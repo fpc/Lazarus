@@ -34,7 +34,7 @@ end;
 
 {-------------------------------------------------------------------------------
   function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
-  
+
   'TheMessage' is in TLMessage format. Don't confuse this with tagMsg.
 --------------------------------------------------------------------------------}
 function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
@@ -119,7 +119,7 @@ end;
   function GTKRealizeCB
   Params: Widget: PGtkWidget; Data: Pointer
   Result: GBoolean
-  
+
   GTKRealizeCB is called by the gtk, whenever a widget is realized (ie mapped),
   but before the widget itself got the realize signal.
   That means that the gdk window on the xserver has been created.
@@ -152,7 +152,7 @@ begin
 
     if (TObject(Data) is TWinControl) then
       UpdateWidgetStyleOfControl(TWinControl(Data));
-    
+
     if not (csDesigning in TComponent(Data).ComponentState) then
       RealizeAccelerator(TComponent(Data),Widget);
   end;
@@ -186,7 +186,7 @@ end;
     RCStyle^.font_name:=g_strdup('-urw-chancery l-medium-i-normal-*-*-140-*-*-p-*-iso8859-2');
 
     gtk_widget_modify_style(AWidget,RCStyle);
-    
+
     g_free(RCStyle^.font_name);
     RCStyle^.font_name:=nil;
     gtk_rc_style_unref(RCStyle);
@@ -211,7 +211,7 @@ begin
   HiddenLCLObject:=GetHiddenLCLObject(Widget);
   if HiddenLCLObject=nil then begin
     // this is a normal lcl wigdet
-  
+
     MainWidget:=GetMainWidget(Widget);
     if MainWidget=nil then
       MainWidget:=Widget;
@@ -223,7 +223,7 @@ begin
         TheWinControl:=TWinControl(LCLObject)
       else
         TheWinControl:=nil;
-        
+
       // set extra signal masks after the widget window is created
       // define extra events we're interrested in
       //write('GTKRealizeAfterCB ');
@@ -251,7 +251,7 @@ begin
         ModifyWidgetStyle(TheWinControl,Widget);
         {$ENDIF}
       end;
-      
+
     end;
   end else begin
     // this is a hidden child widget of a lcl widget
@@ -295,7 +295,7 @@ var
 begin
   Result:= True;
   EventTrace('activate', data);
-  
+
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
   FillChar(Mess,SizeOf(Mess),#0);
@@ -320,12 +320,12 @@ begin
   Result := CallBackDefaultReturn;
 
   EventTrace('toggled', AData);
-  
+
   LCLMenuItem := TMenuItem(AData);
   // some sanity checks
   if LCLMenuItem = nil then Exit;
   if not LCLMenuItem.IsCheckItem then Exit; // ???
-  
+
   // the gtk always toggles the check flag
   // -> restore 'checked' flag if needed
   if gtk_check_menu_item_get_active(AMenuItem) = LCLMenuItem.Checked then Exit;
@@ -415,7 +415,7 @@ var
 begin
   Result := CallBackDefaultReturn;
   EventTrace('DrawAfter', data);
-  
+
   if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstDrawAfter);
     if DesignOnlySignal then exit;
@@ -501,7 +501,7 @@ begin
   end;
   DebugLn('');
   {$ENDIF}
-  
+
   UpdateMouseCaptureControl;
   Mess.Msg := LM_ACTIVATE;
   Mess.Active:=true;
@@ -885,7 +885,7 @@ end;
 
 {-------------------------------------------------------------------------------
   function ControlGetsMouseMoveBefore(AControl: TControl): boolean;
-  
+
   Returns true, if mouse move event should be sent before the widget istelf
   reacts.
 -------------------------------------------------------------------------------}
@@ -900,10 +900,10 @@ end;
   GTKMotionNotify
   Params: widget: PGTKWidget; event: PGDKEventMotion; data: gPointer
   Returns: GBoolean
-  
+
   Called whenever the mouse is moved over a widget.
   The gtk event is translated into a lcl MouseMove message.
-  
+
 -------------------------------------------------------------------------------}
 function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
   Data: gPointer): GBoolean; cdecl;
@@ -1189,7 +1189,7 @@ var
   DesignOnlySignal: boolean;
   CaptureWidget: PGtkWidget;
 begin
-  Result := true;
+	Result := true;
 
   {$IFDEF VerboseMouseBugfix}
   DebugLn('');
@@ -1224,16 +1224,14 @@ begin
     CaptureWidget:=PGtkWidget(TWinControl(Data).Handle);
     if Event^.button=1 then begin
       CaptureMouseForWidget(CaptureWidget,mctGTKIntf);
+      Result := false;
     end;
-
   end else begin
     // stop the signal, so that the widget does not auto react
     if (TControl(Data).FCompStyle<>csNotebook)
     or (event^.Button<>1) then begin
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
-{$IFDEF GTK2}
-      result := false;
-{$ENDIF GTK2}
+			result := false;
     end;
   end;
   DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
@@ -1385,7 +1383,7 @@ begin
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
-    
+
     ReleaseMouseCapture;
     if DesignOnlySignal or (not ControlGetsMouseUpBefore(TControl(Data))) then
     begin
@@ -1396,7 +1394,7 @@ begin
     if TControl(Data).FCompStyle<>csNotebook then
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
   end;
-  
+
   DeliverMouseUpMessage(Widget,Event,TWinControl(Data));
 end;
 
@@ -1463,16 +1461,16 @@ begin
          if LastFileSelectRow <> -1 then
          begin
             startRow := LastFileSelectRow;
-	    endRow := row;
+     endRow := row;
             if LastFileSelectRow > row then
-	    begin
-	       startRow := row;
-	       endRow := LastFileSelectRow;
-	    end;
+     begin
+        startRow := row;
+        endRow := LastFileSelectRow;
+     end;
             for loop := startRow to endRow do
-	    begin
+     begin
                gtk_clist_select_row(PGtkCList(widget), loop, column);
-	    end;
+     end;
          end;
       end
       else if not (ssCtrl in ShiftState) then
@@ -1512,7 +1510,7 @@ begin
   if (Widget=nil) then ;
   theDialog := TCommonDialog(data);
   FPointer := Pointer(theDialog.Handle);
-  
+
   if theDialog is TFileDialog then
   begin
     if theDialog is TOpenDialog then
@@ -1548,10 +1546,10 @@ begin
         while cListRow <> nil do
         begin
           if PGtkCListRow(cListRow^.data)^.state = GTK_STATE_SELECTED then
-	        begin
+         begin
             if gtk_clist_get_cell_type(fileList, rowNum, 0) = GTK_CELL_TEXT
             then begin
-	            gtk_clist_get_text(fileList, rowNum, 0, @fileInfo);
+             gtk_clist_get_text(fileList, rowNum, 0, @fileInfo);
                  Files.Add(DirName+fileInfo);
             end;
           end;
@@ -1606,7 +1604,7 @@ end;
   function gtkDialogCancelclickedCB
   Params: widget: PGtkWidget; data: gPointer
   Result: GBoolean
-  
+
   This function is called, whenever the user clicks the cancel button in a
   commondialog
 -------------------------------------------------------------------------------}
@@ -1772,7 +1770,7 @@ begin
         UpdateDetailView(TOpenDialog(data));
       end;
     end;
-    
+
   end;
 end;
 
@@ -1861,7 +1859,7 @@ var
       UpdateDetailView(TOpenDialog(theDialog));
     end;
   end;
-  
+
 var
   AHistoryEntry: PFileSelHistoryEntry;
   FilterMenu, ActiveFilterMenuItem: PGtkWidget;
@@ -1996,7 +1994,7 @@ begin
   EventTrace('size-allocate', data);
 
   with Size^ do Assert(False, Format('Trace:[gtksize_allocateCB] %s --> X: %d, Y: %d, Width: %d, Height: %d', [TObject(data).ClassName, X, Y, Width, Height]));
-  
+
   if not (TObject(Data) is TControl) then begin
     // owner is not TControl -> ignore
     DebugLn('WARNING: gtksize_allocateCB: Data is not TControl. Data=',
@@ -2006,7 +2004,7 @@ begin
     RaiseException('');
     exit;
   end;
-  
+
   { The gtk sends the size messages after the resizing. Therefore the parent
     widget is already resized, but the parent resize message will be emitted
     after all its childs. So, the gtk resizes in top-bottom order, just like the
@@ -2099,11 +2097,11 @@ begin
       Y:= Event^.Y;
       Width:= Event^.Width;
       Height:= Event^.Height;
-    end;  
+    end;
     Result:= gtksize_allocateCB( Widget, Allocation, Data);
   finally
     Dispose(Allocation);
-  end;    
+  end;
 end;
 
 function gtkreleasedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -2131,16 +2129,16 @@ begin
   if TControl(Data) is TCustomMemo then begin
     Memo:= TCustomMemo(Data);
     if Memo.MaxLength < 0 then Exit;
-    
+
     CurrLength:= gtk_text_get_length(PGtkText(widget));
     if CurrLength + NewTextLength <= Memo.MaxLength then Exit;
-    
+
     CutLength:= CurrLength + NewTextLength - Memo.MaxLength;
-    
+
     if NewTextLength - CutLength > 0 then begin
       gtk_editable_insert_text(PGtkEditable(widget), char, NewTextLength - CutLength, Position);
     end;
-    
+
     g_signal_stop_emission_by_name(PGtkObject(widget), 'insert_text');
   end;
 end;
@@ -2283,8 +2281,8 @@ end;
            0    - 0 will stop the gtk timer
 
   Callback for gtk timer.
-  
-  WARNING: There seems to be a bug in gtk-1.2.x which breaks 
+
+  WARNING: There seems to be a bug in gtk-1.2.x which breaks
            gtk_timeout_remove so we have to dispose data here & return 0
            (s.a. KillTimer).
  ------------------------------------------------------------------------------}
@@ -2294,7 +2292,7 @@ var
 begin
   EventTrace ('TimerCB', nil);
   Result := GdkFalse;  // assume: timer will stop
-  
+
   TimerInfo:=PGtkITimerinfo(Data);
 
   if (FTimerData=nil) or (FTimerData.IndexOf(Data)<0) then begin
@@ -2317,7 +2315,7 @@ begin
       Result := GdkFalse;       // stop timer
     end;
   end;
-  
+
   if (Result<>GdkFalse) and (FTimerData.IndexOf(Data)<0) then begin
     // timer was killed
     // -> stop timer
@@ -2345,7 +2343,7 @@ begin
   Result := CallBackDefaultReturn;
   //DebugLn('[gtkFocusInNotifyCB] ',TControl(data).Name,':',TObject(data).ClassName);
   EventTrace ('FocusInNotify (alias Enter)', data);
-  
+
   if (Event=nil) then ;
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
@@ -2389,7 +2387,7 @@ var
   OldValue,
   V, U, {L,}
   StepI, PageI{, Page}: Integer;
-  Scroll: PGTKHScrollBar;  
+  Scroll: PGTKHScrollBar;
   X, Y: GInt;
   Mask: TGdkModifierType;
 begin
@@ -2411,9 +2409,9 @@ begin
     PageI := RoundToInt(Page_Increment);
     //Page := RoundToInt(Page_Size);
   end;
-  
+
   // get keystates
-  if Scroll <> nil 
+  if Scroll <> nil
   then begin
     gdk_window_get_pointer(GetControlWindow(Scroll), @X, @Y, @Mask);
   end;
@@ -2424,11 +2422,11 @@ begin
     // Get scrollcode
     if ssLeft in GTKEventState2ShiftState(Word(Mask))
     then ScrollCode := SB_THUMBTRACK
-    else if V - OldValue = StepI 
+    else if V - OldValue = StepI
     then ScrollCode := SB_LINERIGHT
     else if OldValue - V = StepI
     then ScrollCode := SB_LINELEFT
-    else if V - OldValue = PageI 
+    else if V - OldValue = PageI
     then ScrollCode := SB_PAGERIGHT
     else if OldValue - V = PageI
     then ScrollCode := SB_PAGELEFT
@@ -2448,7 +2446,7 @@ var
   OldValue,
   V, U, {L,}
   StepI, PageI{, Page}: Integer;
-  Scroll: PGTKHScrollBar;  
+  Scroll: PGTKHScrollBar;
   X, Y: GInt;
   Mask: TGdkModifierType;
 begin
@@ -2470,7 +2468,7 @@ begin
     PageI := RoundToInt(Page_Increment);
     //Page := RoundToInt(Page_Size);
   end;
-  
+
   // get keystates
   if Scroll <> nil then begin
     BeginGDKErrorTrap;
@@ -2486,11 +2484,11 @@ begin
     // Get scrollcode
     if ssLeft in GTKEventState2ShiftState(Word(Mask))
     then ScrollCode := SB_THUMBTRACK
-    else if V - OldValue = StepI 
+    else if V - OldValue = StepI
     then ScrollCode := SB_LINEDOWN
     else if OldValue - V = StepI
     then ScrollCode := SB_LINEUP
-    else if V - OldValue = PageI 
+    else if V - OldValue = PageI
     then ScrollCode := SB_PAGEDOWN
     else if OldValue - V = PageI
     then ScrollCode := SB_PAGEUP
@@ -2517,7 +2515,7 @@ function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey;
   FuncData: gPointer): gInt; cdecl;
 var
   KeyStateList: TList;
-  
+
   procedure UpdateToggleList(const AVKeyCode: Integer);
   begin
     // Check for a toggle
@@ -2526,7 +2524,7 @@ var
     if KeyStateList.Remove(Pointer(AVKeyCode or KEYMAP_TOGGLE)) < 0
     then KeyStateList.Add(Pointer(AVKeyCode or KEYMAP_TOGGLE));
   end;
-  
+
   procedure UpdateList(const AVKeyCode: Integer; const APressed: Boolean);
   begin
     if AVKeyCode = 0 then Exit;
@@ -2582,10 +2580,10 @@ begin
     ]));
     Exit;
   end;
-  
+
   KeyStateList := TList(FuncData);
   if KeyStateList = nil then Exit;
-  
+
   UpdateList(Vkey.VKey, Pressed);
   if IsToggleKey(Vkey.VKey)
   then UpdateToggleList(Vkey.VKey);
@@ -2599,7 +2597,7 @@ begin
     GDK_Key_Alt_L:      UpdateList(VK_LMENU, Pressed);
     GDK_Key_Alt_R:      UpdateList(VK_RMENU, Pressed);
   end;
-  
+
   // Recheck the list against the modifiers
   for n := 0 to High(STATE_MAP) do
   begin
@@ -2612,7 +2610,7 @@ begin
     UpdateList(VK_MAP[n][1], (STATE_MAP[n] and Event^.State) <> 0);
     UpdateList(VK_MAP[n][2], (STATE_MAP[n] and Event^.State) <> 0);
   end;
-  
+
   // if the VKey has multiple VK_codes then SHIFT distinguishes between them
   // In that case SHIFT is not pressed
   // On the next event the shift flag will be restored based on modifiers
@@ -2734,7 +2732,7 @@ begin
             and (ClipboardExtraGtkFormats[ClipboardType][gfTEXT]))
           then
             FormatID:=gdk_atom_intern('text/plain',GdkFalse);
-            
+
           {$IFDEF DEBUG_CLIPBOARD}
           DebugLn('[ClipboardSelectionRequestHandler] FormatID=',FormatID,' CompoundText=',gdk_atom_intern('COMPOUND_TEXT',1),' ',ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]);
           {$ENDIF}
@@ -2746,7 +2744,7 @@ begin
           Buffer:=nil;
           BufLength:=0;
           BitCount:=8;
-          
+
           // if the format was wrapped, transform it back
           if (FormatID=gdk_atom_intern('text/plain',GdkTrue)) then begin
             if (SelectionData^.Target=gdk_atom_intern('COMPOUND_TEXT',GdkTrue)) then
@@ -2874,6 +2872,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.243  2004/08/04 10:51:13  mazen
+  * fix left mouse button click reaction
+
   Revision 1.242  2004/08/03 17:18:15  mazen
   * fix right mouse button down event
 
