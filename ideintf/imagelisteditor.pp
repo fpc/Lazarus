@@ -134,8 +134,8 @@ begin
  Opendlg := TOpenDialog.Create(Self);
  Try
    Opendlg.Options:=[ofextensiondifferent, ofpathmustexist, offilemustexist, ofenablesizing];
-   Opendlg.DefaultExt:='.xpm';
-   Opendlg.Filter:='*.xpm';
+   Opendlg.Filter:='All supported files (*.xpm;*.bmp)|*.xpm;*.bmp|'+
+                   'Pixmap (*.xpm)|*.xpm|Bitmap (*.bmp)|*.bmp';
    OpenDlg.InitialDir:=fDirName; //last rirectory
    
    If OpenDlg.Execute then

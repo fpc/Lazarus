@@ -360,8 +360,8 @@ end;
 constructor TOpenPictureDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  FDefaultFilter := Format(rsAllFiles, [GetAllFilesMask, GetAllFilesMask,
-    GraphicFilter(TGraphic)]);
+  FDefaultFilter := GraphicFilter(TGraphic)+'|'+Format(rsAllFiles,
+  [GetAllFilesMask, GetAllFilesMask,'']);
   Filter:=FDefaultFilter;
 
   FPictureGroupBox:=TGroupBox.Create(Self);

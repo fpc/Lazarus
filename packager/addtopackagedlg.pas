@@ -138,7 +138,6 @@ type
     procedure AddFileButtonClick(Sender: TObject);
     procedure AddFilePageResize(Sender: TObject);
     procedure AddFileShortenButtonClick(Sender: TObject);
-    procedure AddFilesPageResize(Sender: TObject);
     procedure AddToPackageDlgClose(Sender: TObject;
                                    var CloseAction: TCloseAction);
     procedure AddUnitButtonClick(Sender: TObject);
@@ -155,6 +154,7 @@ type
     procedure ClassNameEditChange(Sender: TObject);
     procedure ComponentUnitFileBrowseButtonClick(Sender: TObject);
     procedure ComponentUnitFileShortenButtonClick(Sender: TObject);
+    procedure AddFilesPageResize(Sender: TObject);
     procedure FilesAddButtonClick(Sender: TObject);
     procedure FilesBrowseButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
@@ -546,6 +546,11 @@ begin
       LazPackage.GetFileDialogInitialDir(OpenDialog.InitialDir);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist,ofPathMustExist];
+    OpenDialog.Filter:='Lazarus File (*.pas;*.pp;*.inc;*.lfm;*.lrs)|*.pas;*.pp;*.inc;*.lfm;*.lrs'
+      +'|Pascal unit (*.pp;*.pas)|*.pp;*.pas'
+      +'|Pascal source file (*.pas)|*.pas'
+      +'|FreePascal source file (*.pp)|*.pp'
+      +'|All files ('+GetAllFilesMask+')|'+GetAllFilesMask;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       if FileExists(AFilename) then begin
@@ -615,6 +620,10 @@ begin
       LazPackage.GetFileDialogInitialDir(OpenDialog.InitialDir);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist,ofPathMustExist];
+    OpenDialog.Filter:='Pascal unit (*.pp;*.pas)|*.pp;*.pas'
+      +'|Pascal source file (*.pas)|*.pas'
+      +'|FreePascal source file (*.pp)|*.pp'
+      +'|All files ('+GetAllFilesMask+')|'+GetAllFilesMask;
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       if FileExists(AFilename) then begin
