@@ -1468,8 +1468,10 @@ begin
   while (n>0) do begin
     dec(n);
     TimerInfo := FTimerData[n];
-    if TimerInfo^.TimerID=idEvent
-      then TimerInfo^.TimerFunc;
+    if TimerInfo^.TimerID=idEvent then begin
+      TimerInfo^.TimerFunc;
+      break;
+    end;
   end;
 end;
 
@@ -1480,6 +1482,9 @@ end;
 
 {
   $Log$
+  Revision 1.170  2004/12/01 22:38:36  vincents
+  fixed error, when more than one timer was disabled in a timer callback.
+
   Revision 1.169  2004/11/26 12:26:13  vincents
   implemented SelectionChange event
 
