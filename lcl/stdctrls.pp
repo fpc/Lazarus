@@ -603,7 +603,7 @@ type
     procedure SetFocusControl(Val : TWinControl); virtual;
     procedure SetShowAccelChar(Val : boolean); virtual;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
-    property FocusControl : TWinControl read FFocusControl write SetFocusControl;
+    property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Layout: TTextLayout read FLayout write SetLayout default tlBottom;
     property ShowAccelChar : boolean read FShowAccelChar write SetShowAccelChar default true;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default false;
@@ -1452,6 +1452,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.94  2003/06/10 15:58:39  mattias
+  started TLabeledEdit
+
   Revision 1.93  2003/06/10 13:35:54  mattias
   implemented TComboBox dropdown from Yoyong
 

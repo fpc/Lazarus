@@ -5966,7 +5966,7 @@ msgstr "Версия"
 msgid "View breakpoints"
 msgstr "Просмотр точек останова"
 
-#: lazarusidestrconsts:srkmectogglecallstack
+#: lazarusidestrconsts:uemviewcallstackcursor
 msgid "View call stack"
 msgstr "Просмотр стека вызовов"
 

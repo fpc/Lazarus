@@ -5976,7 +5976,7 @@ msgstr ""
 msgid "View breakpoints"
 msgstr ""
 
-#: lazarusidestrconsts:srkmectogglecallstack
+#: lazarusidestrconsts:uemviewcallstackcursor
 msgid "View call stack"
 msgstr ""
 

@@ -2862,6 +2862,10 @@ msgstr ""
 msgid "&Run to Cursor"
 msgstr ""
 
+#: lazarusidestrconsts:uemviewcallstackcursor
+msgid "View Call Stack"
+msgstr ""
+
 #: lazarusidestrconsts:uemmoveeditorleft
 msgid "Move Editor Left"
 msgstr ""

@@ -195,7 +195,7 @@ type
       read FHelpContext write SetHelpContext default 0;
     property HelpKeyword: string read FHelpKeyword write SetHelpKeyword;
     property HelpType: THelpType
-      read FHelpType write SetHelpType default htKeyword;
+      read FHelpType write SetHelpType default htContext;
     property Hint: string read FHint write SetHint;
     property ImageIndex: TImageIndex
       read FImageIndex write SetImageIndex default -1;
