@@ -3049,6 +3049,7 @@ begin
     DestroyCommonDialogAddOns(TCommonDialog(Sender));
   end;
 
+  if Sender is THintWindow then writeln('TGTKObject.DestroyLCLControl DestroyWidget of ',Sender.ClassName,' creates the following gtk warnings:');
   // destroy the widget
   DestroyWidget(Widget);
 
@@ -3080,6 +3081,8 @@ begin
     LastMiddle:=EmptyLastMouseClick;
   if LastRight.Component=Sender then
     LastRight:=EmptyLastMouseClick;
+
+  if Sender is THintWindow then writeln('TGTKObject.DestroyLCLControl END');
 end;
 
 {-------------------------------------------------------------------------------
@@ -6463,6 +6466,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.250  2002/10/15 16:01:36  lazarus
+  MG: fixed timers
+
   Revision 1.249  2002/10/15 14:18:29  lazarus
   MG: added TGtkObject.WordWrap
 
