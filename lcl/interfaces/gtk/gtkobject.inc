@@ -3242,33 +3242,6 @@ begin
 
         end;
 
-      LM_SETFILTER :
-      begin
-        { ToDo:
-        if Sender is TFileDialog then begin
-          pStr := StrAlloc(length(TFileDialog(Sender).Filter) + 1);
-          try
-            StrPCopy(pStr, TFileDialog(Sender).Filter);
-            gtk_file_selection_complete(PGtkFileSelection(Handle), pstr);
-          finally
-            StrDispose(pStr);
-          end;
-        end;}
-      end;
-
-      LM_SETFILENAME :
-      begin
-        if Sender is TFileDialog then begin
-          pStr := StrAlloc(length(TFileDialog(Sender).Filename) + 1);
-          try
-            StrPCopy(pStr, TFileDialog(Sender).Filename);
-            gtk_file_selection_set_filename( PGtkFileSelection(Handle), pStr);
-          finally
-            StrDispose(pStr);
-          end;
-        end;
-      end;
-
       LM_SETFOCUS:
       begin
         //DebugLn('[TGtkWidgetSet.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
@@ -8636,6 +8609,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.553  2004/09/11 15:01:22  micha
+  remove obsolete LM_SETFILTER and LM_SETFILENAME messages
+
   Revision 1.552  2004/09/11 14:54:01  micha
   convert LM_BTNDEFAULT_CHANGED message to interface method
 

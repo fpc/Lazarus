@@ -163,8 +163,6 @@ const
   //LM_DRAW         = LM_User+32;  //LM_DRAW and LM_PAINT are the same.
   LM_PAINT          = LM_User+32;
   LM_SHOWMODAL      = LM_USER+33;
-  LM_SETFILTER      = LM_USER+34;
-  LM_SETFILENAME    = LM_USER+35;
   LM_OK_CLICKED     = LM_USER+36;
   LM_CANCEL_CLICKED = LM_USER+37;
   //LM_KEYDOWN      = LM_User+38; // Windows Compatability
@@ -959,8 +957,6 @@ begin
   //LM_DRAW         :Result:='LM_DRAW';
   LM_PAINT          :Result:='LM_PAINT';
   LM_SHOWMODAL      :Result:='LM_SHOWMODAL';
-  LM_SETFILTER      :Result:='LM_SETFILTER';
-  LM_SETFILENAME    :Result:='LM_SETFILENAME';
   LM_OK_CLICKED     :Result:='LM_OK_CLICKED';
   LM_CANCEL_CLICKED :Result:='LM_CANCEL_CLICKED';
   //LM_KEYDOWN      :Result:='LM_KEYDOWN';
@@ -1011,6 +1007,9 @@ end.
 
 {
   $Log$
+  Revision 1.87  2004/09/11 15:01:22  micha
+  remove obsolete LM_SETFILTER and LM_SETFILENAME messages
+
   Revision 1.86  2004/09/11 14:54:01  micha
   convert LM_BTNDEFAULT_CHANGED message to interface method
 

@@ -360,30 +360,6 @@ activate_time : the time at which the activation event occurred.
         TrackPopupMenuEx(TPopupMenu(Sender).Handle, TPM_LEFTALIGN or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
           TPoint(Data^).x, TPoint(Data^).y, FAppHandle, Nil);
       End;
-      LM_SETFILTER:
-      Begin
-        //The filter is processed/set inside Execute/CreateCommonDialog
-        //not to say that the code is buggy
-        {PStr := StrAlloc(Length(TFileDialog(Sender).Filter) + 1);
-        Try
-          StrPCopy(PStr, TFileDialog(Sender).Filter);
-          LPOpenFileName(@Sender)^.LPStrFilter := PStr; <- Invalid Typecast
-        Finally
-          StrDispose(pStr);
-        End; }
-      End;
-      LM_SETFILENAME:
-      Begin
-        //The filename is processed/set inside Execute/CreateCommonDialog
-        //not to say that the code is buggy
-        {PStr := StrAlloc(Length(TFileDialog(Sender).FileName) + 1);
-        Try
-          StrPCopy(PStr, TFileDialog(Sender).FileName);
-          LPOpenFileName(@Sender)^.LPStrFile := PStr; <- Invalid Typecast
-        Finally
-          StrDispose(pStr);
-        End; }
-      End;
       LM_SETFOCUS:
       Begin
         If Handle <> 0 Then
@@ -2566,6 +2542,9 @@ End;
 
 {
   $Log$
+  Revision 1.245  2004/09/11 15:01:22  micha
+  remove obsolete LM_SETFILTER and LM_SETFILENAME messages
+
   Revision 1.244  2004/09/11 14:54:01  micha
   convert LM_BTNDEFAULT_CHANGED message to interface method
 
