@@ -397,6 +397,7 @@ TCMDialogKey = TLMKEY;
     FWidth: Integer;
     FWindowProc: TWndMethod;
     FVisible: Boolean;
+    Procedure CheckMenuPopup(const P : TSmallPoint);
     Procedure SetAlign(Value : TAlign);
     Procedure SetAutoSize(value : Boolean);
     Procedure SetBoundsRect(const Rect : TRect);
@@ -1124,6 +1125,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2000/12/22 19:55:37  lazarus
+  Added the Popupmenu code to the LCL.
+  Now you can right click on the editor and a PopupMenu appears.
+  Shane
+
   Revision 1.7  2000/12/20 17:35:58  lazarus
   Added GetChildren
   Shane

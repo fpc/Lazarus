@@ -272,6 +272,7 @@ begin
       LM_BRINGTOFRONT:
       begin
          Assert(False, 'Trace:TODO:bringtofront');
+         //For now just hide and show again.
       end;
 
       LM_BTNDEFAULT_CHANGED :
@@ -418,14 +419,30 @@ begin
          end;
 
 
-      LM_TB_BUTTONCOUNT:
-      begin
-         if (Sender is TToolbar) 
-            then Result := pgtkToolbar(handle)^.num_Children
-            else Result := -1;
-      end;
+      LM_POPUPSHOW :
+        Begin 
+              gtk_menu_popup                  (PgtkMenu(TPopupMenu(Sender).Handle),
+                                              nil,
+                                              nil,
+                                              nil,
+                                              nil,
+                                              0,
+                                              0);	
+{Displays a menu and makes it available for selection. Applications can use this function to display context-sensitive menus, 
+and will typically supply NULL for the parent_menu_shell, parent_menu_item, func and data parameters. 
+The default menu positioning function will position the menu at the current pointer position.
+menu :	a GtkMenu.	
+parent_menu_shell :	the menu shell containing the triggering menu item.	
+parent_menu_item :	the menu item whose activation triggered the popup.	
+func :	a user supplied function used to position the menu.	
+data :	user supplied data to be passed to func.	
+button :	the button which was pressed to initiate the event.	
+activate_time :	the time at which the activation event occurred. 	
+}
 
-      LM_SETFILTER : 
+        end;
+
+      LM_SETFILTER :
       begin 
          pStr := StrAlloc(length(TFileDialog(Sender).Filter) + 1); 
          StrPCopy(pStr, TFileDialog(Sender).Filter); 
@@ -465,6 +482,13 @@ begin
          gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
          gtk_widget_show(PGtkWidget(handle));
          gtk_window_set_modal(PGtkWindow(handle), true);
+      end;
+
+      LM_TB_BUTTONCOUNT:
+      begin
+         if (Sender is TToolbar)
+            then Result := pgtkToolbar(handle)^.num_Children
+            else Result := -1;
       end;
 
 //SH: think of TCanvas.handle!!!!
@@ -1496,7 +1520,7 @@ begin
       caption := TMenuItem(Sender).caption;
       CompStyle := TMenuItem(Sender).FCompStyle;
    end
-   else if (Sender is TMenu) 
+   else if (Sender is TMenu) or (Sender is TPopupMenu)
       then CompStyle := TMenu(Sender).FCompStyle
    else if (Sender is TCommonDialog)
       then CompStyle := TCommonDialog(Sender).FCompStyle
@@ -1890,6 +1914,12 @@ begin
          gtk_widget_show (P);
       end;
 
+      csPopupMenu :
+      with (TPopupMenu(Sender)) do
+          Begin
+          P := gtk_menu_new();
+
+          end;
       csProgressBar:
       with (TProgressBar (Sender)) do
       begin
@@ -2672,6 +2702,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.11  2000/12/22 19:55:38  lazarus
+  Added the Popupmenu code to the LCL.
+  Now you can right click on the editor and a PopupMenu appears.
+  Shane
+
   Revision 1.10  2000/12/19 18:43:13  lazarus
   Removed IDEEDITOR.  This causes the PROJECT class to not function.
   Saving projects no longer works.

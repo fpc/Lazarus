@@ -79,7 +79,7 @@ end;
  ------------------------------------------------------------------------------}
 function TMenu.HandleAllocated : Boolean;
 begin
-   HandleAllocated := FItems.HandleAllocated;
+   Result := FItems.HandleAllocated;
 end;
 
 {------------------------------------------------------------------------------
@@ -111,6 +111,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/12/22 19:55:37  lazarus
+  Added the Popupmenu code to the LCL.
+  Now you can right click on the editor and a PopupMenu appears.
+  Shane
+
   Revision 1.1  2000/07/13 10:28:26  michael
   + Initial import
 

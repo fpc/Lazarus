@@ -33,7 +33,7 @@ uses
 {$else}
 	mwcustomedit,mwPasSyn,
 {$endif}
-       Graphics,Extctrls;
+       Graphics,Extctrls,Menus;
 
 type
 
@@ -41,6 +41,8 @@ type
   TmwCustomEdit = TSynEdit;
   TmwPasSyn = TSynPasSyn;
 {$endif}
+
+
 
   TSourceEditor = class
   private
@@ -56,6 +58,7 @@ type
     FCurrentCursorXLine : Integer;  //pulled out of the editor by the Function Getxxx
     FCurrentCursorYLine : Integer;  //pulled out of the editor by the Function Getxxx
     FFileName : String;
+    FPopUpMenu : TPopupMenu;
     FModified : Boolean;
     FSource : TStringList; //pulled out of the editor by the Function Getxxx
     FUnitName : String;
@@ -67,6 +70,7 @@ type
     FOnBeforeOpen : TNotifyEvent;
     FOnBeforeSave : TNotifyEvent;
 
+    Procedure BuildPopupMenu;
     Function GetSource : TStrings;
     Procedure SetSource(value : TStrings);
     Function GetCurrentCursorXLine : Integer;
@@ -81,8 +85,13 @@ type
   protected
     Procedure DisplayControl;
     Procedure ReParent(AParent : TWinControl);
+
+    Procedure BookMarkClicked(Sender : TObject);
+    Procedure BookMarkGotoClicked(Sender : TObject);
+    Procedure ReadOnlyClicked(Sender : TObject);
     property Control : TComponent read FControl;
     property Editor : TmwCustomEdit read FEditor;
+
   public
     constructor Create(AOwner : TComponent; AParent : TWinControl);
     destructor Destroy; override;
@@ -120,7 +129,6 @@ type
     FSaveDialog : TSaveDialog;
     FOpenDialog : TOpenDialog;
     Function GetEmpty : Boolean;  //look at the # of pages
-
   protected
     Function CreateNotebook : Boolean;
     Function GetActiveSE : TSourceEditor;
@@ -155,11 +163,15 @@ uses
 
 constructor TSourceEditor.create(AOwner : TComponent; AParent : TWinControl);
 Begin
-inherited Create;
-FAOwner := AOwner;
+  inherited Create;
+  FAOwner := AOwner;
 
-FSource := TStringList.create;
-CreateEditor(AOwner,AParent);
+  FSource := TStringList.create;
+
+  BuildPopupMenu;
+
+  CreateEditor(AOwner,AParent);
+  FEditor.PopupMenu := FPopupMenu;
 
 end;
 
@@ -169,6 +181,103 @@ begin
   FEditor.Free;
   FSource.free;
   inherited;
+end;
+
+Procedure TSourceEditor.BuildPopupMenu;
+
+     Function Seperator : TMenuItem;
+     Begin
+     Result := TMenuItem.Create(FAOwner);
+     Result.Caption := '-';
+     end;
+
+var
+  MenuItem : TMenuItem;
+  SubMenuItem : TMenuItem;
+  I : Integer;
+
+
+Begin
+  FPopupMenu := TPopupMenu.Create(FAOwner);
+  FPopupMenu.AutoPopup := True;
+  MenuItem := TMenuItem.Create(FAOwner);
+  MenuItem.Caption := '&Close Page';
+  MenuItem.OnClick := @TSourceNotebook(FAOwner).CloseClicked;
+  FPopupMenu.Items.Add(MenuItem);
+
+  FPopupMenu.Items.Add(Seperator);
+
+  MenuItem := TMenuItem.Create(FAOwner);
+  MenuItem.Caption := '&Toggle Bookmark';
+  FPopupMenu.Items.Add(MenuItem);
+
+  for I := 0 to 9 do
+     Begin
+      SubMenuItem := TMenuItem.Create(FAOwner);
+      SubMenuItem.Caption := 'Bookmark '+inttostr(i);
+      SubMenuItem.OnClick := @BookmarkClicked;
+      SubMenuItem.Tag := I;
+      MenuItem.Add(SubMenuItem);
+     end;
+
+  MenuItem := TMenuItem.Create(FAOwner);
+  MenuItem.Caption := '&Goto Bookmark';
+  FPopupMenu.Items.Add(MenuItem);
+
+  for I := 0 to 9 do
+     Begin
+      SubMenuItem := TMenuItem.Create(FAOwner);
+      SubMenuItem.Caption := 'Bookmark '+inttostr(i);
+      SubMenuItem.OnClick := @BookmarkGotoClicked;
+      SubMenuItem.Tag := I;
+      MenuItem.Add(SubMenuItem);
+     end;
+
+  FPopupMenu.Items.Add(Seperator);
+
+  MenuItem := TMenuItem.Create(FAOwner);
+  MenuItem.Caption := 'Read Only';
+  MenuItem.OnClick := @ReadOnlyClicked;
+  FPopupMenu.Items.Add(MenuItem);
+
+
+end;
+
+Procedure TSourceEditor.BookMarkClicked(Sender : TObject);
+var
+  MenuItem : TMenuItem;
+Begin
+  MenuItem := TMenuItem(sender);
+  MenuItem.Checked := not(MenuItem.Checked);
+  if MenuItem.Checked then
+     Begin
+        FEditor.SetBookMark(MenuItem.Tag,GetCurrentCursorXLine,GetCurrentCursorYLine);
+        MenuItem.Caption := MenuItem.Caption + '*';
+     end
+     else
+     begin
+     FEditor.ClearBookMark(MenuItem.Tag);
+     MenuItem.Caption := copy(MenuItem.Caption,1,Length(MenuItem.Caption)-1);
+     end;
+
+
+end;
+
+Procedure TSourceEditor.BookMarkGotoClicked(Sender : TObject);
+var
+  MenuItem : TMenuItem;
+Begin
+  MenuItem := TMenuItem(sender);
+  FEditor.GotoBookMark(Menuitem.Tag);
+end;
+
+Procedure TSourceEditor.ReadOnlyClicked(Sender : TObject);
+var
+  MenuItem : TMenuItem;
+Begin
+  MenuItem := TMenuItem(sender);
+  FEditor.ReadOnly := not(FEditor.ReadOnly);
+//set the statusbar text;
 end;
 
 

@@ -11,11 +11,27 @@
 constructor TPopupMenu.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
+  FCompStyle := csPopupMenu;
+end;
+
+Procedure TPopupMenu.PopUp(X,Y : Integer);
+var
+  P : TPoint;
+begin
+  P.X := X;
+  P.Y := Y;
+  HandleNeeded;
+ InterfaceObject.IntSendMessage3(LM_POPUPSHOW, Self, @P);
 end;
 
 
 {
   $Log$
+  Revision 1.2  2000/12/22 19:55:38  lazarus
+  Added the Popupmenu code to the LCL.
+  Now you can right click on the editor and a PopupMenu appears.
+  Shane
+
   Revision 1.1  2000/07/13 10:28:27  michael
   + Initial import
 

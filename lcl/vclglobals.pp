@@ -84,7 +84,7 @@ csToolButton = 43;
 csBitBtn = 44;
 csCListBox = 45;
 csSpeedButton = 46;
-
+csPopupMenu = 47;
 type
 
   //TODO: check this against lcllinux

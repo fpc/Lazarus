@@ -84,6 +84,37 @@ Begin
   Assert(False, 'Trace:TODO: [TControl.ChangeScale]');
 end;
 
+
+{------------------------------------------------------------------------------}
+{       TControl.CheckMenuPopup
+}
+{------------------------------------------------------------------------------}
+Procedure TControl.CheckMenuPopup(const P : TSmallPoint);
+var
+  Control: TControl;
+  TempPopupMenu: TPopupMenu;
+  P2 : Tpoint;
+begin
+  if csDesigning in ComponentState then Exit;
+  Control := Self;
+  while Control <> nil do
+  begin
+    TempPopupMenu := Control.GetPopupMenu;
+    if (TempPopupMenu <> nil) then
+    begin
+      if not TempPopupMenu.AutoPopup then Exit;
+//      SendCancelMode(nil);
+      TempPopupMenu.PopupComponent := Control;
+      P2 := SmallPointtoPoint(P);
+      P2 := ClientToScreen(P2);
+        TempPopupMenu.Popup(P2.X, P2.Y);
+      Exit;
+    end;
+    Control := Control.Parent;
+  end;
+end;
+
+
 {------------------------------------------------------------------------------}
 {       TControl.CMENABLEDCHANGED
 }
@@ -220,7 +251,6 @@ begin
   P := ClientOrigin;
   Result.X := Point.X + P.X;
   Result.Y := Point.Y + P.Y;
-  Assert(False, Format('Trace:[TControl.ClientToScreen] %s: Point(%d, %d) Org(%d, %d) --> (%d, %d)',  [Classname, Point.x,  point.y, p.x, p.y, result.x, result.y]));
 end;
 
 {------------------------------------------------------------------------------}
@@ -585,7 +615,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMRButtonUp(var Message: TLMRButtonUp);
 begin
+//  inherited;
   DoMouseUp(Message, mbRight);
+  if Message.Result = 0 then CheckMenuPopup(Message.pos);
+
 end;
 
 {------------------------------------------------------------------------------
@@ -1242,6 +1275,11 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.5  2000/12/22 19:55:37  lazarus
+  Added the Popupmenu code to the LCL.
+  Now you can right click on the editor and a PopupMenu appears.
+  Shane
+
   Revision 1.4  2000/11/30 21:43:38  lazarus
   Changed TDesigner.  It's now notified when a control is added to it's CustomForm.
   It's created in main.pp when New Form is selected.

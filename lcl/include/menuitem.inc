@@ -243,7 +243,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.Insert(Index: Integer; Item: TMenuItem);
 begin
-  if (Item <> nil) 
+  if FItems = nil then FItems := TList.Create;
+  if (Item <> nil)
   then begin
     if Item.Parent <> nil 
     then raise EMenuError.Create('Menu inserted twice');
@@ -256,6 +257,7 @@ begin
 //    if FMenu <> nil then Item.FCompStyle := csMenu;
 
     Item.FParent := Self;
+    Writeln('INDEX = '+inttostr(index));
     FItems.Insert(Index, Item);
     MenuChanged(FItems.Count = 1);
   end;
@@ -404,6 +406,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2000/12/22 19:55:38  lazarus
+  Added the Popupmenu code to the LCL.
+  Now you can right click on the editor and a PopupMenu appears.
+  Shane
+
   Revision 1.3  2000/07/30 21:48:32  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit
@@ -439,6 +446,11 @@ end;
 
 
   $Log$
+  Revision 1.4  2000/12/22 19:55:38  lazarus
+  Added the Popupmenu code to the LCL.
+  Now you can right click on the editor and a PopupMenu appears.
+  Shane
+
   Revision 1.3  2000/07/30 21:48:32  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit

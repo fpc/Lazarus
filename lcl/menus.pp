@@ -40,7 +40,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-uses vclglobals, classes, sysutils, {controls,} LMessages;
+uses vclglobals, classes, sysutils, LMessages;
 
 
 type
@@ -141,8 +141,11 @@ type
   TPopupMenu = class(TMenu)
   private
     FAutoPopup : Boolean;
+    FPopupComponent : TComponent;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure PopUp(X, Y : Integer);
+    property PopupComponent : TComponent read FPopupComponent write FPopupComponent;
   published
     property AutoPopup : Boolean read FAutoPopup write FAutoPopup default True;
   end;
@@ -199,6 +202,11 @@ end.
 
 {
   $Log$
+  Revision 1.3  2000/12/22 19:55:37  lazarus
+  Added the Popupmenu code to the LCL.
+  Now you can right click on the editor and a PopupMenu appears.
+  Shane
+
   Revision 1.2  2000/09/10 23:08:30  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function

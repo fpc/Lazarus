@@ -91,6 +91,7 @@ LM_DRAGINFOCHANGED = LM_COMUSER+53;
 
 //LM_SETENABLED = LM_COMUSER+54;
 LM_BRINGTOFRONT = LM_COMUSER+55;
+LM_POPUPSHOW = LM_COMUSER+56;
 
 //end of messages that are sent to the interface
 
@@ -783,6 +784,11 @@ end.
 
 {
   $Log$
+  Revision 1.7  2000/12/22 19:55:37  lazarus
+  Added the Popupmenu code to the LCL.
+  Now you can right click on the editor and a PopupMenu appears.
+  Shane
+
   Revision 1.6  2000/12/19 18:43:13  lazarus
   Removed IDEEDITOR.  This causes the PROJECT class to not function.
   Saving projects no longer works.
