@@ -237,10 +237,11 @@ begin
       FillChar(FCurItem^,FCurSize,0);
     if FItems=nil then FItems:=TList.Create;
     FItems.Add(FCurItem);
-    FEndItem:=Pointer(integer(FCurItem)+FCurSize);
+    FEndItem := FCurItem;
+    Inc(FEndItem, FCurSize);
   end;
   Result:=FCurItem;
-  inc(integer(FCurItem),FItemSize);
+  Inc(FCurItem, FItemSize);
 end;
 
 procedure TLCLNonFreeMemManager.EnumerateItems(Method: TLCLEnumItemsMethod);
@@ -257,12 +258,13 @@ begin
     for i:=0 to Cnt-1 do begin
       inc(Size,Size);
       p:=FItems[i];
-      Last:=Pointer(integer(p)+Size);
+      Last := p;
+      Inc(Last, Size);
       if i=Cnt-1 then
         Last:=FEndItem;
       while p<>Last do begin
         Method(p);
-        inc(integer(p),FItemSize);
+        Inc(p, FItemSize);
       end;
     end;
   end;
