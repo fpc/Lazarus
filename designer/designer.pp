@@ -569,41 +569,45 @@ Begin
         // no grabber resizing
 
         CompIndex:=ControlSelection.IndexOf(MouseDownComponent);
-        if (ssShift in Shift) then begin
+        if ssCtrl in Shift then begin
+          // child selection
+        end else begin
+          if (ssShift in Shift) then begin
           // shift key pressed (multiselection)
 
-          if CompIndex<0 then begin
-            // not selected
-            // add component to selection
-            if (ControlSelection.SelectionForm<>nil)
-            and (ControlSelection.SelectionForm<>Form)
-            then begin
-              MessageDlg('Invalid mutliselection',
-                'Multiselected components must be of a single form.',
-                mtInformation,[mbOk],0);
+            if CompIndex<0 then begin
+              // not selected
+              // add component to selection
+              if (ControlSelection.SelectionForm<>nil)
+              and (ControlSelection.SelectionForm<>Form)
+              then begin
+                MessageDlg('Invalid mutliselection',
+                  'Multiselected components must be of a single form.',
+                  mtInformation,[mbOk],0);
+              end else begin
+                ControlSelection.Add(MouseDownComponent);
+                InvalidateWithParent(MouseDownComponent);
+              end;
             end else begin
-              ControlSelection.Add(MouseDownComponent);
+              // remove from multiselection
+              ControlSelection.Delete(CompIndex);
               InvalidateWithParent(MouseDownComponent);
             end;
           end else begin
-            // remove from multiselection
-            ControlSelection.Delete(CompIndex);
-            InvalidateWithParent(MouseDownComponent);
-          end;
-        end else begin
-          // no shift key (single selection)
+            // no shift key (single selection)
 
-          if (CompIndex<0) then begin
-            // select only this component
-            
-            // invalidate old components
-            for i:=0 to ControlSelection.Count-1 do
-              if ControlSelection[i].Component is TControl then
-                InvalidateWithParent(TControl(ControlSelection[i].Component));
-                
-            // clear old selection and select new component
-            ControlSelection.AssignComponent(MouseDownComponent);
-            InvalidateWithParent(MouseDownComponent);
+            if (CompIndex<0) then begin
+              // select only this component
+
+              // invalidate old components
+              for i:=0 to ControlSelection.Count-1 do
+                if ControlSelection[i].Component is TControl then
+                  InvalidateWithParent(TControl(ControlSelection[i].Component));
+
+              // clear old selection and select new component
+              ControlSelection.AssignComponent(MouseDownComponent);
+              InvalidateWithParent(MouseDownComponent);
+            end;
           end;
         end;
       end else begin
