@@ -3,7 +3,7 @@ msgid "Enter translation language"
 msgstr ""
 
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.4 beta"
+msgid "0.9.5 beta"
 msgstr ""
 
 #: lazarusidestrconsts:lisleaveemptyfo

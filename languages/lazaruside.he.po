@@ -246,7 +246,7 @@ msgid "(unknown macro: %s)"
 msgstr "(%s :מקרו לא מוכר)"
 
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.4 beta"
+msgid "0.9.5 beta"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
