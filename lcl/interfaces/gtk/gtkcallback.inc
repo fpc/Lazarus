@@ -539,6 +539,8 @@ begin
     );
   {$ENDIF}
 
+  CheckMouseCaptureHandle(Widget);
+
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
@@ -565,20 +567,15 @@ begin
     if ssLeft in ShiftState then Keys := Keys or MK_LBUTTON;
     if ssRight in ShiftState then Keys := Keys or MK_RBUTTON;
     if ssMiddle in ShiftState then Keys := Keys or MK_MBUTTON;
+
+    Result := 0;
   end;
 
   // send the message directly to the LCL
   // (Posting the message via queue
   //  has the risk of getting out of sync with the gtk)
-  //DeliverMessage(Data, Msg);
-  DeliverPostMessage(Data,Msg);
-
-  if (MCaptureHandle <> 0) and (Pointer(MCaptureHandle) <> widget) then
-  begin
-    // capture differs. => gtk forgot to tell, that the capturing has changed
-    // -> update
-    UpdateMouseCaptureControl;
-  end;
+  DeliverMessage(Data, Msg);
+  //DeliverPostMessage(Data,Msg);
 end;
 
 {-------------------------------------------------------------------------------
@@ -599,6 +596,8 @@ begin
 
   // stop the signal, so that it is not sent to the parent widgets
   gtk_signal_emit_stop_by_name(PGTKObject(Widget),'motion-notify-event');
+
+  CheckMouseCaptureHandle(Widget);
 end;
 
 {-------------------------------------------------------------------------------
@@ -618,8 +617,6 @@ var
   ShiftState: TShiftState;
   MappedXY: TPoint;
   EventXY: TPoint;
-  //ShowDebugging : Boolean;
-  //parWindow : PgdkWindow;  //the Parent's GDKWindow
   DesignOnlySignal: boolean;
 
 { $DEFINE VerboseMouseBugfix}
@@ -712,6 +709,8 @@ begin
   EventTrace('Mouse button Press', data);
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
 
+  CheckMouseCaptureHandle(Widget);
+
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     if TControl(Data).FCompStyle<>csNotebook then
@@ -734,10 +733,13 @@ begin
     MessE.Y := MappedXY.Y;
     MessE.State := ShiftState;
     MessE.UserData := Data;
+    MessE.Button := 0;
+
     // send the message directly to the LCL
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
-    DeliverPostMessage(Data, MessE);
+    //DeliverPostMessage(Data, MessE);
+    DeliverMessage(Data, MessE);
   end
   else begin
     // a normal mouse button is pressed
@@ -772,10 +774,12 @@ begin
     if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
     if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
     
+    MessI.Result:=0;
     // send the message directly to the LCL
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
-    DeliverPostMessage(Data, MessI);
+    //DeliverPostMessage(Data, MessI);
+    DeliverMessage(Data, MessI);
   end;
   Result:=true;
 end;
@@ -801,6 +805,8 @@ begin
 
   // stop the signal, so that it is not sent to the parent widgets
   gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-press-event');
+
+  CheckMouseCaptureHandle(Widget);
 end;
 
 {-------------------------------------------------------------------------------
@@ -848,6 +854,8 @@ begin
   //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8),
   //' GDK_BUTTON_RELEASE_MASK=',HexStr(Cardinal(GDK_BUTTON_RELEASE_MASK),8));
 
+  CheckMouseCaptureHandle(Widget);
+
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     if TControl(Data).FCompStyle<>csNotebook then
@@ -891,11 +899,14 @@ begin
   if ssRight in ShiftState then MessI.Keys := MessI.Keys or MK_RBUTTON;
   if ssMiddle in ShiftState then MessI.Keys := MessI.Keys or MK_MBUTTON;
 
-  if MessI.Msg <> LM_NULL then
+  if MessI.Msg <> LM_NULL then begin
     // send the message directly to the LCL
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
-    DeliverPostMessage(Data, MessI);
+    //DeliverPostMessage(Data, MessI);
+    MessI.Result := 0;
+    DeliverMessage(Data, MessI);
+  end;
   Result:=true;
 end;
 
@@ -919,6 +930,8 @@ begin
 
   // stop the signal, so that it is not sent to the parent widgets
   gtk_signal_emit_stop_by_name(PGTKObject(Widget),'button-release-event');
+
+  CheckMouseCaptureHandle(Widget);
 end;
 
 function gtkclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -933,6 +946,8 @@ begin
 
   Result := True;
 end;
+
+
 
 function gtkOpenDialogRowSelectCB( widget : PGtkWidget; row : gint;
   column : gint; event : pgdkEventButton; data : gPointer ) : GBoolean; cdecl;
@@ -2172,6 +2187,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.111  2002/08/24 12:54:59  lazarus
+  MG: fixed mouse capturing, OI edit focus
+
   Revision 1.110  2002/08/24 08:07:14  lazarus
   MG: fixed double click recognition
 
