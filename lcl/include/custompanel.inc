@@ -74,7 +74,6 @@ end;
 procedure TCustomPanel.Paint;
 var
   Rect: TRect;
-  InflateSize: Integer;
   TS : TTextStyle;
 begin
   Rect := GetClientRect;

@@ -91,6 +91,8 @@ LM_MINIMIZE = LM_COMUSER+59;
 
 LM_SETDESIGNING = LM_COMUSER+60;
 
+LM_SETSHORTCUT = LM_COMUSER+61;
+
 //end of messages that are sent to the interface
 
 
@@ -716,9 +718,15 @@ TLMNCHITTEST = packed record
          Result : LongInt);
 end;
 
-
 TLMDestroy = TLMNoParams;
 
+TLMShortCut = packed record
+  Handle : HWND;
+  OldKey : Word;
+  OldModifier : TShiftState;
+  NewKey : Word;
+  NewModifier : TShiftState;
+end;
 
 
 function GetMessageName(const AMessage: Integer):  String;
@@ -776,6 +784,7 @@ begin
 //    LM_SETENABLED       : Result :='LM_SETENABLED       ';
     LM_BRINGTOFRONT     : Result :='LM_BRINGTOFRONT     ';   
     LM_CB_GETCOUNT         : Result :='LM_CB_GETCOUNT         ';
+    LM_SETSHORTCUT      : Result := 'LM_SETSHORTCUT';
   else
     Result := Format('Unknown message 0x%x (%d)', [AMessage, AMessage]);
   end;
@@ -788,6 +797,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2002/02/18 22:46:11  lazarus
+  Implented TMenuItem.ShortCut (not much tested).
+
   Revision 1.19  2002/02/03 00:24:00  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

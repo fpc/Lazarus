@@ -1247,6 +1247,14 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
             end;
          end;
       end;
+      
+      LM_SETSHORTCUT :
+      begin
+	with TLMShortcut(data^) do begin
+          Widget:= PGtkWidget(Handle);
+	end;
+	Accelerate(Widget, TLMShortcut(data^));
+      end;
 
       else
         if Sender<>nil then
@@ -1257,6 +1265,7 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
     end;   // end of else-part of 1st case
   end;   // end of 1st case
 end;
+
 
 
 {------------------------------------------------------------------------------
@@ -3760,6 +3769,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.104  2002/02/18 22:46:11  lazarus
+  Implented TMenuItem.ShortCut (not much tested).
+
   Revision 1.103  2002/02/03 00:24:01  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

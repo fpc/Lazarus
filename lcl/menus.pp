@@ -74,6 +74,7 @@ type
     procedure SetChecked(Value: Boolean);
     procedure SetDefault(Value: Boolean);
     procedure SetEnabled(Value: Boolean);
+    procedure ShortcutChanged(const OldValue, Value : TShortcut);
   protected
     procedure CreateHandle; virtual;
     procedure AttachSignals; virtual;
@@ -162,8 +163,8 @@ type
     procedure AddMenu(Title: TCaption; Menu: TMenu);
   end;
 
-function ShortCut(Key: Word; Shift : TShiftState) : TShortCut;
-procedure ShortCuttoKey(ShortCut : TShortCut; var Key: Word; var Shift : TShiftState);
+function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
+procedure ShortCuttoKey(const ShortCut : TShortCut; var Key: Word; var Shift : TShiftState);
 
 implementation
 
@@ -176,7 +177,7 @@ uses
 {$I mainmenu.inc}
 {$I popupmenu.inc}
 
-Function ShortCut(Key: Word; Shift : TShiftState) : TShortCut;
+Function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 Begin
   Result := 0;
   if WordRec(Key).Hi <> 0 then exit;
@@ -187,7 +188,7 @@ Begin
   if ssAlt in Shift then Inc(Result,scAlt);
 end;
 
-Procedure ShortCuttoKey(ShortCut : TShortCut; var Key: Word; var Shift : TShiftState);
+Procedure ShortCuttoKey(const ShortCut : TShortCut; var Key: Word; var Shift : TShiftState);
 begin
   key := ShortCut and not(scShift+scAlt+scCtrl);
   Shift := [];
@@ -202,6 +203,9 @@ end.
 
 {
   $Log$
+  Revision 1.6  2002/02/18 22:46:11  lazarus
+  Implented TMenuItem.ShortCut (not much tested).
+
   Revision 1.5  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 

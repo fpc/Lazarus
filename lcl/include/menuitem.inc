@@ -51,7 +51,10 @@ begin
     Parent.HandleNeeded;
     if Parent.HandleAllocated 
     then InterfaceObject.IntSendMessage3(LM_CREATE, Self, nil); 
-    if FHandle <> 0 then AttachSignals;
+    if FHandle <> 0 then begin
+      AttachSignals;
+      if ShortCut <> 0 then ShortcutChanged(0, Shortcut);
+    end;  
   end;
   if (FItems <> nil) and ((Parent = nil) or Parent.HandleAllocated) 
   then begin
@@ -385,8 +388,9 @@ Procedure TMenuItem.SetShortCut(Value : TShortCut);
 Begin
   if FShortCut <> Value then
   begin
+    //MenuChanged(True);
+    ShortcutChanged(FShortcut, Value);
     FShortCut := Value;
-    MenuChanged(True);  //Use this to do a sendmessage
   end;
 end;
 
@@ -403,10 +407,40 @@ begin
   FVisible := Value;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TMenuItem.ShortcutChanged
+  Params:  OldValue: Old shortcut, Value: New shortcut
+  Returns: Nothing
+
+  Installs a new shortcut, removes an old one.
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.ShortcutChanged(const OldValue, Value: TShortcut);
+var Msg : TLMShortcut;
+begin
+  if not HandleAllocated then Exit;
+  Msg.Handle:= Handle;
+  if OldValue = 0 then begin
+    Msg.OldKey:= 0;
+    Msg.OldModifier:= [];
+  end else begin
+    ShortCutToKey(OldValue, Msg.OldKey, Msg.OldModifier);
+  end;
+  if Value = 0 then begin
+    Msg.NewKey:= 0;
+    Msg.NewModifier:= [];
+  end else begin
+    ShortCutToKey(Value, Msg.NewKey, Msg.NewModifier);
+  end;
+  InterfaceObject.IntSendMessage3(LM_SETSHORTCUT, Self, @Msg);
+end;
+
 
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/02/18 22:46:11  lazarus
+  Implented TMenuItem.ShortCut (not much tested).
+
   Revision 1.8  2001/03/19 14:40:49  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 
@@ -457,6 +491,9 @@ end;
 
 
   $Log$
+  Revision 1.9  2002/02/18 22:46:11  lazarus
+  Implented TMenuItem.ShortCut (not much tested).
+
   Revision 1.8  2001/03/19 14:40:49  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 
