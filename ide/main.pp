@@ -660,6 +660,7 @@ type
     procedure DoArrangeSourceEditorAndMessageView(PutOnTop: boolean);
     function GetTestBuildDir: string; override;
     function GetProjectTargetFilename: string;
+    function GetTargetOS: string;
     function GetTestProjectFilename: string;
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; override;
     function GetTargetUnitFilename(AnUnitInfo: TUnitInfo): string;
@@ -5903,8 +5904,12 @@ begin
       end;
       FRunProcess.CurrentDirectory:=ExpandFilename(WorkingDir);
       Project1.RunParameterOptions.AssignEnvironmentTo(FRunProcess.Environment);
-
-      FRunProcess.Options:= [poNoConsole];
+      // Console applications in win32 need a new console
+      if (GetTargetOS='win32') and
+        not Project1.CompilerOptions.Win32GraphicApp then
+        FRunProcess.Options:= [poNewConsole]
+      else
+        FRunProcess.Options:= [poNoConsole];
       FRunProcess.ShowWindow := swoNone;
     except
       on e: Exception do
@@ -7653,6 +7658,15 @@ begin
       end;
     end;
   end;
+end;
+
+function TMainIDE.GetTargetOS: string;
+begin
+  result := '';
+  if (Project1<>nil) then
+    result := lowercase(Project1.CompilerOptions.TargetOS);
+  if (result='') or (result='default') then
+    result := GetDefaultTargetOS;
 end;
 
 function TMainIDE.GetTestProjectFilename: string;
@@ -10279,6 +10293,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.724  2004/05/26 23:05:23  mattias
+  fixed creating console under win32
+
   Revision 1.723  2004/05/12 16:19:28  micha
   use align property instead of resize event
 
