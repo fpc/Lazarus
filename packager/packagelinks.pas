@@ -42,6 +42,10 @@ uses
   PackageDefs, LazConf;
   
 type
+  TIteratePackagesEvent =
+    procedure(APackage: TLazPackageID) of object;
+
+
   { TPackageLink }
 
   TPkgLinkOrigin = (
@@ -50,24 +54,17 @@ type
     );
   TPkgLinkOrigins = set of TPkgLinkOrigin;
 
-  TPackageLink = class
+  TPackageLink = class(TLazPackageID)
   private
     FFilename: string;
     FOrigin: TPkgLinkOrigin;
-    FPkgName: string;
-    FVersion: TPkgVersion;
     procedure SetFilename(const AValue: string);
     procedure SetOrigin(const AValue: TPkgLinkOrigin);
-    procedure SetPkgName(const AValue: string);
-    procedure SetVersion(const AValue: TPkgVersion);
   public
     constructor Create;
     destructor Destroy; override;
-    function Compare(Link2: TPackageLink): integer;
   public
     property Origin: TPkgLinkOrigin read FOrigin write SetOrigin;
-    property PkgName: string read FPkgName write SetPkgName;
-    property Version: TPkgVersion read FVersion write SetVersion;
     property Filename: string read FFilename write SetFilename;
   end;
 
@@ -108,6 +105,7 @@ type
 var
   PkgLinks: TPackageLinks;
 
+
 implementation
 
 
@@ -134,7 +132,7 @@ begin
   else begin
     PkgName:=AnsiString(Key);
     Link:=TPackageLink(Data);
-    Result:=AnsiCompareText(PkgName,Link.PkgName);
+    Result:=AnsiCompareText(PkgName,Link.Name);
   end;
 end;
 
@@ -152,18 +150,6 @@ begin
   FFilename:=AValue;
 end;
 
-procedure TPackageLink.SetPkgName(const AValue: string);
-begin
-  if FPkgName=AValue then exit;
-  FPkgName:=AValue;
-end;
-
-procedure TPackageLink.SetVersion(const AValue: TPkgVersion);
-begin
-  if FVersion=AValue then exit;
-  FVersion:=AValue;
-end;
-
 constructor TPackageLink.Create;
 begin
   FVersion:=TPkgVersion.Create;
@@ -173,13 +159,6 @@ destructor TPackageLink.Destroy;
 begin
   FVersion.Free;
   inherited Destroy;
-end;
-
-function TPackageLink.Compare(Link2: TPackageLink): integer;
-begin
-  Result:=AnsiCompareText(PkgName,Link2.PkgName);
-  if Result=0 then
-    Result:=Version.Compare(Link2.Version);
 end;
 
 { TPackageLinks }
@@ -198,7 +177,7 @@ begin
   while Result<>nil do begin
     PriorNode:=LinkTree.FindPrecessor(Result);
     if (PriorNode=nil)
-    or (AnsiCompareText(TPackageLink(PriorNode.Data).PkgName,PkgName)<>0)
+    or (AnsiCompareText(TPackageLink(PriorNode.Data).Name,PkgName)<>0)
     then
       break;
     Result:=PriorNode;
@@ -320,10 +299,10 @@ begin
       
       NewPkgLink:=TPackageLink.Create;
       NewPkgLink.Origin:=ploGlobal;
-      NewPkgLink.PkgName:=NewPkgName;
+      NewPkgLink.Name:=NewPkgName;
       NewPkgLink.Version.Assign(PkgVersion);
       NewPkgLink.Filename:=NewFilename;
-      if IsValidIdent(NewPkgLink.PkgName) and FileExists(NewPkgLink.Filename)
+      if IsValidIdent(NewPkgLink.Name) and FileExists(NewPkgLink.Filename)
       then
         FGlobalLinks.Add(NewPkgLink)
       else
@@ -363,11 +342,11 @@ begin
       ItemPath:=Path+'Item'+IntToStr(i)+'/';
       NewPkgLink:=TPackageLink.Create;
       NewPkgLink.Origin:=ploUser;
-      NewPkgLink.PkgName:=XMLConfig.GetValue(ItemPath+'PkgName/Value','');
+      NewPkgLink.Name:=XMLConfig.GetValue(ItemPath+'Name/Value','');
       NewPkgLink.Version.LoadFromXMLConfig(XMLConfig,ItemPath+'Version/',
                                                           LazPkgXMLFileVersion);
       NewPkgLink.Filename:=XMLConfig.GetValue(ItemPath+'Filename/Value','');
-      if IsValidIdent(NewPkgLink.PkgName) and FileExists(NewPkgLink.Filename)
+      if IsValidIdent(NewPkgLink.Name) and FileExists(NewPkgLink.Filename)
       then
         FUserLinks.Add(NewPkgLink)
       else
@@ -430,7 +409,7 @@ begin
       break;
     end;
     CurNode:=LinkTree.FindSuccessor(CurNode);
-    if AnsiCompareText(TPackageLink(CurNode.Data).PkgName,Dependency.PackageName)
+    if AnsiCompareText(TPackageLink(CurNode.Data).Name,Dependency.PackageName)
     <>0
     then begin
       CurNode:=nil;

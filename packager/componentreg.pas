@@ -139,6 +139,7 @@ var
   IDEComponentPalette: TIDEComponentPalette;
 
 function ComparePriority(const p1,p2: TComponentPriority): integer;
+function CompareIDEComponentByClassName(Data1, Data2: pointer): integer;
 
 
 implementation
@@ -149,6 +150,17 @@ begin
   Result:=ord(p2.Category)-ord(p1.Category);
   if Result<>0 then exit;
   Result:=p1.Level-p2.Level;
+end;
+
+function CompareIDEComponentByClassName(Data1, Data2: pointer): integer;
+var
+  Comp1: TIDEComponent;
+  Comp2: TIDEComponent;
+begin
+  Comp1:=TIDEComponent(Data1);
+  Comp2:=TIDEComponent(Data2);
+  Result:=AnsiCompareText(Comp1.ComponentClass.Classname,
+                          Comp2.ComponentClass.Classname);
 end;
 
 { TIDEComponent }

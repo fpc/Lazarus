@@ -39,8 +39,8 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, StdCtrls, ExtCtrls,
-  Dialogs, LazarusIDEStrConsts, IDEOptionDefs, InputHistory, FileCtrl, IDEProcs,
-  EnvironmentOpts, PackageDefs;
+  Dialogs, LazarusIDEStrConsts, IDEOptionDefs, InputHistory, FileCtrl, AVL_Tree,
+  IDEProcs, EnvironmentOpts, PackageSystem, PackageDefs, ComponentReg;
   
 type
   TAddToPackageDlg = class(TForm)
@@ -48,6 +48,7 @@ type
     NoteBook: TNoteBook;
     AddUnitPage: TPage;
     NewComponentPage: TPage;
+    NewDependPage: TPage;
     // add unit page
     AddUnitFilenameLabel: TLabel;
     AddUnitFilenameEdit: TEdit;
@@ -66,6 +67,16 @@ type
     ComponentUnitButton: TButton;
     NewComponentButton: TButton;
     CancelNewComponentButton: TButton;
+    // new require/conflict
+    DependPkgNameLabel: TLabel;
+    DependPkgNameComboBox: TComboBox;
+    DependTypeRadioGroup: TRadioGroup;
+    DependMinVersionLabel: TLabel;
+    DependMinVersionEdit: TEdit;
+    DependMaxVersionLabel: TLabel;
+    DependMaxVersionEdit: TEdit;
+    NewDependButton: TButton;
+    CancelDependButton: TButton;
     procedure AddToPackageDlgResize(Sender: TObject);
     procedure AddUnitButtonClick(Sender: TObject);
     procedure AddUnitFileBrowseButtonClick(Sender: TObject);
@@ -75,15 +86,21 @@ type
     procedure ComponentUnitButtonClick(Sender: TObject);
     procedure NewComponentButtonClick(Sender: TObject);
     procedure NewComponentPageResize(Sender: TObject);
+    procedure NewDependPageResize(Sender: TObject);
   private
     FLazPackage: TLazPackage;
-    fCurAncestorIndex: integer;
+    fPkgComponents: TAVLTree;// tree of TPkgComponent
+    fPackages: TAVLTree;// tree of  TLazPackage or TPackageLink
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
+    procedure OnIterateComponentClasses(PkgComponent: TPkgComponent);
+    procedure OnIteratePackages(APackageID: TLazPackageID);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure UpdateAvailableAncestorTypes;
+    procedure UpdateAvailablePageNames;
+    procedure UpdateAvailableDependencyNames;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -101,6 +118,7 @@ begin
   AddDlg:=TAddToPackageDlg.Create(Application);
   AddDlg.LazPackage:=Pkg;
   Result:=AddDlg.ShowModal;
+  IDEDialogLayoutList.SaveLayout(AddDlg);
   AddDlg.Free;
 end;
 
@@ -187,6 +205,7 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       if FilenameIsPascalUnit(AFilename) then begin
@@ -266,11 +285,54 @@ begin
     SetBounds(x,y,80,Height);
 end;
 
+procedure TAddToPackageDlg.NewDependPageResize(Sender: TObject);
+var
+  x: Integer;
+  y: Integer;
+begin
+  x:=5;
+  y:=5;
+  
+  with DependPkgNameLabel do
+    SetBounds(x,y+3,110,Height);
+
+  with DependPkgNameComboBox do
+    SetBounds(x+DependPkgNameLabel.Width+5,y,150,Height);
+  inc(y,DependPkgNameComboBox.Height+5);
+
+  with DependTypeRadioGroup do
+    SetBounds(x,y,200,50);
+  inc(y,DependTypeRadioGroup.Height+10);
+
+  with DependMinVersionLabel do
+    SetBounds(x,y+3,170,Height);
+
+  with DependMinVersionEdit do
+    SetBounds(x+DependMinVersionLabel.Width+5,y,100,Height);
+  inc(y,DependMinVersionEdit.Height+5);
+
+  with DependMaxVersionLabel do
+    SetBounds(x,y+3,DependMinVersionLabel.Width,Height);
+
+  with DependMaxVersionEdit do
+    SetBounds(x+DependMaxVersionLabel.Width+5,y,
+              DependMinVersionEdit.Width,Height);
+  inc(y,DependMaxVersionEdit.Height+20);
+
+  with NewDependButton do
+    SetBounds(x,y,80,Height);
+
+  with CancelDependButton do
+    SetBounds(x+NewDependButton.Width+10,y,80,Height);
+end;
+
 procedure TAddToPackageDlg.SetLazPackage(const AValue: TLazPackage);
 begin
   if FLazPackage=AValue then exit;
   FLazPackage:=AValue;
   UpdateAvailableAncestorTypes;
+  UpdateAvailablePageNames;
+  UpdateAvailableDependencyNames;
 end;
 
 procedure TAddToPackageDlg.SetupComponents;
@@ -283,13 +345,18 @@ begin
     AddUnitPage:=Page[0];
     Pages.Add('New Component');
     NewComponentPage:=Page[1];
+    Pages.Add('New Require, Conflict');
+    NewDependPage:=Page[2];
     PageIndex:=0;
     Align:=alClient;
   end;
   
+  // add unit
+  
   AddUnitPage.OnResize:=@AddUnitPageResize;
   NewComponentPage.OnResize:=@NewComponentPageResize;
-  
+  NewDependPage.OnResize:=@NewDependPageResize;
+
   AddUnitFilenameLabel:=TLabel.Create(Self);
   with AddUnitFilenameLabel do begin
     Name:='AddUnitFilenameLabel';
@@ -327,6 +394,9 @@ begin
     Caption:='Cancel';
     OnClick:=@CancelAddUnitButtonClick;
   end;
+  
+
+  // add new component unit
 
   AncestorTypeLabel:=TLabel.Create(Self);
   with AncestorTypeLabel do begin
@@ -407,27 +477,163 @@ begin
     Caption:='Cancel';
     OnClick:=@CancelNewComponentButtonClick;
   end;
+
+
+  // add require, conflict
+  
+  DependPkgNameLabel:=TLabel.Create(Self);
+  with DependPkgNameLabel do begin
+    Name:='DependPkgNameLabel';
+    Parent:=NewDependPage;
+    Caption:='Package Name:';
+  end;
+  
+  DependPkgNameComboBox:=TComboBox.Create(Self);
+  with DependPkgNameComboBox do begin
+    Name:='DependPkgNameComboBox';
+    Parent:=NewDependPage;
+    Text:='';
+  end;
+  
+  DependTypeRadioGroup:=TRadioGroup.Create(Self);
+  with DependTypeRadioGroup do begin
+    Name:='DependTypeRadioGroup';
+    Parent:=NewDependPage;
+    Items.Add('Require');
+    Items.Add('Conflict');
+    ItemIndex:=0;
+    Columns:=2;
+    Caption:='Type';
+  end;
+
+  DependMinVersionLabel:=TLabel.Create(Self);
+  with DependMinVersionLabel do begin
+    Name:='DependMinVersionLabel';
+    Parent:=NewDependPage;
+    Caption:='Minimum Version (optional):';
+  end;
+
+  DependMinVersionEdit:=TEdit.Create(Self);
+  with DependMinVersionEdit do begin
+    Name:='DependMinVersionEdit';
+    Parent:=NewDependPage;
+    Text:='';
+  end;
+
+  DependMaxVersionLabel:=TLabel.Create(Self);
+  with DependMaxVersionLabel do begin
+    Name:='DependMaxVersionLabel';
+    Parent:=NewDependPage;
+    Caption:='Maximum Version (optional):';
+  end;
+
+  DependMaxVersionEdit:=TEdit.Create(Self);
+  with DependMaxVersionEdit do begin
+    Name:='DependMaxVersionEdit';
+    Parent:=NewDependPage;
+    Text:='';
+  end;
+
+  NewDependButton:=TButton.Create(Self);
+  with NewDependButton do begin
+    Name:='NewDependButton';
+    Parent:=NewDependPage;
+    Caption:='Ok';
+  end;
+
+  CancelDependButton:=TButton.Create(Self);
+  with CancelDependButton do begin
+    Name:='CancelDependButton';
+    Parent:=NewDependPage;
+    Caption:='Cancel';
+    ModalResult:=mrCancel;
+  end;
+end;
+
+procedure TAddToPackageDlg.OnIterateComponentClasses(PkgComponent: TPkgComponent
+  );
+begin
+  if fPkgComponents.Find(PkgComponent)=nil then
+    fPkgComponents.Add(PkgComponent);
+end;
+
+procedure TAddToPackageDlg.OnIteratePackages(APackageID: TLazPackageID);
+begin
+  if (APackageID<>LazPackage) and (fPackages.Find(APackageID)=nil) then
+    fPackages.Add(APackageID);
 end;
 
 constructor TAddToPackageDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  fPkgComponents:=TAVLTree.Create(@CompareIDEComponentByClassName);
+  fPackages:=TAVLTree.Create(@CompareLazPackageID);
   Position:=poScreenCenter;
-  Width:=450;
-  Height:=300;
+  IDEDialogLayoutList.ApplyLayout(Self,500,300);
   SetupComponents;
   OnResize:=@AddToPackageDlgResize;
 end;
 
 destructor TAddToPackageDlg.Destroy;
 begin
+  FreeAndNil(fPkgComponents);
+  FreeAndNil(fPackages);
   inherited Destroy;
 end;
 
 procedure TAddToPackageDlg.UpdateAvailableAncestorTypes;
+var
+  ANode: TAVLTreeNode;
+  sl: TStringList;
 begin
-  fCurAncestorIndex:=0;
-  //LazPackage.IterateComponentClasses(@OnIterateComponentClasses);
+  // get all available registered components
+  fPkgComponents.Clear;
+  PackageGraph.IterateComponentClasses(LazPackage,@OnIterateComponentClasses,
+                                       true,true);
+  // put them into the combobox
+  sl:=TStringList.Create;
+  ANode:=fPkgComponents.FindLowest;
+  while ANode<>nil do begin
+    sl.Add(TPkgComponent(ANode.Data).ComponentClass.ClassName);
+    ANode:=fPkgComponents.FindSuccessor(ANode);
+  end;
+  AncestorComboBox.Items.Assign(sl);
+  sl.Free;
+end;
+
+procedure TAddToPackageDlg.UpdateAvailablePageNames;
+var
+  i: Integer;
+  APageName: String;
+  sl: TStringList;
+begin
+  // get all current pagenames (excluding the hidden page)
+  sl:=TStringList.Create;
+  for i:=0 to IDEComponentPalette.Count-1 do begin
+    APageName:=IDEComponentPalette[i].PageName;
+    if APageName<>'' then
+      sl.Add(APageName);
+  end;
+  sl.Sort;
+  PalettePageCombobox.Items.Assign(sl);
+  sl.Free;
+end;
+
+procedure TAddToPackageDlg.UpdateAvailableDependencyNames;
+var
+  ANode: TAVLTreeNode;
+  sl: TStringList;
+begin
+  fPackages.Clear;
+  PackageGraph.IteratePackages(fpfSearchPackageEverywhere,@OnIteratePackages);
+  sl:=TStringList.Create;
+  ANode:=fPackages.FindLowest;
+  while ANode<>nil do begin
+    sl.Add(TLazPackageID(ANode.Data).IDAsString);
+    ANode:=fPackages.FindSuccessor(ANode);
+  end;
+  DependPkgNameComboBox.Items.Assign(sl);
+  sl.Free;
 end;
 
 end.

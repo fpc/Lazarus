@@ -37,7 +37,8 @@ interface
 uses
   Classes, SysUtils, IDEProcs, LazConf, LResources, Forms, Controls, Buttons,
   ExtCtrls, StdCtrls, ComCtrls, Dialogs, Laz_XMLCfg, CodeToolManager,
-  DefineTemplates, SourceChanger, EditDefineTree, SynEdit,LazarusIDEStrConsts;
+  DefineTemplates, SourceChanger, SynEdit,
+  IDEOptionDefs, EditDefineTree, LazarusIDEStrConsts;
 
 type
   TCodeToolsOptions = class
@@ -645,6 +646,7 @@ begin
     Width:=485;
     Height:=435;
     Position:=poScreenCenter;
+    IDEDialogLayoutList.ApplyLayout(Self,485,435);
     Caption:=dlgCodeToolsOpts;
     OnResize:=@CodeToolsOptsDlgResize;
 
@@ -1690,6 +1692,7 @@ begin
     CodeToolsOptsDlg.OnGetSynEditSettings:=OnGetSynEditSettings;
     CodeToolsOptsDlg.UpdatePreviewSettings;
     Result:=CodeToolsOptsDlg.ShowModal;
+    IDEDialogLayoutList.SaveLayout(CodeToolsOptsDlg);
     if Result=mrOk then begin
       CodeToolsOptsDlg.WriteSettings(Options);
       Options.AssignTo(CodeToolBoss);

@@ -107,6 +107,11 @@ type
     procedure RegisterStaticPackages;
     function OpenDependency(Dependency: TPkgDependency;
       Flags: TFindPackageFlags; var APackage: TLazPackage): TLoadPackageResult;
+    procedure IterateComponentClasses(APackage: TLazPackage;
+      Event: TIterateComponentClassesEvent;
+      WithUsedPackages, WithRequiredPackages: boolean);
+    procedure IteratePackages(Flags: TFindPackageFlags;
+      Event: TIteratePackagesEvent);
   public
     property Packages[Index: integer]: TLazPackage read GetPackages; default;
     property RegistrationPackage: TLazPackage read FRegistrationPackage
@@ -168,7 +173,7 @@ end;
 
 constructor TLazPackageGraph.Create;
 begin
-  FTree:=TAVLTree.Create(@CompareLazPackage);
+  FTree:=TAVLTree.Create(@CompareLazPackageID);
   FItems:=TList.Create;
 end;
 
@@ -187,9 +192,16 @@ begin
 end;
 
 procedure TLazPackageGraph.Clear;
+var
+  i: Integer;
+  CurPkg: TLazPackage;
 begin
-  FTree.FreeAndClear;
-  FItems.Clear;
+  for i:=FItems.Count-1 downto 0 do begin
+    CurPkg:=Packages[i];
+    FItems.Delete(i);
+    FTree.Remove(CurPkg);
+    CurPkg.Free;
+  end;
 end;
 
 function TLazPackageGraph.Count: integer;
@@ -551,6 +563,55 @@ begin
     Result:=lprSuccess;
   end else begin
     Result:=lprSuccess;
+  end;
+end;
+
+procedure TLazPackageGraph.IterateComponentClasses(APackage: TLazPackage;
+  Event: TIterateComponentClassesEvent; WithUsedPackages,
+  WithRequiredPackages: boolean);
+var
+  Cnt: Integer;
+  i: Integer;
+  ARequiredPackage: TLazPackage;
+  ADependency: TPkgDependency;
+begin
+  APackage.IterateComponentClasses(Event,WithUsedPackages);
+  // iterate through all required packages
+  if WithRequiredPackages then begin
+    Cnt:=APackage.RequiredPkgCount;
+    for i:=0 to Cnt-1 do begin
+      ADependency:=APackage.RequiredPkgs[i];
+      if OpenDependency(ADependency,[fpfSearchInInstalledPckgs],ARequiredPackage)
+         =lprSuccess
+      then begin
+        ARequiredPackage.IterateComponentClasses(Event,false);
+      end;
+    end;
+  end;
+end;
+
+procedure TLazPackageGraph.IteratePackages(Flags: TFindPackageFlags;
+  Event: TIteratePackagesEvent);
+var
+  CurPkg: TLazPackage;
+  i: Integer;
+begin
+  // iterate opened packages
+  for i:=0 to FItems.Count-1 do begin
+    CurPkg:=Packages[i];
+    // check installed packages
+    if ((fpfSearchInInstalledPckgs in Flags) and (CurPkg.Installed<>pitNope))
+    // check autoinstall packages
+    or ((fpfSearchInAutoInstallPckgs in Flags) and (CurPkg.AutoInstall<>pitNope))
+    // check packages with opened editor
+    or ((fpfSearchInPckgsWithEditor in Flags) and (CurPkg.Editor<>nil))
+    then
+      Event(CurPkg);
+  end;
+  // iterate in package links
+  if (fpfSearchInPkgLinks in Flags) then begin
+    // ToDo
+    //PkgLinks.IteratePackageNames();
   end;
 end;
 

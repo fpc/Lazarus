@@ -243,7 +243,8 @@ begin
     // draw registered component
     CurComponent:=TPkgComponent(CurObject);
     with RegisteredListBox.Canvas do begin
-      CurStr:=CurComponent.ComponentClass.ClassName;
+      CurStr:=CurComponent.ComponentClass.ClassName
+              +', Page: '+CurComponent.Page.PageName;
       TxtH:=TextHeight(CurStr);
       CurRect:=ARect;
       inc(CurRect.Left,25);
@@ -598,7 +599,7 @@ begin
         FPlugins.AddObject(CurLine,CurComponent);
         inc(CurListIndex);
       end;
-      // show them in the RegisteredListBox
+      // put them in the RegisteredListBox
       RegisteredListBox.Items.Assign(FPlugins);
     end else begin
       CallRegisterProcCheckBox.Checked:=false;

@@ -152,8 +152,13 @@ var
   CurEditor: TPackageEditorForm;
 begin
   Result:=mrCancel;
-  // create a new package
+  // create a new package with standard dependencies
   NewPackage:=PackageGraph.NewPackage('NewPackage');
+  NewPackage.AddRequiredDependency(
+    PackageGraph.FCLPackage.CreateDependencyForThisPkg);
+  NewPackage.AddRequiredDependency(
+    PackageGraph.LCLPackage.CreateDependencyForThisPkg);
+
   // open a package editor
   CurEditor:=PackageEditors.OpenEditor(NewPackage);
   CurEditor.Show;
