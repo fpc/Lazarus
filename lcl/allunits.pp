@@ -25,16 +25,20 @@ unit AllUnits;
 interface
 
 uses
-  InterfaceBase,  LCLStrConsts,  Lazqueue,      GraphMath,
-  StringHashList, DynHashArray,  LCLMemManager, ExtendedStrings,
-  Buttons,        Extctrls,      Registry,      VCLGlobals,
-  Calendar,       Clipbrd,       FileCtrl,      Forms,
-  LCLLinux,       Spin,          Comctrls,      Graphics,
-  LMessages,      StdCtrls,      Arrow,         Controls,
-  Imglist,        Menus,         Toolwin,       Dialogs,
-  Messages,       UTrace,        Clistbox,      ActnList,
-  DynamicArray,   Grids,         Printers,      PostScriptPrinter,
-  MaskEdit;
+  // resource strings
+  LCLStrConsts,
+  // base classes
+  LazQueue, DynHashArray, LCLMemManager, AvgLvlTree, StringHashList,
+  ExtendedStrings, DynamicArray, UTrace,
+  // the interface base
+  InterfaceBase,
+  // base types and base functions
+  LCLProc, LCLType, GraphMath, VCLGlobals, FileCtrl, LMessages,
+  // components and functions
+  Buttons, Extctrls, Registry, Calendar, Clipbrd, Forms, LCLLinux, Spin,
+  Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
+  Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
+  Printers, PostScriptPrinter;
 
 implementation
 
@@ -43,6 +47,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2003/06/19 16:36:35  mattias
+  started codeexplorer
+
   Revision 1.20  2003/04/16 22:59:35  mattias
   added TMaskEdit from Tony
 
