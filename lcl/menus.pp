@@ -45,7 +45,7 @@ interface
 {$endif}
 
 uses
-  VCLGlobals, Classes, SysUtils, LMessages;
+  VCLGlobals, Classes, SysUtils, LMessages, ActnList;
 
 
 type
@@ -59,8 +59,43 @@ type
   TMenuChangeEvent = procedure (Sender: TObject; Source: TMenuItem;
                                 Rebuild: Boolean) of object;
 
+  { TMenuActionLink }
+
+  TMenuActionLink = class(TActionLink)
+  protected
+    FClient: TMenuItem;
+    procedure AssignClient(AClient: TObject); override;
+    function IsAutoCheckLinked: Boolean; virtual;
+    function IsCaptionLinked: Boolean; override;
+    function IsCheckedLinked: Boolean; override;
+    function IsEnabledLinked: Boolean; override;
+    function IsHelpContextLinked: Boolean; override;
+    function IsHintLinked: Boolean; override;
+    function IsGroupIndexLinked: Boolean; override;
+    function IsImageIndexLinked: Boolean; override;
+    function IsShortCutLinked: Boolean; override;
+    function IsVisibleLinked: Boolean; override;
+    function IsOnExecuteLinked: Boolean; override;
+    procedure SetAutoCheck(Value: Boolean); override;
+    procedure SetCaption(const Value: string); override;
+    procedure SetChecked(Value: Boolean); override;
+    procedure SetEnabled(Value: Boolean); override;
+    procedure SetHelpContext(Value: THelpContext); override;
+    procedure SetHint(const Value: string); override;
+    procedure SetImageIndex(Value: Integer); override;
+    procedure SetShortCut(Value: TShortCut); override;
+    procedure SetVisible(Value: Boolean); override;
+    procedure SetOnExecute(Value: TNotifyEvent); override;
+  end;
+
+  TMenuActionLinkClass = class of TMenuActionLink;
+  
+  
+  { TMenuItem }
+
   TMenuItem = class(TComponent)//TWinControl)
   private
+    FActionLink: TMenuActionLink;
     FCaption: string;
     FChecked: Boolean;
     FCommand: integer;
@@ -81,6 +116,7 @@ type
     function GetCount: Integer;
     function GetItem(Index: Integer): TMenuItem;
     function GetParent: TMenuItem;
+    function IsCaptionStored: boolean;
     procedure SetCaption(const AValue: string);
     procedure SetChecked(AValue: Boolean);
     procedure SetDefault(AValue: Boolean);
@@ -90,6 +126,7 @@ type
     procedure TurnSiblingsOff;
     procedure VerifyGroupIndex(Position: Integer; Value: Byte);
   protected
+    property ActionLink: TMenuActionLink read FActionLink write FActionLink;
     procedure CreateHandle; virtual;
     procedure DoClicked(var msg); message LM_ACTIVATE;               //'activate';
     function GetHandle: HMenu;
@@ -118,7 +155,7 @@ type
     property Items[Index: Integer]: TMenuItem read GetItem; default;
     property Parent: TMenuItem read GetParent;
   published
-    property Caption: String read FCaption write SetCaption {stored IsCaptionStored};
+    property Caption: String read FCaption write SetCaption stored IsCaptionStored;
     property Checked: Boolean read FChecked write SetChecked {stored IsCheckedStored} default False;
     property Default: Boolean read FDefault write SetDefault default False;
     property Enabled: Boolean read FEnabled write SetEnabled {stored IsEnabledStored} default True;
@@ -190,6 +227,8 @@ type
 function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 procedure ShortCuttoKey(const ShortCut : TShortCut; var Key: Word; var Shift : TShiftState);
 
+function TextToShortCut(Text: string): TShortCut;
+function ShortCutToText(ShortCut: TShortCut): string;
 
 
 implementation
@@ -208,12 +247,129 @@ begin
   CommandPool[Result] := True;
 end;
 
+type
+  TMenuKeyCap = (mkcBkSp, mkcTab, mkcEsc, mkcEnter, mkcSpace, mkcPgUp,
+    mkcPgDn, mkcEnd, mkcHome, mkcLeft, mkcUp, mkcRight, mkcDown, mkcIns,
+    mkcDel, mkcShift, mkcCtrl, mkcAlt);
+
+const
+  SmkcBkSp = 'BkSp';
+  SmkcTab = 'Tab';
+  SmkcEsc = 'Esc';
+  SmkcEnter = 'Enter';
+  SmkcSpace = 'Space';
+  SmkcPgUp = 'PgUp';
+  SmkcPgDn = 'PgDn';
+  SmkcEnd = 'End';
+  SmkcHome = 'Home';
+  SmkcLeft = 'Left';
+  SmkcUp = 'Up';
+  SmkcRight = 'Right';
+  SmkcDown = 'Down';
+  SmkcIns = 'Ins';
+  SmkcDel = 'Del';
+  SmkcShift = 'Shift+';
+  SmkcCtrl = 'Ctrl+';
+  SmkcAlt = 'Alt+';
+
+  MenuKeyCaps: array[TMenuKeyCap] of string = (
+    SmkcBkSp, SmkcTab, SmkcEsc, SmkcEnter, SmkcSpace, SmkcPgUp,
+    SmkcPgDn, SmkcEnd, SmkcHome, SmkcLeft, SmkcUp, SmkcRight,
+    SmkcDown, SmkcIns, SmkcDel, SmkcShift, SmkcCtrl, SmkcAlt);
+
+function GetSpecialName(ShortCut: TShortCut): string;
+{var
+  ScanCode: Integer;
+  KeyName: array[0..255] of Char;}
+begin
+  Result := '';
+  // ToDo:
+  {
+  ScanCode := MapVirtualKey(WordRec(ShortCut).Lo, 0) shl 16;
+  if ScanCode <> 0 then
+  begin
+    GetKeyNameText(ScanCode, KeyName, SizeOf(KeyName));
+    GetSpecialName := KeyName;
+  end;
+  }
+end;
+
+function ShortCutToText(ShortCut: TShortCut): string;
+var
+  Name: string;
+begin
+  case WordRec(ShortCut).Lo of
+    $08, $09:
+      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcBkSp) + WordRec(ShortCut).Lo - $08)];
+    $0D: Name := MenuKeyCaps[mkcEnter];
+    $1B: Name := MenuKeyCaps[mkcEsc];
+    $20..$28:
+      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcSpace) + WordRec(ShortCut).Lo - $20)];
+    $2D..$2E:
+      Name := MenuKeyCaps[TMenuKeyCap(Ord(mkcIns) + WordRec(ShortCut).Lo - $2D)];
+    $30..$39: Name := Chr(WordRec(ShortCut).Lo - $30 + Ord('0'));
+    $41..$5A: Name := Chr(WordRec(ShortCut).Lo - $41 + Ord('A'));
+    $60..$69: Name := Chr(WordRec(ShortCut).Lo - $60 + Ord('0'));
+    $70..$87: Name := 'F' + IntToStr(WordRec(ShortCut).Lo - $6F);
+  else
+    Name := GetSpecialName(ShortCut);
+  end;
+  if Name <> '' then
+  begin
+    Result := '';
+    if ShortCut and scShift <> 0 then Result := Result + MenuKeyCaps[mkcShift];
+    if ShortCut and scCtrl <> 0 then Result := Result + MenuKeyCaps[mkcCtrl];
+    if ShortCut and scAlt <> 0 then Result := Result + MenuKeyCaps[mkcAlt];
+    Result := Result + Name;
+  end
+  else Result := '';
+end;
+
+function TextToShortCut(Text: string): TShortCut;
+
+  { If the front of Text is equal to Front then remove the matching piece
+    from Text and return True, otherwise return False }
+
+  function CompareFront(var Text: string; const Front: string): Boolean;
+  begin
+    Result := False;
+    if (Length(Text) >= Length(Front)) and
+      (AnsiStrLIComp(PChar(Text), PChar(Front), Length(Front)) = 0) then
+    begin
+      Result := True;
+      Delete(Text, 1, Length(Front));
+    end;
+  end;
+
+var
+  Key: TShortCut;
+  Shift: TShortCut;
+begin
+  Result := 0;
+  Shift := 0;
+  while True do
+  begin
+    if CompareFront(Text, MenuKeyCaps[mkcShift]) then Shift := Shift or scShift
+    else if CompareFront(Text, '^') then Shift := Shift or scCtrl
+    else if CompareFront(Text, MenuKeyCaps[mkcCtrl]) then Shift := Shift or scCtrl
+    else if CompareFront(Text, MenuKeyCaps[mkcAlt]) then Shift := Shift or scAlt
+    else Break;
+  end;
+  if Text = '' then Exit;
+  for Key := $08 to $255 do { Copy range from table in ShortCutToText }
+    if AnsiCompareText(Text, ShortCutToText(Key)) = 0 then
+    begin
+      Result := Key or Shift;
+      Exit;
+    end;
+end;
 
 {$I menubar.inc}
 {$I menu.inc}
 {$I menuitem.inc}
 {$I mainmenu.inc}
 {$I popupmenu.inc}
+{$I menuactionlink.inc}
 
 Function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 Begin
@@ -241,6 +397,9 @@ end.
 
 {
   $Log$
+  Revision 1.16  2002/08/06 19:57:39  lazarus
+  MG: added actnlist.pp
+
   Revision 1.15  2002/08/05 10:45:02  lazarus
   MG: TMenuItem.Caption can now be set after creation
 

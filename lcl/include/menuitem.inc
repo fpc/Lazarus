@@ -209,6 +209,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TMenuItem.IsCaptionStored: boolean;
+
+  Checks if Caption needs to be saved to stream
+ ------------------------------------------------------------------------------}
+function TMenuItem.IsCaptionStored: boolean;
+begin
+  Result := (ActionLink = nil) or not FActionLink.IsCaptionLinked;
+end;
+
+{------------------------------------------------------------------------------
   Function: TMenuItem.GetParentMenu
   Params:   none
   Returns:  The (popup)menu containing this item.
@@ -577,6 +587,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/08/06 19:57:40  lazarus
+  MG: added actnlist.pp
+
   Revision 1.16  2002/08/05 10:45:03  lazarus
   MG: TMenuItem.Caption can now be set after creation
 
@@ -653,6 +666,9 @@ end;
 
 
   $Log$
+  Revision 1.17  2002/08/06 19:57:40  lazarus
+  MG: added actnlist.pp
+
   Revision 1.16  2002/08/05 10:45:03  lazarus
   MG: TMenuItem.Caption can now be set after creation
 

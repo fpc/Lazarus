@@ -43,9 +43,8 @@ interface
 uses
   SysUtils, Classes, Graphics, GraphType, vclGlobals;
 
-
-
 type
+  TImageIndex = type integer;
 
   { TChangeLink }
   {
@@ -151,6 +150,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2002/08/06 19:57:39  lazarus
+  MG: added actnlist.pp
+
   Revision 1.6  2002/05/10 06:05:50  lazarus
   MG: changed license to LGPL
 
