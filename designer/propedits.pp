@@ -1422,12 +1422,10 @@ begin
           and (PropInfo^.SetProc = nil)))
       then begin
         Candidates.Delete(I);
-writeln('AAA1 ',PropInfo^.Name);
         continue;
       end;
       EdClass := GetEditorClass(PropInfo, Obj);
       if EdClass = nil then begin
-writeln('AAA2 ',PropInfo^.Name);
         Candidates.Delete(I)
       end else
       begin
@@ -1435,7 +1433,7 @@ writeln('AAA2 ',PropInfo^.Name);
         PropEditor := EdClass.Create(Hook,Components,1);
         PropEditor.SetPropEntry(0, Components[0], PropInfo);
         PropEditor.Initialize;
-        with PropInfo^ do
+        with PropInfo^ do begin
           // check for multiselection, ValueAvailable and customfilter
           if ((CompCount > 1)
               and not (paMultiSelect in PropEditor.GetAttributes))
@@ -1443,8 +1441,9 @@ writeln('AAA2 ',PropInfo^.Name);
           or (Assigned(EditorFilterFunc) and not EditorFilterFunc(PropEditor))
           then begin
             Candidates.Delete(I);
-writeln('AAA3 ',PropInfo^.Name);
           end;
+        end;
+        PropEditor.Free;
       end;
     end;
     PropLists := TList.Create;
