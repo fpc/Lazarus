@@ -3200,6 +3200,7 @@ begin
     +';'+Dir+'fcl'+DS+'inc'+DS
     +';'+Dir+'fcl'+DS+SrcOS+DS
     +';'+Dir+'fcl'+DS+'classes'+DS
+    +';'+Dir+'rtl'+DS+TargetOS+DS
     ,da_DefineRecurse));
   FCLDBDir:=TDefineTemplate.Create('DB','DB','','db',da_Directory);
   FCLDir.AddChild(FCLDBDir);
