@@ -684,7 +684,7 @@ procedure TMakeResStrDialog.SaveIdentPrefixes;
 var
   HistoryList: THistoryList;
 begin
-  if (not CustomIdentifierCheckBox.Checked)
+  if CustomIdentifierCheckBox.Checked
   or (IdentPrefixComboBox.Text='') then
     exit;
   HistoryList:=
@@ -698,7 +698,7 @@ procedure TMakeResStrDialog.SaveIdentLengths;
 var
   HistoryList: THistoryList;
 begin
-  if (not CustomIdentifierCheckBox.Checked)
+  if CustomIdentifierCheckBox.Checked
   or (IdentLengthComboBox.Text='') then
     exit;
   HistoryList:=

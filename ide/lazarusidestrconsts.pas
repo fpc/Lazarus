@@ -967,6 +967,33 @@ resourcestring
    dlgUnitDepBrowse      = 'Browse...';
    dlgUnitDepRefresh     = 'Refresh';
    
+   // Build lazarus dialog
+   lisBuildJITForm = 'Build JITForm';
+   lisCleanLazarusSource = 'Clean Lazarus Source';
+   lisBuildLCL = 'Build LCL';
+   lisBuildComponent = 'Build Component';
+   lisBuildSynEdit = 'Build SynEdit';
+   lisBuildIDE = 'Build IDE';
+   lisBuildExamples = 'Build Examples';
+   lisConfigureBuildLazarus = 'Configure %sBuild Lazarus%s';
+   lisLazBuildCleanAll = 'Clean all';
+   lisLazBuildSetToBuildAll = 'Set to %sBuild All%s';
+   lisLazBuildBuildComponentsSynEditCodeTools = 'Build Components (SynEdit, '
+     +'CodeTools)';
+   lisLazBuildBuildSynEdit = 'Build SynEdit';
+   lisLazBuildBuildCodeTools = 'Build CodeTools';
+   lisLazBuildBuildIDE = 'Build IDE';
+   lisLazBuildBuildExamples = 'Build Examples';
+   lisLazBuildOptions = 'Options:';
+   lisLazBuildTargetOS = 'Target OS:';
+   lisLazBuildLCLInterface = 'LCL interface';
+   lisLazBuildBuildJITForm = 'Build JITForm';
+   lisLazBuildOk = 'Ok';
+   lisLazBuildCancel = 'Cancel';
+   lisLazBuildNone = 'None';
+   lisLazBuildBuild = 'Build';
+   lisLazBuildCleanBuild = 'Clean+Build';
+   
 
 implementation
 end.

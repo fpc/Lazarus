@@ -1536,13 +1536,17 @@ var
     FormatStringConstant:=FormatStringConstant+c;
   end;
 
-  procedure AddParameter(ParamStartPos,ParamEndPos: integer);
+  procedure AddParameter(const NewParam: string);
   begin
     FormatStringConstant:=FormatStringConstant+'%s';
     if FormatParameters<>'' then
       FormatParameters:=FormatParameters+',';
-    FormatParameters:=FormatParameters+
-                              copy(Src,ParamStartPos,ParamEndPos-ParamStartPos);
+    FormatParameters:=FormatParameters+NewParam;
+  end;
+
+  procedure AddParameter(ParamStartPos,ParamEndPos: integer);
+  begin
+    AddParameter(copy(Src,ParamStartPos,ParamEndPos-ParamStartPos));
   end;
   
   procedure ConvertStringConstant;
@@ -1567,6 +1571,11 @@ var
               // a single ' means end of string constant
               inc(APos);
               break;
+            end;
+          '"':
+            begin
+              AddParameter('''"''');
+              inc(APos);
             end;
           else
             begin

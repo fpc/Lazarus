@@ -35,7 +35,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Buttons, LResources,
-  Laz_XMLCfg, ExtToolDialog, ExtToolEditDlg, TransferMacros, LazConf;
+  Laz_XMLCfg, LazarusIDEStrConsts, ExtToolDialog, ExtToolEditDlg,
+  TransferMacros, LazConf;
 
 type
   TMakeMode = (mmNone, mmBuild, mmCleanBuild);
@@ -126,6 +127,16 @@ const
       'gtk', 'gtk2', 'gnome', 'win32'
     );
 
+function GetTranslatedMakeModes(MakeMode: TMakeMode): string;
+begin
+  case MakeMode of
+  mmNone: Result:=lisLazBuildNone;
+  mmBuild: Result:=lisLazBuildBuild;
+  mmCleanBuild: Result:=lisLazBuildCleanBuild;
+  else
+    Result:='???';
+  end;
+end;
 
 function StrToMakeMode(const s: string): TMakeMode;
 begin
@@ -197,7 +208,7 @@ var
   function DoBuildJITForm: TModalResult;
   begin
     // build IDE jitform
-    Tool.Title:='Build JITForm';
+    Tool.Title:=lisBuildJITForm;
     Tool.WorkingDirectory:='$(LazarusDir)/designer/jitform';
     SetMakeParams(Options.BuildJITForm,CreateJITFormOptions,
                   Options.TargetOS);
@@ -220,7 +231,7 @@ begin
     Tool.ScanOutputForMakeMessages:=true;
     if Options.CleanAll then begin
       // clean lazarus source directories
-      Tool.Title:='Clean Lazarus Source';
+      Tool.Title:=lisCleanLazarusSource;
       Tool.WorkingDirectory:='$(LazarusDir)';
       Tool.CmdLineParams:='cleanall';
       Result:=ExternalTools.Run(Tool,Macros);
@@ -228,7 +239,7 @@ begin
     end;
     if Options.BuildLCL<>mmNone then begin
       // build lcl
-      Tool.Title:='Build LCL';
+      Tool.Title:=lisBuildLCL;
       Tool.WorkingDirectory:='$(LazarusDir)/lcl';
       SetMakeParams(Options.BuildLCL,Options.ExtraOptions,Options.TargetOS);
       Result:=ExternalTools.Run(Tool,Macros);
@@ -236,7 +247,7 @@ begin
     end;
     if Options.BuildComponents<>mmNone then begin
       // build components
-      Tool.Title:='Build Component';
+      Tool.Title:=lisBuildComponent;
       Tool.WorkingDirectory:='$(LazarusDir)/components';
       SetMakeParams(Options.BuildComponents,Options.ExtraOptions,
                     Options.TargetOS);
@@ -245,7 +256,7 @@ begin
     end else begin
       if Options.BuildSynEdit<>mmNone then begin
         // build SynEdit
-        Tool.Title:='Build SynEdit';
+        Tool.Title:=lisBuildSynEdit;
         Tool.WorkingDirectory:='$(LazarusDir)/components/synedit';
         SetMakeParams(Options.BuildSynEdit,Options.ExtraOptions,
                       Options.TargetOS);
@@ -268,7 +279,7 @@ begin
     end;
     if Options.BuildIDE<>mmNone then begin
       // build IDE
-      Tool.Title:='Build IDE';
+      Tool.Title:=lisBuildIDE;
       Tool.WorkingDirectory:='$(LazarusDir)';
       if Options.ExtraOptions<>'' then
         Tool.CmdLineParams:='OPT='''+Options.ExtraOptions+''' '
@@ -286,7 +297,7 @@ begin
     end;
     if Options.BuildExamples<>mmNone then begin
       // build Examples
-      Tool.Title:='Build Examples';
+      Tool.Title:=lisBuildExamples;
       Tool.WorkingDirectory:='$(LazarusDir)/examples';
       SetMakeParams(Options.BuildComponents,Options.ExtraOptions,
                     Options.TargetOS);
@@ -311,7 +322,7 @@ begin
     Width:=480;
     Height:=435;
     Position:=poScreenCenter;
-    Caption:='Configure "Build Lazarus"';
+    Caption:=Format(lisConfigureBuildLazarus, ['"', '"']);
     OnResize:=@ConfigureBuildLazarusDlgResize;
     OnKeyDown:=@ConfigureBuildLazarusDlgKeyDown;
     
@@ -320,7 +331,7 @@ begin
       Parent:=Self;
       Name:='CleanAllCheckBox';
       SetBounds(10,10,Self.ClientWidth-150,20);
-      Caption:='Clean all';
+      Caption:=lisLazBuildCleanAll;
       Visible:=true;
     end;
     
@@ -331,7 +342,7 @@ begin
       Left:=CleanAllCheckBox.Left;
       Top:=CleanAllCheckBox.Top+CleanAllCheckBox.Height+5;
       Width:=200;
-      Caption:='Set to "Build All"';
+      Caption:=Format(lisLazBuildSetToBuildAll, ['"', '"']);
       OnClick:=@BuildAllButtonClick;
       Visible:=true;
     end;
@@ -344,7 +355,7 @@ begin
                 CleanAllCheckBox.Width,40);
       Caption:='Build LCL';
       for MakeMode:=Low(TMakeMode) to High(TMakeMode) do
-        Items.Add(MakeModeNames[MakeMode]);
+        Items.Add(GetTranslatedMakeModes(MakeMode));
       Columns:=3;
       Visible:=true;
     end;
@@ -355,9 +366,9 @@ begin
       Name:='BuildComponentsRadioGroup';
       SetBounds(10,BuildLCLRadioGroup.Top+BuildLCLRadioGroup.Height+5,
                 BuildLCLRadioGroup.Width,BuildLCLRadioGroup.Height);
-      Caption:='Build Components (SynEdit, CodeTools)';
+      Caption:=lisLazBuildBuildComponentsSynEditCodeTools;
       for MakeMode:=Low(TMakeMode) to High(TMakeMode) do
-        Items.Add(MakeModeNames[MakeMode]);
+        Items.Add(GetTranslatedMakeModes(MakeMode));
       Columns:=3;
       Visible:=true;
     end;
@@ -370,9 +381,9 @@ begin
                 BuildComponentsRadioGroup.Top+BuildComponentsRadioGroup.Height+5,
                 BuildComponentsRadioGroup.Width,
                 BuildLCLRadioGroup.Height);
-      Caption:='Build SynEdit';
+      Caption:=lisLazBuildBuildSynEdit;
       for MakeMode:=Low(TMakeMode) to High(TMakeMode) do
-        Items.Add(MakeModeNames[MakeMode]);
+        Items.Add(GetTranslatedMakeModes(MakeMode));
       Columns:=3;
       Visible:=true;
     end;
@@ -383,9 +394,9 @@ begin
       Name:='BuildCodeToolsRadioGroup';
       SetBounds(10,BuildSynEditRadioGroup.Top+BuildSynEditRadioGroup.Height+5,
                 BuildLCLRadioGroup.Width,BuildLCLRadioGroup.Height);
-      Caption:='Build CodeTools';
+      Caption:=lisLazBuildBuildCodeTools;
       for MakeMode:=Low(TMakeMode) to High(TMakeMode) do
-        Items.Add(MakeModeNames[MakeMode]);
+        Items.Add(GetTranslatedMakeModes(MakeMode));
       Columns:=3;
       Visible:=true;
     end;
@@ -396,9 +407,9 @@ begin
       Name:='BuildIDERadioGroup';
       SetBounds(10,BuildCodeToolsRadioGroup.Top+BuildCodeToolsRadioGroup.Height+5,
                 BuildLCLRadioGroup.Width,BuildLCLRadioGroup.Height);
-      Caption:='Build IDE';
+      Caption:=lisLazBuildBuildIDE;
       for MakeMode:=Low(TMakeMode) to High(TMakeMode) do
-        Items.Add(MakeModeNames[MakeMode]);
+        Items.Add(GetTranslatedMakeModes(MakeMode));
       Columns:=3;
       Visible:=true;
     end;
@@ -409,9 +420,9 @@ begin
       Name:='BuildExamplesRadioGroup';
       SetBounds(10,BuildIDERadioGroup.Top+BuildIDERadioGroup.Height+5,
                 BuildLCLRadioGroup.Width,BuildLCLRadioGroup.Height);
-      Caption:='Build Examples';
+      Caption:=lisLazBuildBuildExamples;
       for MakeMode:=Low(TMakeMode) to High(TMakeMode) do
-        Items.Add(MakeModeNames[MakeMode]);
+        Items.Add(GetTranslatedMakeModes(MakeMode));
       Columns:=3;
       Visible:=true;
     end;
@@ -423,7 +434,7 @@ begin
       SetBounds(10,
                 BuildExamplesRadioGroup.Top+BuildExamplesRadioGroup.Height+5,
                 80,Height);
-      Caption:='Options:';
+      Caption:=lisLazBuildOptions;
       Visible:=true;
     end;
     
@@ -444,7 +455,7 @@ begin
       Parent:=Self;
       SetBounds(10,OptionsLabel.Top+OptionsLabel.Height+12,
                 80,Height);
-      Caption:='Target OS:';
+      Caption:=lisLazBuildTargetOS;
       Visible:=true;
     end;
 
@@ -467,7 +478,7 @@ begin
       Top:=BuildLCLRadioGroup.Top;
       Width:=Parent.ClientHeight-Left-BuildLCLRadioGroup.Left;
       Height:=120;
-      Caption:='LCL interface';
+      Caption:=lisLazBuildLCLInterface;
       for LCLInterface:=Low(TLCLPlatform) to High(TLCLPlatform) do begin
         Items.Add(LCLPlatformNames[LCLInterface]);
       end;
@@ -481,7 +492,7 @@ begin
       SetBounds(LCLInterfaceRadioGroup.Left,
            LCLInterfaceRadioGroup.Top+LCLInterfaceRadioGroup.Height+50,
            LCLInterfaceRadioGroup.Width,Height);
-      Caption:='Build JITForm';
+      Caption:=lisLazBuildBuildJITForm;
       Visible:=true;
     end;
 
@@ -490,7 +501,7 @@ begin
       Parent:=Self;
       Name:='OkButton';
       SetBounds(Self.ClientWidth-180,Self.ClientHeight-38,80,25);
-      Caption:='Ok';
+      Caption:=lisLazBuildOk;
       OnClick:=@OkButtonClick;
       Visible:=true;
     end;
@@ -500,7 +511,7 @@ begin
       Parent:=Self;
       Name:='CancelButton';
       SetBounds(Self.ClientWidth-90,OkButton.Top,OkButton.Width,OkButton.Height);
-      Caption:='Cancel';
+      Caption:=lisLazBuildCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;
