@@ -48,9 +48,9 @@ type
   }
   TInterfaceBase = Class(TObject)
   private
+  protected
     procedure SetCallback(Msg : LongInt; Sender : TObject); virtual; abstract;
     procedure RemoveCallbacks(Sender : TObject); virtual; abstract;
-  protected
   public
     procedure AppTerminate; virtual; abstract;
     procedure DoEvents; virtual; abstract;
@@ -82,6 +82,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2002/03/27 08:57:16  lazarus
+  MG: reduced compiler warnings
+
   Revision 1.6  2002/03/25 17:59:19  lazarus
   GTK Cleanup
   Shane
