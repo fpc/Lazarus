@@ -53,7 +53,7 @@ type
     FStockGrayBrush: HBRUSH;
     FStockDkGrayBrush: HBRUSH;
     FStockWhiteBrush: HBRUSH;
-    
+    Procedure HookSignals(Sender : TObject);  //hooks all signals for controls
     procedure CreateComponent(Sender : TObject);
     procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
@@ -88,6 +88,8 @@ type
     
     function HashPaintMessage(p: pointer): integer;
     function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;
+    procedure SetCallback(Msg : LongInt; Sender : TObject); override;
+    procedure RemoveCallbacks(Sender : TObject); override;
   protected
     Cursor_Watch    : pGDKCursor;
     Cursor_Arrow    : pGDKCursor;
@@ -108,8 +110,6 @@ type
     function  GetText(Sender: TControl; var Text: String): Boolean; override;
     procedure SetLabel(Sender : TObject; Data : Pointer);
     function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
-    procedure SetCallback(Msg : LongInt; Sender : TObject); override;
-    procedure RemoveCallbacks(Sender : TObject); override;
     procedure DoEvents; override;
     procedure HandleEvents; override;
     procedure WaitMessage; override;
@@ -325,6 +325,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.31  2002/03/14 20:28:49  lazarus
   Bug fix for Mattias.
   Fixed spinedit so you can now get the value and set the value.
