@@ -1,16 +1,14 @@
 // File: NVGL.pp        
 // modified: 10-04-2001
 //
-// FreePascal Bindings for libGL by NVIDIA (based on MESA Bindings from
-// Sebastian Günther)
+// FreePascal Bindings for libGL by NVIDIA (based on MESA Bindings from Sebastian Günther)
 // Version 0.0.1
-// this is UNPUBLISHED source code and may not be used by anyone (except matti)
-// for anything
+// this is UNPUBLISHED source code and may not be used by anyone (except matti) for anything
 // later it will be GPL'ed  :)
 // Copyright (C) 2001 Satan
 
 
-{$MODE DELPHI}  // objfpc would not work because of direct proc var assignments
+{$MODE delphi}  // objfpc would not work because of direct proc var assignments
 
 unit NVGL;
 
@@ -43,6 +41,8 @@ var
 type
   PSingle   = ^Single;
   PDouble   = ^Double;
+  PShortInt = ^ShortInt;
+  PLongword = ^Longword;
 
   GLvoid    = Pointer;
   GLboolean = Byte;
@@ -1849,37 +1849,53 @@ glClearStencil: procedure(s: LongInt); cdecl;
 glClientActiveTextureARB: procedure(texture: GLenum); cdecl;
 glClipPlane: procedure(plane: GLenum; var equation: Double); cdecl;
 glColor3b: procedure (red, green, blue: ShortInt); cdecl;
-glColor3bv: procedure (var v: ShortInt); cdecl;
+//glColor3bv: procedure (var v: ShortInt); cdecl;
+glColor3bv: procedure (v: PShortInt); cdecl;
 glColor3d: procedure (red, green, blue: Double); cdecl;
-glColor3dv: procedure (var v: Double); cdecl;
+//glColor3dv: procedure (var v: Double); cdecl;
+glColor3dv: procedure (v: PDouble); cdecl;
 glColor3f: procedure (red, green, blue: Single); cdecl;
-glColor3fv: procedure (var v: Single); cdecl;
+//glColor3fv: procedure (var v: Single); cdecl;
+glColor3fv: procedure (v:PSingle); cdecl;
 glColor3i: procedure (red, green, blue: LongInt); cdecl;
-glColor3iv: procedure (var v: LongInt); cdecl;
+//glColor3iv: procedure (var v: LongInt); cdecl;
+glColor3iv: procedure (v: PLongInt); cdecl;
 glColor3s: procedure (red, green, blue: SmallInt); cdecl;
-glColor3sv: procedure (var v: SmallInt); cdecl;
+//glColor3sv: procedure (var v: SmallInt); cdecl;
+glColor3sv: procedure (v: PSmallInt); cdecl;
 glColor3ub: procedure(red, green, blue: Byte); cdecl;
-glColor3ubv: procedure(var v: Byte); cdecl;
+//glColor3ubv: procedure(var v: Byte); cdecl;
+glColor3ubv: procedure(v: PByte); cdecl;
 glColor3ui: procedure(red, green, blue: LongWord); cdecl;
-glColor3uiv: procedure(var v: LongWord); cdecl;
+//glColor3uiv: procedure(var v: LongWord); cdecl;
+glColor3uiv: procedure(v: PLongWord); cdecl;
 glColor3us: procedure(red, green, blue: Word); cdecl;
-glColor3usv: procedure(var v: Word); cdecl;
+//glColor3usv: procedure(var v: Word); cdecl;
+glColor3usv: procedure(v: PWord); cdecl;
 glColor4b: procedure (red, green, blue, alpha: ShortInt); cdecl;
-glColor4bv: procedure (var v: ShortInt); cdecl;
+//glColor4bv: procedure (var v: ShortInt); cdecl;
+glColor4bv: procedure (v: PShortInt); cdecl;
 glColor4d: procedure (red, green, blue, alpha: Double); cdecl;
-glColor4dv: procedure (var v: Double); cdecl;
+//glColor4dv: procedure (var v: Double); cdecl;
+glColor4dv: procedure (v: PDouble); cdecl;
 glColor4f: procedure (red, green, blue, alpha: Single); cdecl;
-glColor4fv: procedure (var v: Single); cdecl;
+//glColor4fv: procedure (var v: Single); cdecl;
+glColor4fv: procedure (v: PSingle); cdecl;
 glColor4i: procedure (red, green, blue, alpha: LongInt); cdecl;
-glColor4iv: procedure (var v: LongInt); cdecl;
+//glColor4iv: procedure (var v: LongInt); cdecl;
+glColor4iv: procedure (v: PLongInt); cdecl;
 glColor4s: procedure (red, green, blue, alpha: SmallInt); cdecl;
-glColor4sv: procedure (var v: SmallInt); cdecl;
+//glColor4sv: procedure (var v: SmallInt); cdecl;
+glColor4sv: procedure (v: PSmallInt); cdecl;
 glColor4ub: procedure(red, green, blue, alpha: Byte); cdecl;
-glColor4ubv: procedure(var v: Byte); cdecl;
+//glColor4ubv: procedure(var v: Byte); cdecl;
+glColor4ubv: procedure(v: PByte); cdecl;
 glColor4ui: procedure(red, green, blue, alpha: LongWord); cdecl;
-glColor4uiv: procedure(var v: LongWord); cdecl;
+//glColor4uiv: procedure(var v: LongWord); cdecl;
+glColor4uiv: procedure(v: PLongWord); cdecl;
 glColor4us: procedure(red, green, blue, alpha: Word); cdecl;
-glColor4usv: procedure(var v: Word); cdecl;
+//glColor4usv: procedure(var v: Word); cdecl;
+glColor4usv: procedure(v: PWord); cdecl;
 glColorMask: procedure(red, green, blue, alpha: GLboolean); cdecl;
 glColorMaterial: procedure(face, mode: GLenum); cdecl;
 glColorPointer: procedure(size: LongInt; _Type: GLenum; stride: LongInt; var ptr); cdecl;
@@ -3097,12 +3113,12 @@ end;
 initialization
   InitGL;
 finalization
-  if Assigned(libGL)  then dlclose(libGL);
+  if Assigned(libGL) then dlclose(libGL);
 end.
 {
   $Log$
-  Revision 1.1  2001/10/16 14:19:11  lazarus
-  MG: added nvidia opengl support and a new opengl example from satan
+  Revision 1.2  2001/11/12 17:36:47  lazarus
+  MG: new version from satan
 
   Revision 1.2  2001/06/20 14:22:48  marco
    * Introduced Unix dir structure for opengl.
@@ -3124,22 +3140,3 @@ end.
 
 }
 
-
-{
-  $Log$
-  Revision 1.1  2001/10/16 14:19:11  lazarus
-  MG: added nvidia opengl support and a new opengl example from satan
-
-  Revision 1.2  2001/06/20 14:22:48  marco
-   * Introduced Unix dir structure for opengl.
-
-  Revision 1.6  2001/06/20 13:59:20  marco
-   * Fixed breaking of Freebsd. Still requires copying linux to freebsd dir.
-
-  Revision 1.5  2000/10/01 22:17:58  peter
-    * new bounce demo
-
-  Revision 1.4.2.1  2000/10/01 22:12:27  peter
-    * new demo
-
-}
