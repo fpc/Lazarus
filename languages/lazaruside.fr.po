@@ -5708,6 +5708,10 @@ msgstr ""
 msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
 msgstr ""
 
+#: lazarusidestrconsts:listheunititselfhasalreadythenamepascalidentifiersmus
+msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
+msgstr ""
+
 #: lazarusidestrconsts:lisprojaddtheunitnamealreadyexistsintheproject
 msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
 msgstr ""
@@ -5786,6 +5790,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthereisalreadyapackageloadedfromfile
 msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
+msgstr ""
+
+#: lazarusidestrconsts:listhereisalreadyaunitwiththenamepascalidentifiersmus
+msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthereisalreadyanotherpackagewiththename

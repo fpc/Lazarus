@@ -18,7 +18,7 @@ msgstr "Directory %s"
 
 #: codetoolsstrconsts:ctsstrexpectedbutatomfound
 msgid "%s expected, but %s found"
-msgstr "era previsto %s invece √® stato trovato %s"
+msgstr "era previsto %s invece Ë stato trovato %s"
 
 #: codetoolsstrconsts:ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
@@ -26,7 +26,7 @@ msgstr "%s ha un collegamento simbolico circolare"
 
 #: codetoolsstrconsts:ctsfileisnotexecutable
 msgid "%s is not executable"
-msgstr "%s non √® eseguibile"
+msgstr "%s non Ë eseguibile"
 
 #: codetoolsstrconsts:ctsnamedproject
 msgid "%s Project"
@@ -54,7 +54,7 @@ msgstr ". comincia a "
 
 #: codetoolsstrconsts:ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
-msgstr "era previsto un ; dopo lo specificatore di propriet√† \"%s\" invece √® stato trovato %s"
+msgstr "era previsto un ; dopo lo specificatore di propriet‡ \"%s\" invece Ë stato trovato %s"
 
 #: codetoolsstrconsts:ctswordnotfound
 msgid "\"%s\" not found"
@@ -66,15 +66,15 @@ msgstr "definizione \"class of\" non risolta: %s"
 
 #: codetoolsstrconsts:ctsendforclassnotfound
 msgid "\"end\" for class/object not found"
-msgstr "non √® stato trovato il comando \"end\" per la classe/oggetto"
+msgstr "non Ë stato trovato il comando \"end\" per la classe/oggetto"
 
 #: codetoolsstrconsts:ctsdircomponentdoesnotexistsorisdanglingsymlink
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "un componente directory in %s non esiste o √® un collegamento simbolico a vuoto"
+msgstr "un componente directory in %s non esiste o Ë un collegamento simbolico a vuoto"
 
 #: codetoolsstrconsts:ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
-msgstr "una directory componente in %s non √® una directory"
+msgstr "una directory componente in %s non Ë una directory"
 
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
@@ -86,11 +86,11 @@ msgstr "un progetto LCL"
 
 #: codetoolsstrconsts:ctsancestorisnotproperty
 msgid "ancestor of untyped property is not a property"
-msgstr "un antenato di una propriet√† senza tipo non √® una propriet√†"
+msgstr "un antenato di una propriet‡ senza tipo non Ë una propriet‡"
 
 #: codetoolsstrconsts:ctsanoymdefinitionsarenotallowed
 msgid "Anonym %s definitions are not allowed"
-msgstr "La definizione %s anonima non √® consentita"
+msgstr "La definizione %s anonima non Ë consentita"
 
 #: codetoolsstrconsts:ctsbasetypeofnotfound
 msgid "base type of \"%s\" not found"
@@ -106,11 +106,11 @@ msgstr "parentesi %s non trovata"
 
 #: codetoolsstrconsts:ctsbracketcloseexpectedbutatomfound
 msgid "bracket close expected, but %s found"
-msgstr "era prevista una parentesi chiusa invece √® stato trovato %s"
+msgstr "era prevista una parentesi chiusa invece Ë stato trovato %s"
 
 #: codetoolsstrconsts:ctsbracketopenexpectedbutatomfound
 msgid "bracket open expected, but %s found"
-msgstr "era prevista una parentesi aperta invece √® stato trovato %s"
+msgstr "era prevista una parentesi aperta invece Ë stato trovato %s"
 
 #: codetoolsstrconsts:ctscircleindefinitions
 msgid "circle in definitions"
@@ -186,7 +186,7 @@ msgstr "antenato di interfaccia predefinita IInterface non trovato"
 
 #: codetoolsstrconsts:ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
-msgstr "era previsto un parametro predefinito invece √® stato trovato %s"
+msgstr "era previsto un parametro predefinito invece Ë stato trovato %s"
 
 #: codetoolsstrconsts:ctsdefaultppc386sourceoperatingsystem
 msgid "Default ppc386 source Operating System"
@@ -206,7 +206,7 @@ msgstr "Processore di destinazione ppc386 predefinito"
 
 #: codetoolsstrconsts:ctsdefaultpropertynotfound
 msgid "default property not found"
-msgstr "propriet√É¬† predefinita non trovata"
+msgstr "propriet√† predefinita non trovata"
 
 #: codetoolsstrconsts:ctsdefaultspecifierredefined
 msgid "default specifier redefined"
@@ -266,7 +266,7 @@ msgstr "fine record non trovata"
 
 #: codetoolsstrconsts:ctsendofsourcenotfound
 msgid "End of source not found"
-msgstr "Non √® stata trovata la fine del sorgente"
+msgstr "Non Ë stata trovata la fine del sorgente"
 
 #: codetoolsstrconsts:ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
@@ -290,11 +290,11 @@ msgstr "accesso all'esecuzione negato per %s"
 
 #: codetoolsstrconsts:ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
-msgstr "era previsto end. invece √® stato trovato %s"
+msgstr "era previsto end. invece Ë stato trovato %s"
 
 #: codetoolsstrconsts:ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
-msgstr "la clausola exports √® permessa solo nelle librerie"
+msgstr "la clausola exports Ë permessa solo nelle librerie"
 
 #: codetoolsstrconsts:ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
@@ -306,7 +306,7 @@ msgstr "il file \"%s\" non esite"
 
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
-msgstr "il file √® in sola lettura"
+msgstr "il file Ë in sola lettura"
 
 #: codetoolsstrconsts:ctsforward
 msgid "Forward"
@@ -350,15 +350,15 @@ msgstr "identificatore"
 
 #: codetoolsstrconsts:ctsidentifieralreadydefined
 msgid "Identifier %s already defined"
-msgstr "Identificatore %s gi√† definito"
+msgstr "Identificatore %s gi‡ definito"
 
 #: codetoolsstrconsts:ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
-msgstr "era previsto un identificatore me √® stato trovato %s"
+msgstr "era previsto un identificatore me Ë stato trovato %s"
 
 #: codetoolsstrconsts:ctsidentexpectedbutkeywordfound
 msgid "identifier expected, but keyword %s found"
-msgstr "era previsto un identificatore invece √® stata trovata la parola chiave %s"
+msgstr "era previsto un identificatore invece Ë stata trovata la parola chiave %s"
 
 #: codetoolsstrconsts:ctsidentifiernotfound
 msgid "identifier not found: %s"
@@ -402,11 +402,11 @@ msgstr "file include non trovato \"%s\""
 
 #: codetoolsstrconsts:ctsincompatibletypesgotexpected
 msgid "incompatibles types: expected \"%s\" but got \"%s\""
-msgstr "tipi incompatibili: era previsto \"%s\" invece √® stato trovato \"%s\""
+msgstr "tipi incompatibili: era previsto \"%s\" invece Ë stato trovato \"%s\""
 
 #: codetoolsstrconsts:ctsindexparameterexpectedbutatomfound
 msgid "index parameter expected, but %s found"
-msgstr "era previsto un indice di parametro invece √® stato trovato %s"
+msgstr "era previsto un indice di parametro invece Ë stato trovato %s"
 
 #: codetoolsstrconsts:ctsindexspecifierredefined
 msgid "index specifier redefined"
@@ -414,7 +414,7 @@ msgstr "ridefinito specificatore di indice"
 
 #: codetoolsstrconsts:ctsinheritedkeywordonlyallowedinmethods
 msgid "inherited keyword only allowed in methods"
-msgstr "una parolachiave ereditata √® consentita solo in un metodo"
+msgstr "una parolachiave ereditata Ë consentita solo in un metodo"
 
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
@@ -442,7 +442,7 @@ msgstr "valore flag non valido \"%s\" per la direttiva %s"
 
 #: codetoolsstrconsts:ctsinvalidmode
 msgid "invalid mode \"%s\""
-msgstr "modalit√† non valida \"%s\""
+msgstr "modalit‡ non valida \"%s\""
 
 #: codetoolsstrconsts:ctsinvalidsubrange
 msgid "invalid subrange"
@@ -470,7 +470,7 @@ msgstr "parolachiave"
 
 #: codetoolsstrconsts:ctskeywordexampleexpectedbutatomfound
 msgid "keyword (e.g. %s) expected, but %s found"
-msgstr "era prevista una parolachiave (per es. %s) invece √® stato trovato %s"
+msgstr "era prevista una parolachiave (per es. %s) invece Ë stato trovato %s"
 
 #: codetoolsstrconsts:ctskeywordin
 msgid "keyword \"in\""
@@ -518,11 +518,11 @@ msgstr "nessun nodo di contesto trovato al cursore"
 
 #: codetoolsstrconsts:ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
-msgstr "non √® stato trovato nessun codice pascal (il primo token √® %s)"
+msgstr "non Ë stato trovato nessun codice pascal (il primo token Ë %s)"
 
 #: codetoolsstrconsts:ctsnonodefoundatcursor
 msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "nessun nodo pascal trovato al cursore (cio√® in codice non analizzato)"
+msgstr "nessun nodo pascal trovato al cursore (cioË in codice non analizzato)"
 
 #: codetoolsstrconsts:ctsnoscanneravailable
 msgid "No scanner available"
@@ -530,7 +530,7 @@ msgstr "Nessuno scanner disponibile"
 
 #: codetoolsstrconsts:ctsnoscannerfound
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
-msgstr "Non √® stato trovato nessuno scanner per \"%s\". Se √® un file include, aprire prima il sorgente principale."
+msgstr "Non Ë stato trovato nessuno scanner per \"%s\". Se Ë un file include, aprire prima il sorgente principale."
 
 #: codetoolsstrconsts:ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"
@@ -566,15 +566,15 @@ msgstr "specifiche di processore"
 
 #: codetoolsstrconsts:ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
-msgstr "specificatore di propriet√† gi√† definito: %s"
+msgstr "specificatore di propriet‡ gi‡ definito: %s"
 
 #: codetoolsstrconsts:ctsproperttypeexpectedbutatomfound
 msgid "property type expected, but %s found"
-msgstr "era previsto un tipo di propriet√† invece √® stato trovato %s"
+msgstr "era previsto un tipo di propriet‡ invece Ë stato trovato %s"
 
 #: codetoolsstrconsts:ctsqualifierexpectedbutatomfound
 msgid "qualifier expected but %s found"
-msgstr "era previsto un qualificatore invece √® stato trovato %s"
+msgstr "era previsto un qualificatore invece Ë stato trovato %s"
 
 #: codetoolsstrconsts:ctsresetalldefines
 msgid "Reset all defines"
@@ -602,7 +602,7 @@ msgstr "Nome del file sorgente per la unit fpc standard"
 
 #: codetoolsstrconsts:ctssourceisnotunit
 msgid "source is not unit"
-msgstr "il sorgente non √® una unit"
+msgstr "il sorgente non Ë una unit"
 
 #: codetoolsstrconsts:ctssourcenotfoundunit
 msgid "source not found: unit %s"
@@ -646,7 +646,7 @@ msgstr "impossibile applicare i cambiamenti"
 
 #: codetoolsstrconsts:ctsunabletocompleteproperty
 msgid "unable to complete property"
-msgstr "impossibile completare la propriet√†"
+msgstr "impossibile completare la propriet‡"
 
 #: codetoolsstrconsts:ctsidentexpectedbuteoffound
 msgid "unexpected end of file (identifier expected)"
@@ -698,7 +698,7 @@ msgstr "Non analizzato"
 
 #: codetoolsstrconsts:ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"
-msgstr "la unit utilizzata non √® una unit pascal"
+msgstr "la unit utilizzata non Ë una unit pascal"
 
 #: codetoolsstrconsts:ctsutilsdirectories
 msgid "Utils directories"

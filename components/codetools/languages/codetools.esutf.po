@@ -1,710 +1,710 @@
 msgid ""
 msgstr ""
-"PO-Revision-Date: 2004-06-22 08:31+0200\n"
-"Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
-"Language-Team: italiano <tp@lists.linux.it>\n"
-"MIME-Version: 1.0\n"
+"Last-Translator: Luis R. Hilario B. <l_hilario@yahoo.com>\n"
+"PO-Revision-Date: 2004-03-12 20:43-0400\n"
+"Project-Id-Version: codetools.esutf\n"
+"Language-Team: Español\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Project-Id-Version: 0.9.3"
+"X-Generator: KBabel 1.0.2\n"
 
 #: codetoolsstrconsts:ctsothercompilerdefines
 msgid "%s Compiler Defines"
-msgstr "Define compilatore %s"
+msgstr "%s Definiciones del Compilador"
 
 #: codetoolsstrconsts:ctsnameddirectory
 msgid "%s Directory"
-msgstr "Directory %s"
+msgstr "Directorio %s"
 
 #: codetoolsstrconsts:ctsstrexpectedbutatomfound
 msgid "%s expected, but %s found"
-msgstr "era previsto %s invece è stato trovato %s"
+msgstr "se esperaba %s, pero se encontró %s"
 
 #: codetoolsstrconsts:ctsfilehascircularsymlink
 msgid "%s has a circular symbolic link"
-msgstr "%s ha un collegamento simbolico circolare"
+msgstr "%s tiene un enlace simbólico circular"
 
 #: codetoolsstrconsts:ctsfileisnotexecutable
 msgid "%s is not executable"
-msgstr "%s non è eseguibile"
+msgstr "%s no es ejecutable"
 
 #: codetoolsstrconsts:ctsnamedproject
 msgid "%s Project"
-msgstr "Progetto %s"
+msgstr "%s Proyecto"
 
 #: codetoolsstrconsts:ctsawithoutb
 msgid "%s without %s"
-msgstr "%s senza %s"
+msgstr "%s sin %s"
 
 #: codetoolsstrconsts:ctsunknownmainfilename
 msgid "(unknown mainfilename)"
-msgstr "(nome file principale sconosciuto)"
+msgstr "(nombre de archivo principal desconocido)"
 
 #: codetoolsstrconsts:ctsunknownsubdescriptor
 msgid "(unknown subdescriptor %s)"
-msgstr "(sottodescrittore sconosciuto %s)"
+msgstr "(subdescriptor desconocido %s)"
 
 #: codetoolsstrconsts:ctspointhintprocstartat
 msgid ".  Hint: proc start at "
-msgstr ". Dritta: proc parte da"
+msgstr ".  Sugerencia: proc inicia desde "
 
 #: codetoolsstrconsts:ctspointstartat
 msgid ". start at "
-msgstr ". comincia a "
+msgstr ". inicia a "
 
 #: codetoolsstrconsts:ctssemicolonafterpropspecmissing
 msgid "; expected after \"%s\" property specifier, but %s found"
-msgstr "era previsto un ; dopo lo specificatore di proprietà \"%s\" invece è stato trovato %s"
+msgstr "se esperaba ; después de \"%s\" especificador de propiedad, pero se encontró %s"
 
 #: codetoolsstrconsts:ctswordnotfound
 msgid "\"%s\" not found"
-msgstr "\"%s\" non trovato"
+msgstr "\"%s\" no encontrado"
 
 #: codetoolsstrconsts:ctsclassofdefinitionnotresolved
 msgid "\"class of\" definition not resolved: %s"
-msgstr "definizione \"class of\" non risolta: %s"
+msgstr "\"class of\" definición sin resolver: %s"
 
 #: codetoolsstrconsts:ctsendforclassnotfound
 msgid "\"end\" for class/object not found"
-msgstr "non è stato trovato il comando \"end\" per la classe/oggetto"
+msgstr "\"end\" parar clase/objeto no encontrado"
 
 #: codetoolsstrconsts:ctsdircomponentdoesnotexistsorisdanglingsymlink
 msgid "a directory component in %s does not exist or is a dangling symlink"
-msgstr "un componente directory in %s non esiste o è un collegamento simbolico a vuoto"
+msgstr "componente de un directorio en %s no existe o es un enlace simbólico colgando"
 
 #: codetoolsstrconsts:ctsdircomponentisnotdir
 msgid "a directory component in %s is not a directory"
-msgstr "una directory componente in %s non è una directory"
+msgstr "un componente de directorio en %s no es un directorio"
 
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
-msgstr "aggiungi %s al SrcPath"
+msgstr "añadir %s a SrcPath"
 
 #: codetoolsstrconsts:ctsanlclproject
 msgid "an LCL project"
-msgstr "un progetto LCL"
+msgstr "un proyecto LCL"
 
 #: codetoolsstrconsts:ctsancestorisnotproperty
 msgid "ancestor of untyped property is not a property"
-msgstr "un antenato di una proprietà senza tipo non è una proprietà"
+msgstr "ancestro de propiedad untyped no es una propiedad"
 
 #: codetoolsstrconsts:ctsanoymdefinitionsarenotallowed
 msgid "Anonym %s definitions are not allowed"
-msgstr "La definizione %s anonima non è consentita"
+msgstr "Definiciones anónimas %s no son permitidas"
 
 #: codetoolsstrconsts:ctsbasetypeofnotfound
 msgid "base type of \"%s\" not found"
-msgstr "tipo base di \"%s\" non trovato"
+msgstr "tipo base de \"%s\" no encontrado"
 
 #: codetoolsstrconsts:ctsbinaryoperator
 msgid "binary operator"
-msgstr "operatore binario"
+msgstr "operador binario"
 
 #: codetoolsstrconsts:ctsbracketnotfound
 msgid "bracket %s not found"
-msgstr "parentesi %s non trovata"
+msgstr "paréntesis %s no encontrado"
 
 #: codetoolsstrconsts:ctsbracketcloseexpectedbutatomfound
 msgid "bracket close expected, but %s found"
-msgstr "era prevista una parentesi chiusa invece è stato trovato %s"
+msgstr "se esperaba paréntesis cerrado, pero se encontró %s"
 
 #: codetoolsstrconsts:ctsbracketopenexpectedbutatomfound
 msgid "bracket open expected, but %s found"
-msgstr "era prevista una parentesi aperta invece è stato trovato %s"
+msgstr "se esperaba paréntesis abierto, pero se encontró %s"
 
 #: codetoolsstrconsts:ctscircleindefinitions
 msgid "circle in definitions"
-msgstr "definizione circolare"
+msgstr "círculo en definiciones"
 
 #: codetoolsstrconsts:ctsclasssnotfound
 msgid "Class %s not found"
-msgstr "Classe %s non trovata"
+msgstr "Clase %s no encontrada"
 
 #: codetoolsstrconsts:ctsclassnotfound
 msgid "class %s%s%s not found"
-msgstr "classe %s%s%s non trovata"
+msgstr "clase %s%s%s no encontrada"
 
 #: codetoolsstrconsts:ctsclassidentifierexpected
 msgid "class identifier expected"
-msgstr "era previsto un identificatore di classe"
+msgstr "se esperaba identificador de clase"
 
 #: codetoolsstrconsts:ctsclassnodewithoutparentnode
 msgid "class node without parent node"
-msgstr "nodo classe senza nodo genitore"
+msgstr "nodo class sin nodo parent"
 
 #: codetoolsstrconsts:ctsclasswithoutname
 msgid "class without name"
-msgstr "classe senza nome"
+msgstr "clase sin nombre"
 
 #: codetoolsstrconsts:ctscommandlineparameters
 msgid "Command line parameters"
-msgstr "Parametri della riga di comando"
+msgstr "Parámetros de la línea de comandos"
 
 #: codetoolsstrconsts:ctscommentendnotfound
 msgid "Comment end not found"
-msgstr "Fine del commento non trovata"
+msgstr "No se encontró el final del comentario"
 
 #: codetoolsstrconsts:ctscompiledsrcpath
 msgid "Compiled SrcPath"
-msgstr "SrcPach compilato"
+msgstr "Compilado SrcPath"
 
 #: codetoolsstrconsts:ctscompiler
 msgid "Compiler"
-msgstr "Compilatore"
+msgstr "Compilador"
 
 #: codetoolsstrconsts:ctscomponentsdirectory
 msgid "Components Directory"
-msgstr "Directory componenti"
+msgstr "Directorio de los Componentes"
 
 #: codetoolsstrconsts:ctsconstant
 msgid "constant"
-msgstr "costante"
+msgstr "constante"
 
 #: codetoolsstrconsts:ctscpudirectory
 msgid "CPU directory"
-msgstr "directory CPU"
+msgstr ""
 
 #: codetoolsstrconsts:ctscursorposoutsideofcode
 msgid "cursor pos outside of code"
-msgstr "posizione del cursore fuori dal codice"
+msgstr "posición de cursor fuera del código"
 
 #: codetoolsstrconsts:ctscustomcomponentsdirectory
 msgid "Custom Components Directory"
-msgstr "Directory componenti personalizzati"
+msgstr "Directorio de los Componentes personalizados"
 
 #: codetoolsstrconsts:ctsdebuggerdirectory
 msgid "Debugger Directory"
-msgstr "Directory del debugger"
+msgstr "Directorio del Depurador"
 
 #: codetoolsstrconsts:ctsdefaultclassancestortobjectnotfound
 msgid "default class ancestor TObject not found"
-msgstr "antenato di classe predefinita TObject non trovato"
+msgstr "clase ancestro por defecto TObject no encontrada"
 
 #: codetoolsstrconsts:ctsdefaultinterfaceancestoriinterfacenotfound
 msgid "default interface ancestor IInterface not found"
-msgstr "antenato di interfaccia predefinita IInterface non trovato"
+msgstr "interface ancestro por defecto IInterface no encontrada"
 
 #: codetoolsstrconsts:ctsdefaultparameterexpectedbutatomfound
 msgid "default parameter expected, but %s found"
-msgstr "era previsto un parametro predefinito invece è stato trovato %s"
+msgstr "se esperaba parámetro por defecto, pero se encontró %s"
 
 #: codetoolsstrconsts:ctsdefaultppc386sourceoperatingsystem
 msgid "Default ppc386 source Operating System"
-msgstr "Sistema operativo sorgente ppc386 predefinito"
+msgstr "Por defecto ppc386 fuentes del Sistema Operativo"
 
 #: codetoolsstrconsts:ctsdefaultppc386symbol
 msgid "Default ppc386 symbol"
-msgstr "Simbolo ppc386 predefinito"
+msgstr "Símbolo por defecto ppc386"
 
 #: codetoolsstrconsts:ctsdefaultppc386targetoperatingsystem
 msgid "Default ppc386 target Operating System"
-msgstr "Sistema operativo di destinazione ppc386 predefinito"
+msgstr "Por defecto ppc386 destino del Sistema Operativo"
 
 #: codetoolsstrconsts:ctsdefaultppc386targetprocessor
 msgid "Default ppc386 target processor"
-msgstr "Processore di destinazione ppc386 predefinito"
+msgstr "Por defecto ppc386 procesador de destino"
 
 #: codetoolsstrconsts:ctsdefaultpropertynotfound
 msgid "default property not found"
-msgstr "proprietÃ  predefinita non trovata"
+msgstr "no se encontró la propiedad por defecto"
 
 #: codetoolsstrconsts:ctsdefaultspecifierredefined
 msgid "default specifier redefined"
-msgstr "ridefinito specificatore predefinito"
+msgstr "especificador por defecto redefinido"
 
 #: codetoolsstrconsts:ctsdefine
 msgid "Define "
-msgstr "Define"
+msgstr "Definir "
 
 #: codetoolsstrconsts:ctsdefinemacroname
 msgid "Define Macro %s"
-msgstr "Define macro %s"
+msgstr "Definir Macro %s"
 
 #: codetoolsstrconsts:ctsdefinemacrognome2
 msgid "Define macro gnome2"
-msgstr "Definisci macro gnome2"
+msgstr "Define macro gnome2"
 
 #: codetoolsstrconsts:ctsdefinemacrogtk1
 msgid "Define macro gtk1"
-msgstr "Definisci macro gtk1"
+msgstr "Define macro gtk1"
 
 #: codetoolsstrconsts:ctsdefinemacrogtk2
 msgid "Define macro gtk2"
-msgstr "Definisci macro gtk2"
+msgstr "Definir macro gtk2"
 
 #: codetoolsstrconsts:ctsdefineprozessortype
 msgid "Define processor type"
-msgstr "Tipo di processore"
+msgstr "Definir tipo de procesador"
 
 #: codetoolsstrconsts:ctsdefsforlazarussources
 msgid "Definitions for the Lazarus Sources"
-msgstr "Definizioni per i sorgenti di Lazarus"
+msgstr "Definiciones para los fuentes de Lazarus"
 
 #: codetoolsstrconsts:ctsdesignerdirectory
 msgid "Designer Directory"
-msgstr "Directory designer"
+msgstr "Directorio del Diseñador"
 
 #: codetoolsstrconsts:ctsdesignerunitsdirectory
 msgid "Designer Units"
-msgstr "Unit del designer"
+msgstr "Unidades del diseñador"
 
 #: codetoolsstrconsts:ctsdoceditordirectory
 msgid "Doc Editor Directory"
-msgstr "Directory di documentazione editor"
+msgstr "Directorio Doc Editor"
 
 #: codetoolsstrconsts:ctsduplicateidentifier
 msgid "duplicate identifier: %s"
-msgstr "identificatore duplicato: %s"
+msgstr "identificador duplicado: %s"
 
 #: codetoolsstrconsts:ctselse
 msgid "else"
-msgstr "altrimenti"
+msgstr "else"
 
 #: codetoolsstrconsts:ctsendforrecordnotfound
 msgid "end for record not found"
-msgstr "fine record non trovata"
+msgstr "final para registro no encontrado"
 
 #: codetoolsstrconsts:ctsendofsourcenotfound
 msgid "End of source not found"
-msgstr "Non è stata trovata la fine del sorgente"
+msgstr "Fin de código fuente no encontrado"
 
 #: codetoolsstrconsts:ctserrorduringcreationofnewprocbodies
 msgid "error during creation of new proc bodies"
-msgstr "errore durante la creazione di nuovi corpi proc"
+msgstr "error durante la creación de los nuevos cuerpos del proc"
 
 #: codetoolsstrconsts:ctserrorduringinsertingnewclassparts
 msgid "error during inserting new class parts"
-msgstr "errore durante l'inserzione delle nuove parti della classe"
+msgstr "error durante la inserción de nueva partes de la clase"
 
 #: codetoolsstrconsts:ctserrorindirectiveexpression
 msgid "error in directive expression"
-msgstr "errore nell'espressione della direttiva"
+msgstr "error en expresión de directiva"
 
 #: codetoolsstrconsts:ctserrorinparamlist
 msgid "error in paramlist"
-msgstr "errore nell'elenco dei parametri"
+msgstr "error en lista de parametros"
 
 #: codetoolsstrconsts:ctsexecuteaccessdeniedforfile
 msgid "execute access denied for %s"
-msgstr "accesso all'esecuzione negato per %s"
+msgstr "acceso de ejecutar denegado para %s"
 
 #: codetoolsstrconsts:ctsendofsourceexpectedbutatomfound
 msgid "expected end., but %s found"
-msgstr "era previsto end. invece è stato trovato %s"
+msgstr "se esperaba end., pero se encontró %s"
 
 #: codetoolsstrconsts:ctsexportsclauseonlyallowedinlibraries
 msgid "exports clause only allowed in libraries"
-msgstr "la clausola exports è permessa solo nelle librerie"
+msgstr ""
 
 #: codetoolsstrconsts:ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
-msgstr "il tipo di espressione deve essere di tipo classe o record"
+msgstr "tipo de expresión debe de ser de tipo class o record"
 
 #: codetoolsstrconsts:ctsfiledoesnotexists
 msgid "file \"%s\" does not exist"
-msgstr "il file \"%s\" non esite"
+msgstr "archivo \"%s\" no existe"
 
 #: codetoolsstrconsts:ctsfileisreadonly
 msgid "file is read only"
-msgstr "il file è in sola lettura"
+msgstr "archivo es de sólo lectura"
 
 #: codetoolsstrconsts:ctsforward
 msgid "Forward"
-msgstr "Avanti"
+msgstr "Adelante"
 
 #: codetoolsstrconsts:ctsforwardclassdefinitionnotresolved
 msgid "Forward class definition not resolved: %s"
-msgstr "Definizione forward di una classe non risolta: %s"
+msgstr "Definición de clase Forward sin resolver: %s"
 
 #: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
 msgid "Free Pascal Compiler initial macros"
-msgstr "Macro iniziali del compilatore Free Pascal"
+msgstr "Macros iniciales del Compilador de Free Pascal"
 
 #: codetoolsstrconsts:ctsfreepascalcomponentlibrary
 msgid "Free Pascal Component Library"
-msgstr "Libreria di componenti Free Pascal"
+msgstr "Librería de Componentes de Free Pascal"
 
 #: codetoolsstrconsts:ctsfreepascalsourcedir
 msgid "Free Pascal Source Directory"
-msgstr "Directory sorgenti Free Pascal"
+msgstr "Directorio de los fuentes de Free Pascal"
 
 #: codetoolsstrconsts:ctsfreepascalsourcesplusdesc
 msgid "Free Pascal Sources, %s"
-msgstr "Sorgenti Free Pascal, %s"
+msgstr "Fuentes de Free Pascal, %s"
 
 #: codetoolsstrconsts:ctsgnomeintfdirectory
 msgid "gnome interface directory"
-msgstr "directory di interfaccia gnome"
+msgstr "directorio de la interfase gnome"
 
 #: codetoolsstrconsts:ctsgtk2intfdirectory
 msgid "gtk2 interface directory"
-msgstr "gtk2 directory di interfaccia"
+msgstr "directorio de la interfase gtk2"
 
 #: codetoolsstrconsts:ctsideintfdirectory
 msgid "IDEIntf Directory"
-msgstr "Directory IDEIntf"
+msgstr "Directorio IDEIntf"
 
 #: codetoolsstrconsts:ctsidentifier
 msgid "identifier"
-msgstr "identificatore"
+msgstr "identificador"
 
 #: codetoolsstrconsts:ctsidentifieralreadydefined
 msgid "Identifier %s already defined"
-msgstr "Identificatore %s già definito"
+msgstr "Ya fue definido el identificador %s"
 
 #: codetoolsstrconsts:ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
-msgstr "era previsto un identificatore me è stato trovato %s"
+msgstr "se esperaba identificador, pero se encontró %s"
 
 #: codetoolsstrconsts:ctsidentexpectedbutkeywordfound
 msgid "identifier expected, but keyword %s found"
-msgstr "era previsto un identificatore invece è stata trovata la parola chiave %s"
+msgstr "se esperaba identificador, pero palabra clave %s encontrada"
 
 #: codetoolsstrconsts:ctsidentifiernotfound
 msgid "identifier not found: %s"
-msgstr "identificatore non trovato: %s"
+msgstr "identificador no encontrado: %s"
 
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgnome2
 msgid "If LCLWidgetType=gnome2 then"
-msgstr "Se LCLWidgetType=gnome2 allora"
+msgstr "If LCLWidgetType=gnome2 then"
 
 #: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
 msgid "If LCLWidgetType=gtk2 then"
-msgstr "Se LCLWidgetTipe=gtk2 allora"
+msgstr "If LCLWidgetType=gtk2 then"
 
 #: codetoolsstrconsts:ctsiftargetosisnotwin32
 msgid "If TargetOS<>win32 then"
-msgstr "Se TargetOS<>win32 allora"
+msgstr "If TargetOS<>win32 then"
 
 #: codetoolsstrconsts:ctsillegalcircleinusedunits
 msgid "illegal circle using unit: %s"
-msgstr "circolo illegale usando unit: %s"
+msgstr "círculo ilegal usando la unidad: %s"
 
 #: codetoolsstrconsts:ctsillegalqualifier
 msgid "illegal qualifier %s found"
-msgstr "trovato qualificatore illegale %s"
+msgstr "calificador ilegal %s encontrado"
 
 #: codetoolsstrconsts:ctsimplementationnodenotfound
 msgid "implementation node not found"
-msgstr "nodo di implementazione non trovato"
+msgstr "nodo implementation no encontrado"
 
 #: codetoolsstrconsts:ctsincludecircledetected
 msgid "Include circle detected"
-msgstr "Rilevato include circolare"
+msgstr "Detectado círculo en incluido"
 
 #: codetoolsstrconsts:ctsincludedirectoriesplusdirs
 msgid "include directories: %s"
-msgstr "directory di include: %s"
+msgstr "incluye directorios: %s"
 
 #: codetoolsstrconsts:ctsincludefilenotfound
 msgid "include file not found \"%s\""
-msgstr "file include non trovato \"%s\""
+msgstr "archivo incluido no encontrado \"%s\""
 
 #: codetoolsstrconsts:ctsincompatibletypesgotexpected
 msgid "incompatibles types: expected \"%s\" but got \"%s\""
-msgstr "tipi incompatibili: era previsto \"%s\" invece è stato trovato \"%s\""
+msgstr "tipos incompatibles: se esperaba \"%s\" pero va \"%s\""
 
 #: codetoolsstrconsts:ctsindexparameterexpectedbutatomfound
 msgid "index parameter expected, but %s found"
-msgstr "era previsto un indice di parametro invece è stato trovato %s"
+msgstr "se esperaba parámetro de índice, pero se encontró %s"
 
 #: codetoolsstrconsts:ctsindexspecifierredefined
 msgid "index specifier redefined"
-msgstr "ridefinito specificatore di indice"
+msgstr "especificador de índice redefinido"
 
 #: codetoolsstrconsts:ctsinheritedkeywordonlyallowedinmethods
 msgid "inherited keyword only allowed in methods"
-msgstr "una parolachiave ereditata è consentita solo in un metodo"
+msgstr "palabra clave inherited permitida sólo en métodos"
 
 #: codetoolsstrconsts:ctsinsufficientmemory
 msgid "insufficient memory"
-msgstr "memoria insufficiente"
+msgstr "memoria insuficiente"
 
 #: codetoolsstrconsts:ctsintfdirectory
 msgid "interface directory"
-msgstr "directory interfaccia"
+msgstr "directorio de la interfaz"
 
 #: codetoolsstrconsts:ctsinterfacesectionnotfound
 msgid "interface section not found"
-msgstr "sezione interfaccia non trovata"
+msgstr "sección interface no encontrada"
 
 #: codetoolsstrconsts:ctsinvalidclassname2
 msgid "invalid class name %s%s%s"
-msgstr "nome classe non valido %s%s%s"
+msgstr "nombre de clase inválido %s%s%s"
 
 #: codetoolsstrconsts:ctsinvalidclassname
 msgid "invalid class name=%s%s%s"
-msgstr "nome classe non valido=%s%s%s"
+msgstr "nombre de clase inválido=%s%s%s"
 
 #: codetoolsstrconsts:ctsinvalidflagvaluefordirective
 msgid "invalid flag value \"%s\" for directive %s"
-msgstr "valore flag non valido \"%s\" per la direttiva %s"
+msgstr "valor de indicador inválido \"%s\" para directiva %s"
 
 #: codetoolsstrconsts:ctsinvalidmode
 msgid "invalid mode \"%s\""
-msgstr "modalità non valida \"%s\""
+msgstr "modo inválido \"%s\""
 
 #: codetoolsstrconsts:ctsinvalidsubrange
 msgid "invalid subrange"
-msgstr "subrange non valido"
+msgstr "subrango no válido"
 
 #: codetoolsstrconsts:ctsinvalidtype
 msgid "invalid type"
-msgstr "tipo non valido"
+msgstr "tipo no válido"
 
 #: codetoolsstrconsts:ctsinvalidvariablename
 msgid "invalid variable name %s%s%s"
-msgstr "nome variabile non valido %s%s%s"
+msgstr "nombre de variable inválido %s%s%s"
 
 #: codetoolsstrconsts:ctsinvalidvariabletype
 msgid "invalid variable type %s%s%s"
-msgstr "tipo di variabile non valido %s%s%s"
+msgstr "tipo de variable inválido %s%s%s"
 
 #: codetoolsstrconsts:ctsjitformdirectory
 msgid "JITForm Directory"
-msgstr "Directory JITForm"
+msgstr "Directorio JITForm"
 
 #: codetoolsstrconsts:ctskeyword
 msgid "keyword"
-msgstr "parolachiave"
+msgstr "palabra reservada"
 
 #: codetoolsstrconsts:ctskeywordexampleexpectedbutatomfound
 msgid "keyword (e.g. %s) expected, but %s found"
-msgstr "era prevista una parolachiave (per es. %s) invece è stato trovato %s"
+msgstr "se esperaba palabra reservada (por ejemplo %s), pero se encontró %s"
 
 #: codetoolsstrconsts:ctskeywordin
 msgid "keyword \"in\""
-msgstr "parolachiave \"in\""
+msgstr "palabra reservada \"in\""
 
 #: codetoolsstrconsts:ctslazarusmaindirectory
 msgid "lazarus main directory"
-msgstr "directory principale di Lazarus"
+msgstr "Directorio principal de Lazarus"
 
 #: codetoolsstrconsts:ctslazarussources
 msgid "Lazarus Sources"
-msgstr "Sorgenti di Lazarus"
+msgstr "Fuentes de Lazarus"
 
 #: codetoolsstrconsts:ctsmethodname
 msgid "method name"
-msgstr "nome metodo"
+msgstr "nombre de método"
 
 #: codetoolsstrconsts:ctsmethodtypedefinitionnotfound
 msgid "method type definition not found"
-msgstr "definizione del tipo di metodo non trovata"
+msgstr "definición de tipo de método no encontrado"
 
 #: codetoolsstrconsts:ctsmissingpointafterend
 msgid "missing . after end"
-msgstr "manca il . dopo end"
+msgstr "falta . después de end"
 
 #: codetoolsstrconsts:ctsmissingenumlist
 msgid "missing enum list"
-msgstr "elenco enum mancante"
+msgstr "falta lista enumerada"
 
 #: codetoolsstrconsts:ctsmissingtypeidentifier
 msgid "missing type identifier"
-msgstr "manca il tipo di identificatore"
+msgstr "falta tipo de identificador"
 
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
-msgstr "Commenti nidificati abilitati"
+msgstr "Comentarios anidados"
 
 #: codetoolsstrconsts:ctsnewprocbodynotfound
 msgid "new proc body not found"
-msgstr "nuovi corpi proc non trovati"
+msgstr "cuerpo nuevo de proc no encontrado"
 
 #: codetoolsstrconsts:ctsnocontextnodefoundatcursor
 msgid "no context node found at cursor"
-msgstr "nessun nodo di contesto trovato al cursore"
+msgstr "contexto de nodo no encontrado desde cursor"
 
 #: codetoolsstrconsts:ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
-msgstr "non è stato trovato nessun codice pascal (il primo token è %s)"
+msgstr "no se encontró código pascal (primer símbolo es %s)"
 
 #: codetoolsstrconsts:ctsnonodefoundatcursor
 msgid "no pascal node found at cursor (i.e. in unparsed code)"
-msgstr "nessun nodo pascal trovato al cursore (cioè in codice non analizzato)"
+msgstr "no se encontró nodo pascal desde cursor (es decir en código sin procesar)"
 
 #: codetoolsstrconsts:ctsnoscanneravailable
 msgid "No scanner available"
-msgstr "Nessuno scanner disponibile"
+msgstr "Sin escáner disponible"
 
 #: codetoolsstrconsts:ctsnoscannerfound
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
-msgstr "Non è stato trovato nessuno scanner per \"%s\". Se è un file include, aprire prima il sorgente principale."
+msgstr "No se encontró escáner para \"%s\". Si este es un archivo incluido, por favor abra primero el código fuente principal."
 
 #: codetoolsstrconsts:ctsnodefaultspecifierdefinedtwice
 msgid "nodefault specifier defined twice"
-msgstr "specificatore di default definito due volte"
+msgstr "especificador no por defecto definido dos veces"
 
 #: codetoolsstrconsts:ctsoldmethodnotfound
 msgid "old method not found: %s"
-msgstr "vecchio metodo non trovato: %s"
+msgstr "método viejo no encontrado: %s"
 
 #: codetoolsstrconsts:ctspackagedirectories
 msgid "Package directories"
-msgstr "Directory dei pacchetti"
+msgstr "Directorios de paquetes"
 
 #: codetoolsstrconsts:ctspackagerdirectory
 msgid "Packager Directory"
-msgstr "Directory pacchetti"
+msgstr "Directorio Packager"
 
 #: codetoolsstrconsts:ctspackagerregistrationdirectory
 msgid "Packager Registration Directory"
-msgstr "Directory di registrazione del Packager"
+msgstr "Directorio Packager Registration"
 
 #: codetoolsstrconsts:ctspackagerunitsdirectory
 msgid "Packager Units Directory"
-msgstr "Directory delle units del packager"
+msgstr "Directorio Packager Units"
 
 #: codetoolsstrconsts:ctsprocedureorfunction
 msgid "procedure or function"
-msgstr "procedura o funzione"
+msgstr "procedimiento o función"
 
 #: codetoolsstrconsts:ctsprocessorspecific
 msgid "processor specific"
-msgstr "specifiche di processore"
+msgstr "específico del procesador"
 
 #: codetoolsstrconsts:ctspropertyspecifieralreadydefined
 msgid "property specifier already defined: %s"
-msgstr "specificatore di proprietà già definito: %s"
+msgstr "especificador de propiedad ya definido: %s"
 
 #: codetoolsstrconsts:ctsproperttypeexpectedbutatomfound
 msgid "property type expected, but %s found"
-msgstr "era previsto un tipo di proprietà invece è stato trovato %s"
+msgstr "se esperaba tipo property, pero se encontró %s"
 
 #: codetoolsstrconsts:ctsqualifierexpectedbutatomfound
 msgid "qualifier expected but %s found"
-msgstr "era previsto un qualificatore invece è stato trovato %s"
+msgstr "se esperaba calificador pero se encontró %s"
 
 #: codetoolsstrconsts:ctsresetalldefines
 msgid "Reset all defines"
-msgstr "Reimposta tutti i define"
+msgstr "Reiniciar todas las definiciones"
 
 #: codetoolsstrconsts:ctsruntimelibrary
 msgid "Runtime library"
-msgstr "Libreria di runtime"
+msgstr "Librerías de Tiempo de Ejecución"
 
 #: codetoolsstrconsts:ctssemicolonnotfound
 msgid "semicolon not found"
-msgstr "puntoevirgola non trovato"
+msgstr "punto y coma no encontrado"
 
 #: codetoolsstrconsts:ctssetsincpathto
 msgid "sets IncPath to %s"
-msgstr "imposta IncPath a %s"
+msgstr "configurar IncPath a %s"
 
 #: codetoolsstrconsts:ctssetssrcpathto
 msgid "sets SrcPath to %s"
-msgstr "imposta SrcPath a %s"
+msgstr "configurar SrcPath a %s"
 
 #: codetoolsstrconsts:ctssourcefilenamesforstandardfpcunits
 msgid "Source filenames for the standard fpc units"
-msgstr "Nome del file sorgente per la unit fpc standard"
+msgstr "Nombre de archivos de las fuentes para las unidades estándar de FPC"
 
 #: codetoolsstrconsts:ctssourceisnotunit
 msgid "source is not unit"
-msgstr "il sorgente non è una unit"
+msgstr "código fuente no es una unidad"
 
 #: codetoolsstrconsts:ctssourcenotfoundunit
 msgid "source not found: unit %s"
-msgstr "sorgente non trovato: unit %s"
+msgstr "fuente no encontrada: unidad %s"
 
 #: codetoolsstrconsts:ctssrcpathforcompiledunits
 msgid "src path for compiled units"
-msgstr "percorso sorgente per unit compilate"
+msgstr "ruta de fuentes para las unidades compiladas"
 
 #: codetoolsstrconsts:ctssrcpathinitialization
 msgid "SrcPath Initialization"
-msgstr "Inizializzazione SrcPath"
+msgstr "Inicialización SrcPath"
 
 #: codetoolsstrconsts:ctsstringconstant
 msgid "string constant"
-msgstr "stringa costante"
+msgstr "constante de cadena"
 
 #: codetoolsstrconsts:ctssyntaxerrorinexpr
 msgid "Syntax Error in expression \"%s\""
-msgstr "Errore di sintassi nell'espressione \"%s\""
+msgstr "Error de sintáxis en expresión \"%s\""
 
 #: codetoolsstrconsts:ctstermnotsimple
 msgid "Term has no simple type"
-msgstr "Il termine non ha un tipo semplice"
+msgstr "Término no tiene tipo simple"
 
 #: codetoolsstrconsts:ctstoolsdirectory
 msgid "Tools Directory"
-msgstr "Directory strumenti"
+msgstr "Directorio de las Herramientas"
 
 #: codetoolsstrconsts:ctstypeidentifier
 msgid "type identifier"
-msgstr "identificatore di tipo"
+msgstr "tipo de identificador"
 
 #: codetoolsstrconsts:ctstypesectionofclassnotfound
 msgid "type section of class not found"
-msgstr "tipo si selezione di classe non trovata"
+msgstr "sección type de class no encontrado"
 
 #: codetoolsstrconsts:ctsunabletoapplychanges
 msgid "unable to apply changes"
-msgstr "impossibile applicare i cambiamenti"
+msgstr "No se pueden aplicar los cambios"
 
 #: codetoolsstrconsts:ctsunabletocompleteproperty
 msgid "unable to complete property"
-msgstr "impossibile completare la proprietà"
+msgstr "no se puede completar propiedad"
 
 #: codetoolsstrconsts:ctsidentexpectedbuteoffound
 msgid "unexpected end of file (identifier expected)"
-msgstr "fine file non trovata (era previsto un identificatore)"
+msgstr "inesperado fin de archivo (se esperaba identificador)"
 
 #: codetoolsstrconsts:ctsunexpectedendofsource
 msgid "unexpected end of source"
-msgstr "imprevista fine del sorgente"
+msgstr "fin de código fuente inesperado"
 
 #: codetoolsstrconsts:ctsunexpectedkeyword
 msgid "unexpected keyword \"%s\""
-msgstr "parolachiave non prevista \"%s\""
+msgstr "palabra clave no esperada \"%s\""
 
 #: codetoolsstrconsts:ctsunexpectedkeywordwhilereadingbackwards
 msgid "unexpected keyword \"%s\" found while reading blocks backwards"
-msgstr "trovata parolachiave imprevista \"%s\" durante la lettura dei blocchi in senso inverso"
+msgstr "se encontró palabra clave inesperada \"%s\" mientras se leían bloques hacia atrás"
 
 #: codetoolsstrconsts:ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"
-msgstr "trovata parolachiave imprevista \"%s\" in blocco asm"
+msgstr "se encontró palabra reservada inesperada \"%s\" en bloque asm"
 
 #: codetoolsstrconsts:ctsunexpectedkeywordinbeginendblock
 msgid "unexpected keyword \"%s\" in begin..end found"
-msgstr "trovata parolachiave imprevista \"%s\" in un blocco begin..end"
+msgstr "se encontró palabra reservada inesperada \"%s\" en begin..end"
 
 #: codetoolsstrconsts:ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
-msgstr "trovato operatore di subrange '..' inaspettato"
+msgstr "se encontró operador de subrango '..' inesperado"
 
 #: codetoolsstrconsts:ctsunitnotfound
 msgid "unit not found: %s"
-msgstr "unit non trovata: %s"
+msgstr "unidad no encontrada: %s"
 
 #: codetoolsstrconsts:ctsunitpathinitialization
 msgid "UnitPath Initialization"
-msgstr "Inizializzazione UnitPath"
+msgstr "Inicialización UnitPath"
 
 #: codetoolsstrconsts:ctsunknownfunction
 msgid "Unknown function %s"
-msgstr "Funzione sconosciuta %s"
+msgstr "Función desconocida %s"
 
 #: codetoolsstrconsts:ctsunknownsectionkeyword
 msgid "unknown section keyword %s found"
-msgstr "trovata parolachiave di sezione %s sconosciuta"
+msgstr "sección desconocida palabra clave %s encontrada"
 
 #: codetoolsstrconsts:ctsunparsed
 msgid "Unparsed"
-msgstr "Non analizzato"
+msgstr "Sin procesar"
 
 #: codetoolsstrconsts:ctsusedunitisnotapascalunit
 msgid "used unit is not a pascal unit"
-msgstr "la unit utilizzata non è una unit pascal"
+msgstr "unidad usada no es una unidad Pascal"
 
 #: codetoolsstrconsts:ctsutilsdirectories
 msgid "Utils directories"
-msgstr "Directory delle utility"
+msgstr "Directorios de utilidades"
 
 #: codetoolsstrconsts:ctswidgetdirectory
 msgid "Widget Directory"
-msgstr "Directory widget"
+msgstr "Directorio de Widget"
 

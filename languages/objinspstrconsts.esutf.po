@@ -1,222 +1,222 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: 0.0\n"
-"PO-Revision-Date: 2003-09-02 01:20GMT\n"
-"Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
-"Language-Team: italiano <tp@lists.linux.it>\n"
-"MIME-Version: 1.0\n"
+"Last-Translator: Luis R. Hilario B. <l_hilario@yahoo.com>\n"
+"PO-Revision-Date: 2004-03-12 20:45-0400\n"
+"Project-Id-Version: objinspstrconsts\n"
+"Language-Team: Español\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.0.2\n"
 
 #: objinspstrconsts:sccsilcmbimglist
 msgid " Images "
-msgstr " Immagini "
+msgstr " Imágenes "
 
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
-msgstr " Proprietà voce "
+msgstr " propiedad elemento "
 
 #: objinspstrconsts:sccslvedtgrplcaption
 msgid " Items "
-msgstr " Voci "
+msgstr " elementos "
 
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
-msgstr " Immagine selezionata "
+msgstr "Imagen seleccionada"
 
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
-msgstr "%u voci selezionate"
+msgstr "%u elementos seleccionados"
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"
-msgstr "&Aggiungi"
+msgstr "&Añadir"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
-msgstr "&Elimina"
+msgstr "&Suprimir"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
-msgstr "(tutto)"
+msgstr "(Todo)"
 
 #: objinspstrconsts:cactionlisteditorunknowncategory
 msgid "(Unknown)"
-msgstr "(sconosciuto)"
+msgstr "(Desconocido)"
 
 #: objinspstrconsts:oisaction
 msgid "Action"
-msgstr "Azione"
+msgstr "Acción"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
-msgstr "Editor elenco azioni"
+msgstr "Editor de Lista de Acción"
 
 #: objinspstrconsts:oisadd
 msgid "Add"
-msgstr "Aggiungi"
+msgstr "Añadir"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
-msgstr "Aggiungi..."
+msgstr "Añadir ..."
 
 #: objinspstrconsts:oisall
 msgid "All"
-msgstr "Tutto"
+msgstr "Todo"
 
 #: objinspstrconsts:oisallfiles
 msgid "All files (*.*)|*.*"
-msgstr "Tutti i file (*.*)|*.*"
+msgstr ""
 
 #: objinspstrconsts:oisarray
 msgid "Array"
-msgstr "Array"
+msgstr ""
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
-msgstr "Booleano"
+msgstr ""
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
-msgstr "Categoria"
+msgstr "Categoría"
 
 #: objinspstrconsts:oischar
 msgid "Char"
-msgstr "Carattere"
+msgstr ""
 
 #: objinspstrconsts:oisclass
 msgid "Class"
-msgstr "Classe"
+msgstr ""
 
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
-msgstr "Cancella"
+msgstr "Limpiar"
 
 #: objinspstrconsts:sccsilconfirme
 msgid "Confirme clear all images ?"
-msgstr "Conferma la cancellazione di tutte le immagini?"
+msgstr "¿Confirme limpiar todas las imágenes?"
 
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
-msgstr "Elimina"
+msgstr "Suprimir"
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
-msgstr "Modifica elenco azioni..."
+msgstr "Editor de lista de acción..."
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
-msgstr "Enumerazione"
+msgstr ""
 
 #: objinspstrconsts:oiserror
 msgid "Error"
-msgstr "Errore"
+msgstr "Error"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
-msgstr "Eventi"
+msgstr "Eventos"
 
 #: objinspstrconsts:oisfloat
 msgid "Float"
-msgstr "Virgola mobile"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
-msgstr "Indice immagine"
+msgstr "Indice de imagen"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
-msgstr "Editor elenco immagini"
+msgstr "Editor de lista de imagen"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
-msgstr "Int64"
+msgstr ""
 
 #: objinspstrconsts:oisinteger
 msgid "Integer"
-msgstr "Intero"
+msgstr ""
 
 #: objinspstrconsts:oisinterface
 msgid "Interface"
-msgstr "Interfaccia"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
-msgstr "Etichetta"
+msgstr "Etiqueta"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
-msgstr "Editor elenco viste"
+msgstr "Editor de ListView"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
-msgstr "Metodo"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
-msgstr "Nuovo"
+msgstr "Nuevo"
 
 #: objinspstrconsts:oisobject
 msgid "Object"
-msgstr "Oggetto"
+msgstr ""
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
-msgstr "Ispettore oggetti"
+msgstr "Inspector de Objetos"
 
 #: objinspstrconsts:oisproperties
 msgid "Properties"
-msgstr "Proprietà"
+msgstr "Propiedades"
 
 #: objinspstrconsts:oisrecord
 msgid "Record"
-msgstr "Record"
+msgstr ""
 
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
-msgstr "Seleziona un file"
+msgstr ""
 
 #: objinspstrconsts:oisset
 msgid "Set"
-msgstr "Imposta"
+msgstr ""
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
-msgstr "Imposta al valore predefinito"
+msgstr "Establecer valor por defecto"
 
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
-msgstr "Imposta al valore predefinito: %s"
+msgstr "Establecer por defecto: %s"
 
 #: objinspstrconsts:oisstring
 msgid "String"
-msgstr "Stringa"
+msgstr ""
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
-msgstr "Editor StringGrid"
+msgstr "Editor de StringGrid"
 
 #: objinspstrconsts:cesstringgrideditor
 msgid "StringGrid Editor ..."
-msgstr "Editor StringGrid..."
+msgstr "Editor de StringGrid ..."
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
-msgstr "Voce sottostante"
+msgstr "Sub-elemento"
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"
-msgstr "Sconosciuto"
+msgstr "Desconocido"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
-msgstr "Valore:"
+msgstr "Valor:"
 
 #: objinspstrconsts:oisvariant
 msgid "Variant"
-msgstr "Variante"
+msgstr ""
 
 #: objinspstrconsts:oisword
 msgid "Word"
-msgstr "Parola"
+msgstr ""
 

@@ -5,7 +5,7 @@ msgstr ""
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: italiano <tp@lists.linux.it>\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: objinspstrconsts:sccsilcmbimglist
@@ -14,7 +14,7 @@ msgstr " Immagini "
 
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
-msgstr " Propriet√† voce "
+msgstr " Propriet‡ voce "
 
 #: objinspstrconsts:sccslvedtgrplcaption
 msgid " Items "
@@ -166,7 +166,7 @@ msgstr "Ispettore oggetti"
 
 #: objinspstrconsts:oisproperties
 msgid "Properties"
-msgstr "Propriet√†"
+msgstr "Propriet‡"
 
 #: objinspstrconsts:oisrecord
 msgid "Record"

@@ -5709,6 +5709,10 @@ msgstr "Modu³ %s%s%s ju¿ istnieje.%sIgnoruj wymusi zmianê nazwy,%sAnuluj anuluje
 msgid "The unit %s%s%s is not lowercase.%sThe FreePascal compiler 1.0.x needs lowercase filenames. If you do not use the fpc 1.0.x to compile this unit, you can ignore this message.%s%sRename file?"
 msgstr "Nazwa modu³u %s%s%s nie jest napisana ma³ymi literami.%sKompilator FPC 1.0.x wymaga ma³ych liter w nazwach plików. Jeœli nie u¿ywasz FPC 1.0.x do kompilacji tego modu³u, mo¿esz zignorowaæ komunikat.%s%sChcesz zmieniæ nazwê pliku?"
 
+#: lazarusidestrconsts:listheunititselfhasalreadythenamepascalidentifiersmus
+msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
+msgstr ""
+
 #: lazarusidestrconsts:lisprojaddtheunitnamealreadyexistsintheproject
 msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
 msgstr "Modu³ o nazwie %s%s%s ju¿ istnieje w projekcie%sw pliku: %s%s%s."
@@ -5788,6 +5792,10 @@ msgstr "Ju¿ jest formularz o nazwie %s%s%s"
 #: lazarusidestrconsts:lispkgmangthereisalreadyapackageloadedfromfile
 msgid "There is already a package %s%s%s loaded%sfrom file %s%s%s.%sSee Components -> Package Graph.%sReplace is impossible."
 msgstr "Jest ju¿ pakiet %s%s%s za³adowany%sz pliku %s%s%s.%sSpójrz na Komponenty -> Lista pakietów.%sNadpisanie jest niemo¿liwe."
+
+#: lazarusidestrconsts:listhereisalreadyaunitwiththenamepascalidentifiersmus
+msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangthereisalreadyanotherpackagewiththename
 msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"

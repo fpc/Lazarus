@@ -1198,6 +1198,10 @@ msgstr ""
 msgid "Component name %s%s%s is keyword"
 msgstr ""
 
+#: lazarusidestrconsts:listheunititselfhasalreadythenamepascalidentifiersmus
+msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletorenamevariableinsource
 msgid "Unable to rename variable in source."
 msgstr ""
@@ -1208,6 +1212,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listhereisalreadyaformwiththename
 msgid "There is already a form with the name %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:listhereisalreadyaunitwiththenamepascalidentifiersmus
+msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
 msgstr ""
 
 #: lazarusidestrconsts:lisseemessages
