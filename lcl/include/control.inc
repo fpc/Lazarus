@@ -595,7 +595,7 @@ end;
 {------------------------------------------------------------------------------}
 {       TControl WndPRoc                                 }
 {------------------------------------------------------------------------------}
-procedure TControl.WndPRoc(var Message : TLMessage);
+procedure TControl.WndPRoc(var TheMessage : TLMessage);
 Var
   Form : TCustomForm;
 begin
@@ -604,54 +604,55 @@ begin
   begin
       Form := GetParentForm(Self);
       if (Form <> nil) and (Form.Designer <> nil) and
-          Form.Designer.IsDesignMsg(Self,MEssage) then Exit;
+          Form.Designer.IsDesignMsg(Self,TheMessage) then Exit;
   end
   else
   begin
-    if (Message.Msg >= LM_KeyFirst) and (Message.Msg <= LM_KeyLast) then
+    if (TheMessage.Msg >= LM_KeyFirst) and (TheMessage.Msg <= LM_KeyLast) then
     begin
       Form := GetParentForm(Self);
-      if (Form <> nil) and (Form.WantChildKey(Self,Message)) then exit;
+      if (Form <> nil) and (Form.WantChildKey(Self,TheMessage)) then exit;
     end
     else
       begin
-      if (Message.Msg >= LM_MOUSEFIRST) and (Message.msg <= LM_MOUSELAST) then
+      if (TheMessage.Msg >= LM_MOUSEFIRST) and (TheMessage.Msg <= LM_MOUSELAST)
+      then
       begin
         // map double clicks for controls, that do not want doubleclicks
         if not (csDoubleClicks in ControlStyle) then
         begin
-          case Message.Msg of
+          case TheMessage.Msg of
             LM_LButtonDBLCLK,
             LM_RButtonDBLCLK,
             LM_MButtonDBLCLK:
-              Dec(Message.Msg, LM_LBUTTONDBLCLK - LM_LBUTTONDOWN);
+              Dec(TheMessage.Msg, LM_LBUTTONDBLCLK - LM_LBUTTONDOWN);
           end;
         end;
         // map triple clicks for controls, that do not want tripleclicks
         if not (csTripleClicks in ControlStyle) then
         begin
-          case Message.Msg of
-            LM_LBUTTONTRIPLECLK: Message.Msg:=LM_LBUTTONDOWN;
-            LM_MBUTTONTRIPLECLK: Message.Msg:=LM_MBUTTONDOWN;
-            LM_RBUTTONTRIPLECLK: Message.Msg:=LM_RBUTTONDOWN;
+          case TheMessage.Msg of
+            LM_LBUTTONTRIPLECLK: TheMessage.Msg:=LM_LBUTTONDOWN;
+            LM_MBUTTONTRIPLECLK: TheMessage.Msg:=LM_MBUTTONDOWN;
+            LM_RBUTTONTRIPLECLK: TheMessage.Msg:=LM_RBUTTONDOWN;
           end;
         end;
         // map quad clicks for controls, that do not want quadclicks
         if not (csQuadClicks in ControlStyle) then
         begin
-          case Message.Msg of
-            LM_LBUTTONQUADCLK: Message.Msg:=LM_LBUTTONDOWN;
-            LM_MBUTTONQUADCLK: Message.Msg:=LM_MBUTTONDOWN;
-            LM_RBUTTONQUADCLK: Message.Msg:=LM_RBUTTONDOWN;
+          case TheMessage.Msg of
+            LM_LBUTTONQUADCLK: TheMessage.Msg:=LM_LBUTTONDOWN;
+            LM_MBUTTONQUADCLK: TheMessage.Msg:=LM_MBUTTONDOWN;
+            LM_RBUTTONQUADCLK: TheMessage.Msg:=LM_RBUTTONDOWN;
           end;
         end;
         
-        case Message.Msg of
+        case TheMessage.Msg of
         
           LM_MOUSEMOVE:
             begin
-              Application.HintMouseMessage(Self, Message);
-              if Dragging then DragObject.MouseMsg(Message);
+              Application.HintMouseMessage(Self, TheMessage);
+              if Dragging then DragObject.MouseMsg(TheMessage);
             end;
             
           LM_LBUTTONDOWN,
@@ -669,20 +670,22 @@ begin
           LM_LBUTTONUP:
             begin
               Exclude(FControlState, csLButtonDown);
-              if Dragging then DragObject.MouseMsg(Message);
+              if Dragging then DragObject.MouseMsg(TheMessage);
             end;
         end;
       end
       else begin
-        if Message.Msg = CM_VISIBLECHANGED
-        then with Message do SendDockNotification(Msg,WParam,LParam);
+        if TheMessage.Msg = CM_VISIBLECHANGED
+        then
+          with TheMessage do
+            SendDockNotification(Msg,WParam,LParam);
       end;
     end;
   end;
 {debug purposes}
 //Assert(False, 'Trace:TCONTROL.WNDPROC');
 //Assert(False, Format('Trace:Control = %s     -->Message = %d',[CLASSNAME,Message.msg]));
-  Dispatch(Message);
+  Dispatch(TheMessage);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1761,6 +1764,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.56  2002/06/19 19:46:08  lazarus
+  MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
+
   Revision 1.55  2002/06/04 15:17:22  lazarus
   MG: improved TFont for XLFD font names
 
