@@ -27,6 +27,8 @@ interface
 uses
   classes, abstractformeditor, controls,Typinfo;
 
+Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
+
 type
 
 {
@@ -35,37 +37,43 @@ each control that's dropped onto the form
 }
 
 TCustomFormEditor = class; //forward declaration
+TSetProc = Procedure (const Value) of Object;
+TGetProc = Function : Variant of Object;
 
-TComponentInterface = class(TIComponentInterface)
+
+  TComponentInterface = class(TIComponentInterface)
       private
-      FControl : TComponent;
-      FFormEditor : TCustomFormEditor;  //used to call it's functions
-
+        FControl : TComponent;
+        FFormEditor : TCustomFormEditor;  //used to call it's functions
+      protected
+        Function GetPropbyIndex(Index : Integer) : PPropInfo;
+        MySetProc : TSetPRoc;
+        MyGetProc : TGetProc;
       public
-      Function GetComponentType    : String; override;
-      Function GetComponentHandle  : LongInt; override;
-      Function GetParent           : TIComponentInterface; override;
-      Function IsTControl          : Boolean; override;
-      Function GetPropCount	   : Integer; override;
-      Function GetPropType(Index : Integer) : TPropertyType; override;
-      Function GetPropName(Index : Integer) : String; override;
-      Function GetPropTypebyName(Name : String) : TPropertyType; override;
+        Function GetComponentType    : String; override;
+        Function GetComponentHandle  : LongInt; override;
+        Function GetParent           : TIComponentInterface; override;
+        Function IsTControl          : Boolean; override;
+        Function GetPropCount	   : Integer; override;
+        Function GetPropType(Index : Integer) : TTypeKind; override;
+        Function GetPropName(Index : Integer) : String; override;
+        Function GetPropTypebyName(Name : String) : TTypeKind; override;
 
-      Function GetPropValue(Index : Integer; var Value) : Boolean; override;
-      Function GetPropValuebyName(Name: String; var Value) : Boolean; override;
-      Function SetProp(Index : Integer; const Value) : Boolean; override;
-      Function SetPropbyName(Name : String; const Value) : Boolean; override;
+        Function GetPropValue(Index : Integer; var Value) : Boolean; override;
+        Function GetPropValuebyName(Name: String; var Value) : Boolean; override;
+        Function SetProp(Index : Integer; const Value) : Boolean; override;
+        Function SetPropbyName(Name : String; const Value) : Boolean; override;
 
-      Function GetControlCount: Integer; override;
-      Function GetControl(Index : Integer): TIComponentInterface; override;
+        Function GetControlCount: Integer; override;
+        Function GetControl(Index : Integer): TIComponentInterface; override;
 
-      Function GetComponentCount: Integer; override;
-      Function GetComponent(Index : Integer): TIComponentInterface; override;
+        Function GetComponentCount: Integer; override;
+        Function GetComponent(Index : Integer): TIComponentInterface; override;
 
-      Function Select : Boolean; override;
-      Function Focus : Boolean; override;
-      Function Delete : Boolean; override;
-end;
+        Function Select : Boolean; override;
+        Function Focus : Boolean; override;
+        Function Delete : Boolean; override;
+  end;
 
 {
 TCustomFormEditor
@@ -102,6 +110,10 @@ TCustomFormEditor
 implementation
 
 {TComponentInterface}
+Function TComponentInterface.GetPropByIndex(Index:Integer): PPropInfo;
+Begin
+
+end;
 
 Function TComponentInterface.GetComponentType    : String;
 Begin
@@ -132,137 +144,200 @@ end;
 
 Function TComponentInterface.GetPropCount : Integer;
 var
-TypeInfo : PTypeInfo;
-TypeKinds : TTypeKinds;
-PropList : TPropList;
+PT : PTypeData;
 Begin
-TypeKinds := [tkInteger,tkChar,tkEnumeration,tkFloat,tkSet,tkMethod,tkSString,tkLString,tkAString,
-                   tkWString,tkVariant,tkArray,tkRecord,tkInterface,
-                   tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord];
+PT:=GetTypeData(FControl.ClassInfo);
 
-Result := GetPropList(TypeInfo,TypeKinds,@Proplist);
+Result := PT^.PropCount;
 end;
 
-Function TComponentInterface.GetPropType(Index : Integer) : TPropertyType;
+Function TComponentInterface.GetPropType(Index : Integer) : TTypeKind;
 var
-TypeInfo : PTypeInfo;
-TypeKinds : TTypeKinds;
-PropList : TPropList;
-PropInfo : TPropInfo;
-
+PT : PTypeData;
+PP : PPropList;
+PI : PTypeInfo;
 Num : Integer;
 Begin
-TypeKinds := [tkUnknown,tkInteger,tkChar,tkEnumeration,tkFloat,tkSet,tkMethod,tkSString,tkLString,tkAString,
-                   tkWString,tkVariant,tkArray,tkRecord,tkInterface,
-                   tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord];
-
-Num := GetPropList(TypeInfo,TypeKinds,@Proplist);
-
-If NUm > 0 then
-   Begin
-   PropInfo := PropList[Index]^;
-   TypeInfo := PropInfo.PropType;
-   case TypeInfo^.kind of
-      tkUnknown : Result := ptUnknown;
-      tkInteger : Result := ptInteger;
-      tkChar : Result := ptChar;
-      tkEnumeration : Result := ptEnumeration;
-      tkFloat : Result := ptFloat;
-      tkSet : Result := ptSet;
-      tkMethod : Result := ptMethod;
-      tkSString : Result := ptString;
-      tkLString : Result := ptLString;
-      tkAString : Result := ptLString;
-      tkWString : Result := ptLString;
-      tkVariant : Result := ptVariant;
-      tkClass : Result := ptClass;
-      tkWChar : Result := ptWChar;
+  PT:=GetTypeData(FControl.ClassInfo);
+  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
+  GetPropInfos(PI,PP);
+  if Index < PT^.PropCount then
+      Result := PP^[Index]^.PropType^.Kind
       else
-        Result := ptUnknown
-   end;
-   end;
+      Result := tkUnknown;
+
+  freemem(PP);
 end;
 
 Function TComponentInterface.GetPropName(Index : Integer) : String;
 var
-TypeInfo : PTypeInfo;
-TypeKinds : TTypeKinds;
-PropList : TPropList;
-PropInfo : TPropInfo;
-
+PT : PTypeData;
+PP : PPropList;
+PI : PTypeInfo;
 Num : Integer;
 Begin
-TypeKinds := [tkUnknown,tkInteger,tkChar,tkEnumeration,tkFloat,tkSet,tkMethod,tkSString,tkLString,tkAString,
-                   tkWString,tkVariant,tkArray,tkRecord,tkInterface,
-                   tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord];
-
-Num := GetPropList(TypeInfo,TypeKinds,@Proplist);
-
-If NUm > 0 then
-   Begin
-   PropInfo := PropList[Index]^;
-   TypeInfo := PropInfo.PropType;
-   Result := TypeInfo^.Name;
-   end;
+  PT:=GetTypeData(FControl.ClassInfo);
+  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
+  GetPropInfos(PI,PP);
+  if Index < PT^.PropCount then
+      Result := PP^[Index]^.PropType^.Name
+      else
+      Result := '';
+  freemem(PP);
 
 end;
 
-Function TComponentInterface.GetPropTypebyName(Name : String) : TPropertyType;
+Function TComponentInterface.GetPropTypebyName(Name : String) : TTypeKind;
 var
-TypeInfo : PTypeInfo;
-TypeKinds : TTypeKinds;
-PropList : TPropList;
-PropInfo : TPropInfo;
-
+PT  : PTypeData;
+PP  : PPropList;
+PI  : PTypeInfo;
 Num : Integer;
+I   : Longint;
 Begin
-TypeKinds := [tkUnknown,tkInteger,tkChar,tkEnumeration,tkFloat,tkSet,tkMethod,tkSString,tkLString,tkAString,
-                   tkWString,tkVariant,tkArray,tkRecord,tkInterface,
-                   tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord];
+  PT:=GetTypeData(FControl.ClassInfo);
+  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
+  GetPropInfos(PI,PP);
 
-Num := GetPropInfo(TypeInfo,Name);
+  Result := tkUnknown;
+  For I:=0 to PT^.PropCount-1 do
+  If PP^[i]<>Nil then
+      begin
+      if PP^[i]^.Name = Name then
+         begin
+           Result := PP^[i]^.PropType^.Kind;
+           Break;
+         end;
+       end;
 
-If NUm > 0 then
-   Begin
-   PropInfo := PropList[Index]^;
-   TypeInfo := PropInfo.PropType;
-   case TypeInfo^.kind of
-      tkUnknown : Result := ptUnknown;
-      tkInteger : Result := ptInteger;
-      tkChar : Result := ptChar;
-      tkEnumeration : Result := ptEnumeration;
-      tkFloat : Result := ptFloat;
-      tkSet : Result := ptSet;
-      tkMethod : Result := ptMethod;
-      tkSString : Result := ptString;
-      tkLString : Result := ptLString;
-      tkAString : Result := ptLString;
-      tkWString : Result := ptLString;
-      tkVariant : Result := ptVariant;
-      tkClass : Result := ptClass;
-      tkWChar : Result := ptWChar;
-      else
-        Result := ptUnknown
-   end;
-   end;
-
+  freemem(PP);
 
 end;
 
 
 Function TComponentInterface.GetPropValue(Index : Integer; var Value) : Boolean;
+var
+PT : PTypeData;
+PP : PPropList;
+PI : PTypeInfo;
+PRI : PPropInfo;
+J : Longint;
+Num : Integer;
 Begin
+  PT:=GetTypeData(FControl.ClassInfo);
+  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
+  GetPropInfos(PI,PP);
+  result := False;
+  if Index < PT^.PropCount then
+      begin
+        pri:=PP^[index];
+        with PRI^ do
+            Begin
+               Result := True;
+               If (Proptype^.kind in Ordinaltypes) Then
+                  begin
+                    J:=GetOrdProp(FControl,pri);
+                    If PropType^.Kind=tkenumeration then
+                       Value := GetEnumName(Proptype,J)
+	            else
+                       Value := J;
+                  end
+               else
+               Case pri^.proptype^.kind of
+                  tkfloat :  begin
+                     Value := GetFloatProp(FControl,pri);
+                     end;
+                  tkAstring : begin
+                     Value := GetStrProp(FControl,Pri);
+                     end;
+                   else
+                     Begin
+                      Value := -1;
+                      Result := False;
+                     end;
+               end;  //end of the CASE
 
+            end;  //end of the with PRI^...
+      end;  //end of If Index < PT
+
+  freemem(PP);
 end;
 
 Function TComponentInterface.GetPropValuebyName(Name: String; var Value) : Boolean;
+var
+PT : PTypeData;
+PP : PPropList;
+PI : PTypeInfo;
+PRI : PPropInfo;
+I,J : Longint;
+Num : Integer;
 Begin
+  PT:=GetTypeData(FControl.ClassInfo);
+  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
+  GetPropInfos(PI,PP);
+  result := -1;
+  I := -1;
+  repeat
+   inc(i);
+  until (PP^[i]^.Name = Name) or (i > PT^.PropCount-1);
+
+  if PP^[i]^.Name = Name then
+      begin
+        pri:=PP^[i];
+        with PRI^ do
+            Begin
+               If (Proptype^.kind in Ordinaltypes) Then
+                  begin
+                    J:=GetOrdProp(FControl,pri);
+                    If PropType^.Kind=tkenumeration then
+                       Result := GetEnumName(Proptype,J)
+	            else
+                       Result := J;
+                  end
+               else
+               Case pri^.proptype^.kind of
+                  tkfloat :  begin
+                     Result := GetFloatProp(FControl,pri);
+                     end;
+                  tkAstring : begin
+                     Result := GetStrProp(FControl,Pri);
+                     end;
+               end;  //end of the CASE
+            end;  //end of the with PRI^...
+      end;  //end of If Index < PT
+
+  freemem(PP);
 
 end;
 
 Function TComponentInterface.SetProp(Index : Integer; const Value) : Boolean;
-Begin
 
+var
+PT : PTypeData;
+PP : PPropList;
+PI : PTypeInfo;
+PRI : PPropInfo;
+J : Longint;
+Num : Integer;
+Begin
+  PT:=GetTypeData(FControl.ClassInfo);
+  GetMem (PP,PT^.PropCount*SizeOf(Pointer));
+  GetPropInfos(PI,PP);
+  result := -1;
+  if Index < PT^.PropCount then
+      begin
+        pri:=PP^[i];
+        with PRI^ do
+            Begin
+             if SetProc <> nil then
+                Begin  //call the procedure passing Value
+                 MySetProc := SetProc;
+                 MySetProc(Value);
+                end;
+            end;
+       end;
+
+  freemem(PP);
 end;
 
 Function TComponentInterface.SetPropbyName(Name : String; const Value) : Boolean;

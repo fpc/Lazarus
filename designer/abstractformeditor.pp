@@ -24,12 +24,17 @@ unit AbstractFormEditor;
 interface
 
 uses
-  classes;
+  classes,typinfo;
 
 type
 
-  TPropertyType = (ptUnknown, ptInteger, ptChar, ptEnumeration,ptFloat,ptString,ptSet,
-                   ptClass, ptMethod,ptWChar, ptLString, LWString, ptVariant);
+{
+Should I include typinfo.pp and use TTypeKind instead of TPropertyType
+or use TPropertyType
+ }
+
+//  TPropertyType = (ptUnknown, ptInteger, ptChar, ptEnumeration,ptFloat,ptString,ptSet,
+//                   ptClass, ptMethod,ptWChar, ptLString, LWString, ptVariant);
 
   TIComponentInterface = class
     public
@@ -38,9 +43,11 @@ type
       Function GetParent           : TIComponentInterface; virtual; abstract;
       Function IsTControl          : Boolean; virtual; abstract;
       Function GetPropCount	   : Integer; virtual; abstract;
-      Function GetPropType(Index : Integer) : TPropertyType; virtual; abstract;
+      Function GetPropType(Index : Integer) : TTypeKind; virtual; abstract;
+//      Function GetPropType(Index : Integer) : TPropertyType; virtual; abstract;
       Function GetPropName(Index : Integer) : String; virtual; abstract;
-      Function GetPropTypebyName(Name : String) : TPropertyType; virtual; abstract;
+      Function GetPropTypebyName(Name : String) : TTypeKind; virtual; abstract;
+//      Function GetPropTypebyName(Name : String) : TPropertyType; virtual; abstract;
 
       Function GetPropValue(Index : Integer; var Value) : Boolean; virtual; abstract;
       Function GetPropValuebyName(Name: String; var Value) : Boolean; virtual; abstract;
