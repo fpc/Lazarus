@@ -29,7 +29,7 @@ uses
   LCLStrConsts,
   // base classes
   LazQueue, DynHashArray, LCLMemManager, AvgLvlTree, StringHashList,
-  ExtendedStrings, DynamicArray, UTrace,
+  ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
   LCLProc, LCLType, GraphMath, VCLGlobals, FileCtrl, LMessages,
   // the interface base
@@ -47,6 +47,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.25  2003/07/31 17:16:32  mattias
+  added ToDo for textstrings.pas
+
   Revision 1.24  2003/07/04 22:06:49  mattias
   implemented interface graphics
 
