@@ -74,7 +74,7 @@ function SendApplicationMessage(Msg: Cardinal; WParam, LParam: Longint):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
 function OffsetRect(var ARect: TRect; dx,dy: Integer): Boolean;
 procedure FreeThenNil(var AnObject: TObject);
-
+procedure RaiseGDBException(const Msg: string);
 
 implementation
 
@@ -348,6 +348,21 @@ begin
     System.Move(FItems[NewIndex+1],FItems[NewIndex],
                 SizeOf(TMethod)*(NewIndex-OldIndex));
   FItems[NewIndex]:=MovingMethod;
+end;
+
+{------------------------------------------------------------------------------
+  procedure RaiseGDBException(const Msg: string);
+
+  Raises an exception.
+  gdb does not catch fpc Exception objects, therefore this procedure raises
+  a standard AV which is catched by gdb.
+ ------------------------------------------------------------------------------}
+procedure RaiseGDBException(const Msg: string);
+begin
+  writeln('ERROR in gtk-interface: ',Msg);
+  // creates an exception, that gdb catches:
+  writeln('Creating gdb catchable error:');
+  if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
 initialization
