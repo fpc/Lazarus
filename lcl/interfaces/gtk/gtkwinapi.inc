@@ -1294,6 +1294,8 @@ function TgtkObject.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
 {$IfDef USE_PANGO}
 begin
+  writeln('ToDo: TgtkObject.CreateFontIndirectEx');
+  Result:=0;
 end;
 {$Else}
 var
@@ -2948,6 +2950,8 @@ function TgtkObject.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
 {$Ifdef USE_PANGO}
 begin
+  writeln('ToDo: TgtkObject.ExtTextOut');
+  Result:=false;
 end;
 {$Else}
 var
@@ -3760,7 +3764,12 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.GetCursorPos(var lpPoint: TPoint ): Boolean;
-{$IfDef GTK1}
+{$IfDef GTK2}
+begin
+  writeln('TGTKObject.TextOut ToDo');
+  Result:=false;
+end;
+{$Else}
 var
   root, child: pointer;
   winx, winy: Integer;
@@ -3788,10 +3797,8 @@ begin
 
   if TopList <> nil
   then g_list_free(TopList);
-{$Else}
-begin
-{$EndIf}
 end;
+{$EndIf}
 
 {------------------------------------------------------------------------------
   Function: GetDC
@@ -4974,6 +4981,8 @@ function TgtkObject.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
 {$IfDef USE_PANGO}
 begin
+  writeln('TGTKObject.GetTextExtentPoint ToDo');
+  Result:=false;
 end;
 {$Else}
 var
@@ -8489,6 +8498,8 @@ Function TGTKObject.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
   Count: Integer) : Boolean;
 {$IfDef USE_PANGO}
 begin
+  writeln('TGTKObject.TextOut ToDo');
+  Result:=false;
 end;
 {$ELSE}
 var
@@ -8764,6 +8775,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.281  2003/09/15 15:43:04  mattias
+  fixed gtk2interface package
+
   Revision 1.280  2003/09/11 21:33:11  ajgenius
   partly fixed TWinControl(csFixed)
 

@@ -1,7 +1,18 @@
 <?xml version="1.0"?>
 <CONFIG>
-  <Package>
+  <Package Version="2">
     <Name Value="GTK2Interface"/>
+    <CompilerOptions>
+      <SearchPaths>
+        <OtherUnitFiles Value="../gtk/;../../units/"/>
+        <UnitOutputDirectory Value="../../units/gtk2"/>
+        <LCLWidgetType Value="gtk"/>
+      </SearchPaths>
+      <Other>
+        <CustomOptions Value="-dGTK2"/>
+        <CompilerPath Value="$(CompPath)"/>
+      </Other>
+    </CompilerOptions>
     <Files Count="20">
       <Item1>
         <Filename Value="interfaces.pas"/>
