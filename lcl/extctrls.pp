@@ -689,7 +689,9 @@ type
   TCheckGroup = class(TCustomCheckGroup)
   public
   published
+    property Anchors;
     property Align;
+    property Constraints;
     property Caption;
     property Enabled;
     property Items;
@@ -697,6 +699,7 @@ type
     property Visible;
     property OnItemClick;
     property OnResize;
+    property OnChangeBounds;
   end;
 
 
@@ -726,6 +729,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnEnter;
+    property OnExit;
   end;
 
 
@@ -925,6 +930,9 @@ end.
 
  {
   $Log$
+  Revision 1.100  2004/03/18 22:14:05  mattias
+  published TCheckGroup.Anchors
+
   Revision 1.99  2004/02/24 21:53:12  mattias
   added StdActns definitions, no code yet
 
