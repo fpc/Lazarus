@@ -1064,6 +1064,7 @@ lcl/include/customcheckbox.inc svneol=native#text/pascal
 lcl/include/customcheckgroup.inc svneol=native#text/pascal
 lcl/include/customcombobox.inc svneol=native#text/pascal
 lcl/include/customcontrol.inc svneol=native#text/pascal
+lcl/include/customdockform.inc svneol=native#text/pascal
 lcl/include/customedit.inc svneol=native#text/pascal
 lcl/include/customform.inc svneol=native#text/pascal
 lcl/include/customframe.inc svneol=native#text/pascal

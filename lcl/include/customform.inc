@@ -1,7 +1,7 @@
 {%MainUnit ../forms.pp}
 
 {******************************************************************************
-                                     TCustomForm
+                               TCustomForm
  ******************************************************************************
 
  *****************************************************************************
@@ -825,6 +825,19 @@ begin
   Result:=(Color<>clBtnFace);
 end;
 
+procedure TCustomForm.DoDock(NewDockSite: TWinControl; var ARect: TRect);
+begin
+  if (NewDockSite<>HostDockSite) then begin
+
+  end;
+  inherited DoDock(NewDockSite, ARect);
+end;
+
+function TCustomForm.GetFloating: Boolean;
+begin
+  Result := (HostDockSite = nil) and (FloatingDockSiteClass = ClassType);
+end;
+
 procedure TCustomForm.CMActionExecute(var Message: TLMessage);
 begin
   if DoExecuteAction(TBasicAction(Message.LParam)) then
@@ -1077,8 +1090,8 @@ end;
 constructor TCustomForm.Create(AOwner : TComponent);
 begin
   //DebugLn('[TCustomForm.Create] A Class=',Classname);
+  BeginFormUpdate;
   try
-    BeginFormUpdate;
     CreateNew(AOwner, 1);
     //DebugLn('[TCustomForm.Create] B Class=',Classname);
     if (ClassType <> TForm) and not (csDesigning in ComponentState) then
@@ -1098,8 +1111,8 @@ begin
         Exclude(FFormState, fsCreating);
       end;
     end;
-    EndFormUpdate;
   finally
+    EndFormUpdate;
   end;
   //DebugLn('[TCustomForm.Create] END Class=',Classname);
 end;
@@ -1660,6 +1673,11 @@ begin
   RemoveHandler(fhtClose,TMethod(OnCloseHandler));
 end;
 
+procedure TCustomForm.Dock(NewDockSite: TWinControl; ARect: TRect);
+begin
+  inherited Dock(NewDockSite, ARect);
+end;
+
 //==============================================================================
 {$IFNDEF VER1_0}
 
@@ -1701,6 +1719,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.150  2004/08/16 22:09:18  mattias
+  started TCustomDockForm
+
   Revision 1.149  2004/08/15 14:39:36  mattias
   implemented platform independent binary object streamer
 

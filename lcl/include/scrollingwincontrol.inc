@@ -112,12 +112,14 @@ end;
 
 Procedure TScrollingWinControl.UpdateScrollbars;
 begin
-  If IsUpdating then
-    exit;
-  IsUpdating := True;
-  FVertScrollbar.UpdateScrollbar;
-  FHorzScrollbar.UpdateScrollbar;
-  IsUpdating := False;
+  If FIsUpdating then exit;
+  FIsUpdating := True;
+  try
+    FVertScrollbar.UpdateScrollbar;
+    FHorzScrollbar.UpdateScrollbar;
+  finally
+    FIsUpdating := False;
+  end;
 end;
 
 function TScrollingWinControl.HasVisibleScrollbars: boolean;

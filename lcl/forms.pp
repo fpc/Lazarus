@@ -138,21 +138,17 @@ type
 
   TScrollingWinControl = class(TWinControl)
   private
-    FHorzScrollBar : TControlScrollBar;
-    FVertScrollBar : TControlScrollBar;
-    FAutoScroll    : Boolean;
-
+    FHorzScrollBar: TControlScrollBar;
+    FVertScrollBar: TControlScrollBar;
+    FAutoScroll: Boolean;
     FOnPaint: TNotifyEvent;
-
-    FCanvas : TControlCanvas;
-
-    IsUpdating : Boolean;
-
+    FCanvas: TControlCanvas;
+    FIsUpdating: Boolean;
     procedure SetAutoScroll(Value: Boolean);
     procedure SetHorzScrollBar(Value: TControlScrollBar);
     procedure SetVertScrollBar(Value: TControlScrollBar);
     Function StoreScrollBars : Boolean;
-  Protected
+  protected
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
     Procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
@@ -162,16 +158,13 @@ type
     Procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
     procedure ScrollBy(DeltaX, DeltaY: Integer);
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
-  Public
+  public
     Constructor Create(AOwner : TComponent); Override;
     Destructor Destroy; Override;
-
     procedure Paint; dynamic;
     procedure PaintWindow(dc : Hdc); override;
-
     procedure UpdateScrollbars; virtual;
     function HasVisibleScrollbars: boolean; virtual;
-
     property Canvas: TControlCanvas read FCanvas;
   published
     property AutoScroll: Boolean read FAutoScroll write SetAutoScroll;
@@ -291,15 +284,15 @@ type
     property OnConstrainedResize;
     property OnContextPopup;
     property OnDblClick;
-    //property OnDockDrop;
-    //property OnDockOver;
+    property OnDockDrop;
+    property OnDockOver;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDock;
     property OnEndDrag;
     property OnEnter;
     property OnExit;
-    //property OnGetSiteInfo;
+    property OnGetSiteInfo;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
@@ -309,7 +302,7 @@ type
     property OnResize;
     property OnStartDock;
     property OnStartDrag;
-    //property OnUnDock;
+    property OnUnDock;
   end;
 
 
@@ -437,6 +430,10 @@ type
     function VisibleIsStored: boolean;
     function ColorIsStored: boolean; override;
   protected
+    // drag and dock
+    procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); override;
+    function GetFloating: Boolean; override;
+  protected
     // actions
     procedure CMActionExecute(var Message: TLMessage); message CM_ACTIONEXECUTE;
     procedure CMActionUpdate(var Message: TLMessage); message CM_ACTIONUPDATE;
@@ -445,7 +442,7 @@ type
     procedure UpdateActions; virtual;
   public
     constructor Create(AOwner: TComponent); override;
-    constructor CreateNew(AOwner: TComponent; Num : Integer); virtual;
+    constructor CreateNew(AOwner: TComponent; Num : Integer{=0}); virtual;
     procedure BeforeDestruction; override;
     function GetIconHandle: HICON;
     destructor Destroy; override;
@@ -468,6 +465,9 @@ type
     procedure RemoveHandlerFirstShow(OnFirstShowHandler: TNotifyEvent);
     procedure AddHandlerClose(OnCloseHandler: TCloseEvent; AsLast: Boolean);
     procedure RemoveHandlerClose(OnCloseHandler: TCloseEvent);
+  public
+    // drag and dock
+    procedure Dock(NewDockSite: TWinControl; ARect: TRect); override;
   public
     property Active: Boolean read FActive;
     property ActiveControl: TWinControl read FActiveControl write SetActiveControl;
@@ -518,6 +518,7 @@ type
     FClientHandle: HWND;
   public
     property ClientHandle: HWND read FClientHandle;
+    property DockManager;
   published
     property Action;
     property ActiveControl;
@@ -529,6 +530,7 @@ type
     property ClientWidth;
     property Color;
     property Constraints;
+    property DockSite;
     property Enabled;
     property Font;
     property FormStyle;
@@ -543,6 +545,10 @@ type
     property OnCreate;
     property OnDeactivate;
     property OnDestroy;
+    property OnDockDrop;
+    property OnDockOver;
+    property OnEndDock;
+    property OnGetSiteInfo;
     property OnHide;
     property OnKeyDown;
     property OnKeyPress;
@@ -554,6 +560,8 @@ type
     property OnPaint;
     property OnResize;
     property OnShow;
+    property OnStartDock;
+    property OnUnDock;
     property ParentFont;
     property PixelsPerInch;
     property PopupMenu;
@@ -561,11 +569,31 @@ type
     property SessionProperties;
     property ShowHint;
     property TextHeight;
+    property UseDockManager;
     property Visible;
     property WindowState;
   end;
 
   TFormClass = class of TForm;
+
+
+  { TCustomDockForm }
+
+  TCustomDockForm = class(TCustomForm)
+  protected
+    procedure DoAddDockClient(Client: TControl; const ARect: TRect); override;
+    procedure DoRemoveDockClient(Client: TControl); override;
+    procedure GetSiteInfo(Client: TControl; var InfluenceRect: TRect;
+                          MousePos: TPoint; var CanDock: Boolean); override;
+    procedure Loaded; override;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    property AutoScroll default False;
+    property BorderStyle default bsSizeToolWin;
+    property FormStyle default fsStayOnTop;
+  published
+    property PixelsPerInch;
+  end;
 
 
   { THintWindow }
@@ -1522,6 +1550,7 @@ end;
 {$I scrollbox.inc}
 {$I customframe.inc}
 {$I customform.inc}
+{$I customdockform.inc}
 {$I screen.inc}
 {$I application.inc}
 {$I applicationproperties.inc}
