@@ -7,8 +7,8 @@ Lazarus provides two main parts:
 
 What is required for lazarus:
 - FreePascal - the FreePascal Compiler plus packages plus sources.
-- gtk libaries - Most distributions already install them. See www.gtk.org.
-                 You need gtk 1.x. The new gtk2 is not yet supported.
+- Under Linux/xxxBSD: gtk libaries - Most distributions already install them.
+     See www.gtk.org. You need gtk 1.x. The new gtk2 is not yet supported.
 
 
 The FAQ - Frequently Asked Question is available at www.lazarus.freepascal.org
@@ -18,21 +18,50 @@ The FAQ - Frequently Asked Question is available at www.lazarus.freepascal.org
 The following will describe how to get FreePascal and how to install lazarus
 properly:
 
-
 ================================================================================
-1. Installing FreePascal
+1. Quick installation guide
 
 --------------------------------------------------------------------------------
-1.1 Installing FreePascal under Linux:
+1.1 This is the short version. For more details, see the following sections.
+
+  Lazarus is intended to be a development tool. Therefore it is designed, that
+  any normal user can easily install his local copy. This means, lazarus does
+  not need to be installed as root and it does not any sym links or config
+  entries. You can literally just unpack it into a directory of your choice and
+  compile it.
+
+
+1.2 Under Linux/BSD:
+
+  Make sure, that you have installed X, gtk1 and gtk1-devel.
+
+  Download and install FreePascal. Either the rpm, tgz or the daily snapshot.
+  You need at least fpc 1.0.10 (1.0.x is the stable version of fpc, the 1.9 is
+  the development version).
+
+  To compile lazarus (LCL + IDE) go to your unpacked lazarus source and do:
+  []$ make clean all
+
+  You don't need "./configure" and you don't need "make install". You now have
+  already a complete lazarus. You can start the IDE with "./lazarus".
+  The "make install" as root will just copy the files and set some nice sym
+  links and desktop entries.
+
+================================================================================
+2. Installing FreePascal
+
+--------------------------------------------------------------------------------
+2.1 Installing FreePascal under Linux:
 
   Lazarus requires a fpc (FreePascal) version 1.0.10 and it requires both - the
   compiled fpc libs (binaries) and the fpc sources. The fpc 1.0.6 is too buggy.
 
   The fpc binaries:
-  At the lazarus downloads section (www.lazarus.freepascal.org) you can get the
-  rpm/deb of the freepascal compiler (compiler / linux) and its packages. Or if
-  you don't have a rpm system, you can download and install the tars from the
-  www.freepascal.org.
+  At the lazarus downloads section (www.lazarus.freepascal.org
+  or http://sourceforge.net/project/showfiles.php?group_id=89339) you can get
+  the rpm/deb of the freepascal compiler(compiler / linux) and its packages.
+  Or if you don't have a rpm system, you can download and install the tars from
+  the www.freepascal.org.
   If you want to compile the binaries for yourself see the BSD section.
 
   The fpc sources:
@@ -67,7 +96,7 @@ properly:
 
 
 --------------------------------------------------------------------------------
-1.2 Installing FreePascal under Windows:
+2.2 Installing FreePascal under Windows:
 
     ToDo: Write me.
     
@@ -82,7 +111,7 @@ properly:
 
 
 --------------------------------------------------------------------------------
-1.3 Installing FreePascal under BSD/manually:
+2.3 Installing FreePascal under BSD/manually:
 
  Effectively, you need:
 
@@ -138,10 +167,10 @@ properly:
 
 
 ================================================================================
-2. Installing Lazarus
+3. Installing Lazarus
 
 --------------------------------------------------------------------------------
-2.1 Installing Lazarus under Linux/BSD:
+3.1 Installing Lazarus under Linux/BSD:
 
   You can either install the rpms for lazarus, or follow these instructions.
   Because the whole lazarus stuff is installed into one directory, uninstall
@@ -211,7 +240,7 @@ properly:
 
 
 --------------------------------------------------------------------------------
-2.1 Installing Lazarus under Windows:
+3.1 Installing Lazarus under Windows:
 
   Under windows the IDE does not run well. So don't expect too much.
 
