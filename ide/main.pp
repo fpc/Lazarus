@@ -4085,7 +4085,9 @@ begin
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenEditorFile START');{$ENDIF}
   Result:=mrCancel;
-  
+
+  AFilename:=TrimFilename(AFilename);
+
   if (not (ofRevert in Flags))
   and (ExtractFilenameOnly(AFilename)='') then
     exit;
@@ -8067,6 +8069,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.501  2003/03/29 21:41:19  mattias
+  fixed path delimiters for environment directories
+
   Revision 1.500  2003/03/29 17:20:04  mattias
   added TMemoScrollBar
 
