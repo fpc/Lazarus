@@ -35,153 +35,11 @@ uses
 {$ASSERTIONS ON}
 {$endif}
 
-  {$IFDEF NewGraphType}
 type
   TGraphicsColor = -$7FFFFFFF-1..$7FFFFFFF;
   TGraphicsFillStyle = (fsSurface, fsBorder);
   TGraphicsBevelCut = (bvNone, bvLowered, bvRaised);
 
-  {$ELSE}
-type
-  PColor = ^TColor;
-  // don't define TColor as longint, or else the RTTI can't distinguish them
-  TColor = -$7FFFFFFF-1..$7FFFFFFF;
-
-  TFontPitch = (fpDefault, fpVariable, fpFixed);
-  TFontName = string;
-  TFontCharSet = 0..255;
-  TFontDataName = string[LF_FACESIZE -1];
-  TFontStyle = (fsBold, fsItalic, fsStrikeOut, fsUnderline);
-  TFontStyles = set of TFontStyle;
-  TFontStylesbase = set of TFontStyle;
-
-  TFontData = record
-    Handle : HFont;
-    Height : Integer;
-    Pitch : TFontPitch;
-    Style : TFontStylesBase;
-    CharSet : TFontCharSet;
-    Name : TFontDataName;
-  end;
-
-  { Reflects text style when drawn in a rectangle }
-  
-  TTextLayout = (tlTop, tlCenter, tlBottom);
-  TTextStyle = packed record
-    Alignment  : TAlignment;  // TextRect Only : horizontal alignment
-
-    Layout     : TTextLayout; // TextRect Only : vertical alignment
-
-    SingleLine : boolean;     // If WordBreak is false then process #13, #10 as
-                              // standard chars and perform no Line breaking.
-
-    Clipping   : boolean;     // TextRect Only : Clip Text to passed Rectangle
-
-    ExpandTabs : boolean;     // currently ignored
-
-    ShowPrefix : boolean;     // TextRect Only : Process first single '&' per
-                              //    line as an underscore and draw '&&' as '&'
-
-    Wordbreak  : boolean;     // TextRect Only : If line of text is too long
-                              //    too fit between left and right boundaries
-                              //    try to break into multiple lines between
-                              //    words
-
-    Opaque     : boolean;     // TextRect : Fills background with current Brush
-                              // TextOut  : Fills background with current
-                              //            foreground color
-
-    SystemFont : Boolean;     // Use the system font instead of Canvas Font
-  end;
-
-  TPenStyle = (psSolid, psDash, psDot, psDashDot, psDashDotDot, psClear,
-               psInsideframe);
-  TPenMode = (pmBlack, pmWhite, pmNop, pmNot, pmCopy, pmNotCopy, pmMergePenNot,
-              pmMaskPenNot, pmMergeNotPen, pmMaskNotPen, pmMerge,pmNotMerge, pmMask,
-              pmNotMask, pmXor, pmNotXor
-             );
-
-  TPenData = record
-    Handle : HPen;
-    Color : TColor;
-    Width : Integer;
-    Style : TPenStyle;
-  end;
-
-  TBrushStyle = (bsSolid, bsClear, bsHorizontal, bsVertical, bsFDiagonal,
-                 bsBDiagonal, bsCross, bsDiagCross);
-
-  TFillStyle = (fsSurface, fsBorder);
-  TFillMode = (fmAlternate, fmWinding);
-
-  TCopymode = longint;
-
-  TCanvasStates = (csHandleValid, csFontValid, csPenvalid, csBrushValid,
-                   csRegionValid);
-  TCanvasState = set of TCanvasStates;
-  TCanvasOrientation = (csLefttoRight, coRighttoLeft);
-
-  { TProgressEvent is a generic progress notification event which may be
-        used by TGraphic classes with computationally intensive (slow)
-        operations, such as loading, storing, or transforming image data.
-    Event params:
-      Stage - Indicates whether this call to the OnProgress event is to
-        prepare for, process, or clean up after a graphic operation.  If
-        OnProgress is called at all, the first call for a graphic operation
-        will be with Stage = psStarting, to allow the OnProgress event handler
-        to allocate whatever resources it needs to process subsequent progress
-        notifications.  After Stage = psStarting, you are guaranteed that
-        OnProgress will be called again with Stage = psEnding to allow you
-        to free those resources, even if the graphic operation is aborted by
-        an exception.  Zero or more calls to OnProgress with Stage = psRunning
-        may occur between the psStarting and psEnding calls.
-      PercentDone - The ratio of work done to work remaining, on a scale of
-        0 to 100.  Values may repeat or even regress (get smaller) in
-        successive calls.  PercentDone is usually only a guess, and the
-        guess may be dramatically altered as new information is discovered
-        in decoding the image.
-      RedrawNow - Indicates whether the graphic can be/should be redrawn
-        immediately.  Useful for showing successive approximations of
-        an image as data is available instead of waiting for all the data
-        to arrive before drawing anything.  Since there is no message loop
-        activity during graphic operations, you should call Update to force
-        a control to be redrawn immediately in the OnProgress event handler.
-        Redrawing a graphic when RedrawNow = False could corrupt the image
-        and/or cause exceptions.
-      Rect - Area of image that has changed and needs to be redrawn.
-      Msg - Optional text describing in one or two words what the graphic
-        class is currently working on.  Ex:  "Loading" "Storing"
-        "Reducing colors".  The Msg string can also be empty.
-        Msg strings should be resourced for translation,  should not
-        contain trailing periods, and should be used only for
-        display purposes.  (do not: if Msg = 'Loading' then...)
-  }
-  TProgressStage = (psStarting, psRunning, psEnding);
-  TProgressEvent = procedure (Sender: TObject; Stage: TProgressStage;
-                          PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
-                          const Msg: string; var Continue : Boolean) of object;
-  
-  TBevelCut = (bvNone, bvLowered, bvRaised);
-
-  { For Delphi compatibility }
-  TPixelFormat = (
-    pfDevice,
-    pf1bit,
-    pf4bit,
-    pf8bit,
-    pf15bit,
-    pf16bit,
-    pf24bit,
-    pf32bit,
-    pfCustom
-    );
-                  
-  TTransparentMode = (
-    tmAuto,
-    tmFixed
-    );
-
-  {$ENDIF}
 //------------------------------------------------------------------------------
 // raw image data
 type
@@ -268,6 +126,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2003/08/25 16:43:32  mattias
+  moved many graphics types form graphtype.pp to graphics.pp
+
   Revision 1.19  2003/08/19 12:23:23  mattias
   moved types from graphtype.pp back to graphics.pp
 

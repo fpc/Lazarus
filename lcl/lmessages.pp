@@ -421,7 +421,7 @@ type
   TLMCanvasDrawRect = Record
      R : TRect;
      ReDraw : Boolean;
-     PenColor : {$IFDEF NewGraphType}TGraphicsColor{$ELSE}TColor{$ENDIF};
+     PenColor : TGraphicsColor;
     end;
 
   PLMCanvasDrawLine = ^TLMCanvasDrawLine;
@@ -430,7 +430,7 @@ type
      y1 : Integer;
      x2 : Integer;
      y2 : Integer;
-     PenColor : {$IFDEF NewGraphType}TGraphicsColor{$ELSE}TColor{$ENDIF};
+     PenColor : TGraphicsColor;
      ReDraw : Boolean;
     end;
 
@@ -440,7 +440,7 @@ type
      y1 : Integer;
      Str : String;
      Font : TObject;
-     PenColor : {$IFDEF NewGraphType}TGraphicsColor{$ELSE}TColor{$ENDIF};
+     PenColor : TGraphicsColor;
      ReDraw : Boolean;
     end;
 
@@ -730,7 +730,7 @@ type
 
   TLMSetGetPixel = record
     X,Y : Integer;
-    PixColor : {$IFDEF NewGraphType}TGraphicsColor{$ELSE}TColor{$ENDIF};
+    PixColor : TGraphicsColor;
   end;
 
   TLMSize = packed record
@@ -1057,6 +1057,9 @@ end.
 
 {
   $Log$
+  Revision 1.52  2003/08/25 16:43:32  mattias
+  moved many graphics types form graphtype.pp to graphics.pp
+
   Revision 1.51  2003/08/19 12:23:23  mattias
   moved types from graphtype.pp back to graphics.pp
 

@@ -308,8 +308,7 @@ begin
 end;
 
 function FloodFill(DC: HDC; X, Y: Integer;
-  Color: {$IFDEF NewGraphType}TGraphicsColor{$ELSE}TColor{$ENDIF};
-  FillStyle: {$IFDEF NewGraphType}TGraphicsFillStyle{$ELSE}TFillStyle{$ENDIF};
+  Color: TGraphicsColor; FillStyle: TGraphicsFillStyle;
   Brush: HBRUSH): Boolean;
 begin
   Result := InterfaceObject.FloodFill(DC,X,Y,Color,FillStyle,Brush);
@@ -321,8 +320,7 @@ begin
 end;
 
 function Frame3d(DC : HDC; var ARect : TRect; const FrameWidth : integer;
-  const Style: {$IFDEF NewGraphType}TGraphicsBevelCut{$ELSE}TBevelCut{$ENDIF}
-  ) : boolean;
+  const Style: TGraphicsBevelCut) : boolean;
 begin
   Result:= InterfaceObject.Frame3d(DC, ARect, FrameWidth, Style);
 end;
@@ -1673,6 +1671,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.96  2003/08/25 16:43:32  mattias
+  moved many graphics types form graphtype.pp to graphics.pp
+
   Revision 1.95  2003/08/19 12:23:23  mattias
   moved types from graphtype.pp back to graphics.pp
 

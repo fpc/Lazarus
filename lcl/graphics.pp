@@ -38,7 +38,6 @@ uses
   {$IFDEF UseFPImage}, FPReadPNG, IntfGraphics{$ENDIF}
   ;
 
-  {$IFDEF NewGraphType}
 type
   PColor = ^TColor;
   TColor = TGraphicsColor;
@@ -176,9 +175,6 @@ type
     tmAuto,
     tmFixed
     );
-
-  {$ELSE}
-  {$ENDIF}
 
 const
   // The follow colors match the predefined Delphi Colors
@@ -824,10 +820,6 @@ type
     to convert it automatically to the best internal format. That is why the
     Handle is interface dependent. }
 
-  {$IFNDEF NewGraphType}
-  TTransparentMode = (tmAuto, tmFixed);
-  {$ENDIF}
-
   TBitmapInternalStateFlag = (
     bmisCreateingCanvas
     );
@@ -1181,6 +1173,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.83  2003/08/25 16:43:32  mattias
+  moved many graphics types form graphtype.pp to graphics.pp
+
   Revision 1.82  2003/08/20 17:03:47  mattias
   implemented TPixmap and TPortableNetworkGraphic with fpImage
 
