@@ -1628,8 +1628,14 @@ End;
   Adds a rectangle to the specified window's update region.
  ------------------------------------------------------------------------------}
 Function TWin32Object.InvalidateRect(aHandle: HWND; Rect: PRect; BErase: Boolean): Boolean;
+Var
+  Flags: UINT;
 Begin
-  Result := Windows.InvalidateRect(aHandle, Windows.RECT(Rect^), bErase);
+//  Result := Windows.InvalidateRect(aHandle, Windows.RECT(Rect^), bErase);
+  Flags := RDW_INVALIDATE or RDW_ALLCHILDREN;
+  if BErase then
+    Flags := Flags or RDW_ERASE;
+  Result := Windows.RedrawWindow(aHandle, Windows.RECT(Rect^), 0, Flags);
 End;
 
 {------------------------------------------------------------------------------
@@ -1960,6 +1966,13 @@ Function TWin32Object.ReleaseDC(HWnd: HWND; DC: HDC): Integer;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.ReleaseDC] DC:0x%x', [DC]));
   Result := Windows.ReleaseDC(HWnd, DC);
+  Assert(False, Format('Trace:< [TWin32Object.ReleaseDC] DC:0x%x', [DC]));
+End;
+
+Function TWin32Object.ReleaseDesignerDC(HWnd: HWND; DC: HDC): Integer;
+Begin
+  Assert(False, Format('Trace:> [TWin32Object.ReleaseDC] DC:0x%x', [DC]));
+  Result := Windows.ReleaseDC(0, DC);
   Assert(False, Format('Trace:< [TWin32Object.ReleaseDC] DC:0x%x', [DC]));
 End;
 
@@ -2523,6 +2536,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2003/11/07 17:35:57  micha
+  InvalidateRect invalidate children too
+
   Revision 1.67  2003/11/04 13:18:21  micha
   Implement GetDesignerDC
 
