@@ -1,7 +1,7 @@
 Name: lazarus
 Version: LAZVERSION
 Release: LAZRELEASE
-Copyright: LGPL2
+Copyright: LGPL2/GPL2
 Group: Development/Tools
 Source: LAZSOURCE
 Summary: Lazarus Component Library and IDE
@@ -17,6 +17,7 @@ Requires: gdk-pixbuf-devel >= 0.18.0
 %description
 Lazarus is a free and opensource RAD tool for freepascal using the lazarus
 component library - LCL, which is also included in this package.
+The LCL is licensed under LGPL2, the IDE is licensed under GPL2.
 
 %prep
 %setup -c

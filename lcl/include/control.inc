@@ -1076,20 +1076,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-       TControl.SendDockNotification
-------------------------------------------------------------------------------}
-procedure TControl.SendDockNotification;
-begin
-  // ToDo dock: do we really need this method?
-  if (FHostDockSite<>nil) and (DragObject=nil)
-  and (ComponentState*[csLoading,csDestroying] = []) then
-  begin
-    // ToDo dock
-    //FHostDockSite.Perform
-  end;
-end;
-
-{------------------------------------------------------------------------------
        TControl.DblClick
 ------------------------------------------------------------------------------}
 procedure TControl.DblClick;
@@ -1428,98 +1414,84 @@ begin
   //DebugLn('CCC TControl.WndPRoc ',Name,':',ClassName);
   if (csDesigning in ComponentState) then
   begin
+    // redirect messages to designer
     Form := GetParentForm(Self);
     if (Form <> nil) and (Form.Designer <> nil)
     and Form.Designer.IsDesignMsg(Self,TheMessage) then begin
       Exit;
     end;
   end
-  else
-  begin
-    if (TheMessage.Msg >= LM_KeyFirst) and (TheMessage.Msg <= LM_KeyLast) then
+  else if (TheMessage.Msg >= LM_KeyFirst) and (TheMessage.Msg <= LM_KeyLast)
+  then begin
+    // keyboard messages
+    Form := GetParentForm(Self);
+    if (Form <> nil) and (Form.WantChildKey(Self,TheMessage)) then exit;
+  end
+  else if ((TheMessage.Msg>=LM_MOUSEFIRST) and (TheMessage.Msg<=LM_MOUSELAST))
+  or ((TheMessage.Msg>=LM_MOUSEFIRST2) and (TheMessage.Msg<=LM_MOUSELAST2))
+  then begin
+    // mouse messages
+    
+    // map double clicks for controls, that do not want doubleclicks
+    if not (csDoubleClicks in ControlStyle) then
     begin
-      Form := GetParentForm(Self);
-      if (Form <> nil) and (Form.WantChildKey(Self,TheMessage)) then exit;
-    end
-    else
-    begin
-      if ((TheMessage.Msg>=LM_MOUSEFIRST) and (TheMessage.Msg<=LM_MOUSELAST))
-      or ((TheMessage.Msg>=LM_MOUSEFIRST2) and (TheMessage.Msg<=LM_MOUSELAST2))
-      then
-      begin
-        // map double clicks for controls, that do not want doubleclicks
-        if not (csDoubleClicks in ControlStyle) then
-        begin
-          case TheMessage.Msg of
-            LM_LButtonDBLCLK,
-            LM_RButtonDBLCLK,
-            LM_MButtonDBLCLK:
-              Dec(TheMessage.Msg, LM_LBUTTONDBLCLK - LM_LBUTTONDOWN);
-          end;
-        end;
-        // map triple clicks for controls, that do not want tripleclicks
-        if not (csTripleClicks in ControlStyle) then
-        begin
-          case TheMessage.Msg of
-            LM_LBUTTONTRIPLECLK: TheMessage.Msg:=LM_LBUTTONDOWN;
-            LM_MBUTTONTRIPLECLK: TheMessage.Msg:=LM_MBUTTONDOWN;
-            LM_RBUTTONTRIPLECLK: TheMessage.Msg:=LM_RBUTTONDOWN;
-          end;
-        end;
-        // map quad clicks for controls, that do not want quadclicks
-        if not (csQuadClicks in ControlStyle) then
-        begin
-          case TheMessage.Msg of
-            LM_LBUTTONQUADCLK: TheMessage.Msg:=LM_LBUTTONDOWN;
-            LM_MBUTTONQUADCLK: TheMessage.Msg:=LM_MBUTTONDOWN;
-            LM_RBUTTONQUADCLK: TheMessage.Msg:=LM_RBUTTONDOWN;
-          end;
-        end;
-
-        case TheMessage.Msg of
-
-          LM_MOUSEMOVE:
-            begin
-              Application.HintMouseMessage(Self, TheMessage);
-            end;
-
-          LM_LBUTTONDOWN,
-          LM_LBUTTONDBLCLK:
-            begin
-              if FDragMode = dmAutomatic
-              then begin
-                //Assert(False, 'Trace:Begin AutoDrag called');
-                BeginAutoDrag;
-                { The VCL holds up the mouse down for dmAutomatic
-                  and sends it, when it decides, if it is a drag operation or
-                  not.
-                  This decision requires full control of focus and mouse, which
-                  not all LCL interfaces provide. Therefore the mouse down event
-                  is sent immediately.
-                }
-                // VCL: exit;
-              end;
-              Include(FControlState,csLButtonDown);
-            end;
-
-          LM_LBUTTONUP:
-            begin
-              Exclude(FControlState, csLButtonDown);
-            end;
-        end;
-      end
-      else begin
-        if TheMessage.Msg = CM_VISIBLECHANGED
-        then begin
-          // ToDo: call a real method, do not create a win32 message
-          //with TheMessage do SendDockNotification(Msg,WParam,LParam);
-        end;
+      case TheMessage.Msg of
+        LM_LButtonDBLCLK,
+        LM_RButtonDBLCLK,
+        LM_MButtonDBLCLK:
+          Dec(TheMessage.Msg, LM_LBUTTONDBLCLK - LM_LBUTTONDOWN);
       end;
     end;
+    // map triple clicks for controls, that do not want tripleclicks
+    if not (csTripleClicks in ControlStyle) then
+    begin
+      case TheMessage.Msg of
+        LM_LBUTTONTRIPLECLK: TheMessage.Msg:=LM_LBUTTONDOWN;
+        LM_MBUTTONTRIPLECLK: TheMessage.Msg:=LM_MBUTTONDOWN;
+        LM_RBUTTONTRIPLECLK: TheMessage.Msg:=LM_RBUTTONDOWN;
+      end;
+    end;
+    // map quad clicks for controls, that do not want quadclicks
+    if not (csQuadClicks in ControlStyle) then
+    begin
+      case TheMessage.Msg of
+        LM_LBUTTONQUADCLK: TheMessage.Msg:=LM_LBUTTONDOWN;
+        LM_MBUTTONQUADCLK: TheMessage.Msg:=LM_MBUTTONDOWN;
+        LM_RBUTTONQUADCLK: TheMessage.Msg:=LM_RBUTTONDOWN;
+      end;
+    end;
+
+    case TheMessage.Msg of
+
+      LM_MOUSEMOVE:
+        begin
+          Application.HintMouseMessage(Self, TheMessage);
+        end;
+
+      LM_LBUTTONDOWN,
+      LM_LBUTTONDBLCLK:
+        begin
+          if FDragMode = dmAutomatic
+          then begin
+            BeginAutoDrag;
+            { The VCL holds up the mouse down for dmAutomatic
+              and sends it, when it decides, if it is a drag operation or
+              not.
+              This decision requires full control of focus and mouse, which
+              do not all LCL interfaces provide. Therefore the mouse down event
+              is sent immediately.
+            }
+            // VCL: exit;
+          end;
+          Include(FControlState,csLButtonDown);
+        end;
+
+      LM_LBUTTONUP:
+        begin
+          Exclude(FControlState, csLButtonDown);
+        end;
+    end;
   end;
-{debug purposes}
-//Assert(False, 'Trace:TCONTROL.WNDPROC');
-//Assert(False, Format('Trace:Control = %s     -->Message = %d',[CLASSNAME,Message.msg]));
   Dispatch(TheMessage);
 end;
 
@@ -3214,6 +3186,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.189  2004/06/01 22:49:50  mattias
+  added workaround for buggy typinfo GetMethodProp function
+
   Revision 1.188  2004/06/01 09:58:35  mattias
   implemented setting TCustomPage.PageIndex  from Andrew Haines
 

@@ -2056,9 +2056,44 @@ begin
   Result:=GetMethodValueAt(0);
 end;
 
+// workaround for buggy rtl function
+function LazGetMethodProp(Instance: TObject; PropInfo: PPropInfo): TMethod;
+type
+  TGetMethodProcIndex=function(Index: Longint): TMethod of object;
+  TGetMethodProc=function(): TMethod of object;
+  PMethod = ^TMethod;
+var
+  value: PMethod;
+  AMethod : TMethod;
+begin
+  Result.Code:=nil;
+  Result.Data:=nil;
+  case (PropInfo^.PropProcs) and 3 of
+    ptfield:
+      begin
+        Value:=PMethod(Pointer(Instance)+Longint(PropInfo^.GetProc));
+        if Value<>nil then
+          Result:=Value^;
+      end;
+    ptstatic,
+    ptvirtual :
+      begin
+        if (PropInfo^.PropProcs and 3)=ptStatic then
+          AMethod.Code:=PropInfo^.GetProc
+        else
+          AMethod.Code:=PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.GetProc))^;
+        AMethod.Data:=Instance;
+        if ((PropInfo^.PropProcs shr 6) and 1)<>0 then
+          Result:=TGetMethodProcIndex(AMethod)(PropInfo^.Index)
+        else
+          Result:=TGetMethodProc(AMethod)();
+      end;
+  end;
+end;
+
 function TPropertyEditor.GetMethodValueAt(Index:Integer):TMethod;
 begin
-  with FPropList^[Index] do Result:=GetMethodProp(Instance,PropInfo);
+  with FPropList^[Index] do Result:=LazGetMethodProp(Instance,PropInfo);
 end;
 
 function TPropertyEditor.GetEditLimit:Integer;
@@ -2234,7 +2269,7 @@ begin
   Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do begin
-      AMethod:=GetMethodProp(Instance,PropInfo);
+      AMethod:=LazGetMethodProp(Instance,PropInfo);
       Changed:=Changed or not CompareMem(@AMethod,@NewValue,SizeOf(TMethod));
     end;
   if Changed then begin

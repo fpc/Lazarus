@@ -901,8 +901,8 @@ type
     procedure DrawDragDockImage(DragDockObject: TDragDockObject); dynamic;
     procedure EraseDragDockImage(DragDockObject: TDragDockObject); dynamic;
     procedure PositionDockRect(DragDockObject: TDragDockObject); dynamic;
-    procedure SendDockNotification; virtual;
     procedure SetDragMode(Value: TDragMode); virtual;
+    //procedure SendDockNotification; virtual;
   protected
     // mouse
     procedure Click; dynamic;
@@ -2320,6 +2320,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.208  2004/06/01 22:49:50  mattias
+  added workaround for buggy typinfo GetMethodProp function
+
   Revision 1.207  2004/06/01 09:58:35  mattias
   implemented setting TCustomPage.PageIndex  from Andrew Haines
 
