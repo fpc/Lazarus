@@ -199,7 +199,6 @@ var NewPage:TRegisteredComponentPage;
   a:integer;
   NewComp:TRegisteredComponent;
 begin
-Writeln('REGISTERING COMPONENT');
 
   NewPage:=FindPageByName(Page);
   if NewPage=nil then begin
@@ -230,7 +229,7 @@ var a:integer;
 begin
   Name:=uppercase(Name);
   for a:=0 to FPages.Count-1 do begin
-    if uppercase(Pages.Name)=Name then begin
+    if uppercase(Pages[a].Name)=Name then begin
       Result:=Pages[a];
       exit;
     end;

@@ -251,6 +251,9 @@ begin
           ,TBevel,TRadioGroup]);
   RegisterComponents('Additional','ComCtrls',[TStatusBar,TListView,TProgressBar
           ,TToolBar,TToolButton,TTrackBar]);
+
+  RegisterComponents('Samples','Spin',[TSpinEdit]);
+
   RegisterComponentsProc:=nil;
 
 
