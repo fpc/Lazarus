@@ -2788,10 +2788,11 @@ end;
 procedure TWinControl.WMSize(var Message: TLMSize);
 var
   NewLeft, NewTop: integer;
+  NewBoundsRealized: TRect;
 begin
   {$IFDEF VerboseSizeMsg}
-  DebugLn('TWinControl.WMSize A ',Name,':',ClassName,' Message=',Message.Width,',',Message.Height,
-    ' BoundsRealized=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right-FBoundsRealized.Left,',',FBoundsRealized.Bottom-FBoundsRealized.Top);
+  DebugLn('TWinControl.WMSize A ',Name,':',ClassName,' Message=',dbgs(Message.Width),',',dbgs(Message.Height),
+    ' BoundsRealized=',dbgs(FBoundsRealized));
   {$ENDIF}
   NewLeft:=Left;
   NewTop:=Top;
@@ -2803,7 +2804,9 @@ begin
     if HandleAllocated then
       GetWindowRelativePosition(Handle,NewLeft,NewTop);
     //DebugLn('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
-    FBoundsRealized:=Bounds(NewLeft,NewTop,Message.Width,Message.Height);
+    NewBoundsRealized:=Bounds(NewLeft,NewTop,Message.Width,Message.Height);
+    If CompareRect(@NewBoundsRealized,@FBoundsRealized) then exit;
+    FBoundsRealized:=NewBoundsRealized;
   end;
 
   SetBoundsKeepBase(NewLeft,NewTop,Message.Width,Message.Height,Parent<>nil);
@@ -3519,6 +3522,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.228  2004/05/16 22:43:23  mattias
+  WMSize from interface are now ignored when BoundsRealized the same
+
   Revision 1.227  2004/05/11 11:42:27  mattias
   replaced writeln by debugln
 
