@@ -45,12 +45,8 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Forms, Controls, LCLLinux, Dialogs, JITForm,
-  {$IFDEF DisablePkgs}
-  CompReg;
-  {$ELSE}
-  ComponentReg;
-  {$ENDIF}
+  Classes, SysUtils, Forms, Controls, LCLLinux, Dialogs, JITForm, ComponentReg,
+  IDEProcs;
 
 type
   //----------------------------------------------------------------------------
@@ -65,78 +61,118 @@ type
   
   TJITReaderErrorEvent = procedure(Sender: TObject; ErrorType: TJITFormError;
     var Action: TModalResult) of object;
-  
-  
-  // Just-In-Time-Form List
-  TJITForms = class(TPersistentWithTemplates)
+
+
+  { TJITComponentList }
+
+  TJITComponentList = class(TPersistentWithTemplates)
   private
+    FComponentPrefix: string;
+    procedure SetComponentPrefix(const AValue: string);
+  protected
     FCurReadErrorMsg: string;
-    FCurReadForm:TForm;
+    FCurReadJITComponent:TComponent;
     FCurReadClass:TClass;
-    FCurReadComponent: TComponent;
-    FCurReadComponentClass: TComponentClass;
-    FForms: TList; // list of TJITForm
+    FCurReadChild: TComponent;
+    FCurReadChildClass: TComponentClass;
     FOnReaderError: TJITReaderErrorEvent;
-    {$IFDEF DisablePkgs}
-    FRegCompList:TRegisteredComponentList;
-    {$ENDIF}
+    FJITComponents: TList;
     // jit procedures
-    function CreateVMTCopy(SourceClass:TClass; const NewClassName:ShortString):Pointer;
-    procedure FreevmtCopy(vmtCopy:Pointer);
-    procedure DoAddNewMethod(JITClass:TClass; AName:ShortString; ACode:Pointer);
+    function CreateVMTCopy(SourceClass: TClass;
+                           const NewClassName: ShortString):Pointer;
+    procedure FreevmtCopy(vmtCopy: Pointer);
+    procedure DoAddNewMethod(JITClass:TClass;
+                             const AName:ShortString; ACode:Pointer);
       // AddNewMethod does not check if method already exists
-    procedure DoRemoveMethod(JITClass:TClass; AName:ShortString; var OldCode:Pointer);
+    procedure DoRemoveMethod(JITClass:TClass; AName:ShortString;
+                             var OldCode:Pointer);
       // RemoveMethod does not free code memory
     procedure DoRenameMethod(JITClass:TClass; OldName,NewName:ShortString);
-    procedure DoRenameClass(JITClass:TClass; NewName:ShortString);
+    procedure DoRenameClass(JITClass:TClass; const NewName:ShortString);
     // TReader events
     procedure ReaderFindMethod(Reader: TReader; const FindMethodName: Ansistring;
       var Address: Pointer; var Error: Boolean);
     procedure ReaderSetName(Reader: TReader; Component: TComponent;
       var NewName: Ansistring);
     procedure ReaderReferenceName(Reader: TReader; var RefName: Ansistring);
-    procedure ReaderAncestorNotFound(Reader: TReader; const ComponentName: Ansistring;
-      ComponentClass: TPersistentClass; var Component: TComponent);
+    procedure ReaderAncestorNotFound(Reader: TReader;
+      const ComponentName: Ansistring; ComponentClass: TPersistentClass;
+      var Component: TComponent);
     procedure ReaderError(Reader: TReader; const ErrorMsg: Ansistring;
       var Handled: Boolean);
-    procedure ReaderFindComponentClass(Reader: TReader; const FindClassName: Ansistring;
-      var ComponentClass: TComponentClass);
+    procedure ReaderFindComponentClass(Reader: TReader;
+      const FindClassName: Ansistring; var ComponentClass: TComponentClass);
     procedure ReaderCreateComponent(Reader: TReader;
       ComponentClass: TComponentClass; var Component: TComponent);
     // some useful functions
-    function GetItem(Index:integer):TForm;
+    function GetItem(Index:integer):TComponent;
     function GetClassNameFromStream(s:TStream):shortstring;
-    function DoCreateJITForm(NewFormName,NewClassName:shortstring):integer;
     function OnFindGlobalComponent(const AName:AnsiString):TComponent;
     procedure InitReading;
+    function DoCreateJITComponent(NewComponentName,NewClassName:shortstring
+                                  ):integer;
+    procedure DoFinishReading; virtual;
+    function CreateDefaultVMTCopy: Pointer; virtual; abstract;
   public
     constructor Create;
     destructor Destroy; override;
-    property Items[Index:integer]:TForm read GetItem; default;
+    property Items[Index:integer]: TComponent read GetItem; default;
     function Count:integer;
-    {$IFDEF DisablePkgs}
-    property RegCompList:TRegisteredComponentList read FRegCompList write FRegCompList;
-    {$ENDIF}
-    function AddNewJITForm:integer;
-    function AddJITFormFromStream(BinStream:TStream):integer;
-    procedure DestroyJITForm(JITForm:TForm);
-    procedure DestroyJITForm(Index:integer);
-    function IndexOf(JITForm:TForm):integer;
-    function FindFormByClassName(AClassName:shortstring):integer;
-    function FindFormByName(AName:shortstring):integer;
-    procedure GetUnusedNames(var FormName,FormClassName:shortstring);
-    procedure AddNewMethod(JITForm:TForm; AName:ShortString);
-    function CreateNewMethod(JITForm:TForm; AName:ShortString): TMethod;
-    procedure RemoveMethod(JITForm:TForm; AName:ShortString);
-    procedure RenameMethod(JITForm:TForm; OldName,NewName:ShortString);
-    procedure RenameFormClass(JITForm:TForm; NewName:ShortString);
+    function AddNewJITComponent:integer;
+    function AddJITComponentFromStream(BinStream:TStream):integer;
+    procedure DestroyJITComponent(JITComponent:TComponent);
+    procedure DestroyJITComponent(Index:integer);
+    function IndexOf(JITComponent:TComponent):integer;
+    function FindComponentByClassName(const AClassName:shortstring):integer;
+    function FindComponentByName(const AName:shortstring):integer;
+    procedure GetUnusedNames(var ComponentName, ComponentClassName: shortstring);
+    procedure AddNewMethod(JITComponent: TComponent; const AName: ShortString);
+    function CreateNewMethod(JITComponent:TComponent;
+                             const AName:ShortString): TMethod;
+    procedure RemoveMethod(JITComponent:TComponent; const AName:ShortString);
+    procedure RenameMethod(JITComponent:TComponent;
+                           const OldName,NewName:ShortString);
+    procedure RenameComponentClass(JITComponent:TComponent;
+                                   const NewName:ShortString);
+  public
     property OnReaderError: TJITReaderErrorEvent
-      read FOnReaderError write FOnReaderError;
-    property CurReadForm:TForm read FCurReadForm;
+                                       read FOnReaderError write FOnReaderError;
+    property CurReadJITComponent:TComponent read FCurReadJITComponent;
     property CurReadClass:TClass read FCurReadClass;
-    property CurReadComponent: TComponent read FCurReadComponent;
-    property CurReadComponentClass: TComponentClass read FCurReadComponentClass;
+    property CurReadChild: TComponent read FCurReadChild;
+    property CurReadChildClass: TComponentClass read FCurReadChildClass;
     property CurReadErrorMsg: string read FCurReadErrorMsg;
+    property ComponentPrefix: string read FComponentPrefix
+                                     write SetComponentPrefix;
+  end;
+
+
+  { TJITForms }
+  
+  TJITForms = class(TJITComponentList)
+  private
+    function GetItem(Index: integer): TForm;
+  protected
+    procedure DoFinishReading; override;
+    function CreateDefaultVMTCopy: Pointer; override;
+  public
+    constructor Create;
+    function IsJITForm(AComponent: TComponent): boolean;
+    property Items[Index:integer]: TForm read GetItem; default;
+  end;
+  
+  
+  { TJITDataModules }
+  
+  TJITDataModules = class(TJITComponentList)
+  private
+    function GetItem(Index: integer): TDataModule;
+  protected
+    function CreateDefaultVMTCopy: Pointer; override;
+  public
+    constructor Create;
+    function IsJITDataModule(AComponent: TComponent): boolean;
+    property Items[Index:integer]: TDataModule read GetItem; default;
   end;
 
 implementation
@@ -152,130 +188,90 @@ end;
   //----------------------------------------------------------------------------
 
 
-{ TJITForms }
+{ TJITComponentList }
 
-constructor TJITForms.Create;
+constructor TJITComponentList.Create;
 begin
   inherited Create;
-  FForms:=TList.Create;
+  FComponentPrefix:='Form';
+  FJITComponents:=TList.Create;
 end;
 
-destructor TJITForms.Destroy;
+destructor TJITComponentList.Destroy;
 begin
-  while FForms.Count>0 do DestroyJITForm(FForms.Count-1);
-  FForms.Free;
+  while FJITComponents.Count>0 do DestroyJITComponent(FJITComponents.Count-1);
+  FJITComponents.Free;
   inherited Destroy;
 end;
 
-function TJITForms.GetItem(Index:integer):TForm;
+function TJITComponentList.GetItem(Index:integer):TComponent;
 begin
-  Result:=TForm(FForms[Index]);
+  Result:=TComponent(FJITComponents[Index]);
 end;
 
-function TJITForms.Count:integer;
+function TJITComponentList.Count:integer;
 begin
-  Result:=FForms.Count;
+  Result:=FJITComponents.Count;
 end;
 
-function TJITForms.IndexOf(JITForm:TForm):integer;
+function TJITComponentList.IndexOf(JITComponent:TComponent):integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (Items[Result]<>JITForm) do dec(Result);
+  while (Result>=0) and (Items[Result]<>JITComponent) do dec(Result);
 end;
 
-procedure TJITForms.DestroyJITForm(JITForm:TForm);
+procedure TJITComponentList.DestroyJITComponent(JITComponent:TComponent);
 var a:integer;
 begin
-  if JITForm=nil then
-    raise Exception.Create('TJITForms.DestroyJITForm JITForm=nil');
-  a:=IndexOf(JITForm);
+  if JITComponent=nil then
+    RaiseException('TJITComponentList.DestroyJITForm JITComponent=nil');
+  a:=IndexOf(JITComponent);
   if a<0 then
-    raise Exception.Create('TJITForms.DestroyJITForm JITForm.ClassName='+
-      JITForm.ClassName);
-  if a>=0 then DestroyJITForm(a);
+    RaiseException('TJITComponentList.DestroyJITForm JITComponent.ClassName='+
+      JITComponent.ClassName);
+  if a>=0 then DestroyJITComponent(a);
 end;
 
-procedure TJITForms.DestroyJITForm(Index:integer);
+procedure TJITComponentList.DestroyJITComponent(Index:integer);
 var OldClass:TClass;
 begin
   OldClass:=Items[Index].ClassType;
   Items[Index].Free;
   FreevmtCopy(OldClass);
-  FForms.Delete(Index);
+  FJITComponents.Delete(Index);
 end;
 
-function TJITForms.FindFormByClassName(AClassName:shortstring):integer;
+function TJITComponentList.FindComponentByClassName(
+  const AClassName:shortstring):integer;
 begin
-  AClassName:=uppercase(AClassName);
-  Result:=FForms.Count-1;
-  while (Result>=0) and (uppercase(Items[Result].ClassName)<>AClassName) do
+  Result:=FJITComponents.Count-1;
+  while (Result>=0)
+  and (AnsiCompareText(Items[Result].ClassName,AClassName)<>0) do
     dec(Result);
 end;
 
-function TJITForms.FindFormByName(AName:shortstring):integer;
+function TJITComponentList.FindComponentByName(const AName:shortstring):integer;
 begin
-  AName:=uppercase(AName);
-  Result:=FForms.Count-1;
-  while (Result>=0) and (uppercase(Items[Result].Name)<>AName) do
+  Result:=FJITComponents.Count-1;
+  while (Result>=0)
+  and (AnsiCompareText(Items[Result].Name,AName)<>0) do
     dec(Result);
 end;
 
-procedure TJITForms.GetUnusedNames(var FormName,FormClassName:shortstring);
+procedure TJITComponentList.GetUnusedNames(
+  var ComponentName,ComponentClassName:shortstring);
 var a:integer;
 begin
   a:=1;
   repeat
-    FormName:='Form'+IntToStr(a);
-    FormClassName:='TForm'+IntToStr(a);
+    ComponentName:=ComponentPrefix+IntToStr(a);
+    ComponentClassName:='T'+ComponentPrefix+IntToStr(a);
     inc(a);
-  until (FindFormByName(FormName)<0) and (FindFormByClassName(FormClassName)<0);
+  until (FindComponentByName(ComponentName)<0)
+        and (FindComponentByClassName(ComponentClassName)<0);
 end;
 
-function TJITForms.DoCreateJITForm(
-  NewFormName,NewClassName:shortstring):integer;
-var
-  Instance:TComponent;
-  ok: boolean;
-begin
-  Result:=-1;
-  // create new class and an instance
-  //writeln('[TJITForms.DoCreateJITForm] Creating new JIT class '''+NewClassName+''' ...');
-  Pointer(FCurReadClass):=CreateVMTCopy(TJITForm,'TJITForm');
-  //writeln('[TJITForms.DoCreateJITForm] Creating an instance of JIT class '''+NewClassName+''' ...');
-  Instance:=TComponent(FCurReadClass.NewInstance);
-  //writeln('[TJITForms.DoCreateJITForm] Initializing new instance ...');
-  TComponent(FCurReadForm):=Instance;
-  ok:=false;
-  try
-    Instance.Create(nil);
-    if NewFormName<>'' then
-      Instance.Name:=NewFormName;
-    DoRenameClass(FCurReadClass,NewClassName);
-    ok:=true;
-  //writeln('[TJITForms.DoCreateJITForm] Initialization was successful! FormName="',NewFormName,'"');
-  finally
-    if not ok then begin
-      TComponent(FCurReadForm):=nil;
-      writeln('[TJITForms.DoCreateJITForm] Error while creating instance');
-    end;
-  end;
-  Result:=FForms.Add(FCurReadForm);
-end;
-
-function TJITForms.AddNewJITForm:integer;
-var NewFormName,NewClassName:shortstring;
-begin
-  {$IFDEF IDE_VERBOSE}
-  Writeln('[TJITForms] AddNewJITForm');
-  {$ENDIF}
-  GetUnusedNames(NewFormName,NewClassName);
-  {$IFDEF IDE_VERBOSE}
-  Writeln('NewFormName is ',NewFormname,', NewClassName is ',NewClassName);
-  {$ENDIF}
-  Result:=DoCreateJITForm(NewFormName,NewClassName);
-end;
-
-function TJITForms.GetClassNameFromStream(s:TStream):shortstring;
+function TJITComponentList.GetClassNameFromStream(s:TStream):shortstring;
 var Signature:shortstring;
   NameLen:byte;
 begin
@@ -295,29 +291,22 @@ begin
   s.Position:=0;
 end;
 
-function TJITForms.AddJITFormFromStream(BinStream:TStream):integer;
+function TJITComponentList.AddNewJITComponent:integer;
+var NewComponentName,NewClassName:shortstring;
+begin
+  {$IFDEF IDE_VERBOSE}
+  Writeln('[TJITComponentList] AddNewJITComponent');
+  {$ENDIF}
+  GetUnusedNames(NewComponentName,NewClassName);
+  {$IFDEF IDE_VERBOSE}
+  Writeln('NewComponentName is ',NewComponentName,', NewClassName is ',NewClassName);
+  {$ENDIF}
+  Result:=DoCreateJITComponent(NewComponentName,NewClassName);
+end;
+
+function TJITComponentList.AddJITComponentFromStream(BinStream:TStream):integer;
 //  returns new index
 // -1 = invalid stream
-
-  procedure ApplyVisible;
-  var
-    i: integer;
-    AControl: TControl;
-  begin
-    // The LCL has as default Visible=false. But for Delphi compatbility
-    // loading control defaults to true.
-    for i:=0 to FCurReadForm.ComponentCount-1 do begin
-      AControl:=TControl(FCurReadForm.Components[i]);
-      if (AControl is TControl) then begin
-        if (not (csVisibleSetInLoading in AControl.ControlState)) then
-          AControl.Visible:=true
-        else
-          AControl.ControlState:=
-            AControl.ControlState-[csVisibleSetInLoading];
-      end;
-    end;
-  end;
-
 var
   Reader:TReader;
   NewClassName:shortstring;
@@ -328,17 +317,17 @@ begin
   if NewClassName='' then begin
 
     // Application.MessageBox('No classname in form stream found.','',mb_OK);
-    MessageDlg('No classname in form stream found.',mterror,[mbOK],0);
+    MessageDlg('No classname in stream found.',mterror,[mbOK],0);
 
     exit;
   end;
   {$IFDEF IDE_VERBOSE}
-  writeln('[TJITForms.AddJITFormFromStream] 1');
+  writeln('[TJITComponentList.AddJITFormFromStream] 1');
   {$ENDIF}
   try
-    Result:=DoCreateJITForm('',NewClassName);
+    Result:=DoCreateJITComponent('',NewClassName);
     {$IFDEF IDE_VERBOSE}
-    writeln('[TJITForms.AddJITFormFromStream] 2');
+    writeln('[TJITComponentList.AddJITFormFromStream] 2');
     {$ENDIF}
 
     Reader:=TReader.Create(BinStream,4096);
@@ -346,7 +335,7 @@ begin
     FindGlobalComponent:=@MyFindGlobalComponent;
 
     {$IFDEF IDE_VERBOSE}
-    writeln('[TJITForms.AddJITFormFromStream] 3');
+    writeln('[TJITComponentList.AddJITFormFromStream] 3');
     {$ENDIF}
     try
       // connect TReader events
@@ -359,109 +348,145 @@ begin
       Reader.OnFindComponentClass:=@ReaderFindComponentClass;
 
       {$IFDEF IDE_VERBOSE}
-      writeln('[TJITForms.AddJITFormFromStream] 4');
+      writeln('[TJITComponentList.AddJITFormFromStream] 4');
       {$ENDIF}
       InitReading;
 
-      Reader.ReadRootComponent(FCurReadForm);
-      if FCurReadForm.Name='' then begin
-        NewName:=FCurReadForm.ClassName;
+      Reader.ReadRootComponent(FCurReadJITComponent);
+      if FCurReadJITComponent.Name='' then begin
+        NewName:=FCurReadJITComponent.ClassName;
         if NewName[1] in ['T','t'] then
           System.Delete(NewName,1,1);
-        FCurReadForm.Name:=NewName;
+        FCurReadJITComponent.Name:=NewName;
       end;
 
       {$IFDEF IDE_VERBOSE}
-      writeln('[TJITForms.AddJITFormFromStream] 5');
+      writeln('[TJITComponentList.AddJITFormFromStream] 5');
       {$ENDIF}
-      ApplyVisible;
-
-      {$IFDEF IDE_VERBOSE}
-      writeln('[TJITForms.AddJITFormFromStream] 6');
-      {$ENDIF}
-      FCurReadForm.Show;
+      DoFinishReading;
     finally
       FindGlobalComponent:=nil;
       Reader.Free;
     end;
   except
-    writeln('[TJITForms.AddJITFormFromStream] ERROR reading form stream'
+    writeln('[TJITComponentList.AddJITFormFromStream] ERROR reading form stream'
        +' of Class ''',NewClassName,'''');
     Result:=-1;
   end;
 end;
 
-function TJITForms.OnFindGlobalComponent(const AName:AnsiString):TComponent;
+function TJITComponentList.OnFindGlobalComponent(const AName:AnsiString):TComponent;
 begin
   Result:=Application.FindComponent(AName);
 end;
 
-procedure TJITForms.InitReading;
+procedure TJITComponentList.InitReading;
 begin
-  FCurReadComponentClass:=nil;
-  FCurReadComponent:=nil;
+  FCurReadChildClass:=nil;
+  FCurReadChild:=nil;
   FCurReadErrorMsg:='';
 end;
 
-procedure TJITForms.AddNewMethod(JITForm:TForm; AName:ShortString);
+function TJITComponentList.DoCreateJITComponent(
+  NewComponentName,NewClassName:shortstring):integer;
+var
+  Instance:TComponent;
+  ok: boolean;
 begin
-  CreateNewmethod(JITForm,AName);
+  Result:=-1;
+  // create new class and an instance
+  //writeln('[TJITForms.DoCreateJITComponent] Creating new JIT class '''+NewClassName+''' ...');
+  Pointer(FCurReadClass):=CreateDefaultVMTCopy;
+  //writeln('[TJITForms.DoCreateJITComponent] Creating an instance of JIT class '''+NewClassName+''' ...');
+  Instance:=TComponent(FCurReadClass.NewInstance);
+  //writeln('[TJITForms.DoCreateJITComponent] Initializing new instance ...');
+  TComponent(FCurReadJITComponent):=Instance;
+  ok:=false;
+  try
+    Instance.Create(nil);
+    if NewComponentName<>'' then
+      Instance.Name:=NewComponentName;
+    DoRenameClass(FCurReadClass,NewClassName);
+    ok:=true;
+  //writeln('[TJITForms.DoCreateJITComponent] Initialization was successful! FormName="',NewFormName,'"');
+  finally
+    if not ok then begin
+      TComponent(FCurReadJITComponent):=nil;
+      writeln('[TJITForms.DoCreateJITComponent] Error while creating instance');
+    end;
+  end;
+  Result:=FJITComponents.Add(FCurReadJITComponent);
 end;
 
-procedure TJITForms.RemoveMethod(JITForm:TForm; AName:ShortString);
+procedure TJITComponentList.DoFinishReading;
+begin
+
+end;
+
+procedure TJITComponentList.AddNewMethod(JITComponent:TComponent;
+  const AName:ShortString);
+begin
+  CreateNewmethod(JITComponent,AName);
+end;
+
+procedure TJITComponentList.RemoveMethod(JITComponent:TComponent;
+  const AName:ShortString);
 var OldCode:Pointer;
 begin
-  if JITForm=nil then
-    raise Exception.Create('TJITForms.RemoveMethod JITForm=nil');
-  if IndexOf(JITForm)<0 then
-    raise Exception.Create('TJITForms.RemoveMethod JITForm.ClassName='+
-      JITForm.ClassName);
+  if JITComponent=nil then
+    raise Exception.Create('TJITComponentList.RemoveMethod JITComponent=nil');
+  if IndexOf(JITComponent)<0 then
+    raise Exception.Create('TJITComponentList.RemoveMethod JITComponent.ClassName='+
+      JITComponent.ClassName);
   if (AName='') or (not IsValidIdent(AName)) then
-    raise Exception.Create('TJITForms.RemoveMethod invalid name: "'+AName+'"');
+    raise Exception.Create('TJITComponentList.RemoveMethod invalid name: "'+AName+'"');
   OldCode:=nil;
-  DoRemoveMethod(JITForm.ClassType,AName,OldCode);
+  DoRemoveMethod(JITComponent.ClassType,AName,OldCode);
   FreeMem(OldCode);
 end;
 
-procedure TJITForms.RenameMethod(JITForm:TForm; OldName,NewName:ShortString);
+procedure TJITComponentList.RenameMethod(JITComponent:TComponent;
+  const OldName,NewName:ShortString);
 begin
-  if JITForm=nil then
-    raise Exception.Create('TJITForms.RenameMethod JITForm=nil');
-  if IndexOf(JITForm)<0 then
-    raise Exception.Create('TJITForms.RenameMethod JITForm.ClassName='+
-      JITForm.ClassName);
+  if JITComponent=nil then
+    raise Exception.Create('TJITComponentList.RenameMethod JITComponent=nil');
+  if IndexOf(JITComponent)<0 then
+    raise Exception.Create('TJITComponentList.RenameMethod JITComponent.ClassName='+
+      JITComponent.ClassName);
   if (NewName='') or (not IsValidIdent(NewName)) then
-    raise Exception.Create('TJITForms.RenameMethod invalid name: "'+NewName+'"');
-  DoRenameMethod(JITForm.ClassType,OldName,NewName);
+    raise Exception.Create('TJITComponentList.RenameMethod invalid name: "'+NewName+'"');
+  DoRenameMethod(JITComponent.ClassType,OldName,NewName);
 end;
 
-procedure TJITForms.RenameFormClass(JITForm:TForm; NewName:ShortString);
+procedure TJITComponentList.RenameComponentClass(JITComponent:TComponent;
+  const NewName:ShortString);
 begin
-  if JITForm=nil then
-    raise Exception.Create('TJITForms.RenameFormClass JITForm=nil');
-  if IndexOf(JITForm)<0 then
-    raise Exception.Create('TJITForms.RenameFormClass JITForm.ClassName='+
-      JITForm.ClassName);
+  if JITComponent=nil then
+    raise Exception.Create('TJITComponentList.RenameComponentClass JITComponent=nil');
+  if IndexOf(JITComponent)<0 then
+    raise Exception.Create('TJITComponentList.RenameComponentClass JITComponent.ClassName='+
+      JITComponent.ClassName);
   if (NewName='') or (not IsValidIdent(NewName)) then
-    raise Exception.Create('TJITForms.RenameFormClass invalid name: "'+NewName+'"');
-  DoRenameClass(JITForm.ClassType,NewName);
+    raise Exception.Create('TJITComponentList.RenameComponentClass invalid name: "'+NewName+'"');
+  DoRenameClass(JITComponent.ClassType,NewName);
 end;
 
-function TJITForms.CreateNewMethod(JITForm: TForm; AName: ShortString): TMethod;
+function TJITComponentList.CreateNewMethod(JITComponent: TComponent;
+  const AName: ShortString): TMethod;
 var CodeTemplate,NewCode:Pointer;
   CodeSize:integer;
   OldCode: Pointer;
 begin
-  if JITForm=nil then
-    raise Exception.Create('TJITForms.CreateNewMethod JITForm=nil');
-  if IndexOf(JITForm)<0 then
-    raise Exception.Create('TJITForms.CreateNewMethod JITForm.ClassName='+
-      JITForm.ClassName);
+  if JITComponent=nil then
+    raise Exception.Create('TJITComponentList.CreateNewMethod JITComponent=nil');
+  if IndexOf(JITComponent)<0 then
+    raise Exception.Create('TJITComponentList.CreateNewMethod JITComponent.ClassName='+
+      JITComponent.ClassName);
   if (AName='') or (not IsValidIdent(AName)) then
-    raise Exception.Create('TJITForms.CreateNewMethod invalid name: "'+AName+'"');
-  OldCode:=JITForm.MethodAddress(AName);
+    raise Exception.Create('TJITComponentList.CreateNewMethod invalid name: "'+AName+'"');
+  OldCode:=JITComponent.MethodAddress(AName);
   if OldCode<>nil then begin
-    Result.Data:=JITForm;
+    Result.Data:=JITComponent;
     Result.Code:=OldCode;
     exit;
   end;
@@ -469,8 +494,8 @@ begin
   CodeSize:=100; // !!! what is the real codesize of DoNothing? !!!
   GetMem(NewCode,CodeSize);
   Move(CodeTemplate^,NewCode^,CodeSize);
-  DoAddNewMethod(JITForm.ClassType,AName,NewCode);
-  Result.Data:=JITForm;
+  DoAddNewMethod(JITComponent.ClassType,AName,NewCode);
+  Result.Data:=JITComponent;
   Result.Code:=NewCode;
 end;
 
@@ -492,8 +517,13 @@ type
 
   PMethodNameTable =  ^TMethodNameTable;
 
+procedure TJITComponentList.SetComponentPrefix(const AValue: string);
+begin
+  if FComponentPrefix=AValue then exit;
+  FComponentPrefix:=AValue;
+end;
 
-function TJITForms.CreateVMTCopy(SourceClass:TClass;
+function TJITComponentList.CreateVMTCopy(SourceClass:TClass;
   const NewClassName:ShortString):Pointer;
 const
   vmtSize:integer=2000; //XXX how big is the vmt of class TJITForm ?
@@ -501,7 +531,7 @@ var MethodTable, NewMethodTable : PMethodNameTable;
   MethodTableSize: integer;
   ClassNamePtr, ClassNamePShortString: Pointer;
 begin
-//writeln('[TJITForms.CreatevmtCopy] SourceClass='''+SourceClass.ClassName+''''
+//writeln('[TJITComponentList.CreatevmtCopy] SourceClass='''+SourceClass.ClassName+''''
 // +' NewClassName='''+NewClassName+'''');
   // create copy of vmt
   GetMem(Result,vmtSize);
@@ -524,7 +554,7 @@ begin
   Move(NewClassName[0],ClassNamePShortString^,SizeOf(ShortString));
 end;
 
-procedure TJITForms.FreevmtCopy(vmtCopy:Pointer);
+procedure TJITComponentList.FreevmtCopy(vmtCopy:Pointer);
 
   procedure FreeNewMethods(MethodTable: PMethodNameTable);
   var
@@ -555,7 +585,7 @@ var
   MethodTable : PMethodNameTable;
   ClassNamePtr: Pointer;
 begin
-  //writeln('[TJITForms.FreevmtCopy] ClassName='''+TClass(vmtCopy).ClassName+'''');
+  //writeln('[TJITComponentList.FreevmtCopy] ClassName='''+TClass(vmtCopy).ClassName+'''');
   if vmtCopy=nil then exit;
   // free copy of methodtable
   MethodTable:=PMethodNameTable((Pointer(vmtCopy)+vmtMethodTable)^);
@@ -570,12 +600,12 @@ begin
   FreeMem(vmtCopy);
 end;
 
-procedure TJITForms.DoAddNewMethod(JITClass:TClass;
-  AName:ShortString;  ACode:Pointer);
-var OldMethodTable,NewMethodTable: PMethodNameTable;
+procedure TJITComponentList.DoAddNewMethod(JITClass:TClass;
+  const AName:ShortString;  ACode:Pointer);
+var OldMethodTable, NewMethodTable: PMethodNameTable;
   NewMethodTableSize:integer;
 begin
-  //writeln('[TJITForms.AddNewMethod] '''+JITClass.ClassName+'.'+AName+'''');
+  //writeln('[TJITComponentList.AddNewMethod] '''+JITClass.ClassName+'.'+AName+'''');
   OldMethodTable:=PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^);
   if Assigned(OldMethodTable) then begin
     NewMethodTableSize:=SizeOf(DWord)+
@@ -609,14 +639,14 @@ begin
     FreeMem(OldMethodTable);
 end;
 
-procedure TJITForms.DoRemoveMethod(JITClass:TClass;  AName:ShortString;
-          var OldCode:Pointer);
+procedure TJITComponentList.DoRemoveMethod(JITClass:TClass;
+  AName:ShortString; var OldCode:Pointer);
 var OldMethodTable, NewMethodTable: PMethodNameTable;
   NewMethodTableSize:integer;
   a:cardinal;
 begin
   {$IFDEF IDE_VERBOSE}
-  writeln('[TJITForms.DoRemoveMethod] '''+JITClass.ClassName+'.'+AName+'''');
+  writeln('[TJITComponentList.DoRemoveMethod] '''+JITClass.ClassName+'.'+AName+'''');
   {$ENDIF}
   AName:=uppercase(AName);
   OldMethodTable:=PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^);
@@ -650,13 +680,13 @@ begin
   end;
 end;
 
-procedure TJITForms.DoRenameMethod(JITClass:TClass;
+procedure TJITComponentList.DoRenameMethod(JITClass:TClass;
   OldName,NewName:ShortString);
 var MethodTable: PMethodNameTable;
   a:integer;
 begin
   {$IFDEF IDE_VERBOSE}
-  writeln('[TJITForms.DoRenameMethod] ClassName='''+JITClass.ClassName+''''
+  writeln('[TJITComponentList.DoRenameMethod] ClassName='''+JITClass.ClassName+''''
     +' OldName='''+OldName+''' NewName='''+OldName+'''');
   {$ENDIF}
   OldName:=uppercase(OldName);
@@ -669,10 +699,11 @@ begin
   end;
 end;
 
-procedure TJITForms.DoRenameClass(JITClass:TClass; NewName:ShortString);
+procedure TJITComponentList.DoRenameClass(JITClass:TClass;
+  const NewName:ShortString);
 begin
   {$IFDEF IDE_VERBOSE}
-  writeln('[TJITForms.DoRenameClass] OldName='''+JITClass.ClassName
+  writeln('[TJITComponentList.DoRenameClass] OldName='''+JITClass.ClassName
     +''' NewName='''+NewName+''' ');
   {$ENDIF}
   PShortString((Pointer(JITClass)+vmtClassName)^)^:=NewName;
@@ -689,44 +720,44 @@ end;
   (just-in-time).
 }
 
-procedure TJITForms.ReaderFindMethod(Reader: TReader;
+procedure TJITComponentList.ReaderFindMethod(Reader: TReader;
   const FindMethodName: Ansistring;  var Address: Pointer; var Error: Boolean);
 var NewMethod: TMethod;
 begin
   {$IFDEF IDE_DEBUG}
-  writeln('[TJITForms.ReaderFindMethod] A "'+FindMethodName+'" Address=',HexStr(Cardinal(Address),8));
+  writeln('[TJITComponentList.ReaderFindMethod] A "'+FindMethodName+'" Address=',HexStr(Cardinal(Address),8));
   {$ENDIF}
   if Address=nil then begin
     // there is no method in the ancestor class with this name
     // => add a JIT method with this name to the JITForm
-    NewMethod:=CreateNewMethod(FCurReadForm,FindMethodName);
+    NewMethod:=CreateNewMethod(FCurReadJITComponent,FindMethodName);
     Address:=NewMethod.Code;
     Error:=false;
   end;
 end;
 
-procedure TJITForms.ReaderSetName(Reader: TReader; Component: TComponent;
+procedure TJITComponentList.ReaderSetName(Reader: TReader; Component: TComponent;
   var NewName: Ansistring);
 begin
-//  writeln('[TJITForms.ReaderSetName] OldName="'+Component.Name+'" NewName="'+NewName+'"');
+//  writeln('[TJITComponentList.ReaderSetName] OldName="'+Component.Name+'" NewName="'+NewName+'"');
 end;
 
-procedure TJITForms.ReaderReferenceName(Reader: TReader; var RefName: Ansistring);
+procedure TJITComponentList.ReaderReferenceName(Reader: TReader; var RefName: Ansistring);
 begin
-//  writeln('[TJITForms.ReaderReferenceName] Name='''+RefName+'''');
+//  writeln('[TJITComponentList.ReaderReferenceName] Name='''+RefName+'''');
 end;
 
-procedure TJITForms.ReaderAncestorNotFound(Reader: TReader;
+procedure TJITComponentList.ReaderAncestorNotFound(Reader: TReader;
   const ComponentName: Ansistring;  ComponentClass: TPersistentClass;
   var Component: TComponent);
 begin
 // ToDo: this is for custom form templates
-//  writeln('[TJITForms.ReaderAncestorNotFound] ComponentName='''+ComponentName
+//  writeln('[TJITComponentList.ReaderAncestorNotFound] ComponentName='''+ComponentName
 //    +''' Component='''+Component.Name+'''');
 end;
 
-procedure TJITForms.ReaderError(Reader: TReader; const ErrorMsg: Ansistring;
-  var Handled: Boolean);
+procedure TJITComponentList.ReaderError(Reader: TReader;
+  const ErrorMsg: Ansistring; var Handled: Boolean);
 // ToDo: use SUnknownProperty when it is published by the fpc team
 const
   SUnknownProperty = 'Unknown property';
@@ -746,19 +777,19 @@ begin
     OnReaderError(Self,ErrorType,Action);
   Handled:=Action in [mrIgnore];
   writeln('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-  writeln('[TJITForms.ReaderError] "'+ErrorMsg+'" ignoring=',Handled);
+  writeln('[TJITComponentList.ReaderError] "'+ErrorMsg+'" ignoring=',Handled);
   writeln('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 end;
 
-procedure TJITForms.ReaderFindComponentClass(Reader: TReader;
+procedure TJITComponentList.ReaderFindComponentClass(Reader: TReader;
   const FindClassName: Ansistring;  var ComponentClass: TComponentClass);
 var
   RegComp: TRegisteredComponent;
   Action: TModalResult;
   ErrorType: TJITFormError;
 begin
-  fCurReadComponent:=nil;
-  fCurReadComponentClass:=ComponentClass;
+  fCurReadChild:=nil;
+  fCurReadChildClass:=ComponentClass;
   if ComponentClass=nil then begin
     {$IFDEF DisablePkgs}
     RegComp:=FRegCompList.FindComponentClassByName(FindClassName);
@@ -766,11 +797,11 @@ begin
     RegComp:=IDEComponentPalette.FindComponent(FindClassName);
     {$ENDIF}
     if RegComp<>nil then begin
-      //writeln('[TJITForms.ReaderFindComponentClass] '''+FindClassName
+      //writeln('[TJITComponentList.ReaderFindComponentClass] '''+FindClassName
       //   +''' is registered');
       ComponentClass:=RegComp.ComponentClass;
     end else begin
-      writeln('[TJITForms.ReaderFindComponentClass] '''+FindClassName
+      writeln('[TJITComponentList.ReaderFindComponentClass] '''+FindClassName
          +''' is unregistered');
       Action:=mrCancel;
       ErrorType:=jfeUnknownComponentClass;
@@ -780,16 +811,92 @@ begin
   end;
 end;
 
-procedure TJITForms.ReaderCreateComponent(Reader: TReader;
+procedure TJITComponentList.ReaderCreateComponent(Reader: TReader;
   ComponentClass: TComponentClass; var Component: TComponent);
 begin
-  fCurReadComponent:=Component;
-  fCurReadComponentClass:=ComponentClass;
-//  writeln('[TJITForms.ReaderCreateComponent] Class='''+ComponentClass.ClassName+'''');
+  fCurReadChild:=Component;
+  fCurReadChildClass:=ComponentClass;
+//  writeln('[TJITComponentList.ReaderCreateComponent] Class='''+ComponentClass.ClassName+'''');
 end;
 
 //==============================================================================
 
+
+{ TJITForms }
+
+constructor TJITForms.Create;
+begin
+  inherited Create;
+  FComponentPrefix:='Form';
+end;
+
+function TJITForms.IsJITForm(AComponent: TComponent): boolean;
+begin
+  Result:=(AComponent<>nil) and (AComponent is TForm)
+      and (TForm(AComponent).Parent=nil) and (IndexOf(AComponent)>=0);
+end;
+
+function TJITForms.GetItem(Index: integer): TForm;
+begin
+  Result:=TForm(inherited Items[Index]);
+end;
+
+function TJITForms.CreateDefaultVMTCopy: Pointer;
+begin
+  Result:=CreateVMTCopy(TJITForm,'TJITForm');
+end;
+
+procedure TJITForms.DoFinishReading;
+
+  procedure ApplyVisible;
+  var
+    i: integer;
+    AControl: TControl;
+  begin
+    // The LCL has as default Visible=false. But for Delphi compatbility
+    // loading control defaults to true.
+    for i:=0 to FCurReadJITComponent.ComponentCount-1 do begin
+      AControl:=TControl(FCurReadJITComponent.Components[i]);
+      if (AControl is TControl) then begin
+        if (not (csVisibleSetInLoading in AControl.ControlState)) then
+          AControl.Visible:=true
+        else
+          AControl.ControlState:=
+            AControl.ControlState-[csVisibleSetInLoading];
+      end;
+    end;
+  end;
+
+begin
+  inherited DoFinishReading;
+  ApplyVisible;
+  TJITForm(FCurReadJITComponent).Show;
+end;
+
+
+{ TJITDataModules }
+
+function TJITDataModules.GetItem(Index: integer): TDataModule;
+begin
+  Result:=TDataModule(inherited Items[Index]);
+end;
+
+function TJITDataModules.CreateDefaultVMTCopy: Pointer;
+begin
+  Result:=CreateVMTCopy(TJITDataModule,'TJITDataModule');
+end;
+
+constructor TJITDataModules.Create;
+begin
+  inherited Create;
+  FComponentPrefix:='DataModule';
+end;
+
+function TJITDataModules.IsJITDataModule(AComponent: TComponent): boolean;
+begin
+  Result:=(AComponent<>nil) and (AComponent is TDataModule)
+          and (IndexOf(AComponent)>=0);
+end;
 
 end.
 

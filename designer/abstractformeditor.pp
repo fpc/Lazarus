@@ -112,8 +112,10 @@ or use TPropertyType
 //     Function CreateComponent(CI : TIComponentInterface; TypeName : ShortString;
      Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
                              X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
-     Function CreateFormFromStream(BinStream: TStream): TIComponentInterface; virtual; abstract;
-  end;
+     Function CreateComponentFromStream(BinStream: TStream;
+                                     AncestorType: TComponentClass
+                                     ): TIComponentInterface; virtual; abstract;
+   end;
 
 
 implementation

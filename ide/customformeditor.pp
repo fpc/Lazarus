@@ -39,12 +39,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector,
-  Forms, Menus, JITForms,
-  {$IFDEF DisablePkgs}
-  CompReg, IDEComp,
-  {$ELSE}
-  ComponentReg,
-  {$ENDIF}
+  Forms, Menus, JITForms, NonControlForms, ComponentReg, IDEProcs,
   ComponentEditors, KeyMapping, EditorOptions, Dialogs;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
@@ -128,7 +123,7 @@ TCustomFormEditor
     procedure SetSelectedComponents(TheSelectedComponents : TComponentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); virtual;
-    procedure JITFormListReaderError(Sender: TObject; ErrorType: TJITFormError;
+    procedure JITListReaderError(Sender: TObject; ErrorType: TJITFormError;
           var Action: TModalResult); virtual;
 
     Function GetComponentByHandle(const Value : Longint): TIComponentInterface; override;
@@ -137,15 +132,19 @@ TCustomFormEditor
     Function GetSelComponent(Index : Integer) : TIComponentInterface; override;
     procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
   public
-    JITFormList : TJITForms;
+    JITFormList: TJITForms;// designed forms
+    JITDataModuleList: TJITDataModules;// designed data modules
+    
     constructor Create;
     destructor Destroy; override;
 
     Function AddSelected(Value : TComponent) : Integer;
-    Procedure DeleteControl(Value : TComponent; FreeComponent: boolean);
+    Procedure DeleteControl(AComponent: TComponent; FreeComponent: boolean);
     Function FormModified : Boolean; override;
     Function FindComponentByName(const Name : ShortString) : TIComponentInterface; override;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
+    function IsJITComponent(AComponent: TComponent): boolean;
+    function GetJITListOfType(AncestorType: TComponentClass): TJITComponentList;
     
     function GetComponentEditor(AComponent: TComponent): TBaseComponentEditor;
     Function GetFormComponent: TIComponentInterface; override;
@@ -156,9 +155,10 @@ TCustomFormEditor
     Function CreateComponentInterface(AComponent: TComponent): TIComponentInterface;
     Function CreateComponent(ParentCI : TIComponentInterface;
       TypeClass: TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
-    Function CreateFormFromStream(BinStream: TStream): TIComponentInterface; override;
-    Procedure SetFormNameAndClass(CI: TIComponentInterface; 
-      const NewFormName, NewClassName: shortstring);
+    Function CreateComponentFromStream(BinStream: TStream;
+                       AncestorType: TComponentClass): TIComponentInterface; override;
+    Procedure SetComponentNameAndClass(CI: TIComponentInterface;
+      const NewName, NewClassName: shortstring);
     Procedure ClearSelected;
     
     function TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): integer;
@@ -175,7 +175,7 @@ implementation
 
 
 uses
-  SysUtils;
+  SysUtils, Math;
 
 {TComponentInterface}
 
@@ -622,11 +622,13 @@ begin
   inherited Create;
   FComponentInterfaceList := TList.Create;
   FSelectedComponents := TComponentSelectionList.Create;
+  
   JITFormList := TJITForms.Create;
-  {$IFDEF DisablePkgs}
-  JITFormList.RegCompList := RegCompList;
-  {$ENDIF}
-  JITFormList.OnReaderError:=@JITFormListReaderError;
+  JITFormList.OnReaderError:=@JITListReaderError;
+  
+  JITDataModuleList := TJITDataModules.Create;
+  JITDataModuleList.OnReaderError:=@JITListReaderError;
+  
   DesignerMenuItemClick:=@OnDesignerMenuItemClick;
 end;
 
@@ -634,6 +636,7 @@ destructor TCustomFormEditor.Destroy;
 begin
   DesignerMenuItemClick:=nil;
   JITFormList.Free;
+  JITDataModuleList.Free;
   FComponentInterfaceList.Free;
   FSelectedComponents.Free;
   inherited;
@@ -664,36 +667,41 @@ Begin
   Obj_Inspector.Selections := FSelectedComponents;
 end;
 
-Procedure TCustomFormEditor.DeleteControl(Value : TComponent;
+Procedure TCustomFormEditor.DeleteControl(AComponent: TComponent;
   FreeComponent: boolean);
 var
   Temp : TComponentInterface;
   i: integer;
-  AForm: TCustomForm;
 Begin
-  Temp := TComponentInterface(FindComponent(Value));
+  Temp := TComponentInterface(FindComponent(AComponent));
   if Temp <> nil then
   begin
     RemoveFromComponentInterfaceList(Temp);
-    if (Value is TCustomForm) then begin
+
+writeln('TCustomFormEditor.DeleteControl ',AComponent.ClassName,' ',IsJITComponent(AComponent));
+    if IsJITComponent(AComponent) then begin
+      // value is a top level component
       if FreeComponent then begin
-        AForm:=TCustomForm(Value);
-        i:=AForm.ComponentCount-1;
+        i:=AComponent.ComponentCount-1;
         while i>=0 do begin
-          DeleteControl(AForm.Components[i],true);
+          DeleteControl(AComponent.Components[i],true);
           dec(i);
-          if i>AForm.ComponentCount-1 then
-            i:=AForm.ComponentCount-1;
+          if i>AComponent.ComponentCount-1 then
+            i:=AComponent.ComponentCount-1;
         end;
-        if PropertyEditorHook.LookupRoot=AForm then
+        if PropertyEditorHook.LookupRoot=AComponent then
           PropertyEditorHook.LookupRoot:=nil;
-        if not (AForm is TForm) then
-          writeln('WARNING: TCustomFormEditor.DeleteControl ',AForm.ClassName);
-        JITFormList.DestroyJITForm(TForm(AForm));
+        if JITFormList.IsJITForm(AComponent) then
+          JITFormList.DestroyJITComponent(AComponent)
+        else if JITDataModuleList.IsJITDataModule(AComponent) then
+          JITDataModuleList.DestroyJITComponent(AComponent)
+        else
+          RaiseException('TCustomFormEditor.AddSelected '+AComponent.ClassName);
       end;
       Temp.Free;
     end
     else begin
+      // value is a normal child component
       if FreeComponent then
         Temp.Delete
       else
@@ -737,6 +745,23 @@ Begin
   Result:=nil;
 end;
 
+function TCustomFormEditor.IsJITComponent(AComponent: TComponent): boolean;
+begin
+  Result:=JITFormList.IsJITForm(AComponent)
+          or JITDataModuleList.IsJITDataModule(AComponent);
+end;
+
+function TCustomFormEditor.GetJITListOfType(AncestorType: TComponentClass
+  ): TJITComponentList;
+begin
+  if AncestorType.InheritsFrom(TForm) then
+    Result:=JITFormList
+  else if AncestorType.InheritsFrom(TDataModule) then
+    Result:=JITDataModuleList
+  else
+    Result:=nil;
+end;
+
 function TCustomFormEditor.GetComponentEditor(AComponent: TComponent
   ): TBaseComponentEditor;
 var
@@ -749,14 +774,16 @@ begin
   Result:=ACompIntf.GetComponentEditor;
 end;
 
-Function TCustomFormEditor.CreateComponent(ParentCI : TIComponentInterface;
-  TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface;
+Function TCustomFormEditor.CreateComponent(ParentCI: TIComponentInterface;
+  TypeClass: TComponentClass;  X,Y,W,H: Integer): TIComponentInterface;
 Var
   Temp: TComponentInterface;
-  NewFormIndex: Integer;
+  NewJITIndex: Integer;
   CompLeft, CompTop, CompWidth, CompHeight: integer;
   OwnerComponent: TComponent;
   ParentComponent: TComponent;
+  JITList: TJITComponentList;
+  AControl: TControl;
 Begin
   writeln('[TCustomFormEditor.CreateComponent] Class='''+TypeClass.ClassName+'''');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent A');{$ENDIF}
@@ -787,11 +814,14 @@ Begin
       end;
     end;
   end else begin
-    // create a toplevel control -> a form
+    // create a toplevel control -> a form or a datamodule
     ParentComponent:=nil;
-    NewFormIndex := JITFormList.AddNewJITForm;
-    if NewFormIndex >= 0 then
-      Temp.FComponent := JITFormList[NewFormIndex]
+    JITList:=GetJITListOfType(TypeClass);
+    if JITList=nil then
+      RaiseException('TCustomFormEditor.CreateComponent '+TypeClass.ClassName);
+    NewJITIndex := JITList.AddNewJITComponent;
+    if NewJITIndex >= 0 then
+      Temp.FComponent := JITList[NewJITIndex]
     else begin
       Result:=nil;
       exit;
@@ -801,23 +831,53 @@ Begin
   Temp.Component.Name := CreateUniqueComponentName(Temp.Component);
 
   // set bounds
+  CompLeft:=X;
+  CompTop:=Y;
+  CompWidth:=W;
+  CompHeight:=H;
   if (Temp.Component is TControl) then
   Begin
-    CompLeft:=X;
-    CompTop:=Y;
-    CompWidth:=W;
-    CompHeight:=H;
-    if CompWidth<=0 then CompWidth:=TControl(Temp.Component).Width;
-    if CompHeight<=0 then CompHeight:=TControl(Temp.Component).Height;
-    if CompLeft<0 then
-      CompLeft:=(TControl(Temp.Component).Parent.Width + CompWidth) div 2;
-    if CompTop<0 then
-      CompTop:=(TControl(Temp.Component).Parent.Height+ CompHeight) div 2;
-    TControl(Temp.Component).SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
-  end else begin
+    AControl:=TControl(Temp.Component);
+    if CompWidth<=0 then CompWidth:=Max(5,AControl.Width);
+    if CompHeight<=0 then CompHeight:=Max(5,AControl.Height);
+    if CompLeft<0 then begin
+      if AControl.Parent<>nil then
+        CompLeft:=(AControl.Parent.Width - CompWidth) div 2
+      else if AControl is TCustomForm then
+        CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50))
+      else
+        CompLeft:=0;
+    end;
+    if CompTop<0 then begin
+      if AControl.Parent<>nil then
+        CompTop:=(AControl.Parent.Height - CompHeight) div 2
+      else if AControl is TCustomForm then
+        CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50))
+      else
+        CompTop:=0;
+    end;
+    AControl.SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
+  end
+  else if (Temp.Component is TDataModule) then begin
+    // data module
+    with TDataModule(Temp.Component) do begin
+      if CompWidth<=0 then CompWidth:=Max(50,DesignSize.X);
+      if CompHeight<=0 then CompHeight:=Max(50,DesignSize.Y);
+      if CompLeft<0 then
+        CompLeft:=Max(1,Min(250,Screen.Width-CompWidth-50));
+      if CompTop<0 then
+        CompTop:=Max(1,Min(250,Screen.Height-CompHeight-50));
+      DesignOffset.X:=CompLeft;
+      DesignOffset.Y:=CompTop;
+      DesignSize.X:=CompWidth;
+      DesignSize.Y:=CompHeight;
+    end;
+  end
+  else begin
+    // non TControl
     with LongRec(Temp.Component.DesignInfo) do begin
-      Lo:=X;
-      Hi:=Y;
+      Lo:=CompLeft;
+      Hi:=CompTop;
     end;
   end;
 
@@ -828,68 +888,76 @@ Begin
   Result := Temp;
 end;
 
-Function TCustomFormEditor.CreateFormFromStream(
-  BinStream: TStream): TIComponentInterface;
+Function TCustomFormEditor.CreateComponentFromStream(
+  BinStream: TStream; AncestorType: TComponentClass): TIComponentInterface;
 var
-  NewFormIndex: integer;
+  NewJITIndex: integer;
   i: integer;
-  NewForm: TCustomForm;
+  NewComponent: TComponent;
+  JITList: TJITComponentList;
 begin
-  // create JITForm
-  NewFormIndex := JITFormList.AddJITFormFromStream(BinStream);
-  if NewFormIndex < 0 then begin
+  // create JIT Component
+  JITList:=GetJITListOfType(AncestorType);
+  if JITList=nil then
+    RaiseException('TCustomFormEditor.CreateComponentFromStream ClassName='+
+                   AncestorType.ClassName);
+  NewJITIndex := JITList.AddJITComponentFromStream(BinStream);
+  if NewJITIndex < 0 then begin
     Result:=nil;
     exit;
   end;
-  NewForm:=JITFormList[NewFormIndex];
+  NewComponent:=JITList[NewJITIndex];
   
   // create a component interface for the form
-  Result:=CreateComponentInterface(NewForm);
+  Result:=CreateComponentInterface(NewComponent);
 
-  // create component interfaces for the form components
-  for i:=0 to NewForm.ComponentCount-1 do
-    CreateComponentInterface(NewForm.Components[i]);
+  // create a component interface for each component owned by the new component
+  for i:=0 to NewComponent.ComponentCount-1 do
+    CreateComponentInterface(NewComponent.Components[i]);
 end;
 
-Procedure TCustomFormEditor.SetFormNameAndClass(CI: TIComponentInterface;
-  const NewFormName, NewClassName: shortstring);
-var AComponent: TComponent;
+Procedure TCustomFormEditor.SetComponentNameAndClass(CI: TIComponentInterface;
+  const NewName, NewClassName: shortstring);
+var
+  AComponent: TComponent;
+  JITList: TJITComponentList;
 begin
   AComponent:=TComponentInterface(CI).Component;
-  if (AComponent<>nil) and (AComponent is TForm) then begin
-    JITFormList.RenameFormClass(TForm(AComponent),NewClassName);
-    TForm(AComponent).Name:=NewFormName;
-  end;
+  JITList:=GetJITListOfType(TComponentClass(AComponent.ClassType));
+  JITList.RenameComponentClass(AComponent,NewClassName);
+  AComponent.Name:=NewName;
 end;
 
-procedure TCustomFormEditor.JITFormListReaderError(Sender: TObject;
+procedure TCustomFormEditor.JITListReaderError(Sender: TObject;
   ErrorType: TJITFormError; var Action: TModalResult);
 var
   aCaption, aMsg: string;
   DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons;
   HelpCtx: Longint;
+  JITComponentList: TJITComponentList;
 begin
-  aCaption:='Error reading form';
+  JITComponentList:=TJITComponentList(Sender);
+  aCaption:='Error reading '+JITComponentList.ComponentPrefix;
   aMsg:='';
   DlgType:=mtError;
   Buttons:=[mbCancel];
   HelpCtx:=0;
   
-  with JITFormList do begin
-    aMsg:=aMsg+'Form: ';
-    if CurReadForm<>nil then
-      aMsg:=aMsg+CurReadForm.Name+':'+CurReadForm.ClassName
+  with JITComponentList do begin
+    aMsg:=aMsg+ComponentPrefix+': ';
+    if CurReadJITComponent<>nil then
+      aMsg:=aMsg+CurReadJITComponent.Name+':'+CurReadJITComponent.ClassName
     else
       aMsg:=aMsg+'?';
-    if CurReadComponent<>nil then
+    if CurReadChild<>nil then
       aMsg:=aMsg+#13'Component: '
-        +CurReadComponent.Name+':'+CurReadComponent.ClassName
-    else if CurReadComponentClass<>nil then
-      aMsg:=aMsg+#13'Component Class: '+CurReadComponentClass.ClassName;
+        +CurReadChild.Name+':'+CurReadChild.ClassName
+    else if CurReadChildClass<>nil then
+      aMsg:=aMsg+#13'Component Class: '+CurReadChildClass.ClassName;
+    aMsg:=aMsg+#13+CurReadErrorMsg;
   end;
-  aMsg:=aMsg+#13+JITFormList.CurReadErrorMsg;
-  
+
   case ErrorType of
     jfeUnknownProperty, jfeReaderError:
       begin

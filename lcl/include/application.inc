@@ -956,9 +956,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-       TApplication CreateForm
-       Create a Form instance and sets the pointer to the internal form
-       variable and loads the form into the application forms list
+  TApplication CreateForm
+  
+  Note: The name is confusing and only kept for Delphi compatibility. It can
+  create any kind of components.
+       
+  Create a Component instance and sets the pointer to the component variable
+  and loads the component. If it is a form it will be added to the applications
+  forms list
 ------------------------------------------------------------------------------}
 procedure TApplication.CreateForm(InstanceClass: TComponentClass;
   var Reference);
@@ -1011,6 +1016,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2003/05/31 10:07:33  mattias
+  changed projects forms into components
+
   Revision 1.54  2003/05/30 08:10:52  mattias
   added try except to Application.Run, message on changing debugger items during compile
 

@@ -77,12 +77,13 @@ type
     fEditorIndex: integer;
     fFileName: string;
     fFileReadOnly: Boolean;
-    fForm: TComponent;
-    fFormName: string; { classname is always T<FormName>
-         this attribute contains the formname, even if the unit is not loaded,
+    fComponent: TComponent;
+    fComponentName: string; { classname is always T<ComponentName>
+         this attribute contains the component name,
+         even if the unit is not loaded,
          or the designer form is not created.
-         A form can be a TForm or a TDataModule }
-    fFormResourceName: string;
+         A component can be a TForm or a TDataModule }
+    fComponentResourceName: string;
     fHasResources: boolean; // source has resource file
     FIgnoreFileDateOnDiskValid: boolean;
     FIgnoreFileDateOnDisk: longint;
@@ -107,7 +108,7 @@ type
     function GetHasResources:boolean;
     procedure SetEditorIndex(const AValue: integer);
     procedure SetFileReadOnly(const AValue: Boolean);
-    procedure SetForm(const AValue: TComponent);
+    procedure SetComponent(const AValue: TComponent);
     procedure SetIsPartOfProject(const AValue: boolean);
     procedure SetLoaded(const AValue: Boolean);
     procedure SetProject(const AValue: TProject);
@@ -117,14 +118,14 @@ type
   protected
     fNextUnitWithEditorIndex: TUnitInfo;
     fPrevUnitWithEditorIndex: TUnitInfo;
-    fNextUnitWithForm: TUnitInfo;
-    fPrevUnitWithForm: TUnitInfo;
+    fNextUnitWithComponent: TUnitInfo;
+    fPrevUnitWithComponent: TUnitInfo;
     fNextLoadedUnit: TUnitInfo;
     fPrevLoadedUnit: TUnitInfo;
     fNextAutoRevertLockedUnit: TUnitInfo;
     fPrevAutoRevertLockedUnit: TUnitInfo;
     procedure UpdateEditorIndexList;
-    procedure UpdateFormList;
+    procedure UpdateComponentList;
     procedure UpdateLoadedList;
     procedure UpdateAutoRevertLockedList;
     procedure UpdatePartOfProjectList;
@@ -159,8 +160,8 @@ type
     // Unit views
     property NextUnitWithEditorIndex: TUnitInfo read fNextUnitWithEditorIndex;
     property PrevUnitWithEditorIndex: TUnitInfo read fPrevUnitWithEditorIndex;
-    property NextUnitWithForm: TUnitInfo read fNextUnitWithForm;
-    property PrevUnitWithForm: TUnitInfo read fPrevUnitWithForm;
+    property NextUnitWithComponent: TUnitInfo read fNextUnitWithComponent;
+    property PrevUnitWithComponent: TUnitInfo read fPrevUnitWithComponent;
     property NextLoadedUnit: TUnitInfo read fNextLoadedUnit;
     property PrevLoadedUnit: TUnitInfo read fPrevLoadedUnit;
     property NextAutoRevertLockedUnit: TUnitInfo read fNextAutoRevertLockedUnit;
@@ -175,10 +176,10 @@ type
     property EditorIndex:integer read fEditorIndex write SetEditorIndex;
     property Filename: String read GetFilename;
     property FileReadOnly: Boolean read fFileReadOnly write SetFileReadOnly;
-    property Form: TComponent read fForm write SetForm;
-    property FormName: string read fFormName write fFormName;
-    property FormResourceName: string
-                                 read fFormResourceName write fFormResourceName;
+    property Component: TComponent read fComponent write SetComponent;
+    property ComponentName: string read fComponentName write fComponentName;
+    property ComponentResourceName: string read fComponentResourceName
+                                           write fComponentResourceName;
     property HasResources: boolean read GetHasResources write fHasResources;
     property IsPartOfProject: boolean
                                  read fIsPartOfProject write SetIsPartOfProject;
@@ -282,7 +283,7 @@ type
     FFirstRemovedDependency: TPkgDependency;
     FFirstRequiredDependency: TPkgDependency;
     fFirstUnitWithEditorIndex: TUnitInfo;  // units with EditorIndex>=0
-    fFirstUnitWithForm: TUnitInfo;         // units with Form<>nil
+    fFirstUnitWithComponent: TUnitInfo;    // units with Component<>nil
     FFlags: TProjectFlags;
     fIconPath: String;
     fJumpHistory: TProjectJumpHistory;
@@ -329,17 +330,17 @@ type
     // special unit lists
     procedure AddToAutoRevertLockedList(AnUnitInfo: TUnitInfo);
     procedure AddToEditorWithIndexList(AnUnitInfo: TUnitInfo);
-    procedure AddToFormList(AnUnitInfo: TUnitInfo);
+    procedure AddToComponentList(AnUnitInfo: TUnitInfo);
     procedure AddToLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
-    procedure AddToOrRemoveFromFormList(AnUnitInfo: TUnitInfo);
+    procedure AddToOrRemoveFromComponentList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
     procedure AddToPartOfProjectList(AnUnitInfo: TUnitInfo);
     procedure RemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
     procedure RemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
-    procedure RemoveFromFormList(AnUnitInfo: TUnitInfo);
+    procedure RemoveFromComponentList(AnUnitInfo: TUnitInfo);
     procedure RemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure RemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
   public
@@ -361,7 +362,7 @@ type
     // units
     function UnitCount:integer;
     function NewUniqueUnitName(NewUnitType:TNewUnitType): string;
-    function NewUniqueFormName(NewUnitType:TNewUnitType): string;
+    function NewUniqueComponentName(NewUnitType:TNewUnitType): string;
     procedure AddUnit(AnUnit: TUnitInfo; AddToProjectFile: boolean);
     procedure RemoveUnit(Index: integer);
     
@@ -369,9 +370,9 @@ type
     function IndexOf(AUnitInfo: TUnitInfo): integer;
     function IndexOfUnitWithName(const AnUnitName: string;
                       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
-    function IndexOfUnitWithForm(AForm: TComponent;
+    function IndexOfUnitWithComponent(AComponent: TComponent;
                       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
-    function IndexOfUnitWithFormName(const AFormName: string;
+    function IndexOfUnitWithComponentName(const AComponentName: string;
                       OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo): integer;
     function IndexOfFilename(const AFilename: string): integer;
     function IndexOfFilename(const AFilename: string;
@@ -379,7 +380,7 @@ type
     function ProjectUnitWithFilename(const AFilename: string): TUnitInfo;
     function ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
-    Function UnitWithForm(AForm: TComponent): TUnitInfo;
+    Function UnitWithComponent(AComponent: TComponent): TUnitInfo;
     function UnitInfoWithFilename(const AFilename: string): TUnitInfo;
     function UnitWithUnitname(const AnUnitname: string): TUnitInfo;
 
@@ -445,7 +446,7 @@ type
     property FirstRequiredDependency: TPkgDependency
                                                   read FFirstRequiredDependency;
     property FirstUnitWithEditorIndex: TUnitInfo read fFirstUnitWithEditorIndex;
-    property FirstUnitWithForm: TUnitInfo read fFirstUnitWithForm;
+    property FirstUnitWithForm: TUnitInfo read fFirstUnitWithComponent;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property IconPath: String read fIconPath write fIconPath;
     property JumpHistory: TProjectJumpHistory
@@ -670,14 +671,14 @@ end;
 procedure TUnitInfo.Clear;
 begin
   FBookmarks.Clear;
+  fComponent := nil;
+  fComponentName := '';
+  fComponentResourceName := '';
   fCursorPos.X := -1;
   fCursorPos.Y := -1;
   fCustomHighlighter := false;
   fEditorIndex := -1;
   fFilename := '';
-  fForm := nil;
-  fFormName := '';
-  fFormResourceName := '';
   fHasResources := false;
   FIgnoreFileDateOnDiskValid:=false;
   fIsPartOfProject := false;
@@ -706,7 +707,7 @@ begin
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,false);
   XMLConfig.SetValue(Path+'Filename/Value',AFilename);
-  XMLConfig.SetDeleteValue(Path+'FormName/Value',fFormName,'');
+  XMLConfig.SetDeleteValue(Path+'ComponentName/Value',fComponentName,'');
   XMLConfig.SetDeleteValue(Path+'HasResources/Value',fHasResources,false);
   XMLConfig.SetDeleteValue(Path+'IsPartOfProject/Value',fIsPartOfProject,false);
   XMLConfig.SetDeleteValue(Path+'Loaded/Value',fLoaded,false);
@@ -737,7 +738,9 @@ begin
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,true);
   fFilename:=AFilename;
-  fFormName:=XMLConfig.GetValue(Path+'FormName/Value','');
+  fComponentName:=XMLConfig.GetValue(Path+'ComponentName/Value','');
+  if fComponentName='' then
+    fComponentName:=XMLConfig.GetValue(Path+'FormName/Value','');
   HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
   IsPartOfProject:=XMLConfig.GetValue(Path+'IsPartOfProject/Value',false);
   Loaded:=XMLConfig.GetValue(Path+'Loaded/Value',false);
@@ -788,13 +791,13 @@ begin
   end;
 end;
 
-procedure TUnitInfo.UpdateFormList;
+procedure TUnitInfo.UpdateComponentList;
 begin
   if Project<>nil then begin
-    Project.AddToOrRemoveFromFormList(Self);
+    Project.AddToOrRemoveFromComponentList(Self);
   end else begin
-    fNextUnitWithForm:=nil;
-    fPrevUnitWithForm:=nil;
+    fNextUnitWithComponent:=nil;
+    fPrevUnitWithComponent:=nil;
   end;
 end;
 
@@ -1001,10 +1004,10 @@ begin
           +'type'+LE);
         if NewUnitType=nuForm then
           NewSource:=NewSource+Beautified(
-            +'  T'+fFormName+' = class(TForm)'+LE)
+            +'  T'+fComponentName+' = class(TForm)'+LE)
         else
           NewSource:=NewSource+Beautified(
-            +'  T'+fFormName+' = class(TDataModule)'+LE);
+            +'  T'+fComponentName+' = class(TDataModule)'+LE);
         NewSource:=NewSource+Beautified(
           '  private'+LE);
         NewSource:=NewSource
@@ -1017,7 +1020,7 @@ begin
           +'  end;'+LE
           +LE
           +'var'+LE
-          +'  '+fFormName+': T'+fFormName+';'+LE
+          +'  '+fComponentName+': T'+fComponentName+';'+LE
           +LE
           +'implementation'+LE
           +LE
@@ -1050,7 +1053,7 @@ end;
 
 function TUnitInfo.GetHasResources:boolean;
 begin
-  Result:=fHasResources or (FormName<>'');
+  Result:=fHasResources or (ComponentName<>'');
 end;
 
 procedure TUnitInfo.SetEditorIndex(const AValue: integer);
@@ -1068,11 +1071,11 @@ begin
     fSource.ReadOnly:=ReadOnly;
 end;
 
-procedure TUnitInfo.SetForm(const AValue: TComponent);
+procedure TUnitInfo.SetComponent(const AValue: TComponent);
 begin
-  if fForm=AValue then exit;
-  fForm:=AValue;
-  UpdateFormList;
+  if fComponent=AValue then exit;
+  fComponent:=AValue;
+  UpdateComponentList;
 end;
 
 procedure TUnitInfo.SetIsPartOfProject(const AValue: boolean);
@@ -1109,14 +1112,14 @@ begin
   if FProject=AValue then exit;
   if AValue=nil then begin
     Project.RemoveFromEditorWithIndexList(Self);
-    Project.RemoveFromFormList(Self);
+    Project.RemoveFromComponentList(Self);
     Project.RemoveFromLoadedList(Self);
     Project.RemoveFromAutoRevertLockedList(Self);
     Project.RemoveFromPartOfProjectList(Self);
   end;
   FProject:=AValue;
   UpdateEditorIndexList;
-  UpdateFormList;
+  UpdateComponentList;
   UpdateLoadedList;
   UpdateAutoRevertLockedList;
   UpdatePartOfProjectList;
@@ -1548,9 +1551,9 @@ begin
       if (OldUnitInfo.UnitName<>'') then
         CodeToolBoss.RemoveUnitFromAllUsesSections(Units[MainUnitID].Source,
           OldUnitInfo.UnitName);
-      if (OldUnitInfo.FormName<>'') then
+      if (OldUnitInfo.ComponentName<>'') then
         CodeToolBoss.RemoveCreateFormStatement(Units[MainUnitID].Source,
-          OldUnitInfo.FormName);
+          OldUnitInfo.ComponentName);
     end;
   end;
 
@@ -1704,25 +1707,26 @@ begin
   Result:=Prefix+IntToStr(u);
 end;
 
-function TProject.NewUniqueFormName(NewUnitType:TNewUnitType):string;
+function TProject.NewUniqueComponentName(NewUnitType:TNewUnitType):string;
 
-  function FormNameExists(const AFormName: string): boolean;
+  function FormComponentExists(const AComponentName: string): boolean;
   var i: integer;
   begin
     Result:=true;
     for i:=0 to UnitCount-1 do begin
-      if (Units[i].Form<>nil) then begin
-        if AnsiCompareText(Units[i].Form.Name,AFormName)=0 then exit;
-        if AnsiCompareText(Units[i].Form.ClassName,'T'+AFormName)=0 then exit;
-      end else if (Units[i].FormName<>'')
+      if (Units[i].Component<>nil) then begin
+        if AnsiCompareText(Units[i].Component.Name,AComponentName)=0 then exit;
+        if AnsiCompareText(Units[i].Component.ClassName,'T'+AComponentName)=0
+        then exit;
+      end else if (Units[i].ComponentName<>'')
       and ((Units[i].IsPartOfProject) or (Units[i].Loaded)) then begin
-        if AnsiCompareText(Units[i].FormName,AFormName)=0 then exit;
+        if AnsiCompareText(Units[i].ComponentName,AComponentName)=0 then exit;
       end;
     end;
     Result:=false;
   end;
 
-// NewUniqueFormName(NewUnitType:TNewUnitType)
+// NewUniqueComponentName(NewUnitType:TNewUnitType)
 var i: integer;
   Prefix: string;
 begin
@@ -1733,7 +1737,7 @@ begin
   else
     Prefix:='form';
   end;
-  while (FormNameExists(Prefix+IntToStr(i))) do inc(i);
+  while (FormComponentExists(Prefix+IntToStr(i))) do inc(i);
   Result:=Prefix+IntToStr(i);
 end;
 
@@ -1776,7 +1780,7 @@ begin
   end;
 end;
 
-function TProject.IndexOfUnitWithForm(AForm: TComponent; 
+function TProject.IndexOfUnitWithComponent(AComponent: TComponent;
   OnlyProjectUnits:boolean; IgnoreUnit: TUnitInfo):integer;
 begin
   Result:=UnitCount-1;
@@ -1784,14 +1788,14 @@ begin
     if (OnlyProjectUnits and Units[Result].IsPartOfProject) 
     or (not OnlyProjectUnits)
     and (IgnoreUnit<>Units[Result]) then begin
-      if Units[Result].Form=AForm then
+      if Units[Result].Component=AComponent then
         exit;
     end;
     dec(Result);
   end;
 end;
 
-function TProject.IndexOfUnitWithFormName(const AFormName: string;
+function TProject.IndexOfUnitWithComponentName(const AComponentName: string;
   OnlyProjectUnits: boolean; IgnoreUnit: TUnitInfo): integer;
 begin
   Result:=UnitCount-1;
@@ -1799,9 +1803,9 @@ begin
     if ((OnlyProjectUnits and Units[Result].IsPartOfProject)
     or (not OnlyProjectUnits))
     and (IgnoreUnit<>Units[Result]) then begin
-      if (AnsiCompareText(Units[Result].FormName,AFormName)=0)
-      or ((Units[Result].Form<>nil)
-        and (AnsiCompareText(Units[Result].Form.Name,AFormName)=0))
+      if (AnsiCompareText(Units[Result].ComponentName,AComponentName)=0)
+      or ((Units[Result].Component<>nil)
+        and (AnsiCompareText(Units[Result].Component.Name,AComponentName)=0))
       then
         exit;
     end;
@@ -2002,12 +2006,12 @@ begin
   end;
 end;
 
-procedure TProject.AddToOrRemoveFromFormList(AnUnitInfo: TUnitInfo);
+procedure TProject.AddToOrRemoveFromComponentList(AnUnitInfo: TUnitInfo);
 begin
-  if AnUnitInfo.Form=nil then begin
-    RemoveFromFormList(AnUnitInfo);
+  if AnUnitInfo.Component=nil then begin
+    RemoveFromComponentList(AnUnitInfo);
   end else begin
-    AddToFormList(AnUnitInfo);
+    AddToComponentList(AnUnitInfo);
   end;
 end;
 
@@ -2352,11 +2356,11 @@ begin
 
 end;
 
-Function TProject.UnitWithForm(AForm : TComponent) : TUnitInfo;
+Function TProject.UnitWithComponent(AComponent: TComponent) : TUnitInfo;
 begin
-  Result:=fFirstUnitWithForm;
-  while (Result<>nil) and (Result.Form<>AForm) do
-    Result:=Result.fNextUnitWithForm;
+  Result:=fFirstUnitWithComponent;
+  while (Result<>nil) and (Result.Component<>AComponent) do
+    Result:=Result.fNextUnitWithComponent;
 end;
 
 function TProject.UnitInfoWithFilename(const AFilename: string): TUnitInfo;
@@ -2467,33 +2471,33 @@ begin
   AnUnitInfo.fPrevUnitWithEditorIndex:=nil;
 end;
 
-procedure TProject.AddToFormList(AnUnitInfo: TUnitInfo);
+procedure TProject.AddToComponentList(AnUnitInfo: TUnitInfo);
 begin
   // add to list if AnUnitInfo is not in list
-  if (fFirstUnitWithForm<>AnUnitInfo)
-  and (AnUnitInfo.fNextUnitWithForm=nil)
-  and (AnUnitInfo.fPrevUnitWithForm=nil) then begin
-    AnUnitInfo.fNextUnitWithForm:=fFirstUnitWithForm;
-    AnUnitInfo.fPrevUnitWithForm:=nil;
-    fFirstUnitWithForm:=AnUnitInfo;
-    if AnUnitInfo.fNextUnitWithForm<>nil then
-      AnUnitInfo.fNextUnitWithForm.fPrevUnitWithForm:=AnUnitInfo;
+  if (fFirstUnitWithComponent<>AnUnitInfo)
+  and (AnUnitInfo.fNextUnitWithComponent=nil)
+  and (AnUnitInfo.fPrevUnitWithComponent=nil) then begin
+    AnUnitInfo.fNextUnitWithComponent:=fFirstUnitWithComponent;
+    AnUnitInfo.fPrevUnitWithComponent:=nil;
+    fFirstUnitWithComponent:=AnUnitInfo;
+    if AnUnitInfo.fNextUnitWithComponent<>nil then
+      AnUnitInfo.fNextUnitWithComponent.fPrevUnitWithComponent:=AnUnitInfo;
   end;
 end;
 
-procedure TProject.RemoveFromFormList(AnUnitInfo: TUnitInfo);
+procedure TProject.RemoveFromComponentList(AnUnitInfo: TUnitInfo);
 begin
   // remove from list if AnUnitInfo is in list
-  if fFirstUnitWithForm=AnUnitInfo then
-    fFirstUnitWithForm:=AnUnitInfo.fNextUnitWithForm;
-  if AnUnitInfo.fNextUnitWithForm<>nil then
-    AnUnitInfo.fNextUnitWithForm.fPrevUnitWithForm:=
-      AnUnitInfo.fPrevUnitWithForm;
-  if AnUnitInfo.fPrevUnitWithForm<>nil then
-    AnUnitInfo.fPrevUnitWithForm.fNextUnitWithForm:=
-      AnUnitInfo.fNextUnitWithForm;
-  AnUnitInfo.fNextUnitWithForm:=nil;
-  AnUnitInfo.fPrevUnitWithForm:=nil;
+  if fFirstUnitWithComponent=AnUnitInfo then
+    fFirstUnitWithComponent:=AnUnitInfo.fNextUnitWithComponent;
+  if AnUnitInfo.fNextUnitWithComponent<>nil then
+    AnUnitInfo.fNextUnitWithComponent.fPrevUnitWithComponent:=
+      AnUnitInfo.fPrevUnitWithComponent;
+  if AnUnitInfo.fPrevUnitWithComponent<>nil then
+    AnUnitInfo.fPrevUnitWithComponent.fNextUnitWithComponent:=
+      AnUnitInfo.fNextUnitWithComponent;
+  AnUnitInfo.fNextUnitWithComponent:=nil;
+  AnUnitInfo.fPrevUnitWithComponent:=nil;
 end;
 
 procedure TProject.AddToLoadedList(AnUnitInfo: TUnitInfo);
@@ -2514,7 +2518,7 @@ procedure TProject.RemoveFromLoadedList(AnUnitInfo: TUnitInfo);
 begin
   // remove from list if AnUnitInfo is in list
   if fFirstLoadedUnit=AnUnitInfo then
-    fFirstLoadedUnit:=AnUnitInfo.fNextUnitWithForm;
+    fFirstLoadedUnit:=AnUnitInfo.fNextLoadedUnit;
   if AnUnitInfo.fNextLoadedUnit<>nil then
     AnUnitInfo.fNextLoadedUnit.fPrevLoadedUnit:=
       AnUnitInfo.fPrevLoadedUnit;
@@ -2709,6 +2713,9 @@ end.
 
 {
   $Log$
+  Revision 1.124  2003/05/31 10:07:33  mattias
+  changed projects forms into components
+
   Revision 1.123  2003/05/30 16:25:47  mattias
   started datamodule
 

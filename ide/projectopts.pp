@@ -527,9 +527,9 @@ begin
     try
       for i:= 0 to FProject.UnitCount - 1 do begin
         if (FProject.Units[i].IsPartOfProject)
-          and (FProject.Units[i].FormName <> '')
-          and (IndexOfAutoCreateForm(FProject.Units[i].FormName) < 0) then
-          sl.Add(FProject.Units[i].FormName);
+          and (FProject.Units[i].ComponentName <> '')
+          and (IndexOfAutoCreateForm(FProject.Units[i].ComponentName) < 0) then
+          sl.Add(FProject.Units[i].ComponentName);
       end;
       sl.Sort;
       FormsAvailFormsListBox.Items.Assign(sl);
