@@ -20,28 +20,28 @@
  *                                                                           *
  *****************************************************************************
 }
-unit wslclclasses;
+unit WSLCLClasses;
 
-{$mode objfpc}{H+}
+{$mode objfpc}{$H+}
 
 interface
 
 uses
-  classes;
+  Classes;
 
 type
 
   { TWSLCLComponent } 
   
-  TWSLCLComponentClass = class of TWSLCLComponent;
   TWSLCLComponent = class(TObject)
-  private
-  protected
-  public
   end;
-  
+
+  TWSLCLComponentClass = class of TWSLCLComponent;
+
+
 function FindWSComponentClass(const AComponent: TComponentClass): TWSLCLComponentClass;
-procedure RegisterWSComponent(const AComponent: TComponentClass; const AWSComponent: TWSLCLComponentClass);
+procedure RegisterWSComponent(const AComponent: TComponentClass;
+                              const AWSComponent: TWSLCLComponentClass);
 
 implementation
 
@@ -51,7 +51,8 @@ uses
 var
   MWSComponentList: TStringList;
 
-function FindWSComponentClass(const AComponent: TComponentClass): TWSLCLComponentClass;
+function FindWSComponentClass(
+  const AComponent: TComponentClass): TWSLCLComponentClass;
 var
   idx: Integer;
   cls: TClass;
@@ -70,7 +71,8 @@ begin
   end;
 end;
 
-procedure RegisterWSComponent(const AComponent: TComponentClass; const AWSComponent: TWSLCLComponentClass);
+procedure RegisterWSComponent(const AComponent: TComponentClass;
+  const AWSComponent: TWSLCLComponentClass);
 var
   idx: Integer;
   Name: String;

@@ -3567,6 +3567,9 @@ begin
      Format(ctsIncludeDirectoriesPlusDirs,['include']),
      ExternalMacroStart+'IncPath',
      'include',da_Define));
+  DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+    Format(ctsAddsDirToSourcePath,['widgetset']),
+    ExternalMacroStart+'SrcPath',d('widgetset;'+SrcPath),da_Define));
   MainDir.AddChild(DirTempl);
   
   // <LazarusSrcDir>/lcl/units
@@ -3578,7 +3581,7 @@ begin
   begin
     SplitLazarusCPUOSWidgetCombo(Lazarus_CPU_OS_Widget_Combinations[i],
                                  CurCPU,CurOS,CurWidgetSet);
-    // <LazarusSrcDir>/lcl/units/TargetCPU
+    // <LazarusSrcDir>/lcl/units/<TargetCPU>
     LCLUnitsCPUDir:=LCLUnitsDir.FindChildByName(CurCPU);
     if LCLUnitsCPUDir=nil then begin
       LCLUnitsCPUDir:=TDefineTemplate.Create(CurCPU,
@@ -3586,7 +3589,7 @@ begin
         '',CurCPU,da_Directory);
       LCLUnitsDir.AddChild(LCLUnitsCPUDir);
     end;
-    // <LazarusSrcDir>/lcl/units/TargetCPU/TargetOS
+    // <LazarusSrcDir>/lcl/units/<TargetCPU>/<TargetOS>
     // these directories contain the output of the LCL (excluding the interfaces)
     LCLUnitsCPUOSDir:=LCLUnitsCPUDir.FindChildByName(CurOS);
     if LCLUnitsCPUOSDir=nil then begin
@@ -3595,14 +3598,14 @@ begin
         '',CurOS,da_Directory);
       LCLUnitsCPUDir.AddChild(LCLUnitsCPUOSDir);
       
-      ExtraSrcPath:='../../..';
+      ExtraSrcPath:='../../..;../../../widgetset';
       if CurOS<>'win32' then
         ExtraSrcPath:=ExtraSrcPath+';../../../nonwin32';
       LCLUnitsCPUOSDir.AddChild(TDefineTemplate.Create('CompiledSrcPath',
          ctsSrcPathForCompiledUnits,CompiledSrcPathMacroName,
          d(ExtraSrcPath),da_Define));
     end;
-    // <LazarusSrcDir>/lcl/units/TargetCPU/TargetOS/WidgetSet
+    // <LazarusSrcDir>/lcl/units/<TargetCPU>/<TargetOS>/<WidgetSet>
     // these directories contain the output of the LCL interfaces
     LCLUnitsCPUOSWidgetSetDir:=LCLUnitsCPUOSDir.FindChildByName(CurWidgetSet);
     if LCLUnitsCPUOSWidgetSetDir=nil then begin
@@ -3626,7 +3629,8 @@ begin
   // add lcl to the source path of all widget set directories
   SubDirTempl.AddChild(TDefineTemplate.Create('LCL Path',
     Format(ctsAddsDirToSourcePath,['lcl']),ExternalMacroStart+'SrcPath',
-    LazarusSrcDir+d('/lcl;')+SrcPath,da_DefineRecurse));
+    LazarusSrcDir+d('/lcl;')+LazarusSrcDir+d('/lcl/widgetset;')+SrcPath,
+    da_DefineRecurse));
   DirTempl.AddChild(SubDirTempl);
   
   // <LazarusSrcDir>/lcl/interfaces/gtk

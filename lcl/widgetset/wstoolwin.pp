@@ -20,9 +20,9 @@
  *                                                                           *
  *****************************************************************************
 }
-unit wstoolwin;
+unit WSToolWin;
 
-{$mode objfpc}{H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -30,7 +30,7 @@ uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
-// To get as litle as posible circles,
+// To get as little as posible circles,
 // Uncomment only when needed for registration
 ////////////////////////////////////////////////////
 //  toolwin,

@@ -20,14 +20,14 @@
  *                                                                           *
  *****************************************************************************
 }
-unit lclclasses;
+unit LCLClasses;
 
-{$mode objfpc}{H+}
+{$mode objfpc}{$H+}
 
 interface
 
 uses
-  classes, wslclclasses;
+  Classes, WSLCLClasses;
 
 type
 
