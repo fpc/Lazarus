@@ -968,35 +968,32 @@ begin
   result:=fTopLeft.x;
 end;
 
-Function TCustomGrid.Getcolcount: Integer;
-Begin
+function TCustomGrid.Getcolcount: Integer;
+begin
   Result:=FCols.Count;
-End;
+end;
 
-Function TCustomGrid.Getrowcount: Integer;
-Begin
+function TCustomGrid.Getrowcount: Integer;
+begin
   Result:=FRows.Count;
-End;
+end;
 
-Function TCustomGrid.Getcolwidths(Acol: Integer): Integer;
-Begin
-  if aCol<ColCount then begin
-    Result:=Integer(FCols[aCol]);
-    if result<0 then Result:=fDefColWidth;
-  end else
-    Result:=0;
-End;
+function TCustomGrid.Getcolwidths(Acol: Integer): Integer;
+begin
+  Result:=Integer(FCols[aCol]);
+  if result<0 then Result:=fDefColWidth;
+end;
 
 procedure TCustomGrid.SetEditor(AValue: TWinControl);
-Var
+var
   Msg: TGridMessage;
 begin
   if FEditor=AValue then exit;
   FEditor:=AValue;
-  if FEditor<>nil Then Begin
-    //FEditor.ControlStyle:=FEditor.ControlStyle - [csCaptureMouse];
-    If FEditor.Parent=nil Then FEditor.Visible:=False;
-    If FEditor.Parent<>Self Then FEditor.Parent:=Self;
+  if FEditor<>nil then begin
+
+    if FEditor.Parent=nil then FEditor.Visible:=False;
+    if FEditor.Parent<>Self then FEditor.Parent:=Self;
     FEditor.TabStop:=False;
     
     Msg.MsgID:=GM_SETGRID;
@@ -1393,7 +1390,7 @@ begin
 end;
 
 // The visible grid Depends on  TopLeft and ClientWidht,ClientHeight,
-// Col/Row Count, So it Should be called immediately after any change
+// Col/Row Count, So it Should be called inmediately after any change
 // like that
 function TCustomGrid.GetVisibleGrid: TRect;
 var
@@ -1657,7 +1654,7 @@ var
   Rs: Boolean;
   R: TRect;
 begin
-  if (RowCount=0) or (ColCount=0) then exit;
+
   ColRowToOffSet(False, True, aRow, R.Top, R.Bottom);
   
   // Draw columns in this row
@@ -2023,58 +2020,56 @@ begin
   // Adjust ScrollBar Positions
   // Special condition only When scrolling by draging
   // the scrollbars see: WMHScroll and WVHScroll
-  If FUpdateScrollBarsCount=0 Then begin
+  if FUpdateScrollBarsCount=0 then begin
   
-    if (Which=HorzScrollBar)or(Which=nil) Then
-      If (FScrollBars in [ssAutoHorizontal, ssAutoBoth]) And
-          HorzScrolLBar.Visible Then begin
-          With FGCache do
+    if (Which=HorzScrollBar)or(Which=nil) then
+      if (FScrollBars in [ssAutoHorizontal, ssAutoBoth]) and
+          HorzScrolLBar.Visible then begin
+          with FGCache do
             HorzScrollBar.Position:=
               Integer(AccumWidth[FTopLeft.x])-TLColOff-FixedWidth;
-      End;
+      end;
 
-    If (Which=VertScrollBar)Or(Which=nil) Then
-      If (FScrolLBars in [ssAutoVertical, ssAutoBoth]) And
-          VertScrolLBar.Visible Then begin
-          With FGCache do
+    if (Which=VertScrollBar)Or(Which=nil) then
+      if (FScrolLBars in [ssAutoVertical, ssAutoBoth]) and
+          VertScrolLBar.Visible then begin
+          with FGCache do
             VertScrollBar.Position:=
               Integer(AccumHeight[FTopLeft.y])-TLRowOff-FixedHeight;
-      End;
-  End; {If FUpd...}
+      end;
+  end; {if FUpd...}
 end;
 
 procedure TCustomGrid.CheckFixedCount(aCol,aRow,aFCol,aFRow: Integer);
 begin
-  If AFRow<0 Then
+  if AFRow<0 then
     Raise EGridException.Create('FixedRows<0');
-  If AFCol<0 Then
+  if AFCol<0 then
     Raise EGridException.Create('FixedCols<0');
-  If (ACol>0)And(aFCol>=ACol) Then
+    
+  if (aCol=0)And(aFCol=0) then // invalid grid, ok
+  else if (aFCol>=aCol) Then
     raise EGridException.Create(rsFixedColsTooBig);
-  If (ARow>0)And(aFRow>=ARow) Then
+  if (aRow=0)and(aFRow=0) then // Invalid grid, ok
+  else if (aFRow>=aRow) then
     raise EGridException.Create(rsFixedRowsTooBig);
 end;
 
 { Save to the cache the current visible grid (excluding fixed cells) }
 procedure TCustomGrid.CacheVisibleGrid;
-Var
+var
   R: TRect;
 begin
-  With FGCache do begin
+  with FGCache do begin
     VisibleGrid:=GetVisibleGrid;
-    With VisibleGrid do
-      ValidGrid:=(Left>=0)And(Top>=0)And(Right>=Left)And(Bottom>=Top);
-    If Not ValidGrid Then MaxClientXY:=Point(0,0)
-    Else begin
-      if (VisibleGrid.Right<ColCount)
-      and (VisibleGrid.Bottom<RowCount) then begin
-        R:=ColRowToClientCellrect(VisibleGrid.Right, VisibleGrid.Bottom);
-        MaxClientXY:=R.BottomRight;
-      end else begin
-        MaxClientXY:=Point(0,0);
-      end;
-    End;
-  End;
+    with VisibleGrid do
+      ValidGrid:=(Left>=0)and(Top>=0)and(Right>=Left)and(Bottom>=Top);
+    if not ValidGrid then MaxClientXY:=Point(0,0)
+    else begin
+      R:=ColRowToClientCellrect(VisibleGrid.Right, VisibleGrid.Bottom);
+      MaxClientXY:=R.BottomRight;
+    end;
+  end;
 end;
 
 function TCustomGrid.GetSelection: TGridRect;
@@ -2106,255 +2101,255 @@ end;
 procedure TCustomGrid.SetSelectActive(const AValue: Boolean);
 begin
   if FSelectActive=AValue then exit;
-  FSelectActive:=AValue and Not(goEditing in Options);
-  If FSelectActive Then FPivot:=Point(FCol,FRow);
+  FSelectActive:=AValue and not(goEditing in Options);
+  if FSelectActive then FPivot:=Point(FCol,FRow);
 end;
 
 procedure TCustomGrid.SetSelection(const AValue: TGridRect);
 begin
-  If goRangeSelect in Options Then begin
+  if goRangeSelect in Options then begin
     fRange:=NormalizarRect(aValue);
     Invalidate;
-  End;
+  end;
 end;
 
 function TCustomGrid.doColSizing(X, Y: Integer): Boolean;
-Var
+var
   R: TRect;
   Loc: Integer;
 begin
   Result:=False;
-  If gsColSizing = fGridState Then begin
-    If x>FSplitter.y Then
+  if gsColSizing = fGridState then begin
+    if x>FSplitter.y then
       ColWidths[FSplitter.x]:=x-FSplitter.y
-    Else
-      if ColWidths[FSplitter.x]>0 Then ColWidths[FSplitter.X]:=0;
+    else
+      if ColWidths[FSplitter.x]>0 then ColWidths[FSplitter.X]:=0;
     Result:=True;
-  End Else
-  If (fGridState=gsNormal)And(Y<FGCache.FixedHeight)And(X>FGCache.FixedWidth) Then
+  end else
+  if (fGridState=gsNormal)and(Y<FGCache.FixedHeight)and(X>FGCache.FixedWidth) then
   begin
     FSplitter.X:= OffsetToColRow(True, True, X, Loc);
     FSplitter.Y:=0;
-    If FSplitter.X>=0 Then begin
+    if FSplitter.X>=0 then begin
       R:=ColRowToClientCellRect(FSplitter.x, FSplitter.y);
       FSplitter.y:=X;                       // Resizing X reference
-      If (R.Right-X)<(X-R.Left) then Loc:=R.Right
-      Else begin
+      if (R.Right-X)<(X-R.Left) then Loc:=R.Right
+      else begin
         Loc:=R.Left;
         Dec(FSplitter.x);                   // Resizing col is the previous
-      End;
-      IF (Abs(Loc-x)<=2)And(FSplitter.X>=FFixedCols) then Cursor:=crHSplit
-      Else                                                Cursor:=crDefault;
+      end;
+      IF (Abs(Loc-x)<=2)and(FSplitter.X>=FFixedCols) then Cursor:=crHSplit
+      else                                                Cursor:=crDefault;
       Result:=True;
-    End;
-  End
-    Else
-      If (cursor=crHSplit) Then Cursor:=crDefault;
+    end;
+  end
+    else
+      if (cursor=crHSplit) then Cursor:=crDefault;
 end;
 
 function TCustomGrid.doRowSizing(X, Y: Integer): Boolean;
-Var
+var
   OffTop,OffBottom: Integer;
 begin
   Result:=False;
-  If gsRowSizing = fGridState Then begin
-    If y>FSplitter.x Then
+  if gsRowSizing = fGridState then begin
+    if y>FSplitter.x then
       RowHeights[FSplitter.y]:=y-FSplitter.x
-    Else
-      if RowHeights[FSplitter.y]>0 Then RowHeights[FSplitter.Y]:=0;
+    else
+      if RowHeights[FSplitter.y]>0 then RowHeights[FSplitter.Y]:=0;
     Result:=True;
-  End Else
-  If (fGridState=gsNormal)And(X<FGCache.FixedWidth)And(Y>FGCache.FixedHeight) Then
+  end else
+  if (fGridState=gsNormal)and(X<FGCache.FixedWidth)and(Y>FGCache.FixedHeight) then
   begin
     fSplitter.Y:=OffsetToColRow(False, True, Y, OffTop{dummy});
-    If Fsplitter.Y>=0 Then begin
+    if Fsplitter.Y>=0 then begin
       ColRowToOffset(False, True, FSplitter.Y, OffTop, OffBottom);
       FSplitter.X:=Y;
-      If (OffBottom-Y)<(Y-OffTop) Then SwapInt(OffTop, OffBottom)
-      Else Dec(FSplitter.y);
-      IF (Abs(OffTop-y)<=2)And(FSplitter.Y>=FFixedRows) then Cursor:=crVSplit
-      Else                                                   Cursor:=crDefault;
+      if (OffBottom-Y)<(Y-OffTop) then SwapInt(OffTop, OffBottom)
+      else Dec(FSplitter.y);
+      IF (Abs(OffTop-y)<=2)and(FSplitter.Y>=FFixedRows) then Cursor:=crVSplit
+      else                                                   Cursor:=crDefault;
       Result:=True;
-    End;
-  End
-    Else
-      If Cursor=crVSplit Then Cursor:=crDefault;
+    end;
+  end
+    else
+      if Cursor=crVSplit then Cursor:=crDefault;
 end;
 
 procedure TCustomGrid.doColMoving(X, Y: Integer);
-Var
+var
   P: TPoint;
   R: TRect;
 begin
   P:=MouseToCell(Point(X,Y));
-  If (Abs(FSplitter.Y-X)>fDragDx)And(Cursor<>crMultiDrag) Then begin
+  if (Abs(FSplitter.Y-X)>fDragDx)and(Cursor<>crMultiDrag) then begin
     Cursor:=crMultiDrag;
     FMoveLast:=Point(-1,-1);
     ResetOffset(True, False);
-  End;
-  if (Cursor=crMultiDrag)And
-     (P.x>=FFixedCols) And
-     ((P.X<=FSplitter.X)or(P.X>FSplitter.X))And
-     (P.X<>FMoveLast.X) Then begin
+  end;
+  if (Cursor=crMultiDrag)and
+     (P.x>=FFixedCols) and
+     ((P.X<=FSplitter.X)or(P.X>FSplitter.X))and
+     (P.X<>FMoveLast.X) then begin
       R:=ColRowToClientCellRect(P.x, P.y);
-      If P.x<=FSplitter.X Then fMoveLast.Y:=R.left
-      Else                     FMoveLast.Y:=R.Right;
+      if P.x<=FSplitter.X then fMoveLast.Y:=R.left
+      else                     FMoveLast.Y:=R.Right;
       fMoveLast.X:=P.X;
       Invalidate;
-  End;
+  end;
 end;
 
 procedure TCustomGrid.doRowMoving(X, Y: Integer);
-Var
+var
   P: TPoint;
   R: TRect;
 begin
   P:=MouseToCell(Point(X,Y));
-  If (Cursor<>crMultiDrag)And(Abs(FSplitter.X-Y)>fDragDx) Then begin
+  if (Cursor<>crMultiDrag)and(Abs(FSplitter.X-Y)>fDragDx) then begin
     Cursor:=crMultiDrag;
     FMoveLast:=Point(-1,-1);
     ResetOffset(False, True);
-  End;
-  if (Cursor=crMultiDrag)And
-     (P.y>=FFixedRows) And
-     ((P.y<=FSplitter.Y)or(P.Y>FSplitter.Y))And
-     (P.y<>FMoveLast.Y) Then begin
+  end;
+  if (Cursor=crMultiDrag)and
+     (P.y>=FFixedRows) and
+     ((P.y<=FSplitter.Y)or(P.Y>FSplitter.Y))and
+     (P.y<>FMoveLast.Y) then begin
       R:=ColRowToClientCellRect(P.x, P.y);
-      If P.y<=FSplitter.y Then fMoveLast.X:=R.Top
-      Else                     FMoveLast.X:=R.Bottom;
+      if P.y<=FSplitter.y then fMoveLast.X:=R.Top
+      else                     FMoveLast.X:=R.Bottom;
       fMoveLast.Y:=P.Y;
       Invalidate;
-  End;
+  end;
 end;
 
 
-Function TCustomGrid.OffsetToColRow(IsCol, Fisical: Boolean; Offset: Integer;
+function TCustomGrid.OffsetToColRow(IsCol, Fisical: Boolean; Offset: Integer;
   var Rest: Integer): Integer;
 begin
   Result:=0; //Result:=-1;
   Rest:=0;
-  If Offset<0 Then Exit; // Out of Range;
-  With FGCache do
-  If IsCol Then begin
-
-    // Begin to count Cols from 0 but ...
-    If Fisical And (Offset>FixedWidth-1) Then begin
-      Result:=FTopLeft.X;  // In scrolled view, then Begin from FtopLeft col
+  if Offset<0 then Exit; // Out of Range;
+  
+  with FGCache do
+  if IsCol then begin
+  
+    // begin to count Cols from 0 but ...
+    if Fisical and (Offset>FixedWidth-1) then begin
+      Result:=FTopLeft.X;  // In scrolled view, then begin from FtopLeft col
       Offset:=Offset-FixedWidth+Integer(AccumWidth[Result])+TLColOff;
-      If Offset>GridWidth-1 Then Begin
+      if Offset>GridWidth-1 then begin
         Result:=ColCount-1;
         Exit;
-      End;
-    End;
-    While Offset>(Integer(AccumWidth[Result])+GetColWidths(Result)-1) do Inc(Result);
+      end;
+    end;
+    while Offset>(Integer(AccumWidth[Result])+GetColWidths(Result)-1) do Inc(Result);
     Rest:=Offset;
-    If Result<>0 Then Rest:=Offset-Integer(AccumWidth[Result]);
+    if Result<>0 then Rest:=Offset-Integer(AccumWidth[Result]);
 
-  End Else Begin
+  end else begin
   
-    If Fisical And (Offset>FixedHeight-1) Then begin
+    if Fisical and (Offset>FixedHeight-1) then begin
       Result:=FTopLeft.Y;
       Offset:=Offset-FixedHeight+Integer(AccumHeight[Result])+TLRowOff;
-      If Offset>GridHeight-1 Then Begin
+      if Offset>GridHeight-1 then begin
         Result:=RowCount-1;
         Exit; // Out of Range
-      End;
-    End;
-    While Offset>(Integer(AccumHeight[Result])+GetRowHeights(Result)-1) do Inc(Result);
+      end;
+    end;
+    while Offset>(Integer(AccumHeight[Result])+GetRowHeights(Result)-1) do Inc(Result);
     Rest:=Offset;
-    If Result<>0 Then Rest:=Offset-Integer(AccumHeight[Result]);
+    if Result<>0 then Rest:=Offset-Integer(AccumHeight[Result]);
     
-  End;
+  end;
 end;
 
-function TCustomGrid.ColRowToOffset(IsCol,Fisical:Boolean; Index:Integer;
-  Var Ini,Fin:Integer): Boolean;
-Var
+function TCustomGrid.ColRowToOffset(IsCol,Fisical:Boolean; Index:Integer; var Ini,Fin:Integer): Boolean;
+var
   Dim: Integer;
 begin
-  With FGCache do begin
-    If IsCol Then begin
+  with FGCache do begin
+    if IsCol then begin
       Ini:=Integer(AccumWidth[Index]);
       Dim:=GetColWidths(Index);
-    End Else begin
+    end else begin
       Ini:=Integer(AccumHeight[Index]);
       Dim:= GetRowheights(Index);
-    End;
-    if Not Fisical Then begin
+    end;
+    if not Fisical then begin
       Fin:=Ini + Dim;
       Exit;
-    End;
-    If IsCol Then Begin
-      If index>=FFixedCols Then
+    end;
+    if IsCol then begin
+      if index>=FFixedCols then
         Ini:=Ini-Integer(AccumWidth[FTopLeft.X]) + FixedWidth -  TLColOff;
-    End Else begin
+    end else begin
       if Index>=FFixedRows then
         Ini:=Ini-Integer(AccumHeight[FTopLeft.Y]) + FixedHeight - TLRowOff;
-    End;
+    end;
     Fin:=Ini + Dim;
-  End;
+  end;
   Result:=true;
 end;
 
 function TCustomGrid.MouseToGridZone(X, Y: Integer; CellCoords: Boolean): TGridZone;
 begin
   Result:=gzNormal;
-  If CellCoords Then Begin
-    If (X<fFixedCols) then
-      If Y<FFixedRows Then  Result:= gzFixedCells
-      Else                  Result:= gzFixedRows
-    Else
-    If (Y<fFixedRows) Then
-      If X<FFixedCols Then  Result:= gzFixedCells
-      Else                  Result:= gzFixedCols;
-  End Else begin
-    If X<=FGCache.FixedWidth Then
-      If Y<=FGcache.FixedHeight Then  Result:=gzFixedCells
-      Else                            Result:=gzFixedRows
-    Else
-    If Y<=FGCache.FixedHeight Then
-      if X<=FGCache.FixedWidth Then   Result:=gzFixedCells
-      Else                            Result:=gzFixedCols;
-  End;
+  if CellCoords then begin
+    if (X<fFixedCols) then
+      if Y<FFixedRows then  Result:= gzFixedCells
+      else                  Result:= gzFixedRows
+    else
+    if (Y<fFixedRows) then
+      if X<FFixedCols then  Result:= gzFixedCells
+      else                  Result:= gzFixedCols;
+  end else begin
+    if X<=FGCache.FixedWidth then
+      if Y<=FGcache.FixedHeight then  Result:=gzFixedCells
+      else                            Result:=gzFixedRows
+    else
+    if Y<=FGCache.FixedHeight then
+      if X<=FGCache.FixedWidth then   Result:=gzFixedCells
+      else                            Result:=gzFixedCols;
+  end;
 end;
 
 procedure TCustomGrid.ExchangeColRow(IsColumn: Boolean; Index, WithIndex: Integer
   );
 begin
-  If IsColumn Then FCols.Exchange(Index, WithIndex)
-  Else             FRows.Exchange(Index, WithIndex);
+  if IsColumn then FCols.Exchange(Index, WithIndex)
+  else             FRows.Exchange(Index, WithIndex);
   ColRowExchanged(IsColumn, Index, WithIndex);
   VisualChange;
 end;
 
 procedure TCustomGrid.MoveColRow(IsColumn: Boolean; FromIndex, ToIndex: Integer);
 begin
-  If IsColumn then FCols.Move(FromIndex, ToIndex)
-  Else             FRows.Move(FromIndex, ToIndex);
+  if IsColumn then FCols.Move(FromIndex, ToIndex)
+  else             FRows.Move(FromIndex, ToIndex);
   ColRowMoved(IsColumn, FromIndex, ToIndex);
   VisualChange;
-End;
+end;
 
 procedure TCustomGrid.SortColRow(IsColumn: Boolean; Index: Integer);
 begin
-  If IsColumn Then SortColRow(IsColumn, Index, FFixedRows, RowCount-1)
-  Else             SortColRow(IsColumn, Index, FFixedCols, ColCount-1);
+  if IsColumn then SortColRow(IsColumn, Index, FFixedRows, RowCount-1)
+  else             SortColRow(IsColumn, Index, FFixedCols, ColCount-1);
 end;
 
 procedure TCustomGrid.SortColRow(IsColumn: Boolean; Index, FromIndex,
   ToIndex: Integer);
 begin
-  If Assigned(OnCompareCells) Then begin
+  if Assigned(OnCompareCells) then begin
     BeginUpdate;
     Sort(IsColumn, Index, FromIndex, ToIndex);
     EndUpdate(true);
-  End;
+  end;
 end;
 
 procedure TCustomGrid.DeleteColRow(IsColumn: Boolean; Index: Integer);
 begin
-  If IsColumn Then FCols.Delete(Index)
-  Else             FRows.Delete(Index);
+  if IsColumn then FCols.Delete(Index)
+  else             FRows.Delete(Index);
   ColRowDeleted(IsColumn, Index);
   VisualChange;
 end;
@@ -2670,7 +2665,7 @@ begin
 end;
 
 
-{ Returns a rectangle corresponding to a fisical cell[aCol,aRow] }
+{ Returns a reactagle corresponding to a fisical cell[aCol,aRow] }
 function TCustomGrid.ColRowToClientCellRect(aCol, aRow: Integer): TRect;
 begin
   ColRowToOffset(True, True, ACol, Result.Left, Result.Right);
@@ -4846,7 +4841,6 @@ end;
 end.
 
 {  The_Log
-
 
 VERSION: 0.8.4:
 ---------------
