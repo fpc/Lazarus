@@ -12,6 +12,7 @@ components/codetools/customcodetool.pas svneol=native#text/pascal
 components/codetools/definetemplates.pas svneol=native#text/pascal
 components/codetools/eventcodetool.pas svneol=native#text/pascal
 components/codetools/expreval.pas svneol=native#text/pascal
+components/codetools/finddeclarationtool.pas svneol=native#text/pascal
 components/codetools/keywordfunclists.pas svneol=native#text/pascal
 components/codetools/linkscanner.pas svneol=native#text/pascal
 components/codetools/memcheck.pas svneol=native#text/pascal

@@ -147,7 +147,7 @@ endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages)
 override PACKAGE_NAME=lazarus
 override PACKAGE_VERSION=0.8a
-override TARGET_UNITS+=avl_tree basiccodetools codecache codetoolmanager sourcelog customcodetool pascalparsertool stdcodetools methodjumptool eventcodetool codecompletiontool codeatom codetree definetemplates expreval keywordfunclists linkscanner sourcechanger memcheck
+override TARGET_UNITS+=avl_tree basiccodetools codecache codetoolmanager sourcelog customcodetool pascalparsertool finddeclarationtool stdcodetools methodjumptool eventcodetool codecompletiontool codeatom codetree definetemplates expreval keywordfunclists linkscanner sourcechanger memcheck
 override DIST_ZIPNAME=lazarus.codetools.$(ZIPSUFFIX)
 override COMPILER_OPTIONS+=-gl
 override COMPILER_UNITDIR+=. $(COMPILER_UNITTARGETDIR)

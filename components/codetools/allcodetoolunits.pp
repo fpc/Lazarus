@@ -15,8 +15,8 @@ interface
 
 uses
   MemCheck,
-  CodeToolManager, CustomCodeTool, PascalParserTool, StdCodeTools,
-  MethodJumpTool, EventCodeTool, CodeCompletionTool, LinkScanner,
+  CodeToolManager, CustomCodeTool, PascalParserTool, FindDeclarationTool,
+  StdCodeTools, MethodJumpTool, EventCodeTool, CodeCompletionTool, LinkScanner,
   BasicCodeTools, CodeTree, CodeAtom, SourceChanger, CodeCache,
   KeywordFuncLists, SourceLog, ExprEval, AVL_Tree, DefineTemplates;
 
@@ -28,6 +28,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/12/12 21:11:29  lazarus
+  MG: started finddeclarationtool
+
   Revision 1.3  2001/11/15 09:08:35  lazarus
   MG: splitted codetools.pp, it was a monster
 

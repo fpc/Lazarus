@@ -21,8 +21,8 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TStandardCodeTool enhances TPascalParserTool with many standard code editing
-    functions for the following categories:
+    TStandardCodeTool enhances TFindDeclarationTool with many standard code
+    editing functions for the following categories:
       - source name
       - uses sections
       - lazarus resources
@@ -45,12 +45,12 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeTree, CodeAtom, PascalParserTool, SourceLog,
+  Classes, SysUtils, CodeTree, CodeAtom, FindDeclarationTool, SourceLog,
   KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo,
   SourceChanger;
 
 type
-  TStandardCodeTool = class(TPascalParserTool)
+  TStandardCodeTool = class(TFindDeclarationTool)
   public
     // source name  e.g. 'unit UnitName;'
     function GetSourceNamePos(var NamePos: TAtomPosition): boolean;
