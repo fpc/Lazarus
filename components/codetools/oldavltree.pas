@@ -35,9 +35,12 @@ interface
 
 uses
   {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
-  Classes, SysUtils, FileProcs;
+  Classes, SysUtils;
 
 type
+  TFPCStreamSeekType = int64;
+  TFPCMemStreamSeekType = integer;
+
   TAVLTreeNode = class
   public
     Parent, Left, Right: TAVLTreeNode;
