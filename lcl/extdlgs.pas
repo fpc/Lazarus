@@ -1213,7 +1213,9 @@ end;
 procedure TCalendarDialogForm.InitForm;
 
 begin
-  Height:=150;
+  // TODO: let the size of this dialog dependent on the prefered size of
+  // the calendar, because the gtk calendar is smaller than the win32 calendar.
+  Height:=170;
   Width:=200;
   Position:=poScreenCenter;
   BorderStyle:=bsDialog;
@@ -1221,7 +1223,7 @@ begin
   With FCalendar do
     begin
     Parent:=Self;
-    SetBounds(0,0,Self.Width,98);
+    SetBounds(0,0,Self.Width,118);
     Align:=alClient;
     //Anchors:=[akLeft,akRight,akTop,akBottom];
     end;
@@ -1229,7 +1231,7 @@ begin
   With FPanel do
     begin
     Parent:=Self;
-    Top:=99;
+    Top:=109;
     Height:=32;
     Width:=200;
     Align:=alBottom;
