@@ -5700,15 +5700,31 @@ var
   GDKColor: TGDKColor;
   pFixed  : PGTKFixed;
   fWindow : pGdkWindow;
+  X: Integer;
+  Y: Integer;
+  DCOrigin: TPoint;
+  MaxX, MaxY: integer;
 begin
   aDC := TDeviceContext(TCanvas(Sender).Handle);
   if aDC = nil then exit;
-  Widget := PgtkWidget(aDC.Wnd);
 
-  Image := gtk_Object_get_data(pgtkobject(widget),'Image');
+  X:=TLMSetGetPixel(data^).X;
+  Y:=TLMSetGetPixel(data^).Y;
+  DCOrigin:=GetDCOffset(TDeviceContext(aDC));
+  inc(X,DCOrigin.X);
+  inc(Y,DCOrigin.Y);
+
+  gdk_window_get_size(aDC.Drawable, @MaxX, @MaxY);
+  if (X<0) or (Y<0) or (X>=MaxX) or (Y>=MaxY) then exit;
+
+  Widget := PgtkWidget(aDC.Wnd);
+  pFixed := GetFixedWidget(Widget);
+  if pFixed <> nil then Widget:=PgtkWidget(pFixed);
+  fWindow:=GetControlWindow(pFixed);
+  if fWindow=nil then exit;
+
+  Image := gtk_Object_get_data(pgtkobject(pFixed),'Image');
   if Image = nil then begin
-    fWindow:=GetControlWindow(widget);
-    if fWindow=nil then exit;
     Image := gdk_image_get(fWindow,0,0,
                             widget^.allocation.width,widget^.allocation.height);
     if Image = nil then exit;
@@ -5718,20 +5734,15 @@ begin
   // ToDo: free allocated gdk color
 
   GDKColor:=AllocGDKColor(TLMSetGetPixel(data^).PixColor);
-//writeln('SetPixel: Color=',HexStr(TLMSetGetPixel(data^).PixColor,8),' GDKColor=',HexStr(GDKColor.Pixel,8));
-  gdk_image_put_pixel(Image,TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y,
-                         GDKColor.Pixel);
 
-  pFixed := GetFixedWidget(Widget);
-  if pFixed <> nil then Widget:=PgtkWidget(pFixed);
-  fWindow := GetControlWindow(Widget);
-  if fWindow<>nil then
-    gdk_draw_image(fwindow,
-      PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (Widget)], 
-      Image,
-      TLMSetGetPixel(Data^).X,TLMSetGetPixel(data^).Y,
-      TLMSetGetPixel(Data^).X,TLMSetGetPixel(data^).Y,
-      1,1);
+//writeln('SetPixel: Color=',HexStr(TLMSetGetPixel(data^).PixColor,8),' GDKColor=',HexStr(GDKColor.Pixel,8));
+  gdk_image_put_pixel(Image,X,Y,GDKColor.Pixel);
+
+  gdk_draw_image(fwindow,
+    PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (Widget)],
+    Image,
+    X,Y,X,Y,
+    1,1);
 end;
 
 {------------------------------------------------------------------------------
@@ -5747,28 +5758,46 @@ var
   aDC    : TDeviceContext;
   Image  : pGDKImage;
   Widget : PgtkWidget;
+  pFixed: PgtkWidget;
   GDKColor: TGDKColor;
   GdkColorContext: PGdkColorContext;
-  AWindow: PGdkWindow;
+  fWindow: PGdkWindow;
+  X: Integer;
+  Y: Integer;
+  DCOrigin: TPoint;
+  MaxX, MaxY: integer;
 begin
+  TLMSetGetPixel(data^).PixColor := clNone;
+  
   aDC := TDeviceContext(TCanvas(Sender).Handle);
   if aDC = nil then exit;
+
+  X:=TLMSetGetPixel(data^).X;
+  Y:=TLMSetGetPixel(data^).Y;
+  DCOrigin:=GetDCOffset(TDeviceContext(aDC));
+  inc(X,DCOrigin.X);
+  inc(Y,DCOrigin.Y);
+
+  gdk_window_get_size(aDC.Drawable, @MaxX, @MaxY);
+  if (X<0) or (Y<0) or (X>=MaxX) or (Y>=MaxY) then exit;
+
   Widget := PgtkWidget(aDC.Wnd);
+  pFixed := GetFixedWidget(Widget);
+  if pFixed <> nil then Widget:=PgtkWidget(pFixed);
+  fWindow:=GetControlWindow(pFixed);
+  if fWindow=nil then exit;
 
   Image := gtk_Object_get_data(pgtkobject(Widget),'Image');
   if Image = nil then begin
-    AWindow:=GetControlWindow(widget);
-    if AWindow=nil then exit;
-    Image := gdk_image_get(AWindow,0,0,
+    Image := gdk_image_get(fWindow,0,0,
       widget^.allocation.width,widget^.allocation.height);
     if Image = nil then exit;
     gtk_Object_set_data(pgtkobject(Widget),'Image',Image);
   end;
 
-  GDKColor.Pixel := gdk_image_get_pixel(Image,
-                              TLMSetGetPixel(data^).X,TLMSetGetPixel(data^).Y);
+  GDKColor.Pixel := gdk_image_get_pixel(Image,X,Y);
   GdkColorContext:=
-    gdk_color_context_new(gdk_visual_get_system,gdk_colormap_get_system);
+           gdk_color_context_new(gdk_visual_get_system,gdk_colormap_get_system);
   gdk_color_context_query_color(GdkColorContext,@GDKColor);
   gdk_color_context_free(GdkColorContext);
     
@@ -7323,6 +7352,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.376  2003/06/13 10:09:04  mattias
+  fixed Set/GetPixel
+
   Revision 1.375  2003/06/12 16:18:23  mattias
   applied TComboBox fix for grabbing keys from Yoyong
 
