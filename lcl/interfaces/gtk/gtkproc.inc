@@ -166,6 +166,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
 begin
+  //writeln('SetComboBoxText ',HexStr(Cardinal(ComboWidget),8),' "',NewText,'"');
   // lock combobox, so that no OnChange event is fired
   LockOnChange(PGtkObject(ComboWidget^.entry),+1);
   // set text
@@ -3522,6 +3523,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.113  2002/10/05 10:37:22  lazarus
+  MG: fixed TComboBox.ItemIndex on CreateWnd
+
   Revision 1.112  2002/10/04 20:46:53  lazarus
   MG: improved TComboBox.SetItemIndex
 
