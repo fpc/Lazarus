@@ -29,7 +29,7 @@ interface
 
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
-  LCLLinux, Controls, ComCtrls, ExtCtrls, PropEdits, TypInfo, Messages,
+  LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, PropEdits, TypInfo, Messages,
   LResources, XMLCfg, Menus, Dialogs;
 
 type
@@ -188,8 +188,8 @@ type
     procedure ValueButtonClick(Sender: TObject);
 
     procedure WMVScroll(var Msg: TWMScroll); message WM_VSCROLL;
-    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMMouseMove(var Msg: TWMMouseMove); message WM_MOUSEMOVE;
+    procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetBackgroundColor(const AValue: TColor);
     procedure UpdateScrollBar;
@@ -261,7 +261,6 @@ type
     procedure AvailComboBoxChange(Sender:TObject);
     procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
     procedure OnShowHintPopupMenuItemClick(Sender :TObject);
-    procedure FormResize(Sender: TObject);
   private
     FComponentList: TComponentSelectionList;
     FPropertyEditorHook:TPropertyEditorHook;
@@ -276,7 +275,6 @@ type
     procedure PropEditLookupRootChange;
     procedure OnGridModified(Sender: TObject);
   public
-    //procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
     property Selections:TComponentSelectionList 
       read FComponentList write SetSelections;
     procedure RefreshSelections;
@@ -289,7 +287,6 @@ type
     property PropertyEditorHook:TPropertyEditorHook 
       read FPropertyEditorHook write SetPropertyEditorHook;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
-    procedure DoInnerResize;
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -460,7 +457,7 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.WMSize(var Msg: TWMSize);
+procedure TOIPropertyGrid.WMSize(var Msg: TLMSize);
 begin
   inherited;
   UpdateScrollBar;
@@ -1647,6 +1644,7 @@ begin
     Name:='StatusBar';
     Parent:=Self;
     SimpleText:='All';
+    Align:= alBottom;
     Visible:=true;
   end;
 
@@ -1676,6 +1674,7 @@ begin
     Text:='';
     OnChange:=@AvailComboBoxChange;
     //Sorted:=true;
+    Align:= alTop;
     Visible:=true;
   end;
 
@@ -1687,6 +1686,7 @@ begin
     Pages.Strings[0]:='Properties';
     Pages.Add('Events');
     PopupMenu:=MainPopupMenu;
+    Align:= alClient;
     Visible:=true;
   end;
 
@@ -1724,29 +1724,12 @@ begin
     Visible:=true;
   end;
 
-  OnResize:=@FormResize;
 end;
 
 destructor TObjectInspector.Destroy;
 begin
   FComponentList.Free;
   inherited Destroy;
-end;
-
-procedure TObjectInspector.DoInnerResize;
-var MaxX,MaxY,NewTop:integer;
-begin
-  if Visible=false then exit;
-  MaxX:=ClientWidth;
-  MaxY:=ClientHeight-20;
-
-  // combobox at top (filled with available components)
-  AvailCompsComboBox.SetBounds(0,0,MaxX,20);
-
-  // notebook
-  NewTop:=AvailCompsComboBox.Top+AvailCompsComboBox.Height+2;
-//writeln('[TObjectInspector.DoInnerResize]');
-  NoteBook.SetBounds(0,NewTop,MaxX,MaxY-NewTop);
 end;
 
 procedure TObjectInspector.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
@@ -1862,13 +1845,6 @@ begin
   EventGrid.RefreshPropertyValues;
 end;
 
-{procedure TObjectInspector.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
-begin
-//writeln('[TObjectInspector.SetBounds] ',aLeft,',',aTop,',',aWidth,',',aHeight);
-  inherited SetBounds(aLeft,aTop,aWidth,aHeight);
-  DoInnerResize;
-end;}
-
 procedure TObjectInspector.AvailComboBoxChange(Sender:TObject);
 var NewComponent,Root:TComponent;
   a:integer;
@@ -1931,11 +1907,6 @@ procedure TObjectInspector.OnShowHintPopupMenuItemClick(Sender : TObject);
 begin
   PropertyGrid.ShowHint:=not PropertyGrid.ShowHint;
   EventGrid.ShowHint:=not EventGrid.ShowHint;
-end;
-
-procedure TObjectInspector.FormResize(Sender: TObject);
-begin
-  DoInnerResize;
 end;
 
 end.

@@ -57,12 +57,12 @@ type
   }
 
 
-  TPage = class(TCustomControl)
+  TPage = class(TWinControl)
   private
   protected
     procedure AttachSignals; override;
     procedure ReadState(Reader: TAbstractReader); override;
-    procedure Paint; override;
+    //procedure Paint; override;
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
   public
     procedure AddControl; override;
@@ -435,6 +435,11 @@ end.
 
  {
   $Log$
+  Revision 1.19  2002/03/13 22:48:16  lazarus
+  Constraints implementation (first cut) and sizig - moving system rework to
+  better match Delphi/Kylix way of doing things (the existing implementation
+  worked by acident IMHO :-)
+
   Revision 1.18  2002/02/24 20:51:23  lazarus
   Improved TSpeedButton (Glyph, Spacing, Margin, drawing)
   Added PageCount to TNotebook

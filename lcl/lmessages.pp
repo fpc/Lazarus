@@ -93,6 +93,8 @@ LM_SETDESIGNING = LM_COMUSER+60;
 
 LM_SETSHORTCUT = LM_COMUSER+61;
 
+LM_SETGEOMETRY = LM_COMUSER+62;
+
 //end of messages that are sent to the interface
 
 
@@ -797,6 +799,11 @@ end.
 
 {
   $Log$
+  Revision 1.21  2002/03/13 22:48:16  lazarus
+  Constraints implementation (first cut) and sizig - moving system rework to
+  better match Delphi/Kylix way of doing things (the existing implementation
+  worked by acident IMHO :-)
+
   Revision 1.20  2002/02/18 22:46:11  lazarus
   Implented TMenuItem.ShortCut (not much tested).
 
