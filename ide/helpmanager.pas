@@ -38,7 +38,7 @@ uses
   PascalParserTool, FindDeclarationTool,
   HelpIntf, HelpHTML, HelpFPDoc,
   TransferMacros, DialogProcs, IDEOptionDefs, EnvironmentOpts, AboutFrm,
-  Project, PackageDefs, MainBar, HelpOptions, MainIntf;
+  MsgView, Project, PackageDefs, MainBar, HelpOptions, MainIntf;
 
 type
   { TBaseHelpManager }
@@ -55,6 +55,7 @@ type
     function ShowHelpForSourcePosition(const Filename: string;
                                        const CodePos: TPoint;
                                        var ErrMsg: string): TShowHelpResult; virtual; abstract;
+    procedure ShowHelpForMessage(Line: integer); virtual; abstract;
   end;
 
 
@@ -101,6 +102,7 @@ type
     function ShowHelpForSourcePosition(const Filename: string;
                                        const CodePos: TPoint;
                                        var ErrMsg: string): TShowHelpResult; override;
+    procedure ShowHelpForMessage(Line: integer); override;
   public
     property MainHelpDB: THelpDatabase read FMainHelpDB;
     property FCLHelpDB: THelpDatabase read FFCLHelpDB;
@@ -597,6 +599,21 @@ begin
         TObject(PascalHelpContextLists[i]).Free;
       PascalHelpContextLists.Free;
     end;
+  end;
+end;
+
+procedure THelpManager.ShowHelpForMessage(Line: integer);
+var
+  Msg: String;
+begin
+  debugln('THelpManager.ShowHelpForMessage A Line=',dbgs(Line));
+  if MessagesView=nil then exit;
+  if Line<0 then
+    Line:=MessagesView.SelectedMessageIndex;
+  if (Line<0) or (Line>=MessagesView.VisibleItemCount) then exit;
+  Msg:=MessagesView.VisibleItems[Line].Msg;
+  if Msg<>'' then begin
+    ShowHelpOrErrorForMessageLine(Msg);
   end;
 end;
 

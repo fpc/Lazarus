@@ -589,6 +589,8 @@ function ShowHelpOrErrorForSourcePosition(const Filename: string;
 // help for messages (compiler messages, codetools messages, make messages, ...)
 function ShowHelpForMessageLine(const MessageLine: string;
   var ErrMsg: string): TShowHelpResult;
+function ShowHelpOrErrorForMessageLine(const MessageLine: string
+  ): TShowHelpResult;
 
 // URL functions
 function FilenameToURL(const Filename: string): string;
@@ -692,6 +694,16 @@ begin
   Result:=HelpDatabases.ShowHelpForQuery(
             THelpQueryMessage.Create('',MessageLine),
             true,ErrMsg);
+end;
+
+function ShowHelpOrErrorForMessageLine(const MessageLine: string
+  ): TShowHelpResult;
+var
+  ErrMsg: String;
+begin
+  ErrMsg:='';
+  Result:=ShowHelpForMessageLine(MessageLine,ErrMsg);
+  HelpDatabases.ShowError(Result,ErrMsg);
 end;
 
 function FilenameToURL(const Filename: string): string;
@@ -1426,16 +1438,62 @@ end;
 
 function THelpDatabases.ShowHelpForMessageLine(Query: THelpQueryMessage;
   var ErrMsg: string): TShowHelpResult;
+var
+  Nodes: TList;
 begin
-  Result:=shrHelpNotFound;
-  ErrMsg:='THelpDatabases.ShowHelpForMessageLine not implemented';
+  ErrMsg:='';
+  Result:=shrSuccess;
+
+  debugln('THelpDatabases.ShowHelpForMessageLine A Msg="',Query.WholeMessage,'"');
+  // search node
+  Nodes:=nil;
+  try
+    Result:=GetNodesForMessage(Query.WholeMessage,Nodes,ErrMsg);
+    if Result<>shrSuccess then exit;
+
+    // check if at least one node found
+    if (Nodes<>nil) then Nodes.Pack;
+    if (Nodes=nil) or (Nodes.Count=0) then begin
+      // no node found for the message is not a bug
+      Result:=shrSuccess;
+      ErrMsg:='';
+      exit;
+    end;
+
+    Result:=ShowHelpForNodes(Query,Nodes,ErrMsg);
+  finally
+    Nodes.Free;
+  end;
 end;
 
 function THelpDatabases.ShowHelpForClass(Query: THelpQueryClass;
   var ErrMsg: string): TShowHelpResult;
+var
+  Nodes: TList;
 begin
-  Result:=shrHelpNotFound;
-  ErrMsg:='THelpDatabases.ShowHelpForClass not implemented';
+  ErrMsg:='';
+  Result:=shrSuccess;
+
+  debugln('THelpDatabases.ShowHelpForClass A ',Query.TheClass.ClassName);
+  // search node
+  Nodes:=nil;
+  try
+    Result:=GetNodesForClass(Query.TheClass,Nodes,ErrMsg);
+    if Result<>shrSuccess then exit;
+
+    // check if at least one node found
+    if (Nodes<>nil) then Nodes.Pack;
+    if (Nodes=nil) or (Nodes.Count=0) then begin
+      // no node found for the class is not a bug
+      Result:=shrSuccess;
+      ErrMsg:='';
+      exit;
+    end;
+
+    Result:=ShowHelpForNodes(Query,Nodes,ErrMsg);
+  finally
+    Nodes.Free;
+  end;
 end;
 
 function THelpDatabases.GetNodesForKeyword(const HelpKeyword: string;

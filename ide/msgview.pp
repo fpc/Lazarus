@@ -37,7 +37,7 @@ unit MsgView;
 interface
 
 uses
-  Classes, SysUtils, Controls, StdCtrls, Forms, LResources, IDEProcs,
+  Classes, SysUtils, LCLProc, Controls, StdCtrls, Forms, LResources, IDEProcs,
   IDEOptionDefs, IDECommands, EnvironmentOpts, LazarusIDEStrConsts;
 
 type
@@ -109,7 +109,7 @@ type
                                          write SetLastLineIsProgress;
     property Message: String read GetMessage;
     property Directory: string read GetDirectory;
-    property SelectedMessageIndex: Integer read GetSelectedLineIndex
+    property SelectedMessageIndex: Integer read GetSelectedLineIndex  // visible index
                                            write SetSelectedLineIndex;
     property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged
                                               write FOnSelectionChanged;
@@ -395,6 +395,7 @@ end;
 procedure TMessagesView.MessagesViewKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
+  debugln('TMessagesView.MessagesViewKeyDown ',dbgs(Key));
   ExecuteIDECommand(Self,Key,Shift);
 end;
 

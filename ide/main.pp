@@ -1946,6 +1946,11 @@ begin
   Handled:=true;
   
   case Command of
+  
+  ecContextHelp:
+    if Sender=MessagesView then
+      HelpBoss.ShowHelpForMessage(-1);
+
   ecSave:
     if (Sender is TDesigner) then begin
       GetDesignerUnit(TDesigner(Sender),ASrcEdit,AnUnitInfo);
@@ -10576,6 +10581,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.758  2004/08/23 17:05:21  mattias
+  implemented help jump for messages and classes
+
   Revision 1.757  2004/08/22 22:47:43  mattias
   implemented context help for source editor
 
