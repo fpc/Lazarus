@@ -1348,10 +1348,12 @@ procedure TWinControl.SetFocus;
 var
   Form : TCustomForm;
 begin
-  //if ClassName='TSYNEDIT' then writeln('[TWinControl.SetFocus] ',Name,' Visible=',Visible,' HandleAllocated=',HandleAllocated);
-  Form := GetParentForm(self);
+  {$IFDEF VerboseFocus}
+  writeln('[TWinControl.SetFocus] ',Name,':',ClassName,' Visible=',Visible,' HandleAllocated=',HandleAllocated);
+  {$ENDIF}
+  Form := GetParentForm(Self);
   if Form <> nil then
-    Form.FocusControl(self)
+    Form.FocusControl(Self)
   else if Visible and HandleAllocated then
     LCLLinux.SetFocus(Handle);
 end;
@@ -2580,6 +2582,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.122  2003/03/18 13:04:25  mattias
+  improved focus debugging output
+
   Revision 1.121  2003/03/17 08:51:09  mattias
   added IsWindowVisible
 
