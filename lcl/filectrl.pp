@@ -323,8 +323,10 @@ var
   i: Integer;
 begin
   i:=IndexOfFile(AValue);
-  if i<>ItemIndex then
+  if i<>ItemIndex then begin
     ItemIndex:=i;
+    UpdateSelectedFileName;
+  end;
 end;
 
 procedure TCustomFileListBox.SetMask(const AValue: String);
@@ -379,8 +381,6 @@ begin
   UpdateFileList;
   //Initializes the Sorted property.
   Sorted := True;
-  //An trick for the first time TCustomFileListBox.UpdateSelectedFileName work.
-  FFileName := '_';
 end;
 
 destructor TCustomFileListBox.Destroy;
@@ -400,6 +400,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2004/04/21 21:22:52  mattias
+  fixed updatinf Filename when setting Filename  from Luis
+
   Revision 1.26  2004/04/21 17:41:29  mattias
   added directory brackets  from Luis
 
