@@ -110,7 +110,7 @@ type
     soContent,            // Save Grid Content (Text in stringgrid)
     soPosition            // Save Grid cursor and selection position
   );
-  TSaveOptions = Set of TGridSaveOptions;
+  TSaveOptions = set of TGridSaveOptions;
 
   TGridDrawState = set of (gdSelected, gdFocused, gdFixed);
   TGridState =
@@ -373,7 +373,9 @@ type
     procedure WriteRowHeights(Writer: TWriter);
     procedure WMEraseBkgnd(var message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TLMNoParams); message LM_GETDLGCODE;
+    {
     procedure WMSize(var Msg: TLMSize); message LM_SIZE;
+    }
     procedure WMChar(var message: TLMChar); message LM_CHAR;
   protected
     fGridState: TGridState;
@@ -391,6 +393,7 @@ type
     procedure DblClick; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DestroyHandle; override;
+    procedure DoOnChangeBounds; override;
     procedure DoExit; override;
     procedure DoEnter; override;
     procedure DrawBackGround; virtual;
@@ -994,7 +997,7 @@ begin
   fTopLeft.y:=AValue;
   FRow:=AValue;
   UpdateSelectionRange;
-  if not (csLoading in ComponentState) Then doTopleftChange(true);
+  if not (csLoading in ComponentState) then doTopleftChange(true);
 end;
 
 procedure TCustomGrid.SetGridLineColor(const AValue: TColor);
@@ -1354,7 +1357,7 @@ begin
   end else
   if FScrollBars in [ssHorizontal, ssBoth] then HsbRange:=0;
   ScrollBarShow(SB_HORZ, HsbVisible);
-  If HsbVisible then ScrollBarRange(SB_HORZ, {HsbVisible, }HsbRange );
+  if HsbVisible then ScrollBarRange(SB_HORZ, {HsbVisible, }HsbRange );
 
   with FGCache do
   if ScrollBarAutomatic(ssVertical)  then begin
@@ -1543,9 +1546,9 @@ begin
 
     with FTopLeft do
     if ((XInc=0)and(YInc=0)) or
-       ((X=aCol)and(y=aRow)) Or // Only Perfect fit !
-       ((X+XInc>=ColCount)or(Y+Yinc>=RowCount)) Or // Last Posible
-       ((X+XInc<0)Or(Y+Yinc<0)) // Least Posible
+       ((X=aCol)and(y=aRow)) or // Only Perfect fit !
+       ((X+XInc>=ColCount)or(Y+Yinc>=RowCount)) or // Last Posible
+       ((X+XInc<0)or(Y+Yinc<0)) // Least Posible
     then Break;
     Inc(FTopLeft.x, XInc);
     Inc(FTopLeft.y, YInc);
@@ -1937,7 +1940,7 @@ begin
       Dv := goFixedVertLine in Options;
       Dh := goFixedHorzLine in Options;
       Pen.Style := psSolid;
-      if Not FFlat Then begin
+      if not FFlat then begin
         Pen.Color := cl3DHilight;
         MoveTo(Right - 1, Top);
         LineTo(Left, Top);
@@ -2198,13 +2201,13 @@ begin
     end;
   end;
 end;
-
+{
 procedure TCustomGrid.WMSize(var Msg: TLMSize);
 begin
   Inherited;
   visualChange;
 end;
-
+}
 procedure TCustomGrid.WMChar(var message: TLMChar);
 var
   Ch: Char;
@@ -2272,7 +2275,7 @@ begin
   // the scrollbars see: WMHScroll and WVHScroll
   if FUpdateScrollBarsCount=0 then begin
     if Which in [ssHorizontal, ssBoth] then begin
-      if ScrollBarAutomatic(ssHorizontal) Then begin
+      if ScrollBarAutomatic(ssHorizontal) then begin
           with FGCache do
             ScrollBarPosition(SB_HORZ,
               Integer(AccumWidth[FTopLeft.x])-TLColOff-FixedWidth );
@@ -2422,7 +2425,9 @@ begin
   with FGCache do begin
     VisibleGrid:=GetVisibleGrid;
     with VisibleGrid do
-      ValidGrid:=(Left>=0)and(Top>=0)and(Right>=Left)and(Bottom>=Top);
+      ValidGrid:=
+        (Left>=0)and(Top>=0)and(Right>=Left)and(Bottom>=Top)and
+        (ColCount>0)and(RowCount>0);
     if not ValidGrid then
       MaxClientXY:=Point(0,0)
     else begin
@@ -2959,6 +2964,12 @@ procedure TCustomGrid.DestroyHandle;
 begin
   editorGetValue;
   inherited DestroyHandle;
+end;
+
+procedure TCustomGrid.DoOnChangeBounds;
+begin
+  inherited DoOnChangeBounds;
+  VisualChange;
 end;
 
 procedure TCustomGrid.doExit;
@@ -4394,11 +4405,17 @@ end;
 procedure TDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 begin
   // Draw focused cell if we have the focus
-  if Self.Focused Or (EditorAlwaysShown and ((Feditor=nil) or not Feditor.Focused)) then
+  if Self.Focused or (EditorAlwaysShown and ((Feditor=nil) or not Feditor.Focused)) then
   begin
     if goRowSelect in Options then begin
       aRect.Left := FGCache.FixedWidth + 1;
       aRect.Right := FGCache.MaxClientXY.x;
+    end;
+    if not (goHorzLine in Options) then begin
+      aRect.Bottom := aRect.Bottom + 1;
+    end;
+    if not (goVertLine in Options) then begin
+      aRect.Right := aRect.Right + 1;
     end;
     DrawRubberRect(Canvas, aRect, FFocusColor);
   end;
@@ -4434,7 +4451,7 @@ end;
 procedure TDrawGrid.HeaderSized(IsColumn: Boolean; index: Integer);
 begin
   inherited HeaderSized(IsColumn, index);
-  If Assigned(OnHeaderSized) then OnHeaderSized(Self, IsColumn, index);
+  if Assigned(OnHeaderSized) then OnHeaderSized(Self, IsColumn, index);
 end;
 
 function TDrawGrid.GetEditMask(aCol, aRow: Longint): string;
@@ -4882,7 +4899,7 @@ end;
 
 procedure TStringGrid.SetEditText(aCol, aRow: Longint; const aValue: string);
 begin
-  if Cells[aCol, aRow]<>aValue Then Cells[aCol, aRow]:= aValue;
+  if Cells[aCol, aRow]<>aValue then Cells[aCol, aRow]:= aValue;
   inherited SetEditText(aCol, aRow, aValue);
 end;
 

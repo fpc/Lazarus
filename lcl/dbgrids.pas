@@ -350,7 +350,10 @@ type
     procedure EndVisualChange;
     procedure DoLayoutChanged;
     procedure WriteColumns(Writer: TWriter);
+    
+    {
     procedure WMSize(var Msg: TLMSize); message LM_SIZE;
+    }
     
     procedure OnTitleFontChanged(Sender: TObject);
     procedure RestoreEditor;
@@ -363,6 +366,7 @@ type
     procedure EditingColumn(aCol: Integer; Ok: boolean);
     procedure EditorCancelEditing;
     procedure CellClick(const aCol,aRow: Integer); override;
+    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
     function  CreateColumns: TDBGridColumns;
     function  ColumnIndexFromGridColumn(Column: Integer): Integer;
@@ -370,6 +374,8 @@ type
     procedure CreateWnd; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DefaultDrawCell(aCol,aRow: Integer; aRect: TRect; aState: TGridDrawState);
+    procedure DoExit; override;
+    procedure DoOnChangeBounds; override;
     procedure DrawByRows; override;
     procedure DrawRow(ARow: Integer); override;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
@@ -377,7 +383,6 @@ type
     function  EditorCanAcceptKey(const ch: Char): boolean; override;
     function  EditorIsReadOnly: boolean; override;
     procedure EndLayout;
-    procedure DoExit; override;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
@@ -598,10 +603,10 @@ procedure TCustomDbGrid.OnEditingChanged(aDataSet: TDataSet);
 begin
   {$ifdef dbgdbgrid}
   DebugLn('(',name,') ','TCustomDBGrid.OnEditingChanged');
+  DebugLn('Editing=', BoolToStr(dsEdit = aDataSet.State));
+  DebugLn('Inserting=',BoolToStr(dsInsert = aDataSet.State));
   {$endif}
   UpdateActive;
-  WriteLn('Editing=',(dsEdit = aDataSet.State));
-  WriteLn('Inserting=',(dsInsert = aDataSet.State));
 end;
 
 procedure TCustomDbGrid.OnInvalidDataSet(aDataSet: TDataSet);
@@ -999,7 +1004,7 @@ begin
   else
     Writer.WriteCollection(FColumns);
 end;
-
+{
 procedure TCustomDbGrid.WMSize(var Msg: TLMSize);
 begin
   BeginVisualChange;
@@ -1007,7 +1012,7 @@ begin
   LayoutChanged;
   EndVisualChange;
 end;
-
+}
 procedure TCustomDbGrid.OnTitleFontChanged(Sender: TObject);
 begin
   if FColumns.Enabled then
@@ -1088,7 +1093,7 @@ end;
 
 procedure TCustomDBGrid.LayoutChanged;
 begin
-  if FLayoutChangedCount = 0 then begin
+  if FLayoutChangedCount=0 then begin
     BeginLayout;
     if FColumns.Count>0 then
       FColumns.LinkFields
@@ -1234,6 +1239,16 @@ begin
     Canvas.TextRect(Arect, 2, 2, S);
     //Canvas.TextOut(aRect.Left+2,ARect.Top+2, S);
   end;
+end;
+
+
+procedure TCustomDbGrid.DoOnChangeBounds;
+begin
+  BeginVisualChange;
+  inherited DoOnChangeBounds;
+  if HandleAllocated then
+    LayoutChanged;
+  EndVisualChange;
 end;
 
 procedure TCustomDbGrid.BeforeMoveSelection(const DCol,DRow: Integer);
@@ -1434,6 +1449,11 @@ procedure TCustomDbGrid.CellClick(const aCol, aRow: Integer);
 begin
   if Assigned(OnCellClick) then
     OnCellClick(ColumnFromGridColumn(aCol));
+end;
+
+procedure TCustomDbGrid.ChangeBounds(ALeft, ATop, AWidth, AHeight: integer);
+begin
+  inherited ChangeBounds(ALeft, ATop, AWidth, AHeight);
 end;
 
 procedure TCustomDbGrid.EndLayout;
@@ -2302,7 +2322,7 @@ end;
 function TColumn.GetDisplayName: string;
 begin
   if FFieldName='' then
-    Result := Inherited GetDisplayName
+    Result := inherited GetDisplayName
   else
     Result:=FFieldName;
 end;
@@ -2516,8 +2536,8 @@ end;
 
 procedure TCellButton.msg_SetPos(var Msg: TGridMessage);
 begin
-  With Msg.CellRect do begin
-    If Right-Left>25 Then Left:=Right-25;
+  with Msg.CellRect do begin
+    if Right-Left>25 then Left:=Right-25;
     SetBounds(Left, Top, Right-Left, Bottom-Top);
   End;
 end;
@@ -2526,6 +2546,12 @@ end.
 
 {
   $Log$
+  Revision 1.16  2004/09/08 07:21:10  vincents
+  - removed some debug output
+  - removed wmsize event handler
+  - changed case of some keywords
+  - improved DrawFocusRect in case there are not gridlines
+
   Revision 1.15  2004/09/02 17:42:38  mattias
   fixed changing CNCHar.CharCode when key changed
 
