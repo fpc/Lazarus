@@ -1639,6 +1639,9 @@ if (X >= 0) and (X <= TControl(sender).Width) and
 
      //set the ONCLICK event so we know when the control is selected;
      TControl(CInterface.Control).OnClick := @ClickOnControl;
+      FormEditor1.ClearSelected;
+      FormEditor1.AddSelected(TComponent(Cinterface.Control));
+
    end;
 //TIdeComponent(ideComplist.items[bpressed-1]).
 
@@ -2457,8 +2460,9 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.9  2000/11/27 20:27:16  lazarus
-  Fixed the code so you can drop controls on the form
+  Revision 1.10  2000/11/27 20:33:18  lazarus
+  Changed the code so when you add a control to the form, it's selected by the object inspector.
+
   Shane
 
   Revision 1.5  2000/08/10 13:22:51  lazarus
