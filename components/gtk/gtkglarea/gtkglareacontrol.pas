@@ -22,7 +22,7 @@ interface
 uses
   Classes, SysUtils, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF}, Forms,
   Controls, Graphics, LMessages, VCLGlobals, InterfaceBase, GTKInt,
-  WSLCLClasses, LResources,
+  WSLCLClasses, WSControls, LResources,
   GLib, NVGL, GTKGLArea_Int;
   
 type
@@ -103,7 +103,7 @@ type
   
   { TWSGTKGLAreaControl }
   
-  TWSGTKGLAreaControl = class(TWSLCLComponent)
+  TWSGTKGLAreaControl = class(TWSWinControl)
   public
     class function CreateHandle(const AComponent: TComponent;
                                 const AParams: TCreateParams): THandle; override;
