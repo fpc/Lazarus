@@ -26,13 +26,17 @@ packages=fcl
 
 [prerules]
 ifneq ($(OS_TARGET),win32)
-override COMPILER_UNITDIR+=lcl/nonwin32
+NONWIN32=nonwin32
+else
+ifeq ($(findstring 1.0.,$(FPC_VERSION)),)
+NONWIN32=nonwin32
+endif
 endif
 
 [compiler]
 options=-gl
 unittargetdir=units
-unitdir=.
+unitdir=. $(NONWIN32)
 includedir=include
 
 [install]
