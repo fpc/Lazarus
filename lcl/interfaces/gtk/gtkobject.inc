@@ -3975,12 +3975,23 @@ begin
       gtk_widget_show(Box);
 
       // Create the form client area
-      TempWidget := gtk_fixed_new();
+      TempWidget := gtk_scrolled_window_new(nil,nil);
       gtk_box_pack_end(Box, TempWidget, True, True, 0);
       gtk_widget_show(TempWidget);
-      SetFixedWidget(p, TempWidget);
-      SetMainWidget(p, TempWidget);
 
+      gtk_object_set_data(P,'scroll_area', TempWidget);
+
+      TempWidget2 := gtk_layout_new(nil, nil);
+      gtk_container_add(PGTKContainer(TempWidget), TempWidget2);
+      gtk_widget_show(TempWidget2);
+      SetFixedWidget(p, TempWidget2);
+      SetMainWidget(p, TempWidget2);
+
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(TempWidget),
+                                     GTK_POLICY_NEVER,
+                                     GTK_POLICY_NEVER);
       //drag icons
       if Drag_Icon = nil then
         Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
@@ -6510,6 +6521,12 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.262  2002/10/23 20:47:27  lazarus
+  AJ: Started Form Scrolling
+      Started StaticText FocusControl
+      Fixed Misc Dialog Problems
+      Added TApplication.Title
+
   Revision 1.261  2002/10/22 18:54:56  lazarus
   MG: fixed menu streaming
 
