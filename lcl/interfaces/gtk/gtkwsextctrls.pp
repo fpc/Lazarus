@@ -216,10 +216,10 @@ implementation
 
 var
   {$IFDef GTK1}
-  NoteBookCloseBtnPixmapImg: PGdkPixmap = nil;
-  NoteBookCloseBtnPixmapMask: PGdkPixmap = nil;
+  NoteBookCloseBtnPixmapImg: PGdkPixmap {$ifndef VER1_0} = nil {$endif};
+  NoteBookCloseBtnPixmapMask: PGdkPixmap {$ifndef VER1_0} = nil {$endif};
   {$Else}
-  NoteBookCloseBtnPixbuf: PGdkPixbuf = nil;
+  NoteBookCloseBtnPixbuf: PGdkPixbuf {$ifndef VER1_0} = nil {$endif};
   {$EndIf}
 
 {-------------------------------------------------------------------------------
@@ -678,4 +678,13 @@ initialization
 //  RegisterWSComponent(TCustomPanel, TGtkWSCustomPanel);
 //  RegisterWSComponent(TPanel, TGtkWSPanel);
 ////////////////////////////////////////////////////
+
+{$ifdef VER1_0}
+  {$ifdef GTK1}
+  NoteBookCloseBtnPixmapImg := nil;
+  NoteBookCloseBtnPixmapMask := nil;
+  {$else}
+  NoteBookCloseBtnPixbuf := nil;
+  {$endif}
+{$endif}
 end.
