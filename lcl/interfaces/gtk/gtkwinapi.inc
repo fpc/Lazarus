@@ -5288,6 +5288,7 @@ begin
   Result := 0;
   if (Handle <> 0)
   then begin
+    Adjustment := nil;
     case SBStyle of
     
       SB_HORZ:
@@ -5297,7 +5298,7 @@ begin
           Adjustment := gtk_scrolled_window_get_hadjustment(
                            PGTKScrolledWindow(Handle))
         else
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), 
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
           gtk_hscrollbar_get_type) 
         then
           Adjustment :=  PgtkhScrollBar(handle)^.Scrollbar.Range.Adjustment
@@ -5308,13 +5309,13 @@ begin
           Adjustment :=  {$IfDef Win32}nil{$Else}gtk_clist_get_hadjustment(PgtkCList(handle)){$EndIf};
 
       SB_VERT:
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), 
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
                          gtk_scrolled_window_get_type) 
         then
           Adjustment := gtk_scrolled_window_get_vadjustment(
                            PGTKScrolledWindow(Handle))
         else
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), 
+        if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
           gtk_vscrollbar_get_type) 
         then
           Adjustment :=  PgtkvScrollBar(handle)^.Scrollbar.Range.Adjustment
@@ -5330,8 +5331,6 @@ begin
           Adjustment := gtk_range_get_adjustment(PGTKRange(Handle));
         end;
         
-      else
-        Adjustment := nil;
     end;
 
     if Adjustment <> nil
@@ -5350,34 +5349,52 @@ begin
         Page_Increment := nPage;
       end;
       
-//writeln('[TgtkObject.SetScrollInfo] Result=',Result,' Lower=',round(Lower),' Upper=',round(Upper),' Page_Size=',round(Page_Size),' Page_Increment=',round(Page_Increment),' bRedraw=',bRedraw,' Handle=',Handle);
+{writeln('[TgtkObject.SetScrollInfo] Result=',Result,
+' Lower=',round(Lower),
+' Upper=',round(Upper),
+' Page_Size=',round(Page_Size),
+' Page_Increment=',round(Page_Increment),
+' bRedraw=',bRedraw,
+' Handle=',HexStr(Cardinal(Handle),8));}
 
       // do we have to set this allways ?
       if bRedraw then
-         begin
-{}
-         if  (Handle <> 0) then
-            begin
-            if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
-               gtk_scrolled_window_get_type) then
-             begin
-              if SBStyle in [SB_BOTH, SB_HORZ]
-                 then gtk_object_set(PGTKObject(Handle), 'hscrollbar_policy', [POLICY[bRedraw], nil]);
-               if SBStyle in [SB_BOTH, SB_VERT]
-                 then gtk_object_set(PGTKObject(Handle), 'vscrollbar_policy', [POLICY[bRedraw], nil]);
-             end
+      begin
+        if  (Handle <> 0) then
+        begin
+          if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
+                           gtk_scrolled_window_get_type)
+          then
+          begin
+            if SBStyle in [SB_BOTH, SB_HORZ]
+              then gtk_object_set(PGTKObject(Handle), 'hscrollbar_policy',
+                                  [POLICY[bRedraw], nil]);
+            if SBStyle in [SB_BOTH, SB_VERT]
+              then gtk_object_set(PGTKObject(Handle), 'vscrollbar_policy',
+                                  [POLICY[bRedraw], nil]);
+          end
+          else
+          begin
+            if (SBSTYLE = SB_CTL)
+            and gtk_type_is_a(gtk_object_type(PGTKObject(Handle)),
+                              gtk_widget_get_type)
+            then
+              gtk_widget_show(PGTKWidget(Handle))
             else
-            begin
-             if (SBSTYLE = SB_CTL) and gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_widget_get_type) then
-                 gtk_widget_show(PGTKWidget(Handle))
-                 else
-                 gtk_widget_hide(PGTKWidget(Handle))
-            end;
-            end;
-{}
+              gtk_widget_hide(PGTKWidget(Handle))
+          end;
+        end;
+{  writeln('TgtkObject.SetScrollInfo: ',
+  ' lower=',lower,'/',nMin,
+  ' upper=',upper,'/',nMax,
+  ' value=',value,'/',nPos,
+  ' step_increment=',step_increment,'/',1,
+  ' page_increment=',page_increment,'/',nPage,
+  ' page_size=',page_size,'/',nPage,
+  '');}
 
-         gtk_adjustment_changed(Adjustment);
-         end;
+        gtk_adjustment_changed(Adjustment);
+      end;
     end;
   end;
   with ScrollInfo do Assert(False, Format('Trace:> [TgtkObject.SetScrollInfo] --> %d', [Result]));
@@ -6361,6 +6378,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.124  2002/09/06 19:11:48  lazarus
+  MG: fixed scrollbars of TTreeView
+
   Revision 1.123  2002/09/06 16:41:31  lazarus
   MG: set SpecialOrigin
 
