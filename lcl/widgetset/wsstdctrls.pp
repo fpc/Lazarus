@@ -51,6 +51,7 @@ uses
 type
   { TWSScrollBar }
 
+  TWSScrollBarClass = class of TWSScrollBar;
   TWSScrollBar = class(TWSWinControl)
     class procedure SetParams(const AScrollBar: TScrollBar); virtual;
   end;

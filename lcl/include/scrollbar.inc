@@ -117,7 +117,7 @@ begin
   end;
 
   if HandleAllocated then
-    CNSendMessage(LM_SetProperties,Self,nil);
+    TWSScrollBarClass(WidgetSetClass).SetParams(Self);
 end;
 
 procedure TScrollBar.SetPosition(Value: Integer);
