@@ -201,63 +201,7 @@ end;
 
 function TCustomCodeTool.NodeDescToStr(Desc: integer): string;
 begin
-  case Desc of
-  // CodeTreeNodeDescriptors
-  ctnNone            : Result:='None';
-
-  ctnClass           : Result:='Class';
-  ctnClassPublished  : Result:='Published';
-  ctnClassPrivate    : Result:='Private';
-  ctnClassProtected  : Result:='Protected';
-  ctnClassPublic     : Result:='Public';
-
-  ctnProcedure       : Result:='Method';
-  ctnProcedureHead   : Result:='Method Head';
-  ctnParameterList   : Result:='Param List';
-
-  ctnBeginBlock      : Result:='Begin';
-  ctnAsmBlock        : Result:='Asm';
-  ctnWithBlock        : Result:='With';
-
-  ctnProgram         : Result:='Program';
-  ctnPackage         : Result:='Package';
-  ctnLibrary         : Result:='Library';
-  ctnUnit            : Result:='Unit';
-  ctnInterface       : Result:='Interface';
-  ctnImplementation  : Result:='Implementation';
-  ctnInitialization  : Result:='Initialization';
-  ctnFinalization    : Result:='Finalization';
-
-  ctnTypeSection     : Result:='Type Section';
-  ctnVarSection      : Result:='Var Section';
-  ctnConstSection    : Result:='Const Section';
-  ctnResStrSection   : Result:='Resource String Section';
-  ctnUsesSection     : Result:='Uses Section';
-
-  ctnTypeDefinition  : Result:='Type Definition';
-  ctnVarDefinition   : Result:='Variable Definition';
-  ctnConstDefinition : Result:='Const Definition';
-  
-  ctnProperty        : Result:='Property';
-  
-  ctnIdentifier      : Result:='Identifier';
-  ctnArrayType       : Result:='Array Type';
-  ctnRecordType      : Result:='Record Type';
-  ctnRecordCase      : Result:='Record Case';
-  ctnRecordVariant   : Result:='Record Variant';
-  ctnProcedureType   : Result:='Procedure Type';
-  ctnSetType         : Result:='Set Type';
-  ctnRangeType       : Result:='Subrange Type';
-  ctnEnumType        : Result:='Enumeration Type';
-  ctnLabelType       : Result:='Label Type';
-  ctnTypeType        : Result:='''Type'' Type';
-  ctnFileType        : Result:='File Type';
-  ctnPointerType     : Result:='Pointer ''^'' Type';
-  ctnClassOfType     : Result:='Class Of Type';
-
-  else
-    Result:='(unknown descriptor '+IntToStr(Desc)+')';
-  end;
+  Result:=NodeDescriptionAsString(Desc);
 end;
 
 function TCustomCodeTool.NodeSubDescToStr(Desc, SubDesc: integer): string;

@@ -64,7 +64,6 @@ const
 
   ctnBeginBlock      = 20;
   ctnAsmBlock        = 21;
-  ctnWithBlock       = 22;
 
   ctnProgram         = 30;
   ctnPackage         = 31;
@@ -114,6 +113,14 @@ const
      [ctnClassPublic,ctnClassPublished,ctnClassPrivate,ctnClassProtected];
   AllDefinitionSections =
      [ctnTypeSection,ctnVarSection,ctnConstSection,ctnResStrSection];
+  AllIdentifierDefinitions =
+     [ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition];
+  AllPascalTypes =
+     [ctnClass,
+      ctnIdentifier,ctnArrayType,ctnRecordType,ctnRecordCase,ctnRecordVariant,
+      ctnProcedureType,ctnSetType,ctnRangeType,ctnEnumType,ctnLabelType,
+      ctnTypeType,ctnFileType,ctnPointerType,ctnClassOfType];
+
 
   // CodeTreeNodeSubDescriptors
   ctnsNone               = 0;
@@ -129,6 +136,8 @@ type
     Cache: TObject;
     function Next: TCodeTreeNode;
     function Prior: TCodeTreeNode;
+    function HasAsParent(Node: TCodeTreeNode): boolean;
+    function DescAsString: string;
     procedure Clear;
     constructor Create;
     function ConsistencyCheck: integer; // 0 = ok
@@ -242,7 +251,6 @@ begin
 
   ctnBeginBlock: Result:='BeginBlock';
   ctnAsmBlock: Result:='AsmBlock';
-  ctnWithBlock: Result:='WithBlock';
 
   ctnProgram: Result:='Program';
   ctnPackage: Result:='Package';
@@ -363,6 +371,26 @@ begin
     if Result<>0 then exit;
   end;
   Result:=0;
+end;
+
+function TCodeTreeNode.HasAsParent(Node: TCodeTreeNode): boolean;
+var CurNode: TCodeTreeNode;
+begin
+  Result:=false;
+  if Node=nil then exit;
+  CurNode:=Parent;
+  while (CurNode<>nil) do begin
+    if CurNode=Node then begin
+      Result:=true;
+      exit;
+    end;
+    CurNode:=CurNode.Parent;
+  end;
+end;
+
+function TCodeTreeNode.DescAsString: string;
+begin
+  Result:=NodeDescriptionAsString(Desc);
 end;
 
 { TCodeTree }

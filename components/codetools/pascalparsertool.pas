@@ -118,7 +118,7 @@ type
     function KeyWordFuncTypeRecord: boolean;
     function KeyWordFuncTypeDefault: boolean;
     // procedures/functions/methods
-    function KeyWordFuncMethod: boolean;
+    function KeyWordFuncProc: boolean;
     function KeyWordFuncBeginEnd: boolean;
     // class/object elements
     function KeyWordFuncClassSection: boolean;
@@ -161,6 +161,7 @@ type
         CreateNodes: boolean): boolean;
     function ReadWithStatement(ExceptionOnError,
         CreateNodes: boolean): boolean;
+    procedure ReadVariableType;
   public
     CurSection: TCodeTreeNodeDesc;
 
@@ -202,6 +203,8 @@ type
     function FindImplementationNode: TCodeTreeNode;
     function FindInitializationNode: TCodeTreeNode;
     function FindMainBeginEndNode: TCodeTreeNode;
+    function FindTypeNodeOfDefinition(
+        DefinitionNode: TCodeTreeNode): TCodeTreeNode;
     function GetSourceType: TCodeTreeNodeDesc;
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
@@ -336,12 +339,12 @@ begin
     Add('CONST',{$ifdef FPC}@{$endif}KeyWordFuncConst);
     Add('RESOURCESTRING',{$ifdef FPC}@{$endif}KeyWordFuncResourceString);
     
-    Add('PROCEDURE',{$ifdef FPC}@{$endif}KeyWordFuncMethod);
-    Add('FUNCTION',{$ifdef FPC}@{$endif}KeyWordFuncMethod);
-    Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}KeyWordFuncMethod);
-    Add('DESTRUCTOR',{$ifdef FPC}@{$endif}KeyWordFuncMethod);
-    Add('OPERATOR',{$ifdef FPC}@{$endif}KeyWordFuncMethod);
-    Add('CLASS',{$ifdef FPC}@{$endif}KeyWordFuncMethod);
+    Add('PROCEDURE',{$ifdef FPC}@{$endif}KeyWordFuncProc);
+    Add('FUNCTION',{$ifdef FPC}@{$endif}KeyWordFuncProc);
+    Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}KeyWordFuncProc);
+    Add('DESTRUCTOR',{$ifdef FPC}@{$endif}KeyWordFuncProc);
+    Add('OPERATOR',{$ifdef FPC}@{$endif}KeyWordFuncProc);
+    Add('CLASS',{$ifdef FPC}@{$endif}KeyWordFuncProc);
 
     Add('BEGIN',{$ifdef FPC}@{$endif}KeyWordFuncBeginEnd);
     Add('ASM',{$ifdef FPC}@{$endif}KeyWordFuncBeginEnd);
@@ -532,6 +535,9 @@ begin
   if ClassNode.FirstChild<>nil then
     // class already parsed
     exit;
+  if ClassNode.Desc<>ctnClass then
+    RaiseException('[TPascalParserTool.BuildSubTreeForClass] ClassNode.Desc='
+                   +ClassNode.DescAsString);
   // set CursorPos after class head
   MoveCursorToNodeStart(ClassNode);
   // parse
@@ -691,7 +697,9 @@ begin
   end;
   if not AtomIsChar(':') then
     RaiseException('syntax error: : expected, but '+GetAtom+' found');
-  ReadNextAtom;
+  // read type
+  ReadVariableType;
+{  ReadNextAtom;
   if (CurPos.StartPos>SrcLen) then
     RaiseException('syntax error: variable type definition not found');
   // create type body node
@@ -726,7 +734,7 @@ begin
   EndChildNode;
   // end variable definition
   CurNode.EndPos:=CurPos.EndPos;
-  EndChildNode;
+  EndChildNode;}
   Result:=true;
 end;
 
@@ -1479,7 +1487,7 @@ begin
   Result:=true;
 end;
 
-function TPascalParserTool.KeyWordFuncMethod: boolean;
+function TPascalParserTool.KeyWordFuncProc: boolean;
 // procedure, function, constructor, destructor, operator
 var ChildCreated: boolean;
   IsFunction, HasForwardModifier, IsClassProc: boolean;
@@ -1491,7 +1499,7 @@ begin
         'syntax error: identifier expected, but '+GetAtom+' found');
     ReadNextAtom;
     if UpAtomIs('PROCEDURE') or UpAtomIs('FUNCTION') then
-     IsClassProc:=true
+      IsClassProc:=true
     else
       RaiseException(
         'syntax error: "procedure" expected, but '+GetAtom+' found');
@@ -1776,6 +1784,40 @@ begin
   Result:=true;
 end;
 
+procedure TPascalParserTool.ReadVariableType;
+// creates nodes for variable type
+begin
+  ReadNextAtom;
+  TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
+    CurPos.EndPos-CurPos.StartPos);
+  if UpAtomIs('ABSOLUTE') then begin
+    ReadNextAtom;
+    ReadConstant(true,false,[]);
+  end;
+  if AtomIsChar('=') then begin
+    // read constant
+    repeat
+      ReadNextAtom;
+      if AtomIsChar('(') or AtomIsChar('[') then
+        ReadTilBracketClose(true);
+      if AtomIsWord and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
+        CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
+      and (UpAtomIs('END') or AtomIsKeyWord) then
+        RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+    until AtomIsChar(';');
+  end;
+  // read ;
+  if not AtomIsChar(';') then
+    RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+  if not ReadNextUpAtomIs('CVAR') then
+    UndoReadNextAtom
+  else
+    if not ReadNextAtomIsChar(';') then
+      RaiseException('syntax error: ; expected, but '+GetAtom+' found');
+  CurNode.EndPos:=CurPos.EndPos;
+  EndChildNode;
+end;
+
 function TPascalParserTool.KeyWordFuncBeginEnd: boolean;
 // Keyword: begin, asm
 var BeginKeyWord: shortstring;
@@ -1897,35 +1939,7 @@ begin
       if not AtomIsChar(':') then
         RaiseException('syntax error: : expected, but '+GetAtom+' found');
       // read type
-      ReadNextAtom;
-      TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
-        CurPos.EndPos-CurPos.StartPos);
-      if UpAtomIs('ABSOLUTE') then begin
-        ReadNextAtom;
-        ReadConstant(true,false,[]);
-      end;
-      if AtomIsChar('=') then begin
-        // read constant
-        repeat
-          ReadNextAtom;
-          if AtomIsChar('(') or AtomIsChar('[') then
-            ReadTilBracketClose(true);
-          if AtomIsWord and (not IsKeyWordInConstAllowed.DoItUppercase(UpperSrc,
-            CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
-          and (UpAtomIs('END') or AtomIsKeyWord) then
-            RaiseException('syntax error: ; expected, but '+GetAtom+' found');
-        until AtomIsChar(';');
-      end;
-      // read ;
-      if not AtomIsChar(';') then
-        RaiseException('syntax error: ; expected, but '+GetAtom+' found');
-      if not ReadNextUpAtomIs('CVAR') then
-        UndoReadNextAtom
-      else
-        if not ReadNextAtomIsChar(';') then
-          RaiseException('syntax error: ; expected, but '+GetAtom+' found');
-      CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode;
+      ReadVariableType;
     end else begin
       UndoReadNextAtom;
       break;
@@ -3022,6 +3036,23 @@ begin
   Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
   if (Dummy<>0) and (Dummy<>-1) then
     RaiseException('cursor pos outside of code');
+end;
+
+function TPascalParserTool.FindTypeNodeOfDefinition(
+  DefinitionNode: TCodeTreeNode): TCodeTreeNode;
+// for example: 'var a,b,c: integer;'  only c has a type child
+begin
+  Result:=DefinitionNode;
+  while (Result<>nil)
+  and (Result.Desc in AllIdentifierDefinitions) do begin
+    if (Result.FirstChild<>nil) then begin
+      Result:=Result.FirstChild;
+      if (Result<>nil) and (not (Result.Desc in AllPascalTypes)) then
+        Result:=nil;
+      exit;
+    end;
+    Result:=Result.NextBrother;
+  end;
 end;
 
 
