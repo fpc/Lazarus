@@ -816,3 +816,4 @@ tools/lazarusmake.ini svneol=native#text/plain
 tools/lazres.lpi svneol=native#text/plain
 tools/lazres.pp svneol=native#text/pascal
 tools/runwait.sh -text svneol=native#application/x-sh
+tools/updatepofiles.pas svneol=native#text/pascal

@@ -44,6 +44,7 @@ uses
   Classes, SysUtils;
 
 // file attributes and states
+function CompareFilenames(const Filename1, Filename2: string): integer;
 function FilenameIsAbsolute(TheFilename: string):boolean;
 procedure CheckIfFileIsExecutable(const AFilename: string);
 procedure CheckIfFileIsSymlink(const AFilename: string);
@@ -109,6 +110,9 @@ end.
 
 {
   $Log$
+  Revision 1.10  2003/01/17 16:28:42  mattias
+  updated translation files
+
   Revision 1.9  2002/12/23 13:20:46  mattias
   fixed backuping symlinks
 

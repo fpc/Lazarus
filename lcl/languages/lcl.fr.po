@@ -1,3 +1,91 @@
+#: lclstrconsts:rsmball
+msgid "&All"
+msgstr ""
+
+#: lclstrconsts:rsmbclose
+msgid "&Close"
+msgstr ""
+
+#: lclstrconsts:rsmbhelp
+msgid "&Help"
+msgstr ""
+
+#: lclstrconsts:rsmbignore
+msgid "&Ignore"
+msgstr ""
+
+#: lclstrconsts:rsmbno
+msgid "&No"
+msgstr ""
+
+#: lclstrconsts:rsmbok
+msgid "&OK"
+msgstr ""
+
+#: lclstrconsts:rsmbretry
+msgid "&Retry"
+msgstr ""
+
+#: lclstrconsts:rsmbyes
+msgid "&Yes"
+msgstr ""
+
+#: lclstrconsts:rsmbabort
+msgid "Abort"
+msgstr "Abandonner"
+
+#: lclstrconsts:rsmball
+msgid "All?"
+msgstr "Tout"
+
+#: lclstrconsts:rsmbcancel
+msgid "Cancel"
+msgstr "Annuler"
+
+#: lclstrconsts:rsmtconfirmation
+msgid "Confirmation"
+msgstr "Confirmation"
+
+#: lclstrconsts:rsmtcustom
+msgid "Custom"
+msgstr "Personalisé"
+
+#: lclstrconsts:rsmterror
+msgid "Error"
+msgstr "Erreur"
+
+#: lclstrconsts:rsmbhelp
+msgid "Help"
+msgstr "Aide"
+
+#: lclstrconsts:rsmbignore
+msgid "Ignore"
+msgstr "Ignorer"
+
+#: lclstrconsts:rsmtinformation
+msgid "Information"
+msgstr "Information"
+
+#: lclstrconsts:rsmbno
+msgid "No"
+msgstr "Non"
+
+#: lclstrconsts:rsmbnotoall
+msgid "No to all"
+msgstr "Non pour tout"
+
+#: lclstrconsts:rsmbok
+msgid "OK"
+msgstr "Ok"
+
+#: lclstrconsts:rsmbretry
+msgid "Retry"
+msgstr "Réessayer"
+
+#: lclstrconsts:rsmtwarning
+msgid "Warning"
+msgstr "Avertissement"
+
 msgid ""
 msgstr ""
 ""
@@ -7,68 +95,11 @@ msgstr ""
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 0.9.6\n"
-
 #: lclstrconsts:rsmbyes
 msgid "Yes"
 msgstr "Oui"
 
-#: lclstrconsts:rsmbno
-msgid "No"
-msgstr "Non"
-
-#: lclstrconsts:rsmbok
-msgid "OK"
-msgstr "Ok"
-
-#: lclstrconsts:rsmbcancel
-msgid "Cancel"
-msgstr "Annuler"
-
-#: lclstrconsts:rsmbabort
-msgid "Abort"
-msgstr "Abandonner"
-
-#: lclstrconsts:rsmbretry
-msgid "Retry"
-msgstr "Réessayer"
-
-#: lclstrconsts:rsmbignore
-msgid "Ignore"
-msgstr "Ignorer"
-
-#: lclstrconsts:rsmball
-msgid "All?"
-msgstr "Tout"
-
-#: lclstrconsts:rsmbnotoall
-msgid "No to all"
-msgstr "Non pour tout"
-
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to all"
 msgstr "Oui pour tout"
-
-#: lclstrconsts:rsmbhelp
-msgid "Help"
-msgstr "Aide"
-
-#: lclstrconsts:rsmtwarning
-msgid "Warning"
-msgstr "Avertissement"
-
-#: lclstrconsts:rsmterror
-msgid "Error"
-msgstr "Erreur"
-
-#: lclstrconsts:rsmtinformation
-msgid "Information"
-msgstr "Information"
-
-#: lclstrconsts:rsmtconfirmation
-msgid "Confirmation"
-msgstr "Confirmation"
-
-#: lclstrconsts:rsmtcustom
-msgid "Custom"
-msgstr "Personalisé"
 

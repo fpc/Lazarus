@@ -34,6 +34,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function CompareFilenames(const Filename1, Filename2: string): integer;
+ ------------------------------------------------------------------------------}
+function CompareFilenames(const Filename1, Filename2: string): integer;
+begin
+  {$IFDEF WIN32}
+  Result:=AnsiCompareText(Filename1, Filename2);
+  {$ELSE}
+  Result:=AnsiCompareStr(Filename1, Filename2);
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
   function FilenameIsAbsolute(TheFilename: string):boolean;
  ------------------------------------------------------------------------------}
 function FilenameIsAbsolute(TheFilename: string):boolean;
@@ -710,6 +722,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2003/01/17 16:28:42  mattias
+  updated translation files
+
   Revision 1.9  2002/12/27 08:46:32  mattias
   changes for fpc 1.1
 

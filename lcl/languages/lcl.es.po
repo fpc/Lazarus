@@ -1,68 +1,46 @@
-msgid ""
+#: lclstrconsts:rsmball
+msgid "&All"
 msgstr ""
-""
-"Last-Translator: Luis R. Hilario B. <luisdigital@BonBon.net>\n"
-"PO-Revision-Date: 2002-12-22 20:15-0400\n"
-"Language-Team: Español\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
 
-#: lclstrconsts:rsmbyes
-msgid "Yes"
-msgstr "Sí"
+#: lclstrconsts:rsmbclose
+msgid "&Close"
+msgstr ""
+
+#: lclstrconsts:rsmbhelp
+msgid "&Help"
+msgstr ""
+
+#: lclstrconsts:rsmbignore
+msgid "&Ignore"
+msgstr ""
 
 #: lclstrconsts:rsmbno
-msgid "No"
-msgstr "No"
+msgid "&No"
+msgstr ""
 
 #: lclstrconsts:rsmbok
-msgid "OK"
-msgstr "Aceptar"
+msgid "&OK"
+msgstr ""
 
-#: lclstrconsts:rsmbcancel
-msgid "Cancel"
-msgstr "Cancelar"
+#: lclstrconsts:rsmbretry
+msgid "&Retry"
+msgstr ""
+
+#: lclstrconsts:rsmbyes
+msgid "&Yes"
+msgstr ""
 
 #: lclstrconsts:rsmbabort
 msgid "Abort"
 msgstr "Abortar"
 
-#: lclstrconsts:rsmbretry
-msgid "Retry"
-msgstr "Reintentar"
-
-#: lclstrconsts:rsmbignore
-msgid "Ignore"
-msgstr "Ignorar"
-
 #: lclstrconsts:rsmball
 msgid "All?"
 msgstr "¿Todo?"
 
-#: lclstrconsts:rsmbnotoall
-msgid "No to all"
-msgstr "No a todo"
-
-#: lclstrconsts:rsmbyestoall
-msgid "Yes to all"
-msgstr "Sí a todo"
-
-#: lclstrconsts:rsmbhelp
-msgid "Help"
-msgstr "Ayuda"
-
-#: lclstrconsts:rsmtwarning
-msgid "Warning"
-msgstr "Advertencia"
-
-#: lclstrconsts:rsmterror
-msgid "Error"
-msgstr "Error"
-
-#: lclstrconsts:rsmtinformation
-msgid "Information"
-msgstr "Información"
+#: lclstrconsts:rsmbcancel
+msgid "Cancel"
+msgstr "Cancelar"
 
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"
@@ -72,5 +50,56 @@ msgstr "Confirmación"
 msgid "Custom"
 msgstr "Personalizar"
 
+#: lclstrconsts:rsmterror
+msgid "Error"
+msgstr "Error"
 
+#: lclstrconsts:rsmbhelp
+msgid "Help"
+msgstr "Ayuda"
+
+#: lclstrconsts:rsmbignore
+msgid "Ignore"
+msgstr "Ignorar"
+
+#: lclstrconsts:rsmtinformation
+msgid "Information"
+msgstr "Información"
+
+#: lclstrconsts:rsmbno
+msgid "No"
+msgstr "No"
+
+#: lclstrconsts:rsmbnotoall
+msgid "No to all"
+msgstr "No a todo"
+
+#: lclstrconsts:rsmbok
+msgid "OK"
+msgstr "Aceptar"
+
+#: lclstrconsts:rsmbretry
+msgid "Retry"
+msgstr "Reintentar"
+
+#: lclstrconsts:rsmtwarning
+msgid "Warning"
+msgstr "Advertencia"
+
+msgid ""
+msgstr ""
+""
+"Last-Translator: Luis R. Hilario B. <luisdigital@BonBon.net>\n"
+"PO-Revision-Date: 2002-12-22 20:15-0400\n"
+"Language-Team: Español\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+#: lclstrconsts:rsmbyes
+msgid "Yes"
+msgstr "Sí"
+
+#: lclstrconsts:rsmbyestoall
+msgid "Yes to all"
+msgstr "Sí a todo"
 

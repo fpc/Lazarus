@@ -16,11 +16,23 @@ packages=rtl fcl
 
 [compiler]
 options=-gl
-unitdir=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units $(LAZDIR)/lcl/units/$(LCLPLATFORM)
+unitdir=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units \
+          $(LAZDIR)/lcl/units/$(LCL_PLATFORM)/
 targetdir=.
 
 [prerules]
 LAZDIR=..
+
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+LCL_PLATFORM=gtk
+endif
+endif
+export LCL_PLATFORM
 
 
 [rules]
@@ -28,6 +40,7 @@ LAZDIR=..
 
 all: apiwizz_all
         $(MAKE) --assume-new=lazres.pp lazres$(EXEEXT)
+        $(MAKE) --assume-new=updatepofiles.pas updatepofiles$(EXEEXT)
 
 makefile: Makefile.fpc
         -$(FPCMAKE) -w

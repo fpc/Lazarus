@@ -201,10 +201,18 @@ PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages/base $(FPCDIR)/packages/ext
 override PACKAGE_NAME=lazarus-tools
 override PACKAGE_VERSION=0.8a
 LAZDIR=..
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+LCL_PLATFORM=gtk
+endif
+endif
+export LCL_PLATFORM
 override TARGET_DIRS+=apiwizz
 override TARGET_PROGRAMS+=lazres
 override COMPILER_OPTIONS+=-gl
-override COMPILER_UNITDIR+=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units $(LAZDIR)/lcl/units/$(LCLPLATFORM)
+override COMPILER_UNITDIR+=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units $(LAZDIR)/lcl/units/$(LCL_PLATFORM)/
 override COMPILER_TARGETDIR+=.
 ifdef REQUIRE_UNITSDIR
 override UNITSDIR+=$(REQUIRE_UNITSDIR)
@@ -1533,6 +1541,7 @@ endif
 .PHONY: all makefile makefiles
 all: apiwizz_all
 	$(MAKE) --assume-new=lazres.pp lazres$(EXEEXT)
+	$(MAKE) --assume-new=updatepofiles.pas updatepofiles$(EXEEXT)
 makefile: Makefile.fpc
 	-$(FPCMAKE) -w
 makefiles: makefile

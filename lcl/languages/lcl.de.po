@@ -1,58 +1,46 @@
-#: lclstrconsts:rsmbyes
-msgid "Yes"
-msgstr "Ja"
+#: lclstrconsts:rsmball
+msgid "&All"
+msgstr ""
+
+#: lclstrconsts:rsmbclose
+msgid "&Close"
+msgstr ""
+
+#: lclstrconsts:rsmbhelp
+msgid "&Help"
+msgstr ""
+
+#: lclstrconsts:rsmbignore
+msgid "&Ignore"
+msgstr ""
 
 #: lclstrconsts:rsmbno
-msgid "No"
-msgstr "Nein"
+msgid "&No"
+msgstr ""
 
 #: lclstrconsts:rsmbok
-msgid "OK"
-msgstr "OK"
+msgid "&OK"
+msgstr ""
 
-#: lclstrconsts:rsmbcancel
-msgid "Cancel"
-msgstr "Stop"
+#: lclstrconsts:rsmbretry
+msgid "&Retry"
+msgstr ""
+
+#: lclstrconsts:rsmbyes
+msgid "&Yes"
+msgstr ""
 
 #: lclstrconsts:rsmbabort
 msgid "Abort"
 msgstr "Abbruch"
 
-#: lclstrconsts:rsmbretry
-msgid "Retry"
-msgstr "Wiederholen"
-
-#: lclstrconsts:rsmbignore
-msgid "Ignore"
-msgstr "Ignorieren"
-
 #: lclstrconsts:rsmball
 msgid "All?"
 msgstr "All?"
 
-#: lclstrconsts:rsmbnotoall
-msgid "No to all"
-msgstr "Immer Nein"
-
-#: lclstrconsts:rsmbyestoall
-msgid "Yes to all"
-msgstr "Immer Ja"
-
-#: lclstrconsts:rsmbhelp
-msgid "Help"
-msgstr "Hilfe"
-
-#: lclstrconsts:rsmtwarning
-msgid "Warning"
-msgstr "Warnung"
-
-#: lclstrconsts:rsmterror
-msgid "Error"
-msgstr "Fehler"
-
-#: lclstrconsts:rsmtinformation
-msgid "Information"
-msgstr "Information"
+#: lclstrconsts:rsmbcancel
+msgid "Cancel"
+msgstr "Stop"
 
 #: lclstrconsts:rsmtconfirmation
 msgid "Confirmation"
@@ -61,4 +49,48 @@ msgstr "Bestaetigung"
 #: lclstrconsts:rsmtcustom
 msgid "Custom"
 msgstr "Spezial"
+
+#: lclstrconsts:rsmterror
+msgid "Error"
+msgstr "Fehler"
+
+#: lclstrconsts:rsmbhelp
+msgid "Help"
+msgstr "Hilfe"
+
+#: lclstrconsts:rsmbignore
+msgid "Ignore"
+msgstr "Ignorieren"
+
+#: lclstrconsts:rsmtinformation
+msgid "Information"
+msgstr "Information"
+
+#: lclstrconsts:rsmbno
+msgid "No"
+msgstr "Nein"
+
+#: lclstrconsts:rsmbnotoall
+msgid "No to all"
+msgstr "Immer Nein"
+
+#: lclstrconsts:rsmbok
+msgid "OK"
+msgstr "OK"
+
+#: lclstrconsts:rsmbretry
+msgid "Retry"
+msgstr "Wiederholen"
+
+#: lclstrconsts:rsmtwarning
+msgid "Warning"
+msgstr "Warnung"
+
+#: lclstrconsts:rsmbyes
+msgid "Yes"
+msgstr "Ja"
+
+#: lclstrconsts:rsmbyestoall
+msgid "Yes to all"
+msgstr "Immer Ja"
 

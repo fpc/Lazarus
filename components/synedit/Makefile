@@ -209,7 +209,7 @@ endif
 endif
 export LCL_PLATFORM
 override TARGET_UNITS+=allunits
-override TARGET_IMPLICITUNITS+=syntextdrawer syneditkeycmds synedittypes syneditstrconst syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer synedit synedithighlighter synhighlightermulti synregexpr synexporthtml syneditexport synmemo synmacrorecorder syneditplugins syneditregexsearch synhighlighterposition
+override TARGET_IMPLICITUNITS+=syntextdrawer syneditkeycmds synedittypes syneditstrconst syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer synedit synedithighlighter synhighlightermulti synregexpr synexporthtml syneditexport synmemo synmacrorecorder syneditplugins syneditregexsearch synhighlighterposition synhighlighterjava
 override CLEAN_FILES+=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 override COMPILER_OPTIONS+=-gl
 override COMPILER_UNITDIR+=../../lcl/units/$(LCL_PLATFORM) ../../lcl/units .

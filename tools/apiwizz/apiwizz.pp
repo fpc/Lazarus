@@ -27,6 +27,7 @@
 program APIWizz;
 
 uses
+  Interfaces,
   Forms,
   APIWizard;
 
@@ -38,6 +39,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/01/17 16:28:42  mattias
+  updated translation files
+
   Revision 1.1  2000/07/13 10:28:31  michael
   + Initial import
 

@@ -1,17 +1,3 @@
-msgid ""
-msgstr ""
-""
-"Last-Translator: \n"
-"PO-Revision-Date: 2003-01-09 01:15+0100\n"
-"Language-Team:  <fr@li.org>\n"
-"Content-Type: text/plain; charset=ISO-8859-1\n"
-"Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 0.9.6\n"
-
-#: objinspstrconsts:oisobjectinspector
-msgid "Object Inspector"
-msgstr "Inspecteur d'objet"
-
 #: objinspstrconsts:oisitemsselected
 msgid " items selected"
 msgstr "Sélection"
@@ -24,11 +10,15 @@ msgstr "&Ajouter"
 msgid "&Delete"
 msgstr "&Supprimer"
 
-#: objinspstrconsts:oisproperties
-msgid "Properties"
-msgstr "Propriétés"
-
 #: objinspstrconsts:oisevents
 msgid "Events"
 msgstr "Evénements"
+
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr "Inspecteur d'objet"
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr "Propriétés"
 

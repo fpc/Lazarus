@@ -2586,7 +2586,9 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
-    '..'+ds+'lcl;..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
+    '..'+ds+'lcl;..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
+    +';..'+ds+'components'+ds+'codetools'
+    +';'+SrcPath
     ,da_Define));
   MainDir.AddChild(DirTempl);
 
