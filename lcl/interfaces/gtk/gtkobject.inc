@@ -877,6 +877,7 @@ var
   Titles    : Array [0..255] of PChar;
   BitImage : TBitmap;
   Geometry : TGdkGeometry;
+  Accel : integer;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -1150,15 +1151,10 @@ begin
            PixMapWid := gtk_pixmap_new(pixmap,nil);
          end;
 
-         {pStr := StrAlloc(length(TBitBtn(Sender).Caption) + 1);
-         StrPCopy(pStr, TBitBtn(Sender).Caption);
-         Accel := Ampersands2Underscore(pStr);
-         pLabel := gtk_label_new(pstr);
-         If Accel <> -1 then
-           gtk_label_parse_uline(PGtkLabel(pLabel), pStr);}
          pStr := Ampersands2Underscore(PChar(TBitBtn(Sender).Caption));
          pLabel := gtk_label_new(pstr);
-         gtk_label_parse_uline(PGtkLabel(pLabel), pStr);
+         Accel:= gtk_label_parse_uline(PGtkLabel(pLabel), pStr);
+	 gtk_accel_group_add(gtk_accel_group_get_default, Accel, 0, GTK_ACCEL_VISIBLE, PGtkObject(TBitBtn(Sender).Handle), 'clicked');
          StrDispose(pStr);
          if (TBitBtn(Sender).Layout = blGlyphLeft)
          or (TBitBtn(Sender).Layout = blGlyphTop) then
@@ -1780,13 +1776,9 @@ begin
           csBitBtn,
           csButton,
           csToolButton:
-            Try
-              AccelerateButton(Widget, TLMShortcut(data^));
-            except
-              Assert(False, Format('WARNING:[TgtkObject.IntSendMessage3] unknown error occured in LM_SETSHORTCUT',[]));
-            end;
+            Accelerate(Widget, TLMShortcut(data^), 'clicked');
           else
-            Accelerate(Widget, TLMShortcut(data^));
+            Accelerate(Widget, TLMShortcut(data^), 'activate_item');
         end;
       end;
 
@@ -2007,8 +1999,8 @@ procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
 
 var
   P : Pointer;
-  aLabel,
-  pLabel: pchar;
+  aLabel, pLabel: pchar;
+  AccelKey : integer;
 begin
   if Sender is TMenuItem then begin
     SetMenuItemCaption;
@@ -2061,8 +2053,26 @@ begin
   csColorDialog,
   csFontDialog  : gtk_window_set_title(pGtkWindow(p),PLabel);
 
-  csLabel       : gtk_label_set_text(pGtkLabel(p), pLabel);
-                  //gtk_label_parse_uline(pGtkLabel(p),pLabel);
+  csLabel       : begin
+		    AccelKey:= GetAccelKey(p);
+		    if AccelKey <> 0 then gtk_widget_remove_accelerators(p, 'grab_focus', false);
+		    
+                    if TLabel(Sender).ShowAccelChar then begin
+		      aLabel:= Ampersands2Underscore(pLabel);
+		      try
+                        AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
+			SetAccelKey(p, AccelKey);
+			if AccelKey <> 0 then
+			  gtk_widget_add_accelerator(p, 'grab_focus', gtk_accel_group_get_default(),
+			    AccelKey, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+		      finally
+		        StrDispose(aLabel);
+		      end;
+		    end else begin
+		      gtk_label_set_text(PGtkLabel(p), pLabel);
+		      gtk_label_set_pattern(PGtkLabel(p), nil);
+		    end;  
+		  end;    
 
   csCheckBox    : gtk_label_set_text(
                     pGtkLabel(pgtkCheckButton(p)^.Toggle_Button.Button.Child),
@@ -3350,31 +3360,31 @@ end;
 -------------------------------------------------------------------------------}
 function CreateComboBox(ComboBox: TComboBox): Pointer;
 var
-  ComboWidget: PGtkCombo;
+  Widget: PGtkCombo;
   ItemList: TGtkListStringList;
 begin
-  Result:=gtk_combo_new();
-  ComboWidget:=PGTKCombo(Result);
+  Result:= gtk_combo_new();
+  Widget:= PGTKCombo(Result);
   
-  SetMainWidget(Result,PGtkCombo(Result)^.entry);
+  SetMainWidget(Result, Widget^.entry);
   
-  gtk_combo_disable_activate(ComboWidget);
+  gtk_combo_disable_activate(Widget);
+  gtk_combo_set_case_sensitive(Widget, 1);
     
   // Items
-  ItemList:=TGtkListStringList.Create(PGtkList(ComboWidget^.List));
-  gtk_object_set_data(PGtkObject(ComboWidget),'LCLList',ItemList);
+  ItemList:= TGtkListStringList.Create(PGtkList(Widget^.List));
+  gtk_object_set_data(PGtkObject(Widget), 'LCLList', ItemList);
   ItemList.Assign(ComboBox.Items);
 
   // ItemIndex
-  if ComboBox.ItemIndex>=0 then
-    gtk_list_select_item(PGTKLIST(ComboWidget^.list),ComboBox.ItemIndex);
+  if ComboBox.ItemIndex >= 0 then
+    gtk_list_select_item(PGtkList(Widget^.list), ComboBox.ItemIndex);
 
   // MaxLength
-  gtk_entry_set_max_length(PGtkEntry(ComboWidget^.entry),ComboBox.MaxLength);
+  gtk_entry_set_max_length(PGtkEntry(Widget^.entry), ComboBox.MaxLength);
 
   // Text
-  //writeln('CreateComboBox: ',ComboBox.Text);
-  SetComboBoxText(ComboWidget,PChar(ComboBox.Text));
+  SetComboBoxText(Widget, PChar(ComboBox.Text));
 end;
 
 {------------------------------------------------------------------------------
@@ -3707,6 +3717,7 @@ begin
       P := gtk_label_new(StrTemp);
       gtk_label_set_justify(PGtkLabel(P), GTK_JUSTIFY_LEFT);
       gtk_misc_set_alignment(PGTKMISC(P), 0.0 , 0.0);
+      gtk_signal_connect(p, 'grab_focus', gtk_signal_func(@gtkactivateCB), Sender);
     end;
 
   csListBox :
@@ -5661,6 +5672,14 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.195  2002/09/03 11:32:49  lazarus
+  Added shortcut keys to labels
+  Support for alphabetically sorting the properties
+  Standardize message and add shortcuts ala Kylix
+  Published BorderStyle, unpublished BorderWidth
+  ShowAccelChar and FocusControl
+  ShowAccelChar and FocusControl for TLabel, escaped ampersands now work.
+
   Revision 1.194  2002/09/03 08:07:20  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
