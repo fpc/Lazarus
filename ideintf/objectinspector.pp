@@ -605,7 +605,7 @@ begin
     ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
     ScrollInfo.nMin := 0;
     ScrollInfo.nTrackPos := 0;
-    ScrollInfo.nMax := TopMax+ClientHeight;
+    ScrollInfo.nMax := TopMax+ClientHeight-1;
     ScrollInfo.nPage := ClientHeight;
     if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
     if TopY > ScrollInfo.nMax then TopY:=ScrollInfo.nMax;
@@ -1485,10 +1485,16 @@ begin
 end;
 
 procedure TOICustomPropertyGrid.SetTopY(const NewValue:integer);
+var
+  NewTopY: integer;
 begin
-  if FTopY<>NewValue then begin
-    FTopY:=NewValue;
-    if FTopY<0 then FTopY:=0;
+  NewTopY := TopMax;
+  if NewValue < NewTopY then
+    NewTopY := NewValue;
+  if NewTopY < 0 then
+    NewTopY := 0;
+  if FTopY<>NewTopY then begin
+    FTopY:=NewTopY;
     UpdateScrollBar;
     ItemIndex:=-1;
     Invalidate;
