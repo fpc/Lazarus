@@ -187,7 +187,6 @@ end;
 procedure TgtkObject.SetWindowSizeAndPosition(Window: PGtkWindow;
   AWinControl: TWinControl);
 begin
-if AWinControl is TButton then writeln('NANU? ');
   gtk_window_set_default_size(Window,AWinControl.Width,AWinControl.Height);
   gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
   gtk_widget_set_usize(PGtkWidget(Window),AWinControl.Width,AWinControl.Height);
@@ -773,11 +772,7 @@ begin
 
     LM_GETPixel : GetPixel(Sender,Data); 
 
-    LM_ShowHide :
-    begin
-      Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Show/Hide', [Sender.ClassNAme]));
-      ShowHide(Sender);
-    end;
+    LM_ShowHide : ShowHide(Sender);
 
     LM_SetCursor : SetCursor(TWinControl(Sender));
 
@@ -5294,6 +5289,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.145  2002/06/26 15:11:09  lazarus
+  MG: added new tool: Guess misplaced $IFDEF/$ENDIF
+
   Revision 1.144  2002/06/21 17:54:23  lazarus
   MG: in design mode the mouse cursor is now also set for hidden gdkwindows
 
