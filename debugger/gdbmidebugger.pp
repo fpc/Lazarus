@@ -70,6 +70,7 @@ type
     function  GDBPause: Boolean;
     function  GDBStart(const AContinueRunning: Boolean): Boolean;
     function  GDBStop: Boolean;
+    function  GDBStop2: Boolean;
     function  GDBStepOver: Boolean;
     function  GDBStepInto: Boolean;
     function  GDBRunTo(const ASource: String; const ALine: Integer): Boolean;
@@ -415,6 +416,7 @@ function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
   const ANoMICommand: Boolean): Boolean;
 var
   S: String;
+  IsKill: Boolean;
 begin
   AResultValues := '';
   AResultState := dsNone;
@@ -422,7 +424,13 @@ begin
   FCommandQueue.AddObject(ACommand, TObject(Integer(ANoMICommand)));
   if FCommandQueue.Count > 1 then Exit;
   repeat
-    SendCmdLn(FCommandQueue[0], AValues);
+    S := FCommandQueue[0];
+    // Kill is a special case, since it requires additional
+    // processing after the command is executed. Until we have
+    // added a callback meganism, we handle it here
+    IsKill := S = 'kill';
+    
+    SendCmdLn(S, AValues);
     Result := ProcessResult(AResultState, AResultValues,
                             Boolean(Integer(FCommandQueue.Objects[0])));
     if Result
@@ -440,6 +448,8 @@ begin
       FStoppedParams := '';
       ProcessStopped(S);
     end;
+    if IsKill
+    then GDBStop2;
   until not Result or (FCommandQueue.Count = 0);
 end;
 
@@ -497,10 +507,7 @@ var
 begin
   if not ExecuteCommand('x/d ' + AExpression, AValues, S, True)
   then Result := nil
-  else begin
-    writeln('TGDBMIDebugger.GDBGetData A {',S,'}');
-    Result := Pointer(StrToIntDef(StripLN(GetPart('\t', '', S)), 0));
-  end;
+  else Result := Pointer(StrToIntDef(StripLN(GetPart('\t', '', S)), 0));
 end;
 
 function TGDBMIDebugger.GDBGetText(const ALocation: Pointer): String;
@@ -519,7 +526,10 @@ begin
   end
   else begin
     S := StripLN(S);
-    Result := GetPart('\t ''', '''', S);
+    // don't use ' as end terminator, there might be one as part of the text
+    // since ' will be the last char, simply strip it.
+    Result := GetPart(['\t '''], [], S);
+    Delete(Result, Length(Result), 1);
   end;
 end;
 
@@ -665,31 +675,42 @@ begin
   end;
 end;
 
+function TGDBMIDebugger.GDBStop2: Boolean;
+var
+  S: String;
+begin
+  // Second pass stop
+  Result := False;
+  // verify stop
+  if not ExecuteCommand('info program', [], S, True) then Exit;
+
+  if Pos('not being run', S) > 0
+  then SetState(dsStop);
+  Result := True;
+end;
+
 function TGDBMIDebugger.GDBStop: Boolean;
 begin
-  if State = dsError 
+  Result := False;
+  
+  if State = dsError
   then begin
     // We don't know the state of the debugger, 
     // force a reinit. Let's hope this works.
     DebugProcess.Terminate(0);
     Done;
+    Result := True;
     Exit;
   end;
 
   if State = dsRun
   then GDBPause;
 
-  ExecuteCommand('kill', True);
-(*
-  if State = dsPause
-  then begin
-    // not supported yet
-    // ExecuteCommand('-exec-abort');
-    ExecuteCommand('kill', True);
-    SetState(dsStop); //assume stop until abort is supported;
-  end;
-*)
-  Result := True;
+  // not supported yet
+  // ExecuteCommand('-exec-abort');
+  if not ExecuteCommand('kill', True) then Exit;
+  
+  // the second part is handled in GDBStop2 (called by execute)
 end;
 
 function TGDBMIDebugger.GetGDBTypeInfo(const AExpression: String): TGDBType;
@@ -790,7 +811,11 @@ begin
           else if S = 'error'
           then begin
             Result := True;
-            ANewState := dsError;
+            // todo implement with values
+            if  (pos('msg=', AResultValues) > 0)
+            and (pos('not being run', AResultValues) > 0)
+            then ANewState := dsStop
+            else ANewState := dsError;
           end
           else if S = 'exit'
           then begin
@@ -1795,6 +1820,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.21  2003/05/30 00:53:09  marc
+  MWE: * fixed debugger.stop
+
   Revision 1.20  2003/05/29 18:47:27  mattias
   fixed reposition sourcemark
 
