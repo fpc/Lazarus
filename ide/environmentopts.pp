@@ -631,15 +631,17 @@ begin
   Result:=afaAsk;
 end;
 
-function GetLazarusLanguageNames(aLangId : TLazarusLanguage) : String;
+function GetLazarusLanguageNames(aLangId: TLazarusLanguage) : String;
 begin
-  Result :=rsLanguageAutomatic;
+  Result := '?';
   Case aLangId of
-    llEnglish : Result:=rsLanguageEnglish;
-    llGerman  : Result:=rsLanguageDeutsch;
-    llSpanish : Result:=rsLanguageSpanish;
-    llFrench  : Result:=rsLanguageFrench;
-    llRussian : Result:=rsLanguageRussian;
+    llAutomatic: Result:=rsLanguageAutomatic;
+    llEnglish  : Result:=rsLanguageEnglish;
+    llGerman   : Result:=rsLanguageDeutsch;
+    llSpanish  : Result:=rsLanguageSpanish;
+    llFrench   : Result:=rsLanguageFrench;
+    llRussian  : Result:=rsLanguageRussian;
+    llPolish   : Result:=rsLanguagePolish;
   end;
 end;
 
