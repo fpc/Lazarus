@@ -47,6 +47,8 @@ type
   end;
   PAvgLvlTreeNode = ^TAvgLvlTreeNode;
 
+  { TAvgLvlTree }
+
   TAvgLvlTree = class
   private
     FCount: integer;
@@ -64,7 +66,9 @@ type
     function Compare(Data1, Data2: Pointer): integer;
     function Find(Data: Pointer): TAvgLvlTreeNode;
     function FindKey(Key: Pointer;
-      OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+                     OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+    function FindNearestKey(Key: Pointer;
+                       OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
     function FindSuccessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
     function FindPrecessor(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
     function FindLowest: TAvgLvlTreeNode;
@@ -74,9 +78,9 @@ type
     function FindLeftMost(Data: Pointer): TAvgLvlTreeNode;
     function FindRightMost(Data: Pointer): TAvgLvlTreeNode;
     function FindLeftMostKey(Key: Pointer;
-      OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+                       OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
     function FindRightMostKey(Key: Pointer;
-      OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+                       OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
     function FindLeftMostSameKey(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
     function FindRightMostSameKey(ANode: TAvgLvlTreeNode): TAvgLvlTreeNode;
     procedure Add(ANode: TAvgLvlTreeNode);
@@ -681,6 +685,28 @@ begin
       Result:=Result.Left
     end else begin
       Result:=Result.Right
+    end;
+  end;
+end;
+
+function TAvgLvlTree.FindNearestKey(Key: Pointer;
+  OnCompareKeyWithData: TListSortCompare): TAvgLvlTreeNode;
+var Comp: integer;
+begin
+  Result:=Root;
+  while (Result<>nil) do begin
+    Comp:=OnCompareKeyWithData(Key,Result.Data);
+    if Comp=0 then exit;
+    if Comp<0 then begin
+      if Result.Left<>nil then
+        Result:=Result.Left
+      else
+        exit;
+    end else begin
+      if Result.Right<>nil then
+        Result:=Result.Right
+      else
+        exit;
     end;
   end;
 end;

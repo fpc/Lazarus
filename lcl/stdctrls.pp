@@ -680,6 +680,7 @@ type
     property OnChange;
     property OnChangeBounds;
     property OnClick;
+    property OnEditingDone;
     property OnEnter;
     property OnExit;
     Property OnKeyDown;
@@ -1217,6 +1218,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.190  2005/02/04 15:24:56  mattias
+  published TEdit.OnEditingDone
+
   Revision 1.189  2005/02/03 15:10:23  micha
   implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
 

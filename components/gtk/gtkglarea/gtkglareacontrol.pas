@@ -22,7 +22,7 @@ interface
 uses
   Classes, SysUtils, LCLType, LCLIntf, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF},
   Forms, Controls, Graphics, LMessages, InterfaceBase, WSLCLClasses, WSControls,
-  LResources, GTKInt, GLib, Gtk, NVGL,
+  LResources, GTKInt, Gtk, NVGL,
   {$IFDEF UseGtkGlAreaLib}
   GTKGLArea_Int
   {$ELSE}
