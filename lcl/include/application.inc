@@ -394,6 +394,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/03/16 21:40:54  lazarus
+  MG: reduced size+move messages between lcl and interface
+
   Revision 1.19  2002/03/08 11:37:42  lazarus
   MG: outputfilter can now find include files
 
