@@ -1328,9 +1328,11 @@ begin
 
       LM_BTNDEFAULT_CHANGED :
       Begin
-        if (TButton(Sender).Default) and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(handle))) 
-           then gtk_widget_grab_default(pgtkwidget(handle))
-           else gtk_widget_Draw_Default(pgtkwidget(Handle));  //this isn't right but I'm not sure what to call
+        if (TButton(Sender).Default)
+        and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(handle))) then
+          gtk_widget_grab_default(pgtkwidget(handle))
+        else
+          gtk_widget_Draw_Default(pgtkwidget(Handle));  //this isn't right but I'm not sure what to call
       end;
 
       LM_DESTROY :
@@ -1422,6 +1424,7 @@ begin
            pLabel := gtk_label_new(pStr);
            Accel:= gtk_label_parse_uline(PGtkLabel(pLabel), pStr);
            if Accel <> GDK_VOIDSYMBOL then begin
+             // ToDo: use accelerator group of Form
              gtk_accel_group_add(gtk_accel_group_get_default, Accel, 0,
                GTK_ACCEL_VISIBLE, PGtkObject(TBitBtn(Sender).Handle), 'clicked');
            end;
@@ -2068,8 +2071,10 @@ begin
           csToolButton,
           csRadioButton,
           csCheckBox:
+            // ToDo: use accelerator group of Form
             Accelerate(Widget, TLMShortcut(data^), 'clicked');
           else
+            // ToDo: use accelerator group of Form
             Accelerate(Widget, TLMShortcut(data^), 'activate_item');
         end;
       end;
@@ -2358,9 +2363,11 @@ begin
 	try
           AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
 	  SetAccelKey(p, AccelKey);
-	  if AccelKey <> 0 then
+	  if AccelKey <> 0 then begin
+            // ToDo: use accelerator group of Form
 	    gtk_widget_add_accelerator(p, 'grab_focus', gtk_accel_group_get_default(),
 	      AccelKey, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
+          end;
         finally
 	  StrDispose(aLabel);
 	end;
@@ -3027,11 +3034,12 @@ begin
   FFixWidgetsResized.Remove(FixWidget);
 
   //writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
-  // update mouse caturing
-  if MCaptureHandle=Handle then Uncapturehandle;
+  // update mouse capturing
+  if (MCaptureHandle=Handle) or (MCaptureHandle=HWnd(FixWidget)) then
+    Uncapturehandle;
   
   // update clipboard widget
-  if ClipboardWidget=Widget then
+  if (ClipboardWidget=Widget) or (ClipboardWidget=FixWidget) then
   begin
     // clipboard widget destroyed
     if (Application<>nil) and (Application.MainForm<>nil)
@@ -4165,6 +4173,7 @@ begin
         RaiseException('form has already a MainMenu');
       Box := PGTKBin(ParentForm.Handle)^.Child;
       gtk_box_pack_start(Box, p, False, False, 0);
+      // ToDo: use accelerator group of Form
       SetAccelGroup(p, gtk_accel_group_get_default);
       gtk_widget_show(p);
     end;
@@ -4199,6 +4208,7 @@ begin
        gtk_container_add(
          GTK_Container(
            GetFixedWidget(Pointer(TWinControl(TMenu(Sender).Owner).Handle))), P);
+       // ToDo: use accelerator group of Form
        SetAccelGroup(p, gtk_accel_group_get_default);
        gtk_widget_show(p);
     end;
@@ -6518,6 +6528,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.252  2002/10/17 15:09:32  lazarus
+  MG: made mouse capturing more strict
+
   Revision 1.251  2002/10/15 22:28:05  lazarus
   AJ: added forcelinebreaks
 
