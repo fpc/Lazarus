@@ -30,9 +30,9 @@
 //  {$C+}
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
-  
+
 Const
-  BOOL_TEXT: Array[Boolean] Of String = ('False', 'True');  
+  BOOL_TEXT: Array[Boolean] Of String = ('False', 'True');
 
 //##apiwiz##sps##   // Do not remove
 
@@ -51,7 +51,7 @@ Const
   The angles angle1 and angle2 are 1/16th of a degree. For example, a full
   circle equals 5760 (16*360). Positive values of Angle and AngleLength mean
   counter-clockwise while negative values mean clockwise direction.
-  Zero degrees is at the 3'o clock position. 
+  Zero degrees is at the 3'o clock position.
  ------------------------------------------------------------------------------}
 Function TWin32Object.Arc(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer): Boolean;
 var
@@ -87,15 +87,15 @@ End;
   Params:  DestDC        - The destination device context
            X, Y          - The left/top corner of the destination rectangle
            Width, Height - The size of the destination rectangle
-           SrcDC         - The source devicecontext 
-           XSrc, YSrc    - The left/top corner of the source rectangle   
-           Rop           - The raster operation to be performed 
+           SrcDC         - The source devicecontext
+           XSrc, YSrc    - The left/top corner of the source rectangle
+           Rop           - The raster operation to be performed
   Returns: True if succesful
 
-  The BitBlt function copies a bitmap from a source context into a destination 
+  The BitBlt function copies a bitmap from a source context into a destination
   context using the specified raster operation.
  ------------------------------------------------------------------------------}
-Function TWin32Object.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; 
+Function TWin32Object.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 Begin
   Result := Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
 End;
@@ -174,7 +174,7 @@ Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
 
 begin
   case TLMessage(Message).Msg of
-  
+
   LM_PAINT:
     CallWin32PaintHandler;
 
@@ -215,7 +215,7 @@ End;
 {------------------------------------------------------------------------------
   Function: CheckMenuItem
   Params:  hndMenu: HMENU         - menu handle
-           uIDEnableItem: Integer - menu item to check/uncheck 
+           uIDEnableItem: Integer - menu item to check/uncheck
            bChecked: Boolean      - new state of the menu item
   Returns: The previous state of the menu item.
 
@@ -225,7 +225,7 @@ Function TWin32Object.CheckMenuItem(HndMenu: HMENU; uIDEnableItem: Integer; BChe
 var CheckFlag: integer;
     PrevState: integer;
 Begin
-  if BChecked then CheckFlag := MF_CHECKED 
+  if BChecked then CheckFlag := MF_CHECKED
   else CheckFlag := MF_UNCHECKED;
   CheckFlag := CheckFlag or MF_BYCOMMAND;
   PrevState := Windows.CheckMenuItem(FMenu, UIDEnableItem, CheckFlag);
@@ -320,9 +320,9 @@ End;
            FormatCount - number of formats
            Formats - array of TClipboardFormat. The supported formats the owner
                       provides.
-                      
+
   Returns: true on success
-  
+
   Sets the supported formats and requests ownership for the clipboard.
   Each time the clipboard is read the OnRequestProc will be executed.
   If someone else requests the ownership, the OnRequestProc will be executed
@@ -366,21 +366,21 @@ End;
   Returns: longint
 
   Combine the 2 Source Regions into the Destination Region using the specified
-  Combine Mode. The Destination must already be initialized. The Return value 
+  Combine Mode. The Destination must already be initialized. The Return value
   is the Destination's Region type, or ERROR.
-  
+
   The Combine Mode can be one of the following:
       RGN_AND  : Gets a region of all points which are in both source regions
 
       RGN_COPY : Gets an exact copy of the first source region
 
-      RGN_DIFF : Gets a region of all points which are in the first source 
+      RGN_DIFF : Gets a region of all points which are in the first source
                  region but not in the second.(Source1 - Source2)
 
-      RGN_OR   : Gets a region of all points which are in either the first 
+      RGN_OR   : Gets a region of all points which are in either the first
                  source region or in the second.(Source1 + Source2)
 
-      RGN_XOR  : Gets all points which are in either the first Source Region 
+      RGN_XOR  : Gets all points which are in either the first Source Region
                  or in the second, but not in both.
 
   The result can be one of the following constants
@@ -829,7 +829,7 @@ End;
           GrfFlags - type of border
   Returns: If the function succeeds.
 
-  Draws one or more edges of a rectangle, not including the 
+  Draws one or more edges of a rectangle, not including the
   right and bottom edge.
  ------------------------------------------------------------------------------}
 Function TWin32Object.DrawEdge(DC: HDC; Var Rect: TRect; Edge: Cardinal; GrfFlags: Cardinal): Boolean;
@@ -856,14 +856,14 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   Ellipse
-  Params:   
+  Params:
             DC - handle to device context
             X1 - x-coord. of bounding rectangle's upper-left corner
             Y1 - y-coord. of bounding rectangle's upper-left corner
             X2 - x-coord. of bounding rectangle's lower-right corner
             Y2 - y-coord. of bounding rectangle's lower-right corner
   Returns:  If the function succeeds
-  
+
   Use Ellipse to draw a filled circle or ellipse.
  ------------------------------------------------------------------------------}
 Function TWin32Object.Ellipse(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
@@ -898,7 +898,7 @@ End;
 Function TWin32Object.EnableMenuItem(HndMenu: HMENU; UIDEnableItem: Integer; BEnable: Boolean): Boolean;
 var EnableFlag: integer;
 Begin
-  if BEnable then EnableFlag := MF_ENABLED 
+  if BEnable then EnableFlag := MF_ENABLED
   else EnableFlag := MF_GRAYED;
   EnableFlag := EnableFlag or MF_BYCOMMAND;
   Result := Windows.EnableMenuItem(FMenu, UIDEnableItem, EnableFlag);
@@ -1033,7 +1033,7 @@ end;
   Method:  FillRect
   Params:  DC    - handle to device context
            Rect  - record with rectangle
-           Brush - handle to brush 
+           Brush - handle to brush
   Returns: If the function succeeds
 
   The FillRect Function fills a rectangle by using the specified brush.
@@ -1107,9 +1107,9 @@ End;
 
 {------------------------------------------------------------------------------
   Method:  GetCharABCWidths
-  Params:  DC         - handle of device context 
-           P2         - first character in range to query 
-           P3         - last character in range to query 
+  Params:  DC         - handle of device context
+           P2         - first character in range to query
+           P3         - last character in range to query
            ABCStructs - character-width record
   Returns: If the function succeeds
 
@@ -1186,7 +1186,7 @@ End;
   Function: GetClipBox
   Params: dc, lprect
   Returns: Integer
- 
+
   Returns the smallest rectangle which includes the entire current
   Clipping Region.
 
@@ -1207,7 +1207,7 @@ end;
   Function: GetClipRGN
   Params: dc, rgn
   Returns: Integer
- 
+
   Returns the current Clipping Region.
 
   The result can be one of the following constants
@@ -1218,7 +1218,7 @@ end;
 
 
  ------------------------------------------------------------------------------}
-Function TWin32Object.GetClipRGN(DC : hDC; RGN : hRGN) : Integer; 
+Function TWin32Object.GetClipRGN(DC : hDC; RGN : hRGN) : Integer;
 begin
   Result := Windows.GetClipRGN(DC, RGN);
 end;
@@ -1267,7 +1267,48 @@ End;
 function TWin32Object.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
 begin
   Result := Windows.GetDeviceCaps(DC, Index);
-end;  
+end;
+
+function TWin32Object.GetDeviceSize(DC: HDC; var P: TPoint): Boolean;
+var
+  hBitmap: HGDIOBJ;
+  hWindow: HWND;
+  BitmapInfo: BITMAP;
+  ClientRect: TRect;
+begin
+  // check if memory dc with bitmap
+  Result := false;
+  case GetObjectType(DC) of
+    OBJ_MEMDC:
+      begin
+        hBitmap := GetCurrentObject(DC, OBJ_BITMAP);
+        if hBitmap <> HGDIOBJ(nil) then
+        begin
+          GetObject(hBitmap, SizeOf(BITMAP), @BitmapInfo);
+          P.x := BitmapInfo.bmWidth;
+          P.y := BitmapInfo.bmHeight;
+          Result := true;
+        end;
+      end;
+    OBJ_DC:
+      begin
+        hWindow := WindowFromDC(DC);
+        if hWindow <> HWND(nil) then
+        begin
+          Result := GetClientRect(hWindow, ClientRect);
+          P.x := ClientRect.Right;
+          P.y := ClientRect.Bottom;
+        end;
+      end;
+  else
+  end;
+
+  if not Result then
+  begin
+    // do default
+    Result := inherited GetDeviceSize(DC, P);
+  end;
+end;
 
 function TWin32Object.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
@@ -1416,7 +1457,7 @@ End;
 
 {------------------------------------------------------------------------------
   Method:  GetTextExtentPoint
-  Params:  DC    - handle of device context 
+  Params:  DC    - handle of device context
            Str   - text string
            Count - number of characters in string
            Size  - TSize record in which the dimensions of the string are to be
@@ -1465,7 +1506,7 @@ End;
 
 {------------------------------------------------------------------------------
   Method:  GetWindowOrgEx
-  Params:  DC - handle of device context 
+  Params:  DC - handle of device context
            P  - record receiving the window origin
   Returns: 0 if the function fails; non-zero integer otherwise
 
@@ -1512,7 +1553,7 @@ begin
   LeftTop.X:=R.Left;
   LeftTop.Y:=R.Top;
   ParentHandle:=Windows.GetParent(Handle);
-  if ParentHandle<>0 then 
+  if ParentHandle<>0 then
   begin
     if not Windows.ScreenToClient(ParentHandle,@LeftTop) then exit;
     if not GetLCLClientOriginOffset(ParentHandle,LeftOffset,TopOffset) then
@@ -1521,7 +1562,7 @@ begin
     dec(LeftTop.Y,TopOffset);
   end;
   Left:=LeftTop.X;
-  Top:=LeftTop.Y;  
+  Top:=LeftTop.Y;
   Result:=true;
 end;
 
@@ -1589,8 +1630,8 @@ End;
   Params:  dc, Left, Top, Right, Bottom
   Returns: Integer
 
-  Shrinks the clipping region in the device context dc to a region of all 
-  intersecting points between the boundary defined by Left, Top, Right, 
+  Shrinks the clipping region in the device context dc to a region of all
+  intersecting points between the boundary defined by Left, Top, Right,
   Bottom , and the Current clipping region.
 
   The result can be one of the following constants
@@ -1619,8 +1660,8 @@ end;
 {------------------------------------------------------------------------------
   Method:  LineTo
   Params:  DC - device context handle
-           X  - x-coordinate of line's ending point 
-           Y  - y-coordinate of line's ending point 
+           X  - x-coordinate of line's ending point
+           Y  - y-coordinate of line's ending point
   Returns: if the function succeeds
 
   Draws a line from the current position up to, but not including, the specified point.
@@ -1637,17 +1678,17 @@ End;
   Params:  DestDC        - The destination device context
            X, Y          - The left/top corner of the destination rectangle
            Width, Height - The size of the destination rectangle
-           SrcDC         - The source device context 
-           XSrc, YSrc    - The left/top corner of the source rectangle   
+           SrcDC         - The source device context
+           XSrc, YSrc    - The left/top corner of the source rectangle
            Mask          - The handle of a monochrome bitmap
            XMask, YMask  - The left/top corner of the mask rectangle
-           Rop           - The raster operation to be performed 
+           Rop           - The raster operation to be performed
   Returns: True if succesful
 
-  The MaskBlt Function copies a bitmap from a source context into a destination 
+  The MaskBlt Function copies a bitmap from a source context into a destination
   context using the specified mask and raster operation.
  ------------------------------------------------------------------------------}
-Function TWin32Object.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; 
+Function TWin32Object.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
 Begin
   Result := Windows.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop);
 End;
@@ -1681,7 +1722,7 @@ End;
   Params:  DC       - handle of device context
            X        - x-coordinate of new current position
            Y        - x-coordinate of new current position
-           OldPoint - address of old current position 
+           OldPoint - address of old current position
   Returns: If the function succeeds.
 
   Updates the current position to the specified point.
@@ -1706,7 +1747,7 @@ End;
   Checks a thread message queue for a message.
  ------------------------------------------------------------------------------}
 Function TWin32Object.PeekMessage(Var LPMsg: TMsg; Handle: HWND; WMsgFilterMin, WMsgFilterMax, WRemoveMsg: UINT): Boolean;
-Begin 
+Begin
   Result := Windows.PeekMessage(@LPMsg, Handle, WMsgFilterMin, WMsgFilterMax, WRemoveMsg);
 End;
 
@@ -1805,22 +1846,22 @@ End;
 
 {------------------------------------------------------------------------------
   Method:   RadialArc
-  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Params:   DC,x,y,width,height,sx,sy,ex,ey
   Returns:  Nothing
 
-  Use RadialArc to draw an elliptically curved line with the current Pen. The 
-  values sx,sy, and ex,ey represent the starting and ending radial-points 
+  Use RadialArc to draw an elliptically curved line with the current Pen. The
+  values sx,sy, and ex,ey represent the starting and ending radial-points
   between which the Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TWin32Object.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
+function TWin32Object.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 Begin
   Result := Windows.Arc(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
 End;
 
 {------------------------------------------------------------------------------
   Method:   RadialChord
-  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Params:   DC,x,y,width,height,sx,sy,ex,ey
   Returns:  Nothing
 
   Use RadialChord to draw a filled Chord-shape on the canvas. The values sx,sy,
@@ -1828,22 +1869,22 @@ End;
   the bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TWin32Object.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
+function TWin32Object.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 Begin
   Result := Windows.Chord(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
 End;
 
 {------------------------------------------------------------------------------
   Method:   RadialPie
-  Params:   DC,x,y,width,height,sx,sy,ex,ey 
+  Params:   DC,x,y,width,height,sx,sy,ex,ey
   Returns:  Nothing
 
-  Use RadialPie to draw a filled Pie-shaped Wedge on the canvas. The values 
+  Use RadialPie to draw a filled Pie-shaped Wedge on the canvas. The values
   sx,sy, and ex,ey represent the starting and ending radial-points between which
   the bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-function TWin32Object.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; 
+function TWin32Object.RadialPie(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 Begin
   Result := Windows.Pie(DC, X, Y, X+Width, Y+Height, SX,SY,EX,EY);
 End;
@@ -1865,7 +1906,7 @@ End;
 
 {------------------------------------------------------------------------------
   Method:  Rectangle
-  Params:  DC - handle of device context 
+  Params:  DC - handle of device context
            X1 - x-coordinate of bounding rectangle's upper-left corner
            Y1 - y-coordinate of bounding rectangle's upper-left corner
            X2 - x-coordinate of bounding rectangle's lower-right corner
@@ -1892,7 +1933,7 @@ end;
   Params:  none
   Returns: True if succesful
 
-  The ReleaseCapture Function releases the mouse capture from a window 
+  The ReleaseCapture Function releases the mouse capture from a window
   and restores normal mouse input processing.
  ------------------------------------------------------------------------------}
 Function TWin32Object.ReleaseCapture: Boolean;
@@ -1902,8 +1943,8 @@ End;
 
 {------------------------------------------------------------------------------
   Method:  ReleaseDC
-  Params:  HWnd - handle of window 
-           DC   - handle of device context 
+  Params:  HWnd - handle of window
+           DC   - handle of device context
   Returns: 1 if the device context was released or 0 if it wasn't
 
   Releases a device context (DC), freeing it for use by other applications.
@@ -1918,7 +1959,7 @@ End;
 {------------------------------------------------------------------------------
   Method:  RestoreDC
   Params:  DC - handle of device context
-           SavedDC - state to be restored 
+           SavedDC - state to be restored
   Returns: if the function succeeds
 
   Restores a device context (DC) to the specified state.
@@ -1933,10 +1974,10 @@ End;
 {------------------------------------------------------------------------------
   Method:  SaveDC
   Params:  DC - a DC to save
-  Returns: 0 if the functions fails otherwise a positive integer identifing 
+  Returns: 0 if the functions fails otherwise a positive integer identifing
            the saved DC
 
-  The SaveDC function saves the current state of the specified device 
+  The SaveDC function saves the current state of the specified device
   context (DC) by copying its elements to a context stack.
 -------------------------------------------------------------------------------}
 Function TWin32Object.SaveDC(DC: HDC): Integer;
@@ -1948,7 +1989,7 @@ End;
 
 {------------------------------------------------------------------------------
   Method:  ScreenToClient
-  Params: Handle - window handle for source coordinates 
+  Params: Handle - window handle for source coordinates
           P      - record containing coordinates
   Returns: if the function succeeds, the return value is nonzero; if the
            function fails, the return value is zero
@@ -1971,13 +2012,13 @@ End;
            HRgnUpdate - handle of update region
            PRcUpdate  - pointer to update rectangle
            Flags      - scrolling flags
-           
+
   Returns: True if succesfull
 
-  The ScrollWindowEx function scrolls the content of the specified window's 
+  The ScrollWindowEx function scrolls the content of the specified window's
   client area
  ------------------------------------------------------------------------------}
-Function TWin32Object.ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll, PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect; Flags: UINT): Boolean; 
+Function TWin32Object.ScrollWindowEx(HWnd: HWND; DX, DY: Integer; PRcScroll, PRcClip: PRect; HRgnUpdate: HRGN; PRcUpdate: PRect; Flags: UINT): Boolean;
 Begin
   Result := Windows.ScrollWindowEx(HWnd, DX, DY, Windows.RECT(PRcScroll^), Windows.RECT(PRcClip^), HRgnUpdate, LPRECT(PRcUpdate), Flags) <> ERROR;
 End;
@@ -1987,7 +2028,7 @@ End;
   Params:  DC, RGN
   Returns: longint
 
-  Sets the DeviceContext's ClipRegion. The Return value 
+  Sets the DeviceContext's ClipRegion. The Return value
   is the new clip regions type, or ERROR.
 
   The result can be one of the following constants
@@ -2020,7 +2061,7 @@ End;
 
 {------------------------------------------------------------------------------
   Method:  SelectPalette
-  Params:  DC - handle of device context 
+  Params:  DC - handle of device context
            Palette - handle of logical color palette
            ForceBackground - whether the logical palette is forced to be a
                              background palette
@@ -2043,8 +2084,8 @@ End;
           LParam      - second message parameter
   Returns: the result of the message processing
 
-  The SendMessage function sends the specified message to a window or windows. 
-  The function calls the window procedure for the specified window and does 
+  The SendMessage function sends the specified message to a window or windows.
+  The function calls the window procedure for the specified window and does
   not return until the window procedure has processed the message.
  ------------------------------------------------------------------------------}
 Function TWin32Object.SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Integer;
@@ -2091,13 +2132,13 @@ End;
 Function TWin32Object.SetCapture(Value: LongInt): LongInt;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.SetCapture] 0x%x', [Value]));
-  Result := Windows.SetCapture(Value); 
+  Result := Windows.SetCapture(Value);
   Assert(False, Format('Trace:< [TWin32Object.SetCapture] 0x%x --> 0x%x', [Value, Result]));
 End;
 
 {------------------------------------------------------------------------------
   Method:  SetCaretPos
-  Params:  new position x, y 
+  Params:  new position x, y
   Returns: true on success
 
   Moves the caret to the specified coordinates.
@@ -2212,11 +2253,11 @@ End;
   Params:  CElements    - the number of elements
            LPAElements  - array with element numbers
            LPARGBValues - array with colors
-  Returns: 0 if unsuccesful 
+  Returns: 0 if unsuccesful
 
   The SetSysColors function sets the colors for one or more display elements.
  ------------------------------------------------------------------------------}
-Function TWin32Object.SetSysColors(CElements: Integer; Const LPAElements; Const LPARGBValues): Boolean; 
+Function TWin32Object.SetSysColors(CElements: Integer; Const LPAElements; Const LPARGBValues): Boolean;
 Begin
   Result := Windows.SetSysColors(CElements, LPAElements, LPARGBValues);
 End;
@@ -2270,7 +2311,7 @@ End;
 
 {------------------------------------------------------------------------------
   Method:  SetWindowOrgEx
-  Params:  DC    - handle of device context 
+  Params:  DC    - handle of device context
            NewX  - new x-coordinate of window origin
            NewY  - new y-coordinate of window origin
            Point - record receiving original origin
@@ -2306,7 +2347,7 @@ End;
 
 {------------------------------------------------------------------------------
   Method:  ShowCaret
-  Params:  HWnd - handle of window with caret 
+  Params:  HWnd - handle of window with caret
   Returns: if the function succeeds
 
   Makes the caret visible on the screen at the caret's current position.
@@ -2350,16 +2391,16 @@ end;
   Params:  DestDC              - The destination device context
            X, Y                - The left/top corner of the destination rectangle
            Width, Height       - The size of the destination rectangle
-           SrcDC               - The source device context 
-           XSrc, YSrc          - The left/top corner of the source rectangle   
+           SrcDC               - The source device context
+           XSrc, YSrc          - The left/top corner of the source rectangle
            SrcWidth, SrcHeight - The size of the source rectangle
-           Rop                 - The raster operation to be performed 
+           Rop                 - The raster operation to be performed
   Returns: True if succesful
 
-  The StretchBlt function copies a bitmap from a source rectangle into a 
-  destination rectangle using the specified raster operation. If needed it 
-  resizes the bitmap to fit the dimensions of the destination rectangle. 
-  Sizing is done according to the stretching mode currently set in the 
+  The StretchBlt function copies a bitmap from a source rectangle into a
+  destination rectangle using the specified raster operation. If needed it
+  resizes the bitmap to fit the dimensions of the destination rectangle.
+  Sizing is done according to the stretching mode currently set in the
   destination device context.
  ------------------------------------------------------------------------------}
 Function TWin32Object.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
@@ -2374,25 +2415,25 @@ End;
   Params:  DestDC:                The destination devicecontext
            X, Y:                  The left/top corner of the destination rectangle
            Width, Height:         The size of the destination rectangle
-           SrcDC:                 The source devicecontext 
-           XSrc, YSrc:            The left/top corner of the source rectangle   
+           SrcDC:                 The source devicecontext
+           XSrc, YSrc:            The left/top corner of the source rectangle
            SrcWidth, SrcHeight:   The size of the source rectangle
            Mask:                  The handle of a monochrome bitmap
            XMask, YMask:          The left/top corner of the mask rectangle
-           Rop:                   The raster operation to be performed 
+           Rop:                   The raster operation to be performed
   Returns: True if succesful
 
-  The StretchMaskBlt function copies a bitmap from a source rectangle into a 
+  The StretchMaskBlt function copies a bitmap from a source rectangle into a
   destination rectangle using the specified mask and raster operations. If
   needed it resizes the bitmap to fit the dimensions of the destination
   rectangle.  Sizing is done according to the stretching mode currently set in
   the destination device context.
  ------------------------------------------------------------------------------}
-Function TWin32Object.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; 
+Function TWin32Object.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
 Begin
   Result := MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop) And
             StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
-  
+
   //Result := False; //Windows.StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Mask, XMask, YMask, Rop);
 End;
 
@@ -2402,7 +2443,7 @@ End;
           X     - x-coordinate of starting position
           Y     - y-coordinate of starting position
           Str   - string
-          Count - number of characters in string 
+          Count - number of characters in string
   Returns: If the function succeeds
 
   Writes a character string at the specified location, using the currently
@@ -2475,6 +2516,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2003/10/31 11:49:30  micha
+  fix win32 designer: grid, non-windowed components, selectiongrabbers
+
   Revision 1.65  2003/10/21 15:06:27  micha
   spinedit fix; variables cleanup
 

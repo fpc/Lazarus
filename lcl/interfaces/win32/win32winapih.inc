@@ -90,6 +90,7 @@ Function GetClipRGN(DC : hDC; RGN : hRGN) : Longint; override;
 function GetCursorPos(var LPPoint: TPoint): Boolean; override;
 Function GetDC(HWnd: HWND): HDC; Override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
+function GetDeviceSize(DC: HDC; var P: TPoint): Boolean; Override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
 Function GetFocus: HWND; Override;
@@ -179,6 +180,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2003/10/31 11:49:30  micha
+  fix win32 designer: grid, non-windowed components, selectiongrabbers
+
   Revision 1.34  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

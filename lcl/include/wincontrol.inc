@@ -3,7 +3,7 @@
 {******************************************************************************
                                   TWinControl
  ******************************************************************************
- 
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -46,9 +46,9 @@ end;
 
 {------------------------------------------------------------------------------
   TWinControl AlignControls
-  
+
   Align child controls
-  
+
 ------------------------------------------------------------------------------}
 procedure TWinControl.AlignControls(AControl : TControl; var ARect : TRect);
 var
@@ -106,18 +106,18 @@ var
     end;
 
     { Recalculate the anchors
-      
-      Use Anchors to ensure that a control maintains its current position 
+
+      Use Anchors to ensure that a control maintains its current position
       relative to an edge of its parent, even if the parent is resized. When
-      its parent is resized, the control holds its position relative to the 
+      its parent is resized, the control holds its position relative to the
       edges to which it is anchored.
-      If a control is anchored to opposite edges of its parent, the control 
-      stretches when its parent is resized. For example, if a control has its 
-      Anchors property set to [akLeft,akRight], the control stretches when the 
+      If a control is anchored to opposite edges of its parent, the control
+      stretches when its parent is resized. For example, if a control has its
+      Anchors property set to [akLeft,akRight], the control stretches when the
       width of its parent changes.
-      Anchors is enforced only when the parent is resized. Thus, for example, 
-      if a control is anchored to opposite edges of a form at design time and 
-      the form is created in a maximized state, the control is not stretched 
+      Anchors is enforced only when the parent is resized. Thus, for example,
+      if a control is anchored to opposite edges of a form at design time and
+      the form is created in a maximized state, the control is not stretched
       because the form is not resized after the control is created.
     }
     if (AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]) then
@@ -126,19 +126,19 @@ var
       begin
         // Get the base bounds. The base bounds are the user defined bounds
         // without automatic aligning and/or anchoring
-      
+
         // get base size of parents client area
         ParentBaseClientSize:=FBaseParentClientSize;
         if (ParentBaseClientSize.X=0)
         and (ParentBaseClientSize.Y=0) then
           ParentBaseClientSize:=Point(Parent.ClientWidth,Parent.ClientHeight);
-          
+
         // get base bounds of Control
         CurBaseBounds:=FBaseBounds;
         if (CurBaseBounds.Right=CurBaseBounds.Left)
         and (CurBaseBounds.Bottom=CurBaseBounds.Top) then
           CurBaseBounds:=BoundsRect;
-          
+
         {$IFDEF CHECK_POSITION}
         //if csDesigning in ComponentState then
         if AnsiCompareText(Self.ClassName,'TSynBaseCompletionForm')=0 then
@@ -227,7 +227,7 @@ var
           '');
       {$ENDIF}
     end;
-    
+
     // set min size
     if NewWidth<0 then NewWidth:=0;
     if NewHeight<0 then NewHeight:=0;
@@ -286,7 +286,7 @@ var
           '');
       {$ENDIF}
     end;
-    
+
     // set the new bounds
     if (Control.Left <> NewLeft) or (Control.Top <> NewTop)
     or (Control.Width <> NewWidth) or (Control.Height <> NewHeight) then begin
@@ -383,7 +383,7 @@ var
     begin
       Control := Controls[I];
 
-      if (Control.Align = AAlign) 
+      if (Control.Align = AAlign)
         and ((AAlign = alNone)
           or (Control.Visible
             or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
@@ -394,8 +394,8 @@ var
         if Control = AControl then Continue;
 
         X := 0;
-        while (X < AlignList.Count) 
-        and not InsertBefore(Control, TControl(AlignList[X]), AAlign) do 
+        while (X < AlignList.Count)
+        and not InsertBefore(Control, TControl(AlignList[X]), AAlign) do
           Inc(X);
         AlignList.Insert(X, Control);
       end;
@@ -410,14 +410,14 @@ var
 begin
   if wcfAligningControls in FFlags then exit;
   Include(FFlags,wcfAligningControls);
-  
+
   // unset all align needed flags
   Exclude(FFlags,wcfReAlignNeeded);
   for i:=ControlCount-1 downto 0 do begin
     ChildControl:=Controls[i];
     Exclude(ChildControl.FControlFlags,cfRequestAlignNeeded);
   end;
-  
+
   try
     {if csDesigning in ComponentState then begin
       writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',AlignWork);
@@ -603,7 +603,7 @@ End;
 
 {-------------------------------------------------------------------------------
   TWinControl DoAdjustClientRectChange
-  
+
   Asks the interface if clientrect has changed since last AlignControl
   and calls AlignControl(nil) on change.
 -------------------------------------------------------------------------------}
@@ -633,7 +633,7 @@ end;
 {-------------------------------------------------------------------------------
   TWinControl DoConstraintsChange
   Params: Sender : TObject
-  
+
   Call inherited, then send the constraints to the interface
 -------------------------------------------------------------------------------}
 procedure TWinControl.DoConstraintsChange(Sender : TObject);
@@ -685,9 +685,9 @@ end;
 {-------------------------------------------------------------------------------
   TWinControl DoSetBounds
   Params: ALeft, ATop, AWidth, AHeight : integer
-  
+
   Anticipate the new clientwidth/height and call inherited
-  
+
   Normally the clientwidth/clientheight is adjusted automatically by the
   interface. But it is up to interface when this will be done. The gtk for
   example just puts resize requests into a queue. The LCL would resize the
@@ -754,7 +754,7 @@ End;
 {-------------------------------------------------------------------------------
   TWinControl GetClientOrigin
   Result:  TPoint
-  
+
   returns the screen coordinate of the topleft coordinate 0,0 of the client area
   Note that this value is the position as stored in the interface and is not
   always in sync with the LCL. When a control is moved, the LCL sets the bounds
@@ -840,7 +840,7 @@ begin
       //  ' New=',Result.Left,',',Result.Top,',',Result.Right,',',Result.Bottom
       //  );
     end;}
-    
+
   end else begin
     Result:=Rect(0,0,FClientWidth,FClientHeight);
   end;
@@ -922,7 +922,7 @@ begin
       Right now we have to call these messages as some
       descendents incorrectly depend on it, so force it
       down their throat }
-      
+
   Perform(LM_WindowposChanged, 0, 0);
 
   if SizeChanged then begin
@@ -967,7 +967,7 @@ begin
 
   if bShow then begin
     if not HandleAllocated then CreateHandle;
-    if FWinControls <> nil 
+    if FWinControls <> nil
     then begin
       for n := 0 to FWinControls.Count - 1 do
         TWinControl(FWinControls[n]).UpdateShowing;
@@ -975,7 +975,7 @@ begin
   end;
 
   if HandleAllocated then begin
-    if FShowing <> bShow 
+    if FShowing <> bShow
     then begin
       FShowing := bShow;
       ok:=false;
@@ -997,7 +997,7 @@ end;
 
 {-------------------------------------------------------------------------------
   procedure TWinControl.SetZOrderPosition(Position: Integer);
-  
+
 -------------------------------------------------------------------------------}
 procedure TWinControl.SetZOrderPosition(Position: Integer);
 var
@@ -1089,7 +1089,7 @@ begin
             I:=List.Count-1;
         end;
         if I=J then exit;
-          
+
         Next := TControl(List[I]);
         //writeln('TWinControl.FindNextControl B ',Next.Name,' ',I);
         If (((Not CheckTabStop) or Next.TabStop)
@@ -1176,7 +1176,7 @@ begin
   then begin
     Control := nil;
     if (CaptureControl <> nil)
-    and (CaptureControl.Parent = Self) 
+    and (CaptureControl.Parent = Self)
     then Control := CaptureControl;
   end
   else begin
@@ -1423,7 +1423,7 @@ end;
   Params: const Pos : TPoint
           AllowDisabled, AllowWinControls: Boolean
   Results: TControl
-  
+
   Searches a child (not grand child) control, which client area contains Pos.
   Pos is relative to the ClientOrigin.
 ------------------------------------------------------------------------------}
@@ -1470,7 +1470,7 @@ var
         ControlClientBounds:=GetChildsRect(false);
         Result:=PtInRect(ControlClientBounds,ControlPos);
       end;
-      
+
       Result:= Result
               and (
                    (
@@ -1512,7 +1512,7 @@ begin
     Result:=nil;
     exit;
   end;
-  
+
   // map Pos to logical client area
   ScrolledOffset:=GetClientScrollOffset;
   P:=Point(Pos.X+ScrolledOffset.X,Pos.Y+ScrolledOffset.Y);
@@ -1533,8 +1533,8 @@ end;
 
 {-------------------------------------------------------------------------------
   function TWinControl.GetControlIndex(AControl: TControl): integer;
-  
-  
+
+
 -------------------------------------------------------------------------------}
 function TWinControl.GetControlIndex(AControl: TControl): integer;
 begin
@@ -1583,7 +1583,7 @@ begin
         //writeln('  ',TWinControl(FWinControls[i]).Name,':',TWinControl(FWinControls[i]).ClassName);
         if TWinControl(FWinControls[i]).HandleAllocated then
           TWinControl(FWinControls[i]).DestroyHandle;
-      end;	
+      end;
     end;
     DestroyWnd;
 //  end;
@@ -1600,7 +1600,7 @@ Var
 Begin
 //  Assert(False, Format('Trace:[TWinControl.WndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Message.Msg]));
   case Message.Msg of
-  
+
   LM_SETFOCUS:
     begin
       Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> LM_SETFOCUS', [ClassName]));
@@ -1611,14 +1611,14 @@ Begin
       if (Form <> nil) and not Form.SetFocusedControl(Self) then Exit;
       Message.Result:=0;
     end;
-    
+
   LM_KILLFOCUS:
     begin
       Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> _KILLFOCUS', [ClassName]));
       if csFocusing in ControlState then Exit;
       Message.Result:=0;
     end;
-    
+
   LM_NCHITTEST:
     begin
       inherited WndPRoc(Message);
@@ -1627,7 +1627,7 @@ Begin
       then  Message.Result := HTCLIENT;
       Exit;
     end;
-    
+
   LM_MOUSEFIRST..LM_MOUSELAST,LM_MOUSEFIRST2..LM_MOUSELAST2:
      begin
        {$IFDEF VerboseMouseBugfix}
@@ -1639,16 +1639,16 @@ Begin
        writeln('TWinControl.WndPRoc B ',Name,':',ClassName);
        {$ENDIF}
      end;
-     
+
   LM_KEYFIRST..LM_KEYLAST:
     if Dragging then Exit;
-    
+
   LM_CANCELMODE:
     if (GetCapture = Handle)
     and (CaptureControl <> nil)
     and (CaptureControl.Parent = Self)
     then CaptureControl.Perform(LM_CANCELMODE,0,0);
-    
+
   else
 //TODO:Implement TMOUSE
 {  with Mouse do
@@ -1817,16 +1817,16 @@ begin
 //  Writeln('name is ',self.name);
   Result := True;
   F := GetParentForm(Self);
-  if  (F <> nil) 
-  and (F <> Self) 
+  if  (F <> nil)
+  and (F <> Self)
   and (F.KeyPreview)
   and (TWinControl(F).DoKeyDown(Message)) then Exit;
-  
+
   with Message do
   begin
     ShiftState := KeyDataToShiftState(KeyData);
     //ShiftState := [];
-    if not (csNoStdEvents in ControlStyle) 
+    if not (csNoStdEvents in ControlStyle)
     then begin
       KeyDown(CharCode, ShiftState);
       if CharCode = VK_UNKNOWN then Exit;
@@ -1834,7 +1834,7 @@ begin
     if Application<>nil then
       Application.NotifyKeyDownHandler(Self, CharCode, ShiftState);
   end;
-  
+
   Result := False;
 end;
 
@@ -1848,9 +1848,9 @@ var
 begin
   Result := True;
   F := GetParentForm(Self);
-  if  (F <> nil) 
-  and (F <> Self) 
-  and (F.KeyPreview) 
+  if  (F <> nil)
+  and (F <> Self)
+  and (F.KeyPreview)
   and (TWinControl(F).DoKeyPress(Message)) then Exit;
   if not (csNoStdEvents in ControlStyle)
   then with Message do
@@ -1860,7 +1860,7 @@ begin
     CharCode := Ord(C);
     if Char(CharCode) = #0 then Exit;
   end;
-  
+
   Result := False;
 End;
 
@@ -1874,20 +1874,20 @@ var
 begin
   Result := True;
   F := GetParentForm(Self);
-  if  (F <> nil) 
-  and (F <> Self) 
-  and (F.KeyPreview) 
+  if  (F <> nil)
+  and (F <> Self)
+  and (F.KeyPreview)
   and (TWinControl(F).DoKeyUp(Message)) then Exit;
-  
+
   with Message do
   begin
     ShiftState := KeyDataToShiftState(KeyData);
-    if not (csNoStdEvents in ControlStyle) 
+    if not (csNoStdEvents in ControlStyle)
     then begin
       KeyUp(CharCode, ShiftState);
       if CharCode = 0 then Exit;
     end;
-    
+
     // TODO
     //if (CharCode = VK_APPS) and not (ssAlt in ShiftState) then
     //  CheckMenuPopup(SmallPoint(0, 0));
@@ -1939,13 +1939,13 @@ end;
 function TWinControl.DoMouseWheel(Shift: TShiftState; WheelDelta: Integer; MousePos: TPoint): Boolean;
 begin
   Result := False;
-  
-  if Assigned(FOnMouseWheel) 
+
+  if Assigned(FOnMouseWheel)
   then FOnMouseWheel(Self, Shift, WheelDelta, MousePos, Result);
-  
-  if not Result 
+
+  if not Result
   then begin
-    if WheelDelta < 0 
+    if WheelDelta < 0
     then Result := DoMouseWheelDown(Shift, MousePos)
     else Result := DoMouseWheelUp(Shift, MousePos);
   end;
@@ -1978,7 +1978,7 @@ procedure TWinControl.Insert(AControl : TControl);
 begin
   if AControl <> nil then
   begin
-    if AControl = Self 
+    if AControl = Self
     then begin
       Assert(False, 'Trace:[TControl.SetParent] EInvalidOperation --> AControl = Self');
       raise EInvalidOperation.Create(rsAControlCanNotHaveItselfAsParent);
@@ -2132,7 +2132,7 @@ begin
     Include(FControlState, csAlignmentNeeded);
     exit;
   end;
-  
+
   // check if all childs have finished loading
   for i:=0 to ControlCount-1 do begin
     ChildControl:=Controls[i];
@@ -2144,7 +2144,7 @@ begin
       exit;
     end;
   end;
-  
+
   DisableAlign;
   try
     ARect:= GetClientRect;
@@ -2285,7 +2285,7 @@ begin
 
   //for n:=0 to ComponentCount-1 do
   //  writeln('  n=',n,' ',Components[n].ClassName);
-  
+
   n := ControlCount;
 
   while n > 0 do
@@ -2340,11 +2340,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CMEnabledChanged(var Message: TLMEssage);
 begin
-  if not Enabled and (Parent <> nil) 
+  if not Enabled and (Parent <> nil)
   then RemoveFocus(False);
-  
-  if HandleAllocated 
-  and not (csDesigning in ComponentState) 
+
+  if HandleAllocated
+  and not (csDesigning in ComponentState)
   then EnableWindow(Handle, Enabled);
 end;
 
@@ -2442,7 +2442,7 @@ begin
       MoveWindowOrgEx(MemDC,ClientBoundRect.Left,ClientBoundRect.Top);
       // handle the paint message
       Msg.DC := MemDC;
-      WMPaint(Msg);
+      Perform(LM_PAINT, MemDC, 0);
       Msg.DC := 0;
       // restore the DC origin
       MoveWindowOrgEx(MemDC,-ClientBoundRect.Left,-ClientBoundRect.Top);
@@ -2471,12 +2471,12 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMDestroy(var Message: TLMDestroy);
-begin            
+begin
   Assert(False, Format('Trace: [TWinControl.LMDestroy] %s', [ClassName]));
   //writeln('TWinControl.WMDestroy ',Name,':',ClassName);
   // Our widget/window doesn't exist anymore
   Handle := 0;
-end;                          
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinControl.WMMove
@@ -2537,7 +2537,7 @@ begin
     //writeln('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
     FBoundsRealized:=Bounds(NewLeft,NewTop,Message.Width,Message.Height);
   end;
-  
+
   SetBoundsKeepBase(NewLeft,NewTop,Message.Width,Message.Height,Parent<>nil);
 end;
 
@@ -2563,9 +2563,9 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMShowWindow(var Message: TLMShowWindow);
-begin            
+begin
   Assert(False, Format('Trace: TODO: [TWinControl.LMShowWindow] %s', [ClassName]));
-end;                          
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinControl.WMEnter
@@ -2575,7 +2575,7 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMEnter(var Message: TLMEnter);
-begin            
+begin
   Assert(False, Format('Trace: TODO: [TWinControl.LMEnter] %s', [ClassName]));
 end;
 
@@ -2601,9 +2601,9 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMExit(var Message: TLMExit);
-begin            
+begin
   Assert(False, Format('Trace: TODO: [TWinControl.LMExit] %s', [ClassName]));
-end;                          
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinControl.WMMouseWheel
@@ -2616,7 +2616,7 @@ procedure TWinControl.WMMouseWheel(var Message: TLMMouseEvent);
 Var
   MousePos : TPoint;
   Shift : TShiftState;
-begin            
+begin
   Assert(False, Format('Trace: [TWinControl.LMMouseWheel] %s', [ClassName]));
 
   MousePos.X := Message.X;
@@ -2626,7 +2626,7 @@ begin
   Shift := [ssMiddle];
 
   DoMouseWheel(Shift, Message.WheelDelta, MousePos);
-end;                          
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinControl.WMChar
@@ -2636,10 +2636,10 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMChar(var Message: TLMChar);
-begin            
+begin
   Assert(False, Format('Trace:[TWinControl.WMChar] %s', [ClassName]));
   if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
-end;                          
+end;
 
 {------------------------------------------------------------------------------
   Method: TWinControl.WMKeyDown
@@ -2704,7 +2704,7 @@ procedure TWinControl.CreateWnd;
 var
   Params: TCreateParams;
   n: Integer;
-  
+
 {  procedure WriteClientRect(const Prefix: string);
   var r: TRect;
   begin
@@ -2712,10 +2712,10 @@ var
     if csDesigning in ComponentState then
       writeln('WriteClientRect ',Prefix,' ',Name,':',ClassName,' r=',r.Right,',',r.Bottom);
   end;}
-  
+
 begin
   //writeln('[TWinControl.CreateWnd] START ',Name,':',Classname);
-  if (FCompstyle = csNone) then 
+  if (FCompstyle = csNone) then
   begin
     WriteLn(Format('WARNING: [TWinControl.CreateWnd] %s --> FCompstyle = csNone', [ClassName]));
     Exit;
@@ -2727,12 +2727,12 @@ begin
       RaiseGDBException('TWinControl.CreateWnd: no parent '+Name+':'+ClassName);
     Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
   end;
-  
+
   CreateComponent(nil);
 
   //WriteClientRect('A');
   if Parent <> nil then AddControl;
-  
+
   //WriteClientRect('B');
   InitializeWnd;
 
@@ -2747,7 +2747,7 @@ begin
       with TWinControl(FWinControls.Items[n]) do
         if Visible then HandleNeeded;
   end;
-  
+
   //writeln('[TWinControl.CreateWnd] END ',Name,':',Classname);
   //WriteClientRect('D');
 end;
@@ -2783,25 +2783,25 @@ end;
   Params:  none
   Returns: Nothing
 
-  Gets called after the window is created, but before the owned controls are 
+  Gets called after the window is created, but before the owned controls are
   created. Place cached property code here.
  ------------------------------------------------------------------------------}
 procedure TWinControl.InitializeWnd;
 begin
   Assert(False, Format('Trace:[TWinControl.InitializeWnd]  %s', [ClassName]));
   // set all cached properties
-  
+
   // MWE:All of this should be handled to the interface create routine
   Assert(False, 'Trace:TODO: [TWinControl.InitializeWnd] move this code to the interface');
-  
+
 //writeln('[TWinControl.InitializeWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
   DoSendBoundsToInterface;
   CNSendMessage(LM_SHOWHIDE, Self, nil);
   CNSendMessage(LM_SETCOLOR, Self, nil);
   Exclude(FFlags,wcfColorChanged);
-  
+
   EnableWindow(Handle, Enabled);
- 
+
   SetTextBuf(PChar(FCaption));
   Assert(False, 'Trace:SETPROP**********************************************');
 
@@ -2836,7 +2836,7 @@ end;
 
   Creates the interface object.
  ------------------------------------------------------------------------------}
-procedure TWinControl.DestroyWnd; 
+procedure TWinControl.DestroyWnd;
 begin
   if HandleAllocated then begin
     DestroyComponent;
@@ -2855,7 +2855,7 @@ procedure TWinControl.HandleNeeded;
 begin
   if not HandleAllocated then
   begin
-    if Parent = Self 
+    if Parent = Self
     then begin
       Assert(False, Format('Trace:[TWinControl.HandleNeeded] Somebody set Parent := Self in %s. DONT DO THAT !!', [Classname]));
     end
@@ -2988,7 +2988,7 @@ begin
   if BoundsLockCount<>0 then exit;
   OldBounds:=BoundsRect;
   NewBounds:=Bounds(ALeft, ATop, AWidth, AHeight);
-  
+
   if not CompareRect(@NewBounds,@OldBounds) then begin
     // LCL bounds are not up2date -> process new bounds
     LockRealizeBounds;
@@ -3033,7 +3033,7 @@ function TWinControl.GetDeviceContext(var WindowHandle: HWnd): HDC;
 begin
   Result := GetDC(Handle);
   //writeln('[TWinControl.GetDeviceContext] ',ClassName,' DC=',HexStr(Cardinal(Result),8),' Handle=',HexStr(Cardinal(FHandle),8));
-  if Result = 0 
+  if Result = 0
   then raise EOutOfResources.CreateFmt(rsErrorCreatingDeviceContext, [Name,
     ClassName]);
 
@@ -3051,9 +3051,9 @@ procedure TWinControl.CMVisibleChanged(var TheMessage : TLMessage);
 begin
   if not FVisible and (Parent <> nil)
   then RemoveFocus(False);
-  
-  if not (csDesigning in ComponentState) 
-  or (csNoDesignVisible in ControlStyle) 
+
+  if not (csDesigning in ComponentState)
+  or (csNoDesignVisible in ControlStyle)
   then
     UpdateControlState;
 end;
@@ -3136,6 +3136,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.178  2003/10/31 11:49:30  micha
+  fix win32 designer: grid, non-windowed components, selectiongrabbers
+
   Revision 1.177  2003/10/16 19:43:44  ajgenius
   disable Buffering in TWinControl.WM_PAINT
 

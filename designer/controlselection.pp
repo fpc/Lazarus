@@ -1,5 +1,5 @@
 {/***************************************************************************
-                             ControlSelection.pp   
+                             ControlSelection.pp
                              -------------------
                          cointains selected controls.
 
@@ -45,7 +45,7 @@ type
   TGrabber = class;
 
   { TGrabber }
-  
+
   TGrabIndex = 0..7;
 
   TGrabPosition = (gpTop, gpBottom, gpLeft, gpRight);
@@ -92,7 +92,7 @@ type
 
 
   { TSelectedControl }
-  
+
   TSelectedControlFlag = (
     scfParentInSelection,
     scfChildInSelection
@@ -157,7 +157,7 @@ type
     property IsTControl: boolean read FIsTControl;
     property DesignerForm: TCustomForm read FDesignerForm;
   end;
-  
+
 
   TComponentAlignment = (
     csaNone,
@@ -178,13 +178,13 @@ type
   TSelectionSortCompare = function(Index1, Index2: integer): integer of object;
   TOnSelectionFormChanged = procedure(Sender: TObject;
     OldForm, NewForm: TCustomForm) of object;
-  
+
   TNearestInt = record
     Level: integer;
     Nearest: integer;
     Valid: boolean;
   end;
-  
+
   TGuideLineCache = record
     CacheValid: boolean;
     LineValid: boolean;
@@ -192,17 +192,17 @@ type
     PaintedLineValid: boolean;
     PaintedLine: TRect;
   end;
-  
+
   TGuideLineType = (glLeft, glTop, glRight, glBottom);
-  
+
   TRubberbandType = (
     rbtSelection,
     rbtCreating
     );
-    
+
 
   { TControlSelection }
-  
+
   TControlSelState = (
     cssLookupRootSelected,
     cssOnlyNonVisualNeedsUpdate,
@@ -333,9 +333,9 @@ type
     procedure FindNearestTopGuideLine(var NearestInt: TNearestInt);
     procedure ImproveNearestInt(var NearestInt: TNearestInt; Candidate: integer);
   public
-    constructor Create; 
+    constructor Create;
     destructor Destroy; override;
-    
+
     // items
     property Items[Index:integer]:TSelectedControl
       read GetItems write SetItems; default;
@@ -345,7 +345,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     property UpdateLock: integer read FUpdateLock;
-    
+
     function IndexOf(AComponent:TComponent):integer;
     function Add(AComponent: TComponent):integer;
     procedure Remove(AComponent: TComponent);
@@ -371,7 +371,7 @@ type
 
     procedure MoveSelection(dx, dy: integer);
     function MoveSelectionWithSnapping(TotalDX, TotalDY: integer): boolean;
-    procedure SizeSelection(dx, dy: integer);  
+    procedure SizeSelection(dx, dy: integer);
     procedure SetBounds(NewLeft,NewTop,NewWidth,NewHeight: integer);
     procedure AlignComponents(HorizAlignment,VertAlignment:TComponentAlignment);
     procedure MirrorHorizontal;
@@ -410,13 +410,13 @@ type
     procedure DrawMarkerAt(DC: TDesignerDeviceContext;
       ALeft, ATop, AWidth, AHeight: integer);
     property ActiveGrabber: TGrabber read FActiveGrabber write SetActiveGrabber;
-    
+
     // user wished bounds:
     property Left:integer read FLeft;
     property Top:integer read FTop;
     property Width:integer read FWidth;
     property Height:integer read FHeight;
-    
+
     // real current bounds
     property RealLeft:integer read FRealLeft;
     property RealTop:integer read FRealTop;
@@ -972,9 +972,9 @@ begin
     writeln('[TControlSelection.DoApplyUserBounds] M Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
     ' User=',FLeft,',',FTop,',',FWidth,',',FHeight);
     {$ENDIF}
-    
+
     // ToDo: sort selection with parent level and size/move parents first
-    
+
     if (FOldWidth<>0) and (FOldHeight<>0) then begin
       for i:=0 to Count-1 do begin
         OldLeftTop:=Items[i].OldFormRelativeLeftTop;
@@ -1104,7 +1104,7 @@ begin
     end;
   end;
   if IsSelected(AComponent) then exit;
-  
+
   Result:=true;
 end;
 
@@ -1886,7 +1886,7 @@ begin
   end;
 end;
 
-procedure TControlSelection.SizeSelection(dx, dy: integer);  
+procedure TControlSelection.SizeSelection(dx, dy: integer);
 // size all controls depending on ActiveGrabber.
 // if ActiveGrabber=nil then Left,Top
 var
@@ -1960,7 +1960,7 @@ var
   g:TGrabIndex;
   Diff: TPoint;
   RestoreBrush: boolean;
-  
+
   procedure FillRect(RLeft,RTop,RRight,RBottom: integer);
   begin
     if not DC.RectVisible(RLeft,RTop,RRight,RBottom) then exit;
@@ -1974,13 +1974,13 @@ var
     end;
     DC.Canvas.FillRect(Rect(RLeft,RTop,RRight,RBottom));
   end;
-  
+
 begin
   if (Count=0) or (FForm=nil)
   or LookupRootSelected
   or OnlyInvisibleComponentsSelected then exit;
 
-  Diff:=DC.FormOrigin;
+  Diff:=DC.DCOrigin;
 
   {writeln('[DrawGrabbers] '
    ,' DC=',Diff.X,',',Diff.Y
@@ -1995,7 +1995,7 @@ begin
       ,FGrabbers[g].Top-Diff.Y+FGrabbers[g].Height
     );
   Include(FStates,cssGrabbersPainted);
-      
+
   if RestoreBrush then
     DC.Canvas.Brush.Color:=OldBrushColor;
 end;
@@ -2005,7 +2005,7 @@ procedure TControlSelection.DrawMarkerAt(DC: TDesignerDeviceContext;
 var
   OldBrushColor: TColor;
   RestoreBrush: boolean;
-  
+
   procedure FillRect(RLeft, RTop, RRight, RBottom: integer);
   begin
     if not DC.RectVisible(RLeft, RTop, RRight, RBottom) then exit;
@@ -2017,7 +2017,7 @@ var
     end;
     DC.Canvas.FillRect(Rect(RLeft,RTop,RRight,RBottom));
   end;
-  
+
 begin
   RestoreBrush:=false;
   FillRect(ALeft,ATop,ALeft+MarkerSize,ATop+MarkerSize);
@@ -2040,10 +2040,10 @@ begin
   or (AComponent=FLookupRoot)
   or (not IsSelected(AComponent))
   or ComponentIsInvisible(AComponent) then exit;
-  
+
   GetComponentBounds(AComponent,CompLeft,CompTop,CompWidth,CompHeight);
   CompOrigin:=GetParentFormRelativeParentClientOrigin(AComponent);
-  DCOrigin:=DC.FormOrigin;
+  DCOrigin:=DC.DCOrigin;
   CompLeft:=CompLeft+CompOrigin.X-DCOrigin.X;
   CompTop:=CompTop+CompOrigin.Y-DCOrigin.Y;
 
@@ -2074,7 +2074,7 @@ var
       DC.Canvas.MoveTo(x,y);
       DC.Canvas.LineTo(x+1,y);
     end;
-    
+
     procedure DrawRubberLine(StartX, StartY, EndX, EndY: integer);
     begin
       if not DC.RectVisible(StartX, StartY, EndX, EndY) then exit;
@@ -2101,7 +2101,7 @@ var
         end;
       end;
     end;
-    
+
   begin
     RestorePen:=false;
     if x1>x2 then begin i:=x1; x1:=x2; x2:=i; end;
@@ -2118,7 +2118,7 @@ var
 
 // DrawRubberband
 begin
-  Diff:=DC.FormOrigin;
+  Diff:=DC.DCOrigin;
   with FRubberBandBounds do
     DrawInvertFrameRect(Left-Diff.X,Top-Diff.Y,Right-Diff.X,Bottom-Diff.Y);
 end;
@@ -2471,7 +2471,7 @@ begin
         end;
       end;
   end;
-      
+
   EndResizing(false);
 end;
 
@@ -2574,8 +2574,8 @@ begin
       TControl(Items[i].Component).SetBounds(Items[i].Left,Items[i].Top,
         Max(1,AWidth), Max(1,AHeight));
     end;
-  end;  
-  
+  end;
+
   EndResizing(false);
 end;
 
@@ -2597,7 +2597,7 @@ begin
           Max(1,(Items[i].Height*Percent) div 100)
         );
     end;
-  end;  
+  end;
 
   EndResizing(false);
 end;
@@ -2641,11 +2641,11 @@ begin
   if (not LineExists[glLeft]) and (not LineExists[glRight])
   and (not LineExists[glTop]) and (not LineExists[glBottom])
   then exit;
-  
+
   RestorePen:=false;
-  
+
   DC.Save;
-  DCOrigin:=DC.FormOrigin;
+  DCOrigin:=DC.DCOrigin;
   OldPenColor:=DC.Canvas.Pen.Color;
   // draw bottom guideline
   if LineExists[glBottom] then
@@ -2659,12 +2659,12 @@ begin
   // draw left guideline
   if LineExists[glLeft] then
     DrawLine(Line[glLeft],EnvironmentOptions.GuideLineColorLeftTop);
-    
+
   for g:=Low(g) to High(g) do begin
     FGuideLinesCache[g].PaintedLineValid:=LineExists[g];
     FGuideLinesCache[g].PaintedLine:=Line[g];
   end;
-    
+
   if RestorePen then
     DC.Canvas.Pen.Color:=OldPenColor;
   Include(FStates,cssGuideLinesPainted);

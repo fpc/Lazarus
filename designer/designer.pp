@@ -46,7 +46,7 @@ uses
 type
   TDesigner = class;
 
-  TOnGetSelectedComponentClass = procedure(Sender: TObject; 
+  TOnGetSelectedComponentClass = procedure(Sender: TObject;
     var RegisteredComponent: TRegisteredComponent) of object;
   TOnSetDesigning = procedure(Sender: TObject; Component: TComponent;
     Value: boolean) of object;
@@ -66,7 +66,7 @@ type
     const NewName: string) of object;
   TOnProcessCommand = procedure(Sender: TObject; Command: word;
     var Handled: boolean) of object;
-    
+
   TDesignerFlag = (
     dfHasSized,
     dfDuringPaintControl,
@@ -120,7 +120,7 @@ type
     //hint stuff
     FHintTimer : TTimer;
     FHintWIndow : THintWindow;
-    
+
     function GetGridColor: TColor;
     function GetShowComponentCaptionHints: boolean;
     function GetShowGrid: boolean;
@@ -204,7 +204,7 @@ type
   public
     ControlSelection : TControlSelection;
     DDC: TDesignerDeviceContext;
-    
+
     constructor Create(TheDesignerForm: TCustomForm;
        AControlSelection: TControlSelection);
     procedure DeleteFormAndFree;
@@ -319,7 +319,7 @@ begin
     FLookupRoot:=TNonControlForm(FForm).LookupRoot
   else
     FLookupRoot:=FForm;
-  
+
   ControlSelection:=AControlSelection;
   FFlags:=[];
   FGridColor:=clGray;
@@ -328,13 +328,13 @@ begin
   FHintTimer.Interval := 500;
   FHintTimer.Enabled := False;
   FHintTimer.OnTimer := @HintTimer;
-  
+
   FHintWindow := THintWindow.Create(nil);
 
   FHIntWindow.Visible := False;
   FHintWindow.HideInterval := 4000;
   FHintWindow.AutoHide := True;
-  
+
   DDC:=TDesignerDeviceContext.Create;
   LastFormCursor:=crDefault;
   DeletingComponents:=TList.Create;
@@ -352,7 +352,7 @@ destructor TDesigner.Destroy;
 Begin
   if FPopupMenu<>nil then
     FPopupMenu.Free;
-    
+
   FHintWIndow.Free;
   FHintTimer.Free;
   DDC.Free;
@@ -505,7 +505,7 @@ function TDesigner.DoCopySelectionToClipboard: boolean;
     end;
     Result:=true;
   end;
-  
+
 var
   AllComponentsStream: TMemoryStream;
   AllComponentText: string;
@@ -553,13 +553,13 @@ var
   CurTextCompStream: TStream;
   PasteParent: TWinControl;
   NewSelection: TControlSelection;
-  
+
   procedure GetPasteParent;
   var
     i: Integer;
   begin
     if PasteParent<>nil then exit;
-    
+
     for i:=0 to ControlSelection.Count-1 do begin
       if (ControlSelection[i].Component is TWinControl)
       and (csAcceptsControls in
@@ -573,7 +573,7 @@ var
     and (FLookupRoot is TWinControl) then
       PasteParent:=TWinControl(FLookupRoot);
   end;
-  
+
   procedure FindUniquePosition(AComponent: TComponent);
   var
     OverlappedComponent: TComponent;
@@ -623,7 +623,7 @@ var
         Max(0,Min(P.y,Form.ClientHeight-NonVisualCompWidth));
     end;
   end;
-  
+
   function PasteComponent(TextCompStream: TStream): boolean;
   var
     NewComponent: TComponent;
@@ -647,7 +647,7 @@ var
 
     Result:=true;
   end;
-  
+
 begin
   if not CanPaste then exit;
 
@@ -815,16 +815,16 @@ begin
 
     ecSelectParentComponent:
       SelectParentOfSelection;
-      
+
     ecCopyComponents:
       CopySelection;
-      
+
     ecCutComponents:
       begin
         CopySelection;
         DeleteSelection;
       end;
-      
+
     ecPasteComponents:
       PasteSelection;
 
@@ -875,7 +875,7 @@ var
   OldDuringPaintControl, InternalPaint: boolean;
 begin
   Result:=true;
-  
+
   {$IFDEF VerboseDsgnPaintMsg}
   writeln('***  TDesigner.PaintControl A ',Sender.Name,':',Sender.ClassName,
           ' DC=',HexStr(Cardinal(TheMessage.DC),8));
@@ -883,7 +883,7 @@ begin
   // Set flag
   OldDuringPaintControl:=dfDuringPaintControl in FFlags;
   Include(FFlags,dfDuringPaintControl);
-  
+
   // send the Paint message to the control, so that it paints itself
   //writeln('TDesigner.PaintControl B ',Sender.Name);
   Sender.Dispatch(TheMessage);
@@ -896,7 +896,7 @@ begin
     {$IFDEF VerboseDesignerDraw}
     writeln('TDesigner.PaintControl D ',Sender.Name,':',Sender.ClassName,
       ' DC=',HexStr(DDC.DC,8),
-      ' FormOrigin=',DDC.FormOrigin.X,',',DDC.FormOrigin.Y,
+     {' FormOrigin=',DDC.FormOrigin.X,',',DDC.FormOrigin.Y,}
       ' DCOrigin=',DDC.DCOrigin.X,',',DDC.DCOrigin.Y,
       ' FormClientOrigin=',DDC.FormClientOrigin.X,',',DDC.FormClientOrigin.Y,
       ' Internal=',InternalPaint
@@ -994,7 +994,7 @@ Begin
 
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
-  
+
   NonVisualComp:=NonVisualComponentAtPos(MouseDownPos.X,MouseDownPos.Y);
   if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
 
@@ -1007,13 +1007,13 @@ Begin
   case TheMessage.Msg of
   LM_LBUTTONDOWN,LM_MBUTTONDOWN,LM_RBUTTONDOWN:
     MouseDownClickCount:=1;
-    
+
   LM_LBUTTONDBLCLK,LM_MBUTTONDBLCLK,LM_RBUTTONDBLCLK:
     MouseDownClickCount:=2;
-    
+
   LM_LBUTTONTRIPLECLK,LM_MBUTTONTRIPLECLK,LM_RBUTTONTRIPLECLK:
     MouseDownClickCount:=3;
-    
+
   LM_LBUTTONQUADCLK,LM_MBUTTONQUADCLK,LM_RBUTTONQUADCLK:
     MouseDownClickCount:=4;
   else
@@ -1054,7 +1054,7 @@ Begin
     // -> check if a grabber was activated
     ControlSelection.ActiveGrabber:=
       ControlSelection.GrabberAtPos(MouseDownPos.X,MouseDownPos.Y);
-      
+
     if SelectedCompClass = nil then begin
       // selection mode
       if ControlSelection.ActiveGrabber=nil then begin
@@ -1123,7 +1123,7 @@ var
   ParentClientOrigin: TPoint;
   SelectedCompClass: TRegisteredComponent;
   SelectionChanged, NewRubberbandSelection: boolean;
-  
+
   procedure GetShift;
   begin
     Shift := [];
@@ -1137,7 +1137,7 @@ var
     LM_MBUTTONUP: Include(Shift,ssMiddle);
     LM_RBUTTONUP: Include(Shift,ssRight);
     end;
-    
+
     if MouseDownClickCount=2 then
       Include(Shift,ssDouble);
     if MouseDownClickCount=3 then
@@ -1145,7 +1145,7 @@ var
     if MouseDownClickCount=4 then
       Include(Shift,ssQuad);
   end;
-  
+
   procedure AddComponent;
   var
     NewParent: TComponent;
@@ -1177,7 +1177,7 @@ writeln('AddComponent A ',FLookupRoot is TCustomForm);
     end;
     ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
     if not Assigned(ParentCI) then exit;
-    
+
     if not PropertyEditorHook.BeforeAddComponent(Self,
                                      SelectedCompClass.ComponentClass,NewParent)
     then begin
@@ -1213,7 +1213,7 @@ writeln('AddComponent A ',FLookupRoot is TCustomForm);
       TControl(NewCI.Component).Visible:=true;
     if Assigned(FOnSetDesigning) then
       FOnSetDesigning(Self,NewCI.Component,True);
-      
+
     // tell IDE about the new component (e.g. add it to the source)
     NotifyComponentAdded(NewCI.Component);
 
@@ -1224,13 +1224,13 @@ writeln('AddComponent A ',FLookupRoot is TCustomForm);
       if Assigned(FOnUnselectComponentClass) then
         // this resets the component palette to the selection tool
         FOnUnselectComponentClass(Self);
-        
+
     {$IFDEF VerboseDesigner}
     writeln('NEW COMPONENT ADDED: Form.ComponentCount=',Form.ComponentCount,
        '  NewCI.Control.Owner.Name=',NewCI.Component.Owner.Name);
     {$ENDIF}
   end;
-  
+
   procedure RubberbandSelect;
   var
     MaxParentControl: TControl;
@@ -1271,7 +1271,7 @@ writeln('AddComponent A ',FLookupRoot is TCustomForm);
     {$ENDIF}
     Form.Invalidate;
   end;
-  
+
   procedure PointSelect;
   begin
     if (not (ssShift in Shift)) then begin
@@ -1286,18 +1286,18 @@ writeln('AddComponent A ',FLookupRoot is TCustomForm);
       end;
     end;
   end;
-  
+
   procedure DisableRubberBand;
   begin
     if ControlSelection.RubberbandActive then begin
       ControlSelection.RubberbandActive:=false;
     end;
   end;
-  
+
 Begin
   FHintTimer.Enabled := False;
   SetCaptureControl(nil);
-  
+
   // check if the message is for the designed form
   // and there was a mouse down before
   SenderParentForm:=GetParentForm(Sender);
@@ -1310,7 +1310,7 @@ Begin
     MouseDownSender:=nil;
     exit;
   end;
-  
+
   ControlSelection.ActiveGrabber:=nil;
   RubberBandWasActive:=ControlSelection.RubberBandActive;
   SelectedCompClass:=GetSelectedComponentClass;
@@ -1352,7 +1352,7 @@ Begin
     BuildPopupMenu;
     FPopupMenu.Popup(MouseUpPos.X,MouseUpPos.Y);
   end;
-  
+
   DisableRubberBand;
 
   LastMouseMovePos.X:=-1;
@@ -1400,7 +1400,7 @@ begin
                          LastMouseMovePos.X, LastMouseMovePos.Y)
   else
     Grabber:=nil;
-                         
+
   if MouseDownComponent=nil then begin
     if Grabber = nil then
       ACursor:= crDefault
@@ -1411,7 +1411,7 @@ begin
       LastFormCursor:=ACursor;
       CNSendMessage(LM_SETCURSOR, Form, Pointer(Integer(ACursor)));
     end;
-    
+
     exit;
   end;
 
@@ -1534,12 +1534,12 @@ Begin
         NudgeControl(-1,0)
       else if (ssShift in Shift) then
         NudgeSize(-1,0);
-        
+
     else
       Handled:=false;
     end;
   end;
-  
+
   if Handled then begin
     TheMessage.CharCode:=0;
   end;
@@ -1765,7 +1765,7 @@ begin
   if (AWinControl=nil)
   or (not (csAcceptsControls in AWinControl.ControlStyle))
   or (not ShowGrid) then exit;
-  
+
   SavedDC:=SaveDC(aDDC.DC);
   try
     // exclude all child control areas
@@ -1807,7 +1807,7 @@ begin
       end;
       Inc(x, StepX);
     end;
-    
+
     // restore pen
     SelectObject(aDDC.DC,OldPen);
     DeleteObject(Pen);
@@ -1994,7 +1994,7 @@ begin
     AComponent:=FLookupRoot.Components[i];
     if (not (AComponent is TControl))
     and (not ComponentIsInvisible(AComponent)) then begin
-      Diff:=aDDC.FormOrigin;
+      Diff:=aDDC.DCOrigin;
       // non-visual component
       ItemLeftTop:=NonVisualComponentLeftTop(AComponent);
       ItemLeft:=ItemLeftTop.X-Diff.X;
@@ -2202,9 +2202,9 @@ begin
     Enabled := CompsAreSelected and not OnlyNonVisualCompsAreSelected;
   end;
   FPopupMenu.Items.Add(FSizeMenuItem);
-  
+
   AddSeparator;
-  
+
   // menuitems: TabOrder, BringToFront, SendToBack
   FTabOrderMenuItem := TMenuItem.Create(FPopupMenu);
   with FTabOrderMenuItem do begin
@@ -2222,7 +2222,7 @@ begin
     Enabled:= CompsAreSelected;
   end;
   FPopupMenu.Items.Add(FBringToFrontMenuItem);
-  
+
   FSendToBackMenuItem:= TMenuItem.Create(FPopupMenu);
   with FSendToBackMenuItem do begin
     Caption:= fdmSendtoback;
@@ -2230,9 +2230,9 @@ begin
     Enabled:= CompsAreSelected;
   end;
   FPopupMenu.Items.Add(FSendToBackMenuItem);
-  
+
   AddSeparator;
-  
+
   // menuitems: Cut/Copy/Paste/Delete
   FCutMenuItem:= TMenuItem.Create(FPopupMenu);
   with FCutMenuItem do begin
@@ -2379,7 +2379,7 @@ begin
     AComponent:= ControlSelection.Items[0].Component;
     if AComponent is TControl then
       TControl(AComponent).BringToFront;
-  end;    
+  end;
 end;
 
 procedure TDesigner.OnSendToBackMenuClick(Sender: TObject);
@@ -2420,9 +2420,9 @@ begin
     if not Assigned(AComponent) then
       AComponent := AWinControl;
   end;
-  
+
   // create a nice hint:
-  
+
   // component name and classname
   if (dfShowComponentCaptionHints in FFlags) then
     AHint := AComponent.Name+' : '+AComponent.ClassName
