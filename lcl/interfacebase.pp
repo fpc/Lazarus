@@ -81,7 +81,7 @@ type
 implementation
 
 Uses
-  StdCtrls;
+  Forms, StdCtrls, ExtCtrls, Graphics, Buttons;
 
 procedure TInterfaceBase.SendCachedLCLMessages;
 begin
@@ -99,6 +99,9 @@ end.
 
 {
   $Log$
+  Revision 1.16  2002/10/11 16:00:39  lazarus
+  AJ: made InputQuery Interface Dependant
+
   Revision 1.15  2002/10/01 10:15:31  lazarus
   MG: removed last clientrectbugfix switches
 
