@@ -87,6 +87,7 @@ type
     FMirrorHorizontalMenuItem: TMenuItem;
     FMirrorVerticalMenuItem: TMenuItem;
     FOnActivated: TNotifyEvent;
+    FOnCloseQuery: TNotifyEvent;
     FOnComponentAdded: TOnComponentAdded;
     FOnComponentDeleted: TOnComponentDeleted;
     FOnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas;
@@ -180,7 +181,8 @@ type
 
     // hook
     function GetPropertyEditorHook: TPropertyEditorHook; override;
-    Procedure OnFormActivated;
+    function OnFormActivated: boolean;
+    function OnFormCloseQuery: boolean;
   public
     ControlSelection : TControlSelection;
     DDC: TDesignerDeviceContext;
@@ -226,6 +228,7 @@ type
     property GridColor: TColor read GetGridColor write SetGridColor;
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property OnActivated: TNotifyEvent read FOnActivated write FOnActivated;
+    property OnCloseQuery: TNotifyEvent read FOnCloseQuery write FOnCloseQuery;
     property OnComponentAdded: TOnComponentAdded
                                  read FOnComponentAdded write FOnComponentAdded;
     property OnComponentDeleted: TOnComponentDeleted
@@ -1163,7 +1166,8 @@ begin
     FOnGetSelectedComponentClass(Self,Result);
 end;
 
-function TDesigner.IsDesignMsg(Sender: TControl; var TheMessage: TLMessage): Boolean;
+function TDesigner.IsDesignMsg(Sender: TControl;
+  var TheMessage: TLMessage): Boolean;
 Begin
   Result := false;
   if csDesigning in Sender.ComponentState then begin
@@ -1171,19 +1175,19 @@ Begin
     case TheMessage.Msg of
       LM_PAINT,
       LM_INTERNALPAINT:
-                  Result:=PaintControl(Sender,TLMPaint(TheMessage));
-      LM_KEYDOWN: KeyDown(Sender,TLMKey(TheMessage));
-      LM_KEYUP:   KeyUP(Sender,TLMKey(TheMessage));
+                      Result:=PaintControl(Sender,TLMPaint(TheMessage));
+      LM_KEYDOWN:     KeyDown(Sender,TLMKey(TheMessage));
+      LM_KEYUP:       KeyUP(Sender,TLMKey(TheMessage));
       LM_LBUTTONDOWN,
       LM_RBUTTONDOWN,
       LM_LBUTTONDBLCLK: MouseDownOnControl(Sender,TLMMouse(TheMessage));
       LM_LBUTTONUP,
       LM_RBUTTONUP:   MouseUpOnControl(Sender,TLMMouse(TheMessage));
       LM_MOUSEMOVE:   MouseMoveOnControl(Sender, TLMMouse(TheMessage));
-      LM_SIZE:    Result:=SizeControl(Sender,TLMSize(TheMessage));
-      LM_MOVE:    Result:=MoveControl(Sender,TLMMove(TheMessage));
-      LM_ACTIVATE : OnFormActivated;
-//      CM_MOUSELEAVE:  Writeln('MOUSELEAVE!!!!!!!!!!!!');//Result:=MoveControl(Sender,TLMMove(Message));
+      LM_SIZE:        Result:=SizeControl(Sender,TLMSize(TheMessage));
+      LM_MOVE:        Result:=MoveControl(Sender,TLMMove(TheMessage));
+      LM_ACTIVATE:    Result:=OnFormActivated;
+      LM_CLOSEQUERY:  Result:=OnFormCloseQuery;
     else
       Result:=false;
     end;
@@ -1902,11 +1906,17 @@ begin
   EnvironmentOptions.SnapToGrid:=AValue;
 end;
 
-Procedure TDesigner.OnFormActivated;
+function TDesigner.OnFormActivated: boolean;
 begin
   //the form was activated.
-  if Assigned(FOnActivated) then
-    FOnActivated(Self);
+  if Assigned(FOnActivated) then FOnActivated(Self);
+  Result:=true;
+end;
+
+function TDesigner.OnFormCloseQuery: boolean;
+begin
+  if Assigned(FOnCloseQuery) then FOnCloseQuery(Self);
+  Result:=true;
 end;
 
 function TDesigner.GetPropertyEditorHook: TPropertyEditorHook;
