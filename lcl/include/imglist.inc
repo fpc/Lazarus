@@ -622,7 +622,7 @@ var
   CheckInt1, CheckInt2: Integer;
   CheckByte1, CheckByte2: Byte;
   StreamPos: TStreamSeekType;
-  NewImage, NewMask: TBitMap;
+  NewImage: TBitMap;
   i       : integer;
   Sign,NewCount : Word;
   CurSize: integer;
@@ -1066,6 +1066,9 @@ end;
 {
 
   $Log$
+  Revision 1.22  2004/02/02 21:31:08  mattias
+  reduced output
+
   Revision 1.21  2004/02/02 19:13:31  mattias
   started reading TImageList in Delphi format
 

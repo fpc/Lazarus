@@ -287,7 +287,6 @@ type
     function GetPropInfo:PPropInfo;
     function GetFloatValue:Extended;
     function GetFloatValueAt(Index:Integer):Extended;
-    function GetDefaultFloatValue:Extended;
     function GetInt64Value:Int64;
     function GetInt64ValueAt(Index:Integer):Int64;
     function GetMethodValue:TMethod;
@@ -2019,11 +2018,6 @@ end;
 function TPropertyEditor.GetFloatValueAt(Index:Integer):Extended;
 begin
   with FPropList^[Index] do Result:=GetFloatProp(Instance,PropInfo);
-end;
-
-function TPropertyEditor.GetDefaultFloatValue: Extended;
-begin
-
 end;
 
 function TPropertyEditor.GetMethodValue:TMethod;
