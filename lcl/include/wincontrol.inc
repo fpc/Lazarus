@@ -250,7 +250,7 @@ begin
   begin
     AdjustClientRect(Rect);
     FAdjustClientRectRealized:=Rect;
-    {$IFDEF ClientRectBugFix}
+    {$IFDEF VerboseClientRectBugFix}
     writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom);
     {$ENDIF}
     AlignList := TList.Create;
@@ -394,7 +394,7 @@ begin
   or (r.Bottom<>FAdjustClientRectRealized.Bottom)
   then begin
     // client rect changed since last AlignControl
-    {$IFDEF ClientRectBugFix}
+    {$IFDEF VerboseClientRectBugFix}
     writeln('UUU TWinControl.DoAdjustClientRectChange ClientRect changed ',Name,':',ClassName,
       ' Old=',FAdjustClientRectRealized.Right,'x',FAdjustClientRectRealized.Bottom,
       ' New=',r.RIght,'x',r.Bottom);
@@ -427,7 +427,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TWinControl.InvalidateClientRectCache;
 begin
+  {$IFDEF VerboseClientRectBugFix}
   writeln('[TWinControl.InvalidateClientRectCache] ',Name,':',ClassName);
+  {$ENDIF}
   Include(FFlags,wcfClientRectNeedsUpdate);
 end;
 
@@ -450,13 +452,17 @@ begin
   if wcfClientRectNeedsUpdate in FFlags then begin
     GetClientRect;
   end;
+  {$IFDEF VerboseClientRectBugFix}
   write('[TWinControl.DoSetBounds] ',Name,':',ClassName,' OldClient=',FClientWidth,',',FClientHeight,
   ' OldHeight=',FHeight,' NewHeight=',AHeight);
+  {$ENDIF}
   inc(FClientWidth,AWidth-FWidth);
   if (FClientWidth<0) then FClientWidth:=0;
   inc(FClientHeight,AHeight-FHeight);
   if (FClientHeight<0) then FClientHeight:=0;
+  {$IFDEF VerboseClientRectBugFix}
   writeln(' NewClient=',FClientWidth,',',FClientHeight);
+  {$ENDIF}
 
   inherited DoSetBounds(ALeft,ATop,AWidth,AHeight);
 end;
@@ -517,7 +523,9 @@ function TWinControl.GetClientRect: TRect;
     if wcfClientRectNeedsUpdate in FFlags then begin
       FClientWidth:=NewClientRect.Right;
       FClientHeight:=NewClientRect.Bottom;
-      writeln('StoreClientRect ',name,':',ClassName,' ',FClientWidth,',',FClientHeight);
+      {$IFDEF VerboseClientRectBugFix}
+      writeln('StoreClientRect ',Name,':',ClassName,' ',FClientWidth,',',FClientHeight);
+      {$ENDIF}
       Exclude(FFlags,wcfClientRectNeedsUpdate);
     end;
   end;
@@ -2183,6 +2191,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.67  2002/05/13 14:47:00  lazarus
+  MG: fixed client rectangles, TRadioGroup, RecreateWnd
+
   Revision 1.66  2002/05/12 04:56:20  lazarus
   MG: client rect bugs nearly completed
 
