@@ -5799,7 +5799,7 @@ begin
       inc(Index);
     end;
     if Index>=MaxMessages then exit;
-    MessagesView.MessageView.ItemIndex:=Index;
+    MessagesView.SelectedMessageIndex:=Index;
   end;
   if TheOutputFilter.GetSourcePosition(MessagesView.MessageView.Items[Index],
         Filename,CaretXY,MsgType) then begin
@@ -6511,6 +6511,8 @@ begin
       +') Error: '+CodeToolBoss.ErrorMessage);
   end else
     MessagesView.Add(CodeToolBoss.ErrorMessage);
+  MessagesView.SelectedMessageIndex:=MessagesView.MsgCount-1;
+
     
   // jump to error in source editor
   if CodeToolBoss.ErrorCode<>nil then begin
@@ -7526,6 +7528,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.444  2002/12/27 10:34:54  mattias
+  message view scrolls to message
+
   Revision 1.443  2002/12/26 11:00:14  mattias
   added included by to unitinfo and a few win32 functions
 
