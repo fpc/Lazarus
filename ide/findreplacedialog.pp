@@ -293,7 +293,7 @@ begin
       Add(lisFRBackwardSearch);
       EndUpdate;
     end;
-    ItemIndex:=1;
+    ItemIndex:=0;
   end;
 
   OkButton:=TButton.Create(Self);
