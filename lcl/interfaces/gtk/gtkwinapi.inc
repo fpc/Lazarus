@@ -2907,6 +2907,16 @@ begin
   Result := False;
 end;
 
+Function TgtkObject.CreateSystemFont : hFont;
+var
+  GDIObj : PGDIObject;
+begin
+  GDIObj := NewGDIObject(gdiFont);
+  GDIObj^.GDIFontObject:= GetDefaultFont;
+  Result := hFont(GDIObj);
+end;
+
+
 {------------------------------------------------------------------------------
   Function: GetStockObject
   Params:
@@ -2941,30 +2951,34 @@ begin
       
    (* ANSI_FIXED_FONT:     // Fixed-pitch (monospace) system font.
       begin
-      end;  
+      end;
     ANSI_VAR_FONT:       // Variable-pitch (proportional space) system font.
       begin
-      end;  
+      end;
     DEVICE_DEFAULT_FONT: // Device-dependent font.
       begin
-      end;  
+      end;  *)
     DEFAULT_GUI_FONT:    // Default font for user interface objects such as menus and dialog boxes.
       begin
-      end;  
-    OEM_FIXED_FONT:      // Original equipment manufacturer (OEM) dependent fixed-pitch (monospace) font.
+        Result := GetStockObject(SYSTEM_FONT);
+      end;
+(*    OEM_FIXED_FONT:      // Original equipment manufacturer (OEM) dependent fixed-pitch (monospace) font.
       begin
-      end;  
+      end;
+*)
     SYSTEM_FONT:         // System font. By default, Windows uses the system font to draw menus, dialog box controls, and text. In Windows versions 3.0 and later, the system font is a proportionally spaced font; earlier versions of Windows used a monospace system font.
       begin
-      end;  
-    SYSTEM_FIXED_FONT:   // Fixed-pitch (monospace) system font used in Windows versions earlier than 3.0. This stock object is provided for compatibility with earlier versions of Windows.
+        If FStockSystemFont = 0 then
+          FStockSystemFont := CreateSystemFont;
+        Result := FStockSystemFont;
+      end;
+(*    SYSTEM_FIXED_FONT:   // Fixed-pitch (monospace) system font used in Windows versions earlier than 3.0. This stock object is provided for compatibility with earlier versions of Windows.
       begin
-      end;  
+      end;
     DEFAULT_PALETTE:     // Default palette. This palette consists of the static colors in the system palette.
       begin
-      end;  
-*)
-  else
+      end;
+*)  else
     Assert(False, Format('Trace:TODO: [TgtkObject.GetStockObject] Implement value: %d', [Value]));
   end;
   Assert(False, Format('Trace:< [TgtkObject.GetStockObject] %d --> 0x%x', [Value, Result]));
@@ -6120,6 +6134,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.112  2002/08/27 06:40:51  lazarus
+  MG: ShortCut support for buttons from Andrew
+
   Revision 1.111  2002/08/24 12:55:00  lazarus
   MG: fixed mouse capturing, OI edit focus
 
