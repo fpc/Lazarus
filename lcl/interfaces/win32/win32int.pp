@@ -249,12 +249,6 @@ type
     Next: PLazObject;
   End;
 
-  {$IFDEF VER1_1_MSG}
-    TMsgArray = Array Of Integer;
-  {$ELSE}
-    TMsgArray = Array[0..1] Of Integer;
-  {$ENDIF}
-
 var
   OnClipBoardRequest: TClipboardRequestEvent;
 
@@ -281,6 +275,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.125  2004/10/28 14:17:18  micha
+  remove obsolete message event array
+
   Revision 1.124  2004/10/28 07:43:29  micha
   experiment: use CS_SAVEBITS class style on tabpages to reduce flickering
 
