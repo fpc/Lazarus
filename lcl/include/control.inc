@@ -1630,7 +1630,8 @@ constructor TControl.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
 
-  FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
+  FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks,
+                    csOpaque];
   FConstraints:= TSizeConstraints.Create(Self);
   FConstraints.OnChange:= @DoConstraintsChange;
   
@@ -1781,7 +1782,11 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.70  2002/08/30 12:32:20  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.69  2002/08/30 06:46:03  lazarus
+
   Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
   Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
   Make Anchors work again and publish them for various controls.
