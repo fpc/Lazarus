@@ -71,7 +71,7 @@ uses
   MenuPropEdit,
   {$ENDIF}
   // debugger
-  RunParamsOpts, BaseDebugManager, DebugManager,
+  RunParamsOpts, BaseDebugManager, DebugManager, Debugger,
   // packager
   PkgManager, BasePkgManager,
   // source editing
@@ -191,6 +191,7 @@ type
     procedure mnuStepOverProjectClicked(Sender : TObject);
     procedure mnuRunToCursorProjectClicked(Sender : TObject);
     procedure mnuStopProjectClicked(Sender : TObject);
+    procedure mnuResetDebuggerClicked(Sender : TObject);
     procedure mnuRunParametersClicked(Sender : TObject);
     procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
     
@@ -1576,6 +1577,7 @@ begin
   itmProjectStepOver.OnClick := @mnuStepOverProjectClicked;
   itmProjectRunToCursor.OnClick := @mnuRunToCursorProjectClicked;
   itmProjectStop.OnClick := @mnuStopProjectClicked;
+  itmProjectResetDebugger.OnClick := @mnuResetDebuggerClicked;
   itmProjectCompilerSettings.OnClick := @mnuProjectCompilerSettingsClicked;
   itmProjectRunParameters.OnClick := @mnuRunParametersClicked;
 end;
@@ -2362,6 +2364,14 @@ end;
 Procedure TMainIDE.mnuStopProjectClicked(Sender : TObject);
 begin
   DebugBoss.DoStopProject;
+end;
+
+procedure TMainIDE.mnuResetDebuggerClicked(Sender : TObject);
+begin
+  if DebugBoss.State = dsNone then Exit;
+  
+  DebugBoss.EndDebugging;
+  DebugBoss.DoInitDebugger;
 end;
 
 procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender : TObject);
@@ -3400,6 +3410,7 @@ function TMainIDE.DoOpenUnknownFile(const AFileName: string; Flags: TOpenFlags;
 var
   Ext, NewProgramName, LPIFilename, ACaption, AText: string;
   PreReadBuf: TCodeBuffer;
+  LoadFlags: TLoadBufferFlags;
 begin
   Handled:=false;
   Ext:=lowercase(ExtractFileExt(AFilename));
@@ -3413,8 +3424,9 @@ begin
   end;
 
   // load the source
-  Result:=DoLoadCodeBuffer(PreReadBuf,AFileName,
-                           [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert]);
+  LoadFlags := [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert];
+  if ofQuiet in Flags then Include(LoadFlags, lbfQuiet);
+  Result:=DoLoadCodeBuffer(PreReadBuf,AFileName,LoadFlags);
   if Result<>mrOk then exit;
   NewUnitInfo:=nil;
 
@@ -8662,6 +8674,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.573  2003/05/22 23:05:26  marc
+  MWE: Added "Reset Debuuger" menu command
+
   Revision 1.572  2003/05/22 06:32:03  mattias
   fixed double formats
 
