@@ -137,10 +137,12 @@ type
     procedure AddFileBrowseButtonClick(Sender: TObject);
     procedure AddFileButtonClick(Sender: TObject);
     procedure AddFilePageResize(Sender: TObject);
+    procedure AddFileShortenButtonClick(Sender: TObject);
     procedure AddFilesPageResize(Sender: TObject);
     procedure AddToPackageDlgClose(Sender: TObject; var Action: TCloseAction);
     procedure AddUnitButtonClick(Sender: TObject);
     procedure AddUnitFileBrowseButtonClick(Sender: TObject);
+    procedure AddUnitFileShortenButtonClick(Sender: TObject);
     procedure AddUnitIsVirtualCheckBoxClick(Sender: TObject);
     procedure AddUnitPageResize(Sender: TObject);
     procedure AddUnitUpdateButtonClick(Sender: TObject);
@@ -151,9 +153,11 @@ type
     procedure CancelNewComponentButtonClick(Sender: TObject);
     procedure ClassNameEditChange(Sender: TObject);
     procedure ComponentUnitFileBrowseButtonClick(Sender: TObject);
+    procedure ComponentUnitFileShortenButtonClick(Sender: TObject);
     procedure FilesAddButtonClick(Sender: TObject);
     procedure FilesBrowseButtonClick(Sender: TObject);
     procedure FilesDeleteButtonClick(Sender: TObject);
+    procedure FilesShortenButtonClick(Sender: TObject);
     procedure NewComponentButtonClick(Sender: TObject);
     procedure NewComponentPageResize(Sender: TObject);
     procedure NewDependButtonClick(Sender: TObject);
@@ -180,6 +184,7 @@ type
     procedure UpdateAddUnitInfo;
     procedure UpdateAddFileInfo;
     function FileNameToPkgFileType(const AFilename: string): TPkgFileType;
+    function SwitchRelativeAbsoluteFilename(const Filename: string): string;
   public
     Params: TAddToPkgResult;
     constructor Create(TheOwner: TComponent); override;
@@ -369,7 +374,7 @@ begin
   // check packagename
   if (NewPkgName='') or (not IsValidIdent(NewPkgName)) then begin
     MessageDlg(lisProjAddInvalidPackagename,
-      Format(lisA2PThePackageNameIsInvalidPlaseChooseAnExisting, ['"',
+      Format(lisA2PThePackageNameIsInvalidPleaseChooseAnExisting, ['"',
         NewPkgName, '"', #13]),
       mtError,[mbCancel],0);
     exit;
@@ -426,7 +431,8 @@ begin
     Params.AutoAddLFMFile:=false;
     Params.AutoAddLRSFile:=false;
   end;
-  
+  LazPackage.LongenFilename(Params.UnitFilename);
+
   // check filename
   if not CheckAddingUnitFilename(LazPackage,Params.AddType,
     OnGetIDEFileInfo,Params.UnitFilename) then exit;
@@ -454,6 +460,7 @@ procedure TAddToPackageDlg.AddFilePageResize(Sender: TObject);
 var
   x: Integer;
   y: Integer;
+  w: Integer;
 begin
   x:=5;
   y:=5;
@@ -461,12 +468,16 @@ begin
     SetBounds(x,y+2,100,Height);
   inc(x,AddFilenameLabel.Width+5);
 
+  w:=AddFilenameEdit.Height;
   with AddFilenameEdit do
-    SetBounds(x,y,Parent.ClientWidth-x-30,Height);
+    SetBounds(x,y,Parent.ClientWidth-x-2-w-2-w-5,Height);
   inc(x,AddFilenameEdit.Width+2);
 
   with AddFileBrowseButton do
-    SetBounds(x,y,AddFilenameEdit.Height,AddFilenameEdit.Height);
+    SetBounds(x,y,w,w);
+  inc(x,w+2);
+  with AddFileShortenButton do
+    SetBounds(x,y,w,w);
   x:=5;
   y:=AddFilenameEdit.Top+AddFilenameEdit.Height+5;
 
@@ -483,6 +494,13 @@ begin
     SetBounds(x,y,80,Height);
 end;
 
+procedure TAddToPackageDlg.AddFileShortenButtonClick(Sender: TObject);
+begin
+  if lisA2PchooseAnExistingFile=AddFilenameEdit.Text then exit;
+  AddFilenameEdit.Text:=
+    SwitchRelativeAbsoluteFilename(AddFilenameEdit.Text);
+end;
+
 procedure TAddToPackageDlg.AddFilesPageResize(Sender: TObject);
 var
   x: Integer;
@@ -493,21 +511,27 @@ begin
   with FilesListView do
     SetBounds(0,0,Parent.ClientWidth,Parent.ClientHeight-45);
 
-  x:=10;
+  x:=5;
   y:=FilesListView.Height+10;
-  w:=80;
+  w:=100;
   h:=25;
   
   with FilesBrowseButton do
     SetBounds(x,y,w,h);
-    
-  inc(x,w+10);
+  inc(x,w+3);
+
+  with FilesShortenButton do
+    SetBounds(x,y,w,h);
+  inc(x,w+3);
+
   with FilesDeleteButton do
     SetBounds(x,y,w,h);
+  inc(x,w+3);
 
-  inc(x,w+10);
+  w:=FilesAddButton.Parent.ClientWidth-x-5;
+  if w<20 then w:=20;
   with FilesAddButton do
-    SetBounds(x,y,Parent.ClientWidth-x-10,h);
+    SetBounds(x,y,w,h);
 end;
 
 procedure TAddToPackageDlg.AddFileBrowseButtonClick(Sender: TObject);
@@ -525,7 +549,7 @@ begin
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       if FileExists(AFilename) then begin
-        LazPackage.ShortenFilename(AFilename);
+        LazPackage.ShortenFilename(AFilename,true);
         AddFilenameEdit.Text:=AFilename;
         UpdateAddFileInfo;
       end;
@@ -594,7 +618,7 @@ begin
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       if FileExists(AFilename) then begin
-        LazPackage.ShortenFilename(AFilename);
+        LazPackage.ShortenFilename(AFilename,true);
         AddUnitFilenameEdit.Text:=AFilename;
         UpdateAddUnitInfo;
       end;
@@ -605,12 +629,20 @@ begin
   end;
 end;
 
+procedure TAddToPackageDlg.AddUnitFileShortenButtonClick(Sender: TObject);
+begin
+  if lisA2PchooseAnExistingFile=AddUnitFilenameEdit.Text then exit;
+  AddUnitFilenameEdit.Text:=
+    SwitchRelativeAbsoluteFilename(AddUnitFilenameEdit.Text);
+end;
+
 procedure TAddToPackageDlg.AddUnitIsVirtualCheckBoxClick(Sender: TObject);
 var
   VirtualFile: Boolean;
 begin
   VirtualFile:=AddUnitIsVirtualCheckBox.Checked;
   AddUnitFileBrowseButton.Enabled:=not VirtualFile;
+  AddUnitFileShortenButton.Enabled:=not VirtualFile;
   AddUnitHasRegisterCheckBox.Enabled:=not VirtualFile;
   AddUnitUpdateButton.Enabled:=not VirtualFile;
   AddSecondaryFilesCheckBox.Enabled:=not VirtualFile;
@@ -620,6 +652,7 @@ procedure TAddToPackageDlg.AddUnitPageResize(Sender: TObject);
 var
   x: Integer;
   y: Integer;
+  w: Integer;
 begin
   x:=5;
   y:=5;
@@ -627,12 +660,17 @@ begin
     SetBounds(x,y+2,100,Height);
   inc(x,AddUnitFilenameLabel.Width+5);
 
+  w:=AddUnitFilenameEdit.Height;
   with AddUnitFilenameEdit do
-    SetBounds(x,y,Parent.ClientWidth-x-30,Height);
+    SetBounds(x,y,Parent.ClientWidth-x-2*w-2-2-5,Height);
   inc(x,AddUnitFilenameEdit.Width+2);
 
   with AddUnitFileBrowseButton do
-    SetBounds(x,y,AddUnitFilenameEdit.Height,AddUnitFilenameEdit.Height);
+    SetBounds(x,y,w,w);
+  inc(x,w+2);
+  with AddUnitFileShortenButton do
+    SetBounds(x,y,w,w);
+
   x:=5;
   y:=AddUnitFilenameEdit.Top+AddUnitFilenameEdit.Height+5;
 
@@ -720,7 +758,7 @@ begin
     if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
       if FilenameIsPascalUnit(AFilename) then begin
-        LazPackage.ShortenFilename(AFilename);
+        LazPackage.ShortenFilename(AFilename,true);
         ComponentUnitFileEdit.Text:=AFilename;
       end else begin
         MessageDlg(lisA2PInvalidFile,
@@ -732,6 +770,13 @@ begin
   finally
     OpenDialog.Free;
   end;
+end;
+
+procedure TAddToPackageDlg.ComponentUnitFileShortenButtonClick(Sender: TObject);
+begin
+  if ''=ComponentUnitFileEdit.Text then exit;
+  ComponentUnitFileEdit.Text:=
+    SwitchRelativeAbsoluteFilename(ComponentUnitFileEdit.Text);
 end;
 
 procedure TAddToPackageDlg.FilesAddButtonClick(Sender: TObject);
@@ -830,7 +875,7 @@ begin
       for i:=0 to OpenDialog.Files.COunt-1 do begin
         AFilename:=CleanAndExpandFilename(OpenDialog.Files[i]);
         if FileExists(AFilename) then begin
-          LazPackage.ShortenFilename(AFilename);
+          LazPackage.ShortenFilename(AFilename,true);
           NewListItem:=FilesListView.Items.Add;
           NewListItem.Caption:=AFilename;
           NewPgkFileType:=FileNameToPkgFileType(AFilename);
@@ -851,6 +896,26 @@ begin
   for i:=FilesListView.Items.Count-1 downto 0 do
     if FilesListView.Items[i].Selected then
       FilesListView.Items.Delete(i);
+end;
+
+procedure TAddToPackageDlg.FilesShortenButtonClick(Sender: TObject);
+var
+  SwitchToAbsolute: Boolean;
+  i: Integer;
+  Filename: String;
+begin
+  if FilesListView.Items.Count=0 then exit;
+  if (not LazPackage.HasDirectory)
+  or (not FilenameIsAbsolute(LazPackage.Directory)) then exit;
+  SwitchToAbsolute:=not FilenameIsAbsolute(FilesListView.Items[0].Caption);
+  for i:=0 to FilesListView.Items.Count-1 do begin
+    Filename:=FilesListView.Items[i].Caption;
+    if SwitchToAbsolute then
+      Filename:=CreateAbsolutePath(Filename,LazPackage.Directory)
+    else
+      Filename:=CreateRelativePath(Filename,LazPackage.Directory);
+    FilesListView.Items[i].Caption:=Filename;
+  end;
 end;
 
 procedure TAddToPackageDlg.NewComponentButtonClick(Sender: TObject);
@@ -974,6 +1039,7 @@ procedure TAddToPackageDlg.NewComponentPageResize(Sender: TObject);
 var
   x: Integer;
   y: Integer;
+  w: Integer;
 begin
   x:=5;
   y:=5;
@@ -1013,12 +1079,16 @@ begin
     SetBounds(x,y+2,100,Height);
   inc(x,ComponentUnitFileLabel.Width+5);
 
+  w:=ComponentUnitFileEdit.Height;
   with ComponentUnitFileEdit do
-    SetBounds(x,y,Parent.ClientWidth-x-Height-5,Height);
+    SetBounds(x,y,Parent.ClientWidth-x-2-w-2-w-5,Height);
   inc(x,ComponentUnitFileEdit.Width+2);
 
   with ComponentUnitFileBrowseButton do
-    SetBounds(x,y,ComponentUnitFileEdit.Height,ComponentUnitFileEdit.Height);
+    SetBounds(x,y,w,w);
+  inc(x,w+2);
+  with ComponentUnitFileShortenButton do
+    SetBounds(x,y,w,w);
   x:=5;
   inc(y,ComponentUnitFileEdit.Height+5);
 
@@ -1189,6 +1259,14 @@ begin
     OnClick:=@AddUnitFileBrowseButtonClick;
   end;
 
+  AddUnitFileShortenButton:=TButton.Create(Self);
+  with AddUnitFileShortenButton do begin
+    Name:='AddUnitFileShortenButton';
+    Parent:=AddUnitPage;
+    Caption:='<>';
+    OnClick:=@AddUnitFileShortenButtonClick;
+  end;
+
   AddUnitSrcNameLabel:=TLabel.Create(Self);
   with AddUnitSrcNameLabel do begin
     Name:='AddUnitSrcNameLabel';
@@ -1328,6 +1406,14 @@ begin
     OnClick:=@ComponentUnitFileBrowseButtonClick;
   end;
 
+  ComponentUnitFileShortenButton:=TButton.Create(Self);
+  with ComponentUnitFileShortenButton do begin
+    Name:='ComponentUnitFileShortenButton';
+    Parent:=NewComponentPage;
+    Caption:='<>';
+    OnClick:=@ComponentUnitFileShortenButtonClick;
+  end;
+
   ComponentUnitNameLabel:=TLabel.Create(Self);
   with ComponentUnitNameLabel do begin
     Name:='ComponentUnitNameLabel';
@@ -1446,6 +1532,14 @@ begin
     OnClick:=@AddFileBrowseButtonClick;
   end;
 
+  AddFileShortenButton:=TButton.Create(Self);
+  with AddFileShortenButton do begin
+    Name:='AddFileShortenButton';
+    Parent:=AddFilePage;
+    Caption:='<>';
+    OnClick:=@AddFileShortenButtonClick;
+  end;
+
   AddFileTypeRadioGroup:=TRadioGroup.Create(Self);
   with AddFileTypeRadioGroup do begin
     Name:='AddFileTypeRadioGroup';
@@ -1503,6 +1597,14 @@ begin
     OnClick:=@FilesBrowseButtonClick;
   end;
   
+  FilesShortenButton:=TButton.Create(Self);
+  with FilesShortenButton do begin
+    Name:='FilesShortenButton';
+    Parent:=AddFilesPage;
+    Caption:=lisA2PSwitchPaths;
+    OnClick:=@FilesShortenButtonClick;
+  end;
+
   FilesDeleteButton:=TButton.Create(Self);
   with FilesDeleteButton do begin
     Name:='FilesDeleteButton';
@@ -1638,6 +1740,18 @@ begin
     Result:=pftText
   else
     Result:=pftBinary;
+end;
+
+function TAddToPackageDlg.SwitchRelativeAbsoluteFilename(const Filename: string
+  ): string;
+begin
+  Result:=Filename;
+  if (not LazPackage.HasDirectory)
+  or (not FilenameIsAbsolute(LazPackage.Directory)) then exit;
+  if FilenameIsAbsolute(Filename) then
+    Result:=TrimFilename(CreateRelativePath(Filename,LazPackage.Directory))
+  else
+    Result:=TrimFilename(CreateAbsolutePath(Filename,LazPackage.Directory));
 end;
 
 constructor TAddToPackageDlg.Create(TheOwner: TComponent);

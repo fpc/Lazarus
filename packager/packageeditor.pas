@@ -1707,18 +1707,18 @@ begin
   // check if directory is already in the unit path of the package
   NewDirectory:=ExtractFilePath(AnUnitFilename);
   ShortDirectory:=NewDirectory;
-  LazPackage.ShortenFilename(ShortDirectory);
+  LazPackage.ShortenFilename(ShortDirectory,false);
   if ShortDirectory='' then exit;
-  UnitPath:=LazPackage.GetUnitPath(false);
-  UnitPathPos:=SearchDirectoryInSearchPath(UnitPath,NewDirectory,1);
+  UnitPath:=LazPackage.GetUnitPath(true);
+  UnitPathPos:=SearchDirectoryInSearchPath(UnitPath,ShortDirectory,1);
   IncPathPos:=1;
   if AnIncludeFile<>'' then begin
     NewIncDirectory:=ExtractFilePath(AnIncludeFile);
     ShortIncDirectory:=NewIncDirectory;
-    LazPackage.ShortenFilename(ShortIncDirectory);
+    LazPackage.ShortenFilename(ShortIncDirectory,false);
     if ShortIncDirectory<>'' then begin
-      IncPath:=LazPackage.GetIncludePath(false);
-      IncPathPos:=SearchDirectoryInSearchPath(IncPath,NewIncDirectory,1);
+      IncPath:=LazPackage.GetIncludePath(true);
+      IncPathPos:=SearchDirectoryInSearchPath(IncPath,ShortIncDirectory,1);
     end;
   end;
   if UnitPathPos<1 then begin

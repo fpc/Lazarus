@@ -2,7 +2,7 @@
 <CONFIG>
   <Package>
     <Name Value="GTK2Interface"/>
-    <Files Count="3">
+    <Files Count="20">
       <Item1>
         <Filename Value="interfaces.pas"/>
         <UnitName Value="Interfaces"/>
@@ -15,6 +15,74 @@
         <Filename Value="../gtk/gtkglobals.pp"/>
         <UnitName Value="GTKGlobals"/>
       </Item3>
+      <Item4>
+        <Filename Value="../gtk/gtkmsgqueue.pp"/>
+        <UnitName Value="GtkMsgQueue"/>
+      </Item4>
+      <Item5>
+        <Filename Value="../gtk/gtkcallback.inc"/>
+        <Type Value="Include"/>
+      </Item5>
+      <Item6>
+        <Filename Value="../gtk/gtkcomboboxcallback.inc"/>
+        <Type Value="Include"/>
+      </Item6>
+      <Item7>
+        <Filename Value="../gtk/gtkdef.pp"/>
+        <UnitName Value="GTKDef"/>
+      </Item7>
+      <Item8>
+        <Filename Value="../gtk/gtkdragcallback.inc"/>
+        <Type Value="Include"/>
+      </Item8>
+      <Item9>
+        <Filename Value="../gtk/gtkimages.lrs"/>
+        <Type Value="LRS"/>
+      </Item9>
+      <Item10>
+        <Filename Value="../gtk/gtkint.pp"/>
+        <UnitName Value="GtkInt"/>
+      </Item10>
+      <Item11>
+        <Filename Value="../gtk/gtklistsl.inc"/>
+        <Type Value="Include"/>
+      </Item11>
+      <Item12>
+        <Filename Value="../gtk/gtklistslh.inc"/>
+        <Type Value="Include"/>
+      </Item12>
+      <Item13>
+        <Filename Value="../gtk/gtklistviewcallback.inc"/>
+        <Type Value="Include"/>
+      </Item13>
+      <Item14>
+        <Filename Value="../gtk/gtkobject.inc"/>
+        <Type Value="Include"/>
+      </Item14>
+      <Item15>
+        <Filename Value="../gtk/gtkproc.inc"/>
+        <Type Value="Include"/>
+      </Item15>
+      <Item16>
+        <Filename Value="../gtk/gtkproc.pp"/>
+        <UnitName Value="GTKProc"/>
+      </Item16>
+      <Item17>
+        <Filename Value="../gtk/gtkwinapi.inc"/>
+        <Type Value="Include"/>
+      </Item17>
+      <Item18>
+        <Filename Value="../gtk/gtkwinapih.inc"/>
+        <Type Value="Include"/>
+      </Item18>
+      <Item19>
+        <Filename Value="../gtk/gtkwinapiwindow.pp"/>
+        <UnitName Value="GTKWinapiWindow"/>
+      </Item19>
+      <Item20>
+        <Filename Value="../gtk/keymap.pp"/>
+        <UnitName Value="KeyMap"/>
+      </Item20>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
@@ -36,7 +104,7 @@
   </Package>
   <CompilerOptions>
     <SearchPaths>
-      <OtherUnitFiles Value="./;../gtk/;../../units/"/>
+      <OtherUnitFiles Value="../gtk/;../../units/"/>
       <UnitOutputDirectory Value="../../units/gtk2"/>
       <LCLWidgetType Value="gtk"/>
     </SearchPaths>

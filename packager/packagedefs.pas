@@ -159,12 +159,13 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure ConsistencyCheck;
     function IsVirtual: boolean;
-    function GetShortFilename(RelativePaths: boolean): string;
+    function GetShortFilename(UseUp: boolean): string;
     function ComponentCount: integer;
     procedure AddPkgComponent(APkgComponent: TPkgComponent);
     procedure RemovePkgComponent(APkgComponent: TPkgComponent);
     function GetResolvedFilename: string;
     function HasRegisteredPlugins: boolean;
+    function MakeSense: boolean;
   public
     property Removed: boolean read FRemoved write SetRemoved;
     property Directory: string read FDirectory;
@@ -461,6 +462,8 @@ type
     FFirstRequiredDependency: TPkgDependency;
     FFirstUsedByDependency: TPkgDependency;
     FFlags: TLazPackageFlags;
+    FHasDirectory: boolean;
+    FHasStaticDirectory: boolean;
     FHoldPackageCount: integer;
     FIconFile: string;
     FInstalled: TPackageInstallType;
@@ -535,6 +538,7 @@ type
     // paths, define templates
     function IsVirtual: boolean;
     function HasDirectory: boolean;
+    function HasStaticDirectory: boolean;
     function GetResolvedFilename: string;
     function GetSourceDirs(WithPkgDir, WithoutOutputDir: boolean): string;
     procedure GetInheritedCompilerOptions(var OptionsList: TList);
@@ -547,7 +551,7 @@ type
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function NeedsDefineTemplates: boolean;
     // files
-    procedure ShortenFilename(var ExpandedFilename: string);
+    procedure ShortenFilename(var ExpandedFilename: string; UseUp: boolean);
     procedure LongenFilename(var AFilename: string);
     function FindPkgFile(const AFilename: string;
                          ResolveLinks, IgnoreRemoved: boolean): TPkgFile;
@@ -1112,6 +1116,11 @@ begin
   Result:=ComponentCount>0;
 end;
 
+function TPkgFile.MakeSense: boolean;
+begin
+  Result:=Filename<>'';
+end;
+
 constructor TPkgFile.Create(ThePackage: TLazPackage);
 begin
   Clear;
@@ -1155,7 +1164,7 @@ var
   TmpFilename: String;
 begin
   TmpFilename:=Filename;
-  FPackage.ShortenFilename(TmpFilename);
+  FPackage.ShortenFilename(TmpFilename,true);
   XMLConfig.SetDeleteValue(Path+'Filename/Value',TmpFilename,'');
   XMLConfig.SetDeleteValue(Path+'HasRegisterProc/Value',HasRegisterProc,
                            false);
@@ -1177,13 +1186,10 @@ begin
   Result:=FilenameIsAbsolute(FFilename);
 end;
 
-function TPkgFile.GetShortFilename(RelativePaths: boolean): string;
+function TPkgFile.GetShortFilename(UseUp: boolean): string;
 begin
   Result:=FFilename;
-  LazPackage.ShortenFilename(Result);
-  if RelativePaths and FilenameIsAbsolute(Result)
-  and LazPackage.HasDirectory then
-    Result:=CreateRelativePath(Result,LazPackage.Directory);
+  LazPackage.ShortenFilename(Result,UseUp);
 end;
 
 function TPkgFile.ComponentCount: integer;
@@ -1729,6 +1735,8 @@ begin
     FDirectory:=FFilename
   else
     FDirectory:=ExtractFilePath(FFilename);
+  FHasDirectory:=(FDirectory<>'') and (FDirectory[length(FDirectory)]=PathDelim);
+  FHasStaticDirectory:=FHasDirectory and FilenameIsAbsolute(FDirectory);
   FUsageOptions.BaseDirectory:=FDirectory;
   FCompilerOptions.BaseDirectory:=FDirectory;
   Modified:=true;
@@ -1887,6 +1895,8 @@ begin
   FCompilerOptions.Clear;
   FDescription:='';
   FDirectory:='';
+  FHasDirectory:=false;
+  FHasStaticDirectory:=false;
   FVersion.Clear;
   FFilename:='';
   for i:=FRemovedFiles.Count-1 downto 0 do RemovedFiles[i].Free;
@@ -1970,7 +1980,10 @@ var
       PkgFile:=TPkgFile.Create(Self);
       PkgFile.LoadFromXMLConfig(XMLConfig,ThePath+'Item'+IntToStr(i+1)+'/',
                                 FileVersion,PathDelimChanged);
-      List.Add(PkgFile);
+      if PkgFile.MakeSense then
+        List.Add(PkgFile)
+      else
+        PkgFile.Free;
     end;
   end;
   
@@ -2073,7 +2086,12 @@ end;
 
 function TLazPackage.HasDirectory: boolean;
 begin
-  Result:=(FDirectory<>'') and (FDirectory[length(FDirectory)]=PathDelim);
+  Result:=FHasDirectory;
+end;
+
+function TLazPackage.HasStaticDirectory: boolean;
+begin
+  Result:=FHasStaticDirectory;
 end;
 
 procedure TLazPackage.CheckInnerDependencies;
@@ -2085,21 +2103,25 @@ function TLazPackage.MakeSense: boolean;
 begin
   Result:=false;
   if (Name='') or (not IsValidIdent(Name)) then exit;
-
   Result:=true;
 end;
 
-procedure TLazPackage.ShortenFilename(var ExpandedFilename: string);
+procedure TLazPackage.ShortenFilename(var ExpandedFilename: string;
+  UseUp: boolean);
 var
   PkgDir: String;
   CurPath: String;
 begin
-  if not HasDirectory then exit;
+  if (not HasDirectory) then exit;
   PkgDir:=FDirectory;
-  CurPath:=copy(ExtractFilePath(ExpandedFilename),1,length(PkgDir));
-  if CompareFilenames(PkgDir,CurPath)=0 then begin
-    ExpandedFilename:=copy(ExpandedFilename,length(CurPath)+1,
-                           length(ExpandedFilename)-length(CurPath));
+  if HasStaticDirectory and UseUp then
+    ExpandedFilename:=CreateRelativePath(ExpandedFilename,PkgDir)
+  else begin
+    CurPath:=copy(ExtractFilePath(ExpandedFilename),1,length(PkgDir));
+    if CompareFilenames(PkgDir,CurPath)=0 then begin
+      ExpandedFilename:=copy(ExpandedFilename,length(CurPath)+1,
+                             length(ExpandedFilename)-length(CurPath));
+    end;
   end;
 end;
 

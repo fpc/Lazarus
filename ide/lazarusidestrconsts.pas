@@ -726,6 +726,7 @@ resourcestring
   dlgEdAdd = 'Add...';
   dlgEdEdit = 'Edit...';
   dlgEdDelete = 'Delete';
+  lisA2PSwitchPaths = 'Switch Paths';
   lisA2PAddFilesToPackage = 'Add files to package';
   lisA2PAddToPackage = 'Add to package';
   dlgIndentCodeTo = 'Indent code to';
@@ -1954,8 +1955,8 @@ resourcestring
     +'projects and packages.';
   lisA2PTheMaximumVersionIsLowerThanTheMinimimVersion = 'The Maximum Version '
     +'is lower than the Minimim Version.';
-  lisA2PThePackageNameIsInvalidPlaseChooseAnExisting = 'The package name %s%s%'
-    +'s is invalid.%sPlase choose an existing package.';
+  lisA2PThePackageNameIsInvalidPleaseChooseAnExisting = 'The package name %s%s%'
+    +'s is invalid.%sPlease choose an existing package.';
   lisA2PThePackageHasAlreadyADependencyForThe = 'The package has already a '
     +'dependency for the package %s%s%s.';
   lisA2PNoPackageFoundForDependencyPleaseChooseAnExisting = 'No package found '
