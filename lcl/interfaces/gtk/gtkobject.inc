@@ -4148,7 +4148,6 @@ begin
         RaiseException('form has already a MainMenu');
       Box := PGTKBin(ParentForm.Handle)^.Child;
       gtk_box_pack_start(Box, p, False, False, 0);
-      //SetAccelGroup(p, gtk_accel_group_get_default);
       gtk_widget_show(p);
     end;
 
@@ -6511,6 +6510,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.261  2002/10/22 18:54:56  lazarus
+  MG: fixed menu streaming
+
   Revision 1.260  2002/10/22 12:12:08  lazarus
   MG: accelerators are now shared between non modal forms
 
