@@ -146,16 +146,35 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function LockOnChange(GtkObject: PGtkObject; LockOffset: integer): integer;
+
+  Adds LockOffset to the OnChangeLock and returns the result.
+ ------------------------------------------------------------------------------}
+function LockOnChange(GtkObject: PGtkObject; LockOffset: integer): integer;
+begin
+  Result:=Integer(gtk_object_get_data(GtkObject,'OnChangeLock'));
+  if LockOffset<>0 then begin
+    inc(Result);
+    gtk_object_set_data(GtkObject,'OnChangeLock',Pointer(Result));
+  end;
+end;
+
+{------------------------------------------------------------------------------
   procedure SetComboBoxText(ComboWidget: PGtkCombo; const NewText: string);
 
   Sets the text of the combobox entry.
  ------------------------------------------------------------------------------}
 procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
 begin
+  // lock combobox, so that no OnChange event is fired
+  LockOnChange(PGtkObject(ComboWidget^.entry),+1);
+  // set text
   if NewText <> nil then
     gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText)
   else
     gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), #0);
+  // unlock combobox
+  LockOnChange(PGtkObject(ComboWidget^.entry),-1);
 end;
 
 {------------------------------------------------------------------------------
@@ -3478,6 +3497,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.111  2002/10/04 16:38:15  lazarus
+  MG: no OnChange event when app sets Text of TComboBox
+
   Revision 1.110  2002/10/03 14:47:32  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 
