@@ -3390,24 +3390,9 @@ Begin
               with FindReplaceDlg do
               begin
                 FindText:=LocalFindText;
-                Options:= Options-[ssoReplace,ssoReplaceAll,ssoBackwards];
-                //Whole Words ?
-                if FindInFilesDialog.WholeWordsOnlyCheckBox.Checked then
-                  Options:= Options+[ssoWholeWord]
-                else
-                  Options:= Options-[ssoWholeWord];
-                //Case Sensitive?
-                if FindInFilesDialog.CaseSensitiveCheckBox.Checked then
-                  Options:= Options+[ssoMatchCase]
-                else
-                  Options:= Options-[ssoMatchCase];
-                //Regular Expression?
-                if FindInFilesDialog.RegularExpressionsCheckBox.Checked then
-                  Options:= Options+[ssoRegExpr]
-                else
-                  Options:= Options-[ssoRegExpr];
+                Options:= FindInFilesDialog.SynSearchOptions;
                 //Multiline RegExpr?
-                  Options:= Options-[ssoRegExprMultiLine];
+                Options:= Options-[ssoRegExprMultiLine];
               end;//with
             end//if
             else

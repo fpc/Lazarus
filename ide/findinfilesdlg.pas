@@ -24,7 +24,14 @@ interface
 
 uses
   Classes, SysUtils, LCLLinux, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
-  LResources, LazarusIDEStrConsts, DirSel, Dialogs;
+  LResources, LazarusIDEStrConsts, DirSel, Dialogs, SynEditTypes;
+
+type
+  TLazFindInFileSearchOption = (fifMatchCase, fifWholeWord, fifRegExpr,
+                                fifSearchProject, fifSearchOpen, fifSearchFiles,
+                                fifIncludeSubDirs);
+                                
+  TLazFindInFileSearchOptions = set of TLazFindInFileSearchOption;
 
 type
   TLazFindInFilesDialog = class(TForm)
@@ -49,12 +56,20 @@ type
     procedure CancelButtonClick(Sender: TObject);
     procedure DirectoryBrowseClick(Sender: TObject);
     procedure WhereRadioGroupClick(Sender: TObject);
+    procedure SetOptions(NewOptions: TLazFindInFileSearchOptions);
+    function GetOptions: TLazFindInFileSearchOptions;
+    function GetSynOptions: TSynSearchOptions;
+    procedure SetSynOptions(NewOptions: TSynSearchOptions);
   private
     function GetFindText: string;
     procedure SetFindText(const NewFindText: string);
   public
     constructor Create(AOwner:TComponent); override;
+    property Options:TLazFindInFileSearchOptions read GetOptions
+                                                 write SetOptions;
     property FindText: string read GetFindText write SetFindText;
+    property SynSearchOptions: TSynSearchOptions read GetSynOptions
+                                                 write SetSynOptions;
   end;
 
 
@@ -355,6 +370,48 @@ begin
   if SelectDirectory('Select A Directory', TheRootDir, TheDirectory, false) then
     DirectoryComboBox.Text:= TheDirectory;
 end;//DirectoryBrowseClick
+
+procedure TLazFindInFilesDialog.SetOptions(
+                                       NewOptions: TLazFindInFileSearchOptions);
+begin
+  CaseSensitiveCheckBox.Checked:=fifMatchCase in NewOptions;
+  WholeWordsOnlyCheckBox.Checked:=fifWholeWord in NewOptions;
+  RegularExpressionsCheckBox.Checked:=fifRegExpr in NewOptions;
+  IncludeSubDirsCheckBox.Checked:= fifIncludeSubDirs in NewOptions;
+  if fifSearchProject in NewOptions then WhereRadioGroup.ItemIndex:= 0;
+  if fifSearchOpen in NewOptions then WhereRadioGroup.ItemIndex:= 1;
+  if fifSearchFiles in NewOptions then WhereRadioGroup.ItemIndex:= 2;
+end;//SetOptions
+
+function TLazFindInFilesDialog.GetOptions: TLazFindInFileSearchOptions;
+begin
+  Result:=[];
+  if CaseSensitiveCheckBox.Checked then Include(Result,fifMatchCase);
+  if WholeWordsOnlyCheckBox.Checked then Include(Result,fifWholeWord);
+  if RegularExpressionsCheckBox.Checked then Include(Result,fifRegExpr);
+  if IncludeSubDirsCheckBox.Checked then Include(Result,fifIncludeSubDirs);
+  
+  case WhereRadioGroup.ItemIndex of
+    0: Include(Result,fifSearchProject);
+    1: Include(Result,fifSearchOpen);
+    2: Include(Result,fifSearchFiles);
+  end;//case
+end;//GetOptions
+
+function TLazFindInFilesDialog.GetSynOptions: TSynSearchOptions;
+begin
+  Result:=[];
+  if CaseSensitiveCheckBox.Checked then Include(Result,ssoMatchCase);
+  if WholeWordsOnlyCheckBox.Checked then Include(Result,ssoWholeWord);
+  if RegularExpressionsCheckBox.Checked then Include(Result,ssoRegExpr);
+end;//GetSynOptions
+
+procedure TLazFindInFilesDialog.SetSynOptions(NewOptions: TSynSearchOptions);
+begin
+  CaseSensitiveCheckBox.Checked:=ssoMatchCase in NewOptions;
+  WholeWordsOnlyCheckBox.Checked:=ssoWholeWord in NewOptions;
+  RegularExpressionsCheckBox.Checked:=ssoRegExpr in NewOptions;
+end;//SetSynOptions
 
 initialization
   FindInFilesDialog:=nil;

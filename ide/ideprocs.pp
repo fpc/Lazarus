@@ -2083,12 +2083,10 @@ begin
             // check if special file, skip directories this time
             if (FileInfo.Name='.') or (FileInfo.Name='..')
             or ((faDirectory and FileInfo.Attr)>0) then continue;
-            //Make sure this is a text file as we will be search
-            if (FileIsText(TempDir + FileInfo.Name))and
-           (FileIsReadable(TempDir + FileInfo.Name)) then
-            begin
-              FileList.Add(TempDir + FileInfo.Name);
-            end;//if
+            //Make sure this is a text file as it will be searched
+            if FileIsReadable(TempDir + FileInfo.Name)
+            and FileIsText(TempDir + FileInfo.Name)
+            then FileList.Add(TempDir + FileInfo.Name);
           until SysUtils.FindNext(FileInfo)<>0;
         end;//if
         SysUtils.FindClose(FileInfo);
@@ -2098,20 +2096,17 @@ begin
     end;//try-finally
     //If selected then Look for and search subdirectories
     if (recursive) then begin
-      if (SysUtils.FindFirst(TempDir
-                        +FindMask,faAnyFile,FileInfo)=0) then
+      if (SysUtils.FindFirst(TempDir+FindMask,faAnyFile,FileInfo)=0) then
       begin
-        if ((faDirectory and FileInfo.Attr)>0) then
-        begin
-          repeat
-            // check if special file
-            if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
-            FindMatchingTextFiles
-              (FileList,TempDir + FileInfo.Name,mask,recursive);
-          until SysUtils.FindNext(FileInfo)<>0;
-        end;//if
-        SysUtils.FindClose(FileInfo);
-      end;
+        repeat
+          // check if directory and not special file
+          if ((faDirectory and FileInfo.Attr)>0)
+            and (FileInfo.Name<>'.') and (FileInfo.Name<>'..')
+            then FindMatchingTextFiles(FileList,
+                                       TempDir + FileInfo.Name,mask,recursive);
+        until SysUtils.FindNext(FileInfo)<>0;
+      end;//if
+      SysUtils.FindClose(FileInfo);
     end;//if
   end;//if
 end;//FindMatchingFiles
