@@ -46,11 +46,11 @@ uses
 {$ENDIF}
   // fpc packages
   Classes, SysUtils, Process, TypInfo,
+  // codetools
+  CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // lcl
   LCLType, LclLinux, LMessages, LResources, StdCtrls, Forms, Buttons, Menus,
   FileCtrl, Controls, Graphics, GraphType, ExtCtrls, Dialogs,
-  // codetools
-  CodeToolManager, CodeCache, DefineTemplates,
   // synedit
   SynEditKeyCmds,
   // compile
@@ -5361,9 +5361,12 @@ begin
           and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
             ActiveUnitInfo.ReadUnitNameFromSource;
             ShortUnitName:=ActiveUnitInfo.UnitName;
-            if (ShortUnitName<>'') then
-              CodeToolBoss.AddUnitToMainUsesSection(
-                 Project1.MainUnitInfo.Source,ShortUnitName,'');
+            if (ShortUnitName<>'') then begin
+              if CodeToolBoss.AddUnitToMainUsesSection(
+                 Project1.MainUnitInfo.Source,ShortUnitName,'')
+              then
+                Project1.MainUnitInfo.Modified:=true;
+            end;
           end;
           Project1.Modified:=true;
         end;
@@ -5403,12 +5406,16 @@ Begin
           AnUnitInfo.IsPartOfProject:=false;
           if (Project1.MainUnitID>=0)
           and (Project1.ProjectType in [ptProgram, ptApplication]) then begin
-            if (AnUnitInfo.UnitName<>'') then
-              CodeToolBoss.RemoveUnitFromAllUsesSections(
-                Project1.MainUnitInfo.Source,AnUnitInfo.UnitName);
-            if (AnUnitInfo.FormName<>'') then
+            if (AnUnitInfo.UnitName<>'') then begin
+              if CodeToolBoss.RemoveUnitFromAllUsesSections(
+                Project1.MainUnitInfo.Source,AnUnitInfo.UnitName)
+              then
+                Project1.MainUnitInfo.Modified:=true;
+            end;
+            if (AnUnitInfo.FormName<>'') then begin
               Project1.RemoveCreateFormFromProjectFile(
                   'T'+AnUnitInfo.FormName,AnUnitInfo.FormName);
+            end;
           end;
         end;
       end;
@@ -6784,6 +6791,7 @@ begin
   // add needed unit to source
   CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
       AComponentClass.{$IFDEF EnablePkgs}GetUnitName{$ELSE}UnitName{$ENDIF},'');
+  ActiveUnitInfo.Modified:=true;
   // add component definition to form source
   FormClassName:=TDesigner(Sender).Form.ClassName;
   if not CodeToolBoss.PublishedVariableExists(ActiveUnitInfo.Source,
@@ -7549,10 +7557,11 @@ var
   InsertPolicy: TResourcestringInsertPolicy;
   SectionCode: TCodeBuffer;
   SectionCaretXY: TPoint;
-  InsertAlphabetically: boolean;
   DummyResult: Boolean;
   SelectedStartPos: TPoint;
   SelectedEndPos: TPoint;
+  CursorCode: TCodeBuffer;
+  CursorXY: TPoint;
 begin
   FOpenEditorsOnCodeToolChange:=true;
   try
@@ -7563,9 +7572,10 @@ begin
     writeln('[TMainIDE.DoMakeResourceString] ************');
     {$ENDIF}
     // calculate start and end of expression in source
-    if CodeToolBoss.GetStringConstBounds(ActiveUnitInfo.Source,
-      ActiveSrcEdit.EditorComponent.CaretX,
-      ActiveSrcEdit.EditorComponent.CaretY,
+    CursorCode:=ActiveUnitInfo.Source;
+    CursorXY:=ActiveSrcEdit.EditorComponent.CaretXY;
+    if CodeToolBoss.GetStringConstBounds(
+      CursorCode,CursorXY.X,CursorXY.Y,
       StartCode,StartPos.X,StartPos.Y,
       EndCode,EndPos.X,EndPos.Y,
       true) then
@@ -7616,10 +7626,7 @@ begin
 
     // gather all reachable resourcestring sections
     if not CodeToolBoss.GatherResourceStringSections(
-      ActiveUnitInfo.Source,
-      ActiveSrcEdit.EditorComponent.CaretX,
-      ActiveSrcEdit.EditorComponent.CaretY,
-      nil)
+      CursorCode,CursorXY.X,CursorXY.Y,nil)
     then begin
       DoJumpToCodeToolBossError;
       exit;
@@ -7637,19 +7644,18 @@ begin
                                  CodeToolBoss.Positions,
                                  NewIdentifier,NewIdentValue,NewSourceLines,
                                  SectionCode,SectionCaretXY,InsertPolicy);
-    if Result<>mrOk then exit;
+    if (Result<>mrOk) then exit;
 
     // replace source
     ActiveSrcEdit.ReplaceLines(StartPos.Y,EndPos.Y,NewSourceLines);
 
     // add new resourcestring to resourcestring section
-    if InsertPolicy in [rsipAppend,rsipAlphabetically] then begin
-      InsertAlphabetically:=(InsertPolicy=rsipAlphabetically);
+    if (InsertPolicy<>rsipNone) then
       DummyResult:=CodeToolBoss.AddResourcestring(
-                     SectionCode,SectionCaretXY.X,SectionCaretXY.Y,
-                     NewIdentifier,''''+NewIdentValue+'''',
-                     InsertAlphabetically);
-    end else
+                       CursorCode,CursorXY.X,CursorXY.Y,
+                       SectionCode,SectionCaretXY.X,SectionCaretXY.Y,
+                       NewIdentifier,''''+NewIdentValue+'''',InsertPolicy)
+    else
       DummyResult:=true;
     ApplyCodeToolChanges;
     if not DummyResult then begin
@@ -8084,7 +8090,9 @@ begin
       Dummy:=CodeToolBoss.AddUnitToMainUsesSection(
          Project1.MainUnitInfo.Source,ShortUnitName,'');
       ApplyCodeToolChanges;
-      if not Dummy then begin
+      if Dummy then begin
+        Project1.MainUnitInfo.Modified:=true;
+      end else begin
         DoJumpToCodeToolBossError;
         Result:=mrCancel;
       end;
@@ -8109,8 +8117,10 @@ begin
     ShortUnitName:=AnUnitInfo.UnitName;
     if (ShortUnitName<>'') then begin
       Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
-        Project1.MainUnitInfo.Source,ShortUnitName);
-      if not Dummy then begin
+                                    Project1.MainUnitInfo.Source,ShortUnitName);
+      if Dummy then
+        Project1.MainUnitInfo.Modified:=true
+      else begin
         ApplyCodeToolChanges;
         DoJumpToCodeToolBossError;
         Result:=mrCancel;
@@ -8648,6 +8658,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.551  2003/05/02 22:22:14  mattias
+  localization, added context policy to make resource string dialog
+
   Revision 1.550  2003/05/02 10:28:59  mattias
   improved file checking
 
