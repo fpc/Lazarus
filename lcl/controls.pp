@@ -152,7 +152,7 @@ const
    mrAll = mrNone + 8;
    mrNoToAll = mrNone + 9;
    mrYesToAll = mrNone + 10;
-
+   mrLast = mrYesToAll;
 
 
 type
@@ -1325,6 +1325,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.63  2002/08/31 18:45:54  lazarus
+  MG: added some property editors and started component editors
+
   Revision 1.62  2002/08/30 12:32:20  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 
