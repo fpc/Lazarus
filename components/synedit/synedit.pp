@@ -486,6 +486,10 @@ type
     procedure DragOver(Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean); override;
     procedure FindMatchingBracket; virtual;
+    {$IFDEF SYN_LAZARUS}
+    function FindMatchingBracket(StartIncludeNeigborChars,
+      MoveCaret, SelectBrackets: boolean): TPoint; virtual;
+    {$ENDIF}
     function GetReadOnly: boolean; virtual;
     procedure HideCaret;
     procedure HighlighterAttrChanged(Sender: TObject);
@@ -610,6 +614,11 @@ type
     function SearchReplace(const ASearch, AReplace: string;
       AOptions: TSynSearchOptions): integer;
     procedure SelectAll;
+    {$IFDEF SYN_LAZARUS}
+    procedure SelectToBrace;
+    procedure SelectLine;
+    procedure SelectParagraph;
+    {$ENDIF}
     procedure SetBookMark(BookMark: Integer; X: Integer; Y: Integer);
     procedure SetDefaultKeystrokes; virtual;
     procedure SetOptionFlag(Flag: TSynEditorOption; Value: boolean);
@@ -3214,6 +3223,23 @@ begin
   // Selection should have changed...
   StatusChanged([scSelection]);
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.SelectToBrace;
+begin
+  FindMatchingBracket(true,true,true);
+end;
+
+procedure TCustomSynEdit.SelectLine;
+begin
+  SetLineBlock(CaretXY);
+end;
+
+procedure TCustomSynEdit.SelectParagraph;
+begin
+  SetParagraphBlock(CaretXY);
+end;
+{$ENDIF}
 
 procedure TCustomSynEdit.SetBlockBegin(Value: TPoint);
 var
@@ -7260,6 +7286,8 @@ begin
 end;
 
 procedure TCustomSynEdit.FindMatchingBracket;
+{$IFDEF SYN_LAZARUS}
+{$ELSE}
 const
   Brackets: array[0..5] of char = ('(', ')', '[', ']', '{', '}');
 var
@@ -7267,7 +7295,11 @@ var
   i, PosX, PosY, Len: integer;
   Test, BracketInc, BracketDec: char;
   NumBrackets: integer;
+{$ENDIF}
 begin
+  {$IFDEF SYN_LAZARUS}
+  FindMatchingBracket(false,true,false);
+  {$ELSE}
   // get char at caret
   PosX := CaretX;
   PosY := CaretY;
@@ -7336,7 +7368,145 @@ begin
         break;
       end;
   end;
+  {$ENDIF}
 end;
+
+{$IFDEF SYN_LAZARUS}
+function TCustomSynEdit.FindMatchingBracket(StartIncludeNeigborChars,
+  MoveCaret, SelectBrackets: boolean): TPoint;
+const
+  Brackets: array[0..5] of char = ('(', ')', '[', ']', '{', '}');
+var
+  Line: string;
+  PosX, PosY: integer;
+  StartPt: TPoint;
+
+  procedure DoMatchingBracketFound;
+  var
+    EndPt, DummyPt: TPoint;
+  begin
+    // matching bracket found, set caret and bail out
+    Result := Point(PosX, PosY);
+    if SelectBrackets then begin
+      EndPt:=Result;
+      if (EndPt.Y < StartPt.Y)
+        or ((EndPt.Y = StartPt.Y) and (EndPt.X < StartPt.X)) then
+      begin
+        DummyPt:=StartPt;
+        StartPt:=EndPt;
+        EndPt:=DummyPt;
+      end;
+      inc(EndPt.X);
+      SetCaretAndSelection(CaretXY, StartPt, EndPt);
+      // Selection should have changed...
+      StatusChanged([scSelection]);
+    end else if MoveCaret then
+      CaretXY := Result;
+  end;
+
+  procedure DoFindMatchingBracket(i: integer);
+  var
+    Test, BracketInc, BracketDec: char;
+    NumBrackets, Len: integer;
+  begin
+    StartPt:=Point(PosX,PosY);
+    BracketInc := Brackets[i];
+    BracketDec := Brackets[i xor 1]; // 0 -> 1, 1 -> 0, ...
+    // search for the matching bracket (that is until NumBrackets = 0)
+    NumBrackets := 1;
+    if Odd(i) then begin
+      // closing bracket -> search opening bracket
+      repeat
+        // search until start of line
+        while PosX > 1 do begin
+          Dec(PosX);
+          Test := Line[PosX];
+          if Test = BracketInc then
+            Inc(NumBrackets)
+          else if Test = BracketDec then begin
+            Dec(NumBrackets);
+            if NumBrackets = 0 then begin
+              DoMatchingBracketFound;
+              exit;
+            end;
+          end;
+        end;
+        // get previous line if possible
+        if PosY = 1 then break;
+        Dec(PosY);
+        Line := Lines[PosY - 1];
+        PosX := Length(Line) + 1;
+      until FALSE;
+    end else begin
+      // opening bracket -> search closing bracket
+      repeat
+        // search until end of line
+        Len := Length(Line);
+        while PosX < Len do begin
+          Inc(PosX);
+          Test := Line[PosX];
+          if Test = BracketInc then
+            Inc(NumBrackets)
+          else if Test = BracketDec then begin
+            Dec(NumBrackets);
+            if NumBrackets = 0 then begin
+              DoMatchingBracketFound;
+              exit;
+            end;
+          end;
+        end;
+        // get next line if possible
+        if PosY = Lines.Count then break;
+        Inc(PosY);
+        Line := Lines[PosY - 1];
+        PosX := 0;
+      until FALSE;
+    end;
+  end;
+  
+  procedure DoCheckBracket;
+  var
+    i: integer;
+    Test: char;
+  begin
+    if Length(Line) >= PosX then begin
+      Test := Line[PosX];
+      // is it one of the recognized brackets?
+      for i := Low(Brackets) to High(Brackets) do begin
+        if Test = Brackets[i] then begin
+          // this is the bracket, get the matching one and the direction
+          DoFindMatchingBracket(i);
+          exit;
+        end;
+      end;
+    end;
+  end;
+  
+begin
+  Result.X:=-1;
+  Result.Y:=-1;
+  
+  // get char at caret
+  PosX := CaretX;
+  PosY := CaretY;
+  Line := LineText;
+  DoCheckBracket;
+  if Result.Y>0 then exit;
+  if StartIncludeNeigborChars then begin
+    if PosX>1 then begin
+      dec(PosX);
+      DoCheckBracket;
+      if Result.Y>0 then exit;
+      inc(PosX);
+    end;
+    if PosX<Length(Line) then begin
+      inc(PosX);
+      DoCheckBracket;
+      if Result.Y>0 then exit;
+    end;
+  end;
+end;
+{$ENDIF}
 
 function TCustomSynEdit.GetHighlighterAttriAtRowCol(XY: TPoint;
   var Token: string; var Attri: TSynHighlighterAttributes): boolean;
