@@ -2292,7 +2292,9 @@ function TDefinePool.CreateLazarusSrcTemplate(
   const LazarusSrcDir, WidgetType: string): TDefineTemplate;
 const
   ds: char = PathDelim;
-var MainDir, DirTempl, SubDirTempl: TDefineTemplate;
+var
+  MainDir, DirTempl, SubDirTempl, IntfDirTemplate,
+  IfTemplate: TDefineTemplate;
   TargetOS, SrcPath: string;
 begin
   Result:=nil;
@@ -2341,11 +2343,6 @@ begin
   // lcl
   DirTempl:=TDefineTemplate.Create('LCL',Format(ctsNamedDirectory,['LCL']),
     '','lcl',da_Directory);
-  DirTempl.AddChild(TDefineTemplate.Create('WidgetPath',
-    Format(ctsAddsDirToSourcePath,[ctsAbstractWidgetPath]),
-    ExternalMacroStart+'SrcPath',
-    'interfaces'+ds+'abstract'+ds+';'+SrcPath,
-    da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('IncludePath',
      Format(ctsIncludeDirectoriesPlusDirs,['include']),
      ExternalMacroStart+'IncPath',
@@ -2353,13 +2350,46 @@ begin
   MainDir.AddChild(DirTempl);
 
   // lcl/interfaces
-  SubDirTempl:=TDefineTemplate.Create('Widget Directory',
+  SubDirTempl:=TDefineTemplate.Create('WidgetDirectory',
     ctsWidgetDirectory,'','interfaces',da_Directory);
+  // add lcl to the source path of all widget set directories
   SubDirTempl.AddChild(TDefineTemplate.Create('LCL Path',
     Format(ctsAddsDirToSourcePath,['lcl']),ExternalMacroStart+'SrcPath',
     LazarusSrcDir+ds+'lcl;'+SrcPath,da_DefineRecurse));
   DirTempl.AddChild(SubDirTempl);
   
+  // lcl/interfaces/gtk
+  IntfDirTemplate:=TDefineTemplate.Create('gtkIntfDirectory',
+    ctsGtkIntfDirectory,'','gtk',da_Directory);
+    // if $(LCLWidgetType)=gtk2
+    IfTemplate:=TDefineTemplate.Create('IF LCLWidgetType=gtk2',
+      ctsIfLCLWidgetTypeEqualsGtk2,'','$(LCLWidgetType)=gtk2',da_If);
+      // then define gtk2
+      IfTemplate.AddChild(TDefineTemplate.Create('Define gtk2',
+        ctsDefineMacroGTK2,'gtk2','',da_Define));
+    IntfDirTemplate.AddChild(IfTemplate);
+  SubDirTempl.AddChild(IntfDirTemplate);
+
+  // lcl/interfaces/gtk2
+  IntfDirTemplate:=TDefineTemplate.Create('gtk2IntfDirectory',
+    ctsGtk2IntfDirectory,'','gtk2',da_Directory);
+  // add '../gtk' to the SrcPath
+  IntfDirTemplate.AddChild(TDefineTemplate.Create('SrcPath',
+    Format(ctsAddsDirToSourcePath,['gtk']),ExternalMacroStart+'SrcPath',
+    '..'+ds+'gtk;'+SrcPath,da_Define));
+  SubDirTempl.AddChild(IntfDirTemplate);
+  
+  // lcl/interfaces/gnome
+  IntfDirTemplate:=TDefineTemplate.Create('gnomeIntfDirectory',
+    ctsGnomeIntfDirectory,'','gnome',da_Directory);
+  // add '../gtk' to the SrcPath
+  IntfDirTemplate.AddChild(TDefineTemplate.Create('SrcPath',
+    Format(ctsAddsDirToSourcePath,['gtk']),ExternalMacroStart+'SrcPath',
+    '..'+ds+'gtk;'+SrcPath,da_Define));
+  SubDirTempl.AddChild(IntfDirTemplate);
+
+  // lcl/interfaces/win32
+  // no special
 
   // components
   DirTempl:=TDefineTemplate.Create('Components',ctsComponentsDirectory,

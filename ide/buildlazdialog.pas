@@ -39,7 +39,7 @@ uses
 
 type
   TMakeMode = (mmNone, mmBuild, mmCleanBuild);
-  TLCLPlatform = (lpGtk, lpGnome, lpWin32);
+  TLCLPlatform = (lpGtk, lpGtk2, lpGnome, lpWin32);
 
   TBuildLazarusOptions = class
   private
@@ -123,7 +123,7 @@ const
       'None', 'Build', 'Clean+Build'
     );
   LCLPlatformNames: array[TLCLPlatform] of string = (
-      'gtk', 'gnome', 'win32'
+      'gtk', 'gtk2', 'gnome', 'win32'
     );
 
 
@@ -466,7 +466,7 @@ begin
       Left:=BuildLCLRadioGroup.Left+BuildLCLRadioGroup.Width+10;
       Top:=BuildLCLRadioGroup.Top;
       Width:=Parent.ClientHeight-Left-BuildLCLRadioGroup.Left;
-      Height:=100;
+      Height:=120;
       Caption:='LCL interface';
       for LCLInterface:=Low(TLCLPlatform) to High(TLCLPlatform) do begin
         Items.Add(LCLPlatformNames[LCLInterface]);

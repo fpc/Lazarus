@@ -3171,9 +3171,10 @@ begin
     with Items do begin
       Add('gnome');
       Add('gtk');
+      Add('gtk2');
       Add('win32');
     end;
-    Columns:=3;
+    Columns:=Items.Count;
     ItemIndex:=1;
     Visible:=true;
   end;

@@ -168,8 +168,12 @@ ResourceString
   ctsSetsIncPathTo = 'sets IncPath to %s';
   ctsSetsSrcPathTo = 'sets SrcPath to %s';
   ctsNamedDirectory = '%s Directory';
-  ctsAbstractWidgetPath = 'abstract widget path';
   ctsWidgetDirectory = 'Widget Directory';
+  ctsGtkIntfDirectory = 'gtk interface directory';
+  ctsIfLCLWidgetTypeEqualsGtk2 = 'If LCLWidgetType=gtk2 then';
+  ctsDefineMacroGTK2 = 'Define macro gtk2';
+  ctsGtk2IntfDirectory = 'gtk2 interface directory';
+  ctsGnomeIntfDirectory = 'gnome interface directory';
   ctsComponentsDirectory = 'Components Directory';
   ctsCustomComponentsDirectory = 'Custom Components Directory';
   ctsToolsDirectory = 'Tools Directory';
