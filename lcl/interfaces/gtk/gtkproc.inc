@@ -97,6 +97,7 @@ begin
   Result:=-1;
 end;
 
+
 {------------------------------------------------------------------------------
   function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 
@@ -3460,6 +3461,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.125  2002/10/15 07:01:30  lazarus
+  MG: fixed timer checking
+
   Revision 1.124  2002/10/10 19:59:41  lazarus
   MG: get always a default font
 
