@@ -2895,11 +2895,12 @@ begin
         SelectedColors:=dcscCustom;
       end;
       SelectGDKBrushProps(DC);
-      DCOrigin:=GetDCOffset(TDeviceContext(DC));
-      If not CurrentBrush^.IsNullBrush then
+      If not CurrentBrush^.IsNullBrush then begin
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
         gdk_draw_rectangle(Drawable, GC, 1,
-                         Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
-                         Width, Height);
+                           Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
+                           Width, Height);
+      end;
       // Restore current brush
       if PGdiObject(Brush)<>OldCurrentBrush then begin
         SelectedColors:=dcscCustom;
@@ -3194,9 +3195,9 @@ begin
   if Result <> ERROR
   then with TDeviceContext(DC) do
   begin
-    DCOrigin:=GetDCOffset(TDeviceContext(DC));
     If Not IsValidGDIObject(ClipRegion) then begin
-      gdk_window_get_size(Drawable, @X, @Y);  
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
+      gdk_window_get_size(Drawable, @X, @Y);
       lpRect^ := Rect(-DCOrigin.X, -DCOrigin.Y, X, Y);
       Result := SIMPLEREGION;
     end
@@ -3204,12 +3205,13 @@ begin
       Result := RegionType(PGDIObject(ClipRegion)^.GDIRegionObject);
       gdk_region_get_clipbox(PGDIObject(ClipRegion)^.GDIRegionObject, 
         @CRect);
-      With lpRect^,CRect do begin
-        Left   := X-DCOrigin.X;
-        Top    := Y-DCOrigin.Y;
-        Right  := Left + Width;
-        Bottom := Top + Height;
-      end;  
+      // the gdk_region_get_clipbox has already added the gtk scrollbar values
+      // Therefore we must here only add our own DC Offset
+      DCOrigin:=Origin;
+      lpRect^.Left   := CRect.X - DCOrigin.X;
+      lpRect^.Top    := CRect.Y - DCOrigin.Y;
+      lpRect^.Right  := lpRect^.Left + CRect.Width;
+      lpRect^.Bottom := lpRect^.Top + CRect.Height;
     end;
   end;  
 end;
@@ -5038,7 +5040,7 @@ var
   PointArray: PGDKPoint;
   Tmp, RGN : hRGN;
   ClipRect : TRect;
-  DCOrigin: Tpoint;
+  DCOrigin: TPoint;
   OldNumPts: integer;
 begin
   Result := IsValidDC(DC);
@@ -7498,6 +7500,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.180  2002/10/31 18:37:30  lazarus
+  MG: fixed GetClipBox
+
   Revision 1.179  2002/10/31 17:31:11  lazarus
   MG: fixed return polygon point
 
