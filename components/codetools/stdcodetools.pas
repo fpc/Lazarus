@@ -53,6 +53,11 @@ uses
   TypInfo, LFMTrees, SourceChanger, CustomCodeTool, CodeToolsStructs;
 
 type
+  TOnGetDefineProperties = procedure(Sender: TObject;
+    const ClassContext: TFindContext; LFMNode: TLFMTreeNode;
+    const IdentName: string; var DefineProperties: TStrings) of object;
+
+
   TStandardCodeTool = class(TIdentCompletionTool)
   private
     CachedSourceName: string;
@@ -110,7 +115,8 @@ type
     function RenameInclude(LinkIndex: integer; const NewFilename: string;
           KeepPath: boolean;
           SourceChangeCache: TSourceChangeCache): boolean;
-    function CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree): boolean;
+    function CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree;
+                  const OnGetDefineProperties: TOnGetDefineProperties): boolean;
 
     // createform
     function FindCreateFormStatement(StartPos: integer;
@@ -873,17 +879,46 @@ begin
   Result:=true;
 end;
 
-function TStandardCodeTool.CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree
-  ): boolean;
+function TStandardCodeTool.CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree;
+  const OnGetDefineProperties: TOnGetDefineProperties): boolean;
 var
   RootContext: TFindContext;
   
   function CheckLFMObjectValues(LFMObject: TLFMObjectNode;
     const ClassContext: TFindContext): boolean; forward;
 
+  function FindNonPublishedDefineProperty(LFMNode: TLFMTreeNode;
+    DefaultErrorPosition: integer;
+    const IdentName: string; const ClassContext: TFindContext): boolean;
+  var
+    PropertyNode: TLFMPropertyNode;
+    ObjectNode: TLFMObjectNode;
+  begin
+    Result:=false;
+    if (not (LFMNode is TLFMPropertyNode)) then exit;
+    PropertyNode:=TLFMPropertyNode(LFMNode);
+    if (PropertyNode.Parent=nil)
+    or (not (PropertyNode.Parent is TLFMObjectNode)) then exit;
+    ObjectNode:=TLFMObjectNode(PropertyNode.Parent);
+    if ObjectNode.DefineProperties=nil then begin
+      // fetch define properties
+      if Assigned(OnGetDefineProperties) then begin
+        OnGetDefineProperties(Self,ClassContext,LFMNode,IdentName,
+          ObjectNode.DefineProperties);
+      end else begin
+        // create the default define properties for TComponent
+        ObjectNode.DefineProperties:=TStringList.Create;
+        ObjectNode.DefineProperties.Add('LEFT');
+        ObjectNode.DefineProperties.Add('TOP');
+      end;
+    end;
+    Result:=ObjectNode.DefineProperties.IndexOf(IdentName)>=0;
+  end;
+
   function FindLFMIdentifier(LFMNode: TLFMTreeNode;
     DefaultErrorPosition: integer;
-    const IdentName: string; const ClassContext: TFindContext): TFindContext;
+    const IdentName: string; const ClassContext: TFindContext;
+    SearchAlsoInDefineProperties: boolean): TFindContext;
   var
     Params: TFindDeclarationParams;
   begin
@@ -918,6 +953,12 @@ var
       Params.Free;
     end;
     if Result.Node=nil then begin
+      // no node found
+      if SearchAlsoInDefineProperties then begin
+        if FindNonPublishedDefineProperty(LFMNode,DefaultErrorPosition,
+          IdentName,ClassContext)
+        then exit;
+      end;
       LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
                        'identifier '+IdentName+' not found',
                        DefaultErrorPosition);
@@ -995,7 +1036,7 @@ var
       exit;
     end;
     ChildContext:=FindLFMIdentifier(LFMObject,LFMObject.NamePosition,
-      LFMObjectName,RootContext);
+      LFMObjectName,RootContext,false);
     if ChildContext.Node=nil then exit;
     
     // check if identifier is variable
@@ -1086,6 +1127,11 @@ var
 
   procedure CheckLFMProperty(LFMProperty: TLFMPropertyNode;
     const ParentContext: TFindContext);
+  // checks properties. For example lines like 'OnShow = FormShow'
+  // or 'VertScrollBar.Range = 29'
+  // LFMProperty is the property node
+  // ParentContext is the context, where properties are searched.
+  //               This can be a class or a property.
   var
     i: Integer;
     CurName: string;
@@ -1113,7 +1159,7 @@ var
       CurName:=LFMProperty.NameParts.Names[i];
       CurPropertyContext:=FindLFMIdentifier(LFMProperty,
                                          LFMProperty.NameParts.NamePositions[i],
-                                         CurName,SearchContext);
+                                         CurName,SearchContext,true);
       if CurPropertyContext.Node=nil then
         break;
       SearchContext:=CurPropertyContext;

@@ -120,7 +120,7 @@ var
   end;
   
 begin
-  Result:=CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree);
+  Result:=CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,nil,LFMTree);
   try
     if Result then exit;
     WriteLFMErrors;

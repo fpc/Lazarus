@@ -43,8 +43,8 @@ uses
   Classes, SysUtils, FileProcs, BasicCodeTools, CodeToolsStrConsts,
   EventCodeTool, CodeTree, CodeAtom, SourceChanger, DefineTemplates, CodeCache,
   ExprEval, LinkScanner, KeywordFuncLists, TypInfo, AVL_Tree, LFMTrees,
-  CustomCodeTool, FindDeclarationTool, IdentCompletionTool, ResourceCodeTool,
-  CodeToolsStructs, CodeTemplatesTool, ExtractProcTool;
+  CustomCodeTool, FindDeclarationTool, IdentCompletionTool, StdCodeTools,
+  ResourceCodeTool, CodeToolsStructs, CodeTemplatesTool, ExtractProcTool;
 
 type
   TCodeToolManager = class;
@@ -341,6 +341,7 @@ type
     // resources
     function FindLFMFileName(Code: TCodeBuffer): string;
     function CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
+          OnGetDefineProperties: TOnGetDefineProperties;
           var LFMTree: TLFMTree): boolean;
     function FindNextResourceFile(Code: TCodeBuffer;
           var LinkIndex: integer): TCodeBuffer;
@@ -1958,6 +1959,7 @@ begin
 end;
 
 function TCodeToolManager.CheckLFM(UnitCode, LFMBuf: TCodeBuffer;
+  OnGetDefineProperties: TOnGetDefineProperties;
   var LFMTree: TLFMTree): boolean;
 begin
   Result:=false;
@@ -1966,7 +1968,7 @@ begin
   {$ENDIF}
   if not InitCurCodeTool(UnitCode) then exit;
   try
-    Result:=FCurCodeTool.CheckLFM(LFMBuf,LFMTree);
+    Result:=FCurCodeTool.CheckLFM(LFMBuf,LFMTree,OnGetDefineProperties);
   except
     on e: Exception do HandleException(e);
   end;

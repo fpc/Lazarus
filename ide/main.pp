@@ -3736,11 +3736,14 @@ begin
                       FormEditor1.CreateComponentFromStream(BinLFMStream,
                                                             AncestorType,true));
       if CInterface=nil then begin
+        // error streaming component -> examine lfm file
         NewComponent:=nil;
         AnUnitInfo.Component:=NewComponent;
         // open lfm file in editor
         Result:=DoOpenEditorFile(LFMBuf.Filename,AnUnitInfo.EditorIndex+1,
           Flags+[ofOnlyIfExists,ofQuiet,ofRegularFile]);
+        if Result<>mrOk then exit;
+        Result:=DoCheckLFMInEditor;
         if Result=mrOk then Result:=mrCancel;
         exit;
       end else begin
@@ -10312,6 +10315,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.708  2004/02/04 11:09:40  mattias
+  added DefineProperties check for check lfm
+
   Revision 1.707  2004/02/03 20:01:29  mattias
   fixed gtk intf WaitMessages
 

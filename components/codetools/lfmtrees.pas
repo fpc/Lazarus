@@ -73,7 +73,9 @@ type
     NamePosition: integer;
     TypeName: string;
     TypeNamePosition: integer;
+    DefineProperties: TSTrings;
     constructor CreateVirtual; override;
+    destructor Destroy; override;
   end;
 
   { TLFMNameParts }
@@ -613,6 +615,12 @@ end;
 constructor TLFMObjectNode.CreateVirtual;
 begin
   TheType:=lfmnObject;
+end;
+
+destructor TLFMObjectNode.Destroy;
+begin
+  DefineProperties.Free;
+  inherited Destroy;
 end;
 
 { TLFMPropertyNode }

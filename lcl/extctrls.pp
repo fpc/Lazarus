@@ -513,6 +513,7 @@ type
   TImage = class(TCustomImage)
   published
     property Align;
+    property Anchors;
     property AutoSize;
     property Center;
     property Constraints;
@@ -852,6 +853,7 @@ type
     property ClientHeight;
     property ClientWidth;
     property Color;
+    property Constraints;
     property DragMode;
     property Enabled;
     property Font;
@@ -919,6 +921,9 @@ end.
 
  {
   $Log$
+  Revision 1.94  2004/02/04 11:09:40  mattias
+  added DefineProperties check for check lfm
+
   Revision 1.93  2004/02/03 19:00:10  mattias
   published TBevel.OnPaint
 

@@ -416,6 +416,7 @@ type
     property Align;
     property Anchors;
     property BorderStyle;
+    property Constraints;
     property ExtendedSelect;
     property Items;
     property ItemHeight;
@@ -1482,6 +1483,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.123  2004/02/04 11:09:40  mattias
+  added DefineProperties check for check lfm
+
   Revision 1.122  2004/02/04 00:21:40  mattias
   added SelectDirectory and TListBox.ItemVisible
 
