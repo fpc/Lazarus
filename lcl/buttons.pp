@@ -257,13 +257,21 @@ var
 {$I buttonglyph.inc}
 {$I speedbutton.inc}
 
-initialization
+procedure ButtonInit;
+var
+  BitBtnKind: TBitBtnKind;
+begin
+  for BitBtnKind:=Low(TBitBtnKind) to High(TBitBtnKind) do
+    BitBtnImages[BitBtnKind]:=IMGOK_Check;
+  BitbtnImages[bkOK] := IMGOK_Check;
+  BitbtnImages[bkCancel] := IMGCancel_X;
+  BitbtnImages[bkClose] := IMGClose;
+  BitbtnImages[bkHelp] := IMGHELP;
+  BitbtnImages[bkAll] := IMGAll_Check;
+end;
 
-BitbtnImages[bkOK] := IMGOK_Check;
-BitbtnImages[bkCancel] := IMGCancel_X;
-BitbtnImages[bkClose] := IMGClose;
-BitbtnImages[bkHelp] := IMGHELP;
-BitbtnImages[bkAll] := IMGAll_Check;
+initialization
+  ButtonInit;
 
 finalization
 
@@ -274,6 +282,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2002/09/13 16:58:27  lazarus
+  MG: removed the 1x1 bitmap from TBitBtn
+
   Revision 1.26  2002/09/09 07:26:42  lazarus
   MG: started TCollectionPropertyEditor
 
