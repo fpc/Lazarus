@@ -6789,8 +6789,8 @@ begin
   Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
   if Result<>'' then exit;
   
-  // if file is a pascal unit, then search for the compiled version in
-  // unit path and all inherited unit paths
+  // if file is a pascal unit, then search for the compiled version in the
+  // unit path, all inherited unit paths and the fpc sources
   if FilenameIsPascalUnit(SearchFile) then begin
     CompiledSrcExt:=CodeToolBoss.GetCompiledSrcExtForDirectory(BaseDir);
     SearchFile:=ChangeFileExt(LowerCase(ExtractFilename(AFilename)),
@@ -6805,11 +6805,14 @@ begin
       Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
       if Result<>'' then exit;
     end;
+    
+    // search unit in fpc source directory
+    BaseDir:=Project1.ProjectDirectory;
+    Result:=CodeToolBoss.FindUnitInUnitLinks(BaseDir,
+                                             ExtractFilenameOnly(AFilename));
+    if Result<>'' then exit;
   end;
   
-  // search in fpc source directory
-  // ToDo
-
   // search in include path
   BaseDir:=Project1.ProjectDirectory;
   SearchFile:=ExtractFilename(AFilename);
@@ -6817,9 +6820,13 @@ begin
   Result:=SearchFileInPath(SearchFile,BaseDir,SearchPath,';',[]);
   if Result<>'' then exit;
   
-  // search in source directories of all required packages
+  // search include file in source directories of all required packages
+  SearchFile:=ExtractFilename(AFilename);
+  Result:=PkgBoss.FindIncludeFileInProjectDependencies(Project1,SearchFile);
+  if Result<>'' then exit;
+
+  // search include file in fpc source directory
   // ToDo
-  
 end;
 
 //------------------------------------------------------------------------------
@@ -8752,6 +8759,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.577  2003/05/23 19:31:23  mattias
+  implemented searching debugging files in include paths
+
   Revision 1.576  2003/05/23 18:50:07  mattias
   implemented searching debugging files in inherited unit paths
 
