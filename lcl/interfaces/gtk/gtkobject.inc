@@ -3771,7 +3771,6 @@ begin
       gtk_widget_set_app_paintable(p,true);
     {$ENDIF}
     HookSignals(Sender);
-writeln('Sender=',Sender.ClassName,' p=',HexStr(Cardinal(p),8),' ',HexStr(Cardinal(GetWidgetInfo(p,false)),8));
   end;
 end;
 
@@ -5299,6 +5298,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.170  2002/08/21 11:42:52  lazarus
+  MG: reduced output
+
   Revision 1.169  2002/08/21 11:42:09  lazarus
   MG: fixed mem leaks
 
