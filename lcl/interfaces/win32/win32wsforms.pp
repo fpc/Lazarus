@@ -183,17 +183,15 @@ var
   BorderIcons: TBorderIcons;
 begin
   Result := 0;
-  if not (AForm.BorderStyle in [bsNone, bsDialog, bsToolWindow]) then
+  BorderIcons := AForm.BorderIcons;
+  if biSystemMenu in BorderIcons then
+    Result := Result or WS_SYSMENU;
+  if AForm.BorderStyle in [bsNone, bsSingle, bsSizeable] then
   begin
-    BorderIcons := AForm.BorderIcons;
-    if biSystemMenu in BorderIcons then
-    begin
-      Result := Result or WS_SYSMENU;
-      if biMinimize in BorderIcons then
-        Result := Result or WS_MINIMIZEBOX;
-      if biMaximize in BorderIcons then
-        Result := Result or WS_MAXIMIZEBOX;
-    end;
+    if biMinimize in BorderIcons then
+      Result := Result or WS_MINIMIZEBOX;
+    if biMaximize in BorderIcons then
+      Result := Result or WS_MAXIMIZEBOX;
   end;
 end;
 
