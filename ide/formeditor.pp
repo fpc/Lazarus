@@ -40,8 +40,7 @@ type
 
 
 implementation
-uses
-  LCLLinux;
+
 
 constructor TFormEditor.Create;
 Begin

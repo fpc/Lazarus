@@ -25,7 +25,7 @@ unit CustomFormEditor;
 interface
 
 uses
-  classes, abstractformeditor, controls,prop_edits,Typinfo,Object_Inspector;
+  classes, abstractformeditor, controls,propedits,Typinfo,ObjectInspector;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 

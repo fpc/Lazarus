@@ -1,4 +1,4 @@
-unit prop_edits;
+unit propedits;
 {
   Author: Mattias Gaertner
 
@@ -2131,12 +2131,13 @@ end;
 function TComponentNamePropertyEditor.GetValue: string;
 begin
   Result:=inherited GetValue;
-  writeln('OI: Get ComponentName Len'+IntToStr(length(Result))+',Name='''+Result+'''');
+  //writeln('OI: Get ComponentName Len'+IntToStr(length(Result))+',Name='''+Result+'''');
 end;
 
 procedure TComponentNamePropertyEditor.SetValue(const Value: string);
 begin
-  writeln('OI: Set ComponentName Len'+IntToStr(length(Value))+',Name='''+Value+'''');
+  inherited SetValue(Value);
+  //writeln('OI: Set ComponentName Len'+IntToStr(length(Value))+',Name='''+Value+'''');
 end;
 
 { TModalResultPropertyEditor }

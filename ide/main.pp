@@ -31,7 +31,7 @@ uses
   classes,LclLinux,compiler, stdctrls,forms,buttons,menus,comctrls,
   Spin, project,sysutils, global,
   compileroptions,Controls,graphics,extctrls, Dialogs,dlgMEssage,
-  Designer,process,idecomp,Find_dlg,FormEditor,CustomFormEditor,Object_Inspector;
+  Designer,process,idecomp,Find_dlg,FormEditor,CustomFormEditor,ObjectInspector;
 
 const
   STANDARDBTNCOUNT = 50;
@@ -1563,6 +1563,7 @@ begin
   CInterface := TComponentInterface(FormEditor1.CreateComponent(nil,TForm,50,50,300,400));
   TForm(CInterface.Control).Name := 'Form1';
   TForm(CInterface.Control).Designer := TDesigner.Create(TCustomForm(CInterface.Control));
+  TDesigner(TForm(CInterface.Control).Designer).FormEditor := FormEditor1;
   TForm(CInterface.Control).Show;
 
 //set the ONCLICK event so we know when a control is dropped onto the form.
@@ -2147,10 +2148,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.15  2000/12/01 19:30:36  lazarus
-  Added a private function
-  FSetProp
-  to the TComponentInterface.  It changes the properties once a PPropInfo is gotten for the property.
+  Revision 1.16  2000/12/01 20:23:34  lazarus
+  renamed Object_Inspector and Prop_edits by removing the underline.
   Shane
 
   Revision 1.5  2000/08/10 13:22:51  lazarus

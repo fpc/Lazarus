@@ -25,7 +25,7 @@ unit designer;
 interface
 
 uses
-  classes,Forms,controls,lmessages,graphics,ControlSelection;
+  classes,Forms,controls,lmessages,graphics,ControlSelection, FormEditor;
 
 type
 
@@ -37,6 +37,7 @@ type
  TDesigner = class(TIDesigner)
   private
     FCustomForm: TCustomForm;
+    FFormEditor : TFormEditor;
     FControlSelection : TControlSelection;
     function GetIsControl: Boolean;
     procedure SetIsControl(Value: Boolean);
@@ -56,6 +57,7 @@ type
     procedure ValidateRename(AComponent: TComponent; const CurName, NewName: string); override;
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property Form: TCustomForm read FCustomForm write FCustomForm;
+    property FormEditor : TFormEditor read FFormEditor write FFormEditor;
  end;
 
  implementation

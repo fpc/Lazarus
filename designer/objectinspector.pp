@@ -1,4 +1,4 @@
-unit object_inspector;
+unit objectinspector;
 {
   Author: Mattias Gaertner
 
@@ -9,7 +9,9 @@ unit object_inspector;
    display and control properties, thus the object inspector is merely an
    object viewer than an editor. The property editors do the real work.
 
+
   ToDo:
+   - the abstract
    - connect to TFormEditor
    - TCustomComboBox has a bug: it can not store objects
    - MouseDown is always fired two times -> workaround
@@ -21,8 +23,8 @@ unit object_inspector;
    - combobox can't sort (exception)
    - TEdit.OnChange and TEdit.OnExit don't work
    - TEdit has no ReadOnly and Maxlength
-   - Events
    - backgroundcolor=clNone
+   - DoubleClick on Property
 
    - a lot more ...
 }
@@ -33,7 +35,7 @@ interface
 
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, StdCtrls, LCLLinux, Controls,
-  ComCtrls, ExtCtrls, Prop_Edits, TypInfo;
+  ComCtrls, ExtCtrls, PropEdits, TypInfo;
 
 type
   TOIPropertyGrid = class;
@@ -94,6 +96,7 @@ type
     FCurrentButton:TWinControl; // nil or ValueButton
     FDragging:boolean;
     FOldMouseDownY:integer;  // XXX workaround
+    FExpandedProperties:TStringList;
 
     function GetRow(Index:integer):TOIPropertyGridRow;
     function GetRowCount:integer;
@@ -124,6 +127,7 @@ type
     procedure ValueEditChange(Sender: TObject);
     procedure ValueComboBoxExit(Sender: TObject);
     procedure ValueComboBoxChange(Sender: TObject);
+    procedure ValueComboBoxKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure ValueButtonClick(Sender: TObject);
     procedure TrackBarChange(Sender:TObject);
   public
@@ -147,6 +151,9 @@ type
     property NameFont:TFont read FNameFont write FNameFont;
     property ValueFont:TFont read FValueFont write FValueFont;
     property ItemIndex:integer read FItemIndex write SetItemIndex;
+    property ExpandedProperties:TStringList read FExpandedProperties write FExpandedProperties;
+    function PropertyPath(Index:integer):string;
+    function GetRowByPath(PropPath:string):TOIPropertyGridRow;
 
     procedure MouseDown(Button:TMouseButton; Shift:TShiftState; X,Y:integer);  override;
     procedure MouseMove(Shift:TShiftState; X,Y:integer);  override;
@@ -165,6 +172,7 @@ type
   private
     FComponentList: TComponentSelectionList;
     FRootComponent:TComponent;
+    FUpdatingAvailComboBox:boolean;
     function ComponentToString(c:TComponent):string;
     procedure SetRootComponent(Value:TComponent);
     procedure SetSelections(const NewSelections:TComponentSelectionList);
@@ -180,8 +188,8 @@ type
     procedure FillComponentComboBox;
     property RootComponent:TComponent read FRootComponent write SetRootComponent;
     procedure DoInnerResize;
-    procedure Paint;  override;
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   end;
 
 //******************************************************************************
@@ -204,6 +212,7 @@ begin
   FRows:=TList.Create;
   FExpandingRow:=nil;
   FDragging:=false;
+  FExpandedProperties:=TStringList.Create;
 
   // visible values
   FTopY:=0;
@@ -233,9 +242,9 @@ begin
   ValueEdit:=TEdit.Create(Self);
   with ValueEdit do begin
     Parent:=Self;
-    OnKeyDown:=@ValueEditKeyDown;
     OnExit:=@ValueEditExit;
     OnChange:=@ValueEditChange;
+    OnKeyDown:=@ValueEditKeyDown;
     Visible:=false;
     Enabled:=false;
   end;
@@ -244,6 +253,7 @@ begin
   with ValueComboBox do begin
     OnExit:=@ValueComboBoxExit;
     OnChange:=@ValueComboBoxChange;
+    OnKeyDown:=@ValueComboBoxKeyDown;
     Visible:=false;
     Enabled:=false;
     Parent:=Self;
@@ -265,41 +275,100 @@ end;
 destructor TOIPropertyGrid.Destroy;
 var a:integer;
 begin
+  FItemIndex:=-1;
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FRows.Free;
   FComponentList.Free;
   FValueFont.Free;
   FNameFont.Free;
+  FExpandedProperties.Free;
   inherited Destroy;
 end;
 
 procedure TOIPropertyGrid.SetSelections(
   const NewSelections:TComponentSelectionList);
 var a:integer;
+  CurRow:TOIPropertyGridRow;
+  OldSelectedRowPath:string;
 begin
+  OldSelectedRowPath:=PropertyPath(ItemIndex);
   ItemIndex:=-1;
   for a:=0 to FRows.Count-1 do
     Rows[a].Free;
   FRows.Clear;
   FComponentList.Assign(NewSelections);
   BuildPropertyList;
+  CurRow:=GetRowByPath(OldSelectedRowPath);
+  if CurRow<>nil then
+    ItemIndex:=CurRow.Index;
+end;
+
+function TOIPropertyGrid.PropertyPath(Index:integer):string;
+var CurRow:TOIPropertyGridRow;
+begin
+  if (Index>=0) and (Index<FRows.Count) then begin
+    CurRow:=Rows[Index];
+    Result:=CurRow.Name;
+    CurRow:=CurRow.Parent;
+    while CurRow<>nil do begin
+      Result:=CurRow.Name+'.'+Result;
+      CurRow:=CurRow.Parent;
+    end;
+  end else Result:='';
+end;
+
+function TOIPropertyGrid.GetRowByPath(PropPath:string):TOIPropertyGridRow;
+// searches PropPath. Expands automatically parent rows
+var CurName:string;
+  s,e:integer;
+  CurParentRow:TOIPropertyGridRow;
+begin
+  Result:=nil;
+  if FRows.Count=0 then exit;
+  CurParentRow:=nil;
+  s:=1;
+  while (s<=length(PropPath)) do begin
+    e:=s;
+    while (e<=length(PropPath)) and (PropPath[e]<>'.') do inc(e);
+    CurName:=uppercase(copy(PropPath,s,e-s));
+    s:=e+1;
+    // search name in childs
+    if CurParentRow=nil then
+      Result:=Rows[0]
+    else
+      Result:=CurParentRow.FirstChild;
+    while (Result<>nil) and (uppercase(Result.Name)<>CurName) do
+      Result:=Result.NextBrother;
+    if Result=nil then begin
+      exit;
+    end else begin
+      // expand row
+      CurParentRow:=Result;
+      ExpandRow(CurParentRow.Index);
+    end;
+  end;
+  if s<=length(PropPath) then Result:=nil;
 end;
 
 procedure TOIPropertyGrid.SetRowValue;
-var CurrRow:TOIPropertyGridRow;
+var CurRow:TOIPropertyGridRow;
   NewValue:string;
 begin
   if (FChangingItemIndex=false) and (FCurrentEdit<>nil)
   and (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
-    CurrRow:=Rows[FItemIndex];
+    CurRow:=Rows[FItemIndex];
       if FCurrentEdit=ValueEdit then
         NewValue:=ValueEdit.Text
       else
         NewValue:=ValueComboBox.Text;
-    if NewValue<>CurrRow.Editor.GetVisualValue then begin
+    if NewValue<>CurRow.Editor.GetVisualValue then begin
       try
-        CurrRow.Editor.SetValue(NewValue);
+        CurRow.Editor.SetValue(NewValue);
       except
+        if FCurrentEdit=ValueEdit then
+          ValueEdit.Text:=CurRow.Editor.GetVisualValue
+        else
+          ValueComboBox.Text:=CurRow.Editor.GetVisualValue;
       end;
     end;
   end;
@@ -308,8 +377,12 @@ end;
 procedure TOIPropertyGrid.ValueEditKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if Key=VK_Return then
-    SetRowValue;
+  if (Key=VK_UP) and (FItemIndex>0) then begin
+    ItemIndex:=ItemIndex-1;
+  end;
+  if (Key=VK_Down) and (FItemIndex<FRows.Count-1) then begin
+    ItemIndex:=ItemIndex+1;
+  end;
 end;
 
 procedure TOIPropertyGrid.ValueEditExit(Sender: TObject);
@@ -318,12 +391,12 @@ begin
 end;
 
 procedure TOIPropertyGrid.ValueEditChange(Sender: TObject);
-var CurrRow:TOIPropertyGridRow;
+var CurRow:TOIPropertyGridRow;
 begin
   if (FCurrentEdit<>nil) and (FItemIndex>=0) and (FItemIndex<FRows.Count) then
   begin
-    CurrRow:=Rows[FItemIndex];
-    if paAutoUpdate in CurrRow.Editor.GetAttributes then
+    CurRow:=Rows[FItemIndex];
+    if paAutoUpdate in CurRow.Editor.GetAttributes then
       SetRowValue;
   end;
 end;
@@ -338,18 +411,29 @@ begin
   SetRowValue;
 end;
 
+procedure TOIPropertyGrid.ValueComboBoxKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  if (Key=VK_UP) and (FItemIndex>0) then begin
+    ItemIndex:=ItemIndex-1;
+  end;
+  if (Key=VK_Down) and (FItemIndex<FRows.Count-1) then begin
+    ItemIndex:=ItemIndex+1;
+  end;
+end;
+
 procedure TOIPropertyGrid.ValueButtonClick(Sender: TObject);
-var CurrRow:TOIPropertyGridRow;
+var CurRow:TOIPropertyGridRow;
 begin
   if (FCurrentEdit<>nil) and (FItemIndex>=0) and (FItemIndex<FRows.Count) then
   begin
-    CurrRow:=Rows[FItemIndex];
-    if paDialog in CurrRow.Editor.GetAttributes then begin
-      CurrRow.Editor.Edit;
+    CurRow:=Rows[FItemIndex];
+    if paDialog in CurRow.Editor.GetAttributes then begin
+      CurRow.Editor.Edit;
       if FCurrentEdit=ValueEdit then
-        ValueEdit.Text:=CurrRow.Editor.GetVisualValue
+        ValueEdit.Text:=CurRow.Editor.GetVisualValue
       else
-        ValueComboBox.Text:=CurrRow.Editor.GetVisualValue;
+        ValueComboBox.Text:=CurRow.Editor.GetVisualValue;
     end;
   end;
 end;
@@ -430,12 +514,24 @@ end;
 
 procedure TOIPropertyGrid.BuildPropertyList;
 var a:integer;
+  CurRow:TOIPropertyGridRow;
+  OldSelectedRowPath:string;
 begin
+  OldSelectedRowPath:=PropertyPath(ItemIndex);
   ItemIndex:=-1;
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FRows.Clear;
   GetComponentProperties(FComponentList,FFilter,@AddPropertyEditor);
   SetItemsTops;
+  for a:=FExpandedProperties.Count-1 downto 0 do begin
+    CurRow:=GetRowByPath(FExpandedProperties[a]);
+    if CurRow<>nil then
+      ExpandRow(CurRow.Index);
+  end;
+  CurRow:=GetRowByPath(OldSelectedRowPath);
+  if CurRow<>nil then begin
+    ItemIndex:=CurRow.Index;
+  end;
   Invalidate;
 end;
 
@@ -459,6 +555,9 @@ begin
 end;
 
 procedure TOIPropertyGrid.ExpandRow(Index:integer);
+var a:integer;
+  CurPath:string;
+  AlreadyInExpandList:boolean;
 begin
   FExpandingRow:=Rows[Index];
   if (FExpandingRow.Expanded)
@@ -470,26 +569,54 @@ begin
   FExpandingRow.Editor.GetProperties(@AddSubEditor);
   SetItemsTops;
   FExpandingRow.FExpanded:=true;
+  a:=0;
+  CurPath:=uppercase(PropertyPath(FExpandingRow.Index));
+  AlreadyInExpandList:=false;
+  while a<FExpandedProperties.Count do begin
+    if FExpandedProperties[a]=copy(CurPath,1,length(FExpandedProperties[a]))
+    then begin
+      if length(FExpandedProperties[a])=length(CurPath) then begin
+        AlreadyInExpandList:=true;
+        inc(a);
+      end else begin
+        FExpandedProperties.Delete(a);
+      end;
+    end else begin
+      inc(a);
+    end;
+  end;
+  if not AlreadyInExpandList then
+    FExpandedProperties.Add(CurPath);
   FExpandingRow:=nil;
   Invalidate;
 end;
 
 procedure TOIPropertyGrid.ShrinkRow(Index:integer);
-var CurrRow:TOIPropertyGridRow;
+var CurRow:TOIPropertyGridRow;
   StartIndex,EndIndex,a:integer;
+  CurPath:string;
 begin
-  CurrRow:=Rows[Index];
-  if (not CurrRow.Expanded) then exit;
-  if CurrRow.NextBrother=nil then StartIndex:=FRows.Count-1
-  else StartIndex:=CurrRow.NextBrother.Index-1;
-  EndIndex:=CurrRow.Index+1;
+  CurRow:=Rows[Index];
+  if (not CurRow.Expanded) then exit;
+  if CurRow.NextBrother=nil then StartIndex:=FRows.Count-1
+  else StartIndex:=CurRow.NextBrother.Index-1;
+  EndIndex:=CurRow.Index+1;
   for a:=StartIndex downto EndIndex do begin
     Rows[a].Free;
     FRows.Delete(a);
   end;
   SetItemsTops;
-  CurrRow.FExpanded:=false;
-  Parent.Invalidate;
+  CurRow.FExpanded:=false;
+  CurPath:=uppercase(PropertyPath(CurRow.Index));
+  a:=0;
+  while a<FExpandedProperties.Count do begin
+    if copy(FExpandedProperties[a],1,length(CurPath))=CurPath then
+      FExpandedProperties.Delete(a)
+    else
+      inc(a);
+  end;
+  if CurRow.Parent<>nil then
+    FExpandedProperties.Add(PropertyPath(CurRow.Parent.Index));
   Invalidate;
 end;
 
@@ -695,7 +822,7 @@ end;
 procedure TOIPropertyGrid.PaintRow(ARow:integer);
 var ARowRect,NameRect,NameIconRect,NameTextRect,ValueRect:TRect;
   IconX,IconY:integer;
-  CurrRow:TOIPropertyGridRow;
+  CurRow:TOIPropertyGridRow;
   DrawState:TPropEditDrawState;
   OldFont:TFont;
 
@@ -716,7 +843,7 @@ var ARowRect,NameRect,NameIconRect,NameTextRect,ValueRect:TRect;
 
 // PaintRow
 begin
-  CurrRow:=Rows[ARow];
+  CurRow:=Rows[ARow];
   ARowRect:=RowRect(ARow);
   NameRect:=ARowRect;
   ValueRect:=ARowRect;
@@ -738,13 +865,13 @@ begin
       FillRect(NameTextRect);
     end;
     // draw icon
-    if paSubProperties in CurrRow.Editor.GetAttributes then begin
-      DrawTreeIcon(IconX,IconY,not CurrRow.Expanded);
+    if paSubProperties in CurRow.Editor.GetAttributes then begin
+      DrawTreeIcon(IconX,IconY,not CurRow.Expanded);
     end;
     // draw name
     OldFont:=Font;
     Font:=FNameFont;
-    CurrRow.Editor.PropDrawName(Canvas,NameTextRect,DrawState);
+    CurRow.Editor.PropDrawName(Canvas,NameTextRect,DrawState);
     Font:=OldFont;
     // draw frame
     Pen.Color:=cl3DDkShadow;
@@ -765,7 +892,7 @@ begin
     if ARow<>ItemIndex then begin
       OldFont:=Font;
       Font:=FValueFont;
-      CurrRow.Editor.PropDrawValue(Canvas,ValueRect,DrawState);
+      CurRow.Editor.PropDrawValue(Canvas,ValueRect,DrawState);
       Font:=OldFont;
     end;
     // draw frame
@@ -922,6 +1049,7 @@ begin
   Caption := 'Object Inspector';
   FRootComponent:=nil;
   FComponentList:=TComponentSelectionList.Create;
+  FUpdatingAvailComboBox:=false;
 
   // combobox at top (filled with available components)
   AvailCompsComboBox := TComboBox.Create (Self);
@@ -963,8 +1091,7 @@ begin
   end;
 
   // event grid
-  EventGrid:=TOIPropertyGrid.Create(Self,
-     [tkMethod]);
+  EventGrid:=TOIPropertyGrid.Create(Self,[tkMethod]);
   with EventGrid do begin
     Name:='EventGrid';
     Parent:=NoteBook.Page[1];
@@ -976,6 +1103,12 @@ begin
     Align:=alClient;
     Show;
   end;
+end;
+
+destructor TObjectInspector.Destroy;
+begin
+  FComponentList.Free;
+  inherited Destroy;
 end;
 
 procedure TObjectInspector.DoInnerResize;
@@ -993,20 +1126,15 @@ begin
   NoteBook.SetBounds(0,NewTop,MaxX-4,MaxY-NewTop);
 end;
 
-procedure TObjectinspector.Paint;
-begin
-  with Canvas do begin
-  end;
-end;
-
 procedure TObjectinspector.SetRootComponent(Value:TComponent);
 begin
+//writeln('OI: SetRootComponent');
   if FRootComponent<>Value then begin
     FRootComponent:=Value;
-    FillComponentComboBox;
     // select root component
     FComponentList.Clear;
     if FRootComponent<>nil then FComponentList.Add(FRootComponent);
+    FillComponentComboBox;
     RefreshSelections;
   end;
 end;
@@ -1019,6 +1147,10 @@ end;
 procedure TObjectinspector.FillComponentComboBox;
 var a:integer;
 begin
+//writeln('OI: FillComponentComboBox');
+  if FUpdatingAvailComboBox then exit;
+  FUpdatingAvailComboBox:=true;
+  AvailCompsComboBox.Items.BeginUpdate;
   AvailCompsComboBox.Items.Clear;
   if FRootComponent<>nil then begin
     AvailCompsComboBox.Items.AddObject(
@@ -1030,26 +1162,26 @@ begin
         FRootComponent.Components[a]);
     end;
   end;
+  AvailCompsComboBox.Items.EndUpdate;
+  FUpdatingAvailComboBox:=false;
 end;
 
 procedure TObjectinspector.SetSelections(
  const NewSelections:TComponentSelectionList);
-var a:integer;
 begin
-  FComponentList.Clear;
-  FComponentList.Capacity:=NewSelections.Count;
-  for a:=0 to NewSelections.Count-1 do
-    FComponentList.Add(NewSelections[a]);
-  RefreshSelections;
-end;
-
-procedure TObjectinspector.RefreshSelections;
-begin
+//writeln('OI: Set Selections');
+  FComponentList.Assign(NewSelections);
   if FComponentList.Count=1 then begin
     AvailCompsComboBox.Text:=ComponentToString(FComponentList[0]);
   end else begin
     AvailCompsComboBox.Text:='';
   end;
+  RefreshSelections;
+end;
+
+procedure TObjectinspector.RefreshSelections;
+begin
+//writeln('OI: Refresh Selections');
   PropertyGrid.Selections:=FComponentList;
   EventGrid.Selections:=FComponentList;
 end;
@@ -1063,19 +1195,25 @@ end;
 procedure TObjectinspector.AvailComboBoxChange(Sender:TObject);
 var NewComponent:TComponent;
   a:integer;
+
+  procedure SetSelectedComponent(c:TComponent);
+  begin
+    if (FComponentList.Count=1) and (FComponentList[0]=c) then exit;
+    FComponentList.Clear;
+    FComponentList.Add(c);
+    RefreshSelections;
+  end;
+
+// AvailComboBoxChange
 begin
   if FRootComponent=nil then exit;
   if AvailCompsComboBox.Text=ComponentToString(FRootComponent) then begin
-    FComponentList.Clear;
-    FComponentList.Add(FRootComponent);
-    RefreshSelections;
+    SetSelectedComponent(FRootComponent);
   end else begin
     for a:=0 to FRootComponent.ComponentCount-1 do begin
       NewComponent:=FRootComponent.Components[a];
       if AvailCompsComboBox.Text=ComponentToString(NewComponent) then begin
-        FComponentList.Clear;
-        FComponentList.Add(NewComponent);
-        RefreshSelections;
+        SetSelectedComponent(NewComponent);
         break;
       end;
     end;

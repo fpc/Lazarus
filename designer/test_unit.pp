@@ -9,8 +9,8 @@ unit test_unit;
 interface
 
 uses
-  classes, stdctrls,forms,buttons,menus,comctrls,sysutils, extctrls,
-  object_inspector, prop_edits, graphics;
+  Classes, StdCtrls, Forms, Buttons, Menus, ComCtrls, SysUtils, ExtCtrls,
+  ObjectInspector, PropEdits, Graphics;
 
 type
   TMyEnum = (MyEnum1,MyEnum2,MyEnum3);

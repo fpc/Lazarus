@@ -3,7 +3,7 @@ program test_obj_inspector;
 {$MODE OBJFPC}
 
 uses
-  classes, forms, sysutils, test_unit, object_inspector;
+  classes, forms, sysutils, test_unit;
 
 begin
   Application.Initialize; { calls InitProcedure which starts up GTK }
