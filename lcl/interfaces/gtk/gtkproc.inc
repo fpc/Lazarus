@@ -2439,6 +2439,8 @@ var
   l : Longint;
   s : PGTKStyle;
 begin
+  If Not Assigned(Styles) then
+    exit;
   l := IndexOfStyle(WName);
   If l >= 0 then begin
     If Styles.Objects[l] <> nil then
@@ -2447,7 +2449,7 @@ begin
         If S^.Ref_Count > 0 then
           GTK_Style_Unref(S);
       Except
-        writeln('ReleaseStyle warning');
+        Writeln('[ReleaseStyle] : Unable To Unreference Style');
       end;
     Styles.Delete(l);
   end;
@@ -2460,10 +2462,20 @@ var
   Style: PGtkStyle;
 begin
   Result := nil;
+  If Not Assigned(Styles) then
+    exit;
   l:=IndexOfStyle(WName);
   If l < 0 then begin
     If AnsiCompareText(WName,'button')=0 then
       Wd := GTK_BUTTON_NEW
+    else
+      If AnsiCompareText(WName,'default')=0 then begin
+        Style := GTK_Style_New;
+        if Style <> nil then begin
+          Styles.AddObject(WName, TObject(Style));
+          Result:=Style;
+        end;
+      end
     else
       exit;
     gtk_widget_ensure_style(Wd);
@@ -2473,10 +2485,37 @@ begin
     if Style <> nil then begin
       Styles.AddObject(WName, TObject(Style));
       Result:=Style;
+      UpdateSysColorMap(Wd);
     end;
     GTK_Widget_Destroy(Wd);
   end else
     Result := PGTKStyle(Styles.Objects[l]);
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetDefaultFont
+  Params: none
+  Returns: Returns the default Font
+
+  For Text/Font Routines: if the Font is invalid, this can be used instead.
+  It attempts to get the font from the default Style, or if none is available,
+  gets a generic fixed font. If the result is not nil it MUST be
+  GDK_FONT_UNREF'd when done.
+ ------------------------------------------------------------------------------}
+function GetDefaultFont : PGDKFont;
+var
+  Style : PGTKStyle;
+begin
+  Style := GetStyle('default');
+  Result := nil;
+  If Style <> nil then begin
+    Result := Style^.Font;
+    If Result <> nil then
+      Result := gdk_font_ref(Result);
+  end;
+
+  If Result = nil then
+    Result := gdk_fontset_load('-*-fixed-*-*-*-*-*-120-*-*-*-*-*-*');
 end;
 
 {$IFDEF ASSERT_IS_ON}
@@ -2487,6 +2526,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.73  2002/08/24 06:51:23  lazarus
+  MG: from Andrew: style list fixes, autosize for radio/checkbtns
+
   Revision 1.72  2002/08/23 07:05:17  lazarus
   MG: started form renaming
 
