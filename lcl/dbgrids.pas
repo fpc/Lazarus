@@ -37,8 +37,8 @@ unit DBGrids;
 interface
 
 uses
-  Classes, LCLIntf, LCLProc, Graphics, SysUtils, LCLType, stdctrls, DB, LMessages, Grids,
-  Controls;
+  Classes, LCLIntf, LCLProc, Graphics, SysUtils, LCLType, stdctrls, DB,
+  LMessages, Grids, Controls;
 
 type
   TCustomDbGrid = class;
@@ -287,12 +287,12 @@ type
     property Canvas;
     //property SelectedRows;
   published
-  
     property Align;
     property Anchors;
     property AutoAdvance;
     property AutoFillColumns;
     //property BiDiMode;
+    property BorderSpacing;
     property BorderStyle;
     property Color;
     property Columns; // stored false;
@@ -1958,6 +1958,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2005/01/08 15:06:06  mattias
+  fixed TabOrder dialog for new TabOrder
+
   Revision 1.26  2005/01/05 15:20:10  mattias
   Columns property in TCustomGrid  by Jesus
 

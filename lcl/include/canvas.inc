@@ -159,7 +159,7 @@ begin
   OldHandle:=SelectObject(FHandle, Pen.Handle);
   if (OldHandle<>Pen.Handle) and (FSavedPenHandle=0) then
     FSavedPenHandle:=OldHandle;
-  SetPenPos(FPenPos);
+  MoveTo(PenPos.X,PenPos.Y);
   Include(FState, csPenValid);
   SetROP2(FHandle, PenModes[Pen.Mode]);
 end;
@@ -193,17 +193,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: TCanvas.GetPenPos
-  Params:   None
-  Returns:  PenPos
-
- ------------------------------------------------------------------------------}
-function TCanvas.GetPenPos: TPoint;
-begin
-  Result := FPenPos;
-end;
-
-{------------------------------------------------------------------------------
   Method:   TCanvas.SetAutoReDraw
   Params:   Value
   Returns:  Nothing
@@ -217,53 +206,51 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TCanvas.SetPenPos
-  Params:   Value
-  Returns:  Nothing
-
- ------------------------------------------------------------------------------}
-procedure TCanvas.SetPenPos(const Value : TPoint);
-begin
-  MoveTo(Value.X, Value.Y);
-end;
-
-{------------------------------------------------------------------------------
   procedure TCanvas.SetInternalPenPos(const Value: TPoint);
  ------------------------------------------------------------------------------}
 procedure TCanvas.SetInternalPenPos(const Value: TPoint);
 begin
+  {$IFDEF UseFPCanvas}
+  inherited SetPenPos(Value);
+  {$ELSE}
   FPenPos:=Value;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TCanvas.SetBrush
+  Method:   TCanvas.SetLazBrush
   Params:   Value
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.SetBrush(Value : TBrush);
+procedure TCanvas.SetLazBrush(Value : TBrush);
 begin
   FBrush.Assign(Value);
 end;
 
+procedure TCanvas.SetPenPos(const AValue: TPoint);
+begin
+  MoveTo(AValue.X,AValue.Y);
+end;
+
 {------------------------------------------------------------------------------
-  Method:   TCanvas.SetFont
+  Method:   TCanvas.SetLazFont
   Params:   Value
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.SetFont(Value : TFont);
+procedure TCanvas.SetLazFont(Value : TFont);
 begin
   FFont.Assign(Value);
 end;
 
 {------------------------------------------------------------------------------
-  Method:   TCanvas.SetPen
+  Method:   TCanvas.SetLazPen
   Params:   Value
   Returns:  Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.SetPen(Value : TPen);
+procedure TCanvas.SetLazPen(Value : TPen);
 begin
   FPen.Assign(Value);
 end;
@@ -279,9 +266,207 @@ begin
   FRegion.Assign(Value);
 end;
 
+{$IFDEF UseFPCanvas}
+function TCanvas.DoCreateDefaultFont: TFPCustomFont;
+begin
+  Result:=TFont.Create;
+end;
+
+function TCanvas.DoCreateDefaultPen: TFPCustomPen;
+begin
+  Result:=TPen.Create;
+end;
+
+function TCanvas.DoCreateDefaultBrush: TFPCustomBrush;
+begin
+  Result:=TBrush.Create;
+end;
+
+procedure TCanvas.SetFont(AValue: TFPCustomFont);
+begin
+  inherited SetFont(AValue);
+end;
+
+procedure TCanvas.SetBrush(AValue: TFPCustomBrush);
+begin
+  inherited SetBrush(AValue);
+end;
+
+procedure TCanvas.SetPen(AValue: TFPCustomPen);
+begin
+  inherited SetPen(AValue);
+end;
+
+function TCanvas.DoAllowFont(AFont: TFPCustomFont): boolean;
+begin
+  Result:=inherited DoAllowFont(AFont);
+end;
+
+function TCanvas.DoAllowPen(APen: TFPCustomPen): boolean;
+begin
+  Result:=inherited DoAllowPen(APen);
+end;
+
+function TCanvas.DoAllowBrush(ABrush: TFPCustomBrush): boolean;
+begin
+  Result:=inherited DoAllowBrush(ABrush);
+end;
+
+procedure TCanvas.SetColor(x, y: integer; const Value: TFPColor);
+begin
+  inherited SetColor(x, y, Value);
+end;
+
+function TCanvas.GetColor(x, y: integer): TFPColor;
+begin
+  Result:=inherited GetColor(x, y);
+end;
+
+procedure TCanvas.SetHeight(AValue: integer);
+begin
+  inherited SetHeight(AValue);
+end;
+
+function TCanvas.GetHeight: integer;
+begin
+  Result:=inherited GetHeight;
+end;
+
+procedure TCanvas.SetWidth(AValue: integer);
+begin
+  inherited SetWidth(AValue);
+end;
+
+function TCanvas.GetWidth: integer;
+begin
+  Result:=inherited GetWidth;
+end;
+
+procedure TCanvas.SetPenPos(const AValue: TPoint);
+begin
+  inherited SetPenPos(AValue);
+end;
+
+procedure TCanvas.DoLockCanvas;
+begin
+  inherited DoLockCanvas;
+end;
+
+procedure TCanvas.DoUnlockCanvas;
+begin
+  inherited DoUnlockCanvas;
+end;
+
+procedure TCanvas.DoTextOut(x, y: integer; Text: string);
+begin
+  inherited DoTextOut(x, y, Text);
+end;
+
+procedure TCanvas.DoGetTextSize(Text: string; var w, h: integer);
+begin
+  inherited DoGetTextSize(Text, w, h);
+end;
+
+function TCanvas.DoGetTextHeight(Text: string): integer;
+begin
+  Result:=inherited DoGetTextHeight(Text);
+end;
+
+function TCanvas.DoGetTextWidth(Text: string): integer;
+begin
+  Result:=inherited DoGetTextWidth(Text);
+end;
+
+procedure TCanvas.DoRectangle(const Bounds: TRect);
+begin
+  inherited DoRectangle(Bounds);
+end;
+
+procedure TCanvas.DoRectangleFill(const Bounds: TRect);
+begin
+  inherited DoRectangleFill(Bounds);
+end;
+
+procedure TCanvas.DoRectangleAndFill(const Bounds: TRect);
+begin
+  inherited DoRectangleAndFill(Bounds);
+end;
+
+procedure TCanvas.DoEllipse(const Bounds: TRect);
+begin
+  inherited DoEllipse(Bounds);
+end;
+
+procedure TCanvas.DoEllipseFill(const Bounds: TRect);
+begin
+  inherited DoEllipseFill(Bounds);
+end;
+
+procedure TCanvas.DoEllipseAndFill(const Bounds: TRect);
+begin
+  inherited DoEllipseAndFill(Bounds);
+end;
+
+procedure TCanvas.DoPolygon(const Points: array of TPoint);
+begin
+  inherited DoPolygon(Points);
+end;
+
+procedure TCanvas.DoPolygonFill(const Points: array of TPoint);
+begin
+  inherited DoPolygonFill(Points);
+end;
+
+procedure TCanvas.DoPolygonAndFill(const Points: array of TPoint);
+begin
+  inherited DoPolygonAndFill(Points);
+end;
+
+procedure TCanvas.DoPolyline(const Points: array of TPoint);
+begin
+  inherited DoPolyline(Points);
+end;
+
+procedure TCanvas.DoFloodFill(x, y: integer);
+begin
+  inherited DoFloodFill(x, y);
+end;
+
+procedure TCanvas.DoMoveTo(x, y: integer);
+begin
+  inherited DoMoveTo(x, y);
+end;
+
+procedure TCanvas.DoLineTo(x, y: integer);
+begin
+  inherited DoLineTo(x, y);
+end;
+
+procedure TCanvas.DoLine(x1, y1, x2, y2: integer);
+begin
+  inherited DoLine(x1, y1, x2, y2);
+end;
+
+procedure TCanvas.DoCopyRect(x, y: integer; Canvas: TFPCustomCanvas;
+  const SourceRect: TRect);
+begin
+  inherited DoCopyRect(x, y, Canvas, SourceRect);
+end;
+
+procedure TCanvas.DoDraw(x, y: integer; const Image: TFPCustomImage);
+begin
+  inherited DoDraw(x, y, Image);
+end;
+
+procedure TCanvas.CheckHelper(AHelper: TFPCanvasHelper);
+begin
+  inherited CheckHelper(AHelper);
+end;
+{$ENDIF}
+
 {------------------------------------------------------------------------------
   Method:   TCanvas.Arc
-  Params:   x,y,width,height,angle1,angle2
+  Params:   x,y,AWidth,AHeight,angle1,angle2
   Returns:  Nothing
 
   Use Arc to draw an elliptically curved line with the current Pen.
@@ -291,17 +476,17 @@ end;
   Zero degrees is at the 3'o clock position.
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.Arc(x,y,width,height,angle1,angle2 : Integer);
+procedure TCanvas.Arc(x,y,AWidth,AHeight,angle1,angle2 : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  LCLIntf.Arc(FHandle,x,y,width,height,angle1,angle2);
+  LCLIntf.Arc(FHandle,x,y,AWidth,AHeight,angle1,angle2);
   Changed;
 end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Arc
-  Params:   DC,x,y,width,height,sx,sy,ex,ey
+  Params:   DC,x,y,AWidth,AHeight,sx,sy,ex,ey
   Returns:  Nothing
 
   Use Arc to draw an elliptically curved line with the current Pen. The
@@ -309,17 +494,17 @@ end;
   between which the Arc is drawn.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.Arc(x,y,width,height,sx,sy,ex,ey : Integer);
+procedure TCanvas.Arc(x,y,AWidth,AHeight,sx,sy,ex,ey : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialArc(FHandle,x,y,width,height,sx,sy,ex,ey);
+  LCLIntf.RadialArc(FHandle,x,y,AWidth,AHeight,sx,sy,ex,ey);
   Changed;
 end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.RadialPie
-  Params:   x,y,Width, Height, StartAngle16Deg, EndAngle16Deg: Integer
+  Params:   x,y, AWidth, AHeight, StartAngle16Deg, EndAngle16Deg: Integer
   Returns:  Nothing
 
   Use Pie to draw a filled pie-shaped wedge on the canvas.
@@ -330,19 +515,19 @@ end;
   Zero degrees is at the 3'o clock position.
 
  ------------------------------------------------------------------------------}
-procedure TCanvas.RadialPie(x,y,Width, Height,
+procedure TCanvas.RadialPie(x, y, AWidth, AHeight,
   StartAngle16Deg, EndAngle16Deg: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialPieWithAngles(FHandle,x,y,Width,Height,
+  LCLIntf.RadialPieWithAngles(FHandle,x,y,AWidth,AHeight,
                               StartAngle16Deg,EndAngle16Deg);
   Changed;
 end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.RadialPie
-  Params:   x,y,width,height,sx,sy,ex,ey
+  Params:   x,y, AWidth, AHeight, sx,sy,ex,ey
   Returns:  Nothing
 
   Use Pie to draw a filled Pie-shaped wedge on the canvas. The values sx,sy,
@@ -350,11 +535,11 @@ end;
   the Bounding-Arc is drawn.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.RadialPie(x,y,width,height,sx,sy,ex,ey: Integer);
+procedure TCanvas.RadialPie(x,y, AWidth, AHeight, sx,sy,ex,ey: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialPie(FHandle,x,y,width,height,sx,sy,ex,ey);
+  LCLIntf.RadialPie(FHandle,x,y,AWidth,AHeight,sx,sy,ex,ey);
   Changed;
 end;
 
@@ -851,8 +1036,9 @@ end;
 Procedure TCanvas.MoveTo(X1, Y1: Integer);
 begin
   RequiredState([csHandleValid]);
-  if LCLIntf.MoveToEx(FHandle, X1, Y1, nil) then
+  if LCLIntf.MoveToEx(FHandle, X1, Y1, nil) then begin
     SetInternalPenPos(Point(X1, Y1));
+  end;
 End;
 
 {------------------------------------------------------------------------------
@@ -1007,9 +1193,11 @@ begin
   FRegion.OnChange := @RegionChanged;
   FSavedRegionHandle := 0;
   FCopyMode := cmSrcCopy;
+  {$IFNDEF UseFPCanvas}
   FPenPos := Point(0, 0);
   FLockCount := 0;
-  InitializeCriticalSection(FLock);
+  {$ENDIF}
+  // FLock will be initialized on demand, because most canvas don't use it
   With FTextStyle do begin
     Alignment := taLeftJustify;
     Layout := tlTop;
@@ -1023,7 +1211,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Chord
-  Params:   x,y,Width, Height, StartAngle16Deg, EndAngle16Deg
+  Params:   x,y, AWidth, AHeight, StartAngle16Deg, EndAngle16Deg
   Returns:  Nothing
 
   Use Chord to draw a filled Chord-shape on the canvas. The angles angle1 and
@@ -1032,18 +1220,18 @@ end;
   values mean clockwise direction. Zero degrees is at the 3'o clock position.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.Chord(x, y, Width, Height,
+procedure TCanvas.Chord(x, y, AWidth, AHeight,
   StartAngle16Deg, EndAngle16Deg: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.AngleChord(FHandle,x,y,Width,Height,StartAngle16Deg,EndAngle16Deg);
+  LCLIntf.AngleChord(FHandle,x,y,AWidth,AHeight,StartAngle16Deg,EndAngle16Deg);
   Changed;
 end;
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.Chord
-  Params:   x,y,width,height,sx,sy,ex,ey
+  Params:   x,y,AWidth, AHeight, sx,sy,ex,ey
   Returns:  Nothing
 
   Use Chord to draw a filled Chord-shape on the canvas. The values sx,sy,
@@ -1051,11 +1239,11 @@ end;
   the Arc is draw.
 
 ------------------------------------------------------------------------------}
-procedure TCanvas.Chord(x,y,width,height,sx,sy,ex,ey : Integer);
+procedure TCanvas.Chord(x,y,AWidth, AHeight, sx,sy,ex,ey : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLIntf.RadialChord(FHandle,x,y,width,height,sx,sy,ex,ey);
+  LCLIntf.RadialChord(FHandle,x,y,AWidth,AHeight,sx,sy,ex,ey);
   Changed;
 end;
 
@@ -1107,7 +1295,6 @@ begin
     if FHandle <> 0 then
     begin
       DeselectHandles;
-      FPenPos := GetPenPos;
       FHandle := 0;
       Exclude(FState, csHandleValid);
     end;
@@ -1251,8 +1438,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Lock;
 begin
+  {$IFDEF UseFPCanvas}
+  LockCanvas;
+  {$ELSE}
+  if FLock=0 then InitializeCriticalSection(FLock);
   EnterCriticalSection(FLock);
   Inc(FLockCount);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1262,8 +1454,12 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCanvas.Unlock;
 begin
+  {$IFDEF UseFPCanvas}
+  UnlockCanvas;
+  {$ELSE}
   LeaveCriticalSection(FLock);
   Dec(FLockCount);
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1277,6 +1473,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.87  2005/01/08 15:06:06  mattias
+  fixed TabOrder dialog for new TabOrder
+
   Revision 1.86  2005/01/08 11:03:18  mattias
   implemented TPen.Mode=pmXor  from Jesus
 

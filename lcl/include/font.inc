@@ -559,7 +559,7 @@ begin
         try
           CharSet:= TFont(Source).CharSet;
           {$IFDEF UseFPCanvas}
-          SetColor(TFPCanvasHelper(Source).Color,TFPCanvasHelper(Source).FPColor);
+          SetColor(TFont(Source).Color,TFPCanvasHelper(Source).FPColor);
           {$ELSE}
           Color := TFont(Source).Color;
           {$ENDIF}
@@ -1099,6 +1099,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2005/01/08 15:06:06  mattias
+  fixed TabOrder dialog for new TabOrder
+
   Revision 1.26  2005/01/07 21:02:59  mattias
   TFont, TBrush, TPen can now be used with fpCanvas
 

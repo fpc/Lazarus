@@ -8,13 +8,14 @@ unit RunTimeTypeInfoControls;
 interface
 
 uses
-  RTTICtrls, LazarusPackageIntf; 
+  RTTICtrls, RTTIGrids, LazarusPackageIntf; 
 
 implementation
 
 procedure Register; 
 begin
   RegisterUnit('RTTICtrls', @RTTICtrls.Register); 
+  RegisterUnit('RTTIGrids', @RTTIGrids.Register); 
 end; 
 
 initialization

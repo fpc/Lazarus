@@ -168,7 +168,7 @@ begin
   then begin
     Width := TPen(Source).Width;
     {$IFDEF UseFPCanvas}
-    SetColor(TFPCanvasHelper(Source).Color,TFPCanvasHelper(Source).FPColor);
+    SetColor(TPen(Source).Color,TFPCanvasHelper(Source).FPColor);
     {$ELSE}
     Color := TPen(Source).Color;
     {$ENDIF}
@@ -303,6 +303,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2005/01/08 15:06:06  mattias
+  fixed TabOrder dialog for new TabOrder
+
   Revision 1.17  2005/01/07 21:02:59  mattias
   TFont, TBrush, TPen can now be used with fpCanvas
 

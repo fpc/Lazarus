@@ -22,8 +22,6 @@
 
   ToDo:
     - ploReadOnly
-    - TTICheckBox with Enums (e.g. TTICheckBox.Checked = Enum property has the
-                              same value as TIElementName)
 }
 unit RTTICtrls;
 
@@ -34,7 +32,7 @@ interface
 uses
   Classes, SysUtils, TypInfo, LResources, LCLProc, LCLType, LCLIntf, Forms,
   Controls, Graphics, MaskEdit, Calendar, Spin, Dialogs, CheckLst, ComCtrls,
-  StdCtrls, Buttons, ExtCtrls, ObjectInspector, GraphPropEdits, PropEdits;
+  StdCtrls, Buttons, ExtCtrls, GraphPropEdits, PropEdits;
 
 type
   { TAliasStrings }
@@ -1343,49 +1341,6 @@ Type
   end;
 
 
-  { TTICustomPropertyGrid }
-
-  TTICustomPropertyGrid = class(TCustomPropertiesGrid)
-  end;
-
-
-  { TTIPropertyGrid }
-
-  TTIPropertyGrid = class(TTICustomPropertyGrid)
-  published
-    property Align;
-    property Anchors;
-    property BackgroundColor;
-    property BorderSpacing;
-    property BorderStyle;
-    property Constraints;
-    property DefaultItemHeight;
-    property DefaultValueFont;
-    property Indent;
-    property NameFont;
-    property OnChangeBounds;
-    property OnClick;
-    property OnEnter;
-    property OnExit;
-    property OnKeyDown;
-    property OnKeyPress;
-    property OnKeyUp;
-    property OnModified;
-    property OnMouseDown;
-    property OnMouseEnter;
-    property OnMouseLeave;
-    property OnMouseMove;
-    property OnMouseUp;
-    property OnResize;
-    property PopupMenu;
-    property PrefferedSplitterX;
-    property SplitterX;
-    property Tabstop;
-    property TIObject;
-    property ValueFont;
-    property Visible;
-  end;
-  
 function GetPropertyLinkOfComponent(AComponent: TComponent
   ): TCustomPropertyLink;
 
@@ -1412,8 +1367,7 @@ begin
   RegisterComponents('RTTI',[TTIEdit,TTIComboBox,TTIButton,TTICheckBox,
     TTILabel,TTIGroupBox,TTIRadioGroup,TTICheckGroup,TTICheckListBox,
     TTIListBox,TTIMemo,TTICalendar,TTIImage,TTISpinEdit,TTITrackBar,
-    TTIProgressBar,TTIMaskEdit,TTIColorButton,TTIPropertyGrid,
-    TMultiPropertyLink]);
+    TTIProgressBar,TTIMaskEdit,TTIColorButton,TMultiPropertyLink]);
 end;
 
 { TAliasStrings }
@@ -3754,9 +3708,6 @@ initialization
   // property editor for TCustomPropertyLink.AliasValues
   RegisterPropertyEditor(ClassTypeInfo(TAliasStrings),
     TCustomPropertyLink, 'AliasValues', TPropLinkAliasPropertyEditor);
-  // property editor for TTICustomPropertyGrid.TIObject
-  RegisterPropertyEditor(ClassTypeInfo(TPersistent),
-    TTICustomPropertyGrid, 'TIObject', TTIObjectPropertyEditor);
   // property editor for TMultiPropertyLink.TIObject
   RegisterPropertyEditor(ClassTypeInfo(TPersistent),
     TMultiPropertyLink, 'TIObject', TTIObjectPropertyEditor);

@@ -119,12 +119,12 @@ end;
 procedure TTabOrderDialog.CommitNodes(ANode: TTreeNode;
   var TabChanged: boolean);
 var
-  AControl: TControl;
+  AControl: TWinControl;
   CurTabOrder: Integer;
 begin
   CurTabOrder:=0;
   while ANode<>nil do begin
-    AControl:=TControl(ANode.Data);
+    AControl:=TWinControl(ANode.Data);
     if AControl.TabStop then begin
       if AControl.TabOrder<>CurTabOrder then
         TabChanged:=true;
@@ -168,6 +168,7 @@ var
   NodeBehind: TTreeNode;
   NewNode: TTreeNode;
   NodeText: String;
+  AWinControl: TWinControl;
 begin
   ItemTreeview.BeginUpdate;
   if ParentNode=nil then
@@ -177,22 +178,22 @@ begin
   for i:=0 to ParentControl.ControlCount-1 do begin
     AControl:=ParentControl.Controls[i];
     if not (AControl is TWinControl) then continue;
-    CurTab:=AControl.TabOrder;
+    AWinControl:=TWinControl(AControl);
+    CurTab:=AWinControl.TabOrder;
     NodeBehind:=FirstSibling;
-    while (NodeBehind<>nil) and (TControl(NodeBehind.Data).TabOrder<=CurTab)
+    while (NodeBehind<>nil) and (TWinControl(NodeBehind.Data).TabOrder<=CurTab)
     do
       NodeBehind:=NodeBehind.GetNextSibling;
-    NodeText:=AControl.Name;
+    NodeText:=AWinControl.Name;
     if ShowOldValuesCheckbox.Checked then
-      NodeText:=NodeText+'   ('+IntToStr(AControl.TabOrder)+')';
+      NodeText:=NodeText+'   ('+IntToStr(AWinControl.TabOrder)+')';
     if NodeBehind<>nil then
       NewNode:=ItemTreeview.Items.InsertObject(NodeBehind,NodeText,AControl)
     else
       NewNode:=ItemTreeview.Items.AddChildObject(ParentNode,NodeText,AControl);
     if (FirstSibling=nil) or (NewNode.GetPrevSibling=nil) then
       FirstSibling:=NewNode;
-    if AControl is TWinControl then
-      CreateNodes(TWinControl(AControl),NewNode);
+    CreateNodes(AWinControl,NewNode);
     NewNode.Expanded:=true;
   end;
   ItemTreeview.EndUpdate;

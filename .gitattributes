@@ -166,6 +166,7 @@ components/rtticontrols/examples/exampleproject3.lpi svneol=native#text/plain
 components/rtticontrols/examples/exampleproject3.lpr svneol=native#text/pascal
 components/rtticontrols/rttictrls.lrs svneol=native#text/pascal
 components/rtticontrols/rttictrls.pas svneol=native#text/pascal
+components/rtticontrols/rttigrids.pas svneol=native#text/pascal
 components/rtticontrols/runtimetypeinfocontrols.lpk svneol=native#text/pascal
 components/rtticontrols/runtimetypeinfocontrols.pas svneol=native#text/pascal
 components/rtticontrols/tmultipropertylink.xpm -text svneol=native#image/x-xpixmap

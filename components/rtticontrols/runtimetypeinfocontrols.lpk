@@ -4,7 +4,7 @@
     <Name Value="RunTimeTypeInfoControls"/>
     <Author Value="Mattias Gaertner"/>
     <CompilerOptions>
-      <Version Value="2"/>
+      <Version Value="3"/>
       <SearchPaths>
         <OtherUnitFiles Value="$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)/"/>
         <UnitOutputDirectory Value="lib/"/>
@@ -21,20 +21,25 @@
 "/>
     <License Value="LGPL"/>
     <Version Minor="1"/>
-    <Files Count="3">
+    <Files Count="4">
       <Item1>
         <Filename Value="rttictrls.pas"/>
         <HasRegisterProc Value="True"/>
         <UnitName Value="RTTICtrls"/>
       </Item1>
       <Item2>
-        <Filename Value="README"/>
-        <Type Value="Text"/>
+        <Filename Value="rttigrids.pas"/>
+        <HasRegisterProc Value="True"/>
+        <UnitName Value="RTTIGrids"/>
       </Item2>
       <Item3>
         <Filename Value="rttictrls.lrs"/>
         <Type Value="LRS"/>
       </Item3>
+      <Item4>
+        <Filename Value="README"/>
+        <Type Value="Text"/>
+      </Item4>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="3">

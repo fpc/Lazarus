@@ -775,7 +775,7 @@ type
   TGetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; var Value: string) of object;
   TSetEditEvent = procedure (Sender: TObject; ACol, ARow: Integer; const Value: string) of object;
 
-  TDrawGrid=class(TCustomGrid)
+  TCustomDrawGrid=class(TCustomGrid)
   private
     FOnColRowDeleted: TgridOperationEvent;
     FOnColRowExchanged: TgridOperationEvent;
@@ -830,12 +830,13 @@ type
     property Selection;
     //property TabStops;
     property TopRow;
-  published
+  public
     property Align;
     property Anchors;
     property AutoAdvance;
     property AutoFillColumns;
     //property BiDiMode;
+    property BorderSpacing;
     property BorderStyle;
     property Color default clWindow;
     property ColCount;
@@ -912,8 +913,98 @@ type
     property OnMouseWheelUp;
 }
   end;
+  
+  
+  
+  { TDrawGrid }
 
-  TStringGrid = class(TDrawGrid)
+  TDrawGrid = class(TCustomDrawGrid)
+  published
+    property Align;
+    property Anchors;
+    property AutoAdvance;
+    property AutoFillColumns;
+    //property BiDiMode;
+    property BorderSpacing;
+    property BorderStyle;
+    property Color;
+    property ColCount;
+    property Columns;
+    //property Constraints;
+    //property Ctl3D; // Deprecated
+    property DefaultColWidth;
+    property DefaultDrawing;
+    property DefaultRowHeight;
+    //property DragCursor;
+    //property DragKind;
+    //property DragMode;
+    property Enabled;
+    property FixedColor;
+    property FixedCols;
+    property FixedRows;
+    property Flat;
+    property Font;
+    property GridLineWidth;
+    property Options;
+    //property ParentBiDiMode;
+    //property ParentColor;
+    //property ParentCtl3D; // Deprecated
+    //property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property RowCount;
+    property ScrollBars;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property VisibleColCount;
+    property VisibleRowCount;
+
+
+    property OnBeforeSelection;
+    property OnClick;
+    property OnColRowDeleted;
+    property OnColRowExchanged;
+    property OnColRowMoved;
+    property OnCompareCells;
+    property OnDblClick;
+    property OnDrawCell;
+    property OnEditButtonClick;
+    property OnEnter;
+    property OnExit;
+    property OnGetEditMask;
+    property OnGetEditText;
+    property OnHeaderClick;
+    property OnHeaderSized;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnPrepareCanvas;
+    property OnSelectEditor;
+    property OnSelection;
+    property OnSelectCell;
+    property OnSetEditText;
+    property OnTopleftChanged;
+
+{
+    property OnContextPopup;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+}
+  end;
+  
+
+  TCustomStringGrid = class(TCustomDrawGrid)
     private
       //FDefEditor: TStringCellEditor;
       function  GetCells(ACol, ARow: Integer): string;
@@ -941,13 +1032,101 @@ type
       procedure SetEditText(aCol, aRow: Longint; const aValue: string); override;
 
     public
-      constructor Create(AOWner: TComponent); override;
+      constructor Create(AOwner: TComponent); override;
       //destructor Destroy; override;
       procedure AutoSizeColumns;
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
       property Cols[index: Integer]: TStrings read GetCols write SetCols;
       property Objects[ACol, ARow: Integer]: TObject read GetObjects write SetObjects;
       property Rows[index: Integer]: TStrings read GetRows write SetRows;
+  end;
+  
+  
+  { TStringGrid }
+
+  TStringGrid = class(TCustomStringGrid)
+  published
+    property Align;
+    property Anchors;
+    property AutoAdvance;
+    property AutoFillColumns;
+    //property BiDiMode;
+    property BorderSpacing;
+    property BorderStyle;
+    property Color;
+    property ColCount;
+    property Columns;
+    //property Constraints;
+    //property Ctl3D; // Deprecated
+    property DefaultColWidth;
+    property DefaultDrawing;
+    property DefaultRowHeight;
+    //property DragCursor;
+    //property DragKind;
+    //property DragMode;
+    property Enabled;
+    property FixedColor;
+    property FixedCols;
+    property FixedRows;
+    property Flat;
+    property Font;
+    property GridLineWidth;
+    property Options;
+    //property ParentBiDiMode;
+    //property ParentColor;
+    //property ParentCtl3D; // Deprecated
+    //property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property RowCount;
+    property ScrollBars;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property VisibleColCount;
+    property VisibleRowCount;
+
+
+    property OnBeforeSelection;
+    property OnClick;
+    property OnColRowDeleted;
+    property OnColRowExchanged;
+    property OnColRowMoved;
+    property OnCompareCells;
+    property OnDblClick;
+    property OnDrawCell;
+    property OnEditButtonClick;
+    property OnEnter;
+    property OnExit;
+    property OnGetEditMask;
+    property OnGetEditText;
+    property OnHeaderClick;
+    property OnHeaderSized;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnPrepareCanvas;
+    property OnSelectEditor;
+    property OnSelection;
+    property OnSelectCell;
+    property OnSetEditText;
+    property OnTopleftChanged;
+
+{
+    property OnContextPopup;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnStartDock;
+    property OnStartDrag;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+}
   end;
 
 
@@ -956,7 +1135,7 @@ type
   procedure DrawRubberRect(Canvas: TCanvas; aRect: TRect; Color: TColor);
 
 
-procedure register;
+procedure Register;
 
 implementation
 
@@ -5198,15 +5377,15 @@ begin
   SelectAll;
 end;
 
-{ TDrawGrid }
+{ TCustomDrawGrid }
 
 
-procedure TDrawGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
+procedure TCustomDrawGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
 begin
   //
 end;
 
-procedure TDrawGrid.DrawCell(aCol,aRow: Integer; aRect: TRect;
+procedure TCustomDrawGrid.DrawCell(aCol,aRow: Integer; aRect: TRect;
   aState:TGridDrawState);
 begin
   if Assigned(OnDrawCell) and not(CsDesigning in ComponentState) then begin
@@ -5219,7 +5398,7 @@ begin
   inherited DrawCellGrid(aCol,aRow,aRect,aState);
 end;
 
-procedure TDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
+procedure TCustomDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 begin
   // Draw focused cell if we have the focus
   if Self.Focused or (EditorAlwaysShown and ((Feditor=nil) or not Feditor.Focused)) then
@@ -5229,40 +5408,40 @@ begin
   end;
 end;
 
-procedure TDrawGrid.ColRowExchanged(IsColumn:Boolean; index, WithIndex: Integer);
+procedure TCustomDrawGrid.ColRowExchanged(IsColumn:Boolean; index, WithIndex: Integer);
 begin
   Fgrid.ExchangeColRow(IsColumn, index, WithIndex);
   if Assigned(OnColRowExchanged) then
     OnColRowExchanged(Self, IsColumn, index, WithIndex);
 end;
 
-procedure TDrawGrid.ColRowDeleted(IsColumn: Boolean; index: Integer);
+procedure TCustomDrawGrid.ColRowDeleted(IsColumn: Boolean; index: Integer);
 begin
   FGrid.DeleteColRow(IsColumn, index);
   if Assigned(OnColRowDeleted) then
     OnColRowDeleted(Self, IsColumn, index, index);
 end;
 
-procedure TDrawGrid.ColRowMoved(IsColumn: Boolean; FromIndex, ToIndex: Integer);
+procedure TCustomDrawGrid.ColRowMoved(IsColumn: Boolean; FromIndex, ToIndex: Integer);
 begin
   FGrid.MoveColRow(IsColumn, FromIndex, ToIndex);
   if Assigned(OnColRowMoved) then
     OnColRowMoved(Self, IsColumn, FromIndex, toIndex);
 end;
 
-procedure TDrawGrid.HeaderClick(IsColumn: Boolean; index: Integer);
+procedure TCustomDrawGrid.HeaderClick(IsColumn: Boolean; index: Integer);
 begin
   inherited HeaderClick(IsColumn, index);
   if Assigned(OnHeaderClick) then OnHeaderClick(Self, IsColumn, index);
 end;
 
-procedure TDrawGrid.HeaderSized(IsColumn: Boolean; index: Integer);
+procedure TCustomDrawGrid.HeaderSized(IsColumn: Boolean; index: Integer);
 begin
   inherited HeaderSized(IsColumn, index);
   if Assigned(OnHeaderSized) then OnHeaderSized(Self, IsColumn, index);
 end;
 
-procedure TDrawGrid.GetAutoFillColumnInfo(const Index: Integer; var aMin, aMax,
+procedure TCustomDrawGrid.GetAutoFillColumnInfo(const Index: Integer; var aMin, aMax,
   aPriority: Integer);
 begin
   if Index<FixedCols then
@@ -5271,61 +5450,61 @@ begin
     aPriority := 1;
 end;
 
-function TDrawGrid.GetEditMask(aCol, aRow: Longint): string;
+function TCustomDrawGrid.GetEditMask(aCol, aRow: Longint): string;
 begin
   result:='';
   if assigned(OnGetEditMask) then OnGetEditMask(self, aCol, aRow, Result);
 end;
 
-function TDrawGrid.GetEditText(aCol, aRow: Longint): string;
+function TCustomDrawGrid.GetEditText(aCol, aRow: Longint): string;
 begin
   result:='';
   if assigned(OnGetEditText) then OnGetEditText(self, aCol, aRow, Result);
 end;
 
-procedure TDrawGrid.SetEditText(ACol, ARow: Longint; const Value: string);
+procedure TCustomDrawGrid.SetEditText(ACol, ARow: Longint; const Value: string);
 begin
   if Assigned(OnSetEditText) then OnSetEditText(Self, aCol, aRow, Value);
 end;
 
-procedure TDrawGrid.SizeChanged(OldColCount, OldRowCount: Integer);
+procedure TCustomDrawGrid.SizeChanged(OldColCount, OldRowCount: Integer);
 begin
   if OldColCount<>ColCount then fGrid.ColCount:=ColCOunt;
   if OldRowCount<>RowCount then fGrid.RowCount:=RowCount;
 end;
 
-function TDrawGrid.SelectCell(aCol, aRow: Integer): boolean;
+function TCustomDrawGrid.SelectCell(aCol, aRow: Integer): boolean;
 begin
   Result:= (ColWidths[aCol] > 0) and (RowHeights[aRow] > 0);
   if Assigned(OnSelectCell) then OnSelectCell(Self, aCol, aRow, Result);
 end;
 
-procedure TDrawGrid.SetColor(Value: TColor);
+procedure TCustomDrawGrid.SetColor(Value: TColor);
 begin
   inherited SetColor(Value);
   Invalidate;
 end;
 
-function TDrawGrid.CreateVirtualGrid: TVirtualGrid;
+function TCustomDrawGrid.CreateVirtualGrid: TVirtualGrid;
 begin
   Result:=TVirtualGrid.Create;
 end;
 
-constructor TDrawGrid.Create(AOwner: TComponent);
+constructor TCustomDrawGrid.Create(AOwner: TComponent);
 begin
   fGrid:=CreateVirtualGrid; //TVirtualGrid.Create;
   inherited Create(AOwner);
 end;
 
-destructor TDrawGrid.Destroy;
+destructor TCustomDrawGrid.Destroy;
 begin
-  {$Ifdef dbg}DebugLn('TDrawGrid.Destroy');{$Endif}
+  {$Ifdef dbg}DebugLn('TCustomDrawGrid.Destroy');{$Endif}
   //DebugLn('Font.Name',Font.Name);
   FreeThenNil(FGrid);
   inherited Destroy;
 end;
 
-procedure TDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
+procedure TCustomDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
   aState: TGridDrawState);
 var
   OldDefaultDrawing: boolean;
@@ -5341,9 +5520,9 @@ begin
   Canvas.FillRect(aRect);
 end;
 
-{ TStringGrid }
+{ TCustomStringGrid }
 
-function TStringGrid.Getcells(aCol, aRow: Integer): string;
+function TCustomStringGrid.Getcells(aCol, aRow: Integer): string;
 var
    C: PCellProps;
 begin
@@ -5352,7 +5531,7 @@ begin
   if C<>nil then Result:=C^ .Text;
 end;
 
-function TStringGrid.GetCols(index: Integer): TStrings;
+function TCustomStringGrid.GetCols(index: Integer): TStrings;
 var
   i: Integer;
 begin
@@ -5364,7 +5543,7 @@ begin
   end;
 end;
 
-function TStringGrid.GetObjects(ACol, ARow: Integer): TObject;
+function TCustomStringGrid.GetObjects(ACol, ARow: Integer): TObject;
 var
   C: PCellProps;
 begin
@@ -5373,7 +5552,7 @@ begin
   if C<>nil then Result:=C^.Data;
 end;
 
-function TStringGrid.GetRows(index: Integer): TStrings;
+function TCustomStringGrid.GetRows(index: Integer): TStrings;
 var
   i: Integer;
 begin
@@ -5385,7 +5564,7 @@ begin
   end;
 end;
 
-procedure TStringGrid.ReadCells(Reader: TReader);
+procedure TCustomStringGrid.ReadCells(Reader: TReader);
 var
   aCol,aRow: Integer;
   i, c: Integer;
@@ -5409,7 +5588,7 @@ begin
   end;
 end;
 
-procedure TStringGrid.Setcells(aCol, aRow: Integer; const Avalue: string);
+procedure TCustomStringGrid.Setcells(aCol, aRow: Integer; const Avalue: string);
 var
   C: PCellProps;
 begin
@@ -5430,7 +5609,7 @@ begin
   end;
 end;
 
-procedure TStringGrid.SetCols(index: Integer; const AValue: TStrings);
+procedure TCustomStringGrid.SetCols(index: Integer; const AValue: TStrings);
 var
   i: Integer;
 begin
@@ -5441,7 +5620,7 @@ begin
   end;
 end;
 
-procedure TStringGrid.SetObjects(ACol, ARow: Integer; AValue: TObject);
+procedure TCustomStringGrid.SetObjects(ACol, ARow: Integer; AValue: TObject);
 var
   c: PCellProps;
 begin
@@ -5454,7 +5633,7 @@ begin
   end;
 end;
 
-procedure TStringGrid.SetRows(index: Integer; const AValue: TStrings);
+procedure TCustomStringGrid.SetRows(index: Integer; const AValue: TStrings);
 var
   i: Integer;
 begin
@@ -5465,7 +5644,7 @@ begin
   end;
 end;
 
-procedure TStringGrid.WriteCells(Writer: TWriter);
+procedure TCustomStringGrid.WriteCells(Writer: TWriter);
 var
   i,j: Integer;
   c: Integer;
@@ -5490,7 +5669,7 @@ begin
   end;
 end;
 
-procedure TStringGrid.AutoAdjustColumn(aCol: Integer);
+procedure TCustomStringGrid.AutoAdjustColumn(aCol: Integer);
 var
   i,W: Integer;
   Ts: TSize;
@@ -5506,7 +5685,7 @@ begin
   ColWidths[aCol]:=W;
 end;
 
-procedure TStringGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
+procedure TCustomStringGrid.CalcCellExtent(acol, aRow: Integer; var aRect: TRect);
 var
   S: string;
   Ts: Tsize;
@@ -5532,14 +5711,14 @@ begin
   end;
 end;
 
-procedure TStringGrid.DefineProperties(Filer: TFiler);
+procedure TCustomStringGrid.DefineProperties(Filer: TFiler);
   function NeedCells: boolean;
   var
     i,j: integer;
-    AntGrid: TStringGrid;
+    AntGrid: TCustomStringGrid;
   begin
-    AntGrid := TStringGrid(Filer.Ancestor);
-    //DebugLn('TStringGrid.DefineProperties: Ancestor=',Integer(AntGrid));
+    AntGrid := TCustomStringGrid(Filer.Ancestor);
+    //DebugLn('TCustomStringGrid.DefineProperties: Ancestor=',Integer(AntGrid));
     if AntGrid<>nil then begin
       result:=false;
       for i:=0 to AntGrid.ColCount-1 do
@@ -5558,7 +5737,7 @@ begin
   end;
 end;
 
-procedure TStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
+procedure TCustomStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 //var
 //  ts: TTextStyle;
@@ -5571,13 +5750,13 @@ begin
   end;
 end;
 
-function TStringGrid.GetEditText(aCol, aRow: Integer): string;
+function TCustomStringGrid.GetEditText(aCol, aRow: Integer): string;
 begin
   Result:=Cells[aCol, aRow];
   if Assigned(OnGetEditText) then OnGetEditText(Self, aCol, aRow, result);
 end;
 
-procedure TStringGrid.SaveContent(cfg: TXMLConfig);
+procedure TCustomStringGrid.SaveContent(cfg: TXMLConfig);
 var
   i,j,k: Integer;
   c: PCellProps;
@@ -5601,7 +5780,7 @@ begin
    end;
 end;
 
-procedure TStringGrid.LoadContent(Cfg: TXMLConfig; Version:Integer);
+procedure TCustomStringGrid.LoadContent(Cfg: TXMLConfig; Version:Integer);
 var
   ContentSaved: Boolean;
   i,j,k: Integer;
@@ -5623,7 +5802,7 @@ begin
 end;
 
 (*
-procedure TStringGrid.DrawInteriorCells;
+procedure TCustomStringGrid.DrawInteriorCells;
 var
   i,j: Integer;
   gds: TGridDrawState;
@@ -5670,13 +5849,13 @@ begin
   end else inherited DrawInteriorCells;
 end;
 *)
-procedure TStringGrid.SetEditText(aCol, aRow: Longint; const aValue: string);
+procedure TCustomStringGrid.SetEditText(aCol, aRow: Longint; const aValue: string);
 begin
   if Cells[aCol, aRow]<>aValue then Cells[aCol, aRow]:= aValue;
   inherited SetEditText(aCol, aRow, aValue);
 end;
 
-constructor TStringGrid.Create(AOwner: TComponent);
+constructor TCustomStringGrid.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   with DefaultTextStyle do begin
@@ -5687,7 +5866,7 @@ begin
   end;
 end;
 
-procedure TStringGrid.AutoSizeColumns;
+procedure TCustomStringGrid.AutoSizeColumns;
 var
   i: Integer;
 begin
@@ -6411,7 +6590,7 @@ Date: 15-Sept-2003
   * HorzScrollbar and VertScrollbar doesn't exists anymore
   * Scrollbar is handled with setscrollinfo or through the new ScrollbarXXXX
      protected methods.
-- TDrawGrid attribute support was removed and added to a new TStringGrid derivated
+- TCustomDrawGrid attribute support was removed and added to a new TCustomStringGrid derivated
   component.
 - Removed CanSelect, OnCanSelect, TOnCanSelectEvent now it uses SelectCell
   OnSelectCell and TOnSelectCell.
@@ -6499,14 +6678,14 @@ VERSION: 0.8.1
 ---------------
 DATE: 28-DEC-2002
 
-CHANGES -- Continued migrating properties from TCustomGrid to TDrawGrid
+CHANGES -- Continued migrating properties from TCustomGrid to TCustomDrawGrid
 	   (onCellAttr, DefaultCellAttr, FixedColor, etc.)
 
-FIXES   -- FGrid in TDrawGrid was not destroyed
+FIXES   -- FGrid in TCustomDrawGrid was not destroyed
         -- goEditing now works. I mean, you can now stop showing the
 	   editor at F2 (although editor needs more work)
            Default cell editor
-	-- DefaultEditor parent is now TStringGrid
+	-- DefaultEditor parent is now TCustomStringGrid
 	-- Some fpc 1.1 issues (Mattias)
 
 
@@ -6518,7 +6697,7 @@ CHANGES Many internal changes (width,height removed from pcellsprop,
         fgrid removed from tcustomgrid, colRowToClientCellRect now
         uses col,row instead of point(col,row), cleaned DynamicArray,
         drawcells splitted in DrawFixedCells, DrawInteriorCells, DrawFocused
-        so TStringGrid can implement ordered cell drawin and TCustomGrid
+        so TCustomStringGrid can implement ordered cell drawin and TCustomGrid
         draw cells is simpler, etc).
 
 ADDED   ExchangeColRow(IsColumn: Boolean; index, WithIndex: Integer);
@@ -6539,7 +6718,7 @@ VERSION:  0.7.3
 DATE: 10-DIC-2002
 
 ADDED goDblClickAutoSize to grid Options, Doubleclicking col's right edge
-      automatically adjust column width (in TStringGrid).
+      automatically adjust column width (in TCustomStringGrid).
       Implemented AutoAdjustColumn() and AutoAdjustColumns.
 
 FIXED col, row increment after grid.clear don't show the grid ( if
@@ -6564,8 +6743,8 @@ ADDED LoadFromFile and SaveToFile to XML file.
   soDesign:     Save & Load ColCount,RowCount,FixedCols,FixedRows,
                 ColWidths, RowHeights and Options (TCustomGrid)
   soPosition:   Save & Load Scroll Position, Row, Col and Selection (TCustomGrid)
-  soAttributes: Save & Load Colors, Text Alignment & Layout, etc. (TDrawGrid)
-  soContent:    Save & Load Text (TStringGrid)
+  soAttributes: Save & Load Colors, Text Alignment & Layout, etc. (TCustomDrawGrid)
+  soContent:    Save & Load Text (TCustomStringGrid)
 
 ADDED TCustomgrid.Clear.
                 Wipe completly the grid.
@@ -6579,7 +6758,7 @@ VERSION:  0.7.0
 -----------------
 RELEASE DATE: 30-NOV-2002
 
-This unit version provides TCustomGrid, TDrawGrid and TStringGrid for lazarus
+This unit version provides TCustomGrid, TCustomDrawGrid and TCustomStringGrid for lazarus
 from the component user perpective there should be to much differences.
 This release has only basic editing support.
 

@@ -905,11 +905,11 @@ type
 
   { TCanvas }
 
-  { $IFDEF UseFPCanvas}
-  //TCanvas = class(TFPCustomCanvas)
-  { $ELSE}
+  {$IFDEF UseFPCanvas}
+  TCanvas = class(TFPCustomCanvas)
+  {$ELSE}
   TCanvas = class(TPersistent)
-  { $ENDIF}
+  {$ENDIF}
   private
     FAutoRedraw: Boolean;
     FState: TCanvasState;
@@ -922,27 +922,74 @@ type
     FOnChange: TNotifyEvent;
     FOnChanging: TNotifyEvent;
     FTextStyle: TTextStyle;
-    FLock: TCriticalSection;
-    FLockCount: Integer;
+    FLock: TCriticalSection;// FLock is initialized on demand
     FRegion: TRegion;
     FPen: TPen;
     FFont: TFont;
     FBrush: TBrush;
+    {$IFNDEF UseFPCanvas}
+    FLockCount: Integer;
     FPenPos: TPoint;
+    {$ENDIF}
     procedure BrushChanged(ABrush: TObject);
     procedure FontChanged(AFont: TObject);
     procedure PenChanged(APen: TObject);
     procedure RegionChanged(ARegion: TObject);
-    Function GetColor: TColor;
+    function GetColor: TColor;
     function GetHandle: HDC;
-    Function GetPenPos: TPoint;
-    Procedure SetAutoRedraw(Value: Boolean); virtual;
-    Procedure SetBrush(value: TBrush);
-    Procedure SetColor(c: TColor);
-    Procedure SetFont(value: TFont);
-    Procedure SetPen(value: TPen);
-    procedure SetPenPos(const Value: TPoint);
-    Procedure SetRegion(Value: TRegion);
+    procedure SetAutoRedraw(Value: Boolean); virtual;
+    procedure SetColor(c: TColor);
+    procedure SetLazFont(value: TFont);
+    procedure SetLazPen(value: TPen);
+    procedure SetLazBrush(value: TBrush);
+    {$IFNDEF UseFPCanvas}
+    procedure SetPenPos(const AValue: TPoint);
+    {$ENDIF}
+    procedure SetRegion(Value: TRegion);
+    {$IFDEF UseFPCanvas}
+  protected
+    function DoCreateDefaultFont: TFPCustomFont; override;
+    function DoCreateDefaultPen: TFPCustomPen; override;
+    function DoCreateDefaultBrush: TFPCustomBrush; override;
+    procedure SetFont(AValue: TFPCustomFont); override;
+    procedure SetBrush(AValue: TFPCustomBrush); override;
+    procedure SetPen(AValue: TFPCustomPen); override;
+    function  DoAllowFont(AFont: TFPCustomFont): boolean; override;
+    function  DoAllowPen(APen: TFPCustomPen): boolean; override;
+    function  DoAllowBrush(ABrush: TFPCustomBrush): boolean; override;
+    procedure SetColor(x, y: integer; const Value: TFPColor); override;
+    function  GetColor(x, y: integer): TFPColor; override;
+    procedure SetHeight(AValue: integer); override;
+    function  GetHeight: integer; override;
+    procedure SetWidth(AValue: integer); override;
+    function  GetWidth: integer; override;
+    procedure SetPenPos(const AValue: TPoint); override;
+    procedure DoLockCanvas; override;
+    procedure DoUnlockCanvas; override;
+    procedure DoTextOut(x, y: integer; Text: string); override;
+    procedure DoGetTextSize(Text: string; var w,h:integer); override;
+    function  DoGetTextHeight(Text: string): integer; override;
+    function  DoGetTextWidth(Text: string): integer; override;
+    procedure DoRectangle(const Bounds: TRect); override;
+    procedure DoRectangleFill(const Bounds: TRect); override;
+    procedure DoRectangleAndFill(const Bounds: TRect); override;
+    procedure DoEllipse(const Bounds: TRect); override;
+    procedure DoEllipseFill(const Bounds: TRect); override;
+    procedure DoEllipseAndFill(const Bounds: TRect); override;
+    procedure DoPolygon(const Points: array of TPoint); override;
+    procedure DoPolygonFill(const Points: array of TPoint); override;
+    procedure DoPolygonAndFill(const Points: array of TPoint); override;
+    procedure DoPolyline(const Points: array of TPoint); override;
+    procedure DoFloodFill(x, y: integer); override;
+    procedure DoMoveTo(x, y: integer); override;
+    procedure DoLineTo(x, y: integer); override;
+    procedure DoLine(x1, y1, x2, y2: integer); override;
+    procedure DoCopyRect(x, y: integer; Canvas: TFPCustomCanvas;
+                         const SourceRect: TRect); override;
+    procedure DoDraw(x, y: integer; const Image: TFPCustomImage); override;
+    procedure CheckHelper(AHelper: TFPCanvasHelper); override;
+    {$ELSE}
+    {$ENDIF}
   protected
     function GetCanvasClipRect: TRect; virtual;
     Function GetPixel(X,Y: Integer): TColor; virtual;
@@ -967,13 +1014,13 @@ type
     procedure Changing; virtual;
     procedure Changed; virtual;
 
-    procedure Arc(x,y,width,height,angle1,angle2: Integer); virtual;
-    procedure Arc(x,y,width,height,SX,SY,EX,EY: Integer); virtual;
+    procedure Arc(x, y, AWidth, AHeight, angle1, angle2: Integer); virtual;
+    procedure Arc(x, y, AWidth, AHeight, SX, SY, EX, EY: Integer); virtual;
     Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
                         TransparentColor: TColor); virtual;
-    procedure Chord(x, y, Width, Height,
+    procedure Chord(x, y, AWidth, AHeight,
                     StartAngle16Deg, EndAngle16Deg: Integer); virtual;
-    procedure Chord(x, y, Width, Height, SX, SY, EX, EY: Integer); virtual;
+    procedure Chord(x, y, AWidth, AHeight, SX, SY, EX, EY: Integer); virtual;
     Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas;
                        const Source: TRect); virtual;
     Procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); virtual;
@@ -993,9 +1040,9 @@ type
     Procedure Line(X1,Y1,X2,Y2: Integer); virtual; // short for MoveTo();LineTo();
     Procedure LineTo(X1,Y1: Integer); virtual;
     Procedure MoveTo(X1,Y1: Integer); virtual;
-    procedure RadialPie(x,y,Width, Height,
+    procedure RadialPie(x,y,AWidth, AHeight,
                         StartAngle16Deg, EndAngle16Deg: Integer); virtual;
-    procedure RadialPie(x,y,Width,Height,sx,sy,ex,ey: Integer); virtual;
+    procedure RadialPie(x, y, AWidth, AHeight, sx, sy, ex, ey: Integer); virtual;
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                   StartX,StartY,EndX,EndY: Integer); virtual;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
@@ -1034,17 +1081,18 @@ type
     function GetUpdatedHandle(ReqState: TCanvasState): HDC; virtual;
   public
     property ClipRect: TRect read GetCanvasClipRect;
-    property PenPos: TPoint read GetPenPos write SetPenPos;
+    {$IFNDEF UseFPCanvas}
+    property PenPos: TPoint read FPenPos write SetPenPos;
+    {$ENDIF}
     property Pixels[X, Y: Integer]: TColor read GetPixel write SetPixel;
     property Handle: HDC read GetHandle write SetHandle;
     property TextStyle: TTextStyle read FTextStyle write FTextStyle;
-    property LockCount:Integer read FLockCount;
   published
     property AutoRedraw: Boolean read FAutoRedraw write SetAutoRedraw;
-    property Brush: TBrush read FBrush write SetBrush;
+    property Brush: TBrush read FBrush write SetLazBrush;
     property CopyMode: TCopyMode read FCopyMode write FCopyMode default cmSrcCopy;
-    property Font: TFont read FFont write SetFont;
-    property Pen: TPen read FPen write SetPen;
+    property Font: TFont read FFont write SetLazFont;
+    property Pen: TPen read FPen write SetLazPen;
     property Region: TRegion read FRegion write SetRegion;
     property Color: TColor read GetColor write SetColor;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -1052,9 +1100,7 @@ type
   end;
 
 
-  { TSharedImage }
-
-  {  base class for reference counted images }
+  { TSharedImage -  base class for reference counted images }
 
   TSharedImage = class
   private
@@ -1069,9 +1115,9 @@ type
   end;
 
 
-  { TBitmapImage }
-
-  { Descendent of TSharedImage for TBitmap. If a TBitmap is assigned to another
+  { TBitmapImage
+  
+    Descendent of TSharedImage for TBitmap. If a TBitmap is assigned to another
     TBitmap, only the reference count will be increased and both will share the
     same TBitmapImage }
 
@@ -1906,6 +1952,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.170  2005/01/08 15:06:06  mattias
+  fixed TabOrder dialog for new TabOrder
+
   Revision 1.169  2005/01/08 10:43:07  mattias
   added Lagunov Aleksey to Contributors.txt
 
