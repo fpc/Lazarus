@@ -973,11 +973,8 @@ var h: string;
   begin
     if ANode=nil then exit;
     WriteTreeNode(ANode.Right,Prefix+'  ');
-    b:=Prefix+HexStr(Cardinal(ANode.Data),8)+'    '
-        +'  Self='+HexStr(Cardinal(ANode),8)
-        +'  Parent='+HexStr(Cardinal(ANode.Parent),8)
-        +'  Balance='+IntToStr(ANode.Balance)
-        +#13#10;
+    b:=Prefix+Format('%p      Self=%p  Parent=%p  Balance=%d#13#10', [
+      ANode.Data, Pointer(ANode),Pointer(ANode.Parent), ANode.Balance]);
     WriteStr(b);
     WriteTreeNode(ANode.Left,Prefix+'  ');
   end;
