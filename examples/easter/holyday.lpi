@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="2"/>
+    <Version Value="3"/>
     <General>
       <ProjectType Value="Application"/>
       <Flags>
@@ -26,14 +26,14 @@
         <UsageCount Value="23"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="11" Y="111"/>
+        <CursorPos X="25" Y="21"/>
         <EditorIndex Value="0"/>
         <Filename Value="main.pas"/>
         <ComponentName Value="Form1"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="main.lrs"/>
-        <TopLine Value="83"/>
+        <TopLine Value="1"/>
         <UnitName Value="Main"/>
         <UsageCount Value="23"/>
       </Unit1>
@@ -69,8 +69,6 @@
   </ProjectOptions>
   <CompilerOptions>
     <SearchPaths>
-      <OtherUnitFiles Value="$(LazarusDir)/lcl/units/;$(LazarusDir)/lcl/units/$(LCLWidgetType)/"/>
-      <LCLWidgetType Value="gtk"/>
       <SrcPath Value="$(LazarusDir)/lcl/;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)/"/>
     </SearchPaths>
     <Other>
