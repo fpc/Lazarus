@@ -40,13 +40,9 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TCustomListView.ColumnsChanged;
 Begin
-  if csDestroying in Componentstate Then Exit;
-//TODO: Optimize implementation by invoking individual upadates instead of
-//      recreating window
-  //notify the interface....
-  RecreateWnd;
-  CNSendMessage(LM_SETPROPERTIES,self,nil);
-end;                 
+  FUpdateNeeded:=true;
+  DoUpdate;
+end;
             
 {------------------------------------------------------------------------------}
 {   TCustomListView Change                                                     }
@@ -135,6 +131,22 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+   TCustomListView DoUpdate
+ ------------------------------------------------------------------------------}
+procedure TCustomListView.DoUpdate;
+begin
+  if FUpdateCount>0 then exit;
+  if not FUpdateNeeded then exit;
+  FUpdateNeeded:=false;
+  if csDestroying in Componentstate Then Exit;
+  //TODO: Optimize implementation by invoking individual upadates instead of
+  //      recreating window
+  //notify the interface....
+  RecreateWnd;
+  CNSendMessage(LM_SETPROPERTIES,self,nil);
+end;
+
 {------------------------------------------------------------------------------}
 {   TCustomListView DoSelectItem                                               }
 {------------------------------------------------------------------------------}
@@ -149,8 +161,11 @@ end;
 Procedure TCustomListView.ItemChanged(Index : Integer);  //called by TListItems
 Begin
   if csDestroying in Componentstate Then Exit;
-  //notify the interface....
-  CNSendMessage(LM_LV_CHANGEITEM,self,@Index);
+  if FUpdateCount>0 then
+    FUpdateNeeded:=true
+  else
+    //notify the interface....
+    CNSendMessage(LM_LV_CHANGEITEM,self,@Index);
 End;
 
 {------------------------------------------------------------------------------}
@@ -158,8 +173,12 @@ End;
 {------------------------------------------------------------------------------}
 Procedure TCustomListView.ItemDeleted(Index : Integer);  //called by TListItems
 Begin
-  //notify the interface....
-  CNSendMessage(LM_LV_DELETEITEM,self,@Index);
+  if csDestroying in Componentstate Then Exit;
+  if FUpdateCount>0 then
+    FUpdateNeeded:=true
+  else
+    //notify the interface....
+    CNSendMessage(LM_LV_DELETEITEM,self,@Index);
 End;
 
 {------------------------------------------------------------------------------}
@@ -167,8 +186,12 @@ End;
 {------------------------------------------------------------------------------}
 Procedure TCustomListView.ItemAdded;
 Begin
-  //notify the interface....
-  CNSendMessage(LM_LV_ADDITEM,self,nil);
+  if csDestroying in Componentstate Then Exit;
+  if FUpdateCount>0 then
+    FUpdateNeeded:=true
+  else
+    //notify the interface....
+    CNSendMessage(LM_LV_ADDITEM,self,nil);
 End;
 
 {------------------------------------------------------------------------------}
@@ -242,6 +265,30 @@ begin
   inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+   TCustomListView BeginUpdate
+   Params: None
+   Result: none
+   
+   Increases the update count. Use this procedure before any big change, so that
+   the interface will not show any single step.
+ ------------------------------------------------------------------------------}
+procedure TCustomListView.BeginUpdate;
+begin
+  inc(FUpdateCount);
+end;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView GetSelection                                                 }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.EndUpdate;
+begin
+  if FUpdateCount=0 then exit;
+  dec(FUpdateCount);
+  if FUpdateCount>0 then exit;
+  DoUpdate;
+end;
+
 {------------------------------------------------------------------------------}
 {   TCustomListView GetSelection                                                 }
 {------------------------------------------------------------------------------}
@@ -287,8 +334,12 @@ end;
 
 Procedure TCustomListView.ImageChanged(Sender : TObject);
 begin
-  //image changed so redraw it all....
-        CNSendMessage(LM_SETPROPERTIES,self,nil);
+  if csDestroying in Componentstate Then Exit;
+  if FUpdateCount>0 then
+    FUpdateNeeded:=true
+  else
+    //image changed so redraw it all....
+    CNSendMessage(LM_SETPROPERTIES,self,nil);
 end;
 
 procedure TCustomListView.SetScrollBars(const Value: TScrollStyle);
@@ -328,6 +379,9 @@ procedure TCustomListView.UpdateScrollbars;
 var
   ScrollInfo: TScrollInfo;
 begin
+ writeln('TODO: TCustomListView.UpdateScrollbars');
+  exit;
+  
   if not HandleAllocated then exit
   else
   begin
@@ -417,12 +471,12 @@ end;
 
 Function TCustomListView.GetMaxScrolledLeft : Integer;
 begin
-result := 0;
+  Result := 0;
 end;
 
 Function TCustomListView.GetMaxScrolledTop : Integer;
 begin
- Result := 0;
+  Result := 0;
 end;
 
 procedure TCustomListView.SetDefaultItemHeight(AValue: integer);
@@ -432,7 +486,6 @@ begin
   FDefItemHeight:=AValue;
 //  Include(FStates,tvsTopsNeedsUpdate);
   Invalidate;
-
 end;
 
 // included by comctrls.pp
@@ -440,6 +493,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/05/28 14:58:30  lazarus
+  MG: added scrollbars for TListView
+
   Revision 1.18  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 

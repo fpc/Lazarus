@@ -272,6 +272,8 @@ type
     FSelected: TListItem; // temp copy of the selected item
     FLastHorzScrollInfo: TScrollInfo;
     FLastVertScrollInfo: TScrollInfo;
+    FUpdateCount: integer;
+    FUpdateNeeded: boolean;
     FOnChange: TLVChangeEvent;
     FOnColumnClick: TLVColumnClickEvent;
     FOnSelectItem: TLVSelectItemEvent;
@@ -290,6 +292,7 @@ type
     procedure SetViewStyle (const Avalue: TViewStyle);
     procedure UpdateScrollbars;
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
+    procedure DoUpdate;
   protected
     ParentWindow : TScrolledWindow;
     procedure Change(AItem: TListItem; AChange: Integer); dynamic;
@@ -328,6 +331,8 @@ type
   public
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
     property Selected: TListItem read GetSelection write SetSelection;
   end;
 
@@ -354,7 +359,7 @@ type
     property SortColumn;
     property Visible;
     property ViewStyle;
-    property OnMOuseMOve;
+    property OnMouseMove;
     property OnChange;
     property OnClick;
     property OnColumnClick;
@@ -1559,6 +1564,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.36  2002/05/28 14:58:29  lazarus
+  MG: added scrollbars for TListView
+
   Revision 1.35  2002/05/20 14:19:03  lazarus
   MG: activated the clientrect bugfixes
 
