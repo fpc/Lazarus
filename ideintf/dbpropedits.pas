@@ -26,7 +26,7 @@ uses
   Classes, PropEdits, Componenteditors, TypInfo;
 
 type
-  TFieldProperty = class(TStringProperty)
+  TFieldProperty = class(TStringPropertyEditor)
   public
     function  GetAttributes: TPropertyAttributes; override;
     procedure GetValues(Proc: TGetStrProc); override;

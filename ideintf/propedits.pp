@@ -44,7 +44,7 @@ interface
 uses
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, GraphType, Graphics,
   StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf, Dialogs,
-  TextTools, ColumnDlg, ObjInspStrConsts;
+  Grids, EditBtn, TextTools, ColumnDlg, ObjInspStrConsts;
 
 const
   MaxIdentLength: Byte = 63;
@@ -770,6 +770,17 @@ type
   TURLDirectoryPropertyEditor = class(TURLPropertyEditor)
   public
     function CreateFileDialog: TOpenDialog; override;
+  end;
+  
+
+{ TFileDlgFilterProperty
+  PropertyEditor editor for TFileDialog filter properties.
+  Show a dialog on Edit. }
+
+  TFileDlgFilterProperty = class(TStringPropertyEditor)
+  public
+    function  GetAttributes: TPropertyAttributes; override;
+    procedure Edit; override;
   end;
 
 
@@ -4920,6 +4931,135 @@ begin
   Result.Options:=Result.Options+[ofFileMustExist];
 end;
 
+type
+  TFileFilterPropertyEditorForm = class(TForm)
+  private
+    StringGrid1: TStringGrid;
+    function GetFilter: string;
+    procedure SetFilter(const AValue: string);
+  public
+    constructor Create(AOwner : TComponent); Override;
+    property Filter:string read GetFilter write SetFilter;
+  end;
+
+{ TFileFilterPropertyEditorForm }
+
+function TFileFilterPropertyEditorForm.GetFilter: string;
+var
+  i:integer;
+begin
+  Result:='';
+  for i:=1 to StringGrid1.RowCount-1 do
+  begin
+    if StringGrid1.Cells[1,i]<>'' then
+    begin
+      if Result<>'' then Result:=Result+'|';
+      if StringGrid1.Cells[0,i]<>'' then
+        Result:=Result+StringGrid1.Cells[0,i]+'|'+StringGrid1.Cells[1,i]
+      else
+        Result:=Result+StringGrid1.Cells[1,i]+'|'+StringGrid1.Cells[1,i];
+    end
+    else
+      break;
+  end;
+end;
+
+procedure TFileFilterPropertyEditorForm.SetFilter(const AValue: string);
+var
+  S:string;
+  C1, i:integer;
+begin
+  S:=AValue;
+  I:=1;
+  while (S<>'') do
+  begin
+    C1:=Pos('|',S);
+    if C1>0 then
+    begin
+      StringGrid1.Cells[0,i]:=Copy(S, 1, C1-1);
+      Delete(S, 1, C1);
+      C1:=Pos('|',S);
+      if (C1>0) then
+      begin
+        StringGrid1.Cells[1,i]:=Copy(S, 1, C1-1);
+        Delete(S, 1, C1);
+      end
+      else
+      begin
+        StringGrid1.Cells[1,i]:=S;
+        S:='';
+      end;
+    end
+    else
+    begin
+      StringGrid1.Cells[0,i]:=S;
+      StringGrid1.Cells[1,i]:=S;
+      S:='';
+    end;
+    inc(i);
+  end;
+end;
+
+constructor TFileFilterPropertyEditorForm.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  Caption:='Filter editor';
+  Height:=295;
+  Width:=417;
+  Position:=poDesktopCenter;
+  BorderStyle:=bsDialog;
+  StringGrid1:=TStringGrid.Create(Self);
+  StringGrid1.ColCount:=2;
+  StringGrid1.DefaultColWidth:=190;
+  StringGrid1.Options:=StringGrid1.Options + [goEditing, goAlwaysShowEditor];
+  StringGrid1.RowCount:= 100;
+  StringGrid1.Left:= 8;
+  StringGrid1.Height := 248;
+  StringGrid1.Top := 8;
+  StringGrid1.Width := 408;
+  StringGrid1.Parent:=Self;
+  StringGrid1.FixedCols := 0;
+  with TBitBtn.Create(Self) do
+  begin
+    Parent:=Self;
+    Kind := bkOK;
+    Left := 256;
+    Height := 25;
+    Top := 264;
+    Width := 75;
+  end;
+  with TBitBtn.Create(Self) do
+  begin
+    Parent:=Self;
+    Kind := bkCancel;
+    Left := 341;
+    Height := 25;
+    Top := 264;
+    Width := 75;
+  end;
+  StringGrid1.Cells[0,0]:='Filter name';
+  StringGrid1.Cells[1,0]:='Filter';
+end;
+
+{ TFileDlgFilterProperty }
+
+function TFileDlgFilterProperty.GetAttributes: TPropertyAttributes;
+begin
+  Result:=inherited GetAttributes + [paDialog];
+end;
+
+procedure TFileDlgFilterProperty.Edit;
+begin
+  with TFileFilterPropertyEditorForm.Create(Application) do
+  try
+    Filter:=GetStrProp(GetComponent(0), 'Filter');
+    if ShowModal=mrOk then
+      SetStrProp(GetComponent(0), 'Filter', Filter);
+  finally
+    Free;
+  end;
+end;
+
 { TSessionPropertiesPropertyEditor }
 
 function TSessionPropertiesPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -6000,7 +6140,7 @@ begin
   PropertyEditorMapperList:=TList.Create;
   // register the standard property editors
 
-  // XXX workaround for buggy typeinfo function
+  // XXX workaround for buggy typinfo function
   // Normally it should use something like this;
   // RegisterPropertyEditor(TypeInfo(TColor),nil,'',TColorPropertyEditor);
   DummyClassForPropTypes:=TDummyClassForPropTypes.Create;
@@ -6036,9 +6176,12 @@ begin
     ,'',TComponentPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TListColumns'),
     nil,'',TListColumnsPropertyEditor);
-
   RegisterPropertyEditor(ClassTypeInfo(TCollection),
     nil,'',TCollectionPropertyEditor);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+    TFileDialog, 'Filter', TFileDlgFilterProperty);
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+    TFileNameEdit, 'Filter', TFileDlgFilterProperty);
 end;
 
 procedure FinalPropEdits;

@@ -25,11 +25,9 @@ unit ComponentEditors;
 interface
 
 uses
-  Classes, SysUtils, TypInfo,
-  LCLProc, Forms, Controls, Menus, ExtCtrls, Graphics, Grids, Buttons, ComCtrls,
+  Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Menus, ExtCtrls,
+  Graphics, Grids, Buttons, ComCtrls, Dialogs,
   PropEdits, ObjInspStrConsts;
-
-
 
 type
   { TComponentEditorDesigner }
@@ -268,7 +266,7 @@ type
 
 
 { TToolBarComponentEditor
-  The default componenteditor fo TToolBar}
+  The default componenteditor for TToolBar }
 
   TToolBarComponentEditor = class(TDefaultComponentEditor)
   protected
@@ -279,6 +277,20 @@ type
     function ToolBar: TToolBar; virtual;
   end;
 
+
+{ TFileDialogComponentEditor
+  The default componenteditor for TFileDialog }
+
+  TFileDialogComponentEditor = class(TComponentEditor)
+  private
+    procedure TestDialog;
+  public
+    function GetVerbCount:integer;override;
+    function GetVerb(Index:integer):string;override;
+    procedure ExecuteVerb(Index:integer);override;
+    procedure Edit;override;
+  end;
+  
 
 { Register a component editor }
 type
@@ -965,6 +977,41 @@ begin
   Result:=TToolBar(GetComponent);
 end;
 
+{ TFileDialogComponentEditor }
+
+procedure TFileDialogComponentEditor.TestDialog;
+begin
+  with Component as TFileDialog do Execute;
+end;
+
+function TFileDialogComponentEditor.GetVerbCount: integer;
+begin
+  Result:=1;
+end;
+
+function TFileDialogComponentEditor.GetVerb(Index: integer): string;
+begin
+  case Index of
+    0:Result:='Test dialog...';
+  else
+    Result:=inherited GetVerb(Index);
+  end;
+end;
+
+procedure TFileDialogComponentEditor.ExecuteVerb(Index: integer);
+begin
+  case Index of
+    0:TestDialog;
+  else
+    inherited ExecuteVerb(Index);
+  end;
+end;
+
+procedure TFileDialogComponentEditor.Edit;
+begin
+  TestDialog;
+end;
+
 //------------------------------------------------------------------------------
 
 procedure InternalFinal;
@@ -987,6 +1034,7 @@ initialization
   RegisterComponentEditor(TCustomPage,TPageComponentEditor);
   RegisterComponentEditor(TStringGrid,TStringGridComponentEditor);
   RegisterComponentEditor(TToolBar,TToolBarComponentEditor);
+  RegisterComponentEditor(TFileDialog, TFileDialogComponentEditor);
 
 finalization
   InternalFinal;
