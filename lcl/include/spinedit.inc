@@ -216,6 +216,7 @@ end;
 procedure TCustomSpinEdit.DestroyComponent;
 begin
   GetValue;
+  inherited DestroyComponent;
 end;
 
 procedure TCustomSpinEdit.SelectAll;
