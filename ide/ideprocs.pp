@@ -65,6 +65,7 @@ procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList;
   const Path: string);
 procedure AddToRecentList(const s: string; RecentList: TStringList;
   Max: integer);
+procedure RemoveFromRecentList(const s: string; RecentList: TStringList);
 procedure LoadRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 
@@ -95,6 +96,15 @@ uses
 
 procedure AddToRecentList(const s: string; RecentList: TStringList;
   Max: integer);
+begin
+  RemoveFromRecentList(s,RecentList);
+  RecentList.Insert(0,s);
+  if Max>0 then
+    while RecentList.Count>Max do
+      RecentList.Delete(RecentList.Count-1);
+end;
+
+procedure RemoveFromRecentList(const s: string; RecentList: TStringList);
 var i: integer;
 begin
   i:=RecentList.Count-1;
@@ -102,10 +112,6 @@ begin
     if RecentList[i]=s then RecentList.Delete(i);
     dec(i);
   end;
-  RecentList.Insert(0,s);
-  if Max>0 then
-    while RecentList.Count>Max do
-      RecentList.Delete(RecentList.Count-1);
 end;
 
 procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList; 
