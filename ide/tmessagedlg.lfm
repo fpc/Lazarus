@@ -1,0 +1,17 @@
+object MessageDlg: TMESSAGEDLG
+  CAPTION = 'Compiler Messages'
+  COLOR = -2147483633
+  CLIENTHEIGHT = 240
+  CLIENTWIDTH = 320
+  HEIGHT = 240
+  WIDTH = 320
+  object MessageView: TLISTBOX
+    ALIGN = alClient
+    BORDERSTYLE = bssingle
+    ONDBLCLICK = nil
+    LEFT = 1
+    HEIGHT = 25
+    TOP = 1
+    WIDTH = 100
+  end
+end
