@@ -164,7 +164,7 @@ begin
     GdkWindow:=GetControlWindow(PgtkWidget(hwnd));
     gdk_window_raise(GdkWindow);
     // how to set the keyboard focus to the raised window?
-    gtk_window_activate_focus(PGtkWindow(hWnd));
+    //gtk_window_activate_focus(PGtkWindow(hWnd));
   end;
 end;
 
@@ -7485,6 +7485,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.176  2002/10/29 23:14:28  lazarus
+  MG: removed interfaces
+
   Revision 1.175  2002/10/29 19:33:42  lazarus
   MG: removed interfaces
 
