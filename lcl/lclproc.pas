@@ -57,8 +57,8 @@ type
   end;
 
 
-function ShortCutToShortCutText(ShortCut: TShortCut): string;
-function ShortCutTextToShortCut(const ShortCutText: string): TShortCut;
+function ShortCutToText(ShortCut: TShortCut): string;
+function TextToShortCut(const ShortCutText: string): TShortCut;
 
 // Hooks used to prevent unit circles
 type
@@ -250,7 +250,7 @@ begin
   }
 end;
 
-function ShortCutToShortCutText(ShortCut: TShortCut): string;
+function ShortCutToText(ShortCut: TShortCut): string;
 var
   Name: string;
 begin
@@ -281,7 +281,7 @@ begin
   else Result := '';
 end;
 
-function ShortCutTextToShortCut(const ShortCutText: string): TShortCut;
+function TextToShortCut(const ShortCutText: string): TShortCut;
 
   function CompareFront(var StartPos: integer; const Front: string): Boolean;
   begin
@@ -318,7 +318,7 @@ begin
   end;
   if ShortCutText = '' then Exit;
   for Key := $08 to $255 do begin { Copy range from table in ShortCutToText }
-    Name:=ShortCutToShortCutText(Key);
+    Name:=ShortCutToText(Key);
     if (Name<>'') and (length(Name)=length(ShortCutText)-StartPos+1)
     and (AnsiStrLIComp(@ShortCutText[StartPos], PChar(Name), length(Name)) = 0)
     then begin

@@ -326,9 +326,6 @@ function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 procedure ShortCutToKey(const ShortCut : TShortCut; var Key: Word;
                         var Shift : TShiftState);
 
-function TextToShortCut(const ShortCutText: string): TShortCut;
-function ShortCutToText(ShortCut: TShortCut): string;
-
 var
   DesignerMenuItemClick: TNotifyEvent;
   ActivePopupMenu: TPopupMenu;
@@ -354,20 +351,10 @@ begin
   CommandPool[Result] := True;
 end;
 
-function ShortCutToText(ShortCut: TShortCut): string;
-begin
-  Result:=ShortCutToShortCutText(ShortCut);
-end;
-
 procedure Register;
 begin
   RegisterComponents('Standard',[TMainMenu,TPopupMenu]);
   RegisterNoIcon([TMenuItem]);
-end;
-
-function TextToShortCut(const ShortCutText: string): TShortCut;
-begin
-  Result:=ShortCutTextToShortCut(ShortCutText);
 end;
 
 {$I menu.inc}
@@ -413,6 +400,10 @@ end.
 
 {
   $Log$
+  Revision 1.73  2004/10/24 14:50:31  micha
+  fix menuitem caption issue (partly by martin smat)
+  remove ShortCutToText and TextToShortCut wrapper functions
+
   Revision 1.72  2004/09/17 10:56:24  micha
   convert LM_SHORTCUT message to interface methods
 

@@ -85,6 +85,38 @@ implementation
 
 { TWin32WSMenuItem }
 
+procedure UpdateCaption(const AMenuItem: TMenuItem; ACaption: String);
+var 
+  MenuInfo: MENUITEMINFO;
+begin
+  with MenuInfo do
+  begin
+    cbsize:=sizeof(MENUITEMINFO);
+    if ACaption <> '-' then
+    begin
+      fType := MFT_STRING;
+      {In Win32 Menu items that are created without a initial caption default to disabled,
+       the next three lines are to counter that.}
+      fMask:=MIIM_STATE;
+      GetMenuItemInfo(AMenuItem.Parent.Handle,
+                      AMenuItem.Command, false, @MenuInfo);
+      if AMenuItem.Enabled then
+        fState := fState and DWORD(not (MFS_DISABLED or MFS_GRAYED));
+
+      fMask:=MIIM_TYPE or MIIM_STATE;
+      dwTypeData:=LPSTR(ACaption);
+      cch := StrLen(dwTypeData);
+    end
+    else fType := MFT_SEPARATOR;
+  end;
+  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  // owner could be a popupmenu too
+  if (AMenuItem.Owner is TWinControl) and
+      TWinControl(AMenuItem.Owner).HandleAllocated and
+      ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
+    DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
+end;
+
 procedure TWin32WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 var 
   MenuInfo: MENUITEMINFO;
@@ -150,6 +182,8 @@ var
     end;
   end;
 
+var
+  newCaption: string;
 begin
   ParentMenuHandle := AMenuItem.Parent.Handle;
 
@@ -193,13 +227,11 @@ begin
     if AMenuItem.Caption <> '-' then
     begin
       fType:=MFT_STRING;
+      newCaption:=AMenuItem.Caption;
       if AMenuItem.ShortCut <> 0 then
-      begin
-        dwTypeData:=LPSTR(AMenuItem.Caption+#9+ShortCutToText(AMenuItem.ShortCut));
-      end else begin
-        dwTypeData:=LPSTR(AMenuItem.Caption);
-      end;
-      cch:=StrLen(dwTypeData);
+        newCaption:=newCaption+#9+ShortCutToText(AMenuItem.ShortCut);
+      dwTypeData:=LPSTR(newCaption);
+      cch:=Length(newCaption);
     end else begin
       fType:=MFT_SEPARATOR;
       dwTypeData:=nil;
@@ -244,38 +276,12 @@ begin
 end;
 
 procedure TWin32WSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
-var 
-  MenuInfo: MENUITEMINFO;
-  Style: integer;
+var newCaption: string;
 begin
-  if AMenuItem.Caption = '-' then 
-    Style := MFT_SEPARATOR
-  else 
-    Style := MFT_STRING;
-    
-  with MenuInfo do
-  begin
-    cbsize:=sizeof(MENUITEMINFO);
-    {In Win32 Menu items that are created without a initial caption default to disabled,
-     the next three lines are to counter that.}
-    fMask:=MIIM_STATE;
-    GetMenuItemInfo(AMenuItem.Parent.Handle,
-                    AMenuItem.Command, false, @MenuInfo);
-    if AMenuItem.Enabled then
-      fState := fState and DWORD(not (MFS_DISABLED or MFS_GRAYED));
-
-    fMask:=MIIM_TYPE or MIIM_STATE;
-    fType:=Style;
-    dwTypeData:=PChar(ACaption);
-    if dwTypeData <> nil then
-      cch := Length(ACaption);
-  end;
-  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
-  // owner could be a popupmenu too
-  if (AMenuItem.Owner is TWinControl) and
-      TWinControl(AMenuItem.Owner).HandleAllocated and
-      ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
-    DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
+  newCaption := ACaption;  
+  if AMenuItem.ShortCut <> 0 then
+    newCaption := newCaption+#9+ShortCutToText(AMenuItem.ShortCut);
+  UpdateCaption(AMenuItem, newCaption);
 end;
   
 procedure TWin32WSMenuItem.SetShortCut(const AMenuItem: TMenuItem;
@@ -284,7 +290,7 @@ var
   NewKey: word;
   NewModifier: TShiftState;
 begin
-  SetCaption(AMenuItem, LPSTR(AMenuItem.Caption+#9+ShortCutToText(NewShortCut)));
+  UpdateCaption(AMenuItem, AMenuItem.Caption+#9+ShortCutToText(NewShortCut));
   if (AMenuItem.Owner is TWinControl) and AMenuItem.HandleAllocated then
   begin
     ShortCutToKey(NewShortCut, NewKey, NewModifier);
