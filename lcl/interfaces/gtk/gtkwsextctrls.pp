@@ -275,6 +275,7 @@ begin
   gtk_notebook_insert_page_menu(GTK_NOTEBOOK(NotebookWidget), PageWidget,
     TabWidget, MenuWidget, AIndex);
 
+  gtk_widget_realize(PageWidget);
   UpdateNotebookPageTab(ANoteBook, AChild);
   UpdateNoteBookClientWidget(ANoteBook);
 end;
