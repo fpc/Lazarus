@@ -289,6 +289,21 @@ Var
          Windows.SendMessage(TRadioButton(Sibling).Handle, BM_SETCHECK, Windows.WParam(BST_UNCHECKED), 0);
     end;
   end;
+  
+  // sets the text of the combobox,
+  // because some events are risen, before the text is actually changed
+  procedure UpdateComboBoxText(ComboBox: TCustomComboBox);
+  var
+    Index: Integer;
+  begin
+    with ComboBox do begin
+      Index := ItemIndex;
+      // Index might be -1,
+      // if current text is not in the list.
+      if (Index>=0) then
+        Text := Items[Index]
+    end;
+  end;
 
 Begin
   Assert(False, 'Trace:WindowProc - Start');
@@ -409,15 +424,13 @@ Begin
             selecting in the list, but before text is actually changed.
             itemindex is updated, so set text manually }
           CBN_SELCHANGE: begin
-            with TCustomComboBox(OwnerObject) do
-              Text := Items[ItemIndex];
+            UpdateComboBoxText(TCustomComboBox(OwnerObject));
             LMessage.Msg := LM_CHANGED;
           end;
           { closeup message is sent before text is actually changed... *sigh*
             itemindex is updated, so set text manually }
           CBN_CLOSEUP:
-            with TCustomComboBox(OwnerObject) do
-              Text := Items[ItemIndex];
+            UpdateComboBoxText(TCustomComboBox(OwnerObject));
         end;
       // no specific message found? try send a general msg
       if LMessage.Msg = LM_NULL then
@@ -1185,6 +1198,9 @@ end;
 
 {
   $Log$
+  Revision 1.110  2004/06/02 19:32:05  vincents
+  fix out of bounds error, when canceling combobox selection
+
   Revision 1.109  2004/05/30 20:17:55  vincents
   changed radiobutton style to BS_RADIOBUTTON to prevent test program from hanging.
 
