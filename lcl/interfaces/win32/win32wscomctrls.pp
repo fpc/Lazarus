@@ -264,7 +264,9 @@ var
   CurrentRight: integer;
 begin
   if StatusBar.Panels.Count=0 then begin
-    Windows.SendMessage(StatusBar.Handle, SB_SETPARTS, 0, 0);
+    // SETPARTS 0,0 does not work :S
+    Windows.SendMessage(StatusBar.Handle, SB_SIMPLE, 1, 0);
+    Windows.SendMessage(StatusBar.Handle, SB_SETTEXT, 255, WPARAM(''));    
     exit;
   end;
   Getmem(Rights, StatusBar.Panels.Count * sizeof(integer));
