@@ -2241,7 +2241,7 @@ begin
   CreateParams(Params);
   with Params do begin
     if (WndParent = 0) and (Style and WS_CHILD <> 0) then
-      RaiseGDBException('TWinControl.CreateWnd: no parent');
+      RaiseGDBException('TWinControl.CreateWnd: no parent '+Name+':'+ClassName);
     Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
   end;
   
@@ -2592,6 +2592,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.124  2003/03/28 19:39:54  mattias
+  started typeinfo for double extended
+
   Revision 1.123  2003/03/25 10:45:41  mattias
   reduced focus handling and improved focus setting
 
