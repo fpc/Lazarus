@@ -58,6 +58,8 @@ const
  ------------------------------------------------------------------------------}
 function TgtkObject.Arc(DC: HDC; 
   x,y,width,height,angle1,angle2 : Integer): Boolean;
+var
+  DCOrigin: TPoint;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -71,8 +73,9 @@ begin
     else begin
       // Draw outline
       SelectGDKPenProps(DC);
-      inc(X,Origin.X);
-      inc(Y,Origin.Y);
+      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      inc(X,DCOrigin.X);
+      inc(Y,DCOrigin.Y);
       gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height,
                    Angle1 shl 2, Angle2 shl 2);
       Result := True;
@@ -1736,6 +1739,7 @@ var
     Shadow: TGtkShadowType;
     aStyle : PGTKStyle;
     pDC: PDeviceContext;
+    DCOrigin: TPoint;
   begin
     if Widget<>nil then begin
 
@@ -1788,6 +1792,7 @@ var
           State := GTK_STATE_ACTIVE;
           
       pDC:=PDeviceContext(DC);
+      DCOrigin:=GetDCOffset(pDC);
 
       Case Shadow of
         GTK_SHADOW_NONE:
@@ -1797,7 +1802,7 @@ var
              nil,
              Widget,
              'button',
-             Rect.Left+pDC^.Origin.X,Rect.Top+pDC^.Origin.Y,
+             Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
              Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
         else
           gtk_paint_box(aStyle,Widget^.Window,
@@ -1806,7 +1811,7 @@ var
              nil,
              Widget,
              'button',
-             Rect.Left+pDC^.Origin.X,Rect.Top+pDC^.Origin.Y,
+             Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
              Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
       end;
 
@@ -1912,6 +1917,7 @@ Var
   BInner, BOuter: Boolean;
   Width, Height: Integer;
   R: TRect;
+  DCOrigin: TPoint;
 begin
   Assert(False, Format('trace:> [TgtkObject.DrawEdge] DC:0x%x, Rect = %d,%d,%d,%d', [DC, Rect.Left, Rect.Top,Rect.Right, Rect.Bottom]));
   Result := IsValidDC(DC);
@@ -2017,7 +2023,8 @@ begin
         Width := R.Right - R.Left + 1;
         Height := R.Bottom - R.Top + 1;
         SelectGDKBrushProps(DC);
-        gdk_draw_rectangle(Drawable, GC, 1, R.Left+Origin.X, R.Top+Origin.Y,
+        DCOrigin:=GetDCOffset(PDeviceContext(DC));
+        gdk_draw_rectangle(Drawable, GC, 1, R.Left+DCOrigin.X, R.Top+DCOrigin.Y,
                            Width, Height);
       end;
 
@@ -2124,7 +2131,9 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.Ellipse(DC: HDC; 
   x1,y1,x2,y2: Integer): Boolean;
-var x,y,width,height: integer;
+var
+  x,y,width,height: integer;
+  DCOrigin: TPoint;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -2146,11 +2155,12 @@ begin
       height:=height shr 1;
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
-      gdk_draw_arc(Drawable, GC, 1, x+Origin.X, y+Origin.Y, Width, Height,
+      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      gdk_draw_arc(Drawable, GC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
                    0, 360 shl 6);
       // Draw outline
       SelectGDKPenProps(DC);
-      gdk_draw_arc(Drawable, GC, 0, x+Origin.X, y+Origin.Y, Width, Height,
+      gdk_draw_arc(Drawable, GC, 0, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
                    0, 360 shl 6);
       Result := True;
     end;
@@ -2210,6 +2220,7 @@ var
   //ADC : hDC;
   UseFont : PGDKFont;
   UnRef : Boolean;
+  DCOrigin: TPoint;
 begin
   Assert(False, Format('trace:> [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
@@ -2238,6 +2249,7 @@ begin
       else begin
         // TODO: implement other parameters.
         //ADC := SaveDC(DC);
+        DCOrigin:=GetDCOffset(PDeviceContext(DC));
         if (Options and ETO_OPAQUE) <> 0 then
         begin
           Width := Rect^.Right - Rect^.Left;
@@ -2245,7 +2257,7 @@ begin
           gdk_gc_set_fill(GC, GDK_SOLID);
           gdk_gc_set_foreground(GC, @CurrentBackColor);
           gdk_draw_rectangle(Drawable, GC, 1,
-                             Rect^.Left+Origin.X, Rect^.Top+Origin.Y,
+                             Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
                              Width, Height);
         end;
         if (Options and ETO_CLIPPED) <> 0 then
@@ -2268,7 +2280,7 @@ begin
         if Num < 0 then begin
           if Count> 0 then
             gdk_draw_text(Drawable, UseFont, GC,
-                          TxtPt.X+Origin.X, TxtPt.Y+Origin.Y, Str, Count);
+                          TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
         end else
         Begin  //write multiple lines
           LineStart:=Str;
@@ -2277,7 +2289,7 @@ begin
             LineEnd:=LineStart+Num;
             if Num>0 then
               gdk_draw_text(Drawable, UseFont, GC,
-                            TxtPt.X+Origin.X, TxtPt.Y+Origin.Y, LineStart, Num);
+                            TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, LineStart, Num);
             AY := TxtPt.Y;
             {$IfDef Win32}
               TxtPt.Y := AY + TM.tmHeight div 2;
@@ -2315,6 +2327,7 @@ function TgtkObject.FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean
 var
   Width, Height: Integer;
   OldCurrentBrush: PGdiObject;
+  DCOrigin: TPoint;
 begin
   Assert(False, Format('trace:> [TgtkObject.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
   Result := IsValidDC(DC) and IsValidGDIObject(Brush);
@@ -2334,7 +2347,9 @@ begin
       OldCurrentBrush := CurrentBrush;
       CurrentBrush := PGdiObject(Brush);
       SelectGDKBrushProps(DC);
-      gdk_draw_rectangle(Drawable, GC, 1, Rect.Left+Origin.X, Rect.Top+Origin.Y,
+      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      gdk_draw_rectangle(Drawable, GC, 1,
+                         Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                          Width, Height);
       // Restore current brush
       CurrentBrush := OldCurrentBrush;
@@ -2358,8 +2373,10 @@ function TGtkObject.Frame3d(DC : HDC; var Rect : TRect;
 const GTKShadowType: array[TBevelCut] of integer =
   (GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT);
   
-var Widget, ClientWidget: PGtkWidget;
-    i : integer;
+var
+  Widget, ClientWidget: PGtkWidget;
+  i : integer;
+  DCOrigin: TPoint;
 begin
   Result := IsValidDC(DC);
   if Result then
@@ -2373,11 +2390,12 @@ begin
         ClientWidget:=GetFixedWidget(Widget);
         if ClientWidget=nil then
           ClientWidget:=Widget;
+        DCOrigin:=GetDCOffset(PDeviceContext(DC));
         for i:= 1 to FrameWidth do begin
           gtk_draw_shadow(ClientWidget^.thestyle,
                           ClientWidget^.window, GTK_STATE_NORMAL,
                           GtkShadowType[Style],
-                          Rect.Left+Origin.X, Rect.Top+Origin.Y,
+                          Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                           Rect.Right - Rect.Left-1, Rect.Bottom - Rect.Top-1);
           InflateRect(Rect, -1, -1);
         end;
@@ -2569,6 +2587,7 @@ Function TGTKObject.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 var
   CRect : TGDKRectangle;
   X, Y : Longint;
+  DCOrigin: Tpoint;
 begin
   If not IsValidDC(DC) then
     Result := ERROR;
@@ -2577,9 +2596,10 @@ begin
   if Result <> ERROR
   then with PDeviceContext(DC)^ do
   begin
+    DCOrigin:=GetDCOffset(PDeviceContext(DC));
     If Not IsValidGDIObject(ClipRegion) then begin
       gdk_window_get_size(Drawable, @X, @Y);  
-      lpRect^ := Rect(-Origin.X, -Origin.Y, X, Y);
+      lpRect^ := Rect(-DCOrigin.X, -DCOrigin.Y, X, Y);
       Result := SIMPLEREGION;
     end
     else begin
@@ -2587,8 +2607,8 @@ begin
       gdk_region_get_clipbox(PGDIObject(ClipRegion)^.GDIRegionObject, 
         @CRect);
       With lpRect^,CRect do begin
-        Left   := X-Origin.X;
-        Top    := Y-Origin.Y;
+        Left   := X-DCOrigin.X;
+        Top    := Y-DCOrigin.Y;
         Right  := Left + Width;
         Bottom := Top + Height;
       end;  
@@ -3584,6 +3604,8 @@ end;
   specified device context.
  ------------------------------------------------------------------------------}
 function TgtkObject.GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
+var
+  DCOrigin: TPoint;
 begin
 //  gdk_window_get_deskrelative_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
 //write('[TgtkObject.GetWindowOrgEx] ',p.x,' ',p.y);
@@ -3594,10 +3616,11 @@ begin
   // ToDo: fix this, when Designer is ready
   If IsValidDC(DC) then
   with PDeviceContext(DC)^ do begin
+    DCOrigin:=GetDCOffset(PDeviceContext(DC));
     if Drawable<>nil then begin
       gdk_window_get_origin(PGdkWindow(Drawable), @P.X, @P.Y);
-      inc(P.X,Origin.X);
-      inc(P.Y,Origin.Y);
+      inc(P.X,DCOrigin.X);
+      inc(P.Y,DCOrigin.Y);
       Result := 1;
     end else begin
       writeln('TgtkObject.GetWindowOrgEx:',
@@ -3803,6 +3826,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.LineTo(DC: HDC; X, Y: Integer): Boolean;
+var
+  DCOrigin: TPoint;
 begin
   Assert(False, Format('trace:> [TgtkObject.LineTo] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
   Result := IsValidDC(DC);
@@ -3815,9 +3840,10 @@ begin
       Result := False;
     end
     else begin
+      DCOrigin:=GetDCOffset(PDeviceContext(DC));
       SelectGDKPenProps(DC);
-      gdk_draw_line(Drawable, GC, PenPos.X+Origin.X, PenPos.Y+Origin.Y,
-                    X+Origin.X, Y+Origin.Y);
+      gdk_draw_line(Drawable, GC, PenPos.X+DCOrigin.X, PenPos.Y+DCOrigin.Y,
+                    X+DCOrigin.X, Y+DCOrigin.Y);
       PenPos:= Point(X, Y);
       Result := True;
     end;
@@ -4127,6 +4153,7 @@ var
   PointArray: PGDKPoint;
   Tmp, RGN : hRGN;
   ClipRect : TRect;
+  DCOrigin: Tpoint;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -4138,11 +4165,12 @@ begin
       Result := False;
     end
     else begin
+      DCOrigin:=GetDCOffset(PDeviceContext(DC));
       if NumPts<=0 then exit;
       GetMem(PointArray,SizeOf(TGdkPoint)*NumPts);
       for i:=0 to NumPts-1 do begin
-        PointArray[i].x:=Points[i].x+Origin.X;
-        PointArray[i].y:=Points[i].y+Origin.Y;
+        PointArray[i].x:=Points[i].x+DCOrigin.X;
+        PointArray[i].y:=Points[i].y+DCOrigin.Y;
       end;
 
       If (Points[NumPts-1].X <> Points[0].X) or
@@ -4150,8 +4178,8 @@ begin
       then begin
         Inc(NumPts);
         ReallocMem(PointArray,SizeOf(TGdkPoint)*NumPts);
-        PointArray[NumPts - 1].x:=Points[0].x+Origin.X;
-        PointArray[NumPts - 1].y:=Points[0].y+Origin.Y;
+        PointArray[NumPts - 1].x:=Points[0].x+DCOrigin.X;
+        PointArray[NumPts - 1].y:=Points[0].y+DCOrigin.Y;
       end;
 
       // first draw interior in brush color
@@ -4185,6 +4213,7 @@ end;
 function TgtkObject.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
 var i: integer;
   PointArray: PGDKPoint;
+  DCOrigin: TPoint;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -4197,10 +4226,11 @@ begin
     end
     else begin
       if NumPts<=0 then exit;
+      DCOrigin:=GetDCOffset(PDeviceContext(DC));
       GetMem(PointArray,SizeOf(TGdkPoint)*NumPts);
       for i:=0 to NumPts-1 do begin
-        PointArray[i].x:=Points[i].x+Origin.X;
-        PointArray[i].y:=Points[i].y+Origin.Y;
+        PointArray[i].x:=Points[i].x+DCOrigin.X;
+        PointArray[i].y:=Points[i].y+DCOrigin.Y;
       end;
 
       // draw outline
@@ -4423,6 +4453,7 @@ end;
 function TgtkObject.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
   Width, Height: Integer;
+  DCOrigin: TPoint;
 begin
   Assert(False, Format('trace:> [TgtkObject.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
   Result := IsValidDC(DC);
@@ -4439,12 +4470,13 @@ begin
       Height := Y2 - Y1;
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
-      gdk_draw_rectangle(Drawable, GC, 1, X1+Origin.X, Y1+Origin.Y,
+      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      gdk_draw_rectangle(Drawable, GC, 1, X1+DCOrigin.X, Y1+DCOrigin.Y,
                          Width, Height);
 
       // Draw outline
       SelectGDKPenProps(DC);
-      gdk_draw_rectangle(Drawable, GC, 0, X1+Origin.X, Y1+Origin.Y,
+      gdk_draw_rectangle(Drawable, GC, 0, X1+DCOrigin.X, Y1+DCOrigin.Y,
                          Width, Height);
       Result := True;
     end;
@@ -6021,18 +6053,21 @@ const //                 FROM     TO
     (@DrawableToNoDrawable, @DrawableToDrawable)
   );
 
+var DCOrigin: TPoint;
 begin
   Assert(True, Format('trace:> [TgtkObject.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
   if Result
   then begin
     with PDeviceContext(DestDC)^ do begin
-      Inc(X,Origin.X);
-      Inc(Y,Origin.Y);
+      DCOrigin:=GetDCOffset(PDeviceContext(DestDC));
+      Inc(X,DCOrigin.X);
+      Inc(Y,DCOrigin.Y);
     end;
     with PDeviceContext(SrcDC)^ do begin
-      Inc(XSrc,Origin.X);
-      Inc(YSrc,Origin.Y);
+      DCOrigin:=GetDCOffset(PDeviceContext(SrcDC));
+      Inc(XSrc,DCOrigin.X);
+      Inc(YSrc,DCOrigin.Y);
     end;
 
     //writeln('TgtkObject.StretchBlt X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
@@ -6099,6 +6134,7 @@ var
   TM : TTextMetric;
   UseFont : PGDKFont;
   UnRef : Boolean;
+  DCOrigin: TPoint;
 begin
   Result := IsValidDC(DC);
   if Result
@@ -6121,8 +6157,9 @@ begin
       If UseFont = nil then
         WriteLn('WARNING: [TgtkObject.TextOut] Missing Font')
       else begin
+        DCOrigin:=GetDCOffset(PDeviceContext(DC));
         GetTextExtentPoint(DC, Str, Count, Sz);
-        aRect := Rect(X+Origin.X,Y+Origin.Y,X + Sz.CX, Sz.CY);
+        aRect := Rect(X+DCOrigin.X,Y+DCOrigin.Y,X + Sz.CX, Sz.CY);
         FillRect(DC,aRect,hBrush(CurrentBrush));
         GetTextMetrics(DC, TM);
         TxtPt.X := X;
@@ -6133,7 +6170,7 @@ begin
         {$EndIf}
         SelectGDKTextProps(DC);
         gdk_draw_text(Drawable, UseFont,
-          GC, TxtPt.X+Origin.X, TxtPt.Y+Origin.Y, Str, Count);
+          GC, TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
         Result := True;
         If UnRef then
           GDK_Font_UnRef(UseFont);
@@ -6323,6 +6360,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.122  2002/09/06 16:38:25  lazarus
+  MG: added GetDCOffset
+
   Revision 1.121  2002/09/06 15:57:36  lazarus
   MG: fixed notebook client area, send messages and minor bugs
 
