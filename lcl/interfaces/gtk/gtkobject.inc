@@ -1442,7 +1442,6 @@ begin
       LM_BTNDEFAULT_CHANGED :
       Begin
         if (TButton(Sender).Default) then begin
-        writeln('AAA1 ',TButton(Sender).Name,':',TButton(Sender).ClassName);
           TButton(Sender).SetFocus;
           //and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(handle))) then
           //  gtk_widget_grab_default(pgtkwidget(handle))
@@ -6734,6 +6733,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.305  2002/12/25 14:21:28  mattias
+  fixed setting activecontrol to nil when removing component
+
   Revision 1.304  2002/12/25 11:53:47  mattias
   Button.Default now sets focus
 
