@@ -49,6 +49,8 @@ begin
   FAccelGroup := gtk_accel_group_new();
   FTimerData  := TList.Create;
   FDefaultFont:= nil;
+  FRCFilename := ChangeFileExt(ParamStr(0),'.gtkrc');
+  FRCFileParsed := false;
 end;
 
 {------------------------------------------------------------------------------
@@ -599,6 +601,10 @@ begin
 
   // call init and pass cmd line args
   gtk_init (@argc, @argv);
+  
+  // read gtk rc file
+  FRCFileParsed:=true;
+  ParseRCFile;
 
   // Create default cursor types
   Cursor_Watch := gdk_Cursor_New(gdk_Watch);
@@ -2654,6 +2660,36 @@ var
    //pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
    ParentForm: TCustomForm;
 
+  procedure Set_RC_Name(AWidget: PGtkWidget);
+  var RCName: string;
+    AComponent: TComponent;
+  begin
+    if (AWidget=nil) or (not (Sender is TComponent)) then exit;
+
+    // check if a unique name can be created
+    AComponent:=TComponent(Sender);
+    while (AComponent<>nil) and (AComponent.Name<>'') do begin
+      AComponent:=AComponent.Owner;
+    end;
+    if (AComponent=nil) or (AComponent=TComponent(Application)) then begin
+      // create unique name
+      AComponent:=TComponent(Sender);
+      RCName:=AComponent.Name;
+      while (AComponent<>nil) do begin
+        AComponent:=TComponent(AComponent.Owner);
+        if (AComponent<>nil) and (AComponent.Name<>'') then
+          RCName:=AComponent.Name+'_'+RCName;
+      end;
+      gtk_widget_set_name(AWidget,PChar(RCName));
+      gtk_widget_set_rc_style(AWidget);
+    end;
+    if (Sender is TCustomForm)
+    and ((Application.MainForm=TCustomForm(Sender))
+      or (Application.MainForm=nil))
+    then
+      UpdateSysColorMap(AWidget);
+  end;
+
 begin
   Assert(False, 'Trace:In CreateComponet');
   p := nil;
@@ -2857,7 +2893,7 @@ begin
 
       gtk_window_set_policy (GTK_WINDOW (p), 1, 1, 0);
       gtk_window_set_title(pGtkWindow(p), strTemp);
-
+      
       {$IFDEF ClientRectBugFix}
       {gtk_window_set_default_size(PgtkWindow(p),
                                   TForm(Sender).Width,TForm(Sender).Height);
@@ -3272,6 +3308,7 @@ begin
   if (Sender is TCommonDialog) then
     TCommonDialog(Sender).Handle:= THandle(p);
 
+  Set_RC_Name(p);
 
   StrDispose(StrTemp);
   if P <> nil then HookSignals(Sender);
@@ -4217,6 +4254,36 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: SetRCFilename
+  Params:  const AValue: string
+  Returns: none
+
+  Sets the gtk resource file and parses it.
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.SetRCFilename(const AValue: string);
+begin
+  if FRCFilename=AValue then exit;
+  FRCFilename:=AValue;
+  ParseRCFile;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ParseRCFile
+  Params:  const AValue: string
+  Returns: none
+
+  Sets the gtk resource file and parses it.
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.ParseRCFile;
+begin
+  if (FRCFilename<>'') and FileExists(FRCFilename) and FRCFileParsed then
+  begin
+    gtk_rc_parse(PChar(FRCFilename));
+    FRCFileParsed:=true;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: HashPaintMessage
   Params: a PaintMessage in the Message queue (= PLazQueueItem)
   Returns: a hash index
@@ -4445,6 +4512,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.128  2002/05/28 19:39:45  lazarus
+  MG: added gtk rc file support and started stule dependent syscolors
+
   Revision 1.127  2002/05/28 14:58:31  lazarus
   MG: added scrollbars for TListView
 
