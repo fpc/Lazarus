@@ -2461,44 +2461,6 @@ begin
       if CharCode = VK_UNKNOWN then Exit;
     end;
 
-    // check popup menu
-    if Assigned(FPopupMenu) then
-    begin
-      if FPopupMenu.IsShortCut(Message) then
-      begin
-        CharCode := VK_UNKNOWN;
-        exit;
-      end;
-    end;
-  
-    // let each parent form handle shortcuts
-    AParent:=Parent;
-    while (AParent<>nil) do begin
-      if (AParent is TCustomForm) then begin
-        if TCustomForm(AParent).IsShortcut(Message) then
-        begin
-          CharCode := VK_UNKNOWN;
-          exit;
-        end;
-      end;
-      AParent:=AParent.Parent;
-    end;
-
-    // let application handle shortcut
-    if Assigned(Application) and Application.IsShortcut(Message) then
-    begin
-      CharCode := VK_UNKNOWN;
-      exit;
-    end;
-
-    // let parent(s) handle key from child key
-    if Assigned(Parent) then
-      if Parent.ChildKey(Message) then
-      begin
-        CharCode := VK_UNKNOWN;
-        exit;
-      end;
-
     // let user handle the key
     if not (csNoStdEvents in ControlStyle) then 
     begin
@@ -2540,10 +2502,37 @@ end;
 function TWinControl.DoRemainingKeyDown(var Message: TLMKeyDown): Boolean;
 var
   ShiftState: TShiftState;
+  AParent: TWinControl;
 begin
   Result:=true;
   
   ShiftState := KeyDataToShiftState(Message.KeyData);
+
+  // check popup menu
+  if Assigned(FPopupMenu) then
+  begin
+    if FPopupMenu.IsShortCut(Message) then
+      exit;
+  end;
+
+  // let each parent form handle shortcuts
+  AParent:=Parent;
+  while (AParent<>nil) do begin
+    if (AParent is TCustomForm) then begin
+      if TCustomForm(AParent).IsShortcut(Message) then
+        exit;
+    end;
+    AParent:=AParent.Parent;
+  end;
+
+  // let application handle shortcut
+  if Assigned(Application) and Application.IsShortcut(Message) then
+    exit;
+
+  // let parent(s) handle key from child key
+  if Assigned(Parent) then
+    if Parent.ChildKey(Message) then
+      exit;
 
   // handle LCL special keys
   ControlKeyDown(Message.CharCode,ShiftState);
@@ -4464,6 +4453,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.311  2005/02/06 15:49:49  micha
+  handle generic shortcuts after widgetset specific shortcuts
+
   Revision 1.310  2005/02/05 16:09:52  marc
   * first 64bit changes
 
