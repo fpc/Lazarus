@@ -52,12 +52,12 @@ procedure laz_gdk_gc_set_dashes(gc:PGdkGC; dash_offset:gint;
 
 
 {$IFNDEF GTK2}
-  GTK_TYPE_CONTAINER = GTK_CONTAINER_TYPE;
-  GTK_TYPE_BIN = GTK_BIN_TYPE;
-  GTK_TYPE_SCROLLED_WINDOW = GTK_SCROLLED_WINDOW_TYPE;
-  GTK_TYPE_COMBO = GTK_COMBO_TYPE;
-  GTK_TYPE_WINDOW = GTK_WINDOW_TYPE;
-  GTK_TYPE_MENU = GTK_MENU_TYPE;
+  function  GTK_TYPE_CONTAINER : TGTKType; cdecl; external gtkdll name 'gtk_container_get_type';
+  function  GTK_TYPE_BIN  : TGTKType; cdecl; external gtkdll name 'gtk_bin_get_type';
+  function  GTK_TYPE_SCROLLED_WINDOW : TGTKType; cdecl; external gtkdll name 'gtk_scrolled_window_get_type';
+  function  GTK_TYPE_COMBO  : TGTKType; cdecl; external gtkdll name 'gtk_combo_get_type';
+  function  GTK_TYPE_WINDOW  : TGTKType; cdecl; external gtkdll name 'gtk_window_get_type';
+  function  GTK_TYPE_MENU  : TGTKType; cdecl; external gtkdll name 'gtk_menu_get_type';
 {$ENDIF}
 
 (* GTKCallback.inc headers *)
