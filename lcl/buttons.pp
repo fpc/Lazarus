@@ -182,9 +182,6 @@ type
    
   { TSpeedButton }
   
-  TMyCollectionItem = class(TCollectionItem)
-  end;
-
   TSpeedButton = class(TGraphicControl)
   private
     FAllowAllUp : Boolean;
@@ -208,7 +205,7 @@ type
     procedure SetGlyph(value : TBitmap);
     procedure SetLayout(const Value : TButtonLayout);
     procedure SetTransparent(const Value : boolean);
-    procedure CMButtonPressed(var MEssage : TLMessage); message CM_BUTTONPRESSED;
+    procedure CMButtonPressed(var Message : TLMessage); message CM_BUTTONPRESSED;
     procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
     procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
@@ -291,6 +288,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.38  2003/04/02 13:23:23  mattias
+  fixed default font
+
   Revision 1.37  2003/03/08 21:51:57  mattias
   make resource string dialog nearly complete
 
