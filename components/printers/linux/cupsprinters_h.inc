@@ -53,10 +53,18 @@
   implementation in the LCL, but was adapted to work with CUPS.
   ---------------------------------------------------------------------}
 uses
-  Classes, SysUtils, PostScriptCanvas,Printers,dialogs,
-  Controls,CUPSDyn;
+  Classes, SysUtils, LCLProc, PostScriptCanvas, Printers, Dialogs, Controls,
+  CUPSDyn;
   
 type
+  TCUPSPrinterState = (
+    cpsDefaultPaperNameValid,
+    cpsOrientationValid,
+    cpsPaperNameValid,
+    cpsCopiesValid
+    );
+  TCUPSPrinterStates = set of TCUPSPrinterState;
+
   TCUPSPrinter = Class(TPrinter)
   private
      fcupsPrinters: Pcups_dest_t;    //Printers avaible
@@ -66,7 +74,11 @@ type
      fcupsPPDName : String;          //File name of PPD file (temporary copy)
      fcupsOptions : Pcups_option_t;  //Options selected
      fcupsNumOpts : Integer;         //Number of Options
-
+     fStates      : TCUPSPrinterStates;
+     fCachedGetDefaultPaperName: string;
+     fCachedOrientation: TPrinterOrientation;
+     fCachedPaperName: string;
+     fCachedCopies: integer;
 
      function GetCupsRequest : Pipp_t;
      procedure DoCupsConnect;
@@ -90,7 +102,7 @@ type
      function DoGetDefaultPaperName: string; override;
      function DoGetPaperName: string; override;
      procedure DoSetPaperName(aName : string); override;
-     function DoGetPaperRect(aName : string; Var aPaperRc : TPaperRect) : Integer; override;
+     function DoGetPaperRect(aName : string; var aPaperRc: TPaperRect): Integer; override;
      function DoGetPrinterState: TPrinterState; override;
      
      function GetPrinterType : TPrinterType; override;
@@ -104,15 +116,15 @@ type
 
      procedure GetEnumAttributeString(aName : PChar; Lst : TStrings);
      function GetAttributeInteger(aName : PChar;DefaultValue : Integer) : Integer;
-     function GetAttributeString(aName: PChar; DefaultValue : string): string;
+     function GetAttributeString(aName: PChar; const DefaultValue : string): string;
      function GetAttributeBoolean(aName : PChar; DefaultValue : Boolean) : Boolean;
-     function EnumPPDChoice(Lst : TStrings; aKeyWord : string) : Integer;
+     function EnumPPDChoice(Lst : TStrings; const aKeyWord : string) : Integer;
 
      procedure cupsAddOption(aName,aValue: string);
      function cupsGetOption(aKeyWord: string): String;
   public
     constructor Create; override;
-    destructor destroy; override;
+    destructor Destroy; override;
     
     function PrintDialog : Boolean;  override;
     function PrinterSetup: Boolean;  override;

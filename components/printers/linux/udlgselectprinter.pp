@@ -148,13 +148,13 @@ end;
 //Convert an local date & time to a GMT(UTC) Date & Time
 function LocalToGMTDateTime(aDate : TDateTime) : TDateTime;
 begin
-  Result:=aDate-((LapseLocalToGMT/3600)/24);
+  Result:=aDate-((TDateTime(LapseLocalToGMT)/3600)/24);
 end;
 
 //Convert an GMT(UTC) Date & Time to local date & time
 function GMTToLocalDateTime(aDate : TDateTime) : TDateTime;
 begin
-  Result:=aDate+((LapseLocalToGMT/3600)/24);
+  Result:=aDate+((TDateTime(LapseLocalToGMT)/3600)/24);
 end;
 
 {---------------------------------------------------}

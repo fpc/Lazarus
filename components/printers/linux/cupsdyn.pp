@@ -909,6 +909,7 @@ Type
                           data : pointer;              //Data in attribute
                         end );
      end;
+  Pipp_value_t = ^ipp_value_t;
 
 
   //Attribute
@@ -1347,14 +1348,14 @@ end;
 function CUPSLibInstalled : Boolean;
 begin
   Result:=False;
-  Try
-    if RefCount=0 then
+  if RefCount=0 then begin
+    Try
       InitializeCups;
-
-    Result:=(RefCount>0);
-  Except
-    Result:=False;
+    Except
+      exit;
+    end;
   end;
+  Result:=(RefCount>0);
 end;
 
 procedure FinalizeCups;

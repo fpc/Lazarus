@@ -64,6 +64,8 @@ begin
 
   fcupsNumOpts:=0;
   fcupsOptions:=nil;
+  FStates:=FStates-[cpsDefaultPaperNameValid,cpsOrientationValid,
+                    cpsPaperNameValid,cpsCopiesValid];
 end;
 
 procedure TCUPSPrinter.cupsAddOption(aName,aValue: string);
@@ -140,8 +142,9 @@ begin
     else
        PrinterName:='';
 
-    Result:=cupsdyn.cupsPrintFile(PChar(PrinterName),PChar(aFileName),PChar(Self.Title),
-                               fcupsNumOpts,fcupsOptions);
+    Result:=cupsdyn.cupsPrintFile(PChar(PrinterName),PChar(aFileName),
+                                  PChar(Self.Title),
+                                  fcupsNumOpts,fcupsOptions);
 
   end;
 end;
@@ -261,7 +264,8 @@ begin
 end;
 
 //Enum all options associed with aKeyWord
-function TCUPSPrinter.EnumPPDChoice(Lst : TStrings; aKeyWord : string) : Integer;
+function TCUPSPrinter.EnumPPDChoice(Lst : TStrings;
+  const aKeyWord : string) : Integer;
 var i         : integer;
     Option    : Pppd_option_t;
     Choice    : Pppd_choice_t;
@@ -321,9 +325,9 @@ begin
         for i:=0 to Attribute^.num_values-1 do
         begin
           if Attribute^.value_tag=IPP_TAG_INTEGER then
-             Lst.add(IntToStr(Attribute^.values[i].aInteger))
+             Lst.add(IntToStr(Pipp_value_t(@Attribute^.values)[i].aInteger))
           else
-             Lst.add(Attribute^.values[i]._string.text);
+             Lst.add(Pipp_value_t(@Attribute^.values)[i]._string.text);
         end;
       end;
     finally
@@ -353,7 +357,8 @@ begin
   end;
 end;
 
-function TCUPSPrinter.GetAttributeString(aName: PChar; DefaultValue : string): string;
+function TCUPSPrinter.GetAttributeString(aName: PChar;
+  const DefaultValue : string): string;
 var
   Reponse   : Pipp_t; //IPP Reponse
   Attribute : Pipp_attribute_t; //Current attribute
@@ -373,7 +378,8 @@ begin
   end;
 end;
 
-function TCUPSPrinter.GetAttributeBoolean(aName: PChar; DefaultValue : Boolean): Boolean;
+function TCUPSPrinter.GetAttributeBoolean(aName: PChar;
+  DefaultValue : Boolean): Boolean;
 var
   Reponse   : Pipp_t; //IPP Reponse
   Attribute : Pipp_attribute_t; //Current attribute
@@ -496,10 +502,12 @@ Var i  : Integer;
     P  : Pcups_dest_t;
     Fn : String;
 begin
+  //debugln('TCUPSPrinter.DoSetPrinter aName="',aName,'"');
   Result:=inherited DoSetPrinter(aName);
   if not CUPSLibInstalled then Exit;
+  //debugln('TCUPSPrinter.DoSetPrinter B Printers.Count=',dbgs(Printers.Count));
 
-  //Set the curent printer. If aName='' then use a default Frinter (index 0)
+  //Set the current printer. If aName='' then use a default Printer (index 0)
   If (Printers.Count>0) then
   begin
     if (aName<>'') and Assigned(fcupsPPD) then
@@ -509,6 +517,7 @@ begin
       if i=PrinterIndex then
       begin
         Result:=PrinterIndex;
+        //debugln('TCUPSPrinter.DoSetPrinter no change');
         Exit;
       end;
     end;
@@ -541,7 +550,7 @@ begin
       P:=nil;
       P:=cupsGetDest(PChar(aName),nil,Printers.Count,fcupsPrinters);
       if not Assigned(P) then
-        raise Exception.Create(Format('"%s" is not a valide printer.',[aName]));
+        raise Exception.Create(Format('"%s" is not a valid printer.',[aName]));
       fcupsPrinter:=P;
 
       //Open linked ppdfile
@@ -559,17 +568,22 @@ end;
 
 function TCUPSPrinter.DoGetCopies: Integer;
 begin
-  Result:=inherited DoGetCopies;
+  if not (cpsCopiesValid in FStates) then begin
+    fCachedCopies:=inherited DoGetCopies;
 
-  //Get default value if defined
-  Result:=GetAttributeInteger('copies-default',Result);
-  //Get Copies in options or return default value
-  Result:=StrToIntdef(cupsGetOption('copies'),Result);
+    //Get default value if defined
+    fCachedCopies:=GetAttributeInteger('copies-default',fCachedCopies);
+    //Get Copies in options or return default value
+    fCachedCopies:=StrToIntdef(cupsGetOption('copies'),fCachedCopies);
+    //TODO Include(FStates,cpsCopiesValid);
+  end;
+  Result:=fCachedCopies;
 end;
 
 procedure TCUPSPrinter.DoSetCopies(aValue: Integer);
 var i : Integer;
 begin
+  //if aValue=DoGetCopies then exit;
   inherited DoSetCopies(aValue);
 
   if Printers.Count>0 then
@@ -585,22 +599,27 @@ end;
 function TCUPSPrinter.DoGetOrientation: TPrinterOrientation;
 var i  : Integer;
 begin
-  Result:=inherited DoGetOrientation;
+  if not (cpsOrientationValid in FStates) then begin
+    fCachedOrientation:=inherited DoGetOrientation;
 
-  if Printers.Count>0 then
-  begin
-    //Default orientation value
-    i:=GetAttributeInteger('orientation-requested-default',3);
-    //Get selected orientation or Default if not defined
-    i:=StrToIntDef(cupsGetOption('orientation-requested'),i);
-    //Calc result
-    Result:=TPrinterOrientation(i-3);
+    if Printers.Count>0 then
+    begin
+      //Default orientation value
+      i:=GetAttributeInteger('orientation-requested-default',3);
+      //Get selected orientation or Default if not defined
+      i:=StrToIntDef(cupsGetOption('orientation-requested'),i);
+      //Calc result
+      fCachedOrientation:=TPrinterOrientation(i-3);
+    end;
+    //TODO Include(FStates,cpsOrientationValid);
   end;
+  Result:=fCachedOrientation;
 end;
 
 procedure TCUPSPrinter.DoSetOrientation(aValue: TPrinterOrientation);
 var St : String;
 begin
+  //if aValue=DoGetOrientation then exit;
   inherited DoSetOrientation(aValue);
 
   if Printers.Count>0 then
@@ -615,13 +634,22 @@ end;
 
 function TCUPSPrinter.DoGetDefaultPaperName: string;
 begin
-  Result:=inherited DoGetDefaultPaperName;
-  Result:=GetAttributeString('media-default',Result);
+  if not (cpsDefaultPaperNameValid in FStates) then begin
+    fCachedGetDefaultPaperName:=inherited DoGetDefaultPaperName;
+    fCachedGetDefaultPaperName:=
+                 GetAttributeString('media-default',fCachedGetDefaultPaperName);
+    //TODO Include(FStates,cpsDefaultPaperNameValid);
+  end;
+  Result:=fCachedGetDefaultPaperName;
 end;
 
 function TCUPSPrinter.DoGetPaperName: string;
 begin
-  Result:=cupsGetOption('PageSize');
+  if not (cpsPaperNameValid in FStates) then begin
+    fCachedPaperName:=cupsGetOption('PageSize');
+    //TODO Include(FStates,cpsPaperNameValid);
+  end;
+  Result:=fCachedPaperName;
 end;
 
 procedure TCUPSPrinter.DoSetPaperName(aName: string);
@@ -634,7 +662,8 @@ end;
 //Result : -1 no result
 //          0 aPaperRc.WorkRect is a margins
 //          1 aPaperRc.WorkRect is really the work rect
-function TCUPSPrinter.DoGetPaperRect(aName: string; var aPaperRc: TPaperRect): Integer;
+function TCUPSPrinter.DoGetPaperRect(aName: string;
+  var aPaperRc: TPaperRect): Integer;
 var P : Pppd_size_t;
 begin
   Result:=inherited DoGetPaperRect(aName, aPaperRc);
@@ -698,7 +727,7 @@ end;
 
 initialization
   if Assigned(Printer) then
-     Printer.Free;
+    Printer.Free;
 
   Printer:=TCUPSPrinter.Create;
 

@@ -1,20 +1,23 @@
 <?xml version="1.0"?>
 <CONFIG>
   <Package Version="2">
-    <PathDelim Value="\"/>
     <Name Value="Printer4Lazarus"/>
     <Author Value="Olivier Guilbaud"/>
     <CompilerOptions>
       <Version Value="4"/>
-      <PathDelim Value="\"/>
       <SearchPaths>
-        <IncludeFiles Value="$(LazarusDir)\components\printers\$(TargetOS)\"/>
-        <OtherUnitFiles Value="$(LazarusDir)\components\printers\$(TargetOS)\"/>
-        <UnitOutputDirectory Value="lib\"/>
+        <IncludeFiles Value="$(LazarusDir)/components/printers/$(TargetOS)/"/>
+        <OtherUnitFiles Value="$(LazarusDir)/components/printers/$(TargetOS)/"/>
+        <UnitOutputDirectory Value="lib/"/>
       </SearchPaths>
       <CodeGeneration>
         <Generate Value="Faster"/>
       </CodeGeneration>
+      <Linking>
+        <Debugging>
+          <GenGProfCode Value="True"/>
+        </Debugging>
+      </Linking>
       <Other>
         <CompilerPath Value="$(CompPath)"/>
       </Other>
@@ -22,7 +25,7 @@
     <Description Value="Printer implementation for Lazarus"/>
     <License Value="LGPL"/>
     <Version Build="1"/>
-    <Files Count="3">
+    <Files Count="21">
       <Item1>
         <Filename Value="printersdlgs.lrs"/>
         <Type Value="LRS"/>
@@ -36,6 +39,82 @@
         <Filename Value="osprinters.pas"/>
         <UnitName Value="OSPrinters"/>
       </Item3>
+      <Item4>
+        <Filename Value="readme.txt"/>
+        <Type Value="Text"/>
+      </Item4>
+      <Item5>
+        <Filename Value="linux/udlgselectprinter.lfm"/>
+        <Type Value="LFM"/>
+      </Item5>
+      <Item6>
+        <Filename Value="linux/udlgselectprinter.lrs"/>
+        <Type Value="LRS"/>
+      </Item6>
+      <Item7>
+        <Filename Value="linux/udlgselectprinter.pp"/>
+        <Type Value="Text"/>
+        <UnitName Value="uDlgSelectPrinter"/>
+      </Item7>
+      <Item8>
+        <Filename Value="linux/cupsdyn.pp"/>
+        <Type Value="Text"/>
+        <UnitName Value="cupsdyn"/>
+      </Item8>
+      <Item9>
+        <Filename Value="linux/cupsprinters.inc"/>
+        <Type Value="Include"/>
+      </Item9>
+      <Item10>
+        <Filename Value="linux/cupsprinters_h.inc"/>
+        <Type Value="Include"/>
+      </Item10>
+      <Item11>
+        <Filename Value="linux/jobsimglist.lrs"/>
+        <Type Value="LRS"/>
+      </Item11>
+      <Item12>
+        <Filename Value="linux/printerprop.lrs"/>
+        <Type Value="LRS"/>
+      </Item12>
+      <Item13>
+        <Filename Value="linux/selectprinter.lrs"/>
+        <Type Value="LRS"/>
+      </Item13>
+      <Item14>
+        <Filename Value="linux/udlgprintersjobs.lfm"/>
+        <Type Value="LFM"/>
+      </Item14>
+      <Item15>
+        <Filename Value="linux/udlgprintersjobs.lrs"/>
+        <Type Value="LRS"/>
+      </Item15>
+      <Item16>
+        <Filename Value="linux/udlgprintersjobs.pp"/>
+        <Type Value="Text"/>
+        <UnitName Value="udlgPrintersJobs"/>
+      </Item16>
+      <Item17>
+        <Filename Value="linux/udlgpropertiesprinter.lfm"/>
+        <Type Value="LFM"/>
+      </Item17>
+      <Item18>
+        <Filename Value="linux/udlgpropertiesprinter.lrs"/>
+        <Type Value="LRS"/>
+      </Item18>
+      <Item19>
+        <Filename Value="linux/udlgpropertiesprinter.pp"/>
+        <Type Value="Text"/>
+        <UnitName Value="uDlgPropertiesPrinter"/>
+      </Item19>
+      <Item20>
+        <Filename Value="linux/udlgselectprinter.lfm"/>
+        <Type Value="LFM"/>
+      </Item20>
+      <Item21>
+        <Filename Value="linux/udlgselectprinter.lrs"/>
+        <Type Value="LRS"/>
+      </Item21>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="2">
@@ -48,11 +127,10 @@
       </Item2>
     </RequiredPkgs>
     <UsageOptions>
-      <UnitPath Value="$(PkgOutDir)\"/>
+      <UnitPath Value="$(PkgOutDir)/"/>
     </UsageOptions>
     <PublishOptions>
       <Version Value="2"/>
-      <DestinationDirectory Value="$(TestDir)\publishedpackage\"/>
       <CommandAfter Value="tar czf $MakeFile($(ProjPublishDir)).tgz $(ProjPublishDir)"/>
     </PublishOptions>
   </Package>
