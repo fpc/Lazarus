@@ -75,6 +75,9 @@ type
     destructor Destroy; override;
     procedure Edit; override;
     property Menu: TMainMenu read fMenu write fMenu;
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
   end;
 
 var
@@ -264,6 +267,21 @@ begin
                                           TMenu(GetComponent), Self, fDesigner);
   MainMenuEditorForm.Show;
   //MainMenuEditorForm.Free;
+end;
+
+function TMainMenuComponentEditor.GetVerbCount: Integer;
+begin
+  Result:=1;
+end;
+
+function TMainMenuComponentEditor.GetVerb(Index: Integer): string;
+begin
+  Result:='Edit';
+end;
+
+procedure TMainMenuComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  Edit;
 end;
 
 { //TMainMenuComponentEditor}

@@ -184,6 +184,9 @@ type
       var Continue: Boolean); virtual;
   public
     procedure Edit; override;
+    function GetVerbCount: Integer; override;
+    function GetVerb(Index: Integer): string; override;
+    procedure ExecuteVerb(Index: Integer); override;
   end;
   
 { TNotebookComponentEditor
@@ -444,6 +447,21 @@ begin
     FBest := nil;
     Components.Free;
   end;
+end;
+
+function TDefaultComponentEditor.GetVerbCount: Integer;
+begin
+  Result:=1;
+end;
+
+function TDefaultComponentEditor.GetVerb(Index: Integer): string;
+begin
+  Result:='Edit';
+end;
+
+procedure TDefaultComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  Edit;
 end;
 
 
