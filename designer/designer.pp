@@ -376,7 +376,7 @@ end;
 Procedure TDesigner.NudgeControl(DiffX, DiffY : Integer);
 Begin
   {$IFDEF VerboseDesigner}
-  Writeln('[TDesigner.NudgeControl]');
+  DebugLn('[TDesigner.NudgeControl]');
   {$ENDIF}
   if (ControlSelection.SelectionForm<>Form)
   or ControlSelection.LookupRootSelected then exit;
@@ -386,7 +386,7 @@ end;
 Procedure TDesigner.NudgeSize(DiffX, DiffY: Integer);
 Begin
   {$IFDEF VerboseDesigner}
-  Writeln('[TDesigner.NudgeSize]');
+  DebugLn('[TDesigner.NudgeSize]');
   {$ENDIF}
   if (ControlSelection.SelectionForm<>Form)
   or ControlSelection.LookupRootSelected then exit;
@@ -724,9 +724,9 @@ begin
           inc(EndPos);
         // extract text for the current component
         {$IFDEF VerboseDesigner}
-        writeln('TDesigner.DoInsertFromStream==============================');
-        writeln(copy(AllComponentText,StartPos,EndPos-StartPos));
-        writeln('TDesigner.DoInsertFromStream==============================');
+        DebugLn('TDesigner.DoInsertFromStream==============================');
+        DebugLn(copy(AllComponentText,StartPos,EndPos-StartPos));
+        DebugLn('TDesigner.DoInsertFromStream==============================');
         {$ENDIF}
 
         CurTextCompStream:=TMemoryStream.Create;
@@ -900,7 +900,7 @@ end;
 procedure TDesigner.InvalidateWithParent(AComponent: TComponent);
 begin
   {$IFDEF VerboseDesigner}
-  writeln('TDesigner.INVALIDATEWITHPARENT ',AComponent.Name,':',AComponent.ClassName);
+  DebugLn('TDesigner.INVALIDATEWITHPARENT ',AComponent.Name,':',AComponent.ClassName);
   {$ENDIF}
   if AComponent is TControl then begin
     if TControl(AComponent).Parent<>nil then
@@ -1078,22 +1078,22 @@ Begin
 
 
   {$IFDEF VerboseDesigner}
-  writeln('************************************************************');
-  write('MouseDownOnControl');
-  write(' ',Sender.Name,':',Sender.ClassName);
+  DebugLn('************************************************************');
+  DbgOut('MouseDownOnControl');
+  DbgOut(' ',Sender.Name,':',Sender.ClassName);
   //write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
   //write(' Mouse=',MouseDownPos.X,',',MouseDownPos.Y);
   //writeln('');
 
   if (TheMessage.Keys and MK_Shift) = MK_Shift then
-    Write(' Shift down')
+    DbgOut(' Shift down')
   else
-    Write(' No Shift down');
+    DbgOut(' No Shift down');
 
   if (TheMessage.Keys and MK_Control) = MK_Control then
-    Writeln(', CTRL down')
+    DebugLn(', CTRL down')
   else
-    Writeln(', No CTRL down');
+    DebugLn(', No CTRL down');
   {$ENDIF}
 
   SelectedCompClass:=GetSelectedComponentClass;
@@ -1158,7 +1158,7 @@ Begin
   end;
 
   {$IFDEF VerboseDesigner}
-  writeln('[TDesigner.MouseDownOnControl] END');
+  DebugLn('[TDesigner.MouseDownOnControl] END');
   {$ENDIF}
 End;
 
@@ -1278,7 +1278,7 @@ var
         FOnUnselectComponentClass(Self);
 
     {$IFDEF VerboseDesigner}
-    writeln('NEW COMPONENT ADDED: Form.ComponentCount=',Form.ComponentCount,
+    DebugLn('NEW COMPONENT ADDED: Form.ComponentCount=',DbgS(Form.ComponentCount),
        '  NewComponent.Owner.Name=',NewComponent.Owner.Name);
     {$ENDIF}
   end;
@@ -1318,8 +1318,7 @@ var
     ControlSelection.RubberbandActive:=false;
     ControlSelection.EndUpdate;
     {$IFDEF VerboseDesigner}
-    with ControlSelection.Grabbers[0] do
-      writeln('RubberbandSelect ',Left,',',Top,',',Width,',',Height);
+    DebugLn('RubberbandSelect ',DbgS(ControlSelection.Grabbers[0]));
     {$ENDIF}
     Form.Invalidate;
   end;
@@ -1371,11 +1370,11 @@ Begin
   MouseUpPos:=GetFormRelativeMousePosition(Form);
 
   {$IFDEF VerboseDesigner}
-  writeln('************************************************************');
-  write('MouseUpOnControl');
-  write(' ',Sender.Name,':',Sender.ClassName);
+  DebugLn('************************************************************');
+  DbgOut('MouseUpOnControl');
+  DbgOut(' ',Sender.Name,':',Sender.ClassName);
   //write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
-  writeln('');
+  DebugLn('');
   {$ENDIF}
 
   if TheMessage.Msg=LM_LBUTTONUP then begin
@@ -1415,7 +1414,7 @@ Begin
   MouseDownComponent:=nil;
   MouseDownSender:=nil;
   {$IFDEF VerboseDesigner}
-  writeln('[TDesigner.MouseLeftUpOnControl] END');
+  DebugLn('[TDesigner.MouseLeftUpOnControl] END');
   {$ENDIF}
 end;
 
@@ -1549,7 +1548,8 @@ var
   Handled: boolean;
 Begin
   {$IFDEF VerboseDesigner}
-  Writeln('TDesigner.KEYDOWN ',TheMessage.CharCode,' ',TheMessage.KeyData);
+  DebugLn('TDesigner.KEYDOWN ',DbgS(TheMessage.CharCode),' ',
+             DbgS(TheMessage.KeyData));
   {$ENDIF}
 
   Shift := KeyDataToShiftState(TheMessage.KeyData);
@@ -1751,7 +1751,7 @@ var
   ChildControl: TControl;
 Begin
   {$IFDEF VerboseDesigner}
-  Writeln('[TDesigner.RemovePersistentAndChilds] ',dbgsName(APersistent),' ',HexStr(Cardinal(APersistent),8));
+  DebugLn('[TDesigner.RemovePersistentAndChilds] ',dbgsName(APersistent),' ',HexStr(Cardinal(APersistent),8));
   {$ENDIF}
   if (APersistent=FLookupRoot) or (APersistent=Form)
   or (IgnoreDeletingPersistent.IndexOf(APersistent)>=0)
@@ -1775,7 +1775,7 @@ Begin
   end;
   // remove component
   {$IFDEF VerboseDesigner}
-  Writeln('[TDesigner.RemovePersistentAndChilds] C ',dbgsName(APersistent));
+  DebugLn('[TDesigner.RemovePersistentAndChilds] C ',dbgsName(APersistent));
   {$ENDIF}
   DoDeletePersistent(APersistent,true);
 end;
@@ -1784,7 +1784,7 @@ procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
 Begin
   if Operation = opInsert then begin
     {$IFDEF VerboseDesigner}
-    Writeln('opInsert ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
+    DebugLn('opInsert ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
     {$ENDIF}
     if dfDeleting in FFlags then begin
       // a component has auto created a new component during deletion
@@ -1795,7 +1795,7 @@ Begin
   else
   if Operation = opRemove then begin
     {$IFDEF VerboseDesigner}
-    writeln('[TDesigner.Notification] opRemove ',
+    DebugLn('[TDesigner.Notification] opRemove ',
             AComponent.Name,':',AComponent.ClassName);
     {$ENDIF}
     DoDeletePersistent(AComponent,false);

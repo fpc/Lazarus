@@ -1011,7 +1011,7 @@ begin
     NewRight:=FLeft+FWidth;
     NewBottom:=FTop+FHeight;
     {$IFDEF VerboseDesigner}
-    writeln('[TControlSelection.DoApplyUserBounds] S Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
+    DebugLn('[TControlSelection.DoApplyUserBounds] S Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
     ' User=',FLeft,',',FTop,',',FWidth,',',FHeight);
     {$ENDIF}
     Items[0].SetFormRelativeBounds(
@@ -1024,7 +1024,7 @@ begin
   end else if Count>1 then begin
     // multi selection
     {$IFDEF VerboseDesigner}
-    writeln('[TControlSelection.DoApplyUserBounds] M Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
+    DebugLn('[TControlSelection.DoApplyUserBounds] M Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
     ' User=',FLeft,',',FTop,',',FWidth,',',FHeight);
     {$ENDIF}
 
@@ -1049,7 +1049,7 @@ begin
         if NewHeight<1 then NewHeight:=1;
         Items[i].SetFormRelativeBounds(NewLeft,NewTop,NewWidth,NewHeight);
         {$IFDEF VerboseDesigner}
-        writeln('  i=',i,' ',Items[i].Persistent.Name,
+        DebugLn('  i=',i,' ',Items[i].Persistent.Name,
         ' ',Items[i].Left,',',Items[i].Top,',',Items[i].Width,',',Items[i].Height);
         {$ENDIF}
       end;
@@ -1952,7 +1952,7 @@ begin
   Result:=false;
   if (Count=0) or (IsResizing) then exit;
   {$IFDEF VerboseDesigner}
-  writeln('[TControlSelection.MoveSelectionWithSnapping] A  ',
+  DebugLn('[TControlSelection.MoveSelectionWithSnapping] A  ',
     TotalDX,',',TotalDY,' OldBounds=',FLeft,',',FTop,',',FWidth,',',FHeight);
   {$ENDIF}
   NewLeft:=FindNearestSnapLeft(FOldLeft+TotalDX,FWidth);
@@ -1963,7 +1963,7 @@ begin
     FLeft:=NewLeft;
     FTop:=NewTop;
     {$IFDEF VerboseDesigner}
-    writeln('[TControlSelection.MoveSelectionWithSnapping] B  ',
+    DebugLn('[TControlSelection.MoveSelectionWithSnapping] B  ',
       FLeft,',',FTop,',',FWidth,',',FHeight);
     {$ENDIF}
     EndResizing(true);
@@ -1979,7 +1979,7 @@ begin
   if (Count=0) or (IsResizing) then exit;
   if (dx=0) and (dy=0) then exit;
   {$IFDEF VerboseDesigner}
-  writeln('[TControlSelection.SizeSelection] A  ',dx,',',dy);
+  DebugLn('[TControlSelection.SizeSelection] A  ',dx,',',dy);
   {$ENDIF}
   if FActiveGrabber<>nil then
     GrabberPos:=FActiveGrabber.Positions
@@ -2024,7 +2024,7 @@ var g:TGrabIndex;
 begin
   if FControls.Count>0 then begin
     {$IFDEF VerboseDesigner}
-    writeln('[TControlSelection.GrabberAtPos] ',x,',',y,'  '
+    DebugLn('[TControlSelection.GrabberAtPos] ',x,',',y,'  '
     ,FGrabbers[4].Left,',',FGrabbers[4].Top);
     {$ENDIF}
     for g:=Low(TGrabIndex) to High(TGrabIndex) do
