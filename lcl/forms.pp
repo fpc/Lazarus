@@ -58,6 +58,9 @@ type
   TCloseAction = (caNone, caHide, caFree, caMinimize);
 
   TScrollingWinControl = class;
+  
+  
+  { TControlScrollBar }
 
   TScrollBarKind = (sbHorizontal, sbVertical);
   TScrollBarInc = 1..32768;
@@ -103,6 +106,9 @@ type
     property Size: integer read GetSize write SetSize stored false;
     property Visible: Boolean read FVisible write SetVisible;// default True;
   end;
+  
+  
+  { TScrollingWinControl }
 
   TScrollingWinControl = class(TWinControl)
   private
@@ -148,6 +154,9 @@ type
     property VertScrollBar: TControlScrollBar
       read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
   end;
+  
+  
+  { TScrollBox }
 
   TScrollBox = class(TScrollingWinControl)
   public
@@ -207,6 +216,9 @@ type
   end;
 
   TIDesigner = class;
+
+
+  { TCustomForm }
 
   TCloseEvent = procedure(Sender: TObject; var Action: TCloseAction) of object;
   TCloseQueryEvent = procedure(Sender : TObject; var CanClose : boolean) of object;
@@ -323,6 +335,9 @@ type
     property Visible write SetVisible default False;
     property WindowState: TWindowState read FWindowState write SetWindowState default wsNormal;
   end;
+  
+  
+  { TForm }
 
   TForm = class(TCustomForm)
   private
@@ -374,7 +389,7 @@ type
   TFormClass = class of TForm;
   
 
-  {THintWindow}
+  { THintWindow }
   
   THintWindow = class(TCustomForm)
   private
@@ -397,6 +412,8 @@ type
     property HideInterval : Integer read FHideInterval write SetHideInterval;
   end;
 
+
+  { TScreen }
 
   TScreen = class(TComponent)
   private
@@ -426,8 +443,14 @@ type
     property Width : Integer read GetWidth;
   end;
 
+
+  { TApplication }
+
   TExceptionEvent = procedure (Sender: TObject; E: Exception) of object;
   TIdleEvent = procedure (Sender: TObject; var Done: Boolean) of object;
+  
+  TApplicationStateType = (AppWaiting, AppIdleEndSent);
+  TApplicationState = set of TApplicationStateType;
 
   TApplication = class(TComponent)
   private
@@ -438,11 +461,16 @@ type
     FMouseControl: TControl;
     FOnException: TExceptionEvent;
     FOnIdle: TIdleEvent;
+    FOnIdleHandler: TMethodList;
+    FOnIdleEnd: TNotifyEvent;
+    FOnIdleEndHandler: TMethodList;
+    FOnUserInput: TNotifyEvent;
+    FOnUserInputHandler: TMethodList;
+    FState: TApplicationState;
     FTerminate : Boolean;
     FTitle : String;
-  // MWE:Do we need this ??
-    // function ProcessMessage(Var Msg : TMsg) : Boolean;
     procedure wndproc(var Message : TLMessage);
+    procedure DoOnIdleEnd;
     function GetExename: String;
     function GetIconHandle: HICON;
     function GetTitle: string;
@@ -450,6 +478,9 @@ type
     procedure Idle;
     procedure MouseIdle(const CurrentControl: TControl);
     procedure SetIcon(AValue: TIcon);
+  protected
+    procedure NotifyIdleHandler;
+    procedure NotifyIdleEndHandler;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -459,7 +490,8 @@ type
     function HandleAllocated: boolean;
     procedure HandleException(Sender: TObject);
     procedure HandleMessage;
-    procedure HintMouseMEssage(Control : TControl; var Message: TLMessage);
+    function IsWaiting: boolean;
+    procedure HintMouseMessage(Control : TControl; var Message: TLMessage);
     property Icon: TIcon read FIcon write SetIcon;
     procedure Initialize;
     function MessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
@@ -468,14 +500,27 @@ type
     procedure Run;
     procedure ShowException(E: Exception);
     procedure Terminate;
+    procedure NotifyUserInputHandler;
+    procedure AddOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
+    procedure RemoveOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
+    procedure AddOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
+    procedure RemoveOnIdleEndHandler(AnOnIdleEndHandler: TNotifyEvent);
+    procedure AddOnUserInputHandler(AnOnUserInputHandler: TNotifyEvent);
+    procedure RemoveOnUserInputHandler(AnOnUserInputHandler: TNotifyEvent);
+  public
     property Exename: String read GetExeName;
     property Handle: THandle read FHandle;
     property Terminated: Boolean read FTerminate;
     property MainForm: TForm read FMainForm;
     property OnException: TExceptionEvent read FOnException write FOnException;
     property OnIdle: TIdleEvent read FOnIdle write FOnIdle;
+    property OnIdleEnd: TNotifyEvent read FOnIdleEnd write FOnIdleEnd;
+    property OnUserInput: TNotifyEvent read FOnUserInput write FOnUserInput;
     property Title: String read GetTitle write FTitle;
   end;
+  
+  
+  { TIDesigner }
 
   TIDesigner = class(TObject)
   public
@@ -509,7 +554,8 @@ function FindRootDesigner(AComponent: TComponent): TIDesigner;
 
 function IsAccel(VK : Word; const Str : ShortString): Boolean;
 
-function InitResourceComponent(Instance: TComponent; RootAncestor: TClass):Boolean;
+function InitResourceComponent(Instance: TComponent;
+  RootAncestor: TClass):Boolean;
 
 
 var

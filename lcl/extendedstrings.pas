@@ -20,8 +20,8 @@
 
   Author: Mattias: Gaertner
   
-  TExtendedStrings is a normal TStringList, except that the Objects are extended
-  to records.
+  TExtendedStrings is a normal TStringList, except that the Objects can hold
+  any type of records.
 }
 unit ExtendedStrings;
 
