@@ -205,6 +205,7 @@ type
   end;
 
 
+  { Timer }
   {
     @abstract(A free running timer.)
     Introduced and (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
@@ -230,6 +231,9 @@ type
     property Interval: Cardinal read FInterval write SetInterval default 1000;
     property OnTimer: TNotifyEvent read FOnTimer write SetOnTimer;
   end;
+
+
+  { TPaintBox }
 
   TPaintBox = class(TGraphicControl)
   private
@@ -268,25 +272,42 @@ type
 //    property OnStartDock;
 //    property OnStartDrag;
   end;
+
+
+  { TImage }
   
   TImage = class(TGraphicControl)
   private
     FPicture: TPicture;
+    FAutoSize,
+    FCenter,
+    FTransparent,
+    FStretch : Boolean;
     procedure SetPicture(const AValue: TPicture);
-    Procedure PictureChanged(SEnder : TObject);
+    procedure SetAutoSize(Value : Boolean);
+    procedure SetCenter(Value : Boolean);
+    procedure SetStretch(Value : Boolean);
+    procedure SetTransparent(Value : Boolean);
+    procedure PictureChanged(SEnder : TObject);
   protected
+    Procedure Paint; Override;
   public
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
   published
     Property Align;
+    property AutoSize : Boolean read FAutoSize write SetAutoSize default False;
+    property Center : Boolean read FCenter write SetCenter;
+    property Constraints;
     property Picture : TPicture read FPicture write SetPicture;
     property Visible;
     property OnCLick;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property Stretch: Boolean read FStretch write SetStretch;
+    property Transparent: Boolean read FTransparent write SetTransparent;
   end;
-
 
   { TBevel }
   
@@ -318,6 +339,8 @@ type
     Property Width;
   End;
 
+
+  { TCustomRadioGroup }
   {
     @abstract(Base class for TRadioGroup.)
     (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
@@ -352,6 +375,8 @@ type
     property OnClick : TNotifyEvent read FOnClick write FOnClick;
   end;
 
+
+  { TRadioGroup }
   {
     @abstract(Group of radiobuttons.)
     (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
@@ -369,6 +394,9 @@ type
     property Visible;
     property OnClick;
   end;
+
+
+  { TCustomPanel }
 
   TPanelBevel = TBevelCut;
   TBevelWidth = 1..Maxint;
@@ -406,12 +434,16 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure Invalidate; override;
   end;
+  
+  
+  { TPanel }
 
   TPanel = class(TCustomPanel)
   published
     property Align default alNone;
     property Alignment;
     property Anchors;
+    property AutoSize;
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
@@ -452,7 +484,7 @@ const
 
 implementation
 
-uses Interfaces;
+uses Interfaces, Math;
 
 {$I page.inc}
 {$I customnotebook.inc}
@@ -470,6 +502,9 @@ end.
 
  {
   $Log$
+  Revision 1.29  2002/09/03 08:07:18  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.28  2002/09/02 19:10:28  lazarus
   MG: TNoteBook now starts with no Page and TPage has no auto names
 
