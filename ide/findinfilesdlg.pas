@@ -29,7 +29,7 @@ uses
 type
   TLazFindInFilesDialog = class(TForm)
     TextToFindLabel: TLabel;
-    TextToFindEdit: TEdit;
+    TextToFindComboBox: TComboBox;
     OptionsGroupBox: TGroupBox;
     CaseSensitiveCheckBox: TCheckBox;
     WholeWordsOnlyCheckBox: TCheckBox;
@@ -47,8 +47,12 @@ type
     procedure LazFindInFilesDialogResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
+  private
+    function GetFindText: string;
+    procedure SetFindText(const NewFindText: string);
   public
     constructor Create(AOwner:TComponent); override;
+    property FindText: string read GetFindText write SetFindText;
   end;
 
 
@@ -75,19 +79,17 @@ begin
       Parent:=Self;
       SetBounds(8,8,80,Height);
       Caption:=lisFindFileTextToFind;
-      Visible:=true;
     end;
     
-    TextToFindEdit:=TEdit.Create(Self);
-    with TextToFindEdit do begin
-      Name:='TextToFindEdit';
+    TextToFindComboBox:=TComboBox.Create(Self);
+    with TextToFindComboBox do begin
+      Name:='TextToFindComboBox';
       Parent:=Self;
       SetBounds(TextToFindLabel.Left+TextToFindLabel.Width+5,
         TextToFindLabel.Top-2,
         Self.ClientWidth-TextToFindLabel.Left-TextToFindLabel.Width-13,
         Height);
       Text:='';
-      Visible:=true;
     end;
     
     OptionsGroupBox:=TGroupBox.Create(Self);
@@ -97,7 +99,6 @@ begin
       SetBounds(8,TextToFindLabel.Top+TextToFindLabel.Height+10,
         Self.ClientWidth-20,95);
       Caption:=dlgFROpts;
-      Visible:=true;
     end;
     
     CaseSensitiveCheckBox:=TCheckBox.Create(Self);
@@ -106,7 +107,6 @@ begin
       Parent:=OptionsGroupBox;
       SetBounds(8,2,OptionsGroupBox.ClientWidth-20,20);
       Caption:=lisFindFileCaseSensitive;
-      Visible:=true;
     end;
     
     WholeWordsOnlyCheckBox:=TCheckBox.Create(Self);
@@ -117,7 +117,6 @@ begin
            CaseSensitiveCheckBox.Top+CaseSensitiveCheckBox.Height+5,
            CaseSensitiveCheckBox.Width,20);
       Caption:=lisFindFileWholeWordsOnly;
-      Visible:=true;
     end;
     
     RegularExpressionsCheckBox:=TCheckBox.Create(Self);
@@ -128,7 +127,6 @@ begin
            WholeWordsOnlyCheckBox.Top+WholeWordsOnlyCheckBox.Height+5,
            CaseSensitiveCheckBox.Width,20);
       Caption:=lisFindFileRegularExpressions;
-      Visible:=true;
     end;
     
     WhereRadioGroup:=TRadioGroup.Create(Self);
@@ -143,7 +141,7 @@ begin
       Items.Add(lisFindFilesearchAllOpenFiles);
       Items.Add(lisFindFilesearchInDirectories);
       Items.EndUpdate;
-      Visible:=true;
+      ItemIndex:=1;
     end;
     
     DirectoryOptionsGroupBox:=TGroupBox.Create(Self);
@@ -153,7 +151,6 @@ begin
       SetBounds(8,WhereRadioGroup.Top+WhereRadioGroup.Height+10,
         Self.ClientWidth-20,135);
       Caption:=lisFindFileDirectoryOptions;
-      Visible:=true;
     end;
     
     DirectoryLabel:=TLabel.Create(Self);
@@ -162,7 +159,6 @@ begin
       Parent:=DirectoryOptionsGroupBox;
       SetBounds(8,5,80,Height);
       Caption:=lisCodeToolsDefsInsertBehindDirectory;
-      Visible:=true;
     end;
     
     DirectoryComboBox:=TComboBox.Create(Self);
@@ -172,7 +168,7 @@ begin
       Left:=DirectoryLabel.Left+DirectoryLabel.Width+5;
       Top:=DirectoryLabel.Top-2;
       Width:=Parent.ClientWidth-Left-8-25-5;
-      Visible:=true;
+      Text:='';
     end;
     
     DirectoryBrowse:=TBitBtn.Create(Self);
@@ -182,7 +178,6 @@ begin
       SetBounds(DirectoryComboBox.Left+DirectoryComboBox.Width+5,
         DirectoryComboBox.Top,25,25);
       Caption:='...';
-      Visible:=true;
     end;
     
     FileMaskLabel:=TLabel.Create(Self);
@@ -191,7 +186,6 @@ begin
       Parent:=DirectoryOptionsGroupBox;
       SetBounds(8,DirectoryComboBox.Top+DirectoryComboBox.Height+5,200,Height);
       Caption:=lisFindFileFileMaskBak;
-      Visible:=true;
     end;
     
     FileMaskComboBox:=TComboBox.Create(Self);
@@ -200,7 +194,7 @@ begin
       Parent:=DirectoryOptionsGroupBox;
       SetBounds(FileMaskLabel.Left, FileMaskLabel.Top+FileMaskLabel.Height+3,
          Self.ClientWidth-20-5-25,Height);
-      Visible:=true;
+      Text:='*.*';
     end;
     
     IncludeSubDirsCheckBox:=TCheckBox.Create(Self);
@@ -210,7 +204,6 @@ begin
       SetBounds(8,FileMaskComboBox.Top+FileMaskComboBox.Height+10,
           150,Height);
       Caption:=lisFindFileIncludeSubDirectories;
-      Visible:=true;
     end;
     
     OkButton:=TButton.Create(Self);
@@ -220,7 +213,6 @@ begin
       SetBounds(Self.ClientWidth-200,Self.ClientHeight-40,80,Height);
       Caption:=lisLazBuildOk;
       OnClick:=@OkButtonClick;
-      Visible:=true;
     end;
     
     CancelButton:=TButton.Create(Self);
@@ -230,7 +222,6 @@ begin
       SetBounds(Self.ClientWidth-100,Self.ClientHeight-40,80,Height);
       Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
-      Visible:=true;
     end;
   end;
   LazFindInFilesDialogResize(nil);
@@ -242,7 +233,7 @@ begin
     SetBounds(8,8,80,Height);
   end;
 
-  with TextToFindEdit do begin
+  with TextToFindComboBox do begin
     SetBounds(TextToFindLabel.Left+TextToFindLabel.Width+5,
       TextToFindLabel.Top-2,
       Self.ClientWidth-TextToFindLabel.Left-TextToFindLabel.Width-13,
@@ -327,6 +318,20 @@ procedure TLazFindInFilesDialog.CancelButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
 end;
+
+procedure TLazFindInFilesDialog.SetFindText(const NewFindText: string);
+begin
+  TextToFindComboBox.Text:= NewFindText;
+  TextToFindComboBox.SelectAll;
+end;
+
+function TLazFindInFilesDialog.GetFindText: string;
+begin
+  Result:=TextToFindComboBox.Text;
+end;
+
+initialization
+  FindInFilesDialog:=nil;
 
 end.
 
