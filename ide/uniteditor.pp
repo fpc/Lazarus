@@ -107,8 +107,6 @@ type
     Function GetInsertMode : Boolean;
     Function GetReadonly : Boolean;
     Function TextUnderCursor : String;
-    Function GotoMethod(Value : String) : Integer;
-    Function GotoMethodDeclaration(Value : String) : Integer;
     procedure SetCodeTemplates(
          NewCodeTemplates: TSynEditAutoComplete);
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
@@ -437,68 +435,6 @@ Begin
   FEditor.TopLine := TopLine;
   Result:=FEditor.CaretY;
 end;
-
-{-----------------------------G O T O   M E T H O D ---------------------------}
-
-Function TSourceEditor.GotoMethod(Value : String) : Integer;
-Var
-  I : Integer;
-  Texts2 : String;
-Begin
-  Result := -1;
-  if Length(Value) <= 1 then Exit;
-
-  //move down looking for the classname.texts
-  //we need to parse for the class name eventually
-  //for now just search for .procedurename
-  Value := '.'+lowercase(value);
-  for I := CurrentCursorYLine to Source.Count -1 do
-    begin
-      Texts2 := Lowercase(Source.Strings[i]);
-      if (pos('procedure',Texts2) <> 0) or (pos('function',texts2) <> 0)
-      then begin
-        if pos(Value,texts2) <> 0 then
-           begin
-             FEditor.TopLine := I-1;
-             CurrentCursorYLine := I+1;
-             Result := I;
-             Break;
-           end;
-        end;
-     end;
-End;
-
-
-{-----------------------G O T O   M E T H O D    D E C L A R A T I O N---------}
-Function TSourceEditor.GotoMethodDeclaration(Value : String) : Integer;
-Var
-I : Integer;
-Texts2 : String;
-Begin
-     Result := -1;
-     if Length(Value) <= 1 then Exit;
-
-     //move down looking for the classname.texts
-     //we need to parse for the class name eventually
-    //for now just search for .procedurename
-     Value := lowercase(value);
-     for I := 0 to Source.Count -1 do
-         begin
-            Texts2 := Lowercase(Source.Strings[i]);
-            if (pos('procedure',Texts2) <> 0) or (pos('function',texts2) <> 0) then
-                begin
-                if pos(Value,texts2) <> 0 then
-                   begin
-                     FEditor.TopLine := I;
-                     CurrentCursorYLine := I+1;
-                     Result := I;
-                     Break;
-                   end;
-                end;
-           end;
-
-End;
-
 
 {--------------------------TEXT UNDER CURSOR-----------------------------------}
 Function TSourceEditor.TextUnderCursor : String;
@@ -950,6 +886,7 @@ begin
   if ASyntaxHighlighterType<>fSyntaxHighlighterType then begin
     fSyntaxHighlighterType:=ASyntaxHighlighterType;
   end;
+  EditorOpts.GetSynEditSelectedColor(FEditor);
 end;
 
 procedure TSourceEditor.SetErrorLine(NewLine: integer);

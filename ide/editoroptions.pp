@@ -1466,7 +1466,9 @@ begin
     for i:=0 to ASynEdit.Highlighter.AttrCount-1 do begin
       with ASynEdit.Highlighter.Attribute[i] do begin
         if Name='' then continue;
-        if Name=AdditionalHighlightAttributes[ahaTextBlock] then begin
+        if AnsiCompareText(StrToValidXMLName(Name),
+          StrToValidXMLName(AdditionalHighlightAttributes[ahaTextBlock]))=0 then
+        begin
           ASynEdit.SelectedColor.Background:=Background;
           ASynEdit.SelectedColor.Foreground:=Foreground;
           exit;
