@@ -91,7 +91,7 @@ Begin
     DestroyWindow(FAppHandle);
 
   Windows.UnregisterClass(@ClsName, System.HInstance);
-  Windows.UnregisterClass(@ToolBtnClsName, System.HInstance);
+//  Windows.UnregisterClass(@ToolBtnClsName, System.HInstance);
 
   Inherited Destroy;
 End;
@@ -115,12 +115,13 @@ Begin
     writeln('Trace:Win32Object.Init - Register Failed');
     Exit;
   End;
+{  
   If Not ToolBtnWinRegister then
   Begin
     Assert(False, 'Trace:Win32Object.Init - Toolbar button Register Failed');
     Exit;
   End;
-
+}
   //Init stock objects;
   LogBrush.lbStyle := BS_NULL;
   FStockNullBrush := CreateBrushIndirect(LogBrush);
@@ -1134,30 +1135,14 @@ Procedure TWin32WidgetSet.HandleEvents;
 var
   AMessage: TMsg;
   AccelTable: HACCEL;
-
-  function HandleDialogMessage: Boolean;
-  var
-    TopParent, TmpParent: HWnd;
-  begin
-    TmpParent := AMessage.HWnd;
-    repeat
-      TopParent := TmpParent;
-      TmpParent := Windows.GetParent(TmpParent);
-    until TmpParent = HWND(nil);
-    Result := Windows.IsDialogMessage(TopParent, @AMessage);
-  end;
-
 Begin
   While PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) Do
   Begin
     AccelTable := HACCEL(Windows.GetProp(AMessage.HWnd, 'Accel'));
     If (AccelTable = HACCEL(nil)) or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) Then
     Begin
-      if not HandleDialogMessage then
-      Begin
-        TranslateMessage(@AMessage);
-        DispatchMessage(@AMessage);
-      End;
+      TranslateMessage(@AMessage);
+      DispatchMessage(@AMessage);
     End;
   End;
 End;
@@ -1308,6 +1293,7 @@ Begin
   Assert(False, 'Trace:WinRegister - Exit');
 End;
 
+(*
 Function TWin32WidgetSet.ToolBtnWinRegister: boolean;
 var WinClass: WndClass;
 begin
@@ -1325,6 +1311,7 @@ begin
   end;
   Result := Windows.RegisterClass(@WinClass) <> 0;
 end;
+*)
 
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.PaintPixmap
@@ -2036,7 +2023,7 @@ Begin
       WindowTitle := StrCaption;
       Flags := Flags Or ES_AUTOHSCROLL;
     End;
-    csArrow, csFixed:
+    csArrow, csFixed, csToolButton:
     Begin
       Assert(False, 'Trace:TODO: Figure out what component style csFixed is and code the component.  No component created.');
       pClassName := @ClsName;
@@ -2205,12 +2192,14 @@ Begin
       pClassName := TOOLBARCLASSNAME;
       Flags := Flags OR CCS_ADJUSTABLE;
     End;
+{    
     csToolButton:
     Begin
       pClassName := ToolBtnClsName;
       Flags := 0;
       SubClassWndProc := nil;
     End;
+}    
     // TCustomPage - Notebook page
     csPage:
     Begin
@@ -2308,6 +2297,10 @@ Begin
     end;
     Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
         Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);
+    if Window = 0 then
+    begin
+      raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError()));
+    end;
     { after creating a child window the following happens:
       1) the previously bottom window is thrown to the top
       2) the created window is added at the bottom
@@ -2981,6 +2974,10 @@ End;
 
 {
   $Log$
+  Revision 1.191  2004/05/12 09:46:25  micha
+  fix toolbar buttons by handling them as customcontrols
+  remove handledialogmessage, now handled in lcl
+
   Revision 1.190  2004/05/09 19:14:45  micha
   fix update menu caption at runtime (code accidently commented by me, i think)
 

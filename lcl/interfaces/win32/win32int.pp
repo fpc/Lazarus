@@ -130,7 +130,7 @@ Type
         Desc: PRawImageDescription);
 
     Function WinRegister: Boolean;
-    Function ToolBtnWinRegister: Boolean;
+//    Function ToolBtnWinRegister: Boolean;
     Procedure SetOwner(Window: HWND; Owner: TObject);
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
     Procedure NormalizeIconName(Var IconName: String);
@@ -255,6 +255,10 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.78  2004/05/12 09:46:25  micha
+  fix toolbar buttons by handling them as customcontrols
+  remove handledialogmessage, now handled in lcl
+
   Revision 1.77  2004/04/11 10:19:28  micha
   cursor management updated:
   - lcl notifies interface via WSControl.SetCursor of changes
