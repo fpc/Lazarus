@@ -73,6 +73,7 @@ type
     procedure popDeleteAllClick(Sender: TObject);
   private
     FBaseDirectory: string;
+    FBreakPoints: TDBGBreakPoints;
     FBreakpointsNotification: TDBGBreakPointsNotification;
     FStates: TBreakPointsDlgStates;
     procedure BreakPointAdd(const ASender: TDBGBreakPoints;
@@ -82,19 +83,20 @@ type
     procedure BreakPointRemove(const ASender: TDBGBreakPoints;
                                const ABreakpoint: TDBGBreakPoint);
     procedure SetBaseDirectory(const AValue: string);
+    procedure SetBreakPoints(const AValue: TDBGBreakPoints);
 
     procedure UpdateItem(const AnItem: TListItem;
                          const ABreakpoint: TDBGBreakPoint);
     procedure UpdateAll;
   protected
-    procedure SetDebugger(const ADebugger: TDebugger); override;
     procedure DoEndUpdate; override;
+    procedure BreakPointsUpdate; virtual;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure BreakPointsUpdate(const ASender: TDBGBreakPoints);
   public
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
+    property BreakPoints: TDBGBreakPoints read FBreakPoints write SetBreakPoints;
   end;
 
 
@@ -150,6 +152,19 @@ begin
   UpdateAll;
 end;
 
+procedure TBreakPointsDlg.SetBreakPoints(const AValue: TDBGBreakPoints);
+begin
+  if FBreakPoints=AValue then exit;
+  lvBreakPoints.Items.Clear;
+  if FBreakPoints<>nil then
+    FBreakPoints.RemoveNotification(FBreakpointsNotification);
+  FBreakPoints:=AValue;
+  if FBreakPoints<>nil then begin
+    FBreakPoints.AddNotification(FBreakpointsNotification);
+    BreakPointsUpdate;
+  end;
+end;
+
 constructor TBreakPointsDlg.Create(AOwner: TComponent);
 begin
   inherited;
@@ -171,12 +186,13 @@ begin
   inherited;
 end;
 
-procedure TBreakPointsDlg.BreakPointsUpdate(const ASender: TDBGBreakPoints);
+procedure TBreakPointsDlg.BreakPointsUpdate;
 var
   i: Integer;
 begin
-  for i:=0 to ASender.Count-1 do
-    BreakPointUpdate(ASender,ASender.Items[i]);
+  if FBreakPoints=nil then exit;
+  for i:=0 to FBreakPoints.Count-1 do
+    BreakPointUpdate(FBreakPoints,FBreakPoints.Items[i]);
 end;
 
 procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
@@ -279,23 +295,6 @@ procedure TBreakPointsDlg.popPropertiesClick(Sender: TObject);
 begin     
 end;
 
-procedure TBreakPointsDlg.SetDebugger(const ADebugger: TDebugger);
-begin
-  if ADebugger <> Debugger
-  then begin
-    if Debugger <> nil
-    then begin                    
-      Debugger.Breakpoints.RemoveNotification(FBreakpointsNotification);
-    end;
-    inherited;
-    if Debugger <> nil
-    then begin
-      Debugger.Breakpoints.AddNotification(FBreakpointsNotification);
-    end;
-  end
-  else inherited;
-end;
-
 procedure TBreakPointsDlg.DoEndUpdate;
 begin
   inherited DoEndUpdate;
@@ -385,6 +384,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.15  2003/05/28 15:56:19  mattias
+  implemented sourcemarks
+
   Revision 1.14  2003/05/28 08:46:24  mattias
   break;points dialog now gets the items without debugger
 

@@ -61,7 +61,8 @@ type
      lshCPP, lshPerl, lshJava);
 
   TAdditionalHilightAttribute = (ahaNone, ahaTextBlock, ahaExecutionPoint,
-    ahaEnabledBreakpoint, ahaDisabledBreakpoint, ahaInvalidBreakpoint, ahaUnknownBreakpoint,
+    ahaEnabledBreakpoint, ahaDisabledBreakpoint,
+    ahaInvalidBreakpoint, ahaUnknownBreakpoint,
     ahaErrorLine);
 
 const

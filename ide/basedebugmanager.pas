@@ -40,7 +40,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, Laz_XMLCfg, Project, Debugger;
+  Classes, SysUtils, Forms, Laz_XMLCfg, Project, SourceMarks, Debugger;
 
 type
   TBaseDebugManager = class(TComponent)
@@ -67,14 +67,19 @@ type
     
     procedure RunDebugger; virtual; abstract;
     procedure EndDebugging; virtual; abstract;
-    function Evaluate(const AExpression: String; var AResult: String): Boolean; virtual; abstract; // Evaluates the given expression, returns true if valid
+    function Evaluate(const AExpression: String; var AResult: String
+                     ): Boolean; virtual; abstract; // Evaluates the given expression, returns true if valid
     
-    function DoCreateBreakPoint(const AFilename: string; ALine: integer): TModalResult; virtual; abstract;
-    function DoDeleteBreakPoint(const AFilename: string; ALine: integer): TModalResult; virtual; abstract;
+    function DoCreateBreakPoint(const AFilename: string; ALine: integer
+                                ): TModalResult; virtual; abstract;
+    function DoDeleteBreakPoint(const AFilename: string; ALine: integer
+                                ): TModalResult; virtual; abstract;
+    function DoDeleteBreakPointAtMark(const ASourceMark: TSourceMark
+                                     ): TModalResult; virtual; abstract;
     function DoCreateWatch(const AExpression: string): TModalResult; virtual; abstract;
     
-    property Commands: TDBGCommands read GetCommands;              // All current available commands of the debugger
-    property State: TDBGState read GetState;                       // The current state of the debugger
+    property Commands: TDBGCommands read GetCommands;  // All current available commands of the debugger
+    property State: TDBGState read GetState;           // The current state of the debugger
     property BreakPoints: TDBGBreakPoints read FBreakpoints;
   end;
 
