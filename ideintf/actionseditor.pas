@@ -49,7 +49,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, StdCtrls, Buttons, ActnList, ExtCtrls,
-  Controls, Dialogs, ObjInspStrConsts, ComponentEditors, PropEdits;
+  Controls, Dialogs, ObjInspStrConsts, ComponentEditors, PropEdits, DBActns,
+  StdActns;
 
 type
   { TActionListEditor }
@@ -786,9 +787,22 @@ end;
 procedure RegisterStandardActions;
 begin
   // TODO
-  //  - db actions
-  //  - edit actions
   //  - default images for actions
+  
+  // register edit actions
+  RegisterActions('Edit',[TEditCut,TEditCopy,TEditPaste,TEditSelectAll,
+   TEditUndo,TEditDelete],nil);
+  // register help actions
+  RegisterActions('Help',[THelpAction,THelpContents,THelpTopicSearch,
+    THelpOnHelp,THelpContextAction],nil);
+  // register file actions
+  RegisterActions('File',[TFileOpen,TFileOpenWith,TFileSaveAs,TFileExit],nil);
+  // register dialog actions
+  RegisterActions('Dialog',[TFontEdit,TColorSelect],nil);
+  // register database actions
+  RegisterActions('Database',[TDataSetFirst,TDataSetLast,TDataSetNext,
+    TDataSetPrior,TDataSetRefresh,TDataSetCancel,TDataSetDelete,TDataSetEdit,
+    TDataSetInsert,TDataSetPost],nil);
 end;
 
 initialization

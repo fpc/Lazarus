@@ -592,7 +592,6 @@ type
 
   TCustomMemo = class(TCustomEdit)
   private
-    //FFont : TFont;
     FHorzScrollBar: TMemoScrollBar;
     FLines: TStrings;
     FScrollBars: TScrollStyle;
@@ -1159,6 +1158,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.157  2004/08/13 10:20:19  mattias
+  fixed codetools ConstSet, implemented notifying TApplication whenmenu popups
+
   Revision 1.156  2004/08/05 21:20:47  mattias
   moved designer/abstractformeditor.pp to ideintf/formeditingintf.pas
 

@@ -829,7 +829,7 @@ type
     procedure RemoveHandler(HandlerType: TApplicationHandlerType;
                             const Handler: TMethod);
   protected
-    Function GetConsoleApplication: boolean; override;
+    function GetConsoleApplication: boolean; override;
     procedure NotifyIdleHandler;
     procedure NotifyIdleEndHandler;
     function IsHintMsg(var Msg: TMsg): Boolean;
@@ -840,6 +840,7 @@ type
     procedure StartHintTimer(Interval: integer; TimerType: TAppHintTimerType);
     procedure UpdateVisible;
     procedure DoIdleActions;
+    procedure MenuPopupHandler(Sender: TObject);
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1089,9 +1090,9 @@ function GetLongHint(const Hint: string): string;
 
 
 var
-  Application : TApplication;
-  Screen : TScreen;
-  ExceptionObject : TExceptObject;
+  Application: TApplication;
+  Screen: TScreen;
+  ExceptionObject: TExceptObject;
   HintWindowClass: THintWindowClass;
 
 type

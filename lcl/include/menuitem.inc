@@ -49,11 +49,13 @@ procedure TMenuItem.Click;
 begin
   if Enabled then
   begin
+    if Assigned(OnMenuPopupHandler) then OnMenuPopupHandler(Self);
+
     if (not Assigned(ActionLink) and AutoCheck) or (Assigned(ActionLink) and
         not (ActionLink.IsAutoCheckLinked) and AutoCheck)
     then begin
       // Break a little Delphi compatibility
-      // It makes no sense to uncheck a checked RadioItem (besides, GTK cant handle it)
+      // It makes no sense to uncheck a checked RadioItem (besides, GTK can't handle it)
       if (not RadioItem) or (not Checked) then
         Checked := not Checked;
     end;
@@ -1162,6 +1164,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2004/08/13 10:20:19  mattias
+  fixed codetools ConstSet, implemented notifying TApplication whenmenu popups
+
   Revision 1.58  2004/06/24 17:45:33  mattias
   fixed TMenuItem.GetIconSize
 
@@ -1364,6 +1369,9 @@ end;
 
 
   $Log$
+  Revision 1.59  2004/08/13 10:20:19  mattias
+  fixed codetools ConstSet, implemented notifying TApplication whenmenu popups
+
   Revision 1.58  2004/06/24 17:45:33  mattias
   fixed TMenuItem.GetIconSize
 

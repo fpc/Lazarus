@@ -4691,15 +4691,6 @@ var EndPos, SubStartPos: integer;
       if Result.Desc=xtContext then
         DebugLn('  Result.Context.Node=',Result.Context.Node.DescAsString);
       {$ENDIF}
-      if not (Result.Desc in [xtConstOrdInteger,xtChar,xtWideChar])
-      and ((Result.Desc=xtContext)
-        and (Result.Context.Node.Desc<>ctnEnumerationType)) then
-      begin
-        MoveCursorToCleanPos(SubStartPos);
-        ReadNextAtom; // read '['
-        ReadNextAtom;
-        RaiseConstExpected;
-      end;
     end else begin
       // empty set '[]'
       Result.Desc:=xtNone;

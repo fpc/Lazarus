@@ -178,7 +178,7 @@ type
   protected
     property ActionLink: TMenuActionLink read FActionLink write FActionLink;
   public
-    FCompStyle : LongInt;
+    FCompStyle: LongInt;
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetImageList: TCustomImageList; virtual;
@@ -333,6 +333,7 @@ function ShortCutToText(ShortCut: TShortCut): string;
 var
   DesignerMenuItemClick: TNotifyEvent;
   ActivePopupMenu: TPopupMenu;
+  OnMenuPopupHandler: TNotifyEvent;
 
 procedure Register;
 
@@ -401,6 +402,7 @@ initialization
   DesignerMenuItemClick:=nil;
   ActivePopupMenu:=nil;
   CommandPool := nil;
+  OnMenuPopupHandler := nil;
 
 finalization
   FreeThenNil(CommandPool);
@@ -409,6 +411,9 @@ end.
 
 {
   $Log$
+  Revision 1.69  2004/08/13 10:20:19  mattias
+  fixed codetools ConstSet, implemented notifying TApplication whenmenu popups
+
   Revision 1.68  2004/06/17 21:24:19  mattias
   implemented painting menuitem icons from ImageList
 

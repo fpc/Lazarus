@@ -57,6 +57,7 @@ begin
   ActivePopupMenu:=Self;
   Items.InitiateActions;
   HandleNeeded;
+  if Assigned(OnMenuPopupHandler) then OnMenuPopupHandler(Self);
   SendMsgToInterface(LM_POPUPSHOW, Self, @FPopupPoint);
 end;
 
@@ -77,6 +78,9 @@ end;
 
 {
   $Log$
+  Revision 1.12  2004/08/13 10:20:19  mattias
+  fixed codetools ConstSet, implemented notifying TApplication whenmenu popups
+
   Revision 1.11  2004/07/10 18:17:30  mattias
   added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
 

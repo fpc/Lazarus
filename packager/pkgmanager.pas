@@ -174,7 +174,7 @@ type
                          ComponentClassnames: TStrings): TModalResult; override;
     function GetMissingDependenciesForUnit(const UnitFilename: string;
                          ComponentClassnames: TStrings;
-                         var List: TObjectList): TModalResult;
+                         var List: TObjectArray): TModalResult;
     function GetOwnersOfUnit(const UnitFilename: string): TList;
     
     // package graph
@@ -2480,7 +2480,7 @@ var
   UnitBuf: TCodeBuffer;
   UnitNames: TStringList;
   Packages: TList;
-  MissingDependencies: TObjectList;
+  MissingDependencies: TObjectArray;
   
   function LoadAndParseUnitBuf: TModalResult;
   begin
@@ -2670,7 +2670,8 @@ end;
 
 function TPkgManager.GetMissingDependenciesForUnit(
   const UnitFilename: string; ComponentClassnames: TStrings;
-  var List: TObjectList): TModalResult;
+  var List: TObjectArray): TModalResult;
+// returns a list of packages needed to use the Component in the unit
 var
   UnitOwners: TList;
   UnitOwner: TObject;
@@ -2706,7 +2707,7 @@ begin
             and (FindCompatibleDependencyInList(FirstDependency,pdlRequires,
               RequiredPackage)=nil)
             then begin
-              if List=nil then List:=TObjectList.Create;
+              if List=nil then List:=TObjectArray.Create;
               List.AddObject(UnitOwner,RequiredPackage);
               //writeln('TPkgManager.GetMissingDependenciesForUnit A ',UnitOwner.ClassName,' ',RequiredPackage.Name);
               //if TObject(List[List.Count-1])<>UnitOwner then RaiseException('A');

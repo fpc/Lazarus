@@ -87,6 +87,8 @@ begin
   FOnIdle := nil;
   FIcon := nil;
   ApplicationActionComponent:=Self;
+  OnMenuPopupHandler:=@MenuPopupHandler;
+
 
   inherited Create(AOwner);
   CaptureExceptions:=true;
@@ -99,6 +101,9 @@ destructor TApplication.Destroy;
 var
   HandlerType: TApplicationHandlerType;
 begin
+  if OnMenuPopupHandler=@MenuPopupHandler then
+    OnMenuPopupHandler:=nil;
+  
   // shutting down
   CancelHint;
   ShowHint := False;
@@ -675,6 +680,11 @@ begin
   end;
 end;
 
+procedure TApplication.MenuPopupHandler(Sender: TObject);
+begin
+  HideHint;
+end;
+
 {------------------------------------------------------------------------------
   Method: TApplication.IconChanged
  ------------------------------------------------------------------------------}
@@ -953,9 +963,8 @@ begin
   if Assigned(FOnHint) then
     FOnHint(Self)
   else begin
-    { Fire THintAction to anyone interested }
-    {with THintAction.Create(Self) do
-    begin
+    // Send THintAction
+    {with THintAction.Create(Self) do begin
       Hint := Value;
       try
         Execute;
@@ -1205,6 +1214,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.85  2004/08/13 10:20:19  mattias
+  fixed codetools ConstSet, implemented notifying TApplication whenmenu popups
+
   Revision 1.84  2004/08/09 21:12:43  mattias
   implemented FormStyle fsSplash for splash screens
 
