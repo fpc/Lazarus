@@ -7922,6 +7922,56 @@ var
   pRowText : PChar;
   BitImage : TBitMap;
   AnAdjustment: PGtkAdjustment;
+
+  {$IfDef GTK1}
+  procedure SetMemoProperties;
+  begin
+    ImplWidget:= GetWidgetInfo(wHandle, true)^.CoreWidget;
+
+    gtk_text_freeze(PGtkText(ImplWidget));
+    gtk_text_set_editable (GTK_TEXT(ImplWidget), not (Sender as TCustomMemo).ReadOnly);
+    if TCustomMemo(Sender).WordWrap then
+      gtk_text_set_line_wrap(GTK_TEXT(ImplWidget), GdkTrue)
+    else
+      gtk_text_set_line_wrap(GTK_TEXT(ImplWidget), GdkFalse);
+    gtk_text_set_word_wrap(GTK_TEXT(ImplWidget), GdkTrue);
+
+    case (Sender as TCustomMemo).Scrollbars of
+      ssHorizontal:     gtk_scrolled_window_set_policy(
+                          GTK_SCROLLED_WINDOW(wHandle),
+                          GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
+      ssVertical:       gtk_scrolled_window_set_policy(
+                          GTK_SCROLLED_WINDOW(wHandle),
+                          GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+      ssBoth:           gtk_scrolled_window_set_policy(
+                          GTK_SCROLLED_WINDOW(wHandle),
+                          GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+      ssAutoHorizontal: gtk_scrolled_window_set_policy(
+                          GTK_SCROLLED_WINDOW(wHandle),
+                          GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+      ssAutoVertical:   gtk_scrolled_window_set_policy(
+                          GTK_SCROLLED_WINDOW(wHandle),
+                          GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+      ssAutoBoth:       gtk_scrolled_window_set_policy(
+                          GTK_SCROLLED_WINDOW(wHandle),
+                          GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+    else
+      gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wHandle),
+                                     GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+    end;
+
+    if (TCustomMemo(Sender).MaxLength >= 0) then begin
+      i:= gtk_text_get_length(GTK_TEXT(ImplWidget));
+      if i > TCustomMemo(Sender).MaxLength then begin
+         gtk_editable_delete_text(PGtkOldEditable(ImplWidget),
+                                  TCustomMemo(Sender).MaxLength, i);
+      end;
+    end;
+
+    gtk_text_thaw(PGtkText(ImplWidget));
+  end;
+  {$ENDIF}
+
 begin
   Result := 0;     // default if nobody sets it
 
@@ -8164,49 +8214,10 @@ begin
       gtk_clist_thaw(GTK_CLIST(Widget));
     end;
   {$EndIf}
+  
   {$IfDef GTK1}
   csMemo:
-    begin
-      ImplWidget:= GetWidgetInfo(wHandle, true)^.CoreWidget;
-
-      gtk_text_set_editable (GTK_TEXT(ImplWidget), not (Sender as TCustomMemo).ReadOnly);
-      if TCustomMemo(Sender).WordWrap then
-        gtk_text_set_line_wrap(GTK_TEXT(ImplWidget), GdkTrue)
-      else
-        gtk_text_set_line_wrap(GTK_TEXT(ImplWidget), GdkFalse);
-      gtk_text_set_word_wrap(GTK_TEXT(ImplWidget), GdkTrue);
-
-      case (Sender as TCustomMemo).Scrollbars of
-        ssHorizontal:     gtk_scrolled_window_set_policy(
-                            GTK_SCROLLED_WINDOW(wHandle),
-                            GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
-        ssVertical:       gtk_scrolled_window_set_policy(
-                            GTK_SCROLLED_WINDOW(wHandle),
-                            GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-        ssBoth:           gtk_scrolled_window_set_policy(
-                            GTK_SCROLLED_WINDOW(wHandle),
-                            GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-        ssAutoHorizontal: gtk_scrolled_window_set_policy(
-                            GTK_SCROLLED_WINDOW(wHandle),
-                            GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
-        ssAutoVertical:   gtk_scrolled_window_set_policy(
-                            GTK_SCROLLED_WINDOW(wHandle),
-                            GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-        ssAutoBoth:       gtk_scrolled_window_set_policy(
-                            GTK_SCROLLED_WINDOW(wHandle),
-                            GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-      else
-        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wHandle),
-                                       GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-      end;
-
-  if (TCustomMemo(Sender).MaxLength >= 0) then begin
-    i:= gtk_text_get_length(GTK_TEXT(ImplWidget));
-    if i > TCustomMemo(Sender).MaxLength then begin
-          gtk_editable_delete_text(PGtkOldEditable(ImplWidget), TCustomMemo(Sender).MaxLength, i);
-    end;
-  end;
-    end;
+    SetMemoProperties;
   {$EndIf}
 
   csSpinEdit:
@@ -9405,6 +9416,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.501  2004/05/14 12:53:25  mattias
+  improved grids e.g. OnPrepareCanvas   patch from Jesus
+
   Revision 1.500  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 

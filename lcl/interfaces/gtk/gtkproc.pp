@@ -396,6 +396,7 @@ function IsToggleKey(const AVKey: Byte): Boolean;
 //function GTKEventState2ShiftState(KeyState: Word): TShiftState;
 //function KeyToListCode_(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
 procedure gdk_event_key_get_string(Event: PGDKEventKey; var theString: Pointer);
+procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar);
 function gdk_event_get_type(Event: Pointer): guint;
 procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey;
                                           BeforeEvent: boolean);

@@ -33,21 +33,20 @@ todo: credit who created the TComponentDatalink idea (Johana ...)
 unit DBGrids;
 
 {$mode objfpc}{$H+}
-{.$define protodbgrid}
 interface
 
 uses
   Classes, LCLProc, Graphics, SysUtils, LCLType, stdctrls, DB, LMessages, Grids,
   Controls;
 
-Type
-  TDataSetScrolledEvent = Procedure(DataSet: TDataSet; Distance: Integer) of Object;
+type
+  TDataSetScrolledEvent = procedure(DataSet: TDataSet; Distance: Integer) of object;
 
-Type
-  TComponentDataLink=Class(TDatalink)
+type
+  TComponentDataLink=class(TDatalink)
   private
     FDataSet: TDataSet;
-    FDataSetName: String;
+    FDataSetName: string;
     FModified: Boolean;
     FOnDatasetChanged: TDatasetNotifyEvent;
     fOnDataSetClose: TDataSetNotifyEvent;
@@ -57,103 +56,98 @@ Type
     fOnInvalidDataSource: TDataSetNotifyEvent;
     fOnNewDataSet: TDataSetNotifyEvent;
     FOnRecordChanged: TFieldNotifyEvent;
-    function GetDataSetName: String;
+    function GetDataSetName: string;
     function GetFields(Index: Integer): TField;
-    procedure SetDataSetName(const AValue: String);
-  Protected
+    procedure SetDataSetName(const AValue: string);
+  protected
     procedure RecordChanged(Field: TField); override;
-    Procedure DataSetChanged; Override;
+    procedure DataSetChanged; override;
     procedure ActiveChanged; override;
     procedure LayoutChanged; override;
     procedure DataSetScrolled(Distance: Integer); override;
     procedure FocusControl(Field: TFieldRef); override;
     // Testing Events
-    procedure CheckBrowseMode; Override;
-    procedure EditingChanged; Override;
-    procedure UpdateData; Override;
-    function  MoveBy(Distance: Integer): Integer; Override;
-  Public
-    Procedure Modified;
-    Property OnRecordChanged: TFieldNotifyEvent Read FOnRecordChanged Write FOnRecordChanged;
-    Property OnDataSetChanged: TDatasetNotifyEvent Read FOnDatasetChanged Write FOnDataSetChanged;
+    procedure CheckBrowseMode; override;
+    procedure EditingChanged; override;
+    procedure UpdateData; override;
+    function  MoveBy(Distance: Integer): Integer; override;
+  public
+    procedure Modified;
+    Property OnRecordChanged: TFieldNotifyEvent read FOnRecordChanged write FOnRecordChanged;
+    Property OnDataSetChanged: TDatasetNotifyEvent read FOnDatasetChanged write FOnDataSetChanged;
     property OnNewDataSet: TDataSetNotifyEvent read fOnNewDataSet write fOnNewDataSet;
     property OnDataSetOpen: TDataSetNotifyEvent read fOnDataSetOpen write fOnDataSetOpen;
     property OnInvalidDataSet: TDataSetNotifyEvent read fOnInvalidDataSet write fOnInvalidDataSet;
     property OnInvalidDataSource: TDataSetNotifyEvent read fOnInvalidDataSource write fOnInvalidDataSource;
     property OnDataSetClose: TDataSetNotifyEvent read fOnDataSetClose write fOnDataSetClose;
-    Property OnDataSetScrolled: TDataSetScrolledEvent Read FOnDataSetScrolled Write FOnDataSetScrolled;
-    Property DataSetName:String Read GetDataSetName Write SetDataSetName;
+    Property OnDataSetScrolled: TDataSetScrolledEvent read FOnDataSetScrolled write FOnDataSetScrolled;
+    Property DataSetName:string read GetDataSetName write SetDataSetName;
     Property Fields[Index: Integer]: TField read GetFields;
-  End;
+  end;
 
 
-  TCustomDbGrid=Class(TCustomGrid)
-  Private
+  TCustomDbGrid=class(TCustomGrid)
+  private
     FDataLink: TComponentDataLink;
     FKeepInBuffer: Boolean;
     FOnColEnter: TNotifyEvent;
     FOnColExit: TNotifyEvent;
     FReadOnly: Boolean;
     FColEnterPending: Boolean;
-    FSelfScroll: Boolean;
+    //FSelfScroll: Boolean;
     FLayoutChanging: Boolean;
     FVisualLock: Boolean;
     FNumRecords: Integer;
     function GetDataSource: TDataSource;
-    Procedure OnRecordChanged(Field:TField);
-    Procedure OnDataSetChanged(aDataSet: TDataSet);
-    Procedure OnDataSetOpen(aDataSet: TDataSet);
-    Procedure OnDataSetClose(aDataSet: TDataSet);
-    Procedure OnInvalidDataSet(aDataSet: TDataSet);
-    Procedure OnInvalidDataSource(aDataSet: TDataset);
-    Procedure OnNewDataSet(aDataSet: TDataset);
-    Procedure OnDataSetScrolled(aDataSet:TDataSet; Distance: Integer);
+    procedure OnRecordChanged(Field:TField);
+    procedure OnDataSetChanged(aDataSet: TDataSet);
+    procedure OnDataSetOpen(aDataSet: TDataSet);
+    procedure OnDataSetClose(aDataSet: TDataSet);
+    procedure OnInvalidDataSet(aDataSet: TDataSet);
+    procedure OnInvalidDataSource(aDataSet: TDataset);
+    procedure OnNewDataSet(aDataSet: TDataset);
+    procedure OnDataSetScrolled(aDataSet:TDataSet; Distance: Integer);
     procedure SetDataSource(const AValue: TDataSource);
-    Procedure UpdateBufferCount;
+    procedure UpdateBufferCount;
     // Temporal
-    Function DefaultFieldColWidth(FieldType: TFieldType): Integer;
+    function DefaultFieldColWidth(FieldType: TFieldType): Integer;
 
-  Protected
+  protected
     procedure LinkActive(Value: Boolean); virtual;
-    Procedure LayoutChanged; Virtual;
-    Property ReadOnly: Boolean Read FReadOnly Write FReadOnly;
-    property DataSource: TDataSource read GetDataSource write SetDataSource;
-    Procedure DrawByRows; Override;
-    Procedure DrawRow(ARow: Integer); Override;
-    Procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); Override;
+    procedure LayoutChanged; virtual;
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure DrawByRows; override;
+    procedure DrawRow(ARow: Integer); override;
+    procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
     
-    {$Ifdef protodbgrid}
-    Function BeyondRowCount(Count: Integer):Boolean; Override;
-    Function BelowFirstRow(Count: Integer):Boolean; Override;
-    procedure UpdateGridScrollPosition(DCol,DRow: Integer; InvAll: Boolean); Override;
-    {$endif protodbgrid}
-    Procedure MoveSelection; Override;
-    Procedure BeforeMoveSelection(Const DCol,DRow: Integer); Override;
-    procedure HeaderClick(IsColumn: Boolean; index: Integer); Override;
-    procedure KeyDown(var Key : Word; Shift : TShiftState); Override;
+    procedure MoveSelection; override;
+    procedure BeforeMoveSelection(const DCol,DRow: Integer); override;
+    procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
+    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     
-    Procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure MouseDown(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     function  ScrollBarAutomatic(Which: TScrollStyle): boolean; override;
     {
-    Procedure MouseMove(Shift: TShiftState; X,Y: Integer);Override;
-    Procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
+    procedure MouseMove(Shift: TShiftState; X,Y: Integer);override;
+    procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); override;
     }
     
-    Procedure VisualChange; Override;
+    procedure VisualChange; override;
 
-    Procedure WMHScroll(var Message : TLMHScroll); message LM_HScroll;
-    Procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
+    procedure WMVScroll(var Message : TLMVScroll); message LM_VScroll;
 
     procedure UpdateActive;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
+    Property KeepInBuffer: Boolean read FKeepInBuffer write FKeepInBuffer;
+    Property ReadOnly: Boolean read FReadOnly write FReadOnly;
     property OnColEnter: TNotifyEvent read FOnColEnter write FOnColEnter;
     property OnColExit: TNotifyEvent read FOnColExit write FOnColExit;
-    Property KeepInBuffer: Boolean read FKeepInBuffer write FKeepInBuffer;
-  Public
-    Constructor Create(AOwner: TComponent); Override;
-    Destructor Destroy; Override;
-  End;
+  public
+    Constructor Create(AOwner: TComponent); override;
+    Destructor Destroy; override;
+  end;
   
-  TdbGrid=Class(TCustomDbGrid)
+  TdbGrid=class(TCustomDbGrid)
   public
     property Canvas;
     //property SelectedRows;
@@ -213,9 +207,9 @@ Type
     //property OnStartDock;
     //property OnStartDrag;
     //property OnTitleClick;
-  End;
+  end;
 
-Procedure Register;
+procedure Register;
   
 implementation
 
@@ -230,9 +224,9 @@ end;
 procedure TCustomDbGrid.OnRecordChanged(Field: TField);
 begin
   {$IfDef dbgdbgrid}
-  DBGOut('(',name,') ','TCustomDBGrid.OnRecordChanged(Field=');
-  If Field=nil Then DebugLn('nil)')
-  Else              DebugLn(Field.FieldName,')');
+  DBGOut('('+name+') ','TCustomDBGrid.OnRecordChanged(Field=');
+  if Field=nil then DebugLn('nil)')
+  else              DebugLn(Field.FieldName,')');
   {$Endif}
 end;
 
@@ -244,9 +238,9 @@ end;
 procedure TCustomDbGrid.OnDataSetChanged(aDataSet: TDataSet);
 begin
   {$Ifdef dbgdbgrid}
-  DBGOut('(',name,') ','TCustomDBDrid.OnDataSetChanged(aDataSet=');
-  If aDataSet=nil Then DebugLn('nil)')
-  Else DebugLn(aDataSet.Name,')');
+  DBGOut('('+name+') ','TCustomDBDrid.OnDataSetChanged(aDataSet=');
+  if aDataSet=nil then DebugLn('nil)')
+  else DebugLn(aDataSet.Name,')');
   {$endif}
   UpdateActive;
 end;
@@ -296,10 +290,10 @@ end;
 procedure TCustomDbGrid.OnDataSetScrolled(aDataset: TDataSet; Distance: Integer);
 begin
   {$ifdef dbgdbgrid}
-  DebugLn(ClassName, ' (',name,')', '.OnDataSetScrolled(',Distance,'), Invalidating');
+  DebugLn(ClassName, ' (',name,')', '.OnDataSetScrolled(',IntToStr(Distance),'), Invalidating');
   {$endif}
   UpdateActive;
-  If Distance<>0 Then Invalidate;
+  if Distance<>0 then Invalidate;
 end;
 
 procedure TCustomDbGrid.SetDataSource(const AValue: TDataSource);
@@ -311,31 +305,27 @@ end;
 
 procedure TCustomDbGrid.UpdateBufferCount;
 begin
-  If FDataLink.Active Then begin
-    //if FGCache.ValidGrid Then
+  if FDataLink.Active then begin
+    //if FGCache.ValidGrid then
       FDataLink.BufferCount:= ClientHeight div DefaultRowHeight - 1;
-    //Else
+    //else
     //  FDataLink.BufferCount:=0;
     {$ifdef dbgdbgrid}
-    DebugLn(ClassName, ' (',name,')', ' FdataLink.BufferCount=',Fdatalink.BufferCount);
+    DebugLn(ClassName, ' (',name,')', ' FdataLink.BufferCount=' + IntToStr(Fdatalink.BufferCount));
     {$endif}
-  End;
-end;
-
-procedure TCustomDbGrid.WMHScroll(var Message: TLMHScroll);
-begin
-  inherited;
+  end;
 end;
 
 procedure TCustomDbGrid.WMVScroll(var Message: TLMVScroll);
-Var
+var
   Num: Integer;
   C, TL: Integer;
 begin
-  Inherited;
-  if Not GCache.ValidGrid Then Exit;
+  inherited;
+  if not GCache.ValidGrid then Exit;
+  {$ifdef dbgdbgrid}
   DebugLn('VSCROLL: Code=',dbgs(Message.ScrollCode),' Position=', dbgs(Message.Pos));
-  
+  {$endif}
   exit;
   C:=Message.Pos+GCache.Fixedheight;
   Num:=(FNumRecords + FixedRows) * DefaultRowHeight;
@@ -345,22 +335,22 @@ begin
 end;
 
 
-Function TCustomDbGrid.DefaultFieldColWidth(FieldType: TFieldType): Integer;
+function TCustomDbGrid.DefaultFieldColWidth(FieldType: TFieldType): Integer;
 begin
-  Case FieldType of
+  case FieldType of
     ftString: Result:=150;
     ftSmallInt..ftBoolean: Result:=60;
-    Else Result:=DefaultColWidth;
-  End;
+    else Result:=DefaultColWidth;
+  end;
 end;
 
 procedure TCustomDbGrid.LinkActive(Value: Boolean);
 begin
   //BeginUpdate;
-  FVisualLock:= Value; // If Not Active Call Inherited visualchange y Active dont call it
-  If Not Value Then FDataLink.BufferCount:=0;
+  FVisualLock:= Value; // if not Active Call inherited visualchange y Active dont call it
+  if not Value then FDataLink.BufferCount:=0;
   Clear; // This will call VisualChange and Finally -> LayoutChanged
-  //If Value Then LayoutChanged;
+  //if Value then LayoutChanged;
   //EndUpdate(uoFull);
 end;
 
@@ -369,16 +359,16 @@ var
   i: Integer;
   FDefs: TFieldDefs;
 begin
-  If FDataLink.Active Then begin
+  if FDataLink.Active then begin
 
     FNumRecords:= FDataLink.DataSet.RecordCount;
     {$ifdef dbgdbgrid}
     DebugLn('(',name,') ','TCustomGrid.LayoutChanged INIT');
-    DebugLn('DataLink.DataSet.recordcount: ',FNumRecords);
+    DebugLn('DataLink.DataSet.recordcount: ', IntToStr(FNumRecords));
     {$endif}
 
     FLayoutChanging:=True; // Avoid infinit loop
-    FVisualLock:=True; // Avoid Calling Inherited visualchange
+    FVisualLock:=True; // Avoid Calling inherited visualchange
     UpdateBufferCount;
     ColCount:= FDataLink.DataSet.FieldCount + 1;
     RowCount:= FDataLink.RecordCount + 1;
@@ -386,10 +376,10 @@ begin
     FixedCols:=1;
     ColWidths[0]:=12;
     FDefs:=FDataLink.DataSet.FieldDefs;
-    For i:=0 to FDefs.Count-1 do Begin
+    for i:=0 to FDefs.Count-1 do begin
       //DebugLn('Field ',FDefs[i].Name, ' Size= ',FDefs[i].Size);
       ColWidths[i+1]:= DefaultFieldColWidth(FDefs[i].DataType);
-    End;
+    end;
     FVisualLock:=False;
     VisualChange; // Now Call Visual Change
     // Update Scrollbars
@@ -400,98 +390,44 @@ begin
     //HorzScrollBar.Range:= GridWidth+2;
     //VertScrollBar.Range:= (FNumRecords + FixedRows) * DefaultRowHeight + 2;
     {
-    For i:=1 to ColCount-1 do begin
+    for i:=1 to ColCount-1 do begin
       F:=FDataLink.Fields[i];
-      If F<>nil Then Begin
+      if F<>nil then begin
         W:=F.DisplayWidth;
-        If W<0 Then W:=0;
-        If W=0 Then W:=F.GetDefaultwidth;
+        if W<0 then W:=0;
+        if W=0 then W:=F.GetDefaultwidth;
         DebugLn('Field ',F.FieldName,' DisplayWidth=', W);
-      End;
-    End;
+      end;
+    end;
     }
     {$ifdef dbgdbgrid}
     DebugLn('(',name,') ','TCustomGrid.LayoutChanged - DONE');
     {$endif}
     FLayoutChanging:=False;
-  End;
-end;
-{$IfDef Protodbgrid}
-Function TCustomDbGrid.BeyondRowCount(Count: Integer): Boolean;
-Var
-  i: integer;
-  InMaxRow: Boolean;
-begin
-  With FDataLink do begin
-    Result:=Active;
-    {$ifdef dbgdbgrid}
-    DebugLn('(',name,') ',
-      'BeyondRowCount Hitted here: Count=',Count,
-      ' FDataLink.Active=', Result,
-      ' FDataLink.EOF=',EOF);
-    {$Endif}
-    If Not result Then Exit;
-
-    If EOF And DataSet.CanModify And Not ReadOnly Then
-      Dataset.Append
-    Else
-      If not EOF Then begin
-        I:=MoveBy(Count);
-        {$Ifdef dbgdbgrid}
-        DebugLn('Scrolled by ',I);
-        {$Endif}
-      End;
-  End;
+  end;
 end;
 
-Function TCustomDbGrid.BelowFirstRow(Count: Integer):Boolean;
-var
-  i: Integer;
+procedure TCustomDbGrid.DefineProperties(Filer: TFiler);
 begin
-  With FDataLink do Begin
-    Result:=Active;
-    {$ifdef dbgdbgrid}
-    DebugLn('(',name,') ',
-      'BelowFirstRow Hitted here: Count=',Count,
-      ' FDataLink.Active=', Result,
-      ' FDataLink.BOF=',BOF);
-    {$Endif}
-    If Result And Not BOF Then begin
-      If KeepInBuffer And (ActiveRecord<>0) Then
-        Result:=Inherited BelowFirstRow(Count)
-      Else begin
-        I:=MoveBy(-Count);
-        {$Ifdef dbgdbgrid}
-        DebugLn('Scrolled By ', I);
-        {$Endif}
-      End;
-    End;
-  End;
 end;
 
-procedure TCustomDbGrid.UpdateGridScrollPosition(DCol, DRow: Integer; InvAll: Boolean);
+procedure TCustomDbGrid.BeforeMoveSelection(const DCol,DRow: Integer);
 begin
-  If DCol<>Col Then inherited;
-end;
-{$Endif Protodbgrid}
-
-Procedure TCustomDbGrid.BeforeMoveSelection(Const DCol,DRow: Integer);
-begin
-  Inherited BeforeMoveSelection(DCol, DRow);
+  inherited BeforeMoveSelection(DCol, DRow);
   
   FDatalink.UpdateData;
-  If DCol<>Col Then begin
+  if DCol<>Col then begin
      // Its a Column Movement
-     If assigned(OnColExit) Then OnColExit(Self);
+     if assigned(OnColExit) then OnColExit(Self);
      FColEnterPending:=True;
-  End;
+  end;
   {
   Exit;
-  If (DRow<>Row) Then Begin
+  if (DRow<>Row) then begin
     // Its a Row Movement
     D:= DRow - Row;
     FDatalink.MoveBy(D);
-  End;
+  end;
   }
 end;
 
@@ -501,47 +437,47 @@ begin
 end;
 
 procedure TCustomDbGrid.KeyDown(var Key: Word; Shift: TShiftState);
-  Procedure MoveBy(Delta: Integer);
-  Begin
-    FSelfScroll:=True;
+  procedure MoveBy(Delta: Integer);
+  begin
+    //FSelfScroll:=True;
     FDatalink.MoveBy(Delta);
-    FSelfScroll:=False;
+    //FSelfScroll:=False;
   end;
 begin
   // inherited KeyDown(Key, Shift); // Fully override old KeyDown handler
-  Case Key of
+  case Key of
     VK_DOWN: MoveBy(1);
     VK_UP: MoveBy(-1);
     VK_NEXT: MoveBy( VisibleRowCount );
     VK_PRIOR: MoveBy( -VisibleRowCount );
-    else Inherited;
-  End;
+    else inherited;
+  end;
 end;
 
 procedure TCustomDbGrid.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
   Y: Integer);
-Var
+var
   Gz: TGridZone;
   P: TPoint;
 begin
-  If csDesigning in componentState Then Exit;
-  If Not GCache.ValidGrid Then Exit;
+  if csDesigning in componentState then Exit;
+  if not GCache.ValidGrid then Exit;
   
   Gz:=MouseToGridZone(X,Y, False);
-  Case Gz of
+  case Gz of
     gzFixedRows, gzFixedCols: inherited MouseDown(Button, Shift, X, Y);
     else
-      Begin
+      begin
         P:=MouseToCell(Point(X,Y));
-        If P.Y=Row Then Inherited MouseDown(Button, Shift, X, Y)
-        Else Begin
+        if P.Y=Row then inherited MouseDown(Button, Shift, X, Y)
+        else begin
           BeginUpdate;
           FDatalink.MoveBy(P.Y - Row);
           Col:=P.X;
           EndUpdate(uoQuick);
-        End;
-      End;
-  End;
+        end;
+      end;
+  end;
 end;
 
 function TCustomDbGrid.ScrollBarAutomatic(Which: TScrollStyle): boolean;
@@ -555,29 +491,29 @@ end;
 procedure TCustomDbGrid.MoveSelection;
 begin
   inherited MoveSelection;
-  If FColEnterPending And Assigned(OnColEnter) Then OnColEnter(Self);
+  if FColEnterPending and Assigned(OnColEnter) then OnColEnter(Self);
   FColEnterPending:=False;
   UpdateActive;
 end;
 
 procedure TCustomDbGrid.DrawByRows;
-Var
+var
   CurActiveRecord: Integer;
 begin
-  If FDataLink.ACtive Then Begin
+  if FDataLink.ACtive then begin
     CurActiveRecord:=FDataLink.ActiveRecord;
     //PrimerRecord:=FDataLink.FirstRecord;
-  End;
-  Try
+  end;
+  try
     inherited DrawByRows;
-  Finally
-    if FDataLink.Active Then FDataLink.ActiveRecord:=CurActiveRecord;
-  End;
+  finally
+    if FDataLink.Active then FDataLink.ActiveRecord:=CurActiveRecord;
+  end;
 end;
 // 33 31 21 29 80 90 4 3
 procedure TCustomDbGrid.DrawRow(ARow: Integer);
 begin
-  If Arow>=FixedRows then FDataLink.ActiveRecord:=ARow-FixedRows;
+  if Arow>=FixedRows then FDataLink.ActiveRecord:=ARow-FixedRows;
   inherited DrawRow(ARow);
 end;
 
@@ -585,7 +521,7 @@ procedure DrawArrow(Canvas: TCanvas; R: TRect; Opt: TDataSetState);
 var
   dx,dy, x, y: Integer;
 begin
-  Case Opt of
+  case Opt of
     dsBrowse:
       begin //
           Canvas.Brush.Color:=clBlack;
@@ -595,7 +531,7 @@ begin
           y:= R.top+ (R.Bottom-R.Top) div 2;
           x:= R.Left+2;
           Canvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
-       End;
+       end;
     dsEdit:
       begin // Normal
           Canvas.Brush.Color:=clRed;
@@ -605,7 +541,7 @@ begin
           y:= R.top+ (R.Bottom-R.Top) div 2;
           x:= R.Left+2;
           Canvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
-       End;
+       end;
     dsInsert:
       begin // Normal
           Canvas.Brush.Color:=clGreen;
@@ -615,35 +551,46 @@ begin
           y:= R.top+ (R.Bottom-R.Top) div 2;
           x:= R.Left+2;
           Canvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
-       End;
-   End;
-End;
+       end;
+   end;
+end;
 
 procedure TCustomDbGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
-Var
+var
   F: TField;
+  S: string;
 begin
   // Draw appropiated attributes
   inherited DrawCell(aCol, aRow, aRect, aState);
   
-  If Not FDataLink.Active then Exit;
+  if not FDataLink.Active then
+    Exit;
   
   // Draw text When needed
-  If gdFixed in aState Then begin
-    if (aRow=0)And(ACol>=FixedCols) Then begin
+  if gdFixed in aState then begin
+    if (aRow=0)and(ACol>=FixedCols) then begin
       // draw column headers
       F:=FDataLink.Fields[aCol-FixedCols];
-      If F<>nil then Canvas.TextOut(Arect.Left+2,ARect.Top+2, F.FieldName);
-    End Else
-    If (aCol=0)And(aRow=Row) Then
+      if F<>nil then
+        Canvas.TextOut(Arect.Left+2,ARect.Top+2, F.FieldName);
+    end else
+    if (aCol=0)and(aRow=Row) then
       // draw row headers (selected/editing/* record)
       DrawArrow(Canvas, aRect, FDataLink.Dataset.State)
-  End Else begin
+  end else begin
     // Draw the other cells
-    F:=FDataLink.Fields[Acol-FixedCols];
-    If F<>nil then Canvas.TextOut(aRect.Left+2,ARect.Top+2, F.AsString);
-  End;
+    try
+      F:=FDataLink.Fields[Acol-FixedCols];
+      if F<>nil then
+        S := F.AsString
+      else
+        S := '';
+    except
+      S := 'Error!';
+    end;
+    Canvas.TextOut(aRect.Left+2,ARect.Top+2, S);
+  end;
 end;
 
 procedure TCustomDbGrid.UpdateActive;
@@ -654,32 +601,32 @@ var
   WasVisible: Boolean;
 }
 begin
-  With FDataLink do begin
-    If Not GCache.ValidGrid then Exit;
-    If DataSource=nil Then Exit;
+  with FDataLink do begin
+    if not GCache.ValidGrid then Exit;
+    if DataSource=nil then Exit;
     DebugLn('(',Name,') ActiveRecord=', dbgs(ActiveRecord), ' FixedRows=',dbgs(FixedRows), ' Row=', dbgs(Row));
     Row:= FixedRows + ActiveRecord;
     {
     LastRow:=Row;
     LastEditor:= Editor;
-    WasVisible:= (Lasteditor<>nil)And(LastEditor.Visible);
+    WasVisible:= (Lasteditor<>nil)and(LastEditor.Visible);
     FRow:=FixedRows + ActiveRecord;
-    If LastRow<>FRow Then
+    if LastRow<>FRow then
       ProcessEditor(LastEditor,Col,LastRow,WasVisible);
     }
-  End;
+  end;
   Invalidate;
 end;
 
 procedure TCustomDbGrid.VisualChange;
 begin
-  If FDataLink=nil Then Exit;
-  If not FVisualLock Then begin
+  if FDataLink=nil then Exit;
+  if not FVisualLock then begin
     inherited VisualChange;
-  End;
-  If Not FLayoutChanging Then begin
+  end;
+  if not FLayoutChanging then begin
     LayoutChanged;
-  End;
+  end;
 end;
 
 constructor TCustomDbGrid.Create(AOwner: TComponent);
@@ -711,25 +658,25 @@ begin
   FDataLink.OnDataSetChanged:=nil;
   FDataLink.OnRecordChanged:=nil;
   FDataLink.Free;
-  Inherited Destroy;
+  inherited Destroy;
 end;
 
 { TComponentDataLink }
 
 function TComponentDataLink.GetFields(Index: Integer): TField;
 begin
-  If (index>=0)And(index<DataSet.FieldCount) Then result:=DataSet.Fields[index];
+  if (index>=0)and(index<DataSet.FieldCount) then result:=DataSet.Fields[index];
 end;
 
-function TComponentDataLink.GetDataSetName: String;
+function TComponentDataLink.GetDataSetName: string;
 begin
   Result:=FDataSetName;
-  If DataSet<>nil Then Result:=DataSet.Name;
+  if DataSet<>nil then Result:=DataSet.Name;
 end;
 
-procedure TComponentDataLink.SetDataSetName(const AValue: String);
+procedure TComponentDataLink.SetDataSetName(const AValue: string);
 begin
-  If FDataSetName<>AValue then FDataSetName:=AValue;
+  if FDataSetName<>AValue then FDataSetName:=AValue;
 end;
 
 procedure TComponentDataLink.RecordChanged(Field: TField);
@@ -737,7 +684,7 @@ begin
   {$ifdef dbgdbgrid}
   DebugLn('TComponentDataLink.RecordChanged');
   {$endif}
-  If Assigned(OnRecordChanged) Then OnRecordChanged(Field);
+  if Assigned(OnRecordChanged) then OnRecordChanged(Field);
 end;
 
 procedure TComponentDataLink.DataSetChanged;
@@ -745,7 +692,7 @@ begin
   {$ifdef dbgdbgrid}
   DebugLn('TComponentDataLink.DataSetChanged');
   {$Endif}
-  If Assigned(OnDataSetChanged) Then OnDataSetChanged(DataSet);
+  if Assigned(OnDataSetChanged) then OnDataSetChanged(DataSet);
 end;
 
 procedure TComponentDataLink.ActiveChanged;
@@ -780,7 +727,7 @@ end;
 
 procedure TComponentDataLink.LayoutChanged;
 begin
-  Inherited LayoutChanged;
+  inherited LayoutChanged;
   {$ifdef dbgdbgrid}
   DebugLn('TComponentDataLink.LayoutChanged');
   {$endif}
@@ -789,9 +736,9 @@ end;
 procedure TComponentDataLink.DataSetScrolled(Distance: Integer);
 begin
   {$ifdef dbgdbgrid}
-  DebugLn('TComponentDataLink.DataSetScrolled(',Distance,')');
+  DebugLn('TComponentDataLink.DataSetScrolled(',IntToStr(Distance),')');
   {$endif}
-  if Assigned(OnDataSetScrolled) Then OnDataSetScrolled(DataSet, Distance);
+  if Assigned(OnDataSetScrolled) then OnDataSetScrolled(DataSet, Distance);
 end;
 
 procedure TComponentDataLink.FocusControl(Field: TFieldRef);

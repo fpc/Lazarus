@@ -32,6 +32,8 @@ Cur version: 0.8.5
 The log was moved to end of file, search for: The_Log
 
 }
+
+{$Define UseClipRect}
 unit Grids;
 
 {$mode objfpc}{$H+}
@@ -114,7 +116,7 @@ type
   TGridZone = (gzNormal, gzFixedCols, gzFixedRows, gzFixedCells);
 
   TUpdateOption = (uoNone, uoQuick, uoFull);
-  TAutoAdvance = (aaDown,aaRight);
+  TAutoAdvance = (aaDown,aaRight,aaLeft);
 
   TGridStatus = (stNormal, stEditorHiding, stEditorShowing, stFocusing);
   TItemType = (itNormal,itCell,itColumn,itRow,itFixed,itFixedColumn,itFixedRow,itSelected);
@@ -193,6 +195,10 @@ type
   TSelectEditorEvent =
     procedure(Sender: TObject; Col,Row: Integer;
               var Editor: TWinControl) of object;
+              
+  TOnPrepareCanvasEvent =
+    procedure(sender: TObject; Col,Row: Integer;
+              aState:TGridDrawState) of object;
 
   TVirtualGrid=class
     private
@@ -271,9 +277,11 @@ type
     FGridLineWidth: Integer;
     FDefColWidth, FDefRowHeight: Integer;
     FCol,FRow, FFixedCols, FFixedRows: Integer;
+    FOnPrepareCanvas: TOnPrepareCanvasEvent;
     FOnSelectEditor: TSelectEditorEvent;
     FGridLineColor: TColor;
     FFixedcolor, FFocusColor, FSelectedColor: TColor;
+    FFocusRectVisible: boolean;
     FCols,FRows: TList;
     FsaveOptions: TSaveOptions;
     FScrollBars: TScrollStyle;
@@ -301,6 +309,7 @@ type
     procedure CheckCount(aNewColCount, aNewRowCount: Integer);
     function  CheckTopLeft(aCol,aRow: Integer; CheckCols,CheckRows: boolean): boolean;
     procedure SetFlat(const AValue: Boolean);
+    procedure SetFocusRectVisible(const AValue: Boolean);
     function  doColSizing(X,Y: Integer): Boolean;
     function  doRowSizing(X,Y: Integer): Boolean;
     procedure doColMoving(X,Y: Integer);
@@ -386,8 +395,8 @@ type
     procedure DrawColRowMoving;
     procedure DrawEdges;
     //procedure DrawFixedCells; virtual;
-    procedure DrawFocused; virtual;
-    procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect; aState:TGridDrawstate); virtual;
+    //procedure DrawFocused; virtual;
+    procedure DrawFocusRect(aCol,aRow:Integer; ARect:TRect); virtual;
     //procedure DrawInteriorCells; virtual;
     procedure DrawRow(aRow: Integer); virtual;
     procedure EditordoGetValue; virtual;
@@ -398,6 +407,7 @@ type
     function  GetEditText(ACol, ARow: Longint): string; dynamic;
     procedure SetEditText(ACol, ARow: Longint; const Value: string); dynamic;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); dynamic;
+    procedure HeaderSized(IsColumn: Boolean; index: Integer); dynamic;
     procedure InvalidateCell(aCol, aRow: Integer); overload;
     procedure InvalidateCell(aCol, aRow: Integer; Redraw: Boolean); overload;
     procedure InvalidateCol(ACol: Integer);
@@ -455,6 +465,7 @@ type
     property FixedColor: TColor read GetFixedColor write SetFixedcolor;
     property Flat: Boolean read FFlat write SetFlat default false;
     property FocusColor: TColor read FFocusColor write SetFocusColor;
+    property FocusRectVisible: Boolean read FFocusRectVisible write SetFocusRectVisible;
     property GCache: TGridDataCache read FGCAChe;
     property GridHeight: Integer read FGCache.GridHeight;
     property GridLineColor: TColor read FGridLineColor write SetGridLineColor;
@@ -478,6 +489,7 @@ type
 
     property OnBeforeSelection: TOnSelectEvent read FOnBeforeSelection write FOnBeforeSelection;
     property OnCompareCells: TOnCompareCells read FOnCompareCells write FOnCompareCells;
+    property OnPrepareCanvas: TOnPrepareCanvasEvent read FOnPrepareCanvas write FOnPrepareCanvas;
     property OnDrawCell: TOnDrawCell read FOnDrawCell write FOnDrawCell;
     property OnSelection: TOnSelectEvent read fOnSelection write fOnSelection;
     property OnSelectEditor: TSelectEditorEvent read FOnSelectEditor write FOnSelectEditor;
@@ -521,7 +533,7 @@ type
     FOnColRowMoved: TgridOperationEvent;
     FOnGetEditMask: TGetEditEvent;
     FOnGetEditText: TGetEditEvent;
-    FOnHeaderClick: THdrEvent;
+    FOnHeaderClick, FOnHeaderSized: THdrEvent;
     FOnSelectCell: TOnSelectcellEvent;
     FOnSetEditText: TSetEditEvent;
   protected
@@ -532,8 +544,9 @@ type
     procedure ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer); override;
     function  CreateVirtualGrid: TVirtualGrid; virtual;
     procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
-    procedure DrawFocusRect(aCol,aRow: Integer; ARect: TRect; aState: TGridDrawstate); override;
+    procedure DrawFocusRect(aCol,aRow: Integer; ARect: TRect); override;
     procedure HeaderClick(IsColumn: Boolean; index: Integer); override;
+    procedure HeaderSized(IsColumn: Boolean; index: Integer); override;
     function  GetEditMask(aCol, aRow: Longint): string; override;
     function  GetEditText(aCol, aRow: Longint): string; override;
     function  SelectCell(aCol,aRow: Integer): boolean; override;
@@ -553,6 +566,7 @@ type
     property Editor;
     property EditorMode;
     property FocusColor;
+    property FocusRectVisible;
     property GridHeight;
     property GridLineColor;
     property GridLineStyle;
@@ -561,6 +575,7 @@ type
     property Row;
     property RowHeights;
     property SaveOptions;
+    property SelectedColor;
     property Selection;
     property SkipUnselectable;
     //property TabStops;
@@ -618,12 +633,14 @@ type
     property OnGetEditMask: TGetEditEvent read FOnGetEditMask write FOnGetEditMask;
     property OnGetEditText: TGetEditEvent read FOnGetEditText write FOnGetEditText;
     property OnHeaderClick: THdrEvent read FOnHeaderClick write FOnHeaderClick;
+    property OnHeaderSized: THdrEvent read FOnHeaderSized write FOnHeaderSized;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnPrepareCanvas;
     property OnSelectEditor;
     property OnSelection;
     property OnSelectCell: TOnSelectCellEvent read FOnSelectCell write FOnSelectCell;
@@ -1485,14 +1502,16 @@ end;
 procedure TCustomGrid.HeaderClick(IsColumn: Boolean; index: Integer);
 begin
 end;
+procedure TCustomGrid.HeaderSized(IsColumn: Boolean; index: Integer);
+begin
+end;
 procedure TCustomGrid.ColRowMoved(IsColumn: Boolean; FromIndex,ToIndex: Integer);
 begin
 end;
 procedure TCustomGrid.ColRowExchanged(isColumn: Boolean; index, WithIndex: Integer);
 begin
 end;
-procedure TCustomGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect;
-  aState: TGridDrawstate);
+procedure TCustomGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 begin
 end;
 procedure TCustomGrid.AutoAdjustColumn(aCol: Integer);
@@ -1539,6 +1558,8 @@ begin
     Canvas.Brush.Color := clWindow;
     Canvas.Font.Color := clWindowText;
   end;
+  if Assigned(OnPrepareCanvas) then
+    OnPrepareCanvas(Self, aCol, aRow, aState);
 end;
 
 procedure TCustomGrid.ResetOffset(chkCol, ChkRow: Boolean);
@@ -1579,14 +1600,14 @@ var
   R: TRect;
 begin
   if BorderStyle = bsSingle then begin
-    R := Rect(0,0,Width,Height);
+    R := Rect(0,0,FGCache.ClientWidth, FGCache.Clientheight);
     with R, Canvas do begin
       Pen.Color := cl3DDKShadow;
-      MoveTo(Right-1, 0);
+      MoveTo(0,0);
+      LineTo(0,Bottom);
+      LineTo(Right, Bottom);
+      LineTo(Right, 0);
       LineTo(0,0);
-      LineTo(0,Bottom-1);
-      LineTo(Right-1, Bottom-1);
-      LineTo(Right-1, Top-1);
     end;
   end;
 end;
@@ -1668,28 +1689,59 @@ begin
   For i:=0 to FFixedRows-1 Do DrawRow(i);
 end;
 
+function VerticalIntersect(const aRect,bRect: TRect): boolean;
+begin
+  result := (aRect.Top < bRect.Bottom) and (aRect.Bottom > bRect.Top);
+end;
+
+function HorizontalIntersect(const aRect,bRect: TRect): boolean;
+begin
+  result := (aRect.Left < bRect.Right) and (aRect.Right > bRect.Left);
+end;
+
 procedure TCustomGrid.DrawRow(aRow: Integer);
 var
   Gds: TGridDrawState;
   i: Integer;
   Rs: Boolean;
   R: TRect;
+  {$IFDEF UseClipRect}
+  ClipArea: Trect;
+  {$ENDIF}
 begin
 
   // Upper and Lower bounds for this row
   ColRowToOffSet(False, True, aRow, R.Top, R.Bottom);
 
+  {$IFDEF UseClipRect}
+  // is this row within the ClipRect
+  ClipArea := Canvas.ClipRect;
+  if not VerticalIntersect( R, ClipArea) then exit;
+  {$ENDIF}
+  
   // Draw columns in this row
   with FGCache.VisibleGrid do
     if ARow<FFixedRows then begin
       gds:=[gdFixed];
       For i:=Left to Right do begin
         ColRowToOffset(true, True, i, R.Left, R.Right);
+        {$IFDEF UseClipRect}
+        // is this column within the ClipRect?
+        if HorizontalIntersect( R, ClipArea) then
+        {$ENDIF}
+        
         DrawCell(i,aRow, R,gds)
       end;
     end else begin
       Rs:=(goRowSelect in Options);
       For i:=Left To Right do begin
+        ColRowToOffset(True, True, i, R.Left, R.Right);
+        {$IFDEF UseClipRect}
+        // is this column within the ClipRect?
+        if Not HorizontalIntersect( R, ClipArea) then
+          Continue;
+        {$ENDIF}
+
         Gds:=[];
         if (i=Fcol)and(FRow=ARow) then begin
           // Focused Cell
@@ -1699,18 +1751,22 @@ begin
              (Rs and not(goRelaxedRowSelect in Options)) then Include(gds, gdSelected);
         end else
         if IsCellSelected(i, ARow) then Include(gds, gdSelected);
-        ColRowToOffset(True, True, i, R.Left, R.Right);
+
         DrawCell(i,aRow, R, gds);
       end;
       // Draw the focus Rect
-      if (ARow=FRow) and
-         (IsCellVisible(FCol,ARow) or (Rs and (ARow>=Top) and (ARow<=Bottom)))
+      if FFocusRectVisible and (ARow=FRow) and
+         ((Rs and (ARow>=Top) and (ARow<=Bottom)) or IsCellVisible(FCol,ARow))
       then begin
-        if EditorShouldEdit and (FEditor<>nil)and(FEditor.Visible) then begin
+        if EditorShouldEdit and (FEditor<>nil) and FEditor.Visible then begin
           //DebugLn('No Draw Focus Rect');
         end else begin
           ColRowToOffset(True, True, FCol, R.Left, R.Right);
-          DrawFocusRect(FCol,FRow, R, [gdFocused]);
+          {$IFDEF UseClipRect}
+          // is this column within the ClipRect?
+          if HorizontalIntersect( R, ClipArea) then
+          {$ENDIF}
+          DrawFocusRect(FCol,FRow, R);
         end;
       end;
     end; // else begin
@@ -1719,6 +1775,10 @@ begin
   gds:=[gdFixed];
   For i:=0 to FFixedCols-1 do begin
     ColRowToOffset(True, True, i, R.Left, R.Right);
+    {$IFDEF UseClipRect}
+    // is this column within the ClipRect?
+    if HorizontalIntersect( R, ClipArea) then
+    {$ENDIF}
     DrawCell(i,aRow, R,gds);
   end;
 end;
@@ -1744,6 +1804,7 @@ begin
   end;
 end;
 
+{
 procedure TCustomGrid.DrawFocused;
 var
   R: TRect;
@@ -1766,6 +1827,7 @@ begin
       DrawFocusRect(fcol,fRow, R, gds);
     end;
 end;
+}
 
 procedure DebugRect(S:string; R:TRect);
 begin
@@ -2053,7 +2115,7 @@ var
   Ch: Char;
 begin
   Ch:=Char(message.CharCode);
-  //DebugLn(ClassName,'.WMchar CharCode= ',message.CharCode);
+  DebugLn(ClassName,'.WMchar CharCode= ', IntToStr(message.CharCode));
   if (goEditing in Options) and (Ch in [^H, #32..#255]) then
     EditorShowChar(Ch)
   else
@@ -2228,6 +2290,14 @@ begin
   if FFlat=AValue then exit;
   FFlat:=AValue;
   Invalidate;
+end;
+
+procedure TCustomGrid.SetFocusRectVisible(const AValue: Boolean);
+begin
+  if FFocusRectVisible<>AValue then begin
+    FFocusRectVisible := AValue;
+    Invalidate;
+  end;
 end;
 
 procedure TCustomGrid.SetBorderStyle(const AValue: TBorderStyle);
@@ -2687,6 +2757,14 @@ begin
         end else
           if Cur.Y=FSplitter.Y then HeaderClick(False, FSplitter.Y);
       end;
+    gsColSizing:
+      begin
+        debugln('Col Sizing ENDED');
+      end;
+    gsRowSizing:
+      begin
+        debugLn('Row Sizing ENDED');
+      end;
   end;
   fGridState:=gsNormal;
   {$IfDef dbgFocus}DebugLn('MouseUP  END  RND=',Random);{$Endif}
@@ -2808,6 +2886,9 @@ begin
         aaDown:
           if Sh then Key:=VK_UP
           else       Key:=VK_DOWN;
+        aaLeft:
+          if sh then Key:=VK_RIGHT
+          else       Key:=VK_LEFT;
       end;
     end else begin
       // TODO
@@ -2960,11 +3041,18 @@ begin
 
   LastEditor:=Editor;
   WasVis:=(LastEditor<>nil)and(LastEditor.Visible);
-  // default range
-  if goRowSelect in Options then FRange:=Rect(FFixedCols, DRow, Colcount-1, DRow)
-  else                           FRange:=Rect(DCol,DRow,DCol,DRow);
 
   InvalidateAll:=False;
+  // default range
+  if goRowSelect in Options then FRange:=Rect(FFixedCols, DRow, Colcount-1, DRow)
+  else begin
+    // Just after selectActive=false and Selection Area is more than one cell
+    InvalidateAll := Not SelectActive And (
+      (FRange.Right-FRange.Left > 0) or
+      (Frange.Bottom-FRange.Top > 0) );
+    FRange:=Rect(DCol,DRow,DCol,DRow);
+  end;
+
   if SelectActive then
     if goRangeSelect in Options then begin
       if goRowSelect in Options then begin
@@ -3310,12 +3398,14 @@ begin
       case FAutoAdvance of
         aaRight: Key:=VK_RIGHT * Integer( FCol<ColCount-1 );
         aaDown : Key:=VK_DOWN * Integer( FRow<RowCount-1 );
+        aaLeft : Key:=VK_LEFT * Integer( FCol>FixedCols );
       end;
       if Key=0 then begin
         EditorGetValue;
         EditorShow;
         // Select All !
-      end else KeyDown(Key, Shift);
+      end else
+        KeyDown(Key, Shift);
     end;
   end;
   FEditorKey:=False;
@@ -3337,20 +3427,19 @@ begin
 end;
 
 procedure TCustomGrid.EditorShowChar(Ch: Char);
-{
 var
   msg: TGridMessage;
-}
 begin
   SelectEditor;
   if FEditor<>nil then begin
     EditorShow;
     EditorSelectAll;
-    PostMessage(FEditor.Handle, LM_CHAR, Word(Ch), 0);
-    //
+    //DebugLn('Posting editor LM_CHAR, ch=',ch, ' ', InttoStr(Ord(ch)));
+    
+    //PostMessage(FEditor.Handle, LM_CHAR, Word(Ch), 0);
+    ///
     // Note. this is a workaround because the call above doesn't work
     ///
-    {
     Msg.MsgID:=GM_SETVALUE;
     Msg.Grid:=Self;
     Msg.Col:=FCol;
@@ -3358,7 +3447,6 @@ begin
     if Ch=^H then Msg.Value:=''
     else          Msg.Value:=ch;
     FEditor.Dispatch(Msg);
-    }
   end;
 end;
 
@@ -3610,6 +3698,7 @@ begin
   //DebugLn('FGSMHBar= ', FGSMHBar, ' FGSMVBar= ', FGSMVBar);
   inherited Create(AOwner);
   //AutoScroll:=False;
+  FFocusRectVisible := True;
   FBorderStyle := bsSingle; //bsNone;
   FDefaultDrawing := True;
   FOptions:=
@@ -3937,7 +4026,7 @@ end;
 {
 procedure TStringCellEditor.WndProc(var TheMessage: TLMessage);
 begin
-  write(Name,'.WndProc msg= ');
+  DbgOut(Name+'.WndProc msg= ');
   case TheMessage.Msg of
     LM_SHOWWINDOW: DebugLn('LM_SHOWWINDOW');
     LM_SETFOCUS: DebugLn('LM_SETFOCUS');
@@ -4049,36 +4138,35 @@ procedure TDrawGrid.DrawCell(aCol,aRow: Integer; aRect: TRect;
 begin
   if Assigned(OnDrawCell) and not(CsDesigning in ComponentState) then begin
     PrepareCanvas(aCol, aRow, aState);
-    Canvas.FillRect(aRect);
+    if DefaultDrawing then
+      Canvas.FillRect(aRect);
     OnDrawCell(Self,aCol,aRow,aRect,aState)
   end else
     DefaultDrawCell(aCol,aRow,aRect,aState);
   inherited DrawCellGrid(aCol,aRow,aRect,aState);
 end;
 
-procedure TDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect;
-  aState: TGridDrawstate);
+procedure TDrawGrid.DrawFocusRect(aCol, aRow: Integer; ARect: TRect);
 begin
   // Draw focused cell if we have the focus
-  if Self.Focused Or (EditorShouldEdit and ((Feditor=nil)or not Feditor.Focused)) then begin
-    if (gdFocused in aState)then begin
-      Canvas.Pen.Color:=FFocusColor;
-      Canvas.Pen.Style:=psDot;
-      if goRowSelect in Options then begin
-        Canvas.MoveTo(FGCache.FixedWidth+1, aRect.Top);
-        Canvas.LineTo(FGCache.MaxClientXY.x-2, aRect.Top);
-        Canvas.LineTo(FGCache.MaxClientXY.x-2, aRect.Bottom-2);
-        Canvas.LineTo(FGCache.FixedWidth+1, aRect.Bottom-2);
-        Canvas.LineTo(FGCache.FixedWidth+1, aRect.Top+1);
-      end else begin
-        Canvas.MoveTo(aRect.Left, aRect.Top);
-        Canvas.LineTo(ARect.Right-2,aRect.Top);
-        Canvas.LineTo(aRect.Right-2,aRect.bottom-2);
-        Canvas.LineTo(aRect.Left, aRect.Bottom-2);
-        Canvas.Lineto(aRect.left, aRect.top+1);
-      end;
-      Canvas.Pen.Style:=psSolid;
+  if Self.Focused Or (EditorShouldEdit and ((Feditor=nil) or not Feditor.Focused)) then
+  begin
+    Canvas.Pen.Color:=FFocusColor;
+    Canvas.Pen.Style:=psDot;
+    if goRowSelect in Options then begin
+      Canvas.MoveTo(FGCache.FixedWidth+1, aRect.Top);
+      Canvas.LineTo(FGCache.MaxClientXY.x-2, aRect.Top);
+      Canvas.LineTo(FGCache.MaxClientXY.x-2, aRect.Bottom-2);
+      Canvas.LineTo(FGCache.FixedWidth+1, aRect.Bottom-2);
+      Canvas.LineTo(FGCache.FixedWidth+1, aRect.Top+1);
+    end else begin
+      Canvas.MoveTo(aRect.Left, aRect.Top);
+      Canvas.LineTo(ARect.Right-2,aRect.Top);
+      Canvas.LineTo(aRect.Right-2,aRect.bottom-2);
+      Canvas.LineTo(aRect.Left, aRect.Bottom-2);
+      Canvas.Lineto(aRect.left, aRect.top+1);
     end;
+    Canvas.Pen.Style:=psSolid;
   end;
 end;
 
@@ -4107,6 +4195,12 @@ procedure TDrawGrid.HeaderClick(IsColumn: Boolean; index: Integer);
 begin
   inherited HeaderClick(IsColumn, index);
   if Assigned(OnHeaderClick) then OnHeaderClick(Self, IsColumn, index);
+end;
+
+procedure TDrawGrid.HeaderSized(IsColumn: Boolean; index: Integer);
+begin
+  inherited HeaderSized(IsColumn, index);
+  If Assigned(OnHeaderSized) then OnHeaderSized(Self, IsColumn, index);
 end;
 
 function TDrawGrid.GetEditMask(aCol, aRow: Longint): string;

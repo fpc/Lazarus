@@ -73,6 +73,23 @@ begin
   {$EndIF}
 end;
 
+procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar
+  );
+var
+  OldString: PChar;
+begin
+  {$IfDef GTK2}
+  OldString := Pointer(Event^._String);
+  {$Else}
+  OldString := Pointer(Event^.TheString);
+  {$EndIF}
+  if (OldString<>nil) then
+    if (NewString<>nil) then
+      OldString[0]:=NewString[0]
+    else
+      OldString[0]:=#0;
+end;
+
 function gdk_event_get_type(Event : Pointer) : guint;
 begin
   {$IfDef GTK2}
@@ -6761,6 +6778,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.279  2004/05/14 12:53:25  mattias
+  improved grids e.g. OnPrepareCanvas   patch from Jesus
+
   Revision 1.278  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 

@@ -772,23 +772,10 @@ begin
             StopKeyEvent('key_press_event')
           else begin
             EventString^:=chr(Msg.CharCode);
+            gdk_event_key_set_string(Event,EventString);
           end;
         end;
       end;
-      
-      {if  (Msg.CharCode = VK_TAB)
-      and (TObject(Data) is TControl)
-      then begin
-        TopLevel := gtk_widget_get_toplevel(TargetWidget);
-        if GtkWidgetIsA(TopLevel, gtk_window_get_type)
-        and (PGtkWindow(TopLevel)^.focus_widget = TargetWidget)
-        then begin
-          StopKeyEvent('key_press_event');
-          // Perform a forward tab, or when Shift is pressed a backward tab
-          Result := TControl(TargetData).PerformTab(
-                      (Event^.State and GDK_SHIFT_MASK) = 0);
-        end;
-      end;}
     end;
   end;
 //DebugLn('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
@@ -3098,6 +3085,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.231  2004/05/14 12:53:25  mattias
+  improved grids e.g. OnPrepareCanvas   patch from Jesus
+
   Revision 1.230  2004/05/11 11:42:27  mattias
   replaced writeln by debugln
 

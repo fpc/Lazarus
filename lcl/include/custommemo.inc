@@ -30,7 +30,6 @@ begin
   inherited Create(AOwner);
   fCompStyle := csMemo;
   FWordWrap := True;
-  //FFont := TFont.Create;
   FLines := TMemoStrings.Create(Self);
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
@@ -47,7 +46,6 @@ end;
 destructor TCustomMemo.Destroy;
 begin
   FreeThenNil(FLines);
-  //FreeThenNil(FFont);
   FreeThenNil(FVertScrollbar);
   FreeThenNil(FHorzScrollbar);
   inherited destroy;
@@ -117,7 +115,7 @@ procedure TCustomMemo.SetScrollbars(const Value : TScrollStyle);
 begin
   if Value <> FScrollbars then begin
     FScrollbars:= Value;
-    if HandleAllocated then
+    if HandleAllocated and (not (csLoading in ComponentState)) then
       CNSendMessage(LM_SETPROPERTIES, Self, nil);
   end;
 end;
@@ -134,6 +132,8 @@ end;
   procedure TCustomMemo.Loaded;
  ------------------------------------------------------------------------------}
 procedure TCustomMemo.Loaded;
+var
+  s: String;
 begin
   inherited Loaded;
   CNSendMessage(LM_SETPROPERTIES, Self, nil);
@@ -160,6 +160,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2004/05/14 12:53:25  mattias
+  improved grids e.g. OnPrepareCanvas   patch from Jesus
+
   Revision 1.24  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 
