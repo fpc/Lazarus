@@ -126,6 +126,7 @@ const
   LM_LV_ADDITEM    = LM_LV_FIRST+1;
   LM_LV_CHANGEITEM = LM_LV_FIRST+2;
   LM_LV_DELETEITEM = LM_LV_FIRST+3;
+  LM_LV_SELECTITEM = LM_LV_FIRST+4;
   LM_LV_LAST       = LM_LV_FIRST+9; // LM_COMUSER+89
 
   // TComboBox
@@ -847,6 +848,9 @@ end.
 
 {
   $Log$
+  Revision 1.31  2002/09/10 10:00:27  lazarus
+  MG: TListView now works handleless and SetSelection implemented
+
   Revision 1.30  2002/09/04 09:32:17  lazarus
   MG: improved streaming error handling
 

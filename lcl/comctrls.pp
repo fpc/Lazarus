@@ -253,6 +253,9 @@ type
   TLVColumnClickEvent = procedure(Sender: TObject; Column: TListColumn) of object;
   TLVColumnRClickEvent = procedure(Sender: TObject; Column: TListColumn; Point: TPoint) of object;
   TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem; Selected: Boolean) of object;
+  
+  TListViewState = (lvMultiSelect, lvUpdateNeeded);
+  TListViewStates = set of TListViewState;
 
   TCustomListView = class(TWinControl)
   private
@@ -265,7 +268,6 @@ type
     FViewStyle : TViewStyle;
     FSortType: TSortType;
     FSortColumn : Integer;
-    FMultiSelect: Boolean;
     FImageChangeLink : TChangeLink;
     FScrollBars: TScrollStyle;
     FScrolledLeft: integer; // horizontal scrolled pixels (hidden pixels at top)
@@ -274,10 +276,11 @@ type
     FLastHorzScrollInfo: TScrollInfo;
     FLastVertScrollInfo: TScrollInfo;
     FUpdateCount: integer;
-    FUpdateNeeded: boolean;
     FOnChange: TLVChangeEvent;
     FOnColumnClick: TLVColumnClickEvent;
     FOnSelectItem: TLVSelectItemEvent;
+    FStates: TListViewStates;
+    function GetMultiSelect: Boolean;
     function GetSelection: TListItem;
     procedure SetColumns(const AValue: TListColumns);
     procedure SetDefaultItemHeight(AValue: integer);
@@ -296,6 +299,7 @@ type
     procedure DoUpdate;
   protected
     ParentWindow : TScrolledWindow;
+    procedure InitializeWnd; override;
     procedure Change(AItem: TListItem; AChange: Integer); dynamic;
     procedure ColClick(AColumn: TListColumn); dynamic;
     procedure Delete(Item : TListItem);
@@ -316,7 +320,7 @@ type
     property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight;
 //    property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
     property Items: TListItems read FListItems write SetItems;
-    property MultiSelect: Boolean read FMultiSelect write SetMultiSelect default False;
+    property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
 //    property ReadOnly: Boolean read FReadOnly write SetReadOnly;
 //    property RowSelect: Boolean read FRowSelect write SetRowSelect default False;
     property ScrolledLeft: integer read FScrolledLeft write SetScrolledLeft;
@@ -1594,6 +1598,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.43  2002/09/10 10:00:27  lazarus
+  MG: TListView now works handleless and SetSelection implemented
+
   Revision 1.42  2002/09/10 06:49:18  lazarus
   MG: scrollingwincontrol from Andrew
 
