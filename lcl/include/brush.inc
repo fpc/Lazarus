@@ -112,9 +112,9 @@ begin
     Bitmap := TBrush(Source).Bitmap;
     Color := TBrush(Source).Color;
     Style := TBrush(Source).Style;
-  end;
-
-  inherited Assign(Source);
+  end
+  else
+    inherited Assign(Source);
 end;
 
 {------------------------------------------------------------------------------
@@ -194,6 +194,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/10/31 04:27:59  lazarus
+  AJ: added TShape
+
   Revision 1.3  2002/09/18 17:07:24  lazarus
   MG: added patch from Andrew
 
