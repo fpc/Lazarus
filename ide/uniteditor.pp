@@ -224,11 +224,13 @@ type
     procedure SelectLine;
     procedure SelectParagraph;
     function CommentText(const Txt: string; CommentType: TCommentType): string;
+
     procedure InsertGPLNotice(CommentType: TCommentType);
     procedure InsertUsername;
     procedure InsertDateTime;
     procedure InsertChangeLogEntry;
 
+    procedure InsertCVSKeyword(const AKeyWord: string);
 
     // editor commands
     procedure DoEditorExecuteCommand(EditorCommand: integer);
@@ -928,6 +930,30 @@ Begin
   ecInsertChangeLogEntry:
     InsertChangeLogEntry;
 
+  ecInsertCVSAuthor:
+    InsertCVSKeyword('Author');
+
+  ecInsertCVSDate:
+    InsertCVSKeyword('Date');
+
+  ecInsertCVSHeader:
+    InsertCVSKeyword('Header');
+
+  ecInsertCVSID:
+    InsertCVSKeyword('ID');
+
+  ecInsertCVSLog:
+    InsertCVSKeyword('Log');
+
+  ecInsertCVSName:
+    InsertCVSKeyword('Name');
+
+  ecInsertCVSRevision:
+    InsertCVSKeyword('Revision');
+
+  ecInsertCVSSource:
+    InsertCVSKeyword('Source');
+
   else
     begin
       Handled:=false;
@@ -1175,6 +1201,11 @@ var s: string;
 begin
   s:=DateToStr(now)+'   '+GetCurrentUserName+' '+GetCurrentMailAddress;
   FEditor.SelText:=s;
+end;
+
+procedure TSourceEditor.InsertCVSKeyword(const AKeyWord: string);
+begin
+  FEditor.SelText:='$'+AKeyWord+'$'+EndOfLine;
 end;
 
 procedure TSourceEditor.RemoveBreakPoint(const ABreakPointMark: TSynEditMark);
