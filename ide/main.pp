@@ -3379,6 +3379,8 @@ begin
     i:=Project1.Bookmarks.IndexOfID(BookmarkID);
     if i<0 then continue;
     if (Project1.Bookmarks[i].EditorIndex=AnUnitInfo.EditorIndex) then begin
+      //writeln('TMainIDE.DoRestoreBookMarks ',BookmarkID,' ',
+      //   Project1.Bookmarks[i].CursorPos.X,' ',Project1.Bookmarks[i].CursorPos.Y);
       ASrcEdit.EditorComponent.SetBookmark(BookmarkID,
          Project1.Bookmarks[i].CursorPos.X,Project1.Bookmarks[i].CursorPos.Y);
     end;
@@ -9020,6 +9022,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.595  2003/06/03 16:12:14  mattias
+  fixed loading bookmarks for editor index 0
+
   Revision 1.594  2003/06/03 08:02:33  mattias
   implemented showing source lines in breakpoints dialog
 
