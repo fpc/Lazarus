@@ -560,10 +560,10 @@ begin
   end else begin
     // there is no var section yet
     // -> create a new var section and append variable
-    InsertTxt:='var'+SourceChangeCache.BeautifyCodeOptions.LineEnd
-                +GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent)
-                +InsertTxt;
     Indent:=GetLineIndent(Src,BeginNode.StartPos);
+    InsertTxt:='var'+SourceChangeCache.BeautifyCodeOptions.LineEnd
+                +GetIndentStr(Indent+SourceChangeCache.BeautifyCodeOptions.Indent)
+                +InsertTxt;
     InsertPos:=BeginNode.StartPos;
   end;
   
