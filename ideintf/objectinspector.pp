@@ -293,6 +293,9 @@ type
     function GetRowByPath(const PropPath:string):TOIPropertyGridRow;
 
     function MouseToIndex(y:integer;MustExist:boolean):integer;
+    function GetActiveRow: TOIPropertyGridRow;
+    procedure SetCurrentRowValue(const NewValue: string);
+    function CanEditRowValue: boolean;
 
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
@@ -324,6 +327,7 @@ type
     StatusBar: TStatusBar;
     MainPopupMenu: TPopupMenu;
     ColorsPopupMenuItem: TMenuItem;
+    SetDefaultPopupMenuItem: TMenuItem;
     BackgroundColPopupMenuItem: TMenuItem;
     ShowHintsPopupMenuItem: TMenuItem;
     ShowComponentTreePopupMenuItem: TMenuItem;
@@ -331,10 +335,12 @@ type
     procedure AvailComboBoxCloseUp(Sender: TObject);
     procedure ComponentTreeSelectionChanged(Sender: TObject);
     procedure ObjectInspectorResize(Sender: TObject);
-    procedure OnBackgroundColPopupMenuItemClick(Sender :TObject);
-    procedure OnShowHintPopupMenuItemClick(Sender :TObject);
-    procedure OnShowOptionsPopupMenuItemClick(Sender :TObject);
-    procedure OnShowComponentTreePopupMenuItemClick(Sender :TObject);
+    procedure OnSetDefaultPopupmenuItemClick(Sender: TObject);
+    procedure OnBackgroundColPopupMenuItemClick(Sender: TObject);
+    procedure OnShowHintPopupMenuItemClick(Sender: TObject);
+    procedure OnShowOptionsPopupMenuItemClick(Sender: TObject);
+    procedure OnShowComponentTreePopupMenuItemClick(Sender: TObject);
+    procedure OnMainPopupMenuPopup(Sender: TObject);
     procedure HookRefreshPropertyValues;
   private
     FComponentList: TComponentSelectionList;
@@ -375,6 +381,9 @@ type
     procedure FillComponentComboBox;
     procedure BeginUpdate;
     procedure EndUpdate;
+    function GetActivePropertyGrid: TOIPropertyGrid;
+    function GetActivePropertyRow: TOIPropertyGridRow;
+    function GetCurRowDefaultValue(var DefaultStr: string): boolean;
   public
     property DefaultItemHeight: integer read FDefaultItemHeight
                                         write SetDefaultItemHeight;
@@ -704,17 +713,7 @@ var
   OldExpanded: boolean;
   OldChangeStep: integer;
 begin
-  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
-  or (FCurrentEdit=nil)
-  or (FItemIndex<0)
-  or (FItemIndex>=FRows.Count)
-  or ((FCurrentEditorLookupRoot<>nil)
-    and (FPropertyEditorHook<>nil)
-    and (FPropertyEditorHook.LookupRoot<>FCurrentEditorLookupRoot))
-  then begin
-    exit;
-  end;
-  
+  if not CanEditRowValue then exit;
   OldChangeStep:=fChangeStep;
   CurRow:=Rows[FItemIndex];
   if FCurrentEdit=ValueEdit then
@@ -1151,6 +1150,39 @@ begin
     if y<0 then Result:=0
     else Result:=FRows.Count-1;
   end else Result:=-1;
+end;
+
+function TOIPropertyGrid.GetActiveRow: TOIPropertyGridRow;
+begin
+  Result:=nil;
+  if ItemIndex<0 then exit;
+  Result:=Rows[ItemIndex];
+end;
+
+procedure TOIPropertyGrid.SetCurrentRowValue(const NewValue: string);
+begin
+  if not CanEditRowValue then exit;
+  if FCurrentEdit is TComboBox then
+    TComboBox(FCurrentEdit).Text:=NewValue
+  else if FCurrentEdit is TEdit then
+    TEdit(FCurrentEdit).Text:=NewValue;
+  SetRowValue;
+end;
+
+function TOIPropertyGrid.CanEditRowValue: boolean;
+begin
+  if (FStates*[pgsChangingItemIndex,pgsApplyingValue]<>[])
+  or (FCurrentEdit=nil)
+  or (FItemIndex<0)
+  or (FItemIndex>=FRows.Count)
+  or ((FCurrentEditorLookupRoot<>nil)
+    and (FPropertyEditorHook<>nil)
+    and (FPropertyEditorHook.LookupRoot<>FCurrentEditorLookupRoot))
+  then begin
+    Result:=false;
+  end else begin
+    Result:=true;
+  end;
 end;
 
 procedure TOIPropertyGrid.MouseDown(Button:TMouseButton;  Shift:TShiftState;
@@ -2126,7 +2158,7 @@ end;
 
 constructor TObjectInspector.Create(AnOwner: TComponent);
 
-  procedure AddPopupMenuItem(var NewMenuItem: TmenuItem;
+  procedure AddPopupMenuItem(var NewMenuItem: TMenuItem;
     ParentMenuItem: TMenuItem; const AName, ACaption, AHint: string;
     AnOnClick: TNotifyEvent; CheckedFlag, EnabledFlag, VisibleFlag: boolean);
   begin
@@ -2138,6 +2170,23 @@ constructor TObjectInspector.Create(AnOwner: TComponent);
       OnClick:=AnOnClick;
       Checked:=CheckedFlag;
       Enabled:=EnabledFlag;
+      Visible:=VisibleFlag;
+    end;
+    if ParentMenuItem<>nil then
+      ParentMenuItem.Add(NewMenuItem)
+    else
+      MainPopupMenu.Items.Add(NewMenuItem);
+  end;
+
+  procedure AddSeparatorMenuItem(ParentMenuItem: TMenuItem;
+    const AName: string; VisibleFlag: boolean);
+  var
+    NewMenuItem: TMenuItem;
+  begin
+    NewMenuItem:=TMenuItem.Create(Self);
+    with NewMenuItem do begin
+      Name:=AName;
+      Caption:='-';
       Visible:=VisibleFlag;
     end;
     if ParentMenuItem<>nil then
@@ -2171,9 +2220,14 @@ begin
   MainPopupMenu:=TPopupMenu.Create(Self);
   with MainPopupMenu do begin
     Name:='MainPopupMenu';
+    OnPopup:=@OnMainPopupMenuPopup;
     AutoPopup:=true;
   end;
-  AddPopupMenuItem(ColorsPopupmenuItem,nil,'ColorsPopupMenuItem','Colors',''
+  AddPopupMenuItem(SetDefaultPopupmenuItem,nil,'SetDefaultPopupMenuItem',
+     'Set to Default Value','Set property value to Default',
+     @OnSetDefaultPopupmenuItemClick,false,true,true);
+  AddSeparatorMenuItem(nil,'OptionsSeparatorMenuItem',true);
+  AddPopupMenuItem(ColorsPopupmenuItem,nil,'ColorsPopupMenuItem','Set Colors',''
      ,nil,false,true,true);
   AddPopupMenuItem(BackgroundColPopupMenuItem,ColorsPopupMenuItem
      ,'BackgroundColPopupMenuItem','Background','Grid background color'
@@ -2379,6 +2433,43 @@ begin
   end;
 end;
 
+function TObjectInspector.GetActivePropertyGrid: TOIPropertyGrid;
+begin
+  Result:=nil;
+  if NoteBook=nil then exit;
+  if NoteBook.PageIndex=0 then
+    Result:=PropertyGrid
+  else if NoteBook.PageIndex=1 then
+    Result:=EventGrid;
+end;
+
+function TObjectInspector.GetActivePropertyRow: TOIPropertyGridRow;
+var
+  CurGrid: TOIPropertyGrid;
+begin
+  Result:=nil;
+  CurGrid:=GetActivePropertyGrid;
+  if CurGrid=nil then exit;
+  Result:=CurGrid.GetActiveRow;
+end;
+
+function TObjectInspector.GetCurRowDefaultValue(var DefaultStr: string): boolean;
+var
+  CurRow: TOIPropertyGridRow;
+begin
+  Result:=false;
+  DefaultStr:='';
+  CurRow:=GetActivePropertyRow;
+  if (CurRow=nil) or (not (paHasDefaultValue in CurRow.Editor.GetAttributes))
+  then exit;
+  try
+    DefaultStr:=CurRow.Editor.GetDefaultValue;
+    Result:=true;
+  except
+    DefaultStr:='';
+  end;
+end;
+
 procedure TObjectInspector.SetSelections(
   const NewSelections:TComponentSelectionList);
 begin
@@ -2466,6 +2557,18 @@ begin
   if (ComponentTree<>nil) and (ComponentTree.Visible)
   and (ComponentTree.Parent=Self) then
     ComponentTree.Height:=ClientHeight div 4;
+end;
+
+procedure TObjectInspector.OnSetDefaultPopupmenuItemClick(Sender: TObject);
+var
+  CurGrid: TOIPropertyGrid;
+  DefaultStr: string;
+begin
+  if not GetCurRowDefaultValue(DefaultStr) then exit;
+  CurGrid:=GetActivePropertyGrid;
+  if CurGrid=nil then exit;
+  CurGrid.SetCurrentRowValue(DefaultStr);
+  RefreshPropertyValues;
 end;
 
 procedure TObjectInspector.OnBackgroundColPopupMenuItemClick(Sender :TObject);
@@ -2654,6 +2757,17 @@ procedure TObjectInspector.OnShowComponentTreePopupMenuItemClick(Sender: TObject
   );
 begin
   ShowComponentTree:=not ShowComponentTree;
+end;
+
+procedure TObjectInspector.OnMainPopupMenuPopup(Sender: TObject);
+var
+  DefaultStr: String;
+begin
+  SetDefaultPopupMenuItem.Enabled:=GetCurRowDefaultValue(DefaultStr);
+  if SetDefaultPopupMenuItem.Enabled then
+    SetDefaultPopupMenuItem.Caption:='Set to default: '+DefaultStr
+  else
+    SetDefaultPopupMenuItem.Caption:='Set to default value';
 end;
 
 procedure TObjectInspector.HookRefreshPropertyValues;

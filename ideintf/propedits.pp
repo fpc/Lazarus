@@ -249,7 +249,8 @@ type
     paVolatileSubProperties,
     paDisableSubProperties,
     paReference,
-    paNotNestable
+    paNotNestable,
+    paHasDefaultValue
     );
   TPropertyAttributes=set of TPropertyAttribute;
 
@@ -273,7 +274,7 @@ type
 
   TPropertyEditor=class
   private
-    FComponents:TComponentSelectionList;
+    FComponents: TComponentSelectionList;
     FOnSubPropertiesChanged: TNotifyEvent;
     FPropertyHook: TPropertyEditorHook;
     FPropCount: Integer;
@@ -289,6 +290,7 @@ type
     function GetMethodValueAt(Index:Integer):TMethod;
     function GetOrdValue:Longint;
     function GetOrdValueAt(Index:Integer):Longint;
+    function GetDefaultOrdValue:Longint;
     function GetStrValue:AnsiString;
     function GetStrValueAt(Index:Integer):AnsiString;
     function GetVarValue:Variant;
@@ -318,10 +320,11 @@ type
     procedure GetProperties(Proc: TGetPropEditProc); virtual;
     function GetPropType: PTypeInfo;
     function GetValue: ansistring; virtual;
+    function GetDefaultValue: ansistring; virtual;
     function GetVisualValue: ansistring;
     procedure GetValues(Proc: TGetStringProc); virtual;
     procedure Initialize; virtual;
-    procedure Revert;
+    procedure Revert; virtual;
     procedure SetValue(const NewValue:ansistring); virtual;
     procedure SetPropEntry(Index: Integer; AnInstance: TPersistent;
                            APropInfo: PPropInfo);
@@ -353,11 +356,16 @@ type
 
 { TOrdinalPropertyEditor
   The base class of all ordinal property editors.  It establishes that ordinal
-  properties are all equal if the GetOrdValue all return the same value. }
+  properties are all equal if the GetOrdValue all return the same value and
+  provide methods to retrieve the default value. }
 
   TOrdinalPropertyEditor = class(TPropertyEditor)
     function AllEqual: Boolean; override;
     function GetEditLimit: Integer; override;
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: ansistring; override;
+    function GetDefaultValue: ansistring; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; virtual;
   end;
 
 { TIntegerPropertyEditor
@@ -367,7 +375,7 @@ type
 
   TIntegerPropertyEditor = class(TOrdinalPropertyEditor)
   public
-    function GetValue: ansistring; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure SetValue(const NewValue: ansistring);  override;
   end;
 
@@ -377,7 +385,7 @@ type
 
   TCharPropertyEditor = class(TOrdinalPropertyEditor)
   public
-    function GetValue: ansistring; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
 
@@ -388,7 +396,7 @@ type
   TEnumPropertyEditor = class(TOrdinalPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
-    function GetValue: ansistring; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
@@ -397,7 +405,7 @@ type
   Default property editor for all boolean properties }
 
   TBoolPropertyEditor = class(TEnumPropertyEditor)
-    function GetValue: ansistring; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
@@ -478,7 +486,7 @@ type
   public
     function GetAttributes: TPropertyAttributes; override;
     procedure GetProperties(Proc: TGetPropEditProc); override;
-    function GetValue: AnsiString; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
   end;
   
 { TClassPropertyEditor
@@ -616,7 +624,7 @@ type
   TShortCutPropertyEditor = class(TOrdinalPropertyEditor)
   public
     function GetAttributes: TPropertyAttributes; override;
-    function GetValue: string; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStrProc); override;
     procedure SetValue(const Value: string); override;
   end;
@@ -1973,6 +1981,19 @@ begin
   with FPropList^[Index] do Result:=GetOrdProp(Instance,PropInfo);
 end;
 
+function TPropertyEditor.GetDefaultOrdValue: Longint;
+var
+  APropInfo: PPropInfo;
+begin
+  writeln('TPropertyEditor.GetDefaultOrdValue START ',ClassName);
+  APropInfo:=FPropList^[0].PropInfo;
+  {if HasAncestor then
+    Result:=GetOrdValue(Ancestor,APropInfo)
+  else}
+  Result:=APropInfo^.Default;
+  writeln('TPropertyEditor.GetDefaultOrdValue END ',Result);
+end;
+
 function TPropertyEditor.GetPrivateDirectory:ansistring;
 begin
   Result:='';
@@ -2017,6 +2038,13 @@ end;
 function TPropertyEditor.GetValue:ansistring;
 begin
   Result:=oisUnknown;
+end;
+
+function TPropertyEditor.GetDefaultValue: ansistring;
+begin
+  if not (paHasDefaultValue in GetAttributes) then
+    raise EPropertyError.Create('No default property available');
+  Result:='';
 end;
 
 function TPropertyEditor.GetVisualValue:ansistring;
@@ -2325,19 +2353,40 @@ begin
   Result := 63;
 end;
 
+function TOrdinalPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:=(inherited GetAttributes)+[paHasDefaultValue];
+end;
+
+function TOrdinalPropertyEditor.GetValue: ansistring;
+begin
+  Result:=OrdValueToVisualValue(GetOrdValue);
+end;
+
+function TOrdinalPropertyEditor.GetDefaultValue: ansistring;
+begin
+  Result:=OrdValueToVisualValue(GetDefaultOrdValue);
+end;
+
+function TOrdinalPropertyEditor.OrdValueToVisualValue(OrdValue: longint
+  ): string;
+begin
+  Result:=IntToStr(OrdValue);
+end;
 
 { TIntegerPropertyEditor }
 
-function TIntegerPropertyEditor.GetValue: ansistring;
+function TIntegerPropertyEditor.OrdValueToVisualValue(OrdValue: longint
+  ): string;
 begin
   with GetTypeData(GetPropType)^ do
     case OrdType of
-      otSByte : Result:= IntToStr(ShortInt(GetOrdValue));
-      otUByte : Result:= IntToStr(Byte(GetOrdValue));
-      otSWord : Result:= IntToStr(SmallInt(GetOrdValue));
-      otUWord : Result:= IntToStr(Word(GetOrdValue));
-      otULong : Result:= IntToStr(Cardinal(GetOrdValue));
-      else Result := IntToStr(GetOrdValue);
+      otSByte : Result:= IntToStr(ShortInt(OrdValue));
+      otUByte : Result:= IntToStr(Byte(OrdValue));
+      otSWord : Result:= IntToStr(SmallInt(OrdValue));
+      otUWord : Result:= IntToStr(Word(OrdValue));
+      otULong : Result:= IntToStr(Cardinal(OrdValue));
+      else Result := IntToStr(OrdValue);
     end;
 end;
 
@@ -2371,11 +2420,11 @@ end;
 
 { TCharPropertyEditor }
 
-function TCharPropertyEditor.GetValue: ansistring;
+function TCharPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 var
   Ch: Char;
 begin
-  Ch := Chr(GetOrdValue);
+  Ch := Chr(OrdValue);
   if Ch in [#33..#127] then
     Result := Ch
   else
@@ -2405,14 +2454,14 @@ end;
 
 function TEnumPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paValueList, paSortList, paRevertable];
+  Result:=[paMultiSelect,paValueList,paSortList,paRevertable,paHasDefaultValue];
 end;
 
-function TEnumPropertyEditor.GetValue: ansistring;
+function TEnumPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 var
   L: Longint;
 begin
-  L := GetOrdValue;
+  L := OrdValue;
   with GetTypeData(GetPropType)^ do
     if (L < MinValue) or (L > MaxValue) then L := MaxValue;
   Result := GetEnumName(GetPropType, L);
@@ -2446,9 +2495,9 @@ end;
 
 { TBoolPropertyEditor  }
 
-function TBoolPropertyEditor.GetValue: ansistring;
+function TBoolPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 begin
-  if GetOrdValue = 0 then
+  if OrdValue = 0 then
     Result := 'False'
   else
     Result := 'True';
@@ -2662,7 +2711,8 @@ end;
 
 function TSetPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paSubProperties, paReadOnly, paRevertable];
+  Result := [paMultiSelect,paSubProperties,paReadOnly,paRevertable,
+             paHasDefaultValue];
 end;
 
 procedure TSetPropertyEditor.GetProperties(Proc: TGetPropEditProc);
@@ -2674,13 +2724,13 @@ begin
       Proc(TSetElementPropertyEditor.Create(Self, I));
 end;
 
-function TSetPropertyEditor.GetValue: ansistring;
+function TSetPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 var
   S: TIntegerSet;
   TypeInfo: PTypeInfo;
   I: Integer;
 begin
-  Integer(S) := GetOrdValue;
+  Integer(S) := OrdValue;
   TypeInfo := GetTypeData(GetPropType)^.CompType;
   Result := '[';
   for I := 0 to SizeOf(Integer) * 8 - 1 do
@@ -3950,14 +4000,15 @@ const
     
 function TShortCutPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paValueList, paRevertable];
+  Result := [paMultiSelect, paValueList, paRevertable, paHasDefaultValue];
 end;
 
-function TShortCutPropertyEditor.GetValue: string;
+function TShortCutPropertyEditor.OrdValueToVisualValue(OrdValue: longint
+  ): string;
 var
   CurValue: TShortCut;
 begin
-  CurValue := TShortCut(GetOrdValue);
+  CurValue := TShortCut(OrdValue);
   if CurValue = scNone then
     Result := '(None)'//srNone
   else

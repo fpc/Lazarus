@@ -442,6 +442,7 @@ type
     property BorderStyle: TFormBorderStyle
                       read FBorderStyle write SetBorderStyle default bsSizeable;
     property Caption stored IsForm;
+    property Color default clBtnFace;
     property Designer: TIDesigner read FDesigner write SetDesigner;
     property FormState: TFormState read FFormState;
     property FormStyle: TFormStyle read FFormStyle write SetFormStyle

@@ -19,7 +19,7 @@
 {------------------------------------------------------------------------------}
 constructor TCustomGroupBox.Create(AOwner: TComponent);
 begin
-  inherited Create (AOwner);
+  inherited Create(AOwner);
   fCompStyle := csGroupBox;
   ControlStyle := ControlStyle + [csAcceptsControls];
   Width:= 185;
@@ -35,6 +35,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2003/12/27 19:34:13  mattias
+  implemented default values for property editors and OI
+
   Revision 1.9  2003/06/10 17:23:34  mattias
   implemented tabstop
 

@@ -60,7 +60,7 @@ type
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
-    function GetValue: ansistring; override;
+    function OrdValueToVisualValue(OrdValue: longint): string; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
     procedure ListMeasureWidth(const CurValue:ansistring; Index:integer;
@@ -82,12 +82,13 @@ type
 
   TBrushStylePropertyEditor = class(TEnumPropertyEditor)
   public
+    function GetAttributes: TPropertyAttributes; override;
     procedure ListMeasureWidth(const CurValue: ansistring; Index:integer;
       ACanvas: TCanvas;  var AWidth: Integer); override;
     procedure ListDrawValue(const CurValue: ansistring; Index:integer;
       ACanvas: TCanvas;  const ARect: TRect; AState: TPropEditDrawState); override;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
-      AState:TPropEditDrawState); override;
+      AState: TPropEditDrawState); override;
   end;
 
 { TPenStylePropertyEditor
@@ -95,6 +96,7 @@ type
 
   TPenStylePropertyEditor = class(TEnumPropertyEditor)
   public
+    function GetAttributes: TPropertyAttributes; override;
     procedure ListMeasureWidth(const CurValue: ansistring; Index:integer;
       ACanvas: TCanvas;  var AWidth: Integer); override;
     procedure ListDrawValue(const CurValue: ansistring; Index:integer;
@@ -551,12 +553,12 @@ end;
 
 function TColorPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result := [paMultiSelect, paDialog, paValueList, paRevertable];
+  Result := [paMultiSelect,paDialog,paValueList,paRevertable,paHasDefaultValue];
 end;
 
-function TColorPropertyEditor.GetValue: ansistring;
+function TColorPropertyEditor.OrdValueToVisualValue(OrdValue: longint): string;
 begin
-  Result := ColorToString(TColor(GetOrdValue));
+  Result := ColorToString(TColor(OrdValue));
 end;
 
 procedure TColorPropertyEditor.GetValues(Proc: TGetStringProc);
@@ -732,6 +734,11 @@ begin
   end;
 end;
 
+function TBrushStylePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:=(inherited GetAttributes)-[paHasDefaultValue];
+end;
+
 procedure TBrushStylePropertyEditor.ListMeasureWidth(const CurValue: ansistring;
   Index:integer; ACanvas: TCanvas; var AWidth: Integer);
 begin
@@ -795,6 +802,11 @@ begin
                             Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),
                             AState);
   end;
+end;
+
+function TPenStylePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:=(inherited GetAttributes)-[paHasDefaultValue];
 end;
 
 procedure TPenStylePropertyEditor.ListMeasureWidth(const CurValue: ansistring;
