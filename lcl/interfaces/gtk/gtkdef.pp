@@ -119,9 +119,16 @@ type
       );
   end;
 
+  TDevContextTextMetric = record
+    lbearing: LongInt;
+    rBearing: LongInt;
+    TextMetric: TTextMetric;
+  end;
+
   TDeviceContextsFlag = (
     dcfPenSelected, // pen changed and needs selecting
-    dcfPenInvalid   // pen is not a valid GDIObject
+    dcfPenInvalid,  // pen is not a valid GDIObject
+    dcfTextMetricsValid
     );
   TDeviceContextsFlags = set of TDeviceContextsFlag;
   
@@ -160,7 +167,8 @@ type
     CurrentPalette: PGdiObject;
     CurrentTextColor: TGDIColor;
     CurrentBackColor: TGDIColor;
-    ClipRegion : hRGN;
+    ClipRegion: hRGN;
+    DCTextMetric: TDevContextTextMetric; // only valid if dcfTextMetricsValid set
     
     // control
     SelectedColors: TDevContextSelectedColorsType;
@@ -419,6 +427,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/10/10 19:43:16  lazarus
+  MG: accelerated GetTextMetrics
+
   Revision 1.24  2002/10/08 14:10:02  lazarus
   MG: added TDeviceContext.SelectedColors
 
