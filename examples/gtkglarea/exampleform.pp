@@ -28,7 +28,7 @@ unit ExampleForm;
 interface
 
 uses
-  Classes, SysUtils, GTKGlArea, gtkglarea_int, Forms, LResources, Buttons,
+  Classes, SysUtils, GTKGlArea, GTKGLArea_Int, Forms, LResources, Buttons,
   StdCtrls, Dialogs, gtk, glib, NVGL, Linux;
 
 type
@@ -443,14 +443,6 @@ begin
   end;
 end;
 
-{procedure TParticleEngine.Stop;
-var i: integer;
-begin
-  for i:=1 to 1000 do begin
-    Particle[i].life:=0;
-  end;
-end;}
-
 // ---------------------------------------------------------------------------
 // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 // ---------------------------------------------------------------------------
@@ -813,8 +805,6 @@ begin
     glRotatef(rz,0.0,0.0,1.0);
     
     // draw cube
-    
-    
     glCallList(CubeList);
     if blended then begin
       glDisable(GL_BLEND);

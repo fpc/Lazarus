@@ -4313,6 +4313,7 @@ begin
         exit;
       end;
     end;
+    {$IFDEF EnablePkgs}
     if (CompareFileExt(AFilename,'.lpk',false)=0) then begin
       if MessageDlg('Open Package?',
         'Open the package '+AFilename+'?'#13
@@ -4323,6 +4324,7 @@ begin
         exit;
       end;
     end;
+    {$ENDIF}
   end;
   
   // check if the project knows this file
@@ -5674,6 +5676,12 @@ function TMainIDE.DoBuildLazarus(Flags: TBuildLazarusFlags): TModalResult;
 var
   PkgOptions: string;
 begin
+  // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
+  SourceNotebook.ClearErrorLines;
+  Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
+                       EnvironmentOptions.ExternalTools,MacroList,
+                       '',Flags+[blfWithoutIDE]);
+
   // prepare static auto install packages
   PkgOptions:='';
   {$IFDEF EnablePkgs}
@@ -5695,7 +5703,7 @@ begin
   SourceNotebook.ClearErrorLines;
   Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                        EnvironmentOptions.ExternalTools,MacroList,
-                       PkgOptions);
+                       PkgOptions,Flags+[blfOnlyIDE]);
   DoCheckFilesOnDisk;
 end;
 
@@ -8624,6 +8632,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.546  2003/04/29 19:00:41  mattias
+  added package gtkopengl
+
   Revision 1.545  2003/04/29 13:35:39  mattias
   improved configure build lazarus dialog
 

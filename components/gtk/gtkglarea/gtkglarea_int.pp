@@ -11,7 +11,7 @@
  *****************************************************************************
 
 }
-unit gtkglarea_int;
+unit GTKGLArea_Int;
 
 {$mode objfpc}{$H+}
 {$PACKRECORDS C}
@@ -91,28 +91,21 @@ procedure gdk_gl_use_gdk_font(font:PGdkFont; first:longint; count:longint; list_
 
 // gtkglarea
 
-{ C++ extern C conditionnal removed }
-{ __cplusplus  }
-{ was #define dname def_expr }
 function GTK_TYPE_GL_AREA: TGtkType; cdecl; external 'gtkgl' name 'gtk_gl_area_get_type';
 { return type might be wrong }
 
-{ was #define dname(params) para_def_expr }
 { argument types are unknown }
 { return type might be wrong }
 //function GTK_GL_AREA(obj : longint) : longint;
 
-{ was #define dname(params) para_def_expr }
 { argument types are unknown }
 { return type might be wrong }
 //function GTK_GL_AREA_CLASS(klass : longint) : longint;
 
-{ was #define dname(params) para_def_expr }
 { argument types are unknown }
 { return type might be wrong }
 function GTK_IS_GL_AREA(obj : Pointer) : Boolean;
 
-{ was #define dname def_expr }
 function GTK_IS_GL_AREA_CLASS(klass: Pointer): Boolean;
 { return type might be wrong }
 
