@@ -69,6 +69,7 @@ type
     dsIdle,
     dsStop,
     dsPause,
+    dsInit,
     dsRun,
     dsError
     );
@@ -94,6 +95,9 @@ type
   dsPause:
     The debugger has paused the target. Target variables can be examined
 
+  dsInit:
+    (Optional, Internal) The debugger is about to run
+
   dsRun:
     The target is running.
 
@@ -108,8 +112,8 @@ type
 
 
 const
-  dcRunCommands = [dcRun,dcStepInto,dcStepOver,dcRunTo];
-  dsRunStates = [dsRun];
+//  dcRunCommands = [dcRun,dcStepInto,dcStepOver,dcRunTo];
+//  dsRunStates = [dsRun];
 
   XMLBreakPointsNode = 'BreakPoints';
   XMLBreakPointGroupsNode = 'BreakPointGroups';
@@ -263,8 +267,7 @@ type
     function GetDebugger: TDebugger;
   protected
     procedure DoChanged; override;
-    procedure DoDebuggerStateChange; virtual;
-    procedure InitTargetStart; virtual;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
     property  Debugger: TDebugger read GetDebugger;
   public
     constructor Create(ACollection: TCollection); override;
@@ -334,8 +337,7 @@ type
     function GetItem(const AnIndex: Integer): TDBGBreakPoint;
     procedure SetItem(const AnIndex: Integer; const AValue: TDBGBreakPoint);
   protected
-    procedure DoStateChange; virtual;
-    procedure InitTargetStart; virtual;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
     property  Debugger: TDebugger read FDebugger;
   public
     function Add(const ASource: String; const ALine: Integer): TDBGBreakPoint;
@@ -471,8 +473,7 @@ type
     function GetDebugger: TDebugger;
   protected
     procedure DoChanged; override;
-    procedure DoStateChange; virtual;
-    procedure InitTargetStart; virtual;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
     property Debugger: TDebugger read GetDebugger;
   public
     constructor Create(ACollection: TCollection); override;
@@ -539,8 +540,7 @@ type
     function GetItem(const AnIndex: Integer): TDBGWatch;
     procedure SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
   protected
-    procedure DoStateChange; virtual;
-    procedure InitTargetStart; virtual;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
     property  Debugger: TDebugger read FDebugger;
   public
     constructor Create(const ADebugger: TDebugger;
@@ -605,7 +605,7 @@ type
     FOnChange: TNotifyEvent;
   protected
     procedure DoChange;
-    procedure DoStateChange; virtual;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
     function GetCount: Integer; virtual;
     property Debugger: TDebugger read FDebugger;
   public
@@ -709,7 +709,7 @@ type
     FOnClear: TNotifyEvent;
   protected
     function CheckCount: Boolean; override;
-    procedure DoStateChange; virtual;
+    procedure DoStateChange(const AOldState: TDBGState); virtual;
     property Debugger: TDebugger read FDebugger;
   public
     constructor Create(const ADebugger: TDebugger);
@@ -919,7 +919,7 @@ type
   { TDebugger }
 
   TDebuggerStateChangedEvent = procedure(ADebugger: TDebugger;
-                                         OldState: TDBGState) of object;
+                                         AOldState: TDBGState) of object;
   TDBGOutputEvent = procedure(Sender: TObject; const AText: String) of object;
   TDBGCurrentLineEvent = procedure(Sender: TObject;
                                    const ALocation: TDBGLocationRec) of object;
@@ -983,7 +983,6 @@ type
                              virtual; abstract; // True if succesful
     procedure SetExitCode(const AValue: Integer);
     procedure SetState(const AValue: TDBGState);
-    procedure InitTargetStart; virtual;
   public
     class function Caption: String; virtual;         // The name of the debugger as shown in the debuggeroptions
     class function ExePaths: String; virtual;        // The default locations of the exe
@@ -1013,7 +1012,6 @@ type
 
     function  Evaluate(const AExpression: String; var AResult: String): Boolean; // Evaluates the given expression, returns true if valid
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
-    function  TargetIsStarted: boolean; virtual;
 
   public 
     property Arguments: String read FArguments write FArguments;                 // Arguments feed to the program
@@ -1064,6 +1062,7 @@ const
     'Idle',
     'Stop',
     'Pause',
+    'Init',
     'Run',
     'Error'
     );
@@ -1086,6 +1085,8 @@ function DBGBreakPointActionNameToAction(const s: string): TIDEBreakPointAction;
 implementation
 
 const
+  INTERNAL_STATES = [dsInit];
+
   COMMANDMAP: array[TDBGState] of TDBGCommands = (
   {dsNone } [],
   {dsIdle } [dcEnvironment],
@@ -1093,6 +1094,7 @@ const
              dcEvaluate, dcEnvironment],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak,
              dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment],
+  {dsInit } [],
   {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment],
   {dsError} [dcStop]
   );
@@ -1306,7 +1308,8 @@ end;
 
 procedure TDebugger.DoState(const OldState: TDBGState);
 begin
-  if Assigned(FOnState) then FOnState(Self,OldState);
+  if State in INTERNAL_STATES then Exit;
+  if Assigned(FOnState) then FOnState(Self, OldState);
 end;
 
 procedure TDebugger.EnvironmentChanged(Sender: TObject);
@@ -1406,11 +1409,6 @@ begin
   Result := False;
 end;
 
-function TDebugger.TargetIsStarted: boolean;
-begin
-  Result:=FState in [dsRun,dsPause];
-end;
-
 procedure TDebugger.Pause;
 begin
   ReqCmd(dcPause, []);
@@ -1420,9 +1418,8 @@ function TDebugger.ReqCmd(const ACommand: TDBGCommand;
   const AParams: array of const): Boolean;
 begin
   if FState = dsNone then Init;
-  if ACommand in Commands then begin
-    if (not TargetIsStarted) and (ACommand in dcRunCommands) then
-      InitTargetStart;
+  if ACommand in Commands 
+  then begin
     Result := RequestCommand(ACommand, AParams);
     if not Result then begin
       DebugLn('TDebugger.ReqCmd failed: ',DBGCommandNames[ACommand]);
@@ -1464,7 +1461,7 @@ procedure TDebugger.SetFileName(const AValue: String);
 begin
   if FFileName <> AValue
   then begin
-    DebugLn('[TDebugger.SetFileName] ', AValue);
+    DebugLn('[TDebugger.SetFileName] "', AValue, '"');
     if FState in [dsRun, dsPause]
     then begin
       Stop;
@@ -1472,16 +1469,17 @@ begin
       if FState <> dsStop
       then SetState(dsError);
     end;
-
+    
     if FState = dsStop
     then begin
       // Reset state
       FFileName := '';
       SetState(dsIdle);
+      ChangeFileName;
     end;
 
     FFileName := AValue;
-    if (FFilename <> '') and (FState = dsIdle) and ChangeFileName
+    if  (FFilename <> '') and (FState = dsIdle) and ChangeFileName
     then SetState(dsStop);
   end;
 end;
@@ -1504,20 +1502,14 @@ var
 begin
   if AValue <> FState
   then begin
-    OldState := FState;
+    OldState := FState;            
     FState := AValue;
-    FBreakpoints.DoStateChange;
-    FLocals.DoStateChange;
-    FCallStack.DoStateChange;
-    FWatches.DoStateChange;
+    FBreakpoints.DoStateChange(OldState);
+    FLocals.DoStateChange(OldState);
+    FCallStack.DoStateChange(OldState);
+    FWatches.DoStateChange(OldState);
     DoState(OldState);
   end;
-end;
-
-procedure TDebugger.InitTargetStart;
-begin
-  FBreakPoints.InitTargetStart;
-  FWatches.InitTargetStart;
 end;
 
 procedure TDebugger.StepInto;
@@ -1998,25 +1990,24 @@ begin
   then FSlave.Changed;
 end;
 
-procedure TDBGBreakPoint.DoDebuggerStateChange;
+procedure TDBGBreakPoint.DoStateChange(const AOldState: TDBGState);
 begin
-end;
+  if Debugger.State <> dsStop then Exit;
+  if not (AOldState in [dsIdle, dsNone]) then Exit;
 
-function TDBGBreakPoint.GetDebugger: TDebugger;
-begin
-  Result := TDBGBreakPoints(Collection).FDebugger;
-end;
-
-procedure TDBGBreakPoint.InitTargetStart;
-begin
   BeginUpdate;
   try
-    SetLocation(FSource,GetSourceLine);
+    SetLocation(FSource, SourceLine);
     Enabled := InitialEnabled;
     SetHitCount(0);
   finally
     EndUpdate;
   end;
+end;
+
+function TDBGBreakPoint.GetDebugger: TDebugger;
+begin
+  Result := TDBGBreakPoints(Collection).FDebugger;
 end;
 
 { =========================================================================== }
@@ -2184,12 +2175,12 @@ begin
   inherited Create(ABreakPointClass);
 end;
 
-procedure TDBGBreakPoints.DoStateChange;
+procedure TDBGBreakPoints.DoStateChange(const AOldState: TDBGState);
 var
   n: Integer;
 begin
   for n := 0 to Count - 1 do
-    GetItem(n).DoDebuggerStateChange;
+    GetItem(n).DoStateChange(AOldState);
 end;
 
 function TDBGBreakPoints.Find(const ASource: String; const ALine: Integer): TDBGBreakPoint;
@@ -2205,14 +2196,6 @@ end;
 function TDBGBreakPoints.GetItem (const AnIndex: Integer ): TDBGBreakPoint;
 begin
   Result := TDBGBreakPoint(inherited GetItem(AnIndex));
-end;
-
-procedure TDBGBreakPoints.InitTargetStart;
-var
-  i: Integer;
-begin
-  for i := 0 to Count - 1 do
-    Items[i].InitTargetStart;
 end;
 
 procedure TDBGBreakPoints.SetItem (const AnIndex: Integer; const AValue: TDBGBreakPoint );
@@ -2631,17 +2614,13 @@ begin
   then FSlave.Changed;
 end;
 
-procedure TDBGWatch.DoStateChange;
+procedure TDBGWatch.DoStateChange(const AOldState: TDBGState);
 begin
 end;
 
 function TDBGWatch.GetDebugger: TDebugger;
 begin
   Result := TDBGWatches(Collection).FDebugger;
-end;
-
-procedure TDBGWatch.InitTargetStart;
-begin
 end;
 
 { =========================================================================== }
@@ -2815,12 +2794,12 @@ begin
   inherited Create(AWatchClass);
 end;
 
-procedure TDBGWatches.DoStateChange;
+procedure TDBGWatches.DoStateChange(const AOldState: TDBGState);
 var
   n: Integer;
 begin
   for n := 0 to Count - 1 do
-    GetItem(n).DoStateChange;
+    GetItem(n).DoStateChange(AOldState);
 end;
 
 function TDBGWatches.Find(const AExpression: String): TDBGWatch;
@@ -2831,14 +2810,6 @@ end;
 function TDBGWatches.GetItem(const AnIndex: Integer): TDBGWatch;
 begin
   Result := TDBGWatch(inherited GetItem(AnIndex));
-end;
-
-procedure TDBGWatches.InitTargetStart;
-var
-  i: Integer;
-begin
-  for i := 0 to Count - 1 do
-    Items[i].InitTargetStart;
 end;
 
 procedure TDBGWatches.SetItem(const AnIndex: Integer; const AValue: TDBGWatch);
@@ -2949,7 +2920,7 @@ begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-procedure TDBGLocals.DoStateChange;
+procedure TDBGLocals.DoStateChange(const AOldState: TDBGState);
 begin
 end;
 
@@ -3168,20 +3139,19 @@ begin
   inherited Create;
 end;
 
-procedure TDBGCallStack.DoStateChange;
+procedure TDBGCallStack.DoStateChange(const AOldState: TDBGState);
 begin
   if FDebugger.State = dsPause
   then begin
     if Assigned(FOnChange) then FOnChange(Self);
   end
   else begin
-    if FOldState = dsPause
+    if AOldState = dsPause
     then begin 
       Clear;
       if Assigned(FOnClear) then FOnClear(Self);
     end;
   end;          
-  FOldState := FDebugger.State;
 end;
 
 
@@ -3572,6 +3542,10 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.62  2004/10/11 23:28:13  marc
+  * Fixed interrupting GDB on win32
+  * Reset exename after run so that the exe is not locked on win32
+
   Revision 1.61  2004/09/14 21:30:36  vincents
   replaced writeln by DebugLn
 

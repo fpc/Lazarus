@@ -121,6 +121,7 @@ type
     function  ExecuteCommand(const ACommand: String; AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultValues: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; const AFlags: TGDBMICmdFlags): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback): Boolean; overload;
     function  StartDebugging(const AContinueCommand: String): Boolean;
@@ -153,15 +154,6 @@ type
 implementation
 
 type
-  TGDBMIBreakPoints = class(TDBGBreakPoints)
-  private
-  protected
-    procedure SetBreakPoints(ResetAll: boolean);
-    procedure InitTargetStart; override;
-  public
-  end;
-
-
   TGDBMIBreakPoint = class(TDBGBreakPoint)
   private
     FBreakID: Integer;
@@ -173,7 +165,7 @@ type
   protected
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
-    procedure InitTargetStart; override;
+    procedure DoStateChange(const AOldState: TDBGState); override;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
   public
     constructor Create(ACollection: TCollection); override;
@@ -188,7 +180,7 @@ type
     procedure LocalsNeeded;
     procedure AddLocals(const AParams:String);
   protected
-    procedure DoStateChange; override;
+    procedure DoStateChange(const AOldState: TDBGState); override;
     function GetCount: Integer; override;
     function GetName(const AnIndex: Integer): String; override;
     function GetValue(const AnIndex: Integer): String; override;
@@ -205,7 +197,7 @@ type
   protected
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
-    procedure DoStateChange; override;
+    procedure DoStateChange(const AOldState: TDBGState); override;
     function  GetValue: String; override;
     function  GetValid: TValidState; override;
   public
@@ -369,25 +361,39 @@ function TGDBMIDebugger.ChangeFileName: Boolean;
     SeperatorPos: integer;
   begin
     Result := FileName;
-    if DirectorySeparator<>'/' then
-      repeat
-        SeperatorPos := Pos(DirectorySeparator, Result);
-        if SeperatorPos>0 then begin
-          Delete(Result, SeperatorPos, 1);
-          Insert('/', Result, SeperatorPos);
-        end;
-      until SeperatorPos=0;
-  end;
+    if DirectorySeparator = '/' then Exit;
+
+    repeat
+      SeperatorPos := Pos(DirectorySeparator, Result);
+      if SeperatorPos <= 0 then Exit;
+      
+      Delete(Result, SeperatorPos, 1);
+      Insert('/', Result, SeperatorPos);
+    until False;
+  end;              
+var
+  S: String;
+  ResultState: TDBGState;
 begin
   Result:=false;
   
 
-  if not ExecuteCommand('-file-exec-and-symbols %s',
-    [GetFileNameForGDB], []) then exit;
-  if State=dsError then exit;
-  if not (inherited ChangeFileName) then exit;
-  if State=dsError then exit;
-
+  S := GetFileNameForGDB; 
+  if not ExecuteCommand('-file-exec-and-symbols %s', [S], ResultState, [cfIgnoreError]) then Exit;
+  if  (ResultState = dsError) 
+  and (FileName <> '')
+  then begin
+    SetState(dsError);
+    Exit;
+  end;
+  if not (inherited ChangeFileName) then Exit;
+  if State = dsError then Exit;
+  if FileName = '' 
+  then begin
+    Result := True;
+    Exit;
+  end;
+  
   if tfHasSymbols in FTargetFlags
   then begin
     // Force setting language
@@ -422,7 +428,7 @@ end;
 
 function TGDBMIDebugger.CreateBreakPoints: TDBGBreakPoints;
 begin
-  Result := TGDBMIBreakPoints.Create(Self, TGDBMIBreakPoint);
+  Result := TDBGBreakPoints.Create(Self, TGDBMIBreakPoint);
 end;
 
 function TGDBMIDebugger.CreateCallStack: TDBGCallStack; 
@@ -516,6 +522,15 @@ var
   ResultState: TDBGState;
 begin
   Result := ExecuteCommand(ACommand, AValues, ResultState, AResultValues, AFlags, nil);
+end;
+
+function TGDBMIDebugger.ExecuteCommand(const ACommand: String; 
+  AValues: array of const; var AResultState: TDBGState; 
+  const AFlags: TGDBMICmdFlags): Boolean; 
+var
+  S: String;
+begin
+  Result := ExecuteCommand(ACommand, AValues, AResultState, S, AFlags, nil);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
@@ -751,44 +766,50 @@ end;
 function TGDBMIDebugger.GDBRunTo(const ASource: String;
   const ALine: Integer): Boolean;
 begin
+  Result := False;
   case State of
-    dsIdle, dsStop: begin
+    dsStop: begin
       Result := StartDebugging(Format('-exec-until %s:%d', [ASource, ALine]));
     end;
     dsPause: begin
       Result := ExecuteCommand('-exec-until %s:%d', [ASource, ALine], [cfExternal]);
     end;
-  else
-    Result := False;
+    dsIdle: begin
+      DebugLn('[WARNING] Debugger: Unable to runto in idle state');
+    end;
   end;
 
 end;
 
 function TGDBMIDebugger.GDBStepInto: Boolean;
 begin
+  Result := False;
   case State of
-    dsIdle, dsStop: begin
+    dsStop: begin
       Result := StartDebugging('');
     end;
     dsPause: begin
       Result := ExecuteCommand('-exec-step', [cfExternal]);
     end;
-  else
-    Result := False;
+    dsIdle: begin
+      DebugLn('[WARNING] Debugger: Unable to step in idle state');
+    end;
   end;
 end;
 
 function TGDBMIDebugger.GDBStepOver: Boolean;
 begin
+  Result := False;
   case State of
-    dsIdle, dsStop: begin
+    dsStop: begin
       Result := StartDebugging('');
     end;
     dsPause: begin
       Result := ExecuteCommand('-exec-next', [cfExternal]);
     end;
-  else
-    Result := False;
+    dsIdle: begin
+      DebugLn('[WARNING] Debugger: Unable to step over in idle state');
+    end;
   end;
 end;
 
@@ -928,10 +949,13 @@ begin
     if not ParseInitialization
     then begin
       SetState(dsError);
-      Exit;
+      Exit;                             
     end;
     
     ExecuteCommand('-gdb-set confirm off', []);
+    // for win32, turn off a new console otherwise breaking gdb will fail
+    // ignore the error on other platforms
+    ExecuteCommand('-gdb-set new-console off', [cfIgnoreError]);
     
     // try to find the debugger version
     ResolveGDBVersion;
@@ -1590,6 +1614,7 @@ begin
   
   if ResultState = dsNone
   then begin
+    SetState(dsInit);
     if AContinueCommand <> ''
     then Result := ExecuteCommand(AContinueCommand, [])
     else SetState(dsPause);
@@ -1602,29 +1627,6 @@ end;
 procedure TGDBMIDebugger.TestCmd(const ACommand: String);
 begin
   ExecuteCommand(ACommand, [cfIgnoreError]);
-end;
-
-{ =========================================================================== }
-{ TGDBMIBreakPoints }
-{ =========================================================================== }
-
-procedure TGDBMIBreakPoints.SetBreakPoints(ResetAll: boolean);
-var
-  n: Integer;
-  BreakPoint: TGDBMIBreakPoint;
-begin
-  for n := 0 to Count - 1 do
-  begin
-    BreakPoint := TGDBMIBreakPoint(Items[n]);
-    if (Breakpoint.FBreakID = 0) or ResetAll
-    then BreakPoint.SetBreakPoint;
-  end;
-end;
-
-procedure TGDBMIBreakPoints.InitTargetStart;
-begin
-  inherited InitTargetStart;
-  SetBreakPoints(false);
 end;
 
 { =========================================================================== }
@@ -1655,15 +1657,24 @@ begin
   inherited;
 end;
 
+procedure TGDBMIBreakPoint.DoStateChange(const AOldState: TDBGState);
+begin
+  inherited DoStateChange(AOldState);
+  
+  case Debugger.State of
+    dsInit: begin
+      SetBreakpoint;
+    end;
+    dsStop: begin
+      if AOldState = dsRun
+      then ReleaseBreakpoint;
+    end;
+  end;
+end;
+
 procedure TGDBMIBreakPoint.Hit(var ACanContinue: Boolean);
 begin
   DoHit(HitCount + 1, ACanContinue);
-end;
-
-procedure TGDBMIBreakPoint.InitTargetStart;
-begin
-  // initialize values
-  inherited InitTargetStart;
 end;
 
 procedure TGDBMIBreakPoint.SetBreakpoint;
@@ -1718,11 +1729,10 @@ end;
 procedure TGDBMIBreakPoint.SetLocation(const ASource: String;
   const ALine: Integer);
 begin
-  //writeln('TGDBMIBreakPoint.SetLocation A ',Source = ASource,' ',Line = ALine);
   if (Source = ASource) and (Line = ALine) then exit;
   inherited;
   if Debugger = nil then Exit;
-  if TGDBMIDebugger(Debugger).State in [dsStop, dsPause, dsIdle, dsRun]
+  if TGDBMIDebugger(Debugger).State in [dsStop, dsPause, dsRun]
   then SetBreakpoint;
 end;
 
@@ -1795,7 +1805,7 @@ begin
   FreeAndNil(FLocals);
 end;
 
-procedure TGDBMILocals.DoStateChange;
+procedure TGDBMILocals.DoStateChange(const AOldState: TDBGState);
 begin
   if  (Debugger <> nil)
   and (Debugger.State = dsPause)
@@ -1889,7 +1899,7 @@ begin
   inherited;
 end;
 
-procedure TGDBMIWatch.DoStateChange;
+procedure TGDBMIWatch.DoStateChange(const AOldState: TDBGState);
 begin
   if Debugger = nil then Exit;
 
@@ -2283,6 +2293,10 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.51  2004/10/11 23:28:13  marc
+  * Fixed interrupting GDB on win32
+  * Reset exename after run so that the exe is not locked on win32
+
   Revision 1.50  2004/09/14 21:30:36  vincents
   replaced writeln by DebugLn
 
