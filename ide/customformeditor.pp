@@ -92,6 +92,9 @@ TCustomFormEditor
   private
     FModified     : Boolean;
     FComponentInterfaceList : TList; //used to track and find controls
+    FMainControl : TComponent;  //this needs to be recorded here so when a control
+                                //is created via the CreateComponent we can use this
+                                //to set the owner property.
   protected
 
   public
@@ -104,7 +107,7 @@ TCustomFormEditor
     Function FindComponent(const Name : String) : TIComponentInterface; override;
     Function CreateComponent(CI : TIComponentInterface; TypeName : String;
                              X,Y,W,H : Integer): TIComponentInterface; override;
-
+    property MainControl : TComponent read FMainControl write FMainControl;
   end;
 
 
@@ -461,21 +464,45 @@ end;
 
 Function TCustomFormEditor.CreateComponent(CI : TIComponentInterface; TypeName : String;
                              X,Y,W,H : Integer): TIComponentInterface;
-
+Var
+Temp : TComponentInterface;
 Begin
-Result := TIComponentInterface.Create;
-//Result.FControl := TCOntrolClass(TypeName).Create(
+Temp := TComponentInterface.Create;
+Temp.FControl := TControlClass(TypeName).Create(MainControl);
   if Assigned(CI) then
      Begin
         if (TComponentInterface(CI).FControl is TWinControl) then
             begin
             if (csAcceptsControls in TWinControl(TComponentInterface(CI).FControl).COntrolStyle) then
                  Begin  //set CI the parent of the new one.
+                   TWinControl(Temp.FControl).Parent := TWinControl(TComponentInterface(CI).FControl);
                  end;
             end;
 
      End;
 
+if (Temp.FControl is TControl) then
+Begin
+if (X <> -1) and (Y <> -1) and (W <> -1) and (h <> -1) then
+   TControl(Temp.FControl).SetBounds(X,Y,W,H)
+else
+   Begin
+   if (W <> -1) then TControl(Temp.FControl).Width := W;  //if W=-1 then use default size otherwise use W
+
+   if (H <> -1) then TControl(Temp.FControl).Height := H; //if H=-1 then use default size otherwise use H
+
+   if (X <> -1) then TControl(Temp.FControl).Left := X //if X=-1 then center in parent otherwise use X
+       else
+       TControl(Temp.FControl).Left := (TControl(Temp.FControl).Parent.Width div 2) - (TControl(Temp.FControl).Width div 2);
+
+   if (Y <> -1) then TControl(Temp.FControl).Top := Y //if Y=-1 then center in parent otherwise use Y
+       else
+       TControl(Temp.FControl).Top := (TControl(Temp.FControl).Parent.Height div 2) - (TControl(Temp.FControl).Height div 2);
+   end;
+
+end;
+
+ Result := Temp;
 end;
 
 
