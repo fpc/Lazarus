@@ -776,7 +776,7 @@ begin
       Repeat
         If GoForward then
           Inc(I);
-	If List[I] <> nil then begin
+	If (I < List.Count) and (List[I] <> nil) then begin
 	  Next := TControl(List[I]);
 	  If ((Not CheckTabStop or Next.TabStop) and
 	    (not CheckParent or (Next.Parent = Self)))
@@ -784,7 +784,7 @@ begin
 	  then
 	    Result := Next;
         end;
-      until (Result <> nil) or (I = J) or ((I + 1)>= List.Count);
+      until (Result <> nil) or (I = J) or (I >= List.Count);
     end;
   finally
     List.Free;
@@ -802,7 +802,7 @@ begin
   If FTabList <> nil then
     For I := 0 to FTabList.Count - 1 do begin
       Control := TControl(FTabList[I]);
-      If Control.CanTab then
+      If Control.CanTab and Control.TabStop then
         List.Add(Control);
       If Control is TWinControl then
         TWinControl(Control).GetTabOrderList(List);
@@ -1453,8 +1453,14 @@ begin
       ListAdd(FTabList, AControl);
     end else
       ListAdd(FControls, AControl);
-      
+
     AControl.FParent := Self;
+
+    If (csDesigning in ComponentState) and not
+       (csLoading in ComponentState)
+    then
+      If AControl.CanTab then
+        AControl.TabStop := True;
   end;
 End;
 
@@ -2028,64 +2034,13 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyDown(Var Message : TLMKeyDown);
-
-  Function TopLevelAncestor(TopControl : TWinControl) : TWinControl;
-  begin
-    Result := nil;
-
-    If TopControl = nil then
-      exit;
-
-    If TopControl is TForm then
-      Result := TForm(TopControl)
-    else
-      Result := TopLevelAncestor(TopControl.Parent);
-  end;
-  
-var
-  I : Integer;
-  List : TList;
-  FirstFocus, OFocus, NFocus : TControl;
-  TopLevel : TWinControl;
 begin
   Assert(False, Format('Trace:[TWinControl.WMKeyDown] %s', [ClassName]));
   if not DoKeyDown(Message) then {inherited} ;  // there is nothing to inherit
-  NFocus := nil;
-  OFocus := nil;
-  TopLevel := TopLevelAncestor(Self);
-  If TopLevel = nil then
-    exit;
-  Case Message.CharCode of
-    VK_Tab    : begin
-                  try
-                    List := TList.Create;
-                    TopLevel.GetTabOrderList(List);
-                    FirstFocus := nil;
-                    For I := 0 to List.Count - 1 do
-                      If List[I] <> nil then begin
-                        If I = 0 then
-                          FirstFocus := TControl(List[I]);
-                        If TControl(List[I]).Focused then begin
-	                  OFocus := TControl(List[I]);
-	                  Break;
-	                end;
-                      end;
-                  Finally
-                    List.Free;
-                  end;
-                  NFocus := TopLevel.FindNextControl(OFocus,True,True,True);
-                  If (NFocus <> nil) and (NFocus <> OFocus) then
-                    NFocus.SetFocus
-                  else
-                    If FirstFocus <> nil then
-                      FirstFocus.SetFocus;
-                  Message.CharCode := 0;
-                end;
-  end;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWinControl.WMKeyUp
+                                                                                  Method: TWinControl.WMKeyUp
   Params:   Msg: The message
   Returns:  nothing
 
@@ -2500,6 +2455,13 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.89  2002/09/29 15:08:38  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+    Patch includes:
+      -fixes Problems with hiding modal forms
+      -temporarily fixes TCustomForm.BorderStyle in bsNone
+      -temporarily fixes problems with improper tabbing in TSynEdit
+
   Revision 1.88  2002/09/27 20:52:23  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
