@@ -137,7 +137,7 @@ writeln('[TCompiler.Compile] Output="',OutputLine,'"');
     else if (pos(') Warning:',OutputLine) <> 0) then
       WriteMessage := AProject.CompilerOptions.ShowWarn
                    or AProject.CompilerOptions.ShowAll
-    else if (copy(OutputLine,1,5)='Panic') or (pos(') Fatal:',OutputLine) <> 0)
+    else if (copy(OutputLine,1,5)='Panic') or (pos(') Fatal:',OutputLine) <> 0) or (pos('Fatal: ',OutputLine) <> 0)
     then begin
       Result:=mrCancel;
       WriteMessage := true;
@@ -336,6 +336,10 @@ end.
 
 {
   $Log$
+  Revision 1.20  2001/11/09 20:48:36  lazarus
+  Minor fixes
+  Shane
+
   Revision 1.19  2001/11/09 18:39:11  lazarus
   MG: turned back to stable ground (use old process.pp)
 

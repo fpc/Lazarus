@@ -1,4 +1,12 @@
 { THintWindow }
+{
+
+   use:
+   HintWindow := THintWindow.Create(nil);
+   Rect := HintWindow.CalcHintRect(0,'This is the hint',nil);
+   HintWindow.ActivateHint(Rect,'This is the hint');
+   
+}
 
 constructor THintWindow.Create(AOwner: TComponent);
 begin
