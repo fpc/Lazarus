@@ -23,7 +23,7 @@
  *****************************************************************************
 }
 {
-@abstract(A GTK widget to support controls derived from a window)
+@abstract(A GTK widget to support controls derived from a wincontrol)
 @author(TGTKWinapiWindow - Marc Weustink <weus@quicknet.nl>)
 @created(2000)
 @lastmod(2000)
@@ -33,6 +33,8 @@ unit GTKWinapiWindow;
 {$mode objfpc}{$H+}
 
 interface
+
+{$DEFINE WinAPIChilds : use GtkFixed as client area, to allow childs }
 
 uses
   {$IFDEF gtk2}
@@ -47,7 +49,7 @@ type
   TGTKAPIWidget = record
     // ! the ScrolledWindow must be the first attribute of this record !
     ScrolledWindow: TGTKScrolledWindow;
-    Client: PGTKWidget;
+    Client: PGtkWidget;
   end;
   
   PGTKAPIWidgetClass = ^TGTKAPIWidgetClass;
@@ -55,8 +57,8 @@ type
     parent_class: TGTKScrolledWindowClass;
   end;
 
-function GTKAPIWidget_GetType : guint;
-function GTKAPIWidget_New : PGTKWidget;
+function GTKAPIWidget_GetType: guint;
+function GTKAPIWidget_New: PGTKWidget;
 procedure GTKAPIWidget_CreateCaret(APIWidget: PGTKAPIWidget;
                                  AWidth, AHeight: Integer; ABitmap: PGDKPixmap); 
 procedure GTKAPIWidget_DestroyCaret(APIWidget: PGTKAPIWidget); 
@@ -90,8 +92,10 @@ type
   PGTKAPIWidgetClient = ^TGTKAPIWidgetClient;
   TGTKAPIWidgetClient = record
     // ! the Widget must be the first attribute of the record !
-    Widget: TGTKWidget;
+    Widget: {$IFDEF WinApiChilds}TGtkFixed{$ELSE}TGtkWidget{$ENDIF};
+    {$IFNDEF WinApiChilds}
     OtherWindow: PGDKWindow;
+    {$ENDIF}
     Caret: TCaretInfo;
   end;
   
@@ -102,7 +106,37 @@ type
                                HAdjustment, VAdjustment: PGTKAdjustment); cdecl;
   end;
 
+function GTKAPIWidgetClient_Timer(Client: Pointer): gint; cdecl; forward;
+procedure GTKAPIWidgetClient_Realize(Widget: PGTKWidget); cdecl; forward;
+procedure GTKAPIWidgetClient_UnRealize(Widget: PGTKWidget); cdecl; forward;
+function GTKAPIWidgetClient_KeyPress(Widget: PGTKWidget;
+  Event: PGDKEventKey): gint; cdecl; forward;
+function GTKAPIWidgetClient_ButtonPress(Widget: PGTKWidget;
+  Event: PGDKEventButton): gint; cdecl; forward;
+function GTKAPIWidgetClient_FocusIn(Widget: PGTKWidget;
+  Event: PGdkEventFocus): gint; cdecl; forward;
+function GTKAPIWidgetClient_FocusOut(Widget: PGTKWidget;
+  Event: PGdkEventFocus): gint; cdecl; forward;
+  
+procedure GTKAPIWidgetClient_ClassInit(theClass: Pointer);cdecl; forward;
+procedure GTKAPIWidgetClient_Init(Client, theClass: Pointer); cdecl; forward;
+function GTKAPIWidgetClient_GetType: Guint; forward;
+function GTKAPIWidgetClient_New: PGTKWidget; forward;
+
+procedure GTKAPIWidgetClient_HideCaret(Client: PGTKAPIWidgetClient); forward;
 procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient); forward;
+procedure GTKAPIWidgetClient_ShowCaret(Client: PGTKAPIWidgetClient); forward;
+procedure GTKAPIWidgetClient_CreateCaret(Client: PGTKAPIWidgetClient;
+  AWidth, AHeight: Integer; ABitmap: PGDKPixmap); forward;
+procedure GTKAPIWidgetClient_DestroyCaret(Client: PGTKAPIWidgetClient); forward;
+procedure GTKAPIWidgetClient_SetCaretPos(Client: PGTKAPIWidgetClient;
+  AX, AY: Integer); forward;
+procedure GTKAPIWidgetClient_GetCaretPos(Client: PGTKAPIWidgetClient;
+  var X, Y: Integer); forward;
+procedure GTKAPIWidgetClient_SetCaretRespondToFocus(Client: PGTKAPIWidgetClient;
+  ShowHideOnFocus: boolean); forward;
+
+
 
 function GTKAPIWidgetClient_Timer(Client: Pointer): gint; cdecl;
 // returning 0 would stop the timer, 1 will restart it
@@ -126,10 +160,9 @@ var
   Client: PGTKAPIWidgetClient;
 begin
 //  Assert(False, 'Trace:[GTKAPIWidgetClient_Realize]');
-   
-  Client := PGTKAPIWidgetClient(Widget); 
-  
   gtk_widget_set_flags(Widget, GTK_REALIZED);
+
+  Client := PGTKAPIWidgetClient(Widget);
 
   with Attributes do
   begin
@@ -151,7 +184,7 @@ begin
   Widget^.Window := gdk_window_new(gtk_widget_get_parent_window(Widget),
                                    @Attributes, AttributesMask);
 
-  gdk_window_set_user_data(Widget^.Window, Client);
+  gdk_window_set_user_data(Widget^.Window, Widget);
 
   with Attributes do
   begin
@@ -163,14 +196,17 @@ begin
   end;
 //  AttributesMask := AttributesMask or GDK_WA_CURSOR;
 
+  {$IFNDEF WinApiChilds}
   Client^.OtherWindow := gdk_window_new(Widget^.Window, @Attributes, AttributesMask);
   gdk_window_set_user_data (Client^.OtherWindow, Client);
+  {$ENDIF}
 
   Widget^.theStyle := gtk_style_attach(Widget^.theStyle, Widget^.Window);
 
   gtk_style_set_background (Widget^.theStyle, Widget^.Window, GTK_STATE_NORMAL);
 //  gdk_window_set_background(Widget^.Window, @PGTKStyle(Widget^.theStyle)^.Base[gtk_widget_state(Widget)]);
 //  gdk_window_set_background (Client^.OtherWindow, @PGTKStyle(Widget^.theStyle)^.Base[gtk_widget_state(Widget)]);
+  gdk_window_set_back_pixmap(Widget^.Window,nil,false);
 end;
 
 procedure GTKAPIWidgetClient_UnRealize(Widget: PGTKWidget); cdecl;
@@ -299,6 +335,8 @@ begin
     Timer := 0;
     ShowHideOnFocus := true;
   end;
+
+  gtk_widget_set_app_paintable(PGTKWidget(Client),true);
 end;
 
 function GTKAPIWidgetClient_GetType: Guint;
@@ -315,8 +353,10 @@ const
     base_class_init_func: nil;
   );
 begin
-  if (TheType = 0) 
-  then TheType := gtk_type_unique(gtk_widget_get_type, @Info);
+  if (TheType = 0) then
+    TheType := gtk_type_unique(
+              {$IFDEF WinApiChilds}gtk_fixed_type{$ELSE}gtk_widget_type{$ENDIF},
+                               @Info);
   Result := TheType;
 end;
 
@@ -734,6 +774,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.39  2002/12/22 22:42:55  mattias
+  custom controls now support child wincontrols
+
   Revision 1.38  2002/12/15 11:52:28  mattias
   started gtk2 interface
 
