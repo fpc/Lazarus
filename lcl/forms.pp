@@ -866,6 +866,70 @@ type
     {$ENDIF}
   end;
   
+  TApplicationProperties = class(TComponent)
+  private
+    WE_MIGHT_BE_DESIGNING : Boolean;
+
+    FCaptureExceptions: boolean;
+    FHelpFile: string;
+    FHint: string;
+    FHintColor: TColor;
+    FHintHidePause: Integer;
+    FHintPause: Integer;
+    FHintShortCuts: Boolean;
+    FHintShortPause: Integer;
+    FShowHint: Boolean;
+    FTitle: String;
+
+    FOnException: TExceptionEvent;
+    FOnIdle: TIdleEvent;
+    FOnIdleEnd: TNotifyEvent;
+    FOnHelp: THelpEvent;
+    FOnHint: TNotifyEvent;
+    FOnShowHint: TShowHintEvent;
+    FOnUserInput: TOnUserInputEvent;
+  protected
+    Procedure SetCaptureExceptions(Const AValue : boolean);
+    Procedure SetHelpFile(Const AValue : string);
+    Procedure SetHint(Const AValue : string);
+    Procedure SetHintColor(Const AValue : TColor);
+    Procedure SetHintHidePause(Const AValue : Integer);
+    Procedure SetHintPause(Const AValue : Integer);
+    Procedure SetHintShortCuts(Const AValue : Boolean);
+    Procedure SetHintShortPause(Const AValue : Integer);
+    Procedure SetShowHint(Const AValue : Boolean);
+    Procedure SetTitle(Const AValue : String);
+
+    Procedure SetOnException(Const AValue : TExceptionEvent);
+    Procedure SetOnIdle(Const AValue : TIdleEvent);
+    Procedure SetOnIdleEnd(Const AValue : TNotifyEvent);
+    Procedure SetOnHelp(Const AValue : THelpEvent);
+    Procedure SetOnHint(Const AValue : TNotifyEvent);
+    Procedure SetOnShowHint(Const AValue : TShowHintEvent);
+    Procedure SetOnUserInput(Const AValue : TOnUserInputEvent);
+  public
+    Constructor Create(AOwner: TComponent); Override;
+  published
+    property CaptureExceptions: boolean read FCaptureExceptions
+                                        write SetCaptureExceptions;
+    property HelpFile: string read FHelpFile write SetHelpFile;
+    property Hint: string read FHint write SetHint;
+    property HintColor: TColor read FHintColor write SetHintColor;
+    property HintHidePause: Integer read FHintHidePause write SetHintHidePause;
+    property HintPause: Integer read FHintPause write SetHintPause;
+    property HintShortCuts: Boolean read FHintShortCuts write SetHintShortCuts;
+    property HintShortPause: Integer read FHintShortPause write SetHintShortPause;
+    property ShowHint: Boolean read FShowHint write SetShowHint;
+    property Title: String read FTitle write SetTitle;
+
+    property OnException: TExceptionEvent read FOnException write SetOnException;
+    property OnIdle: TIdleEvent read FOnIdle write SetOnIdle;
+    property OnIdleEnd: TNotifyEvent read FOnIdleEnd write SetOnIdleEnd;
+    property OnHelp: THelpEvent read FOnHelp write SetOnHelp;
+    property OnHint: TNotifyEvent read FOnHint write SetOnHint;
+    property OnShowHint: TShowHintEvent read FOnShowHint write SetOnShowHint;
+    property OnUserInput: TOnUserInputEvent read FOnUserInput write SetOnUserInput;
+  end;
   
   { TIDesigner }
 
@@ -995,7 +1059,7 @@ var
 
 procedure Register;
 begin
-  RegisterComponents('Additional',[TScrollBox]);
+  RegisterComponents('Additional',[TScrollBox, TApplicationProperties]);
 end;
 
 {------------------------------------------------------------------------------
@@ -1446,8 +1510,185 @@ end;
 {$I customform.inc}
 {$I screen.inc}
 {$I application.inc}
-{$I hintwindow.inc}
+//==============================================================================
+Procedure TApplicationProperties.SetCaptureExceptions(Const AValue : boolean);
+begin
+  FCaptureExceptions := AValue;
 
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.CaptureExceptions := AValue;
+end;
+
+Procedure TApplicationProperties.SetHelpFile(Const AValue : string);
+begin
+  FHelpFile := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.HelpFile := AValue;
+end;
+
+Procedure TApplicationProperties.SetHint(Const AValue : string);
+begin
+  FHint := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.Hint := AValue;
+end;
+
+Procedure TApplicationProperties.SetHintColor(Const AValue : TColor);
+begin
+  FHintColor := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.HintColor := AValue;
+end;
+
+Procedure TApplicationProperties.SetHintHidePause(Const AValue : Integer);
+begin
+  FHintHidePause := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.HintHidePause := AValue;
+end;
+
+Procedure TApplicationProperties.SetHintPause(Const AValue : Integer);
+begin
+  FHintPause := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.HintPause := AValue;
+end;
+
+Procedure TApplicationProperties.SetHintShortCuts(Const AValue : Boolean);
+begin
+  FHintShortCuts := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.HintShortCuts := AValue;
+end;
+
+Procedure TApplicationProperties.SetHintShortPause(Const AValue : Integer);
+begin
+  FHintShortPause := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.HintShortPause := AValue;
+end;
+
+Procedure TApplicationProperties.SetShowHint(Const AValue : Boolean);
+begin
+  FShowHint := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.ShowHint := AValue;
+end;
+
+Procedure TApplicationProperties.SetTitle(Const AValue : String);
+begin
+  FTitle := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.Title := AValue;
+end;
+
+Procedure TApplicationProperties.SetOnException(Const AValue : TExceptionEvent);
+begin
+  FOnException := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.OnException := AValue;
+end;
+
+Procedure TApplicationProperties.SetOnIdle(Const AValue : TIdleEvent);
+begin
+  FOnIdle := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.OnIdle := AValue;
+end;
+
+Procedure TApplicationProperties.SetOnIdleEnd(Const AValue : TNotifyEvent);
+begin
+  FOnIdleEnd := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.OnIdleEnd := AValue;
+end;
+
+Procedure TApplicationProperties.SetOnHelp(Const AValue : THelpEvent);
+begin
+  FOnHelp := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.OnHelp := AValue;
+end;
+
+Procedure TApplicationProperties.SetOnHint(Const AValue : TNotifyEvent);
+begin
+  FOnHint := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.OnHint := AValue;
+end;
+
+Procedure TApplicationProperties.SetOnShowHint(Const AValue : TShowHintEvent);
+begin
+  FOnShowHint := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.OnShowHint := AValue;
+end;
+
+Procedure TApplicationProperties.SetOnUserInput(Const AValue : TOnUserInputEvent);
+begin
+  FOnUserInput := AValue;
+
+  If not WE_MIGHT_BE_DESIGNING then
+    Application.OnUserInput := AValue;
+end;
+
+constructor TApplicationProperties.Create(AOwner: TComponent);
+begin
+  If (FindRootDesigner(Self)<>nil) then
+    WE_MIGHT_BE_DESIGNING := True;
+
+  If WE_MIGHT_BE_DESIGNING then begin
+    FCaptureExceptions:=true;
+    FHintColor := DefHintColor;
+    FHintPause := DefHintPause;
+    FHintShortCuts := True;
+    FHintShortPause := DefHintShortPause;
+    FHintHidePause := DefHintHidePause;
+    FShowHint := true;
+  end
+  else begin
+    FCaptureExceptions := Application.CaptureExceptions;
+    FHelpFile := Application.HelpFile;
+    FHint := Application.Hint;
+    FHintColor := Application.HintColor;
+    FHintHidePause := Application.HintHidePause;
+    FHintPause := Application.HintPause;
+    FHintShortCuts := Application.HintShortCuts;
+    FHintShortPause := Application.HintShortPause;
+    FShowHint := Application.ShowHint;
+    FTitle := Application.Title;
+  end;
+
+  FOnIdle := nil;
+  FOnException := nil;
+  FOnIdle := nil;
+  FOnIdleEnd := nil;
+  FOnHelp := nil;
+  FOnHint := nil;
+  FOnShowHint := nil;
+  FOnUserInput := nil;
+
+  inherited Create(AOwner);
+end;
+
+//==============================================================================
+
+{$I hintwindow.inc}
 
 initialization
   FocusCount := 0;
