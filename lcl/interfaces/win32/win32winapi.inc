@@ -459,6 +459,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.CreateFontIndirect(Const LogFont: TLogFont): HFONT;
 Begin
+  if String(LogFont.lfFaceName) = 'default' then
+    Result := Windows.GetStockObject(DEFAULT_GUI_FONT)
+  else
   Result := Windows.CreateFontIndirect(@LogFont);
 End;
 
@@ -2422,6 +2425,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.57  2003/08/26 16:14:21  mattias
+  defaultfont patch from Micha
+
   Revision 1.56  2003/08/23 11:30:51  mattias
   fixed SetComboHeight in win32 intf and finddeclaration of overloaded proc definition
 
