@@ -107,10 +107,11 @@ end;
 -------------------------------------------------------------------------------}
 function GTKRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 var
-  WinWidgetInfo: PWinWidgetInfo;
+  WinWidgetInfo, ClientWidgetInfo: PWinWidgetInfo;
   HiddenLCLObject, LCLObject: TObject;
   NewEventMask: TGdkEventMask;
   TheWinControl: TWinControl;
+  ClientWidget: PGtkWidget;
 begin
   EventTrace('realizeafter', nil);
   
@@ -121,6 +122,7 @@ begin
     WinWidgetInfo:=GetWidgetInfo(Widget,true);
     LCLObject:=GetLCLObject(Widget);
     if (LCLObject<>nil) and (WinWidgetInfo<>nil) then begin
+      ClientWidget:=GetFixedWidget(Widget);
       if (LCLObject is TWinControl) then
         TheWinControl:=TWinControl(LCLObject)
       else
@@ -128,11 +130,23 @@ begin
         
       // set extra signal masks after the widget window is created
       // define extra events we're interrested in
-      if (TheWinControl=nil)
-      or (csDesigning in TheWinControl.ComponentState) then begin
+      //write('GTKRealizeAfterCB ');
+      //if TheWinControl<>nil then write(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',HexStr(Cardinal(TheWinControl.Handle),8));
+      //writeln(' Widget=',HexStr(Cardinal(Widget),8),' Fixed=',HexStr(Cardinal(GetFixedWidget(Widget)),8),' Main=',HexStr(Cardinal(GetMainWidget(Widget)),8));
+      if (TheWinControl<>nil)
+      and (not (csDesigning in TheWinControl.ComponentState)) then begin
         NewEventMask:=gdk_window_get_events(Widget^.Window)
                       or WinWidgetInfo^.EventMask;
         gdk_window_set_events(Widget^.Window,NewEventMask);
+        if (ClientWidget<>nil) and (ClientWidget^.Window<>nil) then begin
+          ClientWidgetInfo:=GetWidgetInfo(ClientWidget,false);
+          if ClientWidgetInfo<>nil then begin
+            NewEventMask:=gdk_window_get_events(ClientWidget^.Window)
+                          or ClientWidgetInfo^.EventMask;
+            gdk_window_set_events(ClientWidget^.Window,NewEventMask);
+          end;
+        end;
+        //writeln('BBB1 ',HexStr(Cardinal(NewEventMask),8),' ',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8));
       end else begin
         //SetEventMaskForDesignMode(Widget^.Window);
       end;
@@ -576,13 +590,14 @@ var
   //ShowDebugging : Boolean;
   //parWindow : PgdkWindow;  //the Parent's GDKWindow
   HiddenLCLObject: TObject;
+{ $DEFINE VerboseMouseBugfix}
 begin
   Result:=true;
   
   HiddenLCLObject:=GetHiddenLCLObject(Widget);
   if HiddenLCLObject<>nil then begin
-writeln('DDD1 Hidden=',HexStr(Cardinal(Data),8),' ',HexStr(Cardinal(HiddenLCLObject),8));
-writeln('     ',TControl(Data).Name,':',TControl(Data).ClassName);
+    writeln('DDD1 Hidden=',HexStr(Cardinal(Data),8),' ',HexStr(Cardinal(HiddenLCLObject),8));
+    writeln('     ',TControl(Data).Name,':',TControl(Data).ClassName);
     // this is a hidden widget (= a child widget of a lcl widget)
     if not (csDesigning in TControl(HiddenLCLObject).ComponentState) then begin
       // if not in design mode, hidden widgets are controlled by the gtk ...
@@ -595,6 +610,8 @@ writeln('     ',TControl(Data).Name,':',TControl(Data).ClassName);
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
     Trunc(Event^.X),',',Trunc(Event^.Y));
   {$ENDIF}
+  //writeln('Widget=',HexStr(Cardinal(Widget),8),
+  //' EventMask=',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8));
 
   EventTrace('Mouse button Press', data);
   Assert(False, Format('Trace:[gtkMouseBtnPress] ', []));
@@ -799,6 +816,12 @@ var
   HiddenLCLObject: TObject;
 begin
   Result:=true;
+
+  {$IFDEF VerboseMouseBugfix}
+  writeln('[gtkMouseBtnRelease] A ',
+    TControl(Data).Name,':',TObject(Data).ClassName,' ',
+    Trunc(Event^.X),',',Trunc(Event^.Y));
+  {$ENDIF}
 
   HiddenLCLObject:=GetHiddenLCLObject(Widget);
   if HiddenLCLObject<>nil then begin
@@ -2133,6 +2156,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.90  2002/07/20 13:47:03  lazarus
+  MG: fixed eventmask for realized windows
+
   Revision 1.89  2002/06/26 16:15:56  lazarus
   MG: fixed missing declaration
 

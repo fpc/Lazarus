@@ -4123,26 +4123,38 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.SetCapture(Value: Longint): Longint;
-//var
-//  Sender : TObject;
+{$IFDEF VerboseMouseCapture}
+var
+  Sender : TObject;
+{$ENDIF}
 begin
   Assert(False, Format('Trace:> [TgtkObject.SetCapture] 0x%x', [Value]));
-  
+  {$IFDEF VerboseMouseCapture}
+  if Value<>0 then
+    Sender:=GetLCLObject(Pointer(Value))
+  else
+    Sender:=nil;
+  write('TgtkObject.SetCapture ',HexStr(Cardinal(Value),8),' ');
+  if Sender=nil then
+    writeln('Sender=nil')
+  else
+    writeln('Sender=',TControl(Sender).Name,':',Sender.ClassName);
+  {$ENDIF}
+
   //CaptureHandle is defined in gtkint.pp pivate var definition.
   
   //MWE: there are some problems with grabbing the pointer and tabs
   //     so back to gtk_grab
 
-  if MCaptureHandle <> 0 
-  //then gdk_pointer_ungrab(0); 
-  then gtk_grab_remove(pgtkwidget(MCaptureHandle));
+  if MCaptureHandle <> 0 then
+    //gdk_pointer_ungrab(0);
+    gtk_grab_remove(pgtkwidget(MCaptureHandle));
   
   //
   Result := MCaptureHandle;
   MCaptureHandle := Value;
 
-  if MCaptureHandle <> 0
-  then begin
+  if MCaptureHandle <> 0 then begin
     //WriteLN(Format('[TgtkObject.SetCapture] Current widget 0x%p', [gtk_grab_get_current]));
     gtk_grab_add(Pointer(MCaptureHandle));
     //WriteLN(Format('[TgtkObject.SetCapture] handle: 0x%p gtk: 0x%p', [Pointer(MCaptureHandle), gtk_grab_get_current]));
@@ -4812,6 +4824,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.82  2002/07/20 13:47:04  lazarus
+  MG: fixed eventmask for realized windows
+
   Revision 1.81  2002/07/09 17:18:23  lazarus
   MG: fixed parser for external vars
 
