@@ -32,8 +32,25 @@ begin
   FItems.FMenu := Self;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TMenu.SetImages(const AValue: TCustomImageList);
+
+  Creates the handle ( = object).
+ ------------------------------------------------------------------------------}
+procedure TMenu.SetImages(const AValue: TCustomImageList);
+begin
+  // ToDo
+  FImages:=AValue;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TMenu.SetParent(const AValue: TComponent);
+
+  Creates the handle ( = object).
+ ------------------------------------------------------------------------------}
 procedure TMenu.SetParent(const AValue: TComponent);
 begin
+  // ToDo
   FParent:=AValue;
 end;
 
@@ -151,6 +168,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/08/12 15:32:29  lazarus
+  MG: started enhanced menuitem
+
   Revision 1.10  2002/05/30 21:33:10  lazarus
   + added / fixed streaming functions for TMenu & TMenuItem, stoppok
 

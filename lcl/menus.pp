@@ -45,7 +45,7 @@ interface
 {$endif}
 
 uses
-  VCLGlobals, Classes, SysUtils, LMessages, ActnList;
+  VCLGlobals, Classes, SysUtils, LMessages, ActnList, Graphics, ImgList;
 
 
 type
@@ -96,11 +96,13 @@ type
   TMenuItem = class(TComponent)//TWinControl)
   private
     FActionLink: TMenuActionLink;
+    FAutoCheck: boolean;
     FCaption: string;
     FChecked: Boolean;
     FCommand: integer;
     FDefault: Boolean;
     FEnabled: Boolean;
+    FGraphic: TGraphic;
     FGroupIndex: Byte;
     FHandle: HMenu;
     FHint : String;
@@ -110,7 +112,9 @@ type
     FParent: TMenuItem;
     FRadioItem: Boolean;
     FRightJustify: boolean;
-    FShortCut: TShortCut;	
+    FShortCut: TShortCut;
+    FShowAlwaysCheckable: boolean;
+    FSubMenuImages: TCustomImageList;
     FVisible: Boolean;
     FOnChange: TMenuChangeEvent;
     FOnClick: TNotifyEvent;
@@ -123,13 +127,17 @@ type
     function IsEnabledStored: boolean;
     function IsShortCutStored: boolean;
     function IsVisibleStored: boolean;
+    procedure SetAutoCheck(const AValue: boolean);
     procedure SetCaption(const AValue: string);
     procedure SetChecked(AValue: Boolean);
     procedure SetDefault(AValue: Boolean);
     procedure SetEnabled(AValue: Boolean);
+    procedure SetGraphic(const AValue: TGraphic);
     procedure SetMenuIndex(AValue: Integer);
     procedure SetRadioItem(const AValue: Boolean);
     procedure SetRightJustify(const AValue: boolean);
+    procedure SetShowAlwaysCheckable(const AValue: boolean);
+    procedure SetSubMenuImages(const AValue: TCustomImageList);
     procedure ShortcutChanged(const OldValue, Value : TShortcut);
     procedure SubItemChanged(Sender: TObject; Source: TMenuItem;
                              Rebuild: Boolean);
@@ -139,7 +147,8 @@ type
     property ActionLink: TMenuActionLink read FActionLink write FActionLink;
     procedure CreateHandle; virtual;
     procedure DestroyHandle; virtual;
-    procedure DoClicked(var msg); message LM_ACTIVATE;               //'activate';
+    procedure RecreateHandle; virtual;
+    procedure DoClicked(var msg); message LM_ACTIVATE;         //'activate';
     function GetHandle: HMenu;
     Procedure SetImageIndex(value : Integer);
     procedure SetGroupIndex(AValue: Byte);
@@ -155,12 +164,15 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure Delete(Index: Integer);
     destructor Destroy; override;
-    function GetParentMenu: TMenu;
+    function GetImageList: TCustomImageList; virtual;
+    function GetParentComponent: TComponent; override;
+    function GetParentMenu: TMenu; virtual;
     function HandleAllocated : Boolean;
-    procedure HandleNeeded;
+    procedure HandleNeeded; virtual;
+    function HasIcon: boolean; virtual;
     function HasParent : Boolean; override;
     function IndexOf(Item: TMenuItem): Integer;
-    function IndexOfCaption(const ACaption: string): Integer;
+    function IndexOfCaption(const ACaption: string): Integer; virtual;
     procedure Insert(Index: Integer; Item: TMenuItem);
     procedure Remove(Item: TMenuItem);
     property Count: Integer read GetCount;
@@ -168,19 +180,31 @@ type
     property Items[Index: Integer]: TMenuItem read GetItem; default;
     property MenuIndex: Integer read GetMenuIndex write SetMenuIndex;
     property Parent: TMenuItem read GetParent;
+    function IsCheckItem: boolean; virtual;
   published
-    //property Bitmap: TBitmap read GetBitmap write SetBitmap;
-    property Caption: String read FCaption write SetCaption stored IsCaptionStored;
-    property Checked: Boolean read FChecked write SetChecked stored IsCheckedStored default False;
+    property AutoCheck: boolean read FAutoCheck write SetAutoCheck;
+    property Caption: String
+      read FCaption write SetCaption stored IsCaptionStored;
+    property Checked: Boolean
+      read FChecked write SetChecked stored IsCheckedStored default False;
     property Default: Boolean read FDefault write SetDefault default False;
-    property Enabled: Boolean read FEnabled write SetEnabled stored IsEnabledStored default True;
+    property Enabled: Boolean
+      read FEnabled write SetEnabled stored IsEnabledStored default True;
+    property Graphic: TGraphic read FGraphic write SetGraphic;
     property GroupIndex: Byte read FGroupIndex write SetGroupIndex default 0;
     property Hint : String read FHint write FHint;
     property ImageIndex : Integer read FImageIndex write SetImageIndex;
-    property RadioItem: Boolean read FRadioItem write SetRadioItem default False;
+    property RadioItem: Boolean
+      read FRadioItem write SetRadioItem default False;
     property RightJustify: boolean read FRightJustify write SetRightJustify;
-    property ShortCut: TShortCut read FShortCut write SetShortCut stored IsShortCutStored default 0;
-    property Visible: Boolean read FVisible write SetVisible stored IsVisibleStored default True;
+    property ShortCut: TShortCut
+      read FShortCut write SetShortCut stored IsShortCutStored default 0;
+    property ShowAlwaysCheckable: boolean
+      read FShowAlwaysCheckable write SetShowAlwaysCheckable;
+    property SubMenuImages: TCustomImageList
+      read FSubMenuImages write SetSubMenuImages;
+    property Visible: Boolean
+      read FVisible write SetVisible stored IsVisibleStored default True;
     property OnClick: TNotifyEvent read FOnClick write FOnclick; 
   end;
 
@@ -191,8 +215,10 @@ type
 
   TMenu = class(TComponent) //TWinControl)
   private
+    FImages: TCustomImageList;
     FItems: TMenuItem;
     FParent: TComponent;
+    procedure SetImages(const AValue: TCustomImageList);
     procedure SetParent(const AValue: TComponent);
   protected
     procedure CreateHandle; virtual;
@@ -210,6 +236,7 @@ type
     property Parent: TComponent read FParent write SetParent;
   published
     property Items: TMenuItem read FItems;
+    property Images: TCustomImageList read FImages write SetImages;
   end;
 
 
@@ -428,6 +455,9 @@ end.
 
 {
   $Log$
+  Revision 1.22  2002/08/12 15:32:28  lazarus
+  MG: started enhanced menuitem
+
   Revision 1.21  2002/08/08 17:26:37  lazarus
   MG: added property TMenuItems.RightJustify
 

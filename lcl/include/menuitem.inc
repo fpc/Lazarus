@@ -138,6 +138,43 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TMenuItem.GetImageList: TCustomImageList;
+
+
+ ------------------------------------------------------------------------------}
+function TMenuItem.GetImageList: TCustomImageList;
+var
+  LItem: TMenuItem;
+  LMenu: TMenu;
+begin
+  Result := nil;
+  LItem := Parent;
+  while (LItem <> nil) and (LItem.SubMenuImages = nil) do
+    LItem := LItem.Parent;
+  if LItem <> nil then
+    Result := LItem.SubMenuImages
+  else
+  begin
+    LMenu := GetParentMenu;
+    if LMenu <> nil then
+      Result := LMenu.Images;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  function TMenuItem.GetParentComponent: TComponent;
+
+
+ ------------------------------------------------------------------------------}
+function TMenuItem.GetParentComponent: TComponent;
+begin
+  if (FParent <> nil) and (FParent.FMenu <> nil) then
+    Result := FParent.FMenu
+  else
+    Result := FParent;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TMenuItem.DoClicked
   Params:  msg: 
   Returns: Nothing
@@ -286,6 +323,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TMenuItem.SetAutoCheck(const AValue: boolean);
+
+  If user clicks, toggle 'Checked'
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.SetAutoCheck(const AValue: boolean);
+var
+  OldIsCheckItem: boolean;
+begin
+  if FAutoCheck=AValue then exit;
+  OldIsCheckItem:=IsCheckItem;
+  FAutoCheck:=AValue;
+  if (OldIsCheckItem<>IsCheckItem) and (HandleAllocated) then
+    RecreateHandle;
+end;
+
+{------------------------------------------------------------------------------
   Function: TMenuItem.GetParentMenu
   Params:   none
   Returns:  The (popup)menu containing this item.
@@ -326,6 +379,16 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TMenuItem.HasIcon: boolean;
+
+  Returns true if there is an icon
+ ------------------------------------------------------------------------------}
+function TMenuItem.HasIcon: boolean;
+begin
+  Result:=(FGraphic<>nil) or ((ImageIndex>=0) and (GetImageList<>nil));
+end;
+
+{------------------------------------------------------------------------------
   procedure TMenuItem.DestroyHandle;
 
   Free the Handle
@@ -343,6 +406,18 @@ begin
   end;
   InterfaceObject.IntSendMessage3(LM_DESTROY, Self, nil);
   FHandle:=0;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TMenuItem.RecreateHandle;
+
+  Destroy and re-Create handle. This is done, when the type or the context
+  of the TMenuItem is changed.
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.RecreateHandle;
+begin
+  DestroyHandle;
+  CreateHandle;
 end;
 
 {------------------------------------------------------------------------------
@@ -458,6 +533,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TMenuItem.IsCheckItem: boolean;
+
+  Results true if 'Checked' or 'RadioItem' or 'AutoCheck'
+  or 'ShowAlwaysCheckable'
+ ------------------------------------------------------------------------------}
+function TMenuItem.IsCheckItem: boolean;
+begin
+  Result:=Checked or RadioItem or AutoCheck or ShowAlwaysCheckable;
+end;
+
+{------------------------------------------------------------------------------
   Method:  TMenuItem.SetCaption
   Params:  Value:
   Returns: Nothing
@@ -520,6 +606,19 @@ begin
       EnableMenuItem(Handle, FCommand, FEnabled);
     MenuChanged(False);
   end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TMenuItem.SetGraphic(const AValue: TGraphic);
+
+  Reposition the MenuItem
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.SetGraphic(const AValue: TGraphic);
+begin
+  if FGraphic=AValue then exit;
+  FGraphic:=AValue;
+  if HandleAllocated then RecreateHandle;
+  MenuChanged(False);
 end;
 
 {------------------------------------------------------------------------------
@@ -588,6 +687,43 @@ begin
   FRightJustify:=AValue;
   if HandleAllocated then
     RightJustifyMenuItem(Handle,RightJustify);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TMenuItem.SetShowAlwaysCheckable(const AValue: boolean);
+
+  Reserve place for check icon, even if not 'Checked'
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.SetShowAlwaysCheckable(const AValue: boolean);
+var
+  OldIsCheckItem: boolean;
+begin
+  if FShowAlwaysCheckable=AValue then exit;
+  OldIsCheckItem:=IsCheckItem;
+  FShowAlwaysCheckable:=AValue;
+  if (OldIsCheckItem<>IsCheckItem) and (HandleAllocated) then
+    RecreateHandle;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TMenuItem.SetSubMenuImages(const AValue: TCustomImageList);
+
+  Enables a menuItem.
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.SetSubMenuImages(const AValue: TCustomImageList);
+begin
+  if FSubMenuImages=AValue then exit;
+  // ToDo:
+  raise Exception.Create('TMenuItem.SetSubMenuImages: not implemented yet');
+  {if FSubMenuImages <> nil then
+    FSubMenuImages.UnRegisterChanges(FImageChangeLink);
+  FSubMenuImages := Value;
+  if FSubMenuImages <> nil then
+  begin
+    FSubMenuImages.RegisterChanges(FImageChangeLink);
+    FSubMenuImages.FreeNotification(Self);
+  end;
+  UpdateItems;}
 end;
 
 {------------------------------------------------------------------------------
@@ -777,6 +913,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/08/12 15:32:29  lazarus
+  MG: started enhanced menuitem
+
   Revision 1.23  2002/08/08 17:26:37  lazarus
   MG: added property TMenuItems.RightJustify
 
@@ -874,6 +1013,9 @@ end;
 
 
   $Log$
+  Revision 1.24  2002/08/12 15:32:29  lazarus
+  MG: started enhanced menuitem
+
   Revision 1.23  2002/08/08 17:26:37  lazarus
   MG: added property TMenuItems.RightJustify
 
