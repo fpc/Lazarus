@@ -2519,7 +2519,7 @@ function TMainIDE.DoSaveEditorUnit(PageIndex:integer;
 var ActiveSrcEdit:TSourceEditor;
   ActiveUnitInfo:TUnitInfo;
   SaveDialog:TSaveDialog;
-  OldFilename, OldFilePath, LFMFilename: string;
+  OldFilename, OldFilePath, LFMFilename, Ext: string;
   NewUnitName, NewFilename, NewFilePath, NewPageName,
   NewResFilename, NewResFilePath:string;
   AText,ACaption,CompResourceCode,TestFilename: string;
@@ -2625,6 +2625,7 @@ writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
         NewFilename:=ExpandFilename(SaveDialog.Filename);
         EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(NewFilename);
         NewUnitName:=ExtractFileNameOnly(NewFilename);
+        if NewUnitName='' then exit;
         if Project.IndexOfUnitWithName(NewUnitName,true,ActiveUnitInfo)>=0 then
         begin
           Result:=MessageDlg('Unitname already in project',
@@ -2640,6 +2641,9 @@ writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
         end;
         if ExtractFileExt(NewFilename)='' then
           NewFilename:=NewFilename+SaveAsFileExt;
+        if EnvironmentOptions.PascalFileLowerCase then
+          NewFileName:=ExtractFilePath(NewFilename)
+                       +lowercase(ExtractFileName(NewFilename));
         NewFilePath:=ExtractFilePath(NewFilename);
         if FileExists(NewFilename) then begin
           ACaption:='Overwrite file?';
@@ -2654,7 +2658,6 @@ writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
           if MessageDlg(ACaption, AText, mtConfirmation,[mbCancel],0)
              =mrCancel then exit;
         end;
-        EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
         if ResourceCode=nil then begin
           // there are no resource files -> remove any resource files in the
           // destination
@@ -2668,6 +2671,7 @@ writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
                +' failed.',mtError,[mbIgnore,mbCancel],0)=mrCancel) then exit;
         end;
         // save source in the new position
+        EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
         if not CodeToolBoss.SaveBufferAs(ActiveUnitInfo.Source,NewFilename,
                NewSource) then exit;
         if ResourceCode<>nil then begin
@@ -2708,6 +2712,7 @@ writeln('TMainIDE.DoSaveEditorUnit C ',ResourceCode<>nil);
         ActiveUnitInfo.Modified:=false;
         ActiveSrcEdit.CodeBuffer:=NewSource; // the code is not changed, thus the marks are kept
         // change unitname in project and in source
+        Ext:=ExtractFileExt(NewFilename);
         ActiveUnitInfo.UnitName:=NewUnitName;
         if ResourceCode<>nil then begin
           // change resource include filename in source
@@ -2724,8 +2729,12 @@ else
   writeln('AAA4 Final ResourceCode=NIL');
 {$ENDIF}
         // change unitname on SourceNotebook
+        if (Ext='.pas') or (Ext='.pp') then
+          NewPageName:=NewUnitName
+        else
+          NewPageName:=ExtractFileName(NewFilename);
         NewPageName:=SourceNoteBook.FindUniquePageName(
-            ActiveUnitInfo.Filename,SourceNoteBook.NoteBook.PageIndex);
+            NewPageName,SourceNoteBook.NoteBook.PageIndex);
         SourceNoteBook.NoteBook.Pages[SourceNoteBook.NoteBook.PageIndex]:=
             NewPageName;
         ActiveSrcEdit.ShortName:=NewPageName;
@@ -3617,6 +3626,7 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
         SaveDialog.Filename:=ChangeFileExt(Project.Title,'.lpi')
       else if SaveDialog.Filename='' then
         SaveDialog.Filename:='project1.lpi';
+      NewProgramName:='';
       repeat
         Result:=mrCancel;
         SaveDialog.InitialDir:=EnvironmentOptions.LastOpenDialogDir;
@@ -3632,9 +3642,13 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
             EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(NewFilename);
             if ExtractFileExt(NewFilename)='' then
               NewFilename:=NewFilename+'.lpi';
+            NewProgramName:=ExtractFileNameOnly(NewFilename);
+            if EnvironmentOptions.PascalFileLowerCase then
+              NewFileName:=ExtractFilePath(NewFilename)
+                          +lowercase(ExtractFileName(NewFilename));
             NewProgramFilename:=ChangeFileExt(
               NewFilename,ProjectDefaultExt[Project.ProjectType]);
-            if NewFilename=NewProgramFilename then begin
+            if CompareFilenames(NewFilename,NewProgramFilename)=0 then begin
               ACaption:='Choose a different name';
               AText:='The project info file "'+NewFilename+'"'#13
                  +'is equal to the project source file!';
@@ -3683,17 +3697,17 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
         if MainUnitSrcEdit<>nil then
           MainUnitSrcEdit.CodeBuffer:=NewBuf;
         // change program name
-        NewProgramName:=ExtractFileNameOnly(NewProgramFilename);
         MainUnitInfo.UnitName:=NewProgramName;
         
         // TODO: rename resource file
         
         // update source editor of main unit
         MainUnitInfo.Modified:=true;
-        NewPageName:=ExtractFileName(MainUnitInfo.Filename);
-        Ext:=ExtractFileExt(NewPagename);
-        if (Ext='.pp') or (Ext='.pas') then
-          NewPageName:=copy(NewpageName,1,length(NewPageName)-length(Ext));
+        Ext:=ExtractFileExt(MainUnitInfo.Filename);
+        if ((Ext='.pp') or (Ext='.pas')) then
+          NewPageName:=NewProgramName
+        else
+          NewPageName:=ExtractFileName(MainUnitInfo.Filename);
         if MainUnitInfo.EditorIndex>=0 then begin
           NewPageName:=SourceNoteBook.FindUniquePageName(
             NewPageName,MainUnitInfo.EditorIndex);
@@ -6373,6 +6387,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.248  2002/03/21 23:15:39  lazarus
+  MG: fixes for save-project-as and pagenames
+
   Revision 1.247  2002/03/21 22:44:06  lazarus
   MG: fixes for save-as and form streaming exceptions
 

@@ -122,6 +122,9 @@ type
     
     // naming conventions
     fPascalFileExtension: TPascalExtType;
+    fPascalFileLowerCase: boolean;
+    
+    
     procedure SetOnApplyWindowLayout(const AValue: TOnApplyIDEWindowLayout);
 
     procedure SetFileName(const NewFilename: string);
@@ -220,9 +223,12 @@ type
     // external tools
     property ExternalTools: TExternalToolList
        read fExternalTools write fExternalTools;
-       
+
+    // naming conventions
     property PascalFileExtension: TPascalExtType 
        read fPascalFileExtension write fPascalFileExtension;
+    property PascalFileLowerCase: boolean
+       read fPascalFileLowerCase write fPascalFileLowerCase;
   end;
 
   //----------------------------------------------------------------------------
@@ -316,6 +322,7 @@ type
     
     // naming conventions
     PascalFileExtRadiogroup: TRadioGroup;
+    PascalFileLowercaseCheckBox: TCheckBox;
 
     // buttons at bottom
     OkButton: TButton;
@@ -456,6 +463,7 @@ begin
   fExternalTools:=TExternalToolList.Create;
   
   fPascalFileExtension:=petPAS;
+  fPascalFileLowerCase:=true;
 end;
 
 destructor TEnvironmentOptions.Destroy;
@@ -660,6 +668,8 @@ begin
     
     // naming
     LoadPascalFileExt('EnvironmentOptions/');
+    fPascalFileLowerCase:=XMLConfig.GetValue(
+      'EnvironmentOptions/PascalFileLowerCase/Value',true);
 
     XMLConfig.Free;
 
@@ -795,6 +805,8 @@ begin
     // naming
     XMLConfig.SetValue('EnvironmentOptions/Naming/PascalFileExtension',
       PascalExtension[fPascalFileExtension]);
+    XMLConfig.SetValue('EnvironmentOptions/PascalFileLowerCase/Value',
+      fPascalFileLowerCase);
 
     XMLConfig.Flush;
     XMLConfig.Free;
@@ -1806,6 +1818,16 @@ begin
     Visible:=true;
   end;
 
+  PascalFileLowercaseCheckBox:=TCheckBox.Create(Self);
+  with PascalFileLowercaseCheckBox do begin
+    Name:='PascalFileLowercaseCheckBox';
+    Parent:=NoteBook.Page[Page];
+    Left:=PascalFileExtRadiogroup.Left;
+    Top:=PascalFileExtRadiogroup.Top+PascalFileExtRadiogroup.Height+10;
+    Width:=250;
+    Caption:='Save pascal files lowercase';
+    Visible:=true;
+  end;
 end;
 
 procedure TEnvironmentOptionsDialog.BakTypeRadioGroupClick(Sender: TObject);
@@ -1997,6 +2019,7 @@ begin
     for i:=0 to PascalFileExtRadiogroup.Items.Count-1 do
       if PascalFileExtRadiogroup.Items[i]=PascalExtension[PascalFileExtension]
       then PascalFileExtRadiogroup.ItemIndex:=i;
+    PascalFileLowercaseCheckBox.Checked:=PascalFileLowerCase;
   end;
 end;
 
@@ -2096,6 +2119,7 @@ begin
         PascalFileExtRadiogroup.Items[PascalFileExtRadiogroup.ItemIndex])
     else
       PascalFileExtension:=petPAS;
+    PascalFileLowerCase:=PascalFileLowercaseCheckBox.Checked;
   end;
 end;
 
