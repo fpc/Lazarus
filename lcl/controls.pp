@@ -979,9 +979,8 @@ procedure RaiseGDBException(const Msg: string);
 implementation
 
 
-//uses clause
-//Needs dialogs for the SetVisible procedure.
-uses Forms, Dialogs, Interfaces, Math;
+uses
+  Forms, Interfaces, Math;
 
 var
   CaptureControl: TControl;
@@ -1374,6 +1373,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.79  2002/10/24 10:05:50  lazarus
+  MG: broke graphics.pp <-> clipbrd.pp circle
+
   Revision 1.78  2002/10/14 15:55:47  lazarus
   MG: reduced output
 
