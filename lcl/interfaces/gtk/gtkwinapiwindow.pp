@@ -105,32 +105,15 @@ procedure GTKAPIWidgetClient_DrawCaret(Client: PGTKAPIWidgetClient); forward;
 function GTKAPIWidgetClient_Timer(Client: Pointer): gint; cdecl;
 // returning 0 would stop the timer, 1 will restart it
 begin
-try
   if PGTKAPIWidgetClient(Client)^.Caret.Timer<=0 then begin
     Result := 0;
     exit;
   end;
-except
-  Writeln('------Exception 1 in GTKAPIWidgetClient_Timer------');
-end;
-try
   GTKAPIWidgetClient_DrawCaret(Client);
-except
-  Writeln('------Exception 2 in GTKAPIWidgetClient_Timer------');
-end;
-try
   if PGTKAPIWidgetClient(Client)^.Caret.Timer<>0 then
     Result := 1
   else
     Result := 0;
-except
-  Writeln('------Exception 3 in GTKAPIWidgetClient_Timer------');
-  writeln('Client = ',longint(Client));
-  if Assigned(Client) then
-     begin
-        writeln('Timer is ',Longint(PGTKAPIWidgetClient(Client)^.Caret.Timer));
-     end;
-end;
 end;
 
 procedure GTKAPIWidgetClient_Realize(Widget: PGTKWidget); cdecl;
@@ -240,6 +223,7 @@ type
 var 
   ObjectClass: PGTKObjectClass;
   WidgetClass: PGTKWidgetClass;
+  ClientClass: PGTKAPIWidgetClientClass;
   SignalID: Guint;
 {$IFDEF VER1_1}
   AdjustParams: TAdjustParams;
@@ -247,6 +231,7 @@ var
 begin
   ObjectClass := PGTKObjectClass(theClass);
   WidgetClass := PGTKWidgetClass(theClass);
+  ClientClass := PGTKAPIWidgetClientClass(theClass);
   
   {$IFDEF VER1_1}
   AdjustParams.Param1 := gtk_adjustment_get_type;
@@ -258,7 +243,7 @@ begin
     'set_scroll_adjustments',
     GTK_RUN_FIRST,
     ObjectClass^.thetype,
-    (@PGTKAPIWidgetClientClass(theClass)^.set_scroll_adjustments - Pointer(theClass)),
+    (@ClientClass^.set_scroll_adjustments - Pointer(theClass)),
     @gtk_marshal_NONE__POINTER_POINTER,
     GTK_TYPE_NONE,
     2, 
@@ -279,7 +264,7 @@ begin
     focus_out_event := @GTKAPIWidgetClient_FocusOut;
   end;
 
-  PGTKAPIWidgetClientClass(theClass)^.set_scroll_adjustments := nil;
+  ClientClass^.set_scroll_adjustments := nil;
 end;
 
 procedure GTKAPIWidgetClient_Init(Client, theClass: Pointer); cdecl;
@@ -313,11 +298,13 @@ const
     class_size: SizeOf(TGTKAPIWidgetClientClass)+100;
     class_init_func: @GTKAPIWidgetClient_ClassInit;
     object_init_func : @GTKAPIWidgetClient_Init;
+    reserved_1: nil;
+    reserved_2: nil;
+    base_class_init_func: nil;
   );
 begin
   if (TheType = 0) 
   then TheType := gtk_type_unique(gtk_widget_get_type, @Info);
-
   Result := TheType;
 end;
 
@@ -625,10 +612,13 @@ const
   wawType: Guint = 0;
   wawInfo: TGTKTypeInfo = (
     type_name: 'LCLWinapiWidget';
-    object_size: SizeOf(TGTKAPIWidget)+100;
+    object_size: SizeOf(TGTKAPIWidget)+100; // a TGTKScrolledWindow
     class_size: SizeOf(TGTKAPIWidgetClass)+100;
     class_init_func: @GTKAPIWidget_ClassInit;
     object_init_func : @GTKAPIWidget_Init;
+    reserved_1: nil;
+    reserved_2: nil;
+    base_class_init_func: nil;
   );
 begin
   if (wawType = 0) 
@@ -729,6 +719,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/06/11 13:41:11  lazarus
+  MG: fixed mouse coords and fixed mouse clicked thru bug
+
   Revision 1.30  2002/06/09 14:00:42  lazarus
   MG: fixed persistent caret and implemented Form.BorderStyle=bsNone
 
