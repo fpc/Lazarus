@@ -790,12 +790,6 @@ procedure TConfigureBuildLazarusDlg.SetupComponents;
     ImageList.Add(Pixmap,nil)
   end;
 
-  function LoadPixmap(const ResourceName:string): TPixmap;
-  begin
-    Result:=TPixmap.Create;
-    Result.LoadFromLazarusResource(ResourceName);
-  end;
-
 var
   LCLInterface: TLCLPlatform;
 begin

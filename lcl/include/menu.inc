@@ -74,8 +74,7 @@ var i: integer;
 begin
   SendMsgToInterface(LM_CREATE, Self, nil); // CreateComponent(nil);
   // initiate creation of subitems
-  // Note: FItems is a MenuItem, by using HandleNeeded all subitems will
-  //       create their handles.
+  // Note: FItems is a TMenuItem. Using HandleNeeded will create all subitems.
   for i:=0 to Items.Count-1 do
     Items[i].HandleNeeded;
 end;
@@ -237,6 +236,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2003/10/22 17:50:16  mattias
+  updated rpm scripts
+
   Revision 1.18  2003/06/24 15:57:55  mattias
   applied win32 menu patch from Micha Nelissen
 

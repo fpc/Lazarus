@@ -17,9 +17,9 @@
 {------------------------------------------------------------------------------}
 {   TStatusBar Constructor                                                     }
 {------------------------------------------------------------------------------}
-constructor TStatusBar.Create(AOwner: TComponent);
+constructor TStatusBar.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   fCompStyle := csStatusBar;
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csOpaque];
   FSimplePanel := True;
@@ -200,7 +200,7 @@ Begin
   end;
   Canvas.Color := Color;
   R := Rect(Left, Top, Left + ClientWidth, Top + ClientHeight);
-  if SimplePanel = False then
+  if not SimplePanel then
   Begin
     Style.Opaque := True;
     Style.Clipping := True;

@@ -52,7 +52,7 @@ var
 begin
   if Source=Self then exit;
   if Source is TBitmap then begin
-    writeln('TBitMap.Assign ',ClassName,' ',Source.ClassName);
+    //writeln('TBitMap.Assign ',ClassName,' ',Source.ClassName);
     // TBitmap can share image data
     // -> check if already shared
     SrcBitmap:=TBitmap(Source);
@@ -190,7 +190,7 @@ end;
 procedure TBitmap.SetPixelFormat(const AValue: TPixelFormat);
 begin
   if AValue=PixelFormat then exit;
-  writeln('WARNING: TBitmap.SetPixelFormat not implemented');
+  writeln('Note: TBitmap.SetPixelFormat not implemented');
 end;
 
 procedure TBitmap.UpdatePixelFormat;
@@ -346,7 +346,7 @@ end;
 procedure TBitmap.UnshareImage;
 begin
   if (FImage.RefCount>1) then begin
-    writeln('TBitmap.UnshareImage ',ClassName);
+    //writeln('TBitmap.UnshareImage ',ClassName);
     // release old FImage and create a new one
     FreeCanvasContext;
     FImage.Release;
@@ -654,7 +654,7 @@ begin
     DoWriteOriginal;
     exit;
   end;
-  writeln('TBitmap.WriteStream A Warning: creating BMP does not always work ',FImage.SaveStream<>nil,' ',ord(FImage.SaveStreamType));
+  writeln('TBitmap.WriteStream A Warning: creating BMP does not always work ',FImage.SaveStream<>nil,' ',ord(FImage.SaveStreamType),'. Please use FPImage.');
 
   // write image in BMP format to temporary stream
   MemStream:=TMemoryStream.Create;
@@ -940,7 +940,7 @@ end;
 procedure TBitmap.SetTransparentMode(Value: TTransparentMode);
 begin
   if Value=TransparentMode then exit;
-  writeln('TBitmap.SetTransparentMode not implemented');
+  writeln('Note: TBitmap.SetTransparentMode not implemented');
 end;
 
 // included by graphics.pp
@@ -949,6 +949,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.48  2003/10/22 17:50:16  mattias
+  updated rpm scripts
+
   Revision 1.47  2003/09/12 14:59:43  mattias
   added searching for fpImage reader/writer
 

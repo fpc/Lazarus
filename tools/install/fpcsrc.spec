@@ -14,6 +14,7 @@ BuildRoot: %{_tmppath}/fpcsrc-build%{version}
 
 # The normal redhat rpm scripts tests every installed file for requirements.
 # We install only sources, so we don't need the requirements.
+# But it seems, RPM ignores these macros:
 %define __find_provides /tmp/do_nothing.sh
 %define __find_requires /tmp/do_nothing.sh
 
@@ -36,6 +37,12 @@ bindings and many more.
 %setup -c
 
 %build
+
+# The normal redhat rpm scripts tests every installed file for requirements.
+# We install only sources, so we don't need the requirements.
+# I don't know, how to tell RPM, to not test for requirements, so simply rename
+find . -name '*.pm' -exec mv {} {}.renamed_for_rpm \;
+find . -name '*.pl' -exec mv {} {}.renamed_for_rpm \;
 
 %install
 if [ %{buildroot} != "/" ]; then

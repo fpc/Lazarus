@@ -2618,7 +2618,8 @@ begin
         SelectGDKBrushProps(DC);
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         If not CurrentBrush^.IsNullBrush then
-          if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and (TColor(CurrentBrush^.GDIBrushColor.ColorRef) in [clForm, clInfoBk]) then
+          if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
+          and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef))) then
             StyleFillRectangle(Drawable, GC, CurrentBrush^.GDIBrushColor.ColorRef,
                                R.Left+DCOrigin.X, R.Top+DCOrigin.Y, Width, Height)
           else
@@ -3153,7 +3154,7 @@ begin
         EnsureGCColor(DC, dccCurrentBackColor, True, False);
         BeginGDKErrorTrap;
         buffer := gdk_pixmap_new(Drawable, Width, Height, -1);
-        if TColor(CurrentBackColor.ColorRef)  in [clForm, clInfoBk] then
+        if IsBackgroundColor(TColor(CurrentBackColor.ColorRef)) then
           StyleFillRectangle(buffer, GC, CurrentBackColor.ColorRef, 0, 0, Width, Height)
         else
           gdk_draw_rectangle(buffer, GC, 1, 0, 0, Width, Height);
@@ -3257,7 +3258,8 @@ begin
         If not CurrentBrush^.IsNullBrush then begin
           DCOrigin:=GetDCOffset(TDeviceContext(DC));
           //writeln('FillRect DC=',HexStr(Cardinal(DC),8),' Drawable',HexStr(Cardinal(Drawable),8));
-          if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and (TColor(CurrentBrush^.GDIBrushColor.ColorRef)  in [clForm, clInfoBk]) then
+          if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
+          and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef))) then
             StyleFillRectangle(drawable, GC, CurrentBrush^.GDIBrushColor.ColorRef, Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y, Width, Height)
           else
             gdk_draw_rectangle(Drawable, GC, 1,
@@ -6449,7 +6451,8 @@ begin
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       BeginGDKErrorTrap;
       If not CurrentBrush^.IsNullBrush then
-        if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and (TColor(CurrentBrush^.GDIBrushColor.ColorRef)  in [clForm, clInfoBk]) then
+        if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
+        and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef))) then
           StyleFillRectangle(Drawable, GC, CurrentBrush^.GDIBrushColor.ColorRef, Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height)
         else
           gdk_draw_rectangle(Drawable, GC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
@@ -9001,6 +9004,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.293  2003/10/22 17:50:16  mattias
+  updated rpm scripts
+
   Revision 1.292  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

@@ -93,7 +93,7 @@ function gtkactivateCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 function gtkchangedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-{$Ifdef GTK1}
+{$IfNdef GTK2}
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
 {$EndIf}
@@ -311,6 +311,7 @@ function AllocGDKColor(const AColor: LongInt): TGDKColor;
 function TGDKColorToTColor(const value : TGDKColor) : TColor;
 function TColortoTGDKColor(const value : TColor) : TGDKColor;
 procedure UpdateSysColorMap(Widget: PGtkWidget);
+function IsBackgroundColor(Color: TColor): boolean;
 
 function CompareGDIColor(const Color1, Color2: TGDIColor): boolean;
 function CompareGDIFill(const Fill1, Fill2: TGdkFill): boolean;

@@ -78,7 +78,7 @@ function TSSHGDBMIDebugger.ParseInitialization: Boolean;
     then ALine := StripLN(ReadLine);
   end;
 var
-  Line, S: String;
+  Line: String;
 begin
   Result := False;
   
@@ -152,6 +152,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/10/22 17:50:16  mattias
+  updated rpm scripts
+
   Revision 1.4  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

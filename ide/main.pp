@@ -688,37 +688,6 @@ uses
 
 //==============================================================================
 
-function LoadPixmapRes(const ResourceName:string; PixMap:TPixMap):boolean;
-var
-  ms:TMemoryStream;
-  res:TLResource;
-begin
-  Result:=false;
-  res:=LazarusResources.Find(ResourceName);
-  if (res<>nil) and (res.Value<>'') and (res.ValueType='XPM') then begin
-    ms:=TMemoryStream.Create;
-    try
-      ms.Write(res.Value[1],length(res.Value));
-      ms.Position:=0;
-      Pixmap.LoadFromStream(ms);
-      Result:=true;
-    finally
-      ms.Free;
-    end;
-  end;
-end;
-
-function LoadSpeedBtnPixMap(const ResourceName:string):TPixmap;
-begin
-  Result:=TPixmap.Create;
-  Result.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes(ResourceName,Result) then
-    LoadPixmapRes('default',Result);
-end;
-
-
-//==============================================================================
-
 
 { TMainIDE }
 
@@ -1050,7 +1019,7 @@ procedure TMainIDE.SetupSpeedButtons;
       Top := ATop;
       Left := ALeft;
       OnClick := AOnClick;
-      Glyph := LoadSpeedBtnPixMap(APixName);
+      Glyph.LoadFromLazarusResource(APixName);
       NumGlyphs := ANumGlyphs;
       Flat := True;
       //Transparent:=True;
@@ -9956,6 +9925,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.658  2003/10/22 17:50:16  mattias
+  updated rpm scripts
+
   Revision 1.657  2003/10/16 20:31:21  mattias
   fixed TApplicationProperties
 

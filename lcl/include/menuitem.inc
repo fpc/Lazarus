@@ -109,16 +109,16 @@ var i: Integer;
 begin
   //writeln('TMenuItem.CreateHandle START ',Name,':',ClassName);
   SendMsgToInterface(LM_CREATE, Self, nil);
+  if FItems<>nil then begin
+    for i := 0 to Count - 1 do begin
+      Items[i].HandleNeeded;
+    end;
+  end;
   if Parent <> nil then
   begin
     Parent.HandleNeeded;
     if Parent.HandleAllocated then
       SendMsgToInterface(LM_ATTACHMENU, Self, nil);
-  end;
-  if FItems<>nil then begin
-    for i := 0 to Count - 1 do begin
-      Items[i].HandleNeeded;
-    end;
   end;
   if (Parent<>nil) then
   begin
@@ -983,6 +983,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2003/10/22 17:50:16  mattias
+  updated rpm scripts
+
   Revision 1.38  2003/07/21 23:43:32  marc
   * Fixed radiogroup menuitems
 
@@ -1125,6 +1128,9 @@ end;
 
 
   $Log$
+  Revision 1.39  2003/10/22 17:50:16  mattias
+  updated rpm scripts
+
   Revision 1.38  2003/07/21 23:43:32  marc
   * Fixed radiogroup menuitems
 

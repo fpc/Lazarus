@@ -116,7 +116,7 @@ type
   protected
     function ColorIsStored: boolean; override;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     procedure InvalidatePanel(PanelIndex: integer; PanelParts: TPanelParts); virtual;
     procedure GetPanelRect(PanelIndex: integer; var ARect: TRect);
@@ -1935,6 +1935,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.90  2003/10/22 17:50:16  mattias
+  updated rpm scripts
+
   Revision 1.89  2003/09/20 15:24:54  mattias
   implemented TPageControl and TTabSheet
 

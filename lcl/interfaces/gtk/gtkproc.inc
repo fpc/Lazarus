@@ -1049,6 +1049,11 @@ begin
   SetGDIColorRef(DestGDIColor,SourceGDIColor.ColorRef);
 end;
 
+function IsBackgroundColor(Color: TColor): boolean;
+begin
+  Result:=(Color=clForm) or (Color=clInfoBk);
+end;
+
 function CompareGDIColor(const Color1, Color2: TGDIColor): boolean;
 begin
   Result:=Color1.ColorRef=Color2.ColorRef;
@@ -5473,6 +5478,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.220  2003/10/22 17:50:16  mattias
+  updated rpm scripts
+
   Revision 1.219  2003/10/19 16:33:10  marc
   * Fixed VKey keypad handling
 
