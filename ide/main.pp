@@ -550,7 +550,7 @@ type
       var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
     function GetFormOfSource(AnUnitInfo: TUnitInfo;
       LoadForm: boolean): TCustomForm;
-    procedure UpdateCaption;
+    procedure UpdateCaption; override;
     function DoConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
     
     // methods for codetools
@@ -6259,7 +6259,7 @@ begin
 end;
 
 procedure TMainIDE.UpdateCaption;
-var NewCaption:string;
+var NewCaption: string;
 begin
   NewCaption := Format(lisLazarusEditorV, [lisLazarusVersionString]);
   if Project1<>nil then begin
@@ -6269,6 +6269,10 @@ begin
       NewCaption:=NewCaption+' - '+ExtractFileName(Project1.ProjectInfoFile)
     else
       NewCaption:=Format(lisnewProject, [NewCaption])
+  end;
+  case ToolStatus of
+  itBuilder:  NewCaption:=NewCaption+' (compiliing ...)';
+  itDebugger: NewCaption:=NewCaption+' (debugging ...)';
   end;
   Caption:=NewCaption;
 end;
@@ -8706,6 +8710,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.575  2003/05/23 16:58:18  mattias
+  implemented changing caption during compilation/debugging
+
   Revision 1.574  2003/05/23 14:12:50  mattias
   implemented restoring breakpoints
 
