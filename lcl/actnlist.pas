@@ -26,7 +26,7 @@ unit ActnList;
 interface
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLProc, ImgList, LCLClasses;
+  Classes, SysUtils, LCLStrConsts, LCLProc, ImgList, LCLClasses, LMessages;
   
 type
 
@@ -98,7 +98,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function ExecuteAction(Action: TBasicAction): Boolean; override;
-    //function IsShortCut(var Message: TWMKey): Boolean;
+    function IsShortCut(var Message: TLMKey): Boolean;
     function UpdateAction(Action: TBasicAction): Boolean; override;
     function IndexOfName(const ActionName: string): integer;
     function ActionByName(const ActionName: string): TContainedAction;
@@ -297,7 +297,9 @@ procedure Register;
 
 implementation
 
-uses Controls;
+uses Controls,
+  Menus,        {func Shortcut}
+  Forms;        {func KeyDataToShiftState}
 
 procedure RegisterActions(const CategoryName: string;
   const AClasses: array of TBasicActionClass; Resource: TComponentClass);

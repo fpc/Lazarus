@@ -2461,6 +2461,44 @@ begin
       if CharCode = VK_UNKNOWN then Exit;
     end;
 
+    // check popup menu
+    if Assigned(FPopupMenu) then
+    begin
+      if FPopupMenu.IsShortCut(Message) then
+      begin
+        CharCode := VK_UNKNOWN;
+        exit;
+      end;
+    end;
+  
+    // let each parent form handle shortcuts
+    AParent:=Parent;
+    while (AParent<>nil) do begin
+      if (AParent is TCustomForm) then begin
+        if TCustomForm(AParent).IsShortcut(Message) then
+        begin
+          CharCode := VK_UNKNOWN;
+          exit;
+        end;
+      end;
+      AParent:=AParent.Parent;
+    end;
+
+    // let application handle shortcut
+    if Assigned(Application) and Application.IsShortcut(Message) then
+    begin
+      CharCode := VK_UNKNOWN;
+      exit;
+    end;
+
+    // let parent(s) handle key from child key
+    if Assigned(Parent) then
+      if Parent.ChildKey(Message) then
+      begin
+        CharCode := VK_UNKNOWN;
+        exit;
+      end;
+
     // let user handle the key
     if not (csNoStdEvents in ControlStyle) then 
     begin
@@ -2473,12 +2511,33 @@ begin
   Result := False;
 end;
 
+function TWinControl.ChildKey(var Message: TLMKey): boolean;
+begin
+  if Assigned(Parent) then
+    Result := Parent.ChildKey(Message)
+  else
+    Result := false;
+end;
+
+function TWinControl.DialogChar(var Message: TLMKey): boolean;
+var
+  I: integer;
+begin
+  // broadcast to children
+  Result := false;
+  for I := 0 to ControlCount - 1 do
+  begin
+    Result := Controls[I].DialogChar(Message);
+    if Result then exit;
+  end;
+end;
+
 {------------------------------------------------------------------------------
-  TWinControl DoRemainginKeyDown
+  TWinControl DoRemainingKeyDown
 
   Returns True if key handled
 ------------------------------------------------------------------------------}
-function TWinControl.DoRemainginKeyDown(var Message: TLMKeyDown): Boolean;
+function TWinControl.DoRemainingKeyDown(var Message: TLMKeyDown): Boolean;
 var
   ShiftState: TShiftState;
 begin
@@ -2541,6 +2600,23 @@ begin
 
   Result := False;
 End;
+
+{------------------------------------------------------------------------------
+  TWinControl DoRemainingKeyPress
+  
+  Returns True if key handled
+------------------------------------------------------------------------------}
+function TWinControl.DoRemainingKeyPress(var Message : TLMKey): Boolean;
+var
+  ParentForm: TCustomForm;
+begin
+  ParentForm := GetParentForm(Self);
+  if ParentForm <> nil then
+  begin
+    Result := ParentForm.DialogChar(Message);
+    if Result then exit;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   TWinControl DoUTF8KeyPress
@@ -3548,12 +3624,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMChar(var Message: TLMChar);
 begin
+  DoRemainingKeyPress(Message);
   Assert(False, Format('Trace:[TWinControl.WMChar] %s', [ClassName]));
 end;
 
 procedure TWinControl.WMSysChar(var Message: TLMChar);
 begin
-
+  DoRemainingKeyPress(Message);
 end;
 
 {------------------------------------------------------------------------------
@@ -3565,12 +3642,12 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyDown(Var Message: TLMKeyDown);
 begin
-  DoRemainginKeyDown(Message);
+  DoRemainingKeyDown(Message);
 end;
 
 procedure TWinControl.WMSysKeyDown(var Message: TLMKeyDown);
 begin
-  DoRemainginKeyDown(Message);
+  DoRemainingKeyDown(Message);
 end;
 
 {------------------------------------------------------------------------------
@@ -4387,6 +4464,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.309  2005/02/03 15:10:23  micha
+  implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
+
   Revision 1.308  2005/01/26 15:45:08  mattias
   implemented adding files from directory in project inspector, fixed extrac proc checking overlapping blocks
 

@@ -1087,6 +1087,7 @@ type
     function  CanTab: boolean; override;
     procedure CalcSize(var AWidth, AHeight: integer);
     procedure DoAutoSize; override;
+    function  DialogChar(var Message: TLMKey): boolean; override;
     procedure CMTextChanged(var Message: TLMSetText); message CM_TEXTCHANGED;
 
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
@@ -1216,6 +1217,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.189  2005/02/03 15:10:23  micha
+  implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
+
   Revision 1.188  2005/01/26 17:36:02  mattias
   added error message for TStaticText.BorderStyle not implemented during designing
 

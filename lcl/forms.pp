@@ -332,6 +332,8 @@ type
   THelpEvent = function(Command: Word; Data: Longint;
     var CallHelp: Boolean): Boolean of object;
 
+  TShortCutEvent = procedure (var Msg: TLMKey; var Handled: Boolean) of object;
+  
   TFormStateType = (
     fsCreating,  // initializing (form streaming)
     fsVisible,   // form should be shown
@@ -380,6 +382,7 @@ type
     FOnDestroy: TNotifyEvent;
     FOnHelp: THelpEvent;
     FOnHide: TNotifyEvent;
+    FOnShortcut: TShortCutEvent;
     FOnShow: TNotifyEvent;
     FOnWindowStateChanged: TNotifyEvent;
     FPixelsPerInch: Longint;
@@ -492,6 +495,7 @@ type
     procedure RemoveHandlerFirstShow(OnFirstShowHandler: TNotifyEvent);
     procedure AddHandlerClose(OnCloseHandler: TCloseEvent; AsLast: Boolean);
     procedure RemoveHandlerClose(OnCloseHandler: TCloseEvent);
+    function  IsShortcut(var Message: TLMKey): boolean;
   public
     // drag and dock
     procedure Dock(NewDockSite: TWinControl; ARect: TRect); override;
@@ -527,6 +531,7 @@ type
     property OnHelp: THelpEvent read FOnHelp write FOnHelp;
     property OnHide: TNotifyEvent read FOnHide write FOnHide;
     property OnResize stored IsForm;
+    property OnShortcut: TShortcutEvent read FOnShortcut write FOnShortcut;
     property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property OnWindowStateChanged: TNotifyEvent
                          read fOnWindowStateChanged write fOnWindowStateChanged;
@@ -876,6 +881,7 @@ type
     FOnHint: TNotifyEvent;
     FOnIdle: TIdleEvent;
     FOnIdleEnd: TNotifyEvent;
+    FOnShortcut: TShortcutEvent;
     FOnShowHint: TShowHintEvent;
     FOnUserInput: TOnUserInputEvent;
     FReleaseComponents: TList;
@@ -972,6 +978,7 @@ type
     procedure RemoveOnKeyDownHandler(Handler: TKeyEvent);
     procedure RemoveAllHandlersOfObject(AnObject: TObject); virtual;
     procedure DoBeforeMouseMessage(CurMouseControl: TControl);
+    function  IsShortcut(var Message: TLMKey): boolean;
   public
     property CaptureExceptions: boolean read FCaptureExceptions
                                         write SetCaptureExceptions;
@@ -991,6 +998,7 @@ type
     property OnIdleEnd: TNotifyEvent read FOnIdleEnd write FOnIdleEnd;
     property OnHelp: THelpEvent read FOnHelp write FOnHelp;
     property OnHint: TNotifyEvent read FOnHint write FOnHint;
+    property OnShortcut: TShortcutEvent read FOnShortcut write FOnShortcut;
     property OnShowHint: TShowHintEvent read FOnShowHint write FOnShowHint;
     property OnUserInput: TOnUserInputEvent read FOnUserInput write FOnUserInput;
     property ShowHint: Boolean read FShowHint write SetShowHint;

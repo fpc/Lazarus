@@ -273,6 +273,7 @@ type
     destructor Destroy; override;
     procedure DestroyHandle; virtual;
     function FindItem(AValue: Integer; Kind: TFindItemKind) : TMenuItem;
+    function IsShortcut(var Message: TLMKey): boolean;
     function HandleAllocated: Boolean;
     Function IsRightToLeft: Boolean;
     procedure HandleNeeded;
@@ -339,7 +340,8 @@ procedure Register;
 implementation
 
 uses
-  WSMenus;
+  WSMenus,
+  Forms {KeyDataToShiftState};
 
 { Menu command managment }
 
@@ -403,6 +405,9 @@ end.
 
 {
   $Log$
+  Revision 1.77  2005/02/03 15:10:23  micha
+  implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
+
   Revision 1.76  2004/12/12 03:54:09  mattias
   implemented open project after open standard windows
 

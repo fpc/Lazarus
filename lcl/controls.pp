@@ -1018,7 +1018,7 @@ type
     procedure SetDragMode(Value: TDragMode); virtual;
     //procedure SendDockNotification; virtual; MG: probably not needed
   protected
-    // mouse
+    // key and mouse
     procedure Click; dynamic;
     procedure DblClick; dynamic;
     procedure TripleClick; dynamic;
@@ -1028,6 +1028,7 @@ type
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
     procedure MouseEnter; virtual;
     procedure MouseLeave; virtual;
+    function  DialogChar(var Message: TLMKey): boolean; virtual;
   protected
     procedure Changed;
     function  GetPalette: HPalette; virtual;
@@ -1552,10 +1553,13 @@ type
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     function  DoKeyDown(var Message: TLMKey): Boolean;
-    function  DoRemainginKeyDown(var Message: TLMKeyDown): Boolean;
+    function  DoRemainingKeyDown(var Message: TLMKeyDown): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
+    function  DoRemainingKeyPress(var Message: TLMKey): Boolean;
     function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; dynamic;
     function  DoKeyUp(var Message: TLMKey): Boolean;
+    function  ChildKey(var Message: TLMKey): boolean; dynamic;
+    function  DialogChar(var Message: TLMKey): boolean; override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
@@ -2895,6 +2899,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.279  2005/02/03 15:10:22  micha
+  implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
+
   Revision 1.278  2005/01/26 23:23:11  mattias
   added error when setting FormStyle to MDI
 

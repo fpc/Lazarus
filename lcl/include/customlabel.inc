@@ -178,6 +178,26 @@ begin
   end;
 end;
 
+function TCustomLabel.DialogChar(var Message: TLMKey): boolean;
+var
+  PrefixIndex: integer;
+  PrefixChar: char;
+begin
+  Result := false;
+  if not FShowAccelChar then exit;
+  if FFocusControl = nil then exit;
+
+  PrefixIndex := Pos('&', Caption);
+  if PrefixIndex < Length(Caption) then
+    PrefixChar := Caption[PrefixIndex+1];
+  if ssAlt in KeyDataToShiftState(Message.KeyData) then
+    if char(Message.CharCode and $ff) = PrefixChar then
+    begin
+      Result := true;
+      FFocusControl.SetFocus;
+    end;
+end;
+
 procedure TCustomLabel.Loaded;
 begin
   inherited Loaded;
@@ -251,6 +271,9 @@ end;
 
 {
   $Log$
+  Revision 1.28  2005/02/03 15:10:23  micha
+  implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
+
   Revision 1.27  2005/01/26 17:51:34  mattias
   calling autosizing on changing TLabel.Caption
 

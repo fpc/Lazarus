@@ -1769,6 +1769,16 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
+  TControl DialogChar
+  
+  Do something useful with accelerators etc.
+------------------------------------------------------------------------------}
+function TControl.DialogChar(var Message: TLMKey): boolean;
+begin
+  Result := false;
+end;
+
+{------------------------------------------------------------------------------
   TControl AddControl
   
   Add Handle object to parents Handle object.
@@ -3449,6 +3459,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.243  2005/02/03 15:10:23  micha
+  implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
+
   Revision 1.242  2005/01/26 15:45:08  mattias
   implemented adding files from directory in project inspector, fixed extrac proc checking overlapping blocks
 

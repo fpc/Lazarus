@@ -1511,6 +1511,30 @@ begin
   Result := False;
 end;
 
+function TCustomForm.IsShortCut(var Message: TLMKey): boolean;
+var
+  I: integer;
+begin
+  Result := false;
+  if Assigned(FOnShortcut) then
+    FOnShortcut(Message, Result);
+  if Result then 
+    exit;
+  if Assigned(FMenu) then
+  begin
+    Result := FMenu.IsShortCut(Message);
+    if Result then exit;
+  end;
+  if Assigned(FActionLists) then
+  begin
+    for I := 0 to FActionLists.Count - 1 do
+    begin
+      Result := TCustomActionList(FActionLists.Items[I]).IsShortCut(Message);
+      if Result then exit;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomForm.CreateWnd
   Params:  None
@@ -1866,6 +1890,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.176  2005/02/03 15:10:23  micha
+  implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
+
   Revision 1.175  2005/01/27 10:10:25  mattias
   added TTreeNode.GetParentNodeOfAbsoluteLevel  from Sergio
 

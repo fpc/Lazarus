@@ -140,6 +140,23 @@ begin
   Result:=Find(Items);
 end;
 
+function TMenu.IsShortcut(var Message: TLMKey): boolean;
+var
+  Item: TMenuItem;
+  Shortcut: TShortcut;
+  ShiftState: TShiftState;
+begin
+  ShiftState := KeyDataToShiftState(Message.KeyData);
+  Shortcut := Menus.Shortcut(Message.CharCode, ShiftState);
+  Item := FindItem(Shortcut, fkShortcut);
+  Result := Item <> nil;
+  if Result then
+  begin
+    Item.InitiateActions;
+    Item.Click;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: TMenu.GetHandle
   Params:   none
@@ -245,6 +262,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2005/02/03 15:10:23  micha
+  implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
+
   Revision 1.29  2005/01/07 13:04:08  vincents
   don't create handle for unvisible menu item
 

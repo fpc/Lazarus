@@ -1244,6 +1244,21 @@ begin
   UpdateMouseControl(GetControlAtMouse);
 end;
 
+function TApplication.IsShortcut(var Message: TLMKey): boolean;
+begin
+  Result := false;
+  if Assigned(FOnShortcut) then
+  begin
+    FOnShortcut(Message, Result);
+    if Result then
+      exit;
+  end;
+  // TODO: only send shortcuts to main form if no form is showing modal
+  //  or otherwise disabling the main form
+  if Assigned(FMainForm) {and IsWindowEnabled(FMainForm.Handle)} then
+    Result := FMainForm.IsShortcut(Message);
+end;
+
 {------------------------------------------------------------------------------
   TApplication CreateForm
 
@@ -1341,6 +1356,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.95  2005/02/03 15:10:23  micha
+  implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
+
   Revision 1.94  2005/01/14 00:27:05  mattias
   fixed several dialogs to react on esacpe
 

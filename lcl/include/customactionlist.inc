@@ -117,20 +117,19 @@ begin
   OwnerFormDesignerModified(Self);
 end;
 
-{ ToDo:
-function TCustomActionList.IsShortCut(var Message: TWMKey): Boolean;
+function TCustomActionList.IsShortCut(var Message: TLMKey): Boolean;
 var
   I: Integer;
   ShortCut: TShortCut;
   ShiftState: TShiftState;
   Action: TCustomAction;
 begin
-  ShiftState := KeyDataToShiftState(Message.KeyData);
+  ShiftState := Forms.KeyDataToShiftState(Message.KeyData);
   ShortCut := Menus.ShortCut(Message.CharCode, ShiftState);
   if ShortCut <> scNone then
     for I := 0 to FActions.Count - 1 do
     begin
-      Action := FActions.List[I];
+      Action := TCustomAction(FActions.Items[I]);
       if (TObject(Action) is TCustomAction) then
         if (Action.ShortCut = ShortCut) or (Assigned(Action.FSecondaryShortCuts) and
            (Action.SecondaryShortCuts.IndexOfShortCut(ShortCut) <> -1)) then
@@ -140,7 +139,7 @@ begin
         end;
     end;
   Result := False;
-end;   }
+end;
 
 function TCustomActionList.ExecuteAction(Action: TBasicAction): Boolean;
 begin
