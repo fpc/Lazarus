@@ -37,17 +37,18 @@ unit DebuggerDlg;
 interface
 
 uses
-  Forms, Debugger;
+  Classes, Forms, IDEProcs, Debugger, EnvironmentOpts;
 
 type
   TDebuggerDlgClass = class of TDebuggerDlg;
   
   TDebuggerDlg = class(TForm)
-  private                        
+  private
     FDebugger: TDebugger;
   protected                                              
     procedure SetDebugger(const ADebugger: TDebugger); virtual;
-  public 
+    procedure DoClose(var Action: TCloseAction); override;
+  public
     destructor Destroy; override;
     property Debugger: TDebugger read FDebugger write SetDebugger;
   end;
@@ -62,14 +63,22 @@ begin
   inherited;
 end;
 
-procedure TDebuggerDlg.SetDebugger(const ADebugger: TDebugger); 
+procedure TDebuggerDlg.SetDebugger(const ADebugger: TDebugger);
 begin
   FDebugger := ADebugger; 
 end;
 
+procedure TDebuggerDlg.DoClose(var Action: TCloseAction);
+begin
+  inherited DoClose(Action);
+  EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self).GetCurrentPosition;
+end;
 
 { =============================================================================
   $Log$
+  Revision 1.3  2003/05/18 10:42:58  mattias
+  implemented deleting empty submenus
+
   Revision 1.2  2002/05/10 06:57:48  lazarus
   MG: updated licenses
 

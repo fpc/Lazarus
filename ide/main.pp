@@ -38,8 +38,6 @@ interface
 
 {$I ide.inc}
 
-{ $DEFINE UseNewMenuEditor}
-
 uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
@@ -8564,7 +8562,7 @@ var
   l: TNonModalIDEWindow;
 begin
   if (ALayout=nil) or (ALayout.Form=nil) then exit;
-//writeln('AAA TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
+  // writeln('AAA TMainIDE.OnApplyWindowLayout ',ALayout.Form.Name,' ',ALayout.Form.Classname,' ',IDEWindowPlacementNames[ALayout.WindowPlacement],' ',ALayout.CustomCoordinatesAreValid,' ',ALayout.Left,' ',ALayout.Top,' ',ALayout.Width,' ',ALayout.Height);
   if (ALayout.WindowPlacement in [iwpCustomPosition,iwpRestoreWindowGeometry])
   and (ALayout.CustomCoordinatesAreValid) then begin
     // explicit position
@@ -8639,6 +8637,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.567  2003/05/18 10:42:57  mattias
+  implemented deleting empty submenus
+
   Revision 1.566  2003/05/14 07:12:35  mattias
   fixed hiding destroyed components
 

@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, StdCtrls,
-  Buttons, Extctrls, Menus, ComCtrls, Debugger, DebuggerDlg;
+  Buttons, Extctrls, Menus, ComCtrls, Debugger, DebuggerDlg, WatchPropertyDlg;
 
 type
   TWatchesDlg = class(TDebuggerDlg)
@@ -81,14 +81,13 @@ type
 
 implementation
 
-uses
-  WatchPropertyDlg;
 
 { TWatchesDlg }
 
 constructor TWatchesDlg.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  Name:='WatchesDlg';
   FWatchesNotification := TDBGWatchesNotification.Create;
   FWatchesNotification.AddReference;
   FWatchesNotification.OnAdd := @WatchAdd;
@@ -264,6 +263,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.5  2003/05/18 10:42:58  mattias
+  implemented deleting empty submenus
+
   Revision 1.4  2002/05/30 22:45:57  lazarus
   MWE:
     - Removed menucreation from loaded since streaming works
