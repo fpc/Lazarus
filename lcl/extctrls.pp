@@ -77,6 +77,7 @@ type
     destructor Destroy; override;
     procedure AdjustClientRect(var ARect: TRect); override;
     function PageIndex: integer;
+    function CanTab: boolean; override;
   published
     property Caption;
     property ImageIndex: integer read FImageIndex write SetImageIndex default -1;
@@ -170,6 +171,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function TabIndexAtClientPos(ClientPos: TPoint): integer;
+    function CanTab: boolean; override;
   public
     property ActivePage: String read GetActivePage write SetActivePage
                                 stored IsStoredActivePage;
@@ -740,6 +742,9 @@ end.
 
  {
   $Log$
+  Revision 1.59  2003/06/10 17:23:34  mattias
+  implemented tabstop
+
   Revision 1.58  2003/06/10 15:58:39  mattias
   started TLabeledEdit
 
