@@ -5766,7 +5766,23 @@ begin
   FreeMem(TopologicalList);
 end;
 
-
+procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer);
+var
+  Widget: PGtkWidget;
+  Requisition: TGtkRequisition;
+begin
+  Widget := PGtkWidget(AWinControl.Handle);
+  // set size to default
+  gtk_widget_set_usize(Widget,-1,-1);
+  // ask default size
+  gtk_widget_size_request(Widget,@Requisition);
+  PreferredWidth:=Requisition.width;
+  PreferredHeight:=Requisition.height;
+  // set new size
+  gtk_widget_set_usize(Widget,AWinControl.Width,AWinControl.Height);
+  //debugln('GetGTKDefaultSize PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+end;
 
 Procedure ReportNotObsolete(const Texts : String);
 Begin
@@ -7775,6 +7791,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.316  2004/11/03 14:18:36  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.315  2004/10/16 15:36:49  mattias
   implemented gtkwscomctrls.TGtkWSStatusBar
 

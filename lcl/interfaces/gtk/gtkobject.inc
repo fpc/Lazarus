@@ -3635,23 +3635,18 @@ begin
   end;
 
   if Sender is TControl then begin
-    case TControl(Sender).FCompStyle of
-
-    csPage:
-      begin
-        // a notebook always need at least one page
-        // -> if this is the last page, then add a dummy page
-        APage:=TCustomPage(Sender);
-        if (APage.Parent<>nil) and APage.Parent.HandleAllocated
-        and (APage.Parent is TCustomNoteBook) then begin
-          NoteBookWidget:=PGtkNotebook(TCustomNoteBook(APage.Parent).Handle);
-          if GetGtkNoteBookPageCount(NoteBookWidget)=1 then begin
-            AddDummyNoteBookPage(NoteBookWidget);
-            UpdateNoteBookClientWidget(TCustomNoteBook(APage.Parent));
-          end;
+    if Sender is TCustomPage then begin
+      // a notebook always need at least one page
+      // -> if this is the last page, then add a dummy page
+      APage:=TCustomPage(Sender);
+      if (APage.Parent<>nil) and APage.Parent.HandleAllocated
+      and (APage.Parent is TCustomNoteBook) then begin
+        NoteBookWidget:=PGtkNotebook(TCustomNoteBook(APage.Parent).Handle);
+        if GetGtkNoteBookPageCount(NoteBookWidget)=1 then begin
+          AddDummyNoteBookPage(NoteBookWidget);
+          UpdateNoteBookClientWidget(TCustomNoteBook(APage.Parent));
         end;
       end;
-
     end;
   end
   else if Sender is TCommonDialog then begin
@@ -3776,7 +3771,8 @@ end;
 -------------------------------------------------------------------------------}
 //TODO: Remove when the creation splitup is finished.
 //      In that case all code here is moved to the specific creation parts
-procedure TGtkWidgetSet.HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject);
+procedure TGtkWidgetSet.HookSignals(const AGTKObject: PGTKObject;
+  const ALCLObject: TObject);
 begin
   if (ALCLObject is TWinControl)
   then TGTKWSWinControl.SetCallbacks(AGTKObject, TWinControl(ALCLObject));
@@ -6946,6 +6942,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.607  2004/11/03 14:18:36  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.606  2004/10/16 15:36:49  mattias
   implemented gtkwscomctrls.TGtkWSStatusBar
 

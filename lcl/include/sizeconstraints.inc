@@ -101,6 +101,30 @@ begin
     Result:=MaxInterfaceHeight;
 end;
 
+function TSizeConstraints.MinMaxWidth(Width: integer): integer;
+var
+  MinW: LongInt;
+  MaxW: LongInt;
+begin
+  Result:=Width;
+  MinW:=EffectiveMinWidth;
+  if (MinW>0) and (Width<MinW) then Width:=MinW;
+  MaxW:=EffectiveMaxWidth;
+  if (MaxW>0) and (Width>MaxW) then Width:=MaxW;
+end;
+
+function TSizeConstraints.MinMaxHeight(Height: integer): integer;
+var
+  MinH: LongInt;
+  MaxH: LongInt;
+begin
+  Result:=Height;
+  MinH:=EffectiveMinHeight;
+  if (MinH>0) and (Height<MinH) then Height:=MinH;
+  MaxH:=EffectiveMaxHeight;
+  if (MaxH>0) and (Height>MaxH) then Height:=MaxH;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TSizeConstraints.SetMaxWidth
   Params:  Value: the new value of the property

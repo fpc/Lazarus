@@ -560,6 +560,8 @@ type
     function EffectiveMinHeight: integer; virtual;
     function EffectiveMaxWidth: integer; virtual;
     function EffectiveMaxHeight: integer; virtual;
+    function MinMaxWidth(Width: integer): integer;
+    function MinMaxHeight(Height: integer): integer;
   public
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property MaxInterfaceHeight: integer read FMaxInterfaceHeight;
@@ -581,11 +583,12 @@ type
 
   { TControlBorderSpacing }
   
-  { TControlBorderSpacing defines the spacing around a control, around its
-    childs and between its childs.
+  { TControlBorderSpacing defines the spacing around a control.
+    The spacing around its childs and between its childs is defined in
+    TWinControl.ChildSizing.
 
     Left, Top, Right, Bottom: integer;
-        minimum space left to the control.
+        minimum space left to the autosized control.
         For example: Control A lies left of control B.
         A has borderspacing Right=10 and B has borderspacing Left=5.
         Then A and B will have a minimum space of 10 between.
@@ -672,7 +675,8 @@ type
     cfClientWidthLoaded,
     cfClientHeightLoaded,
     cfLastAlignedBoundsValid,
-    cfBoundsRectForNewParentValid
+    cfBoundsRectForNewParentValid,
+    cfPreferredSizeValid
     );
   TControlFlags = set of TControlFlag;
 
@@ -766,6 +770,8 @@ type
     FParentFont: Boolean;
     FParentShowHint: Boolean;
     FPopupMenu: TPopupMenu;
+    FPreferredWidth: integer;
+    FPreferredHeight: integer;
     FSessionProperties: string;
     FShowHint: Boolean;
     FSizeLock: integer;
@@ -848,6 +854,8 @@ type
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); virtual;
     procedure ConstrainedResize(var MinWidth, MinHeight,
                                 MaxWidth, MaxHeight: TConstraintSize); virtual;
+    procedure CalculatePreferredSize(
+                         var PreferredWidth, PreferredHeight: integer); virtual;
     procedure DoOnResize; virtual;
     procedure DoOnChangeBounds; virtual;
     procedure Resize; virtual;
@@ -1006,9 +1014,10 @@ type
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
     property OnEditingDone: TNotifyEvent read FOnEditingDone write FOnEditingDone;
   public
-    FCompStyle: Byte; // enables (valid) use of 'IN' operator (this is a hack
-      // for speed. It will be replaced by the use of the widgetset classes.
-      // So, don't use it anymore)
+    FCompStyle: Byte; // DEPRECATED. Enables (valid) use of 'IN' operator (this
+      // is a hack for speed. It will be replaced by the use of the widgetset
+      // classes.
+      // So, don't use it anymore.
   public
     // drag and dock
     Procedure DragDrop(Source: TObject; X,Y: Integer); Dynamic;
@@ -1047,6 +1056,8 @@ type
     procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
                                 Lock: boolean); virtual;
+    procedure GetPreferredSize(var PreferredWidth, PreferredHeight: integer); virtual;
+    procedure InvalidatePreferredSize; virtual;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
     function  GetTextLen: Integer; virtual;
     Procedure SetTextBuf(Buffer: PChar); virtual;
@@ -1063,7 +1074,6 @@ type
     function HandleObjectShouldBeVisible: boolean; virtual;
     function ParentHandlesAllocated: boolean; virtual;
     procedure InitiateAction; virtual;
-    property MouseEntered: Boolean read FMouseEntered;
   public
     // Event lists
     procedure RemoveAllHandlersOfObject(AnObject: TObject); override;
@@ -1104,6 +1114,7 @@ type
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
     property TabStop: Boolean read FTabStop write SetTabStop default false;
     property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
+    property MouseEntered: Boolean read FMouseEntered;
   public
     // docking properties
     property DockOrientation: TDockOrientation read FDockOrientation write FDockOrientation;
@@ -1285,7 +1296,8 @@ type
     wcfFontChanged,
     wcfReAlignNeeded,
     wcfAligningControls,
-    wcfEraseBackground
+    wcfEraseBackground,
+    wcfAutoSizeNeeded
     );
   TWinControlFlags = set of TWinControlFlag;
 
@@ -1308,7 +1320,7 @@ type
     FClientHeight: Integer;
     FDockManager: TDockManager;
     FDockSite: Boolean;
-    FFlags: TWinControlFlags;
+    FWinControlFlags: TWinControlFlags;
     FOnDockDrop: TDockDropEvent;
     FOnDockOver: TDockOverEvent;
     FOnGetSiteInfo: TGetSiteInfoEvent;
@@ -1372,11 +1384,11 @@ type
     procedure DoSendBoundsToInterface; virtual;
     procedure RealizeBounds; virtual;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
-//    procedure CreateComponent(TheOwner: TComponent); virtual;
     procedure DestroyComponent; virtual;
     procedure DoConstraintsChange(Sender: TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DoAutoSize; Override;
+    procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer); override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     procedure PaintControls(DC: HDC; First: TControl);
@@ -1429,7 +1441,7 @@ type
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     function  DoKeyDown(var Message: TLMKey): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
-    function DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; dynamic;
+    function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; dynamic;
     function  DoKeyUp(var Message: TLMKey): Boolean;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
@@ -1466,7 +1478,7 @@ type
     procedure MainWndProc(var Message: TLMessage);
     procedure ParentFormInitializeWnd; virtual; //gets called by InitializeWnd of parent form
     procedure ReAlign; // realign all childs
-    procedure RealSetText(const Value: TCaption); override;
+    procedure RealSetText(const AValue: TCaption); override;
     procedure RemoveFocus(Removing: Boolean);
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
     procedure SetBorderStyle(NewStyle: TBorderStyle); virtual;
@@ -1490,13 +1502,20 @@ type
   public
     // properties which are supported by all descendents
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
+    property BoundsLockCount: integer read FBoundsLockCount;
+    property Brush: TBrush read GetBrush;
+    property CachedClientHeight: integer read FClientHeight;
+    property CachedClientWidth: integer read FClientWidth;
     property ChildSizing: TControlChildSizing read FChildSizing write SetChildSizing;
+    property ControlCount: Integer read GetControlCount;
+    property Controls[Index: Integer]: TControl read GetControl;
     property DefWndProc: Pointer read FDefWndProc write FDefWndPRoc;
     property DockClientCount: Integer read GetDockClientCount;
     property DockClients[Index: Integer]: TControl read GetDockClients;
     property DockManager: TDockManager read FDockManager write FDockManager;
     property DockSite: Boolean read FDockSite write SetDockSite default False;
     property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
+    property Handle: HWND read GetHandle write SetHandle;
     property IsResizing: Boolean read GetIsResizing;
     property OnDockDrop: TDockDropEvent read FOnDockDrop write FOnDockDrop;
     property OnDockOver: TDockOverEvent read FOnDockOver write FOnDockOver;
@@ -1504,37 +1523,41 @@ type
     property OnExit: TNotifyEvent read FOnExit write FOnExit;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
-    property OnUTF8KeyPress: TUTF8KeyPressEvent read FOnUTF8KeyPress write FOnUTF8KeyPress;
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
     property OnMouseWheel: TMouseWheelEvent read FOnMouseWheel write FOnMouseWheel;
     property OnMouseWheelDown: TMouseWheelUpDownEvent read FOnMouseWheelDown write FOnMouseWheelDown;
     property OnMouseWheelUp: TMouseWheelUpDownEvent read FOnMouseWheelUp write FOnMouseWheelUp;
     property OnUnDock: TUnDockEvent read FOnUnDock write FOnUnDock;
+    property OnUTF8KeyPress: TUTF8KeyPressEvent read FOnUTF8KeyPress write FOnUTF8KeyPress;
     property ParentCtl3D: Boolean read FParentCtl3D write SetParentCtl3d default True;
+    property Showing: Boolean read FShowing;
     property UseDockManager: Boolean read FUseDockManager
                                      write SetUseDockManager default False;
     property VisibleDockClientCount: Integer read GetVisibleDockClientCount;
   public
-    constructor Create(TheOwner: TComponent);override;
-    constructor CreateParented(ParentWindow: HWnd);
-    class function CreateParentedControl(ParentWindow: HWnd): TWinControl;
-    destructor Destroy; override;
+    // size, position, bounds
     procedure BeginUpdateBounds;
     procedure EndUpdateBounds;
     procedure LockRealizeBounds;
     procedure UnlockRealizeBounds;
-    procedure DockDrop(DockObject: TDragDockObject; X, Y: Integer); dynamic;
-    Function CanFocus: Boolean;
     Function ControlAtPos(const Pos: TPoint; AllowDisabled: Boolean): TControl;
     Function ControlAtPos(const Pos: TPoint;
       AllowDisabled, AllowWinControls: Boolean): TControl;
     Function ControlAtPos(const Pos: TPoint;
       AllowDisabled, AllowWinControls, OnlyClientAreas: Boolean): TControl; virtual;
-    function GetControlIndex(AControl: TControl): integer;
-    procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     procedure DoAdjustClientRectChange;
     procedure InvalidateClientRectCache(WithChildControls: boolean);
     function ClientRectNeedsInterfaceUpdate: boolean;
+    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
+  public
+    constructor Create(TheOwner: TComponent);override;
+    constructor CreateParented(ParentWindow: HWnd);
+    class function CreateParentedControl(ParentWindow: HWnd): TWinControl;
+    destructor Destroy; override;
+    procedure DockDrop(DockObject: TDragDockObject; X, Y: Integer); dynamic;
+    Function CanFocus: Boolean;
+    function GetControlIndex(AControl: TControl): integer;
+    procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     Function Focused: Boolean; override;
     procedure SelectNext(CurControl: TWinControl;
                          GoForward, CheckTabStop: Boolean);
@@ -1552,7 +1575,6 @@ type
     Procedure Insert(AControl: TControl; Index: integer);
     Procedure Remove(AControl: TControl);
     procedure ReCreateWnd;
-    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure Hide;
     procedure Repaint; override;
     Procedure SetFocus; override;
@@ -1565,15 +1587,6 @@ type
     procedure EraseBackground(DC: HDC); virtual;
     function IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
                               RepeatCount: integer): boolean; dynamic;
-  public
-    property BoundsLockCount: integer read FBoundsLockCount;
-    property Brush: TBrush read GetBrush;
-    property Controls[Index: Integer]: TControl read GetControl;
-    property ControlCount: Integer read GetControlCount;
-    property Handle: HWND read GetHandle write SetHandle;
-    property Showing: Boolean read FShowing;
-    property CachedClientWidth: integer read FClientWidth;
-    property CachedClientHeight: integer read FClientHeight;
   end;
 
 
@@ -2285,19 +2298,11 @@ begin
 end;
 
 procedure TControlBorderSpacing.GetSpaceAround(var SpaceAround: TRect);
-{$IFDEF VER1_0}
-//fpc 1.0.x can't determine which overloaded function to call,
-//because the parameter type doesn't match exactly.
-  function Max(Int1, Int2: TSpacingSize): TSpacingSize;
-  begin
-    Result:=Max(Integer(Int1),Integer(Int2));
-  end;
-{$ENDIF}
 begin
-  SpaceAround.Left:=Max(Left,Around);
-  SpaceAround.Top:=Max(Top,Around);
-  SpaceAround.Right:=Max(Right,Around);
-  SpaceAround.Bottom:=Max(Bottom,Around);
+  SpaceAround.Left:=Left+Around;
+  SpaceAround.Top:=Top+Around;
+  SpaceAround.Right:=Right+Around;
+  SpaceAround.Bottom:=Bottom+Around;
 end;
 
 procedure TControlBorderSpacing.Change;
@@ -2483,6 +2488,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.255  2004/11/03 14:18:35  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.254  2004/10/30 16:24:06  mattias
   disabled alClient RemainingClientRect adjust
 

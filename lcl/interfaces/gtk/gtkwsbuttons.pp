@@ -34,7 +34,7 @@ uses
   GLib, Gtk, 
   {$ENDIF}
   // LCL
-  Buttons, Classes, LCLType, LMessages, Controls, Graphics,
+  Classes, LCLProc, LCLType, LMessages, Controls, Graphics, Buttons,
   // widgetset
   WSButtons, WSLCLClasses, WSProc,
   // interface
@@ -62,6 +62,8 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetShortcut(const AButton: TCustomButton; const OldShortcut, NewShortcut: TShortcut); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer); override;
   end;
 
   { TGtkWSBitBtn }
@@ -175,6 +177,7 @@ var
 begin          
   if not WSCheckHandleAllocated(AWincontrol, 'SetText')
   then Exit;
+  AWinControl.InvalidatePreferredSize;
 
   BtnWidget := PGtkButton(AWinControl.Handle);
   {$IFDEF GTK2}
@@ -191,6 +194,13 @@ begin
   end;
   
   GtkWidgetSet.SetLabelCaption(LblWidget, AText, AWinControl, PGtkWidget(BtnWidget), 'clicked');   
+end;
+
+procedure TGtkWSButton.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer);
+begin
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
+  //debugln('TGtkWSButton.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
 { TGtkWSBitBtn }

@@ -67,16 +67,11 @@ procedure TRadioButton.RealSetText(const Value: TCaption);
 begin
   if Text=Value then exit;
   Inherited RealSetText(Value);
+  InvalidatePreferredSize;
   DoAutoSize;
 end;
 
-{------------------------------------------------------------------------------
-  Method: TRadioButton.DoAutoSize
-  Params:  Value : Boolean
-  Returns: nothing
-
-  Attempts to Size to fit Caption if AutoSize is True
- ------------------------------------------------------------------------------}
+{$IFNDEF EnablePreferredSize}
 procedure TRadioButton.DoAutoSize;
 var
   R : TRect;
@@ -101,11 +96,16 @@ begin
     AutoSizing := False;
   end;
 end;
+{$ENDIF}
+
 // included by stdctrls.pp
 
 
 {
   $Log$
+  Revision 1.19  2004/11/03 14:18:35  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.18  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

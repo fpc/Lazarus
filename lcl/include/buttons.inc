@@ -205,6 +205,7 @@ begin
     FShortCut := ShortCut(Char2VK(ParseStr[AccelIndex]), [ssCtrl]);
     TWSButtonClass(WidgetSetClass).SetShortCut(Self, OldShortCut, FShortCut);
   end;
+  DoAutoSize;
 end;
 
 function TCustomButton.ChildClassAllowed(ChildClass: TClass): boolean;
@@ -216,6 +217,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2004/11/03 14:18:35  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.36  2004/09/17 10:56:25  micha
   convert LM_SHORTCUT message to interface methods
 

@@ -80,6 +80,8 @@ type
     class procedure SetColor(const AWinControl: TWinControl); virtual;
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); virtual;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                         var PreferredWidth, PreferredHeight: integer); virtual;
     class function  CreateHandle(const AWinControl: TWinControl;
       const AParams: TCreateParams): HWND; virtual;
     class procedure DestroyHandle(const AWinControl: TWinControl); virtual;
@@ -177,6 +179,11 @@ begin
 end;
 
 procedure TWSWinControl.ConstraintsChange(const AWinControl: TWinControl);
+begin
+end;
+
+procedure TWSWinControl.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer);
 begin
 end;
 

@@ -15,13 +15,8 @@
 }
 
 {$IFNDef NewCheckBox}
-{------------------------------------------------------------------------------
-  Method: TCheckbox.DoAutoSize
-  Params:  Value : Boolean
-  Returns: nothing
 
-  Attempts to Size to fit Caption if AutoSize is True
- ------------------------------------------------------------------------------}
+{$IFNDEF EnablePreferredSize}
 procedure TCheckbox.DoAutoSize;
 var
   R : TRect;
@@ -46,8 +41,10 @@ begin
     AutoSizing := False;
   end;
 end;
+{$ENDIF}
 
-{$ENDIF not NewCheckBox}
+{$ENDIF}
+
 {$IFDef NewCheckBox}
 Procedure TCheckbox.DoAutoSize;
 var
@@ -474,6 +471,9 @@ end;
 
 {
   $Log$
+  Revision 1.16  2004/11/03 14:18:35  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.15  2004/09/24 13:45:32  mattias
   fixed TCanvas.TextRect Delphi compatible Rect and added TBarChart from Michael VC
 

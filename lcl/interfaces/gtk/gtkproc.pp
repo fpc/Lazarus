@@ -641,11 +641,15 @@ procedure UpdateStatusBarPanels(StatusBar: TObject;
 procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
                                StatusPanelWidget: PGtkWidget);
 
-// size messages
+// sizing
 procedure SaveSizeNotification(Widget: PGtkWidget);
 procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
 function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TList;
+procedure GetGTKDefaultWidgetSize(AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer);
+
 Procedure ReportNotObsolete(const Texts: String);
+
 function WaitForClipboardAnswer(c: PClipboardEventData): boolean;
 function RequestSelectionData(ClipboardWidget: PGtkWidget;
   ClipboardType: TClipboardType;  FormatID: cardinal): TGtkSelectionData;

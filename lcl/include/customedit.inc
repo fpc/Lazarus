@@ -18,29 +18,12 @@
  *****************************************************************************
 }
 
-Procedure TCustomEdit.DoAutoSize;
-var
-  TM : TTextMetric;
-  DC : HDC;
-  OldFont : hFont;
+procedure TCustomEdit.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer);
 begin
-  //TCustomEdit.AutoSize only affects Height!!
-  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
-    exit;
-  If AutoSize and Not AutoSizing then begin
-    AutoSizing := True;
-    try
-      DC := GetDC(0);
-      OldFont := SelectObject(DC, Font.Handle);
-      GetTextMetrics(DC, TM);
-      SelectObject(DC, OldFont);
-      ReleaseDC(0, DC);
-      //TextHeight + 5 top space/border + 5 bottom space/border
-      Height := TM.tmHeight + 10;
-    finally
-      AutoSizing := False;
-    end;
-  end;
+  inherited CalculatePreferredSize(PreferredWidth, PreferredHeight);
+  // ignore width
+  PreferredWidth:=0;
 end;
 
 procedure TCustomEdit.CreateWnd;
@@ -384,6 +367,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2004/11/03 14:18:35  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.34  2004/09/21 13:28:10  micha
   convert LM_SETPROPERTIES to interface methods for TCustomEdit
 

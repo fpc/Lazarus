@@ -305,8 +305,8 @@ begin
   pLabel := pchar(AText);
 
   case AWinControl.fCompStyle of
-    csBitBtn,
-    csButton: DebugLn('[WARNING] Obsolete call to TGTKOBject.SetLabel for ', AWinControl.ClassName);
+  csBitBtn,
+  csButton: DebugLn('[WARNING] Obsolete call to TGTKOBject.SetLabel for ', AWinControl.ClassName);
   
 {$IFDEF OldToolBar}
   csToolButton:

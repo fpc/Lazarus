@@ -543,7 +543,7 @@ type
     procedure SetPasswordChar(const AValue: Char);
     procedure SetReadOnly(Value: Boolean);
   Protected
-    Procedure DoAutoSize; Override;
+    procedure CalculatePreferredSize(var PreferredWidth, PreferredHeight: integer); override;
     procedure CreateWnd; override;
 
     procedure CMTextChanged(Var Message: TLMessage); message CM_TextChanged;
@@ -725,11 +725,13 @@ type
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
   protected
     function GetLabelText: String ; virtual;
-    procedure DoAutoSize; override;
-    procedure ParentFormInitializeWnd; override;
+    procedure RealSetText(const AValue: TCaption); override;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure SetFocusControl(Val: TWinControl); virtual;
     procedure SetShowAccelChar(Val: boolean); virtual;
+    {$IFNDEF EnablePreferredSize}
+    procedure DoAutoSize; override;
+    {$ENDIF}
   public
     constructor Create(AOwner: TComponent); override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
@@ -834,7 +836,9 @@ type
   // Normal checkbox
   TCheckBox = class(TCustomCheckBox)
   protected
-    procedure DoAutoSize; Override;
+    {$IFNDEF EnablePreferredSize}
+    procedure DoAutoSize; override;
+    {$ENDIF}
   published
     property Action;
     property Align;
@@ -994,8 +998,10 @@ type
 
   TRadioButton = class(TCustomCheckBox)
   protected
-    procedure DoAutoSize; override;
     procedure RealSetText(const Value: TCaption); override;
+    {$IFNDEF EnablePreferredSize}
+    procedure DoAutoSize; override;
+    {$ENDIF}
   public
     constructor Create(TheOwner: TComponent); override;
   published
@@ -1175,6 +1181,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.171  2004/11/03 14:18:35  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.170  2004/09/25 15:05:38  mattias
   implemented Rename Identifier
 

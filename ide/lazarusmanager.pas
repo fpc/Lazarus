@@ -98,7 +98,7 @@ end;
 
 function TLazarusManager.GetLazarusPath(const FileName: string) : string;
 begin
-  result := AppendPathDelim(FStartLazarusOptions.LazarusDir) + FileName +
+  Result := AppendPathDelim(FStartLazarusOptions.LazarusDir) + FileName +
     GetDefaultExecutableExt;
 end;
 
@@ -223,6 +223,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.8  2004/11/03 14:18:34  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.7  2004/10/31 21:17:34  vincents
   - Implemented restarting by starting startlazarus on unix (for 1.9.x only).
   - Add Restart After Succesfull Build CheckBox to the Configure Build Lazarus dialog.

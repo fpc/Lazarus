@@ -1236,7 +1236,7 @@ begin
     end;
   end else begin
     // stop the signal, so that the widget does not auto react
-    if (TControl(Data).FCompStyle<>csNotebook)
+    if (not (TControl(Data) is TCustomNoteBook))
     or (event^.Button<>1) then begin
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-press-event');
 			result := false;
@@ -1400,7 +1400,7 @@ begin
     end;
   end else begin
     // stop the signal, so that the widget does not auto react
-    if TControl(Data).FCompStyle<>csNotebook then
+    if not (TControl(Data) is TCustomNoteBook) then
       g_signal_stop_emission_by_name(PGTKObject(Widget),'button-release-event');
   end;
 
@@ -2909,6 +2909,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.250  2004/11/03 14:18:36  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.249  2004/10/15 12:04:09  mattias
   calling updating notebook tab after realize, needed for close btns
 

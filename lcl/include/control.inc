@@ -428,6 +428,7 @@ begin
   FTop:= ATop;
   FWidth:= AWidth;
   FHeight:= AHeight;
+  if Parent<>nil then Parent.InvalidatePreferredSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -827,6 +828,24 @@ procedure TControl.ConstrainedResize(var MinWidth, MinHeight,
 begin
   if Assigned(FOnConstrainedResize) then
     FOnConstrainedResize(Self, MinWidth, MinHeight, MaxWidth, MaxHeight);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.CalculatePreferredSize(var PreferredWidth,
+    PreferredHeight: integer);
+
+  Calculates the default/preferred width and height for a control, which is used
+  by the LCL autosizing algorithms as default size. Only positive values are
+  valid. Negative or 0 are treated as undefined and the LCL uses other sizes
+  instead.
+  TWinControl overrides this and asks the interface for theme dependent values.
+  See TWinControl.GetPreferredSize for more information.
+ ------------------------------------------------------------------------------}
+procedure TControl.CalculatePreferredSize(var PreferredWidth,
+  PreferredHeight: integer);
+begin
+  PreferredWidth:=0;
+  PreferredHeight:=0;
 end;
 
 {------------------------------------------------------------------------------
@@ -1839,9 +1858,11 @@ Begin
     FOnClick(Self);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl AddControl                                                         }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl AddControl
+  
+  Add Handle object to parents Handle object.
+------------------------------------------------------------------------------}
 procedure TControl.AddControl;
 begin
   TWSControlClass(WidgetSetClass).AddControl(Self);
@@ -1888,6 +1909,7 @@ Procedure TControl.SetAutoSize(const value : Boolean);
 Begin
   If AutoSize <> Value then begin
     FAutoSize := Value;
+    //debugln('TControl.SetAutoSize ',DbgSName(Self));
     DoAutoSize;
   end;
 end;
@@ -3229,6 +3251,44 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TControl.GetPreferredSize(
+    var PreferredWidth, PreferredHeight: integer);
+    
+  Returns the default/preferred width and height for a control, which is used
+  by the LCL autosizing algorithms as default size. Only positive values are
+  valid. Negative or 0 are treated as undefined and the LCL uses other sizes
+  instead.
+  TWinControl overrides this and asks the interface for theme dependent values.
+  See TWinControl.GetPreferredSize for more information.
+ ------------------------------------------------------------------------------}
+procedure TControl.GetPreferredSize(var PreferredWidth, PreferredHeight: integer
+  );
+begin
+  if not (cfPreferredSizeValid in FControlFlags) then begin
+    CalculatePreferredSize(FPreferredWidth,FPreferredHeight);
+    Include(FControlFlags,cfPreferredSizeValid);
+  end;
+  PreferredWidth:=FPreferredWidth;
+  PreferredHeight:=FPreferredHeight;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.InvalidatePreferredSize;
+  
+  Invalidate the cache of the preferred size of this and all parent controls.
+ ------------------------------------------------------------------------------}
+procedure TControl.InvalidatePreferredSize;
+var
+  AControl: TControl;
+begin
+  AControl:=Self;
+  while AControl<>nil do begin
+    Exclude(AControl.FControlFlags,cfPreferredSizeValid);
+    AControl:=AControl.Parent;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TControl.WMWindowPosChanged
   Params:   Msg: The message
   Returns:  nothing
@@ -3288,6 +3348,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.220  2004/11/03 14:18:35  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.219  2004/10/28 09:30:49  mattias
   implemented borderspacing TWinControl.ChildSizing.Left/Top
 

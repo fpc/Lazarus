@@ -195,14 +195,16 @@ var
 begin
   if Value=Text then exit;
   Inherited RealSetText(Value);
-  If (not HandleAllocated) or (csDesigning in ComponentState) then exit;
-  ParseStr := Value;
-  AccelIndex := DeleteAmpersands(ParseStr);
-  If AccelIndex > -1 then begin
-    OldKey := FShortCut;
-    FShortCut := Char2VK(ParseStr[AccelIndex]);
-    TWSCustomCheckBoxClass(WidgetSetClass).SetShortCut(Self, OldKey, FShortCut);
+  If HandleAllocated and (not (csDesigning in ComponentState)) then begin
+    ParseStr := Value;
+    AccelIndex := DeleteAmpersands(ParseStr);
+    If AccelIndex > -1 then begin
+      OldKey := FShortCut;
+      FShortCut := Char2VK(ParseStr[AccelIndex]);
+      TWSCustomCheckBoxClass(WidgetSetClass).SetShortCut(Self, OldKey, FShortCut);
+    end;
   end;
+  InvalidatePreferredSize;
   DoAutoSize;
 end;
 
@@ -210,6 +212,9 @@ end;
 
 {
   $Log$
+  Revision 1.27  2004/11/03 14:18:35  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.26  2004/09/19 18:50:28  micha
   convert LM_SETVALUE message to interface methods
 

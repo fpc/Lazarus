@@ -47,6 +47,16 @@ begin
   Result := Caption;  
 end;
 
+procedure TCustomLabel.RealSetText(const AValue: TCaption);
+begin
+  if Text=AValue then exit;
+  inherited RealSetText(AValue);
+  InvalidatePreferredSize;
+  {$IFDEF EnablePreferredSize}
+  DoAutoSize;
+  {$ENDIF}
+end;
+
 {------------------------------------------------------------------------------
   procedure TCustomLabel.Notification(AComponent: TComponent;
     Operation: TOperation);
@@ -71,39 +81,6 @@ begin
     if HandleAllocated then
       TWSCustomLabelClass(WidgetSetClass).SetAlignment(Self, Value);
   end;
-end;
-
-Procedure TCustomLabel.DoAutoSize;
-var
-  R: TRect;
-  DC: hDC;
-begin
-  If AutoSizing or (not AutoSize) or (Caption='') then
-    Exit;
-  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
-    exit;
-  AutoSizing := True;
-  DC := GetDC(Handle);
-  Try
-    R := Rect(0,0, Width, Height);
-    DrawText(DC, PChar(Caption + 'W'), Length(Caption) + 1, R,
-      DT_CalcRect or DT_NoPrefix or DT_Internal);
-    Width := R.Right;
-    Height := R.Bottom;
-  Finally
-    ReleaseDC(Handle, DC);
-    AutoSizing := False;
-  end;
-end;
-
-{------------------------------------------------------------------------------
-  procedure TCustomLabel.ParentFormInitializeWnd;
- ------------------------------------------------------------------------------}
-procedure TCustomLabel.ParentFormInitializeWnd;
-begin
-  inherited ParentFormInitializeWnd;
-  // workaround, till AutoSizing is completed in TWinControl
-  DoAutoSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -150,6 +127,31 @@ begin
   end;
 end;
 
+{$IFNDEF EnablePreferredSize}
+procedure TCustomLabel.DoAutoSize;
+var
+  R: TRect;
+  DC: hDC;
+begin
+  If AutoSizing or (not AutoSize) or (Caption='') then
+    Exit;
+  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
+    exit;
+  AutoSizing := True;
+  DC := GetDC(Handle);
+  Try
+    R := Rect(0,0, Width, Height);
+    DrawText(DC, PChar(Caption + 'W'), Length(Caption) + 1, R,
+      DT_CalcRect or DT_NoPrefix or DT_Internal);
+    Width := R.Right;
+    Height := R.Bottom;
+  Finally
+    ReleaseDC(Handle, DC);
+    AutoSizing := False;
+  end;
+end;
+{$ENDIF}
+
 {------------------------------------------------------------------------------
   Method: TCustomLabel.SetWordWrap
   Params: None
@@ -183,6 +185,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2004/11/03 14:18:35  mattias
+  implemented preferred size for controls for theme depending AutoSizing
+
   Revision 1.18  2004/09/25 15:05:38  mattias
   implemented Rename Identifier
 

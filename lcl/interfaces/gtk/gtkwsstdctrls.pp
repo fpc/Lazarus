@@ -139,6 +139,9 @@ type
     class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer); override;
   end;
 
   { TGtkWSCustomMemo }
@@ -193,6 +196,8 @@ type
                               const NewLayout: TTextLayout); override;
     class procedure SetWordWrap(const ACustomLabel: TCustomLabel;
                                 const NewWordWrap: boolean); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer); override;
   end;
 
   { TGtkWSLabel }
@@ -223,6 +228,8 @@ type
       const OldShortCut, NewShortCut: TShortCut); override;
     class procedure SetState(const ACustomCheckBox: TCustomCheckBox;
                              const NewState: TCheckBoxState); override;
+    class procedure GetPreferredSize(const AWinControl: TWinControl;
+                        var PreferredWidth, PreferredHeight: integer); override;
   end;
 
   { TGtkWSCheckBox }
@@ -509,27 +516,22 @@ procedure TGtkWSCustomListBox.SetItemIndex(const ACustomListBox: TCustomListBox;
   const AIndex: integer);
 var
   Handle: HWND;
+  Widget: PGtkWidget;
 begin
   Handle := ACustomListBox.Handle;
   if Handle<>0 then 
   begin
-    case ACustomListBox.fCompStyle of
-
-    csListBox, csCheckListBox:
-    begin
-      if AIndex >= 0 then 
+    Widget:=GetWidgetInfo(Pointer(Handle),True)^.CoreWidget;
+    if GtkWidgetIsA(Widget,GTK_LIST_TYPE) then begin
+      if AIndex >= 0 then
       begin
-        gtk_list_select_item(
-          PGtkList(GetWidgetInfo(Pointer(Handle),True)^.CoreWidget), AIndex)
+        gtk_list_select_item(PGtkList(Widget), AIndex)
       end else
-        gtk_list_unselect_all(
-          PGtkList(GetWidgetInfo(Pointer(Handle),True)^.CoreWidget));
-    end;
-
-    csCListBox:
-      gtk_clist_select_row(PGtkCList(GetWidgetInfo(
-        Pointer(Handle), True)^.CoreWidget), AIndex, 1);    // column
-    end;
+        gtk_list_unselect_all(PGtkList(Widget));
+    end else if GtkWidgetIsA(Widget,GTK_CLIST_TYPE) then begin
+      gtk_clist_select_row(PGtkCList(Widget), AIndex, 1);    // column
+    end else
+      raise Exception.Create('');
   end;
 end;
 
@@ -544,12 +546,12 @@ end;
 procedure TGtkWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox;
   AList: TStrings; ASorted: boolean);
 begin
-  case ACustomListBox.fCompStyle of
-  csListBox,
-  csCheckListBox:
-                 TGtkListStringList(AList).Sorted := ASorted;
-  csCListBox: TGtkCListStringList(AList).Sorted := ASorted;
-  end
+  if AList is TGtkListStringList then
+    TGtkListStringList(AList).Sorted := ASorted
+  else if AList is TGtkCListStringList then
+    TGtkCListStringList(AList).Sorted := ASorted
+  else
+    raise Exception.Create('');
 end;
 
 procedure TGtkWSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox;
@@ -773,6 +775,13 @@ begin
                      NewLength);
 end;
 
+procedure TGtkWSCustomEdit.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer);
+begin
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
+  //debugln('TGtkWSCustomEdit.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
+end;
+
 { TGtkWSCustomLabel }
 
 procedure TGtkWSCustomLabel.SetAlignment(const ACustomLabel: TCustomLabel;
@@ -785,6 +794,7 @@ end;
 procedure TGtkWSCustomLabel.SetLayout(const ACustomLabel: TCustomLabel;
   const NewLayout: TTextLayout);
 begin
+  ACustomLabel.InvalidatePreferredSize;
   SetLabelAlignment(PGtkLabel(ACustomLabel.Handle),ACustomLabel.Alignment,
                     NewLayout);
 end;
@@ -792,7 +802,15 @@ end;
 procedure TGtkWSCustomLabel.SetWordWrap(const ACustomLabel: TCustomLabel;
   const NewWordWrap: boolean);
 begin
+  ACustomLabel.InvalidatePreferredSize;
   gtk_label_set_line_wrap(GTK_LABEL(Pointer(ACustomLabel.Handle)), NewWordWrap);
+end;
+
+procedure TGtkWSCustomLabel.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer);
+begin
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
+  //debugln('TGtkWSCustomLabel.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
 { TGtkWSCustomCheckBox }
@@ -931,6 +949,13 @@ begin
   LockOnChange(GtkObject,1);
   gtk_toggle_button_set_active(PGtkToggleButton(GtkObject), NewState = cbChecked);
   LockOnChange(GtkObject,-1);
+end;
+
+procedure TGtkWSCustomCheckBox.GetPreferredSize(const AWinControl: TWinControl;
+  var PreferredWidth, PreferredHeight: integer);
+begin
+  GetGTKDefaultWidgetSize(AWinControl,PreferredWidth,PreferredHeight);
+  //debugln('TGtkWSCustomCheckBox.GetPreferredSize ',DbgSName(AWinControl),' PreferredWidth=',dbgs(PreferredWidth),' PreferredHeight=',dbgs(PreferredHeight));
 end;
 
 initialization
