@@ -930,9 +930,9 @@ type
     AutoSizing: Boolean;
     procedure AdjustSize; virtual;
     procedure DoAutoSize; virtual;
-    procedure AnchorSideChanged(TheAnchorSide: TAnchorSide); virtual;
     function AutoSizeCanStart: boolean; virtual;
     function AutoSizeDelayed: boolean; virtual;
+    procedure AnchorSideChanged(TheAnchorSide: TAnchorSide); virtual;
     procedure SetAlign(Value: TAlign); virtual;
     procedure SetAnchors(const AValue: TAnchors); virtual;
     procedure SetAutoSize(const Value: Boolean); virtual;
@@ -2853,6 +2853,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.274  2005/01/24 12:23:11  mattias
+  fixed TColorButton.Paint
+
   Revision 1.273  2005/01/22 22:26:16  mattias
   added sprite example
 

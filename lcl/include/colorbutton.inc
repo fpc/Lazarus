@@ -39,10 +39,11 @@ begin
   ARect:=Bounds(0, 0, Width, Height);
   with Canvas do begin
     Frame3d(ARect,FBorderWidth,bvRaised);
+    //debugln('TColorButton.Paint A ',dbgs(ARect));
     InflateRect(ARect,-FBorderWidth,-FBorderWidth);
+    //debugln('TColorButton.Paint B ',dbgs(ARect));
     Brush.Color:=ButtonColor;
     FillRect(ARect);
-    FillRect(Rect(-100,-100,300,300));
   end;
   inherited Paint;
 end;

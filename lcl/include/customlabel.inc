@@ -180,7 +180,7 @@ end;
 procedure TCustomLabel.Loaded;
 begin
   inherited Loaded;
-  DoAutoSize;
+  AdjustSize;
 end;
 
 Procedure TCustomLabel.Paint;
@@ -250,6 +250,9 @@ end;
 
 {
   $Log$
+  Revision 1.26  2005/01/24 12:23:11  mattias
+  fixed TColorButton.Paint
+
   Revision 1.25  2005/01/24 11:49:42  mattias
   added checks for filenames with spaces
 

@@ -51,9 +51,7 @@ begin
   if Text=AValue then exit;
   inherited RealSetText(AValue);
   InvalidatePreferredSize;
-  {$IFDEF EnablePreferredSize}
-  DoAutoSize;
-  {$ENDIF}
+  AdjustSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -171,6 +169,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2005/01/24 12:23:11  mattias
+  fixed TColorButton.Paint
+
   Revision 1.11  2005/01/11 21:36:36  micha
   remove TStaticText.Layout property, not supported by delphi, hard to implement
 

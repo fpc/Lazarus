@@ -67,7 +67,7 @@ begin
   if Text=Value then exit;
   Inherited RealSetText(Value);
   InvalidatePreferredSize;
-  DoAutoSize;
+  AdjustSize;
 end;
 
 {$IFNDEF EnablePreferredSize}
@@ -102,6 +102,9 @@ end;
 
 {
   $Log$
+  Revision 1.21  2005/01/24 12:23:11  mattias
+  fixed TColorButton.Paint
+
   Revision 1.20  2005/01/01 19:36:40  mattias
   fixed loading TRadioButton.Checked
 

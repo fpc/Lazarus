@@ -1454,7 +1454,13 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.ParentFormHandleInitialized;
 begin
-  DoAutoSize;
+  // The form is real connection to the target screen. For example, the gtk
+  // under X gathers some screen information not before form creation.
+  // But this information is needed to create DeviceContexts, which
+  // are needed to calculate Text Size and such stuff needed for AutoSizing.
+  // That's why AdjustSize delays AutoSizing till this moment. Now do the
+  // AutoSize.
+  AdjustSize;
 end;
 
 {------------------------------------------------------------------------------
@@ -1814,12 +1820,18 @@ Begin
   If AutoSize <> Value then begin
     FAutoSize := Value;
     //debugln('TControl.SetAutoSize ',DbgSName(Self));
-    DoAutoSize;
+    AdjustSize;
   end;
 end;
 
 {------------------------------------------------------------------------------
-       TControl DoAutoSize
+  TControl DoAutoSize
+
+  IMPORTANT: Many Delphi controls override this method and many call this method
+  directly after setting some properties.
+  During handle creation not all interfaces can create complete Device Contexts
+  which are needed to calculate things like text size.
+  That's why you should always call AdjustSize instead of DoAutoSize.
 ------------------------------------------------------------------------------}
 Procedure TControl.DoAutoSize;
 Begin
@@ -3418,6 +3430,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.241  2005/01/24 12:23:11  mattias
+  fixed TColorButton.Paint
+
   Revision 1.240  2005/01/24 11:49:42  mattias
   added checks for filenames with spaces
 

@@ -222,13 +222,16 @@ begin
     end;
   end;
   InvalidatePreferredSize;
-  DoAutoSize;
+  AdjustSize;
 end;
 
 // included by stdctrls.pp
 
 {
   $Log$
+  Revision 1.31  2005/01/24 12:23:11  mattias
+  fixed TColorButton.Paint
+
   Revision 1.30  2005/01/13 23:37:33  marc
   * Fixed and clearified loaded
 
