@@ -301,7 +301,8 @@ function TGDBMIDebugger.ChangeFileName: Boolean;
 //  S: String;
 begin
   FHasSymbols := True; // True until proven otherwise
-  Result := ExecuteCommand('-file-exec-and-symbols %s', [FileName], False) and inherited ChangeFileName;
+  Result := ExecuteCommand('-file-exec-and-symbols %s', [FileName], False)
+            and inherited ChangeFileName;
 
   if Result and FHasSymbols
   then begin
@@ -415,6 +416,9 @@ function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
 var
   S: String;
 begin
+  AResultValues := '';
+  AResultState := dsNone;
+  
   FCommandQueue.AddObject(ACommand, TObject(Integer(ANoMICommand)));
   if FCommandQueue.Count > 1 then Exit;
   repeat
@@ -486,13 +490,17 @@ begin
   Result := GDBGetData('%u', [Integer(ALocation)]);
 end;
 
-function TGDBMIDebugger.GDBGetData(const AExpression: String; AValues: array of const): Pointer;
+function TGDBMIDebugger.GDBGetData(const AExpression: String;
+  AValues: array of const): Pointer;
 var
   S: String;
 begin
   if not ExecuteCommand('x/d ' + AExpression, AValues, S, True)
   then Result := nil
-  else Result := Pointer(StrToIntDef(StripLN(GetPart('\t', '', S)), 0));
+  else begin
+    writeln('TGDBMIDebugger.GDBGetData A {',S,'}');
+    Result := Pointer(StrToIntDef(StripLN(GetPart('\t', '', S)), 0));
+  end;
 end;
 
 function TGDBMIDebugger.GDBGetText(const ALocation: Pointer): String;
@@ -500,7 +508,8 @@ begin
   Result := GDBGetText('%d', [Integer(ALocation)]);
 end;
 
-function TGDBMIDebugger.GDBGetText(const AExpression: String; AValues: array of const): String;
+function TGDBMIDebugger.GDBGetText(const AExpression: String;
+  AValues: array of const): String;
 var
   S: String;
 begin
@@ -510,8 +519,7 @@ begin
   end
   else begin
     S := StripLN(S);
-    S := GetPart('\t ''', '', S);
-    Result := LeftStr(S, Length(S) - 1);
+    Result := GetPart('\t ''', '''', S);
   end;
 end;
 
@@ -573,7 +581,8 @@ begin
       // Insert Exception breakpoint
       if FExceptionBreakID = -1
       then begin
-        ExecuteCommand('-break-insert FPC_RAISEEXCEPTION', [], True, ResultState, S, False);
+        ExecuteCommand('-break-insert FPC_RAISEEXCEPTION', [], True,
+                       ResultState, S, False);
         ResultList := CreateMIValueList(S);
         BkptList := CreateMIValueList(ResultList.Values['bkpt']);
         FExceptionBreakID := StrToIntDef(BkptList.Values['number'], -1);
@@ -584,7 +593,8 @@ begin
       // Insert Break breakpoint
       if FBreakErrorBreakID = -1
       then begin
-        ExecuteCommand('-break-insert FPC_BREAK_ERROR', [], True, ResultState, S, False);
+        ExecuteCommand('-break-insert FPC_BREAK_ERROR', [], True, ResultState,
+                       S, False);
         ResultList := CreateMIValueList(S);
         BkptList := CreateMIValueList(ResultList.Values['bkpt']);
         FBreakErrorBreakID := StrToIntDef(BkptList.Values['number'], -1);
@@ -687,7 +697,8 @@ var
   ResultState: TDBGState;
   ResultValues: String;
 begin
-  if not ExecuteCommand('ptype %s', [AExpression], True, ResultState, ResultValues, True)
+  if not ExecuteCommand('ptype %s', [AExpression], True, ResultState,
+                        ResultValues, True)
   or (ResultState = dsError)
   then begin
     Result := nil;
@@ -744,11 +755,13 @@ begin
   end;
 end;
 
-function TGDBMIDebugger.ProcessResult(var ANewState: TDBGState; var AResultValues: String; const ANoMICommand: Boolean): Boolean;
+function TGDBMIDebugger.ProcessResult(var ANewState: TDBGState;
+  var AResultValues: String; const ANoMICommand: Boolean): Boolean;
 var
   S: String;
 begin
   Result := False;
+  AResultValues:='';
   S := StripLN(ReadLine);
   ANewState := dsNone;
   while DebugProcessRunning and (S <> '(gdb) ') do
@@ -904,7 +917,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
   begin
     Frame := CreateMIValueList(AFrame);
 
-    Location.Adress := Pointer(StrToIntDef(Frame.Values['addr'], 0));
+    Location.Address := Pointer(StrToIntDef(Frame.Values['addr'], 0));
     Location.FuncName := Frame.Values['func'];
     Location.SrcFile := Frame.Values['file'];
     Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
@@ -927,8 +940,14 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
 
     CompactMode := FVersion >= '5.3';
     
-    if (CompactMode and ExecuteCommand('-data-evaluate-expression ^^shortstring(^^pointer($fp+8)^^+12)^^', [], S, False))
-    or (not CompactMode and ExecuteCommand('-data-evaluate-expression pshortstring(%u)^', [Integer(GDBGetData(GDBGetData(GDBGetData('$fp+8', []))+12))], S, False))
+    if (CompactMode
+        and ExecuteCommand(
+              '-data-evaluate-expression ^^shortstring(^^pointer($fp+8)^^+12)^^',
+              [], S, False))
+    or ((not CompactMode)
+        and ExecuteCommand('-data-evaluate-expression pshortstring(%u)^',
+              [Integer(GDBGetData(GDBGetData(GDBGetData('$fp+8', []))+12))],
+              S, False))
     then begin
       ResultList := CreateMIValueList(S);
       ExceptionName := ResultList.Values['value'];
@@ -943,9 +962,10 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
     Location.SrcLine := -1;
     Location.SrcFile := '';
     Location.FuncName := '';
-    Location.Adress := GDBGetData('$fp+12', []);
+    Location.Address := GDBGetData('$fp+12', []);
     
-    if ExecuteCommand('info line * pointer(%d)', [Integer(Location.Adress)], S, True)
+    if ExecuteCommand('info line * pointer(%d)', [Integer(Location.Address)],
+                      S, True)
     then begin
       Location.SrcLine := StrToIntDef(GetPart('Line ', ' of', S), -1);
       Location.SrcFile := GetPart('\"', '\"', S);
@@ -965,9 +985,9 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
     
     Location.SrcLine := -1;
     Location.SrcFile := '';
-    Location.Adress := GDBGetData('$fp+12', []);
+    Location.Address := GDBGetData('$fp+12', []);
     Location.FuncName := '';
-    if ExecuteCommand('info line * pointer(%d)', [Integer(Location.Adress)], S, True)
+    if ExecuteCommand('info line * pointer(%d)', [Integer(Location.Address)], S, True)
     then begin
       Location.SrcLine := StrToIntDef(GetPart('Line ', ' of', S), -1);
       Location.SrcFile := GetPart('\"', '\"', S);
@@ -1215,7 +1235,8 @@ begin
   if  (FBreakID <> 0)
   and (Debugger <> nil)
   then begin
-    TGDBMIDebugger(Debugger).ExecuteCommand('-break-delete %d', [FBreakID], False);
+    TGDBMIDebugger(Debugger).ExecuteCommand('-break-delete %d', [FBreakID],
+                                            False);
     FBreakID:=0;
     SetHitCount(0);
   end;
@@ -1433,7 +1454,8 @@ begin
   if Debugger = nil then Exit;
 
   Arguments := TStringList.Create;
-  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-arguments 1 %d %d', [AIndex, AIndex], S, False);
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-arguments 1 %d %d',
+                                          [AIndex, AIndex], S, False);
   List := CreateMIValueList(S);   
   S := List.Values['stack-args'];
   FreeAndNil(List);
@@ -1453,7 +1475,8 @@ begin
   end;
   FreeAndNil(ArgList);
   
-  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-frames %d %d', [AIndex, AIndex], S, False);
+  TGDBMIDebugger(Debugger).ExecuteCommand('-stack-list-frames %d %d',
+                                          [AIndex, AIndex], S, False);
   List := CreateMIValueList(S);   
   S := List.Values['stack'];
   FreeAndNil(List);
@@ -1734,7 +1757,10 @@ begin
         AResult := AResult + FOperator;
       end;
 
-      if not FDebugger.ExecuteCommand('ptype %s', [FOperator], True, ResultState, ResultValues, True) then Exit;
+      if not FDebugger.ExecuteCommand('ptype %s', [FOperator], True,
+                                     ResultState, ResultValues, True)
+      then Exit;
+      
       if ResultState = dsError
       then begin
         // no type possible, use literal operator
@@ -1769,6 +1795,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.20  2003/05/29 18:47:27  mattias
+  fixed reposition sourcemark
+
   Revision 1.19  2003/05/29 17:40:10  marc
   MWE: * Fixed string resolving
        * Updated exception handling
