@@ -110,7 +110,7 @@ RegCompList:TRegisteredComponentList;
 
 implementation
 
-uses Project,global,LResources;
+uses Project,LResources;
 
 
 { TIDECompList }
