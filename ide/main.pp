@@ -1922,12 +1922,12 @@ begin
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofAllowMultiSelect];
-    OpenDialog.Filter:='Lazarus unit (*.pas;*.pp)|*.pas;*.pp'
+    OpenDialog.Filter:='All files ('+GetAllFilesMask+')|'+GetAllFilesMask
+                 +'|Lazarus unit (*.pas;*.pp)|*.pas;*.pp'
                  +'|Lazarus project (*.lpi)|*.lpi'
                  +'|Lazarus form (*.lfm)|*.lfm'
                  +'|Lazarus package (*.lpk)|*.lpk'
-                 +'|Lazarus project source (*.lpr)|*.lpr'
-                 +'|All files ('+GetAllFilesMask+')|'+GetAllFilesMask;
+                 +'|Lazarus project source (*.lpr)|*.lpr';
     if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
       OpenFlags:=[ofAddToRecent];
       //debugln('TMainIDE.mnuOpenClicked OpenDialog.Files.Count=',dbgs(OpenDialog.Files.Count));
@@ -11457,6 +11457,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.852  2005/03/02 15:59:53  mattias
+  accelerated identifier completion
+
   Revision 1.851  2005/02/28 22:43:48  mattias
   implemented updating lrs files from lfm files
 

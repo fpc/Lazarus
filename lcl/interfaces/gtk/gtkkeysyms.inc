@@ -1,3 +1,4 @@
+{$IFDEF Gtk1}
 const
   GDK_KEY_VoidSymbol =                    GDK_VoidSymbol;
   GDK_KEY_BackSpace =                     GDK_BackSpace;
@@ -1319,3 +1320,4 @@ const
   GDK_KEY_Hangul_J_KkogjiDalrinIeung =    GDK_Hangul_J_KkogjiDalrinIeung;
   GDK_KEY_Hangul_J_YeorinHieuh =          GDK_Hangul_J_YeorinHieuh;
   GDK_KEY_Korean_Won =                    GDK_Korean_Won;
+{$ENDIF}

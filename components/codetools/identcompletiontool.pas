@@ -79,6 +79,8 @@ type
     );
   TIdentListItemFlags = set of TIdentListItemFlag;
   
+  { TIdentifierListItem }
+
   TIdentifierListItem = class
   private
     FNext: TIdentifierListItem;
@@ -110,6 +112,7 @@ type
     procedure UpdateBaseContext;
     function HasChilds: boolean;
     procedure Clear;
+    function CompareParamList(CompareItem: TIdentifierListItem): integer;
   public
     property ParamList: string read GetParamList write SetParamList;
   end;
@@ -277,7 +280,7 @@ begin
   if Result<>0 then exit;
   
   // then sort for ParamList (lower is better)
-  Result:=AnsiCompareText(Item2.ParamList,Item1.ParamList);
+  Result:=Item2.CompareParamList(Item1);
 end;
 
 function CompareIdentListItemsForIdents(Data1, Data2: Pointer): integer;
@@ -293,7 +296,7 @@ begin
   if Result<>0 then exit;
 
   // then sort for ParamList (lower is better)
-  Result:=AnsiCompareText(Item2.ParamList,Item1.ParamList);
+  Result:=Item2.CompareParamList(Item1);
 end;
 
 function CompareIdentHistListItem(Data1, Data2: Pointer): integer;
@@ -307,6 +310,7 @@ begin
   Result:=CompareIdentifiers(PChar(Item2.Identifier),PChar(Item1.Identifier));
   if Result<>0 then exit;
 
+  //debugln('CompareIdentHistListItem ',Item2.Identifier,'=',Item1.Identifier);
   Result:=CompareIdentifiers(PChar(Item2.ParamList),PChar(Item1.ParamList));
 end;
 
@@ -321,7 +325,8 @@ begin
   Result:=CompareIdentifiers(PChar(HistItem.Identifier),IdentItem.Identifier);
   if Result<>0 then exit;
 
-  Result:=AnsiCompareText(HistItem.ParamList,IdentItem.ParamList);
+  debugln('CompareIdentItemWithHistListItem ',HistItem.Identifier,'=',GetIdentifier(IdentItem.Identifier));
+  Result:=SysUtils.CompareText(HistItem.ParamList,IdentItem.ParamList);
 end;
 
 type
@@ -970,11 +975,14 @@ end;
 function TIdentifierListItem.GetParamList: string;
 begin
   if not FParamListValid then begin
-    if (Node<>nil) and (Node.Desc=ctnProcedure) then
+    // Note: if you implement param lists for other than ctnProcedure, check
+    //       CompareParamList
+    if (Node<>nil) and (Node.Desc=ctnProcedure) then begin
       FParamList:=Tool.ExtractProcHead(Node,
          [phpWithoutClassKeyword,phpWithoutClassName,
-          phpWithoutName,phpInUpperCase])
-    else
+          phpWithoutName,phpInUpperCase]);
+      //debugln('TIdentifierListItem.GetParamList A ',GetIdentifier(Identifier),' ',Tool.MainFilename,' ',dbgs(Node.StartPos));
+    end else
       FParamList:='';
     FParamListValid:=true;
   end;
@@ -1104,6 +1112,23 @@ begin
   DefaultDesc:=ctnNone;
   Flags:=[];
   BaseExprType:=CleanExpressionType;
+end;
+
+function TIdentifierListItem.CompareParamList(CompareItem: TIdentifierListItem
+  ): integer;
+begin
+  Result:=0;
+  if Self=CompareItem then exit;
+  if (Node=CompareItem.Node) then exit;
+  if (Node.Desc<>ctnProcedure) or (CompareItem.Node.Desc<>ctnProcedure) then
+    exit;
+  {DbgOut('TIdentifierListItem.CompareParamList ',GetIdentifier(Identifier),'=',GetIdentifier(CompareItem.Identifier));
+  if Node<>nil then
+    DbgOut(' Self=',Tool.MainFilename,' ',dbgs(Node.StartPos));
+  if CompareItem.Node<>nil then
+    DbgOut(' Other=',CompareItem.Tool.MainFilename,' ',dbgs(CompareItem.Node.StartPos));
+  debugln('');}
+  Result:=SysUtils.CompareText(ParamList,CompareItem.ParamList);
 end;
 
 { TIdentifierHistoryList }
