@@ -1098,6 +1098,7 @@ resourcestring
   uemCompleteCode = 'Complete Code';
   uemEncloseSelection = 'Enclose Selection';
   uemExtractProc = 'Extract Procedure';
+  uemInvertAttribution = 'Invert Attribution';
   uemEditorproperties='Editor properties';
   ueNotImplCap='Not implemented yet';
   ueNotImplText='If You can help us to implement this feature, mail to '
@@ -1300,6 +1301,7 @@ resourcestring
   srkmecExtractProc               = 'Extract procedure';
   srkmecFindIdentifierRefs        = 'Find identifier references';
   srkmecRenameIdentifier          = 'Rename identifier';
+  srkmecInvertAttribution         = 'Invert attribution';
   srkmecSyntaxCheck               = 'Syntax check';
   srkmecGuessMisplacedIFDEF       = 'Guess misplaced $IFDEF';
   srkmecFindDeclaration           = 'Find declaration';

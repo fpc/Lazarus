@@ -126,6 +126,7 @@ const
   ecExtractProc          = ecUserFirst + 112;
   ecFindIdentifierRefs   = ecUserFirst + 113;
   ecRenameIdentifier     = ecUserFirst + 114;
+  ecInvertAttribution    = ecUserFirst + 115;
 
   // file menu
   ecNew                  = ecUserFirst + 201;
@@ -572,6 +573,7 @@ begin
   ecExtractProc: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecFindIdentifierRefs: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecRenameIdentifier: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecInvertAttribution: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecSyntaxCheck: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGuessUnclosedBlock: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecGuessMisplacedIFDEF: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
@@ -1181,6 +1183,7 @@ begin
     ecExtractProc           : Result:= srkmecExtractProc;
     ecFindIdentifierRefs    : Result:= srkmecFindIdentifierRefs;
     ecRenameIdentifier      : Result:= srkmecRenameIdentifier;
+    ecInvertAttribution     : Result:= srkmecInvertAttribution;
     ecSyntaxCheck           : Result:= srkmecSyntaxCheck;
     ecGuessUnclosedBlock    : Result:= lismenuguessunclosedblock;
     ecGuessMisplacedIFDEF   : Result:= srkmecGuessMisplacedIFDEF;
@@ -1996,7 +1999,7 @@ begin
   AddDefault(C,'Identifier completion',ecIdentCompletion);
   AddDefault(C,'Extract proc',ecExtractProc);
   AddDefault(C,'Find identifier references',ecFindIdentifierRefs);
-  AddDefault(C,'Rename identifier',ecRenameIdentifier);
+  AddDefault(C,'Invert attribution',ecInvertAttribution);
   AddDefault(C,'Syntax check',ecSyntaxCheck);
   AddDefault(C,'Guess unclosed block',ecGuessUnclosedBlock);
   AddDefault(C,'Guess misplaced $IFDEF',ecGuessMisplacedIFDEF);

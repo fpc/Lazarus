@@ -55,7 +55,7 @@ uses
   LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
   WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
   EnvironmentOpts, MsgView, SearchResultView, InputHistory,
-  SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef,
+  SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef, InvertAttribTool,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch,
   BaseDebugManager, Debugger, MainIntf;
 
@@ -229,6 +229,7 @@ type
     procedure ConditionalSelection;
     procedure SortSelection;
     procedure BreakLinesInSelection;
+    procedure InvertAttribution;
     procedure SelectToBrace;
     procedure SelectCodeBlock;
     procedure SelectLine;
@@ -332,6 +333,8 @@ type
     EditorPropertiesMenuItem: TMenuItem;
     EncloseSelectionMenuItem: TMenuItem;
     ExtractProcMenuItem: TMenuItem;
+    InvertAttributionMenuItem: TMenuItem; //SMACE
+    
     FindDeclarationMenuItem: TMenuItem;
     GotoBookmarkMenuItem: TMenuItem;
     MoveEditorLeftMenuItem: TMenuItem;
@@ -354,6 +357,7 @@ type
     Procedure DeleteBreakpointClicked(Sender: TObject);
     procedure EncloseSelectionMenuItemClick(Sender: TObject);
     procedure ExtractProcMenuItemClick(Sender: TObject);
+    procedure InvertAttributionMenuItemClick(Sender: TObject);
     procedure FindIdentifierReferencesMenuItemClick(Sender: TObject);
     procedure RenameIdentifierMenuItemClick(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
@@ -1081,6 +1085,9 @@ Begin
   ecSelectionBreakLines:
     BreakLinesInSelection;
 
+  ecInvertAttribution:
+    InvertAttribution;
+
   ecSelectToBrace:
     SelectToBrace;
 
@@ -1339,6 +1346,26 @@ begin
   // ToDo: replace step by step to keep bookmarks and breakpoints
   OldSelection:=EditorComponent.SelText;
   FEditor.SelText:=BreakLinesInText(OldSelection,FEditor.RightEdge);
+  FEditor.EndUndoBlock;
+  FEditor.EndUpdate;
+end;
+
+procedure TSourceEditor.InvertAttribution;
+var
+  codelines: TStringList;
+begin
+  if ReadOnly then exit;
+  if not EditorComponent.SelAvail then exit;
+  FEditor.BeginUpdate;
+  FEditor.BeginUndoBlock;
+  // ToDo: replace step by step to keep bookmarks and breakpoints
+  codelines := TStringList.Create;
+  try
+    codelines.Text := FEditor.SelText;
+    FEditor.SelText := InvertAttribTool.InvertAttribution( codelines ).Text;
+  finally
+    codelines.Free;
+  end;
   FEditor.EndUndoBlock;
   FEditor.EndUpdate;
 end;
@@ -2861,8 +2888,9 @@ begin
     // user clicked on text
     SelAvail:=ASrcEdit.EditorComponent.SelAvail;
     SelAvailAndWritable:=SelAvail and (not ASrcEdit.ReadOnly);
-    EncloseSelectionMenuItem.Enabled:=SelAvailAndWritable;
-    ExtractProcMenuItem.Enabled:=SelAvailAndWritable;
+    EncloseSelectionMenuItem.Enabled := SelAvailAndWritable;
+    ExtractProcMenuItem.Enabled := SelAvailAndWritable;
+    InvertAttributionMenuItem.Enabled := SelAvailAndWritable;
     FindIdentifierReferencesMenuItem.Enabled:=
                                    IsValidIdent(ASrcEdit.GetWordAtCurrentCaret);
     RenameIdentifierMenuItem.Enabled:=
@@ -3115,6 +3143,17 @@ Begin
         OnClick :=@ExtractProcMenuItemClick;
       end;
       RefactorMenuItem.Add(ExtractProcMenuItem);
+
+      //SMACE
+      InvertAttributionMenuItem := TMenuItem.Create(Self);
+      with InvertAttributionMenuItem do begin
+        Name := 'InvertAttribution';
+        Caption := uemInvertAttribution;
+        OnClick :=@InvertAttributionMenuItemClick;
+      end;
+      RefactorMenuItem.Add(InvertAttributionMenuItem);
+
+
 
       FindIdentifierReferencesMenuItem := TMenuItem.Create(Self);
       with FindIdentifierReferencesMenuItem do begin
@@ -3965,6 +4004,15 @@ end;
 procedure TSourceNotebook.ExtractProcMenuItemClick(Sender: TObject);
 begin
   MainIDEInterface.DoCommand(ecExtractProc);
+end;
+
+procedure TSourceNotebook.InvertAttributionMenuItemClick(Sender: TObject);
+var
+  ASrcEdit: TSourceEditor;
+begin
+  ASrcEdit:=GetActiveSE;
+  if ASrcEdit=nil then exit;
+  ASrcEdit.InvertAttribution;
 end;
 
 procedure TSourceNotebook.FindIdentifierReferencesMenuItemClick(Sender: TObject

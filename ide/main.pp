@@ -2128,7 +2128,7 @@ begin
 
   ecExtractProc:
     DoExtractProcFromSelection;
-    
+
   ecToggleMessages:
     DoShowMessagesView;
     
@@ -11331,6 +11331,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.824  2005/01/09 15:26:05  mattias
+  added Invert attribution tool  from sergio
+
   Revision 1.823  2005/01/07 21:09:18  mattias
   improved placing new forms  by Jan
 
