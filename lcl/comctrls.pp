@@ -43,17 +43,17 @@ uses
   CommCtrl, Buttons;
 
 type
-
-{ TAlignment = Class(TWinControl)
-  public
-   constructor Create(AOwner : TComponent); override;
-   destructor Destroy; override;
-  end;
- }
   TStatusPanelStyle = (psText, psOwnerDraw);
   TStatusPanelBevel = (pbNone, pbLowered, pbRaised);
 
   TStatusBar = class;  //forward declaration
+
+  TPanelPart = (
+    ppText,    // for text and text alignment
+    ppBorder,  // for bevel and style
+    ppWidth    // for width
+    );
+  TPanelParts = set of TPanelPart;
 
   TStatusPanel = class(TCollectionItem)
   private
@@ -63,7 +63,6 @@ type
     FBevel: TStatusPanelBevel;
     FParentBiDiMode: Boolean;
     FStyle: TStatusPanelStyle;
-    //FUpdateNeeded: Boolean;
     procedure SetAlignment(Value: TAlignment);
     procedure SetBevel(Value: TStatusPanelBevel);
     procedure SetStyle(Value: TStatusPanelStyle);
@@ -71,9 +70,11 @@ type
     procedure SetWidth(Value: Integer);
   protected
     function GetDisplayName: string; override;
+    procedure PanelChanged(const Parts: TPanelParts);
   public
     constructor Create(aCollection: TCollection); override;
     procedure Assign(Source: TPersistent); override;
+    function StatusBar: TStatusBar;
   published
     property Alignment: TAlignment read FAlignment write SetAlignment;
     property Bevel: TStatusPanelBevel read FBevel write SetBevel default pbLowered;
@@ -91,22 +92,23 @@ type
     function GetOwner: TPersistent; override;
     procedure Update(Item: TCollectionItem); override;
   public
-    constructor Create(StatusBar: TStatusBar);
+    constructor Create(TheStatusBar: TStatusBar);
     function Add: TStatusPanel;
     property Items[Index: Integer]: TStatusPanel read GetItem write SetItem; default;
+    property StatusBar: TStatusBar read FStatusBar;
   end;
+  
+  
+  { TStatusBar }
 
- TStatusBar = Class(TWinControl)
+  TStatusBar = Class(TWinControl)
   private
     FCanvas : TCanvas;
     FPanels : TStatusPanels;
     FSimpleText : String;
     FSimplePanel : Boolean;
-    //FContext : Integer;
-    //FMessage : Integer;
-    //FAlignmentWidget : TAlignment;
     procedure SetPanels(Value: TStatusPanels);
-    procedure SetSimpleText(Value : String);
+    procedure SetSimpleText(const Value : String);
     procedure SetSimplePanel(Value : Boolean);
     Procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     Procedure DrawDivider(X : Integer);
@@ -114,6 +116,9 @@ type
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
+    procedure InvalidatePanel(PanelIndex: integer; PanelParts: TPanelParts); virtual;
+    procedure GetPanelRect(PanelIndex: integer; var ARect: TRect);
+  public
     property Canvas : TCanvas read FCanvas;
   published
     property Panels: TStatusPanels read FPanels write SetPanels;
@@ -1708,6 +1713,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.61  2002/11/30 11:22:53  mattias
+  statusbar now uses invalidaterect
+
   Revision 1.60  2002/11/25 11:37:18  mattias
   applied patch from Vasily
 

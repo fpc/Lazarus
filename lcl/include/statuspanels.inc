@@ -17,10 +17,10 @@
 
 }
 
-constructor TStatusPanels.Create(StatusBar: TStatusBar);
+constructor TStatusPanels.Create(TheStatusBar: TStatusBar);
 begin
   inherited Create(TStatusPanel);
-  FStatusBar := StatusBar;
+  FStatusBar := TheStatusBar;
 end;
 
 function TStatusPanels.Add: TStatusPanel;
@@ -45,7 +45,9 @@ end;
 
 procedure TStatusPanels.Update(Item: TCollectionItem);
 begin
-  FStatusBar.Invalidate;
+  // Don't invalidate the whole statusbar. There is an improved
+  // TStatusBar.InvalidatePanel.
+  //FStatusBar.Invalidate;
 end;
 
 // included by comctrls.pp

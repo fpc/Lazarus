@@ -31,29 +31,28 @@ begin
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
   FSimplePanel := True;
-//  FSizeGrip := True;
 end;
 
 
 {------------------------------------------------------------------------------}
 {   TStatusBar SetSimpleText                                                   }
 {------------------------------------------------------------------------------}
-procedure TStatusBar.SetSimpleText(Value : String);
+procedure TStatusBar.SetSimpleText(const Value : String);
 begin
-   if FSimpleText <> value then
-   begin
-      FSimpleText := Value;
-      Invalidate;
-   end;
+  if FSimpleText <> value then
+  begin
+    FSimpleText := Value;
+    Invalidate;
+  end;
 end;
 
 Procedure TStatusBar.SetSimplePanel(Value : Boolean);
 Begin
   if FSimplePanel <> Value then
-     Begin
-      FSimplePanel := Value;
-      Invalidate;
-     end;
+  Begin
+    FSimplePanel := Value;
+    Invalidate;
+  end;
 End;
 
 procedure TStatusBar.SetPanels(Value: TStatusPanels);
@@ -68,17 +67,67 @@ end;
 {------------------------------------------------------------------------------}
 destructor TStatusBar.Destroy;
 begin
-  FPanels.Free;
-  FCanvas.Free;
+  FreeThenNil(FPanels);
+  FreeThenNil(FCanvas);
   inherited Destroy;
 end;
 
-{------------------------------------------------------------------------------}
-{   TStatusBar DrawBevel                                                       }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  procedure TStatusBar.InvalidatePanel(PanelIndex: integer;
+    PanelParts: TPanelParts);
+------------------------------------------------------------------------------}
+procedure TStatusBar.InvalidatePanel(PanelIndex: integer;
+  PanelParts: TPanelParts);
+var
+  PanelRect, TextRect: TRect;
+begin
+  if (PanelParts=[]) or (not HandleAllocated) or (csLoading in ComponentState)
+  then exit;
+  if ppWidth in PanelParts then begin
+    Invalidate;
+  end else begin
+    GetPanelRect(PanelIndex,PanelRect);
+    if ppText in PanelParts then begin
+      TextRect:=PanelRect;
+      inc(TextRect.Left);
+      inc(TextRect.Top);
+      dec(TextRect.Right);
+      dec(TextRect.Bottom);
+      InvalidateRect(Handle,@TextRect,false);
+    end;
+    if ppBorder in PanelParts then begin
+      InvalidateFrame(Handle,@PanelRect,false,2);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TStatusBar.GetPanelRect(PanelIndex: integer; var ARect: TRect);
+------------------------------------------------------------------------------}
+procedure TStatusBar.GetPanelRect(PanelIndex: integer; var ARect: TRect);
+var
+  i: Integer;
+begin
+  ARect.Left:=0;
+  ARect.Top:=0;
+  ARect.Bottom:=ClientHeight;
+  for i:=0 to PanelIndex-1 do
+    inc(ARect.Left,Panels[i].Width);
+  if PanelIndex = Panels.Count-1 then begin
+    ARect.Right:=ClientWidth-ARect.Left;
+    if ARect.Right<ARect.Left then
+      ARect.Right:=ARect.Left;
+  end
+  else
+    ARect.Right:=ARect.Left+Panels[PanelIndex].Width;
+end;
+
+{------------------------------------------------------------------------------
+   TStatusBar DrawBevel
+------------------------------------------------------------------------------}
 Procedure TStatusBar.DrawBevel(xLeft, PanelNum : Integer );
 var
-  Colora,Colorb:TColor;
+  LeftTopColor,RightBottomColor:TColor;
   I, PL, PW : Longint;
 Begin
   if PanelNum = Panels.Count-1 then begin
@@ -90,35 +139,36 @@ Begin
   end
   else
     PW := Panels[PanelNum].Width;
+  if PW<=0 then exit;
 
-  Canvas.Brush.Color := Color;
-  Canvas.FillRect(Rect(XLeft, Top, XLeft + PW, Top + Height));
-
-  if Panels[PanelNum].Bevel = pbRaised then
-  begin
-   Colora:=clBtnHighlight;
-   Colorb:=clBtnShadow;
-  end;
-  if Panels[PanelNum].Bevel = pbLowered then
-  begin
-   Colora:=clBtnShadow;
-   Colorb:=clBtnHighlight;
-  end;
-
-  Canvas.Pen.Width:=1;
-  if (Panels[PanelNum].Bevel = pbRaised) or (Panels[PanelNum].Bevel = pbLowered) then
-   With Canvas Do
-   Begin
-      Pen.Color:=Colora;
+  if (Panels[PanelNum].Bevel in [pbRaised,pbLowered]) then begin
+    Canvas.Brush.Color := Color;
+    Canvas.FillRect(Rect(XLeft+1, Top+1, XLeft + PW-1, Top + Height - 1));
+    
+    if Panels[PanelNum].Bevel = pbRaised then
+    begin
+      LeftTopColor:=clBtnHighlight;
+      RightBottomColor:=clBtnShadow;
+    end else begin
+      LeftTopColor:=clBtnShadow;
+      RightBottomColor:=clBtnHighlight;
+    end;
+    With Canvas Do Begin
+      Pen.Width:=1;
+      Pen.Color:=LeftTopColor;
       MoveTo(XLeft,Top+Height-1);
       LineTo(XLeft,Top);
       LineTo(XLeft+PW-1,Top);
-      Pen.Color:=Colorb;
-      LineTo(XLeft+PW-1,Top+Height-1);
-      LIneTo(XLeft,Top+Height-1);
-   End;
+      Pen.Color:=RightBottomColor;
+      LineTo(XLeft+PW-1,Top+Height);
+      MoveTo(XLeft+PW-1,Top+Height-1);
+      LineTo(XLeft,Top+Height-1);
+    End;
+  end else begin
+    Canvas.Brush.Color := Color;
+    Canvas.FillRect(Rect(XLeft, Top, XLeft + PW, Top + Height));
+  end;
 End;
-
 
 Procedure TStatusBar.DrawDivider(X : Integer);
 Begin

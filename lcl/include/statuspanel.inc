@@ -37,11 +37,27 @@ begin
   else inherited Assign(Source);
 end;
 
+function TStatusPanel.StatusBar: TStatusBar;
+begin
+  if (Collection is TStatusPanels) then
+    Result:=TStatusPanels(Collection).StatusBar
+  else
+    Result:=nil;
+end;
 
 function TStatusPanel.GetDisplayName: string;
 begin
   Result := Text;
   if Result = '' then Result := inherited GetDisplayName;
+end;
+
+procedure TStatusPanel.PanelChanged(const Parts: TPanelParts);
+var
+  TheStatusBar: TStatusBar;
+begin
+  TheStatusBar:=StatusBar;
+  if TheStatusBar=nil then exit;
+  TheStatusBar.InvalidatePanel(Index,Parts);
 end;
 
 procedure TStatusPanel.SetAlignment(Value: TAlignment);
@@ -50,6 +66,7 @@ begin
   begin
     FAlignment := Value;
     Changed(False);
+    PanelChanged([ppText]);
   end;
 end;
 
@@ -59,6 +76,7 @@ begin
   begin
     FBevel := Value;
     Changed(False);
+    PanelChanged([ppBorder]);
   end;
 end;
 
@@ -68,6 +86,7 @@ begin
   begin
     FStyle := Value;
     Changed(False);
+    PanelChanged([ppBorder]);
   end;
 end;
 
@@ -77,6 +96,7 @@ begin
   begin
     FText := Value;
     Changed(False);
+    PanelChanged([ppText]);
   end;
 end;
 
@@ -86,6 +106,7 @@ begin
   begin
     FWidth := Value;
     Changed(True);
+    PanelChanged([ppWidth]);
   end;
 end;
 
