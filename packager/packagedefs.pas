@@ -634,7 +634,7 @@ type
   
   TBasePackageEditor = class(TForm)
   protected
-    function GetLazPackage: TLazPackage; virtual; abstract;
+    function GetLazPackage: TLazPackage; virtual;
     procedure SetLazPackage(const AValue: TLazPackage); virtual; abstract;
   public
     procedure UpdateAll; virtual; abstract;
@@ -2968,6 +2968,13 @@ begin
   finally
     NewSourceDirs.Free;
   end;
+end;
+
+{ TBasePackageEditor }
+
+function TBasePackageEditor.GetLazPackage: TLazPackage;
+begin
+  Result:=nil;
 end;
 
 initialization

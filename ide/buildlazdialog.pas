@@ -296,7 +296,8 @@ begin
     end;
     Tool.ScanOutputForFPCMessages:=true;
     Tool.ScanOutputForMakeMessages:=true;
-    if Options.CleanAll and (not (blfQuick in Flags)) then begin
+    if Options.CleanAll
+    and ([blfQuick,blfOnlyIDE]*Flags=[]) then begin
       // clean lazarus source directories
       Tool.Title:=lisCleanLazarusSource;
       Tool.WorkingDirectory:='$(LazarusDir)';

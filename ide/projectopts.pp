@@ -447,7 +447,8 @@ begin
   FormsAutoCreateNewFormsCheckBox.Checked:=Project.AutoCreateForms;
 end;
 
-procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject; var Action: TCloseAction);
+procedure TProjectOptionsDialog.ProjectOptionsClose(Sender: TObject;
+  var Action: TCloseAction);
 var NewFlags: TProjectFlags;
 begin
   if ModalResult = mrOk then begin  
