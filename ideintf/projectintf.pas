@@ -45,6 +45,8 @@ type
     cgcSmallerCode
     );
 
+  { TLazCompilerOptions }
+
   TLazCompilerOptions = class(TPersistent)
   private
     FOnModified: TNotifyEvent;
@@ -125,6 +127,7 @@ type
     fShowCompProc: Boolean;
     fShowCond: Boolean;
     fShowNothing: Boolean;
+    fShowSummary: Boolean;
     fShowHintsForUnusedUnitsInMainSrc: Boolean;
     fWriteFPCLogo: Boolean;
     fStopAfterErrCount: integer;
@@ -232,6 +235,7 @@ type
     property ShowCompProc: Boolean read fShowCompProc write fShowCompProc;
     property ShowCond: Boolean read fShowCond write fShowCond;
     property ShowNothing: Boolean read fShowNothing write fShowNothing;
+    property ShowSummary: Boolean read FShowSummary write FShowSummary;
     property ShowHintsForUnusedUnitsInMainSrc: Boolean
       read fShowHintsForUnusedUnitsInMainSrc write fShowHintsForUnusedUnitsInMainSrc;
     property WriteFPCLogo: Boolean read fWriteFPCLogo write fWriteFPCLogo;

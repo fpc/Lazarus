@@ -924,6 +924,7 @@ begin
   ShowCompProc := XMLConfigFile.GetValue(p+'Verbosity/ShowCompProc/Value', false);
   ShowCond := XMLConfigFile.GetValue(p+'Verbosity/ShowCond/Value', false);
   ShowNothing := XMLConfigFile.GetValue(p+'Verbosity/ShowNothing/Value', false);
+  ShowSummary := XMLConfigFile.GetValue(p+'Verbosity/ShowSummary/Value', false);
   ShowHintsForUnusedUnitsInMainSrc := XMLConfigFile.GetValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', false);
   WriteFPCLogo := XMLConfigFile.GetValue(p+'WriteFPCLogo/Value', true);
   StopAfterErrCount := XMLConfigFile.GetValue(p+'ConfigFile/StopAfterErrCount/Value', 1);
@@ -1064,6 +1065,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowCompProc/Value', ShowCompProc,false);
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowCond/Value', ShowCond,false);
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowNothing/Value', ShowNothing,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowSummary/Value', ShowSummary,false);
   XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowHintsForUnusedUnitsInMainSrc/Value', ShowHintsForUnusedUnitsInMainSrc,false);
   XMLConfigFile.SetDeleteValue(p+'WriteFPCLogo/Value', WriteFPCLogo,true);
   XMLConfigFile.SetDeleteValue(p+'ConfigFile/StopAfterErrCount/Value', StopAfterErrCount,1);
@@ -1960,6 +1962,7 @@ begin
   fShowCompProc := false;
   fShowCond := false;
   fShowNothing := false;
+  fShowSummary := false;
   fShowHintsForUnusedUnitsInMainSrc := false;
   fWriteFPCLogo := true;
   fStopAfterErrCount := 1;
@@ -2062,6 +2065,7 @@ begin
   fShowCompProc := CompOpts.fShowCompProc;
   fShowCond := CompOpts.fShowCond;
   fShowNothing := CompOpts.fShowNothing;
+  fShowSummary := CompOpts.FShowSummary;
   fShowHintsForUnusedUnitsInMainSrc := CompOpts.fShowHintsForUnusedUnitsInMainSrc;
   fWriteFPCLogo := CompOpts.fWriteFPCLogo;
   fStopAfterErrCount := CompOpts.fStopAfterErrCount;
@@ -2153,6 +2157,7 @@ begin
     and (fShowCompProc = CompOpts.fShowCompProc)
     and (fShowCond = CompOpts.fShowCond)
     and (fShowNothing = CompOpts.fShowNothing)
+    and (fShowSummary = CompOpts.fShowSummary)
     and (fShowHintsForUnusedUnitsInMainSrc = CompOpts.fShowHintsForUnusedUnitsInMainSrc)
     and (fWriteFPCLogo = CompOpts.fWriteFPCLogo)
     

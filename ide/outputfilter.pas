@@ -368,6 +368,14 @@ var i, j, FilenameEndPos: integer;
     if Result then inc(p);
   end;
 
+  function CheckForString(const Str: string; var p: integer;
+    const Find: string): boolean;
+  begin
+    Result:=(p+length(Find)-1<=length(Str))
+            and (CompareText(Find,copy(s,p,length(Find)))=0);
+    if Result then inc(p,length(Find));
+  end;
+
   function CheckForLineProgress: boolean;
   var
     p: Integer;
@@ -381,8 +389,26 @@ var i, j, FilenameEndPos: integer;
     if not CheckForNumber(s,p) then exit;
     if not CheckForChar(s,p,' ') then exit;
     Result:=true;
+    // I don't think it should be kept: DoAddFilteredLine(s);
   end;
   
+  function CheckForLinesCompiled: boolean;
+  var
+    p: Integer;
+  begin
+    Result:=false;
+    p:=1;
+    if not CheckForNumber(s,p) then exit;
+    if not CheckForString(s,p,' Lines compiled, ') then exit;
+    if not CheckForNumber(s,p) then exit;
+    if not CheckForChar(s,p,'.') then exit;
+    if not CheckForNumber(s,p) then exit;
+    if not CheckForChar(s,p,' ') then exit;
+    Result:=true;
+    if CompilerOptions.ShowAll or CompilerOptions.ShowSummary then;
+      DoAddFilteredLine(s);
+  end;
+
 begin
   Result:=false;
   if s='' then exit;
@@ -398,8 +424,11 @@ begin
   // check for 'Note: '
   Result:=CheckForNoteMessages;
   if Result then exit;
-  // check for '<line> <kb>/<kb> Kb Free'
+  // check for '<line> <kb>/<kb>'...
   Result:=CheckForLineProgress;
+  if Result then exit;
+  // check for '<int> Lines compiled, <int>.<int> sec'
+  Result:=CheckForLinesCompiled;
   if Result then exit;
 
   // search for round bracket open

@@ -157,6 +157,7 @@ type
     chkGeneralInfo: TCheckBox;
     chkLineNumbers: TCheckBox;
     chkEverything: TCheckBox;
+    chkShowSummary: TCheckBox;
     chkAllProcsOnError: TCheckBox;
     chkDebugInfo: TCheckBox;
     chkUsedFiles: TCheckBox;
@@ -729,6 +730,7 @@ begin
   chkCompiledProc.Checked := Options.ShowCompProc;
   chkConditionals.Checked := Options.ShowCond;
   chkNothing.Checked := Options.ShowNothing;
+  chkShowSummary.Checked := Options.ShowSummary;
   chkHintsForUnusedUnitsInMainSrc.Checked :=
                                        Options.ShowHintsForUnusedUnitsInMainSrc;
 
@@ -982,6 +984,7 @@ begin
   Options.ShowCompProc := chkCompiledProc.Checked;
   Options.ShowCond := chkConditionals.Checked;
   Options.ShowNothing := chkNothing.Checked;
+  Options.ShowSummary := chkShowSummary.Checked;
   Options.ShowHintsForUnusedUnitsInMainSrc :=
                                         chkHintsForUnusedUnitsInMainSrc.Checked;
 
@@ -1807,7 +1810,7 @@ begin
     Parent := MsgPage;
     Top := 10;
     Left := 10;
-    Height := 212;
+    Height := 235;
     Width := Self.ClientWidth-28;
     Caption := dlgVerbosity;
   end;
@@ -1894,6 +1897,17 @@ begin
     Parent := grpVerbosity;
     Caption := dlgShowEverything+' (-va)';
     Top := 153;
+    Left := chkErrors.Left;
+    Height := chkErrors.Height;
+    Width := chkErrors.Width;
+  end;
+
+  chkShowSummary := TCheckBox.Create(Self);
+  with chkShowSummary do
+  begin
+    Parent := grpVerbosity;
+    Caption := dlgShowSummary+' (none)';
+    Top := 174;
     Left := chkErrors.Left;
     Height := chkErrors.Height;
     Width := chkErrors.Width;
@@ -1991,7 +2005,7 @@ begin
   begin
     Parent := grpVerbosity;
     Caption := dlgHintsUnused+' (none)';
-    Top := 174;
+    Top := 195;
     Left := ChkErrors.Left;
     Height := ChkErrors.Height;
     Width := chkDebugInfo.Width*2;
