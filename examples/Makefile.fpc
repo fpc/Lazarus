@@ -22,7 +22,7 @@ files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT))
             
 [compiler]
 options=-gl  
-unitdir=../lcl/units ../lcl/units/$(LCL_PLATFORM) .. .
+unitdir=../lcl/units ../lcl/units/$(LCL_PLATFORM) ../components/units .. .
 units=allexamples
 
 
