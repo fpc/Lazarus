@@ -110,9 +110,11 @@ type
     function IndexOfKey(Key: Pointer): integer;
     function FindHashItem(Item: Pointer): PDynHashArrayItem;
     function FindHashItemWithKey(Key: Pointer): PDynHashArrayItem;
-    property FirstHashItem: PDynHashArrayItem read FFirstItem;
     function GetHashItem(HashIndex: integer): PDynHashArrayItem;
     procedure Delete(ADynHashArrayItem: PDynHashArrayItem);
+    procedure AssignTo(List: TList);
+    
+    property FirstHashItem: PDynHashArrayItem read FFirstItem;
     property MinCapacity: integer read FMinCapacity write FMinCapacity;
     property MaxCapacity: integer read FMaxCapacity write FMaxCapacity;
     property Capacity: integer read FCapacity;
@@ -382,51 +384,61 @@ begin
 end;
 
 procedure TDynHashArray.Remove(Item: Pointer);
-var Index: integer;
-  OldNext, Old: PDynHashArrayItem;
 begin
-  if (Item=nil) or (FItems=nil) then exit;
-  Index:=IndexOf(Item);
-  if (Index<0) then exit;
-  Old:=FItems[Index];
-  if Old=nil then exit;
-  if Old^.Item=Item then begin
-    OldNext:=Old^.Next;
-    if (OldNext=nil) or (OldNext^.IsOverflow) then
-      FItems[Index]:=OldNext
-    else
-      FItems[Index]:=nil;
-  end else begin
-    repeat
-      Old:=Old^.Next;
-      if Old=nil then exit;
-      if Old^.IsOverflow=false then exit;
-    until (Old^.Item=Item);
-  end;
-  Delete(Old);
+  Delete(FindHashItem(Item));
 end;
 
 procedure TDynHashArray.Delete(ADynHashArrayItem: PDynHashArrayItem);
+var Index: integer;
+  OldNext: PDynHashArrayItem;
 begin
   if ADynHashArrayItem=nil then exit;
+  // delete from cache
   if (FHashCacheIndex>=0)
   and ((ADynHashArrayItem^.Item=FHashCacheItem)
   or (Assigned(OnGetKeyForHashItem)
     and (OnGetKeyForHashItem(ADynHashArrayItem^.Item)=FHashCacheItem)))
   then
     // if the user removes an item, changes the key and readds it, the hash
-    // can change for it, so the cache must be cleared
+    // of the item can change
+    // => the cache must be cleared
     ClearCache;
-  if (ADynHashArrayItem^.IsOverflow=false) and (ADynHashArrayItem^.Next<>nil)
-  then
-    ADynHashArrayItem^.Next^.IsOverflow:=false;
+  // delete from FItems
+  if not ADynHashArrayItem^.IsOverflow then begin
+    // Item is first item with hash
+    Index:=IndexOf(ADynHashArrayItem^.Item);
+    OldNext:=ADynHashArrayItem^.Next;
+    if (OldNext=nil) or (not (OldNext^.IsOverflow)) then
+      FItems[Index]:=nil
+    else begin
+      FItems[Index]:=OldNext;
+      OldNext^.IsOverflow:=false;
+    end;
+  end;
+  // adjust FFirstItem
   if FFirstItem=ADynHashArrayItem then
     FFirstItem:=FFirstItem^.Next;
+  // free storage item
   DisposeHashItem(ADynHashArrayItem);
+  // adjust count and capacity
   dec(FCount);
   if FCount<FLowWaterMark then begin
     // resize
     SetCapacity((FCapacity+1) div 2);
+  end;
+end;
+
+procedure TDynHashArray.AssignTo(List: TList);
+var i: integer;
+  HashItem: PDynHashArrayItem;
+begin
+  List.Count:=Count;
+  HashItem:=FirstHashItem;
+  i:=0;
+  while HashItem<>nil do begin
+    List[i]:=HashItem^.Item;
+    inc(i);
+    HashItem:=HashItem^.Next;
   end;
 end;
 

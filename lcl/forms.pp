@@ -478,7 +478,7 @@ end;
 
 
 {$I form.inc}
-{$I Customform.inc}
+{$I customform.inc}
 {$I screen.inc}
 {$I application.inc}
 {$I hintwindow.inc}

@@ -304,6 +304,13 @@ begin
   Result := InterfaceObject.GetWindowRect(Handle, Rect);
 end;
 
+{$IFDEF ClientRectBugFix}
+Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
+begin
+  Result := InterfaceObject.GetWindowSize(Handle, Width, Height);
+end;
+{$ENDIF}
+
 Function GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
 begin
  Result := InterfaceObject.GetWindowOrgEx(dc,P);
@@ -1085,6 +1092,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/05/12 04:56:20  lazarus
+  MG: client rect bugs nearly completed
+
   Revision 1.28  2002/05/10 06:05:56  lazarus
   MG: changed license to LGPL
 
