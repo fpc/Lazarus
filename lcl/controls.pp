@@ -1326,6 +1326,7 @@ type
     procedure SetParentCtl3D(Value : Boolean);
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabValue: TTabOrder);
+    function  WantsKey(CharCode: word): dword;
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
@@ -2322,6 +2323,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.216  2004/06/29 10:23:00  micha
+  fix cnkeydown to check wm_getdlgcode result
+  fix win32 intf to also send wm_keydown of cn_keydown wasn't processed
+
   Revision 1.215  2004/06/28 23:46:40  marc
   * Fixed compilation on 1.0.10
   * Fixed check for override of GetTextBuf and SetTextBuf

@@ -2079,6 +2079,41 @@ begin
   if Assigned(FOnKeyPress) then FOnKeyPress(Self, Key);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TWinControl.WantsKey
+  Params: CharCode - the key to inspect whether it is wanted
+  Returns: 0 - if not wanted
+           1 - if wanted, but is special (arrow)
+           2 - if wanted, but is special (tab)
+           4 - if wanted, but is special (all)
+           8 - if wanted, is normal key
+
+  Checks if the passed key is a special key, and if so, returns non zero
+  Also determines type of special key, see return values
+ ------------------------------------------------------------------------------}
+function TWinControl.WantsKey(CharCode: word): dword; 
+var
+  lWantKeys: dword;
+begin
+  // we don't know what keys are special, different widgetsets may have
+  // different set of special keys; send message to control asking
+  // if it wants to handle it, if not, set lWantKeys to zero, so that
+  // KeyDown will not be called
+  lWantKeys := Perform(LM_GETDLGCODE, 0, 0);
+  if (lWantKeys and DLGC_WANTALLKEYS) <> 0 then
+  begin
+    lWantKeys := DLGC_WANTALLKEYS;
+  end else begin
+    case CharCode of
+    VK_TAB: 
+      lWantKeys := lWantKeys and DLGC_WANTTAB;
+    VK_UP, VK_LEFT, VK_DOWN, VK_RIGHT:
+      lWantKeys := lWantKeys and DLGC_WANTARROWS;
+    end;
+  end;  
+  Result := lWantKeys;
+end;
+
 {------------------------------------------------------------------------------}
 {  TWinControl DoKeyDown                                                      }
 {------------------------------------------------------------------------------}
@@ -2086,6 +2121,7 @@ function TWinControl.DoKeyDown(Var Message: TLMKey): Boolean;
 var
   F: TCustomForm;
   ShiftState: TShiftState;
+  lWantsKey: dword;
 begin
   Result := True;
   F := GetParentForm(Self);
@@ -2101,15 +2137,20 @@ begin
 
     // let drag object handle the key
     if Dragging and (DragObject<>nil) then
+    begin
       DragObject.KeyDown(CharCode, ShiftState);
-    if CharCode = VK_UNKNOWN then Exit;
+      if CharCode = VK_UNKNOWN then Exit;
+    end;
 
     // let user handle the key
-    if not (csNoStdEvents in ControlStyle)
-    then begin
-      // ToDo: only If WantAllKeys then
-      KeyDown(CharCode, ShiftState);
-      if CharCode = VK_UNKNOWN then Exit;
+    if not (csNoStdEvents in ControlStyle) then 
+    begin
+      lWantsKey := WantsKey(CharCode);
+      if (lWantsKey > 0) and (lWantsKey <= DLGC_WANTALLKEYS) then
+      begin
+        KeyDown(CharCode, ShiftState);
+        if CharCode = VK_UNKNOWN then Exit;
+      end;
     end;
 
     // let application handle the key
@@ -3053,10 +3094,15 @@ end;
   event handler.
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyDown(Var Message : TLMKeyDown);
+var
+  ShiftState: TShiftState;
 begin
   //DebugLn('TWinControl.WMKeyDown ',Name,':',ClassName);
-  // ToDo: If not WantAllKeys then
-  //KeyDown(CharCode, ShiftState);
+  if WantsKey(Message.CharCode) = 8 then
+  begin
+    ShiftState := KeyDataToShiftState(Message.KeyData);
+    KeyDown(Message.CharCode, ShiftState);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -3660,6 +3706,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.244  2004/06/29 10:23:00  micha
+  fix cnkeydown to check wm_getdlgcode result
+  fix win32 intf to also send wm_keydown of cn_keydown wasn't processed
+
   Revision 1.243  2004/06/28 18:57:55  mattias
   fixed GetControlAtPos for non designing
 

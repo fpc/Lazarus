@@ -565,6 +565,7 @@ Begin
         Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
         Assert(False,'  OwnerObject= '+TComponent(OwnerObject).Name+':'+OwnerObject.ClassName);
       End;
+      WinProcess := false;
     End;
     WM_KEYUP:
     Begin
@@ -577,6 +578,7 @@ Begin
         CharCode := Word(WParam);
         Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
       End;
+      WinProcess := false;
     End;
     WM_KILLFOCUS:
     Begin
@@ -1037,10 +1039,23 @@ Begin
         WinProcess := true;
       end;
     end;
+    
     WM_SETCURSOR:
     begin
       if LMessage.Result = 0 then
         WinProcess := true;
+    end;
+    
+    WM_KEYDOWN, WM_KEYUP:
+    begin
+      // if not yet processed, resend normally
+      if LMKey.CharCode <> VK_UNKNOWN then
+      begin
+        LMKey.Msg := Msg;
+        DeliverMessage(OwnerObject, LMKey);
+        // still not handled? then do default processing
+        WinProcess := LMKey.CharCode <> VK_UNKNOWN;
+      end;
     end;
   end;
 
@@ -1238,6 +1253,10 @@ end;
 
 {
   $Log$
+  Revision 1.121  2004/06/29 10:23:00  micha
+  fix cnkeydown to check wm_getdlgcode result
+  fix win32 intf to also send wm_keydown of cn_keydown wasn't processed
+
   Revision 1.120  2004/06/20 20:36:55  micha
   remove old obsolete/commented toolbutton code
   rename lazarusform classname to window, because we use it for panels, notebookpages, etc too
