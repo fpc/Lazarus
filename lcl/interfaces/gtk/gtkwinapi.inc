@@ -71,7 +71,9 @@ begin
     else begin
       // Draw outline
       SelectGDKPenProps(DC);
-      gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height, 
+      inc(X,Origin.X);
+      inc(Y,Origin.Y);
+      gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height,
                    Angle1 shl 2, Angle2 shl 2);
       Result := True;
     end;
@@ -156,14 +158,13 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer;
 begin
-result := 0;
-//TODO: Does anything need to be done here?
-Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
-Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
-Assert(False, 'Trace:TODO: CALLNEXTHOOKEX in gtkwinapi.inc');
-Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
-Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
-
+  Result := 0;
+  //TODO: Does anything need to be done here?
+  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
+  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
+  Assert(False, 'Trace:TODO: CALLNEXTHOOKEX in gtkwinapi.inc');
+  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
+  Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
 end;
 
 {------------------------------------------------------------------------------
@@ -176,7 +177,8 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-Function TGTKObject.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer;
+Function TGTKObject.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND;
+  Msg : UINT; wParam ,lParam : LongInt) : Integer;
 var
   Proc : TWndMethod;
   Mess : TLMessage;
@@ -187,9 +189,10 @@ begin
   Result := -1;
   P := nil;
   P := gtk_object_get_data(pgtkobject(Handle),'WNDPROC');
-  if P <> nil then Proc := TWndMethod(P^)
-     else
-      Exit;
+  if P <> nil then
+    Proc := TWndMethod(P^)
+  else
+    Exit;
   Mess.msg := msg;
   Mess.LParam := LParam;
   Mess.WParam := WParam;
@@ -784,15 +787,18 @@ begin
   begin
     case lbStyle of
  //     BS_HOLLOW,         // Hollow brush.
-      BS_NULL:           // Same as BS_HOLLOW.
+       BS_NULL:           // Same as BS_HOLLOW.
         begin
           GObject^.GDIBrushFill := GDK_STIPPLED;
-          GObject^.GDIBrushPixmap := gdk_bitmap_create_from_data(nil, @HATCH_NULL, 8, 8);
+          GObject^.GDIBrushPixmap :=
+            gdk_bitmap_create_from_data(nil, @HATCH_NULL, 8, 8);
         end;
+        
       BS_SOLID:          // Solid brush.
         begin
           GObject^.GDIBrushFill := GDK_SOLID;
         end;
+        
       BS_HATCHED:        // Hatched brush.
         begin
           GObject^.GDIBrushFill := GDK_STIPPLED;
@@ -818,8 +824,8 @@ begin
             else
               sError := Format('WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported Hatch %d', [lbHatch]);
           end;
-
         end;
+        
       BS_DIBPATTERN,     // A pattern brush defined by a device-independent
            // bitmap (DIB) specification. If lbStyle is BS_DIBPATTERN, the
            // lbHatch member contains a handle to a packed DIB.Windows 95:
@@ -838,6 +844,7 @@ begin
           then GObject^.GDIBrushPixmap := PGdiObject(lbHatch)^.GDIBitmapObject
           else sError := 'WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported bitmap';
         end;
+        
       else
         sError := Format('WARNING: [TgtkObject.CreateBrushIndirect] Got unsupported Style %d'
                         , [lbStyle]);
@@ -853,8 +860,8 @@ begin
     with GObject^.GDIBrushColor do
       Assert(False, Format('Trace:  [TgtkObject.CreateBrushIndirect]  Allocated R: %2x, G: %2x, B: %2x', [Red, Green, Blue]));
   end;
-  if sError = ''
-  then Result := HBRUSH(GObject)
+  if sError = '' then
+    Result := HBRUSH(GObject)
   else begin
     Assert(False, 'Trace:' + sError);
     Result := 0;
@@ -884,9 +891,10 @@ begin
   if Result then begin
     if gtk_type_is_a(gtk_object_type(GTKObject), GTKAPIWidget_GetType)
     then begin
-      if IsValidGDIObjectType(Bitmap, gdiBitmap)
-      then BMP := PGdiObject(Bitmap)^.GDIBitmapObject
-      else BMP := nil;
+      if IsValidGDIObjectType(Bitmap, gdiBitmap) then
+        BMP := PGdiObject(Bitmap)^.GDIBitmapObject
+      else
+        BMP := nil;
       GTKAPIWidget_CreateCaret(PGTKAPIWidget(GTKObject), Width, Height, BMP);
     end
 //    else if // TODO: other widgettypes
@@ -895,7 +903,6 @@ begin
     end;
   end
   else Assert(False, 'Trace:WARNING: [TgtkObject.CreateCaret] Got null HWND');
-
 end;
 
 {------------------------------------------------------------------------------
@@ -913,13 +920,15 @@ var
 begin
   Assert(False, Format('Trace:> [TgtkObject.CreateCompatibleBitmap] DC: 0x%x, W: %d, H: %d', [DC, Width, Height]));
   
-  if (IsValidDC(DC) and (PDeviceContext(DC)^.Drawable <> nil))
-  then visual := gdk_window_get_visual(Pointer(PDeviceContext(DC)^.Drawable))
-  else visual := gdk_visual_get_system;
+  if (IsValidDC(DC) and (PDeviceContext(DC)^.Drawable <> nil)) then
+    Visual := gdk_window_get_visual(Pointer(PDeviceContext(DC)^.Drawable))
+  else
+    Visual := gdk_visual_get_system;
   
-  if Visual <> nil 
-  then Result := CreateBitmap(Width, Height, 1, Visual^.Depth, nil)
-  else Result := 0;
+  if Visual <> nil then
+    Result := CreateBitmap(Width, Height, 1, Visual^.Depth, nil)
+  else
+    Result := 0;
   
   Assert(False, Format('Trace:< [TgtkObject.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
@@ -1041,6 +1050,7 @@ begin
 
     // check if LongFontName is in XLFD format and get nicer defaults
     // This way, the user can set X fonts that are not supported by TFont.
+    
     //writeln('TgtkObject.CreateFontIndirectEx Name="',LogFont.lfFaceName,'"',
     //' Long="',LongFontName,'" ',IsFontNameXLogicalFontDesc(LongFontName)
     //,' ',ord(LogFont.lfFaceName[0]));
@@ -1466,7 +1476,8 @@ end;
       ComplexRegion
 
  ------------------------------------------------------------------------------}
-Function TgtkObject.CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;
+Function TgtkObject.CombineRgn(Dest, Src1, Src2 : HRGN;
+  fnCombineMode : Longint) : Longint;
 var
   Continue : Boolean;
   D, S1, S2 : PGDKRegion;
@@ -1484,8 +1495,10 @@ begin
     Result := Error;
   end
   else begin
-    If DObj^.GDIRegionObject <> nil then
+    If DObj^.GDIRegionObject <> nil then begin
       GDK_Region_Destroy(DObj^.GDIRegionObject);
+      DObj^.GDIRegionObject:=nil;
+    end;
     S1 := S1Obj^.GDIRegionObject;
     S2 := S2Obj^.GDIRegionObject;
     Case fnCombineMode of
@@ -1503,8 +1516,10 @@ begin
         D := gdk_regions_union(S1, S2);
       RGN_XOR :
         D := gdk_regions_xor(S1, S2);
-      else
+      else begin
         Result:= ERROR;
+        D := nil;
+      end;
     end;
     DObj^.GDIRegionObject := D;
     Result := RegionType(D);
@@ -1616,9 +1631,10 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.DeleteObject(GDIObject: HGDIOBJ): Boolean;
-var GDIObjectExists: boolean;
+var
+  GDIObjectExists: boolean;
 begin
-  { Find out if we want to release internal GDI object }
+  // Find out if we want to release internal GDI object
   GDIObjectExists:=FGDIObjects.Contains(PGDIObject(GDIObject));
   Result:= IsValidGDIObject(GDIObject);
   if Result or GDIObjectExists 
@@ -1708,15 +1724,16 @@ const
   PUSH_EDGE_FLAG2: array[Boolean] of Integer = (0, BF_FLAT);
 var
   Widget: PGtkWidget;
-  
+
   procedure DrawButtonPush;
   var
     State: TGtkStateType;
     Shadow: TGtkShadowType;
     aStyle : PGTKStyle;
+    pDC: PDeviceContext;
   begin
     if Widget<>nil then begin
-    
+
       // use the gtk paint functions to draw a widget style dependent button
       
       // set State (the interior filling style)
@@ -1764,6 +1781,8 @@ var
       else
         If State = GTK_STATE_SELECTED then
           State := GTK_STATE_ACTIVE;
+          
+      pDC:=PDeviceContext(DC);
 
       Case Shadow of
         GTK_SHADOW_NONE:
@@ -1773,7 +1792,7 @@ var
              nil,
              Widget,
              'button',
-             Rect.Left,Rect.Top,
+             Rect.Left+pDC^.Origin.X,Rect.Top+pDC^.Origin.Y,
              Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
         else
           gtk_paint_box(aStyle,Widget^.Window,
@@ -1782,7 +1801,7 @@ var
              nil,
              Widget,
              'button',
-             Rect.Left,Rect.Top,
+             Rect.Left+pDC^.Origin.X,Rect.Top+pDC^.Origin.Y,
              Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
       end;
 
@@ -1811,6 +1830,7 @@ begin
       Widget:=ClientWidget;
   end else
     Widget:=nil;
+    
   case uType of
     DFC_CAPTION:
       begin  //all draw CAPTION commands here
@@ -1966,7 +1986,6 @@ begin
       if BInner
       then with R do
       begin
-
         gdk_gc_set_foreground(GC, @InnerTL);
         if (grfFlags and BF_TOP) = BF_TOP
         then gdk_draw_line(Drawable, GC, Left, Top, Right, Top);
@@ -1993,7 +2012,8 @@ begin
         Width := R.Right - R.Left + 1;
         Height := R.Bottom - R.Top + 1;
         SelectGDKBrushProps(DC);
-        gdk_draw_rectangle(Drawable, GC, 1, R.Left, R.Top, Width, Height);
+        gdk_draw_rectangle(Drawable, GC, 1, R.Left+Origin.X, R.Top+Origin.Y,
+                           Width, Height);
       end;
 
       // adjust rect if needed
@@ -2084,8 +2104,8 @@ end;
 function TGTKObject.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
   Assert(False, Format('Trace:  [TGTKObject.EnableWindow] hWnd: 0x%x, Enable: %s', [hwnd, BOOL_TEXT[bEnable]]));
-  if hWnd <> 0 
-  then gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable);
+  if hWnd <> 0 then
+    gtk_widget_set_sensitive(pgtkwidget(hWnd), bEnable);
   Result:=true;
 end;
 
@@ -2121,10 +2141,12 @@ begin
       height:=height shr 1;
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
-      gdk_draw_arc(Drawable, GC, 1, x, y, Width, Height, 0, 360 shl 6);
+      gdk_draw_arc(Drawable, GC, 1, x+Origin.X, y+Origin.Y, Width, Height,
+                   0, 360 shl 6);
       // Draw outline
       SelectGDKPenProps(DC);
-      gdk_draw_arc(Drawable, GC, 0, x, y, Width, Height, 0, 360 shl 6);
+      gdk_draw_arc(Drawable, GC, 0, x+Origin.X, y+Origin.Y, Width, Height,
+                   0, 360 shl 6);
       Result := True;
     end;
   end;
@@ -2218,7 +2240,8 @@ begin
           gdk_gc_set_fill(GC, GDK_SOLID);
           gdk_gc_set_foreground(GC, @CurrentBackColor);
           gdk_draw_rectangle(Drawable, GC, 1,
-                           Rect^.Left, Rect^.Top, Width, Height);
+                             Rect^.Left+Origin.X, Rect^.Top+Origin.Y,
+                             Width, Height);
         end;
         if (Options and ETO_CLIPPED) <> 0 then
         begin
@@ -2240,7 +2263,7 @@ begin
         if Num < 0 then begin
           if Count> 0 then
             gdk_draw_text(Drawable, UseFont, GC,
-                          TxtPt.X, TxtPt.Y, Str, Count);
+                          TxtPt.X+Origin.X, TxtPt.Y+Origin.Y, Str, Count);
         end else
         Begin  //write multiple lines
           LineStart:=Str;
@@ -2249,7 +2272,7 @@ begin
             LineEnd:=LineStart+Num;
             if Num>0 then
               gdk_draw_text(Drawable, UseFont, GC,
-                             TxtPt.X, TxtPt.Y, LineStart, Num);
+                            TxtPt.X+Origin.X, TxtPt.Y+Origin.Y, LineStart, Num);
             AY := TxtPt.Y;
             {$IfDef Win32}
               TxtPt.Y := AY + TM.tmHeight div 2;
@@ -2306,7 +2329,8 @@ begin
       OldCurrentBrush := CurrentBrush;
       CurrentBrush := PGdiObject(Brush);
       SelectGDKBrushProps(DC);
-      gdk_draw_rectangle(Drawable, GC, 1, Rect.Left, Rect.Top, Width, Height);
+      gdk_draw_rectangle(Drawable, GC, 1, Rect.Left+Origin.X, Rect.Top+Origin.Y,
+                         Width, Height);
       // Restore current brush
       CurrentBrush := OldCurrentBrush;
 
@@ -2348,7 +2372,7 @@ begin
           gtk_draw_shadow(ClientWidget^.thestyle,
                           ClientWidget^.window, GTK_STATE_NORMAL,
                           GtkShadowType[Style],
-                          Rect.left, Rect.top,
+                          Rect.Left+Origin.X, Rect.Top+Origin.Y,
                           Rect.Right - Rect.Left-1, Rect.Bottom - Rect.Top-1);
           InflateRect(Rect, -1, -1);
         end;
@@ -2428,7 +2452,8 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean;
+function TgtkObject.GetCharABCWidths(DC: HDC; p2, p3: UINT;
+  const ABCStructs): Boolean;
 begin
   Result := False;
 end;
@@ -2539,7 +2564,6 @@ Function TGTKObject.GetClipBox(DC : hDC; lpRect : PRect) : Longint;
 var
   CRect : TGDKRectangle;
   X, Y : Longint;
-  OldCnt: integer;
 begin
   If not IsValidDC(DC) then
     Result := ERROR;
@@ -2550,24 +2574,19 @@ begin
   begin
     If Not IsValidGDIObject(ClipRegion) then begin
       gdk_window_get_size(Drawable, @X, @Y);  
-      lpRect^ := Rect(0, 0, X, Y);
+      lpRect^ := Rect(-Origin.X, -Origin.Y, X, Y);
       Result := SIMPLEREGION;
     end
     else begin
-// ClipBug
-OldCnt:=FGDIObjects.Count;
-      Result := RegionType(PGDIObject(ClipRegion)^.GDIRegionObject);    
+      Result := RegionType(PGDIObject(ClipRegion)^.GDIRegionObject);
       gdk_region_get_clipbox(PGDIObject(ClipRegion)^.GDIRegionObject, 
         @CRect);
       With lpRect^,CRect do begin
-        Left   := X;
-        Top    := Y;
-        Right  := X + Width;
-        Bottom := Y + Height;
+        Left   := X-Origin.X;
+        Top    := Y-Origin.Y;
+        Right  := Left + Width;
+        Bottom := Top + Height;
       end;  
-if OldCnt<>FGDIObjects.Count then begin
-  writeln('TGTKObject.GetClipBox ',OldCnt,',',FGDIObjects.Count);
-end;
     end;
   end;  
 end;
@@ -2680,12 +2699,10 @@ end;
 function TgtkObject.GetDC(hWnd: HWND): HDC;
 var
   p: PDeviceContext;
-  pFixed: PGTKFixed;
+  ClientWidget: PGtkWidget;
   GdiObject: PGdiObject;
   Values: TGdkGCValues;
   X,Y : Longint;
-  //Color: TGdkColor;
-  //nIndex: Integer;
 begin
   Assert(False, Format('trace:> [TgtkObject.GetDC] hWND: 0x%x', [hWnd]));
   p := nil;
@@ -2697,27 +2714,23 @@ begin
     FillChar(Values, SizeOf(Values), #0);
   end
   else begin
-    // ToDo: other widget types
-    
-    pFixed := GetFixedWidget(Pointer(hWnd));
-    if pFixed = nil
+    ClientWidget := GetFixedWidget(Pointer(hWnd));
+    if ClientWidget = nil
     then begin
-      Assert(False, 'trace:WARNING: [TgtkObject.GetDC] Window has no fixed, using window itself');
-      pFixed := Pointer(hWnd);
+      Assert(False, 'trace:WARNING: [TgtkObject.GetDC] Widget has no fixed, using widget itself');
+      ClientWidget := Pointer(hWnd);
     end;
 
     // create a new devicecontext for this window
     P := NewDC;
     p^.hWnd := hWnd;
-//(*      
-    if PGTKFixed(pFixed)^.Container.Widget.Window = nil
+    if ClientWidget^.Window = nil
     then begin
       Assert(False, 'Trace:[TgtkObject.GetDC] Force widget creation');
       //force creation
-      gtk_widget_realize(PGTKWidget(pFixed));
+      gtk_widget_realize(ClientWidget);
     end;
-//*)
-    p^.Drawable := PGTKFixed(pFixed)^.Container.Widget.Window;
+    p^.Drawable := ClientWidget^.Window;
     p^.GC := gdk_gc_new(p^.Drawable);
 
     gdk_window_get_size(P^.Drawable, @X, @Y);
@@ -2740,6 +2753,7 @@ begin
     p^.CurrentBrush := CreateDefaultBrush;
     p^.CurrentPen := CreateDefaultPen;
   end;
+  
   Result := HDC(p);
   Assert(False, Format('trace:< [TgtkObject.GetDC] Got 0x%x', [Result]));
 end;
@@ -2876,11 +2890,11 @@ end;
 
  ------------------------------------------------------------------------------}
 Function TGTKObject.GetParent(Handle : HWND): HWND;
-var
-  p : pgtkwidget;
 begin
-  p := (pgtkWidget(Handle)^.parent);
-  Result := longint(p);
+  //writeln('TGTKObject.GetParent ',HexStr(Cardinal(Handle),8));
+  Result:=0;
+  if Handle<>0 then
+    Result:=HWnd(PGtkWidget(Handle)^.Parent);
 end;
 
 
@@ -2903,7 +2917,8 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;
+function TgtkObject.GetScrollInfo(Handle: HWND; BarFlag: Integer;
+  var ScrollInfo: TScrollInfo): Boolean;
 begin
   Assert(False, 'Trace:TODO: [TgtkObject.GetScrollInfo]');
   Result := False;
@@ -2992,7 +3007,6 @@ end;
   Returns:  RGB value
 
  ------------------------------------------------------------------------------}
-
 function TgtkObject.GetSysColor(nIndex: Integer): DWORD;
 begin
   if (nIndex < 0) or (nIndex > MAX_SYS_COLORS) 
@@ -3321,7 +3335,8 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
+function TgtkObject.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
+  var Size: TSize): Boolean;
 var
   lbearing, rbearing, width, ascent,descent: LongInt;
   UseFont : PGDKFont;
@@ -3344,7 +3359,8 @@ begin
     If UseFont = nil then
       WriteLn('WARNING: [TgtkObject.GetTextExtentPoint] Missing font')
     else begin
-      gdk_text_extents(UseFont, Str, Count, @lbearing, @rBearing, @width, @ascent, @descent);
+      gdk_text_extents(UseFont, Str, Count,
+                       @lbearing, @rBearing, @width, @ascent, @descent);
       Size.cX := Width;
       //I THINK this is accurate...
       Size.cY := GDK_String_Height(UseFont, Str)
@@ -3482,6 +3498,9 @@ end;
   Function: GetWindowOrgEx
   Params:  none
   Returns: Nothing
+
+  Returns the x-coordinates and y-coordinates of the window origin for the
+  specified device context.
  ------------------------------------------------------------------------------}
 function TgtkObject.GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
 begin
@@ -3489,14 +3508,22 @@ begin
 //write('[TgtkObject.GetWindowOrgEx] ',p.x,' ',p.y);
 //  gdk_window_get_root_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
 //write(' / ',p.x,' ',p.y);
-  result := 0;
+  Result := 0;
   P := Point(0,0);
-  If IsValidDC(dc) then
-    If pgtkwidget(PdeviceContext(dc)^.hwnd) <> nil then
-      If pgtkwidget(PdeviceContext(dc)^.hwnd)^.window <> nil then begin
-        gdk_window_get_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
-        Result := 1;
-      end;
+  // ToDo: fix this, when Designer is ready
+  If IsValidDC(DC) then
+  with PDeviceContext(DC)^ do begin
+    if Drawable<>nil then begin
+      gdk_window_get_origin(PGdkWindow(Drawable), @P.X, @P.Y);
+      inc(P.X,Origin.X);
+      inc(P.Y,Origin.Y);
+      Result := 1;
+    end else begin
+      writeln('TgtkObject.GetWindowOrgEx:',
+        ' WARNING: DC ',HexStr(Cardinal(DC),8),' without gdkwindow.',
+        ' Widget=',HexStr(Cardinal(hwnd),8));
+    end;
+  end;
 //writeln(' / ',p.x,' ',p.y);
 end;
 
@@ -3708,7 +3735,8 @@ begin
     end
     else begin
       SelectGDKPenProps(DC);
-      gdk_draw_line(Drawable, GC, PenPos.X, PenPos.Y, X, Y);
+      gdk_draw_line(Drawable, GC, PenPos.X+Origin.X, PenPos.Y+Origin.Y,
+                    X+Origin.X, Y+Origin.Y);
       PenPos:= Point(X, Y);
       Result := True;
     end;
@@ -3769,7 +3797,8 @@ begin
   end else Result:= false;    
 end;
 
-function TgtkObject.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType : Cardinal): integer;
+function TgtkObject.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
+  uType : Cardinal): integer;
 var Dialog, ALabel : PGtkWidget;
     ButtonCount, DefButton, ADialogResult : Integer;
     DialogType : Cardinal;
@@ -3874,6 +3903,25 @@ begin
   Assert(False, Format('trace:< [TgtkObject.MoveToEx] DC:0x%x, X:%d, Y:%d', [DC, X, Y]));
 end;
 
+{------------------------------------------------------------------------------
+  function MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean; override;
+
+  Move the origin of all operations of a DeviceContext.
+  For example:
+  Moving the Origin to 10,20 and drawing a point to 50,50, results in
+  drawing a point to 60,70.
+ ------------------------------------------------------------------------------}
+function TgtkObject.MoveWindowOrgEx(DC: HDC; dX, dY: Integer): Boolean;
+begin
+  Result:=IsValidDC(DC);
+  if Result then
+  with PDeviceContext(DC)^ do begin
+    //writeln('[TgtkObject.MoveWindowOrgEx] B DC=',HexStr(Cardinal(DC),8),
+    //  ' Old=',Origin.X,',',Origin.Y,' d=',dX,',',dY,' ');
+    inc(Origin.X,dX);
+    inc(Origin.Y,dY);
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Function: PeekMessage
@@ -4012,8 +4060,8 @@ begin
       if NumPts<=0 then exit;
       GetMem(PointArray,SizeOf(TGdkPoint)*NumPts);
       for i:=0 to NumPts-1 do begin
-        PointArray[i].x:=Points[i].x;
-        PointArray[i].y:=Points[i].y;
+        PointArray[i].x:=Points[i].x+Origin.X;
+        PointArray[i].y:=Points[i].y+Origin.Y;
       end;
 
       If (Points[NumPts-1].X <> Points[0].X) or
@@ -4021,8 +4069,8 @@ begin
       then begin
         Inc(NumPts);
         ReallocMem(PointArray,SizeOf(TGdkPoint)*NumPts);
-        PointArray[NumPts - 1].x:=Points[0].x;
-        PointArray[NumPts - 1].y:=Points[0].y;
+        PointArray[NumPts - 1].x:=Points[0].x+Origin.X;
+        PointArray[NumPts - 1].y:=Points[0].y+Origin.Y;
       end;
 
       // first draw interior in brush color
@@ -4070,8 +4118,8 @@ begin
       if NumPts<=0 then exit;
       GetMem(PointArray,SizeOf(TGdkPoint)*NumPts);
       for i:=0 to NumPts-1 do begin
-        PointArray[i].x:=Points[i].x;
-        PointArray[i].y:=Points[i].y;
+        PointArray[i].x:=Points[i].x+Origin.X;
+        PointArray[i].y:=Points[i].y+Origin.Y;
       end;
 
       // draw outline
@@ -4144,7 +4192,7 @@ begin
   Result := True;
 
   New(AMessage);
-  AMessage^.HWnd := Handle; // this is normally a gtk widget
+  AMessage^.HWnd := Handle; // this is normally the main gtk widget
   AMessage^.Message := Msg;
   AMessage^.WParam := WParam;
   AMessage^.LParam := LParam;
@@ -4155,11 +4203,11 @@ begin
     // A paint message to a control will also repaint all child controls.
     // -> check if there is already a paint message for one of its parents
     // if yes, then skip this message
-    if ParentPaintMessageInQueue then begin
+    {if ParentPaintMessageInQueue then begin
       if AMessage^.Message=LM_PAINT then
         ReleaseDC(0,AMessage^.WParam);
       exit;
-    end;
+    end;}
   
     // delete old paint message to this widget,
     // so that the widget repaints only once
@@ -4310,11 +4358,13 @@ begin
       Height := Y2 - Y1;
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
-      gdk_draw_rectangle(Drawable, GC, 1, X1, Y1, Width, Height);
+      gdk_draw_rectangle(Drawable, GC, 1, X1+Origin.X, Y1+Origin.Y,
+                         Width, Height);
 
       // Draw outline
       SelectGDKPenProps(DC);
-      gdk_draw_rectangle(Drawable, GC, 0, X1, Y1, Width, Height);
+      gdk_draw_rectangle(Drawable, GC, 0, X1+Origin.X, Y1+Origin.Y,
+                         Width, Height);
       Result := True;
     end;
   end;
@@ -4577,7 +4627,7 @@ Begin
         gdk_window_get_origin(Widget^.Window, @X, @Y);
    end;
 
-writeln('[TGTKObject.ScreenToClient] ',x,',',y,' P=',P.X,',',P.Y);
+  //writeln('[TGTKObject.ScreenToClient] ',x,',',y,' P=',P.X,',',P.Y);
   dec(P.X, X);
   dec(P.Y, Y);
   Result := -1;
@@ -4730,8 +4780,6 @@ begin
         begin
           Result := ClipRegion;
           ClipRegion := 0;
-          //CreateRectRGN(0,0,1,1);
-          //GetClipRGN(DC, Result);
           if GC <> nil then SelectClipRGN(DC, GDIObj);
         end;
       end;
@@ -4773,8 +4821,8 @@ function TGTKObject.SendMessage(HandleWnd: HWND; Msg: Cardinal; wParam: LongInt;
 var
   AMessage: TLMessage;
   Target: TObject;
-  ParentControl: TWinControl;
-  ParentHandle: HWnd;
+  //ParentControl: TWinControl;
+  //ParentHandle: HWnd;
 begin
   AMessage.Msg := Msg;
   AMessage.WParam := WParam;
@@ -4790,7 +4838,7 @@ begin
       // many times. To avoid this the queue is checked for LM_PAINT messages
       // for the parent control. If there is a parent LM_PAINT, this message
       // is ignored.
-      if (Target is TControl) then begin
+      {if (Target is TControl) then begin
         ParentControl:=TControl(Target).Parent;
         while ParentControl<>nil do begin
           ParentHandle:=TWinControl(ParentControl).Handle;
@@ -4801,7 +4849,7 @@ begin
           end;
           ParentControl:=ParentControl.Parent;
         end;
-      end;
+      end;}
       if Msg=LM_GtkPAINT then begin
         // convert LM_GtkPAINT to LM_PAINT
         AMessage.Msg := LM_PAINT;
@@ -5006,7 +5054,6 @@ begin
         ShowHideOnFocus);
       Result:=true;
     end
-//    else if // TODO: other widgettypes
     else begin
       Result := False;
     end;
@@ -5104,8 +5151,7 @@ end;
 Function TgtkObject.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 Begin
   gtk_object_set_data(pGTKObject(handle),Str,data);
-  // ToDo
-  Result:=false;
+  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -5232,7 +5278,8 @@ end;
 
   The SetSysColors function sets the colors for one or more display elements.
  ------------------------------------------------------------------------------}
-function TgtkObject.SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; 
+function TgtkObject.SetSysColors(cElements: Integer; const lpaElements;
+  const lpaRgbValues): Boolean;
 type
   TLongArray = array[0..0] of Longint;
   PLongArray = ^TLongArray;
@@ -5290,18 +5337,20 @@ begin
   then begin
     with PDeviceContext(DC)^, CurrentTextColor do
     begin
-      Result := ((Red and HI_MASK) shr 8) or (Green and HI_MASK) or ((Blue and HI_MASK) shl 8);
+      Result := ((Red and HI_MASK) shr 8)
+              or (Green and HI_MASK)
+              or ((Blue and HI_MASK) shl 8);
 
       if Result <> Color
       then begin
-
         gdk_colormap_free_colors(gdk_colormap_get_system, @CurrentTextColor, 1);
 
         Red :=   ((Color shl 8) and HI_MASK) or ((Color       ) and LO_MASK);
         Green := ((Color      ) and HI_MASK) or ((Color shr 8 ) and LO_MASK);
         Blue :=  ((Color shr 8) and HI_MASK) or ((Color shr 16) and LO_MASK);
 
-        gdk_colormap_alloc_color(gdk_colormap_get_system, @CurrentTextColor, False, True);
+        gdk_colormap_alloc_color(gdk_colormap_get_system, @CurrentTextColor,
+                                 False, True);
       end;
     end;
 
@@ -5321,7 +5370,8 @@ end;
 
   Design: Currently only a callback to the TTimer class is implemented.
  ------------------------------------------------------------------------------}
-function TGTKObject.SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer;
+function TGTKObject.SetTimer(hWnd: HWND; nIDEvent, uElapse: integer;
+  lpTimerFunc: TFNTimerProc) : integer;
 var
   PTimerInfo: PGtkITimerinfo;
 begin
@@ -5336,14 +5386,6 @@ begin
      FTimerData.Add (PTimerInfo);
   end;
 end;
-(*begin
-  if (hWnd <> 0) 
-     then Result := gtk_timeout_add(uElapse, @gtkTimerCB, Pointer (hWnd))
-  else if (lpTimerFunc <> nil)
-     then Result := gtk_timeout_add(uElapse, @gtkTimerCBDirect, Pointer (hWnd))
-  else 
-     Result := 0
-end;*)
 
 {------------------------------------------------------------------------------
   Procedure: SetWindowLong
@@ -5352,7 +5394,8 @@ end;*)
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.SetWindowLong(Handle: HWND; Idx: Integer; NewLong: Longint): LongInt;
+function TgtkObject.SetWindowLong(Handle: HWND; Idx: Integer;
+  NewLong: Longint): LongInt;
 begin
   //TODO: Finish this;
   Assert(False, Format('Trace:> [TgtkObject.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, idx, idx, newlong, newlong]));
@@ -5391,20 +5434,28 @@ begin
   Assert(False, Format('Trace:< [TgtkObject.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d) --> 0x%x(%d)', [Handle, idx, idx, newlong, newlong, Result, Result]));
 end;
 
-Function TgtkObject.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var Point: TPoint) : Boolean;
-begin
-//writeln('[TgtkObject.SetWindowOrgEx] ',NewX,' ',NewY);
-// ToDo: move origin
+{------------------------------------------------------------------------------
+  Function TgtkObject.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
+    var OldPoint: TPoint) : Boolean;
 
-  Point.X := NewX;
-  Point.Y := NewY;
-  
-  
-  Result := True;
+  Sets the x-coordinates and y-coordinates of the window origin for the
+  specified device context.
+ ------------------------------------------------------------------------------}
+Function TgtkObject.SetWindowOrgEx(DC : HDC; NewX, NewY : Integer;
+  var OldPoint: TPoint) : Boolean;
+begin
+  //writeln('[TgtkObject.SetWindowOrgEx] ',NewX,' ',NewY);
+  GetWindowOrgEx(DC,OldPoint);
+  Result := MoveWindowOrgEx(DC,NewX-OldPoint.X,NewY-OldPoint.Y);
 end;
 
+{------------------------------------------------------------------------------
+  function TgtkObject.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
+    X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
+
+ ------------------------------------------------------------------------------}
 function TgtkObject.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
-      X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
+  X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
 //var Widget: PGTKWidget;
 begin
 //writeln('[TgtkObject.SetWindowPos] Top=',hWndInsertAfter=HWND_TOP);
@@ -5416,7 +5467,6 @@ begin
                 //gdk_window_raise(Widget^.Window);
   end;
 }
-
   Result:=true;
 end;
 
@@ -5431,8 +5481,6 @@ function TgtkObject.ShowCaret(hWnd: HWND): Boolean;
 var
   GTKObject: PGTKObject;
 begin
-//writeln('[TgtkObject.ShowCaret] A');
-//TODO: [TgtkObject.ShowCaret] Finish (in gtkwinapi.inc)
   Assert(False, Format('Trace:> [TgtkObject.ShowCaret] HWND: 0x%x', [hWnd]));
 
   GTKObject := PGTKObject(HWND);
@@ -5444,7 +5492,6 @@ begin
     then begin
       GTKAPIWidget_ShowCaret(PGTKAPIWidget(GTKObject));
     end
-//    else if // TODO: other widgettypes
     else begin
       Result := False;
     end;
@@ -5882,6 +5929,15 @@ begin
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
   if Result
   then begin
+    with PDeviceContext(DestDC)^ do begin
+      Inc(X,Origin.X);
+      Inc(Y,Origin.Y);
+    end;
+    with PDeviceContext(SrcDC)^ do begin
+      Inc(XSrc,Origin.X);
+      Inc(YSrc,Origin.Y);
+    end;
+
     (*
 
     Result := DRAWABLE_MATRIX[
@@ -5999,7 +6055,7 @@ begin
         WriteLn('WARNING: [TgtkObject.TextOut] Missing Font')
       else begin
         GetTextExtentPoint(DC, Str, Count, Sz);
-        aRect := Rect(X,Y,X + Sz.CX, Sz.CY);
+        aRect := Rect(X+Origin.X,Y+Origin.Y,X + Sz.CX, Sz.CY);
         FillRect(DC,aRect,hBrush(CurrentBrush));
         GetTextMetrics(DC, TM);
         TxtPt.X := X;
@@ -6010,7 +6066,7 @@ begin
         {$EndIf}
         SelectGDKTextProps(DC);
         gdk_draw_text(Drawable, UseFont,
-          GC, TxtPt.X, TxtPt.Y, Str, Count);
+          GC, TxtPt.X+Origin.X, TxtPt.Y+Origin.Y, Str, Count);
         Result := True;
         If UnRef then
           GDK_Font_UnRef(UseFont);
@@ -6200,6 +6256,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.116  2002/08/30 12:32:24  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.115  2002/08/29 00:07:03  lazarus
   MG: fixed TComboBox and InvalidateControl
 
