@@ -688,6 +688,7 @@ type
     public
       constructor Create(AOWner: TComponent); override;
       destructor Destroy; override;
+      procedure AutoSizeColumns;
       property Cells[ACol, ARow: Integer]: string read GetCells write SetCells;
       property Cols[index: Integer]: TStrings read GetCols write SetCols;
       property Objects[ACol, ARow: Integer]: TObject read GetObjects write SetObjects;
@@ -4722,6 +4723,14 @@ begin
     FreeThenNil(FDefEditor);
   end;
   inherited Destroy;
+end;
+
+procedure TStringGrid.AutoSizeColumns;
+var
+  i: Integer;
+begin
+  for i:=0 to ColCount-1 do
+    AutoAdjustColumn(i)
 end;
 
 

@@ -41,6 +41,7 @@ uses
 
 type
   TDataSetScrolledEvent = procedure(DataSet: TDataSet; Distance: Integer) of object;
+  TColumnNotifyEvent = procedure(Sender:TObject; Field: TField) of object;
 
 type
   TComponentDataLink=class(TDatalink)
@@ -86,18 +87,23 @@ type
   end;
 
 
+
   TCustomDbGrid=class(TCustomGrid)
   private
     FDataLink: TComponentDataLink;
     FKeepInBuffer: Boolean;
+    FOnColEnter,FOnColExit: TColumnNotifyEvent;
+    {
     FOnColEnter: TNotifyEvent;
     FOnColExit: TNotifyEvent;
+    }
     FReadOnly: Boolean;
     FColEnterPending: Boolean;
     //FSelfScroll: Boolean;
     FLayoutChanging: Boolean;
     FVisualLock: Boolean;
     FNumRecords: Integer;
+    function GetCurrentField: TField;
     function GetDataSource: TDataSource;
     procedure OnRecordChanged(Field:TField);
     procedure OnDataSetChanged(aDataSet: TDataSet);
@@ -111,6 +117,8 @@ type
     procedure UpdateBufferCount;
     // Temporal
     function DefaultFieldColWidth(FieldType: TFieldType): Integer;
+    function GetFieldCount: Integer;
+    function GetFieldFromColumnIndex(Column: Integer): TField;
 
   protected
     procedure LinkActive(Value: Boolean); virtual;
@@ -140,11 +148,14 @@ type
     property DataSource: TDataSource read GetDataSource write SetDataSource;
     Property KeepInBuffer: Boolean read FKeepInBuffer write FKeepInBuffer;
     Property ReadOnly: Boolean read FReadOnly write FReadOnly;
-    property OnColEnter: TNotifyEvent read FOnColEnter write FOnColEnter;
-    property OnColExit: TNotifyEvent read FOnColExit write FOnColExit;
+    property OnColEnter: TColumnNotifyEvent read FOnColEnter write FOnColEnter;
+    property OnColExit: TColumnNotifyEvent read FOnColExit write FOnColExit;
   public
-    Constructor Create(AOwner: TComponent); override;
-    Destructor Destroy; override;
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+    
+    property CurrentField: TField read GetCurrentField;
+
   end;
   
   TdbGrid=class(TCustomDbGrid)
@@ -233,6 +244,11 @@ end;
 function TCustomDbGrid.GetDataSource: TDataSource;
 begin
   Result:= FDataLink.DataSource;
+end;
+
+function TCustomDbGrid.GetCurrentField: TField;
+begin
+  result := GetFieldFromColumnIndex( Col );
 end;
 
 procedure TCustomDbGrid.OnDataSetChanged(aDataSet: TDataSet);
@@ -344,6 +360,37 @@ begin
   end;
 end;
 
+function TCustomDbGrid.GetFieldCount: Integer;
+var
+  i: integer;
+  F: TField;
+begin
+  result := 0;
+  for i:=0 to FDataLink.DataSet.FieldCount-1 do begin
+    F:= FDataLink.DataSet.Fields[i];
+    if (F<>nil) and F.Visible then
+      Inc(Result);
+  end;
+  Inc(Result, 1); // show selected column
+end;
+
+function TCustomDbGrid.GetFieldFromColumnIndex(Column: Integer): TField;
+var
+  i,j: integer;
+begin
+  j:=-1;
+  Column := Column - FixedCols;
+  if Column >= 0 then
+  for i:=0 to FDataLink.DataSet.FieldCount-1 do begin
+    Result:=FDataLink.Fields[i];
+    if Result.visible then begin
+      Inc(j);
+      if j=Column then Exit;
+    end;
+  end;
+  result := nil;
+end;
+
 procedure TCustomDbGrid.LinkActive(Value: Boolean);
 begin
   //BeginUpdate;
@@ -357,7 +404,7 @@ end;
 procedure TCustomDbGrid.LayoutChanged;
 var
   i: Integer;
-  FDefs: TFieldDefs;
+  F: TField;
 begin
   if FDataLink.Active then begin
 
@@ -370,16 +417,18 @@ begin
     FLayoutChanging:=True; // Avoid infinit loop
     FVisualLock:=True; // Avoid Calling inherited visualchange
     UpdateBufferCount;
-    ColCount:= FDataLink.DataSet.FieldCount + 1;
+    ColCount:= GetFieldCount;
     RowCount:= FDataLink.RecordCount + 1;
     FixedRows:=1;
     FixedCols:=1;
     ColWidths[0]:=12;
-    FDefs:=FDataLink.DataSet.FieldDefs;
-    for i:=0 to FDefs.Count-1 do begin
-      //DebugLn('Field ',FDefs[i].Name, ' Size= ',FDefs[i].Size);
-      ColWidths[i+1]:= DefaultFieldColWidth(FDefs[i].DataType);
+    
+    for i:=1 to ColCount-1 do begin
+      F := GetFieldFromColumnIndex( i );
+      if F<>nil then
+        ColWidths[i]:= DefaultFieldColWidth(F.DataType);
     end;
+
     FVisualLock:=False;
     VisualChange; // Now Call Visual Change
     // Update Scrollbars
@@ -418,7 +467,9 @@ begin
   FDatalink.UpdateData;
   if DCol<>Col then begin
      // Its a Column Movement
-     if assigned(OnColExit) then OnColExit(Self);
+     WriteLn('OldCol = ',Col,' Newcol= ', Dcol);
+     if assigned(OnColExit) then
+      OnColExit(Self, GetFieldFromColumnIndex(Col));
      FColEnterPending:=True;
   end;
   {
@@ -491,7 +542,9 @@ end;
 procedure TCustomDbGrid.MoveSelection;
 begin
   inherited MoveSelection;
-  if FColEnterPending and Assigned(OnColEnter) then OnColEnter(Self);
+  if FColEnterPending and Assigned(OnColEnter) then begin
+    OnColEnter(Self, GetFieldFromColumnIndex(Col));
+  end;
   FColEnterPending:=False;
   UpdateActive;
 end;
@@ -571,7 +624,7 @@ begin
   if gdFixed in aState then begin
     if (aRow=0)and(ACol>=FixedCols) then begin
       // draw column headers
-      F:=FDataLink.Fields[aCol-FixedCols];
+      F := GetFieldFromColumnIndex(aCol);
       if F<>nil then
         Canvas.TextOut(Arect.Left+2,ARect.Top+2, F.FieldName);
     end else
@@ -581,10 +634,12 @@ begin
   end else begin
     // Draw the other cells
     try
-      F:=FDataLink.Fields[Acol-FixedCols];
-      if F<>nil then
+      F := GetFieldFromColumnIndex(ACol);
+      if F<>nil then begin
+        if not F.Visible then
+          exit;
         S := F.AsString
-      else
+      end else
         S := '';
     except
       S := 'Error!';
@@ -646,7 +701,7 @@ begin
   FKeepInBuffer:=False;
 
   FReadOnly:=True;
-  Options:=Options + [goColSizing, goDrawFocusSelected];
+  Options:=Options + [goDrawFocusSelected];
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
   ScrolLBars:=ssBoth;
   FVisualLock:=False;
