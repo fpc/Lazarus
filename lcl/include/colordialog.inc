@@ -26,12 +26,15 @@ constructor TColorDialog.Create (AOwner : TComponent);
 begin
    inherited Create(AOwner);
    fCompStyle := csColorDialog;
-   FTitle:= 'Select color:';
+   FTitle:= rsSelectcolorTitle;
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/02/28 10:21:16  mattias
+  lcl localization from Olivier
+
   Revision 1.2  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

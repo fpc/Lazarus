@@ -37,7 +37,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-uses StdCtrls, VCLGlobals, Classes, LCLType, LCLProc, LCLLinux, LCLStrConsts,
+uses StdCtrls, VCLGlobals, Classes, LCLType, LCLProc, LCLLinux,LCLStrConsts,
   GraphType, Graphics, SysUtils, Controls, lMessages, Forms, Messages;
 
 type
@@ -155,6 +155,9 @@ type
     Procedure SetKind(Value : TBitBtnKind);
     Procedure SetLayout(Value : TButtonLayout);
     Procedure SetSpacing(Value : Integer);
+    
+    //Return the caption associed with the akind value.
+    function GetCaptionOfKind(aKind :TBitBtnKind) : String;
   protected
     Procedure Click; override;
     procedure GlyphChanged(Sender : TObject);
@@ -259,13 +262,13 @@ implementation
 
 
 const
-  BitBtnModalResults : array[TBitBtnKind] of TModalResult = (
-    0, mrOK, mrCancel, 0, mrYes, mrNo,
-    0, mrAbort, mrRetry, mrIgnore, mrAll);
-
   BitbtnCaption : array[TBitBtnKind] of String = (
     '', rsmbOK, rsmbCancel, rsmbHelp, rsmbYes, rsmbNo,
     rsmbClose, rsmbAbort, rsmbRetry, rsmbIgnore, rsmbAll);
+
+  BitBtnModalResults : array[TBitBtnKind] of TModalResult = (
+    0, mrOK, mrCancel, 0, mrYes, mrNo,
+    0, mrAbort, mrRetry, mrIgnore, mrAll);
 
   BitBtnImages : array[TBitBtnKind] of Longint = (
     idButtonOk, idButtonOk, idButtonCancel, idButtonHelp, idButtonYes,
@@ -287,6 +290,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.36  2003/02/28 10:21:16  mattias
+  lcl localization from Olivier
+
   Revision 1.35  2003/02/06 06:33:57  mattias
   fixed message
 

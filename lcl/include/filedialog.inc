@@ -138,32 +138,30 @@ begin
     and (not FileExists(Filename)) then begin
       Filename:=Filename+DefaultExt;
     end;
-    if (ofOverwritePrompt in Options) and FileExists(Filename) then begin
-      Result:=MessageDlg('Overwrite file?',
-        'The file "'+Filename+'" already exists.'#13
-        +'Overwrite?',mtConfirmation,[mbOk,mbCancel],0)=mrOk;
+    if (ofOverwritePrompt in Options) and FileExists(Filename) then
+    begin
+      Result:=MessageDlg(rsfdOverwriteFile,Format(rsfdFileAlreadyExists,[FileName]),
+               mtConfirmation,[mbOk,mbCancel],0)=mrOk;
       if not Result then exit;
     end;
     if (ofPathMustExist in Options)
     and (not FileExists(ExtractFilePath(Filename))) then begin
       Result:=false;
-      MessageDlg('Path must exist',
-        'The path "'+ExtractFilePath(Filename)+'" does not exist.'
-        ,mtError,[mbCancel],0);
+      MessageDlg(rsfdPathMustExist,Format(rsfdPathNoExist,[ExtractFilePath(Filename)]),
+                 mtError,[mbCancel],0);
       exit;
     end;
     if (ofFileMustExist in Options)
-    and (not FileExists(Filename)) then begin
+    and (not FileExists(Filename)) then
+    begin
       Result:=false;
-      MessageDlg('File must exist',
-        'The file "'+Filename+'" does not exist.',mtError,[mbCancel],0);
+      MessageDlg(rsfdFileMustExist,Format(rsfdFileNotExist,[FileName]),mtError,[mbCancel],0);
       exit;
     end;
     if (ofNoReadOnlyReturn in Options)
     and (not FileIsWritable(Filename)) then begin
       Result:=false;
-      MessageDlg('File is not writable',
-        'The file "'+Filename+'" is not writable.',mtError,[mbCancel],0);
+      MessageDlg(rsfdFileReadOnlyTitle,Format(rsfdFileReadOnly,[FileName]),mtError,[mbCancel],0);
       exit;
     end;
   end;
@@ -179,7 +177,7 @@ end;
 constructor TOpenDialog.Create (AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  FTitle:= 'Open existing file:';
+  FTitle:= rsfdOpenFile;
   FOptions := [ofEnableSizing, ofViewDetail];
 end;
 
@@ -197,12 +195,15 @@ constructor TSaveDialog.Create (AOwner : TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csFileDialog;
-  FTitle:= 'Save file as:';
+  FTitle:= rsfdFileSaveAs;
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.7  2003/02/28 10:21:16  mattias
+  lcl localization from Olivier
+
   Revision 1.6  2002/05/30 14:11:11  lazarus
   MG: added filters and history to TOpenDialog
 
