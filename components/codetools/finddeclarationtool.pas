@@ -2914,7 +2914,7 @@ type
     theOperator: TAtomPosition;
     OperatorLvl: integer;
   end;
-  TExprStack = array[0..3] of TOperandAndOperator;
+  TExprStack = array[0..4] of TOperandAndOperator;
 var
   CurExprType: TExpressionType;
   ExprStack: TExprStack;
@@ -2930,16 +2930,16 @@ var
     end;
     LastPos:=CurPos.StartPos;
     while (StackPtr>0)
-    and (ExprStack[StackPtr].OperatorLvl>ExprStack[StackPtr-1].OperatorLvl) do
+    and (ExprStack[StackPtr].OperatorLvl>=ExprStack[StackPtr-1].OperatorLvl) do
     begin
-      // next operand has a lower priority/precedence
+      // next operand has a lower or equal priority/precedence
       // -> calculate last two operands
       NewOperand:=CalculateBinaryOperator(ExprStack[StackPtr-1].Operand,
         ExprStack[StackPtr].Operand,ExprStack[StackPtr-1].theOperator,
         Params);
       // put result on stack
+      ExprStack[StackPtr-1]:=ExprStack[StackPtr];
       dec(StackPtr);
-      ExprStack[StackPtr]:=ExprStack[StackPtr+1];
       ExprStack[StackPtr].Operand:=NewOperand;
     end;
     MoveCursorToCleanPos(LastPos);
@@ -2955,7 +2955,13 @@ var
     RaiseException('[TFindDeclarationTool.FindExpressionResultType]'
       +' internal error: unknown precedence lvl for operator '+GetAtom);
   end;
-  
+
+  procedure RaiseInternalErrorStack;
+  begin
+    RaiseException('[TFindDeclarationTool.FindExpressionResultType]'
+      +' internal error: stackptr too big ');
+  end;
+
 var
   OldFlags: TFindDeclarationFlags;
 begin
@@ -2977,6 +2983,8 @@ begin
     ReadNextAtom;
     // put operand on stack
     inc(StackPtr);
+    if StackPtr>High(ExprStack) then
+      RaiseInternalErrorStack;
     ExprStack[StackPtr].Operand:=CurExprType;
     ExprStack[StackPtr].theOperator.StartPos:=-1;
     ExprStack[StackPtr].OperatorLvl:=5;
