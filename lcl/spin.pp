@@ -30,49 +30,104 @@ unit Spin;
 interface
 
 uses
-  Classes, Controls, SysUtils, StdCtrls, VCLGlobals, LMessages;
-
+  Classes, Controls, SysUtils, VCLGlobals, LMessages, ClipBrd, StdCtrls;
 
 type
-  TSpinEdit = class(TWinControl)
+  { TCustomSpinEdit }
+
+  TCustomSpinEdit = class(TWinControl)
   private
-    fDecimals : Integer;
+    fClimbRate: Single;
+    fDecimals: Integer;
+    fLastValueOnChange: single;
     FMaxValue: single;
     FMinValue: single;
-    fValue    : Single;
-    fClimbRate : Single;
+    FModified: boolean;
+    FOnChange: TNotifyEvent;
+    FSelLength: integer;
+    FSelStart: integer;
+    fValue: Single;
     fValueNeedsUpdate: boolean;
     function Climb_RateIsStored: boolean;
+    function GetModified: Boolean;
+    function GetSelLength: integer;
+    function GetSelStart: integer;
+    function GetSelText: String;
     function MaxValueIsStored: boolean;
     function MinValueIsStored: boolean;
     procedure SetMaxValue(const AValue: single);
     procedure SetMinValue(const AValue: single);
+    procedure SetModified(const AValue: Boolean);
+    procedure SetSelLength(const AValue: integer);
+    procedure SetSelStart(const AValue: integer);
+    procedure SetSelText(const AValue: String);
     Procedure UpdateControl;
     function ValueIsStored: boolean;
   protected
-    procedure SetDecimals(num : Integer);
-    Function GetValue : Single;
-    procedure SetValue(Num : Single);
-    procedure SetClimbRate(num : Single);
+    procedure CMTextChanged(Var Message: TLMessage); message CM_TextChanged;
+    procedure SetDecimals(Num: Integer);
+    Function GetValue: Single;
+    procedure SetValue(Num: Single);
+    procedure SetClimbRate(Num: Single);
     procedure InitializeWnd; override;
     procedure Loaded; override;
+    procedure Change; dynamic;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure SelectAll;
+    procedure ClearSelection; virtual;
+    procedure CopyToClipboard; virtual;
+    procedure CutToClipboard; virtual;
+    procedure PasteFromClipboard; virtual;
+    property SelLength: integer read GetSelLength write SetSelLength;
+    property SelStart: integer read GetSelStart write SetSelStart;
+    property SelText: String read GetSelText write SetSelText;
+    property Modified: Boolean read GetModified write SetModified;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property Text;
   published
-    property Align;
     property Decimal_Places: Integer read fDecimals write SetDecimals default 2;
-    property Enabled;
     property Climb_Rate : Single read fClimbRate write SetClimbRate stored Climb_RateIsStored;
     property MinValue: single read FMinValue write SetMinValue stored MinValueIsStored;
     property MaxValue: single read FMaxValue write SetMaxValue stored MaxValueIsStored;
+    property Value: Single read GetValue write SetValue stored ValueIsStored;
+  end;
+  
+  
+  { TSpinEdit }
+  
+  TSpinEdit = class(TCustomSpinEdit)
+  published
+    property Align;
+    property Anchors;
+    property Climb_Rate;
+    property Constraints;
+    property Decimal_Places;
+    property Enabled;
+    property MaxValue;
+    property MinValue;
+    property OnChange;
+    property OnChangeBounds;
+    property OnClick;
     property OnEnter;
     property OnExit;
+    Property OnKeyDown;
+    property OnKeyPress;
+    Property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property ParentShowHint;
     property PopupMenu;
     property ShowHint;
-    property Value: Single read GetValue write SetValue stored ValueIsStored;
+    property TabStop;
+    property TabOrder;
+    property Value;
     property Visible;
   end;
+  
 
 procedure Register;
 

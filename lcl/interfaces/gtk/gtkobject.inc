@@ -4008,7 +4008,8 @@ begin
      end;
      
    {$IfDef GTK1}
-   csEdit: Text:= StrPas(gtk_entry_get_text(PgtkEntry(TWinControl(Sender).Handle)));
+   csEdit, csSpinEdit:
+       Text:= StrPas(gtk_entry_get_text(PgtkEntry(TWinControl(Sender).Handle)));
 
    csMemo    : begin
                   CS := gtk_editable_get_chars(PGtkOldEditable(
@@ -4434,6 +4435,7 @@ begin
     end;
 
     LM_CHANGED :
+    begin
        if Sender is TTrackBar then
        begin
          ConnectSenderSignal(gtk_Object(
@@ -4446,12 +4448,13 @@ begin
        else
        if Sender is TCustomCombobox then
          ConnectSenderSignal (PGtkObject(
-                   PGtkCombo(gobject)^.entry), 'changed', @gtkchangedCB)
+                   PGtkCombo(gObject)^.entry), 'changed', @gtkchangedCB)
        else 
        if Sender is TCustomMemo then
          ConnectSenderSignal(gCore, 'changed', @gtkchanged_editbox)
        else
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
+    end;
 
     LM_CLICKED :
     begin
@@ -5115,7 +5118,7 @@ begin
         End;
 
         {$IfDef GTK1}
-        csEdit:
+        csEdit, csSpinEdit:
         begin
           SetCallback(LM_CHANGED, Sender);
           SetCallback(LM_ACTIVATE, Sender);
@@ -7991,12 +7994,10 @@ begin
   csSpinEdit:
     Begin
       AnAdjustment:=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wHandle));
-writeln('SetProperties ',AnAdjustment^.lower,' ',TSpinEdit(Sender).MinValue);
       if (AnAdjustment^.lower<>TSpinEdit(Sender).MinValue)
       or (AnAdjustment^.upper<>TSpinEdit(Sender).MaxValue) then
       begin
         AnAdjustment^.lower:=TSpinEdit(Sender).MinValue;
-writeln('SetProperties ',AnAdjustment^.lower,' ',TSpinEdit(Sender).MinValue);
         AnAdjustment^.upper:=TSpinEdit(Sender).MaxValue;
         gtk_adjustment_changed(AnAdjustment);
       end;
@@ -9183,6 +9184,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.462  2004/02/04 00:04:37  mattias
+  added some TEdit ideas to TSpinEdit
+
   Revision 1.461  2004/02/03 20:01:29  mattias
   fixed gtk intf WaitMessages
 

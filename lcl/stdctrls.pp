@@ -451,15 +451,15 @@ type
 
   TCustomEdit = class(TWinControl)
   private
-    FCharCase : TEditCharCase;
-    FEchoMode : TEchoMode;
-    FMaxLength : Integer;
-    FModified : Boolean;
+    FCharCase: TEditCharCase;
+    FEchoMode: TEchoMode;
+    FMaxLength: Integer;
+    FModified: Boolean;
     FPasswordChar: Char;
-    FReadOnly : Boolean;
-    FOnChange : TNotifyEvent;
-    FSelLength : integer;
-    FSelStart : integer;
+    FReadOnly: Boolean;
+    FOnChange: TNotifyEvent;
+    FSelLength: integer;
+    FSelStart: integer;
     function GetModified : Boolean;
     procedure SetCharCase(Value : TEditCharCase);
     procedure SetMaxLength(Value : Integer);
@@ -481,8 +481,6 @@ type
     procedure SetSelStart(Val : integer); virtual;
     procedure SetSelText(const Val : string); virtual;
     procedure SetText(const Value: TCaption); override;
-
-    property OnChange : TNotifyEvent read FOnChange write FOnChange;
   public
     constructor Create(AOwner: TComponent); override;
     procedure SelectAll;
@@ -490,16 +488,17 @@ type
     procedure CopyToClipboard; virtual;
     procedure CutToClipboard; virtual;
     procedure PasteFromClipboard; virtual;
-    property CharCase : TEditCharCase read FCharCase write SetCharCase default ecNormal;
-    property EchoMode : TEchoMode read FEchoMode write SetEchoMode default emNormal;
-    property MaxLength : Integer read FMaxLength write SetMaxLength default -1;
-    property ReadOnly : Boolean read FReadOnly write SetReadOnly default false;
+    property CharCase: TEditCharCase read FCharCase write SetCharCase default ecNormal;
+    property EchoMode: TEchoMode read FEchoMode write SetEchoMode default emNormal;
+    property MaxLength: Integer read FMaxLength write SetMaxLength default -1;
+    property ReadOnly: Boolean read FReadOnly write SetReadOnly default false;
     property SelLength: integer read GetSelLength write SetSelLength;
     property SelStart: integer read GetSelStart write SetSelStart;
     property SelText: String read GetSelText write SetSelText;
-    property Modified : Boolean read GetModified write SetModified;
+    property Modified: Boolean read GetModified write SetModified;
     property PasswordChar: Char read FPasswordChar write SetPasswordChar default #0;
     property Text;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   published
     property PopupMenu;
     property TabStop default true;
@@ -568,6 +567,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
+    property Constraints;
     property CharCase;
     property DragMode;
     property EchoMode;
@@ -591,6 +591,8 @@ type
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
+    property TabStop;
+    property TabOrder;
     property Text;
     property Visible;
   end;
@@ -1476,6 +1478,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.121  2004/02/04 00:04:37  mattias
+  added some TEdit ideas to TSpinEdit
+
   Revision 1.120  2004/02/02 12:44:45  mattias
   implemented interface constraints
 

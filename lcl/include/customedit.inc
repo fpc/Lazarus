@@ -336,12 +336,12 @@ End;
 
 Procedure TCustomEdit.Change;
 Begin
-  //inherited Change;
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
 procedure TCustomEdit.InitializeWnd;
-var ASelStart, ASelLength : integer;
+var
+  ASelStart, ASelLength : integer;
 begin
   inherited InitializeWnd;
   if FSelStart <> FSelLength then begin
@@ -357,6 +357,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2004/02/04 00:04:37  mattias
+  added some TEdit ideas to TSpinEdit
+
   Revision 1.21  2004/01/23 20:31:43  mattias
   fixed TCustomEdit copying to clipboard
 
