@@ -316,7 +316,7 @@ begin
   Position:= poScreenCenter;
   Width := 240;
   Height := 180;
-  BorderStyle  := bsNone;
+  BorderStyle  := bsToolWindow;
 
   FBitmap := TBitmap.Create;
   FBitmap.Handle := CreatePixmapIndirect(@SPLASH_IMAGE, ColorToRGB(clBtnFace));
@@ -375,6 +375,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2001/11/19 12:14:24  lazarus
+  MG: changed splashform borderstyle
+
   Revision 1.5  2001/10/15 17:41:31  lazarus
   MG: fixed splashform showing
 
