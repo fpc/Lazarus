@@ -174,12 +174,102 @@ Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
     end;
   end;
 
+  procedure DrawOwnerButton(Data: PDrawItemStruct);
+  var flags:integer; // How the button looks like (pressed or not pressed)
+      BitmapHandle: HBITMAP; // Handle of bitmap
+      OldBitmapHandle: HBITMAP; // Handle of provious bitmap in hdcBitmap
+      BitmapBuf: BITMAP; // Buffer for bitmap
+      hdcBitmap: HDC; // Memory device context for the bitmap
+      xDestBitmap: integer; // X coordinate of destination rectangle for bitmap
+      yDestBitmap: integer; // Y coordinate of destination rectangle for bitmap
+      TextSize: SIZE; // For computing the length of button caption in pixels
+      TextPosFlags:integer; // Flags for text position on the button
+  begin
+    flags:=DFCS_BUTTONPUSH;
+    if (Data^.itemState and ODS_SELECTED)<>0 then
+      flags:=flags or DFCS_PUSHED;
+    DrawFrameControl(Data^._HDC, Data^.rcItem, DFC_BUTTON, flags);
+    InflateRect(Data^.rcItem, -2, -2);
+    if (Data^.itemState and ODS_SELECTED)<>0 then
+      OffsetRect(Data^.rcItem, 1, 1);
+    SetBkMode(Data^._HDC, TRANSPARENT);
+    BitmapHandle := TBitBtn(Sender).Glyph.Handle;
+    hdcBitmap := Windows.CreateCompatibleDC(Data^._HDC);
+    Windows.GetObject(BitmapHandle, sizeof(BitmapBuf), @BitmapBuf);
+    OldBitmapHandle := Windows.SelectObject(hdcBitmap, BitmapHandle);
+    {Windows.}GetTextExtentPoint32(Data^._HDC, LPSTR(TBitBtn(Sender).Caption), length(TBitBtn(Sender).Caption), TextSize);
+    case TBitBtn(Sender).Layout of
+      blGlyphLeft: begin
+        xDestBitmap:=Data^.rcItem.Left+((Data^.rcItem.Right-Data^.rcItem.Left)-(TextSize.cx+BitmapBuf.bmWidth+2)) shr 1;
+        yDestBitmap:=Data^.rcItem.Top+((Data^.rcItem.Bottom-Data^.rcItem.Top)-BitmapBuf.bmHeight) shr 1;
+        TextPosFlags:=DT_SINGLELINE or DT_LEFT or DT_VCENTER;
+        Inc(Data^.rcItem.Left, xDestBitmap+BitmapBuf.bmWidth+2);
+      end;
+      blGlyphRight: begin
+        xDestBitmap:=Data^.rcItem.Right-((Data^.rcItem.Right-Data^.rcItem.Left)-(TextSize.cx+BitmapBuf.bmWidth+2)) shr 1 - BitmapBuf.bmWidth;
+        yDestBitmap:=Data^.rcItem.Top+((Data^.rcItem.Bottom-Data^.rcItem.Top)-BitmapBuf.bmHeight) shr 1;
+        TextPosFlags:=DT_SINGLELINE or DT_RIGHT or DT_VCENTER;
+        Data^.rcItem.Right:=xDestBitmap-2;
+      end;
+      blGlyphTop: begin
+        xDestBitmap:=Data^.rcItem.Left+((Data^.rcItem.Right-Data^.rcItem.Left)-BitmapBuf.bmWidth) shr 1;
+        yDestBitmap:=Data^.rcItem.Top+((Data^.rcItem.Bottom-Data^.rcItem.Top)-(TextSize.cy+BitmapBuf.bmHeight+2)) shr 1;
+        TextPosFlags:=DT_SINGLELINE or DT_CENTER or DT_TOP;
+        Inc(Data^.rcItem.Top, yDestBitmap+BitmapBuf.bmHeight+2);
+      end;
+      blGlyphBottom: begin
+        xDestBitmap:=Data^.rcItem.Left+((Data^.rcItem.Right-Data^.rcItem.Left)-BitmapBuf.bmWidth) shr 1;
+        yDestBitmap:=Data^.rcItem.Bottom-((Data^.rcItem.Bottom-Data^.rcItem.Top)-(TextSize.cy+BitmapBuf.bmHeight+2)) shr 1 - BitmapBuf.bmHeight;
+        TextPosFlags:=DT_SINGLELINE or DT_CENTER or DT_BOTTOM;
+        Data^.rcItem.Bottom:=yDestBitmap-2;
+      end;
+    end;
+    Windows.BitBlt(Data^._HDC, xDestBitmap, yDestBitmap, BitmapBuf.bmWidth, BitmapBuf.bmHeight, hdcBitmap, 0, 0, SRCCOPY);
+    Windows.DrawText(Data^._HDC, LPSTR(TBitBtn(Sender).Caption), -1, Data^.rcItem, TextPosFlags);
+    if OldBitmapHandle <> 0 then
+      Windows.SelectObject(hdcBitmap, OldBitmapHandle);
+    Windows.DeleteDC(hdcBitmap);
+  end;
+
+  procedure DrawCheckListBoxItem(Checked: Boolean; Text: PChar; Data: PDrawItemStruct);
+  var
+    Flags: Cardinal;
+    Rect: TRect;
+  begin
+    Flags := DFCS_BUTTONCHECK;
+    if Checked then
+      Flags := Flags or DFCS_CHECKED;
+    Rect := Data^.rcItem;
+    WriteLn('DrawItem rect:',Rect.Left,',',Rect.Top,';',Rect.Right,',',Rect.Bottom);
+    Rect.Right := Rect.Bottom-Rect.Top;
+    Windows.DrawFrameControl(Data^._HDC, Rect, DFC_BUTTON, Flags);
+    Rect.Right := Data^.rcItem.Right;
+    Rect.Left := Rect.Bottom-Rect.Top + 5;
+    Windows.DrawText(Data^._HDC, Text, -1, Rect, DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+  end;
+
 begin
   case TLMessage(Message).Msg of
 
-  LM_PAINT:
-    CallWin32PaintHandler;
+    LM_PAINT:
+      CallWin32PaintHandler;
 
+    LM_DRAWITEM:
+    begin
+      with TLMDrawItems(Message) do
+      begin
+        if Sender is TBitBtn then
+        begin
+          DrawOwnerButton(DrawItemStruct);
+        end else
+        if Sender is TCheckListBox then
+        begin
+          if DrawItemStruct^.ItemID >= 0 then
+            DrawCheckListBoxItem(TCheckListBox(Sender).Checked[DrawItemStruct^.ItemID],
+              PChar(TCheckListBox(Sender).Items[DrawItemStruct^.ItemID]), DrawItemStruct);
+        end;
+      end;
+    end;
   end;
 end;
 
@@ -2792,6 +2882,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.76  2003/11/25 21:20:38  micha
+  implement tchecklistbox
+
   Revision 1.75  2003/11/25 14:21:28  micha
   new api lclenable,checkmenuitem according to list
 

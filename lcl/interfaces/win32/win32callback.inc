@@ -152,6 +152,11 @@ Var
     end;
   end;
 
+  procedure GetChildOwnerObject(ChildId: Integer);
+  begin
+    OwnerObject := TObject(Windows.GetProp(Windows.GetDlgItem(Window, ChildId), 'WinControl'));
+  end;
+
   function SendPaintMessage: boolean;
   var
     DC,MemDC : HDC;
@@ -201,6 +206,28 @@ Var
       SelectObject(MemDC, OldBitmap);
       DeleteDC(MemDC);
       DeleteObject(MemBitmap);
+    end;
+  end;
+
+  procedure CheckListBoxLButtonDown;
+  var
+    I: Integer;
+    ItemRect: TRect;
+    MousePos: TPoint;
+  begin
+    MousePos.X := LMMouse.Pos.X;
+    MousePos.Y := LMMouse.Pos.Y;
+    for I := 0 to Windows.SendMessage(Window, LB_GETCOUNT, 0, 0) - 1 do
+    begin
+      Windows.SendMessage(Window, LB_GETITEMRECT, I, LongInt(@ItemRect));
+      if Windows.PtInRect(@ItemRect, MousePos) then
+      begin
+        // item clicked: toggle
+        if I < TCheckListBox(OwnerObject).Items.Count then
+          TCheckListBox(OwnerObject).Checked[I] := not TCheckListBox(OwnerObject).Checked[I];
+        // can only click one item
+        exit;
+      end;
     end;
   end;
 
@@ -407,6 +434,10 @@ Begin
         YPos := Hi(LParam);
         Keys := WParam;
       End;
+
+      // CheckListBox functionality
+      if OwnerObject is TCheckListBox then
+        CheckListBoxLButtonDown;
     End;
     WM_LBUTTONDOWN:
     Begin
@@ -419,6 +450,10 @@ Begin
         YPos := Hi(LParam);
         Keys := WParam;
       End;
+
+      // CheckListBox functionality
+      if OwnerObject is TCheckListBox then
+        CheckListBoxLButtonDown;
     End;
     WM_LBUTTONUP:
     Begin
@@ -649,12 +684,20 @@ Begin
     End;
     WM_MEASUREITEM:
     Begin
-      if wParam <> 0 then
-        CNSendMessage(LM_MEASUREITEM, TObject(Windows.GetProp(Windows.GetDlgItem(Window, WParam), 'WinControl')), Pointer(LParam));
+      GetChildOwnerObject(WParam);
+      LMessage.Msg := LM_MEASUREITEM;
+      LMessage.LParam := LParam;
+      LMessage.WParam := WParam;
     End;
     WM_DRAWITEM:
     Begin
-      CNSendMessage(LM_DRAWITEM, TObject(GetProp(PDRAWITEMSTRUCT(LParam)^.hwndItem ,'WinControl')), Pointer(LParam));
+      GetChildOwnerObject(WParam);
+      with TLMDrawItems(LMessage) do
+      begin
+        Msg := LM_DRAWITEM;
+        Ctl := 0;
+        DrawItemStruct := PDrawItemStruct(LParam);
+      end;
       WinProcess := false;
     End;
   End;
@@ -842,6 +885,9 @@ end;
 
 {
   $Log$
+  Revision 1.72  2003/11/25 21:20:38  micha
+  implement tchecklistbox
+
   Revision 1.71  2003/11/25 14:21:28  micha
   new api lclenable,checkmenuitem according to list
 

@@ -136,7 +136,7 @@ Type
 Implementation
 
 Uses
-  Arrow, Buttons, Calendar, CListBox, Spin, WinExt;
+  Arrow, Buttons, Calendar, CListBox, Spin, CheckLst, WinExt;
 
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheeel, etMouseUpDown);
@@ -185,6 +185,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.54  2003/11/25 21:20:38  micha
+  implement tchecklistbox
+
   Revision 1.53  2003/11/25 14:21:28  micha
   new api lclenable,checkmenuitem according to list
 

@@ -89,7 +89,7 @@ Begin
                FDDownCount:= TComboBox(FSender).DropDownCount;
                If FDDownCount = 0 then FDDownCount:= 8;
     	       end;
-    csListBox:begin
+    csListBox,csCheckListBox:begin
     	      FFlagSort:=LBS_SORT;
               FFlagGetText:=LB_GETTEXT;
               FFlagGetTextLen:=LB_GETTEXTLEN;
@@ -417,6 +417,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2003/11/25 21:20:38  micha
+  implement tchecklistbox
+
   Revision 1.21  2003/11/18 07:20:40  micha
   added "included by" notice at top of file
 

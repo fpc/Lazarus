@@ -362,70 +362,13 @@ Var
   ListItemIndex: TListItem;
   LVI: LV_ITEM;
   PStr, PStr2: PChar;
-  SizeRect: TRECT; // used by LM_SETSIZE,LM_INVALIDATE and LM_REDRAW
+  SizeRect: TRECT; // used by LM_SETSIZE,LM_INVALIDATE,LM_CLB_SET_CHECKED and LM_REDRAW
   S: String;
   TBB: TBBUTTON;
   WindowStyle: Integer; //used by LM_SETTABPOSITION
   OldPageIndex: Integer; //used by LM_SETITEMINDEX of a csNotebook
   AMenu: TMenu;
   TheWinControl: TWinControl;
-
-  Procedure DrawOwnerButton;
-  var flags:integer; // How the button looks like (pressed or not pressed)
-      BitmapHandle: HBITMAP; // Handle of bitmap
-      OldBitmapHandle: HBITMAP; // Handle of provious bitmap in hdcBitmap
-      BitmapBuf: BITMAP; // Buffer for bitmap
-      hdcBitmap: HDC; // Memory device context for the bitmap
-      xDestBitmap: integer; // X coordinate of destination rectangle for bitmap
-      yDestBitmap: integer; // Y coordinate of destination rectangle for bitmap
-      TextSize: SIZE; // For computing the length of button caption in pixels
-      TextPosFlags:integer; // Flags for text position on the button
-  begin
-    with PDrawItemStruct(Data)^ do
-    begin
-      flags:=DFCS_BUTTONPUSH;
-      if (itemState and ODS_SELECTED)<>0 then flags:=flags or DFCS_PUSHED;
-      DrawFrameControl(_HDC, rcItem, DFC_BUTTON, flags);
-      InflateRect(rcItem, -2, -2);
-      if (itemState and ODS_SELECTED)<>0 then OffsetRect(rcItem, 1, 1);
-      SetBkMode(_HDC, TRANSPARENT);
-      BitmapHandle:=TBitBtn(Sender).Glyph.Handle;
-      hdcBitmap := CreateCompatibleDC(_HDC);
-      GetObject(BitmapHandle, sizeof(BitmapBuf), @BitmapBuf);
-      OldBitmapHandle := SelectObject(hdcBitmap, BitmapHandle);
-      GetTextExtentPoint32(_HDC, LPSTR(TBitBtn(Sender).Caption), length(TBitBtn(Sender).Caption), TextSize);
-      case TBitBtn(Sender).Layout of
-        blGlyphLeft: begin
-          xDestBitmap:=rcItem.Left+((rcItem.Right-rcItem.Left)-(TextSize.cx+BitmapBuf.bmWidth+2)) shr 1;
-          yDestBitmap:=rcItem.Top+((rcItem.Bottom-rcItem.Top)-BitmapBuf.bmHeight) shr 1;
-          TextPosFlags:=DT_SINGLELINE or DT_LEFT or DT_VCENTER;
-          Inc(rcItem.Left, xDestBitmap+BitmapBuf.bmWidth+2);
-        end;
-        blGlyphRight: begin
-          xDestBitmap:=rcItem.Right-((rcItem.Right-rcItem.Left)-(TextSize.cx+BitmapBuf.bmWidth+2)) shr 1 - BitmapBuf.bmWidth;
-          yDestBitmap:=rcItem.Top+((rcItem.Bottom-rcItem.Top)-BitmapBuf.bmHeight) shr 1;
-          TextPosFlags:=DT_SINGLELINE or DT_RIGHT or DT_VCENTER;
-          rcItem.Right:=xDestBitmap-2;
-        end;
-        blGlyphTop: begin
-          xDestBitmap:=rcItem.Left+((rcItem.Right-rcItem.Left)-BitmapBuf.bmWidth) shr 1;
-          yDestBitmap:=rcItem.Top+((rcItem.Bottom-rcItem.Top)-(TextSize.cy+BitmapBuf.bmHeight+2)) shr 1;
-          TextPosFlags:=DT_SINGLELINE or DT_CENTER or DT_TOP;
-          Inc(rcItem.Top, yDestBitmap+BitmapBuf.bmHeight+2);
-        end;
-        blGlyphBottom: begin
-          xDestBitmap:=rcItem.Left+((rcItem.Right-rcItem.Left)-BitmapBuf.bmWidth) shr 1;
-          yDestBitmap:=rcItem.Bottom-((rcItem.Bottom-rcItem.Top)-(TextSize.cy+BitmapBuf.bmHeight+2)) shr 1 - BitmapBuf.bmHeight;
-          TextPosFlags:=DT_SINGLELINE or DT_CENTER or DT_BOTTOM;
-          rcItem.Bottom:=yDestBitmap-2;
-        end;
-      end;
-      BitBlt(_HDC, xDestBitmap, yDestBitmap, BitmapBuf.bmWidth, BitmapBuf.bmHeight, hdcBitmap, 0, 0, SRCCOPY);
-      DrawText(_HDC, LPSTR(TBitBtn(Sender).Caption), -1, rcItem, TextPosFlags);
-      if OldBitmapHandle <> 0 then SelectObject(hdcBitmap, OldBitmapHandle);
-      DeleteDC(hdcBitmap);
-    end;
-  end;
 
 Begin
   Result := 0;   //default value just in case nothing sets it
@@ -536,6 +479,25 @@ Begin
           End;
         End;
       End;
+      LM_CLB_SETCHECKED:
+      begin
+        with TLMSetChecked(Data^) do
+        begin
+          if Checked then
+            I := 1
+          else
+            I := 0;
+          Windows.SendMessage(Handle, LB_SETITEMDATA, Index, I);
+
+          // redraw control
+          Windows.SendMessage(Handle, LB_GETITEMRECT, Index, LPARAM(@SizeRect));
+          Windows.InvalidateRect(Handle, @SizeRect, FALSE);
+        end;
+      end;
+      LM_CLB_GETCHECKED:
+      begin
+        Result := Windows.SendMessage(Handle, LB_GETITEMDATA, PInteger(Data)^, 0);
+      end;
       LM_LV_DELETEITEM:
       Begin
         If Sender Is TListView Then
@@ -587,61 +549,54 @@ Begin
           End;
         End;
       End;
-        LM_BRINGTOFRONT:
+      LM_BRINGTOFRONT:
+      Begin
+        Assert(False, 'Trace:TODO: [TWin32Object.IntSendMessage3] - LM_BRINGTOFRONT');
+        BringWindowToTop(Handle);
+      End;
+      LM_BTNDEFAULT_CHANGED:
+      Begin
+        If (TButton(Sender).Default) And (SendMessage(Handle, BM_GETSTATE, 0, 0) = BST_FOCUS) Then
+          SendMessage(Handle, BM_SETSTATE, WPARAM(True), 0);
+      End;
+      LM_DESTROY:
+      Begin
+        If (Sender Is TWinControl) Or (Sender Is TCommonDialog) Then
         Begin
-          Assert(False, 'Trace:TODO: [TWin32Object.IntSendMessage3] - LM_BRINGTOFRONT');
-          BringWindowToTop(Handle);
-        End;
-        LM_BTNDEFAULT_CHANGED:
+          If Handle <> 0 Then
+          begin
+            RemoveProp(Handle, 'Lazarus');
+            DestroyWindow(Handle);
+          end;
+        End
+        Else If Sender Is TMenu Then
         Begin
-          If (TButton(Sender).Default) And (SendMessage(Handle, BM_GETSTATE, 0, 0) = BST_FOCUS) Then
-            SendMessage(Handle, BM_SETSTATE, WPARAM(True), 0);
-        End;
-        LM_DESTROY:
+          If Handle <> 0 Then
+            DestroyMenu(Handle)
+        End
+        Else If Sender Is TMenuItem Then
         Begin
-          If (Sender Is TWinControl) Or (Sender Is TCommonDialog) Then
-          Begin
-            If Handle <> 0 Then
-            begin
-              RemoveProp(Handle, 'Lazarus');
-              DestroyWindow(Handle);
-            end;
-          End
-          Else If Sender Is TMenu Then
-          Begin
-            If Handle <> 0 Then
-              DestroyMenu(Handle)
-          End
-          Else If Sender Is TMenuItem Then
-          Begin
-            { not assigned when this the menuitem of a TMenu; handle is destroyed above }
-            if Assigned(TMenuItem(Sender).Parent) then
-              DeleteMenu((Sender as TMenuItem).Parent.Handle, TMenuItem(Sender).Command, MF_BYCOMMAND);
-            AMenu:=TMenuItem(Sender).GetParentMenu;
-            if (AMenu<>nil) and (AMenu.Parent<>nil)
-            and (AMenu.Parent is TCustomForm)
-            and TCustomForm(AMenu.Parent).HandleAllocated then
-              DrawMenuBar(TCustomForm(AMenu.Parent).Handle);
-          End
-          Else
-            Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
-        End;
-        LM_DRAGINFOCHANGED:
-        Begin
-        End;
-        LM_DRAWITEM:
-        Begin
-          if PDrawItemStruct(Data)^.CtlType = ODT_BUTTON then
-          Begin
-            DrawOwnerButton;
-          End;
-        End;
-        //TBitBtn
-        LM_IMAGECHANGED, LM_LAYOUTCHANGED:
-        Begin
-          GetClientRect(Handle, SizeRect);
-          InvalidateRect(Handle, @SizeRect, True);
-        End;
+          { not assigned when this the menuitem of a TMenu; handle is destroyed above }
+          if Assigned(TMenuItem(Sender).Parent) then
+            DeleteMenu((Sender as TMenuItem).Parent.Handle, TMenuItem(Sender).Command, MF_BYCOMMAND);
+          AMenu:=TMenuItem(Sender).GetParentMenu;
+          if (AMenu<>nil) and (AMenu.Parent<>nil)
+          and (AMenu.Parent is TCustomForm)
+          and TCustomForm(AMenu.Parent).HandleAllocated then
+            DrawMenuBar(TCustomForm(AMenu.Parent).Handle);
+        End
+        Else
+          Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
+      End;
+      LM_DRAGINFOCHANGED:
+      Begin
+      End;
+      //TBitBtn
+      LM_IMAGECHANGED, LM_LAYOUTCHANGED:
+      Begin
+        GetClientRect(Handle, SizeRect);
+        InvalidateRect(Handle, @SizeRect, True);
+      End;
 {Displays a menu and makes it available for selection. Applications can use this function to display context-sensitive menus,
 and will typically supply NULL for the parent_menu_shell, parent_menu_item, func and data parameters.
 The default menu positioning function will position the menu at the current pointer position.
@@ -653,383 +608,383 @@ data :	user supplied data to be passed to func.
 button :	the button which was pressed to initiate the event.
 activate_time :	the time at which the activation event occurred.
 }
-        LM_POPUPSHOW:
-        Begin
-          SetProp(FAppHandle, 'PopupMenu', Pointer(TPopupMenu(Sender).Handle));
-          TrackPopupMenuEx(TPopupMenu(Sender).Handle, TPM_LEFTALIGN or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
-            TPoint(Data^).x, TPoint(Data^).y, FAppHandle, Nil);
-        End;
-        LM_SETFILTER:
-        Begin
-          //The filter is processed/set inside Execute/CreateCommonDialog
-          //not to say that the code is buggy
-          {PStr := StrAlloc(Length(TFileDialog(Sender).Filter) + 1);
-          Try
-            StrPCopy(PStr, TFileDialog(Sender).Filter);
-            LPOpenFileName(@Sender)^.LPStrFilter := PStr; <- Invalid Typecast
-          Finally
-            StrDispose(pStr);
-          End; }
-        End;
-        LM_SETFILENAME:
-        Begin
-          //The filename is processed/set inside Execute/CreateCommonDialog
-          //not to say that the code is buggy
-          {PStr := StrAlloc(Length(TFileDialog(Sender).FileName) + 1);
-          Try
-            StrPCopy(PStr, TFileDialog(Sender).FileName);
-            LPOpenFileName(@Sender)^.LPStrFile := PStr; <- Invalid Typecast
-          Finally
-            StrDispose(pStr);
-          End; }
-        End;
-        LM_SETFOCUS:
-        Begin
-          If Handle <> 0 Then
-            SetFocus(Handle);
-        End;
-        LM_SETSIZE:
-        Begin
-          If (Sender Is TWinControl) Then // Handle is already tested --> see above
-          With PRect(Data)^ do
+      LM_POPUPSHOW:
+      Begin
+        SetProp(FAppHandle, 'PopupMenu', Pointer(TPopupMenu(Sender).Handle));
+        TrackPopupMenuEx(TPopupMenu(Sender).Handle, TPM_LEFTALIGN or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
+          TPoint(Data^).x, TPoint(Data^).y, FAppHandle, Nil);
+      End;
+      LM_SETFILTER:
+      Begin
+        //The filter is processed/set inside Execute/CreateCommonDialog
+        //not to say that the code is buggy
+        {PStr := StrAlloc(Length(TFileDialog(Sender).Filter) + 1);
+        Try
+          StrPCopy(PStr, TFileDialog(Sender).Filter);
+          LPOpenFileName(@Sender)^.LPStrFilter := PStr; <- Invalid Typecast
+        Finally
+          StrDispose(pStr);
+        End; }
+      End;
+      LM_SETFILENAME:
+      Begin
+        //The filename is processed/set inside Execute/CreateCommonDialog
+        //not to say that the code is buggy
+        {PStr := StrAlloc(Length(TFileDialog(Sender).FileName) + 1);
+        Try
+          StrPCopy(PStr, TFileDialog(Sender).FileName);
+          LPOpenFileName(@Sender)^.LPStrFile := PStr; <- Invalid Typecast
+        Finally
+          StrDispose(pStr);
+        End; }
+      End;
+      LM_SETFOCUS:
+      Begin
+        If Handle <> 0 Then
+          SetFocus(Handle);
+      End;
+      LM_SETSIZE:
+      Begin
+        If (Sender Is TWinControl) Then // Handle is already tested --> see above
+        With PRect(Data)^ do
+        begin
+          TheWinControl:=TWinControl(Sender);
+          SizeRect := PRect(Data)^;
+          Case TheWinControl.FCompStyle of
+          csForm:
           begin
-            TheWinControl:=TWinControl(Sender);
-            SizeRect := PRect(Data)^;
-            Case TheWinControl.FCompStyle of
-            csForm:
+            // the LCL defines the size of a form without border, win32 with.
+            // -> adjust size according to BorderStyle
+            Case TCustomForm(Sender).BorderStyle of
+            bsSizeable,bsSingle,bsDialog:
+              Windows.AdjustWindowRect(@SizeRect,WS_OVERLAPPEDWINDOW,false);
+            bsToolWindow,bsSizeToolWin:
+              Windows.AdjustWindowRectEx(@SizeRect,WS_OVERLAPPEDWINDOW,false,WS_EX_TOOLWINDOW);
+            //bsNone: -> Do Nothing
+            End;
+          end;
+          csComboBox:
             begin
-              // the LCL defines the size of a form without border, win32 with.
-              // -> adjust size according to BorderStyle
-              Case TCustomForm(Sender).BorderStyle of
-              bsSizeable,bsSingle,bsDialog:
-                Windows.AdjustWindowRect(@SizeRect,WS_OVERLAPPEDWINDOW,false);
-              bsToolWindow,bsSizeToolWin:
-                Windows.AdjustWindowRectEx(@SizeRect,WS_OVERLAPPEDWINDOW,false,WS_EX_TOOLWINDOW);
-              //bsNone: -> Do Nothing
-              End;
+              // the height of a combobox is fixed
+              Windows.GetWindowRect(Handle,@SizeRect);
+              SizeRect.Right:=Right;
+              SizeRect.Left:=Left;
             end;
-            csComboBox:
-              begin
-                // the height of a combobox is fixed
-                Windows.GetWindowRect(Handle,@SizeRect);
-                SizeRect.Right:=Right;
-                SizeRect.Left:=Left;
-              end;
-            end; //case
-            ResizeChild(TheWinControl, Left, Top,
-               SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top);
-          end; //with
-        end; //LM_SETSIZE
-        LM_SHOWMODAL:
-        Begin
-          If Sender Is TCommonDialog Then
-            Exit
-          Else begin
-            EnumThreadWindows(GetWindowThreadProcessId(Handle,nil),@DisableWindowsProc, Handle);
-            ShowWindow(Handle, SW_Show);
-          end;
-        End;
-        LM_TB_BUTTONCOUNT:
-        Begin
-          If Sender Is TToolbar Then
-            Result := SendMessage(Handle, TB_BUTTONCOUNT, 0, 0)
-          Else
-            Result := -1;
-        End;
-        //SH: think of TCanvas.handle!!!!
-        LM_REDRAW:
-        Begin
-          Assert(False, Format('Trace:[TWin32Object.IntSendMessage3] %S --> Redraw', [Sender.ClassName]));
-          If Sender Is TCanvas Then
-            ReDraw(TCanvas(Sender))
-          Else If Not (Sender Is TSpeedbutton) Then
-            ReDraw(Sender)
-          Else If Sender Is TSpeedButton Then
-            If TSpeedbutton(Sender).Visible Then
-              TSpeedButton(Sender).Perform(LM_PAINT, 0, 0)
-            Else
-            Begin
-              SizeRect := TSpeedButton(sender).BoundsRect;
-              InvalidateRect(TSpeedButton(Sender).Parent.Handle, @SizeRect, True);
-            End;
-        End;
-        LM_ADDPAGE:
-        Begin
-          Assert(False, Format('Trace:[TWin32Object.IntSendMessage3] %S --> Add NB page: %S', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
-          AddNBPage(Sender as TCustomNotebook, TLMNotebookEvent(Data^).Child as TCustomPage, TLMNotebookEvent(Data^).Page);
-        End;
-        LM_REMOVEPAGE:
-        Begin
-          RemoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Page);
-        End;
-        LM_SHOWTABS:
-        Begin
-          Result := Ord(True);
-          (Sender As TWinControl).Visible := TLMNotebookEvent(Data^).ShowTabs;
-          ShowHide(Sender);
-        End;
-        LM_SETTABPOSITION :
-        Begin
-          // VS: not tested
-          With TLMNotebookEvent(Data^) Do
-          Begin
-            WindowStyle := Windows.GetWindowLong((Sender As TWinControl).Handle, GWL_STYLE);
-            Case TTabPosition(TabPosition^) Of
-              tpTop:
-                WindowStyle := WindowStyle and not(TCS_VERTICAL or TCS_MULTILINE or TCS_BOTTOM);
-              tpBottom:
-                WindowStyle := (WindowStyle or TCS_BOTTOM) and not (TCS_VERTICAL or TCS_MULTILINE);
-              tpLeft:
-                WindowStyle := (WindowStyle or TCS_VERTICAL or TCS_MULTILINE) and not TCS_RIGHT;
-              tpRight:
-                WindowStyle := WindowStyle or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
-            End;
-            Windows.SetWindowLong(TWinControl(Sender).Handle, GWL_STYLE, WindowStyle);
-          End;
-        End;
-        LM_INSERTTOOLBUTTON:
-        Begin
-          if Sender is TToolButton then
-          begin
-            Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-            Assert(False, 'Trace:Toolbutton being inserted');
-            Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-            If (Sender is TWinControl) Then
-            Begin
-              PStr := StrAlloc(Length(TToolButton(Sender).Caption) + 1);
-              StrPCopy(PStr, TToolButton(Sender).Caption);
-              PStr2 := StrAlloc(Length(TControl(Sender).Hint) + 1);
-              StrPCopy(PStr2, TControl(Sender).Hint);
-            End
-            Else
-            Begin
-              Raise Exception.Create('Can not assign this control to the toolbar');
-              Exit;
-            End;
-
-            Num := TToolbar(TWinControl(Sender).Parent).Buttonlist.IndexOf(TControl(Sender));
-            If Num < 0 Then
-              Num := TToolbar(TWinControl(Sender).Parent).Buttonlist.Count + 1;
-            Assert(False, Format('Trace:Num = %d in LM_INSERTTOOLBUTTON', [Num]));
-
-            {Make sure it's created!!}
-            If Handle = 0 Then
-              IntSendMessage3(LM_CREATE, Sender, Nil);
-
-            With tbb Do
-            Begin
-              iBitmap := Num;
-              idCommand := Num;
-              fsState := TBSTATE_ENABLED;
-              fsStyle := TBSTYLE_BUTTON;
-              iString := Integer(PStr);
-            End;
-
-            SendMessage(TWinControl(Sender).Parent.Handle, TB_BUTTONSTRUCTSIZE, SizeOf(TBBUTTON), 0);
-            SendMessage(TWinControl(Sender).Parent.Handle, TB_ADDBUTTONS, 1, LParam(LPTBButton(@tbb)));
-            StrDispose(pStr);
-            StrDispose(pStr2);
-            Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-          end;
-        End;
-        LM_DELETETOOLBUTTON:
-        Begin
-          SendMessage((Sender As TWinControl).Parent.Handle, TB_DELETEBUTTON, 0, 0);
-        End;
-        LM_INVALIDATE:
-        Begin
-          Assert(False, 'Trace:Trying to invalidate window... !!!');
-          GetClientRect(Handle, SizeRect);
-          InvalidateRect(Handle, @SizeRect, True);
-        End;
-        LM_SETFORMICON:
-        Begin
-          SetClassLong(Handle, GCL_HIcon, integer(Data));
-        End;
-        LM_GETITEMS :
-        Begin
-          If (Sender as TControl).fCompStyle = csCListBox Then
-          Begin
-            Data := TWin32CListStringList.Create(Handle,TWinControl(Sender));
-            Result := Integer(Data);
-          End
-          Else
-          Begin
-            Data := TWin32ListStringList.Create(Handle,TWinControl(Sender));
-            Result := Integer(Data);
-          End;
-        End;
-        LM_GETTEXT :
-        Begin
-          Result := Integer(GetText(TComponent(Sender), Handle, PString(Data)^));
-        End;
-        LM_GETITEMINDEX :
-        Begin
-          Case (Sender as TControl).FCompStyle Of
-            csComboBox:
-            Begin
-              Result:=SendMessage(Handle, CB_GETCURSEL, 0, 0);
-              if Result = LB_ERR Then
-              Begin
-                Assert(False, 'Trace:[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
-                Result := -1;
-              End;
-            End;
-            csListBox, csCListBox:
-            Begin
-              Result := SendMessage(Handle, LB_GETCURSEL, 0, 0);
-              If Result = LB_ERR Then
-              Begin
-                Assert(False, 'Trace:[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
-                Result := -1;
-              End;
-            End;
-            csNotebook:
-            Begin
-              TLMNotebookEvent(Data^).Page := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
-            End;
-          End;
-        End;
-        LM_SETITEMINDEX :
-        Begin
-          Case (Sender as TControl).FCompStyle Of
-            csComboBox: SendMessage(Handle, CB_SETCURSEL, WParam(Integer(Data)), 0);
-            csListBox, csCListBox:
-            Begin
-              If TListBox(Sender).MultiSelect Then
-                SendMessage(Handle, LB_SETSEL, WPARAM(TRUE), LParam(Integer(Data)))
-              Else
-                SendMessage(Handle, LB_SETCURSEL, WParam(Integer(Data)), 0);
-            End;
-            csNotebook:
-            Begin
-              Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
-              with TLMNotebookEvent(Data^) do
-              begin
-                OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
-                SendMessage(Handle,TCM_SETCURSEL,WPARAM(Page),0);
-                if (Page>=0)
-                And ((Parent As TCustomNotebook).CustomPage(Page).HandleAllocated)
-                  then ShowWindow(TCustomNotebook(Parent).CustomPage(Page).Handle, SW_SHOW);
-                if (OldPageIndex>=0) and (OldPageIndex<>Page)
-                and (TCustomNotebook(Parent).CustomPage(OldPageIndex).HandleAllocated)
-                  then ShowWindow(TCustomNotebook(Parent).CustomPage(OldPageIndex).Handle, SW_HIDE);
-              end;
-            End;
-          End;
-        End;
-        LM_GETSELSTART:
-        Begin
-          If (Sender as TControl).FCompStyle = csComboBox Then
-          Begin
-            Result := Low(SendMessage(Handle, CB_GETEDITSEL, WPARAM(nil), LPARAM(nil)));
-          End;
-        End;
-        LM_GETSELLEN:
-        Begin
-          If (Sender as TControl).FCompStyle = csComboBox then
-          Begin
-            Result := SendMessage(Handle, CB_GETEDITSEL, WPARAM(nil), LPARAM(nil));
-          End;
-        End;
-        LM_GETLIMITTEXT:
-        Begin
-          If (Sender as TControl).FCompStyle = csComboBox Then
-          Begin
-            Result := Integer(GetProp(Handle, 'LIMIT_TEXT'));
-          End;
-        End;
-        LM_SETSELSTART:
-        Begin
-          If (Sender Is TControl)
-          And (TControl(Sender).FCompStyle = csComboBox) Then
-            SendMessage(Handle, CB_SETEDITSEL, 0,
-                        MakeLParam(Word(Integer(Data)), High(Word)));
-        End;
-        LM_SETSELLEN:
-        Begin
-          If (Sender Is TControl) And (TControl(Sender).FCompStyle = csComboBox) Then
-          Begin
-            SendMessage(Handle, CB_SETCURSEL, WParam(Data), 0);
-          End;
-        End;
-        LM_GETLINECOUNT:
-        Begin
-          If Sender Is TCustomMemo Then
-            Result := SendMessage(Handle, EM_GETLINECOUNT, 0, 0);
-        End;
-        LM_GETSELCOUNT:
-        Begin
-          If Sender Is TCustomListBox then
-            Result := SendMessage(Handle, LB_GETSELCOUNT, 0, 0);
-        End;
-        LM_GETSEL:
-        Begin
-          If Sender Is TCustomListBox then
-             Result := Windows.SendMessage(Handle, LB_GETSEL, WParam(Data^), 0);
-        End;
-        LM_SETLIMITTEXT:
-        Begin
-          If (Sender Is TControl) Then
-            SetLimitText(Handle, Word(Data^));
-        End;
-        LM_SORT:
-        Begin
-          If  (Sender Is TControl) And Assigned(Data) Then
-          Begin
-            Case TControl(Sender).FCompStyle Of
-              csComboBox, csListBox:
-                TWin32ListStringList(TLMSort(Data^).List).Sorted :=
-                  TLMSort(Data^).IsSorted;
-              csCListBox:
-                TWin32CListStringList(TLMSort(Data^).List).Sorted :=
-                  TLMSort(Data^).IsSorted;
-            End
-          End
-        End;
-        LM_SETSEL:
-        Begin
-          If (Sender is TControl) And (TControl(Sender).FCompStyle In [csListBox, csCListBox]) And Assigned(Data) Then
-          Begin
-            If TControl(Sender).FCompStyle = csListBox Then
-            Begin
-              If TLMSetSel(Data^).Selected Then
-                SendMessage(Handle, LB_SELITEMRANGE, WParam(True), MakeLParam(0, 0))
-              Else
-                SendMessage(Handle, LB_SELITEMRANGE, WParam(False), MakeLParam(0, 0));
-            End
-          End;
-        End;
-        LM_SETSELMODE:
-        Begin
-        If Sender Is TCustomListBox Then
-          RecreateWnd(TWinControl(Sender));
-        End;
-        LM_SETBORDER:
-        Begin
-          If Sender is TControl Then
-          Begin
-            If (TControl(Sender).FCompStyle = csListBox)
-            Or (TControl(Sender).FCompStyle = csCListBox) Then
-            Begin
-              If TCustomListBox(Sender).BorderStyle = TBorderStyle(bsSingle) Then
-                SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) Or WS_EX_CLIENTEDGE)
-              Else
-                SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) And Not WS_EX_CLIENTEDGE);
-            End
-          End;
-        End;
-        LM_SETSHORTCUT:
-        Begin
-          If Sender is TMenuItem Then
-          Begin
-            SetLabel(Sender, LPSTR(TMenuItem(Sender).Caption+#9+ShortCutToText(ShortCut(TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier))));
-            SetAccelKey(TLMShortCut(Data^).Handle, TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier, FAccelGroup);
-          End;
-        End;
+          end; //case
+          ResizeChild(TheWinControl, Left, Top,
+             SizeRect.Right - SizeRect.Left, SizeRect.Bottom - SizeRect.Top);
+        end; //with
+      end; //LM_SETSIZE
+      LM_SHOWMODAL:
+      Begin
+        If Sender Is TCommonDialog Then
+          Exit
+        Else begin
+          EnumThreadWindows(GetWindowThreadProcessId(Handle,nil),@DisableWindowsProc, Handle);
+          ShowWindow(Handle, SW_Show);
+        end;
+      End;
+      LM_TB_BUTTONCOUNT:
+      Begin
+        If Sender Is TToolbar Then
+          Result := SendMessage(Handle, TB_BUTTONCOUNT, 0, 0)
         Else
-          Assert(True, Format ('WARNING: Unhandled message %d in IntSendMessage3 send by %s --> message:Redraw', [LM_Message, Sender.ClassName]));
-          // unhandled message
+          Result := -1;
+      End;
+      //SH: think of TCanvas.handle!!!!
+      LM_REDRAW:
+      Begin
+        Assert(False, Format('Trace:[TWin32Object.IntSendMessage3] %S --> Redraw', [Sender.ClassName]));
+        If Sender Is TCanvas Then
+          ReDraw(TCanvas(Sender))
+        Else If Not (Sender Is TSpeedbutton) Then
+          ReDraw(Sender)
+        Else If Sender Is TSpeedButton Then
+          If TSpeedbutton(Sender).Visible Then
+            TSpeedButton(Sender).Perform(LM_PAINT, 0, 0)
+          Else
+          Begin
+            SizeRect := TSpeedButton(sender).BoundsRect;
+            InvalidateRect(TSpeedButton(Sender).Parent.Handle, @SizeRect, True);
+          End;
+      End;
+      LM_ADDPAGE:
+      Begin
+        Assert(False, Format('Trace:[TWin32Object.IntSendMessage3] %S --> Add NB page: %S', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
+        AddNBPage(Sender as TCustomNotebook, TLMNotebookEvent(Data^).Child as TCustomPage, TLMNotebookEvent(Data^).Page);
+      End;
+      LM_REMOVEPAGE:
+      Begin
+        RemoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Page);
+      End;
+      LM_SHOWTABS:
+      Begin
+        Result := Ord(True);
+        (Sender As TWinControl).Visible := TLMNotebookEvent(Data^).ShowTabs;
+        ShowHide(Sender);
+      End;
+      LM_SETTABPOSITION :
+      Begin
+        // VS: not tested
+        With TLMNotebookEvent(Data^) Do
+        Begin
+          WindowStyle := Windows.GetWindowLong((Sender As TWinControl).Handle, GWL_STYLE);
+          Case TTabPosition(TabPosition^) Of
+            tpTop:
+              WindowStyle := WindowStyle and not(TCS_VERTICAL or TCS_MULTILINE or TCS_BOTTOM);
+            tpBottom:
+              WindowStyle := (WindowStyle or TCS_BOTTOM) and not (TCS_VERTICAL or TCS_MULTILINE);
+            tpLeft:
+              WindowStyle := (WindowStyle or TCS_VERTICAL or TCS_MULTILINE) and not TCS_RIGHT;
+            tpRight:
+              WindowStyle := WindowStyle or (TCS_VERTICAL or TCS_RIGHT or TCS_MULTILINE);
+          End;
+          Windows.SetWindowLong(TWinControl(Sender).Handle, GWL_STYLE, WindowStyle);
+        End;
+      End;
+      LM_INSERTTOOLBUTTON:
+      Begin
+        if Sender is TToolButton then
+        begin
+          Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+          Assert(False, 'Trace:Toolbutton being inserted');
+          Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+          If (Sender is TWinControl) Then
+          Begin
+            PStr := StrAlloc(Length(TToolButton(Sender).Caption) + 1);
+            StrPCopy(PStr, TToolButton(Sender).Caption);
+            PStr2 := StrAlloc(Length(TControl(Sender).Hint) + 1);
+            StrPCopy(PStr2, TControl(Sender).Hint);
+          End
+          Else
+          Begin
+            Raise Exception.Create('Can not assign this control to the toolbar');
+            Exit;
+          End;
+
+          Num := TToolbar(TWinControl(Sender).Parent).Buttonlist.IndexOf(TControl(Sender));
+          If Num < 0 Then
+            Num := TToolbar(TWinControl(Sender).Parent).Buttonlist.Count + 1;
+          Assert(False, Format('Trace:Num = %d in LM_INSERTTOOLBUTTON', [Num]));
+
+          {Make sure it's created!!}
+          If Handle = 0 Then
+            IntSendMessage3(LM_CREATE, Sender, Nil);
+
+          With tbb Do
+          Begin
+            iBitmap := Num;
+            idCommand := Num;
+            fsState := TBSTATE_ENABLED;
+            fsStyle := TBSTYLE_BUTTON;
+            iString := Integer(PStr);
+          End;
+
+          SendMessage(TWinControl(Sender).Parent.Handle, TB_BUTTONSTRUCTSIZE, SizeOf(TBBUTTON), 0);
+          SendMessage(TWinControl(Sender).Parent.Handle, TB_ADDBUTTONS, 1, LParam(LPTBButton(@tbb)));
+          StrDispose(pStr);
+          StrDispose(pStr2);
+          Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
+        end;
+      End;
+      LM_DELETETOOLBUTTON:
+      Begin
+        SendMessage((Sender As TWinControl).Parent.Handle, TB_DELETEBUTTON, 0, 0);
+      End;
+      LM_INVALIDATE:
+      Begin
+        Assert(False, 'Trace:Trying to invalidate window... !!!');
+        GetClientRect(Handle, SizeRect);
+        InvalidateRect(Handle, @SizeRect, True);
+      End;
+      LM_SETFORMICON:
+      Begin
+        SetClassLong(Handle, GCL_HIcon, integer(Data));
+      End;
+      LM_GETITEMS :
+      Begin
+        If (Sender as TControl).fCompStyle = csCListBox Then
+        Begin
+          Data := TWin32CListStringList.Create(Handle,TWinControl(Sender));
+          Result := Integer(Data);
+        End
+        Else
+        Begin
+          Data := TWin32ListStringList.Create(Handle,TWinControl(Sender));
+          Result := Integer(Data);
+        End;
+      End;
+      LM_GETTEXT :
+      Begin
+        Result := Integer(GetText(TComponent(Sender), Handle, PString(Data)^));
+      End;
+      LM_GETITEMINDEX :
+      Begin
+        Case (Sender as TControl).FCompStyle Of
+          csComboBox:
+          Begin
+            Result:=SendMessage(Handle, CB_GETCURSEL, 0, 0);
+            if Result = LB_ERR Then
+            Begin
+              Assert(False, 'Trace:[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
+              Result := -1;
+            End;
+          End;
+          csListBox, csCListBox:
+          Begin
+            Result := SendMessage(Handle, LB_GETCURSEL, 0, 0);
+            If Result = LB_ERR Then
+            Begin
+              Assert(False, 'Trace:[TWin32Object.IntSendMessage3] Could not retrieve item index via LM_GETITEMINDEX; try selecting an item first');
+              Result := -1;
+            End;
+          End;
+          csNotebook:
+          Begin
+            TLMNotebookEvent(Data^).Page := SendMessage(Handle, TCM_GETCURSEL, 0, 0);
+          End;
+        End;
+      End;
+      LM_SETITEMINDEX :
+      Begin
+        Case (Sender as TControl).FCompStyle Of
+          csComboBox: SendMessage(Handle, CB_SETCURSEL, WParam(Integer(Data)), 0);
+          csListBox, csCListBox:
+          Begin
+            If TListBox(Sender).MultiSelect Then
+              SendMessage(Handle, LB_SETSEL, WPARAM(TRUE), LParam(Integer(Data)))
+            Else
+              SendMessage(Handle, LB_SETCURSEL, WParam(Integer(Data)), 0);
+          End;
+          csNotebook:
+          Begin
+            Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
+            with TLMNotebookEvent(Data^) do
+            begin
+              OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
+              SendMessage(Handle,TCM_SETCURSEL,WPARAM(Page),0);
+              if (Page>=0)
+              And ((Parent As TCustomNotebook).CustomPage(Page).HandleAllocated)
+                then ShowWindow(TCustomNotebook(Parent).CustomPage(Page).Handle, SW_SHOW);
+              if (OldPageIndex>=0) and (OldPageIndex<>Page)
+              and (TCustomNotebook(Parent).CustomPage(OldPageIndex).HandleAllocated)
+                then ShowWindow(TCustomNotebook(Parent).CustomPage(OldPageIndex).Handle, SW_HIDE);
+            end;
+          End;
+        End;
+      End;
+      LM_GETSELSTART:
+      Begin
+        If (Sender as TControl).FCompStyle = csComboBox Then
+        Begin
+          Result := Low(SendMessage(Handle, CB_GETEDITSEL, WPARAM(nil), LPARAM(nil)));
+        End;
+      End;
+      LM_GETSELLEN:
+      Begin
+        If (Sender as TControl).FCompStyle = csComboBox then
+        Begin
+          Result := SendMessage(Handle, CB_GETEDITSEL, WPARAM(nil), LPARAM(nil));
+        End;
+      End;
+      LM_GETLIMITTEXT:
+      Begin
+        If (Sender as TControl).FCompStyle = csComboBox Then
+        Begin
+          Result := Integer(GetProp(Handle, 'LIMIT_TEXT'));
+        End;
+      End;
+      LM_SETSELSTART:
+      Begin
+        If (Sender Is TControl)
+        And (TControl(Sender).FCompStyle = csComboBox) Then
+          SendMessage(Handle, CB_SETEDITSEL, 0,
+                      MakeLParam(Word(Integer(Data)), High(Word)));
+      End;
+      LM_SETSELLEN:
+      Begin
+        If (Sender Is TControl) And (TControl(Sender).FCompStyle = csComboBox) Then
+        Begin
+          SendMessage(Handle, CB_SETCURSEL, WParam(Data), 0);
+        End;
+      End;
+      LM_GETLINECOUNT:
+      Begin
+        If Sender Is TCustomMemo Then
+          Result := SendMessage(Handle, EM_GETLINECOUNT, 0, 0);
+      End;
+      LM_GETSELCOUNT:
+      Begin
+        If Sender Is TCustomListBox then
+          Result := SendMessage(Handle, LB_GETSELCOUNT, 0, 0);
+      End;
+      LM_GETSEL:
+      Begin
+        If Sender Is TCustomListBox then
+           Result := Windows.SendMessage(Handle, LB_GETSEL, WParam(Data^), 0);
+      End;
+      LM_SETLIMITTEXT:
+      Begin
+        If (Sender Is TControl) Then
+          SetLimitText(Handle, Word(Data^));
+      End;
+      LM_SORT:
+      Begin
+        If  (Sender Is TControl) And Assigned(Data) Then
+        Begin
+          Case TControl(Sender).FCompStyle Of
+            csComboBox, csListBox:
+              TWin32ListStringList(TLMSort(Data^).List).Sorted :=
+                TLMSort(Data^).IsSorted;
+            csCListBox:
+              TWin32CListStringList(TLMSort(Data^).List).Sorted :=
+                TLMSort(Data^).IsSorted;
+          End
+        End
+      End;
+      LM_SETSEL:
+      Begin
+        If (Sender is TControl) And (TControl(Sender).FCompStyle In [csListBox, csCListBox]) And Assigned(Data) Then
+        Begin
+          If TControl(Sender).FCompStyle = csListBox Then
+          Begin
+            If TLMSetSel(Data^).Selected Then
+              SendMessage(Handle, LB_SELITEMRANGE, WParam(True), MakeLParam(0, 0))
+            Else
+              SendMessage(Handle, LB_SELITEMRANGE, WParam(False), MakeLParam(0, 0));
+          End
+        End;
+      End;
+      LM_SETSELMODE:
+      Begin
+      If Sender Is TCustomListBox Then
+        RecreateWnd(TWinControl(Sender));
+      End;
+      LM_SETBORDER:
+      Begin
+        If Sender is TControl Then
+        Begin
+          If (TControl(Sender).FCompStyle = csListBox)
+          Or (TControl(Sender).FCompStyle = csCListBox) Then
+          Begin
+            If TCustomListBox(Sender).BorderStyle = TBorderStyle(bsSingle) Then
+              SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) Or WS_EX_CLIENTEDGE)
+            Else
+              SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) And Not WS_EX_CLIENTEDGE);
+          End
+        End;
+      End;
+      LM_SETSHORTCUT:
+      Begin
+        If Sender is TMenuItem Then
+        Begin
+          SetLabel(Sender, LPSTR(TMenuItem(Sender).Caption+#9+ShortCutToText(ShortCut(TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier))));
+          SetAccelKey(TLMShortCut(Data^).Handle, TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier, FAccelGroup);
+        End;
+      End;
+      Else
+        Assert(True, Format ('WARNING: Unhandled message %d in IntSendMessage3 send by %s --> message:Redraw', [LM_Message, Sender.ClassName]));
+        // unhandled message
       End; // end of 2nd case
     End; // end of else-part of 1st case
   End; // end of 1st case
@@ -1965,7 +1920,7 @@ Begin
       end;
       FlagsEx := WS_EX_CLIENTEDGE;
       pClassName := 'LISTBOX';
-      Flags := Flags or WS_VSCROLL or LBS_NOINTEGRALHEIGHT;
+      Flags := Flags or (WS_VSCROLL or LBS_NOINTEGRALHEIGHT or LBS_HASSTRINGS);
     End;
     csCListBox:
     Begin
@@ -2863,6 +2818,9 @@ End;
 
 {
   $Log$
+  Revision 1.135  2003/11/25 21:20:38  micha
+  implement tchecklistbox
+
   Revision 1.134  2003/11/25 14:21:28  micha
   new api lclenable,checkmenuitem according to list
 
