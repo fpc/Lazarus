@@ -230,9 +230,8 @@ const
   crSizeAll     = TCursor(-22);
 
 
-
 type
-  TWndMethod = procedure(var Message : TLMessage) of Object;
+  TWndMethod = procedure(var TheMessage : TLMessage) of Object;
 
   TControlStyleType = (
     csAcceptsControls,
@@ -1358,6 +1357,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.75  2002/10/01 10:41:47  lazarus
+  MG: fixed mem leak
+
   Revision 1.74  2002/09/29 15:08:37  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
     Patch includes:
