@@ -209,6 +209,7 @@ type
     function DoSaveProject(SaveAs:boolean):TModalResult;
     function DoCloseProject:TModalResult;
     function DoOpenProjectFile(AFileName:string):TModalResult;
+    function SomethingOfProjectIsModified: boolean;
 
     // helpful methods
     procedure GetCurrentUnit(var ActiveSourceEditor:TSourceEditor; 
@@ -588,9 +589,10 @@ begin
   itmSearchFindAgain.OnClick := @SourceNotebook.FindAgainClicked;
   itmSearchReplace.OnClick := @SourceNotebook.ReplaceClicked;
 
-  // create a new project
-  // ToDo: open last project
-  DoNewProject(ptProgram);
+  // load last project or create a new project
+  if (not FileExists(EnvironmentOptions.LastSavedProjectFile))
+  or (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile)<>mrOk) then
+    DoNewProject(ptProgram);
 end;
 
 destructor TMainIDE.Destroy;
@@ -1280,7 +1282,7 @@ end;
 
 procedure TMainIDE.mnuQuitClicked(Sender : TObject);
 begin
-  if Project.Modified then begin
+  if SomethingOfProjectIsModified then begin
     if DoSaveProject(false)=mrAbort then exit;
   end;
   Project.Free;
@@ -2214,6 +2216,7 @@ writeln('TMainIDE.DoSaveProject 3.1');
         AText:='A file "'+NewFilename+'" already exists. Replace it?';
         Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
           ,MB_OKCANCEL);
+        //Result:=MessageDlg(AText,mtConfirmation,[mbOk,mbCancel],0);
         if Result=mrCancel then exit;
       end else if Project.ProjectType in [ptProgram, ptApplication] then begin
         if FileExists(NewProgramFilename) then begin
@@ -2224,15 +2227,15 @@ writeln('TMainIDE.DoSaveProject 3.1');
           if Result=mrCancel then exit;
         end;
       end;
-writeln('TMainIDE.DoSaveProject 4');
+writeln('TMainIDE.DoSaveProject 4 ',NewFilename);
       Project.ProjectFile:=NewFilename;
       if (MainUnitInfo<>nil) and (MainUnitInfo.Loaded) then begin
-writeln('TMainIDE.DoSaveProject 5');
+writeln('TMainIDE.DoSaveProject 5 ',MainUnitInfo.Filename);
         // update source editor of main unit
         MainUnitSrcEdit.Source.Assign(MainUnitInfo.Source);
         MainUnitSrcEdit.Filename:=MainUnitInfo.Filename;
         NewPageName:=ExtractFileName(MainUnitInfo.Filename);
-        Ext:=ExtractFilename(NewPagename);
+        Ext:=ExtractFileExt(NewPagename);
         NewPageName:=copy(NewpageName,1,length(NewPageName)-length(Ext));
         NewPageName:=SourceNoteBook.FindUniquePageName(
           NewPageName,MainUnitInfo.EditorIndex);
@@ -2256,6 +2259,8 @@ writeln('TMainIDE.DoSaveProject 7');
       if Result=mrAbort then exit;
     end;
   end;
+  EnvironmentOptions.LastSavedProjectFile:=Project.ProjectInfoFile;
+  EnvironmentOptions.Save(false);
 writeln('TMainIDE.DoSaveProject 8');
   if Result=mrOk then begin
     if MainUnitInfo<>nil then MainUnitInfo.Modified:=false;
@@ -2347,6 +2352,18 @@ writeln('TMainIDE.DoOpenProjectFile 5');
   and (Project.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.Pages.Count) then
     SourceNoteBook.Notebook.PageIndex:=Project.ActiveEditorIndexAtStart;
 writeln('TMainIDE.DoOpenProjectFile end');
+end;
+
+function TMainIDE.SomethingOfProjectIsModified: boolean;
+var i:integer;
+begin
+  Result:=Project.Modified;
+  for i:=0 to Project.UnitCount-1 do begin
+    Result:=Result or Project.Units[i].Modified;
+    if Project.Units[i].Loaded then
+      Result:=Result or SourceNoteBook.FindSourceEditorWithPageIndex(
+           Project.Units[i].EditorIndex).Modified;
+  end;
 end;
 
 function TMainIDE.DoSaveAll: TModalResult;
@@ -2543,8 +2560,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.71  2001/03/08 23:11:49  lazarus
-  bugfixes
+  Revision 1.72  2001/03/09 11:38:20  lazarus
+  auto load last project
 
   Revision 1.68  2001/03/03 11:06:15  lazarus
   added project support, codetools

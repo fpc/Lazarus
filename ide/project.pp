@@ -642,7 +642,6 @@ begin
   AFilename:=XMLConfig.GetValue(Path+'Filename/Value','');
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,true);
-writeln('TUnitInfo.LoadFromXMLConfig ',AFilename);
   fFilename:=AFilename;
   fFormName:=XMLConfig.GetValue(Path+'FormName/Value','');
   HasResources:=XMLConfig.GetValue(Path+'HasResources/Value',false);
@@ -680,6 +679,7 @@ begin
       end;
       Source.Text:=SrcTxt;
       fUnitName:=NewUnitName;
+      fModified:=true;
     end;
   end;
 end;
@@ -740,6 +740,7 @@ begin
     Add('end.');
     Add('');
   end;
+  fModified:=true;
 end;
 
 function TUnitInfo.GetHasResources:boolean;
@@ -1398,8 +1399,8 @@ end.
 
 {
   $Log$
-  Revision 1.13  2001/03/08 23:11:49  lazarus
-  bugfixes
+  Revision 1.14  2001/03/09 11:38:20  lazarus
+  auto load last project
 
   Revision 1.10  2001/03/03 11:06:15  lazarus
   added project support, codetools

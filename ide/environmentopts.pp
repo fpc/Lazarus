@@ -45,6 +45,7 @@ type
     FAutoSaveEditorFiles: boolean;
     FAutoSaveProject: boolean;
     FAutoSaveIntervalInSecs: integer;
+    FLastSavedProjectFile: string;
     
     // windows
     FSaveWindowPositions: boolean;
@@ -87,6 +88,8 @@ type
        read FAutoSaveProject write FAutoSaveProject;
     property AutoSaveIntervalInSecs: integer
        read FAutoSaveIntervalInSecs write FAutoSaveIntervalInSecs;
+    property LastSavedProjectFile: string 
+       read FLastSavedProjectFile write FLastSavedProjectFile;
 
     // windows
     property SaveWindowPositions: boolean
@@ -212,6 +215,7 @@ begin
   FAutoSaveEditorFiles:=true;
   FAutoSaveProject:=true;
   FAutoSaveIntervalInSecs:=300; // 5 minutes
+  FLastSavedProjectFile:='';
 
   // windows
   FSaveWindowPositions:=true;
@@ -316,6 +320,8 @@ begin
        'EnvironmentOptions/AutoSave/Project',FAutoSaveProject);
     FAutoSaveIntervalInSecs:=XMLConfig.GetValue(
        'EnvironmentOptions/AutoSave/IntervalInSecs',FAutoSaveIntervalInSecs);
+    FLastSavedProjectFile:=XMLConfig.GetValue(
+       'EnvironmentOptions/AutoSave/LastSavedProjectFile',FLastSavedProjectFile);
 
     // windows
     FSaveWindowPositions:=XMLConfig.GetValue(
@@ -402,8 +408,10 @@ begin
     XMLConfig.SetValue('EnvironmentOptions/AutoSave/EditorFiles'
        ,FAutoSaveEditorFiles);
     XMLConfig.SetValue('EnvironmentOptions/AutoSave/Project',FAutoSaveProject);
-    XMLConfig.GetValue('EnvironmentOptions/AutoSave/IntervalInSecs'
+    XMLConfig.SetValue('EnvironmentOptions/AutoSave/IntervalInSecs'
        ,FAutoSaveIntervalInSecs);
+    XMLConfig.SetValue('EnvironmentOptions/AutoSave/LastSavedProjectFile'
+       ,FLastSavedProjectFile);
 
     // windows
     XMLConfig.SetValue('EnvironmentOptions/Desktop/SaveWindowPositions'
