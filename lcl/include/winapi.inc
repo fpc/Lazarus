@@ -385,6 +385,12 @@ begin
   Result := InterfaceObject.GetKeyState(nVirtKey);
 end;
 
+function GetNotebookTabIndexAtPos(Handle: HWND;
+  const ClientPos: TPoint): integer;
+begin
+  Result := InterfaceObject.GetNotebookTabIndexAtPos(Handle,ClientPos);
+end;
+
 function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
 begin
   Result := InterfaceObject.GetObject(GDIObject, BufSize, Buf);
@@ -1380,6 +1386,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.61  2002/11/09 15:02:07  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.60  2002/10/31 21:29:47  lazarus
   MG: implemented TControlScrollBar.Size
 

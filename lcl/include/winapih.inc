@@ -112,6 +112,7 @@ function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetFocus: HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetKeyState(nVirtKey: Integer): Smallint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function GetNotebookTabIndexAtPos(Handle: HWND; const ClientPos: TPoint): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetParent(Handle : HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function GetProp(Handle : hwnd; Str : PChar): Pointer;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -335,6 +336,9 @@ Function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.54  2002/11/09 15:02:07  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.53  2002/10/31 21:29:47  lazarus
   MG: implemented TControlScrollBar.Size
 
