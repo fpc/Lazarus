@@ -1600,6 +1600,7 @@ end;
 
 procedure TMainIDE.mnuCloseAllClicked(Sender : TObject);
 begin
+  DoSaveAll([]);
   while (SourceNoteBook.NoteBook<>nil)
   and (DoCloseEditorFile(SourceNoteBook.NoteBook.PageIndex,
        [cfSaveFirst])=mrOk) do ;
@@ -7197,6 +7198,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.394  2002/09/30 09:26:40  lazarus
+  MG: added DoSaveAll before CloseAll
+
   Revision 1.393  2002/09/20 14:41:34  lazarus
   MG: cleanup
 
