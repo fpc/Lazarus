@@ -1118,7 +1118,7 @@ begin
   // check project
   if SomethingOfProjectIsModified then begin
     MsgResult:=MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
-      [Project1.Title]), mtConfirmation, [mbYes, mbNo, mbCancel], 0);
+      [Project1.Title]), mtConfirmation, [mbYes, mbNo, mbAbort], 0);
     case MsgResult of
 
     mrYes:
@@ -1127,7 +1127,7 @@ begin
         if not CanClose then exit;
       end;
 
-    mrCancel:
+    mrCancel, mrAbort:
       begin
         CanClose:= false;
         Exit;
@@ -5221,19 +5221,17 @@ Begin
   // close current project first
   If Project1<>nil then begin
     if SomethingOfProjectIsModified then begin
-        if MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
-         [Project1.Title]),
-          mtconfirmation, [mbYes, mbNo, mbCancel], 0) = mrYes then begin
-        if DoSaveProject([])=mrAbort then begin
-          Result:=mrAbort;
-          exit;
-        end;
-      end;
+      Result:=MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
+       [Project1.Title]),
+        mtconfirmation, [mbYes, mbNo, mbAbort], 0);
+      if Result=mrYes then begin
+        Result:=DoSaveProject([]);
+        if Result=mrAbort then exit;
+      end else if Result in [mrCancel,mrAbort] then
+        exit;
     end;
-    if DoCloseProject=mrAbort then begin
-      Result:=mrAbort;
-      exit;
-    end;
+    Result:=DoCloseProject;
+    if Result=mrAbort then exit;
   end;
 
   // create a virtual project (i.e. unsaved and without real project directory)
@@ -10609,6 +10607,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.761  2004/08/29 08:54:39  mattias
+  fixed aborting new project
+
   Revision 1.760  2004/08/26 21:32:31  vincents
   Prepare lazarus for use with loader. Use -dUseStartLazarus to activate.
 
