@@ -63,7 +63,7 @@ type
   
   
   // Just-In-Time-Form List
-  TJITForms = class(TPersistent)
+  TJITForms = class(TPersistentWithTemplates)
   private
     FCurReadErrorMsg: string;
     FCurReadForm:TForm;
@@ -128,9 +128,6 @@ type
     property CurReadComponent: TComponent read FCurReadComponent;
     property CurReadComponentClass: TComponentClass read FCurReadComponentClass;
     property CurReadErrorMsg: string read FCurReadErrorMsg;
-  published
-    // the dummy template 'procedure of object' for all events
-    procedure DoNothing;
   end;
 
 implementation
@@ -678,12 +675,6 @@ end;
   there is no compiled code, thus it must be produced it at runtime
   (just-in-time).
 }
-
-procedure TJITForms.DoNothing;
-// this is the template procedure for all unknown procedures
-begin
-  // !!! do not write any code in here !!!
-end;
 
 procedure TJITForms.ReaderFindMethod(Reader: TReader;
   const FindMethodName: Ansistring;  var Address: Pointer; var Error: Boolean);

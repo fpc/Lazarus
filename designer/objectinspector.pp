@@ -613,7 +613,9 @@ begin
   or ((FCurrentEditorLookupRoot<>nil)
     and (FPropertyEditorHook<>nil)
     and (FPropertyEditorHook.LookupRoot<>FCurrentEditorLookupRoot))
-  then exit;
+  then begin
+    exit;
+  end;
   
   OldChangeStep:=fChangeStep;
   CurRow:=Rows[FItemIndex];

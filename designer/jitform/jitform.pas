@@ -49,6 +49,14 @@ type
   end;
 
   TJITFormClass = class of TJITForm;
+  
+  // TPersistentWithTemplates
+  TPersistentWithTemplates = class(TPersistent)
+  published
+    // the dummy template 'procedure of object' for all events
+    procedure DoNothing;
+  end;
+  
 
 implementation
 
@@ -74,6 +82,13 @@ begin
   TSetDesigningComponent.SetDesigningOfControl(TComponent(Result),true);
 end;
 
+{ TPersistentWithTemplates }
+
+procedure TPersistentWithTemplates.DoNothing;
+// this is the template procedure for all events of the designed components
+begin
+  // !!! do not write any code in here !!!
+end;
 
 end.
 
