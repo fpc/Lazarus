@@ -435,7 +435,8 @@ var
   i: integer;
 begin
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then begin
+  if (Operation = opRemove)
+  {$IFDEF SYN_LAZARUS}and (AComponent is TCustomSynEdit){$ENDIF} then begin
     i := fEditors.IndexOf(AComponent);
     if i > -1 then
       RemoveEditor(AComponent as TCustomSynEdit);
