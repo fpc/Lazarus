@@ -3084,8 +3084,10 @@ begin
           case TControl(Sender).fCompStyle of
           csComboBox:
             Widget:= PGtkWidget(PGtkCombo(Handle)^.entry);
+          {$IfDef GTK1}
           csEdit, csMemo:
   	    Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+          {$EndIf}
   	  else
   	    Widget:= nil;
           end;
@@ -3107,11 +3109,13 @@ begin
           csComboBox:
             Result:= Abs(PGtkOldEditable(PGtkCombo(Handle)^.entry)^.selection_end_pos
                      - PGtkOldEditable(PGtkCombo(Handle)^.entry)^.selection_start_pos);
+          {$IfDef GTK1}
           csEdit, csMemo:
   	    begin
   	      Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
               Result:= Abs(PGtkOldEditable(Widget)^.selection_end_pos - PGtkOldEditable(Widget)^.selection_start_pos);
   	    end;
+          {$EndIf}
           end;
         end;
       end;
@@ -3132,8 +3136,10 @@ begin
             csComboBox:
               Widget:=PGtkCombo(Handle)^.entry;
 
+          {$IfDef GTK1}
             csEdit, csMemo:
               Widget:=GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+          {$EndIf}
 
           else
             Widget:=nil;
@@ -3152,8 +3158,10 @@ begin
             csComboBox:
               Widget:=PGtkCombo(Handle)^.entry;
 
+          {$IfDef GTK1}
             csEdit, csMemo:
               Widget:=GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+          {$EndIf}
 
           else
             Widget:=nil;
@@ -3416,6 +3424,7 @@ begin
                                          TComboBox(Sender).Handle)^.entry)));
      end;
      
+   {$IfDef GTK1}
    csEdit: Text:= StrPas(gtk_entry_get_text(PgtkEntry(TWinControl(Sender).Handle)));
 
    csMemo    : begin
@@ -3424,6 +3433,7 @@ begin
                   Text := StrPas(CS);
                   g_free(CS);
                end;
+  {$EndIf}
   else
     Result := False;
   end;
@@ -3521,6 +3531,7 @@ begin
   if Str=nil then exit;
   
   if (Sender is TWinControl) then begin
+   {$IfDef GTK1}
     case TWinControl(Sender).fCompStyle of
       csMemo:
       begin
@@ -3531,7 +3542,8 @@ begin
         gtk_editable_insert_text(PGtkOldEditable(Widget),Str,StrLen(Str),@CurMemoLen);
         gtk_text_thaw(PGtkText(Widget));
       end;
-    end;
+     end;
+   {$EndIf}
   end;
 end;
 
@@ -3698,6 +3710,7 @@ begin
 
   csGroupBox    : gtk_frame_set_label(pgtkFrame(P),pLabel);
 
+  {$IfDef GTK1}
   csEdit        : begin
                     LockOnChange(PGtkObject(p),+1);
                     gtk_entry_set_text(pGtkEntry(P), pLabel);
@@ -3714,7 +3727,8 @@ begin
                     gtk_text_thaw(PGtkText(P));
                   end;      
 
-  csPage:
+   {$EndIf}
+   csPage:
     SetNotebookPageTabLabel;
     
   csComboBox    :
@@ -4536,6 +4550,7 @@ begin
           SetCallback(LM_CHANGED,Sender);
         End;
 
+        {$IfDef GTK1}
         csEdit:
         begin
           SetCallback(LM_CHANGED, Sender);
@@ -4554,7 +4569,8 @@ begin
           SetCallback(LM_PASTEFROMCLIP, Sender);
 	  SetCallback(LM_INSERTTEXT, Sender);
 	end;
-	
+        {$EndIf}
+        
         csFixed :
         begin
           SetCallback(LM_HSCROLL,Sender);
@@ -5593,9 +5609,10 @@ begin
   csComboBox :
     p:=CreateComboBox(TComboBox(Sender));
 
+  {$IfDef GTK1}
   csEdit :
     p :=  gtk_entry_new();
-
+  {$EndIF}
   csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
   csPreviewFileDialog:
     InitializeFileDialog(TFileDialog(Sender),p,StrTemp);
@@ -5712,6 +5729,7 @@ begin
       gtk_widget_show(p);
     end;
 
+  {$IfDef GTK1}
   csMemo :
     begin
       P := gtk_scrolled_window_new(nil, nil);
@@ -5741,7 +5759,7 @@ begin
 
       SetupProps:= true;
     end;
-
+  {$EndIF}
   csMenuBar :
     begin
        P := gtk_menu_bar_new();
@@ -6845,6 +6863,7 @@ begin
       end;
     end;
 
+  {$IfDef GTK1}
   csEdit :
     with TCustomEdit(Sender) do
       begin
@@ -6857,7 +6876,7 @@ begin
           (TCustomEdit(Sender).EchoMode = emNormal)
           and (TCustomEdit(Sender).PassWordChar=#0));
       end;
-
+  {$EndIf}
   csProgressBar :
     with TProgressBar(Sender) do
     begin
@@ -7045,6 +7064,7 @@ begin
       gtk_clist_thaw(GTK_CLIST(Widget));
     end;
 
+  {$IfDef GTK1}
   csMemo:
     begin
       ImplWidget:= GetWidgetInfo(wHandle, true)^.ImplementationWidget;
@@ -7087,7 +7107,8 @@ begin
 	  end;
 	end;  
     end;
-         
+  {$EndIf}
+
   csSpinEdit:
     Begin
       AnAdjustment:=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wHandle));
@@ -8172,6 +8193,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.419  2003/09/18 21:36:00  ajgenius
+  add csEdit to GTK2 interface to start removing use of GtkOldEditable
+
   Revision 1.418  2003/09/18 12:15:01  mattias
   fixed is checks for TCustomXXX controls
 

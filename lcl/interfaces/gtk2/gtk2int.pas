@@ -70,7 +70,9 @@ type
     procedure AppendText(Sender: TObject; Str: PChar); override;
     function GetText(Sender: TComponent; var Text: String): Boolean; override;
     procedure SetLabel(Sender : TObject; Data : Pointer); override;
-    
+    procedure HookSignals(Sender: TObject); override;
+    function SetProperties(Sender : TObject) : integer; override;
+
     function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
   end;
@@ -980,6 +982,13 @@ begin
   StrPCopy(strTemp, Caption);
 
   case CompStyle of
+  csEdit :
+    begin
+      p :=  gtk_entry_new();
+      gtk_editable_set_editable (PGtkEditable(P), not TCustomEdit(Sender).ReadOnly);
+      gtk_widget_show_all(P);
+    end;
+    
   csMemo :
     begin
       P := gtk_scrolled_window_new(nil, nil);
@@ -1037,6 +1046,7 @@ var
   aTextIter1  : TGtkTextIter;
   aTextIter2  : TGtkTextIter;
   aTextBuffer : PGtkTextBuffer;
+  Pos         : Integer;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -1066,6 +1076,12 @@ begin
                 gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, nil);
                 result := gtk_text_iter_get_offset(@aTextIter1);
               end;
+            csEdit:
+              begin
+    	        Widget:= GTK_WIDGET(Pointer(Handle));
+                if not gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),@result, nil) then
+                   result := gtk_editable_get_position(GTK_EDITABLE(Widget));
+              end;
             else begin
               result := inherited  IntSendMessage3(LM_Message, Sender, data);
               exit;
@@ -1087,6 +1103,14 @@ begin
                 gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
                 result:= Abs(gtk_text_iter_get_offset(@aTextIter2) - gtk_text_iter_get_offset(@aTextIter1));
   	      end;
+            csEdit:
+              begin
+    	        Widget:= GTK_WIDGET(Pointer(Handle));
+                if gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),@result, @Pos) then
+                   result := Pos - Result
+                else
+                  result := 0;
+              end;
             else begin
               result := inherited  IntSendMessage3(LM_Message, Sender, data);
               exit;
@@ -1107,6 +1131,15 @@ begin
                 {gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, nil);
                 result := gtk_text_iter_get_offset(@aTextIter1);}
               end;
+
+            csEdit:
+              begin
+    	        Widget:= GTK_WIDGET(Pointer(Handle));
+                if gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),nil, @Pos) then
+                  If (Integer(Data) >= 0) and (Integer(Data)<=Pos) then
+                    gtk_editable_select_region(GTK_EDITABLE(Widget), Integer(Data), Pos+1);
+              end;
+
             else begin
               result := inherited  IntSendMessage3(LM_Message, Sender, data);
               exit;
@@ -1129,6 +1162,17 @@ begin
                 {gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
                 result:= Abs(gtk_text_iter_get_offset(@aTextIter2) - gtk_text_iter_get_offset(@aTextIter1));}
   	      end;
+
+            csEdit:
+              begin
+    	        Widget:= GTK_WIDGET(Pointer(Handle));
+                if gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),@Pos, nil) then
+                  gtk_editable_select_region(GTK_EDITABLE(Widget), Pos, Pos+Integer(Data)+1)
+                else
+                  gtk_editable_select_region(GTK_EDITABLE(Widget), gtk_editable_get_position(GTK_EDITABLE(Widget)),
+                    gtk_editable_get_position(GTK_EDITABLE(Widget)) + Integer(Data)+1)
+              end;
+
             else begin
               result := inherited  IntSendMessage3(LM_Message, Sender, data);
               exit;
@@ -1156,6 +1200,13 @@ var
 begin
   Result := True;
   case TControl(Sender).fCompStyle of
+   csEdit: begin
+             Widget:= GTK_WIDGET(Pointer(TWinControl(Sender).Handle));
+             CS := gtk_editable_get_chars(GTK_EDITABLE(Widget), 0, -1);
+             Text := StrPas(CS);
+             g_free(CS);
+           end;
+
    csMemo    : begin
       	          Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.ImplementationWidget;
                   aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
@@ -1233,6 +1284,14 @@ begin
   pLabel := pchar(Data);
 
   case TControl(Sender).fCompStyle of
+  csEdit        : begin
+                    gtk_entry_set_text(pGtkEntry(Widget), pLabel);
+                    {LockOnChange(PGtkObject(Widget),+1);
+                    gtk_editable_delete_text(pGtkEditable(P), 0, -1);
+                    gtk_editable_insert_text(pGtkEditable(P), pLabel, StrLen(pLabel). 0);
+                    LockOnChange(PGtkObject(Widget),-1);}
+                  end;
+
   csMemo        : begin
                     Widget:= PGtkWidget(GetWidgetInfo(Widget, True)^.ImplementationWidget);
                     aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
@@ -1248,6 +1307,130 @@ begin
     inherited SetLabel(Sender, Data);
   end;
   Assert(False, Format('trace:  [Tgtk2Object.SetLabel] %s --> END', [Sender.ClassName]));
+end;
+
+procedure Tgtk2Object.HookSignals(Sender: TObject);
+begin
+  if (Sender is TWinControl) then
+     Begin
+       inherited HookSignals(Sender);
+     End;
+
+  if (Sender is TControl) then
+    Begin
+      case TControl(sender).FCompStyle of
+        csEdit:
+        begin
+          SetCallback(LM_CHANGED, Sender);
+          SetCallback(LM_ACTIVATE, Sender);
+          SetCallback(LM_CUTTOCLIP, Sender);
+          SetCallback(LM_COPYTOCLIP, Sender);
+          SetCallback(LM_PASTEFROMCLIP, Sender);
+        end;
+
+	csMemo:
+	begin
+          SetCallback(LM_CHANGED, Sender);
+          SetCallback(LM_ACTIVATE, Sender);
+          SetCallback(LM_CUTTOCLIP, Sender);
+          SetCallback(LM_COPYTOCLIP, Sender);
+          SetCallback(LM_PASTEFROMCLIP, Sender);
+	  SetCallback(LM_INSERTTEXT, Sender);
+	end;
+      end; //case
+    end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGtk2Object.SetProperties
+  Params:  Sender : the lcl object which called this func via SenMessage
+  Returns: currently always 0
+
+  Depending on the compStyle, this function will apply all properties of
+  the calling object to the corresponding GTK2 object.
+ ------------------------------------------------------------------------------}
+function Tgtk2Object.SetProperties(Sender : TObject) : integer;
+var
+  wHandle    : Pointer;
+  Widget, ImplWidget   : PGtkWidget;
+  i : Longint;
+  aTextBuffer : PGtkTextBuffer;
+  aTextIter1  : TGtkTextIter;
+  aTextIter2  : TGtkTextIter;
+begin
+  Result := 0;     // default if nobody sets it
+
+  if Sender is TWinControl
+  then
+    Assert(False, Format('Trace:  [Tgtk2Object.SetProperties] %s', [Sender.ClassName]))
+  else
+    RaiseException('Tgtk2Object.SetProperties: '
+                   +' Sender.ClassName='+Sender.ClassName);
+
+  wHandle:= Pointer(TWinControl(Sender).Handle);
+  Widget:= GTK_WIDGET(wHandle);
+
+  case TControl(Sender).fCompStyle of
+  csEdit :
+    with TCustomEdit(Sender) do
+      begin
+        gtk_editable_set_editable(GTK_ENTRY(wHandle), not (TCustomEdit(Sender).ReadOnly));
+        gtk_entry_set_max_length(GTK_ENTRY(wHandle), TCustomEdit(Sender).MaxLength);
+        gtk_entry_set_visibility(GTK_ENTRY(wHandle), (TCustomEdit(Sender).EchoMode = emNormal) and (TCustomEdit(Sender).PassWordChar=#0));
+        if (TCustomEdit(Sender).EchoMode = emNone) then
+          gtk_entry_set_invisible_char(GTK_ENTRY(wHandle), 0)
+        else
+          gtk_entry_set_invisible_char(GTK_ENTRY(wHandle), Longint(TCustomEdit(Sender).PassWordChar));
+      end;
+
+  csMemo:
+    begin
+      ImplWidget:= GetWidgetInfo(wHandle, true)^.ImplementationWidget;
+
+      gtk_text_view_set_editable (PGtkTextView(ImplWidget), not TCustomMemo(Sender).ReadOnly);
+      if TCustomMemo(Sender).WordWrap then
+        gtk_text_view_set_wrap_mode(PGtkTextView(ImplWidget), GTK_WRAP_WORD)
+      else
+        gtk_text_view_set_wrap_mode(PGtkTextView(ImplWidget), GTK_WRAP_NONE);
+
+
+      case (Sender as TCustomMemo).Scrollbars of
+        ssHorizontal:     gtk_scrolled_window_set_policy(
+                            GTK_SCROLLED_WINDOW(wHandle),
+                            GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
+        ssVertical:       gtk_scrolled_window_set_policy(
+                            GTK_SCROLLED_WINDOW(wHandle),
+                            GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+        ssBoth:           gtk_scrolled_window_set_policy(
+                            GTK_SCROLLED_WINDOW(wHandle),
+                            GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+        ssAutoHorizontal: gtk_scrolled_window_set_policy(
+                            GTK_SCROLLED_WINDOW(wHandle),
+                            GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+        ssAutoVertical:   gtk_scrolled_window_set_policy(
+                            GTK_SCROLLED_WINDOW(wHandle),
+                            GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+        ssAutoBoth:       gtk_scrolled_window_set_policy(
+                            GTK_SCROLLED_WINDOW(wHandle),
+                            GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+      else
+        gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wHandle),
+                                       GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+      end;
+
+      If (TCustomMemo(Sender).MaxLength >= 0) then begin
+          aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(ImplWidget));
+	  i:= gtk_text_buffer_get_char_count(aTextBuffer);
+	  if i > TCustomMemo(Sender).MaxLength then begin
+             gtk_text_buffer_get_bounds(aTextBuffer, nil, @aTextIter2);
+             gtk_text_buffer_get_iter_at_offset(aTextBuffer, @aTextIter1, i);
+             gtk_text_buffer_delete(aTextBuffer, @aTextIter1, @aTextIter2);
+	  end;
+      end;
+    end;
+  else
+    Result := inherited SetProperties(Sender);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1358,6 +1541,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2003/09/18 21:36:00  ajgenius
+  add csEdit to GTK2 interface to start removing use of GtkOldEditable
+
   Revision 1.17  2003/09/18 17:23:05  ajgenius
   start using GtkTextView for Gtk2 Memo
 
