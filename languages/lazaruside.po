@@ -1,13 +1,13 @@
 #: lazarusidestrconsts:liscmdlinehlpheader
-msgid "lazarus [options] <project-filename>\015\n\015\nIDE Options:\015\n\015\n--help or -?             this help message\015\n\015\n"
+msgid "lazarus [options] <project-filename>\n\nIDE Options:\n\n--help or -?             this help message\n\n"
 msgstr ""
 
 #: lazarusidestrconsts:liscmdlineprimaryconfigpathdesc
-msgid "--primary-config-path <path>\015\n                         primary config directory, where Lazarus\015\n                         stores its config files. Default is \015\n                         %s\015\n\015\n"
+msgid "--primary-config-path <path>\n                         primary config directory, where Lazarus\n                         stores its config files. Default is \n                         %s\n\n"
 msgstr ""
 
 #: lazarusidestrconsts:liscmdlinesecondaryconfigpathdesc
-msgid "--secondary-config-path <path>\015\n                         secondary config directory, where Lazarus\015\n                         searches for config template files.\015\n                         Default is %s\015\n\015\n"
+msgid "--secondary-config-path <path>\n                         secondary config directory, where Lazarus\n                         searches for config template files.\n                         Default is %s\n\n"
 msgstr ""
 
 #: lazarusidestrconsts:liscmdlinelclinterfacespecificoptions
@@ -559,7 +559,7 @@ msgid "About Lazarus"
 msgstr ""
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
-msgid "License: GPL/LGPL\015Lazarus are the class libraries for Free Pascal that emulate Delphi.\015Free Pascal is a (L)GPL'ed compiler that runs on Linux,\015Win32, OS/2, 68K and more. Free Pascal is designed to be able to\015understand and compile Delphi syntax, which is of course OOP.\015Lazarus is the missing part of the puzzle that will allow you to\015develop Delphi like programs in all of the above platforms.\015The IDE will eventually become a RAD tool like Delphi.\015\015As Lazarus is growing we need more developers.\015For example: Write a nicer about dialog with a logo."
+msgid "License: GPL/LGPL\nLazarus are the class libraries for Free Pascal that emulate Delphi.\nFree Pascal is a (L)GPL'ed compiler that runs on Linux,\nWin32, OS/2, 68K and more. Free Pascal is designed to be able to\nunderstand and compile Delphi syntax, which is of course OOP.\nLazarus is the missing part of the puzzle that will allow you to\ndevelop Delphi like programs in all of the above platforms.\nThe IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers.\nFor example: Write a nicer about dialog with a logo."
 msgstr ""
 
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
@@ -567,7 +567,7 @@ msgid "Unitname already in project"
 msgstr ""
 
 #: lazarusidestrconsts:lisunitnamealreadyexiststext
-msgid "The unit \"%s\" already exists.\015Ignore will force the renaming,\015Cancel will cancel the saving of this source and\015Abort will abort the whole saving."
+msgid "The unit \"%s\" already exists.\nIgnore will force the renaming,\nCancel will cancel the saving of this source and\nAbort will abort the whole saving."
 msgstr ""
 
 #: lazarusidestrconsts:lisinvalidpascalidentifiercap
@@ -628,5 +628,593 @@ msgstr ""
 
 #: lazarusidestrconsts:lisgplnotice
 msgid "This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version. %sThis program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Library General Public License for more details. %sYou should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. "
+msgstr ""
+
+#: lazarusidestrconsts:idestandard
+msgid "Standard"
+msgstr ""
+
+#: lazarusidestrconsts:ideadditional
+msgid "Additional"
+msgstr ""
+
+#: lazarusidestrconsts:idemisc
+msgid "Misc"
+msgstr ""
+
+#: lazarusidestrconsts:idesystem
+msgid "System"
+msgstr ""
+
+#: lazarusidestrconsts:idedialogs
+msgid "Dialogs"
+msgstr ""
+
+#: lazarusidestrconsts:idedataaccess
+msgid "Data Access"
+msgstr ""
+
+#: lazarusidestrconsts:ideinterbase
+msgid "Interbase Data Access"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvopts
+msgid "Environment Options"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdesktop
+msgid "Desktop"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfrmeditor
+msgid "Form Editor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgobjinsp
+msgid "Object Inspector"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvfiles
+msgid "Files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvbckup
+msgid "Backup"
+msgstr ""
+
+#: lazarusidestrconsts:dlgnaming
+msgid "Naming"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcancel
+msgid "Cancel"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvlanguage
+msgid "Language"
+msgstr ""
+
+#: lazarusidestrconsts:dlgautosave
+msgid "Auto save"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedfiles
+msgid "Editor files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvproject
+msgid "Project"
+msgstr ""
+
+#: lazarusidestrconsts:dlgintvinsec
+msgid "Interval in secs"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdesktopfiles
+msgid "Desktop files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsavedfile
+msgid "Save desktop settings to file"
+msgstr ""
+
+#: lazarusidestrconsts:dlgloaddfile
+msgid "Load desktop settings from file"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpalhints
+msgid "Hints for component palette"
+msgstr ""
+
+#: lazarusidestrconsts:dlgspbhints
+msgid "Hints for main speed buttons (open, save, ...)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgwinpos
+msgid "Window Positions"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmainmenu
+msgid "Main Menu"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsrcedit
+msgid "Source Editor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmsgs
+msgid "Messages"
+msgstr ""
+
+#: lazarusidestrconsts:dlgprojfiles
+msgid "Project files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvtype
+msgid "Type"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvnone
+msgid "None"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsmbfront
+msgid "Symbol in front (.~pp)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsmbbehind
+msgid "Symbol behind (.pp~)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsmbcounter
+msgid "Counter (.pp;1)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcustomext
+msgid "User defined extension (.pp.xxx)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgbckupsubdir
+msgid "Same name (in subdirectory)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedcustomext
+msgid "User defined extension"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmaxcntr
+msgid "Maximum counter"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedbsubdir
+msgid "Sub directory"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvotherfiles
+msgid "Other files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmaxrecentfiles
+msgid "Max recent files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmaxrecentprojs
+msgid "Max recent project files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgqopenlastprj
+msgid "Open last project at start"
+msgstr ""
+
+#: lazarusidestrconsts:dlglazarusdir
+msgid "Lazarus directory (default for all projects)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfpcpath
+msgid "Compiler path (ppc386)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfpcsrcpath
+msgid "FPC source directory"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdebugtype
+msgid "Debugger type and path"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtestprjdir
+msgid "Directory for building test projects"
+msgstr ""
+
+#: lazarusidestrconsts:dlgqshowgrid
+msgid "Show grid"
+msgstr ""
+
+#: lazarusidestrconsts:dlggridcolor
+msgid "Grid color"
+msgstr ""
+
+#: lazarusidestrconsts:dlgqsnaptogrid
+msgid "Snap to grid"
+msgstr ""
+
+#: lazarusidestrconsts:dlggridx
+msgid "Grid size X"
+msgstr ""
+
+#: lazarusidestrconsts:dlggridy
+msgid "Grid size Y"
+msgstr ""
+
+#: lazarusidestrconsts:dlgguidelines
+msgid "Show Guide Lines"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsnapguidelines
+msgid "Snap to Guide Lines"
+msgstr ""
+
+#: lazarusidestrconsts:dlglefttopclr
+msgid "color for left, top"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrightbottomclr
+msgid "color for right, bottom"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowcaps
+msgid "Show component captions"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowedrhints
+msgid "Show editor hints"
+msgstr ""
+
+#: lazarusidestrconsts:dlgautoform
+msgid "Auto create forms"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvgrid
+msgid "Grid"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvlguidelines
+msgid "Guide lines"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvmisc
+msgid "Miscellaneous"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpasext
+msgid "Default pascal extension"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpaslower
+msgid "Save pascal files lowercase"
+msgstr ""
+
+#: lazarusidestrconsts:dlgambigfileact
+msgid "Ambigious file action:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvask
+msgid "Ask"
+msgstr ""
+
+#: lazarusidestrconsts:dlgautodel
+msgid "Auto delete file"
+msgstr ""
+
+#: lazarusidestrconsts:dlgautoren
+msgid "Auto rename file"
+msgstr ""
+
+#: lazarusidestrconsts:dlgambigwarn
+msgid "Warn on compile"
+msgstr ""
+
+#: lazarusidestrconsts:dlgignoreverb
+msgid "Ignore"
+msgstr ""
+
+#: lazarusidestrconsts:dlgbackcolor
+msgid "Background color"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvcolors
+msgid "Colors"
+msgstr ""
+
+#: lazarusidestrconsts:dlgenvnotes
+msgid "Notes: "
+msgstr ""
+
+#: lazarusidestrconsts:dlgedoptscap
+msgid "Editor Options"
+msgstr ""
+
+#: lazarusidestrconsts:dlgeddisplay
+msgid "Display"
+msgstr ""
+
+#: lazarusidestrconsts:dlgkeymapping
+msgid "Key Mappings"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedcolor
+msgid "Color"
+msgstr ""
+
+#: lazarusidestrconsts:dlgkeymappingerrors
+msgid "Key mapping errors"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedback
+msgid "Back"
+msgstr ""
+
+#: lazarusidestrconsts:dlgreport
+msgid "Report"
+msgstr ""
+
+#: lazarusidestrconsts:dlgednoerr
+msgid "No errors in key mapping found."
+msgstr ""
+
+#: lazarusidestrconsts:dlgdeltemplate
+msgid "Delete template "
+msgstr ""
+
+#: lazarusidestrconsts:dlgchscodetempl
+msgid "Choose code template file (*.dci)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgallfiles
+msgid "All files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgaltsetclmode
+msgid "Alt Sets Column Mode"
+msgstr ""
+
+#: lazarusidestrconsts:dlgautoident
+msgid "Auto Indent"
+msgstr ""
+
+#: lazarusidestrconsts:dlgbrachighlight
+msgid "Bracket Highlight"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdragdroped
+msgid "Drag Drop Editing"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdropfiles
+msgid "Drop Files"
+msgstr ""
+
+#: lazarusidestrconsts:dlghalfpagescroll
+msgid "Half Page Scroll"
+msgstr ""
+
+#: lazarusidestrconsts:dlgkeepcaretx
+msgid "Keep Caret X"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpersistentcaret
+msgid "Persistent Caret"
+msgstr ""
+
+#: lazarusidestrconsts:dlgscrollbyoneless
+msgid "Scroll By One Less"
+msgstr ""
+
+#: lazarusidestrconsts:dlgscrollpastendfile
+msgid "Scroll Past End of File"
+msgstr ""
+
+#: lazarusidestrconsts:dlgscrollpastendline
+msgid "Scroll Past End of Line"
+msgstr ""
+
+#: lazarusidestrconsts:dlgclosebuttonsnotebook
+msgid "Close buttons in notebook"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowscrollhint
+msgid "Show Scroll Hint"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsmarttabs
+msgid "Smart Tabs"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtabstospaces
+msgid "Tabs To Spaces"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtrimtrailingspaces
+msgid "Trim Trailing Spaces"
+msgstr ""
+
+#: lazarusidestrconsts:dlgundoaftersave
+msgid "Undo after save"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdoubleclickline
+msgid "Double click line"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfindtextatcursor
+msgid "Find text at cursor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgusesyntaxhighlight
+msgid "Use syntax highlight"
+msgstr ""
+
+#: lazarusidestrconsts:dlgblockindent
+msgid "Block indent:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgundolimit
+msgid "Undo limit:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtabwidths
+msgid "Tab widths:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmargingutter
+msgid "Margin and gutter"
+msgstr ""
+
+#: lazarusidestrconsts:dlgvisiblerightmargin
+msgid "Visible right margin"
+msgstr ""
+
+#: lazarusidestrconsts:dlgvisiblegutter
+msgid "Visible gutter"
+msgstr ""
+
+#: lazarusidestrconsts:dlgshowlinenumbers
+msgid "Show line numbers"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrightmargin
+msgid "Right margin"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrightmargincolor
+msgid "Right margin color"
+msgstr ""
+
+#: lazarusidestrconsts:dlggutterwidth
+msgid "Gutter width"
+msgstr ""
+
+#: lazarusidestrconsts:dlgguttercolor
+msgid "Gutter color"
+msgstr ""
+
+#: lazarusidestrconsts:dlgeditorfont
+msgid "Editor font"
+msgstr ""
+
+#: lazarusidestrconsts:dlgeditorfontheight
+msgid "Editor font height"
+msgstr ""
+
+#: lazarusidestrconsts:dlgextralinespacing
+msgid "Extra line spacing"
+msgstr ""
+
+#: lazarusidestrconsts:dlgkeymappingscheme
+msgid "Key Mapping Scheme"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcheckconsistency
+msgid "Check consistency"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedhintcommand
+msgid "Hint: click on the command you want to edit"
+msgstr ""
+
+#: lazarusidestrconsts:dlglang
+msgid "Language:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgclrscheme
+msgid "Color Scheme:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgfileexts
+msgid "File extensions:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedelement
+msgid "Element"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsetelementdefault
+msgid "Set element to default"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsetallelementdefault
+msgid "Set all elements to default"
+msgstr ""
+
+#: lazarusidestrconsts:dlgforecolor
+msgid "Foreground color"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedusedefcolor
+msgid "Use default color"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtextattributes
+msgid "Text attributes"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedbold
+msgid "Bold"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedital
+msgid "Italic"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedunder
+msgid "Underline"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedidcomlet
+msgid "Identfier completion"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedcodeparams
+msgid "Code parameters"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtooltipeval
+msgid "Tooltip expression evaluation"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtooltiptools
+msgid "Tooltip symbol Tools"
+msgstr ""
+
+#: lazarusidestrconsts:dlgeddelay
+msgid "Delay"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtimesecondunit
+msgid "sec"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedcodetempl
+msgid "Code templates"
+msgstr ""
+
+#: lazarusidestrconsts:dlgtplfname
+msgid "Template file name"
+msgstr ""
+
+#: lazarusidestrconsts:dlgedadd
+msgid "Add..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgededit
+msgid "Edit..."
+msgstr ""
+
+#: lazarusidestrconsts:dlgeddelete
+msgid "Delete"
+msgstr ""
+
+#: lazarusidestrconsts:dlgindentcodeto
+msgid "Indent code to"
 msgstr ""
 

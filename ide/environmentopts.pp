@@ -39,7 +39,7 @@ uses
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Buttons, GraphType, Graphics, Laz_XMLCfg,
   ObjectInspector, ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf,
-  Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs, InputHistory;
+  Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs, InputHistory,LazarusIDEStrConsts;
 
 const
   EnvOptsVersion: integer = 101;
@@ -1139,7 +1139,7 @@ begin
   if LazarusResources.Find(ClassName)=nil then begin
     Position:=poScreenCenter;
     IDEDialogLayoutList.ApplyLayout(Self,485,435);
-    Caption:='Environment Options';
+    Caption:=dlgEnvOpts;
     OnResize:=@EnvironmentOptionsDialogResize;
     
     NoteBook:=TNoteBook.Create(Self);
@@ -1148,14 +1148,14 @@ begin
       Parent:=Self;
       SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
       if PageCount>0 then
-        Pages[0]:='Desktop'
+        Pages[0]:=dlgDesktop
       else
-        Pages.Add('Desktop');
-      Pages.Add('Form Editor');
-      Pages.Add('Object Inspector');
-      Pages.Add('Files');
-      Pages.Add('Backup');
-      Pages.Add('Naming');
+        Pages.Add(dlgDesktop);
+      Pages.Add(dlgFrmEditor);
+      Pages.Add(dlgObjInsp);
+      Pages.Add(dlgEnvFiles);
+      Pages.Add(dlgEnvBckup);
+      Pages.Add(dlgNaming);
     end;
 
     SetupDesktopPage(0);
@@ -1175,7 +1175,7 @@ begin
       Height:=23;
       Left:=Self.ClientWidth-Width-15;
       Top:=Self.ClientHeight-Height-15;
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;
@@ -1188,7 +1188,7 @@ begin
       Height:=CancelButton.Height;
       Left:=CancelButton.Left-15-Width;
       Top:=CancelButton.Top;
-      Caption:='Ok';
+      Caption:='Ok';//"Ok" may be the same in any language. If not, change
       OnClick:=@OkButtonClick;
       Visible:=true;
     end;
@@ -1217,7 +1217,7 @@ begin
     Top:=2;
     Width:=(MaxX div 2) - 15;
     Height:=50;
-    Caption:='Language';
+    Caption:=dlgEnvLanguage;
     Visible:=true;
   end;
   
@@ -1247,7 +1247,7 @@ begin
     Top:=LanguageGroupBox.Top+LanguageGroupBox.Height+5;
     Width:=LanguageGroupBox.Width;
     Height:=108;
-    Caption:='Auto save';
+    Caption:=dlgAutoSave;
     Visible:=true;
   end;
   
@@ -1259,7 +1259,7 @@ begin
     Top:=2;
     Width:=AutoSaveGroupBox.ClientWidth-2;
     Height:=20;
-    Caption:='Editor files';
+    Caption:=dlgEdFiles;
     Enabled:=false;
     Visible:=true;
   end;
@@ -1272,7 +1272,7 @@ begin
     Top:=27;
     Width:=AutoSaveGroupBox.ClientWidth-2;
     Height:=20;
-    Caption:='Project';
+    Caption:=dlgEnvProject;
     Enabled:=false;
     Visible:=true;
   end;
@@ -1285,7 +1285,7 @@ begin
     Top:=54;
     Width:=90;
     Height:=23;
-    Caption:='Interval in secs';
+    Caption:=dlgIntvInSec;
     Enabled:=false;
     Visible:=true;
   end;
@@ -1319,7 +1319,7 @@ begin
     Top:=AutoSaveGroupBox.Top+AutoSaveGroupBox.Height+5;
     Width:=AutoSaveGroupBox.Width;
     Height:=90;
-    Caption:='Desktop files';
+    Caption:=dlgDesktopFiles;
     Visible:=true;
   end;
 
@@ -1331,7 +1331,7 @@ begin
     Top:=5;
     Width:=DesktopFilesGroupBox.ClientWidth-15;
     Height:=25;
-    Caption:='Save desktop settings to file';
+    Caption:=dlgSaveDFile;
     OnClick:=@SaveDesktopSettingsToFileButtonClick;
     Visible:=true;
   end;
@@ -1344,7 +1344,7 @@ begin
     Top:=38;
     Width:=SaveDesktopSettingsToFileButton.Width;
     Height:=25;
-    Caption:='Load desktop settings from file';
+    Caption:=dlgLoadDFile;
     OnClick:=@LoadDesktopSettingsFromFileButtonClick;
     Visible:=true;
   end;
@@ -1358,7 +1358,7 @@ begin
     Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+40;
     Width:=Parent.ClientWidth-Left;
     Height:=20;
-    Caption:='Hints for component palette';
+    Caption:=dlgPalHints;
     Visible:=true;
   end;
   
@@ -1371,7 +1371,7 @@ begin
          +ShowHintsForComponentPaletteCheckBox.Height+5;
     Width:=Parent.ClientWidth-Left;
     Height:=20;
-    Caption:='Hints for main speed buttons (open, save, ...)';
+    Caption:=dlgSpBHints;
     Visible:=true;
   end;
 
@@ -1380,7 +1380,7 @@ begin
   with WindowPositionsGroupBox do begin
     Name:='WindowPositionsGroupBox';
     Parent:=NoteBook.Page[Page];
-    Caption:='Window Positions';
+    Caption:=dlgWinPos;
     SetBounds(MaxX div 2,LanguageGroupBox.Top,(MaxX div 2)-5,330);
     OnResize:=@WindowPositionsGroupBoxResize;
     Visible:=true;
@@ -1393,10 +1393,10 @@ begin
     SetBounds(5,5,Parent.ClientWidth-15,60);
     with Items do begin
       BeginUpdate;
-      Add('Main Menu');
-      Add('Source Editor');
-      Add('Messages');
-      Add('Object Inspector');
+      Add(dlgMainMenu);
+      Add(dlgSrcEdit);
+      Add(dlgMsgs);
+      Add(dlgObjInsp);
       EndUpdate;
     end;
     OnMouseUp:=@WindowPositionsListBoxMouseUp;
@@ -1428,7 +1428,7 @@ begin
     Top:=2;
     Width:=MaxX-Left*2;
     Height:=23;
-    Caption:='Notes: ';
+    Caption:=dlgEnvNotes;
     Visible:=true;
   end;
 
@@ -1440,7 +1440,7 @@ begin
     Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
     Width:=(MaxX div 2) - 11;
     Height:=260;
-    Caption:='Project files';
+    Caption:=dlgProjFiles;
     Visible:=true;
   end;
 
@@ -1452,15 +1452,15 @@ begin
     Top:=4;
     Width:=BackupProjectGroupBox.ClientWidth-Left-Left-4;
     Height:=140;
-    Caption:='Type';
+    Caption:=dlgEnvType;
     with Items do begin
       BeginUpdate;
-      Add('None');
-      Add('Symbol in front (.~pp)');
-      Add('Symbol behind (.pp~)');
-      Add('Counter (.pp;1)');
-      Add('User defined extension (.pp.xxx)');
-      Add('Same name (in subdirectory)');
+      Add(dlgEnvNone);
+      Add(dlgSmbFront);
+      Add(dlgSmbBehind);
+      Add(dlgSmbCounter);
+      Add(dlgCustomExt);
+      Add(dlgBckUpSubDir);
       EndUpdate;
     end;
     OnClick:=@BakTypeRadioGroupClick;
@@ -1475,7 +1475,7 @@ begin
     Top:=BakProjTypeRadioGroup.Top+BakProjTypeRadioGroup.Height+5;
     Width:=BakProjTypeRadioGroup.Width-62;
     Height:=23;
-    Caption:='User defined extension';
+    Caption:=dlgEdCustomExt;
     Visible:=true;
   end;
 
@@ -1504,7 +1504,7 @@ begin
     Top:=BakProjAddExtLabel.Top+BakProjAddExtLabel.Height+5;
     Width:=110;
     Height:=23;
-    Caption:='Maximum counter';
+    Caption:=dlgMaxCntr;
     Visible:=true;
   end;
 
@@ -1537,7 +1537,7 @@ begin
     Top:=BakProjMaxCounterLabel.Top+BakProjMaxCounterLabel.Height+5;
     Width:=110;
     Height:=23;
-    Caption:='Sub directory';
+    Caption:=dlgEdBSubDir;
     Visible:=true;
   end;
 
@@ -1566,7 +1566,7 @@ begin
     Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
     Width:=(MaxX div 2) - 11;
     Height:=260;
-    Caption:='Other files';
+    Caption:=dlgEnvOtherFiles;
     Visible:=true;
   end;
 
@@ -1578,15 +1578,15 @@ begin
     Top:=4;
     Width:=BackupOtherGroupBox.ClientWidth-Left-Left-4;
     Height:=140;
-    Caption:='Type';
+    Caption:=dlgEnvType;
     with Items do begin
       BeginUpdate;
-      Add('None');
-      Add('Symbol in front (.~pp)');
-      Add('Symbol behind (.pp~)');
-      Add('Counter (.pp;1)');
-      Add('User defined extension (.pp.xxx)');
-      Add('Same name (in subdirectory)');
+      Add(dlgEnvNone);
+      Add(dlgSmbFront);
+      Add(dlgSmbBehind);
+      Add(dlgSmbCounter);
+      Add(dlgCustomExt);
+      Add(dlgBckUpSubDir);
       EndUpdate;
     end;
     OnClick:=@BakTypeRadioGroupClick;
@@ -1601,7 +1601,7 @@ begin
     Top:=BakOtherTypeRadioGroup.Top+BakOtherTypeRadioGroup.Height+5;
     Width:=BakOtherTypeRadioGroup.Width-62;
     Height:=23;
-    Caption:='User defined extension';
+    Caption:=dlgEdCustomExt;
     Visible:=true;
   end;
 
@@ -1630,7 +1630,7 @@ begin
     Top:=BakOtherAddExtLabel.Top+BakOtherAddExtLabel.Height+5;
     Width:=110;
     Height:=23;
-    Caption:='Maximum counter';
+    Caption:=dlgMaxCntr;
     Visible:=true;
   end;
 
@@ -1663,7 +1663,7 @@ begin
     Top:=BakOtherMaxCounterLabel.Top+BakOtherMaxCounterLabel.Height+5;
     Width:=110;
     Height:=23;
-    Caption:='Sub directory';
+    Caption:=dlgEdBSubDir;
     Visible:=true;
   end;
 
@@ -1699,7 +1699,7 @@ begin
     Top:=4;
     Width:=170;
     Height:=23;
-    Caption:='Max recent files';
+    Caption:=dlgMaxRecentFiles;
     Visible:=true;
   end;
 
@@ -1732,7 +1732,7 @@ begin
     Top:=MaxRecentOpenFilesLabel.Top+MaxRecentOpenFilesLabel.Height+3;
     Width:=MaxRecentOpenFilesLabel.Width;
     Height:=MaxRecentOpenFilesLabel.Height;
-    Caption:='Max recent project files';
+    Caption:=dlgMaxRecentProjs;
     Visible:=true;
   end;
 
@@ -1765,7 +1765,7 @@ begin
     Top:=MaxRecentProjectFilesLabel.Top+MaxRecentProjectFilesLabel.Height+5;
     Width:=MaxX-10;
     Height:=23;
-    Caption:='Open last project at start';
+    Caption:=dlgQOpenLastPrj;
     Visible:=true;
   end;
 
@@ -1778,7 +1778,7 @@ begin
         +OpenLastProjectAtStartCheckBox.Height+5;
     Width:=MaxX-10;
     Height:=23;
-    Caption:='Lazarus directory (default for all projects)';
+    Caption:=dlgLazarusDir;
     Visible:=true;
   end;
 
@@ -1806,7 +1806,7 @@ begin
     Top:=LazarusDirComboBox.Top+LazarusDirComboBox.Height;
     Width:=LazarusDirLabel.Width;
     Height:=25;
-    Caption:='Compiler path (ppc386)';
+    Caption:=dlgFpcPath;
     Visible:=true;
   end;
 
@@ -1835,7 +1835,7 @@ begin
     Top:=CompilerPathComboBox.Top+CompilerPathComboBox.Height;
     Width:=LazarusDirLabel.Width;
     Height:=23;
-    Caption:='FPC source directory';
+    Caption:=dlgFpcSrcPath;
     Visible:=true;
   end;
 
@@ -1863,7 +1863,7 @@ begin
     Top:=FPCSourceDirComboBox.Top+FPCSourceDirComboBox.Height;
     Width:=FPCSourceDirLabel.Width;
     Height:=25;
-    Caption:='Debugger type and path';
+    Caption:=dlgDebugType;
     Visible:=true;
   end;
 
@@ -1909,7 +1909,7 @@ begin
     Top:=DebuggerTypeComboBox.Top+DebuggerTypeComboBox.Height;
     Width:=LazarusDirLabel.Width;
     Height:=23;
-    Caption:='Directory for building test projects';
+    Caption:=dlgTestPrjDir;
     Visible:=true;
   end;
 
@@ -1944,7 +1944,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Left:=6;
       Top:=2;
       Width:=200;
-      Caption:='Show grid';
+      Caption:=dlgQShowGrid;
       Visible:=true;
     end;
 
@@ -1966,7 +1966,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Left:=GridColorButton.Left+GridColorButton.Width+5;
       Top:=GridColorButton.Top+2;
       Width:=80;
-      Caption:='Grid color';
+      Caption:=dlgGridColor;
       Visible:=true;
     end;
 
@@ -1978,7 +1978,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Left:=ShowGridCheckBox.Left;
       Width:=ShowGridCheckBox.Width;
       Height:=ShowGridCheckBox.Height;
-      Caption:='Snap to grid';
+      Caption:=dlgQSnapToGrid;
       Visible:=true;
     end;
 
@@ -1989,7 +1989,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Left:=ShowGridCheckBox.Left;
       Top:=SnapToGridCheckBox.Top+SnapToGridCheckBox.Height+5;
       Width:=80;
-      Caption:='Grid size X';
+      Caption:=dlgGridX;
       Visible:=true;
     end;
 
@@ -2023,7 +2023,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Left:=GridSizeXLabel.Left;
       Top:=GridSizeXLabel.Top+GridSizeXLabel.Height+5;
       Width:=GridSizeXLabel.Width;
-      Caption:='Grid size Y';
+      Caption:=dlgGridY;
       Visible:=true;
     end;
 
@@ -2060,7 +2060,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Left:=5;
       Top:=5;
       Width:=Parent.ClientWidth-2*Left;
-      Caption:='Show Guide Lines';
+      Caption:=dlgGuideLines;
       Visible:=true;
     end;
     
@@ -2071,7 +2071,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Left:=ShowGuideLinesCheckBox.Left;
       Top:=ShowGuideLinesCheckBox.Top+ShowGuideLinesCheckBox.Height+5;
       Width:=ShowGuideLinesCheckBox.Width;
-      Caption:='Snap to Guide Lines';
+      Caption:=dlgSnapGuideLines;
       Visible:=true;
     end;
     
@@ -2093,7 +2093,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Left:=GuideLineColorLeftTopButton.Left+GuideLineColorLeftTopButton.Width+5;
       Top:=GuideLineColorLeftTopButton.Top+2;
       Width:=150;
-      Caption:='color for left, top';
+      Caption:=dlgLeftTopClr;
       Visible:=true;
     end;
 
@@ -2116,7 +2116,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Left:=GuideLineColorLeftTopLabel.Left;
       Top:=GuideLineColorRightBottomButton.Top+2;
       Width:=GuideLineColorLeftTopLabel.Width;
-      Caption:='color for right, bottom';
+      Caption:=dlgRightBottomClr;
       Visible:=true;
     end;
   end;
@@ -2130,7 +2130,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Top:=5;
       Left:=5;
       Width:=Parent.ClientWidth-2*Left;
-      Caption:='Show component captions';
+      Caption:=dlgShowCaps;
       Visible:=true;
     end;
 
@@ -2142,7 +2142,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
            +ShowComponentCaptionsCheckBox.Height+5;
       Left:=ShowComponentCaptionsCheckBox.Left;
       Width:=ShowComponentCaptionsCheckBox.Width;
-      Caption:='Show editor hints';
+      Caption:=dlgShowEdrHints;
       Visible:=true;
     end;
 
@@ -2153,7 +2153,7 @@ procedure TEnvironmentOptionsDialog.SetupFormEditorPage(Page: integer);
       Top:=ShowEditorHintsCheckBox.Top+ShowEditorHintsCheckBox.Height+5;
       Left:=ShowEditorHintsCheckBox.Left;
       Width:=ShowEditorHintsCheckBox.Width;
-      Caption:='Auto create forms';
+      Caption:=dlgAutoForm;
       Visible:=true;
     end;
   end;
@@ -2168,7 +2168,7 @@ begin
     Top:=5;
     Width:=((Parent.ClientWidth-3*Left) div 2);
     Height:=170;
-    Caption:='Grid';
+    Caption:=dlgEnvGrid ;
     Visible:=true;
   end;
   
@@ -2182,7 +2182,7 @@ begin
     Top:=GridGroupBox.Top;
     Width:=GridGroupBox.Width;
     Height:=GridGroupBox.Height;
-    Caption:='Guide lines';
+    Caption:=dlgEnvLGuideLines;
     Visible:=true;
   end;
   
@@ -2196,7 +2196,7 @@ begin
     Top:=GridGroupBox.Top+GridGroupBox.Height+5;
     Width:=Parent.ClientWidth-2*Left;
     Height:=100;
-    Caption:='Miscellaneous';
+    Caption:=dlgEnvMisc;
     Visible:=true;
   end;
   
@@ -2215,7 +2215,7 @@ begin
     Top:=4;
     Width:=200;
     Height:=80;
-    Caption:='Default pascal extension';
+    Caption:=dlgPasExt;
     with Items do begin
       BeginUpdate;
       for pe:=Low(TPascalExtType) to High(TPascalExtType) do
@@ -2233,7 +2233,7 @@ begin
     Left:=PascalFileExtRadiogroup.Left;
     Top:=PascalFileExtRadiogroup.Top+PascalFileExtRadiogroup.Height+10;
     Width:=300;
-    Caption:='Save pascal files lowercase';
+    Caption:=dlgPasLower;
     Visible:=true;
   end;
   
@@ -2245,7 +2245,7 @@ begin
     Top:=PascalFileLowercaseCheckBox.Top+PascalFileLowercaseCheckBox.Height+15;
     Width:=200;
     Height:=130;
-    Caption:='Ambigious file action:';
+    Caption:=dlgAmbigFileAct;
     with Items do begin
       BeginUpdate;
       Add('Ask');
@@ -3177,7 +3177,7 @@ begin
     Top:=2;
     Width:=(MaxX div 2) - 15;
     Height:=55;
-    Caption:='Colors';
+    Caption:=dlgEnvColors;
     Visible:=true;
   end;
 
@@ -3200,7 +3200,7 @@ begin
     Top:=OIBackgroundColorButton.Top;
     Width:=ObjectInspectorGroupBox.ClientWidth-Left-5;
     Height:=23;
-    Caption:='Background color';
+    Caption:=dlgBackColor;
     Visible:=true;
   end;
 end;

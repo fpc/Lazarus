@@ -41,7 +41,7 @@ interface
 uses
   Classes, LclLinux, StdCtrls, Forms, Buttons, Menus, ComCtrls,Arrow,
   Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs, Calendar,
-  ImgList
+  ImgList, LResources
   {$IFDEF DATABASE}
   ,db
   {$ENDIF}
@@ -85,7 +85,7 @@ type
    Created by Shane Miller
    This class keeps a list of TIDEComponents
    --------------------------------------------}
-   TIdeCompList = Class(TObject)
+   TIDECompList = Class(TObject)
    private
      {The list of @link(TIdeComponent)s used in the IDE.}
      FItems : TList;
@@ -134,11 +134,12 @@ type
 
 var
   IDECompList : TIDECompList;
-//shane  RegCompList:TRegisteredComponentList;
+
+procedure InitIDEComponents;
+
 
 implementation
 
-uses LResources;
 
 
 { TIDECompList }
@@ -354,13 +355,16 @@ begin
   RegisterComponentsProc:=nil;
 end;
 
+procedure InitIDEComponents;
+begin
+  RegisterStandardComponents(RegCompList);
+  IdeCompList := TIDECompList.Create;
+end;
 
 initialization
 
 {$I images/components_images.lrs}
 
-  RegisterStandardComponents(RegCompList);
-  IdeCompList := TIDECompList.Create;
 
 finalization
   IdeCompList.Free;

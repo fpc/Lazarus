@@ -51,7 +51,7 @@ uses
 {$else}
   mwCustomEdit, mwPasSyn, mwHighlighter,
 {$endif}
-  Laz_XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs;
+  Laz_XMLCfg, CodeTemplateDialog, KeyMapping, InputHistory, IDEOptionDefs, LazarusIDEStrConsts;
 
 type
 {$ifdef NEW_EDITOR_SYNEDIT}
@@ -1883,7 +1883,7 @@ begin
   if LazarusResources.Find(ClassName)=nil then begin  
     Position:=poScreenCenter;
     IDEDialogLayoutList.ApplyLayout(Self,480,459);
-    Caption:='Editor Options';
+    Caption:=dlgEdOptsCap;
     OnResize:=@EditorOptionsFormResize;
     
     SynAutoComplete:=TSynEditAutoComplete.Create(Self);
@@ -1896,13 +1896,13 @@ begin
       Width:=Self.Width;
       Height:=Self.Height-50;
       if PageCount>0 then
-        Pages.Strings[0]:='General'
+        Pages.Strings[0]:=lisMenuInsertGeneral//by VVI - it will solve a problem
       else
-        Pages.Add('General');
-      Pages.Add('Display');
-      Pages.Add('Key Mappings');
-      Pages.Add('Color');
-      Pages.Add('Code Tools');
+        Pages.Add(lisMenuInsertGeneral);
+      Pages.Add(dlgEdDisplay);
+      Pages.Add(dlgKeyMapping);
+      Pages.Add(dlgEdColor);
+      Pages.Add('Code Tools'); //by VVI - it seems to be a proper name
     end;
     
     ImageList:=TImageList.Create(Self);
@@ -2592,7 +2592,7 @@ begin
   inherited Create(AnOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     SetBounds((Screen.Width-410) div 2,(Screen.Height-260) div 2, 400,250);
-    Caption:='Key mapping errors';
+    Caption:=dlgKeyMappingErrors;
 
     ListBox:=TListBox.Create(Self);
     with ListBox do begin
@@ -2611,7 +2611,7 @@ begin
       Parent:=Self;
       Width:=60;
       Height:=25;
-      Caption:='Back';
+      Caption:=dlgEdBack;
       Left:=((Self.ClientWidth-4)-Width) div 2;
       Top:=Self.ClientHeight-38;
       OnClick:=@BackButtonClick;
@@ -2645,8 +2645,8 @@ begin
         KeyMapErrorsForm.Free;
       end;
     end else begin
-      ACaption:='Report';
-      AText:='No errors in key mapping found.';
+      ACaption:=dlgReport;
+      AText:=dlgEdNoErr;
       MessageDlg(ACaption,AText,mtInformation,[mbOk],0);
     end;
   finally
@@ -3049,7 +3049,7 @@ begin
     end;
   end else if Sender=CodeTemplateDeleteButton then begin
     if CurCodeTemplate>=0 then begin
-      if MessageDlg('Delete template '
+      if MessageDlg(dlgDelTemplate
           +'"'+SynAutoComplete.Completions[CurCodeTemplate]+' - '
           +SynAutoComplete.CompletionComments[CurCodeTemplate]+'"'
           +'?',mtConfirmation,[mbOk,mbCancel],0)=mrOK then begin
@@ -3074,8 +3074,8 @@ begin
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     with OpenDialog do begin
-      Title:='Choose code template file (*.dci)';
-      Filter:='DCI file (*.dci)|*.dci|All files|*.*';
+      Title:=dlgChsCodeTempl;
+      Filter:='DCI file (*.dci)|*.dci|'+dlgAllFiles+'|*.*';
       if Execute then
         CodeTemplateFileNameComboBox.Text:=FileName;
     end;
@@ -3114,7 +3114,7 @@ begin
     Left:=5;
     Width:=MaxX-10;
     Height:=24*10;
-    Caption:='Editor Options';
+    Caption:=dlgEdOptsCap;
     Show;
   end;
 
@@ -3129,7 +3129,7 @@ begin
     Left:=5;
     Width:=ChkBoxW;
     Height:=16;
-    Caption:='Alt Sets Column Mode';
+    Caption:=dlgAltSetClMode;
     Checked:=eoAltSetsColumnMode in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3143,7 +3143,7 @@ begin
     Left:=AltSetsColumnModeCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Auto Indent';
+    Caption:=dlgAutoIdent;
     Checked:=eoAutoIndent in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3157,7 +3157,7 @@ begin
     Left:=AutoIndentCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Bracket Highlight';
+    Caption:=dlgBracHighlight;
     Checked:=eoBracketHighlight in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3171,7 +3171,7 @@ begin
     Left:=BracketHighlightCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Drag Drop Editing';
+    Caption:=dlgDragDropEd;
     Checked:=eoDragDropEditing in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3185,7 +3185,7 @@ begin
     Left:=AltSetsColumnModeCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Drop Files';
+    Caption:=dlgDropFiles;
     Checked:=eoDropFiles in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Enabled:=false;
@@ -3200,7 +3200,7 @@ begin
     Left:=AltSetsColumnModeCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Half Page Scroll';
+    Caption:=dlgHalfPageScroll;
     Checked:=eoHalfPageScroll in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3214,7 +3214,7 @@ begin
     Left:=AltSetsColumnModeCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Keep Caret X';
+    Caption:=dlgKeepCaretX;
     Checked:=eoKeepCaretX in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3228,7 +3228,7 @@ begin
     Left:=AltSetsColumnModeCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Persistent Caret';
+    Caption:=dlgPersistentCaret;
     Checked:=eoPersistentCaret in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3242,7 +3242,7 @@ begin
     Left:=AltSetsColumnModeCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Scroll By One Less';
+    Caption:=dlgScrollByOneLess;
     Checked:=eoScrollByOneLess in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3256,7 +3256,7 @@ begin
     Left:=ScrollByOneLessCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Scroll Past End of File';
+    Caption:=dlgScrollPastEndFile;
     Checked:=eoScrollPastEoF in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3271,7 +3271,7 @@ begin
     Left:=ScrollPastEoFCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Scroll Past End of Line';
+    Caption:=dlgScrollPastEndLine;
     Checked:=eoScrollPastEoL in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3285,7 +3285,7 @@ begin
     Left:=ScrollPastEoLCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Close buttons in notebook';
+    Caption:=dlgCloseButtonsNotebook;
     Checked:=EditorOpts.ShowTabCloseButtons;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3300,7 +3300,7 @@ begin
     Left:=ShowCloseBtnInNoteBookCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Show Scroll Hint';
+    Caption:=dlgShowScrollHint;
     Checked:=eoShowScrollHint in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3314,7 +3314,7 @@ begin
     Left:=ShowScrollHintCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Smart Tabs';
+    Caption:=dlgSmartTabs;
     Checked:=eoSmartTabs in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3328,7 +3328,7 @@ begin
     Left:=ShowScrollHintCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Tabs To Spaces';
+    Caption:=dlgTabsToSpaces;
     Checked:=eoTabsToSpaces in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3342,7 +3342,7 @@ begin
     Left:=ShowScrollHintCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Trim Trailing Spaces';
+    Caption:=dlgTrimTrailingSpaces ;
     Checked:=eoTrimTrailingSpaces in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3356,7 +3356,7 @@ begin
     Left:=ShowScrollHintCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Undo after save';
+    Caption:=dlgUndoAfterSave;
     Checked:=EditorOpts.UndoAfterSave;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3370,7 +3370,7 @@ begin
     Left:=ShowScrollHintCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Double click line';
+    Caption:=dlgDoubleClickLine;
     Checked:=eoDoubleClickSelectsLine in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3384,7 +3384,7 @@ begin
     Left:=ShowScrollHintCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Find text at cursor';
+    Caption:=dlgFindTextatCursor;
     Checked:=EditorOpts.FindTextAtCursor;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3398,7 +3398,7 @@ begin
     Left:=ShowScrollHintCheckBox.Left;
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
-    Caption:='Use syntax highlight';
+    Caption:=dlgUseSyntaxHighlight;
     Checked:=EditorOpts.UseSyntaxHighlight;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3433,7 +3433,7 @@ begin
     Top:=BlockIndentComboBox.Top+2;
     Left:=EditorOptionsGroupBox.Left+2;
     Width:=BlockIndentComboBox.Left-2-Left;
-    Caption:='Block indent:';
+    Caption:=dlgBlockIndent;
     Show;
   end;
 
@@ -3463,7 +3463,7 @@ begin
     Top:=UndoLimitComboBox.Top+2;
     Left:=EditorOptionsGroupBox.Left+2;
     Width:=UndoLimitComboBox.Left-Left-2;
-    Caption:='Undo limit:';
+    Caption:=dlgUndoLimit;
     Show;
   end;
 
@@ -3709,7 +3709,7 @@ begin
     Left:=5;
     Width:=MaxX-10;
     Height:=109;
-    Caption:='Margin and gutter';
+    Caption:=dlgMarginGutter;
     Show;
   end;
 
@@ -3720,7 +3720,7 @@ begin
     Top:=5;
     Left:=5;
     Width:=ChkBoxW;
-    Caption:='Visible right margin';
+    Caption:=dlgVisibleRightMargin ;
     Height:=23;
     Checked:=EditorOpts.VisibleRightMargin;
     OnClick:=@GeneralCheckBoxOnClick;
@@ -3736,7 +3736,7 @@ begin
     Left:=VisibleRightMarginCheckBox.Left;
     Width:=ChkBoxW;
     Height:=VisibleRightMarginCheckBox.Height;
-    Caption:='Visible gutter';
+    Caption:=dlgVisibleGutter;
     Checked:=EditorOpts.VisibleGutter;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3750,7 +3750,7 @@ begin
     Left:=VisibleGutterCheckBox.Left;
     Width:=ChkBoxW;
     Height:=VisibleRightMarginCheckBox.Height;
-    Caption:='Show line numbers';
+    Caption:=dlgShowLineNumbers ;
     Checked:=EditorOpts.ShowLineNumbers;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
@@ -3782,7 +3782,7 @@ begin
     Top:=2;
     Left:=RightMarginComboBox.Left+2;
     Width:=150;
-    Caption:='Right margin';
+    Caption:=dlgRightMargin ;
     Show;
   end;
 
@@ -3807,7 +3807,7 @@ begin
     Top:=RightMarginComboBox.Top+RightMarginComboBox.Height;
     Left:=RightMarginComboBox.Left+2;
     Width:=150;
-    Caption:='Right margin color';
+    Caption:=dlgRightMarginColor ;
     Show;
   end;
 
@@ -3838,7 +3838,7 @@ begin
     Top:=2;
     Left:=GutterWidthComboBox.Left+2;
     Width:=130;
-    Caption:='Gutter width';
+    Caption:=dlgGutterWidth ;
     Show;
   end;
 
@@ -3863,7 +3863,7 @@ begin
     Top:=GutterWidthComboBox.Top+GutterWidthComboBox.Height;
     Left:=GutterWidthComboBox.Left+2;
     Width:=130;
-    Caption:='Gutter color';
+    Caption:=dlgGutterColor ;
     Show;
   end;
 
@@ -3913,7 +3913,7 @@ begin
     Top:=5;
     Left:=EditorFontComboBox.Left+2;
     Width:=130;
-    Caption:='Editor font';
+    Caption:=dlgEditorFont ;
     Show;
   end;
 
@@ -3947,7 +3947,7 @@ begin
     Top:=EditorFontHeightComboBox.Top-18;
     Left:=EditorFontHeightComboBox.Left+2;
     Width:=150;
-    Caption:='Editor font height';
+    Caption:=dlgEditorFontHeight ;
     Show;
   end;
 
@@ -3978,7 +3978,7 @@ begin
     Top:=ExtraLineSpacingComboBox.Top-18;
     Left:=ExtraLineSpacingComboBox.Left+2;
     Width:=150;
-    Caption:='Extra line spacing';
+    Caption:=dlgExtraLineSpacing ;
     Show;
   end;
 
@@ -4167,7 +4167,7 @@ begin
     Left:=5;
     Width:=KeyMappingSchemeComboBox.Left-Left;
     Height:=16;
-    Caption:='Key Mapping Scheme';
+    Caption:=dlgKeyMappingScheme ;
     Visible:=true;
   end;
 
@@ -4180,7 +4180,7 @@ begin
             ,MaxX-150);
     Width:=130;
     Height:=23;
-    Caption:='Check consistency';
+    Caption:=dlgCheckConsistency ;
     OnClick:=@KeyMappingConsistencyCheckButtonClick;
     Visible:=true;
   end;
@@ -4193,7 +4193,7 @@ begin
     Left:=5;
     Width:=MaxX-Left-Left;
     Height:=16;
-    Caption:='Hint: click on the command you want to edit';
+    Caption:=dlgEdHintCommand ;
     Visible:=true;
   end;
 
@@ -4291,7 +4291,7 @@ begin
     Left:=5;
     Width:=LanguageComboBox.Left-Left;
     Height:=16;
-    Caption:='Language:';
+    Caption:=dlgLang;
     Visible:=true;
   end;
 
@@ -4325,7 +4325,7 @@ begin
     Left:=ColorSchemeComboBox.Left-90;
     Width:=ColorSchemeComboBox.Left-Left;
     Height:=16;
-    Caption:='Color Scheme:';
+    Caption:=dlgClrScheme ;
     Visible:=true;
   end;
 
@@ -4358,7 +4358,7 @@ begin
     Top:=FileExtensionsComboBox.Top+2;
     Left:=5;
     Width:=FileExtensionsComboBox.Left-Left-2;
-    Caption:='File extensions:';
+    Caption:=dlgFileExts ;
     Visible:=true;
   end;
 
@@ -4370,7 +4370,7 @@ begin
     Left:=5;
     Width:=180;
     Height:=16;
-    Caption:='Element';
+    Caption:=dlgEdElement ;
     Visible:=true;
   end;
 
@@ -4395,7 +4395,7 @@ begin
     Left:=ColorElementListBox.Left+ColorElementListBox.Width+12;
     Width:=MaxX-5-Left;
     Height:=23;
-    Caption:='Set element to default';
+    Caption:=dlgSetElementDefault ;
     OnClick:=@SetAttributeToDefaultButtonClick;
     Visible:=true;
   end;
@@ -4408,7 +4408,7 @@ begin
     Left:=SetAttributeToDefaultButton.Left;
     Width:=SetAttributeToDefaultButton.Width;
     Height:=SetAttributeToDefaultButton.Height;
-    Caption:='Set all elements to default';
+    Caption:=dlgSetAllElementDefault;
     OnClick:=@SetAllAttributesToDefaultButtonClick;
     Visible:=true;
   end;
@@ -4422,7 +4422,7 @@ begin
     Left:=ColorElementListBox.Left+ColorElementListBox.Width+12;
     Width:=MaxX-5-Left;
     Height:=43;
-    Caption:='Foreground color';
+    Caption:=dlgForecolor;
     Visible:=true;
   end;
 
@@ -4448,7 +4448,7 @@ begin
     Left:=ForegroundColorButton.Left+ForegroundColorButton.Width+5;
     Width:=ForeGroundGroupBox.Width-Left-Left;
     Height:=16;
-    Caption:='Use default color';
+    Caption:=dlgEdUseDefColor ;
     OnClick:=@GeneralCheckBoxOnClick;
     Visible:=true;
   end;
@@ -4461,7 +4461,7 @@ begin
     Left:=ForeGroundGroupBox.Left;
     Width:=ForeGroundGroupBox.Width;
     Height:=ForeGroundGroupBox.Height;
-    Caption:='Background color';
+    Caption:=dlgBackColor ;
     Visible:=true;
   end;
 
@@ -4487,7 +4487,7 @@ begin
     Left:=BackgroundColorButton.Left+BackgroundColorButton.Width+5;
     Width:=ForeGroundGroupBox.Width-Left-Left;
     Height:=16;
-    Caption:='Use default color';
+    Caption:=dlgEdUseDefColor;
     OnClick:=@GeneralCheckBoxOnClick;
     Visible:=true;
   end;
@@ -4500,7 +4500,7 @@ begin
     Left:=ForeGroundGroupBox.Left;
     Width:=ForeGroundGroupBox.Width;
     Height:=43;
-    Caption:='Text attributes';
+    Caption:=dlgTextAttributes ;
     Visible:=true;
   end;
 
@@ -4512,7 +4512,7 @@ begin
     Left:=5;
     Width:=50;
     Height:=16;
-    Caption:='Bold';
+    Caption:=dlgEdBold;
     OnClick:=@GeneralCheckBoxOnClick;
     Visible:=true;
   end;
@@ -4525,7 +4525,7 @@ begin
     Left:=TextBoldCheckBox.Left+TextBoldCheckBox.Width+5;
     Width:=50;
     Height:=TextBoldCheckBox.Height;
-    Caption:='Italic';
+    Caption:=dlgEdItal ;
     OnClick:=@GeneralCheckBoxOnClick;
     Visible:=true;
   end;
@@ -4538,7 +4538,7 @@ begin
     Left:=TextItalicCheckBox.Left+TextItalicCheckBox.Width+5;
     Width:=75;
     Height:=TextItalicCheckBox.Height;
-    Caption:='Underline';
+    Caption:=dlgEdUnder ;
     OnClick:=@GeneralCheckBoxOnClick;
     Visible:=true;
   end;
@@ -4737,7 +4737,7 @@ begin
     Left:=5;
     Width:=200;
     Height:=20;
-    Caption:='Identfier completion';
+    Caption:=dlgEdIdComlet ;
     Checked:=EditorOpts.AutoIdentifierCompletion;
     Enabled:=false;
     Visible:=true;
@@ -4752,7 +4752,7 @@ begin
     Left:=AutoIdentifierCompletionCheckBox.Left;
     Width:=AutoIdentifierCompletionCheckBox.Width;
     Height:=AutoIdentifierCompletionCheckBox.Height;
-    Caption:='Code parameters';
+    Caption:=dlgEdCodeParams ;
     Checked:=EditorOpts.AutoCodeParameters;
     Enabled:=false;
     Visible:=true;
@@ -4766,7 +4766,7 @@ begin
     Left:=AutoIdentifierCompletionCheckBox.Left;
     Width:=AutoIdentifierCompletionCheckBox.Width;
     Height:=AutoIdentifierCompletionCheckBox.Height;
-    Caption:='Tooltip expression evaluation';
+    Caption:=dlgTooltipEval ;
     Checked:=EditorOpts.AutoToolTipExprEval;
     Enabled:=false;
     Visible:=true;
@@ -4780,7 +4780,7 @@ begin
     Left:=AutoIdentifierCompletionCheckBox.Left;
     Width:=AutoIdentifierCompletionCheckBox.Width;
     Height:=AutoIdentifierCompletionCheckBox.Height;
-    Caption:='Tooltip symbol Tools';
+    Caption:=dlgTooltipTools ;
     Checked:=EditorOpts.AutoToolTipSymbTools;
     Visible:=true;
   end;
@@ -4793,7 +4793,7 @@ begin
     Left:=AutoIdentifierCompletionCheckBox.Left
           +AutoIdentifierCompletionCheckBox.Width+17;
     Width:=70;
-    Caption:='Delay';
+    Caption:=dlgEdDelay ;
     Visible:=true;
   end;
 
@@ -4821,7 +4821,7 @@ begin
     Left:=AutoIdentifierCompletionCheckBox.Left
          +AutoIdentifierCompletionCheckBox.Width+15;
     Width:=70;
-    Caption:='0.5 sec';
+    Caption:='0.5 ' + DlgTimeSecondUnit;
     Visible:=true;
   end;
 
@@ -4832,7 +4832,7 @@ begin
     Top:=AutoDelayMinLabel.Top;
     Left:=AutoDelayTrackBar.Left+AutoDelayTrackBar.Width-30;
     Width:=70;
-    Caption:='1.5 sec';
+    Caption:='1.5 '+ dlgTimeSecondUnit ;
     Visible:=true;
   end;
 
@@ -4844,7 +4844,7 @@ begin
     Left:=AutomaticFeaturesGroupBox.Left;
     Width:=AutomaticFeaturesGroupBox.Width;
     Height:=250;
-    Caption:='Code templates';
+    Caption:=dlgEdCodeTempl;
     OnResize:=@CodeTemplatesGroupBoxResize;
     Visible:=true;
   end;
@@ -4856,7 +4856,7 @@ begin
     Top:=5;
     Left:=7;
     Width:=110;
-    Caption:='Template file name';
+    Caption:=dlgTplFName ;
     Visible:=true;
   end;
 
@@ -4895,7 +4895,7 @@ begin
     Width:=50;
     Left:=CodeTemplateFileNameLabel.Left;
     Height:=23;
-    Caption:='Add...';
+    Caption:=dlgEdAdd;
     OnClick:=@CodeTemplateButtonClick;
     Visible:=true;
   end;
@@ -4908,7 +4908,7 @@ begin
     Left:=CodeTemplateAddButton.Left;
     Width:=CodeTemplateAddButton.Width;
     Height:=CodeTemplateAddButton.Height;
-    Caption:='Edit...';
+    Caption:=dlgEdEdit;
     OnClick:=@CodeTemplateButtonClick;
     Visible:=true;
   end;
@@ -4921,7 +4921,7 @@ begin
     Left:=CodeTemplateAddButton.Left;
     Width:=CodeTemplateAddButton.Width;
     Height:=CodeTemplateAddButton.Height;
-    Caption:='Delete';
+    Caption:=dlgEdDelete ;
     OnClick:=@CodeTemplateButtonClick;
     Visible:=true;
   end;
@@ -4982,7 +4982,7 @@ begin
     Top:=CodeTemplateCodeLabel.Top+CodeTemplateCodeLabel.Height+15;
     Width:=CodeTemplateCodePreview.Left-Left-8;
     Height:=70;
-    Caption:='Indent code to';
+    Caption:=dlgIndentCodeTo ;
     with Items do begin
       BeginUpdate;
       Add('Token start');
