@@ -960,7 +960,7 @@ const
 
 function CNSendMessage(LM_Message : integer; Sender : TObject; data : pointer) : integer;
 Function FindDragTarget(const Pos : TPoint; AllowDisabled: Boolean): TControl;
-Function FindLCLWindow(const Pos : TPoint) : TWinControl;
+Function FindLCLWindow(const ScreenPos : TPoint) : TWinControl;
 Function FindControl(Handle : hwnd) : TWinControl;
 function FindLCLControl(const ScreenPos : TPoint) : TControl;
 
@@ -1047,7 +1047,7 @@ begin
   if AWinControl=nil then exit;
   // find control at mouse cursor
   ClientPos:=AWinControl.ScreenToClient(ScreenPos);
-  Result:=AWinControl.ControlAtPos(ClientPos,true);
+  Result:=AWinControl.ControlAtPos(ClientPos,true,true,false);
   if Result=nil then Result:=AWinControl;
 end;
 
@@ -1193,26 +1193,21 @@ end;
   Returns:  
 
  ------------------------------------------------------------------------------}
-function FindLCLWindow(const Pos : TPoint) : TWinControl;
+function FindLCLWindow(const ScreenPos : TPoint) : TWinControl;
 var
   Handle : HWND;
+  ClientPos: TPoint;
 begin
-  Handle := WindowFromPoint(Pos);
+  Handle := WindowFromPoint(ScreenPos);
   Result := nil;
   while Handle <> 0 do
   begin
-    Assert(False, Format('Trace:[FindLCLWindow] Find handle: 0x%x', [Handle]));
     Result := FindControl(Handle);
-    
-    if Result <> nil 
-    then begin
-      Assert(False, Format('Trace:[FindLCLWindow] Control found: %s Handle: 0x%x', [Result.ClassName, Handle]));
+    if Result <> nil then begin
       Exit;
     end;
-    
     Handle := GetParent(Handle);
   end;
-  Assert(False, 'Trace:[FindLCLWindow] Nothing found');
 end;
 
 {------------------------------------------------------------------------------
@@ -1402,6 +1397,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.87  2002/11/05 20:03:41  lazarus
+  MG: implemented hints
+
   Revision 1.86  2002/11/04 19:49:35  lazarus
   MG: added persistent hints for main ide bar
 
