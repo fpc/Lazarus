@@ -365,7 +365,7 @@ begin
   DeliverGtkPaintMessage(Data,Widget);
 end;
 
-function gtkfrmactivate( widget: PGtkWidget; Event : PgdkEventFocus;
+function gtkfrmactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMActivate;
@@ -373,7 +373,7 @@ var
   LCLObject: TControl;
 {$ENDIF}
 begin
-  EventTrace('activate', data);
+  EventTrace('activate after', data);
   {$IFDEF VerboseFocus}
   write('gtkfrmactivate Widget=',HexStr(Cardinal(Widget),8),' ',Event^.theIn);
   LCLObject:=TControl(GetLCLObject(Widget));
@@ -386,7 +386,7 @@ begin
   Result := DeliverPostMessage(Data, Mess);
 end;
 
-function gtkfrmdeactivate( widget: PGtkWidget; Event : PgdkEventFocus;
+function gtkfrmdeactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMActivate;
@@ -394,7 +394,7 @@ var
   LCLObject: TControl;
 {$ENDIF}
 begin
-  EventTrace('deactivate', data);
+  EventTrace('deactivate after', data);
   {$IFDEF VerboseFocus}
   write('gtkfrmdeactivate Widget=',HexStr(Cardinal(Widget),8),' ',Event^.theIn,
         ' GetFocus=',HexStr(Cardinal(Widget),8));
@@ -2530,6 +2530,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.161  2002/12/28 12:42:38  mattias
+  focus fixes, reduced lpi size
+
   Revision 1.160  2002/11/23 13:48:44  mattias
   added Timer patch from Vincent Snijders
 
