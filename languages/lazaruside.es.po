@@ -1178,6 +1178,10 @@ msgstr "Los componentes multiseleccionados deben ser de una sola forma."
 msgid "Naming"
 msgstr "Nombrando"
 
+#: lazarusidestrconsts:lismenunewother
+msgid "New ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"
 msgstr "Nueva Forma"

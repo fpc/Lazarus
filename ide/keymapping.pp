@@ -326,7 +326,7 @@ const
 function EditorCommandLocalizedName(cmd: word;
   const DefaultName: string): string;
 begin
-  Result:=DefaultName+'i';
+  Result:=DefaultName;
 end;
 
 function StrToVKCode(const s: string): integer;

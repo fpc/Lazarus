@@ -1178,6 +1178,10 @@ msgstr "Множественный выбор компонентов должен быть на одной форме"
 msgid "Naming"
 msgstr "Названия"
 
+#: lazarusidestrconsts:lismenunewother
+msgid "New ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"
 msgstr "Создать форму"

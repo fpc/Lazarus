@@ -506,6 +506,10 @@ msgstr ""
 msgid "Designer Directory"
 msgstr ""
 
+#: codetoolsstrconsts:ctspackagerdirectory
+msgid "Packager Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctslazarusmaindirectory
 msgid "lazarus main directory"
 msgstr ""

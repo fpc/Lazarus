@@ -142,6 +142,10 @@ msgstr ""
 msgid "New Form"
 msgstr ""
 
+#: lazarusidestrconsts:lismenunewother
+msgid "New ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
 msgstr ""

@@ -448,6 +448,10 @@ msgstr "ancienne méthode non trouvée : %s"
 msgid "Package directories"
 msgstr "Répertoires de paquet"
 
+#: codetoolsstrconsts:ctspackagerdirectory
+msgid "Packager Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctsprocedureorfunction
 msgid "procedure or function"
 msgstr "procedure ou function"

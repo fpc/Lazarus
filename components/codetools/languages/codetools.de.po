@@ -438,6 +438,10 @@ msgstr ""
 msgid "Package directories"
 msgstr ""
 
+#: codetoolsstrconsts:ctspackagerdirectory
+msgid "Packager Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctsprocedureorfunction
 msgid "procedure or function"
 msgstr ""

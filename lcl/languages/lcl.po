@@ -66,3 +66,51 @@ msgstr ""
 msgid "Custom"
 msgstr ""
 
+#: lclstrconsts:rsfdopenfile
+msgid "Open existing file"
+msgstr ""
+
+#: lclstrconsts:rsfdoverwritefile
+msgid "Overwrite file ?"
+msgstr ""
+
+#: lclstrconsts:rsfdfilealreadyexists
+msgid "The file \"%s\" already exists.\015Overwrite ?"
+msgstr ""
+
+#: lclstrconsts:rsfdpathmustexist
+msgid "Path must exist"
+msgstr ""
+
+#: lclstrconsts:rsfdpathnoexist
+msgid "The path \"%s\" does not exist."
+msgstr ""
+
+#: lclstrconsts:rsfdfilemustexist
+msgid "File must exist"
+msgstr ""
+
+#: lclstrconsts:rsfdfilenotexist
+msgid "The file \"%s\" does not exist."
+msgstr ""
+
+#: lclstrconsts:rsfdfilereadonlytitle
+msgid "File is not writable"
+msgstr ""
+
+#: lclstrconsts:rsfdfilereadonly
+msgid "The file \"%s\" is not writable."
+msgstr ""
+
+#: lclstrconsts:rsfdfilesaveas
+msgid "Save file as"
+msgstr ""
+
+#: lclstrconsts:rsselectcolortitle
+msgid "Select color"
+msgstr ""
+
+#: lclstrconsts:rsselectfonttitle
+msgid "Select a font"
+msgstr ""
+

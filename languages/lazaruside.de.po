@@ -1178,6 +1178,10 @@ msgstr ""
 msgid "Naming"
 msgstr ""
 
+#: lazarusidestrconsts:lismenunewother
+msgid "New ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"
 msgstr "Neues Formular"

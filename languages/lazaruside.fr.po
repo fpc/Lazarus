@@ -1188,6 +1188,10 @@ msgstr "Les composants sélectionnés doivent être d'une même fiche."
 msgid "Naming"
 msgstr "Extension"
 
+#: lazarusidestrconsts:lismenunewother
+msgid "New ..."
+msgstr ""
+
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"
 msgstr "Nouvelle fiche"
