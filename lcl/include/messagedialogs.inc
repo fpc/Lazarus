@@ -513,89 +513,28 @@ begin
   InputQuery(ACaption, APrompt, Result);
 end;
 
-Function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
-var
-  Form : TForm;
-  Prompt : TLabel;
-  Edit : TEdit;
-  T : String;
-  ButtonTop, ButtonWidth, ButtonHeight : Integer;
-  Avg : TPoint;
+Function PasswordBox(const ACaption, APrompt : String) : String;
 begin
-  Result := False;
-  Form := TForm.CreateNew(nil, 0);
-  With Form do begin
-    BorderStyle := bsDialog;
-    Caption := ACaption;
-    Prompt := TLabel.Create(Form);
-    With Prompt do begin
-      Parent := Form;
-      Caption := APrompt;
-      Visible := True;
-    end;
-    SelectObject(Canvas.Handle, GetStockObject(SYSTEM_FONT));
-    AVG := GetAvgCharSize(Canvas.Handle);
-    Position := poScreenCenter;
-    Prompt.Left := (7*AVG.X) div 4;
-    Prompt.Top := (8*AVG.Y) div 8;
-    Prompt.Width := AVG.X * Length(APrompt) + 1;
-    ClientWidth := (172*AVG.X) div 4;
-    ClientHeight := (58*AVG.Y) div 8;
-    ButtonTop := (39*AVG.Y) div 8;
-    ButtonWidth := (50*AVG.X) div 4;
-    ButtonHeight := (13*AVG.Y) div 8;
-    Edit := TEdit.Create(Form);
-    With Edit do begin
-      Parent := Form;
-      Left := Prompt.Left;
-      Top := (19*AVG.Y) div 8;
-      Width := (160*AVG.X) div 4;
-      Height := (7*AVG.Y) div 4;
-      Text := Value;
-      TabStop := True;
-      Visible := True;
-      TabOrder := 0;
-    end;
-    With TBitBtn.Create(Form) do begin
-      Parent := Form;
-      Kind := bkOk;
-      Default := True;
-      ModalResult := mrOk;
-      Left := (37*AVG.X) div 4;
-      Top := ButtonTop;
-      Height := ButtonHeight;
-      Width := ButtonWidth;
-      TabStop := True;
-      Visible := True;
-      TabOrder := 1;
-    end;
-    With TBitBtn.Create(Form) do begin
-      Parent := Form;
-      Kind := bkCancel;
-      Cancel := True;
-      Left := (92*AVG.X) div 4;
-      Top := ButtonTop;
-      Height := ButtonHeight;
-      Width := ButtonWidth;
-      TabStop := True;
-      Visible := True;
-      TabOrder := 2;
-    end;
-    Show;
-    Edit.SetFocus;
-    Hide;
-    If ShowModal = mrOk then
-    begin
-      T := Edit.Text;
-      Result := True;
-    End;
-    Form.Close;
-  end;
-  Value := T;
+  Result := '';
+  InputQuery(ACaption, APrompt, True, Result);
+end;
+
+Function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean;
+  var Value : String) : Boolean;
+begin
+  Result := LCLLinux.RequestInput(ACaption, APrompt, MaskInput, Value);
+end;
+
+Function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
+begin
+  Result := InputQuery(ACaption, APrompt, False, Value);
 end;
 
 {
    $Log$
+   Revision 1.16  2002/10/11 16:00:39  lazarus
+   AJ: made InputQuery Interface Dependant
+
    Revision 1.15  2002/10/10 13:29:08  lazarus
    AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
 

@@ -54,6 +54,64 @@ begin
   Result := HBitmap(Pixmap);
 end;
 
+//----------------------------------------------------------------------------//
+//-------------------------TGnomeObject.RequestInput--------------------------//
+Type
+  PRequestInputObject = ^TRequestInputObject;
+  TRequestInputObject = Record
+    Finished : Boolean;
+    NewValue : String;
+  end;
+
+procedure RequestInputFinishCallback(NewString:PChar; data: PRequestInputObject);cdecl;
+var
+  I, Len : Longint;
+begin
+  If Data <> nil then
+    with Data^ do begin
+      If NewString = nil then
+        NewValue := ''
+      else begin
+        Len := StrLen(NewString);
+        SetLength(NewValue, Len);
+        For I := 0 to Len - 1 do
+          NewValue[I + 1] := NewString[I];
+      end;
+      Finished := True;
+    end;
+end;
+
+Function TGnomeObject.RequestInput(const InputCaption, InputPrompt : String;
+  MaskInput : Boolean; var Value : String) : Boolean;
+var
+  MainWidget,
+  RequestWidget : Pointer;
+  RequestObject : TRequestInputObject;
+begin
+  Result := False;
+
+  If (Application.MainForm <> nil) and
+    (Application.MainForm.HandleAllocated)
+  then
+    MainWidget := Pointer(Application.MainForm.Handle);
+
+  With RequestObject do begin
+    Finished := False;
+    NewValue := Value;
+  end;
+
+  RequestWidget := gnome_request_dialog(MaskInput, PChar(InputPrompt), PChar(Value), 256,
+    TGnomeStringCallback(@RequestInputFinishCallback), @RequestObject, MainWidget);
+
+  gtk_window_set_title(RequestWidget,PChar(InputCaption));
+
+  If gnome_dialog_run_and_close(RequestWidget) = 0 then
+    If RequestObject.Finished then begin
+      Result := True;
+      Value := RequestObject.NewValue;
+    end;
+end;
+
 {$IfDef ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -61,6 +119,9 @@ end;
 
 {
   $Log$
+  Revision 1.3  2002/10/11 16:00:39  lazarus
+  AJ: made InputQuery Interface Dependant
+
   Revision 1.2  2002/10/10 13:29:08  lazarus
   AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
 

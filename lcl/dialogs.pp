@@ -243,8 +243,10 @@ type
   procedure ShowMessageFmt(const aMsg: string; Params: array of const);
   procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
 
+  Function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
   Function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
   Function InputBox(const ACaption, APrompt, ADefault : String) : String;
+  Function PasswordBox(const ACaption, APrompt : String) : String;
 
 implementation
 
@@ -292,6 +294,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/10/11 16:00:39  lazarus
+  AJ: made InputQuery Interface Dependant
+
   Revision 1.19  2002/10/10 13:29:08  lazarus
   AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
 
