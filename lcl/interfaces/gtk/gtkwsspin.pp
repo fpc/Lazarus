@@ -27,7 +27,12 @@ unit GtkWSSpin;
 interface
 
 uses
-  Spin, WSSpin, WSLCLClasses;
+  {$IFDEF gtk2}
+  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+  {$ELSE}
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
+  {$ENDIF}
+  Spin, WSSpin, WSLCLClasses, LCLType;
 
 type
 
@@ -37,6 +42,7 @@ type
   private
   protected
   public
+    class procedure UpdateControl(const ACustomSpinEdit: TCustomSpinEdit); override;
   end;
 
   { TGtkWSSpinEdit }
@@ -50,6 +56,29 @@ type
 
 implementation
 
+{ TGtkWSCustomSpinEdit }
+
+procedure TGtkWSCustomSpinEdit.UpdateControl(const ACustomSpinEdit: TCustomSpinEdit);
+var
+  AnAdjustment: PGtkAdjustment;
+  wHandle: HWND;
+begin
+  wHandle := ACustomSpinEdit.Handle;
+  AnAdjustment:=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wHandle));
+  if (AnAdjustment^.lower<>ACustomSpinEdit.MinValue)
+  or (AnAdjustment^.upper<>ACustomSpinEdit.MaxValue) then
+  begin
+    AnAdjustment^.lower:=ACustomSpinEdit.MinValue;
+    AnAdjustment^.upper:=ACustomSpinEdit.MaxValue;
+    gtk_adjustment_changed(AnAdjustment);
+  end;
+  gtk_spin_button_set_digits(GTK_SPIN_BUTTON(wHandle),
+                             ACustomSpinEdit.Decimal_Places);
+  gtk_spin_button_set_value(GTK_SPIN_BUTTON(wHandle),
+                            ACustomSpinEdit.Value);
+  GTK_SPIN_BUTTON(wHandle)^.climb_rate:=ACustomSpinEdit.Climb_Rate;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -58,7 +87,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomSpinEdit, TGtkWSCustomSpinEdit);
+  RegisterWSComponent(TCustomSpinEdit, TGtkWSCustomSpinEdit);
 //  RegisterWSComponent(TSpinEdit, TGtkWSSpinEdit);
 ////////////////////////////////////////////////////
 end.

@@ -6243,7 +6243,6 @@ const
 var
   Widget   : PGtkWidget;
   wHandle    : Pointer;
-  AnAdjustment: PGtkAdjustment;
 
 begin
   Result := 0;     // default if nobody sets it
@@ -6285,31 +6284,6 @@ begin
         end;
         //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Widget), 'value_changed');
      end;
-
-  csListView :
-  {$IfDef GTK2}
-    DebugLn('TODO: TGtkWidgetSet.SetProperties csListView');
-  {$Else}
-    begin
-    end;
-  {$EndIf}
-  
-  csSpinEdit:
-    Begin
-      AnAdjustment:=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wHandle));
-      if (AnAdjustment^.lower<>TSpinEdit(Sender).MinValue)
-      or (AnAdjustment^.upper<>TSpinEdit(Sender).MaxValue) then
-      begin
-        AnAdjustment^.lower:=TSpinEdit(Sender).MinValue;
-        AnAdjustment^.upper:=TSpinEdit(Sender).MaxValue;
-        gtk_adjustment_changed(AnAdjustment);
-      end;
-      gtk_spin_button_set_digits(GTK_SPIN_BUTTON(wHandle),
-                                 TSpinEdit(Sender).Decimal_Places);
-      gtk_spin_button_set_value(GTK_SPIN_BUTTON(wHandle),
-                                TSpinEdit(Sender).Value);
-      GTK_SPIN_BUTTON(wHandle)^.climb_rate:=TSpinEdit(Sender).Climb_Rate;
-    End;
 
   else
     Assert (true, Format ('WARNING:[TGtkWidgetSet.SetProperties] failed for %s', [Sender.ClassName]));
@@ -7450,6 +7424,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.596  2004/09/23 21:16:45  micha
+  convert LM_SETPROPERTIES message to interface method for TCustomSpinEdit
+
   Revision 1.595  2004/09/23 20:36:30  micha
   convert LM_SETPROPERTIES message to interface method for TScrollBar
 

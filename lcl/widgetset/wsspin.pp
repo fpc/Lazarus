@@ -58,6 +58,8 @@ type
 
     class procedure SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer); virtual;
     class procedure SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer); virtual;
+
+    class procedure UpdateControl(const ACustomSpinEdit: TCustomSpinEdit); virtual;
   end;
   TWSCustomSpinEditClass = class of TWSCustomSpinEdit;
 
@@ -91,6 +93,10 @@ begin
 end;
 
 procedure TWSCustomSpinEdit.SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer);
+begin
+end;
+
+procedure TWSCustomSpinEdit.UpdateControl(const ACustomSpinEdit: TCustomSpinEdit);
 begin
 end;
 

@@ -51,6 +51,8 @@ type
 
     class procedure SetSelStart(const ACustomSpinEdit: TCustomSpinEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer); override;
+  
+    class procedure UpdateControl(const ACustomSpinEdit: TCustomSpinEdit); override;
   end;
 
   { TWin32WSSpinEdit }
@@ -89,6 +91,16 @@ end;
 procedure TWin32WSCustomSpinEdit.SetSelLength(const ACustomSpinEdit: TCustomSpinEdit; NewLength: integer);
 begin
   EditSetSelLength(SendMessage(ACustomSpinEdit.Handle, UDM_GETBUDDY, 0, 0), NewLength); 
+end;
+
+procedure TWin32WSCustomSpinEdit.UpdateControl(const ACustomSpinEdit: TCustomSpinEdit);
+var
+  Handle: HWND;
+begin
+  Handle := ACustomSpinEdit.Handle;
+  SendMessage(Handle, UDM_SETRANGE, 0, MakeLong(Trunc(ACustomSpinEdit.MaxValue), 
+    Trunc(ACustomSpinEdit.MinValue)));
+  SendMessage(Handle, UDM_SETPOS, 0, MakeLong(Trunc(ACustomSpinEdit.Value), 0));
 end;
 
 initialization

@@ -1700,12 +1700,6 @@ begin
 
   Case TControl(Sender).FCompStyle Of
 
-  csSpinEdit:
-    Begin
-      SendMessage(Handle, UDM_SETRANGE, 0, MakeLong(Trunc(TSpinEdit(Sender).MaxValue), Trunc(TSpinEdit(Sender).MinValue)));
-      SendMessage(Handle, UDM_SETPOS, 0, MakeLong(Trunc(TSpinEdit(Sender).Value), 0));
-    End;
-
   csTrackbar:
     With(TCustomTrackBar(Sender)) Do
     Begin
@@ -1760,6 +1754,9 @@ End;
 
 {
   $Log$
+  Revision 1.284  2004/09/23 21:16:46  micha
+  convert LM_SETPROPERTIES message to interface method for TCustomSpinEdit
+
   Revision 1.283  2004/09/23 20:36:30  micha
   convert LM_SETPROPERTIES message to interface method for TScrollBar
 

@@ -27,7 +27,7 @@ begin
     fValueNeedsUpdate:=true;
     exit;
   end;
-  CNSendMessage(LM_SetProperties,Self,nil);
+  TWSCustomSpinEditClass(WidgetSetClass).UpdateControl(Self);
   fValueNeedsUpdate:=false;
 end;
 
