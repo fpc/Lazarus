@@ -57,6 +57,8 @@ function MakeWord(A,B : Byte) : Word;
 function PredefinedClipboardFormat(
   AFormat: TPredefinedClipboardFormat): TClipboardFormat;
 
+function CharLower(c: char): char;
+function CharUpper(c: char): char;
 
 implementation
 
@@ -66,6 +68,9 @@ uses
 var
   FPredefinedClipboardFormats:
     array[TPredefinedClipboardFormat] of TClipboardFormat;
+  LowerCaseChars: array[char] of char;
+  UpperCaseChars: array[char] of char;
+
 
 function MakeLong(A,B : Word) : LongInt;
 begin
@@ -86,16 +91,30 @@ begin
   Result:=FPredefinedClipboardFormats[AFormat];
 end;
 
+function CharLower(c: char): char;
+begin
+  Result:=LowerCaseChars[c];
+end;
+
+function CharUpper(c: char): char;
+begin
+  Result:=UpperCaseChars[c];
+end;
 
 {$I winapi.inc}
 
 procedure InternalInit;
 var
   AClipboardFormat: TPredefinedClipboardFormat;
+  c: char;
 begin
   for AClipboardFormat:=Low(TPredefinedClipboardFormat) to
     High(TPredefinedClipboardFormat) do
       FPredefinedClipboardFormats[AClipboardFormat]:=0;
+  for c:=Low(char) to High(char) do begin
+    LowerCaseChars[c]:=lowercase(c)[1];
+    UpperCaseChars[c]:=upcase(c);
+  end;
 end;
 
 initialization
@@ -105,6 +124,9 @@ end.
 
 {
   $Log$
+  Revision 1.23  2002/11/23 09:34:12  mattias
+  fixed compiling errors for synregexpr.pas
+
   Revision 1.22  2002/10/26 15:15:46  lazarus
   MG: broke LCL<->interface circles
 
