@@ -37,8 +37,9 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-uses StdCtrls, VCLGlobals, Classes, LCLType, LCLProc, LCLIntf, LCLStrConsts,
-  GraphType, Graphics, SysUtils, Controls, lMessages, Forms;
+uses
+  Classes, SysUtils, VCLGlobals, LCLType, LCLProc, LCLIntf, LCLStrConsts,
+  GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, lMessages, Forms;
 
 type
   { TButton }
@@ -81,6 +82,7 @@ type
   public
     constructor Create(AOwner: TComponent); override;
   published
+    property Action;
     property Anchors;
     property Align;
     property Constraints;
@@ -155,27 +157,50 @@ type
     Procedure SetLayout(Value : TButtonLayout);
     Procedure SetSpacing(Value : Integer);
 
-    //Return the caption associed with the akind value.
+    //Return the caption associated with the aKind value.
     function GetCaptionOfKind(aKind :TBitBtnKind) : String;
   protected
     Procedure Click; override;
     procedure GlyphChanged(Sender : TObject);
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; Override;
   published
+    property Action;
+    property Align;
+    property Anchors;
+    property Constraints;
     property Default stored IsCustom;
     property Glyph : TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
     property Kind : TBitBtnKind read FKind write SetKind;
     property Layout: TButtonLayout read FLayout write SetLayout;
     property ModalResult stored IsCustom;
-    property Spacing : Integer read FSpacing write SetSpacing;
-    property Visible;
+    property OnChangeBounds;
+    property OnClick;
     property OnEnter;
     property OnExit;
-    property ShowHint;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
     property ParentShowHint;
     property PopupMenu;
+    property ShowHint;
+    property Spacing : Integer read FSpacing write SetSpacing;
+    property Visible;
+  end;
+
+
+  { TSpeedButtonActionLink }
+
+  TSpeedButtonActionLink = class(TControlActionLink)
+  protected
+    procedure AssignClient(AClient: TObject); override;
+    function IsCheckedLinked: Boolean; override;
+    function IsGroupIndexLinked: Boolean; override;
+    procedure SetGroupIndex(Value: Integer); override;
+    procedure SetChecked(Value: Boolean); override;
   end;
 
 
@@ -227,14 +252,18 @@ type
     procedure UpdateState(InvalidateOnChange: boolean); virtual;
     function GetDrawFlags: integer; virtual;
     property MouseInControl : Boolean read FMouseInControl;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
+    function GetActionLinkClass: TControlActionLinkClass; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Click; override;
   published
+    property Action;
     property Align;
     property Anchors;
     property AllowAllUp: Boolean read FAllowAllUp write SetAllowAllUp default false;
+    property Constraints;
     property Caption;
     property Down: Boolean read FDown write SetDown default false;
     property Enabled;
@@ -253,6 +282,7 @@ type
     property OnMouseUp;
     property OnPaint;
     property OnResize;
+    property OnChangeBounds;
     property ShowHint;
     property ParentShowHint;
     property PopupMenu;
@@ -302,6 +332,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.56  2004/02/02 18:01:31  mattias
+  added TSpeedButton.Action and TBitBtn.Action
+
   Revision 1.55  2004/02/02 11:07:43  mattias
   constraints and aligning now work together
 

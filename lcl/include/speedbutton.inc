@@ -253,6 +253,38 @@ begin
     inc(Result,DFCS_FLAT);
 end;
 
+procedure TSpeedButton.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+
+  procedure CopyImage(ImageList: TCustomImageList; Index: Integer);
+  begin
+    with Glyph do
+    begin
+      Width := ImageList.Width;
+      Height := ImageList.Height;
+      Canvas.Brush.Color := clMaroon; // whatever
+      Canvas.FillRect(Rect(0,0,Width,Height));
+      ImageList.Draw(Canvas,0,0,Index,true);
+    end;
+  end;
+
+begin
+  inherited ActionChange(Sender,CheckDefaults);
+  if Sender is TCustomAction then begin
+    with TCustomAction(Sender) do begin
+      if CheckDefaults or (Self.GroupIndex = 0) then
+        Self.GroupIndex := GroupIndex;
+      if (Glyph.Empty) and (ActionList <> nil) and (ActionList.Images <> nil)
+      and (ImageIndex >= 0) and (ImageIndex < ActionList.Images.Count) then
+        CopyImage(ActionList.Images,ImageIndex);
+    end;
+  end;
+end;
+
+function TSpeedButton.GetActionLinkClass: TControlActionLinkClass;
+begin
+  Result := TSpeedButtonActionLink;
+end;
+
 {------------------------------------------------------------------------------
   Method: TSpeedButton.UpdateExclusive
   Params: none
@@ -686,6 +718,44 @@ begin
   end;
 end;
 
+{ TSpeedButtonActionLink }
+
+procedure TSpeedButtonActionLink.AssignClient(AClient: TObject);
+begin
+  inherited AssignClient(AClient);
+  FClient := AClient as TSpeedButton;
+end;
+
+function TSpeedButtonActionLink.IsCheckedLinked: Boolean;
+var
+  SpeedButton: TSpeedButton;
+begin
+  SpeedButton:=TSpeedButton(FClient);
+  Result := inherited IsCheckedLinked
+            and (SpeedButton.GroupIndex <> 0)
+            and SpeedButton.AllowAllUp
+            and (SpeedButton.Down = (Action as TCustomAction).Checked);
+end;
+
+function TSpeedButtonActionLink.IsGroupIndexLinked: Boolean;
+var
+  SpeedButton: TSpeedButton;
+begin
+  SpeedButton:=TSpeedButton(FClient);
+  Result := (SpeedButton is TSpeedButton) and
+    (SpeedButton.GroupIndex = (Action as TCustomAction).GroupIndex);
+end;
+
+procedure TSpeedButtonActionLink.SetGroupIndex(Value: Integer);
+begin
+  if IsGroupIndexLinked then TSpeedButton(FClient).GroupIndex := Value;
+end;
+
+procedure TSpeedButtonActionLink.SetChecked(Value: Boolean);
+begin
+  if IsCheckedLinked then TSpeedButton(FClient).Down := Value;
+end;
+
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -698,6 +768,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2004/02/02 18:01:31  mattias
+  added TSpeedButton.Action and TBitBtn.Action
+
   Revision 1.44  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 
