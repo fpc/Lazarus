@@ -108,7 +108,7 @@ end;
 
   The GTK_IS_XXX macro functions in the fpc gtk1.x bindings are not correct.
   They just test the highest level.
-  This function checks just like the real C macros.
+  This function checks as the real C macros.
  ------------------------------------------------------------------------------}
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 begin
@@ -4072,6 +4072,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.173  2003/05/26 20:05:21  mattias
+  made compiling gtk2 interface easier
+
   Revision 1.172  2003/05/19 08:16:33  mattias
   fixed allocation of dc backcolor
 

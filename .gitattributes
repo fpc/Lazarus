@@ -591,6 +591,7 @@ lcl/interfaces/gtk/interfaces.pp svneol=native#text/pascal
 lcl/interfaces/gtk/keymap.pp svneol=native#text/pascal
 lcl/interfaces/gtk/tnotebook_close_tab.xpm -text svneol=native#image/x-xpixmap
 lcl/interfaces/gtk2/gtk2int.pas svneol=native#text/pascal
+lcl/interfaces/gtk2/gtk2interface.lpk svneol=native#text/pascal
 lcl/interfaces/gtk2/interfaces.pas svneol=native#text/pascal
 lcl/interfaces/qt/build.sh -text svneol=native#application/x-sh
 lcl/interfaces/qt/include/lpushbt.h svneol=native#text/plain
