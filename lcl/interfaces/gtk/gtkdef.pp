@@ -115,6 +115,11 @@ type
       );
   end;
 
+  TDeviceContextsFlag = (
+    dcfPenSelected, // pen changed and needs selecting
+    dcfPenInvalid   // pen is not a valid GDIObject
+    );
+  TDeviceContextsFlags = set of TDeviceContextsFlag;
 
   TDeviceContext = class
   public
@@ -133,6 +138,7 @@ type
     CurrentBackColor: TGDIColor;
     ClipRegion : hRGN;
     SavedContext: TDeviceContext; // linked list of saved DCs
+    DCFlags: TDeviceContextsFlags;
     procedure Clear;
   end;
   
@@ -368,6 +374,7 @@ begin
   FillChar(CurrentBackColor,SizeOf(CurrentBackColor),0);
   ClipRegion:=0;
   SavedContext:=nil;
+  DCFlags:=[];
 end;
 
 finalization
@@ -381,6 +388,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/10/07 20:50:58  lazarus
+  MG: accelerated SelectGDKPenProps
+
   Revision 1.20  2002/10/01 10:05:48  lazarus
   MG: changed PDeviceContext into class TDeviceContext
 
