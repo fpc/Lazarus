@@ -202,9 +202,17 @@ type
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
     procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
-    function Notebook: TNotebook;
+    function Notebook: TNotebook; virtual;
   end;
   
+{ TPageComponentEditor
+  The default component editor for TPage. }
+  TPageComponentEditor = class(TNotebookComponentEditor)
+  protected
+  public
+    function Notebook: TNotebook; override;
+    function Page: TPage; virtual;
+  end;
 
 
 { Register a component editor to be created when a component derived from
@@ -704,10 +712,28 @@ begin
   Result:=TNotebook(GetComponent);
 end;
 
+{ TPageComponentEditor }
+
+function TPageComponentEditor.Notebook: TNotebook;
+var
+  APage: TPage;
+begin
+  APage:=Page;
+  if (APage.Parent<>nil) and (APage.Parent is TNoteBook) then
+    Result:=TNoteBook(APage.Parent);
+end;
+
+function TPageComponentEditor.Page: TPage;
+begin
+  Result:=TPage(GetComponent);
+end;
+
 //------------------------------------------------------------------------------
+
 initialization
   RegisterComponentEditorProc:=@DefaultRegisterComponentEditorProc;
   RegisterComponentEditor(TNotebook,TNotebookComponentEditor);
+  RegisterComponentEditor(TPage,TPageComponentEditor);
 
 end.
 

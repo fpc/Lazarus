@@ -3119,6 +3119,15 @@ begin
 end;
 
 procedure TCustomTreeView.UpdateScrollbars;
+
+  function Max(i1, i2: integer): integer;
+  begin
+    if i1>i2 then
+      Result:=i1
+    else
+      Result:=i2;
+  end;
+
 var
   ScrollInfo: TScrollInfo;
 begin
@@ -3130,17 +3139,15 @@ begin
     if ScrolledTop>GetMaxScrollTop then ScrolledTop:=GetMaxScrollTop;
     Exclude(FStates,tvsScrollbarChanged);
     if fScrollBars <> ssNone then begin
-      ScrollInfo.cbSize := SizeOf(ScrollInfo);
-      ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
-      ScrollInfo.nTrackPos := 0;
       if fScrollBars in [ssBoth, ssHorizontal] then begin
         // horizontal scrollbar
+        ScrollInfo.cbSize := SizeOf(ScrollInfo);
+        ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+        ScrollInfo.nTrackPos := 0;
         ScrollInfo.nMin := 0;
-        ScrollInfo.nPage := (ClientWidth-ScrollBarWidth)-2*BorderWidth;
-        if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
-        ScrollInfo.nMax := GetMaxScrollLeft+ScrollInfo.nPage;
-        if ScrollInfo.nMax<1 then ScrollInfo.nMax:=1;
-        ScrollInfo.nPos := FScrolledLeft;
+        ScrollInfo.nPage := Max(1,(ClientWidth-ScrollBarWidth)-2*BorderWidth);
+        ScrollInfo.nMax := Max(1,GetMaxScrollLeft+ScrollInfo.nPage);
+        ScrollInfo.nPos := Max(FScrolledLeft,0);
         if not CompareMem(@ScrollInfo,@FLastHorzScrollInfo,SizeOf(TScrollInfo))
         then begin
           FLastHorzScrollInfo:=ScrollInfo;
@@ -3160,13 +3167,14 @@ begin
       end;
       if fScrollBars in [ssBoth, ssVertical] then begin
         // vertical scrollbar
-        ScrollInfo.nMin := 0;
-        ScrollInfo.nPage := (ClientHeight-ScrollBarWidth)-FDefItemHeight;
-        if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
-        ScrollInfo.nMax := GetMaxScrollTop+ScrollInfo.nPage;
-        if ScrollInfo.nMax<1 then ScrollInfo.nMax:=1;
+        ScrollInfo.cbSize := SizeOf(ScrollInfo);
+        ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
         ScrollInfo.nTrackPos := 0;
-        ScrollInfo.nPos := FScrolledTop;
+        ScrollInfo.nMin := 0;
+        ScrollInfo.nPage := Max(1,(ClientHeight-ScrollBarWidth)-FDefItemHeight);
+        ScrollInfo.nMax := Max(1,GetMaxScrollTop+ScrollInfo.nPage);
+        ScrollInfo.nTrackPos := 0;
+        ScrollInfo.nPos := Max(0,FScrolledTop);
         if not CompareMem(@ScrollInfo,@FLastVertScrollInfo,SizeOf(TScrollInfo))
         then begin
           FLastVertScrollInfo:=ScrollInfo;
