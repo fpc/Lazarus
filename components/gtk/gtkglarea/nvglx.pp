@@ -30,6 +30,13 @@ interface
 uses
   X, XLib, XUtil, nvGL;
 
+
+  {$IFDEF VER1_0}
+type
+  PCardinal           = ^Cardinal;
+  {$ENDIF}
+
+
 const
   GLX_VERSION_1_1 = 1;
   GLX_VERSION_1_2 = 1;
