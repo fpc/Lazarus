@@ -1290,7 +1290,6 @@ end;
 {-------------------------------------------------------------------------------
   procedure DestroyWidget(Widget: PGtkWidget);
 
-
 -------------------------------------------------------------------------------}
 procedure DestroyWidget(Widget: PGtkWidget);
 begin
@@ -3949,6 +3948,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.156  2003/01/01 11:11:50  mattias
+  fixed testall example
+
   Revision 1.155  2002/12/27 17:12:38  mattias
   added more Delphi win32 compatibility functions
 
