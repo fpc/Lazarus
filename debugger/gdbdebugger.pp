@@ -54,7 +54,7 @@ type
     function  GetFlags: TDBGCommands; override;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
   public
-    constructor Create; override;
+    constructor Create; 
     destructor Destroy; override;
   
     procedure Init; override;         // Initializes external debugger
@@ -292,6 +292,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.3  2001/11/12 19:28:23  lazarus
+  MG: fixed create, virtual constructors makes no sense
+
   Revision 1.2  2001/11/06 23:59:13  lazarus
   MWE: + Initial breakpoint support
        + Added exeption handling on process.free

@@ -67,7 +67,7 @@ type
     procedure SetFileName(const Value: String); virtual;
     procedure SetState(const Value: TDBGState); 
   public
-    constructor Create; virtual;
+    constructor Create;
     destructor Destroy; override;
     
     procedure Init; virtual;                         // Initializes the debugger
@@ -272,6 +272,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.5  2001/11/12 19:28:23  lazarus
+  MG: fixed create, virtual constructors makes no sense
+
   Revision 1.4  2001/11/06 23:59:13  lazarus
   MWE: + Initial breakpoint support
        + Added exeption handling on process.free
