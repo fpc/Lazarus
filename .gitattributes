@@ -652,6 +652,7 @@ lcl/toolwin.pp svneol=native#text/pascal
 lcl/utrace.pp svneol=native#text/pascal
 lcl/vclglobals.pp svneol=native#text/pascal
 packager/lazaruspackageintf.pas svneol=native#text/pascal
+packager/pkggraphexporer.pas svneol=native#text/pascal
 tools/apiwizz/apiwizard.pp svneol=native#text/pascal
 tools/apiwizz/apiwizz.pp svneol=native#text/pascal
 tools/install/create_fpcsrc-1.1_rpm.sh -text svneol=native#application/x-sh

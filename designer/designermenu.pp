@@ -85,7 +85,6 @@ constructor TDesignerMainMenu.CreateWithMenu(TheOwner: TComponent;
 begin
   inherited Create(TheOwner);
   new(Root);
-  Root:=nil;
   AppMenu:=AMenu;
   temp_level:=1;
 end;
