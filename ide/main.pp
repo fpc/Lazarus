@@ -1985,7 +1985,7 @@ end;
 function TMainIDE.DoOpenEditorFile(AFileName:string; 
   ProjectLoading:boolean):TModalResult;
 var Ext,ACaption,AText:string;
-  i,ProgramNameStart,ProgramNameEnd:integer;
+  i,BookmarkID,ProgramNameStart,ProgramNameEnd:integer;
   ReOpen:boolean;
   NewUnitInfo:TUnitInfo;
   NewPageName, NewLFMFilename, NewProgramName, NewSource: string;
@@ -2035,7 +2035,7 @@ writeln('TMainIDE.DoOpenEditorFile "',AFilename,'"');
             if FileExists(ChangeFileExt(AFilename,'.lpi')) then begin
               AText:='The file "'+AFilename+'"'
                  +' seems to be the program file of an existing lazarus project.'
-                 +' Open project?';
+                 +' Open project? Cancel will load the source.';
               ACaption:='Project info file detected';
               if Application.MessageBox(PChar(AText),PChar(ACaption)
                   ,MB_OKCANCEL)=mrOk then begin
@@ -2045,7 +2045,8 @@ writeln('TMainIDE.DoOpenEditorFile "',AFilename,'"');
             end else begin
               AText:='The file "'+AFilename+'"'
                 +' seems to be a program. Close current project'
-                +' and create a new lazarus project for this program?';
+                +' and create a new lazarus project for this program?'
+                +'  Cancel will load the source.';
               ACaption:='Program detected';
               if Application.MessageBox(PChar(AText),PChar(ACaption)
                  ,MB_OKCANCEL)=mrOK then begin
@@ -2085,14 +2086,29 @@ writeln('TMainIDE.DoOpenEditorFile "',AFilename,'"');
   sl.Text:=NewUnitInfo.Source.Source;
   SourceNotebook.NewFile(NewPageName,sl);
   sl.Free;
-  if not ProjectLoading then
-    Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
-  NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
   NewSrcEdit:=SourceNotebook.GetActiveSE;
+  if not ProjectLoading then
+    Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex)
+  else begin
+    for BookmarkID:=0 to 9 do begin
+      i:=Project.Bookmarks.IndexOfID(BookmarkID);
+      if (i>=0) and (Project.Bookmarks[i].EditorIndex=NewUnitInfo.EditorIndex)
+      then begin
+        NewSrcEdit.EditorComponent.SetBookmark(BookmarkID,
+           Project.Bookmarks[i].CursorPos.X,Project.Bookmarks[i].CursorPos.Y);
+        while i>=0 do begin
+          Project.Bookmarks.Delete(i);
+          i:=Project.Bookmarks.IndexOfID(BookmarkID);
+        end;
+      end;
+    end;
+  end;
+  NewUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
   NewSrcEdit.EditorComponent.CaretXY:=NewUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=NewUnitInfo.TopLine;
   NewSrcEdit.EditorComponent.LeftChar:=1;
+  
   NewUnitInfo.Loaded:=true;
   // read form data
   if (NewUnitInfo.Unitname<>'') then begin
@@ -2366,7 +2382,7 @@ var MainUnitSrcEdit, ASrcEdit: TSourceEditor;
   MainUnitInfo, AnUnitInfo: TUnitInfo;
   SaveDialog: TSaveDialog;
   NewFilename, NewProgramFilename, NewPageName, AText, ACaption, Ext: string;
-  i:integer;
+  i, BookmarkID, BookmarkX, BookmarkY :integer;
 begin
   Result:=mrCancel;
   if ToolStatus<>itNone then begin
@@ -2402,6 +2418,7 @@ writeln('TMainIDE.DoSaveProject A');
     MainUnitInfo:=nil;
 
   // save some information of the loaded files
+  Project.Bookmarks.Clear;
   for i:=0 to Project.UnitCount-1 do begin
     AnUnitInfo:=Project.Units[i];
     if AnUnitInfo.Loaded then begin
@@ -2409,6 +2426,13 @@ writeln('TMainIDE.DoSaveProject A');
          AnUnitInfo.EditorIndex);
       AnUnitInfo.TopLine:=ASrcEdit.EditorComponent.TopLine;
       AnUnitInfo.CursorPos:=ASrcEdit.EditorComponent.CaretXY;
+      for BookmarkID:=0 to 9 do begin
+        if (ASrcEdit.EditorComponent.GetBookMark(BookmarkID,BookmarkX,BookmarkY))
+        and (Project.Bookmarks.IndexOfID(BookmarkID)<0) then begin
+          Project.Bookmarks.Add(TProjectBookmark.Create(BookmarkX,BookmarkX,
+              AnUnitInfo.EditorIndex,BookmarkID));
+        end;
+      end;
     end;
   end;
 
@@ -2616,9 +2640,7 @@ writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   Project.Modified:=false;
   EnvironmentOptions.LastSavedProjectFile:=Project.ProjectInfoFile;
   EnvironmentOptions.Save(false);
-
 writeln('TMainIDE.DoOpenProjectFile end ');
-
 end;
 
 function TMainIDE.DoCreateProjectForProgram(ProgramFilename
@@ -3463,6 +3485,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.104  2001/06/27 21:43:23  lazarus
+  MG: added project bookmark support
+
   Revision 1.103  2001/06/26 00:08:35  lazarus
   MG: added code for form icons from Rene E. Beszon
 

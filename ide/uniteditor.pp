@@ -231,7 +231,7 @@ type
     Procedure BookMarkToggle(Value : Integer);
   protected
     ccSelection : String;
- 
+     
     Function CreateNotebook : Boolean;
     Function DisplayPage(SE : TSourceEditor) : Boolean;
     Function NewSE(Pagenum : Integer) : TSourceEditor;
@@ -1099,6 +1099,7 @@ writeln('TSourceEditor.CreateEditor  FEditorName="',NewName,'"');
     Name:=NewName;
     Parent := AParent;
     Align := alClient;
+    BookMarkOptions.EnableKeys := false;
     OnStatusChange := @EditorStatusChanged;
     OnProcessUserCommand := @ProcessUserCommand;
     OnReplaceText := @OnReplace;
@@ -2036,8 +2037,8 @@ Begin
   if TempEditor <> nil then TempEditor.FindAgain;
 End;
 
-
 Procedure TSourceNotebook.BookMarkClicked(Sender : TObject);
+// popup menu toggle bookmark clicked
 var
   MenuItem : TMenuItem;
 Begin
@@ -2046,6 +2047,7 @@ Begin
 end;
 
 Procedure TSourceNotebook.BookMarkGotoClicked(Sender : TObject);
+// popup menu goto bookmark clicked
 var
   MenuItem : TMenuItem;
 Begin
@@ -2336,7 +2338,8 @@ begin
   Result:=nil;
 end;
 
-function TSourceNotebook.FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
+function TSourceNotebook.FindPageWithEditor(
+  ASourceEditor: TSourceEditor):integer;
 var i:integer;
 begin
   if Notebook=nil then begin
@@ -2346,7 +2349,7 @@ begin
     while (Result>=0) do begin
       with Notebook.Page[Result] do
         for I := 0 to ControlCount-1 do
-          if Controls[I]=TControl(ASourceEditor) then exit;
+          if Controls[I]=ASourceEditor.EditorComponent then exit;
       dec(Result);
     end;
   end;
@@ -2391,7 +2394,7 @@ begin
 
   ecJumpToEditor :
     Begin
-      //This is NOT implemented yet
+      // This is NOT implemented yet
 
     end;
 
@@ -2401,8 +2404,16 @@ begin
 
   ecToggleFormUnit:
     ToggleFormUnitClicked(self);
+    
+  ecGotoMarker0..ecGotoMarker9:
+    BookMarkGoto(Command - ecGotoMarker0);
+
+  ecSetMarker0..ecSetMarker9:
+    BookMarkToggle(Command - ecSetMarker0);
 
   end;  //case
+  
+  writeln('******* ',ecGotoMarker4,',',Command);
 end;
 
 Procedure TSourceNotebook.ReloadEditorOptions;

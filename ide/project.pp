@@ -42,6 +42,8 @@ type
     fEditorIndex: integer;
     fID: integer;
   public
+    constructor Create;
+    constructor Create(X,Y, AnEditorIndex, AnID: integer);
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property EditorIndex: integer read fEditorIndex write fEditorIndex;
     property ID:integer read fID write fID;
@@ -312,9 +314,24 @@ end;
 
 { TProjectBookmark }
 
+constructor TProjectBookmark.Create;
+begin
+  inherited Create;
+end;
+
+constructor TProjectBookmark.Create(X,Y, AnEditorIndex, AnID: integer);
+begin
+  inherited Create;
+  fCursorPos.X:=X;
+  fCursorPos.Y:=Y;
+  fEditorIndex:=AnEditorIndex;
+  fID:=AnID;
+end;
+
 procedure TProjectBookmark.SaveToXMLConfig(XMLConfig: TXMLConfig; 
   Path: string);
 begin
+  XMLConfig.SetValue(Path+'ID',ID);
   XMLConfig.SetValue(Path+'CursorPosX',CursorPos.X);
   XMLConfig.SetValue(Path+'CursorPosY',CursorPos.Y);
   XMLConfig.SetValue(Path+'EditorIndex',EditorIndex);
@@ -323,6 +340,7 @@ end;
 procedure TProjectBookmark.LoadFromXMLConfig(XMLConfig: TXMLConfig; 
   Path: string);
 begin
+  ID:=XMLConfig.GetValue(Path+'ID',-1);
   CursorPos.X:=XMLConfig.GetValue(Path+'CursorPosX',0);
   CursorPos.Y:=XMLConfig.GetValue(Path+'CursorPosY',0);
   EditorIndex:=XMLConfig.GetValue(Path+'EditorIndex',-1);
@@ -1398,6 +1416,9 @@ end.
 
 {
   $Log$
+  Revision 1.25  2001/06/27 21:43:23  lazarus
+  MG: added project bookmark support
+
   Revision 1.24  2001/06/04 09:32:17  lazarus
   MG: fixed bugs and cleaned up messages
 

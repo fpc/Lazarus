@@ -889,7 +889,6 @@ begin
   with Message do
   begin
     ShiftState := KeyDataToShiftState(KeyData);
-    ShiftState := [];
     if not (csNoStdEvents in ControlStyle) 
     then begin
       KeyUp(CharCode, ShiftState);
@@ -1960,6 +1959,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2001/06/27 21:43:23  lazarus
+  MG: added project bookmark support
+
   Revision 1.33  2001/06/15 10:31:06  lazarus
   MG: set longstrings as default
 
