@@ -1540,6 +1540,8 @@ begin
   else
     AText:='Error while reading property'#13+E.Message;
   MessageDlg(ACaption,AText,mtError,[mbCancel],0);
+  if Writing then
+    LoadFromProperty;
 end;
 
 procedure TCustomPropertyLink.MapValues(Values, AliasStrings: TStrings;

@@ -9,7 +9,7 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="2"/>
+      <ActiveEditorIndexAtStart Value="1"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="exampleproject1"/>
@@ -24,7 +24,7 @@
         <UsageCount Value="29"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="74" Y="26"/>
+        <CursorPos X="73" Y="26"/>
         <EditorIndex Value="0"/>
         <Filename Value="example1.pas"/>
         <ComponentName Value="Form1"/>
