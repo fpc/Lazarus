@@ -1685,8 +1685,11 @@ begin
   if (LockOnChange(PgtkObject(Widget),0)>0) then exit;
   Mess.Msg := LM_CLICKED;
   Result:= DeliverMessage(Data, Mess) = 0;
-
+  {$ifDef GTK2}
+  result := False;
+  {$else}
   Result := True;
+  {$endIf}
 end;
 
 function gtkOpenDialogRowSelectCB(widget : PGtkWidget; row : gint;
@@ -1743,10 +1746,14 @@ var
    FontName : String;
    ALogFont  : TLogFont;
    // filedialog
-   cListRow : PGList;
    rowNum   : gint;
    fileInfo : PGChar;
+   {$IfDef GTK2}
+   fileList : PPgchar;
+   {$else}
+   cListRow : PGList;
    fileList : PGTKCList;
+   {$EndIf}
    DirName  : string;
    FileName : string;
    Files: TStringList;
@@ -1771,6 +1778,20 @@ begin
         Files.Clear;
         if not FileExists(FileName) then
           Files.Add(FileName);
+        {$IfDef GTK2}
+        fileList := gtk_file_selection_get_selections(PGtkFileSelection(FPointer));
+        rowNum := 0;
+        While FileList^ <> nil do
+        begin
+          fileInfo := FileList^;
+          if (AnsiString(fileInfo)<>'') and (Files.IndexOf(AnsiString(fileInfo))<0) then
+            Files.Add(AnsiString(fileInfo));
+          inc(FileList);
+          inc(rowNum);
+        end;
+        Dec(FileList, rowNum);
+        g_strfreev(fileList);
+        {$Else}
         fileList := PGtkCList(PGtkFileSelection(FPointer)^.file_list);
         rowNum := 0;
         cListRow := fileList^.row_list;
@@ -1788,6 +1809,7 @@ begin
           rowNum := rowNum + 1;
           cListRow := g_list_next(cListRow);
         end;
+        {$EndIf}
         if (Filename<>'') and (Files.IndexOf(Filename)<0) then
           Files.Add(Filename);
       end else begin
@@ -3163,6 +3185,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.200  2003/10/02 03:35:29  ajgenius
+  more fixes for GTK2, synedit now mostly-useable
+
   Revision 1.199  2003/10/02 01:18:38  ajgenius
   more callbacks fixes for gtk2, partly fix gtk2 CheckListBox
 

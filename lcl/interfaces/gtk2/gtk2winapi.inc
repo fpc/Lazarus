@@ -331,8 +331,8 @@ begin
   If (Handle <> 0) and (not GTK_WIDGET_DOUBLE_BUFFERED((PGTKWidget(Handle)))) then
   begin
     if PS.HDC <> 0 then begin
-      gdk_window_end_paint (TDeviceContext(PS.HDC).Drawable);
       gdk_window_thaw_updates(TDeviceContext(PS.HDC).Drawable);
+      gdk_window_end_paint (TDeviceContext(PS.HDC).Drawable);
     end;
   end;
 
@@ -827,6 +827,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2003/10/02 03:35:29  ajgenius
+  more fixes for GTK2, synedit now mostly-useable
+
   Revision 1.1  2003/09/22 20:08:56  ajgenius
   break GTK2 object and winapi into includes like the GTK interface
 
