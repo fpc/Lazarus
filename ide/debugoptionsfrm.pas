@@ -187,17 +187,11 @@ begin
 end;
 
 procedure TDebuggerOptionsForm.FetchDebuggerSpecificOptions;
-var
-  i: Integer;
 begin
-//  FPropertyEditorHook.LookupRoot := FCurDebuggerClass.GetProperties;
-  PropertyGrid.Clear;
   PropertyGrid.Selection.Clear;
-
-  if FCurDebuggerClass = nil then Exit;
-
-  // todo: use create properties to allow cancel
-  PropertyGrid.Selection.Add(FCurDebuggerClass.GetProperties);
+  if FCurDebuggerClass<>nil then begin
+    PropertyGrid.Selection.Add(FCurDebuggerClass.GetProperties);
+  end;
   PropertyGrid.BuildPropertyList;
 end;
 

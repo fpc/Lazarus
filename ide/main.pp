@@ -281,7 +281,7 @@ type
     procedure OnSrcNotebookShowSearchResultsView(Sender: TObject);
 
     // ObjectInspector + PropertyEditorHook events
-    procedure OIOnSelectComponents(Sender: TObject);
+    procedure OIOnSelectPersistents(Sender: TObject);
     procedure OIOnShowOptions(Sender: TObject);
     procedure OnPropHookGetMethods(TypeData:PTypeData; Proc:TGetStringProc);
     function OnPropHookMethodExists(const AMethodName:ShortString;
@@ -973,7 +973,7 @@ begin
   end;//with
 end;
 
-procedure TMainIDE.OIOnSelectComponents(Sender: TObject);
+procedure TMainIDE.OIOnSelectPersistents(Sender: TObject);
 begin
   TheControlSelection.AssignSelection(ObjectInspector1.Selection);
 end;
@@ -1201,7 +1201,7 @@ procedure TMainIDE.SetupObjectInspector;
 
 begin
   ObjectInspector1 := TObjectInspector.Create(Self);
-  ObjectInspector1.OnSelectComponentsInOI:=@OIOnSelectComponents;
+  ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
 
   GlobalDesignHook:=TPropertyEditorHook.Create;
@@ -8098,7 +8098,7 @@ begin
   // add component definitions to form source
   CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot);
 
-  ObjectInspector1.FillComponentComboBox;
+  ObjectInspector1.FillPersistentComboBox;
 end;
 
 procedure TMainIDE.OnDesignerComponentDeleted(Sender: TObject;
@@ -8108,7 +8108,7 @@ var
 begin
   CurDesigner:=TDesigner(Sender);
   if dfDestroyingForm in CurDesigner.Flags then exit;
-  ObjectInspector1.FillComponentComboBox;
+  ObjectInspector1.FillPersistentComboBox;
 end;
 
 procedure TMainIDE.OnDesignerRemoveComponent(Sender: TObject;
@@ -9927,7 +9927,7 @@ procedure TMainIDE.OnPropHookComponentRenamed(AComponent: TComponent);
 begin
   if (AComponent.Owner=nil) then
     FormEditor1.UpdateDesignerFormName(AComponent);
-  ObjectInspector1.FillComponentComboBox;
+  ObjectInspector1.FillPersistentComboBox;
 end;
 
 {-------------------------------------------------------------------------------
@@ -10265,6 +10265,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.694  2004/01/04 11:32:17  mattias
+  OI support for TPersistent, PropMeasuerHeight
+
   Revision 1.693  2004/01/04 03:53:35  marc
   * Changed TComponentSelectionList to TPersistentSelectionList
   + Added SSHdebugger property

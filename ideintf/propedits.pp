@@ -336,10 +336,10 @@ type
     procedure ListDrawValue(const AValue: ansistring; Index:integer;
                             ACanvas:TCanvas; const ARect: TRect;
                             AState: TPropEditDrawState); dynamic;
-    procedure PropMeasureHeight(const NewValue: ansistring;  ACanvas:TCanvas;
+    procedure PropMeasureHeight(const NewValue: ansistring;  ACanvas: TCanvas;
                                 var AHeight:Integer); dynamic;
-    procedure PropDrawName(ACanvas:TCanvas; const ARect:TRect;
-                           AState:TPropEditDrawState); dynamic;
+    procedure PropDrawName(ACanvas: TCanvas; const ARect:TRect;
+                           AState: TPropEditDrawState); dynamic;
     procedure PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
                             AState:TPropEditDrawState); dynamic;
     procedure UpdateSubProperties; virtual;
@@ -2316,7 +2316,7 @@ end;
 
 { these three procedures implement the default render behavior of the
   object inspector's property row. You don't need to override the measure
-  procedure if the default width or height don't need to be changed.  }
+  procedure if the default height don't need to be changed. }
 procedure TPropertyEditor.PropMeasureHeight(const NewValue:ansistring;
   ACanvas:TCanvas;  var AHeight:Integer);
 begin

@@ -144,13 +144,14 @@ type
     function GetBottom:integer;
     function IsReadOnly: boolean;
     function IsDisabled: boolean;
+    procedure MeasureHeight(ACanvas: TCanvas);
   public
     property Editor:TPropertyEditor read FEditor;
     property Top:integer read FTop write FTop;
     property Height:integer read FHeight write FHeight;
     property Bottom: integer read GetBottom;
     property Lvl:integer read FLvl;
-    property Name:string read FName;
+    property Name: string read FName;
     property Expanded:boolean read FExpanded;
     property Tree:TOIPropertyGrid read FTree;
     property Parent:TOIPropertyGridRow read FParent;
@@ -309,8 +310,12 @@ type
   end;
 
   //============================================================================
-  TOnAddAvailableComponent = procedure(AComponent:TComponent;
-    var Allowed:boolean) of object;
+  
+  
+  { TObjectInspector }
+  
+  TOnAddAvailablePersistent = procedure(APersistent: TPersistent;
+    var Allowed: boolean) of object;
 
   TOIFlag = (
     oifRebuildPropListsNeeded
@@ -318,7 +323,7 @@ type
   TOIFlags = set of TOIFlag;
 
   TObjectInspector = class (TForm)
-    AvailCompsComboBox: TComboBox;
+    AvailPersistentComboBox: TComboBox;
     PairSplitter1: TPairSplitter;
     ComponentTree: TComponentTreeView;
     NoteBook: TNoteBook;
@@ -349,20 +354,20 @@ type
     FFlags: TOIFlags;
     FOnShowOptions: TNotifyEvent;
     FPropertyEditorHook:TPropertyEditorHook;
-    FOnAddAvailableComponent:TOnAddAvailableComponent;
-    FOnSelectComponentsInOI:TNotifyEvent;
+    FOnAddAvailablePersistent: TOnAddAvailablePersistent;
+    FOnSelectPersistentsInOI: TNotifyEvent;
     FOnModified: TNotifyEvent;
     FShowComponentTree: boolean;
     FUpdateLock: integer;
-    FUpdatingAvailComboBox:boolean;
+    FUpdatingAvailComboBox: boolean;
     FUsePairSplitter: boolean;
-    function ComponentToString(c:TComponent):string;
+    function PersistentToString(APersistent: TPersistent): string;
     procedure SetComponentTreeHeight(const AValue: integer);
     procedure SetDefaultItemHeight(const AValue: integer);
     procedure SetOnShowOptions(const AValue: TNotifyEvent);
-    procedure SetPropertyEditorHook(NewValue:TPropertyEditorHook);
-    procedure SetSelection(const ASelection:TPersistentSelectionList);
-    procedure AddComponentToList(AComponent:TComponent; List: TStrings);
+    procedure SetPropertyEditorHook(NewValue: TPropertyEditorHook);
+    procedure SetSelection(const ASelection: TPersistentSelectionList);
+    procedure AddPersistentToList(APersistent: TPersistent; List: TStrings);
     procedure HookLookupRootChange;
     procedure OnGridModified(Sender: TObject);
     procedure SetAvailComboBoxText;
@@ -378,7 +383,7 @@ type
     procedure RefreshSelection;
     procedure RefreshPropertyValues;
     procedure RebuildPropertyLists;
-    procedure FillComponentComboBox;
+    procedure FillPersistentComboBox;
     procedure BeginUpdate;
     procedure EndUpdate;
     function GetActivePropertyGrid: TOIPropertyGrid;
@@ -389,10 +394,10 @@ type
                                         write SetDefaultItemHeight;
     property Selection: TPersistentSelectionList
                                         read FSelection write SetSelection;
-    property OnAddAvailComponent: TOnAddAvailableComponent
-                   read FOnAddAvailableComponent write FOnAddAvailableComponent;
-    property OnSelectComponentsInOI: TNotifyEvent
-                       read FOnSelectComponentsInOI write FOnSelectComponentsInOI;
+    property OnAddAvailPersistent: TOnAddAvailablePersistent
+                 read FOnAddAvailablePersistent write FOnAddAvailablePersistent;
+    property OnSelectPersistentsInOI: TNotifyEvent
+                   read FOnSelectPersistentsInOI write FOnSelectPersistentsInOI;
     property PropertyEditorHook: TPropertyEditorHook
                            read FPropertyEditorHook write SetPropertyEditorHook;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
@@ -423,7 +428,7 @@ end;
 { TOIPropertyGrid }
 
 constructor TOIPropertyGrid.CreateWithParams(AnOwner:TComponent;
-  APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds;
+  APropertyEditorHook:TPropertyEditorHook; TypeFilter:TTypeKinds;
   DefItemHeight: integer);
 begin
   inherited Create(AnOwner);
@@ -1543,8 +1548,10 @@ procedure TOIPropertyGrid.SetItemsTops;
 // set indices of all rows
 var a,scrollmax:integer;
 begin
-  for a:=0 to FRows.Count-1 do
+  for a:=0 to FRows.Count-1 do begin
     Rows[a].Index:=a;
+    Rows[a].MeasureHeight(Canvas);
+  end;
   if FRows.Count>0 then
     Rows[0].Top:=0;
   for a:=1 to FRows.Count-1 do
@@ -1552,7 +1559,8 @@ begin
   if FRows.Count>0 then
     scrollmax:=Rows[FRows.Count-1].Bottom-Height
   else
-    scrollmax:=10;
+    scrollmax:=0;
+  // always show something
   if scrollmax<10 then scrollmax:=10;
 end;
 
@@ -1794,8 +1802,8 @@ end;
 
 { TOIPropertyGridRow }
 
-constructor TOIPropertyGridRow.Create(PropertyTree:TOIPropertyGrid;
-PropEditor:TPropertyEditor;  ParentNode:TOIPropertyGridRow);
+constructor TOIPropertyGridRow.Create(PropertyTree: TOIPropertyGrid;
+  PropEditor:TPropertyEditor; ParentNode:TOIPropertyGridRow);
 begin
   inherited Create;
   // tree pointer
@@ -1964,6 +1972,12 @@ begin
     end;
     ParentRow:=ParentRow.Parent;
   end;
+end;
+
+procedure TOIPropertyGridRow.MeasureHeight(ACanvas: TCanvas);
+begin
+  FHeight:=FTree.DefaultItemHeight;
+  Editor.PropMeasureHeight(Name,ACanvas,FHeight);
 end;
 
 //==============================================================================
@@ -2243,10 +2257,10 @@ begin
 
   PopupMenu:=MainPopupMenu;
 
-  // combobox at top (filled with available components)
-  AvailCompsComboBox := TComboBox.Create (Self);
-  with AvailCompsComboBox do begin
-    Name:='AvailCompsComboBox';
+  // combobox at top (filled with available persistents)
+  AvailPersistentComboBox := TComboBox.Create (Self);
+  with AvailPersistentComboBox do begin
+    Name:='AvailPersistentComboBox';
     Parent:=Self;
     Style:=csDropDown;
     Text:='';
@@ -2303,7 +2317,7 @@ begin
     if (FPropertyEditorHook<>nil) and (FPropertyEditorHook.LookupRoot<>nil)
     and (FPropertyEditorHook.LookupRoot is TComponent) then
       FSelection.Add(TComponent(FPropertyEditorHook.LookupRoot));
-    FillComponentComboBox;
+    FillPersistentComboBox;
     PropertyGrid.PropertyEditorHook:=FPropertyEditorHook;
     EventGrid.PropertyEditorHook:=FPropertyEditorHook;
     ComponentTree.PropertyEditorHook:=FPropertyEditorHook;
@@ -2311,9 +2325,12 @@ begin
   end;
 end;
 
-function TObjectInspector.ComponentToString(c: TComponent): string;
+function TObjectInspector.PersistentToString(APersistent: TPersistent): string;
 begin
-  Result:=c.GetNamePath+': '+c.ClassName;
+  if APersistent is TComponent then
+    Result:=TComponent(APersistent).GetNamePath+': '+APersistent.ClassName
+  else
+    Result:=APersistent.ClassName;
 end;
 
 procedure TObjectInspector.SetComponentTreeHeight(const AValue: integer);
@@ -2348,26 +2365,28 @@ begin
   ShowOptionsPopupMenuItem.Visible:=FOnShowOptions<>nil;
 end;
 
-procedure TObjectInspector.AddComponentToList(AComponent: TComponent;
+procedure TObjectInspector.AddPersistentToList(APersistent: TPersistent;
   List: TStrings);
-var Allowed:boolean;
+var
+  Allowed: boolean;
 begin
-  if csDestroying in AComponent.ComponentState then exit;
+  if (APersistent is TComponent)
+  and (csDestroying in TComponent(APersistent).ComponentState) then exit;
   Allowed:=true;
-  if Assigned(FOnAddAvailableComponent) then
-    FOnAddAvailableComponent(AComponent,Allowed);
+  if Assigned(FOnAddAvailablePersistent) then
+    FOnAddAvailablePersistent(APersistent,Allowed);
   if Allowed then
-    List.AddObject(ComponentToString(AComponent),AComponent);
+    List.AddObject(PersistentToString(APersistent),APersistent);
 end;
 
 procedure TObjectInspector.HookLookupRootChange;
 begin
   PropertyGrid.PropEditLookupRootChange;
   EventGrid.PropEditLookupRootChange;
-  FillComponentComboBox;
+  FillPersistentComboBox;
 end;
 
-procedure TObjectInspector.FillComponentComboBox;
+procedure TObjectInspector.FillPersistentComboBox;
 var a:integer;
   Root:TComponent;
   OldText:AnsiString;
@@ -2382,29 +2401,30 @@ begin
   NewList:=TStringList.Create;
   try
     if (FPropertyEditorHook<>nil)
-    and (FPropertyEditorHook.LookupRoot<>nil)
-    and (FPropertyEditorHook.LookupRoot is TComponent) then begin
-      Root:=TComponent(FPropertyEditorHook.LookupRoot);
-      AddComponentToList(Root,NewList);
+    and (FPropertyEditorHook.LookupRoot<>nil) then begin
+      AddPersistentToList(FPropertyEditorHook.LookupRoot,NewList);
+      if FPropertyEditorHook.LookupRoot is TComponent then begin
+        Root:=TComponent(FPropertyEditorHook.LookupRoot);
   //writeln('[TObjectInspector.FillComponentComboBox] B  ',Root.Name,'  ',Root.ComponentCount);
-        for a:=0 to TComponent(Root).ComponentCount-1 do
-          AddComponentToList(TComponent(Root).Components[a],NewList);
+        for a:=0 to Root.ComponentCount-1 do
+          AddPersistentToList(Root.Components[a],NewList);
+      end;
     end;
 
-    if AvailCompsComboBox.Items.Equals(NewList) then exit;
+    if AvailPersistentComboBox.Items.Equals(NewList) then exit;
 
-    AvailCompsComboBox.Items.BeginUpdate;
-    if AvailCompsComboBox.Items.Count=1 then
-      OldText:=AvailCompsComboBox.Text
+    AvailPersistentComboBox.Items.BeginUpdate;
+    if AvailPersistentComboBox.Items.Count=1 then
+      OldText:=AvailPersistentComboBox.Text
     else
       OldText:='';
-    AvailCompsComboBox.Items.Assign(NewList);
-    AvailCompsComboBox.Items.EndUpdate;
-    a:=AvailCompsComboBox.Items.IndexOf(OldText);
+    AvailPersistentComboBox.Items.Assign(NewList);
+    AvailPersistentComboBox.Items.EndUpdate;
+    a:=AvailPersistentComboBox.Items.IndexOf(OldText);
     if (OldText='') or (a<0) then
       SetAvailComboBoxText
     else
-      AvailCompsComboBox.ItemIndex:=a;
+      AvailPersistentComboBox.ItemIndex:=a;
 
   finally
     NewList.Free;
@@ -2506,14 +2526,14 @@ procedure TObjectInspector.AvailComboBoxCloseUp(Sender:TObject);
 var NewComponent,Root:TComponent;
   a:integer;
 
-  procedure SetSelectedComponent(c:TComponent);
+  procedure SetSelectedPersistent(c:TPersistent);
   begin
     if (FSelection.Count=1) and (FSelection[0]=c) then exit;
     FSelection.Clear;
     FSelection.Add(c);
     RefreshSelection;
-    if Assigned(FOnSelectComponentsInOI) then
-      FOnSelectComponentsInOI(Self);
+    if Assigned(FOnSelectPersistentsInOI) then
+      FOnSelectPersistentsInOI(Self);
   end;
 
 // AvailComboBoxChange
@@ -2521,16 +2541,20 @@ begin
   if FUpdatingAvailComboBox then exit;
   if (FPropertyEditorHook=nil) or (FPropertyEditorHook.LookupRoot=nil) then
     exit;
-  if not (FPropertyEditorHook.LookupRoot is TComponent) then
+  if not (FPropertyEditorHook.LookupRoot is TComponent) then begin
+    // not a TComponent => no childs => select always only the root
+    SetSelectedPersistent(FPropertyEditorHook.LookupRoot);
     exit;
+  end;
   Root:=TComponent(FPropertyEditorHook.LookupRoot);
-  if (AvailCompsComboBox.Text=ComponentToString(Root)) then begin
-    SetSelectedComponent(Root);
+  if (AvailPersistentComboBox.Text=PersistentToString(Root)) then begin
+    SetSelectedPersistent(Root);
   end else begin
     for a:=0 to Root.ComponentCount-1 do begin
       NewComponent:=Root.Components[a];
-      if AvailCompsComboBox.Text=ComponentToString(NewComponent) then begin
-        SetSelectedComponent(NewComponent);
+      if AvailPersistentComboBox.Text=PersistentToString(NewComponent) then
+      begin
+        SetSelectedPersistent(NewComponent);
         break;
       end;
     end;
@@ -2543,8 +2567,8 @@ begin
   if FSelection.IsEqual(ComponentTree.Selection) then exit;
   Fselection.Assign(ComponentTree.Selection);
   RefreshSelection;
-  if Assigned(FOnSelectComponentsInOI) then
-    FOnSelectComponentsInOI(Self);
+  if Assigned(FOnSelectPersistentsInOI) then
+    FOnSelectPersistentsInOI(Self);
 end;
 
 procedure TObjectInspector.ObjectInspectorResize(Sender: TObject);
@@ -2591,10 +2615,13 @@ end;
 procedure TObjectInspector.SetAvailComboBoxText;
 begin
   case FSelection.Count of
-    1: AvailCompsComboBox.Text:=ComponentToString(FSelection[0]);
-    0: AvailCompsComboBox.Text:='';
+    0: // none selected
+       AvailPersistentComboBox.Text:='';
+    1: // single selection
+       AvailPersistentComboBox.Text:=PersistentToString(FSelection[0]);
   else
-    AvailCompsComboBox.Text:=Format(oisItemsSelected, [FSelection.Count]);
+    // multi selection
+    AvailPersistentComboBox.Text:=Format(oisItemsSelected, [FSelection.Count]);
   end;
 end;
 
@@ -2617,7 +2644,7 @@ begin
     PairSplitter1.Visible:=false;
   DestroyNoteBook;
   ComponentTree.Visible:=false;
-  AvailCompsComboBox.Visible:=false;
+  AvailPersistentComboBox.Visible:=false;
   // rebuild controls
   if FUsePairSplitter and FShowComponentTree then begin
     CreatePairSplitter;
@@ -2633,7 +2660,7 @@ begin
     end;
   end;
   ComponentTree.Visible:=FShowComponentTree;
-  AvailCompsComboBox.Visible:=not FShowComponentTree;
+  AvailPersistentComboBox.Visible:=not FShowComponentTree;
   CreateNoteBook;
   EndUpdate;
 end;
