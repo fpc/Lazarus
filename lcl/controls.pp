@@ -1160,7 +1160,7 @@ type
                                        AsLast: boolean);
     procedure RemoveHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent);
   public
-    // standard properties, which should be supported by all descendents
+    // standard properties, which should be supported by all descendants
     property Action: TBasicAction read GetAction write SetAction;
     property Align: TAlign read FAlign write SetAlign;
     property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored;
@@ -2600,6 +2600,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.260  2004/12/23 00:33:43  mattias
+  fixed crash on readonly projects
+
   Revision 1.259  2004/12/22 23:54:20  mattias
   started TControl.AnchorSide
 

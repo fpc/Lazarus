@@ -380,7 +380,6 @@ type
     fTargetFileExt: String;
     fUnitList: TList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
-    xmlconfig: TXMLConfig;
     function GetFirstAutoRevertLockedUnit: TUnitInfo;
     function GetFirstLoadedUnit: TUnitInfo;
     function GetFirstPartOfProject: TUnitInfo;
@@ -1173,7 +1172,6 @@ begin
   inherited Create(ProjectDescription);
 
   Assert(False, 'Trace:Project Class Created');
-  xmlconfig := nil;
 
   //fProjectType:=TheProjectType;
 
@@ -1209,7 +1207,6 @@ begin
   fDestroying:=true;
   Clear;
   FreeThenNil(fBookmarks);
-  FreeThenNil(xmlconfig);
   FreeThenNil(fUnitList);
   FreeThenNil(fJumpHistory);
   FreeThenNil(fPublishOptions);
@@ -1228,6 +1225,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
 var
   confPath: String;
   Path: String;
+  xmlconfig: TXMLConfig;
 
   procedure SaveFlags;
   var f: TProjectFlag;
@@ -1368,7 +1366,10 @@ begin
           mtError,[mbRetry,mbAbort],0);
       end;
     end;
-    xmlconfig.Free;
+    try
+      xmlconfig.Free;
+    except
+    end;
     xmlconfig:=nil;
   until Result<>mrRetry;
 end;
@@ -1400,6 +1401,7 @@ var
   OldSrcPath: String;
   Path: String;
   OldProjectType: TOldProjectType;
+  xmlconfig: TXMLConfig;
 
   procedure LoadCompilerOptions;
   var
@@ -1541,7 +1543,10 @@ begin
     finally
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
       fPathDelimChanged:=false;
-      xmlconfig.Free;
+      try
+        xmlconfig.Free;
+      except
+      end;
       xmlconfig:=nil;
     end;
   finally
@@ -1653,8 +1658,6 @@ procedure TProject.Clear;
 var i:integer;
 begin
   BeginUpdate(true);
-
-  FreeThenNil(xmlconfig);
 
   // break and free removed dependencies
   while FFirstRemovedDependency<>nil do
@@ -3129,6 +3132,9 @@ end.
 
 {
   $Log$
+  Revision 1.172  2004/12/23 00:33:43  mattias
+  fixed crash on readonly projects
+
   Revision 1.171  2004/12/13 16:43:37  mattias
   fixed loading project flags and added RTTI example for readonly properties
 
