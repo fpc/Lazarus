@@ -369,12 +369,18 @@ begin
   else begin
     gdk_region_get_clipbox(RGN,@aRect);
     EmptyRGN:=gdk_region_new;
+    {$IFDEF GTK2}
+    SimpleRGN:=EmptyRGN;
+    gdk_region_union_with_rect(SimpleRGN,@aRect);
+    {$ELSE}
     SimpleRGN:=gdk_region_union_with_rect(EmptyRGN,@aRect);
+    {$ENDIF}
     if gdk_region_equal(SimpleRGN, RGN) then
       Result := SIMPLEREGION
     else
       Result := COMPLEXREGION;
-    gdk_region_destroy(SimpleRGN);
+    if SimpleRGN<>EmptyRGN then
+      gdk_region_destroy(SimpleRGN);
     gdk_region_destroy(EmptyRGN);
   end;
 end;
@@ -405,6 +411,11 @@ begin
 end;
 
 function CopyGDKRegion(RGN: PGDKRegion): PGDKRegion;
+{$IFDEF GTK2}
+begin
+  Result:=gdk_region_copy(RGN);
+end;
+{$ELSE}
 var
   EmptyRegion: PGdkRegion;
 begin
@@ -412,6 +423,7 @@ begin
   Result := gdk_regions_union(RGN, EmptyRegion);
   gdk_region_destroy(EmptyRegion);
 end;
+{$ENDIF}
 
 function GDKRegionAsString(RGN: PGDKRegion): string;
 var
@@ -426,16 +438,22 @@ end;
 
 function CreateRectGDKRegion(const ARect: TRect): PGDKRegion;
 var
+  {$IFNDEF Gtk2}
   EmptyRegion: PGdkRegion;
+  {$ENDIF}
   GDkRect: TGDKRectangle;
 begin
-  EmptyRegion := gdk_region_new;
   GDkRect.x:=ARect.Left;
   GDkRect.y:=ARect.Top;
   GDkRect.Width:=ARect.Right-ARect.Left;
   GDkRect.Height:=ARect.Bottom-ARect.Top;
+  {$IFDEF GTK2}
+  Result:=gdk_region_rectangle(@GDKRect);
+  {$ELSE}
+  EmptyRegion := gdk_region_new;
   Result := gdk_region_union_with_rect(EmptyRegion,@GDkRect);
   gdk_region_destroy(EmptyRegion);
+  {$ENDIF}
 end;
 
 Procedure FreeGDIColor(GDIColor: PGDIColor);
@@ -4276,6 +4294,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.189  2003/08/27 21:14:42  mattias
+  fixed a few things for gtk2 intf
+
   Revision 1.188  2003/07/21 23:43:32  marc
   * Fixed radiogroup menuitems
 
