@@ -17,32 +17,6 @@
  *                                                                           *
  *****************************************************************************
 }
-{------------------------------------------------------------------------------
-  Method: TCustomMemo.Append
-  Params: 
-  Returns: 
-
- ------------------------------------------------------------------------------}
-procedure TCustomMemo.Append(Value : String);
-begin
-//TODO: Custommemo.append
-end;
-
-{------------------------------------------------------------------------------
-  Method: TCustomMemo.SetLines
-  Params: 
-  Returns: 
-
- ------------------------------------------------------------------------------}
-procedure TCustomMEmo.SetLines(Value : TStrings);
-begin
-   if Value <> nil then
-   begin
-      Assert(False, 'Trace:Assigning Lines');
-      FLines.Assign(Value);
-      Assert(False, 'Trace:Assigned Lines');
-   end;
-end;
 
 {------------------------------------------------------------------------------
   Method: TCustomMemo.Create
@@ -55,6 +29,8 @@ constructor TCustomMemo.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csMemo;
+  Width:= 185;
+  Height:= 89;
   FWordWrap := True;
   FFont := TFont.Create;
   FLines := TMemoStrings.Create(Self);
@@ -75,15 +51,58 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TCustomMemo.Append
+  Params: 
+  Returns: 
+
+ ------------------------------------------------------------------------------}
+procedure TCustomMemo.Append(const Value : String);
+begin
+  Lines.Add(Value);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomMemo.SetLines
+  Params: 
+  Returns: 
+
+ ------------------------------------------------------------------------------}
+procedure TCustomMemo.SetLines(Value : TStrings);
+begin
+  if Value <> nil then
+  begin
+    Assert(False, 'Trace:Assigning Lines');
+    FLines.Assign(Value);
+    Assert(False, 'Trace:Assigned Lines');
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TCustomMemo.SetWordWrap
   Params: 
   Returns: 
 
  ------------------------------------------------------------------------------}
-procedure TCustomMemo.SetWordWrap(Value : Boolean);
+procedure TCustomMemo.SetScrollbars(const Value : TScrollStyle);
 begin
-   FWordWrap := Value;
-//TODO:Call sendmessage
+  if Value <> FScrollbars then begin
+    FScrollbars:= Value;
+    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomMemo.SetWordWrap
+  Params: 
+  Returns: 
+
+ ------------------------------------------------------------------------------}
+procedure TCustomMemo.SetWordWrap(const Value : boolean);
+begin
+  if Value <> FWordWrap then begin
+    FWordWrap := Value;
+    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+  end;    
 end;
 
 // included by stdctrls.pp
@@ -91,6 +110,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/09/05 10:12:07  lazarus
+  New dialog for multiline caption of TCustomLabel.
+  Prettified TStrings property editor.
+  Memo now has automatic scrollbars (not fully working), WordWrap and Scrollbars property
+  Removed saving of old combo text (it broke things and is not needed). Cleanups.
+
   Revision 1.6  2002/05/10 06:05:52  lazarus
   MG: changed license to LGPL
 

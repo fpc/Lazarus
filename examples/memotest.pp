@@ -185,12 +185,12 @@ end;
 
 procedure TMemoTestForm.Button5Click(Sender: TObject);
 begin
-  Memo1.Lines.Add(Edit1.Text);
+  Memo1.Append(Edit1.Text);
 end;
 
 procedure TMemoTestForm.Button6Click(Sender: TObject);
 begin
-  Memo2.Lines.Add(Edit1.Text);
+  Memo2.Append(Edit1.Text);
 end;
 
 begin

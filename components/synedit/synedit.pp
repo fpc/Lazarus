@@ -1186,7 +1186,7 @@ end;
 procedure TCustomSynEdit.CreateParams(var Params: TCreateParams);
 const
   ScrollBar: array[TScrollStyle] of DWORD = (0, WS_HSCROLL, WS_VSCROLL,
-    WS_HSCROLL or WS_VSCROLL);
+    WS_HSCROLL or WS_VSCROLL, WS_HSCROLL, WS_VSCROLL, WS_HSCROLL or WS_VSCROLL);
   BorderStyles: array[TBorderStyle] of DWORD = (0, WS_BORDER);
   ClassStylesOff = CS_VREDRAW or CS_HREDRAW;
 begin
