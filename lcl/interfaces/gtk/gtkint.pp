@@ -49,7 +49,7 @@ uses
   InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
   glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals, 
   LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType, 
-  GraphicsMath;
+  GraphMath;
 
 type
   TgtkObject = class(TInterfaceBase)
@@ -171,7 +171,7 @@ type
   public
     constructor Create; 
     destructor Destroy; override;
-    function  GetText(Sender: TControl; var Text: String): Boolean; override;
+    function  GetText(Sender: TComponent; var Text: String): Boolean; override;
     procedure SetLabel(Sender : TObject; Data : Pointer); virtual;
     function  IntSendMessage3(LM_Message : Integer; Sender : TObject;
                               data : pointer) : integer; override;
@@ -268,6 +268,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.95  2002/10/26 15:15:50  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.94  2002/10/24 22:10:39  lazarus
   AJ: More changes for better code reuse between gnome & gtk interfaces
 
