@@ -20,7 +20,8 @@ unit GTKGLAreaControl;
 interface
 
 uses
-  Classes, SysUtils, LCLType, LCLIntf, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF},
+  Classes, SysUtils, LCLProc, LCLType, LCLIntf,
+  {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF},
   Forms, Controls, Graphics, LMessages, InterfaceBase, WSLCLClasses, WSControls,
   LResources, GTKInt, Gtk, NVGL,
   {$IFDEF UseGtkGlAreaLib}
@@ -299,7 +300,7 @@ begin
   end;
   // recreate handle if needed
   if HandleAllocated and (not (csDesigning in ComponentState)) then
-    ReCreateWnd;
+    ReCreateWnd(Self);
 end;
 
 function TCustomGTKGLAreaControl.GetSharingAreas(Index: integer
@@ -312,15 +313,16 @@ procedure TCustomGTKGLAreaControl.WMPaint(var Message: TLMPaint);
 begin
   Include(FControlState, csCustomPaint);
   inherited WMPaint(Message);
+  //debugln('TCustomGTKGLAreaControl.WMPaint A ',dbgsName(Self),' ',dbgsName(FCanvas));
   if (csDesigning in ComponentState) and (FCanvas<>nil) then begin
     with FCanvas do begin
       Brush.Color:=clLtGray;
       Pen.Color:=clRed;
-      Rectangle(0,0,Width-1,Height-1);
+      Rectangle(0,0,Self.Width-1,Self.Height-1);
       MoveTo(0,0);
-      LineTo(Width,Height);
-      MoveTo(0,Height);
-      LineTo(Width,0);
+      LineTo(Self.Width,Self.Height);
+      MoveTo(0,Self.Height);
+      LineTo(Self.Width,0);
     end;
   end else begin
     Paint;
@@ -356,6 +358,7 @@ var
   NewWidget: Pointer;
   Area: TCustomGTKGLAreaControl;
 begin
+  //debugln('TWSGTKGLAreaControl.CreateHandle A AWinControl=',dbgsName(AWinControl),' csDesigning=',dbgs(csDesigning in AWinControl.ComponentState));
   if csDesigning in AWinControl.ComponentState then
     Result:=inherited CreateHandle(AWinControl,AParams)
   else begin

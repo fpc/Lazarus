@@ -1,6 +1,5 @@
-{  This file was automatically created by Lazarus. Do not edit!
-  This source is only used to compile and install
-  the package GTKOpenGL 1.0.
+{ This file was automatically created by Lazarus. Do not edit!
+This source is only used to compile and install the package.
  }
 
 unit GTKOpenGL; 
@@ -8,8 +7,7 @@ unit GTKOpenGL;
 interface
 
 uses
-  GTKGLAreaControl, GTKGLArea_Int, OpenGLGtkWidget, nvGL, nvGLX, 
-    LazarusPackageIntf; 
+  GTKGLAreaControl, nvGL, nvGLX, LazarusPackageIntf; 
 
 implementation
 

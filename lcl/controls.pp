@@ -2048,7 +2048,8 @@ begin
 
   if not AWinControl.HandleAllocated
   then begin
-    // since the interface should only call us, the handle is always created
+    // since only the interface (or custom interface dependent controls) should
+    // call us, the handle is always created
     DebugLN('WARNING: obsolete call to RecreateWnd for %s', [AWinControl.ClassName]);
   end;
 
@@ -2889,6 +2890,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.294  2005/04/04 11:43:36  mattias
+  fixed compilation and designtime drawing of gtkglarea
+
   Revision 1.293  2005/04/01 19:10:42  micha
   make method Hide a member of TControl (fixes bug 707)
 

@@ -4,7 +4,7 @@
     <Name Value="GTKOpenGL"/>
     <Author Value="Mattias Gaertner, Satan"/>
     <CompilerOptions>
-      <Version Value="4"/>
+      <Version Value="5"/>
       <SearchPaths>
         <UnitOutputDirectory Value="lib/"/>
         <LCLWidgetType Value="gtk"/>
@@ -32,10 +32,12 @@ Please make sure that you link to the right libgtkgl. If you accidently link to 
       </Item2>
       <Item3>
         <Filename Value="gtkglarea_int.pp"/>
+        <Type Value="Text"/>
         <UnitName Value="GTKGLArea_Int"/>
       </Item3>
       <Item4>
         <Filename Value="openglgtkwidget.pas"/>
+        <Type Value="Text"/>
         <UnitName Value="OpenGLGtkWidget"/>
       </Item4>
       <Item5>
