@@ -570,7 +570,7 @@ begin
   NewPage.Caption:=NewName;
   NewPage.Name:=NewName;
   NoteBook.PageIndex:=Index;
-  Hook.ComponentAdded(NewPage,true);
+  Hook.PersistentAdded(NewPage,true);
   Modified;
 end;
 
@@ -605,7 +605,7 @@ begin
   if (OldIndex>=0) and (OldIndex<Notebook.PageCount) then begin
     if not GetHook(Hook) then exit;
     PageComponent:=TComponent(NoteBook.PageList[OldIndex]);
-    Hook.DeleteComponent(PageComponent);
+    Hook.DeletePersistent(PageComponent);
   end;
 end;
 
@@ -893,7 +893,7 @@ begin
   NewToolButton.Name:=NewName;
   NewToolButton.Style:=NewStyle;
   NewToolButton.Parent:=CurToolBar;
-  Hook.ComponentAdded(NewToolButton,true);
+  Hook.PersistentAdded(NewToolButton,true);
   Modified;
 end;
 

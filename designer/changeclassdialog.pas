@@ -39,8 +39,6 @@ uses
   Buttons, AVGLvlTree, LazarusIDEStrConsts, ComponentReg;
 
 type
-  TPersistentClass = class of TPersistent;
-
   TChangeClassDlg = class(TForm)
     NewClassComboBox: TComboBox;
     NewAncestorGroupBox: TGroupBox;

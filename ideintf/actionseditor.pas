@@ -70,8 +70,8 @@ type
     FActionList: TActionList;
     FDesigner: TComponentEditorDesigner;
   protected
-    procedure OnComponentDeleting(AComponent: TComponent);
-    procedure OnComponentAdded(AComponent: TComponent; Select: boolean);
+    procedure OnPersistentDeleting(APersistent: TPersistent);
+    procedure OnPersistentAdded(APersistent: TPersistent; Select: boolean);
     procedure OnComponentRenamed(AComponent: TComponent);
     procedure CreateActionListEditor; // create form
     function GetSelectedAction: TContainedAction;
@@ -146,7 +146,7 @@ begin
 
   NewAction.ActionList:=FActionList;
 
-  FDesigner.PropertyEditorHook.ComponentAdded(NewAction,true);
+  FDesigner.PropertyEditorHook.PersistentAdded(NewAction,true);
   FDesigner.Modified;
 //  writeln('Add done');
 end;
@@ -170,7 +170,7 @@ begin
   if assigned(OldAction) then
   begin
     try
-      FDesigner.PropertyEditorHook.ComponentDeleting(OldAction);
+      FDesigner.PropertyEditorHook.PersistentDeleting(OldAction);
       OldAction.Free;
     except
       on E: Exception do begin
@@ -222,13 +222,13 @@ begin
   FDesigner.SelectOnlyThisComponent(CurAction);
 end;
 
-procedure TActionListEditor.OnComponentDeleting(AComponent: TComponent);
+procedure TActionListEditor.OnPersistentDeleting(APersistent: TPersistent);
 var
   xIndex:Integer;
 begin
-  if (AComponent is TAction) then
+  if (APersistent is TAction) then
   begin
-    xIndex:=lstActionName.Items.IndexOf(AComponent.Name);
+    xIndex:=lstActionName.Items.IndexOf(TAction(APersistent).Name);
     if xIndex<0 then Exit; // action not showed in listbox (other category)
     lstActionName.Items.Delete(xIndex);
     if lstActionName.Items.Count=0 then
@@ -241,10 +241,10 @@ begin
   end;
 end;
 
-procedure TActionListEditor.OnComponentAdded(AComponent: TComponent;
+procedure TActionListEditor.OnPersistentAdded(APersistent: TPersistent;
   Select: boolean);
 begin
-  if (AComponent is TAction) then
+  if (APersistent is TAction) then
     // ToDo: only set update flag and do not rebuild everything on every change
     FillCategories;
 end;
@@ -338,8 +338,8 @@ begin
     SetBounds(130,48, 65 ,17);
   end;
 
-  GlobalDesignHook.AddHandlerComponentDeleting(@OnComponentDeleting);
-  GlobalDesignHook.AddHandlerComponentAdded(@OnComponentAdded);
+  GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
+  GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
   GlobalDesignHook.AddHandlerComponentRenamed(@OnComponentRenamed);
 end;
 

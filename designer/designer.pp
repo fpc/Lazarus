@@ -36,8 +36,8 @@ interface
 { $DEFINE VerboseDesignerDraw}
 
 uses
-  Classes, SysUtils, Math, LCLType, LCLIntf, Forms, Controls, LMessages,
-  GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
+  Classes, SysUtils, Math, LCLProc, LCLType, LCLIntf, LMessages,
+  Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
   LazarusIDEStrConsts, EnvironmentOpts, KeyMapping, ComponentReg,
   NonControlForms, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
   DesignerProcs, PropEdits, ComponentEditors, CustomFormEditor,
@@ -50,14 +50,14 @@ type
     var RegisteredComponent: TRegisteredComponent) of object;
   TOnSetDesigning = procedure(Sender: TObject; Component: TComponent;
     Value: boolean) of object;
-  TOnComponentAdded = procedure(Sender: TObject; Component: TComponent;
+  TOnPersistentAdded = procedure(Sender: TObject; APersistent: TPersistent;
     ComponentClass: TRegisteredComponent) of object;
   TOnPasteComponent = procedure(Sender: TObject; LookupRoot: TComponent;
     TxtCompStream: TStream; ParentControl: TWinControl;
     var NewComponent: TComponent) of object;
-  TOnRemoveComponent = procedure(Sender: TObject; Component: TComponent)
+  TOnRemovePersistent = procedure(Sender: TObject; APersistent: TPersistent)
     of object;
-  TOnComponentDeleted = procedure(Sender: TObject; Component: TComponent)
+  TOnPersistentDeleted = procedure(Sender: TObject; APersistent: TPersistent)
     of object;
   TOnGetNonVisualCompIconCanvas = procedure(Sender: TObject;
     AComponent: TComponent; var IconCanvas: TCanvas;
@@ -93,15 +93,15 @@ type
     FMirrorVerticalMenuItem: TMenuItem;
     FOnActivated: TNotifyEvent;
     FOnCloseQuery: TNotifyEvent;
-    FOnComponentAdded: TOnComponentAdded;
-    FOnComponentDeleted: TOnComponentDeleted;
+    FOnPersistentAdded: TOnPersistentAdded;
+    FOnPersistentDeleted: TOnPersistentDeleted;
     FOnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas;
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
     FOnModified: TNotifyEvent;
     FOnPasteComponent: TOnPasteComponent;
     FOnProcessCommand: TOnProcessCommand;
     FOnPropertiesChanged: TNotifyEvent;
-    FOnRemoveComponent: TOnRemoveComponent;
+    FOnRemovePersistent: TOnRemovePersistent;
     FOnRenameComponent: TOnRenameComponent;
     FOnSetDesigning: TOnSetDesigning;
     FOnShowOptions: TNotifyEvent;
@@ -149,8 +149,8 @@ type
     LastMouseMovePos: TPoint;
     PopupMenuComponentEditor: TBaseComponentEditor;
     LastFormCursor: TCursor;
-    DeletingComponents: TList;
-    IgnoreDeletingComponents: TList;
+    DeletingPersistent: TList;
+    IgnoreDeletingPersistent: TList;
 
     LastPaintSender: TControl;
 
@@ -165,11 +165,11 @@ type
     Procedure KeyUp(Sender: TControl; var TheMessage:TLMKEY);
     function  HandleSetCursor(var TheMessage: TLMessage): boolean;
 
-    // procedures for working with components
-    procedure DoDeleteSelectedComponents;
-    procedure DoDeleteComponent(AComponent: TComponent; FreeComponent: boolean);
-    procedure MarkComponentForDeletion(AComponent: TComponent);
-    function ComponentIsMarkedForDeletion(AComponent: TComponent): boolean;
+    // procedures for working with components and persistents
+    procedure DoDeleteSelectedPersistents;
+    procedure DoDeletePersistent(APersistent: TPersistent; FreeIt: boolean);
+    procedure MarkPersistentForDeletion(APersistent: TPersistent);
+    function PersistentIsMarkedForDeletion(APersistent: TPersistent): boolean;
     function GetSelectedComponentClass: TRegisteredComponent;
     Procedure NudgeControl(DiffX, DiffY: Integer);
     Procedure NudgeSize(DiffX, DiffY: Integer);
@@ -179,7 +179,7 @@ type
     procedure DoShowTabOrderEditor;
     procedure DoShowChangeClassDialog;
     procedure GiveComponentsNames;
-    procedure NotifyComponentAdded(AComponent: TComponent);
+    procedure NotifyPersistentAdded(APersistent: TPersistent);
 
     // popup menu
     procedure BuildPopupMenu;
@@ -239,7 +239,7 @@ type
     function IsDesignMsg(Sender: TControl;
                                   var TheMessage: TLMessage): Boolean; override;
     function UniqueName(const BaseName: string): string; override;
-    Procedure RemoveComponentAndChilds(AComponent: TComponent);
+    Procedure RemovePersistentAndChilds(APersistent: TPersistent);
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
     procedure ValidateRename(AComponent: TComponent;
@@ -261,10 +261,10 @@ type
     property LookupRoot: TComponent read FLookupRoot;
     property OnActivated: TNotifyEvent read FOnActivated write FOnActivated;
     property OnCloseQuery: TNotifyEvent read FOnCloseQuery write FOnCloseQuery;
-    property OnComponentAdded: TOnComponentAdded
-                                 read FOnComponentAdded write FOnComponentAdded;
-    property OnComponentDeleted: TOnComponentDeleted
-                             read FOnComponentDeleted write FOnComponentDeleted;
+    property OnPersistentAdded: TOnPersistentAdded
+                                 read FOnPersistentAdded write FOnPersistentAdded;
+    property OnPersistentDeleted: TOnPersistentDeleted
+                             read FOnPersistentDeleted write FOnPersistentDeleted;
     property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
                                             read FOnGetNonVisualCompIconCanvas
                                             write FOnGetNonVisualCompIconCanvas;
@@ -278,8 +278,8 @@ type
                                                  write FOnPasteComponent;
     property OnPropertiesChanged: TNotifyEvent
                            read FOnPropertiesChanged write FOnPropertiesChanged;
-    property OnRemoveComponent: TOnRemoveComponent
-                               read FOnRemoveComponent write FOnRemoveComponent;
+    property OnRemovePersistent: TOnRemovePersistent
+                             read FOnRemovePersistent write FOnRemovePersistent;
     property OnRenameComponent: TOnRenameComponent
                                read FOnRenameComponent write FOnRenameComponent;
     property OnSetDesigning: TOnSetDesigning
@@ -338,14 +338,15 @@ begin
 
   DDC:=TDesignerDeviceContext.Create;
   LastFormCursor:=crDefault;
-  DeletingComponents:=TList.Create;
-  IgnoreDeletingComponents:=TList.Create;
+  DeletingPersistent:=TList.Create;
+  IgnoreDeletingPersistent:=TList.Create;
 end;
 
 procedure TDesigner.DeleteFormAndFree;
 begin
   Include(FFlags,dfDestroyingForm);
-  TheFormEditor.DeleteControl(FLookupRoot,true);
+  if FLookupRoot is TComponent then
+    TheFormEditor.DeleteComponent(FLookupRoot,true);
   Free;
 end;
 
@@ -357,8 +358,8 @@ Begin
   FHintWIndow.Free;
   FHintTimer.Free;
   DDC.Free;
-  DeletingComponents.Free;
-  IgnoreDeletingComponents.Free;
+  DeletingPersistent.Free;
+  IgnoreDeletingPersistent.Free;
   Inherited Destroy;
 end;
 
@@ -392,11 +393,11 @@ begin
   end;
   i:=ControlSelection.Count-1;
   while (i>=0)
-  and ((ControlSelection[i].ParentInSelection)
-    or (not ControlSelection[i].IsTControl)
-    or (TControl(ControlSelection[i].Component).Parent=nil)) do dec(i);
+  and (   (ControlSelection[i].ParentInSelection)
+       or (not ControlSelection[i].IsTControl)
+       or (TControl(ControlSelection[i].Persistent).Parent=nil)) do dec(i);
   if i>=0 then
-    SelectOnlyThisComponent(TControl(ControlSelection[i].Component).Parent);
+    SelectOnlyThisComponent(TControl(ControlSelection[i].Persistent).Parent);
 end;
 
 function TDesigner.DoCopySelectionToClipboard: boolean;
@@ -418,7 +419,7 @@ function TDesigner.DoCopySelectionToClipboard: boolean;
         end;
 
         // check if not the top level component is selected
-        CurParent:=TControl(ControlSelection[i].Component).Parent;
+        CurParent:=TControl(ControlSelection[i].Persistent).Parent;
         if CurParent=nil then begin
           MessageDlg('Can not copy top level component.',
             'Copying a whole form is not implemented.',
@@ -450,12 +451,14 @@ function TDesigner.DoCopySelectionToClipboard: boolean;
   begin
     Result:=false;
     for i:=0 to ControlSelection.Count-1 do begin
+      if not ControlSelection[i].IsTComponent then continue;
+
       BinCompStream:=TMemoryStream.Create;
       TxtCompStream:=TMemoryStream.Create;
       try
         // write component binary stream
         try
-          CurComponent:=ControlSelection[i].Component;
+          CurComponent:=TComponent(ControlSelection[i].Persistent);
 
           Driver := TBinaryObjectWriter.Create(BinCompStream, 4096);
           Try
@@ -512,7 +515,7 @@ var
   AllComponentText: string;
 begin
   Result:=false;
-  if ControlSelection.Count=0 then exit;
+  if (ControlSelection.Count=0) then exit;
 
   // Because controls will be pasted on a single parent,
   // unselect all controls, that do not have the same parent
@@ -562,11 +565,11 @@ var
     if PasteParent<>nil then exit;
 
     for i:=0 to ControlSelection.Count-1 do begin
-      if (ControlSelection[i].Component is TWinControl)
+      if (ControlSelection[i].IsTWinControl)
       and (csAcceptsControls in
-           TWinControl(ControlSelection[i].Component).ControlStyle)
+           TWinControl(ControlSelection[i].Persistent).ControlStyle)
       and (not ControlSelection[i].ParentInSelection) then begin
-        PasteParent:=TWinControl(ControlSelection[i].Component);
+        PasteParent:=TWinControl(ControlSelection[i].Persistent);
         break;
       end;
     end;
@@ -642,7 +645,7 @@ var
       // set new nice bounds
       FindUniquePosition(NewComponent);
       // finish adding component
-      NotifyComponentAdded(NewComponent);
+      NotifyPersistentAdded(NewComponent);
       Modified;
     end;
 
@@ -718,7 +721,7 @@ procedure TDesigner.DoShowChangeClassDialog;
 begin
   if (ControlSelection.Count=1) and (not ControlSelection.LookupRootSelected)
   then
-    ShowChangeClassDialog(ControlSelection[0].Component);
+    ShowChangeClassDialog(ControlSelection[0].Persistent);
 end;
 
 procedure TDesigner.GiveComponentsNames;
@@ -734,12 +737,12 @@ begin
   end;
 end;
 
-procedure TDesigner.NotifyComponentAdded(AComponent: TComponent);
+procedure TDesigner.NotifyPersistentAdded(APersistent: TPersistent);
 begin
   try
     GiveComponentsNames;
-    if Assigned(FOnComponentAdded) then
-      FOnComponentAdded(Self,AComponent,nil);
+    if Assigned(FOnPersistentAdded) then
+      FOnPersistentAdded(Self,APersistent,nil);
   except
     on E: Exception do
       MessageDlg('Error:',E.Message,mtError,[mbOk],0);
@@ -748,7 +751,7 @@ end;
 
 procedure TDesigner.SelectOnlyThisComponent(AComponent:TComponent);
 begin
-  ControlSelection.AssignComponent(AComponent);
+  ControlSelection.AssignPersistent(AComponent);
 end;
 
 procedure TDesigner.CopySelection;
@@ -759,7 +762,7 @@ end;
 procedure TDesigner.CutSelection;
 begin
   if DoCopySelectionToClipboard then
-    DoDeleteSelectedComponents;
+    DoDeleteSelectedPersistents;
 end;
 
 function TDesigner.CanPaste: Boolean;
@@ -776,7 +779,7 @@ end;
 
 procedure TDesigner.DeleteSelection;
 begin
-  DoDeleteSelectedComponents;
+  DoDeleteSelectedPersistents;
 end;
 
 function TDesigner.InvokeComponentEditor(AComponent: TComponent;
@@ -822,16 +825,16 @@ begin
     case Command of
 
     ecSelectParentComponent:
-      SelectParentOfSelection;
+      if not ControlSelection.OnlyInvisiblePersistensSelected then
+        SelectParentOfSelection;
 
     ecCopyComponents:
-      CopySelection;
+      if not ControlSelection.OnlyInvisiblePersistensSelected then
+        CopySelection;
 
     ecCutComponents:
-      begin
-        CopySelection;
-        DeleteSelection;
-      end;
+      if not ControlSelection.OnlyInvisiblePersistensSelected then
+        CutSelection;
 
     ecPasteComponents:
       PasteSelection;
@@ -1091,7 +1094,7 @@ Begin
 
             if (CompIndex<0) then begin
               // select only this component
-              ControlSelection.AssignComponent(MouseDownComponent);
+              ControlSelection.AssignPersistent(MouseDownComponent);
             end else
               // sync with the interface
               ControlSelection.UpdateBounds;
@@ -1181,7 +1184,7 @@ var
     ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
     if not Assigned(ParentCI) then exit;
 
-    if not PropertyEditorHook.BeforeAddComponent(Self,
+    if not PropertyEditorHook.BeforeAddPersistent(Self,
                                      SelectedCompClass.ComponentClass,NewParent)
     then begin
       writeln('TDesigner.AddComponent ',
@@ -1220,7 +1223,7 @@ var
       FOnSetDesigning(Self,NewComponent,True);
 
     // tell IDE about the new component (e.g. add it to the source)
-    NotifyComponentAdded(NewComponent);
+    NotifyPersistentAdded(NewComponent);
 
     // creation completed
     // -> select new component
@@ -1281,7 +1284,7 @@ var
   begin
     if (not (ssShift in Shift)) then begin
       // select only the mouse down component
-      ControlSelection.AssignComponent(MouseDownComponent);
+      ControlSelection.AssignPersistent(MouseDownComponent);
       if (MouseDownClickCount=2)
       and (ControlSelection.SelectionForm=Form) then begin
         // Double Click -> invoke 'Edit' of the component editor
@@ -1516,7 +1519,8 @@ Begin
     Handled:=true;
     case TheMessage.CharCode of
     VK_DELETE:
-      DoDeleteSelectedComponents;
+      if not ControlSelection.OnlyInvisiblePersistensSelected then
+        DoDeleteSelectedPersistents;
 
     VK_UP:
       if (ssCtrl in Shift) then
@@ -1561,10 +1565,10 @@ Begin
   {$ENDIF}
 end;
 
-procedure TDesigner.DoDeleteSelectedComponents;
+procedure TDesigner.DoDeleteSelectedPersistents;
 var
   i: integer;
-  AComponent: TComponent;
+  APersistent: TPersistent;
 begin
   if (ControlSelection.Count=0) or (ControlSelection.SelectionForm<>Form) then
     exit;
@@ -1577,71 +1581,73 @@ begin
   end;
   // mark selected components for deletion
   for i:=0 to ControlSelection.Count-1 do
-    MarkComponentForDeletion(ControlSelection[i].Component);
+    MarkPersistentForDeletion(ControlSelection[i].Persistent);
   // clear selection by selecting the LookupRoot
   SelectOnlyThisComponent(FLookupRoot);
   // delete marked components
   Include(FFlags,dfDeleting);
-  if DeletingComponents.Count=0 then exit;
-  while DeletingComponents.Count>0 do begin
-    AComponent:=TComponent(DeletingComponents[DeletingComponents.Count-1]);
+  if DeletingPersistent.Count=0 then exit;
+  while DeletingPersistent.Count>0 do begin
+    APersistent:=TPersistent(DeletingPersistent[DeletingPersistent.Count-1]);
     //writeln('TDesigner.DoDeleteSelectedComponents A ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
-    RemoveComponentAndChilds(AComponent);
-    //writeln('TDesigner.DoDeleteSelectedComponents B ',DeletingComponents.IndexOf(AComponent));
+    RemovePersistentAndChilds(APersistent);
+    //writeln('TDesigner.DoDeleteSelectedComponents B ',DeletingPersistent.IndexOf(AComponent));
   end;
-  IgnoreDeletingComponents.Clear;
+  IgnoreDeletingPersistent.Clear;
   Exclude(FFlags,dfDeleting);
   Modified;
 end;
 
-procedure TDesigner.DoDeleteComponent(AComponent: TComponent;
-  FreeComponent: boolean);
+procedure TDesigner.DoDeletePersistent(APersistent: TPersistent;
+  FreeIt: boolean);
 var
   Hook: TPropertyEditorHook;
 begin
   //writeln('TDesigner.DoDeleteComponent A ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
   PopupMenuComponentEditor:=nil;
   // unselect component
-  ControlSelection.Remove(AComponent);
-  if TheFormEditor.FindComponent(AComponent)=nil then begin
+  ControlSelection.Remove(APersistent);
+  if (APersistent is TComponent)
+  and (TheFormEditor.FindComponent(TComponent(APersistent))=nil) then begin
     // thsi component is currently in the process of deletion or the component
     // was not properly created
     // -> do not call handlers and simply get rid of the rubbish
     //writeln('TDesigner.DoDeleteComponent UNKNOWN ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
-    if FreeComponent then
-      AComponent.Free;
+    if FreeIt then
+      APersistent.Free;
     // unmark component
-    DeletingComponents.Remove(AComponent);
-    IgnoreDeletingComponents.Remove(AComponent);
+    DeletingPersistent.Remove(APersistent);
+    IgnoreDeletingPersistent.Remove(APersistent);
     exit;
   end;
   // call RemoveComponent handler
-  if Assigned(FOnRemoveComponent) then
-    FOnRemoveComponent(Self,AComponent);
+  if Assigned(FOnRemovePersistent) then
+    FOnRemovePersistent(Self,APersistent);
   // call component deleting handlers
   Hook:=GetPropertyEditorHook;
   if Hook<>nil then
-    Hook.ComponentDeleting(AComponent);
+    Hook.PersistentDeleting(APersistent);
   // delete component
-  TheFormEditor.DeleteControl(AComponent,FreeComponent);
+  if APersistent is TComponent then
+    TheFormEditor.DeleteComponent(TComponent(APersistent),FreeIt);
   // unmark component
-  DeletingComponents.Remove(AComponent);
-  IgnoreDeletingComponents.Remove(AComponent);
+  DeletingPersistent.Remove(APersistent);
+  IgnoreDeletingPersistent.Remove(APersistent);
   // call ComponentDeleted handler
-  if Assigned(FOnComponentDeleted) then
-    FOnComponentDeleted(Self,AComponent);
+  if Assigned(FOnPersistentDeleted) then
+    FOnPersistentDeleted(Self,APersistent);
 end;
 
-procedure TDesigner.MarkComponentForDeletion(AComponent: TComponent);
+procedure TDesigner.MarkPersistentForDeletion(APersistent: TPersistent);
 begin
-  if (not ComponentIsMarkedForDeletion(AComponent)) then
-    DeletingComponents.Add(AComponent);
+  if (not PersistentIsMarkedForDeletion(APersistent)) then
+    DeletingPersistent.Add(APersistent);
 end;
 
-function TDesigner.ComponentIsMarkedForDeletion(AComponent: TComponent
+function TDesigner.PersistentIsMarkedForDeletion(APersistent: TPersistent
   ): boolean;
 begin
-  Result:=(DeletingComponents.IndexOf(AComponent)>=0);
+  Result:=(DeletingPersistent.IndexOf(APersistent)>=0);
 end;
 
 function TDesigner.GetSelectedComponentClass: TRegisteredComponent;
@@ -1691,28 +1697,28 @@ Begin
   if Assigned(FOnModified) then FOnModified(Self);
 end;
 
-Procedure TDesigner.RemoveComponentAndChilds(AComponent :TComponent);
+Procedure TDesigner.RemovePersistentAndChilds(APersistent: TPersistent);
 var
   i: integer;
   AWinControl: TWinControl;
   ChildControl: TControl;
 Begin
   {$IFDEF VerboseDesigner}
-  Writeln('[TDesigner.RemoveComponentAndChilds] ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8));
+  Writeln('[TDesigner.RemovePersistentAndChilds] ',dbgsName(APersistent),' ',HexStr(Cardinal(APersistent),8));
   {$ENDIF}
-  if (AComponent=FLookupRoot) or (AComponent=Form)
-  or (IgnoreDeletingComponents.IndexOf(AComponent)>=0)
+  if (APersistent=FLookupRoot) or (APersistent=Form)
+  or (IgnoreDeletingPersistent.IndexOf(APersistent)>=0)
   then exit;
   // remove all child controls owned by the LookupRoot
-  if (AComponent is TWinControl) then begin
-    AWinControl:=TWinControl(AComponent);
+  if (APersistent is TWinControl) then begin
+    AWinControl:=TWinControl(APersistent);
     i:=AWinControl.ControlCount-1;
     while (i>=0) do begin
       ChildControl:=AWinControl.Controls[i];
       if (ChildControl.Owner=FLookupRoot)
-      and (IgnoreDeletingComponents.IndexOf(ChildControl)<0) then begin
+      and (IgnoreDeletingPersistent.IndexOf(ChildControl)<0) then begin
         //Writeln('[TDesigner.RemoveComponentAndChilds] B ',AComponent.Name,':',AComponent.ClassName,' ',HexStr(Cardinal(AComponent),8),' Child=',ChildControl.Name,':',ChildControl.ClassName,' i=',i);
-        RemoveComponentAndChilds(ChildControl);
+        RemovePersistentAndChilds(ChildControl);
         // the component list of the form has changed
         // -> restart the search
         i:=AWinControl.ControlCount-1;
@@ -1722,9 +1728,9 @@ Begin
   end;
   // remove component
   {$IFDEF VerboseDesigner}
-  Writeln('[TDesigner.RemoveComponentAndChilds] C ',AComponent.Name,':',AComponent.ClassName);
+  Writeln('[TDesigner.RemovePersistentAndChilds] C ',dbgsName(APersistent));
   {$ENDIF}
-  DoDeleteComponent(AComponent,true);
+  DoDeletePersistent(APersistent,true);
 end;
 
 procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
@@ -1736,7 +1742,7 @@ Begin
     if dfDeleting in FFlags then begin
       // a component has auto created a new component during deletion
       // -> ignore the new component
-      IgnoreDeletingComponents.Add(AComponent);
+      IgnoreDeletingPersistent.Add(AComponent);
     end;
   end
   else
@@ -1745,7 +1751,7 @@ Begin
     writeln('[TDesigner.Notification] opRemove ',
             AComponent.Name,':',AComponent.ClassName);
     {$ENDIF}
-    DoDeleteComponent(AComponent,false);
+    DoDeletePersistent(AComponent,false);
   end;
 end;
 
@@ -1878,7 +1884,7 @@ end;
 
 procedure TDesigner.OnDeleteSelectionMenuClick(Sender: TObject);
 begin
-  DoDeleteSelectedComponents;
+  DoDeleteSelectedPersistents;
 end;
 
 procedure TDesigner.OnChangeClassMenuClick(Sender: TObject);
@@ -2115,8 +2121,10 @@ function TDesigner.GetComponentEditorForSelection: TBaseComponentEditor;
 begin
   Result:=nil;
   if (ControlSelection.Count<>1)
-  or (ControlSelection.SelectionForm<>Form) then exit;
-  Result:=TheFormEditor.GetComponentEditor(ControlSelection[0].Component);
+  or (ControlSelection.SelectionForm<>Form)
+  or (not ControlSelection[0].IsTComponent) then exit;
+  Result:=
+   TheFormEditor.GetComponentEditor(TComponent(ControlSelection[0].Persistent));
 end;
 
 procedure TDesigner.AddComponentEditorMenuItems(
@@ -2198,17 +2206,20 @@ procedure TDesigner.BuildPopupMenu;
 var
   ControlSelIsNotEmpty,
   LookupRootIsSelected,
-  OnlyNonVisualCompsAreSelected,
+  OnlyNonVisualsAreSelected,
   CompsAreSelected: boolean;
+  SelectionVisible: Boolean;
 begin
   if FPopupMenu<>nil then FPopupMenu.Free;
 
   ControlSelIsNotEmpty:=(ControlSelection.Count>0)
                         and (ControlSelection.SelectionForm=Form);
   LookupRootIsSelected:=ControlSelection.LookupRootSelected;
-  OnlyNonVisualCompsAreSelected:=
-                               ControlSelection.OnlyNonVisualComponentsSelected;
-  CompsAreSelected:=ControlSelIsNotEmpty and not LookupRootIsSelected;
+  OnlyNonVisualsAreSelected:=
+                              ControlSelection.OnlyNonVisualPersistentsSelected;
+  SelectionVisible:=not ControlSelection.OnlyInvisiblePersistensSelected;
+  CompsAreSelected:=ControlSelIsNotEmpty and SelectionVisible
+                    and not LookupRootIsSelected;
 
   FPopupMenu:=TPopupMenu.Create(nil);
 
@@ -2243,7 +2254,7 @@ begin
   with FScaleMenuItem do begin
     Caption := fdmScaleWord;
     OnClick := @OnScalePopupMenuClick;
-    Enabled := CompsAreSelected and not OnlyNonVisualCompsAreSelected;
+    Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
   end;
   FPopupMenu.Items.Add(FScaleMenuItem);
 
@@ -2251,7 +2262,7 @@ begin
   with FSizeMenuItem do begin
     Caption := fdmSizeWord;
     OnClick := @OnSizePopupMenuClick;
-    Enabled := CompsAreSelected and not OnlyNonVisualCompsAreSelected;
+    Enabled := CompsAreSelected and not OnlyNonVisualsAreSelected;
   end;
   FPopupMenu.Items.Add(FSizeMenuItem);
 
@@ -2440,22 +2451,18 @@ begin
 end;
 
 procedure TDesigner.OnBringToFrontMenuClick(Sender: TObject);
-var AComponent : TComponent;
 begin
-  if ControlSelection.Count = 1 then begin
-    AComponent:= ControlSelection.Items[0].Component;
-    if AComponent is TControl then
-      TControl(AComponent).BringToFront;
+  if (ControlSelection.Count = 1)
+  and (ControlSelection[0].IsTControl) then begin
+    TControl(ControlSelection[0].Persistent).BringToFront;
   end;
 end;
 
 procedure TDesigner.OnSendToBackMenuClick(Sender: TObject);
-var AComponent : TComponent;
 begin
-  if ControlSelection.Count = 1 then begin
-    AComponent:= ControlSelection.Items[0].Component;
-    if AComponent is TControl then
-      TControl(AComponent).SendToBack;
+  if (ControlSelection.Count = 1)
+  and (ControlSelection[0].IsTControl) then begin
+    TControl(ControlSelection[0].Persistent).SendToBack;
   end;
 end;
 

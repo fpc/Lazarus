@@ -300,33 +300,36 @@ type
                                     ATypeInfo:PTypeInfo): TMethod;
     procedure OnPropHookShowMethod(const AMethodName:ShortString);
     procedure OnPropHookRenameMethod(const CurName, NewName:ShortString);
-    function OnPropHookBeforeAddComponent(Sender: TObject;
-                AComponentClass: TComponentClass; AParent: TComponent): boolean;
+    function OnPropHookBeforeAddPersistent(Sender: TObject;
+                                           APersistentClass: TPersistentClass;
+                                           AParent: TPersistent): boolean;
     procedure OnPropHookComponentRenamed(AComponent: TComponent);
-    procedure OnPropHookComponentAdded(AComponent: TComponent; Select: boolean);
-    procedure OnPropHookDeleteComponent(AComponent: TComponent);
+    procedure OnPropHookPersistentAdded(APersistent: TPersistent;
+                                        Select: boolean);
+    procedure OnPropHookDeletePersistent(APersistent: TPersistent);
 
     // designer events
     procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
       var RegisteredComponent: TRegisteredComponent);
     procedure OnDesignerUnselectComponentClass(Sender: TObject);
     procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
-      Value: boolean);
+                                     Value: boolean);
     procedure OnDesignerShowOptions(Sender: TObject);
     procedure OnDesignerPasteComponent(Sender: TObject; LookupRoot: TComponent;
-      TxtCompStream: TStream; ParentControl: TWinControl;
-      var NewComponent: TComponent);
+                            TxtCompStream: TStream; ParentControl: TWinControl;
+                            var NewComponent: TComponent);
     procedure OnDesignerPropertiesChanged(Sender: TObject);
-    procedure OnDesignerComponentAdded(Sender: TObject; AComponent: TComponent;
-      AComponentClass: TRegisteredComponent);
-    procedure OnDesignerComponentDeleted(Sender: TObject;
-      AComponent: TComponent);
-    procedure OnDesignerRemoveComponent(Sender: TObject; AComponent: TComponent);
+    procedure OnDesignerPersistentAdded(Sender: TObject; APersistent: TPersistent;
+                                        AComponentClass: TRegisteredComponent);
+    procedure OnDesignerPersistentDeleted(Sender: TObject;
+                                          APersistent: TPersistent);
+    procedure OnDesignerRemovePersistent(Sender: TObject;
+                                         APersistent: TPersistent);
     procedure OnDesignerModified(Sender: TObject);
     procedure OnDesignerActivated(Sender: TObject);
     procedure OnDesignerCloseQuery(Sender: TObject);
     procedure OnDesignerRenameComponent(ADesigner: TDesigner;
-      AComponent: TComponent; const NewName: string);
+                                 AComponent: TComponent; const NewName: string);
 
     // control selection
     procedure OnControlSelectionChanged(Sender: TObject);
@@ -1229,9 +1232,9 @@ begin
   GlobalDesignHook.AddHandlerCreateMethod(@OnPropHookCreateMethod);
   GlobalDesignHook.AddHandlerShowMethod(@OnPropHookShowMethod);
   GlobalDesignHook.AddHandlerRenameMethod(@OnPropHookRenameMethod);
-  GlobalDesignHook.AddHandlerBeforeAddComponent(@OnPropHookBeforeAddComponent);
+  GlobalDesignHook.AddHandlerBeforeAddPersistent(@OnPropHookBeforeAddPersistent);
   GlobalDesignHook.AddHandlerComponentRenamed(@OnPropHookComponentRenamed);
-  GlobalDesignHook.AddHandlerComponentAdded(@OnPropHookComponentAdded);
+  GlobalDesignHook.AddHandlerPersistentAdded(@OnPropHookPersistentAdded);
 
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
   EnvironmentOptions.IDEWindowLayoutList.Apply(ObjectInspector1,
@@ -2186,8 +2189,8 @@ Begin
     TheFormEditor := FormEditor1;
     OnActivated:=@OnDesignerActivated;
     OnCloseQuery:=@OnDesignerCloseQuery;
-    OnComponentAdded:=@OnDesignerComponentAdded;
-    OnComponentDeleted:=@OnDesignerComponentDeleted;
+    OnPersistentAdded:=@OnDesignerPersistentAdded;
+    OnPersistentDeleted:=@OnDesignerPersistentDeleted;
     OnGetNonVisualCompIconCanvas:=
            @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIconCanvas;
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
@@ -2195,7 +2198,7 @@ Begin
     OnPasteComponent:=@OnDesignerPasteComponent;
     OnProcessCommand:=@OnProcessIDECommand;
     OnPropertiesChanged:=@OnDesignerPropertiesChanged;
-    OnRemoveComponent:=@OnDesignerRemoveComponent;
+    OnRemovePersistent:=@OnDesignerRemovePersistent;
     OnRenameComponent:=@OnDesignerRenameComponent;
     OnSetDesigning:=@OnDesignerSetDesigning;
     OnShowOptions:=@OnDesignerShowOptions;
@@ -3789,7 +3792,7 @@ begin
         DesignerForm:=FormEditor1.GetDesignerForm(NewComponent);
         if not (ofProjectLoading in Flags) then begin
           GlobalDesignHook.LookupRoot := NewComponent;
-          TheControlSelection.AssignComponent(NewComponent);
+          TheControlSelection.AssignPersistent(NewComponent);
         end;
         FLastFormActivated:=DesignerForm;
       end;
@@ -7302,7 +7305,7 @@ begin
   ShowDesignerForm(AForm);
   if TheControlSelection.SelectionForm<>AForm then begin
     // select the new form (object inspector, formeditor, control selection)
-    TheControlSelection.AssignComponent(ActiveUnitInfo.Component);
+    TheControlSelection.AssignPersistent(ActiveUnitInfo.Component);
   end;
 end;
 
@@ -8222,37 +8225,42 @@ begin
   ObjectInspector1.RefreshPropertyValues;
 end;
 
-procedure TMainIDE.OnDesignerComponentAdded(Sender: TObject;
-  AComponent: TComponent; AComponentClass: TRegisteredComponent);
+procedure TMainIDE.OnDesignerPersistentAdded(Sender: TObject;
+  APersistent: TPersistent; AComponentClass: TRegisteredComponent);
 var
   ActiveUnitInfo: TUnitInfo;
   ActiveSrcEdit: TSourceEditor;
   ADesigner: TDesigner;
 begin
   if not (Sender is TDesigner) then begin
-    writeln('TMainIDE.OnDesignerComponentAdded ERROR: Sender.ClassName=',
+    writeln('TMainIDE.OnDesignerPersistentAdded ERROR: Sender.ClassName=',
             Sender.ClassName);
     exit;
   end;
   if AComponentClass=nil then
-    AComponentClass:=IDEComponentPalette.FindComponent(AComponent.ClassName);
+    AComponentClass:=IDEComponentPalette.FindComponent(APersistent.ClassName);
   ADesigner:=TDesigner(Sender);
-  BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource]);
+  if not BeginCodeTool(ADesigner,ActiveSrcEdit,ActiveUnitInfo,
+    [ctfSwitchToFormSource])
+  then exit;
 
+  if AComponentClass<>nil then begin
   // add needed package to required packages
-  PkgBoss.AddProjectRegCompDependency(Project1,AComponentClass);
-  // add needed unit to source
-  CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
-                                        AComponentClass.GetUnitName,'');
-  ActiveUnitInfo.Modified:=true;
-  // add component definitions to form source
-  CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot);
+    PkgBoss.AddProjectRegCompDependency(Project1,AComponentClass);
+    // add needed unit to source
+    CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
+                                          AComponentClass.GetUnitName,'');
+    ActiveUnitInfo.Modified:=true;
+    
+    // add component definitions to form source
+    CodeToolBoss.CompleteComponent(ActiveUnitInfo.Source,ADesigner.LookupRoot);
+  end;
 
   ObjectInspector1.FillPersistentComboBox;
 end;
 
-procedure TMainIDE.OnDesignerComponentDeleted(Sender: TObject;
-  AComponent: TComponent);
+procedure TMainIDE.OnDesignerPersistentDeleted(Sender: TObject;
+  APersistent: TPersistent);
 var
   CurDesigner: TDesigner;
 begin
@@ -8261,8 +8269,8 @@ begin
   ObjectInspector1.FillPersistentComboBox;
 end;
 
-procedure TMainIDE.OnDesignerRemoveComponent(Sender: TObject;
-  AComponent: TComponent);
+procedure TMainIDE.OnDesignerRemovePersistent(Sender: TObject;
+  APersistent: TPersistent);
 var
   ActiveForm: TCustomForm;
   ActiveUnitInfo: TUnitInfo;
@@ -8273,8 +8281,8 @@ begin
   CurDesigner:=TDesigner(Sender);
   if dfDestroyingForm in CurDesigner.Flags then exit;
 
-  BeginCodeTool(CurDesigner,ActiveSrcEdit,ActiveUnitInfo,
-                [ctfSwitchToFormSource]);
+  if not BeginCodeTool(CurDesigner,ActiveSrcEdit,ActiveUnitInfo,
+                [ctfSwitchToFormSource]) then exit;
   ActiveForm:=CurDesigner.Form;
   if ActiveForm=nil then
     RaiseException('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
@@ -8283,10 +8291,12 @@ begin
   if ActiveUnitInfo=nil then begin
     RaiseException('[TMainIDE.OnDesignerAddComponent] Error: form without source');
   end;
-  // remove component definition from owner source
-  OwnerClassName:=CurDesigner.LookupRoot.ClassName;
-  CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,OwnerClassName,
-                                       AComponent.Name,false);
+  if APersistent is TComponent then begin
+    // remove component definition from owner source
+    OwnerClassName:=CurDesigner.LookupRoot.ClassName;
+    CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,OwnerClassName,
+                                         TComponent(APersistent).Name,false);
+  end;
 end;
 
 procedure TMainIDE.OnDesignerModified(Sender: TObject);
@@ -8322,7 +8332,7 @@ begin
 
   NewSelection:=TPersistentSelectionList.Create;
   for i:=0 to TheControlSelection.Count-1 do
-    NewSelection.Add(TheControlSelection[i].Component);
+    NewSelection.Add(TheControlSelection[i].Persistent);
   FormEditor1.Selection:=NewSelection;
   NewSelection.Free;
   {$IFDEF IDE_DEBUG}
@@ -10092,12 +10102,12 @@ begin
   end;
 end;
 
-function TMainIDE.OnPropHookBeforeAddComponent(Sender: TObject;
-  AComponentClass: TComponentClass; AParent: TComponent): boolean;
+function TMainIDE.OnPropHookBeforeAddPersistent(Sender: TObject;
+  APersistentClass: TPersistentClass; AParent: TPersistent): boolean;
 begin
   Result:=false;
   if (not (AParent is TControl))
-  and (AComponentClass.InheritsFrom(TControl)) then begin
+  and (APersistentClass.InheritsFrom(TControl)) then begin
     MessageDlg('Invalid parent',
       'A '+Parent.ClassName+' can not hold TControls.'#13
       +'You can only put non visual components on it.',
@@ -10116,54 +10126,65 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  procedure TMainIDE.OnPropHookComponentAdded(AComponent: TComponent;
+  procedure TMainIDE.OnPropHookPersistentAdded(APersistent: TPersistent;
     Select: boolean);
 
   This handler is called whenever a new component was added to a designed form
   and should be added to form source
 -------------------------------------------------------------------------------}
-procedure TMainIDE.OnPropHookComponentAdded(AComponent: TComponent;
+procedure TMainIDE.OnPropHookPersistentAdded(APersistent: TPersistent;
   Select: boolean);
 var
   ComponentClass: TRegisteredComponent;
   ADesigner: TIDesigner;
+  AComponent: TComponent;
 begin
-  writeln('TMainIDE.OnPropHookComponentAdded A ',AComponent.Name,':',AComponent.ClassName);
-  ComponentClass:=IDEComponentPalette.FindComponent(AComponent.ClassName);
-  if ComponentClass=nil then begin
-    writeln('TMainIDE.OnPropHookComponentAdded ',AComponent.ClassName,
+  writeln('TMainIDE.OnPropHookPersistentAdded A ',dbgsName(APersistent));
+  if APersistent is TComponent then
+    AComponent:=TComponent(APersistent)
+  else
+    AComponent:=nil;
+  ComponentClass:=IDEComponentPalette.FindComponent(APersistent.ClassName);
+  if (ComponentClass=nil) and (AComponent<>nil) then begin
+    writeln('TMainIDE.OnPropHookPersistentAdded ',APersistent.ClassName,
             ' not registered');
     exit;
   end;
-  // create unique name
-  if AComponent.Name='' then
-    AComponent.Name:=FormEditor1.CreateUniqueComponentName(AComponent);
-  //writeln('TMainIDE.OnPropHookComponentAdded B ',AComponent.Name,':',AComponent.ClassName);
-  // create component interface
-  if FormEditor1.FindComponent(AComponent)=nil then
-    FormEditor1.CreateComponentInterface(AComponent);
-  // set component into design mode
-  SetDesigning(AComponent,true);
-  //writeln('TMainIDE.OnPropHookComponentAdded C ',AComponent.Name,':',AComponent.ClassName);
-  // add to source
-  ADesigner:=FindRootDesigner(AComponent);
-  OnDesignerComponentAdded(ADesigner,AComponent,ComponentClass);
-  //writeln('TMainIDE.OnPropHookComponentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
+  if AComponent<>nil then begin
+    // create unique name
+    if AComponent.Name='' then
+      AComponent.Name:=FormEditor1.CreateUniqueComponentName(AComponent);
+    //writeln('TMainIDE.OnPropHookPersistentAdded B ',AComponent.Name,':',AComponent.ClassName);
+    // create component interface
+    if FormEditor1.FindComponent(AComponent)=nil then
+      FormEditor1.CreateComponentInterface(AComponent);
+    // set component into design mode
+    SetDesigning(AComponent,true);
+    //writeln('TMainIDE.OnPropHookPersistentAdded C ',AComponent.Name,':',AComponent.ClassName);
+    // add to source
+    ADesigner:=FindRootDesigner(AComponent);
+  end;
+  OnDesignerPersistentAdded(ADesigner,APersistent,ComponentClass);
+  //writeln('TMainIDE.OnPropHookPersistentAdded D ',AComponent.Name,':',AComponent.ClassName,' ',Select);
   // select component
   if Select then begin
-    TheControlSelection.AssignComponent(AComponent);
+    TheControlSelection.AssignPersistent(APersistent);
   end;
-  writeln('TMainIDE.OnPropHookComponentAdded END ',AComponent.Name,':',AComponent.ClassName,' ',Select);
+  writeln('TMainIDE.OnPropHookPersistentAdded END ',dbgsName(APersistent),' Select=',Select);
 end;
 
-procedure TMainIDE.OnPropHookDeleteComponent(AComponent: TComponent);
+procedure TMainIDE.OnPropHookDeletePersistent(APersistent: TPersistent);
 var
   ADesigner: TDesigner;
+  AComponent: TComponent;
 begin
-  writeln('TMainIDE.OnPropHookDeleteComponent A ',AComponent.Name,':',AComponent.ClassName);
-  ADesigner:=TDesigner(FindRootDesigner(AComponent));
-  if ADesigner=nil then exit;
-  ADesigner.RemoveComponentAndChilds(AComponent);
+  writeln('TMainIDE.OnPropHookDeletePersistent A ',dbgsName(APersistent));
+  if APersistent is TComponent then begin
+    AComponent:=TComponent(APersistent);
+    ADesigner:=TDesigner(FindRootDesigner(AComponent));
+    if ADesigner=nil then exit;
+    ADesigner.RemovePersistentAndChilds(AComponent);
+  end;
 end;
 
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
@@ -10454,6 +10475,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.737  2004/07/24 11:23:55  mattias
+  Designer can now handle TPersistent selections, TCollectionPropertyEditor basically working
+
   Revision 1.736  2004/07/07 17:10:02  mattias
   added hint for unimplemented IDE directives for non pascal sources
 

@@ -124,6 +124,7 @@ function DbgS(const p: TPoint): string;
 function DbgS(const p: pointer): string;
 function DbgS(const e: extended): string;
 function DbgS(const b: boolean): string;
+function DbgSName(const p: TPersistent): string;
 
 function DbgS(const i1,i2,i3,i4: integer): string;
 
@@ -736,6 +737,16 @@ end;
 function DbgS(const b: boolean): string;
 begin
   if b then Result:='True' else Result:='False';
+end;
+
+function DbgSName(const p: TPersistent): string;
+begin
+  if p=nil then
+    Result:='nil'
+  else if p is TComponent then
+    Result:=TComponent(p).Name+':'+p.ClassName
+  else
+    Result:=p.ClassName;
 end;
 
 function DbgS(const i1, i2, i3, i4: integer): string;

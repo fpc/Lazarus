@@ -141,7 +141,7 @@ each control that's dropped onto the form
     destructor Destroy; override;
 
     Function AddSelected(Value : TComponent) : Integer;
-    Procedure DeleteControl(AComponent: TComponent; FreeComponent: boolean);
+    Procedure DeleteComponent(AComponent: TComponent; FreeComponent: boolean);
     Function FindComponentByName(const Name : ShortString) : TIComponentInterface; override;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
     
@@ -692,7 +692,7 @@ Begin
   Obj_Inspector.Selection := FSelection;
 end;
 
-Procedure TCustomFormEditor.DeleteControl(AComponent: TComponent;
+Procedure TCustomFormEditor.DeleteComponent(AComponent: TComponent;
   FreeComponent: boolean);
 var
   Temp : TComponentInterface;
@@ -711,7 +711,7 @@ Begin
       if FreeComponent then begin
         i:=AComponent.ComponentCount-1;
         while i>=0 do begin
-          DeleteControl(AComponent.Components[i],true);
+          DeleteComponent(AComponent.Components[i],true);
           dec(i);
           if i>AComponent.ComponentCount-1 then
             i:=AComponent.ComponentCount-1;

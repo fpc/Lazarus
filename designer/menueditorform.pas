@@ -49,8 +49,8 @@ type
     fDesigner: TComponentEditorDesigner;
     List_menus: TListBox;
     Label_menus: TLabel;
-    procedure OnComponentDeleting(AComponent: TComponent);
-    procedure OnComponentAdded(AComponent: TComponent; Select: boolean);
+    procedure OnPersistentDeleting(AComponent: TComponent);
+    procedure OnPersistentAdded(AComponent: TComponent; Select: boolean);
     procedure CreateDesignerMenu;
     procedure UpdateListOfMenus;
   public
@@ -115,7 +115,7 @@ end;
 
 { TMainMenuEditorForm }
 
-procedure TMainMenuEditorForm.OnComponentDeleting(AComponent: TComponent);
+procedure TMainMenuEditorForm.OnPersistentDeleting(AComponent: TComponent);
 var
   i: Integer;
 begin
@@ -124,7 +124,7 @@ begin
   if i>=0 then List_menus.Items.Delete(i);
 end;
 
-procedure TMainMenuEditorForm.OnComponentAdded(AComponent: TComponent;
+procedure TMainMenuEditorForm.OnPersistentAdded(AComponent: TComponent;
   Select: boolean);
 begin
   if AComponent is TMenu then
@@ -241,8 +241,8 @@ begin
   UpdateListOfMenus;
   CreateDesignerMenu;
 
-  GlobalDesignHook.AddHandlerComponentDeleting(@OnComponentDeleting);
-  GlobalDesignHook.AddHandlerComponentAdded(@OnComponentAdded);
+  GlobalDesignHook.AddHandlerPersistentDeleting(@OnPersistentDeleting);
+  GlobalDesignHook.AddHandlerPersistentAdded(@OnPersistentAdded);
 end;
 
 destructor TMainMenuEditorForm.Destroy;

@@ -369,7 +369,7 @@ begin
     firstmenuitem.Caption:='New Item1';
     firstmenuitem.Name:=GetDesigner.CreateUniqueComponentName(firstmenuitem.ClassName);
     fMenu.Items.Insert(0, firstmenuitem);
-    GetDesigner.PropertyEditorHook.ComponentAdded(firstmenuitem, true);
+    GetDesigner.PropertyEditorHook.PersistentAdded(firstmenuitem, true);
     GetDesigner.Modified;
   end;
   
@@ -1765,7 +1765,7 @@ begin
          // code from Mattias (one of mail he sent me)
          temp_menuitem.Name:=GetDesigner.CreateUniqueComponentName(temp_menuitem.ClassName);
          MenuItem.Insert(index_sequence[Ind] + 1, temp_menuitem);
-         GetDesigner.PropertyEditorHook.ComponentAdded(temp_menuitem, true);
+         GetDesigner.PropertyEditorHook.PersistentAdded(temp_menuitem, true);
          GetDesigner.Modified;
          
        end else
@@ -1783,7 +1783,7 @@ begin
          // code from Mattias (one of mail he sent me)
          temp_menuitem.Name:=GetDesigner.CreateUniqueComponentName(temp_menuitem.ClassName);
          MenuItem.Insert(index_sequence[Ind] - 1, temp_menuitem);
-         GetDesigner.PropertyEditorHook.ComponentAdded(temp_menuitem, true);
+         GetDesigner.PropertyEditorHook.PersistentAdded(temp_menuitem, true);
          GetDesigner.Modified;
        end else
        begin
@@ -1800,7 +1800,7 @@ begin
            // code from Mattias (one of mail he sent me)
            temp_menuitem.Name:=GetDesigner.CreateUniqueComponentName(temp_menuitem.ClassName);
            MenuItem[index_sequence[Ind]].Add(temp_menuitem);
-           GetDesigner.PropertyEditorHook.ComponentAdded(temp_menuitem, true);
+           GetDesigner.PropertyEditorHook.PersistentAdded(temp_menuitem, true);
            GetDesigner.Modified;
          end else
            UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, TheAction);

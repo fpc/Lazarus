@@ -102,22 +102,25 @@ type
 
   TSelectedControl = class
   private
+    FCachedFormRelativeLeftTop: TPoint;
+    FCachedHeight: integer;
     FCachedLeft: integer;
     FCachedTop: integer;
     FCachedWidth: integer;
-    FCachedHeight: integer;
-    FCachedFormRelativeLeftTop: TPoint;
-    FComponent: TComponent;
     FDesignerForm: TCustomForm;
     FFlags: TSelectedControlFlags;
+    FIsNonVisualComponent: boolean;
+    FIsTComponent: boolean;
     FIsTControl: boolean;
+    FIsTWinControl: boolean;
     FMarkerPaintedBounds: TRect;
+    FOldFormRelativeLeftTop: TPoint;
+    FOldHeight: integer;
     FOldLeft: integer;
     FOldTop: integer;
     FOldWidth: integer;
-    FOldHeight: integer;
-    FOldFormRelativeLeftTop: TPoint;
     FOwner: TControlSelection;
+    FPersistent: TPersistent;
     FUseCache: boolean;
     function GetLeft: integer;
     procedure SetLeft(ALeft: integer);
@@ -130,18 +133,19 @@ type
     function GetHeight: integer;
     procedure SetHeight(AHeight: integer);
   public
-    constructor Create(AnOwner: TControlSelection; AComponent: TComponent);
+    constructor Create(AnOwner: TControlSelection; APersistent: TPersistent);
     destructor Destroy; override;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SetFormRelativeBounds(ALeft, ATop, AWidth, AHeight: integer);
+    procedure GetFormRelativeBounds(var ALeft, ATop, AWidth, AHeight: integer);
     procedure SaveBounds;
     procedure UpdateCache;
     function IsTopLvl: boolean;
     function ChildInSelection: boolean;
     function ParentInSelection: boolean;
-    procedure InvalidateNonVisualComponent;
+    procedure InvalidateNonVisualPersistent;
 
-    property Component: TComponent read FComponent;
+    property Persistent: TPersistent read FPersistent;
     property Owner: TControlSelection read FOwner write SetOwner;
     property Left: integer read GetLeft write SetLeft;
     property Top: integer read GetTop write SetTop;
@@ -155,7 +159,10 @@ type
       read FOldFormRelativeLeftTop write FOldFormRelativeLeftTop;
     property Flags: TSelectedControlFlags read FFlags write FFlags;
     property UseCache: boolean read FUseCache write SetUseCache;
+    property IsTComponent: boolean read FIsTComponent;
     property IsTControl: boolean read FIsTControl;
+    property IsTWinControl: boolean read FIsTWinControl;
+    property IsNonVisualComponent: boolean read FIsNonVisualComponent;
     property DesignerForm: TCustomForm read FDesignerForm;
     property MarkerPaintedBounds: TRect read FMarkerPaintedBounds write FMarkerPaintedBounds;
   end;
@@ -230,9 +237,17 @@ type
     cssGuideLinesPainted
     );
   TControlSelStates = set of TControlSelState;
+  
+const
+  cssSelectionChangeFlags =
+   [cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
+    cssOnlyInvisibleNeedsUpdate,cssOnlyBoundLessNeedsUpdate,
+    cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate];
+
+type
 
   TControlSelection = class(TObject)
-    FControls: TList;  // list of TSelectedComponent
+    FControls: TList;  // list of TSelectedControl
 
     // current bounds of the selection (only valid if Count>0)
     // These are the values set by the user
@@ -319,7 +334,7 @@ type
     // snapping
     function CleanGridSizeX: integer;
     function CleanGridSizeY: integer;
-    function ComponentAlignable(AComponent: TComponent): boolean;
+    function PersistentAlignable(APersistent: TPersistent): boolean;
     function GetBottomGuideLine(var ALine: TRect): boolean;
     function GetLeftGuideLine(var ALine: TRect): boolean;
     function GetRightGuideLine(var ALine: TRect): boolean;
@@ -351,21 +366,21 @@ type
     procedure EndUpdate;
     property UpdateLock: integer read FUpdateLock;
 
-    function IndexOf(AComponent:TComponent):integer;
-    function Add(AComponent: TComponent):integer;
-    procedure Remove(AComponent: TComponent);
+    function IndexOf(APersistent: TPersistent):integer;
+    function Add(APersistent: TPersistent):integer;
+    procedure Remove(APersistent: TPersistent);
     procedure Delete(Index:integer);
     procedure Clear;
-    function AssignComponent(AComponent:TComponent): boolean;
+    function AssignPersistent(APersistent: TPersistent): boolean;
     procedure Assign(AControlSelection: TControlSelection);
     procedure AssignSelection(const ASelection: TPersistentSelectionList);
-    function IsSelected(AComponent: TComponent): Boolean;
-    function IsOnlySelected(AComponent: TComponent): Boolean;
+    function IsSelected(APersistent: TPersistent): Boolean;
+    function IsOnlySelected(APersistent: TPersistent): Boolean;
     procedure SaveBounds;
     function ParentLevel: integer;
-    function OnlyNonVisualComponentsSelected: boolean;
+    function OnlyNonVisualPersistentsSelected: boolean;
     function OnlyVisualComponentsSelected: boolean;
-    function OnlyInvisibleComponentsSelected: boolean;
+    function OnlyInvisiblePersistensSelected: boolean;
     function OnlyBoundLessComponentsSelected: boolean;
     function LookupRootSelected: boolean;
 
@@ -522,13 +537,17 @@ end;
 { TSelectedControl }
 
 constructor TSelectedControl.Create(AnOwner: TControlSelection;
-  AComponent:TComponent);
+  APersistent: TPersistent);
 begin
   inherited Create;
   FOwner:=AnOwner;
-  FComponent:=AComponent;
-  FIsTControl:=FComponent is TControl;
-  FDesignerForm:=GetDesignerForm(FComponent);
+  FPersistent:=APersistent;
+  FIsTComponent:=FPersistent is TComponent;
+  FIsTControl:=FPersistent is TControl;
+  FIsTWinControl:=FPersistent is TWinControl;
+  FIsNonVisualComponent:=FIsTComponent and (not FIsTControl);
+  if FIsTComponent then
+    FDesignerForm:=GetDesignerForm(TComponent(FPersistent));
 end;
 
 destructor TSelectedControl.Destroy;
@@ -539,17 +558,17 @@ end;
 procedure TSelectedControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   if FIsTControl then begin
-    TControl(FComponent).SetBounds(ALeft, ATop, AWidth, AHeight);
+    TControl(FPersistent).SetBounds(ALeft, ATop, AWidth, AHeight);
     FCachedLeft:=ALeft;
     FCachedTop:=ATop;
     FCachedWidth:=AWidth;
     FCachedHeight:=AHeight;
-  end else begin
+  end else if FIsTComponent then begin
     if (Left<>ALeft) or (Top<>ATop) then begin
-      InvalidateNonVisualComponent;
+      InvalidateNonVisualPersistent;
       Left:=ALeft;
       Top:=ATop;
-      InvalidateNonVisualComponent;
+      InvalidateNonVisualPersistent;
     end;
   end;
 end;
@@ -559,31 +578,53 @@ procedure TSelectedControl.SetFormRelativeBounds(ALeft, ATop, AWidth,
 var
   ParentOffset: TPoint;
 begin
-  ParentOffset:=GetParentFormRelativeParentClientOrigin(FComponent);
-  //writeln('TSelectedControl.SetFormRelativeBounds ',FComponent.Name,
-  //  ' Left=',ALeft,' LeftOff=',ParentOffset.X,
-  //  ' Top=',ATop,' TopOff=',ParentOffset.Y);
+  if not FIsTComponent then exit;
+  ParentOffset:=
+               GetParentFormRelativeParentClientOrigin(TComponent(FPersistent));
   SetBounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight);
+end;
+
+procedure TSelectedControl.GetFormRelativeBounds(var ALeft, ATop, AWidth,
+  AHeight: integer);
+var
+  ALeftTop: TPoint;
+begin
+  if FIsTComponent then begin
+    GetComponentBounds(TComponent(FPersistent),ALeft,ATop,AWidth,AHeight);
+    ALeftTop:=GetParentFormRelativeTopLeft(TComponent(FPersistent));
+    ALeft:=ALeftTop.X;
+    ATop:=ALeftTop.Y;
+  end else begin
+    ALeft:=0;
+    ATop:=0;
+    AWidth:=0;
+    AHeight:=0;
+  end;
 end;
 
 procedure TSelectedControl.SaveBounds;
 begin
-  GetComponentBounds(FComponent,FOldLeft,FOldTop,FOldWidth,FOldHeight);
-  FOldFormRelativeLeftTop:=GetParentFormRelativeTopLeft(FComponent);
-//writeln('[TSelectedControl.SaveBounds] ',Component.Name,':',Component.ClassName
-//  ,'  ',FOldLeft,',',FOldTop);
+  if not FIsTComponent then exit;
+  GetComponentBounds(TComponent(FPersistent),
+                     FOldLeft,FOldTop,FOldWidth,FOldHeight);
+  FOldFormRelativeLeftTop:=
+                          GetParentFormRelativeTopLeft(TComponent(FPersistent));
 end;
 
 procedure TSelectedControl.UpdateCache;
 begin
-  GetComponentBounds(FComponent,FCachedLeft,FCachedTop,FCachedWidth,FCachedHeight);
-  FCachedFormRelativeLeftTop:=GetParentFormRelativeTopLeft(FComponent);
+  if not FIsTComponent then exit;
+  GetComponentBounds(TComponent(FPersistent),
+                     FCachedLeft,FCachedTop,FCachedWidth,FCachedHeight);
+  FCachedFormRelativeLeftTop:=
+                          GetParentFormRelativeTopLeft(TComponent(FPersistent));
 end;
 
 function TSelectedControl.IsTopLvl: boolean;
 begin
-  Result:=(FComponent.Owner=nil)
-          or (FIsTControl and (TControl(FComponent).Parent=nil));
+  Result:=(not FIsTComponent)
+          or (TComponent(FPersistent).Owner=nil)
+          or (FIsTControl and (TControl(FPersistent).Parent=nil));
 end;
 
 function TSelectedControl.ChildInSelection: boolean;
@@ -606,15 +647,15 @@ begin
   end;
 end;
 
-procedure TSelectedControl.InvalidateNonVisualComponent;
+procedure TSelectedControl.InvalidateNonVisualPersistent;
 var
   AForm: TCustomForm;
   CompRect: TRect;
 begin
   AForm:=DesignerForm;
-  if (AForm=nil) then exit;
-  CompRect.Left:=LongRec(FComponent.DesignInfo).Lo;
-  CompRect.Top:=LongRec(FComponent.DesignInfo).Hi;
+  if (AForm=nil) or (not FIsTComponent) then exit;
+  CompRect.Left:=LongRec(TComponent(FPersistent).DesignInfo).Lo;
+  CompRect.Top:=LongRec(TComponent(FPersistent).DesignInfo).Hi;
   CompRect.Right:=CompRect.Left+NonVisualCompWidth;
   CompRect.Bottom:=CompRect.Top+NonVisualCompWidth;
   //writeln('TSelectedControl.InvalidateNonVisualComponent A ',CompRect.Left,',',CompRect.Top,',',CompRect.Right,',',CompRect.Bottom);
@@ -625,16 +666,19 @@ function TSelectedControl.GetLeft: integer;
 begin
   if FUseCache then
     Result:=FCachedLeft
+  else if FIsTComponent then
+    Result:=GetComponentLeft(TComponent(FPersistent))
   else
-    Result:=GetComponentLeft(FComponent);
+    Result:=0;
 end;
 
 procedure TSelectedControl.SetLeft(ALeft: integer);
 begin
   if FIsTControl then
-    TControl(FComponent).Left:=Aleft
-  else
-    LongRec(FComponent.DesignInfo).Lo:=word(Min(32000,Max(0,ALeft)));
+    TControl(FPersistent).Left:=Aleft
+  else if FIsTComponent then
+    LongRec(TComponent(FPersistent).DesignInfo).Lo:=
+      word(Min(32000,Max(0,ALeft)));
   FCachedLeft:=ALeft;
 end;
 
@@ -642,8 +686,10 @@ function TSelectedControl.GetTop: integer;
 begin
   if FUseCache then
     Result:=FCachedTop
+  else if FIsTComponent then
+    Result:=GetComponentTop(TComponent(FPersistent))
   else
-    Result:=GetComponentTop(FComponent);
+    Result:=0;
 end;
 
 procedure TSelectedControl.SetOwner(const AValue: TControlSelection);
@@ -655,9 +701,10 @@ end;
 procedure TSelectedControl.SetTop(ATop: integer);
 begin
   if FIsTControl then
-    TControl(FComponent).Top:=ATop
-  else
-    LongRec(FComponent.DesignInfo).Hi:=word(Min(32000,Max(0,ATop)));
+    TControl(FPersistent).Top:=ATop
+  else if FIsTComponent then
+    LongRec(TComponent(FPersistent).DesignInfo).Hi:=
+      word(Min(32000,Max(0,ATop)));
   FCachedTop:=ATop;
 end;
 
@@ -665,8 +712,8 @@ function TSelectedControl.GetWidth: integer;
 begin
   if FUseCache then
     Result:=FCachedWidth
-  else
-    Result:=GetComponentWidth(FComponent);
+  else if FIsTComponent then
+    Result:=GetComponentWidth(TComponent(FPersistent));
 end;
 
 procedure TSelectedControl.SetUseCache(const AValue: boolean);
@@ -679,9 +726,7 @@ end;
 procedure TSelectedControl.SetWidth(AWidth: integer);
 begin
   if FIsTControl then
-    TControl(FComponent).Width:=AWidth
-  else
-    ;
+    TControl(FPersistent).Width:=AWidth;
   FCachedWidth:=AWidth;
 end;
 
@@ -689,16 +734,16 @@ function TSelectedControl.GetHeight: integer;
 begin
   if FUseCache then
     Result:=FCachedHeight
+  else if FIsTComponent then
+    Result:=GetComponentHeight(TComponent(FPersistent))
   else
-    Result:=GetComponentHeight(FComponent);
+    Result:=0;
 end;
 
 procedure TSelectedControl.SetHeight(AHeight: integer);
 begin
   if FIsTControl then
-    TControl(FComponent).Height:=AHeight
-  else
-    ;
+    TControl(FPersistent).Height:=AHeight;
   FCachedHeight:=AHeight;
 end;
 
@@ -1000,7 +1045,7 @@ begin
         if NewHeight<1 then NewHeight:=1;
         Items[i].SetFormRelativeBounds(NewLeft,NewTop,NewWidth,NewHeight);
         {$IFDEF VerboseDesigner}
-        writeln('  i=',i,' ',Items[i].Component.Name,
+        writeln('  i=',i,' ',Items[i].Persistent.Name,
         ' ',Items[i].Left,',',Items[i].Top,',',Items[i].Width,',',Items[i].Height);
         {$ENDIF}
       end;
@@ -1012,27 +1057,25 @@ begin
 end;
 
 procedure TControlSelection.UpdateRealBounds;
-var i:integer;
-  LeftTop: TPoint;
+var
+  i: integer;
+  NextRealLeft, NextRealTop, NextRealHeight, NextRealWidth: integer;
 begin
   if FControls.Count>=1 then begin
-    LeftTop:=GetParentFormRelativeTopLeft(Items[0].Component);
-    FRealLeft:=LeftTop.X;
-    FRealTop:=LeftTop.Y;
-    FRealHeight:=Items[0].Height;
-    FRealWidth:=Items[0].Width;
+    Items[0].GetFormRelativeBounds(FRealLeft,FRealTop,FRealWidth,FRealHeight);
     for i:=1 to FControls.Count-1 do begin
-      LeftTop:=GetParentFormRelativeTopLeft(Items[i].Component);
-      if FRealLeft>LeftTop.X then begin
-        inc(FRealWidth,FRealLeft-LeftTop.X);
-        FRealLeft:=LeftTop.X;
+      Items[i].GetFormRelativeBounds(
+                         NextRealLeft,NextRealTop,NextRealWidth,NextRealHeight);
+      if FRealLeft>NextRealLeft then begin
+        inc(FRealWidth,FRealLeft-NextRealLeft);
+        FRealLeft:=NextRealLeft;
       end;
-      if FRealTop>LeftTop.Y then begin
-        inc(FRealHeight,FRealTop-LeftTop.Y);
-        FRealTop:=LeftTop.Y;
+      if FRealTop>NextRealTop then begin
+        inc(FRealHeight,FRealTop-NextRealTop);
+        FRealTop:=NextRealTop;
       end;
-      FRealWidth:=Max(FRealLeft+FRealWidth,LeftTop.X+Items[i].Width)-FRealLeft;
-      FRealHeight:=Max(FRealTop+FRealHeight,LeftTop.Y+Items[i].Height)-FRealTop;
+      FRealWidth:=Max(FRealLeft+FRealWidth,NextRealLeft+NextRealWidth)-FRealLeft;
+      FRealHeight:=Max(FRealTop+FRealHeight,NextRealTop+NextRealHeight)-FRealTop;
     end;
     AdjustGrabbers;
     InvalidateGuideLines;
@@ -1048,15 +1091,14 @@ begin
   if not (cssParentChildFlagsNeedUpdate in FStates) then exit;
   Cnt:=Count;
   for i:=0 to Cnt-1 do begin
-    Control1:=TControl(Items[i].Component);
     Items[i].FFlags:=Items[i].FFlags-[scfParentInSelection,scfChildInSelection];
   end;
   for i:=0 to Cnt-1 do begin
-    Control1:=TControl(Items[i].Component);
-    if not (Control1 is TControl) then continue;
+    if not Items[i].IsTControl then continue;
+    Control1:=TControl(Items[i].Persistent);
     for j:=0 to Cnt-1 do begin
-      Control2:=TControl(Items[j].Component);
-      if not (Control2 is TControl) then continue;
+      if not Items[j].IsTControl then continue;
+      Control2:=TControl(Items[j].Persistent);
       if i=j then continue;
       if Control1.IsParentOf(Control2) then begin
         Include(Items[i].FFlags,scfChildInSelection);
@@ -1076,7 +1118,8 @@ var
   AComponent: TComponent;
 begin
   CurItem:=Items[Index];
-  AComponent:=CurItem.Component;
+  if not CurItem.IsTComponent then exit;
+  AComponent:=TComponent(CurItem.Persistent);
 
   GetComponentBounds(AComponent,CompLeft,CompTop,CompWidth,CompHeight);
   CompOrigin:=GetParentFormRelativeParentClientOrigin(AComponent);
@@ -1106,11 +1149,15 @@ begin
   if Result<1 then Result:=1;
 end;
 
-function TControlSelection.ComponentAlignable(AComponent: TComponent): boolean;
+function TControlSelection.PersistentAlignable(
+  APersistent: TPersistent): boolean;
 var
   CurParentLevel: integer;
+  AComponent: TComponent;
 begin
   Result:=false;
+  if not (APersistent is TComponent) then exit;
+  AComponent:=TComponent(APersistent);
   if AComponent=nil then exit;
   if AComponent is TControl then begin
     if not ControlIsInDesignerVisible(TControl(AComponent)) then begin
@@ -1118,8 +1165,8 @@ begin
       exit;
     end;
     if Count>0 then begin
-      if OnlyNonVisualComponentsSelected then begin
-        //writeln('not alignable: B OnlyNonVisualComponentsSelected ',AComponent.Name);
+      if OnlyNonVisualPersistentsSelected then begin
+        //writeln('not alignable: B OnlyNonVisualPersistentsSelected ',AComponent.Name);
         exit;
       end;
     end;
@@ -1227,7 +1274,8 @@ end;
 
 procedure TControlSelection.FindNearestLeftGuideLine(
   var NearestInt: TNearestInt);
-var i, CurLeft, MaxDist, CurDist: integer;
+var
+  i, CurLeft, MaxDist, CurDist: integer;
   AComponent: TComponent;
 begin
   if (not EnvironmentOptions.SnapToGuideLines) or (FLookupRoot=nil) then exit;
@@ -1235,7 +1283,7 @@ begin
   MaxDist:=(CleanGridSizeX+1) div 2;
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
     AComponent:=FLookupRoot.Components[i];
-    if not ComponentAlignable(AComponent) then continue;
+    if not PersistentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurLeft:=GetParentFormRelativeTopLeft(AComponent).X;
     CurDist:=Abs(CurLeft-NearestInt.Level);
@@ -1254,7 +1302,7 @@ begin
   MaxDist:=(CleanGridSizeX+1) div 2;
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
     AComponent:=FLookupRoot.Components[i];
-    if not ComponentAlignable(AComponent) then continue;
+    if not PersistentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurRight:=GetParentFormRelativeTopLeft(AComponent).X
               +GetComponentWidth(AComponent);
@@ -1274,7 +1322,7 @@ begin
   MaxDist:=(CleanGridSizeY+1) div 2;
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
     AComponent:=FLookupRoot.Components[i];
-    if not ComponentAlignable(AComponent) then continue;
+    if not PersistentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurTop:=GetParentFormRelativeTopLeft(AComponent).Y;
     CurDist:=Abs(CurTop-NearestInt.Level);
@@ -1293,7 +1341,7 @@ begin
   MaxDist:=(CleanGridSizeY+1) div 2;
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
     AComponent:=FLookupRoot.Components[i];
-    if not ComponentAlignable(AComponent) then continue;
+    if not PersistentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurBottom:=GetParentFormRelativeTopLeft(AComponent).Y
               +GetComponentHeight(AComponent);
@@ -1458,7 +1506,7 @@ begin
     if FForm=nil then exit;
     for i:=0 to FLookupRoot.ComponentCount-1 do begin
       AComponent:=FLookupRoot.Components[i];
-      if not ComponentAlignable(AComponent) then continue;
+      if not PersistentAlignable(AComponent) then continue;
       CRect:=GetParentFormRelativeBounds(AComponent);
       if CRect.Left=FRealLeft then begin
         ALine.Left:=FRealLeft;
@@ -1502,7 +1550,7 @@ begin
     if FLookupRoot=nil then exit;
     for i:=0 to FLookupRoot.ComponentCount-1 do begin
       AComponent:=FForm.Components[i];
-      if not ComponentAlignable(AComponent) then continue;
+      if not PersistentAlignable(AComponent) then continue;
       CRect:=GetParentFormRelativeBounds(AComponent);
       if (CRect.Right=FRealLeft+FRealWidth) then begin
         ALine.Left:=CRect.Right;
@@ -1546,7 +1594,7 @@ begin
     if FLookupRoot=nil then exit;
     for i:=0 to FLookupRoot.ComponentCount-1 do begin
       AComponent:=FForm.Components[i];
-      if not ComponentAlignable(AComponent) then continue;
+      if not PersistentAlignable(AComponent) then continue;
       CRect:=GetParentFormRelativeBounds(AComponent);
       if CRect.Top=FRealTop then begin
         ALine.Top:=FRealTop;
@@ -1590,19 +1638,19 @@ begin
     if FLookupRoot=nil then exit;
     for i:=0 to FLookupRoot.ComponentCount-1 do begin
       AComponent:=FForm.Components[i];
-      if not ComponentAlignable(AComponent) then continue;
+      if not PersistentAlignable(AComponent) then continue;
       CRect:=GetParentFormRelativeBounds(AComponent);
       if CRect.Bottom=FRealTop+FRealHeight then begin
         ALine.Top:=CRect.Bottom;
         ALine.Bottom:=ALine.Top;
         LineLeft:=Min(Min(Min(FRealLeft,
-                                FRealLeft+FRealWidth),
-                                CRect.Left),
-                                CRect.Right);
+                              FRealLeft+FRealWidth),
+                              CRect.Left),
+                              CRect.Right);
         LineRight:=Max(Max(Max(FRealLeft,
-                                 FRealLeft+FRealWidth),
-                                 CRect.Left),
-                                 CRect.Right);
+                               FRealLeft+FRealWidth),
+                               CRect.Left),
+                               CRect.Right);
         if Result then begin
           LineLeft:=Min(ALine.Left,LineLeft);
           LineRight:=Max(ALine.Right,LineRight);
@@ -1633,8 +1681,8 @@ function TControlSelection.ParentLevel: integer;
 begin
   if (cssParentLevelNeedsUpdate in FStates) then begin
     if (Count>0) and OnlyVisualComponentsSelected
-    and (Items[0].Component is TControl) then
-      FParentLevel:=GetParentLevel(TControl(Items[0].Component))
+    and (Items[0].IsTControl) then
+      FParentLevel:=GetParentLevel(TControl(Items[0].Persistent))
     else
       FParentLevel:=0;
     Exclude(FStates,cssParentLevelNeedsUpdate);
@@ -1751,44 +1799,43 @@ begin
   Result:=FControls.Count;
 end;
 
-function TControlSelection.IndexOf(AComponent:TComponent):integer;
+function TControlSelection.IndexOf(APersistent: TPersistent): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (Items[Result].Component<>AComponent) do dec(Result);
+  while (Result>=0) and (Items[Result].Persistent<>APersistent) do dec(Result);
 end;
 
-function TControlSelection.Add(AComponent: TComponent):integer;
-var NewSelectedControl:TSelectedControl;
+function TControlSelection.Add(APersistent: TPersistent): integer;
+var
+  NewSelectedControl: TSelectedControl;
 begin
   BeginUpdate;
-  NewSelectedControl:=TSelectedControl.Create(Self,AComponent);
+  NewSelectedControl:=TSelectedControl.Create(Self,APersistent);
   if NewSelectedControl.DesignerForm<>FForm then Clear;
   Result:=FControls.Add(NewSelectedControl);
-  FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
-                    cssOnlyInvisibleNeedsUpdate,cssOnlyBoundLessNeedsUpdate,
-                    cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate];
+  FStates:=FStates+cssSelectionChangeFlags;
   if Count=1 then SetCustomForm;
-  if AComponent=FLookupRoot then Include(FStates,cssLookupRootSelected);
+  if APersistent=FLookupRoot then Include(FStates,cssLookupRootSelected);
   DoChange;
   UpdateBounds;
   SaveBounds;
   EndUpdate;
 end;
 
-function TControlSelection.AssignComponent(AComponent: TComponent): boolean;
+function TControlSelection.AssignPersistent(APersistent: TPersistent): boolean;
 begin
-  Result:=not IsOnlySelected(AComponent);
+  Result:=not IsOnlySelected(APersistent);
   if not Result then exit;
   BeginUpdate;
   Clear;
-  Add(AComponent);
+  Add(APersistent);
   EndUpdate;
 end;
 
-procedure TControlSelection.Remove(AComponent: TComponent);
+procedure TControlSelection.Remove(APersistent: TPersistent);
 var i:integer;
 begin
-  i:=IndexOf(AComponent);
+  i:=IndexOf(APersistent);
   if i>=0 then Delete(i);
 end;
 
@@ -1801,13 +1848,11 @@ begin
     InvalidateGrabbers;
     InvalidateGuideLines;
   end;
-  if Items[Index].Component=FLookupRoot then
+  if Items[Index].Persistent=FLookupRoot then
     Exclude(FStates,cssLookupRootSelected);
   Items[Index].Free;
   FControls.Delete(Index);
-  FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
-                    cssOnlyInvisibleNeedsUpdate,cssOnlyBoundLessNeedsUpdate,
-                    cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate];
+  FStates:=FStates+cssSelectionChangeFlags;
 
   if Count=0 then SetCustomForm;
   UpdateBounds;
@@ -1824,17 +1869,14 @@ begin
   InvalidateGuideLines;
   for i:=0 to FControls.Count-1 do Items[i].Free;
   FControls.Clear;
-  FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
-                    cssOnlyInvisibleNeedsUpdate,cssOnlyBoundLessNeedsUpdate,
-                    cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate]
-                  -[cssLookupRootSelected];
+  FStates:=FStates+cssSelectionChangeFlags-[cssLookupRootSelected];
   FForm:=nil;
   UpdateBounds;
   SaveBounds;
   DoChange;
 end;
 
-procedure TControlSelection.Assign(AControlSelection:TControlSelection);
+procedure TControlSelection.Assign(AControlSelection: TControlSelection);
 var i:integer;
 begin
   if (AControlSelection=Self) or (cssNotSavingBounds in FStates) then exit;
@@ -1843,7 +1885,7 @@ begin
   Clear;
   FControls.Capacity:=AControlSelection.Count;
   for i:=0 to AControlSelection.Count-1 do
-    Add(AControlSelection[i].Component);
+    Add(AControlSelection[i].Persistent);
   SetCustomForm;
   UpdateBounds;
   Exclude(FStates,cssNotSavingBounds);
@@ -1866,7 +1908,7 @@ begin
   for i:=0 to ASelection.Count-1 do
   begin
     Instance := ASelection[i];
-    if Instance is TComponent then Add(TComponent(Instance));
+    if Instance is TPersistent then Add(Instance);
   end;
   SetCustomForm;
   UpdateBounds;
@@ -1876,14 +1918,14 @@ begin
   DoChange;
 end;
 
-function TControlSelection.IsSelected(AComponent: TComponent): Boolean;
+function TControlSelection.IsSelected(APersistent: TPersistent): Boolean;
 begin
-  Result:=(IndexOf(AComponent)>=0);
+  Result:=(IndexOf(APersistent)>=0);
 end;
 
-function TControlSelection.IsOnlySelected(AComponent: TComponent): Boolean;
+function TControlSelection.IsOnlySelected(APersistent: TPersistent): Boolean;
 begin
-  Result:=(Count=1) and (Items[0].Component=AComponent);
+  Result:=(Count=1) and (Items[0].Persistent=APersistent);
 end;
 
 procedure TControlSelection.MoveSelection(dx, dy: integer);
@@ -2072,7 +2114,8 @@ var
 begin
   if (Count<2) or (FForm=nil) then exit;
   for i:=0 to Count-1 do begin
-    AComponent:=Items[i].Component;
+    if not Items[i].IsTComponent then continue;
+    AComponent:=TComponent(Items[i].Persistent);
     if (AComponent=FLookupRoot)
     or ComponentIsInvisible(AComponent) then continue;
     DoDrawMarker(i,DC);
@@ -2317,7 +2360,7 @@ begin
   end;
 end;
 
-function TControlSelection.OnlyNonVisualComponentsSelected: boolean;
+function TControlSelection.OnlyNonVisualPersistentsSelected: boolean;
 var i: integer;
 begin
   if cssOnlyNonVisualNeedsUpdate in FStates then begin
@@ -2355,16 +2398,18 @@ begin
     Result:=cssOnlyVisualNeedsSelected in FStates;
 end;
 
-function TControlSelection.OnlyInvisibleComponentsSelected: boolean;
+function TControlSelection.OnlyInvisiblePersistensSelected: boolean;
 var i: integer;
 begin
   if cssOnlyInvisibleNeedsUpdate in FStates then begin
     Result:=true;
-    for i:=0 to FControls.Count-1 do
-      if not ComponentIsInvisible(Items[i].Component) then begin
+    for i:=0 to FControls.Count-1 do begin
+      if (not Items[i].IsTComponent)
+      or (not ComponentIsInvisible(TComponent(Items[i].Persistent))) then begin
         Result:=false;
         break;
       end;
+    end;
     if Result then
       Include(FStates,cssOnlyInvisibleSelected)
     else
@@ -2381,7 +2426,8 @@ begin
   if cssOnlyBoundLessNeedsUpdate in FStates then begin
     Result:=true;
     for i:=0 to FControls.Count-1 do
-      if ComponentBoundsDesignable(Items[i].Component) then begin
+      if Items[i].IsTComponent
+      and ComponentBoundsDesignable(TComponent(Items[i].Persistent)) then begin
         Result:=false;
         break;
       end;
@@ -2666,10 +2712,10 @@ begin
   // size components
   for i:=0 to FControls.Count-1 do begin
     if Items[i].IsTopLvl then continue;
-    if (Items[i].Component is TControl) then begin
+    if (Items[i].IsTControl) then begin
       if HorizSizing=cssNone then AWidth:=Items[i].Width;
       if VertSizing=cssNone then AHeight:=Items[i].Height;
-      TControl(Items[i].Component).SetBounds(Items[i].Left,Items[i].Top,
+      TControl(Items[i].Persistent).SetBounds(Items[i].Left,Items[i].Top,
         Max(1,AWidth), Max(1,AHeight));
     end;
   end;
@@ -2687,8 +2733,8 @@ begin
   if Percent>1000 then Percent:=1000;
   // size components
   for i:=0 to FControls.Count-1 do begin
-    if Items[i].Component is TControl then begin
-      TControl(Items[i].Component).SetBounds(
+    if Items[i].IsTControl then begin
+      TControl(Items[i].Persistent).SetBounds(
           Items[i].Left,
           Items[i].Top,
           Max(1,(Items[i].Width*Percent) div 100),
@@ -2793,8 +2839,8 @@ function TControlSelection.GetSelectionOwner: TComponent;
 var
   AComponent: TComponent;
 begin
-  if FControls.Count>0 then begin
-    AComponent:=Items[0].Component;
+  if (FControls.Count>0) and (Items[0].IsTComponent) then begin
+    AComponent:=TComponent(Items[0].Persistent);
     if AComponent.Owner<>nil then
       Result:=AComponent.Owner
     else

@@ -1057,14 +1057,14 @@ type
   TPropHookGetComponentNames = procedure(TypeData:PTypeData;
                                          Proc:TGetStringProc) of object;
   TPropHookGetRootClassName = function:ShortString of object;
-  TPropHookBeforeAddComponent = function(Sender: TObject;
-                                         AComponentClass: TComponentClass;
-                                         Parent: TComponent): boolean of object;
+  TPropHookBeforeAddPersistent = function(Sender: TObject;
+                                         APersistentClass: TPersistentClass;
+                                         Parent: TPersistent): boolean of object;
   TPropHookComponentRenamed = procedure(AComponent: TComponent) of object;
-  TPropHookComponentAdded = procedure(AComponent: TComponent; Select: boolean
+  TPropHookPersistentAdded = procedure(APersistent: TPersistent; Select: boolean
                                       ) of object;
-  TPropHookComponentDeleting = procedure(AComponent: TComponent) of object;
-  TPropHookDeleteComponent = procedure(var AComponent: TComponent) of object;
+  TPropHookPersistentDeleting = procedure(APersistent: TPersistent) of object;
+  TPropHookDeletePersistent = procedure(var APersistent: TPersistent) of object;
   TPropHookGetSelection = procedure(const ASelection: TPersistentSelectionList
                                              ) of object;
   TPropHookSetSelection = procedure(const ASelection: TPersistentSelectionList
@@ -1097,12 +1097,12 @@ type
     htGetComponentNames,
     htGetRootClassName,
     htComponentRenamed,
-    htBeforeAddComponent,
-    htComponentAdded,
-    htComponentDeleting,
-    htDeleteComponent,
-    htGetSelectedComponents,
-    htSetSelectedComponents,
+    htBeforeAddPersistent,
+    htPersistentAdded,
+    htPersistentDeleting,
+    htDeletePersistent,
+    htGetSelectedPersistents,
+    htSetSelectedPersistents,
     // persistent objects
     htGetObject,
     htGetObjectName,
@@ -1148,13 +1148,13 @@ type
     function GetComponentName(AComponent: TComponent):ShortString;
     procedure GetComponentNames(TypeData:PTypeData; const Proc:TGetStringProc);
     function GetRootClassName:ShortString;
-    function BeforeAddComponent(Sender: TObject;
-                                AComponentClass: TComponentClass;
-                                Parent: TComponent): boolean;
+    function BeforeAddPersistent(Sender: TObject;
+                                 APersistentClass: TPersistentClass;
+                                 Parent: TPersistent): boolean;
     procedure ComponentRenamed(AComponent: TComponent);
-    procedure ComponentAdded(AComponent: TComponent; Select: boolean);
-    procedure ComponentDeleting(AComponent: TComponent);
-    procedure DeleteComponent(var AComponent: TComponent);
+    procedure PersistentAdded(APersistent: TPersistent; Select: boolean);
+    procedure PersistentDeleting(APersistent: TPersistent);
+    procedure DeletePersistent(var APersistent: TPersistent);
     procedure GetSelection(const ASelection: TPersistentSelectionList);
     procedure SetSelection(const ASelection: TPersistentSelectionList);
     procedure SelectOnlyThis(const APersistent: TPersistent);
@@ -1219,26 +1219,27 @@ type
                            const OnGetRootClassName: TPropHookGetRootClassName);
     procedure RemoveHandlerGetRootClassName(
                            const OnGetRootClassName: TPropHookGetRootClassName);
-    procedure AddHandlerBeforeAddComponent(
-                       const OnBeforeAddComponent: TPropHookBeforeAddComponent);
-    procedure RemoveHandlerBeforeAddComponent(
-                       const OnBeforeAddComponent: TPropHookBeforeAddComponent);
     procedure AddHandlerComponentRenamed(
                            const OnComponentRenamed: TPropHookComponentRenamed);
     procedure RemoveHandlerComponentRenamed(
                            const OnComponentRenamed: TPropHookComponentRenamed);
-    procedure AddHandlerComponentAdded(
-                               const OnComponentAdded: TPropHookComponentAdded);
-    procedure RemoveHandlerComponentAdded(
-                               const OnComponentAdded: TPropHookComponentAdded);
-    procedure AddHandlerComponentDeleting(
-                         const OnComponentDeleting: TPropHookComponentDeleting);
-    procedure RemoveHandlerComponentDeleting(
-                         const OnComponentDeleting: TPropHookComponentDeleting);
-    procedure AddHandlerDeleteComponent(
-                             const OnDeleteComponent: TPropHookDeleteComponent);
-    procedure RemoveHandlerDeleteComponent(
-                             const OnDeleteComponent: TPropHookDeleteComponent);
+    // persistent selection
+    procedure AddHandlerBeforeAddPersistent(
+                       const OnBeforeAddPersistent: TPropHookBeforeAddPersistent);
+    procedure RemoveHandlerBeforeAddPersistent(
+                       const OnBeforeAddPersistent: TPropHookBeforeAddPersistent);
+    procedure AddHandlerPersistentAdded(
+                               const OnPersistentAdded: TPropHookPersistentAdded);
+    procedure RemoveHandlerPersistentAdded(
+                               const OnPersistentAdded: TPropHookPersistentAdded);
+    procedure AddHandlerPersistentDeleting(
+                         const OnPersistentDeleting: TPropHookPersistentDeleting);
+    procedure RemoveHandlerPersistentDeleting(
+                         const OnPersistentDeleting: TPropHookPersistentDeleting);
+    procedure AddHandlerDeletePersistent(
+                             const OnDeletePersistent: TPropHookDeletePersistent);
+    procedure RemoveHandlerDeletePersistent(
+                             const OnDeletePersistent: TPropHookDeletePersistent);
     procedure AddHandlerGetSelection(
                                    const OnGetSelection: TPropHookGetSelection);
     procedure RemoveHandlerGetSelection(
@@ -3305,15 +3306,20 @@ end;
 
 Type
   TCollectionPropertyEditorForm = class(TForm)
+    procedure ListClick(Sender: TObject);
+    procedure AddClick(Sender: TObject);
+    procedure DeleteClick(Sender: TObject);
+    procedure MoveDownButtonClick(Sender: TObject);
+    procedure MoveUpButtonClick(Sender: TObject);
   protected
     CollectionList : TListBox;
     ButtonPanel: TPanel;
     AddButton: TSpeedButton;
     DeleteButton: TSpeedButton;
-    procedure ListClick(Sender: TObject);
-    procedure AddClick(Sender: TObject);
-    procedure DeleteClick(Sender: TObject);
+    MoveUpButton: TSpeedButton;
+    MoveDownButton: TSpeedButton;
     procedure UpdateCaption;
+    procedure UpdateButtons;
   public
     Collection: TCollection;
     PersistentName: string;
@@ -3326,13 +3332,18 @@ const
   CollectionForm : TCollectionPropertyEditorForm = nil;
 
 Constructor TCollectionPropertyEditorForm.Create(TheOwner : TComponent);
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+  h: Integer;
 begin
   Inherited Create(TheOwner);
 
   Position := poDefault;
 
   Height:= 216;
-  Width:= 166;
+  Width:= 220;
 
   ButtonPanel := TPanel.Create(Self);
   With ButtonPanel do begin
@@ -3344,20 +3355,44 @@ begin
     Height:= 41;
   end;
 
+  x:=6;
+  y:=6;
+  w:=43;
+  h:=27;
   AddButton:= TSpeedButton.Create(Self);
   With AddButton do begin
     Parent:= ButtonPanel;
     Caption:= oiscAdd;
     OnClick:= @AddClick;
-    SetBounds(6, 6, 43, 27);
+    SetBounds(x,y,w,h);
+    inc(x,w);
   end;
 
   DeleteButton := TSpeedButton.Create(Self);
   With DeleteButton do begin
     Parent:= ButtonPanel;
     Caption:= oiscDelete;
-    OnClick:= @DeleteCLICK;
-    SetBounds(56, 6, 43, 27);
+    OnClick:= @DeleteClick;
+    SetBounds(x,y,w,h);
+    inc(x,w);
+  end;
+
+  MoveUpButton := TSpeedButton.Create(Self);
+  With MoveUpButton do begin
+    Parent:= ButtonPanel;
+    Caption:= 'Up'; // replace this by up arrow
+    OnClick:=@MoveUpButtonClick;
+    SetBounds(x,y,w,h);
+    inc(x,w);
+  end;
+
+  MoveDownButton := TSpeedButton.Create(Self);
+  With MoveDownButton do begin
+    Parent:= ButtonPanel;
+    Caption:= 'Down'; // replace this by down arrow
+    OnClick:=@MoveDownButtonClick;
+    SetBounds(x,y,w,h);
+    inc(x,w);
   end;
 
   CollectionList := TListBox.Create(Self);
@@ -3382,6 +3417,16 @@ begin
   Caption:=NewCaption;
 end;
 
+procedure TCollectionPropertyEditorForm.UpdateButtons;
+var
+  i: LongInt;
+begin
+  i:=CollectionList.ItemIndex;
+  DeleteButton.Enabled:= i > -1;
+  MoveUpButton.Enabled:=i>0;
+  MoveDownButton.Enabled:=(i>=0) and (i<Collection.Count-1);
+end;
+
 procedure TCollectionPropertyEditorForm.PropagateList;
 var
   I : Longint;
@@ -3402,17 +3447,38 @@ begin
   end;
   CollectionList.Items.EndUpdate;
 
-  DeleteButton.Enabled:= CollectionList.ItemIndex > -1;
+  UpdateButtons;
   UpdateCaption;
 end;
 
+procedure TCollectionPropertyEditorForm.MoveDownButtonClick(Sender: TObject);
+var
+  i: LongInt;
+begin
+  i:=CollectionList.ItemIndex;
+  if i>=Collection.Count-1 then exit;
+  Collection.Items[i].Index:=i+1;
+  CollectionList.ItemIndex:=i+1;
+  PropagateList;
+end;
+
+procedure TCollectionPropertyEditorForm.MoveUpButtonClick(Sender: TObject);
+var
+  i: LongInt;
+begin
+  i:=CollectionList.ItemIndex;
+  if i<=0 then exit;
+  Collection.Items[i].Index:=i-1;
+  CollectionList.ItemIndex:=i-1;
+  PropagateList;
+end;
+
 procedure TCollectionPropertyEditorForm.ListClick(Sender: TObject);
-//var i : integer;
 var
   NewSelection: TPersistentSelectionList;
   i: Integer;
 begin
-  DeleteButton.Enabled := CollectionList.ItemIndex > -1;
+  UpdateButtons;
   UpdateCaption;
   // select in OI
   NewSelection:=TPersistentSelectionList.Create;
@@ -3450,7 +3516,7 @@ begin
         CollectionList.ItemIndex := I;
     end;
   end;
-  DeleteButton.Enabled := CollectionList.ItemIndex > -1;
+  UpdateButtons;
 end;
 
 //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -4961,16 +5027,16 @@ begin
     Result:=LookupRoot.ClassName;
 end;
 
-function TPropertyEditorHook.BeforeAddComponent(Sender: TObject;
-  AComponentClass: TComponentClass; Parent: TComponent): boolean;
+function TPropertyEditorHook.BeforeAddPersistent(Sender: TObject;
+  APersistentClass: TPersistentClass; Parent: TPersistent): boolean;
 var
   i: Integer;
-  Handler: TPropHookBeforeAddComponent;
+  Handler: TPropHookBeforeAddPersistent;
 begin
-  i:=GetHandlerCount(htBeforeAddComponent);
-  while GetNextHandlerIndex(htBeforeAddComponent,i) do begin
-    Handler:=TPropHookBeforeAddComponent(FHandlers[htBeforeAddComponent][i]);
-    Result:=Handler(Sender,AComponentClass,Parent);
+  i:=GetHandlerCount(htBeforeAddPersistent);
+  while GetNextHandlerIndex(htBeforeAddPersistent,i) do begin
+    Handler:=TPropHookBeforeAddPersistent(FHandlers[htBeforeAddPersistent][i]);
+    Result:=Handler(Sender,APersistentClass,Parent);
     if not Result then exit;
   end;
   Result:=true;
@@ -4985,36 +5051,36 @@ begin
     TPropHookComponentRenamed(FHandlers[htComponentRenamed][i])(AComponent);
 end;
 
-procedure TPropertyEditorHook.ComponentAdded(AComponent: TComponent;
+procedure TPropertyEditorHook.PersistentAdded(APersistent: TPersistent;
   Select: boolean);
 var
   i: Integer;
 begin
-  i:=GetHandlerCount(htComponentAdded);
-  while GetNextHandlerIndex(htComponentAdded,i) do
-    TPropHookComponentAdded(FHandlers[htComponentAdded][i])(AComponent,Select);
+  i:=GetHandlerCount(htPersistentAdded);
+  while GetNextHandlerIndex(htPersistentAdded,i) do
+    TPropHookPersistentAdded(FHandlers[htPersistentAdded][i])(APersistent,Select);
 end;
 
-procedure TPropertyEditorHook.ComponentDeleting(AComponent: TComponent);
+procedure TPropertyEditorHook.PersistentDeleting(APersistent: TPersistent);
 var
   i: Integer;
 begin
-  i:=GetHandlerCount(htComponentDeleting);
-  while GetNextHandlerIndex(htComponentDeleting,i) do
-    TPropHookComponentDeleting(FHandlers[htComponentDeleting][i])(AComponent);
+  i:=GetHandlerCount(htPersistentDeleting);
+  while GetNextHandlerIndex(htPersistentDeleting,i) do
+    TPropHookPersistentDeleting(FHandlers[htPersistentDeleting][i])(APersistent);
 end;
 
-procedure TPropertyEditorHook.DeleteComponent(var AComponent: TComponent);
+procedure TPropertyEditorHook.DeletePersistent(var APersistent: TPersistent);
 var
   i: Integer;
 begin
-  if AComponent=nil then exit;
-  i:=GetHandlerCount(htDeleteComponent);
+  if APersistent=nil then exit;
+  i:=GetHandlerCount(htDeletePersistent);
   if i>0 then begin
-    while GetNextHandlerIndex(htDeleteComponent,i) do
-      TPropHookDeleteComponent(FHandlers[htDeleteComponent][i])(AComponent);
+    while GetNextHandlerIndex(htDeletePersistent,i) do
+      TPropHookDeletePersistent(FHandlers[htDeletePersistent][i])(APersistent);
   end else
-    FreeThenNil(AComponent);
+    FreeThenNil(APersistent);
 end;
 
 procedure TPropertyEditorHook.GetSelection(
@@ -5025,9 +5091,9 @@ var
 begin
   if ASelection=nil then exit;
   ASelection.Clear;
-  i:=GetHandlerCount(htGetSelectedComponents);
-  while GetNextHandlerIndex(htGetSelectedComponents,i) do begin
-    Handler:=TPropHookGetSelection(FHandlers[htGetSelectedComponents][i]);
+  i:=GetHandlerCount(htGetSelectedPersistents);
+  while GetNextHandlerIndex(htGetSelectedPersistents,i) do begin
+    Handler:=TPropHookGetSelection(FHandlers[htGetSelectedPersistents][i]);
     Handler(ASelection);
   end;
 end;
@@ -5061,9 +5127,9 @@ begin
   // set selection
   if ASelection=nil then exit;
   //writeln('TPropertyEditorHook.SetSelection A ASelection.Count=',ASelection.Count);
-  i:=GetHandlerCount(htSetSelectedComponents);
-  while GetNextHandlerIndex(htSetSelectedComponents,i) do begin
-    Handler:=TPropHookSetSelection(FHandlers[htSetSelectedComponents][i]);
+  i:=GetHandlerCount(htSetSelectedPersistents);
+  while GetNextHandlerIndex(htSetSelectedPersistents,i) do begin
+    Handler:=TPropHookSetSelection(FHandlers[htSetSelectedPersistents][i]);
     Handler(ASelection);
   end;
   //writeln('TPropertyEditorHook.SetSelection END ASelection.Count=',ASelection.Count);
@@ -5317,16 +5383,16 @@ begin
   RemoveHandler(htGetRootClassName,TMethod(OnGetRootClassName));
 end;
 
-procedure TPropertyEditorHook.AddHandlerBeforeAddComponent(
-  const OnBeforeAddComponent: TPropHookBeforeAddComponent);
+procedure TPropertyEditorHook.AddHandlerBeforeAddPersistent(
+  const OnBeforeAddPersistent: TPropHookBeforeAddPersistent);
 begin
-  AddHandler(htBeforeAddComponent,TMethod(OnBeforeAddComponent));
+  AddHandler(htBeforeAddPersistent,TMethod(OnBeforeAddPersistent));
 end;
 
-procedure TPropertyEditorHook.RemoveHandlerBeforeAddComponent(
-  const OnBeforeAddComponent: TPropHookBeforeAddComponent);
+procedure TPropertyEditorHook.RemoveHandlerBeforeAddPersistent(
+  const OnBeforeAddPersistent: TPropHookBeforeAddPersistent);
 begin
-  RemoveHandler(htBeforeAddComponent,TMethod(OnBeforeAddComponent));
+  RemoveHandler(htBeforeAddPersistent,TMethod(OnBeforeAddPersistent));
 end;
 
 procedure TPropertyEditorHook.AddHandlerComponentRenamed(
@@ -5341,64 +5407,64 @@ begin
   RemoveHandler(htComponentRenamed,TMethod(OnComponentRenamed));
 end;
 
-procedure TPropertyEditorHook.AddHandlerComponentAdded(
-  const OnComponentAdded: TPropHookComponentAdded);
+procedure TPropertyEditorHook.AddHandlerPersistentAdded(
+  const OnPersistentAdded: TPropHookPersistentAdded);
 begin
-  AddHandler(htComponentAdded,TMethod(OnComponentAdded));
+  AddHandler(htPersistentAdded,TMethod(OnPersistentAdded));
 end;
 
-procedure TPropertyEditorHook.RemoveHandlerComponentAdded(
-  const OnComponentAdded: TPropHookComponentAdded);
+procedure TPropertyEditorHook.RemoveHandlerPersistentAdded(
+  const OnPersistentAdded: TPropHookPersistentAdded);
 begin
-  RemoveHandler(htComponentAdded,TMethod(OnComponentAdded));
+  RemoveHandler(htPersistentAdded,TMethod(OnPersistentAdded));
 end;
 
-procedure TPropertyEditorHook.AddHandlerComponentDeleting(
-  const OnComponentDeleting: TPropHookComponentDeleting);
+procedure TPropertyEditorHook.AddHandlerPersistentDeleting(
+  const OnPersistentDeleting: TPropHookPersistentDeleting);
 begin
-  AddHandler(htComponentDeleting,TMethod(OnComponentDeleting));
+  AddHandler(htPersistentDeleting,TMethod(OnPersistentDeleting));
 end;
 
-procedure TPropertyEditorHook.RemoveHandlerComponentDeleting(
-  const OnComponentDeleting: TPropHookComponentDeleting);
+procedure TPropertyEditorHook.RemoveHandlerPersistentDeleting(
+  const OnPersistentDeleting: TPropHookPersistentDeleting);
 begin
-  RemoveHandler(htComponentDeleting,TMethod(OnComponentDeleting));
+  RemoveHandler(htPersistentDeleting,TMethod(OnPersistentDeleting));
 end;
 
-procedure TPropertyEditorHook.AddHandlerDeleteComponent(
-  const OnDeleteComponent: TPropHookDeleteComponent);
+procedure TPropertyEditorHook.AddHandlerDeletePersistent(
+  const OnDeletePersistent: TPropHookDeletePersistent);
 begin
-  AddHandler(htDeleteComponent,TMethod(OnDeleteComponent));
+  AddHandler(htDeletePersistent,TMethod(OnDeletePersistent));
 end;
 
-procedure TPropertyEditorHook.RemoveHandlerDeleteComponent(
-  const OnDeleteComponent: TPropHookDeleteComponent);
+procedure TPropertyEditorHook.RemoveHandlerDeletePersistent(
+  const OnDeletePersistent: TPropHookDeletePersistent);
 begin
-  RemoveHandler(htDeleteComponent,TMethod(OnDeleteComponent));
+  RemoveHandler(htDeletePersistent,TMethod(OnDeletePersistent));
 end;
 
 procedure TPropertyEditorHook.AddHandlerGetSelection(
   const OnGetSelection: TPropHookGetSelection);
 begin
-  AddHandler(htGetSelectedComponents,TMethod(OnGetSelection));
+  AddHandler(htGetSelectedPersistents,TMethod(OnGetSelection));
 end;
 
 procedure TPropertyEditorHook.RemoveHandlerGetSelection(
   const OnGetSelection: TPropHookGetSelection);
 begin
-  RemoveHandler(htGetSelectedComponents,TMethod(OnGetSelection));
+  RemoveHandler(htGetSelectedPersistents,TMethod(OnGetSelection));
 end;
 
 procedure TPropertyEditorHook.AddHandlerSetSelection(
   const OnSetSelection: TPropHookSetSelection);
 begin
-  AddHandler(htSetSelectedComponents,TMethod(OnSetSelection));
+  AddHandler(htSetSelectedPersistents,TMethod(OnSetSelection));
 end;
 
 procedure TPropertyEditorHook.RemoveHandlerSetSelection(
   const OnSetSelection: TPropHookSetSelection);
 begin
-  RemoveHandler(htSetSelectedComponents,TMethod(OnSetSelection));
+  RemoveHandler(htSetSelectedPersistents,TMethod(OnSetSelection));
 end;
 
 procedure TPropertyEditorHook.AddHandlerGetObject(

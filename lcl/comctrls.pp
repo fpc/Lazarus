@@ -405,15 +405,15 @@ type
     destructor Destroy; override;
     procedure Assign(ASource: TPersistent); override;
   published
-    property Alignment: TAlignment read FAlignment write SetAlignment;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property AutoSize: Boolean read FAutoSize write SetAutoSize;
     property Caption: string read FCaption write SetCaption;
-    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex;
-    property MaxWidth: TWidth read FMaxWidth write SetMaxWidth;
-    property MinWidth: TWidth read FMinWidth write SetMinWidth;
-    property Tag: Integer read FTag write FTag;
-    property Visible : Boolean read FVisible write SetVisible;
-    property Width: TWidth read GetWidth write SetWidth;
+    property ImageIndex: TImageIndex read FImageIndex write SetImageIndex default -1;
+    property MaxWidth: TWidth read FMaxWidth write SetMaxWidth default 0;
+    property MinWidth: TWidth read FMinWidth write SetMinWidth default 0;
+    property Tag: Integer read FTag write FTag default 0;
+    property Visible : Boolean read FVisible write SetVisible default true;
+    property Width: TWidth read GetWidth write SetWidth default 50;
   end;
 
 
@@ -2305,6 +2305,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.140  2004/07/24 11:23:56  mattias
+  Designer can now handle TPersistent selections, TCollectionPropertyEditor basically working
+
   Revision 1.139  2004/07/24 00:00:33  mattias
   started TCollectionPropertyEditor
 
