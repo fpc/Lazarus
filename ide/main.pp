@@ -3771,7 +3771,7 @@ begin
 
   // set new project directory
   if OldProjectPath<>Project1.ProjectDirectory then begin
-    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
+    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
       Project1.ProjectDirectory;
     CodeToolBoss.DefineTree.ClearCache;
   end;
@@ -4795,7 +4795,7 @@ writeln('TMainIDE.DoNewProject A');
   // create a virtual project (i.e. unsaved and without real project directory)
   
   // switch codetools to virtual project directory
-  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
+  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
     VirtualDirectory;
 
   // create new project (TProject will automatically create the mainunit)
@@ -5286,7 +5286,7 @@ begin
   end;
 
   // switch codetools to new project directory
-  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
+  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
     ExpandFilename(ExtractFilePath(ProgramBuf.Filename));
 
   // create a new project
@@ -6293,9 +6293,10 @@ procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
 var MacroName:string;
 begin
   if TheMacro=nil then begin
-    MessageDlg('Unknown Macro','Macro not defined: "'+s+'".',
-      mtError,[mbAbort],0);
-    Abort:=true;
+    writeln('WARNING: Macro not defined: "'+s+'".');
+    s:='';
+    //MessageDlg('Unknown Macro','Macro not defined: "'+s+'".',mtError,[mbAbort],0);
+    Handled:=true;
     exit;
   end;
   MacroName:=lowercase(TheMacro.Name);
@@ -6948,7 +6949,7 @@ begin
     Variables[ExternalMacroStart+'FPCSrcDir']:=
       EnvironmentOptions.FPCSourceDirectory;
     Variables[ExternalMacroStart+'LCLWidgetType']:='gtk';
-    Variables[ExternalMacroStart+'ProjectDir']:=VirtualDirectory;
+    Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
   end;
   
   // build DefinePool and Define Tree
@@ -8620,6 +8621,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.544  2003/04/29 09:31:09  mattias
+  changed macro name ProjectDir to ProjPath
+
   Revision 1.543  2003/04/28 20:46:54  mattias
   implemented replacing installed packages
 
