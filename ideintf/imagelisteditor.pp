@@ -55,6 +55,8 @@ const
 
 Type
   {TMenuItemsPropertyEditorDlg}
+
+  Directions = (Up,Down);
   
   //Editor dialog
   TImageListEditorDlg = Class(TForm)
@@ -65,15 +67,26 @@ Type
     fBtnAdd  : TButton;
     fBtnDel  : TButton;
     fBtnClear: TButton;
+    fBtnMoveUp   : TButton;
+    fBtnMoveDown : TButton;
     fDirName : String;
     FModified: boolean;
+    FmnuLVPopupAdd : TMenuItem;
+    FmnuLVPopupDelete : TMenuItem;
+    FmnuLVPopupClear : TMenuItem;
+    FmnuLVPopupMoveUp : TMenuItem;
+    FmnuLVPopupMoveDown : TMenuItem;
     
     procedure OnLVLSelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);
     procedure OnClickAdd(Sender: TObject);
     procedure OnClickDel(Sender: TObject);
     procedure OnClickClear(Sender: TObject);
+    procedure OnClickMoveUp(Sender: TObject);
+    procedure OnClickMoveDown(Sender: TObject);
     procedure SetModified(const AValue: boolean);
+    procedure MoveImageIndex(Direction : Directions);
   public
+    mnuLVPopup : TPopupMenu;
     constructor Create(aOwner: TComponent); override;
 
     //Assign an List images at editor and initialise the
@@ -227,6 +240,16 @@ begin
   end;
 end;
 
+procedure TImageListEditorDlg.OnClickMoveDown(Sender: TObject);
+begin
+  MoveImageIndex(Down);
+end;
+
+procedure TImageListEditorDlg.OnClickMoveUp(Sender: TObject);
+begin
+  MoveImageIndex(Up);
+end;
+  
 procedure TImageListEditorDlg.SetModified(const AValue: boolean);
 begin
   if FModified=AValue then exit;
@@ -247,7 +270,7 @@ begin
   fDirName:=ExtractFilePath(ParamStr(0));
   
   //Sise of window
-  Height:=289;
+  Height:=331;
   Width :=579;
   BorderStyle:=bsSingle;
   Position :=poScreenCenter;
@@ -314,7 +337,7 @@ begin
     Width  :=562;
     Top    :=144;
     Left   :=8;
-    Height :=141;
+    Height :=180;
     Parent :=Self;
     Caption:=sccsILCmbImgList
   end;
@@ -326,7 +349,7 @@ begin
     Left   :=3;
     Width  :=411;
     Top    :=1;
-    Height :=118;
+    Height :=160;
     SmallImages:=fImgL;
     ScrollBars:=sshorizontal;
     fLV.OnSelectItem:=@OnLVLSelectItem;
@@ -369,6 +392,83 @@ begin
     Caption :=sccsILBtnClear;
     OnClick :=@OnClickClear;
   end;
+  
+  fBtnMoveUp:=TButton.Create(self);
+  With fBtnMoveUp do
+  begin
+    Parent  :=Cmp;
+    Top     :=98;
+    Width   :=112;
+    Left    :=430;
+    Height  :=25;
+    //Enabled :=False;
+    Enabled :=True;
+    //Caption :=sccsILBtnClear;
+    Caption := 'Move Up';
+    OnClick := @OnClickMoveUp;
+  end;
+
+  fBtnMoveDown:=TButton.Create(self);
+  With fBtnMoveDown do
+  begin
+    Parent  :=Cmp;
+    Top     :=130;
+    Width   :=112;
+    Left    :=430;
+    Height  :=25;
+    //Enabled :=False;
+    Enabled :=True;
+    //Caption :=sccsILBtnClear;
+    Caption := 'Move Down';
+    OnClick := @OnClickMoveDown;
+  end;
+
+  FmnuLVPopupAdd := TMenuItem.Create(Self);
+  With FmnuLVPopupAdd do
+  begin
+    Caption := 'Add';
+    OnClick := @OnClickAdd;
+  end;
+  
+  FmnuLVPopupDelete := TMenuItem.Create(Self);
+  With FmnuLVPopupDelete do
+  begin
+    Caption := 'Delete';
+    OnClick := @OnClickDel;
+  end;
+
+  FmnuLVPopupClear := TMenuItem.Create(Self);
+  With FmnuLVPopupClear do
+  begin
+    Caption := 'Clear';
+    OnClick := @OnClickClear;
+  end;
+
+  FmnuLVPopupMoveUp := TMenuItem.Create(Self);
+  With FmnuLVPopupMoveUp do
+  begin
+    Caption := 'Move Up';
+    OnClick := @OnClickMoveUp;
+  end;
+
+  FmnuLVPopupMoveDown := TMenuItem.Create(Self);
+  With FmnuLVPopupMoveDown do
+  begin
+    Caption := 'Move Down';
+    OnClick := @OnClickMoveDown;
+  end;
+
+  mnuLVPopup := TPopupMenu.Create(Self);
+  With mnuLVPopup do
+  begin
+    Items.Add(FmnuLVPopupAdd);
+    Items.Add(FmnuLVPopupDelete);
+    Items.Add(FmnuLVPopupClear);
+    Items.Add(FmnuLVPopupMoveUp);
+    Items.Add(FmnuLVPopupMoveDown);
+  end;
+
+  fLV.PopupMenu := mnuLVPopup;
 end;
 
 //Assign an List images at editor
@@ -423,6 +523,27 @@ begin
   end;
 end;
 
+procedure TImageListEditorDlg.MoveImageIndex(Direction : Directions);
+var
+  iSelected : Integer;
+begin
+  //sanity check
+  if fLv.Selected <> nil then
+  begin
+    if (Direction = Up) and (fLv.Selected.Index > 0 ) then
+    begin
+      iSelected := fLv.Selected.Index;
+      fImgL.Move(iSelected,iSelected-1);
+      fLv.Selected := fLv.Items[iSelected - 1];
+      Modified := True;
+    end else if (Direction = Down) and (fLv.Selected.Index < (fLv.Items.Count-1)) then
+    begin
+      fImgL.Move(fLv.Selected.Index,fLv.Selected.Index+1);
+      fLv.Selected := fLv.Items[fLv.Selected.Index + 1];
+      Modified := True;
+    end;
+  end;
+end;
 
 { TImageListComponentEditor }
 
@@ -461,7 +582,7 @@ end;
 
 procedure TImageListComponentEditor.ExecuteVerb(Index: Integer);
 begin
- DoShowEditor;
+  DoShowEditor;
 end;
 
 function TImageListComponentEditor.GetVerb(Index: Integer): string;
