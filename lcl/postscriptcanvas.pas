@@ -1391,7 +1391,7 @@ end;
 
 //Draw an picture with scale size
 procedure TPostscriptPrinterCanvas.StretchDraw(const DestRect: TRect;  SrcGraphic: TGraphic);
-var X,Y,X1,Y1 : Integer;
+var X1,Y1,X2,Y2 : Integer;
     DrawWidth : Integer;
     DrawHeight: Integer;
     ImgWidth  : Integer;
@@ -1402,13 +1402,13 @@ begin
   Changing;
   RequiredState([csHandleValid]);
 
-  X:=DestRect.Left;
-  Y:=DestRect.Top;
-  X1:=DestRect.Right;
-  Y1:=DestRect.Bottom;
+  X1:=DestRect.Left;
+  Y1:=DestRect.Top;
+  X2:=DestRect.Right;
+  Y2:=DestRect.Bottom;
   
-  TranslateCoord(X,Y);
-  TransLateCoord(X1,Y1);
+  TranslateCoord(X1,Y1);
+  TransLateCoord(X2,Y2);
   
   ImgWidth:=SrcGraphic.Width;
   ImgHeight:=SrcGraphic.Height;
@@ -1416,12 +1416,12 @@ begin
   //if not FPImage then draw ab Rectangle because other wise PostScript
   //interpreter wait infinite some RGB datas
   {$ifndef DisableFPImage}
-  DrawWidth:=X1-X;
-  DrawHeight:=Y-Y1;
+  DrawWidth:=X2-X1;
+  DrawHeight:=Y1-Y2;
   ClearBuffer;
 
   WriteB('gsave');
-  writeB(Format('%d %d translate',[X,Y-DrawHeight]));
+  writeB(Format('%d %d translate',[X1,Y1-DrawHeight]));
   WriteB(Format('%d %d scale',[DrawWidth,DrawHeight]));
   WriteB(Format('/scanline %d 3 mul string def',[ImgWidth]));
   WriteB(Format('%d %d %d',[ImgWidth,ImgHeight,8]));
