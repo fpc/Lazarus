@@ -2864,6 +2864,9 @@ writeln('[TMainIDE.DoRunProject] A');
   Ext:=ExtractFileExt(Project.ProjectFile);
   ProgramFilename := LowerCase(copy(Project.ProjectFile,1,
                           length(Project.ProjectFile)-length(Ext)));
+  {$ifdef win32}
+  ProgramFilename:=ProgramFilename+'.exe';
+  {$endif}
 
   if not FileExists(ProgramFilename) then begin
     AText:='No program file "'+ProgramFilename+'" found!';
@@ -3490,8 +3493,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.106  2001/07/06 06:25:37  lazarus
-  MG: fixes for ide speedbuttons, form.showmodal, initial lazarus.dci
+  Revision 1.107  2001/07/06 22:04:27  lazarus
+  MG: fixed Programfilename under win32
 
   Revision 1.105  2001/07/01 15:55:43  lazarus
   MG: JumpToCompilerMessage now centered in source editor
