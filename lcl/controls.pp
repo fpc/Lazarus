@@ -529,6 +529,7 @@ type
     FWidth: Integer;
     FWindowProc: TWndMethod;
     FVisible: Boolean;
+    FTabOrder: integer;
     FTabStop : Boolean;
     procedure DoBeforeMouseMessage;
     procedure DoConstrainedResize(var NewWidth, NewHeight : integer);
@@ -684,7 +685,7 @@ type
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
   public
     FCompStyle : LongInt;
-    Function PerformTab : Boolean; Virtual;
+    Function PerformTab(ForwardTab: boolean): Boolean; Virtual;
     // use overload to simulate default
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer); //overload;
     procedure BeginDrag(Immediate: Boolean); //overload;
@@ -820,16 +821,18 @@ type
     FRealizeBoundsLockCount: integer;
     FHandle: Hwnd;
     FShowing : Boolean;
-    FTabList : TList;
+    FTabList: TList;
     FWinControls : TList;
     procedure AlignControl(AControl : TControl);
     function  GetControl(const Index: Integer): TControl;
     function  GetControlCount: Integer;
     function  GetHandle : HWND;
     function  GetIsResizing: boolean;
+    function GetTabOrder: TTabOrder;
     procedure SetHandle(NewHandle: HWND);
     Procedure SetBorderWidth(Value : TBorderWidth);
     Procedure SetParentCtl3D(Value : Boolean);
+    procedure UpdateTabOrder(NewTabValue: TTabOrder);
   protected
     procedure AdjustSize; override;
     procedure AdjustClientRect(var Rect: TRect); virtual;
@@ -897,9 +900,11 @@ type
     function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoKeyUp(var Message: TLMKey): Boolean;
     Function  FindNextControl(CurrentControl: TControl; GoForward,
-      CheckTabStop, CheckParent, OnlyWinControls: Boolean) : TControl;
+                              CheckTabStop, CheckParent, OnlyWinControls
+                              : Boolean) : TControl;
     Function  FindNextControl(CurrentControl: TWinControl; GoForward,
-      CheckTabStop, CheckParent: Boolean) : TWinControl;
+                              CheckTabStop, CheckParent: Boolean) : TWinControl;
+    procedure FixupTabList;
     function  GetClientOrigin: TPoint; override;
     function  GetClientRect: TRect; override;
     function  GetChildsRect(Scrolled: boolean): TRect; override;
@@ -1496,6 +1501,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.124  2003/06/10 17:23:34  mattias
+  implemented tabstop
+
   Revision 1.123  2003/06/10 12:28:23  mattias
   fixed anchoring controls
 

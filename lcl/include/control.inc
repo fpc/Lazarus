@@ -322,7 +322,10 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.SetTabOrder(Value : TTabOrder);
 Begin
-  UpdateTabOrder(Value);
+  if csLoading in ComponentState then
+    FTabOrder := Value
+  else
+    UpdateTabOrder(Value);
 end;
 
 {------------------------------------------------------------------------------}
@@ -540,10 +543,10 @@ end;
 
 
 
-{------------------------------------------------------------------------------}
-{       TControl.Perform
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.Perform
+
+------------------------------------------------------------------------------}
 Function TControl.Perform(Msg:Cardinal; WParam , LParam : LongInt): LongInt;
 var
   Message : TLMessage;
@@ -556,7 +559,7 @@ begin
     Result := Message.Result;
 end;
 
-Function TControl.PerformTab : Boolean;
+Function TControl.PerformTab(ForwardTab: boolean): Boolean;
 
   Function TopLevelAncestor(TopControl : TControl) : TWinControl;
   begin
@@ -574,11 +577,11 @@ Function TControl.PerformTab : Boolean;
 var
   I : Integer;
   List : TList;
-  FirstFocus, OFocus, NFocus : TControl;
+  FirstFocus, OldFocus, NewFocus : TControl;
   TopLevel : TWinControl;
 begin
-  NFocus := nil;
-  OFocus := nil;
+  NewFocus := nil;
+  OldFocus := nil;
   TopLevel := TopLevelAncestor(Self);
   If TopLevel = nil then
     exit;
@@ -591,7 +594,7 @@ begin
         If I = 0 then
           FirstFocus := TControl(List[I]);
         If TControl(List[I]).Focused then begin
-          OFocus := TControl(List[I]);
+          OldFocus := TControl(List[I]);
           Break;
         end;
       end;
@@ -599,20 +602,23 @@ begin
     List.Free;
   end;
 
-  NFocus := TopLevel.FindNextControl(OFocus,True,True,False,false);
-  If NFocus = OFocus then begin
+  if OldFocus<>nil then
+    NewFocus := TopLevel.FindNextControl(OldFocus,ForwardTab,True,False,False);
+  //if NewFocus<>nil then
+  //  writeln('TControl.PerformTab A ',Name,':',ClassName,' NewFocus=',NewFocus.Name,':',NewFocus.ClassName)
+  //else
+  //  writeln('TControl.PerformTab A ',Name,':',ClassName,' NewFocus=nil');
+
+  If (NewFocus = nil) then NewFocus:=FirstFocus;
+  If NewFocus = OldFocus then begin
     Result := True;
     exit;
   end;
-  If (NFocus <> nil) then begin
-    NFocus.SetFocus;
-    Result := NFocus.Focused;
-  end
-  else
-    If FirstFocus <> nil then begin
-      FirstFocus.SetFocus;
-      Result := FirstFocus.Focused;
-    end;
+  if NewFocus<>nil then begin
+    NewFocus.SetFocus;
+    Result := NewFocus.Focused;
+  end else
+    Result:=true;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2063,6 +2069,7 @@ begin
   FIsControl := False;
   FEnabled := True;
   FHelpType := htContext;
+  FTabOrder := -1;
   TabStop := False;
   //writeln('TControl.Create END ',Name,':',ClassName);
 end;
@@ -2229,6 +2236,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.130  2003/06/10 17:23:34  mattias
+  implemented tabstop
+
   Revision 1.129  2003/06/10 15:58:39  mattias
   started TLabeledEdit
 
