@@ -64,6 +64,8 @@ function CheckFileIsWritable(const Filename: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
 function ForceDirectoryInteractive(Directory: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
+function DeleteFileInteractive(const Filename: string;
+  ErrorButtons: TMsgDlgButtons): TModalResult;
 function SaveStringToFile(const Filename, Content: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
 
@@ -228,6 +230,21 @@ begin
     inc(i);
   end;
   Result:=mrOk;
+end;
+
+function DeleteFileInteractive(const Filename: string;
+  ErrorButtons: TMsgDlgButtons): TModalResult;
+begin
+  repeat
+    Result:=mrOk;
+    if not FileExists(Filename) then exit;
+    if not DeleteFile(Filename) then begin
+      Result:=MessageDlg(lisDeleteFileFailed,
+        Format(lisPkgMangUnableToDeleteFile, ['"', Filename, '"']),
+        mtError,[mbCancel,mbRetry],0);
+      if Result<>mrRetry then exit;
+    end;
+  until false;
 end;
 
 function SaveStringToFile(const Filename, Content: string;

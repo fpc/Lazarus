@@ -152,7 +152,8 @@ type
     function CheckPackageGraphForCompilation(APackage: TLazPackage;
                                  FirstDependency: TPkgDependency;
                                  const Directory: string): TModalResult;
-    function DoPreparePackageOutputDirectory(APackage: TLazPackage): TModalResult;
+    function DoPreparePackageOutputDirectory(APackage: TLazPackage;
+                                             CleanUp: boolean): TModalResult;
     function DoSavePackageCompiledState(APackage: TLazPackage;
                   const CompilerFilename, CompilerParams: string): TModalResult;
     function DoLoadPackageCompiledState(APackage: TLazPackage;
@@ -1137,12 +1138,17 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.DoPreparePackageOutputDirectory(APackage: TLazPackage
-  ): TModalResult;
+function TPkgManager.DoPreparePackageOutputDirectory(APackage: TLazPackage;
+  CleanUp: boolean): TModalResult;
 var
   OutputDir: String;
   StateFile: String;
   PkgSrcDir: String;
+  i: Integer;
+  CurFile: TPkgFile;
+  CompiledUnitExt: String;
+  FPCVersion, FPCRelease, FPCPatch: integer;
+  OutputFileName: String;
 begin
   OutputDir:=APackage.GetOutputDirectory;
   StateFile:=APackage.GetStateFilename;
@@ -1174,6 +1180,20 @@ begin
         PkgSrcDir, '"', #13, APackage.IDAsString]),
       mtError,[mbCancel,mbAbort],0);
     exit;
+  end;
+  
+  // clean up if wanted
+  if CleanUp then begin
+    CodeToolBoss.GetFPCVersionForDirectory(PkgSrcDir,
+                                           FPCVersion,FPCRelease,FPCPatch);
+    CompiledUnitExt:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
+    for i:=0 to APackage.FileCount-1 do begin
+      CurFile:=APackage.Files[i];
+      if not (CurFile.FileType in PkgFileUnitTypes) then continue;
+      OutputFileName:=AppendPathDelim(OutputDir)+CurFile.UnitName+CompiledUnitExt;
+      Result:=DeleteFileInteractive(OutputFileName,[mbIgnore,mbAbort]);
+      if Result in [mrCancel,mrAbort] then exit;
+    end;
   end;
 
   Result:=mrOk;
@@ -2322,7 +2342,7 @@ begin
       CompilePolicies:=[pupAsNeeded];
       if pcfCompileDependenciesClean in Flags then
         Include(CompilePolicies,pupOnRebuildingAll);
-      Result:=CompileRequiredPackages(APackage,nil,Globals,[pupAsNeeded]);
+      Result:=CompileRequiredPackages(APackage,nil,Globals,CompilePolicies);
       if Result<>mrOk then exit;
     end;
 
@@ -2349,7 +2369,7 @@ begin
     
     MessagesView.BeginBlock;
     try
-      Result:=DoPreparePackageOutputDirectory(APackage);
+      Result:=DoPreparePackageOutputDirectory(APackage,pcfCleanCompile in Flags);
       if Result<>mrOk then begin
         DebugLn('TPkgManager.DoCompilePackage DoPreparePackageOutputDirectory failed');
         exit;

@@ -1160,7 +1160,7 @@ function TBuildLazarusOptions.CompiledUnitExt(FPCVersion, FPCRelease: integer
   ): string;
 begin
   Result:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
-  if (AnsiCompareText(TargetOS,'win32')=0)
+  if (CompareText(TargetOS,'win32')=0)
   and (FPCVersion=1) and (FPCRelease=0) then
     Result:='.ppw'
   else
