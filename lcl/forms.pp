@@ -973,6 +973,7 @@ type
     procedure NotifyKeyDownHandler(Sender: TObject;
                                    var Key: Word; Shift: TShiftState);
     procedure ControlKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure ControlKeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure AddOnIdleHandler(Handler: TNotifyEvent;
                          AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
     procedure RemoveOnIdleHandler(Handler: TNotifyEvent);

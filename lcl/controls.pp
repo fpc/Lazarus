@@ -1552,20 +1552,24 @@ type
                            MousePos: TPoint): Boolean; dynamic;
     function  DoMouseWheelDown(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
     function  DoMouseWheelUp(Shift: TShiftState; MousePos: TPoint): Boolean; dynamic;
-    function  DoKeyDown(var Message: TLMKey): Boolean;
+    function  DoKeyDownBeforeInterface(var Message: TLMKey): Boolean;
     function  DoRemainingKeyDown(var Message: TLMKeyDown): Boolean;
-    function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoRemainingKeyPress(var Message: TLMKey): Boolean;
+    function  DoRemainingKeyUp(var Message: TLMKeyDown): Boolean;
+    function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoUTF8KeyPress(var UTF8Key: TUTF8Char): boolean; dynamic;
-    function  DoKeyUp(var Message: TLMKey): Boolean;
+    function  DoKeyUpBeforeInterface(var Message: TLMKey): Boolean;
     function  ChildKey(var Message: TLMKey): boolean; dynamic;
     function  DialogChar(var Message: TLMKey): boolean; override;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); dynamic;
+    procedure ControlKeyUp(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyPress(var Key: char); dynamic;
     procedure KeyUp(var Key: Word; Shift: TShiftState); dynamic;
+    procedure KeyUpBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
+    procedure KeyUpAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure UTF8KeyPress(var UTF8Key: TUTF8Char); dynamic;
   protected
     Function  FindNextControl(CurrentControl: TWinControl; GoForward,
@@ -2946,6 +2950,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.283  2005/02/19 21:54:08  mattias
+  moved LCL navigation key handling to key up, so that interface has the chance to handle keys
+
   Revision 1.282  2005/02/16 22:55:59  mattias
   improved gtk intf file dialog filter  from C Western
 

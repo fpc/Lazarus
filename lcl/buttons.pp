@@ -76,6 +76,7 @@ type
     procedure CreateWnd; override;
     procedure DoSendBtnDefault; virtual;
     procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
+    procedure ControlKeyUp(var Key: Word; Shift: TShiftState); override;
     procedure SetParent(AParent: TWinControl); override;
     procedure RealSetText(const Value: TCaption); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
@@ -392,6 +393,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.90  2005/02/19 21:54:08  mattias
+  moved LCL navigation key handling to key up, so that interface has the chance to handle keys
+
   Revision 1.89  2005/02/19 17:52:56  mattias
   published TButton.OnMouseEnter/Leave, added lcl test for single button
 

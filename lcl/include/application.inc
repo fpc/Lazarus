@@ -1145,13 +1145,18 @@ end;
 
 procedure TApplication.ControlKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
+begin
+end;
+
+procedure TApplication.ControlKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 var
   AControl: TWinControl;
   Form: TCustomForm;
 begin
   if Sender is TWinControl then begin
     AControl:=TWinControl(Sender);
-    //debugln('TApplication.ControlKeyDown A ',Acontrol.Name);
+    //debugln('TApplication.ControlKeyUp A ',Acontrol.Name);
 
     // handle tab keys
     if (Key=VK_Tab) and ((Shift-[ssShift])=[])
@@ -1161,19 +1166,20 @@ begin
       Key:=VK_UNKNOWN;
       AControl.PerformTab(not (ssShift in Shift));
     end;
-    
+
     // check for special actions handled ourselves
     if (Shift = []) and ((Key = VK_RETURN) or (Key = VK_ESCAPE)) then
     begin
       Form := GetParentForm(AControl);
-      //debugln('TApplication.ControlKeyDown B ',DbgSName(Acontrol),' ',DbgSName(Form),' ',dbgs(anoEscapeForCancelControl in Navigation));
+      //debugln('TApplication.ControlKeyUp B ',DbgSName(Acontrol),' ',DbgSName(Form),' ',dbgs(anoEscapeForCancelControl in Navigation));
       if Form<>nil then begin
-        //debugln('TApplication.ControlKeyDown C Form.DefaultControl=',dbgs(Form.DefaultControl),' Form.CancelControl=',dbgs(Form.CancelControl));
+        //debugln('TApplication.ControlKeyUp C Form.DefaultControl=',dbgs(Form.DefaultControl),' Form.CancelControl=',dbgs(Form.CancelControl));
         case Key of
           VK_RETURN:
             if (anoReturnForDefaultControl in Navigation)
             and (Form.DefaultControl <> nil) then
             begin
+              //debugln('TApplication.ControlKeyUp VK_RETURN ',Acontrol.Name);
               Form.DefaultControl.ExecuteDefaultAction;
               Key := VK_UNKNOWN;
             end;
@@ -1182,12 +1188,12 @@ begin
             if (anoEscapeForCancelControl in Navigation) then begin
               if (Form.CancelControl <> nil) then
               begin
-                //debugln('TApplication.ControlKeyDown C ',Acontrol.Name);
+                //debugln('TApplication.ControlKeyUp VK_ESCAPE ',Acontrol.Name);
                 Form.CancelControl.ExecuteCancelAction;
                 Key := VK_UNKNOWN;
               end;
             end;
-            
+
         end;
       end;
     end;
@@ -1377,6 +1383,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.100  2005/02/19 21:54:08  mattias
+  moved LCL navigation key handling to key up, so that interface has the chance to handle keys
+
   Revision 1.99  2005/02/17 18:54:04  mattias
   disabling idle handler during TApplication error handling
 

@@ -61,10 +61,23 @@ end;
 procedure TCustomButton.ControlKeyDown(var Key: Word; Shift: TShiftState);
 begin
   if (Key=VK_RETURN) and (Shift=[]) then begin
+    // some interfaces will handle it with an animation
+    // => let it handle itself
+    // if it does not handle it, we will do it ourselves afterwards
+  end else
+    inherited ControlKeyDown(Key, Shift);
+end;
+
+procedure TCustomButton.ControlKeyUp(var Key: Word; Shift: TShiftState
+  );
+begin
+  if (Key=VK_RETURN) and (Shift=[]) then begin
+    // the interface didn't handle it.
+    debugln('TCustomButton.ControlKeyUp User pressed Return on ',DbgSName(Self),' and interface did not handle it');
     Key:=VK_UNKNOWN;
     Click;
   end else
-    inherited ControlKeyDown(Key, Shift);
+    inherited KeyDownAfterInterface(Key, Shift);
 end;
 
 {------------------------------------------------------------------------------
@@ -223,6 +236,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2005/02/19 21:54:08  mattias
+  moved LCL navigation key handling to key up, so that interface has the chance to handle keys
+
   Revision 1.38  2005/01/14 00:27:05  mattias
   fixed several dialogs to react on esacpe
 

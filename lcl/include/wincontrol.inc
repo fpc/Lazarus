@@ -2371,9 +2371,19 @@ end;
 {------------------------------------------------------------------------------
   TWinControl KeyUp
 ------------------------------------------------------------------------------}
-Procedure TWinControl.KeyUp(var Key: Word; shift : TShiftState);
+Procedure TWinControl.KeyUp(var Key: Word; Shift : TShiftState);
 begin
   if Assigned(FOnKeyUp) then FOnKeyUp(Self, Key, Shift);
+end;
+
+procedure TWinControl.KeyUpBeforeInterface(var Key: Word; Shift: TShiftState);
+begin
+  KeyUp(Key,Shift);
+end;
+
+procedure TWinControl.KeyUpAfterInterface(var Key: Word; Shift: TShiftState);
+begin
+
 end;
 
 {------------------------------------------------------------------------------
@@ -2417,11 +2427,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TWinControl DoKeyDown
+  TWinControl DoKeyDownBeforeInterface
   
   returns true if handled
 ------------------------------------------------------------------------------}
-function TWinControl.DoKeyDown(Var Message: TLMKey): Boolean;
+function TWinControl.DoKeyDownBeforeInterface(Var Message: TLMKey): Boolean;
 var
   F: TCustomForm;
   ShiftState: TShiftState;
@@ -2446,7 +2456,7 @@ begin
       if (AParent is TCustomForm) then begin
         F := TCustomForm(AParent);
         if  (F.KeyPreview)
-        and (F.DoKeyDown(Message)) then Exit;
+        and (F.DoKeyDownBeforeInterface(Message)) then Exit;
       end;
       AParent:=AParent.Parent;
     end;
@@ -2607,6 +2617,26 @@ begin
   end;
 end;
 
+function TWinControl.DoRemainingKeyUp(var Message: TLMKeyDown): Boolean;
+var
+  ShiftState: TShiftState;
+begin
+  Result:=true;
+
+  ShiftState := KeyDataToShiftState(Message.KeyData);
+
+  // handle LCL special keys
+  ControlKeyUp(Message.CharCode,ShiftState);
+  if Message.CharCode=VK_UNKNOWN then exit;
+
+  if not (csNoStdEvents in ControlStyle) then
+  begin
+    KeyUpAfterInterface(Message.CharCode, ShiftState);
+    if Message.CharCode=VK_UNKNOWN then exit;
+    // Note: Message.CharCode can now be different or even 0
+  end;
+end;
+
 {------------------------------------------------------------------------------
   TWinControl DoUTF8KeyPress
 
@@ -2639,11 +2669,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TWinControl DoKeyUp
+  TWinControl DoKeyUpBeforeInterface
 
   Returns True if key handled
 ------------------------------------------------------------------------------}
-Function TWinControl.DoKeyUp(Var Message : TLMKey): Boolean;
+Function TWinControl.DoKeyUpBeforeInterface(Var Message : TLMKey): Boolean;
 var
   F: TCustomForm;
   ShiftState: TShiftState;
@@ -2657,7 +2687,7 @@ begin
     if (AParent is TCustomForm) then begin
       F := TCustomForm(AParent);
       if  (F.KeyPreview)
-      and (F.DoKeyUp(Message)) then Exit;
+      and (F.DoKeyUpBeforeInterface(Message)) then Exit;
     end;
     AParent:=AParent.Parent;
   end;
@@ -2688,6 +2718,11 @@ end;
 procedure TWinControl.ControlKeyDown(var Key: Word; Shift: TShiftState);
 begin
   Application.ControlKeyDown(Self,Key,Shift);
+end;
+
+procedure TWinControl.ControlKeyUp(var Key: Word; Shift: TShiftState);
+begin
+  Application.ControlKeyUp(Self,Key,Shift);
 end;
 
 {------------------------------------------------------------------------------
@@ -3448,7 +3483,7 @@ end;
 procedure TWinControl.CNKeyDown(var Message: TLMKeyDown);
 begin
   //DebugLn('TWinControl.CNKeyDown ',Name,':',ClassName);
-  if not DoKeyDown(Message) then {inherited};  // there is nothing to inherit
+  if not DoKeyDownBeforeInterface(Message) then {inherited};  // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3456,7 +3491,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNSysKeyDown(var Message: TLMKeyDown);
 begin
-  if not DoKeyDown(Message) then {inherited};  // there is nothing to inherit
+  if not DoKeyDownBeforeInterface(Message) then {inherited};  // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3464,7 +3499,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNSysKeyUp(var Message: TLMKeyUp);
 begin
-  if not DoKeyUp(Message) then {inherited}; // there is nothing to inherit
+  if not DoKeyUpBeforeInterface(Message) then {inherited}; // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3476,7 +3511,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.CNKeyUp(var Message: TLMKeyUp);
 begin
-  if not DoKeyUp(Message) then {inherited}; // there is nothing to inherit
+  if not DoKeyUpBeforeInterface(Message) then {inherited}; // there is nothing to inherit
 end;
 
 {------------------------------------------------------------------------------
@@ -3644,7 +3679,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMSysKeyUp(var Message: TLMKeyUp);
 begin
-  { DoRemainingKeyUp ? }
+  DoRemainingKeyUp(Message);
 end;
 
 {------------------------------------------------------------------------------
@@ -3656,7 +3691,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyUp(Var Message: TLMKeyUp);
 Begin
-  { DoRemainingKeyUp ? }
+  DoRemainingKeyUp(Message);
 end;
 
 {------------------------------------------------------------------------------
@@ -4453,6 +4488,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.313  2005/02/19 21:54:08  mattias
+  moved LCL navigation key handling to key up, so that interface has the chance to handle keys
+
   Revision 1.312  2005/02/07 11:04:06  micha
   make cn_,wm_ keyup and syskeyup more symmetric with keydown
 

@@ -997,12 +997,12 @@ procedure TGTK2WidgetSet.SetCallback(const AMsg: LongInt; const AGTKObject: PGTK
     //debugln('gtk2object ConnectKeyPressReleaseEvents A ALCLObject=',DbgSName(ALCLObject));
     ConnectSenderSignal(AnObject,
       'key-press-event', @GTK2KeyDown, GDK_KEY_PRESS_MASK);
-    //ConnectSenderSignalAfter(AnObject,
-    //  'key-press-event', @GTK2KeyDownAfter, GDK_KEY_PRESS_MASK);
-    //ConnectSenderSignal(AnObject,
-    //  'key-release-event', @GTK2KeyUp, GDK_KEY_RELEASE_MASK);
-    //ConnectSenderSignalAfter(AnObject,
-    //  'key-release-event', @GTK2KeyUpAfter, GDK_KEY_RELEASE_MASK);
+    ConnectSenderSignalAfter(AnObject,
+      'key-press-event', @GTK2KeyDownAfter, GDK_KEY_PRESS_MASK);
+    ConnectSenderSignal(AnObject,
+      'key-release-event', @GTK2KeyUp, GDK_KEY_RELEASE_MASK);
+    ConnectSenderSignalAfter(AnObject,
+      'key-release-event', @GTK2KeyUpAfter, GDK_KEY_RELEASE_MASK);
   end;
 
 var
@@ -1521,6 +1521,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.26  2005/02/19 21:54:08  mattias
+  moved LCL navigation key handling to key up, so that interface has the chance to handle keys
+
   Revision 1.25  2005/02/19 20:33:10  mattias
   fixed gtk2 key handle result
 
