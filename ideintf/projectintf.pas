@@ -22,17 +22,19 @@ unit ProjectIntf;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, FileUtil;
+  Classes, SysUtils, LCLProc, FileUtil, NewItemIntf;
   
 const
-  FileDescNamePascalUnit = 'unit';
-  FileDescNameLCLForm = 'form';
-  FileDescNameDatamodule = 'datamodule';
-  FileDescNameText = 'text';
+  FileDescGroupName = 'File';
+  FileDescNamePascalUnit = 'Unit';
+  FileDescNameLCLForm = 'Form';
+  FileDescNameDatamodule = 'Datamodule';
+  FileDescNameText = 'Text';
   
-  ProjDescNameApplication = 'application';
-  ProjDescNameProgram = 'program';
-  ProjDescNameCustomProgram = 'custom program';
+  ProjDescGroupName = 'Project';
+  ProjDescNameApplication = 'Application';
+  ProjDescNameProgram = 'Program';
+  ProjDescNameCustomProgram = 'Custom Program';
 
 type
   { TLazCompilerOptions }
@@ -262,9 +264,19 @@ type
                                       write SetIsPartOfProject;
     property Filename: string read GetFilename;
   end;
+  TLazProjectFileClass = class of TLazProjectFile;
   
 
-  { TProjectFileDescriptor }
+  { TProjectFileDescriptor
+  
+    ResourceClass: When the IDE creates a new unit of this type the IDE will
+                   create a direct descendant from this class.
+                   You should also register this class, so that, when the IDE
+                   opens a unit with such a type
+                   (i.e. 'TMyResouceClass1 = class(TMyResouceClass)')
+                   it creates the correct class type. Just call somewhere once
+                   RegisterClass(ResourceClass);
+                   }
 
   TProjectFileDescriptor = class(TPersistent)
   private
@@ -314,8 +326,23 @@ type
     property IsPascalUnit: boolean read FIsPascalUnit write FIsPascalUnit;
     property AddToProject: boolean read FAddToProject write FAddToProject;
   end;
+  TProjectFileDescriptorClass = class of TProjectFileDescriptor;
   
   
+  { TNewItemProjectFile - a new item for project file descriptors }
+
+  TNewItemProjectFile = class(TNewIDEItemTemplate)
+  private
+    FDescriptor: TProjectFileDescriptor;
+  public
+    function LocalizedName: string; override;
+    function Description: string; override;
+    procedure Assign(Source: TPersistent); override;
+  public
+    property Descriptor: TProjectFileDescriptor read FDescriptor write FDescriptor;
+  end;
+
+
   { TFileDescPascalUnit }
 
   TFileDescPascalUnit = class(TProjectFileDescriptor)
@@ -353,12 +380,14 @@ type
     function Count: integer; virtual; abstract;
     function GetUniqueName(const Name: string): string; virtual; abstract;
     function IndexOf(const Name: string): integer; virtual; abstract;
+    function IndexOf(FileDescriptor: TProjectFileDescriptor): integer; virtual; abstract;
     function FindByName(const Name: string): TProjectFileDescriptor; virtual; abstract;
     procedure RegisterFileDescriptor(FileDescriptor: TProjectFileDescriptor); virtual; abstract;
     procedure UnregisterFileDescriptor(FileDescriptor: TProjectFileDescriptor); virtual; abstract;
   public
     property Items[Index: integer]: TProjectFileDescriptor read GetItems; default;
   end;
+
   
 var
   ProjectFileDescriptors: TProjectFileDescriptors; // will be set by the IDE
@@ -409,6 +438,21 @@ type
     property Flags: TProjectFlags read FFlags write SetFlags;
     property DefaultExt: string read FDefaultExt write FDefaultExt;
   end;
+  TProjectDescriptorClass = class of TProjectDescriptor;
+
+
+  { TNewItemProject - a new item for project descriptors }
+
+  TNewItemProject = class(TNewIDEItemTemplate)
+  private
+    FDescriptor: TProjectDescriptor;
+  public
+    function LocalizedName: string; override;
+    function Description: string; override;
+    procedure Assign(Source: TPersistent); override;
+  public
+    property Descriptor: TProjectDescriptor read FDescriptor write FDescriptor;
+  end;
 
 
   { TLazProject - interface class to a Lazarus project }
@@ -447,6 +491,7 @@ type
     property LazCompilerOptions: TLazCompilerOptions read FLazCompilerOptions
                                                      write SetLazCompilerOptions;
   end;
+  TLazProjectClass = class of TLazProject;
 
 
   { TProjectDescriptors }
@@ -458,12 +503,14 @@ type
     function Count: integer; virtual; abstract;
     function GetUniqueName(const Name: string): string; virtual; abstract;
     function IndexOf(const Name: string): integer; virtual; abstract;
+    function IndexOf(Descriptor: TProjectDescriptor): integer; virtual; abstract;
     function FindByName(const Name: string): TProjectDescriptor; virtual; abstract;
     procedure RegisterDescriptor(Descriptor: TProjectDescriptor); virtual; abstract;
     procedure UnregisterDescriptor(Descriptor: TProjectDescriptor); virtual; abstract;
   public
     property Items[Index: integer]: TProjectDescriptor read GetItems; default;
   end;
+  TProjectDescriptorsClass = class of TProjectDescriptors;
 
 var
   ProjectDescriptors: TProjectDescriptors; // will be set by the IDE
@@ -492,8 +539,36 @@ const
 function ProjectFlagsToStr(Flags: TProjectFlags): string;
 
 
+procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
+procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor);
+
+
 implementation
 
+
+procedure RegisterProjectFileDescriptor(FileDesc: TProjectFileDescriptor);
+var
+  NewItemFile: TNewItemProjectFile;
+begin
+  ProjectFileDescriptors.RegisterFileDescriptor(FileDesc);
+  if FileDesc.VisibleInNewDialog then begin
+    NewItemFile:=TNewItemProjectFile.Create(FileDesc.Name,niifCopy,[niifCopy]);
+    NewItemFile.Descriptor:=FileDesc;
+    RegisterNewDialogItem(FileDescGroupName,NewItemFile);
+  end;
+end;
+
+procedure RegisterProjectDescriptor(ProjDesc: TProjectDescriptor);
+var
+  NewItemProject: TNewItemProject;
+begin
+  ProjectDescriptors.RegisterDescriptor(ProjDesc);
+  if ProjDesc.VisibleInNewDialog then begin
+    NewItemProject:=TNewItemProject.Create(ProjDesc.Name,niifCopy,[niifCopy]);
+    NewItemProject.Descriptor:=ProjDesc;
+    RegisterNewDialogItem(ProjDescGroupName,NewItemProject);
+  end;
+end;
 
 function FileDescriptorUnit: TProjectFileDescriptor;
 begin
@@ -836,6 +911,44 @@ constructor TLazCompilerOptions.Create(const TheOwner: TObject);
 begin
   inherited Create;
   FOwner := TheOwner;
+end;
+
+{ TNewItemProjectFile }
+
+function TNewItemProjectFile.LocalizedName: string;
+begin
+  Result:=Descriptor.GetLocalizedName;
+end;
+
+function TNewItemProjectFile.Description: string;
+begin
+  Result:=Descriptor.GetLocalizedDescription;
+end;
+
+procedure TNewItemProjectFile.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TNewItemProjectFile then
+    FDescriptor:=TNewItemProjectFile(Source).Descriptor;
+end;
+
+{ TNewItemProject }
+
+function TNewItemProject.LocalizedName: string;
+begin
+  Result:=Descriptor.GetLocalizedName;
+end;
+
+function TNewItemProject.Description: string;
+begin
+  Result:=Descriptor.GetLocalizedDescription;
+end;
+
+procedure TNewItemProject.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TNewItemProject then
+    FDescriptor:=TNewItemProject(Source).Descriptor;
 end;
 
 initialization

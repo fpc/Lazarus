@@ -70,14 +70,14 @@ uses
   DefineTemplates,
   // IDE interface
   AllIDEIntf, ObjectInspector, PropEdits, IDECommands, SrcEditorIntf,
-  LazIDEIntf,
+  NewItemIntf, PackageIntf, ProjectIntf, LazIDEIntf,
   // synedit
   SynEditKeyCmds,
   // compile
   Compiler, CompilerOptions, CompilerOptionsDlg, CheckCompilerOpts,
   ImExportCompilerOpts,
   // projects
-  ProjectIntf, Project, ProjectDefs, NewProjectDlg, ProjectOpts,
+  Project, ProjectDefs, NewProjectDlg, ProjectOpts,
   PublishProjectDlg, ProjectInspector,
   // help manager
   HelpManager,
@@ -959,7 +959,7 @@ begin
   ConnectMainBarEvents;
   
   // create main IDE register items
-  NewIDEItems:=TNewIDEItemCategories.Create;
+  NewIDEItems:=TNewLazIDEItemCategories.Create;
   SetupStandardProjectTypes;
 
   // initialize the other IDE managers
@@ -1548,69 +1548,23 @@ begin
 end;
 
 procedure TMainIDE.SetupStandardProjectTypes;
-var
-  FileDescPascalUnit: TFileDescPascalUnit;
-  FileDescPascalUnitWithForm: TFileDescPascalUnitWithForm;
-  FileDescPascalUnitWithDataModule: TFileDescPascalUnitWithDataModule;
-  FileDescText: TFileDescText;
-  FileDescSimplePascalProgram: TFileDescSimplePascalProgram;
-  ProjDescApplication: TProjectApplicationDescriptor;
-  ProjDescProgram: TProjectProgramDescriptor;
-  ProjDescCustomProgram: TProjectManualProgramDescriptor;
-  i: Integer;
-  NewItemFile: TNewItemProjectFile;
-  NewItemProject: TNewItemProject;
-  FileItem: TProjectFileDescriptor;
-  ProjectItem: TProjectDescriptor;
 begin
-  // file descriptors ----------------------------------------------------------
+  NewIDEItems.Add(TNewLazIDEItemCategoryFile.Create(FileDescGroupName));
+  NewIDEItems.Add(TNewLazIDEItemCategoryProject.Create(ProjDescGroupName));
+
+  // file descriptors
   LazProjectFileDescriptors:=TLazProjectFileDescriptors.Create;
-  // basic pascal unit
-  FileDescPascalUnit:=TFileDescPascalUnit.Create;
-  LazProjectFileDescriptors.RegisterFileDescriptor(FileDescPascalUnit);
-  // pascal unit with form
-  FileDescPascalUnitWithForm:=TFileDescPascalUnitWithForm.Create;
-  LazProjectFileDescriptors.RegisterFileDescriptor(FileDescPascalUnitWithForm);
-  // pascal unit with datamodule
-  FileDescPascalUnitWithDataModule:=TFileDescPascalUnitWithDataModule.Create;
-  LazProjectFileDescriptors.RegisterFileDescriptor(FileDescPascalUnitWithDataModule);
-  // simple pascal program
-  FileDescSimplePascalProgram:=TFileDescSimplePascalProgram.Create;
-  LazProjectFileDescriptors.RegisterFileDescriptor(FileDescSimplePascalProgram);
-  // empty text file
-  FileDescText:=TFileDescText.Create;
-  LazProjectFileDescriptors.RegisterFileDescriptor(FileDescText);
-  
-  // project descriptors -------------------------------------------------------
+  RegisterProjectFileDescriptor(TFileDescPascalUnit.Create);
+  RegisterProjectFileDescriptor(TFileDescPascalUnitWithForm.Create);
+  RegisterProjectFileDescriptor(TFileDescPascalUnitWithDataModule.Create);
+  RegisterProjectFileDescriptor(TFileDescSimplePascalProgram.Create);
+  RegisterProjectFileDescriptor(TFileDescText.Create);
+
+  // project descriptors
   LazProjectDescriptors:=TLazProjectDescriptors.Create;
-  // application
-  ProjDescApplication:=TProjectApplicationDescriptor.Create;
-  LazProjectDescriptors.RegisterDescriptor(ProjDescApplication);
-  // program
-  ProjDescProgram:=TProjectProgramDescriptor.Create;
-  LazProjectDescriptors.RegisterDescriptor(ProjDescProgram);
-  // custom program
-  ProjDescCustomProgram:=TProjectManualProgramDescriptor.Create;
-  LazProjectDescriptors.RegisterDescriptor(ProjDescCustomProgram);
-
-  NewIDEItems.Add(TNewIDEItemCategoryFile.Create('File'));
-  NewIDEItems.Add(TNewIDEItemCategoryProject.Create('Project'));
-
-  // TODO: move this mechanism to LazProjectFileDescriptors.RegisterFileDescriptor
-  for i:=0 to LazProjectFileDescriptors.Count-1 do begin
-    FileItem:=LazProjectFileDescriptors[i];
-    if not FileItem.VisibleInNewDialog then continue;
-    NewItemFile:=TNewItemProjectFile.Create(FileItem.Name,niifCopy,[niifCopy]);
-    NewItemFile.Descriptor:=FileItem;
-    RegisterNewDialogItem('File',NewItemFile);
-  end;
-  for i:=0 to LazProjectDescriptors.Count-1 do begin
-    ProjectItem:=LazProjectDescriptors[i];
-    if not ProjectItem.VisibleInNewDialog then continue;
-    NewItemProject:=TNewItemProject.Create(ProjectItem.Name,niifCopy,[niifCopy]);
-    NewItemProject.Descriptor:=ProjectItem;
-    RegisterNewDialogItem('Project',NewItemProject);
-  end;
+  RegisterProjectDescriptor(TProjectApplicationDescriptor.Create);
+  RegisterProjectDescriptor(TProjectProgramDescriptor.Create);
+  RegisterProjectDescriptor(TProjectManualProgramDescriptor.Create);
 end;
 
 procedure TMainIDE.SetRecentFilesMenu;
@@ -11011,6 +10965,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.796  2004/11/22 21:39:39  mattias
+  implemented registration functions for project, file and package types, added cgilazide package
+
   Revision 1.795  2004/11/20 11:49:15  mattias
   implemented stopping project on close project
 

@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Laz_XMLCfg, Forms, SynRegExpr, FileUtil, LCLProc,
-  ProjectIntf,
+  NewItemIntf, ProjectIntf,
   LazarusIDEStrConsts, PublishModule;
 
 type
@@ -79,6 +79,7 @@ type
     function Count: integer; override;
     function GetUniqueName(const Name: string): string; override;
     function IndexOf(const Name: string): integer; override;
+    function IndexOf(FileDescriptor: TProjectFileDescriptor): integer; override;
     function FindByName(const Name: string): TProjectFileDescriptor; override;
     procedure RegisterFileDescriptor(FileDescriptor: TProjectFileDescriptor); override;
     procedure UnregisterFileDescriptor(FileDescriptor: TProjectFileDescriptor); override;
@@ -86,6 +87,7 @@ type
   public
     property DefaultPascalFileExt: string read FDefaultPascalFileExt write SetDefaultPascalFileExt;
   end;
+  
   
   { TLazProjectDescriptors }
 
@@ -101,6 +103,7 @@ type
     function Count: integer; override;
     function GetUniqueName(const Name: string): string; override;
     function IndexOf(const Name: string): integer; override;
+    function IndexOf(Descriptor: TProjectDescriptor): integer; override;
     function FindByName(const Name: string): TProjectDescriptor; override;
     procedure RegisterDescriptor(Descriptor: TProjectDescriptor); override;
     procedure UnregisterDescriptor(Descriptor: TProjectDescriptor); override;
@@ -999,6 +1002,14 @@ begin
     dec(Result);
 end;
 
+function TLazProjectFileDescriptors.IndexOf(
+  FileDescriptor: TProjectFileDescriptor): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (Items[Result]<>FileDescriptor) do
+    dec(Result);
+end;
+
 function TLazProjectFileDescriptors.FindByName(const Name: string
   ): TProjectFileDescriptor;
 var
@@ -1020,11 +1031,19 @@ begin
     raise Exception.Create('TLazProjectFileDescriptors.RegisterFileDescriptor FileDescriptor.Name empty');
   if FileDescriptor.DefaultFilename='' then
     raise Exception.Create('TLazProjectFileDescriptors.RegisterFileDescriptor FileDescriptor.DefaultFilename empty');
+  if IndexOf(FileDescriptor)>=0 then
+    raise Exception.Create('TLazProjectFileDescriptors.RegisterFileDescriptor FileDescriptor already registered');
+  // make name unique
   FileDescriptor.Name:=GetUniqueName(FileDescriptor.Name);
   DefPasExt:=DefaultPascalFileExt;
   if DefPasExt<>'' then
     FileDescriptor.UpdateDefaultPascalFileExtension(DefPasExt);
   FItems.Add(FileDescriptor);
+  
+  // register ResourceClass, so that the IDE knows, what means
+  // '= class(<ResourceClass.ClassName>)'
+  if FileDescriptor.ResourceClass<>nil then
+    RegisterClass(FileDescriptor.ResourceClass);
 end;
 
 procedure TLazProjectFileDescriptors.UnregisterFileDescriptor(
@@ -1100,6 +1119,14 @@ begin
     dec(Result);
 end;
 
+function TLazProjectDescriptors.IndexOf(Descriptor: TProjectDescriptor
+  ): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (Items[Result]<>Descriptor) do
+    dec(Result);
+end;
+
 function TLazProjectDescriptors.FindByName(const Name: string
   ): TProjectDescriptor;
 var
@@ -1117,8 +1144,12 @@ procedure TLazProjectDescriptors.RegisterDescriptor(
 begin
   if Descriptor.Name='' then
     raise Exception.Create('TLazProjectDescriptors.RegisterDescriptor Descriptor.Name empty');
+  if IndexOf(Descriptor)>=0 then
+    raise Exception.Create('TLazProjectDescriptors.RegisterDescriptor Descriptor already registered');
   Descriptor.Name:=GetUniqueName(Descriptor.Name);
   FItems.Add(Descriptor);
+  if Descriptor.VisibleInNewDialog then
+    ;
 end;
 
 procedure TLazProjectDescriptors.UnregisterDescriptor(

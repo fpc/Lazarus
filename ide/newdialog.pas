@@ -41,57 +41,28 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, StdCtrls, Buttons, ComCtrls,
-  Dialogs, LResources, ProjectIntf, PackageIntf,
+  Dialogs, LResources, ProjectIntf, PackageIntf, NewItemIntf,
   IDEOptionDefs, LazarusIDEStrConsts;
   
 type
-  // Items that can be created in the IDE:
-  {TNewIDEItemType = (
-    niiNone,
-    niiCustom,     // for experts (IDE plugins)
-    
-    niiUnit,       // pascal unit
-    niiForm,       // pascal unit with lcl form
-    niiDataModule, // pascal nuit with datamodule
-    niiText,       // text file
-    
-    niiApplication,// Project: Application
-    niiFPCProject, // Project: with hidden main file
-    niiCustomProject,// Project: pascal program without any specials
-    
-    niiPackage     // standard package
-  );
-  TNewIDEItemTypes = set of TNewIDEItemType;}
+  { TNewLazIDEItemCategory }
 
-  // Flags/Options for the items
-  TNewIDEItemFlag = (
-    niifCopy,
-    niifInherited,
-    niifUse
-    );
-  TNewIDEItemFlags = set of TNewIDEItemFlag;
-
-  TNewIDEItemTemplate = class;
-
-
-  { TNewIDEItemCategory }
-  
-  TNewIDEItemCategory = class
+  TNewLazIDEItemCategory = class(TNewIDEItemCategory)
   private
     FItems: TList;
-    FName: string;
-    function GetCount: integer;
-    function GetItems(Index: integer): TNewIDEItemTemplate;
+  protected
+    function GetCount: integer; override;
+    function GetItems(Index: integer): TNewIDEItemTemplate; override;
   public
     constructor Create;
-    constructor Create(const AName: string);
+    constructor Create(const AName: string); override;
     destructor Destroy; override;
-    procedure Clear;
-    procedure Add(ATemplate: TNewIDEItemTemplate);
-    function LocalizedName: string; virtual;
-    function Description: string; virtual;
-    function IndexOfCategory(const CategoryName: string): integer;
-    function FindCategoryByName(const CategoryName: string): TNewIDEItemCategory;
+    procedure Clear; override;
+    procedure Add(ATemplate: TNewIDEItemTemplate); override;
+    function LocalizedName: string;  override;
+    function Description: string;  override;
+    function IndexOfCategory(const CategoryName: string): integer; override;
+    function FindCategoryByName(const CategoryName: string): TNewIDEItemCategory; override;
   public
     property Count: integer read GetCount;
     property Items[Index: integer]: TNewIDEItemTemplate read GetItems; default;
@@ -99,121 +70,54 @@ type
   end;
   
 
-  { TNewIDEItemCategories }
+  { TNewLazIDEItemCategories }
   
-  TNewIDEItemCategories = class
+  TNewLazIDEItemCategories = class(TNewIDEItemCategories)
   private
     FItems: TList;
-    function GetItems(Index: integer): TNewIDEItemCategory;
-    procedure SetItems(Index: integer; const AValue: TNewIDEItemCategory);
+  protected
+    function GetItems(Index: integer): TNewIDEItemCategory; override;
+    procedure SetItems(Index: integer; const AValue: TNewIDEItemCategory); override;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Clear;
-    procedure Add(ACategory: TNewIDEItemCategory);
-    function Count: integer;
-    function IndexOf(const CategoryName: string): integer;
-    function FindByName(const CategoryName: string): TNewIDEItemCategory;
-    procedure RegisterItem(const Paths: string; NewItem: TNewIDEItemTemplate);
-    procedure UnregisterItem(NewItem: TNewIDEItemTemplate);
+    procedure Clear; override;
+    procedure Add(ACategory: TNewIDEItemCategory); override;
+    function Count: integer; override;
+    function IndexOf(const CategoryName: string): integer; override;
+    function FindByName(const CategoryName: string): TNewIDEItemCategory; override;
+    procedure RegisterItem(const Paths: string; NewItem: TNewIDEItemTemplate); override;
+    procedure UnregisterItem(NewItem: TNewIDEItemTemplate); override;
     function FindCategoryByPath(const Path: string;
-                                 ErrorOnNotFound: boolean): TNewIDEItemCategory;
-  public
-    property Items[Index: integer]: TNewIDEItemCategory
-                                          read GetItems write SetItems; default;
+                                ErrorOnNotFound: boolean): TNewIDEItemCategory; override;
   end;
 
 
-  { TNewIDEItemTemplate }
-  
-  TNewIDEItemTemplate = class(TPersistent)
-  private
-    FAllowedFlags: TNewIDEItemFlags;
-    FDefaultFlag: TNewIDEItemFlag;
-    FName: string;
-    fCategory: TNewIDEItemCategory;
-  public
-    constructor Create(const AName: string; ADefaultFlag: TNewIDEItemFlag;
-                       TheAllowedFlags: TNewIDEItemFlags);
-    function LocalizedName: string; virtual;
-    function Description: string; virtual;
-    function CreateCopy: TNewIDEItemTemplate; virtual;
-    procedure Assign(Source: TPersistent); override;
-  public
-    property DefaultFlag: TNewIDEItemFlag read FDefaultFlag;
-    property AllowedFlags: TNewIDEItemFlags read FAllowedFlags;
-    property Name: string read FName;
-    property Category: TNewIDEItemCategory read fCategory; // main category
-  end;
-  TNewIDEItemTemplateClass = class of TNewIDEItemTemplate;
-  
   //----------------------------------------------------------------------------
   // standard categories for new dialog
 
-  { TNewIDEItemCategoryFile }
+  { TNewLazIDEItemCategoryFile }
 
-  TNewIDEItemCategoryFile = class(TNewIDEItemCategory)
+  TNewLazIDEItemCategoryFile = class(TNewLazIDEItemCategory)
   public
     function LocalizedName: string; override;
     function Description: string; override;
   end;
 
-  { TNewIDEItemCategoryProject }
+  { TNewLazIDEItemCategoryProject }
 
-  TNewIDEItemCategoryProject = class(TNewIDEItemCategory)
+  TNewLazIDEItemCategoryProject = class(TNewLazIDEItemCategory)
   public
     function LocalizedName: string; override;
     function Description: string; override;
   end;
 
-  { TNewIDEItemCategoryPackage }
+  { TNewLazIDEItemCategoryPackage }
 
-  TNewIDEItemCategoryPackage = class(TNewIDEItemCategory)
+  TNewLazIDEItemCategoryPackage = class(TNewLazIDEItemCategory)
   public
     function LocalizedName: string; override;
     function Description: string; override;
-  end;
-
-  //----------------------------------------------------------------------------
-  // standard items for new dialog
-  
-  { TNewItemProjectFile - a new item for project file descriptors }
-  
-  TNewItemProjectFile = class(TNewIDEItemTemplate)
-  private
-    FDescriptor: TProjectFileDescriptor;
-  public
-    function LocalizedName: string; override;
-    function Description: string; override;
-    procedure Assign(Source: TPersistent); override;
-  public
-    property Descriptor: TProjectFileDescriptor read FDescriptor write FDescriptor;
-  end;
-  
-  { TNewItemProject - a new item for project descriptors }
-
-  TNewItemProject = class(TNewIDEItemTemplate)
-  private
-    FDescriptor: TProjectDescriptor;
-  public
-    function LocalizedName: string; override;
-    function Description: string; override;
-    procedure Assign(Source: TPersistent); override;
-  public
-    property Descriptor: TProjectDescriptor read FDescriptor write FDescriptor;
-  end;
-
-  { TNewItemPackage - a new item for package descriptors }
-
-  TNewItemPackage = class(TNewIDEItemTemplate)
-  private
-    FDescriptor: TPackageDescriptor;
-  public
-    function LocalizedName: string; override;
-    function Description: string; override;
-    procedure Assign(Source: TPersistent); override;
-  public
-    property Descriptor: TPackageDescriptor read FDescriptor write FDescriptor;
   end;
 
   //----------------------------------------------------------------------------
@@ -243,13 +147,6 @@ type
   
 function ShowNewIDEItemDialog(var NewItem: TNewIDEItemTemplate): TModalResult;
 
-var
-  NewIDEItems: TNewIDEItemCategories;// will be set by the IDE
-
-
-procedure RegisterNewDialogItem(const Paths: string;
-  NewItem: TNewIDEItemTemplate);
-procedure UnregisterNewDialogItem(NewItem: TNewIDEItemTemplate);
 
 implementation
 
@@ -266,21 +163,6 @@ begin
   end;
   IDEDialogLayoutList.SaveLayout(NewOtherDialog);
   NewOtherDialog.Free;
-end;
-
-procedure RegisterNewDialogItem(const Paths: string;
-  NewItem: TNewIDEItemTemplate);
-begin
-  if NewIDEItems=nil then
-    raise Exception.Create('RegisterNewDialogItem NewIDEItems=nil');
-  NewIDEItems.RegisterItem(Paths,NewItem);
-end;
-
-procedure UnregisterNewDialogItem(NewItem: TNewIDEItemTemplate);
-begin
-  if NewIDEItems=nil then
-    raise Exception.Create('RegisterNewDialogItem NewIDEItems=nil');
-  NewIDEItems.UnregisterItem(NewItem);
 end;
 
 { TNewOtherDialog }
@@ -359,8 +241,8 @@ var
 begin
   ANode:=ItemsTreeView.Selected;
   if (ANode<>nil) and (ANode.Data<>nil) then begin
-    if TObject(ANode.Data) is TNewIDEItemCategory then
-      Desc:=TNewIDEItemCategory(ANode.Data).Description
+    if TObject(ANode.Data) is TNewLazIDEItemCategory then
+      Desc:=TNewLazIDEItemCategory(ANode.Data).Description
     else
       Desc:=TNewIDEItemTemplate(ANode.Data).Description;
   end else begin
@@ -452,38 +334,38 @@ begin
   Result:=TNewIDEItemTemplate(ANode.Data).CreateCopy;
 end;
 
-{ TNewIDEItemCategory }
+{ TNewLazIDEItemCategory }
 
-function TNewIDEItemCategory.GetCount: integer;
+function TNewLazIDEItemCategory.GetCount: integer;
 begin
   Result:=FItems.Count;
 end;
 
-function TNewIDEItemCategory.GetItems(Index: integer): TNewIDEItemTemplate;
+function TNewLazIDEItemCategory.GetItems(Index: integer): TNewIDEItemTemplate;
 begin
   Result:=TNewIDEItemTemplate(FItems[Index]);
 end;
 
-constructor TNewIDEItemCategory.Create;
+constructor TNewLazIDEItemCategory.Create;
 begin
-  raise Exception.Create('TNewIDEItemCategory.Create: call Create(Name) instead');
+  raise Exception.Create('TNewLazIDEItemCategory.Create: call Create(Name) instead');
 end;
 
-constructor TNewIDEItemCategory.Create(const AName: string);
+constructor TNewLazIDEItemCategory.Create(const AName: string);
 begin
   FItems:=TList.Create;
   FName:=AName;
-  //debugln('TNewIDEItemCategory.Create ',Name);
+  //debugln('TNewLazIDEItemCategory.Create ',Name);
 end;
 
-destructor TNewIDEItemCategory.Destroy;
+destructor TNewLazIDEItemCategory.Destroy;
 begin
   Clear;
   FItems.Free;
   inherited Destroy;
 end;
 
-procedure TNewIDEItemCategory.Clear;
+procedure TNewLazIDEItemCategory.Clear;
 var
   i: Integer;
 begin
@@ -491,20 +373,20 @@ begin
   FItems.Clear;
 end;
 
-procedure TNewIDEItemCategory.Add(ATemplate: TNewIDEItemTemplate);
+procedure TNewLazIDEItemCategory.Add(ATemplate: TNewIDEItemTemplate);
 begin
-  //debugln('TNewIDEItemCategory.Add ',Name);
+  //debugln('TNewLazIDEItemCategory.Add ',Name);
   FItems.Add(ATemplate);
-  ATemplate.fCategory:=Self;
+  ATemplate.Category:=Self;
 end;
 
-function TNewIDEItemCategory.LocalizedName: string;
+function TNewLazIDEItemCategory.LocalizedName: string;
 begin
   // ToDo:
   Result:=Name;
 end;
 
-function TNewIDEItemCategory.Description: string;
+function TNewLazIDEItemCategory.Description: string;
 begin
   if Name='File' then begin
     Result:=Format(lisNewDlgCreateANewEditorFileChooseAType, [#13]);
@@ -514,14 +396,14 @@ begin
     Result:='';
 end;
 
-function TNewIDEItemCategory.IndexOfCategory(const CategoryName: string
+function TNewLazIDEItemCategory.IndexOfCategory(const CategoryName: string
   ): integer;
 begin
   // TODO
   Result:=-1;
 end;
 
-function TNewIDEItemCategory.FindCategoryByName(const CategoryName: string
+function TNewLazIDEItemCategory.FindCategoryByName(const CategoryName: string
   ): TNewIDEItemCategory;
 var
   i: LongInt;
@@ -533,73 +415,32 @@ begin
     Result:=nil;
 end;
 
-{ TNewIDEItemTemplate }
+{ TNewLazIDEItemCategories }
 
-constructor TNewIDEItemTemplate.Create(const AName: string;
-  ADefaultFlag: TNewIDEItemFlag; TheAllowedFlags: TNewIDEItemFlags);
-begin
-  FName:=AName;
-  FDefaultFlag:=ADefaultFlag;
-  FAllowedFlags:=TheAllowedFlags;
-  Include(FAllowedFlags,FDefaultFlag);
-end;
-
-function TNewIDEItemTemplate.LocalizedName: string;
-begin
-  Result:=Name;
-end;
-
-function TNewIDEItemTemplate.Description: string;
-begin
-  Result:='<Description not set>';
-end;
-
-function TNewIDEItemTemplate.CreateCopy: TNewIDEItemTemplate;
-begin
-  Result:=TNewIDEItemTemplateClass(ClassType).Create(
-                                                 Name,DefaultFlag,AllowedFlags);
-  Result.Assign(Self);
-end;
-
-procedure TNewIDEItemTemplate.Assign(Source: TPersistent);
-var
-  Src: TNewIDEItemTemplate;
-begin
-  if Source is TNewIDEItemTemplate then begin
-    Src:=TNewIDEItemTemplate(Source);
-    FName:=Src.Name;
-    FDefaultFlag:=Src.DefaultFlag;
-    FAllowedFlags:=Src.AllowedFlags;
-  end else
-    inherited Assign(Source);
-end;
-
-{ TNewIDEItemCategories }
-
-function TNewIDEItemCategories.GetItems(Index: integer): TNewIDEItemCategory;
+function TNewLazIDEItemCategories.GetItems(Index: integer): TNewIDEItemCategory;
 begin
   Result:=TNewIDEItemCategory(FItems[Index]);
 end;
 
-procedure TNewIDEItemCategories.SetItems(Index: integer;
+procedure TNewLazIDEItemCategories.SetItems(Index: integer;
   const AValue: TNewIDEItemCategory);
 begin
   FItems[Index]:=AValue;
 end;
 
-constructor TNewIDEItemCategories.Create;
+constructor TNewLazIDEItemCategories.Create;
 begin
   FItems:=TList.Create;
 end;
 
-destructor TNewIDEItemCategories.Destroy;
+destructor TNewLazIDEItemCategories.Destroy;
 begin
   Clear;
   FItems.Free;
   inherited Destroy;
 end;
 
-procedure TNewIDEItemCategories.Clear;
+procedure TNewLazIDEItemCategories.Clear;
 var
   i: Integer;
 begin
@@ -607,24 +448,24 @@ begin
   FItems.Clear;
 end;
 
-procedure TNewIDEItemCategories.Add(ACategory: TNewIDEItemCategory);
+procedure TNewLazIDEItemCategories.Add(ACategory: TNewIDEItemCategory);
 begin
   FItems.Add(ACategory);
 end;
 
-function TNewIDEItemCategories.Count: integer;
+function TNewLazIDEItemCategories.Count: integer;
 begin
   Result:=FItems.Count;
 end;
 
-function TNewIDEItemCategories.IndexOf(const CategoryName: string): integer;
+function TNewLazIDEItemCategories.IndexOf(const CategoryName: string): integer;
 begin
   Result:=Count-1;
   while (Result>=0) and (AnsiCompareText(CategoryName,Items[Result].Name)<>0) do
     dec(Result);
 end;
 
-function TNewIDEItemCategories.FindByName(const CategoryName: string
+function TNewLazIDEItemCategories.FindByName(const CategoryName: string
   ): TNewIDEItemCategory;
 var
   i: LongInt;
@@ -636,7 +477,7 @@ begin
     Result:=nil;
 end;
 
-procedure TNewIDEItemCategories.RegisterItem(const Paths: string;
+procedure TNewLazIDEItemCategories.RegisterItem(const Paths: string;
   NewItem: TNewIDEItemTemplate);
   
   procedure AddToPath(const Path: string);
@@ -668,12 +509,12 @@ begin
   end;
 end;
 
-procedure TNewIDEItemCategories.UnregisterItem(NewItem: TNewIDEItemTemplate);
+procedure TNewLazIDEItemCategories.UnregisterItem(NewItem: TNewIDEItemTemplate);
 begin
-  raise Exception.Create('TODO TNewIDEItemCategories.UnregisterItem');
+  raise Exception.Create('TODO TNewLazIDEItemCategories.UnregisterItem');
 end;
 
-function TNewIDEItemCategories.FindCategoryByPath(const Path: string;
+function TNewLazIDEItemCategories.FindCategoryByPath(const Path: string;
   ErrorOnNotFound: boolean): TNewIDEItemCategory;
 var
   StartPos: Integer;
@@ -706,95 +547,38 @@ begin
   end;
 end;
 
-{ TNewItemProjectFile }
+{ TNewLazIDEItemCategoryFile }
 
-function TNewItemProjectFile.LocalizedName: string;
-begin
-  Result:=Descriptor.GetLocalizedName;
-end;
-
-function TNewItemProjectFile.Description: string;
-begin
-  Result:=Descriptor.GetLocalizedDescription;
-end;
-
-procedure TNewItemProjectFile.Assign(Source: TPersistent);
-begin
-  inherited Assign(Source);
-  if Source is TNewItemProjectFile then
-    FDescriptor:=TNewItemProjectFile(Source).Descriptor;
-end;
-
-{ TNewItemProject }
-
-function TNewItemProject.LocalizedName: string;
-begin
-  Result:=Descriptor.GetLocalizedName;
-end;
-
-function TNewItemProject.Description: string;
-begin
-  Result:=Descriptor.GetLocalizedDescription;
-end;
-
-procedure TNewItemProject.Assign(Source: TPersistent);
-begin
-  inherited Assign(Source);
-  if Source is TNewItemProject then
-    FDescriptor:=TNewItemProject(Source).Descriptor;
-end;
-
-{ TNewItemPackage }
-
-function TNewItemPackage.LocalizedName: string;
-begin
-  Result:=Descriptor.GetLocalizedName;
-end;
-
-function TNewItemPackage.Description: string;
-begin
-  Result:=Descriptor.GetLocalizedDescription;
-end;
-
-procedure TNewItemPackage.Assign(Source: TPersistent);
-begin
-  inherited Assign(Source);
-  if Source is TNewItemPackage then
-    FDescriptor:=TNewItemPackage(Source).Descriptor;
-end;
-
-{ TNewIDEItemCategoryFile }
-
-function TNewIDEItemCategoryFile.LocalizedName: string;
+function TNewLazIDEItemCategoryFile.LocalizedName: string;
 begin
   Result:='File';
 end;
 
-function TNewIDEItemCategoryFile.Description: string;
+function TNewLazIDEItemCategoryFile.Description: string;
 begin
   Result:='Choose one of these items to create a new File';
 end;
 
-{ TNewIDEItemCategoryProject }
+{ TNewLazIDEItemCategoryProject }
 
-function TNewIDEItemCategoryProject.LocalizedName: string;
+function TNewLazIDEItemCategoryProject.LocalizedName: string;
 begin
   Result:='Project';
 end;
 
-function TNewIDEItemCategoryProject.Description: string;
+function TNewLazIDEItemCategoryProject.Description: string;
 begin
   Result:='Choose one of these items to create a new Project';
 end;
 
-{ TNewIDEItemCategoryPackage }
+{ TNewLazIDEItemCategoryPackage }
 
-function TNewIDEItemCategoryPackage.LocalizedName: string;
+function TNewLazIDEItemCategoryPackage.LocalizedName: string;
 begin
   Result:='Package';
 end;
 
-function TNewIDEItemCategoryPackage.Description: string;
+function TNewLazIDEItemCategoryPackage.Description: string;
 begin
   Result:='Choose one of these items to create a new Package';
 end;

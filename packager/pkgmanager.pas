@@ -49,7 +49,7 @@ uses
   // codetools
   CodeToolManager, CodeCache, BasicCodeTools, Laz_XMLCfg, OldAvLTree,
   // IDE Interface
-  ProjectIntf, PackageIntf, LazIDEIntf,
+  NewItemIntf, ProjectIntf, PackageIntf, LazIDEIntf,
   // IDE
   LazConf, LazarusIDEStrConsts, IDEProcs, ObjectLists, DialogProcs, KeyMapping,
   EnvironmentOpts, MiscOptions, InputHistory, ProjectDefs, Project,
@@ -1434,6 +1434,8 @@ begin
     MiscellaneousOptions.BuildLazOpts.WithStaticPackages:=true;
   end;
 
+  // TODO: sort FirstAutoInstallDependency topological
+
   sl:=TStringList.Create;
   Dependency:=FirstAutoInstallDependency;
   while Dependency<>nil do begin
@@ -1467,6 +1469,7 @@ begin
     PackageGraph.OpenDependency(Dependency);
     Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
   end;
+  // TODO: sort FirstAutoInstallDependency topological
 
   // register them
   PackageGraph.RegisterStaticBasePackages;
@@ -3084,6 +3087,7 @@ begin
         NeedSaving:=true;
       end;
     end;
+    // TODO: sort FirstAutoInstallDependency topological
     if NeedSaving then
       SaveAutoInstallDependencies(true);
 
@@ -3496,24 +3500,9 @@ begin
 end;
 
 procedure TLazPackageDescriptors.AddDefaultPackageDescriptors;
-var
-  i: Integer;
-  NewItem: TNewItemPackage;
-  PkgItem: TPackageDescriptor;
 begin
-  // standard package
-  RegisterDescriptor(TPackageDescriptorStd.Create);
-  
-  // register in new dialog: package category
-  NewIDEItems.Add(TNewIDEItemCategoryPackage.Create('Package'));
-  // register in new dialog: all package templates
-  for i:=0 to Count-1 do begin
-    PkgItem:=Items[i];
-    if not PkgItem.VisibleInNewDialog then continue;
-    NewItem:=TNewItemPackage.Create(PkgItem.Name,niifCopy,[niifCopy]);
-    NewItem.Descriptor:=PkgItem;
-    RegisterNewDialogItem('Package',NewItem);
-  end;
+  NewIDEItems.Add(TNewLazIDEItemCategoryPackage.Create(PkgDescGroupName));
+  RegisterPackageDescriptor(TPackageDescriptorStd.Create);
 end;
 
 { TPackageDescriptorStd }

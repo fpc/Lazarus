@@ -21,14 +21,15 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TJITForm - just-in-time form.
-    TJITDataModule = just-in-time datamodule
-    
-    This TForm descendent is used by the IDE as a template for creating forms
-    at run time (the designed forms).
-    Because the IDE does wild things with this form, like creating an own class
-    for each TJITForm and dynamically creating methods for it, you can't use
-    some special compiling modes like -pg (gprof) with it.
+    JITForm - just-in-time form.
+    Forms are the most common resources/design items in the IDE, hence the name.
+    Of course any TComponent descendant can be editid but naming it
+    'JITComponent' would confuse new developers.
+
+    Because the IDE does wild things with forms and datamodules, like creating
+    an own class for each opened form/datamodule and dynamically creating
+    methods for it, you can't use some special compiling modes like -pg (gprof)
+    with this unit.
     Therefore this unit is kept in a directory of its own.
 }
 unit JITForm;
@@ -41,26 +42,6 @@ uses
   Classes, SysUtils, Forms, Controls;
 
 type
-  // TJITForm is a template TForm descendent class that can be altered at
-  // runtime
-  // OBSOLETE:
-  {TJITForm = class(TForm)
-  public
-  end;
-
-  TJITFormClass = class of TJITForm;
-  
-
-  // TJITDataModule is a template TDataModule descendent class that can be
-  // altered at runtime
-  // OBSOLETE:
-  TJITDataModule = class(TDataModule)
-  public
-  end;
-
-  TJITDataModuleClass = class of TJITDataModule;}
-
-
   // TPersistentWithTemplates
   TPersistentWithTemplates = class(TPersistent)
   published

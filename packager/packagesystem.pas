@@ -1045,6 +1045,7 @@ begin
     AddFile('objectinspector.pp','ObjectInspector',pftUnit,[],cpBase);
     AddFile('objinspstrconsts.pas','ObjInspStrConsts',pftUnit,[],cpBase);
     AddFile('packageintf.pas','PackageIntf',pftUnit,[],cpBase);
+    AddFile('projectintf.pas','ProjectIntf',pftUnit,[],cpBase);
     AddFile('propedits.pp','PropEdits',pftUnit,[],cpBase);
     AddFile('srceditorintf.pas','SrcEditorIntf',pftUnit,[],cpBase);
     AddFile('texttools.pas','TextTools',pftUnit,[],cpBase);

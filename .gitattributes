@@ -3,6 +3,11 @@
 components/README.txt svneol=native#text/plain
 components/cgi/cgilaz.lpk svneol=native#text/pascal
 components/cgi/cgimodules.pas svneol=native#text/pascal
+components/cgi/ide/README.txt svneol=native#text/plain
+components/cgi/ide/cgilazide.lpk svneol=native#text/pascal
+components/cgi/ide/cgilazideintf.pas svneol=native#text/pascal
+components/cgi/ide/lib/README.txt svneol=native#text/plain
+components/cgi/lib/README.txt svneol=native#text/plain
 components/codetools/allcodetoolunits.pp svneol=native#text/pascal
 components/codetools/basiccodetools.pas svneol=native#text/pascal
 components/codetools/codeatom.pas svneol=native#text/pascal

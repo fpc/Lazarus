@@ -38,9 +38,10 @@ unit PackageIntf;
 interface
 
 uses
-  Classes, SysUtils, Forms;
+  Classes, SysUtils, Forms, NewItemIntf;
   
 const
+  PkgDescGroupName = 'Package';
   PkgDescNameStandard = 'Standard Package';
   
 type
@@ -81,6 +82,22 @@ type
     property Name: string read FName write SetName;
     property VisibleInNewDialog: boolean read FVisibleInNewDialog write FVisibleInNewDialog;
   end;
+  TPackageDescriptorClass = class of TPackageDescriptor;
+
+
+  { TNewItemPackage - a new item for package descriptors }
+
+  TNewItemPackage = class(TNewIDEItemTemplate)
+  private
+    FDescriptor: TPackageDescriptor;
+  public
+    function LocalizedName: string; override;
+    function Description: string; override;
+    procedure Assign(Source: TPersistent); override;
+  public
+    property Descriptor: TPackageDescriptor read FDescriptor write FDescriptor;
+  end;
+
 
   { TPackageDescriptors }
 
@@ -101,9 +118,25 @@ type
 var
   PackageDescriptors: TPackageDescriptors; // will be set by the IDE
 
+
+procedure RegisterPackageDescriptor(PkgDesc: TPackageDescriptor);
 function PackageDescriptorStd: TPackageDescriptor;
 
+
 implementation
+
+
+procedure RegisterPackageDescriptor(PkgDesc: TPackageDescriptor);
+var
+  NewItemPkg: TNewItemPackage;
+begin
+  PackageDescriptors.RegisterDescriptor(PkgDesc);
+  if PkgDesc.VisibleInNewDialog then begin
+    NewItemPkg:=TNewItemPackage.Create(PkgDesc.Name,niifCopy,[niifCopy]);
+    NewItemPkg.Descriptor:=PkgDesc;
+    RegisterNewDialogItem(PkgDescGroupName,NewItemPkg);
+  end;
+end;
 
 function PackageDescriptorStd: TPackageDescriptor;
 begin
@@ -146,6 +179,25 @@ end;
 procedure TPackageDescriptor.Reference;
 begin
   inc(FReferenceCount);
+end;
+
+{ TNewItemPackage }
+
+function TNewItemPackage.LocalizedName: string;
+begin
+  Result:=Descriptor.GetLocalizedName;
+end;
+
+function TNewItemPackage.Description: string;
+begin
+  Result:=Descriptor.GetLocalizedDescription;
+end;
+
+procedure TNewItemPackage.Assign(Source: TPersistent);
+begin
+  inherited Assign(Source);
+  if Source is TNewItemPackage then
+    FDescriptor:=TNewItemPackage(Source).Descriptor;
 end;
 
 initialization

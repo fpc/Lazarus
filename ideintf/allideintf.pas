@@ -23,7 +23,7 @@ uses
   ComponentEditors, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView, ActionsEditor, HelpIntf, TextTools, FormEditingIntf,
   SrcEditorIntf, ComponentReg, PackageIntf, HelpHTML, ConfigStorage,
-  HelpFPDoc, ProjectIntf, LazIDEIntf;
+  HelpFPDoc, ProjectIntf, LazIDEIntf, NewItemIntf;
 
 implementation
 
