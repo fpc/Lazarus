@@ -5264,7 +5264,8 @@ begin
       
     // create compiler macros to simulate the Makefiles of the FPC sources
     CompilerUnitLinks:=InputHistories.LastFPCUnitLinks;
-    UnitLinksChanged:=InputHistories.LastFPCUnitLinksNeedsUpdate;
+    UnitLinksChanged:=InputHistories.LastFPCUnitLinksNeedsUpdate(
+                                                        CompilerUnitSearchPath);
     ADefTempl:=CreateFPCSrcTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
             CompilerUnitSearchPath,
@@ -5275,7 +5276,7 @@ begin
     or (InputHistories.LastFPCUnitLinks<>InputHistories.LastFPCUnitLinks)
     then begin
       InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
-            CompilerUnitLinks);
+                                      CompilerUnitSearchPath,CompilerUnitLinks);
       InputHistories.Save;
     end;
     AddTemplate(ADefTempl,false,
@@ -6221,6 +6222,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.279  2002/04/16 08:55:04  lazarus
+  MG: added path editor for compiler options
+
   Revision 1.278  2002/04/15 10:56:05  lazarus
   MG: fixes for open lpi files and improved jump points
 

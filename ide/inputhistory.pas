@@ -36,6 +36,7 @@ type
     // FPC unitlinks
     FLastFPCUnitLinks: string;
     FLastFPCPath: string;
+    FLastFPCSearchPath: string;
     FLastFPCAge: longint;
     
     procedure SetFilename(const AValue: string);
@@ -55,8 +56,8 @@ type
     procedure AddToReplaceHistory(const AReplaceStr: String);
     
     function LastFPCUnitLinksValid: boolean;
-    function LastFPCUnitLinksNeedsUpdate: boolean;
-    procedure SetLastFPCUnitLinks(const FPCPath, UnitLinks: string);
+    function LastFPCUnitLinksNeedsUpdate(const SearchPath: string): boolean;
+    procedure SetLastFPCUnitLinks(const FPCPath, SearchPath, UnitLinks: string);
   public
     // Find- and replace-history
     property FindHistory: TStringList read FFindHistory write FFindHistory;
@@ -67,6 +68,7 @@ type
     // FPC unitlinks
     property LastFPCUnitLinks: string read FLastFPCUnitLinks;
     property LastFPCPath: string read FLastFPCPath write SetLastFPCPath;
+    property LastFPCSearchPath: string read FLastFPCSearchPath;
     property LastFPCAge: longint read FLastFPCAge;
   end;
 
@@ -203,16 +205,20 @@ begin
   Result:=(LastFPCPath<>'') and (FLastFPCAge>=0);
 end;
 
-function TInputHistories.LastFPCUnitLinksNeedsUpdate: boolean;
+function TInputHistories.LastFPCUnitLinksNeedsUpdate(
+  const SearchPath: string): boolean;
 begin
   Result:=(not LastFPCUnitLinksValid)
+           or (SearchPath<>LastFPCSearchPath)
            or (FileAge(LastFPCPath)<>LastFPCAge);
 end;
 
-procedure TInputHistories.SetLastFPCUnitLinks(const FPCPath, UnitLinks: string);
+procedure TInputHistories.SetLastFPCUnitLinks(const FPCPath, SearchPath,
+  UnitLinks: string);
 begin
   FLastFPCPath:=FPCPath;
   FLastFPCUnitLinks:=UnitLinks;
+  FLastFPCSearchPath:=SearchPath;
   FLastFPCAge:=FileAge(FPCPath);
 end;
 

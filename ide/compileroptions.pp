@@ -32,7 +32,7 @@ interface
 
 uses
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
-  XMLCfg, FileCtrl, Dialogs, Controls;
+  XMLCfg, FileCtrl, Dialogs, Controls, PathEditorDlg;
 
 type
   { Compiler Options object used to hold the compiler options }
@@ -204,22 +204,25 @@ type
 
   { Compiler options form }
   TfrmCompilerOptions = class(TForm)
-  private
     nbMain: TNotebook;
     //bvlButtonBar: TBevel;
 
     { Search Paths Controls }
     grpOtherUnits: TGroupBox;
     edtOtherUnits: TEdit;
+    OtherUnitsPathEditBtn: TPathEditorButton;
 
     grpIncludeFiles: TGroupBox;
     edtIncludeFiles: TEdit;
+    IncludeFilesPathEditBtn: TPathEditorButton;
 
     grpOtherSources: TGroupBox;
     edtOtherSources: TEdit;
+    OtherSourcesPathEditBtn: TPathEditorButton;
 
     grpLibraries: TGroupBox;
     edtLibraries: TEdit;
+    LibrariesPathEditBtn: TPathEditorButton;
 
     grpCompiler: TGroupBox;
     edtCompiler: TEdit;
@@ -334,14 +337,17 @@ type
 //    fPath: String;
 
     { Procedures }
-    procedure CreateForm(Sender: TObject);
-    procedure SetupParsingTab(Sender: TObject; Page: integer);
-    procedure SetupCodeGenerationTab(Sender: TObject; Page: integer);
-    procedure SetupLinkingTab(Sender: TObject; Page: integer);
-    procedure SetupOtherTab(Sender: TObject; Page: integer);
-    procedure SetupSearchPathsTab(Sender: TObject; Page: integer);
-    procedure SetupButtonBar(Sender: TObject);
     procedure chkAdditionalConfigFileClick(Sender: TObject);
+    procedure CreateForm(Sender: TObject);
+    procedure PathEditBtnClick(Sender: TObject);
+    procedure PathEditBtnExecuted(Sender: TObject);
+  private
+    procedure SetupSearchPathsTab(Page: integer);
+    procedure SetupParsingTab(Page: integer);
+    procedure SetupCodeGenerationTab(Page: integer);
+    procedure SetupLinkingTab(Page: integer);
+    procedure SetupOtherTab(Page: integer);
+    procedure SetupButtonBar;
   private
     function GetOtherSourcePath: string;
     procedure SetOtherSourcePath(const AValue: string);
@@ -1363,27 +1369,27 @@ begin
   Page:=0;
   
   { Search Paths Tab }
-  SetupSearchPathsTab(Self,Page);
+  SetupSearchPathsTab(Page);
   inc(Page);
   
   { Parsing Tab }
-  SetupParsingTab(Self,Page);
+  SetupParsingTab(Page);
   inc(Page);
 
   { Code Generation Tab }
-  SetupCodeGenerationTab(Self,Page);
+  SetupCodeGenerationTab(Page);
   inc(Page);
 
   { Linking Tab }
-  SetupLinkingTab(Self,Page);
+  SetupLinkingTab(Page);
   inc(Page);
 
   { Other Tab }
-  SetupOtherTab(Self,Page);
+  SetupOtherTab(Page);
   inc(Page);
 
   { Bottom Buttons }
-  SetupButtonBar(Self);
+  SetupButtonBar;
 
   { Show everything }
   nbMain.Show;
@@ -1709,7 +1715,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SetupParsingTab                                         }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupParsingTab(Sender: TObject; Page: integer);
+procedure TfrmCompilerOptions.SetupParsingTab(Page: integer);
 begin
   // Setup the Parsing Tab
   Assert(False, 'Trace:Setting up compiler options parsing tab');
@@ -1923,8 +1929,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SetupCodeGenerationTab                                  }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupCodeGenerationTab(Sender: TObject;
-  Page: integer);
+procedure TfrmCompilerOptions.SetupCodeGenerationTab(Page: integer);
 begin
   // Setup the Code Generation Tab
   Assert(False, 'Trace:Setting up compiler options code generation tab');
@@ -2216,7 +2221,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SetupLinkingTab                                         }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupLinkingTab(Sender: TObject; Page: integer);
+procedure TfrmCompilerOptions.SetupLinkingTab(Page: integer);
 begin
   // Setup the Linking Tab
   Assert(False, 'Trace:Setting up compiler options linking tab');
@@ -2385,7 +2390,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SetupOtherTab                                           }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupOtherTab(Sender: TObject; Page: integer);
+procedure TfrmCompilerOptions.SetupOtherTab(Page: integer);
 begin
   // Setup the Other Tab
   Assert(False, 'Trace:Setting up compiler options other tab');
@@ -2686,8 +2691,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SetupSearchPathsTab                                     }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupSearchPathsTab(Sender: TObject;
-  Page: integer);
+procedure TfrmCompilerOptions.SetupSearchPathsTab(Page: integer);
 begin
   // Setup the Search Paths Tab
 
@@ -2709,10 +2713,24 @@ begin
     Parent := grpOtherUnits;
     Left := 8;
     Top := 5;
-    Width := Parent.ClientWidth-2*Left;
+    Width := Parent.ClientWidth-Left-37;
     Height := 23;
     Text := '';
     Visible := True;
+  end;
+  
+  OtherUnitsPathEditBtn:=TPathEditorButton.Create(Self);
+  with OtherUnitsPathEditBtn do begin
+    Name:='OtherUnitsPathEditBtn';
+    Parent:=grpOtherUnits;
+    Left:=edtOtherUnits.Left+edtOtherUnits.Width+3;
+    Top:=edtOtherUnits.Top;
+    Width:=25;
+    Height:=edtOtherUnits.Height;
+    Caption:='...';
+    OnClick:=@PathEditBtnClick;
+    OnExecuted:=@PathEditBtnExecuted;
+    Visible:=true;
   end;
 
   {------------------------------------------------------------}
@@ -2735,10 +2753,24 @@ begin
     Parent := grpIncludeFiles;
     Top := 5;
     Left := 8;
-    Width := Parent.ClientWidth-2*Left;
+    Width := Parent.ClientWidth-Left-37;
     Height := 23;
     Text := '';
     Visible := True;
+  end;
+
+  IncludeFilesPathEditBtn:=TPathEditorButton.Create(Self);
+  with IncludeFilesPathEditBtn do begin
+    Name:='IncludeFilesPathEditBtn';
+    Parent:=grpIncludeFiles;
+    Left:=edtIncludeFiles.Left+edtIncludeFiles.Width+3;
+    Top:=edtIncludeFiles.Top;
+    Width:=25;
+    Height:=edtIncludeFiles.Height;
+    Caption:='...';
+    OnClick:=@PathEditBtnClick;
+    OnExecuted:=@PathEditBtnExecuted;
+    Visible:=true;
   end;
 
   {------------------------------------------------------------}
@@ -2762,9 +2794,23 @@ begin
     Top := 5;
     Left := 8;
     Height := 23;
-    Width := Parent.ClientWidth-2*Left;
+    Width := Parent.ClientWidth-Left-37;
     Text := '';
     Visible := True;
+  end;
+
+  OtherSourcesPathEditBtn:=TPathEditorButton.Create(Self);
+  with OtherSourcesPathEditBtn do begin
+    Name:='OtherSourcesPathEditBtn';
+    Parent:=grpOtherSources;
+    Left:=edtOtherSources.Left+edtOtherSources.Width+3;
+    Top:=edtOtherSources.Top;
+    Width:=25;
+    Height:=edtOtherSources.Height;
+    Caption:='...';
+    OnClick:=@PathEditBtnClick;
+    OnExecuted:=@PathEditBtnExecuted;
+    Visible:=true;
   end;
 
   {------------------------------------------------------------}
@@ -2788,9 +2834,23 @@ begin
     Top := 5;
     Left := 8;
     Height := 23;
-    Width := Parent.ClientWidth-2*Left;
+    Width := Parent.ClientWidth-Left-37;
     Text := '';
     Visible := True;
+  end;
+
+  LibrariesPathEditBtn:=TPathEditorButton.Create(Self);
+  with LibrariesPathEditBtn do begin
+    Name:='LibrariesPathEditBtn';
+    Parent:=grpLibraries;
+    Left:=edtLibraries.Left+edtLibraries.Width+3;
+    Top:=edtLibraries.Top;
+    Width:=25;
+    Height:=edtLibraries.Height;
+    Caption:='...';
+    OnClick:=@PathEditBtnClick;
+    OnExecuted:=@PathEditBtnExecuted;
+    Visible:=true;
   end;
 
   {------------------------------------------------------------}
@@ -2870,7 +2930,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SetupButtonBar                                          }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupButtonBar(Sender: TObject);
+procedure TfrmCompilerOptions.SetupButtonBar;
 begin
   // Setup the Button Bar
   Assert(False, 'Trace:Setting up compiler options button bar');
@@ -2931,6 +2991,60 @@ end;
 procedure TfrmCompilerOptions.chkAdditionalConfigFileClick(Sender: TObject);
 begin
   edtConfigPath.Enabled:=chkAdditionalConfigFile.Checked;
+end;
+
+procedure TfrmCompilerOptions.PathEditBtnClick(Sender: TObject);
+var AButton: TPathEditorButton;
+  OldPath, Templates: string;
+begin
+  if Sender is TPathEditorButton then begin
+    AButton:=TPathEditorButton(Sender);
+    if AButton=OtherUnitsPathEditBtn then begin
+      OldPath:=edtOtherUnits.Text;
+      Templates:=
+            '$(LazarusDir)/lcl/units'
+          +';$(LazarusDir)/lcl/$(LCLWidgetType)';
+    end else
+    if AButton=IncludeFilesPathEditBtn then begin
+      OldPath:=edtIncludeFiles.Text;
+      Templates:='include';
+    end else
+    if AButton=OtherSourcesPathEditBtn then begin
+      OldPath:=edtOtherSources.Text;
+      Templates:=
+            '$(LazarusDir)/lcl'
+          +';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)';
+    end else
+    if AButton=LibrariesPathEditBtn then begin
+      OldPath:=edtLibraries.Text;
+      Templates:='';
+    end;
+    AButton.CurrentPathEditor.Path:=OldPath;
+    AButton.CurrentPathEditor.Templates:=SetDirSeparators(Templates);
+  end;
+end;
+
+procedure TfrmCompilerOptions.PathEditBtnExecuted(Sender: TObject);
+var AButton: TPathEditorButton;
+  NewPath: string;
+begin
+  if Sender is TPathEditorButton then begin
+    AButton:=TPathEditorButton(Sender);
+    if AButton.CurrentPathEditor.ModalResult<>mrOk then exit;
+    NewPath:=AButton.CurrentPathEditor.Path;
+    if AButton=OtherUnitsPathEditBtn then begin
+      edtOtherUnits.Text:=NewPath;
+    end else
+    if AButton=IncludeFilesPathEditBtn then begin
+      edtIncludeFiles.Text:=NewPath;
+    end else
+    if AButton=OtherSourcesPathEditBtn then begin
+      edtOtherSources.Text:=NewPath;
+    end else
+    if AButton=LibrariesPathEditBtn then begin
+      edtLibraries.Text:=NewPath;
+    end;
+  end;
 end;
 
 function TfrmCompilerOptions.GetOtherSourcePath: string;

@@ -43,7 +43,7 @@ interface
 
 {$I codetools.inc}
 
-{$DEFINE CTDEBUG}
+{ $DEFINE CTDEBUG}
 
 uses
   {$IFDEF MEM_CHECK}
