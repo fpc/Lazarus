@@ -3613,9 +3613,8 @@ begin
   { always the middle button }
   Shift := [ssMiddle];
 
-  DoMouseWheel(Shift, Message.WheelDelta, MousePos);
-
-  inherited;
+  if not DoMouseWheel(Shift, Message.WheelDelta, MousePos) then
+    inherited;
 end;
 
 {------------------------------------------------------------------------------
@@ -4490,6 +4489,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.320  2005/03/29 19:36:22  micha
+  do not call default handler if user handles mousewheel event (from jesusrmx)
+
   Revision 1.319  2005/03/10 09:26:25  mattias
   added note on creating handles on destroying
 
