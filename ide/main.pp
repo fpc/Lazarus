@@ -6230,6 +6230,7 @@ procedure TMainIDE.DoRestart;
     StartLazProcess: TProcess;
     ExeName: string;
   begin
+{$IFNDEF VER1_0}
     StartLazProcess := TProcess.Create(nil);
     try
       StartLazProcess.CurrentDirectory := ExtractFileDir(ParamStr(0));
@@ -6246,6 +6247,7 @@ procedure TMainIDE.DoRestart;
     finally
       StartLazProcess.Free;
     end;
+{$ENDIF}
   end;
 
 begin
@@ -10953,6 +10955,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.801  2004/11/26 21:43:41  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.800  2004/11/26 16:07:12  vincents
   removed ifdef UseStartLazarus
 
