@@ -2097,7 +2097,7 @@ Var
 Begin
   If (TControl(Sender).FCompStyle = csPage) or (TControl(Sender).FCompStyle = csToolButton) then exit;
   Handle := ObjectToHWND(Sender);
-  If TControl(Sender).Visible Then
+  If TControl(Sender).HandleObjectShouldBeVisible Then
   Begin
     Assert(False, 'Trace: [TWin32Object.ShowHide] Showing the window');
     ShowWindow(Handle, SW_SHOW);
@@ -2632,6 +2632,9 @@ End;
 
 {
   $Log$
+  Revision 1.49  2003/03/11 23:14:20  mattias
+  added TControl.HandleObjectShouldBeVisible
+
   Revision 1.48  2003/03/06 17:15:49  mattias
   applied patch from Martin Smat fixing LM_SETSIZE, LM_SETDESIGNING, LM_SCREENINIT
 
