@@ -52,9 +52,15 @@ begin
 end;
 
 destructor TListColumn.Destroy;
+var
+  Columns: TListColumns;
 begin
+  if (Collection<>nil) and (Collection is TListColumns) then begin
+    Columns:=TListColumns(Collection);
+    if Columns.FItemNeedsUpdate=Self then Columns.FItemNeedsUpdate:=nil;
+  end;
   inherited Destroy;
-  Changed(False);  
+  Changed(False);
 end;
 
 function TListColumn.GetWidth: TWidth;
@@ -121,6 +127,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2003/12/26 15:23:30  mattias
+  started message editor and fixed some range checks
+
   Revision 1.5  2003/12/21 16:01:58  mattias
   workaround for inherited bug in fpc 1.9
 

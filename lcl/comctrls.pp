@@ -399,16 +399,22 @@ type
   TListColumns = class(TCollection)
   private
     FOwner: TCustomListView;
+    FUpdateCount: integer;
+    FItemNeedsUpdate: TCollectionItem;
+    FNeedsUpdate: boolean;
     function GetItem(const AIndex: Integer): TListColumn;
     procedure SetItem(const AIndex: Integer; const AValue: TListColumn);
   protected
     procedure Update(AnItem: TCollectionItem); override;
   public
-    constructor Create(AOwner: TCustomListView);
+    constructor Create(TheOwner: TCustomListView);
+    destructor Destroy; override;
     function Add: TListColumn;
+    procedure BeginUpdate; virtual;
+    procedure EndUpdate; virtual;
     property Owner: TCustomListView read FOwner;
     property Items[const AIndex: Integer]: TListColumn
-      read GetItem write SetItem; default;
+                                            read GetItem write SetItem; default;
     procedure Assign(Source: TPersistent); override;
   end;
   
@@ -1936,6 +1942,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.96  2003/12/26 15:23:29  mattias
+  started message editor and fixed some range checks
+
   Revision 1.95  2003/12/26 10:59:24  mattias
   fixed color coversion range check
 

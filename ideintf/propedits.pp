@@ -4134,8 +4134,9 @@ begin
     ListColumns := TListColumns(GetOrdValue);
     ColumnDlg.Columns.Assign(ListColumns);
        
-    if ColumnDlg.ShowModal = mrOK 
-    then ListColumns.Assign(ColumnDlg.Columns);
+    if ColumnDlg.ShowModal = mrOK then begin
+      ListColumns.Assign(ColumnDlg.Columns);
+    end;
   finally
     ColumnDlg.Free;
   end;

@@ -26,20 +26,42 @@ Begin
     OwnerFormDesignerModified(Owner);
 end;
 
+procedure TListColumns.BeginUpdate;
+begin
+  inc(FUpdateCount);
+end;
+
+procedure TListColumns.EndUpdate;
+begin
+  if FUpdateCount<=0 then
+    RaiseGDBException('TListColumns.EndUpdate');
+  dec(FUpdateCount);
+  if (FUpdateCount=0) and FNeedsUpdate then Update(FItemNeedsUpdate);
+end;
+
 procedure TListColumns.Assign(Source: TPersistent);
 begin
   if (Source=nil) or (Source=Self) then exit;
+  BeginUpdate;
   inherited Assign(Source);
+  EndUpdate;
   if (Owner<>nil)
   and ([csDesigning,csLoading,csReading]*Owner.ComponentState=[csDesigning])
   then
     OwnerFormDesignerModified(Owner);
 end;
 
-constructor TListColumns.Create(AOwner: TCustomListView);
+constructor TListColumns.Create(TheOwner: TCustomListView);
 begin
-  FOwner := AOwner;
+  FOwner := TheOwner;
   inherited Create(TListColumn);
+end;
+
+destructor TListColumns.Destroy;
+begin
+  BeginUpdate;
+  inherited Destroy;
+  EndUpdate;
 end;
 
 function TListColumns.GetItem(const AIndex: Integer): TListColumn;
@@ -54,8 +76,19 @@ end;
 
 procedure TListColumns.Update(AnItem: TCollectionItem);
 begin
-//TODO: Optimize implementation by invoking individual updates instead of
-//      recreating window
+  if FUpdateCount>0 then begin
+    FNeedsUpdate:=true;
+    if FItemNeedsUpdate=nil then
+      FItemNeedsUpdate:=AnItem
+    else
+      FItemNeedsUpdate:=nil;
+    exit;
+  end;
+  FNeedsUpdate:=false;
+  FItemNeedsUpdate:=nil;
+
+  //TODO: Optimize implementation by invoking individual updates instead of
+  //      always recreating window
   if FOwner <>nil then
     FOwner.ColumnsChanged;
 end;
@@ -63,6 +96,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2003/12/26 15:23:30  mattias
+  started message editor and fixed some range checks
+
   Revision 1.5  2002/11/18 13:38:44  mattias
   fixed buffer overrun and added several checks
 

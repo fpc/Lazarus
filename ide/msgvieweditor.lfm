@@ -1,0 +1,133 @@
+object MsgViewEditorDlg: TMsgViewEditorDlg
+  Caption = 'Messages Editor'
+  ClientHeight = 345
+  ClientWidth = 548
+  OnCreate = MsgViewEditorDlgCreate
+  HorzScrollBar.Page = 549
+  VertScrollBar.Page = 346
+  Left = 343
+  Height = 345
+  Top = 264
+  Width = 548
+  object FilterSetGroupBox: TGroupBox
+    Anchors = [aktop, akleft, akright]
+    Caption = 'Filter Set:'
+    ClientHeight = 95
+    ClientWidth = 530
+    Color = clBtnFace
+    ParentColor = True
+    ParentCtl3D = False
+    TabOrder = 0
+    Left = 8
+    Height = 112
+    Top = 8
+    Width = 534
+    object FilterSetsListBox: TListBox
+      Align = alleft
+      TabOrder = 0
+      TabStop = True
+      TopIndex = -1
+      Height = 95
+      Width = 358
+    end
+    object AddNewSetButton: TButton
+      Caption = 'AddNewSetButton'
+      TabStop = True
+      TabOrder = 1
+      OnClick = AddNewSetButtonClick
+      Left = 366
+      Height = 25
+      Width = 155
+    end
+    object DeleteSetButton: TButton
+      Caption = 'DeleteSetButton'
+      TabStop = True
+      TabOrder = 2
+      OnClick = DeleteSetButtonClick
+      Left = 366
+      Height = 25
+      Top = 31
+      Width = 155
+    end
+    object RenameSetButton: TButton
+      Caption = 'RenameSetButton'
+      TabStop = True
+      TabOrder = 3
+      OnClick = RenameSetButtonClick
+      Left = 366
+      Height = 25
+      Top = 63
+      Width = 155
+    end
+  end
+  object ActiveFilterSetGroupBox: TGroupBox
+    Anchors = [aktop, akleft, akright, akbottom]
+    Caption = 'ActiveFilterSetGroupBox'
+    ClientHeight = 162
+    ClientWidth = 531
+    Color = clBtnFace
+    ParentColor = True
+    ParentCtl3D = False
+    TabOrder = 1
+    Left = 8
+    Height = 179
+    Top = 128
+    Width = 535
+    object RulesListView: TListView
+      Align = alclient
+      Color = clBtnFace
+      Columns = <      
+        item
+          Caption = 'Rule'
+          Visible = True
+          Width = 250
+        end      
+        item
+          Visible = True
+          Width = 50
+        end      
+        item
+          Caption = 'Action'
+          Visible = True
+          Width = 50
+        end      
+        item
+          Visible = True
+          Width = 50
+        end      
+        item
+          Visible = True
+          Width = 50
+        end      
+        item
+          Visible = True
+          Width = 50
+        end>
+      ViewStyle = vsreport
+      Height = 162
+      Width = 531
+    end
+  end
+  object OkButton: TButton
+    Anchors = [akleft, akbottom]
+    Caption = 'OkButton'
+    TabStop = True
+    TabOrder = 2
+    OnClick = OkButtonClick
+    Left = 128
+    Height = 25
+    Top = 312
+    Width = 131
+  end
+  object CancelButton: TButton
+    Anchors = [akleft, akbottom]
+    ModalResult = 2
+    Caption = 'CancelButton'
+    TabStop = True
+    TabOrder = 3
+    Left = 299
+    Height = 25
+    Top = 312
+    Width = 133
+  end
+end

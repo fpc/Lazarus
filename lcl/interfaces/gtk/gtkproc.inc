@@ -4115,21 +4115,19 @@ end;
 
 function TColortoTGDKColor(const value : TColor) : TGDKColor;
 var
-   newColor : TGDKColor;
-   num : LongInt;                                          // example assume value := $00FF2510
-
+  newColor : TGDKColor;
 begin
-   if Value<0 then begin
-     FillChar(Result,SizeOf(Result),0);
-     exit;
-   end;
+  if Value<0 then begin
+    FillChar(Result,SizeOf(Result),0);
+    exit;
+  end;
 
-   NewColor.pixel := 0;
-   newColor.red   := (value and $ff) * 257;                    //   red - $00000010  * 257
-   newColor.green := ((value shr 8) and $ff) * 257;         // green = $00000025  * 257
-   newColor.blue  := ((value shr 16) and $ff) * 257;        //  blue - $000000FF  * 257
+  newColor.pixel := 0;
+  newColor.red   := (value and $ff) * 257;
+  newColor.green := ((value shr 8) and $ff) * 257;
+  newColor.blue  := ((value shr 16) and $ff) * 257;
 
-   result := newColor;
+  Result := newColor;
 end;
 
 {------------------------------------------------------------------------------
@@ -5624,6 +5622,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.236  2003/12/26 15:23:30  mattias
+  started message editor and fixed some range checks
+
   Revision 1.235  2003/12/26 10:59:25  mattias
   fixed color coversion range check
 

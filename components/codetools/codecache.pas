@@ -581,6 +581,13 @@ var
     ALink:=TIncludedByLink(ANode.Data);
     DiffTime:=CurTime-ALink.LastTimeUsed;
     if (FExpirationTimeInDays<=0) or (DiffTime<ExpirationTime) then begin
+      {if Index<50 then
+        writeln('TCodeCache.SaveIncludeLinksToXML ',
+          Index,' ',ALink.IncludeFilename,
+          ' LastTimeUsed=',FormatDateTime('ddddd', ALink.LastTimeUsed),
+          ' CurTime=',FormatDateTime('ddddd',CurTime),
+          ' DiffTime=',DiffTime,
+          ' ExpirationTime=',ExpirationTime);}
       APath:=XMLPath+'IncludeLinks/Link'+IntToStr(Index)+'/';
       XMLConfig.SetValue(APath+'IncludeFilename/Value',ALink.IncludeFilename);
       XMLConfig.SetValue(APath+'IncludedByFilename/Value',ALink.IncludedByFile);
@@ -594,7 +601,7 @@ var
 begin
   try
     CurTime:=Now;
-    ExpirationTime:=TDateTime(FExpirationTimeInDays)*(1000*60*60*24);
+    ExpirationTime:=TDateTime(FExpirationTimeInDays);
     UpdateIncludeLinks;
     XMLConfig.SetDeleteValue(XMLPath+'IncludeLinks/ExpirationTimeInDays',
         FExpirationTimeInDays,0);

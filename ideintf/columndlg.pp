@@ -31,40 +31,40 @@ uses
 type
   // TODO create more generic collection editor.
   TColumnDlg = class(TForm)
-    Listbox1: TLISTBOX;
-    Label1: TLABEL;
-    Edit1: TEDIT;
-    Label2: TLABEL;
-    Edit2: TEDIT;
-    Button1: TBUTTON;
-    Button2: TBUTTON;
-    Radiogroup1: TRADIOGROUP;
-    Button3: TBUTTON;
-    Button4: TBUTTON;
+    ColumnsListBox: TLISTBOX;
+    CaptionLabel: TLABEL;
+    CaptionEdit: TEDIT;
+    WidthLabel: TLABEL;
+    WidthEdit: TEDIT;
+    AddButton: TBUTTON;
+    DeleteButton: TBUTTON;
+    AlignmentRadioGroup: TRADIOGROUP;
+    MoveUpButton: TBUTTON;
+    MoveDownButton: TBUTTON;
     btnOK : TBitBtn;
     btnCancel : TBitBtn;
     cbVisible : TCheckbox;
     cbAutoSize : TCheckBox;
   private
-    { private declarations }
     FColumns: TListColumns;
     FSelectedIndex : Integer;
     procedure DisplayColumn(Value : Integer);
     procedure SetColumns(const AValue: TListColumns);
   protected
-    procedure Button1OnClick(sender : TObject);
-    procedure Button2OnClick(sender : TObject);
-    procedure Button3OnClick(sender : TObject);
-    procedure Button4OnClick(sender : TObject);
-    procedure RadioGroup1OnClick(sender : TObject);
-    procedure Listbox1OnClick(sender : TObject);
-    Procedure Edit1OnChange(Sender : TObject);
-    Procedure Edit2OnChange(Sender : TObject);
+    procedure AddButtonOnClick(sender : TObject);
+    procedure DeleteButtonOnClick(sender : TObject);
+    procedure MoveUpButtonOnClick(sender : TObject);
+    procedure MoveDownButtonOnClick(sender : TObject);
+    procedure AlignmentRadioGroupOnClick(sender : TObject);
+    procedure ColumnsListBoxOnClick(sender : TObject);
+    Procedure CaptionEditOnChange(Sender : TObject);
+    Procedure WidthEditOnChange(Sender : TObject);
     Procedure cbVisibleOnClick(Sender : TObject);
     Procedure cbAutoSizeOnClick(Sender : TObject);
     Procedure FormOnShow(Sender : TObject);
+    procedure EnableComponents;
+    procedure WriteDebugReport;
   public
-    { public declarations }
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
     property Columns: TListColumns read FColumns write SetColumns;
@@ -78,179 +78,164 @@ implementation
 constructor TColumnDlg.Create(AOwner : TComponent);
 Begin
   inherited Create(AOwner);
-//  if LazarusResources.Find(Classname)=nil then
-  begin
-     Caption := 'Column Editor';
-     Width := 400;
-     Height := 340;
-     OnShow := @FormOnShow;
-     Position := poScreenCenter;
-     Listbox1 := TListBox.Create(self);
-     with Listbox1 do
-       Begin
-         Parent := Self;
-         left := 1;
-         Width := 170;
-         Top := 1;
-         Height := 270;
-         Visible := True;
-         OnClick := @Listbox1OnClick;
-       end;
-     Label1 := TLabel.Create(self);
-     with Label1 do
-       Begin
-          Parent := self;
-          Caption := 'Caption';
-          Left := self.width div 2;
-          Top := 15;
-          Visible := True;
-       end;
+  Caption := 'Column Editor';
+  Width := 400;
+  Height := 340;
+  OnShow := @FormOnShow;
+  Position := poScreenCenter;
+  
+  ColumnsListBox := TListBox.Create(self);
+  with ColumnsListBox do
+   Begin
+     Parent := Self;
+     left := 1;
+     Width := 170;
+     Top := 1;
+     Height := 270;
+     OnClick := @ColumnsListBoxOnClick;
+   end;
+   
+  CaptionLabel := TLabel.Create(self);
+  with CaptionLabel do
+   Begin
+      Parent := self;
+      Caption := 'Caption';
+      Left := self.width div 2;
+      Top := 15;
+   end;
 
-     Edit1 := TEdit.Create(self);
-     with Edit1 do
-       Begin
-         Parent := Self;
-         Text := '';
-         Left := self.Width div 2;
-         Height := 25;
-         Top := Label1.Top+Label1.Height+5;
-          Visible := True;
-          OnChange := @Edit1OnChange;
-       end;
-         
-     Label2 := TLabel.Create(self);
-     with Label2 do
-       Begin
-          Parent := self;
-          Caption := 'Width';
-          Left := self.width div 2;
-          Top := Edit1.Top+Edit1.Height+5;
-          Visible := True;
-       end;
+  CaptionEdit := TEdit.Create(self);
+  with CaptionEdit do
+   Begin
+     Parent := Self;
+     Text := '';
+     Left := self.Width div 2;
+     Height := 25;
+     Top := CaptionLabel.Top+CaptionLabel.Height+5;
+     OnChange := @CaptionEditOnChange;
+   end;
 
-     Edit2 := TEdit.Create(self);
-     with Edit2 do
-       Begin
-         Parent := Self;
-         Text := '';
-         Left := self.Width div 2;
-         Height := 25;
-         Top := Label2.Top+Label2.Height+5;
-         Visible := True;
-         OnChange := @Edit2OnChange;
-       end;
-       
-     RadioGroup1 := TRadioGroup.Create(self);
-     with RadioGroup1 do
-       Begin
-         Parent := Self;
-         Caption := 'Alignment';
-         Left := self.Width div 2;
-         Top := Edit2.Top+Edit2.Height+5;
-         Visible := True;
-         Columns := 3;
-         Height := 50;
-         Width := 200;
-         Items.Add('Left');
-         Items.Add('Center');
-         Items.Add('Right');
-         ItemIndex := 0;
-         OnClick := @RadioGroup1OnClick;
-       end;
+  WidthLabel := TLabel.Create(self);
+  with WidthLabel do
+   Begin
+      Parent := self;
+      Caption := 'Width';
+      Left := self.width div 2;
+      Top := CaptionEdit.Top+CaptionEdit.Height+5;
+   end;
 
-     cbVisible := TCheckBox.Create(self);
-     with cbVisible do
-       begin
-         Parent := Self;
-         Visible := True;
-         Caption := 'Visible';
-         Left := self.width div 2;
-         Top :=  RadioGroup1.Top+RadioGroup1.Height+5;
-         Height := 25;
-         Checked := True;
-         OnClick := @cbVisibleOnClick;
-       end;
+  WidthEdit := TEdit.Create(self);
+  with WidthEdit do
+   Begin
+     Parent := Self;
+     Text := '';
+     Left := self.Width div 2;
+     Height := 25;
+     Top := WidthLabel.Top+WidthLabel.Height+5;
+     OnChange := @WidthEditOnChange;
+   end;
 
-     cbAutoSize := TCheckBox.Create(self);
-     with cbAutoSize do
-       begin
-         Parent := Self;
-         Visible := True;
-         Caption := 'Auto Size';
-         Left := self.width div 2;
-         Top :=  cbVisible.Top + cbVisible.Height + 5;
-         Height := 25;
-         Checked := True;
-         OnClick := @cbAutoSizeOnClick;
-       end;
+  AlignmentRadioGroup := TRadioGroup.Create(self);
+  with AlignmentRadioGroup do
+   Begin
+     Parent := Self;
+     Caption := 'Alignment';
+     Left := self.Width div 2;
+     Top := WidthEdit.Top+WidthEdit.Height+5;
+     Columns := 3;
+     Height := 50;
+     Width := 200;
+     Items.Add('Left');
+     Items.Add('Center');
+     Items.Add('Right');
+     ItemIndex := 0;
+     OnClick := @AlignmentRadioGroupOnClick;
+   end;
 
-     Button1 := TButton.Create(self);
-     with Button1 do
-       Begin
-          Parent := self;
-          Caption := 'Add';
-          Left := self.width div 2;
-          Top := cbAutoSize.Top+cbAutoSize.Height+5;
-          Visible := True;
-          OnClick := @Button1OnClick;
-       end;
+  cbVisible := TCheckBox.Create(self);
+  with cbVisible do
+   begin
+     Parent := Self;
+     Caption := 'Visible';
+     Left := self.width div 2;
+     Top :=  AlignmentRadioGroup.Top+AlignmentRadioGroup.Height+5;
+     Height := 25;
+     Checked := True;
+     OnClick := @cbVisibleOnClick;
+   end;
 
-     Button2 := TButton.Create(self);
-     with Button2 do
-       Begin
-          Parent := self;
-          Caption := 'Delete';
-          Left := Button1.Left+Button1.Width+5;
-          Top := Button1.Top;
-          Visible := True;
-          OnClick := @Button2OnClick;
-       end;
-       
-     Button3 := TButton.Create(self);
-     with Button3 do
-       Begin
-          Parent := self;
-          Caption := 'Move up';
-          Left := 5;
-          Top := ListBox1.Top+Listbox1.Height+5;
-          Visible := True;
-          OnClick := @Button3OnClick;
-       end;
+  cbAutoSize := TCheckBox.Create(self);
+  with cbAutoSize do
+   begin
+     Parent := Self;
+     Caption := 'Auto Size';
+     Left := self.width div 2;
+     Top :=  cbVisible.Top + cbVisible.Height + 5;
+     Height := 25;
+     Checked := True;
+     OnClick := @cbAutoSizeOnClick;
+   end;
 
-     Button4 := TButton.Create(self);
-     with Button4 do
-       Begin
-          Parent := self;
-          Caption := 'Move down';
-          Left := Button3.Left+Button3.Width+5;
-          Top := Button3.Top;
-          Visible := True;
-          OnClick := @Button4OnClick;
-       end;
-       
-     btnOK := TBitbtn.Create(self);
-     with btnOK do
-       Begin
-          Parent := self;
-          Caption := 'OK';
-          Left := self.Width div 2+5;
-          Top := Button3.Top;
-          Visible := True;
-          kind := bkOK;
-       end;
+  AddButton := TButton.Create(self);
+  with AddButton do
+   Begin
+      Parent := self;
+      Caption := 'Add';
+      Left := self.width div 2;
+      Top := cbAutoSize.Top+cbAutoSize.Height+5;
+      OnClick := @AddButtonOnClick;
+   end;
 
-     btnCancel := TBitbtn.Create(self);
-     with btnCancel do
-       Begin
-          Parent := self;
-          Caption := 'Cancel';
-          Left := btnOK.left + btnOK.Width + 5;
-          Top :=btnOK.top;
-          Visible := True;
-          Kind := bkCancel;
-       end;
+  DeleteButton := TButton.Create(self);
+  with DeleteButton do
+   Begin
+      Parent := self;
+      Caption := 'Delete';
+      Left := AddButton.Left+AddButton.Width+5;
+      Top := AddButton.Top;
+      OnClick := @DeleteButtonOnClick;
+   end;
 
-  end;
+  MoveUpButton := TButton.Create(self);
+  with MoveUpButton do
+   Begin
+      Parent := self;
+      Caption := 'Move up';
+      Left := 5;
+      Top := ColumnsListBox.Top+ColumnsListBox.Height+5;
+      OnClick := @MoveUpButtonOnClick;
+   end;
+
+  MoveDownButton := TButton.Create(self);
+  with MoveDownButton do
+   Begin
+      Parent := self;
+      Caption := 'Move down';
+      Left := MoveUpButton.Left+MoveUpButton.Width+5;
+      Top := MoveUpButton.Top;
+      OnClick := @MoveDownButtonOnClick;
+   end;
+
+  btnOK := TBitbtn.Create(self);
+  with btnOK do
+   Begin
+      Parent := self;
+      Caption := 'OK';
+      Left := self.Width div 2+5;
+      Top := MoveUpButton.Top;
+      kind := bkOK;
+   end;
+
+  btnCancel := TBitbtn.Create(self);
+  with btnCancel do
+   Begin
+      Parent := self;
+      Caption := 'Cancel';
+      Left := btnOK.left + btnOK.Width + 5;
+      Top :=btnOK.top;
+      Kind := bkCancel;
+   end;
+   
   FColumns := TListColumns.Create(nil);
   FSelectedIndex:= -1;
 end;
@@ -261,8 +246,7 @@ begin
   inherited Destroy;
 end;
 
-
-procedure TColumnDlg.Button1OnClick(sender : TObject);
+procedure TColumnDlg.AddButtonOnClick(sender : TObject);
 var
   Column : TListColumn;
 Begin
@@ -270,71 +254,70 @@ Begin
   Column := FColumns.Add;
   Column.Caption := 'Caption';
   FSelectedIndex := Column.Index;
-  Listbox1.Items.Add(Column.Caption);
-  Listbox1.Selected[FSelectedIndex] := True;
+  ColumnsListBox.Items.Add(Column.Caption);
+  ColumnsListBox.Selected[FSelectedIndex] := True;
   DisplayColumn(FSelectedIndex);
 end;
 
-procedure TColumnDlg.Listbox1OnClick(sender : TObject);
+procedure TColumnDlg.ColumnsListBoxOnClick(sender : TObject);
 var
   I : Integer;
 begin
-  Edit1.ReadOnly := True;
+  CaptionEdit.ReadOnly := True;
   FSelectedIndex := -1;
-  if Listbox1.SelCount = 0 then Exit;
-  Edit1.ReadOnly := False;
+  if ColumnsListBox.SelCount = 0 then Exit;
+  CaptionEdit.ReadOnly := False;
   I := 0;
-  While not Listbox1.Selected[i] do
+  While not ColumnsListBox.Selected[i] do
     inc(i);
   DisplayColumn(I);
   
 end;
 
-Procedure TColumnDlg.Edit1OnChange(Sender : TObject);
+Procedure TColumnDlg.CaptionEditOnChange(Sender : TObject);
 Var
   ListColumn : TListColumn;
 begin
   if FSelectedIndex = -1 then Exit;
   ListColumn := FColumns[FSelectedIndex];
-  ListColumn.Caption := Edit1.Caption;
-  Listbox1.Items[FSelectedIndex] := Edit1.Caption;
-  Listbox1.Selected[FSelectedIndex] := True;
+  ListColumn.Caption := CaptionEdit.Caption;
+  ColumnsListBox.Items[FSelectedIndex] := CaptionEdit.Caption;
+  ColumnsListBox.Selected[FSelectedIndex] := True;
 end;
 
-Procedure TColumnDlg.Edit2OnChange(Sender : TObject);
+Procedure TColumnDlg.WidthEditOnChange(Sender : TObject);
 Var
   ListColumn : TListColumn;
 begin
   if FSelectedIndex = -1 then Exit;
   ListColumn := FColumns[FSelectedIndex];
-  if Edit2.Caption = '' then
+  if WidthEdit.Caption = '' then
     ListColumn.Width := 0
     else
     try
-      ListColumn.Width := StrtoInt(Edit2.Caption);
+      ListColumn.Width := StrtoInt(WidthEdit.Caption);
     except
         raise Exception.Create('Invalid numeric Value');
-        Edit2.Caption := '0';
+        WidthEdit.Caption := '0';
     end;
 end;
 
-procedure TColumnDlg.Button2OnClick(sender : TObject);
+procedure TColumnDlg.DeleteButtonOnClick(sender : TObject);
 var
   Index : Integer;
 begin
   //delete
   if FSelectedIndex = -1 then Exit;
-
   Index := FSelectedIndex;
   FSelectedIndex := -1;
   FColumns[Index].Free;
-  Listbox1.Items.Delete(Index);
+  ColumnsListBox.Items.Delete(Index);
   if Index > 0 then
-  Listbox1.Selected[Index-1] := True;
+  ColumnsListBox.Selected[Index-1] := True;
   DisplayColumn(Index-1);
 end;
 
-procedure TColumnDlg.Button3OnClick(sender : TObject);
+procedure TColumnDlg.MoveUpButtonOnClick(sender : TObject);
 Var
   ListColumn : TListColumn;
   Index : Integer;
@@ -346,20 +329,20 @@ begin
   ListColumn := FColumns[Index];
   ListColumn.Index := Index - 1;
   
-  Listbox1.Items.Insert(Index-1,ListColumn.Caption);
-  Listbox1.Items.Delete(Index+1);
-  Listbox1.Selected[Index-1] := True;
+  ColumnsListBox.Items.Insert(Index-1,ListColumn.Caption);
+  ColumnsListBox.Items.Delete(Index+1);
+  ColumnsListBox.Selected[Index-1] := True;
   DisplayColumn(Index-1);
 end;
 
-procedure TColumnDlg.Button4OnClick(sender : TObject);
+procedure TColumnDlg.MoveDownButtonOnClick(sender : TObject);
 Var
   ListColumn : TListColumn;
   Index : Integer;
 begin
   //move down
   if FSelectedIndex = -1 then Exit;
-  if (FSelectedIndex >= Listbox1.Items.Count-1) then Exit;
+  if (FSelectedIndex >= ColumnsListBox.Items.Count-1) then Exit;
 
   Index := FSelectedIndex;
   FSelectedIndex := -1;
@@ -367,9 +350,9 @@ begin
   ListColumn := FColumns[Index];
   ListColumn.Index := Index + 1;
 
-  Listbox1.Items.Insert(Index+2,ListColumn.Caption);
-  Listbox1.Items.Delete(Index);
-  Listbox1.Selected[Index+1] := True;
+  ColumnsListBox.Items.Insert(Index+2,ListColumn.Caption);
+  ColumnsListBox.Items.Delete(Index);
+  ColumnsListBox.Selected[Index+1] := True;
   DisplayColumn(Index+1);
 end;
 
@@ -378,22 +361,24 @@ Var
   ListColumn : TListColumn;
 begin
   FSelectedIndex := -1;
-  if Value = -1 then exit;
+  if Value >=0 then begin
 
-  ListColumn := FColumns[Value];
-  Edit1.Caption := ListColumn.Caption;
-  Edit2.Caption := Inttostr(Integer(ListColumn.Width));
+    ListColumn := FColumns[Value];
+    CaptionEdit.Caption := ListColumn.Caption;
+    WidthEdit.Caption := IntToStr(Integer(ListColumn.Width));
 
-  case ListColumn.Alignment of
-    taLeftJustify :  RadioGroup1.ItemIndex := 0;
-    taCenter:        RadioGroup1.ItemIndex := 1;
-    taRightJustify : RadioGroup1.ItemIndex := 2;
-  end;  //case
-  
-  cbVisible.Checked := ListColumn.Visible;
-  cbAutoSize.Checked := ListColumn.AutoSize;
+    case ListColumn.Alignment of
+      taLeftJustify :  AlignmentRadioGroup.ItemIndex := 0;
+      taCenter:        AlignmentRadioGroup.ItemIndex := 1;
+      taRightJustify : AlignmentRadioGroup.ItemIndex := 2;
+    end;  //case
+
+    cbVisible.Checked := ListColumn.Visible;
+    cbAutoSize.Checked := ListColumn.AutoSize;
+  end;
 
   FSelectedIndex := Value;
+  EnableComponents;
 end;
 
 procedure TColumnDlg.SetColumns(const AValue: TListColumns);
@@ -401,13 +386,13 @@ begin
   FColumns.Assign(AValue);
 end;
 
-procedure TColumnDlg.RadioGroup1OnClick(sender : TObject);
+procedure TColumnDlg.AlignmentRadioGroupOnClick(sender : TObject);
 Var
   ListColumn : TListColumn;
 begin
   if FSelectedIndex = -1 then Exit;
   ListColumn := FColumns[FSelectedIndex];
-  case  RadioGroup1.ItemIndex of
+  case  AlignmentRadioGroup.ItemIndex of
      0 : ListColumn.Alignment := taLeftJustify;
      1 : ListColumn.Alignment := taCenter;
      2 : ListColumn.Alignment := taRightJustify;
@@ -419,16 +404,41 @@ var
   I : Integer;
 begin
   //clear the listbox and display the items if any...
-  Listbox1.Items.Clear;
+  ColumnsListBox.Items.Clear;
   for I := 0 to FColumns.Count-1 do begin
     writeln('TColumnDlg.FormOnShow ',i,' "',FColumns[i].Caption,'"');
-    Listbox1.Items.Add(FColumns[i].Caption);
+    ColumnsListBox.Items.Add(FColumns[i].Caption);
   end;
 
-  if Listbox1.Items.Count > 0 then
+  if ColumnsListBox.Items.Count > 0 then
   begin
-    Listbox1.Selected[0] := True;
+    ColumnsListBox.Selected[0] := True;
     DisplayColumn(0);
+  end;
+  EnableComponents;
+end;
+
+procedure TColumnDlg.EnableComponents;
+var
+  AColumnIsSelected: boolean;
+begin
+  AColumnIsSelected:=FSelectedIndex>=0;
+
+  CaptionEdit.Enabled:=AColumnIsSelected;
+  WidthEdit.Enabled:=AColumnIsSelected;
+  AlignmentRadioGroup.Enabled:=AColumnIsSelected;
+end;
+
+procedure TColumnDlg.WriteDebugReport;
+var
+  I: Integer;
+begin
+  writeln('TColumnDlg.WriteDebugReport: ');
+  for I := 0 to ColumnsListBox.Items.Count-1 do begin
+    writeln('ListBox: ',i,' "',ColumnsListBox.Items[I],'"');
+  end;
+  for I := 0 to FColumns.Count-1 do begin
+    writeln('Columns: ',i,' "',FColumns[i].Caption,'" ');
   end;
 end;
 
@@ -443,9 +453,6 @@ begin
   if FSelectedIndex = -1 then Exit;
   FColumns[FSelectedIndex].AutoSize := cbAutoSize.Checked;
 end;
-
-initialization
-  { $I columndlg.lrs}
 
 end.
 
