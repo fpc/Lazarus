@@ -1698,8 +1698,9 @@ begin
 end;
 
 procedure TGDBMIBreakPoint.UpdateEnable;
-const
-  CMD: array[Boolean] of String = ('disable', 'enable');
+const                         
+  // Use shortstring as fix for fpc 1.9.5 [2004/07/15]
+  CMD: array[Boolean] of ShortString = ('disable', 'enable');
 begin
   if (FBreakID = 0)
   or (Debugger = nil)
@@ -2261,6 +2262,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.47  2004/07/19 22:29:46  marc
+  * Temp (?) fix for FPC 1.9.5 [2004/07/15]
+
   Revision 1.46  2004/04/14 23:07:20  marc
   * Merged Getpart for target PID form Colin Western
 
