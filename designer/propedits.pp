@@ -1809,15 +1809,30 @@ procedure TPropertyEditor.ListDrawValue(const AValue:ansistring; Index:integer;
   ACanvas:TCanvas; const ARect:TRect; AState: TPropEditDrawState);
 var
   Style : TTextStyle;
+  OldColor : TColor;
 begin
   With Style do begin
     Alignment := taLeftJustify;
     Layout := tlCenter;
-    Opaque := ACanvas.Brush.Color<>clNone;
+    Opaque := (pedsInEdit in AState) and (ACanvas.Color <> clNone);
     Clipping := True;
     ShowPrefix := True;
     WordBreak := False;
     SingleLine := True;
+  end;
+  If (pedsInComboList in AState) and not (pedsInEdit in AState)
+  then begin
+    OldColor := ACanvas.Color;
+    If pedsSelected in AState then begin
+      ACanvas.Color := clHighlight;
+      ACanvas.Font.Color := clHighlightText;
+    end
+    else begin
+      ACanvas.Color := clWindow;
+      ACanvas.Font.Color := clWindowText;
+    end;
+    ACanvas.FillRect(ARect);
+    ACanvas.Color := OldColor;
   end;
   ACanvas.TextRect(ARect, 2,0,AValue, Style);
 end;
