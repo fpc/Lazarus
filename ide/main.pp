@@ -3861,42 +3861,55 @@ var ActiveSrcEdit: TSourceEditor;
   //  Searches for FName in SPath
   //  If FName is not found, we'll check extensions pp and pas too
   //  Returns true if found. FName contains the full file+path in that case
-  var TempFile,TempPath,CurPath,Ext: String;
+  var TempFile,TempPath,CurPath,FinalFile, Ext: String;
       i,p,c: Integer;
   begin
     if SPath='' then SPath:='.';
     Result:=true;
-    for i:=0 to 2 do begin
-      case i of
-        1: Ext:='.pp';
-        2: Ext:='.pas';
-        else Ext:='';
+    TempPath:=SPath;
+    while TempPath<>'' do begin
+      p:=pos(';',TempPath);
+      if p=0 then p:=length(TempPath)+1;
+      CurPath:=copy(TempPath,1,p-1);
+      Delete(TempPath,1,p);
+      if CurPath='' then continue;
+      CurPath:=AppendPathDelim(CurPath);
+      if not FilenameIsAbsolute(CurPath) then begin
+        if ActiveUnitInfo.IsVirtual then
+          CurPath:=AppendPathDelim(Project1.ProjectDirectory)+CurPath
+        else
+          CurPath:=AppendPathDelim(ExtractFilePath(ActiveUnitInfo.Filename))
+                   +CurPath;
       end;
-      TempPath:=SPath;
-      while TempPath<>'' do begin
-        p:=pos(';',TempPath);
-        if p=0 then p:=length(TempPath)+1;
-        CurPath:=copy(TempPath,1,p-1);
-        Delete(TempPath,1,p);
-        if CurPath='' then continue;
-        if CurPath[length(CurPath)]<>PathDelim then
-          CurPath:=CurPath+PathDelim;
-        for c:=0 to 2 do begin
-          case c of
-            0: TempFile:=FName;
-            1: TempFile:=LowerCase(FName);
-            2: TempFile:=UpperCase(FName);
+      for c:=0 to 2 do begin
+        case c of
+          0: TempFile:=FName;
+          1: TempFile:=LowerCase(FName);
+          2: TempFile:=UpperCase(FName);
+        end;
+        if ExtractFileExt(TempFile)='' then begin
+          for i:=0 to 2 do begin
+            case i of
+              1: Ext:='.pp';
+              2: Ext:='.pas';
+              else Ext:='';
+            end;
+            FinalFile:=ExpandFileName(CurPath+TempFile+Ext);
+            if FileExists(FinalFile) then begin
+              FName:=FinalFile;
+              exit;
+            end;
           end;
-          TempFile:=ExpandFileName(CurPath+TempFile+Ext);
-          if FileExists(TempFile) then begin
-            FName:=TempFile;
+        end else begin
+          FinalFile:=ExpandFileName(CurPath+TempFile);
+          if FileExists(FinalFile) then begin
+            FName:=FinalFile;
             exit;
           end;
         end;
       end;
-      if (Ext='') and (ExtractFileExt(FName)<>'') then break;
     end;
-    result:=false;
+    Result:=false;
   end;
 
   function GetFilenameAtRowCol(XY: TPoint): string;
@@ -6488,6 +6501,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.313  2002/06/14 14:57:05  lazarus
+  MG: fixed open file at cursor search path
+
   Revision 1.312  2002/06/13 18:37:47  lazarus
   MG: added upper/lowercase selection
 
