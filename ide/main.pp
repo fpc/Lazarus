@@ -6912,10 +6912,10 @@ begin
   try
     Result:=mrCancel;
     if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-    { $IFDEF IDE_DEBUG}
+    {$IFDEF IDE_DEBUG}
     writeln('');
     writeln('[TMainIDE.DoMakeResourceString] ************');
-    { $ENDIF}
+    {$ENDIF}
     // calculate start and end of expression in source
     if CodeToolBoss.GetStringConstBounds(ActiveUnitInfo.Source,
       ActiveSrcEdit.EditorComponent.CaretX,
@@ -6924,7 +6924,6 @@ begin
       EndCode,EndPos.X,EndPos.Y,
       true) then
     begin
-      writeln('[TMainIDE.DoMakeResourceString] B');
       // the codetools have calculated the maximum bounds
       if (StartCode=EndCode) and (CompareCaret(StartPos,EndPos)=0) then begin
         MessageDlg('No String Constant Found',
@@ -6933,7 +6932,6 @@ begin
         mtError,[mbCancel],0);
         exit;
       end;
-      writeln('[TMainIDE.DoMakeResourceString] C');
       // the user can shorten this range by selecting text
       if (Trim(ActiveSrcEdit.EditorComponent.SelText)='') then begin
         // the user has not selected text
@@ -7863,6 +7861,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.479  2003/03/09 21:13:32  mattias
+  localized gtk interface
+
   Revision 1.478  2003/03/09 17:44:12  mattias
   finshed Make Resourcestring dialog and implemented TToggleBox
 
