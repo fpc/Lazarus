@@ -814,7 +814,7 @@ begin
   with Result do begin
     AutoCreated:=true;
     Name:='FCL';
-    Filename:='$(FPCSrcDir)/fcl/';
+    Filename:=SetDirSeparators('$(FPCSrcDir)/fcl/');
     Version.SetValues(1,0,0,0);
     Author:='FPC team';
     License:='LGPL-2';
@@ -826,15 +826,18 @@ begin
     CompilerOptions.UnitOutputDirectory:='';
     
     // add lazarus registration unit path
-    UsageOptions.UnitPath:='$(LazarusDir)/packager/units';
+    UsageOptions.UnitPath:=SetDirSeparators('$(LazarusDir)/packager/units');
 
     // add registering units
-    AddFile('inc/process.pp','Process',pftUnit,[pffHasRegisterProc],cpBase);
-    AddFile('db/db.pp','DB',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile(SetDirSeparators('inc/process.pp'),'Process',pftUnit,
+            [pffHasRegisterProc],cpBase);
+    AddFile(SetDirSeparators('db/db.pp'),'DB',pftUnit,
+            [pffHasRegisterProc],cpBase);
 
     // use the packager/units/lazaruspackageintf.o file as indicator,
     // if FCL has been recompiled
-    OutputStateFile:='$(LazarusDir)/packager/units/lazaruspackageintf.o';
+    OutputStateFile:=SetDirSeparators(
+      '$(LazarusDir)/packager/units/lazaruspackageintf.o');
 
     Modified:=false;
   end;
@@ -848,7 +851,7 @@ begin
   with Result do begin
     AutoCreated:=true;
     Name:='LCL';
-    Filename:='$(LazarusDir)/lcl/';
+    Filename:=SetDirSeparators('$(LazarusDir)/lcl/');
     Version.SetValues(1,0,0,0);
     Author:='Lazarus';
     License:='LGPL-2';
@@ -885,16 +888,16 @@ begin
       inc(Files[i].ComponentPriority.Level);
 
     // add unit paths
-    UsageOptions.UnitPath:=
-      '$(LazarusDir)/lcl/units;$(LazarusDir)/lcl/units/$(LCLWidgetType)';
+    UsageOptions.UnitPath:=SetDirSeparators(
+      '$(LazarusDir)/lcl/units;$(LazarusDir)/lcl/units/$(LCLWidgetType)');
     UsageOptions.CustomOptions:='-dLCL';
     // add include path
-    CompilerOptions.IncludeFiles:=
-      '$(LazarusDir)/lcl/include;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)';
+    CompilerOptions.IncludeFiles:=SetDirSeparators(
+      '$(LazarusDir)/lcl/include;$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
 
     // use the lcl/units/allunits.o file as indicator,
     // if LCL has been recompiled
-    OutputStateFile:='$(LazarusDir)/lcl/units/allunits.o';
+    OutputStateFile:=SetDirSeparators('$(LazarusDir)/lcl/units/allunits.o');
 
     Modified:=false;
   end;
@@ -906,7 +909,7 @@ begin
   with Result do begin
     AutoCreated:=true;
     Name:='SynEdit';
-    Filename:='$(LazarusDir)/components/synedit/';
+    Filename:=SetDirSeparators('$(LazarusDir)/components/synedit/');
     Version.SetValues(1,0,0,0);
     Author:='SynEdit - http://sourceforge.net/projects/synedit/';
     License:='LGPL-2';
@@ -939,11 +942,12 @@ begin
     AddFile('synhighlightermulti.pas','SynHighlighterMulti',pftUnit,[],cpBase);
 
     // add unit paths
-    UsageOptions.UnitPath:='$(LazarusDir)/components/units';
+    UsageOptions.UnitPath:=SetDirSeparators('$(LazarusDir)/components/units');
 
     // use the lcl/units/allunits.o file as indicator,
     // if synedit has been recompiled
-    OutputStateFile:='$(LazarusDir)/components/units/allunits.o';
+    OutputStateFile:=SetDirSeparators(
+      '$(LazarusDir)/components/units/allunits.o');
 
     Modified:=false;
   end;
@@ -955,7 +959,7 @@ begin
   with Result do begin
     AutoCreated:=true;
     Name:='DefaultPackage';
-    Filename:='$(LazarusDir)/components/custom/';
+    Filename:=SetDirSeparators('$(LazarusDir)/components/custom/');
     Version.SetValues(1,0,1,1);
     Author:='Anonymous';
     AutoInstall:=pitStatic;
@@ -966,7 +970,7 @@ begin
     CompilerOptions.UnitOutputDirectory:='';
 
     // add unit paths
-    UsageOptions.UnitPath:='$(LazarusDir)/components/custom';
+    UsageOptions.UnitPath:=SetDirSeparators('$(LazarusDir)/components/custom');
 
     // add requirements
     AddRequiredDependency(LCLPackage.CreateDependencyForThisPkg(Result));
