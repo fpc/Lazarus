@@ -135,6 +135,14 @@ procedure RaiseException(const Msg: string);
 procedure FreeThenNil(var Obj: TObject);
 function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
 
+const
+  {$IFDEF Win32}
+  FindMask = '*.*';
+  {$ELSE}
+  FindMask = '*';
+  {$ENDIF}
+
+
 implementation
 
 
@@ -148,13 +156,6 @@ uses
        ,Unix
      {$ENDIF}
   {$EndIf};
-
-const
-  {$IFDEF Win32}
-  FindMask = '*.*';
-  {$ELSE}
-  FindMask = '*';
-  {$ENDIF}
 
 function AddToRecentList(const s: string; RecentList: TStringList;
   Max: integer): boolean;
