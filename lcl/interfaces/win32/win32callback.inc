@@ -458,7 +458,7 @@ Begin
           LMessage.Result := LResult(TWinControl(MsgObject).Brush.Handle);
           // Override default handling
           WinProcess := false;
-	end;
+        end;
       end;
     End;
     WM_COPY:
@@ -539,7 +539,7 @@ Begin
       if OwnerObject is TEdit then
       begin
         WinProcess := false;
-	LMessage.Result := DLGC_WANTALLKEYS;
+        LMessage.Result := DLGC_WANTALLKEYS;
       end;
     End;
     WM_KEYDOWN:
@@ -685,27 +685,27 @@ Begin
       Begin
         X := SmallInt(Lo(LParam));
         Y := SmallInt(Hi(LParam));
-	// check if mouse cursor within this window, otherwise send message to window the mouse is hovering over
-	if GetWindowRect(Window, R) <> 0 then
-	begin
-	  if (X < R.Left) or (R.Right < X)
-	    or (Y < R.Top) or (R.Bottom < Y) then
-	  begin
-	    P.X := X;
-	    P.Y := Y;
-	    Window := TWin32WidgetSet(InterfaceObject).WindowFromPoint(P);
-	    if Window = HWND(nil) then
-	      exit;
+        // check if mouse cursor within this window, otherwise send message to window the mouse is hovering over
+        if GetWindowRect(Window, R) <> 0 then
+        begin
+          if (X < R.Left) or (R.Right < X)
+            or (Y < R.Top) or (R.Bottom < Y) then
+          begin
+            P.X := X;
+            P.Y := Y;
+            Window := TWin32WidgetSet(InterfaceObject).WindowFromPoint(P);
+            if Window = HWND(nil) then
+              exit;
 
-	    PostMessage(Window, WM_MOUSEWHEEL, WParam, LParam);
-	    exit;
-	  end;
-	end;
+            PostMessage(Window, WM_MOUSEWHEEL, WParam, LParam);
+            exit;
+          end;
+        end;
 
-	Msg := LM_MOUSEWHEEL;
+        Msg := LM_MOUSEWHEEL;
         WheelDelta := SmallInt(Hi(WParam));
-	State := GetShiftState;
-	UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
+        State := GetShiftState;
+        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
       End;
       WinProcess := false;
     End;
@@ -797,7 +797,8 @@ Begin
       if (TheWinControl <> nil) and (TheWinControl.Cursor <> crDefault) then
       begin
         Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[TheWinControl.Cursor]));
-	WinProcess := false;
+        WinProcess := false;
+        LMessage.Result := 1;
       end;
     end;
     WM_SETFOCUS:
@@ -950,9 +951,9 @@ Begin
             exit;
           TheWinControl.InvalidateClientRectCache(true);
         end;
-	OverlayWindow := Windows.GetProp(Window, 'Overlay');
-	if OverlayWindow <> 0 then
-	  Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
+        OverlayWindow := Windows.GetProp(Window, 'Overlay');
+        if OverlayWindow <> 0 then
+          Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
       End;
     End;
   end;
@@ -1010,15 +1011,15 @@ Begin
 
   { LMMouseEvent and LMInsertText have no Result field }
 
-  if 	  PLMsg = @LMScroll 	then Result := LMScroll.Result 
-  else if PLMsg = @LMKey 	then Result := LMKey.Result 
-  else if PLMsg = @LMChar 	then Result := LMChar.Result
-  else if PLMsg = @LMMouse 	then Result := LMMouse.Result
-  else if PLMsg = @LMMouseMove 	then Result := LMMouseMove.Result
-  else if PLMsg = @LMMove 	then Result := LMMove.Result
-  else if PLMsg = @LMNotify 	then Result := LMNotify.Result
+  if      PLMsg = @LMScroll     then Result := LMScroll.Result 
+  else if PLMsg = @LMKey        then Result := LMKey.Result 
+  else if PLMsg = @LMChar       then Result := LMChar.Result
+  else if PLMsg = @LMMouse      then Result := LMMouse.Result
+  else if PLMsg = @LMMouseMove  then Result := LMMouseMove.Result
+  else if PLMsg = @LMMove       then Result := LMMove.Result
+  else if PLMsg = @LMNotify     then Result := LMNotify.Result
   else if PLMsg = @LMMouseEvent then Result := 1
-  else 				     Result := PLMsg^.Result;
+  else                               Result := PLMsg^.Result;
   
   Assert(False, 'Trace:WindowProc - Exit');
 End;
@@ -1211,6 +1212,9 @@ end;
 
 {
   $Log$
+  Revision 1.112  2004/06/13 13:30:21  micha
+  fix wm_setcursor to return TRUE if processed
+
   Revision 1.111  2004/06/10 13:26:10  micha
   try fix LM_ERASEBKGND bug: not responding to user Result
 
