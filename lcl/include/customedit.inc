@@ -86,8 +86,8 @@ var
   OldText, NewText: string;
 begin
   OldText:=Text;
-  NewText:=LeftStr(OldText,SelStart-1)+Val
-             +RightStr(OldText,length(OldText)-SelStart-SelLength+1);
+  NewText:=LeftStr(OldText,SelStart)+Val
+             +RightStr(OldText,length(OldText)-SelStart-SelLength);
   Text:=NewText;
 end;
 
@@ -160,6 +160,51 @@ begin
     SetSelStart(0);
     SetSelLength(Length(Text));
   end;    
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomEdit.ClearSelection
+  Params: -
+  Returns: nothing
+
+  Delete selected text.
+ ------------------------------------------------------------------------------}
+procedure TCustomEdit.ClearSelection;
+begin
+  if SelLength > 0 then
+    SelText := '';
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomEdit.ClearSelection
+  Params: -
+  Returns: nothing
+
+  Copy selected text to clipboard.
+ ------------------------------------------------------------------------------}
+procedure TCustomEdit.CopyToClipboard;
+begin
+  if (EchoMode <> emNormal) and (SelLength > 0) then
+    Clipboard.AsText := SelText;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomEdit.ClearSelection
+  Params: -
+  Returns: nothing
+
+  Move selected text to clipboard.
+ ------------------------------------------------------------------------------}
+procedure TCustomEdit.CutToClipboard;
+begin
+  CopyToClipboard;
+  ClearSelection;
+end;
+
+procedure TCustomEdit.PasteFromClipboard;
+begin
+  if Clipboard.HasFormat(CF_TEXT) then
+    SelText := Clipboard.AsText;
 end;
 
 {------------------------------------------------------------------------------
@@ -270,7 +315,7 @@ Procedure TCustomEdit.CMTextChanged(var Message : TLMessage);
 var
   Temp : String;
 Begin
-  //check to see if the charcase should effect the text.
+  //check to see if the charcase should affect the text.
   if FCharCase = ecUppercase then
   Begin
     Temp := Uppercase(text);
@@ -310,6 +355,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2003/11/01 18:58:15  mattias
+  added clipboard support for TCustomEdit from Colin
+
   Revision 1.18  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

@@ -32,8 +32,7 @@ interface
 uses
   VCLGlobals, Classes, SysUtils, LCLStrConsts, LCLType, LCLProc,
   Graphics, GraphType, LMessages, Controls, ExtendedStrings, LCLIntf,
-  GraphMath, Forms;
-
+  ClipBrd, GraphMath, Forms;
 
 type
 
@@ -477,6 +476,10 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure SelectAll;
+    procedure ClearSelection; virtual;
+    procedure CopyToClipboard; virtual;
+    procedure CutToClipboard; virtual;
+    procedure PasteFromClipboard; virtual;
     property CharCase : TEditCharCase read FCharCase write SetCharCase default ecNormal;
     property EchoMode : TEchoMode read FEchoMode write SetEchoMode default emNormal;
     property MaxLength : Integer read FMaxLength write SetMaxLength default -1;
@@ -535,6 +538,7 @@ type
     destructor Destroy; override;
     procedure Append(const Value : String);
     procedure Clear;
+    function GetTextLen: Integer;
   public
     property Lines: TStrings read FLines write SetLines;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
@@ -981,7 +985,6 @@ procedure Register;
 
 implementation
 
-
 type
   TMemoStrings = class(TStrings)
   private
@@ -1001,25 +1004,6 @@ begin
   RegisterComponents('Standard',[TLabel,TEdit,TMemo,TToggleBox,TCheckBox,
        TRadioButton,TListBox,TComboBox,TScrollBar,TGroupBox,TStaticText]);
 end;
-
- { TComboBoxStrings = class(TStrings)
-  private
-    ComboBox: TCustomComboBox;
-  protected
-    function Get(Index: Integer): string; override;
-    function GetCount: Integer; override;
-    function GetObject(Index: Integer): TObject; override;
-    procedure PutObject(Index: Integer; AObject: TObject); override;
-    procedure SetUpdateState(Updating: Boolean); override;
-  public
-    function Add(const S: string): Integer; override;
-    procedure Clear; override;
-    procedure Delete(Index: Integer); override;
-    function IndexOf(const S: string): Integer; override;
-    procedure Insert(Index: Integer; const S: string); override;
-  end;
-    }
-
 
 
 {$IFDef NewCheckBox}
@@ -1476,6 +1460,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.109  2003/11/01 18:58:15  mattias
+  added clipboard support for TCustomEdit from Colin
+
   Revision 1.108  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

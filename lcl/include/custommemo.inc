@@ -73,6 +73,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TCustomMemo.Clear;
+ ------------------------------------------------------------------------------}
+function TCustomMemo.GetTextLen: Integer;
+begin
+  Result := Length(Text);
+end;
+
+{------------------------------------------------------------------------------
   procedure TCustomMemo.SetHorzScrollBar(const AValue: TMemoScrollBar);
  ------------------------------------------------------------------------------}
 procedure TCustomMemo.SetHorzScrollBar(const AValue: TMemoScrollBar);
@@ -159,6 +167,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2003/11/01 18:58:15  mattias
+  added clipboard support for TCustomEdit from Colin
+
   Revision 1.16  2003/06/13 11:58:46  mattias
   fixed readonly of properties
 
