@@ -91,7 +91,6 @@ begin
   end;
 end;
 
-
 {------------------------------------------------------------------------------
   Method: TSpeedButton.SetDown
   Params: Value:
@@ -433,9 +432,6 @@ begin
     end;
   end;  
 
-  //this needs to be done yet.
-  //Assert(False,'Trace:TODO: DRAWTEXTBIDIMODEFLAGS');
-
   FGlyph.Draw(Canvas, PaintRect, Offset, FState, Transparent, 0);
   if Caption <> '' then begin
     TXTStyle := Canvas.TextStyle;
@@ -704,6 +700,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2003/04/29 13:35:39  mattias
+  improved configure build lazarus dialog
+
   Revision 1.37  2003/04/02 13:23:23  mattias
   fixed default font
 
