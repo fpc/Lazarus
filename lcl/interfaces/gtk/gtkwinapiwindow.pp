@@ -343,6 +343,9 @@ const
 var
   Widget: PGTKWidget;
   HasFocus: boolean;
+  //OldGdkFunction: TGdkFunction;
+  ForeGroundGC: PGdkGC;
+  //ForeGroundGCValues: TGdkGCValues;
 begin
   if Client = nil then begin
     WriteLn('WARNING: [GTKAPIWidgetClient_DrawCaret] Got nil client');
@@ -384,6 +387,7 @@ begin
       then
         BackPixmap := gdk_pixmap_new(Widget^.Window, Width, Height, -1);
 
+      // undraw old caret
       if (BackPixmap <> nil) and (Widget<>nil) and ((Widget^.theStyle)<>nil)
       and (Width>0) and (Height>0)
       then gdk_draw_pixmap(
@@ -396,13 +400,22 @@ begin
       if (PGTKStyle(PGTKWidget(Client)^.theStyle)<>nil) 
       and (PGTKWidget(Client)^.Window<>nil)
       and (Width>0) and (Height>0)
-      and (PGTKWidget(Client)^.theStyle<>nil) then
+      and (PGTKWidget(Client)^.theStyle<>nil) then begin
+        // set draw function to xor
+        ForeGroundGC:=PGTKStyle(
+           PGTKWidget(Client)^.theStyle)^.fg_gc[GC_STATE[Integer(Pixmap) <> 1]];
+        //gdk_gc_get_values(ForeGroundGC,@ForeGroundGCValues);
+        //OldGdkFunction:=ForeGroundGCValues.thefunction;
+        //gdk_gc_set_function(ForeGroundGC,GDK_XOR);
+        // draw the caret
         gdk_draw_rectangle(
           PGTKWidget(Client)^.Window, 
-          PGTKStyle(PGTKWidget(Client)^.theStyle)^.fg_gc[GC_STATE[Integer(Pixmap) <> 1]],
+          ForeGroundGC,
           1, X, Y, Width, Height
-        )
-      else
+        );
+        // restore draw function
+        //gdk_gc_set_function(ForeGroundGC,OldGdkFunction);
+      end else
         writeln('***: Draw Caret failed: Client=',HexStr(Cardinal(Client),8),' X=',X,' Y=',Y,' W=',Width,' H=',Height,' ',Pixmap<>nil,',',PGTKWidget(Client)^.Window<>nil,',',PGTKWidget(Client)^.theStyle<>nil);
       IsDrawn := True;
 
@@ -699,6 +712,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2001/12/17 12:14:40  lazarus
+  MG: tried to xor caret, but failed :(
+
   Revision 1.18  2001/12/12 14:39:26  lazarus
   MG: carets will now be auto destroyed on widget destroy
 
