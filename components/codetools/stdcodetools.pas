@@ -29,9 +29,6 @@
       - Application.CreateForm statements
       - published variables
 
-  ToDo:
-    -Insert class method body in pipClassOrder
-    
 }
 unit StdCodeTools;
 
@@ -58,6 +55,10 @@ type
     function ReadForwardTilAnyBracketClose: boolean;
     function ReadBackwardTilAnyBracketClose: boolean;
   public
+    // search & replace
+    function ReplaceIdentifiers(IdentList: TStrings;
+          SourceChangeCache: TSourceChangeCache): boolean;
+
     // source name  e.g. 'unit UnitName;'
     function GetSourceNamePos(var NamePos: TAtomPosition): boolean;
     function GetSourceName: string;
@@ -114,6 +115,11 @@ type
     function ListAllCreateFormStatements: TStrings;
     function SetAllCreateFromStatements(List: TStrings;
           SourceChangeCache: TSourceChangeCache): boolean;    
+
+    // forms
+    function RenameForm(const OldFormName, OldFormClassName: string;
+          const NewFormName, NewFormClassName: string;
+          SourceChangeCache: TSourceChangeCache): boolean;
 
     // form components
     function FindPublishedVariable(const UpperClassName,
@@ -921,6 +927,106 @@ begin
     end;
   end;
   Result:=SourceChangeCache.Apply;
+end;
+
+function TStandardCodeTool.RenameForm(const OldFormName,
+  OldFormClassName: string; const NewFormName, NewFormClassName: string;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  IdentList: TStringList;
+begin
+  Result:=false;
+  if (OldFormName='') or (OldFormClassName='')
+  or (NewFormName='') or (NewFormClassName='')
+  or (SourceChangeCache=nil) then exit;
+  IdentList:=TStringList.Create;
+  try
+    IdentList.Add(OldFormName);
+    IdentList.Add(NewFormName);
+    IdentList.Add(OldFormClassName);
+    IdentList.Add(NewFormClassName);
+    Result:=ReplaceIdentifiers(IdentList,SourceChangeCache);
+  finally
+    IdentList.Free;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
+    SourceChangeCache: TSourceChangeCache): boolean;
+    
+  Search in all used sources (not the cleaned source) for identifiers.
+  It will find all identifiers, except identifiers in compiler directives.
+  This includes identifiers in string constants and comments.
+-------------------------------------------------------------------------------}
+function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
+  SourceChangeCache: TSourceChangeCache): boolean;
+  
+  procedure ReplaceIdentifiersInSource(Code: TCodeBuffer);
+  var
+    StartPos, EndPos, MaxPos, IdentStart: integer;
+    CurSource: string;
+    i: integer;
+  begin
+    CurSource:=Code.Source;
+    MaxPos:=length(CurSource);
+    StartPos:=1;
+    // go through all source parts between compiler directives
+    repeat
+      EndPos:=FindNextCompilerDirective(CurSource,StartPos,
+                                        Scanner.NestedComments);
+      if EndPos>MaxPos then EndPos:=MaxPos+1;
+      // search all identifiers
+      repeat
+        IdentStart:=FindNextIdentifier(CurSource,StartPos,EndPos-1);
+        if IdentStart<EndPos then begin
+          i:=0;
+          while i<IdentList.Count do begin
+            if BasicCodeTools.CompareIdentifiers(PChar(IdentList[i]),
+                                                 @CurSource[IdentStart])=0 then
+            begin
+              // identifier found -> replace
+
+              break;
+            end;
+            inc(i,2);
+          end;
+          // skip identifier
+          StartPos:=IdentStart;
+          while (StartPos<MaxPos) and IsIdentChar[CurSource[StartPos]] do
+            inc(StartPos);
+        end else begin
+          break;
+        end;
+      until false;
+      if EndPos<=MaxPos then begin
+        // skip comment
+        StartPos:=FindCommentEnd(CurSource,EndPos,Scanner.NestedComments);
+        if StartPos>MaxPos then break;
+      end else begin
+        break;
+      end;
+    until false;
+  end;
+  
+var
+  SourceList: TList;
+  i: integer;
+begin
+  Result:=false;
+  if (IdentList=nil) or (IdentList.Count=0) or (SourceChangeCache=nil)
+  or (Odd(IdentList.Count)) then exit;
+  BuildTree(false);
+  if Scanner=nil then exit;
+  SourceList:=TList.Create;
+  try
+    Scanner.FindCodeInRange(1,SrcLen,SourceList);
+    for i:=0 to SourceList.Count-1 do begin
+      ReplaceIdentifiersInSource(TCodeBuffer(SourceList[i]));
+    end;
+  finally
+    SourceList.Free;
+  end;
 end;
 
 function TStandardCodeTool.FindPublishedVariable(const UpperClassName,

@@ -21,10 +21,9 @@
   Author: Mattias Gaertner
 
   Abstract:
-    Basic pascal code functions. Most of the functions have counterparts in the
+    Basic pascal code functions. Many of the functions have counterparts in the
     code tools, which are faster, more flexible and aware of compiler settings 
-    and directives. They are only used for code building.
-  
+    and directives.
 }
 unit BasicCodeTools;
 
@@ -119,15 +118,30 @@ function ReadRawNextPascalAtom(const Source:string;
    var Position,AtomStart:integer):string;
 
 //----------------------------------------------------------------------------
+// comments
+function FindCommentEnd(const ASource: string; StartPos: integer;
+    NestedComments: boolean): integer;
+function FindNextCompilerDirective(const ASource: string; StartPos: integer;
+  NestedComments: boolean): integer;
+
+// line ranges and indent
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer;
     var LineStart,LineEnd:integer);
+function GetLineIndent(const Source: string; Position: integer): integer;
+function GetIndentStr(Indent: integer): string;
+function LineEndCount(const Txt: string; var LengthOfLastLine:integer): integer;
+
+// identifiers
 procedure GetIdentStartEndAtPosition(const Source:string; Position:integer;
     var IdentStart,IdentEnd:integer);
 function GetIdentLen(Identifier: PChar): integer;
-function LineEndCount(const Txt: string; var LengthOfLastLine:integer): integer;
+function GetIdentifier(Identifier: PChar): string;
+function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer
+  ): integer;
+
+// line/code ends
 function FindFirstNonSpaceCharInLine(const Source: string;
     Position: integer): integer;
-function GetLineIndent(const Source: string; Position: integer): integer;
 function FindLineEndOrCodeInFrontOfPosition(const Source: string;
     Position, MinPosition: integer; NestedComments: boolean): integer;
 function FindLineEndOrCodeAfterPosition(const Source: string;
@@ -136,6 +150,8 @@ function FindFirstLineEndInFrontOfInCode(const Source: string;
     Position, MinPosition: integer; NestedComments: boolean): integer;
 function FindFirstLineEndAfterInCode(const Source: string;
     Position, MaxPosition: integer; NestedComments: boolean): integer;
+
+// replacements
 function ReplacementNeedsLineEnd(const Source: string;
     FromPos, ToPos, NewLength, MaxLineLength: integer): boolean;
 function CountNeededLineEndsToAddForward(const Src: string;
@@ -143,23 +159,22 @@ function CountNeededLineEndsToAddForward(const Src: string;
 function CountNeededLineEndsToAddBackward(const Src: string;
     StartPos, MinLineEnds: integer): integer;
 
-   
+// comparison
 function CompareTextIgnoringSpace(const Txt1, Txt2: string;
     CaseSensitive: boolean): integer;
 function CompareSubStrings(const Find, Txt: string;
     FindStartPos, TxtStartPos, Len: integer; CaseSensitive: boolean): integer;
+function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
+
+//
 function CleanCodeFromComments(const DirtyCode: string;
     NestedComments: boolean): string;
-function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
-function GetIdentifier(Identifier: PChar): string;
-
 function TrimCodeSpace(const ACode: string): string;
 
-function GetIndentStr(Indent: integer): string;
-
 //-----------------------------------------------------------------------------
+
 const
-  MaxLineLength:integer=80;
+  MaxLineLength: integer = 80;
 
 const
   // ToDo: find the constant in the fpc units.
@@ -890,6 +905,123 @@ begin
     end;
     Position:=FirstSrcAtomEnd;
   until false;
+end;
+
+function FindNextCompilerDirective(const ASource: string; StartPos: integer;
+  NestedComments: boolean): integer;
+var
+  MaxPos: integer;
+begin
+  MaxPos:=length(ASource);
+  Result:=StartPos;
+  while (Result<=MaxPos) do begin
+    case ASource[Result] of
+    '''':
+      begin
+        inc(Result);
+        while (Result<=MaxPos) do begin
+          if (ASource[Result]<>'''') then
+            inc(Result)
+          else begin
+            inc(Result);
+            break;
+          end;
+        end;
+      end;
+
+    '/':
+      begin
+        inc(Result);
+        if (Result<=MaxPos) and (ASource[Result]='/') then begin
+          // skip Delphi comment
+          while (Result<=MaxPos) and (not (ASource[Result] in [#10,#13])) do
+            inc(Result);
+        end;
+      end;
+
+    '{':
+      begin
+        if (Result<MaxPos) and (ASource[Result+1]='$') then
+          exit;
+        // skip pascal comment
+        Result:=FindCommentEnd(ASource,Result,NestedComments);
+      end;
+
+    '(':
+      begin
+        if (Result<MaxPos) and (ASource[Result+1]='*') then begin
+          if (Result+2<=MaxPos) and (ASource[Result+2]='$') then
+            exit;
+          // skip TP comment
+          Result:=FindCommentEnd(ASource,Result,NestedComments);
+        end else
+          inc(Result);
+      end;
+
+    else
+      inc(Result);
+    end;
+
+  end;
+  if Result>MaxPos+1 then Result:=MaxPos+1;
+end;
+
+function FindCommentEnd(const ASource: string; StartPos: integer;
+  NestedComments: boolean): integer;
+var
+  MaxPos, CommentLvl: integer;
+begin
+  MaxPos:=length(ASource);
+  Result:=StartPos;
+  if Result>MaxPos then exit;
+  case ASource[Result] of
+  '/':
+    begin
+      if (Result<MaxPos) and (ASource[Result+1]='/') then begin
+        // skip Delphi comment
+        while (Result<=MaxPos) and (not (ASource[Result] in [#10,#13])) do
+          inc(Result);
+      end;
+    end;
+    
+  '{':
+    begin
+      CommentLvl:=1;
+      inc(Result);
+      while Result<=MaxPos do begin
+        case ASource[Result] of
+        '{':
+          if NestedComments then
+            inc(CommentLvl);
+
+        '}':
+          begin
+            dec(CommentLvl);
+            if CommentLvl=0 then begin
+              inc(Result);
+              break;
+            end;
+          end;
+          
+        end;
+        inc(Result);
+      end;
+    end;
+      
+  '(':
+    if (Result<MaxPos) and (ASource[Result+1]='*') then begin
+      inc(Result,2);
+      while (Result<=MaxPos) do begin
+        if (Result<MaxPos) and (ASource[Result]='*') and (ASource[Result+1]=')')
+        then begin
+          inc(Result,2);
+          break;
+        end;
+        inc(Result);
+      end;
+    end;
+    
+  end;
 end;
 
 procedure GetLineStartEndAtPosition(const Source:string; Position:integer; 
@@ -1757,6 +1889,14 @@ begin
       Move(Identifier[0],Result[1],len);
   end else
     Result:='';
+end;
+
+function FindNextIdentifier(const Source: string; StartPos, MaxPos: integer
+  ): integer;
+begin
+  Result:=StartPos;
+  while (Result<=MaxPos) and (not IsIDStartChar[Source[Result]]) do
+    inc(Result);
 end;
 
 function GetIndentStr(Indent: integer): string;

@@ -5507,7 +5507,7 @@ procedure TMainIDE.OnDesignerModified(Sender: TObject);
 var i: integer;
   SrcEdit: TSourceEditor;
 begin
-  i:=Project1.IndexOfUnitWithForm(TDesigner(Sender).Form,false);
+  i:=Project1.IndexOfUnitWithForm(TDesigner(Sender).Form,false,nil);
   if i>=0 then begin
     Project1.Units[i].Modified:=true;
     if Project1.Units[i].Loaded then
@@ -6079,11 +6079,15 @@ procedure TMainIDE.OnDesignerRenameComponent(ADesigner: TDesigner;
 var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
+  i: integer;
+  NewClassName: string;
 begin
   BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false);
+  ActiveUnitInfo:=Project1.UnitWithForm(ADesigner.Form);
+  if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
+    raise Exception.Create('Component name "'+Newname+'" is keyword');
   if AComponent.Owner<>nil then begin
     // rename published variable in form source
-    ActiveUnitInfo:=Project1.UnitWithForm(ADesigner.Form);
     if CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
       ADesigner.Form.ClassName,
       AComponent.Name,NewName,AComponent.ClassName) then
@@ -6096,11 +6100,33 @@ begin
                             +'See messages.');
     end;
   end else if AComponent=ADesigner.Form then begin
+    // rename form
     // ToDo:
     //   rename form in source
-    //   rename form variable
+    //   rename formclass
     //   replace createform statement
-    //   delete old form resource in resource file
+
+    // check if formname already exists
+    i:=Project1.IndexOfUnitWithFormName(NewName,true,ActiveUnitInfo);
+    if i>=0 then
+      raise Exception.Create(
+                         'There is already a form with the name "'+Newname+'"');
+    NewClassName:='T'+NewName;
+
+    // rename form in source
+    if CodeToolBoss.RenameForm(ActiveUnitInfo.Source,
+      AComponent.Name,AComponent.ClassName,
+      NewName,NewClassName) then
+    begin
+      ApplyCodeToolChanges;
+    end else begin
+      ApplyCodeToolChanges;
+      DoJumpToCodeToolBossError;
+      raise Exception.Create('Unable to rename form in source.'#13
+                            +'See messages.');
+    end;
+
+    
     MessageDlg('Not implemented yet.',
                'Form renaming in source is not implemented yet.',
                mtInformation,[mbOk],0);
@@ -6339,7 +6365,7 @@ procedure TMainIDE.DoSwitchToFormSrc(var ActiveSourceEditor: TSourceEditor;
 var i: integer;
 begin
   if PropertyEditorHook1.LookupRoot<>nil then begin
-    i:=Project1.IndexOfUnitWithForm(PropertyEditorHook1.LookupRoot,false);
+    i:=Project1.IndexOfUnitWithForm(PropertyEditorHook1.LookupRoot,false,nil);
     if (i>=0) then begin
       i:=Project1.Units[i].EditorIndex;
       if (i>=0) then begin
@@ -6603,6 +6629,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.346  2002/08/23 07:05:14  lazarus
+  MG: started form renaming
+
   Revision 1.345  2002/08/21 07:16:57  lazarus
   MG: reduced mem leak of clipping stuff, still not fixed
 

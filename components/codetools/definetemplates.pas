@@ -2298,8 +2298,9 @@ var
     UnitLinkListValid:=true;
   end;
 
-// function TDefinePool.CreateFPCSrcTemplate(
-//   const FPCSrcDir: string): TDefineTemplate;
+//  function CreateFPCSrcTemplate(const FPCSrcDir,
+//      UnitSearchPath: string;
+//      UnitLinkListValid: boolean; var UnitLinkList: string): TDefineTemplate;
 var
   DefTempl, MainDir, FCLDir, RTLDir, PackagesDir, CompilerDir: TDefineTemplate;
   s: string;
@@ -2362,10 +2363,11 @@ begin
       da_Directory);
   MainDir.AddChild(FCLDir);
   FCLDir.AddChild(TDefineTemplate.Create('Include Path',
-    Format(ctsIncludeDirectoriesPlusDirs,['inc']),
+    Format(ctsIncludeDirectoriesPlusDirs,['inc,'+SrcOS]),
     ExternalMacroStart+'IncPath',
     IncPathMacro
-    +';'+Dir+'fcl/inc/'
+    +';'+Dir+'fcl'+DS+'inc'+DS
+    +';'+Dir+'fcl'+DS+SrcOS+DS
     ,da_DefineRecurse));
 
   // packages

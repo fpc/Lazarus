@@ -360,7 +360,7 @@ begin
   end;
   // add entry
   NewEntry:=TSourceChangeCacheEntry.Create(FrontGap,AfterGap,FromPos,ToPos,
-                 Text,FromCode,FromDirectPos);
+                                           Text,FromCode,FromDirectPos);
   ANode:=FEntries.Add(NewEntry);
   if ToPos=FromPos then
     FEntries.MoveDataLeftMost(ANode)
@@ -368,6 +368,7 @@ begin
     // the new entry is a delete operation -> put it rightmost, so that it will
     // be applied first
     FEntries.MoveDataRightMost(ANode);
+    
   FBuffersToModifyNeedsUpdate:=true;
   Result:=true;
   {$IFDEF CTDEBUG}

@@ -60,10 +60,12 @@ type
     fOptions: TOuputFilterOptions;
     fProject: TProject;
     fPrgSourceFilename: string;
+    FStopExecute: boolean;
     procedure DoAddFilteredLine(const s: string);
     procedure DoAddLastLinkerMessages;
     procedure DoAddLastAssemblerMessages;
     function SearchIncludeFile(const ShortIncFilename: string): string;
+    procedure SetStopExecute(const AValue: boolean);
   public
     procedure Execute(TheProcess: TProcess);
     function GetSourcePosition(const Line: string; var Filename:string;
@@ -79,6 +81,7 @@ type
     function ReadMakeLine(const s: string): boolean;
     property CurrentDirectory: string read fCurrentDirectory;
     property FilteredLines: TStringList read fFilteredOutput;
+    property StopExecute: boolean read FStopExecute write SetStopExecute;
     property Lines: TStringList read fOutput;
     property LastErrorType: TErrorType read fLastErrorType;
     property LastMessageType: TOutputMessageType read fLastMessageType;
@@ -130,6 +133,7 @@ begin
   fFilteredOutput.Clear;
   if fCompilingHistory<>nil then fCompilingHistory.Clear;
   if fMakeDirHistory<>nil then fMakeDirHistory.Clear;
+  FStopExecute:=false;
 end;
 
 procedure TOutputFilter.Execute(TheProcess: TProcess);
@@ -148,11 +152,13 @@ begin
   and (fCurrentDirectory[length(fCurrentDirectory)]<>PathDelim) then
     fCurrentDirectory:=fCurrentDirectory+PathDelim;
   SetLength(Buf,BufSize);
-  Application.ProcessMessages;
 
   OutputLine:='';
   ErrorExists:=false;
   repeat
+    Application.ProcessMessages;
+    if StopExecute then exit;
+    
     if TheProcess.Output<>nil then
       Count:=TheProcess.Output.Read(Buf[1],length(Buf))
     else
@@ -540,6 +546,11 @@ begin
     SearchedDirectories.Free;
   end;
   Result:=ShortIncFilename;
+end;
+
+procedure TOutputFilter.SetStopExecute(const AValue: boolean);
+begin
+  FStopExecute:=AValue;
 end;
 
 destructor TOutputFilter.Destroy;

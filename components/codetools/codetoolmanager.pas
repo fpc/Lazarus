@@ -183,6 +183,9 @@ type
     function FindEnclosingIncludeDirective(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
+          
+    // keywords
+    function IsKeyword(Code: TCodeBuffer; const KeyWord: string): boolean;
 
     // blocks (e.g. begin..end, case..end, try..finally..end, repeat..until)
     function FindBlockCounterPart(Code: TCodeBuffer; X,Y: integer;
@@ -204,7 +207,7 @@ type
     function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
-          
+
     // functions for events in the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
           const AClassName: string; TypeData: PTypeData;
@@ -272,6 +275,11 @@ type
     function SetAllCreateFromStatements(Code: TCodeBuffer; 
           List: TStrings): boolean;
 
+    // forms
+    function RenameForm(Code: TCodeBuffer;
+      const OldFormName, OldFormClassName: string;
+      const NewFormName, NewFormClassName: string): boolean;
+
     // form components
     function PublishedVariableExists(Code: TCodeBuffer;
           const AClassName, AVarName: string): boolean;
@@ -282,6 +290,7 @@ type
     function RenamePublishedVariable(Code: TCodeBuffer;
           const AClassName, OldVariableName, NewVarName,
           VarType: shortstring): boolean;
+          
 
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -295,7 +304,6 @@ type
 
 
 var CodeToolBoss: TCodeToolManager;
-
 
 
 implementation
@@ -716,6 +724,21 @@ begin
       NewY:=NewPos.Y;
       NewCode:=NewPos.Code;
     end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.IsKeyword(Code: TCodeBuffer; const KeyWord: string
+  ): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.IsKeyword A ',Code.Filename,' Keyword=',KeyWord);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.StringIsKeyWord(KeyWord);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -1322,6 +1345,25 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.SetAllCreateFromStatements(List,SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.RenameForm(Code: TCodeBuffer; const OldFormName,
+  OldFormClassName: string; const NewFormName, NewFormClassName: string
+  ): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.RenameForm A ',Code.Filename,
+    ' OldFormName=',OldFormName,' OldFormClassName=',OldFormClassName,
+    ' NewFormName=',NewFormName,' NewFormClassName=',NewFormClassName);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.RenameForm(OldFormName,OldFormClassName,
+                                NewFormName,NewFormClassName,SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;

@@ -252,8 +252,7 @@ type
     function LinkCleanedEndPos(Index: integer): integer;
     function FindFirstSiblingLink(LinkIndex: integer): integer;
     function FindParentLink(LinkIndex: integer): integer;
-    //function FindFirstLinkIndexOfCodeInCleanPos
-    
+
     function CleanedSrc: string;
     function CursorToCleanPos(ACursorPos: integer; ACode: pointer;
         var ACleanPos: integer): integer; // 0=valid CleanPos
@@ -395,10 +394,56 @@ var
   PSourceChangeStepMemManager: TPSourceChangeStepMemManager;
 
 
+procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TList);
+function IndexOfCodeInUniqueList(ACode: Pointer;
+  UniqueSortedCodeList: TList): integer;
+
+
 implementation
 
 
 // useful procs ----------------------------------------------------------------
+
+function IndexOfCodeInUniqueList(ACode: Pointer;
+  UniqueSortedCodeList: TList): integer;
+var l,m,r: integer;
+begin
+  l:=0;
+  r:=UniqueSortedCodeList.Count-1;
+  m:=0;
+  while r>=l do begin
+    m:=(l+r) shr 1;
+    if UniqueSortedCodeList[m]<ACode then
+      r:=m-1
+    else if UniqueSortedCodeList[m]>ACode then
+      l:=m+1
+    else begin
+      Result:=m;
+      exit;
+    end;
+  end;
+  Result:=-1;
+end;
+
+procedure AddCodeToUniqueList(ACode: Pointer; UniqueSortedCodeList: TList);
+var l,m,r: integer;
+begin
+  l:=0;
+  r:=UniqueSortedCodeList.Count-1;
+  m:=0;
+  while r>=l do begin
+    m:=(l+r) shr 1;
+    if UniqueSortedCodeList[m]<ACode then
+      r:=m-1
+    else if UniqueSortedCodeList[m]>ACode then
+      l:=m+1
+    else
+      exit;
+  end;
+  if (m<UniqueSortedCodeList.Count) and (UniqueSortedCodeList[m]<ACode) then
+    inc(m);
+  UniqueSortedCodeList.Insert(m,ACode);
+end;
 
 function CompareUpToken(const UpToken: shortstring; const Txt: string;
   TxtStartPos, TxtEndPos: integer): boolean;
@@ -2355,27 +2400,6 @@ end;
 
 procedure TLinkScanner.FindCodeInRange(CleanStartPos, CleanEndPos: integer;
   UniqueSortedCodeList: TList);
-  
-  procedure AddCodeToList(ACode: Pointer);
-  var l,m,r: integer;
-  begin
-    l:=0;
-    r:=UniqueSortedCodeList.Count-1;
-    m:=0;
-    while r>=l do begin
-      m:=(l+r) shr 1;
-      if UniqueSortedCodeList[m]<ACode then
-        r:=m-1
-      else if UniqueSortedCodeList[m]>ACode then
-        l:=m+1
-      else
-        exit;
-    end;
-    if (m<UniqueSortedCodeList.Count) and (UniqueSortedCodeList[m]<ACode) then
-      inc(m);
-    UniqueSortedCodeList.Insert(m,ACode);
-  end;
-  
 var ACode: Pointer;
   LinkIndex: integer;
 begin
@@ -2384,14 +2408,14 @@ begin
   LinkIndex:=LinkIndexAtCleanPos(CleanStartPos);
   if LinkIndex<0 then exit;
   ACode:=Links[LinkIndex].Code;
-  AddCodeToList(ACode);
+  AddCodeToUniqueList(ACode,UniqueSortedCodeList);
   repeat
     inc(LinkIndex);
     if (LinkIndex>=LinkCount) or (Links[LinkIndex].CleanedPos>CleanEndPos) then
       exit;
     if ACode<>Links[LinkIndex].Code then begin
       ACode:=Links[LinkIndex].Code;
-      AddCodeToList(ACode);
+      AddCodeToUniqueList(ACode,UniqueSortedCodeList);
     end;
   until false;
 end;

@@ -123,6 +123,8 @@ type
     procedure BeginParsingAndGetCleanPos(DeleteNodes,
         OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
         var CleanCursorPos: integer);
+        
+    function StringIsKeyWord(const Word: string): boolean;
     
     procedure MoveCursorToNodeStart(ANode: TCodeTreeNode);
     procedure MoveCursorToCleanPos(ACleanPos: integer);
@@ -1350,6 +1352,12 @@ begin
   Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
   if (Dummy<>0) and (Dummy<>-1) then
     RaiseException(ctsCursorPosOutsideOfCode);
+end;
+
+function TCustomCodeTool.StringIsKeyWord(const Word: string): boolean;
+begin
+  Result:=(Word<>'') and IsIdentStartChar[Word[1]]
+                           and WordIsKeyWord.DoItUpperCase(Word,1,length(Word));
 end;
 
 procedure TCustomCodeTool.MoveCursorToNodeStart(ANode: TCodeTreeNode);
