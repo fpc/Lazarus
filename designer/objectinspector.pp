@@ -13,7 +13,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-   This unit defines the TObjectInspector which is a descendent of TCustomForm.
+   This unit defines the TObjectInspector.
    It uses TOIPropertyGrid and TOIPropertyGridRow which are also defined in this
    unit. The object inspector uses property editors (see TPropertyEditor) to
    display and control properties, thus the object inspector is merely an
@@ -280,7 +280,7 @@ type
 
   TOnSelectComponentInOI = procedure(AComponent:TComponent) of object;
 
-  TObjectInspector = class (TCustomForm)
+  TObjectInspector = class (TForm)
     AvailCompsComboBox: TComboBox;
     NoteBook:TNoteBook;
     PropertyGrid:TOIPropertyGrid;

@@ -86,6 +86,7 @@ type
                                     var Value: string);
     procedure OnGlobalValuesChanged;
     function GetMainCode(Code: TCodeBuffer): TCodeBuffer;
+    procedure CreateScanner(Code: TCodeBuffer);
     function InitCurCodeTool(Code: TCodeBuffer): boolean;
     function InitResourceTool: boolean;
     function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
@@ -490,12 +491,17 @@ begin
     Result:=SourceCache.LoadFile(Result.LastIncludedByFile);
     if Result=nil then exit;
   end;
-  if FilenameHasSourceExt(Result.Filename) and (Result.Scanner=nil) then begin
+  CreateScanner(Result);
+end;
+
+procedure TCodeToolManager.CreateScanner(Code: TCodeBuffer);
+begin
+  if FilenameHasSourceExt(Code.Filename) and (Code.Scanner=nil) then begin
     // create a scanner for the unit/program
-    Result.Scanner:=TLinkScanner.Create;
-    Result.Scanner.OnGetInitValues:=@OnScannerGetInitValues;
-    Result.Scanner.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
-    Result.Scanner.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
+    Code.Scanner:=TLinkScanner.Create;
+    Code.Scanner.OnGetInitValues:=@OnScannerGetInitValues;
+    Code.Scanner.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
+    Code.Scanner.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
   end;
 end;
 
@@ -1610,7 +1616,6 @@ end;
 function TCodeToolManager.GetCodeToolForSource(Code: TCodeBuffer;
   ExceptionOnError: boolean): TCustomCodeTool;
 // return a codetool for the source
-var MainCode: TCodeBuffer;
 begin
   Result:=nil;
   if Code=nil then begin
@@ -1621,14 +1626,7 @@ begin
   end;
   Result:=FindCodeToolForSource(Code);
   if Result=nil then begin
-    MainCode:=GetMainCode(Code);   // create a scanner
-    if (MainCode<>Code) then begin
-      if ExceptionOnError then
-        raise Exception.Create('[TCodeToolManager.GetCodeToolForSource]'
-          +' the source "'+Code.Filename+'"'
-          +' is an include file of "'+MainCode.Filename+'"');
-      exit;
-    end;
+    CreateScanner(Code);
     if Code.Scanner=nil then begin
       if ExceptionOnError then
         raise Exception.CreateFmt(ctsNoScannerFound,[Code.Filename]);
