@@ -1252,9 +1252,29 @@ end;
 function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;
 var
   TheWindow: PGdkWindow;
+  {$IFDEF RaiseExceptionOnNilPointers}
+  LCLObject: TObject;
+  {$ENDIF}
 begin
   TheWindow:=GetControlWindow(TheWidget);
-  gdk_window_get_origin(TheWindow,@Result.X,@Result.Y);
+  if TheWindow<>nil then
+    gdk_window_get_origin(TheWindow,@Result.X,@Result.Y)
+  else begin
+    {$IFDEF RaiseExceptionOnNilPointers}
+    LCLobject:=GetLCLObject(TheWidget);
+    write('GetWidgetOrigin ');
+    if LCLObject=nil then
+      write(' LCLObject=nil')
+    else if LCLObject is TControl then
+      write(' LCLObject=',TControl(LCLObject).Name,':',TControl(LCLObject).ClassName)
+    else
+      write(' LCLObject=',TControl(LCLObject).ClassName);
+    writeln('');
+    RaiseException('GetWidgetOrigin Window=nil');
+    {$ENDIF}
+    Result.X:=0;
+    Result.Y:=0;
+  end;
   // check if the gdkwindow is the clientwindow of the parent
   if gtk_widget_get_parent_window(TheWidget)=TheWindow then begin
     // the widget is using its parent window
@@ -1273,10 +1293,16 @@ end;
 function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
 var
   ClientWidget: PGtkWidget;
+  ClientWindow: PGdkWindow;
 begin
   ClientWidget:=GetFixedWidget(TheWidget);
   if ClientWidget<>nil then begin
-    gdk_window_get_origin(GetControlWindow(ClientWidget),@Result.X,@Result.Y);
+    ClientWindow:=GetControlWindow(ClientWidget);
+    if ClientWindow<>nil then begin
+      gdk_window_get_origin(ClientWindow,@Result.X,@Result.Y);
+    end else begin
+      Result:=GetWidgetOrigin(TheWidget);
+    end;
   end else begin
     Result:=GetWidgetOrigin(TheWidget);
   end;
@@ -1295,6 +1321,12 @@ var
   ClientAreaWindowOrigin: TPoint;
   Src2ClientAreaVector: TPoint;
 begin
+  if SourceWindow=nil then begin
+    {$IFDEF RaiseExceptionOnNilPointers}
+    RaiseException('TranslateGdkPointToClientArea Window=nil');
+    {$ENDIF}
+    writeln('WARNING: TranslateGdkPointToClientArea SourceWindow=nil');
+  end;
   gdk_window_get_origin(SourceWindow,@SrcWindowOrigin.X,@SrcWindowOrigin.Y);
   ClientAreaWindowOrigin:=GetWidgetClientOrigin(DestinationWidget);
   Src2ClientAreaVector.X:=ClientAreaWindowOrigin.X-SrcWindowOrigin.X;
@@ -3222,6 +3254,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.101  2002/09/19 16:45:54  lazarus
+  MG: fixed Menu.Free and gdkwindow=nil bug
+
   Revision 1.100  2002/09/18 17:07:29  lazarus
   MG: added patch from Andrew
 
