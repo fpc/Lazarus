@@ -5180,7 +5180,7 @@ Begin
     Project1.Units[i].Modified:=false;
   Project1.Modified:=false;
 
-writeln('TMainIDE.DoNewProject end ',CodeToolBoss.ConsistencyCheck);
+  writeln('TMainIDE.DoNewProject end ');
   Result:=mrOk;
 end;
 
@@ -7295,115 +7295,95 @@ begin
     exit;
   end;
   MacroName:=lowercase(TheMacro.Name);
+  Handled:=true;
   if MacroName='save' then begin
-    Handled:=true;
     if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       Abort:=(DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,
               [sfCheckAmbigiousFiles])<>mrOk);
     s:='';
   end else if MacroName='saveall' then begin
-    Handled:=true;
     Abort:=(DoSaveAll([sfCheckAmbigiousFiles])<>mrOk);
     s:='';
   end else if MacroName='edfile' then begin
-    Handled:=true;
     if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       s:=Project1.UnitWithEditorIndex(SourceNoteBook.NoteBook.PageIndex).Filename
     else
       s:='';
   end else if MacroName='col' then begin
-    Handled:=true;
     if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       s:=IntToStr(SourceNoteBook.GetActiveSE.EditorComponent.CaretX);
   end else if MacroName='row' then begin
-    Handled:=true;
     if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       s:=IntToStr(SourceNoteBook.GetActiveSE.EditorComponent.CaretY);
   end else if MacroName='projfile' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=Project1.MainFilename
     else
       s:='';
   end else if MacroName='projpath' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=Project1.ProjectDirectory
     else
       s:='';
   end else if MacroName='projunitpath' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=Project1.CompilerOptions.GetUnitPath(false)
     else
       s:='';
   end else if MacroName='projincpath' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=Project1.CompilerOptions.GetIncludePath(false)
     else
       s:='';
   end else if MacroName='projsrcpath' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=Project1.CompilerOptions.GetSrcPath(false)
     else
       s:='';
   end else if MacroName='projpublishdir' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=Project1.PublishOptions.DestinationDirectory
     else
       s:='';
   end else if MacroName='curtoken' then begin
-    Handled:=true;
     if (SourceNoteBook<>nil) and (SourceNoteBook.NoteBook<>nil) then
       with SourceNoteBook.GetActiveSE.EditorComponent do
         s:=GetWordAtRowCol(CaretXY);
   end else if MacroName='lazarusdir' then begin
-    Handled:=true;
     s:=EnvironmentOptions.LazarusDirectory;
   end else if MacroName='lclwidgettype' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=Project1.CompilerOptions.LCLWidgetType
     else
       s:='';
     if (s='') or (s='default') then s:=GetDefaultLCLWidgetType;
   end else if MacroName='targetcpu' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=lowercase(Project1.CompilerOptions.TargetCPU)
     else
       s:='';
     if (s='') or (s='default') then s:=GetDefaultTargetCPU;
   end else if MacroName='targetos' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=lowercase(Project1.CompilerOptions.TargetOS)
     else
       s:='';
     if (s='') or (s='default') then s:=GetDefaultTargetOS;
   end else if MacroName='fpcsrcdir' then begin
-    Handled:=true;
     s:=EnvironmentOptions.FPCSourceDirectory;
   end else if MacroName='comppath' then begin
-    Handled:=true;
     s:=EnvironmentOptions.CompilerFilename;
   end else if MacroName='params' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=Project1.RunParameterOptions.CmdLineParams
     else
       s:='';
   end else if MacroName='targetfile' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=GetProjectTargetFilename
     else
       s:='';
   end else if MacroName='targetcmdline' then begin
-    Handled:=true;
     if Project1<>nil then begin
       s:=Project1.RunParameterOptions.CmdLineParams;
       if s='' then
@@ -7413,27 +7393,24 @@ begin
     end else
       s:='';
   end else if MacroName='testdir' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=GetTestBuildDir
     else
       s:='';
   end else if MacroName='runcmdline' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=GetRunCommandLine
     else
       s:='';
   end else if MacroName='projpublishdir' then begin
-    Handled:=true;
     if Project1<>nil then
       s:=GetProjPublishDir
     else
       s:='';
   end else if MacroName='confdir' then begin
-    Handled:=true;
     s:=GetPrimaryConfigPath;
-  end;
+  end else
+    Handled:=false;
 end;
 
 function TMainIDE.OnSubstituteCompilerOption(Options: TParsedCompilerOptions;
@@ -8371,7 +8348,7 @@ begin
       EnvironmentOptions.LazarusDirectory;
     Variables[ExternalMacroStart+'FPCSrcDir']:=
       EnvironmentOptions.FPCSourceDirectory;
-    Variables[ExternalMacroStart+'LCLWidgetType']:='gtk';
+    Variables[ExternalMacroStart+'LCLWidgetType']:=GetDefaultLCLWidgetType;
     Variables[ExternalMacroStart+'ProjPath']:=VirtualDirectory;
   end;
 
@@ -10273,7 +10250,7 @@ begin
   end
   else if (not (ALayout.WindowPlacement in [iwpDocked,iwpUseWindowManagerSetting]))
   then begin
-    // default position
+    // default window positions
     l:=NonModalIDEFormIDToEnum(ALayout.FormID);
     case l of
     nmiwMainIDEName:
@@ -10329,7 +10306,6 @@ end;
 //-----------------------------------------------------------------------------
 
 initialization
-  { $I mainide.lrs}
   {$I images/laz_images.lrs}
   {$I images/mainicon.lrs}
   ShowSplashScreen:=true;
@@ -10339,6 +10315,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.717  2004/03/17 11:28:35  mattias
+  fixed setting project LCLWidgetSet in defines
+
   Revision 1.716  2004/03/15 15:56:24  mattias
   fixed package ID string to ID conversion
 

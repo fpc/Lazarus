@@ -2818,7 +2818,7 @@ begin
   Changed:=false;
   Changed:=Changed or CodeToolBoss.SetGlobalValue(
                            ExternalMacroStart+'LCLWidgetType',
-                           Owner.CompilerOptions.LCLWidgetType);
+                           Owner.CompilerOptions.GetEffectiveLCLWidgetType);
   if Owner.IsVirtual then
     NewProjectDir:=VirtualDirectory
   else
@@ -2833,6 +2833,9 @@ end.
 
 {
   $Log$
+  Revision 1.151  2004/03/17 11:28:35  mattias
+  fixed setting project LCLWidgetSet in defines
+
   Revision 1.150  2004/03/15 15:56:24  mattias
   fixed package ID string to ID conversion
 

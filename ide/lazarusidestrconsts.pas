@@ -898,7 +898,6 @@ resourcestring
   lisCOScanForMakeMessages = 'Scan for Make messages';
   lisCOShowAllMessages = 'Show all messages';
   dlgUnitOutp = 'Unit output directory:';
-  dlgLCLWidgetType = 'LCL Widget Type';
   lisCOdefault = 'default (%s)';
   dlgButApply = 'Apply';
   dlgCOShowOptions = 'Show Options';

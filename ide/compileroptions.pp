@@ -329,6 +329,7 @@ type
     function ShortenPath(const SearchPath: string;
                                MakeAlwaysRelative: boolean): string;
     function GetCustomOptions: string;
+    function GetEffectiveLCLWidgetType: string;
   public
     { Properties }
     property Owner: TObject read fOwner write fOwner;
@@ -1642,6 +1643,13 @@ begin
   
   // eliminate line breaks
   Result:=SpecialCharsToSpaces(Result);
+end;
+
+function TBaseCompilerOptions.GetEffectiveLCLWidgetType: string;
+begin
+  Result:=LCLWidgetType;
+  if (Result='') or (Result='default') then
+    Result:=GetDefaultLCLWidgetType;
 end;
 
 function TBaseCompilerOptions.ShortenPath(const SearchPath: string;
@@ -4709,7 +4717,7 @@ begin
     Top:= y;
     Width:=Self.ClientWidth-28;
     Height:=45;
-    Caption:=dlgLCLWidgetType;
+    Caption:=lisLCLWidgetType;
     with Items do begin
       Add(Format(lisCOdefault, [GetDefaultLCLWidgetType]));
       Add('gnome');

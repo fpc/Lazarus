@@ -2054,6 +2054,7 @@ var
     MacroParam: string;
     OldMacroLen: Integer;
     Handled: Boolean;
+    MacroVarName: String;
   begin
     Result:=false;
     MacroFuncNameEnd:=MacroEnd;
@@ -2071,17 +2072,18 @@ var
       MacroStr:=ExecuteMacroFunction(MacroFuncName,MacroParam);
     end else begin
       // Macro variable
-      MacroStr:=copy(CurValue,MacroStart+2,MacroEnd-MacroStart-3);
-      //writeln('**** MacroStr=',MacroStr);
+      MacroVarName:=copy(CurValue,MacroStart+2,MacroEnd-MacroStart-3);
+      MacroStr:=MacroVarName;
+      //writeln('**** MacroVarName=',MacroVarName,' ',DirDef.Values.Variables[MacroVarName]);
       //writeln('DirDef.Values=',DirDef.Values.AsString);
-      if MacroStr=DefinePathMacroName then begin
+      if MacroVarName=DefinePathMacroName then begin
         MacroStr:=CurDefinePath;
-      end else if DirDef.Values.IsDefined(MacroStr) then begin
-        MacroStr:=DirDef.Values.Variables[MacroStr];
+      end else if DirDef.Values.IsDefined(MacroVarName) then begin
+        MacroStr:=DirDef.Values.Variables[MacroVarName];
       end else begin
         Handled:=false;
         if Assigned(FOnReadValue) then begin
-          MacroParam:=MacroStr;
+          MacroParam:=MacroVarName;
           MacroStr:='';
           FOnReadValue(Self,MacroParam,MacroStr,Handled);
         end;
@@ -2092,7 +2094,6 @@ var
           MacroStr:='';
         end;
       end;
-      //writeln('**** NewValue MacroStr=',MacroStr);
     end;
     NewMacroLen:=length(MacroStr);
     GrowBuffer(BufferPos+NewMacroLen-OldMacroLen+ValueLen-ValuePos+1);
