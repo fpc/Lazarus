@@ -684,6 +684,7 @@ type
     property TopLine: Integer read fTopLine write SetTopLine;                   
     {$IFDEF SYN_LAZARUS}
     procedure Update; override;
+    procedure Invalidate; override;
     {$ENDIF}
   public
     property OnKeyDown;
@@ -3204,6 +3205,12 @@ begin
   {$ENDIF}
 end;
 
+procedure TCustomSynEdit.Invalidate;
+begin
+  //writeln('TCustomSynEdit.Invalidate A');
+  inherited Invalidate;
+end;
+
 procedure TCustomSynEdit.PasteFromClipboard;
 var
   StartOfBlock: TPoint;
@@ -5130,17 +5137,20 @@ begin
       if (NewY<>fLastCtrlMouseLinkY)
       or (NewX1<>fLastCtrlMouseLinkX1)
       or (NewX2<>fLastCtrlMouseLinkX2)
-      then
+      then begin
         Invalidate;
+      end;
     end else begin
       // there is no link -> do not show link
-      if fLastCtrlMouseLinkY>0 then
+      if fLastCtrlMouseLinkY>0 then begin
         Invalidate;
+      end;
     end;
   end else begin
     // do not show link
-    if fLastCtrlMouseLinkY>0 then
+    if fLastCtrlMouseLinkY>0 then begin
       Invalidate;
+    end;
   end;
 end;
 {$ENDIF}
@@ -5746,12 +5756,16 @@ begin
       ecUp, ecSelUp:
         begin
           MoveCaretVert(-1, Command = ecSelUp);
+          {$IFNDEF SYN_LAZARUS}
           Update;
+          {$ENDIF}
         end;
       ecDown, ecSelDown:
         begin
           MoveCaretVert(1, Command = ecSelDown);
+          {$IFNDEF SYN_LAZARUS}
           Update;
+          {$ENDIF}
         end;
       ecPageUp, ecSelPageUp, ecPageDown, ecSelPageDown:
         begin
