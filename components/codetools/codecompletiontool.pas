@@ -78,7 +78,7 @@ type
     procedure SetCodeCompleteClassNode(const AClassNode: TCodeTreeNode);
     procedure SetCodeCompleteSrcChgCache(const AValue: TSourceChangeCache);
     function OnTopLvlIdentifierFound(Params: TFindDeclarationParams;
-      FoundContext: TFindContext): TIdentifierFoundResult;
+      const FoundContext: TFindContext): TIdentifierFoundResult;
   protected
     function ProcExistsInCodeCompleteClass(const NameAndParams: string): boolean;
     function VarExistsInCodeCompleteClass(const UpperName: string): boolean;
@@ -174,7 +174,7 @@ begin
 end;
 
 function TCodeCompletionCodeTool.OnTopLvlIdentifierFound(
-  Params: TFindDeclarationParams; FoundContext: TFindContext
+  Params: TFindDeclarationParams; const FoundContext: TFindContext
   ): TIdentifierFoundResult;
 var TrimmedIdentifier: string;
 begin
@@ -516,7 +516,7 @@ function TCodeCompletionCodeTool.AddLocalVariable(
   var NewPos: TCodeXYPosition;
   var NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
 var
-  CursorNode, ParentNode, BeginNode, VarSectionNode, VarNode: TCodeTreeNode;
+  CursorNode, BeginNode, VarSectionNode, VarNode: TCodeTreeNode;
   Indent, InsertPos: integer;
   InsertTxt: string;
   OldCodePos: TCodePosition;
@@ -537,7 +537,6 @@ begin
     writeln('TCodeCompletionCodeTool.AddLocalVariable - Not in Begin Block');
     exit;
   end;
-  ParentNode:=BeginNode.Parent;
 
   //writeln('TCodeCompletionCodeTool.AddLocalVariable C ');
 
