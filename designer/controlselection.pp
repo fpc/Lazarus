@@ -565,6 +565,7 @@ end;
 procedure TSelectedControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
   if FIsTControl then begin
+    TControl(FPersistent).Invalidate;
     TControl(FPersistent).SetBounds(ALeft, ATop, AWidth, AHeight);
     FCachedLeft:=ALeft;
     FCachedTop:=ATop;
