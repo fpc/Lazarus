@@ -408,7 +408,7 @@ end;
 ------------------------------------------------------------------------------}
 function TControl.ColorIsStored: boolean;
 begin
-  Result:=(Color=clBtnFace);
+  Result:=(Color<>clBtnFace);
 end;
 
 {------------------------------------------------------------------------------
@@ -2055,6 +2055,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.114  2003/01/01 13:01:01  mattias
+  fixed setcolor for streamed components
+
   Revision 1.113  2002/12/29 18:13:38  mattias
   identifier completion: basically working, still hidden
 
