@@ -714,6 +714,30 @@ begin
   gtk_main_iteration_do(True);
 end;
 
+
+procedure TGtkObject.FreeStockItems;
+
+  procedure DeleteAndNilObject(var h: HGDIOBJ);
+  begin
+    DeleteObject(h);
+    h:=0;
+  end;
+
+begin
+  DeleteAndNilObject(FStockNullBrush);
+  DeleteAndNilObject(FStockBlackBrush);
+  DeleteAndNilObject(FStockLtGrayBrush);
+  DeleteAndNilObject(FStockGrayBrush);
+  DeleteAndNilObject(FStockDkGrayBrush);
+  DeleteAndNilObject(FStockWhiteBrush);
+
+  DeleteAndNilObject(FStockNullPen);
+  DeleteAndNilObject(FStockBlackPen);
+  DeleteAndNilObject(FStockWhitePen);
+
+  DeleteAndNilObject(FStockSystemFont);
+end;
+
 {------------------------------------------------------------------------------
   Method: TGtkObject.AppTerminate
   Params:  None
@@ -722,19 +746,6 @@ end;
   *Note: Tells GTK Engine to halt and destroy
  ------------------------------------------------------------------------------}
 procedure TGtkObject.AppTerminate;
-
-  procedure DestroyGdkCursor(var Cursor: pGDKCursor);
-  begin
-    gdk_Cursor_Destroy(Cursor);
-    Cursor:=nil;
-  end;
-  
-  procedure DeleteAndNilObject(var h: HGDIOBJ);
-  begin
-    DeleteObject(h);
-    h:=0;
-  end;
-
 var
   I : Integer;
 begin
@@ -747,39 +758,46 @@ begin
     End;
   Styles := Nil;
 
-  DestroyGdkCursor(Cursor_Watch);
-  DestroyGdkCursor(Cursor_Arrow);
-  DestroyGdkCursor(Cursor_Cross);
-  DestroyGdkCursor(Cursor_Hand1);
-  DestroyGdkCursor(Cursor_XTerm);
-  DestroyGdkCursor(Cursor_StdArrow);
-  DestroyGdkCursor(Cursor_HSplit);
-  DestroyGdkCursor(Cursor_VSplit);
-  DestroyGdkCursor(Cursor_SizeNWSE);
-  DestroyGdkCursor(Cursor_SizeNS);
-  DestroyGdkCursor(Cursor_SizeNESW);
-  DestroyGdkCursor(Cursor_SizeWE);
-  DestroyGdkCursor(Cursor_Help);
-  DestroyGdkCursor(Cursor_SizeAll);
+  FreeGDKCursors;
 
   gtk_object_unref(PGTKObject(FGTKToolTips));
   FGTKToolTips := nil;
    
-  DeleteAndNilObject(FStockNullBrush);
-  DeleteAndNilObject(FStockBlackBrush);
-  DeleteAndNilObject(FStockLtGrayBrush);
-  DeleteAndNilObject(FStockGrayBrush);
-  DeleteAndNilObject(FStockDkGrayBrush);
-  DeleteAndNilObject(FStockWhiteBrush);
-   
-  DeleteAndNilObject(FStockNullPen);
-  DeleteAndNilObject(FStockBlackPen);
-  DeleteAndNilObject(FStockWhitePen);
-   
-  DeleteAndNilObject(FStockSystemFont);
-
+  FreeStockItems;
+  
   // MG: using gtk_main_quit is not a clean way to close
   //gtk_main_quit;
+end;
+
+Procedure Tgtkobject.InitStockItems;
+var
+  LogBrush: TLogBrush;
+  logPen : TLogPen;
+begin
+  LogBrush.lbStyle := BS_NULL;
+  FStockNullBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbStyle := BS_SOLID;
+  LogBrush.lbColor := $000000;
+  FStockBlackBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbColor := $C0C0C0;
+  FStockLtGrayBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbColor := $808080;
+  FStockGrayBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbColor := $404040;
+  FStockDkGrayBrush := CreateBrushIndirect(LogBrush);
+  LogBrush.lbColor := $FFFFFF;
+  FStockWhiteBrush := CreateBrushIndirect(LogBrush);
+
+  LogPen.lopnStyle := PS_NULL;
+  LogPen.lopnWidth.X := 1;
+  LogPen.lopnColor := $FFFFFF;
+  FStockNullPen := CreatePenIndirect(LogPen);
+  LogPen.lopnStyle := PS_SOLID;
+  FStockWhitePen := CreatePenIndirect(LogPen);
+  LogPen.lopnColor := $000000;
+  FStockBlackPen := CreatePenIndirect(LogPen);
+
+  FStockSystemFont := 0;//Styles aren't initialized yet
 end;
 
 {------------------------------------------------------------------------------
@@ -790,12 +808,6 @@ end;
   *Note: Initialite GTK engine
  ------------------------------------------------------------------------------}
 procedure TGtkObject.Init;
-var
-  LogBrush: TLogBrush;
-  logPen : TLogPen;
-  //Attributes: TGdkWindowAttr;
-  //AttributesMask: gint;
-  FG,BG : TgdkColor;  //foreground and background
 begin
   // initialize app level gtk engine 
   gtk_set_locale ();
@@ -813,62 +825,17 @@ begin
   // Initialize Stringlist for holding styles
   Styles := TStringlist.Create;
   
-  // Create default cursor types
-  Cursor_Watch := gdk_cursor_new(gdk_Watch);
-  Cursor_Arrow := gdk_cursor_new(gdk_Arrow);
-  Cursor_Cross := gdk_cursor_new(gdk_Cross);
-  Cursor_Hand1 := gdk_cursor_new(gdk_Hand1);
-  Cursor_XTerm := gdk_cursor_new(gdk_XTerm);
-  Cursor_StdArrow := gdk_cursor_new(GDK_LEFT_PTR);
-  Cursor_HSplit := gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW);
-  Cursor_VSplit := gdk_cursor_new(GDK_SB_V_DOUBLE_ARROW);
-  Cursor_SizeNWSE := gdk_cursor_new(GDK_TOP_LEFT_CORNER);
-  Cursor_SizeNS := gdk_cursor_new(GDK_SB_V_DOUBLE_ARROW);
-  Cursor_SizeNESW := gdk_cursor_new(GDK_BOTTOM_LEFT_CORNER);
-  Cursor_SizeWE := gdk_cursor_new(GDK_SB_H_DOUBLE_ARROW);
-  Cursor_SizeAll:= gdk_cursor_new(GDK_FLEUR);
-  Cursor_Help := gdk_cursor_new(GDK_QUESTION_ARROW);
+  LoadGDKCursors;
 
   gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
 
   // Init tooltips
-  FGTKToolTips := gtk_tooltips_new;   
+  FGTKToolTips := gtk_tooltips_new;
   gtk_object_ref(PGTKObject(FGTKToolTips));
   gtk_toolTips_Enable(FGTKToolTips);
-  FG.red := $FFFF;
-  FG.Green := $FFFF;
-  fg.blue := $FFFF;
-  BG.REd := $4444;
-  bg.Green := $ffff;
-  bg.Blue := $1111;
-  
-  gtk_toolTips_set_colors(FGTKToolTips,@FG,@BG);
 
   // Init stock objects;
-  LogBrush.lbStyle := BS_NULL; 
-  FStockNullBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbStyle := BS_SOLID; 
-  LogBrush.lbColor := $000000;
-  FStockBlackBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbColor := $C0C0C0;
-  FStockLtGrayBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbColor := $808080;
-  FStockGrayBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbColor := $404040;
-  FStockDkGrayBrush := CreateBrushIndirect(LogBrush);
-  LogBrush.lbColor := $FFFFFF;
-  FStockWhiteBrush := CreateBrushIndirect(LogBrush);
-
-  LogPen.lopnStyle := PS_NULL; 
-  LogPen.lopnWidth.X := 1;
-  LogPen.lopnColor := $FFFFFF;
-  FStockNullPen := CreatePenIndirect(LogPen);
-  LogPen.lopnStyle := PS_SOLID; 
-  FStockWhitePen := CreatePenIndirect(LogPen);
-  LogPen.lopnColor := $000000;
-  FStockBlackPen := CreatePenIndirect(LogPen);
-
-  FStockSystemFont := 0;//Styles aren't initialized yet
+  InitStockItems;
 
   // clipboard
   ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
@@ -6543,6 +6510,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.258  2002/10/21 03:23:35  lazarus
+  AJ: rearranged GTK init stuff for proper GNOME init & less duplication between interfaces
+
   Revision 1.257  2002/10/20 21:54:03  lazarus
   MG: fixes for 1.1
 
