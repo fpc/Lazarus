@@ -136,18 +136,9 @@ Begin
   FToolTipWindow := CreateWindowEx(WS_EX_TOPMOST, TOOLTIPS_CLASS, nil, WS_POPUP Or TTS_NOPREFIX Or TTS_ALWAYSTIP, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, FParentWindow, HMENU(nil), HInstance, nil);
   Windows.SendMessage(FParentWindow, TTM_ACTIVATE, WPARAM(True), 0);
 
-  try
-    FTimerWindow :=CreateWindowEx(0, @TimerClsName, nil, WS_POPUPWINDOW, 0, 0, 640, 480, 0, 0, System.HInstance, nil);
-  except
-  // Sometimes an access violation occurs, I don't know why
-    on E: Exception do
-    begin
-      FTimerWindow := 0;
-      writeln('Win32Object.Init: Failed to create a hidden window to receive timer messages');
-      writeln('Exception: ',E.Message);
-    end;
-  end;
+  FTimerWindow :=CreateWindowEx(0, @TimerClsName, nil, WS_POPUPWINDOW, 0, 0, 640, 480, 0, 0, System.HInstance, nil);
   Assert(False,'Trace:FTimerWindow: ' + IntToStr(FTimerWindow));
+
   //Init stock objects;
   LogBrush.lbStyle := BS_NULL;
   FStockNullBrush := CreateBrushIndirect(LogBrush);
@@ -2717,6 +2708,9 @@ End;
 
 {
   $Log$
+  Revision 1.69  2003/07/03 08:05:53  mattias
+  fixed Criticalsection from Vincent
+
   Revision 1.68  2003/07/02 20:18:28  mattias
   more cleanups from Micha
 

@@ -57,6 +57,7 @@ Var
   R: TRect;
   OwnerObject: TObject;
   WinProcess: Boolean;
+  C: integer;
   procedure ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean);
   var
     NoteBook: TCustomNotebook;
@@ -192,10 +193,8 @@ Begin
     WM_DESTROY:
     Begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
-// The following lines cause an acces violation
-// TODO: find out why.
-//      For C := 0 To WndList.Count - 1 Do
-//        EnumProps(HWND(WndList[C]), @PropEnumProc);
+      For C := 0 To WndList.Count - 1 Do
+        EnumProps(HWND(WndList[C]), @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
     End;
@@ -555,6 +554,9 @@ end;
 
 {
   $Log$
+  Revision 1.34  2003/07/03 08:05:53  mattias
+  fixed Criticalsection from Vincent
+
   Revision 1.33  2003/07/02 20:18:28  mattias
   more cleanups from Micha
 

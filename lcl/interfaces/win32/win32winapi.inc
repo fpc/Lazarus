@@ -2260,6 +2260,8 @@ Begin
   Result := Windows.WindowFromPoint(Windows.POINT(Point));
 End;
 
+
+{We interprete CritSection as a pointer to a LPCRITICAL_SECTION structure}
 Procedure TWin32Object.InitializeCriticalSection(var CritSection: TCriticalSection);
 var
   Crit : LPCRITICAL_SECTION;
@@ -2268,8 +2270,8 @@ begin
   If CritSection <> 0 then
     DeleteCriticalSection(CritSection);
   New(Crit);
-  Windows.InitializeCriticalSection(Crit^);
-  CritSection := Longint(Crit);
+  Windows.InitializeCriticalSection(Crit);
+  CritSection := TCriticalSection(Crit);
 end;
 
 Procedure TWin32Object.EnterCriticalSection(var CritSection: TCriticalSection);
@@ -2287,11 +2289,14 @@ end;
 Procedure TWin32Object.DeleteCriticalSection(var CritSection: TCriticalSection);
 begin
   { An OS Compatible TCriticalSection needs to be defined}
-  Windows.DeleteCriticalSection(LPCRITICAL_SECTION(CritSection));
-  Try
-    Dispose(LPCRITICAL_SECTION(CritSection));
-  finally
-    CritSection := 0;
+  if CritSection<>0 then
+  begin
+    Windows.DeleteCriticalSection(LPCRITICAL_SECTION(CritSection));
+    Try
+      Dispose(LPCRITICAL_SECTION(CritSection));
+    finally
+      CritSection := 0;
+    end;
   end;
 end;
 
@@ -2305,6 +2310,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.39  2003/07/03 08:05:53  mattias
+  fixed Criticalsection from Vincent
+
   Revision 1.38  2003/07/02 20:07:29  mattias
   fixed critical section from Micha
 
