@@ -38,6 +38,8 @@ interface
 
 {$I ide.inc}
 
+{ $DEFINE UseNewMenuEditor}
+
 uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
@@ -8251,6 +8253,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.517  2003/04/10 16:38:37  mattias
+  fixed crash in new menueditor
+
   Revision 1.516  2003/04/10 10:17:27  mattias
   added Abort to save on modified
 
