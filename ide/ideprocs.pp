@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, DOS, SysUtils, Laz_XMLCfg, GetText, FileProcs;
+  Classes, SysUtils, Laz_XMLCfg, GetText, FileProcs;
 
 type
   TCommentType = (
@@ -140,18 +140,8 @@ implementation
 
 
 // to get more detailed error messages consider the os
-{$IFDEF Win32}
 uses
-  Dos;
-{$ELSE}
-uses
- {$IFDEF Ver1_0}
-  Linux
- {$ELSE}
-  Unix
- {$ENDIF}
-  ;
-{$ENDIF}
+  Dos{$IFDEF Ver1_0},Linux{$ELSE},Unix{$ENDIF};
 
 function AddToRecentList(const s: string; RecentList: TStringList;
   Max: integer): boolean;
