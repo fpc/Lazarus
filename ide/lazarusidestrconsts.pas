@@ -503,6 +503,7 @@ resourcestring
   dlgCOParsing = 'Parsing';
   dlgCodeGeneration = 'Code Generation';
   dlgCOLinking = 'Linking';
+  dlgCOMessages = 'Messages';
   dlgCOOther = 'Other';
   dlgShowCompilerOptions = 'Show compiler options';
   dlgCOOpts = 'Options: ';
@@ -551,6 +552,7 @@ resourcestring
   dlgLinkLibraries = 'Link Libraries:';
   dlgLinkDinLibs = 'Link With Dynamic Libraries';
   dlgLinkStatLibs = 'Link With Static Libraries';
+  dlgLinkSmart = 'Link Smart';
   dlgPassOptsLinker = 'Pass Options To The Linker (Delimiter is space)';
   dlgVerbosity = 'Verbosity:';
   dlgCOShowErr = 'Show Errors';

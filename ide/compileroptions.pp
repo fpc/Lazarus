@@ -57,7 +57,18 @@ type
     fTargetFilename: string;
     fLoaded: Boolean;
 
+    // Search Paths:
+    fIncludeFiles: String;
+    fLibraries: String;
+    fOtherUnitFiles: String;
+    fCompilerPath: String;
+    fUnitOutputDir: string;
+    fLCLWidgetType: string;
+
+    // Parsing:
+    // style
     fStyle: Integer;
+    // symantec checking
     fD2Ext: Boolean;
     fCStyleOp: Boolean;
     fIncludeAssertionCode: Boolean;
@@ -71,6 +82,7 @@ type
     fInitConst: Boolean;
     fStaticKwd: Boolean;    
 
+    // Code generation:
     fUnitStyle: Integer;
     fIOChecks: Boolean;
     fRangeChecks: Boolean;
@@ -84,6 +96,7 @@ type
     fOptLevel: Integer;
     fTargetOS: String;
     
+    // Linking:
     fGenDebugInfo: Boolean;
     fGenDebugDBX: Boolean;
     fUseLineInfoUnit: Boolean;
@@ -94,6 +107,7 @@ type
     fPassLinkerOpt: Boolean;
     fLinkerOptions: String;
     
+    // Messages:
     fShowErrors: Boolean;
     fShowWarn: Boolean;
     fShowNotes: Boolean;
@@ -111,17 +125,12 @@ type
     fShowNothing: Boolean;
     fShowHintsForUnusedProjectUnits: Boolean;
     fWriteFPCLogo: Boolean;
+    fStopAfterErrCount: integer;
+
+    // Other:
     fDontUseConfigFile: Boolean;
     fAdditionalConfigFile: Boolean;
     fConfigFilePath: String;
-    fStopAfterErrCount: integer;
-    
-    fIncludeFiles: String;
-    fLibraries: String;
-    fOtherUnitFiles: String;
-    fCompilerPath: String;
-    fUnitOutputDir: string;
-    fLCLWidgetType: string;
 
     procedure LoadTheCompilerOptions;
     procedure SaveTheCompilerOptions;
@@ -144,7 +153,16 @@ type
     property TargetFilename: String read fTargetFilename write fTargetFilename;
     property XMLConfigFile: TXMLConfig read xmlconfig write xmlconfig;
     property Loaded: Boolean read fLoaded write fLoaded;
-    
+
+    // search paths:
+    property IncludeFiles: String read fIncludeFiles write fIncludeFiles;
+    property Libraries: String read fLibraries write fLibraries;
+    property OtherUnitFiles: String read fOtherUnitFiles write fOtherUnitFiles;
+    property CompilerPath: String read fCompilerPath write fCompilerPath;
+    property UnitOutputDirectory: string read fUnitOutputDir write fUnitOutputDir;
+    property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
+
+    // parsing:
     property Style: Integer read fStyle write fStyle;
     property D2Extensions: Boolean read fD2Ext write fD2Ext;
     property CStyleOperators: Boolean read fCStyleOp write fCStyleOp;
@@ -160,6 +178,7 @@ type
     property InitConstructor: Boolean read fInitConst write fInitConst;
     property StaticKeyword: Boolean read fStaticKwd write fStaticKwd;
 
+    // code generation:
     property UnitStyle: Integer read fUnitStyle write fUnitStyle;
     property IOChecks: Boolean read fIOChecks write fIOChecks;
     property RangeChecks: Boolean read fRangeChecks write fRangeChecks;
@@ -173,6 +192,7 @@ type
     property OptimizationLevel: Integer read fOptLevel write fOptLevel;
     property TargetOS: string read fTargetOS write fTargetOS;
     
+    // linking:
     property GenerateDebugInfo: Boolean read fGenDebugInfo write fGenDebugInfo;
     property GenerateDebugDBX: Boolean read fGenDebugDBX write fGenDebugDBX;
     property UseLineInfoUnit: Boolean read fUseLineInfoUnit write fUseLineInfoUnit;
@@ -183,6 +203,7 @@ type
     property PassLinkerOptions: Boolean read fPassLinkerOpt write fPassLinkerOpt;
     property LinkerOptions: String read fLinkerOptions write fLinkerOptions;
     
+    // messages:
     property ShowErrors: Boolean read fShowErrors write fShowErrors;
     property ShowWarn: Boolean read fShowWarn write fShowWarn;
     property ShowNotes: Boolean read fShowNotes write fShowNotes;
@@ -202,18 +223,13 @@ type
     property ShowHintsForUnusedProjectUnits: Boolean 
       read fShowHintsForUnusedProjectUnits write fShowHintsForUnusedProjectUnits;
     property WriteFPCLogo: Boolean read fWriteFPCLogo write fWriteFPCLogo;
+    property StopAfterErrCount: integer
+      read fStopAfterErrCount write fStopAfterErrCount;
+
+    // other
     property DontUseConfigFile: Boolean read fDontUseConfigFile write fDontUseConfigFile;
     property AdditionalConfigFile: Boolean read fAdditionalConfigFile write fAdditionalConfigFile;
     property ConfigFilePath: String read fConfigFilePath write fConfigFilePath;
-    property StopAfterErrCount: integer 
-      read fStopAfterErrCount write fStopAfterErrCount;
-    
-    property IncludeFiles: String read fIncludeFiles write fIncludeFiles;
-    property Libraries: String read fLibraries write fLibraries;
-    property OtherUnitFiles: String read fOtherUnitFiles write fOtherUnitFiles;
-    property CompilerPath: String read fCompilerPath write fCompilerPath;
-    property UnitOutputDirectory: string read fUnitOutputDir write fUnitOutputDir;
-    property LCLWidgetType: string read fLCLWidgetType write fLCLWidgetType;
   end;
 
 
@@ -311,12 +327,13 @@ type
     grpLinkLibraries: TGroupBox;
     radLibsLinkDynamic: TRadioButton;
     radLibsLinkStatic: TRadioButton;
+    radLibsLinkSmart: TRadioButton;
 
     grpOptions: TGroupBox;
     chkOptionsLinkOpt: TCheckBox;
     edtOptionsLinkOpt: TEdit;
 
-    { Other Controls }
+    { Messages Controls }
     grpVerbosity: TGroupBox;
     chkErrors: TCheckBox;
     chkWarnings: TCheckBox;
@@ -334,16 +351,16 @@ type
     chkConditionals: TCheckBox;
     chkNothing: TCheckBox;
     chkHintsForUnusedProjectUnits: TCheckBox;
-
     chkFPCLogo: TCheckBox;
 
+    grpErrorCnt: TGroupBox;
+    edtErrorCnt: TEdit;
+
+    { 'Other' Controls }
     grpConfigFile: TGroupBox;
     chkConfigFile: TCheckBox;
     chkAdditionalConfigFile: TCheckBox;
     edtConfigPath: TEdit;
-    
-    grpErrorCnt: TGroupBox;
-    edtErrorCnt: TEdit;
 
     { Buttons }
     btnTest: TButton;
@@ -364,6 +381,7 @@ type
     procedure SetupParsingTab(Page: integer);
     procedure SetupCodeGenerationTab(Page: integer);
     procedure SetupLinkingTab(Page: integer);
+    procedure SetupMessagesTab(Page: integer);
     procedure SetupOtherTab(Page: integer);
     procedure SetupButtonBar;
   private
@@ -878,9 +896,9 @@ begin
 
   { UnitStyle   '' = Static     'D' = Dynamic   'X' = smart linked }
   case (UnitStyle) of
-    1: ;
-    2: switches := switches + ' -CD';
-    3: switches := switches + ' -CX';
+    0: ;
+    1: switches := switches + ' -CD';
+    2: switches := switches + ' -CX';
   end;
 
   { Checks }
@@ -1374,11 +1392,12 @@ begin
   if nbMain.PageCount>0 then
     nbMain.Pages[0] := dlgSearchPaths 
   else
-    nbMain.Pages.Add(dlgSearchPaths );
-  nbMain.Pages.Add(dlgCOParsing );
-  nbMain.Pages.Add(dlgCodeGeneration );
-  nbMain.Pages.Add(dlgCOLinking );
-  nbMain.Pages.Add(dlgCOOther );
+    nbMain.Pages.Add(dlgSearchPaths);
+  nbMain.Pages.Add(dlgCOParsing);
+  nbMain.Pages.Add(dlgCodeGeneration);
+  nbMain.Pages.Add(dlgCOLinking);
+  nbMain.Pages.Add(dlgCOMessages);
+  nbMain.Pages.Add(dlgCOOther);
 
 {
   bvlButtonBar := TBevel.Create(Self);
@@ -1405,6 +1424,10 @@ begin
 
   { Linking Tab }
   SetupLinkingTab(Page);
+  inc(Page);
+
+  { Messages Tab }
+  SetupMessagesTab(Page);
   inc(Page);
 
   { Other Tab }
@@ -1564,6 +1587,7 @@ begin
   case CompilerOpts.LinkStyle of
     1: radLibsLinkDynamic.Checked := true;
     2: radLibsLinkStatic.Checked := true;
+    3: radLibsLinkSmart.Checked := true;
   end;
 
   chkOptionsLinkOpt.Checked := CompilerOpts.PassLinkerOptions;
@@ -1696,11 +1720,13 @@ begin
   CompilerOpts.LinkerOptions := edtOptionsLinkOpt.Text;
 
   if (radLibsLinkDynamic.Checked) then
-      CompilerOpts.LinkStyle := 1
+    CompilerOpts.LinkStyle := 1
   else if (radLibsLinkStatic.Checked) then
-      CompilerOpts.LinkStyle := 2
+    CompilerOpts.LinkStyle := 2
+  else if (radLibsLinkSmart.Checked) then
+    CompilerOpts.LinkStyle := 3
   else
-      CompilerOpts.LinkStyle := 1;
+    CompilerOpts.LinkStyle := 1;
   
   CompilerOpts.ShowErrors := chkErrors.Checked;
   CompilerOpts.ShowWarn := chkWarnings.Checked;
@@ -2366,7 +2392,7 @@ begin
     Parent := nbMain.Page[Page];
     Top := grpDebugging.Top + grpDebugging.Height + 10;
     Left := 10;
-    Height := 70;
+    Height := 91;
     Width := Self.ClientWidth-28;
     Caption := dlgLinkLibraries ;
     Visible := True;
@@ -2390,6 +2416,18 @@ begin
     Parent := grpLinkLibraries;
     Caption := dlgLinkStatLibs ;
     Top := 27;
+    Left := 8;
+    Height := 16;
+    Width := 330;
+    Visible := True;
+  end;
+
+  radLibsLinkSmart := TRadioButton.Create(grpLinkLibraries);
+  with radLibsLinkSmart do
+  begin
+    Parent := grpLinkLibraries;
+    Caption := dlgLinkSmart ;
+    Top := 48;
     Left := 8;
     Height := 16;
     Width := 330;
@@ -2436,13 +2474,11 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TfrmCompilerOptions SetupOtherTab                                           }
+{  TfrmCompilerOptions SetupMessagesTab                                           }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupOtherTab(Page: integer);
+procedure TfrmCompilerOptions.SetupMessagesTab(Page: integer);
 begin
-  // Setup the Other Tab
-  Assert(False, 'Trace:Setting up compiler options other tab');
-
+  // Setup the Messages Tab
   grpVerbosity := TGroupBox.Create(Self);
   with grpVerbosity do
   begin
@@ -2658,14 +2694,42 @@ begin
     Width := 250;
     Visible := True;
   end;
-  
+
+  {------------------------------------------------------------}
+  grpErrorCnt := TGroupBox.Create(Self);
+  with grpErrorCnt do
+  begin
+    Parent := nbMain.Page[Page];
+    Top := grpVerbosity.Top + grpVerbosity.Height + 10;
+    Left := 10;
+    Height := 50;
+    Width := 200;
+    Caption := dlgStopAfterNrErr ;
+    Visible := True;
+  end;
+
+  edtErrorCnt := TEdit.Create(grpConfigFile);
+  with edtErrorCnt do
+  begin
+    Parent := grpErrorCnt;
+    Top := 6;
+    Left := 8;
+    Height := 23;
+    Width := grpErrorCnt.ClientWidth-2*Left-4;
+    Text := '';
+    Visible := True;
+  end;
+end;
+
+procedure TfrmCompilerOptions.SetupOtherTab(Page: integer);
+begin
   {------------------------------------------------------------}
 
   grpConfigFile := TGroupBox.Create(Self);
   with grpConfigFile do
   begin
     Parent := nbMain.Page[Page];
-    Top := grpVerbosity.Top + grpVerbosity.Height + 10;
+    Top := 10;
     Left := 10;
     Height := 95;
     Width := Self.ClientWidth-28;
@@ -2706,31 +2770,6 @@ begin
     Left := 8;
     Height := 23;
     Width := 330;
-    Text := '';
-    Visible := True;
-  end;
-  
-  {------------------------------------------------------------}
-  grpErrorCnt := TGroupBox.Create(Self);
-  with grpErrorCnt do
-  begin
-    Parent := nbMain.Page[Page];
-    Top := grpConfigFile.Top + grpConfigFile.Height + 10;
-    Left := 10;
-    Height := 50;
-    Width := 200;
-    Caption := dlgStopAfterNrErr ;
-    Visible := True;
-  end;
-
-  edtErrorCnt := TEdit.Create(grpConfigFile);
-  with edtErrorCnt do
-  begin
-    Parent := grpErrorCnt;
-    Top := 6;
-    Left := 8;
-    Height := 23;
-    Width := grpErrorCnt.ClientWidth-2*Left-4;
     Text := '';
     Visible := True;
   end;
