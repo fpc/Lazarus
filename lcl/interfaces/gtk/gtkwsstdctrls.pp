@@ -854,8 +854,10 @@ begin
   Widget:=GetWidgetInfo(Pointer(ACustomMemo.Handle), true)^.CoreWidget;
   gtk_text_freeze(PGtkText(Widget));
   CurMemoLen := gtk_text_get_length(PGtkText(Widget));
+  //debugln('TGtkWSCustomMemo.AppendText "',AText,'" CurMemoLen=',dbgs(CurMemoLen));
   gtk_editable_insert_text(PGtkOldEditable(Widget), PChar(AText), Length(AText),
                            @CurMemoLen);
+  //debugln('TGtkWSCustomMemo.AppendText B CurMemoLen=',dbgs(CurMemoLen));
   gtk_text_thaw(PGtkText(Widget));
 end;
 

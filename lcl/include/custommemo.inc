@@ -34,7 +34,7 @@ begin
   TMemoStrings(FLines).MemoWidgetClass := TWSCustomMemoClass(WidgetSetClass);
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
-  SetInitialBounds(0,0,185,90);
+  SetInitialBounds(0,0,150,90);
 end;
 
 {------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ begin
   FreeThenNil(FLines);
   FreeThenNil(FVertScrollbar);
   FreeThenNil(FHorzScrollbar);
-  inherited destroy;
+  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------
@@ -178,6 +178,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2005/01/01 14:38:36  mattias
+  fixed loading TMemo.Lines - During Loading
+
   Revision 1.31  2004/11/15 12:37:52  mattias
   added check handleallocated on loading memo
 

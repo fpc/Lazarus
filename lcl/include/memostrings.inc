@@ -110,7 +110,7 @@ end;
   Returns: 
 
  ------------------------------------------------------------------------------}
-procedure TMemoStrings.Insert(index : Integer; const S: String);
+procedure TMemoStrings.Insert(Index: Integer; const S: String);
 var
   TempStrings: TStringList;
   Cnt: Integer;
@@ -123,11 +123,18 @@ begin
     CurText := FMemo.Text;
     TempStrings.Text := CurText;
     Cnt:=TempStrings.Count;
+    //debugln('TMemoStrings.Insert A Index=',dbgs(Index),' Cnt=',dbgs(Cnt),' S="',S,'" FMemo.HandleAllocated=',dbgs(FMemo.HandleAllocated));
     if Index=Cnt then begin
-      if FMemo.HandleAllocated then begin
+      // IMPORTANT:
+      // TControl.FCaption is only updated with FMemo.Text:=s calls
+      // That's why, FMemoWidgetClass.AppendText does not update
+      // TControl.FCaption and can not be used during loading.
+      if (FMemo.HandleAllocated) and (not (csLoading in FMemo.ComponentState))
+      then begin
         LastLine:=S+LineEnding;
         if (CurText<>'') and (not (CurText[length(CurText)] in [#10,#13])) then
           LastLine:=LineEnding+LastLine;
+        //debugln('TMemoStrings.Insert AppendText LastLine="',LastLine,'"');
         FMemoWidgetClass.AppendText(FMemo, LastLine);
       end else begin
         TempStrings.Insert(Index, S);
@@ -148,6 +155,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2005/01/01 14:38:36  mattias
+  fixed loading TMemo.Lines - During Loading
+
   Revision 1.11  2004/09/10 17:59:57  micha
   convert LM_APPENDTEXT to interface method
 

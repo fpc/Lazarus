@@ -3147,11 +3147,13 @@ begin
   Perform(CM_TEXTCHANGED, 0, 0);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetText                                                            }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetText
+------------------------------------------------------------------------------}
 procedure TControl.SetText(const Value: TCaption);
 begin
+  //if CompareText(ClassName,'TMEMO')=0 then
+  //  debugln('TControl.SetText A ',DbgSName(Self),' GetText="',GetText,'" Value="',Value,'" FCaption="',FCaption,'"');
   if GetText = Value then Exit;
   
   // Check if SetTextBuf is overridden, otherwise
@@ -3169,11 +3171,13 @@ begin
     DebugLn('Note: SetTextBuf is overridden for: ', Classname);
     SetTextBuf(PChar(Value));
   end;
+  //if CompareText(ClassName,'TMEMO')=0 then
+  //  debugln('TControl.SetText END ',DbgSName(Self),' FCaption="',FCaption,'"');
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl Update                                                           }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl Update
+------------------------------------------------------------------------------}
 procedure TControl.Update;
 begin
   if Parent<>nil then Parent.Update;
@@ -3456,6 +3460,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.228  2005/01/01 14:38:36  mattias
+  fixed loading TMemo.Lines - During Loading
+
   Revision 1.227  2004/12/22 23:54:21  mattias
   started TControl.AnchorSide
 

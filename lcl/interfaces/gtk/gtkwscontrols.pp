@@ -399,12 +399,13 @@ begin
 
   csMemo        : begin
                     P:= GetWidgetInfo(P, True)^.CoreWidget;
-
+                    //debugln('TGtkWSWinControl.SetText A ',dbgs(gtk_text_get_length(PGtkText(P))),' AText="',AText,'"');
                     gtk_text_freeze(PGtkText(P));
                     gtk_text_set_point(PGtkText(P), 0);
                     gtk_text_forward_delete(PGtkText(P), gtk_text_get_length(PGtkText(P)));
                     gtk_text_insert(PGtkText(P), nil, nil, nil, pLabel, -1);
                     gtk_text_thaw(PGtkText(P));
+                    //debugln('TGtkWSWinControl.SetText B ',dbgs(gtk_text_get_length(PGtkText(P))));
                   end;
 
   csPage:
