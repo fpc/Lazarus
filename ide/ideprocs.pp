@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, GetText;
+  Classes, SysUtils, Laz_XMLCfg, LazGetText;
 
 //
 const
@@ -582,7 +582,8 @@ var
   TableID, StringID, TableCount: Integer;
   s: String;
 begin
-  if (ResUnitName='') or (AFilename='') then exit;
+  if (ResUnitName='') or (AFilename='') or (not FileExists(AFilename)) then
+    exit;
   try
     mo := TMOFile.Create(AFilename);
     try
