@@ -55,6 +55,7 @@ type
     procedure BuildDefaultKeyWordFunctions; virtual;
     procedure SetScanner(NewScanner: TLinkScanner); virtual;
     procedure RaiseException(const AMessage: string); virtual;
+    procedure DoDeleteNodes; virtual;
   public
     Tree: TCodeTree;
 
@@ -1131,7 +1132,7 @@ begin
   CurPos.EndPos:=1;
   LastAtoms.Clear;
   CurNode:=nil;
-  if DeleteNodes then Tree.Clear;
+  if DeleteNodes then DoDeleteNodes;
 end;
 
 procedure TCustomCodeTool.MoveCursorToNodeStart(ANode: TCodeTreeNode);
@@ -1467,6 +1468,11 @@ begin
       Move(Src[CleanStartPos],Result[1],len);
   end else
     Result:='';
+end;
+
+procedure TCustomCodeTool.DoDeleteNodes;
+begin
+  Tree.Clear;
 end;
 
 

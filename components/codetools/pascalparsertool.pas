@@ -903,6 +903,7 @@ begin
   // create node for procedure head
   CreateChildNode;
   CurNode.Desc:=ctnProcedureHead;
+  CurNode.SubDesc:=ctnsNeedJITParsing;
   // read rest
   ReadNextAtom;
   ReadTilProcedureHeadEnd(true,IsFunction,false,false,false,HasForwardModifier);

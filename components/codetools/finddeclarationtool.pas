@@ -41,6 +41,7 @@
             - cache must be deleted, everytime the codetree is rebuild
                this is enough update, because it does only store internals
            -> This will improve access time to all precompiled packages
+              but still not fast enough.
            
         2. dynamic cache:
             searching a compatible proc not by name, but by parameter type list
@@ -88,6 +89,7 @@ interface
 { $DEFINE ShowTriedContexts}
 { $DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
+{ $DEFINE ShowCachedIdentifiers}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -118,8 +120,9 @@ type
     fdfIgnoreClassVisibility,//find inaccessible private+protected fields
     fdfClassPublished,fdfClassPublic,fdfClassProtected,fdfClassPrivate,
     fdfIgnoreMissingParams, // found proc fits, even if parameters are missing
-    fdfFirstIdentFound      // a first identifier was found, now searching for
+    fdfFirstIdentFound,     // a first identifier was found, now searching for
                             // the a better one (used for proc overloading)
+    fdfOnlyCompatibleProc   // incompatible procs are ignored
     );
   TFindDeclarationFlags = set of TFindDeclarationFlag;
 
@@ -134,6 +137,9 @@ const
   CleanFindContext: TFindContext = (Node:nil; Tool:nil);
   
 type
+  { TExpressionTypeDesc describes predefined types
+    The Freepascal compiler can automatically convert them
+  }
   TExpressionTypeDesc = (
     xtNone, xtContext, xtChar, xtReal, xtSingle, xtDouble,
     xtExtended, xtCurrency, xtComp, xtInt64, xtCardinal, xtQWord, xtBoolean,
@@ -167,6 +173,7 @@ const
 
 type
   { TExpressionType is used for compatibility check
+    A compatibility check is done by comparing two TExpressionType
 
     if Desc = xtConstSet, SubDesc contains the type of the set
     if Context.Node<>nil, it contains the corresponding codetree node
@@ -182,6 +189,7 @@ const
     (Desc:xtNone; SubDesc:xtNone; Context:(Node:nil; Tool:nil));
 
 type
+  // TTypeCompatibility is the result of a compatibility check
   TTypeCompatibility = (
     tcExact,        // exactly same type
     tcCompatible,   // type can be auto converted
@@ -195,7 +203,7 @@ const
     );
 
 type
-  // TExprTypeList is used for parameter lists
+  // TExprTypeList is used for compatibility checks of whole parameter lists
   TExprTypeList = class
   public
     Count: integer;
@@ -206,6 +214,40 @@ type
   
 
 type
+  { Caching
+  
+    1. interface cache:
+      Every FindIdentifierInInterface call is cached
+        - stores: Identifier -> Node+CleanPos
+        - cache must be deleted, everytime the codetree is rebuild
+           this is enough update, because it does only store internals
+       -> This will improve access time to all precompiled packages
+          but still not fast enough.
+  }
+  PInterfaceIdentCacheEntry = ^TInterfaceIdentCacheEntry;
+  TInterfaceIdentCacheEntry = record
+    Identifier: PChar;
+    Node: TCodeTreeNode; // if node = nil then identifier does not exists in
+                         //                    this interface
+    CleanPos: integer;
+    NextEntry: PInterfaceIdentCacheEntry; // used by memory manager
+  end;
+
+  TInterfaceIdentifierCache = class
+  private
+    FItems: TAVLTree; // tree of TInterfaceIdentCacheEntry
+    FTool: TFindDeclarationTool;
+    function FindAVLNode(Identifier: PChar): TAVLTreeNode;
+  public
+    function FindIdentifier(Identifier: PChar): PInterfaceIdentCacheEntry;
+    procedure Add(Identifier: PChar; Node: TCodeTreeNode; CleanPos: integer);
+    procedure Clear;
+    constructor Create(ATool: TFindDeclarationTool);
+    destructor Destroy; override;
+    property Tool: TFindDeclarationTool read FTool;
+  end;
+  
+  //---------------------------------------------------------------------------
   TIdentifierFoundResult = (ifrProceedSearch, ifrAbortSearch, ifrSuccess);
 
   TOnIdentifierFound = function(Params: TFindDeclarationParams;
@@ -221,11 +263,13 @@ type
 
   TFindDeclarationParams = class(TObject)
   public
+    // input parameters:
     Flags: TFindDeclarationFlags;
     Identifier: PChar;
     ContextNode: TCodeTreeNode;
     OnIdentifierFound: TOnIdentifierFound;
     IdentifierTool: TFindDeclarationTool;
+    // results:
     NewNode: TCodeTreeNode;
     NewCleanPos: integer;
     NewCodeTool: TFindDeclarationTool;
@@ -251,6 +295,7 @@ type
   private
     FOnGetUnitSourceSearchPath: TOnGetSearchPath;
     FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
+    FInterfaceIdentifierCache: TInterfaceIdentifierCache;
     {$IFDEF CTDEBUG}
     DebugPrefix: string;
     procedure IncPrefix;
@@ -297,6 +342,7 @@ type
     function GetFirstParameterNode(Node: TCodeTreeNode): TCodeTreeNode;
     function PredefinedIdentToTypeDesc(Identifier: PChar): TExpressionTypeDesc;
   protected
+    procedure DoDeleteNodes; override;
     function FindDeclarationOfIdentifier(
       Params: TFindDeclarationParams): boolean;
     function FindContextNodeAtCursor(
@@ -335,15 +381,32 @@ type
     function IsCompatible(Node: TCodeTreeNode; ExpressionType: TExpressionType;
       Params: TFindDeclarationParams): TTypeCompatibility;
   public
+    destructor Destroy; override;
     function FindDeclaration(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindUnitSource(const AnUnitName,
       AnUnitInFilename: string): TCodeBuffer;
+    property InterfaceIdentifierCache: TInterfaceIdentifierCache
+      read FInterfaceIdentifierCache;
     property OnGetUnitSourceSearchPath: TOnGetSearchPath
       read FOnGetUnitSourceSearchPath write FOnGetUnitSourceSearchPath;
     property OnGetCodeToolForBuffer: TOnGetCodeToolForBuffer
       read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
   end;
+
+  //----------------------------------------------------------------------------
+  TGlobalIdentifierTree = class
+  private
+    FItems: TAVLTree; // tree of PChar;
+  public
+    function AddCopy(Identifier: PChar): PChar;
+    function Find(Identifier: PChar): PChar;
+    procedure Clear;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+var GlobalIdentifierTree: TGlobalIdentifierTree;
 
 
 implementation
@@ -353,10 +416,122 @@ const
   fdfAllClassVisibilities = [fdfClassPublished,fdfClassPublic,fdfClassProtected,
                              fdfClassPrivate];
   fdfGlobals = [fdfExceptionOnNotFound, fdfIgnoreUsedUnits];
-  fdfGlobalsSameIdent = fdfGlobals+[fdfIgnoreMissingParams,fdfFirstIdentFound];
+  fdfGlobalsSameIdent = fdfGlobals+[fdfIgnoreMissingParams,fdfFirstIdentFound,
+                                    fdfOnlyCompatibleProc];
   fdfDefaultForExpressions = [fdfSearchInParentNodes,fdfSearchInAncestors,
                               fdfExceptionOnNotFound]+fdfAllClassVisibilities;
   
+type
+  // memory system for PInterfaceIdentCacheEntry(s)
+  TInterfaceIdentCacheEntryMemManager = class
+  private
+    FFirstFree: PInterfaceIdentCacheEntry;
+    FFreeCount: integer;
+    FCount: integer;
+    FMinFree: integer;
+    FMaxFreeRatio: integer;
+    FAllocatedCount: integer;
+    FFreedCount: integer;
+    procedure SetMaxFreeRatio(NewValue: integer);
+    procedure SetMinFree(NewValue: integer);
+  public
+    procedure DisposeEntry(Entry: PInterfaceIdentCacheEntry);
+    function NewEntry: PInterfaceIdentCacheEntry;
+    property MinimumFreeCount: integer read FMinFree write SetMinFree;
+    property MaximumFreeRatio: integer
+        read FMaxFreeRatio write SetMaxFreeRatio; // in one eighth steps
+    property Count: integer read FCount;
+    property FreeCount: integer read FFreeCount;
+    property AllocatedCount: integer read FAllocatedCount;
+    property FreedCount: integer read FFreedCount;
+    procedure Clear;
+    constructor Create;
+    destructor Destroy; override;
+  end;
+
+var
+  InterfaceIdentCacheEntryMemManager: TInterfaceIdentCacheEntryMemManager;
+
+{ TInterfaceIdentCacheEntryMemManager }
+
+procedure TInterfaceIdentCacheEntryMemManager.Clear;
+var Entry: PInterfaceIdentCacheEntry;
+begin
+  while FFirstFree<>nil do begin
+    Entry:=FFirstFree;
+    FFirstFree:=FFirstFree^.NextEntry;
+    Entry^.NextEntry:=nil;
+    Dispose(Entry);
+    inc(FFreedCount);
+  end;
+  FFreeCount:=0;
+end;
+
+constructor TInterfaceIdentCacheEntryMemManager.Create;
+begin
+  inherited Create;
+  FFirstFree:=nil;
+  FFreeCount:=0;
+  FCount:=0;
+  FAllocatedCount:=0;
+  FFreedCount:=0;
+  FMinFree:=100000;
+  FMaxFreeRatio:=8; // 1:1
+end;
+
+destructor TInterfaceIdentCacheEntryMemManager.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TInterfaceIdentCacheEntryMemManager.DisposeEntry(
+  Entry: PInterfaceIdentCacheEntry);
+begin
+  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
+  begin
+    // add Entry to Free list
+    Entry^.NextEntry:=FFirstFree;
+    FFirstFree:=Entry;
+    inc(FFreeCount);
+  end else begin
+    // free list full -> free the Entry
+    Dispose(Entry);
+    inc(FFreedCount);
+  end;
+  dec(FCount);
+end;
+
+function TInterfaceIdentCacheEntryMemManager.NewEntry: PInterfaceIdentCacheEntry;
+begin
+  if FFirstFree<>nil then begin
+    // take from free list
+    Result:=FFirstFree;
+    FFirstFree:=FFirstFree^.NextEntry;
+    Result^.NextEntry:=nil;
+    dec(FFreeCount);
+  end else begin
+    // free list empty -> create new Entry
+    New(Result);
+    inc(FAllocatedCount);
+  end;
+  inc(FCount);
+end;
+
+procedure TInterfaceIdentCacheEntryMemManager.SetMaxFreeRatio(NewValue: integer);
+begin
+  if NewValue<0 then NewValue:=0;
+  if NewValue=FMaxFreeRatio then exit;
+  FMaxFreeRatio:=NewValue;
+end;
+
+procedure TInterfaceIdentCacheEntryMemManager.SetMinFree(NewValue: integer);
+begin
+  if NewValue<0 then NewValue:=0;
+  if NewValue=FMinFree then exit;
+  FMinFree:=NewValue;
+end;
+
 
 { TFindContext }
 
@@ -2334,6 +2509,7 @@ function TFindDeclarationTool.FindIdentifierInInterface(
 var InterfaceNode: TCodeTreeNode;
   SrcIsUsable: boolean;
   OldInput: TFindDeclarationInput;
+  CacheEntry: PInterfaceIdentCacheEntry;
 begin
   Result:=false;
   // build code tree
@@ -2348,7 +2524,31 @@ writeln(DebugPrefix,'TFindDeclarationTool.FindIdentifierInInterface',
   // ToDo: build codetree for ppu, ppw, dcu files
   
   // build tree for pascal source
+  
+  // ToDo: only check the first time during a big search
+  
   BuildTree(true);
+  
+  // search identifier in cache
+  if FInterfaceIdentifierCache<>nil then begin
+    CacheEntry:=FInterfaceIdentifierCache.FindIdentifier(Params.Identifier);
+    if CacheEntry<>nil then begin
+      // identifier in cache found
+{$IFDEF ShowCachedIdentifiers}
+writeln('[TFindDeclarationTool.FindIdentifierInInterface] Ident already in cache:',
+' Exists=',CacheEntry^.Node<>nil);
+{$ENDIF}
+      if CacheEntry^.Node=nil then begin
+        // identifier not in this interface
+        exit;
+      end else begin
+        // identifier in this interface found
+        Params.SetResult(Self,CacheEntry^.Node,CacheEntry^.CleanPos);
+        Result:=true;
+        exit;
+      end;
+    end;
+  end;
   
   // check source name
   MoveCursorToNodeStart(Tree.Root);
@@ -2378,6 +2578,15 @@ writeln(DebugPrefix,'TFindDeclarationTool.FindIdentifierInInterface',
   else
     // do not reload param input, so that find next is possible
     ;
+
+  // save result in cache
+  if FInterfaceIdentifierCache=nil then
+    FInterfaceIdentifierCache:=TInterfaceIdentifierCache.Create(Self);
+  if Result then
+    FInterfaceIdentifierCache.Add(OldInput.Identifier,Params.NewNode,
+      Params.NewCleanPos)
+  else
+    FInterfaceIdentifierCache.Add(OldInput.Identifier,nil,-1);
 end;
 
 function TFindDeclarationTool.CompareNodeIdentifier(Node: TCodeTreeNode;
@@ -2998,9 +3207,9 @@ writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
             FirstParameterNode,
             ExprInputList,fdfIgnoreMissingParams in Params.Flags,
             Params,BestCompatibilityList);
+          FoundContext:=CurFoundContext;
           if ParamCompatibility=tcExact then begin
             // the first proc fits exactly -> stop the search
-            FoundContext:=CurFoundContext;
             Result:=ifrSuccess;
             exit;
           end;
@@ -3076,7 +3285,8 @@ writeln('[TFindDeclarationTool.CheckSrcIdentifier] no next overloaded proc ',
 );
 {$ENDIF}
               // no further proc found
-              if ParamCompatibility=tcIncompatible then begin
+              if (ParamCompatibility=tcIncompatible)
+              and (fdfOnlyCompatibleProc in OldInput.Flags) then begin
                 // no compatible proc found at all
                 if fdfExceptionOnNotFound in OldInput.Flags then begin
                   if not Params.IdentifierTool.IsPCharInSrc(Params.Identifier)
@@ -3095,7 +3305,7 @@ writeln('[TFindDeclarationTool.CheckSrcIdentifier] no next overloaded proc ',
                   exit;
                 end;
               end else begin
-                // compatible proc found
+                // proc found
                 Result:=ifrSuccess;
                 exit;
               end;
@@ -3197,6 +3407,7 @@ function TFindDeclarationTool.CreateParamExprList(StartPos: integer;
   Params: TFindDeclarationParams): TExprTypeList;
 var ExprType: TExpressionType;
   BracketClose: char;
+  ExprStartPos, ExprEndPos: integer;
 begin
 {$IFDEF ShowExprEval}
 writeln('[TFindDeclarationTool.CreateParamExprList] ',
@@ -3217,8 +3428,26 @@ writeln('[TFindDeclarationTool.CreateParamExprList] ',
     if not AtomIsChar(BracketClose) then begin
       // read all expressions
       while true do begin
-        ExprType:=ReadOperandTypeAtCursor(Params);
+        ExprStartPos:=CurPos.StartPos;
+        // read til comma or bracket close
+        repeat
+          ReadNextAtom;
+          if AtomIsChar('(') or AtomIsChar('[') then begin
+            ReadTilBracketClose(true);
+            ReadNextAtom;
+          end;
+          if (CurPos.StartPos>SrcLen)
+          or ((CurPos.EndPos=CurPos.StartPos+1)
+            and (Src[CurPos.StartPos] in [')',']',',']))
+          then
+            break;
+        until false;
+        ExprEndPos:=CurPos.StartPos;
+        // find expression type
+        ExprType:=FindExpressionResultType(Params,ExprStartPos,ExprEndPos);
+        // add expression type to list
         Result.Add(ExprType);
+        MoveCursorToCleanPos(ExprEndPos);
         ReadNextAtom;
         if AtomIsChar(BracketClose) then break;
         if not AtomIsChar(',') then
@@ -3363,6 +3592,20 @@ writeln('[TFindDeclarationTool.IsCompatible] B ',
   end;
 end;
 
+procedure TFindDeclarationTool.DoDeleteNodes;
+begin
+  if FInterfaceIdentifierCache<>nil then
+    FInterfaceIdentifierCache.Clear;
+  inherited DoDeleteNodes;
+end;
+
+destructor TFindDeclarationTool.Destroy;
+begin
+  FInterfaceIdentifierCache.Free;
+  FInterfaceIdentifierCache:=nil;
+  inherited Destroy;
+end;
+
 
 { TFindDeclarationParams }
 
@@ -3481,6 +3724,181 @@ begin
     ReAllocMem(Items,NewSize);
   Items[Count-1]:=ExprType;
 end;
+
+{ TInterfaceIdentifierCache }
+
+function CompareTInterfaceIdentCacheEntry(Data1, Data2: Pointer): integer;
+begin
+  Result:=CompareIdentifiers(PInterfaceIdentCacheEntry(Data1)^.Identifier,
+                             PInterfaceIdentCacheEntry(Data2)^.Identifier);
+end;
+
+
+procedure TInterfaceIdentifierCache.Clear;
+var
+  Node: TAVLTreeNode;
+  Entry: PInterfaceIdentCacheEntry;
+begin
+  if FItems<>nil then begin
+    Node:=FItems.FindLowest;
+    while Node<>nil do begin
+      Entry:=PInterfaceIdentCacheEntry(Node.Data);
+      InterfaceIdentCacheEntryMemManager.DisposeEntry(Entry);
+      Node:=FItems.FindSuccessor(Node);
+    end;
+    FItems.Clear;
+  end;
+end;
+
+constructor TInterfaceIdentifierCache.Create(ATool: TFindDeclarationTool);
+begin
+  inherited Create;
+  FTool:=ATool;
+  if ATool=nil then
+    raise Exception.Create('TInterfaceIdentifierCache.Create ATool=nil');
+end;
+
+destructor TInterfaceIdentifierCache.Destroy;
+begin
+  Clear;
+  if FItems<>nil then FItems.Free;
+  inherited Destroy;
+end;
+
+function TInterfaceIdentifierCache.FindAVLNode(Identifier: PChar): TAVLTreeNode;
+var
+  Entry: PInterfaceIdentCacheEntry;
+  comp: integer;
+begin
+  if FItems<>nil then begin
+    Result:=FItems.Root;
+    while Result<>nil do begin
+      Entry:=PInterfaceIdentCacheEntry(Result.Data);
+      comp:=CompareIdentifiers(Identifier,Entry^.Identifier);
+      if comp<0 then
+        Result:=Result.Left
+      else if comp>0 then
+        Result:=Result.Right
+      else
+        exit;
+    end;
+  end else begin
+    Result:=nil;
+  end;
+end;
+
+function TInterfaceIdentifierCache.FindIdentifier(Identifier: PChar
+  ): PInterfaceIdentCacheEntry;
+var Node: TAVLTreeNode;
+begin
+  Node:=FindAVLNode(Identifier);
+  if Node<>nil then
+    Result:=PInterfaceIdentCacheEntry(Node.Data)
+  else
+    Result:=nil;
+end;
+
+procedure TInterfaceIdentifierCache.Add(Identifier: PChar; Node: TCodeTreeNode;
+  CleanPos: integer);
+var
+  NewEntry: PInterfaceIdentCacheEntry;
+begin
+  if FItems=nil then
+    FItems:=TAVLTree.Create(@CompareTInterfaceIdentCacheEntry);
+  NewEntry:=InterfaceIdentCacheEntryMemManager.NewEntry;
+  NewEntry^.Identifier:=GlobalIdentifierTree.AddCopy(Identifier);
+  NewEntry^.Node:=Node;
+  NewEntry^.CleanPos:=CleanPos;
+  FItems.Add(NewEntry);
+end;
+
+
+{ TGlobalIdentifierTree }
+
+procedure TGlobalIdentifierTree.Clear;
+var Node: TAVLTreeNode;
+begin
+  if FItems<>nil then begin
+    Node:=FItems.FindLowest;
+    while Node<>nil do begin
+      FreeMem(Node.Data);
+      Node:=FItems.FindSuccessor(Node);
+    end;
+    FItems.Clear;
+  end;
+end;
+
+constructor TGlobalIdentifierTree.Create;
+begin
+  inherited Create;
+end;
+
+destructor TGlobalIdentifierTree.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+function TGlobalIdentifierTree.AddCopy(Identifier: PChar): PChar;
+var Len: integer;
+begin
+  Result:=nil;
+  if (Identifier=nil) or (not IsIdentChar[Identifier[0]]) then exit;
+  Result:=Find(Identifier);
+  if Result<>nil then
+    exit;
+  Len:=0;
+  while IsIdentChar[Identifier[Len]] do inc(Len);
+  GetMem(Result,Len+1);
+  Move(Identifier^,Result^,Len+1);
+  if FItems=nil then FItems:=TAVLTree.Create(@CompareIdentifiers);
+  FItems.Add(Result);
+end;
+
+function TGlobalIdentifierTree.Find(Identifier: PChar): PChar;
+var
+  comp: integer;
+  Node: TAVLTreeNode;
+begin
+  Result:=nil;
+  if FItems<>nil then begin
+    Node:=FItems.Root;
+    while Result<>nil do begin
+      Result:=PChar(Node.Data);
+      comp:=CompareIdentifiers(Identifier,Result);
+      if comp<0 then
+        Node:=Node.Left
+      else if comp>0 then
+        Node:=Node.Right
+      else
+        exit;
+    end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+
+procedure InternalInit;
+begin
+  GlobalIdentifierTree:=TGlobalIdentifierTree.Create;
+  InterfaceIdentCacheEntryMemManager:=TInterfaceIdentCacheEntryMemManager.Create;
+end;
+
+procedure InternalFinal;
+begin
+  GlobalIdentifierTree.Free;
+  GlobalIdentifierTree:=nil;
+  InterfaceIdentCacheEntryMemManager.Free;
+  InterfaceIdentCacheEntryMemManager:=nil;
+end;
+
+
+initialization
+  InternalInit;
+
+finalization
+  InternalFinal;
+
 
 end.
 
