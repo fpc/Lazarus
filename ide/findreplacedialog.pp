@@ -30,8 +30,6 @@
         - mrAll for ReplaceAll
         - mrCancel for Cancel
 
-  ToDo:
-  
 }
 unit FindReplaceDialog;
 
@@ -127,7 +125,6 @@ begin
       Anchors:= [akLeft, akTop, akRight];
       Text:='';
       OnKeyDown:=@TextToFindComboBoxKeyDown;
-      Visible:=true;
     end;
 
     TextToFindLabel:=TLabel.Create(Self);
@@ -138,7 +135,6 @@ begin
       Top:=8;
       Width:= 100;
       Caption:=dlgTextToFing;
-      Visible:=true;
       FocusControl:= TextToFindComboBox;
     end;
 
@@ -152,7 +148,6 @@ begin
       Anchors:= [akLeft, akTop, akRight];
       Text:='';
       OnKeyDown:=@TextToFindComboBoxKeyDown;
-      Visible:=true;
     end;
     
     ReplaceWithLabel:=TLabel.Create(Self);
@@ -163,7 +158,6 @@ begin
       Top:=32;
       Width:= 100;
       Caption:=dlgReplaceWith;
-      Visible:=true;
       FocusControl:= ReplaceTextComboBox;
     end;
 
@@ -175,8 +169,7 @@ begin
       Top:=58;
       Width:=194;
       Height:=150;
-      Caption:=dlgFROpts ;
-      Visible:=true;
+      Caption:=dlgFROpts;
     end;
 
     CaseSensitiveCheckBox:=TCheckBox.Create(Self);
@@ -187,8 +180,7 @@ begin
       Left:=8;
       Top:=6;
       Width:=155;
-      Caption:=dlgCaseSensitive ;
-      Visible:=true;
+      Caption:=dlgCaseSensitive;
     end;
 
     WholeWordsOnlyCheckBox:=TCheckBox.Create(Self);
@@ -200,7 +192,6 @@ begin
       Top:=31;
       Width:=155;
       Caption:=dlgWholeWordsOnly;
-      Visible:=true;
     end;
 
     RegularExpressionsCheckBox:=TCheckBox.Create(Self);
@@ -212,7 +203,6 @@ begin
       Top:=56;
       Width:=155;
       Caption:=dlgRegularExpressions;
-      Visible:=true;
     end;
 
     MultiLineCheckBox:=TCheckBox.Create(Self);
@@ -224,7 +214,6 @@ begin
       Top:=81;
       Width:=155;
       Caption:=dlgMultiLine;
-      Visible:=true;
       Enabled:=false;
     end;
 
@@ -236,9 +225,8 @@ begin
       Left:=8;
       Top:=106;
       Width:=135;
-      Caption:=dlgPromptOnReplace ;
+      Caption:=dlgPromptOnReplace;
       Checked:=true;
-      Visible:=true;
     end;
 
     OriginRadioGroup:=TRadioGroup.Create(Self);
@@ -258,7 +246,6 @@ begin
         EndUpdate;
       end;
       ItemIndex:=0;
-      Visible:=true;
     end;
 
     ScopeRadioGroup:=TRadioGroup.Create(Self);
@@ -278,7 +265,6 @@ begin
         EndUpdate;
       end;
       ItemIndex:=0;
-      Visible:=true;
     end;
 
     DirectionRadioGroup:=TRadioGroup.Create(Self);
@@ -294,11 +280,10 @@ begin
         BeginUpdate;
         Clear;
         Add(dlgUpWord);
-        Add(dlgDownWord );
+        Add(dlgDownWord);
         EndUpdate;
       end;
       ItemIndex:=1;
-      Visible:=true;
     end;
 
     OkButton:=TButton.Create(Self);
@@ -309,7 +294,6 @@ begin
       Top:= 268;
       Caption:='Ok';
       OnClick:=@OkButtonClick;
-      Visible:=true;
     end;
 
     ReplaceAllButton:=TButton.Create(Self);
@@ -321,7 +305,6 @@ begin
       Width:=99;
       Caption:=dlgReplaceAll;
       OnClick:=@ReplaceAllButtonClick;
-      Visible:=true;
     end;
 
     CancelButton:=TButton.Create(Self);
@@ -332,7 +315,6 @@ begin
       Top:= 268;
       Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
-      Visible:=true;
     end;
     
   end;

@@ -58,7 +58,7 @@ type
     );
 
 const
-  // This is the list of IDE windows, that will not be automatically restored
+  // This is the list of IDE windows, that will not be automatically reopened
   // on startup.
   NonModalIDEWindowManualOpen = [
     nmiwNone,

@@ -40,7 +40,7 @@ program Lazarus;
   {$R *.res}
 {$ENDIF}
 
-{$DEFINE IDE_MEM_CHECK}
+{ $DEFINE IDE_MEM_CHECK}
 
 uses
   //cmem,
@@ -99,6 +99,9 @@ end.
 
 {
   $Log$
+  Revision 1.56  2004/04/09 10:32:02  mattias
+  FindInFilesDialog size is now stored
+
   Revision 1.55  2004/04/08 18:27:51  mattias
   fixed memleak in TDefaultComponentEditor.Edit
 

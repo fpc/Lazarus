@@ -24,8 +24,8 @@
  *                                                                         *
  ***************************************************************************
 }
-{This unit builds the TSourceNotebook that the editors are held on.  It also has
- a class that controls the editors (TSourceEditor)
+{ This unit builds the TSourceNotebook that the editors are held on.
+  It also has a class that controls the editors (TSourceEditor)
 }
 
 unit UnitEditor;
@@ -50,7 +50,7 @@ uses
   SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, //SynHighlighterPas,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
   // IDE units
-  IDECommands, EditorOptions, CustomFormEditor, KeyMapping, FormEditor, Project,
+  IDECommands, EditorOptions, KeyMapping, Project,
   FindReplaceDialog, WordCompletion, FindInFilesDlg, IDEProcs, IDEOptionDefs,
   MsgView, SearchResultView, InputHistory, LazarusIDEStrConsts,
   BaseDebugManager, Debugger, LResources, LazConf, EnvironmentOpts, Compiler,
@@ -140,32 +140,32 @@ type
     Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     Procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
-    Function GetSource : TStrings;
+    Function GetSource: TStrings;
     procedure SetPageName(const AValue: string);
     procedure UpdatePageName;
-    Procedure SetSource(Value : TStrings);
-    Function GetCurrentCursorXLine : Integer;
+    Procedure SetSource(Value: TStrings);
+    Function GetCurrentCursorXLine: Integer;
     Procedure SetCurrentCursorXLine(num : Integer);
-    Function GetCurrentCursorYLine : Integer;
-    Procedure SetCurrentCursorYLine(num : Integer);
-    Function GetModified : Boolean;
+    Function GetCurrentCursorYLine: Integer;
+    Procedure SetCurrentCursorYLine(num: Integer);
+    Function GetModified: Boolean;
     procedure SetModified(NewValue:boolean);
-    Function GetInsertMode : Boolean;
-    Function GetReadOnly : Boolean;
+    Function GetInsertMode: Boolean;
+    Function GetReadOnly: Boolean;
     procedure SetReadOnly(NewValue: boolean);
     procedure SetCodeTemplates(
          NewCodeTemplates: TSynEditAutoComplete);
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
     function GetFilename: string;
 
-    Function GotoLine(Value : Integer) : Integer;
+    Function GotoLine(Value: Integer): Integer;
 
-    Procedure CreateEditor(AOwner : TComponent; AParent: TWinControl);
+    Procedure CreateEditor(AOwner: TComponent; AParent: TWinControl);
     procedure SetVisible(Value: boolean);
   protected
-    FindText : String;
-    ErrorMsgs : TStrings;
-    Procedure ReParent(AParent : TWinControl);
+    FindText: String;
+    ErrorMsgs: TStrings;
+    Procedure ReParent(AParent: TWinControl);
 
     Procedure ProcessCommand(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
@@ -173,8 +173,8 @@ type
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     Procedure UserCommandProcessed(Sender: TObject;
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
-    Procedure ccOnTimer(sender : TObject);
-    Procedure ccAddMessage(Texts : String);
+    Procedure ccOnTimer(sender: TObject);
+    Procedure ccAddMessage(Texts: String);
 
     Procedure FocusEditor;// called by TSourceNotebook when the Notebook page
                           // changes so the editor is focused
@@ -182,7 +182,7 @@ type
          mark: TSynEditMark);
     procedure OnEditorSpecialLineColor(Sender: TObject; Line: integer;
          var Special: boolean; var FG, BG: TColor);
-    Function RefreshEditorSettings : Boolean;
+    Function RefreshEditorSettings: Boolean;
     procedure SetSyntaxHighlighterType(
          ASyntaxHighlighterType: TLazSyntaxHighlighter);
     procedure SetErrorLine(NewLine: integer);
@@ -190,14 +190,14 @@ type
     procedure OnCodeBufferChanged(Sender: TSourceLog;
       SrcLogEntry: TSourceLogEntry);
 
-    procedure LinesInserted(sender : TObject; FirstLine,Count : Integer);
-    procedure LinesDeleted(sender : TObject; FirstLine,Count : Integer);
+    procedure LinesInserted(sender: TObject; FirstLine,Count: Integer);
+    procedure LinesDeleted(sender: TObject; FirstLine,Count: Integer);
 
-    property Visible : Boolean read FVisible write SetVisible default False;
+    property Visible: Boolean read FVisible write SetVisible default False;
   public
-    constructor Create(AOwner : TComponent; AParent : TWinControl);
+    constructor Create(AOwner: TComponent; AParent: TWinControl);
     destructor Destroy; override;
-    Function Close : Boolean;
+    Function Close: Boolean;
 
     // codebuffer
     procedure IncreaseIgnoreCodeBufferLock;
@@ -218,7 +218,7 @@ type
     // selections
     function SelectionAvailable: boolean;
     function GetText(OnlySelection: boolean): string;
-    Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
+    Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd: Integer);
     procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string);
     procedure EncloseSelection;
     procedure UpperCaseSelection;
@@ -245,8 +245,8 @@ type
     procedure DoEditorExecuteCommand(EditorCommand: integer);
 
     // used to get the word at the mouse cursor
-    Function GetWordAtPosition(Position : TPoint) : String;
-    function GetWordFromCaret(const ACaretPos: TPoint) : String;
+    Function GetWordAtPosition(Position: TPoint): String;
+    function GetWordFromCaret(const ACaretPos: TPoint): String;
     function GetWordFromCaretEx(const ACaretPos: TPoint;
       const ALeftLimit, ARightLimit: TCharSet): String;
     Function GetWordAtCurrentCaret: String;
@@ -254,7 +254,7 @@ type
     function PositionInSelection(const APosition: TPoint): Boolean;
 
     // cursor
-    Function GetCaretPosFromCursorPos(CursorPos : TPoint) : TPoint;
+    Function GetCaretPosFromCursorPos(CursorPos: TPoint): TPoint;
     procedure CenterCursor;
 
     // notebook
@@ -266,9 +266,9 @@ type
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
     property CodeTemplates: TSynEditAutoComplete
        read FCodeTemplates write SetCodeTemplates;
-    property CurrentCursorXLine : Integer
+    property CurrentCursorXLine: Integer
        read GetCurrentCursorXLine write SetCurrentCursorXLine;
-    property CurrentCursorYLine : Integer
+    property CurrentCursorYLine: Integer
        read GetCurrentCursorYLine write SetCurrentCursorYLine;
     property EditorComponent: TSynEdit read FEditor;
     property ErrorLine: integer read FErrorLine write SetErrorLine;
@@ -322,13 +322,13 @@ type
   TSourceNotebook = class(TForm)
     ClosePageMenuItem: TMenuItem;
     FindDeclarationMenuItem: TMenuItem;
-    GotoBookmarkMenuItem : TMenuItem;
+    GotoBookmarkMenuItem: TMenuItem;
     MoveEditorLeftMenuItem: TMenuItem;
     MoveEditorRightMenuItem: TMenuItem;
     Notebook: TNotebook;
     OpenFileAtCursorMenuItem: TMenuItem;
     ReadOnlyMenuItem: TMenuItem;
-    SetBookmarkMenuItem : TMenuItem;
+    SetBookmarkMenuItem: TMenuItem;
     ShowLineNumbersMenuItem: TMenuItem;
     ShowUnitInfoMenuItem: TMenuItem;
     SrcPopUpMenu: TPopupMenu;
@@ -342,32 +342,30 @@ type
     Procedure AddBreakpointClicked(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
-    Procedure AddWatchAtCursor(Sender : TObject);
+    Procedure AddWatchAtCursor(Sender: TObject);
     Procedure BookmarkGoTo(Index: Integer);
-    Procedure BookMarkGotoClicked(Sender : TObject);
-    Procedure BookMarkSet(Value : Integer);
-    Procedure BookMarkSetClicked(Sender : TObject);
-    Procedure BookMarkToggle(Value : Integer);
+    Procedure BookMarkGotoClicked(Sender: TObject);
+    Procedure BookMarkSet(Value: Integer);
+    Procedure BookMarkSetClicked(Sender: TObject);
+    Procedure BookMarkToggle(Value: Integer);
     procedure EditorPropertiesClicked(Sender: TObject);
-    Procedure FindDeclarationClicked(Sender : TObject);
+    Procedure FindDeclarationClicked(Sender: TObject);
     procedure MoveEditorLeftClicked(Sender: TObject);
     procedure MoveEditorRightClicked(Sender: TObject);
-    Procedure NotebookPageChanged(Sender : TObject);
+    Procedure NotebookPageChanged(Sender: TObject);
     procedure NotebookShowTabHint(Sender: TObject; HintInfo: Pointer);
-    Procedure OpenAtCursorClicked(Sender : TObject);
-    Procedure ReadOnlyClicked(Sender : TObject);
-    Procedure ShowUnitInfo(Sender : TObject);
+    Procedure OpenAtCursorClicked(Sender: TObject);
+    Procedure ReadOnlyClicked(Sender: TObject);
+    Procedure ShowUnitInfo(Sender: TObject);
     procedure SrcPopUpMenuPopup(Sender: TObject);
-    Procedure ToggleLineNumbersClicked(Sender : TObject);
+    Procedure ToggleLineNumbersClicked(Sender: TObject);
   private
     FCodeTemplateModul: TSynEditAutoComplete;
-    FFormEditor : TFormEditor;
     fIncrementalSearchStartPos: TPoint;
     FIncrementalSearchStr: string;
     FKeyStrokes: TSynEditKeyStrokes;
-    FMainIDE : TComponent;
     FProcessingCommand: boolean;
-    FSourceEditorList : TList; // list of TSourceEditor
+    FSourceEditorList: TList; // list of TSourceEditor
     FOnAddJumpPoint: TOnAddJumpPoint;
     FOnAddWatchAtCursor: TOnAddWatch;
     FOnCloseClicked: TNotifyEvent;
@@ -423,26 +421,26 @@ type
     ccSelection: String;
     States: TSourceNotebookStates;
 
-    Function CreateNotebook : Boolean;
-    Function NewSE(Pagenum : Integer) : TSourceEditor;
+    Function CreateNotebook: Boolean;
+    Function NewSE(Pagenum: Integer): TSourceEditor;
     Procedure EditorChanged(Sender: TObject);
 
-    Procedure ccExecute(Sender : TObject);
-    Procedure ccCancel(Sender : TObject);
+    Procedure ccExecute(Sender: TObject);
+    Procedure ccCancel(Sender: TObject);
     procedure ccComplete(var Value: ansistring; Shift: TShiftState);
     function OnSynCompletionPaintItem(const AKey: string; ACanvas: TCanvas;
        X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
     procedure OnSynCompletionSearchPosition(var APosition: integer);
-    procedure OnSynCompletionCompletePrefix(Sender : TObject);
+    procedure OnSynCompletionCompletePrefix(Sender: TObject);
     procedure DeactivateCompletionForm;
     procedure InitIdentCompletion(S: TStrings);
 
-    Procedure EditorMouseMove(Sender : TObject; Shift: TShiftstate;
-       X,Y : Integer);
-    Procedure EditorMouseDown(Sender : TObject; Button : TMouseButton;
-       Shift: TShiftstate; X,Y : Integer);
-    Procedure EditorMouseUp(Sender : TObject; Button : TMouseButton;
-       Shift: TShiftstate; X,Y : Integer);
+    Procedure EditorMouseMove(Sender: TObject; Shift: TShiftstate;
+       X,Y: Integer);
+    Procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
+       Shift: TShiftstate; X,Y: Integer);
+    Procedure EditorMouseUp(Sender: TObject; Button: TMouseButton;
+       Shift: TShiftstate; X,Y: Integer);
 
     //hintwindow stuff
     FHintWindow: THintWindow;
@@ -485,13 +483,14 @@ type
 
     property Editors[Index:integer]:TSourceEditor read GetEditors;
     function EditorCount:integer;
+    function Empty: boolean;
 
     function FindSourceEditorWithPageIndex(PageIndex:integer):TSourceEditor;
     function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
     function FindSourceEditorWithEditorComponent(
                                          EditorComp: TComponent): TSourceEditor;
     function FindSourceEditorWithFilename(const Filename: string): TSourceEditor;
-    Function GetActiveSE : TSourceEditor;
+    Function GetActiveSE: TSourceEditor;
     procedure SetActiveSE(SrcEdit: TSourceEditor);
 
     procedure LockAllEditorsInSourceChangeCache;
@@ -500,29 +499,29 @@ type
     procedure GetSourceText(PageIndex: integer; OnlySelection: boolean;
                             var Source: string);
 
-    Function ActiveFileName : AnsiString;
+    Function ActiveFileName: AnsiString;
     Function FindUniquePageName(FileName:string; IgnorePageIndex:integer):string;
     function SomethingModified: boolean;
     procedure UpdateStatusBar;
-    Procedure ClearUnUsedEditorComponents(Force: boolean);
+    Procedure ClearUnusedEditorComponents(Force: boolean);
     procedure ClearErrorLines;
     procedure ClearExecutionLines;
 
     Procedure NewClicked(Sender: TObject);
-    procedure OpenClicked(Sender : TObject);
-    procedure SaveClicked(Sender : TObject);
-    procedure SaveAllClicked(Sender : TObject);
-    procedure SaveAsClicked(Sender : TObject);
-    procedure CloseClicked(Sender : TObject);
+    procedure OpenClicked(Sender: TObject);
+    procedure SaveClicked(Sender: TObject);
+    procedure SaveAllClicked(Sender: TObject);
+    procedure SaveAsClicked(Sender: TObject);
+    procedure CloseClicked(Sender: TObject);
     procedure ToggleFormUnitClicked(Sender: TObject);
     procedure ToggleObjectInspClicked(Sender: TObject);
 
     procedure InitFindDialog;
-    procedure FindClicked(Sender : TObject);
-    procedure FindNextClicked(Sender : TObject);
-    procedure FindPreviousClicked(Sender : TObject);
-    procedure ReplaceClicked(Sender : TObject);
-    procedure IncrementalFindClicked(Sender : TObject);
+    procedure FindClicked(Sender: TObject);
+    procedure FindNextClicked(Sender: TObject);
+    procedure FindPreviousClicked(Sender: TObject);
+    procedure ReplaceClicked(Sender: TObject);
+    procedure IncrementalFindClicked(Sender: TObject);
     procedure FindInFiles(AProject: TProject);
     procedure ShowSearchResultsView;
 
@@ -538,13 +537,13 @@ type
     procedure ActivateHint(const ScreenPos: TPoint; const TheHint: string);
     procedure HideHint;
 
-    Procedure NewFile(const NewShortName: String; ASource : TCodeBuffer;
+    Procedure NewFile(const NewShortName: String; ASource: TCodeBuffer;
                       FocusIt: boolean);
     Procedure CloseFile(PageIndex:integer);
     procedure FocusEditor;
 
-    Procedure ToggleBookmark(Value : Integer);
-    Procedure SetBookmark(Value : Integer);
+    Procedure ToggleBookmark(Value: Integer);
+    Procedure SetBookmark(Value: Integer);
     Procedure GotoBookmark(Value: Integer);
 
     Procedure ReloadEditorOptions;
@@ -556,10 +555,6 @@ type
                                 AnEditor: TCustomSynEdit; var Index:integer);
     procedure OnWordCompletionGetSource(
        var Source: TStrings; SourceIndex: integer);
-
-    function Empty: boolean;
-    property FormEditor : TFormEditor read FFormEditor write FFormEditor;
-    property MainIDE : TComponent read FMainIDE;
 
     procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
                   Shift:TShiftState; FindDlgComponent: TFindDlgComponent);
@@ -581,7 +576,7 @@ type
   published
     property OnAddJumpPoint: TOnAddJumpPoint
                                      read FOnAddJumpPoint write FOnAddJumpPoint;
-    property OnCloseClicked : TNotifyEvent
+    property OnCloseClicked: TNotifyEvent
                                      read FOnCloseClicked write FOnCloseClicked;
     property OnCtrlMouseUp: TMouseEvent
                                        read FOnCtrlMouseUp write FOnCtrlMouseUp;
@@ -593,7 +588,7 @@ type
                                    read FOnEditorChanged write FOnEditorChanged;
     property OnEditorPropertiesClicked: TNotifyEvent
                read FOnEditorPropertiesClicked write FOnEditorPropertiesClicked;
-    property OnFindDeclarationClicked : TNotifyEvent
+    property OnFindDeclarationClicked: TNotifyEvent
                  read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
     property OnInitIdentCompletion: TOnInitIdentCompletion
                        read FOnInitIdentCompletion write FOnInitIdentCompletion;
@@ -603,7 +598,7 @@ type
     property OnNewClicked: TNotifyEvent read FOnNewClicked write FOnNewClicked;
     property OnOpenClicked: TNotifyEvent
                                        read FOnOPenClicked write FOnOpenClicked;
-    property OnOpenFileAtCursorClicked : TNotifyEvent
+    property OnOpenFileAtCursorClicked: TNotifyEvent
                read FOnOpenFileAtCursorClicked write FOnOpenFileAtCursorClicked;
     property OnReadOnlyChanged: TNotifyEvent
                                read fOnReadOnlyChanged write fOnReadOnlyChanged;
@@ -617,9 +612,9 @@ type
                            read FOnShowHintForSource write FOnShowHintForSource;
     property OnShowUnitInfo: TNotifyEvent
                                      read FOnShowUnitInfo write FOnShowUnitInfo;
-    property OnToggleFormUnitClicked : TNotifyEvent
+    property OnToggleFormUnitClicked: TNotifyEvent
                    read FOnToggleFormUnitClicked write FOnToggleFormUnitClicked;
-    property OnToggleObjectInspClicked : TNotifyEvent
+    property OnToggleObjectInspClicked: TNotifyEvent
                read FOnToggleObjectInspClicked write FOnToggleObjectInspClicked;
     property OnProcessUserCommand: TOnProcessUserCommand
                          read FOnProcessUserCommand write FOnProcessUserCommand;
@@ -635,16 +630,16 @@ type
 
   //=============================================================================
 
-{Goto dialog}
+{ Goto dialog }
 
   TfrmGoto = class(TForm)
-    Label1 : TLabel;
-    Edit1 : TEdit;
-    btnOK : TBitbtn;
-    btnCancel : TBitBtn;
+    Label1: TLabel;
+    Edit1: TEdit;
+    btnOK: TBitbtn;
+    btnCancel: TBitBtn;
     procedure Edit1KeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     procedure DoShow; override;
   end;
 
@@ -659,12 +654,12 @@ var
   aCompletion: TSynCompletion;
   // CurCompletionControl contains aCompletion whenever the completion form is
   // active
-  CurCompletionControl : TSynCompletion;
+  CurCompletionControl: TSynCompletion;
   CurrentCompletionType: TCompletionType;
-  IdentCompletionTimer : TTimer;
+  IdentCompletionTimer: TTimer;
   AWordCompletion: TWordCompletion;
 
-  GotoDialog : TfrmGoto;
+  GotoDialog: TfrmGoto;
 
 
 { TSourceEditor }
@@ -673,7 +668,7 @@ var
  and the AParent is usually a page of a @link(TNotebook)
 }
 
-constructor TSourceEditor.Create(AOwner : TComponent; AParent : TWinControl);
+constructor TSourceEditor.Create(AOwner: TComponent; AParent: TWinControl);
 Begin
 //writeln('TSourceEditor.Create A ',AOwner.ClassName);
   inherited Create;
@@ -715,9 +710,9 @@ begin
 end;
 
 {------------------------------G O T O   L I N E  -----------------------------}
-Function TSourceEditor.GotoLine(Value : Integer) : Integer;
+Function TSourceEditor.GotoLine(Value: Integer): Integer;
 Var
-  P : TPoint;
+  P: TPoint;
   TopLine: integer;
 Begin
   TSourceNotebook(Owner).AddJumpPointClicked(Self);
@@ -905,7 +900,7 @@ Begin
   {$ENDIF}
 end;
 
-Function TSourceEditor.GetReadOnly : Boolean;
+Function TSourceEditor.GetReadOnly: Boolean;
 Begin
   Result:=FEditor.ReadOnly;
 End;
@@ -977,9 +972,9 @@ end;
 Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: char; Data: pointer);
 var
-  Y,I : Integer;
+  Y,I: Integer;
   P: TPoint;
-  Texts, Texts2 : String;
+  Texts, Texts2: String;
   Handled: boolean;
 Begin
   Handled:=true;
@@ -1513,17 +1508,17 @@ Begin
     FEditor.Options:=FEditor.Options-[eoShowCtrlMouseLinks];
 end;
 
-Procedure TSourceEditor.ccAddMessage(Texts : String);
+Procedure TSourceEditor.ccAddMessage(Texts: String);
 Begin
   ErrorMsgs.Add(Texts);
 End;
 
-Procedure TSourceEditor.ccOnTimer(sender : TObject);
+Procedure TSourceEditor.ccOnTimer(sender: TObject);
 Begin
   IdentCompletionTimer.Enabled := False;
 End;
 
-Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
+Procedure TSourceEditor.CreateEditor(AOwner: TComponent; AParent: TWinControl);
 var
   NewName: string;
   i: integer;
@@ -1709,7 +1704,7 @@ begin
   DecreaseIgnoreCodeBufferLock;
 end;
 
-Function TSourceEditor.GetSource : TStrings;
+Function TSourceEditor.GetSource: TStrings;
 Begin
   //return synedit's source.
   Result := FEditor.Lines;
@@ -1734,34 +1729,34 @@ begin
     SourceNotebook.NoteBook.Pages[p]:=NewPageName;
 end;
 
-Procedure TSourceEditor.SetSource(value : TStrings);
+Procedure TSourceEditor.SetSource(value: TStrings);
 Begin
   FEditor.Lines.Assign(Value);
 end;
 
-Function TSourceEditor.GetCurrentCursorXLine : Integer;
+Function TSourceEditor.GetCurrentCursorXLine: Integer;
 Begin
   Result := FEditor.CaretX
 end;
 
-Procedure TSourceEditor.SetCurrentCursorXLine(num : Integer);
+Procedure TSourceEditor.SetCurrentCursorXLine(num: Integer);
 Begin
   FEditor.CaretX := Num;
 end;
 
-Function TSourceEditor.GetCurrentCursorYLine : Integer;
+Function TSourceEditor.GetCurrentCursorYLine: Integer;
 Begin
   Result := FEditor.CaretY;
 end;
 
-Procedure TSourceEditor.SetCurrentCursorYLine(num : Integer);
+Procedure TSourceEditor.SetCurrentCursorYLine(num: Integer);
 Begin
   FEditor.CaretY := Num;
 end;
 
-Procedure TSourceEditor.SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
+Procedure TSourceEditor.SelectText(LineNum,CharStart,LineNum2,CharEnd: Integer);
 var
-  P : TPoint;
+  P: TPoint;
 Begin
   P.X := CharStart;
   P.Y := LineNum;
@@ -1804,7 +1799,7 @@ begin
   FEditor.CaretXY:=NewCaretXY;
 end;
 
-Function TSourceEditor.GetModified : Boolean;
+Function TSourceEditor.GetModified: Boolean;
 Begin
   Result := FEditor.Modified or FModified;
 end;
@@ -1820,12 +1815,12 @@ begin
     UpdatePageName;
 end;
 
-Function TSourceEditor.GetInsertMode : Boolean;
+Function TSourceEditor.GetInsertMode: Boolean;
 Begin
   Result := FEditor.Insertmode;
 end;
 
-Function TSourceEditor.Close : Boolean;
+Function TSourceEditor.Close: Boolean;
 Begin
   Result := True;
   If Assigned(FOnBeforeClose) then
@@ -1839,7 +1834,7 @@ Begin
   If Assigned(FOnAfterClose) then FOnAfterClose(Self);
 end;
 
-Procedure TSourceEditor.ReParent(AParent : TWInControl);
+Procedure TSourceEditor.ReParent(AParent: TWInControl);
 Begin
   CreateEditor(FAOwner,AParent);
 End;
@@ -1871,25 +1866,25 @@ begin
     Result:='';
 end;
 
-Procedure TSourceEditor.EditorMouseMoved(Sender : TObject;
-  Shift : TShiftState; X,Y : Integer);
+Procedure TSourceEditor.EditorMouseMoved(Sender: TObject;
+  Shift: TShiftState; X,Y: Integer);
 begin
 //  Writeln('MouseMove in Editor',X,',',Y);
   if Assigned(OnMouseMove) then
     OnMouseMove(Self,Shift,X,Y);
 end;
 
-Function TSourceEditor.GetWordAtPosition(Position : TPoint) : String;
+Function TSourceEditor.GetWordAtPosition(Position: TPoint): String;
 var
-  CaretPos : TPoint;
+  CaretPos: TPoint;
 begin
   Result := '';
   Caretpos := GetCaretPosfromCursorPos(Position);
   Result := GetWordFromCaret(CaretPos);
 end;
 
-Procedure TSourceEditor.EditorMouseDown(Sender : TObject; Button : TMouseButton;
-   Shift : TShiftState; X, Y : Integer);
+Procedure TSourceEditor.EditorMouseDown(Sender: TObject; Button: TMouseButton;
+   Shift: TShiftState; X, Y: Integer);
 begin
   if Assigned(OnMouseDown) then
     OnMouseDown(Sender, Button, Shift, X,Y);
@@ -1902,19 +1897,19 @@ begin
     OnMouseUp(Sender, Button, Shift, X,Y);
 end;
 
-Procedure TSourceEditor.EditorKeyDown(Sender : TObject; var Key : Word; Shift :
+Procedure TSourceEditor.EditorKeyDown(Sender: TObject; var Key: Word; Shift :
   TShiftState);
 begin
   if Assigned(OnKeyDown) then
     OnKeyDown(Sender, Key, Shift);
 end;
 
-Function TSourceEditor.GetCaretPosFromCursorPos(CursorPos : TPoint) : TPoint;
+Function TSourceEditor.GetCaretPosFromCursorPos(CursorPos: TPoint): TPoint;
 var
-  TopLine : Integer;
-  LineHeight : Integer;
-  LineNum : Integer;
-  XLine : Integer;
+  TopLine: Integer;
+  LineHeight: Integer;
+  LineNum: Integer;
+  XLine: Integer;
 begin
   //Figure out the line number
   TopLine := FEditor.TopLine;
@@ -1981,7 +1976,7 @@ end;
 
 Function TSourceEditor.GetWordAtCurrentCaret: String;
 var
-  CaretPos : TPoint;
+  CaretPos: TPoint;
 begin
   Result := '';
   CaretPos.Y := CurrentCursorYLine;
@@ -1989,14 +1984,14 @@ begin
   Result := GetWordFromCaret(CaretPos);
 end;
 
-function TSourceEditor.GetWordFromCaret(const ACaretPos : TPoint) : String;
+function TSourceEditor.GetWordFromCaret(const ACaretPos: TPoint): String;
 begin
   Result := GetWordFromCaretEx(ACaretPos, ['A'..'Z', 'a'..'z', '0'..'9'], ['A'..'Z', 'a'..'z', '0'..'9']);
 end;
 
 function TSourceEditor.GetWordFromCaretEx(const ACaretPos: TPoint; const ALeftLimit, ARightLimit: TCharSet): String;
 var
-  XLine,YLine : Integer;
+  XLine,YLine: Integer;
   EditorLine: String;
 begin
   Result := '';
@@ -2024,15 +2019,15 @@ begin
   SetLength(Result, XLine - 1);
 end;
 
-procedure TSourceEditor.LinesDeleted(sender : TObject; FirstLine,
-  Count : Integer);
+procedure TSourceEditor.LinesDeleted(sender: TObject; FirstLine,
+  Count: Integer);
 begin
   //notify the notebook that lines were deleted.
   //marks will use this to update themselves
 end;
 
-procedure TSourceEditor.LinesInserted(sender : TObject; FirstLine,
-  Count : Integer);
+procedure TSourceEditor.LinesInserted(sender: TObject; FirstLine,
+  Count: Integer);
 begin
   //notify the notebook that lines were Inserted.
   //marks will use this to update themselves
@@ -2061,8 +2056,6 @@ begin
   Caption := locWndSrcEditor;
   KeyPreview:=true;
   FProcessingCommand := false;
-
-  FMainIDE := AOwner;
 
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
 
@@ -2371,30 +2364,31 @@ begin
 end;
 
 procedure TSourceNotebook.InitIdentCompletion(S: TStrings);
-type
+{type
   TMethodRec = record
-    Flags : TParamFlags;
-    ParamName : ShortString;
-    TypeName : ShortString;
-  end;
+    Flags: TParamFlags;
+    ParamName: ShortString;
+    TypeName: ShortString;
+  end;}
 
 var
-  CompInt : TComponentInterface;
-  propKind : TTypeKind;
-  TypeInfo : PTypeInfo;
-  TypeData : PTypeData;
+  {CompInt: TComponentInterface;
+  propKind: TTypeKind;
+  TypeInfo: PTypeInfo;
+  TypeData: PTypeData;
   MethodRec: TMethodRec;
   CompName: String;
   CurLine: String;
-  I, X1, X2: Integer;
+  X1, X2: Integer;
   ParamStr: String;
   PropName: String;
   Count,Offset,Len: Integer;
   ActiveEditor: TSynEdit;
-  Prefix: string;
-  NewStr: string;
+  NewStr: string;}
+  i: integer;
   Handled: boolean;
   Abort: boolean;
+  Prefix: string;
   ItemCnt: Integer;
 begin
   Prefix := CurCompletionControl.CurrentString;
@@ -2412,7 +2406,7 @@ begin
       exit;
     end;
   end;
-  CompInt := nil;
+  {CompInt := nil;
   ccSelection := Prefix;
   ActiveEditor:=GetActiveSE.EditorComponent;
   with ActiveEditor do begin
@@ -2443,15 +2437,6 @@ begin
             //check for parameters
             if TypeData^.ParamCount > 0 then
             Begin
-              {Writeln('----');
-              for Count := 0 to 60 do
-                if TypeData^.ParamList[Count] in ['a'..'z','A'..'Z','0'..'9'] then
-                  Write(TypeData^.ParamList[Count])
-                else
-                  Begin
-                    Write('$',HexStr(ord(TypeData^.ParamList[Count]),3),' ');
-                  end;
-              }
               ParamStr := '';
               Offset:=0;
               for Count := 0 to TypeData^.ParamCount-1 do
@@ -2519,7 +2504,7 @@ begin
       if NewStr <> '' then S.Add(NewStr);
       NewStr := '';
     end;  // end for
-  end;
+  end;}
 end;
 
 procedure TSourceNotebook.ccComplete(var Value: ansistring; Shift: TShiftState);
@@ -2615,7 +2600,7 @@ Begin
   DeactivateCompletionForm;
 End;
 
-Procedure TSourceNotebook.ccCancel(Sender : TObject);
+Procedure TSourceNotebook.ccCancel(Sender: TObject);
 // user cancels completion form
 var ActSE: TSourceEditor;
 begin
@@ -2625,10 +2610,10 @@ begin
   if ActSE<>nil then LCLIntf.ShowCaret(ActSE.EditorComponent.Handle);
 end;
 
-Procedure TSourceNotebook.ccExecute(Sender : TObject);
+Procedure TSourceNotebook.ccExecute(Sender: TObject);
 // init completion form
 var
-  S : TStrings;
+  S: TStrings;
   Prefix: String;
   I: Integer;
   NewStr: String;
@@ -2682,7 +2667,7 @@ Begin
   end;
 End;
 
-Function TSourceNotebook.CreateNotebook : Boolean;
+Function TSourceNotebook.CreateNotebook: Boolean;
 Begin
   {$IFDEF IDE_DEBUG}
   writeln('[TSourceNotebook.CreateNotebook] START');
@@ -2872,15 +2857,15 @@ end;
 
 Procedure TSourceNotebook.BuildPopupMenu;
 
-  Function Seperator : TMenuItem;
+  Function Seperator: TMenuItem;
   Begin
     Result := TMenuItem.Create(Self);
     Result.Caption := '-';
   end;
 
 var
-  SubMenuItem : TMenuItem;
-  I : Integer;
+  SubMenuItem: TMenuItem;
+  I: Integer;
 Begin
   SrcPopupMenu := TPopupMenu.Create(Self);
   with SrcPopupMenu do begin
@@ -3080,12 +3065,12 @@ end;
 
 {-------------------------------------------------------------------------------
   Procedure TSourceNotebook.EditorChanged
-  Params: Sender : TObject
+  Params: Sender: TObject
   Result: none
 
   Called whenever an editor status changes. Sender is normally a TSynEdit.
 -------------------------------------------------------------------------------}
-Procedure TSourceNotebook.EditorChanged(Sender : TObject);
+Procedure TSourceNotebook.EditorChanged(Sender: TObject);
 var SenderDeleted: boolean;
 Begin
   SenderDeleted:=FUnUsedEditorComponents.IndexOf(Sender)>=0;
@@ -3095,7 +3080,7 @@ Begin
     OnEditorChanged(Sender);
 End;
 
-Function TSourceNotebook.NewSE(PageNum : Integer) : TSourceEditor;
+Function TSourceNotebook.NewSE(PageNum: Integer): TSourceEditor;
 Begin
   {$IFDEF IDE_DEBUG}
   writeln('TSourceNotebook.NewSE A ');
@@ -3137,7 +3122,7 @@ end;
 function TSourceNotebook.FindSourceEditorWithPageIndex(
   PageIndex:integer):TSourceEditor;
 var I:integer;
-  TempEditor : TControl;
+  TempEditor: TControl;
 begin
   ClearUnUsedEditorComponents(false);
   Result := nil;
@@ -3161,7 +3146,7 @@ begin
   Result := TSourceEditor(FSourceEditorList[i]);
 end;
 
-Function TSourceNotebook.GetActiveSE : TSourceEditor;
+Function TSourceNotebook.GetActiveSE: TSourceEditor;
 Begin
   Result := nil;
   if (FSourceEditorList=nil) or (FSourceEditorList.Count=0)
@@ -3233,7 +3218,7 @@ begin
     Source:=SrcEdit.GetText(OnlySelection);
 end;
 
-Function TSourceNotebook.Empty : Boolean;
+Function TSourceNotebook.Empty: Boolean;
 Begin
   Result := (not assigned(Notebook)) or (Notebook.PageCount = 0);
 end;
@@ -3373,14 +3358,14 @@ begin
   MoveEditorRight(NoteBook.PageIndex);
 end;
 
-Procedure TSourceNotebook.FindClicked(Sender : TObject);
+Procedure TSourceNotebook.FindClicked(Sender: TObject);
 var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSE;
   if TempEditor <> nil then TempEditor.StartFindAndReplace(false);
 End;
 
-Procedure TSourceNotebook.ReplaceClicked(Sender : TObject);
+Procedure TSourceNotebook.ReplaceClicked(Sender: TObject);
 var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSE;
@@ -3399,14 +3384,14 @@ begin
   UpdateStatusBar;
 end;
 
-Procedure TSourceNotebook.FindNextClicked(Sender : TObject);
+Procedure TSourceNotebook.FindNextClicked(Sender: TObject);
 var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSe;
   if TempEditor <> nil then TempEditor.FindNext;
 End;
 
-Procedure TSourceNotebook.FindPreviousClicked(Sender : TObject);
+Procedure TSourceNotebook.FindPreviousClicked(Sender: TObject);
 var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSe;
@@ -3586,6 +3571,7 @@ Begin
     end;
   end;
   
+  IDEDialogLayoutList.ApplyLayout(FindInFilesDialog,320,430);
   if FindInFilesDialog.ShowModal=mrOk then
   begin
     SaveFindInFilesHistory(FindInFilesDialog);
@@ -3599,6 +3585,7 @@ Begin
       end;//case
     end;//if
   end;//if
+  IDEDialogLayoutList.SaveLayout(FindInFilesDialog);
 End;//FindInFilesClicked
 
 procedure TSourceNotebook.ShowSearchResultsView;
@@ -3695,25 +3682,25 @@ begin
     FHintWindow.Visible:=false;
 end;
 
-Procedure TSourceNotebook.BookMarkSetClicked(Sender : TObject);
+Procedure TSourceNotebook.BookMarkSetClicked(Sender: TObject);
 // popup menu:  set bookmark clicked
 var
-  MenuItem : TMenuItem;
+  MenuItem: TMenuItem;
 Begin
   MenuItem := TMenuItem(sender);
   BookMarkSet(MenuItem.MenuIndex);
 end;
 
-Procedure TSourceNotebook.BookMarkGotoClicked(Sender : TObject);
+Procedure TSourceNotebook.BookMarkGotoClicked(Sender: TObject);
 // popup menu goto bookmark clicked
 var
-  MenuItem : TMenuItem;
+  MenuItem: TMenuItem;
 Begin
   MenuItem := TMenuItem(sender);
   GotoBookMark(MenuItem.MenuIndex);
 end;
 
-Procedure TSourceNotebook.ReadOnlyClicked(Sender : TObject);
+Procedure TSourceNotebook.ReadOnlyClicked(Sender: TObject);
 var ActEdit:TSourceEditor;
 begin
   ActEdit:=GetActiveSE;
@@ -3731,14 +3718,14 @@ begin
   UpdateStatusBar;
 end;
 
-Procedure TSourceNotebook.ShowUnitInfo(Sender : TObject);
+Procedure TSourceNotebook.ShowUnitInfo(Sender: TObject);
 begin
   if Assigned(FOnShowUnitInfo) then FOnShowUnitInfo(Sender);
 end;
 
-Procedure TSourceNotebook.ToggleLineNumbersClicked(Sender : TObject);
+Procedure TSourceNotebook.ToggleLineNumbersClicked(Sender: TObject);
 var
-  MenuITem : TMenuItem;
+  MenuITem: TMenuItem;
   ActEdit:TSourceEditor;
   i: integer;
   ShowLineNumbers: boolean;
@@ -3753,21 +3740,21 @@ begin
   EditorOpts.Save;
 end;
 
-Procedure TSourceNotebook.OpenAtCursorClicked(Sender : TObject);
+Procedure TSourceNotebook.OpenAtCursorClicked(Sender: TObject);
 begin
   if Assigned(FOnOpenFileAtCursorClicked) then
     FOnOpenFileAtCursorClicked(Sender);
 end;
 
-Procedure TSourceNotebook.FindDeclarationClicked(Sender : TObject);
+Procedure TSourceNotebook.FindDeclarationClicked(Sender: TObject);
 begin
   if Assigned(FOnFindDeclarationClicked) then
     FOnFindDeclarationClicked(Sender);
 end;
 
-Procedure TSourceNotebook.BookMarkToggle(Value : Integer);
+Procedure TSourceNotebook.BookMarkToggle(Value: Integer);
 var
-  MenuItem : TMenuItem;
+  MenuItem: TMenuItem;
   ActEdit,AnEdit:TSourceEditor;
 Begin
   MenuItem := TMenuItem(SetBookmarkMenuItem.Items[Value]);
@@ -3799,7 +3786,7 @@ begin
 end;
 
 {This is called from outside to toggle a bookmark}
-Procedure TSourceNotebook.ToggleBookmark(Value : Integer);
+Procedure TSourceNotebook.ToggleBookmark(Value: Integer);
 Begin
   BookMarkToggle(Value);
 End;
@@ -3837,9 +3824,9 @@ begin
   ProcessParentCommand(Self,Command,AChar,Data,Handled);
 end;
 
-Procedure TSourceNotebook.BookMarkSet(Value : Integer);
+Procedure TSourceNotebook.BookMarkSet(Value: Integer);
 var
-  MenuItem : TMenuItem;
+  MenuItem: TMenuItem;
   ActEdit,AnEdit:TSourceEditor;
 Begin
   MenuItem := TMenuItem(SetBookmarkMenuItem.Items[Value]);
@@ -3856,12 +3843,12 @@ Begin
 end;
 
 {This is called from outside to set a bookmark}
-Procedure TSourceNotebook.SetBookmark(Value : Integer);
+Procedure TSourceNotebook.SetBookmark(Value: Integer);
 Begin
   BookMarkSet(Value);
 End;
 
-Procedure TSourceNotebook.BookMarkGoto(Index : Integer);
+Procedure TSourceNotebook.BookMarkGoto(Index: Integer);
 var
   AnEditor:TSourceEditor;
 begin
@@ -3881,9 +3868,9 @@ begin
 End;
 
 Procedure TSourceNotebook.NewFile(const NewShortName: String;
-  ASource : TCodeBuffer; FocusIt: boolean);
+  ASource: TCodeBuffer; FocusIt: boolean);
 Var
-  TempEditor : TSourceEditor;
+  TempEditor: TSourceEditor;
 Begin
   //create a new page
   {$IFDEF IDE_DEBUG}
@@ -3964,7 +3951,7 @@ Begin
   if Assigned(FOnSaveClicked) then FOnSaveClicked(Sender);
 end;
 
-Function TSourceNotebook.ActiveFileName : AnsiString;
+Function TSourceNotebook.ActiveFileName: AnsiString;
 Begin
   Result := GetActiveSE.FileName;
 end;
@@ -3979,7 +3966,7 @@ begin
   Result:=FSourceEditorList.Count;
 end;
 
-Procedure TSourceNotebook.CloseClicked(Sender : TObject);
+Procedure TSourceNotebook.CloseClicked(Sender: TObject);
 Begin
   if Assigned(FOnCloseClicked) then FOnCloseClicked(Sender);
 end;
@@ -4026,12 +4013,12 @@ begin
   end;
 end;
 
-Procedure TSourceNotebook.SaveAsClicked(Sender : TObject);
+Procedure TSourceNotebook.SaveAsClicked(Sender: TObject);
 Begin
   if Assigned(FOnSaveAsClicked) then FOnSaveAsClicked(Sender);
 end;
 
-Procedure TSourceNotebook.SaveAllClicked(Sender : TObject);
+Procedure TSourceNotebook.SaveAllClicked(Sender: TObject);
 Begin
   if Assigned(FOnSaveAllClicked) then FOnSaveAllClicked(Sender);
 end;
@@ -4056,7 +4043,7 @@ end;
 
 Procedure TSourceNotebook.UpdateStatusBar;
 var
-  tempEditor : TSourceEditor;
+  tempEditor: TSourceEditor;
   PanelFilename: String;
   PanelCharMode: string;
   PanelXY: string;
@@ -4157,7 +4144,7 @@ begin
   Result:=nil;
 end;
 
-Procedure TSourceNotebook.NotebookPageChanged(Sender : TObject);
+Procedure TSourceNotebook.NotebookPageChanged(Sender: TObject);
 var TempEditor:TSourceEditor;
 Begin
   TempEditor:=GetActiveSE;
@@ -4274,7 +4261,7 @@ end;
 
 Procedure TSourceNotebook.ReloadEditorOptions;
 var
-  I : integer;
+  I: integer;
   h: TLazSyntaxHighlighter;
 Begin
   // this reloads the colors for the highlighter and other editor settings.
@@ -4303,7 +4290,7 @@ Begin
   end;
 end;
 
-procedure TSourceNotebook.KeyDown(var Key : Word; Shift : TShiftState);
+procedure TSourceNotebook.KeyDown(var Key: Word; Shift: TShiftState);
 var i, Command: integer;
 Begin
   inherited KeyDown(Key,Shift);
@@ -4331,8 +4318,8 @@ begin
   dec(fAutoFocusLock);
 end;
 
-Procedure TSourceNotebook.EditorMouseMove(Sender : TObject; Shift: TShiftstate;
-  X,Y : Integer);
+Procedure TSourceNotebook.EditorMouseMove(Sender: TObject; Shift: TShiftstate;
+  X,Y: Integer);
 begin
   // restart hint timer
   FHintTimer.Enabled := False;
@@ -4345,9 +4332,9 @@ begin
 
 end;
 
-Procedure TSourceNotebook.HintTimer(sender : TObject);
+Procedure TSourceNotebook.HintTimer(sender: TObject);
 var
-  MousePos : TPoint;
+  MousePos: TPoint;
   AControl: TControl;
 begin
   FHintTimer.Enabled := False;
@@ -4424,7 +4411,7 @@ begin
   end;
 end;
 
-Procedure TSourceNotebook.AddWatchAtCursor(Sender : TObject);
+Procedure TSourceNotebook.AddWatchAtCursor(Sender: TObject);
 begin
   if Assigned(OnAddWatchAtCursor) then
     OnAddWatchAtCursor(Self);
@@ -4520,7 +4507,7 @@ end;
 
 { GOTO DIALOG }
 
-Constructor TfrmGoto.Create(AOWner : TComponent);
+Constructor TfrmGoto.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
 
