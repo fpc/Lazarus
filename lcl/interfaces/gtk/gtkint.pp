@@ -56,13 +56,13 @@ type
     FPaintMessages: TDynHashArray; // hasharray of PLazQueueItem
     FRCFilename: string;
     FRCFileParsed: boolean;
-    {$IFDEF ClientRectBugFix}
     FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
-    {$ENDIF}
     FGTKToolTips: PGtkToolTips;
     FAccelGroup: PgtkAccelGroup;
     FTimerData : TList;       // keeps track of timer event structures
     FDefaultFont : PGdkFont;
+    FNoteBookCloseBtnPixmapImg: PGdkPixmap;
+    FNoteBookCloseBtnPixmapMask: PGdkPixmap;
 
     FStockNullBrush: HBRUSH;
     FStockBlackBrush: HBRUSH;
@@ -76,7 +76,6 @@ type
     procedure DestroyLCLControl(Sender : TObject);
     procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
-    function  GetLabel(CompStyle: Integer; P : Pointer) : String;
     procedure AssignSelf(Child ,Data : Pointer);
     procedure ReDraw(Child : Pointer);
     Procedure SetCursor(Sender : TObject);
@@ -84,19 +83,25 @@ type
     
     function IsValidDC(const DC: HDC): Boolean;
     function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
-    function IsValidGDIObjectType(const GDIObject: HGDIOBJ; const GDIType: TGDIType): Boolean;
+    function IsValidGDIObjectType(const GDIObject: HGDIOBJ;
+                                  const GDIType: TGDIType): Boolean;
     function NewGDIObject(const GDIType: TGDIType): PGdiObject;
     function NewDC: PDeviceContext;
     function CreateDefaultBrush: PGdiObject;
     function CreateDefaultFont: PGdiObject;
     function CreateDefaultPen: PGdiObject;
-    
+    procedure LoadXPMFromLazResource(const ResourceName: string;
+      Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
+
     procedure SetRCFilename(const AValue: string);
     procedure ParseRCFile;
 
     procedure ShowHide(Sender : TObject);
-    procedure AddNBPage(Parent,Child: TObject; Index: Integer);
-    procedure RemoveNBPage(Parent: TObject; Index: Integer);
+    procedure GetNoteBookCloseBtnPixmap(Window: PGdkWindow;
+                                        var Img, Mask: PGdkPixmap);
+    procedure UpdateNotebookPageTab(ANoteBook, APage: TObject);
+    procedure AddNBPage(ANoteBook, APage: TObject; Index: Integer);
+    procedure RemoveNBPage(ANoteBook: TObject; Index: Integer);
     procedure SetText(Child,Data : Pointer);
     procedure SetColor(Sender : TObject);
     Procedure SetPixel(Sender : TObject; Data : Pointer);
@@ -111,11 +116,9 @@ type
     function HashPaintMessage(p: pointer): integer;
     function FindPaintMessage(HandleWnd: HWnd): PLazQueueItem;
     
-    {$IFDEF ClientRectBugFix}
     procedure SetResizeRequest(Widget: PGtkWidget);
     procedure UnsetResizeRequest(Widget: PGtkWidget);
-    {$ENDIF}
-    
+
     procedure SendCachedLCLMessages;
     function  LCLtoGtkMessagePending: boolean;
     procedure SendCachedGtkMessages;
@@ -140,11 +143,8 @@ type
     destructor Destroy; override;
     function  GetText(Sender: TControl; var Text: String): Boolean; override;
     procedure SetLabel(Sender : TObject; Data : Pointer);
-    function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
-    {$IFDEF ClientRectBugFix}
-    {$ELSE}
-    procedure DoEvents; override; // use HandleEvents instead
-    {$ENDIF}
+    function  IntSendMessage3(LM_Message : Integer; Sender : TObject;
+                              data : pointer) : integer; override;
     procedure HandleEvents; override;
     procedure WaitMessage; override;
     procedure AppTerminate; override;
@@ -163,7 +163,8 @@ implementation
 
 uses 
   Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
-  KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl;
+  KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
+  LResources;
 
 {$I gtklistsl.inc}
 
@@ -288,14 +289,12 @@ var
   ClipboardTargetEntries: array[TClipboardType] of PGtkTargetEntry;
   ClipboardTargetEntryCnt: array[TClipboardType] of integer;
 
-  {$IFDEF ClientRectBugFix}
   // each main widget that was resized by the gtk is stored here
   // (hasharray of PGtkWidget)
   FWidgetsResized: TDynHashArray;
   // each fixed widget that was resized by the gtk is stored here
   // (hasharray of PGtkWidget)
   FFixWidgetsResized: TDynHashArray;
-  {$ENDIF}
 
 const
   aGtkJustification: array[TAlignment] of TGTKJustification =
@@ -330,17 +329,7 @@ procedure InternalInit;
 var c: TClipboardType;
 begin
   gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
-{
-  Target_Table[0].Target := 'STRING';
-  Target_Table[0].Flags := 0;
-  Target_Table[0].Info := TARGET_STRING;
-  Target_Table[1].Target := 'text/plain';
-  Target_Table[1].Flags := 0;
-  Target_Table[1].Info := TARGET_STRING;
-  Target_Table[2].Target := 'application/x-rootwin-drop';
-  Target_Table[2].Flags := 0;
-  Target_Table[2].Info := TARGET_ROOTWIN;
-}
+  
   MCaptureHandle := 0;
   FOldTimerData:=TList.Create;
   
@@ -361,6 +350,7 @@ var i: integer;
   ced: PClipboardEventData;
   c: TClipboardType;
 begin
+  // timer
   for i:=0 to FOldTimerData.Count-1 do begin
     t:=PGtkITimerinfo(FOldTimerData[i]);
     dispose(t);
@@ -382,7 +372,8 @@ end;
 
 
 initialization
-//writeln('gtkint.pp - initialization');
+  //writeln('gtkint.pp - initialization');
+  {$I gtkimages.lrs}
   InternalInit;
 
 finalization
@@ -393,6 +384,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.48  2002/06/08 17:16:04  lazarus
+  MG: added close buttons and images to TNoteBook and close buttons to source editor
+
   Revision 1.47  2002/06/07 06:40:18  lazarus
   MG: gtk HandleEvents will now process all pending events
 
