@@ -45,31 +45,7 @@ uses
   ImgList, UTrace, Menus, LCLType;
 
 
-// Cursor constants
 const
-  crDefault   = 0;
-  crNone      = -1;
-  crArrow     = -2;
-  crCross     = -3;
-  crIBeam     = -4;
-  crSize      = -5;
-  crSizeNESW  = -6;
-  crSizeNS    = -7;
-  crSizeNWSE  = -8;
-  crSizeWE    = -9;
-  crUpArrow   = -10;
-  crHourGlass = -11;
-  crDrag      = -12;
-  crNoDrop    = -13;
-  crHSplit    = -14;
-  crVSplit    = -15;
-  crMultiDrag = -16;
-  crSQLWait   = -17;
-  crNo        = -18;
-  crAppStart  = -19;
-  crHelp      = -20;
-  crHandPoint = -21;
-
   CM_BASE                 = $B000;
   CM_ACTIVATE             = CM_BASE + 0;
   CM_DEACTIVATE           = CM_BASE + 1;
@@ -229,6 +205,35 @@ type
 
   TMouseButton = (mbLeft, mbRight, mbMiddle);
 
+const
+  // Cursor constants
+  crDefault     = TCursor(0);
+  crNone        = TCursor(-1);
+  crArrow       = TCursor(-2);
+  crCross       = TCursor(-3);
+  crIBeam       = TCursor(-4);
+  crSize        = TCursor(-22);
+  crSizeNESW    = TCursor(-6);
+  crSizeNS      = TCursor(-7);
+  crSizeNWSE    = TCursor(-8);
+  crSizeWE      = TCursor(-9);
+  crUpArrow     = TCursor(-10);
+  crHourGlass   = TCursor(-11);
+  crDrag        = TCursor(-12);
+  crNoDrop      = TCursor(-13);
+  crHSplit      = TCursor(-14);
+  crVSplit      = TCursor(-15);
+  crMultiDrag   = TCursor(-16);
+  crSQLWait     = TCursor(-17);
+  crNo          = TCursor(-18);
+  crAppStart    = TCursor(-19);
+  crHelp        = TCursor(-20);
+  crHandPoint   = TCursor(-21);
+  crSizeAll     = TCursor(-22);
+
+
+
+type
   TWndMethod = procedure(var Message : TLMessage) of Object;
 
   TControlStyle = set of (csAcceptsControls,
@@ -930,6 +935,11 @@ var
   NewStyleControls : Boolean;
   Mouse : TMouse;
 
+function CursorToString(Cursor: TCursor): string;
+function StringToCursor(const S: string): TCursor;
+procedure GetCursorValues(Proc: TGetStrProc);
+function CursorToIdent(Cursor: Longint; var Ident: string): Boolean;
+function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean;
 
 
 implementation
@@ -1110,7 +1120,7 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: FindDragTarget
+  Function: FindLCLWindow
   Params: 
   Returns:  
 
@@ -1203,6 +1213,70 @@ begin
 
 end;
 
+{ Cursor translation function }
+
+const
+  DeadCursors = 1;
+
+const
+  Cursors: array[0..21] of TIdentMapEntry = (
+    (Value: crDefault;      Name: 'crDefault'),
+    (Value: crArrow;        Name: 'crArrow'),
+    (Value: crCross;        Name: 'crCross'),
+    (Value: crIBeam;        Name: 'crIBeam'),
+    (Value: crSizeNESW;     Name: 'crSizeNESW'),
+    (Value: crSizeNS;       Name: 'crSizeNS'),
+    (Value: crSizeNWSE;     Name: 'crSizeNWSE'),
+    (Value: crSizeWE;       Name: 'crSizeWE'),
+    (Value: crUpArrow;      Name: 'crUpArrow'),
+    (Value: crHourGlass;    Name: 'crHourGlass'),
+    (Value: crDrag;         Name: 'crDrag'),
+    (Value: crNoDrop;       Name: 'crNoDrop'),
+    (Value: crHSplit;       Name: 'crHSplit'),
+    (Value: crVSplit;       Name: 'crVSplit'),
+    (Value: crMultiDrag;    Name: 'crMultiDrag'),
+    (Value: crSQLWait;      Name: 'crSQLWait'),
+    (Value: crNo;           Name: 'crNo'),
+    (Value: crAppStart;     Name: 'crAppStart'),
+    (Value: crHelp;         Name: 'crHelp'),
+    (Value: crHandPoint;    Name: 'crHandPoint'),
+    (Value: crSizeAll;      Name: 'crSizeAll'),
+
+    { Dead cursors }
+    (Value: crSize;         Name: 'crSize'));
+
+function CursorToString(Cursor: TCursor): string;
+begin
+  if not CursorToIdent(Cursor, Result) then FmtStr(Result, '%d', [Cursor]);
+end;
+
+function StringToCursor(const S: string): TCursor;
+var
+  L: Longint;
+begin
+  if not IdentToCursor(S, L) then L := StrToInt(S);
+  Result := L;
+end;
+
+procedure GetCursorValues(Proc: TGetStrProc);
+var
+  I: Integer;
+begin
+  for I := Low(Cursors) to High(Cursors) - DeadCursors do Proc(Cursors[I].Name);
+end;
+
+function CursorToIdent(Cursor: Longint; var Ident: string): Boolean;
+begin
+  Result := IntToIdent(Cursor, Ident, Cursors);
+end;
+
+function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean;
+begin
+  Result := IdentToInt(Ident, Cursor, Cursors);
+end;
+
+
+
 // turn off before includes !!
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -1227,6 +1301,8 @@ initialization
   Mouse := TMouse.create;
   DragControl := nil;
   CaptureControl := nil;
+  
+  RegisterIntegerConsts(TypeInfo(TCursor), @IdentToCursor, @CursorToIdent);
 
 finalization
   Mouse.Free;
@@ -1236,6 +1312,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.56  2002/08/07 09:55:29  lazarus
+  MG: codecompletion now checks for filebreaks, savefile now checks for filedate
+
   Revision 1.55  2002/08/06 09:32:48  lazarus
   MG: moved TColor definition to graphtype.pp and registered TColor names
 
