@@ -195,7 +195,7 @@ End;
 procedure TCustomForm.IconChanged(Sender: TObject);
 begin
   if HandleAllocated then
-    TWSCustomForm(WidgetSetClass).SetIcon(Self, GetIconHandle);
+    TWSCustomFormClass(WidgetSetClass).SetIcon(Self, GetIconHandle);
 end;
 
 {------------------------------------------------------------------------------
@@ -1808,6 +1808,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.159  2004/09/23 09:00:42  vincents
+  fix type cast of WidgetSetClass
+
   Revision 1.158  2004/09/17 20:30:13  vincents
   replaced write by DbgOut
 
