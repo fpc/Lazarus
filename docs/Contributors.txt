@@ -12,6 +12,7 @@ Darek Mazur
 Eric Chapman
 GongYu
 Hans-Joachim Ott
+Ido Kanner
 Jason King
 Jeffrey A. Wormsley
 Jeroen van Idekinge
