@@ -428,8 +428,7 @@ Begin
 end;
 
 function TWinControl.GetClientRect: TRect;
-{ $DEFINE NewClientRect}
-{$IFDEF NewClientRect}
+{$IFDEF ClientRectBugFix}
 var r: TRect;
 begin
   Result:=inherited GetClientRect;
@@ -443,6 +442,7 @@ begin
       ' Old=',Result.Left,',',Result.Top,',',Result.Right,',',Result.Bottom,
       ' New=',r.Left,',',r.Top,',',r.Right,',',r.Bottom);
   end;
+  Result:=r;
 end;
 {$ELSE}
 begin
@@ -2072,6 +2072,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2002/05/06 08:50:36  lazarus
+  MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
+
   Revision 1.62  2002/04/28 14:10:31  lazarus
   MG: fixes for saving resource files
 
