@@ -1527,12 +1527,6 @@ Begin
   Result := True;
 end;
 
-function TInterfaceBase.SetRadioButtonGroupMode(Handle: hWnd;
-  AutoGroup: boolean): Boolean;
-Begin
-  Result := False;
-end;
-
 function TInterfaceBase.SetScrollInfo(Handle : HWND; SBStyle : Integer;
   ScrollInfo: TScrollInfo; Redraw : Boolean): Integer;
 begin
@@ -1666,6 +1660,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.85  2003/03/17 20:53:16  mattias
+  removed SetRadioButtonGroupMode
+
   Revision 1.84  2003/03/17 20:50:30  mattias
   fixed TRadioGroup.ItemIndex=-1
 
