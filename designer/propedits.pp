@@ -3181,6 +3181,8 @@ end;
 
 procedure TComponentNamePropertyEditor.SetValue(const NewValue: ansistring);
 begin
+  if (not IsValidIdent(NewValue)) or (NewValue='') then
+    raise Exception.Create('Component name "'+NewValue+'" is not a valid identifier');
   inherited SetValue(NewValue);
   PropertyHook.ComponentRenamed(TComponent(GetComponent(0)));
 end;
