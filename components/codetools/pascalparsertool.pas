@@ -347,6 +347,7 @@ begin
 
     Add('TYPE',{$ifdef FPC}@{$endif}KeyWordFuncType);
     Add('VAR',{$ifdef FPC}@{$endif}KeyWordFuncVar);
+    Add('THREADVAR',{$ifdef FPC}@{$endif}KeyWordFuncVar);
     Add('CONST',{$ifdef FPC}@{$endif}KeyWordFuncConst);
     Add('RESOURCESTRING',{$ifdef FPC}@{$endif}KeyWordFuncResourceString);
     Add('LABEL',{$ifdef FPC}@{$endif}KeyWordFuncLabel);
@@ -2429,7 +2430,7 @@ function TPascalParserTool.KeyWordFuncTypeProc: boolean;
     function(ParmList):SimpleType of object;
     procedure; cdecl; popstack; register; pascal; stdcall;
 }
-var IsFunction, SemicolonFound: boolean;
+var IsFunction, EqualFound: boolean;
 begin
   IsFunction:=UpAtomIs('FUNCTION');
   CreateChildNode;
@@ -2460,38 +2461,38 @@ begin
   end else begin
     if AtomIsChar(';') then begin
       ReadNextAtom;
-      SemicolonFound:=true;
-    end else begin
-      SemicolonFound:=false;
+      EqualFound:=false;
+    end else if AtomIsChar('=') then begin
+      EqualFound:=true;
     end;
-    // read modifiers
-    repeat
-      if not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,
-        CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
-      begin
-        if not SemicolonFound then
-          RaiseException('; expected, but '+GetAtom+' found');
-        UndoReadNextAtom;
-        break;
-      end else begin
-        if not ReadNextAtomIsChar(';') then begin
-          if Scanner.CompilerMode<>cmDelphi then begin
+    if not EqualFound then begin
+      // read modifiers
+      repeat
+        if (not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,
+          CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)) then
+        begin
+          UndoReadNextAtom;
+          if (not AtomIsChar(';')) and (Scanner.CompilerMode<>cmDelphi) then
             RaiseException('; expected, but '+GetAtom+' found');
-          end else begin
-            // delphi allows proc modifiers without semicolons
-            if not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,
-              CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
-            begin
-              RaiseException('; expected, but '+GetAtom+' found');
-            end;
-            UndoReadNextAtom;
-          end;
+          break;
         end else begin
-          SemicolonFound:=true;
+          if not ReadNextAtomIsChar(';') then begin
+            if Scanner.CompilerMode<>cmDelphi then begin
+              RaiseException('; expected, but '+GetAtom+' found');
+            end else begin
+              // delphi allows proc modifiers without semicolons
+              if not IsKeyWordProcedureTypeSpecifier.DoItUpperCase(UpperSrc,
+                CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+              begin
+                RaiseException('; expected, but '+GetAtom+' found');
+              end;
+              UndoReadNextAtom;
+            end;
+          end;
         end;
-      end;
-      ReadNextAtom;
-    until false;
+        ReadNextAtom;
+      until false;
+    end;
   end;
   CurNode.EndPos:=CurPos.StartPos;
   EndChildNode;
@@ -2560,8 +2561,6 @@ end;
 function TPascalParserTool.KeyWordFuncTypePointer: boolean;
 // '^Identfier'
 begin
-  if not (LastAtomIs(0,'=') or LastAtomIs(0,':')) then
-    RaiseException('identifier expected, but ^ found');
   CreateChildNode;
   CurNode.Desc:=ctnPointerType;
   ReadNextAtom;

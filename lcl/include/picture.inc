@@ -142,7 +142,7 @@ constructor TPicture.Create;
 begin
   inherited Create;
   GetFileFormats;
-  //GetClipboardFormats;
+  GetClipboardFormats;
 end;
 
 destructor TPicture.Destroy;
@@ -180,12 +180,14 @@ end;
 
 function TPicture.GetPixmap: TPixmap;
 begin
-  Result:=nil;
+  ForceType(TPixmap);
+  Result := TPixmap(Graphic);
 end;
 
 function TPicture.GetIcon: TIcon;
 begin
-  Result:=nil;
+  ForceType(TIcon);
+  Result := TIcon(Graphic);
 end;
 
 procedure TPicture.SetBitmap(Value: TBitmap);
@@ -225,7 +227,7 @@ begin
   end;
 end;
 
-{ Based on the extension of Filename, create the cooresponding TGraphic class
+{ Based on the extension of Filename, create the corresponding TGraphic class
   and call its LoadFromFile method. }
 
 procedure TPicture.LoadFromFile(const Filename: string);
@@ -233,20 +235,24 @@ var
   Ext: string;
   NewGraphic: TGraphic;
   GraphicClass: TGraphicClass;
+  ok: boolean;
 begin
   Ext := ExtractFileExt(Filename);
-  Delete(Ext, 1, 1);
+  System.Delete(Ext, 1, 1); // delete '.'
   GraphicClass := GetFileFormats.FindExt(Ext);
   if GraphicClass = nil then
     raise EInvalidGraphic.CreateFmt('Unknown picture extension', [Ext]);
 
   NewGraphic := GraphicClass.Create;
+  ok:=false;
   try
     NewGraphic.OnProgress := @Progress;
     NewGraphic.LoadFromFile(Filename);
-  except
-    NewGraphic.Free;
-    raise;
+    ok:=true;
+  finally
+    // this try..finally construction will in case of an exception
+    // not alter the error backtrace output
+    if not ok then NewGraphic.Free;
   end;
   FGraphic.Free;
   FGraphic := NewGraphic;
@@ -260,8 +266,26 @@ begin
 end;
 
 procedure TPicture.LoadFromClipboardFormat(FormatID: TClipboardFormat);
+var
+  NewGraphic: TGraphic;
+  GraphicClass: TGraphicClass;
 begin
+  GraphicClass := ClipboardFormats.FindFormat(FormatID);
+  if GraphicClass = nil then
+    InvalidGraphic(@SUnknownClipboardFormat);
 
+  NewGraphic := GraphicClass.Create;
+  try
+    NewGraphic.OnProgress := Progress;
+    NewGraphic.LoadFromClipboardFormat(AFormat, AData, APalette);
+  except
+    NewGraphic.Free;
+    raise;
+  end;
+  FGraphic.Free;
+  FGraphic := NewGraphic;
+  FGraphic.OnChange := Changed;
+  Changed(Self);
 end;
 
 procedure TPicture.SaveToClipboardFormat(FormatID: TClipboardFormat);

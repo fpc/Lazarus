@@ -1083,7 +1083,8 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
           if (ProcCode='') then begin
             ANode:=ANodeExt.Node;
             if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
-              ProcCode:=ExtractProcHead(ANode,[phpWithStart,phpAddClassname,
+              ProcCode:=ExtractProcHead(ANode,[phpWithStart,
+               phpWithoutClassKeyword,phpAddClassname,
                phpWithParameterNames,phpWithResultType,phpWithVarModifiers]);
             end;
           end;
@@ -1299,8 +1300,9 @@ writeln('TCodeCompletionCodeTool.CompleteCode Body not found -> create it ... ')
       end;
 
       // build nice proc
-      ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpWithVarModifiers,
-                  phpWithParameterNames,phpWithResultType,phpWithComments]);
+      ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpWithoutClassKeyword,
+                  phpWithVarModifiers,phpWithParameterNames,phpWithResultType,
+                  phpWithComments]);
       if ProcCode='' then 
         RaiseException('unable to reparse proc node');
       ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(ProcCode,
