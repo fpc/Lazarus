@@ -60,6 +60,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2004/04/29 18:08:17  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.11  2004/03/19 00:03:14  marc
   * Moved the implementation of (GTK)ButtonCreateHandle to the new
     (GTK)WSButton class

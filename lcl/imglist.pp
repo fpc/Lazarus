@@ -43,6 +43,10 @@ unit ImgList;
 
 {$mode objfpc}{$H+}
 
+{$IFDEF VER1_0_10}
+  {$DEFINE DisableFPImage}
+{$ENDIF}
+
 interface
 
 {$ifdef Trace}
@@ -215,6 +219,9 @@ end.
 
 {
   $Log$
+  Revision 1.22  2004/04/29 18:08:17  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.21  2004/04/03 16:47:46  mattias
   implemented converting gdkbitmap to RawImage mask
 

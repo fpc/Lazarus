@@ -1602,8 +1602,6 @@ end;
 
 { TIcon }
 
-{$IFNDEF DisableFPImage}
-
 const
   IconSignature: array [0..3] of char = #0#0#1#0;
   
@@ -1619,6 +1617,7 @@ begin
   AStream.Position:=OldPosition;
 end;
 
+{$IFNDEF DisableFPImage}
 procedure TIcon.ReadData(Stream: TStream);
 var
   Size: longint;
@@ -1681,6 +1680,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.135  2004/04/29 18:08:17  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.134  2004/04/12 22:36:29  mattias
   made TIcon more independent of TBitmap  from Colin
 
