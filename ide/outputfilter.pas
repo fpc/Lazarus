@@ -3,8 +3,8 @@
  /***************************************************************************
                         outputfilter.pas  -  Lazarus IDE unit
                         -------------------------------------
-                   TOutputFilter is responsible for parsing output of external
-                   tools and to filter important messages.
+             TOutputFilter is responsible for parsing output of external
+             tools and to filter important messages.
 
  ***************************************************************************/
 
@@ -46,6 +46,7 @@ type
   TOutputFilter = class
   private
     fCurrentDirectory: string;
+    fCurrentCompilerSubDir: string;
     fFilteredOutput: TStringList;
     fLastErrorType: TErrorType;
     fLastMessageType: TOutputMessageType;
@@ -125,6 +126,7 @@ var
 begin
   TheProcess.Execute;
   fCurrentDirectory:=TheProcess.CurrentDirectory;
+  fCurrentCompilerSubDir:='';
   if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDir;
   if (fCurrentDirectory<>'')
   and (fCurrentDirectory[length(fCurrentDirectory)]<>PathDelim) then
@@ -191,8 +193,25 @@ var i, j, FilenameEndPos: integer;
   SkipMessage: boolean;
 begin
   Result:=false;
-  if ('Compiling '=copy(s,1,length('Compiling ')))
-  or ('Assembling '=copy(s,1,length('Assembling ')))
+  if ('Compiling '=copy(s,1,length('Compiling '))) then begin
+    fLastMessageType:=omtFPC;
+    fLastErrorType:=etNone;
+    Result:=true;
+    i:=length(s);
+    while (i>0) and (s[i]<>PathDelim) do dec(i);
+    if i=0 then begin
+      fCurrentCompilerSubDir:='';
+    end else begin
+      // compiler is compiling a file in a sub directory
+      j:=length('Compiling ')+1;
+      fCurrentCompilerSubDir:=copy(s,j,i-j+1);
+      if (copy(fCurrentCompilerSubDir,1,2)='.'+PathDelim) then
+        fCurrentCompilerSubDir:=copy(fCurrentCompilerSubDir,3,
+                     length(fCurrentCompilerSubDir)-2);
+    end;
+    exit;
+  end;
+  if ('Assembling '=copy(s,1,length('Assembling ')))
   then begin
     fLastMessageType:=omtFPC;
     fLastErrorType:=etNone;
@@ -286,10 +305,18 @@ begin
       end else
         SkipMessage:=false;
       Msg:=s;
+      if (fCurrentCompilerSubDir<>'') then begin
+        Filename:=copy(s,1,FilenameEndPos);
+        if not FilenameIsAbsolute(Filename) then begin
+          Msg:=fCurrentCompilerSubDir+Msg;
+          inc(FilenameEndPos,length(fCurrentCompilerSubDir));
+        end;
+      end;
       if (ofoMakeFilenamesAbsolute in Options) then begin
         Filename:=copy(s,1,FilenameEndPos);
-        if not FilenameIsAbsolute(Filename) then
+        if not FilenameIsAbsolute(Filename) then begin
           Msg:=fCurrentDirectory+Msg;
+        end;
       end;
       if not SkipMessage then
         DoAddFilteredLine(Msg);

@@ -2882,7 +2882,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
       exit;
     end else if OnlyIfExists then begin
       MessageDlg('File not found','File "'+AFilename+'" not found.'#13,
-                 mtInformation,[mbYes,mbNo],0);
+                 mtInformation,[mbCancel],0);
       // cancel loading file
       exit;
     end else begin
@@ -5763,6 +5763,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.211  2002/02/06 09:37:40  lazarus
+  MG: outputfilter now recognizes, if compiler in sub directory
+
   Revision 1.210  2002/02/06 08:58:27  lazarus
   MG: fixed compiler warnings and asking to create non existing files
 
