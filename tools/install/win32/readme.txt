@@ -18,12 +18,13 @@ A Lazarus cvs tree, containing the lazarus sources.
 A.4. fpc 1.0.10 compiler
 You need a fpc 1.0.10 compiler  to bootstrap compilation of the current fpc version.
 
-A.5 Other binary utilities
+A.5 Debugger
+Download http://prdownloads.sourceforge.net/mingw/gdb-6.0-20031011.exe?download and install it in some directory. Set GDBDIR to this directory.
+
+A.6 Other binary utilities
 You need some third party binary utilities, for example make, ld, strip. Download a recent binary fpc installer, and extract asldw32.zip and makew32.zip to a new directory.
 
 Note: I wasn't able to build fpc using the make utility suplied by fpc, but used mingw32-make.exe. You can download that from mingw.sourceforge.net
-
-Note: In this release gdb is not included, because debugging isn't working reliably yet. It will be included, when debugging works without too much problems.
 
 B Adjust create_installer.bat to your configuration
 
@@ -34,6 +35,7 @@ FPCCVSDIR: Path to the fpc sources checked out of cvs
 LAZCVSDIR: Path to the lazarus sources checked out of cvs
 RELEASE_PPC: Path to fpc 1.0.10 compiler
 FPCBINDIR: Path to the directory containing some utilities used by fpc
+GDBDIR: Path to the directory containing the mingw gdb debugger installation
 BUILDDIR: Path to build directory. 
 EXPORTCVS: Path to the tool to create an export using a local cvs directory
 
