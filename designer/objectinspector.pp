@@ -1502,23 +1502,37 @@ end;
 
 function TObjectInspector.ComponentToString(c:TComponent):string;
 begin
+Try
   Result:=c.GetNamePath+': '+c.ClassName;
+except
+  Result := '';
+  Writeln('Exception: ObjectInspector ComponentToString');
+end;
+
 end;
 
 procedure TObjectInspector.AddComponentToAvailComboBox(AComponent:TComponent);
 var Allowed:boolean;
 begin
+try
   Allowed:=true;
   if Assigned(FOnAddAvailableComponent) then
     FOnAddAvailableComponent(AComponent,Allowed);
   if Allowed then
     AvailCompsComboBox.Items.AddObject(
       ComponentToString(AComponent),AComponent);
+except
+  Writeln('Exception: ObjectInspector AddComponentToAvailComboBox');
+end;
 end;
 
 procedure TObjectInspector.PropEditLookupRootChange;
 begin
+try
   FillComponentComboBox;
+except
+  Writeln('Exception: ObjectInspector PropEditLookupRootCHange');
+end;
 end;
 
 procedure TObjectInspector.FillComponentComboBox;
@@ -1528,6 +1542,7 @@ var a:integer;
 begin
 //writeln('[TObjectInspector.FillComponentComboBox] A ',FUpdatingAvailComboBox
 //,' ',FPropertyEditorHook<>nil,'  ',FPropertyEditorHook.LookupRoot<>nil);
+try
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
   AvailCompsComboBox.Items.BeginUpdate;
@@ -1551,6 +1566,9 @@ begin
       AvailCompsComboBox.Text:='';
   end else
     AvailCompsComboBox.ItemIndex:=a;
+except
+  Writeln('Exception: ObjectInspector FillComponentComboBox');
+end;
 end;
 
 procedure TObjectInspector.SetSelections(

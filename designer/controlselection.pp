@@ -25,9 +25,12 @@ unit ControlSelection;
 interface
 
 uses
-  Classes, LCLLinux, Controls, Forms, Graphics;
+  Classes, LCLLinux, Controls, Forms, Graphics,SysUtils;
 
 type
+
+  GenException = class(Exception);
+  
   TGrabberMoveEvent = procedure(Sender: TObject; dx, dy: Integer) of object;
 
   TGrabIndex = 0..7;
@@ -223,7 +226,7 @@ implementation
 
 
 uses
-  Sysutils, Math;
+  Math;
 
 const
   GRAB_CURSOR: array[TGrabIndex] of TCursor = (
@@ -436,11 +439,17 @@ end;
 
 procedure TControlSelection.EndUpdate;
 begin
-  if FUpdateLock<=0 then exit;
-  dec(FUpdateLock);
-  if FUpdateLock=0 then begin
-    if FChangedDuringLock then DoChange;
-  end;
+    if FUpdateLock<=0 then exit;
+    Writeln('1');
+    dec(FUpdateLock);
+    if FUpdateLock=0 then
+      begin
+       try
+         if FChangedDuringLock then DoChange;
+       except
+          raise GenException.Create('Exception Occured');
+       end;
+      end;
 end;
 
 procedure TControlSelection.SetCustomForm;
@@ -525,12 +534,18 @@ end;
 
 procedure TControlSelection.DoChange;
 begin
+try
   if (FUpdateLock>0) then
-    FChangedDuringLock:=true
-  else begin
-    if Assigned(FOnChange) then FOnChange(Self);
+       FChangedDuringLock:=true
+  else
+  begin
+    if Assigned(fOnChange) then fOnChange(Self);
     FChangedDuringLock:=false;
   end;
+except
+  Writeln('Exception in DoChange');
+//Crashes!!!!     raise GenException.Create('Exception Occured');
+end;
 end;
 
 procedure TControlSelection.SetVisible(const Value: Boolean);

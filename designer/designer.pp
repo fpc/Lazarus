@@ -174,12 +174,9 @@ Begin
   Writeln('[TDesigner.RemoveControl] ',Control.Name,':',Control.ClassName);
   if Assigned(FOnRemoveComponent) then
     FOnRemoveComponent(Self,Control);
-  Writeln('[TDesigner.RemoveControl] 1');
   FCustomForm.RemoveControl(TCOntrol(Control));
   //this send a message to notification and removes it from the controlselection
-  Writeln('[TDesigner.RemoveControl] 2');
   FFormEditor.DeleteControl(Control);
-  Writeln('[TDesigner.RemoveControl] end');
 end;
 
 Procedure TDesigner.NudgeControl(DiffX, DiffY : Integer);
@@ -693,6 +690,7 @@ procedure TDesigner.Notification(AComponent: TComponent; Operation: TOperation);
 Begin
   if Operation = opInsert then
     begin
+    Writeln('opInsert');
     end
   else
   if Operation = opRemove then

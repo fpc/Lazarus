@@ -2865,10 +2865,14 @@ end;
 
 procedure TPropertyEditorHook.SetLookupRoot(AComponent:TComponent);
 begin
+try
   if FLookupRoot=AComponent then exit;
   FLookupRoot:=AComponent;
   if Assigned(FOnChangeLookupRoot) then
     FOnChangeLookupRoot();
+except
+  Writeln('Exception in PropEdits.pp SetLookupRoot');
+end;
 end;
 
 

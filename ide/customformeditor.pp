@@ -523,16 +523,24 @@ end;
 procedure TCustomFormEditor.SetSelectedComponents(
   TheSelectedComponents : TComponentSelectionList);
 begin
-  if FSelectedComponents.Count>0 then begin
-    if FSelectedComponents[0].Owner<>nil then begin
-      Obj_Inspector.PropertyEditorHook.LookupRoot:=
-        FSelectedComponents[0].Owner;
-    end else begin
+try
+  if FSelectedComponents.Count>0 then
+   begin
+    if FSelectedComponents[0].Owner<>nil then
+     begin
+      Obj_Inspector.PropertyEditorHook.LookupRoot:= FSelectedComponents[0].Owner;
+     end
+     else
+     begin
       Obj_Inspector.PropertyEditorHook.LookupRoot:=FSelectedComponents[0];
-    end;
-  end;
+     end;
+   end;
   FSelectedComponents.Assign(TheSelectedComponents);
   Obj_Inspector.Selections := FSelectedComponents;
+except
+Writeln('Exception in CustomFormEditor SetSelectedComponents');
+end;
+
 end;
 
 Function TCustomFormEditor.AddSelected(Value : TComponent) : Integer;
