@@ -661,7 +661,6 @@ type
     property ParentFont: Boolean  read FParentFont write FParentFont;
     property ParentColor: Boolean  read FParentColor write FParentColor;
     property ParentShowHint : Boolean read FParentShowHint write SetParentShowHint default True;
-    property PopupMenu : TPopupmenu read GetPopupmenu write SetPopupMenu;
     property Text: TCaption read GetText write SetText;
     property OnConstrainedResize : TConstrainedResizeEvent read FOnConstrainedResize write FOnConstrainedResize;
     property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;
@@ -724,6 +723,7 @@ type
     property Font : TFont read FFont write SetFont;
     property HostDockSite : TWincontrol read FHostDockSite write FHostDockSite;
     property Parent : TWinControl read FParent write SetParent;
+    property PopupMenu : TPopupmenu read GetPopupmenu write SetPopupMenu;
     property ShowHint : Boolean read FShowHint write SetShowHint default False;
     property Visible: Boolean read FVisible write SetVisible default True;
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
@@ -1461,6 +1461,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.116  2003/05/03 09:53:33  mattias
+  fixed popupmenu for component palette
+
   Revision 1.115  2003/04/11 08:09:26  mattias
   published TControl help properties
 
