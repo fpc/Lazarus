@@ -1643,9 +1643,6 @@ procedure CheckCommonControl(CC: Integer);
 
 Implementation
 
-uses
-  Interfaces;
-
 const
   ButtonStates: array[TToolButtonState] of Word = (TBSTATE_CHECKED,
     TBSTATE_PRESSED, TBSTATE_ENABLED, TBSTATE_HIDDEN, TBSTATE_INDETERMINATE,
@@ -1701,6 +1698,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.56  2002/10/26 11:20:29  lazarus
+  MG: broke some interfaces.pp circles
+
   Revision 1.55  2002/10/25 10:42:07  lazarus
   MG: broke minor circles
 

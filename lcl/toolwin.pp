@@ -82,8 +82,6 @@ type
 
 implementation
 
-uses Interfaces;
-
 {$I toolwindow.inc}
 
 

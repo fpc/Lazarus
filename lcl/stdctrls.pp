@@ -889,8 +889,7 @@ type
 
 implementation
 
-uses
-  Interfaces, Math;
+uses Math;
 
 
 type
@@ -1383,6 +1382,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.64  2002/10/26 11:20:30  lazarus
+  MG: broke some interfaces.pp circles
+
   Revision 1.63  2002/10/25 09:47:37  lazarus
   MG: added inputdialog.inc
 
