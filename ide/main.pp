@@ -5940,6 +5940,7 @@ begin
         if not EnvironmentOptions.ShowHintsForComponentPalette then exit;
       end;
       Control:=Control.Parent;
+      Application.ProcessMessages;
     end;
     HintTimer1.Enabled := ([ssLeft,ssRight,ssMiddle]*Shift=[]);
   end;
@@ -6438,6 +6439,11 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.250  2002/03/22 13:11:29  lazarus
+  Added Application.ProcessMessages in MainMouseMoved to prevent the IDE hanging.
+
+  Shane
+
   Revision 1.249  2002/03/22 12:36:44  lazarus
   MG: many fixes, to make it short: events
 
