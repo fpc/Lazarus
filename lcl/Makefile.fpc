@@ -13,7 +13,7 @@ units=allunits
 implicitunits=arrow actnlist buttons calendar clipbrd clistbox comctrls \
         commctrl controls dialogs dynamicarray  dynhasharray extctrls \
         extendedstrings filectrl forms graphics graphmath graphtype grids \
-        imglist interfacebase lazlinkedlist lclmemmanager lcllinux lclstrconsts \
+        imglist interfacebase lazlinkedlist lclmemmanager lclintf lclstrconsts \
         lcltype lmessages lresources maskedit menus messages registry spin \
         stdctrls stringhashlist toolwin utrace vclglobals printers \
         postscriptprinter intfgraphics dbctrls

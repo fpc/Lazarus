@@ -62,8 +62,7 @@ interface
 
 uses
 {$IFDEF SYN_LAZARUS}
-  LCLLinux,
-  LCLType, GraphType, LMessages,
+  LCLIntf, LCLType, LMessages,
 {$ELSE}
   Windows,
 {$ENDIF}
@@ -1253,7 +1252,7 @@ var
 begin
 //writeln('[TCustomSynEdit.Destroy]');
   {$IFDEF SYN_LAZARUS}
-  if HandleAllocated then LCLLinux.DestroyCaret(Handle);
+  if HandleAllocated then LCLIntf.DestroyCaret(Handle);
   {$ENDIF}
   Highlighter := nil;
   // free listeners while other fields are still valid
@@ -1552,7 +1551,7 @@ procedure TCustomSynEdit.HideCaret;
 begin
   //writeln('[TCustomSynEdit.HideCaret] ',Name,' ',sfCaretVisible in fStateFlags,' ',eoPersistentCaret in Options);
   if sfCaretVisible in fStateFlags then begin
-    if {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.HideCaret(Handle) then
+    if {$IFDEF SYN_LAZARUS}LCLIntf{$ELSE}Windows{$ENDIF}.HideCaret(Handle) then
       Exclude(fStateFlags, sfCaretVisible);
   end;
 end;
@@ -1934,7 +1933,7 @@ begin
   {$IFDEF SYN_LAZARUS}
   if (X < fGutterWidth) then
     Include(fStateFlags, sfPossibleGutterClick);
-  LCLLinux.SetFocus(Handle);
+  LCLIntf.SetFocus(Handle);
   UpdateCaret;
   {$ELSE}
   if (fMouseDownX < fGutterWidth) then
@@ -2277,7 +2276,7 @@ begin
   // and fill only the area after the last visible line.
   dc := Canvas.Handle;
   {$IFDEF SYN_LAZARUS}
-  LCLLinux.SetBkColor(dc,Canvas.Brush.Color);
+  LCLIntf.SetBkColor(dc,Canvas.Brush.Color);
   {$ENDIF}
   if fGutter.ShowLineNumbers then begin
     fTextDrawer.BeginDrawing(dc);
@@ -2301,9 +2300,9 @@ begin
         s := fGutter.FormatLineNumber(iLine);
         {$IFDEF SYN_LAZARUS}
         InternalFillRect(DC, rcLine);
-        LCLLinux.DrawText(DC, PChar(S), Length(S), rcLine,
+        LCLIntf.DrawText(DC, PChar(S), Length(S), rcLine,
           DT_RIGHT or DT_Center or DT_SINGLELINE or DT_NOPREFIX);
-        //LCLLinux.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
+        //LCLIntf.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
         //  @rcLine, PChar(s), Length(s), nil);
         {$ELSE}
         Windows.ExtTextOut(DC, fGutter.LeftOffset, rcLine.Top, ETO_OPAQUE,
@@ -2509,8 +2508,8 @@ var
         // draw background
         InternalFillRect(dc,rcToken);
         // draw edge
-        LCLLinux.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
-        LCLLinux.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+        LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
+        LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
         // draw text
         fTextDrawer.ExtTextOut(nX, rcToken.Top, ETOOptions-ETO_OPAQUE, rcToken,
           pszText, nCharsToPaint);
@@ -2614,8 +2613,8 @@ var
       // Draw the right edge if necessary.
       if bDoRightEdge and (not (eoHideRightMargin in Options))
       and (nRightEdge>=rcToken.Left) then begin
-        LCLLinux.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
-        LCLLinux.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+        LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
+        LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
       end;
       {$ENDIF}
     end;
@@ -3189,8 +3188,8 @@ begin
     // Draw the right edge if necessary.
     if bDoRightEdge and (not (eoHideRightMargin in Options)) then begin
       {$IFDEF SYN_LAZARUS}
-      LCLLinux.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
-      LCLLinux.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+      LCLIntf.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
+      LCLIntf.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
       {$ELSE}
       Windows.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       Windows.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
@@ -3988,7 +3987,7 @@ begin
     {$IFDEF SYN_LAZARUS}
     SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
     {$ENDIF}
-    if {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.ShowCaret(Handle) then
+    if {$IFDEF SYN_LAZARUS}LCLIntf{$ELSE}Windows{$ENDIF}.ShowCaret(Handle) then
     begin
       //writeln('[TCustomSynEdit.ShowCaret] A ',Name);
       Include(fStateFlags, sfCaretVisible);
@@ -4201,7 +4200,7 @@ begin
   LastMouseCaret:=Point(-1,-1);
   if not (eoPersistentCaret in fOptions) then begin
     HideCaret;
-    LCLLinux.DestroyCaret(Handle);
+    LCLIntf.DestroyCaret(Handle);
   end;
   {$ELSE}
   HideCaret;

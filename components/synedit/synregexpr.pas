@@ -986,7 +986,7 @@ implementation
 
 {$IFDEF SYN_LAZARUS}
 uses
-  LCLLinux;
+  LCLIntf;
 {$ELSE}
 {$IFNDEF LINUX} //js 07-04-2002 only use windows in non-CLX-envirolment -- SYN_CLX doesn't work, why?
 uses

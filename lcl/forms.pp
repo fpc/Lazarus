@@ -44,7 +44,7 @@ interface
 
 uses
   Classes, Controls, LCLStrConsts, VCLGlobals, SysUtils, LCLType, LCLProc,
-  LCLLinux, InterfaceBase, GraphType, Graphics, Menus, LMessages, CustomTimer,
+  LCLIntf, InterfaceBase, GraphType, Graphics, Menus, LMessages, CustomTimer,
   ActnList, ClipBrd
   {$IFDEF UseCustApp},CustApp{$ENDIF}
   ;

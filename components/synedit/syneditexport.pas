@@ -60,7 +60,7 @@ uses
   QClipbrd
 {$ELSE}
 {$IFDEF SYN_LAZARUS}
-  LCLLinux, GraphType, LCLType,
+  LCLIntf, LCLType,
 {$ELSE}
   Windows,
 {$ENDIF}

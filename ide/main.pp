@@ -47,8 +47,8 @@ uses
   // codetools
   Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
   // lcl
-  LCLType, LclLinux, LCLproc, LMessages, LResources, StdCtrls, Forms, Buttons,
-  Menus, FileCtrl, Controls, Graphics, GraphType, ExtCtrls, Dialogs,
+  LCLType, LCLIntf, LCLproc, LMessages, LResources, StdCtrls, Forms, Buttons,
+  Menus, FileCtrl, Controls, GraphType, Graphics, ExtCtrls, Dialogs,
   // synedit
   SynEditKeyCmds,
   // compile
@@ -2131,7 +2131,7 @@ procedure TMainIDE.ShowDesignerForm(AForm: TCustomForm);
 begin
   // do not call 'AForm.Show', because it will set Visible to true
   AForm.BringToFront;
-  LCLLinux.ShowWindow(AForm.Handle,SW_SHOWNORMAL);
+  LCLIntf.ShowWindow(AForm.Handle,SW_SHOWNORMAL);
 end;
 
 procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);
@@ -9792,6 +9792,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.649  2003/09/18 09:21:02  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.648  2003/09/17 22:06:56  mattias
   implemented default lcl widget type
 

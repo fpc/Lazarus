@@ -31,7 +31,7 @@ unit CodeTemplateDialog;
 interface
 
 uses
-  Classes, SysUtils, LCLLinux, LResources, Forms, Buttons, Controls,
+  Classes, SysUtils, LCLIntf, LResources, Forms, Buttons, Controls,
   SynEditAutoComplete, LazarusIDEStrConsts, StdCtrls, SynEditKeyCmds, Dialogs;
 
 type

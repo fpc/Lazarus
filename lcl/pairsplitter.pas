@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LMessages, VCLGlobals, Graphics, GraphType,
-  LCLLinux, Controls;
+  LCLIntf, Controls;
   
 type
   TCustomPairSplitter = class;

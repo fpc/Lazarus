@@ -50,7 +50,7 @@ uses
   Types,
 {$ELSE}
   {$IFDEF SYN_LAZARUS}
-  LCLLinux, Controls,
+  LCLIntf, Controls,
   {$ELSE}
   Windows,
   {$ENDIF}

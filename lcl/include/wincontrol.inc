@@ -656,7 +656,7 @@ var
 begin
   Result:=false;
   if not HandleAllocated then exit;
-  LCLLinux.GetClientRect(Handle,IntfClientRect);
+  LCLIntf.GetClientRect(Handle,IntfClientRect);
   Result:=(FClientWidth<>IntfClientRect.Right)
        or (FClientHeight<>IntfClientRect.Bottom);
 end;
@@ -749,7 +749,7 @@ Begin
 //writeln('[TWinControl.GetClientOrigin] ',Name,':',ClassName,'  ',Handle);
   if HandleAllocated then begin
     // get the interface idea where the client area is on the screen
-    LCLLinux.ClientToScreen(Handle,Result);
+    LCLIntf.ClientToScreen(Handle,Result);
     // adjust the result by all bounds, that are not yet sent to the interface
     AControl:=Self;
     repeat
@@ -799,12 +799,12 @@ begin
     StoreClientRect(Result);
   end else if wcfClientRectNeedsUpdate in FFlags then begin
     // update clientrect from interface
-    LCLLinux.GetClientRect(Handle, Result);
+    LCLIntf.GetClientRect(Handle, Result);
     // the LCL is not always in sync with the interface
     // -> adjust client rect based on LCL bounds
     // for example: if the Width in LCL differ from the Width of the Interface
     // object, then adjust the clientwidth accordingly
-    LCLLinux.GetWindowSize(Handle, InterfaceWidth, InterfaceHeight);
+    LCLIntf.GetWindowSize(Handle, InterfaceWidth, InterfaceHeight);
     Result.Right:=Width-(InterfaceWidth-Result.Right);
     Result.Bottom:=Height-(InterfaceHeight-Result.Bottom);
     StoreClientRect(Result);
@@ -837,7 +837,7 @@ var
   ScrolledOffset: TPoint;
 begin
   if HandleAllocated then begin
-    LCLLinux.GetClientBounds(Handle,Result);
+    LCLIntf.GetClientBounds(Handle,Result);
     if Scrolled then begin
       ScrolledOffset:=GetClientScrollOffset;
       inc(Result.Left,ScrolledOffset.X);
@@ -1171,7 +1171,7 @@ begin
     if (Control is TWinControl) and TWinControl(Control).HandleAllocated then
     begin
       // map coordinates to client area of control
-      LCLLinux.GetClientBounds(TWinControl(Control).Handle,ClientBounds);
+      LCLIntf.GetClientBounds(TWinControl(Control).Handle,ClientBounds);
       dec(P.X,ClientBounds.Left);
       dec(P.Y,ClientBounds.Top);
       {$IFDEF VerboseMouseBugfix}
@@ -1214,7 +1214,7 @@ procedure TWinControl.PaintHandler(var TheMessage: TLMPaint);
 var
   I, Clip, SaveIndex: Integer;
   DC: HDC;
-  PS: TPaintStruct; //defined in LCLLinux.pp
+  PS: TPaintStruct; //defined in LCLIntf.pp
   ControlsNeedsClipping: boolean;
 begin
 //writeln('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
@@ -1714,7 +1714,7 @@ begin
   if Form <> nil then
     Form.FocusControl(Self)
   else if Visible and HandleAllocated then
-    LCLLinux.SetFocus(Handle);
+    LCLIntf.SetFocus(Handle);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2664,7 +2664,7 @@ var
 {  procedure WriteClientRect(const Prefix: string);
   var r: TRect;
   begin
-    LCLLinux.GetClientRect(Handle,r);
+    LCLIntf.GetClientRect(Handle,r);
     if csDesigning in ComponentState then
       writeln('WriteClientRect ',Prefix,' ',Name,':',ClassName,' r=',r.Right,',',r.Bottom);
   end;}
@@ -3081,6 +3081,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.170  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.169  2003/09/17 15:26:41  mattias
   fixed removing TPage
 

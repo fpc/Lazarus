@@ -30,7 +30,7 @@ unit AlignCompsDlg;
 interface
 
 uses
-  Classes, LCLLinux, Forms, Controls, Buttons, ExtCtrls, LResources;
+  Classes, LCLIntf, Forms, Controls, Buttons, ExtCtrls, LResources;
 
 type
   TAlignComponentsDialog = class(TForm)

@@ -40,7 +40,7 @@ uses
   {$IFDEF IP_LAZARUS}
   LCLType,
   GraphType,
-  LCLLinux,
+  LCLIntf,
   {$ELSE}
   Windows,
   Messages,

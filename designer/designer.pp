@@ -36,7 +36,7 @@ interface
 { $DEFINE VerboseDesignerDraw}
 
 uses
-  Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
+  Classes, LCLType, LCLIntf, Forms, Controls, LMessages, GraphType, Graphics,
   Dialogs, ExtCtrls, Menus, ClipBrd, IDEProcs,
   LazarusIDEStrConsts, EnvironmentOpts, KeyMapping, ComponentReg,
   NonControlForms, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,

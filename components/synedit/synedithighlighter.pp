@@ -40,7 +40,7 @@ uses
 {$ELSE}
   Graphics,
   {$IFDEF SYN_LAZARUS}
-  LCLLinux, LCLType, GraphType,
+  LCLIntf, LCLType,
   {$ELSE}
   Windows,
   {$ENDIF}

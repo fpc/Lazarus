@@ -44,7 +44,7 @@ uses
   {$IFDEF IP_LAZARUS}
   LCLType,
   GraphType,
-  LCLLinux,
+  LCLIntf,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -1779,6 +1779,9 @@ end;
 
 {
   $Log$
+  Revision 1.2  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.1  2003/03/27 18:25:35  mattias
   added ipro html components, compilable but not yet working
 

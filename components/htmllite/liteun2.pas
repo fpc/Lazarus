@@ -13,7 +13,7 @@ unit LiteUn2;
 interface
 uses
   {$IFDEF HL_LAZARUS}
-  LCLLinux, LCLType, VCLGlobals, SysUtils, Messages, Classes, GraphType,
+  LCLIntf, LCLType, VCLGlobals, SysUtils, Messages, Classes, GraphType,
   Graphics, Controls, Forms, Dialogs, StdCtrls, ExtCtrls;
   {$ELSE}
   Windows, SysUtils, Messages, Classes, Graphics, Controls,

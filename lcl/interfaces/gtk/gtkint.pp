@@ -59,7 +59,7 @@ uses
   {$ENDIF}
   xlib,
   SysUtils, Classes, ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
-  VclGlobals, LCLProc, LCLLinux, LCLType, gtkDef, DynHashArray, gtkMsgQueue,
+  VclGlobals, LCLProc, LCLIntf, LCLType, gtkDef, DynHashArray, gtkMsgQueue,
   GraphType, GraphMath, Graphics;
 
 
@@ -372,6 +372,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.147  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.146  2003/09/15 03:10:46  ajgenius
   PANGO support for GTK2 now works.. sorta. TextOut/ExtTextOut broken?
 

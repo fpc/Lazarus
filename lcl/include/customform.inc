@@ -305,7 +305,7 @@ begin
   or (not NewFocusControl.Visible)
   or (not NewFocusControl.Enabled) then
     exit;
-  LCLLinux.SetFocus(NewFocusControl.Handle);
+  LCLIntf.SetFocus(NewFocusControl.Handle);
   if GetFocus = NewFocusControl.Handle then
     NewFocusControl.Perform(CM_UIACTIVATE, 0, 0);
 end;
@@ -337,7 +337,7 @@ begin
         {$IFDEF VerboseFocus}
         writeln('TCustomForm.WMShowWindow B ',FActiveControl.Name,':',FActiveControl.ClassName);
         {$ENDIF}
-        LCLLinux.SetFocus(FActiveControl.Handle);
+        LCLIntf.SetFocus(FActiveControl.Handle);
       end;
       DoShow;
     end else begin
@@ -696,7 +696,7 @@ begin
             {$IFDEF VerboseFocus}
             writeln('[TCustomForm.WndProc] ',Name,':',ClassName);
             {$ENDIF}
-            LCLLinux.SetFocus(FocusHandle);
+            LCLIntf.SetFocus(FocusHandle);
             Exit;
           end;
         end;
@@ -1115,7 +1115,7 @@ begin
   Show;
   BringToFront;
   //writeln('TCustomForm.ShowOnTop ',Name,':',ClassName,' ',Visible,' ',HandleAllocated,' ',csDesigning in ComponentState);
-  LCLLinux.ShowWindow(Handle,SW_SHOWNORMAL);
+  LCLIntf.ShowWindow(Handle,SW_SHOWNORMAL);
 end;
 
 {------------------------------------------------------------------------------
@@ -1255,7 +1255,7 @@ begin
       {$IFDEF VerboseFocus}
       writeln('TCustomForm.CreateWnd A ',FActiveControl.Name,':',FActiveControl.ClassName);
       {$ENDIF}
-      LCLLinux.SetFocus(FActiveControl.Handle);
+      LCLIntf.SetFocus(FActiveControl.Handle);
     end;
   end;
   //writeln('TCustomForm.CreateWnd END ',ClassName);
@@ -1435,6 +1435,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.115  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.114  2003/09/13 10:04:35  mattias
   fixed ColorIsStored
 

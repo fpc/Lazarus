@@ -41,7 +41,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  Classes, LCLLinux, LCLType, VclGlobals, LCLMemManager, DynHashArray,
+  Classes, LCLIntf, LCLType, VclGlobals, LCLMemManager, DynHashArray,
   GraphType;
 
 type
@@ -465,6 +465,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.47  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.46  2003/09/15 03:10:46  ajgenius
   PANGO support for GTK2 now works.. sorta. TextOut/ExtTextOut broken?
 

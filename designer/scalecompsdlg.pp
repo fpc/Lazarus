@@ -30,7 +30,7 @@ unit ScaleCompsDlg;
 interface
 
 uses
-  Classes, LCLLinux, Forms, Controls, Buttons, StdCtrls, ExtCtrls, LResources;
+  Classes, LCLIntf, Forms, Controls, Buttons, StdCtrls, ExtCtrls, LResources;
 
 type
   TScaleComponentsDialog = class(TForm)

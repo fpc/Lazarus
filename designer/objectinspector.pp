@@ -39,7 +39,7 @@ interface
 
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
-  LCLLinux, LCLProc, LMessages, Controls, ComCtrls, ExtCtrls, TypInfo, Messages,
+  LCLIntf, LCLProc, LMessages, Controls, ComCtrls, ExtCtrls, TypInfo, Messages,
   LResources, PairSplitter, Laz_XMLCfg, Menus, Dialogs, ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView;

@@ -36,7 +36,7 @@ unit ProjectOpts;
 interface
 
 uses
-  Classes, LCLLinux, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
+  Classes, LCLIntf, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
   Project, LResources, Buttons, Dialogs, IDEProcs, CodeToolManager,
   LazarusIDEStrConsts, IDEOptionDefs;
 

@@ -41,8 +41,8 @@ interface
 
 
 uses classes, forms, buttons, StdCtrls, controls, menus, ExtCtrls, CListBox,
-     ComCtrls, SysUtils, GraphType, Graphics, Dialogs, Inifiles, Spin, clipbrd, lclLinux,
-     registry, lresources;
+     ComCtrls, SysUtils, GraphType, Graphics, Dialogs, Inifiles, Spin, clipbrd,
+     LCLIntf, registry, lresources;
 
 type
    TForm1 = class(TForm)
@@ -2584,6 +2584,9 @@ END.
 
 {
   $Log$
+  Revision 1.13  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.12  2003/01/01 11:11:49  mattias
   fixed testall example
 

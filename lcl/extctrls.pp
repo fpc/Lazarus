@@ -46,7 +46,7 @@ interface
 
 uses
   SysUtils, Classes, LCLStrConsts, LCLProc, Controls, Forms, StdCtrls,
-  vclGlobals, lMessages, GraphType, Graphics, LCLLinux, CustomTimer;
+  vclGlobals, lMessages, GraphType, Graphics, LCLIntf, CustomTimer;
 
 type
   { workaround problem with fcl }
@@ -755,6 +755,9 @@ end.
 
  {
   $Log$
+  Revision 1.75  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.74  2003/09/17 15:26:41  mattias
   fixed removing TPage
 

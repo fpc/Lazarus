@@ -71,7 +71,7 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLLinux, LCLType, GraphType,
+  LCLIntf, LCLType, GraphType,
   {$ELSE}
   Windows,
   {$ENDIF}
@@ -913,8 +913,8 @@ begin
     Windows.SetBkColor(DC, ColorToRGB(FBkColor));
     {$ELSE}
     FSavedFont := SelectObject(DC, FCrntFont);
-    LCLLinux.SetTextColor(DC, FColor);
-    LCLLinux.SetBkColor(DC, FBkColor);
+    LCLIntf.SetTextColor(DC, FColor);
+    LCLIntf.SetBkColor(DC, FBkColor);
     {$ENDIF}
     DoSetCharExtra(FCharExtra);
   end;
@@ -1020,7 +1020,7 @@ begin
     FBkColor := Value;
     if FDC <> 0 then
       {$IFDEF SYN_LAZARUS}
-      LCLLinux.SetBkColor(FDC, Value);
+      LCLIntf.SetBkColor(FDC, Value);
       {$ELSE}
       Windows.SetBkColor(FDC, ColorToRGB(Value));
       {$ENDIF}
@@ -1046,7 +1046,7 @@ procedure TheTextDrawer.TextOut(X, Y: Integer; Text: PChar;
   Length: Integer);
 begin
   {$IFDEF SYN_LAZARUS}
-  LCLLinux.TextOut(FDC, X, Y, Text, Length);
+  LCLIntf.TextOut(FDC, X, Y, Text, Length);
   {$ELSE}
   Windows.TextOut(FDC, X, Y, Text, Length);
   {$ENDIF}
@@ -1080,7 +1080,7 @@ begin
   if FETOSizeInChar < Length then
     InitETODist(GetCharWidth);
   {$IFDEF SYN_LAZARUS}
-  LCLLinux.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text,
+  LCLIntf.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text,
     Length, PInteger(FETODist));
   {$ELSE}
   Windows.ExtTextOut(FDC, X, Y, fuOptions, @ARect, Text,
@@ -1172,7 +1172,7 @@ procedure TheTextDrawerEx.ExtTextOutFixed(X, Y: Integer; fuOptions: UINT;
   const ARect: TRect; Text: PChar; Length: Integer);
 begin
   {$IFDEF SYN_LAZARUS}
-  LCLLinux.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil);
+  LCLIntf.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil);
   {$ELSE}
   Windows.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil);
   {$ENDIF}
@@ -1218,7 +1218,7 @@ begin
         n := GetCharWidth * Len;
         Right := Min(Left + n + GetCharWidth, ARect.Right);
         {$IFDEF SYN_LAZARUS}
-        LCLLinux.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, pCrnt, Len, nil);
+        LCLIntf.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, pCrnt, Len, nil);
         {$ELSE}
         Windows.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, pCrnt, Len, nil);
         {$ENDIF}
@@ -1238,7 +1238,7 @@ begin
       n := GetCharWidth * Len;
       Right := Min(Left + n + GetCharWidth, ARect.Right);
       {$IFDEF SYN_LAZARUS}
-      LCLLinux.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, pCrnt, Len, nil);
+      LCLIntf.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, pCrnt, Len, nil);
       {$ELSE}
       Windows.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, pCrnt, Len, nil);
       {$ENDIF}
@@ -1253,7 +1253,7 @@ begin
   begin
     SetTextCharacterExtra(StockDC, FCharExtra + FCrntDx);
     {$IFDEF SYN_LAZARUS}
-    LCLLinux.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, nil, 0, nil);
+    LCLIntf.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, nil, 0, nil);
     {$ELSE}
     Windows.ExtTextOut(StockDC, X, Y, fuOptions, @TmpRect, nil, 0, nil);
     {$ENDIF}
@@ -1282,13 +1282,13 @@ begin
        (Left + GetCharWidth * (Length + 1) > Right)
     then
       {$IFDEF SYN_LAZARUS}
-      LCLLinux.TextOut(StockDC, X, Y, Text, Length)
+      LCLIntf.TextOut(StockDC, X, Y, Text, Length)
       {$ELSE}
       Windows.TextOut(StockDC, X, Y, Text, Length)
       {$ENDIF}
     else
       {$IFDEF SYN_LAZARUS}
-      LCLLinux.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil)
+      LCLIntf.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil)
       {$ELSE}
       Windows.ExtTextOut(StockDC, X, Y, fuOptions, @ARect, Text, Length, nil)
       {$ENDIF}

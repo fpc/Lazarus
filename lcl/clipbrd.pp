@@ -128,7 +128,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLType, LCLLinux, GraphType, Graphics;
+  Classes, SysUtils, LCLType, LCLIntf, GraphType, Graphics;
 
 { for delphi compatibility:
 
@@ -360,6 +360,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.13  2003/09/10 19:15:15  mattias
   implemented copying graphics from/to clipboard
 

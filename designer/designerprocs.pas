@@ -33,7 +33,7 @@ unit DesignerProcs;
 interface
 
 uses
-  Classes, SysUtils, LCLLinux, Forms, Controls, LCLType, Graphics, VCLGlobals,
+  Classes, SysUtils, LCLIntf, Forms, Controls, LCLType, Graphics, VCLGlobals,
   Menus;
 
 type

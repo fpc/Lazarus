@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, vclglobals, LCLType, LCLProc,
-  GraphType, Graphics, LMessages, LCLLinux, InterfaceBase, ImgList, UTrace,
+  GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList, UTrace,
   Menus, ActnList;
 
 
@@ -1844,6 +1844,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.150  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.149  2003/09/13 15:51:21  mattias
   implemented parent color from Micha
 

@@ -31,7 +31,7 @@ unit IntfGraphics;
 interface
 
 uses
-  Classes, SysUtils, fpImage, AvgLvlTree, LCLLinux, LCLType, LCLProc, GraphType;
+  Classes, SysUtils, fpImage, AvgLvlTree, LCLIntf, LCLType, LCLProc, GraphType;
   
 type
   { TLazIntfImage }

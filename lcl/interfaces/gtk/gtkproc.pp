@@ -45,7 +45,7 @@ uses
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
   LMessages, Controls, Forms, VclGlobals, LCLProc,
-  LCLStrConsts, LCLLinux, LCLType, gtkDef, DynHashArray, LazLinkedList,
+  LCLStrConsts, LCLIntf, LCLType, gtkDef, DynHashArray, LazLinkedList,
   GraphType, GraphMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls,
   ComCtrls, CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls,
   Dialogs, ExtDlgs, FileCtrl, LResources, Math, GTKGlobals;

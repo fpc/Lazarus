@@ -36,7 +36,7 @@ uses
   {$IFDEF UseFPImage}
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
   {$ENDIF}
-  LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLLinux, LResources,
+  LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLIntf, LResources,
   GraphType, GraphMath;
 
 type
@@ -1256,6 +1256,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.92  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.91  2003/09/12 14:59:43  mattias
   added searching for fpImage reader/writer
 

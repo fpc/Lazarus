@@ -50,7 +50,7 @@ interface
 uses
   SysUtils, Classes,
   {$IFDEF SYN_LAZARUS}
-  LCLLinux, LCLType, GraphType, Graphics,
+  LCLIntf, LCLType, Graphics,
   {$ELSE}
   {$IFDEF SYN_CLX}
   Qt, QControls, QGraphics,

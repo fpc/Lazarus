@@ -374,7 +374,7 @@ begin
         Exit;
       end;
     end;}
-    LCLLinux.SetCursor(Cursors[FCursor]);
+    LCLIntf.SetCursor(Cursors[FCursor]);
   end;
   Inc(FCursorCount);
 end;

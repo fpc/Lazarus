@@ -32,7 +32,7 @@ unit KeyMapping;
 interface
 
 uses
-  LCLLinux, LCLType,
+  LCLIntf, LCLType,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
   SynEdit, SynEditKeyCmds, Laz_XMLCfg, Dialogs, StringHashList,
   LazarusIDEStrConsts;

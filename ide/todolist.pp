@@ -56,7 +56,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources,
   ExtCtrls, ComCtrls, Menus, Buttons, GraphType,
-  StdCtrls, mPasLex, LCLLinux, LCLType,
+  StdCtrls, mPasLex, LCLIntf, LCLType,
   CodeCache, CodeToolManager, LazarusIDEStrConsts;
 
 Const

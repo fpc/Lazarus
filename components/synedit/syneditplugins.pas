@@ -48,7 +48,7 @@ uses
   QMenus,
 {$ELSE}
   {$IFDEF SYN_LAZARUS}
-  LCLLinux,
+  LCLIntf,
   {$ELSE}
   Windows,
   {$ENDIF}

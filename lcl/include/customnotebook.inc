@@ -401,7 +401,7 @@ end;
 function TCustomNotebook.TabIndexAtClientPos(ClientPos: TPoint): integer;
 begin
   if HandleAllocated then
-    Result:=LCLLinux.GetNotebookTabIndexAtPos(Handle,ClientPos)
+    Result:=LCLIntf.GetNotebookTabIndexAtPos(Handle,ClientPos)
   else
     Result:=-1;
 end;
@@ -763,6 +763,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.34  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.33  2003/09/17 15:26:41  mattias
   fixed removing TPage
 

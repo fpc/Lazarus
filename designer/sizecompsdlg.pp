@@ -30,7 +30,7 @@ unit SizeCompsDlg;
 interface
 
 uses
-  Classes, LCLLinux, Forms, Controls, Buttons, ExtCtrls, StdCtrls, LResources;
+  Classes, LCLIntf, Forms, Controls, Buttons, ExtCtrls, StdCtrls, LResources;
 
 type
   TSizeComponentsDialog = class(TForm)

@@ -23,7 +23,7 @@ interface
 
 uses
   Classes, TypInfo, SysUtils, Forms, Controls, LCLType, GraphType, Graphics,
-  StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs, LCLLinux, PropEdits;
+  StdCtrls, Buttons, ComCtrls, Menus, ExtCtrls, Dialogs, LCLIntf, PropEdits;
 
 type
  {TGraphicPropertyEditor

@@ -2,7 +2,7 @@
 {  $Id$  }
 {
  /***************************************************************************
-                                LCLLinux.pp
+                                LCLIntf.pas
                                 -----------
                              Component Library Windows Controls
                    Initial Revision  : Fri Jul 23 20:00:00 PDT 1999
@@ -31,11 +31,10 @@
 
 This unit is being created specifically for compatibility with Delphi. It
 should only be used for constants and type definitions that are included in
-the Delphi Windows unit. This is only done for compatibiltiy.
-
+the Delphi Windows unit. This is only done for compatibility.
 }
 
-unit LCLLinux;
+unit LCLIntf;
 
 {$mode objfpc}{$H+}
 
@@ -145,6 +144,9 @@ end.
 
 {
   $Log$
+  Revision 1.1  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.25  2002/12/16 12:12:50  mattias
   fixes for fpc 1.1
 

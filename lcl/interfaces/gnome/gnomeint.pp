@@ -40,7 +40,7 @@ interface
 uses
   InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
   glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals,
-  LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType,
+  LCLIntf, LCLType, gtkDef, DynHashArray, LazQueue, GraphType,
   GraphMath, gtkInt, {$Ifndef NoGdkImlib}gdk_imlib,{$EndIf}
   libgnome, libart, libgnomeui;
 
@@ -246,6 +246,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.17  2003/06/05 15:53:30  mattias
   increased version to 0.9.0 beta
 

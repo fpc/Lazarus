@@ -37,7 +37,7 @@ interface
 { $DEFINE VerboseDesigner}
 
 uses
-  Classes, LCLLinux, LCLType, Controls, Forms, GraphType, Graphics, SysUtils,
+  Classes, LCLIntf, LCLType, Controls, Forms, GraphType, Graphics, SysUtils,
   Menus, EnvironmentOpts, PropEdits, DesignerProcs;
 
 type

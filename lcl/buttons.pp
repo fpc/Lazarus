@@ -37,7 +37,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-uses StdCtrls, VCLGlobals, Classes, LCLType, LCLProc, LCLLinux,LCLStrConsts,
+uses StdCtrls, VCLGlobals, Classes, LCLType, LCLProc, LCLIntf, LCLStrConsts,
   GraphType, Graphics, SysUtils, Controls, lMessages, Forms, Messages;
 
 type
@@ -307,6 +307,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.50  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.49  2003/09/13 15:43:05  ajgenius
   make speed button FState Protected, not private. needed for descendents,
 

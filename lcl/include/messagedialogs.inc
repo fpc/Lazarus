@@ -221,7 +221,7 @@ end;
 Function InputQuery(const ACaption, APrompt : String; MaskInput : Boolean;
   var Value : String) : Boolean;
 begin
-  Result := LCLLinux.RequestInput(ACaption, APrompt, MaskInput, Value);
+  Result := LCLIntf.RequestInput(ACaption, APrompt, MaskInput, Value);
 end;
 
 Function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
@@ -233,6 +233,9 @@ end;
 
 {
    $Log$
+   Revision 1.23  2003/09/18 09:21:03  mattias
+   renamed LCLLinux to LCLIntf
+
    Revision 1.22  2003/04/13 13:45:04  mattias
    implemented broken dependencies dialog
 

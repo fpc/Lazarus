@@ -35,7 +35,7 @@ uses
   // the interface base
   InterfaceBase, {$IFDEF UseFPImage}IntfGraphics,{$ENDIF}
   // components and functions
-  Buttons, Extctrls, Registry, Calendar, Clipbrd, Forms, LCLLinux, Spin,
+  Buttons, Extctrls, Registry, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, CheckLst, PairSplitter, DirSel, ExtDlgs,
@@ -48,6 +48,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.29  2003/09/16 11:35:14  mattias
   started TDBCheckBox
 

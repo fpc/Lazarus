@@ -41,7 +41,7 @@ Begin
   writeln('TMouse.SetCapture ');
   {$ENDIF}
   FCapture := Value;
-  if Value = 0 then ReleaseCapture else LCLLinux.SetCapture(Value);
+  if Value = 0 then ReleaseCapture else LCLIntf.SetCapture(Value);
 end;
 
 Procedure TMouse.SetCursorPos(Value : Tpoint);

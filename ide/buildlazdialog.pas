@@ -34,7 +34,7 @@ unit BuildLazDialog;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, LCLType, LCLLinux, Graphics, GraphType,
+  Classes, SysUtils, Forms, Controls, LCLType, LCLIntf, Graphics, GraphType,
   StdCtrls, ExtCtrls, Buttons, FileCtrl, Dialogs, LResources, Laz_XMLCfg,
   LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, InputHistory,
   ExtToolDialog, ExtToolEditDlg;

@@ -40,7 +40,7 @@ interface
 
 uses 
   Classes, TypInfo, SysUtils, LCLProc, Forms, Controls, GraphType, Graphics,
-  StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLLinux, Dialogs,
+  StdCtrls, Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLIntf, Dialogs,
   ColumnDlg, ObjInspStrConsts;
 
 const

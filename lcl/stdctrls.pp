@@ -31,7 +31,7 @@ interface
 
 uses
   VCLGlobals, Classes, SysUtils, LCLStrConsts, LCLType, LCLProc,
-  Graphics, GraphType, LMessages, Controls, ExtendedStrings, LCLLinux,
+  Graphics, GraphType, LMessages, Controls, ExtendedStrings, LCLIntf,
   GraphMath, Forms;
 
 
@@ -1464,6 +1464,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.104  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.103  2003/08/28 09:10:00  mattias
   listbox and comboboxes now set sort and selection at handle creation
 

@@ -280,7 +280,7 @@ procedure TCanvas.Arc(x,y,width,height,angle1,angle2 : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  LCLLinux.Arc(FHandle,x,y,width,height,angle1,angle2);
+  LCLIntf.Arc(FHandle,x,y,width,height,angle1,angle2);
   Changed;
 end;
 
@@ -298,7 +298,7 @@ procedure TCanvas.Arc(x,y,width,height,sx,sy,ex,ey : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLLinux.RadialArc(FHandle,x,y,width,height,sx,sy,ex,ey);
+  LCLIntf.RadialArc(FHandle,x,y,width,height,sx,sy,ex,ey);
   Changed;
 end;
 
@@ -318,7 +318,7 @@ procedure TCanvas.RadialPie(x,y,width,height,angle1,angle2 : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLLinux.RadialPieWithAngles(FHandle,x,y,width,height,angle1,angle2);
+  LCLIntf.RadialPieWithAngles(FHandle,x,y,width,height,angle1,angle2);
   Changed;
 end;
 
@@ -336,7 +336,7 @@ procedure TCanvas.RadialPie(x,y,width,height,sx,sy,ex,ey: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLLinux.RadialPie(FHandle,x,y,width,height,sx,sy,ex,ey);
+  LCLIntf.RadialPie(FHandle,x,y,width,height,sx,sy,ex,ey);
   Changed;
 end;
 
@@ -357,7 +357,7 @@ procedure TCanvas.Pie(EllipseX1, EllipseY1, EllipseX2, EllipseY2,
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLLinux.Pie(FHandle,EllipseX1,EllipseY1,EllipseX2,EllipseY2,
+  LCLIntf.Pie(FHandle,EllipseX1,EllipseY1,EllipseX2,EllipseY2,
                StartX,StartY,EndX,EndY);
   Changed;
 end;
@@ -403,7 +403,7 @@ procedure TCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLLinux.PolyBezier(FHandle,Points,NumPts,Filled, Continuous);
+  LCLIntf.PolyBezier(FHandle,Points,NumPts,Filled, Continuous);
   Changed;
 end;
 
@@ -460,7 +460,7 @@ begin
   if NumPts<=0 then exit;
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLLinux.Polygon(FHandle,Points,NumPts,Winding);
+  LCLIntf.Polygon(FHandle,Points,NumPts,Winding);
   Changed;
 end;
 
@@ -509,7 +509,7 @@ procedure TCanvas.Polyline(Points: PPoint; NumPts: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  LCLLinux.Polyline(FHandle,Points,NumPts);
+  LCLIntf.Polyline(FHandle,Points,NumPts);
   Changed;
 end;
 
@@ -536,7 +536,7 @@ procedure TCanvas.Ellipse(x1, y1, x2, y2: Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLLinux.Ellipse(FHandle,x1,y1,x2,y2);
+  LCLIntf.Ellipse(FHandle,x1,y1,x2,y2);
   Changed;
 end;
 
@@ -563,7 +563,7 @@ procedure TCanvas.FillRect(const ARect : TRect);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);
-  LCLLinux.FillRect(FHandle, ARect, Brush.Handle);
+  LCLIntf.FillRect(FHandle, ARect, Brush.Handle);
   Changed;
 end;
 
@@ -586,7 +586,7 @@ procedure TCanvas.FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillSt
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);
-  LCLLinux.FloodFill(FHandle, X, Y, FillColor, FillStyle, Brush.Handle);
+  LCLIntf.FloodFill(FHandle, X, Y, FillColor, FillStyle, Brush.Handle);
   Changed;
 end;
 
@@ -601,7 +601,7 @@ procedure TCanvas.Frame3d(var ARect: TRect; const FrameWidth : integer;
 begin
   Changing;
   RequiredState([csHandleValid]);
-  LCLLinux.Frame3d(FHandle, ARect, FrameWidth, Style);
+  LCLIntf.Frame3d(FHandle, ARect, FrameWidth, Style);
   Changed;
 end;
 
@@ -614,7 +614,7 @@ procedure TCanvas.Frame(const ARect: TRect);
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  LCLLinux.Frame(FHandle, ARect);
+  LCLIntf.Frame(FHandle, ARect);
   Changed;
 end;
 
@@ -637,7 +637,7 @@ procedure TCanvas.FrameRect(const ARect: TRect);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid]);
-  LCLLinux.FrameRect(FHandle, ARect, Brush.GetHandle);
+  LCLIntf.FrameRect(FHandle, ARect, Brush.GetHandle);
   Changed;
 end;
 
@@ -661,7 +661,7 @@ procedure TCanvas.Rectangle(X1,Y1,X2,Y2 : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLLinux.Rectangle(FHandle, X1, Y1, X2, Y2);
+  LCLIntf.Rectangle(FHandle, X1, Y1, X2, Y2);
   Changed;
 end;
 
@@ -686,7 +686,7 @@ Procedure TCanvas.RoundRect(X1, Y1, X2, Y2: Integer; RX,RY : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLLinux.RoundRect(FHandle, X1, Y1, X2, Y2, RX, RY);
+  LCLIntf.RoundRect(FHandle, X1, Y1, X2, Y2, RX, RY);
   Changed;
 end;
 
@@ -825,7 +825,7 @@ end;
 Procedure TCanvas.MoveTo(X1, Y1 : Integer);
 begin
   RequiredState([csHandleValid]);
-  if LCLLinux.MoveToEx(FHandle, X1, Y1, nil) then FPenPos:= Point(X1, Y1);
+  if LCLIntf.MoveToEx(FHandle, X1, Y1, nil) then FPenPos:= Point(X1, Y1);
 End;
 
 {------------------------------------------------------------------------------
@@ -838,7 +838,7 @@ procedure TCanvas.LineTo(X1, Y1 : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csPenValid]);
-  if LCLLinux.LineTo(FHandle, X1, Y1) then FPenPos:= Point(X1, Y1);
+  if LCLIntf.LineTo(FHandle, X1, Y1) then FPenPos:= Point(X1, Y1);
   Changed;
 end;
 
@@ -993,7 +993,7 @@ procedure TCanvas.Chord(x,y,width,height,angle1,angle2 : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLLinux.AngleChord(FHandle,x,y,width,height,angle1,angle2);
+  LCLIntf.AngleChord(FHandle,x,y,width,height,angle1,angle2);
   Changed;
 end;
 
@@ -1011,7 +1011,7 @@ procedure TCanvas.Chord(x,y,width,height,sx,sy,ex,ey : Integer);
 begin
   Changing;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
-  LCLLinux.RadialChord(FHandle,x,y,width,height,sx,sy,ex,ey);
+  LCLIntf.RadialChord(FHandle,x,y,width,height,sx,sy,ex,ey);
   Changed;
 end;
 
@@ -1236,6 +1236,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.52  2003/08/27 08:14:37  mattias
   fixed system fonts for win32 intf
 
@@ -1413,7 +1416,7 @@ end;
   reference it from interface (GTK, Win32) units.
   New Frame3d canvas method that uses native (themed) drawing (GTK only).
   New overloaded Canvas.TextRect method.
-  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+  LCLIntf and Graphics was split, so a bunch of files had to be modified.
 
   Revision 1.14  2002/01/02 15:24:58  lazarus
   MG: added TCanvas.Polygon and TCanvas.Polyline

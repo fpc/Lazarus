@@ -35,7 +35,7 @@ interface
 uses 
   InterfaceBase, sysutils, lmessages, Classes, Controls,
   extctrls, forms,dialogs, VclGlobals,stdctrls, comctrls, 
-  LCLLinux,qt;
+  LCLIntf, qt;
  
 
 

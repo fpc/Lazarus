@@ -597,7 +597,7 @@ end;
 {------------------------------------------------------------------------------
   Function: ClipboardGetOwnerShip
   Params:  ClipboardType
-           OnRequestProc - TClipboardRequestEvent is defined in LCLLinux.pp
+           OnRequestProc - TClipboardRequestEvent is defined in LCLIntf.pp
                            If OnRequestProc is nil the onwership will end.
            FormatCount - number of formats
            Formats - array of TClipboardFormat. The supported formats the owner
@@ -5289,8 +5289,8 @@ function TgtkObject.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Lo
     end;
 
     If GradientBrush <> 0 then
-      LCLLinux.DeleteObject(GradientBrush);
-    GradientBrush := LCLLinux.CreateBrushIndirect(NewBrush);
+      LCLIntf.DeleteObject(GradientBrush);
+    GradientBrush := LCLIntf.CreateBrushIndirect(NewBrush);
   end;
 
   Function FillTriMesh(Mesh : tagGradientTriangle) : Boolean;
@@ -5364,7 +5364,7 @@ function TgtkObject.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Lo
         Steps := Min(BR.Y - TL.Y, MaxSteps);
         for I := 0 to Steps - 1 do begin
           GetGradientBrush(StartColor, EndColor, I, Steps, UseBrush);
-            LCLLinux.FillRect(DC, Rect(TL.X, TL.Y + I, BR.X, TL.Y + I + 1),
+            LCLIntf.FillRect(DC, Rect(TL.X, TL.Y + I, BR.X, TL.Y + I + 1),
               UseBrush)
         end
       end
@@ -5372,12 +5372,12 @@ function TgtkObject.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Lo
         Steps := Min(BR.X - TL.X, MaxSteps);
         for I := 0 to  Steps - 1 do begin
           GetGradientBrush(StartColor, EndColor, I, Steps, UseBrush);
-          LCLLinux.FillRect(DC, Rect(TL.X + I, TL.Y, TL.X + I + 1, BR.Y),
+          LCLIntf.FillRect(DC, Rect(TL.X + I, TL.Y, TL.X + I + 1, BR.Y),
             UseBrush);
         end;
       end;
       If UseBrush <> 0 then
-        LCLLinux.DeleteObject(UseBrush);
+        LCLIntf.DeleteObject(UseBrush);
     end;
   end;
 
@@ -8794,6 +8794,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.284  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.283  2003/09/17 19:40:46  ajgenius
   Initial DoubleBuffering Support for GTK2
 
@@ -9546,7 +9549,7 @@ end;
   reference it from interface (GTK, Win32) units.
   New Frame3d canvas method that uses native (themed) drawing (GTK only).
   New overloaded Canvas.TextRect method.
-  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+  LCLIntf and Graphics was split, so a bunch of files had to be modified.
 
   Revision 1.59  2002/01/24 15:40:59  lazarus
   MG: deactivated clipboard setting target list for win32

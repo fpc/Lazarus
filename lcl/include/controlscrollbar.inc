@@ -141,7 +141,7 @@ begin
   else
     KindID:=SM_CXVSCROLL;
   if HandleAllocated then
-    Result:=LCLLinux.GetScrollBarSize(ControlHandle,KindID)
+    Result:=LCLIntf.GetScrollBarSize(ControlHandle,KindID)
   else
     Result:=GetSystemMetrics(KindID);
 end;

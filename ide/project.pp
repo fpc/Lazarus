@@ -47,7 +47,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, LCLLinux, LCLType, Laz_XMLCfg, LazConf, CompilerOptions,
+  Classes, SysUtils, LCLIntf, LCLType, Laz_XMLCfg, LazConf, CompilerOptions,
   FileCtrl, CodeToolManager, CodeCache, Forms, Controls, EditorOptions, Dialogs,
   IDEProcs, RunParamsOpts, ProjectDefs, EditDefineTree, DefineTemplates,
   PackageDefs;
@@ -2712,6 +2712,9 @@ end.
 
 {
   $Log$
+  Revision 1.137  2003/09/18 09:21:02  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.136  2003/09/17 08:43:17  mattias
   fixed loading old project compiler options
 

@@ -37,7 +37,7 @@ Interface
 }
 Uses
   Windows, Classes, LCLStrConsts, ComCtrls, Controls, Dialogs, DynHashArray,
-  ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLLinux, LCLType,
+  ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
   LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def, Graphics;
 
 Type
@@ -186,6 +186,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.41  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.40  2003/09/14 09:43:45  mattias
   fixed common dialogs from Karl
 

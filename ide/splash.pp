@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, Controls, Forms, Buttons, SysUtils, StdCtrls, ExtCtrls, LResources,
-  LCLLinux{must be used before graphics}, Graphics;
+  LCLIntf{must be used before graphics}, Graphics;
 
 type
   TSplashForm = class(TForm)
@@ -141,6 +141,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2003/09/18 09:21:02  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.18  2003/01/06 12:00:16  mattias
   implemented fsStayOnTop+bsNone for forms under gtk (useful for splash)
 

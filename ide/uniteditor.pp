@@ -41,7 +41,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, Controls, LCLProc, LCLType, LCLLinux, FileCtrl, LMessages, Forms,
+  Classes, Controls, LCLProc, LCLType, LCLIntf, FileCtrl, LMessages, Forms,
   Buttons, ComCtrls, SysUtils, Dialogs, StdCtrls, GraphType, Graphics, Extctrls,
   Menus,
   // codetools
@@ -2542,7 +2542,7 @@ begin
   if CurCompletionControl=nil then exit;
   DeactivateCompletionForm;
   ActSE:=GetActiveSE;
-  if ActSE<>nil then LCLLinux.ShowCaret(ActSE.EditorComponent.Handle);
+  if ActSE<>nil then LCLIntf.ShowCaret(ActSE.EditorComponent.Handle);
 end;
 
 Procedure TSourceNotebook.ccExecute(Sender : TObject);

@@ -413,6 +413,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.6  2002/10/30 13:44:29  lazarus
   MG: fixed examples
 
@@ -433,7 +436,7 @@ end.
   reference it from interface (GTK, Win32) units.
   New Frame3d canvas method that uses native (themed) drawing (GTK only).
   New overloaded Canvas.TextRect method.
-  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+  LCLIntf and Graphics was split, so a bunch of files had to be modified.
 
   Revision 1.1  2000/07/13 10:28:20  michael
   + Initial import

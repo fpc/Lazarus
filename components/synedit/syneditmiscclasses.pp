@@ -43,7 +43,7 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLLinux, LCLType, GraphType,
+  LCLIntf, LCLType,
   {$ELSE}
   Windows,
   {$ENDIF}

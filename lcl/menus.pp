@@ -45,7 +45,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLLinux, LCLType, LCLProc, VCLGlobals,
+  Classes, SysUtils, LCLStrConsts, LCLIntf, LCLType, LCLProc, VCLGlobals,
   LMessages, ActnList, Graphics, ImgList;
 
 
@@ -386,6 +386,9 @@ end.
 
 {
   $Log$
+  Revision 1.51  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.50  2003/07/21 23:43:32  marc
   * Fixed radiogroup menuitems
 

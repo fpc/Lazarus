@@ -42,13 +42,13 @@ uses
 
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
 
-   LMessages, Controls, Forms, VclGlobals, LCLProc,
-  LCLStrConsts, LCLLinux, LCLType, DynHashArray, LazLinkedList,
+  LMessages, Controls, Forms, VclGlobals, LCLProc,
+  LCLStrConsts, LCLIntf, LCLType, DynHashArray, LazLinkedList,
   GraphType, GraphMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls,
   ComCtrls, CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls,
   Dialogs, ExtDlgs, FileCtrl, LResources, Math, GTKGlobals,
 
-  gtkDef,   gtkProc, gtkInt;
+  gtkDef, gtkProc, gtkInt;
 
 type
   TGtk2Object = class(TGtkObject)
@@ -1046,6 +1046,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.14  2003/09/17 20:30:57  ajgenius
   fix(?) DCOffset for DrawText
 

@@ -50,7 +50,7 @@ uses
   QGraphics,
 {$ELSE}
   {$IFDEF SYN_LAZARUS}
-  LCLLinux, Graphics, GraphType, ClipBrd,
+  LCLIntf, Graphics, ClipBrd,
   {$ELSE}
   Windows,
   Graphics,

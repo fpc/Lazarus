@@ -28,7 +28,7 @@ unit Grids;
 interface
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLProc, LCLType, LCLLinux, Controls,
+  Classes, SysUtils, LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls,
   GraphType, Graphics, Forms, VCLGlobals, DynamicArray, LMessages, Messages,
   XMLCfg, StdCtrls, LResources, MaskEdit;
 
@@ -2435,7 +2435,7 @@ begin
         
         if (GoEditing in Options)and(FEditor=nil) and not Focused then begin
           {$IfDef dbgFocus} WriteLn('  AUTO-FOCUSING '); {$Endif}
-          LCLLinux.SetFocus(Self.Handle);
+          LCLIntf.SetFocus(Self.Handle);
         end;
         
       end;
@@ -2983,7 +2983,7 @@ begin
       FEditorHiding:=True;
       Editor.Visible:=False;
       Editor.Parent:=nil;
-      LCLLinux.SetFocus(Self.Handle);
+      LCLIntf.SetFocus(Self.Handle);
       FEDitorHiding:=False;
       {$IfDef dbgFocus} WriteLn('EditorHide FIN'); {$Endif}
     end;
@@ -3001,7 +3001,7 @@ begin
         FEditorShowing:=True;
         ScrollToCell(FCol,FRow);
         EditorReset;
-        LCLLinux.SetFocus(Editor.Handle);
+        LCLIntf.SetFocus(Editor.Handle);
         FEditorShowing:=False;
         InvalidateCell(FCol,FRow,True);
         {$IfDef dbgFocus} WriteLn('EditorShow FIN');{$Endif}

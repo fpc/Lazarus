@@ -68,7 +68,7 @@ begin
     // focus the next button to the left or right
     
     // search old focused button
-    OldFocusControl:=FindControl(LCLLinux.GetFocus);
+    OldFocusControl:=FindControl(LCLIntf.GetFocus);
     if (OldFocusControl=nil) or (GetParentForm(OldFocusControl)<>Self)
     or (not (OldFocusControl is TButton)) then
     begin
@@ -375,6 +375,9 @@ end;
 
 {
    $Log$
+   Revision 1.8  2003/09/18 09:21:03  mattias
+   renamed LCLLinux to LCLIntf
+
    Revision 1.7  2003/08/27 08:14:37  mattias
    fixed system fonts for win32 intf
 

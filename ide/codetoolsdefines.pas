@@ -44,7 +44,7 @@ unit CodeToolsDefines;
 interface
 
 uses
-  Classes, SysUtils, LCLLinux, Forms, Controls, Buttons, StdCtrls, ComCtrls,
+  Classes, SysUtils, LCLIntf, Forms, Controls, Buttons, StdCtrls, ComCtrls,
   ExtCtrls, Menus, LResources, LCLProc, Graphics, Dialogs, ImgList, SynEdit,
   Laz_XMLCfg, LazarusIDEStrConsts, DefineTemplates, CodeToolManager,
   CodeToolsOptions, CodeToolsDefPreview, TransferMacros, InputFileDialog,

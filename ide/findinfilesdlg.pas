@@ -23,7 +23,7 @@ unit FindInFilesDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLLinux, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
+  Classes, SysUtils, LCLIntf, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
   LResources, LazarusIDEStrConsts, DirSel, Dialogs, SynEditTypes;
 
 type

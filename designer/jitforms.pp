@@ -47,7 +47,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, TypInfo, Forms, Controls, LCLLinux, Dialogs, JITForm,
+  Classes, SysUtils, TypInfo, Forms, Controls, LCLIntf, Dialogs, JITForm,
   ComponentReg, IDEProcs;
 
 type

@@ -24,7 +24,7 @@ program SpeedTest;
 
 uses 
   Interfaces, Forms, SysUtils, Buttons, Classes, StdCtrls, LCLType,
-  LCLLinux, Graphics;
+  LCLIntf, Graphics;
 
 type
   TForm1 = class(TForm)

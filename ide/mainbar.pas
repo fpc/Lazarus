@@ -40,7 +40,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, LCLType, LCLLinux, StdCtrls, Buttons, Menus, ComCtrls, SysUtils,
+  Classes, LCLType, LCLIntf, StdCtrls, Buttons, Menus, ComCtrls, SysUtils,
   Controls, Graphics, ExtCtrls, Dialogs, FileCtrl, Forms, CodeToolManager,
   CodeCache, AVL_Tree, SynEditKeyCmds, LazConf, LazarusIDEStrConsts,
   ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,

@@ -37,7 +37,7 @@ unit Dialogs;
 interface
 
 uses
-  Classes, SysUtils, LCLlinux, InterfaceBase, FileCtrl, LCLStrConsts, LCLType,
+  Classes, SysUtils, LCLIntf, InterfaceBase, FileCtrl, LCLStrConsts, LCLType,
   VCLGlobals, LMessages, Forms, Controls, GraphType, Graphics, Buttons,
   StdCtrls;
 
@@ -421,6 +421,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.37  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.36  2003/09/04 10:51:30  mattias
   fixed default size of preview widget
 

@@ -38,7 +38,7 @@ unit EditorOptions;
 interface
 
 uses
-  LCLLinux, LCLType,
+  LCLIntf, LCLType,
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
   FileCtrl, GraphType, Graphics, Controls, Dialogs, LResources, IDEProcs,
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,

@@ -38,7 +38,7 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Classes, LCLStrConsts, LCLLinux, LCLType, LCLProc, AvgLvlTree,
+  SysUtils, Classes, LCLStrConsts, LCLIntf, LCLType, LCLProc, AvgLvlTree,
   Controls, Forms, StdCtrls, ExtCtrls, vclGlobals, LMessages, Menus, ImgList,
   GraphType, Graphics, ToolWin, CommCtrl, Buttons, Math;
 
@@ -2039,6 +2039,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.87  2003/09/18 09:21:03  mattias
+  renamed LCLLinux to LCLIntf
+
   Revision 1.86  2003/09/13 10:06:53  mattias
   fixed ColorIsStored
 
