@@ -647,6 +647,7 @@ begin
     or (AnsiCompareText(ParamStr(1),'-help')=0)
     or (AnsiCompareText(ParamStr(1),'-?')=0)) then
   begin
+    TranslateResourceStrings(ExtractFilePath(ParamStr(0)),'');
     writeln(lisCmdLineHlpHeader);
     writeln(Format(lisCmdLinePrimaryConfigPathDesc,[GetPrimaryConfigPath]));
     writeln(Format(lisCmdLineSecondaryConfigPathDesc,[GetSecondaryConfigPath]));
@@ -5538,6 +5539,7 @@ var
   CurUnit: TUnitInfo;
 begin
   Result:=mrOk;
+  if Project1=nil then exit;
   Project1.GetUnitsChangedOnDisk(AnUnitList);
   if AnUnitList=nil then exit;
   Result:=ShowDiskDiffsDialog(AnUnitList);
@@ -7504,6 +7506,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.437  2002/12/16 23:27:01  mattias
+  fixed command line internationalization
+
   Revision 1.436  2002/12/02 10:44:55  mattias
   fixed SourceChangeCache when nothing has changed
 
