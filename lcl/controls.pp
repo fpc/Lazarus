@@ -893,7 +893,7 @@ type
     property  OnMouseWheelDown: TMouseWheelUpDownEvent read FOnMouseWheelDown write FOnMouseWheelDown;
     property  OnMouseWheelUp: TMouseWheelUpDownEvent read FOnMouseWheelUp write FOnMouseWheelUp;
   public
-    constructor Create(AOwner: TComponent);override;
+    constructor Create(TheOwner: TComponent);override;
     constructor CreateParented(ParentWindow: HWnd);
     class function CreateParentedControl(ParentWindow: HWnd): TWinControl;
     destructor Destroy; override;
@@ -1443,6 +1443,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.104  2003/03/09 17:44:12  mattias
+  finshed Make Resourcestring dialog and implemented TToggleBox
+
   Revision 1.103  2003/02/27 09:52:00  mattias
   published TImgList.Width and Height
 
