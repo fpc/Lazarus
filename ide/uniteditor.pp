@@ -808,7 +808,7 @@ if Command >= ecFirstParent then
                           except
                             GotoLine(0);
                           end;
-TMainIDE(TSourceNotebook(FAOwner).MainIDE).speedbutton4.visible := not TMainIDE(TSourceNotebook(FAOwner).MainIDE).speedbutton4.visible;
+//TMainIDE(TSourceNotebook(FAOwner).MainIDE).speedbutton4.visible := not TMainIDE(TSourceNotebook(FAOwner).MainIDE).speedbutton4.visible;
                         end;
 
    ecPeriod : Begin

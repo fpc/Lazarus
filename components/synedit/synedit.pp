@@ -1078,7 +1078,6 @@ end;
 
 procedure TCustomSynEdit.DecPaintLock;
 begin
-  Writeln('IN DECPAINT');
   Dec(fPaintLock);
   if (fPaintLock = 0) and HandleAllocated then begin
     if sfScrollbarChanged in fStateFlags then
@@ -2659,7 +2658,6 @@ procedure TCustomSynEdit.SetCaretXY(Value: TPoint);
 var
   nMaxX: integer;
 begin
-  Writeln('IN SETCARETXY');
   nMaxX := fMaxLeftChar;
   if Value.Y > Lines.Count then
     Value.Y := Lines.Count;
@@ -3165,22 +3163,22 @@ var
   cf: TCompositionForm;
 {$ENDIF}
 begin
-  Writeln('IN UPDATECARET');
-  Writeln('PAINTLOCK = '+inttostr(PaintLock));
+ Writeln('UPDATECARET---------------------------');
   if (PaintLock <> 0) or not Focused then
-    Begin
-       Include(fStateFlags, sfCaretChanged);
-    end
+    Include(fStateFlags, sfCaretChanged)
   else begin
+    Writeln('Inside UPDATECARET section-------');
     Exclude(fStateFlags, sfCaretChanged);
     CX := CaretXPix + FCaretOffset.X;
     CY := CaretYPix + FCaretOffset.Y;
     if (CX >= fGutterWidth) and (CX < ClientWidth)
       and (CY >= 0) and (CY < ClientHeight)
     then begin
+      Writeln('setting CaretPos to '+Inttostr(CX)+','+Inttostr(CY));
       SetCaretPos(CX, CY);
       ShowCaret;
     end else begin
+      Writeln('hiding CaretPos');
       HideCaret;
       SetCaretPos(CX, CY);
     end;

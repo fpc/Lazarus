@@ -539,7 +539,7 @@ begin
           y := Top;
           while y <= top+height do
             begin
-              if Controlatpos(TPOINT([x,y]),True) = nil then
+              //if Controlatpos(TPOINT([x,y]),True) = nil then
               Canvas.Rectangle(x-left,y-top,x-left+1,y-top);
               Inc(y, GridPoints.Y);
             end;

@@ -84,6 +84,20 @@ Begin
       FOnDeactivate(Self);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TCustomForm.FocusControl
+  Params:  None
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+Procedure TCustomForm.FocusControl(Control : TWinControl);
+Begin
+   Writeln('[FOCUSCONTROL]');
+   FActiveControl := Control;
+   LCLLinux.SetFocus(Control.Handle);
+   Writeln('[FOCUSCONTROL] DONE');
+
+End;
+
 
 {------------------------------------------------------------------------------
   Method: TCustomForm.Notification
@@ -156,7 +170,9 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.WMActivate(var Message : TLMActivate);
 Begin
+  Writeln('[TCUSTOMFORM.WMACtivate]');
 if Assigned(FOnActivate) then FOnActivate(Self);
+  Writeln('[TCUSTOMFORM.WMACtivate] Done');
 end;
 
 {------------------------------------------------------------------------------
@@ -379,7 +395,7 @@ begin
           end;
           if FocusHandle <> 0 
           then begin
-            //TODO:should we write a function or use tcustomform's function?   Windows.SetFocus(FocusHandle);
+            LCLLinux.SetFocus(FocusHandle);
             Exit;
           end;
         end;
@@ -837,6 +853,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/02/06 20:59:17  lazarus
+  Trying to get the last control of the last form focused when a dialog closes.
+  Still working on it.
+  Shane
+
   Revision 1.11  2001/02/02 20:13:39  lazarus
   Codecompletion changes.
   Added code to Uniteditor for code completion.

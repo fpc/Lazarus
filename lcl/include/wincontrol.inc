@@ -419,8 +419,7 @@ end;
 {------------------------------------------------------------------------------}
 Function TWinControl.Focused : Boolean;
 Begin
-  Assert(False, 'Trace:TODO:[TWinControl.Focused]');
-  Result := True;
+Result := (FHandle <> 0) and (GetFocus = FHandle);
 end;
 
 {------------------------------------------------------------------------------}
@@ -725,9 +724,24 @@ end;
 {  TWinControl SetFocus                                                      }
 {------------------------------------------------------------------------------}
 procedure TWinControl.SetFocus;
+var
+  Form : TCustomForm;
 begin
-  if Visible and HandleAllocated
-  then LCLLinux.SetFocus(Handle);
+ Writeln('[TWINCONTROL.SETFOCUS]');
+   Form := GetParentForm(self);
+   if Assigned(form) then
+     Writeln('Form is assigned') else Writeln('Form is NOT assigned');
+  if Form <> nil then
+     Form.FocusControl(self)
+  else
+  if Visible and HandleAllocated then
+     LCLLinux.SetFocus(Handle);
+  Writeln('[TWINCONTROL.SETFOCUS] done');
+
+
+{  if Visible and HandleAllocated then
+     LCLLinux.SetFocus(Handle);
+ }
 end;
 
 {------------------------------------------------------------------------------}
@@ -1915,6 +1929,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2001/02/06 20:59:17  lazarus
+  Trying to get the last control of the last form focused when a dialog closes.
+  Still working on it.
+  Shane
+
   Revision 1.18  2001/02/06 18:19:37  lazarus
   Shane
 

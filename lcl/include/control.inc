@@ -802,13 +802,16 @@ procedure TControl.InvalidateControl(IsVisible, IsOpaque : Boolean);
 var
   Rect : TRect;
 begin
+Writeln('[INAVLIDATECONTROL]');
   if (IsVisible or (csDesigning in ComponentState) and not (csNoDesignVisible in ControlStyle)) and
      (Parent <> nil) and (Parent.HandleAllocated) then
     Begin
-//     CNSendMessage(LM_REDRAW,Self,Nil);
-    Rect := BoundsRect;
-    InvalidateRect(parent.handle,@Rect, True);
+     CNSendMessage(LM_REDRAW,Self,Nil);
+//    Rect := BoundsRect;
+//    InvalidateRect(parent.handle,@Rect, True);
     end;
+Writeln('[INAVLIDATECONTROL] Done');
+
 end;
 
 {------------------------------------------------------------------------------}
@@ -1289,8 +1292,9 @@ end;
 
 { =============================================================================
   $Log$
-  Revision 1.13  2001/02/06 18:23:51  lazarus
-  Changed InvalidateControl
+  Revision 1.14  2001/02/06 20:59:16  lazarus
+  Trying to get the last control of the last form focused when a dialog closes.
+  Still working on it.
   Shane
 
   Revision 1.11  2001/02/04 04:18:12  lazarus
