@@ -416,6 +416,7 @@ end;
 procedure TCanvas.Polygon(Points: PPoint; NumPts: Integer;
   Winding: boolean{$IFDEF VER1_1} = False{$ENDIF});
 begin
+  if NumPts<=0 then exit;
   RequiredState([csHandleValid, csBrushValid, csPenValid]);
   LCLLinux.Polygon(FHandle,Points,NumPts,Winding);
 end;
@@ -1096,6 +1097,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2002/10/31 17:31:10  lazarus
+  MG: fixed return polygon point
+
   Revision 1.33  2002/10/27 11:51:35  lazarus
   MG: fixed memleaks
 
