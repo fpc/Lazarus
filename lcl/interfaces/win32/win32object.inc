@@ -226,7 +226,7 @@ Begin
 
   Handle := (Sender As TWinControl).Handle;
   HOwner := GetAncestor(Handle, GA_ROOTOWNER);
-  Assert(Handle = 0, 'Trace:WARNING: [TWin32Object.SetLabel] --> Got NULL handle');
+  Assert(Handle<>0,'Trace:WARNING: [TWin32Object.SetLabel] --> Got NULL handle');
   Assert(False, 'Trace:Setting the label in TWin32Object.SetLabel');
  
   Case TControl(Sender).FCompStyle Of
@@ -295,7 +295,7 @@ Begin
   End;
   Assert(False, Format('Trace:[TWin32Object.SetLabel] %S --> END', [Sender.ClassName]));
 End;
-{$C+}
+
 {------------------------------------------------------------------------------
   Method: TWin32Object.IntSendMessage3
   Params:  LM_Message - message to be processed
@@ -772,8 +772,8 @@ activate_time :	the time at which the activation event occurred.
               begin
                 OldPageIndex := SendMessage(Handle,TCM_GETCURSEL,0,0);
                 SendMessage(Handle,TCM_SETCURSEL,WPARAM(Page),0);
-{                if (Page>=0) And ((Parent As TCustomNotebook).Page[Page].HandleAllocated)
-                  then ShowWindow((Parent As TCustomNotebook).Page[Page].Handle, SW_SHOW);}
+                if (Page>=0) And ((Parent As TCustomNotebook).Page[Page].HandleAllocated)
+                  then ShowWindow((Parent As TCustomNotebook).Page[Page].Handle, SW_SHOW);
                 if (OldPageIndex>=0) and (OldPageIndex<>Page) and ((Parent As TCustomNotebook).Page[OldPageIndex].HandleAllocated)
                   then ShowWindow((Parent As TCustomNotebook).Page[OldPageIndex].Handle, SW_HIDE);
               end;
@@ -901,7 +901,7 @@ activate_time :	the time at which the activation event occurred.
     End; // end of else-part of 1st case
   End; // end of 1st case
 End;
-{$C-}
+
 {------------------------------------------------------------------------------
   Method: TWin32Object.SetCallback
   Params: Msg    - message for which to set a callback
@@ -1982,7 +1982,7 @@ Begin
     csPage:
     Begin
       Assert(False, 'Trace:Create a csPage component.');
-      Window := CreateWindow('STATIC', Nil, WS_CHILD, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindowEx(WS_EX_CONTROLPARENT, @ClsName, Nil, WS_CHILD or WS_CLIPCHILDREN or WS_CLIPSIBLINGS, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       ShowWindow(Window, SW_HIDE);
       SetProp(Window, 'Lazarus', Sender);
     End;
@@ -2589,6 +2589,9 @@ End;
 
 {
   $Log$
+  Revision 1.35  2002/12/20 19:08:24  mattias
+  notebook patch from vincent
+
   Revision 1.34  2002/12/19 19:55:37  mattias
   Fixed sending wrong List
 
