@@ -2738,7 +2738,7 @@ begin
     NewUnitInfo.ComponentName,'T'+NewUnitInfo.ComponentName);
   NewComponent:=CInterface.Component;
   if NewComponent is TControl then
-    TControl(NewComponent).Visible:=true;
+    TControl(NewComponent).Visible:=false;
   NewUnitInfo.Component:=NewComponent;
   CreateDesignerForComponent(NewComponent);
 
@@ -9406,6 +9406,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.635  2003/08/14 12:25:21  mattias
+  changed default visible of forms to false
+
   Revision 1.634  2003/08/14 08:10:02  mattias
   started first compiler test
 
