@@ -678,6 +678,7 @@ begin
   // rename package
   PackageGraph.ChangePackageID(APackage,NewPkgName,APackage.Version,
                                RenameDependencies);
+  SaveAutoInstallDependencies(false);
 
   // clean up old package file to reduce ambigiousities
   if FileExists(OldPkgFilename)
@@ -1239,7 +1240,6 @@ var
 begin
   if SetWithStaticPcksFlagForIDE then begin
     MiscellaneousOptions.BuildLazOpts.WithStaticPackages:=true;
-    MiscellaneousOptions.Save;
   end;
 
   sl:=TStringList.Create;
