@@ -146,8 +146,11 @@ begin
 
     try
       TheProcess := TProcess.Create(nil);
+      writeln('AAA1');
       TheProcess.CommandLine := CmdLine;
+      writeln('AAA2');
       TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
+      writeln('AAA3');
       TheProcess.ShowWindow := swoNone;
       Result:=mrOk;
       try
@@ -157,12 +160,14 @@ begin
           OutputFilter.PrgSourceFilename:=ProjectFilename;
           OutputFilter.Options:=[ofoSearchForFPCMessages,ofoExceptionOnError];
           OutputFilter.Project:=AProject;
+      writeln('AAA4');
           OutputFilter.Execute(TheProcess);
         end else begin
           TheProcess.Execute;
+          TheProcess.WaitOnExit;
         end;
+      writeln('AAA5');
       finally
-        TheProcess.WaitOnExit;
         TheProcess.Free;
       end;
     except
@@ -189,6 +194,9 @@ end.
 
 {
   $Log$
+  Revision 1.34  2002/10/21 22:12:46  lazarus
+  MG: fixed frmactivate
+
   Revision 1.33  2002/09/05 19:03:34  lazarus
   MG: improved handling of ambigious source files
 
