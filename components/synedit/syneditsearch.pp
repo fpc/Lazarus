@@ -203,10 +203,11 @@ begin
   if (Delta <> 0) and (fResults.Count > 0) then begin
     i := Pred(fResults.Count);
     while i >= 0 do begin
-      if GetResult(i) <= First then break;
       {$IFDEF SYN_LAZARUS}
-      dec(TSynEditSearchResult(fResults[i]).Start,Delta);
+      if GetResult(i)>=First then
+        dec(TSynEditSearchResult(fResults[i]).Start,Delta);
       {$ELSE}
+      if GetResult(i) <= First then break;
       fResults[i] := pointer(integer(fResults[i]) - Delta);
       {$ENDIF}
       Dec(i);
