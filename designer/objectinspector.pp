@@ -2082,6 +2082,7 @@ begin
   FComponentList:=TComponentSelectionList.Create;
   FUpdatingAvailComboBox:=false;
   Name := DefaultObjectInspectorName;
+  FDefaultItemHeight := 22;
 
   // StatusBar
   StatusBar:=TStatusBar.Create(Self);
