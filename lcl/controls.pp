@@ -552,7 +552,7 @@ type
     property DragCursor : TCursor read FDragCursor write FDragCursor default crDrag;
     property DragKind : TDragKind read FDragKind write FDragKind default dkDrag;
     property DragMode : TDragMode read fDragMode write SetDragMode default dmManual;
-    property ISControl : Boolean read FIsControl write FIsControl;
+    property IsControl : Boolean read FIsControl write FIsControl;
     property MouseCapture: Boolean read GetMouseCapture write SetMOuseCapture;
     property ParentFont : Boolean  read FParentFont write FParentFont;
     property ParentColor : Boolean  read FParentColor write FParentColor;
@@ -654,6 +654,7 @@ type
     FBoundsLockCount: integer;
     FBoundsRealized: TRect;
     FBrush: TBrush;
+    FAdjustClientRectRealized: TRect;
     FControls : TList;
     FDefWndProc : Pointer;
     //FDockSite : Boolean;
@@ -703,7 +704,6 @@ type
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var Message: TLMPaint);
     procedure PaintWindow(DC: HDC); virtual;
-    { events need to be protected otherwise they can't be overridden ??}
     procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure WMEraseBkgnd(var Message : TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
@@ -750,12 +750,12 @@ type
     function  DoKeyDown(var Message: TLMKey): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoKeyUp(var Message: TLMKey): Boolean;
-    function GetClientOrigin: TPoint; override;
+    function  GetClientOrigin: TPoint; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
-    Function  IsControlMouseMsg(var Message : TLMMOuse): Boolean;
-    property BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
+    Function  IsControlMouseMsg(var Message : TLMMouse): Boolean;
+    property  BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property  DefWndProc: Pointer read FDefWndProc write FDefWndPRoc;
-    property IsResizing : Boolean read GetIsResizing;
+    property  IsResizing : Boolean read GetIsResizing;
 
     property  ParentCtl3D : Boolean read FParentCtl3D write SetParentCtl3d default True;
     { events }
@@ -776,6 +776,7 @@ type
     procedure EndUpdateBounds;
     Function CanFocus : Boolean;
     Function ControlAtPos(const Pos : TPoint; AllowDisabled : Boolean): TControl;
+    procedure DoAdjustClientRectChange;
     Function Focused : Boolean; dynamic;
     Procedure BroadCast(var Message);
     Procedure DisableAlign;
@@ -822,18 +823,18 @@ type
   end;
 
 
- TCustomControl = class(TWinControl)
- private
+  TCustomControl = class(TWinControl)
+  private
 //   FOnPaint : TNotifyEvent;
-   FCanvas: TCanvas;
- protected
-   procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
-   Procedure Paint; virtual;
-   property Canvas: TCanvas read FCanvas write FCanvas;
- public
-   constructor Create(AOwner: TComponent); override;
-   destructor Destroy; override;
- end;
+    FCanvas: TCanvas;
+  protected
+    procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
+    Procedure Paint; virtual;
+    property Canvas: TCanvas read FCanvas write FCanvas;
+  public
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
+  end;
  
 
 
@@ -1219,6 +1220,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.42  2002/04/22 13:07:44  lazarus
+  MG: fixed AdjustClientRect of TGroupBox
+
   Revision 1.41  2002/04/21 06:53:54  lazarus
   MG: fixed save lrs to test dir
 
