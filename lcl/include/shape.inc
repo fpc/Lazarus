@@ -13,10 +13,10 @@
  *****************************************************************************
 }
 
-constructor TShape.Create(AOwner: TComponent);
+constructor TShape.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  SetBounds(0,0,65,65);
+  inherited Create(TheOwner);
+  SetInitialBounds(0,0,65,65);
   ControlStyle := ControlStyle + [csReplicatable];
   FPen := TPen.Create;
   FPen.OnChange := @StyleChanged;
@@ -26,8 +26,8 @@ end;
 
 destructor TShape.Destroy;
 begin
-  FPen.Free;
-  FBrush.Free;
+  FreeThenNil(FPen);
+  FreeThenNil(FBrush);
   inherited Destroy;
 end;
 
@@ -35,6 +35,7 @@ procedure TShape.Paint;
 var
   PaintRect : TRect;
   MinSize : Longint;
+  P: array[0..3] of TPoint;
 begin
   with Canvas do
   begin
@@ -45,7 +46,8 @@ begin
     InflateRect(PaintRect, -(Pen.Width div 2), -(Pen.Width div 2));
     With PaintRect do begin
       MinSize := Min(Right - Left, Bottom - Top);
-      if FShape in [stSquare, stRoundSquare, stCircle] then begin
+      if FShape in [stSquare, stRoundSquare, stCircle, stSquaredDiamond] then
+      begin
         Left := Left + ((Right - Left) - MinSize) div 2;
         Top := Top + ((Bottom - Top) - MinSize) div 2;
         Right := Left + MinSize;
@@ -60,6 +62,14 @@ begin
         RoundRect(PaintRect, MinSize div 4, MinSize div 4);
       stCircle, stEllipse:
         Ellipse(PaintRect);
+      stSquaredDiamond, stDiamond:
+        with PaintRect do begin
+          P[0].x:=Left; P[0].y:=Top + (Bottom - Top) div 2;
+          P[1].x:=Left+ (Right - Left) div 2; P[1].y:=Bottom;
+          P[2].x:=Right; P[2].y:= P[0].y;
+          P[3].x:=P[1].x; P[3].y:=Top;
+          Polygon(P);
+        end;
     end;
   end;
 end;
@@ -95,6 +105,9 @@ end;
 { =============================================================================
 
  $Log$
+ Revision 1.3  2004/02/10 10:13:09  mattias
+ added diamonds to TShape
+
  Revision 1.2  2002/08/18 04:57:01  mattias
  fixed csDashDot
 

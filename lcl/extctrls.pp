@@ -311,7 +311,7 @@ type
   { TShape }
 
   TShapeType = (stRectangle, stSquare, stRoundRect, stRoundSquare,
-    stEllipse, stCircle);
+    stEllipse, stCircle, stSquaredDiamond, stDiamond);
 
   TShape = class(TGraphicControl)
   private
@@ -322,25 +322,22 @@ type
     procedure SetPen(Value: TPen);
     procedure SetShape(Value: TShapeType);
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-
     procedure Paint; override;
-  published
     procedure StyleChanged(Sender: TObject);
+  published
     property Align;
     property Anchors;
     property Brush: TBrush read FBrush write SetBrush;
+    property Constraints;
     property DragCursor;
     property DragKind;
     property DragMode;
     property Enabled;
-    property Constraints;
     property ParentShowHint;
     property Pen: TPen read FPen write SetPen;
-    property Shape: TShapeType read FShape write SetShape;
-    property ShowHint;
-    property Visible;
+    property OnChangeBounds;
 //    property OnDragDrop;
 //    property OnDragOver;
 //    property OnEndDock;
@@ -348,8 +345,12 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnResize;
 //    property OnStartDock;
 //    property OnStartDrag;
+    property Shape: TShapeType read FShape write SetShape;
+    property ShowHint;
+    property Visible;
   end;
 
 
@@ -924,6 +925,9 @@ end.
 
  {
   $Log$
+  Revision 1.96  2004/02/10 10:13:08  mattias
+  added diamonds to TShape
+
   Revision 1.95  2004/02/04 22:17:08  mattias
   removed workaround VirtualCreate
 
