@@ -26,8 +26,8 @@ interface
 
 uses
   Classes, SysUtils, LCLLinux, Forms, Controls, Buttons, StdCtrls, ComCtrls,
-  ExtCtrls, Menus, LResources, Graphics, ImgList, SynEdit, DefineTemplates,
-  CodeToolManager, CodeToolsOptions;
+  ExtCtrls, Menus, LResources, Graphics, Dialogs, ImgList, SynEdit,
+  DefineTemplates, CodeToolManager, CodeToolsOptions;
 
 type
   TCodeToolsDefinesEditor = class(TForm)
@@ -111,6 +111,7 @@ type
     procedure DeleteFilePathBitBtnClick(Sender: TObject);
     procedure InsertFilePathBitBtnClick(Sender: TObject);
     procedure InsertNodeMenuItemClick(Sender: TObject);
+    procedure ProjectSpecificCheckBoxClick(Sender: TObject);
   private
     FDefineTree: TDefineTree;
     FLastSelectedNode: TTreeNode;
@@ -119,10 +120,11 @@ type
     procedure RebuildDefineTreeView;
     procedure AddDefineNodes(ANode: TDefineTemplate; AParent: TTreeNode;
       WithChilds,WithNextSiblings: boolean);
-    procedure SetNodeImages(ANode: TTreeNode);
+    procedure SetNodeImages(ANode: TTreeNode; WithSubNodes: boolean);
     procedure ValueAsPathToValueAsText;
-    procedure SaveSelectedValues;
+    procedure SaveSelectedValues(ATreeNode: TTreeNode);
     procedure ShowSelectedValues;
+    procedure SetTypeLabel;
     function ValueToFilePathText(const AValue: string): string;
     procedure InsertNewNode(Behind: boolean; Action: TDefineAction);
   public
@@ -293,8 +295,8 @@ procedure TCodeToolsDefinesEditor.MoveFilePathUpBitBtnClick(Sender: TObject);
 var y: integer;
 begin
   if ValueAsFilePathsSynEdit.ReadOnly then exit;
-  y:=ValueAsFilePathsSynEdit.CaretY;
-  if (y>1) and (y<=ValueAsFilePathsSynEdit.Lines.Count) then
+  y:=ValueAsFilePathsSynEdit.CaretY-1;
+  if (y>0) and (y<ValueAsFilePathsSynEdit.Lines.Count) then
     ValueAsFilePathsSynEdit.Lines.Move(y,y-1);
 end;
 
@@ -302,8 +304,8 @@ procedure TCodeToolsDefinesEditor.MoveFilePathDownBitBtnClick(Sender: TObject);
 var y: integer;
 begin
   if ValueAsFilePathsSynEdit.ReadOnly then exit;
-  y:=ValueAsFilePathsSynEdit.CaretY;
-  if (y>=1) and (y<ValueAsFilePathsSynEdit.Lines.Count) then
+  y:=ValueAsFilePathsSynEdit.CaretY-1;
+  if (y>=0) and (y<ValueAsFilePathsSynEdit.Lines.Count-1) then
     ValueAsFilePathsSynEdit.Lines.Move(y,y+1);
 end;
 
@@ -311,8 +313,8 @@ procedure TCodeToolsDefinesEditor.DeleteFilePathBitBtnClick(Sender: TObject);
 var y: integer;
 begin
   if ValueAsFilePathsSynEdit.ReadOnly then exit;
-  y:=ValueAsFilePathsSynEdit.CaretY;
-  if (y>=1) and (y<=ValueAsFilePathsSynEdit.Lines.Count) then
+  y:=ValueAsFilePathsSynEdit.CaretY-1;
+  if (y>=0) and (y<ValueAsFilePathsSynEdit.Lines.Count) then
     ValueAsFilePathsSynEdit.Lines.Delete(y);
 end;
 
@@ -320,8 +322,8 @@ procedure TCodeToolsDefinesEditor.InsertFilePathBitBtnClick(Sender: TObject);
 var y: integer;
 begin
   if ValueAsFilePathsSynEdit.ReadOnly then exit;
-  y:=ValueAsFilePathsSynEdit.CaretY;
-  if (y>=1) and (y<=ValueAsFilePathsSynEdit.Lines.Count) then
+  y:=ValueAsFilePathsSynEdit.CaretY-1;
+  if (y>=0) and (y<ValueAsFilePathsSynEdit.Lines.Count) then
     ValueAsFilePathsSynEdit.Lines.Insert(y,'');
 end;
 
@@ -351,6 +353,25 @@ begin
   else if Sender=InsertAsChildElseIfMenuItem then Action:=da_ElseIf
   else if Sender=InsertAsChildElseMenuItem then Action:=da_Else;
   InsertNewNode(Behind,Action);
+end;
+
+procedure TCodeToolsDefinesEditor.ProjectSpecificCheckBoxClick(Sender: TObject);
+var
+  SelTreeNode: TTreeNode;
+  SelDefNode: TDefineTemplate;
+begin
+  if not SelectedItemGroupBox.Enabled then exit;
+  SelTreeNode:=DefineTreeView.Selected;
+  if SelTreeNode=nil then exit;
+  SelDefNode:=TDefineTemplate(SelTreeNode.Data);
+  if ProjectSpecificCheckBox.Checked=(dtfProjectSpecific in SelDefNode.Flags)
+  then exit;
+  if ProjectSpecificCheckBox.Checked then
+    Include(SelDefNode.Flags,dtfProjectSpecific)
+  else
+    Exclude(SelDefNode.Flags,dtfProjectSpecific);
+  SetNodeImages(SelTreeNode,true);
+  SetTypeLabel;
 end;
 
 procedure TCodeToolsDefinesEditor.CreateComponents;
@@ -535,6 +556,7 @@ begin
                    SelectedItemGroupBox);
   ProjectSpecificCheckBox.Caption:=
     'Node and its children are only valid for this project';
+  ProjectSpecificCheckBox.OnClick:=@ProjectSpecificCheckBoxClick;
   
   CreateWinControl(NameLabel,TLabel,'NameLabel',SelectedItemGroupBox);
   NameLabel.Caption:='Name:';
@@ -619,7 +641,7 @@ begin
 //writeln(' AAA ',StringOfChar(' ',ANode.Level*2),' ',ANode.Name,' ',WithChilds,',',WithNextSiblings);
   DefineTreeView.Items.BeginUpdate;
   NewTreeNode:=DefineTreeView.Items.AddChildObject(AParent,ANode.Name,ANode);
-  SetNodeImages(NewTreeNode);
+  SetNodeImages(NewTreeNode,false);
   if WithChilds and (ANode.FirstChild<>nil) then begin
     AddDefineNodes(ANode.FirstChild,NewTreeNode,true,true);
   end;
@@ -629,7 +651,8 @@ begin
   DefineTreeView.Items.EndUpdate;
 end;
 
-procedure TCodeToolsDefinesEditor.SetNodeImages(ANode: TTreeNode);
+procedure TCodeToolsDefinesEditor.SetNodeImages(ANode: TTreeNode;
+  WithSubNodes: boolean);
 var ADefineTemplate: TDefineTemplate;
 begin
   ADefineTemplate:=TDefineTemplate(ANode.Data);
@@ -648,16 +671,23 @@ begin
     ANode.ImageIndex:=-1;
   end;
   ANode.SelectedIndex:=ANode.ImageIndex;
-  if dtfAutoGenerated in ADefineTemplate.Flags then begin
-    if dtfProjectSpecific in ADefineTemplate.Flags then
+  if ADefineTemplate.IsAutoGenerated then begin
+    if ADefineTemplate.IsProjectSpecific then
       ANode.StateIndex:=13
     else
       ANode.StateIndex:=11;
   end else begin
-    if dtfProjectSpecific in ADefineTemplate.Flags then
+    if ADefineTemplate.IsProjectSpecific then
       ANode.StateIndex:=12
     else
       ANode.StateIndex:=10;
+  end;
+  if WithSubNodes then begin
+    ANode:=ANode.GetFirstChild;
+    while ANode<>nil do begin
+      SetNodeImages(ANode,true);
+      ANode:=ANode.GetNextSibling;
+    end;
   end;
 end;
 
@@ -694,22 +724,21 @@ begin
   ValueAsTextSynEdit.Text:=s;
 end;
 
-procedure TCodeToolsDefinesEditor.SaveSelectedValues;
+procedure TCodeToolsDefinesEditor.SaveSelectedValues(ATreeNode: TTreeNode);
 var
-  SelTreeNode: TTreeNode;
-  SelDefNode: TDefineTemplate;
+  ADefNode: TDefineTemplate;
   s: string;
   l: integer;
 begin
-  SelTreeNode:=DefineTreeView.Selected;
-  if (SelTreeNode<>nil) then begin
-    SelDefNode:=TDefineTemplate(SelTreeNode.Data);
-    if (not SelDefNode.IsAutoGenerated) then begin
+  if (ATreeNode<>nil) then begin
+    ADefNode:=TDefineTemplate(ATreeNode.Data);
+    if (not ADefNode.IsAutoGenerated) then begin
       if ProjectSpecificCheckBox.Checked then
-        Include(SelDefNode.Flags,dtfProjectSpecific);
-      SelDefNode.Name:=NameEdit.Text;
-      SelDefNode.Variable:=VariableEdit.Text;
-      SelDefNode.Description:=DescriptionEdit.Text;
+        Include(ADefNode.Flags,dtfProjectSpecific);
+      ADefNode.Name:=NameEdit.Text;
+      ATreeNode.Text:=ADefNode.Name;
+      ADefNode.Variable:=VariableEdit.Text;
+      ADefNode.Description:=DescriptionEdit.Text;
       s:=ValueAsTextSynEdit.Text;
       l:=length(s);
       if (l>0) and (s[l] in [#13,#10]) then begin
@@ -719,7 +748,7 @@ begin
           dec(l);
         SetLength(s,l);
       end;
-      SelDefNode.Value:=s;
+      ADefNode.Value:=s;
     end;
   end;
 end;
@@ -728,21 +757,14 @@ procedure TCodeToolsDefinesEditor.ShowSelectedValues;
 var
   SelTreeNode: TTreeNode;
   SelDefNode: TDefineTemplate;
-  s: string;
 begin
   SelTreeNode:=DefineTreeView.Selected;
   if SelTreeNode<>FLastSelectedNode then begin
-    SaveSelectedValues;
+    SaveSelectedValues(FLastSelectedNode);
   end;
   if SelTreeNode<>nil then begin
     SelDefNode:=TDefineTemplate(SelTreeNode.Data);
     SelectedItemGroupBox.Enabled:=true;
-    s:='Action: '+DefineActionNames[SelDefNode.Action];
-    if SelDefNode.IsAutoGenerated then
-      s:=s+', auto generated';
-    if SelDefNode.IsProjectSpecific then
-      s:=s+', project specific';
-    TypeLabel.Caption:=s;
     ProjectSpecificCheckBox.Checked:=dtfProjectSpecific in SelDefNode.Flags;
     NameEdit.Text:=SelDefNode.Name;
     DescriptionEdit.Text:=SelDefNode.Description;
@@ -760,15 +782,34 @@ begin
     ValueAsFilePathsSynEdit.ReadOnly:=ValueAsTextSynEdit.ReadOnly;
   end else begin
     SelectedItemGroupBox.Enabled:=false;
-    TypeLabel.Caption:='none selected';
-    ProjectSpecificCheckBox.Enabled:=false;
     NameEdit.Text:='';
     DescriptionEdit.Text:='';
     VariableEdit.Text:='';
     ValueAsTextSynEdit.Text:='';
     ValueAsFilePathsSynEdit.Text:='';
   end;
+  SetTypeLabel;
   FLastSelectedNode:=SelTreeNode;
+end;
+
+procedure TCodeToolsDefinesEditor.SetTypeLabel;
+var
+  SelTreeNode: TTreeNode;
+  SelDefNode: TDefineTemplate;
+  s: string;
+begin
+  SelTreeNode:=DefineTreeView.Selected;
+  if SelTreeNode<>nil then begin
+    SelDefNode:=TDefineTemplate(SelTreeNode.Data);
+    s:='Action: '+DefineActionNames[SelDefNode.Action];
+    if SelDefNode.IsAutoGenerated then
+      s:=s+', auto generated';
+    if SelDefNode.IsProjectSpecific then
+      s:=s+', project specific';
+  end else begin
+    s:='none selected';
+  end;
+  TypeLabel.Caption:=s;
 end;
 
 function TCodeToolsDefinesEditor.ValueToFilePathText(const AValue: string
@@ -793,10 +834,11 @@ begin
   ParentNode:=nil;
   if SelTreeNode<>nil then begin
     // there is an selected node
-    if Behind then
+    if Behind then begin
       // insert behind selected node
-      NodeInFront:=SelTreeNode
-    else begin
+      NodeInFront:=SelTreeNode;
+      ParentNode:=NodeInFront.Parent;
+    end else begin
       // insert as last child of selected node
       ParentNode:=SelTreeNode;
       NodeInFront:=ParentNode.GetFirstChild;
@@ -808,12 +850,15 @@ begin
   end else begin
     // no node selected, add as last root node
     NodeInFront:=DefineTreeView.Items.GetLastNode;
-    if NodeInFront<>nil then begin
-      while NodeInFront.GetNextSibling<>nil do
-        NodeInFront:=NodeInFront.GetNextSibling;
-    end;
   end;
-  // find a unique name
+  if (ParentNode<>nil) and (TDefineTemplate(ParentNode.Data).IsAutoGenerated)
+  then begin
+    MessageDlg('Invalid Parent','Auto created nodes can not be edited,'#13
+     +'nor can they have non auto created child nodes.',mtInformation,[mbCancel]
+     ,0);
+    exit;
+  end;
+  // find an unique name
   if ParentNode<>nil then
     FirstNode:=ParentNode.GetFirstChild
   else
@@ -839,15 +884,14 @@ begin
   NewDefNode:=TDefineTemplate.Create(NewName,NewDescription,NewVariable,
                                      NewValue,Action);
   // add node to treeview
-  if ParentNode<>nil then
-    // add as last child
-    NewTreeNode:=DefineTreeView.Items.AddChildObject(ParentNode,NewName,
-                                                     NewDefNode)
-  else if (NodeInFront<>nil) and (NodeInFront.GetNextSibling<>nil) then
+  if (NodeInFront<>nil) then
     // insert in front
     NewTreeNode:=DefineTreeView.Items.InsertObjectBehind(
-                  NodeInFront,NewName,NewDefNode);
-  SetNodeImages(NewTreeNode);
+                  NodeInFront,NewName,NewDefNode)
+  else
+    // add as last child
+    NewTreeNode:=DefineTreeView.Items.AddChildObject(ParentNode,NewName,
+                                                     NewDefNode);
 
   // add node to define tree
   if NodeInFront<>nil then
@@ -856,6 +900,9 @@ begin
     TDefineTemplate(ParentNode.Data).AddChild(NewDefNode)
   else
     FDefineTree.Add(NewDefNode);
+
+  SetNodeImages(NewTreeNode,true);
+  DefineTreeView.Selected:=NewTreeNode;
 end;
 
 procedure TCodeToolsDefinesEditor.Assign(ACodeToolBoss: TCodeToolManager;

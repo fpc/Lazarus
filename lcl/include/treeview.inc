@@ -595,11 +595,8 @@ begin
       Result:=Result.Parent;
     if Result<>nil then Result:=Result.GetNextSibling;
   end;
-//writeln('TTreeNode.GetNextVisible A ',HexStr(Cardinal(Result),8));
-  if (Result<>nil) and (TreeView<>nil) and (not TreeView.IsNodeVisible(Result))
-  then
+  if (Result<>nil) and (not Result.IsVisible) then
     Result:=nil;
-//writeln('TTreeNode.GetNextVisible B ',HexStr(Cardinal(Result),8));
 end;
 
 function TTreeNode.GetPrevVisible: TTreeNode;
@@ -950,8 +947,12 @@ writeln('');
     taInsert:
       begin
         // insert node in front of ANode
-//writeln('[TTreeNode.InternalMove] ANode.Index=',ANode.Index);
-        Owner.MoveTopLvlNode(-1,ANode.Index,Self);
+//writeln('[TTreeNode.InternalMove] ANode.Index=',ANode.Index,' ANode=',HexStr(Cardinal(ANode),8));
+        FNextBrother:=ANode;
+        FPrevBrother:=ANode.GetPrevSibling;
+        if Owner<>nil then begin
+          Owner.MoveTopLvlNode(-1,ANode.Index,Self);
+        end;
       end;
     end;
   end;
@@ -1011,11 +1012,11 @@ procedure TTreeNode.MoveTo(Destination: TTreeNode; Mode: TNodeAttachMode);
 {
   TNodeAttachMode = (naAdd, naAddFirst, naAddChild, naAddChildFirst, naInsert);
 
-  naAdd: add as last sibling of Destination
-  naAddFirst: add as first sibling of Destnation
-  naAddChild: add as last child of Destination
+  naAdd:           add as last sibling of Destination
+  naAddFirst:      add as first sibling of Destnation
+  naAddChild:      add as last child of Destination
   naAddChildFirst: add as first child of Destination
-  naInsert: insert in front of Destination
+  naInsert:        insert in front of Destination
 }
 var
   AddMode: TAddMode;
@@ -1581,7 +1582,7 @@ begin
   if (PrevNode<>nil) and (PrevNode.GetNextSibling<>nil) then
     Result:=InternalAddObject(PrevNode.GetNextSibling,S,Data,taInsert)
   else
-    Result:=AddObject(nil,S,Data);
+    Result:=AddObject(PrevNode,S,Data);
 end;
 
 function TTreeNodes.InternalAddObject(Node: TTreeNode; const S: string;
@@ -1611,6 +1612,7 @@ writeln('');
       Owner.Invalidate;
     ok:=true;
   finally
+    // this construction creates nicer exception output
     if not ok then
       Result.Free;
   end;
@@ -1863,10 +1865,10 @@ writeln('[TTreeNodes.MoveTopLvlNode] TopLvlFromIndex=',TopLvlFromIndex,
         TreeNodeError('TTreeNodes.MoveTopLvlNode inserting nil');
       // insert node
       if FTopLvlCount=FTopLvlCapacity then GrowTopLvlItems;
+      inc(FTopLvlCount);
       for i:=FTopLvlCount-1 downto TopLvlToIndex+1 do
         FTopLvlItems[i]:=FTopLvlItems[i-1];
       FTopLvlItems[TopLvlToIndex]:=Node;
-      inc(FTopLvlCount);
     end else begin
       // nothing to do
     end;
@@ -2038,8 +2040,10 @@ begin
     if (i>0) and (FTopLvlItems[i].FPrevBrother<>FTopLvlItems[i-1]) then
       exit(-9);
     if (i<FTopLvlCount-1) and (FTopLvlItems[i].FNextBrother<>FTopLvlItems[i+1])
-    then
+    then begin
+writeln(' CONSISTENCY i=',i,' FTopLvlCount=',FTopLvlCount,' FTopLvlItems[i]=',HexStr(Cardinal(FTopLvlItems[i]),8),' FTopLvlItems[i].FNextBrother=',HexStr(Cardinal(FTopLvlItems[i].FNextBrother),8),' FTopLvlItems[i+1]=',HexStr(Cardinal(FTopLvlItems[i+1]),8));
       exit(-10);
+    end;
     if (i=FTopLvlCount-1) and (FTopLvlItems[i].FNextBrother<>nil) then
       exit(-11);
   end;
@@ -2909,6 +2913,16 @@ begin
   end;
 end;
 
+function TCustomTreeView.GetNodeDrawAreaWidth: integer;
+begin
+  Result:=ClientWidth-ScrollBarWidth-BorderWidth*2;
+end;
+
+function TCustomTreeView.GetNodeDrawAreaHeight: integer;
+begin
+  Result:=ClientHeight-ScrollBarWidth-BorderWidth*2;
+end;
+
 function TCustomTreeView.GetNodeAt(X, Y: Integer): TTreeNode;
 //var HitTest: TTVHitTestInfo;
 begin
@@ -3030,7 +3044,6 @@ begin
 //writeln('[TCustomTreeView.IsNodeVisible] A Node=',HexStr(Cardinal(ANode),8),
 //' ANode.AreParentsExpanded=',ANode.AreParentsExpanded);
   if Result then begin
-    UpdateAllTops;
 //writeln('[TCustomTreeView.IsNodeVisible] B Node=',HexStr(Cardinal(ANode),8),
 //' ',FScrolledTop,'>=',ANode.Top,'+',ANode.Height,' or ',FScrolledTop,'+',ClientHeight,'<',ANode.Top);
     if (FScrolledTop>=ANode.Top+ANode.Height)
@@ -3141,9 +3154,10 @@ procedure TCustomTreeView.SetSelection(Value: TTreeNode);
 begin
   if FSelectedNode=Value then exit;
   FSelectedNode:=Value;
-  if Value <> nil then
+  if Value <> nil then begin
     Value.Selected := True;
-  // TreeView_SelectItem(Handle, nil);
+    Value.MakeVisible;
+  end;
   Invalidate;
 end;
 
@@ -3899,14 +3913,16 @@ begin
 end;
 
 procedure TCustomTreeView.EnsureNodeIsVisible(ANode: TTreeNode);
+var b: integer;
 begin
   if ANode=nil then exit;
   ANode.ExpandParents;
-  UpdateAllTops;
   if ANode.Top<ScrolledTop then
     ScrolledTop:=ANode.Top
-  else if ANode.Top+ANode.Height>ScrolledTop+(ClientHeight-ScrollBarWidth) then
-    ScrolledTop:=ANode.Top+ANode.Height-(ClientHeight-ScrollBarWidth);
+  else begin
+    b:=ANode.Top+ANode.Height-GetNodeDrawAreaHeight;
+    if ScrolledTop<b then ScrolledTop:=b;
+  end;
 end;
 
 function TCustomTreeView.CreateNode: TTreeNode;
@@ -4243,7 +4259,7 @@ end;
 
 procedure TCustomTreeView.WMSize(var Msg: TLMSize);
 begin
-  Include(FStates,tvsScrollbarChanged);
+  FStates:=FStates+[tvsScrollbarChanged,tvsBottomItemNeedsUpdate];
   inherited;
 end;
 
@@ -4312,7 +4328,7 @@ begin
   if FTreeNodes=nil then exit(-6);
   Result:=FTreeNodes.ConsistencyCheck;
   if Result<>0 then begin
-    dec(Result,100);
+    dec(Result,1000);
     exit;
   end;
   if FUpdateCount<0 then exit(-7);

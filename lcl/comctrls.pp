@@ -1505,6 +1505,8 @@ type
     function GetMaxScrollTop: integer;
     function GetNodeAtInternalY(Y: Integer): TTreeNode;
     function GetNodeAtY(Y: Integer): TTreeNode;
+    function GetNodeDrawAreaWidth: integer;
+    function GetNodeDrawAreaHeight: integer;
     procedure GetSelectedIndex(Node: TTreeNode); virtual;
     function IsCustomDrawn(Target: TCustomDrawTarget;
       Stage: TCustomDrawStage): Boolean;
@@ -1521,6 +1523,7 @@ type
     procedure SetDragMode(Value: TDragMode); override;
     procedure SetOptions(NewOptions: TTreeViewOptions);
     procedure WndProc(var Message: TLMessage); override;
+    
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle: TBorderStyle
       read FBorderStyle write SetBorderStyle default bsSingle;
@@ -1754,6 +1757,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/03/04 13:07:21  lazarus
+  MG: fixed update bottomitem on wmsize
+
   Revision 1.22  2002/03/04 07:28:53  lazarus
   MG: find declaration: fixed function in with context
 
