@@ -1,505 +1,504 @@
 #: lazarusidestrconsts:lisselectiontool
 msgid "Selection tool"
-msgstr "йОУФТХНЕОФ ЧЩВПТБ"
+msgstr "Инструмент выбора"
 
 #: lazarusidestrconsts:liscursorcolumnincurrenteditor
 msgid "Cursor column in current editor"
-msgstr "лПМПОЛБ ЛХТУПТБ Ч ЬФПН ТЕДБЛФПТЕ"
+msgstr "Колонка курсора в этом редакторе"
 
 #: lazarusidestrconsts:liscursorrowincurrenteditor
 msgid "Cursor row in current editor"
-msgstr "тСД ЛХТУПТБ Ч ЬФПН ТЕДБЛФПТЕ"
+msgstr "Ряд курсора в этом редакторе"
 
 #: lazarusidestrconsts:liscompilerfilename
 msgid "Compiler filename"
-msgstr "йНС ЖБКМБ ЛПНРЙМСФПТБ"
+msgstr "Имя файла компилятора"
 
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
-msgstr "уМПЧП РПД ЛХТУПТПН Ч ЬФПН ТЕДБЛФПТЕ"
+msgstr "Слово под курсором в этом редакторе"
 
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
-msgstr "рПМОПЕ ЙНС ЖБКМБ Ч ДБООПН ТЕДБЛФПТЕ"
+msgstr "Полное имя файла в данном редакторе"
 
 #: lazarusidestrconsts:lisfreepascalsourcedirectory
 msgid "Freepascal source directory"
-msgstr "лБФБМПЗ ЙУИПДОЙЛПЧ FreePascal"
+msgstr "Каталог исходников FreePascal"
 
 #: lazarusidestrconsts:lislazarusdirectory
 msgid "Lazarus directory"
-msgstr "лБФБМПЗ Lazarus"
+msgstr "Каталог Lazarus"
 
 #: lazarusidestrconsts:lislclwidgettype
 msgid "LCL Widget Type"
-msgstr "фЙР ЬМЕНЕОФБ ХРТБЧМЕОЙС LCL"
+msgstr "Тип элемента управления LCL"
 
 #: lazarusidestrconsts:liscommandlineparamsofprogram
 msgid "Command line parameters of program"
-msgstr "рБТБНЕФТЩ ЛПНБОДОПК УФТПЛЙ РТПЗТБННЩ"
+msgstr "Параметры командной строки программы"
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
-msgstr "рПДУЛБЪЛБ РП ЪОБЮЕОЙА"
+msgstr "Подсказка по значению"
 
 #: lazarusidestrconsts:lisprojectfilename
 msgid "Project filename"
-msgstr "йНС ЖБКМБ РТПЕЛФБ"
+msgstr "Имя файла проекта"
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
-msgstr "йНС ЛБФБМПЗБ РТПЕЛФБ"
+msgstr "Имя каталога проекта"
 
 #: lazarusidestrconsts:lissavecurrenteditorfile
 msgid "save current editor file"
-msgstr "уПИТБОЙФШ ФЕЛХЭЙК ЖБКМ ТЕДБЛФПТБ"
+msgstr "Сохранить текущий файл редактора"
 
 #: lazarusidestrconsts:lissaveallmodified
 msgid "save all modified files"
-msgstr "уПИТБОЙФШ ЧУЕ ЙЪНЕОЕООЩЕ ЖБКМЩ"
+msgstr "Сохранить все измененные файлы"
 
 #: lazarusidestrconsts:listargetfilenameofproject
 msgid "Target filename of project"
-msgstr "йНС ЖБКМБ ВЙОБТОЙЛБ РТПЕЛФБ"
+msgstr "Имя файла бинарника проекта"
 
 #: lazarusidestrconsts:listargetfilenameplusparams
 msgid "Target filename + params"
-msgstr "йНС ЖБКМБ ВЙОБТОЙЛБ У РБТБНЕФТБНЙ"
+msgstr "Имя файла бинарника с параметрами"
 
 #: lazarusidestrconsts:lislaunchingcmdline
 msgid "Launching target command line"
-msgstr "лПНБОДОБС УФТПЛБ ДМС ЪБРХУЛБ"
+msgstr "Командная строка для запуска"
 
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
-msgstr "&жБКМ"
+msgstr "&Файл"
 
 #: lazarusidestrconsts:lismenuedit
 msgid "&Edit"
-msgstr "&рТБЧЛБ"
+msgstr "&Правка"
 
 #: lazarusidestrconsts:lismenusearch
 msgid "&Search"
-msgstr "&рПЙУЛ"
+msgstr "&Поиск"
 
 #: lazarusidestrconsts:lismenuview
 msgid "&View"
-msgstr "&рТПУНПФТ"
+msgstr "&Просмотр"
 
 #: lazarusidestrconsts:lismenuproject
 msgid "&Project"
-msgstr "рТП&ЕЛФ"
+msgstr "Про&ект"
 
 #: lazarusidestrconsts:lismenurun
 msgid "&Run"
-msgstr "&ъБРХУЛ"
+msgstr "&Запуск"
 
 #: lazarusidestrconsts:lismenutools
 msgid "&Tools"
-msgstr "&йОУФТХНЕОФЩ"
+msgstr "&Инструменты"
 
 #: lazarusidestrconsts:lismenuenvironent
 msgid "E&nvironment"
-msgstr "&пЛТХЦЕОЙЕ"
+msgstr "&Окружение"
 
 #: lazarusidestrconsts:lismenuhelp
 msgid "&Help"
-msgstr "&уРТБЧЛБ"
+msgstr "&Справка"
 
 #: lazarusidestrconsts:lismenunewunit
 msgid "New Unit"
-msgstr "уПЪДБФШ НПДХМШ"
+msgstr "Создать модуль"
 
 #: lazarusidestrconsts:lismenunewform
 msgid "New Form"
-msgstr "уПЪДБФШ ЖПТНХ"
+msgstr "Создать форму"
 
 #: lazarusidestrconsts:lismenuopen
 msgid "Open"
-msgstr "пФЛТЩФШ"
+msgstr "Открыть"
 
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent"
-msgstr "пФЛТЩФШ ОЕДБЧОЕЕ"
+msgstr "Открыть недавнее"
 
 #: lazarusidestrconsts:lismenusave
 msgid "Save"
-msgstr "уПИТБОЙФШ"
+msgstr "Сохранить"
 
 #: lazarusidestrconsts:lismenusaveas
 msgid "Save As"
-msgstr "уПИТБОЙФШ ЛБЛ"
+msgstr "Сохранить как"
 
 #: lazarusidestrconsts:lismenusaveall
 msgid "Save All"
-msgstr "уПИТБОЙФШ ЧУЕ"
+msgstr "Сохранить все"
 
 #: lazarusidestrconsts:lismenuclose
 msgid "Close"
-msgstr "ъБЛТЩФШ"
+msgstr "Закрыть"
 
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close All"
-msgstr "ъБЛТЩФШ ЧУЕ"
+msgstr "Закрыть все"
 
 #: lazarusidestrconsts:lismenuquit
 msgid "Quit"
-msgstr "чЩИПД"
+msgstr "Выход"
 
 #: lazarusidestrconsts:lismenuundo
 msgid "Undo"
-msgstr "пФНЕОЙФШ"
+msgstr "Отменить"
 
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
-msgstr "чЕТОХФШ"
+msgstr "Вернуть"
 
 #: lazarusidestrconsts:lismenucut
 msgid "Cut"
-msgstr "чЩТЕЪБФШ"
+msgstr "Вырезать"
 
 #: lazarusidestrconsts:lismenucopy
 msgid "Copy"
-msgstr "лПРЙТПЧБФШ"
+msgstr "Копировать"
 
 #: lazarusidestrconsts:lismenupaste
 msgid "Paste"
-msgstr "чУФБЧЙФШ"
+msgstr "Вставить"
 
 #: lazarusidestrconsts:lismenuindentselection
 msgid "Indent selection"
-msgstr "уДЧЙОХФШ ВМПЛ ЧРТБЧП"
+msgstr "Сдвинуть блок вправо"
 
 #: lazarusidestrconsts:lismenuunindentselection
 msgid "Unindent selection"
-msgstr "уДЧЙОХФШ ВМПЛ ЧМЕЧП"
+msgstr "Сдвинуть блок влево"
 
 #: lazarusidestrconsts:lismenuuppercaseselection
 msgid "Uppercase selection"
-msgstr "чЕТИОЙК ТЕЗЙУФТ ЧЩДЕМЕОЙС"
+msgstr "Верхний регистр выделения"
 
 #: lazarusidestrconsts:lismenulowercaseselection
 msgid "Lowercase selection"
-msgstr "оЙЦОЙК ТЕЗЙУФТ ЧЩДЕМЕОЙС"
+msgstr "Нижний регистр выделения"
 
 #: lazarusidestrconsts:lismenutabstospacesselection
 msgid "Tabs to spaces in selection"
-msgstr "фбв УДЕМБФШ РТПВЕМБНЙ Ч ЧЩДЕМЕООПН"
+msgstr "ТАБ сделать пробелами в выделенном"
 
 #: lazarusidestrconsts:lismenucompletecode
 msgid "Complete Code"
-msgstr "ъБЧЕТЫЙФШ ЛПД"
+msgstr "Завершить код"
 
 #: lazarusidestrconsts:lismenufind
 msgid "Find"
-msgstr "оБКФЙ"
+msgstr "Найти"
 
 #: lazarusidestrconsts:lismenufindnext
 msgid "Find &Next"
-msgstr "оБКФЙ ЧРЕТЕДЙ"
+msgstr "Найти впереди"
 
 #: lazarusidestrconsts:lismenufindprevious
 msgid "Find &Previous"
-msgstr "оБКФЙ УЪБДЙ"
+msgstr "Найти сзади"
 
 #: lazarusidestrconsts:lismenufindinfiles
 msgid "Find &in files"
-msgstr "рПЙУЛ Ч ЖБКМБИ"
+msgstr "Поиск в файлах"
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
-msgstr "ъБНЕОБ"
+msgstr "Замена"
 
 #: lazarusidestrconsts:lismenugotoline
 msgid "Goto line"
-msgstr "рЕТЕИПД Л УФТПЛЕ"
+msgstr "Переход к строке"
 
 #: lazarusidestrconsts:lismenujumpback
 msgid "Jump back"
-msgstr "рЕТЕИПД ОБЪБД"
+msgstr "Переход назад"
 
 #: lazarusidestrconsts:lismenujumpforward
 msgid "Jump forward"
-msgstr "рЕТЕИПД ЧРЕТЕД"
+msgstr "Переход вперед"
 
 #: lazarusidestrconsts:lismenuaddjumppointtohistory
 msgid "Add jump point to history"
-msgstr "дПВБЧЙФШ ФПЮЛХ РЕТЕИПДБ Ч ЙУФПТЙА"
+msgstr "Добавить точку перехода в историю"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
-msgstr "рТПУНПФТ ЙУФПТЙЙ РЕТЕИПДПЧ"
+msgstr "Просмотр истории переходов"
 
 #: lazarusidestrconsts:lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
-msgstr "оБКФЙ ДТХЗПК ЛПОЕГ ВМПЛБ ЛПДБ"
+msgstr "Найти другой конец блока кода"
 
 #: lazarusidestrconsts:lismenufindcodeblockstart
 msgid "Find code block start"
-msgstr "оБКФЙ ОБЮБМП ВМПЛБ ЛПДБ"
+msgstr "Найти начало блока кода"
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
-msgstr "оБКФЙ ПРЙУБОЙЕ РПД ЛХТУПТБ"
+msgstr "Найти описание под курсора"
 
 #: lazarusidestrconsts:lismenuopenfilenameatcursor
 msgid "Open filename at cursor"
-msgstr "пФЛТЩФШ ЙНС ЖБКМБ РПД ЛХТУПТПН"
+msgstr "Открыть имя файла под курсором"
 
 #: lazarusidestrconsts:lismenugotoincludedirective
 msgid "Goto include directive"
-msgstr "рЕТЕИПД РП ДЙТЕЛФЙЧЕ $I"
+msgstr "Переход по директиве $I"
 
 #: lazarusidestrconsts:lismenuviewobjectinspector
 msgid "Object Inspector"
-msgstr "йОУРЕЛФПТ ПВЯЕЛФПЧ"
+msgstr "Инспектор объектов"
 
 #: lazarusidestrconsts:lismenuviewprojectexplorer
 msgid "Project Explorer"
-msgstr "дЙУРЕФЮЕТ РТПЕЛФБ"
+msgstr "Диспетчер проекта"
 
 #: lazarusidestrconsts:lismenuviewcodeexplorer
 msgid "Code Explorer"
-msgstr "пВПЪТЕЧБФЕМШ ЛПДБ"
+msgstr "Обозреватель кода"
 
 #: lazarusidestrconsts:lismenuviewunits
 msgid "Units..."
-msgstr "нПДХМЙ..."
+msgstr "Модули..."
 
 #: lazarusidestrconsts:lismenuviewforms
 msgid "Forms..."
-msgstr "жПТНЩ..."
+msgstr "Формы..."
 
 #: lazarusidestrconsts:lismenuviewmessages
 msgid "Messages"
-msgstr "уППВЭЕОЙС..."
+msgstr "Сообщения..."
 
 #: lazarusidestrconsts:lismenudebugwindows
 msgid "Debug windows"
-msgstr "пЛОП ПФМБДЛЙ..."
+msgstr "Окно отладки..."
 
 #: lazarusidestrconsts:lismenuviewwatches
 msgid "Watches"
-msgstr "пЛОП ОБВМАДЕОЙК"
+msgstr "Окно наблюдений"
 
 #: lazarusidestrconsts:lismenuviewbreakpoints
 msgid "BreakPoints"
-msgstr "фПЮЛЙ ПУФБОПЧБ"
+msgstr "Точки останова"
 
 #: lazarusidestrconsts:lismenuviewlocalvariables
 msgid "Local Variables"
-msgstr "мПЛБМШОЩЕ РЕТЕНЕООЩЕ"
+msgstr "Локальные переменные"
 
 #: lazarusidestrconsts:lismenuviewcallstack
 msgid "Call Stack"
-msgstr "уФЕЛ ЧЩЪПЧПЧ"
+msgstr "Стек вызовов"
 
 #: lazarusidestrconsts:lismenuviewdebugoutput
 msgid "Debug output"
-msgstr "чЩЧПД ПФМБДЮЙЛБ"
+msgstr "Вывод отладчика"
 
 #: lazarusidestrconsts:lismenunewproject
 msgid "New Project"
-msgstr "уПЪДБФШ РТПЕЛФ"
+msgstr "Создать проект"
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project"
-msgstr "пФЛТЩФШ РТПЕЛФ"
+msgstr "Открыть проект"
 
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project"
-msgstr "пФЛТЩФШ ОЕДБЧОЙК РТПЕЛФ"
+msgstr "Открыть недавний проект"
 
 #: lazarusidestrconsts:lismenusaveproject
 msgid "Save Project"
-msgstr "уПИТБОЙФШ РТПЕЛФ"
+msgstr "Сохранить проект"
 
 #: lazarusidestrconsts:lismenusaveprojectas
 msgid "Save Project As..."
-msgstr "уПИТБОЙФШ РТПЕЛФ ЛБЛ..."
+msgstr "Сохранить проект как..."
 
 #: lazarusidestrconsts:lismenuaddunittoproject
 msgid "Add active unit to Project"
-msgstr "дПВБЧЙФШ ФЕЛХЭЙК НПДХМШ Л РТПЕЛФХ"
+msgstr "Добавить текущий модуль к проекту"
 
 #: lazarusidestrconsts:lismenuremoveunitfromproject
 msgid "Remove from Project"
-msgstr "хВТБФШ ЙЪ РТПЕЛФБ"
+msgstr "Убрать из проекта"
 
 #: lazarusidestrconsts:lismenuviewsource
 msgid "View Source"
-msgstr "рТПУНПФТ ЙУИПДОЙЛБ"
+msgstr "Просмотр исходника"
 
 #: lazarusidestrconsts:lismenuprojectoptions
 msgid "Project Options..."
-msgstr "рБТБНЕФТЩ РТПЕЛФБ..."
+msgstr "Параметры проекта..."
 
 #: lazarusidestrconsts:lismenubuild
 msgid "Build"
-msgstr "уПВТБФШ"
+msgstr "Собрать"
 
 #: lazarusidestrconsts:lismenubuildall
 msgid "Build all"
-msgstr "уПВТБФШ ЧУЕ"
+msgstr "Собрать все"
 
 #: lazarusidestrconsts:lismenuprojectrun
 msgid "Run"
-msgstr "ъБРХУЛ"
+msgstr "Запуск"
 
 #: lazarusidestrconsts:lismenupause
 msgid "Pause"
-msgstr "рБХЪБ"
+msgstr "Пауза"
 
 #: lazarusidestrconsts:lismenustepinto
 msgid "Step into"
-msgstr "ыБЗ УП ЧИПДПН"
+msgstr "Шаг со входом"
 
 #: lazarusidestrconsts:lismenustepover
 msgid "Step over"
-msgstr "ыБЗ Ч ПВИПД"
+msgstr "Шаг в обход"
 
 #: lazarusidestrconsts:lismenuruntocursor
 msgid "Run to cursor"
-msgstr "ъБРХУЛ ДП ЛХТУПТБ"
+msgstr "Запуск до курсора"
 
 #: lazarusidestrconsts:lismenustop
 msgid "Stop"
-msgstr "пУФБОПЧ"
+msgstr "Останов"
 
 #: lazarusidestrconsts:lismenucompileroptions
 msgid "Compiler Options..."
-msgstr "рБТБНЕФТЩ ЛПНРЙМСФПТБ..."
+msgstr "Параметры компилятора..."
 
 #: lazarusidestrconsts:lismenurunparameters
 msgid "Run Parameters ..."
-msgstr "рБТБНЕФТЩ ЪБРХУЛБ ..."
+msgstr "Параметры запуска ..."
 
 #: lazarusidestrconsts:lismenusettings
 msgid "Settings ..."
-msgstr "хУФБОПЧЛЙ ..."
+msgstr "Установки ..."
 
 #: lazarusidestrconsts:lismenuquicksyntaxcheck
 msgid "Quick syntax check"
-msgstr "вЩУФТБС РТПЧЕТЛБ УЙОФБЛУЙУБ"
+msgstr "Быстрая проверка синтаксиса"
 
 #: lazarusidestrconsts:lismenuguessunclosedblock
 msgid "Guess unclosed block"
-msgstr "йУРТБЧЙФШ ОЕЪБЛПОЮЕООЩК ВМПЛ"
+msgstr "Исправить незаконченный блок"
 
 #: lazarusidestrconsts:lismenuguessmisplacedifdef
 msgid "Guess misplaced IFDEF/ENDIF"
-msgstr "йУРТБЧЙФШ ОЕУППФЧЕФУФЧЙЕ IFDEF/ENDIF"
+msgstr "Исправить несоответствие IFDEF/ENDIF"
 
 #: lazarusidestrconsts:lismenubuildlazarus
 msgid "Build Lazarus"
-msgstr "уПВТБФШ Lazarus"
+msgstr "Собрать Lazarus"
 
 #: lazarusidestrconsts:lismenuconfigurebuildlazarus
 msgid "Configure \"Build Lazarus\""
-msgstr "оБУФТПЙФШ \"уПВТБФШ Lazarus\""
+msgstr "Настроить \"Собрать Lazarus\""
 
 #: lazarusidestrconsts:lismenugeneraloptions
 msgid "General options"
-msgstr "пВЭЙЕ РБТБНЕФТЩ"
+msgstr "Общие параметры"
 
 #: lazarusidestrconsts:lismenueditoroptions
 msgid "Editor options"
-msgstr "оБУФТПКЛЙ ТЕДБЛФПТБ"
+msgstr "Настройки редактора"
 
 #: lazarusidestrconsts:lismenucodetoolsoptions
 msgid "CodeTools options"
-msgstr "оБУФТПКЛЙ CodeTools"
+msgstr "Настройки CodeTools"
 
 #: lazarusidestrconsts:lismenucodetoolsdefineseditor
 msgid "CodeTools defines editor"
-msgstr "оБУФТПКЛЙ ТЕДБЛФПТБ CodeTools"
+msgstr "Настройки редактора CodeTools"
 
 #: lazarusidestrconsts:lismenuaboutlazarus
 msgid "About Lazarus"
-msgstr "п РТПЕЛФЕ Lazarus"
+msgstr "О проекте Lazarus"
 
 #: lazarusidestrconsts:lisresourcefilecomment
-msgid "This is an automatically generated lazarus resource file"
-msgstr "ьФП - ЖБКМ ТЕУХТУПЧ, БЧФПНБФЙЮЕУЛЙ УПЪДБООЩК lazarus"
+msgid "{ This is an automatically generated lazarus resource file }"
+msgstr "{ Это - файл ресурсов, автоматически созданный lazarus }"
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
-msgstr "пФЛТЩФШ ЖБКМ"
+msgstr "Открыть файл"
 
 #: lazarusidestrconsts:lisopenprojectfile
 msgid "Open Project File"
-msgstr "пФЛТЩФШ РТПЕЛФ"
+msgstr "Открыть проект"
 
 #: lazarusidestrconsts:lissavespace
 msgid "Save "
-msgstr "уПИТБОЙФШ "
+msgstr "Сохранить "
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project?"
-msgstr "уПИТБОЙФШ ЙЪНЕОЕОЙС Ч РТПЕЛФЕ?"
+msgstr "Сохранить изменения в проекте?"
 
 #: lazarusidestrconsts:lisprojectchanged
 msgid "Project changed"
-msgstr "рТПЕЛФ ЙЪНЕОЕО"
+msgstr "Проект изменен"
 
 #: lazarusidestrconsts:lisfpcsourcedirectoryerror
 msgid "FPC Source Directory error"
-msgstr "пЫЙВЛБ ЛБФБМПЗБ ЙУИПДОЙЛПЧ FPC"
+msgstr "Ошибка каталога исходников FPC"
 
 #: lazarusidestrconsts:lisplzcheckthefpcsourcedirectory
 msgid "Please check the freepascal source directory"
-msgstr "рТПЧЕТШФЕ ЛБФБМПЗ ЙУИПДОЙЛПЧ FreePascal"
+msgstr "Проверьте каталог исходников FreePascal"
 
 #: lazarusidestrconsts:liscompilererror
 msgid "Compiler error"
-msgstr "пЫЙВЛБ ЛПНРЙМСФПТБ"
+msgstr "Ошибка компилятора"
 
 #: lazarusidestrconsts:lisplzcheckthecmpilername
 msgid "Please check the compiler name"
-msgstr "рТПЧЕТШФЕ ЙНС ЛПНРЙМСФПТБ"
+msgstr "Проверьте имя компилятора"
 
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL\015Lazarus are the class libraries for Free Pascal that emulate Delphi.\015Free Pascal is a (L)GPL'ed compiler that runs on Linux,\015Win32, OS/2, 68K and more. Free Pascal is designed to be able to\015understand and compile Delphi syntax, which is of course OOP.\015Lazarus is the missing part of the puzzle that will allow you to\015develop Delphi like programs in all of the above platforms.\015The IDE will eventually become a RAD tool like Delphi.\015\015As Lazarus is growing we need more developers.\015For example: Write a nicer about dialog with a logo."
-msgstr "мЙГЕОЪЙС: GPL/LGPL\015Lazarus - ЬФП ВЙВМЙПФЕЛЙ ЛМБУУПЧ ДМС FreePascal, ЬНХМЙТХАЭЙЕ Delphi.\015Free Pascal - ЬФП (L)GPLШОЩК ЛПНРЙМСФПТ, ЪБРХУЛБЕНЩК РПД Linux,\015Win32, OS/2, 68K Й ДТ. Free Pascal ТБЪТБВПФБО\015ДМС ЛПНРЙМСГЙЙ РТПЗТБН У УЙОФБЛУЙУПН Delphi, ЛПФПТЩК, ЕУФЕУФЧЕООП, ппр.\015Lazarus - ХФТБЮЕООЕ ЪЧЕОП, ЛПФПТПЕ РПЪЧПМЙФ чБН\015ТБЪТБВБФЩЧБФШ РТПЗТБННЩ ФЙРБ Delphis РПДП ЧУЕНЙ ЧЩЫЕХЛБЪБООЩНЙ РМБФЖПТНБНЙ.\015IDE ЛПЗДБ-ОЙВХДШ УФБОЕФ ЙОУФТХНЕОФПН RAD, ЛБЛ Й Delphi.\015\015рП НЕТЕ ТПУФБ Lazarus, ОБН ОХЦОП ВПМШЫЕ ТБЪТБВПФЮЙЛПЧ.\015оБРТЙНЕТ, ОБРЙУБФШ МХЮЫЙК ДЙБМПЗ 'п РТПЗТБННЕ' У МПЗПФЙРПН."
+msgstr "Лицензия: GPL/LGPL\015Lazarus - это библиотеки классов для FreePascal, эмулирующие Delphi.\015Free Pascal - это (L)GPLьный компилятор, запускаемый под Linux,\015Win32, OS/2, 68K и др. Free Pascal разработан\015для компиляции програм с синтаксисом Delphi, который, естественно, ООП.\015Lazarus - утраченне звено, которое позволит Вам\015разрабатывать программы типа Delphis подо всеми вышеуказанными платформами.\015IDE когда-нибудь станет инструментом RAD, как и Delphi.\015\015По мере роста Lazarus, нам нужно больше разработчиков.\015Например, написать лучший диалог 'О программе' с логотипом."
 
-#: lazarusidestrconsts:lisunitnamealreadyexistscap
+#: lazarusidestrconsts:lsiunitnamealreadyexistscap
 msgid "Unitname already in project"
-msgstr "нПДХМШ У ФБЛЙН ЙНЕОЕН ХЦЕ Ч РТПЕЛФЕ"
+msgstr "Модуль с таким именем уже в проекте"
 
-#: lazarusidestrconsts:lisunitnamealreadyexiststext
+#: lazarusidestrconsts:lsiunitnamealreadyexiststext
 msgid "The unit \"%s\" already exists.\015Ignore will force the renaming,\015Cancel will cancel the saving of this source and\015Abort will abort the whole saving."
-msgstr "нПДХМШ \"%s\" ХЦЕ ЕУФШ.\015Ignore РТЙЧЕДЕФ Л РЕТЕЙНЕОПЧБОЙА,\015Cancel ПФНЕОЙФ ЪБРЙУШ ЬФПЗП ЙУИПДОЙЛБ Й\015Abort РТЕТЧЕФ ЧЕУШ РТПГЕУУ ЪБРЙУЙ."
+msgstr "Модуль \"%s\" уже есть.\015Ignore приведет к переименованию,\015Cancel отменит запись этого исходника и\015Abort прервет весь процесс записи."
 
-#: lazarusidestrconsts:lisinvalidpascalidentifiercap
+#: lazarusidestrconsts:lsiinvalidpascalidentifiercap
 msgid "Invalid Pascal Identifier"
-msgstr "оЕЛПТТЕЛФОЩК ЙДЕОФЙЖЙЛБФПТ РБУЛБМС"
+msgstr "Некорректный идентификатор паскаля"
 
-#: lazarusidestrconsts:lisinvalidpascalidentifiertext
+#: lazarusidestrconsts:lsiinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
-msgstr "уМПЧП \"%s\" - ОЕРТБЧЙМШОЩК ЙДЕОФЙЖЙЛБФПТ СЪЩЛБ РБУЛБМШ."
+msgstr "Слово \"%s\" - неправильный идентификатор языка паскаль."
 
-#: lazarusidestrconsts:lishintsaveall
+#: lazarusidestrconsts:lsihintsaveall
 msgid "Save all"
-msgstr "уПИТБОЙФШ ЧУЕ"
+msgstr "Сохранить все"
 
-#: lazarusidestrconsts:lishinttoggleformunit
+#: lazarusidestrconsts:lsihinttoggleformunit
 msgid "Toggle Form/Unit"
-msgstr "рЕТЕЛМАЮЙФШ ЖПТНХ/НПДХМШ"
+msgstr "Переключить форму/модуль"
 
-#: lazarusidestrconsts:lishintviewunits
+#: lazarusidestrconsts:lsihintviewunits
 msgid "View Units"
-msgstr "рПЛБЪБФШ НПДХМЙ"
+msgstr "Показать модули"
 
-#: lazarusidestrconsts:lishintviewforms
+#: lazarusidestrconsts:lsihintviewforms
 msgid "View Forms"
-msgstr "рПЛБЪБФШ ЖПТНЩ"
+msgstr "Показать формы"
 
-#: lazarusidestrconsts:lishintstepinto
+#: lazarusidestrconsts:lsihintstepinto
 msgid "Step Into"
-msgstr "ыБЗ УП ЧИПДПН"
+msgstr "Шаг со входом"
 
-#: lazarusidestrconsts:lishintstepover
+#: lazarusidestrconsts:lsihintstepover
 msgid "Step Over"
-msgstr "ыБЗ Ч ПВИПД"
-
+msgstr "Шаг в обход"
 
