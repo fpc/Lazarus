@@ -2287,7 +2287,8 @@ var
     end else begin
       if (((DFCS_FLAT+DFCS_CHECKED) and uState)=DFCS_FLAT) then begin
         // button up, flat, no special
-        Shadow:=GTK_SHADOW_NONE;
+        Shadow:=GTK_SHADOW_ETCHED_OUT;
+        //Shadow:=GTK_SHADOW_NONE;
       end else begin
         // button up
         Shadow:=GTK_SHADOW_OUT;
@@ -8707,6 +8708,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.356  2004/06/28 23:16:24  mattias
+  added TListView.AddItems  from Andrew Haines
+
   Revision 1.355  2004/06/28 20:03:33  mattias
   fixed TGtkWidgetSet.DrawFrameControl
 

@@ -343,12 +343,14 @@ type
 
   public
     function Add: TListItem;
+    procedure AddItem(AItem: TListItem);
     procedure Clear;
     constructor Create(AOwner : TCustomListView);
     destructor Destroy; override;
     procedure Delete(const AIndex : Integer);
     function FindData(const AData: Pointer): TListItem;
     function Insert(const AIndex: Integer) : TListItem;
+    procedure InsertItem(AItem: TListItem; const AIndex: Integer);
     property Count: Integer read GetCount;
     property Item[const AIndex: Integer]: TListItem read GetItem write SetItem; default;
     property Owner : TCustomListView read FOwner;
@@ -2256,6 +2258,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.134  2004/06/28 23:16:24  mattias
+  added TListView.AddItems  from Andrew Haines
+
   Revision 1.133  2004/06/17 10:38:40  mattias
   fixed TToolButton.SetMenuItem while loading
 

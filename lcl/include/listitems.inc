@@ -59,10 +59,18 @@ end;
 function TListItems.Add:TListItem;
 begin
   Result := TListItem.Create(self);
-  FItems.Add(Result);
+  AddItem(Result);
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItems AddItem                                                         }
+{------------------------------------------------------------------------------}
+procedure TListItems.AddItem(AItem: TListItem);
+begin
+  FItems.Add(AItem);
   //Notify parent TListView that something was added.
   if FOwner <> nil
-  then FOwner.ItemInserted(Result, -1);
+  then FOwner.ItemInserted(AItem, -1);
 end;
 
 {------------------------------------------------------------------------------
@@ -100,9 +108,17 @@ end;
 function TListItems.Insert(const AIndex: Integer): TListItem;
 begin
   Result := TListItem.Create(self);
-  FItems.Insert(AIndex, Result);
+  InsertItem(Result, AIndex);
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItems InsertItem                                                      }
+{------------------------------------------------------------------------------}
+procedure TListItems.InsertItem(AItem: TListItem; const AIndex: Integer);
+begin
+  FItems.Insert(AIndex, AItem);
   //Notify parent TListView that something was added.
-  FOwner.ItemInserted(Result, AIndex);
+  FOwner.ItemInserted(AItem, AIndex);
 end;
 
 {------------------------------------------------------------------------------}
@@ -333,6 +349,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2004/06/28 23:16:24  mattias
+  added TListView.AddItems  from Andrew Haines
+
   Revision 1.21  2004/05/21 18:12:17  mattias
   quick fixed crashing property overloading BorderStyle
 
