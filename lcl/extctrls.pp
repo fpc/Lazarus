@@ -518,11 +518,12 @@ type
     property Constraints;
     property Picture;
     property Visible;
+    property OnChangeBounds;
     property OnClick;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
-    property OnChangeBounds;
+    property OnPaint;
     property OnResize;
     property Stretch;
     property Transparent;
@@ -566,6 +567,7 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnPaint;
   end;
 
 
@@ -917,6 +919,9 @@ end.
 
  {
   $Log$
+  Revision 1.93  2004/02/03 19:00:10  mattias
+  published TBevel.OnPaint
+
   Revision 1.92  2004/02/03 18:54:38  mattias
   published TBevel.OnMouseXXX
 
