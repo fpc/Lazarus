@@ -119,7 +119,7 @@ type
     procedure InvalidatePanel(PanelIndex: integer; PanelParts: TPanelParts); virtual;
     procedure GetPanelRect(PanelIndex: integer; var ARect: TRect);
   public
-    property Canvas : TCanvas read FCanvas;
+    property Canvas: TCanvas read FCanvas;
   published
     property Panels: TStatusPanels read FPanels write SetPanels;
     property SimpleText: String read FSimpleText write SetSimpleText;
@@ -1758,6 +1758,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.74  2003/06/10 00:46:16  mattias
+  fixed aligning controls
+
   Revision 1.73  2003/04/16 17:20:24  mattias
   implemented package check broken dependency on compile
 

@@ -22,15 +22,13 @@ begin
   inherited Create(AOwner);
   fCompStyle := csStatusBar;
   ControlStyle := [csCaptureMouse, csClickEvents, csDoubleClicks, csOpaque];
-  Color := clBtnFace;
-  Height := 19;
-  SetBounds(0,TWinControl(AOwner).ClientHeight-21,
-            TWinControl(AOwner).ClientWidth,20);
-  Align := alBottom;
+  FSimplePanel := True;
   FPanels := TStatusPanels.Create(Self);
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  FSimplePanel := True;
+  Color := clBtnFace;
+  Height:=20;
+  Align := alBottom;
 end;
 
 
@@ -59,7 +57,6 @@ procedure TStatusBar.SetPanels(Value: TStatusPanels);
 begin
   FPanels.Assign(Value);
 end;
-
 
 
 {------------------------------------------------------------------------------}

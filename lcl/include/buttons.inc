@@ -35,7 +35,7 @@ begin
   {set default alignment}
   Align := alNone;
   {setup default sizes}
-  SetBounds(1, 1, 75, 25);
+  SetInitialBounds(1, 1, 75, 25);
 end;
 
 {------------------------------------------------------------------------------
@@ -165,6 +165,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2003/06/10 00:46:16  mattias
+  fixed aligning controls
+
   Revision 1.12  2002/12/25 14:21:28  mattias
   fixed setting activecontrol to nil when removing component
 

@@ -982,7 +982,7 @@ Begin
 
   ControlStyle := ControlStyle + [csAcceptsControls, csCaptureMouse,
                                   csClickEvents, csSetCaption, csDoubleClicks];
-  SetBounds(0,0,320,240);
+  SetInitialBounds(0,0,320,240);
   Visible := False;
   ParentColor := False;
   ParentFont := False;
@@ -1426,6 +1426,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.101  2003/06/10 00:46:16  mattias
+  fixed aligning controls
+
   Revision 1.100  2003/06/01 21:09:09  mattias
   implemented datamodules
 

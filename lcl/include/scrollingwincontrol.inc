@@ -153,7 +153,7 @@ begin
 
   ControlStyle := [csAcceptsControls, csClickEvents, csDoubleClicks];
 
-  SetBounds(0,0, 150, 150);
+  SetInitialBounds(0,0, 150, 150);
 end;
 
 Destructor TScrollingWinControl.Destroy;
