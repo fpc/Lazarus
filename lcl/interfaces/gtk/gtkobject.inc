@@ -42,7 +42,10 @@ begin
   FPaintMessages.OwnerHashFunction := @HashPaintMessage;
   WaitingForMessages := false;
   FWidgetsWithResizeRequest := TDynHashArray.Create(-1);
+  FWidgetsWithResizeRequest.Options:=
+    FWidgetsWithResizeRequest.Options+[dhaoCacheContains];
   FWidgetsResized := TDynHashArray.Create(-1);
+  FWidgetsResized.Options:=FWidgetsResized.Options+[dhaoCacheContains];
   FFixWidgetsResized := TDynHashArray.Create(-1);
   FTimerData  := TList.Create;
   FDefaultFont:= nil;
@@ -463,7 +466,7 @@ procedure TGtkObject.SendCachedGtkMessages;
     if (FFixWidgetsResized.Count=0) and (FWidgetsResized.Count=0) then exit;
     
     List:=TList.Create;
-    
+
     { if any fixed widget was resized then a client area of a LCL control was
       resized
       -> invalidate client rectangles
@@ -492,15 +495,17 @@ procedure TGtkObject.SendCachedGtkMessages;
     {$IFDEF VerboseSizeMsg}
     writeln('HHH2 SendCachedGtkClientResizeNotifications SizeMsgCount=',FWidgetsResized.Count);
     {$ENDIF}
-    FWidgetsResized.AssignTo(List);
-    for i:=0 to List.Count-1 do begin
-      MainWidget:=List[i];
-      if not FWidgetsWithResizeRequest.Contains(MainWidget) then begin
-        SendSizeNotificationToLCL(MainWidget);
-        FixWidget:=GetFixedWidget(MainWidget);
-      end;
-    end;
-    
+    repeat
+      MainWidget:=FWidgetsResized.First;
+      if MainWidget<>nil then begin
+        FWidgetsResized.Remove(MainWidget);
+        if not FWidgetsWithResizeRequest.Contains(MainWidget) then begin
+          SendSizeNotificationToLCL(MainWidget);
+          FixWidget:=GetFixedWidget(MainWidget);
+        end;
+      end else break;
+    until false;
+
     { if any client area was resized, which MainWidget Size was already in sync
       with the LCL, no message was send. So, tell each changed client area to
       check its size.
@@ -508,17 +513,19 @@ procedure TGtkObject.SendCachedGtkMessages;
     {$IFDEF VerboseSizeMsg}
     writeln('HHH3 SendCachedGtkClientResizeNotifications Updating ClientRects ...');
     {$ENDIF}
-    FFixWidgetsResized.AssignTo(List);
-    for i:=0 to List.Count-1 do begin
-      FixWidget:=List[i];
-      MainWidget:=GetMainWidget(FixWidget);
-      LCLControl:=TWinControl(GetLCLObject(MainWidget));
-      LCLControl.DoAdjustClientRectChange;
-    end;
-    
+    repeat
+      FixWidget:=FFixWidgetsResized.First;
+      if FixWidget<>nil then begin
+        FFixWidgetsResized.Remove(FixWidget);
+        MainWidget:=GetMainWidget(FixWidget);
+        LCLControl:=TWinControl(GetLCLObject(MainWidget));
+        LCLControl.DoAdjustClientRectChange;
+      end else begin
+        break;
+      end;
+    until false;
+
     List.Free;
-    FWidgetsResized.Clear;
-    FFixWidgetsResized.Clear;
     {$IFDEF VerboseSizeMsg}
     writeln('HHH4 SendCachedGtkClientResizeNotifications  completed.');
     {$ENDIF}
@@ -879,7 +886,7 @@ Begin
   aParent := aWinControl.Parent;
   if aParent<>nil then begin
     // remove and insert the control
-    // this will destroy all child handles
+    // this will destroy and recreate all child handles
     aWinControl.Parent := nil;
     aWinControl.Parent := aParent;
   end;
@@ -3156,8 +3163,23 @@ begin
 
   RemoveCallbacks(Sender);
 
+  if Sender is TControl then begin
+    case TControl(Sender).fCompStyle of
+    csComboBox:
+      begin
+        SetComboBoxText(PGtkCombo(Handle),nil);
+        FreeWinWidgetInfo(PGtkCombo(Handle)^.Entry);
+        FreeWinWidgetInfo(PGtkCombo(Handle)^.Button);
+      end;
+
+    end;
+  end
+  else if Sender is TCommonDialog then begin
+    DestroyCommonDialogAddOns(TCommonDialog(Sender));
+  end;
+
   // remove pending size messages
-  FWidgetsWithResizeRequest.Remove(Widget);
+  UnsetResizeRequest(Widget);
   FWidgetsResized.Remove(Widget);
   if FixWidget<>Widget then
     FFixWidgetsResized.Remove(FixWidget);
@@ -3186,21 +3208,6 @@ begin
   then
     DestroyCaret(Handle);
     
-  if Sender is TControl then begin
-    case TControl(Sender).fCompStyle of
-    csComboBox:
-      begin
-        SetComboBoxText(PGtkCombo(Handle),nil);
-        FreeWinWidgetInfo(PGtkCombo(Handle)^.Entry);
-        FreeWinWidgetInfo(PGtkCombo(Handle)^.Button);
-      end;
-      
-    end;
-  end
-  else if Sender is TCommonDialog then begin
-    DestroyCommonDialogAddOns(TCommonDialog(Sender));
-  end;
-
   // destroy the widget
   DestroyWidget(Widget);
 
@@ -6714,6 +6721,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.293  2002/11/27 15:40:36  mattias
+  fixed resize request
+
   Revision 1.292  2002/11/23 13:48:44  mattias
   added Timer patch from Vincent Snijders
 

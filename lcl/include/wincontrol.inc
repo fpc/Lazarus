@@ -2233,8 +2233,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.DestroyWnd; 
 begin
-  if FHandle <> 0 then
-  begin
+  if HandleAllocated then begin
     DestroyComponent;
     FHandle := 0;
   end;
@@ -2512,6 +2511,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.102  2002/11/27 15:40:36  mattias
+  fixed resize request
+
   Revision 1.101  2002/11/21 18:49:53  mattias
   started OnMouseEnter and OnMouseLeave
 
