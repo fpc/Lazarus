@@ -46,7 +46,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSizeConstraints.UpdateInterfaceConstraints;
 begin
-  GetControlConstraints(Self);
+  FControl.GetControlConstraints(Self);
 end;
 
 procedure TSizeConstraints.SetInterfaceConstraints(MinW, MinH,

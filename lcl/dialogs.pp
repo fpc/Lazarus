@@ -84,6 +84,8 @@ type
     procedure SetWidth(const AValue: integer);
   protected
     function DoExecute : boolean; virtual;
+  protected
+    class function SendMsgToInterface(LM_Message: integer; Sender: TObject; Data: pointer): integer;
   public
     FCompStyle : LongInt;
     constructor Create (AOwner : TComponent); override;
@@ -411,6 +413,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.45  2004/02/22 22:52:57  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.44  2004/02/04 13:40:19  mattias
   ShortCutToText now deletes any modifier
 

@@ -176,6 +176,11 @@ type
     procedure ImageListChange(Sender: TObject);
   protected
     property ActionLink: TMenuActionLink read FActionLink write FActionLink;
+  protected
+    class function SendMsgToInterface(LM_Message: integer; Sender: TObject; Data: pointer): integer;
+    {$define INTF_MENUITEM}
+    {$i lclintfh.inc}
+    {$undef INTF_MENUITEM}
   public
     FCompStyle : LongInt;
     constructor Create(TheOwner: TComponent); override;
@@ -264,6 +269,8 @@ type
                           Rebuild: Boolean); virtual;
     property OnChange: TMenuChangeEvent read FOnChange write FOnChange;
     procedure UpdateItems;
+  protected
+    class function SendMsgToInterface(LM_Message: integer; Sender: TObject; Data: pointer): integer;
   public
     FCompStyle: LongInt;
     constructor Create(AOwner: TComponent); override;
@@ -407,6 +414,9 @@ end.
 
 {
   $Log$
+  Revision 1.64  2004/02/22 22:52:57  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.63  2004/02/08 11:31:32  mattias
   TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
 

@@ -364,7 +364,7 @@ Begin
 
 end;
 
-procedure TBitMap.PaletteNeeded;
+procedure TBitmap.PaletteNeeded;
 begin
   // ToDo
 end;
@@ -1066,6 +1066,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2004/02/22 22:52:57  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.69  2004/02/21 01:01:03  mattias
   added uninstall popupmenuitem to package graph explorer
 

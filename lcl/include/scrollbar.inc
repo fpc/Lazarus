@@ -116,7 +116,7 @@ begin
   end;
 
   if HandleAllocated then
-    CNSendMEssage(LM_SetProperties,Self,nil);
+    SendMsgToInterface(LM_SetProperties,Self,nil);
 end;
 
 procedure TScrollBar.SetPosition(Value: Integer);

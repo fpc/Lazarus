@@ -154,9 +154,9 @@ end;
 procedure TCustomListView.InitializeWnd;
 begin
   inherited InitializeWnd;
-  CNSendMessage(LM_SETPROPERTIES,Self,nil);
+  SendMsgToInterface(LM_SETPROPERTIES,Self,nil);
   if FSelected<>nil then
-    CNSendMessage(LM_LV_SELECTITEM,Self,FSelected);
+    SendMsgToInterface(LM_LV_SELECTITEM,Self,FSelected);
 end;
 
 procedure TCustomListView.Loaded;
@@ -193,7 +193,7 @@ Begin
   else begin
     //notify the interface....
     if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    CNSendMessage(LM_LV_CHANGEITEM,self,@Index);
+    SendMsgToInterface(LM_LV_CHANGEITEM,self,@Index);
   end;
 End;
 
@@ -210,7 +210,7 @@ Begin
   else begin
     //notify the interface....
     if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    CNSendMessage(LM_LV_DELETEITEM,self,@Index);
+    SendMsgToInterface(LM_LV_DELETEITEM,self,@Index);
   end;
 End;
 
@@ -225,7 +225,7 @@ Begin
   else begin
     //notify the interface....
     if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    CNSendMessage(LM_LV_ADDITEM,self,nil);
+    SendMsgToInterface(LM_LV_ADDITEM,self,nil);
   end;
 End;
 
@@ -269,7 +269,7 @@ begin
   if FViewStyle = AValue then Exit;
   FViewStyle := AValue;
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  CNSendMessage(LM_SETPROPERTIES,self,nil);
+  SendMsgToInterface(LM_SETPROPERTIES,self,nil);
 end;
 
 
@@ -281,7 +281,7 @@ begin
   if FSortType = AValue then Exit;
   FSortType := AValue;
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  CNSendMessage(LM_SETPROPERTIES,self,nil);
+  SendMsgToInterface(LM_SETPROPERTIES,self,nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -292,7 +292,7 @@ begin
   if FSortColumn = AValue then Exit;
   FSortColumn := AValue;
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  CNSendMessage(LM_SETPROPERTIES,self,nil);
+  SendMsgToInterface(LM_SETPROPERTIES,self,nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -352,7 +352,7 @@ begin
   if FSelected=AValue then exit;
   FSelected := AValue;
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  CNSendMessage(LM_LV_SELECTITEM,self,FSelected);
+  SendMsgToInterface(LM_LV_SELECTITEM,self,FSelected);
   //DoSelectItem(FSelected, True);
 end;
 
@@ -368,7 +368,7 @@ begin
   else begin
     //notify the interface...
     if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    CNSendMessage(LM_SETPROPERTIES,Self,nil);
+    SendMsgToInterface(LM_SETPROPERTIES,Self,nil);
   end;
 end;
 
@@ -387,7 +387,7 @@ begin
              FSmallImages.FreeNotification(self);
            end;
         if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-        CNSendMessage(LM_SETPROPERTIES,self,nil);
+        SendMsgToInterface(LM_SETPROPERTIES,self,nil);
      end;
 end;
 
@@ -399,7 +399,7 @@ begin
   else begin
     //image changed so redraw it all....
     if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    CNSendMessage(LM_SETPROPERTIES,self,nil);
+    SendMsgToInterface(LM_SETPROPERTIES,self,nil);
   end;
 end;
 
@@ -558,6 +558,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/02/22 22:52:58  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.27  2004/01/21 10:19:16  micha
   enable tabstops for controls; implement tabstops in win32 intf
 

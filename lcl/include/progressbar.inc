@@ -219,7 +219,7 @@ begin
   inc (FPosition, FStep);
   if FPosition > FMax then FPosition := FMax;
   if FPosition < FMin then FPosition := FMin;
-  CNSendMessage(LM_SetValue, Self, @FPosition);
+  SendMsgToInterface(LM_SetValue, Self, @FPosition);
 end;
 
 
@@ -251,7 +251,7 @@ end;
 procedure TProgressBar.ApplyChanges;
 begin
   if HandleAllocated and (not (csLoading in ComponentState)) then
-    CNSendMessage(LM_SETPROPERTIES, Self, nil);
+    SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
 end;
 
 
@@ -296,6 +296,9 @@ end;
 
 {
   $Log$
+  Revision 1.5  2004/02/22 22:52:58  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.4  2003/06/25 21:02:20  mattias
   reduced TProgressBar setproperties calls
 

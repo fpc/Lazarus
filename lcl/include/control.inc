@@ -1645,7 +1645,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.AddControl;
 begin
-  CNSendMessage(LM_AddChild, Self, nil);
+  SendMsgToInterface(LM_AddChild, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -1762,7 +1762,7 @@ begin
     // so for now I do it this way.
     // later, I'll create the cursor in the CreateComponent
     // (or something like that)
-    if not(csDesigning in ComponentState) then CNSendMessage(LM_SETCURSOR, Self, nil);
+    if not(csDesigning in ComponentState) then SendMsgToInterface(LM_SETCURSOR, Self, nil);
   end;
 end;
 
@@ -1865,7 +1865,7 @@ begin
   if (Self is TWinControl)
   and TWinControl(Self).HandleAllocated
   and (not (csLoading in ComponentState))
-  and boolean(CNSendMessage(LM_GETTEXT, Self, @Result))
+  and boolean(SendMsgToInterface(LM_GETTEXT, Self, @Result))
   then Assert(False, Format('Trace:[TControl.GetText] %s got: "%s"', [ClassName, Result]))
   else Result := FCaption;
 
@@ -2181,7 +2181,7 @@ end;
 procedure TControl.SetDragMode(Value: TDragMode);
 begin
   FDragMode := Value;
-  CNSendMessage(LM_DRAGINFOCHANGED,Self,Nil);
+  SendMsgToInterface(LM_DRAGINFOCHANGED,Self,Nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2794,10 +2794,160 @@ end;
   {$C-}
 {$ENDIF}
 
+{******************************************************************************
+  These functions redirect to the platform specific interface object.
+
+  Note:
+    the section for not referring InterfaceObject is at the end
+ ******************************************************************************}
+//##apiwiz##sps##   // Do not remove
+
+function TControl.SendMsgToInterface(LM_Message: integer; Sender: TObject; Data: pointer): integer;
+begin
+  Result := InterfaceObject.GetIntfControl.IntSendMessage3(LM_Message, Sender, Data);
+end;
+
+procedure TControl.AttachMenuToWindow(AMenuObject: TComponent);
+begin
+  InterfaceObject.GetIntfControl.AttachMenuToWindow(AMenuObject);
+end;
+
+procedure TControl.CallDefaultWndHandler(Sender: TObject; var Message);
+begin
+  InterfaceObject.GetIntfControl.CallDefaultWndHandler(Sender,Message);
+end;
+
+function TControl.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
+begin
+  Result := InterfaceObject.GetIntfControl.ComboBoxDropDown(Handle,DropDown);
+end;
+
+procedure TControl.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
+begin
+  InterfaceObject.GetIntfControl.DrawArrow(Arrow, Canvas);
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetClientBounds
+  Params: handle:
+          ARect:
+          Result:
+  Returns: true on success
+
+  Returns the client bounds of a control. The client bounds is the rectangle of
+  the inner area of a control, where the child controls are visible. The
+  coordinates are relative to the control's left and top.
+ ------------------------------------------------------------------------------}
+function TControl.GetIntfClientBounds(Handle: HWND; var ARect: TRect): Boolean;
+begin
+  Result := InterfaceObject.GetIntfControl.GetIntfClientBounds(Handle, ARect);
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetClientRect
+  Params: handle:
+          Result:
+  Returns: true on success
+
+  Returns the client rectangle of a control. Left and Top are always 0.
+  The client rectangle is the size of the inner area of a control, where the
+  child controls are visible.
+  A child control with Align=alClient will completely fill the clientrect.
+ ------------------------------------------------------------------------------}
+function TControl.GetIntfClientRect(handle : HWND; var Rect : TRect) : Boolean;
+begin
+  Result := InterfaceObject.GetIntfControl.GetIntfClientRect(handle, Rect);
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetControlConstraints
+  Params: Constraints: TObject
+  Returns: true on success
+
+  Updates the constraints object (e.g. TSizeConstraints) with interface specific
+  bounds. For instance, vertical scrollbars under gtk are fixed in width. So,
+  it sets MinInterfaceWidth and MaxInterfaceWidth. This is used by the auto
+  aligning/sizing algorithms of the LCL.
+ ------------------------------------------------------------------------------}
+function TControl.GetControlConstraints(Constraints: TObject): boolean;
+begin
+  Result := InterfaceObject.GetIntfControl.GetControlConstraints(Constraints);
+end;
+
+function TControl.GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer;
+begin
+  Result := InterfaceObject.GetIntfControl.GetListBoxIndexAtY(ListBox, y);
+end;
+
+function TControl.GetListBoxItemRect(ListBox: TComponent; Index: integer;
+  var ARect: TRect): boolean;
+begin
+  Result := InterfaceObject.GetIntfControl.GetListBoxItemRect(ListBox,Index,ARect);
+end;
+
+function TControl.GetNotebookTabIndexAtPos(Handle: HWND;
+  const ClientPos: TPoint): integer;
+begin
+  Result := InterfaceObject.GetIntfControl.GetNotebookTabIndexAtPos(Handle,ClientPos);
+end;
+
+function TControl.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
+  Side: integer): Boolean;
+begin
+  Result:=InterfaceObject.GetIntfControl.PairSplitterAddSide(SplitterHandle,SideHandle,Side);
+end;
+
+function TControl.PairSplitterGetInterfaceInfo: boolean;
+begin
+  Result:=InterfaceObject.GetIntfControl.PairSplitterGetInterfaceInfo;
+end;
+
+function TControl.PairSplitterRemoveSide(SplitterHandle, SideHandle: hWnd;Side: integer): Boolean;
+begin
+  Result:=InterfaceObject.GetIntfControl.PairSplitterRemoveSide(SplitterHandle,SideHandle, Side);
+end;
+
+function TControl.PairSplitterSetPosition(SplitterHandle: hWnd; var NewPosition: integer): Boolean;
+begin
+  Result:=InterfaceObject.GetIntfControl.PairSplitterSetPosition(SplitterHandle,NewPosition);
+end;
+
+function TControl.SetCaretRespondToFocus(Handle: hWnd; ShowHideOnFocus: boolean):Boolean;
+begin
+  Result := InterfaceObject.GetIntfControl.SetCaretRespondToFocus(Handle,ShowHideOnFocus);
+end;
+
+function TControl.SetComboMinDropDownSize(Handle: HWND;
+  MinItemsWidth, MinItemsHeight, MinItemCount: integer): boolean;
+begin
+  Result := InterfaceObject.GetIntfControl.SetComboMinDropDownSize(Handle,
+                                   MinItemsWidth, MinItemsHeight, MinItemCount);
+end;
+
+procedure TControl.StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer);
+begin
+  InterfaceObject.GetIntfControl.StatusBarPanelUpdate(StatusBar, PanelIndex);
+end;
+
+procedure TControl.StatusBarSetText(StatusBar: TObject; PanelIndex: integer);
+begin
+  InterfaceObject.GetIntfControl.StatusBarSetText(StatusBar, PanelIndex);
+end;
+
+procedure TControl.StatusBarUpdate(StatusBar: TObject);
+begin
+  InterfaceObject.GetIntfControl.StatusBarUpdate(StatusBar);
+end;
+
+//##apiwiz##eps##   // Do not remove
+
 // included by controls.pp
 
 { =============================================================================
   $Log$
+  Revision 1.172  2004/02/22 22:52:57  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.171  2004/02/22 10:43:20  mattias
   added child-parent checks
 

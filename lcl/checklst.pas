@@ -124,7 +124,7 @@ begin
   CheckIndex(AIndex);
 
   if HandleAllocated
-  then Result := (CNSendMessage(LM_CLB_GETCHECKED, Self, @AIndex) <> 0)
+  then Result := (SendMsgToInterface(LM_CLB_GETCHECKED, Self, @AIndex) <> 0)
   else Result := PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^;
 end;
 
@@ -136,7 +136,7 @@ begin
   then begin
     Msg.Index:= AIndex;
     Msg.Checked := AChecked;
-    CNSendMessage(LM_CLB_SETCHECKED, Self, @Msg);
+    SendMsgToInterface(LM_CLB_SETCHECKED, Self, @Msg);
   end;
 end;
 
@@ -154,6 +154,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2004/02/22 22:52:57  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.3  2003/07/09 00:13:18  marc
   * fixed cached items.object storage if TCheckListBox
   * Changed DebuggerOptions dialog to use new TCheckListBox

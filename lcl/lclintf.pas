@@ -51,9 +51,6 @@ uses
 
 // All winapi related stuff (Delphi compatible)
 {$I winapih.inc}
-// All interface communication (Our additions)
-{$I lclintfh.inc}
-
 
 function MakeLong(A,B : Word) : LongInt;
 function MakeWord(A,B : Byte) : Word;
@@ -155,7 +152,6 @@ begin
 end;
 
 {$I winapi.inc}
-{$I lclintf.inc}
 
 procedure InternalInit;
 var
@@ -184,6 +180,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2004/02/22 22:52:57  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.11  2004/02/19 09:57:03  mattias
   moved GetTickStep to IFDEF DebugLCL
 

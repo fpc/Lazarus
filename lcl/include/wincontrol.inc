@@ -760,7 +760,7 @@ var
 begin
   Result:=false;
   if not HandleAllocated then exit;
-  LCLIntf.GetClientRect(Handle,IntfClientRect);
+  GetIntfClientRect(Handle,IntfClientRect);
   Result:=(FClientWidth<>IntfClientRect.Right)
        or (FClientHeight<>IntfClientRect.Bottom);
 end;
@@ -913,7 +913,7 @@ begin
     StoreClientRect(Result);
   end else if wcfClientRectNeedsUpdate in FFlags then begin
     // update clientrect from interface
-    LCLIntf.GetClientRect(Handle, Result);
+    GetIntfClientRect(Handle, Result);
     // the LCL is not always in sync with the interface
     // -> adjust client rect based on LCL bounds
     // for example: if the Width in LCL differ from the Width of the Interface
@@ -951,7 +951,7 @@ var
   ScrolledOffset: TPoint;
 begin
   if HandleAllocated then begin
-    LCLIntf.GetClientBounds(Handle,Result);
+    GetIntfClientBounds(Handle,Result);
     if Scrolled then begin
       ScrolledOffset:=GetClientScrollOffset;
       inc(Result.Left,ScrolledOffset.X);
@@ -970,7 +970,7 @@ Procedure TWinControl.ReCreateWnd;
 Begin
 //send a message to inform the interface that we need to destroy and recreate this control
   if HandleAllocated then
-    CNSendMessage(LM_RECREATEWND,Self,Nil);
+    SendMsgToInterface(LM_RECREATEWND,Self,Nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1331,7 +1331,7 @@ begin
     if (Control is TWinControl) and TWinControl(Control).HandleAllocated then
     begin
       // map coordinates to client area of control
-      LCLIntf.GetClientBounds(TWinControl(Control).Handle,ClientBounds);
+      GetIntfClientBounds(TWinControl(Control).Handle,ClientBounds);
       dec(P.X,ClientBounds.Left);
       dec(P.Y,ClientBounds.Top);
       {$IFDEF VerboseMouseBugfix}
@@ -1354,7 +1354,7 @@ procedure TWinControl.FontChanged(Sender: TObject);
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
-    CNSendMessage(LM_SETFONT, Self, Pointer(Font.Handle));
+    SendMsgToInterface(LM_SETFONT, Self, Pointer(Font.Handle));
     Exclude(FFlags,wcfFontChanged);
     //NotifyControls(CM_ ...);
   end else
@@ -1369,7 +1369,7 @@ begin
     FBrush.Color := Color;
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
-    CNSendMessage(LM_SETCOLOR, Self, nil);
+    SendMsgToInterface(LM_SETCOLOR, Self, nil);
     Exclude(FFlags,wcfColorChanged);
     NotifyControls(CM_PARENTCOLORCHANGED);
   end else
@@ -2083,7 +2083,7 @@ end;
 Procedure TWinControl.Invalidate;
 Begin
   if HandleAllocated and (not (csDestroying in ComponentState))
-  then CNSendMessage(LM_Invalidate,Self,Nil);
+  then SendMsgToInterface(LM_Invalidate,Self,Nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -2096,7 +2096,7 @@ Begin
   if csDesigning in ComponentState then
     writeln('TWinControl.Repaint A ',Name,':',ClassName);
   {$ENDIF}
-  CNSendMessage(LM_PAINT, Self, nil);
+  SendMsgToInterface(LM_PAINT, Self, nil);
   // Invalidate;
   // Update;
 end;
@@ -2671,7 +2671,7 @@ begin
       // WMPaint expects the DC origin to be equal to the client origin of its
       // parent
       // -> Move the DC Origin to the client origin
-      if not GetClientBounds(Handle,ClientBoundRect) then exit;
+      if not GetIntfClientBounds(Handle,ClientBoundRect) then exit;
       MoveWindowOrgEx(MemDC,ClientBoundRect.Left,ClientBoundRect.Top);
       // handle the paint message
       Msg.DC := MemDC;
@@ -2999,7 +2999,7 @@ procedure TWinControl.CreateComponent(TheOwner : TComponent);
 begin
   if HandleAllocated then
     RaiseError('Handle already created');
-  CNSendMessage(LM_CREATE, Self, nil);
+  SendMsgToInterface(LM_CREATE, Self, nil);
   Constraints.UpdateInterfaceConstraints;
   FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
   if not HandleAllocated then
@@ -3013,7 +3013,7 @@ procedure TWinControl.DestroyComponent;
 begin
   if not HandleAllocated then
     RaiseGDBException('TWinControl.DestroyComponent Handle already destroyed');
-  CNSendMessage(LM_DESTROY, Self, nil);
+  SendMsgToInterface(LM_DESTROY, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -3034,10 +3034,10 @@ begin
 
 //writeln('[TWinControl.InitializeWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
   DoSendBoundsToInterface;
-  CNSendMessage(LM_SHOWHIDE, Self, nil);
+  SendMsgToInterface(LM_SHOWHIDE, Self, nil);
   if [wcfColorChanged,wcfFontChanged]*FFLags<>[] then begin
     // replace by update style call
-    CNSendMessage(LM_SETCOLOR, Self, nil);
+    SendMsgToInterface(LM_SETCOLOR, Self, nil);
     FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
   end;
 
@@ -3064,7 +3064,7 @@ begin
   if ([wcfColorChanged,wcfFontChanged]*FFlags<>[]) and HandleAllocated then
   begin
     // ToDo: replace by update style call
-    CNSendMessage(LM_SETCOLOR, Self, nil);
+    SendMsgToInterface(LM_SETCOLOR, Self, nil);
     FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
   end;
   // align the childs
@@ -3123,7 +3123,7 @@ end;
 procedure TWinControl.SetTextBuf(Buffer: PChar);
 begin
   if not HandleAllocated then exit;
-  CNSendMessage(LM_SetLabel, Self, Buffer);
+  SendMsgToInterface(LM_SetLabel, Self, Buffer);
   inherited SetTextBuf(Buffer);
 end;
 
@@ -3323,7 +3323,7 @@ begin
   //writeln('TWinControl.DoSendBoundsToInterface A ',Name,':',ClassName,' Old=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
   //' New=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
   FBoundsRealized:=NewBounds;
-  CNSendMessage(LM_SetSize, Self, @NewBounds);
+  SendMsgToInterface(LM_SetSize, Self, @NewBounds);
 end;
 
 procedure TWinControl.RealizeBounds;
@@ -3363,7 +3363,7 @@ procedure TWinControl.CMShowingChanged(var Message: TLMessage);
 begin
   // ToDo: do not send this while loading, send it after loading.
   if HandleAllocated and ([csDestroying]*ComponentState=[])then
-    CNSendMessage(LM_ShowHide, Self, nil);
+    SendMsgToInterface(LM_ShowHide, Self, nil);
 //  SetWindowPos(Handle, 0, 0, 0, 0, 0, ShowFlags[FShowing]);
 end;
 
@@ -3388,6 +3388,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.205  2004/02/22 22:52:58  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.204  2004/02/22 15:39:43  mattias
   fixed error handling on saving lpi file
 

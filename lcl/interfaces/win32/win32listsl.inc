@@ -138,7 +138,7 @@ Procedure TWin32ListStringList.Sort;
 Begin
   // The win api doesn't allow to change the sort on the fly,
   // so is needed to recreate the window
-  CNSendMessage(LM_RECREATEWND,FSender,Nil);
+  IntSendMessage3(LM_RECREATEWND,FSender,Nil);
 End;
 
 {------------------------------------------------------------------------------
@@ -157,7 +157,7 @@ Begin
   Begin
     // save any text in edit box
     if FSender.FCompStyle=csComboBox then
-      CNSendMessage(LM_GETTEXT, FSender, @EditText);
+      IntSendMessage3(LM_GETTEXT, FSender, @EditText);
 
     Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
     For Counter := 0 To (TStrings(Source).Count - 1) Do
@@ -174,7 +174,7 @@ Begin
         SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FDDownCount*FItemHeight + 2);
 
       // restore text in edit box
-      CNSendMessage(LM_SETLABEL, FSender, PChar(EditText));
+      IntSendMessage3(LM_SETLABEL, FSender, PChar(EditText));
     end;
   End
   Else
@@ -420,7 +420,7 @@ Procedure TWin32CListStringList.Sort;
 Begin
   // The win api doesn't allow to change the sort on the fly,
   // so is needed to recreate the window
-  CNSendMessage(LM_RECREATEWND,FSender,Nil);
+  IntSendMessage3(LM_RECREATEWND,FSender,Nil);
 End;
 
 {------------------------------------------------------------------------------
@@ -543,6 +543,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/02/22 22:52:58  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.27  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

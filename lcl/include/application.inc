@@ -120,7 +120,8 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.BringToFront;
 begin
-  CNSendMessage(LM_BRINGTOFRONT,Self,nil);
+// TODO: Introduce new function
+//  CNSendMessage(LM_BRINGTOFRONT,Self,nil);
 end;
 
 
@@ -217,7 +218,8 @@ begin
     raise Exception.Create(rsNoInterfaceObject);
   end;
   InterfaceObject.AppInit;
-  CNSendMessage(LM_SCREENINIT, nil, @ScreenInfo);
+// TODO: Introduce new function  
+//  CNSendMessage(LM_SCREENINIT, nil, @ScreenInfo);
   Screen.UpdateScreen;
   // application icon
   if LazarusResources.Find('MAINICON')<>nil then begin
@@ -653,7 +655,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TApplication.IconChanged(Sender: TObject);
 begin
-  CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
+// TODO: Introduce new function
+//  CNSendMessage(LM_SETFORMICON, Self, Pointer(GetIconHandle));
   // NotifyForms(CM_ICONCHANGED);
 end;
 
@@ -1161,6 +1164,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.72  2004/02/22 22:52:57  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.71  2004/02/10 02:00:13  mattias
   activated Idle actions
 

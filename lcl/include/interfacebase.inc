@@ -25,13 +25,11 @@
 constructor TInterfaceBase.Create;
 begin
   inherited Create;
-  SendMsgToInterface:=@IntSendMessage3;
 end;
 
 destructor TInterfaceBase.Destroy;
 begin
   inherited Destroy;
-  SendMsgToInterface:=nil;
 end;
 
 procedure TInterfaceBase.PassCmdLineOptions;
@@ -41,6 +39,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.113  2004/02/22 22:52:58  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.112  2003/11/24 11:03:07  marc
   * Splitted winapi*.inc into a winapi and a lcl interface communication part
 

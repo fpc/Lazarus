@@ -108,9 +108,6 @@ Type
     Procedure CreateCommonDialog(Sender: TCommonDialog; CompStyle: Integer);
     Procedure CreateSelectDirectoryDialog(Sender: TSelectDirectoryDialog);
     
-    procedure UpdateStatusBarPanel(StatusPanel: TStatusPanel);
-    procedure UpdateStatusBarPanelWidths(StatusBar: TStatusBar);
-
   Public
     { Creates a callback of Lazarus message Msg for Sender }
     Procedure SetCallback(Msg: LongInt; Sender: TObject); virtual;
@@ -123,21 +120,68 @@ Type
     Destructor Destroy; Override;
     { Initialize the API }
     Procedure AppInit; Override;
-    Function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer) : Integer; Override;
     Procedure HandleEvents; Override;
     Procedure WaitMessage; Override;
     Procedure AppTerminate; Override;
     Function  InitHintFont(HintFont: TObject): Boolean; Override;
-    Procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
 
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
     function DestroyTimer(TimerHandle: Integer) : boolean; override;
+    
+    function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
+
+    function GetIntfControl: TIntfControlClass; override;
+    function GetIntfCanvas: TIntfCanvasClass; override;
+    function GetIntfGraphic: TIntfGraphicClass; override;
+    function GetIntfMenu: TIntfMenuClass; override;
+    function GetIntfMenuItem: TIntfMenuItemClass; override;
+    function GetIntfDialog: TIntfDialogClass; override;
 
     {$I win32winapih.inc}
-    {$I win32lclintfh.inc}
 
     property AppHandle: HWND read FAppHandle;
   End;
+
+  TWin32IntfControl = class(TIntfControl)
+  protected
+    class procedure UpdateStatusBarPanel(StatusPanel: TStatusPanel);
+    class procedure UpdateStatusBarPanelWidths(StatusBar: TStatusBar);
+  public
+    class function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer; override;
+
+    {$define INTF_CONTROL}
+    {$I win32lclintfh.inc}
+    {$undef INTF_CONTROL}
+  end;
+
+  TWin32IntfCanvas = class(TIntfCanvas)
+  public
+    class function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer; override;
+  end;
+
+  TWin32IntfGraphic = class(TIntfGraphic)
+  public
+    class function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer; override;
+  end;
+
+  TWin32IntfMenu = class(TIntfMenu)
+  public
+    class function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer; override;
+  end;
+
+  TWin32IntfMenuItem = class(TIntfMenuItem)
+  public
+    class function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer; override;
+
+    {$define INTF_MENUITEM}
+    {$I win32lclintfh.inc}
+    {$undef INTF_MENUITEM}
+  end;
+
+  TWin32IntfDialog = class(TIntfDialog)
+  public
+    class function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer; override;
+  end;
 
   {$I win32listslh.inc}
 
@@ -177,6 +221,38 @@ Const
 {$I win32object.inc}
 {$I win32winapi.inc}
 {$I win32lclintf.inc}
+    
+// TODO: Cleanup!    
+    
+function TWin32IntfControl.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
+begin
+  Result := TWin32Object(InterfaceObject).IntSendMessage3(LM_Message, Sender, Data);
+end;
+
+function TWin32IntfCanvas.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
+begin
+  Result := TWin32Object(InterfaceObject).IntSendMessage3(LM_Message, Sender, Data);
+end;
+
+function TWin32IntfGraphic.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
+begin
+  Result := TWin32Object(InterfaceObject).IntSendMessage3(LM_Message, Sender, Data);
+end;
+
+function TWin32IntfMenu.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
+begin
+  Result := TWin32Object(InterfaceObject).IntSendMessage3(LM_Message, Sender, Data);
+end;
+
+function TWin32IntfMenuItem.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
+begin
+  Result := TWin32Object(InterfaceObject).IntSendMessage3(LM_Message, Sender, Data);
+end;
+
+function TWin32IntfDialog.IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer): Integer;
+begin
+  Result := TWin32Object(InterfaceObject).IntSendMessage3(LM_Message, Sender, Data);
+end;
 
 Initialization
 
@@ -191,6 +267,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.67  2004/02/22 22:52:58  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.66  2004/02/21 13:35:15  micha
   fixed: name clash SetCursor (message LM_SETCURSOR), and inherited SetCursor (winapi)
 

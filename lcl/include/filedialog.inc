@@ -48,9 +48,9 @@ begin
   if FInitialDir<>'' then SetCurrentDir(FInitialDir);
   try
     FUserChoice := mrNone;
-    CNSendMessage(LM_CREATE, Self, nil);
+    SendMsgToInterface(LM_CREATE, Self, nil);
     Result:= DoExecute;
-    CNSendMessage(LM_DESTROY, Self, nil);
+    SendMsgToInterface(LM_DESTROY, Self, nil);
     FHandle := 0;
   finally
     SetCurrentDir(FOldWorkingDir);
@@ -85,7 +85,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TFileDialog.SetFilter(const value : string);
 begin
-  FFilter := Value;  // make sure this is defined first before the CNSendMessage
+  FFilter := Value;  // make sure this is defined first before the SendMsgToInterface
 end;
 
 {------------------------------------------------------------------------------}
@@ -93,7 +93,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TFileDialog.SetFileName(const value : string);
 begin
-  FFileName := Value;  // make sure this is defined first before the CNSendMessage
+  FFileName := Value;  // make sure this is defined first before the SendMsgToInterface
 end;
 
 {******************************************************************************
@@ -278,6 +278,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/02/22 22:52:58  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.15  2004/01/24 16:25:35  mattias
   TSelectDirectoryDialog ofFileMustExist now checks for directory from Vincent
 
@@ -370,11 +373,11 @@ end;
         buttons.pp   the DoLeave and DoEnter were connected to the wrong
                      event.
 
-        The rest were modified to use the new CNSendMessage function.   MAH
+        The rest were modified to use the new SendMsgToInterface function.   MAH
 
   Revision 1.2  1999/07/31 06:39:24  lazarus
 
-       Modified the IntCNSendMessage3 to include a data variable. It isn't used
+       Modified the IntSendMsgToInterface3 to include a data variable. It isn't used
        yet but will help in merging the Message2 and Message3 features.
 
        Adjusted TColor routines to match Delphi color format

@@ -27,23 +27,37 @@
 }
 
 //##apiwiz##sps##   // Do not remove
-procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 
-function GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String; override;
-function GetControlConstraints(Constraints: TObject): boolean; override;
-function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
+{$ifdef INTF_CONTROL}
+class procedure AttachMenuToWindow(AMenuObject: TComponent); Override;
+class procedure CallDefaultWndHandler(Sender: TObject; var Message); Override;
+class procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent); override;
 
-function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
-function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
+class function GetControlConstraints(Constraints: TObject): boolean; override;
+class function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
+class function GetIntfClientBounds(Handle: HWND; Var Rect: TRect): Boolean; Override;
+class function GetIntfClientRect(Handle: HWND; Var Rect: TRect): Boolean; Override;
 
-procedure StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer); override;
-procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer); override;
-procedure StatusBarUpdate(StatusBar: TObject); override;
+class function SetCaretRespondToFocus(Handle: HWND; ShowHideOnFocus: Boolean): Boolean; Override;
+
+class procedure StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer); override;
+class procedure StatusBarSetText(StatusBar: TObject; PanelIndex: integer); override;
+class procedure StatusBarUpdate(StatusBar: TObject); override;
+{$endif}
+
+{$ifdef INTF_MENUITEM}
+class function MenuItemSetCheck(BaseMenuItem: TComponent): Boolean; override;
+class function MenuItemSetEnable(BaseMenuItem: TComponent): Boolean; override;
+{$endif}
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/02/22 22:52:58  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.10  2004/02/20 19:52:18  micha
   fixed: tarrow crash in win32
   added: interface function DrawArrow to draw themed arrow

@@ -26,7 +26,7 @@ end;
 function TStatusPanels.Add: TStatusPanel;
 begin
   Result := TStatusPanel(inherited Add);
-  StatusBarUpdate(StatusBar);
+  FStatusBar.StatusBarUpdate(StatusBar);
 end;
 
 function TStatusPanels.GetItem(Index: Integer): TStatusPanel;

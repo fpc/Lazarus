@@ -126,7 +126,7 @@ begin
   if Value <> FScrollbars then begin
     FScrollbars:= Value;
     if HandleAllocated then
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
   end;
 end;
 
@@ -144,7 +144,7 @@ end;
 procedure TCustomMemo.Loaded;
 begin
   inherited Loaded;
-  CNSendMessage(LM_SETPROPERTIES, Self, nil);
+  SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -159,7 +159,7 @@ begin
     writeln('TCustomMemo.SetWordWrap ',Name,' Old=',FWordWrap,' New=',Value);
     FWordWrap := Value;
     if HandleAllocated and (not (csLoading in ComponentState)) then
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      SendMsgToInterface(LM_SETPROPERTIES, Self, nil);
   end;    
 end;
 
@@ -168,6 +168,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/02/22 22:52:58  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.19  2004/02/09 19:52:52  mattias
   implemented ByteOrder for TLazIntfImage and added call of to LM_SETFONT
 

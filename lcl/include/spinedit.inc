@@ -27,7 +27,7 @@ begin
     fValueNeedsUpdate:=true;
     exit;
   end;
-  CNSendMessage(LM_SetProperties,Self,nil);
+  SendMsgToInterface(LM_SetProperties,Self,nil);
   fValueNeedsUpdate:=false;
 end;
 
@@ -64,14 +64,14 @@ end;
 function TCustomSpinEdit.GetSelLength: integer;
 begin
   if HandleAllocated then
-    FSelLength := CNSendMessage(LM_GETSELLEN, Self, nil);
+    FSelLength := SendMsgToInterface(LM_GETSELLEN, Self, nil);
   Result:= FSelLength;
 end;
 
 function TCustomSpinEdit.GetSelStart: integer;
 begin
   if HandleAllocated then
-    FSelStart:= CNSendMessage(LM_GETSELSTART, Self, nil);
+    FSelStart:= SendMsgToInterface(LM_GETSELSTART, Self, nil);
   Result:= FSelStart;
 end;
 
@@ -109,14 +109,14 @@ procedure TCustomSpinEdit.SetSelLength(const AValue: integer);
 begin
   FSelLength:= AValue;
   if HandleAllocated then
-    CNSendMessage(LM_SETSELLEN, Self, Pointer(FSelLength));
+    SendMsgToInterface(LM_SETSELLEN, Self, Pointer(FSelLength));
 end;
 
 procedure TCustomSpinEdit.SetSelStart(const AValue: integer);
 begin
   FSelStart:= AValue;
   if HandleAllocated then
-    CNSendMessage(LM_SETSELSTART, Self, Pointer(FSelStart));
+    SendMsgToInterface(LM_SETSELSTART, Self, Pointer(FSelStart));
 end;
 
 procedure TCustomSpinEdit.SetSelText(const AValue: String);
@@ -177,7 +177,7 @@ Var
   Temp : Single;
 begin
   if HandleAllocated and (not fValueNeedsUpdate) then begin
-    CNSendMessage(LM_GETVALUE,Self,@Temp);
+    SendMsgToInterface(LM_GETVALUE,Self,@Temp);
     FValue := Temp;
   end;
   GetValue := fValue;

@@ -1136,12 +1136,46 @@ begin
     inherited AssignTo(Dest);
 end;
 
+function TMenuItem.SendMsgToInterface(LM_Message: integer; Sender: TObject; Data: pointer): integer;
+begin
+  Result := InterfaceObject.GetIntfMenuItem.IntSendMessage3(LM_Message, Sender, Data);
+end;
+
+function TMenuItem.MenuItemSetCheck(AMenuItem: TComponent): Boolean;
+begin
+  Result := InterfaceObject.GetIntfMenuItem.MenuItemSetCheck(AMenuItem);
+end;
+
+function TMenuItem.MenuItemSetEnable(AMenuItem: TComponent): Boolean;
+begin
+  Result := InterfaceObject.GetIntfMenuItem.MenuItemSetEnable(AMenuItem);
+end;
+
+function TMenuItem.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
+begin
+  Result := InterfaceObject.GetIntfMenuItem.RadioMenuItemGroup(hndMenu,bRadio);
+end;
+
+function TMenuItem.RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer) : Boolean;
+begin
+  Result := InterfaceObject.GetIntfMenuItem.RegroupMenuItem(hndMenu,GroupIndex);
+end;
+
+function TMenuItem.RightJustifyMenuItem(HndMenu: HMenu;
+  bRightJustify: boolean): boolean;
+begin
+  Result := InterfaceObject.GetIntfMenuItem.RightJustifyMenuItem(hndMenu, bRightJustify);
+end;
+
 // included by menus.pp
 
 
 { =============================================================================
 
   $Log$
+  Revision 1.52  2004/02/22 22:52:58  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.51  2004/02/08 11:31:32  mattias
   TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
 
@@ -1326,6 +1360,9 @@ end;
 
 
   $Log$
+  Revision 1.52  2004/02/22 22:52:58  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.51  2004/02/08 11:31:32  mattias
   TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
 

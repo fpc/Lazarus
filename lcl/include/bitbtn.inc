@@ -75,7 +75,7 @@ end;
 procedure TBitBtn.GlyphChanged(Sender: TObject);
 begin
   if HandleAllocated then begin
-    CNSendMessage(LM_IMAGECHANGED,Self,nil);
+    SendMsgToInterface(LM_IMAGECHANGED,Self,nil);
     Invalidate;
   end;
 end;
@@ -122,7 +122,7 @@ Begin
   if FLayout = AValue then Exit;
   FLayout := AValue;
   if HandleAllocated then
-    CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
+    SendMsgToInterface(LM_LAYOUTCHANGED,Self,nil);
 end;
 
 Procedure TBitBtn.SetSpacing(AValue: Integer);
@@ -131,7 +131,7 @@ Begin
   FSpacing := AValue;
   if HandleAllocated then
     //still send the layout message because it still calls the same procedure
-    CNSendMessage(LM_LAYOUTCHANGED,Self,nil);
+    SendMsgToInterface(LM_LAYOUTCHANGED,Self,nil);
 end;
 
 procedure TBitBtn.RealizeKind;

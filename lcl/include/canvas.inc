@@ -197,6 +197,11 @@ begin
   Result := FPenPos;
 end;
 
+function TCanvas.SendIntfMessage(LM_Message: integer; Sender: TObject; Data: pointer): integer;
+begin
+  Result := InterfaceObject.GetIntfCanvas.IntSendMessage3(LM_Message, Sender, Data);
+end;
+    
 {------------------------------------------------------------------------------
   Method:   TCanvas.SetAutoReDraw
   Params:   Value
@@ -1261,6 +1266,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.67  2004/02/22 22:52:57  micha
+  split interface into non-lcl and lcl-component dependent parts
+
   Revision 1.66  2004/02/21 15:17:43  micha
   fixed: compiler doesn't know what function to call using ver 1.9.2
 
