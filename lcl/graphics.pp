@@ -659,7 +659,7 @@ type
     function GetScanline(Row: Integer): Pointer;
     procedure SetHandleType(Value: TBitmapHandleType); virtual;
   protected
-    procedure Draw(ACanvas: TCanvas; const Rect: TRect); override;
+    procedure Draw(ACanvas: TCanvas; const ARect: TRect); override;
     function GetEmpty: Boolean; override;
     function GetHeight: Integer; override;
     function GetPalette: HPALETTE; override;
@@ -962,6 +962,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.65  2003/03/12 14:39:29  mattias
+  fixed clipping origin in stretchblt
+
   Revision 1.64  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 

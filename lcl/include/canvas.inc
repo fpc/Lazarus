@@ -168,6 +168,9 @@ begin
   SetTextColor(FHandle, Font.Color);
 end;
 
+{------------------------------------------------------------------------------
+  Procedure TCanvas.CreateRegion;
+ ------------------------------------------------------------------------------}
 Procedure TCanvas.CreateRegion;
 var OldHandle: HRGN;
 begin
@@ -187,7 +190,6 @@ function TCanvas.GetPenPos: TPoint;
 begin
   Result := FPenPos;
 end;
-
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.SetAutoReDraw
@@ -1155,6 +1157,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2003/03/12 14:39:29  mattias
+  fixed clipping origin in stretchblt
+
   Revision 1.41  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 
