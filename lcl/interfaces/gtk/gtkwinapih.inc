@@ -72,6 +72,7 @@ function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; override;
 Function GetClientBounds(handle : HWND; var ARect : TRect) : Boolean; override;
 Function GetClientRect(handle : HWND; var ARect : TRect) : Boolean; override;
+Function GetCmdLineParamDescForInterface: string; override;
 function GetDC(hWnd: HWND): HDC;  override;
 function GetFocus: HWND; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;
@@ -152,6 +153,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2002/05/27 17:58:42  lazarus
+  MG: added command line help
+
   Revision 1.29  2002/05/24 07:16:35  lazarus
   MG: started mouse bugfix and completed Makefile.fpc
 

@@ -249,6 +249,19 @@ begin
   Result := InterfaceObject.GetClientRect(handle, Rect);
 end;
 
+{------------------------------------------------------------------------------
+  Function: GetCmdLineParamDescForInterface
+  Params: none
+  Returns: ansistring
+
+  Returns a description of the command line parameters, that are understood by
+  the interface.
+ ------------------------------------------------------------------------------}
+Function GetCmdLineParamDescForInterface: string;
+begin
+  Result := InterfaceObject.GetCmdLineParamDescForInterface;
+end;
+
 Function GetCursorPos(var lpPoint:TPoint): Boolean;
 Begin
   Result := InterfaceObject.GetCaretPos(lpPoint);
@@ -1116,6 +1129,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/05/27 17:58:42  lazarus
+  MG: added command line help
+
   Revision 1.30  2002/05/24 07:16:32  lazarus
   MG: started mouse bugfix and completed Makefile.fpc
 

@@ -55,6 +55,7 @@ uses
 
 begin
   Application.Initialize;
+  TMainIde.ParseCmdLineOptions;
 
   // Show splashform
   SplashForm := TSplashForm.Create(nil);
@@ -83,6 +84,9 @@ end.
 
 {
   $Log$
+  Revision 1.34  2002/05/27 17:58:40  lazarus
+  MG: added command line help
+
   Revision 1.33  2002/05/15 05:58:16  lazarus
   MG: added TMainMenu.Parent
 

@@ -247,7 +247,6 @@ type
     procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
     
     // methods for start
-    procedure ParseCmdLineOptions;
     procedure LoadGlobalOptions;
     procedure SetupMainMenu;
     procedure AddRecentSubMenu(ParentMenuItem: TMenuItem; FileList: TStringList;
@@ -312,6 +311,8 @@ type
     function DoCompleteLoadingProjectInfo: TModalResult;
 
   public
+    class procedure ParseCmdLineOptions;
+    
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
@@ -528,6 +529,30 @@ const
   SecondaryConfPathOpt='--secondary-config-path=';
 var i: integer;
 begin
+  if (ParamCount>0)
+  and ((AnsiCompareText(ParamStr(1),'--help')=0)
+    or (AnsiCompareText(ParamStr(1),'-?')=0)) then
+  begin
+    writeln('lazarus [options] <project-filename>');
+    writeln('');
+    writeln('IDE Options:');
+    writeln('');
+    writeln('--help or -?             this help message');
+    writeln('');
+    writeln('--primary-config-path    primary config directory, where Lazarus');
+    writeln('                         stores its config files. Default is ');
+    writeln('                         ',GetPrimaryConfigPath);
+    writeln('');
+    writeln('--secondary-config-path  secondary config directory, where Lazarus');
+    writeln('                         searches for config template files.');
+    writeln('                         Default is ',GetSecondaryConfigPath);
+    writeln('');
+    writeln('');
+    writeln('LCL Interface specific options:');
+    writeln('');
+    writeln(GetCmdLineParamDescForInterface);
+    Halt;
+  end;
   for i:=1 to ParamCount do begin
     if AnsiCompareText(LeftStr(ParamStr(i),length(PrimaryConfPathOpt)),
       PrimaryConfPathOpt)=0 then
@@ -6375,6 +6400,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.301  2002/05/27 17:58:40  lazarus
+  MG: added command line help
+
   Revision 1.300  2002/05/27 14:38:32  lazarus
   MG; fixed find declaration of overloaded procs and expression input types
 

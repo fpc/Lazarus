@@ -47,13 +47,13 @@ interface
 
 // activate for debug:
 
-{$DEFINE CTDEBUG}
+{ $DEFINE CTDEBUG}
 { $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
-{$DEFINE ShowTriedContexts}
+{ $DEFINE ShowTriedContexts}
 { $DEFINE ShowTriedIdentifiers}
-{$DEFINE ShowExprEval}
-{$DEFINE ShowFoundIdentifier}
+{ $DEFINE ShowExprEval}
+{ $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowInterfaceCache}
 { $DEFINE ShowNodeCache}
 { $DEFINE ShowBaseTypeCache}
