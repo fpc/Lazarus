@@ -158,7 +158,9 @@ end;
 function TCustomPage.GetPageIndex: integer;
 begin
   if (Parent<>nil) and (Parent is TCustomNotebook) then
-    Result:=TCustomNotebook(Parent).PageList.IndexOf(Self);
+    Result:=TCustomNotebook(Parent).PageList.IndexOf(Self)
+  else
+    Result := -1;
 end;
 
 procedure TCustomPage.SetPageIndex(AValue: Integer);
