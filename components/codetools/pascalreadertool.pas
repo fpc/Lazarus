@@ -418,20 +418,22 @@ begin
   if CurPos.Flag=cafSemicolon then
     ExtractNextAtom(true,Attr);
   // read specifiers
-  if phpWithCallingSpecs in Attr then begin
+  if [phpWithCallingSpecs,phpWithProcModifiers]*Attr<>[] then begin
     while (CurPos.StartPos<=ProcNode.FirstChild.EndPos) do begin
       if CurPos.Flag=cafSemicolon then begin
-        ExtractNextAtom(false,Attr);
+        ExtractNextAtom(phpWithProcModifiers in Attr,Attr);
       end else begin
         if (UpAtomIs('INLINE') or UpAtomIs('CDECL')) then begin
-          ExtractNextAtom(phpWithCallingSpecs in Attr,Attr);
-          ExtractMemStream.Write(';',1);
+          ExtractNextAtom([phpWithCallingSpecs,phpWithProcModifiers]*Attr<>[],
+                          Attr);
+          if not (phpWithProcModifiers in Attr) then
+            ExtractMemStream.Write(';',1);
         end
         else if (CurPos.Flag=cafEdgedBracketOpen) then begin
           ReadTilBracketClose(false);
-          ExtractNextAtom(false,Attr);
+          ExtractNextAtom(phpWithProcModifiers in Attr,Attr);
         end else begin
-          ExtractNextAtom(false,Attr);
+          ExtractNextAtom(phpWithProcModifiers in Attr,Attr);
         end;
       end;
     end;

@@ -257,7 +257,7 @@ begin
     Result:=ACodeTool.ExtractProcHead(CodeNode,
                   [phpWithStart,phpWithVarModifiers,
                    phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
-                   phpWithOfObject,phpWithCallingSpecs]);
+                   phpWithOfObject,phpWithCallingSpecs,phpWithProcModifiers]);
                    
   ctnProperty:
     Result:='property '+ACodeTool.ExtractPropName(CodeNode,false);
@@ -352,10 +352,10 @@ begin
       NodeImageIndex:=GetNodeImage(CodeNode);
       if InFrontViewNode<>nil then
         ViewNode:=CodeTreeview.Items.InsertObjectBehind(
-                                                InFrontViewNode,NodeText,NodeData)
+                                              InFrontViewNode,NodeText,NodeData)
       else if ParentViewNode<>nil then
         ViewNode:=CodeTreeview.Items.AddChildObject(
-                                                 ParentViewNode,NodeText,NodeData)
+                                               ParentViewNode,NodeText,NodeData)
       else
         ViewNode:=CodeTreeview.Items.AddObject(nil,NodeText,NodeData);
       ViewNode.ImageIndex:=NodeImageIndex;

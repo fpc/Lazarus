@@ -61,6 +61,7 @@ type
     phpWithResultType,     // extract colon + result type
     phpWithOfObject,       // extract 'of object'
     phpWithCallingSpecs,   // extract cdecl; inline;
+    phpWithProcModifiers,  // extract forward; alias; external;
     phpWithComments,       // extract comments and spaces
     phpInUpperCase,        // turn to uppercase
     phpCommentsToSpace,    // replace comments with a single space
@@ -244,6 +245,7 @@ const
       'phpWithResultType',
       'phpWithOfObject',
       'phpWithCallingSpecs',
+      'phpWithProcModifiers',
       'phpWithComments',
       'phpInUpperCase',
       'phpCommentsToSpace',
