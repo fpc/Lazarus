@@ -71,40 +71,40 @@ var
   DlgType : TMsgDlgType;
   Buttons : TMsgDlgButtons;
 begin
-//This uses TMessageBox class in MessageDialogs.inc
-if (Flags and MB_RETRYCANCEL) = MB_RETRYCANCEL then
-   Buttons := [mbREtry, mbCancel]
-else
-if (Flags and MB_YESNO) = MB_YESNO then
-   Buttons := [mbYes, mbNo]
-else
-if (Flags and MB_YESNOCANCEL) = MB_YESNOCANCEL then
-   Buttons := [mbYes, mbNo, mbCancel]
-   else
-if (Flags and MB_ABORTRETRYIGNORE) = MB_ABORTRETRYIGNORE then
-   Buttons := [mbAbort, mbRetry, mbIgnore]
-   else
-if (Flags and MB_OKCANCEL) = MB_OKCANCEL then
-   Buttons := [mbOK,mbCancel]
-   else
-if (Flags and MB_OK) = MB_OK then
-   Buttons := [mbOK]
-   else
-   Buttons := [mbOK];
+  //This uses TMessageBox class in MessageDialogs.inc
+  if (Flags and MB_RETRYCANCEL) = MB_RETRYCANCEL then
+    Buttons := [mbREtry, mbCancel]
+  else
+  if (Flags and MB_YESNO) = MB_YESNO then
+    Buttons := [mbYes, mbNo]
+  else
+  if (Flags and MB_YESNOCANCEL) = MB_YESNOCANCEL then
+    Buttons := [mbYes, mbNo, mbCancel]
+  else
+  if (Flags and MB_ABORTRETRYIGNORE) = MB_ABORTRETRYIGNORE then
+    Buttons := [mbAbort, mbRetry, mbIgnore]
+  else
+  if (Flags and MB_OKCANCEL) = MB_OKCANCEL then
+    Buttons := [mbOK,mbCancel]
+  else
+  if (Flags and MB_OK) = MB_OK then
+    Buttons := [mbOK]
+  else
+    Buttons := [mbOK];
 
    
-if (Flags and MB_ICONQUESTION) = MB_ICONQUESTION then
+  if (Flags and MB_ICONQUESTION) = MB_ICONQUESTION then
     DlgTYpe := mtConfirmation
-    else
-if (Flags and MB_ICONINFORMATION) = MB_ICONINFORMATION then
+  else
+  if (Flags and MB_ICONINFORMATION) = MB_ICONINFORMATION then
     DlgTYpe := mtInformation
-    else
-if (Flags and MB_ICONERROR) = MB_ICONERROR then
+  else
+  if (Flags and MB_ICONERROR) = MB_ICONERROR then
     DlgTYpe := mtError
-    else
-if (Flags and MB_ICONWARNING) = MB_ICONWARNING then
+  else
+  if (Flags and MB_ICONWARNING) = MB_ICONWARNING then
     DlgTYpe := mtWarning
-    else
+  else
     DlgTYpe := mtCustom;
 
 
@@ -411,6 +411,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/08/31 11:37:09  lazarus
+  MG: fixed destroying combobox
+
   Revision 1.24  2002/05/28 19:39:45  lazarus
   MG: added gtk rc file support and started stule dependent syscolors
 
