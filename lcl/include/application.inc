@@ -345,6 +345,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2001/11/14 17:46:58  lazarus
+  Changes to make toggling between form and unit work.
+  Added BringWindowToTop
+  Shane
+
   Revision 1.13  2001/11/05 18:18:19  lazarus
   added popupmenu+arrows to notebooks, added target filename
 

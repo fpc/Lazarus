@@ -67,6 +67,7 @@ begin
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
+
 function gtkactivateCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMessage;
@@ -1389,6 +1390,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2001/11/14 17:46:58  lazarus
+  Changes to make toggling between form and unit work.
+  Added BringWindowToTop
+  Shane
+
   Revision 1.43  2001/11/12 19:32:23  lazarus
   MG: fixed empty clipboard stream crashing bug
 

@@ -442,14 +442,28 @@ begin
 
       LM_BRINGTOFRONT:
       begin
-         Assert(False, 'Trace:TODO:bringtofront');
+      Writeln('----------------------------');
+      Writeln('----------------------------');
+      Writeln('----------------------------');
+      Writeln('----------------------------');
+      Writeln('----------------------------');
+      Writeln('----------------------------');
+{         Assert(False, 'Trace:TODO:bringtofront');
          //For now just hide and show again.
 	 if (Sender is TControl) then begin
 	   TControl(Sender).Parent.RemoveControl(TControl(Sender));
 	   writeln('Removed control ', TControl(Sender).Name);
 	   TControl(Sender).Parent.InsertControl(TControl(Sender));
 	   writeln('Inserted control ', TControl(Sender).Name);
-	 end;
+    end;
+    }
+    
+    if (Sender is TCustomForm) then
+       Begin
+         Widget := PgtkWidget(TCustomForm(Sender).Handle);
+         gdk_window_raise(Widget^.Window);
+       end;
+       
       end;
 
       LM_BTNDEFAULT_CHANGED :
@@ -3300,6 +3314,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.71  2001/11/14 17:46:58  lazarus
+  Changes to make toggling between form and unit work.
+  Added BringWindowToTop
+  Shane
+
   Revision 1.70  2001/11/12 16:56:08  lazarus
   MG: CLIPBOARD
 

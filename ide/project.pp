@@ -311,6 +311,7 @@ type
        OnlyProjectUnits:boolean):integer;
 
     function UnitWithEditorIndex(Index:integer):TUnitInfo;
+    Function UnitWithForm(AForm : TComponent) : TUnitInfo;
     procedure CloseEditorIndex(EditorIndex:integer);
     procedure InsertEditorIndex(EditorIndex:integer);
     procedure Clear;
@@ -1673,12 +1674,29 @@ begin
   for i:=0 to UnitCount-1 do Result:=Result or Units[i].Modified;
 end;
 
+Function TProject.UnitWithForm(AForm : TComponent) : TUnitInfo;
+var i:integer;
+begin
+  i:=UnitCount-1;
+  while (i>=0) and (Units[i].Form<>AForm) do dec(i);
+  if i>=0 then
+    Result:=Units[i]
+  else
+    Result:=nil;
+
+end;
+
 end.
 
 
 
 {
   $Log$
+  Revision 1.40  2001/11/14 17:46:57  lazarus
+  Changes to make toggling between form and unit work.
+  Added BringWindowToTop
+  Shane
+
   Revision 1.39  2001/11/06 22:20:30  lazarus
   MG: started breakpoint and watch frontend
 

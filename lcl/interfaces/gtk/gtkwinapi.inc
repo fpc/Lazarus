@@ -177,6 +177,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: BringWindowToTop
+  Params: hWnd:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.BringWindowToTop(hWnd : HWND): Boolean;
+begin
+  //hwnd should be a PgtkWidget.
+  result := True;
+  try
+    gdk_window_raise(PgtkWidget(hwnd)^.window);
+  except
+    Result := False;
+  end;
+  
+end;
+
+{------------------------------------------------------------------------------
   Function: CallNextHookEx
   Params:  none
   Returns: Nothing
@@ -4050,6 +4068,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2001/11/14 17:46:59  lazarus
+  Changes to make toggling between form and unit work.
+  Added BringWindowToTop
+  Shane
+
   Revision 1.48  2001/11/12 16:56:08  lazarus
   MG: CLIPBOARD
 

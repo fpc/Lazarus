@@ -210,7 +210,7 @@ type
     Procedure OnSrcNotebookProcessCommand(Sender: TObject; Command: integer;
         var Handled: boolean);
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
-
+    Procedure OnSrcNoteBookActivated(Sender : TObject);
     // ObjectInspector events
     procedure OIOnAddAvailableComponent(AComponent:TComponent;
        var Allowed:boolean);
@@ -235,6 +235,7 @@ type
     procedure MessagesViewSelectionChanged(sender : TObject);
   private
     FCodeLastActivated : Boolean; //used for toggling between code and forms
+    FLastFormActivated : TCustomForm;  //used to find the last form so you can display the corret tab
     FSelectedComponent : TRegisteredComponent;
     fProject: TProject;
     MacroList: TTransferMacroList;
@@ -342,6 +343,7 @@ type
       ComponentClass: TRegisteredComponent);
     procedure OnDesignerRemoveComponent(Sender: TObject; Component: TComponent);
     procedure OnDesignerModified(Sender: TObject);
+    Procedure OnDesignerActivated(Sender : TObject);
     procedure OnControlSelectionChanged(Sender: TObject);
 
     procedure SaveEnvironment;
@@ -572,7 +574,7 @@ begin
   SourceNotebook.OnProcessUserCommand := @OnSrcNotebookProcessCommand;
   SourceNotebook.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
   SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
-
+  SourceNotebook.OnActivate := @OnSrcNoteBookActivated;
 
   // find / replace dialog
   itmSearchFind.OnClick := @SourceNotebook.FindClicked;
@@ -731,7 +733,7 @@ writeln('[TMainIDE.FormCloseQuery]');
   CanClose:=true;
 
   if SomethingOfProjectIsModified then begin
-    if (Application.MessageBox('Save changes to project2?','Project changed', MB_IconQuestion+mb_YesNo))=mrYes then
+    if (Application.MessageBox('Save changes to project?','Project changed', MB_IconQuestion+mb_YesNo))=mrYes then
     begin
       CanClose:=DoSaveProject(false,false)<>mrAbort;
       if CanClose=false then exit;
@@ -1685,6 +1687,7 @@ writeln('[TMainIDE.SetDefaultsforForm] B');
     OnRemoveComponent:=@OnDesignerRemoveComponent;
     OnGetNonVisualCompIconCanvas:=@IDECompList.OnGetNonVisualCompIconCanvas;
     OnModified:=@OnDesignerModified;
+    OnActivated := @OnDesignerActivated;
   end;
 end;
 
@@ -3091,7 +3094,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
   // close the old project
   if SomethingOfProjectIsModified then begin
     if MessageDlg('Project changed', 'Save changes to project?',
-      mtconfirmation,[mbok, mbcancel],0)=mrOK then 
+      mtconfirmation,[mbYes, mbNo],0)=mrYes then
     begin
       if DoSaveProject(false,false)=mrAbort then begin
         Result:=mrAbort;
@@ -3179,7 +3182,7 @@ begin
 
   if SomethingOfProjectIsModified then begin
     if MessageDlg('Project changed','Save changes to project?',
-      mtconfirmation,[mbok, mbcancel],0)=mrOK then 
+      mtconfirmation,[mbYes, mbNo],0)=mrYes then
     begin
       if DoSaveProject(false,false)=mrAbort then begin
         Result:=mrAbort;
@@ -3340,8 +3343,8 @@ begin
        'The project must be saved before building'#13
       +'If you set the Test Directory in the environment options,'#13
       +'you can create new projects and build them at once.'#13
-      +'Save project?',mtInformation,[mbOk,mbCancel],0);
-    if Result<>mrOk then exit;
+      +'Save project?',mtInformation,[mbYes,mbNo],0);
+    if Result<>mrYes then exit;
     Result:=DoSaveAll;
     exit;
   end;
@@ -3921,6 +3924,16 @@ begin
        AForm:=SourceNotebook
     else
        AForm:=nil;
+    //if AForm is set, make sure the right tab is being displayed.
+    if AForm <> nil then
+       begin
+        ActiveUnitInfo := Project.UnitWithForm(FLastFormActivated);
+        if ActiveUnitInfo <> nil then
+           begin
+             SourceNotebook.Notebook.PageIndex := ActiveUnitInfo.EditorIndex;
+           end;
+           
+       end;
    end
    else
    begin
@@ -3930,16 +3943,14 @@ begin
         SourceNoteBook.NoteBook.PageIndex);
       if (ActiveUnitInfo<>nil) then
         AForm:=TCustomForm(ActiveUnitInfo.Form);
-        
+      FLastFormActivated := AForm;
         
      end;
   end;
 
   if AForm<>nil then
    begin
-//    AForm.BringToFront;
-    AForm.Hide;
-    AForm.Show;
+    BringWindowToTop(AForm.Handle);
    end;
 end;
 
@@ -4140,12 +4151,9 @@ begin
   FMessagesViewBoundsRectValid:=true;
   WasVisible:=MessagesView.Visible;
   MessagesView.Show;
-  if not WasVisible then begin
-    // quick hack, till BringToFront works correctly
-    SourceNotebook.Hide;
-    SourceNotebook.Show;
-  end;
-  
+  if not WasVisible then
+     bringWindowToTop(SourceNotebook.Handle);  //sxm changed 2001-11-14
+
 //set the event here for the selectionchanged event
   if not assigned(MessagesView.OnSelectionChanged) then
      MessagesView.OnSelectionChanged := @MessagesViewSelectionChanged;
@@ -4550,11 +4558,27 @@ end;
 Procedure TMainIDE.OnSrcNotebookEditorVisibleChanged(Sender : TObject);
 var
   NewSrcEdit : TSourceEditor;
+  ActiveUnitInfo : TUnitInfo;
 begin
   if SourceNotebook.Notebook = nil then Exit;
   
   NewSrcEdit:=SourceNotebook.GetActiveSE;
-  ToggleFormSpeedBtn.Enabled := Assigned(NewSrcEdit.Control);
+  ActiveUnitInfo := Project.UnitWithEditorIndex(SourceNotebook.Notebook.Pageindex);
+  if ActiveUnitInfo = nil then Exit;
+
+  ToggleFormSpeedBtn.Enabled := Assigned(ActiveUnitInfo.Form);
+end;
+
+Procedure TMainIDE.OnSrcNoteBookActivated(Sender : TObject);
+begin
+    FCodeLastActivated:=True;
+end;
+
+Procedure TMainIDE.OnDesignerActivated(Sender : TObject);
+begin
+    FCodeLastActivated:=False;
+    FLastFormActivated := TCustomForm(Sender);
+
 end;
 
 initialization
@@ -4569,8 +4593,9 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.142  2001/11/13 18:50:08  lazarus
-  Changes to facilitate the toggle between form and unit
+  Revision 1.143  2001/11/14 17:46:54  lazarus
+  Changes to make toggling between form and unit work.
+  Added BringWindowToTop
   Shane
 
   Revision 1.141  2001/11/12 16:56:04  lazarus

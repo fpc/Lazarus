@@ -6,6 +6,7 @@
 //##apiwiz##sps##   // Do not remove
 
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
+Function BringWindowToTop(hWnd : HWND): Boolean; override;
 
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer; override;
 Function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer; override;
@@ -125,6 +126,11 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2001/11/14 17:46:59  lazarus
+  Changes to make toggling between form and unit work.
+  Added BringWindowToTop
+  Shane
+
   Revision 1.18  2001/11/12 16:56:09  lazarus
   MG: CLIPBOARD
 

@@ -69,7 +69,7 @@ type
     FEditor : TSynEdit;
     FCodeTemplates: TSynEditAutoComplete;
     //if this is a Form or Datamodule, this is used
-    FControl: TComponent;
+//    FControl: TComponent;  //commented out on 11-14-2001
 
     FCodeBuffer: TCodeBuffer;
     FIgnoreCodeBufferLock: integer;
@@ -120,7 +120,6 @@ type
   protected
     FindText : String;
     ErrorMsgs : TStrings;
-    Procedure DisplayControl;
     Procedure ReParent(AParent : TWinControl);
 
     Procedure OpenAtCursorClicked(Sender : TObject);
@@ -168,7 +167,7 @@ type
     procedure GetDialogPosition(Width, Height:integer; var Left,Top:integer);
     
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
-    property Control : TComponent read FControl write FControl;
+//    property Control : TComponent read FControl write FControl; //commented out on 11-14-2001
     property CurrentCursorXLine : Integer
        read GetCurrentCursorXLine write SetCurrentCursorXLine;
     property CurrentCursorYLine : Integer
@@ -240,7 +239,6 @@ type
     Procedure OpenAtCursorClicked(Sender : TObject);
     Procedure BookmarkGoTo(Value: Integer);
     Procedure BookMarkToggle(Value : Integer);
-    
   protected
     ccSelection : String;
      
@@ -267,6 +265,8 @@ type
     function GetEditors(Index:integer):TSourceEditor;
     
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
+    
+
   public
     SearchPaths: string;
 
@@ -288,7 +288,6 @@ type
     procedure UpdateStatusBar;
     Procedure ClearUnUsedEditorComponents(Force: boolean);
 
-    Procedure DisplayFormforActivePage;
     Procedure DisplayCodeforControl(Control : TObject);
     Procedure DisplayCodefromUnitName(const UnitName : String);
 
@@ -406,7 +405,7 @@ Begin
   FErrorColumn:=-1;
   FExecutionLine:=-1;
 
-  FControl := nil;
+//  FControl := nil; //commented out on 11-14-2001
 //writeln('TSourceEditor.Create B ');
   CreateEditor(AOwner,AParent);
 //writeln('TSourceEditor.Create END ');
@@ -1155,21 +1154,6 @@ writeln('TSourceEditor.CreateEditor  A ');
   FEditor.SetFocus;
 end;
 
-Procedure TSourceEditor.DisplayControl;
-Begin
-if FControl = nil then Exit;
-
-if (FControl is TCustomForm) then TCustomForm(FControl).Show
-    else
-    if (FCOntrol is TControl) then TControl(FCOntrol).Visible := True;
-
-//Bringtofront does not work yet.
-//TControl(FControl).BringToFront;
-//so I hide it and unhide it.
-
-TControl(FCOntrol).Visible := False;
-TControl(FCOntrol).Visible := True;
-end;
 
 procedure TSourceEditor.SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
 begin
@@ -1588,6 +1572,7 @@ begin
   IdentCompletionTimer.Interval := 500;
 
   Visible:=false;
+  
 end;
 
 destructor TSourceNotebook.Destroy;
@@ -2164,7 +2149,11 @@ Procedure TSourceNotebook.DisplayCodeforControl(Control : TObject);
 Var
    I,X : Integer;
 Begin
-   X := FSourceEditorList.Count;
+Writeln('DISPLAY CODE FOR CONTROL');
+Writeln('This was commented out on 11-14-2001');
+Writeln('This should be deleted a month from that day if it''s not used.');
+
+{   X := FSourceEditorList.Count;
    if X = 0 then Exit;
    I := 0;
    while  (I < X)
@@ -2174,8 +2163,9 @@ Begin
        Writeln(' I = '+inttostr(i));
      end;
 
-   if I < X then
+   if I < X then                s
      DisplayPage(TSourceEditor(FSOurceEditorList.Items[I]));
+}
 End;
 
 Procedure TSourceNotebook.DisplayCodefromUnitName(const UnitName : String);
@@ -2195,12 +2185,6 @@ Begin
      DisplayPage(TSourceEditor(FSOurceEditorList.Items[I]));
 end;
 
-Procedure TSourceNotebook.DisplayFormforActivePage;
-Begin
-Writeln('DisplayFormForActivePage');
-  GetActiveSE.DisplayControl;
-Writeln('Exiting DisplayFormForActivePage');
-End;
 
 Function TSourceNotebook.DisplayPage(SE : TSourceEditor) : Boolean;
 Var
@@ -2858,6 +2842,7 @@ Begin
     end;
   end;
 end;
+
 
 
 {  GOTO DIALOG}

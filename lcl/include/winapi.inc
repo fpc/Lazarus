@@ -21,6 +21,11 @@ begin
   Result := InterfaceObject.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
 end;
 
+Function BringWindowToTop(hWnd : HWND): Boolean;
+begin
+  Result := InterfaceObject.BringWindowToTop(hWnd);
+end;
+
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer; 
 begin
   Result := InterfaceObject.CallNExtHookEx(hhk,ncode,wparam,lParam);
@@ -1022,6 +1027,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2001/11/14 17:46:58  lazarus
+  Changes to make toggling between form and unit work.
+  Added BringWindowToTop
+  Shane
+
   Revision 1.18  2001/11/12 16:56:07  lazarus
   MG: CLIPBOARD
 

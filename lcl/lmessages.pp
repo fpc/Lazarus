@@ -87,6 +87,8 @@ LM_POPUPSHOW = LM_COMUSER+56;
 LM_RECREATEWND = LM_COMUSER+57;
 LM_SETFORMICON = LM_COMUSER+58;
 
+LM_MINIMIZE = LM_COMUSER+59;
+
 //end of messages that are sent to the interface
 
 
@@ -769,6 +771,11 @@ end.
 
 {
   $Log$
+  Revision 1.12  2001/11/14 17:46:58  lazarus
+  Changes to make toggling between form and unit work.
+  Added BringWindowToTop
+  Shane
+
   Revision 1.11  2001/06/26 00:08:35  lazarus
   MG: added code for form icons from Rene E. Beszon
 

@@ -58,6 +58,7 @@ type
     FOnRemoveComponent: TOnRemoveComponent;
     FOnSetDesigning: TOnSetDesigning;
     FOnUnselectComponentClass: TNotifyEvent;
+    FOnActivated: TNotifyEvent;
     FPopupMenu: TPopupMenu;
     FAlignMenuItem: TMenuItem;
     FMirrorHorizontalMenuItem: TMenuItem;
@@ -100,6 +101,7 @@ type
     procedure OnSizePopupMenuClick(Sender: TObject);
     procedure OnBringToFrontMenuClick(Sender: TObject);
     procedure OnSendToBackMenuClick(Sender: TObject);
+    Procedure OnFormActivated;
   public
     ControlSelection : TControlSelection;
     constructor Create(Customform : TCustomform; AControlSelection: TControlSelection);
@@ -130,6 +132,8 @@ type
     property OnSetDesigning: TOnSetDesigning read FOnSetDesigning write FOnSetDesigning;
     property OnUnselectComponentClass: TNotifyEvent
        read FOnUnselectComponentClass write FOnUnselectComponentClass;
+    property OnActivated: TNotifyEvent
+       read FOnActivated write FOnActivated;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
     procedure DrawNonVisualComponents(DC: HDC);
     property OnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas
@@ -695,7 +699,10 @@ Begin
       Result := true
     else
     if ((Message.Msg >= LM_KeyFIRST) and (Message.Msg <= LM_KeyLAST)) then
-      Result:=true;
+      Result:=true
+    else
+    if (Message.Msg = LM_ACTIVATE) then
+      Result := True;
 //    else
 //    if ((Message.Msg >= CM_MOUSEENTER) and (Message.Msg <= CM_MOUSELEAVE)) then
 //      Result:=true;
@@ -710,6 +717,7 @@ Begin
       LM_MOUSEMOVE:    MouseMoveOnControl(Sender, TLMMouse(Message));
       LM_SIZE:    Result:=SizeControl(Sender,TLMSize(Message));
       LM_MOVE:    Result:=MoveControl(Sender,TLMMove(Message));
+      LM_ACTIVATE : OnFormActivated;
 //      CM_MOUSELEAVE:  Writeln('MOUSELEAVE!!!!!!!!!!!!');//Result:=MoveControl(Sender,TLMMove(Message));
     end;
   end;
@@ -1050,6 +1058,13 @@ begin
   Rect.Bottom := Rect.Top + Rect.Bottom;
 
   FHintWindow.ActivateHint(Rect,AHint);
+end;
+
+Procedure TDesigner.OnFormActivated;
+begin
+  //the form was activated.
+  if Assigned(FOnActivated) then
+     FOnActivated(Form);
 end;
 
 

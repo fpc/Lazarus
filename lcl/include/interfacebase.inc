@@ -14,6 +14,12 @@ begin
   Result := False;
 end;
 
+Function TInterfaceBase.BringWindowToTop(hWnd : HWND): Boolean;
+begin
+  // Your default here
+  // Result := 
+end;
+
 function TInterfaceBase.CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer;
 begin
   Result := 0;
@@ -492,6 +498,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2001/11/14 17:46:58  lazarus
+  Changes to make toggling between form and unit work.
+  Added BringWindowToTop
+  Shane
+
   Revision 1.18  2001/11/12 16:56:07  lazarus
   MG: CLIPBOARD
 
