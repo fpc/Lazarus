@@ -345,6 +345,7 @@ type
     FSorted: boolean;
     FStyle: TListBoxStyle;
     FTopIndex: integer;
+    FCacheValid: Boolean;
     function GetTopIndex: Integer;
     procedure SetTopIndex(const AValue: Integer);
     procedure UpdateSelectionMode;
@@ -352,12 +353,17 @@ type
     procedure LMDrawListItem(var TheMessage : TLMDrawListItem); message LM_DrawListItem;
     procedure SendItemSelected(Index: integer; IsSelected: boolean);
   protected
+    procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); virtual; // called to store item data while the handle isn't created
+    procedure AssignCacheToItemData(const AIndex: Integer; const AData: Pointer); virtual; // called to restore the itemdata after a handle is created
     procedure CreateHandle; override;
     procedure DestroyHandle; override;
+    procedure CheckIndex(const AIndex: Integer);
     function GetItemHeight: Integer;
     function GetItemIndex : integer; virtual;
     function GetSelCount : integer;
     function GetSelected(Index : integer) : boolean;
+    function GetCachedDataSize: Integer; virtual; // returns the amount of data needed per item
+    function GetCachedData(const AIndex: Integer): Pointer;
     procedure SetBorderStyle(Val : TBorderStyle); virtual;
     procedure SetExtendedSelect(Val : boolean); virtual;
     procedure SetItemIndex(Val : integer); virtual;
@@ -1459,6 +1465,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.100  2003/07/07 23:58:43  marc
+  + Implemented TCheckListBox.Checked[] property
+
   Revision 1.99  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 

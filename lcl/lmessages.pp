@@ -122,30 +122,36 @@ const
 
   // TListView
   LM_LV_FIRST       = LM_COMUSER+80;
-  LM_LV_ADDITEM     = LM_LV_FIRST+1;
-  LM_LV_CHANGEITEM  = LM_LV_FIRST+2;
-  LM_LV_DELETEITEM  = LM_LV_FIRST+3;
-  LM_LV_SELECTITEM  = LM_LV_FIRST+4;
+  LM_LV_ADDITEM     = LM_LV_FIRST+0;
+  LM_LV_CHANGEITEM  = LM_LV_FIRST+1;
+  LM_LV_DELETEITEM  = LM_LV_FIRST+2;
+  LM_LV_SELECTITEM  = LM_LV_FIRST+3;
   LM_LV_LAST        = LM_LV_FIRST+9; // LM_COMUSER+89
 
   // TComboBox
   LM_CB_FIRST       = LM_LV_LAST+1;  // LM_COMUSER+90
-  LM_CB_GETCOUNT    = LM_CB_FIRST+1;
-  LM_CB_GETTEXT     = LM_CB_FIRST+2;
-  LM_CB_ADDTEXT     = LM_CB_FIRST+3;
+  LM_CB_GETCOUNT    = LM_CB_FIRST+0;
+  LM_CB_GETTEXT     = LM_CB_FIRST+1;
+  LM_CB_ADDTEXT     = LM_CB_FIRST+2;
   LM_CB_LAST        = LM_CB_FIRST+9; // LM_COMUSER+99
   
   // TNoteBook
   LM_NB_First       = LM_CB_LAST+1;
-  LM_NB_UpdateTab   = LM_NB_First+1;
+  LM_NB_UpdateTab   = LM_NB_First+0;
   LM_NB_Last        = LM_NB_UpdateTab;
   
   // TListBox
   LM_LB_First          = LM_NB_Last +1;
-  LM_LB_GETTOPINDEX    = LM_LB_First   +1;
-  LM_LB_SETTOPINDEX    = LM_LB_First   +2;
-  LM_LB_GETINDEXAT     = LM_LB_First   +3;
+  LM_LB_GETTOPINDEX    = LM_LB_First   +0;
+  LM_LB_SETTOPINDEX    = LM_LB_First   +1;
+  LM_LB_GETINDEXAT     = LM_LB_First   +2;
   LM_LB_Last           = LM_LB_GETINDEXAT;
+  
+  // TCheckListBox
+  LM_CLB_FIRST         = LM_LB_Last + 1;
+  LM_CLB_GETCHECKED    = LM_CLB_FIRST + 0;
+  LM_CLB_SETCHECKED    = LM_CLB_FIRST + 1;
+  LM_CLB_LAST          = LM_CLB_SETCHECKED;
 
 
   //-------------
@@ -712,6 +718,11 @@ type
     ExtendedSelect : boolean;
   end;
 
+  TLMSetChecked = record
+    Index : integer;
+    Checked : boolean;
+  end;
+  
   TLMSetFocus = packed record
     Msg: Cardinal;
     FocusedWnd: HWND;
@@ -951,6 +962,9 @@ begin
   LM_LB_SETTOPINDEX    :Result:='LM_LB_SETTOPINDEX';
   //LM_LB_Last           :Result:='LM_LB_Last';
 
+  // TCheckListBox
+  LM_CLB_GETCHECKED    :Result:='LM_CLB_GETCHECKED';
+  LM_CLB_SETCHECKED    :Result:='LM_CLB_SETCHECKED';
 
   //-------------
   // lcl messages
@@ -1045,6 +1059,9 @@ end.
 
 {
   $Log$
+  Revision 1.49  2003/07/07 23:58:43  marc
+  + Implemented TCheckListBox.Checked[] property
+
   Revision 1.48  2003/04/29 13:35:39  mattias
   improved configure build lazarus dialog
 

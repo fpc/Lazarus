@@ -2263,24 +2263,25 @@ end;
 function TgtkObject.IntSendMessage3(LM_Message : Integer; Sender : TObject;
   data : pointer) : integer;
 var
-  handle    : hwnd;                  // handle of sender        
-  pStr      : PChar;                 // temporary string pointer, must be allocated/disposed when used!
-  Widget    : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
-  AParent   : TWinControl;           // only used twice, replace with typecasts!
-  Pixmap    : pgdkPixMap;
-  box1      : pgtkWidget;            // currently only used for TBitBtn
-  pixmapwid : pGtkWidget;            // currently only used for TBitBtn, possibly replace with pixmap!!!!
-  pLabel    : PgtkWidget;            // currently only used as extra label-widget for TBitBtn
-  Num       : Integer;               // currently only used for LM_INSERTTOOLBUTTON and LM_ADDITEM
-  pStr2     : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
-  GList     : pGList;                // Only used for listboxes, replace with widget!!!!!
+  handle      : hwnd;                  // handle of sender
+  pStr        : PChar;                 // temporary string pointer, must be allocated/disposed when used!
+  Widget      : PGtkWidget;            // pointer to gtk-widget (local use when neccessary)
+  ChildWidget : PGtkWidget;            // generic pointer to a child gtk-widget (local use when neccessary)
+  AParent     : TWinControl;           // only used twice, replace with typecasts!
+  Pixmap      : pgdkPixMap;
+  box1        : pgtkWidget;            // currently only used for TBitBtn
+  pixmapwid   : pGtkWidget;            // currently only used for TBitBtn, possibly replace with pixmap!!!!
+  pLabel      : PgtkWidget;            // currently only used as extra label-widget for TBitBtn
+  Num         : Integer;               // currently only used for LM_INSERTTOOLBUTTON and LM_ADDITEM
+  pStr2       : PChar;                 // currently only used for LM_INSERTTOOLBUTTON
+  GList       : pGList;                // Only used for listboxes, replace with widget!!!!!
   SelectionMode : TGtkSelectionMode; // currently only used for listboxes
-  ListItem  : PGtkListItem;          // currently only used for listboxes
-  Rect      : TRect;
+  ListItem    : PGtkListItem;          // currently only used for listboxes
+  Rect        : TRect;
   FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
-  Geometry  : TGdkGeometry;
-  Accel     : integer;
-  AWindow   : PGdkWindow;
+  Geometry    : TGdkGeometry;
+  Accel       : integer;
+  AWindow     : PGdkWindow;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -3002,33 +3003,74 @@ begin
       end;
   
       LM_GETSEL :
-        case (Sender as TControl).fCompStyle of
-        csListBox, csCheckListBox:
-          begin
-            { Get the child in question of that index }
-            Widget:=GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
-            ListItem:= g_list_nth_data(PGtkList(Widget)^.children, Integer(Data^));
-            if (ListItem<>nil)
-            and (g_list_index(PGtkList(Widget)^.selection, ListItem)>=0) then
-              Result:=1
-            else
-              Result:=0;
-          end;
-        csCListBox:
-          begin
-            { Get the selections }
-            Widget:=GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
-            GList:= PGtkCList(Widget)^.selection;
-            Result := 0;      { assume: nothing found }
-            while Assigned(GList) do begin
-              if integer(GList^.data) = integer(Data^) then begin
-                Result:= 1;
-                Break;
-              end else
-                GList := GList^.Next;
+      begin
+        Result := 0;      { assume: nothing found }
+        if (Sender is TControl)
+        and Assigned (data)
+        then case TControl(Sender).fCompStyle of
+          csListBox, csCheckListBox:
+            begin
+              { Get the child in question of that index }
+              Widget:=GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+              ListItem:= g_list_nth_data(PGtkList(Widget)^.children, Integer(Data^));
+              if (ListItem<>nil)
+              and (g_list_index(PGtkList(Widget)^.selection, ListItem)>=0)
+              then Result:=1
+            end;
+          csCListBox:
+            begin
+              { Get the selections }
+              Widget:=GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+              GList:= PGtkCList(Widget)^.selection;
+              while Assigned(GList) do begin
+                if integer(GList^.data) = integer(Data^) then begin
+                  Result:= 1;
+                  Break;
+                end else
+                  GList := GList^.Next;
+              end;
             end;
           end;
+      end;
+
+      LM_CLB_GETCHECKED :
+      begin
+        Result := 0;
+        if Assigned(Data)
+        and (Sender is TControl)
+        and (TControl(Sender).fCompStyle = csCheckListBox)
+        then begin
+          { Get the child in question of that index }
+          Widget := GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+          ListItem := g_list_nth_data(PGtkList(Widget)^.children, Integer(Data^));
+          if ListItem <> nil
+          then begin
+             ChildWidget := PPointer(PGTKBox(PGtkBin(ListItem)^.child)^.Children^.Data)^;
+             if (ChildWidget <> nil)
+             and gtk_toggle_button_get_active(PGTKToggleButton(ChildWidget))
+             then Result := 1;
+          end;
         end;
+      end;
+      
+      LM_CLB_SETCHECKED :
+      begin
+        if Assigned(Data)
+        and (Sender is TControl)
+        and (TControl(Sender).fCompStyle = csCheckListBox)
+        then begin
+          Widget := GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          ListItem := g_list_nth_data(PGtkList(Widget)^.children,
+                                      TLMSetChecked(Data^).Index);
+          if ListItem <> nil
+          then begin
+             ChildWidget := PPointer(PGTKBox(PGtkBin(ListItem)^.child)^.Children^.Data)^;
+             if (ChildWidget <> nil)
+             then gtk_toggle_button_set_active(PGTKToggleButton(ChildWidget),
+                                                TLMSetChecked(Data^).Checked);
+          end;
+        end;
+      end;
 
       LM_SETLIMITTEXT :
       begin
@@ -3055,31 +3097,22 @@ begin
       LM_SETSEL:
       begin
         if (Sender is TControl)
-        and (TControl(Sender).fCompStyle in [csListBox, csCheckListBox, csCListBox])
-        and assigned (data) then
-        begin
-          if (TControl(Sender).fCompStyle in [csListBox, csCheckListBox]) then
-          begin
-            if TLMSetSel(Data^).Selected then begin
-              gtk_list_select_item(
-                PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),
-                TLMSetSel(Data^).Index);
-            end else
-              gtk_list_unselect_item(
-                PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),
-                TLMSetSel(Data^).Index);
-          end
-          else if (TControl(Sender).fCompStyle = csCListBox) then
-          begin
-            if TLMSetSel(Data^).Selected then
-              gtk_clist_select_row(
-                PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),
-                TLMSetSel(Data^).Index, 0)
-            else
-              gtk_clist_unselect_row(
-                PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),
-                TLMSetSel(Data^).Index, 0);
-          end;
+        and Assigned (data)
+        then case TControl(Sender).fCompStyle of
+          csListBox, csCheckListBox:
+            begin
+              Widget := GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              if TLMSetSel(Data^).Selected
+              then gtk_list_select_item(PGtkList(Widget), TLMSetSel(Data^).Index)
+              else gtk_list_unselect_item(PGtkList(Widget), TLMSetSel(Data^).Index);
+            end;
+          csCListBox:
+            begin
+              Widget := GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              if TLMSetSel(Data^).Selected
+              then gtk_clist_select_row(PGtkCList(Widget), TLMSetSel(Data^).Index, 0)
+              else gtk_clist_unselect_row(PGtkCList(Widget), TLMSetSel(Data^).Index, 0);
+            end;
         end;
       end;
  
@@ -7912,6 +7945,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.393  2003/07/07 23:58:43  marc
+  + Implemented TCheckListBox.Checked[] property
+
   Revision 1.392  2003/07/06 17:53:34  mattias
   updated polish localization
 

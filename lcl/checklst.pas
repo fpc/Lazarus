@@ -1,3 +1,26 @@
+{ $Id$
+ /***************************************************************************
+                               checklst.pp
+                               -----------
+
+                   Initial Revision  : Thu Jun 19 CST 2003
+
+ ***************************************************************************/
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
+
 unit CheckLst;
 
 {$mode objfpc} {$H+}
@@ -5,7 +28,7 @@ unit CheckLst;
 interface
 
 uses
-  Classes, SysUtils, StdCtrls, Graphics, GraphType, Controls, VCLGlobals;
+  Classes, SysUtils, StdCtrls, Graphics, GraphType, Controls, VCLGlobals, LMessages;
   
 
 type
@@ -13,9 +36,17 @@ type
 
   TCheckListBox = class(TCustomListBox)
   private
+    FItemDataOffset: Integer;
+    function GetChecked(const AIndex: Integer): Boolean;
+    procedure SetChecked(const AIndex: Integer; const AValue: Boolean);
+    procedure SendItemChecked(const AIndex: Integer; const AChecked: Boolean);
   protected
+    procedure AssignItemDataToCache(const AIndex: Integer; const AData: Pointer); override;
+    procedure AssignCacheToItemData(const AIndex: Integer; const AData: Pointer); override;
+    function  GetCachedDataSize: Integer; override;
   public
     constructor Create(AOwner: TComponent); override;
+    property Checked[const AIndex: Integer]: Boolean read GetChecked write SetChecked;
   published
     property Align;
     property Anchors;
@@ -56,7 +87,24 @@ begin
   RegisterComponents('Additional',[TCheckListBox]);
 end;
 
+type
+  PCachedItemData = ^TCachedItemData;
+  TCachedItemData = Boolean;
+
 { TCheckListBox }
+
+procedure TCheckListBox.AssignCacheToItemData(const AIndex: Integer; const AData: Pointer);
+begin
+  inherited AssignCacheToItemData(AIndex, AData);
+  if PCachedItemData(AData + FItemDataOffset)^
+  then SendItemChecked(AIndex, True);
+end;
+
+procedure TCheckListBox.AssignItemDataToCache(const AIndex: Integer; const AData: Pointer);
+begin
+  inherited AssignItemDataToCache(AIndex, AData);
+  PCachedItemData(AData + FItemDataOffset)^ := Checked[AIndex];
+end;
 
 constructor TCheckListBox.Create(AOwner: TComponent);
 begin
@@ -64,5 +112,49 @@ begin
   FCompStyle := csCheckListBox;
 end;
 
+function TCheckListBox.GetCachedDataSize: Integer;
+begin
+  FItemDataOffset := inherited GetCachedDataSize;
+  Result := FItemDataOffset + SizeOf(TCachedItemData);
+end;
+
+function TCheckListBox.GetChecked(const AIndex: Integer): Boolean;
+begin
+  CheckIndex(AIndex);
+
+  if HandleAllocated
+  then Result := (CNSendMessage(LM_CLB_GETCHECKED, Self, @AIndex) <> 0)
+  else Result := PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^;
+end;
+
+procedure TCheckListBox.SendItemChecked(const AIndex: Integer; const AChecked: Boolean);
+var
+  Msg : TLMSetChecked;
+begin
+  if HandleAllocated
+  then begin
+    Msg.Index:= AIndex;
+    Msg.Checked := AChecked;
+    CNSendMessage(LM_CLB_SETCHECKED, Self, @Msg);
+  end;
+end;
+
+procedure TCheckListBox.SetChecked(const AIndex: Integer; const AValue: Boolean);
+begin
+  CheckIndex(AIndex);
+
+  if HandleAllocated
+  then SendItemChecked(AIndex, AValue)
+  else PCachedItemData(GetCachedData(AIndex) + FItemDataOffset)^ := AValue;
+end;
+
 end.
 
+{ =============================================================================
+
+  $Log$
+  Revision 1.2  2003/07/07 23:58:43  marc
+  + Implemented TCheckListBox.Checked[] property
+
+
+}

@@ -20,22 +20,30 @@
 }
 
 type
-  TCustomListBoxItemFlag = (clbiSelected);
-  TCustomListBoxItemFlags = set of TCustomListBoxItemFlag;
-  
   TCustomListBoxItemRecord = record
     TheObject: TObject;
-    Flags: TCustomListBoxItemFlags;
+    Selected: Boolean;
   end;
   PCustomListBoxItemRecord = ^TCustomListBoxItemRecord;
 
-
-function GetListBoxItemRecord(ListBoxInternalItems: TStrings;
-  Index: integer): PCustomListBoxItemRecord;
+{------------------------------------------------------------------------------}
+{ procedure TCustomListBox.AssignCacheToItemData                               }
+{------------------------------------------------------------------------------}
+procedure TCustomListBox.AssignCacheToItemData(const AIndex: Integer; const AData: Pointer);
 begin
-  Result:=PCustomListBoxItemRecord(
-                      TExtendedStringList(ListBoxInternalItems).Records[Index]);
+  if PCustomListBoxItemRecord(AData)^.Selected
+  or (FItemIndex = AIndex)
+  then SendItemSelected(AIndex, True);
 end;
+
+{------------------------------------------------------------------------------}
+{ procedure TCustomListBox.AssignItemDataToCache                               }
+{------------------------------------------------------------------------------}
+procedure TCustomListBox.AssignItemDataToCache(const AIndex: Integer; const AData: Pointer);
+begin
+  PCustomListBoxItemRecord(AData)^.Selected := Selected[AIndex];
+end;
+
 
 {------------------------------------------------------------------------------
  procedure TCustomListBox.CreateHandle
@@ -43,8 +51,8 @@ end;
 procedure TCustomListBox.CreateHandle;
 var
   NewStrings : TStrings;
-  i: integer;
-  OldItems: TStrings;
+  i, cnt: integer;
+  OldItems: TExtendedStringList;
 begin
   //writeln('[TCustomListBox.CreateHandle] A ',FItems.ClassName);
   inherited CreateHandle;
@@ -56,10 +64,11 @@ begin
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
   // copy the items (text+objects)
   NewStrings.Assign(Items);
-  OldItems:=FItems;
+  OldItems := FItems as TExtendedStringList;
 
   // new item list is the interface item list
   FItems:= NewStrings;
+  FCacheValid := False;
 
   UpdateSelectionMode;
   UpdateSorted;
@@ -67,11 +76,10 @@ begin
   CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
 
   // copy items attributes
-  for i:=0 to OldItems.Count-1 do begin
-    if (clbiSelected in GetListBoxItemRecord(OldItems,i)^.Flags)
-    or (FItemIndex=i) then
-      SendItemSelected(i,True);
-  end;
+  cnt := OldItems.Count;
+  for i:=0 to cnt-1 do
+    AssignCacheToItemData(i, OldItems.Records[i]);
+
   // free old items
   OldItems.Free;
 
@@ -79,30 +87,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{ procedure TCustomListBox.DestroyHandle                                        }
+{ procedure TCustomListBox.DestroyHandle                                       }
 {------------------------------------------------------------------------------}
 procedure TCustomListBox.DestroyHandle;
 var
-  NewStrings : TStrings;
+  NewStrings : TExtendedStringList;
   i, Cnt: integer;
 begin
   //writeln('[TCustomListBox.DestroyHandle] A ',FItems.ClassName);
   // create internal item list
-  NewStrings:= TExtendedStringList.Create(SizeOf(TCustomListBoxItemRecord));
+  NewStrings:= TExtendedStringList.Create(GetCachedDataSize);
+
   // copy items (text+objects) from the interface items list
   NewStrings.Assign(Items);
   // copy items attributes
   Cnt:=Items.Count;
-  for i:=0 to Cnt-1 do begin
-    if Selected[i] then
-      Include(GetListBoxItemRecord(NewStrings,i)^.Flags,clbiSelected)
-    else
-      Exclude(GetListBoxItemRecord(NewStrings,i)^.Flags,clbiSelected);
-  end;
+  for i:=0 to Cnt-1 do
+    AssignItemDataToCache(i, NewStrings.Records[i]);
+
   // free the interface items list
   FItems.Free;
   // new item list is the internal item list
   FItems:= NewStrings;
+  FCacheValid := True;
   //writeln('[TCustomListBox.DestroyHandle] B ',FItems.ClassName);
   inherited DestroyHandle;
   //writeln('[TCustomListBox.DestroyHandle] END ',FItems.ClassName);
@@ -239,25 +246,17 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListBox.SetSelected(Index : integer; Val : boolean);
 begin
-  if (Index < 0) or (Index >= Items.Count) then
-    raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Index,Items.Count]);
+  CheckIndex(Index);
+
   if not MultiSelect then begin
     if Val then
       ItemIndex:=Index
     else if Index=ItemIndex then
       ItemIndex:=-1;
   end else begin
-    //writeln('TCustomListBox.SetSelected A ',Items.Count);
-    if HandleAllocated then begin
-      //writeln('TCustomListBox.SetSelected B ',Items.Count);
-      SendItemSelected(Index,Val);
-      //writeln('TCustomListBox.SetSelected END ',Items.Count);
-    end else begin
-      if Val then
-        Include(GetListBoxItemRecord(FItems,Index)^.Flags,clbiSelected)
-      else
-        Exclude(GetListBoxItemRecord(FItems,Index)^.Flags,clbiSelected)
-    end;
+    if HandleAllocated
+    then SendItemSelected(Index,Val)
+    else PCustomListBoxItemRecord(GetCachedData(Index))^.Selected := Val;
   end;
 end;
 
@@ -266,12 +265,11 @@ end;
 {------------------------------------------------------------------------------}
 function TCustomListBox.GetSelected(Index : integer) : boolean;
 begin
-  if (Index < 0) or (Index >= Items.Count) then
-    raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Index,Items.Count]);
+  CheckIndex(Index);
   if HandleAllocated then
     Result:= (CNSendMessage(LM_GETSEL, Self, @Index) > 0)
   else
-    Result:=clbiSelected in GetListBoxItemRecord(FItems,Index)^.Flags;
+    Result:= PCustomListBoxItemRecord(GetCachedData(Index))^.Selected;
 end;
 
 {------------------------------------------------------------------------------}
@@ -349,6 +347,26 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{  function TCustomListBox.GetCachedData                                       }
+{------------------------------------------------------------------------------}
+function TCustomListBox.GetCachedData(const AIndex: Integer): Pointer;
+begin
+  if not FCacheValid then raise EInvalidOperation.Create('Reading form invalid cache');
+  Result := TExtendedStringList(FItems).Records[AIndex];
+end;
+
+{------------------------------------------------------------------------------}
+{  function TCustomListBox.GetCachedDataSize                                   }
+{                                                                              }
+{  Returns the amount of data needed when the widged isn't realized in the     }
+{  interface                                                                   }
+{------------------------------------------------------------------------------}
+function TCustomListBox.GetCachedDataSize: Integer;
+begin
+  Result := SizeOf(TCustomListBoxItemRecord);
+end;
+
+{------------------------------------------------------------------------------}
 {  function TCustomListBox.SetItems                                   }
 {------------------------------------------------------------------------------}
 procedure TCustomListBox.SetItems(Value : TStrings);
@@ -366,9 +384,9 @@ constructor TCustomListBox.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csListBox;
-
   FBorderStyle:= bsSingle;
   FItems := TExtendedStringList.Create(SizeOf(TCustomListBoxItemRecord));
+  FCacheValid := True;
   FItemIndex:=-1;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
@@ -380,10 +398,9 @@ end;
 {------------------------------------------------------------------------------}
 destructor TCustomListBox.Destroy;
 begin
-  FCanvas.Free;
-  FCanvas:=nil;
+  FreeAndNil(FCanvas);
   inherited Destroy;
-  FItems.Free;
+  FreeAndNil(FItems);
 end;
 
 function TCustomListBox.GetItemIndex : integer;
@@ -407,6 +424,16 @@ begin
   if HandleAllocated then
     CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
 //writeln('[TCustomListBox.SetItemIndex] END ',FItems.ClassName);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomListBox.CheckIndex
+------------------------------------------------------------------------------}
+procedure TCustomListBox.CheckIndex(const AIndex: Integer);
+begin
+  if (AIndex < 0)
+  or (AIndex >= Items.Count)
+  then raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName, AIndex, Items.Count]);
 end;
 
 {------------------------------------------------------------------------------
