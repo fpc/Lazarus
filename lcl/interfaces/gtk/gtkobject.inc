@@ -8387,8 +8387,14 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.424  2003/09/22 20:08:56  ajgenius
+  break GTK2 object and winapi into includes like the GTK interface
+
   Revision 1.423  2003/09/22 19:17:26  ajgenius
   begin implementing GtkTreeView for ListBox/CListBox
+
+  Revision 1.422  2003/09/22 15:34:07  ajgenius
+  use GtkImage and Pixbuf for GTK2 instead of Deprecated GtkPixmap
 
   Revision 1.421  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
