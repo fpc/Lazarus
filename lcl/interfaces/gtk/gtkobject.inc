@@ -286,6 +286,52 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TgtkObject.ShowModal(Sender: TObject);
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.ShowModal(Sender: TObject);
+var
+  GtkWindow: PGtkWindow;
+  ParentWindow: PGtkWindow;
+begin
+  if Sender is TCommonDialog then
+  begin
+    // Should be done elsewhere (eg via SetLabel) not here!
+    GtkWindow:=PGtkWindow(TCommonDialog(Sender).Handle);
+    gtk_window_set_title(GtkWindow,PChar(TCommonDialog(Sender).Title));
+    if Sender is TColorDialog then
+      SetColorDialogColor(PGtkColorSelection(GtkWindow),
+                          TColorDialog(Sender).Color);
+    gtk_window_set_position(GtkWindow, GTK_WIN_POS_CENTER);
+  end else if (Sender is TCustomForm) then begin
+    GtkWindow:=PGtkWindow(TCustomForm(Sender).Handle);
+    gtk_window_set_default_size(GtkWindow,
+                          TControl(Sender).Width,TControl(Sender).Height);
+    gtk_widget_set_uposition(PGtkWidget(GtkWindow),
+                             TControl(Sender).Left, TControl(Sender).Top);
+  end else begin
+    GtkWindow:=nil;
+    writeln('WARNING: TgtkObject.ShowModal ',Sender.ClassName);
+    exit;
+  end;
+  if (GtkWindow=nil) then exit;
+  UnsetResizeRequest(PgtkWidget(GtkWindow));
+
+  // Try to make all Modal forms transient to the main form
+  // If this is a Form, aka GTKWindow, try and keep decoration and Functions
+
+  // apart from none and sizeable, this will only work if WM supports
+  // motif flags properly, which very few actually do.
+  
+  ParentWindow:=PGtkWindow(GetActiveWindow);
+  if (GtkWindow<>nil)
+  and GtkWidgetIsA(PGtkWidget(ParentWindow),GTK_WINDOW_TYPE) then
+    gtk_window_set_transient_for(GtkWindow,ParentWindow);
+
+  gtk_window_set_modal(GtkWindow, true);
+  gtk_widget_show(PGtkWidget(GtkWindow));
+end;
+
+{------------------------------------------------------------------------------
   Method: TGtkObject.SendCachedLCLMessages
   Params:  None
   Returns: Nothing
@@ -1796,47 +1842,8 @@ begin
         //writeln('[LM_SetSize] B ',Sender.ClassName,' ',PgtkWidget(Handle)^.window<>nil);
       end;
 
-      LM_ShowModal :
-      begin
-        if Sender is TCommonDialog then
-        begin
-          // Should be done elsewhere (eg via SetLabel) not here!
-          gtk_window_set_title(PGtkWindow(handle),
-                               PChar(TCommonDialog(Sender).Title));
-          if Sender is TColorDialog then
-            SetColorDialogColor(Pointer(Handle),TColorDialog(Sender).Color);
-        end;
-
-        if (Sender is TCustomForm) then begin
-          gtk_window_set_default_size(PgtkWindow(handle),
-                                TControl(Sender).Width,TControl(Sender).Height);
-          gtk_widget_set_uposition(PgtkWidget(handle),
-                                   TControl(Sender).Left, TControl(Sender).Top);
-        end else begin
-          gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
-        end;
-        UnsetResizeRequest(PGtkWidget(Handle));
-
-        // Try to make all Modal forms transient to the main form
-        If Sender is TCustomForm then begin
-          //If this is a Form, aka GTKWindow, try
-          //and keep decoration and Functions -
-
-          //apart from none and sizeable, this will
-          //only work if WM supports motif flags
-          //properly, which very few actually do.
-
-          If (Application.MainForm<>nil)
-          and (Sender <> Application.MainForm)
-          and Application.MainForm.HandleAllocated then begin
-            //gtk_window_set_transient_for(PGtkWindow(handle),
-            //  PGtkWindow(Application.MainForm.handle));
-          end;
-        end;
-        gtk_window_set_modal(PGtkWindow(handle), true);
-        gtk_widget_show(PGtkWidget(handle));
-      end;
-
+      LM_ShowModal: ShowModal(Sender);
+      
       LM_TB_BUTTONCOUNT:
       begin
          if (Sender is TToolbar)
@@ -3343,6 +3350,9 @@ begin
         FreeWinWidgetInfo(PGtkCombo(Handle)^.Button);
       end;
 
+    end;
+    if Sender is TCustomForm then begin
+      gtk_window_set_transient_for(PGtkWindow(Widget),nil);
     end;
   end
   else if Sender is TCommonDialog then begin
@@ -4864,6 +4874,7 @@ begin
   else Begin
   
     if (Sender is TCustomForm) then begin
+      gtk_window_set_transient_for(PGtkWindow(SenderWidget),nil);
       UnshareWindowAccelGroups(SenderWidget);
     end;
   
@@ -6887,6 +6898,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.331  2003/03/15 09:42:50  mattias
+  fixed transient windows
+
   Revision 1.330  2003/03/11 23:14:19  mattias
   added TControl.HandleObjectShouldBeVisible
 
