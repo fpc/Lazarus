@@ -3055,13 +3055,16 @@ begin
   if (rcToken.Top < rcToken.Bottom) then begin
     SetBkColor(dc, ColorToRGB(colEditorBG));
     InternalFillRect(dc, rcToken);
-    {$IFNDEF SYN_LAZARUS}
     // Draw the right edge if necessary.
     if bDoRightEdge and (not (eoHideRightMargin in Options)) then begin
+      {$IFDEF SYN_LAZARUS}
+      LCLLinux.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
+      LCLLinux.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+      {$ELSE}
       Windows.MoveToEx(dc, nRightEdge, rcToken.Top, nil);
       Windows.LineTo(dc, nRightEdge, rcToken.Bottom + 1);
+      {$ENDIF}
     end;
-    {$ENDIF}
   end;
   
   {$IFDEF SYN_LAZARUS}
