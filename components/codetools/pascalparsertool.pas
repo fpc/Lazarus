@@ -2332,6 +2332,8 @@ begin
       if not AtomIsStringConstant then
         SaveRaiseExceptionFmt(ctsUnexpectedKeyword,[ctsStringConstant,GetAtom]);
       ReadConstant(true,false,[]);
+      if UpAtomIs('DEPRECATED') then
+        ReadNextAtom;
       // read ;
       if CurPos.Flag<>cafSemicolon then
         SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[';',GetAtom]);

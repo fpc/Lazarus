@@ -1575,7 +1575,6 @@ begin
     else
       FWriteLockStep:=-$7fffffff;
     SourceCache.GlobalWriteLockIsSet:=true;
-writeln('CCC1 ',SourceCache.GlobalWriteLockIsSet);
     SourceCache.GlobalWriteLockStep:=FWriteLockStep;
   end;
   inc(FWriteLockCount);
@@ -1591,7 +1590,6 @@ begin
     if FWriteLockCount=0 then begin
       // end the write lock
       SourceCache.GlobalWriteLockIsSet:=false;
-writeln('CCC2 ',SourceCache.GlobalWriteLockIsSet);
     end;
   end;
   {$IFDEF CTDEBUG}
