@@ -598,9 +598,14 @@ begin
   Result := InterfaceObject.InvalidateRect(aHandle, ARect, bErase);
 end;
 
-function IsDBCSLeadByte(TestChar: Byte): BOOL;
+function IsDBCSLeadByte(TestChar: Byte): boolean;
 begin
   Result := InterfaceObject.IsDBCSLeadByte(TestChar);
+end;
+
+function IsWindowVisible(handle: HWND): boolean;
+begin
+  Result := InterfaceObject.IsWindowVisible(Handle);
 end;
 
 function LineTo(DC: HDC; X, Y: Integer): Boolean;
@@ -1568,6 +1573,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.76  2003/03/17 08:51:09  mattias
+  added IsWindowVisible
+
   Revision 1.75  2003/03/16 13:47:45  mattias
   improved rpm building and added support for 1.0.7
 

@@ -1084,7 +1084,12 @@ begin
   Result := false;
 end;
 
-function TInterfaceBase.IsDBCSLeadByte(TestChar: Byte): BOOL;
+function TInterfaceBase.IsDBCSLeadByte(TestChar: Byte): boolean;
+begin
+  Result := false;
+end;
+
+function TInterfaceBase.IsWindowVisible(handle: HWND): boolean;
 begin
   Result := false;
 end;
@@ -1655,6 +1660,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.83  2003/03/17 08:51:09  mattias
+  added IsWindowVisible
+
   Revision 1.82  2003/02/28 19:54:05  mattias
   added ShowWindow
 

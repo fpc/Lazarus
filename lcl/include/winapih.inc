@@ -162,8 +162,9 @@ function IntersectClipRect(dc: hdc; Left, Top, Right,Bottom: Integer): Integer; 
 Function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function InvalidateRect(aHandle : HWND; ARect : pRect; bErase : Boolean) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IsCharAlphaNumeric --> independent
-function IsDBCSLeadByte(TestChar: Byte): BOOL; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function IsDBCSLeadByte(TestChar: Byte): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function IsRectEmpty --> independent
+function IsWindowVisible(handle: HWND): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function LoadStockPixmap(StockID: longint) : HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -373,6 +374,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2003/03/17 08:51:09  mattias
+  added IsWindowVisible
+
   Revision 1.69  2003/03/16 13:47:45  mattias
   improved rpm building and added support for 1.0.7
 
