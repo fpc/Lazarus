@@ -822,7 +822,6 @@ packager/ucomponentmanmain.pas svneol=native#text/pascal
 packager/ufrmaddcomponent.lfm svneol=native#text/plain
 packager/ufrmaddcomponent.lrs svneol=native#text/pascal
 packager/ufrmaddcomponent.pas svneol=native#text/pascal
-tools/RunAndWait.sh -text svneol=native#application/x-sh
 tools/apiwizz/apiwizard.pp svneol=native#text/pascal
 tools/apiwizz/apiwizz.pp svneol=native#text/pascal
 tools/install/create_fpc_export_tgz.sh -text svneol=native#application/x-sh
