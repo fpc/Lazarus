@@ -2375,6 +2375,7 @@ begin
   Dependency.AddToList(FFirstRequiredDependency,pdlRequires);
   Dependency.Owner:=Self;
   Dependency.HoldPackage:=true;
+  FDefineTemplates.CompilerFlagsChanged;
   Modified:=true;
   EndUpdate;
 end;
@@ -2386,6 +2387,7 @@ begin
   Dependency.RequiredPackage:=nil;
   Dependency.AddToList(FFirstRemovedDependency,pdlRequires);
   Dependency.Removed:=true;
+  FDefineTemplates.CompilerFlagsChanged;
   Modified:=true;
   EndUpdate;
 end;
@@ -2396,6 +2398,7 @@ begin
   Dependency.RequiredPackage:=nil;
   Dependency.RemoveFromList(FFirstRequiredDependency,pdlRequires);
   Dependency.Free;
+  FDefineTemplates.CompilerFlagsChanged;
   EndUpdate;
 end;
 
@@ -2429,6 +2432,7 @@ begin
   if Dependency.PrevRequiresDependency=nil then exit;
   BeginUpdate(true);
   Dependency.MoveUpInList(FFirstRequiredDependency,pdlRequires);
+  FDefineTemplates.CompilerFlagsChanged;
   EndUpdate;
 end;
 
@@ -2437,6 +2441,7 @@ begin
   if Dependency.NextRequiresDependency=nil then exit;
   BeginUpdate(true);
   Dependency.MoveDownInList(FFirstRequiredDependency,pdlRequires);
+  FDefineTemplates.CompilerFlagsChanged;
   EndUpdate;
 end;
 
@@ -2779,6 +2784,9 @@ end.
 
 {
   $Log$
+  Revision 1.143  2003/12/23 18:51:40  mattias
+  fixed updating Define caches, when project dependencies changes
+
   Revision 1.142  2003/12/20 01:20:52  mattias
   splitted output directories for cross compilation
 

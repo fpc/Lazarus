@@ -233,7 +233,7 @@ function UpdateCompilerOptionsTemplates(ParentTemplate: TDefineTemplate;
 var
   CustomOpts: TDefineTemplate;
 begin
-  Result:=false;
+  Result:=false; // no change
   { ToDo:
 
     StackChecks
