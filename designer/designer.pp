@@ -33,7 +33,7 @@ unit Designer;
 interface
 
 {$DEFINE VerboseDesigner}
-{$DEFINE VerboseDesignerDraw}
+{ $DEFINE VerboseDesignerDraw}
 
 uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
@@ -1024,15 +1024,14 @@ var
   IconRect: TRect;
   IconCanvas: TCanvas;
 begin
-  FCustomForm.Canvas.Handle:=aDDC.DC;
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     if not (FCustomForm.Components[i] is TControl) then begin
       Diff:=aDDC.FormOrigin;
       aDDC.Save;
       // non-visual component
       ItemLeftTop:=NonVisualComponentLeftTop(FCustomForm.Components[i]);
-      ItemLeft:=ItemLeftTop.X+Diff.X;
-      ItemTop:=ItemLeftTop.Y+Diff.Y;
+      ItemLeft:=ItemLeftTop.X-Diff.X;
+      ItemTop:=ItemLeftTop.Y-Diff.Y;
       ItemRight:=ItemLeft+NonVisualCompWidth;
       ItemBottom:=ItemTop+NonVisualCompWidth;
       with aDDC.Canvas do begin
@@ -1060,8 +1059,10 @@ begin
         FOnGetNonVisualCompIconCanvas(Self,FCustomForm.Components[i]
              ,IconCanvas,IconWidth,IconHeight);
         if IconCanvas<>nil then begin
-          inc(IconRect.Left,((IconRect.Right-IconRect.Left)-IconWidth) div 2);
-          inc(IconRect.Top,((IconRect.Bottom-IconRect.Top)-IconHeight) div 2);
+          inc(IconRect.Left,(NonVisualCompIconWidth-IconWidth) div 2);
+          inc(IconRect.Top,(NonVisualCompIconWidth-IconHeight) div 2);
+          IconRect.Right:=IconRect.Left+IconWidth;
+          IconRect.Bottom:=IconRect.Top+IconHeight;
           aDDC.Canvas.CopyRect(IconRect, IconCanvas,
              Rect(0,0,IconWidth,IconHeight));
         end;
