@@ -699,20 +699,22 @@ end;
 
 function EditGetSelStart(WinHandle: HWND): integer;
 begin
-  SendMessage(WinHandle, EM_GETSEL, Windows.WPARAM(@Result), 0);
+  Windows.SendMessage(WinHandle, EM_GETSEL, Windows.WPARAM(@Result), 0);
 end;
 
 function EditGetSelLength(WinHandle: HWND): integer;
 var
   startpos, endpos: integer;
 begin
-  SendMessage(WinHandle, EM_GETSEL, Windows.WPARAM(@startpos), Windows.LPARAM(@endpos));
+  Windows.SendMessage(WinHandle, EM_GETSEL, Windows.WPARAM(@startpos), Windows.LPARAM(@endpos));
   Result := endpos - startpos;
 end;
 
 procedure EditSetSelStart(WinHandle: HWND; NewStart: integer);
 begin
-  SendMessage(WinHandle, EM_SETSEL, Windows.WParam(NewStart), Windows.LParam(NewStart));
+  Windows.SendMessage(WinHandle, EM_SETSEL, Windows.WParam(NewStart), Windows.LParam(NewStart));
+  // scroll caret into view
+  Windows.SendMessage(WinHandle, EM_SCROLLCARET, 0, 0);
 end;
 
 procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
