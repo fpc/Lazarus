@@ -133,7 +133,7 @@ begin
   if FState <> OldState then
   begin
     ApplyChanges;
-    if Assigned(OnClick) then OnClick(Self);
+    Click;
   end;
 end;
 
@@ -185,6 +185,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.9  2002/10/09 10:22:54  lazarus
+  MG: fixed client origin coordinates
+
   Revision 1.8  2002/10/03 00:08:50  lazarus
   AJ: TCustomLabel Autosize, TCustomCheckbox '&' shortcuts started
 

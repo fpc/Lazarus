@@ -398,7 +398,6 @@ function TSourceChangeCache.ReplaceEx(FrontGap, AfterGap: TGapTyp;
   DirectCode: TCodeBuffer; FromDirectPos, ToDirectPos: integer;
   const Text: string): boolean;
 var
-  ANode: TAVLTreeNode;
   NewEntry: TSourceChangeCacheEntry;
   p: pointer;
   IsDirectChange: boolean;
@@ -462,14 +461,8 @@ begin
   // add entry
   NewEntry:=TSourceChangeCacheEntry.Create(FrontGap,AfterGap,FromPos,ToPos,
                       Text,DirectCode,FromDirectPos,ToDirectPos,IsDirectChange);
-  ANode:=FEntries.Add(NewEntry);
-{  if not NewEntry.IsDeleteOperation then
-    FEntries.MoveDataLeftMost(ANode)
-  else
-    // the new entry is a delete operation -> put it rightmost, so that it will
-    // be applied first
-    FEntries.MoveDataRightMost(ANode);}
-    
+  FEntries.Add(NewEntry);
+
   FBuffersToModifyNeedsUpdate:=true;
   Result:=true;
   {$IFDEF CTDEBUG}
