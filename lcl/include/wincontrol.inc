@@ -1432,7 +1432,7 @@ begin
       if CharCode = VK_UNKNOWN then Exit;
     end;
     if Application<>nil then
-      Application.NotifyKeyDownHandler(CharCode, ShiftState);
+      Application.NotifyKeyDownHandler(Self, CharCode, ShiftState);
   end;
   
   Result := False;
@@ -2596,6 +2596,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.128  2003/04/11 10:31:57  mattias
+  added Sender to Application OnKeyDownHandler
+
   Revision 1.127  2003/04/11 10:23:23  mattias
   added Application OnKeyDownHandler
 
