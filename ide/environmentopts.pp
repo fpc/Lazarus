@@ -650,7 +650,8 @@ begin
   // windows
   InitLayoutList;
   FIDEDialogLayoutList:=TIDEDialogLayoutList.Create;
-  IDEOptionDefs.IDEDialogLayoutList:=FIDEDialogLayoutList;
+  if IDEOptionDefs.IDEDialogLayoutList=nil then
+    IDEOptionDefs.IDEDialogLayoutList:=FIDEDialogLayoutList;
   FMinimizeAllOnMinimizeMain:=false;
 
   // form editor
@@ -732,8 +733,9 @@ begin
   FFPCSourceDirHistory.Free;
   FDebuggerFileHistory.Free;
   FTestBuildDirHistory.Free;
+  if IDEOptionDefs.IDEDialogLayoutList=FIDEDialogLayoutList then
+    IDEOptionDefs.IDEDialogLayoutList:=nil;
   FIDEDialogLayoutList.Free;
-  IDEOptionDefs.IDEDialogLayoutList:=nil;
   fIDEWindowLayoutList.Free;
   FXMLCfg.Free;
   inherited Destroy;
@@ -3197,8 +3199,9 @@ begin
       end;
       InputHistories.StoreFileDialogSettings(SaveDialog);
     except
-      // ToDo
-      writeln('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick]');
+      on E: Exception do begin
+        writeln('ERROR: [TEnvironmentOptionsDialog.SaveDesktopSettingsToFileButtonClick] ',E.Message);
+      end;
     end;
   finally
     SaveDialog.Free;

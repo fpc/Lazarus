@@ -274,8 +274,8 @@ type
     property Items[Index: integer]: TIDEDialogLayout read GetItems;
   end;
 
-const
-  IDEDialogLayoutList: TIDEDialogLayoutList = nil;
+var
+  IDEDialogLayoutList: TIDEDialogLayoutList;
 
 
 implementation
@@ -1061,6 +1061,9 @@ begin
   for i:=0 to Count-1 do
     Items[i].SaveToXMLConfig(XMLConfig,Path+'/Dialog'+IntToStr(i+1));
 end;
+
+initialization
+  IDEDialogLayoutList:=nil;
 
 end.
 

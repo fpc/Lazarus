@@ -643,16 +643,19 @@ type
     procedure SetChecked(Value: Boolean); override;
     procedure SetText(const Value: TCaption); override;
     procedure ApplyChanges; virtual;
-    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
-    property State: TCheckBoxState read GetState write SetState;
+    procedure Click; override;
   public
     constructor Create(TheOwner: TComponent); override;
+  public
+    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
+    property State: TCheckBoxState read GetState write SetState;
   published
     property TabOrder;
     property TabStop;
   end;
 
 {$IFNDef NewCheckBox}
+  // Normal checkbox
   TCheckBox = class(TCustomCheckBox)
   protected
     procedure DoAutoSize; Override;
@@ -689,6 +692,7 @@ type
     property OnStartDrag;
   end;
 {$Else NewCheckBox}
+  // new checkbox
   TCBAlignment = (alLeftJustify, alRightJustify);
 
   TCheckBoxStyle = (cbsSystem, cbsCrissCross, cbsCheck);
@@ -741,8 +745,6 @@ type
     property Align;
     Property AutoSize;
     property WordWrap : Boolean read FWordWrap write FWordWrap;
-    //property OnMouseEnter;
-    //property OnMouseExit;
     property TabStop;
 
     property Anchors;
@@ -751,6 +753,8 @@ type
     property Font;
     property OnClick;
     property OnDblClick;
+    property OnEnter;
+    property OnExit;
     property OnKeyDown;
     property OnKeyUp;
     property OnKeyPress;
@@ -768,6 +772,9 @@ type
     property OnExit;
   end;
 {$EndIf NewCheckBox}
+
+
+  { TToggleBox }
 
   TToggleBox = class(TCustomCheckBox)
   private
@@ -803,7 +810,7 @@ type
   end;
 
 
-  {TRadioButton}
+  { TRadioButton }
    
   TRadioButton = class(TCustomCheckBox)
   protected
@@ -841,7 +848,9 @@ type
     property OnStartDrag;
   end;
 
-  {TStaticText}
+
+  { TStaticText }
+  
   TStaticBorderStyle = (sbsNone, sbsSingle, sbsSunken);
 
   TCustomStaticText = class(TCustomControl)
@@ -1395,6 +1404,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.83  2003/03/25 16:29:53  mattias
+  fixed sending TButtonControl.OnClick on every change
+
   Revision 1.82  2003/03/17 20:53:16  mattias
   removed SetRadioButtonGroupMode
 

@@ -133,7 +133,7 @@ begin
   if FState <> OldState then
   begin
     ApplyChanges;
-    Click;
+    if not ClicksDisabled then Click;
   end;
 end;
 
@@ -146,10 +146,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.Toggle;
 begin
-  if GetChecked then
-    SetChecked(False)
-  else
-    SetChecked(True);
+  SetChecked(not GetChecked);
 end;
 
 {------------------------------------------------------------------------------
@@ -166,6 +163,18 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  procedure TCustomCheckBox.Click;
+ ------------------------------------------------------------------------------}
+procedure TCustomCheckBox.Click;
+begin
+  inherited Changed;
+  inherited Click;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomCheckBox.SetText(const Value: TCaption);
+ ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.SetText(const Value: TCaption);
 var
   ParseStr : String;
@@ -186,6 +195,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.12  2003/03/25 16:29:53  mattias
+  fixed sending TButtonControl.OnClick on every change
+
   Revision 1.11  2003/03/17 20:50:30  mattias
   fixed TRadioGroup.ItemIndex=-1
 
