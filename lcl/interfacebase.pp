@@ -95,7 +95,6 @@ var
 
 implementation
 
-
 {$I interfacebase.inc}
 
 initialization
@@ -109,6 +108,9 @@ end.
 
 {
   $Log$
+  Revision 1.29  2003/02/28 10:14:28  mattias
+  started package system (packager)
+
   Revision 1.28  2002/02/09 01:48:23  mattias
   renamed TinterfaceObject.Init to AppInit and TWinControls can now contain childs in gtk
 
