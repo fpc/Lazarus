@@ -732,15 +732,22 @@ begin
 end;
 
 procedure TOIPropertyGrid.ShrinkRow(Index:integer);
-var CurRow:TOIPropertyGridRow;
+var CurRow, ARow:TOIPropertyGridRow;
   StartIndex,EndIndex,a:integer;
   CurPath:string;
 begin
   CurRow:=Rows[Index];
   if (not CurRow.Expanded) then exit;
-  if CurRow.NextBrother=nil then StartIndex:=FRows.Count-1
-  else StartIndex:=CurRow.NextBrother.Index-1;
   EndIndex:=CurRow.Index+1;
+  StartIndex:=FRows.Count-1;
+  ARow:=CurRow;
+  while ARow<>nil do begin
+    if ARow.NextBrother<>nil then begin
+      StartIndex:=ARow.NextBrother.Index-1;
+      break;
+    end;
+    ARow:=ARow.Parent;
+  end;
   for a:=StartIndex downto EndIndex do begin
     Rows[a].Free;
     FRows.Delete(a);

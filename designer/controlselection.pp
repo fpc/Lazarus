@@ -68,19 +68,33 @@ type
 
   TSelectedControl = class
   private
-    FControl:TControl;
+    FComponent:TComponent;
     FOldLeft: integer;
     FOldTop: integer;
     FOldWidth: integer;
     FOldHeight: integer;
+    function GetLeft: integer;
+    procedure SetLeft(ALeft: integer);
+    function GetTop: integer;
+    procedure SetTop(ATop: integer);
+    function GetWidth: integer;
+    procedure SetWidth(AWidth: integer);
+    function GetHeight: integer;
+    procedure SetHeight(AHeight: integer);
   public
-    constructor Create(AControl:TControl);
+    constructor Create(AComponent:TComponent);
     destructor Destroy; override;
-    property Control:TControl read FControl write FControl;
+    property Component:TComponent read FComponent write FComponent;
+    property Left: integer read GetLeft write SetLeft;
+    property Top: integer read GetTop write SetTop;
+    property Width: integer read GetWidth write SetWidth;
+    property Height: integer read GetHeight write SetHeight;
     property OldLeft:integer read FOldLeft write FOldLeft;
     property OldTop:integer read FOldTop write FOldTop;
     property OldWidth:integer read FOldWidth write FOldWidth;
     property OldHeight:integer read FOldHeight write FOldHeight;
+    function ParentForm: TCustomForm;
+    procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SaveBounds;
   end;
 
@@ -136,14 +150,14 @@ type
     function Count:integer;
     procedure BeginUpDate;
     procedure EndUpdate;
-    function IndexOf(AControl:TControl):integer;
-    function Add(AControl: TControl):integer;
-    procedure Remove(AControl: TControl);
+    function IndexOf(AComponent:TComponent):integer;
+    function Add(AComponent: TComponent):integer;
+    procedure Remove(AComponent: TComponent);
     procedure Delete(Index:integer);
     procedure Clear;
     procedure Assign(AControlSelection:TControlSelection);
     procedure AdjustSize;
-    function IsSelected(AControl: TControl): Boolean;
+    function IsSelected(AComponent: TComponent): Boolean;
     procedure SaveBounds;
     procedure MoveSelection(dx, dy: integer);
     procedure SizeSelection(dx, dy: integer);  
@@ -157,7 +171,7 @@ type
     property MarkerSize:integer read FMarkerSize write FMarkerSize;
     property MarkerColor: TColor read FMarkerColor write FMarkerColor;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    procedure DrawMarker(AControl:TControl; DC:HDC);
+    procedure DrawMarker(AComponent:TComponent; DC:HDC);
     property ActiveGrabber:TGrabber read FActiveGrabber write SetActiveGrabber;
     property Left:integer read FLeft;
     property Top:integer read FTop;
@@ -173,7 +187,7 @@ type
 
 var TheControlSelection: TControlSelection;
 
-function GetFormRelativeControlTopLeft(Control: TControl): TPoint;
+function GetFormRelativeControlTopLeft(Component: TComponent): TPoint;
 
 implementation
 
@@ -195,16 +209,21 @@ const
   );
 
 
-function GetFormRelativeControlTopLeft(Control: TControl): TPoint;
+function GetFormRelativeControlTopLeft(Component: TComponent): TPoint;
 var FormOrigin: TPoint;
 begin
-  if Control.Parent=nil then begin
-    Result:=Point(0,0);
+  if Component is TControl then begin
+    if TControl(Component).Parent=nil then begin
+      Result:=Point(0,0);
+    end else begin
+      Result:=TControl(Component).Parent.ClientOrigin;
+      FormOrigin:=GetParentForm(TControl(Component)).ClientOrigin;
+      Result.X:=Result.X-FormOrigin.X+TControl(Component).Left;
+      Result.Y:=Result.Y-FormOrigin.Y+TControl(Component).Top;
+    end;
   end else begin
-    Result:=Control.Parent.ClientOrigin;
-    FormOrigin:=GetParentForm(Control).ClientOrigin;
-    Result.X:=Result.X-FormOrigin.X+Control.Left;
-    Result.Y:=Result.Y-FormOrigin.Y+Control.Top;
+    Result.X:=LongRec(Component.DesignInfo).Lo;
+    Result.Y:=LongRec(Component.DesignInfo).Hi;
   end;
 end;
 
@@ -222,10 +241,10 @@ end;
 
 { TSelectedControl }
 
-constructor TSelectedControl.Create(AControl:TControl);
+constructor TSelectedControl.Create(AComponent:TComponent);
 begin
   inherited Create;
-  FControl:=AControl;
+  FComponent:=AComponent;
 end;
 
 destructor TSelectedControl.Destroy;
@@ -233,15 +252,101 @@ begin
   inherited Destroy;
 end;
 
+function TSelectedControl.ParentForm: TCustomForm;
+begin
+  if FComponent is TControl then
+    Result:=GetParentForm(TControl(FComponent))
+  else
+    if FComponent.Owner is TCustomForm then
+      Result:=TCustomForm(FComponent.Owner)
+    else
+      Result:=nil;
+end;
+
+procedure TSelectedControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+begin
+  if FComponent is TControl then
+    TControl(FComponent).SetBounds(ALeft, ATop, AWidth, AHeight)
+  else begin
+    Left:=ALeft;
+    Top:=ATop;
+  end;
+end;
+
 procedure TSelectedControl.SaveBounds;
 begin
-writeln('[TSelectedControl.SaveBounds] ',Control.Name,':',Control.ClassName
-  ,'  ',Control.Left,',',Control.Top);
-  FOldLeft:=Control.Left;
-  FOldTop:=Control.Top;
-  FOldWidth:=Control.Width;
-  FOldHeight:=Control.Height;
+  FOldLeft:=Left;
+  FOldTop:=Top;
+  FOldWidth:=Width;
+  FOldHeight:=Height;
+writeln('[TSelectedControl.SaveBounds] ',Component.Name,':',Component.ClassName
+  ,'  ',FOldLeft,',',FOldTop);
 end;
+
+function TSelectedControl.GetLeft: integer;
+begin
+  if FComponent is TControl then
+    Result:=TControl(FComponent).Left
+  else
+    Result:=LongRec(FComponent.DesignInfo).Lo;
+end;
+
+procedure TSelectedControl.SetLeft(ALeft: integer);
+begin
+  if FComponent is TControl then
+    TControl(FComponent).Left:=Aleft
+  else
+    LongRec(FComponent.DesignInfo).Lo:=ALeft;
+end;
+
+function TSelectedControl.GetTop: integer;
+begin
+  if FComponent is TControl then
+    Result:=TControl(FComponent).Top
+  else
+    Result:=LongRec(FComponent.DesignInfo).Hi;
+end;
+
+procedure TSelectedControl.SetTop(ATop: integer);
+begin
+  if FComponent is TControl then
+    TControl(FComponent).Top:=ATop
+  else
+    LongRec(FComponent.DesignInfo).Hi:=ATop;
+end;
+
+function TSelectedControl.GetWidth: integer;
+begin
+  if FComponent is TControl then
+    Result:=TControl(FComponent).Width
+  else
+    Result:=20;
+end;
+
+procedure TSelectedControl.SetWidth(AWidth: integer);
+begin
+  if FComponent is TControl then
+    TControl(FComponent).Width:=AWidth
+  else
+    ;
+end;
+
+function TSelectedControl.GetHeight: integer;
+begin
+  if FComponent is TControl then
+    Result:=TControl(FComponent).Height
+  else
+    Result:=20;
+end;
+
+procedure TSelectedControl.SetHeight(AHeight: integer);
+begin
+  if FComponent is TControl then
+    TControl(FComponent).Height:=AHeight
+  else
+    ;
+end;
+
 
 { TControlSelection }
 
@@ -296,11 +401,10 @@ end;
 procedure TControlSelection.SetCustomForm;
 var NewCustomForm:TCustomForm;
 begin
-  if Count>0 then begin
-    NewCustomForm:=GetParentForm(Items[0].Control);
-  end else begin
+  if Count>0 then
+    NewCustomForm:=Items[0].ParentForm
+  else
     NewCustomForm:=nil;
-  end;
   if NewCustomForm=FCustomForm then exit;
   FCustomForm:=NewCustomForm;
 end;
@@ -328,13 +432,13 @@ var i:integer;
 begin
   if FIsResizing then exit;
   if FControls.Count>=1 then begin
-    LeftTop:=GetFormRelativeControlTopLeft(Items[0].Control);
+    LeftTop:=GetFormRelativeControlTopLeft(Items[0].Component);
     FLeft:=LeftTop.X;
     FTop:=LeftTop.Y;
-    FHeight:=Items[0].Control.Height;
-    FWidth:=Items[0].Control.Width;
+    FHeight:=Items[0].Height;
+    FWidth:=Items[0].Width;
     for i:=1 to FControls.Count-1 do begin
-      LeftTop:=GetFormRelativeControlTopLeft(Items[i].Control);
+      LeftTop:=GetFormRelativeControlTopLeft(Items[i].Component);
       if FLeft>LeftTop.X then begin
         inc(FWidth,FLeft-LeftTop.X);
         FLeft:=LeftTop.X;
@@ -343,8 +447,8 @@ begin
         inc(FHeight,FTop-LeftTop.Y);
         FTop:=LeftTop.Y;
       end;
-      FWidth:=Max(FLeft+FWidth,LeftTop.X+Items[i].Control.Width)-FLeft;
-      FHeight:=Max(FTop+FHeight,LeftTop.Y+Items[i].Control.Height)-FTop;
+      FWidth:=Max(FLeft+FWidth,LeftTop.X+Items[i].Width)-FLeft;
+      FHeight:=Max(FTop+FHeight,LeftTop.Y+Items[i].Height)-FTop;
     end;
     AdjustGrabber;
   end;
@@ -424,18 +528,18 @@ begin
   Result:=FControls.Count;
 end;
 
-function TControlSelection.IndexOf(AControl:TControl):integer;
+function TControlSelection.IndexOf(AComponent:TComponent):integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (Items[Result].Control<>AControl) do dec(Result);
+  while (Result>=0) and (Items[Result].Component<>AComponent) do dec(Result);
 end;
 
-function TControlSelection.Add(AControl: TControl):integer;
+function TControlSelection.Add(AComponent: TComponent):integer;
 var NewSelectedControl:TSelectedControl;
 begin
   BeginUpdate;
-  NewSelectedControl:=TSelectedControl.Create(AControl);
-  if GetParentForm(AControl)<>FCustomForm then Clear;
+  NewSelectedControl:=TSelectedControl.Create(AComponent);
+  if NewSelectedControl.ParentForm<>FCustomForm then Clear;
   Result:=FControls.Add(NewSelectedControl);
   if Count=1 then SetCustomForm;
   AdjustSize;
@@ -443,10 +547,10 @@ begin
   DoChange;  
 end;
 
-procedure TControlSelection.Remove(AControl: TControl);
+procedure TControlSelection.Remove(AComponent: TComponent);
 var i:integer;
 begin
-  i:=IndexOf(AControl);
+  i:=IndexOf(AComponent);
   if i>=0 then Delete(i);
 end;
 
@@ -474,18 +578,20 @@ procedure TControlSelection.Assign(AControlSelection:TControlSelection);
 var i:integer;
 begin
   if AControlSelection=Self then exit;
+  BeginUpdate;
   Clear;
   FControls.Capacity:=AControlSelection.Count;
   for i:=0 to AControlSelection.Count-1 do
-    Add(AControlSelection[i].Control);
+    Add(AControlSelection[i].Component);
   SetCustomForm;
   AdjustSize;
+  EndUpdate;
   DoChange;
 end;
 
-function TControlSelection.IsSelected(AControl: TControl): Boolean;
+function TControlSelection.IsSelected(AComponent: TComponent): Boolean;
 begin
-  Result:=(IndexOf(AControl)>=0);
+  Result:=(IndexOf(AComponent)>=0);
 end;
 
 procedure TControlSelection.MoveSelection(dx, dy: integer);
@@ -498,7 +604,7 @@ begin
   for i:=0 to FControls.Count-1 do begin
     with Items[i] do begin
 writeln('TControlSelection.MoveSelection ',i,'   ',OldLeft,',',OldTop,'  d=',dx,',',dy);
-      Control.SetBounds(OldLeft+dx,OldTop+dy,Control.Width,Control.Height);
+      SetBounds(OldLeft+dx,OldTop+dy,Width,Height)
     end;
   end;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do begin
@@ -543,12 +649,12 @@ begin
   AdjustGrabber;
   if Count=1 then begin
     // single selection
-    Items[0].Control.SetBounds(FLeft,FTop,FWidth,FHeight);
+    Items[0].SetBounds(FLeft,FTop,FWidth,FHeight);
   end else if Count>1 then begin
     // multi selection
     if (FOldWidth<>0) and (FOldHeight<>0) then begin
       for i:=0 to Count-1 do begin
-        Items[i].Control.SetBounds(
+        Items[i].SetBounds(
           FOldLeft + (((Items[i].OldLeft-FOldLeft) * FWidth) div FOldWidth),
           FOldTop + (((Items[i].OldTop-FOldTop) * FHeight) div FOldHeight),
           Max(1,Abs((Items[i].OldWidth * FWidth) div FOldWidth)),
@@ -585,7 +691,7 @@ var OldBrushColor:TColor;
 //  OldFormHandle: HDC;
 begin
   if (Count=0) or (FCustomForm=nil)
-  or (Items[0].Control is TCustomForm) then exit;
+  or (Items[0].Component is TCustomForm) then exit;
   GetWindowOrgEx(DC, DCOrigin);
   FormOrigin:=FCustomForm.ClientOrigin;
   Diff.X:=FormOrigin.X-DCOrigin.X;
@@ -616,25 +722,33 @@ writeln('[DrawGrabbers] Form=',FormOrigin.X,',',FormOrigin.Y
 //  FCustomForm.Canvas.Handle:=OldFormHandle;
 end;
 
-procedure TControlSelection.DrawMarker(AControl:TControl; DC:HDC);
+procedure TControlSelection.DrawMarker(AComponent:TComponent; DC:HDC);
 var OldBrushColor:TColor;
   ALeft,ATop:integer;
   AControlOrigin,DCOrigin:TPoint;
   SaveIndex:HDC;
-//  OldFormHandle:HDC;
+  AControl: TControl;
 begin
-  if (Count<2) or (FCustomForm=nil) or (AControl is TCustomForm)
-  or (not IsSelected(AControl)) then exit;
-  AControlOrigin:=AControl.Parent.ClientOrigin;
-  Inc(AControlOrigin.X,AControl.Left);
-  Inc(AControlOrigin.Y,AControl.Top);
+  if (Count<2) or (FCustomForm=nil) or (AComponent is TCustomForm)
+  or (not IsSelected(AComponent)) then exit;
+  if AComponent is TControl then begin
+    AControl:=TControl(AComponent);
+    AControlOrigin:=AControl.Parent.ClientOrigin;
+    Inc(AControlOrigin.X,AControl.Left);
+    Inc(AControlOrigin.Y,AControl.Top);
+  end else begin
+    if (not (AComponent.Owner is TCustomForm)) then exit;
+    AControlOrigin:=TCustomForm(AComponent.Owner).ClientOrigin;
+    inc(AControlOrigin.X,LongRec(AComponent.DesignInfo).Lo);
+    inc(AControlOrigin.Y,LongRec(AComponent.DesignInfo).Hi);
+  end;
   GetWindowOrgEx(DC, DCOrigin);
   // MoveWindowOrg is currently not functioning in the gtk
   // this is a workaround
   ALeft:=AControlOrigin.X-DCOrigin.X;
   ATop:=AControlOrigin.Y-DCOrigin.Y;
+  
   SaveIndex := SaveDC(DC);
-//  OldFormHandle:=FCustomForm.Canvas.Handle;
   FCanvas.Handle:=DC;
 {
 writeln('DrawMarker A ',FCustomForm.Name
@@ -657,7 +771,6 @@ writeln('DrawMarker A ',FCustomForm.Name
     Brush.Color:=OldbrushColor;
   end;
   FCanvas.Handle:=0;
-//  FCustomForm.Canvas.Handle:=OldFormHandle;
   RestoreDC(DC, SaveIndex);
 end;
 

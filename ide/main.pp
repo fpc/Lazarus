@@ -635,6 +635,7 @@ end;
 
 destructor TMainIDE.Destroy;
 begin
+writeln('[TMainIDE.Destroy] 1');
   if Project<>nil then begin
     Project.Free;
     Project:=nil;
@@ -642,6 +643,7 @@ begin
   TheControlSelection.OnChange:=nil;
   TheControlSelection.Free;
   TheControlSelection:=nil;
+writeln('[TMainIDE.Destroy] 2');
   FormEditor1.Free;
   FormEditor1:=nil;
   PropertyEditorHook1.Free;
@@ -649,7 +651,9 @@ begin
   MacroList.Free;
   EnvironmentOptions.Free;
   EnvironmentOptions:=nil;
+writeln('[TMainIDE.Destroy] 3');
   inherited Destroy;
+writeln('[TMainIDE.Destroy] END');
 end;
 
 procedure TMainIDE.OIOnAddAvailableComponent(AComponent:TComponent;
@@ -1360,7 +1364,9 @@ var CanClose: boolean;
 begin
   CanClose:=true;
   OnCloseQuery(Sender, CanClose);
+writeln('TMainIDE.mnuQuitClicked 1');
   if CanClose then Close;
+writeln('TMainIDE.mnuQuitClicked 2');
 end;
 
 {------------------------------------------------------------------------------}
@@ -1873,6 +1879,9 @@ writeln('TMainIDE.DoCloseEditorUnit 1');
   end;
   // close form
   if ActiveUnitInfo.Form<>nil then begin
+    for i:=0 to TWinControl(ActiveUnitInfo.Form).ComponentCount-1 do
+      TheControlSelection.Remove(
+        TWinControl(ActiveUnitInfo.Form).Components[i]);
     TheControlSelection.Remove(TControl(ActiveUnitInfo.Form));
     OldDesigner:=TDesigner(TCustomForm(ActiveUnitInfo.Form).Designer);
     FormEditor1.DeleteControl(ActiveUnitInfo.Form);
@@ -2931,7 +2940,7 @@ begin
 writeln('[TMainIDE.OnControlSelectionChanged]');
   NewSelectedComponents:=TComponentSelectionList.Create;
   for i:=0 to TheControlSelection.Count-1 do begin
-    NewSelectedComponents.Add(TheControlSelection[i].Control);
+    NewSelectedComponents.Add(TheControlSelection[i].Component);
   end;
   FormEditor1.SelectedComponents:=NewSelectedComponents;
 end;
@@ -2948,8 +2957,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.79  2001/03/21 23:48:28  lazarus
-  MG: fixed window positions
+  Revision 1.80  2001/03/22 17:57:34  lazarus
+  MG: bugfixes + startet IDE TComponent support
 
   Revision 1.75  2001/03/19 14:00:46  lazarus
   MG: fixed many unreleased DC and GDIObj bugs

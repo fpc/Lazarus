@@ -286,7 +286,8 @@ Begin
             ControlSelection.BeginUpdate;
             ControlSelection.Clear;
             for i:=0 to AControlSelection.Count-1 do
-              AControlSelection[i].Control.Invalidate;
+              if AControlSelection[i].Component is TControl then
+                TControl(AControlSelection[i].Component).Invalidate;
             ControlSelection.Add(Sender);
             ControlSelection.EndUpdate;
             Sender.Invalidate;
@@ -356,7 +357,7 @@ Begin
         ControlSelection.BeginUpdate;
         if (not (ssShift in Shift)) 
         or ((ControlSelection.Count=1) 
-         and (ControlSelection[0].Control is TCustomForm)) then
+         and (ControlSelection[0].Component is TCustomForm)) then
           ControlSelection.Clear;
         if RubberBandWasActive then begin
           ControlSelection.SelectWithRubberBand(SenderParentForm,ssShift in Shift);
@@ -478,7 +479,7 @@ Begin
   end else begin
     if (Message.keys and MK_LButton) = MK_LButton then begin
       if (not (MouseDownControl is TCustomForm)) and (ControlSelection.Count>=1)
-      and not (ControlSelection[0].Control is TCustomForm) then begin
+      and not (ControlSelection[0].Component is TCustomForm) then begin
         // move selection
         FHasSized:=true;
         ControlSelection.MoveSelection(
@@ -523,7 +524,7 @@ Writeln('KEYDOWN');
     ControlSelection.BeginUpdate;
     for  I := ControlSelection.Count-1 downto 0 do Begin
       Writeln('I = '+inttostr(i));
-      RemoveControl(ControlSelection.Items[I].Control);
+      RemoveControl(ControlSelection.Items[I].Component);
     End;
     SelectOnlythisComponent(FCustomForm);
     ControlSelection.EndUpdate;
@@ -614,7 +615,7 @@ Begin
       writeln('[TDesigner.Notification] opRemove '+
         ''''+AComponent.ClassName+'.'+AComponent.Name+'''');
       if (AComponent is TControl) then
-      if ControlSelection.IsSelected(TControl(AComponent)) then
+        if ControlSelection.IsSelected(TControl(AComponent)) then
           ControlSelection.Remove(TControl(AComponent));
     end;
 end;

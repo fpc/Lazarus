@@ -200,12 +200,12 @@ type
     FBorderWidth:integer;
   protected
     procedure Paint; override;
-    procedure MouseDown(Button:TMouseButton; Shift:TShiftState;
-       X,Y:integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
        X, Y: Integer); override;
     procedure SetButtonColor(Value:TColor);
+  public
+    constructor Create(AOwner : TComponent); override;
+    destructor Destroy; Override;
   published
     property BorderWidth:integer read FBorderWidth write FBorderWidth;
     property ButtonColor:TColor read FButtonColor write SetButtonColor;
@@ -919,38 +919,49 @@ end;
 
 { TColorButton }
 
+constructor TColorButton.Create(AOwner: TComponent);
+begin
+  Inherited Create(AOwner);
+  Align := alNone;
+  FBorderWidth:=2;
+  Setbounds(1,1,75,25);
+end;
+
+destructor TColorButton.Destroy;
+Begin
+  inherited Destroy;
+end;
+
 procedure TColorButton.Paint;
-var PaintRect:TRect;
+var a: integer;
 begin
   //inherited Paint;
-  PaintRect := Bounds(Left, Top, Width, Height);
   with Canvas do begin
     Brush.Color:=ButtonColor;
-    FillRect(PaintRect);
+    FillRect(Bounds(0, 0, Width, Height));
+    Pen.Color:=clWhite;
+    for a:=0 to FBorderWidth-1 do begin
+      MoveTo(a,Height-a);
+      LineTo(a,a);
+      LineTo(Width-a,a);
+    end;
+    Pen.Color:=clBlack;
+    for a:=0 to FBorderWidth-1 do begin
+      MoveTo(Width-a-1,a);
+      LineTo(Width-a-1,Height-a-1);
+      MoveTo(a,Height-a-1);
+      LineTo(Width-a,Height-a-1);
+    end;
   end;
-  DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON
-      ,DFCS_BUTTONPUSH or DFCS_ADJUSTRECT);
 end;
 
 procedure TColorButton.SetButtonColor(Value:TColor);
 begin
   if Value=FButtonColor then exit;
   FButtonColor:=Value;
-  if Assigned(FOnColorChanged) then begin
+  if Assigned(FOnColorChanged) then
     FOnColorChanged(Self);
-  end;
   Invalidate;
-end;
-
-procedure TColorButton.MouseDown(Button:TMouseButton; Shift:TShiftState;
-  X,Y:integer);
-begin
-
-end;
-
-procedure TColorButton.MouseMove(Shift: TShiftState; X, Y: Integer);
-begin
-  
 end;
 
 procedure TColorButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
