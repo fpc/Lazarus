@@ -2860,7 +2860,7 @@ procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
     MenuItem:=TMenuItem(Sender);
     if not MenuItem.HandleAllocated then exit;
     MenuItemWidget:=PGtkWidget(MenuItem.Handle);
-    SetMenuItemLabelText(MenuItem,MenuItemWidget);
+    UpdateInnerMenuItem(MenuItem,MenuItemWidget);
   end;
   
 
@@ -7259,6 +7259,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.361  2003/05/01 11:44:03  mattias
+  fixed changing menuitem separator and normal
+
   Revision 1.360  2003/04/29 19:00:43  mattias
   added package gtkopengl
 
