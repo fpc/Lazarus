@@ -2850,6 +2850,9 @@ writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
   if Notebook.Pages.Count>1 then begin
 //writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex);
     Notebook.Pages.Delete(PageIndex);
+    // switch to left PageIndex
+    if PageIndex>0 then
+      Notebook.PageIndex:=PageIndex-1;
 //writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex);
     UpdateStatusBar;
   end else begin

@@ -3568,7 +3568,7 @@ begin
     Project1.RemoveUnit(i);
   end;
   
-writeln('TMainIDE.DoCloseEditorUnit end');
+  writeln('TMainIDE.DoCloseEditorUnit end');
   Result:=mrOk;
 end;
 
@@ -6372,6 +6372,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.298  2002/05/16 15:51:48  lazarus
+  MG: closing editor now switches to left editor
+
   Revision 1.297  2002/05/16 14:35:19  lazarus
   MG: fixed codetools error jumping
 
