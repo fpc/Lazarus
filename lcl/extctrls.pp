@@ -99,21 +99,18 @@ type
 
   TNBPages = class(TStrings)
   private
-    fPageList: TList;
-    fNotebook: TCustomNotebook;
+    FPageList: TList;
+    FNotebook: TCustomNotebook;
   protected
     function Get(Index: Integer): String; override;
     function GetCount: Integer; override;
     function GetObject(Index: Integer): TObject; override;
     procedure Put(Index: Integer; const S: String); override;
-    procedure RemovePage(Index: integer);
   public
     constructor Create(thePageList: TList; theNotebook: TCustomNotebook);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     procedure Insert(Index: Integer; const S: String); override;
-    procedure InsertPage(Index:integer; APage: TCustomPage);
-
     procedure Move(CurIndex, NewIndex: Integer); override;
   end;
 
@@ -135,8 +132,8 @@ type
 
   TCustomNotebook = class(TWinControl)
   private
-    fAccess: TStrings; // TNBPages
-    fAddingPages: boolean;
+    FAccess: TStrings; // TNBPages
+    FAddingPages: boolean;
     FImages: TImageList;
     FLoadedPageIndex: integer;
     FOnChanging: TTabChangingEvent;
@@ -144,11 +141,11 @@ type
     FOnGetImageIndex: TTabGetImageEvent;
     fOnPageChanged: TNotifyEvent;
     FOptions: TNoteBookOptions;
-    fPageIndex: Integer;
-    fPageIndexOnLastChange: integer;
-    fPageList: TList;  // List of TCustomPage
-    fShowTabs: Boolean;
-    fTabPosition: TTabPosition;
+    FPageIndex: Integer;
+    FPageIndexOnLastChange: integer;
+    FPageList: TList;  // List of TCustomPage
+    FShowTabs: Boolean;
+    FTabPosition: TTabPosition;
     Procedure CNNotify(var Message: TLMNotify); message CN_NOTIFY;
     procedure DoSendPageIndex;
     procedure DoSendShowTabs;
@@ -158,8 +155,10 @@ type
     function GetPage(aIndex: Integer): TCustomPage;
     function GetPageCount : integer;
     function GetPageIndex: Integer;
+    procedure InsertPage(APage: TCustomPage; Index: Integer);
     function IsStoredActivePage: boolean;
     procedure MoveTab(Sender: TObject; NewIndex: Integer);
+    procedure RemovePage(Index: Integer);
     procedure SetActivePage(const Value: String);
     procedure SetActivePageComponent(const AValue: TCustomPage);
     procedure SetImages(const AValue: TImageList);
@@ -980,6 +979,9 @@ end.
 
  {
   $Log$
+  Revision 1.120  2004/09/23 14:54:54  vincents
+  moved widgetset related code from TNBPages to TCustomNotebook
+
   Revision 1.119  2004/09/10 16:28:50  mattias
   implemented very rudimentary TTabControl
 

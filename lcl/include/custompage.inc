@@ -101,7 +101,7 @@ begin
     if i>=0 then begin
       Include(FFlags,pfRemoving);
       try
-        TNBPages(ParentNotebook.fAccess).RemovePage(i);
+        ParentNotebook.RemovePage(i);
       finally
         Exclude(FFlags,pfRemoving);
       end;
@@ -115,7 +115,7 @@ begin
     // add to new pagelist
     ParentNotebook:=TCustomNotebook(Parent);
     if ParentNotebook.PageList.IndexOf(Self)<0 then
-      TNBPages(ParentNotebook.fAccess).InsertPage(ParentNotebook.PageCount,Self);
+      ParentNotebook.InsertPage(Self, ParentNotebook.PageCount);
   end;
 end;
 

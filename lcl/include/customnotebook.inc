@@ -71,57 +71,6 @@ begin
   TCustomPage(fPageList[Index]).Caption := S;
 end;
 
-procedure TNBPages.RemovePage(Index: integer);
-var
-  NewPageIndex: integer;
-  APage: TCustomPage;
-begin
-  // Make sure Index is in the range of valid pages to delete
-  {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TNBPages.RemovePage A ',fNoteBook.Name,' Index=',Index,
-    ' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
-  {$ENDIF}
-  if (Index >= 0) and
-     (Index < fPageList.Count) then
-  begin
-    APage:=TCustomPage(fPageList[Index]);
-    NewPageIndex:=fNoteBook.PageIndex;
-    if not (csLoading in fNoteBook.ComponentState) then begin
-      // If that page is showing, then show the next page before deleting it
-      if (Index = fNoteBook.PageIndex) then begin
-        if NewPageIndex<fPageList.Count-1 then
-          // switch current page to next (right) page
-          inc(NewPageIndex)
-        else if fPageList.Count>0 then
-          // switch to previous (left) page
-          dec(NewPageIndex)
-        else
-          // deleting last page
-          NewPageIndex:=-1;
-
-        if NewPageIndex>=0 then
-          fNoteBook.PageIndex:=NewPageIndex;
-      end;
-    end;
-    if (FNoteBook.HandleAllocated)
-    and (TCustomPage(fPageList[Index]).HandleAllocated)
-    then begin
-      TWSCustomNotebookClass(FNotebook.WidgetSetClass).RemovePage(FNotebook, Index);
-    end;
-    fPageList.Delete(Index);
-    APage.Parent:=nil;
-    if not (csLoading in fNoteBook.ComponentState) then begin
-      if NewPageIndex>=Index then
-        dec(NewPageIndex);
-      if (NewPageIndex>=0) and (fPageList.Count>0) then
-        fNoteBook.PageIndex:=NewPageIndex;
-    end;
-  end;
-  {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TNBPages.RemovePage END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
-  {$ENDIF}
-end;
-
 {------------------------------------------------------------------------------
   TNBPages Clear
  ------------------------------------------------------------------------------}
@@ -162,64 +111,28 @@ end;
  ------------------------------------------------------------------------------}
 procedure TNBPages.Insert(Index: Integer; const S: String);
 var
-  tmpPage: TCustomPage;
+  NewPage: TCustomPage;
   NewOwner: TComponent;
 begin
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TNBPages.Insert A ',fNoteBook.Name,' Index=',Index,' S="',S,'"');
+  DebugLn('TNBPages.Insert A ',FNoteBook.Name,' Index=',Index,' S="',S,'"');
   {$ENDIF}
-  NewOwner:=fNotebook.Owner;
+  NewOwner:=FNotebook.Owner;
   if NewOwner=nil then
-    NewOwner:=fNotebook;
-  tmpPage := fNotebook.PageClass.Create(NewOwner);
-  with tmpPage do
+    NewOwner:=FNotebook;
+  NewPage := FNotebook.PageClass.Create(NewOwner);
+  with NewPage do
   begin
     Caption := S;
     Visible := true;
   end;
 
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TNBPages.Insert B ',fNoteBook.Name,' Index=',Index,' S="',S,'"');
+  DebugLn('TNBPages.Insert B ',FNotebook;.Name,' Index=',Index,' S="',S,'"');
   {$ENDIF}
-  InsertPage(Index,tmpPage);
+  FNoteBook.InsertPage(NewPage,Index);
   {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TNBPages.Insert END ',fNoteBook.Name,' Index=',Index,' S="',S,'"');
-  {$ENDIF}
-end;
-
-{------------------------------------------------------------------------------
-  TNBPages InsertPage
- ------------------------------------------------------------------------------}
-procedure TNBPages.InsertPage(Index:integer; APage: TCustomPage);
-var
-  NewZPosition: integer;
-begin
-  {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TNBPages.InsertPage A ',fNoteBook.Name,' Index=',Index,' Name=',APage.Name,' Caption=',APage.Caption);
-  {$ENDIF}
-  if Index<fPageList.Count then
-    NewZPosition:=fNoteBook.GetControlIndex(TCustomPage(fPageList[Index]))
-  else
-    NewZPosition:=-1;
-  fPageList.Insert(Index,APage);
-  APage.Parent := fNotebook;
-  if NewZPosition>=0 then
-    fNoteBook.SetControlIndex(APage,NewZPosition);
-  APage.Visible:=true;
-  fNoteBook.UpdateDesignerFlags(Index);
-
-  if FNoteBook.HandleAllocated
-  and (not (csLoading in FNoteBook.ComponentState))
-  then begin
-    TWSCustomNotebookClass(FNotebook.WidgetSetClass).AddPage(FNotebook, APage, Index);
-    Include(APage.FFlags, pfAdded);
-    if fNoteBook.PageIndex = Index then
-      fNoteBook.DoSendPageIndex
-    else
-      fNoteBook.PageIndex := Index;
-  end;
-  {$IFDEF NOTEBOOK_DEBUG}
-  DebugLn('TNBPages.InsertPage END ',fNoteBook.Name,' Index=',Index,' Name=',APage.Name,' Caption=',APage.Caption);
+  DebugLn('TNBPages.Insert END ',FNotebook;.Name,' Index=',Index,' S="',S,'"');
   {$ENDIF}
 end;
 
@@ -359,10 +272,8 @@ end;
 destructor TCustomNotebook.Destroy;
 begin
   Pages.Clear;
-  fAccess.Free;
-  fAccess:=nil;
-  fPageList.Free;
-  fPageList:=nil;
+  FreeAndNil(FAccess);
+  FreeAndNil(FPageList);
   inherited Destroy;
 end;
 
@@ -527,6 +438,40 @@ begin
   Result := fPageIndex;
 end;
 
+procedure TCustomNotebook.InsertPage(APage: TCustomPage; Index: Integer);
+var
+  NewZPosition: integer;
+begin
+  {$IFDEF NOTEBOOK_DEBUG}
+  DebugLn('TCustomNotebook.InsertPage A ',Name,' Index=',Index,' Name=',
+    APage.Name,' Caption=',APage.Caption);
+  {$ENDIF}
+  if Index<FPageList.Count then
+    NewZPosition:=GetControlIndex(TCustomPage(fPageList[Index]))
+  else
+    NewZPosition:=-1;
+  FPageList.Insert(Index,APage);
+  APage.Parent := fNotebook;
+  if NewZPosition>=0 then
+    SetControlIndex(APage,NewZPosition);
+  APage.Visible:=true;
+
+  UpdateDesignerFlags(Index);
+
+  if HandleAllocated and (not (csLoading in ComponentState)) then begin
+    TWSCustomNotebookClass(WidgetSetClass).AddPage(Self, APage, Index);
+    Include(APage.FFlags, pfAdded);
+    if PageIndex = Index then
+      DoSendPageIndex
+    else
+      PageIndex := Index;
+  end;
+  {$IFDEF NOTEBOOK_DEBUG}
+  DebugLn('TCustomNotebook.InsertPage END ',Name,' Index=',
+    Index,' Name=',APage.Name,' Caption=',APage.Caption);
+  {$ENDIF}
+end;
+
 {------------------------------------------------------------------------------
   TCustomNotebook MoveTab
  ------------------------------------------------------------------------------}
@@ -537,6 +482,56 @@ begin
   end
   else ; //raise exception?
 end;
+
+procedure TCustomNotebook.RemovePage(Index: Integer);
+var
+  NewPageIndex: integer;
+  APage: TCustomPage;
+begin
+  // Make sure Index is in the range of valid pages to delete
+  {$IFDEF NOTEBOOK_DEBUG}
+  DebugLn('TCustomNotebook.RemovePage A ',Name,' Index=',Index,
+    ' FPageList.Count=',FPageList.Count,' PageIndex=',PageIndex);
+  {$ENDIF}
+  if (Index >= 0) and
+     (Index < FPageList.Count) then
+  begin
+    APage:=TCustomPage(fPageList[Index]);
+    NewPageIndex:=PageIndex;
+    if not (csLoading in ComponentState) then begin
+      // If that page is showing, then show the next page before deleting it
+      if (Index = PageIndex) then begin
+        if NewPageIndex<FPageList.Count-1 then
+          // switch current page to next (right) page
+          inc(NewPageIndex)
+        else if FPageList.Count>0 then
+          // switch to previous (left) page
+          dec(NewPageIndex)
+        else
+          // deleting last page
+          NewPageIndex:=-1;
+
+        if NewPageIndex>=0 then
+          PageIndex:=NewPageIndex;
+      end;
+    end;
+    if (HandleAllocated) and (APage.HandleAllocated) then begin
+      TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, Index);
+    end;
+    FPageList.Delete(Index);
+    APage.Parent:=nil;
+    if not (csLoading in ComponentState) then begin
+      if NewPageIndex>=Index then
+        dec(NewPageIndex);
+      if (NewPageIndex>=0) and (FPageList.Count>0) then
+        PageIndex:=NewPageIndex;
+    end;
+  end;
+  {$IFDEF NOTEBOOK_DEBUG}
+  DebugLn('TCustomNotebook.RemovePage END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
+  {$ENDIF}
+end;
+
 {------------------------------------------------------------------------------
   function TCustomNotebook.IsStoredActivePage: boolean;
  ------------------------------------------------------------------------------}
@@ -793,6 +788,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.60  2004/09/23 14:54:55  vincents
+  moved widgetset related code from TNBPages to TCustomNotebook
+
   Revision 1.59  2004/09/15 17:21:22  micha
   convert LM_GETITEMINDEX and LM_SETITEMINDEX messages to interface methods
 
