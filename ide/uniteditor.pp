@@ -41,9 +41,6 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  {$IFDEF USE_UTF8BIDI_LCL}
-  utf8bidi,
-  {$ENDIF}
   Classes, SysUtils, Controls, LCLProc, LCLType, LResources, LCLIntf, FileCtrl,
   Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
   Extctrls, Menus,
