@@ -69,9 +69,43 @@ Begin
   inherited Click;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TButton.CMMouseEnter
+  Params:  None
+  Returns: Nothing
+
+  Handles the event when the button is entered
+ ------------------------------------------------------------------------------}
+procedure TButton.CMMouseEnter(var Message: TMessage); 
+begin 
+  Assert(False,'Trace:[TButton.CMMouseEnter]');
+  inherited CMMouseEnter(Message);
+  If assigned(FOnEnter) then
+    FOnEnter(Self);
+end; 
+
+{------------------------------------------------------------------------------
+  Method:  TButton.CMMouseLeave
+  Params:  None
+  Returns: Nothing
+
+  Handles the event when the button Leaves
+ ------------------------------------------------------------------------------}
+procedure TButton.CMMouseLeave(var Message: TMessage); 
+begin 
+  Assert(False,'Trace:[TButton.CMMouseLeave]');
+  inherited CMMouseLeave(Message);
+  If assigned(FOnLeave) then
+    FOnLeave(Self);
+end; 
+
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/07/16 12:37:52  lazarus
+   Added OnMouseEnter, OnMouseLeave property
+   (code from christer, added by stoppok)
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 
