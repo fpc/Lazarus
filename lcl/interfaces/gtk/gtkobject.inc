@@ -70,7 +70,7 @@ begin
   // Initialize Stringlist for holding styles
   Styles := TStringlist.Create;
 
-  gtk_key_snooper_install(@GTKKeySnooper, @FKeyStateList);
+  gtk_key_snooper_install(@GTKKeySnooper, FKeyStateList);
 
   // Init tooltips
   FGTKToolTips := gtk_tooltips_new;
@@ -7244,6 +7244,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.358  2003/04/26 10:45:34  mattias
+  fixed right control release
+
   Revision 1.357  2003/04/26 07:34:55  mattias
   implemented custom package initialization
 
