@@ -37,8 +37,8 @@ interface
 
 uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
-  Dialogs, ControlSelection, CustomFormEditor, FormEditor, UnitEditor, CompReg,
-  Menus, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts,
+  Dialogs, ControlSelection, CustomFormEditor, UnitEditor, CompReg, Menus,
+  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts,
   DesignerProcs, PropEdits, ComponentEditors;
 
 type
@@ -48,7 +48,7 @@ type
     var RegisteredComponent: TRegisteredComponent) of object;
   TOnSetDesigning = procedure(Sender: TObject; Component: TComponent;
     Value: boolean) of object;
-  TOnAddComponent = procedure(Sender: TObject; Component: TComponent;
+  TOnComponentAdded = procedure(Sender: TObject; Component: TComponent;
     ComponentClass: TRegisteredComponent) of object;
   TOnRemoveComponent = procedure(Sender: TObject; Component: TComponent)
     of object;
@@ -64,11 +64,11 @@ type
   TDesigner = class(TComponentEditorDesigner)
   private
     FCustomForm: TCustomForm;
-    FFormEditor : TFormEditor;
-    FSourceEditor : TSourceEditor;
+    FTheFormEditor: TCustomFormEditor;
+    FSourceEditor: TSourceEditor;
     FFlags: TDesignerFlags;
     FGridColor: TColor;
-    FOnAddComponent: TOnAddComponent;
+    FOnComponentAdded: TOnComponentAdded;
     FOnComponentListChanged: TNotifyEvent;
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
     FOnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas;
@@ -127,8 +127,8 @@ type
     Procedure KeyUp(Sender: TControl; TheMessage:TLMKEY);
 
     procedure DoDeleteSelectedComponents;
+    //procedure DoCreateComponent(AComponent);
     function GetSelectedComponentClass: TRegisteredComponent;
-    Procedure RemoveControl(AComponent: TComponent);
     Procedure NudgeControl(DiffX, DiffY: Integer);
     Procedure NudgeSize(DiffX, DiffY: Integer);
 
@@ -156,7 +156,8 @@ type
     Procedure SelectOnlyThisComponent(AComponent:TComponent);
     function InvokeComponentEditor(AComponent: TComponent;
       MenuIndex: integer): boolean;
-    
+    Procedure RemoveComponent(AComponent: TComponent);
+
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
     function GetDesignedComponent(AComponent: TComponent): TComponent;
@@ -170,6 +171,7 @@ type
        Operation: TOperation); override;
     procedure ValidateRename(AComponent: TComponent;
        const CurName, NewName: string); override;
+    function CreateUniqueComponentName(const AClassName: string): string; override;
 
     procedure PaintGrid; override;
     procedure PaintClientGrid(AWinControl: TWinControl;
@@ -178,15 +180,15 @@ type
 
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property Form: TCustomForm read FCustomForm write FCustomForm;
-    property FormEditor: TFormEditor read FFormEditor write FFormEditor;
+    property TheFormEditor: TCustomFormEditor read FTheFormEditor write FTheFormEditor;
     property GridSizeX: integer read GetGridSizeX write SetGridSizeX;
     property GridSizeY: integer read GetGridSizeY write SetGridSizeY;
     property GridColor: TColor read GetGridColor write SetGridColor;
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property OnActivated: TNotifyEvent
        read FOnActivated write FOnActivated;
-    property OnAddComponent: TOnAddComponent
-       read FOnAddComponent write FOnAddComponent;
+    property OnComponentAdded: TOnComponentAdded
+       read FOnComponentAdded write FOnComponentAdded;
     property OnComponentListChanged: TNotifyEvent
        read FOnComponentListChanged write FOnComponentListChanged;
     property OnGetSelectedComponentClass: TOnGetSelectedComponentClass
@@ -259,7 +261,7 @@ Begin
   Inherited Destroy;
 end;
 
-Procedure TDesigner.RemoveControl(AComponent :TComponent);
+Procedure TDesigner.RemoveComponent(AComponent :TComponent);
 var
   i: integer;
   AWinControl: TWinControl;
@@ -276,7 +278,7 @@ Begin
       while (i>=0) do begin
         ChildControl:=AWinControl.Controls[i];
         if ChildControl.Owner=Form then begin
-          RemoveControl(ChildControl);
+          RemoveComponent(ChildControl);
           // the component list of the form has changed
           // -> restart the search
           i:=AWinControl.ControlCount-1;
@@ -295,7 +297,7 @@ Begin
   {$ENDIF}
   if not (AComponent is TControl) then
     Form.Invalidate;
-  FFormEditor.DeleteControl(AComponent);
+  TheFormEditor.DeleteControl(AComponent);
 end;
 
 Procedure TDesigner.NudgeControl(DiffX, DiffY : Integer);
@@ -318,10 +320,7 @@ end;
 
 procedure TDesigner.SelectOnlyThisComponent(AComponent:TComponent);
 begin
-  ControlSelection.BeginUpdate;
-  ControlSelection.Clear;
-  ControlSelection.Add(TControl(AComponent));
-  ControlSelection.EndUpdate;
+  ControlSelection.AssignComponent(AComponent);
 end;
 
 function TDesigner.InvokeComponentEditor(AComponent: TComponent;
@@ -331,7 +330,7 @@ var
 begin
   Result:=false;
   writeln('TDesigner.InvokeComponentEditor A ',AComponent.Name,':',AComponent.ClassName);
-  CompEditor:=FormEditor1.GetComponentEditor(AComponent);
+  CompEditor:=TheFormEditor.GetComponentEditor(AComponent);
   if CompEditor=nil then begin
     writeln('TDesigner.InvokeComponentEditor',
       ' WARNING: no component editor found for ',
@@ -623,7 +622,7 @@ var
     do begin
       NewParent:=NewParent.Parent;
     end;
-    ParentCI:=TComponentInterface(FFormEditor.FindComponent(NewParent));
+    ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
     if Assigned(ParentCI) then begin
       ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
       NewLeft:=Min(MouseDownPos.X,MouseUpPos.X)-ParentClientOrigin.X;
@@ -636,15 +635,15 @@ var
         NewHeight:=0;
       end;
 
-      NewCI := TComponentInterface(FFormEditor.CreateComponent(
+      NewCI := TComponentInterface(TheFormEditor.CreateComponent(
          ParentCI,SelectedCompClass.ComponentClass
         ,NewLeft,NewTop,NewWidth,NewHeight));
       if NewCI.Component is TControl then
         TControl(NewCI.Component).Visible:=true;
       if Assigned(FOnSetDesigning) then
         FOnSetDesigning(Self,NewCI.Component,True);
-      if Assigned(FOnAddComponent) then
-        FOnAddComponent(Self,NewCI.Component,SelectedCompClass);
+      if Assigned(FOnComponentAdded) then
+        FOnComponentAdded(Self,NewCI.Component,SelectedCompClass);
 
       SelectOnlyThisComponent(TComponent(NewCI.Component));
       if not (ssShift in Shift) then
@@ -924,7 +923,7 @@ begin
     Writeln('TDesigner: Removing control: ',
       AComponent.Name,':',AComponent.ClassName);
     {$ENDIF}
-    RemoveControl(AComponent);
+    RemoveComponent(AComponent);
   End;
   SelectOnlythisComponent(FCustomForm);
   ControlSelection.EndUpdate;
@@ -965,6 +964,7 @@ end;
 procedure TDesigner.Modified;
 Begin
   ControlSelection.SaveBounds;
+  Form.Invalidate;
   if Assigned(FOnModified) then FOnModified(Self);
 end;
 
@@ -1072,6 +1072,11 @@ Begin
     writeln('WARNING: TDesigner.ValidateRename: OldComponentName="',CurName,'"');
   if Assigned(OnRenameComponent) then
     OnRenameComponent(Self,AComponent,NewName);
+end;
+
+function TDesigner.CreateUniqueComponentName(const AClassName: string): string;
+begin
+  Result:=TheFormEditor.CreateUniqueComponentName(AClassName,Form);
 end;
 
 procedure TDesigner.OnComponentEditorVerbMenuItemClick(Sender: TObject);
@@ -1240,7 +1245,7 @@ function TDesigner.GetComponentEditorForSelection: TBaseComponentEditor;
 begin
   Result:=nil;
   if ControlSelection.Count<>1 then exit;
-  Result:=FormEditor1.GetComponentEditor(ControlSelection[0].Component);
+  Result:=TheFormEditor.GetComponentEditor(ControlSelection[0].Component);
 end;
 
 procedure TDesigner.AddComponentEditorMenuItems(
@@ -1523,7 +1528,7 @@ end;
 
 function TDesigner.GetPropertyEditorHook: TPropertyEditorHook;
 begin
-  Result:=FormEditor.PropertyEditorHook;
+  Result:=TheFormEditor.PropertyEditorHook;
 end;
 
 
