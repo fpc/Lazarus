@@ -1523,6 +1523,16 @@ var
     end;
   end;
   
+  procedure CacheResult(Found: boolean);
+  begin
+    if Found and (not (fdfDoNotCache in Params.NewFlags))
+    and (FirstSearchedNode<>nil) then begin
+      // cache result
+      AddResultToNodeCaches(FirstSearchedNode,ContextNode,
+        fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
+    end;
+  end;
+
   function CheckResult(NewResult, CallOnIdentifierFound: boolean): boolean;
   // returns: true if ok to exit
   //          false if search should continue
@@ -1550,6 +1560,7 @@ var
     {$ENDIF}
     if NewResult then begin
       // identifier found
+      CacheResult(true);
       if CallOnIdentifierFound then begin
         {
         write('[TFindDeclarationTool.FindIdentifierInContext] CallOnIdentifierFound Ident=',
@@ -1827,16 +1838,6 @@ var
     Result:=true;
   end;
   
-  procedure CacheResult(Found: boolean);
-  begin
-    if Found and (not (fdfDoNotCache in Params.NewFlags))
-    and (FirstSearchedNode<>nil) then begin
-      // cache result
-      AddResultToNodeCaches(FirstSearchedNode,ContextNode,
-        fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
-    end;
-  end;
-
 begin
   Result:=false;
   InitNodesAndCacheAccess;
@@ -1970,18 +1971,19 @@ begin
     until ContextNode=nil;
     
   except
-    on E: ECodeToolError do begin
+    {on E: ECodeToolError do begin
       CacheResult(Result);
       exit;
     end;
     on E: ELinkScannerError do begin
       CacheResult(Result);
       exit;
-    end;
-    
+    end;}
+
     // unexpected exception
     on E: Exception do begin
-      writeln('Unexpected Exception during find declaration: ',E.Message);
+      writeln('*** Unexpected Exception during find declaration: ',
+        E.ClassName,': ',E.Message);
       writeln('  MainFilename=',MainFilename);
       raise;
     end;
