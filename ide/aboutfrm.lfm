@@ -1,4 +1,4 @@
-object About_frm: TAboutForm
+object AboutForm: TAboutForm
   CAPTION = 'About Lazarus'
   COLOR = -2147483633
   CLIENTHEIGHT = 245
@@ -9,6 +9,7 @@ object About_frm: TAboutForm
   TOP = 389
   WIDTH = 577
   object Memo1: TMEMO
+    COLOR = -2147483643
     FONT.CHARSET = 1
     FONT.COLOR = -2147483640
     FONT.NAME = 'default'
@@ -47,6 +48,7 @@ object About_frm: TAboutForm
   object Label1: TLABEL
     ALIGNMENT = tacenter
     CAPTION = 'Version #:'
+    COLOR = -2147483643
     FONT.CHARSET = 1
     FONT.COLOR = -2147483640
     FONT.NAME = 'default'
