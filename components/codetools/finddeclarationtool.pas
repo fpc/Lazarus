@@ -3195,8 +3195,9 @@ var
   OldFlags: TFindDeclarationFlags;
 begin
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.FindExpressionResultType] Start ',
-  '"',copy(Src,StartPos,EndPos-StartPos),'" Context=',Params.ContextNode.DescAsString);
+  writeln('[TFindDeclarationTool.FindExpressionResultType] Start',
+  ' Pos=',StartPos,'-',EndPos,
+  '="',copy(Src,StartPos,EndPos-StartPos),'" Context=',Params.ContextNode.DescAsString);
   {$ENDIF}
   Result:=CleanExpressionType;
   OldFlags:=Params.Flags;
@@ -4417,8 +4418,9 @@ begin
   repeat
     ReadNextAtom;
     // read till statement end
-    if (CurPos.Flag in [cafSemicolon,cafComma,cafEnd,cafNone,
-      cafRoundBracketClose,cafEdgedBracketClose])
+    if (CurPos.StartPos>SrcLen)
+    or (CurPos.Flag in [cafSemicolon,cafComma,cafEnd,
+                        cafRoundBracketClose,cafEdgedBracketClose])
     or (AtomIsKeyWord
       and not IsKeyWordInConstAllowed.DoItUpperCase(UpperSrc,
                                  CurPos.StartPos,CurPos.EndPos-CurPos.StartPos))
@@ -6130,7 +6132,7 @@ begin
   Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                  fdfTopLvlResolving,fdfFunctionResult];
   ExprType:=FindExpressionResultType(Params,TermAtom.StartPos,TermAtom.EndPos);
-  {$IFDEF CTDEBUG}
+  {$IFDEF ShowExprEval}
   writeln('TFindDeclarationTool.FindTermTypeAsString ExprTypeToString=',
     ExprTypeToString(ExprType));
   {$ENDIF}

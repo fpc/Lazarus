@@ -814,6 +814,7 @@ procedure TCustomImageList.ReadData(AStream: TStream);
     BeginUpdate;
     IntfImage.GetRawImage(RawImage);
     FillChar(SubRawImage,SizeOf(SubRawImage),0);
+    //NewCount:=2;
     try
       for Row := 0 to (IntfImage.Height div Height) - 1 do
       begin
@@ -1181,6 +1182,9 @@ end;
 {
 
   $Log$
+  Revision 1.35  2004/03/30 17:45:31  mattias
+  fixed FindEndOfExpression for bogus statements
+
   Revision 1.34  2004/03/29 17:21:52  mattias
   actionslist editor improved  from Radek
 

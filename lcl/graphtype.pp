@@ -534,8 +534,8 @@ begin
                           SrcLineEndPosition);
     GetRawImageXYPosition(DestRawImageDesc,DestLineStarts,0,y,
                           DestLineStartPosition);
-    //writeln('ExtractRawImageDataRect A y=',y,' SrcByte=',SrcLineStartPosition.Byte,' SrcBit=',SrcLineStartPosition.Bit,
-    //' DestByte=',DestLineStartPosition.Byte,' DestBit=',DestLineStartPosition.Bit);
+    writeln('ExtractRawImageDataRect A y=',y,' SrcByte=',SrcLineStartPosition.Byte,' SrcBit=',SrcLineStartPosition.Bit,
+    ' DestByte=',DestLineStartPosition.Byte,' DestBit=',DestLineStartPosition.Bit);
     if (SrcLineStartPosition.Bit=0)
     and (DestLineStartPosition.Bit=0) then begin
       // copy bytes
@@ -549,7 +549,7 @@ begin
         ByteCount);
     end else if (DestLineStartPosition.Bit=0) then begin
       // copy and move bits
-      ByteCount:=(SrcWidth*BitsPerPixel+7) shr 3;
+      ByteCount:=((SrcWidth*BitsPerPixel)+7) shr 3;
       Shift:=8-SrcLineStartPosition.Bit;
       SrcPos:=PByte(Cardinal(SrcData)+SrcLineStartPosition.Byte);
       DestPos:=PByte(Cardinal(DestData)+DestLineStartPosition.Byte);
@@ -767,6 +767,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2004/03/30 17:45:31  mattias
+  fixed FindEndOfExpression for bogus statements
+
   Revision 1.28  2004/03/28 12:49:22  mattias
   implemented mask merge and extraction for raw images
 

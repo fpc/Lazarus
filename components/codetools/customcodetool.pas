@@ -929,7 +929,9 @@ begin
         while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]]) do
           inc(CurPos.EndPos);
         if (CurPos.EndPos<SrcLen)
-        and (Src[CurPos.EndPos]='.') and (Src[CurPos.EndPos+1]<>'.') then begin
+        and (Src[CurPos.EndPos]='.')
+        and (IsAfterFloatPointChar[Src[CurPos.EndPos+1]])
+        then begin
           // real type number
           inc(CurPos.EndPos);
           while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]])

@@ -454,7 +454,7 @@ var
 
   IsSpaceChar, IsLineEndChar, IsWordChar, IsIdentStartChar, IsIdentChar,
   IsNumberChar, IsCommentStartChar, IsCommentEndChar, IsHexNumberChar,
-  IsEqualOperatorStartChar:
+  IsEqualOperatorStartChar, IsAfterFloatPointChar:
     array[char] of boolean;
     
   PSourceLinkMemManager: TPSourceLinkMemManager;
@@ -3117,6 +3117,7 @@ begin
     IsHexNumberChar[c]:=c in ['0'..'9','a'..'f','A'..'F'];
     IsEqualOperatorStartChar[c]:=c in [':','+','-','/','*','<','>'];
     IsWordChar[c]:=c in ['a'..'z','A'..'Z'];
+    IsAfterFloatPointChar[c]:=c in ['0'..'9','e','E'];
   end;
   for CompMode:=Low(TCompilerMode) to High(TCompilerMode) do
     CompilerModeVars[CompMode]:='FPC_'+CompilerModeNames[CompMode];

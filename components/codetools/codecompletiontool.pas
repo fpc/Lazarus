@@ -625,7 +625,7 @@ begin
   TermAtom.StartPos:=CurPos.StartPos;
   TermAtom.EndPos:=FindEndOfExpression(TermAtom.StartPos);
 
-  Result:=true;
+  Result:=TermAtom.EndPos>TermAtom.StartPos;
 end;
 
 function TCodeCompletionCodeTool.AddLocalVariable(
@@ -755,7 +755,8 @@ begin
     end;
 
     {$IFDEF CTDEBUG}
-    writeln('  CompleteLocalVariableAssignment: Find type of term... ');
+    writeln('  CompleteLocalVariableAssignment: Find type of term ...',
+    ' Term="',copy(Src,TermAtom.StartPos,TermAtom.EndPos-TermAtom.StartPos),'"');
     {$ENDIF}
     // find type of term
     NewType:=FindTermTypeAsString(TermAtom,CursorNode,Params);

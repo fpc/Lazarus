@@ -35,8 +35,8 @@
          need sort category to listbox
        - sometimes click in listbox causes selecting last item
          (it's an strange gtk error. The LCL and the gtk intf do not send any
-          change. Either it is a bug in the gtk1 or we are doing something
-          wrong in the handlers.)
+          change to the gtk. Either it is a bug in the gtk1 or we are doing
+          something wrong in the handlers.)
 }
 
 
