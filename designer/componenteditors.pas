@@ -514,7 +514,6 @@ begin
   if (OldIndex>=0) and (OldIndex<Notebook.PageCount) then begin
     if not GetHook(Hook) then exit;
     Hook.DeleteComponent(TComponent(NoteBook.PageList[OldIndex]));
-    GetDesigner.Modified;
   end;
 end;
 
@@ -566,7 +565,7 @@ begin
   case Index of
     nbvAddPage:       DoAddPage;
     nbvInsertPage:    DoInsertPage;
-    nbvDeletePage:    DoDeletePage;
+    nbvDeletePage:    DoDeletePage; // beware: this can free the editor itself
     nbvMovePageLeft:  DoMoveActivePageLeft;
     nbvMovePageRight: DoMoveActivePageRight;
   end;
