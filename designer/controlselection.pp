@@ -113,6 +113,7 @@ type
     FIsTComponent: boolean;
     FIsTControl: boolean;
     FIsTWinControl: boolean;
+    FIsVisible: boolean;
     FMarkerPaintedBounds: TRect;
     FOldFormRelativeLeftTop: TPoint;
     FOldHeight: integer;
@@ -159,6 +160,7 @@ type
       read FOldFormRelativeLeftTop write FOldFormRelativeLeftTop;
     property Flags: TSelectedControlFlags read FFlags write FFlags;
     property UseCache: boolean read FUseCache write SetUseCache;
+    property IsVisible: boolean read FIsVisible;
     property IsTComponent: boolean read FIsTComponent;
     property IsTControl: boolean read FIsTControl;
     property IsTWinControl: boolean read FIsTWinControl;
@@ -548,6 +550,8 @@ begin
   FIsNonVisualComponent:=FIsTComponent and (not FIsTControl);
   if FIsTComponent then
     FDesignerForm:=GetDesignerForm(TComponent(FPersistent));
+  FIsVisible:=FIsTComponent
+              and (not ComponentIsInvisible(TComponent(APersistent)));
 end;
 
 destructor TSelectedControl.Destroy;
@@ -2056,7 +2060,8 @@ var
   end;
 
 begin
-  if (Count=0) or (FForm=nil) or LookupRootSelected then exit;
+  if (Count=0) or (FForm=nil) or LookupRootSelected
+  or OnlyInvisiblePersistensSelected then exit;
 
   Diff:=DC.FormOrigin;
 
@@ -2117,7 +2122,7 @@ begin
     if not Items[i].IsTComponent then continue;
     AComponent:=TComponent(Items[i].Persistent);
     if (AComponent=FLookupRoot)
-    or ComponentIsInvisible(AComponent) then continue;
+    or (not Items[i].IsVisible) then continue;
     DoDrawMarker(i,DC);
   end;
 end;
@@ -2171,8 +2176,7 @@ begin
   or (AComponent=FLookupRoot) then exit;
   i:=IndexOf(AComponent);
   if i<0 then exit;
-  if ComponentIsInvisible(AComponent) then exit;
-  
+
   DoDrawMarker(i,DC);
 end;
 
@@ -2404,8 +2408,7 @@ begin
   if cssOnlyInvisibleNeedsUpdate in FStates then begin
     Result:=true;
     for i:=0 to FControls.Count-1 do begin
-      if (not Items[i].IsTComponent)
-      or (not ComponentIsInvisible(TComponent(Items[i].Persistent))) then begin
+      if Items[i].IsVisible then begin
         Result:=false;
         break;
       end;

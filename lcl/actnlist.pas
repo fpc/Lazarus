@@ -185,25 +185,26 @@ type
     destructor Destroy; override;
     function DoHint(var HintStr: string): Boolean; dynamic;
     function Execute: Boolean; override;
+  public
     property AutoCheck: Boolean
-      read FAutoCheck write  SetAutoCheck default False;
+                              read FAutoCheck write  SetAutoCheck default False;
     property Caption: string read FCaption write SetCaption;
     property Checked: Boolean read FChecked write SetChecked default False;
-    property DisableIfNoHandler: Boolean
-      read FDisableIfNoHandler write FDisableIfNoHandler default False;
+    property DisableIfNoHandler: Boolean read FDisableIfNoHandler
+                                        write FDisableIfNoHandler default False;
     property Enabled: Boolean read FEnabled write SetEnabled default True;
     property GroupIndex: Integer read FGroupIndex write SetGroupIndex default 0;
     property HelpContext: THelpContext
-      read FHelpContext write SetHelpContext default 0;
+                               read FHelpContext write SetHelpContext default 0;
     property HelpKeyword: string read FHelpKeyword write SetHelpKeyword;
     property HelpType: THelpType
-      read FHelpType write SetHelpType default htContext;
+                             read FHelpType write SetHelpType default htContext;
     property Hint: string read FHint write SetHint;
     property ImageIndex: TImageIndex
-      read FImageIndex write SetImageIndex default -1;
+                                read FImageIndex write SetImageIndex default -1;
     property ShortCut: TShortCut read FShortCut write SetShortCut default 0;
     property SecondaryShortCuts: TShortCutList read GetSecondaryShortCuts
-      write SetSecondaryShortCuts stored IsSecondaryShortCutsStored;
+                  write SetSecondaryShortCuts stored IsSecondaryShortCutsStored;
     property Visible: Boolean read FVisible write SetVisible default True;
     property OnHint: THintEvent read FOnHint write FOnHint;
   end;

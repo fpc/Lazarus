@@ -284,7 +284,7 @@ begin
     Invisible:=(csNoDesignVisible in AControl.ControlStyle)
   end else begin
     RegComp:=FindComponent(AComponent.ClassName);
-    Invisible:=(RegComp<>nil) and (RegComp.PageName='');
+    Invisible:=(RegComp=nil) or (RegComp.PageName='');
   end;
 end;
 

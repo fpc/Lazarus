@@ -22,6 +22,7 @@ begin
   FImageIndex := -1;
   FVisible := True;
   FSecondaryShortCuts := nil;
+  FHelpType := htContext;
 end;
 
 destructor TCustomAction.Destroy;
