@@ -4161,7 +4161,7 @@ begin
     Exclude(fStateFlags, sfScrollbarChanged);
     if fScrollBars <> ssNone then begin
       ScrollInfo.cbSize := SizeOf(ScrollInfo);
-      ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL;
+      ScrollInfo.fMask := SIF_ALL or SIF_DISABLENOSCROLL and not SIF_TRACKPOS;
       ScrollInfo.nMin := 1;
       ScrollInfo.nTrackPos := 0;
       if fScrollBars in [ssBoth, ssHorizontal] then begin
@@ -4174,10 +4174,10 @@ begin
 {end}                                                                           //mh 2000-10-19
         ScrollInfo.nPage := CharsInWindow;
         ScrollInfo.nPos := LeftChar;
-        SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
         {$IFDEF SYN_LAZARUS}
-        ShowScrollBar(Handle,SB_HORZ,True);
+        ShowScrollBar(Handle, SB_HORZ, True); 
         {$ENDIF}
+        SetScrollInfo(Handle, SB_HORZ, ScrollInfo, True);
         //writeln('>>>>>>>>>> [TCustomSynEdit.UpdateScrollbars] nMin=',ScrollInfo.nMin,
         //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
         //' nPos=',ScrollInfo.nPos,
@@ -4202,10 +4202,10 @@ begin
           ScrollInfo.nPage := MulDiv(MAX_SCROLL, LinesInWindow, nMaxScroll);
           ScrollInfo.nPos := MulDiv(MAX_SCROLL, TopLine, nMaxScroll);
         end;
-        SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
         {$IFDEF SYN_LAZARUS}
-        ShowScrollBar(Handle,SB_VERT,True);
+        ShowScrollBar(Handle, SB_VERT, True);
         {$ENDIF}
+        SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
       end;
     end;
   end;
