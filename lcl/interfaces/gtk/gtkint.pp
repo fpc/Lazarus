@@ -41,6 +41,7 @@ interface
   { $DEFINE VerboseSizeMsg}
   { $DEFINE VerboseGetClientRect}
 {$ENDIF}
+{ $DEFINE VerboseMouseBugfix}
 
 uses 
   InterfaceBase, gtk, gdk, glib, SysUtils, LMessages, Classes, Controls,
@@ -395,6 +396,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.53  2002/07/20 13:47:03  lazarus
+  MG: fixed eventmask for realized windows
+
   Revision 1.52  2002/06/26 15:11:09  lazarus
   MG: added new tool: Guess misplaced $IFDEF/$ENDIF
 
