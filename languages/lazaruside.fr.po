@@ -1,3 +1,13 @@
+msgid ""
+msgstr ""
+""
+"Last-Translator: \n"
+"PO-Revision-Date: 2003-02-17 23:16+0100\n"
+"Language-Team:  <fr@li.org>\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
 #: lazarusidestrconsts:uemaddwatchatcursor
 msgid "&Add Watch At Cursor"
 msgstr "&Ajouter un suivi sous le curseur"
@@ -432,7 +442,7 @@ msgstr "Compteur (.pp;1)"
 
 #: lazarusidestrconsts:dlgruberbandcreationcolor
 msgid "Creation"
-msgstr ""
+msgstr "Création"
 
 #: lazarusidestrconsts:lismenuinsertdatetime
 msgid "Current date and time"
@@ -760,7 +770,7 @@ msgstr "Notice GPL"
 
 #: lazarusidestrconsts:dlggrabbercolor
 msgid "Grabber color"
-msgstr ""
+msgstr "Couleur d'accroches"
 
 #: lazarusidestrconsts:dlgenvgrid
 msgid "Grid"
@@ -1080,7 +1090,7 @@ msgstr "Menu principal"
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String"
-msgstr ""
+msgstr "Construire une resource de chaines"
 
 #: lazarusidestrconsts:dlgmargingutter
 msgid "Margin and gutter"
@@ -1088,7 +1098,7 @@ msgstr "Marge et gouttière"
 
 #: lazarusidestrconsts:dlgmarkercolor
 msgid "Marker color"
-msgstr ""
+msgstr "Couleur de marqueur"
 
 #: lazarusidestrconsts:dlgmaxlinelength
 msgid "Max line length:"
@@ -1300,7 +1310,7 @@ msgstr "Pause"
 
 #: lazarusidestrconsts:dlgpersistentcaret
 msgid "Persistent Caret"
-msgstr ""
+msgstr "Curseur persistent"
 
 #: lazarusidestrconsts:lisplzcheckthecompilername
 msgid "Please check the compiler name"
@@ -1552,7 +1562,7 @@ msgstr "Sélectionner les fichiers fiches DELPHI (*.dfm)"
 
 #: lazarusidestrconsts:dlgrubberbandselectsgrandchilds
 msgid "Select grand childs"
-msgstr ""
+msgstr "Choisir les grands enfants"
 
 #: lazarusidestrconsts:lismenuselectline
 msgid "Select line"
@@ -1572,7 +1582,7 @@ msgstr "Sélection"
 
 #: lazarusidestrconsts:dlgruberbandselectioncolor
 msgid "Selection"
-msgstr ""
+msgstr "Sélectionner"
 
 #: lazarusidestrconsts:lisselectiontool
 msgid "Selection tool"

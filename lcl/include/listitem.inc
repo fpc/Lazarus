@@ -72,6 +72,11 @@ begin
   FOwner.ItemChanged(self);
 end;
 
+function TListItem.IsEqual(Item: TListItem): Boolean;
+begin
+  Result:=(Caption = Item.Caption) and (Data = Item.Data);
+end;
+
 {------------------------------------------------------------------------------}
 {   TListItem Destructor                                                       }
 {------------------------------------------------------------------------------}
@@ -116,6 +121,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2003/02/18 23:22:56  mattias
+  added listview items property editor
+
   Revision 1.12  2002/11/25 11:37:18  mattias
   applied patch from Vasily
 

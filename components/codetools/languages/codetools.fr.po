@@ -1,3 +1,13 @@
+msgid ""
+msgstr ""
+""
+"Last-Translator: \n"
+"PO-Revision-Date: 2003-02-17 23:19+0100\n"
+"Language-Team:  <fr@li.org>\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
 #: codetoolsstrconsts:ctsothercompilerdefines
 msgid "%s Compiler Defines"
 msgstr "options compilateur définies %s"
@@ -116,7 +126,7 @@ msgstr "classe sans nom"
 
 #: codetoolsstrconsts:ctscommentendnotfound
 msgid "Comment end not found"
-msgstr ""
+msgstr "Fin de commentaire non trouvé"
 
 #: codetoolsstrconsts:ctscompiler
 msgid "Compiler"
@@ -160,7 +170,7 @@ msgstr "OS source par défaut pour ppc386"
 
 #: codetoolsstrconsts:ctsdefaultppc386symbol
 msgid "Default ppc386 symbol"
-msgstr ""
+msgstr "Symbole par défaut de ppc386"
 
 #: codetoolsstrconsts:ctsdefaultppc386targetoperatingsystem
 msgid "Default ppc386 target Operating System"

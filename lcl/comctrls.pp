@@ -163,6 +163,7 @@ type
     function GetIndex : Integer;
   protected
     Procedure ItemChanged(sender : TObject);  //called by the onchange of the tstringlist in TListItem
+    function IsEqual(Item : TListItem) : Boolean;
   public
     constructor Create(AOwner : TListItems);
     destructor Destroy; override;
@@ -192,6 +193,11 @@ type
     function GetItem(const AIndex: Integer): TListItem;
     procedure SetITem(const AIndex: Integer; const AValue: TListItem);
     procedure ItemChanged(sender : TObject);  //called by TListItem in response to SubItems changing
+
+    procedure DefineProperties(Filer: TFiler); override;
+    procedure ReadData(Stream: TStream);
+    procedure WriteData(Stream: TStream);
+
   public
     function Add: TListItem;
     procedure Clear;
@@ -1713,6 +1719,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.63  2003/02/18 23:22:56  mattias
+  added listview items property editor
+
   Revision 1.62  2002/12/28 11:29:47  mattias
   xmlcfg deletion, focus fixes
 

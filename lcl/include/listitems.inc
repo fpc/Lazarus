@@ -142,9 +142,166 @@ begin
   FOwner.ItemChanged(Index);
 end;
 
+procedure TListItems.DefineProperties(Filer: TFiler);
+
+  function WriteItems: Boolean;
+  var
+    I: Integer;
+    Items: TListItems;
+  begin
+    Items := TListItems(Filer.Ancestor);
+    if not Assigned(Items) then
+      Result := Count > 0
+    else if (Items.Count <> Count) then
+             Result := True
+    else
+    begin
+      Result := False;
+      for I := 0 to Count - 1 do
+      begin
+        Result := not Item[I].IsEqual(Items[I]);
+        if Result then Break;
+      end
+    end;
+  end;
+
+begin
+  inherited DefineProperties(Filer);
+  Filer.DefineBinaryProperty('Data', @ReadData, @WriteData,WriteItems);
+end;
+
+type
+  PItemHeader = ^TItemHeader;
+  TItemHeader = packed record
+    Size, Count: Integer;
+    Items: record end;
+  end;
+  PItemInfo = ^TItemInfo;
+  TItemInfo = packed record
+    ImageIndex: Integer;
+    StateIndex: Integer;
+    OverlayIndex: Integer;
+    SubItemCount: Integer;
+    Data: Pointer;
+    Caption: string[255];
+  end;
+  ShortStr = string[255];
+  PShortStr = ^ShortStr;
+
+procedure TListItems.ReadData(Stream: TStream);
+var
+  I, J, Size, L, Len: Integer;
+  ItemHeader        : PItemHeader;
+  ItemInfo          : PItemInfo;
+  PStr              : PShortStr;
+  Flag              : Boolean;
+begin
+  Clear;
+  Flag:=False;
+  Stream.ReadBuffer(Size, SizeOf(Integer));
+  ItemHeader := AllocMem(Size);
+  Owner.BeginUpdate;
+  try
+    Stream.ReadBuffer(ItemHeader^.Count, Size - SizeOf(Integer));
+    ItemInfo := @ItemHeader^.Items;
+    PStr := nil;
+    for I := 0 to ItemHeader^.Count - 1 do
+    begin
+      with Add do
+      begin
+        Flag:=True;
+        Caption := ItemInfo^.Caption;
+        ImageIndex := ItemInfo^.ImageIndex;
+        Data := ItemInfo^.Data;
+        PStr := @ItemInfo^.Caption;
+        Inc(Integer(PStr), Length(PStr^) + 1);
+        Len := 0;
+        for J := 0 to ItemInfo^.SubItemCount - 1 do
+        begin
+          SubItems.Add(PStr^);
+          L := Length(PStr^);
+          Inc(Len, L + 1);
+          Inc(Integer(PStr), L + 1);
+        end;
+      end;
+      Inc(Integer(ItemInfo), SizeOf(TItemInfo)-255+Length(ItemInfo^.Caption)+Len);
+    end;
+  finally
+    FreeMem(ItemHeader, Size);
+    Owner.EndUpdate;
+
+    if Flag then
+       Owner.ItemAdded;
+  end;
+end;
+
+procedure TListItems.WriteData(Stream: TStream);
+var
+  I, J, Size, L, Len: Integer;
+  ItemHeader: PItemHeader;
+  ItemInfo: PItemInfo;
+  PStr: PShortStr;
+
+  function GetLength(const S: string): Integer;
+  begin
+    Result := Length(S);
+    if Result > 255 then Result := 255;
+  end;
+
+begin
+  Size := SizeOf(TItemHeader);
+  for I := 0 to Count - 1 do
+  begin
+    L := GetLength(Item[I].Caption) + 1;
+    for J := 0 to Item[I].SubItems.Count - 1 do
+    begin
+      Inc(L, GetLength(Item[I].SubItems[J]) + 1);
+      Inc(L, SizeOf(Integer));
+    end;
+    Inc(Size, SizeOf(TItemInfo) - 255 + L);
+  end;
+  ItemHeader := AllocMem(Size);
+  try
+    ItemHeader^.Size := Size;
+    ItemHeader^.Count := Count;
+    ItemInfo := @ItemHeader^.Items;
+    PStr := nil;
+    for I := 0 to Count - 1 do
+    begin
+      with Item[I] do
+      begin
+        ItemInfo^.Caption := Caption;
+        ItemInfo^.ImageIndex := ImageIndex;
+        ItemInfo^.OverlayIndex := -1 {OverlayIndex};
+        ItemInfo^.StateIndex := -1 {StateIndex};
+        ItemInfo^.Data := Data;
+        ItemInfo^.SubItemCount := SubItems.Count;
+        PStr := @ItemInfo^.Caption;
+        Inc(Integer(PStr), Length(ItemInfo^.Caption) + 1);
+        Len := 0;
+        for J := 0 to SubItems.Count - 1 do
+        begin
+          PStr^ := SubItems[J];
+          L := Length(PStr^);
+          Inc(Len, L + 1);
+          Inc(Integer(PStr), L + 1);
+        end;
+      end;
+      Inc(Integer(ItemInfo), SizeOf(TItemInfo) - 255 +
+        Length(ItemInfo^.Caption) + Len);
+    end;
+    Stream.WriteBuffer(ItemHeader^, Size);
+  finally
+    FreeMem(ItemHeader, Size);
+  end;
+end;
+
 { =============================================================================
 
   $Log$
+  Revision 1.16  2003/02/18 23:22:56  mattias
+  added listview items property editor
+
   Revision 1.15  2002/11/18 13:38:44  mattias
   fixed buffer overrun and added several checks
 
