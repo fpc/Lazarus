@@ -1080,6 +1080,10 @@ procedure Register;
 
 implementation
 
+uses
+  WSStdCtrls; // Widgetset uses circle is allowed
+
+
 type
   TMemoStrings = class(TStrings)
   private
@@ -1556,6 +1560,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.147  2004/06/10 22:07:58  vincents
+  listbox style changes are notified to the widgetset
+
   Revision 1.146  2004/05/30 14:02:30  mattias
   implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
 

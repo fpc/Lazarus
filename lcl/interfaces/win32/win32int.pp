@@ -208,7 +208,7 @@ Uses
 // Win32WSMenus,
 // Win32WSPairSplitter,
 // Win32WSSpin,
-// Win32WSStdCtrls,
+ Win32WSStdCtrls,
 // Win32WSToolwin,
 ////////////////////////////////////////////////////
   Buttons, Calendar, CListBox, Spin, CheckLst, WinExt, LclProc;
@@ -253,6 +253,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.83  2004/06/10 22:07:58  vincents
+  listbox style changes are notified to the widgetset
+
   Revision 1.82  2004/06/10 18:14:09  vincents
   converted win32proc.inc to unit
 

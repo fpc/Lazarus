@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  StdCtrls,
+  StdCtrls,
 ////////////////////////////////////////////////////
   WSStdCtrls, WSLCLClasses;
 
@@ -85,8 +85,9 @@ type
   private
   protected
   public
+    class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
   end;
-
+    
   { TWin32WSListBox }
 
   TWin32WSListBox = class(TWSListBox)
@@ -167,14 +168,6 @@ type
   public
   end;
 
-  { TWin32WSCheckBox }
-
-  TWin32WSCheckBox = class(TWSCheckBox)
-  private
-  protected
-  public
-  end;
-
   { TWin32WSToggleBox }
 
   TWin32WSToggleBox = class(TWSToggleBox)
@@ -210,6 +203,17 @@ type
 
 implementation
 
+uses
+  Win32Int, InterfaceBase;
+
+{ TWin32WSCustomListBox }
+
+procedure TWin32WSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
+begin
+  // The listbox styles can't be updated, so recreate the listbox
+  TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomListBox);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -223,7 +227,7 @@ initialization
 //  RegisterWSComponent(TGroupBox, TWin32WSGroupBox);
 //  RegisterWSComponent(TCustomComboBox, TWin32WSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TWin32WSComboBox);
-//  RegisterWSComponent(TCustomListBox, TWin32WSCustomListBox);
+  RegisterWSComponent(TCustomListBox, TWin32WSCustomListBox);
 //  RegisterWSComponent(TListBox, TWin32WSListBox);
 //  RegisterWSComponent(TCustomEdit, TWin32WSCustomEdit);
 //  RegisterWSComponent(TCustomMemo, TWin32WSCustomMemo);

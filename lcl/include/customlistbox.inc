@@ -302,6 +302,8 @@ procedure TCustomListBox.SetStyle(Val : TListBoxStyle);
 begin
   if Val <> FStyle then begin
     FStyle:= Val;
+    if HandleAllocated then
+      TWSCustomListBoxClass(WidgetSetClass).SetStyle(Self);
   end;
 end;
 

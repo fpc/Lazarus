@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  StdCtrls,
+  StdCtrls,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls;
 
@@ -77,8 +77,11 @@ type
   { TWSCustomListBox }
 
   TWSCustomListBox = class(TWSWinControl)
+  public
+    class procedure SetStyle(const ACustomListBox: TCustomListBox); virtual;
   end;
-
+  TWSCustomListBoxClass = class of TWSCustomListBox;
+  
   { TWSListBox }
 
   TWSListBox = class(TWSCustomListBox)
@@ -152,6 +155,12 @@ type
 
 implementation
 
+{ TWSCustomListBox }
+
+procedure TWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
+begin
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -163,7 +172,7 @@ initialization
 //  RegisterWSComponent(TGroupBox, TWSGroupBox);
 //  RegisterWSComponent(TCustomComboBox, TWSCustomComboBox);
 //  RegisterWSComponent(TComboBox, TWSComboBox);
-//  RegisterWSComponent(TCustomListBox, TWSCustomListBox);
+  RegisterWSComponent(TCustomListBox, TWSCustomListBox);
 //  RegisterWSComponent(TListBox, TWSListBox);
 //  RegisterWSComponent(TCustomEdit, TWSCustomEdit);
 //  RegisterWSComponent(TCustomMemo, TWSCustomMemo);
