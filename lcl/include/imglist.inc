@@ -800,7 +800,8 @@ procedure TCustomImageList.ReadData(AStream: TStream);
       AddDirect(bmp, nil);
     end;
   end;
-  
+
+  {$IFNDEF DisableFPImage}
   procedure CreateImagesFromRawImage(IntfImage: TLazIntfImage;
     NewCount: integer);
   var
@@ -875,11 +876,14 @@ procedure TCustomImageList.ReadData(AStream: TStream);
       MaskIntfImage.Free;
     end;
   end;
+  {$ENDIF}
   
 var
   Signature: array[0..1] of Char;
   StreamPos: TStreamSeekType;
+  {$IFNDEF DisableFPImage}
   HasMask: Boolean;
+  {$ENDIF}
   NewCount: Integer;
   Size: integer;
 begin
@@ -905,11 +909,13 @@ begin
     FHeight := AStream.ReadWord;
     //writeln('NewHeight=',FHeight);
     FBKColor := TColor(AStream.ReadDWord);
+    {$IFNDEF DisableFPImage}
     HasMask := (AStream.ReadWord and 1) = 1;
     AStream.ReadDWord; //Skip ?
     AStream.ReadDWord; //Skip ?
-    
+
     ReadDelphiImageAndMask(HasMask,NewCount);
+    {$ENDIF}
   end
   else begin
     // D2 has no signature, so restore original position
@@ -917,7 +923,9 @@ begin
     AStream.ReadBuffer(Size, SizeOf(Size));
     AStream.ReadBuffer(NewCount, SizeOf(NewCount));
 
-    ReadDelphiImageAndMask(HasMask,NewCount);
+    {$IFNDEF DisableFPImage}
+    ReadDelphiImageAndMask(false,NewCount);
+    {$ENDIF}
   end;
 end;
 
@@ -1174,6 +1182,9 @@ end;
 {
 
   $Log$
+  Revision 1.33  2004/03/28 12:57:03  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.32  2004/03/28 12:49:22  mattias
   implemented mask merge and extraction for raw images
 

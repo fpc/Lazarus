@@ -694,9 +694,9 @@ var
 
   procedure DoWriteOriginal;
   begin
-    DoWriteStreamSize(Stream,FImage.SaveStream.Size);
+    DoWriteStreamSize(Stream,longint(FImage.SaveStream.Size));
     FImage.SaveStream.Position:=0;
-    Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
+    Stream.CopyFrom(FImage.SaveStream,longint(FImage.SaveStream.Size));
   end;
 
   Procedure DoWriteSize(Header: TBitmapHeader);
@@ -791,7 +791,7 @@ var
 var
   Bits: PByte;
   Header: TBitmapHeader;
-  StreamSize: longint;
+  StreamSize: TStreamSeekType;
 {$ENDIF}
 begin
   {$IFNDEF DisableFPImage}
@@ -1173,6 +1173,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.81  2004/03/28 12:57:03  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.80  2004/03/28 12:49:22  mattias
   implemented mask merge and extraction for raw images
 
