@@ -57,7 +57,7 @@ interface
 uses
 {$IFDEF SYN_LAZARUS}
   {$IFDEF USE_UTF8BIDI_LCL}
-  utf8bidi,
+  FreeBIDI,utf8bidi,
   {$ENDIF}
   FPCAdds, LCLIntf, LCLType, LMessages, LCLProc,
 {$ELSE}
@@ -7343,7 +7343,7 @@ begin
                 // insert mode
                 {$IFDEF USE_UTF8BIDI_LCL}
                 // TODO: improve utf8bidi for tabs
-                Len := VLength(Temp);
+                Len := VLength(Temp, drLTR);
                 if Len < CaretX then begin
                   Temp := Temp + StringOfChar(' ', CaretX - Len);
                 end;
