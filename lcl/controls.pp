@@ -324,11 +324,13 @@ type
 
   { TDragObject }
           
+
   TDragObject = class;
 
   TDragState = (dsDragEnter, dsDragLeave, dsDragMove);
   TDragMode = (dmManual , dmAutomatic);
   TDragKind = (dkDrag, dkDock);
+  TDragOperation = (dopNone, dopDrag, dopDock);
   TDragMessage = (dmDragEnter, dmDragLeave, dmDragMove, dmDragDrop,
                   dmDragCancel,dmFindTarget);
   TDragOverEvent = Procedure(Sender, Source: TObject;
@@ -401,6 +403,7 @@ type
     procedure Finished(Target: TObject; X, Y: Integer; Accepted: Boolean); override;
   Public
     constructor Create(AControl: TControl); virtual;
+    procedure Assign(Source: TDragObject); override;
     property Control: TControl read FControl write FControl;
   end;
   
@@ -1168,6 +1171,7 @@ type
     Function GetCapture : HWND;
     Procedure SetCursorPos(value : TPoint);
     Function GetCursorPos : TPoint;
+    function GetIsDragging: Boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -1175,6 +1179,7 @@ type
     property CursorPos : TPoint read GetCursorPos write SetCursorPos;
     property DragImmediate : Boolean read FDragImmediate write FDragImmediate default True;
     property DragThreshold : Integer read FDragThreshold write FDragThreshold default 5;
+    property IsDragging: Boolean read GetIsDragging;
   end;
 
 
@@ -1235,13 +1240,14 @@ uses
 var
   CaptureControl: TControl;
   
-  DragCapture : HWND;
-  DragControl : TControl;
-  DragObjectAutoFree : Boolean;
-  DragObject : TDragObject;
-  //DragSaveCursor : HCURSOR;
-  DragStartPos : TPoint;
-  //DragThreshold : Integer;
+  DragCapture: HWND;
+  DragControl: TControl;
+  DragObjectAutoFree: Boolean;
+  DragObject: TDragObject;
+  //DragSaveCursor: HCURSOR;
+  DragStartPos: TPoint;
+  DragThreshold: Integer;
+  ActiveDrag: TDragOperation;
   
 procedure Register;
 begin
@@ -1317,7 +1323,10 @@ begin
 end;
 
 
-{DragIntit}
+{-------------------------------------------------------------------------------
+  Procedure DragInit(aDragObject: TDragObject; Immediate: Boolean;
+    Threshold: Integer);
+-------------------------------------------------------------------------------}
 Procedure DragInit(aDragObject: TDragObject; Immediate: Boolean;
   Threshold: Integer);
 Begin
@@ -1326,15 +1335,17 @@ Begin
   GetCursorPos(DragStartPos);
   DragObject.DragPos := DragStartPos;
   DragCapture := DragObject.Capture;
-  //DragThreshold := Threshold;
+  DragThreshold := Threshold;
   //save the cursor yet
 end;
 
-{Draginitcontrol}
-Procedure DragInitControl(Control : TControl; Immediate : Boolean;
-  Threshold : Integer);
+{-------------------------------------------------------------------------------
+  Procedure DragInitControl(Control : TControl; Immediate : Boolean;
+-------------------------------------------------------------------------------}
+Procedure DragInitControl(Control: TControl; Immediate: Boolean;
+  Threshold: Integer);
 var
-  DragObject : TDragObject;
+  DragObject: TDragObject;
   ok: boolean;
 begin
   DragControl := Control;
@@ -1344,13 +1355,18 @@ begin
     DragObjectAutoFree := False;
     if Control.fDragKind = dkDrag then
     begin
+      // initialize the DragControl. Note: This can change the DragControl
       Control.DoStartDrag(DragObject);
+      // check if initialization was successful
       if DragControl = nil then Exit;
+      // initialize DragObject, if not already done
       if DragObject = nil then
       Begin
         DragObject := TDragControlObject.Create(Control);
         DragObjectAutoFree := True;
       End;
+    end else if Control.fDragKind = dkDock then begin
+      // ToDo: docking
     end;
     DragInit(DragObject,Immediate,Threshold);
     ok:=true;
@@ -1360,14 +1376,21 @@ begin
   end;
 end;
 
+{-------------------------------------------------------------------------------
+  Procedure DragTo(P : TPoint);
+-------------------------------------------------------------------------------}
 Procedure DragTo(P : TPoint);
 Begin
-  Assert(False, 'Trace:********************************************');
-  Assert(False, 'Trace:*******************D R A G T O***************');
-  Assert(False, 'Trace:********************************************');
+  if (ActiveDrag = dopNone)
+  and (Abs(DragStartPos.X - P.X) < DragThreshold)
+  and (Abs(DragStartPos.Y - P.Y) > DragThreshold) then
+    exit;
+    
+
 end;
 
-Function DragMessage(Handle : HWND; Msg : TDragMessage; Source : TDragObject; Target : Pointer; const Pos : TPoint): longint;
+Function DragMessage(Handle: HWND; Msg: TDragMessage; Source: TDragObject;
+  Target: Pointer; const Pos: TPoint): longint;
 var
   DragRec : TDragRec;
 Begin
@@ -1383,7 +1406,6 @@ Begin
     Result := SendMessage(Handle, CM_DRAG,longint(msg),Longint(@DragRec));
   end;
 end;
-
 
 Procedure DragDone(Drop : Boolean);
 var
@@ -1635,6 +1657,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.142  2003/08/23 11:30:50  mattias
+  fixed SetComboHeight in win32 intf and finddeclaration of overloaded proc definition
+
   Revision 1.141  2003/08/21 13:04:10  mattias
   implemented insert marks for TTreeView
 

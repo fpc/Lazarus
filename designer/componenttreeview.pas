@@ -22,7 +22,6 @@
     For an usage example, see the object inspector.
 
   ToDo:
-    - pass selection to form editor
     - icons
     - pass keys to form editor
     - drag&drop: change parent and position

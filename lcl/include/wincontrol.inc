@@ -2362,6 +2362,7 @@ begin
     NewTop:=FBoundsRealized.Top;
     if HandleAllocated then
       GetWindowRelativePosition(Handle,NewLeft,NewTop);
+    //writeln('TWinControl.WMSize B ',Name,':',ClassName,' ',NewLeft,',',NewTop);
     FBoundsRealized:=Bounds(NewLeft,NewTop,Message.Width,Message.Height);
   end;
   
@@ -2947,6 +2948,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.161  2003/08/23 11:30:50  mattias
+  fixed SetComboHeight in win32 intf and finddeclaration of overloaded proc definition
+
   Revision 1.160  2003/08/21 13:04:10  mattias
   implemented insert marks for TTreeView
 

@@ -40,10 +40,15 @@ Begin
   Result := StrComp(AStr, BStr);
 end;
 
-Procedure SetComboHeight(Handle:THandle;ALeft,Atop,AWidth,AHeight,AEditHeight:Integer);
+Procedure SetComboHeight(Sender: TObject;
+  ALeft, ATop, AWidth, AHeight, AEditHeight:Integer);
+var
+  ComboHandle: HWnd;
 begin
-  MoveWindow(Handle,ALeft,ATop,AWidth,AHeight,true);
-  SendMessage(Handle, WM_SIZE, 0, MakeLParam(AWidth,AEditHeight));
+  LCLBoundsToWin32Bounds(Sender,ALeft, ATop, AWidth, AHeight);
+  ComboHandle:=TWinControl(Sender).Handle;
+  MoveWindow(ComboHandle,ALeft,ATop,AWidth,AHeight,true);
+  SendMessage(ComboHandle, WM_SIZE, 0, MakeLParam(AWidth,AEditHeight));
 end;
 {*************************************************************}
 {                      TWin32ListStringList methods           }
@@ -145,9 +150,9 @@ Begin
     if FSender.FCompStyle=csComboBox Then
     begin
       if Count = 0 then
-        SetComboHeight(FWin32List,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2,FEditHeight)
+        SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2,FEditHeight)
       else
-        SetComboHeight(FWin32List,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FDropDownCount*FItemHeight + 2,FEditHeight);    
+        SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FDropDownCount*FItemHeight + 2,FEditHeight);
     end;
   End
   Else
@@ -195,7 +200,8 @@ End;
 Procedure TWin32ListStringList.Clear;
 Begin	
   if FSender.FCompStyle=csComboBox Then
-    SetComboHeight(FWin32List,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2,FEditHeight);
+    SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
+                   FEditHeight + FItemHeight + 2,FEditHeight);
   SendMessage(FWin32List,FFlagResetContent, 0, 0);
 End;  
 
@@ -209,7 +215,8 @@ Procedure TWin32ListStringList.Delete(Index: Integer);
 Begin
   If (FSender.FCompStyle = csComboBox)
   and (GetCount <= 1) Then
-    SetComboHeight(FWin32List,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2,FEditHeight);    
+    SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
+                   FEditHeight + FItemHeight + 2,FEditHeight);
   SendMessage(FWin32List,FFlagDeleteString, Index, 0);
 End;
 
@@ -223,7 +230,8 @@ Procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
 Begin
   If (FSender.FCompStyle = csComboBox) 
   and (GetCount = 0) Then
-    SetComboHeight(FWin32List,FSender.Left,FSender.Top,FSender.Width,FEditHeight + FItemHeight + 2,FEditHeight);    
+    SetComboHeight(FSender,FSender.Left,FSender.Top,FSender.Width,
+                   FEditHeight + FItemHeight + 2,FEditHeight);
   If FSorted Then
     SendMessage(FWin32List,FFlagAddString, 0, LPARAM(PChar(S)))
   Else 
@@ -397,6 +405,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2003/08/23 11:30:51  mattias
+  fixed SetComboHeight in win32 intf and finddeclaration of overloaded proc definition
+
   Revision 1.13  2003/08/13 21:23:10  mattias
   fixed log
 

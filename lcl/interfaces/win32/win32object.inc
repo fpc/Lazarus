@@ -1690,14 +1690,31 @@ End;
 
   Resize a window
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.ResizeChild(Sender: TObject; Left, Top, Width, Height: Integer);
+Procedure TWin32Object.ResizeChild(Sender: TObject;
+  Left, Top, Width, Height: Integer);
 Var
   Handle: HWND;
+  AWinControl: TWinControl;
+  {$IFDEF VerboseSizeMsg}
+  OldLeft: Integer;
+  OldTop: Integer;
+  {$ENDIF}
 Begin
-  Handle := (Sender As TWinControl).Handle;
+  AWinControl:=TWinControl(Sender);
+  if not AWinControl.HandleAllocated then exit;
+  Handle := AWinControl.Handle;
+  {$IFDEF VerboseSizeMsg}
+  OldLeft:=Left;
+  OldTop:=Top;
+  {$ENDIF}
   LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
-  If Handle <> 0 Then
-    MoveWindow(Handle, Left, Top, Width, Height, True);
+  {$IFDEF VerboseSizeMsg}
+  writeln('TWin32Object.ResizeChild A ',AWinControl.Name,':',AWinControl.ClassName,
+    ' LCL=',OldLeft,',',OldTop,',',Width,',',Height,
+    ' Win32=',Left,',',Top,',',Width,',',Height,
+    '');
+  {$ENDIF}
+  MoveWindow(Handle, Left, Top, Width, Height, True);
 End;
 
 {------------------------------------------------------------------------------
@@ -1833,6 +1850,9 @@ Begin
     Width := TControl(Sender).Width;
     Assert(False, 'Trace:Setting dimentions');
     LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
+    {$IFDEF VerboseSizeMsg}
+    writeln('TWin32Object.CreateComponent A ',TControl(Sender).Name,':',TControl(Sender).ClassName,' ',Left,',',Top,',',Width,',',Height);
+    {$ENDIF}
   End
   Else If (Sender Is TMenuItem) Then
   Begin
@@ -2811,6 +2831,9 @@ End;
 
 {
   $Log$
+  Revision 1.93  2003/08/23 11:30:51  mattias
+  fixed SetComboHeight in win32 intf and finddeclaration of overloaded proc definition
+
   Revision 1.92  2003/08/22 07:58:38  mattias
   started componenttree
 

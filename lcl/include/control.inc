@@ -50,15 +50,20 @@ procedure TControl.BeginDrag(Immediate: Boolean; Threshold: Integer);
 var
   P : TPoint;
 begin
+  // start a drag operation, if not already running
   if (DragControl = nil) or (Pointer(DragControl) = Pointer($FFFFFFFF)) then
   Begin
     DragControl := nil;
-    if csLButtonDown in ControlState then
-    Begin
+    
+    // if the last mouse down was not followed by a mouse up, simulate a
+    // mouse up. This way applications need only to react to mouse up to
+    // clean up.
+    if csLButtonDown in ControlState then begin
       GetCursorPos(p);
       P := ScreenToClient(p);
       Perform(LM_LBUTTONUP,0,Longint(PointToSmallPoint(p)));
     end;
+    
     if Threshold < 0 then
       Threshold := Mouse.DragThreshold;
     if Pointer(DragControl) <> Pointer($FFFFFFFF) then
@@ -1147,7 +1152,14 @@ begin
               then begin
                 Assert(False, 'Trace:Begin AutoDrag called');
                 BeginAutoDrag;
-                exit;
+                { The VCL holds up the mouse down for dmAutomatic
+                  and sends it, when it decides, if it is a drag operation or
+                  not.
+                  This decision requires full control of focus and mouse, which
+                  not all LCL interfaces provide. Therefore the mouse down event
+                  is sent immediately.
+                }
+                // VCL: exit;
               end;
               Include(FControlState,csLButtonDown);
             end;
@@ -2468,6 +2480,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.149  2003/08/23 11:30:50  mattias
+  fixed SetComboHeight in win32 intf and finddeclaration of overloaded proc definition
+
   Revision 1.148  2003/08/22 07:58:38  mattias
   started componenttree
 

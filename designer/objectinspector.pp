@@ -22,6 +22,7 @@
 
   ToDo:
    - backgroundcolor=clNone
+   - auto sizing of component tree if no pair splitter
    - pair splitter
    - default values for property editors
    - set to default value

@@ -601,7 +601,9 @@ type
       FirstParameterNode2: TCodeTreeNode;
       Params: TFindDeclarationParams;
       CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
-    function CreateParamExprList(StartPos: integer;
+    function CreateParamExprListFromStatement(StartPos: integer;
+      Params: TFindDeclarationParams): TExprTypeList;
+    function CreateParamExprListFromProcNode(ProcNode: TCodeTreeNode;
       Params: TFindDeclarationParams): TExprTypeList;
     function ContextIsDescendOf(
       const DescendContext, AncestorContext: TFindContext;
@@ -4528,7 +4530,7 @@ begin
       ReadNextAtom;
       if not AtomIsChar('(') then
         exit;
-      ParamList:=CreateParamExprList(CurPos.StartPos,Params);
+      ParamList:=CreateParamExprListFromStatement(CurPos.StartPos,Params);
       if (CompareIdentifiers(IdentPos,'PREC')=0)
       or (CompareIdentifiers(IdentPos,'SUCC')=0) then begin
         // the PREC and SUCC of a expression has the same type as the expression
@@ -4722,6 +4724,9 @@ begin
   i:=0;
   while (ParamNode<>nil) and (i<ExprParamList.Count) do begin
     ParamCompatibility:=IsCompatible(ParamNode,ExprParamList.Items[i],Params);
+    {$IFDEF ShowExprEval}
+    writeln('[TFindDeclarationTool.IsParamListCompatible] B ',ExprTypeToString(ExprParamList.Items[i]));
+    {$ENDIF}
     if CompatibilityList<>nil then
       CompatibilityList[i]:=ParamCompatibility;
     if ParamCompatibility=tcIncompatible then begin
@@ -4919,22 +4924,43 @@ begin
         Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
         StartContextNode:=Params.IdentifierTool.FindDeepestNodeAtPos(
           Params.IdentifierTool.CurPos.StartPos,true);
-        if (StartContextNode<>nil)
-        and (StartContextNode.Desc in AllPascalStatements) then begin
-          Params.Save(OldInput);
-          Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
-          Params.Flags:=fdfDefaultForExpressions+Params.Flags*fdfGlobals;
-          Params.ContextNode:=StartContextNode;
-          Params.OnIdentifierFound:=@Params.IdentifierTool.CheckSrcIdentifier;
-          Params.IdentifierTool.ReadNextAtom;
-          Params.FoundProc^.ExprInputList:=
-            Params.IdentifierTool.CreateParamExprList(
+        if (StartContextNode<>nil) then begin
+          if (StartContextNode.Desc in AllPascalStatements) then begin
+            {$IFDEF ShowProcSearch}
+            writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+            ' Indent=',GetIdentifier(Params.Identifier),
+            ' Creating Input Expression List for statement ...'
+            );
+            {$ENDIF}
+            Params.Save(OldInput);
+            Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
+            Params.Flags:=fdfDefaultForExpressions+Params.Flags*fdfGlobals;
+            Params.ContextNode:=StartContextNode;
+            Params.OnIdentifierFound:=@Params.IdentifierTool.CheckSrcIdentifier;
+            Params.IdentifierTool.ReadNextAtom;
+            Params.FoundProc^.ExprInputList:=
+              Params.IdentifierTool.CreateParamExprListFromStatement(
                                     Params.IdentifierTool.CurPos.EndPos,Params);
-          Params.Load(OldInput);
+            Params.Load(OldInput);
+          end
+          else if (StartContextNode.Desc in [ctnProcedureHead,ctnProcedure])
+          then begin
+            {$IFDEF ShowProcSearch}
+            writeln('[TFindDeclarationTool.CheckSrcIdentifier]',
+            ' Indent=',GetIdentifier(Params.Identifier),
+            ' Creating Input Expression List for proc node ...'
+            );
+            {$ENDIF}
+            Params.FoundProc^.ExprInputList:=
+              Params.IdentifierTool.CreateParamExprListFromProcNode(
+                                                       StartContextNode,Params);
+          end;
         end;
       end;
-      if Params.FoundProc^.ExprInputList=nil then
+      if Params.FoundProc^.ExprInputList=nil then begin
+        // create expression list without params
         Params.FoundProc^.ExprInputList:=TExprTypeList.Create;
+      end;
     end;
 
     // create compatibility lists for params
@@ -5164,8 +5190,8 @@ begin
     Result:=vatNone;
 end;
 
-function TFindDeclarationTool.CreateParamExprList(StartPos: integer;
-  Params: TFindDeclarationParams): TExprTypeList;
+function TFindDeclarationTool.CreateParamExprListFromStatement(
+  StartPos: integer; Params: TFindDeclarationParams): TExprTypeList;
 var ExprType: TExpressionType;
   BracketClose: char;
   ExprStartPos, ExprEndPos: integer;
@@ -5177,7 +5203,7 @@ var ExprType: TExpressionType;
   
 begin
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.CreateParamExprList] ',
+  writeln('[TFindDeclarationTool.CreateParamExprListFromStatement] ',
   '"',copy(Src,StartPos,40),'" Context=',Params.ContextNode.DescAsString);
   {$ENDIF}
   Result:=TExprTypeList.Create;
@@ -5223,8 +5249,34 @@ begin
     end;
   end;
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.CreateParamExprList] END ',
+  writeln('[TFindDeclarationTool.CreateParamExprListFromStatement] END ',
   'ParamCount=',Result.Count,' "',copy(Src,StartPos,40),'"');
+  writeln('  ExprList=[',Result.AsString,']');
+  {$ENDIF}
+end;
+
+function TFindDeclarationTool.CreateParamExprListFromProcNode(
+  ProcNode: TCodeTreeNode; Params: TFindDeclarationParams): TExprTypeList;
+var
+  ExprType: TExpressionType;
+  ParamNode: TCodeTreeNode;
+begin
+  {$IFDEF ShowExprEval}
+  writeln('[TFindDeclarationTool.CreateParamExprListFromProcNode] ',
+  '"',copy(Src,ProcNode.StartPos,40),'" Context=',ProcNode.DescAsString);
+  {$ENDIF}
+  Result:=TExprTypeList.Create;
+  ParamNode:=GetFirstParameterNode(ProcNode);
+  while ParamNode<>nil do begin
+    // find expression type
+    ExprType:=ConvertNodeToExpressionType(ParamNode,Params);
+    // add expression type to list
+    Result.Add(ExprType);
+    ParamNode:=ParamNode.NextBrother;
+  end;
+  {$IFDEF ShowExprEval}
+  writeln('[TFindDeclarationTool.CreateParamExprListFromProcNode] END ',
+  'ParamCount=',Result.Count,' "',copy(Src,ProcNode.StartPos,40),'"');
   writeln('  ExprList=[',Result.AsString,']');
   {$ENDIF}
 end;

@@ -1452,10 +1452,13 @@ begin
   begin
     Windows.ScreenToClient(ParentHandle,@LeftTop);
     OwnerObject := TObject(GetProp(ParentHandle, 'Lazarus'));
-    if OwnerObject is TWinControl then begin
+    if (OwnerObject<>nil) and (OwnerObject is TWinControl) then begin
       TheWinControl:=TWinControl(OwnerObject);
       if TheWinControl is TGroupBox then
       begin
+        {$IFDEF VerboseSizeMsg}
+        writeln('TWin32Object.GetWindowRelativePosition A ',TheWinControl.Name,':',TheWinControl.ClassName,' Win32=',R.Left,',',R.Top,' Moved=',LeftTop.X,',',LeftTop.Y);
+        {$ENDIF}
         DC := GetDC(ParentHandle);
         GetTextMetrics(DC, TM);
         dec(LeftTop.Y,TM.TMHeight); 
@@ -2419,6 +2422,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2003/08/23 11:30:51  mattias
+  fixed SetComboHeight in win32 intf and finddeclaration of overloaded proc definition
+
   Revision 1.55  2003/08/21 13:04:10  mattias
   implemented insert marks for TTreeView
 

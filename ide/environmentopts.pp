@@ -2809,35 +2809,30 @@ begin
     Left:=4;
     Top:=4;
     Width:=170;
-    Height:=23;
   end;
 
   with MaxRecentOpenFilesComboBox do begin
     Left:=MaxRecentOpenFilesLabel.Left+MaxRecentOpenFilesLabel.Width+2;
     Top:=MaxRecentOpenFilesLabel.Top;
     Width:=60;
-    Height:=25;
   end;
 
   with MaxRecentProjectFilesLabel do begin
     Left:=MaxRecentOpenFilesLabel.Left;
     Top:=MaxRecentOpenFilesLabel.Top+MaxRecentOpenFilesLabel.Height+3;
     Width:=MaxRecentOpenFilesLabel.Width;
-    Height:=MaxRecentOpenFilesLabel.Height;
   end;
 
   with MaxRecentProjectFilesComboBox do begin
     Left:=MaxRecentProjectFilesLabel.Left+MaxRecentProjectFilesLabel.Width+2;
     Top:=MaxRecentProjectFilesLabel.Top;
     Width:=60;
-    Height:=25;
   end;
 
   with OpenLastProjectAtStartCheckBox do begin
     Left:=4;
     Top:=MaxRecentProjectFilesLabel.Top+MaxRecentProjectFilesLabel.Height+5;
     Width:=MaxX-2*Left;
-    Height:=23;
   end;
 
   y:=OpenLastProjectAtStartCheckBox.Top
