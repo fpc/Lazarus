@@ -5790,7 +5790,7 @@ begin
   csCalendar :
     Begin
       gtk_calendar_get_date(PgtkCalendar(handle),@Year, @Month, @Day);
-      //Form some reason, the month is zero based.
+      //For some reason, the month is zero based.
       TLMCalendar(data^).Date := EncodeDate(Year,Month+1,Day);
     end;
 
@@ -7244,6 +7244,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.357  2003/04/26 07:34:55  mattias
+  implemented custom package initialization
+
   Revision 1.356  2003/04/25 14:40:49  mattias
   implemented add file to a package dialog
 
