@@ -626,10 +626,6 @@ msgstr "Entorno"
 msgid "Environment options"
 msgstr "Opciones del Entorno"
 
-#: lazarusidestrconsts:lisoievents
-msgid "Events"
-msgstr "Eventos"
-
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr ""
@@ -831,10 +827,6 @@ msgid "I told You: Not implemented yet"
 msgstr "Yo le dije: No implementado todavía"
 
 #: lazarusidestrconsts:dlgedidcomlet
-msgid "Identfier completion"
-msgstr "Completado de Identificador"
-
-#: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
 msgstr ""
 
@@ -1033,10 +1025,6 @@ msgstr "Librerías:"
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL\n\nLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.\n\nLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers."
 msgstr ""
-
-#: lazarusidestrconsts:lisaboutlazarusmsg
-msgid "License: GPL/LGPL\nLazarus are the class libraries for Free Pascal that emulate Delphi.\nFree Pascal is a (L)GPL'ed compiler that runs on Linux,\nWin32, OS/2, 68K and more. Free Pascal is designed to be able to\nunderstand and compile Delphi syntax, which is of course OOP.\nLazarus is the missing part of the puzzle that will allow you to\ndevelop Delphi like programs in all of the above platforms.\nThe IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers."
-msgstr "Licencia: GPL/LGPL\nLazarus es un conjunto de clases para Free Pascal que emulan a Delphi.\nFree Pascal es un compilador (con licencia L/GPL) que corre en Linux,\nWin32, OS/2, 68K y algunos más. Free Pascal fue diseñado para poder \nentender y compilar código de Delphi, el cual es por supuesto OO.\nLazarus es la parte del rompecabezas que le permitirá\ndesarrollar programas como Delphi en todas las plataformas mencionadas.\nEl IDE se convertira eventualmente en una herramienta RAD como Delphi.\n\nAs Lazarus está creciendo nosotros necesitamos más desarrolladores."
 
 #: lazarusidestrconsts:dlglinesplitting
 msgid "Line Splitting"
@@ -1369,10 +1357,6 @@ msgstr "Preguntar por valor"
 #: lazarusidestrconsts:dlgpromptonreplace
 msgid "Prompt On Replace"
 msgstr "Preguntar al Reemplazar"
-
-#: lazarusidestrconsts:lisoiproperties
-msgid "Properties"
-msgstr "Propiedades"
 
 #: lazarusidestrconsts:dlgpropertycompletion
 msgid "Property completion"

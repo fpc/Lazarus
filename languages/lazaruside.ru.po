@@ -626,10 +626,6 @@ msgstr "Окружения"
 msgid "Environment options"
 msgstr "Параметры окружения"
 
-#: lazarusidestrconsts:lisoievents
-msgid "Events"
-msgstr "События"
-
 #: lazarusidestrconsts:lisexpandedfilenameofcurrenteditor
 msgid "Expanded filename of current editor file"
 msgstr "Полное имя файла в данном редакторе"
@@ -725,10 +721,6 @@ msgstr "От курсора"
 #: lazarusidestrconsts:lismenuinsertgeneral
 msgid "General"
 msgstr "Общие"
-
-#: lazarusidestrconsts:lismenugeneraloptions
-msgid "General options"
-msgstr "Общие параметры"
 
 #: lazarusidestrconsts:dlggprof
 msgid "Generate code for gprof"
@@ -833,10 +825,6 @@ msgstr "Главное приложение"
 #: lazarusidestrconsts:uenotimplcapagain
 msgid "I told You: Not implemented yet"
 msgstr "Вам сказано - не реализовано"
-
-#: lazarusidestrconsts:dlgedidcomlet
-msgid "Identfier completion"
-msgstr "Завершение идентификаторов"
 
 #: lazarusidestrconsts:dlgedidcomlet
 msgid "Identifier completion"
@@ -1038,10 +1026,6 @@ msgstr "Библиотека:"
 msgid "License: GPL/LGPL\n\nLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.\n\nLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers."
 msgstr "Лицензия: GPL/LGPL\n\nLazarus - это библиотеки классов для FreePascal, эмулирующие Delphi. Free Pascal - (L)GPL'ьный компилятор под Linux, Win32, OS/2, 68K и др. Free Pascal сделан, чтобы разбирать и компилировать программы с синтаксисом Delphi, который, конечно, ООП.\n\nLazarus - отсутствующее звено цепи, которое позволит Вам создавать программы типа Delphi на всех вышеперечисленных платформах. IDE вдруг станет инструментом RAD, как Delphi.\n\n С ростом Lazarus нам нужно больше разработчиков."
 
-#: lazarusidestrconsts:lisaboutlazarusmsg
-msgid "License: GPL/LGPL\nLazarus are the class libraries for Free Pascal that emulate Delphi.\nFree Pascal is a (L)GPL'ed compiler that runs on Linux,\nWin32, OS/2, 68K and more. Free Pascal is designed to be able to\nunderstand and compile Delphi syntax, which is of course OOP.\nLazarus is the missing part of the puzzle that will allow you to\ndevelop Delphi like programs in all of the above platforms.\nThe IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers.\nFor example: Write a nicer about dialog with a logo."
-msgstr "Лицензия: GPL/LGPL\015Lazarus - это библиотеки классов для FreePascal, эмулирующие Delphi.\015Free Pascal - это (L)GPLьный компилятор, запускаемый под Linux,\015Win32, OS/2, 68K и др. Free Pascal разработан\015для компиляции програм с синтаксисом Delphi, который, естественно, ООП.\015Lazarus - утраченне звено, которое позволит Вам\015разрабатывать программы типа Delphis подо всеми вышеуказанными платформами.\015IDE когда-нибудь станет инструментом RAD, как и Delphi.\015\015По мере роста Lazarus, нам нужно больше разработчиков.\015Например, написать лучший диалог 'О программе' с логотипом."
-
 #: lazarusidestrconsts:dlglinesplitting
 msgid "Line Splitting"
 msgstr "Разрыв строк"
@@ -1205,10 +1189,6 @@ msgstr "Нет"
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
 msgstr "Еще не реализовано"
-
-#: lazarusidestrconsts:dlgenvnotes
-msgid "Notes: "
-msgstr "Заметки:"
 
 #: lazarusidestrconsts:dlgenvbackuphelpnote
 msgid "Notes: Project files are all files in the project directory"
@@ -1378,10 +1358,6 @@ msgstr "Подсказка по значению"
 msgid "Prompt On Replace"
 msgstr "Подтверждать замену"
 
-#: lazarusidestrconsts:lisoiproperties
-msgid "Properties"
-msgstr "Свойства"
-
 #: lazarusidestrconsts:dlgpropertycompletion
 msgid "Property completion"
 msgstr "Завершение свойств"
@@ -1498,10 +1474,6 @@ msgstr "Сохранить как"
 msgid "Save changes to project %s?"
 msgstr "Сохранить изменения в проект %s?"
 
-#: lazarusidestrconsts:lissavechangestoproject
-msgid "Save changes to project?"
-msgstr "Сохранить изменения в проекте?"
-
 #: lazarusidestrconsts:lissavecurrenteditorfile
 msgid "save current editor file"
 msgstr "Сохранить текущий файл редактора"
@@ -1617,10 +1589,6 @@ msgstr "Установить элемент по умолчанию"
 #: lazarusidestrconsts:dlgsetpropertyvariable
 msgid "Set property Variable"
 msgstr "Переменная свойства"
-
-#: lazarusidestrconsts:lismenusettings
-msgid "Settings ..."
-msgstr "Установки ..."
 
 #: lazarusidestrconsts:dlgshowprocserror
 msgid "Show all procs on error"
@@ -1893,10 +1861,6 @@ msgstr "Каталог lazarus \"%s\" выглядит некорректно. Обычно он содержит каталоги
 #: lazarusidestrconsts:lisinvalidpascalidentifiertext
 msgid "The name \"%s\" is not a valid pascal identifier."
 msgstr "Слово \"%s\" - неправильный идентификатор языка паскаль."
-
-#: lazarusidestrconsts:lisunitnamealreadyexiststext
-msgid "The unit \"%s\" already exists.\015Ignore will force the renaming,\015Cancel will cancel the saving of this source and\015Abort will abort the whole saving."
-msgstr "Модуль \"%s\" уже есть.\015Ignore приведет к переименованию,\015Cancel отменит запись этого исходника и\015Abort прервет весь процесс записи."
 
 #: lazarusidestrconsts:lisunitnamealreadyexiststext
 msgid "The unit \"%s\" already exists.\nIgnore will force the renaming,\nCancel will cancel the saving of this source and\nAbort will abort the whole saving."

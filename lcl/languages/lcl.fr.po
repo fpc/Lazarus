@@ -44,10 +44,6 @@ msgstr "&Oui"
 msgid "Abort"
 msgstr "Abandonner"
 
-#: lclstrconsts:rsmball
-msgid "All?"
-msgstr "Tout"
-
 #: lclstrconsts:rsmbcancel
 msgid "Cancel"
 msgstr "Annuler"
@@ -64,41 +60,17 @@ msgstr "Personalisé"
 msgid "Error"
 msgstr "Erreur"
 
-#: lclstrconsts:rsmbhelp
-msgid "Help"
-msgstr "Aide"
-
-#: lclstrconsts:rsmbignore
-msgid "Ignore"
-msgstr "Ignorer"
-
 #: lclstrconsts:rsmtinformation
 msgid "Information"
 msgstr "Information"
-
-#: lclstrconsts:rsmbno
-msgid "No"
-msgstr "Non"
 
 #: lclstrconsts:rsmbnotoall
 msgid "No to all"
 msgstr "Non pour tout"
 
-#: lclstrconsts:rsmbok
-msgid "OK"
-msgstr "Ok"
-
-#: lclstrconsts:rsmbretry
-msgid "Retry"
-msgstr "Réessayer"
-
 #: lclstrconsts:rsmtwarning
 msgid "Warning"
 msgstr "Avertissement"
-
-#: lclstrconsts:rsmbyes
-msgid "Yes"
-msgstr "Oui"
 
 #: lclstrconsts:rsmbyestoall
 msgid "Yes to all"

@@ -285,9 +285,9 @@ end;
 
 procedure MergePoTrees(SrcTree, DestTree: TAVLTree);
 var
-  SrcNode: TAVLTreeNode;
+  SrcNode, DestNode: TAVLTreeNode;
   SrcMsgItem, DestMsgItem: PMsgItem;
-  DestNode: TAVLTreeNode;
+  OldNode: TAVLTreeNode;
 begin
   // add all message items from SrcTree into DestTree
   SrcNode:=SrcTree.FindLowest;
@@ -307,6 +307,20 @@ begin
       DestTree.Add(DestMsgItem);
     end;
     SrcNode:=SrcTree.FindSuccessor(SrcNode);
+  end;
+  // remove all old messages in DestTree
+  DestNode:=DestTree.FindLowest;
+  while DestNode<>nil do begin
+    DestMsgItem:=PMsgItem(DestNode.Data);
+    OldNode:=DestNode;
+    DestNode:=DestTree.FindSuccessor(DestNode);
+    if SrcTree.FindKey(DestMsgItem,@CompareMsgItems)=nil then begin
+      // unused message -> delete it
+      writeln('Deleting unused message "',DestMsgItem^.ID,
+        '" Comment="',DestMsgItem^.Comment,'"');
+      Dispose(DestMsgItem);
+      DestTree.Delete(OldNode);
+    end;
   end;
 end;
 

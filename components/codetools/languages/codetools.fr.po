@@ -62,10 +62,6 @@ msgstr "un composant  répertoire dans %s n'existe pas ou est un lien symbolique"
 msgid "a directory component in %s is not a directory"
 msgstr "un composant répertoire dans %s n'est pas un répertoire"
 
-#: codetoolsstrconsts:ctsabstractwidgetpath
-msgid "abstract widget path"
-msgstr "chemin abstrait de l'élément graphique (widget)"
-
 #: codetoolsstrconsts:ctsaddsdirtosourcepath
 msgid "adds %s to SrcPath"
 msgstr "ajouter %s à SrcPath"
@@ -158,10 +154,6 @@ msgstr "Ancètre par défaut de IInterface non trouvée"
 msgid "default parameter expected, but %s found"
 msgstr "paramètre default attendu, mais %s trouvé"
 
-#: codetoolsstrconsts:ctsdefaultppc386macro
-msgid "Default ppc386 macro"
-msgstr "Macro ppc386 par défaut"
-
 #: codetoolsstrconsts:ctsdefaultppc386sourceoperatingsystem
 msgid "Default ppc386 source Operating System"
 msgstr "OS source par défaut pour ppc386"
@@ -253,10 +245,6 @@ msgstr "impossible de trouver la définition de la classe : %s"
 #: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
 msgid "Free Pascal Compiler initial macros"
 msgstr "Macro initiale de Free Pascal"
-
-#: codetoolsstrconsts:ctsfreepascalcompilerinitialmacros
-msgid "Free Pascal Compiler initial makros"
-msgstr "Macros initiales pour le compilateur Free Pascal"
 
 #: codetoolsstrconsts:ctsfreepascalcomponentlibrary
 msgid "Free Pascal Component Library"
@@ -421,10 +409,6 @@ msgstr "corps de la nouvelle procédure non trouvé"
 #: codetoolsstrconsts:ctsnocontextnodefoundatcursor
 msgid "no context node found at cursor"
 msgstr "noeud trouvé sous le curseur hors contexte"
-
-#: codetoolsstrconsts:ctsnonodefoundatcursor
-msgid "no node found at cursor"
-msgstr "aucun noeud trouvé au curseur"
 
 #: codetoolsstrconsts:ctsnopascalcodefound
 msgid "no pascal code found (first token is %s)"
