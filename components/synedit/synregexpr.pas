@@ -438,6 +438,10 @@ Legend:
 
 interface
 
+{$IFDEF LINUX}
+   {$DEFINE UNIX}  // Kylix fix. Linux is linux only. Unix is *BSD also.
+{$ENDIF}
+
 {$DEFINE DebugRegExpr} // define for dump/trace enabling
 
 {$IFNDEF FPC}
@@ -988,7 +992,7 @@ implementation
 uses
   LCLIntf;
 {$ELSE}
-{$IFNDEF LINUX} //js 07-04-2002 only use windows in non-CLX-envirolment -- SYN_CLX doesn't work, why?
+{$IFNDEF unix} //js 07-04-2002 only use windows in non-CLX-envirolment -- SYN_CLX doesn't work, why?
 uses
   Windows; // CharUpper/Lower
 {$ENDIF}
@@ -1291,7 +1295,7 @@ begin
     if Result = Ch
      then Result := REChar (CharLower (Ch));
     {$ELSE}
-    {$IFNDEF LINUX} //js 07-04-2002 no use of windows api in clx-version!
+    {$IFNDEF Unix} //js 07-04-2002 no use of windows api in clx-version!
     Result := REChar (CharUpper (pointer (Ch)));
     if Result = Ch
      then Result := REChar (CharLower (pointer (Ch)));
