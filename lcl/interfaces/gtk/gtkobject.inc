@@ -8003,9 +8003,7 @@ begin
       end
       else
          gtk_progress_set_show_text (GTK_PROGRESS(wHandle), GDKFalse);
-      Widget := GTK_WIDGET( gtk_adjustment_new (0, Min, Max, 0, 0, 0));
-      gtk_progress_set_adjustment (GTK_PROGRESS(wHandle), PGtkAdjustment (Widget));
-      gtk_progress_set_value (GTK_PROGRESS(wHandle), Position);
+      gtk_progress_configure(GTK_PROGRESS(wHandle),Position,Min,Max);
     end;
 
 
@@ -9404,6 +9402,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.498  2004/05/01 10:23:04  mattias
+  fixed progessbar position
+
   Revision 1.497  2004/04/19 10:06:56  mattias
   fixed illegal ancestor search
 
