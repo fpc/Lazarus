@@ -6127,6 +6127,9 @@ begin
     ApplyBossResult('Unable to rename form in source.'#13
                     +'See messages.');
 
+    // rename form class
+    FormEditor1.JITFormList.RenameFormClass(TForm(AComponent),NewClassName);
+
     // change createform statement
     if ActiveUnitInfo.IsPartOfProject and (Project1.MainUnit>=0)
     then begin
@@ -6134,13 +6137,13 @@ begin
         Project1.MainUnitInfo.Source,
         AComponent.ClassName,AComponent.Name,
         NewClassName,NewName,true);
-      ApplyBossResult('Unable to change CreateForm statement.'#13
-                      +'See messages.');
+      ApplyCodeToolChanges;
+      if not BossResult then begin
+        DoJumpToCodeToolBossError;
+        // don't raise an exception
+      end;
     end;
     
-    // rename form class
-    FormEditor1.JITFormList.RenameFormClass(TForm(AComponent),NewClassName);
-
   end else begin
     if (aComponent is TMenuItem) or (aComponent is TMenu)
     then writeln ('**SH: Warn: TMainIDE.OnDesignerRenameComponent MenuItem / TMenu with Owner = nil'+self.Name)
@@ -6645,6 +6648,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.348  2002/08/23 11:33:03  lazarus
+  MG: imroved error handling for renamed forms
+
   Revision 1.347  2002/08/23 11:24:41  lazarus
   MG: implemented form renaming
 
