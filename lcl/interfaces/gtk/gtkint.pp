@@ -77,6 +77,10 @@ type
     FStockBlackPen: HPEN;
     FStockWhitePen: HPEN;
     
+    FStockSystemFont : HFONT;
+
+    Function CreateSystemFont : hFont;
+
     Procedure HookSignals(Sender : TObject);  //hooks all signals for controls
     procedure CreateComponent(Sender : TObject);
     procedure DestroyLCLControl(Sender : TObject);
@@ -432,6 +436,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.65  2002/08/27 06:40:50  lazarus
+  MG: ShortCut support for buttons from Andrew
+
   Revision 1.64  2002/08/22 16:43:35  lazarus
   MG: improved theme support from Andrew
 
