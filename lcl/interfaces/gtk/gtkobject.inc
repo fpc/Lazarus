@@ -2204,6 +2204,11 @@ begin
 end;
 
 procedure TGtkObject.ListViewChangeItem(TheListView: TObject; Index: integer);
+{$IfDef GTK2}
+begin
+  Writeln('TODO: TGtkObject.ListViewChangeItem');
+end;
+{$Else}
 var
   ListView: TListView;
   LVWidget: PgtkCList;
@@ -2249,11 +2254,17 @@ begin
     gtk_clist_set_text(LVWidget,Index,i,pStr);
   end;
 end;
+{$EndIf}
 
 {------------------------------------------------------------------------------
   procedure TgtkObject.ListViewAddItem(TheListView: TObject);
 ------------------------------------------------------------------------------}
 procedure TgtkObject.ListViewAddItem(TheListView: TObject);
+{$IfDef GTK2}
+begin
+  Writeln('TODO: TGtkObject.ListViewAddItem');
+end;
+{$Else}
 var
   ListView: TListView;
   ListViewWidget: PGtkCList;
@@ -2274,6 +2285,7 @@ begin
   gtk_clist_append(ListViewWidget,Titles);
   FreeMem(Titles);
 end;
+{$EndIf}
 
 {------------------------------------------------------------------------------
   function TgtkObject.GetTopIndex(Sender: TObject): integer;
@@ -2292,6 +2304,11 @@ end;
 ------------------------------------------------------------------------------}
 function TgtkObject.SetTopIndex(Sender: TObject; NewTopIndex: integer
   ): integer;
+{$IFdef GTK2}
+begin
+  writeln('TODO: TgtkObject.SetTopIndex');
+end;
+{$Else}
 var
   ScrolledWindow: PGtkScrolledWindow;
   VertAdj: PGTKAdjustment;
@@ -2329,11 +2346,16 @@ begin
 
   end;
 end;
-
+{$EndIf}
 {------------------------------------------------------------------------------
   function TgtkObject.GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
 ------------------------------------------------------------------------------}
 function TgtkObject.GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
+{$IFdef GTK2}
+begin
+  writeln('TODO: TgtkObject.GetIndexAtY');
+end;
+{$Else}
 var
   ScrolledWindow: PGtkScrolledWindow;
   VertAdj: PGTKAdjustment;
@@ -2372,6 +2394,7 @@ begin
 
   end;
 end;
+{$EndIf}
 
 {------------------------------------------------------------------------------
   procedure TgtkObject.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
@@ -2379,6 +2402,11 @@ end;
 ------------------------------------------------------------------------------}
 procedure TgtkObject.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
   MultiSelect, ExtendedSelect: boolean);
+{$IFdef GTK2}
+begin
+  writeln('TODO: TgtkObject.SetSelectionMode');
+end;
+{$Else}
 var
   AControl: TWinControl;
   SelectionMode: TGtkSelectionMode;
@@ -2412,6 +2440,7 @@ begin
     end;
   end;
 end;
+{$EndIf}
 
 {------------------------------------------------------------------------------
   procedure TgtkObject.BringFormToFront(Sender: TObject);
@@ -2549,9 +2578,13 @@ begin
       begin
         if (Sender is TListView) then
         begin
+          {$IfDef GTK2}
+          Writeln('TODO: TGtkObject.IntSendMessage3 LM_LV_DELETEITEM');
+          {$Else}
           Num := Integer(data^);
           Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
           gtk_clist_remove(PgtkCList(Widget),Num);
+          {$EndIf}
         end;
       end;
 
@@ -2569,10 +2602,14 @@ begin
       LM_LV_SELECTITEM:
       if (Sender is TListView) then
       begin
+       {$IfDef GTK2}
+        Writeln('TODO: TGtkObject.IntSendMessage3 LM_LV_SELECTITEM');
+       {$Else}
         Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
         gtk_clist_unselect_all(PGtkCList(Widget));
         if Data<>nil then
           gtk_clist_select_row(PGtkCList(Widget),TListItem(Data).Index,0);
+       {$EndIf}
       end;
 
       LM_BRINGTOFRONT:
@@ -2965,6 +3002,11 @@ begin
       end;
 
       LM_GETITEMS :
+      {$IFdef GTK2}
+      begin
+        writeln('TODO: TgtkObject.IntSendMessage3 LM_GETITEMS');
+      end;
+      {$Else}
       begin
         case TControl(Sender).fCompStyle of
           csComboBox:
@@ -2993,6 +3035,7 @@ begin
           raise Exception.Create('Message LM_GETITEMS - Not implemented');
         end;
       end;
+      {$EndIf}
 
       LM_GETTEXT :
       begin
@@ -3005,6 +3048,7 @@ begin
            csComboBox:
              Result:=GetComboBoxItemIndex(TComboBox(Sender));
 
+          {$IFdef GTK1}
            csListBox, csCheckListBox:
              begin
                if Handle<>0 then begin
@@ -3035,6 +3079,7 @@ begin
                else
                  Result := integer(GList^.Data);
              end;
+          {$EndIf}
 
            csNotebook:
              begin
@@ -3043,6 +3088,10 @@ begin
                UpdateNoteBookClientWidget(Sender);
              end;
 
+          {$IFdef GTK2}
+           else
+             writeln('TODO: TgtkObject.IntSendMessage3 LM_GETITEMINDEX');
+          {$EndIf}
         end;
       end;
 
@@ -3053,6 +3102,7 @@ begin
           csComboBox:
             SetComboBoxItemIndex(TComboBox(Sender),Integer(Data));
 
+          {$IFdef GTK1}
           csListBox, csCheckListBox:
           begin
             if Integer(Data)>=0 then
@@ -3068,6 +3118,7 @@ begin
             gtk_clist_select_row(PGtkCList(GetWidgetInfo(Pointer(Handle),
                                    True)^.ImplementationWidget),
                                  Integer(Data), 1);    // column
+          {$EndIf}
 
           csNotebook:
             if Data<>nil then begin
@@ -3075,6 +3126,10 @@ begin
                                     TLMNotebookEvent(Data^).Page);
               UpdateNoteBookClientWidget(Sender);
             end;
+          {$IFdef GTK2}
+           else
+             writeln('TODO: TgtkObject.IntSendMessage3 LM_SETITEMINDEX');
+          {$EndIf}
           end;
         end;
 
@@ -3181,6 +3236,11 @@ begin
       end;
 
       LM_GETSELCOUNT :
+      {$IFdef GTK2}
+      begin
+        writeln('TODO: TgtkObject.IntSendMessage3 LM_GETSELCOUNT');
+      end;
+      {$Else}
       begin
         case (Sender as TControl).fCompStyle of
           csListBox, csCheckListBox :
@@ -3191,8 +3251,14 @@ begin
                                True)^.ImplementationWidget)^.selection);
         end;
       end;
-
+      {$EndIf}
+      
       LM_GETSEL :
+      {$IFdef GTK2}
+      begin
+        writeln('TODO: TgtkObject.IntSendMessage3 LM_GETSEL');
+      end;
+      {$Else}
       begin
         Result := 0;      { assume: nothing found }
         if (Sender is TControl)
@@ -3222,6 +3288,7 @@ begin
             end;
           end;
       end;
+      {$EndIf}
 
       LM_CLB_GETCHECKED :
       begin
@@ -3274,17 +3341,30 @@ begin
         if  (Sender is TControl) and assigned (data) then
         begin
           case TControl(Sender).fCompStyle of
-          csComboBox,
+          csComboBox
+          {$Ifdef GTK1}
+          ,
           csListBox,
-          csCheckListBox: TGtkListStringList(TLMSort(Data^).List).Sorted:=
+          csCheckListBox
+          {$EndIf}         : TGtkListStringList(TLMSort(Data^).List).Sorted:=
                               TLMSort(Data^).IsSorted;
+          {$IfDef GTK1}
           csCListBox: TGtkCListStringList(TLMSort(Data^).List).Sorted :=
                               TLMSort(Data^).IsSorted;
+          {$Else}
+          else
+             writeln('TODO: TgtkObject.IntSendMessage3 LM_SORT');
+          {$Endif}
           end
         end
       end;
 
       LM_SETSEL:
+      {$IFdef GTK2}
+      begin
+        writeln('TODO: TgtkObject.IntSendMessage3 LM_SETSEL');
+      end;
+      {$Else}
       begin
         if (Sender is TControl)
         and Assigned (data)
@@ -3305,6 +3385,7 @@ begin
             end;
         end;
       end;
+      {$Endif}
 
       LM_SETSELMODE:
         if Data<>nil then
@@ -3313,6 +3394,11 @@ begin
                            TLMSetSelMode(Data^).ExtendedSelect);
 
       LM_SETBORDER:
+      {$IFdef GTK2}
+      begin
+        writeln('TODO: TgtkObject.IntSendMessage3 LM_SETBORDER');
+      end;
+      {$Else}
       begin
         if (Sender is TControl) then
         begin
@@ -3338,6 +3424,7 @@ begin
             end;
          end;
       end;
+      {$Endif}
 
       LM_SETSHORTCUT :
       begin
@@ -5353,6 +5440,13 @@ begin
 end;
 
 function TgtkObject.CreateListView(ListViewObject: TObject): PGtkWidget;
+{$IFdef GTK2}
+begin
+  Result:=gtk_scrolled_window_new(nil, nil);//create something just in case
+  gtk_widget_show(result);
+  writeln('TODO: TgtkObject.CreateListView');
+end;
+{$Else}
 var
   MainWidget: PGtkWidget;
   i: Integer;
@@ -5429,7 +5523,7 @@ begin
   
   Result:=MainWidget;
 end;
-
+{$EndIF}
 {------------------------------------------------------------------------------
   function TgtkObject.CreatePairSplitter(PairSplitterObject: TObject
     ): PGtkWidget;
@@ -5562,6 +5656,18 @@ begin
     end;
 
   csClistBox :
+    {$IFdef GTK2}
+    begin
+      p:= gtk_scrolled_window_new(nil, nil);//give something just in case
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+      gtk_widget_show(p);
+
+      writeln('TODO: TgtkObject.CreateComponent csCListBox');
+    end;
+    {$Else}
     begin
       p:= gtk_scrolled_window_new(nil, nil);
       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
@@ -5591,7 +5697,8 @@ begin
       SetSelectionMode(Sender,p,TCListBox(Sender).MultiSelect,
                        TCListBox(Sender).ExtendedSelect)
     end;
-
+    {$EndIf}
+    
   csColorDialog :
     begin
       P := gtk_color_selection_dialog_new(StrTemp);
@@ -5685,6 +5792,18 @@ begin
     end;
 
   csListBox, csCheckListBox:
+    {$IFdef GTK2}
+    begin
+      p:= gtk_scrolled_window_new(nil, nil);//give something just in case
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+      gtk_widget_show(p);
+
+      writeln('TODO: TgtkObject.CreateComponent csListBox, csCheckListBox');
+    end;
+    {$Else}
     begin
       p:= gtk_scrolled_window_new(nil, nil);
       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
@@ -5706,7 +5825,8 @@ begin
         SetSelectionMode(Sender,p,TCustomListBox(Sender).MultiSelect,
                          TCustomListBox(Sender).ExtendedSelect);
     end;
-
+   {$EndIf}
+  
   csListView :
     Begin
       p:=CreateListView(Sender);
@@ -7034,6 +7154,9 @@ begin
      end;
      
   csListView :
+  {$IfDef GTK2}
+    Writeln('TODO: TgtkObject.SetProperties csListView');
+  {$Else}
     begin
       // set up columns..
 
@@ -7135,7 +7258,7 @@ begin
       end;
       gtk_clist_thaw(GTK_CLIST(Widget));
     end;
-
+  {$EndIf}
   {$IfDef GTK1}
   csMemo:
     begin
@@ -8264,8 +8387,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.422  2003/09/22 15:34:07  ajgenius
-  use GtkImage and Pixbuf for GTK2 instead of Deprecated GtkPixmap
+  Revision 1.423  2003/09/22 19:17:26  ajgenius
+  begin implementing GtkTreeView for ListBox/CListBox
 
   Revision 1.421  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha

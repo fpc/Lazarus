@@ -204,11 +204,11 @@ type
     procedure ListViewAddItem(TheListView: TObject);
     
     // listbox
-    function GetTopIndex(Sender: TObject): integer;
-    function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer;
-    function GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
+    function GetTopIndex(Sender: TObject): integer;virtual;
+    function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer;virtual;
+    function GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;virtual;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
-                               MultiSelect, ExtendedSelect: boolean);
+                               MultiSelect, ExtendedSelect: boolean); virtual;
 
     // forms and dialogs
     procedure BringFormToFront(Sender: TObject);
@@ -386,6 +386,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.152  2003/09/22 19:17:26  ajgenius
+  begin implementing GtkTreeView for ListBox/CListBox
+
   Revision 1.151  2003/09/22 15:34:07  ajgenius
   use GtkImage and Pixbuf for GTK2 instead of Deprecated GtkPixmap
 

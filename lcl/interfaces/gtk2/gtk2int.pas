@@ -61,6 +61,8 @@ type
     function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
     Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
 
+    procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
+      MultiSelect, ExtendedSelect: boolean); override;
     procedure CreateComponent(Sender : TObject); override;
     function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
     procedure AppendText(Sender: TObject; Str: PChar); override;
@@ -73,6 +75,44 @@ type
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
   end;
 
+  TGtkListStoreStringList = class(TStrings)
+  private
+    FGtkListStore : PGtkListStore;
+    FOwner: TWinControl;
+    FSorted : boolean;
+    FStates: TGtkListStringsStates;
+    FCachedCount: integer;
+    FCachedItems: PGtkTreeIter;
+    FUpdateCount: integer;
+  protected
+    function GetCount : integer; override;
+    function Get(Index : Integer) : string; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure PutObject(Index: Integer; AnObject: TObject); override;
+    procedure SetSorted(Val : boolean); virtual;
+    procedure ConnectItemCallbacks(Index: integer);
+    procedure ConnectItemCallbacks(Li: TGtkTreeIter); virtual;
+    procedure ConnectAllCallbacks; virtual;
+    procedure RemoveItemCallbacks(Index: integer); virtual;
+    procedure RemoveAllCallbacks; virtual;
+    procedure UpdateItemCache;
+  public
+    constructor Create(ListStore : PGtkListStore; TheOwner: TWinControl);
+    destructor Destroy; override;
+    function Add(const S: string): Integer; override;
+    procedure Assign(Source : TPersistent); override;
+    procedure Clear; override;
+    procedure Delete(Index : integer); override;
+    function IndexOf(const S: string): Integer; override;
+    procedure Insert(Index : integer; const S: string); override;
+    procedure Sort; virtual;
+    function IsEqual(List: TStrings): boolean;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+  public
+    property Sorted : boolean read FSorted write SetSorted;
+    property Owner: TWinControl read FOwner;
+  end;
 
 {$IfDef GTK2_2}//we need a GTK2_2 FLAG somehow
 Procedure  gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;
@@ -88,6 +128,424 @@ procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPix
 {$EndIf}
 
 implementation
+
+
+const
+  GtkListStoreItemGtkListTag = 'GtkList';
+  GtkListStoreItemLCLListTag = 'LCLList';
+
+{*************************************************************}
+{                      TGtkListStoreStringList methods             }
+{*************************************************************}
+
+{------------------------------------------------------------------------------
+  Method: TGtkListStoreStringList.Create
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+constructor TGtkListStoreStringList.Create(ListStore : PGtkListStore; TheOwner: TWinControl);
+begin
+  inherited Create;
+  if ListStore = nil then RaiseException(
+    'TGtkListStoreStringList.Create Unspecified list store');
+  FGtkListStore:= ListStore;
+  if TheOwner = nil then RaiseException(
+    'TGtkListStoreStringList.Create Unspecified owner');
+  FOwner:=TheOwner;
+  Include(FStates,glsItemCacheNeedsUpdate);
+  ConnectAllCallbacks;
+end;
+
+destructor TGtkListStoreStringList.Destroy;
+begin
+  // don't destroy the widgets
+  RemoveAllCallbacks;
+  ReAllocMem(FCachedItems,0);
+  inherited Destroy;
+end;
+
+function TGtkListStoreStringList.Add(const S: string): Integer;
+begin
+  Result:=Count;
+  Insert(Count,S);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGtkListStringList.SetSorted
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStoreStringList.SetSorted(Val : boolean);
+begin
+  if Val <> FSorted then begin
+    FSorted:= Val;
+    if FSorted then Sort;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TGtkListStoreStringList.ConnectItemCallbacks(Index: integer);
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStoreStringList.ConnectItemCallbacks(Index: integer);
+var
+  ListItem: TGtkTreeIter;
+begin
+  UpdateItemCache;
+  ListItem:=FCachedItems[Index];
+  ConnectItemCallbacks(ListItem);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TGtkListStoreStringList.ConnectItemCallbacks(Li: PGtkListItem);
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStoreStringList.ConnectItemCallbacks(Li: TGtkTreeIter);
+begin
+  {gtk_object_set_data(PGtkObject(li),GtkListItemLCLListTag,Self);
+  gtk_object_set_data(PGtkObject(li),GtkListItemGtkListTag,FGtkList);}
+end;
+
+{------------------------------------------------------------------------------
+  procedure TGtkListStoreStringList.ConnectAllCallbacks;
+ ------------------------------------------------------------------------------}
+procedure TGtkListStoreStringList.ConnectAllCallbacks;
+var
+  i, Cnt: integer;
+begin
+  BeginUpdate;
+  Cnt:=Count-1;
+  for i:=0 to Cnt-1 do
+    ConnectItemCallbacks(i);
+  EndUpdate;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TGtkListStoreStringList.RemoveItemCallbacks(Index: integer);
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStoreStringList.RemoveItemCallbacks(Index: integer);
+var
+  ListItem: TGtkTreeIter;
+begin
+  UpdateItemCache;
+  ListItem:=FCachedItems[Index];
+  {gtk_object_set_data(PGtkObject(ListItem),GtkListItemLCLListTag,nil);
+  gtk_object_set_data(PGtkObject(ListItem),GtkListItemGtkListTag,nil);}
+end;
+
+{------------------------------------------------------------------------------
+  procedure TGtkListStoreStringList.RemoveAllCallbacks;
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStoreStringList.RemoveAllCallbacks;
+var
+  i: integer;
+begin
+  BeginUpdate;
+  for i:=0 to Count-1 do
+    RemoveItemCallbacks(i);
+  EndUpdate;
+end;
+
+procedure TGtkListStoreStringList.UpdateItemCache;
+var
+  i: integer;
+begin
+  if not (glsItemCacheNeedsUpdate in FStates) then exit;
+  if (FGtkListStore<>nil) then
+    FCachedCount:= gtk_tree_model_iter_n_children(GTK_TREE_MODEL(FGtkListStore),nil)
+  else
+    FCachedCount:=0;
+  ReAllocMem(FCachedItems,SizeOf(TGtkTreeIter)*FCachedCount);
+  if FGtkListStore<>nil then
+    For I := 0 to FCachedCount - 1 do
+      gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(FGtkListStore), @FCachedItems[i], nil, I);
+  Exclude(FStates,glsItemCacheNeedsUpdate);
+end;
+
+procedure TGtkListStoreStringList.PutObject(Index: Integer; AnObject: TObject);
+var
+  ListItem : TGtkTreeIter;
+begin
+  if (Index < 0) or (Index >= Count) then
+    RaiseException('TGtkListStoreStringList.PutObject Out of bounds.')
+  else if FGtkListStore<>nil then begin
+    UpdateItemCache;
+    ListItem:=FCachedItems[Index];
+    {if ListItem <> nil then begin
+      gtk_object_set_data(PGtkObject(ListItem),'LCLStringsObject',AnObject);
+    end;}
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGtkListStoreStringList.Sort
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStoreStringList.Sort;
+var
+  sl: TStringList;
+begin
+  BeginUpdate;
+  // sort internally (sorting in the widget would be slow and unpretty ;)
+  sl:=TStringList.Create;
+  sl.Assign(Self);
+  sl.Sort; // currently this is quicksort ->
+             // Disadvantages: - worst case on sorted list
+             //                - not keeping order
+             // ToDo: replace by mergesort and add customsort
+  Assign(sl);
+  sl.Free;
+  EndUpdate;
+end;
+
+function TGtkListStoreStringList.IsEqual(List: TStrings): boolean;
+var
+  i, Cnt: integer;
+  CmpList: TStringList;
+begin
+  if List=Self then begin
+    Result:=true;
+    exit;
+  end;
+  Result:=false;
+  if List=nil then exit;
+  BeginUpdate;
+  Cnt:=Count;
+  if (Cnt<>List.Count) then exit;
+  CmpList:=TStringList.Create;
+  try
+    CmpList.Assign(List);
+    CmpList.Sorted:=FSorted;
+    for i:=0 to Cnt-1 do begin
+      if (Strings[i]<>CmpList[i]) or (Objects[i]<>CmpList.Objects[i]) then exit;
+    end;
+  finally
+    CmpList.Free;
+  end;
+  Result:=true;
+  EndUpdate;
+end;
+
+procedure TGtkListStoreStringList.BeginUpdate;
+begin
+  if FUpdateCount=0 then Include(FStates,glsItemCacheNeedsUpdate);
+  inc(FUpdateCount);
+end;
+
+procedure TGtkListStoreStringList.EndUpdate;
+begin
+  dec(FUpdateCount);
+  if FUpdateCount=0 then Include(FStates,glsItemCacheNeedsUpdate);
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGtkListStoreStringList.Assign
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStoreStringList.Assign(Source : TPersistent);
+var
+  i, Cnt: integer;
+begin
+  if (Source=Self) or (Source=nil) then exit;
+  if ((Source is TGtkListStoreStringList)
+    and (TGtkListStoreStringList(Source).FGtkListStore=FGtkListStore))
+  then
+    RaiseException('TGtkListStoreStringList.Assign: There 2 lists with the same FGtkListStore');
+  BeginUpdate;
+  try
+    if Source is TStrings then begin
+      // clearing and resetting can change other properties of the widget,
+      // => don't change if the content is already the same
+      if IsEqual(TStrings(Source)) then exit;
+      Clear;
+      Cnt:=TStrings(Source).Count;
+      for i:=0 to Cnt - 1 do begin
+        AddObject(TStrings(Source)[i],TStrings(Source).Objects[i]);
+      end;
+      // ToDo: restore other settings
+
+      // Do not call inherited Assign as it does things we do not want to happen
+    end else
+      inherited Assign(Source);
+  finally
+    EndUpdate;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGtkListStoreStringList.Get
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGtkListStoreStringList.Get(Index : integer) : string;
+var
+  Item : PChar;
+  ListItem : TGtkTreeIter;
+begin
+  if (Index < 0) or (Index >= Count) then
+    RaiseException('TGtkListStoreStringList.Get Out of bounds.')
+  else begin
+    UpdateItemCache;
+    ListItem:=FCachedItems[Index];
+
+    Item := nil;
+    gtk_tree_model_get(GTK_TREE_MODEL(FGtkListStore), @ListItem, [0, @Item, -1]);
+    if (Item <> nil) then begin
+      Result:= StrPas(Item);
+      g_free(Item);
+    end
+    else
+      result := '';
+  end;
+end;
+
+function TGtkListStoreStringList.GetObject(Index: Integer): TObject;
+var
+  ListItem : TGtkTreeIter;
+begin
+  Result:=nil;
+  if (Index < 0) or (Index >= Count) then
+    RaiseException('TGtkListStoreStringList.GetObject Out of bounds.')
+  else if FGtkListStore<>nil then begin
+    UpdateItemCache;
+    ListItem:=FCachedItems[Index];
+    {if ListItem<>nil then begin
+      Result:=TObject(gtk_object_get_data(PGtkObject(ListItem),'LCLStringsObject'));
+    end;}
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGtkListStoreStringList.GetCount
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGtkListStoreStringList.GetCount: integer;
+begin
+  if (FGtkListStore<>nil) then begin
+    UpdateItemCache;
+    Result:=FCachedCount;
+  end else begin
+    Result:= 0
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGtkListStoreStringList.Clear
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStoreStringList.Clear;
+begin
+  RemoveAllCallbacks;
+  Include(FStates,glsItemCacheNeedsUpdate);
+  gtk_list_store_clear(FGtkListStore)
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGtkListStoreStringList.Delete
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStoreStringList.Delete(Index : integer);
+var
+  ListItem : TGtkTreeIter;
+begin
+  RemoveItemCallbacks(Index);
+  Include(FStates,glsItemCacheNeedsUpdate);
+  gtk_tree_model_iter_nth_child (FGtkListStore, @ListItem, nil, Index);
+  gtk_list_store_remove(FGtkListStore, @ListItem);
+end;
+
+function TGtkListStoreStringList.IndexOf(const S: string): Integer;
+var
+  l, m, r, cmp: integer;
+begin
+  BeginUpdate;
+  if FSorted then begin
+    l:=0;
+    r:=Count-1;
+    m:=l;
+    while (l<=r) do begin
+      m:=(l+r) shr 1;
+      cmp:=AnsiCompareText(S,Strings[m]);
+
+      if cmp<0 then
+        r:=m-1
+      else if cmp>0 then
+        l:=m+1
+      else begin
+        Result:=m;
+        exit;
+      end;
+    end;
+    Result:=-1;
+  end else begin
+    Result:=inherited IndexOf(S);
+  end;
+  EndUpdate;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TGtkListStoreStringList.Insert
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStoreStringList.Insert(Index : integer; const S : string);
+var
+  li : TGtkTreeIter;
+  l, m, r, cmp: integer;
+begin
+  BeginUpdate;
+  try
+    if FSorted then begin
+      l:=0;
+      r:=Count-1;
+      m:=l;
+      while (l<=r) do begin
+        m:=(l+r) shr 1;
+        cmp:=AnsiCompareText(S,Strings[m]);
+        if cmp<0 then
+          r:=m-1
+        else if cmp>0 then
+          l:=m+1
+        else
+          break;
+      end;
+      if (m<Count) and (AnsiCompareText(S,Strings[m])>0) then
+        inc(m);
+      Index:=m;
+    end;
+    if (Index < 0) or (Index > Count) then
+      RaiseException('TGtkListStoreStringList.Insert: Index '+IntToStr(Index)
+        +' out of bounds. Count='+IntToStr(Count));
+    if Owner = nil then RaiseException(
+      'TGtkListStoreStringList.Insert Unspecified owner');
+
+    gtk_list_store_insert(FGtkListStore, @li, Index);
+    gtk_list_store_set(FGtkListStore, @li, [0, PChar(S), -1]);
+
+    ConnectItemCallbacks(li);
+
+    Include(FStates,glsItemCacheNeedsUpdate);
+
+  finally
+    EndUpdate;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method:  DrawText
@@ -946,6 +1404,43 @@ begin
   result := Inherited EndPaint(Handle, PS);
 end;
 
+{------------------------------------------------------------------------------
+  procedure Tgtk2Object.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
+    MultiSelect, ExtendedSelect: boolean);
+------------------------------------------------------------------------------}
+procedure Tgtk2Object.SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
+  MultiSelect, ExtendedSelect: boolean);
+var
+  AControl: TWinControl;
+  SelectionMode: TGtkSelectionMode;
+  Selection : PGtkTreeSelection;
+begin
+  AControl:=TWinControl(Sender);
+  if (AControl is TWinControl) and
+    (AControl.fCompStyle in [csListBox, csCheckListBox, csCListBox]) then
+  begin
+    if MultiSelect then
+    begin
+       if ExtendedSelect
+          then SelectionMode:= GTK_SELECTION_EXTENDED
+          else SelectionMode:= GTK_SELECTION_MULTIPLE;
+    end
+    else
+      SelectionMode:= GTK_SELECTION_BROWSE;
+    case AControl.fCompStyle of
+
+    csListBox, csCheckListBox:
+      begin
+        Selection := gtk_tree_view_get_selection(GTK_TREE_VIEW(
+           GetWidgetInfo(Widget, True)^.ImplementationWidget));
+        gtk_tree_selection_set_mode(Selection, SelectionMode);
+      end;
+     else
+       inherited SetSelectionMode(Sender, Widget, MultiSelect, ExtendedSelect);
+    end;
+  end;
+end;
+
 procedure Tgtk2Object.CreateComponent(Sender : TObject);
 var
   Caption : ansistring;          // the caption of "Sender"
@@ -964,6 +1459,9 @@ var
   AccelKey  : guint;
   SetupProps : boolean;
   AWindow: PGdkWindow;
+  liststore : PGtkListStore;
+  renderer : PGtkCellRenderer;
+  column : PGtkTreeViewColumn;
 begin
   p := nil;
   SetupProps:= false;
@@ -982,6 +1480,49 @@ begin
       gtk_widget_show_all(P);
     end;
     
+  csListBox, csCheckListBox:
+    begin
+      p:= gtk_scrolled_window_new(nil, nil);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar, GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar, GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                    GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+      gtk_widget_show(p);
+
+      if (CompStyle = csListBox) then
+        liststore := gtk_list_store_new (1, [G_TYPE_STRING, nil])
+      else
+        liststore := gtk_list_store_new (1, [G_TYPE_BOOLEAN, nil]);
+
+      TempWidget:= gtk_tree_view_new_with_model (GTK_TREE_MODEL (liststore));
+      g_object_unref (G_OBJECT (liststore));
+
+      if (CompStyle = csListBox) then begin
+        renderer := gtk_cell_renderer_text_new();
+        column := gtk_tree_view_column_new_with_attributes ('LISTITEMS', renderer, ['text', 0, nil]);
+      end
+      else begin
+        renderer := gtk_cell_renderer_toggle_new();
+        column := gtk_tree_view_column_new_with_attributes ('CHECKLISTITEMS', renderer, ['active', 0, nil]);
+      end;
+      
+      gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
+      gtk_tree_view_set_headers_visible(GTK_TREE_VIEW (TempWidget), False);
+      
+      gtk_scrolled_window_add_with_viewport(PGtkScrolledWindow(p), TempWidget);
+      gtk_container_set_focus_vadjustment(PGtkContainer(TempWidget),
+                   gtk_scrolled_window_get_vadjustment(PGtkScrolledWindow(p)));
+      gtk_container_set_focus_hadjustment(PGtkContainer(TempWidget),
+                   gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
+      gtk_widget_show(TempWidget);
+
+      SetMainWidget(p, TempWidget);
+      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      if Sender is TCustomListBox then
+        SetSelectionMode(Sender,p,TCustomListBox(Sender).MultiSelect,
+                         TCustomListBox(Sender).ExtendedSelect);
+    end;
+
   csMemo :
     begin
       P := gtk_scrolled_window_new(nil, nil);
@@ -1058,6 +1599,36 @@ begin
       handle := hwnd(ObjectToGtkObject(Sender));
       Case LM_Message of
       
+      LM_GETITEMS :
+      begin
+        case TControl(Sender).fCompStyle of
+          csComboBox:
+            Result:=longint(gtk_object_get_data(PGtkObject(Handle),'LCLList'));
+
+         { csCListBox:
+            begin
+              Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+
+              Data := TGtkCListStringList.Create(PGtkCList(Widget));
+              if Sender is TCustomListBox then
+                TGtkCListStringList(Data).Sorted:=TCustomListBox(Sender).Sorted;
+              Result := integer(Data);
+            end;}
+
+          csCheckListBox, csListBox:
+            begin
+              Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+              Data:= TGtkListStoreStringList.Create(GTK_LIST_STORE(gtk_tree_view_get_model(GTK_TREE_VIEW(Widget))),
+                     TWinControl(Sender));
+              if Sender is TCustomListBox then
+                TGtkListStoreStringList(Data).Sorted:=TCustomListBox(Sender).Sorted;
+              Result:= Integer(Data);
+            end;
+        else
+          raise Exception.Create('Message LM_GETITEMS - Not implemented');
+        end;
+      end;
+
       LM_GETSELSTART :
       begin
         if (Sender is TControl) then begin
@@ -1110,6 +1681,22 @@ begin
             end;
           end;
           end;
+      end;
+
+      LM_SETBORDER:
+      begin
+        if (Sender is TControl) then
+        begin
+          if (TControl(Sender).fCompStyle in [csListBox, csCListBox, csCheckListBox]) then
+            begin
+              {Widget:= PGtkWidget(Handle);
+              if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle)
+              then
+                gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(Widget), GTK_SHADOW_IN)
+              else}
+                gtk_scrolled_window_set_shadow_type(GTK_SCROLLED_WINDOW(Widget), GTK_SHADOW_NONE);
+            end
+         end;
       end;
 
       LM_SETSELSTART:
@@ -1534,6 +2121,9 @@ end.
 
 {
   $Log$
+  Revision 1.20  2003/09/22 19:17:26  ajgenius
+  begin implementing GtkTreeView for ListBox/CListBox
+
   Revision 1.19  2003/09/19 00:41:52  ajgenius
   remove USE_PANGO define since pango now apears to work properly.
 
