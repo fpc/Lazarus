@@ -15,7 +15,6 @@
          (can't be checked now, because the implementation TWinControl
 	  is not yet ready)
        - 1st button is not placed at right top-position
-       - What about OnClick?
 
   Possible improvements:
        - The current implementation often recreates the group even
@@ -112,6 +111,7 @@ begin
       Temp.Height := vertDist;
       Temp.Caption := FItems.Strings[i];
       Temp.Checked := (i = FItemIndex);
+      Temp.OnClick := @Clicked;
       Temp.Show;
       FButtonList.Add (Temp);
 
@@ -128,7 +128,6 @@ begin
   end;
   inherited CreateWnd;
 end;
-
 
 {------------------------------------------------------------------------------
   Method: TCustomRadioGroup.ItemsChanged
@@ -261,11 +260,23 @@ begin
   if HandleAllocated then RecreateWnd;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TCustomRadioGroup.Clicked
+  Params: sender - the calling object
 
-
+  This is the callback for all radiobuttons in the group. If an OnClick
+  handler is assigned it will be called
+ ------------------------------------------------------------------------------}
+Procedure TCustomRadioGroup.Clicked(Sender : TObject);
+Begin
+   if Assigned (FOnClick) then FOnClick(Self);
+end;
 
 {
   $Log$
+  Revision 1.6  2001/04/17 21:33:52  lazarus
+  + added working OnClick support for TCustomRadiogroup, stoppok
+
   Revision 1.5  2001/03/15 14:42:20  lazarus
   MG: customradiogroup is now streamable
 
