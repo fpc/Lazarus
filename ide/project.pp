@@ -20,7 +20,7 @@
  ***************************************************************************/
 
 }
-unit project;
+unit Project;
 
 {$mode objfpc}{$H+}
 
@@ -1504,6 +1504,9 @@ end.
 
 {
   $Log$
+  Revision 1.36  2001/11/06 15:47:32  lazarus
+  MG: added build all
+
   Revision 1.35  2001/11/06 12:20:33  lazarus
   MG: added Run Parameter Options - not enabled yet
 

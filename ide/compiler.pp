@@ -45,7 +45,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    function Compile(AProject: TProject;
+    function Compile(AProject: TProject; BuildAll: boolean;
        const DefaultFilename: string): TModalResult;
     function GetSourcePosition(const Line: string; var Filename:string;
        var CaretXY: TPoint; var MsgType: TErrorType): boolean;
@@ -107,7 +107,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TCompiler Compile                                                           }
 {------------------------------------------------------------------------------}
-function TCompiler.Compile(AProject: TProject;
+function TCompiler.Compile(AProject: TProject; BuildAll: boolean;
   const DefaultFilename: string): TModalResult;
 const
   BufSize = 1024;
@@ -196,6 +196,8 @@ begin
       exit;
     end;
     {$ENDIF linux}
+    if BuildAll then
+      CmdLine := CmdLine+' -B';
     CmdLine := CmdLine
                  + ' '+ AProject.CompilerOptions.MakeOptionsString(ProjectFilename)
                  + ' '+ ProjectFilename;
@@ -328,6 +330,9 @@ end.
 
 {
   $Log$
+  Revision 1.17  2001/11/06 15:47:31  lazarus
+  MG: added build all
+
   Revision 1.16  2001/11/05 18:18:13  lazarus
   added popupmenu+arrows to notebooks, added target filename
 

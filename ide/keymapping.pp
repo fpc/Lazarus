@@ -51,6 +51,7 @@ const
   ecStepOver          = ecStepInto  + 1;
   ecRunToCursor      = ecStepOver  + 1;
   ecStopProgram      = ecRunToCursor + 1;
+  ecBuildAll          = ecStopProgram + 1;
 
   ecJumpToEditor       = ecUserFirst + 300;
   ecToggleFormUnit     = ecUserFirst + 301;
@@ -313,6 +314,7 @@ begin
     ecOpen: Result:= 'open';
     ecClose: Result:= 'close';
     ecBuild: Result:= 'build program/project';
+    ecBuildAll: Result:= 'build all files of program/project';
     ecRun: Result:= 'run program';
     ecPause: Result:= 'pause program';
     ecStepInto: Result:= 'step into';
@@ -907,6 +909,7 @@ begin
   Add('Open',ecOpen,VK_O,[ssCtrl],VK_UNKNOWN,[]);
   Add('Close',ecClose,VK_F4,[ssCtrl],VK_UNKNOWN,[]);
   Add('Build project/program',ecBuild,VK_F9,[ssCtrl],VK_UNKNOWN,[]);
+  Add('Build all files of project/program',ecBuildAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add('Run program',ecRun,VK_F9,[],VK_UNKNOWN,[]);
   Add('Pause program',ecPause,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add('Step into',ecStepInto,VK_F7,[],VK_UNKNOWN,[]);

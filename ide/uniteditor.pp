@@ -2931,10 +2931,8 @@ initialization
 {$I designer/bookmark.lrs}
 
 finalization
-  if aWordCompletion<>nil then begin
-    aWordCompletion.Free;
-    aWordCompletion:=nil;
-  end;
+  aWordCompletion.Free;
+  aWordCompletion:=nil;
 
 
 end.
