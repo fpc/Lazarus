@@ -42,20 +42,23 @@ uses
 
 type
   TControlSelection = class;
+  TGrabber = class;
 
   { TGrabber }
   
-  TGrabberMoveEvent = procedure(Sender: TObject; dx, dy: Integer) of object;
-
   TGrabIndex = 0..7;
 
   TGrabPosition = (gpTop, gpBottom, gpLeft, gpRight);
   TGrabPositions = set of TGrabPosition;
 
+  TGrabberMoveEvent = procedure(Grabber: TGrabber;
+                                const OldRect, NewRect: TRect) of object;
+
   // A TGrabber is one of the 8 small black rectangles at the boundaries of
   // a selection
   TGrabber = class
   private
+    FOnMove: TGrabberMoveEvent;
     FPositions: TGrabPositions;
     FHeight: integer;
     FTop: integer;
@@ -68,6 +71,11 @@ type
     FGrabIndex: TGrabIndex;
     FCursor: TCursor;
   public
+    procedure SaveBounds;
+    procedure Move(NewLeft, NewTop: integer);
+    procedure GetRect(var ARect: TRect);
+    procedure InvalidateOnForm(AForm: TCustomForm);
+
     property Positions: TGrabPositions read FPositions write FPositions;
     property Left:integer read FLeft write FLeft;
     property Top:integer read FTop write FTop;
@@ -79,7 +87,7 @@ type
     property OldHeight:integer read FOldHeight write FOldHeight;
     property GrabIndex: TGrabIndex read FGrabIndex write FGrabIndex;
     property Cursor: TCursor read FCursor write FCursor;
-    procedure SaveBounds;
+    property OnMove: TGrabberMoveEvent read FOnMove write FOnMove;
   end;
 
 
@@ -129,6 +137,7 @@ type
     function IsTopLvl: boolean;
     function ChildInSelection: boolean;
     function ParentInSelection: boolean;
+    procedure InvalidateNonVisualComponent;
 
     property Component: TComponent read FComponent write FComponent;
     property Owner: TControlSelection read FOwner write SetOwner;
@@ -165,6 +174,8 @@ type
     CacheValid: boolean;
     LineValid: boolean;
     Line: TRect;
+    PaintedLineValid: boolean;
+    PaintedLine: TRect;
   end;
   
   TGuideLineType = (glLeft, glTop, glRight, glBottom);
@@ -191,11 +202,14 @@ type
     cssRubberbandActive,
     cssCacheGuideLines,
     cssVisible,
-    cssParentChildFlagsNeedUpdate
+    cssParentChildFlagsNeedUpdate,
+    cssGrabbersPainted,
+    cssGuideLinesPainted
     );
   TControlSelStates = set of TControlSelState;
 
   TControlSelection = class(TObject)
+    procedure GrabberMove(Grabber: TGrabber; const OldRect, NewRect: TRect);
   private
     FControls: TList;  // list of TSelectedComponent
 
@@ -271,6 +285,8 @@ type
     function CompareVertCenter(Index1, Index2: integer): integer;
   protected
     procedure AdjustGrabbers;
+    procedure InvalidateGrabbers;
+    procedure InvalidateGuideLines;
     procedure DoApplyUserBounds;
     procedure UpdateRealBounds;
     procedure UpdateParentChildFlags;
@@ -340,7 +356,7 @@ type
     procedure DrawGuideLines(DC: TDesignerDeviceContext);
     property CacheGuideLines: boolean
       read GetCacheGuideLines write SetCacheGuideLines;
-    procedure InvalidGuideLinesCache;
+    procedure InvalidateGuideLinesCache;
     function ParentLevel: integer;
 
     property GrabberSize:integer read FGrabberSize write SetGrabberSize;
@@ -431,6 +447,34 @@ begin
   FOldHeight:=FHeight;
 end;
 
+procedure TGrabber.Move(NewLeft, NewTop: integer);
+var
+  OldRect, NewRect: TRect;
+begin
+  if (NewLeft=FLeft) and (NewTop=FTop) then exit;
+  GetRect(OldRect);
+  FLeft:=NewLeft;
+  FTop:=NewTop;
+  GetRect(NewRect);
+  if Assigned(FOnMove) then FOnMove(Self,OldRect,NewRect);
+end;
+
+procedure TGrabber.GetRect(var ARect: TRect);
+begin
+  ARect.Left:=FLeft;
+  ARect.Top:=FTop;
+  ARect.Right:=FLeft+FWidth;
+  ARect.Bottom:=FTop+FHeight;
+end;
+
+procedure TGrabber.InvalidateOnForm(AForm: TCustomForm);
+var
+  ARect: TRect;
+begin
+  GetRect(ARect);
+  InvalidateRect(AForm.Handle,@ARect,false);
+end;
+
 
 { TSelectedControl }
 
@@ -467,8 +511,12 @@ begin
     FCachedWidth:=AWidth;
     FCachedHeight:=AHeight;
   end else begin
-    Left:=ALeft;
-    Top:=ATop;
+    if (Left<>ALeft) or (Top<>ATop) then begin
+      InvalidateNonVisualComponent;
+      Left:=ALeft;
+      Top:=ATop;
+      InvalidateNonVisualComponent;
+    end;
   end;
 end;
 
@@ -521,6 +569,20 @@ begin
   end else begin
     Result:=false;
   end;
+end;
+
+procedure TSelectedControl.InvalidateNonVisualComponent;
+var
+  AForm: TCustomForm;
+  CompRect: TRect;
+begin
+  AForm:=TCustomForm(FComponent.Owner);
+  if (AForm=nil) or (not (AForm is TCustomForm)) then exit;
+  CompRect.Left:=LongRec(FComponent.DesignInfo).Lo;
+  CompRect.Top:=LongRec(FComponent.DesignInfo).Hi;
+  CompRect.Right:=CompRect.Left+NonVisualCompWidth;
+  CompRect.Bottom:=CompRect.Top+NonVisualCompWidth;
+  InvalidateRect(AForm.Handle,@CompRect,false);
 end;
 
 function TSelectedControl.GetLeft: integer;
@@ -622,6 +684,7 @@ begin
     FGrabbers[g].Positions:=GRAB_POSITIONS[g];
     FGrabbers[g].GrabIndex:=g;
     FGrabbers[g].Cursor:=GRAB_CURSOR[g];
+    FGrabbers[g].OnMove:=@GrabberMove;
   end;
   FCustomForm:=nil;
   FActiveGrabber:=nil;
@@ -681,7 +744,7 @@ begin
     Include(FStates,cssCacheGuideLines)
   else
     Exclude(FStates,cssCacheGuideLines);
-  InvalidGuideLinesCache;
+  InvalidateGuideLinesCache;
 end;
 
 function TControlSelection.GetSnapping: boolean;
@@ -709,6 +772,14 @@ begin
   Result:=EnvironmentOptions.RubberbandSelectionColor;
 end;
 
+procedure TControlSelection.GrabberMove(Grabber: TGrabber; const OldRect,
+  NewRect: TRect);
+begin
+  if FCustomForm=nil then exit;
+  InvalidateRect(FCustomForm.Handle,@OldRect,false);
+  InvalidateRect(FCustomForm.Handle,@NewRect,false);
+end;
+
 function TControlSelection.GetCacheGuideLines: boolean;
 begin
   Result:=cssCacheGuideLines in FStates;
@@ -734,6 +805,8 @@ begin
     NewCustomForm:=nil;
   if NewCustomForm=FCustomForm then exit;
   // form changed
+  InvalidateGuideLines;
+  InvalidateGrabbers;
   OldCustomForm:=FCustomForm;
   FCustomForm:=NewCustomForm;
   if Assigned(FOnSelectionFormChanged) then
@@ -768,31 +841,62 @@ begin
   FTop:=FRealTop;
   FWidth:=FRealWidth;
   FHeight:=FRealHeight;
-  InvalidGuideLinesCache;
+  InvalidateGuideLinesCache;
   Exclude(FStates,cssBoundsNeedsUpdate);
 end;
 
 procedure TControlSelection.AdjustGrabbers;
 var g:TGrabIndex;
-  OutPix, InPix: integer;
+  OutPix, InPix, NewGrabberLeft, NewGrabberTop: integer;
 begin
   OutPix:=GrabberSize div 2;
   InPix:=GrabberSize-OutPix;
   for g:=Low(TGrabIndex) to High(TGrabIndex) do begin
     if gpLeft in FGrabbers[g].Positions then
-      FGrabbers[g].Left:=FRealLeft-OutPix
+      NewGrabberLeft:=FRealLeft-OutPix
     else if gpRight in FGrabbers[g].Positions then
-      FGrabbers[g].Left:=FRealLeft+FRealWidth-InPix
+      NewGrabberLeft:=FRealLeft+FRealWidth-InPix
     else
-      FGrabbers[g].Left:=FRealLeft+((FRealWidth-GrabberSize) div 2);
+      NewGrabberLeft:=FRealLeft+((FRealWidth-GrabberSize) div 2);
     if gpTop in FGrabbers[g].Positions then
-      FGrabbers[g].Top:=FRealTop-OutPix
+      NewGrabberTop:=FRealTop-OutPix
     else if gpBottom in FGrabbers[g].Positions then
-      FGrabbers[g].Top:=FRealTop+FRealHeight-InPix
+      NewGrabberTop:=FRealTop+FRealHeight-InPix
     else
-      FGrabbers[g].Top:=FRealTop+((FRealHeight-GrabberSize) div 2);
+      NewGrabberTop:=FRealTop+((FRealHeight-GrabberSize) div 2);
     FGrabbers[g].Width:=GrabberSize;
     FGrabbers[g].Height:=GrabberSize;
+    FGrabbers[g].Move(NewGrabberLeft,NewGrabberTop);
+  end;
+end;
+
+procedure TControlSelection.InvalidateGrabbers;
+var g: TGrabIndex;
+begin
+  if cssGrabbersPainted in FStates then begin
+    for g:=Low(TGrabIndex) to High(TGrabIndex) do
+      FGrabbers[g].InvalidateOnForm(FCustomForm);
+    Exclude(FStates,cssGrabbersPainted);
+  end;
+end;
+
+procedure TControlSelection.InvalidateGuideLines;
+var
+  g: TGuideLineType;
+  LineRect: TRect;
+begin
+  if (cssGuideLinesPainted in FStates) then begin
+    if (FCustomForm<>nil) and CacheGuideLines then
+      for g:=Low(g) to High(g) do begin
+        if FGuideLinesCache[g].PaintedLineValid then
+        begin
+          LineRect:=FGuideLinesCache[g].PaintedLine;
+          if LineRect.Top=LineRect.Bottom then inc(LineRect.Bottom);
+          if LineRect.Left=LineRect.Right then inc(LineRect.Right);
+          InvalidateRect(FCustomForm.Handle,@LineRect,false);
+        end;
+      end;
+    Exclude(FStates,cssGuideLinesPainted);
   end;
 end;
 
@@ -819,7 +923,7 @@ begin
       Abs(FWidth),
       Abs(FHeight)
     );
-    InvalidGuideLinesCache;
+    InvalidateGuideLinesCache;
   end else if Count>1 then begin
     // multi selection
     {$IFDEF VerboseDesigner}
@@ -852,7 +956,7 @@ begin
         ' ',Items[i].Left,',',Items[i].Top,',',Items[i].Width,',',Items[i].Height);
         {$ENDIF}
       end;
-      InvalidGuideLinesCache;
+      InvalidateGuideLinesCache;
     end;
   end;
   UpdateRealBounds;
@@ -883,6 +987,7 @@ begin
       FRealHeight:=Max(FRealTop+FRealHeight,LeftTop.Y+Items[i].Height)-FRealTop;
     end;
     AdjustGrabbers;
+    InvalidateGuideLines;
   end;
 end;
 
@@ -1335,10 +1440,11 @@ begin
   end;
 end;
 
-procedure TControlSelection.InvalidGuideLinesCache;
+procedure TControlSelection.InvalidateGuideLinesCache;
 var
   t: TGuideLineType;
 begin
+  InvalidateGuideLines;
   for t:=Low(TGuideLineType) to High(TGuideLineType) do
     FGuideLinesCache[t].CacheValid:=false;
 end;
@@ -1504,6 +1610,10 @@ procedure TControlSelection.Delete(Index:integer);
 begin
   if Index<0 then exit;
   BeginUpdate;
+  if Count=1 then begin
+    InvalidateGrabbers;
+    InvalidateGuideLines;
+  end;
   Items[Index].Free;
   FControls.Delete(Index);
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
@@ -1519,6 +1629,8 @@ procedure TControlSelection.Clear;
 var i:integer;
 begin
   if FControls.Count=0 then exit;
+  InvalidateGrabbers;
+  InvalidateGuideLines;
   for i:=0 to FControls.Count-1 do Items[i].Free;
   FControls.Clear;
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
@@ -1702,6 +1814,7 @@ begin
       ,FGrabbers[g].Left-Diff.X+FGrabbers[g].Width
       ,FGrabbers[g].Top-Diff.Y+FGrabbers[g].Height
     );
+  Include(FStates,cssGrabbersPainted);
       
   if RestoreBrush then
     DC.Canvas.Brush.Color:=OldBrushColor;
@@ -1902,8 +2015,7 @@ end;
 procedure TControlSelection.SetRubberBandBounds(ARect:TRect);
 var i :integer;
 begin
-  FRubberBandBounds:=ARect;
-  with FRubberBandBounds do begin
+  with ARect do begin
     if Right<Left then begin
       i:=Left;
       Left:=Right;
@@ -1914,6 +2026,17 @@ begin
       Top:=Bottom;
       Bottom:=i;
     end;
+  end;
+  if (FRubberBandBounds.Left<>ARect.Left)
+  or (FRubberBandBounds.Top<>ARect.Top)
+  or (FRubberBandBounds.Right<>ARect.Right)
+  or (FRubberBandBounds.Bottom<>ARect.Bottom)
+  then begin
+    if (FCustomForm<>nil) and RubberbandActive then
+      InvalidateFrame(FCustomForm.Handle,FRubberBandBounds);
+    FRubberBandBounds:=ARect;
+    if (FCustomForm<>nil) and RubberbandActive then
+      InvalidateFrame(FCustomForm.Handle,FRubberBandBounds);
   end;
 end;
 
@@ -2277,17 +2400,17 @@ var
   end;
 
 var
-  LeftGuideLineExists, RightGuideLineExists,
-  TopGuideLineExists, BottomGuideLineExists: boolean;
-  LeftGuideLine, RightGuideLine, TopGuideLine, BottomGuideLine: TRect;
+  LineExists: array[TGuideLineType] of boolean;
+  Line: array[TGuideLineType] of TRect;
+  g: TGuideLineType;
 begin
   if (Count=0) or (FCustomForm=nil) or Items[0].IsTopLvl then exit;
-  LeftGuideLineExists:=GetLeftGuideLine(LeftGuideLine);
-  RightGuideLineExists:=GetRightGuideLine(RightGuideLine);
-  TopGuideLineExists:=GetTopGuideLine(TopGuideLine);
-  BottomGuideLineExists:=GetBottomGuideLine(BottomGuideLine);
-  if (not LeftGuideLineExists) and (not RightGuideLineExists)
-  and (not TopGuideLineExists) and (not BottomGuideLineExists)
+  LineExists[glLeft]:=GetLeftGuideLine(Line[glLeft]);
+  LineExists[glRight]:=GetRightGuideLine(Line[glRight]);
+  LineExists[glTop]:=GetTopGuideLine(Line[glTop]);
+  LineExists[glBottom]:=GetBottomGuideLine(Line[glBottom]);
+  if (not LineExists[glLeft]) and (not LineExists[glRight])
+  and (not LineExists[glTop]) and (not LineExists[glBottom])
   then exit;
   
   RestorePen:=false;
@@ -2296,20 +2419,26 @@ begin
   DCOrigin:=DC.FormOrigin;
   OldPenColor:=DC.Canvas.Pen.Color;
   // draw bottom guideline
-  if BottomGuideLineExists then
-    DrawLine(BottomGuideLine,EnvironmentOptions.GuideLineColorRightBottom);
+  if LineExists[glBottom] then
+    DrawLine(Line[glBottom],EnvironmentOptions.GuideLineColorRightBottom);
   // draw top guideline
-  if TopGuideLineExists then
-    DrawLine(TopGuideLine,EnvironmentOptions.GuideLineColorLeftTop);
+  if LineExists[glTop] then
+    DrawLine(Line[glTop],EnvironmentOptions.GuideLineColorLeftTop);
   // draw right guideline
-  if RightGuideLineExists then
-    DrawLine(RightGuideLine,EnvironmentOptions.GuideLineColorRightBottom);
+  if LineExists[glRight] then
+    DrawLine(Line[glRight],EnvironmentOptions.GuideLineColorRightBottom);
   // draw left guideline
-  if LeftGuideLineExists then
-    DrawLine(LeftGuideLine,EnvironmentOptions.GuideLineColorLeftTop);
+  if LineExists[glLeft] then
+    DrawLine(Line[glLeft],EnvironmentOptions.GuideLineColorLeftTop);
+    
+  for g:=Low(g) to High(g) do begin
+    FGuideLinesCache[g].PaintedLineValid:=LineExists[g];
+    FGuideLinesCache[g].PaintedLine:=Line[g];
+  end;
     
   if RestorePen then
     DC.Canvas.Pen.Color:=OldPenColor;
+  Include(FStates,cssGuideLinesPainted);
 end;
 
 procedure TControlSelection.Sort(SortProc: TSelectionSortCompare);

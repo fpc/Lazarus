@@ -112,10 +112,8 @@ begin
     // FPC1.0.x doesn't call itself before destruction
     {$IFDEF VER1_0}BeforeDestruction;{$ENDIF}
     // ------
-    FMenu.Free;
-    FMenu:=nil;
-    FIcon.Free;
-    FIcon:=nil;
+    FreeThenNil(FMenu);
+    FreeThenNil(FIcon);
     Screen.RemoveForm(Self);
     //writeln('[TCustomForm.Destroy] B ',Name,':',ClassName);
     inherited Destroy;
@@ -1200,6 +1198,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.72  2002/11/29 15:14:47  mattias
+  replaced many invalidates by invalidaterect
+
   Revision 1.71  2002/11/12 16:18:46  lazarus
   MG fixed hidden component page
 
