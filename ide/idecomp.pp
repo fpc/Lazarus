@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, LclLinux, StdCtrls, Forms, Buttons, Menus, ComCtrls,
-  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs, db;
+  Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs; //,db;
 
 
 type
@@ -303,7 +303,7 @@ begin
 
   RegisterComponents('Samples','Spin',[TSpinEdit]);
 
-  RegisterComponents('Data Access','Db',[TDatasource,TDatabase]);
+//  RegisterComponents('Data Access','Db',[TDatasource,TDatabase]);
 
 //  RegisterComponents('Interbase Data Access','Interbase',[TIBStoredProc,TIBQuery,TIBDatabase]);
 
