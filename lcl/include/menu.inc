@@ -81,9 +81,6 @@ end;
  ------------------------------------------------------------------------------}
 destructor TMenu.Destroy;
 begin
-  if (Parent<>nil) and (Parent is TCustomForm)
-  and (TCustomForm(Parent).Menu=Self) then
-    TCustomForm(Parent).Menu:=nil;
   FItems.Free;
   inherited Destroy;
 end;
@@ -173,6 +170,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/10/24 09:37:39  lazarus
+  MG: broke menus.pp <-> controls.pp circle
+
   Revision 1.13  2002/09/19 16:45:54  lazarus
   MG: fixed Menu.Free and gdkwindow=nil bug
 

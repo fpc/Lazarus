@@ -299,7 +299,7 @@ function ShortCutToText(ShortCut: TShortCut): string;
 implementation
 
 uses
-  Interfaces, Controls, Forms;
+  Interfaces;
 
 { Menu command managment }
 
@@ -464,6 +464,9 @@ end.
 
 {
   $Log$
+  Revision 1.30  2002/10/24 09:37:39  lazarus
+  MG: broke menus.pp <-> controls.pp circle
+
   Revision 1.29  2002/10/20 21:49:09  lazarus
   MG: fixes for fpc1.1
 

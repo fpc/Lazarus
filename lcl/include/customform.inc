@@ -142,6 +142,30 @@ Procedure TCustomForm.Notification(AComponent : TComponent;
   Operation : TOperation);
 Begin
   inherited Notification(AComponent,Operation);
+  case Operation of
+    opInsert:
+      begin
+        {if AComponent is TCustomActionList then
+        begin
+          if FActionLists = nil then FActionLists := TList.Create;
+          FActionLists.Add(AComponent);
+        end
+        else }if not (csLoading in ComponentState) and (Menu = nil) and
+          (AComponent.Owner = Self) and (AComponent is TMainMenu) then
+          Menu := TMainMenu(AComponent);
+      end;
+    opRemove:
+      begin
+        {if (FActionLists <> nil) and (AComponent is TCustomActionList) then
+          FActionLists.Remove(AComponent)
+        else
+        begin}
+          if Menu = AComponent then Menu := nil;
+          //if WindowMenu = AComponent then WindowMenu := nil;
+          //if ObjectMenuItem = AComponent then ObjectMenuItem := nil;
+        //end;
+      end;
+  end;
   if FDesigner <> nil then FDesigner.Notification(AComponent,Operation);
 End;
 
@@ -1143,6 +1167,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.65  2002/10/24 09:37:39  lazarus
+  MG: broke menus.pp <-> controls.pp circle
+
   Revision 1.64  2002/10/23 20:47:26  lazarus
   AJ: Started Form Scrolling
       Started StaticText FocusControl
