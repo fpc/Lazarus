@@ -131,7 +131,6 @@ type
     DescriptionLabel: TLabel;
     OkButton: TButton;
     CancelButton: TButton;
-    procedure CancelButtonClick(Sender: TObject);
     procedure ItemsTreeViewClick(Sender: TObject);
     procedure NewOtherDialogResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
@@ -231,11 +230,6 @@ begin
   ItemsTreeView.EndUpdate;
 end;
 
-procedure TNewOtherDialog.CancelButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrCancel;
-end;
-
 procedure TNewOtherDialog.ItemsTreeViewClick(Sender: TObject);
 var
   Desc: String;
@@ -299,8 +293,9 @@ begin
     Left:=150;
     Top:=100;
     Caption:=dlgCancel;
-    OnClick:=@CancelButtonClick;
+    ModalResult := mrCancel;
   end;
+  CancelControl:=CancelButton;
 end;
 
 constructor TNewOtherDialog.Create(TheOwner: TComponent);

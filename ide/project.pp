@@ -2278,12 +2278,13 @@ begin
   if not fPathDelimChanged then begin
     FileWasAbsolute:=FilenameIsAbsolute(AFileName);
   end else begin
-    if PathDelim='\' then
-      // PathDelim changed from '/' to '\'
-      FileWasAbsolute:=FilenameIsUnixAbsolute(AFileName)
-    else
-      // PathDelim changed from '\' to '/'
-      FileWasAbsolute:=FilenameIsWinAbsolute(AFileName);
+    {$IFDEF Win32}
+    // PathDelim changed from '/' to '\'
+    FileWasAbsolute:=FilenameIsUnixAbsolute(AFileName)
+    {$ELSE}
+    // PathDelim changed from '\' to '/'
+    FileWasAbsolute:=FilenameIsWinAbsolute(AFileName);
+    {$ENDIF}
     DoDirSeparators(AFilename);
   end;
   AFilename:=TrimFilename(AFilename);
@@ -3169,6 +3170,9 @@ end.
 
 {
   $Log$
+  Revision 1.178  2005/01/20 11:37:24  mattias
+  fixed Escape key in dialogs: run params, new, compiler opts
+
   Revision 1.177  2005/01/15 13:44:03  vincents
   use xml units from fpc, if not compiling with fpc 1.0
 

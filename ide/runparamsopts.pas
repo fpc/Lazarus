@@ -134,7 +134,6 @@ type
     OkButton: TButton;
     CancelButton: TButton;
     procedure OkButtonClick(Sender: TObject);
-    procedure CancelButtonClick(Sender: TObject);
     procedure HostApplicationBrowseBtnClick(Sender: TObject);
     procedure RunParamsOptsDlgResize(Sender: TObject);
     procedure UserOverridesGroupBoxResize(Sender: TObject);
@@ -357,7 +356,6 @@ begin
       SetBounds(270,Self.ClientHeight-40,100,25);
       Caption:='Ok';
       OnClick:=@OkButtonClick;
-      Visible:=true;
     end;
     
     CancelButton:=TButton.Create(Self);
@@ -366,9 +364,9 @@ begin
       Parent:=Self;
       SetBounds(390,OkButton.Top,100,25);
       Caption:=dlgCancel;
-      OnClick:=@CancelButtonClick;
-      Visible:=true;
+      ModalResult := mrCancel;
     end;
+    CancelControl:=CancelButton;
   end;
   RunParamsOptsDlgResize(nil);
 end;
@@ -749,11 +747,6 @@ procedure TRunParamsOptsDlg.OkButtonClick(Sender: TObject);
 begin
   SaveToOptions;
   ModalResult:=mrOk;
-end;
-
-procedure TRunParamsOptsDlg.CancelButtonClick(Sender: TObject);
-begin
-  ModalResult:=mrCancel;
 end;
 
 procedure TRunParamsOptsDlg.HostApplicationBrowseBtnClick(Sender: TObject);

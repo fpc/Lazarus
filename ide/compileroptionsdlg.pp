@@ -231,7 +231,6 @@ type
     btnLoadSave: TButton;
 
     procedure ButtonOKClicked(Sender: TObject);
-    procedure ButtonCancelClicked(Sender: TObject);
     procedure ButtonCheckClicked(Sender: TObject);
     procedure ButtonLoadSaveClick(Sender: TObject);
     procedure ButtonShowOptionsClicked(Sender: TObject);
@@ -431,17 +430,6 @@ begin
   { Save the options and hide the dialog }
   if not PutCompilerOptions(true) then exit;
   ModalResult:=mrOk;
-end;
-
-{------------------------------------------------------------------------------}
-{  TfrmCompilerOptions ButtonCancelClicked                                     }
-{------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.ButtonCancelClicked(Sender: TObject);
-begin
-  // Cancel any changes
-  Assert(False, 'Trace:Cancel compiler options changes');
-
-  ModalResult:=mrCancel;
 end;
 
 {------------------------------------------------------------------------------
@@ -2641,8 +2629,9 @@ begin
   begin
     Parent := Self;
     Caption := dlgCancel;
-    OnClick := @ButtonCancelClicked;
+    ModalResult := mrCancel;
   end;
+  CancelControl:=btnCancel;
 
   btnShowOptions := TButton.Create(Self);
   with btnShowOptions do
