@@ -149,6 +149,48 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: ObjectToGTKObject
+  Params: AObject: A LCL Object
+  Returns:  The GTKObject of the given object
+
+  Returns the GTKObject of the given object, nil if no object available
+ ------------------------------------------------------------------------------}
+function ObjectToGTKObject(const AObject: TObject): gtk_object;
+var
+   handle : HWND;
+begin
+   if not assigned (AObject) then
+   begin
+      assert (false, 'TRACE: ObjectToGtkObject: object not assigned');
+      handle := 0
+   end
+   else if (AObject is TWinControl) then
+   begin
+      if TWinControl (AObject).HandleAllocated then handle := TWinControl(AObject).Handle
+   end
+   else if (AObject is TMenuItem) then
+   begin 
+      if TMenuItem(AObject).HandleAllocated then handle := TMenuItem(AObject).Handle 
+   end
+   else if (AObject is TMenu) then
+   begin 
+      if TMenu(AObject).HandleAllocated then handle := TMenu(AObject).Items.Handle 
+   end
+   else if (AObject is TCustomDialog) then
+   begin
+      {if TCustomDialog(AObject).HandleAllocated then } handle := TCustomDialog(AObject).Handle
+   end
+   else begin
+      Assert(False, 'Trace:Message received with unhandled class-type'); 
+      handle := 0;
+   end;
+   result := gtk_object (handle);
+   if handle = 0 then assert (false, 'Trace: [ObjectToGtkObject]****** Warning: handle = 0 *******');
+end;
+
+
+
+{------------------------------------------------------------------------------
   Method: TGtkObject.IntSendMessage3
   Params:  LM_Message - message to be processed by GTK
            Sender     - sending control
@@ -162,6 +204,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer;
 var
+   handle    : hwnd;                    // handle of sender	
    pStr      : PChar;			// temporary string pointer, must be allocated/disposed when used!
    Widget    : PGtkWidget;		// pointer to gtk-widget (local use when neccessary)
    AParent   : TWinControl;		// only used twice, replace with typecasts!
@@ -178,9 +221,12 @@ var
 begin
    result := 0;   //default value just in case nothing sets it
 
-   Assert(False, 'Trace:Message recieved');
+   Assert(False, 'Trace:Message received'); 
    if Sender <> nil then
      Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
+
+   handle := hwnd(ObjectToGtkObject (sender));
+//???   if handle = nil then assert (false, Format ('Trace:[TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName])); 
 
    case LM_Message of
       LM_Create :
@@ -194,14 +240,14 @@ begin
       begin
          Assert(False, 'Trace:Adding a child to Parent');
          If (TWinControl(Sender).Parent is TToolbar) then
-          Begin
+         Begin
 //          Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> %s   ---calling INSERTBUTTON from Add Child', [AParent.ClassName, Sender.ClassNAme]));
-           exit;
-          end
+            exit;
+         end
          else Begin
             AParent := (Sender as TWinControl).Parent;
             Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Calling Add Child: %s', [AParent.ClassName, Sender.ClassNAme]));
-            AddChild(Pgtkwidget(AParent.Handle), PgtkWidget((Sender as TWinControl).Handle), AParent.Left, AParent.Top);
+            AddChild(Pgtkwidget(AParent.Handle), PgtkWidget(Handle), AParent.Left, AParent.Top);
          end;
       end;
 
@@ -212,10 +258,9 @@ begin
 
       LM_BTNDEFAULT_CHANGED :
       Begin
-        if (TButton(Sender).Default) and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(TButton(Sender).handle))) then
-           gtk_widget_grab_default(pgtkwidget(TButton(Sender).handle))
-           else
-           gtk_widget_Draw_Default(pgtkwidget(TButton(Sender).Handle));  //this isn't right but I'm not sure what to call
+        if (TButton(Sender).Default) and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(handle))) 
+	   then gtk_widget_grab_default(pgtkwidget(handle))
+           else gtk_widget_Draw_Default(pgtkwidget(Handle));  //this isn't right but I'm not sure what to call
       end;
 
       LM_DESTROY :
@@ -225,10 +270,8 @@ begin
             Assert(False, 'Trace:removing timer!!!');
             gtk_timeout_remove((Sender as TTimer).TimerID);
          end
-         else if Sender is TWinControl 
-            then gtk_widget_destroy( PGtkWidget(TWinControl(Sender).Handle))
-         else if (Sender is TCustomDialog) 
-            then gtk_widget_destroy( PGtkWidget(TCustomDialog(Sender).Handle))
+	 else if (Sender is TWinControl) or (Sender is TCustomDialog) 
+            then gtk_widget_destroy( PGtkWidget(Handle))
          else
 	    Assert (False, Format ('Trace:Dont know how to destroy component %s', [sender.classname]));
       end;
@@ -285,15 +328,14 @@ begin
       LM_IMAGECHANGED, LM_LAYOUTCHANGED :
       Begin
      	 Assert(False, 'Trace:********************');
-         Widget := PgtkWidget(TBitBtn(Sender).Handle);
          Assert(False, 'Trace:1');
-         box1 := gtk_object_get_data(pgtkObject(widget),'HBox');
+         box1 := gtk_object_get_data(pgtkObject(handle),'HBox');
          if box1 <> nil then
          begin
             Assert(False, 'Trace:REMOVING THE HBOX');
-            gtk_container_remove(PgtkContainer(box1),gtk_object_get_data(pgtkObject(widget),'Label'));
-            gtk_container_remove(PgtkContainer(box1),gtk_object_get_data(pgtkObject(widget),'Pixmap'));
-            gtk_container_remove(PgtkContainer(widget),box1);
+            gtk_container_remove(PgtkContainer(box1),gtk_object_get_data(pgtkObject(handle),'Label'));
+            gtk_container_remove(PgtkContainer(box1),gtk_object_get_data(pgtkObject(handle),'Pixmap'));
+            gtk_container_remove(PgtkContainer(handle),box1);
             gtk_widget_destroy(box1);
          end;
 
@@ -332,17 +374,18 @@ begin
             gtk_box_pack_start(pGTKBox(Box1),pixmapwid,False,False,TBitBtn(Sender).Spacing);
          end;
          Assert(False, 'Trace:6');
-         gtk_object_set_data(pgtkObject(widget),'Label',pLabel);
-         gtk_object_set_data(pgtkObject(widget),'HBox',Box1);
-         gtk_object_set_data(pgtkObject(widget),'Pixmap',pixmapwid);
+         gtk_object_set_data(pgtkObject(handle),'Label',pLabel);
+         gtk_object_set_data(pgtkObject(handle),'HBox',Box1);
+         gtk_object_set_data(pgtkObject(handle),'Pixmap',pixmapwid);
          Assert(False, 'Trace:7');
          gtk_widget_show(pixmapwid);
          gtk_widget_show(pLabel);
-         gtk_container_add(PgtkContainer(widget),box1);
+         gtk_container_add(PgtkContainer(handle),box1);
          gtk_widget_show(box1);
      	 Assert(False, 'Trace:********************');
       end;
 
+//SH: think of TBitmap.handle!!!!
       LM_LOADXPM:
          Begin
             if (sender is TBitmap) then
@@ -360,25 +403,24 @@ begin
       LM_TB_BUTTONCOUNT:
       begin
          if (Sender is TToolbar) 
-            then Result := pgtkToolbar(TToolbar(Sender).handle)^.num_Children
+            then Result := pgtkToolbar(handle)^.num_Children
             else Result := -1;
       end;
 
       LM_SETENABLED:  
       begin
-         if (sender is TWincontrol) 
-            then gtk_widget_set_sensitive(pgtkwidget(TWinControl(sender).handle),TControl(sender).Enabled)
-            else 
-               if (sender is TMenuItem) 
-                  then gtk_widget_set_sensitive(pgtkwidget(TMenuItem(sender).handle),TMenuItem(sender).Enabled)
-                  else Assert(False, 'Trace:***************NOT SUPPORTED*******************');
+	 if (sender is TWincontrol)
+	    then gtk_widget_set_sensitive(pgtkwidget(handle),TControl(sender).Enabled)
+         else if (sender is TMenuItem) 
+            then gtk_widget_set_sensitive(pgtkwidget(handle),TMenuItem(sender).Enabled)
+         else Assert(False, 'Trace:***************NOT SUPPORTED*******************');
       end;
 
       LM_SETFILTER : 
       begin 
          pStr := StrAlloc(length(TFileDialog(Sender).Filter) + 1); 
          StrPCopy(pStr, TFileDialog(Sender).Filter); 
-         gtk_file_selection_complete(PGtkFileSelection((Sender as TCustomDialog).Handle), pstr);
+         gtk_file_selection_complete(PGtkFileSelection(Handle), pstr);
          StrDispose(pStr); 
       end; 
  
@@ -386,7 +428,7 @@ begin
       begin 
          pStr := StrAlloc(length(TFileDialog(Sender).Filename) + 1); 
          StrPCopy(pStr, TFileDialog(Sender).Filename); 
-         gtk_file_selection_set_filename( PGtkFileSelection((Sender as TCustomDialog).Handle), pStr); 
+         gtk_file_selection_set_filename( PGtkFileSelection(Handle), pStr); 
          StrDispose(pStr); 
       end; 
 
@@ -398,10 +440,7 @@ begin
          ResizeChild(Sender,pTRect(Data)^.Left,pTRect(Data)^.Top,pTRect(Data)^.Right,pTRect(Data)^.Bottom);
       end;
 
-      LM_SetText : 
-      begin 
-         SetText(PgtkWidget((Sender as TWinControl).Handle), Data); 
-      end; 
+      LM_SetText : SetText(PgtkWidget(Handle), Data); 
 
       LM_SETCOLOR: SetColor(Sender);
 
@@ -416,35 +455,29 @@ begin
 
       LM_ShowModal :
       begin
-         if Sender is TCustomForm then
+         if Sender is TCustomDialog then
          begin
-            Widget:= PgtkWidget(TCustomForm(Sender).Handle);
-         end
-         else begin
-            Widget:= PgtkWidget(TCustomDialog(Sender).Handle);
-            pStr:= StrAlloc(Length(TCustomDialog(Sender).Title) + 1);
+	    // Should be done elsewhere (eg via SetLabel) not here!
+	    pStr:= StrAlloc(Length(TCustomDialog(Sender).Title) + 1);
             try
                StrPCopy(pStr, TCustomDialog(Sender).Title);
-               gtk_window_set_title(PGtkWindow(Widget), pStr);
+               gtk_window_set_title(PGtkWindow(handle), pStr);
             finally
                StrDispose(pStr);
             end;
-          end;
-          gtk_window_set_position(PGtkWindow(Widget), GTK_WIN_POS_CENTER);
-          gtk_widget_show(Widget);
-          gtk_window_set_modal(PGtkWindow(Widget), true);
-	        { Don't grab anything - this is done by gtk_window_set_modal }
-          //gtk_grab_add(PgtkWidget(TWinControl(Sender).Handle));
+         end;
+         gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
+         gtk_widget_show(PGtkWidget(handle));
+         gtk_window_set_modal(PGtkWindow(handle), true);
+	       { Don't grab anything - this is done by gtk_window_set_modal }
+         //gtk_grab_add(PgtkWidget(Handle));
       end;
 
       LM_SetCursor : SetCursor(Sender);
 
-      LM_SetLabel :
-      begin
-         SetLabel(Sender,Data);
-      end;
+      LM_SetLabel  : SetLabel(Sender,Data);
 
-
+//SH: think of TCanvas.handle!!!!
       LM_ReDraw : 
       begin 
          Assert(False, Format('Trace:[TgtkObject.IntSendMessage3] %s --> Redraw', [Sender.ClassName]));
@@ -452,7 +485,7 @@ begin
             ReDraw(PgtkWidget((Sender as TCanvas).Handle))
          else
           if not (sender is TSpeedbutton) then
-            ReDraw(PgtkWidget((Sender as TWinControl).Handle))
+            ReDraw(PgtkWidget(Handle))
          else
             (Sender as TSpeedButton).perform(LM_PAINT,0,0);
       end;
@@ -470,16 +503,16 @@ begin
 
       LM_ShowTabs :
       begin
-         gtk_notebook_set_show_tabs(PGtkNotebook(TWinControl(Sender).Handle), Boolean(Integer(TLMNotebookEvent(Data^).ShowTabs)));
+         gtk_notebook_set_show_tabs(PGtkNotebook(Handle), Boolean(Integer(TLMNotebookEvent(Data^).ShowTabs)));
       end;
 
       LM_SetTabPosition :
       begin
          case TTabPosition(TLMNotebookEvent(Data^).TabPosition^) of
-            tpTop   : gtk_notebook_set_tab_pos(PGtkNotebook(TWinControl(Sender).Handle), GTK_POS_TOP);
-            tpBottom: gtk_notebook_set_tab_pos(PGtkNotebook(TWinControl(Sender).Handle), GTK_POS_BOTTOM);
-            tpLeft  : gtk_notebook_set_tab_pos(PGtkNotebook(TWinControl(Sender).Handle), GTK_POS_LEFT);
-            tpRight : gtk_notebook_set_tab_pos(PGtkNotebook(TWinControl(Sender).Handle), GTK_POS_RIGHT);
+            tpTop   : gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_TOP);
+            tpBottom: gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_BOTTOM);
+            tpLeft  : gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_LEFT);
+            tpRight : gtk_notebook_set_tab_pos(PGtkNotebook(Handle), GTK_POS_RIGHT);
          end;
       end;
 
@@ -506,11 +539,11 @@ begin
          Assert(False, Format('Trace:NUM = %d in INSERTBUTTON',[num]));
 
          {Make sure it's created!!}
-         if TWinControl(Sender).handle = 0 
+         if handle = 0 
 	    then IntSendMessage3(LM_CREATE,Sender,nil);
 
          gtk_toolbar_insert_widget(pGTKToolbar(TWinControl(sender).parent.Handle),
-              pgtkwidget(tWinControl(Sender).handle),pstr,pStr2,Num);
+              pgtkwidget(handle),pstr,pStr2,Num);
          StrDispose(pStr);
          StrDispose(pStr2);
       Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
@@ -520,10 +553,10 @@ begin
       Begin
          with pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^ do
 	    children := g_list_remove(pgList(children), sender);
+// Next 3 lines: should be same as above, remove when above lines are proofed
 //         pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children := 
 //            g_list_remove(pgList(pgtkToolbar(TToolbar(TWinControl(Sender).parent).handle)^.children),
 //               sender);
-      
       end;
 
       LM_Invalidate : 
@@ -532,26 +565,26 @@ begin
    //THIS DOESN'T WORK YET....
 {
          Event.thetype := GDK_EXPOSE;
-     Event.window := PgtkWidget((Sender as TWinControl).Handle)^.Window;
+     Event.window := PgtkWidget(Handle)^.Window;
      Event.Send_Event := 0;
      Event.X := 0;
      Event.Y := 0;
-     Event.Width := PgtkWidget((Sender as TWinControl).Handle)^.Allocation.Width;
-     Event.Height := PgtkWidget((Sender as TWinControl).Handle)^.Allocation.Height;
-         gtk_Signal_Emit_By_Name(PgtkObject((Sender as TWinControl).Handle),'expose_event',[(Sender as TWinControl).Handle,Sender,@Event]);
+     Event.Width := PgtkWidget((Handle)^.Allocation.Width;
+     Event.Height := PgtkWidget(Handle)^.Allocation.Height;
+         gtk_Signal_Emit_By_Name(PgtkObject(Handle),'expose_event',[(Sender as TWinControl).Handle,Sender,@Event]);
      Assert(False, 'Trace:Signal Emitted - invalidate window');
 }
-        gtk_widget_queue_draw(PGtkWidget((Sender as TWinControl).Handle));
+        gtk_widget_queue_draw(PGtkWidget(Handle));
       end; 
 
       LM_InvalidateRect :
       begin
          //Erase and then write over that section in the rect
-         PixMap := gtk_object_get_data(PgtkObject((Sender as TWinControl).Handle),'Pixmap'); 
+         PixMap := gtk_object_get_data(PgtkObject(Handle),'Pixmap'); 
          if Assigned(PixMap) then
 	 begin
             gdk_draw_rectangle(pixmap,GetPen(pixmap,TColortoTgdkColor(TCustomForm(Sender).Color)),1,TREct(data^).Left,TRect(data^).Top,TRect(Data^).Right-TRect(Data^).Left,TRect(Data^).Bottom-TRect(Data^).Top); 
-            gtk_widget_queue_draw(PGtkWidget((Sender as TWinControl).Handle));
+            gtk_widget_queue_draw(PGtkWidget(Handle));
             //The following should eventually be implemented.  It's supposed
             // to allow the component to ONLY draw the invalidated rectangle, not the entire widget.
 
@@ -559,7 +592,7 @@ begin
      fWindow :pGdkWindow;
    gc : pgdkGC;
 
-	widget := gtk_Object_get_data(pgtkobject((Sender as TWinControl).Handle),'Fixed');
+	widget := gtk_Object_get_data(pgtkobject(Handle),'Fixed');
          fWindow := pGtkWidget(widget)^.window;
          gc := gdk_gc_new(PgdkWindow(fWindow));
 
@@ -589,14 +622,14 @@ begin
       begin
         if (Sender as TControl).fCompStyle = csCListBox
         then begin
-          Widget:= GetCoreChildWidget(PGtkWidget((Sender as TWinControl).Handle));
+          Widget:= GetCoreChildWidget(PGtkWidget(Handle));
           Data := TGtkCListStringList.Create(PGtkCList(Widget));
           Result := integer(Data);
         end 
         else begin
           case (Sender as TControl).fCompStyle of
-            csComboBox : Widget:= PGtkCombo((Sender as TWinControl).Handle)^.list;
-            csListBox : Widget:= GetCoreChildWidget(PGtkWidget((Sender as TWinControl).Handle));
+            csComboBox : Widget:= PGtkCombo(Handle)^.list;
+            csListBox : Widget:= GetCoreChildWidget(PGtkWidget(Handle));
           else 
             raise Exception.Create('Message LM_GETITEMS - Not implemented');
           end;
@@ -617,27 +650,27 @@ begin
            csListBox: 
              begin
                 if TListBox(Sender).MultiSelect then 
-                   Widget:= PGtkList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle)))^.last_focus_child
+                   Widget:= PGtkList(GetCoreChildWidget(PGtkWidget(Handle)))^.last_focus_child
                 else begin
-                   GList:= PGtkList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle)))^.selection;
+                   GList:= PGtkList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection;
                    if GList = nil 
 		      then Widget:= nil
                       else Widget:= PGtkWidget(GList^.data);
                 end;  
                 if Widget = nil 
 		   then Result:= -1
-                   else Result:= gtk_list_child_position(PGtkList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle))), Widget);
+                   else Result:= gtk_list_child_position(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), Widget);
              end;
            csCListBox:
              begin
-               GList:= PGtkCList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle)))^.selection;
+               GList:= PGtkCList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection;
                if GList = nil
                   then Result := -1
                   else Result := integer(GList^.Data);
              end;
            csNotebook:
              begin
-                TLMNotebookEvent(Data^).Page := gtk_notebook_get_current_page(PGtkNotebook(TWinControl(Sender).Handle));
+                TLMNotebookEvent(Data^).Page := gtk_notebook_get_current_page(PGtkNotebook(Handle));
              end;
         end;
       end;
@@ -645,20 +678,13 @@ begin
       LM_SETITEMINDEX :
       begin
          case (Sender as TControl).fCompStyle of
-            csComboBox: 
-              gtk_list_select_item(PGTKLIST(PGTKCOMBO(TWinControl(Sender).Handle)^.list), Integer(Data));
-            csListBox: 
-              gtk_list_select_item(PGtkList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle))), Integer(Data));
-            csCListBox:
-              gtk_clist_select_row(
-                PGtkCList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle))),
-                Integer(Data),
-                1);    // column
-            csNotebook: 
-              begin
-                 Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
-                 gtk_notebook_set_page(PGtkNotebook(TWinControl(Sender).Handle), TLMNotebookEvent(Data^).Page);
-              end;
+            csComboBox: gtk_list_select_item(PGTKLIST(PGTKCOMBO(Handle)^.list), Integer(Data));
+            csListBox : gtk_list_select_item(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), Integer(Data));
+            csCListBox: gtk_clist_select_row(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))), Integer(Data), 1);    // column
+            csNotebook: begin
+                           Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
+                          gtk_notebook_set_page(PGtkNotebook(Handle), TLMNotebookEvent(Data^).Page);
+                        end;
          end;
       end;
           
@@ -666,7 +692,7 @@ begin
       begin
          if (Sender as TControl).fCompStyle = csComboBox then
          begin
-            Result:= gtk_editable_get_position(PGtkEditable(PGtkCombo((Sender as TWinControl).Handle)^.entry));           
+            Result:= gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry));           
          end;
       end;
           
@@ -683,7 +709,7 @@ begin
       begin
          if (Sender as TControl).fCompStyle = csComboBox then
          begin
-            Result:= PGtkEntry(PGtkCombo((Sender as TWinControl).Handle)^.entry)^.text_max_length;
+            Result:= PGtkEntry(PGtkCombo(Handle)^.entry)^.text_max_length;
          end;
       end;
   
@@ -691,7 +717,7 @@ begin
       begin
          if (Sender is TControl) and (TControl(Sender).fCompStyle = csComboBox) then
          begin
-            gtk_editable_set_position(PGtkEditable(PGtkCombo(TWinControl(Sender).Handle)^.entry), Integer(Data));
+            gtk_editable_set_position(PGtkEditable(PGtkCombo(Handle)^.entry), Integer(Data));
          end;
       end;
           
@@ -699,9 +725,9 @@ begin
       begin
          if (Sender is TControl) and (TControl(Sender).fCompStyle = csComboBox) then
          begin
-            gtk_editable_select_region(PGtkEditable(PGtkCombo(TWinControl(Sender).Handle)^.entry),
-            gtk_editable_get_position(PGtkEditable(PGtkCombo(TWinControl(Sender).Handle)^.entry)),
-            gtk_editable_get_position(PGtkEditable(PGtkCombo(TWinControl(Sender).Handle)^.entry)) + Integer(Data));
+            gtk_editable_select_region(PGtkEditable(PGtkCombo(Handle)^.entry),
+            gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)),
+            gtk_editable_get_position(PGtkEditable(PGtkCombo(Handle)^.entry)) + Integer(Data));
          end;
       end;  
  
@@ -713,8 +739,8 @@ begin
       LM_GETSELCOUNT :
       begin
          case (Sender as TControl).fCompStyle of
-	    csListBox : Result:= g_list_length(PGtkList(GetCoreChildWidget(PGtkWidget((Sender as TWinControl).Handle)))^.selection);
-            csCListBox: Result:= g_list_length(PGtkCList(GetCoreChildWidget(PGtkWidget((Sender as TWinControl).Handle)))^.selection);
+	    csListBox : Result:= g_list_length(PGtkList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection);
+            csCListBox: Result:= g_list_length(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection);
          end;
       end;
   
@@ -723,14 +749,13 @@ begin
          if (Sender as TWinControl).fCompStyle = csListBox then
          begin
            { Get the child in question of that index }
-           ListItem:= g_list_nth_data(PGtkList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle)))^.children, Integer(Data^));
-           Result:= g_list_index(PGtkList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle)))^.selection, ListItem);
+           ListItem:= g_list_nth_data(PGtkList(GetCoreChildWidget(PGtkWidget(Handle)))^.children, Integer(Data^));
+           Result:= g_list_index(PGtkList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection, ListItem);
          end
          else if (Sender as TControl).fCompStyle = csCListBox then
          begin
             { Get the selections }
-            GList:= PGtkCList(GetCoreChildWidget(PGtkWidget(
-                       (Sender as TWinControl).Handle)))^.selection;
+            GList:= PGtkCList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection;
             Result := -1;      { assume: nothing found }
             while Assigned(GList) and (result = -1) do
             begin
@@ -738,13 +763,13 @@ begin
                   then Result := 0
                   else GList := GList^.Next;
             end;
-        end;
+         end;
       end;
   
       LM_SETLIMITTEXT :
       begin
          if (Sender is TControl) and (TControl(Sender).fCompStyle = csComboBox) 
-	    then gtk_entry_set_max_length(PGtkEntry(PGtkCombo(TWinControl(Sender).Handle)^.entry), Integer(Data^));
+	    then gtk_entry_set_max_length(PGtkEntry(PGtkCombo(Handle)^.entry), Integer(Data^));
       end;
  
       LM_SORT :
@@ -768,14 +793,14 @@ begin
             if (TControl(Sender).fCompStyle = csListBox) then 
             begin
                if TLMSetSel(Data^).Selected 
-	          then gtk_list_select_item(PGtkList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle))), TLMSetSel(Data^).Index)
-                  else gtk_list_unselect_item(PGtkList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle))), TLMSetSel(Data^).Index);
+	          then gtk_list_select_item(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), TLMSetSel(Data^).Index)
+                  else gtk_list_unselect_item(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), TLMSetSel(Data^).Index);
             end
             else if (TControl(Sender).fCompStyle = csCListBox) then
 	    begin
                if TLMSetSel(Data^).Selected
-          	  then gtk_clist_select_row(PGtkCList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle))),TLMSetSel(Data^).Index,0)
-                  else gtk_clist_unselect_row(PGtkCList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle))),TLMSetSel(Data^).Index,0);
+          	  then gtk_clist_select_row(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),TLMSetSel(Data^).Index,0)
+                  else gtk_clist_unselect_row(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),TLMSetSel(Data^).Index,0);
 	    end;
          end;  
       end;
@@ -794,9 +819,9 @@ begin
             end 
             else 
                SelectionMode:= GTK_SELECTION_BROWSE;
-	    case (Sender as TControl).fCompStyle of
-	      csListBox  : gtk_list_set_selection_mode(PGtkList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle))), SelectionMode);
-	      csCListBox : gtk_clist_set_selection_mode(PGtkCList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle))),SelectionMode);
+	    case TControl(Sender).fCompStyle of
+	      csListBox  : gtk_list_set_selection_mode(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), SelectionMode);
+	      csCListBox : gtk_clist_set_selection_mode(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),SelectionMode);
 	    else
 	       Assert (true, 'WARNING:[TgtkObject.IntSendMessage3] usage of LM_SETSELMODE unimplemented for actual component');
             end;
@@ -805,26 +830,27 @@ begin
  
       LM_SETBORDER :
       begin
-         if (Sender is TControl) and (TControl(Sender).fCompStyle = csListBox) then 
-         begin
-            { In TempWidget, a viewport is stored }
-            Widget:= PGtkWidget(PGtkBin(TWinControl(Sender).Handle)^.child);
-            if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle) 
-	       then gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_IN)
-               else gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_NONE);
-         end;
-         if (Sender as TControl).fCompStyle = csCListBox
-         then begin
-           if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle)
-           then
-             gtk_clist_set_shadow_type(
-               PGtkCList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle))),
-               GTK_SHADOW_IN)
-           else
-             gtk_clist_set_shadow_type(
-               PGtkCList(GetCoreChildWidget(PGtkWidget(TWinControl(Sender).Handle))),
-               GTK_SHADOW_NONE);
-         end;
+         if (Sender is TControl) then
+	 begin
+            if (TControl(Sender).fCompStyle = csListBox) then
+            begin
+               { In TempWidget, a viewport is stored }
+               Widget:= PGtkWidget(PGtkBin(TWinControl(Sender).Handle)^.child);
+               if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle) 
+	          then gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_IN)
+                  else gtk_viewport_set_shadow_type(PGtkViewPort(Widget), GTK_SHADOW_NONE);
+            end
+	    else if TControl(Sender).fCompStyle = csCListBox then
+            begin
+               if TListBox(Sender).BorderStyle = TBorderStyle(bsSingle)
+                  then gtk_clist_set_shadow_type(
+                         PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),
+                         GTK_SHADOW_IN)
+                  else gtk_clist_set_shadow_type(
+                         PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),
+                         GTK_SHADOW_NONE);
+            end;
+	 end;
       end;
 
       LM_GETVALUE: Result := GetValue (Sender, data);
@@ -1096,32 +1122,6 @@ begin
    gdk_gc_set_foreground (TheStyle^.fg_gc[GTK_STATE_NORMAL], @NewColor);
    gdk_gc_set_background (TheStyle^.fg_gc[GTK_STATE_NORMAL], @NewColor);
    }
-end;
-
-
-
-{------------------------------------------------------------------------------
-  Function: ObjectToGTKObject
-  Params: AObject: A LCL Object
-  Returns:  The GTKObject of the given object
-
-  Returns the GTKObject of the given object, nil if no object available
- ------------------------------------------------------------------------------}
-function ObjectToGTKObject(const AObject: TObject): gtk_object;
-begin
-  if AObject is TWinControl 
-  then 
-    Result := gtk_Object(TWinControl(AObject).Handle)
-  else 
-  if AObject is TControlCanvas 
-  then 
-    Result := gtk_Object(TControlCanvas(AObject).Handle)
-  else  
-  if AObject is TMenuItem 
-  then 
-    Result := gtk_Object(TMenuItem(AObject).Handle)
-  else
-    Result := nil;
 end;
 
 
@@ -1462,49 +1462,58 @@ const
     GTK_WINDOW_TOPLEVEL, GTK_WINDOW_POPUP, GTK_WINDOW_POPUP
   );
   FormSizeableMap : array[TFormBorderStyle] of gint = (0, 0, 1, 0, 0, 1);
-  FormBorderWidth : array[TFormBorderStyle] of gint = (0, 1, 2, 1, 1, 2);  
+//unused:  FormBorderWidth : array[TFormBorderStyle] of gint = (0, 1, 2, 1, 1, 2);  
 
-type
-   Tpixdata = Array[1..20] of String;
+//unused:type
+//unused:   Tpixdata = Array[1..20] of String;
 
 var
-   caption : string;
-   StrTemp : PChar;
-   TempWidget : PGTKWidget;
-   p : pointer;
-   CompStyle, TempInt : Integer;
-   Adjustment: PGTKAdjustment;
-//for csBitBtn
-   box1      : pgtkWidget;
-   pixmap    : pGdkPixMap;
-   pixmapwid : pGtkWidget;
-   mask      : pGDKBitmap;
-   style    : pgtkStyle;
-   label1   : pgtkwidget;
-   TempStr : String;
-   pStr : PChar;
-   Pixdata : TPixData;
+   caption : string;		// the caption of "Sender"
+   StrTemp : PChar;		// same as "caption" but as PChar
+   TempWidget : PGTKWidget;	// pointer to gtk-widget (local use when neccessary)
+   p 	     : pointer;		// ptr to the newly created GtkWidget
+   CompStyle,			// componentstyle (type) of GtkWidget which will be created
+   TempInt   : Integer;		// local use when neccessary
+   Adjustment: PGTKAdjustment;	// currently only used for csFixed
+   // - for csBitBtn
+   box1      : pgtkWidget;	// currently only used for TBitBtn
+   pixmap    : pGdkPixMap;	// TBitBtn - the default pixmap
+   pixmapwid : pGtkWidget;	// currently only used for TBitBtn
+   mask      : pGDKBitmap;	// currently only used for TBitBtn
+   style     : pgtkStyle;	// currently only used for TBitBtn
+   label1    : pgtkwidget;	// currently only used for TBitBtn
+   TempStr   : String;		// currently only used for TBitBtn to load default pixmap
+   pStr      : PChar;		// currently only used for TBitBtn to load default pixmap
 
-   tmp_key : Integer;
-   menu_accel : pointer;
 begin
    Assert(False, 'Trace:In CreateComponet');
    p := nil;
 
-   if (Sender is TControl) 
-      then caption := TControl(Sender).caption
-   else if (Sender is TMenuItem)
-      then caption := TMenuItem(Sender).caption
-   else
-      caption := 'Unknown';
+   CompStyle := csNone;
+   Caption   := Sender.ClassName;
+   if (Sender is TControl) then
+   begin
+      caption := TControl(Sender).caption;
+      CompStyle := TControl(Sender).FCompStyle
+   end
+   else if (Sender is TMenuItem) then
+   begin
+      caption := TMenuItem(Sender).caption;
+      CompStyle := TMenuItem(Sender).FCompStyle;
+   end
+   else if (Sender is TMenu) 
+      then CompStyle := TMenu(Sender).FCompStyle
+   else if (Sender is TCustomDialog) 
+      then CompStyle := TCustomDialog(Sender).FCompStyle
+   else if (Sender is TTimer) 
+      then CompStyle := csTimer;
 
+      // the following is for debug only
+      if caption = '' then caption := Sender.ClassName;
 
-   // the following is for debug only
-   if caption = '' then caption := Sender.ClassName;
+      Assert(False, 'Trace:----------------------Creating component in TgtkObject-   STR = '+caption+'-');
 
-   Assert(False, 'Trace:----------------------Creating component in TgtkObject-   STR = '+caption+'-');
-
-   // until here remove when debug not needed
+      // until here remove when debug not needed
 
    if caption = '' then caption := 'Blank';
 
@@ -1512,19 +1521,6 @@ begin
    StrPCopy(strTemp, caption);
 
    Assert(False, 'Trace:1');
-   if (Sender is TControl) 
-      then CompStyle := TControl(Sender).FCompStyle
-   else if (Sender is TTimer) 
-      then CompStyle := csTimer
-   else if (Sender is TMenu) 
-      then CompStyle := TMenu(Sender).FCompStyle
-   else if (Sender is TMenuItem) 
-      then CompStyle := TMenuItem(Sender).FCompStyle
-   else if (Sender is TCustomDialog) 
-      then CompStyle := TCustomDialog(Sender).FCompStyle
-   else
-     Compstyle := csNone;
-  
    case CompStyle of
       csAlignment :
       begin
@@ -1539,12 +1535,15 @@ begin
          box1 := gtk_hbox_new(False,0);
          gtk_container_set_border_width(PgtkContainer(box1),2);
          style := gtk_widget_get_style(pGTKWidget(p));
-         TempStr := './images/menu.xpm';
+
+	     // is this neccessary?
+	     TempStr := './images/menu.xpm';
              pStr := StrAlloc(length(TempStr) + 1);
              StrPCopy(pStr, TempStr);
              pixmap := gdk_pixmap_create_from_xpm(pgtkWidget(p)^.window, @Mask,
                                    @style^.bg[GTK_STATE_NORMAL],pStr);
              StrDispose(pStr);
+	     
          pixmapwid := gtk_pixmap_new(pixmap,mask);
          label1 := gtk_label_new(StrTemp);
 
@@ -2285,7 +2284,7 @@ begin
      else Assert(False, Format('Trace:WARNING: [TgtkObject.SetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
 
    Handle    := Pointer(TWinControl(Sender).Handle);
-   Assert (Handle = nil, 'WARNING: [TgtkObject.SetValue] --> got nil pointer (no gtkobject)');
+//   Assert (Handle = nil, 'WARNING: [TgtkObject.SetValue] --> got nil pointer (no gtkobject)');
    
    case TControl(Sender).fCompStyle of
       csProgressBar: gtk_progress_set_value (GTK_PROGRESS (handle), integer (data^));
@@ -2644,6 +2643,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.3  2000/07/23 10:51:53  lazarus
+  - cleanups in IntSendMessage3
+  - minor cleanups in other functions
+  stoppok
+
   Revision 1.2  2000/07/16 20:59:03  lazarus
   - some more cleanups (removal of unused variables), stoppok
 
