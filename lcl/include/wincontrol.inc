@@ -428,10 +428,11 @@ var
         begin
           // VCL is tricking here.
           // For alClients with Constraints do the same as for alLeft
-          RemainingClientRect.Left:=NewLeft+NewWidth;
-          RemainingBorderSpace.Left:=0;
-          AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
-            Max(ChildSizing.HorizontalSpacing,ChildAroundSpace.Right),0,0,0);
+        //debugln('TWinControl.AlignControls.DoPosition A Self=',Name,' Control=',DbgSName(Control),' ',dbgs(NewLeft),' ',dbgs(NewWidth));
+        //  RemainingClientRect.Left:=NewLeft+NewWidth;
+        //  RemainingBorderSpace.Left:=0;
+        //  AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
+        //    Max(ChildSizing.HorizontalSpacing,ChildAroundSpace.Right),0,0,0);
         end;
     end;
 
@@ -3951,6 +3952,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.285  2004/10/30 16:24:06  mattias
+  disabled alClient RemainingClientRect adjust
+
   Revision 1.284  2004/10/28 17:56:11  mattias
   implemented Borderspacing
 

@@ -816,8 +816,8 @@ var
   i: integer;
   AValue: string;
 begin
-  SkipAutoLoadingLastProject:=false;
   StartedByStartLazarus:=false;
+  SkipAutoLoadingLastProject:=false;
   if (ParamCount>0)
   and ((AnsiCompareText(ParamStr(1),'--help')=0)
     or (AnsiCompareText(ParamStr(1),'-help')=0)
@@ -881,6 +881,7 @@ begin
     if ParamIsOption(i,StartedByStartLazarusOpt) then
       StartedByStartLazarus:=true;
   end;
+  if StartedByStartLazarus then ;
 end;
 
 procedure TMainIDE.LoadGlobalOptions;
@@ -10954,6 +10955,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.786  2004/10/30 16:24:05  mattias
+  disabled alClient RemainingClientRect adjust
+
   Revision 1.785  2004/10/27 20:49:26  vincents
   Lazarus can be restarted, even if not started by startlazarus (only win32 implemented).
 

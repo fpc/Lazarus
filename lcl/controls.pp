@@ -1196,7 +1196,6 @@ type
         (20+40=60 and 30 pixel space left) will get 30/2=15 additional,
         resulting in: A.Width=35, B.Width=30, C.Width=55 (35+30+55=120).
 
-
       cesHomogenousSpaceGrowth
         Enlarge space between childs equally.
         Childs are resized to their normal/adviced size. If there is some space
@@ -2484,6 +2483,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.254  2004/10/30 16:24:06  mattias
+  disabled alClient RemainingClientRect adjust
+
   Revision 1.253  2004/10/29 06:57:22  vincents
   fixed fpc 1.0.x compilation
 
