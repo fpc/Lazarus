@@ -81,15 +81,37 @@ end;
   That means that the gdk window on the xserver has been created.
 -------------------------------------------------------------------------------}
 function gtkRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
+var
+  decor,Func : Longint;
+  TheWindow: PGdkWindow;
+  TheForm: TCustomForm;
 begin
   Result := True;
   EventTrace('realize', nil);
 
   if Data<>nil then begin
     if TObject(Data) is TCustomForm then begin
-      if TCustomForm(Data).BorderStyle=bsNone then begin
-        // remove window decorations
-        gdk_window_set_decorations(GetControlWindow(Widget),0);
+      TheForm:=TCustomForm(Data);
+      TheWindow:=GetControlWindow(Widget);
+
+      // Try to make all Modal forms transient to the main form
+
+      //apart from none and sizeable, this will
+      //only work if WM supports motif flags
+      //properly, which very few actually do.
+
+      Decor := GetWindowDecorations(TheForm);
+      Func := GetWindowFunction(TheForm);
+
+      gdk_window_set_decorations(TheWindow, decor);
+      gdk_window_set_functions(TheWindow, func);
+    end
+    else if TObject(Data) is TPopupMenu then begin
+      if (Application.MainForm<>nil)
+      and (Application.MainForm.HandleAllocated) then begin
+        TheWindow:=GetControlWindow(Widget);
+        gdk_window_set_transient_for(TheWindow,
+          GetControlWindow(PGtkWidget(Application.MainForm.Handle)));
       end;
     end;
   end;
@@ -1477,8 +1499,9 @@ end;
 -------------------------------------------------------------------------------}
 function GTKDialogRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 begin
-  gdk_window_set_events(GetControlWindow(Widget), gdk_window_get_events(GetControlWindow(Widget))
-    or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
+  gdk_window_set_events(GetControlWindow(Widget),
+    gdk_window_get_events(GetControlWindow(Widget))
+      or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
   Result:=true;
 end;
 
@@ -2395,6 +2418,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.135  2002/09/30 20:19:12  lazarus
+  MG: fixed flickering of modal forms
+
   Revision 1.134  2002/09/30 09:26:42  lazarus
   MG: added DoSaveAll before CloseAll
 
