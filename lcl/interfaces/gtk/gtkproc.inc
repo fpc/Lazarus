@@ -3147,6 +3147,37 @@ begin
   end;
 end;
 
+Function CreateFormContents(var FormWidget : Pointer) : Pointer;
+var
+  TempWidget,
+  TempWidget2 : Pointer;
+begin
+  // Create the VBox, we need that to place controls outside
+  // the client area (like menu and the statusbar)
+  Result := gtk_vbox_new(False, 0);
+  If FormWidget = nil then
+    FormWidget := Result;
+
+  // Create the form client area
+  TempWidget := gtk_scrolled_window_new(nil,nil);
+  gtk_box_pack_end(Result, TempWidget, True, True, 0);
+  gtk_widget_show(TempWidget);
+
+  gtk_object_set_data(FormWidget,'scroll_area', TempWidget);
+
+  TempWidget2 := gtk_layout_new(nil, nil);
+  gtk_container_add(TempWidget, TempWidget2);
+  gtk_widget_show(TempWidget2);
+  SetFixedWidget(FormWidget, TempWidget2);
+  SetMainWidget(FormWidget, TempWidget2);
+
+  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.hscrollbar, GTK_CAN_FOCUS);
+  GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(TempWidget)^.vscrollbar, GTK_CAN_FOCUS);
+  gtk_scrolled_window_set_policy(PGtkScrolledWindow(TempWidget),
+                                 GTK_POLICY_NEVER,
+                                 GTK_POLICY_NEVER);
+end;
+
 {------------------------------------------------------------------------------
   Function: IndexOfStyle
   Params: WName
@@ -3943,6 +3974,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.141  2002/10/25 15:27:03  lazarus
+  AJ: Moved form contents creation to gtkproc for code
+      reuse between GNOME and GTK, and to make GNOME MDI
+      programming easier later on.
+
   Revision 1.140  2002/10/22 12:12:09  lazarus
   MG: accelerators are now shared between non modal forms
 
