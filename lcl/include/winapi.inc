@@ -603,6 +603,11 @@ begin
   Result := InterfaceObject.SendMessage(HandleWnd, Msg, wParam, lParam);
 end;
 
+function SetActiveWindow(Handle: HWND): HWND;
+begin
+  Result := InterfaceObject.SetActiveWindow(Handle);
+end;
+
 function SetBkColor(DC: HDC; Color: TColorRef): TColorRef;  //pbd
 begin
   Result := InterfaceObject.SetBkColor(DC, Color);
@@ -1225,6 +1230,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2002/09/09 14:01:06  lazarus
+  MG: improved TScreen and ShowModal
+
   Revision 1.45  2002/08/30 12:32:21  lazarus
   MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
 
