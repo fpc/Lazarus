@@ -9,7 +9,7 @@
   Support routines go to gtkproc.pp
 
  ******************************************************************************
- Interface
+ Implementation
  ******************************************************************************
 
  *****************************************************************************
@@ -28,8 +28,40 @@
 
 //##apiwiz##sps##   // Do not remove
 
-function LclCheckMenuItem(AMenuItem: TMenuItem): Boolean; override;
-function LclEnableMenuItem(AMenuItem: TMenuItem): Boolean; override;
+{------------------------------------------------------------------------------
+  Function: LCLCheckMenuItem
+  Params:  AMenuItem
+  Returns: Nothing
+
+  Checks or unchecks the specified menu item.
+ ------------------------------------------------------------------------------}
+Function TWin32Object.LclCheckMenuItem(AMenuItem: TMenuItem): Boolean;
+var
+  CheckFlag: Integer;
+Begin
+  if AMenuItem.Checked then CheckFlag := MF_CHECKED
+  else CheckFlag := MF_UNCHECKED;
+  CheckFlag := CheckFlag or MF_BYCOMMAND;
+  Result := Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, CheckFlag) <> $FFFFFFFF;
+End;
+
+{------------------------------------------------------------------------------
+  Function: LCLEnableMenuItem
+  Params: AMenuItem: 
+  Returns:
+
+  Enables, disables, or grays the specified menu item.
+ ------------------------------------------------------------------------------}
+Function TWin32Object.LclEnableMenuItem(AMenuItem: TMenuItem): Boolean;
+Var
+  EnableFlag: Integer;
+Begin
+  if AMenuItem.Enabled then EnableFlag := MF_ENABLED
+  else EnableFlag := MF_GRAYED;
+  EnableFlag := EnableFlag or MF_BYCOMMAND;
+  Result := Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag);
+End;
+
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
@@ -37,11 +69,9 @@ function LclEnableMenuItem(AMenuItem: TMenuItem): Boolean; override;
 { =============================================================================
 
   $Log$
-  Revision 1.2  2003/11/26 00:23:47  marc
+  Revision 1.1  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32
 
-  Revision 1.1  2003/11/24 11:03:07  marc
-  * Splitted winapi*.inc into a winapi and a lcl interface communication part
 
 }

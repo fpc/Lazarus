@@ -79,8 +79,8 @@ function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; Border
 
 function LoadStockPixmap(StockID: longint) : HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
-function LclCheckMenuItem(AMenuItem: TMenuItem; bChecked: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function LclEnableMenuItem(AMenuItem: TMenuItem; bEnable: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function LclCheckMenuItem(AMenuItem: TMenuItem): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function LclEnableMenuItem(AMenuItem: TMenuItem): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 function MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -141,6 +141,10 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/11/26 00:23:47  marc
+  * implemented new LCL(check|enable)Menuitem functions
+  * introduced the lclintf inc files to win32
+
   Revision 1.2  2003/11/25 14:21:28  micha
   new api lclenable,checkmenuitem according to list
 

@@ -37,11 +37,8 @@ function LclEnableMenuItem(AMenuItem: TMenuItem): Boolean; override;
 { =============================================================================
 
   $Log$
-  Revision 1.2  2003/11/26 00:23:47  marc
+  Revision 1.1  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32
-
-  Revision 1.1  2003/11/24 11:03:07  marc
-  * Splitted winapi*.inc into a winapi and a lcl interface communication part
 
 }

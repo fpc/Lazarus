@@ -126,6 +126,7 @@ Type
     function DestroyTimer(TimerHandle: Integer) : boolean; override;
 
     {$I win32winapih.inc}
+    {$I win32lclintfh.inc}
   End;
 
   {$I win32listslh.inc}
@@ -168,6 +169,7 @@ Var
 {$I win32callback.inc}
 {$I win32object.inc}
 {$I win32winapi.inc}
+{$I win32lclintf.inc}
 
 Initialization
 
@@ -185,6 +187,10 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.55  2003/11/26 00:23:47  marc
+  * implemented new LCL(check|enable)Menuitem functions
+  * introduced the lclintf inc files to win32
+
   Revision 1.54  2003/11/25 21:20:38  micha
   implement tchecklistbox
 

@@ -632,7 +632,7 @@ begin
     if (FParent <> nil)
     and not (csReading in ComponentState)
     and HandleAllocated
-    then LclCheckMenuItem(Self, FChecked);
+    then LclCheckMenuItem(Self);
   end;
 end;
 
@@ -661,7 +661,7 @@ begin
   if FEnabled <> AValue then begin
     FEnabled := AValue;
     if HandleAllocated and (Parent <> nil)
-    then LclEnableMenuItem(Self, FEnabled);
+    then LclEnableMenuItem(Self);
     MenuChanged(False);
   end;
 end;
@@ -984,6 +984,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2003/11/26 00:23:47  marc
+  * implemented new LCL(check|enable)Menuitem functions
+  * introduced the lclintf inc files to win32
+
   Revision 1.42  2003/11/25 14:21:28  micha
   new api lclenable,checkmenuitem according to list
 
@@ -1138,6 +1142,10 @@ end;
 
 
   $Log$
+  Revision 1.43  2003/11/26 00:23:47  marc
+  * implemented new LCL(check|enable)Menuitem functions
+  * introduced the lclintf inc files to win32
+
   Revision 1.42  2003/11/25 14:21:28  micha
   new api lclenable,checkmenuitem according to list
 

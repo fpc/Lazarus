@@ -224,14 +224,14 @@ begin
   Result := InterfaceObject.InvalidateFrame(aHandle,ARect,bErase,BorderWidth);
 end;
 
-function LclCheckMenuItem(AMenuItem: TMenuItem; bChecked: Boolean): Boolean;
+function LclCheckMenuItem(AMenuItem: TMenuItem): Boolean;
 begin
-  Result := InterfaceObject.LclCheckMenuItem(AMenuItem, bChecked);
+  Result := InterfaceObject.LclCheckMenuItem(AMenuItem);
 end;
 
-function LclEnableMenuItem(AMenuItem: TMenuItem; bEnable: Boolean): Boolean;
+function LclEnableMenuItem(AMenuItem: TMenuItem): Boolean;
 begin
-  Result := InterfaceObject.LclEnableMenuItem(AMenuItem, bEnable);
+  Result := InterfaceObject.LclEnableMenuItem(AMenuItem);
 end;
 
 function LoadStockPixmap(StockID: longint) : HBitmap;
@@ -448,6 +448,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/11/26 00:23:47  marc
+  * implemented new LCL(check|enable)Menuitem functions
+  * introduced the lclintf inc files to win32
+
   Revision 1.2  2003/11/25 14:21:28  micha
   new api lclenable,checkmenuitem according to list
 

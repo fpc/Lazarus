@@ -1959,44 +1959,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: CheckMenuItem
-  Params:  hndMenu: HMENU         - menu handle
-           uIDEnableItem: Integer - menu item to check/uncheck
-           bChecked: Boolean      - new state of the menu item
-  Returns: The previous state of the menu item.
-
-  Checks or unchecks the specified menu item.
- ------------------------------------------------------------------------------}
-Function TWin32Object.LclCheckMenuItem(AMenuItem: TMenuItem; bChecked: Boolean): Boolean;
-var
-  CheckFlag: Integer;
-Begin
-  if BChecked then CheckFlag := MF_CHECKED
-  else CheckFlag := MF_UNCHECKED;
-  CheckFlag := CheckFlag or MF_BYCOMMAND;
-  Result := Windows.CheckMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, CheckFlag) <> $FFFFFFFF;
-End;
-
-{------------------------------------------------------------------------------
-  Method:  EnableMenuItem
-  Params: HndMenu       - handle to menu
-          UIDEnableItem - menu item to enable/disable
-          BEnable       - new state of the menu item
-  Returns: The previous state of the menu item.
-
-  Enables, disables, or grays the specified menu item.
- ------------------------------------------------------------------------------}
-Function TWin32Object.LclEnableMenuItem(AMenuItem: TMenuItem; BEnable: Boolean): Boolean;
-Var
-  EnableFlag: Integer;
-Begin
-  if BEnable then EnableFlag := MF_ENABLED
-  else EnableFlag := MF_GRAYED;
-  EnableFlag := EnableFlag or MF_BYCOMMAND;
-  Result := Windows.EnableMenuItem(AMenuItem.Parent.Handle, AMenuItem.Command, EnableFlag);
-End;
-
-{------------------------------------------------------------------------------
   Method:  LineTo
   Params:  DC - device context handle
            X  - x-coordinate of line's ending point
@@ -2882,6 +2844,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.77  2003/11/26 00:23:47  marc
+  * implemented new LCL(check|enable)Menuitem functions
+  * introduced the lclintf inc files to win32
+
   Revision 1.76  2003/11/25 21:20:38  micha
   implement tchecklistbox
 

@@ -124,9 +124,6 @@ function IntersectClipRect(dc: hdc; Left, Top, Right, Bottom: Integer): Integer;
 Function InvalidateRect(AHandle: HWND; Rect: PRect; BErase: Boolean): Boolean; Override;
 function IsWindowVisible(handle: HWND): boolean; override;
 
-Function LclCheckMenuItem(AMenuItem: TMenuItem; bChecked: Boolean): Boolean; Override;
-Function LclEnableMenuItem(AMenuItem: TMenuItem; BEnable: Boolean): Boolean; Override;
-
 Function LineTo(DC: HDC; X, Y: Integer): Boolean; Override;
 
 Function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; Override;
@@ -193,6 +190,10 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2003/11/26 00:23:47  marc
+  * implemented new LCL(check|enable)Menuitem functions
+  * introduced the lclintf inc files to win32
+
   Revision 1.41  2003/11/25 14:21:28  micha
   new api lclenable,checkmenuitem according to list
 
