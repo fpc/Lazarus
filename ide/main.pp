@@ -851,6 +851,7 @@ end;
 constructor TMainIDE.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  Constraints.MaxHeight:=100;
 
   // load options
   CreatePrimaryConfigPath;
@@ -10293,6 +10294,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.725  2004/05/29 13:55:28  mattias
+  added MaxHeight:=100 for mainbar
+
   Revision 1.724  2004/05/26 23:05:23  mattias
   fixed creating console under win32
 
