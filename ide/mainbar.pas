@@ -293,6 +293,7 @@ type
     itmProjectStepOver: TMenuItem;
     itmProjectRunToCursor: TMenuItem;
     itmProjectStop: TMenuItem;
+    itmProjectResetDebugger: TMenuItem;
     itmProjectCompilerSettings: TMenuItem;
     itmProjectRunParameters: TMenuItem;
     
@@ -1109,6 +1110,13 @@ begin
 
   mnuRun.Add(CreateMenuSeparator);
 
+  itmProjectResetDebugger := TMenuItem.Create(Self);
+  itmProjectResetDebugger.Name:='itmProjectResetDebugger';
+  itmProjectResetDebugger.Caption := lisMenuResetDebugger;
+  mnuRun.Add(itmProjectResetDebugger);
+
+  mnuRun.Add(CreateMenuSeparator);
+
   itmProjectCompilerSettings := TMenuItem.Create(Self);
   itmProjectCompilerSettings.Name:='itmProjectCompilerSettings';
   itmProjectCompilerSettings.Caption := lisMenuCompilerOptions;
@@ -1376,6 +1384,7 @@ begin
     itmProjectStepOver.ShortCut:=CommandToShortCut(ecStepOver);
     itmProjectRunToCursor.ShortCut:=CommandToShortCut(ecRunToCursor);
     itmProjectStop.ShortCut:=CommandToShortCut(ecStopProgram);
+    itmProjectResetDebugger.ShortCut:=CommandToShortCut(ecResetDebugger);
     itmProjectCompilerSettings.ShortCut:=CommandToShortCut(ecCompilerOptions);
     itmProjectRunParameters.ShortCut:=CommandToShortCut(ecRunParameters);
 

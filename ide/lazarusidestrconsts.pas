@@ -199,6 +199,7 @@ resourcestring
   lisMenuStepOver = 'Step over';
   lisMenuRunToCursor = 'Run to cursor';
   lisMenuStop = 'Stop';
+  lisMenuResetDebugger = 'Reset debugger';
   lisMenuCompilerOptions = 'Compiler Options...';
   lisMenuRunParameters = 'Run Parameters ...';
   
@@ -1094,6 +1095,7 @@ resourcestring
   srkmecRun                       = 'run program';
   srkmecPause                     = 'pause program';
   srkmecStopProgram               = 'stop program';
+  srkmecResetDebugger             = 'reset debugger';
   srkmecRunParameters             = 'run parameters';
   srkmecCompilerOptions           = 'compiler options';
   // tools menu

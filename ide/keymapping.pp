@@ -164,6 +164,7 @@ const
   ecStopProgram          = ecUserFirst + 406;
   ecBuildAll             = ecUserFirst + 407;
   ecBuildLazarus         = ecUserFirst + 408;
+  ecResetDebugger        = ecUserFirst + 409;
 
   // project menu
   ecNewProject           = ecUserFirst + 500;
@@ -625,6 +626,7 @@ begin
     ecStepOver              : Result:= lisMenuStepOver;
     ecRunToCursor           : Result:= lisMenuRunToCursor;
     ecStopProgram           : Result:= srkmecStopProgram;
+    ecResetDebugger         : Result:= srkmecResetDebugger;
     ecRunParameters         : Result:= srkmecRunParameters;
     ecCompilerOptions       : Result:= srkmecCompilerOptions;
     
@@ -1463,6 +1465,7 @@ begin
   Add(C,'Step over',ecStepOver,VK_F8,[],VK_UNKNOWN,[]);
   Add(C,'Run to cursor',ecRunToCursor,VK_F4,[],VK_UNKNOWN,[]);
   Add(C,'Stop program',ecStopProgram,VK_F2,[SSCtrl],VK_UNKNOWN,[]);
+  Add(C,'Reset debugger',ecResetDebugger,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Compiler options',ecCompilerOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Run parameters',ecRunParameters,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
