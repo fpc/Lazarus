@@ -799,16 +799,19 @@ begin
     switches := switches + ' ' + '@' + ConfigFilePath;
 
   { ------------- Search Paths Tab ---------------- }
-
+  Writeln('Switchs = '+Switches);
   if (IncludeFiles <> '') then
     switches := switches + ' ' + ParseSearchPaths('-Fi', IncludeFiles);
-    
+  Writeln('Switchs = '+Switches);
+
   if (Libraries <> '') then
     switches := switches + ' ' + ParseSearchPaths('-Fl', Libraries);
-    
+  Writeln('Switchs = '+Switches);
+
   if (OtherUnitFiles <> '') then
     switches := switches + ' ' + ParseSearchPaths('-Fu', OtherUnitFiles);
-    
+  Writeln('Switchs = '+Switches);
+
   { CompilerPath - Nothing needs to be done with this one }
 
   { TODO: Implement the following switches. They need to be added

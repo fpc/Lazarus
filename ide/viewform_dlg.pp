@@ -28,7 +28,7 @@ unit ViewForm_Dlg;
 interface
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,buttons,stdctrls;
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,LResources,buttons,stdctrls;
 
 
 type
@@ -157,10 +157,19 @@ if Listbox1.Items.Count > 0 then
 end;
 
 
+initialization
+{$I viewforms1.lrs}
+
+
+
 
 end.
 {
   $Log$
+  Revision 1.3  2001/01/13 06:11:07  lazarus
+  Minor fixes
+  Shane
+
   Revision 1.2  2001/01/05 17:44:37  lazarus
   ViewUnits1, ViewForms1 and MessageDlg are all loaded from their resources and all controls are auto-created on them.
   There are still a few problems with some controls so I haven't converted all forms.

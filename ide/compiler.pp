@@ -92,7 +92,6 @@ var
 
   TheProcess : TProcess;
 begin
-  Writeln('In Compile');
 
   Texts := '';
   FOutputList.Clear;
@@ -237,8 +236,8 @@ end.
 
 {
   $Log$
-  Revision 1.3  2001/01/13 03:09:37  lazarus
-  Minor changes
+  Revision 1.4  2001/01/13 06:11:06  lazarus
+  Minor fixes
   Shane
 
   Revision 1.2  2000/12/20 20:04:30  lazarus

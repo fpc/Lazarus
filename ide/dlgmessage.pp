@@ -27,7 +27,7 @@ unit dlgMessage;
 interface
 
 uses
-  classes, sysutils, controls, stdctrls,forms;
+  classes, sysutils, controls, stdctrls,forms,LResources;
 
  type
 
@@ -122,6 +122,8 @@ if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
     end;
    end;
 end;
+
+
 
 end.
 

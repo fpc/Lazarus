@@ -1843,10 +1843,8 @@ end;
 
 initialization
 {$I images/laz_images.lrs}
-
 {$I dlgmessage.lrs}
-{$I viewunits1.lrs}
-{$I viewforms1.lrs}
+
 { $I mainide.lrs}
 { $I finddialog1.lrs}
 
@@ -1858,6 +1856,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.42  2001/01/13 06:11:06  lazarus
+  Minor fixes
+  Shane
+
   Revision 1.41  2001/01/13 03:09:37  lazarus
   Minor changes
   Shane

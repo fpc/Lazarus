@@ -32,6 +32,7 @@ uses
   splash,
   main,
   compileroptions,
+  dlgMessage,
   viewunit_dlg,  //dialog used to list the units in a project
   viewform_dlg;  //dialog to display the forms in the project
 
@@ -51,9 +52,10 @@ begin
    end;
 
    Application.CreateForm(TMainIDE, MainIDE);
-   Application.CreateForm(TfrmCompilerOptions, frmCompilerOptions);
    Application.CreateForm(TViewUnits1, ViewUnits1);
    Application.CreateForm(TViewForms1, ViewForms1);
+//   Application.CreateForm(TMessageDlg, MessageDlg);
+   Application.CreateForm(TfrmCompilerOptions, frmCompilerOptions);
    SplashForm.StartTimer;
    Application.Run;
 end.
@@ -61,6 +63,10 @@ end.
 
 {
   $Log$
+  Revision 1.8  2001/01/13 06:11:06  lazarus
+  Minor fixes
+  Shane
+
   Revision 1.7  2001/01/08 23:48:33  lazarus
   MWE:
     ~ Changed makefiles

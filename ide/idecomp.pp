@@ -211,7 +211,6 @@ pixmap1 := LoadImageintoPixmap;
     Glyph := Pixmap1;
     Visible := True;
 
-
    end;
 result := FSpeedButton;
 end;

@@ -91,7 +91,7 @@ type
     Function GotoMethodDeclaration(Value : String) : Integer;
 
     Procedure CreateEditor(AOwner : TComponent; AParent: TWinControl);
-
+    Procedure CreateFormFromUnit;
   protected
     ToggleMenuItem : TMenuItem;
     Procedure DisplayControl;
@@ -846,6 +846,42 @@ Begin
 tempSource.Free;
 end;
 
+{____________________________________________}
+{                 CREATEFORMFROMUNIT         }
+{This method checks to see if the loaded unit is a form unit.
+ If so, it creates the form                                  }
+Procedure TSourceEditor.CreateFormFromUnit;
+Var
+  I,X : Integer;
+  Found : Boolean;
+  Texts : String;
+Begin
+  for I := 0 to Source.Count -1 do
+      begin
+        Found := (Pos('initialization',lowercase(Source.Strings[i])) <> 0);
+        if Found then break;
+      end;
+
+  if Not Found then exit;
+
+  For X := I to Source.Count-1 do
+      Begin
+      Found := (pos('{<LAZARUSFORMDEF>}',Source.Strings[x]) <> 0);
+      if Found then Break;
+      end;
+
+  if Not Found then exit;
+  inc(x);
+  Texts := Source.Strings[x];
+  //grab the file name
+  Texts := Copy(Texts,pos('{$I ',Texts)+4,Length(Texts));
+  Texts := Copy(Texts,1,pos('.',Texts)+3);
+  Writeln('the resource file is '+Texts);
+
+
+end;
+
+
 Procedure TSourceEditor.CreateNewUnit;
 Var
   I : Integer;
@@ -897,6 +933,8 @@ Begin
     FEditor.Lines.LoadFromFile(FileName);
     FUnitName := Filename;
     FModified := False;
+    //see if this is a form file
+    CreateFormfromUnit;
   except
     Result := False;
   end;
