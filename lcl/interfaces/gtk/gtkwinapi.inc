@@ -1382,6 +1382,8 @@ begin
   // For info about xlfd see:
   //    http://wwwinfo.cern.ch/umtf/working-groups/X11/fonts/hp_xlfd.html
   // Lets fill in all the xlfd parts. Assume we have scalable fonts
+  
+  //writeln('TgtkObject.CreateFontIndirectEx A Name=',LogFont.lfFaceName,' Height=',LogFont.lfHeight);
 
   Result := 0;
   GDIObject := NewGDIObject(gdiFont);
@@ -4128,7 +4130,7 @@ end;
 {------------------------------------------------------------------------------
   Function TgtkObject.CreateSystemFont : hFont;
  ------------------------------------------------------------------------------}
-Function TgtkObject.CreateSystemFont : hFont;
+Function TgtkObject.CreateSystemFont: hFont;
 var
   GDIObj : PGDIObject;
 begin
@@ -4136,7 +4138,6 @@ begin
   GDIObj^.GDIFontObject:= GetDefaultFont;
   Result := hFont(GDIObj);
 end;
-
 
 {------------------------------------------------------------------------------
   Function: GetStockObject
@@ -8034,6 +8035,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.229  2003/04/02 13:23:24  mattias
+  fixed default font
+
   Revision 1.228  2003/03/31 20:25:19  mattias
   fixed scrollbars of TIpHtmlPanel
 
