@@ -3986,27 +3986,50 @@ var
   Widget, ScrollWidget, BarWidget: PGtkWidget;
 begin
   Result:=0;
-  if Handle<>0 then begin
-    Widget:=PGtkWidget(Handle);
-    if GtkWidgetIsA(Widget,GTK_SCROLLED_WINDOW_TYPE) then begin
-      ScrollWidget:=Widget;
-    end else begin
-      ScrollWidget:=PGtkWidget(gtk_object_get_data(
+  Widget:=PGtkWidget(Handle);
+  if GtkWidgetIsA(Widget,GTK_SCROLLED_WINDOW_TYPE) then begin
+    ScrollWidget:=Widget;
+  end else begin
+    ScrollWidget:=PGtkWidget(gtk_object_get_data(
                                              PGtkObject(Widget),'scroll_area'));
-    end;
-    if ScrollWidget<>nil then begin
-      if BarKind=SM_CYVSCROLL then begin
-        BarWidget:=PGtkScrolledWindow(ScrollWidget)^.vscrollbar;
-        if BarWidget<>nil then
-          Result:=BarWidget^.Requisition.Width;
-      end else begin
-        BarWidget:=PGtkScrolledWindow(ScrollWidget)^.hscrollbar;
-        if BarWidget<>nil then
-          Result:=BarWidget^.Requisition.Height;
-      end;
-      if BarWidget<>nil then
-    end;
   end;
+  if ScrollWidget=nil then exit;
+  if BarKind=SM_CYVSCROLL then begin
+    BarWidget:=PGtkScrolledWindow(ScrollWidget)^.vscrollbar;
+    if BarWidget<>nil then
+      Result:=BarWidget^.Requisition.Width;
+  end else begin
+    BarWidget:=PGtkScrolledWindow(ScrollWidget)^.hscrollbar;
+    if BarWidget<>nil then
+      Result:=BarWidget^.Requisition.Height;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  function TgtkObject.GetScrollbarVisible(Handle: HWND;
+    SBStyle: Integer): boolean;
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean;
+var
+  Widget, ScrollWidget, BarWidget: PGtkWidget;
+begin
+  Result:=false;
+  if Handle=0 then exit;
+  Widget:=PGtkWidget(Handle);
+  if GtkWidgetIsA(Widget,GTK_SCROLLED_WINDOW_TYPE) then begin
+    ScrollWidget:=Widget;
+  end else begin
+    ScrollWidget:=PGtkWidget(gtk_object_get_data(
+                                             PGtkObject(Widget),'scroll_area'));
+  end;
+  if ScrollWidget=nil then exit;
+  if SBStyle=SB_VERT then begin
+    BarWidget:=PGtkScrolledWindow(ScrollWidget)^.vscrollbar;
+  end else begin
+    BarWidget:=PGtkScrolledWindow(ScrollWidget)^.hscrollbar;
+  end;
+  if BarWidget<>nil then
+    Result:=GTK_WIDGET_VISIBLE(BarWidget);
 end;
 
 {------------------------------------------------------------------------------
@@ -4016,13 +4039,74 @@ end;
 
 
  ------------------------------------------------------------------------------}
-function TgtkObject.GetScrollInfo(Handle: HWND; BarFlag: Integer;
+function TgtkObject.GetScrollInfo(Handle: HWND; SBStyle: Integer;
   var ScrollInfo: TScrollInfo): Boolean;
+var
+  Adjustment: PGtkAdjustment;
+  Scroll : PGTKWidget;
 begin
-  Assert(False, 'Trace:TODO: [TgtkObject.GetScrollInfo]');
-  Result := False;
+  Result := false;
+  if (Handle = 0) then exit;
+
+  Adjustment := nil;
+  Scroll := GTK_Object_Get_Data(PGTKObject(Handle), 'scroll_area');
+  If not GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
+    Scroll := PGTKWidget(Handle);
+
+  Adjustment:=nil;
+  case SBStyle of
+    SB_HORZ:
+      If GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
+        Adjustment := gtk_scrolled_window_get_hadjustment(
+                         PGTKScrolledWindow(Scroll))
+      else
+      if GtkWidgetIsA(PGtkWidget(Scroll),gtk_hscrollbar_get_type) then
+        Adjustment :=  PgtkhScrollBar(Scroll)^.Scrollbar.Range.Adjustment
+      else  //clist
+      if GtkWidgetIsA(PGtkWidget(Scroll),gtk_clist_get_type) then
+        Adjustment :=  {$IfDef Win32}nil{$Else}gtk_clist_get_hadjustment(PgtkCList(Scroll)){$EndIf};
+
+    SB_VERT:
+      If GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
+        Adjustment := gtk_scrolled_window_get_vadjustment(
+                         PGTKScrolledWindow(Scroll))
+      else
+      if GtkWidgetIsA(PGtkWidget(Scroll),gtk_vscrollbar_get_type) then
+        Adjustment :=  PgtkvScrollBar(Scroll)^.Scrollbar.Range.Adjustment
+      else  //clist
+      if GtkWidgetIsA(PGtkWidget(Scroll), gtk_clist_get_type) then
+        Adjustment := {$IfDef Win32}nil{$Else}gtk_clist_get_vadjustment(PgtkCList(Scroll)){$EndIf};
+
+    SB_CTL:
+      if GtkWidgetIsA(PGtkWidget(Scroll), gtk_range_get_type) then
+        Adjustment := gtk_range_get_adjustment(PGTKRange(Scroll));
+
+  end;
+  
+  with ScrollInfo, Adjustment^ do begin
+    // POS
+    if (fMask and SIF_POS) <> 0 then
+      nPos := round(Value);
+    // RANGE
+    if (fMask and SIF_RANGE) <> 0
+    then begin
+      nMin:= round(Lower);
+      nMax:= round(Upper);
+    end;
+    // PAGE
+    if (fMask and SIF_PAGE) <> 0 then
+      nPage := round(Page_Size);
+    // TRACKPOS
+    if (fMask and SIF_TRACKPOS)<>0 then
+      nTrackPos := round(Value); // don't know if this is correct
+  end;
+
+  Result := true;
 end;
 
+{------------------------------------------------------------------------------
+  Function TgtkObject.CreateSystemFont : hFont;
+ ------------------------------------------------------------------------------}
 Function TgtkObject.CreateSystemFont : hFont;
 var
   GDIObj : PGDIObject;
@@ -6731,129 +6815,103 @@ var
   Adjustment: PGtkAdjustment;
   Scroll : PGTKWidget;
 begin
-//  Assert(False, 'Trace:[TgtkObject.SetScrollInfo]');
-  with ScrollInfo do Assert(False, Format('Trace:> [TgtkObject.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [fMask, nMin, nMax, nPage, nPos]));
-
   Result := 0;
-  if (Handle <> 0)
-  then begin
-    Adjustment := nil;
-    Scroll := GTK_Object_Get_Data(PGTKObject(Handle), 'scroll_area');
-    If (Scroll = nil) or not gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
-      gtk_scrolled_window_get_type)
-    then
-      Scroll := PGTKWidget(Handle);
+  if (Handle = 0) then exit;
+  
+  Adjustment := nil;
+  Scroll := GTK_Object_Get_Data(PGTKObject(Handle), 'scroll_area');
+  If not GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
+    Scroll := PGTKWidget(Handle);
 
-    case SBStyle of
-      SB_HORZ:
-        If gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
-         gtk_scrolled_window_get_type)
-        then
-          Adjustment := gtk_scrolled_window_get_hadjustment(
-                           PGTKScrolledWindow(Scroll))
-        else
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
-          gtk_hscrollbar_get_type) 
-        then
-          Adjustment :=  PgtkhScrollBar(Scroll)^.Scrollbar.Range.Adjustment
-        else  //clist
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
-          gtk_clist_get_type)
-        then
-          Adjustment :=  {$IfDef Win32}nil{$Else}gtk_clist_get_hadjustment(PgtkCList(Scroll)){$EndIf};
+  Adjustment:=nil;
+  case SBStyle of
+    SB_HORZ:
+      If GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
+        Adjustment := gtk_scrolled_window_get_hadjustment(
+                         PGTKScrolledWindow(Scroll))
+      else
+      if GtkWidgetIsA(PGtkWidget(Scroll),gtk_hscrollbar_get_type) then
+        Adjustment :=  PgtkhScrollBar(Scroll)^.Scrollbar.Range.Adjustment
+      else  //clist
+      if GtkWidgetIsA(PGtkWidget(Scroll),gtk_clist_get_type) then
+        Adjustment :=  {$IfDef Win32}nil{$Else}gtk_clist_get_hadjustment(PgtkCList(Scroll)){$EndIf};
 
-      SB_VERT:
-        If gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
-         gtk_scrolled_window_get_type)
-        then
-          Adjustment := gtk_scrolled_window_get_vadjustment(
-                           PGTKScrolledWindow(Scroll))
-        else
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
-          gtk_vscrollbar_get_type) 
-        then
-          Adjustment :=  PgtkvScrollBar(Scroll)^.Scrollbar.Range.Adjustment
-        else  //clist
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
-          gtk_clist_get_type)
-        then
-          Adjustment := {$IfDef Win32}nil{$Else}gtk_clist_get_vadjustment(PgtkCList(Scroll)){$EndIf};
+    SB_VERT:
+      If GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
+        Adjustment := gtk_scrolled_window_get_vadjustment(
+                         PGTKScrolledWindow(Scroll))
+      else
+      if GtkWidgetIsA(PGtkWidget(Scroll),gtk_vscrollbar_get_type) then
+        Adjustment :=  PgtkvScrollBar(Scroll)^.Scrollbar.Range.Adjustment
+      else  //clist
+      if GtkWidgetIsA(PGtkWidget(Scroll), gtk_clist_get_type) then
+        Adjustment := {$IfDef Win32}nil{$Else}gtk_clist_get_vadjustment(PgtkCList(Scroll)){$EndIf};
 
-      SB_CTL:
-        if gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)), gtk_range_get_type)
-        then begin
-          Adjustment := gtk_range_get_adjustment(PGTKRange(Scroll));
-        end;
-        
+    SB_CTL:
+      if GtkWidgetIsA(PGtkWidget(Scroll), gtk_range_get_type) then
+        Adjustment := gtk_range_get_adjustment(PGTKRange(Scroll));
+
+  end;
+
+  if Adjustment = nil then exit;
+
+  with ScrollInfo, Adjustment^ do begin
+    Result := Round(Value);
+    if (fMask and SIF_POS) <> 0
+    then Value := nPos;
+    if (fMask and SIF_RANGE) <> 0
+    then begin
+      Lower := nMin;
+      Upper := nMax;
     end;
+    if (fMask and SIF_PAGE) <> 0
+    then begin
+      Page_Size := nPage;
+      Page_Increment := nPage;
+    end;
+    
+    {writeln('');
+    writeln('[TgtkObject.SetScrollInfo] Result=',Result,
+    ' Lower=',round(Lower),
+    ' Upper=',round(Upper),
+    ' Page_Size=',round(Page_Size),
+    ' Page_Increment=',round(Page_Increment),
+    ' bRedraw=',bRedraw,
+    ' Handle=',HexStr(Cardinal(Handle),8));}
 
-    if Adjustment <> nil
-    then with ScrollInfo, Adjustment^ do begin
-      Result := Round(Value);
-      if (fMask and SIF_POS) <> 0
-      then Value := nPos;
-      if (fMask and SIF_RANGE) <> 0
-      then begin
-        Lower := nMin;
-        Upper := nMax;
-      end;
-      if (fMask and SIF_PAGE) <> 0
-      then begin
-        Page_Size := nPage;
-        Page_Increment := nPage;
-      end;
-      
-      {writeln('');
-      writeln('[TgtkObject.SetScrollInfo] Result=',Result,
-      ' Lower=',round(Lower),
-      ' Upper=',round(Upper),
-      ' Page_Size=',round(Page_Size),
-      ' Page_Increment=',round(Page_Increment),
-      ' bRedraw=',bRedraw,
-      ' Handle=',HexStr(Cardinal(Handle),8));}
-
-      // do we have to set this allways ?
-      if bRedraw then
+    // do we have to set this allways ?
+    if bRedraw then
+    begin
+      if GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
       begin
-        if  (Handle <> 0) then
-        begin
-          if gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
-                           gtk_scrolled_window_get_type)
-          then
-          begin
-            if SBStyle in [SB_BOTH, SB_HORZ]
-              then gtk_object_set(PGTKObject(Scroll), 'hscrollbar_policy',
-                                  [POLICY[bRedraw], nil]);
-            if SBStyle in [SB_BOTH, SB_VERT]
-              then gtk_object_set(PGTKObject(Scroll), 'vscrollbar_policy',
-                                  [POLICY[bRedraw], nil]);
-          end
-          else
-          begin
-            if (SBSTYLE = SB_CTL)
-            and gtk_type_is_a(gtk_object_type(PGTKObject(Scroll)),
-                              gtk_widget_get_type)
-            then
-              gtk_widget_show(PGTKWidget(Scroll))
-            else
-              gtk_widget_hide(PGTKWidget(Scroll))
-          end;
-        end;
-        {writeln('');
-        writeln('TgtkObject.SetScrollInfo: ',
-        ' lower=',round(lower),'/',nMin,
-        ' upper=',round(upper),'/',nMax,
-        ' value=',round(value),'/',nPos,
-        ' step_increment=',round(step_increment),'/',1,
-        ' page_increment=',round(page_increment),'/',nPage,
-        ' page_size=',round(page_size),'/',nPage,
-        '');}
-
-        gtk_adjustment_changed(Adjustment);
+        if SBStyle in [SB_BOTH, SB_HORZ]
+          then gtk_object_set(PGTKObject(Scroll), 'hscrollbar_policy',
+                              [POLICY[bRedraw], nil]);
+        if SBStyle in [SB_BOTH, SB_VERT]
+          then gtk_object_set(PGTKObject(Scroll), 'vscrollbar_policy',
+                              [POLICY[bRedraw], nil]);
+      end
+      else
+      begin
+        if (SBSTYLE = SB_CTL)
+        and GtkWidgetIsA(PGtkWidget(Scroll),gtk_widget_get_type) then
+          gtk_widget_show(PGTKWidget(Scroll))
+        else
+          gtk_widget_hide(PGTKWidget(Scroll))
       end;
+      {writeln('');
+      writeln('TgtkObject.SetScrollInfo: ',
+      ' lower=',round(lower),'/',nMin,
+      ' upper=',round(upper),'/',nMax,
+      ' value=',round(value),'/',nPos,
+      ' step_increment=',round(step_increment),'/',1,
+      ' page_increment=',round(page_increment),'/',nPage,
+      ' page_size=',round(page_size),'/',nPage,
+      '');}
+
+      gtk_adjustment_changed(Adjustment);
     end;
   end;
-  with ScrollInfo do Assert(False, Format('Trace:> [TgtkObject.SetScrollInfo] --> %d', [Result]));
 end;
 
 {------------------------------------------------------------------------------
@@ -7955,6 +8013,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.226  2003/03/29 17:20:05  mattias
+  added TMemoScrollBar
+
   Revision 1.225  2003/03/28 19:39:54  mattias
   started typeinfo for double extended
 
