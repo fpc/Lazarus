@@ -403,16 +403,18 @@ var
   ListIndex, i: integer;
   NewLabel: TLabel;
 begin
+  LabelsAsText:=TStringList.Create;
   // add new TLabels
   while FInputLabels.Count<FFileCount do begin
     ListIndex:=FInputLabels.Count;
     // create TLabel list
     NewLabelList:=TList.Create;
+    LabelsAsText.Text:=FFileDescs[ListIndex];
     // create one TLabel for every line
     for i:=0 to LabelsAsText.Count-1 do begin
       NewLabel:=TLabel.Create(Self);
       with NewLabel do begin
-        Name:='NewLabel';
+        Name:='NewLabel'+IntToStr(FInputLabels.Count)+'_'+IntToStr(i);
         Parent:=Self;
         Visible:=true;
       end;
@@ -425,7 +427,6 @@ begin
     DeleteLabelList(FInputLabels.Count-1);
   end;
   // update label text
-  LabelsAsText:=TStringList.Create;
   for ListIndex:=0 to FInputLabels.Count-1 do begin
     // split description into lines
     LabelsAsText.Text:=FFileDescs[ListIndex];
@@ -510,7 +511,8 @@ begin
   Width:=500;
   
   OnResize:=@FormResize;
-  
+
+  OkButton:=TButton.Create(Self);
   with OkButton do begin
     Name:='OkButton';
     Parent:=Self;
@@ -519,6 +521,7 @@ begin
     Visible:=true;
   end;
   
+  CancelButton:=TButton.Create(Self);
   with CancelButton do begin
     Name:='CancelButton';
     Parent:=Self;
