@@ -1096,6 +1096,7 @@ type
                                ReaderClass: TFPCustomImageReaderClass); virtual;
     procedure WriteNativeStream(Stream: TStream; WriteSize: Boolean;
       SaveStreamType: TBitmapNativeType); virtual;
+    function CreateIntfImage: TLazIntfImage;
     {$ENDIF}
   public
     property Canvas: TCanvas read GetCanvas write FCanvas;
@@ -1213,6 +1214,10 @@ Function Blue(rgb: TColor): BYTE;
 Function Green(rgb: TColor): BYTE;
 Function Red(rgb: TColor): BYTE;
 procedure RedGreenBlue(rgb: TColor; var Red, Green, Blue: Byte);
+{$IFNDEF DisableFPImage}
+function FPColorToTColor(const FPColor: TFPColor): TColor;
+function TColorToFPColor(const c: TColor): TFPColor;
+{$ENDIF}
 
 // fonts
 procedure GetCharsetValues(Proc: TGetStrProc);
@@ -1527,6 +1532,23 @@ begin
   Blue := (rgb shr 16) and $000000ff;
 end;
 
+function FPColorToTColor(const FPColor: TFPColor): TColor;
+begin
+  Result:=((FPColor.Red shr 8) and $ff)
+       or (FPColor.Green and $ff00)
+       or ((FPColor.Blue shl 8) and $ff0000);
+end;
+
+function TColorToFPColor(const c: TColor): TFPColor;
+begin
+  Result.Red:=(c and $ff);
+  Result.Red:=Result.Red+(Result.Red shl 8);
+  Result.Green:=(c and $ff00);
+  Result.Green:=Result.Green+(Result.Green shr 8);
+  Result.Blue:=(c and $ff0000) shr 8;
+  Result.Blue:=Result.Blue+(Result.Blue shr 8);
+  Result.Alpha:=FPImage.alphaOpaque;
+end;
 
 {$I graphicsobject.inc}
 {$I graphic.inc}
@@ -1752,6 +1774,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.155  2004/09/27 10:01:18  mattias
+  added TLazIntfImage.TColors property
+
   Revision 1.154  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods

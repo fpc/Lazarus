@@ -127,7 +127,9 @@ type
     FWriteRawImageBits: TOnWriteRawImageBits;
     FAlphaReadRawImageBits: TOnReadRawImageBits;
     FAlphaWriteRawImageBits: TOnWriteRawImageBits;
+    function GetTColors(x, y: integer): TGraphicsColor;
     procedure SetAutoCreateMask(const AValue: boolean);
+    procedure SetTColors(x, y: integer; const AValue: TGraphicsColor);
   protected
     OnGetInternalColor: TOnGetLazIntfImagePixel;
     OnSetInternalColor: TOnSetLazIntfImagePixel;
@@ -195,6 +197,7 @@ type
     property DataDescription: TRawImageDescription read FDataDescription
                                                    write SetDataDescription;
     property AutoCreateMask: boolean read FAutoCreateMask write SetAutoCreateMask;
+    property TColors[x,y: integer]: TGraphicsColor read GetTColors write SetTColors;
   end;
   
   
@@ -1431,6 +1434,16 @@ begin
     CreateMaskData
   else
     FreeMaskData;
+end;
+
+function TLazIntfImage.GetTColors(x, y: integer): TGraphicsColor;
+begin
+  Result:=FPColorToTColor(Colors[x,y]);
+end;
+
+procedure TLazIntfImage.SetTColors(x, y: integer; const AValue: TGraphicsColor);
+begin
+  Colors[x,y]:=TColorToFPColor(AValue);
 end;
 
 procedure TLazIntfImage.SetUsePalette(Value: boolean);

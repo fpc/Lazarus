@@ -1178,6 +1178,12 @@ begin
   if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
     FImage.SaveStreamType:=SaveStreamType;
 end;
+
+function TBitmap.CreateIntfImage: TLazIntfImage;
+begin
+  Result:=TLazIntfImage.Create(0,0);
+  Result.LoadFromBitmap(Handle,MaskHandle);
+end;
 {$ENDIF}
 
 function TBitmap.GetEmpty: boolean;
@@ -1240,6 +1246,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.91  2004/09/27 10:01:18  mattias
+  added TLazIntfImage.TColors property
+
   Revision 1.90  2004/09/24 10:23:49  mattias
   fixed 1.0.10 compilation
 
