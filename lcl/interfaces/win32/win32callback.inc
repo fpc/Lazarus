@@ -1080,6 +1080,18 @@ Begin
             SW_SHOW)
       end;
     End;
+    WM_SYSCHAR:
+    Begin
+      PLMsg:=@LMChar;
+      With LMChar Do
+      Begin
+        Msg := CN_SYSCHAR;
+        KeyData := LParam;
+        CharCode := Word(WParam);
+        Assert(False,Format('WM_CHAR KeyData= %d CharCode= %d ',[KeyData,CharCode]));
+      End;
+      WinProcess := false;
+    End;
     WM_SYSKEYDOWN:
     Begin
       NotifyUserInput := True;
@@ -1253,14 +1265,14 @@ Begin
         WinProcess := true;
     end;
 
-    CN_CHAR:
+    CN_CHAR, CN_SYSCHAR:
     begin
       // if key not yet processed, let windows process it
       WinProcess := LMChar.CharCode <> VK_UNKNOWN;
       WParam := LMChar.CharCode;
     end;
    
-    CN_KEYDOWN, CN_KEYUP:
+    CN_KEYDOWN, CN_KEYUP, CN_SYSKEYDOWN, CN_SYSKEYUP:
     begin
       // if key not yet processed, let windows process it
       WinProcess := LMKey.CharCode <> VK_UNKNOWN;
@@ -1284,13 +1296,19 @@ Begin
     PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam); 
 
     case Msg of
-      WM_CHAR, WM_KEYDOWN, WM_KEYUP:
+      WM_CHAR, WM_KEYDOWN, WM_KEYUP,
+      WM_SYSCHAR, WM_SYSKEYDOWN, WM_SYSKEYUP:
       begin
         case Msg of
           WM_CHAR: 
           begin
             LMChar.CharCode := Word(WParam);
             LMChar.Msg := LM_CHAR;
+          end;
+          WM_SYSCHAR: 
+          begin
+            LMChar.CharCode := Word(WParam);
+            LMChar.Msg := LM_SYSCHAR;
           end;
           WM_KEYDOWN:
           begin
@@ -1301,6 +1319,16 @@ Begin
           begin
             LMKey.CharCode := Word(WParam);
             LMKey.Msg := LM_KEYUP;
+          end;
+          WM_SYSKEYDOWN:
+          begin
+            LMKey.CharCode := Word(WParam);
+            LMKey.Msg := LM_SYSKEYDOWN;
+          end;
+          WM_SYSKEYUP: 
+          begin
+            LMKey.CharCode := Word(WParam);
+            LMKey.Msg := LM_SYSKEYUP;
           end;
         end;
         case WParam of
@@ -1528,6 +1556,9 @@ end;
 
 {
   $Log$
+  Revision 1.187  2005/02/03 15:06:30  micha
+  translate and route WM_SYSCHAR messages, fix WM_SYSKEYDOWN and WM_SYSKEYUP messages
+
   Revision 1.186  2005/02/01 15:48:03  vincents
   fixed handling WM_MOUSEWHEEL in designer form (bug 647).
 

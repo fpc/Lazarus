@@ -314,7 +314,7 @@ begin
 }
   else
     iconHandle := Windows.LoadIcon(MainInstance, 'MAINICON');
-  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, iconHandle);
+  SendMessage(winHandle, WM_SETICON, ICON_BIG, iconHandle);
 end;
 
 procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);
