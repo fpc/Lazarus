@@ -6559,8 +6559,8 @@ function TgtkObject.CreateDefaultFont: PGdiObject;
 begin
   Result := NewGDIObject(gdiFont);
   if FDefaultFont = nil then begin
-    FDefaultFont:=
-      gdk_font_load('-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-iso8859-1');
+    FDefaultFont:=GetDefaultFont;
+    //  gdk_font_load('-adobe-helvetica-medium-r-normal--*-120-*-*-*-*-iso8859-1');
     if FDefaultFont = nil then begin
       FDefaultFont:= gdk_font_load ('fixed');
       if FDefaultFont = nil then
@@ -7164,6 +7164,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.346  2003/04/02 13:23:24  mattias
+  fixed default font
+
   Revision 1.345  2003/03/29 19:15:30  mattias
   fixed untransienting
 
