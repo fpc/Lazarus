@@ -1324,8 +1324,9 @@ procedure TControl.Show;
 begin
   if Parent <> nil then Parent.ShowControl(Self);
   if not (csDesigning in ComponentState)
-  or (csNoDesignVisible in ControlStyle) then
+  or (not (csNoDesignVisible in ControlStyle)) then begin
     Visible := true;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2041,6 +2042,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.101  2002/11/12 16:18:45  lazarus
+  MG fixed hidden component page
+
   Revision 1.100  2002/11/09 15:02:06  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 
