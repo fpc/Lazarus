@@ -186,11 +186,11 @@ function TRunParamsOptions.Load(XMLConfig: TXMLConfig;
   var i, Cnt: integer;
   begin
     fUserOverrides.Clear;
-    Cnt:=XMLConfig.GetValue(APath+'/Count',0);
+    Cnt:=XMLConfig.GetValue(APath+'Count',0);
     for i:=0 to Cnt-1 do begin
       fUserOverrides.Values[XMLConfig.GetValue(
-        APath+'/Variable'+IntToStr(i)+'/Name','')]:=
-          XMLConfig.GetValue(APath+'/Variable'+IntToStr(i)+'/Value','');
+        APath+'Variable'+IntToStr(i)+'/Name','')]:=
+          XMLConfig.GetValue(APath+'Variable'+IntToStr(i)+'/Value','');
     end;
   end;
 
@@ -230,11 +230,11 @@ function TRunParamsOptions.Save(XMLConfig: TXMLConfig;
   procedure SaveUserOverrides(const APath: string);
   var i: integer;
   begin
-    XMLConfig.SetValue(APath+'/Count',fUserOverrides.Count);
+    XMLConfig.SetValue(APath+'Count',fUserOverrides.Count);
     for i:=0 to fUserOverrides.Count-1 do begin
-      XMLConfig.SetValue(APath+'/Variable'+IntToStr(i)+'/Name',
+      XMLConfig.SetValue(APath+'Variable'+IntToStr(i)+'/Name',
         fUserOverrides.Names[i]);
-      XMLConfig.SetValue(APath+'/Variable'+IntToStr(i)+'/Value',
+      XMLConfig.SetValue(APath+'Variable'+IntToStr(i)+'/Value',
         fUserOverrides.Values[fUserOverrides.Names[i]]);
     end;
   end;
