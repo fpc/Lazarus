@@ -31,7 +31,7 @@ unit AbstractFormEditor;
 interface
 
 uses
-  classes,typinfo;
+  Classes, TypInfo;
 
 type
 
