@@ -170,7 +170,7 @@ Begin
     begin
       SetComboHeight(FSender, FSender.Left, FSender.Top, FSender.Width, ComboHeight);
       // restore text in edit box
-      CNSendMessage(LM_SETLABEL, FSender, PChar(EditText));
+      TWin32WSCustomComboBox.SetText(FSender, EditText);
     end;
   End
   Else
@@ -549,6 +549,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2004/09/10 09:43:13  micha
+  convert LM_SETLABEL message to interface methods
+
   Revision 1.30  2004/05/08 12:32:32  micha
   fix combobox height; whatever the lcl passes as height for combobox, always calculate our own
 

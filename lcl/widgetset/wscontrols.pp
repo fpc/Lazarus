@@ -138,9 +138,16 @@ procedure TWSWinControl.SetSize(const AWinControl: TWinControl; const AWidth, AH
 begin
 end;
 
+{------------------------------------------------------------------------------
+  Method: TWSWinControl.SetLabel
+  Params:  AWinControl - the calling object
+           AText       - String to be set as label/text for a control
+  Returns: Nothing
+
+  Sets the label text on a widget
+ ------------------------------------------------------------------------------}
 procedure TWSWinControl.SetText(const AWinControl: TWinControl; const AText: String); 
 begin
-  CNSendMessage(LM_SetLabel, AWinControl, PChar(AText));
 end;
 
 procedure TWSWinControl.SetColor(const AWinControl: TWinControl);

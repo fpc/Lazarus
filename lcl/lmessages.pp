@@ -46,7 +46,6 @@ const
   //-------------
   LM_ComUser        = $1000;
   LM_Create         = LM_ComUser+1;
-  LM_SetLabel       = LM_ComUser+2;
   LM_SetLeft        = LM_ComUser+3;
   LM_SetTop         = LM_ComUser+4;
   LM_SetWidth       = LM_ComUser+5;
@@ -859,7 +858,6 @@ begin
   //-------------
   LM_ComUser        :Result:='LM_ComUser';
   LM_Create         :Result:='LM_Create';
-  LM_SetLabel       :Result:='LM_SetLabel';
   LM_SetLeft        :Result:='LM_SetLeft';
   LM_SetTop         :Result:='LM_SetTop';
   LM_SetWidth       :Result:='LM_SetWidth';
@@ -1040,6 +1038,9 @@ end.
 
 {
   $Log$
+  Revision 1.77  2004/09/10 09:43:12  micha
+  convert LM_SETLABEL message to interface methods
+
   Revision 1.76  2004/09/08 20:47:16  micha
   convert LM_SHOWHIDE message to new intf method TWSWinControl.ShowHide
 

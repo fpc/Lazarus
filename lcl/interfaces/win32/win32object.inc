@@ -264,148 +264,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.SetLabel
-  Params:   Sender - The object to which to apply the label
-            Data   - Pointer to the label
-  Returns: Nothing
-
-  Sets the label text on a window
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.SetLabel(Sender: TObject; Data: Pointer);
-
-  Procedure SetMenuItemCaption;
-  var MenuInfo: MENUITEMINFO;
-      Style: integer;
-  Begin
-    if TMenuItem(Sender).Caption = '-' then Style := MFT_SEPARATOR
-    else Style := MFT_STRING;
-    with MenuInfo do
-    begin
-      cbsize:=sizeof(MENUITEMINFO);
-      {In Win32 Menu items that are created without a initial caption default to disabled,
-       the next three lines are to counter that.}
-      fMask:=MIIM_STATE;
-      GetMenuItemInfo(TMenuItem(Sender).Parent.Handle,
-                      TMenuItem(Sender).Command, false, @MenuInfo);
-      if TMenuItem(Sender).Enabled then
-        fState := fState and DWORD(not (MFS_DISABLED or MFS_GRAYED));
-
-      fMask:=MIIM_TYPE or MIIM_STATE;
-      fType:=Style;
-      dwTypeData:=Data;
-      if Data <> nil then
-        cch := StrLen(PChar(Data));
-    end;
-    SetMenuItemInfo(TMenuItem(Sender).Parent.Handle,
-                    TMenuItem(Sender).Command, false, @MenuInfo);
-    // owner could be a popupmenu too
-    if (TMenuItem(Sender).Owner is TWinControl) and
-        TWinControl(TMenuItem(Sender).Owner).HandleAllocated and
-        ([csLoading,csDestroying] * TWinControl(TMenuItem(Sender).Owner).ComponentState = []) then
-      DrawMenuBar(TWinControl(TMenuItem(Sender).Owner).Handle);
-  End;
-  
-  procedure SetPageCaption(const Page:TCustomPage);
-  var
-    TCI: TC_ITEM;
-    PageIndex: integer;
-    NotebookHandle: HWND;
-  begin
-    Assert(False, 'Trace: TWin32WidgetSet.SetLabel - Got csPage');
-    PageIndex := Page.PageIndex;
-    NotebookHandle := Page.Parent.Handle;
-    // We can't set label of a page not yet added,
-    // Check for valid page index
-    if (PageIndex>=0) and
-      (PageIndex < Windows.SendMessage(NotebookHandle, TCM_GETITEMCOUNT,0,0)) then
-    begin
-      // retrieve page handle from tab as extra check (in case page isn't added yet).
-      TCI.mask := TCIF_PARAM;
-      Windows.SendMessage(NotebookHandle, TCM_GETITEM, PageIndex, LPARAM(@TCI));
-      if dword(TCI.lParam)=Page.Handle then
-      begin
-        Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - label --> %S', [String(PChar(Data))]));
-        TCI.mask := TCIF_TEXT;
-        TCI.pszText := Data;
-        Windows.SendMessage(NotebookHandle, TCM_SETITEM, PageIndex, LPARAM(@TCI));
-      end;
-    end;
-  end;
-
-Var
-  Handle: HWnd;
-  TCI: TC_ITEM;
-Const
-  TermChar: PChar = #0#0;
-Begin
-  If Sender is TMenuItem then
-  begin
-    SetMenuItemCaption;
-    exit;
-  end;
-  If Sender Is TWinControl Then
-    Assert(False, Format('Trace:[TWin32WidgetSet.SetLabel] %S --> label %S', [Sender.ClassName, TControl(Sender).Caption]))
-  Else
-    Assert(False, Format('Trace:WARNING: [TWin32WidgetSet.SetLabel] %S --> No Decendant of TWinControl', [Sender.ClassName]));
-
-  Handle := (Sender As TWinControl).Handle;
-  Assert(Handle<>0,'Trace:WARNING: [TWin32WidgetSet.SetLabel] --> Got NULL handle');
-  Assert(False, 'Trace:Setting the label in TWin32WidgetSet.SetLabel');
-
-  Case TControl(Sender).FCompStyle Of
-    csBitBtn:
-      DrawBitBtnImage(TCustomBitBtn(Sender), PChar(Data));
-    csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
-    csColorDialog, csFontDialog:
-    Begin
-      Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - Got %S', [CS_To_String(TControl(Sender).FCompStyle)]));
-      Assert(False, 'Trace:TWin32WidgetSet.SetLabel - I''m not sure if this''ll work');
-      Assert(False, Format('Trace:Is Sender a TCommonDialog - %S', [BOOL_RESULT[Sender Is TCommonDialog]]));
-      If Sender Is TCommonDialog Then
-        TCommonDialog(Sender).Title := StrPas(Data)
-      Else
-        TWinControl(Sender).Caption := StrPas(Data);
-      Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - Leaving %S', [CS_To_String(TControl(Sender).FCompStyle)]));
-    End;
-    csComboBox:
-    Begin
-      Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - Got %S', [CS_To_String(TControl(Sender).FCompStyle)]));
-      Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - label --> %S', [String(PChar(Data))]));
-      if TCustomComboBox(Sender).Style = csDropDownList then
-        Windows.SendMessage(Handle, CB_SELECTSTRING, -1, LPARAM(Data))
-      else
-        Windows.SendMessage(Handle, WM_SETTEXT, 0, LPARAM(Data));
-    End;
-    csMemo:
-    Begin
-      SendMessage(Handle, WM_SETTEXT, 0, LPARAM(Data));
-    End;
-    csNotebook:
-    Begin
-      Assert(False, 'Trace: TWin32WidgetSet.SetLabel - Got csNotebook');
-      with TLMNotebookEvent(Data^) do
-      if Parent=Sender then
-      begin
-        TCI.mask := TCIF_TEXT;
-        Assert(False, Format('Trace:TWin32WidgetSet.SetLabel - label --> %S', [Str]));
-        TCI.pszText := PChar(Str);
-        Windows.SendMessage(TCustomNotebook(Sender).Handle, TCM_SETITEM, Page, LPARAM(@TCI));
-      end
-    End;
-    csPage:
-      SetPageCaption(TCustomPage(Sender));
-    csToolButton:
-    Begin
-      Data := StrCat(Data, TermChar);
-      SendMessage(TControl(Sender).Parent.Handle, TB_ADDSTRING, 0, MakeLong(Word(Integer(Data)), 0));
-    End;
-  Else
-    Windows.SetWindowText(Handle, Data);
-  End;
-  Assert(False, Format('Trace:[TWin32WidgetSet.SetLabel] %S --> END', [Sender.ClassName]));
-End;
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.IntSendMessage3
   Params:  LM_Message - message to be processed
            Sender     - sending control
@@ -444,8 +302,6 @@ Begin
       SetPixel(Sender, Data);
     LM_GETPIXEL:
       GetPixel(Sender, Data);
-    LM_SETLABEL:
-      SetLabel(Sender, Data);
     LM_GETVALUE:
       Result := GetValue(Sender, Data);
     LM_SETVALUE:
@@ -489,7 +345,8 @@ Begin
         begin
           GetText(TComponent(Sender), Handle, S);
           S := S + PChar(Data);
-          SetLabel(Sender, PChar(S));
+          { TODO: needs to be moved/changed when TWSWinControl.SetText is broken up further }
+          TWin32WSWinControl.SetText(Sender as TWinControl, S);
         end;
       End;
       LM_SETTEXT:
@@ -900,7 +757,7 @@ activate_time : the time at which the activation event occurred.
       Begin
         If Sender is TMenuItem Then
         Begin
-          SetLabel(Sender, LPSTR(TMenuItem(Sender).Caption+#9+ShortCutToText(ShortCut(TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier))));
+          TWin32WSMenuItem.SetCaption(TMenuItem(Sender), LPSTR(TMenuItem(Sender).Caption+#9+ShortCutToText(ShortCut(TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier))));
           if (TMenuItem(Sender).Owner is TWinControl) and TMenuItem(Sender).HandleAllocated then
           begin
             SetAccelKey(TWinControl(TMenuItem(Sender).Owner).Handle, TMenuItem(Sender).Command, TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier);
@@ -2960,6 +2817,9 @@ End;
 
 {
   $Log$
+  Revision 1.236  2004/09/10 09:43:13  micha
+  convert LM_SETLABEL message to interface methods
+
   Revision 1.235  2004/09/08 20:47:17  micha
   convert LM_SHOWHIDE message to new intf method TWSWinControl.ShowHide
 

@@ -33,9 +33,10 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Menus,
+  Menus,
 ////////////////////////////////////////////////////
-  WSMenus, WSLCLClasses;
+  WSMenus, WSLCLClasses,
+  Windows, Controls, Classes;
 
 type
 
@@ -45,6 +46,7 @@ type
   private
   protected
   public
+    class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
   end;
 
   { TWin32WSMenu }
@@ -74,6 +76,41 @@ type
 
 implementation
 
+procedure TWin32WSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
+var 
+  MenuInfo: MENUITEMINFO;
+  Style: integer;
+begin
+  if AMenuItem.Caption = '-' then 
+    Style := MFT_SEPARATOR
+  else 
+    Style := MFT_STRING;
+    
+  with MenuInfo do
+  begin
+    cbsize:=sizeof(MENUITEMINFO);
+    {In Win32 Menu items that are created without a initial caption default to disabled,
+     the next three lines are to counter that.}
+    fMask:=MIIM_STATE;
+    GetMenuItemInfo(AMenuItem.Parent.Handle,
+                    AMenuItem.Command, false, @MenuInfo);
+    if AMenuItem.Enabled then
+      fState := fState and DWORD(not (MFS_DISABLED or MFS_GRAYED));
+
+    fMask:=MIIM_TYPE or MIIM_STATE;
+    fType:=Style;
+    dwTypeData:=PChar(ACaption);
+    if dwTypeData <> nil then
+      cch := Length(ACaption);
+  end;
+  SetMenuItemInfo(AMenuItem.Parent.Handle, AMenuItem.Command, false, @MenuInfo);
+  // owner could be a popupmenu too
+  if (AMenuItem.Owner is TWinControl) and
+      TWinControl(AMenuItem.Owner).HandleAllocated and
+      ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
+    DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
+end;
+  
 initialization
 
 ////////////////////////////////////////////////////
@@ -82,7 +119,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TMenuItem, TWin32WSMenuItem);
+  RegisterWSComponent(TMenuItem, TWin32WSMenuItem);
 //  RegisterWSComponent(TMenu, TWin32WSMenu);
 //  RegisterWSComponent(TMainMenu, TWin32WSMainMenu);
 //  RegisterWSComponent(TPopupMenu, TWin32WSPopupMenu);

@@ -132,7 +132,6 @@ Type
 
     Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
     Function  GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean; virtual;
-    Procedure SetLabel(Sender: TObject; Data: Pointer);
     Procedure AddChild(Parent, Child: HWND);
     Procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
@@ -204,6 +203,10 @@ Type
 
   {$I win32listslh.inc}
 
+const
+  BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
+  ClsName : array[0..6] of char = 'Window'#0;
+
 Implementation
 
 Uses
@@ -234,7 +237,7 @@ Uses
 // Win32WSGrids,
 // Win32WSImgList,
 // Win32WSMaskEdit,
-// Win32WSMenus,
+ Win32WSMenus,
 // Win32WSPairSplitter,
  Win32WSSpin,
  Win32WSStdCtrls,
@@ -256,10 +259,6 @@ type
   {$ELSE}
     TMsgArray = Array[0..1] Of Integer;
   {$ENDIF}
-
-const
-  BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
-  ClsName : array[0..6] of char = 'Window'#0;
 
 var
   OnClipBoardRequest: TClipboardRequestEvent;
@@ -283,6 +282,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.100  2004/09/10 09:43:13  micha
+  convert LM_SETLABEL message to interface methods
+
   Revision 1.99  2004/09/08 20:47:17  micha
   convert LM_SHOWHIDE message to new intf method TWSWinControl.ShowHide
 

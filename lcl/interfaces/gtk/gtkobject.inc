@@ -3127,8 +3127,6 @@ begin
 
   LM_GETPixel : GetPixel(Sender,Data);
 
-  LM_SetLabel  : SetLabel(Sender,Data);
-
   LM_GETVALUE  : Result := GetValue(Sender, data);
 
   LM_SETVALUE  : Result := SetValue(Sender, data);
@@ -4022,210 +4020,6 @@ begin
      end;
    {$EndIf}
   end;
-end;
-
-{------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.SetLabel
-  Params:  sender - the calling object
-           data   - String (PChar) to be set as label for a control
-  Returns: Nothing
-
-  Sets the label text on a widget
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.SetLabel(Sender : TObject; Data : Pointer);
-
-  procedure SetNotebookPageTabLabel;
-  var
-    NoteBookWidget: PGtkWidget; // the notebook
-    PageWidget: PGtkWidget;     // the page (content widget)
-    TabWidget: PGtkWidget;      // the tab (hbox containing a pixmap, a label
-                                //          and a close button)
-    TabLabelWidget: PGtkWidget; // the label in the tab
-    MenuWidget: PGtkWidget;     // the popup menu (hbox containing a pixmap and
-                                // a label)
-    MenuLabelWidget: PGtkWidget; // the label in the popup menu item
-    NewText: PChar;
-  begin
-    // dig through the hierachy to get the labels
-    NoteBookWidget:=PGtkWidget((TControl(Sender).Parent).Handle);
-    PageWidget:=PGtkWidget(TWinControl(Sender).Handle);
-    TabWidget:=gtk_notebook_get_tab_label(PGtkNoteBook(NotebookWidget),
-                                          PageWidget);
-    if TabWidget<>nil then
-      TabLabelWidget:=gtk_object_get_data(PGtkObject(TabWidget), 'TabLabel')
-    else
-      TabLabelWidget:=nil;
-    MenuWidget:=gtk_notebook_get_menu_label(PGtkNoteBook(NotebookWidget),
-                                            PageWidget);
-    if MenuWidget<>nil then
-      MenuLabelWidget:=gtk_object_get_data(PGtkObject(MenuWidget), 'TabLabel')
-    else
-      MenuLabelWidget:=nil;
-    // set new text
-    NewText:=PChar(Data);
-    if TabLabelWidget<>nil then
-      gtk_label_set_text(pGtkLabel(TabLabelWidget), NewText);
-    if MenuLabelWidget<>nil then
-      gtk_label_set_text(pGtkLabel(MenuLabelWidget), NewText);
-  end;
-
-  procedure SetMenuItemCaption;
-  var
-    MenuItemWidget: PGtkWidget;
-    MenuItem: TMenuItem;
-  begin
-    MenuItem:=TMenuItem(Sender);
-    if not MenuItem.HandleAllocated then exit;
-    MenuItemWidget:=PGtkWidget(MenuItem.Handle);
-    UpdateInnerMenuItem(MenuItem,MenuItemWidget);
-  end;
-
-
-var
-  DC : hDC;
-  P : Pointer;
-  aLabel, pLabel: pchar;
-  AccelKey : integer;
-begin
-  if Sender is TMenuItem then begin
-    SetMenuItemCaption;
-    exit;
-  end;
-
-  if Sender is TWinControl
-  then begin
-    Assert(False, Format('Trace:  [TGtkWidgetSet.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]));
-  end
-  else begin
-    Assert(False, Format('Trace:WARNING: [TGtkWidgetSet.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
-    RaiseException('[TGtkWidgetSet.SetLabel] ERROR: Sender ('+Sender.Classname+')'
-        +' is not TWinControl ');
-  end;
-
-  P := Pointer(TWinControl(Sender).Handle);
-  Assert(p = nil, 'Trace:WARNING: [TGtkWidgetSet.SetLabel] --> got nil pointer');
-  Assert(False, 'Trace:Setting Str1 in SetLabel');
-  pLabel := pchar(Data);
-
-  case TControl(Sender).fCompStyle of
-    csBitBtn,
-    csButton: DebugLn('[WARNING] Obsolete call to TGTKOBject.SetLabel for ', Sender.ClassName);
-  
-{$IFDEF OldToolBar}
-  csToolButton:
-    with PgtkButton(P)^ do
-    begin
-      //aLabel := StrAlloc(Length(AnsiString(PLabel)) + 1);
-      aLabel := Ampersands2Underscore(PLabel);
-      Try
-        //StrPCopy(aLabel, AnsiString(PLabel));
-        //Accel := Ampersands2Underscore(aLabel);
-        if gtk_bin_get_child(P) = nil then
-        begin
-          Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s has no child label', [Sender.ClassName]));
-           gtk_container_add(P, gtk_label_new(aLabel));
-        end
-        else begin
-          Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s has child label', [Sender.ClassName]));
-          gtk_label_set_text(pgtkLabel( gtk_bin_get_child(P)), aLabel);
-        end;
-        //If Accel <> -1 then
-        AccelKey:=gtk_label_parse_uline(PGtkLabel( gtk_bin_get_child(P)), aLabel);
-        Accelerate(TComponent(Sender),PGtkWidget(P),AccelKey,0,'clicked');
-      Finally
-        StrDispose(aLabel);
-      end;
-    end;
-{$ENDIF OldToolBar}
-
-  csForm,
-  csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
-  csPreviewFileDialog,
-  csColorDialog,
-  csFontDialog:
-    if GtkWidgetIsA(p,gtk_window_get_type) then
-      gtk_window_set_title(pGtkWindow(p),PLabel);
-
-  csLabel:
-    begin
-      if TLabel(Sender).ShowAccelChar then begin
-        If TLabel(sender).WordWrap and (TLabel(Sender).Caption<>'') then begin
-          DC := GetDC(HDC(GetStyleWidget(lgsLabel)));
-          aLabel := ForceLineBreaks(DC, pLabel, TLabel(Sender).Width, True);
-          DeleteDC(DC);
-        end
-        else
-          aLabel:= Ampersands2Underscore(pLabel);
-        try
-          AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
-          Accelerate(TComponent(Sender),PGtkWidget(p),AccelKey,0,'grab_focus');
-        finally
-          StrDispose(aLabel);
-        end;
-      end else begin
-        If TLabel(sender).WordWrap then begin
-          DC := GetDC(HDC(GetStyleWidget(lgsLabel)));
-          aLabel := ForceLineBreaks(DC, pLabel, TLabel(Sender).Width, False);
-          gtk_label_set_text(PGtkLabel(p), aLabel);
-          StrDispose(aLabel);
-          DeleteDC(DC);
-        end
-        else
-          gtk_label_set_text(PGtkLabel(p), pLabel);
-        gtk_label_set_pattern(PGtkLabel(p), nil);
-      end;
-    end;
-
-  csCheckBox,
-  csToggleBox,
-  csRadioButton:
-    begin
-      aLabel := Ampersands2Underscore(PLabel);
-      Try
-        gtk_label_set_text(
-                    pGtkLabel(gtk_bin_get_child(@PGTKToggleButton(p)^.Button)),
-                    aLabel);
-        gtk_label_parse_uline(pGtkLabel(gtk_bin_get_child(@PGTKToggleButton(p)^.Button)),
-          aLabel);
-      Finally
-        StrDispose(aLabel);
-      end;
-    end;
-
-  csGroupBox    : gtk_frame_set_label(pgtkFrame(P),pLabel);
-
-  {$IfDef GTK1}
-  csEdit        : begin
-                    LockOnChange(PGtkObject(p),+1);
-                    gtk_entry_set_text(pGtkEntry(P), pLabel);
-                    LockOnChange(PGtkObject(p),-1);
-                  end;
-
-  csMemo        : begin
-                    P:= GetWidgetInfo(P, True)^.CoreWidget;
-
-                    gtk_text_freeze(PGtkText(P));
-                    gtk_text_set_point(PGtkText(P), 0);
-                    gtk_text_forward_delete(PGtkText(P), gtk_text_get_length(PGtkText(P)));
-                    gtk_text_insert(PGtkText(P), nil, nil, nil, pLabel, -1);
-                    gtk_text_thaw(PGtkText(P));
-                  end;
-
-   {$EndIf}
-  csPage:
-    SetNotebookPageTabLabel;
-
-  csComboBox    :
-    begin
-      //DebugLn('SetLabel: ',TComboBox(Sender).Name,':',TComboBox(Sender).ClassName,
-      //  ' ',HexStr(Cardinal(TComboBox(Sender).Handle),8),' "',PLabel,'"');
-      SetComboBoxText(PGtkCombo(TComboBox(Sender).Handle), PLabel);
-    end;
-
-  else
-    // DebugLn('WARNING: [TGtkWidgetSet.SetLabel] --> not handled for class ',Sender.ClassName);
-  end;
-  Assert(False, Format('trace:  [TGtkWidgetSet.SetLabel] %s --> END', [Sender.ClassName]));
 end;
 
 {------------------------------------------------------------------------------
@@ -9137,6 +8931,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.543  2004/09/10 09:43:13  micha
+  convert LM_SETLABEL message to interface methods
+
   Revision 1.542  2004/09/08 20:47:17  micha
   convert LM_SHOWHIDE message to new intf method TWSWinControl.ShowHide
 

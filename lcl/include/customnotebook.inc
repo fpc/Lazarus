@@ -64,28 +64,11 @@ end;
   TNBPages Put
  ------------------------------------------------------------------------------}
 procedure TNBPages.Put(Index: Integer; const S: String);
-var
-  Msg: TLMNotebookEvent;
 begin
   if (Index<0) or (Index>=fPageList.Count) then
     RaiseGDBException('TNBPages.Put Index out of bounds');
+  
   TCustomPage(fPageList[Index]).Caption := S;
-
-  if (FNoteBook.HandleAllocated)
-  and (not (csLoading in FNoteBook.ComponentState))
-  then begin
-    Msg.Parent := fNotebook;
-    Msg.Child := TCustomPage(fPageList[Index]);
-    Msg.fCompStyle := fNotebook.fCompStyle;
-    Msg.Str := S;
-    {$IFDEF NOTEBOOK_DEBUG}
-    DebugLn('[TNBPages.Put] A ',fNoteBook.Name,' ',Index,' ',S);
-    {$ENDIF}
-    CNSendMessage(LM_SetLabel, fNotebook, @Msg);
-    {$IFDEF NOTEBOOK_DEBUG}
-    DebugLn('[TNBPages.Put] B ',fNoteBook.Name);
-    {$ENDIF}
-  end;
 end;
 
 procedure TNBPages.RemovePage(Index: integer);
@@ -811,6 +794,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.54  2004/09/10 09:43:12  micha
+  convert LM_SETLABEL message to interface methods
+
   Revision 1.53  2004/07/17 15:08:36  mattias
   fixed tab for TPanel and TPage
 

@@ -45,6 +45,7 @@ type
   private
   protected
   public
+    class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
   end;
 
   { TGtkWSMenu }
@@ -73,6 +74,15 @@ type
 
 
 implementation
+
+procedure TGtkWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
+var
+  MenuItemWidget: PGtkWidget;
+begin
+  if not AMenuItem.HandleAllocated then exit;
+  MenuItemWidget:=PGtkWidget(AMenuItem.Handle);
+  UpdateInnerMenuItem(AMenuItem,MenuItemWidget);
+end;
 
 initialization
 

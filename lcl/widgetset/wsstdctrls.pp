@@ -131,7 +131,9 @@ type
   { TWSCustomLabel }
 
   TWSCustomLabel = class(TWSWinControl)
+  public
   end;
+  TWSCustomLabelClass = class of TWSCustomLabel;
 
   { TWSLabel }
 

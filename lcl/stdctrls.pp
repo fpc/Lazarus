@@ -1116,7 +1116,7 @@ procedure Register;
 implementation
 
 uses
-  WSStdCtrls; // Widgetset uses circle is allowed
+  WSControls, WSStdCtrls; // Widgetset uses circle is allowed
 
 
 type
@@ -1171,6 +1171,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.165  2004/09/10 09:43:12  micha
+  convert LM_SETLABEL message to interface methods
+
   Revision 1.164  2004/08/30 10:49:20  mattias
   fixed focus catch for combobox csDropDownList
 

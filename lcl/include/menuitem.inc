@@ -780,7 +780,7 @@ begin
   if FCaption = AValue then exit;
   FCaption := AValue;
   if HandleAllocated then
-    SendMsgToInterface(LM_SetLabel, Self, PChar(AValue));
+    TWSMenuItemClass(WidgetSetClass).SetCaption(Self, AValue);
   OwnerFormDesignerModified(Self);
 end;
 
@@ -1164,6 +1164,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.60  2004/09/10 09:43:13  micha
+  convert LM_SETLABEL message to interface methods
+
   Revision 1.59  2004/08/13 10:20:19  mattias
   fixed codetools ConstSet, implemented notifying TApplication whenmenu popups
 
@@ -1369,6 +1372,9 @@ end;
 
 
   $Log$
+  Revision 1.60  2004/09/10 09:43:13  micha
+  convert LM_SETLABEL message to interface methods
+
   Revision 1.59  2004/08/13 10:20:19  mattias
   fixed codetools ConstSet, implemented notifying TApplication whenmenu popups
 

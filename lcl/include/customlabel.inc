@@ -146,7 +146,7 @@ procedure TCustomLabel.SetShowAccelChar(Val : boolean);
 begin
   if Val <> FShowAccelChar then begin
     FShowAccelChar:= Val;
-    if HandleAllocated then CNSendMessage(LM_SETLABEL, Self, PChar(Caption));
+    if HandleAllocated then TWSWinControlClass(WidgetSetClass).SetText(Self, Caption);
   end;
 end;
 
@@ -185,6 +185,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/09/10 09:43:12  micha
+  convert LM_SETLABEL message to interface methods
+
   Revision 1.15  2004/04/20 23:39:01  marc
   * Fixed setting of TWincontrol.Text during load
 

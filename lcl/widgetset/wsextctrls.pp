@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  ExtCtrls,
+  ExtCtrls,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSStdCtrls;
 
@@ -57,7 +57,10 @@ type
   { TWSCustomNotebook }
 
   TWSCustomNotebook = class(TWSWinControl)
+  public
+    class procedure SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); virtual;
   end;
+  TWSCustomNotebookClass = class of TWSCustomNotebook;
 
   { TWSPage }
 
@@ -152,6 +155,10 @@ type
 
 implementation
 
+procedure TWSCustomNotebook.SetTabCaption(const ANotebook: TCustomNotebook; const AChild: TCustomPage; const AText: string); 
+begin
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -159,7 +166,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(TCustomPage, TWSCustomPage);
-//  RegisterWSComponent(TCustomNotebook, TWSCustomNotebook);
+  RegisterWSComponent(TCustomNotebook, TWSCustomNotebook);
 //  RegisterWSComponent(TPage, TWSPage);
 //  RegisterWSComponent(TNotebook, TWSNotebook);
 //  RegisterWSComponent(TShape, TWSShape);

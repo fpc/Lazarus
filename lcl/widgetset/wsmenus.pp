@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Menus,
+  Menus,
 ////////////////////////////////////////////////////
   WSLCLClasses;
 
@@ -52,7 +52,10 @@ type
   { TWSMenuItem }
 
   TWSMenuItem = class(TWSLCLComponent)
+  public
+    class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); virtual;
   end;
+  TWSMenuItemClass = class of TWSMenuItem;
 
   { TWSMenu }
 
@@ -72,13 +75,17 @@ type
 
 implementation
 
+procedure TWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
+begin
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TMenuItem, TWSMenuItem);
+  RegisterWSComponent(TMenuItem, TWSMenuItem);
 //  RegisterWSComponent(TMenu, TWSMenu);
 //  RegisterWSComponent(TMainMenu, TWSMainMenu);
 //  RegisterWSComponent(TPopupMenu, TWSPopupMenu);

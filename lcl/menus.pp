@@ -338,6 +338,9 @@ procedure Register;
 
 implementation
 
+uses
+  WSMenus;
+
 { Menu command managment }
 
 var
@@ -410,6 +413,9 @@ end.
 
 {
   $Log$
+  Revision 1.71  2004/09/10 09:43:12  micha
+  convert LM_SETLABEL message to interface methods
+
   Revision 1.70  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

@@ -258,7 +258,6 @@ type
     function  GetText(Sender: TComponent; var Text: String): Boolean; virtual;
     procedure SetText(Child,Data : Pointer);virtual;
     procedure AppendText(Sender: TObject; Str: PChar); virtual;
-    procedure SetLabel(Sender : TObject; Data : Pointer); virtual;
     Procedure SetPixel(Sender : TObject; Data : Pointer);virtual;
     Procedure GetPixel(Sender : TObject; Data : Pointer);virtual;
     function  GetValue(Sender : TObject; Data : pointer) : integer;virtual;
@@ -267,8 +266,6 @@ type
     procedure AttachMenu(Sender: TObject);virtual;
     procedure SetColorDialogColor(ColorSelection: PGtkColorSelection;
       Color: TColor);virtual;
-    function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
-      ProcessAmpersands : Boolean) : PChar;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
       var Lines: PPChar; var LineCount: integer);
     procedure UpdateStatusBarPanels(StatusBar: TObject;
@@ -310,6 +307,10 @@ type
     procedure AppInit; override;
     procedure AppMinimize; override;
 
+    // helper routines needed by interface methods
+    function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
+      ProcessAmpersands : Boolean) : PChar;
+  
     // create and destroy
     function CreateComponent(Sender : TObject): THandle; override;
     function CreateTimer(Interval: integer; TimerFunc: TFNTimerProc) : integer; override;
@@ -461,6 +462,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.193  2004/09/10 09:43:13  micha
+  convert LM_SETLABEL message to interface methods
+
   Revision 1.192  2004/09/08 20:47:17  micha
   convert LM_SHOWHIDE message to new intf method TWSWinControl.ShowHide
 
