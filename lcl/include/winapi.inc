@@ -605,6 +605,11 @@ begin
   Result := InterfaceObject.RightJustifyMenuItem(hndMenu, bRightJustify);
 end;
 
+Function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
+begin
+  Result := InterfaceObject.RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
+end;
+
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 begin
   Result := InterfaceObject.RestoreDC(DC, SavedDC)  
@@ -1277,6 +1282,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2002/09/18 17:07:25  lazarus
+  MG: added patch from Andrew
+
   Revision 1.48  2002/09/12 05:56:15  lazarus
   MG: gradient fill, minor issues from Andrew
 
