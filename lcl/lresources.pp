@@ -170,7 +170,7 @@ type
     {$endif HASWIDESTRING}
   end;
   TLRSObjectWriterClass = class of TLRSObjectWriter;
-
+  
 var
   LazarusResources: TLResourceList;
 
@@ -209,6 +209,9 @@ procedure FormDataToText(FormStream, TextStream: TStream);
 
 procedure ReverseBytes(p: Pointer; Count: integer);
 procedure ReverseByteOrderInWords(p: PWord; Count: integer);
+function ConvertLRSExtendedToDouble(p: Pointer): Double;
+procedure ConvertEndianBigDoubleToLRSExtended(BigEndianDouble,
+                                              LRSExtended: Pointer);
 
 function ReadLRSWord(s: TStream): word;
 function ReadLRSInteger(s: TStream): integer;
@@ -223,6 +226,7 @@ function ReadLRSCurrency(s: TStream): Currency;
 {$ifdef HASWIDESTRING}
 function ReadLRSWideString(s: TStream): WideString;
 {$endif HASWIDESTRING}
+function ReadLRSEndianLittleExtendedAsDouble(s: TStream): Double;
 
 procedure WriteLRSWord(s: TStream; const w: word);
 procedure WriteLRSInteger(s: TStream; const i: integer);
@@ -244,7 +248,7 @@ procedure WriteLRS8BytesReversed(s: TStream; p: Pointer);
 procedure WriteLRS10BytesReversed(s: TStream; p: Pointer);
 procedure WriteLRSNull(s: TStream; Count: integer);
 procedure WriteLRSEndianBigDoubleAsEndianLittleExtended(s: TStream;
-  PPCDouble: PByte);
+  EndBigDouble: PByte);
 procedure WriteLRSReversedWords(s: TStream; p: Pointer; Count: integer);
 
 
@@ -1788,35 +1792,6 @@ begin
   end;
 end;
 
-procedure ReverseBytes(p: Pointer; Count: integer);
-var
-  p1: PChar;
-  p2: PChar;
-  c: Char;
-begin
-  p1:=PChar(p);
-  p2:=PChar(p)+Count-1;
-  while p1<p2 do begin
-    c:=p1^;
-    p1^:=p2^;
-    p2^:=c;
-    inc(p1);
-    dec(p2);
-  end;
-end;
-
-procedure ReverseByteOrderInWords(p: PWord; Count: integer);
-var
-  i: Integer;
-  w: Word;
-begin
-  for i:=0 to Count-1 do begin
-    w:=p[i];
-    w:=(w shr 8) or ((w and $ff) shl 8);
-    p[i]:=w;
-  end;
-end;
-
 function InitLazResourceComponent(Instance: TComponent;
   RootAncestor: TClass): Boolean;
 
@@ -1892,6 +1867,116 @@ begin
   Result:=TWriter.Create(Driver);
 end;
 
+{ LRS format converter functions }
+
+procedure ReverseBytes(p: Pointer; Count: integer);
+var
+  p1: PChar;
+  p2: PChar;
+  c: Char;
+begin
+  p1:=PChar(p);
+  p2:=PChar(p)+Count-1;
+  while p1<p2 do begin
+    c:=p1^;
+    p1^:=p2^;
+    p2^:=c;
+    inc(p1);
+    dec(p2);
+  end;
+end;
+
+procedure ReverseByteOrderInWords(p: PWord; Count: integer);
+var
+  i: Integer;
+  w: Word;
+begin
+  for i:=0 to Count-1 do begin
+    w:=p[i];
+    w:=(w shr 8) or ((w and $ff) shl 8);
+    p[i]:=w;
+  end;
+end;
+
+function ConvertLRSExtendedToDouble(p: Pointer): Double;
+type
+  Ti386ExtendedReversed = packed record
+    {$IFDEF Endian_BIG}
+    ExponentAndSign: word;
+    Mantissa: qword;
+    {$ELSE}
+    Mantissa: qword;
+    ExponentAndSign: word;
+    {$ENDIF}
+  end;
+var
+  e: Ti386ExtendedReversed;
+  Exponent: word;
+  ExponentAndSign: word;
+  Mantissa: qword;
+begin
+  System.Move(p^,e,10);
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@e,10);
+  {$ENDIF}
+  // i386 extended
+  Exponent:=(e.ExponentAndSign and $7fff);
+  if (Exponent>$4000+$3ff) or (Exponent<$4000-$400) then begin
+    // exponent out of bounds
+    Result:=0;
+    exit;
+  end;
+  dec(Exponent,$4000-$400);
+  ExponentAndSign:=Exponent or ((e.ExponentAndSign and $8000) shr 4);
+  // i386 extended has leading 1, double has not (shl 1)
+  // i386 has 64 bit, double has 52 bit (shr 12)
+  Mantissa:=(e.Mantissa shl 1) shr 12;
+  // put together
+  QWord(Result):=Mantissa or (qword(ExponentAndSign) shl 52);
+end;
+
+procedure ConvertEndianBigDoubleToLRSExtended(BigEndianDouble,
+  LRSExtended: Pointer);
+// Floats consists of a sign bit, some exponent bits and the mantissa bits
+// A 0 is all bits 0
+// not 0 has always a leading 1, which exponent is stored
+// Single/Double does not save the leading 1, Extended does.
+//
+// Double is 8 bytes long, leftmost bit is sign,
+// then 11 bit exponent based $400, then 52 bit mantissa without leading 1
+//
+// Extended is 10 bytes long, leftmost bit is sign,
+// then 15 bit exponent based $4000, then 64 bit mantissa with leading 1
+// EndianLittle means reversed byte order
+var
+  e: array[0..9] of byte;
+  i: Integer;
+  Exponent: Word;
+  d: PByte;
+begin
+  d:=PByte(BigEndianDouble);
+  // convert ppc double to i386 extended
+  if (PCardinal(d)[0] or PCardinal(d)[1])=0 then begin
+    // 0
+    FillChar(LRSExtended^,10,#0);
+  end else begin
+    Exponent:=((d[0] and $7f) shl 4)+(d[1] shr 4);
+    inc(Exponent,$4000-$400);
+    if (d[0] and $80)>0 then
+      // signed
+      inc(Exponent,$8000);
+    e[9]:=Exponent shr 8;
+    e[8]:=Exponent and $ff;
+    e[7]:=($80 or (d[1] shl 3) or (d[2] shr 5)) and $ff;
+    for i:=3 to 7 do begin
+      e[9-i]:=((d[i-1] shl 3) or (d[i] shr 5)) and $ff;
+    end;
+    e[1]:=(d[7] shl 3) and $ff;
+    e[0]:=0;
+    System.Move(e[0],LRSExtended^,10);
+  end;
+end;
+
 function ReadLRSWord(s: TStream): word;
 begin
   s.Read(Result,2);
@@ -1940,24 +2025,13 @@ begin
   {$ENDIF}
 end;
 
-{$IFDEF CPUPowerPC}
-function ReadLRSExtentedAndConvertToExtended(s: TStream): Extended;
-// TODO
-begin
-  s.Read(Result,4);
-  s.Read(Result,4);
-  s.Read(Result,2);
-  Result:=0;
-end;
-{$ENDIF}
-
 function ReadLRSExtended(s: TStream): Extended;
 begin
   {$IFDEF CPUi386}
   s.Read(Result,10);
   {$ENDIF}
   {$IFDEF CPUPowerPC}
-  Result:=ReadLRSExtentedAndConvertToExtended(s);
+  Result:=ReadLRSEndianLittleExtendedAsDouble(s);
   {$ENDIF}
 end;
 
@@ -1986,6 +2060,14 @@ begin
   end;
 end;
 {$endif HASWIDESTRING}
+
+function ReadLRSEndianLittleExtendedAsDouble(s: TStream): Double;
+var
+  e: array[1..10] of byte;
+begin
+  s.Read(e,10);
+  Result:=ConvertLRSExtendedToDouble(@e);
+end;
 
 procedure WriteLRSReversedWord(s: TStream; w: word);
 begin
@@ -2046,15 +2128,12 @@ begin
 end;
 
 procedure WriteLRSEndianBigDoubleAsEndianLittleExtended(s: TStream;
-  PPCDouble: PByte);
-// TODO
+  EndBigDouble: PByte);
 var
-  i: Integer;
+  e: array[0..9] of byte;
 begin
-  i:=0;
-  s.Write(i,4);
-  s.Write(i,4);
-  s.Write(i,2);
+  ConvertEndianBigDoubleToLRSExtended(EndBigDouble,@e);
+  s.Write(e[0],10);
 end;
 
 procedure WriteLRSWord(s: TStream; const w: word);
@@ -2294,19 +2373,21 @@ begin
 end;
 
 function TLRSObjectReader.ReadFloat: Extended;
+{$ifdef Endian_BIG}
+var
+  e: array[1..10] of byte;
+{$endif}
 begin
-  {$ifdef CPUPowerPC}
-  debugln('WARNING: TLRSObjectReader.ReadFloat not yet implemented for powerpc');
-  Read(Result, 4);
-  Read(Result, 4);
-  Read(Result, 2);
-  Result:=0;
-  exit;
-  {$endif CPUPowerPC}
-  
-  Read(Result, 10);
   {$ifdef Endian_BIG}
-  ReverseBytes(@Result,10);
+  if SizeOf(extended)=10 then begin
+    Read(Result, 10);
+    ReverseBytes(@Result,10);
+  end else begin
+    Read(e,10);
+    Result:=ConvertLRSExtendedToDouble(@e);
+  end;
+  {$else not Endian_BIG}
+  Read(Result, 10);
   {$endif}
 end;
 
@@ -2640,14 +2721,19 @@ begin
 end;
 
 procedure TLRSObjectWriter.WriteExtendedContent(e: Extended);
+{$IFDEF Endian_BIG}
+var
+  LRSExtended: array[1..10] of byte;
+{$endif}
 begin
   {$IFDEF Endian_BIG}
-    {$IFDEF CPUPowerPC}
-    debugln('WARNING: TLRSObjectWriter.WriteExtendedContent not yet implemented for powerpc');
-    WriteNulls(10);
-    exit;
-    {$ENDIF}
-  ReverseBytes(@e,10);
+    if SizeOf(e)=10 then begin
+      ReverseBytes(@e,10);
+      Write(e,10);
+    end else begin
+      ConvertEndianBigDoubleToLRSExtended(@e,@LRSExtended);
+      Write(LRSExtended,10);
+    end;
   {$ENDIF}
   Write(e,10);
 end;
@@ -2705,7 +2791,8 @@ end;
 destructor TLRSObjectWriter.Destroy;
 begin
   // Flush all data which hasn't been written yet
-  FlushBuffer;
+  if Assigned(FStream) then
+    FlushBuffer;
 
   if Assigned(FBuffer) then
     FreeMem(FBuffer, FBufSize);

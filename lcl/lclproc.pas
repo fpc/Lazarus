@@ -478,8 +478,8 @@ end;
   procedure RaiseGDBException(const Msg: string);
 
   Raises an exception.
-  gdb does not catch fpc Exception objects, therefore this procedure raises
-  a standard AV which is catched by gdb.
+  gdb does normally not catch fpc Exception objects, therefore this procedure
+  raises a standard AV which is catched by gdb.
  ------------------------------------------------------------------------------}
 procedure RaiseGDBException(const Msg: string);
 begin
@@ -490,6 +490,8 @@ begin
 end;
 
 procedure MoveRectToFit(var ARect: TRect; const MaxRect: TRect);
+// move ARect, so it fits into MaxRect
+// if MaxRect is too small, ARect is resized.
 begin
   if ARect.Left<MaxRect.Left then begin
     // move rectangle right
