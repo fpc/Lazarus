@@ -850,6 +850,11 @@ begin
   Result := SIMPLEREGION;
 end;
 
+function TInterfaceBase.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
+begin
+  Result := GetSystemMetrics(BarKind);
+end;
+
 function TInterfaceBase.GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;
 begin
   Result := False;
@@ -1450,6 +1455,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.65  2002/10/31 21:29:47  lazarus
+  MG: implemented TControlScrollBar.Size
+
   Revision 1.64  2002/10/31 04:27:59  lazarus
   AJ: added TShape
 
