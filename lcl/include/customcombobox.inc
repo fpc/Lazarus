@@ -34,7 +34,8 @@ begin
   // get the interface based item list
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
   // then delete internal list
-  FItems.Free;
+  if FItems<>NewStrings then
+    FItems.Free;
   // and use the interface based list
   FItems:= NewStrings;
 end;
@@ -50,7 +51,9 @@ end;
 procedure TCustomComboBox.DestroyHandle;
 var NewStrings : TStrings;
 begin
-  //writeln('TCustomComboBox.DestroyHandle ',Name);
+  if not HandleAllocated then begin
+    if (length(Name) div (length(Name) div 10000))=0 then ;
+  end;
   // create an internal list for storing items internally
   NewStrings:= TStringList.Create;
   // copy from interface based list
@@ -62,7 +65,6 @@ begin
   // and use the internal list
   FItems:= NewStrings;
   
-  //writeln('TCustomComboBox.DestroyHandle B ',Name);
   inherited DestroyHandle;
 end;
 
@@ -85,7 +87,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomComboBox.DestroyHandle
+  Method: TCustomComboBox.InitializeWnd
   Params: ---
   Returns: Nothing
 
@@ -455,9 +457,14 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCustomComboBox.Destroy;
 begin
+  writeln('TCustomComboBox.Destroy A ',Name);
+  if HandleAllocated then DestroyHandle;
+  writeln('TCustomComboBox.Destroy B ',Name);
   FItems.Free;
   FItems:=nil;
+  writeln('TCustomComboBox.Destroy C ',Name);
   inherited Destroy;
+  writeln('TCustomComboBox.Destroy D ',Name,' ',FItems<>nil);
 end;
 
 {------------------------------------------------------------------------------
@@ -511,9 +518,8 @@ end;
 function TCustomComboBox.GetItemIndex : integer;
 begin
   if HandleAllocated then
-    Result:= CNSendMessage(LM_GETITEMINDEX, Self, nil)
-  else
-    Result:=FItemIndex;
+    FItemIndex:= CNSendMessage(LM_GETITEMINDEX, Self, nil);
+  Result:=FItemIndex;
 end;
 
 {------------------------------------------------------------------------------
@@ -547,6 +553,9 @@ end;
 
 {
   $Log$
+  Revision 1.13  2002/09/16 15:42:17  lazarus
+  MG: fixed calling DestroyHandle if not HandleAllocated
+
   Revision 1.12  2002/08/31 11:37:09  lazarus
   MG: fixed destroying combobox
 

@@ -364,20 +364,21 @@ end;
 
 procedure TBitmap.SetHandle(Value: HBITMAP);
 begin
+  if FImage.FHandle = Value then exit;
   // TODO: the properties from new bitmap
-  with FImage do
-    if FHandle <> Value then
-    begin
-      FreeContext;
-      Release;
-      FImage := TBitmapImage.Create;
-      Reference;
-      FHandle:=Value;
-      FillChar(FDIB, sizeof(FDIB), 0);
-      if Value <> 0 then
-        GetObject(FHandle, SizeOf(FDIB), @FDIB);
-      Changed(Self);
-    end;
+  with FImage do begin
+    FreeContext;
+    Release;
+  end;
+  FImage := TBitmapImage.Create;
+  with FImage do begin
+    Reference;
+    FHandle:=Value;
+    FillChar(FDIB, sizeof(FDIB), 0);
+    if Value <> 0 then
+      GetObject(FHandle, SizeOf(FDIB), @FDIB);
+    Changed(Self);
+  end;
 end;
 
 procedure TBitmap.SetMaskHandle(Value: HBITMAP);
@@ -465,6 +466,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2002/09/16 15:42:17  lazarus
+  MG: fixed calling DestroyHandle if not HandleAllocated
+
   Revision 1.19  2002/09/13 16:58:27  lazarus
   MG: removed the 1x1 bitmap from TBitBtn
 
