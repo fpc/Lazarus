@@ -278,6 +278,7 @@ begin
     Top:=28;
     Width:=165;
     Height:=228;
+    MultiSelect:=true;
     Visible:=true;
   end;
 
@@ -301,6 +302,7 @@ begin
     Top:=FormsAutoCreatedListBox.Top;
     Width:=FormsAutoCreatedListBox.Width;
     Height:=FormsAutoCreatedListBox.Height;
+    MultiSelect:=true;
     Visible:=true;
   end;
 
@@ -699,7 +701,7 @@ end;
 
 procedure TProjectOptionsDialog.FormsRemoveFromAutoCreatedFormsBtnClick(
   Sender: TObject);
-var i, NewPos: integer;
+var i, NewPos, cmp: integer;
   OldFormName: string;
 begin
   FormsAutoCreatedListBox.Items.BeginUpdate;
@@ -710,9 +712,15 @@ begin
       OldFormName:=FormsAutoCreatedListBox.Items[i];
       FormsAutoCreatedListBox.Items.Delete(i);
       NewPos:=0;
-      while (NewPos<FormsAvailFormsListBox.Items.Count)
-      and (AnsiCompareText(FormsAvailFormsListBox.Items[NewPos],OldFormName)<0)
-      do inc(NewPos);
+      cmp:=1;
+      while (NewPos<FormsAvailFormsListBox.Items.Count) do begin
+        cmp:=AnsiCompareText(FormsAvailFormsListBox.Items[NewPos],OldFormName);
+        if cmp<0 then
+          inc(NewPos)
+        else
+          break;
+      end;
+      if cmp=0 then continue;
       FormsAvailFormsListBox.Items.Insert(NewPos,OldFormName);
     end else
       inc(i);
@@ -804,19 +812,21 @@ begin
       while (i>=0) 
       and (AnsiCompareText(OldList[i],FormsAutoCreatedListBox.Items[i])=0) do
         dec(i);
-      if i<0 then exit;
+      if i<0 then begin
+        // no change
+        exit;
+      end;
     end;
     NewList:=TStringList.Create;
-    try
-      for i:=0 to FormsAutoCreatedListBox.Items.Count-1 do begin
-        NewList.Add(FormsAutoCreatedListBox.Items[i]);
-      end;
-      if not CodeToolBoss.SetAllCreateFromStatements(
-          Project.Units[Project.MainUnit].Source, NewList) then begin
-        // ToDo: print a message
-      end;
-    finally
-      NewList.Free;
+    for i:=0 to FormsAutoCreatedListBox.Items.Count-1 do begin
+      NewList.Add(FormsAutoCreatedListBox.Items[i]);
+    end;
+    if not CodeToolBoss.SetAllCreateFromStatements(
+      Project.Units[Project.MainUnit].Source, NewList) then
+    begin
+      MessageDlg('Error',
+        'Unable to change the auto create form list in the program source.'#13
+        +'Plz fix errors first.',mtError,[mbCancel],0);
     end;
   finally
     OldList.Free;

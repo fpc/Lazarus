@@ -1016,7 +1016,8 @@ begin
     Position:=StatementPos.EndPos;
     StatementPos.StartPos:=FindLineEndOrCodeInFrontOfPosition(
        StatementPos.StartPos);
-    InsertPos:=StatementPos.StartPos;
+    if InsertPos<1 then
+      InsertPos:=StatementPos.StartPos;
     StatementPos.EndPos:=FindFirstLineEndAfterInCode(StatementPos.EndPos);
     SourceChangeCache.Replace(gtNone,gtNone,
        StatementPos.StartPos,StatementPos.EndPos,'');
@@ -1029,6 +1030,7 @@ begin
       if ReadNextUpAtomIs('APPLICATION') then begin
         InsertPos:=CurPos.StartPos;
         if ReadNextAtomIsChar('.') and ReadNextUpAtomIs('RUN') then begin
+          InsertPos:=FindLineEndOrCodeInFrontOfPosition(InsertPos);
           break;
         end;
         InsertPos:=-1;
@@ -1040,8 +1042,8 @@ begin
     ColonPos:=1;
     while (ColonPos<=length(List[i])) and (List[i][ColonPos]<>':') do
       inc(ColonPos);
-    AVarName:=copy(List[i],1,ColonPos);
-    if AVarName<>'' then begin
+    if (ColonPos>1) then begin
+      AVarName:=copy(List[i],1,ColonPos);
       AClassName:=copy(List[i],ColonPos+1,length(List[i])-ColonPos);
       if AClassName='' then AClassName:='T'+AVarName;
       Indent:=GetLineIndent(Src,InsertPos);
