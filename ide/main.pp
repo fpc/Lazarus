@@ -57,6 +57,7 @@ uses
   Compiler, CompilerOptions,
   // projects
   Project, ProjectDefs, NewProjectDlg, ProjectOpts, PublishProjectDlg,
+  ProjectInspector,
   // designer
   CompReg, IDEComp, AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
   ObjectInspector, PropEdits, ControlSelection, ColumnDlg,
@@ -168,6 +169,7 @@ type
     procedure mnuSaveProjectClicked(Sender : TObject);
     procedure mnuSaveProjectAsClicked(Sender : TObject);
     procedure mnuPublishProjectClicked(Sender : TObject);
+    procedure mnuProjectInspectorClicked(Sender : TObject);
     procedure mnuAddToProjectClicked(Sender : TObject);
     procedure mnuRemoveFromProjectClicked(Sender : TObject);
     procedure mnuViewProjectSourceClicked(Sender : TObject);
@@ -454,6 +456,7 @@ type
     function DoOpenProjectFile(AFileName:string; Flags: TOpenFlags):TModalResult;
     function DoPublishProject(Flags: TSaveFlags;
       ShowDialog: boolean):TModalResult;
+    function DoShowProjectInspector: TModalResult;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
     procedure DoWarnAmbigiousFiles;
@@ -846,6 +849,8 @@ destructor TMainIDE.Destroy;
 begin
   writeln('[TMainIDE.Destroy] A');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
+  FreeThenNil(ProjInspector);
+  
   if DebugBoss<>nil then DebugBoss.EndDebugging;
 
   Application.RemoveOnUserInputHandler(@OnApplicationUserInput);
@@ -1486,6 +1491,7 @@ begin
   itmProjectSave.OnClick := @mnuSaveProjectClicked;
   itmProjectSaveAs.OnClick := @mnuSaveProjectAsClicked;
   itmProjectPublish.OnClick := @mnuPublishProjectClicked;
+  itmProjectInspector.OnClick := @mnuProjectInspectorClicked;
   itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
   itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
   itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
@@ -2210,6 +2216,11 @@ begin
   DoPublishProject([],true);
 end;
 
+procedure TMainIDE.mnuProjectInspectorClicked(Sender: TObject);
+begin
+  DoShowProjectInspector;
+end;
+
 procedure TMainIDE.mnuAddToProjectClicked(Sender : TObject);
 begin
   DoAddActiveUnitToProject;
@@ -2813,9 +2824,12 @@ var
   AmbigiousFiles: TStringList;
   i: Integer;
   AmbigiousFilename: String;
+  PkgDefaultDirectory: String;
+  OldFilename: String;
 begin
   SrcEdit:=GetSourceEditorForUnitInfo(AnUnitInfo);
   OldFilePath:=ExtractFilePath(AnUnitInfo.Filename);
+  OldFilename:=AnUnitInfo.Filename;
   
   // try to keep the old filename and extension
   SaveAsFileExt:=ExtractFileExt(AnUnitInfo.FileName);
@@ -2844,6 +2858,14 @@ begin
     if AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
     and (not FileIsInPath(SaveDialog.InitialDir,Project1.ProjectDirectory)) then
       SaveDialog.InitialDir:=Project1.ProjectDirectory;
+    // if this is a package file, then start in package directory
+    if (not AnUnitInfo.IsVirtual) then begin
+      PkgDefaultDirectory:=
+        PkgBoss.GetDefaultSaveDirectoryForFile(AnUnitInfo.Filename);
+      if (PkgDefaultDirectory<>'')
+      and (not FileIsInPath(SaveDialog.InitialDir,PkgDefaultDirectory)) then
+        SaveDialog.InitialDir:=PkgDefaultDirectory;
+    end;
     // show save dialog
     if (not SaveDialog.Execute) or (ExtractFileName(SaveDialog.Filename)='')
     then begin
@@ -3053,6 +3075,8 @@ begin
     end;
   end;
 
+  // change packages containing files
+  Result:=PkgBoss.OnRenameFile(OldFilename,AnUnitInfo.Filename);
 
   Result:=mrOk;
 end;
@@ -4693,6 +4717,7 @@ writeln('TMainIDE.DoNewProject A');
   Project1.Title := 'project1';
   Project1.CompilerOptions.CompilerPath:='$(CompPath)';
   UpdateCaption;
+  if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
 
   // set the project type specific things
   ds:=PathDelim;
@@ -4856,6 +4881,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject B');{$ENDIF}
   IncreaseCompilerParseStamp;
   // close Project
+  if ProjInspector<>nil then ProjInspector.LazProject:=nil;
   FreeThenNil(Project1);
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoCloseProject C');{$ENDIF}
   Result:=mrOk;
@@ -4930,6 +4956,7 @@ begin
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B');{$ENDIF}
   Project1:=TProject.Create(ptProgram);
+  if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
   Project1.OnFileBackup:=@DoBackupFile;
   
   // read project info file
@@ -5128,6 +5155,15 @@ begin
   end;
 end;
 
+function TMainIDE.DoShowProjectInspector: TModalResult;
+begin
+  if ProjInspector=nil then begin
+    ProjInspector:=TProjectInspectorForm.Create(Self);
+  end;
+  ProjInspector.ShowOnTop;
+  Result:=mrOk;
+end;
+
 function TMainIDE.DoCreateProjectForProgram(
   ProgramBuf: TCodeBuffer): TModalResult;
 var NewProjectType:TProjectType;
@@ -5168,6 +5204,7 @@ begin
 
   // create a new project
   Project1:=TProject.Create(NewProjectType);
+  if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
   Project1.OnFileBackup:=@DoBackupFile;
   MainUnitInfo:=Project1.MainUnitInfo;
   MainUnitInfo.Source:=ProgramBuf;
@@ -8279,6 +8316,8 @@ begin
       ALayout.Form.SetBounds(250,Screen.Height-400,400,300);
     nmiwPkgGraphExplorer:
       ALayout.Form.SetBounds(250,150,500,350);
+    nmiwProjectInspector:
+      ALayout.Form.SetBounds(210,150,400,300);
     nmiwMessagesViewName:
       ALayout.Form.SetBounds(260,SourceNotebook.Top+SourceNotebook.Height+30,
         Max(50,Screen.Width-300),80);
@@ -8327,6 +8366,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.526  2003/04/19 16:55:38  mattias
+  started project inspector
+
   Revision 1.525  2003/04/17 11:40:40  mattias
   implemented compilation of simple packages
 
