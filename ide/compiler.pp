@@ -40,7 +40,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
-  IDEProcs, OutputFilter, FileCtrl;
+  LazarusIDEStrConsts, IDEProcs, OutputFilter, FileCtrl;
 
 type
   TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
@@ -120,11 +120,12 @@ begin
     except
       on E: Exception do begin
         if OutputFilter<>nil then
-          OutputFilter.ReadLine('Error: invalid compiler: '+E.Message,true);
+          OutputFilter.ReadLine(Format(lisCompilerErrorInvalidCompiler, [
+            E.Message]), true);
         if CmdLine='' then begin
           if OutputFilter<>nil then
-            OutputFilter.ReadLine('Hint: you can set the compiler path in '
-             +'Environment->General Options->Files->Compiler Path',true);
+            OutputFilter.ReadLine(lisCompilerHintYouCanSetTheCompilerPath, true
+              );
         end;
         exit;
       end;
@@ -189,6 +190,9 @@ end.
 
 {
   $Log$
+  Revision 1.40  2003/03/13 23:27:22  mattias
+  localized codetools options
+
   Revision 1.39  2003/03/11 09:57:51  mattias
   implemented ProjectOpt: AutoCreateNewForms, added designer Show Options
 

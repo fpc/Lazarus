@@ -246,11 +246,11 @@ const
   LineSplitExampleText =
        'function(Sender: TObject; const Val1, Val2, Val3:char; '
       +'var Var1, Var2: array of const): integer;'#13
-      +'const s=''abc''#13#10+''xyz'';';
+      +'const i=1+2+3;';
   SpaceExampleText =
        'function(Sender:TObject;const Val1,Val2,Val3:char;'
       +'var Var1,Var2:array of const):integer;'#13
-      +'const s=''abc''#13#10+''xyz'';'#13
+      +'const i=1+2+3;'#13
       +'begin'#13
       +'  A:=@B.C;D:=3;'#13
       +'end;';
@@ -261,6 +261,27 @@ begin
     if s=AtomTypeDescriptions[Result] then exit;
   end;
   Result:=atNone;
+end;
+
+function GetTranslatedAtomTypes(a: TAtomType): string;
+begin
+  case a of
+  atNone: Result:=lisCodeToolsOptsNone;
+  atKeyword: Result:=lisCodeToolsOptsKeyword;
+  atIdentifier: Result:=lisCodeToolsOptsIdentifier;
+  atColon: Result:=lisCodeToolsOptsColon;
+  atSemicolon: Result:=lisCodeToolsOptsSemicolon;
+  atComma: Result:=lisCodeToolsOptsComma;
+  atPoint: Result:=lisCodeToolsOptsPoint;
+  atAt: Result:=lisCodeToolsOptsAt;
+  atNumber: Result:=lisCodeToolsOptsNumber;
+  atStringConstant: Result:=lisCodeToolsOptsStringConst;
+  atNewLine: Result:=lisCodeToolsOptsNewLine;
+  atSpace: Result:=lisCodeToolsOptsSpace;
+  atSymbol: Result:=lisCodeToolsOptsSymbol;
+  else
+    Result:='???';
+  end;
 end;
 
 function ReadAtomTypesFromXML(XMLConfig: TXMLConfig; const Path: string;
@@ -331,7 +352,7 @@ begin
     XMLConfig:=TXMLConfig.Create(FFileName);
     FileVersion:=XMLConfig.GetValue('CodeToolsOptions/Version/Value',0);
     if (FileVersion<>0) and (FileVersion<CodeToolsOptionsVersion) then
-      writeln('NOTE: loading old codetools options file: ',FFileName);
+      writeln(lisCompilerNOTELoadingOldCodetoolsOptionsFile, FFileName);
 
     // General
     FSrcPath:=XMLConfig.GetValue('CodeToolsOptions/SrcPath/Value','');
@@ -474,7 +495,7 @@ begin
                              GetPrimaryConfigPath+'/'+DefaultCodeToolsOptsFile);
   CopySecondaryConfigFile(DefaultCodeToolsOptsFile);
   if (not FileExists(ConfFileName)) then begin
-    writeln('NOTE: codetools config file not found - using defaults');
+    writeln(lisCompilerNOTECodetoolsConfigFileNotFoundUsingDefaults);
   end;
   FFilename:=ConfFilename;
 end;
@@ -673,7 +694,7 @@ begin
       Height:=CancelButton.Height;
       Left:=CancelButton.Left-15-Width;
       Top:=CancelButton.Top;
-      Caption:='Ok';
+      Caption:=lisCodeToolsOptsOk;
       OnClick:=@OkButtonClick;
       Visible:=true;
     end;
@@ -998,8 +1019,8 @@ begin
   with LineLengthLabel do begin
     Name:='LineLengthLabel';
     Parent:=NoteBook.Page[PageID];
-    SetBounds(8,7,Canvas.TextWidth('Max line length: '),Height);
-    Caption:=dlgMaxLineLength ;
+    SetBounds(8,7,Canvas.TextWidth(dlgMaxLineLength),Height);
+    Caption:=dlgMaxLineLength;
     Visible:=true;
   end;
 
@@ -1261,7 +1282,7 @@ end;
 procedure TCodeToolsOptsDlg.ResizeLineSplittingPage;
 begin
   with LineLengthLabel do begin
-    SetBounds(8,7,Canvas.TextWidth('Max line length: '),Height);
+    SetBounds(8,7,Canvas.TextWidth(dlgMaxLineLength),Height);
   end;
 
   with LineLengthEdit do begin

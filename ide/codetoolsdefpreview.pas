@@ -29,6 +29,8 @@
     - TCodeToolsDefinesPreview is a preview for the defines of a single
       directory, used by TCodeToolsDefinesEditor.
 
+  Not complete.
+
 }
 unit CodeToolsDefPreview;
 
@@ -38,8 +40,8 @@ interface
 
 uses
   Classes, SysUtils, LCLLinux, Forms, Controls, Buttons, StdCtrls, ComCtrls,
-  ExtCtrls, Menus, LResources, Graphics, Dialogs, ImgList, SynEdit, ExprEval,
-  DefineTemplates;
+  ExtCtrls, Menus, LResources, Graphics, Dialogs, ImgList, SynEdit,
+  LazarusIDEStrConsts, ExprEval, DefineTemplates;
 
 type
   TCodeToolsDefinesPreview = class(TForm)
@@ -115,7 +117,7 @@ begin
   inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     SetBounds((Screen.Width-400) div 2,(Screen.Height-400) div 2, 420, 420);
-    Caption:='CodeTools Defines Preview';
+    Caption:=lisCodeToolsDefsCodeToolsDefinesPreview;
     OnResize:=@FormResize;
 
     CreateComponents;
