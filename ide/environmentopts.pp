@@ -101,7 +101,8 @@ type
     llRussianCP1251,
     llSpanish,
     llFinnish,
-    llHebrew
+    llHebrew,
+    llArabic
     );
   
 const
@@ -121,11 +122,12 @@ const
     'Russian(CP1251)',
     'Spanish',
     'Finnish',
-    'Hebrew'
+    'Hebrew',
+    'Arabic'
   );
 
   LazarusLanguageIDs: array[TLazarusLanguage] of string = (
-    '', 'ca', 'en', 'fr', 'de', 'it', 'pl', 'pliso', 'plwin', 'ru', 'ruwin', 'es', 'fi', 'he'
+    '', 'ca', 'en', 'fr', 'de', 'it', 'pl', 'pliso', 'plwin', 'ru', 'ruwin', 'es', 'fi', 'he', 'ar'
   );
   
   
@@ -689,6 +691,7 @@ begin
     llCatalan          : Result := rsLanguageCatalan;
     llFinnish          : Result := rsLanguageFinnish;
     llHebrew           : Result := rsLanguageHebrew;
+    llArabic           : Result := rsLanguageArabic;
   end;
 end;
 
