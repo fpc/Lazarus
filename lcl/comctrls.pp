@@ -1282,17 +1282,17 @@ type
   public
     constructor Create(AnOwner: TCustomTreeView);
     destructor Destroy; override;
-    function Add(Node: TTreeNode; const S: string): TTreeNode;
-    function AddChild(Node: TTreeNode; const S: string): TTreeNode;
-    function AddChildFirst(Node: TTreeNode; const S: string): TTreeNode;
-    function AddChildObject(Node: TTreeNode; const S: string;
+    function Add(SiblingNode: TTreeNode; const S: string): TTreeNode;
+    function AddChild(ParentNode: TTreeNode; const S: string): TTreeNode;
+    function AddChildFirst(ParentNode: TTreeNode; const S: string): TTreeNode;
+    function AddChildObject(ParentNode: TTreeNode; const S: string;
       Data: Pointer): TTreeNode;
-    function AddChildObjectFirst(Node: TTreeNode; const S: string;
+    function AddChildObjectFirst(ParentNode: TTreeNode; const S: string;
       Data: Pointer): TTreeNode;
-    function AddFirst(Node: TTreeNode; const S: string): TTreeNode;
-    function AddObject(Node: TTreeNode; const S: string;
+    function AddFirst(SiblingNode: TTreeNode; const S: string): TTreeNode;
+    function AddObject(SiblingNode: TTreeNode; const S: string;
       Data: Pointer): TTreeNode;
-    function AddObjectFirst(Node: TTreeNode; const S: string;
+    function AddObjectFirst(SiblingNode: TTreeNode; const S: string;
       Data: Pointer): TTreeNode;
     procedure Assign(Source: TPersistent); override;
     procedure BeginUpdate;
@@ -1757,6 +1757,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/03/08 09:30:30  lazarus
+  MG: nicer parameter names
+
   Revision 1.23  2002/03/04 13:07:21  lazarus
   MG: fixed update bottomitem on wmsize
 

@@ -28,12 +28,12 @@ interface
 {$endif}
 
 uses
-  GraphType, SysUtils, Classes, vclGlobals, LMessages, LCLType, LCLLinux, LResources;
+  GraphType, SysUtils, Classes, vclGlobals, LMessages, LCLType, LCLLinux,
+  LResources;
 
 
 const
   // The follow colors match the predefined Delphi Colors
-  // TODO : kick these out into platform specific units!
   clBlack =   TColor($000000);
   clMaroon =  TColor($000080);
   clGreen =   TColor($008000);
@@ -56,6 +56,7 @@ const
   clDefault = TColor($20000000);
   
   //System colors
+  // TODO : kick these out into platform specific units!
   clScrollBar               = TColor(SYS_COLOR_BASE or COLOR_SCROLLBAR);
   clBackground              = TColor(SYS_COLOR_BASE or COLOR_BACKGROUND);
   clActiveCaption           = TColor(SYS_COLOR_BASE or COLOR_ACTIVECAPTION);
@@ -111,8 +112,7 @@ const
 
 
 type
-
-  TBitmap = class; //forward declaration
+  TBitmap = class;
 
   TGraphicsObject = class(TPersistent)
   private
@@ -232,6 +232,10 @@ type
 
   TCanvas = class;
 
+  {
+    TGraphic is the mother of all graphic formats like TBitmap, TPixmap and
+    TIcon. It defines properties and methods for width, height and streaming.
+  }
   TGraphic = class(TPersistent)
   private
     FModified: Boolean;
@@ -694,6 +698,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/03/08 09:30:30  lazarus
+  MG: nicer parameter names
+
   Revision 1.22  2002/02/03 00:24:00  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

@@ -1494,43 +1494,47 @@ begin
     GetLastNode.Delete;
 end;
 
-function TTreeNodes.AddChildFirst(Node: TTreeNode; const S: string): TTreeNode;
+function TTreeNodes.AddChildFirst(ParentNode: TTreeNode; const S: string): TTreeNode;
 begin
-  Result := AddChildObjectFirst(Node, S, nil);
+  Result := AddChildObjectFirst(ParentNode, S, nil);
 end;
 
-function TTreeNodes.AddChildObjectFirst(Node: TTreeNode; const S: string;
+function TTreeNodes.AddChildObjectFirst(ParentNode: TTreeNode; const S: string;
   Data: Pointer): TTreeNode;
 begin
-  Result := InternalAddObject(Node, S, Data, taAddFirst);
+  Result := InternalAddObject(ParentNode, S, Data, taAddFirst);
 end;
 
-function TTreeNodes.AddChild(Node: TTreeNode; const S: string): TTreeNode;
+function TTreeNodes.AddChild(ParentNode: TTreeNode; const S: string): TTreeNode;
 begin
-  Result := AddChildObject(Node, S, nil);
+  Result := AddChildObject(ParentNode, S, nil);
 end;
 
-function TTreeNodes.AddChildObject(Node: TTreeNode; const S: string;
+function TTreeNodes.AddChildObject(ParentNode: TTreeNode; const S: string;
   Data: Pointer): TTreeNode;
 begin
-  Result := InternalAddObject(Node, S, Data, taAdd);
+  Result := InternalAddObject(ParentNode, S, Data, taAdd);
 end;
 
-function TTreeNodes.AddFirst(Node: TTreeNode; const S: string): TTreeNode;
+function TTreeNodes.AddFirst(SiblingNode: TTreeNode; const S: string): TTreeNode;
 begin
-  Result := AddObjectFirst(Node, S, nil);
+  Result := AddObjectFirst(SiblingNode, S, nil);
 end;
 
-function TTreeNodes.AddObjectFirst(Node: TTreeNode; const S: string;
+function TTreeNodes.AddObjectFirst(SiblingNode: TTreeNode; const S: string;
   Data: Pointer): TTreeNode;
+var ParentNode: TTreeNode;
 begin
-  if Node <> nil then Node := Node.Parent;
-  Result := InternalAddObject(Node, S, Data, taAddFirst);
+  if SiblingNode <> nil then
+    ParentNode := SiblingNode.Parent
+  else
+    ParentNode := nil;
+  Result := InternalAddObject(ParentNode, S, Data, taAddFirst);
 end;
 
-function TTreeNodes.Add(Node: TTreeNode; const S: string): TTreeNode;
+function TTreeNodes.Add(SiblingNode: TTreeNode; const S: string): TTreeNode;
 begin
-  Result := AddObject(Node, S, nil);
+  Result := AddObject(SiblingNode, S, nil);
 end;
 
 procedure TTreeNodes.Repaint(ANode: TTreeNode);
@@ -1546,11 +1550,15 @@ begin
   end;
 end;
 
-function TTreeNodes.AddObject(Node: TTreeNode; const S: string;
+function TTreeNodes.AddObject(SiblingNode: TTreeNode; const S: string;
   Data: Pointer): TTreeNode;
+var ParentNode: TTreeNode;
 begin
-  if Node <> nil then Node := Node.Parent;
-  Result := InternalAddObject(Node, S, Data, taAdd);
+  if SiblingNode <> nil then
+    ParentNode := SiblingNode.Parent
+  else
+    ParentNode := nil;
+  Result := InternalAddObject(ParentNode, S, Data, taAdd);
 end;
 
 procedure TTreeNodes.AddedNode(AValue: TTreeNode);
@@ -1593,6 +1601,13 @@ end;
 
 function TTreeNodes.InternalAddObject(Node: TTreeNode; const S: string;
   Data: Pointer; AddMode: TAddMode): TTreeNode;
+{
+  TAddMode = (taAddFirst, taAdd, taInsert);
+
+  taAdd:      add Result as last child of Node
+  taAddFirst: add Result as first child of Node
+  taInsert:   add Result in front of Node
+}
 //var Item: HTreeItem;
 var ok: boolean;
 begin
