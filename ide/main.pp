@@ -5984,7 +5984,7 @@ begin
   writeln('');
   writeln('[TMainIDE.DoFindDeclarationAtCaret] ************');
   {$ENDIF}
-  {$IFDEF IDE_MEM_CHECK}CheckHeap('TMainIDE.DoFindDeclarationAtCaret ',IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeap('TMainIDE.DoFindDeclarationAtCaret '+IntToStr(GetMem_Cnt));{$ENDIF}
   if CodeToolBoss.FindDeclaration(ActiveUnitInfo.Source,
     CaretXY.X,CaretXY.Y,
     NewSource,NewX,NewY,NewTopLine) then
@@ -5993,7 +5993,7 @@ begin
       NewSource, NewX, NewY, NewTopLine, true);
   end else
     DoJumpToCodeToolBossError;
-  {$IFDEF IDE_MEM_CHECK}CheckHeap('TMainIDE.DoFindDeclarationAtCaret ',IntToStr(GetMem_Cnt));{$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}CheckHeap('TMainIDE.DoFindDeclarationAtCaret '+IntToStr(GetMem_Cnt));{$ENDIF}
 end;
 
 procedure TMainIDE.DoGoToPascalBlockOtherEnd;
@@ -6811,6 +6811,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.364  2002/09/06 19:11:46  lazarus
+  MG: fixed scrollbars of TTreeView
+
   Revision 1.363  2002/09/05 19:03:34  lazarus
   MG: improved handling of ambigious source files
 
