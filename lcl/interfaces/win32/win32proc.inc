@@ -568,7 +568,7 @@ begin
   if SendSizeMsgOnDiff then begin
     //writeln('LCLBoundsNeedsUpdate B ',TheWinControl.Name,':',TheWinControl.ClassName,' Sending WM_SIZE');
     Sender.InvalidateClientRectCache(true);
-    SendMessage(Window, WM_SIZE, 0, MakeLParam(IntfWidth, IntfHeight));
+    Windows.PostMessage(Window, WM_SIZE, 0, MakeLParam(IntfWidth, IntfHeight));
   end;
 end;
 
@@ -761,6 +761,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.41  2004/05/14 15:20:47  micha
+  fix sizing when menu is attached to window
+
   Revision 1.40  2004/05/12 15:11:46  micha
   fix sizing/non-sizing border sizes
 

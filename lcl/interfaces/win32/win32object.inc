@@ -1251,10 +1251,16 @@ end;
 procedure TWin32WidgetSet.AttachMenuToWindow(AMenuObject: TComponent);
 var
   AMenu: TMenu;
+  AWinControl: TWinControl;
 begin
   AMenu := AMenuObject as TMenu;
   if AMenu.FCompStyle = csMainMenu then
-    Windows.SetMenu(TWinControl(AMenu.Owner).Handle, AMenu.Handle);
+  begin
+    AWinControl := TWinControl(AMenu.Owner);
+    Windows.SetMenu(AWinControl.Handle, AMenu.Handle);
+    // inform LCL of changed client size
+    AWinControl.DoAdjustClientRectChange;
+  end;
 end;
 
 { Private methods (in no significant order) }
@@ -2953,6 +2959,9 @@ End;
 
 {
   $Log$
+  Revision 1.193  2004/05/14 15:20:47  micha
+  fix sizing when menu is attached to window
+
   Revision 1.192  2004/05/12 15:11:46  micha
   fix sizing/non-sizing border sizes
 
