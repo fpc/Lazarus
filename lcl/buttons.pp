@@ -179,6 +179,7 @@ type
     property OnExit;
     property ShowHint;
     property ParentShowHint;
+    property PopupMenu;
   end;
    
    
@@ -255,6 +256,7 @@ type
     property OnResize;
     property ShowHint;
     property ParentShowHint;
+    property PopupMenu;
   end;
 
 procedure Register;
@@ -299,6 +301,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.42  2003/05/03 09:53:33  mattias
+  fixed popupmenu for component palette
+
   Revision 1.41  2003/04/13 13:45:04  mattias
   implemented broken dependencies dialog
 
