@@ -804,18 +804,21 @@ begin
   Result := false;
 end;
 
-function TInterfaceBase.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer;
+function TInterfaceBase.GetDIBits(DC: HDC; Bitmap: HBitmap;
+  StartScan, NumScans: UINT; Bits: Pointer;
+  var BitInfo: BitmapInfo; Usage: UINT): Integer;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
+function TInterfaceBase.GetBitmapBits(Bitmap: HBITMAP; Count: Longint;
+  Bits: Pointer): Longint;
 begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
-  var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;
+function TInterfaceBase.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo;
+  p3: UINT; var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;
 begin
   Result := 0;
 end;
@@ -830,7 +833,14 @@ begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetObject(GDIObject: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer;
+function TInterfaceBase.GetNotebookTabIndexAtPos(Handle: HWND;
+  const ClientPos: TPoint): integer;
+begin
+  Result:=-1;
+end;
+
+function TInterfaceBase.GetObject(GDIObject: HGDIOBJ; BufSize: Integer;
+  Buf: Pointer): Integer;
 begin
   Result := 0;
 end;
@@ -850,12 +860,14 @@ begin
   Result := SIMPLEREGION;
 end;
 
-function TInterfaceBase.GetScrollBarSize(Handle: HWND; BarKind: Integer): integer;
+function TInterfaceBase.GetScrollBarSize(Handle: HWND;
+  BarKind: Integer): integer;
 begin
   Result := GetSystemMetrics(BarKind);
 end;
 
-function TInterfaceBase.GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;
+function TInterfaceBase.GetScrollInfo(Handle: HWND; BarFlag: Integer;
+  var ScrollInfo: TScrollInfo): Boolean;
 begin
   Result := False;
 end;
@@ -880,7 +892,8 @@ begin
   Result := 0;
 end;
 
-function TInterfaceBase.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean;
+function TInterfaceBase.GetTextExtentPoint(DC: HDC; Str: PChar;
+  Count: Integer; var Size: TSize): Boolean;
 begin
   Result := False;
 end;
@@ -911,8 +924,9 @@ begin
   Result:=false;
 end;
 
-function TInterfaceBase.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
-  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean;
+function TInterfaceBase.GradientFill(DC: HDC; Vertices: PTriVertex;
+  NumVertices : Longint; Meshes: Pointer; NumMeshes : Longint;
+  Mode : Longint): Boolean;
 begin
   Result := False;
 end;
@@ -1455,6 +1469,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2002/11/09 15:02:07  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.65  2002/10/31 21:29:47  lazarus
   MG: implemented TControlScrollBar.Size
 
