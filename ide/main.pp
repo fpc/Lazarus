@@ -1884,7 +1884,8 @@ Begin
     OnActivated:=@OnDesignerActivated;
     OnRenameComponent:=@OnDesignerRenameComponent;
     OnProcessCommand:=@OnProcessIDECommand;
-    ShowHints:=EnvironmentOptions.ShowEditorHints;
+    ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
+    ShowComponentCaptionHints:=EnvironmentOptions.ShowComponentCaptions;
   end;
 end;
 
@@ -1896,12 +1897,16 @@ end;
   Calls 'Invalidate' in all designer forms.
 -------------------------------------------------------------------------------}
 procedure TMainIDE.InvalidateAllDesignerForms;
-var i: integer;
+var
+  AnUnitInfo: TUnitInfo;
 begin
-  for i:=0 to Project1.UnitCount-1 do begin
-    if (Project1.Units[i].Form<>nil)
-    and (Project1.Units[i].Form is TControl) then
-      TControl(Project1.Units[i].Form).Invalidate;
+  AnUnitInfo:=Project1.FirstUnitWithForm;
+  while AnUnitInfo<>nil do begin
+    if AnUnitInfo.Form<>nil then begin
+      if AnUnitInfo.Form is TControl then
+        TControl(AnUnitInfo.Form).Invalidate;
+    end;
+    AnUnitInfo:=AnUnitInfo.NextUnitWithForm;
   end;
 end;
 
@@ -2356,6 +2361,28 @@ var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
     end;
   end;
   
+  procedure UpdateDesigners;
+  var
+    AForm: TCustomForm;
+    AnUnitInfo: TUnitInfo;
+    ADesigner: TDesigner;
+  begin
+    AnUnitInfo:=Project1.FirstUnitWithForm;
+    while AnUnitInfo<>nil do begin
+      if (AnUnitInfo.Form<>nil) and (AnUnitInfo.Form is TCustomForm) then begin
+        AForm:=TCustomForm(AnUnitInfo.Form);
+        ADesigner:=TDesigner(AForm.Designer);
+        if ADesigner<>nil then begin
+          ADesigner.ShowEditorHints:=EnvironmentOptions.ShowEditorHints;
+          ADesigner.ShowComponentCaptionHints:=
+            EnvironmentOptions.ShowComponentCaptions;
+        end;
+      end;
+      AnUnitInfo:=AnUnitInfo.NextUnitWithForm;
+    end;
+    InvalidateAllDesignerForms;
+  end;
+  
 Begin
   EnvironmentOptionsDialog:=TEnvironmentOptionsDialog.Create(Application);
   try
@@ -2389,7 +2416,7 @@ Begin
       EnvironmentOptions.Save(false);
       
       // update designer
-      InvalidateAllDesignerForms;
+      UpdateDesigners;
     end;
   finally
     EnvironmentOptionsDialog.Free;
@@ -7440,6 +7467,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.422  2002/11/02 10:59:28  lazarus
+  MG: fixed designer hints
+
   Revision 1.421  2002/10/31 17:31:08  lazarus
   MG: fixed return polygon point
 
