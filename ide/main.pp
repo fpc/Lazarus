@@ -6694,6 +6694,8 @@ begin
   Result:=RenameDelphiUnitToLazarusUnit(DelphiFilename,true,
                        LazarusUnitFilename,LFMFilename);
   if Result<>mrOk then exit;
+  if LFMFilename='' then LFMFilename:=ChangeFIleExt(LazarusUnitFilename,'.lfm');
+  HasDFMFile:=FileExists(LFMFilename);
   // convert .dfm file to .lfm file
   if HasDFMFile then begin
     writeln('TMainIDE.DoConvertDelphiUnit Convert dfm format to lfm "',LFMFilename,'"');
@@ -10644,6 +10646,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.767  2004/09/10 22:14:47  mattias
+  fixed converting vaInt8 and vaUTF8String
+
   Revision 1.766  2004/09/04 21:54:08  marc
   + Added option to skip compiler step on compile, build or run
   * Fixed adding of runtime watches

@@ -259,6 +259,7 @@ type
     xtLongWord,    // longword
     xtWord,        // word
     xtSmallInt,    // smallint
+    xtShortInt,    // shortint
     xtByte,        // byte
     xtCompilerFunc,// SUCC, PREC, LOW, HIGH, ORD, LENGTH, COPY (1.1)
     xtNil          // nil  = pointer, class, procedure, method, ...
@@ -301,6 +302,7 @@ const
     'LongWord',
     'Word',
     'SmallInt',
+    'ShortInt',
     'Byte',
     'CompilerFunc',
     'Nil'
@@ -309,7 +311,8 @@ const
   xtAllTypes = [Low(TExpressionTypeDesc)..High(TExpressionTypeDesc)]-[xtNone];
   xtAllPredefinedTypes = xtAllTypes-[xtContext];
   xtAllIntegerTypes = [xtInt64, xtQWord, xtConstOrdInteger, xtLongint,
-                       xtLongWord, xtWord, xtCardinal, xtSmallInt, xtByte];
+                       xtLongWord, xtWord, xtCardinal, xtSmallInt, xtShortInt,
+                       xtByte];
   xtAllBooleanTypes = [xtBoolean, xtByteBool, xtLongBool];
   xtAllRealTypes = [xtReal, xtConstReal, xtSingle, xtDouble, xtExtended,
                     xtCurrency, xtComp];
@@ -793,6 +796,8 @@ begin
     Result:=xtCardinal
   else if CompareIdentifiers(Identifier,'SMALLINT')=0 then
     Result:=xtSmallInt
+  else if CompareIdentifiers(Identifier,'SHORTINT')=0 then
+    Result:=xtShortInt
   else if CompareIdentifiers(Identifier,'BYTE')=0 then
     Result:=xtByte
   else
@@ -6455,6 +6460,7 @@ begin
     xtLongint,
     xtLongWord,
     xtSmallInt,
+    xtShortInt,
     xtByte,
     xtWord:
       Result:=ExpressionTypeDescNames[ExprType.Desc];

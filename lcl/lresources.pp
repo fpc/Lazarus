@@ -1203,7 +1203,55 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
 
       procedure Stop(const s: String);
       begin
-        RaiseGDBException('ObjectLRSToText Unimplemented '+s);
+        RaiseGDBException('ObjectLRSToText '+s);
+      end;
+      
+      procedure UnknownValueType;
+      var
+        HintStr, s: String;
+        HintLen: Int64;
+      begin
+        s:='';
+        case ValueType of
+        vaNull: s:='vaNull';
+        vaList: s:='vaList';
+        vaInt8: s:='vaInt8';
+        vaInt16: s:='vaInt16';
+        vaInt32: s:='vaInt32';
+        vaExtended: s:='vaExtended';
+        vaString: s:='vaString';
+        vaIdent: s:='vaIdent';
+        vaFalse: s:='vaFalse';
+        vaTrue: s:='vaTrue';
+        vaBinary: s:='vaBinary';
+        vaSet: s:='vaSet';
+        vaLString: s:='vaLString';
+        vaNil: s:='vaNil';
+        vaCollection: s:='vaCollection';
+        vaSingle: s:='vaSingle';
+        vaCurrency: s:='vaCurrency';
+        vaDate: s:='vaDate';
+        vaWString: s:='vaWString';
+        vaInt64: s:='vaInt64';
+        end;
+        if s<>'' then
+          s:='Unimplemented ValueType='+s
+        else
+          s:='Unknown ValueType='+dbgs(Ord(ValueType));
+        HintLen:=Output.Position;
+        if HintLen>50 then HintLen:=50;
+        SetLength(HintStr,HintLen);
+        if HintStr<>'' then begin
+          try
+            Output.Position:=Output.Position-length(HintStr);
+            Output.Read(HintStr[1],length(HintStr));
+            debugln('ObjectLRSToText:');
+            debugln(DbgStr(HintStr));
+          except
+          end;
+        end;
+        s:=s+' ';
+        Stop(s);
       end;
 
       procedure ProcessBinary;
@@ -1242,6 +1290,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
       {$endif HASWIDESTRING}
 
     begin
+      //DbgOut('ValueType="',dbgs(ord(ValueType)),'"');
       case ValueType of
         vaList: begin
             OutStr('(');
@@ -1258,7 +1307,10 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
             end;
             OutLn(Indent + ')');
           end;
-        vaInt8: OutLn(IntToStr(ShortInt(Input.ReadByte)));
+        vaInt8: begin
+            // MG: IntToStr has a bug with ShortInt, therefore these typecasts
+            OutLn(IntToStr(Integer(ShortInt(Input.ReadByte))));
+          end;
         vaInt16: OutLn(IntToStr(SmallInt(ReadLRSWord(Input))));
         vaInt32: OutLn(IntToStr(ReadLRSInteger(Input)));
         vaInt64: OutLn(IntToStr(ReadLRSInt64(Input)));
@@ -1327,10 +1379,16 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
             OutLn(AWideString);
           end;
         {$endif HASWIDESTRING}
-        else begin
-          debugln('Unknown ValueType=',dbgs(Ord(ValueType)),' vaInt16=',dbgs(Ord(vaInt16)));
-          Stop(IntToStr(Ord(ValueType)));
-        end;
+        else
+          if ord(ValueType)=20 then begin
+            // vaUTF8String
+            // Delphi saves widestrings as UTF8 strings
+            // The LCL does not use widestrings, but UTF8 directly
+            // so, simply read the string
+            OutString(ReadLongString);
+            OutLn('');
+          end else
+            UnknownValueType;
       end;
     end;
 

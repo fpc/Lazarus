@@ -1212,6 +1212,7 @@ begin
     Add('WORD'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SMALLINT'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SHORTINT'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('BYTE'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   WordIsPredefinedFPCIdentifier.Add(IsKeyWordBuiltInFunc);
