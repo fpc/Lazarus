@@ -301,6 +301,7 @@ writeln('[TExternalToolList.Run] ',CmdLine);
               TheProcess.WaitOnExit;
               TheProcess.Free;
             end;
+            Result:=mrOk;
           except
             on e: EOutputFilterError do begin
               ErrorOccurred:=true;
@@ -312,6 +313,7 @@ writeln('[TExternalToolList.Run] ',CmdLine);
         end;
       end else begin
         AddRunningTool(TheProcess,true);
+        Result:=mrOk;
       end;
     except
       on e: Exception do
@@ -319,7 +321,6 @@ writeln('[TExternalToolList.Run] ',CmdLine);
           'Unable to run the tool "'+Title+'":'#13+e.Message,mtError,[mbOk],0);
     end;
   end;
-  Result:=mrOk;
 end;
 
 function TExternalToolList.Save(XMLConfig: TXMLConfig;

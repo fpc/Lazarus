@@ -63,7 +63,7 @@ interface
 
 {$I codetools.inc}
 
-{ $DEFINE CTDEBUG}
+{$DEFINE CTDEBUG}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
 
