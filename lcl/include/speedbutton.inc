@@ -244,7 +244,7 @@ function TSpeedButton.GetDrawFlags: integer;
 begin
   Result:=DFCS_BUTTONPUSH;
   if FState in [bsDown, bsExclusive] then inc(Result,DFCS_PUSHED);
-  if FMouseInControl then inc(Result,DFCS_CHECKED);
+//  if FMouseInControl then inc(Result,DFCS_CHECKED);
   if not Enabled then inc(Result,DFCS_INACTIVE);
 
   if Flat and (not (csDesigning in ComponentState)) and
@@ -539,9 +539,9 @@ begin
     end;
   end
   else begin
-    {if not FMouseInControl then begin
+    if not FMouseInControl then begin
       UpdateTracking;
-    end;}
+    end;
   end;
 end;
 
@@ -563,7 +563,7 @@ begin
     if FGroupIndex = 0 
     then begin
       FState := bsUp;
-      FMouseInControl := False;
+//      FMouseInControl := False;
       if not (FState in [bsExclusive, bsDown]) then
         Invalidate;
     end
@@ -698,6 +698,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2003/09/27 09:49:30  mattias
+  fix for speedbutton from Micha
+
   Revision 1.41  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 

@@ -233,7 +233,7 @@ type
     function GetDrawFlags: integer; virtual;
     property MouseInControl : Boolean read FMouseInControl;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Click; override;
   published
@@ -307,6 +307,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.51  2003/09/27 09:49:30  mattias
+  fix for speedbutton from Micha
+
   Revision 1.50  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 
