@@ -698,9 +698,10 @@ begin
     TranslateResourceStrings(EnvironmentOptions.LazarusDirectory,
       LazarusLanguageIDs[EnvironmentOptions.Language]);
 
-    CheckCompilerFilename(InteractiveSetup);
-    if EnvironmentOptions.FPCSourceDirectory='' then
-      EnvironmentOptions.FPCSourceDirectory:=FindDefaultFPCSrcDirectory;
+    SetupCompilerFilename(InteractiveSetup);
+    SetupFPCSourceDirectory(InteractiveSetup);
+    SetupLazarusDirectory(InteractiveSetup);
+    
     ExternalTools.OnNeedsOutputFilter:=@OnExtToolNeedsOutputFilter;
     ExternalTools.OnFreeOutputFilter:=@OnExtToolFreeOutputFilter;
     OnApplyWindowLayout:=@Self.OnApplyWindowLayout;
@@ -7723,6 +7724,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.463  2003/02/19 23:17:45  mattias
+  added warnings when fpc source dir invalid
+
   Revision 1.462  2003/02/19 22:27:33  mattias
   added some messages when compiler filename is invalid
 
