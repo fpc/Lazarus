@@ -1,12 +1,12 @@
-{ 
- /*************************************************************************** 
+{
+ /***************************************************************************
                          WIN32INT.pp  -  Win32Interface Object
-                             ------------------- 
- 
- 
- 
- ***************************************************************************/ 
- 
+                             -------------------
+
+
+
+ ***************************************************************************/
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -20,7 +20,7 @@
  *                                                                           *
  *****************************************************************************
 }
- 
+
 Unit Win32Int;
 
 {$mode objfpc}{$H+}
@@ -31,7 +31,7 @@ Interface
 {$ASSERTIONS ON}
 {$ENDIF}
 
-{ 
+{
   When editing this unit list, be sure to keep Windows listed first to ensure
   successful compilation.
 }
@@ -55,10 +55,10 @@ Type
   TWin32Object = Class(TInterfaceBase)
   Private
     FAccelGroup: HACCEL;
-    FControlIndex: Cardinal; // Win32-API control index
-    FMenu: HMENU; // Main menu/menu bar
-    FParentWindow: HWND; // The parent window
-    FSubMenu: HMENU; // current sub menu
+    FAppHandle: HWND;    // The parent of all windows, represents the button of the taskbar
+                         // Assoc. windowproc also acts as handler for popup menus
+    FMenu: HMENU;        // Main menu/menu bar
+    FSubMenu: HMENU;     // current sub menu
     FWin32MenuHeight: Integer;
 
     FStockNullBrush: HBRUSH;
@@ -122,9 +122,9 @@ Type
 
     {$I win32winapih.inc}
   End;
-   
+
   {$I win32listslh.inc}
-  
+
   { Asserts a trace for event named Message in the object Data }
   Procedure EventTrace(Message: String; Data: TObject);
 
@@ -154,7 +154,7 @@ Const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
   ClsName : array[0..20] of char = 'LazarusForm'#0;
   ToolBtnClsName : array[0..20] of char = 'ToolbarButton'#0;
-  
+
 Var
   WndList: TList;
 
@@ -180,6 +180,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.46  2003/10/23 07:45:49  micha
+  cleanups; single parent window (single taskbar button)
+
   Revision 1.45  2003/10/21 15:06:27  micha
   spinedit fix; variables cleanup
 

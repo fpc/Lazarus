@@ -88,6 +88,8 @@ Begin
 
   if FAccelGroup <> 0 then
     DestroyAcceleratorTable(FAccelGroup);
+  if FAppHandle <> 0 then
+    DestroyWindow(FAppHandle);
 
   Windows.UnregisterClass(@ClsName, System.HInstance);
   Windows.UnregisterClass(@ToolBtnClsName, System.HInstance);
@@ -105,6 +107,7 @@ End;
 Procedure TWin32Object.AppInit;
 Var
   LogBrush: TLOGBRUSH;
+  SysMenu: HMENU;
 Begin
   Assert(False, 'Trace:Win32Object.Init - Start');
   If Not WinRegister then
@@ -135,6 +138,19 @@ Begin
   FStockWhiteBrush := CreateBrushIndirect(LogBrush);
 
   InitCommonControls;
+
+  // Create parent of all windows, `button on taskbar'
+  FAppHandle := CreateWindow(@ClsName, 'AppTitle', WS_POPUP or WS_CLIPSIBLINGS or
+    WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX or WS_VISIBLE,
+    0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
+    0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
+    0, 0, HWND(nil), HMENU(nil), HInstance, nil);
+
+  // remove useless menuitems from sysmenu
+  SysMenu := Windows.GetSystemMenu(FAppHandle, False);
+  Windows.DeleteMenu(SysMenu, SC_MAXIMIZE, MF_BYCOMMAND);
+  Windows.DeleteMenu(SysMenu, SC_SIZE, MF_BYCOMMAND);
+  Windows.DeleteMenu(SysMenu, SC_MOVE, MF_BYCOMMAND);
 
   Assert(False, 'Trace:Win32Object.Init - Exit');
 End;
@@ -648,9 +664,9 @@ activate_time :	the time at which the activation event occurred.
 }
         LM_POPUPSHOW:
         Begin
-          SetProp(FParentWindow, 'PopupMenu', Pointer(TPopupMenu(Sender).Handle));
+          SetProp(FAppHandle, 'PopupMenu', Pointer(TPopupMenu(Sender).Handle));
           TrackPopupMenuEx(TPopupMenu(Sender).Handle, TPM_LEFTALIGN or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
-            TPoint(Data^).x, TPoint(Data^).y, FParentWindow, Nil);
+            TPoint(Data^).x, TPoint(Data^).y, FAppHandle, Nil);
         End;
         LM_SETFILTER:
         Begin
@@ -1441,7 +1457,8 @@ Var
         Result := TWinControl(Owner).Handle
       else if Owner Is TApplication then
         Result := TApplication(Owner).Handle
-      else Result := 0;
+      else
+        Result := FAppHandle;
     end;
   end;
 
@@ -1823,7 +1840,7 @@ Begin
   Assert(False, 'Trace:CreateComponent - Value of Sender is $' + IntToHex(LongInt(Sender), 8));
   Assert(False, 'Trace:CreateComponent - 1');
 
-  Flags := WS_Child Or WS_Visible or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+  Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
   Assert(False, 'Trace:Setting flags');
   Window := HWND(Nil);
   Buddy := HWND(Nil);
@@ -1837,7 +1854,7 @@ Begin
     Assert(False, 'Trace:Setting parent');
   End
   Else
-    Parent := 0;
+    Parent := FAppHandle;
 
   DoSubClass := true;
   CompStyle := csNone;
@@ -1853,6 +1870,8 @@ Begin
     //Parent := TControl(Sender).Parent;
     Top := TControl(Sender).Top;
     Width := TControl(Sender).Width;
+    if TControl(Sender).Visible then
+      Flags := Flags or WS_VISIBLE;
     Assert(False, 'Trace:Setting dimentions');
     LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
     {$IFDEF VerboseSizeMsg}
@@ -1916,7 +1935,7 @@ Begin
     End;
     csCalendar:
     Begin
-      Window := CreateWindow('SysMonthCal32', StrTemp, WS_Child Or WS_Visible, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);
+      Window := CreateWindow('SysMonthCal32', StrTemp, WS_CHILD Or WS_VISIBLE, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);
       DoSubClass := False;
     End;
     csCheckbox:
@@ -2014,8 +2033,6 @@ Begin
       bsSizeToolWin:
         FlagsEx:=WS_EX_TOOLWINDOW;
       End;//case
-      if (Parent = HWND(nil)) and (TCustomForm(Sender).Owner is TCustomForm) then
-        Parent := TCustomForm(TCustomForm(Sender).Owner).Handle;
 
       If TCustomForm(Sender).FormStyle = fsStayOnTop Then
         FlagsEx:= FlagsEx or WS_EX_TOPMOST;
@@ -2024,7 +2041,6 @@ Begin
       except
         writeln('Exception occured creating window');
       end;
-      FParentWindow := Window;
       Assert(False, 'Trace:CreateComponent - Form Window Handle Value = $' + IntToHex(Window, 8));
       Assert(False, 'Trace:Creating a Form - SetProp');
       DoSubClass := false;
@@ -2116,12 +2132,11 @@ Begin
     Begin
       Assert(False, 'Trace:TODO: Create a spin edit control.  What is a spin edit contol anyway?');
       //this needs to be created in the actual code because it requires a gtkadjustment Win32Control
-      Inc(FControlIndex);
       Buddy := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       Window := CreateUpDownControl(Flags Or WS_Border or UDS_ALIGNRIGHT or UDS_NOTHOUSANDS or UDS_ARROWKEYS or UDS_WRAP or UDS_SETBUDDYINT,
         0, 0,       // pos -  ignored for buddy
         0, 0,       // size - ignored for buddy
-        Parent, 0, {FControlIndex,} HInstance, Buddy,
+        Parent, 0, HInstance, Buddy,
         Trunc(TSpinEdit(Sender).MaxValue),
         Trunc(TSpinEdit(Sender).MinValue),
         Trunc(TSpinEdit(Sender).Value));
@@ -2130,8 +2145,7 @@ Begin
     csStatusBar:
     Begin
       Assert(False, 'TRACE:CreateComponent - Creating Status Bar');
-      Inc(FControlIndex);
-      Window := CreateStatusWindow(Flags, StrTemp, Parent, FControlIndex);
+      Window := CreateStatusWindow(Flags, StrTemp, Parent, 0);
     End;
     csGTKTable:
     Begin
@@ -2785,6 +2799,9 @@ End;
 
 {
   $Log$
+  Revision 1.120  2003/10/23 07:45:49  micha
+  cleanups; single parent window (single taskbar button)
+
   Revision 1.119  2003/10/21 15:06:27  micha
   spinedit fix; variables cleanup
 
