@@ -11,7 +11,7 @@ packages=fcl regexpr
 
 [target]
 programs=lazarus
-dirs=lcl components designer/jitform
+dirs=lcl components designer
 exampledirs=examples
 
 [compiler]
@@ -59,7 +59,7 @@ endif
 tools: lcl components
         $(MAKE) -C tools
 
-all: lcl components ide
+all: lcl components designer ide
 
 cleanide:
         $(DEL) $(wildcard *$(OEXT))

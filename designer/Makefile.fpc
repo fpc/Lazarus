@@ -1,0 +1,14 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[target]
+dirs=jitform
+
+[clean]
+files=$(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT))
+
+[rules]
+
+cleanall: clean
