@@ -1585,6 +1585,7 @@ tools/install/get_lazarus_version.sh -text svneol=native#application/x-sh
 tools/install/macosx/fpc_installer_info.zip -text svneol=unset#application/zip
 tools/install/replace_in_files.pl -text svneol=native#application/x-perl
 tools/install/smart_strip.sh -text svneol=native#application/x-sh
+tools/install/win32/readme.txt svneol=native#text/plain
 tools/lazarusmake.ini svneol=native#text/plain
 tools/lazres.lpi svneol=native#text/plain
 tools/lazres.pp svneol=native#text/pascal
