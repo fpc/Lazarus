@@ -341,6 +341,7 @@ begin
       else
         CurControl.BorderSpacing.Space[Kind]:=NewValue;
     end;
+    //GlobalDesignHook.Modified(Self);
     GlobalDesignHook.RefreshPropertyValues;
   end;
 end;
@@ -371,8 +372,12 @@ begin
   CurSide:=Values.Sides[Kind];
   if CurSide.AmbigiousSibling or (CompareText(CurSide.Sibling,NewValue)<>0) then
   begin
-    NewSibling:=FindSibling(NewValue);
-    if NewSibling=nil then exit;
+    if (NewValue<>AnchorDesignerNoSiblingText) then begin
+      NewSibling:=FindSibling(NewValue);
+      if NewSibling=nil then exit;
+    end else begin
+      NewSibling:=nil;
+    end;
     debugln('TAnchorDesigner.SiblingComboBoxChange ',DbgSName(Sender),' NewSibling=',DbgSName(NewSibling));
     // user changed a sibling
     SelectedControls:=GetSelectedControls;
@@ -445,7 +450,6 @@ begin
     Side:=asrBottom;
   end else
     exit;
-  if not TSpeedButton(Sender).Down then exit;
   CurSide:=Values.Sides[Kind];
   if CurSide.AmbigiousSide or (CurSide.Side<>Side) then
   begin
@@ -475,6 +479,7 @@ var
   j: Integer;
   Sibling: TControl;
   SelectedControls: TList;
+  OldText: String;
 begin
   sl:=TStringList.Create;
   sl.Add(AnchorDesignerNoSiblingText);
@@ -494,7 +499,9 @@ begin
       end;
     end;
   end;
+  OldText:=AComboBox.Text;
   AComboBox.Items.Assign(sl);
+  AComboBox.Text:=OldText;
   sl.Free;
 end;
 
@@ -555,7 +562,9 @@ begin
       TopBorderSpaceSpinEdit.ValueEmpty:=CurSide.AmbigiousBorderSpace;
       Sibling:=CurSide.Sibling;
       TopSiblingComboBox.Text:=Sibling;
+      debugln('TAnchorDesigner.Refresh A TopSiblingComboBox.Text=',TopSiblingComboBox.Text,' Sibling=',Sibling);
       FillComboBoxWithSiblings(TopSiblingComboBox);
+      debugln('TAnchorDesigner.Refresh B TopSiblingComboBox.Text=',TopSiblingComboBox.Text,' Sibling=',Sibling);
       TopRefBottomSpeedButton.Enabled:=Sibling<>'';
       TopRefBottomSpeedButton.Down:=(CurSide.Side=asrBottom);
       TopRefCenterSpeedButton.Enabled:=Sibling<>'';

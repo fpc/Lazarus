@@ -15,6 +15,7 @@ object AnchorDesigner: TAnchorDesigner
   Width = 520
   object BorderSpaceGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'BorderSpaceGroupBox'
     ClientHeight = 87
     ClientWidth = 168
@@ -25,6 +26,7 @@ object AnchorDesigner: TAnchorDesigner
     Top = 80
     Width = 172
     object LeftBorderSpaceSpinEdit: TSpinEdit
+      BorderSpacing.OnChange = nil
       Decimal_Places = 0
       MaxValue = 100
       OnChange = BorderSpaceSpinEditChange
@@ -37,6 +39,7 @@ object AnchorDesigner: TAnchorDesigner
       Width = 50
     end
     object RightBorderSpaceSpinEdit: TSpinEdit
+      BorderSpacing.OnChange = nil
       Decimal_Places = 0
       MaxValue = 100
       OnChange = BorderSpaceSpinEditChange
@@ -50,6 +53,7 @@ object AnchorDesigner: TAnchorDesigner
       Width = 50
     end
     object TopBorderSpaceSpinEdit: TSpinEdit
+      BorderSpacing.OnChange = nil
       Decimal_Places = 0
       MaxValue = 100
       OnChange = BorderSpaceSpinEditChange
@@ -62,6 +66,7 @@ object AnchorDesigner: TAnchorDesigner
       Width = 50
     end
     object BottomBorderSpaceSpinEdit: TSpinEdit
+      BorderSpacing.OnChange = nil
       Decimal_Places = 0
       MaxValue = 100
       OnChange = BorderSpaceSpinEditChange
@@ -75,6 +80,7 @@ object AnchorDesigner: TAnchorDesigner
       Width = 50
     end
     object AroundBorderSpaceSpinEdit: TSpinEdit
+      BorderSpacing.OnChange = nil
       Decimal_Places = 0
       MaxValue = 100
       OnChange = BorderSpaceSpinEditChange
@@ -90,6 +96,7 @@ object AnchorDesigner: TAnchorDesigner
   end
   object TopGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akRight]
+    BorderSpacing.OnChange = nil
     Caption = 'TopGroupBox'
     ClientHeight = 33
     ClientWidth = 404
@@ -100,6 +107,7 @@ object AnchorDesigner: TAnchorDesigner
     Width = 408
     object TopRefTopSpeedButton: TSpeedButton
       Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
       GroupIndex = 1
       NumGlyphs = 0
       OnClick = ReferenceSideButtonClicked
@@ -111,6 +119,7 @@ object AnchorDesigner: TAnchorDesigner
     end
     object TopRefBottomSpeedButton: TSpeedButton
       Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
       GroupIndex = 1
       NumGlyphs = 0
       OnClick = ReferenceSideButtonClicked
@@ -122,6 +131,7 @@ object AnchorDesigner: TAnchorDesigner
     end
     object TopRefCenterSpeedButton: TSpeedButton
       Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
       GroupIndex = 1
       NumGlyphs = 0
       OnClick = ReferenceSideButtonClicked
@@ -133,6 +143,7 @@ object AnchorDesigner: TAnchorDesigner
     end
     object TopSiblingLabel: TLabel
       AutoSize = True
+      BorderSpacing.OnChange = nil
       Caption = 'Sibling'
       ParentColor = True
       Left = 94
@@ -141,6 +152,7 @@ object AnchorDesigner: TAnchorDesigner
       Width = 38
     end
     object TopAnchoredCheckBox: TCheckBox
+      BorderSpacing.OnChange = nil
       Caption = 'Enabled'
       OnChange = AnchorEnabledCheckBoxChange
       TabOrder = 0
@@ -151,6 +163,7 @@ object AnchorDesigner: TAnchorDesigner
     end
     object TopSiblingComboBox: TComboBox
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       MaxLength = 0
       OnChange = SiblingComboBoxChange
       ParentShowHint = False
@@ -164,6 +177,7 @@ object AnchorDesigner: TAnchorDesigner
   end
   object BottomGroupBox: TGroupBox
     Anchors = [akLeft, akRight, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'BottomGroupBox'
     ClientHeight = 33
     ClientWidth = 404
@@ -175,6 +189,7 @@ object AnchorDesigner: TAnchorDesigner
     Width = 408
     object BottomRefTopSpeedButton: TSpeedButton
       Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
       GroupIndex = 3
       NumGlyphs = 0
       OnClick = ReferenceSideButtonClicked
@@ -186,6 +201,7 @@ object AnchorDesigner: TAnchorDesigner
     end
     object BottomRefBottomSpeedButton: TSpeedButton
       Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
       GroupIndex = 3
       NumGlyphs = 0
       OnClick = ReferenceSideButtonClicked
@@ -197,6 +213,7 @@ object AnchorDesigner: TAnchorDesigner
     end
     object BottomRefCenterSpeedButton: TSpeedButton
       Anchors = [akTop, akRight]
+      BorderSpacing.OnChange = nil
       GroupIndex = 3
       NumGlyphs = 0
       OnClick = ReferenceSideButtonClicked
@@ -208,6 +225,7 @@ object AnchorDesigner: TAnchorDesigner
     end
     object BottomSiblingLabel: TLabel
       AutoSize = True
+      BorderSpacing.OnChange = nil
       Caption = 'Sibling'
       ParentColor = True
       Left = 94
@@ -216,6 +234,7 @@ object AnchorDesigner: TAnchorDesigner
       Width = 38
     end
     object BottomAnchoredCheckBox: TCheckBox
+      BorderSpacing.OnChange = nil
       Caption = 'Enabled'
       OnChange = AnchorEnabledCheckBoxChange
       TabOrder = 0
@@ -226,6 +245,7 @@ object AnchorDesigner: TAnchorDesigner
     end
     object BottomSiblingComboBox: TComboBox
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       MaxLength = 0
       OnChange = SiblingComboBoxChange
       ParentShowHint = False
@@ -239,6 +259,7 @@ object AnchorDesigner: TAnchorDesigner
   end
   object RightGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'RightGroupBox'
     ClientHeight = 112
     ClientWidth = 146
@@ -249,6 +270,7 @@ object AnchorDesigner: TAnchorDesigner
     Top = 64
     Width = 150
     object RightRefLeftSpeedButton: TSpeedButton
+      BorderSpacing.OnChange = nil
       GroupIndex = 4
       NumGlyphs = 0
       OnClick = ReferenceSideButtonClicked
@@ -260,6 +282,7 @@ object AnchorDesigner: TAnchorDesigner
       Width = 30
     end
     object RightRefRightSpeedButton: TSpeedButton
+      BorderSpacing.OnChange = nil
       GroupIndex = 4
       NumGlyphs = 0
       OnClick = ReferenceSideButtonClicked
@@ -271,6 +294,7 @@ object AnchorDesigner: TAnchorDesigner
       Width = 30
     end
     object RightRefCenterSpeedButton: TSpeedButton
+      BorderSpacing.OnChange = nil
       GroupIndex = 4
       NumGlyphs = 0
       OnClick = ReferenceSideButtonClicked
@@ -283,6 +307,7 @@ object AnchorDesigner: TAnchorDesigner
     end
     object RightSiblingLabel: TLabel
       AutoSize = True
+      BorderSpacing.OnChange = nil
       Caption = 'Sibling'
       ParentColor = True
       Left = 2
@@ -291,6 +316,7 @@ object AnchorDesigner: TAnchorDesigner
       Width = 38
     end
     object RightAnchoredCheckBox: TCheckBox
+      BorderSpacing.OnChange = nil
       Caption = 'Enabled'
       OnChange = AnchorEnabledCheckBoxChange
       TabOrder = 0
@@ -301,6 +327,7 @@ object AnchorDesigner: TAnchorDesigner
     end
     object RightSiblingComboBox: TComboBox
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       MaxLength = 0
       OnChange = SiblingComboBoxChange
       ParentShowHint = False
@@ -314,6 +341,7 @@ object AnchorDesigner: TAnchorDesigner
   end
   object LeftGroupBox: TGroupBox
     Anchors = [akTop, akLeft, akBottom]
+    BorderSpacing.OnChange = nil
     Caption = 'LeftGroupBox'
     ClientHeight = 112
     ClientWidth = 146
@@ -324,6 +352,7 @@ object AnchorDesigner: TAnchorDesigner
     Top = 64
     Width = 150
     object LeftRefLeftSpeedButton: TSpeedButton
+      BorderSpacing.OnChange = nil
       GroupIndex = 2
       NumGlyphs = 0
       OnClick = ReferenceSideButtonClicked
@@ -335,6 +364,7 @@ object AnchorDesigner: TAnchorDesigner
       Width = 30
     end
     object LeftRefRightSpeedButton: TSpeedButton
+      BorderSpacing.OnChange = nil
       GroupIndex = 2
       NumGlyphs = 0
       OnClick = ReferenceSideButtonClicked
@@ -346,6 +376,7 @@ object AnchorDesigner: TAnchorDesigner
       Width = 30
     end
     object LeftRefCenterSpeedButton: TSpeedButton
+      BorderSpacing.OnChange = nil
       GroupIndex = 2
       NumGlyphs = 0
       OnClick = ReferenceSideButtonClicked
@@ -358,6 +389,7 @@ object AnchorDesigner: TAnchorDesigner
     end
     object LeftSiblingLabel: TLabel
       AutoSize = True
+      BorderSpacing.OnChange = nil
       Caption = 'Sibling'
       ParentColor = True
       Left = 2
@@ -366,6 +398,7 @@ object AnchorDesigner: TAnchorDesigner
       Width = 38
     end
     object LeftAnchoredCheckBox: TCheckBox
+      BorderSpacing.OnChange = nil
       Caption = 'Enabled'
       OnChange = AnchorEnabledCheckBoxChange
       TabOrder = 0
@@ -376,6 +409,7 @@ object AnchorDesigner: TAnchorDesigner
     end
     object LeftSiblingComboBox: TComboBox
       Anchors = [akTop, akLeft, akRight]
+      BorderSpacing.OnChange = nil
       MaxLength = 0
       OnChange = SiblingComboBoxChange
       ParentShowHint = False
