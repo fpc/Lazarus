@@ -105,8 +105,6 @@ end;
 {  TMessagesView.GetMessage                                                           }
 {------------------------------------------------------------------------------}
 Function  TMessagesView.GetMessage : String;
-var
-  I : Integer;
 Begin
   Result := '';
   if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then

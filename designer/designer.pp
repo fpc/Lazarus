@@ -498,7 +498,6 @@ var
   SenderOrigin:TPoint;
   SenderParentForm:TCustomForm;
   MouseX, MouseY :integer;
-  s: string;
 Begin
   if MouseDownComponent=nil then exit;
 
