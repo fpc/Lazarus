@@ -4600,7 +4600,8 @@ function TMainIDE.DoNewEditorFile(NewFileDescriptor: TProjectFileDescriptor;
                   BeautifyStatement(s,0);
   end;
 
-var NewUnitInfo:TUnitInfo;
+var
+  NewUnitInfo:TUnitInfo;
   NewSrcEdit: TSourceEditor;
   NewUnitName: string;
   NewBuffer: TCodeBuffer;
@@ -4725,26 +4726,22 @@ var
   NewIDEItem: TNewIDEItemTemplate;
 begin
   Result:=ShowNewIDEItemDialog(NewIDEItem);
-  try
-    if Result<>mrOk then exit;
-    if NewIDEItem is TNewItemProjectFile then begin
-      // file
-      Result:=DoNewEditorFile(TNewItemProjectFile(NewIDEItem).Descriptor,
-                                     '','',[nfOpenInEditor,nfCreateDefaultSrc]);
-    end else if NewIDEItem is TNewItemProject then begin
-      // project
-      //debugln('TMainIDE.DoNewOther ',dbgsName(TNewItemProject(NewIDEItem).Descriptor));
-      Result:=DoNewProject(TNewItemProject(NewIDEItem).Descriptor);
-    end else if NewIDEItem is TNewItemPackage then begin
-      // packages
-      PkgBoss.DoNewPackage;
-    end else begin
-      MessageDlg(ueNotImplCap,
-                 lisSorryThisTypeIsNotYetImplemented,
-        mtInformation,[mbOk],0);
-    end;
-  finally
-    NewIDEItem.Free;
+  if Result<>mrOk then exit;
+  if NewIDEItem is TNewItemProjectFile then begin
+    // file
+    Result:=DoNewEditorFile(TNewItemProjectFile(NewIDEItem).Descriptor,
+                                   '','',[nfOpenInEditor,nfCreateDefaultSrc]);
+  end else if NewIDEItem is TNewItemProject then begin
+    // project
+    //debugln('TMainIDE.DoNewOther ',dbgsName(TNewItemProject(NewIDEItem).Descriptor));
+    Result:=DoNewProject(TNewItemProject(NewIDEItem).Descriptor);
+  end else if NewIDEItem is TNewItemPackage then begin
+    // packages
+    PkgBoss.DoNewPackage;
+  end else begin
+    MessageDlg(ueNotImplCap,
+               lisSorryThisTypeIsNotYetImplemented,
+      mtInformation,[mbOk],0);
   end;
 end;
 
@@ -11376,6 +11373,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.829  2005/01/12 22:39:44  mattias
+  fixed creating new item from new dialog
+
   Revision 1.828  2005/01/12 21:03:48  vincents
   Removed some fpc 1.9.4 workarounds
 
