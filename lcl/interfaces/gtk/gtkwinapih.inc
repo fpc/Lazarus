@@ -51,7 +51,7 @@ function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; overr
 function CreateCompatibleDC(DC: HDC): HDC; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
-function CreatePalette(const LogPalette: TLogPalette): HPALETTE;
+function CreatePalette(const LogPalette: TLogPalette): HPALETTE; override;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP; override;
 Function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; Override;
@@ -106,7 +106,7 @@ function GetTextColor(DC: HDC) : TColorRef; Override;
 function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize): Boolean; override;
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 Function GetWindowLong(Handle : hwnd; int: Integer): Longint; override;
-Function GetWindowOrgEx(dc : hdc; var P: TPoint): Integer;  override;
+Function GetWindowOrgEx(dc : hdc; P: PPoint): Integer;  override;
 Function GetWindowRect(Handle : hwnd; var ARect: TRect): Integer; override;
 Function GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean; override;
 function GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
@@ -190,6 +190,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2002/12/27 17:12:38  mattias
+  added more Delphi win32 compatibility functions
+
   Revision 1.57  2002/12/26 11:00:15  mattias
   added included by to unitinfo and a few win32 functions
 
