@@ -2567,8 +2567,8 @@ begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list),
                             'focus-out-event', @gtkKillFocusCB);
       end else begin
-        ConnectSenderSignal(gObject, 'focus-in-event', @gtkFocusCB);
-        ConnectSenderSignal(gObject, 'focus-out-event', @gtkKillFocusCB);
+        ConnectSenderSignal(gCore, 'focus-in-event', @gtkFocusCB);
+        ConnectSenderSignal(gCore, 'focus-out-event', @gtkKillFocusCB);
       end;
     end;
     
@@ -2942,13 +2942,24 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGTKObject.RemoveCallbacks(Sender : TObject);
 var
-  gObject : gtk_Object;
+  MainWidget, ClientWidget, ImplWidget: PGtkWidget;
+  WinWidgetInfo: PWinWidgetInfo;
 begin
-  gObject := ObjectToGTKObject(Sender);
-  if gObject = nil then Exit;
+  MainWidget := PGtkWidget(ObjectToGTKObject(Sender));
+  if MainWidget = nil then Exit;
+  if (Sender is TMenuItem) then exit;
 
-  if not (Sender is TMenuItem) then
-    gtk_signal_handlers_destroy(gObject);
+  ClientWidget:=GetFixedWidget(MainWidget);
+  WinWidgetInfo:=GetWidgetInfo(MainWidget,false);
+  if WinWidgetInfo<>nil then
+    ImplWidget:=WinWidgetInfo^.ImplementationWidget;
+
+  gtk_signal_handlers_destroy(PGtkObject(MainWidget));
+  if (ClientWidget<>nil) and (ClientWidget<>MainWidget) then
+    gtk_signal_handlers_destroy(PGtkObject(ClientWidget));
+  if (ImplWidget<>nil)
+  and (ImplWidget<>ClientWidget) and (ImplWidget<>MainWidget) then
+    gtk_signal_handlers_destroy(PGtkObject(ImplWidget));
 end;
 
 {-------------------------------------------------------------------------------
@@ -2964,12 +2975,24 @@ var
   MsgPtr: PMsg;
   Widget: PGtkWidget;
   FixWidget: PGtkWidget;
+  GtkWindow: PGtkWidget;
   Accelerators: PGSlist;
   AccelEntry : PGtkAccelEntry;
 begin
   Handle := hwnd(ObjectToGtkObject(Sender));
   if Handle=0 then exit;
   Widget:=PGtkWidget(Handle);
+  
+  FixWidget:=GetFixedWidget(Widget);
+  SetWidgetIsDestroyingHandle(Widget);
+
+  // if one of its widgets has the focus then unfocus
+  GtkWindow:=gtk_widget_get_toplevel(Widget);
+  if GtkWidgetIsA(GtkWindow,gtk_window_type)
+  and (GetParentLCLObject(PGtkWindow(GtkWindow)^.Focus_Widget)=Sender)
+  then begin
+    gtk_window_set_focus(PGtkWindow(GtkWindow),nil);
+  end;
 
   // Remove control accelerators - has to be done due to GTK+ bug?
   if Sender is TWinControl then begin
@@ -2977,7 +3000,7 @@ begin
     while Accelerators <> nil do begin
       AccelEntry:= Accelerators^.data;
       Accelerators:= Accelerators^.next;
-      with AccelEntry^ do 
+      with AccelEntry^ do
         gtk_accel_group_remove(accel_group, accelerator_key, accelerator_mods,
                                PGtkObject(Handle));
     end;
@@ -2986,13 +3009,11 @@ begin
 
   RemoveCallbacks(Sender);
 
-  FixWidget:=GetFixedWidget(Widget);
-  SetWidgetIsDestroyingHandle(Widget);
-
   // remove pending size messages
   FWidgetsWithResizeRequest.Remove(Widget);
   FWidgetsResized.Remove(Widget);
-  FFixWidgetsResized.Remove(FixWidget);
+  if FixWidget<>Widget then
+    FFixWidgetsResized.Remove(FixWidget);
 
   //writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
   // update mouse capturing
@@ -3708,7 +3729,8 @@ begin
   SetComboBoxText(Widget, PChar(ComboBox.Text));
 end;
 
-Procedure TgtkObject.FinishComponentCreate(Sender : TObject; Handle : Pointer; SetupProps : Boolean);
+Procedure TgtkObject.FinishComponentCreate(Sender : TObject;
+  Handle : Pointer; SetupProps : Boolean);
 begin
   // MWE: next will be obsoleted by WinWidgetInfo
   //Set these for functions like GetWindowLong  Added 01/07/2000
@@ -3782,6 +3804,41 @@ begin
   if Result = '' then Result := 'Blank';
 end;
 
+function TgtkObject.CreateAPIWidget(
+  AWinControl: TWinControl): PGtkWidget;
+var
+  Adjustment: PGTKAdjustment;    // currently only used for csFixed
+  WinWidgetInfo: PWinWidgetInfo;
+begin
+  Result := GTKAPIWidget_New;
+  WinWidgetInfo:=GetWidgetInfo(Result,true);
+  WinWidgetInfo^.ImplementationWidget:=PGTKAPIWidget(Result)^.Client;
+  SetLCLObject(WinWidgetInfo^.ImplementationWidget,AWinControl);
+
+  gtk_scrolled_window_set_policy(PGTKScrolledWindow(Result),
+    GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+
+  Adjustment :=
+    gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(Result));
+  if Adjustment <> nil
+  then with Adjustment^ do
+  begin
+    gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar',
+                        PGTKScrolledWindow(Result)^.VScrollBar);
+    Step_Increment := 1;
+  end;
+  
+  Adjustment :=
+    gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(Result));
+  if Adjustment <> nil
+  then with Adjustment^ do
+  begin
+    gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar',
+                        PGTKScrolledWindow(Result)^.HScrollBar);
+    Step_Increment := 1;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: TGTKObject.CreateComponent
   Params:   sender - object for which to create visual representation
@@ -3802,16 +3859,10 @@ var
   p          : pointer;          // ptr to the newly created GtkWidget
   CompStyle,                     // componentstyle (type) of GtkWidget which will be created
   TempInt   : Integer;           // local use when neccessary
-  Adjustment: PGTKAdjustment;    // currently only used for csFixed
   // - for csBitBtn
   Box       : Pointer;           // currently only used for TBitBtn and TForm and TListView
-  //pixmap    : pGdkPixMap;        // TBitBtn - the default pixmap
   pixmapwid : pGtkWidget;        // currently only used for TBitBtn
-  //mask      : pGDKBitmap;        // currently only used for TBitBtn
-  //style     : pgtkStyle;         // currently only used for TBitBtn
   label1    : pgtkwidget;        // currently only used for TBitBtn
-  //TempStr   : String;            // currently only used for TBitBtn to load default pixmap
-  //pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
   ParentForm: TCustomForm;
   AccelText : PChar;
   AccelKey  : guint;
@@ -3937,29 +3988,9 @@ begin
   csFontDialog :
     InitializeFontDialog(TFontDialog(Sender),p,StrTemp);
 
-  csFixed: //used for TWinControl, maybe change this to csWinControl
-    begin
-      p := GTKAPIWidget_New;
-      gtk_scrolled_window_set_policy(PGTKScrolledWindow(p),
-        GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-
-      Adjustment := gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(p));
-      if Adjustment <> nil
-      then with Adjustment^ do
-      begin
-        gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar',
-                            PGTKScrolledWindow(p)^.VScrollBar);
-        Step_Increment := 1;
-      end;
-      Adjustment := gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(p));
-      if Adjustment <> nil
-      then with Adjustment^ do
-      begin
-        gtk_object_set_data(PGTKObject(Adjustment), 'ScrollBar',
-                            PGTKScrolledWindow(p)^.HScrollBar);
-        Step_Increment := 1;
-      end;
-    end;
+  csFixed: // used for TWinControl (and TCustomControl),
+           // maybe change this to csWinControl
+    p:=CreateAPIWidget(TWinControl(Sender));
 
   csForm :
     begin
@@ -6481,6 +6512,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.269  2002/10/28 18:17:03  lazarus
+  MG: impoved focussing, unfocussing on destroy and fixed unit search
+
   Revision 1.268  2002/10/26 15:15:51  lazarus
   MG: broke LCL<->interface circles
 
