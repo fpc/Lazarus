@@ -622,13 +622,13 @@ Begin
     CreateColorMap;
     DoDrawBitmap;
     DestroyColorMap;
+    ReleaseDC(GetDesktopWindow, hdcScreen);
+    DeleteDC(hdcBitmap);
+    Result:=hbmBitmap;
   end;
   PixmapInfo.Free;
   PixmapInfo  := Nil;
   PixmapArray := Nil;
-  ReleaseDC(GetDesktopWindow, hdcScreen);
-  DeleteDC(hdcBitmap);
-  result:=hbmBitmap;
 
   Assert(False, 'Trace:TWin32Object.CreatePixmapIndirect - Exit');
 End;
@@ -2275,6 +2275,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/11/26 17:48:18  mattias
+  patch from Martin Smat for uninitialised DCs
+
   Revision 1.22  2002/11/23 13:48:49  mattias
   added Timer patch from Vincent Snijders
 
