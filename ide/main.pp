@@ -59,6 +59,8 @@ uses
   // projects
   Project, ProjectDefs, NewProjectDlg, ProjectOpts, PublishProjectDlg,
   ProjectInspector,
+  // help manager
+  HelpManager,
   // designer
   ComponentPalette, ComponentReg,
   Designer, FormEditor, CustomFormEditor,
@@ -10440,6 +10442,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.733  2004/07/02 16:12:29  mattias
+  started HelpIntf - the IDE interface for the help system
+
   Revision 1.732  2004/07/01 10:08:31  mattias
   made key handling more flexible
 
