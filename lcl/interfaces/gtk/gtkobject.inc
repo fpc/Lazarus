@@ -4460,105 +4460,108 @@ var
    Date : TDateTime;
    Year,Month,Day : String;
    gtkcalendardisplayoptions : TGtkCalendarDisplayOptions;
-   NUm : Integer;
+   Num : Integer;
    
    ArrowType : TGTKArrowType;
    ShadowType : TGTKShadowType;
 begin
-   result := 0;     // default if nobody sets it
+  result := 0;     // default if nobody sets it
 
-   if Sender is TWinControl 
-     then Assert(False, Format('Trace:  [TgtkObject.SetValue] %s', [Sender.ClassName]))
-     else Assert(False, Format('Trace:WARNING: [TgtkObject.SetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
+  if Sender is TWinControl
+  then Assert(False, Format('Trace:  [TgtkObject.SetValue] %s', [Sender.ClassName]))
+  else Assert(False, Format('Trace:WARNING: [TgtkObject.SetValue] %s --> No Decendant of TWinControl', [Sender.ClassName]));
 
-   Handle    := Pointer(TWinControl(Sender).Handle);
+  Handle    := Pointer(TWinControl(Sender).Handle);
 //   Assert (Handle = nil, 'WARNING: [TgtkObject.SetValue] --> got nil pointer (no gtkobject)');
    
-   case TControl(Sender).fCompStyle of
-      csProgressBar: gtk_progress_set_value (GTK_PROGRESS (handle), integer (data^));
-   
-      csTrackbar   :
-        begin
-          if Handle = nil then Exit;
-          gtk_range_get_adjustment (GTK_RANGE (handle))^.value := integer (data^);
-          gtk_signal_emit_by_name (PGtkObject
-             (gtk_range_get_adjustment (
-                 GTK_RANGE (handle))), 'value_changed');
-        end;
+  case TControl(Sender).fCompStyle of
+  csProgressBar: gtk_progress_set_value (GTK_PROGRESS (handle), integer (data^));
 
-      csRadiobutton,
-      csCheckbox   :
-        if TCheckBoxState (data^) = cbChecked
-        then gtk_toggle_button_set_active( PGtkToggleButton (handle), TRUE)
-        else gtk_toggle_button_set_active( PGtkToggleButton (handle), FALSE);
-                        
-      csCalendar   :
-        Begin
-           Date := TLMCalendar(data^).Date;
-           Year := FormatDateTime('yyyy',Date);
-           Month := FormatDateTime('mm',Date);
-           Day := FormatDateTime('dd',Date);
-           gtk_calendar_select_month(PgtkCalendar(handle),StrtoInt(Month)-1,StrToInt(Year));
-           gtk_calendar_select_day(PgtkCalendar(handle),StrToInt(Day));
-           
-           //set display options
-           Num := 0;
-           if (dsShowHeadings in TLMCalendar(data^).DisplaySettings) then
-              num := Num + (1 shl 0);
+  csTrackbar   :
+    begin
+      if Handle = nil then Exit;
+      gtk_range_get_adjustment (GTK_RANGE (handle))^.value := integer (data^);
+      gtk_signal_emit_by_name (PGtkObject
+         (gtk_range_get_adjustment (
+             GTK_RANGE (handle))), 'value_changed');
+    end;
+
+  csRadiobutton,
+  csCheckbox   :
+    begin
+      if TCheckBoxState (data^) = cbChecked then
+        gtk_toggle_button_set_active( PGtkToggleButton (handle), TRUE)
+      else
+        gtk_toggle_button_set_active( PGtkToggleButton (handle), FALSE);
+    end;
                     
-           if (dsShowDayNames in TLMCalendar(data^).DisplaySettings) then
-              num := Num  + (1 shl 1);
+  csCalendar   :
+    Begin
+       Date := TLMCalendar(data^).Date;
+       Year := FormatDateTime('yyyy',Date);
+       Month := FormatDateTime('mm',Date);
+       Day := FormatDateTime('dd',Date);
+       gtk_calendar_select_month(PgtkCalendar(handle),StrtoInt(Month)-1,StrToInt(Year));
+       gtk_calendar_select_day(PgtkCalendar(handle),StrToInt(Day));
+       
+       //set display options
+       Num := 0;
+       if (dsShowHeadings in TLMCalendar(data^).DisplaySettings) then
+          num := Num + (1 shl 0);
+                
+       if (dsShowDayNames in TLMCalendar(data^).DisplaySettings) then
+          num := Num  + (1 shl 1);
 
-           if (dsNoMonthChange in TLMCalendar(data^).DisplaySettings) then
-              num := Num  + (1 shl 2);
+       if (dsNoMonthChange in TLMCalendar(data^).DisplaySettings) then
+          num := Num  + (1 shl 2);
+          
+       if (dsShowWeekNumbers in TLMCalendar(data^).DisplaySettings) then
+           num := Num  + (1 shl 3);
+
+       if (dsStartMonday in TLMCalendar(data^).DisplaySettings) then
+           num := Num  + (1 shl 4);
+
+       gtkCalendarDisplayOptions := TgtkCalendarDisplayOPtions(num);
+       
+       gtk_Calendar_Display_options(PgtkCalendar(handle),gtkCalendarDisplayOptions);
+       
+       //readonly
+       if TLMCalendar(data^).ReadOnly then
+          gtk_calendar_freeze(PgtkCalendar(handle))
+          else
+          gtk_calendar_thaw(PgtkCalendar(handle));
+
+     end;
+     
+  csArrow :
+    Begin
+      if TLmArrow(data^).ArrowType = atUp then
+        ArrowType := GTK_ARROW_UP
+      else
+      if TLMArrow(data^).ArrowType = atLeft then
+        ArrowType := GTK_ARROW_LEFT
+      else
+      if TLMArrow(data^).ArrowType = atRight then
+        ArrowType := GTK_ARROW_RIGHT
+      else
+        ArrowType := GTK_ARROW_DOWN;
+
+      case TLMArrow(data^).ShadowType of
+        stNONE : ShadowType := GTK_SHADOW_NONE;
+        stIN : ShadowType := GTK_SHADOW_IN;
+        stOut : ShadowType := GTK_SHADOW_OUT;
+        stEtchedIn : ShadowType := GTK_SHADOW_ETCHED_IN;
+        stEtchedOut : ShadowType := GTK_SHADOW_ETCHED_OUT;
+      else
+        ShadowType := GTK_SHADOW_NONE;
+      end;
               
-           if (dsShowWeekNumbers in TLMCalendar(data^).DisplaySettings) then
-               num := Num  + (1 shl 3);
-
-           if (dsStartMonday in TLMCalendar(data^).DisplaySettings) then
-               num := Num  + (1 shl 4);
-
-           gtkCalendarDisplayOptions := TgtkCalendarDisplayOPtions(num);
-           
-           gtk_Calendar_Display_options(PgtkCalendar(handle),gtkCalendarDisplayOptions);
-           
-           //readonly
-           if TLMCalendar(data^).ReadOnly then
-              gtk_calendar_freeze(PgtkCalendar(handle))
-              else
-              gtk_calendar_thaw(PgtkCalendar(handle));
-
-         end;
-         
-     csArrow : Begin
-               if TLmArrow(data^).ArrowType = atUp then
-                      ArrowType := GTK_ARROW_UP
-                      else
-               if TLMArrow(data^).ArrowType = atLeft then
-                      ArrowType := GTK_ARROW_LEFT
-                      else
-               if TLMArrow(data^).ArrowType = atRight then
-                      ArrowType := GTK_ARROW_RIGHT
-                      else
-                      ArrowType := GTK_ARROW_DOWN;
-
-               case TLMArrow(data^).ShadowType of
-                      stNONE : ShadowType := GTK_SHADOW_NONE;
-                      stIN : ShadowType := GTK_SHADOW_IN;
-                      stOut : ShadowType := GTK_SHADOW_OUT;
-                      stEtchedIn : ShadowType := GTK_SHADOW_ETCHED_IN;
-                      stEtchedOut : ShadowType := GTK_SHADOW_ETCHED_OUT;
-                      else
-                      ShadowType := GTK_SHADOW_NONE;
-                      end;
-                      
-                      gtk_arrow_set(PgtkArrow(handle),ArrowType,ShadowType);
-
-               end
-                     
-   else
-      Assert (true, Format ('WARNING:[TgtkObject.SetValue] failed for %s', [Sender.ClassName]));
-   end;
+      gtk_arrow_set(PgtkArrow(handle),ArrowType,ShadowType);
+    end;
+                 
+  else
+    Assert (true, Format ('WARNING:[TgtkObject.SetValue] failed for %s', [Sender.ClassName]));
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -5397,6 +5400,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.181  2002/08/27 14:33:37  lazarus
+  MG: fixed designer component deletion
+
   Revision 1.180  2002/08/27 06:40:50  lazarus
   MG: ShortCut support for buttons from Andrew
 
