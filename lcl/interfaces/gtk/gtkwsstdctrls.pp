@@ -33,7 +33,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
-  WSStdCtrls, WSLCLClasses, GtkInt, LCLType, GtkDef, LCLProc,
+  WSStdCtrls, WSLCLClasses, WSProc, GtkInt, LCLType, GtkDef, LCLProc,
   GTKWinApiWindow, gtkglobals, gtkproc, InterfaceBase;
 
 
@@ -222,10 +222,9 @@ type
   public
     class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox
                                   ): TCheckBoxState; override;
-    class procedure SetState(const ACustomCheckBox: TCustomCheckBox;
-                             const NewState: TCheckBoxState); override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
       const OldShortCut, NewShortCut: TShortCut); override;
+    class procedure SetState(const ACB: TCustomCheckBox; const ANewState: TCheckBoxState); override;
     class procedure GetPreferredSize(const AWinControl: TWinControl;
                         var PreferredWidth, PreferredHeight: integer); override;
   end;
@@ -811,18 +810,20 @@ begin
     'activate_item');
 end;
 
-procedure TGtkWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox;
-  const NewState: TCheckBoxState);
+procedure TGtkWSCustomCheckBox.SetState(const ACB: TCustomCheckBox; const ANewState: TCheckBoxState);
 var
   GtkObject: PGtkObject;
 begin
-  GtkObject := PGtkObject(ACustomCheckBox.Handle);
+  if not WSCheckHandleAllocated(ACB, 'SetState')
+  then Exit;
+
+  GtkObject := PGtkObject(ACB.Handle);
   LockOnChange(GtkObject,1);
-  if NewState=cbGrayed then
+  if ANewState=cbGrayed then
     gtk_object_set_data(GtkObject, 'Grayed', GtkObject)
   else
     gtk_object_set_data(GtkObject, 'Grayed', nil);
-  gtk_toggle_button_set_active(PGtkToggleButton(GtkObject), NewState = cbChecked);
+  gtk_toggle_button_set_active(PGtkToggleButton(GtkObject), ANewState = cbChecked);
   LockOnChange(GtkObject,-1);
 end;
 

@@ -2792,7 +2792,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-       TControl.SetZOrderPosition
+  function TControl.HandleObjectShouldBeVisible
 ------------------------------------------------------------------------------}
 function TControl.HandleObjectShouldBeVisible: boolean;
 begin
@@ -3467,6 +3467,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.246  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.245  2005/02/05 16:09:52  marc
   * first 64bit changes
 

@@ -342,7 +342,7 @@ type
     property Font;
     property ItemHeight;
     property Items;
-    property ItemIndex;
+    property ItemIndex default -1; // keep after Items
     property ItemWidth;
     property MaxLength;
     property OnChange;
@@ -365,6 +365,7 @@ type
     property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
+    property PopupMenu;
     property ShowHint;
     property Sorted;
     property Style;
@@ -1225,6 +1226,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.196  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.195  2005/02/21 20:15:27  mattias
   fixed componentpalette adding via double click
 

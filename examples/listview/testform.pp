@@ -9,6 +9,9 @@ uses
   Buttons, StdCtrls, ExtCtrls;
 
 type
+
+  { TForm1 }
+
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
@@ -18,9 +21,16 @@ type
     Button6: TButton;
     CheckBox1: TCheckBox;
     CheckBox2: TCheckBox;
+    CheckBox3: TCheckBox;
+    CheckBox4: TCheckBox;
+    CheckBox5: TCheckBox;
     ComboBox1: TComboBox;
+    ComboBox2: TComboBox;
+    ComboBox3: TComboBox;
+    ComboBox4: TComboBox;
     Edit1: TEdit;
     Edit10: TEdit;
+    Edit11: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
     Edit4: TEdit;
@@ -32,6 +42,10 @@ type
     ImageList1: TImageList;
     Label1: TLabel;
     Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
+    Label13: TLabel;
+    Label14: TLabel;
     Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
@@ -44,6 +58,7 @@ type
     Notebook1: TNotebook;
     Page1: TPage;
     Page2: TPage;
+    Page3: TPage;
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure Button3Click(Sender: TObject);
@@ -52,8 +67,16 @@ type
     procedure Button6Click(Sender: TObject);
     procedure CheckBox1Click (Sender: TObject );
     procedure CheckBox2Click (Sender: TObject );
+    procedure CheckBox3Change(Sender: TObject);
+    procedure CheckBox3Click(Sender: TObject);
+    procedure CheckBox4Click(Sender: TObject);
+    procedure CheckBox5Click(Sender: TObject);
     procedure ComboBox1Change (Sender: TObject );
+    procedure ComboBox2Change(Sender: TObject);
+    procedure ComboBox3Change(Sender: TObject);
+    procedure ComboBox4Change(Sender: TObject);
     procedure Edit10Change (Sender: TObject );
+    procedure Edit11Change(Sender: TObject);
     procedure Edit1Change (Sender: TObject );
     procedure Edit2Change (Sender: TObject );
     procedure Edit3Change(Sender: TObject);
@@ -70,6 +93,7 @@ type
   private
     procedure ShowItemData;
     procedure ShowColumnData;
+  protected
   public
     { public declarations }
   end; 
@@ -146,12 +170,46 @@ begin
   Column.Autosize := CheckBox2.Checked;
 end;
 
+procedure TForm1.CheckBox3Change(Sender: TObject);
+begin
+end;
+
+procedure TForm1.CheckBox3Click(Sender: TObject);
+begin
+  Listview1.Multiselect := CheckBox3.Checked;
+end;
+
+procedure TForm1.CheckBox4Click(Sender: TObject);
+begin
+  ListView1.RowSelect := CheckBox4.Checked;
+end;
+
+procedure TForm1.CheckBox5Click(Sender: TObject);
+begin
+  ListView1.ShowColumnHeaders := CheckBox5.Checked;
+end;
+
 procedure TForm1.ComboBox1Change (Sender: TObject );
 var
   Column: TListColumn;
 begin
   Column := ListView1.Columns[StrToIntDef(Edit2.Text, 0)];
   Column.Alignment := TAlignment(ComboBox1.ItemIndex);
+end;
+
+procedure TForm1.ComboBox2Change(Sender: TObject);
+begin
+  ListView1.Scrollbars := TScrollStyle(ComboBox2.ItemIndex);
+end;
+
+procedure TForm1.ComboBox3Change(Sender: TObject);
+begin
+  ListView1.SortType := TSortType(ComboBox3.ItemIndex);
+end;
+
+procedure TForm1.ComboBox4Change(Sender: TObject);
+begin
+  ListView1.ViewStyle := TViewStyle(ComboBox4.ItemIndex);
 end;
 
 procedure TForm1.Edit10Change(Sender: TObject);
@@ -172,6 +230,11 @@ begin
   then Item.ImageIndex := idx
   else Item.SubitemImages[n - 1] := idx;
 
+end;
+
+procedure TForm1.Edit11Change(Sender: TObject);
+begin
+  ListView1.SortColumn := StrToIntDef(Edit11.Text, 0);
 end;
 
 procedure TForm1.Edit1Change(Sender: TObject);
@@ -254,6 +317,7 @@ end;
 procedure TForm1.ListView1ColumnClick(Sender: TObject; Column: TListColumn);
 begin
   Edit2.Text := IntToStr(Column.Index);
+  Edit5.Text := IntToStr(Column.Index);
 end;
 
 procedure TForm1.ListView1SelectItem(Sender: TObject; Item: TListItem; Selected: Boolean);

@@ -300,7 +300,8 @@ begin
   if (FItemHeight <> Value) and (Value > 0) then begin
     FItemHeight := Value;
     if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    RecreateWnd;
+    // TODO: remove RecreateWnd
+    RecreateWnd(Self);
   end;
 end;
 

@@ -17,12 +17,12 @@ object EvaluateDlg: TEvaluateDlg
     Caption = 'ToolBar1'
     EdgeBorders = [ebTop, ebBottom]
     Flat = True
-    Height = 50
+    Height = 52
     ParentColor = True
     ShowCaptions = True
     TabOrder = 0
     TabStop = True
-    Height = 50
+    Height = 52
     Width = 400
     object tbInspect: TToolButton
       Caption = '&Inspect'

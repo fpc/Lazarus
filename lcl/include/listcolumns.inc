@@ -20,7 +20,7 @@
 {   TListColumns                                                               }
 {------------------------------------------------------------------------------}
 function TListColumns.Add: TListColumn;
-Begin
+begin
   Result := TListColumn(inherited Add);
   if (Owner<>nil)
   and ([csDesigning,csLoading,csReading]*Owner.ComponentState=[csDesigning])
@@ -86,30 +86,17 @@ begin
   Result := TListColumn(inherited GetItem(AIndex));
 end;
 
+procedure TListColumns.IntfCreateColumns;
+var
+  n: Integer;
+begin
+  for n :=0 to Count - 1 do
+    GetItem(n).IntfCreateColumn;
+end;
+
 procedure TListColumns.SetItem(const AIndex: Integer; const AValue: TListColumn);
 begin
   inherited SetItem(AIndex, AValue);
-end;
-
-procedure TListColumns.Update(AnItem: TCollectionItem);
-begin
-(*
-  if FUpdateCount>0 then begin
-    FNeedsUpdate:=true;
-    if FItemNeedsUpdate=nil then
-      FItemNeedsUpdate:=AnItem
-    else
-      FItemNeedsUpdate:=nil;
-    exit;
-  end;
-  FNeedsUpdate:=false;
-  FItemNeedsUpdate:=nil;
-
-  //TODO: Optimize implementation by invoking individual updates instead of
-  //      always recreating window
-  if FOwner <>nil then
-    FOwner.ColumnsChanged;
-*)
 end;
 
 // included by comctrls.pp
@@ -117,6 +104,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.9  2004/07/11 17:20:47  marc
   * Implemented most of TListColoum/Item in the Ws for gtk and win32
 

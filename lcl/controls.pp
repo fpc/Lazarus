@@ -1398,7 +1398,8 @@ type
     wcfAligningControls,
     wcfEraseBackground,
     wcfAutoSizeNeeded,
-    wcfCreatingHandle, // Set while constructing the handle of this control
+    wcfCreatingHandle,      // Set while constructing the handle of this control
+    wcfInitializing,        // Set while initializing during handle creation
     wcfCreatingChildHandles // Set while constructing the handles of the childs
     );
   TWinControlFlags = set of TWinControlFlag;
@@ -1443,7 +1444,6 @@ type
     FRealizeBoundsLockCount: integer;
     FHandle: Hwnd;
     FShowing: Boolean;
-    FShowingValid: Boolean;
     FTabOrder: integer;
     FTabStop: Boolean;
     FTabList: TList;
@@ -1699,7 +1699,6 @@ type
     Procedure Insert(AControl: TControl);
     Procedure Insert(AControl: TControl; Index: integer);
     Procedure Remove(AControl: TControl);
-    procedure ReCreateWnd;
     procedure Hide;
     procedure Repaint; override;
     Procedure SetFocus; virtual;
@@ -2005,7 +2004,12 @@ Function FindOwnerControl(Handle: hwnd): TWinControl;
 function FindLCLControl(const ScreenPos: TPoint): TControl;
 
 function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
-Procedure MoveWindowOrg(dc: hdc; X,Y: Integer);
+procedure MoveWindowOrg(dc: hdc; X,Y: Integer);
+
+// Interface support.
+
+procedure RecreateWnd(const AWinControl:TWinControl);
+
 
 // drag and drop
 
@@ -2118,6 +2122,34 @@ procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
 begin
   AdjustBorderSpace(RemainingClientRect,CurBorderSpace,Space.Left,Space.Top,
                     Space.Right,Space.Bottom);
+end;
+
+{------------------------------------------------------------------------------}
+{ RecreateWnd                                                                  }
+{ This function was originally member of TWincontrol. From a VCL point of view }
+{ that made perfectly sense since the VCL knows when a win32 widget has to be  }
+{ recreated when properties have changed.                                      }
+{ The LCL however doesn't know, the widgetset does. To avoid old VCL behaviour }
+{ and to provide a central function to the widgetset, it is moved here.        }
+{ MWE.                                                                         }
+{------------------------------------------------------------------------------}
+procedure RecreateWnd(const AWinControl:TWinControl);
+var
+  IsFocused: Boolean;
+begin
+  if csDestroying in AWinControl.ComponentState then Exit;
+
+  if not AWinControl.HandleAllocated
+  then begin
+    // since the interface should only call us, the handle is always created
+    DebugLN('WARNING: obsolete call to RecreateWnd for %s', [AWinControl.ClassName]);
+  end;
+
+  IsFocused := AWinControl.Focused;
+  AWinControl.DestroyHandle;
+  AWinControl.UpdateControlState;
+  if IsFocused and AWinControl.HandleAllocated
+  then SetFocus(AWinControl.FHandle);
 end;
 
 procedure Register;
@@ -2950,6 +2982,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.285  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.284  2005/02/21 20:15:27  mattias
   fixed componentpalette adding via double click
 

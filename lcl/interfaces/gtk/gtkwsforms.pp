@@ -36,6 +36,7 @@ type
 
   { TGtkWSScrollingWinControl }
 
+  // see also GtkWSControls.TGtkWSBaseScrollingWinControl
   TGtkWSScrollingWinControl = class(TWSScrollingWinControl)
   private
   protected

@@ -124,7 +124,8 @@ begin
     FOrientation := Value;
     if HandleAllocated then
     begin
-      RecreateWnd;
+      // TODO: Remove RecreateWnd
+      RecreateWnd(Self);
     end;
   end;
 end;
@@ -331,6 +332,9 @@ end;
 { -------------------- unimplemented stuff below ------------------------------}
 {
   $Log$
+  Revision 1.17  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.16  2004/09/24 07:52:35  micha
   convert LM_SETPROPERTIES message to interface method for TCustomTrackBar
   remove message LM_SETPROPERTIES, conversion done

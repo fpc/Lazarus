@@ -1108,28 +1108,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{  TWinControl ReCreateWnd                                                     }
-{------------------------------------------------------------------------------}
-procedure TWinControl.ReCreateWnd;
-var
-  IsFocused: Boolean;
-begin
-  if csDestroying in ComponentState then Exit;
-
-  if not HandleAllocated
-  then begin
-    // since the interface should only call us, the handle is always created
-    DebugLN('WARNING: obsolete call to RecreateWnd for %s', [ClassName]);
-  end;
-
-  IsFocused := Focused;
-  DestroyHandle;
-  UpdateControlState;
-  if IsFocused and HandleAllocated
-  then LCLIntf.SetFocus(FHandle);
-end;
-
-{------------------------------------------------------------------------------}
 {  TWinControl SetBorderStyle                                                  }
 {------------------------------------------------------------------------------}
 procedure TWinControl.SetBorderStyle(NewStyle: TBorderStyle);
@@ -1275,7 +1253,8 @@ var
 begin
   bShow := HandleObjectShouldBeVisible;
 
-  if bShow then begin
+  if bShow
+  then begin
     if not HandleAllocated then CreateHandle;
     if FWinControls <> nil
     then begin
@@ -1284,20 +1263,19 @@ begin
     end;
   end;
 
-  if HandleAllocated then begin
-    //DebugLn('TWinControl.UpdateShowing A ',Name,':',ClassName,' FShowing=',FShowing,' bShow=',bShow);
-    if (not FShowingValid) or (FShowing <> bShow) then begin
-      FShowing := bShow;
-      FShowingValid := true;
-      ok:=false;
-      try
-        Perform(CM_SHOWINGCHANGED, 0, 0);
-        ok:=true;
-      finally
-        if not ok then
-          FShowing := not bShow;
-      end;
-    end;
+  if not HandleAllocated then Exit;
+
+  //DebugLn('TWinControl.UpdateShowing A ',Name,':',ClassName,' FShowing=',FShowing,' bShow=',bShow);
+  if FShowing = bShow then Exit;
+  
+  FShowing := bShow;
+  ok := false;
+  try
+    Perform(CM_SHOWINGCHANGED, 0, 0);
+    ok := true;
+  finally
+    if not ok then
+      FShowing := not bShow;
   end;
 end;
 
@@ -3746,39 +3724,55 @@ begin
   //DebugLn('[TWinControl.CreateWnd] START ',Name,':',Classname);
   if (csDestroying in ComponentState) then exit;
 
-  if wcfCreatingChildHandles in FWinControlFlags then begin
-    DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self));
+  if wcfInitializing in FWinControlFlags
+  then begin
+    DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while initializing');
     Exit;
   end;
 
-  try
-    Include(FWinControlFlags,wcfCreatingChildHandles);
-    Include(FWinControlFlags,wcfCreatingHandle);
-    try
-      CreateParams(Params);
-      with Params do begin
-        if (WndParent = 0) and (Style and WS_CHILD <> 0) then
-          RaiseGDBException('TWinControl.CreateWnd: no parent '+Name+':'+ClassName);
-        Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
-      end;
+  if wcfCreatingHandle in FWinControlFlags
+  then begin
+    DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while creating handle');
+    Exit;
+  end;
 
-      FHandle := TWSWinControlClass(WidgetSetClass).CreateHandle(Self, Params);
-      if not HandleAllocated then
-        RaiseGDBException('Handle creation failed creating '+DbgSName(Self));
-      Constraints.UpdateInterfaceConstraints;
-      InvalidatePreferredSize;
-      TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
-      FWinControlFlags:=FWinControlFlags-[wcfColorChanged,wcfFontChanged];
-    finally
-      Exclude(FWinControlFlags,wcfCreatingHandle);
+  if wcfCreatingChildHandles in FWinControlFlags
+  then begin
+    DebugLn('[WARNING] Recursive call to CreateWnd for ',DbgSName(Self), ' while creating children');
+    Exit;
+  end;
+
+  Include(FWinControlFlags,wcfCreatingHandle);
+  try
+    CreateParams(Params);
+    with Params do begin
+      if (WndParent = 0) and (Style and WS_CHILD <> 0) then
+        RaiseGDBException('TWinControl.CreateWnd: no parent '+Name+':'+ClassName);
+      Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
     end;
+
+    FHandle := TWSWinControlClass(WidgetSetClass).CreateHandle(Self, Params);
+    if not HandleAllocated then
+      RaiseGDBException('Handle creation failed creating '+DbgSName(Self));
+    Constraints.UpdateInterfaceConstraints;
+    InvalidatePreferredSize;
+    TWSWinControlClass(WidgetSetClass).ConstraintsChange(Self);
+    FWinControlFlags := FWinControlFlags - [wcfColorChanged,wcfFontChanged];
 
     //WriteClientRect('A');
     if Parent <> nil then AddControl;
-
     //WriteClientRect('B');
-    InitializeWnd;
 
+    Include(FWinControlFlags, wcfInitializing);
+    InitializeWnd;
+    
+  finally
+    Exclude(FWinControlFlags, wcfInitializing);
+    Exclude(FWinControlFlags, wcfCreatingHandle);
+  end;
+
+  Include(FWinControlFlags, wcfCreatingChildHandles);
+  try
     //DebugLn('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
     //WriteClientRect('C');
 
@@ -3858,7 +3852,6 @@ begin
   //First set the WinControl property.
   //The win32 interface depends on it to determine where to send call backs.
   SetProp(Handle,'WinControl',TWinControl(Self));
-  SetProp(Handle,'Control',TControl(Self));
 
   DoSendBoundsToInterface;
   TWSWinControlClass(WidgetSetClass).ShowHide(Self);
@@ -3981,6 +3974,7 @@ begin
     // make sure our text is saved
     if TWSWinControlClass(WidgetSetClass).GetText(Self, S)
     then FCaption := S;
+    RemoveProp(Handle,'WinControl');
     DestroyComponent;
     Handle := 0;
   end;
@@ -4492,6 +4486,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.316  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.315  2005/02/21 13:54:26  mattias
   added navigation key check for up/down already handled
 

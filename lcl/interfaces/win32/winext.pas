@@ -98,6 +98,63 @@ Const
   UDM_SETPOS32 = 1137;
   UDM_SETRANGE32 = 1135;
 
+  // Listview constants
+  LVCFMT_JUSTIFYMASK = LVCFMT_LEFT or LVCFMT_RIGHT or LVCFMT_CENTER;
+  LVCFMT_IMAGE            = $0800;
+  LVCFMT_BITMAP_ON_RIGHT  = $1000;
+  LVCFMT_COL_HAS_IMAGES   = $8000;
+
+  LVCF_IMAGE = $0010;
+  LVCF_ORDER = $0020;
+
+  LVM_FIRST                    = $1000;
+  LVM_GETHEADER                = LVM_FIRST + 31;
+  LVM_SETEXTENDEDLISTVIEWSTYLE = LVM_FIRST + 54;
+  LVM_GETEXTENDEDLISTVIEWSTYLE = LVM_FIRST + 55;
+  LVM_SETHOVERTIME             = LVM_FIRST + 71;
+  LVM_GETHOVERTIME             = LVM_FIRST + 72;
+
+  LVS_TYPEMASK = LVS_ICON  or LVS_SMALLICON or LVS_LIST or LVS_REPORT;
+
+  // Comctl32 version:
+  // 4.70
+  LVS_EX_GRIDLINES        = $00000001;
+  LVS_EX_SUBITEMIMAGES    = $00000002;
+  LVS_EX_CHECKBOXES       = $00000004;
+  LVS_EX_TRACKSELECT      = $00000008;
+  LVS_EX_HEADERDRAGDROP   = $00000010;
+  LVS_EX_FULLROWSELECT    = $00000020;
+  LVS_EX_ONECLICKACTIVATE = $00000040;
+  LVS_EX_TWOCLICKACTIVATE = $00000080;
+  // 4.71
+  LVS_EX_FLATSB           = $00000100;
+  LVS_EX_REGIONAL         = $00000200;
+  LVS_EX_INFOTIP          = $00000400;
+  LVS_EX_UNDERLINEHOT     = $00000800;
+  LVS_EX_UNDERLINECOLD    = $00001000;
+  LVS_EX_MULTIWORKAREAS   = $00002000;
+  // 5.80
+  LVS_EX_LABELTIP         = $00004000;
+  // 4.71
+  LVS_EX_BORDERSELECT     = $00008000;
+  // 6
+  LVS_EX_DOUBLEBUFFER     = $00010000;   // TODO: investigate
+                                         // this may be a valid (ex) style message for other controls as well
+                                         // atleast the same value is used for controls on the .net framework
+                                         // coincidence ??
+  LVS_EX_HIDELABELS       = $00020000;
+  LVS_EX_SINGLEROW        = $00040000;
+  LVS_EX_SNAPTOGRID       = $00080000;
+  LVS_EX_SIMPLESELECT     = $00100000;
+  
+// missing listview macros
+function ListView_GetHeader(hwndLV: HWND): HWND;
+function ListView_GetExtendedListViewStyle(hwndLV: HWND): DWORD;
+function ListView_SetExtendedListViewStyle(hwndLV: HWND; dw: DWORD): BOOL;
+function ListView_GetHoverTime(hwndLV: HWND): DWORD;
+function ListView_SetHoverTime(hwndLV: HWND; dwHoverTimeMs: DWORD): DWORD;
+
+
 
 { Win32 API functions not included in windows.pp }
 { Get the ancestor at level Flag of window HWnd }
@@ -109,7 +166,6 @@ Function GetComboBoxInfo(Const hwndCombo: HWND; pcbi: PCOMBOBOXINFO): BOOL; StdC
   e.g. BrowseForFolder dialog functions}
 function CoTaskMemAlloc(cb : ULONG) : PVOID; stdcall; external 'ole32.dll' name 'CoTaskMemAlloc';
 procedure CoTaskMemFree(pv : PVOID); stdcall; external 'ole32.dll' name 'CoTaskMemFree';
-
 
 { Miscellaneous functions }
 { Convert string Str to a PChar }
@@ -127,6 +183,33 @@ Implementation
 Uses SysUtils;
 
 {$PACKRECORDS NORMAL}
+
+function ListView_GetHeader(hwndLV: HWND): HWND;
+begin
+  Result := SendMessage(hwndLV, LVM_GETHEADER, 0, 0);
+end;
+
+function ListView_GetExtendedListViewStyle(hwndLV: HWND): DWORD;
+begin
+  Result := SendMessage(hwndLV, LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0);
+end;
+
+function ListView_SetExtendedListViewStyle(hwndLV: HWND; dw: DWORD): BOOL;
+begin
+  Result := BOOL(SendMessage(hwndLV, LVM_SETEXTENDEDLISTVIEWSTYLE, 0, dw));
+end;
+
+function ListView_GetHoverTime(hwndLV: HWND): DWORD;
+begin
+  Result := SendMessage(hwndLV, LVM_GETHOVERTIME, 0, 0);
+end;
+
+function ListView_SetHoverTime(hwndLV: HWND; dwHoverTimeMs: DWORD): DWORD;
+begin
+  Result := SendMessage(hwndLV, LVM_SETHOVERTIME, 0, dwHoverTimeMs);
+end;
+
+
 
 Var
   TmpStr: PChar;

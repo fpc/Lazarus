@@ -257,23 +257,11 @@ Function Edit_source_drag_data_delete (widget: pGtkWidget;
                    data: gpointer): gBoolean ; cdecl;
 
 // gtklistviewcallbacks.inc headers
-function gtkLVHScroll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
-function gtkLVVScroll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkLVAbortColumnResize(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkLVResizeColumn(AList: PGTKCList; AColumn, AWidth: Integer;
                            AData: gPointer): GBoolean; cdecl;
 function gtkLVClickColumn(AList: PGTKCList; AColumn: Integer;
                           AData: gPointer): GBoolean; cdecl;
-function gtkLVRowMove(AList: PGTKCList; AnOldIdx, ANewIdx: Integer;
-                      AData: gPointer): GBoolean; cdecl;
-function gtkLVSelectRow(AList: PGTKCList; ARow, AColumn: Integer;
-                     AEvent: PGDKEventButton; AData: gPointer): GBoolean; cdecl;
-function gtkLVUnSelectRow(AList: PGTKCList; ARow, AColumn: Integer;
-                     AEvent: PGDKEventButton; AData: gPointer): GBoolean; cdecl;
-function gtkLVToggleFocusRow(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
-function gtkLVSelectAll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
-function gtkLVUnSelectAll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
-function gtkLVEndSelection(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 
 // gtkcomboboxcallbacks.inc headers
 function gtkComboBoxShowAfter(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
@@ -448,7 +436,7 @@ procedure DoneKeyboardTables;
 function CharToVKandFlags(const AChar: Char): Word;
 function GetVKeyInfo(const AVKey: Byte): TVKeyInfo;
 function IsToggleKey(const AVKey: Byte): Boolean;
-//function GTKEventState2ShiftState(KeyState: Word): TShiftState;
+function GTKEventState2ShiftState(KeyState: Word): TShiftState;
 //function KeyToListCode_(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
 procedure gdk_event_key_get_string(Event: PGDKEventKey; var theString: Pointer);
 procedure gdk_event_key_set_string(Event: PGDKEventKey; const NewString: PChar);
@@ -580,6 +568,11 @@ function GetDesignOnlySignalFlag(Widget: PGtkWidget;
 // signals
 // new signal procs, these will obsolete the old ones
 // MG: Say who?
+// MWE: says me !
+// new signalshandlers are attached localy in the new WSxxx classes
+// they also have PWidgetInfo as data (and not the TControl)
+// singnals are now also handled dedicated and localy, so no case statements
+// anymore in signal handlers
 procedure SignalConnect(const AWidget: PGTKWidget; const ASignal: PChar;
   const AProc: Pointer; const AInfo: PWidgetInfo);
 procedure SignalConnectAfter(const AWidget: PGTKWidget; const ASignal: PChar;
@@ -587,6 +580,8 @@ procedure SignalConnectAfter(const AWidget: PGTKWidget; const ASignal: PChar;
 
 // old signal procs
 // MG: why old?
+// MWE: since they are used in attachcallbacs, and they pass TControl as data
+//      One day attachsignals gets removed.
 procedure ConnectSignal(const AnObject: PGTKObject; const ASignal: PChar;
   const ACallBackProc: Pointer; const ALCLObject: TObject;
   const AReqSignalMask: TGdkEventMask; const ASFlags: TConnectSignalFlags);

@@ -45,7 +45,8 @@ end;
 procedure TCustomCheckGroup.ItemsChanged(Sender: TObject);
 begin
   UpdateItems;
-  if HandleAllocated then RecreateWnd;
+  // TODO: Remove RecreateWnd
+  if HandleAllocated then RecreateWnd(Self);
   OwnerFormDesignerModified(Self);
 end;
 
@@ -186,7 +187,8 @@ begin
   begin
     FItems.Assign(Value);
     UpdateItems;
-    if HandleAllocated then RecreateWnd;
+    // TODO: Remove RecreateWnd
+    if HandleAllocated then RecreateWnd(Self);
   end;
 end;
 
@@ -198,7 +200,8 @@ begin
        then raise Exception.Create('TCustomCheckGroup: Columns must be >= 1');
     FColumns := Value;
     DoPositionButtons;
-    if HandleAllocated then RecreateWnd;
+    // TODO: Remove RecreateWnd
+    if HandleAllocated then RecreateWnd(self);
   end;
 end;
 
@@ -272,6 +275,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.10  2004/09/04 22:24:16  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 

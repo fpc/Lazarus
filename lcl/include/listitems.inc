@@ -94,9 +94,12 @@ begin
   FCacheIndex := FItems.Add(AItem);
   FCacheItem := AItem;
 
+  if IntfUpdateAllowed
+  then IntfCreateCacheItem;
+
   //Notify parent TListView that something was added.
   if FOwner <> nil
-  then FOwner.ItemInserted(AItem, FCacheIndex);
+  then FOwner.ItemInserted(AItem);
 end;
 
 {------------------------------------------------------------------------------
@@ -112,22 +115,76 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItems.Delete(const AIndex: Integer);
 begin
-  Item[AIndex].Delete;
+  // Don't use GetItem, it updates the cache, which then will become invalid
+  TListItem(FItems.Items[AIndex]).Delete;
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItems IntfCreateItem                                                  }
+{------------------------------------------------------------------------------}
+procedure TListItems.IntfCreateCacheItem;
+begin
+  TWSCustomListViewClass(FOwner.WidgetSetClass).ItemInsert(FOwner, FCacheIndex, FCacheItem);
+  Include(FCacheItem.FFlags, lifCreated);
+  FCacheItem.IntfUpdateText;
+  FCacheItem.IntfUpdateImages;
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItems IntfCreateItems                                                 }
+{------------------------------------------------------------------------------}
+procedure TListItems.IntfCreateItems;
+var
+  n: integer;
+begin
+  for n := 0 to FItems.Count - 1 do
+  begin
+    FCacheItem := TListItem(FItems[n]);
+    FCacheIndex := n;
+    IntfCreateCacheItem;
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItems IntfUpdateAllowed                                               }
+{------------------------------------------------------------------------------}
+function TListItems.IntfUpdateAllowed: Boolean;
+begin
+  Result := (FOwner <> nil)
+    and FOwner.HandleAllocated
+    and not (csDestroying in FOwner.ComponentState);
 end;
 
 {------------------------------------------------------------------------------}
 {   TListItems ItemDeleted                                                     }
 {------------------------------------------------------------------------------}
-procedure TListItems.ItemDeleted(const AItem: TListItem);
+procedure TListItems.ItemDestroying(const AItem: TListItem);
 var
   idx: Integer;
 begin
-  idx := FItems.IndexOf(AItem);
+  // Don't use IndexOf, it updates the cache, which then will become invalid
+  if  (FCacheIndex <> -1)
+  and (FCacheItem = AItem)
+  then idx := FCacheIndex
+  else idx := FItems.IndexOf(AItem);
+
+  if idx = -1 then Exit; //?????
+
   if FOwner <> nil
-  then FOwner.ItemDeleted(idx);
+  then begin
+    FOwner.ItemDeleted(AItem);
+
+    if (FOwner.HandleAllocated)
+    and (lifCreated in AItem.FFlags)
+    then begin
+      Exclude(AItem.FFlags, lifCreated);
+      TWSCustomListViewClass(FOwner.WidgetSetClass).ItemDelete(FOwner, idx);
+    end;
+  end;
+
   if FCacheIndex = idx 
   then FCacheIndex := -1;
-  FItems.Remove(AItem);
+  FItems.Delete(idx);
 end;
 
 {------------------------------------------------------------------------------}
@@ -167,9 +224,12 @@ begin
   FCacheIndex := AIndex;
   FCacheItem := AItem;
 
+  if IntfUpdateAllowed
+  then IntfCreateCacheItem;
+
   //Notify parent TListView that something was added.
   if FOwner <> nil
-  then FOwner.ItemInserted(AItem, AIndex);
+  then FOwner.ItemInserted(AItem);
 end;
 
 {------------------------------------------------------------------------------}
@@ -407,6 +467,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.27  2005/01/16 23:01:07  marc
   * Rewrite of streamreading/writing to be sparc compatible
     (no unaligned read/writes)

@@ -2701,7 +2701,8 @@ begin
   if (FScrollBars <> Value) then begin
     FScrollBars := Value;
     Include(FStates,tvsScrollbarChanged);
-    RecreateWnd;
+    // TODO: Remove RecreateWnd
+    RecreateWnd(Self);
     UpdateScrollBars;
   end;
 end;

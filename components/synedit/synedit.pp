@@ -4543,7 +4543,10 @@ procedure TCustomSynEdit.SetScrollBars(const Value: TScrollStyle);
 begin
   if (FScrollBars <> Value) then begin
     FScrollBars := Value;
-    RecreateWnd;
+    // TODO: MWE: check if there is a better solution in lazarus
+    // RecreateWnd is depriciated in Lazarus
+    RecreateWnd{$IFDEF SYN_LAZARUS}(Self){$ENDIF};
+
     UpdateScrollBars;
     Invalidate;
   end;

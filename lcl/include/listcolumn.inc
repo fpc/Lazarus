@@ -39,9 +39,6 @@ begin
 end;
 
 constructor TListColumn.Create(ACollection: TCollection);
-var
-  LV: TCustomListView;
-  WSC: TWSCustomListViewClass;
 begin
   FAlignment := taLeftJustify;
   FCaption := '';
@@ -54,22 +51,8 @@ begin
   FImageIndex := -1;
   inherited Create(ACollection);
   
-  // MWE: I don't think a changed is needed here
-  //Changed(False);  
-  
   if not IntfUpdateAllowed then Exit;
-  
-  LV := TListColumns(Collection).FOwner;
-  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
-  WSC.ColumnInsert(LV, Index, Self);
-  WSC.ColumnSetAlignment(LV, Index, Self, FAlignment);
-  WSC.ColumnSetAutosize(LV, Index, Self, FAutosize);
-  WSC.ColumnSetCaption(LV, Index, Self, FCaption);
-  WSC.ColumnSetMaxWidth(LV, Index, Self, FMaxWidth);
-  WSC.ColumnSetMinWidth(LV, Index, Self, FMinWidth);
-  WSC.ColumnSetWidth(LV, Index, Self, FWidth);
-  WSC.ColumnSetImage(LV, Index, Self, FImageIndex);
-  WSC.ColumnSetVisible(LV, Index, Self, FVisible);
+  IntfCreateColumn;
 end;
 
 destructor TListColumn.Destroy;
@@ -98,6 +81,24 @@ begin
   LV := Columns.FOwner;
   WSC := TWSCustomListViewClass(LV.WidgetSetClass);
   WSC.ColumnDelete(LV, Idx);
+end;
+
+procedure TListColumn.IntfCreateColumn;
+var
+  LV: TCustomListView;
+  WSC: TWSCustomListViewClass;
+begin
+  LV := TListColumns(Collection).FOwner;
+  WSC := TWSCustomListViewClass(LV.WidgetSetClass);
+  WSC.ColumnInsert(LV, Index, Self);
+  WSC.ColumnSetAlignment(LV, Index, Self, FAlignment);
+  WSC.ColumnSetAutosize(LV, Index, Self, FAutosize);
+  WSC.ColumnSetCaption(LV, Index, Self, FCaption);
+  WSC.ColumnSetMaxWidth(LV, Index, Self, FMaxWidth);
+  WSC.ColumnSetMinWidth(LV, Index, Self, FMinWidth);
+  WSC.ColumnSetWidth(LV, Index, Self, FWidth);
+  WSC.ColumnSetImage(LV, Index, Self, FImageIndex);
+  WSC.ColumnSetVisible(LV, Index, Self, FVisible);
 end;
 
 function TListColumn.IntfUpdateAllowed: Boolean;
@@ -270,6 +271,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.9  2004/07/24 00:00:33  mattias
   started TCollectionPropertyEditor
 

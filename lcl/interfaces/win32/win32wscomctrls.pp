@@ -31,6 +31,7 @@ uses
   Classes, Windows, SysUtils, WinExt,
   // LCL
   ComCtrls, LCLType, Controls, Graphics,
+  ImgList, StdCtrls,
   LCLProc, InterfaceBase, Win32Int,
   // widgetset
   WSComCtrls, WSLCLClasses, WSProc,
@@ -75,10 +76,13 @@ type
 
   TWin32WSCustomListView = class(TWSCustomListView)
   private
+    class function  GetHeader(const AHandle: THandle): THandle;
+    class procedure PositionHeader(const AHandle: THandle);
+    class procedure UpdateStyle(const AHandle: THandle; const AMask, AStyle: Integer);
+    class procedure UpdateExStyle(const AHandle: THandle; const AMask, AStyle: Integer);
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
+    // columns
     class procedure ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class function  ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer; override;
     class procedure ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); override;
@@ -92,6 +96,7 @@ type
     class procedure ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer); override;
     class procedure ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean); override;
 
+    // items
     class procedure ItemDelete(const ALV: TCustomListView; const AIndex: Integer); override;
     class function  ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; var AIsSet: Boolean): Boolean; override; // returns True if supported
     class procedure ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); override;
@@ -100,7 +105,34 @@ type
     class procedure ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String); override;
     class procedure ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean); override;
   
-    class procedure UpdateProperties(const ACustomListView: TCustomListView); override;
+    // lv
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+
+    class procedure BeginUpdate(const ALV: TCustomListView); override;
+    class procedure EndUpdate(const ALV: TCustomListView); override;
+
+    class function GetBoundingRect(const ALV: TCustomListView): TRect; override;
+    class function GetDropTarget(const ALV: TCustomListView): Integer; override;
+    class function GetFocused(const ALV: TCustomListView): Integer; override;
+    class function GetHoverTime(const ALV: TCustomListView): Integer; override;
+    class function GetSelCount(const ALV: TCustomListView): Integer; override;
+    class function GetSelection(const ALV: TCustomListView): Integer; override;
+    class function GetTopItem(const ALV: TCustomListView): Integer; override;
+    class function GetVisibleRowCount(const ALV: TCustomListView): Integer; override;
+
+    class procedure SetAllocBy(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetDefaultItemHeight(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetHotTrackStyles(const ALV: TCustomListView; const AValue: TListHotTrackStyles); override;
+    class procedure SetHoverTime(const ALV: TCustomListView; const AValue: Integer); override;
+//    class procedure SetIconOptions(const ALV: TCustomListView; const AValue: TIconOptions); override;
+    class procedure SetImageList(const ALV: TCustomListView; const AList: TListViewImageList; const AValue: TCustomImageList); override;
+    class procedure SetProperty(const ALV: TCustomListView; const AProp: TListViewProperty; const AIsSet: Boolean); override;
+    class procedure SetProperties(const ALV: TCustomListView; const AProps: TListViewProperties); override;
+    class procedure SetScrollBars(const ALV: TCustomListView; const AValue: TScrollStyle); override;
+    class procedure SetScrolledLeft(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetScrolledTop(const ALV: TCustomListView; const AValue: Integer); override;
+    class procedure SetSort(const ALV: TCustomListView; const AType: TSortType; const AColumn: Integer); override;
+    class procedure SetViewStyle(const ALV: TCustomListView; const Avalue: TViewStyle); override;
   end;
 
   { TWin32WSListView }
@@ -194,6 +226,9 @@ type
 
 implementation
 
+{$I win32wscustomlistview.inc }
+
+
 { --- Helper routines for TWin32WSStatusBar --- }
 
 {------------------------------------------------------------------------------
@@ -279,12 +314,25 @@ begin
   UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
 end;
 
+procedure TWin32WSStatusBar.SetBounds(const AWinControl: TWinControl;
+  const ALeft, ATop, AWidth, AHeight: integer);
+begin
+  // statusbars do their own resizing, post a size message to it's queue
+  Windows.PostMessage(AWinControl.Handle, WM_SIZE, 0, 0);
+end;
+
 procedure TWin32WSStatusBar.SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer);
 begin
   if AStatusBar.SimplePanel then
     Windows.SendMessage(AStatusBar.Handle, SB_SETTEXT, 255, LPARAM(PChar(AStatusBar.SimpleText)))
   else
     UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
+end;
+
+procedure TWin32WSStatusBar.SetText(const AWinControl: TWinControl;
+  const AText: string);
+begin
+  // inhibit. StatusBars do not have a caption, simpletext is set by SetPanelText
 end;
 
 procedure TWin32WSStatusBar.Update(const AStatusBar: TStatusBar);
@@ -298,376 +346,6 @@ begin
     UpdateStatusBarPanelWidths(AStatusBar);
     for PanelIndex := 0 to AStatusBar.Panels.Count-1 do
       UpdateStatusBarPanel(AStatusBar.Panels[PanelIndex]);
-  end;
-end;
-
-procedure TWin32WSStatusBar.SetText(const AWinControl: TWinControl; 
-  const AText: string);
-begin
-  // inhibit. StatusBars do not have a caption, simpletext is set by SetPanelText
-end;
-
-procedure TWin32WSStatusBar.SetBounds(const AWinControl: TWinControl;
-  const ALeft, ATop, AWidth, AHeight: integer);
-begin
-  // statusbars do their own resizing, post a size message to it's queue
-  Windows.PostMessage(AWinControl.Handle, WM_SIZE, 0, 0);
-end;
-
-{ TWin32WSCustomListView } 
-     
-const                        
-  // TODO: move to windows unit     
-  LVCFMT_JUSTIFYMASK = LVCFMT_LEFT or LVCFMT_RIGHT or LVCFMT_CENTER;
-  LVCF_IMAGE = $0010;
-  LVCF_ORDER = $0020;            
-  
-  LVM_GETHEADER = $1000 + 31;
- 
-type
-  // TODO: add iImage and iOrder to exiting TLvColumn
-  // this is a hack !!!
-  TLvColumn_v4_7 = record
-    lvc: TLvColumn;
-    iImage: Integer;
-    iOrder: Integer;
-  end;
-
-function TWin32WSCustomListView.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
-const  
-  LISTVIEWSTYLES: array[TViewStyle] of DWORD = (LVS_LIST, LVS_REPORT);
-var
-  Params: TCreateWindowExParams;
-begin
-  // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
-  // customization of Params
-  with Params do
-  begin
-    pClassName := WC_LISTVIEW;
-    WindowTitle := StrCaption;
-    Flags := Flags or LISTVIEWSTYLES[TListView(AWinControl).ViewStyle] or LVS_SINGLESEL;
-    FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;   
-  end;
-  // create window
-  FinishCreateWindow(AWinControl, Params, false);
-  Result := Params.Window;
-end;
-
-procedure TWin32WSCustomListView.ColumnDelete(const ALV: TCustomListView; const AIndex: Integer); 
-var
-  H: THandle;
-  Count: Integer;
-begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnDelete')
-  then Exit;            
-  
-  // Move column to the last, otherwise out items get shuffeled
-  
-  //  H := ListView_GetHeader(Handle);
-  H := SendMessage(ALV.Handle, LVM_GETHEADER, 0, 0);
-  Count := Header_GetItemCount(H);
-  if Count <= Aindex then Exit;
-  
-  ColumnMove(ALV, AIndex, Count - 1, nil);
-  ListView_DeleteColumn(ALV.Handle, Count - 1);
-end;
-
-function TWin32WSCustomListView.ColumnGetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn): Integer;
-var
-  lvc: TLvColumn;
-begin
-  Result := -1;                     
-  // this implementation uses columnwidht = 0 for invisible
-  // so fallback to default (= AColumn.FWidth)
-  // Don't return AColumn.Width, this will cause a loop
-  if not AColumn.Visible then Exit; 
-
-  if not WSCheckHandleAllocated(ALV, 'ColumnGetSize')
-  then Exit;    
-  
-  // dont use ListView_GetColumnWidth since we cant detect errors
-  lvc.Mask := LVCF_WIDTH;
-  if ListView_GetColumn(ALV.Handle, AIndex, lvc) <> 0
-  then Result := lvc.cx;
-end;
-
-procedure TWin32WSCustomListView.ColumnInsert(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn); 
-var
-  lvc: TLvColumn;
-begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnInsert')
-  then Exit;
-  
-  lvc.Mask := LVCF_TEXT;
-  lvc.pszText := PChar(AColumn.Caption);
-  
-  ListView_InsertColumn(ALV.Handle, AIndex, lvc);
-end;
-
-procedure TWin32WSCustomListView.ColumnMove(const ALV: TCustomListView; const AOldIndex, ANewIndex: Integer; const AColumn: TListColumn);
-var
-  lvc, oldlvc: TLvColumn_v4_7;
-  buf, oldbuf: array[0..1024] of Char; 
-  Count, idx: Integer;      
-  
-begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnMove')
-  then Exit;
-
-  Count := AOldIndex - ANewIndex;
-  
-  // Fetch old column values
-  oldlvc.lvc.Mask := LVCF_FMT or LVCF_IMAGE or LVCF_TEXT or LVCF_WIDTH;
-  oldlvc.lvc.pszText := @oldbuf;
-  oldlvc.lvc.cchTextMax := SizeOF(oldbuf);
-  ListView_GetColumn(ALV.Handle, AOldIndex, oldlvc.lvc);
-  
-  idx := AOldIndex;
-  while Count <> 0 do
-  begin
-    // get next index 
-    if Count < 0
-    then Inc(idx)
-    else Dec(idx);
-    // and data
-    lvc.lvc.Mask := LVCF_FMT or LVCF_IMAGE or LVCF_TEXT or LVCF_WIDTH;
-    lvc.lvc.pszText := @buf;
-    lvc.lvc.cchTextMax := SizeOF(buf);
-    ListView_GetColumn(ALV.Handle, idx, lvc.lvc);
-    // set data
-    ListView_SetColumn(ALV.Handle, ANewIndex + Count, lvc.lvc);
-    
-    if Count < 0
-    then Inc(Count)
-    else Dec(Count);
-  end;
-  // finally copy original data to new column
-  ListView_SetColumn(ALV.Handle, ANewIndex, oldlvc.lvc);
-end;
-
-procedure TWin32WSCustomListView.ColumnSetAlignment(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAlignment: TAlignment);
-const
-  JUSTIFICATION: array[TAlignment] of Integer = (
-    LVCFMT_LEFT,
-    LVCFMT_RIGHT,
-    LVCFMT_CENTER
-  );
-var
-  lvc: TLvColumn;
-begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnSetAlignment')
-  then Exit;
-  
-  lvc.Mask := LVCF_FMT;
-  ListView_GetColumn(ALV.Handle, AIndex, lvc);
-  lvc.fmt := (lvc.fmt and not LVCFMT_JUSTIFYMASK) or JUSTIFICATION[AAlignment];
-  ListView_SetColumn(ALV.Handle, AIndex, lvc);
-end;
-
-procedure TWin32WSCustomListView.ColumnSetAutoSize(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AAutoSize: Boolean);
-begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnSetAutoSize')
-  then Exit;
-
-  if AAutoSize
-  then ListView_SetColumnWidth(ALV.Handle, AIndex, LVSCW_AUTOSIZE)
-  else ListView_SetColumnWidth(ALV.Handle, AIndex, AColumn.Width);
-end;
-
-procedure TWin32WSCustomListView.ColumnSetCaption(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const ACaption: String);
-var
-  lvc: TLvColumn;
-begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnSetCaption')
-  then Exit;
-  
-  lvc.Mask := LVCF_TEXT;
-  lvc.pszText := PChar(ACaption);
-  
-  ListView_SetColumn(ALV.Handle, AIndex, lvc);
-end;
-
-procedure TWin32WSCustomListView.ColumnSetImage(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AImageIndex: Integer);
-var
-  lvc: TLvColumn_v4_7;
-begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnSetImage')
-  then Exit;
-  
-  lvc.lvc.Mask := LVCF_IMAGE;
-  lvc.iImage := AImageIndex;
-  
-  ListView_SetColumn(ALV.Handle, AIndex, lvc.lvc);
-end;
-
-procedure TWin32WSCustomListView.ColumnSetMaxWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMaxWidth: Integer);
-begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnSetMaxWidth')
-  then Exit;                                             
-  
-  // TODO: in messageHandler
-end;
-
-procedure TWin32WSCustomListView.ColumnSetMinWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AMinWidth: integer);
-begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnSetMinWidth')
-  then Exit;      
-  
-  // TODO: in messageHandler
-end;
-
-procedure TWin32WSCustomListView.ColumnSetWidth(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AWidth: Integer);
-begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnSetWidth')
-  then Exit;
-
-  ListView_SetColumnWidth(ALV.Handle, AIndex, AWidth)
-end;
-
-procedure TWin32WSCustomListView.ColumnSetVisible(const ALV: TCustomListView; const AIndex: Integer; const AColumn: TListColumn; const AVisible: Boolean);
-begin
-  if not WSCheckHandleAllocated(ALV, 'ColumnSetVisible')
-  then Exit;
-                        
-  // TODO: implement with LV_COLUMN.subitem (associate different columns and insert/delete last.
-                        
-  if AVisible
-  then ListView_SetColumnWidth(ALV.Handle, AIndex, AColumn.Width)
-  else ListView_SetColumnWidth(ALV.Handle, AIndex, 0);
-end;
-
-procedure TWin32WSCustomListView.ItemDelete(const ALV: TCustomListView; const AIndex: Integer);
-begin
-  if not WSCheckHandleAllocated(ALV, 'ItemDelete')
-  then Exit;             
-  
-  ListView_DeleteItem(ALV.Handle, AIndex);
-end;
-
-function TWin32WSCustomListView.ItemGetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; var AIsSet: Boolean): Boolean; 
-const  
-  // lisCut, lisDropTarget, lisFocused, lisSelected
-  FLAGS: array[TListItemState] of Integer = (LVIS_CUT, LVIS_DROPHILITED, LVIS_FOCUSED, LVIS_SELECTED);
-begin
-  Result := False;
-  
-  if not WSCheckHandleAllocated(ALV, 'ItemGetState')
-  then Exit;
-  
-  AIsSet := 0 <> ListView_GetItemState(ALV.Handle, AIndex, FLAGS[AState]);
-  Result := True;
-end;
-  
-procedure TWin32WSCustomListView.ItemInsert(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem);
-var
-  lvi: TLvItem;
-begin
-  if not WSCheckHandleAllocated(ALV, 'ItemInsert')
-  then Exit;
-
-  lvi.Mask := LVIF_TEXT;
-  lvi.iItem := AIndex;
-  lvi.iSubItem := 0;
-  lvi.pszText := PChar(AItem.Caption);
-
-  ListView_InsertItem(ALV.Handle, lvi);
-end;
-
-procedure TWin32WSCustomListView.ItemSetImage(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex, AImageIndex: Integer);
-var
-  lvi: TLvItem;
-begin
-  if not WSCheckHandleAllocated(ALV, 'ItemSetImage')
-  then Exit;
-
-  lvi.Mask := LVIF_IMAGE;
-  lvi.iItem := AIndex;
-  lvi.iSubItem := ASubIndex;
-  lvi.iImage := AImageIndex;
-
-  ListView_SetItem(ALV.Handle, lvi);
-end;
-
-procedure TWin32WSCustomListView.ItemSetState(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const AState: TListItemState; const AIsSet: Boolean); 
-const  
-  // lisCut, lisDropTarget, lisFocused, lisSelected
-  FLAGS: array[TListItemState] of Integer = (LVIS_CUT, LVIS_DROPHILITED, LVIS_FOCUSED, LVIS_SELECTED);
-begin
-  if not WSCheckHandleAllocated(ALV, 'ItemSetState')
-  then Exit;
-
-  if AIsSet
-  then ListView_SetItemState(ALV.Handle, AIndex, FLAGS[AState], FLAGS[AState])
-  else ListView_SetItemState(ALV.Handle, AIndex, 0, FLAGS[AState]);
-end;
-
-procedure TWin32WSCustomListView.ItemSetText(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const ASubIndex: Integer; const AText: String);
-begin
-  if not WSCheckHandleAllocated(ALV, 'ItemSetText')
-  then Exit;
-  
-  ListView_SetItemText(ALV.Handle, AIndex, ASubIndex, PChar(AText));
-end;
-
-procedure TWin32WSCustomListView.ItemShow(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem; const PartialOK: Boolean);
-begin
-  if not WSCheckHandleAllocated(ALV, 'ItemShow')
-  then Exit;  
-  
-  ListView_EnsureVisible(ALV.Handle, AIndex, Ord(PartialOK));
-end;
-
-procedure TWin32WSCustomListView.UpdateProperties(const ACustomListView: TCustomListView);
-const
-  LVS_TYPEMASK = LVS_LIST or LVS_REPORT or LVS_SMALLICON or LVS_ICON;
-  LISTVIEWSTYLES: array[TViewStyle] of DWORD = (
-    LVS_LIST, LVS_REPORT);
-var
-  I, Count: Integer;
-  LVC: LV_COLUMN;
-  Style: dword;
-  H: THandle;
-begin
-  with TListView(ACustomListView) do
-  begin
-    Style := dword(GetWindowLong(Handle, GWL_STYLE));
-    if (Style and LVS_TYPEMASK) <> LISTVIEWSTYLES[ViewStyle]
-    then begin
-      Style := Style and not LVS_TYPEMASK or LISTVIEWSTYLES[ViewStyle];
-      SetWindowLong(Handle, GWL_STYLE, Style);
-    end;
-    
-    if ViewStyle = vsReport then
-    begin 
-//        H := ListView_GetHeader(Handle);
-      H := SendMessage(Handle, $1000 + 31 {LVM_GETHEADER}, 0, 0);
-      Count := Header_GetItemCount(H);
-      
-      for I := 0 to Columns.Count - 1 do
-      begin
-        with LVC do
-        begin
-          Mask := LVCF_FMT or LVCF_TEXT or LVCF_WIDTH;
-          Fmt := Integer(Columns.Items[I].Alignment);
-          CX := Columns.Items[I].Width;
-          PSzText := PChar(Columns.Items[I].Caption);
-        end;
-        if i >= Count 
-        then ListView_InsertColumn(Handle, i, lvc)
-        else ListView_SetColumn(Handle, I, LVC);
-      end;
-      for i := Columns.Count to Count - 1 do
-        ListView_DeleteColumn(Handle, i);  
-      Count := Header_GetItemCount(H);
-    end;
-    //If Sorted Then
-      //ListView_SortItems(Handle, @CompareFunc, 0);
-    if MultiSelect then
-      SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) and not LVS_SINGLESEL);
-    if SmallImages <> Nil then
-      ListView_SetImageList(Handle, SmallImages.Handle, LVSIL_NORMAL);
   end;
 end;
 

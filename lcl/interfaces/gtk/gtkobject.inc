@@ -2187,7 +2187,7 @@ begin
     gdk_image_destroy(Image);
     Image := nil;
   end;
-  
+
   // Precisions and Shifts
   if IsGdkBitmap then begin
     Desc^.RedPrec:=1;
@@ -3551,28 +3551,9 @@ begin
     end;
 
 //    HDN_ITEMDBLCLICK
-    HDN_ITEMCLICK,
-    LVN_COLUMNCLICK:
+    HDN_ITEMCLICK:
     begin
       ConnectSenderSignal(gCore, 'click-column', @gtkLVClickColumn);
-    end;
-
-//    LVN_DELETEALLITEMS,
-    LVN_DELETEITEM,
-    LVN_INSERTITEM:
-    begin
-      ConnectSenderSignal(gCore, 'row-move', @gtkLVRowMove);
-    end;
-
-    LVN_ITEMCHANGED,
-    LVN_ITEMCHANGING:
-    begin
-      ConnectSenderSignal(gCore, 'select-row', @gtkLVSelectRow);
-      ConnectSenderSignal(gCore, 'unselect-row', @gtkLVUnSelectRow);
-      ConnectSenderSignal(gCore, 'toggle-focus-row', @gtkLVToggleFocusRow);
-      ConnectSenderSignal(gCore, 'select-all', @gtkLVSelectAll);
-      ConnectSenderSignal(gCore, 'unselect-all', @gtkLVUnSelectAll);
-      ConnectSenderSignal(gCore, 'end-selection', @gtkLVEndSelection);
     end;
 
     LM_COMMAND:
@@ -4685,10 +4666,11 @@ var
 begin
   MainWidget:= gtk_scrolled_window_new(nil, nil);
 
-  with TListView(ListViewObject)
-  do begin
-    RealColumnCnt:=Columns.Count;
-    if RealColumnCnt<1 then RealColumnCnt:=1;
+//  with TListView(ListViewObject)
+//  do begin
+//    RealColumnCnt:=Columns.Count;
+    RealColumnCnt := 1;
+//    if RealColumnCnt<1 then RealColumnCnt:=1;
     CListWidget:=PGtkCList(gtk_clist_new(RealColumnCnt));
     gtk_clist_set_shadow_type(CListWidget,GTK_SHADOW_IN);
     gtk_clist_column_titles_passive (CListWidget);
@@ -4697,16 +4679,17 @@ begin
     GetMem(Titles,SizeOf(PGChar)*CListWidget^.columns);
     for i:=0 to CListWidget^.columns-1 do
       Titles[i]:=nil;
-    for i:=0 to Items.Count-1 do begin
-      if Items[i].Caption<>'' then
-        Titles[0] := PChar(Items[i].Caption)
-      else
-        Titles[0] := #0;
-      gtk_clist_append(CListWidget,Titles);
-    end;
+//    for i:=0 to Items.Count-1 do begin
+//      if Items[i].Caption<>'' then
+//        Titles[0] := PChar(Items[i].Caption)
+//      else
+//        Titles[0] := #0;
+//      gtk_clist_append(CListWidget,Titles);
+//    end;
     FreeMem(Titles);
 
     // set columns properties
+(*
     for i := 0 to Columns.Count - 1 do begin
       with Columns[i] do begin
         // set title
@@ -4728,9 +4711,11 @@ begin
         if (MaxWidth>=MinWidth) and (MaxWidth>0) then
           gtk_clist_set_column_max_width(CListWidget, i, MaxWidth);
       end;
-    end;
+*)
+//    end;
 
-  end;
+//  end;
+
   gtk_clist_column_titles_passive (CListWidget);
 
   ImpWidget:=PGtkWidget(CListWidget);
@@ -7014,6 +6999,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.631  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.630  2005/02/19 20:33:09  mattias
   fixed gtk2 key handle result
 

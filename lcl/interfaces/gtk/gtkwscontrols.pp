@@ -24,12 +24,19 @@ unit GtkWSControls;
 
 {$mode objfpc}{$H+}
 
+{$DEFINE UseGDKErrorTrap}
+
 interface
 
 uses
-  {$IFDEF GTK2} Gtk2, Glib2, Gdk2, {$ELSE} Gtk, Glib, Gdk, {$ENDIF}
+  {$IFDEF GTK2}
+  Gtk2, Glib2, Gdk2,
+  {$ELSE}
+  Gtk, Glib, Gdk,
+  {$ENDIF}
   SysUtils, Classes, Controls, LMessages, InterfaceBase,
-  WSControls, WSLCLClasses, Graphics, ComCtrls;
+  WSControls, WSLCLClasses, Graphics, ComCtrls, GtkDef,
+  LCLType;
 
 type
 
@@ -99,6 +106,30 @@ type
   protected
   public
   end;
+  
+  { TGtkWSBaseScrollingWinControl }
+  {
+    TGtkWSBaseScrollingWinControl is a shared gtk only base implementation of
+    all scrolling widgets, like TListView, TScrollingWinControl etc.
+    It only creates a scrolling widget and handles the LM_HSCROLL and LM_VSCROLL
+    messages
+  }
+  PBaseScrollingWinControlData = ^TBaseScrollingWinControlData;
+  TBaseScrollingWinControlData = record
+    HValue: Integer;
+    HScroll: PGTKWidget;
+    VValue: Integer;
+    VScroll: PGTKWidget;
+  end;
+
+  TGtkWSBaseScrollingWinControl = class(TWSWinControl)
+  private
+  protected
+  public
+    class function  CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND; override;
+    class procedure SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo); virtual;
+  end;
+
 
 
 procedure GtkWindowShowModal(GtkWindow: PGtkWindow);
@@ -106,8 +137,8 @@ procedure GtkWindowShowModal(GtkWindow: PGtkWindow);
 implementation
 
 uses
-  GtkDef, GtkInt, gtkglobals, gtkproc, GTKWinApiWindow,
-  StdCtrls, LCLProc, LCLIntf, LCLType;
+  GtkInt, gtkglobals, gtkproc, GTKWinApiWindow,
+  StdCtrls, LCLProc, LCLIntf;
 
 { TGtkWSWinControl }
   
@@ -501,6 +532,170 @@ begin
   DebugLn('TGtkWidgetSet.ShowModal ',Sender.ClassName);
   {$ENDIF}
   TGtkWidgetSet(InterfaceObject).UpdateTransientWindows;
+end;
+
+{ TGtkWSBaseScrollingWinControl }
+
+function GtkWSBaseScrollingWinControl_HValueChanged(AAdjustment: PGTKAdjustment; AInfo: PWidgetInfo): GBoolean; cdecl;
+var
+  ScrollingData: PBaseScrollingWinControlData;
+  Msg: TLMHScroll;
+  OldValue, V, U, StepI, PageI: Integer;
+  X, Y: GInt;
+  Mask: TGdkModifierType;
+begin
+  Result := CallBackDefaultReturn;
+  if AInfo^.ChangeLock > 0 then Exit;
+
+  ScrollingData := AInfo^.UserData;
+
+  // round values
+  V := Round(AAdjustment^.Value);
+  U := Round(AAdjustment^.Upper);
+  StepI := Round(AAdjustment^.Step_Increment);
+  PageI := Round(AAdjustment^.Page_Increment);
+
+  OldValue := ScrollingData^.HValue;
+  ScrollingData^.HValue := V;
+
+  // get keystates
+  Mask := 0;
+  if ScrollingData^.HScroll <> nil
+  then begin
+    {$IFDEF UseGDKErrorTrap}
+    BeginGDKErrorTrap;
+    {$ENDIF}
+    gdk_window_get_pointer(GetControlWindow(ScrollingData^.HScroll), @X, @Y, @Mask);
+    {$IFDEF UseGDKErrorTrap}
+    EndGDKErrorTrap;
+    {$ENDIF}
+  end;
+
+  Msg.msg := LM_HSCROLL;
+  // get scrollcode
+  if ssLeft in GTKEventState2ShiftState(Word(Mask))
+  then Msg.ScrollCode := SB_THUMBTRACK
+  else if V - OldValue = StepI
+  then Msg.ScrollCode := SB_LINERIGHT
+  else if OldValue - V = StepI
+  then Msg.ScrollCode := SB_LINELEFT
+  else if V - OldValue = PageI
+  then Msg.ScrollCode := SB_PAGERIGHT
+  else if OldValue - V = PageI
+  then Msg.ScrollCode := SB_PAGELEFT
+  else if V >= U
+  then Msg.ScrollCode := SB_ENDSCROLL
+  else Msg.ScrollCode := SB_THUMBPOSITION;
+  Msg.Pos := SmallInt(V);
+  Msg.ScrollBar := HWND(ScrollingData^.HScroll);
+
+  Result := (DeliverMessage(AInfo^.LCLObject, Msg) <> 0) xor CallBackDefaultReturn;
+end;
+
+function GtkWSBaseScrollingWinControl_VValueChanged(AAdjustment: PGTKAdjustment; AInfo: PWidgetInfo): GBoolean; cdecl;
+var
+  ScrollingData: PBaseScrollingWinControlData;
+  Msg: TLMHScroll;
+  OldValue, V, U, StepI, PageI: Integer;
+  X, Y: GInt;
+  Mask: TGdkModifierType;
+begin
+  Result := CallBackDefaultReturn;
+  if AInfo^.ChangeLock > 0 then Exit;
+
+  ScrollingData := AInfo^.UserData;
+
+  // round values
+  V := Round(AAdjustment^.Value);
+  U := Round(AAdjustment^.Upper);
+  StepI := Round(AAdjustment^.Step_Increment);
+  PageI := Round(AAdjustment^.Page_Increment);
+
+  OldValue := ScrollingData^.VValue;
+  ScrollingData^.VValue := V;
+
+  // get keystates
+  Mask := 0;
+  if ScrollingData^.VScroll <> nil
+  then begin
+    {$IFDEF UseGDKErrorTrap}
+    BeginGDKErrorTrap;
+    {$ENDIF}
+    gdk_window_get_pointer(GetControlWindow(ScrollingData^.VScroll), @X, @Y, @Mask);
+    {$IFDEF UseGDKErrorTrap}
+    EndGDKErrorTrap;
+    {$ENDIF}
+  end;
+
+  Msg.msg := LM_VSCROLL;
+  // Get scrollcode
+  if ssLeft in GTKEventState2ShiftState(Word(Mask))
+  then Msg.ScrollCode := SB_THUMBTRACK
+  else if V - OldValue = StepI
+  then Msg.ScrollCode := SB_LINEDOWN
+  else if OldValue - V = StepI
+  then Msg.ScrollCode := SB_LINEUP
+  else if V - OldValue = PageI
+  then Msg.ScrollCode := SB_PAGEDOWN
+  else if OldValue - V = PageI
+  then Msg.ScrollCode := SB_PAGEUP
+  else if V >= U
+  then Msg.ScrollCode := SB_ENDSCROLL
+  else Msg.ScrollCode := SB_THUMBPOSITION;
+  Msg.Pos := SmallInt(V);
+  Msg.ScrollBar := HWND(ScrollingData^.HScroll);
+
+  Result := (DeliverMessage(AInfo^.LCLObject, Msg) <> 0) xor CallBackDefaultReturn;
+end;
+
+function TGtkWSBaseScrollingWinControl.CreateHandle(const AWinControl: TWinControl; const AParams: TCreateParams): HWND;
+var
+  Widget: PGtkWidget;
+  WidgetInfo: PWidgetInfo;
+  ScrollingData: PBaseScrollingWinControlData;
+  Allocation: TGTKAllocation;
+begin
+  Widget := gtk_scrolled_window_new(nil, nil);
+  Result := THandle(Widget);
+  if Result = 0 then Exit;
+
+  gtk_widget_show(Widget);
+
+  WidgetInfo := CreateWidgetInfo(Widget, AWinControl, AParams);
+  New(ScrollingData);
+  ScrollingData^.HValue := 0;
+  ScrollingData^.VValue := 0;
+  ScrollingData^.HScroll := PGtkScrolledWindow(Widget)^.HScrollbar;
+  ScrollingData^.VScroll := PGtkScrolledWindow(Widget)^.VScrollbar;
+  WidgetInfo^.UserData := ScrollingData;
+  WidgetInfo^.DataOwner := True;
+
+  // set allocation
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(Widget, @Allocation);
+
+  // SetCallbacks isn't called here, it should be done in the 'derived' class
+end;
+
+procedure TGtkWSBaseScrollingWinControl.SetCallbacks(const AWidget: PGtkWidget; const AWidgetInfo: PWidgetInfo);
+begin
+  TGtkWSWinControl.SetCallbacks(PGtkObject(AWidget), TComponent(AWidgetInfo^.LCLObject));
+
+  SignalConnect(
+    PGtkWidget(gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(AWidget))),
+    'value-changed',
+    @GtkWSBaseScrollingWinControl_HValueChanged,
+    AWidgetInfo
+  );
+  SignalConnect(
+    PGtkWidget(gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(AWidget))),
+    'value-changed',
+    @GtkWSBaseScrollingWinControl_VValueChanged,
+    AWidgetInfo
+  );
 end;
 
 initialization

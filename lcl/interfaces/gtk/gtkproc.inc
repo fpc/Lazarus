@@ -960,7 +960,9 @@ begin
   gtk_list_select_item(PGtkList(ComboWidget^.list),Index);
   if Index>=0 then begin
     ComboStrings:=TStrings(gtk_object_get_data(PGtkObject(ComboWidget),'LCLList'));
-    SetComboBoxText(ComboWidget,PChar(ComboStrings[Index]));
+    if Index < ComboStrings.Count
+    then SetComboBoxText(ComboWidget, PChar(ComboStrings[Index]))
+    else SetComboBoxText(ComboWidget, '#error#');
   end;
 end;
 
@@ -8079,6 +8081,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.343  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.342  2005/02/21 07:02:00  vincents
   fixed fpc 1.0.x compilation
 

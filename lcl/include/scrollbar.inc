@@ -86,8 +86,9 @@ begin
     // switch width and height
     OldWidth:=Width;
     OldHeight:=Height;
-    if HandleAllocated then
-      RecreateWnd;
+    // TODO: Remove RecreateWnd
+    if HandleAllocated
+    then RecreateWnd(Self);
     SetBounds(Left,Top,OldHeight,OldWidth);
   end;
 end;

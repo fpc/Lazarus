@@ -23,7 +23,6 @@ begin
   FListItems := TListItems.Create(self);
   BorderStyle := bsSingle;
   FScrollBars := ssBoth;
-  FSmallImages := nil;
   FCompStyle := csListView;
   FViewStyle := vsList;
   FSortType := stNone;
@@ -32,19 +31,13 @@ begin
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageChanged;
   FSelected := nil;
+  FFocused := nil;
+  FHoverTime := -1;
   TabStop := true;
   SetInitialBounds(0,0,100,90);
   ParentColor := False;
-  Color := clWindow;
-end;
-
-{------------------------------------------------------------------------------}
-{   TCustomListView ColumnsChanged                                             }
-{------------------------------------------------------------------------------}
-Procedure TCustomListView.ColumnsChanged;
-Begin
-  Include(FStates,lvUpdateNeeded);
-  DoUpdate;
+  Color := clWindow;  
+  FProperties := [lvpColumnClick, lvpHideSelection, lvpShowColumnHeaders];
 end;
 
 {------------------------------------------------------------------------------}
@@ -80,6 +73,7 @@ procedure TCustomListView.CNNotify(var AMessage: TLMNotify);
 var
   nm: PNMListView;
   Item: TListItem;
+  n: Integer;
 begin
   nm := PNMListView(AMessage.NMHdr);
 
@@ -88,12 +82,19 @@ begin
 //    NM_CUSTOMDRAW:
 //    LVN_BEGINDRAG:
     LVN_DELETEITEM: begin
-      // don't call delete yet,
-      // there is no solution available when we have deleted the item first
       Item := Items[nm^.iItem];
-      DoDeletion(Item)
+      Exclude(Item.FFlags, lifCreated);
+      if not (lifDestroying in Item.FFlags)
+      then Item.Delete;
     end;
     LVN_DELETEALLITEMS: begin
+      for n := Items.Count - 1 downto 0 do
+      begin
+        Item := Items[n];
+        Exclude(Item.FFlags, lifCreated);
+        if not (lifDestroying in Item.FFlags)
+        then Item.Delete;
+      end;
     end;
 //    LVN_GETDISPINFO:
 //    LVN_ODCACHEHINT:
@@ -105,7 +106,10 @@ begin
       ColClick(Columns[nm^.iSubItem]);
     end;
     LVN_INSERTITEM: begin
-      // see delete comment
+      // don't call insert yet,
+      // there is no solution available when we have inserted the item first
+      // see delete
+      // besides... who's inserting items
     end;
     LVN_ITEMCHANGING: begin
       //Check
@@ -115,6 +119,20 @@ begin
       Change(Item, nm^.uChanged);
       if (nm^.uChanged = LVIF_STATE)
       then begin
+        // focus
+        if (nm^.uOldState and LVIS_FOCUSED) <> (nm^.uNewState and LVIS_FOCUSED)
+        then begin
+          // focus state changed
+          if (nm^.uNewState and LVIS_FOCUSED) = 0
+          then begin
+            if FFocused = Item
+            then FFocused := nil;
+          end
+          else begin
+            FFocused := Item;
+          end;
+        end;
+        // select
         if (nm^.uOldState and LVIS_SELECTED) <> (nm^.uNewState and LVIS_SELECTED)
         then begin
           // select state changed
@@ -137,58 +155,65 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
-   TCustomListView DoUpdate
- ------------------------------------------------------------------------------}
-procedure TCustomListView.DoUpdate;
-begin
-  if csDestroying in Componentstate Then Exit;
-  if FUpdateCount>0 then exit;
-  if (lvUpdateNeeded in FStates) then begin
-    //TODO: Optimize implementation by invoking individual updates instead of
-    //      recreating window
-    //notify the interface....
-    if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
-      exit;
-    Exclude(FStates,lvUpdateNeeded);
-    RecreateWnd;
-  end else begin
-    UpdateProperties;
-  end;
-end;
-
-procedure TCustomListView.UpdateProperties;
-begin
-  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
-  begin
-    Include(FStates,lvPropertiesNeedsUpdate);
-    exit;
-  end;
-  Exclude(FStates,lvPropertiesNeedsUpdate);
-  TWSCustomListViewClass(WidgetSetClass).UpdateProperties(Self);
-end;
-
+{------------------------------------------------------------------------------}
+{   TCustomListView InitializeWnd                                              }
+{------------------------------------------------------------------------------}
 procedure TCustomListView.InitializeWnd;
+var
+  LVC: TWSCustomListViewClass;
+  lvil: TListViewImageList;
 begin
   inherited InitializeWnd;
-  Exclude(FStates,lvPropertiesNeedsUpdate);
-  TWSCustomListViewClass(WidgetSetClass).UpdateProperties(Self);
-  if FSelected <> nil 
-  then TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index, FSelected, lisSelected, True);
-end;
+  
+  LVC := TWSCustomListViewClass(WidgetSetClass);
 
-procedure TCustomListView.Loaded;
-begin
-  inherited Loaded;
-  DoUpdate;
+  // set the style first
+  LVC.SetViewStyle(Self, FViewStyle);
+  
+  // add columns
+  FColumns.IntfCreateColumns;
+  
+  // set imagelists and item depending properties
+  for lvil := Low(lvil) to High(lvil) do
+  begin
+    if FImages[lvil] <> nil
+    then LVC.SetImageList(Self, lvil, FImages[lvil]);
+  end;
+  LVC.SetScrollBars(Self, FScrollBars);
+  LVC.SetScrolledLeft(Self, FScrolledLeft);
+  LVC.SetScrolledTop(Self, FScrolledTop);
+  LVC.SetSort(Self, FSortType, FSortColumn);
+
+  // add items
+  FListItems.IntfCreateItems;
+  
+  // set other properties
+  LVC.SetAllocBy(Self, FAllocBy);
+  LVC.SetDefaultItemHeight(Self, FDefaultItemHeight);
+  LVC.SetHotTrackStyles(Self, FHotTrackStyles);
+  LVC.SetHoverTime(Self, FHoverTime);
+  LVC.SetProperties(Self, FProperties);
+
+  if FSelected <> nil 
+  then LVC.ItemSetState(Self, FSelected.Index, FSelected, lisSelected, True);
+  if FFocused <> nil
+  then LVC.ItemSetState(Self, FFocused.Index, FFocused, lisFocused, True);
 end;
 
 {------------------------------------------------------------------------------}
-{   TCustomListView DoDeletion                                               }
+{   TCustomListView DoDeletion                                                 }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.DoDeletion(AItem: TListItem);
 begin
   if Assigned(FOnDeletion) then FOnDeletion(Self, AItem);
+end;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView DoInsert                                                   }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.DoInsert(AItem: TListItem);
+begin
+  if Assigned(FOnInsert) then FOnInsert(Self, AItem);
 end;
 
 {------------------------------------------------------------------------------}
@@ -203,35 +228,22 @@ end;
 {------------------------------------------------------------------------------}
 {   TCustomListView ItemDeleted                                                }
 {------------------------------------------------------------------------------}
-procedure TCustomListView.ItemDeleted(const AIndex : Integer);  //called by TListItems
+procedure TCustomListView.ItemDeleted(const AItem: TListItem);  //called by TListItems
 begin
-  if csDestroying in Componentstate Then Exit;
-  if FSelected = FListItems[AIndex] then FSelected := nil;
-  DoDeletion(FListItems[AIndex]);
-  if FUpdateCount>0 then
-    Include(FStates,lvUpdateNeeded)
-  else begin
-    //notify the interface....
-    if (not HandleAllocated) or (csLoading in ComponentState) then Exit;
-    TWSCustomListViewClass(WidgetSetClass).ItemDelete(Self, AIndex);
-  end;
-End;
+  if FSelected = AItem then FSelected := nil;
+  if FFocused = AItem then FFocused := nil;
+  if csDestroying in Componentstate then Exit;
+  DoDeletion(AItem);
+end;
 
 {------------------------------------------------------------------------------}
 {   TCustomListView ItemInserted                                               }
 {------------------------------------------------------------------------------}
-procedure TCustomListView.ItemInserted(const AItem: TListItem; const AIndex: Integer);
+procedure TCustomListView.ItemInserted(const AItem: TListItem);
 begin
-  if csDestroying in Componentstate Then Exit;
-  if FUpdateCount > 0 
-  then
-    Include(FStates,lvUpdateNeeded)
-  else begin
-    //notify the interface....
-    if (not HandleAllocated) or (csLoading in ComponentState) then Exit;
-    TWSCustomListViewClass(WidgetSetClass).ItemInsert(Self, AIndex, AItem);
-  end;
-End;
+  if csDestroying in Componentstate then Exit;
+  DoInsert(AItem);
+end;
 
 {------------------------------------------------------------------------------}
 {   TCustomListView SetItems                                                   }
@@ -244,12 +256,13 @@ end;
 {   TCustomListView SetItemVisible                                             }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.SetItemVisible(const AValue : TListItem;
-                                                      const PartialOK: Boolean);
+                                                     const APartialOK: Boolean);
 begin
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
   TWSCustomListViewClass(WidgetSetClass).ItemShow(
-                                         Self, AValue.Index, AValue, PartialOK);
+                                        Self, AValue.Index, AValue, APartialOK);
 end;
+
 {------------------------------------------------------------------------------}
 {   TCustomListView Delete                                                     }
 {------------------------------------------------------------------------------}
@@ -284,7 +297,8 @@ procedure TCustomListView.SetViewStyle(const AValue: TViewStyle);
 begin
   if FViewStyle = AValue then Exit;
   FViewStyle := AValue;
-  UpdateProperties;
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).SetViewStyle(Self, AValue);
 end;
 
 
@@ -295,10 +309,9 @@ procedure TCustomListView.SetSortType(const AValue: TSortType);
 begin
   if FSortType = AValue then Exit;
   FSortType := AValue;
-  if not(AValue in [stNone]) then
-    Sort;
-  UpdateProperties;
-  ColumnsChanged;
+  if not(AValue in [stNone]) then Sort;
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).SetSort(Self, AValue, FSortColumn);
 end;
 
 {------------------------------------------------------------------------------}
@@ -308,9 +321,9 @@ procedure TCustomListView.SetSortColumn(const AValue : Integer);
 begin
   if FSortColumn = AValue then Exit;
   FSortColumn := AValue;
-  if not(FSortType in [stNone]) then
-    Sort;
-  UpdateProperties;
+  if not(FSortType in [stNone]) then Sort;
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).SetSort(Self, FSortType, AValue);
 end;
 
 function CompareItems(Item1, Item2: Pointer): Integer;
@@ -376,28 +389,75 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomListView.BeginUpdate;
 begin
-{$IFNDEF win32}
-  inc(FUpdateCount);
-{$ENDIF}
+  Inc(FUpdateCount);
+  if (FUpdateCount = 1) and HandleAllocated
+  then TWSCustomListViewClass(WidgetSetClass).BeginUpdate(Self);
 end;
 
 {------------------------------------------------------------------------------}
-{   TCustomListView GetSelection                                               }
+{   TCustomListView EndUpdate                                               }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.EndUpdate;
 begin
-{$IFNDEF win32}
-  if FUpdateCount=0 then
-    RaiseGDBException('TCustomListView.EndUpdate FUpdateCount=0');
-  dec(FUpdateCount);
-  if FUpdateCount>0 then exit;
-  DoUpdate;
-{$ENDIF}
+  if FUpdateCount <= 0
+  then RaiseGDBException('TCustomListView.EndUpdate FUpdateCount=0');
+  
+  Dec(FUpdateCount);
+  if (FUpdateCount = 0) and HandleAllocated
+  then TWSCustomListViewClass(WidgetSetClass).EndUpdate(Self);
 end;
 
-function TCustomListView.GetMultiSelect: Boolean;
+function TCustomListView.GetBoundingRect: TRect;
 begin
-  Result:=lvMultiSelect in FStates;
+  if not HandleAllocated
+  then Result := Rect(0,0,0,0)
+  else Result := TWSCustomListViewClass(WidgetSetClass).GetBoundingRect(Self);
+end;
+
+function TCustomListView.GetColumnFromIndex(AIndex: Integer): TListColumn;
+begin
+  Result := FColumns[AIndex];
+end;
+
+function TCustomListView.GetDropTarget: TListItem;
+var
+  idx: Integer;
+begin
+  if not HandleAllocated
+  then idx := -1
+  else idx := TWSCustomListViewClass(WidgetSetClass).GetDropTarget(Self);
+  if idx = -1
+  then Result := nil
+  else Result := FListItems[idx];
+end;
+
+function TCustomListView.GetFocused: TListItem;
+begin
+  Result := FFocused;
+end;
+
+function TCustomListView.GetImageList(const ALvilOrd: Integer): TCustomImageList;
+begin
+  Result := FImages[TListViewImageList(ALvilOrd)];
+end;
+
+function TCustomListView.GetHoverTime: Integer;
+begin
+  if HandleAllocated
+  then Result := TWSCustomListViewClass(WidgetSetClass).GetHoverTime(Self)
+  else Result := FHoverTime;
+end;
+
+function TCustomListView.GetProperty(const ALvpOrd: Integer): Boolean;
+begin
+  Result := (TListViewProperty(ALvpOrd) in FProperties);
+end;
+
+function TCustomListView.GetSelCount: Integer;
+begin
+  if HandleAllocated
+  then Result := TWSCustomListViewClass(WidgetSetClass).GetSelCount(Self)
+  else Result := 0;
 end;
 
 {------------------------------------------------------------------------------}
@@ -408,97 +468,173 @@ begin
   Result := FSelected;
 end;
 
+function TCustomListView.GetTopItem: TListItem;
+var
+  idx: Integer;
+begin
+  if ViewStyle in [vsSmallIcon, vsIcon]
+  then idx := -1
+  else idx := TWSCustomListViewClass(WidgetSetClass).GetTopItem(Self);
+  if idx = -1
+  then Result := nil
+  else Result := FListItems[idx];
+end;
+
+function TCustomListView.GetViewOrigin: TPoint;
+begin
+  Result := Point(FScrolledLeft, FScrolledTop);
+end;
+
+function TCustomListView.GetVisibleRowCount: Integer;
+begin
+  if ViewStyle in [vsReport, vsList]
+  then Result := TWSCustomListViewClass(WidgetSetClass).GetVisibleRowCount(Self)
+  else Result := 0;
+end;
+
+procedure TCustomListView.SetAllocBy(const AValue: Integer);
+begin
+  if FAllocBy = AValue then Exit;
+  FAllocBy := AValue;
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).SetAllocBy(Self, AValue);
+end;
+
+procedure TCustomListView.SetDefaultItemHeight(AValue: Integer);
+begin
+  if AValue <=0 then AValue := 20;
+  if AValue = FDefaultItemHeight then Exit;
+  FDefaultItemHeight := AValue;
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).SetDefaultItemHeight(Self, AValue);
+end;
+
+procedure TCustomListView.SetDropTarget(const AValue: TListItem);
+begin
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, AValue.Index, AValue, lisDropTarget, True);
+end;
+
+procedure TCustomListView.SetFocused(const AValue: TListItem);
+begin
+  if FFocused = AValue then exit;
+  FFocused := AValue;
+  if not HandleAllocated then exit;
+  TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FFocused.Index, FFocused, lisFocused, True);
+end;
+
+procedure TCustomListView.SetHotTrackStyles(const AValue: TListHotTrackStyles);
+begin
+  if FHotTrackStyles = AValue then Exit;
+  FHotTrackStyles := AValue;
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).SetHotTrackStyles(Self, AValue);
+end;
+
+procedure TCustomListView.SetHoverTime(const AValue: Integer);
+begin
+  if FHoverTime = AValue then Exit;
+  FHoverTime := AValue;
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).SetHoverTime(Self, FHoverTime);
+end;
+
+procedure TCustomListView.SetImageList(const ALvilOrd: Integer; const AValue: TCustomImageList);
+var
+  lvil: TListViewImageList;
+begin
+  lvil := TListViewImageList(ALvilOrd);
+
+  if FImages[lvil] = AValue then Exit;
+
+  if FImages[lvil] <> nil
+  then FImages[lvil].UnregisterChanges(FImageChangeLink);
+
+  FImages[lvil] := AValue;
+
+  if FImages[lvil] <> nil
+  then begin
+    FImages[lvil].RegisterChanges(FImageChangeLink);
+    FImages[lvil].FreeNotification(self);
+  end;
+
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).SetImageList(Self, lvil, AValue);
+end;
+
 {------------------------------------------------------------------------------}
 {   TCustomListView SetSelection                                               }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.SetSelection(const AValue: TListItem);
 begin
-  if FSelected=AValue then exit;
+  if FSelected = AValue then Exit;
   FSelected := AValue;
-  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  
+  if not HandleAllocated then Exit;
   TWSCustomListViewClass(WidgetSetClass).ItemSetState(Self, FSelected.Index, FSelected, lisSelected, True);
 end;
 
-procedure TCustomListView.SetMultiSelect(const AValue: Boolean);
+procedure TCustomListView.SetOwnerData(const AValue: Boolean);
 begin
-  if MultiSelect = AValue then exit;
-  if AValue then
-    Include(FStates,lvMultiSelect)
-  else
-    Exclude(FStates,lvMultiSelect);
-  if FUpdateCount>0 then
-    Include(FStates,lvUpdateNeeded)
-  else begin
-    //notify the interface...
-    UpdateProperties;
-  end;
+  if FOwnerData=AValue then exit;
+  FOwnerData:=AValue;
 end;
 
-procedure TCustomListView.SetSmallImages(const AValue: TCustomImageList);
+procedure TCustomListView.SetProperty(const ALvpOrd: Integer; const AIsSet: Boolean);
+var
+  AProp: TListViewProperty;
 begin
-  if AValue <> FSmallImages then
-  Begin
-    if FSmallImages <> nil then
-      FSmallImages.UnregisterChanges(FImageChangeLink);
+  AProp := TListViewProperty(ALvpOrd);
+  if (AProp in FProperties) = AIsSet then Exit;
 
-      FSmallImages := AValue;
+  if AIsSet
+  then Include(FProperties, AProp)
+  else Exclude(FProperties, AProp);
 
-    if FSmallImages <> nil then
-      Begin
-        FSmallImages.RegisterChanges(FImageChangeLink);
-        FSmallImages.FreeNotification(self);
-      end;
-    UpdateProperties;
-  end;
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).SetProperty(Self, AProp, AIsSet);
 end;
 
-Procedure TCustomListView.ImageChanged(Sender : TObject);
+procedure TCustomListView.ImageChanged(Sender : TObject);
 begin
   if csDestroying in ComponentState Then Exit;
-  if FUpdateCount>0 then
-    Include(FStates,lvUpdateNeeded)
-  else begin
-    //image changed so redraw it all....
-    UpdateProperties;
-  end;
+// TODO: move Imagelist to interface, image changes can be update there
+//  if FUpdateCount>0 then
+//    Include(FStates,lvUpdateNeeded)
+//  else begin
+//    //image changed so redraw it all....
+//    UpdateProperties;
+//  end;
 end;
 
-procedure TCustomListView.SetScrollBars(const Value: TScrollStyle);
+procedure TCustomListView.SetScrollBars(const AValue: TScrollStyle);
 begin
-  if (FScrollBars = Value) then exit;
-  FScrollBars := Value;
-  if FUpdateCount>0 then
-    Include(FStates,lvUpdateNeeded)
-  else begin
-    //notify the interface...
-    if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    RecreateWnd;
-    UpdateScrollBars;
-  end;
+  if (FScrollBars = AValue) then exit;
+  FScrollBars := AValue;
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).SetScrollBars(Self, AValue);
+  UpdateScrollBars;
 end;
 
 procedure TCustomListView.SetScrolledLeft(AValue: integer);
 begin
   if AValue<0 then AValue:=0;
   if AValue=FScrolledLeft then exit;
-//temp  if AValue>GetMaxScrollLeft then AValue:=GetMaxScrollLeft;
-  if AValue=FScrolledLeft then exit;
+//  if AValue>GetMaxScrolledLeft then AValue:=GetMaxScrolledLeft;
+//  if AValue=FScrolledLeft then exit;
   FScrolledLeft:=AValue;
-//  Include(FStates,tvsScrollbarChanged);
-  Invalidate;
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).SetScrolledLeft(Self, AValue);
 end;
 
 procedure TCustomListView.SetScrolledTop(AValue: integer);
 begin
-  if FScrolledTop=AValue then exit;
   if AValue<0 then AValue:=0;
-//temp  if AValue>GetMaxScrollTop then AValue:=GetMaxScrollTop;
-  if AValue=FScrolledTop then exit;
+  if FScrolledTop=AValue then Exit;
+//  if AValue>GetMaxScrolledTop then AValue:=GetMaxScrolledTop;
+//  if AValue=FScrolledTop then Exit;
   FScrolledTop:=AValue;
-//  FStates:=FStates+[tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate,
-//                    tvsScrollbarChanged];
-  Invalidate;
+  if not HandleAllocated then Exit;
+  TWSCustomListViewClass(WidgetSetClass).SetScrolledTop(Self, AValue);
 end;
 
 procedure TCustomListView.UpdateScrollbars;
@@ -534,7 +670,7 @@ begin
       if fScrollBars in [ssBoth, ssVertical] then begin
         // vertical scrollbar
         ScrollInfo.nMin := 0;
-        ScrollInfo.nPage := (ClientHeight-ScrollBarWidth)-FDefItemHeight;
+        ScrollInfo.nPage := (ClientHeight-ScrollBarWidth)-FDefaultItemHeight;
         if ScrollInfo.nPage<1 then ScrollInfo.nPage:=1;
         ScrollInfo.nMax := {GetMaxScrollTop+}ScrollInfo.nPage;
         if ScrollInfo.nMax<1 then ScrollInfo.nMax:=1;
@@ -558,13 +694,13 @@ begin
     SB_LEFT:       ScrolledLeft := 0;
     SB_RIGHT:      ScrolledLeft := width{GetMaxScrollLeft};
       // Scrolls one line left / right
-    SB_LINERIGHT:  ScrolledLeft := ScrolledLeft + FDefItemHeight div 2;
-    SB_LINELEFT:   ScrolledLeft := ScrolledLeft - FDefItemHeight div 2;
+    SB_LINERIGHT:  ScrolledLeft := ScrolledLeft + FDefaultItemHeight div 2;
+    SB_LINELEFT:   ScrolledLeft := ScrolledLeft - FDefaultItemHeight div 2;
       // Scrolls one page of lines left / right
     SB_PAGERIGHT:  ScrolledLeft := ScrolledLeft + (ClientHeight-ScrollBarWidth)
-                                       - FDefItemHeight;
+                                       - FDefaultItemHeight;
     SB_PAGELEFT:   ScrolledLeft := ScrolledLeft - (ClientHeight-ScrollBarWidth)
-                                       + FDefItemHeight;
+                                       + FDefaultItemHeight;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
     SB_THUMBTRACK: ScrolledLeft := Msg.Pos;
@@ -580,13 +716,13 @@ begin
     SB_TOP:        ScrolledTop := 0;
     SB_BOTTOM:     ScrolledTop := Height{GetMaxScrollTop};
       // Scrolls one line up / down
-    SB_LINEDOWN:   ScrolledTop := ScrolledTop + FDefItemHeight div 2;
-    SB_LINEUP:     ScrolledTop := ScrolledTop - FDefItemHeight div 2;
+    SB_LINEDOWN:   ScrolledTop := ScrolledTop + FDefaultItemHeight div 2;
+    SB_LINEUP:     ScrolledTop := ScrolledTop - FDefaultItemHeight div 2;
       // Scrolls one page of lines up / down
     SB_PAGEDOWN:   ScrolledTop := ScrolledTop + (ClientHeight-ScrollBarWidth)
-                                     - FDefItemHeight;
+                                     - FDefaultItemHeight;
     SB_PAGEUP:     ScrolledTop := ScrolledTop - (ClientHeight-ScrollBarWidth)
-                                     + FDefItemHeight;
+                                     + FDefaultItemHeight;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
     SB_THUMBTRACK: ScrolledTop := Msg.Pos;
@@ -605,20 +741,14 @@ begin
   Result := 0;
 end;
 
-procedure TCustomListView.SetDefaultItemHeight(AValue: integer);
-begin
-  if AValue<=0 then AValue:=20;
-  if AValue=FDefItemHeight then exit;
-  FDefItemHeight:=AValue;
-//  Include(FStates,tvsTopsNeedsUpdate);
-  Invalidate;
-end;
-
 // included by comctrls.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.43  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.42  2004/11/25 14:28:45  vincents
   disabled TCustomListView.Begin/EndUpdate on win32.
 

@@ -545,17 +545,20 @@ type
   TListItemState = (lisCut, lisDropTarget, lisFocused, lisSelected);
   TListItemStates = set of TListItemState;
   
+  TListItemFlag = (lifDestroying, lifCreated);
+  TListItemFlags = set of TListItemFlag;
+  
   TListItem = class(TPersistent)
   private
     FOwner: TListItems;
+    FFlags: TListItemFlags;
     FSubItems: TStrings;
     FCaption: String;
     FData: Pointer;
     FImageIndex: Integer;
-    FDestroying: Boolean;
     FStates: TListItemStates;
     function GetState(const ALisOrd: Integer): Boolean;
-    function GetIndex : Integer;
+    function GetIndex: Integer;
     function GetSubItemImages(const AIndex: Integer): Integer;
     function GetSubItems: TStrings;
 
@@ -564,10 +567,10 @@ type
     procedure IntfUpdateImages;
 
     procedure SetState(const ALisOrd: Integer; const AIsSet: Boolean);
-    procedure SetSubItemImages(const AIndex, AValue: Integer);
     procedure SetData(const AValue: Pointer);
     procedure SetImageIndex(const AValue: Integer);
     procedure SetCaption(const AValue : String);
+    procedure SetSubItemImages(const AIndex, AValue: Integer);
     procedure SetSubItems(const AValue: TStrings);
   protected
     function IsEqual(const AItem: TListItem): Boolean;
@@ -608,7 +611,9 @@ type
     FItems: TList;        
     FCacheIndex: Integer;  // Caches the last used item 
     FCacheItem: TListItem; //
-    procedure ItemDeleted(const AItem: TListItem); //called by TListItem when freed
+    procedure IntfCreateCacheItem;
+    function IntfUpdateAllowed: Boolean;
+    procedure ItemDestroying(const AItem: TListItem); //called by TListItem when freed
     procedure ReadData(Stream: TStream);
     procedure WriteData(Stream: TStream);
   protected
@@ -616,7 +621,8 @@ type
     function GetCount : Integer;
     function GetItem(const AIndex: Integer): TListItem;
     function IndexOf(const AItem: TListItem): Integer;
-    procedure SetITem(const AIndex: Integer; const AValue: TListItem);
+    procedure IntfCreateItems;
+    procedure SetItem(const AIndex: Integer; const AValue: TListItem);
   public
     function Add: TListItem;
     procedure AddItem(AItem: TListItem);
@@ -649,6 +655,7 @@ type
     FImageIndex: Integer;
     FTag: Integer;
     function GetWidth: TWidth;
+    procedure IntfCreateColumn;
     function IntfUpdateAllowed: Boolean;
     procedure SetVisible(const AValue: Boolean);
     procedure SetAutoSize(const AValue: Boolean);
@@ -673,7 +680,7 @@ type
     property MaxWidth: TWidth read FMaxWidth write SetMaxWidth default 0;
     property MinWidth: TWidth read FMinWidth write SetMinWidth default 0;
     property Tag: Integer read FTag write FTag default 0;
-    property Visible : Boolean read FVisible write SetVisible default true;
+    property Visible: Boolean read FVisible write SetVisible default true;
     property Width: TWidth read GetWidth write SetWidth default 50;
   end;
 
@@ -687,9 +694,9 @@ type
     FItemNeedsUpdate: TCollectionItem;
     FNeedsUpdate: boolean;
     function GetItem(const AIndex: Integer): TListColumn;
+    procedure IntfCreateColumns;
     procedure SetItem(const AIndex: Integer; const AValue: TListColumn);
   protected
-    procedure Update(AnItem: TCollectionItem); override;
   public
     constructor Create(TheOwner: TCustomListView);
     destructor Destroy; override;
@@ -706,7 +713,7 @@ type
   { TCustomListView }
 
   TItemChange = (ctText, ctImage, ctState);
-  TViewStyle = (vsList,vsReport);
+  TViewStyle = (vsIcon, vsSmallIcon, vsList, vsReport);
 
   TLVChangeEvent = procedure(Sender: TObject; Item: TListItem;
                              Change: TItemChange) of object;
@@ -717,26 +724,58 @@ type
   TLVCompareEvent = procedure(Sender: TObject; Item1, Item2: TListItem;
                                Data: Integer; var Compare: Integer) of object;
   TLVDeletedEvent = procedure(Sender: TObject; Item: TListItem) of object;
+  TLVInsertEvent = TLVDeletedEvent;
   TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem;
                                  Selected: Boolean) of object;
 
-  TListViewState = (lvMultiSelect, lvUpdateNeeded, lvPropertiesNeedsUpdate);
-  TListViewStates = set of TListViewState;
+  TListViewProperty = (
+    lvpAutoArrange,
+    lvpCheckboxes,
+    lvpColumnClick,
+    lvpFlatScrollBars,
+    lvpFullDrag,
+    lvpGridLines,
+    lvpHideSelection,
+    lvpHotTrack,
+    lvpMultiSelect,
+    lvpOwnerDraw,
+    lvpReadOnly,
+    lvpRowSelect,
+    lvpShowColumnHeaders,
+    lvpShowWorkAreas,
+    lvpWrapText
+  );
+  TListViewProperties = set of TListViewProperty;
+
+  TListViewImageList = (lvilSmall, lvilLarge, lvilState);
+  
+  TListHotTrackStyle = (htHandPoint, htUnderlineCold, htUnderlineHot);
+  TListHotTrackStyles = set of TListHotTrackStyle;
+
+  { TCustomListView }
 
   TCustomListView = class(TWinControl)
   private
-    FDefItemHeight: integer;
-    FSmallImages : TCustomImageList;
-    FListItems : TListItems;
-    FColumns : TListColumns;
-    FViewStyle : TViewStyle;
+    FAllocBy: Integer;
+    FCanvas: TCanvas;
+    FDefaultItemHeight: integer;
+    FHotTrackStyles: TListHotTrackStyles;
+//    FIconOptions: TIconOptions;
+    FOwnerData: Boolean;
+    FListItems: TListItems;
+    FColumns: TListColumns;
+    FImages: array[TListViewImageList] of TCustomImageList;
+
+    FViewStyle: TViewStyle;
     FSortType: TSortType;
-    FSortColumn : Integer;
+    FSortColumn: Integer;
     FImageChangeLink : TChangeLink;
     FScrollBars: TScrollStyle;
     FScrolledLeft: integer; // horizontal scrolled pixels (hidden pixels at top)
     FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
     FSelected: TListItem;   // temp copy of the selected item
+    FFocused: TListItem;    // temp copy of the focused item
+    FHoverTime: Integer;    // temp copy of the hover time (the time a mouse must be over a item to auto select)
     FLastHorzScrollInfo: TScrollInfo;
     FLastVertScrollInfo: TScrollInfo;
     FUpdateCount: integer;
@@ -744,17 +783,37 @@ type
     FOnColumnClick: TLVColumnClickEvent;
     FOnCompare: TLVCompareEvent;
     FOnDeletion: TLVDeletedEvent;
+    FOnInsert: TLVInsertEvent;
     FOnSelectItem: TLVSelectItemEvent;
-    FStates: TListViewStates;
-    function GetMultiSelect: Boolean;
+    FProperties: TListViewProperties;
+//    FWorkAreas: TWorkAreas;
+    function GetBoundingRect: TRect;
+    function GetColumnFromIndex(AIndex: Integer): TListColumn;
+    function GetDropTarget: TListItem;
+    function GetFocused: TListItem;
+    function GetImageList(const ALvilOrd: Integer): TCustomImageList;
+    function GetHoverTime: Integer;
+    function GetProperty(const ALvpOrd: Integer): Boolean;
+    function GetSelCount: Integer;
     function GetSelection: TListItem;
+    function GetTopItem: TListItem;
+    function GetViewOrigin: TPoint;
+    function GetVisibleRowCount: Integer;
+
+    procedure SetAllocBy(const AValue: Integer);
     procedure SetColumns(const AValue: TListColumns);
-    procedure SetDefaultItemHeight(AValue: integer);
+    procedure SetDefaultItemHeight(AValue: Integer);
+    procedure SetDropTarget(const AValue: TListItem);
+    procedure SetFocused(const AValue: TListItem);
+    procedure SetHotTrackStyles(const AValue: TListHotTrackStyles);
+    procedure SetHoverTime(const AValue: Integer);
+//    procedure SetIconOptions(const AValue: TIconOptions);
+    procedure SetImageList(const ALvilOrd: Integer; const AValue: TCustomImageList);
     procedure SetItems(const AValue : TListItems);
-    procedure SetItemVisible(const Avalue: TListItem; const PartialOK: Boolean);
-    procedure SetMultiSelect(const AValue: Boolean);
-    procedure SetSmallImages(const AValue: TCustomImageList);
-    procedure SetScrollBars(const Value: TScrollStyle);
+    procedure SetItemVisible(const AValue: TListItem; const APartialOK: Boolean);
+    procedure SetOwnerData(const AValue: Boolean);
+    procedure SetProperty(const ALvpOrd: Integer; const AIsSet: Boolean);
+    procedure SetScrollBars(const AValue: TScrollStyle);
     procedure SetScrolledLeft(AValue: Integer);
     procedure SetScrolledTop(AValue: Integer);
     procedure SetSelection(const AValue: TListItem);
@@ -764,23 +823,19 @@ type
     procedure Sort;
     procedure UpdateScrollbars;
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
-    procedure DoUpdate;
-    procedure UpdateProperties;
   protected
     //called by TListItems
-    procedure ItemDeleted(const AIndex: Integer);  
-    procedure ItemInserted(const AItem: TListItem; const AIndex: Integer);  
+    procedure ItemDeleted(const AItem: TListItem);
+    procedure ItemInserted(const AItem: TListItem);
 
-    //called by TListColumns
-    procedure ColumnsChanged; 
   protected
     procedure InitializeWnd; override;
-    procedure Loaded; override;
     procedure Change(AItem: TListItem; AChange: Integer); dynamic;
     procedure ColClick(AColumn: TListColumn); dynamic;
 
     procedure Delete(Item : TListItem);
     procedure DoDeletion(AItem: TListItem); dynamic;
+    procedure DoInsert(AItem: TListItem); dynamic;
     procedure DoSelectItem(AItem: TListItem; ASelected: Boolean); dynamic;
     procedure InsertItem(Item : TListItem);
     function GetMaxScrolledLeft : Integer;
@@ -788,27 +843,37 @@ type
     procedure ImageChanged(Sender : TObject);
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
+  protected
+    property AllocBy: Integer read FAllocBy write SetAllocBy default 0;
+    property BorderStyle default bsSingle;
     property Columns: TListColumns read FColumns write SetColumns;
-//    property ColumnClick: Boolean read FColumnClick write SetColumnClick default True;
-    property DefaultItemHeight: integer read FDefItemHeight write SetDefaultItemHeight;
-//    property HideSelection: Boolean read FHideSelection write SetHideSelection default True;
+    property ColumnClick: Boolean index Ord(lvpColumnClick) read GetProperty write SetProperty default True;
+    property DefaultItemHeight: integer read FDefaultItemHeight write SetDefaultItemHeight;
+    property HideSelection: Boolean index Ord(lvpHideSelection) read GetProperty write SetProperty default True;
+    property HoverTime: Integer read GetHoverTime write SetHoverTime default -1;
+//    property IconOptions: TIconOptions read FIconOptions write SetIconOptions;
     property Items: TListItems read FListItems write SetItems;
-    property MultiSelect: Boolean read GetMultiSelect write SetMultiSelect default False;
-//    property ReadOnly: Boolean read FReadOnly write SetReadOnly;
-//    property RowSelect: Boolean read FRowSelect write SetRowSelect default False;
+    property LargeImages: TCustomImageList index Ord(lvilLarge) read GetImageList write SetImageList;
+    property MultiSelect: Boolean index Ord(lvpMultiselect) read GetProperty write SetProperty default False;
+    property OwnerData: Boolean read FOwnerData write SetOwnerData default False;
+    property OwnerDraw: Boolean index Ord(lvpOwnerDraw) read GetProperty write SetProperty default False;
+    property ReadOnly: Boolean index Ord(lvpReadOnly) read GetProperty write SetProperty default False;
     property ScrolledLeft: integer read FScrolledLeft write SetScrolledLeft;
     property ScrolledTop: integer read FScrolledTop write SetScrolledTop;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars default ssBoth;
-    property SmallImages: TCustomImageList read FSmallImages write SetSmallImages;
+    property ShowColumnHeaders: Boolean index Ord(lvpShowColumnHeaders) read GetProperty write SetProperty default True;
+    property ShowWorkAreas: Boolean index Ord(lvpShowWorkAreas) read GetProperty write SetProperty default False;
+    property SmallImages: TCustomImageList index Ord(lvilSmall) read GetImageList write SetImageList;
     property SortType: TSortType read FSortType write SetSortType;
     property SortColumn: Integer read FSortColumn write SetSortColumn;
+    property StateImages: TCustomImageList index Ord(lvilState) read GetImageList write SetImageList;
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle;
     property OnChange: TLVChangeEvent read FOnChange write FOnChange;
     property OnColumnClick: TLVColumnClickEvent read FOnColumnClick write FOnColumnClick;
     property OnCompare: TLVCompareEvent read FOnCompare write FOnCompare;
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
+    property OnInsert: TLVInsertEvent read FOnInsert write FOnInsert;
     property OnSelectItem: TLVSelectItemEvent read FOnSelectItem write FOnSelectItem;
-    property BorderStyle default bsSingle;
     {$ifdef ver1_0}
     // repeated as workaround for fpc 1.0.x bug,
     // which can't access a protected property defined in another unit.
@@ -819,8 +884,26 @@ type
     destructor Destroy; override;
     procedure BeginUpdate;
     procedure EndUpdate;
+  public
+    property BoundingRect: TRect read GetBoundingRect;
+    property Canvas: TCanvas read FCanvas;
+    property Checkboxes: Boolean index Ord(lvpCheckboxes) read GetProperty write SetProperty default False;
+    property Column[AIndex: Integer]: TListColumn read GetColumnFromIndex;
+    property DropTarget: TListItem read GetDropTarget write SetDropTarget;
+    property FlatScrollBars: Boolean index Ord(lvpFlatScrollBars) read GetProperty write SetProperty default False;
+    property FullDrag: Boolean index Ord(lvpFullDrag) read GetProperty write SetProperty default False;
+    property GridLines: Boolean index Ord(lvpGridLines) read GetProperty write SetProperty default False;
+    property HotTrack: Boolean index Ord(lvpHotTrack) read GetProperty write SetProperty  default False;
+    property HotTrackStyles: TListHotTrackStyles read FHotTrackStyles write SetHotTrackStyles default [];
+    property ItemFocused: TListItem read GetFocused write SetFocused;
+    property RowSelect: Boolean index Ord(lvpRowSelect) read GetProperty write SetProperty default False;
+    property SelCount: Integer read GetSelCount;
     property Selected: TListItem read GetSelection write SetSelection;
     property TabStop default true;
+    property TopItem: TListItem read GetTopItem;
+    property ViewOrigin: TPoint read GetViewOrigin;
+    property VisibleRowCount: Integer read GetVisibleRowCount;
+//    property WorkAreas: TWorkAreas read FWorkAreas;
   end;
 
 
@@ -829,26 +912,42 @@ type
   TListView = class(TCustomListView)
   published
     property Align;
+//    property AllocBy;
     property Anchors;
     property BorderSpacing;
 //    property BorderStyle;
     property BorderWidth;
+//    property Checkboxes;
     property Color default clWindow;
     property Columns;
-//    property ColumnClick;
+    property ColumnClick;
     property Constraints;
+//    property DefaultItemHeight;
+//    property DropTarget;
     property Enabled;
+//    property FlatScrollBars;
     property Font;
+//    property FullDrag;
+//    property GridLines;
 //    property HideSelection;
+//    property HotTrack;
+//    property HotTrackStyles;
+//    property HoverTime;
     property Items;
+    property LargeImages;
     property MultiSelect;
+//    property OwnerData;
+//    property OwnerDraw;
     property PopupMenu;
 //    property ReadOnly default False;
-//    property RowSelect;
+    property RowSelect;
     property ScrollBars;
+    property ShowColumnHeaders;
+//    property ShowWorkAreas;
     property SmallImages;
     property SortColumn;
     property SortType;
+    property StateImages;
     property TabStop;
     property Visible;
     property ViewStyle;
@@ -2304,6 +2403,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.166  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.165  2005/02/21 21:54:23  micha
   make Action property published for TStatusBar (fired when clicking the statusbar?)
 

@@ -178,8 +178,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.ItemsChanged (Sender : TObject);
 begin
+  // TODO: Remove RecreateWnd
   if HandleAllocated and (not (csLoading in ComponentState)) then
-    RecreateWnd;
+    RecreateWnd(Self);
   OwnerFormDesignerModified(Self);
 end;
 
@@ -215,8 +216,9 @@ begin
   if (Value <> FItems) then
   begin
     FItems.Assign(Value);
+    // TODO: Remove RecreateWnd
     if HandleAllocated and (not (csLoading in ComponentState)) then
-      RecreateWnd;
+      RecreateWnd(Self);
   end;
 end;
 
@@ -305,7 +307,8 @@ begin
   inherited ReadState(Reader);
   FReading := False;
   if (fItemIndex<-1) or (fItemIndex>=FItems.Count) then fItemIndex:=-1;
-  if HandleAllocated then RecreateWnd;
+  // TODO: Remove RecreateWnd
+  if HandleAllocated then RecreateWnd(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -396,6 +399,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.6  2005/01/29 14:36:04  mattias
   reactivated fast xml units without widestrings
 

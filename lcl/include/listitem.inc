@@ -318,30 +318,13 @@ constructor TListItem.Create(AOwner : TListItems);
 begin
   inherited Create;
   FOwner := AOwner;
-  FDestroying := False;
+  FFlags := [];
   FStates := [];
   FImageIndex := -1;
   FSubItems := nil;
-end;
-
-{------------------------------------------------------------------------------}
-{   TListItem SetCaption                                                       }
-{------------------------------------------------------------------------------}
-procedure TListItem.SetCaption(const AValue : String);
-begin
-  if FCaption = AValue then Exit;
-  FCaption := AValue;
-  if IntfUpdateAllowed
-  then TWSCustomListViewClass(FOwner.FOwner.WidgetSetClass).ItemSetText(FOwner.FOwner, GetIndex, Self, 0, FCaption); 
-end;
-
-{------------------------------------------------------------------------------}
-{   TListItem SetData                                                          }
-{------------------------------------------------------------------------------}
-procedure TListItem.SetData(const AValue: Pointer);
-begin
-  FData := AValue;
-  // TODO: Sort
+  
+  // We can't create ourself in the interface since we don't know out index here
+  // So interface creation is done in TListItems
 end;
 
 {------------------------------------------------------------------------------}
@@ -359,9 +342,21 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItem.Delete;
 begin
-  if not FDestroying then Free;
+  if not (lifDestroying in FFlags) then Free;
 end;
 
+{------------------------------------------------------------------------------}
+{   TListItem Destructor                                                       }
+{------------------------------------------------------------------------------}
+destructor TListItem.Destroy;
+begin
+  Include(FFlags, lifDestroying);
+  if FOwner <> nil
+  then FOwner.ItemDestroying(Self);
+
+  FreeAndNil(FSubItems);
+  inherited Destroy;
+end;
 
 {------------------------------------------------------------------------------}
 {   TListItem IntfUpdateText                                                   }
@@ -432,11 +427,9 @@ end;
 {------------------------------------------------------------------------------}
 function TListItem.IntfUpdateAllowed: Boolean;
 begin
-  Result := not FDestroying
+  Result := (FFlags * [lifDestroying, lifCreated] = [lifCreated])
     and (FOwner <> nil)
-    and (FOwner.FOwner <> nil)
-    and FOwner.FOwner.HandleAllocated
-    and not (csDestroying in FOwner.FOwner.ComponentState);
+    and FOwner.IntfUpdateAllowed;
 end;
 
 {------------------------------------------------------------------------------}
@@ -447,32 +440,6 @@ begin
   Result := (Caption = AItem.Caption) 
         and (Data = AItem.Data) 
         and (FStates = AItem.FStates);
-end;
-
-{------------------------------------------------------------------------------}
-{   TListItem Destructor                                                       }
-{------------------------------------------------------------------------------}
-destructor TListItem.Destroy;
-begin
-  FDestroying := True;
-  if FOwner <> nil
-  then FOwner.ItemDeleted(Self);
-  
-  FreeAndNil(FSubItems);
-  inherited Destroy;
-end;
-
-{------------------------------------------------------------------------------}
-{   TListItem SetImageIndex                                                    }
-{------------------------------------------------------------------------------}
-procedure TListItem.SetImageIndex(const AValue: Integer);
-begin
-  if AValue = FImageIndex then Exit;
-  
-  FImageIndex := AValue;
-
-  if IntfUpdateAllowed
-  then TWSCustomListViewClass(FOwner.FOwner.WidgetSetClass).ItemSetImage(FOwner.FOwner, GetIndex, Self, 0, FImageIndex); 
 end;
 
 {------------------------------------------------------------------------------}
@@ -524,6 +491,39 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{   TListItem SetCaption                                                       }
+{------------------------------------------------------------------------------}
+procedure TListItem.SetCaption(const AValue : String);
+begin
+  if FCaption = AValue then Exit;
+  FCaption := AValue;
+  if IntfUpdateAllowed
+  then TWSCustomListViewClass(FOwner.FOwner.WidgetSetClass).ItemSetText(FOwner.FOwner, GetIndex, Self, 0, FCaption);
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItem SetData                                                          }
+{------------------------------------------------------------------------------}
+procedure TListItem.SetData(const AValue: Pointer);
+begin
+  FData := AValue;
+  // TODO: Sort
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItem SetImageIndex                                                    }
+{------------------------------------------------------------------------------}
+procedure TListItem.SetImageIndex(const AValue: Integer);
+begin
+  if AValue = FImageIndex then Exit;
+
+  FImageIndex := AValue;
+
+  if IntfUpdateAllowed
+  then TWSCustomListViewClass(FOwner.FOwner.WidgetSetClass).ItemSetImage(FOwner.FOwner, GetIndex, Self, 0, FImageIndex);
+end;
+
+{------------------------------------------------------------------------------}
 {   TListItem SetState                                                         }
 {------------------------------------------------------------------------------}
 procedure TListItem.SetState(const ALisOrd: Integer; const AIsSet: Boolean);
@@ -532,13 +532,13 @@ var
   LV: TCustomListView;
 begin
   AState := TListItemState(ALisOrd);
-  
+
   if (AState in FStates) = AIsSet then Exit;
-  
+
   if AIsSet
   then Include(FStates, AState)
   else Exclude(FStates, AState);
- 
+
   if not IntfUpdateAllowed then Exit;
   LV := FOwner.FOwner;
   TWSCustomListViewClass(LV.WidgetSetClass).ItemSetState(LV, GetIndex, Self, AState, AIsSet);
@@ -564,6 +564,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2005/02/26 17:08:41  marc
+  * Reworked listviews to match new interface
+
   Revision 1.20  2004/09/08 23:05:35  mattias
   improved TListView.SetItemVisible  from Andrew Haines
 
