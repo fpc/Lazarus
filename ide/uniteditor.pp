@@ -3429,6 +3429,9 @@ begin
       TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
       DirectoryComboBox.Items.Assign(InputHistories.FindInFilesPathHistory);
       FileMaskComboBox.Items.Assign(InputHistories.FindInFilesMaskHistory);
+      WhereRadioGroup.ItemIndex:=InputHistories.FindInFilesWhere;
+      IncludeSubDirsCheckBox.Checked:=InputHistories.FindInFilesSubDirs;
+      DirectoryOptionsGroupBox.Enabled:= (WhereRadioGroup.ItemIndex = 2);
     end;//With
   end;//if
 end;//LoadFindInFilesHistory
@@ -3442,6 +3445,8 @@ begin
       InputHistories.AddToFindHistory(FindText);
       InputHistories.AddToFindInFilesPathHistory(DirectoryComboBox.Text);
       InputHistories.AddToFindInFilesMaskHistory(FileMaskComboBox.Text);
+      InputHistories.FindInFilesWhere:=WhereRadioGroup.ItemIndex;
+      InputHistories.FindInFilesSubDirs:=IncludeSubDirsCheckBox.Checked;
     end;//with
     InputHistories.Save;
   end;//if

@@ -407,8 +407,8 @@ resourcestring
   liscompiling = '%s (compiling ...)';
   lisdebugging = '%s (debugging ...)';
   lisUnableToFindFile = 'Unable to find file %s%s%s.';
-  lisUnableToFindFileCheckSearchPathInRunCompilerOption = 'Unable to find '
-    +'file %s%s%s.%sCheck search path in%sRun->Compiler Options...->Search '
+  lisUnableToFindFileCheckSearchPathInProjectCompilerOption = 'Unable to find '
+    +'file %s%s%s.%sCheck search path in%sProject->Compiler Options...->Search '
     +'Paths->Other Unit Files';
   lisNOTECouldNotCreateDefineTemplateForFreePascal = 'NOTE: Could not create '
     +'Define Template for Free Pascal Sources';

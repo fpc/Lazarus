@@ -7520,7 +7520,7 @@ begin
            mtInformation,[mbOk],0)
       end else begin
         MessageDlg(Format(
-          lisUnableToFindFileCheckSearchPathInRunCompilerOption, ['"',
+          lisUnableToFindFileCheckSearchPathInProjectCompilerOption, ['"',
           Filename, '"', #13, #13]),
            mtInformation,[mbOk],0);
       end;
@@ -7581,7 +7581,7 @@ begin
            mtInformation,[mbOk],0)
       end else begin
         MessageDlg(Format(
-          lisUnableToFindFileCheckSearchPathInRunCompilerOption, ['"',
+          lisUnableToFindFileCheckSearchPathInProjectCompilerOption, ['"',
           AFilename, '"', #13, #13]),
            mtInformation,[mbOk],0);
       end;
@@ -10281,6 +10281,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.720  2004/04/08 19:50:06  marc
+  patch from Darek Mazur
+
   Revision 1.719  2004/04/03 18:16:39  mattias
   Save SpeedButton is now disabled after save
 

@@ -161,6 +161,8 @@ type
     FReplaceHistory: TStringList;
     FFindInFilesPathHistory: TStringList;
     FFindInFilesMaskHistory: TStringList;
+    FFindInFilesWhere : Integer;
+    FFindInFilesSubDirs : boolean;
     FMaxFindHistory: Integer;
     
     // Unit dependencies
@@ -210,6 +212,8 @@ type
     property FindInFilesMaskHistory: TStringList read FFindInFilesMaskHistory
                                                  write FFindInFilesMaskHistory;
     property MaxFindHistory: Integer read FMaxFindHistory write FMaxFindHistory;
+    property FindInFilesWhere: Integer read FFindInFilesWhere write FFindInFilesWhere;
+    property FindInFilesSubDirs: Boolean read FFindInFilesSubDirs write FFindInFilesSubDirs;
     property Filename: string read FFilename write SetFilename;
 
     // Unit dependencies
@@ -326,6 +330,9 @@ begin
                                             'FindInFiles/History/Paths/');
   LoadRecentList(XMLConfig,FFindInFilesMaskHistory,Path+
                                             'FindInFiles/History/Masks/');
+  FFindInFilesWhere:=XMLConfig.GetValue(Path+'FindInFiles/Where',FFindInFilesWhere);
+  FFIndInFilesSubDirs:=
+    XMLConfig.GetValue(Path+'FindInFiles/SubDirs',false);
   // unit dependencies
   LoadRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/');
   // fpc config cache
@@ -367,6 +374,9 @@ begin
                                             'FindInFiles/History/Paths/');
   SaveRecentList(XMLConfig,FFindInFilesMaskHistory,Path+
                                             'FindInFiles/History/Masks/');
+  XMLConfig.SetDeleteValue(Path+'FindInFiles/Where',FFindInFilesWhere,0);
+  XMLConfig.SetDeleteValue(Path+'FindInFiles/SubDirs',
+                           FFindInFilesSubDirs,false);
   // unit dependencies
   SaveRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/');
   // fpc config cache
