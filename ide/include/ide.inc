@@ -11,7 +11,7 @@
 
 { $DEFINE IDE_MEM_CHECK}
 
-{$DEFINE IDE_DEBUG}
+{ $DEFINE IDE_DEBUG}
 
 // end.
 
