@@ -30,6 +30,7 @@ function FileIsWritable(const AFilename: string): boolean;
 function FileIsText(const AFilename: string): boolean;
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function AppendPathDelim(const Path: string): string;
+function TrimFilename(const AFilename: string): string;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
                           Delimiter: string): string;
 procedure SplitCmdLine(const CmdLine: string;
@@ -281,31 +282,36 @@ end;
 
 function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string): string;
+
+  function FileDoesExists(const AFilename: string): boolean;
+  var s: string;
+  begin
+    s:=ExpandFilename(TrimFilename(AFilename));
+    Result:=FileExists(s);
+    if Result then begin
+      SearchFileInPath:=s;
+      exit;
+    end;
+  end;
+
 var
   p, StartPos, l: integer;
   CurPath, Base: string;
 begin
 //writeln('[SearchFileInPath] Filename="',Filename,'" BasePath="',BasePath,'" SearchPath="',SearchPath,'" Delimiter="',Delimiter,'"');
   if (Filename='') then begin
-    Result:=Filename;
+    Result:='';
     exit;
   end;
   // check if filename absolute
   if FilenameIsAbsolute(Filename) then begin
-    if FileExists(Filename) then begin
-      Result:=ExpandFilename(Filename);
-      exit;
-    end else begin
-      Result:='';
-      exit;
-    end;
-  end;
-  Base:=ExpandFilename(AppendPathDelim(BasePath));
-  // search in current directory
-  if FileExists(Base+Filename) then begin
-    Result:=Base+Filename;
+    if FileDoesExists(Filename) then exit;
+    Result:='';
     exit;
   end;
+  Base:=AppendPathDelim(BasePath);
+  // search in current directory
+  if FileDoesExists(Base+Filename) then exit;
   // search in search path
   StartPos:=1;
   l:=length(SearchPath);
@@ -316,8 +322,7 @@ begin
     if CurPath<>'' then begin
       if not FilenameIsAbsolute(CurPath) then
         CurPath:=Base+CurPath;
-      Result:=ExpandFilename(AppendPathDelim(CurPath)+Filename);
-      if FileExists(Result) then exit;
+      if FileDoesExists(AppendPathDelim(CurPath)+Filename) then exit;
     end;
     StartPos:=p+1;
   end;
@@ -339,6 +344,125 @@ begin
   ProgramFilename:=LeftStr(CmdLine,p-1);
   while (p<=length(CmdLine)) and (CmdLine[p]<=' ') do inc(p);
   Params:=RightStr(CmdLine,length(CmdLine)-p+1);
+end;
+
+function TrimFilename(const AFilename: string): string;
+// trim double path delims, heading and trailing spaces
+// and special dirs . and ..
+var SrcPos, DestPos, l, DirStart: integer;
+  c: char;
+begin
+  Result:=AFilename;
+  l:=length(AFilename);
+  SrcPos:=1;
+  DestPos:=1;
+
+  // skip trailing spaces
+  while (l>=1) and (AFilename[SrcPos]=' ') do dec(l);
+
+  // skip heading spaces
+  while (SrcPos<=l) and (AFilename[SrcPos]=' ') do inc(SrcPos);
+
+  // trim double path delims and special dirs . and ..
+  while (SrcPos<=l) do begin
+    c:=AFilename[SrcPos];
+    // check for double path delims
+    if (c=PathDelim) then begin
+      inc(SrcPos);
+      {$IFDEF win32}
+      if (DestPos>2)
+      {$ELSE}
+      if (DestPos>1)
+      {$ENDIF}
+      and (Result[DestPos-1]=PathDelim) then begin
+        // skip second PathDelim
+        continue;
+      end;
+      Result[DestPos]:=c;
+      inc(DestPos);
+      continue;
+    end;
+    // check for special dirs . and ..
+    if (c='.') then begin
+      if (SrcPos<l) then begin
+        if (AFilename[SrcPos+1]=PathDelim) then begin
+          // special dir ./
+          // -> skip
+          inc(SrcPos,2);
+          continue;
+        end else if (AFilename[SrcPos+1]='.')
+        and (SrcPos+1=l) or (AFilename[SrcPos+2]=PathDelim) then
+        begin
+          // special dir ..
+          //  1. ..      -> copy
+          //  2. /..     -> skip .., keep /
+          //  3. C:..    -> copy
+          //  4. C:\..   -> skip .., keep C:\
+          //  5. \\..    -> skip .., keep \\
+          //  6. xxx../..   -> copy
+          //  7. xxxdir/..  -> trim dir and skip ..
+          if DestPos=1 then begin
+            //  1. ..      -> copy
+          end else if (DestPos=2) and (Result[1]=PathDelim) then begin
+            //  2. /..     -> skip .., keep /
+            inc(SrcPos,2);
+            continue;
+          {$IFDEF win32}
+          end else if (DestPos=3) and (Result[2]=':')
+          and (Result[1] in ['a'..'z','A'..'Z']) then begin
+            //  3. C:..    -> copy
+          end else if (DestPos=4) and (Result[2]=':') and (Result[3]=PathDelim)
+          and (Result[1] in ['a'..'z','A'..'Z']) then begin
+            //  4. C:\..   -> skip .., keep C:\
+            inc(SrcPos,2);
+            continue;
+          end else if (DestPos=3) and (Result[1]=PathDelim)
+          and (Result[2]=PathDelim) then
+            //  5. \\..    -> skip .., keep \\
+            inc(SrcPos,2);
+            continue;
+          {$ENDIF}
+          end else if (DestPos>1) and (Result[DestPos-1]=PathDelim) then begin
+            if (DestPos>3)
+            and (Result[DestPos-2]='.') and (Result[DestPos-3]='.')
+            and ((DestPos=4) or (Result[DestPos-4]=PathDelim)) then begin
+              //  6. ../..   -> copy
+            end else begin
+              //  7. xxxdir/..  -> trim dir and skip ..
+              DirStart:=DestPos-2;
+              while (DirStart>1) and (Result[DirStart-1]<>PathDelim) do
+                dec(DirStart);
+              DestPos:=DirStart;
+              inc(SrcPos,2);
+              continue;
+            end;
+          end;
+        end;
+      end else begin
+        // special dir . at end of filename
+        if DestPos=1 then begin
+          Result:='.';
+          exit;
+        end else begin
+          // skip
+          break;
+        end;
+      end;
+    end;
+    // copy directory
+    repeat
+      Result[DestPos]:=c;
+      inc(DestPos);
+      inc(SrcPos);
+      if (SrcPos>l) then break;
+      c:=AFilename[SrcPos];
+      if c=PathDelim then break;
+    until false;
+  end;
+  // trim result
+  if DestPos<=length(AFilename) then
+    SetLength(Result,DestPos-1);
+writeln(' TrimFilename "',AFilename,'" -> "',Result,'"');
 end;
 
 procedure FreeThenNil(var Obj: TObject);

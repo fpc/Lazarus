@@ -299,15 +299,16 @@ begin
             inc(SrcPos,2);
             continue;
           {$ENDIF}
-          end else begin
-            DirStart:=DestPos;
-            while (DirStart>1) and (Result[DirStart-1]<>PathDelim) do
-              dec(DirStart);
-            if (DestPos-DirStart=2) and (Result[DirStart]='.')
-            and (Result[DirStart+1]='.') then begin
-              //  6. xxx../..   -> copy
+          end else if (DestPos>1) and (Result[DestPos-1]=PathDelim) then begin
+            if (DestPos>3)
+            and (Result[DestPos-2]='.') and (Result[DestPos-3]='.')
+            and ((DestPos=4) or (Result[DestPos-4]=PathDelim)) then begin
+              //  6. ../..   -> copy
             end else begin
               //  7. xxxdir/..  -> trim dir and skip ..
+              DirStart:=DestPos-2;
+              while (DirStart>1) and (Result[DirStart-1]<>PathDelim) do
+                dec(DirStart);
               DestPos:=DirStart;
               inc(SrcPos,2);
               continue;
@@ -352,10 +353,12 @@ function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; SearchLoUpCase: boolean): string;
   
   function FileDoesExists(const AFilename: string): boolean;
+  var s: string;
   begin
-    Result:=FileExists(AFilename);
+    s:=ExpandFilename(TrimFilename(AFilename));
+    Result:=FileExists(s);
     if Result then begin
-      SearchFileInPath:=ExpandFilename(AFilename);
+      SearchFileInPath:=s;
       exit;
     end;
     {$IFNDEF Win32}
@@ -376,13 +379,20 @@ begin
   end;
   // check if filename absolute
   if FilenameIsAbsolute(Filename) then begin
-    if FileDoesExists(Filename) then exit;
-    Result:='';
-    exit;
+    if FileExists(Filename) then begin
+      Result:=ExpandFilename(Filename);
+      exit;
+    end else begin
+      Result:='';
+      exit;
+    end;
   end;
   Base:=ExpandFilename(AppendPathDelim(BasePath));
   // search in current directory
-  if FileDoesExists(Base+Filename) then exit;
+  if FileExists(Base+Filename) then begin
+    Result:=Base+Filename;
+    exit;
+  end;
   // search in search path
   StartPos:=1;
   l:=length(SearchPath);
@@ -394,7 +404,7 @@ begin
       if not FilenameIsAbsolute(CurPath) then
         CurPath:=Base+CurPath;
       Result:=ExpandFilename(AppendPathDelim(CurPath)+Filename);
-      if FileDoesExists(Result) then exit;
+      if FileExists(Result) then exit;
     end;
     StartPos:=p+1;
   end;

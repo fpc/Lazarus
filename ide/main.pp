@@ -3491,7 +3491,7 @@ writeln('TMainIDE.DoCloseEditorUnit end');
   Result:=mrOk;
 end;
 
-function TMainIDE.DoOpenEditorFile(const AFileName:string; 
+function TMainIDE.DoOpenEditorFile(const AFileName:string;
   Flags: TOpenFlags):TModalResult;
 var
   i: integer;
@@ -3513,7 +3513,6 @@ begin
     Result:=DoOpenMainUnit(ofProjectLoading in Flags);
     exit;
   end;
-  
   // check if the project knows this file
   i:=Project1.IndexOfFilename(AFilename);
   ReOpen:=(i>=0);
@@ -3998,7 +3997,7 @@ writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   Result:=mrCancel;
   if ExtractFileNameOnly(AFileName)='' then exit;
   
-  AFilename:=ExpandFileName(AFilename);
+  AFilename:=ExpandFileName(TrimFilename(AFilename));
   Ext:=lowercase(ExtractFileExt(AFilename));
   
   // check if file exists
@@ -4044,13 +4043,11 @@ writeln('TMainIDE.DoOpenProjectFile B');
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Project1:=TProject.Create(ptProgram);
   Project1.OnFileBackup:=@DoBackupFile;
-
   // read project info file
   Project1.ReadProject(AFilename);
   Result:=DoCompleteLoadingProjectInfo;
   if Result<>mrOk then exit;
 
-  
   if Project1.MainUnit>=0 then begin
     // read MainUnit Source
     Result:=DoLoadCodeBuffer(NewBuf,Project1.MainFilename,
@@ -4063,7 +4060,7 @@ writeln('TMainIDE.DoOpenProjectFile B');
 writeln('TMainIDE.DoOpenProjectFile C');
 {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
-  
+
   // restore files
   LastEditorIndex:=-1;
   repeat
@@ -6060,8 +6057,7 @@ end;
 
 procedure TMainIDE.mnuEditIndentBlockClicked(Sender: TObject);
 begin
-  writeln('AAA1 TMainIDE.mnuEditIndentBlockClicked');
-  //DoEditMenuCommand(ecBlockIndent);
+  DoEditMenuCommand(ecBlockIndent);
 end;
 
 procedure TMainIDE.mnuEditUnindentBlockClicked(Sender: TObject);
@@ -6241,6 +6237,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.286  2002/04/26 13:50:14  lazarus
+  MG: IDE and codetools work now with trimmed filenames
+
   Revision 1.285  2002/04/26 12:53:29  lazarus
   MG: fixed debug line coloring
 

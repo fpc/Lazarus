@@ -58,7 +58,7 @@ type
     FIsVirtual: boolean;
     FIsDeleted: boolean;
     function GetLastIncludedByFile: string;
-    procedure SetFilename(const Value: string);
+    procedure SetFilename(Value: string);
     procedure SetScanner(const Value: TLinkScanner);
     procedure SetIsDeleted(const NewValue: boolean);
     procedure MakeFileDateValid;
@@ -117,7 +117,7 @@ type
     procedure UpdateIncludeLinks;
   public
     function Count: integer;
-    function FindFile(const AFilename: string): TCodeBuffer;
+    function FindFile(AFilename: string): TCodeBuffer;
     function LoadFile(const AFilename: string): TCodeBuffer;
     function CreateFile(const AFilename: string): TCodeBuffer;
     function SaveBufferAs(OldBuffer: TCodeBuffer; const AFilename: string;
@@ -203,17 +203,18 @@ begin
   inherited Destroy;
 end;
 
-function TCodeCache.FindFile(const AFilename: string): TCodeBuffer;
+function TCodeCache.FindFile(AFilename: string): TCodeBuffer;
 var c: integer;
   ANode: TAVLTreeNode;
 begin
+  AFilename:=TrimFilename(AFilename);
   ANode:=FItems.Root;
   while ANode<>nil do begin
     Result:=TCodeBuffer(ANode.Data);
     c:=CompareFilenames(AFilename,Result.Filename);
-{$IFDEF CTDEBUG}
-if c=0 then writeln(' File found !!! ',Result.Filename);
-{$ENDIF}
+    {$IFDEF CTDEBUG}
+    if c=0 then writeln(' File found !!! ',Result.Filename);
+    {$ENDIF}
     if c<0 then ANode:=ANode.Left
     else if c>0 then ANode:=ANode.Right
     else exit;
@@ -229,7 +230,8 @@ begin
     // load new buffer
     Result:=TCodeBuffer.Create;
     Result.Filename:=AFilename;
-    if (not FileExists(AFilename)) or (not Result.LoadFromFile(AFilename)) then
+    if (not FileExists(Result.Filename))
+    or (not Result.LoadFromFile(Result.Filename)) then
     begin
       Result.Free;
       Result:=nil;
@@ -238,8 +240,8 @@ begin
     FItems.Add(Result);
     with Result do begin
       FCodeCache:=Self;
-      LastIncludedByFile:=FindIncludeLink(AFilename);
-      ReadOnly:=not FileIsWritable(Filename);
+      LastIncludedByFile:=FindIncludeLink(Result.Filename);
+      ReadOnly:=not FileIsWritable(Result.Filename);
     end;
   end else if Result.IsDeleted then begin
     // file in cache, but marked as deleted -> load from disk
@@ -261,7 +263,7 @@ begin
     Result.FileName:=AFileName;
     FItems.Add(Result);
     Result.FCodeCache:=Self;
-    Result.LastIncludedByFile:=FindIncludeLink(AFilename);
+    Result.LastIncludedByFile:=FindIncludeLink(Result.Filename);
   end;
 end;
 
@@ -685,13 +687,14 @@ begin
   if Result=Filename then Result:='';
 end;
 
-procedure TCodeBuffer.SetFilename(const Value: string);
+procedure TCodeBuffer.SetFilename(Value: string);
 var OldFilename: string;
 begin
+  Value:=TrimFilename(Value);
   if FFilename=Value then exit;
   OldFilename:=FFilename;
   FFilename := Value;
-  FIsVirtual:=(ExpandFilename(FFilename)<>FFilename);
+  FIsVirtual:=not FilenameIsAbsolute(Filename);
   if CompareFilenames(OldFileName,Value)<>0 then begin
     FFileDateValid:=false;
   end;
