@@ -992,7 +992,7 @@ end;
 procedure TWinControl.SetBorderStyle(NewStyle: TBorderStyle);
 begin
   FBorderStyle := NewStyle;
-  TWSWinControlClass(WidgetSetClass).BorderStyleChanged(self);
+  TWSWinControlClass(WidgetSetClass).SetBorderStyle(Self, NewStyle);
 end;
 
 {------------------------------------------------------------------------------}
@@ -3544,6 +3544,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.231  2004/05/21 10:02:59  micha
+  consistent BorderStyle naming
+
   Revision 1.230  2004/05/21 09:03:55  micha
   implement new borderstyle
   - centralize to twincontrol (protected)

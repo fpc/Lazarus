@@ -62,7 +62,7 @@ type
   private
   protected
   public
-    class procedure BorderStyleChanged(const AWinControl: TWinControl); override;
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
   end;
 
   { TWin32WSGraphicControl }
@@ -100,7 +100,7 @@ begin
   Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[ACursor]));
 end;
 
-procedure TWin32WSWinControl.BorderStyleChanged(const AWinControl: TWinControl);
+procedure TWin32WSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
 begin
   TWin32WidgetSet(InterfaceObject).RecreateWnd(AWinControl);
 end;

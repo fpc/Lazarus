@@ -65,11 +65,10 @@ type
   { TWSWinControl }
 
   TWSWinControl = class(TWSControl)
-    class procedure BorderStyleChanged(const AWinControl: TWinControl); virtual;
-  
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; virtual;
     class function  GetTextLen(const AWinControl: TWinControl; var ALength: Integer): Boolean; virtual;
 
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); virtual;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); virtual;
     class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); virtual;
@@ -107,7 +106,7 @@ end;
 
 { TWSWinControl }
 
-procedure TWSWinControl.BorderStyleChanged(const AWinControl: TWinControl);
+procedure TWSWinControl.SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle);
 begin
 end;
 
