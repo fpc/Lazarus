@@ -144,9 +144,9 @@ Begin
     Begin
       OwnerObject := TObject(GetProp(LParam, 'Lazarus')); 
       Case Hi(WParam) Of
-        0:
+        0,1: {mouse click or a menuitem command or a shortcut pressed}
         Begin
-          if LParam=0 then OwnerObject := GetMenuItemObject;
+          if LParam=0 then OwnerObject := GetMenuItemObject; {menuitem or shortcut}
           If ((OwnerObject Is TControl) And (Not (OwnerObject Is TButton))) Then
             CallEvent(OwnerObject, TControl(OwnerObject).OnClick, Nil, etNotify)
           Else If OwnerObject Is TMenuItem Then
@@ -510,7 +510,7 @@ end;
 
 {------------------------------------------------------------------------------
  Function: ToolBtnWindowProc
- Params: Window_hwnd - The window that receives a message for the timer window
+ Params: Window_hwnd - The window that receives a message for the window
          Msg         - The message received
          WParam      - Word parameter
          LParam      - Long-integer parameter
@@ -530,6 +530,9 @@ end;
 
 {
   $Log$
+  Revision 1.24  2003/01/27 11:25:40  mattias
+  menu accelerator patch from Martin Smat
+
   Revision 1.23  2003/01/19 10:57:46  mattias
   fix WindowProc now react on menu item click from Martin
 

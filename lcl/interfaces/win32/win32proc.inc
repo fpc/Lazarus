@@ -765,11 +765,59 @@ Begin
   Result := HACCEL(GetProp(Control, 'AccelGroup'));
 End;
 
-Procedure SetAccelKey(Const Control: HWND; Const AKey: LPACCEL);
+Procedure SetAccelKey(Const Control: HWND; Const AKey: word; Const AModifier: TShiftState; var AnAccelTable: HACCEL);
+var AccelCount: integer; {number of accelerators in table}
+    NewCount: integer; {total sum of accelerators in the table}
+    ControlIndex: integer; {index of new (modified) accelerator in table}
+    OldAccel: HACCEL; {old accelerator table}
+    NewAccel: LPACCEL; {new accelerator table}
+    NullAccel: LPACCEL; {an accelerator table with nil value}
+
+  function ControlInTable: integer;
+  var i: integer;
+  begin
+    Result:=AccelCount;
+    i:=0;
+    while i < AccelCount do
+    begin
+      if NewAccel[i].cmd = word(Control) then
+      begin
+        Result:=i;
+        exit;
+      end;
+      inc(i);
+    end;
+  end;
+  
+  function GetVirtFromState(const AState: TShiftState): word;
+  begin
+    Result := FVIRTKEY;
+    if ssAlt in AState then Result := Result or FALT;
+    if ssCtrl in AState then Result := Result or FCONTROL;
+    if ssShift in AState then Result := Result or FSHIFT;
+  end;
+  
 Begin
-  Assert(False, 'Trace:TODO: Code SetAccelKey');
-  If (Control <> HWND(Nil)) Then
-    SetProp(Control, 'AccelKey', AKey);
+  OldAccel := AnAccelTable;
+  NullAccel := nil;
+  AccelCount := CopyAcceleratorTable(OldAccel, NullAccel, 0);
+  Assert(False,Format('Trace: AccelCount=%d',[AccelCount]));
+  NewAccel := LPACCEL(LocalAlloc(LPTR, AccelCount * sizeof(ACCEL)));
+  CopyAcceleratorTable(OldAccel, NewAccel, AccelCount);
+  ControlIndex := ControlInTable;
+  if ControlIndex = AccelCount then {realocating the accelerator array, adding new accelerator}
+  begin
+    LocalFree(HLOCAL(NewAccel));
+    NewAccel := LPACCEL(LocalAlloc(LPTR, (AccelCount+1) * sizeof(ACCEL)));
+    CopyAcceleratorTable(OldAccel, NewAccel, AccelCount);
+    NewCount := AccelCount+1;
+  end
+  else NewCount := AccelCount;
+  NewAccel[ControlIndex].cmd := word(Control);
+  NewAccel[ControlIndex].fVirt := GetVirtFromState(AModifier);
+  NewAccel[ControlIndex].key := AKey;
+  DestroyAcceleratorTable(OldAccel);
+  AnAccelTable := CreateAcceleratorTable(NewAccel, NewCount);
 End;
 
 Function GetAccelKey(Const Control: HWND): LPACCEL;
@@ -786,6 +834,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.13  2003/01/27 11:25:40  mattias
+  menu accelerator patch from Martin Smat
+
   Revision 1.12  2003/01/01 10:46:59  mattias
   fixes for win32 listbox/combobox from Karl Brandt
 

@@ -26,15 +26,13 @@
   Constructor for the class.
  ------------------------------------------------------------------------------}
 Constructor TWin32Object.Create;
-Var
-  AcTbl: Array[1..50] Of ACCEL;
 Begin
   Inherited Create;
   FKeyStateList := TList.Create;
   FDeviceContexts := TDynHashArray.Create(-1);
   FGDIObjects := TDynHashArray.Create(-1);
   FMessageQueue := TList.Create;
-  FAccelGroup := CreateAcceleratorTable(LPACCEL(@AcTbl), High(AcTbl));
+  FAccelGroup := 0;
   FTimerData  := TList.Create;
   FTimerWindow := 0;
 End;
@@ -220,17 +218,18 @@ Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
 
   Procedure SetMenuItemCaption;
   var MenuInfo: MENUITEMINFO;
-      MenuHandle: HMenu;
+      Style: integer;
   Begin
-    MenuHandle := (Sender as TMenuItem).Handle;
+    if (Sender as TMenuItem).Caption = '-' then Style := MFT_SEPARATOR
+    else Style := MFT_STRING;
     with MenuInfo do
     begin
       cbsize:=sizeof(MENUITEMINFO);
       fMask:=MIIM_TYPE;
-      fType:=MFT_STRING;
+      fType:=Style;
       dwTypeData:=Data;
     end;
-    SetMenuItemInfo(FMenu, integer(MenuHandle), false, @MenuInfo);
+    SetMenuItemInfo((Sender as TMenuItem).Parent.Handle, integer((Sender as TMenuItem).Handle), false, @MenuInfo);
     DrawMenuBar(((Sender as TMenuItem).Owner as TWinControl).Handle);
   End;
   
@@ -348,7 +347,7 @@ Var
   PStr, PStr2: PChar;
   R, R2: TRECT;
   SelectionMode: DWORD; // currently only used for listboxes
-  TBB: TBBUTTON; // Limited to 2 buttons at present
+  TBB: TBBUTTON;
   WindowStyle: Integer; //used by LM_SETTABPOSITION
   OldPageIndex: Integer; //used by LM_SETITEMINDEX of a csNotebook
 Begin
@@ -910,6 +909,14 @@ activate_time :	the time at which the activation event occurred.
               Else
                 SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) And Not WS_EX_CLIENTEDGE);
             End
+          End;
+        End;
+        LM_SETSHORTCUT:
+        Begin
+          If Sender is TMenuItem Then
+          Begin
+            SetLabel(Sender, LPSTR((Sender as TMenuItem).Caption+#9+ShortCutToText(ShortCut(TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier))));
+            SetAccelKey(TLMShortCut(Data^).Handle, TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier, FAccelGroup);
           End;
         End;
         Else
@@ -1860,10 +1867,10 @@ Begin
     csMenuItem:
     Begin
       Window := CreateMenu;
-      SetProp(Window, 'MenuCaption', StrTemp);
+      {SetProp(Window, 'MenuCaption', StrTemp);
       AccelIndex := Pos('&', Caption);
       If AccelIndex <> 0 Then
-        SetAccelKey(Window, Nil);
+        SetAccelKey(Window, Nil);}
       {SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);}
     End;
@@ -2542,11 +2549,10 @@ var MenuInfo: MENUITEMINFO;
     ParentMenuHandle: HMenu;
     Style: integer;
     Mask: integer;
+    Msg: TLMShortCut;
 Begin
-  Mask := MIIM_TYPE or MIIM_ID or MIIM_DATA;
+  Mask := MIIM_ID or MIIM_DATA;
   if ((Sender as TMenuItem).Count > 0) then Mask := Mask or MIIM_SUBMENU;
-  if (Sender as TMenuItem).Caption = '-' then Style := MFT_SEPARATOR
-  else Style := MFT_STRING;
   MenuHandle := (Sender as TMenuItem).Handle;
   with MenuInfo do begin
     cbsize:=sizeof(MENUITEMINFO);
@@ -2558,12 +2564,18 @@ Begin
     {hbmpChecked:=0;
     hbmpUnchecked:=0;} {not needed}
     dwItemData:=integer(Sender);
-    dwTypeData:=LPSTR((Sender as TmenuItem).Caption);
+    {dwTypeData:=LPSTR((Sender as TmenuItem).Caption);}
     {cch:=length((Sender as TMenuItem).Caption);} {not needed}
   end;
   ParentMenuHandle := (Sender as TMenuItem).Parent.Handle;
   InsertMenuItem(ParentMenuHandle, 0, false, @MenuInfo);
-  DrawMenuBar(((Sender as TMenuItem).Owner as TWinControl).Handle);
+  if (Sender as TMenuItem).ShortCut <> 0 then
+  begin
+    Msg.Handle:=MenuHandle;
+    ShortCutToKey((Sender as TMenuItem).ShortCut, Msg.NewKey, Msg.NewModifier);
+    IntSendMessage3(LM_SETSHORTCUT, Sender, @Msg);
+  end
+  else SetLabel(Sender, LPSTR((Sender as TMenuItem).Caption));
 End;
 
 {------------------------------------------------------------------------------
@@ -2600,6 +2612,9 @@ End;
 
 {
   $Log$
+  Revision 1.44  2003/01/27 11:25:40  mattias
+  menu accelerator patch from Martin Smat
+
   Revision 1.43  2003/01/19 10:57:46  mattias
   fix WindowProc now react on menu item click from Martin
 
