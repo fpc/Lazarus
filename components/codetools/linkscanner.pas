@@ -171,6 +171,7 @@ type
     procedure SkipComment;
     procedure SkipDelphiComment;
     procedure SkipOldTPComment;
+    procedure CommentEndNotFound;
     procedure EndComment;
     procedure IncCommentLevel;
     procedure DecCommentLevel;
@@ -842,7 +843,7 @@ begin
   FSkippingTillEndif:=false;
   if Assigned(FOnGetInitValues) then
     FInitValues.Assign(FOnGetInitValues(FMainCode,FInitValuesChangeStep));
-  //writeln('TLinkScanner.Scan C --------');
+  //writeln('TLinkScanner.Scan D --------');
   Values.Assign(FInitValues);
   for cm:=Low(TCompilerMode) to High(TCompilerMode) do
     if FInitValues.IsDefined(CompilerModeVars[cm]) then begin
@@ -854,7 +855,7 @@ begin
       PascalCompiler:=pc;
     end;
   //writeln(Values.AsString);
-  //writeln('TLinkScanner.Scan D --------');
+  //writeln('TLinkScanner.Scan E --------');
   FMacrosOn:=(Values.Variables['MACROS']<>'0');
   if Src='' then exit;
   // beging scanning
@@ -862,11 +863,11 @@ begin
   AddLink(1,SrcPos,Code);
   LastTokenType:=lsttNone;
   {$IFDEF CTDEBUG}
-  writeln('TLinkScanner.Scan D ',SrcLen);
+  writeln('TLinkScanner.Scan F ',SrcLen);
   {$ENDIF}
   repeat
     ReadNextToken;
-    //writeln('TLinkScanner.Scan E "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
+    //writeln('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
     UpdateCleanedSource(SrcPos-1);
     if (SrcPos<=SrcLen+1) then begin
       if (LastTokenType<>lsttEqual)
@@ -902,7 +903,6 @@ begin
   IncCommentLevel;
   inc(SrcPos);
   CommentInnerStartPos:=SrcPos;
-  if SrcPos>SrcLen then exit;
   { HandleSwitches can dec CommentLevel }
   while (SrcPos<=SrcLen) and (CommentLevel>0) do begin
     case Src[SrcPos] of
@@ -913,6 +913,7 @@ begin
   end;
   CommentEndPos:=SrcPos;
   CommentInnerEndPos:=SrcPos-1;
+  if (CommentLevel>0) then CommentEndNotFound;
   { handle compiler switches }
   if Src[CommentInnerStartPos]='$' then HandleDirectives;
   EndComment;
@@ -926,9 +927,8 @@ begin
   IncCommentLevel;
   inc(SrcPos,2);
   CommentInnerStartPos:=SrcPos;
-  if SrcPos>SrcLen then exit;
-  if (Src[SrcPos]='$') then ;
   while (SrcPos<=SrcLen) and (Src[SrcPos]<>#10) do inc(SrcPos);
+  DecCommentLevel;
   inc(SrcPos);
   CommentEndPos:=SrcPos;
   CommentInnerEndPos:=SrcPos-1;
@@ -944,16 +944,28 @@ begin
   IncCommentLevel;
   inc(SrcPos,2);
   CommentInnerStartPos:=SrcPos;
-  if SrcPos>SrcLen then exit;
   // ToDo: nested comments
-  while (SrcPos<=SrcLen)
-  and ((Src[SrcPos-1]<>'*') or (Src[SrcPos]<>')')) do inc(SrcPos);
-  inc(SrcPos);
+  while (SrcPos<SrcLen) do begin
+    if ((Src[SrcPos]<>'*') or (Src[SrcPos+1]<>')')) then
+      inc(SrcPos)
+    else begin
+      DecCommentLevel;
+      inc(SrcPos,2);
+      break;
+    end;
+  end;
   CommentEndPos:=SrcPos;
   CommentInnerEndPos:=SrcPos-2;
+  if (CommentLevel>0) then CommentEndNotFound;
   { handle compiler switches }
   if Src[CommentInnerStartPos]='$' then HandleDirectives;
   EndComment;
+end;
+
+procedure TLinkScanner.CommentEndNotFound;
+begin
+  SrcPos:=CommentStartPos;
+  RaiseException(ctsCommentEndNotFound);
 end;
 
 procedure TLinkScanner.UpdateCleanedSource(SourcePos: integer);
@@ -2184,6 +2196,11 @@ begin
                else
                  inc(SrcPos);
         end;
+      end else if Src[SrcPos]='''' then begin
+        // skip string constant
+        inc(SrcPos);
+        while (SrcPos<=SrcLen) and (Src[SrcPos]<>'''') do inc(SrcPos);
+        inc(SrcPos);
       end else begin
         inc(SrcPos);
         if SrcPos>SrcLen then ReturnFromIncludeFile;

@@ -460,6 +460,23 @@ type
     constructor Create(Stream: TStream);
     procedure Write(const Buf; Count: Longint);
   end;
+  
+{function Utf8Decode(const S: UTF8String): WideString;
+var
+  L: Integer;
+  Temp: WideString;
+begin
+  Result := '';
+  if S = '' then Exit;
+  SetLength(Temp, Length(S));
+
+  L := Utf8ToUnicode(PWideChar(Temp), Length(Temp)+1, PChar(S), Length(S));
+  if L > 0 then
+    SetLength(Temp, L-1)
+  else
+    Temp := '';
+  Result := Temp;
+end;}
 
 { TDelphiReader }
 
@@ -959,14 +976,14 @@ var
                   WriteStr('''');
                   while J < I do
                   begin
-                    //ToDo: WriteStr(Char(W[J]));
+                    WriteStr(Char(W[J]));
                     Inc(J);
                   end;
                   WriteStr('''');
                 end else
                 begin
                   WriteStr('#');
-                  //ToDo: WriteStr(IntToStr(Ord(W[I])));
+                  WriteStr(IntToStr(Ord(W[I])));
                   Inc(I);
                   if ((I - K) >= LineLength) then LineBreak := True;
                 end;
@@ -1004,8 +1021,8 @@ var
                     ((I - K) >= LineLength);
                   if ((I - K) >= LineLength) then
                   begin
-                    LIneBreak := True;
-                    //ToDo: if ByteType(S, I) = mbTrailByte then Dec(I);
+                    LineBreak := True;
+                    if ByteType(S, I) = mbTrailByte then Dec(I);
                   end;
                   WriteStr('''');
                   Writer.Write(S[J], I - J);

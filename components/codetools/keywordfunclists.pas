@@ -551,6 +551,7 @@ begin
     Add('NEAR'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DEPRECATED' ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PLATFORM'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LOCAL'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('['          ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create;
