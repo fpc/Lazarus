@@ -31,7 +31,7 @@ unit PostScriptPrinter;
 interface
 
 uses
-  Classes, SysUtils, GraphType, GraphMath, Forms;
+  Classes, SysUtils, GraphType, GraphMath, LCLLinux, Forms;
   
   // uses lcllinux or winapi for RGB conversions and FORMS for application object
   
@@ -240,9 +240,6 @@ type
   end;
 
 implementation
-
-uses
-  {$ifdef linux}LCLLinux{$endif} {$ifdef win32}winapi{$endif};
 
 { TPostScriptCanvas ----------------------------------------------------------}
 
