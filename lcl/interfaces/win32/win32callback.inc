@@ -24,6 +24,12 @@
 {            callback routines                                }
 {*************************************************************}
 
+procedure PrepareSynchronize;
+begin
+  // wake up GUI thread by sending a message to it
+  Windows.PostMessage(TWin32WidgetSet(InterfaceObject).AppHandle, WM_NULL, 0, 0);
+end;
+
 { addition XP messages }
 
 const
@@ -1431,7 +1437,7 @@ begin
   if WinProcess then
     Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
 end;
-    
+
 {------------------------------------------------------------------------------
  Procedure: TimerCallBackProc
  Params: window_hnd - handle of window for timer message, not set in this implementation
@@ -1464,6 +1470,9 @@ end;
 
 {
   $Log$
+  Revision 1.174  2004/12/27 10:18:21  micha
+  implement support for tthread.synchronize
+
   Revision 1.173  2004/12/17 09:00:47  vincents
   set version to 0.9.3
 

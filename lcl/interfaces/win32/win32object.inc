@@ -306,6 +306,10 @@ Begin
       TranslateMessage(@AMessage);
       DispatchMessage(@AMessage);
     End;
+{$ifdef USE_SYNCHRONIZE}
+    // check for pending to-be synchronized methods
+    CheckSynchronize;
+{$endif}
   End;
 End;
 
@@ -706,6 +710,9 @@ end;
 
 {
   $Log$
+  Revision 1.302  2004/12/27 10:18:21  micha
+  implement support for tthread.synchronize
+
   Revision 1.301  2004/12/16 14:29:12  micha
   fix showmodal to remember disabled windows (fixes bug 478, and more)
 

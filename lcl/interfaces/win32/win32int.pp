@@ -263,6 +263,11 @@ Initialization
 {$endif}
   EraseBkgndStack := 0;
 
+{$ifdef USE_SYNCHRONIZE}
+  { TThread.Synchronize support }
+  SynchronizeMethodProc := @PrepareSynchronize;
+{$endif}
+
 Finalization
 
   Assert(False, 'Trace:win32int.pp - Finalization');
@@ -272,6 +277,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.129  2004/12/27 10:18:21  micha
+  implement support for tthread.synchronize
+
   Revision 1.128  2004/11/04 16:57:31  micha
   remove obsolete and unused method twin32widgetset.settext
 
