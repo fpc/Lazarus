@@ -1216,30 +1216,6 @@ end;
 
 function InitResourceComponent(Instance: TComponent;
   RootAncestor: TClass):Boolean;
-
-    { Old hack. Do we still need this?
-
-    procedure ApplyVisible;
-    var
-      i: integer;
-      AControl: TControl;
-    begin
-      // The LCL has as default Visible=false. But for Delphi compatibility
-      // loading control defaults to true.
-      if Instance is TControl then
-        for i:=0 to Instance.ComponentCount-1 do begin
-          AControl:=TControl(Instance.Components[i]);
-          if (AControl is TControl) then begin
-            if (not (csVisibleSetInLoading in AControl.ControlState)) then
-              AControl.Visible:=true
-            else
-              AControl.ControlState:=
-                AControl.ControlState-[csVisibleSetInLoading];
-          end;
-        end;
-    end;}
-
-// InitResourceComponent
 //var LocalizedLoading: Boolean;
 begin
   //GlobalNameSpace.BeginWrite; // hold lock across all ancestor loads (performance)
@@ -1548,44 +1524,10 @@ end;
 {$I screen.inc}
 {$I application.inc}
 {$I applicationproperties.inc}
-
-//==============================================================================
-  {$IFNDEF VER1_0}
-{ TFormPropertyStorage }
-
-procedure TFormPropertyStorage.FormFirstShow(Sender: TObject);
-begin
-  if Sender=nil then ;
-  Restore;
-end;
-
-procedure TFormPropertyStorage.FormClose(Sender: TObject;
-  var CloseAction: TCloseAction);
-begin
-  if Sender=nil then ;
-  Save;
-end;
-
-constructor TFormPropertyStorage.Create(TheOwner: TComponent);
-begin
-  inherited Create(TheOwner);
-  if Owner is TCustomForm then begin
-    TCustomForm(Owner).AddHandlerFirstShow(@FormFirstShow,true);
-    TCustomForm(Owner).AddHandlerClose(@FormClose,true);
-  end;
-end;
-
-destructor TFormPropertyStorage.Destroy;
-begin
-  if Owner is TControl then
-    TControl(Owner).RemoveAllHandlersOfObject(Self);
-  inherited Destroy;
-end;
-
-{$ENDIF not VER1_0}
-//==============================================================================
-
 {$I hintwindow.inc}
+
+
+//==============================================================================
 
 initialization
   FocusCount := 0;

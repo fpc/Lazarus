@@ -123,7 +123,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, FPCAdds, LCLType, LCLIntf, GraphType, Graphics;
+  Classes, SysUtils, FPCAdds, LCLType, LResources, LCLIntf, GraphType, Graphics;
 
 { for delphi compatibility:
 
@@ -355,6 +355,9 @@ end.
 
 {
   $Log$
+  Revision 1.16  2004/08/15 14:39:36  mattias
+  implemented platform independent binary object streamer
+
   Revision 1.15  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

@@ -17,6 +17,8 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
+
+  This unit will be removed in future. The types will be moved and/or vanish.
 }
 unit VCLGlobals;
 

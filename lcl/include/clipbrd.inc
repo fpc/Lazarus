@@ -243,12 +243,25 @@ begin
 end;
 
 procedure TClipboard.SetComponent(Component: TComponent);
-var i: integer;
+var
+  i: integer;
+  s: TMemoryStream;
+  DestroyDriver: Boolean;
+  Writer: TWriter;
 begin
   i:=IndexOfCachedFormatID(PredefinedClipboardFormat(pcfCustomData),true);
-  FData[i].Stream.Clear;
-  FData[i].Stream.WriteComponent(Component);
-  FData[i].Stream.Position:=0;
+  s:=FData[i].Stream;
+  s.Clear;
+  s.WriteComponent(Component);
+  DestroyDriver:=false;
+  Writer := CreateLRSWriter(s,DestroyDriver);
+  Try
+    Writer.WriteDescendent(Component, nil);
+  Finally
+    if DestroyDriver then Writer.Driver.Free;
+    Writer.Destroy;
+  end;
+  s.Position:=0;
 end;
 
 function TClipboard.GetComponent(Owner, Parent: TComponent): TComponent;
@@ -256,13 +269,15 @@ var
   MemStream: TMemoryStream;
   Reader: TReader;
   ok: boolean;
+  DestroyDriver: boolean;
 begin
   Result := nil;
   MemStream:=TMemoryStream.Create;
   try
     if GetFormat(PredefinedClipboardFormat(pcfComponent),MemStream) then begin
       MemStream.Position := 0;
-      Reader := TReader.Create(MemStream, 256);
+      DestroyDriver:=false;
+      Reader := CreateLRSReader(MemStream,DestroyDriver);
       try
         Reader.Parent := Parent;
         Result := Reader.ReadRootComponent(nil);
@@ -274,6 +289,7 @@ begin
           if not ok then Result.Free;
         end;
       finally
+        if DestroyDriver then Reader.Driver.Free;
         Reader.Free;
       end;
     end;
@@ -675,6 +691,9 @@ end;
 
 {
   $Log$
+  Revision 1.18  2004/08/15 14:39:36  mattias
+  implemented platform independent binary object streamer
+
   Revision 1.17  2004/05/11 11:42:27  mattias
   replaced writeln by debugln
 

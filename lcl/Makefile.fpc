@@ -48,7 +48,7 @@ implicitunits= \
   lclintf \
   lclmemmanager \
   lclproc \
-  lclreschache \
+  lclrescache \
   lclstrconsts \
   lcltype \
   lmessages \

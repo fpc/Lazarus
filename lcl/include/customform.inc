@@ -20,12 +20,14 @@
 
 { $DEFINE CHECK_POSITION}
 
+{ TCustomForm }
+
 {------------------------------------------------------------------------------}
 {       TCustomForm ClientWndProc                                              }
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.ClientWndProc(var Message: TLMessage);
 
-  procedure Default;
+  procedure CallDefault;
     begin
       {
       with Message do
@@ -38,7 +40,7 @@ begin
     case Msg of
       LM_NCHITTEST:
         begin
-          Default;
+          CallDefault;
           if Result = HTCLIENT then Result := HTTRANSPARENT;
         end;
       LM_ERASEBKGND:
@@ -48,7 +50,7 @@ begin
           Result := 1;
         end;
     else
-      Default;
+      CallDefault;
     end;
 end;
 
@@ -85,7 +87,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.BeforeDestruction;
 begin
-  //GlobalNameSpace.BeginWrite;
   Destroying;
   Screen.FSaveFocusedList.Remove(Self);
   RemoveFixupReferences(Self, '');
@@ -188,7 +189,7 @@ End;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.IconChanged(Sender: TObject);
 begin
-  if HandleAllocated {and (BorderStyle<>bsDialog)} then
+  if HandleAllocated then
     CNSendMessage(LM_SETFORMICON,Self,Pointer(GetIconHandle));
 end;
 
@@ -271,7 +272,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomForm.GetIconHandle: HICON;
 begin
-//DebugLn('[TCustomForm.GetIconHandle] ',ClassName,' ',FIcon<>nil);
+  //DebugLn('[TCustomForm.GetIconHandle] ',ClassName,' ',FIcon<>nil);
   if (FIcon<>nil) and not Icon.Empty then
     Result := FIcon.Handle
   else
@@ -363,11 +364,11 @@ end;
 procedure TCustomForm.WMShowWindow(var message: TLMShowWindow);
 begin
   {$IFDEF VerboseFocus}
-  write('TCustomForm.WMShowWindow A ',Name,':',ClassName,' fsShowing=',fsShowing in FFormState,' Msg.Show=',Message.Show);
+  DbgOut('TCustomForm.WMShowWindow A ',Name,':',ClassName,' fsShowing=',fsShowing in FFormState,' Msg.Show=',Message.Show);
   if FActiveControl<>nil then begin
-    write(' FActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName,' HandleAllocated=',FActiveControl.HandleAllocated);
+    DbgOut(' FActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName,' HandleAllocated=',FActiveControl.HandleAllocated);
   end else begin
-    write(' FActiveControl=nil');
+    DbgOut(' FActiveControl=nil');
   end;
   DebugLn('');
   {$ENDIF}
@@ -463,9 +464,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMPaint(var Message: TLMPaint);
 begin
-//DebugLn('[TCustomForm.WMPaint] ',Name,':',ClassName);
+  //DebugLn('[TCustomForm.WMPaint] ',Name,':',ClassName);
   inherited WMPaint(Message);
-//DebugLn('[TCustomForm.WMPaint] END ',Name,':',ClassName);
+  //DebugLn('[TCustomForm.WMPaint] END ',Name,':',ClassName);
 end;
 
 
@@ -663,17 +664,17 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.PaintWindow(DC : Hdc);
 begin
-//  FCanvas.Lock;
+  // FCanvas.Lock;
   try
     FCanvas.Handle := DC;
-//DebugLn('[TCustomForm.PaintWindow] ',ClassName,' DC=',HexStr(DC,8),'  ',HexStr(FCanvas.Handle,8));
+    //DebugLn('[TCustomForm.PaintWindow] ',ClassName,' DC=',HexStr(DC,8),'  ',HexStr(FCanvas.Handle,8));
     try
       if FDesigner <> nil then FDesigner.PaintGrid else Paint;
     finally
       FCanvas.Handle := 0;
     end;
   finally
-//    FCanvas.Unlock;
+    // FCanvas.Unlock;
   end;
 end;
 
@@ -744,13 +745,8 @@ end;
 procedure TCustomForm.WndProc(Var TheMessage : TLMessage);
 var
   FocusHandle : HWND;
-//  SaveIndex : Integer;
   MenuItem : TMenuItem;
-//  Canvas2 : TCanvas;
-//  DC: HDC;
-
 begin
-// Assert(False, 'Trace:-----------------IN TCUSTOMFORM WNDPROC-------------------');
   with TheMessage do
   case Msg of
     LM_ACTIVATE, LM_SETFOCUS, LM_KILLFOCUS:
@@ -810,68 +806,11 @@ begin
           MenuItem := Menu.FindItem(itemID, fkCommand);
           if MenuItem <> nil
           then begin
-            {Canvas2 := TControlCanvas.Create;
-            with Canvas2 do
-            try
-              SaveIndex := SaveDC(hDC);
-              try
-                Handle := hDC;
-                Font := Screen.MenuFont;
-                Menus.DrawMenuItem(MenuItem, Canvas2, rcItem,
-                  TOwnerDrawState(LongRec(itemState).Lo));
-              finally
-                Handle := 0;
-riteln('[TCustomForm.WndPRoc] 1');
-                RestoreDC(hDC, SaveIndex)
-              end;
-            finally
-              Free;
-            end;
-            }
             Exit;
           end;
         end;
       end;
-{
-    LM_MEASUREITEM:
-      with PMeasureItemStruct(Message.LParam)^ do
-      begin
-        if (CtlType = ODT_MENU) and Assigned(Menu)
-        then begin
-          MenuItem := Menu.FindItem(itemID, fkCommand);
-          if MenuItem <> nil
-          then begin
-            DC := GetWindowDC(Handle);
-            try
-              Canvas2 := TControlCanvas.Create;
-              with Canvas2 do
-              try
-                SaveIndex := SaveDC(DC);
-                try
-                  Handle := DC;
-                  Font := Screen.MenuFont;
-                  TMenuItemAccess(MenuItem).MeasureItem(Canvas2,
-                    Integer(itemWidth), Integer(itemHeight));
-                finally
-                  Handle := 0;
-                  RestoreDC(DC, SaveIndex);
-                end;
-              finally
-                Canvas2.Free;
-              end;
-            finally
-              ReleaseDC(Handle, DC);
-            end;
 
-            Exit;
-          end;
-        end;
-      end;
-}
-    LM_SHOWWINDOW:
-      begin
-        Assert(False, 'Trace:LM_SHOWWINDOW RECEIVED!!!!!!!!!!!');
-      end;
     end;
   inherited WndProc(TheMessage);
 end;
@@ -963,7 +902,7 @@ function TCustomForm.DoUpdateAction(TheAction: TBasicAction): boolean;
 begin
   Result:=false;
   if (csDesigning in ComponentState) or not Showing then exit;
-  { Find a target for given Command (Message.LParam). }
+  // Find a target for given Command (Message.LParam).
   if ProcessUpdate(ActiveControl) or ProcessUpdate(Self)
   or TraverseClients(Self) then
     Result:=true;
@@ -1002,14 +941,13 @@ begin
   RecursiveInitiate(Self);
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm SetMenu                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm SetMenu
+------------------------------------------------------------------------------}
 Procedure TCustomForm.SetMenu(Value : TMainMenu);
 var
   I: Integer;
 begin
-  //TODO: Finish SETMenu
   if FMenu=Value then exit;
   if Value <> nil then
     for I := 0 to Screen.FormCount - 1 do
@@ -1109,13 +1047,12 @@ Begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm SetFormStyle                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm SetFormStyle
+------------------------------------------------------------------------------}
 Procedure TCustomForm.SetFormStyle(Value : TFormStyle);
 Begin
   if FFormStyle = Value then exit;
-  //TODO: Finish SETFORMSTYLE
   FFormStyle := Value;
   Include(FFormState,fsFormStyleChanged);
   if FFormStyle=fsSplash then begin
@@ -1123,9 +1060,9 @@ Begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{       TCustomForm SetPosition                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TCustomForm SetPosition
+------------------------------------------------------------------------------}
 procedure TCustomForm.SetPosition(Value : TPosition);
 begin
   if Value <> FPosition then begin
@@ -1723,9 +1660,50 @@ begin
   RemoveHandler(fhtClose,TMethod(OnCloseHandler));
 end;
 
+//==============================================================================
+{$IFNDEF VER1_0}
+
+{ TFormPropertyStorage }
+
+procedure TFormPropertyStorage.FormFirstShow(Sender: TObject);
+begin
+  if Sender=nil then ;
+  Restore;
+end;
+
+procedure TFormPropertyStorage.FormClose(Sender: TObject;
+  var CloseAction: TCloseAction);
+begin
+  if Sender=nil then ;
+  Save;
+end;
+
+constructor TFormPropertyStorage.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  if Owner is TCustomForm then begin
+    TCustomForm(Owner).AddHandlerFirstShow(@FormFirstShow,true);
+    TCustomForm(Owner).AddHandlerClose(@FormClose,true);
+  end;
+end;
+
+destructor TFormPropertyStorage.Destroy;
+begin
+  if Owner is TControl then
+    TControl(Owner).RemoveAllHandlersOfObject(Self);
+  inherited Destroy;
+end;
+{$ENDIF not VER1_0}
+
+
+// included by forms.pp
+
 { =============================================================================
 
   $Log$
+  Revision 1.149  2004/08/15 14:39:36  mattias
+  implemented platform independent binary object streamer
+
   Revision 1.148  2004/08/09 21:12:43  mattias
   implemented FormStyle fsSplash for splash screens
 

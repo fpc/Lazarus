@@ -47,8 +47,8 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, TypInfo, Forms, Controls, LCLIntf, Dialogs, JITForm,
-  ComponentReg, IDEProcs;
+  Classes, SysUtils, TypInfo, LResources, Forms, Controls, LCLIntf, Dialogs,
+  JITForm, ComponentReg, IDEProcs;
 
 type
   //----------------------------------------------------------------------------
@@ -129,7 +129,8 @@ type
     function GetItem(Index:integer):TComponent;
     function GetClassNameFromStream(s:TStream):shortstring;
     function OnFindGlobalComponent(const AName:AnsiString):TComponent;
-    procedure InitReading(BinStream: TStream; var Reader: TReader); virtual;
+    procedure InitReading(BinStream: TStream; var Reader: TReader;
+                          DestroyDriver: Boolean); virtual;
     function DoCreateJITComponent(NewComponentName,NewClassName:shortstring
                                   ):integer;
     procedure DoFinishReading; virtual;
@@ -344,6 +345,7 @@ var
   Reader:TReader;
   NewClassName:shortstring;
   NewName: string;
+  DestroyDriver: Boolean;
 begin
   Result:=-1;
   NewClassName:=GetClassNameFromStream(BinStream);
@@ -360,7 +362,8 @@ begin
     writeln('[TJITComponentList.AddJITComponentFromStream] InitReading ...');
     {$ENDIF}
 
-    InitReading(BinStream,Reader);
+    DestroyDriver:=false;
+    InitReading(BinStream,Reader,DestroyDriver);
     {$IFDEF VerboseJITForms}
     writeln('[TJITComponentList.AddJITComponentFromStream] Read ...');
     {$ENDIF}
@@ -379,6 +382,7 @@ begin
       DoFinishReading;
     finally
       FindGlobalComponent:=nil;
+      if DestroyDriver then Reader.Driver.Free;
       Reader.Free;
     end;
   except
@@ -396,11 +400,12 @@ begin
 end;
 
 procedure TJITComponentList.InitReading(BinStream: TStream;
-  var Reader: TReader);
+  var Reader: TReader; DestroyDriver: Boolean);
 begin
   FFlags:=FFlags-[jclAutoRenameComponents];
   
-  Reader:=TReader.Create(BinStream,4096);
+  DestroyDriver:=false;
+  Reader:=CreateLRSReader(BinStream,DestroyDriver);
   MyFindGlobalComponentProc:=@OnFindGlobalComponent;
   FindGlobalComponent:=@MyFindGlobalComponent;
 
@@ -528,6 +533,7 @@ function TJITComponentList.AddJITChildComponentFromStream(
 var
   Reader: TReader;
   NewComponent: TComponent;
+  DestroyDriver: Boolean;
 begin
   Result:=nil;
   NewComponent:=nil;
@@ -537,7 +543,8 @@ begin
   writeln('[TJITComponentList.AddJITChildComponentFromStream] A');
   {$ENDIF}
   try
-    InitReading(BinStream,Reader);
+    DestroyDriver:=false;
+    InitReading(BinStream,Reader,DestroyDriver);
     {$IFDEF VerboseJITForms}
     writeln('[TJITComponentList.AddJITChildComponentFromStream] B');
     {$ENDIF}
@@ -568,6 +575,7 @@ begin
       DoFinishReading;
     finally
       FindGlobalComponent:=nil;
+      if DestroyDriver then Reader.Driver.Free;
       Reader.Free;
     end;
   except

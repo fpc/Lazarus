@@ -35,7 +35,8 @@ uses
   FPCAdds, LazLinkedList, DynHashArray, LCLMemManager, AvgLvlTree,
   StringHashList, ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
-  LCLProc, LCLType, LCLResCache, GraphMath, VCLGlobals, FileCtrl, LMessages,
+  LCLProc, LCLType, LCLResCache, VCLGlobals, GraphMath, FileCtrl, LMessages,
+  LResources,
   // the interface base
   InterfaceBase,
   {$IFNDEF DisableFPImage}IntfGraphics,{$ENDIF}
@@ -63,6 +64,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.19  2004/08/15 14:39:36  mattias
+  implemented platform independent binary object streamer
+
   Revision 1.18  2004/08/11 20:57:09  mattias
   moved intfstrconsts.pp to lclstrconsts.pas, implemented TPenHandleCache
 

@@ -260,6 +260,9 @@ resourcestring
   lisChooseDelphiUnit = 'Choose Delphi unit';
   lisUnableToReadFileError = 'Unable to read file %s%s%s%sError: %s';
   lisFormatError = 'Format error';
+  lisLFMFileCorrupt = 'LFM file corrupt';
+  lisUnableToFindAValidClassnameIn = 'Unable to find a valid classname in %s%'
+    +'s%s';
   lisUnableToConvertFileError = 'Unable to convert file %s%s%s%sError: %s';
   lisUnableToWriteFileError = 'Unable to write file %s%s%s%sError: %s';
   lisErrorCreatingLrs = 'Error creating lrs';

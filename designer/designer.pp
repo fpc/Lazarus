@@ -36,7 +36,7 @@ interface
 { $DEFINE VerboseDesignerDraw}
 
 uses
-  Classes, SysUtils, Math, LCLProc, LCLType, LCLIntf, LMessages,
+  Classes, SysUtils, Math, LCLProc, LCLType, LResources, LCLIntf, LMessages,
   Forms, Controls, GraphType, Graphics, Dialogs, ExtCtrls, Menus, ClipBrd,
   LazarusIDEStrConsts, EnvironmentOpts, KeyMapping, ComponentReg,
   NonControlForms, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
@@ -452,7 +452,7 @@ var
   BinCompStream: TMemoryStream;
   TxtCompStream: TMemoryStream;
   CurComponent: TComponent;
-  Driver: TBinaryObjectWriter;
+  DestroyDriver: Boolean;
   Writer: TWriter;
 begin
   Result:=false;
@@ -472,20 +472,15 @@ begin
       try
         CurComponent:=TComponent(ControlSelection[i].Persistent);
 
-        Driver := TBinaryObjectWriter.Create(BinCompStream, 4096);
+        DestroyDriver:=false;
+        Writer := CreateLRSWriter(BinCompStream,DestroyDriver);
         Try
-          Writer := TWriter.Create(Driver);
-          Try
-            Writer.Root:=FLookupRoot;
-            Writer.WriteComponent(CurComponent);
-          Finally
-            Writer.Destroy;
-          end;
+          Writer.Root:=FLookupRoot;
+          Writer.WriteComponent(CurComponent);
         Finally
-          Driver.Free;
+          if DestroyDriver then Writer.Driver.Free;
+          Writer.Destroy;
         end;
-
-        //BinCompStream.WriteComponent(CurComponent);
       except
         on E: Exception do begin
           MessageDlg(lisUnableToStreamSelectedComponents,

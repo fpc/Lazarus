@@ -16,9 +16,10 @@
 
   Abstract:
     This unit maintains and stores all lazarus resources in the global list
-    named LazarusResources.
+    named LazarusResources and provides methods and types to stream components.
+
     A lazarus resource is an ansistring, with a name and a valuetype. Both, name
-    and valuetype, are ansistrings.
+    and valuetype, are ansistrings as well.
     Lazarus resources are normally included via an include directive in the
     initialization part of a unit. To create such include files use the
     BinaryToLazarusResourceCode procedure.
@@ -33,9 +34,11 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, LCLProc, LCLStrConsts;
+  Classes, SysUtils, FPCAdds, TypInfo, RTLConst, LCLProc, LCLStrConsts;
 
 type
+  { TLResourceList }
+
   TLResource = class
   public
     Name: AnsiString;
@@ -44,14 +47,14 @@ type
   end;
 
   TLResourceList = class(TObject)
-  public //private
-    FList:TList;  // main list with all resource pointer
-    FMergeList:TList; // list needed for mergesort
-    FSortedCount:integer; // 0 .. FSortedCount-1 resources are sorted
-    function FindPosition(const Name:AnsiString):integer;
+  private
+    FList: TList;  // main list with all resource pointers
+    FMergeList: TList; // list needed for mergesort
+    FSortedCount: integer; // 0 .. FSortedCount-1 resources are sorted
+    function FindPosition(const Name: AnsiString):integer;
     procedure Sort;
-    procedure MergeSort(List,MergeList:TList;Pos1,Pos2:integer);
-    procedure Merge(List,MergeList:TList;Pos1,Pos2,Pos3:integer);
+    procedure MergeSort(List, MergeList: TList; Pos1, Pos2: integer);
+    procedure Merge(List, MergeList: TList; Pos1, Pos2, Pos3: integer);
   public
     procedure Add(const Name, ValueType, Value: AnsiString);
     procedure Add(const Name, ValueType: AnsiString; Values: array of string);
@@ -59,9 +62,125 @@ type
     constructor Create;
     destructor Destroy;  override;
   end;
+  
+
+  { TLRSObjectReader }
+
+  TLRSObjectReader = class(TAbstractObjectReader)
+  private
+    FStream: TStream;
+    FBuffer: Pointer;
+    FBufSize: Integer;
+    FBufPos: Integer;
+    FBufEnd: Integer;
+    procedure Read(var Buf; Count: LongInt);
+    procedure SkipProperty;
+    procedure SkipSetBody;
+    function ReadIntegerContent: integer;
+  public
+    constructor Create(Stream: TStream; BufSize: Integer); virtual;
+    destructor Destroy; override;
+
+    function NextValue: TValueType; override;
+    function ReadValue: TValueType; override;
+    procedure BeginRootComponent; override;
+    procedure BeginComponent(var Flags: TFilerFlags; var AChildPos: Integer;
+      var CompClassName, CompName: String); override;
+    function BeginProperty: String; override;
+
+    procedure ReadBinary(const DestData: TMemoryStream); override;
+    function ReadFloat: Extended; override;
+    function ReadSingle: Single; override;
+    {$ifdef HASCURRENCY}
+    function ReadCurrency: Currency; override;
+    {$endif HASCURRENCY}
+    function ReadDate: TDateTime; override;
+    function ReadIdent(ValueType: TValueType): String; override;
+    function ReadInt8: ShortInt; override;
+    function ReadInt16: SmallInt; override;
+    function ReadInt32: LongInt; override;
+    function ReadInt64: Int64; override;
+    function ReadSet(EnumType: Pointer): Integer; override;
+    function ReadStr: String; override;
+    function ReadString(StringType: TValueType): String; override;
+    {$ifdef HASWIDESTRING}
+    function ReadWideString: WideString;override;
+    {$endif HASWIDESTRING}
+    procedure SkipComponent(SkipComponentInfos: Boolean); override;
+    procedure SkipValue; override;
+  end;
+  TLRSObjectReaderClass = class of TLRSObjectReader;
+  
+
+  { TLRSObjectWriter }
+
+  TLRSObjectWriter = class(TAbstractObjectWriter)
+  private
+    FStream: TStream;
+    FBuffer: Pointer;
+    FBufSize: Integer;
+    FBufPos: Integer;
+    FSignatureWritten: Boolean;
+  protected
+    procedure FlushBuffer;
+    procedure Write(const Buffer; Count: Longint);
+    procedure WriteValue(Value: TValueType);
+    procedure WriteStr(const Value: String);
+    procedure WriteIntegerContent(i: integer);
+    procedure WriteWordContent(w: word);
+    procedure WriteInt64Content(i: int64);
+    procedure WriteSingleContent(s: single);
+    procedure WriteDoubleContent(d: Double);
+    procedure WriteExtendedContent(e: Extended);
+    {$ifdef HASCURRENCY}
+    procedure WriteCurrencyContent(c: Currency);
+    {$endif HASCURRENCY}
+    {$ifdef HASWIDESTRING}
+    procedure WriteWideStringContent(ws: WideString);
+    {$endif HASWIDESTRING}
+    procedure WriteWordsReversed(p: PWord; Count: integer);
+    procedure WriteNulls(Count: integer);
+  public
+    constructor Create(Stream: TStream; BufSize: Integer); virtual;
+    destructor Destroy; override;
+
+    procedure BeginCollection; override;
+    procedure BeginComponent(Component: TComponent; Flags: TFilerFlags;
+      ChildPos: Integer); override;
+    procedure BeginList; override;
+    procedure EndList; override;
+    procedure BeginProperty(const PropName: String); override;
+    procedure EndProperty; override;
+
+    procedure WriteBinary(const Buffer; Count: LongInt); override;
+    procedure WriteBoolean(Value: Boolean); override;
+    procedure WriteFloat(const Value: Extended); override;
+    procedure WriteSingle(const Value: Single); override;
+    {$ifdef HASCURRENCY}
+    procedure WriteCurrency(const Value: Currency); override;
+    {$endif HASCURRENCY}
+    procedure WriteDate(const Value: TDateTime); override;
+    procedure WriteIdent(const Ident: string); override;
+    procedure WriteInteger(Value: Int64); override;
+    procedure WriteMethodName(const Name: String); override;
+    procedure WriteSet(Value: LongInt; SetType: Pointer); override;
+    procedure WriteString(const Value: String); override;
+    {$ifdef HASWIDESTRING}
+    procedure WriteWideString(const Value: WideString); override;
+    {$endif HASWIDESTRING}
+  end;
+  TLRSObjectWriterClass = class of TLRSObjectWriter;
+
+var
+  LazarusResources: TLResourceList;
+
+  LRSObjectReaderClass: TLRSObjectReaderClass;
+  LRSObjectWriterClass: TLRSObjectWriterClass;
 
 function InitLazResourceComponent(Instance: TComponent;
   RootAncestor: TClass): Boolean;
+function CreateLRSReader(s: TStream; var DestroyDriver: boolean): TReader;
+function CreateLRSWriter(s: TStream; var DestroyDriver: boolean): TWriter;
 
 procedure BinaryToLazarusResourceCode(BinStream, ResStream: TStream;
   const ResourceName, ResourceType: String);
@@ -86,8 +205,8 @@ procedure DelphiObjectResToText(Input, Output: TStream;
 function TestFormStreamFormat(Stream: TStream): TDelphiStreamOriginalFormat;
 procedure FormDataToText(FormStream, TextStream: TStream);
 
-
-var LazarusResources:TLResourceList;
+procedure ReverseBytes(p: Pointer; Count: integer);
+procedure ReverseByteOrderInWords(p: PWord; Count: integer);
 
 
 implementation
@@ -962,7 +1081,7 @@ function CreateLFMFile(AComponent: TComponent; LFMStream: TStream): integer;
 // -2 = error while streaming binary stream to text file
 var
   BinStream: TMemoryStream;
-  Driver: TAbstractObjectWriter;
+  DestroyDriver: Boolean;
   Writer: TWriter;
 begin
   Result:=0;
@@ -970,16 +1089,13 @@ begin
   try
     try
       // write component to binary stream
-      Driver:=TBinaryObjectWriter.Create(BinStream,4096);
+      DestroyDriver:=false;
+      Writer:=CreateLRSWriter(BinStream,DestroyDriver);
       try
-        Writer:=TWriter.Create(Driver);
-        try
-          Writer.WriteDescendent(AComponent,nil);
-        finally
-          Writer.Free;
-        end;
+        Writer.WriteDescendent(AComponent,nil);
       finally
-        Driver.Free;
+        if DestroyDriver then Writer.Driver.Free;
+        Writer.Free;
       end;
     except
       Result:=-1;
@@ -1435,6 +1551,35 @@ begin
   end;
 end;
 
+procedure ReverseBytes(p: Pointer; Count: integer);
+var
+  p1: PChar;
+  p2: PChar;
+  c: Char;
+begin
+  p1:=PChar(p);
+  p2:=PChar(p)+Count-1;
+  while p1<p2 do begin
+    c:=p1^;
+    p1^:=p2^;
+    p2^:=c;
+    inc(p1);
+    dec(p2);
+  end;
+end;
+
+procedure ReverseByteOrderInWords(p: PWord; Count: integer);
+var
+  i: Integer;
+  w: Word;
+begin
+  for i:=0 to Count-1 do begin
+    w:=p[i];
+    w:=(w shr 8) or ((w and $ff) shl 8);
+    p[i]:=w;
+  end;
+end;
+
 function InitLazResourceComponent(Instance: TComponent;
   RootAncestor: TClass): Boolean;
 
@@ -1442,6 +1587,9 @@ function InitLazResourceComponent(Instance: TComponent;
   var
     CompResource: TLResource;
     MemStream: TMemoryStream;
+    Reader: TReader;
+    DestroyDriver: Boolean;
+    Driver: TAbstractObjectReader;
   begin
     //DebugLn('[InitComponent] ',ClassType.Classname,' ',Instance<>nil);
     Result:=false;
@@ -1457,7 +1605,15 @@ function InitLazResourceComponent(Instance: TComponent;
       MemStream.Position:=0;
       //DebugLn('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
       //try
-        Instance:=MemStream.ReadComponent(Instance);
+      DestroyDriver:=false;
+      Reader := CreateLRSReader(MemStream,DestroyDriver);
+      try
+        Reader.ReadRootComponent(Instance);
+      finally
+        Driver:=Reader.Driver;
+        Reader.Free;
+        if DestroyDriver then Driver.Free;
+      end;
       //except
       //  on E: Exception do begin
       //    DebugLn(Format(rsFormStreamingError,[ClassType.ClassName,E.Message]));
@@ -1474,6 +1630,794 @@ begin
   Result:=InitComponent(Instance.ClassType);
 end;
 
+function CreateLRSReader(s: TStream; var DestroyDriver: boolean): TReader;
+{$IFDEF NewLRSStreamer}
+var
+  p: Pointer;
+  Driver: TAbstractObjectReader;
+{$ENDIF}
+begin
+  Result:=TReader.Create(s,4096);
+  DestroyDriver:=false;
+  {$IFDEF NewLRSStreamer}
+  if Result.Driver.ClassType=LRSObjectReaderClass then exit;
+  // hack to set a write protected variable.
+  DestroyDriver:=true;
+  Driver:=LRSObjectReaderClass.Create(s,4096);
+  p:=@Result.Driver;
+  Result.Driver.Free;
+  TAbstractObjectReader(p^):=Driver;
+  {$ENDIF}
+end;
+
+function CreateLRSWriter(s: TStream; var DestroyDriver: boolean): TWriter;
+var
+  Driver: TAbstractObjectWriter;
+begin
+  {$IFDEF NewLRSStreamer}
+  Driver:=LRSObjectWriterClass.Create(s,4096);
+  {$ELSE}
+  Driver:=TBinaryObjectWriter.Create(s,4096);
+  {$ENDIF}
+  DestroyDriver:=true;
+  Result:=TWriter.Create(Driver);
+end;
+
+{ TLRSObjectReader }
+
+procedure TLRSObjectReader.Read(var Buf; Count: LongInt);
+var
+  CopyNow: LongInt;
+  Dest: Pointer;
+begin
+  Dest := @Buf;
+  while Count > 0 do
+  begin
+    if FBufPos >= FBufEnd then
+    begin
+      FBufEnd := FStream.Read(FBuffer^, FBufSize);
+      if FBufEnd = 0 then
+        raise EReadError.Create(SReadError);
+      FBufPos := 0;
+    end;
+    CopyNow := FBufEnd - FBufPos;
+    if CopyNow > Count then
+      CopyNow := Count;
+    Move(PChar(FBuffer)[FBufPos], Dest^, CopyNow);
+    Inc(FBufPos, CopyNow);
+    Dest:=Dest+CopyNow;
+    Dec(Count, CopyNow);
+  end;
+end;
+
+procedure TLRSObjectReader.SkipProperty;
+begin
+  { Skip property name, then the property value }
+  ReadStr;
+  SkipValue;
+end;
+
+procedure TLRSObjectReader.SkipSetBody;
+begin
+  while Length(ReadStr) > 0 do;
+end;
+
+function TLRSObjectReader.ReadIntegerContent: integer;
+begin
+  Read(Result,4);
+  {$ifdef Endian_BIG}
+  ReverseBytes(@Result,4);
+  {$endif}
+end;
+
+constructor TLRSObjectReader.Create(Stream: TStream; BufSize: Integer);
+begin
+  inherited Create;
+  FStream := Stream;
+  FBufSize := BufSize;
+  GetMem(FBuffer, BufSize);
+end;
+
+destructor TLRSObjectReader.Destroy;
+begin
+  { Seek back the amount of bytes that we didn't process until now: }
+  FStream.Seek(Integer(FBufPos) - Integer(FBufEnd), soFromCurrent);
+
+  if Assigned(FBuffer) then
+    FreeMem(FBuffer, FBufSize);
+
+  inherited Destroy;
+end;
+
+function TLRSObjectReader.ReadValue: TValueType;
+var
+  b: byte;
+begin
+  Result := vaNull; { Necessary in FPC as TValueType is larger than 1 byte! }
+  Read(b,1);
+  Result:=TValueType(b);
+end;
+
+function TLRSObjectReader.NextValue: TValueType;
+begin
+  Result := ReadValue;
+  { We only 'peek' at the next value, so seek back to unget the read value: }
+  Dec(FBufPos);
+end;
+
+procedure TLRSObjectReader.BeginRootComponent;
+var
+  Signature: LongInt;
+begin
+  { Read filer signature }
+  Read(Signature,4);
+  if Signature <> LongInt(FilerSignature) then
+    raise EReadError.Create(SInvalidImage);
+end;
+
+procedure TLRSObjectReader.BeginComponent(var Flags: TFilerFlags;
+  var AChildPos: Integer; var CompClassName, CompName: String);
+var
+  Prefix: Byte;
+  ValueType: TValueType;
+begin
+  { Every component can start with a special prefix: }
+  Flags := [];
+  if (Byte(NextValue) and $f0) = $f0 then
+  begin
+    Prefix := Byte(ReadValue);
+    Flags := TFilerFlags(longint(Prefix and $0f));
+    if ffChildPos in Flags then
+    begin
+      ValueType := NextValue;
+      case ValueType of
+        vaInt8:
+          AChildPos := ReadInt8;
+        vaInt16:
+          AChildPos := ReadInt16;
+        vaInt32:
+          AChildPos := ReadInt32;
+        else
+          raise EReadError.Create(SInvalidPropertyValue);
+      end;
+    end;
+  end;
+
+  CompClassName := ReadStr;
+  CompName := ReadStr;
+end;
+
+function TLRSObjectReader.BeginProperty: String;
+begin
+  Result := ReadStr;
+end;
+
+procedure TLRSObjectReader.ReadBinary(const DestData: TMemoryStream);
+var
+  BinSize: LongInt;
+begin
+  BinSize:=ReadIntegerContent;
+  DestData.Size := BinSize;
+  Read(DestData.Memory^, BinSize);
+end;
+
+function TLRSObjectReader.ReadFloat: Extended;
+begin
+  {$ifdef CPUPowerPC}
+  debugln('WARNING: TLRSObjectReader.ReadFloat not yet implemented for powerpc');
+  Read(Result, 4);
+  Read(Result, 4);
+  Read(Result, 2);
+  Result:=0;
+  exit;
+  {$endif CPUPowerPC}
+  
+  Read(Result, 10);
+  {$ifdef Endian_BIG}
+  ReverseBytes(@Result,10);
+  {$endif}
+end;
+
+function TLRSObjectReader.ReadSingle: Single;
+begin
+  Read(Result, 4);
+  {$ifdef Endian_BIG}
+  ReverseBytes(@Result,4);
+  {$endif}
+end;
+
+{$ifdef HASCURRENCY}
+function TLRSObjectReader.ReadCurrency: Currency;
+begin
+  Read(Result, 8);
+  {$ifdef Endian_BIG}
+  ReverseBytes(@Result,8);
+  {$endif}
+end;
+{$endif  HASCURRENCY}
+
+function TLRSObjectReader.ReadDate: TDateTime;
+begin
+  Read(Result, 8);
+  {$ifdef Endian_BIG}
+  ReverseBytes(@Result,8);
+  {$endif}
+end;
+
+function TLRSObjectReader.ReadIdent(ValueType: TValueType): String;
+var
+  b: Byte;
+begin
+  case ValueType of
+    vaIdent:
+      begin
+        Read(b, 1);
+        SetLength(Result, b);
+        Read(Result[1], b);
+      end;
+    vaNil:
+      Result := 'nil';
+    vaFalse:
+      Result := 'False';
+    vaTrue:
+      Result := 'True';
+    vaNull:
+      Result := 'Null';
+  end;
+end;
+
+function TLRSObjectReader.ReadInt8: ShortInt;
+begin
+  Read(Result, 1);
+end;
+
+function TLRSObjectReader.ReadInt16: SmallInt;
+begin
+  Read(Result, 2);
+  {$ifdef Endian_BIG}
+  ReverseBytes(@Result,2);
+  {$endif}
+end;
+
+function TLRSObjectReader.ReadInt32: LongInt;
+begin
+  Read(Result, 4);
+  {$ifdef Endian_BIG}
+  ReverseBytes(@Result,4);
+  {$endif}
+end;
+
+function TLRSObjectReader.ReadInt64: Int64;
+begin
+  Read(Result, 8);
+  {$ifdef Endian_BIG}
+  ReverseBytes(@Result,8);
+  {$endif}
+end;
+
+function TLRSObjectReader.ReadSet(EnumType: Pointer): Integer;
+var
+  Name: String;
+  Value: Integer;
+begin
+  try
+    Result := 0;
+    while True do
+    begin
+      Name := ReadStr;
+      if Length(Name) = 0 then
+        break;
+      Value := GetEnumValue(PTypeInfo(EnumType), Name);
+      if Value = -1 then
+        raise EReadError.Create(SInvalidPropertyValue);
+      Result := Result or (1 shl Value);
+    end;
+  except
+    SkipSetBody;
+    raise;
+  end;
+end;
+
+function TLRSObjectReader.ReadStr: String;
+var
+  b: Byte;
+begin
+  Read(b, 1);
+  SetLength(Result, b);
+  if b > 0 then
+    Read(Result[1], b);
+end;
+
+function TLRSObjectReader.ReadString(StringType: TValueType): String;
+var
+  i: Integer;
+  b: byte;
+begin
+  case StringType of
+    vaString:
+      begin
+        Read(b, 1);
+        i:=b;
+      end;
+    vaLString:
+      i:=ReadIntegerContent;
+  end;
+  SetLength(Result, i);
+  if i > 0 then
+    Read(Pointer(@Result[1])^, i);
+end;
+
+
+{$ifdef HASWIDESTRING}
+function TLRSObjectReader.ReadWideString: WideString;
+var
+  i: Integer;
+begin
+  i:=ReadIntegerContent;
+  SetLength(Result, i);
+  if i > 0 then
+    Read(Pointer(@Result[1])^, i*2);
+end;
+{$endif HASWIDESTRING}
+
+
+procedure TLRSObjectReader.SkipComponent(SkipComponentInfos: Boolean);
+var
+  Flags: TFilerFlags;
+  Dummy: Integer;
+  CompClassName, CompName: String;
+begin
+  if SkipComponentInfos then
+    { Skip prefix, component class name and component object name }
+    BeginComponent(Flags, Dummy, CompClassName, CompName);
+
+  { Skip properties }
+  while NextValue <> vaNull do
+    SkipProperty;
+  ReadValue;
+
+  { Skip children }
+  while NextValue <> vaNull do
+    SkipComponent(True);
+  ReadValue;
+end;
+
+procedure TLRSObjectReader.SkipValue;
+
+  procedure SkipBytes(Count: LongInt);
+  var
+    Dummy: array[0..1023] of Byte;
+    SkipNow: Integer;
+  begin
+    while Count > 0 do
+    begin
+      if Count > 1024 then
+        SkipNow := 1024
+      else
+        SkipNow := Count;
+      Read(Dummy, SkipNow);
+      Dec(Count, SkipNow);
+    end;
+  end;
+
+var
+  Count: LongInt;
+begin
+  case ReadValue of
+    vaNull, vaFalse, vaTrue, vaNil: ;
+    vaList:
+      begin
+        while NextValue <> vaNull do
+          SkipValue;
+        ReadValue;
+      end;
+    vaInt8:
+      SkipBytes(1);
+    vaInt16:
+      SkipBytes(2);
+    vaInt32:
+      SkipBytes(4);
+    vaExtended:
+      SkipBytes(10);
+    vaString, vaIdent:
+      ReadStr;
+    vaBinary, vaLString, vaWString:
+      begin
+        Count:=ReadIntegerContent;
+        SkipBytes(Count);
+      end;
+    vaSet:
+      SkipSetBody;
+    vaCollection:
+      begin
+        while NextValue <> vaNull do
+        begin
+          { Skip the order value if present }
+          if NextValue in [vaInt8, vaInt16, vaInt32] then
+            SkipValue;
+          SkipBytes(1);
+          while NextValue <> vaNull do
+            SkipProperty;
+          ReadValue;
+        end;
+        ReadValue;
+      end;
+    vaSingle:
+      SkipBytes(4);
+    {$ifdef HASCURRENCY}
+    vaCurrency:
+      SkipBytes(SizeOf(Currency));
+    {$endif}
+    vaDate:
+      SkipBytes(8);
+    vaInt64:
+      SkipBytes(8);
+  else
+    RaiseGDBException('TLRSObjectReader.SkipValue unknown valuetype');
+  end;
+end;
+
+{ TLRSObjectWriter }
+
+procedure TLRSObjectWriter.FlushBuffer;
+begin
+  FStream.WriteBuffer(FBuffer^, FBufPos);
+  FBufPos := 0;
+end;
+
+procedure TLRSObjectWriter.Write(const Buffer; Count: LongInt);
+var
+  CopyNow: LongInt;
+  SourceBuf: PChar;
+begin
+  SourceBuf:=@Buffer;
+  while Count > 0 do
+  begin
+    CopyNow := Count;
+    if CopyNow > FBufSize - FBufPos then
+      CopyNow := FBufSize - FBufPos;
+    Move(SourceBuf^, PChar(FBuffer)[FBufPos], CopyNow);
+    Dec(Count, CopyNow);
+    Inc(FBufPos, CopyNow);
+    SourceBuf:=SourceBuf+CopyNow;
+    if FBufPos = FBufSize then
+      FlushBuffer;
+  end;
+end;
+
+procedure TLRSObjectWriter.WriteValue(Value: TValueType);
+var
+  b: byte;
+begin
+  b:=byte(Value);
+  Write(b, 1);
+end;
+
+procedure TLRSObjectWriter.WriteStr(const Value: String);
+var
+  i: Integer;
+  b: Byte;
+begin
+  i := Length(Value);
+  if i > 255 then
+    i := 255;
+  b:=byte(i);
+  Write(b,1);
+  if i > 0 then
+    Write(Value[1], i);
+end;
+
+procedure TLRSObjectWriter.WriteIntegerContent(i: integer);
+begin
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@i,4);
+  {$ENDIF}
+  Write(i,4);
+end;
+
+procedure TLRSObjectWriter.WriteWordContent(w: word);
+begin
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@w,2);
+  {$ENDIF}
+  Write(w,2);
+end;
+
+procedure TLRSObjectWriter.WriteInt64Content(i: int64);
+begin
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@i,8);
+  {$ENDIF}
+  Write(i,8);
+end;
+
+procedure TLRSObjectWriter.WriteSingleContent(s: single);
+begin
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@s,4);
+  {$ENDIF}
+  Write(s,4);
+end;
+
+procedure TLRSObjectWriter.WriteDoubleContent(d: Double);
+begin
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@d,8);
+  {$ENDIF}
+  Write(d,8);
+end;
+
+procedure TLRSObjectWriter.WriteExtendedContent(e: Extended);
+begin
+  {$IFDEF Endian_BIG}
+    {$IFDEF CPUPowerPC}
+    debugln('WARNING: TLRSObjectWriter.WriteExtendedContent not yet implemented for powerpc');
+    WriteNulls(10);
+    exit;
+    {$ENDIF}
+  ReverseBytes(@e,10);
+  {$ENDIF}
+  Write(e,10);
+end;
+
+{$ifdef HASCURRENCY}
+procedure TLRSObjectWriter.WriteCurrencyContent(c: Currency);
+begin
+  {$IFDEF Endian_BIG}
+  ReverseBytes(@c,8);
+  {$ENDIF}
+  Write(c,8);
+end;
+{$endif HASCURRENCY}
+
+{$ifdef HASWIDESTRING}
+procedure TLRSObjectWriter.WriteWideStringContent(ws: WideString);
+begin
+  {$IFDEF Endian_BIG}
+  WriteWordsReversed(PWord(@ws[1]),length(ws));
+  {$ELSE}
+  Write(ws[1],length(ws)*2);
+  {$ENDIF}
+end;
+{$endif HASWIDESTRING}
+
+procedure TLRSObjectWriter.WriteWordsReversed(p: PWord; Count: integer);
+var
+  i: Integer;
+  w: Word;
+begin
+  for i:=0 to Count-1 do begin
+    w:=p[i];
+    w:=((w and $ff) shl 8) or (w and $ff);
+    Write(w,2);
+  end;
+end;
+
+procedure TLRSObjectWriter.WriteNulls(Count: integer);
+var
+  c: Char;
+  i: Integer;
+begin
+  c:=#0;
+  for i:=0 to Count-1 do Write(c,1);
+end;
+
+constructor TLRSObjectWriter.Create(Stream: TStream; BufSize: Integer);
+begin
+  inherited Create;
+  FStream := Stream;
+  FBufSize := BufSize;
+  GetMem(FBuffer, BufSize);
+end;
+
+destructor TLRSObjectWriter.Destroy;
+begin
+  // Flush all data which hasn't been written yet
+  FlushBuffer;
+
+  if Assigned(FBuffer) then
+    FreeMem(FBuffer, FBufSize);
+
+  inherited Destroy;
+end;
+
+procedure TLRSObjectWriter.BeginCollection;
+begin
+  WriteValue(vaCollection);
+end;
+
+procedure TLRSObjectWriter.BeginComponent(Component: TComponent;
+  Flags: TFilerFlags; ChildPos: Integer);
+var
+  Prefix: Byte;
+begin
+  if not FSignatureWritten then
+  begin
+    Write(FilerSignature, SizeOf(FilerSignature));
+    FSignatureWritten := True;
+  end;
+
+  { Only write the flags if they are needed! }
+  if Flags <> [] then
+  begin
+    Prefix := Integer(Flags) or $f0;
+    Write(Prefix, 1);
+    if ffChildPos in Flags then
+      WriteInteger(ChildPos);
+  end;
+
+  WriteStr(Component.ClassName);
+  WriteStr(Component.Name);
+end;
+
+procedure TLRSObjectWriter.BeginList;
+begin
+  WriteValue(vaList);
+end;
+
+procedure TLRSObjectWriter.EndList;
+begin
+  WriteValue(vaNull);
+end;
+
+procedure TLRSObjectWriter.BeginProperty(const PropName: String);
+begin
+  WriteStr(PropName);
+end;
+
+procedure TLRSObjectWriter.EndProperty;
+begin
+end;
+
+procedure TLRSObjectWriter.WriteBinary(const Buffer; Count: LongInt);
+begin
+  WriteValue(vaBinary);
+  WriteIntegerContent(Count);
+  Write(Buffer, Count);
+end;
+
+procedure TLRSObjectWriter.WriteBoolean(Value: Boolean);
+begin
+  if Value then
+    WriteValue(vaTrue)
+  else
+    WriteValue(vaFalse);
+end;
+
+procedure TLRSObjectWriter.WriteFloat(const Value: Extended);
+begin
+  WriteValue(vaExtended);
+  WriteExtendedContent(Value);
+end;
+
+procedure TLRSObjectWriter.WriteSingle(const Value: Single);
+begin
+  WriteValue(vaSingle);
+  WriteSingleContent(Value);
+end;
+
+{$ifdef HASCURRENCY}
+procedure TLRSObjectWriter.WriteCurrency(const Value: Currency);
+begin
+  WriteValue(vaCurrency);
+  WriteCurrencyContent(Value);
+end;
+{$endif HASCURRENCY}
+
+procedure TLRSObjectWriter.WriteDate(const Value: TDateTime);
+begin
+  WriteValue(vaDate);
+  WriteDoubleContent(Value);
+end;
+
+procedure TLRSObjectWriter.WriteIdent(const Ident: string);
+begin
+  { Check if Ident is a special identifier before trying to just write
+    Ident directly }
+  if UpperCase(Ident) = 'NIL' then
+    WriteValue(vaNil)
+  else if UpperCase(Ident) = 'FALSE' then
+    WriteValue(vaFalse)
+  else if UpperCase(Ident) = 'TRUE' then
+    WriteValue(vaTrue)
+  else if UpperCase(Ident) = 'NULL' then
+    WriteValue(vaNull) else
+  begin
+    WriteValue(vaIdent);
+    WriteStr(Ident);
+  end;
+end;
+
+procedure TLRSObjectWriter.WriteInteger(Value: Int64);
+var
+  w: Word;
+  i: Integer;
+  b: Byte;
+begin
+  writeln('TLRSObjectWriter.WriteInteger Value=',Value);
+  // Use the smallest possible integer type for the given value:
+  if (Value >= -128) and (Value <= 127) then
+  begin
+    WriteValue(vaInt8);
+    b:=Byte(Value);
+    Write(b, 1);
+  end else if (Value >= -32768) and (Value <= 32767) then
+  begin
+    WriteValue(vaInt16);
+    w:=Word(Value);
+    WriteWordContent(w);
+  end else if (Value >= -$80000000) and (Value <= $7fffffff) then
+  begin
+    WriteValue(vaInt32);
+    i:=Integer(Value);
+    WriteIntegerContent(i);
+  end else
+  begin
+  writeln('TLRSObjectWriter.WriteInteger Value=',Value,' FBufPos=',FBufPos);
+    WriteValue(vaInt64);
+  writeln('TLRSObjectWriter.WriteInteger B FBufPos=',FBufPos);
+    WriteInt64Content(Value);
+  writeln('TLRSObjectWriter.WriteInteger C FBufPos=',FBufPos);
+  end;
+end;
+
+procedure TLRSObjectWriter.WriteMethodName(const Name: String);
+begin
+  if Length(Name) > 0 then
+  begin
+    WriteValue(vaIdent);
+    WriteStr(Name);
+  end else
+    WriteValue(vaNil);
+end;
+
+procedure TLRSObjectWriter.WriteSet(Value: LongInt; SetType: Pointer);
+var
+  i: Integer;
+  Mask: LongInt;
+begin
+  WriteValue(vaSet);
+  Mask := 1;
+  for i := 0 to 31 do
+  begin
+    if (Value and Mask) <> 0 then
+      WriteStr(GetEnumName(PTypeInfo(SetType), i));
+    Mask := Mask shl 1;
+  end;
+  WriteStr('');
+end;
+
+procedure TLRSObjectWriter.WriteString(const Value: String);
+var
+  i: Integer;
+  b: Byte;
+begin
+  i := Length(Value);
+  if i <= 255 then
+  begin
+    WriteValue(vaString);
+    b:=byte(i);
+    Write(b, 1);
+  end else
+  begin
+    WriteValue(vaLString);
+    WriteIntegerContent(i);
+  end;
+  if i > 0 then
+    Write(Value[1], i);
+end;
+
+{$ifdef HASWIDESTRING}
+procedure TLRSObjectWriter.WriteWideString(const Value: WideString);
+var
+  i: Integer;
+begin
+  WriteValue(vaWString);
+  i := Length(Value);
+  WriteIntegerContent(i);
+  WriteWideStringContent(Value);
+end;
+{$endif HASWIDESTRING}
 
 
 //------------------------------------------------------------------------------
@@ -1481,6 +2425,8 @@ procedure InternalInit;
 begin
   LazarusResources:=TLResourceList.Create;
   ByteToStrValid:=false;
+  LRSObjectReaderClass:=TLRSObjectReader;
+  LRSObjectWriterClass:=TLRSObjectWriter;
 end;
 
 initialization

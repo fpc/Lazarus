@@ -3190,7 +3190,7 @@ const
 var
   ComponentSavingOk: boolean;
   MemStream, BinCompStream, TxtCompStream: TExtMemoryStream;
-  Driver: TAbstractObjectWriter;
+  DestroyDriver: Boolean;
   Writer: TWriter;
   ACaption, AText: string;
   CompResourceCode, LFMFilename, TestFilename, ResTestFilename: string;
@@ -3217,32 +3217,31 @@ begin
     BinCompStream:=TExtMemoryStream.Create;
     if AnUnitInfo.ComponentLastBinStreamSize>0 then
       BinCompStream.Capacity:=AnUnitInfo.ComponentLastBinStreamSize+BufSize;
+    Writer:=nil;
+    DestroyDriver:=false;
     try
       Result:=mrOk;
       repeat
         try
           BinCompStream.Position:=0;
-          Driver:=TBinaryObjectWriter.Create(BinCompStream,BufSize);
-          try
-            Writer:=TWriter.Create(Driver);
-            try
-              Writer.WriteDescendent(AnUnitInfo.Component,nil);
-            finally
-              Writer.Free;
-            end;
-          finally
-            Driver.Free;
-          end;
+          Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
+          Writer.WriteDescendent(AnUnitInfo.Component,nil);
+          if DestroyDriver then Writer.Driver.Free;
+          Writer.Free;
+          Writer:=nil;
           AnUnitInfo.ComponentLastBinStreamSize:=BinCompStream.Size;
         except
-          ACaption:=lisStreamingError;
-          AText:=Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
-                        AnUnitInfo.ComponentName]);
-          Result:=MessageDlg(ACaption, AText, mtError,
-                     [mbAbort, mbRetry, mbIgnore], 0);
-          if Result=mrAbort then exit;
-          if Result=mrIgnore then Result:=mrOk;
-          ComponentSavingOk:=false;
+          on E: Exception do begin
+            ACaption:=lisStreamingError;
+            AText:=Format(lisUnableToStreamT, [AnUnitInfo.ComponentName,
+                          AnUnitInfo.ComponentName])+#13
+                          +E.Message;
+            Result:=MessageDlg(ACaption, AText, mtError,
+                       [mbAbort, mbRetry, mbIgnore], 0);
+            if Result=mrAbort then exit;
+            if Result=mrIgnore then Result:=mrOk;
+            ComponentSavingOk:=false;
+          end;
         end;
       until Result<>mrRetry;
 
@@ -3356,14 +3355,17 @@ begin
                   TxtCompStream.Free;
                 end;
               except
-                ACaption:=lisStreamingError;
-                AText:=Format(
-                  lisUnableToTransformBinaryComponentStreamOfTIntoText, [
-                  AnUnitInfo.ComponentName, AnUnitInfo.ComponentName]);
-                Result:=MessageDlg(ACaption, AText, mtError,
-                                   [mbAbort, mbRetry, mbIgnore], 0);
-                if Result=mrAbort then exit;
-                if Result=mrIgnore then Result:=mrOk;
+                on E: Exception do begin
+                  ACaption:=lisStreamingError;
+                  AText:=Format(
+                    lisUnableToTransformBinaryComponentStreamOfTIntoText, [
+                    AnUnitInfo.ComponentName, AnUnitInfo.ComponentName])
+                    +#13+E.Message;
+                  Result:=MessageDlg(ACaption, AText, mtError,
+                                     [mbAbort, mbRetry, mbIgnore], 0);
+                  if Result=mrAbort then exit;
+                  if Result=mrIgnore then Result:=mrOk;
+                end;
               end;
             until Result<>mrRetry;
           end;
@@ -3371,6 +3373,8 @@ begin
       end;
     finally
       BinCompStream.Free;
+      if DestroyDriver and (Writer<>nil) then Writer.Driver.Free;
+      Writer.Free;
     end;
   end;
   {$IFDEF IDE_DEBUG}
@@ -3760,8 +3764,8 @@ begin
       // find the classname of the LFM
       NewClassName:=FindLFMClassName(TxtLFMStream);
       if NewClassName='' then begin
-        Result:=MessageDlg('LFM file corrupt',
-          'Unable to find a valid classname in "'+LFMFilename+'"',
+        Result:=MessageDlg(lisLFMFileCorrupt,
+          Format(lisUnableToFindAValidClassnameIn, ['"', LFMFilename, '"']),
           mtError,[mbIgnore,mbCancel,mbAbort],0);
         exit;
       end;
@@ -10578,6 +10582,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.753  2004/08/15 14:39:36  mattias
+  implemented platform independent binary object streamer
+
   Revision 1.752  2004/08/13 12:05:02  mattias
   implemented THelpSelectorDialog
 
