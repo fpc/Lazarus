@@ -320,6 +320,7 @@ type
     function RemoveProjectPathFromFilename(const AFilename: string): string;
     function ProjectDirectory: string;
     function FileIsInProjectDir(const AFilename: string): boolean;
+    procedure GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDefines);
     
     procedure GetUnitsChangedOnDisk(var AnUnitList: TList);
 
@@ -1918,6 +1919,22 @@ begin
     Result:=true;
 end;
 
+procedure TProject.GetVirtualDefines(DefTree: TDefineTree;
+  DirDef: TDirectoryDefines);
+  
+  procedure ExtendPath(const AVariable, APath: string);
+  begin
+    if APath<>'' then
+      DirDef.Values.Prepend(AVariable,DefTree.ReadValue(DirDef,APath+';',''));
+  end;
+  
+begin
+  if (not IsVirtual) then exit;
+  ExtendPath(UnitPathMacroName,CompilerOptions.OtherUnitFiles);
+  ExtendPath(IncludePathMacroName,CompilerOptions.IncludeFiles);
+  ExtendPath(SrcPathMacroName,SrcPath);
+end;
+
 procedure TProject.GetUnitsChangedOnDisk(var AnUnitList: TList);
 var
   AnUnitInfo: TUnitInfo;
@@ -2168,6 +2185,9 @@ end.
 
 {
   $Log$
+  Revision 1.90  2003/01/15 09:08:08  mattias
+  fixed search paths for virtual projects
+
   Revision 1.89  2003/01/02 04:33:55  mattias
   implemented incremental find and unit usage counts
 
