@@ -4696,7 +4696,7 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method:   TCanvas.Polygon
+  Method:   TgtkObject.Polygon
   Params:   DC: HDC; Points: ^TPoint; NumPts: integer; Winding: Boolean;
   Returns:  Nothing
 
@@ -4734,7 +4734,8 @@ begin
     else begin
       DCOrigin:=GetDCOffset(PDeviceContext(DC));
       if NumPts<=0 then exit;
-      GetMem(PointArray,SizeOf(TGdkPoint)*NumPts);
+      
+      GetMem(PointArray,SizeOf(TGdkPoint)*(NumPts+1)); // +1 for return line
       for i:=0 to NumPts-1 do begin
         PointArray[i].x:=Points[i].x+DCOrigin.X;
         PointArray[i].y:=Points[i].y+DCOrigin.Y;
@@ -4744,9 +4745,8 @@ begin
         (Points[NumPts-1].Y <> Points[0].Y)
       then begin
         Inc(NumPts);
-        ReallocMem(PointArray,SizeOf(TGdkPoint)*NumPts);
-        PointArray[NumPts - 1].x:=Points[0].x+DCOrigin.X;
-        PointArray[NumPts - 1].y:=Points[0].y+DCOrigin.Y;
+        PointArray[NumPts - 1].x:=PointArray[0].x;
+        PointArray[NumPts - 1].y:=PointArray[0].y;
       end;
 
       // first draw interior in brush color
@@ -4759,12 +4759,12 @@ begin
         ExtSelectClipRGN(DC, RGN, RGN_AND);
         DeleteObject(RGN);
         GetClipBox(DC, @ClipRect);
-	      FillRect(DC, ClipRect, HBrush(CurrentBrush));
-  	    SelectClipRGN(DC, Tmp);
+        FillRect(DC, ClipRect, HBrush(CurrentBrush));
+        SelectClipRGN(DC, Tmp);
         DeleteObject(Tmp);
-      end else
+      end else begin
         gdk_draw_polygon(Drawable, GC, 1, PointArray, NumPts);
-
+      end;
 
       // draw outline
       SelectGDKPenProps(DC);
@@ -5019,7 +5019,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean;
 var
-  Width, Height: Integer;
+  Left, Top, Width, Height: Integer;
   DCOrigin: TPoint;
 begin
   Assert(False, Format('trace:> [TgtkObject.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
@@ -5033,17 +5033,29 @@ begin
       Result := False;
     end
     else begin
-      Width := X2 - X1;
-      Height := Y2 - Y1;
+      if X1<=X2 then begin
+        Left:=X1;
+        Width:=X2 - X1;
+      end else begin
+        Left:=X2;
+        Width:=X1 - X2;
+      end;
+      if Y1<=Y2 then begin
+        Top:=Y1;
+        Height:=Y2 - Y1;
+      end else begin
+        Top:=Y2;
+        Height:=Y1 - Y2;
+      end;
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(PDeviceContext(DC));
-      gdk_draw_rectangle(Drawable, GC, 1, X1+DCOrigin.X, Y1+DCOrigin.Y,
+      gdk_draw_rectangle(Drawable, GC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
                          Width, Height);
 
       // Draw outline
       SelectGDKPenProps(DC);
-      gdk_draw_rectangle(Drawable, GC, 0, X1+DCOrigin.X, Y1+DCOrigin.Y,
+      gdk_draw_rectangle(Drawable, GC, 0, Left+DCOrigin.X, Top+DCOrigin.Y,
                          Width, Height);
       Result := True;
     end;
@@ -6965,6 +6977,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.133  2002/09/13 16:58:28  lazarus
+  MG: removed the 1x1 bitmap from TBitBtn
+
   Revision 1.132  2002/09/13 11:49:48  lazarus
   Cleanups, extended TStatusBar, graphic control cleanups.
 
