@@ -638,9 +638,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonDown(var Message: TLMLButtonDown);
 begin
+  Writeln('TCONTROL WMLBUTTONDOWN 1');
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then Include(FControlState, csClicked);
   DoMouseDown(Message, mbLeft, []);
+  Writeln('TCONTROL WMLBUTTONDOWN 2');
 end;
 
 {------------------------------------------------------------------------------
@@ -716,6 +718,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonUp(var Message: TLMLButtonUp);
 begin
+  Writeln('TCONTROL WMLBUTTONUP 1');
   if csCaptureMouse in ControlStyle then
      MouseCapture := False;
 
@@ -728,6 +731,8 @@ begin
     end;
   end;
   DoMouseUp(Message, mbLeft);
+  Writeln('TCONTROL WMLBUTTONUP 2');
+
 end;
 
 {------------------------------------------------------------------------------
@@ -1398,21 +1403,6 @@ begin
   CNSendMessage(LM_DESTROY, Self, nil);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetCallback                                                        }
-{------------------------------------------------------------------------------}
-procedure TControl.SetCallback(Msg : LongInt);
-begin
-   InterfaceObject.SetCallback(Msg, Self);
-end;
-
-{------------------------------------------------------------------------------}
-{  TControl RemoveCallbacks                                                                 }
-{------------------------------------------------------------------------------}
-procedure TControl.RemoveCallbacks;
-begin
-  InterfaceObject.RemoveCallbacks(Self);
-end;
 
 {------------------------------------------------------------------------------
   Method:  TControl.GetDeviceContext
@@ -1516,6 +1506,10 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.39  2002/03/25 17:59:20  lazarus
+  GTK Cleanup
+  Shane
+
   Revision 1.38  2002/03/16 21:40:54  lazarus
   MG: reduced size+move messages between lcl and interface
 
