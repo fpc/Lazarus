@@ -564,6 +564,10 @@ type
     Property OnKeyDown;
     property OnKeyPress;
     Property OnKeyUp;
+    Property OnMouseDown;
+    property OnMouseUp;
+    Property OnMouseMove;
+    property ParentFont;
     property ParentShowHint;
     property PasswordChar;
     property PopupMenu;
@@ -592,6 +596,10 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
+    Property OnMouseDown;
+    property OnMouseUp;
+    Property OnMouseMove;
+    property ParentFont;
     property PopupMenu;
     property ReadOnly;
     property ScrollBars;
@@ -644,6 +652,7 @@ type
     property Font;
     property Visible;
     property Layout;
+    property ParentFont;
     property ShowAccelChar;
     property WordWrap;
   end;
@@ -1466,6 +1475,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.107  2003/09/26 18:19:40  ajgenius
+  add minor TEdit/TMemo properties for delphi compatiblitity
+
   Revision 1.106  2003/09/23 08:00:46  mattias
   improved OnEnter for gtkcombo
 
