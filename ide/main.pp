@@ -9881,7 +9881,8 @@ end;
 procedure TMainIDE.OnPropHookRenameMethod(const CurName, NewName: ShortString);
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
-  r: boolean;
+  BossResult: boolean;
+  ErrorMsg: String;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[ctfSwitchToFormSource])
   then exit;
@@ -9892,19 +9893,21 @@ begin
   FOpenEditorsOnCodeToolChange:=true;
   try
     // create published method
-    r:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
+    BossResult:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
                             ActiveUnitInfo.Component.ClassName,CurName,NewName);
     {$IFDEF IDE_DEBUG}
     writeln('');
     writeln('[TMainIDE.OnPropHookRenameMethod] ************2 ',r);
     {$ENDIF}
     ApplyCodeToolChanges;
-    if r then begin
+    if BossResult then begin
       FormEditor1.RenameJITMethod(ActiveUnitInfo.Component,CurName,NewName);
     end else begin
+      ErrorMsg:=CodeToolBoss.ErrorMessage;
       DoJumpToCodeToolBossError;
       raise Exception.Create(
-        lisUnableToRenameMethodPlzFixTheErrorShownInTheMessag);
+        lisUnableToRenameMethodPlzFixTheErrorShownInTheMessag
+        +#13#13+lisError+ErrorMsg);
     end;
   finally
     FOpenEditorsOnCodeToolChange:=false;
@@ -10269,6 +10272,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.701  2004/01/13 22:34:05  mattias
+  changed consistency stops during method renaming to errors
+
   Revision 1.700  2004/01/13 16:39:01  mattias
   changed consistency stops during var renaming to errors
 

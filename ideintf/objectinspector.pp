@@ -1285,10 +1285,19 @@ begin
     if (ItemIndex<FRows.Count-1) then ItemIndex:=ItemIndex+1;
     
   VK_LEFT:
-    if (ItemIndex>=0) then (ShrinkRow(ItemIndex));
+    if (FCurrentEdit=nil)
+    and (ItemIndex>=0) and (Rows[ItemIndex].Expanded) then
+      ShrinkRow(ItemIndex)
+    else
+      Handled:=false;
     
   VK_RIGHT:
-    if (ItemIndex>=0) then (ExpandRow(ItemIndex));
+    if (FCurrentEdit=nil)
+    and (ItemIndex>=0) and (not Rows[ItemIndex].Expanded)
+    and (paSubProperties in Rows[ItemIndex].Editor.GetAttributes) then
+      ExpandRow(ItemIndex)
+    else
+      Handled:=false;
 
   VK_RETURN:
     SetRowValue;

@@ -479,7 +479,6 @@ function TEventsCodeTool.RenamePublishedMethod(const UpperClassName,
 var ClassNode: TCodeTreeNode;
 begin
   BuildTree(false);
-  if not EndOfSourceFound then exit;
   ClassNode:=FindClassNodeInInterface(UpperClassName,true,false,true);
   Result:=RenamePublishedMethod(ClassNode,UpperOldMethodName,NewMethodName,
                                 SourceChangeCache);
@@ -489,45 +488,64 @@ function TEventsCodeTool.RenamePublishedMethod(ClassNode: TCodeTreeNode;
   const UpperOldMethodName, NewMethodName: string;
   SourceChangeCache: TSourceChangeCache): boolean;
 // rename published method in class and in procedure itself
-var ANode, ProcHeadNode: TCodeTreeNode;
+var ProcNode, ProcHeadNode: TCodeTreeNode;
   NameStart, NameEnd: integer;
   UpperClassName: string;
+  ProcBodyNode: TCodeTreeNode;
 begin
   Result:=false;
-  if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) or (UpperOldMethodName='')
-  or (NewMethodName='') or (SourceChangeCache=nil) or (Scanner=nil) then
-    exit;
+  if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) then
+    RaiseException('Invalid class node');
+  if (UpperOldMethodName='') then
+    RaiseException('Invalid UpperOldMethodName="'+UpperOldMethodName+'"');
+  if (NewMethodName='') then
+    RaiseException('Invalid NewMethodName="'+NewMethodName+'"');
+  if (SourceChangeCache=nil) or (Scanner=nil) then
+    RaiseException('Invalid SourceChangeCache or Scanner');
   SourceChangeCache.MainScanner:=Scanner;
   // rename in class
-  ANode:=FindIdentifierNodeInClass(ClassNode,@UpperOldMethodName[1]);
-  if (ANode=nil) then begin
+  ProcNode:=FindIdentifierNodeInClass(ClassNode,@UpperOldMethodName[1]);
+  if (ProcNode=nil) then begin
     MoveCursorToNodeStart(ClassNode);
     RaiseExceptionFmt(ctsOldMethodNotFound,[UpperOldMethodName]);
   end;
-  if (ANode.Desc<>ctnProcedure) then begin
-    MoveCursorToNodeStart(ANode);
+  if (ProcNode.Desc<>ctnProcedure) then begin
+    MoveCursorToNodeStart(ProcNode);
     RaiseExceptionFmt(ctsOldMethodNotFound,[UpperOldMethodName]);
   end;
-  ProcHeadNode:=ANode.FirstChild;
-  if ProcHeadNode=nil then exit;
+  ProcHeadNode:=ProcNode.FirstChild;
+  if ProcHeadNode=nil then begin
+    MoveCursorToNodeStart(ProcNode);
+    RaiseException('Invalid proc header');
+  end;
   NameStart:=ProcHeadNode.StartPos;
   NameEnd:=NameStart;
   while (NameEnd<=SrcLen) and (IsIdentChar[UpperSrc[NameEnd]]) do
     inc(NameEnd);
   if not SourceChangeCache.Replace(gtNone,gtNone,NameStart,NameEnd,
-      NewMethodName) then exit;
-  // rename procedure itself -> find implementation node
+      NewMethodName)
+  then begin
+    MoveCursorToNodeStart(ProcHeadNode);
+    RaiseException('Unable to rename method declaration');
+  end;
+  // main goal achieved
+  Result:=true;
+
+  // rename procedure body -> find implementation node
   UpperClassName:=ExtractClassName(ClassNode,true);
-  ANode:=FindMethodNodeInImplementation(UpperClassName,UpperOldMethodName,false);
-  if ANode=nil then exit;
-  ProcHeadNode:=ANode.FirstChild;
-  if ProcHeadNode=nil then exit;
-  MoveCursorToNodeStart(ProcHeadNode);
-  ReadNextAtom; // read class name
-  ReadNextAtom; // read '.'
-  ReadNextAtom; // read method name
-  Result:=SourceChangeCache.Replace(gtNone,gtNone,
-      CurPos.StartPos,CurPos.EndPos,NewMethodName);
+  ProcBodyNode:=FindMethodNodeInImplementation(UpperClassName,
+                                               UpperOldMethodName,false);
+  if (ProcBodyNode<>nil) and (ProcBodyNode<>nil) then begin
+    ProcHeadNode:=ProcBodyNode.FirstChild;
+    MoveCursorToNodeStart(ProcHeadNode);
+    ReadNextAtom; // read class name
+    ReadNextAtom; // read '.'
+    ReadNextAtom; // read method name
+    SourceChangeCache.Replace(gtNone,gtNone,
+        CurPos.StartPos,CurPos.EndPos,NewMethodName);
+  end;
+  
+  Result:=SourceChangeCache.Apply;
 end;
 
 function TEventsCodeTool.CreatePublishedMethod(const UpperClassName,
