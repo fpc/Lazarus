@@ -1861,16 +1861,6 @@ begin
   MoveWindowOrgEx(DC,X,Y);
 end;
 
-function CompareRect(R1, R2: PRect): Boolean;
-begin
-  Result:=(R1^.Left=R2^.Left) and (R1^.Top=R2^.Top) and
-          (R1^.Bottom=R2^.Bottom) and (R1^.Right=R2^.Right);
-  {if not Result then begin
-    DebugLn(' DIFFER: ',R1^.Left,',',R1^.Top,',',R1^.Right,',',R1^.Bottom
-      ,' <> ',R2^.Left,',',R2^.Top,',',R2^.Right,',',R2^.Bottom);
-  end;}
-end;
-
 function GetKeyShiftState: TShiftState;
 begin
   Result:=[];
@@ -2410,6 +2400,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.246  2004/09/09 22:00:37  mattias
+  started TTabControlNotebookStrings
+
   Revision 1.245  2004/09/08 22:59:54  mattias
   started TTabControl
 

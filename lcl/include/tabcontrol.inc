@@ -23,34 +23,118 @@
 
 {$IFDEF EnableTabControl}
 
-type
-  TTabControlStrings = class(TStrings)
-  protected
-    function Get(Index: Integer): string; override;
-    function GetCount: Integer; override;
-    function GetObject(Index: Integer): TObject; override;
-    procedure Put(Index: Integer; const S: string); override;
-    procedure PutObject(Index: Integer; AObject: TObject); override;
-    procedure SetUpdateState(Updating: Boolean); override;
-  public
-    TabControl: TCustomTabControl;
-    procedure Clear; override;
-    procedure Delete(Index: Integer); override;
-    procedure Insert(Index: Integer; const S: string); override;
-  end;
+{ TTabControlStrings }
 
+constructor TTabControlStrings.Create(TheTabControl: TCustomTabControl);
+begin
+  inherited Create;
+  FTabControl:=TheTabControl;
+end;
+
+procedure TTabControlStrings.TabControlBoundsChange;
+begin
+
+end;
+
+{ TTabControlNoteBookStrings }
+
+function TTabControlNoteBookStrings.Get(Index: Integer): string;
+begin
+  Result:=FNoteBook.Pages[Index];
+end;
+
+function TTabControlNoteBookStrings.GetCount: Integer;
+begin
+  Result:=FNoteBook.PageCount;
+end;
+
+function TTabControlNoteBookStrings.GetObject(Index: Integer): TObject;
+begin
+  Result:=FNoteBook.Pages.GetObject(Index);
+end;
+
+procedure TTabControlNoteBookStrings.Put(Index: Integer; const S: string);
+begin
+  FNoteBook.Pages.Put(Index, S);
+end;
+
+procedure TTabControlNoteBookStrings.PutObject(Index: Integer; AObject: TObject
+  );
+begin
+  FNoteBook.Pages.PutObject(Index, AObject);
+end;
+
+procedure TTabControlNoteBookStrings.SetUpdateState(Updating: Boolean);
+begin
+  FNoteBook.Pages.SetUpdateState(Updating);
+end;
+
+function TTabControlNoteBookStrings.GetTabIndex: integer;
+begin
+  Result:=FNoteBook.PageIndex;
+end;
+
+procedure TTabControlNoteBookStrings.SetTabIndex(const AValue: integer);
+begin
+  FNoteBook.PageIndex:=AValue;
+end;
+
+constructor TTabControlNoteBookStrings.Create(TheTabControl: TCustomTabControl);
+begin
+  inherited Create(TheTabControl);
+  FNoteBook:=TNoteBook.Create(nil);
+  FNoteBook.Parent:=TabControl;
+  TabControlBoundsChange;
+end;
+
+destructor TTabControlNoteBookStrings.Destroy;
+begin
+  FreeThenNil(FNoteBook);
+  inherited Destroy;
+end;
+
+procedure TTabControlNoteBookStrings.Clear;
+begin
+  FNoteBook.Pages.Clear;
+end;
+
+procedure TTabControlNoteBookStrings.Delete(Index: Integer);
+begin
+  FNoteBook.Pages.Delete(Index);
+end;
+
+procedure TTabControlNoteBookStrings.Insert(Index: Integer; const S: string);
+begin
+  FNoteBook.Pages.Insert(Index, S);
+end;
+
+function TTabControlNoteBookStrings.GetSize: integer;
+begin
+  // ToDo
+  Result:=FNoteBook.Height;
+end;
+
+procedure TTabControlNoteBookStrings.TabControlBoundsChange;
+begin
+  inherited TabControlBoundsChange;
+  FNoteBook.SetBounds(0,0,TabControl.Width,30);
+end;
 
 { TCustomTabControl }
 
 function TCustomTabControl.GetDisplayRect: TRect;
+var
+  TabAreaSize: LongInt;
 begin
+  // ToDo
   Result:=ClientRect;
+  TabAreaSize:=TTabControlStrings(FTabs).GetSize;
+  Result.Top:=Min(TabAreaSize,Result.Bottom);
 end;
 
 function TCustomTabControl.GetTabIndex: Integer;
 begin
-  Result:=FTabIndex;
-  // ToDo
+  Result:=TTabControlStrings(FTabs).TabIndex;
 end;
 
 procedure TCustomTabControl.SetHotTrack(const AValue: Boolean);
@@ -125,9 +209,7 @@ end;
 
 procedure TCustomTabControl.SetTabs(const AValue: TStrings);
 begin
-  if FTabs=AValue then exit;
-  FTabs:=AValue;
-  // ToDo
+  FTabs.Assign(AValue);
 end;
 
 procedure TCustomTabControl.SetTabWidth(const AValue: Smallint);
@@ -181,8 +263,7 @@ end;
 
 procedure TCustomTabControl.SetTabIndex(Value: Integer);
 begin
-  if TabIndex=Value then exit;
-  FTabIndex:=Value;
+  TTabControlStrings(FTabs).TabIndex:=Value;
 end;
 
 procedure TCustomTabControl.UpdateTabImages;
@@ -193,6 +274,12 @@ end;
 procedure TCustomTabControl.ImageListChange(Sender: TObject);
 begin
   // ToDo
+end;
+
+procedure TCustomTabControl.DoSetBounds(ALeft, ATop, AWidth, AHeight: integer);
+begin
+  inherited DoSetBounds(ALeft, ATop, AWidth, AHeight);
+  TTabControlStrings(FTabs).TabControlBoundsChange;
 end;
 
 constructor TCustomTabControl.Create(TheOwner: TComponent);
@@ -211,11 +298,13 @@ begin
   FTabWidth:=0;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
+  FTabs:=TTabControlNoteBookStrings.Create(Self);
   SetInitialBounds(0,0,200,150);
 end;
 
 destructor TCustomTabControl.Destroy;
 begin
+  FreeThenNil(FTabs);
   FreeThenNil(FImageChangeLink);
   inherited Destroy;
 end;
@@ -257,6 +346,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2004/09/09 22:00:37  mattias
+  started TTabControlNotebookStrings
+
   Revision 1.2  2004/09/09 09:35:44  mattias
   renamed customradiogroup.inc to radiogroup.inc
 

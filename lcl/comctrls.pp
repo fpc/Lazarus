@@ -272,17 +272,61 @@ type
 
 
   {$IFDEF EnableTabControl}
-
-  { TCustomTabControl }
   
   TCustomTabControl = class;
 
+  { TTabControlStrings }
+
+  TTabControlStrings = class(TStrings)
+  private
+    FTabControl: TCustomTabControl;
+  protected
+    function GetTabIndex: integer; virtual; abstract;
+    procedure SetTabIndex(const AValue: integer); virtual; abstract;
+  public
+    constructor Create(TheTabControl: TCustomTabControl); virtual;
+    function GetSize: integer; virtual; abstract;
+    procedure TabControlBoundsChange; virtual;
+  public
+    property TabControl: TCustomTabControl read FTabControl;
+    property TabIndex: integer read GetTabIndex write SetTabIndex;
+  end;
+  
+  
+  { TTabControlNoteBookStrings }
+
+  TTabControlNoteBookStrings = class(TTabControlStrings)
+  private
+    FNoteBook: TNoteBook;
+  protected
+    function Get(Index: Integer): string; override;
+    function GetCount: Integer; override;
+    function GetObject(Index: Integer): TObject; override;
+    procedure Put(Index: Integer; const S: string); override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
+    procedure SetUpdateState(Updating: Boolean); override;
+    function GetTabIndex: integer; override;
+    procedure SetTabIndex(const AValue: integer); override;
+  public
+    constructor Create(TheTabControl: TCustomTabControl); override;
+    destructor Destroy; override;
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    procedure Insert(Index: Integer; const S: string); override;
+    function GetSize: integer; override;
+    procedure TabControlBoundsChange; override;
+  public
+    property NoteBook: TNoteBook read FNoteBook;
+  end;
+
+
+  { TCustomTabControl }
+  
   TDrawTabEvent = procedure(Control: TCustomTabControl; TabIndex: Integer;
     const Rect: TRect; Active: Boolean) of object;
 
-  TCustomTabControl = class(TWinControl)
+  TCustomTabControl = class(TCustomControl)
   private
-    FCanvas: TCanvas;
     FHotTrack: Boolean;
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
@@ -326,6 +370,7 @@ type
     procedure SetTabIndex(Value: Integer); virtual;
     procedure UpdateTabImages;
     procedure ImageListChange(Sender: TObject); virtual;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
   protected
     property DisplayRect: TRect read GetDisplayRect;
     property HotTrack: Boolean read FHotTrack write SetHotTrack default False;
@@ -335,7 +380,8 @@ type
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnChanging: TTabChangingEvent read FOnChanging write FOnChanging;
     property OnDrawTab: TDrawTabEvent read FOnDrawTab write FOnDrawTab;
-    property OnGetImageIndex: TTabGetImageEvent read FOnGetImageIndex write FOnGetImageIndex;
+    property OnGetImageIndex: TTabGetImageEvent read FOnGetImageIndex
+                                                write FOnGetImageIndex;
     property OwnerDraw: Boolean read FOwnerDraw write SetOwnerDraw default False;
     property RaggedRight: Boolean read FRaggedRight write SetRaggedRight default False;
     property ScrollOpposite: Boolean read FScrollOpposite
@@ -355,7 +401,7 @@ type
     function TabRect(Index: Integer): TRect;
     function RowCount: Integer;
     procedure ScrollTabs(Delta: Integer);
-    property Canvas: TCanvas read FCanvas;
+  public
     property TabStop default True;
   end;
 
@@ -2456,6 +2502,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.148  2004/09/09 22:00:37  mattias
+  started TTabControlNotebookStrings
+
   Revision 1.147  2004/09/09 09:35:44  mattias
   renamed customradiogroup.inc to radiogroup.inc
 
