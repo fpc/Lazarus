@@ -62,8 +62,8 @@ type
   TCommonDialog = class(TComponent)
   private
     FHandle : integer;
-    FInitialHeight: integer;
-    FInitialWidth: integer;
+    FHeight: integer;
+    FWidth: integer;
     FOnCanClose: TCloseQueryEvent;
     FOnShow, FOnClose : TNotifyEvent;
     FTitle : string;
@@ -85,8 +85,8 @@ type
     property OnCanClose: TCloseQueryEvent read FOnCanClose write FOnCanClose;
     property OnShow : TNotifyEvent read FOnShow write FOnShow;
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
-    property InitialWidth: integer read FInitialWidth write FInitialWidth;
-    property InitialHeight: integer read FInitialHeight write FInitialHeight;
+    property Width: integer read FWidth write FWidth;
+    property Height: integer read FHeight write FHeight;
   end;
 
 
@@ -305,6 +305,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/05/30 14:11:11  lazarus
+  MG: added filters and history to TOpenDialog
+
   Revision 1.12  2002/05/29 21:44:37  lazarus
   MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
 

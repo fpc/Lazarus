@@ -77,9 +77,6 @@ end;
 {------------------------------------------------------------------------------}
 function TFileDialog.DoExecute : boolean;
 begin
-  CNSendMessage(LM_SETFILTER, Self, nil);
-  CNSendMessage(LM_SETFILENAME, Self, nil);
-  
   Result:= inherited DoExecute;
 end;
 
@@ -115,10 +112,12 @@ function TOpenDialog.DoExecute: boolean;
   procedure DereferenceLinks;
   var i: integer;
   begin
-    Filename:=ExpandFilename(Filename);
+    if Filename<>'' then
+      Filename:=ExpandFilename(Filename);
     if Files<>nil then begin
       for i:=0 to Files.Count-1 do begin
-        Files[i]:=ExpandFilename(Files[i]);
+        if Files[i]<>'' then
+          Files[i]:=ExpandFilename(Files[i]);
       end;
     end;
   end;
@@ -128,9 +127,11 @@ begin
   if (not (ofNoDereferenceLinks in Options)) then begin
     DereferenceLinks;
   end;
-  if (not (ofNoChangeDir in Options)) and (ExtractFilePath(Filename)<>'') then
-  begin
-    InitialDir:=ExtractFilePath(Filename);
+  if (not (ofNoChangeDir in Options)) then begin
+    if (ExtractFilePath(Filename)<>'') then
+      InitialDir:=ExtractFilePath(Filename)
+    else if (Files.Count>0) and (ExtractFilePath(Files[0])<>'') then
+      InitialDir:=ExtractFilePath(Files[0]);
   end;
   if Result then begin
     if (DefaultExt<>'') and (ExtractFileExt(Filename)='')
@@ -202,6 +203,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/05/30 14:11:11  lazarus
+  MG: added filters and history to TOpenDialog
+
   Revision 1.5  2002/05/29 21:44:38  lazarus
   MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
 

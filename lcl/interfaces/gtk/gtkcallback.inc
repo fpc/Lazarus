@@ -860,7 +860,10 @@ begin
     CanClose:=True;
     theDialog.OnCanClose(theDialog,CanClose);
     Result:=not CanClose;
-    if CanClose then StoreCommonDialogSetup(theDialog);
+  end;
+  if not Result then begin
+    StoreCommonDialogSetup(theDialog);
+    DestroyCommonDialogAddOns(theDialog);
   end;
 end;
 
@@ -894,7 +897,7 @@ begin
   if FileExists(Filename) then begin
     Details:=GetFileDescription(Filename);
   end else begin
-    Details:='(file does not exist)';
+    Details:='(file not found: "'+Filename+'")';
   end;
   gtk_label_set_text(PGtkLabel(FileDetailLabel),PChar(Details));
 end;
@@ -991,16 +994,48 @@ function GTKDialogMenuActivateCB(widget: PGtkWidget; data: gPointer): GBoolean;
   cdecl;
 var
   theDialog: TCommonDialog;
-  //NewFilename: string;
+
+  procedure CheckFilterActivated(FilterWidget: PGtkWidget);
+  var AFilterEntry: PFileSelFilterEntry;
+  begin
+    if FilterWidget=nil then exit;
+    AFilterEntry:=gtk_object_get_data(PGtkObject(FilterWidget),
+                                      'LCLIsFilterMenuItem');
+    if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then begin
+      gtk_file_selection_complete(GTK_FILE_SELECTION(theDialog.Handle),
+        AFilterEntry^.Mask);
+      UpdateDetailView(TOpenDialog(theDialog));
+    end;
+  end;
+  
+var
+  AHistoryEntry: PFileSelHistoryEntry;
+  FilterMenu, ActiveFilterMenuItem: PGtkWidget;
 begin
   Result:=false;
   theDialog:=TCommonDialog(GetLCLObject(Widget));
   if (theDialog is TOpenDialog) then begin
-    if gtk_object_get_data(PGtkObject(Widget), 'IsHistoryMenuItem')<>nil then
-    begin
-
-      //UpdateDetailView(TOpenDialog(theDialog));
+    // check if history activated
+    AHistoryEntry:=gtk_object_get_data(PGtkObject(Widget),
+                                       'LCLIsHistoryMenuItem');
+    if (AHistoryEntry<>nil) and (AHistoryEntry^.Filename<>nil) then begin
+      // use has choosen a history file
+      // -> select it in the filedialog
+      gtk_file_selection_complete(GTK_FILE_SELECTION(theDialog.Handle),
+        AHistoryEntry^.Filename);
+      // restore filter
+      if DirectoryExists(AHistoryEntry^.Filename) then begin
+        FilterMenu:=gtk_object_get_data(PGtkObject(theDialog.Handle),
+                                        'LCLFilterMenu');
+        if FilterMenu<>nil then begin
+          ActiveFilterMenuItem:=gtk_menu_get_active(GTK_MENU(FilterMenu));
+          CheckFilterActivated(ActiveFilterMenuItem);
+        end;
+      end;
+      UpdateDetailView(TOpenDialog(theDialog));
     end;
+    // check if filter activated
+    CheckFilterActivated(Widget);
   end;
 end;
 
@@ -1946,6 +1981,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.77  2002/05/30 14:11:12  lazarus
+  MG: added filters and history to TOpenDialog
+
   Revision 1.76  2002/05/29 21:44:38  lazarus
   MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
 
