@@ -40,8 +40,8 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons,
   LResources, Graphics, LCLType, Menus, Dialogs, IDEProcs, LazarusIDEStrConsts,
-  IDEOptionDefs, IDEDefs, ComponentReg, PackageDefs, AddToPackageDlg,
-  PackageSystem;
+  IDEOptionDefs, IDEDefs, CompilerOptions, ComponentReg, PackageDefs,
+  PkgOptionsDlg, AddToPackageDlg, PackageSystem;
   
 type
   TOnOpenFile =
@@ -66,6 +66,7 @@ type
     RemoveBitBtn: TBitBtn;
     InstallBitBtn: TBitBtn;
     OptionsBitBtn: TBitBtn;
+    CompilerOptionsBitBtn: TBitBtn;
     // items
     FilesTreeView: TTreeView;
     // properties
@@ -88,13 +89,17 @@ type
     procedure AddBitBtnClick(Sender: TObject);
     procedure ApplyDependencyButtonClick(Sender: TObject);
     procedure CallRegisterProcCheckBoxClick(Sender: TObject);
+    procedure CompileBitBtnClick(Sender: TObject);
+    procedure CompilerOptionsBitBtnClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure FilesPopupMenuPopup(Sender: TObject);
     procedure FilesTreeViewDblClick(Sender: TObject);
     procedure FilesTreeViewSelectionChanged(Sender: TObject);
+    procedure InstallBitBtnClick(Sender: TObject);
     procedure MaxVersionEditChange(Sender: TObject);
     procedure MinVersionEditChange(Sender: TObject);
     procedure OpenFileMenuItemClick(Sender: TObject);
+    procedure OptionsBitBtnClick(Sender: TObject);
     procedure PackageEditorFormClose(Sender: TObject; var Action: TCloseAction);
     procedure PackageEditorFormCloseQuery(Sender: TObject; var CanClose: boolean
       );
@@ -207,25 +212,28 @@ var
 begin
   x:=0;
   y:=0;
-  w:=75;
+  w:=ClientWidth div 7;
   h:=25;
-  SaveBitBtn.SetBounds(x,y,w,h);
-  inc(x,w+2);
+  SaveBitBtn.SetBounds(x,y,w-2,h);
+  inc(x,w);
 
-  CompileBitBtn.SetBounds(x,y,w,h);
-  inc(x,w+2);
+  CompileBitBtn.SetBounds(x,y,w-2,h);
+  inc(x,w);
 
-  AddBitBtn.SetBounds(x,y,w,h);
-  inc(x,w+2);
+  AddBitBtn.SetBounds(x,y,w-2,h);
+  inc(x,w);
 
-  RemoveBitBtn.SetBounds(x,y,w,h);
-  inc(x,w+2);
+  RemoveBitBtn.SetBounds(x,y,w-2,h);
+  inc(x,w);
 
-  InstallBitBtn.SetBounds(x,y,w,h);
-  inc(x,w+2);
+  InstallBitBtn.SetBounds(x,y,w-2,h);
+  inc(x,w);
 
-  OptionsBitBtn.SetBounds(x,y,w,h);
+  OptionsBitBtn.SetBounds(x,y,w-2,h);
+  inc(x,w);
 
+  CompilerOptionsBitBtn.SetBounds(x,y,ClientWidth-x,h);
+  
   x:=0;
   inc(y,h+3);
   w:=ClientWidth;
@@ -271,7 +279,8 @@ var
   CurNode: TTreeNode;
   ItemCnt: Integer;
   
-  procedure AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent);
+  procedure AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent;
+    EnabledFlag: boolean);
   var
     CurMenuItem: TMenuItem;
   begin
@@ -282,31 +291,43 @@ var
       CurMenuItem:=FilesPopupMenu.Items[ItemCnt];
     CurMenuItem.Caption:=ACaption;
     CurMenuItem.OnClick:=AnEvent;
+    CurMenuItem.Enabled:=EnabledFlag;
     inc(ItemCnt);
   end;
-
+  
 begin
   CurNode:=FilesTreeView.Selected;
   ItemCnt:=0;
   if CurNode<>nil then begin
     if CurNode.Parent<>nil then begin
       if CurNode.Parent=FilesNode then begin
-        AddPopupMenuItem('Open file',@OpenFileMenuItemClick);
-        AddPopupMenuItem('Remove file from package',@RemoveBitBtnClick);
+        AddPopupMenuItem('Open file',@OpenFileMenuItemClick,true);
+        AddPopupMenuItem('Remove file',@RemoveBitBtnClick,true);
       end else if (CurNode.Parent=RequiredPackagesNode) then begin
-        AddPopupMenuItem('Open package',@OpenFileMenuItemClick);
-        AddPopupMenuItem('Remove dependency from package',@RemoveBitBtnClick);
+        AddPopupMenuItem('Open package',@OpenFileMenuItemClick,true);
+        AddPopupMenuItem('Remove dependency',@RemoveBitBtnClick,true);
       end else if (CurNode.Parent=RemovedFilesNode) then begin
-        AddPopupMenuItem('Open file',@OpenFileMenuItemClick);
-        AddPopupMenuItem('Add file to package',@ReAddMenuItemClick);
+        AddPopupMenuItem('Open file',@OpenFileMenuItemClick,true);
+        AddPopupMenuItem('Add file',@ReAddMenuItemClick,true);
       end else if (CurNode.Parent=RemovedRequiredNode) then begin
-        AddPopupMenuItem('Open package',@OpenFileMenuItemClick);
-        AddPopupMenuItem('Add dependency to package',@ReAddMenuItemClick);
+        AddPopupMenuItem('Open package',@OpenFileMenuItemClick,true);
+        AddPopupMenuItem('Add dependency',@ReAddMenuItemClick,true);
       end;
     end;
   end else begin
 
   end;
+  if ItemCnt>0 then
+    AddPopupMenuItem('-',nil,true);
+
+  AddPopupMenuItem('Save',@SaveBitBtnClick,SaveBitBtn.Enabled);
+  AddPopupMenuItem('Compile',@CompileBitBtnClick,CompileBitBtn.Enabled);
+  AddPopupMenuItem('Add',@AddBitBtnClick,AddBitBtn.Enabled);
+  AddPopupMenuItem('Remove',@RemoveBitBtnClick,RemoveBitBtn.Enabled);
+  AddPopupMenuItem('Install',@InstallBitBtnClick,InstallBitBtn.Enabled);
+  AddPopupMenuItem('General Options',@OptionsBitBtnClick,OptionsBitBtn.Enabled);
+  AddPopupMenuItem('Compiler Options',@CompilerOptionsBitBtnClick,CompilerOptionsBitBtn.Enabled);
+
   while FilesPopupMenu.Items.Count>ItemCnt do
     FilesPopupMenu.Items.Delete(FilesPopupMenu.Items.Count-1);
 end;
@@ -320,6 +341,11 @@ procedure TPackageEditorForm.FilesTreeViewSelectionChanged(Sender: TObject);
 begin
   UpdateSelectedFile;
   UpdateButtons;
+end;
+
+procedure TPackageEditorForm.InstallBitBtnClick(Sender: TObject);
+begin
+
 end;
 
 procedure TPackageEditorForm.MaxVersionEditChange(Sender: TObject);
@@ -357,6 +383,11 @@ begin
       PackageEditors.OpenDependency(Self,CurDependency);
     end;
   end;
+end;
+
+procedure TPackageEditorForm.OptionsBitBtnClick(Sender: TObject);
+begin
+
 end;
 
 procedure TPackageEditorForm.PackageEditorFormClose(Sender: TObject;
@@ -649,6 +680,27 @@ begin
   end;
 end;
 
+procedure TPackageEditorForm.CompileBitBtnClick(Sender: TObject);
+begin
+
+end;
+
+procedure TPackageEditorForm.CompilerOptionsBitBtnClick(Sender: TObject);
+var
+  CompilerOptsDlg: TfrmCompilerOptions;
+begin
+  CompilerOptsDlg:=TfrmCompilerOptions.Create(Self);
+  CompilerOptsDlg.CompilerOpts:=LazPackage.CompilerOptions;
+  with CompilerOptsDlg do begin
+    GetCompilerOptions;
+    Caption:='Compiler Options for Package '+LazPackage.IDAsString;
+    ShowModal;
+    Free;
+  end;
+  UpdateButtons;
+  UpdateStatusBar;
+end;
+
 procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
 var
   ARect: TRect;
@@ -720,6 +772,8 @@ begin
     Parent:=Self;
     Caption:='Save';
     OnClick:=@SaveBitBtnClick;
+    Hint:='Save package';
+    ShowHint:=true;
   end;
 
   CompileBitBtn:=TBitBtn.Create(Self);
@@ -727,6 +781,9 @@ begin
     Name:='CompileBitBtn';
     Parent:=Self;
     Caption:='Compile';
+    OnClick:=@CompileBitBtnClick;
+    Hint:='Compile package';
+    ShowHint:=true;
   end;
   
   AddBitBtn:=TBitBtn.Create(Self);
@@ -735,6 +792,8 @@ begin
     Parent:=Self;
     Caption:='Add';
     OnClick:=@AddBitBtnClick;
+    Hint:='Add an item';
+    ShowHint:=true;
   end;
 
   RemoveBitBtn:=TBitBtn.Create(Self);
@@ -743,6 +802,8 @@ begin
     Parent:=Self;
     Caption:='Remove';
     OnClick:=@RemoveBitBtnClick;
+    Hint:='Remove selected item';
+    ShowHint:=true;
   end;
 
   InstallBitBtn:=TBitBtn.Create(Self);
@@ -750,6 +811,9 @@ begin
     Name:='InstallBitBtn';
     Parent:=Self;
     Caption:='Install';
+    OnClick:=@InstallBitBtnClick;
+    Hint:='Install package in the IDE';
+    ShowHint:=true;
   end;
 
   OptionsBitBtn:=TBitBtn.Create(Self);
@@ -757,6 +821,19 @@ begin
     Name:='OptionsBitBtn';
     Parent:=Self;
     Caption:='Options';
+    OnClick:=@OptionsBitBtnClick;
+    Hint:='Edit General Options';
+    ShowHint:=true;
+  end;
+
+  CompilerOptionsBitBtn:=TBitBtn.Create(Self);
+  with CompilerOptionsBitBtn do begin
+    Name:='CompilerOptionsBitBtn';
+    Parent:=Self;
+    Caption:='Compiler Options';
+    OnClick:=@CompilerOptionsBitBtnClick;
+    Hint:='Edit Options to compile package';
+    ShowHint:=true;
   end;
 
   FilesPopupMenu:=TPopupMenu.Create(Self);
@@ -798,6 +875,8 @@ begin
     Caption:='Register unit';
     UseOnChange:=true;
     OnClick:=@CallRegisterProcCheckBoxClick;
+    Hint:='Call "Register" procedure of selected unit';
+    ShowHint:=true;
   end;
 
   RegisteredPluginsGroupBox:=TGroupBox.Create(Self);
@@ -903,6 +982,7 @@ begin
            or (FilesTreeView.Selected.Parent=RequiredPackagesNode));
   InstallBitBtn.Enabled:=true;
   OptionsBitBtn.Enabled:=true;
+  CompilerOptionsBitBtn.Enabled:=true;
 end;
 
 procedure TPackageEditorForm.UpdateFiles;

@@ -239,6 +239,15 @@ type
   { TPkgCompilerOptions }
   
   TPkgCompilerOptions = class(TBaseCompilerOptions)
+  private
+    FLazPackage: TLazPackage;
+  protected
+    procedure SetLazPackage(const AValue: TLazPackage);
+    procedure SetModified(const NewValue: boolean); override;
+  public
+    procedure Clear; override;
+  public
+    property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
   
   
@@ -321,7 +330,6 @@ type
     FReadOnly: boolean;
     FRemovedFiles: TList; // TList of TPkgFile
     FRegistered: boolean;
-    FTitle: string;
     FUsageOptions: TAdditionalCompilerOptions;
     function GetAutoIncrementVersionOnBuild: boolean;
     function GetAutoUpdate: boolean;
@@ -349,7 +357,6 @@ type
     procedure SetPackageEditor(const AValue: TBasePackageEditor);
     procedure SetPackageType(const AValue: TLazPackageType);
     procedure SetReadOnly(const AValue: boolean);
-    procedure SetTitle(const AValue: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -425,7 +432,6 @@ type
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
-    property Title: string read FTitle write SetTitle;
     property UsageOptions: TAdditionalCompilerOptions
       read FUsageOptions;
   end;
@@ -1321,13 +1327,6 @@ begin
   FReadOnly:=AValue;
 end;
 
-procedure TLazPackage.SetTitle(const AValue: string);
-begin
-  if FTitle=AValue then exit;
-  FTitle:=AValue;
-  Modified:=true;
-end;
-
 constructor TLazPackage.Create;
 begin
   inherited Create;
@@ -1335,6 +1334,7 @@ begin
   FFiles:=TList.Create;
   FRemovedFiles:=TList.Create;
   FCompilerOptions:=TPkgCompilerOptions.Create;
+  FCompilerOptions.LazPackage:=Self;
   FUsageOptions:=TAdditionalCompilerOptions.Create;
   FInstalled:=pitNope;
   FAutoInstall:=pitNope;
@@ -1381,7 +1381,6 @@ begin
   FName:='';
   FPackageType:=lptRunTime;
   FRegistered:=false;
-  FTitle:='';
   FUsageOptions.Clear;
 end;
 
@@ -1474,7 +1473,6 @@ begin
                                           LazPackageTypeIdents[lptRunTime]));
   LoadPkgDependencyList(Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires);
-  FTitle:=XMLConfig.GetValue(Path+'Title/Value','');
   FUsageOptions.LoadFromXMLConfig(XMLConfig,Path+'UsageOptions/');
   UnlockModified;
 end;
@@ -1531,7 +1529,6 @@ begin
                            LazPackageTypeIdents[lptRunTime]);
   SavePkgDependencyList(Path+'RequiredPkgs/',
                         FFirstRequiredDependency,pdlRequires);
-  XMLConfig.SetDeleteValue(Path+'Title/Value',FTitle,'');
   FUsageOptions.SaveToXMLConfig(XMLConfig,Path+'UsageOptions/');
   Modified:=false;
 end;
@@ -1945,6 +1942,25 @@ begin
   Result:=AnsiCompareText(Name,PackageID2.Name);
   if Result<>0 then exit;
   Result:=Version.Compare(PackageID2.Version);
+end;
+
+{ TPkgCompilerOptions }
+
+procedure TPkgCompilerOptions.SetLazPackage(const AValue: TLazPackage);
+begin
+  if FLazPackage=AValue then exit;
+  FLazPackage:=AValue;
+end;
+
+procedure TPkgCompilerOptions.SetModified(const NewValue: boolean);
+begin
+  inherited SetModified(NewValue);
+  if Modified and (LazPackage<>nil) then LazPackage.Modified:=true;
+end;
+
+procedure TPkgCompilerOptions.Clear;
+begin
+  inherited Clear;
 end;
 
 initialization

@@ -41,12 +41,9 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, SynEdit, Buttons, StdCtrls, ExtCtrls,
   IDEOptionDefs, Dialogs, BasicCodeTools, AVL_Tree, EditorOptions,
-  SynEditHighlighter;
+  MiscOptions, SynEditHighlighter;
   
 type
-  TSortDirection = (sdAscending, sdDescending);
-  TSortDomain = (sdWords, sdLines, sdParagraphs);
-  
   TSortSelDlgState = (ssdPreviewNeedsUpdate, ssdSortedTextNeedsUpdate);
   TSortSelDlgStates = set of TSortSelDlgState;
   
@@ -64,6 +61,8 @@ type
     procedure DirectionRadioGroupClick(Sender: TObject);
     procedure DomainRadioGroupClick(Sender: TObject);
     procedure IgnoreSpaceCheckBoxClick(Sender: TObject);
+    procedure SortSelectionDialogClose(Sender: TObject; var Action: TCloseAction
+      );
     procedure SortSelectionDialogResize(Sender: TObject);
   private
     FCaseSensitive: boolean;
@@ -373,6 +372,13 @@ begin
   IgnoreSpace:=IgnoreSpaceCheckBox.Checked;
 end;
 
+procedure TSortSelectionDialog.SortSelectionDialogClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  MiscellaneousOptions.SortSelDirection:=Direction;
+  MiscellaneousOptions.SortSelDomain:=Domain;
+end;
+
 procedure TSortSelectionDialog.SetDirection(const AValue: TSortDirection);
 begin
   if FDirection=AValue then exit;
@@ -466,7 +472,10 @@ begin
       Add('Ascending');
       Add('Descending');
       Columns:=2;
-      ItemIndex:=0;
+      case MiscellaneousOptions.SortSelDirection of
+      sdAscending: ItemIndex:=0;
+      else         ItemIndex:=1;
+      end;
       EndUpdate;
     end;
     OnClick:=@DirectionRadioGroupClick;
@@ -486,7 +495,11 @@ begin
       Add('Lines');
       Add('Words');
       Add('Paragraphs');
-      ItemIndex:=0;
+      case MiscellaneousOptions.SortSelDomain of
+      sdLines: ItemIndex:=0;
+      sdWords: ItemIndex:=1;
+      else     ItemIndex:=2;
+      end;
       Columns:=3;
       EndUpdate;
     end;
@@ -549,6 +562,7 @@ begin
   end;
   
   OnResize:=@SortSelectionDialogResize;
+  OnClose:=@SortSelectionDialogClose;
 end;
 
 procedure TSortSelectionDialog.BeginUpdate;

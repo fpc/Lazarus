@@ -51,6 +51,8 @@ type
     PkgListLabel: TLabel;
     PkgListBox: TListBox;
     InfoMemo: TMemo;
+    procedure PackageGraphBeginUpdate(Sender: TObject);
+    procedure PkgGraphExplorerEndUpdate(Sender: TObject);
     procedure PkgGraphExplorerResize(Sender: TObject);
     procedure PkgGraphExplorerShow(Sender: TObject);
     procedure PkgListBoxClick(Sender: TObject);
@@ -61,6 +63,8 @@ type
   private
     FOnOpenPackage: TOnOpenPackage;
     fSortedPackages: TAVLTree;
+    FChangedDuringLock: boolean;
+    FUpdateLock: integer;
     procedure SetupComponents;
     function GetPackageImageIndex(Pkg: TLazPackage): integer;
     procedure GetDependency(ANode: TTreeNode; var Pkg: TLazPackage;
@@ -71,6 +75,9 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function IsUpdating: boolean;
     procedure UpdateAll;
     procedure UpdateTree;
     procedure UpdateList;
@@ -130,6 +137,16 @@ begin
   
   with InfoMemo do
     SetBounds(x,y,Parent.ClientWidth-2*x,Max(10,Parent.ClientHeight-y-x));
+end;
+
+procedure TPkgGraphExplorer.PackageGraphBeginUpdate(Sender: TObject);
+begin
+  BeginUpdate;
+end;
+
+procedure TPkgGraphExplorer.PkgGraphExplorerEndUpdate(Sender: TObject);
+begin
+  EndUpdate;
 end;
 
 procedure TPkgGraphExplorer.PkgGraphExplorerShow(Sender: TObject);
@@ -384,6 +401,9 @@ begin
   OnResize:=@PkgGraphExplorerResize;
   OnResize(Self);
   OnShow:=@PkgGraphExplorerShow;
+  
+  PackageGraph.OnBeginUpdate:=@PackageGraphBeginUpdate;
+  PackageGraph.OnEndUpdate:=@PkgGraphExplorerEndUpdate;
 end;
 
 destructor TPkgGraphExplorer.Destroy;
@@ -392,8 +412,30 @@ begin
   inherited Destroy;
 end;
 
+procedure TPkgGraphExplorer.BeginUpdate;
+begin
+  inc(FUpdateLock);
+end;
+
+procedure TPkgGraphExplorer.EndUpdate;
+begin
+  if FUpdateLock<=0 then RaiseException('TPkgGraphExplorer.EndUpdate');
+  dec(FUpdateLock);
+  if FChangedDuringLock then UpdateAll;
+end;
+
+function TPkgGraphExplorer.IsUpdating: boolean;
+begin
+  Result:=FUpdateLock>0;
+end;
+
 procedure TPkgGraphExplorer.UpdateAll;
 begin
+  if IsUpdating then begin
+    FChangedDuringLock:=true;
+    exit;
+  end;
+  FChangedDuringLock:=false;
   UpdateTree;
   UpdateList;
   UpdateInfo;
@@ -498,9 +540,7 @@ begin
     InfoStr:='Package '+Dependency.AsString+' not found';
   end else if Pkg<>nil then begin
     // filename and title
-    InfoStr:=
-       'Filename:  '+Pkg.Filename+EndOfLine
-      +'Title:  '+Pkg.Title;
+    InfoStr:='Filename:  '+Pkg.Filename;
     // state
     InfoStr:=InfoStr+EndOfLine+'State: ';
     if Pkg.AutoCreated then

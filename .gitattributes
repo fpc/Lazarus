@@ -828,6 +828,7 @@ packager/packagelinks.pas svneol=native#text/pascal
 packager/packagesystem.pas svneol=native#text/pascal
 packager/pkggraphexporer.pas svneol=native#text/pascal
 packager/pkgmanager.pas svneol=native#text/pascal
+packager/pkgoptionsdlg.pas svneol=native#text/pascal
 packager/registerfcl.pas svneol=native#text/pascal
 packager/registerlcl.pas svneol=native#text/pascal
 packager/ucomponentmanmain.lfm svneol=native#text/plain

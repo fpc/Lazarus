@@ -122,8 +122,7 @@ begin
   if LI<>nil then begin
     CurPkg:=TLazPackage(LI.Data);
     HintStr:=
-       'Filename:  '+CurPkg.Filename+EndOfLine
-      +'Title:  '+CurPkg.Title;
+       'Filename:  '+CurPkg.Filename;
     if CurPkg.AutoCreated then
       HintStr:=HintStr+EndOfLine+'This package was automatically created';
     HintStr:=HintStr+EndOfLine+'Description:  '

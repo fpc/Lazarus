@@ -90,7 +90,9 @@ type
     fRangeChecks: Boolean;
     fOverflowChecks: Boolean;
     fStackChecks: Boolean;
+    FEmulatedFloatOpcodes: boolean;
     fHeapSize: LongInt;
+    fVerifyObjMethodCall: boolean;
     fGenerate: Integer;
     fTargetProc: Integer;
     fVarsInReg: Boolean;
@@ -134,30 +136,32 @@ type
     fAdditionalConfigFile: Boolean;
     fConfigFilePath: String;
     fCustomOptions: string;
-
-    procedure LoadTheCompilerOptions(const Path: string);
-    procedure SaveTheCompilerOptions(const Path: string);
-    procedure SetModified(const AValue: boolean);
+  protected
+    procedure LoadTheCompilerOptions(const Path: string); virtual;
+    procedure SaveTheCompilerOptions(const Path: string); virtual;
+    procedure SetModified(const AValue: boolean); virtual;
   public
     constructor Create;
     destructor Destroy; override;
+    procedure Clear; virtual;
 
     procedure LoadFromXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(AXMLConfig: TXMLConfig; const Path: string);
+    
     procedure LoadCompilerOptions(UseExistingFile: Boolean);
     procedure SaveCompilerOptions(UseExistingFile: Boolean);
-    procedure Assign(CompOpts: TBaseCompilerOptions);
-    function IsEqual(CompOpts: TBaseCompilerOptions): boolean;
+    procedure Assign(CompOpts: TBaseCompilerOptions); virtual;
+    function IsEqual(CompOpts: TBaseCompilerOptions): boolean; virtual;
     
     function MakeOptionsString: String;
-    function MakeOptionsString(const MainSourceFileName: string): String;
+    function MakeOptionsString(const MainSourceFileName: string): String; virtual;
     function CustomOptionsAsString: string;
     function ParseSearchPaths(const switch, paths: String): String;
     function ParseOptions(const Delim, Switch, OptionStr: string): string;
-    function GetXMLConfigPath: String;
-    procedure Clear;
-    function CreateTargetFilename(const MainSourceFileName: string): string;
-
+    function GetXMLConfigPath: String; virtual;
+    function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
+  public
+    { Properties }
     property Modified: boolean read FModified write SetModified;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
 
@@ -196,7 +200,9 @@ type
     property RangeChecks: Boolean read fRangeChecks write fRangeChecks;
     property OverflowChecks: Boolean read fOverflowChecks write fOverflowChecks;
     property StackChecks: Boolean read fStackChecks write fStackChecks;
+    property EmulatedFloatOpcodes: boolean read FEmulatedFloatOpcodes write FEmulatedFloatOpcodes;
     property HeapSize: Integer read fHeapSize write fHeapSize;
+    property VerifyObjMethodCall: boolean read FEmulatedFloatOpcodes write FEmulatedFloatOpcodes;
     property Generate: Integer read fGenerate write fGenerate;
     property TargetProcessor: Integer read fTargetProc write fTargetProc;
     property VariablesInRegisters: Boolean read fVarsInReg write fVarsInReg;
@@ -247,6 +253,7 @@ type
   
   
   { TAdditionalCompilerOptions
+  
     Additional Compiler options are used by packages to define, what a project
     or a package or the IDE needs to use the package.
   }
@@ -284,6 +291,8 @@ type
   { TCompilerOptions }
 
   TCompilerOptions = class(TBaseCompilerOptions)
+  public
+    procedure Clear; override;
   end;
   
 
@@ -422,9 +431,6 @@ type
     btnCancel: TButton;
     btnApply: TButton;
 
-    { Other variables }
-//    fPath: String;
-
     { Procedures }
     procedure chkAdditionalConfigFileClick(Sender: TObject);
     procedure CreateForm(Sender: TObject);
@@ -467,9 +473,9 @@ implementation
 const
   Config_Filename = 'compileroptions.xml';
 
-{------------------------------------------------------------------------------}
-{  TBaseCompilerOptions Constructor                                                }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TBaseCompilerOptions Constructor
+------------------------------------------------------------------------------}
 constructor TBaseCompilerOptions.Create;
 begin
   inherited Create;
@@ -478,9 +484,9 @@ begin
   Clear;
 end;
 
-{------------------------------------------------------------------------------}
-{  TBaseCompilerOptions Destructor                                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TBaseCompilerOptions Destructor
+------------------------------------------------------------------------------}
 destructor TBaseCompilerOptions.Destroy;
 begin
   inherited Destroy;
@@ -522,10 +528,16 @@ begin
   else
   begin
     confPath := GetXMLConfigPath;
-    XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
-    LoadTheCompilerOptions('');
-    XMLConfigFile.Free;
-    XMLConfigFile := nil;
+    try
+      XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
+      LoadTheCompilerOptions('');
+      XMLConfigFile.Free;
+      XMLConfigFile := nil;
+    except
+      on E: Exception do begin
+        writeln('TBaseCompilerOptions.LoadCompilerOptions '+Classname+' '+E.Message);
+      end;
+    end;
   end;
   fLoaded := true;
 end;
@@ -551,7 +563,7 @@ begin
   IncludeFiles := XMLConfigFile.GetValue(p+'IncludeFiles/Value', '');
   Libraries := XMLConfigFile.GetValue(p+'Libraries/Value', '');
   OtherUnitFiles := XMLConfigFile.GetValue(p+'OtherUnitFiles/Value', '');
-  CompilerPath := XMLConfigFile.GetValue(p+'CompilerPath/Value', '/opt/fpc/ppc386');
+  CompilerPath := XMLConfigFile.GetValue(p+'CompilerPath/Value', '$(CompPath)');
   UnitOutputDirectory := XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', '');
   LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', 'gtk');
 
@@ -578,7 +590,9 @@ begin
   RangeChecks := XMLConfigFile.GetValue(p+'Checks/RangeChecks/Value', false);
   OverflowChecks := XMLConfigFile.GetValue(p+'Checks/OverflowChecks/Value', false);
   StackChecks := XMLConfigFile.GetValue(p+'Checks/StackChecks/Value', false);
+  EmulatedFloatOpcodes := XMLConfigFile.GetValue(p+'EmulateFloatingPointOpCodes/Value', false);
   HeapSize := XMLConfigFile.GetValue(p+'HeapSize/Value', 8000000);
+  VerifyObjMethodCall := XMLConfigFile.GetValue(p+'VerifyObjMethodCallValidity/Value', false);
   Generate := XMLConfigFile.GetValue(p+'Generate/Value', 1);
   TargetProcessor := XMLConfigFile.GetValue(p+'TargetProcessor/Value', 1);
   VariablesInRegisters := XMLConfigFile.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
@@ -641,10 +655,16 @@ begin
   else
   begin
     confPath := GetXMLConfigPath;
-    XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
-    SaveTheCompilerOptions('');
-    XMLConfigFile.Free;
-    XMLConfigFile := nil;
+    try
+      XMLConfigFile := TXMLConfig.Create(SetDirSeparators(confPath));
+      SaveTheCompilerOptions('');
+      XMLConfigFile.Free;
+      XMLConfigFile := nil;
+    except
+      on E: Exception do begin
+        writeln('TBaseCompilerOptions.LoadCompilerOptions '+Classname+' '+E.Message);
+      end;
+    end;
   end;
   fModified:=false;
 end;
@@ -697,7 +717,9 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Checks/RangeChecks/Value', RangeChecks,false);
   XMLConfigFile.SetDeleteValue(p+'Checks/OverflowChecks/Value', OverflowChecks,false);
   XMLConfigFile.SetDeleteValue(p+'Checks/StackChecks/Value', StackChecks,false);
+  XMLConfigFile.SetDeleteValue(p+'EmulateFloatingPointOpCodes/Value', EmulatedFloatOpcodes,false);
   XMLConfigFile.SetDeleteValue(p+'HeapSize/Value', HeapSize,8000000);
+  XMLConfigFile.SetDeleteValue(p+'VerifyObjMethodCallValidity/Value', VerifyObjMethodCall,false);
   XMLConfigFile.SetDeleteValue(p+'Generate/Value', Generate,1);
   XMLConfigFile.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,1);
   XMLConfigFile.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
@@ -793,9 +815,9 @@ begin
 
   { Get all the options and create a string that can be passed to the compiler }
   
-  { options of ppc386 1.0.5 :
-  
-  put + after a boolean switch option to enable it, - to disable it
+  { options of ppc386 1.1 :
+
+put + after a boolean switch option to enable it, - to disable it
   -a     the compiler doesn't delete the generated assembler file
       -al        list sourcecode lines in assembler file
       -ar        list register allocation/release info in assembler file
@@ -805,11 +827,13 @@ begin
   -B     build all modules
   -C<x>  code generation options:
       -CD        create also dynamic library (not supported)
+      -Ce        Compilation with emulated floating point opcodes
       -Ch<n>     <n> bytes heap (between 1023 and 67107840)
       -Ci        IO-checking
       -Cn        omit linking stage
       -Co        check overflow of integer operations
       -Cr        range checking
+      -CR        verify object method call validity
       -Cs<n>     set stack size to <n>
       -Ct        stack checking
       -CX        create also smartlinked library
@@ -850,7 +874,7 @@ begin
   -S<x>  syntax options:
       -S2        switch some Delphi 2 extensions on
       -Sc        supports operators like C (*=,+=,/= and -=)
-      -sa        include assertion code.
+      -Sa        include assertion code.
       -Sd        tries to be Delphi compatible
       -Se<x>     compiler stops after the <x> errors (default is 1)
       -Sg        allow LABEL and GOTO
@@ -862,6 +886,8 @@ begin
       -Ss        constructor name must be init (destructor must be done)
       -St        allow static keyword in objects
   -s     don't call assembler and linker (only with -a)
+      -st        Generate script to link on target
+      -sh        Generate script to link on host
   -u<x>  undefines the symbol <x>
   -U     unit options:
       -Un        don't check the unit name
@@ -878,6 +904,7 @@ begin
       b : Show all procedure          r : Rhide/GCC compatibility mode
           declarations if an error    x : Executable info (Win32 only)
           occurs
+  -V     write fpcdebug.txt file with lots of debugging info
   -X     executable options:
       -Xc        link with the c library
       -Xs        strip all symbols from executable
@@ -885,10 +912,9 @@ begin
       -XS        try to link static (default) (defines FPC_LINK_STATIC)
       -XX        try to link smart            (defines FPC_LINK_SMART)
 
-  Processor specific options:
+Processor specific options:
   -A<x>  output format:
       -Aas       assemble using GNU AS
-      -Aasaout   assemble using GNU AS for aout (Go32v1)
       -Anasmcoff coff (Go32v2) file using Nasm
       -Anasmelf  elf32 (Linux) file using Nasm
       -Anasmobj  obj file using Nasm
@@ -907,19 +933,19 @@ begin
       -Ou        enable uncertain optimizations (see docs)
       -O1        level 1 optimizations (quick optimizations)
       -O2        level 2 optimizations (-O1 + slower optimizations)
-      -O3        level 3 optimizations (same as -O2u)
+      -O3        level 3 optimizations (-O2 repeatedly, max 5 times)
       -Op<x>     target processor:
          -Op1  set target processor to 386/486
          -Op2  set target processor to Pentium/PentiumMMX (tm)
          -Op3  set target processor to PPro/PII/c6x86/K6 (tm)
   -T<x>  Target operating system:
-      -TGO32V1   version 1 of DJ Delorie DOS extender
       -TGO32V2   version 2 of DJ Delorie DOS extender
+      -          3*2TWDOSX DOS 32 Bit Extender
       -TLINUX    Linux
+      -Tnetware  Novell Netware Module (experimental)
       -TOS2      OS/2 2.x
       -TSUNOS    SunOS/Solaris
       -TWin32    Windows 32 Bit
-      -TBeOS     BeOS
   -W<x>  Win32 target options
       -WB<x>     Set Image base to Hexadecimal <x> value
       -WC        Specify console type application
@@ -1015,14 +1041,18 @@ begin
   { Checks }
   tempsw := '';
 
-  if (IOChecks) then
+  if IOChecks then
     tempsw := tempsw + 'i';
-  if (RangeChecks) then
+  if RangeChecks then
     tempsw := tempsw + 'r';
-  if (OverflowChecks) then
+  if OverflowChecks then
     tempsw := tempsw + 'o';
-  if (StackChecks) then
+  if StackChecks then
     tempsw := tempsw + 't';
+  if EmulatedFloatOpcodes then
+    tempsw := tempsw + 'e';
+  if VerifyObjMethodCall then
+    tempsw := tempsw + 'R';
 
   if (tempsw <> '') then begin
     switches := switches + ' -C' + tempsw;
@@ -1072,7 +1102,8 @@ begin
        GO32V2 = DOS and version 2 of the DJ DELORIE extender.
        LINUX = LINUX.
        OS2 = OS/2 (2.x) using the EMX extender.
-       WIN32 = Windows 32 bit. }
+       WIN32 = Windows 32 bit.
+       ... }
   { Only linux and win32 are in the dialog at this moment}
   if TargetOS<>'' then
      switches := switches + ' -T' + TargetOS;
@@ -1229,7 +1260,13 @@ begin
   -dxxx = Define symbol name xxx (Used for conditional compiles)
   -uxxx = Undefine symbol name xxx
   
+  -Ce        Compilation with emulated floating point opcodes
+  -CR        verify object method call validity
+
   -s = Do not call assembler or linker. Write ppas.bat/ppas.sh script.
+  -st        Generate script to link on target
+  -sh        Generate script to link on host
+  -V     write fpcdebug.txt file with lots of debugging info
 
   -Xc = Link with C library (LINUX only)
        
@@ -1357,7 +1394,7 @@ begin
   fIncludeFiles := '';
   fLibraries := '';
   fOtherUnitFiles := '';
-  fCompilerPath := '/opt/fpc/ppc386';
+  fCompilerPath := '$(CompPath)';
   fUnitOutputDir := '';
   fLCLWidgetType := 'gtk';
   
@@ -1462,7 +1499,9 @@ begin
   fRangeChecks := CompOpts.fRangeChecks;
   fOverflowChecks := CompOpts.fOverflowChecks;
   fStackChecks := CompOpts.fStackChecks;
+  FEmulatedFloatOpcodes := CompOpts.fEmulatedFloatOpcodes;
   fHeapSize := CompOpts.fHeapSize;
+  fVerifyObjMethodCall := CompOpts.fVerifyObjMethodCall;
   fGenerate := CompOpts.fGenerate;
   fTargetProc := CompOpts.fTargetProc;
   fVarsInReg := CompOpts.fVarsInReg;
@@ -1541,7 +1580,9 @@ begin
     and (fRangeChecks = CompOpts.fRangeChecks)
     and (fOverflowChecks = CompOpts.fOverflowChecks)
     and (fStackChecks = CompOpts.fStackChecks)
+    and (FEmulatedFloatOpcodes = CompOpts.FEmulatedFloatOpcodes)
     and (fHeapSize = CompOpts.fHeapSize)
+    and (fVerifyObjMethodCall = CompOpts.fVerifyObjMethodCall)
     and (fGenerate = CompOpts.fGenerate)
     and (fTargetProc = CompOpts.fTargetProc)
     and (fVarsInReg = CompOpts.fVarsInReg)
@@ -1598,7 +1639,7 @@ begin
 
   Assert(False, 'Trace:Compiler Options Form Created');
   SetBounds((Screen.Width-440) div 2,(Screen.Height-500) div 2,435,480);
-  Caption := dlgCompilerOptions ;
+  Caption := dlgCompilerOptions;
   OnShow := @CreateForm;
   
   nbMain := TNotebook.Create(Self);
@@ -3482,6 +3523,13 @@ begin
   XMLConfig.SetDeleteValue(Path+'LinkerOptions/Value',fLinkerOptions,'');
   XMLConfig.SetDeleteValue(Path+'ObjectPath/Value',FObjectPath,'');
   XMLConfig.SetDeleteValue(Path+'UnitPath/Value',FUnitPath,'');
+end;
+
+{ TCompilerOptions }
+
+procedure TCompilerOptions.Clear;
+begin
+  inherited Clear;
 end;
 
 end.

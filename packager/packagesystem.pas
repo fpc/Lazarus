@@ -73,15 +73,18 @@ type
     FAbortRegistration: boolean;
     FErrorMsg: string;
     FFCLPackage: TLazPackage;
+    FItems: TList;   // unsorted list of TLazPackage
     FLCLPackage: TLazPackage;
     FOnAddPackage: TPkgAddedEvent;
+    FOnBeginUpdate: TNotifyEvent;
     FOnChangePackageName: TPkgChangeNameEvent;
     FOnDeletePackage: TPkgDeleteEvent;
+    FOnEndUpdate: TNotifyEvent;
     FRegistrationFile: TPkgFile;
     FRegistrationPackage: TLazPackage;
     FRegistrationUnitName: string;
     FTree: TAVLTree; // sorted tree of TLazPackage
-    FItems: TList;   // unsorted list of TLazPackage
+    FUpdateLock: integer;
     function GetPackages(Index: integer): TLazPackage;
     procedure SetAbortRegistration(const AValue: boolean);
     procedure SetRegistrationPackage(const AValue: TLazPackage);
@@ -94,6 +97,9 @@ type
     procedure Clear;
     procedure Delete(Index: integer);
     function Count: integer;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function Updating: boolean;
     function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
     function FindNextSameName(ANode: TAVLTreeNode): TAVLTreeNode;
     function FindNodeOfDependency(Dependency: TPkgDependency;
@@ -142,20 +148,22 @@ type
     procedure IteratePackagesSorted(Flags: TFindPackageFlags;
                                     Event: TIteratePackagesEvent);
   public
+    property AbortRegistration: boolean read FAbortRegistration
+                                        write SetAbortRegistration;
+    property ErrorMsg: string read FErrorMsg write FErrorMsg;
+    property FCLPackage: TLazPackage read FFCLPackage;
+    property LCLPackage: TLazPackage read FLCLPackage;
+    property OnAddPackage: TPkgAddedEvent read FOnAddPackage write FOnAddPackage;
+    property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
+    property OnChangePackageName: TPkgChangeNameEvent read FOnChangePackageName
+                                                     write FOnChangePackageName;
+    property OnDeletePackage: TPkgDeleteEvent read FOnDeletePackage write FOnDeletePackage;
+    property OnEndUpdate: TNotifyEvent read FOnEndUpdate write FOnEndUpdate;
     property Packages[Index: integer]: TLazPackage read GetPackages; default;
+    property RegistrationFile: TPkgFile read FRegistrationFile;
     property RegistrationPackage: TLazPackage read FRegistrationPackage
                                               write SetRegistrationPackage;
     property RegistrationUnitName: string read FRegistrationUnitName;
-    property RegistrationFile: TPkgFile read FRegistrationFile;
-    property ErrorMsg: string read FErrorMsg write FErrorMsg;
-    property AbortRegistration: boolean read FAbortRegistration
-                                        write SetAbortRegistration;
-    property FCLPackage: TLazPackage read FFCLPackage;
-    property LCLPackage: TLazPackage read FLCLPackage;
-    property OnChangePackageName: TPkgChangeNameEvent read FOnChangePackageName
-                                                     write FOnChangePackageName;
-    property OnAddPackage: TPkgAddedEvent read FOnAddPackage write FOnAddPackage;
-    property OnDeletePackage: TPkgDeleteEvent read FOnDeletePackage write FOnDeletePackage;
   end;
   
 var
@@ -246,6 +254,28 @@ end;
 function TLazPackageGraph.Count: integer;
 begin
   Result:=FItems.Count;
+end;
+
+procedure TLazPackageGraph.BeginUpdate;
+begin
+  inc(FUpdateLock);
+  if FUpdateLock=1 then begin
+    if Assigned(OnBeginUpdate) then OnBeginUpdate(Self);
+  end;
+end;
+
+procedure TLazPackageGraph.EndUpdate;
+begin
+  if FUpdateLock<=0 then RaiseException('TLazPackageGraph.EndUpdate');
+  dec(FUpdateLock);
+  if FUpdateLock=0 then begin
+    if Assigned(OnEndUpdate) then OnEndUpdate(Self);
+  end;
+end;
+
+function TLazPackageGraph.Updating: boolean;
+begin
+  Result:=FUpdateLock>0;
 end;
 
 function TLazPackageGraph.FindLowestPkgNodeByName(const PkgName: string
@@ -632,13 +662,12 @@ begin
   with Result do begin
     AutoCreated:=true;
     Name:='FCL';
-    Title:='FreePascal Component Library';
     Filename:='$(FPCSrcDir)/fcl/';
     Version.SetValues(1,0,1,1);
     Author:='FPC team';
     AutoInstall:=pitStatic;
     AutoUpdate:=false;
-    Description:='The FCL provides the base classes for object pascal.';
+    Description:='The FCL - FreePascal Component Library provides the base classes for object pascal.';
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
 
@@ -656,13 +685,12 @@ begin
   with Result do begin
     AutoCreated:=true;
     Name:='LCL';
-    Title:='Lazarus Component Library';
     Filename:='$(LazarusDir)/lcl/';
     Version.SetValues(1,0,1,1);
     Author:='Lazarus';
     AutoInstall:=pitStatic;
     AutoUpdate:=false;
-    Description:='The LCL contains all base components for form editing.';
+    Description:='The LCL - Lazarus Component Library contains all base components for form editing.';
     PackageType:=lptDesignTime;
     Installed:=pitStatic;
 
@@ -693,6 +721,7 @@ var
   Dependency: TPkgDependency;
   DepNode: TAVLTreeNode;
 begin
+  BeginUpdate;
   FTree.Add(APackage);
   FItems.Add(APackage);
   APackage.OnChangeName:=@PackageChangedName;
@@ -717,6 +746,7 @@ begin
   end;
   
   if Assigned(OnAddPackage) then OnAddPackage(APackage);
+  EndUpdate;
 end;
 
 procedure TLazPackageGraph.AddStaticBasePackages;
@@ -792,9 +822,11 @@ procedure TLazPackageGraph.CloseUnneededPackages;
 var
   i: Integer;
 begin
+  BeginUpdate;
   MarkNeededPackages;
   for i:=FItems.Count-1 downto 0 do
     if not (lpfNeeded in Packages[i].Flags) then Delete(i);
+  EndUpdate;
 end;
 
 function TLazPackageGraph.CheckIfPackageCanBeClosed(APackage: TLazPackage

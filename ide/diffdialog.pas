@@ -158,6 +158,7 @@ function ShowDiffDialog(Files: TDiffFiles; Text1Index: integer;
 var
   DiffDlg: TDiffDialog;
 begin
+  OpenDiffInEditor:=false;
   DiffDlg:=TDiffDialog.Create(Application);
   DiffDlg.BeginUpdate;
   DiffDlg.OnGetDiffFile:=OnGetDiffFile;
