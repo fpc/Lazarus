@@ -50,8 +50,6 @@ implementation
 { TBMPImage }
 
 procedure TBMPImage.InitFPImageReader(ImgReader: TFPCustomImageReader);
-var
-  BMPReader: TFPReaderBMP;
 begin
   if ImgReader is TFPReaderBMP then begin
   end;
@@ -59,8 +57,6 @@ begin
 end;
 
 procedure TBMPImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
-var
-  BMPReader: TFPReaderBMP;
 begin
   if ImgReader is TFPReaderBMP then begin
   end;

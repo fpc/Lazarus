@@ -49,8 +49,6 @@ implementation
 { TTGAImage }
 
 procedure TTGAImage.InitFPImageReader(ImgReader: TFPCustomImageReader);
-var
-  TGAReader: TFPReaderTarga;
 begin
   if ImgReader is TFPReaderTarga then begin
   end;
@@ -58,11 +56,8 @@ begin
 end;
 
 procedure TTGAImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
-var
-  TGAReader: TFPReaderTarga;
 begin
   if ImgReader is TFPReaderTarga then begin
-    TGAReader:=TFPReaderTarga(ImgReader);
   end;
   inherited FinalizeFPImageReader(ImgReader);
 end;
