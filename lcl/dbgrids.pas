@@ -394,8 +394,8 @@ begin
     VisualChange; // Now Call Visual Change
     // Update Scrollbars
 
-    ScrollBarRange(SB_HORZ, true, GridWidth + 2);
-    ScrollBarRange(SB_VERT, true, (FNumRecords + FixedRows) * DefaultRowHeight + 2);
+    ScrollBarRange(SB_HORZ, GridWidth + 2);
+    ScrollBarRange(SB_VERT, (FNumRecords + FixedRows) * DefaultRowHeight + 2);
     
     //HorzScrollBar.Range:= GridWidth+2;
     //VertScrollBar.Range:= (FNumRecords + FixedRows) * DefaultRowHeight + 2;
