@@ -3363,6 +3363,7 @@ begin
   ItemList:= TGtkListStringList.Create(PGtkList(Widget^.List));
   gtk_object_set_data(PGtkObject(Widget), 'LCLList', ItemList);
   ItemList.Assign(ComboBox.Items);
+  ItemList.Sorted:= ComboBox.Sorted;
 
   // ItemIndex
   if ComboBox.ItemIndex >= 0 then
@@ -5664,6 +5665,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.205  2002/09/07 20:30:50  lazarus
+  Make TComboboxes sort again, including in OI
+
   Revision 1.204  2002/09/07 12:14:51  lazarus
   EchoMode for TCustomEdit. emNone not implemented for GTK+, falls back to emPassword
   behaviour.
