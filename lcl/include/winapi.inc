@@ -454,6 +454,11 @@ begin
   Result := InterfaceObject.GetDeviceSize(DC,p);
 end;
 
+function GetDesignerDC(WindowHandle: HWND): HDC;
+begin
+  Result := InterfaceObject.GetDesignerDC(WindowHandle);
+end;
+
 function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint;
 begin
   Result := InterfaceObject.GetBitmapBits(Bitmap, Count, Bits);
@@ -1682,6 +1687,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.100  2003/11/03 22:37:41  mattias
+  fixed vert scrollbar, implemented GetDesignerDC
+
   Revision 1.99  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

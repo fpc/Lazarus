@@ -915,6 +915,11 @@ begin
   Result := false;
 end;
 
+function TInterfaceBase.GetDesignerDC(WindowHandle: HWND): HDC;
+begin
+  Result:=GetDC(WindowHandle);
+end;
+
 function TInterfaceBase.GetDIBits(DC: HDC; Bitmap: HBitmap;
   StartScan, NumScans: UINT; Bits: Pointer;
   var BitInfo: BitmapInfo; Usage: UINT): Integer;
@@ -1837,6 +1842,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.107  2003/11/03 22:37:41  mattias
+  fixed vert scrollbar, implemented GetDesignerDC
+
   Revision 1.106  2003/10/28 14:25:37  mattias
   fixed unit circle
 

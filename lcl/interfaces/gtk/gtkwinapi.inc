@@ -3955,7 +3955,7 @@ begin
       then begin
         XQueryPointer(gdk_window_xdisplay(List^.Data),
                       gdk_window_xwindow(List^.Data),
-                      @root, @child, @lpPoint.X, @lpPoint.Y, @winx, @winy, @xmask);
+                      @root,@child,@lpPoint.X,@lpPoint.Y,@winx,@winy,@xmask);
 
         Result := True;
         Break;
@@ -3977,17 +3977,20 @@ begin
 end;
 {$ENDIF unix}
 {$ENDIF gkt2}
+
 {------------------------------------------------------------------------------
   Function: GetDC
   Params:  none
   Returns: Nothing
 
   hWnd is any widget.
-  The DC will be created for the client area.
+  The DC will be created for the client area and without the child areas
+  (they are clipped away). Child areas are all child gdkwindows
+  (e.g. not TControls).
  ------------------------------------------------------------------------------}
 function TgtkObject.GetDC(hWnd: HWND): HDC;
 begin
-  Result:=CreateDCForWidget(PGtkWidget(hWnd),nil);
+  Result:=CreateDCForWidget(PGtkWidget(hWnd),nil,false);
 end;
 
 {------------------------------------------------------------------------------
@@ -4124,6 +4127,20 @@ begin
         ' Widget=',HexStr(Cardinal(wnd),8));
     end;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetDesignerDC
+  Params:  none
+  Returns: Nothing
+
+  WindowHandle is any widget.
+  The DC will be created for the client area including the child areas.
+ ------------------------------------------------------------------------------}
+function TgtkObject.GetDesignerDC(WindowHandle: HWND): HDC;
+begin
+  //writeln('TgtkObject.GetDesignerDC A');
+  Result:=CreateDCForWidget(PGtkWidget(WindowHandle),nil,true);
 end;
 
 {------------------------------------------------------------------------------
@@ -7806,16 +7823,14 @@ begin
     begin
       if GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
       begin
-        if SBStyle in [SB_BOTH, SB_HORZ] then
-          NewPolicy:=POLICY[bRedraw]
-        else
-          NewPolicy:=GTK_POLICY_NEVER;
-        gtk_object_set(PGTKObject(Scroll),'hscrollbar_policy',[NewPolicy,nil]);
-        if SBStyle in [SB_BOTH, SB_VERT] then
-          NewPolicy:=POLICY[bRedraw]
-        else
-          NewPolicy:=GTK_POLICY_NEVER;
-        gtk_object_set(PGTKObject(Scroll),'vscrollbar_policy',[NewPolicy,nil]);
+        if SBStyle in [SB_BOTH, SB_HORZ] then begin
+          NewPolicy:=POLICY[bRedraw];
+          gtk_object_set(PGTKObject(Scroll),'hscrollbar_policy',[NewPolicy,nil]);
+        end;
+        if SBStyle in [SB_BOTH, SB_VERT] then begin
+          NewPolicy:=POLICY[bRedraw];
+          gtk_object_set(PGTKObject(Scroll),'vscrollbar_policy',[NewPolicy,nil]);
+        end;
       end
       else
       begin
@@ -8072,16 +8087,20 @@ begin
   if Result then begin
     Widget:=PGtkWidget(Handle);
     if GtkWidgetIsA(Widget,gtk_scrolled_window_get_type) then begin
-      if wBar in [SB_BOTH, SB_HORZ] then
-        NewPolicy:=POLICY[bShow]
-      else
-        NewPolicy:=GTK_POLICY_NEVER;
-      gtk_object_set(PGTKObject(Widget), 'hscrollbar_policy', [NewPolicy,nil]);
-      if wBar in [SB_BOTH, SB_VERT] then
-        NewPolicy:=POLICY[bShow]
-      else
-        NewPolicy:=GTK_POLICY_NEVER;
-      gtk_object_set(PGTKObject(Widget), 'vscrollbar_policy', [NewPolicy,nil]);
+      if wBar in [SB_BOTH, SB_HORZ] then begin
+        if bShow then
+          NewPolicy:=POLICY[bShow]
+        else
+          NewPolicy:=GTK_POLICY_NEVER;
+        gtk_object_set(PGTKObject(Widget), 'hscrollbar_policy', [NewPolicy,nil]);
+      end;
+      if wBar in [SB_BOTH, SB_VERT] then begin
+        if bShow then
+          NewPolicy:=POLICY[bShow]
+        else
+          NewPolicy:=GTK_POLICY_NEVER;
+        gtk_object_set(PGTKObject(Widget), 'vscrollbar_policy', [NewPolicy,nil]);
+      end;
     end
     else begin
       if (wBar = SB_CTL)
@@ -9038,6 +9057,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.297  2003/11/03 22:37:41  mattias
+  fixed vert scrollbar, implemented GetDesignerDC
+
   Revision 1.296  2003/11/01 10:27:41  mattias
   fpc 1.1 fixes, started scrollbar hiding, started polymorphing client areas
 

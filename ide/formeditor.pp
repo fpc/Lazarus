@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, CustomFormEditor, Controls, Forms, Buttons, SysUtils, Graphics,
-  ExtCtrls, ObjectInspector;
+  ExtCtrls, ObjectInspector, Designer;
 
 type
   TFormEditor = class(TCustomFormEditor)
@@ -41,6 +41,7 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+    procedure PaintAllDesignerItems;
   end;
 
 var
@@ -66,6 +67,19 @@ end;
 destructor TFormEditor.destroy;
 Begin
   inherited;
+end;
+
+procedure TFormEditor.PaintAllDesignerItems;
+var
+  i: Integer;
+  ADesigner: TDesigner;
+begin
+  for i:=0 to JITFormList.Count-1 do begin
+    ADesigner:=TDesigner(JITFormList[i].Designer);
+    if ADesigner<>nil then begin
+      ADesigner.DrawDesignerItems(true);
+    end;
+  end;
 end;
 
 end.

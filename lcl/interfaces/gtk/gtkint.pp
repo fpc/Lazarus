@@ -151,7 +151,8 @@ type
     function IsValidDC(const DC: HDC): Boolean;virtual;
     function NewDC: TDeviceContext;virtual;
     procedure DisposeDC(aDC: TDeviceContext);virtual;
-    function CreateDCForWidget(TheWidget: PGtkWidget; TheWindow: PGdkWindow): HDC;
+    function CreateDCForWidget(TheWidget: PGtkWidget; TheWindow: PGdkWindow;
+      WithChildWindows: boolean): HDC;
     
     // GDIObjects
     function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;virtual;
@@ -269,7 +270,6 @@ type
     procedure RemoveCallbacks(Sender : TObject); virtual;
   public
     // for gtk specific components:
-//    FLogHandlerID: Cardinal;
     procedure SetCallback(Msg : LongInt; Sender : TObject); virtual;
     procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
@@ -399,6 +399,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.155  2003/11/03 22:37:41  mattias
+  fixed vert scrollbar, implemented GetDesignerDC
+
   Revision 1.154  2003/11/01 10:27:41  mattias
   fpc 1.1 fixes, started scrollbar hiding, started polymorphing client areas
 

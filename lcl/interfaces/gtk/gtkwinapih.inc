@@ -102,6 +102,7 @@ function GetDC(hWnd: HWND): HDC;  override;
 function GetDeviceCaps(DC: HDC; Index: Integer): Integer; Override;
 function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; override;
 function GetDeviceSize(DC: HDC; var p: TPoint): boolean; override;
+function GetDesignerDC(WindowHandle: HWND): HDC; override;
 function GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT): Integer; Override;
 function GetFocus: HWND; override;
 function GetFontLanguageInfo(DC: HDC): DWord; override;
@@ -214,6 +215,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.79  2003/11/03 22:37:41  mattias
+  fixed vert scrollbar, implemented GetDesignerDC
+
   Revision 1.78  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

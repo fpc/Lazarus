@@ -1174,7 +1174,7 @@ var
     end;
 
     AMessage.Msg := LM_INTERNALPAINT;
-    AMessage.WParam := CreateDCForWidget(Context.MainWidget,PaintWindow);
+    AMessage.WParam := CreateDCForWidget(Context.MainWidget,PaintWindow,false);
     AMessage.LParam := 0;
     AMessage.Result := 0;
 
@@ -7680,12 +7680,12 @@ end;
 
 {------------------------------------------------------------------------------
   function TgtkObject.CreateDCForWidget(TheWidget: PGtkWidget;
-    TheWindow: PGdkWindow): HDC;
+    TheWindow: PGdkWindow; WithChildWindows: boolean): HDC;
 
   Creates an initial DC
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateDCForWidget(TheWidget: PGtkWidget;
-  TheWindow: PGdkWindow): HDC;
+  TheWindow: PGdkWindow; WithChildWindows: boolean): HDC;
   
   procedure RaiseWidgetWithoutClientArea;
   begin
@@ -7697,7 +7697,7 @@ var
   aDC: TDeviceContext;
   ClientWidget: PGtkWidget;
   GdiObject: PGdiObject;
-  Values: TGdkGCValues;
+  GCValues: TGdkGCValues;
   X,Y : Longint;
 begin
   aDC := nil;
@@ -7709,7 +7709,7 @@ begin
 
   if TheWidget = nil
   then begin
-    FillChar(Values, SizeOf(Values), #0);
+    FillChar(GCValues, SizeOf(GCValues), #0);
   end
   else begin
     // create a new devicecontext for this window
@@ -7729,32 +7729,41 @@ begin
     aDC.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
     aDC.Drawable := TheWindow;
     BeginGDKErrorTrap;
-    aDC.GC := gdk_gc_new(aDC.Drawable);
+    // create GC
+    if WithChildWindows then begin
+      //writeln('TgtkObject.CreateDCForWidget A WithChildWindows');
+      FillChar(GCValues, SizeOf(GCValues), #0);
+      GCValues.subwindow_mode := GDK_INCLUDE_INFERIORS;
+      aDC.GC := gdk_gc_new_with_values(aDC.Drawable,
+                                 @GCValues,GDK_GC_FUNCTION or GDK_GC_SUBWINDOW);
+    end else begin
+      aDC.GC := gdk_gc_new(aDC.Drawable);
+    end;
     gdk_window_get_size(aDC.Drawable, @X, @Y);
     gdk_gc_set_function(aDC.GC, GDK_COPY);
 
-    gdk_gc_get_values(aDC.GC, @Values);
+    gdk_gc_get_values(aDC.GC, @GCValues);
     EndGDKErrorTrap;
     {$Ifdef GTK2}
-      if (gtk_widget_get_style(ClientWidget)<>nil) and
-        (gtk_widget_get_style(ClientWidget)^.font_desc <> nil)
-      then begin
-         GdiObject:=NewGDIObject(gdiFont);
-         GdiObject^.GDIFontObject :=  pango_font_description_copy(gtk_widget_get_style(ClientWidget)^.font_desc);
-         GdiObject^.StrikeOut := False;
-         GdiObject^.Underline := False;
-      end else GdiObject := CreateDefaultFont;
+    if (gtk_widget_get_style(ClientWidget)<>nil) and
+      (gtk_widget_get_style(ClientWidget)^.font_desc <> nil)
+    then begin
+       GdiObject:=NewGDIObject(gdiFont);
+       GdiObject^.GDIFontObject :=  pango_font_description_copy(gtk_widget_get_style(ClientWidget)^.font_desc);
+       GdiObject^.StrikeOut := False;
+       GdiObject^.Underline := False;
+    end else GdiObject := CreateDefaultFont;
     {$EndIf}
   end;
 
   if aDC <> nil
   then begin
     {$Ifdef GTK1}
-    if Values.Font <> nil
+    if GCValues.Font <> nil
     then begin
       GdiObject:=NewGDIObject(gdiFont);
-      GdiObject^.GDIFontObject := Values.Font;
-      gdk_font_ref(Values.Font);
+      GdiObject^.GDIFontObject := GCValues.Font;
+      gdk_font_ref(GCValues.Font);
     end
     else GdiObject := CreateDefaultFont;
     {$EndIf}
@@ -8467,6 +8476,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.435  2003/11/03 22:37:41  mattias
+  fixed vert scrollbar, implemented GetDesignerDC
+
   Revision 1.434  2003/11/01 10:27:41  mattias
   fpc 1.1 fixes, started scrollbar hiding, started polymorphing client areas
 

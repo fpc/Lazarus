@@ -73,7 +73,8 @@ type
     dfShowEditorHints,
     dfShowComponentCaptionHints,
     dfDestroyingForm,
-    dfDeleting
+    dfDeleting,
+    dfNeedPainting
     );
   TDesignerFlags = set of TDesignerFlag;
 
@@ -177,7 +178,7 @@ type
     procedure DoShowTabOrderEditor;
     procedure GiveComponentsNames;
     procedure NotifyComponentAdded(AComponent: TComponent);
-
+    
     // popup menu
     procedure BuildPopupMenu;
     procedure OnAlignPopupMenuClick(Sender: TObject);
@@ -246,7 +247,8 @@ type
     procedure PaintClientGrid(AWinControl: TWinControl;
        aDDC: TDesignerDeviceContext);
     procedure DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
-
+    procedure DrawDesignerItems(OnlyIfNeeded: boolean); override;
+    procedure DoPaintDesignerItems;
   public
     property Flags: TDesignerFlags read FFlags;
     property Form: TCustomForm read FForm;
@@ -891,6 +893,8 @@ begin
 
   // paint the Designer stuff
   if TheMessage.DC<>0 then begin
+    Include(FFlags,dfNeedPainting);
+
     InternalPaint:=(TheMessage.Msg=LM_INTERNALPAINT);
     DDC.SetDC(Form,TheMessage.DC);
     {$IFDEF VerboseDesignerDraw}
@@ -908,29 +912,21 @@ begin
       //RaiseException('');
     end;
     LastPaintSender:=Sender;
+    
     // client grid
     if (not InternalPaint) and (Sender is TWinControl)
     and (csAcceptsControls in Sender.ControlStyle) then begin
       PaintClientGrid(TWinControl(Sender),DDC);
     end;
-    // marker
+    
+    // marker (multi selection markers)
     if (ControlSelection.SelectionForm=Form)
     and (ControlSelection.IsSelected(Sender)) then begin
       ControlSelection.DrawMarker(Sender,DDC);
     end;
-    // non visual component icons
-    DrawNonVisualComponents(DDC);
-    // guidelines and grabbers
-    if (ControlSelection.SelectionForm=Form) then begin
-      ControlSelection.DrawGuideLines(DDC);
-      ControlSelection.DrawGrabbers(DDC);
-    end;
-    // rubberband
-    if ControlSelection.RubberBandActive
-    and ((ControlSelection.SelectionForm=Form)
-    or (ControlSelection.SelectionForm=nil)) then begin
-      ControlSelection.DrawRubberBand(DDC);
-    end;
+    //writeln('TDesigner.PaintControl NOT Drawing items');
+    //DoPaintDesignerItems;
+
     // clean up
     DDC.Clear;
   end;
@@ -2042,6 +2038,45 @@ begin
         ControlSelection.DrawMarkerAt(aDDC,
           ItemLeft,ItemTop,NonVisualCompWidth,NonVisualCompWidth);
     end;
+  end;
+end;
+
+procedure TDesigner.DrawDesignerItems(OnlyIfNeeded: boolean);
+var
+  DesignerDC: HDC;
+begin
+  //writeln('TDesigner.DrawDesignerItems A ',dfNeedPainting in FFlags);
+  if OnlyIfNeeded and (not (dfNeedPainting in FFlags)) then exit;
+  Exclude(FFlags,dfNeedPainting);
+  
+  if (Form=nil) or (not Form.HandleAllocated) then exit;
+
+  //writeln('TDesigner.DrawDesignerItems B painting');
+  DesignerDC:=GetDesignerDC(Form.Handle);
+  DDC.SetDC(Form,DesignerDC);
+  DoPaintDesignerItems;
+  DDC.Clear;
+  ReleaseDC(Form.Handle,DesignerDC);
+end;
+
+procedure TDesigner.DoPaintDesignerItems;
+begin
+  // marker (multi selection markers)
+  if (ControlSelection.SelectionForm=Form) then begin
+    // ToDo: draw all markers
+  end;
+  // non visual component icons
+  DrawNonVisualComponents(DDC);
+  // guidelines and grabbers
+  if (ControlSelection.SelectionForm=Form) then begin
+    ControlSelection.DrawGuideLines(DDC);
+    ControlSelection.DrawGrabbers(DDC);
+  end;
+  // rubberband
+  if ControlSelection.RubberBandActive
+  and ((ControlSelection.SelectionForm=Form)
+  or (ControlSelection.SelectionForm=nil)) then begin
+    ControlSelection.DrawRubberBand(DDC);
   end;
 end;
 

@@ -9280,6 +9280,8 @@ begin
   GetDefaultProcessList.FreeStoppedProcesses;
   EnvironmentOptions.ExternalTools.FreeStoppedProcesses;
   if (SplashForm<>nil) then FreeThenNil(SplashForm);
+  
+  FormEditor1.PaintAllDesignerItems;
 end;
 
 procedure TMainIDE.OnScreenRemoveForm(Sender: TObject; AForm: TCustomForm);
@@ -9926,6 +9928,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.662  2003/11/03 22:37:41  mattias
+  fixed vert scrollbar, implemented GetDesignerDC
+
   Revision 1.661  2003/10/30 20:15:45  mattias
   fixed building IDE clean
 
