@@ -25,8 +25,10 @@ unit VCLGlobals;
 
 interface
 
-const
+uses
+  Classes, SysUtils;
 
+const
   {These should be moved to the correct area eventually}
   WS_EX_CLIENTEDGE = $200;
   WS_HSCroll = $100000;
@@ -126,7 +128,128 @@ const
 { Generic Key names }
 {$I hkeys.inc}
 
+Function CS_To_String(CompStyle: Integer): String;
+
+
 implementation
+
+{------------------------------------------------------------------------------
+  Function: CS_To_String
+  Params: CompStyle - Component Style
+  Returns: The component style name
+
+  Converts a component style identIfier into the correct component style name
+ ------------------------------------------------------------------------------}
+Function CS_To_String(CompStyle: Integer): String;
+Begin
+  Case CompStyle of
+    csNone:
+      Result := 'csNone';
+    csAlignment:
+      Result := 'csAlignment';
+    csBox:
+      Result := 'csBox';
+    csButton:
+      Result := 'csButton';
+    csComboBox:
+      Result := 'csComboBox';
+    csCheckbox:
+      Result := 'csCheckbox';
+    csEdit:
+      Result := 'csEdit';
+    csForm:
+      Result := 'csForm';
+    csLabel:
+      Result := 'csLabel';
+    csGTKTable:
+      Result := 'csGTKTable';
+    csScrollBar:
+      Result := 'csScrollBar';
+    csListView:
+      Result := 'csListView';
+    csMainForm:
+      Result := 'csMainForm';
+    csMemo:
+      Result := 'csMemo';
+    csMainMenu:
+      Result := 'csMainMenu';
+    csMenuBar:
+      Result := 'csMenuBar';
+    csMenuItem:
+      Result := 'csMenuItem';
+    csNotebook:
+      Result := 'csNotebook';
+    csFileDialog:
+      Result := 'csFileDialog';
+    csRadioButton:
+      Result := 'csRadioButton';
+    csScrolledWinDow:
+      Result := 'csScrolledWinDow';
+    csSpinEdit:
+      Result := 'csSpinEdit';
+    csStatusBar:
+      Result := 'csStatusBar';
+    csTable:
+      Result := 'csTable';
+    csToggleBox:
+      Result := 'csToggleBox';
+    25: //csVScrollBar
+      Result := 'csVScrollBar';
+    csFrame:
+      Result := 'csFrame';
+    csButtonBox:
+      Result := 'csButtonBox';
+    csCanvas:
+      Result := 'csCanvas';
+    csGroupBox:
+      Result := 'csGroupBox';
+    csFont:
+      Result := 'csFont';
+    csPen:
+      Result := 'csPen';
+    csBrush:
+      Result := 'csBrush';
+    33: //csTimer
+      Result := 'csTimer';
+    csPage:
+      Result := 'csPage';
+    csColorDialog:
+      Result := 'csColorDialog';
+    csListBox:
+      Result := 'csListBox';
+    csFontDialog:
+      Result := 'csFontDialog';
+    csProgressBar:
+      Result := 'csProgressBar';
+    csTrackBar:
+      Result := 'csTrackBar';
+    csFixed:
+      Result := 'csFixed';
+    csImage:
+      Result := 'csImage';
+    csToolbar:
+      Result := 'csToolbar';
+    csToolButton:
+      Result := 'csToolButton';
+    csBitBtn:
+      Result := 'csBitBtn';
+    csCListBox:
+      Result := 'csCListBox';
+    csSpeedButton:
+      Result := 'csSpeedButton';
+    csPopupMenu:
+      Result := 'csPopupMenu';
+    csHintWinDow:
+      Result := 'csHintWinDow';
+    csCalEndar:
+      Result := 'csCalEndar';
+    csArrow:
+      Result := 'csArrow';
+    Else
+      Result := Format('Unknown component style %D', [CompStyle]);
+  End; {Case}
+End;
+
 
 initialization
 //writeln('vclglobals.pp - initialization');
