@@ -525,7 +525,6 @@ procedure EndGDKErrorTrap;
 
 {$Ifdef GTK1}
   const
-    GDK_KEY_Escape = GDK_Escape;
     GDK_key_dead_circumflex = GDK_dead_circumflex;
     GDK_KEY_KP_Space = GDK_KP_Space;
     GDK_KEY_KP_ENTER = GDK_KP_ENTER;
@@ -563,7 +562,7 @@ procedure EndGDKErrorTrap;
     GDK_KEY_KP_Separator = GDK_KP_Separator;
     GDK_KEY_KP_Subtract = GDK_KP_Subtract;
     GDK_KEY_KP_Decimal = GDK_KP_Decimal;
-    GDK_KEY_KP_Divide = GDK_KP_Divide:
+    GDK_KEY_KP_Divide = GDK_KP_Divide;
     GDK_KEY_KP_0 = GDK_KP_0;
     GDK_KEY_KP_1 = GDK_KP_1;
     GDK_KEY_KP_2 = GDK_KP_2;
@@ -619,10 +618,10 @@ procedure EndGDKErrorTrap;
     GDK_KEY_F20 = GDK_F20;
     GDK_KEY_F21 = GDK_F21;
     GDK_KEY_F22 = GDK_F22;
-    GDK_KEY_F23 = GDK_F23
+    GDK_KEY_F23 = GDK_F23;
     GDK_KEY_F24 = GDK_F24;
     GDK_KEY_cyrillic_io = GDK_cyrillic_io;
-    GDK_KEY_cyrillic_Capital_hardsign = GDK_cyrillic_io..GDK_cyrillic_Capital_hardsign;
+    GDK_KEY_cyrillic_Capital_hardsign = GDK_cyrillic_Capital_hardsign;
 
   type
      PGtkOldEditable = PGtkEditable;

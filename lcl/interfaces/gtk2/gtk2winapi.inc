@@ -129,14 +129,20 @@ begin
           LoadDefaultFont;
           exit;
         end;
-        FullString := AnsiString(FamilyName + ' ' + IntToStr(Abs(lfHeight)));
+        FullString := AnsiString(FamilyName);
+        if IsFontNameXLogicalFontDesc(LongFontName) then
+          if Abs(lfHeight)=0 then
+             FullString := FullString + ' 12'
+          else
+            FullString := FullString + ' ' + IntToStr(Abs(lfHeight));
       end
       else begin
         FullString := AnsiString(FamilyName);
-        if (PointSize = '') or (AnsiCompareText(PointSize,'*')=0) then
-          FullString := FullString + ' 12'
-        else
-          FullString := FullString + ' ' + PointSize;
+        if IsFontNameXLogicalFontDesc(LongFontName) then
+          if (PointSize = '') or (AnsiCompareText(PointSize,'*')=0) then
+            FullString := FullString + ' 12'
+          else
+            FullString := FullString + ' ' + IntToStr(StrToInt(PointSize) div 10);
       end;
 
       GdiObject^.GDIFontObject := pango_font_description_from_string(PChar(FullString));
@@ -451,101 +457,105 @@ begin
         Underline := CurrentFont^.Underline;
         StrikeOut := CurrentFont^.StrikeOut;
       end;
-
-      If UseFontDesc = nil then
+      
+      GetStyle('default');
+      If (UseFontDesc = nil) or (GetStyleWidget('default')=nil) then
         WriteLn('WARNING: [Tgtk2Object.ExtTextOut] Missing Font')
       else begin
         // to reduce flickering calculate first and then paint
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
 
-        GetStyle('default');
         Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
 
-        pango_layout_set_font_description(Layout, UseFontDesc);
+        If (Layout = nil) then
+          WriteLn('WARNING: [Tgtk2Object.ExtTextOut] Missing Pango Layout')
+        else begin
+          pango_layout_set_font_description(Layout, UseFontDesc);
 
-        AttrList := pango_layout_get_attributes(Layout);
+          AttrList := pango_layout_get_attributes(Layout);
 
-        If (AttrList = nil) then
-          AttrList := pango_attr_list_new();
+          If (AttrList = nil) then
+            AttrList := pango_attr_list_new();
 
-        If CurrentFont^.Underline then
-          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
-        else
-          Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
-
-        pango_attr_list_change(AttrList,Attr);
-
-        Attr := pango_attr_strikethrough_new(CurrentFont^.StrikeOut);
-        pango_attr_list_change(AttrList,Attr);
-
-        if (Options and ETO_CLIPPED) <> 0 then
-        begin
-          X := Rect^.Left;
-          Y := Rect^.Top;
-          IntersectClipRect(DC, Rect^.Left, Rect^.Top,
-                            Rect^.Right, Rect^.Bottom);
-        end;
-
-        LineLen := FindChar(#10,Str,Count);
-        TopY := Y;
-        UpdateDCTextMetric(TDeviceContext(DC));
-        TxtPt.X := X + DCOrigin.X;
-        LineHeight := DCTextMetric.TextMetric.tmAscent;
-        TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
-
-        SelectedColors := dcscCustom;
-
-        if ((Options and ETO_OPAQUE) <> 0) then
-        begin
-          Width := Rect^.Right - Rect^.Left;
-          Height := Rect^.Bottom - Rect^.Top;
-          EnsureGCColor(DC, dccCurrentBackColor, True, False);
-          gdk_draw_rectangle(Drawable, GC, 1,
-                             Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
-                             Width, Height);
-        end;
-
-        EnsureGCColor(DC, dccCurrentTextColor, True, False);
-        Case TColor(CurrentTextColor.ColorRef) of
-          clScrollbar..clEndColors:
-            RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
+          If CurrentFont^.Underline then
+            Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
           else
-            RGBColor := CurrentTextColor.ColorRef and $FFFFFF;
-        end;
+            Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
 
-        Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
-                                          gushort(GetGValue(RGBColor)) shl 8,
-                                          gushort(GetBValue(RGBColor)) shl 8);
+          pango_attr_list_change(AttrList,Attr);
 
-        pango_attr_list_change(AttrList,Attr);
+          Attr := pango_attr_strikethrough_new(CurrentFont^.StrikeOut);
+          pango_attr_list_change(AttrList,Attr);
 
-        pango_layout_set_attributes(Layout, AttrList);
-
-        LineStart:=Str;
-        if LineLen < 0 then begin
-          LineLen:=Count;
-          if Count> 0 then DrawTextLine;
-        end else
-        Begin  //write multiple lines
-          StrEnd:=Str+Count;
-          while LineStart < StrEnd do begin
-            LineEnd:=LineStart+LineLen;
-            if LineLen>0 then DrawTextLine;
-            inc(TxtPt.Y,LineHeight);
-            LineStart:=LineEnd+1; // skip #10
-            if (LineStart<StrEnd) and (LineStart^=#13) then
-              inc(LineStart); // skip #10
-            Count:=StrEnd-LineStart;
-            LineLen:=FindChar(#10,LineStart,Count);
-            if LineLen<0 then
-              LineLen:=Count;
+          if (Options and ETO_CLIPPED) <> 0 then
+          begin
+            X := Rect^.Left;
+            Y := Rect^.Top;
+            IntersectClipRect(DC, Rect^.Left, Rect^.Top,
+                              Rect^.Right, Rect^.Bottom);
           end;
-        end;
 
-        g_object_unref(Layout);
-        Result := True;
+          LineLen := FindChar(#10,Str,Count);
+          TopY := Y;
+          UpdateDCTextMetric(TDeviceContext(DC));
+          TxtPt.X := X + DCOrigin.X;
+          LineHeight := DCTextMetric.TextMetric.tmAscent;
+          TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
+
+          SelectedColors := dcscCustom;
+
+          if ((Options and ETO_OPAQUE) <> 0) then
+          begin
+            Width := Rect^.Right - Rect^.Left;
+            Height := Rect^.Bottom - Rect^.Top;
+            EnsureGCColor(DC, dccCurrentBackColor, True, False);
+            gdk_draw_rectangle(Drawable, GC, 1,
+                               Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
+                               Width, Height);
+          end;
+
+          EnsureGCColor(DC, dccCurrentTextColor, True, False);
+          Case TColor(CurrentTextColor.ColorRef) of
+            clScrollbar..clEndColors:
+              RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
+            else
+              RGBColor := CurrentTextColor.ColorRef and $FFFFFF;
+          end;
+
+          Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
+                                            gushort(GetGValue(RGBColor)) shl 8,
+                                            gushort(GetBValue(RGBColor)) shl 8);
+
+          pango_attr_list_change(AttrList,Attr);
+
+          pango_layout_set_attributes(Layout, AttrList);
+
+          LineStart:=Str;
+          if LineLen < 0 then begin
+            LineLen:=Count;
+            if Count> 0 then DrawTextLine;
+          end else
+          Begin  //write multiple lines
+            StrEnd:=Str+Count;
+            while LineStart < StrEnd do begin
+              LineEnd:=LineStart+LineLen;
+              if LineLen>0 then DrawTextLine;
+              inc(TxtPt.Y,LineHeight);
+              LineStart:=LineEnd+1; // skip #10
+              if (LineStart<StrEnd) and (LineStart^=#13) then
+                inc(LineStart); // skip #10
+              Count:=StrEnd-LineStart;
+              LineLen:=FindChar(#10,LineStart,Count);
+              if LineLen<0 then
+                LineLen:=Count;
+            end;
+          end;
+
+          g_object_unref(Layout);
+          Result := True;
+        end;
         If UnRef then
-          pango_font_description_free(UseFontDesc);
+           pango_font_description_free(UseFontDesc);
       end;
     end;
   end;
@@ -827,6 +837,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/10/03 04:01:22  ajgenius
+  minor pango/gtk2 font fixes
+
   Revision 1.2  2003/10/02 03:35:29  ajgenius
   more fixes for GTK2, synedit now mostly-useable
 
