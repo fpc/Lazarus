@@ -3836,6 +3836,7 @@ end;
 destructor TGlobalIdentifierTree.Destroy;
 begin
   Clear;
+  FItems.Free;
   inherited Destroy;
 end;
 

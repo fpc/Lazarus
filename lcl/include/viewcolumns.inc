@@ -29,7 +29,10 @@ end;
 
 
 Destructor TViewColumns.Destroy;
+var i: integer;
 begin
+  for i:=0 to FItems.Count-1 do
+    TViewColumn(FItems.Items[i]).Free;
   FItems.Free;
   Inherited;
 end;

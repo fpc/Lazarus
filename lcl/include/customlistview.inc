@@ -127,7 +127,8 @@ destructor TCustomListView.Destroy;
 begin
   Columns.Free;
   FImageChangeLink.Free;
- inherited Destroy;
+  FListItems.Free;
+  inherited Destroy;
 end;
 
 procedure TCustomListView.SetMultiSelect(const AValue: Boolean);

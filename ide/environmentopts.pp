@@ -473,6 +473,11 @@ begin
   FRecentOpenFiles.Free;
   FRecentProjectFiles.Free;
   FObjectInspectorOptions.Free;
+  FLazarusDirsHistory.Free;
+  FCompilerFileHistory.Free;
+  FFPCSourceDirHistory.Free;
+  FDebuggerFileHistory.Free;
+  FTestBuildDirHistory.Free;
   inherited Destroy;
 end;
 
