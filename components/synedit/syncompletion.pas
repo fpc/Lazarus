@@ -475,6 +475,14 @@ begin
           Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
         end;
     end;
+    {$IFDEF SYN_LAZARUS}
+    // paint the rest of the background
+    if NbLinesInWindow > ItemList.Count then begin
+      canvas.brush.color := color;
+      i:=FFontHeight * ItemList.Count;
+      canvas.FillRect(Rect(0, i, Width, Height));
+    end;
+    {$ENDIF}
   {$IFNDEF SYN_LAZARUS}
   end;
   Canvas.Draw(1, 1, bitmap);

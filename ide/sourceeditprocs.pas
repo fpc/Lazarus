@@ -64,6 +64,9 @@ begin
         TextOut(x+1, y, 'PaintCompletionItem: BUG in codetools');
         exit;
       end;
+      // first write the type
+      // var, procedure, property,
+      
       s:=GetIdentifier(IdentItem.Identifier);
       TextOut(x+1,y,s);
 
