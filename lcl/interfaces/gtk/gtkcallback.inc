@@ -274,10 +274,10 @@ begin
   
   if LockOnChange(PgtkObject(Widget),0)>0 then exit;
 
-  if GtkWidgetIsA(widget,GTK_MENU_ITEM_TYPE) then begin
+  if GtkWidgetIsA(widget,GTK_TYPE_MENU_ITEM) then begin
     LCLMenuItem:=TMenuItem(GetLCLObject(Widget));
     if (LCLMenuItem<>nil) and LCLMenuItem.IsCheckItem
-    and (GtkWidgetIsA(widget,GTK_CHECK_MENU_ITEM_TYPE)) then begin
+    and (GtkWidgetIsA(widget,GTK_TYPE_CHECK_MENU_ITEM)) then begin
       if ((PGtkCheckMenuItem(Widget)^.flag0 and bm_checkmenuitem_active)<>0)
         <>LCLMenuItem.Checked
       then begin
@@ -469,10 +469,17 @@ var
     end;
     If (Msg.CharCode >= 31) or (Msg.CharCode = 0) then begin
       {$IfNDef Win32}
+      {$IfDef GTK2}
+      If Event^._string <> nil then begin
+        Event^._string[0] := Char(Msg.CharCode);
+        Event^._string[1] := #0;
+      end;
+      {$else}
       If Event^.theString <> nil then begin
         Event^.theString[0] := Char(Msg.CharCode);
         Event^.theString[1] := #0;
       end;
+      {$EndIf}
       {$EndIf}
       Event^.KeyVal := Msg.CharCode;
       If Msg.CharCode <> VK_UNKNOWN then
@@ -500,8 +507,11 @@ begin
 
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
 
+{$ifdef GTK2}
+  case Event^._Type of
+{$else}
   case Event^.theType of
-
+{$endif}
   GDK_KEY_RELEASE:
     begin
       {writeln('[GTKKeyUpDown] RELEASE ',TControl(Data).Name,':',TControl(Data).ClassName,
@@ -594,7 +604,11 @@ begin
             Result := TControl(Data).PerformTab(ssShift in ShiftState);
             If Result then begin
               {$IfNDef Win32}
+              {$ifdef GTK2}
+              Event^._String[0] := #0;
+              {$else}
               Event^.theString[0] := #0;
+              {$EndIf}
               {$EndIf}
               Event^.KeyVal := 0;
             end;
@@ -1037,6 +1051,18 @@ var
     IsMultiClick: boolean;
   begin
     Result:=false;
+
+    {$ifdef GTK2}
+    if (LastMouse.Down) and
+      (not (Event^._Type in [gdk_2button_press,gdk_3button_press]))
+    then begin
+      {$IFDEF VerboseMouseBugfix}
+      writeln(' NO CLICK: LastMouse.Down=',LastMouse.Down,
+              ' Event^.theType=',Event^._Type);
+      {$ENDIF}
+      Exit;
+    end;
+    {$else}
     if (LastMouse.Down) and
       (not (Event^.theType in [gdk_2button_press,gdk_3button_press]))
     then begin
@@ -1046,12 +1072,17 @@ var
       {$ENDIF}
       Exit;
     end;
+    {$EndIf}
 
     MessI.Keys := MessI.Keys or BtnKey;
 
     IsMultiClick:=TestIfMultiClick;
 
+    {$ifdef GTK2}
+    case Event^._Type of
+    {$else}
     case Event^.theType of
+    {$EndIf}
     gdk_2button_press:
       // the gtk itself has detected a double click
       if (LastMouse.ClickCount>=2)
@@ -1727,8 +1758,12 @@ function GTKDialogKeyUpDownCB(Widget: PGtkWidget; Event : pgdkeventkey;
 begin
   Result:=false;
 
+  {$ifdef GTK2}
+  case Event^._Type of
+  {$else}
   case Event^.theType of
-
+  {$endif}
+  
   GDK_KEY_RELEASE, GDK_KEY_PRESS:
     begin
       if Event^.KeyVal=GDK_Escape then begin
@@ -2437,10 +2472,17 @@ var
   begin
     if VirtKeyCode<>ListCode then
       UpdateExtraKeyState(ListCode,Pressed)
+    {$ifdef GTK2}
+    else if Event^._Type=GDK_KEY_PRESS then
+      UpdateExtraKeyState(ListCode,true)
+    else if Event^._Type=GDK_KEY_RELEASE then
+      UpdateExtraKeyState(ListCode,false);
+    {$else}
     else if Event^.theType=GDK_KEY_PRESS then
       UpdateExtraKeyState(ListCode,true)
     else if Event^.theType=GDK_KEY_RELEASE then
       UpdateExtraKeyState(ListCode,false);
+    {$endif}
   end;
 
 begin
@@ -2453,7 +2495,11 @@ begin
   CheckExtraKeyState(VK_SHIFT,ssShift in ShiftState);
   CheckExtraKeyState(VK_MENU,ssAlt in ShiftState);
 
+  {$ifdef GTK2}
+  case Event^._Type of
+  {$else}
   case Event^.theType of
+  {$endif}
     GDK_KEY_PRESS:
       begin
         if KeyStateList.IndexOf(Pointer(ListCode)) <0
@@ -2475,7 +2521,8 @@ begin
         KeyStateList.Remove(Pointer(ListCode or KEYMAP_TOGGLE));
       end;
   else
-    WriteLn(Format('ERROR: [GTKKeySnooper] Got unknown event %d', [Event^.theType]));
+    WriteLn(Format('ERROR: [GTKKeySnooper] Got unknown event %d',[
+    {$ifdef GTK2}Event^._Type{$else}Event^.theType{$endif}]));
   end;
   Result := 0;
 end;
@@ -2609,8 +2656,13 @@ begin
               P:=StrAlloc(MemStream.Size+1);
               MemStream.Read(P^,MemStream.Size);
               P[MemStream.Size]:=#0;
+              {$ifdef GTK2}
+              gdk_string_to_compound_text(P,@SelectionData^._Type,
+                @SelectionData^.Format,@Buffer,@BufLength);
+              {$else}
               gdk_string_to_compound_text(P,@SelectionData^.theType,
                 @SelectionData^.Format,@Buffer,@BufLength);
+              {$endif}
               StrDispose(P);
               gtk_selection_data_set(SelectionData,SelectionData^.Target,
                 SelectionData^.Format,Buffer,BufLength);
@@ -2711,6 +2763,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.181  2003/06/13 14:26:17  ajgenius
+  some fixes toward gtk2
+
   Revision 1.180  2003/06/10 17:23:35  mattias
   implemented tabstop
 
