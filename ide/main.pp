@@ -8503,6 +8503,7 @@ var
   end;
   
 begin
+  writeln('TMainIDE.OnDesignerRenameComponent Old=',AComponent.Name,':',AComponent.ClassName,' New=',NewName);
   if (not IsValidIdent(NewName)) or (NewName='') then
     raise Exception.Create(Format(lisComponentNameIsNotAValidIdentifier, ['"',
       Newname, '"']));
@@ -8515,14 +8516,8 @@ begin
   if CodeToolBoss.IsKeyWord(ActiveUnitInfo.Source,NewName) then
     raise Exception.Create(Format(lisComponentNameIsKeyword, ['"', Newname, '"']
       ));
-  if ADesigner.LookupRoot<>nil then begin
-    // rename published variable in form source
-    BossResult:=CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
-      ADesigner.LookupRoot.ClassName,
-      AComponent.Name,NewName,AComponent.ClassName);
-    ApplyBossResult(Format(lisUnableToRenameVariableInSourceSeeMessages, [#13])
-      );
-  end else if AComponent=ADesigner.LookupRoot then begin
+
+  if AComponent=ADesigner.LookupRoot then begin
     // rename owner component (e.g. the form)
     // ToDo:
     //   rename form in source
@@ -8560,7 +8555,13 @@ begin
         DoJumpToCodeToolBossError;
       end;
     end;
-    
+  end else if ADesigner.LookupRoot<>nil then begin
+    // rename published variable in form source
+    BossResult:=CodeToolBoss.RenamePublishedVariable(ActiveUnitInfo.Source,
+      ADesigner.LookupRoot.ClassName,
+      AComponent.Name,NewName,AComponent.ClassName);
+    ApplyBossResult(Format(lisUnableToRenameVariableInSourceSeeMessages, [#13])
+      );
   end else begin
     RaiseException('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name+':'+AComponent.ClassName);
   end;
@@ -9354,6 +9355,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.622  2003/07/11 11:56:44  mattias
+  fixed renaming a TDataModule
+
   Revision 1.621  2003/07/09 00:35:38  mattias
   fixed da_IF and find record case variable
 
