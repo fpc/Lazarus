@@ -1541,16 +1541,20 @@ begin
     
     // load the cmd line files
     if CmdLineFiles<>nil then begin
-      OpenFlags:=[ofAddToRecent,ofRegularFile];
       for i:=0 to CmdLineFiles.Count-1 do
         Begin
           AFilename:=CleanAndExpandFilename(CmdLineFiles.Strings[i]);
-          if i<CmdLineFiles.Count then
-            Include(OpenFlags,ofMultiOpen)
-          else
-            Exclude(OpenFlags,ofMultiOpen);
-          if DoOpenEditorFile(AFilename,-1,OpenFlags)=mrAbort then begin
-            break;
+          if CompareFileExt(AFilename,'.lpk',false)=0 then begin
+            if PkgBoss.DoOpenPackageFile(AFilename,[pofAddToRecent])=mrAbort
+            then
+              break;
+          end else begin
+            OpenFlags:=[ofAddToRecent,ofRegularFile];
+            if i<CmdLineFiles.Count then
+              Include(OpenFlags,ofMultiOpen);
+            if DoOpenEditorFile(AFilename,-1,OpenFlags)=mrAbort then begin
+              break;
+            end;
           end;
         end;
     end;
@@ -11375,6 +11379,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.834  2005/01/16 13:34:54  mattias
+  implemented loading .lpk on cmd line
+
   Revision 1.833  2005/01/15 13:44:03  vincents
   use xml units from fpc, if not compiling with fpc 1.0
 

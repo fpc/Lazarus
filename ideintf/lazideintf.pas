@@ -32,7 +32,7 @@ type
     ofRevert,        // reload file if already open
     ofQuiet,         // less messages
     ofAddToRecent,   // add file to recent files
-    ofRegularFile,   // open as regular file (e.g. do not open projects)
+    ofRegularFile,   // open as regular file (e.g. do not open projects/packages)
     ofVirtualFile,   // open the virtual file
     ofConvertMacros, // replace macros in filename
     ofUseCache,      // do not update file from disk
