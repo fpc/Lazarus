@@ -745,9 +745,10 @@ function TMenuItem.GetIconSize: TPoint;
 var
   TheImgList: TCustomImageList;
 begin
-  if FBitmap<>nil then
-    Result:=Point(FBitmap.Width,FBitmap.Height)
-  else if (FImageIndex>=0) then begin
+  Result:=Point(0,0);
+  if FBitmap<>nil then begin
+    Result:=Point(FBitmap.Width,FBitmap.Height);
+  end else if (FImageIndex>=0) then begin
     TheImgList:=GetImageList;
     if (TheImgList<>nil) and (FImageIndex<TheImgList.Count) then
       Result:=Point(TheImgList.Width,TheImgList.Height);
@@ -1161,6 +1162,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2004/06/24 17:45:33  mattias
+  fixed TMenuItem.GetIconSize
+
   Revision 1.57  2004/06/17 21:24:19  mattias
   implemented painting menuitem icons from ImageList
 
@@ -1360,6 +1364,9 @@ end;
 
 
   $Log$
+  Revision 1.58  2004/06/24 17:45:33  mattias
+  fixed TMenuItem.GetIconSize
+
   Revision 1.57  2004/06/17 21:24:19  mattias
   implemented painting menuitem icons from ImageList
 

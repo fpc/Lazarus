@@ -54,7 +54,7 @@ const
                                              '.bmp');
 
 Type
-  {TMenuItemsPropertyEditorDlg}
+  { TImageListEditorDlg }
 
   Directions = (Up,Down);
   

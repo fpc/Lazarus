@@ -752,7 +752,7 @@ begin
   if not HandleAllocated or (csLoading in ComponentState) then exit;
   Msg.Parent := Self;
   Msg.fCompStyle := fCompStyle;
-  Msg.ShowTabs := fShowTabs;
+  Msg.ShowTabs := fShowTabs or (csDesigning in ComponentState);
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('[TCustomNotebook.DoSendShowTabs] A ',Name);
   {$ENDIF}
@@ -804,6 +804,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.51  2004/06/24 17:45:33  mattias
+  fixed TMenuItem.GetIconSize
+
   Revision 1.50  2004/06/20 20:25:47  micha
   fix tabbing to next control to skip invisible notebook pages
 

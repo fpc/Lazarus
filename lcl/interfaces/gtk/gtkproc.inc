@@ -4472,6 +4472,9 @@ begin
       LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
       if LCLMenuItem<>nil then begin
         IconSize:=LCLMenuItem.GetIconSize;
+        {if IconSize.X>100 then
+          debugln('MenuSizeRequest LCLMenuItem=',LCLMenuItem.Name,' ',LCLMenuItem.Caption,
+            ' ');}
         if CurToggleSize<IconSize.X then
           CurToggleSize:=IconSize.X;
       end;
@@ -4480,6 +4483,7 @@ begin
     end;
     ListItem:=ListItem^.Next;
   end;
+  //writeln('MenuSizeRequest A MaxToggleSize=',MaxToggleSize);
   {$IFDEF Gtk2}
   // Gtk2ToDo
   if CheckMenuItem<>nil then begin
@@ -4491,7 +4495,9 @@ begin
   if CheckMenuItem<>nil then
     MENU_ITEM_CLASS(PGtkWidget(CheckMenuItem))^.toggle_size:=MaxToggleSize;
   {$ENDIF}
+  //writeln('MenuSizeRequest B ',GetWidgetDebugReport(widget),' ',requisition^.width,',',requisition^.height);
   OldMenuSizeRequestProc(Widget,requisition);
+  //writeln('MenuSizeRequest C ',GetWidgetDebugReport(widget),' ',requisition^.width,',',requisition^.height);
 end;
 
 {------------------------------------------------------------------------------
@@ -6800,6 +6806,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.284  2004/06/24 17:45:33  mattias
+  fixed TMenuItem.GetIconSize
+
   Revision 1.283  2004/06/19 21:06:38  mattias
   menu separators are now created disabled
 
