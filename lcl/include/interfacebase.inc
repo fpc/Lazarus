@@ -1068,7 +1068,7 @@ function TInterfaceBase.GetWindowRelativePosition(Handle : hwnd;
   var Left, Top: integer): boolean;
 // return the position of the left, top coordinate relative to the clientorigin
 // of its parent. This is normally the Left, Top of a TWinControl. But not
-// during moving/sizing
+// during moving/sizing.
 var
   ChildRect: TRect;
   ParentLeftTop: TPoint;
@@ -1080,6 +1080,8 @@ begin
   Top:=ChildRect.Top;
   ParentHandle:=GetParent(Handle);
   if ParentHandle<>0 then begin
+    ParentLeftTop.X:=0;
+    ParentLeftTop.Y:=0;
     if not ClientToScreen(ParentHandle,ParentLeftTop) then exit;
     dec(Left,ParentLeftTop.X);
     dec(Top,ParentLeftTop.Y);
@@ -1803,6 +1805,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.97  2003/07/20 06:27:19  mattias
+  fixed GetWindowRelativePosition
+
   Revision 1.96  2003/07/06 20:40:34  mattias
   TWinControl.WmSize/Move now updates interface messages smarter
 

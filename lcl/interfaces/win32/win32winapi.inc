@@ -1392,10 +1392,21 @@ End;
   returns the current widget Left, Top, relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-Function TWin32Object.GetWindowRelativePosition(Handle : HWND;
-  var Left, Top:integer): boolean;
+Function TWin32Object.GetWindowRelativePosition(Handle : HWND; var Left, Top:integer): boolean;
+var
+  LeftTop:TPoint;
+  R: TRect;
+  ParentHandle: THandle;
 begin
-  Result := inherited GetWindowRelativePosition(Handle,Left,Top);
+  Result:=Windows.GetWindowRect(Handle,@R);
+  LeftTop.X:=R.Left;
+  LeftTop.Y:=R.Top;
+  ParentHandle:=Windows.GetParent(Handle);
+  if ParentHandle<>0 then 
+    if not Windows.ScreenToClient(ParentHandle,@LeftTop) then
+      Result:=False;  
+  Left:=LeftTop.X;
+  Top:=LeftTop.Y;  
 end;
 
 Function TWin32Object.GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
@@ -2352,6 +2363,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2003/07/20 06:27:19  mattias
+  fixed GetWindowRelativePosition
+
   Revision 1.44  2003/07/07 07:59:34  mattias
   made Size_SourceIsInterface a flag
 

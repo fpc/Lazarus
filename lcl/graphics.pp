@@ -39,27 +39,28 @@ uses
 
 const
   // The follow colors match the predefined Delphi Colors
-  clBlack =   TColor($000000);
-  clMaroon =  TColor($000080);
-  clGreen =   TColor($008000);
-  clOlive =   TColor($008080);
-  clNavy =    TColor($800000);
-  clPurple =  TColor($800080);
-  clTeal =    TColor($808000);
-  clGray =    TColor($808080);
-  clSilver =  TColor($C0C0C0);
-  clRed =     TColor($0000FF);
-  clLime =    TColor($00FF00);
-  clYellow =  TColor($00FFFF);
-  clBlue =    TColor($FF0000);
+  clBlack   = TColor($000000);
+  clMaroon  = TColor($000080);
+  clGreen   = TColor($008000);
+  clOlive   = TColor($008080);
+  clNavy    = TColor($800000);
+  clPurple  = TColor($800080);
+  clTeal    = TColor($808000);
+  clGray    = TColor($808080);
+  clSilver  = TColor($C0C0C0);
+  clRed     = TColor($0000FF);
+  clLime    = TColor($00FF00);
+  clYellow  = TColor($00FFFF);
+  clBlue    = TColor($FF0000);
   clFuchsia = TColor($FF00FF);
-  clAqua =    TColor($FFFF00);
-  clLtGray =  TColor($C0C0C0);
-  clDkGray =  TColor($808080);
-  clWhite  =  TColor($FFFFFF);
-  clNone   =  TColor($1FFFFFFF);
+  clAqua    = TColor($FFFF00);
+  clLtGray  = TColor($C0C0C0);
+  clDkGray  = TColor($808080);
+  clWhite   = TColor($FFFFFF);
+  clNone    = TColor($1FFFFFFF);
   clDefault = TColor($20000000);
-  
+  clCream   = TColor($F0FBFF);
+
   //System colors
   clScrollBar               = TColor(SYS_COLOR_BASE or COLOR_SCROLLBAR);
   clBackground              = TColor(SYS_COLOR_BASE or COLOR_BACKGROUND);
@@ -1027,6 +1028,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.79  2003/07/20 06:27:19  mattias
+  fixed GetWindowRelativePosition
+
   Revision 1.78  2003/07/04 22:06:49  mattias
   implemented interface graphics
 

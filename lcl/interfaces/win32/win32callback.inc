@@ -336,14 +336,21 @@ Begin
     End;
     WM_MOVE:
     Begin
-      Windows.GetWindowRect(Window, @R);
       With TLMMove(LMessage) Do
       Begin
         Msg := LM_MOVE;
         // MoveType := WParam;   WParam is not defined!
         MoveType := Move_SourceIsInterface;
-        XPos := R.Left;
-        YPos := R.Top;
+        //If OwnerObject Is TCustomForm then begin
+          If Windows.GetParent(Window) = 0 then begin 
+          Windows.GetWindowRect(Window,@R);
+          XPos := R.Left;
+          YPos := R.Top;
+        end 
+        Else begin
+          XPos := LoWord(LParam);
+          YPos := HiWord(LParam);
+        end;  
       End;
     End;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
@@ -561,6 +568,9 @@ end;
 
 {
   $Log$
+  Revision 1.41  2003/07/20 06:27:19  mattias
+  fixed GetWindowRelativePosition
+
   Revision 1.40  2003/07/07 08:31:54  mattias
   added an InvalidateClientRectCache to WM_SIZE
 
