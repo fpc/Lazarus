@@ -1343,7 +1343,7 @@ begin
   with chkSmartLinkUnit do
   begin
     Parent := grpSmartLinkUnit;
-    Caption := 'Smart Linking (-CX)';
+    Caption := dlgCOSmartLinkable + ' (-CX)';
     Top := 5;
     Left := 5;
     Width := Parent.ClientWidth-13;

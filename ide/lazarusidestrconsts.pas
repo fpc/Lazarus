@@ -896,9 +896,7 @@ resourcestring
   dlgCOAnsiStr = 'Use Ansi Strings';
   dlgGPCComp = 'GPC (GNU Pascal Compiler) Compatible';
   dlgCOUnitStyle = 'Unit Style:';
-  dlgStatic = 'Static';
-  dlgDynamic = 'Dynamic';
-  dlgCOSmart = 'Smart';
+  dlgCOSmartLinkable = 'Smart Linkable';
   dlgCOChecks = 'Checks:';
   dlgCORange = 'Range';
   dlgCOOverflow = 'Overflow';
@@ -925,9 +923,7 @@ resourcestring
   dlgCOValgrind = 'Generate code for valgrind';
   dlgGPROF = 'Generate code for gprof';
   dlgCOStrip = 'Strip Symbols From Executable';
-  dlgLinkLibraries = 'Link Libraries:';
-  dlgLinkDinLibs = 'Link With Dynamic Libraries';
-  dlgLinkStatLibs = 'Link With Static Libraries';
+  dlgLinkLibraries = 'Link Style:';
   dlgLinkSmart = 'Link Smart';
   dlgPassOptsLinker = 'Pass Options To The Linker (Delimiter is space)';
   lisCOTargetOSSpecificOptions = 'Target OS specific options';
