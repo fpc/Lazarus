@@ -234,7 +234,7 @@ begin
   Toggle := False;
   
   {if Event^.Length>0 then begin
-    writeln('AAA1 Event^.KeyVal=',Event^.KeyVal,
+    writeln('GetGTKKeyInfo Event^.KeyVal=',Event^.KeyVal,
       ' Event^.Length=',Event^.Length,' ',ord(Event^.theString[0])
     );
   end;}
@@ -1243,7 +1243,392 @@ begin
     gtk_accel_group_get_default(), GDKKey, GDKModifier, GTK_ACCEL_VISIBLE);
 end;
 
-{$IFDEF ClientRectBugFix}
+{------------------------------------------------------------------------------
+  procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
+    var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
+
+  Extracts some information from the Handle of a TGraphic
+ ------------------------------------------------------------------------------}
+procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
+  var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
+var
+  GDIObject: PGdiObject;
+begin
+  IconImg:=nil;
+  IconMask:=nil;
+  Width:=0;
+  Height:=0;
+  if (LCLGraphic=nil) then exit;
+  if LCLGraphic is TBitmap then
+    GDIObject:=PgdiObject(TBitmap(LCLGraphic).Handle)
+  else
+    GDIObject:=nil;
+  if GDIObject<>nil then begin
+    IconImg:=GDIObject^.GDIBitmapObject;
+    IconMask:=GDIObject^.GDIBitmapMaskObject;
+    if IconImg<>nil then
+      gdk_window_get_size (IconImg, @Width, @Height);
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure GetGdkPixmapFromGraphic(LCLGraphic: TGraphic;
+    var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
+
+  Extracts some information from the Handle of the icon of a TMenuItem
+ ------------------------------------------------------------------------------}
+procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
+  var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
+begin
+  IconImg:=nil;
+  IconMask:=nil;
+  Width:=0;
+  Height:=0;
+  if LCLMenuItem=nil then exit;
+  if LCLMenuItem.Graphic<>nil then
+    GetGdkPixmapFromGraphic(LCLMenuItem.Graphic,IconImg,IconMask,Width,Height);
+end;
+
+{------------------------------------------------------------------------------
+  function MENU_ITEM_CLASS(widget: PGtkWidget): PGtkMenuItemClass;
+
+  Returns the gtk klass of a menuitem widget.
+ ------------------------------------------------------------------------------}
+function MENU_ITEM_CLASS(widget: PGtkWidget): PGtkMenuItemClass;
+begin
+  Result:=GTK_MENU_ITEM_CLASS(PGtkObject(widget)^.klass);
+end;
+
+{------------------------------------------------------------------------------
+  function CHECK_MENU_ITEM_CLASS(widget: PGtkWidget): PGtkCheckMenuItemClass;
+
+  Returns the gtk klass of a checkmenuitem widget.
+ ------------------------------------------------------------------------------}
+function CHECK_MENU_ITEM_CLASS(widget: PGtkWidget): PGtkCheckMenuItemClass;
+begin
+  Result:=GTK_CHECK_MENU_ITEM_CLASS(PGtkObject(widget)^.klass);
+end;
+
+{------------------------------------------------------------------------------
+  function GetRadioMenuItemGroup(LCLMenuItem: TMenuItem): PGSList;
+
+  Returns the radio group list with the GroupIndex of the MenuItem
+ ------------------------------------------------------------------------------}
+function GetRadioMenuItemGroup(LCLMenuItem: TMenuItem): PGSList;
+var
+  ParentMenuItem: TMenuItem;
+  i: integer;
+begin
+  Result:=nil;
+  if (LCLMenuItem=nil) or (LCLMenuItem.GroupIndex=0) then exit;
+  ParentMenuItem:=LCLMenuItem.Parent;
+  if ParentMenuItem=nil then exit;
+  for i:=0 to ParentMenuItem.Count-1 do begin
+    if ParentMenuItem[i].RadioItem
+    and (ParentMenuItem[i].GroupIndex=LCLMenuItem.GroupIndex)
+    and (ParentMenuItem[i]<>LCLMenuItem)
+    and ParentMenuItem[i].HandleAllocated
+    and (GTK_IS_RADIO_MENU_ITEM(Pointer(ParentMenuItem[i].Handle))) then begin
+      Result:=gtk_radio_menu_item_group(
+                                 GTK_RADIO_MENU_ITEM(ParentMenuItem[i].Handle));
+      exit;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  function GetRadioMenuItemGroup(MenuItem: PGtkRadioMenuItem): PGSList;
+
+  Returns the radio group list with the GroupIndex of the MenuItem
+ ------------------------------------------------------------------------------}
+function GetRadioMenuItemGroup(MenuItem: PGtkRadioMenuItem): PGSList;
+begin
+  if MenuItem=nil then
+    Result:=nil
+  else
+    Result:=GetRadioMenuItemGroup(TMenuItem(GetLCLObject(MenuItem)));
+end;
+
+{------------------------------------------------------------------------------
+  procedure UpdateRadioGroupChecks(RadioGroup: PGSList);
+
+  Set 'checked' for all menuitems in the group
+ ------------------------------------------------------------------------------}
+procedure UpdateRadioGroupChecks(RadioGroup: PGSList);
+var
+  CurListItem: PGSList;
+  MenuItem: PGtkMenuItem;
+  LCLMenuItem: TMenuItem;
+begin
+  if RadioGroup=nil then exit;
+  CurListItem:=RadioGroup;
+  // set active radiomenuitem
+  while CurListItem<>nil do begin
+    MenuItem:=PGtkMenuItem(CurListItem^.Data);
+    if MenuItem<>nil then begin
+      LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
+      if (LCLMenuItem<>nil) and LCLMenuItem.Checked then begin
+        gtk_check_menu_item_set_active(PGtkCheckMenuItem(MenuItem),
+                                       LCLMenuItem.Checked);
+      end;
+    end;
+    CurListItem:=CurListItem^.Next;
+  end;
+  CurListItem:=RadioGroup;
+  // deactivate the other radiomenuitems
+  while CurListItem<>nil do begin
+    MenuItem:=PGtkMenuItem(CurListItem^.Data);
+    if MenuItem<>nil then begin
+      LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
+      if (LCLMenuItem<>nil) then begin
+        gtk_check_menu_item_set_active(PGtkCheckMenuItem(MenuItem),
+                                       LCLMenuItem.Checked);
+      end;
+    end;
+    CurListItem:=CurListItem^.Next;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure DrawMenuItemIcon(MenuItem: PGtkCheckMenuItem;
+    area: PGdkRectangle); cdecl;
+
+  Handler for drawing the icon of a menuitem.
+ ------------------------------------------------------------------------------}
+procedure DrawMenuItemIcon(MenuItem: PGtkCheckMenuItem;
+  Area: PGdkRectangle); cdecl;
+var
+  Widget: PGtkWidget;
+  Container: PgtkContainer;
+  ALeft, ATop, BorderWidth: gint;
+  LCLMenuItem: TMenuItem;
+  IconImg, IconMask: PGdkPixmap;
+  IconWidth, IconHeight: integer;
+begin
+  if (MenuItem=nil) then exit;
+  if not (GTK_WIDGET_DRAWABLE (PGtkWidget(MenuItem))) then exit;
+
+  // get icon
+  LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
+  GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask,IconWidth,IconHeight);
+  if IconImg=nil then begin
+    // call default draw function
+    OldCheckMenuItemDrawProc(MenuItem,Area);
+    exit;
+  end;
+
+  // calculate left and top
+  Widget := PGtkWidget (MenuItem);
+  Container := GTK_CONTAINER (MenuItem);
+  BorderWidth := Container^.flag0 and bm_TGtkContainer_border_width;
+  ALeft := (BorderWidth + PGtkStyle(Widget^.theStyle)^.klass^.xthickness + 2);
+  ATop := (Widget^.Allocation.Height - IconHeight) div 2;
+
+  // draw icon
+  gdk_gc_set_clip_mask(pGtkStyle(Widget^.theStyle)^.Black_gc, IconMask);
+  gdk_gc_set_clip_origin(pGtkStyle(Widget^.theStyle)^.Black_gc,ALeft,ATop);
+  gdk_draw_pixmap(Widget^.Window,pGtkStyle(Widget^.theStyle)^.Black_gc,
+     IconImg,0,0,ALeft,ATop,-1,-1);
+end;
+
+{------------------------------------------------------------------------------
+  procedure MenuSizeRequest(widget:PGtkWidget;
+    requisition:PGtkRequisition); cdecl;
+
+  SizeAllocate Handler for check menuitem widgets.
+ ------------------------------------------------------------------------------}
+procedure MenuSizeRequest(widget:PGtkWidget; requisition:PGtkRequisition); cdecl;
+var
+  CurToggleSize, MaxToggleSize: integer;
+  MenuShell: PGtkMenuShell;
+  ListItem: PGList;
+  MenuItem, CheckMenuItem: PGtkMenuItem;
+  LCLMenuItem: TMenuItem;
+  IconImg, IconMask: PGdkPixmap;
+  Width, Height: integer;
+begin
+  MaxToggleSize:=0;
+  MenuShell:=GTK_MENU_SHELL(widget);
+  ListItem:=MenuShell^.Children;
+  CheckMenuItem:=nil;
+  while ListItem<>nil do begin
+    MenuItem:=PGtkMenuItem(ListItem^.Data);
+    if GTK_IS_CHECK_MENU_ITEM(MenuItem) then begin
+      CheckMenuItem:=MenuItem;
+      CurToggleSize:=OldCheckMenuItemToggleSize;
+      LCLMenuItem:=TMenuItem(GetLCLObject(MenuItem));
+      if LCLMenuItem<>nil then begin
+        GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask,Width,Height);
+        if IconImg<>nil then begin
+          if CurToggleSize<Width then
+            CurToggleSize:=Width;
+        end;
+      end;
+      if MaxToggleSize<CurToggleSize then
+        MaxToggleSize:=CurToggleSize;
+    end;
+    ListItem:=ListItem^.Next;
+  end;
+  if CheckMenuItem<>nil then
+    MENU_ITEM_CLASS(PGtkWidget(CheckMenuItem))^.toggle_size:=MaxToggleSize;
+  OldMenuSizeRequestProc(Widget,requisition);
+end;
+
+{------------------------------------------------------------------------------
+  procedure SetMenuItemLabelText(LCLMenuItem: TMenuItem;
+    MenuItemWidget: PGtkWidget);
+
+  Sets the caption of a menuitem
+ ------------------------------------------------------------------------------}
+procedure SetMenuItemLabelText(LCLMenuItem: TMenuItem;
+  MenuItemWidget: PGtkWidget);
+var
+  ShortCutPos: integer;
+  s: string;
+  LabelWidget: PGtkLabel;
+begin
+  if (MenuItemWidget=nil) or (LCLMenuItem=nil) then exit;
+  LabelWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLLabel');
+  if LabelWidget=nil then exit;
+  //Check for a shortcut key
+  s:=LCLMenuItem.Caption;
+  ShortCutPos := pos('&', s);
+  if ShortCutPos <> 0 then begin
+    s[ShortCutPos] := '_';
+    SetAccelKey(MenuItemWidget,gtk_label_parse_uline(LabelWidget,PChar(s)));
+  end
+  else begin
+    gtk_label_set_text(LabelWidget,PChar(s));
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure CreateInnerMenuItem(LCLMenuItem: TMenuItem;
+    MenuItemWidget: PGtkWidget);
+
+  Creates the inner widgets of a menuitem widget.
+ ------------------------------------------------------------------------------}
+procedure CreateInnerMenuItem(LCLMenuItem: TMenuItem;
+  MenuItemWidget: PGtkWidget);
+var
+  HBoxWidget: PGtkWidget;
+  LabelWidget: PGtkAccelLabel;
+
+  procedure CreateIcon;
+  var
+    IconImg, IconMask: PGdkPixmap;
+    IconWidth, IconHeight: integer;
+    MinHeightWidget: PGtkWidget;
+  begin
+    // the icon will be painted instead of the toggle
+    // of a normal gtkcheckmenuitem
+
+    // get the icon
+    GetGdkPixmapFromMenuItem(LCLMenuItem,IconImg,IconMask,IconWidth,IconHeight);
+    if IconImg<>nil then begin
+      // set the toggle width
+      GTK_MENU_ITEM(MenuItemWidget)^.toggle_size:=IconWidth;
+      GTK_MENU_ITEM(MenuItemWidget)^.flag0:=
+        PGtkMenuItem(MenuItemWidget)^.flag0 or bm_show_toggle_indicator;
+
+      // set our own draw handler
+      if OldCheckMenuItemDrawProc=nil then
+        OldCheckMenuItemDrawProc:=
+          CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator;
+      CHECK_MENU_ITEM_CLASS(MenuItemWidget)^.draw_indicator:=@DrawMenuItemIcon;
+
+      // add a dummy widget for the icon height
+      MinHeightWidget:=gtk_label_new('');
+      gtk_widget_show(MinHeightWidget);
+      gtk_widget_set_usize(MinHeightWidget,1,IconHeight);
+      gtk_box_pack_start(GTK_BOX(HBoxWidget),MinHeightWidget,false,false,0);
+    end else
+      MinHeightWidget:=nil;
+    gtk_object_set_data(PGtkObject(MenuItemWidget),
+                        'LCLMinHeight',MinHeightWidget);
+  end;
+
+  procedure CreateLabel;
+  begin
+    // create a label for the Caption
+    LabelWidget:=PGtkAccelLabel(gtk_accel_label_new(''));
+    gtk_misc_set_alignment(GTK_MISC (LabelWidget), 0.0, 0.5);
+    gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLLabel', LabelWidget);
+    gtk_box_pack_start(GTK_BOX(HBoxWidget),PGtkWidget(LabelWidget),false,false,0);
+    SetMenuItemLabelText(LCLMenuItem,MenuItemWidget);
+    gtk_accel_label_set_accel_widget(GTK_ACCEL_LABEL(LabelWidget),MenuItemWidget);
+    gtk_widget_show(PGtkWidget(LabelWidget));
+  end;
+
+begin
+  HBoxWidget:=gtk_object_get_data(PGtkObject(MenuItemWidget), 'LCLHBox');
+  if HBoxWidget=nil then begin
+    // create inner widgets
+    if LCLMenuItem.Caption='-' then begin
+      // a separator is an empty gtkmenuitem
+      exit;
+    end;
+    HBoxWidget:=gtk_hbox_new(false,0);
+    gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', HBoxWidget);
+    CreateIcon;
+    CreateLabel;
+    gtk_container_add(GTK_CONTAINER(MenuItemWidget),HBoxWidget);
+    gtk_widget_show(HBoxWidget);
+  end else begin
+    // there are already inner widgets
+    if LCLMenuItem.Caption='-' then begin
+      // a separator is an empty gtkmenuitem -> delete the inner widgets
+      gtk_widget_destroy(HBoxWidget);
+      gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', nil);
+    end else begin
+      // just update the content
+      SetMenuItemLabelText(LCLMenuItem,MenuItemWidget);
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  function CreateMenuItem(LCLMenuItem: TMenuItem): Pointer;
+
+  Creates a new menuitem widget.
+ ------------------------------------------------------------------------------}
+function CreateMenuItem(LCLMenuItem: TMenuItem): Pointer;
+var
+  MenuItemWidget: PGtkWidget;
+begin
+  // create the menuitem widget (normal, check or radio)
+  if LCLMenuItem.Caption='-' then
+    // create separator
+    MenuItemWidget:=gtk_menu_item_new
+  else if LCLMenuItem.RadioItem and not LCLMenuItem.HasIcon then begin
+    MenuItemWidget:=gtk_radio_menu_item_new(nil);
+  end else if LCLMenuItem.IsCheckItem or LCLMenuItem.HasIcon then begin
+    MenuItemWidget:=gtk_check_menu_item_new;
+  end else
+    MenuItemWidget:=gtk_menu_item_new;
+  if GTK_IS_CHECK_MENU_ITEM(MenuItemWidget) then begin
+    // set 'ShowAlwaysCheckable'
+    gtk_check_menu_item_set_show_toggle(PGtkCheckMenuItem(MenuItemWidget),
+      LCLMenuItem.ShowAlwaysCheckable);
+    // set 'Checked'
+    gtk_check_menu_item_set_active(PGtkCheckMenuItem(MenuItemWidget),
+      LCLMenuItem.Checked);
+    if (OldCheckMenuItemToggleSize=0) then
+      OldCheckMenuItemToggleSize:=MENU_ITEM_CLASS(MenuItemWidget)^.toggle_size;
+  end;
+
+  // set attributes (enabled and rightjustify)
+  gtk_widget_set_sensitive(MenuItemWidget, LCLMenuItem.Enabled);
+  if LCLMenuItem.RightJustify then
+    gtk_menu_item_right_justify(PGtkMenuItem(MenuItemWidget));
+
+  // create the hbox containing the label and the control
+  CreateInnerMenuItem(LCLMenuItem,MenuItemWidget);
+
+  gtk_widget_show(MenuItemWidget);
+  Result:=MenuItemWidget;
+end;
+
 {------------------------------------------------------------------------------
   TgtkObject SetSizeNotification
   Params: Widget: PGtkWidget  A widget that is the handle of a lcl control.
@@ -1401,7 +1786,8 @@ begin
   FreeMem(LevelCounts);
   FreeMem(TopologicalList);
 end;
-{$ENDIF}
+
+
 
 Procedure ReportNotObsolete(const Texts : String);
 Begin
@@ -1787,6 +2173,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.57  2002/08/15 13:37:58  lazarus
+  MG: started menuitem icon, checked, radio and groupindex
+
   Revision 1.56  2002/08/05 07:43:29  lazarus
   MG: fixed BadCursor bug and Circle Reference of FixedWidget of csPanel
 
