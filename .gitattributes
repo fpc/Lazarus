@@ -85,6 +85,7 @@ designer/designerstr.pas svneol=native#text/pascal
 designer/filesystem.pp svneol=native#text/pascal
 designer/jitforms.pp svneol=native#text/pascal
 designer/objectinspector.pp svneol=native#text/pascal
+designer/objinspstrconsts.pas svneol=native#text/pascal
 designer/propedits.pp svneol=native#text/pascal
 designer/scalecompsdlg.pp svneol=native#text/pascal
 designer/sizecompsdlg.pp svneol=native#text/pascal

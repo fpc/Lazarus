@@ -41,7 +41,8 @@ interface
 
 uses 
   Classes, TypInfo, SysUtils, Forms, Controls, GraphType, Graphics, StdCtrls,
-  Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLLinux;
+  Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLLinux, Dialogs, ColumnDlg,
+  ObjInspStrConsts;
 
 const
   MaxIdentLength: Byte = 63;
@@ -1076,7 +1077,6 @@ type
 
 implementation
 
-uses Dialogs, ColumnDlg, DesignerStr;
 
 const
   ListPropertyEditors: TList = nil;
@@ -2566,7 +2566,7 @@ begin
   AddButton:= TSpeedButton.Create(Self);
   With AddButton do begin
     Parent:= ButtonPanel;
-    Caption:= liscAdd;
+    Caption:= oiscAdd;
     OnClick:= @AddClick;
     SetBounds(6, 6, 43, 27);
   end;
@@ -2574,7 +2574,7 @@ begin
   DeleteButton := TSpeedButton.Create(Self);
   With DeleteButton do begin
     Parent:= ButtonPanel;
-    Caption:= liscDelete;
+    Caption:= oiscDelete;
     OnClick:= @DeleteCLICK;
     SetBounds(56, 6, 43, 27);
   end;
