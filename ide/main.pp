@@ -32,7 +32,7 @@ uses
   Spin, project,sysutils, global,
   compileroptions, Controls, graphics, extctrls, Dialogs, dlgMEssage,
   Designer, process, idecomp, Find_dlg, FormEditor, AbstractFormEditor,
-  CustomFormEditor, ObjectInspector, ControlSelection, UnitEditor;
+  CustomFormEditor, ObjectInspector, ControlSelection, PropEdits, UnitEditor;
 
 const
   STANDARDBTNCOUNT = 50;
@@ -40,8 +40,6 @@ const
 type
 
   TForm1 = class(TFORM)
-    Opendialog1  : TOpenDialog;
-    Savedialog1  : TSaveDialog;
     FontDialog1  : TFontDialog;
     ColorDialog1 : TColorDialog;
     FindDialog1  : TFindDialog;
@@ -116,9 +114,11 @@ type
     cmdTest2: TButton;
     LAbel2 : TLabel;
 { event handlers }
-    procedure mnuNewClicked(Sender : TObject);
     procedure mnuNewFormClicked(Sender : TObject);
     procedure mnuOpenClicked(Sender : TObject);
+    procedure mnuSaveClicked(Sender : TObject);
+    procedure mnuSaveAsClicked(Sender : TObject);
+    procedure mnuSaveAllClicked(Sender : TObject);
     procedure mnuCloseClicked(Sender : TObject);
     procedure mnuQuitClicked(Sender : TObject);
     procedure mnuViewInspectorClicked(Sender : TObject);
@@ -157,13 +157,7 @@ type
     Function CreateSeperator : TMenuItem;
     Procedure SetBtnDefaults(Control : Pointer;I,Page : Integer);
     Function ReturnActiveUnitList : TUnitInfo;
-    Function Create_LFM(SList : TUnitInfo) : Boolean;
-    Function SavebyUnit(SList : TUnitInfo) : Boolean;
     Procedure UpdateViewDialogs;
-    function CreateUnit(var UnitName : string) : TUnitInfo;
-    function RenameUnit(OldUnitName, NewUnitName : string;SList : TUnitInfo) : Boolean;
-    Procedure ReAssignEditorLines(SList : TUnitInfo);
-    Procedure ReAssignSourcefromEditor(var SList : TUnitInfo);
  protected
     procedure DoFind(Sender : TObject);
 
@@ -200,9 +194,14 @@ const
 var
   Form1 : TForm1;
   FormEditor1 : TFormEditor;
+  // this should be moved to FormEditor <...
   ObjectInspector1 : TObjectInspector;
+  PropertyEditorHook1 : TPropertyEditorHook;
+  // ...>
   SourceNotebook : TSourceNotebook;
   TagInc : Integer;
+
+
 implementation
 
 uses
@@ -330,7 +329,7 @@ begin
     Enabled := True;
     Top := 25;
     Left := Speedbutton2.Left + 26;
-    OnClick := @mnuNewCLicked;
+//    OnClick := @mnuNewCLicked;
     Glyph := Pixmap1;
     Visible := True;
     Name := 'Speedbutton3';
@@ -352,7 +351,7 @@ begin
     Enabled := True;
     Top := 25;
     Left := Speedbutton3.Left + 26;
-//    OnClick := @SourceNotebook.OpenClicked;
+    OnClick := @mnuOpenCLicked;
     Glyph := Pixmap1;
     Visible := True;
     Name := 'Speedbutton4';
@@ -374,6 +373,7 @@ begin
     Enabled := True;
     Top := 25;
     Left := Speedbutton4.Left + 26;
+    OnClick := @mnuSaveCLicked;
     Glyph := Pixmap1;
     Visible := True;
     Name := 'Speedbutton5';
@@ -395,6 +395,7 @@ begin
     Enabled := True;
     Top := 25;
     Left := Speedbutton5.left + 26;
+    OnClick := @mnuSaveAllCLicked;
     Glyph := Pixmap1;
     Visible := True;
     Name := 'Speedbutton6';
@@ -623,8 +624,6 @@ begin
     end;
   end;  //If toolbar1 assigned
   
-  OpenDialog1 := TOpenDialog.Create(self);
-  SaveDialog1 := TSaveDialog.Create(self);
   FontDialog1 := TFontDialog.Create(self);
   ColorDialog1 := TColorDialog.Create(self);
   FindDialog1 := TFindDialog.Create(self);
@@ -650,7 +649,8 @@ begin
   ObjectInspector1.SetBounds(0,Top+Height+5,230,600);
   ObjectInspector1.OnAddAvailComponent:=@OIOnAddAvailableComponent;
   ObjectInspector1.OnSelectComponentInOI:=@OIOnSelectComponent;
-
+  PropertyEditorHook1:=TPropertyEditorHook.Create;
+  ObjectInspector1.PropertyEditorHook:=PropertyEditorHook1;
   ObjectInspector1.Show;
 
   FormEditor1 := TFormEditor.Create;
@@ -662,8 +662,11 @@ begin
   itmFileSaveAs.OnClick := @SourceNotebook.SaveAsClicked;
   itmFileSaveAll.OnClick := @SourceNotebook.SaveAllClicked;
   itmFileClose.OnClick := @SourceNotebook.CloseClicked;
-  Speedbutton4.OnClick := @SourceNotebook.OpenClicked;
   itmFileOpen.OnClick := @SourceNotebook.OpenClicked;
+  SpeedButton4.OnClick := @SourceNotebook.OpenClicked;
+  SpeedButton5.OnClick := @SourceNotebook.SaveClicked;
+  SpeedButton6.OnClick := @SourceNotebook.SaveAllClicked;
+
 end;
 
 procedure TForm1.OIOnAddAvailableComponent(AComponent:TComponent;
@@ -767,7 +770,7 @@ begin
   
   itmFileNew := TMenuItem.Create(Self);
   itmFileNew.Caption := 'New Unit';
-  itmFileNew.OnClick := @mnuNewClicked;
+//  itmFileNew.OnClick := @mnuNewClicked;
   mnuFile.Add(itmFileNew);
 
   itmFileNewForm := TMenuItem.Create(Self);
@@ -986,155 +989,6 @@ begin
 
 end;
 
-function TForm1.RenameUnit(OldUnitName, NewUnitName : string; SList : TUnitInfo) : Boolean;
-var
-  X1, X2, X3  : Integer;
-  I,T     : Integer;
-  Count   : Integer;
-  Texts   : String;
-  OldUnitName2,NewUnitName2 : String;
-  Found   : Boolean;
-  InComment : Boolean;
-Begin
-  Assert(False, 'Trace:*********************RENAME UNIT*************************');
-  Assert(False, 'Trace:*********************RENAME UNIT*************************');
-
-  Count := SList.Source.Count;
-  Found := False;
-  InComment := False;
-  Assert(False, 'Trace:Oldunitname = '+OldUnitName);
-  Assert(False, 'Trace:NewUnitname = '+NewUnitName);
-  //drop the '.'
-  OldUnitName2 := Copy(OldUnitName,1,pos('.',OldUnitName)-1);
-  NewUnitName2 := Copy(NewUnitName,1,pos('.',NewUnitName)-1);
-  Assert(False, 'Trace:Oldunitname = '+OldUnitName2);
-  Assert(False, 'Trace:NewUnitname = '+NewUnitName2);
-  ReAssignSourcefromEditor(SList);
-  for I := 0 to Count-1 do
-    begin
-    Assert(False, 'Trace:' + inttostr(i));
-    Assert(False, 'Trace:' + SList.Source.Strings[i]);
-      //Search for the unit name
-      Texts := Uppercase(SList.Source.Strings[I]);
-      x1 := pos(Uppercase(OldUnitName2),Texts);
-      if X1 <> 0 then
-        //check to see if it's a comment
-       if ((pos('//',Texts) = 0) or (pos('//',Texts) > x1+Length(OldUnitName2))) then
-       Begin
-           InComment := False;
-           Assert(False, 'Trace:X1 = '+Inttostr(x1));
-           //found it but is it the one that follows "unit"
-           //check to see if the words "unit " are on this line
-           Texts := Uppercase(SList.Source.Strings[I]);
-           T := I;
-           Found := True;
-  {         x2 := pos('UNIT ',texts);
-           if x2 <> 0 then
-               Found := true
-           else
-           for t := 0 to i do //i contains the line number of the unit name
-             begin
-              Assert(False, 'Trace:t = '+inttostr(t));
-              Texts := Uppercase(SList.Source.Strings[t]);
-              Assert(False, 'Trace:Texts = '+texts);
-               x2 := pos('UNIT',Texts);
-               Assert(False, 'Trace:x2 = '+inttostr(x2));
-               if x2 <> 0 then
-                  begin
-                  Found := true;
-                  break;
-                  end;
-             end;
-          }
-         end;
-            if Found then Break;
-     end;
-  
-   if Found then
-        Begin
-        Texts := SList.Source.Strings[I];
-        Assert(False, 'Trace:Texts = '+Texts);
-        Assert(False, 'Trace:X1 = '+inttostr(x1));
-        delete(Texts,X1,length(OldUnitName2));
-        System.Insert(NewUNitName2,Texts,X1);
-        Assert(False, 'Trace:Texts = '+texts);
-        SList.Source.Strings[i] := Texts;
-        SList.Name := NewUnitName;
-        ReAssignEditorLines(SList);
-        end;
-  
-  Result := Found;
-End;
-
-Procedure TForm1.ReAssignEditorLines(SList : TUnitInfo);
-Begin
-
-end;
-
-Procedure TForm1.ReAssignSourcefromEditor(var SList : TUnitInfo);
-Begin
-
-end;
-
-
-Function TForm1.Create_LFM(SList : TUnitInfo) : Boolean;
-Begin
-
-end;
-
-Function TForm1.SavebyUnit(SList : TUnitInfo) : Boolean;
-Var
-TempName : String;
-Begin
-Result := True;
-Assert(False, 'Trace:SAVEBYUNIT');
-ReAssignSourcefromEditor(SList);
-if SList.Filename = '' then
-Begin
- SaveDialog1.Title := 'Save '+SList.Name+' as:';
- SaveDialog1.Filename := ExtractFilePath(Project1.Name)+SList.name;
- if SList.Flags = pfProject then
-    SaveDialog1.Filter := '*.lpr'
-   else
- if SList.Flags = pfForm then
-    SaveDialog1.Filter := '*.pp'
-   else
- if SList.Flags = pfSource then
-    SaveDialog1.Filter := '*.pp'
-   else
-    SaveDialog1.Filter := '*.*';
-
-
- if SaveDialog1.Execute then
-   begin
-    RenameUnit(SList.Name, ExtractFileName(SaveDialog1.Filename),SList);
-    SList.Filename := SaveDialog1.Filename;
-   end
-    else
-   Exit;
-end;
-
-try
- if FileExists(SList.Filename) then
-    Begin
-      TempName := SList.Filename;
-      TempName := Copy(TempName,1,pos('.',TempName));
-      TempName := tempName + '~';
-      TempName := TempName + Copy(SList.Filename,pos('.',SList.Filename)+1,Length(SList.Filename));
-      RenameFile(SList.Filename,TempName);
-    End;
-
- SList.Source.SaveToFile(SList.Filename);
-//check to see if this is a form.  If so, create a LFM file.
- if SList.Flags = pfForm then
-     Create_LFM(SList);
-
-except
-//error saving
-Result := False;
-end;
-
-End;
 
 {------------------------------------------------------------------------------}
 {Fills the View Units dialog and the View Forms dialog}
@@ -1222,6 +1076,24 @@ Begin
   Assert(False, 'Trace:Exiting SetName_Form');
 end;
 
+procedure TForm1.mnuSaveClicked(Sender : TObject);
+begin
+//this is no longer used.  TSourceNotebook.SaveClicked is called
+end;
+
+{------------------------------------------------------------------------------}
+
+Procedure TForm1.mnuSaveAsClicked(Sender : TObject);
+Begin
+//this is no longer used.  TSourceNotebook.SaveAsClicked is called
+end;
+
+Procedure TForm1.mnuSaveAllClicked(Sender : TObject);
+Begin
+//this is no longer used.  TSourceNotebook.SaveAllClicked is called
+
+End;
+
 
 Procedure TForm1.mnuToggleFormClicked(Sender : TObject);
 Begin
@@ -1301,40 +1173,6 @@ if bpressed = 1 then
 
 end;
 
-
-function TForm1.CreateUnit(var UnitName : string) : TUnitInfo;
-var
-  I,N: Integer;
-  Found : Boolean;
-begin
-  { Creates new unit. }
-  if UnitName = '' then begin
-    N:= 1;
-    repeat
-      UnitName := 'Unit'+IntToStr(N);
-      Found:= false;
-      for i:= 0 to Project1.UnitList.Count - 1 do begin
-        Result:= TUnitInfo(Project1.UnitList.Items[i]);
-        Found:= Uppercase(Result.Name) = Uppercase(UnitName + '.PP');
-        if Found then begin
-          Inc(N);
-          Break;
-        end;	
-      end;
-    until not Found;
-  end;
-  
-  Result:= TUnitInfo.Create;
-  Result.Name := UnitName + '.pp';
-end;
-
-{----------------------}
-{  mnuNewClicked}
-
-procedure TForm1.mnuNewClicked(Sender : TObject);
-begin
-
-end;
 
 function TForm1.FindDesigner(ChildComponent:TComponent):TDesigner;
 begin
@@ -1595,7 +1433,7 @@ begin
   TempForm.OnActivate := @CodeOrFormActivated;
   TempForm.Show;
 
-  ObjectInspector1.RootComponent := TForm(CInterface.Control);
+  PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
   FormEditor1.ClearSelected;
   FormEditor1.AddSelected(TComponent(CInterface.Control));
 end;
@@ -1620,8 +1458,23 @@ end;
 {------------------------------------------------------------------------------}
 
 procedure TForm1.mnuQuitClicked(Sender : TObject);
+var
+I : Integer;
+SList : TUnitInfo;
 begin
-   Close;
+//if there is a project loaded, check if it should be saved
+
+//free the unitlist objects
+if Project1.UnitList.Count > 0 then
+  For I := 0 to Project1.UnitList.Count -1 do
+            Begin
+            SList := TUnitInfo(Project1.UnitList.Items[I]);
+            SList.Destroy;
+            end;
+
+Project1.UnitList.Free;
+
+Close;
 end;
 
 
@@ -1858,8 +1711,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.20  2000/12/20 14:32:42  lazarus
-  Fixed File OPen in the IDE.
+  Revision 1.21  2000/12/20 17:35:58  lazarus
+  Added GetChildren
   Shane
 
   Revision 1.19  2000/12/19 18:43:12  lazarus

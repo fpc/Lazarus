@@ -81,7 +81,7 @@ type
   TOIPropertyGrid = class(TCustomControl)
   private
     FComponentList: TComponentSelectionList;
-    FLookupRoot:TComponent;
+    FPropertyEditorHook:TPropertyEditorHook;
     FFilter: TTypeKinds;
     FItemIndex:integer;
     FChangingItemIndex:boolean;
@@ -116,7 +116,7 @@ type
     procedure DoPaint(PaintOnlyChangedValues:boolean);
 
     procedure SetSelections(const NewSelections:TComponentSelectionList);
-    procedure SetLookupRoot(NewLookupRoot:TComponent);
+    procedure SetPropertyEditorHook(NewPropertyEditorHook:TPropertyEditorHook);
 
     procedure AddPropertyEditor(PropEditor: TPropertyEditor);
     procedure AddStringToComboBox(const s:string);
@@ -140,7 +140,7 @@ type
     TrackBar:TTrackBar;
 
     property Selections:TComponentSelectionList read FComponentList write SetSelections;
-    property LookupRoot:TComponent read FLookupRoot write SetLookupRoot;
+    property PropertyEditorHook:TPropertyEditorHook read FPropertyEditorHook write SetPropertyEditorHook;
     procedure BuildPropertyList;
     procedure RefreshPropertyValues;
 
@@ -168,8 +168,8 @@ type
     procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
     procedure Paint;  override;
     procedure Clear;
-    constructor Create(AOwner:TComponent;  NewLookupRoot:TComponent;
-                       TypeFilter:TTypeKinds);
+    constructor Create(AOwner:TComponent;
+      APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
     destructor Destroy;  override;
   end;
 
@@ -182,15 +182,16 @@ type
   TObjectInspector = class (TCustomForm)
   private
     FComponentList: TComponentSelectionList;
-    FRootComponent:TComponent;
+    FPropertyEditorHook:TPropertyEditorHook;
     FUpdatingAvailComboBox:boolean;
     FOnAddAvailableComponent:TOnAddAvailableComponent;
     FOnSelectComponentInOI:TOnSelectComponentInOI;
     function ComponentToString(c:TComponent):string;
-    procedure SetRootComponent(Value:TComponent);
+    procedure SetPropertyEditorHook(NewValue:TPropertyEditorHook);
     procedure SetSelections(const NewSelections:TComponentSelectionList);
     procedure AvailComboBoxChange(Sender:TObject);
     procedure AddComponentToAvailComboBox(AComponent:TComponent);
+    procedure PropEditLookupRootChange;
   public
     AvailCompsComboBox : TComboBox;
     NoteBook:TNoteBook;
@@ -205,7 +206,7 @@ type
       read FOnAddAvailableComponent write FOnAddAvailableComponent;
     property OnSelectComponentInOI:TOnSelectComponentInOI
       read FOnSelectComponentInOI write FOnSelectComponentInOI;
-    property RootComponent:TComponent read FRootComponent write SetRootComponent;
+    property PropertyEditorHook:TPropertyEditorHook read FPropertyEditorHook write SetPropertyEditorHook;
     procedure DoInnerResize;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -217,8 +218,8 @@ implementation
 
 { TOIPropertyGrid }
 
-constructor TOIPropertyGrid.Create(AOwner:TComponent;  NewLookupRoot:TComponent;
-  TypeFilter:TTypeKinds);
+constructor TOIPropertyGrid.Create(AOwner:TComponent;
+APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
 begin
   inherited Create(AOwner);
   SetBounds(1,1,200,300);
@@ -226,7 +227,7 @@ begin
   ControlStyle:=ControlStyle+[csAcceptsControls];
 
   FComponentList:=TComponentSelectionList.Create;
-  FLookupRoot:=NewLookupRoot;
+  FPropertyEditorHook:=APropertyEditorHook;
   FFilter:=TypeFilter;
   FItemIndex:=-1;
   FChangingItemIndex:=false;
@@ -324,9 +325,11 @@ begin
     ItemIndex:=CurRow.Index;
 end;
 
-procedure TOIPropertyGrid.SetLookupRoot(NewLookupRoot:TComponent);
+procedure TOIPropertyGrid.SetPropertyEditorHook(
+NewPropertyEditorHook:TPropertyEditorHook);
 begin
-  FLookupRoot:=NewLookupRoot;
+  if FPropertyEditorHook=NewPropertyEditorHook then exit;
+  FPropertyEditorHook:=NewPropertyEditorHook;
   SetSelections(FComponentList);
 end;
 
@@ -543,7 +546,8 @@ begin
   ItemIndex:=-1;
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FRows.Clear;
-  GetComponentProperties(FComponentList,FFilter,@AddPropertyEditor,FLookupRoot);
+  GetComponentProperties(FPropertyEditorHook,FComponentList,FFilter,
+    @AddPropertyEditor);
   SetItemsTops;
   for a:=FExpandedProperties.Count-1 downto 0 do begin
     CurRow:=GetRowByPath(FExpandedProperties[a]);
@@ -901,9 +905,13 @@ begin
     LineTo(NameRect.Right-1,NameRect.Bottom-1);
     LineTo(NameRect.Right-1,NameRect.Top-1);
     if ARow=FItemIndex then begin
+      Pen.Color:=cl3DDkShadow;
       MoveTo(NameRect.Left,NameRect.Bottom-1);
       LineTo(NameRect.Left,NameRect.Top);
       LineTo(NameRect.Right-1,NameRect.Top);
+      Pen.Color:=cl3DLight;
+      MoveTo(NameRect.Left+1,NameRect.Bottom-2);
+      LineTo(NameRect.Right-1,NameRect.Bottom-2);
     end;
     // draw value background
     if FBackgroundColor<>clNone then begin
@@ -925,6 +933,10 @@ begin
     Pen.Color:=cl3DLight;
     MoveTo(ValueRect.Left,ValueRect.Bottom-1);
     LineTo(ValueRect.Left,ValueRect.Top);
+    if ARow=FItemIndex then begin
+      MoveTo(ValueRect.Left,ValueRect.Bottom-2);
+      LineTo(ValueRect.Right,ValueRect.Bottom-2);
+    end;
   end;
 end;
 
@@ -1091,7 +1103,7 @@ constructor TObjectInspector.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Caption := 'Object Inspector';
-  FRootComponent:=nil;
+  FPropertyEditorHook:=nil;
   FComponentList:=TComponentSelectionList.Create;
   FUpdatingAvailComboBox:=false;
 
@@ -1117,7 +1129,7 @@ begin
   end;
 
   // property grid
-  PropertyGrid:=TOIPropertyGrid.Create(Self,FRootComponent
+  PropertyGrid:=TOIPropertyGrid.Create(Self,PropertyEditorHook
       ,[tkUnknown, tkInteger, tkChar, tkEnumeration, tkFloat, tkSet{, tkMethod}
       , tkSString, tkLString, tkAString, tkWString, tkVariant
       {, tkArray, tkRecord, tkInterface}, tkClass, tkObject, tkWChar, tkBool
@@ -1135,7 +1147,7 @@ begin
   end;
 
   // event grid
-  EventGrid:=TOIPropertyGrid.Create(Self,FRootComponent,[tkMethod]);
+  EventGrid:=TOIPropertyGrid.Create(Self,PropertyEditorHook,[tkMethod]);
   with EventGrid do begin
     Name:='EventGrid';
     Parent:=NoteBook.Page[1];
@@ -1170,17 +1182,19 @@ begin
   NoteBook.SetBounds(0,NewTop,MaxX-4,MaxY-NewTop);
 end;
 
-procedure TObjectinspector.SetRootComponent(Value:TComponent);
+procedure TObjectinspector.SetPropertyEditorHook(NewValue:TPropertyEditorHook);
 begin
-//XXX writeln('OI: SetRootComponent');
-  if FRootComponent<>Value then begin
-    FRootComponent:=Value;
+//XXX writeln('OI: SetPropertyEditorHook');
+  if FPropertyEditorHook<>NewValue then begin
+    FPropertyEditorHook:=NewValue;
+    FPropertyEditorHook.OnChangeLookupRoot:=@PropEditLookupRootChange;
     // select root component
     FComponentList.Clear;
-    if FRootComponent<>nil then FComponentList.Add(FRootComponent);
+    if (FPropertyEditorHook<>nil) and (FPropertyEditorHook.LookupRoot<>nil) then
+      FComponentList.Add(FPropertyEditorHook.LookupRoot);
     FillComponentComboBox;
-    PropertyGrid.LookupRoot:=FRootComponent;
-    EventGrid.LookupRoot:=FRootComponent;
+    PropertyGrid.PropertyEditorHook:=FPropertyEditorHook;
+    EventGrid.PropertyEditorHook:=FPropertyEditorHook;
     RefreshSelections;
   end;
 end;
@@ -1201,19 +1215,28 @@ begin
       ComponentToString(AComponent),AComponent);
 end;
 
+procedure TObjectinspector.PropEditLookupRootChange;
+begin
+  FillComponentComboBox;
+end;
+
 procedure TObjectinspector.FillComponentComboBox;
 var a:integer;
+  Root:TComponent;
 begin
   if FUpdatingAvailComboBox then exit;
   FUpdatingAvailComboBox:=true;
   AvailCompsComboBox.Items.BeginUpdate;
   AvailCompsComboBox.Items.Clear;
-  if FRootComponent<>nil then begin
-    AddComponentToAvailComboBox(FRootComponent);
-    AvailCompsComboBox.Text:=ComponentToString(FRootComponent);
-    for a:=0 to FRootComponent.ComponentCount-1 do begin
-      AddComponentToAvailComboBox(FRootComponent.Components[a]);
+  if (FPropertyEditorHook<>nil)
+  and (FPropertyEditorHook.LookupRoot<>nil) then begin
+    Root:=FPropertyEditorHook.LookupRoot;
+    AddComponentToAvailComboBox(Root);
+    for a:=0 to Root.ComponentCount-1 do begin
+      AddComponentToAvailComboBox(Root.Components[a]);
     end;
+    if FComponentList.Count=1 then
+      AvailCompsComboBox.Text:=ComponentToString(FComponentList[0]);
   end;
   AvailCompsComboBox.Items.EndUpdate;
   FUpdatingAvailComboBox:=false;
@@ -1253,7 +1276,7 @@ begin
 end;
 
 procedure TObjectinspector.AvailComboBoxChange(Sender:TObject);
-var NewComponent:TComponent;
+var NewComponent,Root:TComponent;
   a:integer;
 
   procedure SetSelectedComponent(c:TComponent);
@@ -1268,12 +1291,15 @@ var NewComponent:TComponent;
 
 // AvailComboBoxChange
 begin
-  if FRootComponent=nil then exit;
-  if AvailCompsComboBox.Text=ComponentToString(FRootComponent) then begin
-    SetSelectedComponent(FRootComponent);
+  if (FPropertyEditorHook=nil) or (FPropertyEditorHook.LookupRoot=nil) then
+    exit;
+  Root:=FPropertyEditorHook.LookupRoot;
+  if AvailCompsComboBox.Text=ComponentToString(Root)
+  then begin
+    SetSelectedComponent(Root);
   end else begin
-    for a:=0 to FRootComponent.ComponentCount-1 do begin
-      NewComponent:=FRootComponent.Components[a];
+    for a:=0 to Root.ComponentCount-1 do begin
+      NewComponent:=Root.Components[a];
       if AvailCompsComboBox.Text=ComponentToString(NewComponent) then begin
         SetSelectedComponent(NewComponent);
         break;

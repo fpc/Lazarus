@@ -290,6 +290,21 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{  TWinControl GetChildren                                                     }
+{------------------------------------------------------------------------------}
+Procedure TWinControl.GetChildren(Proc: TGetChildProc; Root : TComponent);
+var
+I : Integer;
+Control : TControl;
+Begin
+  for I := 0 to ControlCount-1 do
+      Begin
+        Control := Controls[i];
+        if Control.Owner = Root then Proc(Control);
+      end;
+End;
+
+{------------------------------------------------------------------------------}
 {  TWinControl GetClientOrigin                                                      }
 {------------------------------------------------------------------------------}
 Function TWinControl.GetClientOrigin: TPoint;
@@ -1860,6 +1875,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2000/12/20 17:35:58  lazarus
+  Added GetChildren
+  Shane
+
   Revision 1.3  2000/09/10 23:08:30  lazarus
   MWE:
     + Added CreateCompatibeleBitamp function

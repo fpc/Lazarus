@@ -36,8 +36,7 @@ each control that's dropped onto the form
 }
 
   TCustomFormEditor = class; //forward declaration
-  TSetProc = Procedure (const Value) of Object;
-  TGetProc = Function : Variant of Object;
+
 
   TComponentInterface = class(TIComponentInterface)
   private
@@ -49,8 +48,7 @@ each control that's dropped onto the form
   protected
     Function GetPPropInfobyIndex(Index : Integer) : PPropInfo;
     Function GetPPropInfobyName(Name : String) : PPropInfo;
-    MySetProc : TSetPRoc;
-    MyGetProc : TGetProc;
+
   public
     constructor Create;
     destructor Destroy; override;

@@ -20,8 +20,10 @@ unit propedits;
          workaround
     -StrToInt64 has a bug. It prints infinitly "something happened"
        -> taking my own
-    -Font property editors
+    -TFont property editors
     -register ModalResultPropertyEditor
+    -Message Dialogoues on errors
+    -TStrings property editor
 
     -many more... see XXX
 }
@@ -47,25 +49,7 @@ type
 
   TGetStringProc = procedure(const s:string) of object;
 
-  TComponentSelectionList = class
-  private
-    FComponents:TList;
-    function GetItems(Index: integer): TComponent;
-    procedure SetItems(Index: integer; const CompValue: TComponent);
-    function GetCount: integer;
-    function GetCapacity:integer;
-    procedure SetCapacity(const NewCapacity:integer);
-  public
-    procedure Clear;
-    function IsEqual(SourceSelectionList:TComponentSelectionList):boolean;
-    property Count:integer read GetCount;
-    property Capacity:integer read GetCapacity write SetCapacity;
-    function Add(c:TComponent):integer;
-    procedure Assign(SourceSelectionList:TComponentSelectionList);
-    property Items[Index:integer]:TComponent read GetItems write SetItems; default;
-    constructor Create;
-    destructor Destroy;  override;
-  end;
+  TComponentSelectionList = class;
 
 { TPropertyEditor
   Edits a property of a component, or list of components, selected into the
@@ -256,11 +240,11 @@ type
        pedsInComboList);
   TPropEditDrawState = set of TPropEditDrawStateType;
 
+  TPropertyEditorHook = class;
+
   TPropertyEditor=class
   private
-    // XXX
-    //FDesigner:IFormDesigner;
-    FLookupRoot:TComponent;
+    FPropertyHook:TPropertyEditorHook;
     FComponents:TComponentSelectionList;
     FPropList:PInstPropList;
     FPropCount:Integer;
@@ -290,9 +274,8 @@ type
     procedure SetVarValue(const NewValue:Variant);
     procedure Modified;
   public
-    constructor Create({const ADesigner:IFormDesigner;}
-      LookupRoot:TComponent;  ComponentList:TComponentSelectionList;
-      APropCount:Integer); virtual;
+    constructor Create(PropertyEditorFilter:TPropertyEditorHook;
+      ComponentList:TComponentSelectionList;  APropCount:Integer); virtual;
     destructor Destroy; override;
     procedure Activate; virtual;
     procedure Deactivate; virtual;
@@ -324,7 +307,7 @@ type
       AState:TPropEditDrawState); dynamic;
     procedure PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
       AState:TPropEditDrawState); dynamic;
-    //property Designer:IFormDesigner read FDesigner;
+    property PropertyHook:TPropertyEditorHook read FPropertyHook;
     property PrivateDirectory:string read GetPrivateDirectory;
     property PropCount:Integer read FPropCount;
     property FirstValue:string read GetValue write SetValue;
@@ -418,7 +401,7 @@ type
   end;
 
 { TNestedPropertyEditor
-  A property editor that uses the parent's Designer, PropList and PropCount.
+  A property editor that uses the PropertyHook, PropList and PropCount.
   The constructor and destructor do not call inherited, but all derived classes
   should.  This is useful for properties like the TSetElementPropertyEditor. }
 
@@ -653,14 +636,155 @@ type
 
 procedure RegisterPropertyEditorMapper(Mapper:TPropertyEditorMapperFunc);
 
-procedure GetComponentProperties(Components:TComponentSelectionList;
-  Filter:TTypeKinds;  Proc:TGetPropEditProc;  LookupRoot:TComponent);
+procedure GetComponentProperties(PropertyEditorHook:TPropertyEditorHook;
+Components:TComponentSelectionList;  Filter:TTypeKinds;  Proc:TGetPropEditProc);
 
 //procedure RegisterComponentEditor(ComponentClass:TComponentClass;
 //  ComponentEditor:TComponentEditorClass);
 
 //function GetComponentEditor(Component:TComponent;
 //  Designer:IFormDesigner):TComponentEditor;
+
+
+//==============================================================================
+{
+  The TComponentSelectionList is simply a list of TComponents references.
+  It will never create or free any components. It is used by the property
+  editors, the object inspector and the form editor.
+}
+type
+  TComponentSelectionList = class
+  private
+    FComponents:TList;
+    function GetItems(Index: integer): TComponent;
+    procedure SetItems(Index: integer; const CompValue: TComponent);
+    function GetCount: integer;
+    function GetCapacity:integer;
+    procedure SetCapacity(const NewCapacity:integer);
+  public
+    procedure Clear;
+    function IsEqual(SourceSelectionList:TComponentSelectionList):boolean;
+    property Count:integer read GetCount;
+    property Capacity:integer read GetCapacity write SetCapacity;
+    function Add(c:TComponent):integer;
+    procedure Assign(SourceSelectionList:TComponentSelectionList);
+    property Items[Index:integer]:TComponent read GetItems write SetItems; default;
+    constructor Create;
+    destructor Destroy;  override;
+  end;
+
+//==============================================================================
+{
+  TPropertyEditorHook
+
+  This is the interface for methods, components and objects handling of all
+  property editors. Just create such thing and give it the object inspector.
+}
+type
+  // lookup root
+  TPropHookChangeLookupRoot = procedure of object;
+  // methods
+  TPropHookCreateMethod = function(const Name:ShortString; TypeData:PTypeData): TMethod of object;
+  TPropHookGetMethodName = function(const Method:TMethod): ShortString of object;
+  TPropHookGetMethods = procedure(TypeData:PTypeData; Proc:TGetStringProc) of object;
+  TPropHookMethodExists = function(const Name:ShortString):boolean of object;
+  TPropHookRenameMethod = procedure(const CurName, NewName:ShortString) of object;
+  TPropHookShowMethod = procedure(const Name:ShortString) of object;
+  TPropHookMethodFromAncestor = function(const Method:TMethod):boolean of object;
+  TPropHookChainCall = procedure(const MethodName, InstanceName, InstanceMethod:ShortString;
+    TypeData:PTypeData) of object;
+  // components
+  TPropHookGetComponent = function(const Name:ShortString):TComponent of object;
+  TPropHookGetComponentName = function(AComponent:TComponent):ShortString of object;
+  TPropHookGetComponentNames = procedure(TypeData:PTypeData; Proc:TGetStringProc) of object;
+  TPropHookGetRootClassName = function:ShortString of object;
+  // persistent objects
+  TPropHookGetObject = function(const Name:ShortString):TPersistent of object;
+  TPropHookGetObjectName = function(Instance:TPersistent):ShortString of object;
+  TPropHookGetObjectNames = procedure(TypeData:PTypeData; Proc:TGetStringProc) of object;
+  // modifing
+  TPropHookModified = procedure of object;
+  TPropHookRevert = procedure(Instance:TPersistent; PropInfo:PPropInfo) of object;
+
+  TPropertyEditorHook = class
+  private
+    // lookup root
+    FLookupRoot:TComponent;
+    FOnChangeLookupRoot:TPropHookChangeLookupRoot;
+    // methods
+    FOnCreateMethod:TPropHookCreateMethod;
+    FOnGetMethodName:TPropHookGetMethodName;
+    FOnGetMethods:TPropHookGetMethods;
+    FOnMethodExists:TPropHookMethodExists;
+    FOnRenameMethod:TPropHookRenameMethod;
+    FOnShowMethod:TPropHookShowMethod;
+    FOnMethodFromAncestor:TPropHookMethodFromAncestor;
+    FOnChainCall:TPropHookChainCall;
+    // components
+    FOnGetComponent:TPropHookGetComponent;
+    FOnGetComponentName:TPropHookGetComponentName;
+    FOnGetComponentNames:TPropHookGetComponentNames;
+    FOnGetRootClassName:TPropHookGetRootClassName;
+    // persistent objects
+    FOnGetObject:TPropHookGetObject;
+    FOnGetObjectName:TPropHookGetObjectName;
+    FOnGetObjectNames:TPropHookGetObjectNames;
+    // modifing
+    FOnModified:TPropHookModified;
+    FOnRevert:TPropHookRevert;
+
+    procedure SetLookupRoot(AComponent:TComponent);
+  public
+    GetPrivateDirectory:AnsiString;
+    // lookup root
+    property LookupRoot:TComponent read FLookupRoot write SetLookupRoot;
+    // methods
+    function CreateMethod(const Name:ShortString; TypeData:PTypeData): TMethod;
+    function GetMethodName(const Method:TMethod): ShortString;
+    procedure GetMethods(TypeData:PTypeData; Proc:TGetStringProc);
+    function MethodExists(const Name:ShortString):boolean;
+    procedure RenameMethod(const CurName, NewName:ShortString);
+    procedure ShowMethod(const Name:ShortString);
+    function MethodFromAncestor(const Method:TMethod):boolean;
+    procedure ChainCall(const AMethodName, InstanceName,
+      InstanceMethod:ShortString;  TypeData:PTypeData);
+    // components
+    function GetComponent(const Name:ShortString):TComponent;
+    function GetComponentName(AComponent:TComponent):ShortString;
+    procedure GetComponentNames(TypeData:PTypeData; Proc:TGetStringProc);
+    function GetRootClassName:ShortString;
+    // persistent objects
+    function GetObject(const Name:ShortString):TPersistent;
+    function GetObjectName(Instance:TPersistent):ShortString;
+    procedure GetObjectNames(TypeData:PTypeData; Proc:TGetStringProc);
+    // modifing
+    procedure Modified;
+    procedure Revert(Instance:TPersistent; PropInfo:PPropInfo);
+
+    // lookup root
+    property OnChangeLookupRoot:TPropHookChangeLookupRoot read FOnChangeLookupRoot write FOnChangeLookupRoot;
+    // method events
+    property OnCreateMethod:TPropHookCreateMethod read FOnCreateMethod write FOnCreateMethod;
+    property OnGetMethodName:TPropHookGetMethodName read FOnGetMethodName write FOnGetMethodName;
+    property OnGetMethods:TPropHookGetMethods read FOnGetMethods write FOnGetMethods;
+    property OnMethodExists:TPropHookMethodExists read FOnMethodExists write FOnMethodExists;
+    property OnRenameMethod:TPropHookRenameMethod read FOnRenameMethod write FOnRenameMethod;
+    property OnShowMethod:TPropHookShowMethod read FOnShowMethod write FOnShowMethod;
+    property OnMethodFromAncestor:TPropHookMethodFromAncestor read FOnMethodFromAncestor write FOnMethodFromAncestor;
+    property OnChainCall:TPropHookChainCall read FOnChainCall write FOnChainCall;
+    // component event
+    property OnGetComponent:TPropHookGetComponent read FOnGetComponent write FOnGetComponent;
+    property OnGetComponentName:TPropHookGetComponentName read FOnGetComponentName write FOnGetComponentName;
+    property OnGetComponentNames:TPropHookGetComponentNames read FOnGetComponentNames write FOnGetComponentNames;
+    property OnGetRootClassName:TPropHookGetRootClassName read FOnGetRootClassName write FOnGetRootClassName;
+    // persistent object events
+    property OnGetObject:TPropHookGetObject read FOnGetObject write FOnGetObject;
+    property OnGetObjectName:TPropHookGetObjectName read FOnGetObjectName write FOnGetObjectName;
+    property OnGetObjectNames:TPropHookGetObjectNames read FOnGetObjectNames write FOnGetObjectNames;
+    // modifing events
+    property OnModified:TPropHookModified read FOnModified write FOnModified;
+    property OnRevert:TPropHookRevert read FOnRevert write FOnRevert;
+  end;
 
 //==============================================================================
 // XXX
@@ -770,6 +894,8 @@ const
                    tkFloat,tkSet,tkMethod,tkSString,tkLString,tkAString,
                    tkWString,tkVariant,tkArray,tkRecord,tkInterface,
                    tkClass,tkObject,tkWChar,tkBool,tkInt64,tkQWord);
+  and 2 new kinds in version VER1_1_0 :
+                   tkDynArray,tkInterfaceRaw
 }
 
   PropClassMap:array[TypInfo.TTypeKind] of TPropertyEditorClass=(
@@ -794,6 +920,10 @@ const
     TBoolPropertyEditor,   // tkBool
     TInt64PropertyEditor,  // tkInt64
     nil                    // tkQWord
+{$IFDEF VER1_1_0}
+    ,nil                   // tkDynArray
+    ,nil                   // tkInterfaceRaw
+{$ENDIF}
     );
 
 // XXX ToDo: There are bugs in the typinfo.pp. Thus this workaround -------
@@ -1257,6 +1387,10 @@ begin
     if not List.Contains(FList^[I]) then Delete(I);
 end;
 
+
+//------------------------------------------------------------------------------
+
+
 { GetComponentProperties }
 
 procedure RegisterPropertyEditor(PropertyType:PTypeInfo;
@@ -1348,8 +1482,8 @@ begin
     Result:=PropClassMap[PropType^.Kind];
 end;
 
-procedure GetComponentProperties(Components:TComponentSelectionList;
-  Filter:TTypeKinds; Proc:TGetPropEditProc;  LookupRoot:TComponent);
+procedure GetComponentProperties(PropertyEditorHook:TPropertyEditorHook;
+Components:TComponentSelectionList;  Filter:TTypeKinds; Proc:TGetPropEditProc);
 var
   I,J,CompCount:Integer;
   CompType:TClass;
@@ -1373,7 +1507,7 @@ begin
       if EditClass=nil then
         Candidates.Delete(I)
       else begin
-        Editor:=EditClass.Create(LookupRoot,Components,1);
+        Editor:=EditClass.Create(PropertyEditorHook,Components,1);
         try
           Editor.SetPropEntry(0,Components[0],PropInfo);
           Editor.Initialize;
@@ -1400,7 +1534,7 @@ begin
       for I:=0 to Candidates.Count-1 do begin
         EditClass:=GetEditorClass(Candidates[I],Obj);
         if EditClass=nil then continue;
-        Editor:=EditClass.Create(LookupRoot,Components,CompCount);
+        Editor:=EditClass.Create(PropertyEditorHook,Components,CompCount);
         try
           AddEditor:=true;
           for j:=0 to CompCount-1 do begin
@@ -1438,13 +1572,11 @@ end;
 
 { TPropertyEditor }
 
-constructor TPropertyEditor.Create({const ADesigner:IFormDesigner;}
-  LookupRoot:TComponent;  ComponentList:TComponentSelectionList;
-  APropCount:Integer);
+constructor TPropertyEditor.Create(
+PropertyEditorFilter:TPropertyEditorHook;
+ComponentList:TComponentSelectionList;  APropCount:Integer);
 begin
-  // XXX
-  //FDesigner:=ADesigner;
-  FLookupRoot:=LookupRoot;
+  FPropertyHook:=PropertyEditorFilter;
   FComponents:=ComponentList;
   GetMem(FPropList,APropCount * SizeOf(TInstProp));
   FPropCount:=APropCount;
@@ -1553,14 +1685,12 @@ end;
 function TPropertyEditor.GetPrivateDirectory:string;
 begin
   Result:='';
-  // XXX
-  //if Designer<>nil then
-  //  Result:=Designer.GetPrivateDirectory;
+  if PropertyHook<>nil then
+    Result:=PropertyHook.GetPrivateDirectory;
 end;
 
 procedure TPropertyEditor.GetProperties(Proc:TGetPropEditProc);
 begin
-  //
 end;
 
 function TPropertyEditor.GetPropInfo:PPropInfo;
@@ -1617,9 +1747,8 @@ end;
 
 procedure TPropertyEditor.Modified;
 begin
-  // XXX
-  //if Designer<>nil then
-  //  Designer.Modified;
+  if PropertyHook<>nil then
+    PropertyHook.Modified;
 end;
 
 procedure TPropertyEditor.SetFloatValue(NewValue:Extended);
@@ -1677,11 +1806,11 @@ begin
 end;
 
 procedure TPropertyEditor.Revert;
-//var I:Integer;
+var I:Integer;
 begin
-  //if Designer<>nil then
-  //  for I:=0 to FPropCount-1 do
-  //    with FPropList^[I] do Designer.Revert(Instance,PropInfo);
+  if PropertyHook<>nil then
+    for I:=0 to FPropCount-1 do
+      with FPropList^[I] do PropertyHook.Revert(Instance,PropInfo);
 end;
 
 procedure TPropertyEditor.SetValue(const NewValue:string);
@@ -2044,8 +2173,7 @@ end;
 
 constructor TNestedPropertyEditor.Create(Parent: TPropertyEditor);
 begin
-  // XXX
-  //FDesigner := Parent.Designer;
+  FPropertyHook:=Parent.PropertyHook;
   FComponents:=Parent.FComponents;
   FPropList:=Parent.FPropList;
   FPropCount:=Parent.PropCount;
@@ -2171,7 +2299,7 @@ begin
       if SubComponent<>nil then
         Components.Add(SubComponent);
     end;
-    GetComponentProperties(Components, tkProperties, Proc, FLookupRoot);
+    GetComponentProperties(PropertyHook,Components,tkProperties,Proc);
   finally
     Components.Free;
   end;
@@ -2205,9 +2333,8 @@ var
   FormMethodName: string;
 begin
   FormMethodName := GetValue;
-  // XXX
-  if (FormMethodName = '') {or Designer.MethodFromAncestor(GetMethodValue)} then
-  begin
+  if (FormMethodName = '')
+  or PropertyHook.MethodFromAncestor(GetMethodValue) then begin
     if FormMethodName = '' then
       FormMethodName := GetFormMethodName;
     if FormMethodName = '' then begin
@@ -2216,8 +2343,7 @@ begin
     end;
     SetValue(FormMethodName);
   end;
-  // XXX
-  //Designer.ShowMethod(FormMethodName);
+  PropertyHook.ShowMethod(FormMethodName);
 end;
 
 function TMethodPropertyEditor.GetAttributes: TPropertyAttributes;
@@ -2231,27 +2357,25 @@ begin
 end;
 
 function TMethodPropertyEditor.GetFormMethodName: string;
-//var I: Integer;
+var I: Integer;
 begin
-  // XXX
   Result:='';
-  {
-  if GetComponent(0) = Designer.GetRoot then begin
-    Result := Designer.GetRootClassName;
+  if PropertyHook.LookupRoot=nil then exit;
+  if GetComponent(0) = PropertyHook.LookupRoot then begin
+    Result := PropertyHook.GetRootClassName;
     if (Result <> '') and (Result[1] = 'T') then
       Delete(Result, 1, 1);
   end else begin
-    Result := Designer.GetObjectName(GetComponent(0));
+    Result := PropertyHook.GetObjectName(GetComponent(0));
     for I := Length(Result) downto 1 do
       if Result[I] in ['.','[',']'] then
         Delete(Result, I, 1);
   end;
-  }
   if Result = '' then begin
     {raise EPropertyError.CreateRes(@SCannotCreateName);}
     exit;
   end;
-  //Result := Result + GetTrimmedEventName;
+  Result := Result + GetTrimmedEventName;
 end;
 
 function TMethodPropertyEditor.GetTrimmedEventName: string;
@@ -2263,78 +2387,66 @@ begin
 end;
 
 function TMethodPropertyEditor.GetValue: string;
-var MethodValue:TMethod;
 begin
-  // XXX this is a workaround til TFormEditor can do this
-  MethodValue:=GetMethodValue;
-  if Assigned(MethodValue.Code) then
-    if Assigned(FLookupRoot) then begin
-      Result:=FLookupRoot.MethodName(MethodValue.Code);
-      if Result='' then
-        Result:='Unpublished';
-    end else
-      Result:='No LookupRoot'
-  else
-    Result := '';
-  //Result:=Designer.GetMethodName(GetMethodValue);
+  Result:=PropertyHook.GetMethodName(GetMethodValue);
 end;
 
 procedure TMethodPropertyEditor.GetValues(Proc: TGetStringProc);
 begin
-  // XXX
-  //Designer.GetMethods(GetTypeData(GetPropType), Proc);
+  PropertyHook.GetMethods(GetTypeData(GetPropType), Proc);
 end;
 
 procedure TMethodPropertyEditor.SetValue(const AValue: string);
 
   procedure CheckChainCall(const MethodName: string; Method: TMethod);
-  //var
-    //Persistent: TPersistent;
-    //Component: TComponent;
-    //InstanceMethod: string;
-    //Instance: TComponent;
+  var
+    Persistent: TPersistent;
+    Component: TComponent;
+    InstanceMethod: string;
+    Instance: TComponent;
   begin
-    {Persistent := GetComponent(0);
+    Persistent := GetComponent(0);
     if Persistent is TComponent then begin
       Component := TComponent(Persistent);
-      if (Component.Name <> '') and (Method.Data <> Designer.GetRoot) and
-        (TObject(Method.Data) is TComponent) then
+      if (Component.Name <> '')
+      and (TObject(Method.Data) <> PropertyHook.LookupRoot)
+      and (TObject(Method.Data) is TComponent) then
       begin
         Instance := TComponent(Method.Data);
         InstanceMethod := Instance.MethodName(Method.Code);
         if InstanceMethod <> '' then begin
-          // XXX
-          //Designer.ChainCall(MethodName, Instance.Name, InstanceMethod,
-          //  GetTypeData(GetPropType));
+          PropertyHook.ChainCall(MethodName, Instance.Name, InstanceMethod,
+            GetTypeData(GetPropType));
         end;
       end;
-    end;}
+    end;
   end;
 
-//var
-  //NewMethod: Boolean;
-  //CurValue: string;
-  //OldMethod: TMethod;
+var
+  NewMethod: Boolean;
+  CurValue: string;
+  OldMethod: TMethod;
+  NewMethodExists: boolean;
 begin
-  // XXX
-  exit;
-
-  {CurValue:= GetValue;
-  if (CurValue <> '') and (AValue <> '') and (SameText(CurValue, AValue) or
-    not Designer.MethodExists(AValue)) and not Designer.MethodFromAncestor(GetMethodValue) then
-    Designer.RenameMethod(CurValue, AValue)
+  CurValue:= GetValue;
+  NewMethodExists:=PropertyHook.MethodExists(AValue);
+  if (CurValue <> '') and (AValue <> '')
+  and (Uppercase(CurValue)<>UpperCase(AValue))
+  and (not NewMethodExists)
+  and (not PropertyHook.MethodFromAncestor(GetMethodValue)) then
+    PropertyHook.RenameMethod(CurValue, AValue)
   else
   begin
-    NewMethod := (AValue <> '') and not Designer.MethodExists(AValue);
+    NewMethod := (AValue <> '') and not NewMethodExists;
     OldMethod := GetMethodValue;
-    SetMethodValue(Designer.CreateMethod(AValue, GetTypeData(GetPropType)));
-    if NewMethod then
-    begin
-      if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil) then
+    SetMethodValue(PropertyHook.CreateMethod(AValue, GetTypeData(GetPropType)));
+    if NewMethod then begin
+      if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil)
+      then
         CheckChainCall(AValue, OldMethod);
-      Designer.ShowMethod(AValue);
+      PropertyHook.ShowMethod(AValue);
     end;
-  end; }
+  end;
 end;
 
 { TComponentPropertyEditor }
@@ -2344,8 +2456,8 @@ begin
   {if (GetKeyState(VK_CONTROL) < 0) and
      (GetKeyState(VK_LBUTTON) < 0) and
      (GetOrdValue <> 0) then begin
-    Designer.SelectComponent(TPersistent(GetOrdValue))
-  end else}
+    PropertyHook.SelectComponent(TPersistent(GetOrdValue))
+  end else        }
     inherited Edit;
 end;
 
@@ -2363,29 +2475,34 @@ function TComponentPropertyEditor.GetValue: string;
 var Component: TComponent;
 begin
   Component:=TComponent(GetOrdValue);
-  // XXX workaround til TFormEditor can do this
-  //Result:=Designer.GetComponentName(Component);
-  if Assigned(Component) then
-    Result:=Component.Name
-  else
-    Result:='';
+  if Assigned(PropertyHook) then begin
+    Result:=PropertyHook.GetComponentName(Component);
+  end else begin
+    if Assigned(Component) then
+      Result:=Component.Name
+    else
+      Result:='';
+  end;
 end;
 
 procedure TComponentPropertyEditor.GetValues(Proc: TGetStringProc);
 begin
-  {Designer.GetComponentNames(GetTypeData(GetPropType), Proc);}
+  PropertyHook.GetComponentNames(GetTypeData(GetPropType), Proc);
 end;
 
 procedure TComponentPropertyEditor.SetValue(const NewValue: string);
-{var Component: TComponent;}
+var Component: TComponent;
 begin
-  {if NewValue = '' then Component := nil else
+  if NewValue = '' then Component := nil else
   begin
-    Component := Designer.GetComponent(Value);
-    if not (Component is GetTypeData(GetPropType)^.ClassType) then
-      raise EPropertyError.CreateRes(@SInvalidPropertyValue);
+    Component := PropertyHook.GetComponent(NewValue);
+    if not (Component is GetTypeData(GetPropType)^.ClassType) then begin
+      // XXX
+      //raise EPropertyError.CreateRes(@SInvalidPropertyValue);
+      exit;
+    end;
   end;
-  SetOrdValue(Longint(Component));}
+  SetOrdValue(Longint(Component));
 end;
 
 { TComponentNamePropertyEditor }
@@ -2777,7 +2894,9 @@ begin
   Result := [paMultiSelect, paAutoUpdate, paRevertable];
 end;
 
+
 //==============================================================================
+
 
 { TComponentSelectionList }
 
@@ -2851,6 +2970,163 @@ begin
   for a:=0 to FComponents.Count-1 do
     if Items[a]<>SourceSelectionList[a] then exit;
   Result:=true;
+end;
+
+
+//==============================================================================
+
+
+{ TPropertyEditorHook }
+
+function TPropertyEditorHook.CreateMethod(const Name:Shortstring;
+TypeData:PTypeData): TMethod;
+begin
+  if Assigned(FOnCreateMethod) then
+    Result:=FOnCreateMethod(Name,TypeData)
+  else begin
+    Result.Code:=nil;
+    Result.Data:=nil;
+  end;
+end;
+
+function TPropertyEditorHook.GetMethodName(const Method:TMethod): SHortString;
+begin
+  if Assigned(FOnGetMethodName) then
+    Result:=FOnGetMethodName(Method)
+  else begin
+    if Assigned(Method.Code) then
+      if Assigned(LookupRoot) then begin
+        Result:=LookupRoot.MethodName(Method.Code);
+        if Result='' then
+          Result:='Unpublished';
+      end else
+        Result:='No LookupRoot';
+  end;
+end;
+
+procedure TPropertyEditorHook.GetMethods(TypeData:PTypeData; Proc:TGetStringProc);
+begin
+  if Assigned(FOnGetMethods) then
+    FOnGetMethods(TypeData,Proc);
+end;
+
+function TPropertyEditorHook.MethodExists(const Name:Shortstring):boolean;
+begin
+  if Assigned(FOnMethodExists) then
+    Result:=FOnMethodExists(Name)
+  else
+    Result:=false;
+end;
+
+procedure TPropertyEditorHook.RenameMethod(const CurName, NewName:ShortString);
+begin
+  if Assigned(FOnRenameMethod) then
+    FOnRenameMethod(CurName,NewName);
+end;
+
+procedure TPropertyEditorHook.ShowMethod(const Name:Shortstring);
+begin
+  if Assigned(FOnShowMethod) then
+    FOnShowMethod(Name);
+end;
+
+function TPropertyEditorHook.MethodFromAncestor(const Method:TMethod):boolean;
+begin
+  if Assigned(FOnMethodFromAncestor) then
+    Result:=FOnMethodFromAncestor(Method)
+  else
+    Result:=false;
+end;
+
+procedure TPropertyEditorHook.ChainCall(const AMethodName, InstanceName,
+InstanceMethod:Shortstring;  TypeData:PTypeData);
+begin
+  if Assigned(FOnChainCall) then
+    FOnChainCall(AMethodName,InstanceName,InstanceMethod,TypeData);
+end;
+
+function TPropertyEditorHook.GetComponent(const Name:Shortstring):TComponent;
+begin
+  if Assigned(FOnGetComponent) then
+    Result:=FOnGetComponent(Name)
+  else
+    Result:=nil;
+end;
+
+function TPropertyEditorHook.GetComponentName(
+AComponent:TComponent):Shortstring;
+begin
+  if Assigned(FOnGetComponentName) then
+    Result:=FOnGetComponentName(AComponent)
+  else begin
+   if Assigned(AComponent) then
+     Result:=AComponent.Name
+   else
+     Result:='';
+  end;
+end;
+
+procedure TPropertyEditorHook.GetComponentNames(TypeData:PTypeData;
+Proc:TGetStringProc);
+begin
+  if Assigned(FOnGetComponentNames) then
+    FOnGetComponentNames(TypeData,Proc);
+end;
+
+function TPropertyEditorHook.GetRootClassName:Shortstring;
+begin
+  if Assigned(FOnGetRootClassName) then begin
+    Result:=FOnGetRootClassName();
+  end else begin
+    if Assigned(LookupRoot) then
+      Result:=LookupRoot.ClassName
+    else
+      Result:='';
+  end;
+end;
+
+function TPropertyEditorHook.GetObject(const Name:Shortstring):TPersistent;
+begin
+  if Assigned(FOnGetObject) then
+    Result:=FOnGetObject(Name)
+  else
+    Result:=nil;
+end;
+
+function TPropertyEditorHook.GetObjectName(Instance:TPersistent):Shortstring;
+begin
+  if Assigned(FOnGetObjectName) then
+    Result:=FOnGetObjectName(Instance)
+  else
+    Result:='';
+end;
+
+procedure TPropertyEditorHook.GetObjectNames(TypeData:PTypeData;
+Proc:TGetStringProc);
+begin
+  if Assigned(FOnGetObjectNames) then
+    FOnGetObjectNames(TypeData,Proc);
+end;
+
+procedure TPropertyEditorHook.Modified;
+begin
+  if Assigned(FOnModified) then
+    FOnModified();
+end;
+
+procedure TPropertyEditorHook.Revert(Instance:TPersistent;
+PropInfo:PPropInfo);
+begin
+  if Assigned(FOnRevert) then
+    FOnRevert(Instance,PropInfo);
+end;
+
+procedure TPropertyEditorHook.SetLookupRoot(AComponent:TComponent);
+begin
+  if FLookupRoot=AComponent then exit;
+  FLookupRoot:=AComponent;
+  if Assigned(FOnChangeLookupRoot) then
+    FOnChangeLookupRoot();
 end;
 
 

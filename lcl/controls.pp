@@ -617,6 +617,7 @@ TCMDialogKey = TLMKEY;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
+    Procedure GetChildren(Proc : TGetChildProc; Root : TComponent); override;
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var Message: TLMPaint);
     procedure PaintWindow(DC: HDC); virtual;
@@ -1123,6 +1124,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2000/12/20 17:35:58  lazarus
+  Added GetChildren
+  Shane
+
   Revision 1.6  2000/12/01 15:50:39  lazarus
   changed the TCOmponentInterface SetPropByName.  It works for a few properties, but not all.
   Shane
