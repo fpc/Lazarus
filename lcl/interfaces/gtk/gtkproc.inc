@@ -658,8 +658,12 @@ end;
 
 procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
 begin
+  if (ChildWidget=nil) then
+    raise Exception.Create('SetMainWidget ChildWidget=nil');
+  if (ParentWidget=ChildWidget) then
+    raise Exception.Create('SetMainWidget ChildWidget=ParentWidget');
   if (ParentWidget <> nil) and (ChildWidget <> nil) then
-  gtk_object_set_data(ChildWidget, 'Main', ParentWidget);
+    gtk_object_set_data(ChildWidget, 'Main', ParentWidget);
 end;
 
 { ------------------------------------------------------------------------------
@@ -681,6 +685,10 @@ procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
 begin
 //writeln('[gtkproc: SetFixedWidget] Parent=',HexStr(Cardinal(ParentWidget),8),
 //' Fixed=',HexStr(Cardinal(FixedWidget),8));
+  if (ParentWidget=nil) then
+    raise Exception.Create('SetFixedWidget ParentWidget=nil');
+  if (ParentWidget=FixedWidget) then
+    raise Exception.Create('SetFixedWidget FixedWidget=ParentWidget');
   if (ParentWidget <> nil) and (FixedWidget <> nil) then
     gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget);
 end;
@@ -899,11 +907,17 @@ end;
  ------------------------------------------------------------------------------}
 procedure SetCursor(AWinControl : TWinControl);
 
+  procedure DoSetCursor(AWindow: PGdkWindow; Cursor: pGDKCursor);
+  begin
+    if Cursor<>nil then
+      gdk_window_set_cursor(AWindow, Cursor);
+  end;
+
   procedure SetDesigningCursor(AWindow: PGdkWindow);
   var
     ChildWindows, ListEntry: PGList;
   begin
-    gdk_window_set_cursor(AWindow, Cursor_StdArrow);
+    DoSetCursor(AWindow, Cursor_StdArrow);
     
     ChildWindows:=gdk_window_get_children(AWindow);
     ListEntry:=ChildWindows;
@@ -937,19 +951,19 @@ begin
     if AWindow=nil then exit;
 
     case AWinControl.Cursor of
-    crAppStart : gdk_window_set_cursor (AWindow, Cursor_Watch);
-    crArrow    : gdk_window_set_cursor (AWindow, Cursor_Arrow);
-    crCross    : gdk_window_set_cursor (AWindow, Cursor_Cross);
-    crHandPoint: gdk_window_set_cursor (AWindow, Cursor_hand1);
-    crIBeam    : gdk_window_set_cursor (AWindow, Cursor_XTerm);
-    crHourGlass: gdk_window_set_cursor (AWindow, Cursor_Watch);
-    crDefault  : gdk_window_set_cursor (AWindow, Cursor_StdArrow);
-    crHSplit   : gdk_window_set_cursor (AWindow, Cursor_HSplit);
-    crVSplit   : gdk_window_set_cursor (AWindow, Cursor_VSplit);
-    crSizeNWSE : gdk_window_set_cursor (AWindow, Cursor_SizeNWSE);
-    crSizeNS   : gdk_window_set_cursor (AWindow, Cursor_SizeNS);
-    crSizeNESW : gdk_window_set_cursor (AWindow, Cursor_SizeNESW);
-    crSizeWE   : gdk_window_set_cursor (AWindow, Cursor_SizeWE);
+    crAppStart : DoSetCursor (AWindow, Cursor_Watch);
+    crArrow    : DoSetCursor (AWindow, Cursor_Arrow);
+    crCross    : DoSetCursor (AWindow, Cursor_Cross);
+    crHandPoint: DoSetCursor (AWindow, Cursor_hand1);
+    crIBeam    : DoSetCursor (AWindow, Cursor_XTerm);
+    crHourGlass: DoSetCursor (AWindow, Cursor_Watch);
+    crDefault  : DoSetCursor (AWindow, Cursor_StdArrow);
+    crHSplit   : DoSetCursor (AWindow, Cursor_HSplit);
+    crVSplit   : DoSetCursor (AWindow, Cursor_VSplit);
+    crSizeNWSE : DoSetCursor (AWindow, Cursor_SizeNWSE);
+    crSizeNS   : DoSetCursor (AWindow, Cursor_SizeNS);
+    crSizeNESW : DoSetCursor (AWindow, Cursor_SizeNESW);
+    crSizeWE   : DoSetCursor (AWindow, Cursor_SizeWE);
     else
       Exit;
     end;
@@ -1080,6 +1094,111 @@ begin
   if (AWinControl=nil) or (not AWinControl.HandleAllocated) then exit;
   MainWidget:=PGtkWidget(AWinControl.Handle);
   ConnectHiddenChilds(MainWidget);
+end;
+
+{-------------------------------------------------------------------------------
+  procedure SetEventMaskForDesigning(MainWidget: PGtkWidget);
+  
+  Sets the event mask for all gtk internal gdkwindows to prevent gtk automatic
+  reaction to mouse and keyboard events.
+-------------------------------------------------------------------------------}
+procedure SetEventMaskForDesigning(MainWidget: PGtkWidget);
+var
+  TheWinControl: TWinControl;
+  PreparedWindows: TList;
+
+  function WindowIsPrepared(AWindow: PGdkWindow): boolean;
+  begin
+    Result:=(AWindow<>nil)
+           and (PreparedWindows<>nil) and (PreparedWindows.IndexOf(AWindow)>=0);
+  end;
+
+  procedure AddWindow(AWindow: PGdkWindow);
+  begin
+    if AWindow=nil then exit;
+    if WindowIsPrepared(AWindow) then exit;
+    if PreparedWindows=nil then
+      PreparedWindows:=TList.Create;
+    PreparedWindows.Add(AWindow);
+  end;
+  
+  procedure AddWidgetWindow(AWidget: PGtkWidget);
+  begin
+    if (AWidget<>nil) then AddWindow(AWidget^.Window);
+  end;
+  
+  procedure AddStandardWindows;
+  var
+    i: integer;
+    AWinControl: TWinControl;
+    ClientWidget, CoreChildWidget: PGtkWidget;
+  begin
+    AddWidgetWindow(MainWidget);
+    ClientWidget:=GetFixedWidget(MainWidget);
+    AddWidgetWindow(ClientWidget);
+    CoreChildWidget:=GetCoreChildWidget(MainWidget);
+    AddWidgetWindow(CoreChildWidget);
+    for i:=0 to TheWinControl.ComponentCount-1 do begin
+      if TheWinControl.Components[i] is TWinControl then begin
+        AWinControl:=TWinControl(TheWinControl.Components[i]);
+        if AWinControl.HandleAllocated then begin
+          AddWidgetWindow(PGtkWidget(AWinControl.Handle));
+        end;
+      end;
+    end;
+  end;
+
+  procedure PrepareWindow(AWindow: PGdkWindow);
+  var
+    NewEventMask: TGdkEventMask;
+  begin
+    if AWindow=nil then exit;
+    if WindowIsPrepared(AWindow) then exit;
+writeln('AAA1 SetEventMaskForDesigning ',TheWinControl.Name,':',TheWinControl.ClassName,
+' Window=',HexStr(Cardinal(AWindow),8));
+    NewEventMask:=gdk_window_get_events(AWindow)
+                  -GDK_BUTTON_PRESS_MASK
+                  -GDK_POINTER_MOTION_MASK
+                  -GDK_BUTTON_RELEASE_MASK;
+    gdk_window_set_events(AWindow,NewEventMask);
+    AddWindow(AWindow);
+  end;
+
+  procedure PrepareChildWindows(AWindow: PGdkWindow);
+  var
+    ChildWindows, ListEntry: PGList;
+  begin
+    if AWindow=nil then exit;
+    PrepareWindow(AWindow);
+
+    ChildWindows:=gdk_window_get_children(AWindow);
+    ListEntry:=ChildWindows;
+    while ListEntry<>nil do begin
+      PrepareChildWindows(PGdkWindow(ListEntry^.Data));
+      ListEntry:=ListEntry^.Next;
+    end;
+    g_list_free(ChildWindows);
+  end;
+
+var
+  AWidget: PGtkWidget;
+begin
+  TheWinControl:=TWinControl(GetLCLObject(MainWidget));
+  AWidget:=GetMainWidget(MainWidget);
+  if (AWidget<>nil) and (AWidget<>MainWidget) then
+    raise Exception.Create(
+      'SetEventMaskForDesigning Widget '+HexStr(Cardinal(MainWidget),8)
+        +' is not the MainWidget '+HexStr(Cardinal(AWidget),8));
+  if (TheWinControl=nil) then
+    raise Exception.Create(
+      'SetEventMaskForDesigning MainWidget has no LCL Object');
+  {if not (csDesigning in TheWinControl.ComponentState) then
+    raise Exception.Create(
+      'SetEventMaskForDesigning MainWidget is not in Design mode');}
+  PreparedWindows:=nil;
+  AddStandardWindows;
+  PrepareChildWindows(MainWidget^.Window);
+  PreparedWindows.Free;
 end;
 
 // ----------------------------------------------------------------------
@@ -1668,6 +1787,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.56  2002/08/05 07:43:29  lazarus
+  MG: fixed BadCursor bug and Circle Reference of FixedWidget of csPanel
+
   Revision 1.55  2002/08/04 07:09:29  lazarus
   MG: fixed client events
 
