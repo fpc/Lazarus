@@ -207,9 +207,11 @@ const
   ClassPartInsertPolicyNames: array[TClassPartInsertPolicy] of shortstring = (
       'Alphabetically', 'Last'
     );
+    
   MethodInsertPolicyNames: array[TMethodInsertPolicy] of shortstring = (
       'Alphabetically', 'Last', 'ClassOrder'
     );
+    
   ForwardProcInsertPolicyNames: array[TForwardProcInsertPolicy] of shortstring =
     ('Last', 'InFrontOfMethods', 'BehindMethods');
     

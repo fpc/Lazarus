@@ -52,8 +52,11 @@ type
   protected
     procedure RemoveCorrespondingProcNodes(Tree1, Tree2: TAVLTree;
         KeepTree1: boolean);
+    procedure IntersectProcNodes(Tree1, Tree2: TAVLTree; AddLink: boolean);
     function FindProcNodeInTreeWithName(ATree: TAVLTree;
         const UpperProcName: string): TCodeTreeNode;
+    function FindAVLNodeWithNode(AVLTree: TAVLTree;
+        Node: TCodeTreeNode): TAVLTreeNode;
   public
     function FindJumpPoint(CursorPos: TCodeXYPosition;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
@@ -118,6 +121,45 @@ begin
   end;
 end;
 
+procedure TMethodJumpingCodeTool.IntersectProcNodes(Tree1, Tree2: TAVLTree;
+  AddLink: boolean);
+var
+  AVLNode1, NextAVLNode1, AVLNode2: TAVLTreeNode;
+  NodeExt1, NodeExt2: TCodeTreeNodeExtension;
+  cmp: integer;
+begin
+  AVLNode1:=Tree1.FindLowest;
+  AVLNode2:=Tree2.FindLowest;
+  while AVLNode1<>nil do begin
+    NextAVLNode1:=Tree1.FindSuccessor(AVLNode1);
+    NodeExt1:=TCodeTreeNodeExtension(AVLNode1.Data);
+    if AVLNode2<>nil then begin
+      NodeExt2:=TCodeTreeNodeExtension(AVLNode2.Data);
+      cmp:=CompareTextIgnoringSpace(NodeExt1.Txt,NodeExt2.Txt,false);
+      if cmp<0 then begin
+        // node of tree1 does not exists in tree2
+        // -> delete
+        Tree1.FreeAndDelete(AVLNode1);
+      end else if cmp=0 then begin
+        // node of tree1 exists in tree2
+        if AddLink then
+          NodeExt1.Data:=AVLNode2;
+        AVLNode2:=Tree2.FindSuccessor(AVLNode2);
+      end else begin
+        // node of tree2 does not exists in tree1
+        // -> skip node of tree2
+        AVLNode2:=Tree2.FindSuccessor(AVLNode2);
+        continue;
+      end;
+    end else begin
+      // node of tree1 does not exists in tree2
+      // -> delete
+      Tree1.FreeAndDelete(AVLNode1);
+    end;
+    AVLNode1:=NextAVLNode1;
+  end;
+end;
+
 function TMethodJumpingCodeTool.FindProcNodeInTreeWithName(ATree: TAVLTree;
   const UpperProcName: string): TCodeTreeNode;
 var AnAVLNode: TAVLTreeNode;
@@ -134,6 +176,18 @@ begin
     AnAVLNode:=ATree.FindSuccessor(AnAVLNode);
   end;
   Result:=nil;
+end;
+
+function TMethodJumpingCodeTool.FindAVLNodeWithNode(AVLTree: TAVLTree;
+  Node: TCodeTreeNode): TAVLTreeNode;
+begin
+  if (AVLTree=nil) or (Node=nil) then begin
+    Result:=nil;
+    exit;
+  end;
+  Result:=AVLTree.FindLowest;
+  while (Result<>nil) and (TCodeTreeNodeExtension(Result.Data).Node<>Node) do
+    Result:=AVLTree.FindSuccessor(Result);
 end;
 
 function TMethodJumpingCodeTool.FindJumpPoint(CursorPos: TCodeXYPosition;

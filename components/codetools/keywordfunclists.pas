@@ -577,6 +577,7 @@ begin
   with IsKeyWordProcedureBracketSpecifier do begin
     Add('ALIAS'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PUBLIC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('EXTERNAL'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INTERNPROC'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INTERNCONST'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SAVEREGISTERS',{$ifdef FPC}@{$endif}AllwaysTrue);

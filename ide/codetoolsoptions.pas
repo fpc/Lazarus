@@ -55,6 +55,9 @@ type
     FCompleteProperties: boolean;
     FLineLength: integer;
     FClassPartInsertPolicy: TClassPartInsertPolicy;
+    FMixMethodsAndPorperties: boolean;
+    FForwardProcInsertPolicy: TForwardProcInsertPolicy;
+    FKeepForwardProcOrder: boolean;
     FMethodInsertPolicy: TMethodInsertPolicy;
     FKeyWordPolicy : TWordPolicy;
     FIdentifierPolicy: TWordPolicy;
@@ -98,6 +101,12 @@ type
     property LineLength: integer read FLineLength write FLineLength;
     property ClassPartInsertPolicy: TClassPartInsertPolicy
       read FClassPartInsertPolicy write FClassPartInsertPolicy;
+    property MixMethodsAndPorperties: boolean
+      read FMixMethodsAndPorperties write FMixMethodsAndPorperties;
+    property ForwardProcInsertPolicy: TForwardProcInsertPolicy
+      read FForwardProcInsertPolicy write FForwardProcInsertPolicy;
+    property KeepForwardProcOrder: boolean
+      read FKeepForwardProcOrder write FKeepForwardProcOrder;
     property MethodInsertPolicy: TMethodInsertPolicy
       read FMethodInsertPolicy write FMethodInsertPolicy;
     property KeyWordPolicy : TWordPolicy
@@ -137,9 +146,10 @@ type
     
     // Code Creation
     ClassPartInsertPolicyRadioGroup: TRadioGroup;
+    MixMethodsAndPorpertiesCheckBox: TCheckBox;
     MethodInsertPolicyRadioGroup: TRadioGroup;
-    KeyWordPolicyRadioGroup: TRadioGroup;
-    IdentifierPolicyRadioGroup: TRadioGroup;
+    ForwardProcsInsertPolicyRadioGroup: TRadioGroup;
+    ForwardProcsKeepOrderCheckBox: TCheckBox;
     PropertyCompletionGroupBox: TGroupBox;
     PropertyCompletionCheckBox: TCheckBox;
     PropertyReadIdentPrefixLabel: TLabel;
@@ -152,6 +162,10 @@ type
     PrivatVariablePrefixEdit: TEdit;
     SetPropertyVariablenameLabel: TLabel;
     SetPropertyVariablenameEdit: TEdit;
+
+    // words
+    KeyWordPolicyRadioGroup: TRadioGroup;
+    IdentifierPolicyRadioGroup: TRadioGroup;
 
     // Line Splitting
     LineLengthLabel: TLabel;
@@ -178,12 +192,14 @@ type
   private
     FOnGetSynEditSettings: TNotifyEvent;
     BeautifyCodeOptions: TBeautifyCodeOptions;
-    procedure SetupGeneralPage;
-    procedure SetupCodeCreationPage;
-    procedure SetupLineSplittingPage;
-    procedure SetupSpacePage;
+    procedure SetupGeneralPage(PageID: integer);
+    procedure SetupCodeCreationPage(PageID: integer);
+    procedure SetupWordsPage(PageID: integer);
+    procedure SetupLineSplittingPage(PageID: integer);
+    procedure SetupSpacePage(PageID: integer);
     procedure ResizeGeneralPage;
     procedure ResizeCodeCreationPage;
+    procedure ResizeWordsPage;
     procedure ResizeLineSplittingPage;
     procedure ResizeSpacePage;
     procedure CreateAtomCheckBoxes(ParentGroupBox: TGroupBox;
@@ -336,6 +352,14 @@ begin
     FClassPartInsertPolicy:=ClassPartPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/ClassPartInsertPolicy/Value',
       ClassPartInsertPolicyNames[cpipAlphabetically]));
+    FMixMethodsAndPorperties:=XMLConfig.GetValue(
+      'CodeToolsOptions/MixMethodsAndPorperties/Value',false);
+    FForwardProcInsertPolicy:=ForwardProcInsertPolicyNameToPolicy(
+      XMLConfig.GetValue('CodeToolsOptions/ForwardProcInsertPolicy/Value',
+        ForwardProcInsertPolicyNames[fpipInFrontOfMethods]));
+    FKeepForwardProcOrder:=XMLConfig.GetValue(
+      'CodeToolsOptions/KeepForwardProcOrder/Value',true);
+
     FMethodInsertPolicy:=MethodInsertPolicyNameToPolicy(XMLConfig.GetValue(
       'CodeToolsOptions/MethodInsertPolicy/Value',
       MethodInsertPolicyNames[mipClassOrder]));
@@ -399,6 +423,12 @@ begin
       'CodeToolsOptions/LineLengthXMLConfig/Value',FLineLength);
     XMLConfig.SetValue('CodeToolsOptions/ClassPartInsertPolicy/Value',
       ClassPartInsertPolicyNames[FClassPartInsertPolicy]);
+    XMLConfig.SetValue(
+      'CodeToolsOptions/MixMethodsAndPorperties/Value',FMixMethodsAndPorperties);
+    XMLConfig.SetValue('CodeToolsOptions/ForwardProcInsertPolicy/Value',
+      ForwardProcInsertPolicyNames[FForwardProcInsertPolicy]);
+    XMLConfig.SetValue(
+      'CodeToolsOptions/KeepForwardProcOrder/Value',FKeepForwardProcOrder);
     XMLConfig.SetValue('CodeToolsOptions/MethodInsertPolicy/Value',
       MethodInsertPolicyNames[FMethodInsertPolicy]);
     XMLConfig.SetValue('CodeToolsOptions/KeyWordPolicy/Value',
@@ -464,6 +494,9 @@ begin
     // CodeCreation
     FLineLength:=CodeToolsOpts.FLineLength;
     FClassPartInsertPolicy:=CodeToolsOpts.FClassPartInsertPolicy;
+    FMixMethodsAndPorperties:=CodeToolsOpts.MixMethodsAndPorperties;
+    FForwardProcInsertPolicy:=CodeToolsOpts.ForwardProcInsertPolicy;
+    FKeepForwardProcOrder:=CodeToolsOpts.KeepForwardProcOrder;
     FMethodInsertPolicy:=CodeToolsOpts.FMethodInsertPolicy;
     FKeyWordPolicy:=CodeToolsOpts.FKeyWordPolicy;
     FIdentifierPolicy:=CodeToolsOpts.FIdentifierPolicy;
@@ -495,6 +528,9 @@ begin
   FCompleteProperties:=true;
   FLineLength:=80;
   FClassPartInsertPolicy:=cpipLast;
+  FMixMethodsAndPorperties:=false;
+  FForwardProcInsertPolicy:=fpipInFrontOfMethods;
+  FKeepForwardProcOrder:=true;
   FMethodInsertPolicy:=mipClassOrder;
   FKeyWordPolicy:=wpLowerCase;
   FIdentifierPolicy:=wpNone;
@@ -523,6 +559,9 @@ begin
     // CodeCreation
     and (FLineLength=CodeToolsOpts.FLineLength)
     and (FClassPartInsertPolicy=CodeToolsOpts.FClassPartInsertPolicy)
+    and (FMixMethodsAndPorperties=CodeToolsOpts.MixMethodsAndPorperties)
+    and (FForwardProcInsertPolicy=CodeToolsOpts.ForwardProcInsertPolicy)
+    and (FKeepForwardProcOrder=CodeToolsOpts.KeepForwardProcOrder)
     and (FMethodInsertPolicy=CodeToolsOpts.FMethodInsertPolicy)
     and (FKeyWordPolicy=CodeToolsOpts.FKeyWordPolicy)
     and (FIdentifierPolicy=CodeToolsOpts.FIdentifierPolicy)
@@ -559,6 +598,9 @@ begin
   with Boss.SourceChangeCache do begin
     BeautifyCodeOptions.LineLength:=LineLength;
     BeautifyCodeOptions.ClassPartInsertPolicy:=ClassPartInsertPolicy;
+    BeautifyCodeOptions.MixMethodsAndPorperties:=MixMethodsAndPorperties;
+    BeautifyCodeOptions.ForwardProcInsertPolicy:=ForwardProcInsertPolicy;
+    BeautifyCodeOptions.KeepForwardProcOrder:=KeepForwardProcOrder;
     BeautifyCodeOptions.MethodInsertPolicy:=MethodInsertPolicy;
     BeautifyCodeOptions.KeyWordPolicy:=KeyWordPolicy;
     BeautifyCodeOptions.IdentifierPolicy:=IdentifierPolicy;
@@ -594,17 +636,19 @@ begin
       if PageCount>0 then
         Pages[0]:=lisMenuInsertGeneral
       else
-        Pages.Add(lisMenuInsertGeneral);;//by VVI - using first phrase, otherwise we''ll encounter a problem with .po 
+        Pages.Add(lisMenuInsertGeneral);//by VVI - using first phrase, otherwise we''ll encounter a problem with .po
 	
       Pages.Add(dlgCodeCreation);
-      Pages.Add(dlgLineSplitting );
+      Pages.Add(dlgWordsPolicies);
+      Pages.Add(dlgLineSplitting);
       Pages.Add(dlgSpaceNotCosmos);
     end;
 
-    SetupGeneralPage;
-    SetupCodeCreationPage;
-    SetupLineSplittingPage;
-    SetupSpacePage;
+    SetupGeneralPage(0);
+    SetupCodeCreationPage(1);
+    SetupWordsPage(2);
+    SetupLineSplittingPage(3);
+    SetupSpacePage(4);
 
     NoteBook.Show;
 
@@ -645,12 +689,12 @@ begin
   inherited Destroy;
 end;
 
-procedure TCodeToolsOptsDlg.SetupGeneralPage;
+procedure TCodeToolsOptsDlg.SetupGeneralPage(PageID: integer);
 begin
   SrcPathGroupBox:=TGroupBox.Create(Self);
   with SrcPathGroupBox do begin
     Name:='SrcPathGroupBox';
-    Parent:=NoteBook.Page[0];
+    Parent:=NoteBook.Page[PageID];
     SetBounds(8,7,Self.ClientWidth-20,51);
     Caption:=dlgAdditionalSrcPath ;
     Visible:=true;
@@ -667,7 +711,7 @@ begin
   JumpingGroupBox:=TGroupBox.Create(Self);
   with JumpingGroupBox do begin
     Name:='JumpingGroupBox';
-    Parent:=NoteBook.Page[0];
+    Parent:=NoteBook.Page[PageID];
     SetBounds(8,SrcPathGroupBox.Top+SrcPathGroupBox.Height+7,
       SrcPathGroupBox.Width,95);
     Caption:=dlgJumpingETC;
@@ -707,15 +751,14 @@ begin
   end;
 end;
 
-procedure TCodeToolsOptsDlg.SetupCodeCreationPage;
+procedure TCodeToolsOptsDlg.SetupCodeCreationPage(PageID: integer);
 begin
   ClassPartInsertPolicyRadioGroup:=TRadioGroup.Create(Self);
   with ClassPartInsertPolicyRadioGroup do begin
     Name:='ClassPartInsertPolicyRadioGroup';
-    Parent:=NoteBook.Page[1];
-    SetBounds(8,6,
-      (Self.ClientWidth div 2)-12,80);
-    Caption:=dlgClassInsertPolicy ;
+    Parent:=NoteBook.Page[PageID];
+    SetBounds(8,6,(Self.ClientWidth div 2)-12,70);
+    Caption:=dlgClassInsertPolicy;
     with Items do begin
       BeginUpdate;
       Add(dlgAlphabetically);
@@ -724,17 +767,28 @@ begin
     end;
     Visible:=true;
   end;
+  
+  MixMethodsAndPorpertiesCheckBox:=TCheckBox.Create(Self);
+  with MixMethodsAndPorpertiesCheckBox do begin
+    Name:='MixMethodsAndPorpertiesCheckBox';
+    Parent:=NoteBook.Page[PageID];
+    SetBounds(ClassPartInsertPolicyRadioGroup.Left,
+       ClassPartInsertPolicyRadioGroup.Top+ClassPartInsertPolicyRadioGroup.Height+5,
+       ClassPartInsertPolicyRadioGroup.Width,Height);
+    Caption:=dlgMixMethodsAndProperties;
+    Visible:=true;
+  end;
 
   MethodInsertPolicyRadioGroup:=TRadioGroup.Create(Self);
   with MethodInsertPolicyRadioGroup do begin
     Name:='MethodInsertPolicyRadioGroup';
-    Parent:=NoteBook.Page[1];
-    SetBounds(ClassPartInsertPolicyRadioGroup.Left
-      +ClassPartInsertPolicyRadioGroup.Width+8,
-      ClassPartInsertPolicyRadioGroup.Top,
+    Parent:=NoteBook.Page[PageID];
+    SetBounds(ClassPartInsertPolicyRadioGroup.Left,
+      MixMethodsAndPorpertiesCheckBox.Top
+      +MixMethodsAndPorpertiesCheckBox.Height+10,
       ClassPartInsertPolicyRadioGroup.Width,
-      ClassPartInsertPolicyRadioGroup.Height);
-    Caption:=dlgMethodInsPolicy ;
+      100);
+    Caption:=dlgMethodInsPolicy;
     with Items do begin
       BeginUpdate;
       Add(dlgAlphabetically);
@@ -745,55 +799,45 @@ begin
     Visible:=true;
   end;
 
-  KeyWordPolicyRadioGroup:=TRadioGroup.Create(Self);
-  with KeyWordPolicyRadioGroup do begin
-    Name:='KeyWordPolicyRadioGroup';
-    Parent:=NoteBook.Page[1];
-    SetBounds(ClassPartInsertPolicyRadioGroup.Left,
-      ClassPartInsertPolicyRadioGroup.Top
-       +ClassPartInsertPolicyRadioGroup.Height+7,
-      (Self.ClientWidth div 2)-12,100);
-    Caption:=dlgKeywordPolicy ;
+  ForwardProcsInsertPolicyRadioGroup:=TRadioGroup.Create(Self);
+  with ForwardProcsInsertPolicyRadioGroup do begin
+    Name:='ForwardProcsInsertPolicyRadioGroup';
+    Parent:=NoteBook.Page[PageID];;
+    SetBounds(ClassPartInsertPolicyRadioGroup.Left
+         +ClassPartInsertPolicyRadioGroup.Width+8,
+       ClassPartInsertPolicyRadioGroup.Top,
+       ClassPartInsertPolicyRadioGroup.Width,100);
+    Caption:=dlgForwardProcsInsertPolicy;
     with Items do begin
       BeginUpdate;
-      Add(dlgEnvNone);
-      Add(dlgCDTLower);
-      Add(dlgCDTUPPERCASE);
-      Add(dlg1UP2low);
+      Add(dlgLast);
+      Add(dlgInFrontOfMethods);
+      Add(dlgBehindMethods);
       EndUpdate;
     end;
-    OnClick:=@UpdateExamples;
-    Visible:=true;
-  end;
-
-  IdentifierPolicyRadioGroup:=TRadioGroup.Create(Self);
-  with IdentifierPolicyRadioGroup do begin
-    Name:='IdentifierPolicyRadioGroup';
-    Parent:=NoteBook.Page[1];
-    SetBounds(KeyWordPolicyRadioGroup.Left+KeyWordPolicyRadioGroup.Width+8,
-      KeyWordPolicyRadioGroup.Top,
-      KeyWordPolicyRadioGroup.Width,KeyWordPolicyRadioGroup.Height);
-    Caption:=dlgIdentifierPolicy;
-    with Items do begin
-      BeginUpdate;
-      Add(dlgEnvNone);
-      Add(dlgCDTLower);
-      Add(dlgCDTUPPERCASE);
-      Add(dlg1UP2low);
-      EndUpdate;
-    end;
-    OnClick:=@UpdateExamples;
     Visible:=true;
   end;
   
+  ForwardProcsKeepOrderCheckBox:=TCheckBox.Create(Self);
+  with ForwardProcsKeepOrderCheckBox do begin
+    Name:='ForwardProcsKeepOrderCheckBox';
+    Parent:=NoteBook.Page[PageID];;
+    SetBounds(ForwardProcsInsertPolicyRadioGroup.Left,
+       ForwardProcsInsertPolicyRadioGroup.Top
+         +ForwardProcsInsertPolicyRadioGroup.Height+5,
+       ForwardProcsInsertPolicyRadioGroup.Width,Height);
+    Caption:=dlgForwardProcsKeepOrder;
+    Visible:=true;
+  end;
+
   PropertyCompletionGroupBox:=TGroupBox.Create(Self);
   with PropertyCompletionGroupBox do begin
     Name:='PropertyCompletionGroupBox';
-    Parent:=NoteBook.Page[1];
-    SetBounds(KeyWordPolicyRadioGroup.Left,
-      KeyWordPolicyRadioGroup.Top+KeyWordPolicyRadioGroup.Height+7,
+    Parent:=NoteBook.Page[PageID];
+    SetBounds(ClassPartInsertPolicyRadioGroup.Left,
+      MethodInsertPolicyRadioGroup.Top+MethodInsertPolicyRadioGroup.Height+7,
       Self.ClientWidth-20,125);
-    Caption:=dlgPropertyCompletion ;
+    Caption:=dlgPropertyCompletion;
     Visible:=true;
   end;
 
@@ -906,12 +950,54 @@ begin
   end;
 end;
 
-procedure TCodeToolsOptsDlg.SetupLineSplittingPage;
+procedure TCodeToolsOptsDlg.SetupWordsPage(PageID: integer);
+begin
+  KeyWordPolicyRadioGroup:=TRadioGroup.Create(Self);
+  with KeyWordPolicyRadioGroup do begin
+    Name:='KeyWordPolicyRadioGroup';
+    Parent:=NoteBook.Page[PageID];
+    SetBounds(8,6,
+      (Self.ClientWidth div 2)-12,120);
+    Caption:=dlgKeywordPolicy ;
+    with Items do begin
+      BeginUpdate;
+      Add(dlgEnvNone);
+      Add(dlgCDTLower);
+      Add(dlgCDTUPPERCASE);
+      Add(dlg1UP2low);
+      EndUpdate;
+    end;
+    OnClick:=@UpdateExamples;
+    Visible:=true;
+  end;
+
+  IdentifierPolicyRadioGroup:=TRadioGroup.Create(Self);
+  with IdentifierPolicyRadioGroup do begin
+    Name:='IdentifierPolicyRadioGroup';
+    Parent:=NoteBook.Page[PageID];
+    SetBounds(KeyWordPolicyRadioGroup.Left+KeyWordPolicyRadioGroup.Width+8,
+      KeyWordPolicyRadioGroup.Top,
+      KeyWordPolicyRadioGroup.Width,KeyWordPolicyRadioGroup.Height);
+    Caption:=dlgIdentifierPolicy;
+    with Items do begin
+      BeginUpdate;
+      Add(dlgEnvNone);
+      Add(dlgCDTLower);
+      Add(dlgCDTUPPERCASE);
+      Add(dlg1UP2low);
+      EndUpdate;
+    end;
+    OnClick:=@UpdateExamples;
+    Visible:=true;
+  end;
+end;
+
+procedure TCodeToolsOptsDlg.SetupLineSplittingPage(PageID: integer);
 begin
   LineLengthLabel:=TLabel.Create(Self);
   with LineLengthLabel do begin
     Name:='LineLengthLabel';
-    Parent:=NoteBook.Page[2];
+    Parent:=NoteBook.Page[PageID];
     SetBounds(8,7,Canvas.TextWidth('Max line length: '),Height);
     Caption:=dlgMaxLineLength ;
     Visible:=true;
@@ -931,7 +1017,7 @@ begin
   DoNotSplitLineInFrontGroupBox:=TGroupBox.Create(Self);
   with DoNotSplitLineInFrontGroupBox do begin
     Name:='DoNotSplitLineInFrontGroupBox';
-    Parent:=NoteBook.Page[2];
+    Parent:=NoteBook.Page[PageID];
     SetBounds(6,LineLengthLabel.Top+LineLengthLabel.Height+7,
       (Self.ClientWidth-24) div 2,150);
     Caption:=dlgNotSplitLineFront ;
@@ -943,7 +1029,7 @@ begin
   DoNotSplitLineAfterGroupBox:=TGroupBox.Create(Self);
   with DoNotSplitLineAfterGroupBox do begin
     Name:='DoNotSplitLineAfterGroupBox';
-    Parent:=NoteBook.Page[2];
+    Parent:=NoteBook.Page[PageID];
     SetBounds(DoNotSplitLineInFrontGroupBox.Left,
       DoNotSplitLineInFrontGroupBox.Top+DoNotSplitLineInFrontGroupBox.Height+7,
       DoNotSplitLineInFrontGroupBox.Width,
@@ -957,7 +1043,7 @@ begin
   SplitPreviewGroupBox:=TGroupBox.Create(Self);
   with SplitPreviewGroupBox do begin
     Name:='SplitPreviewGroupBox';
-    Parent:=NoteBook.Page[2];
+    Parent:=NoteBook.Page[PageID];
     Left:=DoNotSplitLineInFrontGroupBox.Left
           +DoNotSplitLineInFrontGroupBox.Width+8;
     Top:=LineLengthLabel.Top;
@@ -976,12 +1062,12 @@ begin
   end;
 end;
 
-procedure TCodeToolsOptsDlg.SetupSpacePage;
+procedure TCodeToolsOptsDlg.SetupSpacePage(PageID: integer);
 begin
   DoInsertSpaceInFrontGroupBox:=TGroupBox.Create(Self);
   with DoInsertSpaceInFrontGroupBox do begin
     Name:='DoInsertSpaceInFrontGroupBox';
-    Parent:=NoteBook.Page[3];
+    Parent:=NoteBook.Page[PageID];
     SetBounds(6,6,
       (Self.ClientWidth-24) div 2,150);
     Caption:=dlgInsSpaceFront ;
@@ -993,7 +1079,7 @@ begin
   DoInsertSpaceAfterGroupBox:=TGroupBox.Create(Self);
   with DoInsertSpaceAfterGroupBox do begin
     Name:='DoInsertSpaceAfterGroupBox';
-    Parent:=NoteBook.Page[3];
+    Parent:=NoteBook.Page[PageID];
     SetBounds(DoInsertSpaceInFrontGroupBox.Left
       +DoInsertSpaceInFrontGroupBox.Width+8,
       DoInsertSpaceInFrontGroupBox.Top,
@@ -1008,7 +1094,7 @@ begin
   SpacePreviewGroupBox:=TGroupBox.Create(Self);
   with SpacePreviewGroupBox do begin
     Name:='SpacePreviewGroupBox';
-    Parent:=NoteBook.Page[3];
+    Parent:=NoteBook.Page[PageID];
     Left:=DoInsertSpaceInFrontGroupBox.Left;
     Top:=DoInsertSpaceInFrontGroupBox.Top+DoInsertSpaceInFrontGroupBox.Height+7;
     Width:=Self.ClientWidth-10-Left;
@@ -1062,34 +1148,41 @@ end;
 procedure TCodeToolsOptsDlg.ResizeCodeCreationPage;
 begin
   with ClassPartInsertPolicyRadioGroup do begin
-    SetBounds(8,6,
-      (Self.ClientWidth div 2)-12,80);
+    SetBounds(8,6,(Self.ClientWidth div 2)-12,70);
+  end;
+
+  with MixMethodsAndPorpertiesCheckBox do begin
+    SetBounds(ClassPartInsertPolicyRadioGroup.Left,
+       ClassPartInsertPolicyRadioGroup.Top
+         +ClassPartInsertPolicyRadioGroup.Height+5,
+       ClassPartInsertPolicyRadioGroup.Width,Height);
   end;
 
   with MethodInsertPolicyRadioGroup do begin
-    SetBounds(ClassPartInsertPolicyRadioGroup.Left
-      +ClassPartInsertPolicyRadioGroup.Width+8,
-      ClassPartInsertPolicyRadioGroup.Top,
-      ClassPartInsertPolicyRadioGroup.Width,
-      ClassPartInsertPolicyRadioGroup.Height);
-  end;
-
-  with KeyWordPolicyRadioGroup do begin
     SetBounds(ClassPartInsertPolicyRadioGroup.Left,
-      ClassPartInsertPolicyRadioGroup.Top
-       +ClassPartInsertPolicyRadioGroup.Height+7,
-      (Self.ClientWidth div 2)-12,100);
+      MixMethodsAndPorpertiesCheckBox.Top
+        +MixMethodsAndPorpertiesCheckBox.Height+10,
+      ClassPartInsertPolicyRadioGroup.Width,
+      100);
   end;
 
-  with IdentifierPolicyRadioGroup do begin
-    SetBounds(KeyWordPolicyRadioGroup.Left+KeyWordPolicyRadioGroup.Width+8,
-      KeyWordPolicyRadioGroup.Top,
-      KeyWordPolicyRadioGroup.Width,KeyWordPolicyRadioGroup.Height);
+  with ForwardProcsInsertPolicyRadioGroup do begin
+    SetBounds(ClassPartInsertPolicyRadioGroup.Left
+       +ClassPartInsertPolicyRadioGroup.Width+8,
+       ClassPartInsertPolicyRadioGroup.Top,
+       ClassPartInsertPolicyRadioGroup.Width,100);
+  end;
+
+  with ForwardProcsKeepOrderCheckBox do begin
+    SetBounds(ForwardProcsInsertPolicyRadioGroup.Left,
+       ForwardProcsInsertPolicyRadioGroup.Top
+         +ForwardProcsInsertPolicyRadioGroup.Height+5,
+       ForwardProcsInsertPolicyRadioGroup.Width,Height);
   end;
 
   with PropertyCompletionGroupBox do begin
-    SetBounds(KeyWordPolicyRadioGroup.Left,
-      KeyWordPolicyRadioGroup.Top+KeyWordPolicyRadioGroup.Height+7,
+    SetBounds(ClassPartInsertPolicyRadioGroup.Left,
+      MethodInsertPolicyRadioGroup.Top+MethodInsertPolicyRadioGroup.Height+7,
       Self.ClientWidth-20,125);
   end;
 
@@ -1149,6 +1242,19 @@ begin
     SetBounds(PrivatVariablePrefixEdit.Left,
       PrivatVariablePrefixLabel.Top+PrivatVariablePrefixLabel.Height+5,
       80,Height);
+  end;
+end;
+
+procedure TCodeToolsOptsDlg.ResizeWordsPage;
+begin
+  with KeyWordPolicyRadioGroup do begin
+    SetBounds(8,6,(Self.ClientWidth div 2)-12,120);
+  end;
+
+  with IdentifierPolicyRadioGroup do begin
+    SetBounds(KeyWordPolicyRadioGroup.Left+KeyWordPolicyRadioGroup.Width+8,
+      KeyWordPolicyRadioGroup.Top,
+      KeyWordPolicyRadioGroup.Width,KeyWordPolicyRadioGroup.Height);
   end;
 end;
 
@@ -1224,6 +1330,7 @@ begin
 
   ResizeGeneralPage;
   ResizeCodeCreationPage;
+  ResizeWordsPage;
   ResizeLineSplittingPage;
   ResizeSpacePage;
 
@@ -1317,6 +1424,15 @@ begin
     // cpipLast
     ClassPartInsertPolicyRadioGroup.ItemIndex:=1;
   end;
+  MixMethodsAndPorpertiesCheckBox.Checked:=Options.MixMethodsAndPorperties;
+  case Options.ForwardProcInsertPolicy of
+  fpipLast: ForwardProcsInsertPolicyRadioGroup.ItemIndex:=0;
+  fpipInFrontOfMethods: ForwardProcsInsertPolicyRadioGroup.ItemIndex:=1;
+  else
+    // fpipBehindMethods
+    ForwardProcsInsertPolicyRadioGroup.ItemIndex:=2;
+  end;
+  ForwardProcsKeepOrderCheckBox.Checked:=Options.KeepForwardProcOrder;
   case Options.MethodInsertPolicy of
   mipAlphabetically:
     MethodInsertPolicyRadioGroup.ItemIndex:=0;
@@ -1376,6 +1492,13 @@ begin
   0: Options.ClassPartInsertPolicy:=cpipAlphabetically;
   1: Options.ClassPartInsertPolicy:=cpipLast;
   end;
+  Options.MixMethodsAndPorperties:=MixMethodsAndPorpertiesCheckBox.Checked;
+  case ForwardProcsInsertPolicyRadioGroup.ItemIndex of
+  0: Options.ForwardProcInsertPolicy:=fpipLast;
+  1: Options.ForwardProcInsertPolicy:=fpipInFrontOfMethods;
+  2: Options.ForwardProcInsertPolicy:=fpipBehindMethods;
+  end;
+  Options.KeepForwardProcOrder:=ForwardProcsKeepOrderCheckBox.Checked;
   case MethodInsertPolicyRadioGroup.ItemIndex of
   0: Options.MethodInsertPolicy:=mipAlphabetically;
   1: Options.MethodInsertPolicy:=mipLast;
@@ -1479,6 +1602,13 @@ begin
   0: Options.ClassPartInsertPolicy:=cpipAlphabetically;
   1: Options.ClassPartInsertPolicy:=cpipLast;
   end;
+  Options.MixMethodsAndPorperties:=MixMethodsAndPorpertiesCheckBox.Checked;
+  case ForwardProcsInsertPolicyRadioGroup.ItemIndex of
+  0: Options.ForwardProcInsertPolicy:=fpipLast;
+  1: Options.ForwardProcInsertPolicy:=fpipInFrontOfMethods;
+  2: Options.ForwardProcInsertPolicy:=fpipBehindMethods;
+  end;
+  Options.KeepForwardProcOrder:=ForwardProcsKeepOrderCheckBox.Checked;
   case MethodInsertPolicyRadioGroup.ItemIndex of
   0: Options.MethodInsertPolicy:=mipAlphabetically;
   1: Options.MethodInsertPolicy:=mipLast;

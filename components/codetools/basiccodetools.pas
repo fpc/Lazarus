@@ -120,7 +120,7 @@ function ReadRawNextPascalAtom(const Source:string;
 //----------------------------------------------------------------------------
 // comments
 function FindNextNonSpace(const ASource: string; StartPos: integer
-    ): integer;
+  ): integer;
 function FindCommentEnd(const ASource: string; StartPos: integer;
     NestedComments: boolean): integer;
 function FindNextCompilerDirective(const ASource: string; StartPos: integer;

@@ -239,6 +239,7 @@ type
     function NodeHasParentOfType(ANode: TCodeTreeNode;
         NodeDesc: TCodeTreeNodeDesc): boolean;
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
+    function NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
     function NodeIsFunction(ProcNode: TCodeTreeNode): boolean;
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
@@ -1307,7 +1308,7 @@ begin
             CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
           then
             RaiseKeyWordExampleExpected;
-          if UpAtomIs('INTERNPROC') then
+          if UpAtomIs('INTERNPROC') or UpAtomIs('EXTERNAL') then
             HasForwardModifier:=true;
           ReadNextAtom;
           if CurPos.Flag in [cafColon,cafEdgedBracketClose] then
@@ -3567,18 +3568,29 @@ begin
   Result:=false;
   while (Node<>nil) do begin
     if (Node.Desc=ctnProcedure) then begin
+      if NodeIsMethodBody(Node) then begin
+        Result:=true;
+        exit;
+      end;
+    end;
+    Node:=Node.Parent;
+  end;
+end;
 
-      // ToDo: ppu, ppw, dcu
+function TPascalParserTool.NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
+begin
+  Result:=false;
+  if (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure) then begin
 
-      MoveCursorToNodeStart(Node.FirstChild); // ctnProcedureHead
-      ReadNextAtom;
-      if not AtomIsIdentifier(false) then continue;
-      ReadNextAtom;
-      if (CurPos.Flag<>cafPoint) then continue;
-      Result:=true;
-      exit;
-    end else
-      Node:=Node.Parent;
+    // ToDo: ppu, ppw, dcu
+
+    MoveCursorToNodeStart(ProcNode.FirstChild); // ctnProcedureHead
+    ReadNextAtom;
+    if not AtomIsIdentifier(false) then exit;
+    ReadNextAtom;
+    if (CurPos.Flag<>cafPoint) then exit;
+    Result:=true;
+    exit;
   end;
 end;
 

@@ -435,6 +435,7 @@ resourcestring
 //CodeTools dialogue
   dlgCodeToolsOpts = 'CodeTools Options';
   dlgCodeCreation = 'Code Creation';
+  dlgWordsPolicies = 'Words';
   dlgLineSplitting = 'Line Splitting';
   dlgSpaceNotCosmos{:)} = 'Space';
   dlgAdditionalSrcPath = 'Additional Source search path for all projects (.pp;.pas)';
@@ -445,6 +446,12 @@ resourcestring
   dlgClassInsertPolicy = 'Class part insert policy';
   dlgAlphabetically = 'Alphabetically';
   dlgCDTLast = 'Last';
+  dlgMixMethodsAndProperties = 'Mix methods and properties';
+  dlgForwardProcsInsertPolicy = 'Procedure insert policy';
+  dlgLast = 'Last (i.e. at end of source)';
+  dlgInFrontOfMethods = 'In front of methods';
+  dlgBehindMethods = 'Behind methods';
+  dlgForwardProcsKeepOrder = 'Keep order of procedures';
   dlgMethodInsPolicy = 'Method insert policy';
   dlgCDTClassOrder = 'Class order';
   dlgKeywordPolicy = 'Keyword policy';
