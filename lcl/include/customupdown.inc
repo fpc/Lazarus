@@ -115,59 +115,78 @@ end;
 
 Procedure TUpDownButton.Paint;
 var
-  Points : Array[0..3] of TPoint;
+  tmp : double;
+  ax, ay, ah, aw : integer;
+  j : integer;
 begin
   Inherited Paint;
-  If (((Width <= 5) or (Height <= 10)) and
-    (FUpDown.Orientation = udVertical)) or
-    (((Height <= 5) or (Width <= 10)) and
-    (FUpDown.Orientation = udHorizontal))
-  then
-    exit;
+  
+  Canvas.Pen.Color := clBtnText;//Not perfect, but it works
+
+  ah := height div 2;
+  aw := width div 2;
+
+  if (FUpDown.Orientation = udHorizontal) then begin
+    tmp := (ah+1)/2;
+    if (tmp > aw) then begin
+      ah := 2*aw - 1;
+      aw := (ah+1) div 2;
+    end
+    else begin
+      aw := Round(tmp);
+      ah := 2*aw - 1;
+    end;
+    aw := max(aw, 3);
+    ah := max(ah, 5);
+  end
+  else begin
+    tmp := (aw+1)/2;
+
+    if (tmp > ah) then begin
+      aw := 2*ah - 1;
+      ah := (aw+1) div 2;
+    end
+    else begin
+      ah := Round(tmp);
+      aw := 2*ah - 1;
+    end;
+    ah := max(ah, 3);
+    aw := max(aw, 5);
+  end;
+
+  ax := (width - aw) div 2;
+  ay := (height - ah) div 2;
+
   Case FButtonType of
     btPrev :
       begin
         If FUpDown.Orientation = udVertical then begin
-          Points[0].X := 2;
-          Points[0].Y := 2;
-          Points[1].X := Width - 2;
-          Points[1].Y := 2;
-          Points[2].X := Width div 2;
-          Points[2].Y := Height - 2;
+          for j := 0 to aw div 2 do begin
+            Canvas.MoveTo(ax + j, ay + j);
+            Canvas.LineTo(ax + aw - j, ay + j);
+          end;
         end
-        else begin
-          Points[0].X := 2;
-          Points[0].Y := Height div 2;
-          Points[1].X := Width - 2;
-          Points[1].Y := 2;
-          Points[2].X := Width - 2;
-          Points[2].Y := Height - 2;
-        end;
+        else
+          for j := 0 to ah div 2 do begin
+            Canvas.MoveTo(ax + aw - j - 2, ay + j);
+            Canvas.LineTo(ax + aw - j - 2, ay + ah - j - 1);
+          end;
       end;
     btNext :
       begin
         If FUpDown.Orientation = udVertical then begin
-          Points[0].X := Width div 2;
-          Points[0].Y := 2;
-          Points[1].X := Width - 2;
-          Points[1].Y := Height - 2;
-          Points[2].X := 2;
-          Points[2].Y := Height - 2;
+          for j := 0 to aw div 2 do begin
+            Canvas.MoveTo(ax + j, ay + ah - j - 1);
+            Canvas.LineTo(ax + aw - j, ay + ah - j - 1);
+          end;
         end
-        else begin
-          Points[0].X := 2;
-          Points[0].Y := 2;
-          Points[1].X := Width - 2;
-          Points[1].Y := Height div 2;
-          Points[2].X := 2;
-          Points[2].Y := Height - 2;
-        end;
+        else
+          for j := 0 to ah div 2 do begin
+            Canvas.MoveTo(ax + j, ay + j);
+            Canvas.LineTo(ax + j, ay + ah - j - 1);
+          end;
      end
   end;
-  Canvas.Color := clBtnText;//Not perfect, but it works
-  Canvas.Pen.Color := clBtnText;
-  Points[3] := Points[0];
-  Canvas.Polygon(@Points[0], 4, False);
 end;
 
 constructor TCustomUpDown.Create(AOwner: TComponent);
