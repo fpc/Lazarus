@@ -73,7 +73,6 @@ type
     
     Procedure HookSignals(Sender : TObject);  //hooks all signals for controls
     procedure CreateComponent(Sender : TObject);
-    procedure InitializeCommonDialog(ADialog: TObject; AWindow: PGtkWidget);
     procedure DestroyLCLControl(Sender : TObject);
     procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
@@ -118,8 +117,8 @@ type
     
     procedure SendCachedLCLMessages;
     procedure SendCachedGtkMessages;
-    procedure SetCallback(Msg : LongInt; Sender : TObject);
-    procedure RemoveCallbacks(Sender : TObject);
+    procedure SetCallback(Msg : LongInt; Sender : TObject); override;
+    procedure RemoveCallbacks(Sender : TObject); override;
   protected
     Cursor_Watch    : pGDKCursor;
     Cursor_Arrow    : pGDKCursor;
@@ -302,7 +301,22 @@ const
     
   aGtkSelectionMode: Array[Boolean] of TGtkSelectionMode =
     (GTK_SELECTION_SINGLE,GTk_SELECTION_EXTENDED);
-    
+
+type
+  PFileSelHistoryEntry = ^TFileSelHistoryEntry;
+  TFileSelHistoryEntry = record
+      Filename: PChar;
+      MenuItem: PGtkWidget;
+    end;
+
+  PFileSelFilterEntry = ^TFileSelFilterEntry;
+  TFileSelFilterEntry = record
+      Description: PChar;
+      Mask: PChar;
+      FilterIndex: integer;
+      MenuItem: PGtkWidget;
+    end;
+
 
 {$I dragicons.inc}
 {$I gtkproc.inc}
@@ -377,6 +391,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.45  2002/05/30 14:11:12  lazarus
+  MG: added filters and history to TOpenDialog
+
   Revision 1.44  2002/05/29 21:44:38  lazarus
   MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
 
