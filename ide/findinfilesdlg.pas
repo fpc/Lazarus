@@ -48,6 +48,7 @@ type
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
     procedure DirectoryBrowseClick(Sender: TObject);
+    procedure WhereRadioGroupClick(Sender: TObject);
   private
     function GetFindText: string;
     procedure SetFindText(const NewFindText: string);
@@ -61,6 +62,9 @@ var FindInFilesDialog: TLazFindInFilesDialog;
 
 
 implementation
+
+uses
+  filectrl;
 
 { TLazFindInFilesDialog }
 
@@ -143,6 +147,7 @@ begin
       Items.Add(lisFindFilesearchInDirectories);
       Items.EndUpdate;
       ItemIndex:=1;
+      OnClick:= @WhereRadioGroupClick;
     end;
     
     DirectoryOptionsGroupBox:=TGroupBox.Create(Self);
@@ -152,6 +157,7 @@ begin
       SetBounds(8,WhereRadioGroup.Top+WhereRadioGroup.Height+10,
         Self.ClientWidth-20,135);
       Caption:=lisFindFileDirectoryOptions;
+      Enabled:= False;
     end;
     
     DirectoryLabel:=TLabel.Create(Self);
@@ -332,6 +338,11 @@ begin
   Result:=TextToFindComboBox.Text;
 end;
 
+procedure TLazFindInFilesDialog.WhereRadioGroupClick(Sender: TObject);
+begin
+  DirectoryOptionsGroupBox.Enabled:= (WhereRadioGroup.ItemIndex = 2)
+end;//WhereRaidoGroupClick
+
 procedure TLazFindInFilesDialog.DirectoryBrowseClick(Sender: TObject);
 var
   TheDirectory: string; //Starting Directory and
@@ -340,14 +351,11 @@ var
 begin
   TheDirectory:= GetCurrentDir;
   TheRootDir:= ExtractFileDrive(TheDirectory);
-  if Length(TheRootDir)< 1 then
-    TheRootDir:= '/'   //Linux or Unix ?
-  else
-    TheRootDir:= TheRootDir + '\';
+  TheRootDir:= FileCtrl.AppendPathDelim(TheRootDir);
   if SelectDirectory('Select A Directory', TheRootDir, TheDirectory, false) then
-     DirectoryComboBox.Text:= TheDirectory;
-     
+    DirectoryComboBox.Text:= TheDirectory;
 end;//DirectoryBrowseClick
+
 initialization
   FindInFilesDialog:=nil;
 

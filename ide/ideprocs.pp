@@ -30,7 +30,7 @@ unit IDEProcs;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, GetText, FileCtrl, FileProcs;
+  Classes, SysUtils, Laz_XMLCfg, GetText, FileCtrl, FileProcs, SynRegExpr;
 
 type
   // comments
@@ -2076,25 +2076,22 @@ begin
       MaskList:= GetMasks;//Returns a list of file masks.
       for i:= 0 to MaskList.Count -1 do
       begin
-        try
-          if SysUtils.FindFirst(TempDir + MaskList[i],
-                                faAnyFile,FileInfo)=0 then
-          begin
-            repeat
-              // check if special file, skip directories this time
-              if (FileInfo.Name='.') or (FileInfo.Name='..')
-              or ((faDirectory and FileInfo.Attr)>0) then continue;
-              //Make sure this is a text file as we will be search
-              if (FileIsText(TempDir + FileInfo.Name))and
-             (FileIsReadable(TempDir + FileInfo.Name)) then
-              begin
-                FileList.Add(TempDir + FileInfo.Name);
-              end;//if
-            until SysUtils.FindNext(FileInfo)<>0;
-          end;//if
-        finally
+        if SysUtils.FindFirst(TempDir + MaskList[i],
+                              faAnyFile,FileInfo)=0 then
+        begin
+          repeat
+            // check if special file, skip directories this time
+            if (FileInfo.Name='.') or (FileInfo.Name='..')
+            or ((faDirectory and FileInfo.Attr)>0) then continue;
+            //Make sure this is a text file as we will be search
+            if (FileIsText(TempDir + FileInfo.Name))and
+           (FileIsReadable(TempDir + FileInfo.Name)) then
+            begin
+              FileList.Add(TempDir + FileInfo.Name);
+            end;//if
+          until SysUtils.FindNext(FileInfo)<>0;
           SysUtils.FindClose(FileInfo);
-        end;//try-finally
+        end;//if
       end;//for
     finally
       MaskList.Free;
@@ -2112,6 +2109,7 @@ begin
             (FileList,TempDir + FileInfo.Name,mask,recursive);
         until SysUtils.FindNext(FileInfo)<>0;
       end;//if
+      SysUtils.FindClose(FileInfo);
     end;//if
   end;//if
 end;//FindMatchingFiles
@@ -2127,73 +2125,128 @@ RegExp: Boolean            SearchFor is to be treated as a regular expression
 function FindInFiles(TheFileList: TStringList; Searchfor: String;
                      WholeWord: Boolean; CaseSensitive: Boolean;
                      RegExp: Boolean): TStringList;
-var
-  ThisFile: TStringList; //The File being searched
-  i:        integer;     //Loop Counter
-  Lines:    integer;     //Loop Counter
-  Match:    integer;     //Position of match in line.
-  StartWord:boolean;     //Does the word start with a sperator charater?
-  EndWord:  boolean;     //Does the word end with a seperator charater?
-  TheLine:  string;      //Temp Storage for the current line in the file.
-  TempSearch: string;    //Temp Storage for the search string.
+                
+  {DoNormalSearch is called if the search is not a Regular expression}
+  function DoNormalSearch: TStringList;
+  var
+    ThisFile: TStringList;   //The File being searched
+    i:          integer;     //Loop Counter
+    Lines:      integer;     //Loop Counter
+    Match:      integer;     //Position of match in line.
+    StartWord:  boolean;     //Does the word start with a sperator charater?
+    EndWord:    boolean;     //Does the word end with a seperator charater?
+    TheLine:    string;      //Temp Storage for the current line in the file.
+    TempSearch: string;      //Temp Storage for the search string.
 
   const
   WordBreakChars = ['.', ',', ';', ':', '"', '''', '!', '?', '[', ']', '(',
                 ')', '{', '}', '^', '-', '=', '+', '*', '/', '\', '|', ' '];
-begin
-  Result:= TStringList.Create;
-  try
-    ThisFile:= TStringList.Create;
-    if (Not CaseSensitive) and (not RegExp) then
-      TempSearch:= UpperCase(SearchFor)
-    else
-      TempSearch:= SearchFor;
-    for i:= 0 to TheFileList.Count -1 do
-    begin
-      ThisFile.LoadFromFile(TheFileList.Strings[i]);
-      for Lines:= 0 to ThisFile.Count -1 do
+  begin
+    Result:= TStringList.Create;
+    try
+      ThisFile:= TStringList.Create;
+      //if this is not a regular expression search
+      if (Not CaseSensitive) then
+        TempSearch:= UpperCase(SearchFor)
+      else
+        TempSearch:= SearchFor;
+      for i:= 0 to TheFileList.Count -1 do
       begin
-        TheLine:= ThisFile.Strings[Lines];
-        if not CaseSensitive then
-          TheLine:= UpperCase(TheLine);
-        Match:= pos(TempSearch,TheLine);
-        //look at the char before and after the match to see if they are in
-        //our list of word seperator charaters.
-        if WholeWord and (Match > 0) then
-        begin //is this the first word on the line or does the word start with
-              //one of the word seperator charaters.
-          if (Match = 1) or (TheLine[Match-1] in WordBreakChars) then
-            StartWord := True
-          else
-            StartWord := False;
-          if StartWord then // evaluate end only if start is true.
-          begin
-            if (Match + length(TempSearch) >= length(TheLine)) or
-                (TheLine[Match + Length(TempSearch)] in WordBreakChars) then
-              EndWord:= True
+        ThisFile.LoadFromFile(TheFileList.Strings[i]);
+        for Lines:= 0 to ThisFile.Count -1 do
+        begin
+          TheLine:= ThisFile.Strings[Lines];
+          if not CaseSensitive then
+            TheLine:= UpperCase(TheLine);
+          Match:= pos(TempSearch,TheLine);
+          //look at the char before and after the match to see if they are in
+          //our list of word seperator charaters.
+          if WholeWord and (Match > 0) then
+          begin //is this the first word on the line or does the word start with
+                //one of the word seperator charaters.
+            if (Match = 1) or (TheLine[Match-1] in WordBreakChars) then
+              StartWord := True
             else
-              EndWord:= False;
+              StartWord := False;
+            if StartWord then // evaluate end only if start is true.
+            begin
+              if (Match + length(TempSearch) >= length(TheLine)) or
+                  (TheLine[Match + Length(TempSearch)] in WordBreakChars) then
+                EndWord:= True
+              else
+                EndWord:= False;
+            end;//if
+            if StartWord And EndWord then
+            begin
+              Result.Add(TheFileList.Strings[i]+'('+IntToStr(lines+1)+
+                         ','+ IntToStr(match) + ')'+' '+'None:'+' '+
+                         copy(ThisFile.Strings[Lines],Match,60));
+              break;//junp out we found our match
+            end;//if
           end;//if
-          if StartWord And EndWord then
+          if not WholeWord and (Match > 0) then
           begin
             Result.Add(TheFileList.Strings[i]+'('+IntToStr(lines+1)+
-                       ','+ IntToStr(match) + ')'+' '+'None:'+' '+
+                       ','+IntToStr(match)+')'+' '+'None:'+' '+
                        copy(ThisFile.Strings[Lines],Match,60));
             break;//junp out we found our match
           end;//if
-        end;//if
-        if not WholeWord and (Match > 0) then
-        begin
-          Result.Add(TheFileList.Strings[i]+'('+IntToStr(lines+1)+
-                     ','+IntToStr(match)+')'+' '+'None:'+' '+
-                     copy(ThisFile.Strings[Lines],Match,60));
-          break;//junp out we found our match
-        end;//if
+        end;//for
       end;//for
-    end;//for
-  finally
-    ThisFile.Free;
-  end;//Try-finally
+    finally
+      ThisFile.Free;
+    end;//Try-finally
+  end;//DoNormalSearch
+  
+  {DoRegExpSearch is called if the search is a regular expression}
+  function DoRegExpSearch: TStringList;
+  var
+    ThisFile: TStringList;
+    i:          integer;     //Loop Counter
+    Lines:      integer;     //Loop Counter
+    Match:      integer;     //Position of match in line.
+    TheLine:    string;      //Temp Storage for the current line in the file.
+    RE:         TRegExpr;    //Regular expression search engin
+  begin
+      Result:= TStringList.Create;
+    try
+      ThisFile:= TStringList.Create;
+      RE:= TRegExpr.Create;
+      //Set up the search engine.
+      With RE do
+      begin
+        Expression:= SearchFor;
+        ModifierI:= not CaseSensitive;
+        ModifierM:= False;  //for now
+      end;//with
+      for i:= 0 to TheFileList.Count - 1 do
+      begin
+        ThisFile.LoadFromFile(TheFileList.Strings[i]);
+        for Lines:= 0 to ThisFile.Count - 1 do
+        begin
+          TheLine:= ThisFile[Lines];
+          if RE.Exec(TheLine) then
+          begin
+            Match:= RE.MatchPos[0];
+            Result.Add(TheFileList.Strings[i]+'('+IntToStr(lines+1)+
+                       ','+ IntToStr(Match) + ')'+' '+'None:'+' '+
+                       copy(TheLine,Match,60));
+            break; //We found one so check the next file.
+          end;//if
+        end;//for
+      end;//for
+    finally
+      ThisFile.free;
+      RE.free;
+    end;//try-finally
+  end;//DoRegExpSearch
+  
+{Start FindInFiles ========================================================}
+begin
+  if not RegExp then
+    Result:= DoNormalSearch
+  else
+    Result:= DoRegExpSearch;
 end;//FindInFiles
 
 end.
