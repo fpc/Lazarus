@@ -5566,11 +5566,21 @@ begin
 
     xtContext:
       begin
-        Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                       fdfTopLvlResolving,fdfFunctionResult]
-                      +fdfAllClassVisibilities;
-        FindContext:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
+        FindContext:=ExprType.Context;
+        if not (FindContext.Node.Desc in AllIdentifierDefinitions) then
+        begin
+          if (FindContext.Node.Parent<>nil)
+          and (FindContext.Node.Parent.Desc in AllIdentifierDefinitions) then
+          begin
+            FindContext.Node:=FindContext.Node.Parent;
+          end else begin
+            Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                           fdfTopLvlResolving,fdfFunctionResult]
+                          +fdfAllClassVisibilities;
+            FindContext:=ExprType.Context.Tool.FindBaseTypeOfNode(Params,
                                                          ExprType.Context.Node);
+          end;
+        end;
         
         // ToDo: PPU, PPW, DCU
       
