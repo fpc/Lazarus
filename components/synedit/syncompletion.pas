@@ -624,7 +624,8 @@ begin
   Result:=Form.OnSearchPosition;
 end;
 
-procedure TSynBaseCompletion.SetOnSearchPosition(NewValue :TSynBaseCompletionSearchPosition);
+procedure TSynBaseCompletion.SetOnSearchPosition(
+  NewValue :TSynBaseCompletionSearchPosition);
 begin
   Form.OnSearchPosition:=NewValue;
 end;
@@ -642,8 +643,6 @@ begin
     exit;
   end;
   
-  // ToDo: redirect the Editor input to the form
-
   Form.SetBounds(x,y,Form.Width,Form.Height);
   {$ELSE}
   Form.Left:=x;
@@ -925,9 +924,6 @@ begin
   if F.CurrentEditor <> nil then begin
     with F.CurrentEditor as TCustomSynEdit do begin
       CommandProcessor(ecChar, Key, nil);
-      {$IFDEF SYN_LAZARUS}
-      
-      {$ENDIF}
     end;
   end;
 end;
@@ -974,6 +970,15 @@ var
   ShortCutShift: TShiftState;
 begin
   if Key=VK_UNKNOWN then exit;
+  {$IFDEF SYN_LAZARUS}
+  if (Form<>nil) and (Form.Visible) then begin
+    // completion form is visible, but the synedit got a key
+    // -> redirect to form
+    Form.KeyDown(Key,Shift);
+    // eat it
+    Key:=VK_UNKNOWN;
+  end;
+  {$ENDIF}
   ShortCutToKey(FShortCut, ShortCutKey, ShortCutShift);
   if (Shift <> ShortCutShift) or (Key <> ShortCutKey) then exit;
 
@@ -984,6 +989,9 @@ begin
         p := ClientToScreen(Point(CaretXPix, CaretYPix + LineHeight));
         Form.CurrentEditor := Sender as TCustomSynEdit;
         Execute(GetPreviousToken(Sender as TCustomSynEdit), p.x, p.y);
+        {$IFDEF SYN_LAZARUS}
+        // eat it
+        {$ENDIF}
         Key := VK_UNKNOWN;
         TRecordUsedToStoreEachEditorVars(fEditstuffs[i]^).NoNextKey := true;
       end;

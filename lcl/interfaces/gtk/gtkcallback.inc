@@ -55,11 +55,20 @@ end;
 {            callback routines                                }
 {*************************************************************}
 
-// GTKRealizeCB is used to set extra signal masks after the widget window is created
-// define extra events we're interrested in
+{-------------------------------------------------------------------------------
+  function GTKRealizeCB
+  Params: Widget: PGtkWidget; Data: Pointer
+  Result: GBoolean
+  
+  GTKRealizeCB is called by the gtk, whenever a widget is realized (ie mapped).
+  That means that the gdk window on the xserver has been created. This function
+  is used for the second part of the initialization of a widget.
+-------------------------------------------------------------------------------}
 function GTKRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 begin
   EventTrace('realize', nil);
+  // set extra signal masks after the widget window is created
+  // define extra events we're interrested in
   gdk_window_set_events(Widget^.Window,
                   gdk_window_get_events(Widget^.Window) or TGdkEventMask(Data));
                   
@@ -2029,6 +2038,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.80  2002/06/06 14:41:29  lazarus
+  MG: if completion form visible it will now get all synedit keys
+
   Revision 1.79  2002/06/05 12:33:57  lazarus
   MG: fixed fonts in XLFD format and styles
 

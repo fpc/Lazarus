@@ -3602,11 +3602,16 @@ end;
 procedure TCustomSynEdit.ShowCaret;
 begin
   if not (eoNoCaret in Options) and not (sfCaretVisible in fStateFlags) then
+  begin
     if {$IFDEF SYN_LAZARUS}LCLLinux{$ELSE}Windows{$ENDIF}.ShowCaret(Handle) then
     begin
 //writeln('[TCustomSynEdit.ShowCaret] A ',Name);
       Include(fStateFlags, sfCaretVisible)
     end;
+    {$IFDEF SYN_LAZARUS}
+    SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
+    {$ENDIF}
+  end;
 end;
 
 procedure TCustomSynEdit.UpdateCaret;
