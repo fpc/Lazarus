@@ -2267,7 +2267,6 @@ begin
         //                GDK_BUTTON_RELEASE_MASK);
       end
       else begin
-        //writeln('AAA1 ',TControl(Sender).Name,':',Sender.ClassName,' Widget=',HexStr(Cardinal(gFixed),8));
         ConnectSenderSignal(gFixed, 'button-release-event', @gtkMouseBtnRelease,
                       GDK_BUTTON_RELEASE_MASK);
         ConnectSenderSignalAfter(gFixed, 'button-release-event',
@@ -3732,7 +3731,8 @@ begin
 
     csSpinEdit :
     begin
-      p := gtk_spin_button_new(PgtkAdjustment(gtk_adjustment_new(1,1,100,1,1,1)),1,0);
+      p := gtk_spin_button_new(PgtkAdjustment(
+                                        gtk_adjustment_new(1,1,100,1,1,1)),1,0);
     end;
 
     csSTATUSBAR :
@@ -4392,7 +4392,6 @@ begin
   csSpinEdit :
     Begin
       Single(Data^):=gtk_spin_button_get_value_As_Float(PgtkSpinButton(Handle));
-
     end;
 
   else
@@ -4540,246 +4539,246 @@ var
    Image : PgdkImage;
    BitImage : TBitMap;
 begin
-   result := 0;     // default if nobody sets it
+  Result := 0;     // default if nobody sets it
 
-   if Sender is TWinControl 
-     then Assert(False, Format('Trace:  [TgtkObject.SetProperties] %s', [Sender.ClassName]))
-     else Assert(False, Format('Trace:WARNING: [TgtkObject.SetProperties] %s --> No Decendant of TWinControl', [Sender.ClassName]));
+  if Sender is TWinControl
+  then Assert(False, Format('Trace:  [TgtkObject.SetProperties] %s', [Sender.ClassName]))
+  else Assert(False, Format('Trace:WARNING: [TgtkObject.SetProperties] %s --> No Decendant of TWinControl', [Sender.ClassName]));
 
-   Handle    := Pointer(TWinControl(Sender).Handle);
-   Assert (Handle = nil, 'WARNING: [TgtkObject.SetProperties] --> got nil pointer');
+  Handle    := Pointer(TWinControl(Sender).Handle);
+  Assert (Handle = nil, 'WARNING: [TgtkObject.SetProperties] --> got nil pointer');
    
-   case TControl(Sender).fCompStyle of
-      csEdit :
-          with (TCustomEdit(Sender)) do
-             Begin
-               gtk_entry_set_editable(PgtkEntry(handle),not(TCustomEdit(sender).ReadOnly));
-               gtk_entry_set_max_length(PgtkEntry(handle),TCustomEdit(sender).MaxLength);
-             end;
-
-      csProgressBar :
-         with (TProgressBar (Sender)) do
-         begin
-            Widget := PGtkWidget( gtk_adjustment_new (0, Min, Max, 0, 0, 0));
-            gtk_progress_set_adjustment (GTK_PROGRESS (handle), PGtkAdjustment (Widget));
-            gtk_progress_set_value (GTK_PROGRESS (handle), Position);
-            if Smooth 
-               then gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (handle), GTK_PROGRESS_CONTINUOUS)
-               else gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (handle), GTK_PROGRESS_DISCRETE);
-            case Orientation of
-               pbVertical      : gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR (handle), GTK_PROGRESS_BOTTOM_TO_TOP);
-               pbRightToLeft   : gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR (handle), GTK_PROGRESS_RIGHT_TO_LEFT);
-               pbTopDown       : gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR (handle), GTK_PROGRESS_TOP_TO_BOTTOM);
-            else { pbHorizontal is default }
-               gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR (handle), GTK_PROGRESS_LEFT_TO_RIGHT);
-            end;
-            if BarShowText then 
-            begin
-               gtk_progress_set_format_string (GTK_PROGRESS (handle), '%v from [%l-%u] (=%p%%)');
-               gtk_progress_set_show_text (GTK_PROGRESS (handle), 1);
-            end
-            else
-               gtk_progress_set_show_text (GTK_PROGRESS (handle), 0);
-         end;
-
-
-      csScrollBar:
-         with (TScrollBar (Sender)) do
-             begin
-               //set properties for the range
-               Widget := PGtkWidget (gtk_range_get_adjustment (GTK_RANGE (handle)));
-               PGtkAdjustment(Widget)^.lower := Min;
-               PGtkAdjustment(Widget)^.Upper := Max;
-               PGtkAdjustment(Widget)^.Value := Position;
-               PGtkAdjustment(Widget)^.step_increment := SmallChange;
-               PGtkAdjustment(Widget)^.page_increment := LargeChange;
-             end;
-   
-      csTrackbar   : 
-         with (TTrackBar (Sender)) do
-         begin
-            Widget := PGtkWidget (gtk_range_get_adjustment (GTK_RANGE (handle)));
-            PGtkAdjustment(Widget)^.lower := Min;
-            PGtkAdjustment(Widget)^.Upper := Max;
-            PGtkAdjustment(Widget)^.Value := Position;
-            PGtkAdjustment(Widget)^.step_increment := LineSize; 
-            PGtkAdjustment(Widget)^.page_increment := PageSize;
-            { now do some of the more sophisticated features }
-            { Hint: For some unknown reason we have to disable the draw_value first,
-              otherwise it's set always to true }
-            gtk_scale_set_draw_value (PGTKSCALE (handle), false);
-
-            if ShowScale then
-            begin
-               gtk_scale_set_draw_value (PGTKSCALE (handle), ShowScale);
-               case ScalePos of
-                  trLeft  : gtk_scale_set_value_pos (PGTKSCALE (handle), GTK_POS_LEFT);
-                  trRight : gtk_scale_set_value_pos (PGTKSCALE (handle), GTK_POS_RIGHT);
-                  trTop   : gtk_scale_set_value_pos (PGTKSCALE (handle), GTK_POS_TOP);
-                  trBottom: gtk_scale_set_value_pos (PGTKSCALE (handle), GTK_POS_BOTTOM);
-               end;
-            end;
-            //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Widget), 'value_changed');
-         end;
-
-      csLabel :
-         with TLabel(Sender) do
-         begin
-           case Alignment of
-             taLeftJustify  : xAlign := 0.0;
-             taCenter       : xAlign := 0.5;
-             taRightJustify : xAlign := 1.0;
-           else 
-             xAlign := 0.0; // default, shouldn't happen
+  case TControl(Sender).fCompStyle of
+    csEdit :
+        with (TCustomEdit(Sender)) do
+           Begin
+             gtk_entry_set_editable(PgtkEntry(handle),not(TCustomEdit(sender).ReadOnly));
+             gtk_entry_set_max_length(PgtkEntry(handle),TCustomEdit(sender).MaxLength);
            end;
 
-           case Layout of
-             tlTop    : yAlign := 0.0;
-             tlCenter : yAlign := 0.5;
-             tlBottom : yAlign := 1.0;
-           else 
-             yAlign := 1.0; //default, shouldn't happen
-           end;
-
-           gtk_misc_set_alignment(PGTKMISC(Handle), xAlign, yAlign);
-           gtk_label_set_line_wrap(PGTKLABEL(Handle),WordWrap);
-         end;
-         
-      csListView :
-        begin
-          //set up columns..
-          //
-          Widget := GetCoreChildWidget(PgtkWidget(Handle));//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
-          gtk_clist_freeze(PgtkCList(Widget));
-          for I := 0 to TListview(sender).Columns.Count-1 do
-          begin
-            gtk_clist_set_column_title(Pgtkclist(Widget),I,
-                                    PChar(TListview(sender).Columns[i].Caption));
-
-            //set column alignment
-            gtk_clist_set_column_justification(PgtkCList(Widget),I,
-                     aGTKJUSTIFICATION[TListview(sender).Columns[i].Alignment]);
-            //set auto sizing
-            gtk_clist_set_column_auto_resize(PgtkCList(Widget),I,
-                     TListview(sender).Columns[i].AutoSize);
-            //set width
-            gtk_clist_set_column_width(PgtkCList(Widget),I,
-                     TListview(sender).Columns[i].Width);
-            //set Visible
-            gtk_clist_set_column_visibility(PgtkCList(Widget),I,
-                     TListview(sender).Columns[i].Visible);
-            // set MinWidth
-            if TListview(sender).Columns[i].MinWidth>0 then
-              gtk_clist_set_column_min_width(PGtkCList(Widget), I,
-                                         TListview(sender).Columns[i].MinWidth);
-            // set MaxWidth
-            if (TListview(sender).Columns[i].MaxWidth>=
-              TListview(sender).Columns[i].MinWidth)
-            and (TListview(sender).Columns[i].MaxWidth>0) then
-              gtk_clist_set_column_max_width(PGtkCList(Widget), I,
-                                         TListview(sender).Columns[i].MaxWidth);
+    csProgressBar :
+       with (TProgressBar (Sender)) do
+       begin
+          Widget := PGtkWidget( gtk_adjustment_new (0, Min, Max, 0, 0, 0));
+          gtk_progress_set_adjustment (GTK_PROGRESS (handle), PGtkAdjustment (Widget));
+          gtk_progress_set_value (GTK_PROGRESS (handle), Position);
+          if Smooth 
+             then gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (handle), GTK_PROGRESS_CONTINUOUS)
+             else gtk_progress_bar_set_bar_style (GTK_PROGRESS_BAR (handle), GTK_PROGRESS_DISCRETE);
+          case Orientation of
+             pbVertical      : gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR (handle), GTK_PROGRESS_BOTTOM_TO_TOP);
+             pbRightToLeft   : gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR (handle), GTK_PROGRESS_RIGHT_TO_LEFT);
+             pbTopDown       : gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR (handle), GTK_PROGRESS_TOP_TO_BOTTOM);
+          else { pbHorizontal is default }
+             gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR (handle), GTK_PROGRESS_LEFT_TO_RIGHT);
           end;
+          if BarShowText then 
+          begin
+             gtk_progress_set_format_string (GTK_PROGRESS (handle), '%v from [%l-%u] (=%p%%)');
+             gtk_progress_set_show_text (GTK_PROGRESS (handle), 1);
+          end
+          else
+             gtk_progress_set_show_text (GTK_PROGRESS (handle), 0);
+       end;
 
-          //sorting
-          if (TListview(sender).ViewStyle = vsReport) 
-          then gtk_clist_column_titles_show(PgtkCList(Widget))
-          else gtk_clist_column_titles_Hide(PgtkCList(Widget));
 
-          gtk_clist_set_sort_column(PgtkCList(Widget),
-            TListview(sender).SortColumn);
-                
-          //multiselect
-          gtk_clist_set_selection_mode(PgtkCList(Widget),
-            aGTkSelectionMode[TListview(sender).MultiSelect]);
+    csScrollBar:
+       with (TScrollBar (Sender)) do
+           begin
+             //set properties for the range
+             Widget := PGtkWidget (gtk_range_get_adjustment (GTK_RANGE (handle)));
+             PGtkAdjustment(Widget)^.lower := Min;
+             PGtkAdjustment(Widget)^.Upper := Max;
+             PGtkAdjustment(Widget)^.Value := Position;
+             PGtkAdjustment(Widget)^.step_increment := SmallChange;
+             PGtkAdjustment(Widget)^.page_increment := LargeChange;
+           end;
+ 
+    csTrackbar   : 
+       with (TTrackBar (Sender)) do
+       begin
+          Widget := PGtkWidget (gtk_range_get_adjustment (GTK_RANGE (handle)));
+          PGtkAdjustment(Widget)^.lower := Min;
+          PGtkAdjustment(Widget)^.Upper := Max;
+          PGtkAdjustment(Widget)^.Value := Position;
+          PGtkAdjustment(Widget)^.step_increment := LineSize; 
+          PGtkAdjustment(Widget)^.page_increment := PageSize;
+          { now do some of the more sophisticated features }
+          { Hint: For some unknown reason we have to disable the draw_value first,
+            otherwise it's set always to true }
+          gtk_scale_set_draw_value (PGTKSCALE (handle), false);
+
+          if ShowScale then
+          begin
+             gtk_scale_set_draw_value (PGTKSCALE (handle), ShowScale);
+             case ScalePos of
+                trLeft  : gtk_scale_set_value_pos (PGTKSCALE (handle), GTK_POS_LEFT);
+                trRight : gtk_scale_set_value_pos (PGTKSCALE (handle), GTK_POS_RIGHT);
+                trTop   : gtk_scale_set_value_pos (PGTKSCALE (handle), GTK_POS_TOP);
+                trBottom: gtk_scale_set_value_pos (PGTKSCALE (handle), GTK_POS_BOTTOM);
+             end;
+          end;
+          //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Widget), 'value_changed');
+       end;
+
+    csLabel :
+       with TLabel(Sender) do
+       begin
+         case Alignment of
+           taLeftJustify  : xAlign := 0.0;
+           taCenter       : xAlign := 0.5;
+           taRightJustify : xAlign := 1.0;
+         else 
+           xAlign := 0.0; // default, shouldn't happen
+         end;
+
+         case Layout of
+           tlTop    : yAlign := 0.0;
+           tlCenter : yAlign := 0.5;
+           tlBottom : yAlign := 1.0;
+         else 
+           yAlign := 1.0; //default, shouldn't happen
+         end;
+
+         gtk_misc_set_alignment(PGTKMISC(Handle), xAlign, yAlign);
+         gtk_label_set_line_wrap(PGTKLABEL(Handle),WordWrap);
+       end;
+       
+    csListView :
+      begin
+        //set up columns..
+        //
+        Widget := GetCoreChildWidget(PgtkWidget(Handle));//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+        gtk_clist_freeze(PgtkCList(Widget));
+        for I := 0 to TListview(sender).Columns.Count-1 do
+        begin
+          gtk_clist_set_column_title(Pgtkclist(Widget),I,
+                                  PChar(TListview(sender).Columns[i].Caption));
+
+          //set column alignment
+          gtk_clist_set_column_justification(PgtkCList(Widget),I,
+                   aGTKJUSTIFICATION[TListview(sender).Columns[i].Alignment]);
+          //set auto sizing
+          gtk_clist_set_column_auto_resize(PgtkCList(Widget),I,
+                   TListview(sender).Columns[i].AutoSize);
+          //set width
+          gtk_clist_set_column_width(PgtkCList(Widget),I,
+                   TListview(sender).Columns[i].Width);
+          //set Visible
+          gtk_clist_set_column_visibility(PgtkCList(Widget),I,
+                   TListview(sender).Columns[i].Visible);
+          // set MinWidth
+          if TListview(sender).Columns[i].MinWidth>0 then
+            gtk_clist_set_column_min_width(PGtkCList(Widget), I,
+                                       TListview(sender).Columns[i].MinWidth);
+          // set MaxWidth
+          if (TListview(sender).Columns[i].MaxWidth>=
+            TListview(sender).Columns[i].MinWidth)
+          and (TListview(sender).Columns[i].MaxWidth>0) then
+            gtk_clist_set_column_max_width(PGtkCList(Widget), I,
+                                       TListview(sender).Columns[i].MaxWidth);
+        end;
+
+        //sorting
+        if (TListview(sender).ViewStyle = vsReport) 
+        then gtk_clist_column_titles_show(PgtkCList(Widget))
+        else gtk_clist_column_titles_Hide(PgtkCList(Widget));
+
+        gtk_clist_set_sort_column(PgtkCList(Widget),
+          TListview(sender).SortColumn);
+              
+        //multiselect
+        gtk_clist_set_selection_mode(PgtkCList(Widget),
+          aGTkSelectionMode[TListview(sender).MultiSelect]);
 
 //TODO:This doesn't work right now
 //                gtk_clist_set_auto_sort(PgtkCList(handle),TListview(sender).Sorted);
-          //
-          //do items...
-          //
-          for I := 0 to TListview(sender).Items.Count-1 do
-          begin
-            GetMem(pRowText,Length(TListItem(TListview(sender).Items[i]).Caption)+1);
-            try
-              StrPcopy(pRowText,TListItem(TListview(sender).Items[i]).Caption);
-              gtk_clist_set_text(Pgtkclist(Widget),0,I+1,pRowText);
+        //
+        //do items...
+        //
+        for I := 0 to TListview(sender).Items.Count-1 do
+        begin
+          GetMem(pRowText,Length(TListItem(TListview(sender).Items[i]).Caption)+1);
+          try
+            StrPcopy(pRowText,TListItem(TListview(sender).Items[i]).Caption);
+            gtk_clist_set_text(Pgtkclist(Widget),0,I+1,pRowText);
 
-              //do image if one is assigned....
-              // TODO: Largeimage support
-              Writeln('Starting image section');
-              if  (TListview(sender).SmallImages <> nil) 
-              and (TListItem(TListview(sender).Items[i]).ImageIndex > -1) 
+            //do image if one is assigned....
+            // TODO: Largeimage support
+            Writeln('Starting image section');
+            if  (TListview(sender).SmallImages <> nil) 
+            and (TListItem(TListview(sender).Items[i]).ImageIndex > -1) 
+            then begin
+              Writeln('Checking images');
+              if (TListItem(TListview(sender).Items[i]).ImageIndex
+                < TListview(sender).SmallImages.Count)
               then begin
-                Writeln('Checking images');
-                if (TListItem(TListview(sender).Items[i]).ImageIndex
-                  < TListview(sender).SmallImages.Count)
-                then begin
-                  //draw image
-                  Writeln('drawing image');
-                  Writeln('TListItem(TListview(sender).Items[i]).ImageIndex is ',TListItem(TListview(sender).Items[i]).ImageIndex);
-                        
-                  BitImage := TBitmap.Create;
-                  TListview(sender).SmallImages.GetBitmap(
-                     TListItem(TListview(sender).Items[i]).ImageIndex,BitImage);
-                  
-                  gtk_clist_set_pixmap(Pgtkclist(Widget),I,0,
-                    pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
-                    nil);
-                  {$IfNDef Win32}
-                  gtk_clist_set_pixtext(Pgtkclist(Widget),I,0,pRowText,3,
-                    pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
-                    nil);
-                  {$EndIF}
+                //draw image
+                Writeln('drawing image');
+                Writeln('TListItem(TListview(sender).Items[i]).ImageIndex is ',TListItem(TListview(sender).Items[i]).ImageIndex);
+                      
+                BitImage := TBitmap.Create;
+                TListview(sender).SmallImages.GetBitmap(
+                   TListItem(TListview(sender).Items[i]).ImageIndex,BitImage);
+                
+                gtk_clist_set_pixmap(Pgtkclist(Widget),I,0,
+                  pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
+                  nil);
+                {$IfNDef Win32}
+                gtk_clist_set_pixtext(Pgtkclist(Widget),I,0,pRowText,3,
+                  pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
+                  nil);
+                {$EndIF}
 //                      bitimage.Free;
+              end;
+            end;
+          finally
+            freemem(pRowText);
+          end;
+            
+          if (TListview(sender).ViewStyle = vsReport) 
+          then begin //columns showing
+            for X := 1 to TListview(sender).Columns.Count-1 do
+            begin
+              if ( X <= TListItem(TListview(sender).Items[i]).SubItems.Count) 
+              then begin
+                GetMem(pRowText,Length(TListItem(
+                  TListview(sender).Items[i]).SubItems.Strings[X-1])+1);
+                try
+                  pRowText := StrPcopy(pRowText,TListItem(
+                    TListview(sender).Items[i]).SubItems.Strings[X-1]);
+                  gtk_clist_set_text(Pgtkclist(Widget),X,I+1,pRowText);
+                finally
+                  freemem(pRowText);
                 end;
               end;
-            finally
-              freemem(pRowText);
-            end;
-              
-            if (TListview(sender).ViewStyle = vsReport) 
-            then begin //columns showing
-              for X := 1 to TListview(sender).Columns.Count-1 do
-              begin
-                if ( X <= TListItem(TListview(sender).Items[i]).SubItems.Count) 
-                then begin
-                  GetMem(pRowText,Length(TListItem(
-                    TListview(sender).Items[i]).SubItems.Strings[X-1])+1);
-                  try
-                    pRowText := StrPcopy(pRowText,TListItem(
-                      TListview(sender).Items[i]).SubItems.Strings[X-1]);
-                    gtk_clist_set_text(Pgtkclist(Widget),X,I+1,pRowText);
-                  finally
-                    freemem(pRowText);
-                  end;
-                end;
-              end;  //for loop
-            end;
+            end;  //for loop
           end;
-          gtk_clist_thaw(PgtkCList(Widget));
         end;
-             
-      csImage: 
-        begin
-          //Image changed.
-          Widget := PgtkWidget(PdeviceContext(TBitmap(sender).handle));
-          Image := gdk_image_get(pgtkWidget(widget)^.window,0,0,widget^.allocation.width,widget^.allocation.height);
-          if Handle = nil 
-          then TWinControl(sender).Handle := THandle(gtk_image_new(Image,nil))
-          else gtk_image_set(PgtkImage(handle),Image,nil);
-        end;
-        
-      csSpinEdit:
-         Begin
-          gtk_spin_button_set_digits(PgtkSpinButton(Widget),
-                                     TSpinEdit(Sender).Decimal_Places);
-          gtk_spin_button_set_value(PgtkSpinButton(Widget),
-                                    TSpinEdit(Sender).Value);
+        gtk_clist_thaw(PgtkCList(Widget));
+      end;
+           
+    csImage: 
+      begin
+        //Image changed.
+        Widget := PgtkWidget(PdeviceContext(TBitmap(Sender).Handle));
+        Image := gdk_image_get(pgtkWidget(widget)^.window,0,0,widget^.allocation.width,widget^.allocation.height);
+        if Handle = nil 
+        then TWinControl(sender).Handle := THandle(gtk_image_new(Image,nil))
+        else gtk_image_set(PgtkImage(handle),Image,nil);
+      end;
+      
+    csSpinEdit:
+      Begin
+        // ToDo: set climb_rate
+        gtk_spin_button_set_digits(PgtkSpinButton(Handle),
+                                   TSpinEdit(Sender).Decimal_Places);
+        gtk_spin_button_set_value(PgtkSpinButton(Handle),
+                                  TSpinEdit(Sender).Value);
+      End;
 
-         End;
-
-      else
-         Assert (true, Format ('WARNING:[TgtkObject.SetProperties] failed for %s', [Sender.ClassName]));
+    else
+       Assert (true, Format ('WARNING:[TgtkObject.SetProperties] failed for %s', [Sender.ClassName]));
    end;
 end;
 
@@ -5357,6 +5356,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.178  2002/08/25 14:27:45  lazarus
+  MG: fixed unallocated spinedit handle bug
+
   Revision 1.177  2002/08/24 12:55:00  lazarus
   MG: fixed mouse capturing, OI edit focus
 
