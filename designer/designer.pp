@@ -2,7 +2,7 @@
                    designer.pp  -  Lazarus IDE unit
                    --------------------------------
 
-                 Initial Revision  : Sat May 10 23:15:32 CST 1999
+              Initial Revision  : Sat May 10 23:15:32 CST 1999
 
 
  ***************************************************************************/
@@ -317,6 +317,8 @@ Begin
   {$IFDEF VerboseDesigner}
   Writeln('[TDesigner.NudgeControl]');
   {$ENDIF}
+  if (ControlSelection.SelectionForm<>Form)
+  or (ControlSelection.IsSelected(Form)) then exit;
   ControlSelection.MoveSelection(DiffX, DiffY);
   if ControlSelection.OnlyNonVisualComponentsSelected then
     FCustomForm.Invalidate;
@@ -327,6 +329,8 @@ Begin
   {$IFDEF VerboseDesigner}
   Writeln('[TDesigner.NudgeSize]');
   {$ENDIF}
+  if (ControlSelection.SelectionForm<>Form)
+  or (ControlSelection.IsSelected(Form)) then exit;
   ControlSelection.SizeSelection(DiffX, DiffY);
 end;
 
@@ -522,9 +526,9 @@ Begin
   writeln('************************************************************');
   write('MouseDownOnControl');
   write(' ',Sender.Name,':',Sender.ClassName);
-  write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
-  write(' Mouse=',MouseDownPos.X,',',MouseDownPos.Y);
-  writeln('');
+  //write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
+  //write(' Mouse=',MouseDownPos.X,',',MouseDownPos.Y);
+  //writeln('');
 
   if (TheMessage.Keys and MK_Shift) = MK_Shift then
     Write(' Shift down')
@@ -613,7 +617,7 @@ procedure TDesigner.MouseUpOnControl(Sender : TControl;
   TheMessage:TLMMouse);
 var
   ParentCI, NewCI: TComponentInterface;
-  NewLeft, NewTop, NewWidth, NewHeight, MoveX, MoveY: Integer;
+  NewLeft, NewTop, NewWidth, NewHeight: Integer;
   Shift: TShiftState;
   SenderParentForm: TCustomForm;
   RubberBandWasActive: boolean;
@@ -648,73 +652,73 @@ var
   begin
     // add a new component
     ControlSelection.RubberbandActive:=false;
-    ControlSelection.BeginUpdate;
-    try
+    ControlSelection.Clear;
 
-      // find a parent for the new component
-      NewParent:=TWinControl(MouseDownComponent);
-      while (NewParent<>nil)
-      and ((not (csAcceptsControls in NewParent.ControlStyle))
-        or ((NewParent.Owner<>Form) and (NewParent<>Form)))
-      do begin
-        NewParent:=NewParent.Parent;
-      end;
-      ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
-      if not Assigned(ParentCI) then exit;
+    // find a parent for the new component
+    NewParent:=TWinControl(MouseDownComponent);
+    while (NewParent<>nil)
+    and ((not (csAcceptsControls in NewParent.ControlStyle))
+      or ((NewParent.Owner<>Form) and (NewParent<>Form)))
+    do begin
+      NewParent:=NewParent.Parent;
+    end;
+    ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
+    if not Assigned(ParentCI) then exit;
+    
+    // calculate initial bounds
+    ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
+    NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
+    NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y);
+    if SelectedCompClass.ComponentClass.InheritsFrom(TControl) then begin
+      // adjust left,top to parent origin
+      dec(NewLeft,ParentClientOrigin.X);
+      dec(NewTop,ParentClientOrigin.Y);
+    end;
+    NewWidth:=Abs(MouseUpPos.X-MouseDownPos.X);
+    NewHeight:=Abs(MouseUpPos.Y-MouseDownPos.Y);
+    if Abs(NewWidth+NewHeight)<7 then begin
+      // this very small component is probably only a wag, take default size
+      NewWidth:=0;
+      NewHeight:=0;
+    end;
+
+    // create component and component interface
+    NewCI := TComponentInterface(TheFormEditor.CreateComponent(
+       ParentCI,SelectedCompClass.ComponentClass
+      ,NewLeft,NewTop,NewWidth,NewHeight));
       
-      // calculate initial bounds
-      ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
-      NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
-      NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y);
-      if SelectedCompClass.ComponentClass.InheritsFrom(TControl) then begin
-        // adjust left,top to parent origin
-        dec(NewLeft,ParentClientOrigin.X);
-        dec(NewTop,ParentClientOrigin.Y);
-      end;
-      NewWidth:=Abs(MouseUpPos.X-MouseDownPos.X);
-      NewHeight:=Abs(MouseUpPos.Y-MouseDownPos.Y);
-      if Abs(NewWidth+NewHeight)<7 then begin
-        // this very small component is probably only a wag, take default size
-        NewWidth:=0;
-        NewHeight:=0;
-      end;
-
-      // create component and component interface
-      NewCI := TComponentInterface(TheFormEditor.CreateComponent(
-         ParentCI,SelectedCompClass.ComponentClass
-        ,NewLeft,NewTop,NewWidth,NewHeight));
-        
-      // set initial properties
-      if NewCI.Component is TControl then
-        TControl(NewCI.Component).Visible:=true;
-      if Assigned(FOnSetDesigning) then
-        FOnSetDesigning(Self,NewCI.Component,True);
-        
-      // tell IDE about the new component (e.g. add it to the source)
+    // set initial properties
+    if NewCI.Component is TControl then
+      TControl(NewCI.Component).Visible:=true;
+    if Assigned(FOnSetDesigning) then
+      FOnSetDesigning(Self,NewCI.Component,True);
+      
+    // tell IDE about the new component (e.g. add it to the source)
+    try
       if Assigned(FOnComponentAdded) then
         FOnComponentAdded(Self,NewCI.Component,SelectedCompClass);
-
-      // creation completed
-      // -> select new component
-      SelectOnlyThisComponent(TComponent(NewCI.Component));
-      if not (ssShift in Shift) then
-        if Assigned(FOnUnselectComponentClass) then
-          // this resets the component palette to the selection tool
-          FOnUnselectComponentClass(Self);
-          
-      Form.Invalidate;
-      {$IFDEF VerboseDesigner}
-      writeln('NEW COMPONENT ADDED: Form.ComponentCount=',Form.ComponentCount,
-         '  NewCI.Control.Owner.Name=',NewCI.Component.Owner.Name);
-      {$ENDIF}
-    finally
-      ControlSelection.EndUpdate;
+    except
+      on E: Exception do
+        MessageDlg('Error:',E.Message,mtError,[mbOk],0);
     end;
+
+    // creation completed
+    // -> select new component
+    SelectOnlyThisComponent(TComponent(NewCI.Component));
+    if not (ssShift in Shift) then
+      if Assigned(FOnUnselectComponentClass) then
+        // this resets the component palette to the selection tool
+        FOnUnselectComponentClass(Self);
+        
+    Form.Invalidate;
+    {$IFDEF VerboseDesigner}
+    writeln('NEW COMPONENT ADDED: Form.ComponentCount=',Form.ComponentCount,
+       '  NewCI.Control.Owner.Name=',NewCI.Component.Owner.Name);
+    {$ENDIF}
   end;
   
   procedure RubberbandSelect;
   begin
-    ControlSelection.BeginUpdate;
     if (ssShift in Shift)
     and (ControlSelection.SelectionForm<>nil)
     and (ControlSelection.SelectionForm<>Form)
@@ -725,8 +729,12 @@ var
       exit;
     end;
 
-    NewRubberbandSelection:=(not (ssShift in Shift))
-                            and ControlSelection.IsOnlySelected(Form);
+    ControlSelection.BeginUpdate;
+    NewRubberbandSelection:=
+      ((not (ssShift in Shift))
+        and ControlSelection.IsOnlySelected(Form))
+      or ((ControlSelection.SelectionForm<>nil)
+        and (ControlSelection.SelectionForm<>Form));
     SelectionChanged:=false;
     ControlSelection.SelectWithRubberBand(
       Form,NewRubberbandSelection,ssShift in Shift,SelectionChanged);
@@ -749,7 +757,8 @@ var
       // select only the mouse down component
       if ControlSelection.AssignComponent(MouseDownComponent) then
         Form.Invalidate;
-      if MouseDownClickCount=2 then begin
+      if (MouseDownClickCount=2)
+      and (ControlSelection.SelectionForm=Form) then begin
         // Double Click -> invoke 'Edit' of the component editor
         FShiftState:=Shift;
         InvokeComponentEditor(MouseDownComponent,-1);
@@ -788,8 +797,6 @@ Begin
   GetShift;
 
   MouseUpPos:=GetFormRelativeMousePosition(Form);
-  MoveX:=MouseUpPos.X-MouseDownPos.X;
-  MoveY:=MouseUpPos.Y-MouseDownPos.Y;
 
   SelectedCompClass:=GetSelectedComponentClass;
 
@@ -797,8 +804,7 @@ Begin
   writeln('************************************************************');
   write('MouseUpOnControl');
   write(' ',Sender.Name,':',Sender.ClassName);
-  write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
-  write(' Move=',MoveX,',',MoveY);
+  //write(' Msg=',TheMessage.Pos.X,',',TheMessage.Pos.Y);
   writeln('');
   {$ENDIF}
 
@@ -869,7 +875,12 @@ begin
   if (OldMouseMovePos.X=LastMouseMovePos.X)
   and (OldMouseMovePos.Y=LastMouseMovePos.Y) then exit;
 
-  Grabber:= ControlSelection.GrabberAtPos(LastMouseMovePos.X, LastMouseMovePos.Y);
+  if ControlSelection.SelectionForm=Form then
+    Grabber:=ControlSelection.GrabberAtPos(
+                         LastMouseMovePos.X, LastMouseMovePos.Y)
+  else
+    Grabber:=nil;
+                         
   if MouseDownComponent=nil then begin
     if Grabber = nil then
       ACursor:= crDefault
@@ -890,48 +901,51 @@ begin
   if (TheMessage.keys and MK_Control) = MK_Control then
     Shift := Shift + [ssCTRL];
 
-  if (TheMessage.keys and MK_LButton) = MK_LButton then begin
-    // left button pressed
-    if ControlSelection.ActiveGrabber<>nil then begin
-      // grabber moving -> size selection
-      if not (dfHasSized in FFlags) then begin
-        ControlSelection.SaveBounds;
-        Include(FFlags,dfHasSized);
-      end;
-      ControlSelection.SizeSelection(
-        LastMouseMovePos.X-OldMouseMovePos.X,
-        LastMouseMovePos.Y-OldMouseMovePos.Y);
-      FCustomForm.Invalidate;
-      if Assigned(OnModified) then OnModified(Self);
-    end else begin
-      if (not ComponentIsTopLvl(MouseDownComponent))
-      and (ControlSelection.Count>=1)
-      and not (ControlSelection[0].Component is TCustomForm) then
-      begin
-        // move selection
+  if ControlSelection.SelectionForm=Form then begin
+    if (TheMessage.keys and MK_LButton) = MK_LButton then begin
+      // left button pressed
+      if (ControlSelection.ActiveGrabber<>nil) then begin
+        // grabber moving -> size selection
         if not (dfHasSized in FFlags) then begin
           ControlSelection.SaveBounds;
           Include(FFlags,dfHasSized);
         end;
-        if ControlSelection.MoveSelectionWithSnapping(
-          LastMouseMovePos.X-MouseDownPos.X,LastMouseMovePos.Y-MouseDownPos.Y)
-        then begin
-          if Assigned(OnModified) then OnModified(Self);
-          FCustomForm.Invalidate;
+        ControlSelection.SizeSelection(
+          LastMouseMovePos.X-OldMouseMovePos.X,
+          LastMouseMovePos.Y-OldMouseMovePos.Y);
+        FCustomForm.Invalidate;
+        if Assigned(OnModified) then OnModified(Self);
+      end else begin
+        if (not ComponentIsTopLvl(MouseDownComponent))
+        and (ControlSelection.Count>=1)
+        and not (ControlSelection[0].Component is TCustomForm) then
+        begin
+          // move selection
+          if not (dfHasSized in FFlags) then begin
+            ControlSelection.SaveBounds;
+            Include(FFlags,dfHasSized);
+          end;
+          if ControlSelection.MoveSelectionWithSnapping(
+            LastMouseMovePos.X-MouseDownPos.X,LastMouseMovePos.Y-MouseDownPos.Y)
+          then begin
+            if Assigned(OnModified) then OnModified(Self);
+            FCustomForm.Invalidate;
+          end;
+        end
+        else
+        begin
+          // rubberband sizing
+          ControlSelection.RubberBandBounds:=Rect(MouseDownPos.X,MouseDownPos.Y,
+                                                  LastMouseMovePos.X,
+                                                  LastMouseMovePos.Y);
+          ControlSelection.RubberBandActive:=true;
+          SenderParentForm.Invalidate;
         end;
-      end
-      else
-      begin
-        // rubberband sizing
-        ControlSelection.RubberBandBounds:=Rect(MouseDownPos.X,MouseDownPos.Y,
-                                                LastMouseMovePos.X,
-                                                LastMouseMovePos.Y);
-        ControlSelection.RubberBandActive:=true;
-        SenderParentForm.Invalidate;
       end;
+    end
+    else begin
+      ControlSelection.ActiveGrabber:=nil;
     end;
-  end else begin
-    ControlSelection.ActiveGrabber:=nil;
   end;
 end;
 
@@ -999,7 +1013,7 @@ end;
 Procedure TDesigner.KeyUp(Sender : TControl; TheMessage:TLMKEY);
 Begin
   {$IFDEF VerboseDesigner}
-  Writeln('TDesigner.KEYUP ',TheMessage.CharCode,' ',TheMessage.KeyData);
+  //Writeln('TDesigner.KEYUP ',TheMessage.CharCode,' ',TheMessage.KeyData);
   {$ENDIF}
 end;
 
@@ -1007,6 +1021,8 @@ procedure TDesigner.DoDeleteSelectedComponents;
 var
   i: integer;
 begin
+  if (ControlSelection.Count=0) or (ControlSelection.SelectionForm<>Form) then
+    exit;
   if (ControlSelection.IsSelected(FCustomForm)) then begin
     if ControlSelection.Count>1 then
       MessageDlg('Invalid delete',
@@ -1365,7 +1381,8 @@ end;
 function TDesigner.GetComponentEditorForSelection: TBaseComponentEditor;
 begin
   Result:=nil;
-  if ControlSelection.Count<>1 then exit;
+  if (ControlSelection.Count<>1)
+  or (ControlSelection.SelectionForm<>Form) then exit;
   Result:=TheFormEditor.GetComponentEditor(ControlSelection[0].Component);
 end;
 
@@ -1433,7 +1450,8 @@ var
 begin
   if FPopupMenu<>nil then FPopupMenu.Free;
 
-  ControlSelIsNotEmpty:=ControlSelection.Count>0;
+  ControlSelIsNotEmpty:=(ControlSelection.Count>0)
+     and (ControlSelection.SelectionForm=Form);
   FormIsSelected:=ControlSelection.IsSelected(Form);
   OnlyNonVisualCompsAreSelected:=
     ControlSelection.OnlyNonVisualComponentsSelected;
