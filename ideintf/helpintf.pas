@@ -75,8 +75,8 @@ type
     procedure Insert(Index: integer; const Context: TPascalHelpContext);
     procedure Clear;
     destructor Destroy; override;
-    function IsEqual(List: TPascalHelpContextList): boolean;
-    function CompareList(List: TPascalHelpContextList): integer;
+    function IsEqual(AList: TPascalHelpContextList): boolean;
+    function CompareList(AList: TPascalHelpContextList): integer;
   public
     property Count: integer read FCount;
     property Items[Index: integer]: TPascalHelpContext read GetItems;
@@ -1928,26 +1928,26 @@ begin
   inherited Destroy;
 end;
 
-function TPascalHelpContextList.IsEqual(List: TPascalHelpContextList): boolean;
+function TPascalHelpContextList.IsEqual(AList: TPascalHelpContextList): boolean;
 begin
-  Result:=CompareList(List)=0;
+  Result:=CompareList(AList)=0;
 end;
 
-function TPascalHelpContextList.CompareList(List: TPascalHelpContextList
+function TPascalHelpContextList.CompareList(AList: TPascalHelpContextList
   ): integer;
 var
   i: Integer;
 begin
   i:=0;
-  while (i<Count) and (i<List.Count) do begin
-    if fItems[i].Descriptor<List.fItems[i].Descriptor then begin
+  while (i<Count) and (i<AList.Count) do begin
+    if fItems[i].Descriptor<AList.fItems[i].Descriptor then begin
       Result:=1;
       exit;
-    end else if fItems[i].Descriptor>List.fItems[i].Descriptor then begin
+    end else if fItems[i].Descriptor>AList.fItems[i].Descriptor then begin
       Result:=-1;
       exit;
     end else begin
-      Result:=CompareText(fItems[i].Context,List.fItems[i].Context);
+      Result:=CompareText(fItems[i].Context,AList.fItems[i].Context);
       if Result<>0 then exit;
     end;
     inc(i);
