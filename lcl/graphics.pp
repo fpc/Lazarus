@@ -415,7 +415,9 @@ type
   //     but then with the advanced features of the existing package
   {$ENDIF}
 
-  { TGraphicsObject }
+  { TGraphicsObject
+    In Delphi VCL this is the ancestor of TFon, TPen and TBrush.
+    With FPC 2.0 the LCL uses TFPCanvasHelper. }
 
   TGraphicsObject = class(TPersistent)
   private
@@ -1946,6 +1948,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.172  2005/01/15 11:56:13  mattias
+  fixed locking TCanvas
+
   Revision 1.171  2005/01/10 18:44:44  mattias
   implemented the fpCanvas support for the LCL - Compile with -dUseFPCanvas
 

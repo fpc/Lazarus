@@ -1500,8 +1500,10 @@ begin
   {$IFDEF UseFPCanvas}
   LockCanvas;
   {$ELSE}
-  if FLock=0 then InitializeCriticalSection(FLock);
-  EnterCriticalSection(FLock);
+  if FLockCount=0 then begin
+    if FLock=0 then InitializeCriticalSection(FLock);
+    EnterCriticalSection(FLock);
+  end;
   Inc(FLockCount);
   {$ENDIF}
 end;
@@ -1512,12 +1514,22 @@ end;
   Returns:  nothing
  ------------------------------------------------------------------------------}
 procedure TCanvas.Unlock;
+
+  procedure RaiseTooManyUnlock;
+  begin
+    raise Exception.Create(
+                         'TCanvas.Unlock '+DbgSName(Self)+': too many unlocks');
+  end;
+
 begin
   {$IFDEF UseFPCanvas}
   UnlockCanvas;
   {$ELSE}
-  LeaveCriticalSection(FLock);
   Dec(FLockCount);
+  if FLockCount=0 then begin
+    LeaveCriticalSection(FLock);
+  end else if FLockCount<0 then
+    RaiseTooManyUnlock;
   {$ENDIF}
 end;
 
@@ -1532,6 +1544,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.89  2005/01/15 11:56:13  mattias
+  fixed locking TCanvas
+
   Revision 1.88  2005/01/10 18:44:44  mattias
   implemented the fpCanvas support for the LCL - Compile with -dUseFPCanvas
 
