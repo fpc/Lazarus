@@ -2058,7 +2058,8 @@ Begin
       Assert(False, 'Trace:CreateComponent - Creating a Form Window');
       Flags := BorderStyleToWin32Flags(TCustomForm(Sender).BorderStyle);
       FlagsEx := BorderStyleToWin32FlagsEx(TCustomForm(Sender).BorderStyle);
-      if TCustomForm(Sender).FormStyle = fsStayOnTop then
+      if (TCustomForm(Sender).FormStyle = fsStayOnTop)
+      and (not (csDesigning in TCustomForm(Sender).ComponentState)) then
         FlagsEx := FlagsEx or WS_EX_TOPMOST;
       pClassName := @ClsName;
       WindowTitle := StrCaption;
@@ -2999,6 +3000,9 @@ End;
 
 {
   $Log$
+  Revision 1.201  2004/05/31 08:21:52  mattias
+  fsStayOnTop is now ignored in design mode
+
   Revision 1.200  2004/05/30 20:17:55  vincents
   changed radiobutton style to BS_RADIOBUTTON to prevent test program from hanging.
 

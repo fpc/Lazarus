@@ -5909,7 +5909,8 @@ begin
   else
     ABorderStyle:=ACustomForm.BorderStyle;
   WindowType:=FormStyleMap[ABorderStyle];
-  if (ABorderStyle=bsNone) and (ACustomForm.FormStyle=fsStayOnTop) then begin
+  if (ABorderStyle=bsNone) and (ACustomForm.FormStyle=fsStayOnTop)
+  and (not (csDesigning in ACustomForm.ComponentState)) then begin
     WindowType:=GTK_WINDOW_POPUP;
   end;
 
@@ -6880,7 +6881,8 @@ begin
 
     if (ACustomForm<>nil) then begin
       If (ACustomForm.BorderStyle <> bsSizeable) or
-        (ACustomForm.FormStyle = fsStayOnTop)
+        ((ACustomForm.FormStyle = fsStayOnTop)
+         and (not (csDesigning in ACustomForm.ComponentState)))
       then begin
         Decor := GetWindowDecorations(ACustomForm);
         Func := GetWindowFunction(ACustomForm);
@@ -9211,6 +9213,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.507  2004/05/31 08:21:52  mattias
+  fsStayOnTop is now ignored in design mode
+
   Revision 1.506  2004/05/30 14:02:31  mattias
   implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
 
