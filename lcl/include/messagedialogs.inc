@@ -492,17 +492,17 @@ end;
 
 procedure ShowMessage(const aMsg: string);
 begin
-  MessageDlg (aMsg, mtInformation, [mbOK], 0);
+  NotifyUser(aMsg, idDialogInfo);
 end;
 
 procedure ShowMessageFmt(const aMsg: string; Params: array of const);
 begin
-  MessageDlg (Format (aMsg, Params), mtInformation, [mbOK], 0);
+  NotifyUser(Format(aMsg, Params), idDialogInfo);
 end;
 
 procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
 begin
-  MessageDlgPos(aMsg, mtInformation, [mbOK], 0, X, Y);
+  NotifyUserAtXY(aMsg, idDialogInfo, X, Y);
 end;
 
 //----------------------------------------------------------------------------//
@@ -532,6 +532,10 @@ end;
 
 {
    $Log$
+   Revision 1.17  2002/10/23 14:36:52  lazarus
+   AJ:Fixes to PromptUser;Switched ShowMessage* to use NotifyUser*;
+      fixed TGraphicPropertyEditor for when Property is nil.
+
    Revision 1.16  2002/10/11 16:00:39  lazarus
    AJ: made InputQuery Interface Dependant
 

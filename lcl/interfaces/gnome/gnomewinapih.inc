@@ -19,9 +19,9 @@
 }
 
 Function PromptUser(const DialogCaption, DialogMessage : String; DialogType : longint;
-  Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint) : Longint; override;
+  Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint) : Longint; override;
 Function PromptUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint;
-  Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint; override;
+  Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint; X, Y : Longint) : Longint; override;
 
 Function LoadStockPixmap(StockID: longint) : HBitmap; override;
 
@@ -29,6 +29,10 @@ Function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Bool
 
 {
   $Log$
+  Revision 1.8  2002/10/23 14:36:53  lazarus
+  AJ:Fixes to PromptUser;Switched ShowMessage* to use NotifyUser*;
+     fixed TGraphicPropertyEditor for when Property is nil.
+
   Revision 1.7  2002/10/21 03:23:35  lazarus
   AJ: rearranged GTK init stuff for proper GNOME init & less duplication between interfaces
 

@@ -71,7 +71,7 @@ end;
    or other information, or to ask questions.
  ------------------------------------------------------------------------------}
 Function PromptUserWidget(const DialogCaption, DialogMessage : String;
-  DialogType : longint; Buttons : Array of Longint; DefaultIndex : Longint) : Pointer;
+  DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex : Longint) : Pointer;
 var
   BoxType : PChar;
   MainWidget : Pointer;
@@ -107,8 +107,8 @@ begin
     MsgTitle := nil;
     
   BTNArray := nil;
-  ReallocMem(BTNArray, SizeOf(PgChar)*(High(Buttons) - Low(Buttons) + 2));
-  For I := Low(Buttons) to High(Buttons) do begin
+  ReallocMem(BTNArray, SizeOf(PgChar)*(ButtonCount + 1));
+  For I := 0 to ButtonCount - 1 do begin
     Case Buttons[I] Of
       idButtonOk : StockName := GNOME_STOCK_BUTTON_OK;
       idButtonCancel : StockName := GNOME_STOCK_BUTTON_CANCEL;
@@ -125,11 +125,9 @@ begin
       else
         StockName := '';
     end;
-    BTNArray[I - Low(Buttons)] := StockName;
-    If DefaultIndex = I then
-      DefaultIndex := I - Low(Buttons);
+    BTNArray[I] := StockName;
   end;
-  BTNArray[High(Buttons) - Low(Buttons) + 1] := nil;
+  BTNArray[ButtonCount] := nil;
 
   TXTLayout := gnome_icon_layout_text(PGDIObject(GetStockObject(SYSTEM_FONT))^.GDIFontObject,
     PgChar(DialogMessage), ' ', Screen.Width div 3, False);
@@ -150,8 +148,7 @@ begin
 
   Result := gnome_message_box_newv(PgChar(NewMessage), BoxType, BTNArray);
 
-  If (DefaultIndex >= High(Buttons) - Low(Buttons)) or
-    (DefaultIndex < 0)
+  If (DefaultIndex >= ButtonCount) or (DefaultIndex < 0)
   then
     DefaultIndex := 0;
 
@@ -168,18 +165,18 @@ begin
 end;
 
 Function TGnomeObject.PromptUser(const DialogCaption, DialogMessage : String;
-  DialogType : longint; Buttons : Array of Longint;
+  DialogType : longint; Buttons : PLongint; ButtonCount,
   DefaultIndex, EscapeResult : Longint) : Longint;
 var
   MsgBox : Pointer;
   MSGResult : Longint;
 begin
-  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, Buttons, DefaultIndex);
+  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex);
   MSGResult := gnome_dialog_run_and_close(MsgBox);
   Case MSGResult of
     -1 : Result := EscapeResult;
     else
-      Result := Buttons[MSGResult + Low(Buttons)]
+      Result := Buttons[MSGResult]
   end;
 end;
 
@@ -201,19 +198,19 @@ end;
    questions.
  ------------------------------------------------------------------------------}
 Function TGnomeObject.PromptUserAtXY(const DialogCaption, DialogMessage : String;
-   DialogType : longint; Buttons : Array of Longint; DefaultIndex, EscapeResult : Longint;
+   DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint;
    X, Y : Longint) : Longint;
 var
   MsgBox : Pointer;
   MSGResult : Longint;
 begin
-  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, Buttons, DefaultIndex);
+  MsgBox := PromptUserWidget(DialogCaption, DialogMessage, DialogType, Buttons, ButtonCount, DefaultIndex);
   gtk_widget_set_uposition(MsgBox, X, Y);
   MSGResult := gnome_dialog_run_and_close(MsgBox);
   Case MSGResult of
     -1 : Result := EscapeResult;
     else
-      Result := Buttons[MSGResult + Low(Buttons)]
+      Result := Buttons[MSGResult]
   end;
 end;
 
@@ -296,6 +293,10 @@ end;
 
 {
   $Log$
+  Revision 1.10  2002/10/23 14:36:53  lazarus
+  AJ:Fixes to PromptUser;Switched ShowMessage* to use NotifyUser*;
+     fixed TGraphicPropertyEditor for when Property is nil.
+
   Revision 1.9  2002/10/21 03:23:34  lazarus
   AJ: rearranged GTK init stuff for proper GNOME init & less duplication between interfaces
 
