@@ -1,12 +1,22 @@
-  LazarusResources.Add('TVIEWUNITS1','FORMDATA',
-    'TPF0'#11'TVIEWUNITS1'#0#7'CAPTION'#6#18'View Project Units'#5'COLOR'#4#15
-    +#0#0#128#12'CLIENTHEIGHT'#3#200#0#11'CLIENTWIDTH'#3'E'#1#8'POSITION'#7#14
-    +'poscreencenter'#6'HEIGHT'#3#200#0#5'WIDTH'#3'E'#1#0#7'TBUTTON'#5'btnOK'#7
-    +'CAPTION'#6#2'OK'#7'ONCLICK'#7#10'BTNOKCLICK'#4'LEFT'#3#235#0#6'HEIGHT'#2
-    +#25#3'TOP'#2#10#5'WIDTH'#2'K'#0#0#7'TBUTTON'#9'btnCancel'#7'CAPTION'#6#6
-    +'Cancel'#7'ONCLICK'#7#14'BTNCANCELCLICK'#4'LEFT'#3#235#0#6'HEIGHT'#2#25#3
-    +'TOP'#2'-'#5'WIDTH'#2'K'#0#0#5'TEDIT'#5'Edit1'#4'TEXT'#6#5'Edit1'#4'LEFT'
-    +#2#10#6'HEIGHT'#2#25#3'TOP'#2#10#5'WIDTH'#3#215#0#0#0#8'TLISTBOX'#8'Listb'
-    +'ox1'#11'BORDERSTYLE'#7#2'TL'#7'ONCLICK'#7#13'LISTBOX1CLICK'#4'LEFT'#2#10
-    +#6'HEIGHT'#3#145#0#3'TOP'#2'-'#5'WIDTH'#3#215#0#0#0#0
-  );
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TVIEWUNITS','FORMDATA',[
+  'TPF0'#10'TVIEWUNITS'#9'VIEWUNITS'#7'Caption'#6#18'View Project Units'#12'Cli'
+  +'entHeight'#3#204#0#11'ClientWidth'#3#160#1#8'Position'#7#14'poScreenCenter'
+  +#18'HorzScrollBar.Page'#3#161#1#18'VertScrollBar.Page'#3#205#0#4'Left'#3#221
+  +#1#6'Height'#3#204#0#3'Top'#3#156#1#5'Width'#3#160#1#0#7'TButton'#5'btnOK'#7
+  +'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#2'OK'#8'TabOrder'#2#0#7'OnCl'
+  +'ick'#7#10'BTNOKCLICK'#6'Cursor'#2#25#4'Left'#3'8'#1#6'Height'#2#25#3'Top'#2
+  +#10#5'Width'#2'`'#0#0#7'TButton'#9'btnCancel'#7'Anchors'#11#5'akTop'#7'akRig'
+  +'ht'#0#7'Caption'#6#6'Cancel'#8'TabOrder'#2#1#7'OnClick'#7#14'BTNCANCELCLICK'
+  +#6'Cursor'#2#25#4'Left'#3'8'#1#6'Height'#2#25#3'Top'#2'-'#5'Width'#2'`'#0#0#5
+  +'TEdit'#4'Edit'#7'Anchors'#11#5'akTop'#6'akLeft'#7'akRight'#0#7'Enabled'#8#8
+  +'TabOrder'#2#2#8'TabOrder'#2#2#4'Left'#2#10#6'Height'#2#25#3'Top'#2#10#5'Wid'
+  +'th'#3'&'#1#0#0#8'TListBox'#7'Listbox'#7'Anchors'#11#5'akTop'#6'akLeft'#7'ak'
+  +'Right'#8'akBottom'#0#8'TabOrder'#2#3#8'TopIndex'#2#255#4'Left'#2#10#6'Heigh'
+  +'t'#3#147#0#3'Top'#2'-'#5'Width'#3'&'#1#0#0#9'TCheckBox'#19'MultiSelectCheck'
+  +'Box'#11'AllowGrayed'#9#7'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#12
+  +'Multi Select'#10'DragCursor'#4#244#255#0#0#7'OnClick'#7#24'MultiselectCheck'
+  +'BoxClick'#8'TabOrder'#2#4#4'Left'#3'6'#1#6'Height'#2#20#3'Top'#2'\'#5'Width'
+  +#2'b'#0#0#0
+]);

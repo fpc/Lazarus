@@ -50,37 +50,38 @@ type
   end;
 
   TViewUnits = class(TForm)
+    Edit: TEdit;
     ListBox: TListBox;
-    btnOK : TButton;
-    btnCancel : TButton;
-    MultiselectCheckBox: TCheckBox;
-    procedure ViewUnitsResize(Sender: TObject);
+    btnOK: TButton;
+    btnCancel: TButton;
+    MultiSelectCheckBox: TCheckBox;
     Procedure btnOKClick(Sender :TObject);
     Procedure btnCancelClick(Sender :TObject);
     procedure MultiselectCheckBoxClick(Sender :TObject);
   public
-    constructor Create(AOwner: TComponent); override;	
+    constructor Create(TheOwner: TComponent); override;
   end;
 
 
 function ShowViewUnitsDlg(Entries: TList; MultiSelect: boolean;
-  Caption: string): TModalResult;
-   // Entries is a list of TViewUnitsEntry(s)
+  const Caption: string): TModalResult;
+  // Entries is a list of TViewUnitsEntry(s)
 
 
 implementation
 
 
 function ShowViewUnitsDlg(Entries: TList;
-  MultiSelect: boolean; Caption: string): TModalResult;
+  MultiSelect: boolean; const Caption: string): TModalResult;
 var ViewUnits: TViewUnits;
   i: integer;
 begin
   ViewUnits:=TViewUnits.Create(Application);
   try
     ViewUnits.Caption:=Caption;
-    ViewUnits.ListBox.Visible:=false;
     ViewUnits.MultiselectCheckBox.Enabled:=MultiSelect;
+    ViewUnits.MultiselectCheckBox.Checked:=MultiSelect;
+    ViewUnits.ListBox.Multiselect:=ViewUnits.MultiselectCheckBox.Checked;
     with ViewUnits.ListBox.Items do begin
       BeginUpdate;
       Clear;
@@ -90,7 +91,6 @@ begin
     end;
     for i:=0 to Entries.Count-1 do
       ViewUnits.ListBox.Selected[i]:=TViewUnitsEntry(Entries[i]).Selected;
-    ViewUnits.ListBox.Visible:=true;
     Result:=ViewUnits.ShowModal;
     if Result=mrOk then begin
       for i:=0 to Entries.Count-1 do begin
@@ -115,112 +115,16 @@ end;
 
 { TViewUnits }
 
-constructor TViewUnits.Create(AOwner: TComponent);	
-var
-  Pad : Integer;
+constructor TViewUnits.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
-
-  if LazarusResources.Find(Classname)=nil then begin
-    Caption := lisViewProjectUnits;
-    Width:=325;
-    Height:=200;
-    Position:=poScreenCenter;
-    Pad := 10;
-    OnResize:=@ViewUnitsResize;
-
-    btnOK := TButton.Create(Self);
-    with btnOk do begin
-      Parent := Self;
-      Left := Self.Width - 90;
-      Top := pad;
-      Width := 75;
-      Height := 25;
-      Caption := 'OK';
-      Visible := True;
-      OnClick := @btnOKClick;
-      Name := 'btnOK';
-    end;
-
-    btnCancel := TButton.Create(Self);
-    with btnCancel do begin
-      Parent := Self;
-      Left := Self.Width - 90;
-      Top := btnOK.Top + btnOK.Height + pad;
-      Width := 75;
-      Height := 25;
-      Caption := dlgCancel;
-      Visible := True;
-      Name := 'btnCancel';
-      OnClick := @btnCancelClick;
-    end;
-
-    Listbox:= TListBox.Create(Self);
-    with Listbox do
-    begin
-      Parent:= Self;
-      Top:= Pad;
-      Left:= Pad;
-      Width:= Self.Width - (Self.Width - btnOK.Left) - (2*pad);
-      Height:= Self.Height - Top - Pad;
-      MultiSelect:= false;
-      Name := 'Listbox';
-      Visible:= true;
-      OnDblClick:=@btnOKClick;
-    end;
-    
-    MultiselectCheckBox:=TCheckBox.Create(Self);
-    with MultiselectCheckBox do begin
-      Parent:=Self;
-      Name:='MultiselectCheckBox';
-      Left:=btnOK.Left;
-      Top:=btnCancel.Top+btnCancel.Height+2*pad;
-      Width:=btnOk.Width;
-      Height:=25;
-      Caption:=dlgMulti;
-      Checked:=false;
-      OnClick:=@MultiselectCheckBoxClick;
-      Visible:=true;
-    end;
-  end;
-  
-  IDEDialogLayoutList.ApplyLayout(Self,325,300);
-
-  ViewUnitsResize(nil);
-end;
-
-procedure TViewUnits.ViewUnitsResize(Sender: TObject);
-var Pad: integer;
-begin
-  Pad:=10;
-  
-  with btnOk do begin
-    Left := Self.Width - 90;
-    Top := pad;
-    Width := 75;
-    Height := 25;
-  end;
-
-  with btnCancel do begin
-    Left := Self.Width - 90;
-    Top := btnOK.Top + btnOK.Height + pad;
-    Width := 75;
-    Height := 25;
-  end;
-
-  with Listbox do begin
-    Top:= Pad;
-    Left:= Pad;
-    Width:= Self.Width - (Self.Width - btnOK.Left) - (2*pad);
-    Height:= Self.Height - Top - Pad;
-  end;
-
-  with MultiselectCheckBox do begin
-    Left:=btnOK.Left;
-    Top:=btnCancel.Top+btnCancel.Height+2*pad;
-    Width:=btnOk.Width;
-    Height:=25;
-  end;
+  inherited Create(TheOwner);
+  IDEDialogLayoutList.ApplyLayout(Self,450,300);
+  btnOK.Caption:='Ok';
+  btnOk.Left:=ClientWidth-btnOk.Width-5;
+  btnCancel.Caption:='Cancel';
+  btnCancel.Left:=btnOk.Left;
+  MultiSelectCheckBox.Caption:='Multi Select';
+  MultiSelectCheckBox.Left:=btnOk.Left;
 end;
 
 Procedure TViewUnits.btnOKClick(Sender : TOBject);
@@ -228,7 +132,6 @@ Begin
   IDEDialogLayoutList.SaveLayout(Self);
   ModalResult := mrOK;
 End;
-
 
 Procedure TViewUnits.btnCancelClick(Sender : TOBject);
 Begin
@@ -243,12 +146,15 @@ end;
 
 
 initialization
-{ $I viewunits1.lrs}
+ {$I viewunits1.lrs}
 
 
 end.
 {
   $Log$
+  Revision 1.17  2004/04/03 13:35:14  mattias
+  fixed view unit dialog using lfm
+
   Revision 1.16  2003/05/02 22:22:15  mattias
   localization, added context policy to make resource string dialog
 

@@ -1,50 +1,65 @@
-object VIEWUNITS1: TVIEWUNITS1
-  CAPTION = 'View Project Units'
-  CLIENTHEIGHT = 200
-  CLIENTWIDTH = 325
-  POSITION = poscreencenter
-  HORZSCROLLBAR.PAGE = 326
-  VERTSCROLLBAR.PAGE = 201
-  LEFT = 477
-  HEIGHT = 200
-  TOP = 412
-  WIDTH = 325
-  object btnOK: TBUTTON
-    ANCHORS = [aktop, akleft]
-    CAPTION = 'OK'
-    ONCLICK = BTNOKCLICK
-    LEFT = 235
-    HEIGHT = 25
-    TOP = 10
-    WIDTH = 75
+object VIEWUNITS: TVIEWUNITS
+  Caption = 'View Project Units'
+  ClientHeight = 204
+  ClientWidth = 416
+  Position = poScreenCenter
+  HorzScrollBar.Page = 417
+  VertScrollBar.Page = 205
+  Left = 477
+  Height = 204
+  Top = 412
+  Width = 416
+  object btnOK: TButton
+    Anchors = [akTop, akRight]
+    Caption = 'OK'
+    TabOrder = 0
+    OnClick = BTNOKCLICK
+    Cursor = 25
+    Left = 312
+    Height = 25
+    Top = 10
+    Width = 96
   end
-  object btnCancel: TBUTTON
-    ANCHORS = [aktop, akleft]
-    CAPTION = 'Cancel'
-    TABORDER = 1
-    ONCLICK = BTNCANCELCLICK
-    LEFT = 235
-    HEIGHT = 25
-    TOP = 45
-    WIDTH = 75
+  object btnCancel: TButton
+    Anchors = [akTop, akRight]
+    Caption = 'Cancel'
+    TabOrder = 1
+    OnClick = BTNCANCELCLICK
+    Cursor = 25
+    Left = 312
+    Height = 25
+    Top = 45
+    Width = 96
   end
-  object Edit1: TEDIT
-    ANCHORS = [aktop, akleft]
-    TEXT = 'Edit1'
-    TABORDER = 2
-    LEFT = 10
-    HEIGHT = 25
-    TOP = 10
-    WIDTH = 215
+  object Edit: TEdit
+    Anchors = [akTop, akLeft, akRight]
+    Enabled = False
+    TabOrder = 2
+    TabOrder = 2
+    Left = 10
+    Height = 25
+    Top = 10
+    Width = 294
   end
-  object Listbox1: TLISTBOX
-    ANCHORS = [aktop, akleft]
-    ONCLICK = LISTBOX1CLICK
-    TABORDER = 3
-    TOPINDEX = -1
-    LEFT = 10
-    HEIGHT = 145
-    TOP = 45
-    WIDTH = 215
+  object Listbox: TListBox
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    TabOrder = 3
+    TopIndex = -1
+    Left = 10
+    Height = 147
+    Top = 45
+    Width = 294
+  end
+  object MultiSelectCheckBox: TCheckBox
+    AllowGrayed = True
+    Anchors = [akTop, akRight]
+    Caption = 'Multi Select'
+    DragCursor = 65524
+    OnClick = MultiselectCheckBoxClick
+    TabOrder = 4
+    Left = 310
+    Height = 20
+    Top = 92
+    Width = 98
   end
 end
