@@ -2010,7 +2010,7 @@ begin
   with chkConfigFile do
   begin
     Parent := grpConfigFile;
-    Caption := dlgUseFpcCfg+' (none, not is -n)';
+    Caption := dlgUseFpcCfg+' (If not checked: -n)';
     Top := 6;
     Left := 8;
     Width := 330;

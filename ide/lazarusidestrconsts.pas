@@ -954,8 +954,8 @@ resourcestring
   dlgWriteFPCLogo = 'Write an FPC Logo';
   dlgHintsUnused = 'Show Hints for unused units in main source';
   dlgConfigFiles = 'Config Files:';
-  dlgUseFpcCfg = 'Use Compiler Config File (fpc.cfg)';
-  dlgUseCustomConfig = 'Use custom Compiler Config File';
+  dlgUseFpcCfg = 'Use standard Compiler Config File (fpc.cfg)';
+  dlgUseCustomConfig = 'Use addional Compiler Config File';
   lisCustomOptions2 = 'Custom options';
   dlgStopAfterNrErr = 'Stop after number of errors:';
   dlgOtherUnitFiles = 'Other Unit Files (-Fu) (Delimiter is semicolon):';
