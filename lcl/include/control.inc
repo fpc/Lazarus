@@ -115,15 +115,29 @@ Begin
   Perform(CM_CHANGED,0,Longint(self));
 End;
 
-{------------------------------------------------------------------------------}
-{       TControl.ChangeBounds
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.ChangeBounds
+------------------------------------------------------------------------------}
 procedure TControl.ChangeBounds(ALeft, ATop, AWidth, AHeight : integer);
 var
   SizeChanged, PosChanged : boolean;
+  ARight: Integer;
+  ABottom: Integer;
 begin
+  // check, if we are already processing this bound change
+  ARight:=ALeft+AWidth;
+  ABottom:=ATop+AHeight;
+  if (ALeft=FLastChangeboundRect.Left)
+  and (ATop=FLastChangeboundRect.Top)
+  and (ARight=FLastChangeboundRect.Right)
+  and (ABottom=FLastChangeboundRect.Bottom)
+  then exit;
+  FLastChangeboundRect:=Rect(ALeft,ATop,AWidth,AHeight);
+
+  // constraint the size
   DoConstrainedResize(AWidth, AHeight);
+  
+  // check if something would change
   SizeChanged:= (FWidth <> AWidth) or (FHeight <> AHeight);
   PosChanged:= (FLeft <> ALeft) or (FTop <> ATop);
   if SizeChanged or PosChanged then begin
@@ -143,14 +157,18 @@ begin
     FLastResize.Y:= AHeight - FHeight;
 
     //writeln('TControl.ChangeBounds A ',Name,':',ClassName);
-    InvalidateControl(Visible, False, true);
+    if (not (csLoading in ComponentState)) then
+      InvalidateControl(Visible, False, true);
     //writeln('TControl.ChangeBounds B ',Name,':',ClassName);
     DoSetBounds(ALeft,ATop,AWidth,AHeight);
 
-    if SizeChanged then
+    if SizeChanged
+    and (not (csLoading in ComponentState)) then
       Invalidate;
 //    UpdateAnchorRules;
     BoundsChanged;
+    //if csDesigning in ComponentState then
+    //  writeln('TControl.ChangeBounds ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
     RequestAlign;
     if (not (csLoading in ComponentState)) then begin
       Resize;
@@ -1548,20 +1566,21 @@ begin
   FConstraints.Assign(Value);
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetAlign                                                           }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetAlign
+------------------------------------------------------------------------------}
 procedure TControl.SetAlign(Value: TAlign);
 begin
   if FAlign <> Value then begin
+    //writeln('TControl.SetAlign ',Name,':',ClassName,' Old=',AlignNames[FAlign],' New=',AlignNames[Value]);
     FAlign := Value;
     RequestAlign;
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl RequestAlign                                                       }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl RequestAlign
+------------------------------------------------------------------------------}
 procedure TControl.RequestAlign;
 begin
   if (Parent <> nil) then begin
@@ -1569,9 +1588,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl SetDragmode                                                            }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetDragmode
+------------------------------------------------------------------------------}
 procedure TControl.SetDragMode(Value: TDragMode);
 begin
   FDragMode := Value;
@@ -2027,6 +2046,16 @@ begin
   SetZOrder(false);
 end;
 
+procedure TControl.SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer);
+begin
+  //writeln('TControl.SetInitialBounds A ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
+  if (csLoading in ComponentState)
+  or ((Owner<>nil) and (csLoading in Owner.ComponentState)) then
+    exit;
+  //writeln('TControl.SetInitialBounds B ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
+  SetBounds(aLeft,aTop,aWidth,aHeight);
+end;
+
 {------------------------------------------------------------------------------
   Method: TControl.WMWindowPosChanged
   Params:   Msg: The message
@@ -2104,6 +2133,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.127  2003/06/10 00:46:16  mattias
+  fixed aligning controls
+
   Revision 1.126  2003/06/07 17:14:12  mattias
   small changes for fpc 1.1
 

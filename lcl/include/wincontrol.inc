@@ -33,7 +33,7 @@
 procedure TWinControl.AdjustSize;
 begin
   inherited AdjustSize;
-  if HandleAllocated then RequestAlign;
+  RequestAlign;
 end;
 
 {------------------------------------------------------------------------------}
@@ -85,7 +85,7 @@ var
   begin
     {$IFDEF CHECK_POSITION}
     with Control do
-      writeln('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' recalculate the anchors=',(AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]));
+      writeln('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' recalculate the anchors=',(Control.Anchors <> AnchorAlign[AAlign]),' Align=',AlignNames[AAlign]);
     {$ENDIF}
     with Rect do
     begin
@@ -104,7 +104,7 @@ var
         the form is created in a maximized state, the control is not stretched 
         because the form is not resized after the control is created.
       }
-      if (AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]) then 
+      if (AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]) then
         with Control do
         begin
           if FLastWidth = 0 then 
@@ -176,11 +176,13 @@ var
     if (Control.Left <> Left2) or (Control.Top <> Top2)
     or (Control.Width <> Width2) or (Control.Height <> Height2) then begin
       {$IFDEF CHECK_POSITION}
+      //if csDesigning in Control.ComponentState then
       with Control do
-        writeln('[TWinControl.AlignControls.DoPosition] B1 Control=',Name,':',ClassName,' ',Left2,',',Top2,',',Width2,',',Height2);
+        writeln('[TWinControl.AlignControls.DoPosition] B1 Control=',Name,':',ClassName,' ',Left2,',',Top2,',',Width2,',',Height2,' Align=',AlignNames[AAlign]);
       {$ENDIF}
       Control.SetBounds(Left2, Top2, Width2, Height2);
       {$IFDEF CHECK_POSITION}
+      //if csDesigning in Control.ComponentState then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] B2 Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
       {$ENDIF}
@@ -203,7 +205,7 @@ var
         end;
     {$IFDEF CHECK_POSITION}
     with Control do
-      writeln('[TWinControl.AlignControls.DoPosition] END Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+      writeln('[TWinControl.AlignControls.DoPosition] END Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' Align=',AlignNames[AAlign]);
     {$ENDIF}
   end;
 
@@ -227,8 +229,8 @@ var
     if (AControl <> nil)
       and (AControl.Align = AAlign)
       and ((AAlign = alNone) or AControl.Visible
-        or (csDesigning in AControl.ComponentState)
-        and not (csNoDesignVisible in AControl.ControlStyle))
+        or ((csDesigning in AControl.ComponentState)
+        and not (csNoDesignVisible in AControl.ControlStyle)))
     then
       AlignList.Add(AControl);
 
@@ -241,8 +243,8 @@ var
           or (Control.Visible
             or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
             [csAcceptsControls, csNoDesignVisible]))
-          or (csDesigning in Control.ComponentState)
-          and not (csNoDesignVisible in Control.ControlStyle)) then
+          or ((csDesigning in Control.ComponentState)
+          and not (csNoDesignVisible in Control.ControlStyle))) then
       begin
         if Control = AControl then Continue;
 
@@ -258,6 +260,8 @@ var
   end;
 
 begin
+  //if csDesigning in ComponentState then
+  //writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' AlignWork=',AlignWork);
   if AlignWork then
   begin
     AdjustClientRect(Rect);
@@ -320,7 +324,8 @@ end;
 procedure TWinControl.BoundsChanged;
 begin
   inherited BoundsChanged;
-  Realign;
+  //writeln('TWinControl.BoundsChanged ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+  ReAlign;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1602,7 +1607,23 @@ End;
 {------------------------------------------------------------------------------}
 procedure TWinControl.ReAlign;
 begin
+  if (csLoading in ComponentState) or (not HandleAllocated) then begin
+    Include(FFlags,wcfReAlignNeeded);
+    exit;
+  end;
+  Exclude(FFlags,wcfReAlignNeeded);
+  //writeln('TWinControl.ReAlign ',Name,':',ClassName);
   AlignControl(nil);
+end;
+
+procedure TWinControl.RequestAlign;
+begin
+  if (csLoading in ComponentState) or (not HandleAllocated) then begin
+    Include(FFlags,wcfRequestAlignNeeded);
+    exit;
+  end;
+  Exclude(FFlags,wcfRequestAlignNeeded);
+  inherited RequestAlign;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1675,8 +1696,9 @@ Begin
       UpdateControlState;
     end else
       if HandleAllocated then AControl.Invalidate;
-    AlignControl(AControl);
+    //writeln('TWinControl.InsertControl ',Name,':',ClassName);
   end;
+  AControl.RequestAlign;
   Perform(CM_CONTROLCHANGE, Integer(AControl), Integer(True));
 End;
 
@@ -1703,12 +1725,16 @@ End;
 {------------------------------------------------------------------------------}
 {  TWinControl AlignControl                                                    }
 {------------------------------------------------------------------------------}
-procedure TWinControl.AlignControl(AControl : TControl);
+procedure TWinControl.AlignControl(AControl: TControl);
 var
-//  Num : Integer;
   Rect: TRect;
 begin
-  if not HandleAllocated or (csDestroying in ComponentState) then Exit;
+  //if csDesigning in ComponentState then begin
+  //  write('TWinControl.AlignControl ',Name,':',ClassName);
+  //  if AControl<>nil then writeln(' AControl=',AControl.Name,':',AControl.ClassName) else writeln(' AControl=nil');;
+  //end;
+  if csDestroying in ComponentState then exit;
+
   if FAlignLevel <> 0 then
     Include(FControlState, csAlignmentNeeded)
   else begin
@@ -1721,48 +1747,7 @@ begin
       EnableAlign;
     end;
   end;
-{
-case AControl.Align of
-        alClient :   Begin
-Assert(False,'Trace:Alignment is alClient') ;
-                        AControl.Left := TControl(Owner).Left+1;
-                        AControl.Top := TControl(Owner).Top+1;
-                        AControl.Width := TControl(Owner).Width-1;
-                        AControl.Height := TControl(Owner).Height-1;
-                end;
-        alNone : Begin
-                  //put nothing in here
-
-                End;
-        alBottom : Begin
-                        AControl.Left := TControl(Owner).Left+1;
-                        AControl.Top :=  TControl(Owner).Height - AControl.Height - 1;
-                        AControl.Width := TControl(Owner).Width-1;
-                   end;
-
-        alTop : Begin
-                        AControl.Width := TControl(Owner).Width-1;
-                        AControl.Left := 1;
-                        AControl.Top := 1;
-
-                   end;
-
-        alRight : Begin
-                        AControl.Left := TControl(Owner).Width - AControl.Width - 1;
-                        AControl.Height := TControl(Owner).Height -1;
-                        AControl.Top := 1;
-                   end;
-
-        alLeft : Begin
-                        AControl.Left := 1;
-                        AControl.Height := TControl(Owner).Height -1;
-                        AControl.Top := 1;
-                   end;
-
-        end;
-}
 End;
-
 
 {------------------------------------------------------------------------------}
 {  TWinControl GetControl                                                      }
@@ -2333,6 +2318,10 @@ begin
     CNSendMessage(LM_SETCOLOR, Self, nil);
     Exclude(FFlags,wcfColorChanged);
   end;
+  if wcfReAlignNeeded in FFlags then
+    ReAlign;
+  if wcfRequestAlignNeeded in FFlags then
+    RequestAlign;
 end;
 
 {------------------------------------------------------------------------------
@@ -2401,6 +2390,41 @@ begin
   end;
 end;
 
+procedure TWinControl.LockRealizeBounds;
+begin
+  inc(FRealizeBoundsLockCount);
+end;
+
+procedure TWinControl.UnlockRealizeBounds;
+var
+  NewBounds: TRect;
+begin
+  if FRealizeBoundsLockCount<=0 then exit;
+  dec(FRealizeBoundsLockCount);
+  if FRealizeBoundsLockCount=0 then begin
+    NewBounds:=Bounds(Left, Top, Width, Height);
+    if HandleAllocated
+    and (not (csLoading in ComponentState))
+    and (not CompareRect(@NewBounds,@FBoundsRealized)) then
+    begin
+      // the bounds were not yet send to the InterfaceObject -> send them
+      {$IFDEF CHECK_POSITION}
+      //if csDesigning in ComponentState then
+      writeln('[TWinControl.UnlockRealizeBounds] RealizeBounds B ',Name,':',ClassName,
+      ' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
+      ' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
+      {$ENDIF}
+      BeginUpdateBounds;
+      try
+        FBoundsRealized:=NewBounds;
+        CNSendMessage(LM_SetSize, Self, @NewBounds);
+      finally
+        EndUpdateBounds;
+      end;
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TControl.GetIsResizing
   Params:  None
@@ -2422,20 +2446,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.SetBounds(aLeft, aTop, aWidth, aHeight : integer);
 var
-  NewBounds, OldBounds, R: TRect;
-  
-  function CompareRect(R1, R2: PRect): Boolean;
-  begin
-    Result:=(R1^.Left=R2^.Left) and (R1^.Top=R2^.Top) and
-            (R1^.Bottom=R2^.Bottom) and (R1^.Right=R2^.Right);
-    {if not Result then begin
-      writeln(' DIFFER: ',R1^.Left,',',R1^.Top,',',R1^.Right,',',R1^.Bottom
-        ,' <> ',R2^.Left,',',R2^.Top,',',R2^.Right,',',R2^.Bottom);
-    end;}
-  end;
-
+  NewBounds, OldBounds: TRect;
 begin
   {$IFDEF CHECK_POSITION}
+  //if csDesigning in ComponentState then
   writeln('[TWinControl.SetBounds] START ',Name,':',ClassName,
   ' Old=',Left,',',Top,',',Width,',',Height,
   ' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight,
@@ -2447,53 +2461,22 @@ begin
   if BoundsLockCount<>0 then exit;
   OldBounds:=BoundsRect;
   NewBounds:=Bounds(ALeft, ATop, AWidth, AHeight);
-  if CompareRect(@NewBounds,@OldBounds) then begin
-    // LCL bounds are already up2date -> check realized bounds
-    if HandleAllocated
-    and (not CompareRect(@NewBounds,@FBoundsRealized)) then begin
-      // the bounds were not yet send to the InterfaceObject -> send them
-      BeginUpdateBounds;
-      try
-        {$IFDEF CHECK_POSITION}
-        writeln('[TWinControl.SetBounds] RealizeBounds A ',Name,':',ClassName,
-        ' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
-        ' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
-        {$ENDIF}
-        FBoundsRealized:=NewBounds;
-        R:=Rect(Left,Top,Width,Height);
-        CNSendMessage(LM_SetSize, Self, @R);
-      finally
-        EndUpdateBounds;
-      end;
-    end;
-  end else begin
-    // LCL bounds are not up2date -> process new bounds
-    BeginUpdateBounds;
-    try
+  
+  LockRealizeBounds;
+  try
+    if not CompareRect(@NewBounds,@OldBounds) then begin
+      // LCL bounds are not up2date -> process new bounds
       {$IFDEF CHECK_POSITION}
+      //if csDesigning in ComponentState then
       writeln('[TWinControl.SetBounds] Set LCL Bounds ',Name,':',ClassName,
       ' OldBounds=',Left,',',Top,',',Left+Width,',',Top+Height,
       ' -> New=',ALeft,',',ATop,',',ALeft+AWidth,',',ATop+AHeight);
       {$ENDIF}
       inherited SetBounds(ALeft, ATop, AWidth, AHeight);
       NewBounds:=Bounds(Left, Top, Width, Height);
-
-      if HandleAllocated
-      and (not CompareRect(@NewBounds,@FBoundsRealized)) then
-      begin
-        // the bounds were not yet send to the InterfaceObject -> send them
-        {$IFDEF CHECK_POSITION}
-        writeln('[TWinControl.SetBounds] RealizeBounds B ',Name,':',ClassName,
-        ' OldRelBounds=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
-        ' -> NewBounds=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
-        {$ENDIF}
-        FBoundsRealized:=NewBounds;
-        R:=Rect(Left,Top,Width,Height);
-        CNSendMessage(LM_SetSize, Self, @R);
-      end;
-    finally
-      EndUpdateBounds;
     end;
+  finally
+    UnlockRealizeBounds;
   end;
 end;
 
@@ -2595,6 +2578,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.132  2003/06/10 00:46:16  mattias
+  fixed aligning controls
+
   Revision 1.131  2003/06/01 21:09:09  mattias
   implemented datamodules
 
