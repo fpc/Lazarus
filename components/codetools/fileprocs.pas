@@ -138,7 +138,7 @@ begin
     AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.X_OK){$IFNDEF Ver1_0}=0){$ENDIF} then
   begin
     AText:='"'+AFilename+'"';
-    case LinuxError of
+    case {$ifdef ver1_0} LinuxError {$else} fpGetErrno {$endif} of
     {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
       AText:='read access denied for '+AText;
     {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
