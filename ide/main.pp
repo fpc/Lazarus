@@ -2946,25 +2946,28 @@ begin
     exit;
   end;
 
-  if (not (ofOnlyIfExists in Flags))
-  and (MessageDlg('File not found',
+  // Default to cancel
+  Result:=mrCancel;
+  if ofQuiet in Flags then Exit;
+
+  if ofOnlyIfExists in Flags 
+  then begin
+    MessageDlg('File not found','File "'+AFilename+'" not found.'#13,
+               mtInformation,[mbCancel],0);
+    // cancel loading file
+    Exit;       
+  end;
+
+  if MessageDlg('File not found',
     'File "'+AFilename+'" not found.'#13
     +'Do you want to create it?'#13
-    ,mtInformation,[mbYes,mbNo],0)=mrYes) then
+    ,mtInformation,[mbYes,mbNo],0)=mrYes then
   begin
     // create new file
     if FilenameIsPascalSource(AFilename) then
       Result:=DoNewEditorFile(nuUnit,AFilename)
     else
       Result:=DoNewEditorFile(nuEmpty,AFilename);
-  end else if ofOnlyIfExists in Flags then begin
-    MessageDlg('File not found','File "'+AFilename+'" not found.'#13,
-               mtInformation,[mbCancel],0);
-    // cancel loading file
-    Result:=mrCancel;
-  end else begin
-    // cancel loading file
-    Result:=mrCancel;
   end;
 end;
 
@@ -7197,6 +7200,12 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.396  2002/10/02 00:17:03  lazarus
+  MWE:
+    + Honoured the ofQuiet flag in DoOpenNotExistingFile, so custom messages
+      can be shown
+    + Added a dialog to make custom locate of a debug file possible
+
   Revision 1.395  2002/09/30 14:01:04  lazarus
   MG: undid the TBinaryObjectWriter Buffersize
 
