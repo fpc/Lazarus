@@ -1391,10 +1391,6 @@ begin
            
            Accelerate(TBitBtn(Sender),PGtkWidget(TBitBtn(Sender).Handle),
              Accel,0,'clicked');
-           {if Accel <> GDK_VOIDSYMBOL then begin
-             gtk_accel_group_add(gtk_accel_group_get_default, Accel, 0,
-               GTK_ACCEL_VISIBLE, PGtkObject(TBitBtn(Sender).Handle), 'clicked');
-           end;}
          finally
            StrDispose(pStr);
          end;  
@@ -2331,12 +2327,6 @@ begin
         try
           AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
           Accelerate(TComponent(Sender),PGtkWidget(p),AccelKey,0,'grab_focus');
-	  {SetAccelKey(p, AccelKey);
-	  if AccelKey <> 0 then begin
-            // ToDo: use accelerator group of Form
-	    gtk_widget_add_accelerator(p, 'grab_focus', gtk_accel_group_get_default(),
-	      AccelKey, GDK_MOD1_MASK, GTK_ACCEL_VISIBLE);
-          end;}
         finally
 	  StrDispose(aLabel);
 	end;
@@ -4192,7 +4182,6 @@ begin
        gtk_container_add(
          GTK_Container(
            GetFixedWidget(Pointer(TWinControl(TMenu(Sender).Owner).Handle))), P);
-       //SetAccelGroup(p, gtk_accel_group_get_default);
        gtk_widget_show(p);
     end;
 
@@ -6521,6 +6510,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.263  2002/10/24 06:12:43  lazarus
+  MG: minor cleanups
+
   Revision 1.262  2002/10/23 20:47:27  lazarus
   AJ: Started Form Scrolling
       Started StaticText FocusControl
