@@ -1797,10 +1797,19 @@ begin
   end;    
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.SetZOrderPosition
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.SetZOrderPosition
+------------------------------------------------------------------------------}
+function TControl.HandleObjectShouldBeVisible: boolean;
+begin
+  Result:=Visible
+          or ((csDesigning in ComponentState)
+              and not (csNoDesignVisible in ControlStyle));
+end;
+
+{------------------------------------------------------------------------------
+       TControl.SetZOrderPosition
+------------------------------------------------------------------------------}
 Procedure TControl.SetZOrderPosition(Position: Integer);
 Var
   I : Integer;
@@ -2063,6 +2072,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.117  2003/03/11 23:14:19  mattias
+  added TControl.HandleObjectShouldBeVisible
+
   Revision 1.116  2003/03/11 22:56:41  mattias
   added visiblechanging
 
