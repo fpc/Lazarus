@@ -8186,48 +8186,65 @@ var
 
   //----------
   function NoDrawableToNoDrawable: Boolean;
-  const //            FROM            TO
+  {const //            FROM            TO
     BLT_MATRIX: array[TGDIBitmapType, TGDIBitmapType] of TBltFunction = (
       (@DrawableToDrawable, @BitmapToPixmap, @BitmapToImage),
       (@PixmapToBitmap, @DrawableToDrawable, @PixmapToImage),
       (@ImageToBitmap, @ImageToDrawable, @ImageToImage)
-    );
+    );}
   begin
     If (TDeviceContext(SrcDC).CurrentBitmap <> nil) and
       (TDeviceContext(DestDC).CurrentBitmap <> nil)
     then
-      Result := BLT_MATRIX[
-        TDeviceContext(SrcDC).CurrentBitmap^.GDIBitmapType,
-        TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType
-      ]()
+      case TDeviceContext(SrcDC).CurrentBitmap^.GDIBitmapType of
+      gbBitmap: case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
+                gbBitmap: Result:=DrawableToDrawable;
+                gbPixmap: Result:=BitmapToPixmap;
+                gbImage:  Result:=BitmapToImage;
+                end;
+      gbPixmap: case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
+                gbBitmap: Result:=PixmapToBitmap;
+                gbPixmap: Result:=DrawableToDrawable;
+                gbImage:  Result:=PixmapToImage;
+                end;
+      gbImage:  case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
+                gbBitmap: Result:=ImageToBitmap;
+                gbPixmap: Result:=ImageToDrawable;
+                gbImage:  Result:=ImageToImage;
+                end;
+      end
     else
       Result := Unsupported;
   end;
 
   function NoDrawableToDrawable: Boolean;
-  const
+  {const
     BLT_FUNCTION: array[TGDIBitmapType] of TBltFunction = (
       @PixmapToDrawable, @PixmapToDrawable, @ImageToDrawable
-    );
+    );}
   begin
     If TDeviceContext(SrcDC).CurrentBitmap <> nil then
-      Result := BLT_FUNCTION[
-        TDeviceContext(SrcDC).CurrentBitmap^.GDIBitmapType
-      ]()
+      case TDeviceContext(SrcDC).CurrentBitmap^.GDIBitmapType of
+      gbBitmap: Result:=PixmapToDrawable;
+      gbPixmap: Result:=PixmapToDrawable;
+      gbImage:  Result:=ImageToDrawable;
+      end
     else
       Result := Unsupported;
   end;
 
   function DrawableToNoDrawable: Boolean;
-  const
+  {const
     BLT_FUNCTION: array[TGDIBitmapType] of TBltFunction = (
       @Unsupported, @Unsupported, @Unsupported
-    );
+    );}
   begin
     If TDeviceContext(DestDC).CurrentBitmap <> nil then
-      Result := BLT_FUNCTION[
-        TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType
-      ]()
+      case TDeviceContext(DestDC).CurrentBitmap^.GDIBitmapType of
+      gbBitmap: Result:=Unsupported;
+      gbPixmap: Result:=Unsupported;
+      gbImage:  Result:=Unsupported;
+      end
     else
       Result := Unsupported;
   end;
@@ -8589,6 +8606,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.262  2003/07/08 20:09:40  mattias
+  updated build fpc rpm script
+
   Revision 1.261  2003/07/07 07:59:34  mattias
   made Size_SourceIsInterface a flag
 

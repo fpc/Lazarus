@@ -54,7 +54,10 @@ VersionFile="$TmpDir/compiler/version.pas"
 CompilerVersion=`cat $VersionFile | grep ' *version_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerRelease=`cat $VersionFile | grep ' *release_nr *=.*;' | sed -e 's/[^0-9]//g'`
 CompilerPatch=`cat $VersionFile | grep ' *patch_nr *=.*;' | sed -e 's/[^0-9]//g'`
-LazVersion="$CompilerVersion.$CompilerRelease.$CompilerPatch"
+LazVersion="$CompilerVersion.$CompilerRelease"
+if [ "$CompilerPatch" != "0" ]; then
+  LazVersion="$LazVersion.$CompilerPatch"
+fi
 
 
 SpecFile=$TmpDir/install/fpc.spec
@@ -80,11 +83,12 @@ fi
 
 # change Makefile for new rpmbuild, if not already done
 cd $TmpDir
-grep rpmbuild Makefile \
-|| cat Makefile | \
+if [ -n `grep rpmbuild Makefile` ]; then
+  cat Makefile | \
     sed -e 's/rpm\( --nodeps -ba .*\)$/rpm\1 || rpmbuild\1/g' \
     > New.Makefile
   mv New.Makefile Makefile
+fi
 cd -
 
 #------------------------------------------------------------------------------
