@@ -110,6 +110,7 @@ TCustomFormEditor
     FComponentInterfaceList : TList; //used to track and find controls
     FSelectedComponents : TComponentSelectionList;
     FObj_Inspector : TObjectInspector;
+    function GetPropertyEditorHook: TPropertyEditorHook;
   protected
     Procedure RemoveFromComponentInterfaceList(Value :TIComponentInterface);
     procedure SetSelectedComponents(TheSelectedComponents : TComponentSelectionList);
@@ -137,7 +138,9 @@ TCustomFormEditor
     Procedure ClearSelected;
     property SelectedComponents : TComponentSelectionList 
       read FSelectedComponents write SetSelectedComponents;
-    property Obj_Inspector : TObjectInspector read FObj_Inspector write SetObj_Inspector;
+    property Obj_Inspector : TObjectInspector
+      read FObj_Inspector write SetObj_Inspector;
+    property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
   end;
 
 
@@ -760,6 +763,11 @@ begin
     JITFormList.RenameFormClass(TForm(AComponent),NewClassName);
     TForm(AComponent).Name:=NewFormName;
   end;
+end;
+
+function TCustomFormEditor.GetPropertyEditorHook: TPropertyEditorHook;
+begin
+  Result:=Obj_Inspector.PropertyEditorHook;
 end;
 
 Procedure TCustomFormEditor.RemoveFromComponentInterfaceList(

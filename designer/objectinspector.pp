@@ -719,8 +719,8 @@ begin
       end else begin
         FCurrentEdit:=ValueEdit;
         // XXX
-        //ValueEdit.ReadOnly:=paReadOnly in NewRow.Editor.GetAttributes;
-        //ValueEdit.MaxLength:=NewRow.Editor.GetEditLimit;
+        ValueEdit.ReadOnly:=paReadOnly in NewRow.Editor.GetAttributes;
+        ValueEdit.MaxLength:=NewRow.Editor.GetEditLimit;
         ValueEdit.Text:=NewValue;
         ValueEdit.Visible:=true;
       end;

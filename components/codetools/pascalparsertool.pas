@@ -1043,7 +1043,8 @@ end;
 
 function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
   Attr: TProcHeadAttributes): boolean;
-var copying: boolean;
+var
+  copying: boolean;
 begin
   copying:=[phpWithoutParamList,phpWithoutParamTypes]*Attr=[];
   Result:=false;
@@ -1079,12 +1080,27 @@ begin
       CreateChildNode;
       CurNode.Desc:=ctnIdentifier;
       CurNode.EndPos:=CurPos.EndPos;
-      EndChildNode;
     end;
     if not Extract then
       ReadNextAtom
     else
       ExtractNextAtom(copying,Attr);
+    if CurPos.Flag=cafPoint then begin
+      //  first identifier was unitname -> read '.' + identifier
+      if not Extract then
+        ReadNextAtom
+      else
+        ExtractNextAtom(copying,Attr);
+      if not AtomIsIdentifier(ExceptionOnError) then exit;
+      CurNode.EndPos:=CurPos.EndPos;
+      if not Extract then
+        ReadNextAtom
+      else
+        ExtractNextAtom(copying,Attr);
+    end;
+    if (phpCreateNodes in Attr) then begin
+      EndChildNode;
+    end;
   end else begin
     if ExceptionOnError then
       SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIdentifier,GetAtom])
