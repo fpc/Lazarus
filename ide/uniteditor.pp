@@ -240,6 +240,8 @@ type
     function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
     function GetEditors(Index:integer):TSourceEditor;
   public
+    SearchPaths: string;
+
     property Editors[Index:integer]:TSourceEditor read GetEditors;
     function EditorCount:integer;
 
@@ -310,7 +312,7 @@ type
 implementation
 
 uses
-  LCLLinux, TypInfo, LResources, Main, LazConf;
+  LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts;
 
 type
   TCompletionType = (ctNone, ctWordCompletion, ctTemplateCompletion, ctCodeCompletion);
@@ -482,52 +484,55 @@ Begin
       else
         Found := False;
 
-// check the default LCL directory if not Found
-  Found := True;
-  AppDir := ExtractFilePath(Application.Exename);
-  if FileExists(AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)) then
-    TSourceNotebook(FAOwner).OpenFile(
-      AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts), True)
-  else
-    if FileExists(AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pp') 
-    then
+  if not Found then begin
+    // check the default LCL directory if not Found
+    Found := True;
+    AppDir := ExtractFilePath(Application.Exename);
+    if FileExists(AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)) then
       TSourceNotebook(FAOwner).OpenFile(
-        AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pp', True)
+        AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts), True)
     else
-      if FileExists(
-        AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pas')
+      if FileExists(AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pp') 
       then
         TSourceNotebook(FAOwner).OpenFile(
-          AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pas', True)
+          AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pp', True)
       else
-        Found := False;
-
-// if Not Found then
-//Get the search directories
-  DirDelimiter := '/';
-  SearchDir := TMainIDE(TSourceNotebook(FAOwner).MainIDE).SearchPaths;
-  Writeln('Searcvhdir is '+Searchdir);
-  Num := pos(';',SearchDir);
-  While (not Found) and (SearchDir <> '') do
-  Begin
-    if Num = 0 then Num := Length(SearchDir)+1;
-    TempDir := Copy(SearchDir,1,num-1);
-    Delete(SearchDir,1,Num);
-    if tempDir[Length(TempDir)] <> DirDelimiter then
-      TempDir := TempDir + DirDelimiter;
-    Found := True;
-    if FileExists(TempDir+Lowercase(Texts)) then
-      TSourceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts), True)
-    else
-      if FileExists(TempDir+Lowercase(Texts)+'.pp') then
-        TSourceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts)+'.pp', True)
-      else
-        if FileExists(TempDir+Lowercase(Texts)+'.pas') then 
-          TSourceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts)+'.pas', True)
+        if FileExists(
+          AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pas')
+        then
+          TSourceNotebook(FAOwner).OpenFile(
+            AppDir+'lcl'+AppDir[Length(AppDir)]+Lowercase(Texts)+'.pas', True)
         else
           Found := False;
+  end;
+
+  if not Found then begin
+    //Get the search directories
+    DirDelimiter := '/';
+    SearchDir := TSourceNotebook(Owner).SearchPaths;
+    Writeln('Searchdir is '+Searchdir);
     Num := pos(';',SearchDir);
-  end; //while
+    While (not Found) and (SearchDir <> '') do
+    Begin
+      if Num = 0 then Num := Length(SearchDir)+1;
+      TempDir := Copy(SearchDir,1,num-1);
+      Delete(SearchDir,1,Num);
+      if tempDir[Length(TempDir)] <> DirDelimiter then
+        TempDir := TempDir + DirDelimiter;
+      Found := True;
+      if FileExists(TempDir+Lowercase(Texts)) then
+        TSourceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts), True)
+      else
+        if FileExists(TempDir+Lowercase(Texts)+'.pp') then
+          TSourceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts)+'.pp', True)
+        else
+          if FileExists(TempDir+Lowercase(Texts)+'.pas') then 
+            TSourceNotebook(FAOwner).OpenFile(TempDir+Lowercase(Texts)+'.pas', True)
+          else
+            Found := False;
+      Num := pos(';',SearchDir);
+    end; //while
+  end;
 
   If not Found then
     Application.MessageBox('File not found','Error',MB_OK);
@@ -788,7 +793,7 @@ Begin
   Result := '';
   Found := False;
   DirDelimiter := '/';
-  SearchDir := TMainIDE(TSourceNotebook(FAOwner).MainIDE).SearchPaths;
+  SearchDir := TSourceNoteBook(Owner).SearchPaths;
   Writeln('Searcvhdir is '+Searchdir);
   Num := pos(';',SearchDir);
   While (not Found) and (SearchDir <> '') do
@@ -1296,7 +1301,7 @@ end;
 constructor TSourceNotebook.Create(AOwner: TComponent);
 
 
-function LoadResource(ResourceName:string; PixMap:TPixMap):boolean;
+  function LoadPixmapRes(ResourceName:string; PixMap:TPixMap):boolean;
   var
     ms:TMemoryStream;
     res:TLResource;
@@ -1319,16 +1324,24 @@ function LoadResource(ResourceName:string; PixMap:TPixMap):boolean;
   end;
 
 
+// TSourceNotebook.Create
 var
-Pixmap1 : TPixmap;
-I : Integer;
+  Pixmap1 : TPixmap;
+  I : Integer;
 begin
   inherited Create(AOwner);
-  Caption := 'Lazarus Editor';
-  Left := 260;
-  Top := 150;
-  Width := 600;
-  height := 600;
+  Caption := 'Lazarus Source Editor';
+
+  if (EnvironmentOptions.SaveWindowPositions) 
+  and (EnvironmentOptions.WindowPositionsValid) then begin
+    BoundsRect:=EnvironmentOptions.SourceEditorBounds;
+  end else begin
+    Left := 260;
+    Top := 150;
+    Width := 400;
+    Height := 400;
+  end;
+
   FMainIDE := AOwner;
 
   FSourceEditorList := TList.Create;
@@ -1361,8 +1374,8 @@ begin
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
 
-    if not LoadResource('bookmark'+inttostr(i),Pixmap1) then
-           LoadResource('default',Pixmap1);
+    if not LoadPixmapRes('bookmark'+inttostr(i),Pixmap1) then
+           LoadPixmapRes('default',Pixmap1);
     Bookmarks.Add(Pixmap1,nil);
   end;
 
@@ -1411,11 +1424,11 @@ begin
        SimplePanel := False;
       end;
 
-GotoDialog := TfrmGoto.Create(self);
+  GotoDialog := TfrmGoto.Create(self);
 
-CodeCompletionTimer := TTimer.Create(self);
-CodeCOmpletionTimer.Enabled := False;
-CodeCompletionTimer.Interval := 500;
+  CodeCompletionTimer := TTimer.Create(self);
+  CodeCOmpletionTimer.Enabled := False;
+  CodeCompletionTimer.Interval := 500;
 
 
  Writeln('TSOurceNotebook create exiting');

@@ -1310,14 +1310,12 @@ end;
 
 procedure TOIOptions.Assign(AnObjInspector: TObjectInspector);
 begin
-  if FSaveBounds then begin
-    FLeft:=AnObjInspector.Left;
-    FTop:=AnObjInspector.Top;
-    FWidth:=AnObjInspector.Width;
-    FHeight:=AnObjInspector.Height;
-    FPropertyGridSplitterX:=AnObjInspector.PropertyGrid.SplitterX;
-    FEventGridSplitterX:=AnObjInspector.EventGrid.SplitterX;
-  end;
+  FLeft:=AnObjInspector.Left;
+  FTop:=AnObjInspector.Top;
+  FWidth:=AnObjInspector.Width;
+  FHeight:=AnObjInspector.Height;
+  FPropertyGridSplitterX:=AnObjInspector.PropertyGrid.SplitterX;
+  FEventGridSplitterX:=AnObjInspector.EventGrid.SplitterX;
   FGridBackgroundColor:=AnObjInspector.PropertyGrid.BackgroundColor;
 end;
 

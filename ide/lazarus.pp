@@ -31,12 +31,9 @@ uses
   forms,
   splash,
   main,
-  compileroptions,
   dlgMessage,
   viewunit_dlg,  //dialog used to list the units in a project
   viewform_dlg,  //dialog to display the forms in the project
-  editoroptions,
-  codetemplatedialog,
   FindReplaceDialog;
 
 var
@@ -56,9 +53,7 @@ begin
    Application.CreateForm(TMainIDE, MainIDE);
    Application.CreateForm(TMessageDlg, MessageDlg);
    Application.CreateForm(TViewUnits1, ViewUnits1);
-   Application.CreateForm(TfrmCompilerOptions, frmCompilerOptions);
    Application.CreateForm(TViewForms1, ViewForms1);
-   Application.CreateForm(TEditorOptionsForm,EditorOptionsForm );
    Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
    SplashForm.StartTimer;
    Application.Run;
@@ -71,6 +66,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2001/02/22 17:04:57  lazarus
+  added environment options + killed ide unit circles
+
   Revision 1.14  2001/02/21 22:55:24  lazarus
   small bugfixes + added TOIOptions
 

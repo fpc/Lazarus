@@ -129,8 +129,6 @@ var
   
 implementation
 
-uses
-  Main;
 
 {------------------------------------------------------------------------------
                               TUnitInfo Class
@@ -529,6 +527,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.8  2001/02/22 17:04:57  lazarus
+  added environment options + killed ide unit circles
+
   Revision 1.7  2001/02/08 06:08:13  lazarus
   Began adding code to save project to the output directory. Added TODO
   comments and cleaned up some of the code.                            CAW

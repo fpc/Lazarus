@@ -23,27 +23,23 @@
 unit main;
 
 {$mode objfpc}
-{ $mode delphi}
 {$H+}
 
 interface
 
 uses
-  Classes, LclLinux, compiler, stdctrls, forms, buttons, menus, comctrls,
-  Spin, project,sysutils,
-  compileroptions, Controls, graphics, extctrls, Dialogs, dlgMEssage,
-  process, idecomp, FormEditor, AbstractFormEditor,
-  CustomFormEditor,ObjectInspector, ControlSelection, PropEdits, UnitEditor, EditorOptions,CodeTemplateDialog,
-  CompReg;
+  Classes, LclLinux, Compiler, StdCtrls, Forms, Buttons, Menus, ComCtrls, Spin,
+  Project, Sysutils,  Controls, Graphics, ExtCtrls, Dialogs, CompReg,
+  DlgMessage, Process, IDEComp, AbstractFormEditor, FormEditor,
+  CustomFormEditor, ObjectInspector, ControlSelection, PropEdits, UnitEditor,
+  CompilerOptions, EditorOptions, {CodeTemplateDialog,} EnvironmentOpts;
 
 const
   Version_String = '0.7';
+
 type
 
-
   TMainIDE = class(TFORM)
-    FontDialog1  : TFontDialog;
-    ColorDialog1 : TColorDialog;
     ToolBar1     : TToolBar;
     Toolbutton1  : TToolButton;
     Toolbutton2  : TToolButton;
@@ -80,6 +76,13 @@ type
     itmSeperator: TMenuItem;
 
     itmFileNew : TMenuItem;
+    itmFileNewForm : TMenuItem;
+    itmFileOpen: TMenuItem;
+    itmFileSave: TMenuItem; 
+    itmFileSaveAs: TMenuItem; 
+    itmFileSaveAll: TMenuItem; 
+    itmFileClose: TMenuItem; 
+    itmFileQuit: TMenuItem; 
 
     itmProjectNew: TMenuItem;
     itmProjectOpen: TMenuItem;
@@ -90,30 +93,28 @@ type
     itmProjectOptions: TMenuItem;
     itmProjectCompilerSettings: TMenuItem;
 
-    itmFileNewForm : TMenuItem;
-    itmFileOpen: TMenuItem;
-    itmFileSave: TMenuItem; 
-    itmFileSaveAs: TMenuItem; 
-    itmFileSaveAll: TMenuItem; 
-    itmFileClose: TMenuItem; 
-    itmFileQuit: TMenuItem; 
     itmEditUndo: TMenuItem; 
     itmEditRedo: TMenuItem; 
     itmEditCut: TMenuItem; 
     itmEditCopy: TMenuItem; 
     itmEditPaste: TMenuItem; 
-    itmSearchfind: TMenuItem;
+
+    itmSearchFind: TMenuItem;
     itmSearchFindAgain: TMenuItem;
+    itmReplace: TMenuItem;
+    itmGotoLineNumber: TMenuItem;
+
     itmViewInspector: TMenuItem;
     itmViewProject: TMenuItem; 
     itmViewUnits : TMenuItem;
     itmViewCodeExplorer : TMenuItem;
     itmViewForms : TMenuItem;
     itmViewFile : TMenuItem;
-    itmViewColors : TMenuItem;
-    itmViewFont : TMenuItem;
     itmViewMessage : TMenuItem;
-    itmEnvironmentOptions: TMenuItem; 
+
+    itmEnvGeneralOptions: TMenuItem; 
+    itmEnvEditorOptions: TMenuItem; 
+
     CheckBox1 : TCheckBox; 
     Notebook1 : TNotebook;
     cmdTest: TButton;
@@ -128,10 +129,8 @@ type
     Procedure mnuViewFormsClicked(Sender : TObject);
 
     Procedure mnuToggleFormClicked(Sender : TObject);
-    Procedure CodeorFormActivated(Sender : TObject);
+    Procedure CodeOrFormActivated(Sender : TObject);
 
-    Procedure mnuViewColorClicked(Sender : TObject);
-    Procedure mnuViewFontClicked(Sender : TObject);
     procedure mnuNewProjectClicked(Sender : TObject);
     procedure mnuOpenProjectClicked(Sender : TObject);
     procedure mnuSaveProjectClicked(Sender : TObject);
@@ -140,10 +139,12 @@ type
     procedure mnuRunProjectClicked(Sender : TObject);
     procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
     procedure mnuProjectOptionsClicked(Sender : TObject);
+
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
 
-    procedure mnuEnvironmentOptionsClicked(Sender : TObject);
+    procedure mnuEnvGeneralOptionsClicked(Sender : TObject);
+    procedure mnuEnvEditorOptionsClicked(Sender : TObject);
 
     Procedure OpenFileDownArrowClicked(Sender : TObject);
     Procedure FileClosedEvent(Sender : TObject; Filename : String);
@@ -155,6 +156,12 @@ type
 
     procedure OIOnAddAvailableComponent(AComponent:TComponent; var Allowed:boolean);
     procedure OIOnSelectComponent(AComponent:TComponent);
+
+    procedure OnLoadEnvironmentSettings(Sender: TObject; 
+       TheEnvironmentOptions: TEnvironmentOptions);
+    procedure OnSaveEnvironmentSettings(Sender: TObject; 
+       TheEnvironmentOptions: TEnvironmentOptions);
+
   private
     FCodeLastActivated : Boolean; //used for toggling between code and forms
     FControlLastActivated : TObject;
@@ -164,16 +171,20 @@ type
     Function CreateSeperator : TMenuItem;
     Procedure UpdateViewDialogs;
     Procedure SetDefaultsForForm(aForm : TCustomForm);
- protected
+  protected
     procedure DoFind(Sender : TObject);
 
     procedure FormShow(Sender : TObject);
-    procedure ButtonCLick(Sender : TObject);
-    procedure ToolButtonCLick(Sender : TObject);
+    procedure ToolButtonClick(Sender : TObject);
 //    Procedure Paint; override;
 
   public
+    //these numbers are used to determine where the mouse was when the button was pressed
+    MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
+    MouseDownControl: TObject;
+
     constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
 
     Function SearchPaths : String;
 
@@ -181,13 +192,13 @@ type
     Procedure FormKill(Sender : TObject);
     Procedure SetDesigning(Control : TComponent; Value : Boolean);
     procedure FormPaint(Sender : TObject);
-    procedure LoadResourceFromFile(Value : String);
+    procedure LoadFormFromFile(Value : String);
 
-    //these numbers are used to determine where the mouse was when the button was pressed
-    MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
-    MouseDownControl: TObject;
     property SelectedComponent : TRegisteredComponent read FSelectedComponent write FSelectedComponent;
     property Project: TProject read fProject write fProject;
+
+    procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
+    procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
   end;
 
 
@@ -220,7 +231,7 @@ uses
 
 constructor TMainIDE.Create(AOwner: TComponent);
 
-  function LoadResource(ResourceName:string; PixMap:TPixMap):boolean;
+  function LoadPixmapRes(ResourceName:string; PixMap:TPixMap):boolean;
   var
     ms:TMemoryStream;
     res:TLResource;
@@ -251,14 +262,31 @@ var
 begin
   inherited Create(AOwner);
 
-  Caption := 'Lazarus Editor v '+Version_String;
+  EnvironmentOptions:=TEnvironmentOptions.Create;
+  with EnvironmentOptions do begin
+    SetLazarusDefaultFilename;
+    Load(false);
+  end;
+  
+  EditorOpts.Load;
 
-  Left := 0;
-  Top := 0;
-  Width := Screen.Width-10;
-  height := 125;
-  Position:= poDesigned;
+  if LazarusResources.Find(ClassName)=nil then begin
+
+  end;
+
+  Caption := 'Lazarus Editor v'+Version_String;
+
   Name := 'MainIDE';
+  if (EnvironmentOptions.SaveWindowPositions) 
+  and (EnvironmentOptions.WindowPositionsValid) then begin
+    BoundsRect:=EnvironmentOptions.MainWindowBounds;
+  end else begin
+    Left := 0;
+    Top := 0;
+    Width := Screen.Width-10;
+    Height := 125;
+  end;
+  Position:= poDesigned;
 
 
   LoadMainMenu;
@@ -293,9 +321,9 @@ begin
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('tmouse',Pixmap1) then
+  if not LoadPixmapRes('tmouse',Pixmap1) then
   begin
-    LoadResource('default',Pixmap1);
+    LoadPixmapRes('default',Pixmap1);
   end;
 
 
@@ -345,9 +373,9 @@ begin
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_viewunits',Pixmap1) then
+  if not LoadPixmapRes('btn_viewunits',Pixmap1) then
   begin
-    LoadResource('default',Pixmap1);
+    LoadPixmapRes('default',Pixmap1);
   end;
   SpeedButton1 := TSpeedButton.Create(Self);
   with Speedbutton1 do
@@ -364,9 +392,9 @@ begin
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_viewforms',Pixmap1) then
+  if not LoadPixmapRes('btn_viewforms',Pixmap1) then
   begin
-    LoadResource('default',Pixmap1);
+    LoadPixmapRes('default',Pixmap1);
   end;
 
   SpeedButton2 := TSpeedButton.Create(Self);
@@ -385,9 +413,9 @@ begin
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_newunit',Pixmap1) then
+  if not LoadPixmapRes('btn_newunit',Pixmap1) then
   begin
-    LoadResource('default',Pixmap1);
+    LoadPixmapRes('default',Pixmap1);
   end;
 
   SpeedButton3 := TSpeedButton.Create(Self);
@@ -407,9 +435,9 @@ begin
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_openfile',Pixmap1) then
+  if not LoadPixmapRes('btn_openfile',Pixmap1) then
   begin
-    LoadResource('default',Pixmap1);
+    LoadPixmapRes('default',Pixmap1);
   end;
 
   SpeedButton4 := TSpeedButton.Create(Self);
@@ -428,9 +456,9 @@ begin
   //display the down arrow
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_downarrow',Pixmap1) then
+  if not LoadPixmapRes('btn_downarrow',Pixmap1) then
   begin
-    LoadResource('default',Pixmap1);
+    LoadPixmapRes('default',Pixmap1);
   end;
 
   SpeedButton4_2 := TSpeedButton.Create(Self);
@@ -460,9 +488,9 @@ begin
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_save',Pixmap1) then
+  if not LoadPixmapRes('btn_save',Pixmap1) then
   begin
-    LoadResource('default',Pixmap1);
+    LoadPixmapRes('default',Pixmap1);
   end;
 
   SpeedButton5 := TSpeedButton.Create(Self);
@@ -481,9 +509,9 @@ begin
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_saveall',Pixmap1) then
+  if not LoadPixmapRes('btn_saveall',Pixmap1) then
   begin
-    LoadResource('default',Pixmap1);
+    LoadPixmapRes('default',Pixmap1);
   end;
 
   SpeedButton6 := TSpeedButton.Create(Self);
@@ -502,9 +530,9 @@ begin
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_toggleform',Pixmap1) then
+  if not LoadPixmapRes('btn_toggleform',Pixmap1) then
   begin
-    LoadResource('default',Pixmap1);
+    LoadPixmapRes('default',Pixmap1);
   end;
 
   SpeedButton7 := TSpeedButton.Create(Self);
@@ -523,9 +551,9 @@ begin
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_newform',Pixmap1) then
+  if not LoadPixmapRes('btn_newform',Pixmap1) then
   begin
-    LoadResource('default',Pixmap1);
+    LoadPixmapRes('default',Pixmap1);
   end;
 
   SpeedButton8 := TSpeedButton.Create(Self);
@@ -544,9 +572,9 @@ begin
 
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadResource('btn_run',Pixmap1) then
+  if not LoadPixmapRes('btn_run',Pixmap1) then
   begin
-    LoadResource('default',Pixmap1);
+    LoadPixmapRes('default',Pixmap1);
   end;
 
   RunSpeedButton := TSpeedButton.Create(Self);
@@ -566,9 +594,9 @@ begin
 
   if Assigned(Toolbar1) then
   begin
-  Assert(False, 'Trace:*1*');
-  Toolbutton1 := TToolButton.Create(Toolbar1);
-  with ToolButton1 do
+    Assert(False, 'Trace:*1*');
+    Toolbutton1 := TToolButton.Create(Toolbar1);
+    with ToolButton1 do
     begin
      Assert(False, 'Trace:SETTING PARENT');
       Parent := Toolbar1;
@@ -624,12 +652,14 @@ begin
     begin
       Assert(False, 'Trace:SETTING PARENT');
       Parent := Toolbar1;
+      Items.BeginUpdate;
       Items.Add('Item1');
       Items.Add('Item2');
       Items.Add('Item3');
       Items.Add('Item4');
       Items.Add('Item5');
       Items.Add('Item6');
+      Items.EndUpdate;
       ItemIndex := 0;
   //    Top := 1;
   //    Left := 1;
@@ -637,8 +667,6 @@ begin
     end;
   end;  //If toolbar1 assigned
   
-  FontDialog1 := TFontDialog.Create(self);
-  ColorDialog1 := TColorDialog.Create(self);
   //?? dont need these handlers.
   // Form will kill itself
   //OnDestroy := @FormKill;
@@ -652,7 +680,14 @@ begin
 
 { Create other forms }
   ObjectInspector1 := TObjectInspector.Create(Self);
-  ObjectInspector1.SetBounds(0,Top+Height+30,230,500);
+  if (EnvironmentOptions.SaveWindowPositions) 
+  and (EnvironmentOptions.WindowPositionsValid) then begin
+    with EnvironmentOptions.ObjectInspectorOptions do
+      ObjectInspector1.SetBounds(Left,Top,Width,Height);
+  end else begin
+    ObjectInspector1.SetBounds(
+      0,Top+Height+30,230,Max(Screen.Height-Top-Height-100,50));
+  end;
   ObjectInspector1.OnAddAvailComponent:=@OIOnAddAvailableComponent;
   ObjectInspector1.OnSelectComponentInOI:=@OIOnSelectComponent;
   PropertyEditorHook1:=TPropertyEditorHook.Create;
@@ -662,8 +697,9 @@ begin
   FormEditor1 := TFormEditor.Create;
   FormEditor1.Obj_Inspector := ObjectInspector1;
 
-  SourceNotebook := TSourceNotebook.Create(self);
-  SourceNotebook.OnActivate := @CodeorFormActivated;
+  SourceNotebook := TSourceNotebook.Create(Self);
+  SourceNoteBook.SearchPaths:=SearchPaths;
+  SourceNotebook.OnActivate := @CodeOrFormActivated;
   SourceNotebook.OnCloseFile := @FileClosedEvent;
   SourceNotebook.OnOpenFile := @FileOpenedEvent;
   SourceNotebook.OnSaveFile := @FileSavedEvent;
@@ -674,14 +710,21 @@ begin
   itmFileClose.OnClick := @SourceNotebook.CloseClicked;
   itmFileNew.OnClick := @SourceNotebook.NewClicked;
   itmFileOpen.OnClick := @SourceNotebook.OpenClicked;
+
   itmSearchFind.onClick := @SourceNotebook.FindClicked;
   itmSearchFindAgain.OnClick := @SourceNotebook.FindAgainClicked;
+
   SpeedButton4.OnClick := @SourceNotebook.OpenClicked;
   SpeedButton5.OnClick := @SourceNotebook.SaveClicked;
   SpeedButton6.OnClick := @SourceNotebook.SaveAllClicked;
 
-  EditorOPts.Load;
+end;
 
+destructor TMainIDE.Destroy;
+begin
+  EnvironmentOptions.Free;
+  EnvironmentOptions:=nil;
+  inherited Destroy;
 end;
 
 procedure TMainIDE.OIOnAddAvailableComponent(AComponent:TComponent;
@@ -699,7 +742,7 @@ begin
   TDesigner(Form.Designer).SelectOnlyThisComponent(AComponent);
 end;
 
-Procedure TMainIDE.ToolButtonCLick(Sender : TObject);
+Procedure TMainIDE.ToolButtonClick(Sender : TObject);
 Begin
   Assert(False, 'Trace:TOOL BUTTON CLICK!');
 
@@ -720,9 +763,6 @@ begin
 end;
 
 
-procedure TMainIDE.ButtonClick(Sender : TObject);
-Begin
-End;
 
 {------------------------------------------------------------------------------}
 procedure TMainIDE.FormShow(Sender : TObject);
@@ -877,6 +917,11 @@ begin
   itmSearchFindAgain.Enabled := False;
   mnuSearch.add(itmSearchFindAgain);
 
+  itmReplace := TMenuItem.Create(nil);
+  itmReplace.Name:='itmReplace';
+  itmReplace.Caption := 'Replace';
+  mnuSearch.add(itmReplace);
+
 //--------------
 // View
 //--------------
@@ -913,16 +958,6 @@ begin
   itmViewForms.Caption := 'Forms...';
   itmViewForms.OnClick := @mnuViewFormsClicked;
   mnuView.Add(itmViewForms);
-
-  itmViewColors := TMenuItem.Create(Self);
-  itmViewColors.Caption := 'Color Dialog';
-  itmViewColors.OnClick := @mnuViewColorClicked;
-  mnuView.Add(itmViewColors);
-
-  itmViewFont := TMenuItem.Create(Self);
-  itmViewFont.Caption := 'Font...';
-  itmViewFont.OnClick := @mnuViewFontClicked;
-  mnuView.Add(itmViewFont);
 
   mnuView.Add(CreateSeperator);
 
@@ -993,11 +1028,17 @@ begin
 // Environment
 //--------------
 
-  itmEnvironmentOptions := TMenuItem.Create(nil);
-  itmEnvironmentOptions.Name:='itmEnvironmentOptions';
-  itmEnvironmentOptions.Caption := 'Options';
-  itmEnvironmentOptions.OnCLick := @mnuEnvironmentOptionsClicked;
-  mnuEnvironment.Add(itmEnvironmentOptions);
+  itmEnvGeneralOptions := TMenuItem.Create(nil);
+  itmEnvGeneralOptions.Name:='itmEnvGeneralOptions';
+  itmEnvGeneralOptions.Caption := 'General options';
+  itmEnvGeneralOptions.OnCLick := @mnuEnvGeneralOptionsClicked;
+  mnuEnvironment.Add(itmEnvGeneralOptions);
+
+  itmEnvEditorOptions := TMenuItem.Create(nil);
+  itmEnvEditorOptions.Name:='itmEnvEditorOptions';
+  itmEnvEditorOptions.Caption := 'Editor options';
+  itmEnvEditorOptions.OnCLick := @mnuEnvEditorOptionsClicked;
+  mnuEnvironment.Add(itmEnvEditorOptions);
 
 end;
 {------------------------------------------------------------------------------}
@@ -1012,7 +1053,7 @@ begin
   Result := itmSeperator;
 end;
 
-procedure TMainIDE.LoadResourceFromFile(Value : String);
+procedure TMainIDE.LoadFormFromFile(Value : String);
 Var
   Texts : String;
   Classnm : String;  //like 'TMainIDE'
@@ -1098,7 +1139,7 @@ end;
 
 Function TMainIDE.SearchPaths : String;
 Begin
-    Result :=  Project.CompilerOptions.OtherUnitFiles;
+  Result :=  Project.CompilerOptions.OtherUnitFiles;
 End;
 
 {
@@ -1417,17 +1458,6 @@ Begin
   Messagedlg.Show;
 End;
 
-Procedure TMainIDE.mnuViewColorClicked(Sender : TObject);
-begin
-  ColorDialog1.Execute;
-end;
-
-
-Procedure TMainIDE.mnuViewFontClicked(Sender : TObject);
-Begin
-  FontDialog1.Execute;
-end;
-
 Procedure TMainIDE.DoFind(Sender : TObject);
 Begin
 
@@ -1648,8 +1678,16 @@ begin
 end;
 
 procedure TMainIDE.mnuProjectCompilerSettingsClicked(Sender : TObject);
+var frmCompilerOptions:TfrmCompilerOptions;
 begin
- frmCompilerOptions.Show;
+  frmCompilerOptions:=TfrmCompilerOptions.Create(Application);
+  try
+    if frmCompilerOptions.ShowModal=mrOk then begin
+      SourceNoteBook.SearchPaths:=SearchPaths;
+    end;
+  finally
+    frmCompilerOptions.Free;
+  end;
 end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender : TObject);
@@ -1658,10 +1696,71 @@ begin
  //frmProjectOptions.Show;
 end;
 
-procedure TMainIDE.mnuEnvironmentOptionsClicked(Sender : TObject);
+procedure TMainIDE.SaveDesktopSettings(
+  TheEnvironmentOptions: TEnvironmentOptions);
+begin
+  with TheEnvironmentOptions do begin
+    MainWindowBounds:=BoundsRect;
+    SourceEditorBounds:=SourceNoteBook.BoundsRect;
+    ObjectInspectorOptions.Assign(ObjectInspector1);
+    WindowPositionsValid:=true;
+  end;
+end;
+
+procedure TMainIDE.LoadDesktopSettings(
+  TheEnvironmentOptions: TEnvironmentOptions);
+begin
+  with TheEnvironmentOptions do begin
+    if WindowPositionsValid then begin
+      BoundsRect:=MainWindowBounds;
+      SourceNoteBook.BoundsRect:=SourceEditorBounds;
+      ObjectInspectorOptions.AssignTo(ObjectInspector1);
+    end;
+  end;
+end;
+
+procedure TMainIDE.OnLoadEnvironmentSettings(Sender: TObject; 
+  TheEnvironmentOptions: TEnvironmentOptions);
+begin
+  LoadDesktopSettings(TheEnvironmentOptions);
+end;
+
+procedure TMainIDE.OnSaveEnvironmentSettings(Sender: TObject; 
+  TheEnvironmentOptions: TEnvironmentOptions);
+begin
+  SaveDesktopSettings(TheEnvironmentOptions);
+end;
+
+procedure TMainIDE.mnuEnvGeneralOptionsClicked(Sender : TObject);
+var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
 Begin
-  if EditorOptionsForm.ShowModal = mrOK then
-   SourceNotebook.ReloadEditorOptions;
+  EnvironmentOptionsDialog:=TEnvironmentOptionsDialog.Create(Application);
+  try
+    with EnvironmentOptionsDialog do begin
+      SaveDesktopSettings(EnvironmentOptions);
+      OnLoadEnvironmentSettings:=@Self.OnLoadEnvironmentSettings;
+      OnSaveEnvironmentSettings:=@Self.OnSaveEnvironmentSettings;
+      ReadSettings(EnvironmentOptions);
+      if ShowModal=mrOk then begin
+        WriteSettings(EnvironmentOptions);
+        EnvironmentOptions.Save(false);
+      end;
+    end;
+  finally
+    EnvironmentOptionsDialog.Free;
+  end;
+End;
+
+procedure TMainIDE.mnuEnvEditorOptionsClicked(Sender : TObject);
+var EditorOptionsForm: TEditorOptionsForm;
+Begin
+  EditorOptionsForm:=TEditorOptionsForm.Create(Application);
+  try
+    if EditorOptionsForm.ShowModal=mrOk then
+      SourceNotebook.ReloadEditorOptions;
+  finally
+    EditorOptionsForm.Free;
+  end;
 End;
 
 
@@ -1683,6 +1782,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.62  2001/02/22 17:04:57  lazarus
+  added environment options + killed ide unit circles
+
   Revision 1.61  2001/02/21 22:55:24  lazarus
   small bugfixes + added TOIOptions
 

@@ -37,7 +37,7 @@ uses
 type
   { Compiler Options object used to hold the compiler options }
   TCompilerOptions = class(TObject)
- private
+  private
     fOptionsString: String;
     xmlcfg: TXMLConfig;
 
@@ -318,13 +318,13 @@ type
   end;
 
 var
-frmCompilerOptions: TfrmCompilerOptions;
-compilerOpts: TCompilerOptions;
+  frmCompilerOptions: TfrmCompilerOptions;
+  compilerOpts: TCompilerOptions;
 
 implementation
 
 uses
-  main, project;
+  project;
 
 const
   CONFIG_FILENAME = 'compileroptions.xml';
@@ -1015,9 +1015,9 @@ end;
 constructor TfrmCompilerOptions.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+
   Assert(False, 'Trace:Compiler Options Form Created');
-  Height := 455;
-  Width := 379;
+  SetBounds((Screen.Width-390) div 2,(Screen.Height-480) div 2,379,455);
   Caption := 'Compiler Options';
   OnShow := @CreateForm;
 //  MainIDE.Project.CompilerOptions.LoadCompilerOptions(true);

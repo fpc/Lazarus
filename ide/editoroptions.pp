@@ -925,8 +925,6 @@ var a:integer;
 begin
   inherited Create(AOwner);
 
-  EditorOpts.Load;
-
   if LazarusResources.Find(ClassName)=nil then begin  
     SetBounds((Screen.Width-470) div 2,(Screen.Height-480) div 2, 455,459);
     Caption:='Editor Options';
