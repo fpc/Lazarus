@@ -601,6 +601,7 @@ type
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure FreeImage;
+    function HandleAllocated: boolean;
     property Handle: HBITMAP read GetHandle write SetHandle;
     procedure LoadFromStream(Stream: TStream); override;
     procedure LoadFromLazarusResource(const ResName: String); override;
@@ -834,6 +835,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.38  2002/08/15 13:37:56  lazarus
+  MG: started menuitem icon, checked, radio and groupindex
+
   Revision 1.37  2002/08/13 07:08:24  lazarus
   MG: added gdkpixbuf.pp and changes from Andrew Johnson
 

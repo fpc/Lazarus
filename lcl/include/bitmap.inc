@@ -52,6 +52,11 @@ procedure TBitMap.FreeImage;
 begin
 end;
 
+function TBitmap.HandleAllocated: boolean;
+begin
+  Result:=FImage.FHandle<>0;
+end;
+
 procedure TBitMap.Mask(ATransparentColor: TColor);
 begin
 end;
@@ -290,6 +295,9 @@ begin
     if FHandle <> Value then
     begin
       FreeContext;
+      Release;
+      FImage := TBitmapImage.Create;
+      Reference;
       FHandle:=Value;
       Changed(Self);
     end;
@@ -359,6 +367,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/08/15 13:37:57  lazarus
+  MG: started menuitem icon, checked, radio and groupindex
+
   Revision 1.13  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

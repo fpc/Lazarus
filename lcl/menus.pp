@@ -147,8 +147,7 @@ type
     property ActionLink: TMenuActionLink read FActionLink write FActionLink;
     procedure CreateHandle; virtual;
     procedure DestroyHandle; virtual;
-    procedure RecreateHandle; virtual;
-    procedure DoClicked(var msg); message LM_ACTIVATE;         //'activate';
+    procedure DoClicked(var msg); message LM_ACTIVATE;  //'activate';
     function GetHandle: HMenu;
     Procedure SetImageIndex(value : Integer);
     procedure SetGroupIndex(AValue: Byte);
@@ -174,6 +173,7 @@ type
     function IndexOf(Item: TMenuItem): Integer;
     function IndexOfCaption(const ACaption: string): Integer; virtual;
     procedure Insert(Index: Integer; Item: TMenuItem);
+    procedure RecreateHandle; virtual;
     procedure Remove(Item: TMenuItem);
     property Count: Integer read GetCount;
     property Handle: HMenu read GetHandle write FHandle;
@@ -282,7 +282,7 @@ type
 
 
 function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
-procedure ShortCuttoKey(const ShortCut : TShortCut; var Key: Word;
+procedure ShortCutToKey(const ShortCut : TShortCut; var Key: Word;
                         var Shift : TShiftState);
 
 function TextToShortCut(Text: string): TShortCut;
@@ -440,14 +440,14 @@ Begin
   if ssAlt in Shift then Inc(Result,scAlt);
 end;
 
-Procedure ShortCuttoKey(const ShortCut : TShortCut; var Key: Word; var Shift : TShiftState);
+Procedure ShortCutToKey(const ShortCut : TShortCut; var Key: Word;
+  var Shift : TShiftState);
 begin
   key := ShortCut and not(scShift+scAlt+scCtrl);
   Shift := [];
   if ShortCut and scShift <> 0 then Include(shift,ssShift);
   if ShortCut and scAlt <> 0 then Include(shift,ssAlt);
   if ShortCut and scCtrl <> 0 then Include(shift,ssCtrl);
-
 end;
 
 
@@ -455,6 +455,9 @@ end.
 
 {
   $Log$
+  Revision 1.23  2002/08/15 13:37:57  lazarus
+  MG: started menuitem icon, checked, radio and groupindex
+
   Revision 1.22  2002/08/12 15:32:28  lazarus
   MG: started enhanced menuitem
 

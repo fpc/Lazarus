@@ -62,7 +62,7 @@ end;
 function CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
   bChecked: Boolean): Boolean;
 begin
-  Result:=false;
+  Result := InterfaceObject.CheckMenuItem(hndMenu,uIDEnableItem,bChecked);
 end;
 
 Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
@@ -1141,6 +1141,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2002/08/15 13:37:57  lazarus
+  MG: started menuitem icon, checked, radio and groupindex
+
   Revision 1.39  2002/08/13 07:08:24  lazarus
   MG: added gdkpixbuf.pp and changes from Andrew Johnson
 

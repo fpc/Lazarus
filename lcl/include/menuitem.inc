@@ -122,6 +122,8 @@ destructor TMenuItem.Destroy;
 var
   i : integer;
 begin
+  if FGraphic<>nil then
+    FreeAndNil(FGraphic);
   DestroyHandle;
   if assigned (FItems) then begin
     i := FItems.Count-1;
@@ -416,6 +418,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.RecreateHandle;
 begin
+  if not HandleAllocated then exit;
   DestroyHandle;
   CreateHandle;
 end;
@@ -573,7 +576,7 @@ begin
     if AValue and FRadioItem then
       TurnSiblingsOff;
     if (FParent <> nil) and not (csReading in ComponentState)
-    and (HandleAllocated) then
+    and HandleAllocated then
       CheckMenuItem(Handle, FCommand, FChecked);
   end;
 end;
@@ -874,7 +877,7 @@ var
   I: Integer;
   Item: TMenuItem;
 begin
-  if FParent <> nil then
+  if (FParent <> nil) and (GroupIndex<>0) then
     for I := 0 to FParent.Count - 1 do
     begin
       Item := FParent[I];
@@ -903,7 +906,7 @@ begin
     end
     else
       { Ripple change to menu items at Position and after }
-      if Items[i].GroupIndex<Value then
+      if (Items[i].GroupIndex<>0) and (Items[i].GroupIndex<Value) then
         Items[i].FGroupIndex:=Value;
 end;
 
@@ -913,6 +916,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/08/15 13:37:57  lazarus
+  MG: started menuitem icon, checked, radio and groupindex
+
   Revision 1.24  2002/08/12 15:32:29  lazarus
   MG: started enhanced menuitem
 
@@ -1013,6 +1019,9 @@ end;
 
 
   $Log$
+  Revision 1.25  2002/08/15 13:37:57  lazarus
+  MG: started menuitem icon, checked, radio and groupindex
+
   Revision 1.24  2002/08/12 15:32:29  lazarus
   MG: started enhanced menuitem
 

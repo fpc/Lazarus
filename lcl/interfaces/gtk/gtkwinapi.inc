@@ -218,9 +218,20 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CheckMenuItem(hndMenu: HMENU; uIDEnableItem: Integer;
   bChecked: Boolean): Boolean;
+var
+  LCLMenuItem: TMenuItem;
 begin
-  // ToDo
-  Result:=false;
+  if GTK_IS_CHECK_MENU_ITEM(Pointer(hndMenu)) then begin
+    gtk_check_menu_item_set_active(PGtkCheckMenuItem(hndMenu),bChecked);
+    Result:=true;
+  end else begin
+    LCLMenuItem:=TMenuItem(GetLCLObject(Pointer(hndMenu)));
+    if LCLMenuItem<>nil then begin
+      LCLMenuItem.RecreateHandle;
+      Result:=true;
+    end else
+      Result := false;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1346,7 +1357,7 @@ begin
     ColorMap:=gdk_colormap_get_system;
   GdiObject^.GDIPixmapObject :=
     gdk_pixmap_colormap_create_from_xpm_d(Window,Colormap,
-           @(GdiObject^.GDIBitmapMaskObject), p, data);
+           @(GdiObject^.GDIBitmapMaskObject), p, Data);
   GdiObject^.GDIBitmapType:=gbPixmap;
   Result := HBITMAP(GdiObject);
 end;
@@ -3706,12 +3717,18 @@ End;
   Params:  hndMenu: HMENU; bRadio: Boolean
   Returns: Nothing
 
-  Change the group of menuitems to 'radio' or to checked.
+  Change the group of menuitems to 'radio' or to 'checked'.
  ------------------------------------------------------------------------------}
 function TgtkObject.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
+var
+  LCLMenuItem: TMenuItem;
 begin
-  // ToDo
-  Result := false;
+  LCLMenuItem:=TMenuItem(GetLCLObject(Pointer(hndMenu)));
+  if LCLMenuItem<>nil then begin
+    LCLMenuItem.RecreateHandle;
+    Result:=true;
+  end else
+    Result := false;
 end;
 
 {------------------------------------------------------------------------------
@@ -3785,9 +3802,18 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.RegroupMenuItem(hndMenu: HMENU;
   GroupIndex: Integer): Boolean;
+var
+  RadioGroup: PGSList;
 begin
-  // ToDo
-  Result := false;
+  if GTK_IS_RADIO_MENU_ITEM(Pointer(hndMenu)) then begin
+    // set group
+    RadioGroup:=GetRadioMenuItemGroup(PGtkRadioMenuItem(hndMenu));
+    gtk_radio_menu_item_set_group(PGtkRadioMenuItem(hndMenu),RadioGroup);
+    RadioGroup:=gtk_radio_menu_item_group(PGtkRadioMenuItem(hndMenu));
+    UpdateRadioGroupChecks(RadioGroup);
+    Result:=true;
+  end else
+    Result:=false;
 end;
 
 {------------------------------------------------------------------------------
@@ -4845,7 +4871,7 @@ var
       SRCERASE :
         GDK_GC_Set_Function(ScaleROPGC, GDK_AND);
       NOTSRCCOPY :
-	GDK_GC_Set_Function(ScaleROPGC, GDK_OR_REVERSE);
+        GDK_GC_Set_Function(ScaleROPGC, GDK_OR_REVERSE);
       NOTSRCERASE :
         GDK_GC_Set_Function(ScaleROPGC, GDK_AND);
       MERGEPAINT :
@@ -5314,6 +5340,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.92  2002/08/15 13:37:58  lazarus
+  MG: started menuitem icon, checked, radio and groupindex
+
   Revision 1.91  2002/08/13 07:08:24  lazarus
   MG: added gdkpixbuf.pp and changes from Andrew Johnson
 

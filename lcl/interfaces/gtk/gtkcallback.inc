@@ -203,11 +203,28 @@ begin
 end;
 
 
-function gtkactivateCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkactivateCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  LCLMenuItem: TMenuItem;
 begin
   EventTrace('activate', data);
+  if GTK_IS_CHECK_MENU_ITEM(widget) then begin
+    LCLMenuItem:=TMenuItem(GetLCLObject(Widget));
+    if LCLMenuItem<>nil then begin
+      if (not LCLMenuItem.AutoCheck) then begin
+        // restore 'checked' flag
+        if ((PGtkCheckMenuItem(Widget)^.flag0 and bm_checkmenuitem_active)<>0)
+          <>LCLMenuItem.Checked
+        then begin
+          gtk_check_menu_item_set_active(PGtkCheckMenuItem(Widget),
+                                         LCLMenuItem.Checked);
+          Result:=true;
+          exit;
+        end;
+      end;
+    end;
+  end;
   Mess.Msg := LM_ACTIVATE;
   Mess.Result := 0;
   Result := DeliverMessage(Data, Mess) = 0;
@@ -2122,6 +2139,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.97  2002/08/15 13:37:57  lazarus
+  MG: started menuitem icon, checked, radio and groupindex
+
   Revision 1.96  2002/08/04 08:17:30  lazarus
   MG: fixed normal events in design mode
 
