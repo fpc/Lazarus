@@ -25,11 +25,11 @@ begin
   
   fImageIndex:=-1;
   
-  {set the default height and width}
-
+  // set the default height and width
   if (AOwner<>nil) and (AOwner is TControl) then begin
-    SetInitialBounds(0,0,
-                    TControl(AOwner).ClientWidth,TControl(AOwner).ClientHeight);
+    //SetInitialBounds(0,0,
+    //                TControl(AOwner).ClientWidth,TControl(AOwner).ClientHeight);
+    Align:=alClient;
   end else begin
     SetInitialBounds(0,0,120,100);
   end;
@@ -38,8 +38,6 @@ begin
 
   Visible := False;
   ControlStyle := ControlStyle + [csAcceptsControls];
-  { The alignment is performed by the notebook component }
-
   Caption := '';
 end;
 
@@ -141,6 +139,9 @@ end;
 // included by extctrls.pp
 {
   $Log$
+  Revision 1.16  2003/07/24 06:54:32  mattias
+  fixed anti circle mechnism for aligned controls
+
   Revision 1.15  2002/08/19 15:15:23  mattias
   implemented TPairSplitter
 

@@ -966,7 +966,8 @@ type
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure ControlsAligned; virtual;
-    procedure RealizeBounds;
+    procedure DoSendBoundsToInterface; virtual;
+    procedure RealizeBounds; virtual;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
     procedure CreateComponent(TheOwner: TComponent); virtual;
     procedure DestroyComponent;
@@ -1629,6 +1630,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.137  2003/07/24 06:54:32  mattias
+  fixed anti circle mechnism for aligned controls
+
   Revision 1.136  2003/07/04 10:12:16  mattias
   added default message handler to win32 interface
 

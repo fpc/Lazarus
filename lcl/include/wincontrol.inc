@@ -1,4 +1,4 @@
-// included by controls.pp
+                // included by controls.pp
 
 {******************************************************************************
                                   TWinControl
@@ -147,6 +147,7 @@ var
           ' CurBaseBounds=',CurBaseBounds.Left,',',CurBaseBounds.Top,',',CurBaseBounds.Right-CurBaseBounds.Left,',',CurBaseBounds.Bottom-CurBaseBounds.Top,
           ' ParBaseClient=',ParentBaseClientSize.X,',',ParentBaseClientSize.Y,
           ' ParClient=',Parent.ClientWidth,',',Parent.ClientHeight,
+          ' NewBounds=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,
           '');
         {$ENDIF}
 
@@ -332,13 +333,20 @@ var
             Dec(Right, NewWidth);
             NewLeft := Right;
           end;
+        alClient:
+          ; // VCL is tricking here. Have to discuss this on the list ...
       end;
     end;
 
     {$IFDEF CHECK_POSITION}
     //if AnsiCompareText(ClassName,'TSynBaseCompletionForm')=0 then
     with Control do
-      writeln('[TWinControl.AlignControls.DoPosition] END Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' Align=',AlignNames[AAlign]);
+      writeln('[TWinControl.AlignControls.DoPosition] END Control=',
+        Name,':',ClassName,
+        ' ',Left,',',Top,',',Width,',',Height,
+        ' Align=',AlignNames[AAlign],
+        ' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right-ARect.Left,',',ARect.Bottom-ARect.Top,
+        '');
     {$ENDIF}
   end;
 
@@ -2622,8 +2630,7 @@ begin
   Assert(False, 'Trace:TODO: [TWinControl.InitializeWnd] move this code to the interface');
   
 //writeln('[TWinControl.InitializeWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
-  FBoundsRealized:=Bounds(Left, Top, Width, Height);
-  CNSendMessage(LM_SETSIZE, Self, @FBoundsRealized);
+  DoSendBoundsToInterface;
   CNSendMessage(LM_SHOWHIDE, Self, nil);
   CNSendMessage(LM_SETCOLOR, Self, nil);
   Exclude(FFlags,wcfColorChanged);
@@ -2780,10 +2787,10 @@ begin
   OldBounds:=BoundsRect;
   NewBounds:=Bounds(ALeft, ATop, AWidth, AHeight);
   
-  LockRealizeBounds;
-  try
-    if not CompareRect(@NewBounds,@OldBounds) then begin
-      // LCL bounds are not up2date -> process new bounds
+  if not CompareRect(@NewBounds,@OldBounds) then begin
+    // LCL bounds are not up2date -> process new bounds
+    LockRealizeBounds;
+    try
       {$IFDEF CHECK_POSITION}
       //if csDesigning in ComponentState then
       //if AnsiCompareText(ClassName,'TScrollBar')=0 then
@@ -2793,9 +2800,9 @@ begin
       {$ENDIF}
       inherited SetBounds(ALeft, ATop, AWidth, AHeight);
       NewBounds:=Bounds(Left, Top, Width, Height);
+    finally
+      UnlockRealizeBounds;
     end;
-  finally
-    UnlockRealizeBounds;
   end;
 end;
 
@@ -2854,6 +2861,15 @@ begin
 
 end;
 
+procedure TWinControl.DoSendBoundsToInterface;
+var
+  NewBounds: TRect;
+begin
+  NewBounds:=Bounds(Left, Top, Width, Height);
+  FBoundsRealized:=NewBounds;
+  CNSendMessage(LM_SetSize, Self, @NewBounds);
+end;
+
 procedure TWinControl.RealizeBounds;
 var
   NewBounds: TRect;
@@ -2863,7 +2879,7 @@ begin
   and (not (csLoading in ComponentState))
   and (not CompareRect(@NewBounds,@FBoundsRealized)) then
   begin
-    // the new bounds were not yet send to the InterfaceObject -> send them
+    // the new bounds were not yet sent to the InterfaceObject -> send them
     {$IFDEF CHECK_POSITION}
     if csDesigning in ComponentState then
     writeln('[TWinControl.RealizeBounds] A ',Name,':',ClassName,
@@ -2872,8 +2888,7 @@ begin
     {$ENDIF}
     BeginUpdateBounds;
     try
-      FBoundsRealized:=NewBounds;
-      CNSendMessage(LM_SetSize, Self, @NewBounds);
+      DoSendBoundsToInterface;
     finally
       EndUpdateBounds;
     end;
@@ -2915,6 +2930,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.154  2003/07/24 06:54:32  mattias
+  fixed anti circle mechnism for aligned controls
+
   Revision 1.153  2003/07/07 07:59:34  mattias
   made Size_SourceIsInterface a flag
 

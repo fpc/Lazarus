@@ -972,18 +972,15 @@ procedure TControl.SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer);
   To break the circle, only bounds that are different from the last try will
   be sent.
 }
+var
+  NewBounds: TRect;
 begin
+  NewBounds:=Bounds(aLeft, aTop, aWidth, aHeight);
   if (cfLastAlignedBoundsValid in FControlFlags)
-  and (fLastAlignedBounds.Left=aLeft)
-  and (fLastAlignedBounds.Top=aTop)
-  and (fLastAlignedBounds.Right=aLeft+aWidth)
-  and (fLastAlignedBounds.Bottom=aTop+aHeight)
-  then
+  and CompareRect(@NewBounds,@fLastAlignedBounds) then
     exit;
-  fLastAlignedBounds.Left:=aLeft;
-  fLastAlignedBounds.Top:=aTop;
-  fLastAlignedBounds.Right:=aLeft+aWidth;
-  fLastAlignedBounds.Bottom:=aTop+aHeight;
+  fLastAlignedBounds:=NewBounds;
+  Include(FControlFlags,cfLastAlignedBoundsValid);
 
   //if AnsiCompareText(ClassName,'TSCROLLBAR')=0 then
   //  writeln('TControl.SetAlignedBounds A ',Name,':',ClassName,' ',aLeft,',',aTop,',',aWidth,',',aHeight);
@@ -2466,6 +2463,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.143  2003/07/24 06:54:32  mattias
+  fixed anti circle mechnism for aligned controls
+
   Revision 1.142  2003/07/07 07:59:34  mattias
   made Size_SourceIsInterface a flag
 
