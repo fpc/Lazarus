@@ -525,7 +525,7 @@ begin
           PlatformPrefix := cbgLCLPlatform.Items[PlatformIdx];
           PlatformDir := PlatformPrefix;
           PlatformObject := 'T' + PlatformPrefix + 'WidgetSet';
-          PlatformObject[2] := UpperCase(PlatformObject[2]);
+          PlatformObject[2] := UpCase(PlatformObject[2]);
 
           //------------------
           // open *winapih.inc
@@ -606,6 +606,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/04/01 20:58:38  mattias
+  fixed compilation of apiwiz
+
   Revision 1.6  2004/03/05 01:08:27  marc
   * Updated for new WidgetSet names
 
