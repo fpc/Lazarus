@@ -1,0 +1,16 @@
+#: synmacrorecorder:scannotrecord
+msgid "Cannot record macro when recording"
+msgstr ""
+
+#: synmacrorecorder:scannotplay
+msgid "Cannot playback macro when recording"
+msgstr ""
+
+#: synmacrorecorder:scannotpause
+msgid "Can only pause when recording"
+msgstr ""
+
+#: synmacrorecorder:scannotresume
+msgid "Can only resume when paused"
+msgstr ""
+

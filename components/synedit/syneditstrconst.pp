@@ -45,16 +45,18 @@ const
   SYNS_ComponentsPage           =  'SynEdit';
   SYNS_HighlightersPage         =  'SynEdit Highlighters';
 
-{$IFNDEF FPC}
+{$IFDEF SYN_LAZARUS}
+// The highlight attribute names are the only independent identification.
+// So, they can't be translated.
+// ToDo: add translated versions.
+const
+{$ELSE}
 {$IFDEF SYN_COMPILER_3_UP}
 resourcestring
 {$ELSE}
 const
 {$ENDIF}
-{$ELSE}
-const
 {$ENDIF}
-
   SYNS_Untitled                 =  'Untitled';
 
   // names for highlighter attributes
@@ -142,6 +144,10 @@ const
   SYNS_AttrVariable             =  'Variable';
   SYNS_AttrWhitespace           =  'Whitespace';
 
+{$IFDEF SYN_LAZARUS}
+resourcestring
+{$ENDIF}
+
   // names of exporter output formats
   SYNS_ExporterFormatHTML       =  'HTML';
   SYNS_ExporterFormatRTF        =  'RTF';
@@ -207,6 +213,11 @@ const
   SYNS_FilterGWS                =  'GW-TEL Script Files (*.gws)|*.gws';
   SYNS_FilterSynGenMsgfiles     =  'Msg files (*.msg)|*.msg';
 
+{$IFDEF SYN_LAZARUS}
+// Currently the language names are used to identify the language
+// ToDo: create translation table
+const
+{$ENDIF}
   // Language names. Maybe somebody wants them translated / more detailed...
   SYNS_LangHP48                 =  'HP48';
   SYNS_LangCAClipper            =  'CA-Clipper';
@@ -216,7 +227,9 @@ const
   SYNS_LangPerl                 =  'Perl';
   SYNS_LangBatch                =  'MS-DOS batch language';
   SYNS_LangDfm                  =  'Borland Form definition';
+  {$IFDEF SYN_LAZARUS}
   SYNS_LangLfm                  =  'Lazarus Form definition';
+  {$ENDIF}
   SYNS_LangAWK                  =  'AWK Script';
   SYNS_LangCORBAIDL             =  'CORBA IDL';
   SYNS_LangHTML                 =  'HTML document';

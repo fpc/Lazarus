@@ -4,7 +4,12 @@ for internationalization of the codetools.
 All text and messages used in the codetools should be placed into the unit
 codetoolsstrconsts.pas. This unit uses a resourcestring section, so that the
 compiler will create the
-<lazarusdir>/components/codetools/codetoolsstrconsts.rst file.
+<lazarusdir>/components/units/codetoolsstrconsts.rst file.
+
+The following is a in detail description of updating the language files for
+the codetools. Normally you can just execute the <lazarusdir>/localize.sh
+script.
+
 Since this is a fpc-only format it must be converted with the rstconv program:
 
 cd <lazarusdir>/components/codetools/languages
