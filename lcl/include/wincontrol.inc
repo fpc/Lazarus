@@ -1301,12 +1301,17 @@ var
   Control: TControl;
 begin
 //writeln('[TWinControl.Destroy] A  ',Name,':',ClassName);
-  DestroyHandle; 
+  DestroyHandle;
+  
+//  for n:=0 to ComponentCount-1 do
+//    writeln('  ',Components[n].ClassName);
+  
   n := ControlCount;
 
   while n > 0 do
   begin
     Control := Controls[n - 1];
+//writeln('[TWinControl.Destroy] B  ',Name,':',ClassName,' ',Control.Name,':',Control.ClassName);
     Remove(Control);
     // don't free the control just set parent to nil
     // controls are freed by the owner
@@ -1316,6 +1321,7 @@ begin
   end;
 
   FBrush.Free;
+//writeln('[TWinControl.Destroy] D  ',Name,':',ClassName);
   inherited Destroy;
 //writeln('[TWinControl.Destroy] END  ',Name,':',ClassName);
 end;
@@ -1934,6 +1940,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2002/03/14 23:25:52  lazarus
+  MG: fixed TBevel.Create and TListView.Destroy
+
   Revision 1.50  2002/03/13 22:48:16  lazarus
   Constraints implementation (first cut) and sizig - moving system rework to
   better match Delphi/Kylix way of doing things (the existing implementation
