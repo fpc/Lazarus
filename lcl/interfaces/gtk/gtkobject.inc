@@ -637,6 +637,7 @@ procedure TgtkObject.SendCachedLCLMessages;
         RaiseWidgetWithoutControl;
       end;
       {$IFDEF VerboseSizeMsg}
+      if AnsiCompareText(LCLControl.ClassName,'TScrollBar')=0 then
       writeln('SendCachedLCLMessages ',LCLControl.Name,':',LCLControl.ClassName,
         ' ',LCLControl.Left,',',LCLControl.Top,',',LCLControl.Width,',',LCLControl.Height);
       {$ENDIF}
@@ -749,8 +750,7 @@ procedure TGtkObject.SendCachedGtkMessages;
     GtkHeight:=MainWidget^.Allocation.Height;
     if GtkHeight<0 then GtkHeight:=0;
     
-    IsTopLevelWidget:=(LCLControl is TCustomForm)
-                      and (LCLControl.Parent=nil);
+    IsTopLevelWidget:=(LCLControl is TCustomForm) and (LCLControl.Parent=nil);
     if IsTopLevelWidget then begin
       if not GTK_WIDGET_VISIBLE(MainWidget) then begin
         // size/move messages of invisible windows are not reliable
@@ -795,7 +795,8 @@ procedure TGtkObject.SendCachedGtkMessages;
       finally
         Dispose(PosMsg.WindowPos);
       end;
-      if not MessageDelivered then exit;
+      if (not MessageDelivered) then exit;
+      if FWidgetsWithResizeRequest.Contains(MainWidget) then exit;
       UpdateLCLRect;
     end;
 
@@ -814,6 +815,7 @@ procedure TGtkObject.SendCachedGtkMessages;
       end;
       MessageDelivered := (DeliverMessage(LCLControl, SizeMsg) = 0);
       if not MessageDelivered then exit;
+      if FWidgetsWithResizeRequest.Contains(MainWidget) then exit;
       UpdateLCLRect;
     end;
 
@@ -966,6 +968,7 @@ begin
     end else begin
       NewWidth:=Requisition.width;
     end;
+    //writeln('TgtkObject.RealizeWidgetSize A ',Newwidth,',',Newheight);
   end;
   
   gtk_widget_set_usize(Widget, NewWidth, NewHeight);
@@ -3287,15 +3290,13 @@ begin
     if TWinControl(Sender).HandleAllocated then begin
       Widget := pgtkWidget(TWinControl(Sender).Handle);
       SetResizeRequest(Widget);
-      {$IFDEF VerboseClientRectBugFix}
-      if (Sender is TCustomForm) then
-        writeln(' FFF ResizeChild ',Sender.ClassName,' ',Left,',',Top);
-      {$ENDIF}
+      //if (Sender is TCustomForm) then
+      //if AnsiCompareText(Sender.ClassName,'TScrollBar')=0 then
+      //  writeln(' FFF ResizeChild ',Sender.ClassName,' ',Left,',',Top,',',Width,',',Height);
     end;
   end;
   //writeln('[TgtkObject.ResizeChild] END ',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
 end;
-
 
 {------------------------------------------------------------------------------
   Method: TGtkObject.AddChild
@@ -5796,6 +5797,8 @@ begin
         SetWindowSizeAndPosition(PgtkWindow(SenderWidget),TWinControl(Sender));
       end else if (LCLControl.Parent<>nil) then begin
         // resize widget
+        //if AnsiCompareText(Sender.ClassName,'TScrollBar')=0 then
+        //  writeln('TgtkObject.ShowHide Size ',LCLControl.Left,',',LCLControl.Top,',',LCLControl.Width,',',LCLControl.Height);
         RealizeWidgetSize(SenderWidget,LCLControl.Width,LCLControl.Height);
         // move widget on the fixed widget of parent control
         ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
@@ -7946,6 +7949,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.395  2003/07/25 08:00:36  mattias
+  fixed sending follow up move/size messages from gtk
+
   Revision 1.394  2003/07/23 10:23:56  mattias
   started README about remote debugging
 
