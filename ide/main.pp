@@ -484,6 +484,8 @@ type
       var ActiveUnitInfo:TUnitInfo);
     procedure DoSwitchToFormSrc(ADesigner: TDesigner;
       var ActiveSourceEditor:TSourceEditor; var ActiveUnitInfo:TUnitInfo);
+    function GetFormOfSource(AnUnitInfo: TUnitInfo;
+      LoadForm: boolean): TCustomForm;
     procedure UpdateCaption;
     function DoConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
     
@@ -540,6 +542,8 @@ type
       read FSelectedComponent write FSelectedComponent;
     procedure DoBringToFrontFormOrUnit;
     procedure DoBringToFrontFormOrInspector;
+    procedure DoShowDesignerFormOfCurrentSrc;
+    procedure DoShowSourceOfActiveDesignerForm;
     procedure SetDesigning(AComponent: TComponent; Value : Boolean);
 
     // editor and environment options
@@ -4090,12 +4094,16 @@ begin
   // read form data
   if FilenameIsPascalUnit(AFilename) then begin
     // this could be a unit with a form
-    //if (Project1.AutoCreateForms)
-    // -> try to load the lfm file
-    Result:=DoLoadLFM(NewUnitInfo,Flags);
-    if Result<>mrOk then exit;
+    if EnvironmentOptions.AutoCreateFormsOnOpen
+    or (NewUnitInfo.Form<>nil) then begin
+      // -> try to (re)load the lfm file
+      Result:=DoLoadLFM(NewUnitInfo,Flags);
+      if Result<>mrOk then exit;
+    end;
   end else if NewUnitInfo.Form<>nil then begin
-    // close form (Note: e.g. close form on revert)
+    // this is no pascal source and there is a designer form
+    // This can be the case, when the file is renamed and reverted
+    // -> close form
     CloseDesignerForm(NewUnitInfo);
   end;
 
@@ -5749,78 +5757,70 @@ begin
 end;
 
 procedure TMainIDE.DoBringToFrontFormOrUnit;
-var AForm: TCustomForm;
-  ActiveUnitInfo: TUnitInfo;
 begin
-  AForm:=nil;
   if FDisplayState = dsSource then begin
-    if (SourceNoteBook.NoteBook <> nil) then begin
-      ActiveUnitInfo:=Project1.UnitWithEditorIndex(
-        SourceNoteBook.NoteBook.PageIndex);
-      if (ActiveUnitInfo <> nil) then
-        AForm:=TCustomForm(ActiveUnitInfo.Form);
-      FLastFormActivated:= AForm;
-      if AForm <> nil then FDisplayState:= dsForm;
-    end;
+    DoShowDesignerFormOfCurrentSrc;
   end else begin
-    if SourceNoteBook.NoteBook <> nil then begin
-      AForm:= SourceNotebook;
-      if FLastFormActivated <> nil then begin
-        ActiveUnitInfo:= Project1.UnitWithForm(FLastFormActivated);
-        if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.EditorIndex >= 0) then
-        begin
-          SourceNotebook.Notebook.PageIndex:= ActiveUnitInfo.EditorIndex;
-        end;
-      end;
-      FDisplayState:= dsSource;
-    end;
-  end;
-  if AForm<>nil then begin
-    BringWindowToTop(AForm.Handle);
-    if FLastFormActivated=AForm then begin
-      // select the new form (object inspector, formeditor, control selection)
-      PropertyEditorHook1.LookupRoot := AForm;
-      TDesigner(AForm.Designer).SelectOnlyThisComponent(AForm);
-    end;
+    DoShowSourceOfActiveDesignerForm;
   end;
 end;
 
 procedure TMainIDE.DoBringToFrontFormOrInspector;
-var AForm: TCustomForm;
-  ActiveUnitInfo: TUnitInfo;
 begin
-  AForm:=nil;
   case FDisplayState of
+  
     dsInspector:
-      if (SourceNoteBook.NoteBook <> nil) then begin
-        ActiveUnitInfo:= Project1.UnitWithEditorIndex(SourceNoteBook.NoteBook.PageIndex);
-        if (ActiveUnitInfo <> nil) then
-          AForm:=TCustomForm(ActiveUnitInfo.Form);
-        FLastFormActivated:= AForm;
-        if AForm <> nil then FDisplayState:= dsForm;
-      end;
+      DoShowDesignerFormOfCurrentSrc;
+
     dsInspector2:
-      if SourceNoteBook.NoteBook <> nil then begin
-        AForm:= SourceNotebook;
-        if FLastFormActivated <> nil then begin
-          ActiveUnitInfo:= Project1.UnitWithForm(FLastFormActivated);
-          if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.EditorIndex >= 0) then
-          begin
-            SourceNotebook.Notebook.PageIndex:= ActiveUnitInfo.EditorIndex;
-          end;
-        end;
-        FDisplayState:= dsSource;
-      end;
+      DoShowSourceOfActiveDesignerForm;
+
     else begin
-      AForm:= ObjectInspector1;
+      if ObjectInspector1=nil then exit;
+      ObjectInspector1.Show;
+      BringWindowToTop(ObjectInspector1.Handle);
       FDisplayState:= Succ(FDisplayState);
     end;
   end;
-    
-  if AForm <> nil then begin
-    if not AForm.Visible then AForm.Show;
-    BringWindowToTop(AForm.Handle);
-  end;  
+end;
+
+procedure TMainIDE.DoShowDesignerFormOfCurrentSrc;
+var
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  AForm: TCustomForm;
+begin
+  GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+  if (ActiveUnitInfo = nil) then exit;
+  // load the form, if not already done
+  AForm:=GetFormOfSource(ActiveUnitInfo,true);
+  if AForm=nil then exit;
+  FDisplayState:= dsForm;
+  FLastFormActivated:=AForm;
+  AForm.Show;
+  BringWindowToTop(AForm.Handle);
+  if TheControlSelection.SelectionForm<>AForm then begin
+    // select the new form (object inspector, formeditor, control selection)
+    PropertyEditorHook1.LookupRoot := AForm;
+    TDesigner(AForm.Designer).SelectOnlyThisComponent(AForm);
+  end;
+end;
+
+procedure TMainIDE.DoShowSourceOfActiveDesignerForm;
+var
+  ActiveUnitInfo: TUnitInfo;
+begin
+  if SourceNoteBook.NoteBook = nil then exit;
+  if FLastFormActivated <> nil then begin
+    ActiveUnitInfo:= Project1.UnitWithForm(FLastFormActivated);
+    if (ActiveUnitInfo <> nil) and (ActiveUnitInfo.EditorIndex >= 0) then
+    begin
+      SourceNotebook.Notebook.PageIndex:= ActiveUnitInfo.EditorIndex;
+    end;
+  end;
+  SourceNoteBook.Show;
+  BringWindowToTop(SourceNoteBook.Handle);
+  FDisplayState:= dsSource;
 end;
 
 procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
@@ -7445,6 +7445,17 @@ begin
   ActiveUnitInfo:=nil;
 end;
 
+function TMainIDE.GetFormOfSource(AnUnitInfo: TUnitInfo; LoadForm: boolean
+  ): TCustomForm;
+begin
+  Result:=TCustomForm(AnUnitInfo.Form);
+  if (Result=nil) and LoadForm and (not AnUnitInfo.IsVirtual)
+  and FilenameIsPascalSource(AnUnitInfo.Filename) then begin
+    DoLoadLFM(AnUnitInfo,[]);
+    Result:=TCustomForm(AnUnitInfo.Form);
+  end;
+end;
+
 function TMainIDE.OnPropHookMethodExists(const AMethodName: ShortString;
   TypeData: PTypeData;
   var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean): boolean;
@@ -7870,6 +7881,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.481  2003/03/11 11:00:08  mattias
+  implemented auto loading forms on open
+
   Revision 1.480  2003/03/11 09:57:51  mattias
   implemented ProjectOpt: AutoCreateNewForms, added designer Show Options
 
