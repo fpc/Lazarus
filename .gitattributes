@@ -58,6 +58,7 @@ components/htmllite/litereadthd.pas svneol=native#text/pascal
 components/htmllite/litesbs1.pas svneol=native#text/pascal
 components/htmllite/litesubs.pas svneol=native#text/pascal
 components/htmllite/liteun2.pas svneol=native#text/pascal
+components/mpaslex/mpaslex.pp svneol=native#text/pascal
 components/synedit/allunits.pp svneol=native#text/pascal
 components/synedit/design/tsynautocomplete.xpm -text svneol=native#image/x-xpixmap
 components/synedit/design/tsynedit.xpm -text svneol=native#image/x-xpixmap
