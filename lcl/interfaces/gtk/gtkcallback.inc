@@ -359,7 +359,7 @@ begin
         // send the message directly to the LCL
         // (Posting the message via queue
         //  has the risk of getting out of sync with the gtk)
-        Result := DeliverMessage(Data, Msg) = 0;
+        Result := DeliverPostMessage(Data, Msg);
       end;
     GDK_KEY_PRESS:
       begin
@@ -390,7 +390,7 @@ begin
         // send the message directly to the LCL
         // (Posting the message via queue
         //  has the risk of getting out of sync with the gtk)
-        Result := DeliverMessage(Data, Msg) = 0;
+        Result := DeliverPostMessage(Data, Msg);
 
         if KeyCode <> $FFFF
         then begin
@@ -401,7 +401,7 @@ begin
           // send the message directly to the LCL
           // (Posting the message via queue
           //  has the risk of getting out of sync with the gtk)
-          Result := DeliverMessage(Data, Msg) = 0;
+          Result := DeliverPostMessage(Data, Msg);
         end;
       end;
   end;
@@ -2120,6 +2120,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.104  2002/08/22 12:30:36  lazarus
+  MG: fixed key events and changed pixmap loading
+
   Revision 1.103  2002/08/22 12:25:00  lazarus
   MG: fixed mouse events
 
