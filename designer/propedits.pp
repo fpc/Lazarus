@@ -611,9 +611,19 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
+{ TCaptionMultilinePropertyEditor
+  PropertyEditor editor for the Caption property when the Caption can be multiline.
+  Brings up the dialog for entering text. }
+
+  TCaptionMultilinePropertyEditor = class(TClassPropertyEditor)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+  end;
+
 { TStringsPropertyEditor
   PropertyEditor editor for the TStrings properties.
-  Brings up the dialog for entering test. }
+  Brings up the dialog for entering text. }
 
   TStringsPropertyEditor = class(TClassPropertyEditor)
   public
@@ -623,7 +633,7 @@ type
 
 { TListColumnsPropertyEditor
   PropertyEditor editor for the TListColumns properties.
-  Brings up the dialog for entering test. }
+  Brings up the dialog for entering text. }
 
   TListColumnsPropertyEditor = class(TClassPropertyEditor)
   public
@@ -2857,76 +2867,89 @@ end;
 
 type
   TStringsPropEditorDlg = class(TForm)
+  private
+    procedure MemoChanged(Sender: TObject);
   public
-    Memo1 : TMemo;
-    OKButton : TButton;
-    CancelButton : TButton;
-    procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
+    Memo : TMemo;
+    OKButton, CancelButton : TBitBtn;
+    Bevel : TBevel;
+    StatusLabel : TLabel;
     constructor Create(AOwner : TComponent); override;
   end;
 
 constructor TStringsPropEditorDlg.Create(AOwner : TComponent);
-Begin
+begin
   inherited Create(AOwner);
-  position := poScreenCenter;
+  Position := poScreenCenter;
   Height := 250;
   Width := 350;
   Caption := 'Strings Editor Dialog';
 
-  Memo1 := TMemo.Create(self);
-  with Memo1 do begin
-    Parent := Self;
-    SetBounds(0,0,Width -4,Height-50);
+  Bevel:= TBevel.Create(Self);
+  with Bevel do begin
+    Parent:= Self;
+    SetBounds(4, 4, 342, 213);
+    Anchors:= [akLeft, akTop, akRight, akBottom];
+    Shape:= bsFrame;
+    Visible:= true;
+  end;
+
+  Memo := TMemo.Create(self);
+  with Memo do begin
+    Parent:= Self;
+    SetBounds(12, 32, 326, 176);
+    Anchors:= [akLeft, akTop, akRight, akBottom];
+//    Scrollbars:= ssVertical;   // GTK 1.x does not implement horizontal scrollbars for GtkText
+    Visible:= true;
+    Memo.OnChange:= @MemoChanged;
+  end;
+
+  StatusLabel:= TLabel.Create(Self);
+  with StatusLabel do begin
+    Parent:= Self;
+    SetBounds(12, 12, 326, 17);
+    Caption:= '0 lines, 0 chars';
     Visible := true;
   end;
 
-  OKButton := TButton.Create(self);
+  OKButton := TBitBtn.Create(Self);
   with OKButton do Begin
-    Parent := self;
-    Caption := '&OK';
-    ModalResult := mrOK;
-    Left := self.width-180;
-    Top := self.height -40;
-    Height:=25;
-    Width:=60;
+    Parent := Self;
+    Kind:= bkOK;
+    Left := 192;
+    Top := 221;
+    Anchors:= [akRight, akBottom];
     Visible := true;
   end;
 
-  CancelButton := TButton.Create(self);
+  CancelButton := TBitBtn.Create(self);
   with CancelButton do Begin
     Parent := self;
-    Caption := '&Cancel';
-    ModalResult := mrCancel;
-    Left := self.width-90;
-    Top := self.height -40;
-    Height:=25;
-    Width:=60;
+    Kind:= bkCancel;
+    Left := 271;
+    Top := 221;
+    Anchors:= [akRight, akBottom];
     Visible := true;
   end;
 end;
 
-procedure TStringsPropEditorDlg.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
+procedure TStringsPropEditorDlg.MemoChanged(Sender : TObject);
 begin
-  inherited;
-  if Memo1<>nil then
-    Memo1.SetBounds(0,0,Width-4,Height-50);
-  if OkButton<>nil then
-    OkButton.SetBounds(Width-180,Height-40,60,25);
-  if CancelButton<>nil then
-    CancelButton.SetBounds(Width-90,Height-40,60,25);
+  StatusLabel.Text:= Format('%d lines, %d chars', [Memo.Lines.Count,
+    (Length(Memo.Lines.Text) - Memo.Lines.Count * Length(LineEnding))]);
 end;
 
 procedure TStringsPropertyEditor.Edit;
 var
-  TheDialog: TStringsPropEditorDlg;
-  Strings:TStrings;
+  TheDialog : TStringsPropEditorDlg;
+  Strings : TStrings;
 begin
-  Strings:=TStrings(GetOrdValue);
-  TheDialog:=TStringsPropEditorDlg.Create(Application);
-  TheDialog.Memo1.Text:=Strings.Text;
+  Strings:= TStrings(GetOrdValue);
+  TheDialog:= TStringsPropEditorDlg.Create(Application);
   try
+    TheDialog.Memo.Text:= Strings.Text;
     if (TheDialog.ShowModal = mrOK) then
-      Strings.Text:=TheDialog.Memo1.Text;
+      Strings.Text:=TheDialog.Memo.Text;
   finally
     TheDialog.Free;
   end;
@@ -2935,6 +2958,29 @@ end;
 function TStringsPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
   Result := [paMultiSelect, paDialog, paRevertable, paReadOnly];
+end;
+
+{ TCaptionMultilinePropertyEditor }
+
+procedure TCaptionMultilinePropertyEditor.Edit;
+var
+  TheDialog : TStringsPropEditorDlg;
+  AString : string;
+begin
+  AString:= GetStrValue;
+  TheDialog:= TStringsPropEditorDlg.Create(Application);
+  try
+    TheDialog.Memo.Text:= AString;
+    if (TheDialog.ShowModal = mrOK) then
+      SetStrValue(TheDialog.Memo.Text);
+  finally
+    TheDialog.Free;
+  end;
+end;
+
+function TCaptionMultilinePropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paMultiSelect, paDialog, paRevertable, paAutoUpdate];
 end;
 
 { TListColumnsPropertyEditor }
@@ -3315,6 +3361,10 @@ begin
     nil,'',TShortCutPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDateTime'),
     nil,'',TShortCutPropertyEditor);
+  
+  RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
+    TCustomLabel, 'Caption', TCaptionMultilinePropertyEditor);
+  
 end;
 
 procedure FinalPropEdits;
