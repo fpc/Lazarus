@@ -611,12 +611,12 @@ writeln('TLinkScanner.Scan A -------- TillInterfaceEnd=',TillInterfaceEnd);
   ScanTillInterfaceEnd:=TillInterfaceEnd;
   Clear;
   IncreaseChangeStep;
-  FCleanedSrc:='';
-  CleanedLen:=0;
 {$IFDEF CTDEBUG}
 writeln('TLinkScanner.Scan B ');
 {$ENDIF}
   SetSource(FMainCode);
+  SetLength(FCleanedSrc,length(Src));
+  CleanedLen:=0;
 {$IFDEF CTDEBUG}
 writeln('TLinkScanner.Scan C ',SrcLen);
 {$ENDIF}
