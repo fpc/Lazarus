@@ -110,8 +110,12 @@ end;
  ------------------------------------------------------------------------------}
 function TGTKWidgetSet.FontCanUTF8(Font: HFont): boolean;
 begin
-  Result:=IsValidGDIObject(Font)
-          and FontIsDoubleByteCharsFont(PGdiObject(Font)^.GDIFontObject);
+  Result:=IsValidGDIObject(Font) and
+{$IFDEF GTK2}
+ FontIsDoubleByteCharsFont(gdk_font_from_description(PGdiObject(Font)^.GDIFontObject));
+{$ELSE GTK2}
+ FontIsDoubleByteCharsFont(PGdiObject(Font)^.GDIFontObject);
+{$ENDIF GTK2}
 end;
 
 {------------------------------------------------------------------------------
@@ -556,6 +560,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2004/09/12 18:55:13  mazen
+  * Fix font  retreiving from Pango description
+
   Revision 1.32  2004/09/10 16:28:51  mattias
   implemented very rudimentary TTabControl
 
