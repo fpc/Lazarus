@@ -575,6 +575,9 @@ type
                            var ActiveSrcEdit: TSourceEditor;
                            var ActiveUnitInfo: TUnitInfo;
                            Flags: TCodeToolsFlags): boolean;
+    function DoJumpToSourcePos(const Filename: string;
+                               NewX, NewY, NewTopLine: integer;
+                               AddJumpPoint: boolean): TModalResult; override;
     function DoJumpToCodePos(
                         ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
                         NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
@@ -7602,6 +7605,17 @@ begin
   Result:=true;
 end;
 
+function TMainIDE.DoJumpToSourcePos(const Filename: string; NewX, NewY,
+  NewTopLine: integer; AddJumpPoint: boolean): TModalResult;
+var
+  CodeBuffer: TCodeBuffer;
+begin
+  Result:=mrCancel;
+  CodeBuffer:=CodeToolBoss.LoadFile(CleanAndExpandFilename(Filename),true,false);
+  if CodeBuffer=nil then exit;
+  Result:=DoJumpToCodePos(nil,nil,CodeBuffer,NewX,NewY,NewTopLine,AddJumpPoint);
+end;
+
 function TMainIDE.DoJumpToCodePos(
   ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
@@ -9080,6 +9094,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.587  2003/05/29 23:14:17  mattias
+  implemented jump to code on double click for breakpoints and callstack dlg
+
   Revision 1.586  2003/05/28 21:16:47  mattias
   added a help and a more button tot he package editor
 

@@ -42,6 +42,7 @@ uses
 type
   TCallStackDlg = class(TDebuggerDlg)
     lvCallStack: TListView;
+    procedure lvCallStackDBLCLICK(Sender: TObject);
   private  
     procedure CallStackChanged(Sender: TObject);
   protected
@@ -61,6 +62,20 @@ implementation
 
 { TCallStackDlg }
 
+procedure TCallStackDlg.lvCallStackDBLCLICK(Sender: TObject);
+var
+  CurItem: TListItem;
+  Filename: String;
+  Line: Integer;
+begin
+  CurItem:=lvCallStack.Selected;
+  if CurItem=nil then exit;
+  Filename:=CurItem.Caption;
+  if DoGetFullDebugFilename(Filename,true)<>mrOk then exit;
+  Line:=StrToIntDef(CurItem.SubItems[0],0);
+  DoJumpToCodePos(Filename,Line,0);
+end;
+
 procedure TCallStackDlg.CallStackChanged(Sender: TObject);
 var
   n, m: Integer;                               
@@ -68,6 +83,11 @@ var
   S: String;   
   Entry: TDBGCallStackEntry;
 begin       
+  if Debugger=nil then begin
+    lvCallStack.Items.Clear;
+    exit;
+  end;
+
   // Reuse entries, so add and remove only                    
   // Remove unneded
   for n := lvCallStack.Items.Count - 1 downto Debugger.CallStack.Count do
@@ -125,6 +145,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.3  2003/05/29 23:14:17  mattias
+  implemented jump to code on double click for breakpoints and callstack dlg
+
   Revision 1.2  2002/05/10 06:57:47  lazarus
   MG: updated licenses
 
