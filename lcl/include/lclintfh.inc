@@ -77,7 +77,6 @@ function GetDeviceSize(DC: HDC; var p: TPoint): boolean; {$IFDEF IF_BASE_MEMBER}
 function GetLCLOwnerObject(Handle: HWnd): TObject; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function GetNotebookTabIndexAtPos(Handle: HWND; const ClientPos: TPoint): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function GetScrollBarSize(Handle: HWND; SBStyle: Integer): integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -151,6 +150,10 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2005/03/31 21:29:45  micha
+  move GetNotebookTabIndexAtPos to the widgetset interface
+  implement it for win32 widgetset (fixes bug 669)
+
   Revision 1.28  2004/10/23 14:47:44  micha
   remove old code: statusbar methods in twidgetset
 

@@ -41,7 +41,6 @@ function GetControlConstraints(Constraints: TObject): boolean; override;
 function GetLCLOwnerObject(Handle: HWnd): TObject; override;
 function GetListBoxIndexAtY(ListBox: TComponent; y: integer): integer; override;
 function GetListBoxItemRect(ListBox: TComponent; Index: integer; var ARect: TRect): boolean; override;
-function GetNotebookTabIndexAtPos(Handle: HWND; const ClientPos: TPoint): integer; override;
 
 function IntfSendsUTF8KeyPress: boolean; override;
 
@@ -55,6 +54,10 @@ function ReplaceBitmapMask(var Image, Mask: HBitmap; NewMask: HBitmap): boolean;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2005/03/31 21:29:45  micha
+  move GetNotebookTabIndexAtPos to the widgetset interface
+  implement it for win32 widgetset (fixes bug 669)
+
   Revision 1.22  2005/02/23 01:12:47  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files

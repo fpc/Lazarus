@@ -277,7 +277,7 @@ end;
 function TCustomNotebook.TabIndexAtClientPos(ClientPos: TPoint): integer;
 begin
   if HandleAllocated then
-    Result:=LCLIntf.GetNotebookTabIndexAtPos(Handle,ClientPos)
+    Result:=TWSCustomNotebookClass(WidgetSetClass).GetTabIndexAtPos(Self, ClientPos)
   else
     Result:=-1;
 end;
@@ -798,6 +798,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.71  2005/03/31 21:29:45  micha
+  move GetNotebookTabIndexAtPos to the widgetset interface
+  implement it for win32 widgetset (fixes bug 669)
+
   Revision 1.70  2005/03/26 15:13:55  micha
   when setting tabvisible to false of showing page, switch to another page
 

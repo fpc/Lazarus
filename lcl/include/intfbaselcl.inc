@@ -298,12 +298,6 @@ begin
   Result:=false;
 end;
 
-function TWidgetSet.GetNotebookTabIndexAtPos(Handle: HWND;
-  const ClientPos: TPoint): integer;
-begin
-  Result:=-1;
-end;
-
 function TWidgetSet.GetRawImageFromDevice(SrcDC: HDC;
   const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 begin
@@ -633,6 +627,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2005/03/31 21:29:45  micha
+  move GetNotebookTabIndexAtPos to the widgetset interface
+  implement it for win32 widgetset (fixes bug 669)
+
   Revision 1.33  2005/03/07 21:59:44  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 

@@ -67,6 +67,7 @@ type
       const AIndex: integer); override;
 
     class function GetPageRealIndex(const ANotebook: TCustomNotebook; AIndex: Integer): Integer; override;
+    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
@@ -436,6 +437,16 @@ begin
   NMHdr.idfrom := APageIndex;  //use this to set pageindex to the correct page.
   Mess.NMHdr := @NMHdr;
   DeliverMessage(ANotebook, Mess);
+end;
+
+function TWin32WSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook; 
+  const AClientPos: TPoint): integer;
+var
+  hittestInfo: TC_HITTESTINFO;
+begin
+  hittestInfo.pt.X := AClientPos.X;
+  hittestInfo.pt.Y := AClientPos.Y;
+  Result := Windows.SendMessage(ANotebook.Handle, TCM_HITTEST, 0, LPARAM(@hittestInfo));
 end;
 
 procedure TWin32WSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);

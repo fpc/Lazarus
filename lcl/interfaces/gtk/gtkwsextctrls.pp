@@ -31,7 +31,7 @@ uses
 {$IFDEF GTK2}
   gtk2, gdk2, gdk2PixBuf, glib2,
 {$ELSE GTK2}
-  gtk, gdk,
+  gtk, gdk, glib,
 {$ENDIF GTK2}
   GtkGlobals, GtkProc, ExtCtrls, Classes,
   WSExtCtrls, WSLCLClasses, gtkint, interfacebase;
@@ -62,6 +62,7 @@ type
     
     class function GetNotebookMinTabHeight(const AWinControl: TWinControl): integer; override;
     class function GetNotebookMinTabWidth(const AWinControl: TWinControl): integer; override;
+    class function GetTabIndexAtPos(const ANotebook: TCustomNotebook; const AClientPos: TPoint): integer; override;
     class procedure SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer); override;
     class procedure SetTabPosition(const ANotebook: TCustomNotebook; const ATabPosition: TTabPosition); override;
     class procedure ShowTabs(const ANotebook: TCustomNotebook; AShowTabs: boolean); override;
@@ -373,6 +374,44 @@ end;
          UpdateNoteBookClientWidget(ACustomListBox);
        end;
 }
+
+function TGtkWSCustomNotebook.GetTabIndexAtPos(const ANotebook: TCustomNotebook;
+  const AClientPos: TPoint): integer;
+var
+  NoteBookWidget: PGtkNotebook;
+  i: integer;
+  TabWidget: PGtkWidget;
+  PageWidget: PGtkWidget;
+  NotebookPos: TPoint;
+  PageListItem: PGList;
+begin
+  Result:=-1;
+  NoteBookWidget:=PGtkNotebook(ANotebook.Handle);
+  if (NotebookWidget=nil) then exit;
+  NotebookPos:=AClientPos;
+  // go through all tabs
+  i:=0;
+  PageListItem:=NoteBookWidget^.Children;
+  while PageListItem<>nil do begin
+    PageWidget:=PGtkWidget(PageListItem^.Data);
+    if PageWidget<>nil then begin
+      TabWidget:=gtk_notebook_get_tab_label(NoteBookWidget, PageWidget);
+      if TabWidget<>nil then begin
+        // test if position is in tabwidget
+        if (TabWidget^.Allocation.X<=NoteBookPos.X)
+        and (TabWidget^.Allocation.Y<=NoteBookPos.Y)
+        and (TabWidget^.Allocation.X+TabWidget^.Allocation.Width>NoteBookPos.X)
+        and (TabWidget^.Allocation.Y+TabWidget^.Allocation.Height>NoteBookPos.Y)
+        then begin
+          Result:=i;
+          exit;
+        end;
+      end;
+    end;
+    PageListItem:=PageListItem^.Next;
+    inc(i);
+  end;
+end;
 
 procedure TGtkWSCustomNotebook.SetPageIndex(const ANotebook: TCustomNotebook; const AIndex: integer);
 begin

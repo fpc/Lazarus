@@ -346,50 +346,6 @@ end;
 {$EndIf}
 
 {------------------------------------------------------------------------------
-  function TGtkWidgetSet.GetNotebookTabIndexAtPos(Handle: HWND;
-    const ClientPos: TPoint): integer;
-
-
- ------------------------------------------------------------------------------}
-function TGtkWidgetSet.GetNotebookTabIndexAtPos(Handle: HWND;
-  const ClientPos: TPoint): integer;
-var
-  NoteBookWidget: PGtkNotebook;
-  i: integer;
-  TabWidget: PGtkWidget;
-  PageWidget: PGtkWidget;
-  NotebookPos: TPoint;
-  PageListItem: PGList;
-begin
-  Result:=-1;
-  if (Handle=0) then exit;
-  NoteBookWidget:=PGtkNotebook(Handle);
-  NotebookPos:=ClientPos;
-  // go through all tabs
-  i:=0;
-  PageListItem:=NoteBookWidget^.Children;
-  while PageListItem<>nil do begin
-    PageWidget:=PGtkWidget(PageListItem^.Data);
-    if PageWidget<>nil then begin
-      TabWidget:=gtk_notebook_get_tab_label(NoteBookWidget, PageWidget);
-      if TabWidget<>nil then begin
-        // test if position is in tabwidget
-        if (TabWidget^.Allocation.X<=NoteBookPos.X)
-        and (TabWidget^.Allocation.Y<=NoteBookPos.Y)
-        and (TabWidget^.Allocation.X+TabWidget^.Allocation.Width>NoteBookPos.X)
-        and (TabWidget^.Allocation.Y+TabWidget^.Allocation.Height>NoteBookPos.Y)
-        then begin
-          Result:=i;
-          exit;
-        end;
-      end;
-    end;
-    PageListItem:=PageListItem^.Next;
-    inc(i);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   function TGtkWidgetSet.IntfSendsUTF8KeyPress: boolean;
 
  ------------------------------------------------------------------------------}
@@ -512,6 +468,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2005/03/31 21:29:45  micha
+  move GetNotebookTabIndexAtPos to the widgetset interface
+  implement it for win32 widgetset (fixes bug 669)
+
   Revision 1.36  2005/02/23 01:12:46  marc
   + Added RemoveProp winapi call
   * Some maintenace on winapi/lclintf files

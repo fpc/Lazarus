@@ -228,12 +228,6 @@ begin
   Result := InterfaceObject.GetListBoxItemRect(ListBox,Index,ARect);
 end;
 
-function GetNotebookTabIndexAtPos(Handle: HWND;
-  const ClientPos: TPoint): integer;
-begin
-  Result := InterfaceObject.GetNotebookTabIndexAtPos(Handle,ClientPos);
-end;
-
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
   var NewRawImage: TRawImage): boolean;
 begin
@@ -532,6 +526,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2005/03/31 21:29:45  micha
+  move GetNotebookTabIndexAtPos to the widgetset interface
+  implement it for win32 widgetset (fixes bug 669)
+
   Revision 1.28  2004/10/16 10:15:45  micha
   cleanup statusbar methods in lcl interfaceobject
   fix statusbar recursive call issue
