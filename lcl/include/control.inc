@@ -1329,9 +1329,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl Notification                                                       }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl Notification
+------------------------------------------------------------------------------}
 procedure TControl.Notification( AComponent : TComponent; Operation : TOperation);
 begin
   inherited Notification(AComponent, Operation);
@@ -1340,15 +1340,16 @@ begin
 end;
 
 
-{------------------------------------------------------------------------------}
-{  TControl GetText                                                            }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl GetText
+------------------------------------------------------------------------------}
 function TControl.GetText: TCaption;
 begin
   Assert(False, 'Trace:[TControl.GetText]');
 
   if (Self is TWinControl)
   and TWinControl(Self).HandleAllocated
+  and (not (csLoading in ComponentState))
   and InterfaceObject.GetText(Self, Result)
   then Assert(False, Format('Trace:[TControl.GetText] %s got: "%s"', [ClassName, Result]))
   else Result := FCaption;
@@ -1356,17 +1357,17 @@ begin
   Assert(False, 'Trace:<TControl.GetText> End');
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl IsCaptionStored                                                    }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl IsCaptionStored
+------------------------------------------------------------------------------}
 Function TControl.IsCaptionStored : Boolean;
 Begin
   Result := true;
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl InvalidateControl                                                            }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl InvalidateControl
+------------------------------------------------------------------------------}
 procedure TControl.InvalidateControl(IsVisible, IsOpaque : Boolean);
 var
   Rect: TRect;
@@ -1832,15 +1833,13 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetText(const Value: TCaption);
 begin
-  if GetText <> value
-  then begin
-    //  Need to set FCaption otherwise those components that simply
-    //  check FCaption will always be wrong.
-    FCaption := Value;
+  if GetText = Value then exit;
+  //  Need to set FCaption otherwise those components that simply
+  //  check FCaption will always be wrong.
+  FCaption := Value;
 
-    if Self is TWinControl then
-      SetTextBuf(PChar(FCaption));
-  end;
+  if Self is TWinControl then
+    SetTextBuf(PChar(FCaption));
 end;
 
 {------------------------------------------------------------------------------
@@ -2042,6 +2041,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.103  2002/11/18 13:38:44  mattias
+  fixed buffer overrun and added several checks
+
   Revision 1.102  2002/11/16 14:38:48  mattias
   fixed TControl.Show and Visible of designer forms
 
