@@ -1270,23 +1270,19 @@ begin
             //  so we dont need gtk_widget_destroy(box1);
          end;
 
-         if (TBitBtn(Sender).Layout = blGlyphLeft)
-         or (TBitBtn(Sender).Layout = blGlyphRight) then
-         Begin
-           box1 := gtk_hbox_new(False,0);
-         end
-         else Begin
-           box1 := gtk_vbox_new(False,0);
-         end;
-
          pixmap := pgdkPixmap(
-                     PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapObject);
-         if PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMaskObject <> nil
-         then begin
-           PixMapWid := gtk_pixmap_new(pixmap,
-             PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMaskObject)
+                     PgdiObject(TBitBtn(Sender).Glyph.Handle)^.GDIBitmapObject);
+         if (TBitBtn(Sender).Glyph.Width>1)
+         or (TBitBtn(Sender).Glyph.Height>1) then begin
+           if PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMaskObject <> nil
+           then begin
+             PixMapWid := gtk_pixmap_new(pixmap,
+               PgdiObject(TBitBtn(Sender).Glyph.handle)^.GDIBitmapMaskObject)
+           end else begin
+             PixMapWid := gtk_pixmap_new(pixmap,nil);
+           end;
          end else begin
-           PixMapWid := gtk_pixmap_new(pixmap,nil);
+           PixMapWid:=nil;
          end;
 
          pStr := Ampersands2Underscore(PChar(TBitBtn(Sender).Caption));
@@ -1300,25 +1296,38 @@ begin
          finally
            StrDispose(pStr);
          end;  
+
+         if (TBitBtn(Sender).Layout = blGlyphLeft)
+         or (TBitBtn(Sender).Layout = blGlyphRight) then
+         Begin
+           box1 := gtk_hbox_new(False,0);
+         end
+         else Begin
+           box1 := gtk_vbox_new(False,0);
+         end;
+
          if (TBitBtn(Sender).Layout = blGlyphLeft)
          or (TBitBtn(Sender).Layout = blGlyphTop) then
          begin
-            gtk_box_pack_start(pGTKBox(Box1),PixMapWid,False,False,
-              TBitBtn(Sender).Spacing);
-            gtk_box_pack_start(pGTKBox(Box1),pLabel,False,False,
-              TBitBtn(Sender).Spacing);
+           if PixMapWid<>nil then
+             gtk_box_pack_start(pGTKBox(Box1),PixMapWid,false,false,
+               TBitBtn(Sender).Spacing);
+           gtk_box_pack_start(pGTKBox(Box1),pLabel,PixMapWid=nil,PixMapWid=nil,
+             TBitBtn(Sender).Spacing);
          end
          else begin
-            gtk_box_pack_start(pGTKBox(Box1),pLabel,False,False,
-              TBitBtn(Sender).Spacing);
-            gtk_box_pack_start(pGTKBox(Box1),PixMapWid,False,False,
-              TBitBtn(Sender).Spacing);
+           gtk_box_pack_start(pGTKBox(Box1),pLabel,PixMapWid=nil,PixMapWid=nil,
+             TBitBtn(Sender).Spacing);
+           if PixMapWid<>nil then
+             gtk_box_pack_start(pGTKBox(Box1),PixMapWid,False,False,
+               TBitBtn(Sender).Spacing);
          end;
          gtk_object_set_data(pgtkObject(handle),'HBox',Box1);
          gtk_object_set_data(pgtkObject(handle),'Label',pLabel);
          gtk_object_set_data(pgtkObject(handle),'Pixmap',PixMapWid);
 
-         gtk_widget_show(pixmapwid);
+         if PixMapWid<>nil then
+           gtk_widget_show(pixmapwid);
          gtk_widget_show(pLabel);
          gtk_container_add(PgtkContainer(handle),box1);
          gtk_widget_show(box1);
@@ -3677,7 +3686,6 @@ begin
       gtk_object_set_data(pgtkObject(p),'HBox',Box);
       gtk_object_set_data(pgtkObject(p),'Pixmap',PixMapwid);
       gtk_object_set_data(pgtkObject(p),'Label',Label1);
-
     end;
 
   csButton :
@@ -5828,6 +5836,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.213  2002/09/13 16:58:27  lazarus
+  MG: removed the 1x1 bitmap from TBitBtn
+
   Revision 1.212  2002/09/13 11:49:47  lazarus
   Cleanups, extended TStatusBar, graphic control cleanups.
 
