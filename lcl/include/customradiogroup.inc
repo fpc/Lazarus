@@ -219,8 +219,8 @@ begin
       FItemIndex := Value;
       if (Value <> -1) then
         TRadioButton (FButtonList [Value]).Checked := true;
-         
-      ItemsChanged(Self);
+
+      OwnerFormDesignerModified(Self);
     end
     else
       FItemIndex := Value;
@@ -349,6 +349,9 @@ end;
 
 {
   $Log$
+  Revision 1.18  2003/03/17 09:41:52  mattias
+  fixed TCustomRadioGroup.SetItemIndex
+
   Revision 1.17  2003/03/17 09:33:51  mattias
   fixed TCustomRadioGroup.GetItemIndex
 
