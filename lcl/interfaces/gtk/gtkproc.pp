@@ -239,7 +239,7 @@ function GetMainWidget(const Widget: Pointer): Pointer;
 procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
 function GetFixedWidget(const Widget: Pointer): Pointer;
 procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
-Function GetControlWindow(Control: Pointer) : PGDKWindow;
+Function GetControlWindow(Widget: Pointer) : PGDKWindow;
 function GetDCOffset(DC: TDeviceContext): TPoint;
 function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
 function GetWidgetInfo(const Widget: Pointer; const Create: Boolean): PWinWidgetInfo;
