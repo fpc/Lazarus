@@ -64,7 +64,7 @@ interface
 uses
 {$IFDEF SYN_LAZARUS}
   LCLLinux,
-  LCLType, GraphType,
+  LCLType, GraphType, LMessages,
 {$ELSE}
   Windows,
 {$ENDIF}
@@ -168,7 +168,7 @@ type
   TSynEditorOption = (eoAltSetsColumnMode, eoAutoIndent,
     {$IFDEF SYN_LAZARUS}
     eoBracketHighlight, eoDoubleClickSelectsLine, eoHideRightMargin,
-    eoPersistentCaret,
+    eoPersistentCaret, eoShowCtrlMouseLinks,
     {$ENDIF}
     eoDragDropEditing,     //mh 2000-11-20
     eoDropFiles, eoHalfPageScroll, eoKeepCaretX, eoNoCaret, eoNoSelection,
@@ -270,6 +270,9 @@ type
   TCustomSynEdit = class(TCustomControl)
   private
     procedure WMDropFiles(var Msg: TMessage); message WM_DROPFILES;
+    {$IFDEF SYN_LAZARUS}
+    procedure WMExit(var Message: TLMExit); message LM_EXIT;
+    {$ENDIF}
     procedure WMEraseBkgnd(var Msg: TMessage); message WM_ERASEBKGND;
     procedure WMGetDlgCode(var Msg: TWMGetDlgCode); message WM_GETDLGCODE;
     procedure WMHScroll(var Msg: TWMScroll); message WM_HSCROLL;
@@ -290,6 +293,9 @@ type
     fBlockBegin: TPoint;
     fBlockEnd: TPoint;
     fCaretX: Integer;
+    {$IFDEF SYN_LAZARUS}
+    fCtrlMouseActive: boolean;
+    {$ENDIF}
     fLastCaretX: integer;                                                       //mh 2000-10-19
     fCaretY: Integer;
     fCharsInWindow: Integer;
@@ -300,6 +306,13 @@ type
     fMBCSStepAside: Boolean;
 {$ENDIF}
     fInserting: Boolean;
+    {$IFDEF SYN_LAZARUS}
+    fLastMouseCaret: TPoint;
+    fLastControlIsPressed: boolean;
+    fLastCtrlMouseLinkY: integer;
+    fLastCtrlMouseLinkX1: integer;
+    fLastCtrlMouseLinkX2: integer;
+    {$ENDIF}
     fLines: TStrings;
     fLinesInWindow: Integer;
     fLeftChar: Integer;
@@ -422,6 +435,9 @@ type
     procedure SetInsertCaret(const Value: TSynEditCaretType);
     procedure SetInsertMode(const Value: boolean);
     procedure SetKeystrokes(const Value: TSynEditKeyStrokes);
+    {$ifdef SYN_LAZARUS}
+    procedure SetLastMouseCaret(const AValue: TPoint);
+    {$ENDIF}
     procedure SetLeftChar(Value: Integer);
     procedure SetLines(Value: TStrings);
     procedure SetLineText(Value: string);
@@ -451,6 +467,7 @@ type
     procedure UndoRedoAdded(Sender: TObject);
     procedure UnlockUndo;
     procedure UpdateCaret;
+    procedure UpdateCtrlMouse;
     procedure UpdateScrollBars;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
@@ -475,6 +492,9 @@ type
     procedure InvalidateLines(FirstLine, LastLine: integer);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     procedure KeyPress(var Key: Char); override;
+    {$IFDEF SYN_LAZARUS}
+    procedure KeyUp(var Key : Word; Shift : TShiftState); override;
+    {$ENDIF}
     procedure ListAdded(Index: integer);                                        //mh 2000-10-10
     procedure ListCleared(Sender: TObject);
     procedure ListDeleted(Index: integer);
@@ -528,6 +548,9 @@ type
     function DoOnSpecialLineColors(Line: integer;
       var Foreground, Background: TColor): boolean; virtual;
     procedure DoOnStatusChange(Changes: TSynStatusChanges); virtual;
+    {$IFDEF SYN_LAZARUS}
+    property LastMouseCaret: TPoint read FLastMouseCaret write SetLastMouseCaret;
+    {$ENDIF}
   public
     procedure AddKey(Command: TSynEditorCommand; Key1: word; SS1: TShiftState;
       Key2: word; SS2: TShiftState);
@@ -561,6 +584,9 @@ type
     function GetBookMark(BookMark: integer; var X, Y: integer): boolean;
     function GetHighlighterAttriAtRowCol(XY: TPoint; var Token: string;
       var Attri: TSynHighlighterAttributes): boolean;
+    {$IFDEF SYN_LAZARUS}
+    procedure GetWordBoundsAtRowCol(XY: TPoint; var StartX, EndX: integer);
+    {$ENDIF}
     function GetWordAtRowCol(XY: TPoint): string;
     procedure GotoBookMark(BookMark: Integer);
     procedure InvalidateGutter;                                           
@@ -605,6 +631,9 @@ type
     property CharsInWindow: Integer read fCharsInWindow;
     property CharWidth: integer read fCharWidth;
     property Color;
+    {$IFDEF SYN_LAZARUS}
+    property CtrlMouseActive: boolean read fCtrlMouseActive;
+    {$ENDIF}
     property Font: TFont read GetFont write SetFont;
     property Highlighter: TSynCustomHighlighter
       read fHighlighter write SetHighlighter;
@@ -1100,6 +1129,9 @@ begin
 {$IFDEF SYN_LAZARUS}
   fFontDummy.Name := 'courier';
   fFontDummy.Size := 12;
+  fLastMouseCaret := Point(-1,-1);
+  fLastCtrlMouseLinkY := -1;
+  fLastControlIsPressed := false;
 {$ELSE}
   fFontDummy.Name := 'Courier New';
   fFontDummy.Size := 10;
@@ -1611,11 +1643,18 @@ begin
   //writeln('[TCustomSynEdit.KeyDown] ',Key
   //  ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
   inherited;
+  {$IFDEF SYN_LAZARUS}
+  if fLastControlIsPressed<>(GetKeyShiftState=[ssCtrl]) then
+    UpdateCtrlMouse;
+  {$ENDIF}
   Data := nil;
   C := #0;
   try
     Cmd := TranslateKeyCode(Key, Shift, Data);
     if Cmd <> ecNone then begin
+      {$IFDEF SYN_LAZARUS}
+      LastMouseCaret:=Point(-1,-1);
+      {$ENDIF}
       //writeln('[TCustomSynEdit.KeyDown] key translated ',cmd);
       Key := 0; // eat it.
       Include(fStateFlags, sfIgnoreNextChar);
@@ -1627,6 +1666,15 @@ begin
       FreeMem(Data);
   end;
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyUp(Key, Shift);
+  if fLastControlIsPressed<>(GetKeyShiftState=[ssCtrl]) then
+    UpdateCtrlMouse;
+end;
+{$ENDIF}
 
 procedure TCustomSynEdit.Loaded;
 begin
@@ -1705,6 +1753,7 @@ begin
     inherited MouseDown(Button, Shift, X, Y);
     exit;
   end;
+  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   {$ENDIF}
 //writeln('TCustomSynEdit.MouseDown Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 //  if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) and SelAvail
@@ -1796,6 +1845,9 @@ var
   Z: integer;
 begin
   inherited MouseMove(Shift, x, y);
+  {$IFDEF SYN_LAZARUS}
+  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
+  {$ENDIF}
   if MouseCapture and (sfWaitForDragging in fStateFlags) then begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
@@ -1932,6 +1984,7 @@ begin
     MouseCapture := False;
     exit;
   end;
+  LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
   {$ENDIF}
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
     exit;
@@ -2207,8 +2260,11 @@ var
     Style: TFontStyles;
   end;
   dc: HDC;
+  {$IFDEF SYN_LAZARUS}
   // positions of highlight brackets, the X are zero based
   nBracketX, nBracketY, nAntiBracketX, nAntiBracketY: integer;
+  LinkFGCol: TColor;
+  {$ENDIF}
 
 { local procedures }
 
@@ -2558,6 +2614,35 @@ var
     // draw rest
     PaintSubToken(nTokenLen,false);
   end;
+
+  procedure DrawCtrlMouseToken(attr: TSynHighlighterAttributes;
+    sToken: PChar; nLine, nTokenPos, nTokenLen: integer);
+  var
+    LinkBGCol: TColor;
+    LinkStyle: TFontStyles;
+    r, g, b: integer;
+  begin
+    if Assigned(attr) then begin
+      LinkFGCol:=attr.Foreground;
+      LinkBGCol:=attr.Background;
+      LinkStyle:=attr.Style;
+    end else begin
+      LinkFGCol:=colFG;
+      LinkBGCol:=colBG;
+      LinkStyle:=Font.Style;
+    end;
+    
+    // change FG color
+    r:=LinkFGCol and $ff;
+    g:=(LinkFGCol shr 8) and $ff;
+    b:=(LinkFGCol shr 8) and $ff;
+    r:=255-r;
+    g:=255-g;
+    LinkFGCol:=r+(g shl 8)+(b shl 16);
+    
+    AddHighlightToken(sToken, nTokenPos, nTokenLen,
+      LinkFGCol, LinkBGCol, LinkStyle);
+  end;
   {$ENDIF}
 
   procedure PaintLines;
@@ -2699,19 +2784,27 @@ var
             // record. This will paint any chars already stored if there is
             // a (visible) change in the attributes.
             {$IFDEF SYN_LAZARUS}
-            if ((nBracketY<>nLine) or (nTokenPos<>nBracketX))
-            and ((nAntiBracketY<>nLine) or (nTokenPos<>nAntiBracketX)) then
-            begin
-              // normal token
-              if Assigned(attr) then
-                AddHighlightToken(sToken, nTokenPos, nTokenLen, attr.Foreground,
-                  attr.Background, attr.Style)
-              else
-                AddHighlightToken(sToken, nTokenPos, nTokenLen, colFG, colBG,
-                  Font.Style);
+            if (fLastCtrlMouseLinkY<>nLine) or (nTokenPos<>fLastCtrlMouseLinkX1)
+            then begin
+              if ((nBracketY<>nLine) or (nTokenPos<nBracketX)
+                or (nTokenPos+nTokenLen>=nBracketX))
+              and ((nAntiBracketY<>nLine) or (nTokenPos<nAntiBracketX)
+                or (nTokenPos+nTokenLen>=nAntiBracketX)) then
+              begin
+                // normal token
+                if Assigned(attr) then
+                  AddHighlightToken(sToken, nTokenPos, nTokenLen,
+                    attr.Foreground, attr.Background, attr.Style)
+                else
+                  AddHighlightToken(sToken, nTokenPos, nTokenLen, colFG, colBG,
+                    Font.Style);
+              end else begin
+                // token with bracket hilighting
+                DrawHilightBracketToken(attr,sToken,nLine,nTokenPos,nTokenLen);
+              end;
             end else begin
-              // token with bracket hilighting
-              DrawHilightBracketToken(attr,sToken,nLine,nTokenPos,nTokenLen);
+              // token is link
+              DrawCtrlMouseToken(attr,sToken,nLine,nTokenPos,nTokenLen);
             end;
             {$ELSE}
             if Assigned(attr) then
@@ -2831,6 +2924,36 @@ var
       end;
     end;
   end;
+  
+  procedure CalculateCtrlMouseLink;
+  begin
+    fLastCtrlMouseLinkY:=-1;
+    if (not (eoShowCtrlMouseLinks in Options))
+    or (fLastMouseCaret.X<1) or (fLastMouseCaret.Y<1)
+    or (not fLastControlIsPressed) then
+      exit;
+    GetWordBoundsAtRowCol(fLastMouseCaret,
+                          fLastCtrlMouseLinkX1,fLastCtrlMouseLinkX2);
+    dec(fLastCtrlMouseLinkX1);
+    dec(fLastCtrlMouseLinkX2);
+    if fLastCtrlMouseLinkX1=fLastCtrlMouseLinkX2 then
+      exit;
+    fLastCtrlMouseLinkY:=fLastMouseCaret.Y;
+    LinkFGCol:=clBlue;
+  end;
+  
+  procedure PaintCtrlMouseLinkLine;
+  var
+    LineLeft, LineTop, LineRight: integer;
+  begin
+    if fLastCtrlMouseLinkY<1 then exit;
+    LineTop:=(fLastCtrlMouseLinkY-TopLine+1)*fTextHeight-1;
+    LineLeft:=fGutterWidth + 2 + fLastCtrlMouseLinkX1*fCharWidth;
+    LineRight:=LineLeft+fCharWidth*(fLastCtrlMouseLinkX2-fLastCtrlMouseLinkX1);
+    Canvas.Pen.Color:=LinkFGCol;
+    Canvas.MoveTo(LineLeft,LineTop);
+    Canvas.LineTo(LineRight,LineTop);
+  end;
   {$ENDIF}
 
 { end local procedures }
@@ -2870,6 +2993,7 @@ begin
   if (LastLine >= FirstLine) then begin
     {$IFDEF SYN_LAZARUS}
     InitializeHighlightBrackets;
+    CalculateCtrlMouseLink;
     {$ENDIF}
     // Paint the visible text lines. To make this easier, compute first the
     // necessary information about the selected area: is there any visible
@@ -2902,6 +3026,10 @@ begin
       {$ENDIF}
     end;
   end;
+  
+  {$IFDEF SYN_LAZARUS}
+  PaintCtrlMouseLinkLine;
+  {$ENDIF}
 end;
 
 procedure TCustomSynEdit.Update;
@@ -3795,6 +3923,13 @@ begin
   end;
 {$ENDIF}
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.WMExit(var Message: TLMExit);
+begin
+  LastMouseCaret:=Point(-1,-1);
+end;
+{$ENDIF}
 
 procedure TCustomSynEdit.WMEraseBkgnd(var Msg: TMessage);
 begin
@@ -4744,6 +4879,39 @@ begin
   end;
 end;
 
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.UpdateCtrlMouse;
+var
+  NewY, NewX1, NewX2: integer;
+begin
+  fLastControlIsPressed:=(GetKeyShiftState=[ssCtrl]);
+  if (eoShowCtrlMouseLinks in Options) and fLastControlIsPressed
+  and (fLastMouseCaret.X>0) and (fLastMouseCaret.Y>0) then begin
+    // show link
+    NewY:=fLastMouseCaret.Y;
+    GetWordBoundsAtRowCol(fLastMouseCaret,NewX1,NewX2);
+    dec(NewX1);
+    dec(NewX2);
+    if NewX1<>NewX2 then begin
+      // there is a word to underline as link
+      if (NewY<>fLastCtrlMouseLinkY)
+      or (NewX1<>fLastCtrlMouseLinkX1)
+      or (NewX2<>fLastCtrlMouseLinkX2)
+      then
+        Invalidate;
+    end else begin
+      // there is no link -> do not show link
+      if fLastCtrlMouseLinkY>0 then
+        Invalidate;
+    end;
+  end else begin
+    // do not show link
+    if fLastCtrlMouseLinkY>0 then
+      Invalidate;
+  end;
+end;
+{$ENDIF}
+
 procedure TCustomSynEdit.ClearBookMark(BookMark: Integer);
 begin
   if (BookMark in [0..9]) and assigned(fBookMarks[BookMark]) then begin
@@ -5135,6 +5303,15 @@ begin
   else
     FKeystrokes.Assign(Value);
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.SetLastMouseCaret(const AValue: TPoint);
+begin
+  if (FLastMouseCaret.X=AValue.X) and (FLastMouseCaret.Y=AValue.Y) then exit;
+  FLastMouseCaret:=AValue;
+  UpdateCtrlMouse;
+end;
+{$ENDIF}
 
 procedure TCustomSynEdit.SetDefaultKeystrokes;
 begin
@@ -6414,6 +6591,10 @@ begin
     if ((eoPersistentCaret in fOptions) xor (eoPersistentCaret in OldOptions))
     and HandleAllocated then
       SetCaretRespondToFocus(Handle,not (eoPersistentCaret in fOptions));
+    if ((eoShowCtrlMouseLinks in fOptions)
+    xor (eoShowCtrlMouseLinks in OldOptions))
+    and HandleAllocated then
+      UpdateCtrlMouse;
     {$ENDIF}
   end;
 end;
@@ -7111,6 +7292,35 @@ begin
   Attri := nil;
   Result := FALSE;
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.GetWordBoundsAtRowCol(XY: TPoint; var StartX,
+  EndX: integer);
+var
+  Line: string;
+  IdChars: TSynIdentChars;
+  Len: integer;
+begin
+  StartX:=XY.X;
+  EndX:=XY.X;
+  if (XY.Y >= 1) and (XY.Y <= Lines.Count) then begin
+    Line := Lines[XY.Y - 1];
+    Len := Length(Line);
+    if (XY.X >= 1) and (XY.X <= Len + 1) then begin
+      if Assigned(Highlighter) then
+        IdChars := Highlighter.IdentChars
+      else
+        IdChars := ['a'..'z', 'A'..'Z'];
+      EndX := XY.X;
+      while (EndX <= Len) and (Line[EndX] in IdChars) do
+        Inc(EndX);
+      StartX := XY.X;
+      while (StartX > 1) and (Line[StartX - 1] in IdChars) do
+        Dec(StartX);
+    end;
+  end;
+end;
+{$ENDIF}
 
 function TCustomSynEdit.FindHookedCmdEvent(AHandlerProc: THookedCommandEvent):
   integer;
