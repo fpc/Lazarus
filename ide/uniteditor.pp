@@ -340,9 +340,11 @@ type
     AddBreakpointMenuItem: TMenuItem;
     AddWatchAtCursorMenuItem: TMenuItem;
     RunToCursorMenuItem: TMenuItem;
+    ViewCallStackMenuItem: TMenuItem;
     EditorPropertiesMenuItem: TMenuItem;
     Procedure AddBreakpointClicked(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
+    procedure ViewCallStackClick(Sender: TObject);
     Procedure AddWatchAtCursor(Sender : TObject);
     Procedure BookmarkGoTo(Index: Integer);
     Procedure BookMarkGotoClicked(Sender : TObject);
@@ -2884,7 +2886,6 @@ Begin
       end;
       DebugMenuItem.Add(AddBreakpointMenuItem);
 
-
       AddWatchAtCursorMenuItem := TMenuItem.Create(Self);
       with AddWatchAtCursorMenuItem do begin
         Name := 'AddWatchAtCursorMenuItem';
@@ -2900,6 +2901,15 @@ Begin
         OnClick := @RunToClicked;
       end;
       DebugMenuItem.Add(RunToCursorMenuItem);
+
+      ViewCallStackMenuItem := TMenuItem.Create(Self);
+      with ViewCallStackMenuItem do begin
+        Name := 'ViewCallStackMenuItem';
+        Caption := uemViewCallStackCursor;
+        OnClick := @ViewCallStackClick;
+      end;
+      DebugMenuItem.Add(ViewCallStackMenuItem);
+
 
   SrcPopupMenu.Items.Add(Seperator);
 
@@ -3517,6 +3527,20 @@ begin
   ASrcEdit:=GetActiveSE;
   if ASrcEdit=nil then exit;
   DebugBoss.DoRunToCursor;
+end;
+
+procedure TSourceNotebook.ViewCallStackClick(Sender: TObject);
+var
+  Command: TSynEditorCommand;
+  AChar: char;
+  Data: pointer;
+  Handled: boolean;
+begin
+  Command:=ecToggleCallStack;
+  AChar:=#0;
+  Data:=nil;
+  Handled:=false;
+  ProcessParentCommand(Self,Command,AChar,Data,Handled);
 end;
 
 Procedure TSourceNotebook.BookMarkSet(Value : Integer);
