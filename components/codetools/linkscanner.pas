@@ -43,7 +43,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, ExprEval, SourceLog, KeywordFuncLists;
+  Classes, SysUtils, CodeToolMemManager, FileProcs, ExprEval, SourceLog,
+  KeywordFuncLists;
 
 const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';
@@ -67,12 +68,13 @@ type
     var WriteLockStep: integer) of object;
 
 
+  PSourceLink = ^TSourceLink;
   TSourceLink = record
     CleanedPos: integer;
     SrcPos: integer;
     Code: Pointer;
+    Next: PSourceLink;
   end;
-  PSourceLink = ^TSourceLink;
 
   TSourceChangeStep = record
     Code: Pointer;
@@ -255,6 +257,17 @@ type
   end;
 
 //----------------------------------------------------------------------------
+
+  // memory system for PSourceLink(s)
+  TPSourceLinkMemManager = class(TCodeToolMemManager)
+  protected
+    procedure FreeFirstItem; override;
+  public
+    procedure DisposePSourceLink(Link: PSourceLink);
+    function NewPSourceLink: PSourceLink;
+  end;
+
+//----------------------------------------------------------------------------
 // compiler switches
 const
   CompilerSwitchesNames: array['A'..'Z'] of shortstring=(
@@ -301,9 +314,47 @@ var
   IsNumberChar, IsCommentStartChar, IsCommentEndChar, IsHexNumberChar,
   IsEqualOperatorStartChar:
     array[char] of boolean;
+    
+  PSourceLinkMemManager: TPSourceLinkMemManager;
 
 
 implementation
+
+
+// useful procs ----------------------------------------------------------------
+
+function CompareUpToken(const UpToken: shortstring; const UpperTxt: string;
+  TxtStartPos, TxtEndPos: integer): boolean;
+var len, i: integer;
+begin
+  Result:=false;
+  len:=TxtEndPos-TxtStartPos;
+  if len<>length(UpToken) then exit;
+  i:=1;
+  while i<len do begin
+    if (UpToken[i]<>UpperTxt[TxtStartPos]) then exit;
+    inc(i);
+    inc(TxtStartPos);
+  end;
+  Result:=true;
+end;
+
+function CompareUpToken(const UpToken: ansistring; const UpperTxt: string;
+    TxtStartPos, TxtEndPos: integer): boolean;
+var len, i: integer;
+begin
+  Result:=false;
+  len:=TxtEndPos-TxtStartPos;
+  if len<>length(UpToken) then exit;
+  i:=1;
+  while i<len do begin
+    if (UpToken[i]<>UpperTxt[TxtStartPos]) then exit;
+    inc(i);
+    inc(TxtStartPos);
+  end;
+  Result:=true;
+end;
+
 
 
 { TLinkScanner }
@@ -311,7 +362,7 @@ implementation
 procedure TLinkScanner.AddLink(ACleanedPos, ASrcPos: integer; ACode: pointer);
 var NewLink: PSourceLink;
 begin
-  New(NewLink);
+  NewLink:=PSourceLinkMemManager.NewPSourceLink;
   with NewLink^ do begin
     CleanedPos:=ACleanedPos;
     SrcPos:=ASrcPos;
@@ -322,7 +373,10 @@ end;
 
 function TLinkScanner.CleanedSrc: string;
 begin
-  Result:=copy(FCleanedSrc,1,CleanedLen);
+  if length(FCleanedSrc)<>CleanedLen then begin
+    SetLength(FCleanedSrc,CleanedLen);
+  end;
+  Result:=FCleanedSrc;
 end;
 
 procedure TLinkScanner.Clear;
@@ -332,12 +386,12 @@ var i: integer;
 begin
   for i:=0 to FIncludeStack.Count-1 do begin
     PLink:=PSourceLink(FIncludeStack[i]);
-    Dispose(PLink);
+    PSourceLinkMemManager.DisposePSourceLink(PLink);
   end;
   FIncludeStack.Clear;
   for i:=0 to LinkCount-1 do begin
     PLink:=PSourceLink(FLinks[i]);
-    Dispose(PLink);
+    PSourceLinkMemManager.DisposePSourceLink(PLink);
   end;
   FLinks.Clear;
   FCleanedSrc:='';
@@ -633,10 +687,10 @@ writeln('TLinkScanner.Scan C ',SrcLen);
 //writeln('TLinkScanner.Scan C --------');
   Values.Assign(FInitValues);
   for cm:=Low(TCompilerMode) to High(TCompilerMode) do
-    if Values.IsDefined(CompilerModeVars[cm]) then begin
+    if FInitValues.IsDefined(CompilerModeVars[cm]) then begin
       CompilerMode:=cm;
     end;
-  s:=Values.Variables[PascalCompilerDefine];
+  s:=FInitValues.Variables[PascalCompilerDefine];
   for pc:=Low(TPascalCompiler) to High(TPascalCompiler) do
     if (s=PascalCompilerNames[pc]) then begin
       PascalCompiler:=pc;
@@ -645,6 +699,7 @@ writeln('TLinkScanner.Scan C ',SrcLen);
 //writeln('TLinkScanner.Scan D --------');
   FMacrosOn:=(Values.Variables['MACROS']<>'0');
   if Src='' then exit;
+  // beging scanning
   AddLink(1,SrcPos,Code);
   LastTokenIsEqual:=false;
   LastTokenIsEnd:=false;
@@ -748,23 +803,19 @@ end;
 procedure TLinkScanner.UpdateCleanedSource(SourcePos: integer);
 // add new parsed code to cleaned source string
 var AddLen, i: integer;
-//  s: string;
 begin
   if SourcePos=LastCleanSrcPos then exit;
   if SourcePos>SrcLen then SourcePos:=SrcLen;
   AddLen:=SourcePos-LastCleanSrcPos;
   if AddLen>length(FCleanedSrc)-CleanedLen then begin
-    // expand cleaned source string
+    // expand cleaned source string by at least OldLen+1024
     i:=length(FCleanedSrc)+1024;
     if AddLen<i then AddLen:=i;
     SetLength(FCleanedSrc,length(FCleanedSrc)+AddLen);
-    //SetLength(s,AddLen);
-    //FCleanedSrc:=FCleanedSrc+s;
   end;
   for i:=LastCleanSrcPos+1 to SourcePos do begin
     inc(CleanedLen);
     FCleanedSrc[CleanedLen]:=Src[i];
-    //write(Src[i]);
   end;
   LastCleanSrcPos:=SourcePos;
 end;
@@ -1025,24 +1076,24 @@ end;
 
 function TLinkScanner.LongSwitchDirective: boolean;
 var ValStart: integer;
-  ValueStr: string;
 begin
   SkipSpace;
   ValStart:=SrcPos;
-  while (SrcPos<=SrcLen) and (UpperSrc[SrcPos] in ['A'..'Z']) do
+  while (SrcPos<=SrcLen) and IsWordChar[Src[SrcPos]] do
     inc(SrcPos);
-  ValueStr:=copy(UpperSrc,ValStart,SrcPos-ValStart);
-  if ValueStr='ON' then
+  if CompareUpToken('ON',UpperSrc,ValStart,SrcPos) then
     Values.Variables[FDirectiveName]:='1'
-  else if ValueStr='OFF' then
+  else if CompareUpToken('OFF',UpperSrc,ValStart,SrcPos) then
     Values.Variables[FDirectiveName]:='0'
-  else if (ValueStr='PRELOAD') and (FDirectiveName='ASSERTIONS') then
-    Values.Variables[FDirectiveName]:=ValueStr
+  else if CompareUpToken('PRELOAD',UpperSrc,ValStart,SrcPos)
+  and (FDirectiveName='ASSERTIONS') then
+    Values.Variables[FDirectiveName]:='PRELOAD'
   else if (FDirectiveName='LOCALSYMBOLS') then
     // ignore link object directive
   else begin
     RaiseException(
-      'invalid flag value "'+ValueStr+'" for directive '+FDirectiveName);
+      'invalid flag value "'+copy(UpperSrc,ValStart,SrcPos-ValStart)+'"'
+        +' for directive '+FDirectiveName);
   end;
   Result:=ReadNextSwitchDirective;
 end;
@@ -1050,35 +1101,37 @@ end;
 function TLinkScanner.ModeDirective: boolean;
 // $MODE DEFAULT, OBJFPC, TP, FPC, GPC, DELPHI
 var ValStart: integer;
-  ValueStr: string;
   AMode: TCompilerMode;
   ModeValid: boolean;
 begin
   SkipSpace;
   ValStart:=SrcPos;
-  while (SrcPos<=SrcLen) and (UpperSrc[SrcPos] in ['A'..'Z']) do
+  while (SrcPos<=SrcLen) and (IsWordChar[Src[SrcPos]]) do
     inc(SrcPos);
-  ValueStr:=copy(UpperSrc,ValStart,SrcPos-ValStart);
   // undefine all mode macros
   for AMode:=Low(TCompilerMode) to High(TCompilerMode) do
     Values.Undefine(CompilerModeVars[AMode]);
   CompilerMode:=cmFPC;
   // define new mode macro
-  if (ValueStr='DEFAULT') then begin
-  
-    // ToDo: set mode to cmdline mode
-  
+  if CompareUpToken('DEFAULT',UpperSrc,ValStart,SrcPos) then begin
+    // set mode to initial mode
+    for AMode:=Low(TCompilerMode) to High(TCompilerMode) do
+      if FInitValues.IsDefined(CompilerModeVars[AMode]) then begin
+        CompilerMode:=AMode;
+      end;
   end else begin
     ModeValid:=false;
     for AMode:=Low(TCompilerMode) to High(TCompilerMode) do
-      if CompilerModeNames[AMode]=ValueStr then begin
+      if CompareUpToken(CompilerModeNames[AMode],UpperSrc,ValStart,SrcPos) then
+      begin
         CompilerMode:=AMode;
         Values.Variables[CompilerModeVars[AMode]]:='1';
         ModeValid:=true;
         break;
       end;
     if not ModeValid then
-      RaiseException('invalid mode "'+ValueStr+'"');
+      RaiseException(
+        'invalid mode "'+copy(UpperSrc,ValStart,SrcPos-ValStart)+'"');
   end;
   Result:=true;
 end;
@@ -1185,15 +1238,16 @@ end;
 
 function TLinkScanner.DefineDirective: boolean;
 // {$define name} or {$define name:=value}
-var VariableName, VariableValue: string;
+var VariableName: string;
 begin
   SkipSpace;
   VariableName:=ReadUpperIdentifier;
   if (VariableName<>'') then begin
-    if FMacrosOn and (SrcPos<SrcLen) and (copy(Src,SrcPos,2)=':=') then begin
+    if FMacrosOn and (SrcPos<SrcLen) and (Src[SrcPos]=':') and (Src[SrcPos]='=')
+    then begin
       inc(SrcPos,2);
-      VariableValue:=copy(Src,SrcPos,CommentInnerEndPos-SrcPos);
-      Values.Variables[VariableName]:=VariableValue;
+      Values.Variables[VariableName]:=
+        copy(Src,SrcPos,CommentInnerEndPos-SrcPos);
     end else begin
       Values.Variables[VariableName]:='1';
     end;
@@ -1208,7 +1262,7 @@ begin
   SkipSpace;
   VariableName:=ReadUpperIdentifier;
   if (VariableName<>'') then
-     Values.Undefine(VariableName);
+    Values.Undefine(VariableName);
   Result:=true;
 end;
 
@@ -1218,17 +1272,17 @@ var IncFilename: string;
 begin
   inc(SrcPos);
   IncFilename:=Trim(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
-  if Values.IsDefined('DELPHI') then begin
+  if PascalCompiler<>pcDelphi then begin
+    // default is fpc behaviour
+    if ExtractFileExt(IncFilename)='' then
+      IncFilename:=IncFilename+'.pp';
+  end else begin
     // delphi understands quoted include files and default extension is .pas
     if (copy(IncFilename,1,1)='''')
     and (copy(IncFilename,length(IncFilename),1)='''') then
       IncFilename:=copy(IncFilename,2,length(IncFilename)-2);
     if ExtractFileExt(IncFilename)='' then
       IncFilename:=IncFilename+'.pas';
-  end else begin
-    // default is fpc behaviour
-    if ExtractFileExt(IncFilename)='' then
-      IncFilename:=IncFilename+'.pp';
   end;
   UpdateCleanedSource(CommentEndPos-1);
   // put old position on stack
@@ -1263,20 +1317,6 @@ var
   ExpFilename: string;
   NewCode: pointer;
 
-  function FilenameIsAbsolute(TheFilename: string):boolean;
-  begin
-    {$ifdef FPC}
-    DoDirSeparators(TheFilename);
-    {$endif}
-    {$IFDEF win32}
-    // windows
-    Result:=(copy(TheFilename,1,2)='\\') or ((length(TheFilename)>3) and
-       (UpChars[TheFilename[1]] in ['A'..'Z']) and (TheFilename[2]=':'));
-    {$ELSE}
-    Result:=(TheFilename<>'') and (TheFilename[1]='/');
-    {$ENDIF}
-  end;
-  
   function LoadSourceCaseSensitive(const AbsoluteFilename: string): pointer;
   var Path, FileNameOnly: string;
   begin
@@ -1349,7 +1389,7 @@ var
       {$IFDEF win32}
       and (not ((PathEnd-PathStart=2) 
             and (IncludePath[PathEnd]=':') 
-            and (IncludePath[PathEnd-1] in ['a'..'z','A'..'Z'])))
+            and (IsWordChar[IncludePath[PathEnd-1]])))
       {$ENDIF}
       then begin
         CurPath:=Trim(copy(IncludePath,PathStart,PathEnd-PathStart));
@@ -1397,7 +1437,7 @@ begin
   Expr:=UpperCaseStr(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
   ResultStr:=Values.Eval(Expr);
   if Values.ErrorPosition>=0 then
-    RaiseException('in directive expression ')
+    RaiseException('in directive expression')
   else if ResultStr='0' then
     SkipTillEndifElse
   else
@@ -1411,7 +1451,7 @@ begin
   inc(IfLevel);
   inc(SrcPos);
   Option:=UpperSrc[SrcPos];
-  if (Option in ['A'..'Z']) and (CompilerSwitchesNames[Option]<>'')
+  if (IsWordChar[Option]) and (CompilerSwitchesNames[Option]<>'')
   then begin
     inc(SrcPos);
     if (SrcPos<=SrcLen) then begin
@@ -1438,7 +1478,7 @@ begin
   for i:=0 to FIncludeStack.Count-1 do
     if PSourceLink(FIncludeStack[i])^.Code=ACode then
       RaiseException('Include circle detected');
-  New(NewLink);
+  NewLink:=PSourceLinkMemManager.NewPSourceLink;
   with NewLink^ do begin
     CleanedPos:=ACleanedPos;
     SrcPos:=ASrcPos;
@@ -1452,7 +1492,7 @@ var PLink: PSourceLink;
 begin
   PLink:=PSourceLink(FIncludeStack[FIncludeStack.Count-1]);
   Result:=PLink^;
-  Dispose(PLink);
+  PSourceLinkMemManager.DisposePSourceLink(PLink);
   FIncludeStack.Delete(FIncludeStack.Count-1);
 end;
 
@@ -1722,6 +1762,50 @@ begin
   Sender:=ASender;
 end;
 
+{ TPSourceLinkMemManager }
+
+procedure TPSourceLinkMemManager.FreeFirstItem;
+var Link: PSourceLink;
+begin
+  Link:=PSourceLink(FFirstFree);
+  PSourceLink(FFirstFree):=Link^.Next;
+  Dispose(Link);
+end;
+
+procedure TPSourceLinkMemManager.DisposePSourceLink(Link: PSourceLink);
+begin
+  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
+  begin
+    // add Link to Free list
+    FillChar(Link^,SizeOf(TSourceLink),0);
+    Link^.Next:=PSourceLink(FFirstFree);
+    PSourceLink(FFirstFree):=Link;
+    inc(FFreeCount);
+  end else begin
+    // free list full -> free Link
+    Dispose(Link);
+    inc(FFreedCount);
+  end;
+  dec(FCount);
+end;
+
+function TPSourceLinkMemManager.NewPSourceLink: PSourceLink;
+begin
+  if FFirstFree<>nil then begin
+    // take from free list
+    Result:=PSourceLink(FFirstFree);
+    PSourceLink(FFirstFree):=Result^.Next;
+    Result^.Next:=nil;
+    dec(FFreeCount);
+  end else begin
+    // free list empty -> create new PSourceLink
+    New(Result);
+    FillChar(Result^,SizeOf(TSourceLink),0);
+    inc(FAllocatedCount);
+  end;
+  inc(FCount);
+end;
+
 
 //------------------------------------------------------------------------------
 procedure InternalInit;
@@ -1742,12 +1826,19 @@ begin
   end;
   for CompMode:=Low(TCompilerMode) to High(TCompilerMode) do
     CompilerModeVars[CompMode]:='FPC_'+CompilerModeNames[CompMode];
+  PSourceLinkMemManager:=TPSourceLinkMemManager.Create;
+end;
+
+procedure InternalFinal;
+begin
+  PSourceLinkMemManager.Free;
 end;
 
 initialization
-
-
-InternalInit;
+  InternalInit;
+  
+finalization
+  InternalFinal;
 
 end.
 
