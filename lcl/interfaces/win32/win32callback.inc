@@ -27,16 +27,25 @@
 {-----------------------------------------------------------------------------
   Function: DisableWindowsProc
   Params: Window - handle of toplevel windows to be disabled
-          Data   - handle of current window
+          Data   - handle of current window form
   Returns: Whether the enumeration should continue
 
-  Used in LM_SHOWMODAL to disable the windows of applicaion thread except the current
+  Used in LM_SHOWMODAL to disable the windows of application thread
+  except the current form.
  -----------------------------------------------------------------------------}
 Function DisableWindowsProc(Window: Hwnd; Data: LParam): LongBool; StdCall;
+var
+  Buffer: array[0..15] of Char;
 Begin
   Result:=true;
-  If HWnd(Data) <> Window Then
-    EnableWindow(Window,False);
+  // Don't disable the current window form
+  if Window=HWND(Data) then exit;
+
+  // Don't disable any ComboBox listboxes
+  if (GetClassName(Window, @Buffer, sizeof(Buffer))<sizeof(Buffer))
+    and (stricomp(Buffer, 'ComboLBox')=0) then exit;
+
+  EnableWindow(Window,False);
 End;
 
 {-----------------------------------------------------------------------------
@@ -45,7 +54,8 @@ End;
           Data   - nothing
   Returns: Whether the enumeration should continue
 
-  Used in LM_SHOWMODAL to enable the windows of applicaion thread
+  Called when handling WM_DESTROY for a modal form to enable
+  the windows of application thread
  -----------------------------------------------------------------------------}
 Function EnableWindowsProc(Window: Hwnd; Data: LParam): LongBool; StdCall;
 Begin
@@ -991,6 +1001,9 @@ end;
 
 {
   $Log$
+  Revision 1.92  2004/02/12 18:03:15  mattias
+  fixed combobox enabled  from Vincent
+
   Revision 1.91  2004/01/29 20:57:57  micha
   fixed: use result of message passed to lcl (fixes synedit editing)
 
