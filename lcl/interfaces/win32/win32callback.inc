@@ -149,10 +149,6 @@ Var
   LMMove: TLMMove; // used by WM_MOVE
   LMNotify: TLMNotify; // used by WM_NOTIFY
   DrawListItemStruct: TDrawListItemStruct; //used by WM_DRAWITEM
-{$IFDEF VER1_1_MSG}  // should be 'ifndef VER1_0' when we fix TMsgArray
-  List: TMsgArray;
-  C: Integer;
-{$ENDIF}
 
   procedure ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean);
   var
@@ -1024,21 +1020,8 @@ Begin
   if NotifyUserInput then
     NotifyApplicationUserInput(PLMsg^.Msg);
 
-  {$IFDEF VER1_1_MSG}
-    List := TMsgArray(GetProp(Window, 'MsgList'));
-    If Pointer(List) <> Nil Then
-      For C := 0 To Length(List) Do
-        If List[C] = PLMsg^.Msg Then
-        Begin
-          DeliverMessage(OwnerObject, PLMsg^);
-          Exit;
-        End;
-  {$ELSE VER1_1_MSG}
-    If (OwnerObject <> Nil) And (PLMsg^.Msg <> LM_NULL) Then
-    Begin
-      DeliverMessage(OwnerObject, PLMsg^);
-    End;
-  {$ENDIF VER1_1_MSG}
+  if (OwnerObject <> nil) and (PLMsg^.Msg <> LM_NULL) then
+    DeliverMessage(OwnerObject, PLMsg^);
 
   case Msg of
     WM_ERASEBKGND:
@@ -1324,6 +1307,9 @@ end;
 
 {
   $Log$
+  Revision 1.133  2004/08/24 15:51:49  micha
+  remove obsolete code which has not been enabled the last year
+
   Revision 1.132  2004/08/16 18:15:28  vincents
   The taskbar button is now hidden, if the main form is hidden
 
