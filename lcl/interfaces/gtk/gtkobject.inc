@@ -2815,7 +2815,7 @@ begin
 
     LM_INSERTTEXT :
     begin
-      ConnectSenderSignal(gObject, 'insert-text', @gtkinserttext);
+      ConnectSenderSignal(gCore, 'insert-text', @gtkinserttext);
     end;
 
     LM_DELETETEXT :
@@ -3205,17 +3205,27 @@ begin
           SetCallback(LM_CHANGED,Sender);
         End;
 
-        csEdit,csMemo:
+        csEdit:
         begin
-          SetCallback(LM_CHANGED,Sender);
+          SetCallback(LM_CHANGED, Sender);
           SetCallback(LM_ACTIVATE, Sender);
-          SetCallback(LM_CUTTOCLIP,Sender);
-          SetCallback(LM_COPYTOCLIP,Sender);
-          SetCallback(LM_PASTEFROMCLIP,Sender);
-        End;
+          SetCallback(LM_CUTTOCLIP, Sender);
+          SetCallback(LM_COPYTOCLIP, Sender);
+          SetCallback(LM_PASTEFROMCLIP, Sender);
+        end;
         
+	csMemo:
+	begin
+          SetCallback(LM_CHANGED, Sender);
+          SetCallback(LM_ACTIVATE, Sender);
+          SetCallback(LM_CUTTOCLIP, Sender);
+          SetCallback(LM_COPYTOCLIP, Sender);
+          SetCallback(LM_PASTEFROMCLIP, Sender);
+	  SetCallback(LM_INSERTTEXT, Sender);
+	end;
+	
         csFixed :
-        Begin
+        begin
           SetCallback(LM_HSCROLL,Sender);
           SetCallback(LM_VSCROLL,Sender);
         end;
@@ -5542,7 +5552,7 @@ begin
       begin
         ImplWidget:= GetWidgetInfo(Widget, true)^.ImplementationWidget;
       
-        gtk_text_set_editable (PGtkText(ImplWidget), not (Sender as TMemo).ReadOnly);
+        gtk_text_set_editable (PGtkText(ImplWidget), not (Sender as TCustomMemo).ReadOnly);
         {$IfNDef Win32}
 	gtk_text_set_line_wrap(PGtkText(ImplWidget), Integer((Sender as TCustomMemo).WordWrap));
         {$EndIf}
@@ -5558,6 +5568,13 @@ begin
         else
           gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
         end;
+	
+	if (TCustomMemo(Sender).MaxLength >= 0) then begin
+	  i:= gtk_text_get_length(PGtkText(ImplWidget));
+	  if i > TCustomMemo(Sender).MaxLength then begin
+            gtk_editable_delete_text(PGtkEditable(ImplWidget), TCustomMemo(Sender).MaxLength, i);
+	  end;
+	end;  
       end;
            
     csSpinEdit:
@@ -6614,6 +6631,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.288  2002/11/16 11:22:57  mbukovjan
+  Fixes to MaxLength. TCustomMemo now has MaxLength, too.
+
   Revision 1.287  2002/11/15 23:52:06  mbukovjan
   Fix keydown & keypress for TMemo and hopefully not break others.
 
