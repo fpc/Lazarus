@@ -884,7 +884,6 @@ begin
     if ParamIsOption(i,StartedByStartLazarusOpt) then
       StartedByStartLazarus:=true;
   end;
-  if StartedByStartLazarus then ;
 end;
 
 procedure TMainIDE.LoadGlobalOptions;
@@ -1946,7 +1945,7 @@ var PageIndex: integer;
 begin
   if SourceNoteBook.NoteBook=nil then exit;
   if Sender is TPage then begin
-    PageIndex:=SourceNoteBook.NoteBook.PageList.IndexOf(Sender);
+    PageIndex:=SourceNoteBook.NoteBook.Pages.IndexOfObject(Sender);
     if PageIndex<0 then
       PageIndex:=SourceNoteBook.NoteBook.PageIndex;
   end else begin
@@ -6271,7 +6270,7 @@ begin
   mnuQuitClicked(Self);
   if Application.Terminated then begin
     if StartedByStartLazarus then
-      ExitCode := 99
+      ExitCode := ExitCodeRestartLazarus
     else
       StartStarter;
   end;
@@ -10969,6 +10968,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.788  2004/11/05 22:05:41  vincents
+  Use symbolic constant for restart exitcode.
+
   Revision 1.787  2004/10/31 21:17:34  vincents
   - Implemented restarting by starting startlazarus on unix (for 1.9.x only).
   - Add Restart After Succesfull Build CheckBox to the Configure Build Lazarus dialog.

@@ -114,6 +114,9 @@ const
 const
   EmptyLine = LineEnding + LineEnding;
   EndOfLine: shortstring = LineEnding;
+  
+const
+  ExitCodeRestartLazarus = 99;
 
 implementation
 
@@ -217,6 +220,9 @@ end.
 
 {
   $Log$
+  Revision 1.33  2004/11/05 22:05:41  vincents
+  Use symbolic constant for restart exitcode.
+
   Revision 1.32  2004/10/15 12:04:08  mattias
   calling updating notebook tab after realize, needed for close btns
 

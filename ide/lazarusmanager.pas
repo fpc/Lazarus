@@ -1,5 +1,31 @@
 {  $Id$  }
-unit LazarusManager;
+{
+ /***************************************************************************
+                              lazarusmanager.pas
+                             --------------------
+               Class to manage starting and restarting of lazarus
+
+ ***************************************************************************/
+
+ ***************************************************************************
+ *                                                                         *
+ *   This source is free software; you can redistribute it and/or modify   *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ *   This code is distributed in the hope that it will be useful, but      *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of            *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU     *
+ *   General Public License for more details.                              *
+ *                                                                         *
+ *   A copy of the GNU General Public License is available on the World    *
+ *   Wide Web at <http://www.gnu.org/copyleft/gpl.html>. You can also      *
+ *   obtain it by writing to the Free Software Foundation,                 *
+ *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
+ *                                                                         *
+ ***************************************************************************
+}unit LazarusManager;
 
 {$mode objfpc}{$H+}
 
@@ -13,7 +39,7 @@ uses
   BaseUnix,
 {$ENDIF}
   Classes, SysUtils, Process,
-  LCLProc, FileUtil, Forms,
+  LCLProc, FileUtil, Forms, Controls, Dialogs,
   LazConf,
   StartLazOpts, Splash;
   
@@ -43,7 +69,7 @@ type
     FCmdLineParams: TStrings;
     procedure ParseCommandLine;
     function GetLazarusPath(const FileName: string): string;
-    procedure RenameLazarusExecutables;
+    function RenameLazarusExecutables: TModalResult;
     procedure LazarusProcessStart(Sender: TObject);
     procedure WaitForLazarus;
   public
@@ -102,11 +128,12 @@ begin
     GetDefaultExecutableExt;
 end;
 
-procedure TLazarusManager.RenameLazarusExecutables;
+function TLazarusManager.RenameLazarusExecutables: TModalResult;
 var
   NewFileName: string;
   BackupFileName: String;
 begin
+  Result := mrOK;
   NewFileName := GetLazarusPath('lazarus.new');
   FLazarusPath := GetLazarusPath('lazarus');
   BackupFileName := GetLazarusPath('lazarus.old');
@@ -119,6 +146,11 @@ begin
       RenameFile(FLazarusPath, BackupFileName);
     end;
     RenameFile(NewFileName, FLazarusPath);
+  end;
+  if not FileExists(FLazarusPath) then begin
+    MessageDlg(format('Can''t find lazarus executable: %s', [FLazarusPath]),
+      mtError, [mbOK], 0);
+    Result := mrAbort;
   end;
 end;
 
@@ -167,13 +199,15 @@ begin
   repeat
     SplashForm.Show;
     Application.ProcessMessages;
-    RenameLazarusExecutables();
-    FLazarusProcess := TLazarusProcess.Create(FLazarusPath);
-    FLazarusProcess.OnStart := @LazarusProcessStart;
-    FLazarusProcess.Execute;
-    FLazarusProcess.WaitOnExit;
-    Restart := FLazarusProcess.WantsRestart;
-    FreeAndNil(FLazarusProcess);
+    Restart := false;
+    if RenameLazarusExecutables=mrOK then begin
+      FLazarusProcess := TLazarusProcess.Create(FLazarusPath);
+      FLazarusProcess.OnStart := @LazarusProcessStart;
+      FLazarusProcess.Execute;
+      FLazarusProcess.WaitOnExit;
+      Restart := FLazarusProcess.WantsRestart;
+      FreeAndNil(FLazarusProcess);
+    end;
   until not Restart;
   Application.Terminate;
 end;
@@ -217,12 +251,15 @@ end;
 procedure TLazarusProcess.WaitOnExit;
 begin
   FProcess.WaitOnExit;
-  FWantsRestart := FProcess.ExitStatus=99
+  FWantsRestart := FProcess.ExitStatus=ExitCodeRestartLazarus;
 end;
 
 end.
 {
   $Log$
+  Revision 1.9  2004/11/05 22:05:41  vincents
+  Use symbolic constant for restart exitcode.
+
   Revision 1.8  2004/11/03 14:18:34  mattias
   implemented preferred size for controls for theme depending AutoSizing
 
