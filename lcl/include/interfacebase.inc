@@ -170,6 +170,12 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
+begin
+  Result:=ERROR;
+  writeln('WARNING: CreateEllipticRgn not yet implemented.');
+end;
+
 function TInterfaceBase.CreateFontIndirect(const LogFont: TLogFont): HFONT;
 begin
   Result := 0;
@@ -194,7 +200,8 @@ begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreatePolygonRgn(Points: PPoint; NumPts: Integer; Winding : Boolean): HRGN;
+function TInterfaceBase.CreatePolygonRgn(Points: PPoint; NumPts: Integer;
+  FillMode: integer): HRGN;
 Begin
   Result := 0;
 end;
@@ -903,7 +910,7 @@ end;
 function TInterfaceBase.GetTextExtentExPoint(DC: HDC; Str: PChar;
   Count, p4: Integer; p5, p6: PInteger; var Size: TSize): BOOL;
 begin
-  Result := False;
+  Result := GetTextExtentPoint(DC,Str,Count,Size);
 end;
 
 function TInterfaceBase.GetTextExtentPoint(DC: HDC; Str: PChar;
@@ -1181,7 +1188,13 @@ begin
   Result := False;
 end;
 
-function TInterfaceBase.RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TInterfaceBase.PtInRegion(RGN: HRGN; X, Y: Integer): Boolean;
+begin
+  Result := false;
+end;
+
+function TInterfaceBase.RadialArc(DC: HDC;
+  x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 var
   A1, A2 : Extended;
 Begin
@@ -1189,7 +1202,8 @@ Begin
   Result := Arc(DC, X, Y, Width, Height, Round(A1), Round(A2));
 End;
 
-function TInterfaceBase.RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
+function TInterfaceBase.RadialChord(DC: HDC;
+  x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
 var
   A1, A2 : Extended;
 Begin
@@ -1523,6 +1537,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.74  2002/12/25 13:30:36  mattias
+  added more windows funcs and fixed jump to compiler error end of file
+
   Revision 1.73  2002/12/25 10:21:05  mattias
   made Form.Close more Delphish, added some windows compatibility functions
 
