@@ -44,6 +44,7 @@ procedure TCustomListBox.CreateHandle;
 var
   NewStrings : TStrings;
   i: integer;
+  OldItems: TStrings;
 begin
   //writeln('[TCustomListBox.CreateHandle] A ',FItems.ClassName);
   inherited CreateHandle;
@@ -55,14 +56,8 @@ begin
   NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
   // copy the items (text+objects)
   NewStrings.Assign(Items);
-  // copy items attributes
-  for i:=0 to Items.Count-1 do begin
-    if clbiSelected in GetListBoxItemRecord(FItems,i)^.Flags then
-      SendItemSelected(i,True);
-  end;
-  // free old items
-  FItems.Free;
-  
+  OldItems:=FItems;
+
   // new item list is the interface item list
   FItems:= NewStrings;
 
@@ -70,6 +65,16 @@ begin
   UpdateSorted;
 
   CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
+
+  // copy items attributes
+  for i:=0 to OldItems.Count-1 do begin
+    if (clbiSelected in GetListBoxItemRecord(OldItems,i)^.Flags)
+    or (FItemIndex=i) then
+      SendItemSelected(i,True);
+  end;
+  // free old items
+  OldItems.Free;
+
   //writeln('[TCustomListBox.CreateHandle] END ',FItems.ClassName);
 end;
 
@@ -90,7 +95,9 @@ begin
   Cnt:=Items.Count;
   for i:=0 to Cnt-1 do begin
     if Selected[i] then
-      Include(GetListBoxItemRecord(NewStrings,i)^.Flags,clbiSelected);
+      Include(GetListBoxItemRecord(NewStrings,i)^.Flags,clbiSelected)
+    else
+      Exclude(GetListBoxItemRecord(NewStrings,i)^.Flags,clbiSelected);
   end;
   // free the interface items list
   FItems.Free;
@@ -234,16 +241,23 @@ procedure TCustomListBox.SetSelected(Index : integer; Val : boolean);
 begin
   if (Index < 0) or (Index >= Items.Count) then
     raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Index,Items.Count]);
-  //writeln('TCustomListBox.SetSelected A ',Items.Count);
-  if HandleAllocated then begin
-    //writeln('TCustomListBox.SetSelected B ',Items.Count);
-    SendItemSelected(Index,Val);
-    //writeln('TCustomListBox.SetSelected END ',Items.Count);
-  end else begin
+  if not MultiSelect then begin
     if Val then
-      Include(GetListBoxItemRecord(FItems,Index)^.Flags,clbiSelected)
-    else
-      Exclude(GetListBoxItemRecord(FItems,Index)^.Flags,clbiSelected)
+      ItemIndex:=Index
+    else if Index=ItemIndex then
+      ItemIndex:=-1;
+  end else begin
+    //writeln('TCustomListBox.SetSelected A ',Items.Count);
+    if HandleAllocated then begin
+      //writeln('TCustomListBox.SetSelected B ',Items.Count);
+      SendItemSelected(Index,Val);
+      //writeln('TCustomListBox.SetSelected END ',Items.Count);
+    end else begin
+      if Val then
+        Include(GetListBoxItemRecord(FItems,Index)^.Flags,clbiSelected)
+      else
+        Exclude(GetListBoxItemRecord(FItems,Index)^.Flags,clbiSelected)
+    end;
   end;
 end;
 
