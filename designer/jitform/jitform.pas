@@ -74,7 +74,6 @@ type
   
   TJITClass = class of TPersistent;
   
-
 implementation
 
 // Define a dummy component to set the csDesigning flag which can not be set

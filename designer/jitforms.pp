@@ -92,17 +92,21 @@ type
     FJITComponents: TList;
     FFlags: TJITCompListFlags;
     // jit procedures
+    {$IFDEF UseJITClasses}
+    function CreateNewJITClass(ParentClass: TClass;
+                          const NewClassName, NewUnitName: ShortString): TClass;
+    procedure FreeJITClass(var AClass: TClass);
+    {$ELSE}
     function CreateVMTCopy(SourceClass: TClass;
-                           const NewClassName: ShortString):Pointer;
+                           const NewClassName: ShortString): Pointer;
     procedure FreevmtCopy(vmtCopy: Pointer);
-    procedure DoAddNewMethod(JITClass:TClass;
-                             const AName:ShortString; ACode:Pointer);
-      // Note: AddNewMethod does not check if method already exists
-    procedure DoRemoveMethod(JITClass:TClass; AName:ShortString;
-                             var OldCode:Pointer);
-      // Note: RemoveMethod does not free code memory
-    procedure DoRenameMethod(JITClass:TClass; OldName,NewName:ShortString);
-    procedure DoRenameClass(JITClass:TClass; const NewName:ShortString);
+    {$ENDIF}
+    procedure DoAddNewMethod(JITClass: TClass; const AName: ShortString;
+      ACode: Pointer); // Note: AddNewMethod does not check if method already exists
+    procedure DoRemoveMethod(JITClass: TClass; AName: ShortString;
+      var OldCode: Pointer); // Note: RemoveMethod does not free code memory
+    procedure DoRenameMethod(JITClass: TClass; OldName, NewName: ShortString);
+    procedure DoRenameClass(JITClass: TClass; const NewName: ShortString);
     // TReader events
     procedure ReaderFindMethod(Reader: TReader; const FindMethodName: Ansistring;
       var Address: Pointer; var Error: Boolean);
@@ -205,10 +209,58 @@ type
     function IsJITDataModule(AComponent: TComponent): boolean;
     property Items[Index:integer]: TDataModule read GetItem; default;
   end;
+  
+
+function ClassAsString(AClass: TClass): string;
+function ClassMethodTableAsString(AClass: TClass): string;
+function ClassTypeInfoAsString(AClass: TClass): string;
+function ClassFieldTableAsString(AClass: TClass): string;
+
 
 implementation
 
 {$IFOPT R+}{$DEFINE RangeCheckOn}{$ENDIF}
+
+//------------------------------------------------------------------------------
+// adding, removing and renaming of classes and methods at runtime
+
+const
+  vmtInstanceSizeNeg = vmtInstanceSize+sizeof(ptrint);
+
+type
+  // these definitions are copied from objpas.inc
+
+  TMethodNameRec = packed record
+    Name : PShortString;
+    Addr : Pointer;
+  end;
+
+  TMethodNameTable = packed record
+    Count : DWord;
+    // for runtime range checking it is important to give a range
+    Entries : packed array[0..1000000] of TMethodNameRec;
+  end;
+  PMethodNameTable =  ^TMethodNameTable;
+
+  PFieldClassTable = ^TFieldClassTable;
+  TFieldClassTable = packed record
+    Count: Word;
+    Entries: array[Word] of TPersistentClass;
+  end;
+
+  PFieldInfo = ^TFieldInfo;
+  TFieldInfo = packed record
+    FieldOffset: LongWord;
+    ClassTypeIndex: Word;
+    Name: ShortString;
+  end;
+
+  PFieldTable = ^TFieldTable;
+  TFieldTable = packed record
+    FieldCount: Word;
+    ClassTable: PFieldClassTable;
+    // Fields: array[Word] of TFieldInfo;  Elements have variant size!
+  end;
 
 var
   MyFindGlobalComponentProc:function(const AName:AnsiString):TComponent of object;
@@ -218,7 +270,137 @@ begin
   Result:=MyFindGlobalComponentProc(AName);
 end;
 
-  //----------------------------------------------------------------------------
+function ClassAsString(AClass: TClass): string;
+var
+  ParentClass: TClass;
+begin
+  Result:='Class='+HexStr(Cardinal(AClass),8);
+  if AClass=nil then exit;
+  Result:=Result+' Name="'+AClass.ClassName+'"';
+  ParentClass:=AClass.ClassParent;
+  if ParentClass<>nil then
+    Result:=Result+' Parent='+HexStr(Cardinal(ParentClass),8)+'-"'+ParentClass.ClassName+'"';
+  Result:=Result+LineEnding;
+  Result:=Result+' vmtInstanceSize='+IntToStr(PLongInt(pointer(AClass)+vmtInstanceSize)^);
+  Result:=Result+' vmtInstanceSizeNeg='+IntToStr(PLongInt(pointer(AClass)+vmtInstanceSizeNeg)^);
+  Result:=Result+' vmtParent='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtParent)^),8);
+  Result:=Result+' vmtClassName="'+PShortString((Pointer(AClass)+vmtClassName)^)^+'"';
+  Result:=Result+' vmtDynamicTable='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtDynamicTable)^),8);
+  Result:=Result+' vmtMethodTable='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtMethodTable)^),8);
+  Result:=Result+' vmtFieldTable='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtFieldTable)^),8);
+  Result:=Result+' vmtTypeInfo='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtTypeInfo)^),8);
+  Result:=Result+' vmtInitTable='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtInitTable)^),8);
+  Result:=Result+' vmtAutoTable='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtAutoTable)^),8);
+  Result:=Result+' vmtIntfTable='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtIntfTable)^),8);
+  Result:=Result+' vmtMsgStrPtr='+HexStr(Cardinal(pcardinal(pointer(AClass)+vmtMsgStrPtr)^),8);
+  Result:=Result+LineEnding;
+  Result:=Result+' MethodTable=['+ClassMethodTableAsString(AClass)+']';
+  Result:=Result+LineEnding;
+  Result:=Result+' TypeInfo=['+ClassTypeInfoAsString(AClass)+']';
+  Result:=Result+LineEnding;
+  Result:=Result+' FieldTable=['+ClassFieldTableAsString(AClass)+']';
+end;
+
+function ClassMethodTableAsString(AClass: TClass): string;
+var
+  MethodTable: PMethodNameTable;
+  i: Integer;
+begin
+  Result:='';
+  if AClass=nil then exit;
+  MethodTable:=PMethodNameTable((Pointer(AClass)+vmtMethodTable)^);
+  if MethodTable=nil then exit;
+  for i:=0 to MethodTable^.Count-1 do begin
+    if i>0 then Result:=Result+',';
+    Result:=Result+IntToStr(i)+':"'+(MethodTable^.Entries[i].Name^)+'"'
+      +':'+HexStr(Cardinal(MethodTable^.Entries[i].Addr),8);
+  end;
+end;
+
+function ClassTypeInfoAsString(AClass: TClass): string;
+var
+  TypeInfo: PTypeInfo;
+  TypeData: PTypeData;
+  PropInfo: PPropInfo;
+  CurCount: integer;
+  i: Integer;
+begin
+  Result:='';
+  if AClass=nil then exit;
+  TypeInfo:=AClass.ClassInfo;
+  if TypeInfo=nil then exit;
+  Result:=Result+'ClassInfo^.Name="'+TypeInfo^.Name+'"';
+  // read all property infos of current class
+  TypeData:=GetTypeData(TypeInfo);
+  if TypeData=nil then exit;
+  Result:=Result+' ClassType='+HexStr(Cardinal(TypeData^.ClassType),8);
+  if TypeData^.ClassType<>AClass then
+    Result:=Result+LineEnding
+      +' WARNING: ClassType<>AClass('+HexStr(Cardinal(AClass),8)+')'+LineEnding;
+  Result:=Result+' ParentInfo='+HexStr(Cardinal(TypeData^.ParentInfo),8);
+  if (AClass.ClassParent<>nil)
+  and (TypeData^.ParentInfo<>AClass.ClassParent.ClassInfo) then
+    Result:=Result+LineEnding
+      +' WARNING: TypeData^.ParentInfo<>AClass.ClassParent.ClassInfo('
+      +HexStr(Cardinal(TypeData^.ParentInfo),8)+'<>'+
+      +HexStr(Cardinal(AClass.ClassParent.ClassInfo),8)+'<>'+')'+LineEnding;
+  Result:=Result+' PropCount='+IntToStr(TypeData^.PropCount);
+  Result:=Result+' UnitName="'+TypeData^.UnitName+'"';
+
+  // skip unitname
+  PropInfo:=(@TypeData^.UnitName+Length(TypeData^.UnitName)+1);
+  // read property count
+  CurCount:=PWord(PropInfo)^;
+  Result:=Result+' CurPropCnt='+IntToStr(CurCount);
+  inc(Longint(PropInfo),SizeOf(Word));
+
+  // read properties
+  Result:=Result+' Properties={';
+  for i:=0 to CurCount-1 do begin
+    if i>0 then Result:=Result+',';
+    // point PropInfo to next propinfo record.
+    // Located at Name[Length(Name)+1] !
+    Result:=Result+IntToStr(i)+':PropName="'+PropInfo^.Name+'"'
+                  +':Type="'+PropInfo^.PropType^.Name+'"';
+    PropInfo:=PPropInfo(pointer(@PropInfo^.Name)+PByte(@PropInfo^.Name)^+1);
+  end;
+  Result:=Result+'}';
+end;
+
+function ClassFieldTableAsString(AClass: TClass): string;
+var
+  FieldTable: PFieldTable;
+  FieldInfo: PFieldInfo;
+  i: Integer;
+  ClassTable: PFieldClassTable;
+begin
+  Result:='';
+  if AClass=nil then exit;
+  FieldTable:=PFieldTable((Pointer(AClass)+vmtFieldTable)^);
+  if FieldTable=nil then exit;
+  Result:=Result+'FieldCount='+IntToStr(FieldTable^.FieldCount);
+  ClassTable:=FieldTable^.ClassTable;
+  Result:=Result+' ClassTable='+HexStr(Cardinal(ClassTable),8);
+  if ClassTable<>nil then begin
+    Result:=Result+'={';
+    for i:=0 to ClassTable^.Count-1 do begin
+      if i>0 then Result:=Result+',';
+      Result:=Result+IntToStr(i)+':Name="'+ClassTable^.Entries[i].ClassName+'"';
+    end;
+  end;
+  Result:=Result+'}';
+  FieldInfo := PFieldInfo(Pointer(FieldTable) + 6);
+  Result:=Result+' Fields={';
+  for i:=0 to FieldTable^.FieldCount-1 do begin
+    if i>0 then Result:=Result+',';
+    Result:=Result+IntToStr(i)+':Name="'+FieldInfo^.Name+'"'
+      +':Offset='+IntToStr(FieldInfo^.FieldOffset);
+    Inc(Pointer(FieldInfo), 7 + Length(FieldInfo^.Name));
+  end;
+  Result:=Result+'}';
+end;
+
+//------------------------------------------------------------------------------
 
 
 { TJITComponentList }
@@ -266,11 +448,16 @@ begin
 end;
 
 procedure TJITComponentList.DestroyJITComponent(Index:integer);
-var OldClass:TClass;
+var
+  OldClass: TClass;
 begin
   OldClass:=Items[Index].ClassType;
   Items[Index].Free;
+  {$IFDEF UseJITClasses}
+  FreeJITClass(OldClass);
+  {$ELSE}
   FreevmtCopy(OldClass);
+  {$ENDIF}
   FJITComponents.Delete(Index);
 end;
 
@@ -618,36 +805,155 @@ begin
   Result.Code:=NewCode;
 end;
 
-//------------------------------------------------------------------------------
-// adding, removing and renaming of classes and methods at runtime
-
-type
-  // these definitions are copied from objpas.inc
-
-  TMethodNameRec = packed record
-    Name : PShortString;
-    Addr : Pointer;
-  end;
-
-  TMethodNameTable = packed record
-    Count : DWord;
-    // for runtime range checking it is important to give a range
-    Entries : packed array[0..1000000] of TMethodNameRec;
-  end;
-
-  PMethodNameTable =  ^TMethodNameTable;
-
 procedure TJITComponentList.SetComponentPrefix(const AValue: string);
 begin
   if FComponentPrefix=AValue then exit;
   FComponentPrefix:=AValue;
 end;
 
+{$IFDEF UseJITClasses}
+function TJITComponentList.CreateNewJITClass(ParentClass: TClass;
+  const NewClassName, NewUnitName: ShortString): TClass;
+// Create a new class (vmt, virtual method table, field table and typeinfo)
+// that descends from ParentClass.
+// The new class will have no new variables, now new methods and no new fields.
+const
+  vmtTailSize = 1000; // I don't know, how big the vmt must be,
+                      // just make sure it is big enough.
+  vmtSize = vmtMethodStart+vmtTailSize;
+var
+  NewVMT: Pointer;
+  ClassNamePShortString: Pointer;
+  NewFieldTable: PFieldTable;
+  NewClassTable: PFieldClassTable;
+  NewTypeInfo: PTypeInfo;
+  NewTypeData: PTypeData;
+  TypeInfoSize: Integer;
+  TypeDataSize: Integer;
+  AddedPropCount: PWord;
+begin
+  if ParentClass=nil then
+    raise Exception.Create('CreateNewClass ParentClass=nil');
+  if NewClassName='' then
+    raise Exception.Create('CreateNewClass NewClassName empty');
+  if not IsValidIdent(NewClassName) then
+    raise Exception.Create('CreateNewClass NewClassName is not a valid identifier');
+  Result:=nil;
+
+  // create vmt
+  GetMem(NewVMT,vmtSize);
+  FillChar(NewVMT^,vmtSize,0);
+
+  // set vmtInstanceSize
+  PInteger(NewVMT+vmtInstanceSize)^:=ParentClass.InstanceSize;
+  PInteger(NewVMT+vmtInstanceSizeNeg)^:=-ParentClass.InstanceSize;
+
+  // set vmtParent
+  TClass(Pointer(NewVMT+vmtParent)^):=ParentClass;
+
+  // set vmtClassName: create pointer to classname (PShortString)
+  GetMem(ClassNamePShortString,SizeOf(ShortString));
+  System.Move(NewClassName[0],ClassNamePShortString^,SizeOf(ShortString));
+  Pointer(Pointer(NewVMT+vmtClassName)^):=ClassNamePShortString;// don't use
+                 // PShortString, so that the compiler does not get silly ideas
+
+  // set vmtFieldTable
+  GetMem(NewFieldTable,SizeOf(TFieldTable));
+  FillChar(NewFieldTable^,SizeOf(TFieldTable),0);
+  PFieldTable(Pointer(NewVMT+vmtFieldTable)^):=NewFieldTable;
+
+  // ClassTable
+  GetMem(NewClassTable,SizeOf(Word));
+  FillChar(NewClassTable^,SizeOf(Word),0);
+  NewFieldTable^.ClassTable:=NewClassTable;
+
+  // set vmtTypeInfo
+  TypeDataSize:=SizeOf(TTypeData)+2; // TTypeData + one word for new prop count
+  TypeInfoSize:=SizeOf(TTypeInfo.Kind)+1+length(NewClassName)+TypeDataSize;
+  if SizeOf(TTypeInfo.Kind)<>1 then
+    raise Exception.Create('CreateNewClass SizeOf(TTypeInfo^.Kind)<>1');
+  GetMem(NewTypeInfo,TypeInfoSize);
+  FillChar(NewTypeInfo^,TypeInfoSize,0);
+  Pointer(Pointer(NewVMT+vmtTypeInfo)^):=NewTypeInfo;
+
+  // set TypeInfo Kind and Name
+  NewTypeInfo^.Kind:=tkClass;
+  System.Move(NewClassName[0],NewTypeInfo^.Name[0],length(NewClassName)+1);
+  NewTypeData:=GetTypeData(NewTypeInfo);
+  if NewTypeData<>Pointer(Pointer(@NewTypeInfo^.Name[0])+1+length(NewClassName))
+  then
+    raise Exception.Create('CreateNewClass new aligned TypeData');
+
+  // set TypeData (PropCount is the total number of properties)
+  NewTypeData^.ClassType:=TClass(NewVMT);
+  NewTypeData^.ParentInfo:=ParentClass.ClassInfo;
+  NewTypeData^.PropCount:=GetTypeData(NewTypeData^.ParentInfo)^.PropCount;
+  NewTypeData^.UnitName:=NewUnitName;
+  AddedPropCount:=PWord(@(NewTypeData^.UnitName)+Length(NewTypeData^.UnitName)+1);
+  AddedPropCount^:=0;
+
+  // copy the standard methods
+  System.Move(Pointer(Pointer(ParentClass)+vmtMethodStart)^,
+              Pointer(NewVMT+vmtMethodStart)^,
+              vmtTailSize);
+
+  Result:=TClass(NewVMT);
+end;
+
+procedure TJITComponentList.FreeJITClass(var AClass: TClass);
+
+  procedure FreeMethodTableEntries(MethodTable: PMethodNameTable);
+  var
+    CurCount, i: integer;
+    CurMethod: TMethodNameRec;
+  begin
+    if MethodTable=nil then exit;
+    CurCount:=MethodTable^.Count;
+    i:=CurCount;
+    while i>0 do begin
+      CurMethod:=MethodTable^.Entries[i-1];
+      if CurMethod.Name<>nil then
+        FreeMem(CurMethod.Name);
+      if CurMethod.Addr<>nil then
+        FreeMem(CurMethod.Addr);
+      dec(i);
+    end;
+  end;
+
+var
+  OldVMT: Pointer;
+  ClassNamePShortString: Pointer;
+  OldFieldTable: PFieldTable;
+  OldTypeInfo: PTypeInfo;
+  OldMethodTable: PMethodNameTable;
+begin
+  OldVMT:=Pointer(AClass);
+  // free methodtable
+  OldMethodTable:=PMethodNameTable((OldVMT+vmtMethodTable)^);
+  if Assigned(OldMethodTable) then begin
+    FreeMethodTableEntries(OldMethodTable);
+    FreeMem(OldMethodTable);
+  end;
+  // free classname
+  ClassNamePShortString:=Pointer(Pointer(OldVMT+vmtClassName)^);
+  FreeMem(ClassNamePShortString);
+  // free field table
+  OldFieldTable:=PFieldTable(Pointer(OldVMT+vmtFieldTable)^);
+  ReallocMem(OldFieldTable^.ClassTable,0);
+  FreeMem(OldFieldTable);
+  // free typeinfo
+  OldTypeInfo:=PTypeInfo(Pointer(OldVMT+vmtTypeInfo)^);
+  FreeMem(OldTypeInfo);
+  // free vmt
+  FreeMem(OldVMT);
+  AClass:=nil;
+end;
+{$ELSE UseJITClasses}
 function TJITComponentList.CreateVMTCopy(SourceClass:TClass;
   const NewClassName:ShortString):Pointer;
 const
   vmtSize:integer=5000; //XXX how big is the vmt of class TJITForm ?
-var MethodTable, NewMethodTable : PMethodNameTable;
+var MethodTable, NewMethodTable: PMethodNameTable;
   MethodTableSize: integer;
   ClassNamePtr, ClassNamePShortString: Pointer;
 begin
@@ -667,7 +973,7 @@ begin
     PPointer(Result+vmtMethodTable)^:=NewMethodTable;
   end;
   // create pointer to classname
-  // set ClassNamePtr to point to the PShortString of ClassName 
+  // set ClassNamePtr to point to the PShortString of ClassName
   ClassNamePtr:=Pointer(Result)+vmtClassName;
   GetMem(ClassNamePShortString,SizeOf(ShortString));
   Pointer(ClassNamePtr^):=ClassNamePShortString;
@@ -721,6 +1027,7 @@ begin
   // free copy of VMT
   FreeMem(vmtCopy);
 end;
+{$ENDIF UseJITClasses}
 
 procedure TJITComponentList.DoAddNewMethod(JITClass:TClass;
   const AName:ShortString;  ACode:Pointer);
@@ -1007,7 +1314,11 @@ end;
 
 function TJITForms.CreateDefaultVMTCopy: Pointer;
 begin
+  {$IFDEF UseJITClasses}
+  Result:=CreateNewJITClass(TForm,'TJITForm','JITUnit');
+  {$ELSE}
   Result:=CreateVMTCopy(TJITForm,'TJITForm');
+  {$ENDIF}
 end;
 
 
@@ -1020,7 +1331,11 @@ end;
 
 function TJITDataModules.CreateDefaultVMTCopy: Pointer;
 begin
-  Result:=CreateVMTCopy(TJITDataModule,'TJITDataModule');
+  {$IFDEF UseJITClasses}
+  Result:=CreateNewJITClass(TDataModule,'TJITDataModule','JITUnit');
+  {$ELSE}
+  Result:=CreateVMTCopy(TJITForm,'TJITForm');
+  {$ENDIF}
 end;
 
 constructor TJITDataModules.Create;

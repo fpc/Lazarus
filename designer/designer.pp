@@ -994,7 +994,7 @@ begin
   Sender.Dispatch(TheMessage);
   if ControlSelection.SelectionForm=Form then begin
     if not ControlSelection.IsResizing then begin
-      {writeln('###  TDesigner.SizeControl ',Sender.Name,':',Sender.ClassName,
+      {debugln('###  TDesigner.SizeControl ',Sender.Name,':',Sender.ClassName,
         ' ',Sender.Width,',',Sender.Height,
         ' Type=',TheMessage.SizeType
         ,' ',TheMessage.Width,',',TheMessage.Height,' Pos=',Sender.Left,',',Sender.Top);}
@@ -1011,10 +1011,10 @@ function TDesigner.MoveControl(Sender: TControl; TheMessage: TLMMove):boolean;
 begin
   Result:=true;
   Sender.Dispatch(TheMessage);
-  //writeln('***  TDesigner.MoveControl A ',Sender.Name,':',Sender.ClassName,' ',ControlSelection.SelectionForm=Form,' ',not ControlSelection.IsResizing,' ',ControlSelection.IsSelected(Sender));
+  //debugln('***  TDesigner.MoveControl A ',Sender.Name,':',Sender.ClassName,' ',ControlSelection.SelectionForm=Form,' ',not ControlSelection.IsResizing,' ',ControlSelection.IsSelected(Sender));
   if ControlSelection.SelectionForm=Form then begin
     if not ControlSelection.IsResizing then begin
-      //writeln('***  TDesigner.MoveControl ',Sender.Name,':',Sender.ClassName,' ',Assigned(FOnPropertiesChanged));
+      //debugln('***  TDesigner.MoveControl ',Sender.Name,':',Sender.ClassName,' ',Assigned(FOnPropertiesChanged));
       ControlSelection.UpdateBounds;
       if Assigned(FOnPropertiesChanged) then
         FOnPropertiesChanged(Self);

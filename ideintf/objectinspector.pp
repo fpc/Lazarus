@@ -25,6 +25,7 @@
    - replace pair splitter with splitter
    - Define Init values
    - Set to init value
+   - add favorites page
 }
 unit ObjectInspector;
 
@@ -120,8 +121,8 @@ type
     FEditor: TPropertyEditor;
     procedure GetLvl;
   public
-    constructor Create(PropertyTree:TOICustomPropertyGrid;  PropEditor:TPropertyEditor;
-       ParentNode:TOIPropertyGridRow);
+    constructor Create(PropertyTree:TOICustomPropertyGrid;
+       PropEditor:TPropertyEditor; ParentNode:TOIPropertyGridRow);
     destructor Destroy; override;
     function ConsistencyCheck: integer;
     function HasChild(Row: TOIPropertyGridRow): boolean;
@@ -161,25 +162,25 @@ type
     FCurrentEdit: TWinControl;  // nil or ValueEdit or ValueComboBox
     FCurrentEditorLookupRoot: TPersistent;
     FDefaultItemHeight:integer;
-    FDragging:boolean;
-    FExpandedProperties:TStringList;
-    FExpandingRow:TOIPropertyGridRow;
+    FDragging: boolean;
+    FExpandedProperties: TStringList;
+    FExpandingRow: TOIPropertyGridRow;
     FFilter: TTypeKinds;
-    FIndent:integer;
-    FItemIndex:integer;
-    FNameFont,FDefaultValueFont,FValueFont:TFont;
+    FIndent: integer;
+    FItemIndex: integer;
+    FNameFont, FDefaultValueFont, FValueFont: TFont;
     FOnModified: TNotifyEvent;
     FPreferredSplitterX: integer; // best splitter position
     FPropertyEditorHook: TPropertyEditorHook;
     FRows:TList;
     FSelection: TPersistentSelectionList;
-    FSplitterX:integer; // current splitter position
+    FSplitterX: integer; // current splitter position
     FStates: TOIPropertyGridStates;
-    FTopY:integer;
+    FTopY: integer;
 
     // hint stuff
-    FHintTimer : TTimer;
-    FHintWindow : THintWindow;
+    FHintTimer: TTimer;
+    FHintWindow: THintWindow;
     Procedure HintTimer(Sender: TObject);
     Procedure ResetHintTimer;
     procedure OnUserInput(Sender: TObject; Msg: Cardinal);
