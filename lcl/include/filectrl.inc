@@ -458,6 +458,7 @@ var
   // size
   // date
   // time
+  mode:mode_t;
 {$ENDIF}
 begin
   Result:='';
@@ -468,55 +469,56 @@ begin
   
   // permissions
   // file type
-  if STAT_IFLNK and info.mode=STAT_IFLNK then
+  mode:={$ifdef ver1_0} info.mode {$else} info.st_mode {$endif};
+  if STAT_IFLNK and mode=STAT_IFLNK then
     Result:=Result+'l'
   else
-  if STAT_IFDIR and info.mode=STAT_IFDIR then
+  if STAT_IFDIR and mode=STAT_IFDIR then
     Result:=Result+'d'
   else
-  if STAT_IFBLK and info.mode=STAT_IFBLK then
+  if STAT_IFBLK and mode=STAT_IFBLK then
     Result:=Result+'b'
   else
-  if STAT_IFCHR and info.mode=STAT_IFCHR then
+  if STAT_IFCHR and mode=STAT_IFCHR then
     Result:=Result+'c'
   else
     Result:=Result+'-';
   // user permissions
-  if STAT_IRUSR and info.mode=STAT_IRUsr then
+  if STAT_IRUSR and mode=STAT_IRUsr then
     Result:=Result+'r'
   else
     Result:=Result+'-';
-  if STAT_IWUsr and info.mode=STAT_IWUsr then
+  if STAT_IWUsr and mode=STAT_IWUsr then
     Result:=Result+'w'
   else
     Result:=Result+'-';
-  if STAT_IXUsr and info.mode=STAT_IXUsr then
+  if STAT_IXUsr and mode=STAT_IXUsr then
     Result:=Result+'x'
   else
     Result:=Result+'-';
   // group permissions
-  if STAT_IRGRP and info.mode=STAT_IRGRP then
+  if STAT_IRGRP and mode=STAT_IRGRP then
     Result:=Result+'r'
   else
     Result:=Result+'-';
-  if STAT_IWGRP and info.mode=STAT_IWGRP then
+  if STAT_IWGRP and mode=STAT_IWGRP then
     Result:=Result+'w'
   else
     Result:=Result+'-';
-  if STAT_IXGRP and info.mode=STAT_IXGRP then
+  if STAT_IXGRP and mode=STAT_IXGRP then
     Result:=Result+'x'
   else
     Result:=Result+'-';
   // other permissions
-  if STAT_IROTH and info.mode=STAT_IROTH then
+  if STAT_IROTH and mode=STAT_IROTH then
     Result:=Result+'r'
   else
     Result:=Result+'-';
-  if STAT_IWOTH and info.mode=STAT_IWOTH then
+  if STAT_IWOTH and mode=STAT_IWOTH then
     Result:=Result+'w'
   else
     Result:=Result+'-';
-  if STAT_IXOTH and info.mode=STAT_IXOTH then
+  if STAT_IXOTH and mode=STAT_IXOTH then
     Result:=Result+'x'
   else
     Result:=Result+'-';
@@ -526,7 +528,7 @@ begin
   //Result:=Result+' Owner: '+IntToStr(info.uid)+'.'+IntToStr(info.gid);
 
   // size
-  Result:=Result+'  size '+IntToStr(info.size);
+  Result:=Result+'  size '+IntToStr({$ifdef ver1_0}info.size{$else}info.st_size{$endif});
   
   {$ENDIF}
   // date + time
@@ -894,6 +896,9 @@ end;
 
 {
   $Log$
+  Revision 1.34  2003/11/04 11:41:15  marco
+   * Small 1.1 fixe
+
   Revision 1.33  2003/11/03 16:57:47  peter
     * change $ifdef ver1_1 to $ifndef ver1_0 so it works also with
       fpc 1.9.x
