@@ -1,12 +1,10 @@
 #!/bin/bash
 
 set -e
-#set -x
+set -x
 
 FPCSrcDir=$1
 OutputFile=$2
-
-fpcsrc-1.0.7-1.tgz
 
 Usage="Usage: $0 <fpc_source_directory> <outputfile>"
 
@@ -25,36 +23,40 @@ if [ ! -d $FPCSrcDir/compiler ]; then
   exit
 fi
 
+TmpBaseDir=/tmp
+TmpDir=$TmpBaseDir/fpc
+
 echo "copy $FPCSrcDir to /tmp/fpc ..."
-cd /tmp
-rm -rf /tmp/fpc
+cd $TmpBaseDir
+rm -rf $TmpDir
 cd -
-cp -a $FPCSrcDir /tmp/fpc
+cp -a $FPCSrcDir $TmpDir
 
 echo "cleaning up (CVS, ppu, o) ..."
-cd /tmp/fpc
+cd $TmpDir
 make distclean
-find . -name '*.ppu' -exec rm -rf {} \;
-find . -name '*.rst' -exec rm -rf {} \;
+
+for Ext in ppu ppw ppl o ow rst; do
+  find . -name "*.$Ext" -exec rm -f {} \;
+done
 rm -f *.tar.gz
 if [ -d CVS ]; then
+  # use xargs to remove directories (otherwise find returns strange things)
   find . -name 'CVS' | xargs rm -r
 fi
 cd -
-cd /tmp/fpc/docs
+# clean up docs
+cd $TmpDir/docs
 make clean
 cd -
 
 # pack
 echo "creating tgz ..."
-cd /tmp
+cd $TmpBaseDir
 tar czf fpc_src.tgz fpc
 cd -
-mv /tmp/fpc_src.tgz $OutputFile
-rm -rf /tmp/fpc
-
-echo ""
-echo "NOTE: DON'T FORGET TO PUT THE $OutputFile INTO /usr/src/redhat/SOURCES/"
+mv $TmpBaseDir/fpc_src.tgz $OutputFile
+rm -rf $TmpDir
 
 
 # end.

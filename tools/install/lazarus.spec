@@ -8,8 +8,8 @@ Summary: Lazarus Component Library and IDE
 Packager: Mattias Gaertner (mattias@freepascal.org)
 URL: http://www.lazarus.freepascal.org/
 BuildRoot: %{_tmppath}/lazarus-build
-BuildRequires: fpc >= 1.0.8
-Requires: fpcsrc >= 1.0.8
+BuildRequires: fpc >= 1.0.10
+Requires: fpcsrc >= 1.0.10
 Requires: gdk-pixbuf-devel >= 0.18.0
 
 %define lazdir %{_datadir}/lazarus

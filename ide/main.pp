@@ -8519,10 +8519,6 @@ begin
 
   if AComponent=ADesigner.LookupRoot then begin
     // rename owner component (e.g. the form)
-    // ToDo:
-    //   rename form in source
-    //   rename formclass
-    //   replace createform statement
 
     // check if component name already exists
     i:=Project1.IndexOfUnitWithComponentName(NewName,true,ActiveUnitInfo);
@@ -9355,6 +9351,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.623  2003/07/12 09:11:28  mattias
+  updated build scripts
+
   Revision 1.622  2003/07/11 11:56:44  mattias
   fixed renaming a TDataModule
 

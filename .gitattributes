@@ -935,6 +935,7 @@ tools/apiwizz/apiwizard.pp svneol=native#text/pascal
 tools/apiwizz/apiwizz.pp svneol=native#text/pascal
 tools/check_ide_libs.sh -text svneol=native#application/x-sh
 tools/install/build_fpc_rpm.sh -text svneol=native#application/x-sh
+tools/install/build_fpcsrc_rpm.sh -text svneol=native#application/x-sh
 tools/install/create_fpc_deb.sh -text svneol=native#application/x-sh
 tools/install/create_fpc_export_tgz.sh -text svneol=native#application/x-sh
 tools/install/create_fpc_rpm.sh -text svneol=native#application/x-sh
