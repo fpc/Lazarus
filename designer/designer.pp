@@ -52,6 +52,9 @@ type
     Value: boolean) of object;
   TOnComponentAdded = procedure(Sender: TObject; Component: TComponent;
     ComponentClass: TRegisteredComponent) of object;
+  TOnPasteComponent = procedure(Sender: TObject; LookupRoot: TComponent;
+    TxtCompStream: TStream; ParentControl: TWinControl;
+    var NewComponent: TComponent) of object;
   TOnRemoveComponent = procedure(Sender: TObject; Component: TComponent)
     of object;
   TOnComponentDeleted = procedure(Sender: TObject; Component: TComponent)
@@ -91,6 +94,7 @@ type
     FOnGetNonVisualCompIconCanvas: TOnGetNonVisualCompIconCanvas;
     FOnGetSelectedComponentClass: TOnGetSelectedComponentClass;
     FOnModified: TNotifyEvent;
+    FOnPasteComponent: TOnPasteComponent;
     FOnProcessCommand: TOnProcessCommand;
     FOnPropertiesChanged: TNotifyEvent;
     FOnRemoveComponent: TOnRemoveComponent;
@@ -162,7 +166,8 @@ type
     Procedure NudgeControl(DiffX, DiffY: Integer);
     Procedure NudgeSize(DiffX, DiffY: Integer);
     procedure SelectParentOfSelection;
-    procedure DoCopySelectionToClipboard;
+    function DoCopySelectionToClipboard: boolean;
+    procedure DoPasteSelectionFromClipboard;
 
     // popup menu
     procedure BuildPopupMenu;
@@ -209,6 +214,8 @@ type
     function WinControlAtPos(x,y: integer): TWinControl;
     function GetDesignedComponent(AComponent: TComponent): TComponent;
     function GetComponentEditorForSelection: TBaseComponentEditor;
+    function GetShiftState: TShiftState; override;
+
     procedure AddComponentEditorMenuItems(
       AComponentEditor: TBaseComponentEditor; AParentMenuItem: TMenuItem);
 
@@ -219,7 +226,6 @@ type
        Operation: TOperation); override;
     procedure ValidateRename(AComponent: TComponent;
        const CurName, NewName: string); override;
-    function GetShiftState: TShiftState; override;
     function CreateUniqueComponentName(const AClassName: string): string; override;
 
     procedure PaintGrid; override;
@@ -250,6 +256,8 @@ type
     property OnProcessCommand: TOnProcessCommand
                                  read FOnProcessCommand write FOnProcessCommand;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
+    property OnPasteComponent: TOnPasteComponent read FOnPasteComponent
+                                                 write FOnPasteComponent;
     property OnPropertiesChanged: TNotifyEvent
                            read FOnPropertiesChanged write FOnPropertiesChanged;
     property OnRemoveComponent: TOnRemoveComponent
@@ -274,8 +282,7 @@ type
                                        read FTheFormEditor write FTheFormEditor;
   end;
 
-var
-  ClipBrdSelectionFormat: TClipboardFormat;
+function GetClipBrdSelectionFormat: TClipboardFormat;
 
 implementation
 
@@ -290,6 +297,16 @@ const
   mk_control =   8;
   mk_mbutton = $10;
 
+var
+  ClipBrdSelectionFormat: TClipboardFormat;
+
+function GetClipBrdSelectionFormat: TClipboardFormat;
+begin
+  if ClipBrdSelectionFormat=0 then
+    ClipBrdSelectionFormat:=
+      RegisterClipboardFormat('application/lazarus.componentselection');
+  Result:=ClipBrdSelectionFormat;
+end;
 
 constructor TDesigner.Create(TheDesignerForm: TCustomForm;
   AControlSelection: TControlSelection);
@@ -377,44 +394,56 @@ begin
     SelectOnlyThisComponent(TControl(ControlSelection[i].Component).Parent);
 end;
 
-procedure TDesigner.DoCopySelectionToClipboard;
-var
-  i: Integer;
-  AParent, CurParent: TWinControl;
-  AllComponentsStream, BinCompStream, TxtCompStream: TMemoryStream;
-  CurComponent: TComponent;
-  {$IFDEF VerboseDesigner}
-  s: string;
-  {$ENDIF}
-begin
-  if ControlSelection.Count=0 then exit;
+function TDesigner.DoCopySelectionToClipboard: boolean;
 
-  // Because controls will be pasted on a single parent,
-  // unselect all controls, that do not have the same parent
-  AParent:=nil;
-  i:=0;
-  while i<ControlSelection.Count do begin
-    if ControlSelection[i].IsTControl then begin
-      CurParent:=TControl(ControlSelection[i].Component).Parent;
-      if CurParent=nil then begin
-        MessageDlg('Can not copy top level component.',
-          'Copying a whole form is not implemented.',
-          mtError,[mbCancel],0);
-        exit;
+  function UnselectDistinctControls: boolean;
+  var
+    i: Integer;
+    AParent, CurParent: TWinControl;
+  begin
+    Result:=false;
+    AParent:=nil;
+    i:=0;
+    while i<ControlSelection.Count do begin
+      if ControlSelection[i].IsTControl then begin
+        // unselect controls from which the parent is selected too
+        if ControlSelection[i].ParentInSelection then begin
+          ControlSelection.Delete(i);
+          continue;
+        end;
+
+        // check if not the top level component is selected
+        CurParent:=TControl(ControlSelection[i].Component).Parent;
+        if CurParent=nil then begin
+          MessageDlg('Can not copy top level component.',
+            'Copying a whole form is not implemented.',
+            mtError,[mbCancel],0);
+          exit;
+        end;
+
+        // unselect all controls, that do not have the same parent
+        if (AParent=nil) then
+          AParent:=CurParent
+        else if (AParent<>CurParent) then begin
+          ControlSelection.Delete(i);
+          continue;
+        end;
       end;
-      if (AParent=nil) then
-        AParent:=CurParent
-      else if (AParent<>CurParent) then begin
-        ControlSelection.Delete(i);
-        continue;
-      end;
+      inc(i);
     end;
-    inc(i);
+    Result:=true;
   end;
 
-  // copy components to stream
-  AllComponentsStream:=TMemoryStream.Create;
-  try
+  function CopySelectionToStream(AllComponentsStream: TStream): boolean;
+  var
+    i: Integer;
+    BinCompStream: TMemoryStream;
+    TxtCompStream: TMemoryStream;
+    CurComponent: TComponent;
+    Driver: TBinaryObjectWriter;
+    Writer: TWriter;
+  begin
+    Result:=false;
     for i:=0 to ControlSelection.Count-1 do begin
       BinCompStream:=TMemoryStream.Create;
       TxtCompStream:=TMemoryStream.Create;
@@ -422,7 +451,21 @@ begin
         // write component binary stream
         try
           CurComponent:=ControlSelection[i].Component;
-          BinCompStream.WriteComponent(CurComponent);
+
+          Driver := TBinaryObjectWriter.Create(BinCompStream, 4096);
+          Try
+            Writer := TWriter.Create(Driver);
+            Try
+              Writer.Root:=FLookupRoot;
+              Writer.WriteComponent(CurComponent);
+            Finally
+              Writer.Destroy;
+            end;
+          Finally
+            Driver.Free;
+          end;
+
+          //BinCompStream.WriteComponent(CurComponent);
         except
           on E: Exception do begin
             MessageDlg('Unable to stream selected components',
@@ -456,22 +499,210 @@ begin
         TxtCompStream.Free;
       end;
     end;
-    AllComponentsStream.Position:=0;
+    Result:=true;
+  end;
+  
+var
+  AllComponentsStream: TMemoryStream;
+  {$IFDEF VerboseDesigner}
+  s: string;
+  {$ENDIF}
+begin
+  Result:=false;
+  if ControlSelection.Count=0 then exit;
+
+  // Because controls will be pasted on a single parent,
+  // unselect all controls, that do not have the same parent
+  if not UnselectDistinctControls then exit;
+
+  AllComponentsStream:=TMemoryStream.Create;
+  try
+    // copy components to stream
+    if not CopySelectionToStream(AllComponentsStream) then exit;
     {$IFDEF VerboseDesigner}
     SetLength(s,AllComponentsStream.Size);
-    if s<>'' then
+    if s<>'' then begin
+      AllComponentsStream.Position:=0;
       AllComponentsStream.Read(s[1],length(s));
+    end;
     writeln('TDesigner.DoCopySelectionToClipboard==============================');
     writeln(s);
     writeln('TDesigner.DoCopySelectionToClipboard==============================');
     {$ENDIF}
-    
-    try
-      ClipBrdSelectionFormat:=
-        RegisterClipboardFormat('application/lazarus.componentselection');
-    except
 
+    // copy to clipboard
+    try
+      AllComponentsStream.Position:=0;
+      ClipBoard.SetFormat(GetClipBrdSelectionFormat,AllComponentsStream);
+    except
+      on E: Exception do begin
+        MessageDlg('Unable copy components to clipboard',
+          'There was an error while copying the component stream to clipboard:'#13
+          +E.Message,
+          mtError,[mbCancel],0);
+        exit;
+      end;
     end;
+  finally
+    AllComponentsStream.Free;
+  end;
+  Result:=true;
+end;
+
+procedure TDesigner.DoPasteSelectionFromClipboard;
+var
+  AllComponentsStream: TMemoryStream;
+  AllComponentText: string;
+  StartPos: Integer;
+  EndPos: Integer;
+  CurTextCompStream: TStream;
+  PasteParent: TWinControl;
+  
+  procedure GetPasteParent;
+  var
+    i: Integer;
+  begin
+    if PasteParent<>nil then exit;
+    
+    for i:=0 to ControlSelection.Count-1 do begin
+      if (ControlSelection[i].Component is TWinControl)
+      and (csAcceptsControls in
+           TWinControl(ControlSelection[i].Component).ControlStyle)
+      and (not ControlSelection[i].ParentInSelection) then begin
+        PasteParent:=TWinControl(ControlSelection[i].Component);
+        break;
+      end;
+    end;
+    if (PasteParent=nil)
+    and (FLookupRoot is TWinControl) then
+      PasteParent:=TWinControl(FLookupRoot);
+  end;
+  
+  procedure FindUniquePosition(AComponent: TComponent);
+  var
+    OverlappedComponent: TComponent;
+    P: TPoint;
+    AControl: TControl;
+    AParent: TWinControl;
+    i: Integer;
+    OverlappedControl: TControl;
+  begin
+    if AComponent is TControl then begin
+      AControl:=TControl(AComponent);
+      AParent:=AControl.Parent;
+      if AParent=nil then exit;
+      P:=Point(AControl.Left,AControl.Top);
+      i:=AParent.ControlCount-1;
+      while i>=0 do begin
+        OverlappedControl:=AParent.Controls[i];
+        if (OverlappedControl<>AComponent)
+        and (OverlappedControl.Left=P.X)
+        and (OverlappedControl.Top=P.Y) then begin
+          inc(P.X,NonVisualCompWidth);
+          inc(P.Y,NonVisualCompWidth);
+          if (P.X>AParent.ClientWidth-AControl.Width)
+          or (P.Y>AParent.ClientHeight-AControl.Height) then
+            break;
+          i:=AParent.ControlCount-1;
+        end else
+          dec(i);
+      end;
+      P.x:=Max(0,Min(P.x,AParent.ClientWidth-AControl.Width));
+      P.y:=Max(0,Min(P.y,AParent.ClientHeight-AControl.Height));
+      AControl.SetBounds(P.x,P.y,AControl.Width,AControl.Height);
+    end else begin
+      P:=GetParentFormRelativeTopLeft(AComponent);
+      repeat
+        OverlappedComponent:=NonVisualComponentAtPos(P.x,P.y);
+        if (OverlappedComponent=nil) then break;
+        inc(P.X,NonVisualCompWidth);
+        inc(P.Y,NonVisualCompWidth);
+        if (P.X+NonVisualCompWidth>Form.ClientWidth)
+        or (P.Y+NonVisualCompWidth>Form.ClientHeight) then
+          break;
+      until false;
+      LongRec(AComponent.DesignInfo).Lo:=
+        Max(0,Min(P.x,Form.ClientWidth-NonVisualCompWidth));
+      LongRec(AComponent.DesignInfo).Hi:=
+        Max(0,Min(P.y,Form.ClientHeight-NonVisualCompWidth));
+    end;
+  end;
+  
+  function PasteComponent(TextCompStream: TStream): boolean;
+  var
+    NewComponent: TComponent;
+  begin
+    Result:=false;
+    TextCompStream.Position:=0;
+    if Assigned(FOnPasteComponent) then begin
+      NewComponent:=nil;
+      FOnPasteComponent(Self,FLookupRoot,TextCompStream,
+                        PasteParent,NewComponent);
+      if NewComponent=nil then exit;
+      FindUniquePosition(NewComponent);
+    end;
+
+    Result:=true;
+  end;
+  
+begin
+  if not CanPaste then exit;
+
+  PasteParent:=nil;
+  GetPasteParent;
+
+  AllComponentsStream:=TMemoryStream.Create;
+  try
+    // read component stream from clipboard
+    ClipBoard.GetFormat(GetClipBrdSelectionFormat,AllComponentsStream);
+    if AllComponentsStream.Size=0 then exit;
+    
+    SetLength(AllComponentText,AllComponentsStream.Size);
+    if AllComponentText<>'' then begin
+      AllComponentsStream.Position:=0;
+      AllComponentsStream.Read(AllComponentText[1],length(AllComponentText));
+    end;
+
+    AllComponentsStream.Position:=0;
+    
+    StartPos:=1;
+    EndPos:=StartPos;
+    // read till 'end'
+    while EndPos<=length(AllComponentText) do begin
+      if (AllComponentText[EndPos] in ['e','E'])
+      and (EndPos>1)
+      and (AllComponentText[EndPos-1] in [#10,#13])
+      and (AnsiCompareText(copy(AllComponentText,EndPos,3),'END')=0)
+      and ((EndPos+3>length(AllComponentText))
+           or (AllComponentText[EndPos+3] in [#10,#13]))
+      then begin
+        inc(EndPos,4);
+        while (EndPos<=length(AllComponentText))
+        and (AllComponentText[EndPos] in [' ',#10,#13])
+        do
+          inc(EndPos);
+        // extract text for the current component
+        writeln('TDesigner.DoPasteSelectionFromClipboard==============================');
+        writeln(copy(AllComponentText,StartPos,EndPos-StartPos));
+        writeln('TDesigner.DoPasteSelectionFromClipboard==============================');
+        
+        CurTextCompStream:=TMemoryStream.Create;
+        try
+          CurTextCompStream.Write(AllComponentText[StartPos],EndPos-StartPos);
+          CurTextCompStream.Position:=0;
+          // create component from stream
+          if not PasteComponent(CurTextCompStream) then exit;
+
+        finally
+          CurTextCompStream.Free;
+        end;
+        
+        StartPos:=EndPos;
+      end else begin
+        inc(EndPos);
+      end;
+    end;
+
   finally
     AllComponentsStream.Free;
   end;
@@ -489,17 +720,20 @@ end;
 
 procedure TDesigner.CutSelection;
 begin
-
+  if DoCopySelectionToClipboard then
+    DoDeleteSelectedComponents;
 end;
 
 function TDesigner.CanPaste: Boolean;
 begin
-  Result:=false;
+  Result:=(Form<>nil)
+      and (FLookupRoot<>nil)
+      and (not (csDestroying in FLookupRoot.ComponentState));
 end;
 
 procedure TDesigner.PasteSelection;
 begin
-
+  DoPasteSelectionFromClipboard;
 end;
 
 procedure TDesigner.DeleteSelection;
