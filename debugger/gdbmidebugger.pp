@@ -48,6 +48,11 @@ type
     SignalText: String;  // Signal text if we hit one
   end;
 
+  TGDBMIDebuggerState = (
+    gdbmisWaitingForKill
+    );
+  TGDBMIDebuggerStates = set of TGDBMIDebuggerState;
+
 
   { TGDBMIDebugger }
 
@@ -59,6 +64,7 @@ type
     FTargetPID: Integer;
     FBreakErrorBreakID: Integer;
     FExceptionBreakID: Integer;
+    fGDBMIStates: TGDBMIDebuggerStates;
     FVersion: String;
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
     function  GDBEvaluate(const AExpression: String; var AResult: String): Boolean;
@@ -91,6 +97,7 @@ type
     function  CreateLocals: TDBGLocals; override;
     function  CreateCallStack: TDBGCallStack; override;
     function  CreateWatches: TDBGWatches; override;
+    procedure DoState(const OldState: TDBGState); override;
     function  GetSupportedCommands: TDBGCommands; override;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
   public
@@ -351,6 +358,23 @@ begin
   Result := TDBGWatches.Create(Self, TGDBMIWatch);
 end;
 
+procedure TGDBMIDebugger.DoState(const OldState: TDBGState);
+begin
+  writeln('TGDBMIDebugger.DoState State=',DBGStateNames[State],' OldState=',DBGStateNames[OldState],' ',gdbmisWaitingForKill in fGDBMIStates);
+  // check if state change should sent a notification or is internal
+  if gdbmisWaitingForKill in fGDBMIStates then begin
+    // we are waiting for the debugger to kill the process
+    // -> hide the temporary dsPause state
+    if State=dsPause then begin
+      writeln('[TGDBMIDebugger.DoState] Hiding dsPause while waiting for kill');
+      exit;
+    end;
+    Exclude(fGDBMIStates,gdbmisWaitingForKill);
+  end;
+  // send a notification
+  inherited DoState(OldState);
+end;
+
 destructor TGDBMIDebugger.Destroy;
 begin
   inherited;
@@ -416,7 +440,7 @@ function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
   const ANoMICommand: Boolean): Boolean;
 var
   S: String;
-  IsKill: Boolean;
+  //IsKill: Boolean;
 begin
   AResultValues := '';
   AResultState := dsNone;
@@ -428,7 +452,7 @@ begin
     // Kill is a special case, since it requires additional
     // processing after the command is executed. Until we have
     // added a callback meganism, we handle it here
-    IsKill := S = 'kill';
+    //IsKill := S = 'kill';
     
     SendCmdLn(S, AValues);
     Result := ProcessResult(AResultState, AResultValues,
@@ -440,6 +464,8 @@ begin
       then SetState(AResultState);
       if AResultState = dsRun
       then Result := ProcessRunning;
+    end else begin
+      writeln('WARNING: TGDBMIDebugger.ExecuteCommand Command="',ACommand,'" failed.');
     end;
     FCommandQueue.Delete(0);
     if FStoppedParams <> ''
@@ -448,8 +474,8 @@ begin
       FStoppedParams := '';
       ProcessStopped(S);
     end;
-    if IsKill
-    then GDBStop2;
+    //if IsKill
+    //then GDBStop2;
   until not Result or (FCommandQueue.Count = 0);
 end;
 
@@ -577,6 +603,7 @@ var
   ResultList, BkptList: TStringList;
   TargetPIDPart: String;
 begin
+  Exclude(FGDBMIStates,gdbmisWaitingForKill);
   if State in [dsStop]
   then begin
     if FHasSymbols
@@ -692,6 +719,7 @@ end;
 function TGDBMIDebugger.GDBStop: Boolean;
 begin
   Result := False;
+  Include(FGDBMIStates,gdbmisWaitingForKill);
   
   if State = dsError
   then begin
@@ -731,7 +759,8 @@ end;
 
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
 begin
-  Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak{, dcWatch}, dcLocal, dcEvaluate, dcModify]
+  Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto,
+             dcBreak{, dcWatch}, dcLocal, dcEvaluate, dcModify]
 end;
 
 procedure TGDBMIDebugger.Init;
@@ -850,6 +879,8 @@ begin
           WriteLN('[Debugger] Target output: ', S);
         end;
         '&': begin // log-stream-output
+          if S='&"kill\n"' then
+            ANewState:=dsStop;
           WriteLN('[Debugger] Log output: ', S);
         end;
         '*', '+', '=': begin
@@ -1032,7 +1063,7 @@ begin
   List := CreateMIValueList(AParams);
   try
     Reason := List.Values['reason'];
-    if Reason = 'exited-normally'
+    if (Reason = 'exited-normally') or (gdbmisWaitingForKill in fGDBMIStates)
     then begin
       SetState(dsStop);
       Exit;
@@ -1820,6 +1851,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.22  2003/06/02 21:37:30  mattias
+  fixed debugger stop
+
   Revision 1.21  2003/05/30 00:53:09  marc
   MWE: * fixed debugger.stop
 
