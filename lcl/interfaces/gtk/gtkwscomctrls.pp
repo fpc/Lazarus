@@ -46,9 +46,10 @@ type
   { TGtkWSStatusBar }
 
   TGtkWSStatusBar = class(TWSStatusBar)
-  private
-  protected
   public
+    class procedure PanelUpdate(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure SetPanelText(const AStatusBar: TStatusBar; PanelIndex: integer); override;
+    class procedure Update(const AStatusBar: TStatusBar); override;
   end;
 
   { TGtkWSTabSheet }
@@ -1037,6 +1038,42 @@ begin
     gtk_range_get_adjustment(GTK_RANGE(Pointer(Handle)))), 'value_changed');
 end;
 
+{ TGtkWSStatusBar }
+
+procedure TGtkWSStatusBar.PanelUpdate(const AStatusBar: TStatusBar;
+  PanelIndex: integer);
+var
+  HBox: PGtkWidget;
+  StatusPanelWidget: PGtkWidget;
+  BoxChild: PGtkBoxChild;
+begin
+  //DebugLn('TGtkWidgetSet.StatusBarPanelUpdate ',HexStr(Cardinal(AStatusBar),8),' PanelIndex=',dbgs(PanelIndex));
+  if PanelIndex>=0 then begin
+    // update one
+    HBox:=PGtkWidget(AStatusBar.Handle);
+    BoxChild:=PGtkBoxChild(g_list_nth_data(PGtkBox(HBox)^.children,PanelIndex));
+    if BoxChild=nil then
+      RaiseGDBException('TGtkWidgetSet.StatusBarPanelUpdate Index out of bounds');
+    StatusPanelWidget:=BoxChild^.Widget;
+    UpdateStatusBarPanel(AStatusBar,PanelIndex,StatusPanelWidget);
+  end else begin
+    // update all
+    UpdateStatusBarPanels(AStatusBar,PGtkWidget(AStatusBar.Handle));
+  end;
+end;
+
+procedure TGtkWSStatusBar.SetPanelText(const AStatusBar: TStatusBar;
+  PanelIndex: integer);
+begin
+  PanelUpdate(AStatusBar,PanelIndex);
+end;
+
+procedure TGtkWSStatusBar.Update(const AStatusBar: TStatusBar);
+begin
+  //DebugLn('TGtkWidgetSet.StatusBarUpdate ',HexStr(Cardinal(AStatusBar),8));
+  UpdateStatusBarPanels(AStatusBar,PGtkWidget(AStatusBar.Handle));
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -1045,7 +1082,7 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCustomStatusBar, TGtkWSStatusBar);
+  RegisterWSComponent(TStatusBar, TGtkWSStatusBar);
 //  RegisterWSComponent(TCustomTabSheet, TGtkWSTabSheet);
 //  RegisterWSComponent(TCustomPageControl, TGtkWSPageControl);
   RegisterWSComponent(TCustomListView, TGtkWSCustomListView);

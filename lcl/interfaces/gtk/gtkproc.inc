@@ -5455,6 +5455,149 @@ begin
   Result:=MenuItemWidget;
 end;
 
+function CreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
+begin
+  Result:=gtk_statusbar_new;
+  gtk_widget_show(Result);
+  // other properties are set in UpdateStatusBarPanels
+end;
+
+procedure UpdateStatusBarPanels(StatusBar: TObject;
+  StatusBarWidget: PGtkWidget);
+var
+  AStatusBar: TStatusBar;
+  HBox: PGtkWidget;
+  CurPanelCount: integer;
+  NewPanelCount: Integer;
+  CurStatusPanelWidget: PGtkWidget;
+  ListItem: PGList;
+  i: Integer;
+  ExpandItem: boolean;
+begin
+  //DebugLn('UpdateStatusBarPanels ',HexStr(Cardinal(StatusBar),8));
+
+  AStatusBar:=StatusBar as TStatusBar;
+  HBox:=PGtkWidget(StatusBarWidget);
+  if (not GtkWidgetIsA(StatusBarWidget,GTK_HBOX_GET_TYPE)) then
+    RaiseGDBException('');
+
+  // create needed panels
+  CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
+  if AStatusBar.SimplePanel or (AStatusBar.Panels.Count<1) then
+    NewPanelCount:=1
+  else
+    NewPanelCount:=AStatusBar.Panels.Count;
+  while CurPanelCount<NewPanelCount do begin
+    CurStatusPanelWidget:=CreateStatusBarPanel(StatusBar,CurPanelCount);
+    ExpandItem:=(CurPanelCount=NewPanelCount-1);
+    gtk_box_pack_start(PGtkBox(HBox),CurStatusPanelWidget,
+                       ExpandItem,ExpandItem,0);
+    inc(CurPanelCount);
+  end;
+
+  // remove unneeded panels
+  while CurPanelCount>NewPanelCount do begin
+    CurStatusPanelWidget:=PGtkBoxChild(
+              g_list_nth_data(PGtkBox(HBox)^.children,CurPanelCount-1))^.Widget;
+    DestroyConnectedWidgetCB(CurStatusPanelWidget,true);
+    dec(CurPanelCount);
+  end;
+
+  // check new panel count
+  CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
+  //DebugLn('TGtkWidgetSet.UpdateStatusBarPanels B ',HexStr(Cardinal(StatusBar),8),' NewPanelCount=',NewPanelCount,' CurPanelCount=',CurPanelCount);
+  if CurPanelCount<>NewPanelCount then
+    RaiseGDBException('');
+
+  // set panel properties
+  ListItem:=PGTKBox(HBox)^.children;
+  i:=0;
+  while ListItem<>nil do begin
+    CurStatusPanelWidget:=PGtkBoxChild(PGTKWidget(ListItem^.data))^.widget;
+    ExpandItem:=(ListItem^.next=nil);
+    gtk_box_set_child_packing(PGtkBox(HBox),CurStatusPanelWidget,
+      ExpandItem,ExpandItem,0,GTK_PACK_START);
+    UpdateStatusBarPanel(StatusBar,i,CurStatusPanelWidget);
+    inc(i);
+    ListItem:=ListItem^.next;
+  end;
+end;
+
+procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
+  StatusPanelWidget: PGtkWidget);
+var
+  AStatusBar: TStatusBar;
+  CurPanel: TStatusPanel;
+  FrameWidget: PGtkWidget;
+  LabelWidget: PGtkLabel;
+  PanelText: String;
+  ContextID: LongWord;
+  NewShadowType: TGtkShadowType;
+  NewJustification: TGtkJustification;
+begin
+  //DebugLn('UpdateStatusBarPanel ',HexStr(Cardinal(StatusBar),8),' Index=',dbgs(Index));
+  AStatusBar:=StatusBar as TStatusBar;
+
+  CurPanel:=nil;
+  if (not AStatusBar.SimplePanel) and (AStatusBar.Panels.Count>Index) then
+    CurPanel:=AStatusBar.Panels[Index];
+  //DebugLn('Panel ',Index,' ',GetWidgetClassName(StatusPanelWidget),
+  //  ' frame=',GetWidgetClassName(PGTKStatusBar(StatusPanelWidget)^.frame),
+  //  ' thelabel=',GetWidgetClassName(PGTKStatusBar(StatusPanelWidget)^.thelabel),
+  // '');
+  FrameWidget:=PGTKStatusBar(StatusPanelWidget)^.frame;
+  LabelWidget:=PGtkLabel({$ifdef gtk2}PGTKStatusBar(StatusPanelWidget)^._label{$else}PGTKStatusBar(StatusPanelWidget)^.thelabel{$endif});
+
+  // Text
+  if AStatusBar.SimplePanel then
+    PanelText:=AStatusBar.SimpleText
+  else if CurPanel<>nil then
+    PanelText:=CurPanel.Text
+  else
+    PanelText:='';
+  ContextID:=gtk_statusbar_get_context_id(PGTKStatusBar(StatusPanelWidget),
+                                          'state');
+  //DebugLn('  PanelText="',PanelText,'"');
+  if PanelText<>'' then
+    gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget),ContextID,
+                       PGChar(PanelText))
+  else
+    gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget),ContextID,'');
+
+
+  // Alignment
+  if CurPanel<>nil then begin
+    //DebugLn('  Alignment="',ord(CurPanel.Alignment),'"');
+    case CurPanel.Alignment of
+    taLeftJustify: NewJustification:=GTK_JUSTIFY_LEFT;
+    taRightJustify: NewJustification:=GTK_JUSTIFY_RIGHT;
+    taCenter: NewJustification:=GTK_JUSTIFY_CENTER;
+    else
+      NewJustification:=GTK_JUSTIFY_LEFT;
+    end;
+    gtk_label_set_justify(LabelWidget,NewJustification);
+  end;
+
+  // Bevel
+  if CurPanel<>nil then begin
+    case CurPanel.Bevel of
+    pbNone: NewShadowType:=GTK_SHADOW_NONE;
+    pbLowered: NewShadowType:=GTK_SHADOW_IN;
+    pbRaised: NewShadowType:=GTK_SHADOW_OUT;
+    else
+      NewShadowType:=GTK_SHADOW_IN;
+    end;
+    gtk_frame_set_shadow_type(PGtkFrame(FrameWidget),NewShadowType);
+  end;
+
+  // Width
+  if (CurPanel<>nil) then begin
+    //DebugLn('  CurPanel.Width="',CurPanel.Width,'"');
+    gtk_widget_set_usize(StatusPanelWidget,CurPanel.Width,
+      StatusPanelWidget^.allocation.height);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   SaveSizeNotification
   Params: Widget: PGtkWidget  A widget that is the handle of a lcl control.
@@ -7632,6 +7775,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.315  2004/10/16 15:36:49  mattias
+  implemented gtkwscomctrls.TGtkWSStatusBar
+
   Revision 1.314  2004/10/16 08:59:26  vincents
   fixed fpc 1.0 compilation
 

@@ -164,6 +164,8 @@ begin
   {$IFDEF Use_KeyStateList}
   FKeyStateList_ := TList.Create;
   {$ENDIF}
+  
+  DestroyConnectedWidgetCB:=@DestroyConnectedWidget;
 
   FRCFilename := ChangeFileExt(ParamStr(0),'.gtkrc');
   FRCFileParsed := false;
@@ -4769,7 +4771,7 @@ end;
 
   Creates a new statusbar panel widget.
  ------------------------------------------------------------------------------}
-function TGtkWidgetSet.CreateStatusBarPanel(StatusBar: TObject; Index: integer
+function TGtkWidgetSet.OldCreateStatusBarPanel(StatusBar: TObject; Index: integer
   ): PGtkWidget;
 begin
   Result:=gtk_statusbar_new;
@@ -4783,7 +4785,7 @@ end;
 
   Update the widget(s) of a TStatusBar.
  ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.UpdateStatusBarPanels(StatusBar: TObject;
+procedure TGtkWidgetSet.OldUpdateStatusBarPanels(StatusBar: TObject;
   StatusBarWidget: PGtkWidget);
 var
   AStatusBar: TStatusBar;
@@ -4850,7 +4852,7 @@ end;
 
   Update the widget(s) of a single TStatusBar panel.
  ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
+procedure TGtkWidgetSet.OldUpdateStatusBarPanel(StatusBar: TObject; Index: integer;
   StatusPanelWidget: PGtkWidget);
 var
   AStatusBar: TStatusBar;
@@ -4890,7 +4892,7 @@ begin
                        PGChar(PanelText))
   else
     gtk_statusbar_push(PGTKStatusBar(StatusPanelWidget),ContextID,'');
-                       
+
 
   // Alignment
   if CurPanel<>nil then begin
@@ -6944,6 +6946,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.606  2004/10/16 15:36:49  mattias
+  implemented gtkwscomctrls.TGtkWSStatusBar
+
   Revision 1.605  2004/10/01 13:16:44  mattias
   fixed unselecting TCanvas objects
 

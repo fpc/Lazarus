@@ -265,6 +265,13 @@ procedure DrawMenuItemIcon(MenuItem: PGtkCheckMenuItem; Area: PGdkRectangle); cd
 procedure MenuSizeRequest(widget:PGtkWidget; requisition:PGtkRequisition); cdecl;
 
 //==============================================================================
+type
+  TDestroyConnectedWidgetCB = procedure(Widget: PGtkWidget;
+                                      CheckIfDestroying: boolean) of object;
+var
+  DestroyConnectedWidgetCB: TDestroyConnectedWidgetCB; // set by the TGtkWidgetSet
+
+//==============================================================================
 // functions
 
 // debugging
@@ -626,6 +633,13 @@ procedure UpdateInnerMenuItem(LCLMenuItem: TMenuItem;
 function CreateMenuItem(LCLMenuItem: TMenuItem): Pointer;
 procedure GetGdkPixmapFromMenuItem(LCLMenuItem: TMenuItem;
   var IconImg, IconMask: PGdkPixmap; var Width, Height: integer);
+
+// statusbar
+function CreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
+procedure UpdateStatusBarPanels(StatusBar: TObject;
+                                StatusBarWidget: PGtkWidget);
+procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
+                               StatusPanelWidget: PGtkWidget);
 
 // size messages
 procedure SaveSizeNotification(Widget: PGtkWidget);

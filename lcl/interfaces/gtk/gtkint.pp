@@ -134,7 +134,7 @@ type
     function CreateListView(ListViewObject: TObject): PGtkWidget;
     function CreatePairSplitter(PairSplitterObject: TObject): PGtkWidget;
     function CreateStatusBar(StatusBar: TObject): PGtkWidget;
-    function CreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
+    function OldCreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
     function CreateSimpleClientAreaWidget(Sender: TObject;
       NotOnParentsClientArea: boolean): PGtkWidget;
     function CreateToolBar(ToolBarObject: TObject): PGtkWidget;
@@ -142,7 +142,7 @@ type
     procedure DestroyConnectedWidget(Widget: PGtkWidget;
                                      CheckIfDestroying: boolean);virtual;
     function  RecreateWnd(Sender: TObject): Integer; virtual;
-    procedure AssignSelf(Child ,Data : Pointer);virtual;
+    procedure AssignSelf(Child, Data: Pointer);virtual;
 
     // clipboard
     procedure SetClipboardWidget(TargetWidget: PGtkWidget);virtual;
@@ -228,9 +228,9 @@ type
     Function GetCaption(Sender : TObject) : String; virtual;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
       var Lines: PPChar; var LineCount: integer);
-    procedure UpdateStatusBarPanels(StatusBar: TObject;
+    procedure OldUpdateStatusBarPanels(StatusBar: TObject;
                                     StatusBarWidget: PGtkWidget); virtual;
-    procedure UpdateStatusBarPanel(StatusBar: TObject; Index: integer;
+    procedure OldUpdateStatusBarPanel(StatusBar: TObject; Index: integer;
                                    StatusPanelWidget: PGtkWidget); virtual;
 
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
@@ -430,6 +430,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.217  2004/10/16 15:36:49  mattias
+  implemented gtkwscomctrls.TGtkWSStatusBar
+
   Revision 1.216  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods
