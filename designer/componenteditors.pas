@@ -555,13 +555,10 @@ begin
   Hook:=nil;
   if not GetHook(Hook) then exit;
   NewPage:=NoteBook.Page[Index];
-writeln('TNotebookComponentEditor.AddNewPageToDesigner ',NewPage<>nil,' ',Hook<>nil);
   NewName:=GetDesigner.CreateUniqueComponentName(NewPage.ClassName);
   NewPage.Caption:=NewName;
   NewPage.Name:=NewName;
-writeln('TNotebookComponentEditor.AddNewPageToDesigner ',Index);
   NoteBook.PageIndex:=Index;
-writeln('TNotebookComponentEditor.AddNewPageToDesigner ',NoteBook.PageIndex);
   Hook.ComponentAdded(NewPage,true);
   GetDesigner.Modified;
 end;
@@ -622,8 +619,6 @@ end;
 procedure TNotebookComponentEditor.DoMoveActivePage(
   CurIndex, NewIndex: Integer);
 begin
-writeln('TNotebookComponentEditor.DoMoveActivePage ',CurIndex,' -> ',NewIndex,
-' ',NoteBook.Pages.ClassName);
   NoteBook.Pages.Move(CurIndex,NewIndex);
   GetDesigner.Modified;
 end;

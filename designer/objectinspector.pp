@@ -705,6 +705,7 @@ begin
     if (NewIndex>=0) and (NewIndex<FRows.Count) then begin
       NewRow:=Rows[NewIndex];
       NewRow.Editor.Activate;
+writeln('  NewRow.Editor.ClassName=',NewRow.Editor.ClassName);
       if paDialog in NewRow.Editor.GetAttributes then begin
         FCurrentButton:=ValueButton;
         FCurrentButton.Visible:=true;
