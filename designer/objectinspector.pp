@@ -717,8 +717,7 @@ writeln('  NewRow.Editor.ClassName=',NewRow.Editor.ClassName);
         ValueComboBox.Items.BeginUpdate;
         ValueComboBox.Items.Text:='';
         ValueComboBox.Items.Clear;
-        // XXX
-        //ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
+        ValueComboBox.Sorted:=paSortList in NewRow.Editor.GetAttributes;
         NewRow.Editor.GetValues(@AddStringToComboBox);
         ValueComboBox.Text:=NewValue;
         ValueComboBox.Items.EndUpdate;

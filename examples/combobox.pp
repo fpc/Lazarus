@@ -87,10 +87,12 @@ End;
 
 procedure TForm1.Button2Click(Sender : TObject);
 Begin
-   if assigned (ComboBox1) 
+{   if assigned (ComboBox1) 
       then Combobox1.Items.Add ('item ' + IntToStr (comboBox1.Items.Count));
    if assigned (ComboBox2) 
-      then Combobox2.Items.Add ('item ' + IntToStr (comboBox2.Items.Count));
+      then Combobox2.Items.Add ('item ' + IntToStr (comboBox2.Items.Count));}
+  ComboBox1.Items.Add(Edit1.Text);
+  ComboBox2.Items.Add(Edit1.Text);
 End;
 
 procedure TForm1.Button3Click(Sender : TObject);
@@ -386,7 +388,11 @@ end.
 
 {
   $Log$
+  Revision 1.6  2002/09/07 20:30:50  lazarus
+  Make TComboboxes sort again, including in OI
+
   Revision 1.5  2002/08/30 06:46:03  lazarus
+
   Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
   Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
   Make Anchors work again and publish them for various controls.
