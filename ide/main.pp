@@ -501,10 +501,6 @@ end;
 
 { TMainIDE }
 
-{$DEFINE IDE_IMPLEMENTATION}
-{$I ide_debugger.inc}
-{$UNDEF IDE_IMPLEMENTATION}  
-
 procedure TMainIDE.ParseCmdLineOptions;
 const
   PrimaryConfPathOpt='--primary-config-path=';
@@ -6174,6 +6170,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.260  2002/03/27 11:35:56  lazarus
+  MG: removed ide_debugger.inc
+
   Revision 1.259  2002/03/27 10:39:42  lazarus
   MG: splitted main.pp: debugger management in TDebugManager
 
