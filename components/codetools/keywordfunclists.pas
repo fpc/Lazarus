@@ -879,6 +879,8 @@ begin
   with IsKeyWordBuiltInFunc do begin
     Add('LOW',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('HIGH',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LO',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('HI',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('ORD',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PREC',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('SUCC',{$ifdef FPC}@{$endif}AllwaysTrue);
@@ -894,6 +896,8 @@ begin
     Add('WRITELN',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('READ',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('READLN',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('TYPEOF',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('ASSIGNED',{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
   WordIsTermOperator:=TKeyWordFunctionList.Create;
