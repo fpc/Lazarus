@@ -2460,38 +2460,24 @@ begin
     csProgressBar:
       With (TProgressBar(Sender)) Do
       Begin
+        { smooth and vertical need window recreation }
+        if ((GetWindowLong(Handle, GWL_STYLE) and PBS_SMOOTH  ) <>
+             Integer(Smooth) * PBS_SMOOTH) or
+           ((GetWindowLong(Handle, GWL_STYLE) and PBS_VERTICAL) <>
+             Integer((Orientation = pbVertical) or (Orientation = pbTopDown)) * PBS_VERTICAL) then
+          Self.RecreateWnd(Sender);
+
         SendMessage(Handle, PBM_SETRANGE, 0, MakeLParam(Min, Max));
         SendMessage(Handle, PBM_SETPOS, Position, 0);
-        If Smooth Then
-          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or PBS_SMOOTH)
-        Else
-          SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) And Not PBS_SMOOTH);
-        Case Orientation Of
-          pbVertical:
-            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or PBS_VERTICAL);
-          pbRightToLeft:
-          Begin
-            Assert(False, 'TRACE:TRYING to create a right-to-left progress bar');
-            SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) And Not WS_EX_LTRREADING);
-          End;
-          pbTopDown:
-          Begin
-            Assert(False, 'TRACE: TRYING to create a vertical, top-to-bottom progress bar');
-            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) Or PBS_VERTICAL);
-            SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) And Not WS_EX_LTRLEADING);
-          End;
-          Else { pbHorizontal is default }
-          Begin
-            SetWindowLong(Handle, GWL_STYLE, GetWindowLong(Handle, GWL_STYLE) And Not PBS_VERTICAL);
-            SetWindowLong(Handle, GWL_EXSTYLE, GetWindowLong(Handle, GWL_EXSTYLE) Or WS_EX_LTRLEADING);
-          End;
-        End;
+
+{ TODO: Implementable?
         If BarShowText Then
         Begin
           SetWindowText(Handle, StrToPChar((Sender As TControl).Caption));
         End
         Else
           SetWindowText(Handle, Nil);
+}
     End;
     csScrollBar:
       With (TScrollBar(Sender)) Do
@@ -2674,6 +2660,9 @@ End;
 
 {
   $Log$
+  Revision 1.58  2003/06/26 14:24:50  mattias
+  fixed progressbar SET_PROPERTIES from Micha
+
   Revision 1.57  2003/06/25 20:49:58  mattias
   fixed menu destroy from Micha
 
