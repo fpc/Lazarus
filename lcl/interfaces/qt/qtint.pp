@@ -82,9 +82,42 @@ type
 const
    TargetEntrys = 3;
 
-Implementation
+implementation
 
-uses Graphics, buttons, Menus, CListBox;
+uses 
+////////////////////////////////////////////////////
+// I M P O R T A N T
+////////////////////////////////////////////////////
+// To get as litle as posible circles,
+// Uncomment only those units with implementation
+////////////////////////////////////////////////////
+// qtwsactnlist,
+// qtwsarrow,
+// qtwsbuttons,
+// qtwscalendar,
+// qtwschecklst,
+// qtwsclistbox,
+// qtwscomctrls,
+// qtwscontrols,
+// qtwsdbctrls,
+// qtwsdbgrids,
+// qtwsdialogs,
+// qtwsdirsel,
+// qtwseditbtn,
+// qtwsextctrls,
+// qtwsextdlgs,
+// qtwsfilectrl,
+// qtwsforms,
+// qtwsgrids,
+// qtwsimglist,
+// qtwsmaskedit,
+// qtwsmenus,
+// qtwspairsplitter,
+// qtwsspin,
+// qtwsstdctrls,
+// qtwstoolwin,
+////////////////////////////////////////////////////
+  Graphics, buttons, Menus, CListBox;
 
 
 const

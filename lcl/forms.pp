@@ -43,7 +43,7 @@ interface
 uses
   Classes, Controls, LCLStrConsts, VCLGlobals, SysUtils, LCLType, LCLProc,
   LCLIntf, InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages,
-  CustomTimer, ActnList, ClipBrd,CustApp;
+  CustomTimer, ActnList, ClipBrd, CustApp, LCLClasses;
 
 type
   TProcedure = procedure;
@@ -588,7 +588,7 @@ type
     snActiveFormChanged
     );
 
-  TScreen = class(TComponent)
+  TScreen = class(TLCLComponent)
   private
     FActiveControl: TWinControl;
     FActiveCustomForm: TCustomForm;
@@ -870,7 +870,7 @@ type
 
   { TApplicationProperties }
 
-  TApplicationProperties = class(TComponent)
+  TApplicationProperties = class(TLCLComponent)
   private
     FCaptureExceptions: boolean;
     FHelpFile: string;

@@ -325,6 +325,38 @@ type
 implementation
 
 uses
+////////////////////////////////////////////////////
+// I M P O R T A N T
+////////////////////////////////////////////////////
+// To get as litle as posible circles,
+// Uncomment only those units with implementation
+////////////////////////////////////////////////////
+// gtkwsactnlist,
+// gtkwsarrow,
+// gtkwsbuttons,
+// gtkwscalendar,
+// gtkwschecklst,
+// gtkwsclistbox,
+// gtkwscomctrls,
+// gtkwscontrols,
+// gtkwsdbctrls,
+// gtkwsdbgrids,
+// gtkwsdialogs,
+// gtkwsdirsel,
+// gtkwseditbtn,
+// gtkwsextctrls,
+// gtkwsextdlgs,
+// gtkwsfilectrl,
+// gtkwsforms,
+// gtkwsgrids,
+// gtkwsimglist,
+// gtkwsmaskedit,
+// gtkwsmenus,
+// gtkwspairsplitter,
+// gtkwsspin,
+// gtkwsstdctrls,
+// gtkwstoolwin,
+////////////////////////////////////////////////////
   Buttons, StdCtrls, PairSplitter, Math,
   GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl,
   ExtCtrls, FileCtrl, LResources, gtkglobals, gtkproc;
@@ -425,6 +457,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.173  2004/03/17 00:34:37  marc
+  * Interface reconstruction. Created skeleton units, classes and wscontrols
+
   Revision 1.172  2004/03/05 00:31:52  marc
   * Renamed TGtkObject to TGtkWidgetSet
 

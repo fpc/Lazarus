@@ -51,7 +51,7 @@ interface
 
 uses
   SysUtils, Classes, FPCAdds, LCLStrConsts, LResources, vclGlobals, LCLProc,
-  Graphics, GraphType;
+  Graphics, GraphType, LCLClasses;
 
 type
   TImageIndex = type integer;
@@ -98,7 +98,7 @@ type
   TDrawingStyle = (dsFocus, dsSelected, dsNormal, dsTransparent);
   TImageType = (itImage, itMask);
 
-  TCustomImageList = Class(TComponent)
+  TCustomImageList = Class(TLCLComponent)
   private
     FDrawingStyle: TDrawingStyle;
     FImageList: TList;  //shane
@@ -210,6 +210,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2004/03/17 00:34:37  marc
+  * Interface reconstruction. Created skeleton units, classes and wscontrols
+
   Revision 1.17  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

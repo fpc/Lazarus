@@ -147,6 +147,37 @@ Type
 Implementation
 
 Uses
+////////////////////////////////////////////////////
+// I M P O R T A N T
+////////////////////////////////////////////////////
+// To get as litle as posible circles,
+// Uncomment only those units with implementation
+////////////////////////////////////////////////////
+// win32wsactnlist,
+// win32wsarrow,
+// win32wsbuttons,
+// win32wscalendar,
+// win32wschecklst,
+// win32wscomctrls,
+// win32wscontrols,
+// win32wsdbctrls,
+// win32wsdbgrids,
+// win32wsdialogs,
+// win32wsdirsel,
+// win32wseditbtn,
+// win32wsextctrls,
+// win32wsextdlgs,
+// win32wsfilectrl,
+// win32wsforms,
+// win32wsgrids,
+// win32wsimglist,
+// win32wsmaskedit,
+// win32wsmenus,
+// win32wspairsplitter,
+// win32wsspin,
+// win32wsstdctrls,
+// win32wstoolwin,
+////////////////////////////////////////////////////
   Arrow, Buttons, Calendar, CListBox, Spin, CheckLst, WinExt;
 
 Type
@@ -191,6 +222,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.72  2004/03/17 00:34:37  marc
+  * Interface reconstruction. Created skeleton units, classes and wscontrols
+
   Revision 1.71  2004/03/05 01:04:21  marc
   * Renamed TWin32Object to TWin32WidgetSet
 

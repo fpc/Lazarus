@@ -39,7 +39,7 @@ interface
 uses
   Classes, SysUtils, LCLIntf, InterfaceBase, FileCtrl, LCLStrConsts, LCLType,
   VCLGlobals, LMessages, Forms, Controls, GraphType, Graphics, Buttons,
-  StdCtrls;
+  StdCtrls, LCLClasses;
 
 
 type
@@ -69,7 +69,7 @@ type
 
   { TCommonDialog }
 
-  TCommonDialog = class(TComponent)
+  TCommonDialog = class(TLCLComponent)
   private
     FHandle : integer;
     FHeight: integer;
@@ -411,6 +411,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.47  2004/03/17 00:34:37  marc
+  * Interface reconstruction. Created skeleton units, classes and wscontrols
+
   Revision 1.46  2004/02/23 08:19:04  micha
   revert intf split
 

@@ -77,6 +77,38 @@ var
 implementation
 
 uses
+////////////////////////////////////////////////////
+// I M P O R T A N T
+////////////////////////////////////////////////////
+// To get as litle as posible circles,
+// Uncomment only those units with implementation
+////////////////////////////////////////////////////
+// gnomewsactnlist,
+// gnomewsarrow,
+// gnomewsbuttons,
+// gnomewscalendar,
+// gnomewschecklst,
+// gnomewsclistbox,
+// gnomewscomctrls,
+// gnomewscontrols,
+// gnomewsdbctrls,
+// gnomewsdbgrids,
+// gnomewsdialogs,
+// gnomewsdirsel,
+// gnomewseditbtn,
+// gnomewsextctrls,
+// gnomewsextdlgs,
+// gnomewsfilectrl,
+// gnomewsforms,
+// gnomewsgrids,
+// gnomewsimglist,
+// gnomewsmaskedit,
+// gnomewsmenus,
+// gnomewspairsplitter,
+// gnomewsspin,
+// gnomewsstdctrls,
+// gnomewstoolwin,
+////////////////////////////////////////////////////
   Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
   Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
   LResources, Math, gtkglobals, gtkproc, LCLStrConsts;
@@ -245,6 +277,9 @@ end.
 
 {
   $Log$
+  Revision 1.23  2004/03/17 00:34:37  marc
+  * Interface reconstruction. Created skeleton units, classes and wscontrols
+
   Revision 1.22  2004/03/05 00:46:08  marc
   * Renamed TGnomeObject to TGnomeWidgetSet
 

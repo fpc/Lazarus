@@ -46,7 +46,7 @@ uses
   ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl, ExtCtrls,
   Dialogs, ExtDlgs, FileCtrl, LResources, Math, GTKGlobals,
 
-  gtkDef, gtkProc, gtkInt;
+  gtkDef, gtkInt;
 
 type
   TGtk2WidgetSet = class(TGtkWidgetSet)
@@ -129,6 +129,41 @@ procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPix
 {$EndIf}
 
 implementation
+  
+uses
+////////////////////////////////////////////////////
+// I M P O R T A N T
+////////////////////////////////////////////////////
+// To get as litle as posible circles,
+// Uncomment only those units with implementation
+////////////////////////////////////////////////////
+// gtk2wsactnlist,
+// gtk2wsarrow,
+// gtk2wsbuttons,
+// gtk2wscalendar,
+// gtk2wschecklst,
+// gtk2wsclistbox,
+// gtk2wscomctrls,
+// gtk2wscontrols,
+// gtk2wsdbctrls,
+// gtk2wsdbgrids,
+// gtk2wsdialogs,
+// gtk2wsdirsel,
+// gtk2wseditbtn,
+// gtk2wsextctrls,
+// gtk2wsextdlgs,
+// gtk2wsfilectrl,
+// gtk2wsforms,
+// gtk2wsgrids,
+// gtk2wsimglist,
+// gtk2wsmaskedit,
+// gtk2wsmenus,
+// gtk2wspairsplitter,
+// gtk2wsspin,
+// gtk2wsstdctrls,
+// gtk2wstoolwin,
+////////////////////////////////////////////////////
+  gtkProc;
 
 {$include gtk2object.inc}
 {$include gtk2winapi.inc}
@@ -561,6 +596,9 @@ end.
 
 {
   $Log$
+  Revision 1.31  2004/03/17 00:34:37  marc
+  * Interface reconstruction. Created skeleton units, classes and wscontrols
+
   Revision 1.30  2004/03/09 15:30:15  peter
     * fixed gtk2 compilation
 

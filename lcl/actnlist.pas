@@ -26,7 +26,7 @@ unit ActnList;
 interface
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLProc, ImgList;
+  Classes, SysUtils, LCLStrConsts, LCLProc, ImgList, LCLClasses;
   
 type
 
@@ -68,7 +68,7 @@ type
   TActionEvent = procedure (Action: TBasicAction; var Handled: Boolean) of object;
   TActionListState = (asNormal, asSuspended, asSuspendedEnabled);
 
-  TCustomActionList = class(TComponent)
+  TCustomActionList = class(TLCLComponent)
   private
     FActions: TList;
     FImageChangeLink: TChangeLink;

@@ -42,7 +42,7 @@ interface
 uses
   Classes, SysUtils, LCLStrConsts, vclglobals, LCLType, LCLProc,
   GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList, UTrace,
-  Menus, ActnList;
+  Menus, ActnList, LCLClasses;
 
 
 const
@@ -659,7 +659,7 @@ type
     );
   TControlHandlerTypes = set of TControlHandlerType;
 
-  TControl = class(TComponent)
+  TControl = class(TLCLComponent)
   private
     FActionLink: TControlActionLink;
     FAlign : TAlign;
@@ -2241,6 +2241,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.190  2004/03/17 00:34:37  marc
+  * Interface reconstruction. Created skeleton units, classes and wscontrols
+
   Revision 1.189  2004/03/15 09:06:57  mattias
   added FindDragTarget
 

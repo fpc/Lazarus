@@ -46,7 +46,8 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, VCLGlobals,
-  LCLIntf, InterfaceBase, LMessages, ActnList, Graphics, ImgList;
+  LCLIntf, InterfaceBase, LMessages, ActnList, Graphics, ImgList, 
+  LCLClasses;
 
 
 type
@@ -92,7 +93,7 @@ type
 
   { TMenuItem }
 
-  TMenuItem = class(TComponent)
+  TMenuItem = class(TLCLComponent)
   private
     FActionLink: TMenuActionLink;
     FAutoCheck: boolean;
@@ -245,7 +246,7 @@ type
 
   TFindItemKind = (fkCommand, fkHandle, fkShortCut);
 
-  TMenu = class(TComponent)
+  TMenu = class(TLCLComponent)
   private
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
@@ -407,6 +408,9 @@ end.
 
 {
   $Log$
+  Revision 1.66  2004/03/17 00:34:37  marc
+  * Interface reconstruction. Created skeleton units, classes and wscontrols
+
   Revision 1.65  2004/02/23 08:19:04  micha
   revert intf split
 
