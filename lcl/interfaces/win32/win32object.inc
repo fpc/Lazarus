@@ -1061,8 +1061,6 @@ Begin
     MainForm := Application.MainForm
   Else If FMainForm <> Nil then
     MainForm := FMainForm;
-  if MainForm<> Nil then
-    DestroyWindow(MainForm.Handle);
 End;
 
 {------------------------------------------------------------------------------
@@ -2661,6 +2659,9 @@ End;
 
 {
   $Log$
+  Revision 1.61  2003/06/28 13:11:40  mattias
+  fixed destroying windows from Micha
+
   Revision 1.60  2003/06/28 12:49:26  mattias
   fixed LM_SETSIZE from Micha
 
