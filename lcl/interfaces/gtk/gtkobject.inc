@@ -1326,7 +1326,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TgtkObject.ResizeChild(Sender : TObject;
   Left, Top, Width, Height : Integer);
-{ $DEFINE VerboseResizeChild}
 var
   pFixed: PGTKFixed;
   pWidget: PGTKWidget;
@@ -1335,6 +1334,11 @@ var
   {$IFDEF VerboseResizeChild}
   DummyWidget: PGtkWidget;
   Dummy: TPoint;
+  {$ENDIF}
+  {$IFDEF ClientRectBugFix}
+  OldFixWidgetWidth, OldFixWidgetHeight, OldWidgetWidth, OldWidgetHeight,
+  NewFixWidgetWidth, NewFixWidgetHeight: integer;
+  pClientWidget: PGTKWidget;
   {$ENDIF}
 begin
   //writeln('[TgtkObject.ResizeChild] START ',TControl(Sender).Name,':',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
@@ -1355,14 +1359,18 @@ begin
       {$IFDEF VerboseResizeChild}
       if pWidget^.Window<>nil then begin
         gdk_window_get_size(pWidget^.Window, @Dummy.X, @Dummy.Y);
-        write('ResizeChild: ',TControl(Sender).Name,':',Sender.Classname,
+        writeln('ResizeChild: ',TControl(Sender).Name,':',Sender.Classname,
+          ' Widget=',HexStr(Cardinal(pWidget),8),
           ' OldWidSize=',Dummy.X,',',Dummy.Y,
-          ' NewSize=',Width,',',Height);
+          ' NewSize=',Width,',',Height,
+          ' Allocation=',pWidget^.Allocation.Width,',',pWidget^.Allocation.Height,
+          ' Requisiton=',pWidget^.Requisition.Width,',',pWidget^.Requisition.Height
+          );
         DummyWidget := GetFixedWidget(pWidget);
         if (DummyWidget <> nil) then begin
           if (DummyWidget^.Window<>nil) then begin
             gdk_window_get_size(DummyWidget^.Window, @Dummy.X, @Dummy.Y);
-            writeln('  OldFixWidSize=',Dummy.X,',',Dummy.Y,
+            writeln('    OldFixWidSize=',Dummy.X,',',Dummy.Y,
               ' Allocation=',DummyWidget^.Allocation.Width,',',DummyWidget^.Allocation.Height,
               ' Requisiton=',DummyWidget^.Requisition.Width,',',DummyWidget^.Requisition.Height);
           end else
@@ -1377,27 +1385,56 @@ begin
       end;
       {$ENDIF}
 
-
-      // move widget on the fixed widget of parent control
       if not IsTopLevelWidget then begin
-        //gtk_widget_set_usize(pWidget, -1, -1);
+        { The LCL expects, that if a widget is resized, its client area is
+          resized immediately.
+          The client area under gtk is the fixed widget, which will be resized
+          automatically by the gtk via a resize request. So, the gtk does not
+          resize the client area immediately.
+          So, this function will return to the LCL, the LCL will resize the
+          child components with an uninitialized or old client area.
+          
+          ToDo:
+            - add a flag: uninitialzed fixed widget size
+               - will be set to true at creation time
+               - will be set to false on gtksize_allocate_client
+            - change LCL, so that clients are only aligned, if
+        
+        }
+        // resize fixed widget (= client area)
+        {$IFDEF ClientRectBugFix}
+        pClientWidget := GetFixedWidget(pWidget);
+        if (pClientWidget<>nil) then begin
+          OldWidgetWidth:=pWidget^.Allocation.Width;
+          OldWidgetHeight:=pWidget^.Allocation.Height;
+          OldFixWidgetWidth:=pClientWidget^.Allocation.Width;
+          OldFixWidgetHeight:=pClientWidget^.Allocation.Height;
+          NewFixWidgetWidth:=Width-OldWidgetWidth+OldFixWidgetWidth;
+          if NewFixWidgetWidth<1 then NewFixWidgetWidth:=1;
+          NewFixWidgetHeight:=Height-OldWidgetHeight+OldFixWidgetHeight;
+          if NewFixWidgetHeight<1 then NewFixWidgetHeight:=1;
+          {$IFDEF VerboseResizeChild}
+          //writeln('  RESIZING fixed widget: ',NewFixWidgetWidth,',',NewFixWidgetHeight);
+          {$ENDIF}
+          //gtk_widget_set_usize(pClientWidget,
+          //                     NewFixWidgetWidth, NewFixWidgetHeight);
+        end;
+        {$ENDIF}
+        // resize widget
         gtk_widget_set_usize(pWidget, Width, Height);
-        if Parent <> nil then begin
-          pFixed := GetFixedWidget(PGtkWidget(Parent.Handle));
-          if pFixed <> nil then begin
-            gtk_fixed_move(pFixed, pWidget, Left, Top);
-          end else begin
-            if not (Parent is TNoteBook) then begin
-              writeln('WARNING: TgtkObject.ResizeChild - no Fixed Widget found');
-              writeln('  Control=',TControl(Sender).Name,':',Sender.ClassName,
-                      '  Parent=',Parent.Name,':',Parent.ClassName);
-            end;
-            Assert(False, 'WARNING: TgtkObject.ResizeChild - no Fixed Widget found');
-            //raise Exception.Create('TgtkObject.ResizeChild - no Fixed Widget found');
-          end;
+        // move widget on the fixed widget of parent control
+        //gtk_widget_set_usize(pWidget, -1, -1);
+        pFixed := GetFixedWidget(PGtkWidget(Parent.Handle));
+        if pFixed <> nil then begin
+          gtk_fixed_move(pFixed, pWidget, Left, Top);
         end else begin
-          Assert(False, 'ERROR: TgtkObject.ResizeChild - no Parent Control found');
-          raise Exception.Create('TgtkObject.ResizeChild - no Parent Control found');
+          if not (Parent is TNoteBook) then begin
+            writeln('WARNING: TgtkObject.ResizeChild - no Fixed Widget found');
+            writeln('  Control=',TControl(Sender).Name,':',Sender.ClassName,
+                    '  Parent=',Parent.Name,':',Parent.ClassName);
+          end;
+          Assert(False, 'WARNING: TgtkObject.ResizeChild - no Fixed Widget found');
+          //raise Exception.Create('TgtkObject.ResizeChild - no Fixed Widget found');
         end;
       end
       else begin
@@ -1850,8 +1887,8 @@ begin
     begin
       if (sender is TCustomComboBox) then
          Begin
-           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.entry), 'button-press-event',  @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
-           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.button) , 'button-press-event', @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
+           ConnectSignal(PgtkObject(PgtkCombo(gObject)^.entry), 'button-press-event',  @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
+           ConnectSignal(PgtkObject(PgtkCombo(gObject)^.button) , 'button-press-event', @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
 //         Connecting the list seems to cause errors. Maybe we are returning the wrong boolean in the callback func
 //           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.list), 'button-press-event',  @gtkmousebtnpress, GDK_BUTTON_PRESS_MASK);
 
@@ -1866,8 +1903,8 @@ begin
     begin
       if (sender is TCustomComboBox) then
          Begin
-           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.entry), 'button-release-event',  @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
-           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.button) , 'button-release-event', @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
+           ConnectSignal(PgtkObject(PgtkCombo(gObject)^.entry), 'button-release-event',  @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
+           ConnectSignal(PgtkObject(PgtkCombo(gObject)^.button) , 'button-release-event', @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
 //         Connecting the list seems to cause errors. Maybe we are returning the wrong boolean in the callback func
 //           ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.list), 'button-release-event',  @gtkmousebtnrelease, GDK_BUTTON_RELEASE_MASK);
 
@@ -1899,7 +1936,24 @@ begin
 
     LM_WINDOWPOSCHANGED: //LM_SIZEALLOCATE, LM_RESIZE :
     begin
+      {$IFDEF VerboseResizeChild}
+      writeln('AAA1 SetCallback: LM_ReSize gObject=',HexStr(Cardinal(gObject),8),' Sender=',TControl(Sender).Name,':',Sender.ClassName,
+        ' Allocation=',PGtkWidget(gObject)^.Allocation.Width,',',PGtkWidget(gObject)^.Allocation.Height,
+        ' Requisiton=',PGtkWidget(gObject)^.Requisition.Width,',',PGtkWidget(gObject)^.Requisition.Height
+        );
+      {$ENDIF}
       ConnectSignal(gObject, 'size-allocate', @gtksize_allocateCB);
+      {$IFDEF ClientRectBugFix}
+      if gObject<>gFixed then begin
+        {$IFDEF VerboseResizeChild}
+        writeln('AAA2 SetCallback: LM_ReSize Fixed=',HexStr(Cardinal(gFixed),8),' Sender=',TControl(Sender).Name,':',Sender.ClassName,
+          ' Allocation=',PGtkWidget(gFixed)^.Allocation.Width,',',PGtkWidget(gFixed)^.Allocation.Height,
+          ' Requisiton=',PGtkWidget(gFixed)^.Requisition.Width,',',PGtkWidget(gFixed)^.Requisition.Height
+        );
+        {$ENDIF}
+        ConnectSignal(gFixed, 'size-allocate', @gtksize_allocate_client);
+      end;
+      {$ENDIF}
     end;
 
     LM_CHECKRESIZE :
@@ -2458,10 +2512,6 @@ begin
       SetFixedWidget(p, TempWidget);
       SetMainWidget(p, TempWidget);
       gtk_widget_show (P);
-{writeln('Create csGroupBox Allocation=',PGtkWidget(p)^.Allocation.Width,',',PGtkWidget(p)^.Allocation.Height,
-               ' Requisiton=',PGtkWidget(p)^.Requisition.Width,',',PGtkWidget(p)^.Requisition.Height);
-writeln('Create csGroupBox FixWidget Allocation=',TempWidget^.Allocation.Width,',',TempWidget^.Allocation.Height,
-               ' Requisiton=',TempWidget^.Requisition.Width,',',TempWidget^.Requisition.Height);}
     end;
 
     csGTKTable  :
@@ -3892,6 +3942,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.118  2002/05/06 08:50:36  lazarus
+  MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
+
   Revision 1.117  2002/05/01 11:57:41  lazarus
   MG: find declaration for delphi pointer shortcut and clientrect tricks
 

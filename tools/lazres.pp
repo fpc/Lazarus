@@ -1,4 +1,4 @@
-program lazres;
+program LazRes;
 {
   Author: Mattias Gaertner
 
