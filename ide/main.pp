@@ -4449,6 +4449,7 @@ begin
   if not (sfSaveToTestDir in Flags) then begin
     ActiveUnitInfo.Modified:=false;
     ActiveSrcEdit.Modified:=false;
+    SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
   end;
   SourceNoteBook.UpdateStatusBar;
 
@@ -10280,6 +10281,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.719  2004/04/03 18:16:39  mattias
+  Save SpeedButton is now disabled after save
+
   Revision 1.718  2004/04/03 09:16:13  mattias
   reduced redundancy  from GongYu
 
