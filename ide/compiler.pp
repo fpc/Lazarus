@@ -29,7 +29,8 @@ unit compiler;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process;
+  Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
+  IDEProcs;
 
 type
   TOnOutputString = procedure (const Value: String) of Object;
@@ -68,17 +69,6 @@ function ErrorTypeNameToType(const Name:string): TErrorType;
 
 
 implementation
-
-// to get more detailed error messages consider the os
- {$IFDEF Linux}
-uses
- {$IFDEF Ver1_0}
-  Linux
- {$ELSE}
-  Unix
- {$ENDIF}
- ;
- {$ENDIF}
 
 
 function ErrorTypeNameToType(const Name:string): TErrorType;
@@ -181,28 +171,16 @@ begin
         exit;
       end;
     end;
-    // TProcess does not report, if a program can not be executed
-    // to get good error messages consider the OS
-    {$IFDEF linux}
-    if not Access(CmdLine,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK) then
-    begin
-      case LinuxError of
-        sys_eacces: OutputLine:='execute access denied for "'+CmdLine+'"';
-        sys_enoent: OutputLine:='a directory component in "'+CmdLine+'"'
-                      +' does not exist or is a dangling symlink';
-        sys_enotdir: OutputLine:='a directory component in "'+CmdLine+'"'
-                      +' is not a directory';
-        sys_enomem: OutputLine:='insufficient memory';
-        sys_eloop: OutputLine:='"'+CmdLine+'" has a circular symbolic link';
-      else
-        OutputLine:='unable to execute "'+CmdLine+'"';
+    try
+      CheckIfFileIsExecutable(CmdLine);
+    except
+      on E: Exception do begin
+        OutputLine:='Error: '+E.Message;
+        if Assigned(OnOutputString) then
+          OnOutputString(OutputLine);
+        exit;
       end;
-      OutputLine:='Error: '+OutputLine;
-      if Assigned(OnOutputString) then
-        OnOutputString(OutputLine);
-      exit;
     end;
-    {$ENDIF linux}
     if BuildAll then
       CmdLine := CmdLine+' -B';
     CmdLine := CmdLine
@@ -343,8 +321,8 @@ end.
 
 {
   $Log$
-  Revision 1.21  2001/11/21 12:51:00  lazarus
-  MG: added some more error messages for TProcess
+  Revision 1.22  2001/11/21 13:09:49  lazarus
+  MG: moved executable check to ideprocs.pp
 
   Revision 1.20  2001/11/09 20:48:36  lazarus
   Minor fixes

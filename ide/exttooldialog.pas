@@ -31,7 +31,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLLinux, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
   Dialogs, ExtCtrls, LResources, XMLCfg, ExtToolEditDlg, Process, KeyMapping,
-  TransferMacros;
+  TransferMacros, IDEProcs;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
@@ -105,17 +105,6 @@ function ShowExtToolDialog(ExtToolList: TExternalToolList;
 
 
 implementation
-
-// to get more detailed error messages consider the os
- {$IFDEF Linux}
-uses
- {$IFDEF Ver1_0}
-  Linux
- {$ELSE}
-  Unix
- {$ENDIF}
- ;
- {$ENDIF}
 
 
 function ShowExtToolDialog(ExtToolList: TExternalToolList;
@@ -232,7 +221,7 @@ end;
 
 function TExternalToolList.Run(Index: integer;
   Macros: TTransferMacroList): TModalResult;
-var WorkingDir, Filename, Params, AText: string;
+var WorkingDir, Filename, Params: string;
   TheProcess: TProcess;
 begin
   Result:=mrCancel;
@@ -244,29 +233,8 @@ begin
   and Macros.SubstituteStr(WorkingDir)
   and Macros.SubstituteStr(Params) then begin
 writeln('[TExternalToolList.Run] ',Filename,' ',Params);
-    // TProcess does not report, if a program can not be executed
-    // to get good error messages consider the OS
-    {$IFDEF linux}
-    if not {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(Filename,
-      {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK) then 
-    begin
-      case LinuxError of
-      sys_eacces: AText:='execute access denied for "'+Filename+'"';
-      sys_enoent: AText:='a directory component in "'+Filename+'"'
-                            +' does not exist or is a dangling symlink';
-      sys_enotdir: AText:='a directory component in "'+Filename+'"'
-                            +' is not a directory';
-      sys_enomem: AText:='insufficient memory';
-      sys_eloop: AText:='"'+Filename+'" has a circular symbolic link';
-      else
-        AText:='unable to execute "'+Filename+'"';
-      end;
-      MessageDlg('Error executing tool',
-        AText, mtError, [mbOk], 0);
-      exit;
-    end;
-    {$ENDIF linux}
     try
+      CheckIfFileIsExecutable(Filename);
       TheProcess:=TProcess.Create(Filename+' '+Params,[poRunSuspended,
         poUsePipes, poNoConsole]);
       TheProcess.CurrentDirectory:=WorkingDir;
@@ -277,7 +245,10 @@ writeln('[TExternalToolList.Run] ',Filename,' ',Params);
       TheProcess.CurrentDirectory := WorkingDir;}
       TheProcess.Execute;
     except
-      writeln('[TExternalToolList.Run] Failed to run: ',Filename,' ',Params);
+      on e: Exception do
+        MessageDlg('Failed to run tool',
+          'Unable to run the tool "'+Items[Index].Title+'":'#13
+          +e.Message,mtError,[mbOk],0);
     end;
   end;
   Result:=mrOk;

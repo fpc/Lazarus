@@ -18,8 +18,46 @@ function FilenameIsAbsolute(TheFilename: string):boolean;
 function DirectoryExists(DirectoryName: string): boolean;
 function ForceDirectory(DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
+procedure CheckIfFileIsExecutable(const AFilename: string);
 
 implementation
+
+// to get more detailed error messages consider the os
+ {$IFDEF Linux}
+uses
+ {$IFDEF Ver1_0}
+  Linux
+ {$ELSE}
+  Unix
+ {$ENDIF}
+ ;
+ {$ENDIF}
+
+procedure CheckIfFileIsExecutable(const AFilename: string);
+var AText: string;
+begin
+  // TProcess does not report, if a program can not be executed
+  // to get good error messages consider the OS
+  {$IFDEF linux}if not{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK) then
+  begin
+    AText:='"'+AFilename+'"';
+    case LinuxError of
+    sys_eacces: AText:='execute access denied for '+AText;
+    sys_enoent: AText:='a directory component in '+AText
+                          +' does not exist or is a dangling symlink';
+    sys_enotdir: AText:='a directory component in '+Atext+' is not a directory';
+    sys_enomem: AText:='insufficient memory';
+    sys_eloop: AText:=AText+' has a circular symbolic link';
+    else
+      AText:=AText+' is not executable';
+    end;
+    raise Exception.Create(AText);
+  end;
+  {$ENDIF linux}
+  
+  // ToDo: windows and xxxbsd
+end;
 
 function ExtractFileNameOnly(const AFilename: string): string;
 var ExtLen: integer;
