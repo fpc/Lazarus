@@ -4792,9 +4792,7 @@ begin
   SenderWidget:=PgtkWidget(LCLControl.Handle);
   //if (Sender is TForm) and (Sender.ClassName='TForm1') then
   //  writeln('[TgtkObject.ShowHide] START ',TControl(Sender).Name,':',Sender.ClassName,' Visible=',TControl(Sender).Visible,' GtkVisible=',gtk_widget_visible(SenderWidget));
-  if LCLControl.Visible
-  or ((csDesigning in LCLControl.ComponentState)
-    and not (csNoDesignVisible in LCLControl.ControlStyle)) then
+  if LCLControl.HandleObjectShouldBeVisible then
   begin
     if (Sender is TCustomForm) then begin
       // update shared accelerators
@@ -6889,6 +6887,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.330  2003/03/11 23:14:19  mattias
+  added TControl.HandleObjectShouldBeVisible
+
   Revision 1.329  2003/03/11 22:56:41  mattias
   added visiblechanging
 
