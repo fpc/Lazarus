@@ -664,7 +664,7 @@ type
     procedure LoadFromLazarusResource(const ResName: String); override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
     procedure LoadFromResourceID(Instance: THandle; ResID: Integer); virtual;
-    Procedure LoadFromXPMFile(Filename : String);
+    Procedure LoadFromXPMFile(const Filename : String);
     procedure LoadFromFile(const Filename: string); Override;
     procedure Mask(ATransparentColor: TColor);
     procedure SaveToStream(Stream: TStream); override;
@@ -754,7 +754,13 @@ implementation
 
 
 uses
-  Controls, TypInfo;
+  TypInfo, Interfaces;
+
+function SendIntfMessage(LM_Message : integer; Sender : TObject;
+  Data : pointer) : integer;
+begin
+  result := InterfaceObject.IntSendMessage3(LM_Message, Sender, Data);
+end;
 
 const
   GraphicsFinalized: boolean = false;
@@ -906,6 +912,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.52  2002/10/25 10:42:08  lazarus
+  MG: broke minor circles
+
   Revision 1.51  2002/10/24 10:05:51  lazarus
   MG: broke graphics.pp <-> clipbrd.pp circle
 
