@@ -55,7 +55,7 @@ uses
   {$IFDEF AddStaticPkgs}
   {$I staticpackages.inc}
   {$ENDIF}
-  MainBar, SSHGDBMIDebugger;
+  MainBar;
   
 begin
   Application.Initialize;
@@ -99,6 +99,9 @@ end.
 
 {
   $Log$
+  Revision 1.48  2003/07/24 08:52:46  marc
+  + Added SSHGDB debugger
+
   Revision 1.47  2003/07/24 08:47:36  marc
   + Added SSHGDB debugger
 
