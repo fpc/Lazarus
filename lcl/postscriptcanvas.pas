@@ -68,7 +68,10 @@ Type
     FirstUpdatefont: Boolean;
     
     procedure WriteHeader(St : String);
-    procedure Write(St : String; Lst : TstringList=nil);
+    procedure Write(St : String; Lst : TstringList{$IFNDEF VER1_0}=nil{$ENDIF}); overload;
+    {$IFDEF VER1_0} //added because fpc 1.0 doesn't have default parameters
+    procedure Write(St : String); overload;
+    {$ENDIF}
     procedure WriteB(St : string);
     procedure ClearBuffer;
     procedure Write(Lst : TStringList); overload;
@@ -78,7 +81,7 @@ Type
     procedure SetPosition(X,Y : Integer);
     
     procedure UpdateLineWidth;
-    procedure UpdateLineColor(aColor : TColor=clNone);
+    procedure UpdateLineColor(aColor : TColor{$IFNDEF VER1_0}=clNone{$ENDIF});
     procedure UpdateLineStyle;
     procedure UpdateFillColor;
     procedure UpdateFont;
@@ -116,7 +119,8 @@ Type
 
     Procedure FillRect(const ARect: TRect); override;
     Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); override;
-    procedure Polygon(Points: PPoint; NumPts: Integer; Winding: boolean=False); override;
+    procedure Polygon(Points: PPoint; NumPts: Integer;
+                      Winding: boolean{$IFNDEF VER1_0}=False{$ENDIF}); override;
 
     procedure Ellipse(x1, y1, x2, y2: Integer); override;
     procedure Arc(x,y,width,height,angle1,angle2: Integer); override;
@@ -174,13 +178,20 @@ begin
 end;
 
 //Write an instruction in the document
-procedure TPostscriptPrinterCanvas.Write(St: String; Lst : TStringList=Nil);
+procedure TPostscriptPrinterCanvas.Write(St: String; Lst : TStringList{$IFNDEF VER1_0}=Nil{$ENDIF});
 begin
   If not Assigned(Lst) then
     Lst:=fDocument;
     
   Lst.Add(St);
 end;
+
+{$IFDEF VER1_0}
+procedure TPostscriptPrinterCanvas.Write(St: String);
+begin
+  Write(St, nil);
+end;
+{$ENDIF}
 
 //Write data in fBuffer
 procedure TPostscriptPrinterCanvas.WriteB(St: string);
@@ -233,7 +244,7 @@ begin
 end;
 
 //Init the color of line (pen)
-procedure TPostscriptPrinterCanvas.UpdateLineColor(aColor : TColor=clNone);
+procedure TPostscriptPrinterCanvas.UpdateLineColor(aColor : TColor{$IFNDEF VER1_0}=clNone{$ENDIF});
 Var R,G,B    : Real;
     RGBColor : TColor;
 begin
@@ -404,7 +415,7 @@ begin
   
   if SetBorder and ((Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid))) then
   begin
-    UpdateLineColor;
+    UpdateLineColor{$IFDEF VER1_0}(clNone){$ENDIF};
     UpdateLineWidth;
     UpdateLineStyle;
     Write(Lst);
@@ -921,7 +932,7 @@ begin
   WriteComment(Format('LineTo(%d,%d)',[x1,y1]));
   SetPosition(X1,Y1);
   TranslateCoord(X1,Y1);
-  UpdateLineColor;
+  UpdateLineColor{$IFDEF VER1_0}(clNone){$ENDIF};
   UpdateLineWidth;
   UpdateLineStyle;
   write(Format('%d %d lineto stroke',[X1,Y1]));
@@ -953,7 +964,7 @@ begin
 
     if (Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid)) then
     begin
-      UpdateLineColor;
+      UpdateLineColor{$IFDEF VER1_0}(clNone){$ENDIF};
       UpdateLineWidth;
       UpdateLineStyle;
       Write(Lst);
@@ -1264,7 +1275,7 @@ begin
 
   if (Pen.Color<>clNone) and ((Pen.Color<>Brush.Color) or (Brush.Style<>bsSolid)) then
   begin
-    UpdateLineColor;
+    UpdateLineColor{$IFDEF VER1_0}(clNone){$ENDIF};
     UpdateLineWidth;
     UpdateLineStyle;
 
