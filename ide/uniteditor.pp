@@ -47,7 +47,9 @@ uses
   SynEditTypes, SynEdit, SynEditHighlighter, SynHighlighterPas,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion, GraphType, Graphics,
   Extctrls, Menus, FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs,
-  InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger, FileCtrl;
+  InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger, FileCtrl,
+  LCLType, LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts,
+  SourceEditProcs;
 
 type
   TSourceNoteBook = class;
@@ -305,6 +307,8 @@ type
     OldPageIndex, NewPageIndex: integer) of object;
   TOnShowHintForSource = procedure(SrcEdit: TSourceEditor; ClientPos: TPoint;
     CaretPos: TPoint) of object;
+  TOnInitIdentCompletion = procedure(Sender: TObject;
+    var Handled, Abort: boolean) of object;
 
   TSourceNotebook = class(TForm)
     ReadOnlyMenuItem: TMenuItem;
@@ -348,6 +352,7 @@ type
     FOnEditorChanged: TNotifyEvent;
     FOnEditorPropertiesClicked: TNotifyEvent;
     FOnFindDeclarationClicked: TNotifyEvent;
+    FOnInitIdentCompletion: TOnInitIdentCompletion;
     FOnJumpToHistoryPoint: TOnJumpToHistoryPoint;
     FOnMovingPage: TOnMovingPage;
     FOnNewClicked: TNotifyEvent;
@@ -392,10 +397,11 @@ type
     Procedure ccExecute(Sender : TObject);
     Procedure ccCancel(Sender : TObject);
     procedure ccComplete(var Value: ansistring; Shift: TShiftState);
-    function OnSynCompletionPaintItem(AKey: string; ACanvas: TCanvas;
-       X, Y: integer; ItemSelected: boolean): boolean;
+    function OnSynCompletionPaintItem(const AKey: string; ACanvas: TCanvas;
+       X, Y: integer; ItemSelected: boolean; Index: integer): boolean;
     procedure OnSynCompletionSearchPosition(var APosition:integer);
     procedure DeactivateCompletionForm;
+    procedure InitIdentCompletion(S: TStrings);
 
     Procedure EditorMouseMove(Sender : TObject; Shift: TShiftstate;
        X,Y : Integer);
@@ -489,9 +495,10 @@ type
 
     Procedure ReloadEditorOptions;
     Procedure GetSynEditPreviewSettings(APreviewEditor: TObject);
+    
     Property CodeTemplateModul: TSynEditAutoComplete
        read FCodeTemplateModul write FCodeTemplateModul;
-    procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string; 
+    procedure OnCodeTemplateTokenNotFound(Sender: TObject; AToken: string;
                                 AnEditor: TCustomSynEdit; var Index:integer);
     procedure OnWordCompletionGetSource(
        var Source:TStrings; SourceIndex:integer);
@@ -524,6 +531,8 @@ type
        read FOnEditorPropertiesClicked write FOnEditorPropertiesClicked;
     property OnFindDeclarationClicked : TNotifyEvent
        read FOnFindDeclarationClicked write FOnFindDeclarationClicked;
+    property OnInitIdentCompletion: TOnInitIdentCompletion
+       read FOnInitIdentCompletion write FOnInitIdentCompletion;
     property OnJumpToHistoryPoint: TOnJumpToHistoryPoint
        read FOnJumpToHistoryPoint write FOnJumpToHistoryPoint;
     property OnMovingPage: TOnMovingPage
@@ -580,14 +589,7 @@ type
 implementation
 
 
-uses
-  LCLType, LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts;
-
-type
-  TCompletionType = (ctNone, ctWordCompletion, ctTemplateCompletion,
-                     ctIdentCompletion);
-
-const        
+const
   SrcEditMarkerImgIndex: array[TSrcEditMarkerType] of integer = (
        10,  // active breakpoint
        11,  // inactive breakpoint
@@ -2006,9 +2008,9 @@ begin
   inherited Destroy;
 end;
 
-function TSourceNotebook.OnSynCompletionPaintItem(AKey: string; 
-  ACanvas: TCanvas;  X, Y: integer; ItemSelected: boolean): boolean;
-var i: integer;
+function TSourceNotebook.OnSynCompletionPaintItem(const AKey: string;
+  ACanvas: TCanvas;  X, Y: integer; ItemSelected: boolean;
+  Index: integer): boolean;
 begin
   with ACanvas do begin
     if (aCompletion<>nil) and (aCompletion.Editor<>nil) then
@@ -2022,35 +2024,9 @@ begin
       Font.Color:=FActiveEditDefaultFGColor
     else
       Font.Color:=FActiveEditSelectedFGColor;
-
-    i := 1;
-    while i <= Length(AKey) do
-      case AKey[i] of
-        #1, #2:
-          begin
-          // set color
-            Font.Color := (Ord(AKey[i + 3]) shl 8 + Ord(AKey[i + 2])) shl 8 + Ord(AKey[i + 1]);
-            inc(i, 4);
-          end;
-        #3:
-          begin
-          // set style
-            case AKey[i + 1] of
-              'B': Font.Style := Font.Style + [fsBold];
-              'b': Font.Style := Font.Style - [fsBold];
-              'U': Font.Style := Font.Style + [fsUnderline];
-              'u': Font.Style := Font.Style - [fsUnderline];
-              'I': Font.Style := Font.Style + [fsItalic];
-              'i': Font.Style := Font.Style - [fsItalic];
-            end;
-            inc(i, 2);
-          end;
-      else
-        TextOut(x+1, y, AKey[i]);
-        x := x + TextWidth(AKey[i]);
-        inc(i);
-      end;
   end;
+  PaintCompletionItem(AKey,ACanvas,X,Y,ItemSelected,Index,aCompletion,
+                      CurrentCompletionType);
   Result:=true;
 end;
 
@@ -2143,8 +2119,160 @@ begin
   CurrentCompletionType:=ctNone;
 end;
 
+procedure TSourceNotebook.InitIdentCompletion(S: TStrings);
+type
+  TMethodRec = record
+    Flags : TParamFlags;
+    ParamName : ShortString;
+    TypeName : ShortString;
+  end;
+  
+var
+  CompInt : TComponentInterface;
+  propKind : TTypeKind;
+  TypeInfo : PTypeInfo;
+  TypeData : PTypeData;
+  MethodRec: TMethodRec;
+  CompName: String;
+  CurLine: String;
+  I, X1, X2: Integer;
+  ParamStr: String;
+  PropName: String;
+  Count,Offset,Len: Integer;
+  ActiveEditor: TSynEdit;
+  Prefix: string;
+  NewStr: string;
+  Handled: boolean;
+  Abort: boolean;
+  ItemCnt: Integer;
+begin
+  Prefix := CurCompletionControl.CurrentString;
+  if Assigned(OnInitIdentCompletion) then begin
+    OnInitIdentCompletion(Self,Handled,Abort);
+    if Handled then begin
+      if Abort then exit;
+      // add one entry per item
+      CodeToolBoss.IdentifierList.Prefix:=Prefix;
+      ItemCnt:=CodeToolBoss.IdentifierList.GetFilteredCount;
+writeln('CurCompletionControl.CurrentString=',CurCompletionControl.CurrentString);
+      for i:=0 to ItemCnt-1 do
+        s.Add('Dummy');
+      exit;
+    end;
+  end;
+  CompInt := nil;
+  ccSelection := Prefix;
+  ActiveEditor:=GetActiveSE.EditorComponent;
+  with ActiveEditor do begin
+    CurLine:=LineText;
+    X1:=CaretX-1;
+  end;
+  if X1>length(CurLine) then X1:=length(CurLine);
+  while (X1>0) and (CurLine[X1]<>'.') do dec(X1);
+  X2:=X1-1;
+  while (X2>0) and (CurLine[X2] in ['A'..'Z','a'..'z','0'..'9','_']) do dec(X2);
+  CompName:=copy(CurLine,X2+1,X1-X2-1);
+  CompInt := TComponentInterface(FormEditor1.FindComponentByName(CompName));
+  if CompInt = nil then begin
+    ccSelection:='';
+  end else begin
+    //get all methods
+    NewStr := '';
+    for I := 0 to CompInt.GetPropCount-1 do
+    Begin
+      PropName:=#3'B'+CompInt.GetPropName(I)+#3'b';
+      PropKind := CompInt.GetPropType(i);
+      case PropKind of
+        tkMethod :
+          Begin
+            TypeInfo := CompInt.GetPropTypeInfo(I);
+            TypeData :=  GetTypeData(TypeInfo);
+
+            //check for parameters
+            if TypeData^.ParamCount > 0 then
+            Begin
+              {Writeln('----');
+              for Count := 0 to 60 do
+                if TypeData^.ParamList[Count] in ['a'..'z','A'..'Z','0'..'9'] then
+                  Write(TypeData^.ParamList[Count])
+                else
+                  Begin
+                    Write('$',HexStr(ord(TypeData^.ParamList[Count]),3),' ');
+                  end;
+              }
+              ParamStr := '';
+              Offset:=0;
+              for Count := 0 to TypeData^.ParamCount-1 do
+              begin
+                Len:=1;  // strange: SizeOf(TParamFlags) is 4, but the data is only 1 byte
+                Move(TypeData^.ParamList[Offset],MethodRec.Flags,Len);
+                inc(Offset,Len);
+
+                Len:=ord(TypeData^.ParamList[Offset]);
+                inc(Offset);
+                SetLength(MethodRec.ParamName,Len);
+                Move(TypeData^.ParamList[Offset],MethodRec.ParamName[1],Len);
+                inc(Offset,Len);
+
+                Len:=ord(TypeData^.ParamList[Offset]);
+                inc(Offset);
+                SetLength(MethodRec.TypeName,Len);
+                Move(TypeData^.ParamList[Offset],MethodRec.TypeName[1],Len);
+                inc(Offset,Len);
+
+                if ParamStr<>'' then ParamStr:=';'+ParamStr;
+                if MethodRec.ParamName='' then
+                  ParamStr:=MethodRec.TypeName+ParamStr
+                else
+                  ParamStr:=MethodRec.ParamName+':'+MethodRec.TypeName+ParamStr;
+                if (pfVar in MethodRec.Flags) then ParamStr := 'var '+ParamStr;
+                if (pfConst in MethodRec.Flags) then ParamStr := 'const '+ParamStr;
+                if (pfOut in MethodRec.Flags) then ParamStr := 'out '+ParamStr;
+              end;
+              NewStr:='('+ParamStr+')';
+            end else NewStr:='';
+            case TypeData^.MethodKind of
+              mkProcedure :
+                NewStr := 'procedure   '+PropName+' :'+CompInt.GetPropTypeName(I);
+              mkFunction  :
+                NewStr := 'function    '+PropName+' :'+CompInt.GetPropTypeName(I);
+              mkClassFunction :
+                NewStr := 'function    '+PropName+' :'+'Function '+NewStr;
+              mkClassProcedure :
+                NewStr := 'procedure   '+PropName+' :'+'Procedure '+NewStr;
+              mkConstructor :
+                NewStr := 'constructor '+PropName+' '+'procedure ';
+              mkDestructor :
+                NewStr := 'destructor  '+PropName+' '+'procedure ';
+            end;
+          end;
+
+
+        tkObject :
+           NewStr := 'object      '+PropName+' :'+CompInt.GetPropTypeName(I);
+        tkInteger,tkChar,tkEnumeration,tkWChar :
+           NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
+        tkBool :
+           NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
+        tkClass :
+           NewStr := 'class       '+PropName+' :'+CompInt.GetPropTypeName(I);
+        tkFloat :
+           NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
+        tkSString :
+           NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
+        tkUnKnown,tkLString,tkWString,tkAString,tkVariant :
+           NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
+      end;
+
+      if NewStr <> '' then S.Add(NewStr);
+      NewStr := '';
+    end;  // end for
+  end;
+end;
+
 procedure TSourceNotebook.ccComplete(var Value: ansistring; Shift: TShiftState);
 // completion selected -> deactivate completion form
+// Called when user has selected a completion item
 var
   p1,p2:integer;
 Begin
@@ -2200,141 +2328,20 @@ end;
 
 Procedure TSourceNotebook.ccExecute(Sender : TObject);
 // init completion form
-type
-   TMethodRec = record
-    Flags : TParamFlags;
-    ParamName : ShortString;
-    TypeName : ShortString;
-   end;
 var
   S : TStrings;
-  CompInt : TComponentInterface;
-  CompName, Prefix, CurLine : String;
-  I, X1, X2 : Integer;
-  propKind : TTypeKind;
-  TypeInfo : PTypeInfo;
-  TypeData : PTypeData;
-  NewStr,ParamStr,PropName : String;
-  Count,Offset,Len : Integer;
-  MethodRec : TMethodRec;
+  Prefix: String;
+  I: Integer;
+  NewStr: String;
   ActiveEditor: TSynEdit;
-
 Begin
-  CompInt := nil;
   CurCompletionControl := TSynBaseCompletion(Sender);
   S := TStringList.Create;
   Prefix := CurCompletionControl.CurrentString;
   ActiveEditor:=GetActiveSE.EditorComponent;
   case CurrentCompletionType of
    ctIdentCompletion:
-    begin
-      ccSelection := Prefix;
-      with ActiveEditor do begin
-        CurLine:=LineText;
-        X1:=CaretX-1;
-      end;
-      if X1>length(CurLine) then X1:=length(CurLine);
-      while (X1>0) and (CurLine[X1]<>'.') do dec(X1);
-      X2:=X1-1;
-      while (X2>0) and (CurLine[X2] in ['A'..'Z','a'..'z','0'..'9','_']) do dec(X2);
-      CompName:=copy(CurLine,X2+1,X1-X2-1);
-      CompInt := TComponentInterface(FormEditor1.FindComponentByName(CompName));
-      if CompInt = nil then begin
-        ccSelection:='';
-      end else begin
-        //get all methods
-        NewStr := '';
-        for I := 0 to CompInt.GetPropCount-1 do
-        Begin
-          PropName:=#3'B'+CompInt.GetPropName(I)+#3'b';
-          PropKind := CompInt.GetPropType(i);
-          case PropKind of
-            tkMethod :
-              Begin
-                TypeInfo := CompInt.GetPropTypeInfo(I);
-                TypeData :=  GetTypeData(TypeInfo);
-
-                //check for parameters
-                if TypeData^.ParamCount > 0 then
-                Begin
-                  {Writeln('----');
-                  for Count := 0 to 60 do
-                    if TypeData^.ParamList[Count] in ['a'..'z','A'..'Z','0'..'9'] then
-                      Write(TypeData^.ParamList[Count])
-                    else
-                      Begin
-                        Write('$',HexStr(ord(TypeData^.ParamList[Count]),3),' ');
-                      end;
-                  }
-                  ParamStr := '';
-                  Offset:=0;
-                  for Count := 0 to TypeData^.ParamCount-1 do
-                  begin
-                    Len:=1;  // strange: SizeOf(TParamFlags) is 4, but the data is only 1 byte
-                    Move(TypeData^.ParamList[Offset],MethodRec.Flags,Len);
-                    inc(Offset,Len);
-
-                    Len:=ord(TypeData^.ParamList[Offset]);
-                    inc(Offset);
-                    SetLength(MethodRec.ParamName,Len);
-                    Move(TypeData^.ParamList[Offset],MethodRec.ParamName[1],Len);
-                    inc(Offset,Len);
-
-                    Len:=ord(TypeData^.ParamList[Offset]);
-                    inc(Offset);
-                    SetLength(MethodRec.TypeName,Len);
-                    Move(TypeData^.ParamList[Offset],MethodRec.TypeName[1],Len);
-                    inc(Offset,Len);
-
-                    if ParamStr<>'' then ParamStr:=';'+ParamStr;
-                    if MethodRec.ParamName='' then
-                      ParamStr:=MethodRec.TypeName+ParamStr
-                    else
-                      ParamStr:=MethodRec.ParamName+':'+MethodRec.TypeName+ParamStr;
-                    if (pfVar in MethodRec.Flags) then ParamStr := 'var '+ParamStr;
-                    if (pfConst in MethodRec.Flags) then ParamStr := 'const '+ParamStr;
-                    if (pfOut in MethodRec.Flags) then ParamStr := 'out '+ParamStr;
-                  end;
-                  NewStr:='('+ParamStr+')';
-                end else NewStr:='';
-                case TypeData^.MethodKind of
-                  mkProcedure :
-                    NewStr := 'procedure   '+PropName+' :'+CompInt.GetPropTypeName(I);
-                  mkFunction  :
-                    NewStr := 'function    '+PropName+' :'+CompInt.GetPropTypeName(I);
-                  mkClassFunction :
-                    NewStr := 'function    '+PropName+' :'+'Function '+NewStr;
-                  mkClassProcedure :
-                    NewStr := 'procedure   '+PropName+' :'+'Procedure '+NewStr;
-                  mkConstructor :
-                    NewStr := 'constructor '+PropName+' '+'procedure ';
-                  mkDestructor :
-                    NewStr := 'destructor  '+PropName+' '+'procedure ';
-                end;
-              end;
-
-
-            tkObject :
-               NewStr := 'object      '+PropName+' :'+CompInt.GetPropTypeName(I);
-            tkInteger,tkChar,tkEnumeration,tkWChar :
-               NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-            tkBool :
-               NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-            tkClass :
-               NewStr := 'class       '+PropName+' :'+CompInt.GetPropTypeName(I);
-            tkFloat :
-               NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-            tkSString :
-               NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-            tkUnKnown,tkLString,tkWString,tkAString,tkVariant :
-               NewStr := 'var         '+PropName+' :'+CompInt.GetPropTypeName(I);
-          end;
-
-          if NewStr <> '' then S.Add(NewStr);
-          NewStr := '';
-        end;  // end for
-      end;
-    end;
+     InitIdentCompletion(S);
 
    ctWordCompletion:
      begin
