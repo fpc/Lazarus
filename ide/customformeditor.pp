@@ -39,8 +39,13 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector,
-  Forms, Menus, IDEComp, JITForms, Compreg, ComponentEditors, KeyMapping,
-  EditorOptions, Dialogs;
+  Forms, Menus, JITForms,
+  {$IFDEF EnablePkgs}
+  ComponentReg,
+  {$ELSE}
+  CompReg, IDEComp,
+  {$ENDIF}
+  ComponentEditors, KeyMapping, EditorOptions, Dialogs;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 
@@ -618,7 +623,9 @@ begin
   FComponentInterfaceList := TList.Create;
   FSelectedComponents := TComponentSelectionList.Create;
   JITFormList := TJITForms.Create;
+  {$IFNDEF EnablePkgs}
   JITFormList.RegCompList := RegCompList;
+  {$ENDIF}
   JITFormList.OnReaderError:=@JITFormListReaderError;
   DesignerMenuItemClick:=@OnDesignerMenuItemClick;
 end;

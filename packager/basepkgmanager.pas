@@ -76,6 +76,8 @@ type
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; virtual; abstract;
 
     procedure LoadInstalledPackages; virtual; abstract;
+    procedure UpdateVisibleComponentPalette; virtual; abstract;
+
     function OpenProjectDependencies(AProject: TProject): TModalResult; virtual; abstract;
     procedure AddDefaultDependencies(AProject: TProject); virtual; abstract;
     procedure AddProjectDependency(AProject: TProject; APackage: TLazPackage); virtual; abstract;

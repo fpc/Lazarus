@@ -42,10 +42,15 @@ unit JITForms;
 interface
 
 uses
-{$IFDEF IDE_MEM_CHECK}
+  {$IFDEF IDE_MEM_CHECK}
   MemCheck,
-{$ENDIF}
-  Classes, SysUtils, CompReg, Forms, Controls, LCLLinux, Dialogs, JITForm;
+  {$ENDIF}
+  Classes, SysUtils, Forms, Controls, LCLLinux, Dialogs, JITForm,
+  {$IFDEF EnablePkgs}
+  ComponentReg;
+  {$ELSE}
+  CompReg;
+  {$ENDIF}
 
 type
   //----------------------------------------------------------------------------
@@ -72,7 +77,9 @@ type
     FCurReadComponentClass: TComponentClass;
     FForms: TList; // list of TJITForm
     FOnReaderError: TJITReaderErrorEvent;
+    {$IFNDEF EnablePkgs}
     FRegCompList:TRegisteredComponentList;
+    {$ENDIF}
     // jit procedures
     function CreateVMTCopy(SourceClass:TClass; const NewClassName:ShortString):Pointer;
     procedure FreevmtCopy(vmtCopy:Pointer);
@@ -107,7 +114,9 @@ type
     destructor Destroy; override;
     property Items[Index:integer]:TForm read GetItem; default;
     function Count:integer;
+    {$IFNDEF EnablePkgs}
     property RegCompList:TRegisteredComponentList read FRegCompList write FRegCompList;
+    {$ENDIF}
     function AddNewJITForm:integer;
     function AddJITFormFromStream(BinStream:TStream):integer;
     procedure DestroyJITForm(JITForm:TForm);
@@ -744,14 +753,18 @@ end;
 procedure TJITForms.ReaderFindComponentClass(Reader: TReader;
   const FindClassName: Ansistring;  var ComponentClass: TComponentClass);
 var
-  RegComp:TRegisteredComponent;
+  RegComp: TRegisteredComponent;
   Action: TModalResult;
   ErrorType: TJITFormError;
 begin
   fCurReadComponent:=nil;
   fCurReadComponentClass:=ComponentClass;
   if ComponentClass=nil then begin
+    {$IFDEF EnablePkgs}
+    RegComp:=IDEComponentPalette.FindComponent(FindClassName);
+    {$ELSE}
     RegComp:=FRegCompList.FindComponentClassByName(FindClassName);
+    {$ENDIF}
     if RegComp<>nil then begin
       //writeln('[TJITForms.ReaderFindComponentClass] '''+FindClassName
       //   +''' is registered');

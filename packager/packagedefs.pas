@@ -64,7 +64,7 @@ type
 
   { TPkgComponent }
   
-  TPkgComponent = class(TIDEComponent)
+  TPkgComponent = class(TRegisteredComponent)
   private
     FPkgFile: TPkgFile;
     FIcon: TBitmap;

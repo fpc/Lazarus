@@ -32,6 +32,10 @@ unit CompReg;
 
 {$MODE OBJFPC}{$H+}
 
+{$IFDEF EnablePkgs}
+This unit will be deleted in future
+{$ENDIF}
+
 interface
 
 uses Classes, SysUtils;

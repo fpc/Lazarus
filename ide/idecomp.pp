@@ -39,6 +39,10 @@ unit IDEComp;
   {$linklib crypt}
 {$ENDIF}
 
+{$IFDEF EnablePkgs}
+This unit will be deleted in future
+{$ENDIF}
+
 interface
 
 uses
@@ -51,6 +55,7 @@ uses
    SynHighlighterLFM, SynHighlighterMulti,
   db
   {$IFDEF INTERBASE}
+  // WANRING: Don't use this, use CustomIDEComps instead
   ,interbase
   {$ENDIF}
   {$IFDEF CustomIDEComps}

@@ -51,11 +51,13 @@ uses
   PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
   ExtToolDialog, ExtToolEditDlg, EditDefineTree, DefineTemplates,
-  ProjectInspector,
+  ProjectInspector, ComponentPalette,
   BasePkgManager, MainBar;
 
 type
   TPkgManager = class(TBasePkgManager)
+    procedure IDEComponentPaletteEndUpdate(Sender: TObject;
+      PaletteChanged: boolean);
     // events
     function OnPackageEditorCompilePackage(Sender: TObject;
       APackage: TLazPackage; CompileAll: boolean): TModalResult;
@@ -111,6 +113,8 @@ type
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
 
     procedure LoadInstalledPackages; override;
+    procedure UpdateVisibleComponentPalette; override;
+    
     function AddPackageToGraph(APackage: TLazPackage): TModalResult;
     function OpenProjectDependencies(AProject: TProject): TModalResult; override;
     procedure AddDefaultDependencies(AProject: TProject); override;
@@ -175,6 +179,12 @@ end;
 procedure TPkgManager.MainIDEitmPkgPkgGraphClick(Sender: TObject);
 begin
   DoShowPackageGraph;
+end;
+
+procedure TPkgManager.IDEComponentPaletteEndUpdate(Sender: TObject;
+  PaletteChanged: boolean);
+begin
+  UpdateVisibleComponentPalette;
 end;
 
 function TPkgManager.OnPackageEditorCompilePackage(Sender: TObject;
@@ -865,7 +875,8 @@ end;
 constructor TPkgManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  IDEComponentPalette:=TIDEComponentPalette.Create;
+  IDEComponentPalette:=TComponentPalette.Create;
+  IDEComponentPalette.OnEndUpdate:=@IDEComponentPaletteEndUpdate;
   
   PkgLinks:=TPackageLinks.Create;
   PkgLinks.UpdateAll;
@@ -961,9 +972,21 @@ end;
 
 procedure TPkgManager.LoadInstalledPackages;
 begin
-  // base packages
+  IDEComponentPalette.BeginUpdate(true);
+
+  // static packages
   PackageGraph.AddStaticBasePackages;
   PackageGraph.RegisterStaticPackages;
+  
+  // dynamic packages
+  // ToDo
+
+  IDEComponentPalette.EndUpdate;
+end;
+
+procedure TPkgManager.UpdateVisibleComponentPalette;
+begin
+
 end;
 
 function TPkgManager.AddPackageToGraph(APackage: TLazPackage

@@ -40,11 +40,17 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, LazarusIDEStrConsts, LCLType, LclLinux, Compiler, StdCtrls, Forms,
-  Buttons, Menus, ComCtrls, Spin, ProjectDefs, Project, SysUtils, FileCtrl,
-  Controls, Graphics, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager,
-  Splash, TransferMacros, ObjectInspector, PropEdits, SynEditKeyCmds,
-  OutputFilter, IDEDefs, MsgView, EnvironmentOpts, EditorOptions, IDEComp,
+  Classes, LCLType, LCLLinux, Compiler, StdCtrls, Forms,
+  Buttons, Menus, ComCtrls, Spin, SysUtils, FileCtrl,
+  Controls, Graphics, ExtCtrls, Dialogs, CodeToolManager, SynEditKeyCmds,
+  LazConf, LazarusIDEStrConsts, ProjectDefs, Project,
+  {$IFDEF EnablePkgs}
+  ComponentReg,
+  {$ELSE}
+  CompReg, IDEComp,
+  {$ENDIF}
+  Splash, TransferMacros, ObjectInspector, PropEdits,
+  OutputFilter, IDEDefs, MsgView, EnvironmentOpts, EditorOptions,
   FormEditor, CompilerOptions, KeyMapping, IDEProcs, UnitEditor, Debugger,
   IDEOptionDefs, CodeToolsDefines;
 
@@ -1094,15 +1100,6 @@ end;
 
 procedure TMainIDEBar.SetupComponentsMenu;
 begin
-  itmCompsConfigCustomComps := TMenuItem.Create(Self);
-  itmCompsConfigCustomComps.Name:='itmCompsConfigCustomComps';
-  itmCompsConfigCustomComps.Caption := lisMenuConfigCustomComps;
-  mnuComponents.Add(itmCompsConfigCustomComps);
-
-  {$IFDEF EnablePkgs}
-  mnuComponents.Add(CreateMenuSeparator);
-  {$ENDIF}
-
   itmPkgOpenPackage := TMenuItem.Create(Self);
   itmPkgOpenPackage.Name:='itmPkgOpenPackage';
   itmPkgOpenPackage.Caption := lisMenuOpenPackage;
@@ -1138,6 +1135,15 @@ begin
   {$IFDEF EnablePkgs}
   mnuComponents.Add(itmPkgPkgGraph);
   {$ENDIF}
+
+  {$IFDEF EnablePkgs}
+  mnuComponents.Add(CreateMenuSeparator);
+  {$ENDIF}
+
+  itmCompsConfigCustomComps := TMenuItem.Create(Self);
+  itmCompsConfigCustomComps.Name:='itmCompsConfigCustomComps';
+  itmCompsConfigCustomComps.Caption := lisMenuConfigCustomComps;
+  mnuComponents.Add(itmCompsConfigCustomComps);
 end;
 
 procedure TMainIDEBar.SetupToolsMenu;

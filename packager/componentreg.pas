@@ -63,16 +63,17 @@ const
 
     
 type
-  TIDEComponentPage = class;
-  TIDEComponentPalette = class;
+  TBaseComponentPage = class;
+  TBaseComponentPalette = class;
 
 
-  { TIDEComponent }
+  { TRegisteredComponent }
 
-  TIDEComponent = class
+  TRegisteredComponent = class
   private
+    FButton: TComponent;
     FComponentClass: TComponentClass;
-    FPage: TIDEComponentPage;
+    FPage: TBaseComponentPage;
     FPageName: string;
   public
     constructor Create(TheComponentClass: TComponentClass;
@@ -86,63 +87,83 @@ type
   public
     property ComponentClass: TComponentClass read FComponentClass;
     property PageName: string read FPageName;
-    property Page: TIDEComponentPage read FPage write FPage;
+    property Page: TBaseComponentPage read FPage write FPage;
+    property Button: TComponent read FButton write FButton;
   end;
 
 
-  { TIDEComponentPage }
+  { TBaseComponentPage }
 
-  TIDEComponentPage = class
+  TBaseComponentPage = class
   private
-    FItems: TList; // list of TIDEComponent
+    FItems: TList; // list of TRegisteredComponent
+    FPageComponent: TComponent;
     FPageName: string;
-    FPalette: TIDEComponentPalette;
+    FPalette: TBaseComponentPalette;
     FPriority: TComponentPriority;
-    function GetItems(Index: integer): TIDEComponent;
+    function GetItems(Index: integer): TRegisteredComponent;
   public
     constructor Create(const ThePageName: string);
     destructor Destroy; override;
     procedure Clear;
+    procedure ClearButtons;
     procedure ConsistencyCheck;
     function Count: integer;
-    procedure Add(NewComponent: TIDEComponent);
-    procedure Remove(AComponent: TIDEComponent);
-    function FindComponent(const CompClassName: string): TIDEComponent;
+    procedure Add(NewComponent: TRegisteredComponent);
+    procedure Remove(AComponent: TRegisteredComponent);
+    function FindComponent(const CompClassName: string): TRegisteredComponent;
   public
-    property Items[Index: integer]: TIDEComponent read GetItems; default;
+    property Items[Index: integer]: TRegisteredComponent read GetItems; default;
     property PageName: string read FPageName;
-    property Palette: TIDEComponentPalette read FPalette;
+    property Palette: TBaseComponentPalette read FPalette;
     property Priority: TComponentPriority read FPriority write FPriority;
+    property PageComponent: TComponent read FPageComponent write FPageComponent;
   end;
 
 
-  { TIDEComponentPalette }
+  { TBaseComponentPalette }
+  
+  TEndUpdatePaletteEvent =
+    procedure(Sender: TObject; PaletteChanged: boolean) of object;
 
-  TIDEComponentPalette = class
+  TBaseComponentPalette = class
   private
-    FItems: TList; // list of TIDEComponentPage
-    function GetItems(Index: integer): TIDEComponentPage;
+    FItems: TList; // list of TBaseComponentPage
+    FOnBeginUpdate: TNotifyEvent;
+    FOnEndUpdate: TEndUpdatePaletteEvent;
+    FUpdateLock: integer;
+    fChanged: boolean;
+    function GetItems(Index: integer): TBaseComponentPage;
+  protected
+    procedure DoEndUpdate(Changed: boolean); virtual;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure ClearButtons;
+    procedure BeginUpdate(Change: boolean);
+    procedure EndUpdate;
+    function IsUpdating: boolean;
     procedure ConsistencyCheck;
     function Count: integer;
     function GetPage(const APageName: string;
-      CreateIfNotExists: boolean): TIDEComponentPage;
+      CreateIfNotExists: boolean): TBaseComponentPage;
     function IndexOfPageWithName(const APageName: string): integer;
-    procedure AddComponent(NewComponent: TIDEComponent);
+    procedure AddComponent(NewComponent: TRegisteredComponent);
     function CreateNewPage(const NewPageName: string;
-      const Priority: TComponentPriority): TIDEComponentPage;
-    function FindComponent(const CompClassName: string): TIDEComponent;
+      const Priority: TComponentPriority): TBaseComponentPage;
+    function FindComponent(const CompClassName: string): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
   public
-    property Items[Index: integer]: TIDEComponentPage read GetItems; default;
+    property Pages[Index: integer]: TBaseComponentPage read GetItems; default;
+    property UpdateLock: integer read FUpdateLock;
+    property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
+    property OnEndUpdate: TEndUpdatePaletteEvent read FOnEndUpdate write FOnEndUpdate;
   end;
   
 
 var
-  IDEComponentPalette: TIDEComponentPalette;
+  IDEComponentPalette: TBaseComponentPalette;
 
 function ComparePriority(const p1,p2: TComponentPriority): integer;
 function CompareIDEComponentByClassName(Data1, Data2: pointer): integer;
@@ -166,11 +187,11 @@ end;
 
 function CompareIDEComponentByClassName(Data1, Data2: pointer): integer;
 var
-  Comp1: TIDEComponent;
-  Comp2: TIDEComponent;
+  Comp1: TRegisteredComponent;
+  Comp2: TRegisteredComponent;
 begin
-  Comp1:=TIDEComponent(Data1);
-  Comp2:=TIDEComponent(Data2);
+  Comp1:=TRegisteredComponent(Data1);
+  Comp2:=TRegisteredComponent(Data2);
   Result:=AnsiCompareText(Comp1.ComponentClass.Classname,
                           Comp2.ComponentClass.Classname);
 end;
@@ -182,84 +203,99 @@ begin
   {$ENDIF}
 end;
 
-{ TIDEComponent }
+{ TRegisteredComponent }
 
-constructor TIDEComponent.Create(TheComponentClass: TComponentClass;
+constructor TRegisteredComponent.Create(TheComponentClass: TComponentClass;
   const ThePageName: string);
 begin
   FComponentClass:=TheComponentClass;
   FPageName:=ThePageName;
 end;
 
-destructor TIDEComponent.Destroy;
+destructor TRegisteredComponent.Destroy;
 begin
   if FPage<>nil then FPage.Remove(Self);
+  FreeThenNil(FButton);
   inherited Destroy;
 end;
 
-procedure TIDEComponent.ConsistencyCheck;
+procedure TRegisteredComponent.ConsistencyCheck;
 begin
   if (FComponentClass=nil) then
-    RaiseException('TIDEComponent.ConsistencyCheck FComponentClass=nil');
+    RaiseException('TRegisteredComponent.ConsistencyCheck FComponentClass=nil');
   if not IsValidIdent(FComponentClass.ClassName) then
-    RaiseException('TIDEComponent.ConsistencyCheck not IsValidIdent(FComponentClass.ClassName)');
+    RaiseException('TRegisteredComponent.ConsistencyCheck not IsValidIdent(FComponentClass.ClassName)');
 end;
 
-function TIDEComponent.GetPriority: TComponentPriority;
+function TRegisteredComponent.GetPriority: TComponentPriority;
 begin
   Result:=ComponentPriorityNormal;
 end;
 
-procedure TIDEComponent.AddToPalette;
+procedure TRegisteredComponent.AddToPalette;
 begin
   IDEComponentPalette.AddComponent(Self);
 end;
 
-function TIDEComponent.Createable: boolean;
+function TRegisteredComponent.Createable: boolean;
 begin
   Result:=true;
 end;
 
-{ TIDEComponentPage }
+{ TBaseComponentPage }
 
-function TIDEComponentPage.GetItems(Index: integer): TIDEComponent;
+function TBaseComponentPage.GetItems(Index: integer): TRegisteredComponent;
 begin
-  Result:=TIDEComponent(FItems[Index]);
+  Result:=TRegisteredComponent(FItems[Index]);
 end;
 
-constructor TIDEComponentPage.Create(const ThePageName: string);
+constructor TBaseComponentPage.Create(const ThePageName: string);
 begin
   FPageName:=ThePageName;
   FItems:=TList.Create;
 end;
 
-destructor TIDEComponentPage.Destroy;
+destructor TBaseComponentPage.Destroy;
 begin
   Clear;
+  FreeThenNil(FPageComponent);
   FItems.Free;
   inherited Destroy;
 end;
 
-procedure TIDEComponentPage.Clear;
+procedure TBaseComponentPage.Clear;
 var
   i: Integer;
+  AComponent: TRegisteredComponent;
 begin
-  for i:=0 to FItems.Count-1 do
-    Items[i].Page:=nil;
+  for i:=0 to FItems.Count-1 do begin
+    AComponent:=Items[i];
+    FreeThenNil(AComponent.FButton);
+    AComponent.Page:=nil;
+  end;
   FItems.Clear;
 end;
 
-procedure TIDEComponentPage.ConsistencyCheck;
+procedure TBaseComponentPage.ClearButtons;
+var
+  Cnt: Integer;
+  i: Integer;
+begin
+  Cnt:=Count;
+  for i:=0 to Cnt-1 do FreeThenNil(Items[i].FButton);
+end;
+
+procedure TBaseComponentPage.ConsistencyCheck;
 begin
 
 end;
 
-function TIDEComponentPage.Count: integer;
+function TBaseComponentPage.Count: integer;
 begin
   Result:=FItems.Count;
 end;
 
-procedure TIDEComponentPage.Add(NewComponent: TIDEComponent);
+procedure TBaseComponentPage.Add(NewComponent: TRegisteredComponent);
 var
   InsertIndex: Integer;
   NewPriority: TComponentPriority;
@@ -273,14 +309,14 @@ begin
   NewComponent.Page:=Self;
 end;
 
-procedure TIDEComponentPage.Remove(AComponent: TIDEComponent);
+procedure TBaseComponentPage.Remove(AComponent: TRegisteredComponent);
 begin
   FItems.Remove(AComponent);
   AComponent.Page:=nil;
 end;
 
-function TIDEComponentPage.FindComponent(const CompClassName: string
-  ): TIDEComponent;
+function TBaseComponentPage.FindComponent(const CompClassName: string
+  ): TRegisteredComponent;
 var
   i: Integer;
 begin
@@ -292,71 +328,107 @@ begin
   Result:=nil;
 end;
 
-{ TIDEComponentPalette }
+{ TBaseComponentPalette }
 
-function TIDEComponentPalette.GetItems(Index: integer): TIDEComponentPage;
+function TBaseComponentPalette.GetItems(Index: integer): TBaseComponentPage;
 begin
-  Result:=TIDEComponentPage(FItems[Index]);
+  Result:=TBaseComponentPage(FItems[Index]);
 end;
 
-constructor TIDEComponentPalette.Create;
+procedure TBaseComponentPalette.DoEndUpdate(Changed: boolean);
+begin
+  if Assigned(OnEndUpdate) then OnEndUpdate(Self,Changed);
+end;
+
+constructor TBaseComponentPalette.Create;
 begin
   FItems:=TList.Create;
 end;
 
-destructor TIDEComponentPalette.Destroy;
+destructor TBaseComponentPalette.Destroy;
 begin
   Clear;
   FItems.Free;
   inherited Destroy;
 end;
 
-procedure TIDEComponentPalette.Clear;
+procedure TBaseComponentPalette.Clear;
 var
   i: Integer;
 begin
   for i:=0 to FItems.Count-1 do
-    Items[i].Free;
+    Pages[i].Free;
   FItems.Clear;
 end;
 
-procedure TIDEComponentPalette.ConsistencyCheck;
+procedure TBaseComponentPalette.ClearButtons;
+var
+  Cnt: Integer;
+  i: Integer;
+begin
+  Cnt:=Count;
+  for i:=0 to Cnt-1 do Pages[i].ClearButtons;
+end;
+
+procedure TBaseComponentPalette.BeginUpdate(Change: boolean);
+begin
+  inc(FUpdateLock);
+  if FUpdateLock=1 then begin
+    fChanged:=Change;
+    if Assigned(OnBeginUpdate) then OnBeginUpdate(Self);
+  end else
+    fChanged:=fChanged or Change;
+end;
+
+procedure TBaseComponentPalette.EndUpdate;
+begin
+  if FUpdateLock<=0 then RaiseException('TBaseComponentPalette.EndUpdate');
+  dec(FUpdateLock);
+  if FUpdateLock=0 then DoEndUpdate(fChanged);
+end;
+
+function TBaseComponentPalette.IsUpdating: boolean;
+begin
+  Result:=FUpdateLock>0;
+end;
+
+procedure TBaseComponentPalette.ConsistencyCheck;
 begin
 
 end;
 
-function TIDEComponentPalette.Count: integer;
+function TBaseComponentPalette.Count: integer;
 begin
   Result:=FItems.Count;
 end;
 
-function TIDEComponentPalette.GetPage(const APageName: string;
-  CreateIfNotExists: boolean): TIDEComponentPage;
+function TBaseComponentPalette.GetPage(const APageName: string;
+  CreateIfNotExists: boolean): TBaseComponentPage;
 var
   i: Integer;
 begin
   i:=IndexOfPageWithName(APageName);
   if i>=0 then begin
-    Result:=Items[i];
+    Result:=Pages[i];
   end else begin
-    Result:=TIDEComponentPage.Create(APageName);
+    Result:=TBaseComponentPage.Create(APageName);
     Result.FPalette:=Self;
     FItems.Add(Result);
   end;
 end;
 
-function TIDEComponentPalette.IndexOfPageWithName(const APageName: string
+function TBaseComponentPalette.IndexOfPageWithName(const APageName: string
   ): integer;
 begin
   Result:=Count-1;
-  while (Result>=0) and (AnsiCompareText(Items[Result].PageName,APageName)<>0)
+  while (Result>=0) and (AnsiCompareText(Pages[Result].PageName,APageName)<>0)
   do
     dec(Result);
 end;
 
-procedure TIDEComponentPalette.AddComponent(NewComponent: TIDEComponent);
+procedure TBaseComponentPalette.AddComponent(NewComponent: TRegisteredComponent);
 var
-  CurPage: TIDEComponentPage;
+  CurPage: TBaseComponentPage;
 begin
   CurPage:=GetPage(NewComponent.PageName,false);
   if CurPage=nil then
@@ -364,33 +436,33 @@ begin
   CurPage.Add(NewComponent);
 end;
 
-function TIDEComponentPalette.CreateNewPage(const NewPageName: string;
-  const Priority: TComponentPriority): TIDEComponentPage;
+function TBaseComponentPalette.CreateNewPage(const NewPageName: string;
+  const Priority: TComponentPriority): TBaseComponentPage;
 var
   InsertIndex: Integer;
 begin
-  Result:=TIDEComponentPage.Create(NewPageName);
+  Result:=TBaseComponentPage.Create(NewPageName);
   InsertIndex:=0;
   while (InsertIndex<Count)
-  and (ComparePriority(Items[InsertIndex].Priority,Priority)>0) do
+  and (ComparePriority(Pages[InsertIndex].Priority,Priority)>0) do
     inc(InsertIndex);
   FItems.Insert(InsertIndex,Result);
   Result.FPalette:=Self;
 end;
 
-function TIDEComponentPalette.FindComponent(const CompClassName: string
-  ): TIDEComponent;
+function TBaseComponentPalette.FindComponent(const CompClassName: string
+  ): TRegisteredComponent;
 var
   i: Integer;
 begin
   for i:=0 to Count-1 do begin
-    Result:=Items[i].FindComponent(CompClassName);
+    Result:=Pages[i].FindComponent(CompClassName);
     if Result<>nil then exit;
   end;
   Result:=nil;
 end;
 
-function TIDEComponentPalette.CreateNewClassName(const Prefix: string): string;
+function TBaseComponentPalette.CreateNewClassName(const Prefix: string): string;
 var
   i: Integer;
 begin
