@@ -241,7 +241,7 @@ procedure TgtkObject.SendCachedLCLMessages;
         gtk_window_set_default_size(PgtkWindow(Widget),
                                     LCLControl.Width,LCLControl.Height);
         {$IFDEF VerboseClientRectBugFix}
-        writeln('BBB1 ',Widget^.window<>nil);
+        writeln('BBB1 SendCachedLCLMessages ',Widget^.window<>nil);
         if (LCLControl is TCustomForm) then
           writeln('BBB2 SendCachedLCLMessages ',LCLControl.ClassName,' ',LCLControl.Left,',',LCLControl.Top);
         {$ENDIF}
@@ -1143,6 +1143,7 @@ begin
           
         {$IFDEF ClientRectBugFix}
         if (Sender is TCustomForm) then begin
+          //writeln('CCC1 LM_ShowModal ',Sender.ClassName,' ',TControl(Sender).Left,',',TControl(Sender).Top);
           gtk_window_set_default_size(PgtkWindow(handle),
                                 TControl(Sender).Width,TControl(Sender).Height);
           gtk_widget_set_uposition(PgtkWidget(handle),
@@ -1150,9 +1151,10 @@ begin
         end else begin
           gtk_window_set_position(PGtkWindow(handle), GTK_WIN_POS_CENTER);
         end;
+        UnsetResizeRequest(PGtkWidget(Handle));
         {$ENDIF}
-        gtk_widget_show(PGtkWidget(handle));
         gtk_window_set_modal(PGtkWindow(handle), true);
+        gtk_widget_show(PGtkWidget(handle));
       end;
 
       LM_TB_BUTTONCOUNT:
@@ -1688,80 +1690,10 @@ begin
   if Sender is TWinControl then begin
     if TWinControl(Sender).HandleAllocated then begin
       Widget := pgtkWidget(TWinControl(Sender).Handle);
-      {$IFDEF ClientRectBugFix}
       SetResizeRequest(Widget);
       {$IFDEF VerboseClientRectBugFix}
       if (Sender is TCustomForm) then
         writeln(' FFF ResizeChild ',Sender.ClassName,' ',Left,',',Top);
-      {$ENDIF}
-      {$ELSE}
-      Parent:= TControl(Sender).Parent;
-
-      IsTopLevelWidget:= (Sender is TCustomForm) and (Parent = nil);
-
-      if IsTopLevelWidget then begin
-        gtk_window_set_default_size(PgtkWindow(Widget),Width,Height);
-      end;
-
-      {$IFDEF VerboseResizeChild}
-      if pWidget^.Window<>nil then begin
-        gdk_window_get_size(Widget^.Window, @Dummy.X, @Dummy.Y);
-        writeln('ResizeChild: ',TControl(Sender).Name,':',Sender.Classname,
-          ' Widget=',HexStr(Cardinal(Widget),8),
-          ' OldWidSize=',Dummy.X,',',Dummy.Y,
-          ' NewSize=',Width,',',Height,
-          ' Allocation=',Widget^.Allocation.Width,',',Widget^.Allocation.Height
-          );
-        DummyWidget := GetFixedWidget(Widget);
-        if (DummyWidget <> nil) then begin
-          if (DummyWidget^.Window<>nil) then begin
-            gdk_window_get_size(DummyWidget^.Window, @Dummy.X, @Dummy.Y);
-            writeln('    OldFixWidSize=',Dummy.X,',',Dummy.Y,
-              ' Allocation=',DummyWidget^.Allocation.Width,',',DummyWidget^.Allocation.Height
-              );
-          end else
-            writeln('  FixWid^.Window=nil');
-        end else begin
-          writeln('  NoFixWid');
-        end;
-      end else begin
-        writeln('ResizeChild: ',TControl(Sender).Name,':',Sender.Classname,
-          ' pWidget^.Window=nil',
-          ' NewSize=',Width,',',Height);
-      end;
-      {$ENDIF}
-
-      if not IsTopLevelWidget then begin
-        // resize widget
-        gtk_widget_set_usize(Widget, Width, Height);
-        // move widget on the fixed widget of parent control
-        ParentWidget:=pgtkWidget(TWinControl(Sender).Parent.Handle);
-        ParentFixed := GetFixedWidget(ParentWidget);
-        if ParentFixed <> nil then begin
-          gtk_fixed_move(ParentFixed, Widget, Left, Top);
-        end else begin
-          if not (Parent is TNoteBook) then begin
-            writeln('WARNING: TgtkObject.ResizeChild - no Fixed Widget found');
-            writeln('  Control=',TControl(Sender).Name,':',Sender.ClassName,
-                    '  Parent=',Parent.Name,':',Parent.ClassName);
-          end;
-          Assert(False, 'WARNING: TgtkObject.ResizeChild - no Fixed Widget found');
-          //raise Exception.Create('TgtkObject.ResizeChild - no Fixed Widget found');
-        end;
-      end
-      else begin
-        // resize form
-        if Widget^.window<>nil then begin
-          gdk_window_move_resize(Widget^.window, Left, Top, Width, Height);
-        end else begin
-          gtk_widget_set_usize(Widget, -1,-1);
-          gtk_widget_set_usize(Widget, Width, Height);
-        end;
-        {$IFDEF VerboseClientRectBugFix}
-        writeln('TgtkObject.ResizeChild ',Sender.ClassName,' ',Left,',',Top);
-        {$ENDIF}
-        gtk_widget_set_uposition(Widget, Left, Top);
-      end;
       {$ENDIF}
     end;
   end;
@@ -3399,13 +3331,6 @@ begin
       gtk_window_set_policy (GTK_WINDOW (p), 1, 1, 0);
       gtk_window_set_title(pGtkWindow(p), strTemp);
 
-      {$IFDEF ClientRectBugFix}
-      {gtk_window_set_default_size(PgtkWindow(p),
-                                  TForm(Sender).Width,TForm(Sender).Height);
-      gtk_widget_set_uposition(PgtkWidget(p),
-                               TForm(Sender).Left, TForm(Sender).Top);}
-      {$ENDIF}
-
       // the clipboard needs a widget
       if ClipboardWidget=nil then
         SetClipboardWidget(p);
@@ -3802,6 +3727,12 @@ begin
     if p <> nil then begin
       gtk_object_set_data(pgtkobject(p),'Sender',Sender);
       {$IFDEF ClientRectBugFix}
+      {if (Sender is TCustomForm) and (TCustomForm(Sender).Parent=nil) then begin
+        gtk_window_set_default_size(PgtkWindow(p),
+                              TControl(Sender).Width,TControl(Sender).Height);
+        gtk_widget_set_uposition(PgtkWidget(p),
+                                 TControl(Sender).Left, TControl(Sender).Top);
+      end;}
       SetResizeRequest(p);
       {$ENDIF}
     end;
@@ -3868,36 +3799,47 @@ end;
 {------------------------------------------------------------------------------}
 procedure TgtkObject.ShowHide(Sender : TObject);
 var FormIconGdiObject: PGDIObject;
-  FormWidget: PGTKWidget;
+  SenderWidget: PGTKWidget;
 begin
-  FormWidget:=PgtkWidget(TWinControl(Sender).Handle);
+  SenderWidget:=PgtkWidget(TWinControl(Sender).Handle);
   //if Sender is TForm then
   //  writeln('[TgtkObject.ShowHide] START ',Sender.ClassName,' Visible=',TControl(Sender).Visible,' Window=',FormWidget^.Window<>nil);
   if TControl(Sender).Visible then begin
     {$IFDEF ClientRectBugFix}
-    if (Sender is TCustomForm) and (not gtk_widget_visible(FormWidget)) then
+    if (Sender is TCustomForm) and (not gtk_widget_visible(SenderWidget)) then
     begin
       {$IFDEF VerboseClientRectBugFix}
-      writeln('[TgtkObject.ShowHide] ',TControl(Sender).Name,':',TControl(Sender).ClassName,' ',TControl(Sender).Left,',',TControl(Sender).Top);
+      writeln('[TgtkObject.ShowHide] A set bounds ',
+        TControl(Sender).Name,':',TControl(Sender).ClassName,
+        ' Window=',SenderWidget^.Window<>nil,
+        ' ',TControl(Sender).Left,',',TControl(Sender).Top);
       {$ENDIF}
-      gtk_window_set_default_size(PgtkWindow(FormWidget),
-                               TControl(Sender).Width,TControl(Sender).Height);
-      gtk_widget_set_uposition(PgtkWidget(FormWidget),
-                               TControl(Sender).Left, TControl(Sender).Top);
+      {if SenderWidget^.Window<>nil then begin
+        gdk_window_resize(SenderWidget^.window,
+          TControl(Sender).Width,TControl(Sender).Height);
+        gdk_window_move(SenderWidget^.window,
+          TControl(Sender).Left, TControl(Sender).Top);
+      end else begin}
+        gtk_window_set_default_size(PgtkWindow(SenderWidget),
+                                 TControl(Sender).Width,TControl(Sender).Height);
+        gtk_widget_set_uposition(PgtkWidget(SenderWidget),
+                                 TControl(Sender).Left, TControl(Sender).Top);
+      //end;
+      UnsetResizeRequest(PgtkWidget(Sender));
     end;
     {$ENDIF}
-    gtk_widget_show(FormWidget);
-    if (Sender is TCustomForm) and (FormWidget^.Window<>nil) then begin
+    gtk_widget_show(SenderWidget);
+    if (Sender is TCustomForm) and (SenderWidget^.Window<>nil) then begin
       FormIconGdiObject:=PGDIObject(TCustomForm(Sender).GetIconHandle);
       if (FormIconGdiObject<>nil) then begin
-        gdk_window_set_icon(FormWidget^.Window, nil, 
+        gdk_window_set_icon(SenderWidget^.Window, nil,
                 FormIconGdiObject^.GDIBitmapObject,
                 FormIconGdiObject^.GDIBitmapMaskObject);
       end;
     end;
   end
   else Begin
-    gtk_widget_hide(FormWidget);
+    gtk_widget_hide(SenderWidget);
   end;
   //if Sender is TForm then
   //  writeln('[TgtkObject.ShowHide] END ',Sender.ClassName,' Window=',FormWidget^.Window<>nil);
@@ -4839,12 +4781,11 @@ begin
   Result:=nil;
 end;
 
-{$IFDEF ClientRectBugFix}
 {------------------------------------------------------------------------------
   TgtkObject SetResizeRequest
   Params: Widget: PGtkWidget
 
-  Send a ResizeRequest to the gtk.
+  Marks the widget to send a ResizeRequest to the gtk.
   When the LCL resizes a control the new bounds will not be set directly, but
   cached. This is needed, because it is common behaviour to set the bounds step
   by step. For example: Left:=10; Top:=10; Width:=100; Height:=50; results in
@@ -4856,7 +4797,7 @@ end;
   requests not immediately, but _after_ all requests. This results in changing
   the widget size four times and everytime the LCL gets a message. If the
   control has childs, this will result resizing the childs four times.
-  Therefore LCL size requests for a widget is cached and only the last one is
+  Therefore LCL size requests for a widget are cached and only the last one is
   sent.
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetResizeRequest(Widget: PGtkWidget);
@@ -4880,7 +4821,20 @@ begin
   if not FWidgetsWithResizeRequest.Contains(Widget) then
     FWidgetsWithResizeRequest.Add(Widget);
 end;
-{$ENDIF}
+
+{------------------------------------------------------------------------------
+  TgtkObject UnsetResizeRequest
+  Params: Widget: PGtkWidget
+
+  Unset the mark for the Widget to send a ResizeRequest to the gtk.
+  LCL size requests for a widget are cached and only the last one is sent. Some
+  widgets like forms send a resize request immediately. To avoid sending resize
+  requests multiple times they can unset the mark with this procedure.
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.UnsetResizeRequest(Widget: PGtkWidget);
+begin
+  FWidgetsWithResizeRequest.Remove(Widget);
+end;
 
 {------------------------------------------------------------------------------
   Function: SetClipboardWidget
@@ -5022,6 +4976,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.135  2002/06/06 07:23:24  lazarus
+  MG: small fixes to reduce form repositioing
+
   Revision 1.134  2002/06/05 19:04:15  lazarus
   MG: fixed LM_SetItemIndex gtk warning
 
