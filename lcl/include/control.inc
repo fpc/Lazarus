@@ -8,14 +8,18 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+{ $DEFINE CHECK_POSITION}
+
 {------------------------------------------------------------------------------}
 {       TControl.AdjustSize
 }
 {------------------------------------------------------------------------------}
 procedure TControl.Adjustsize;
 begin
+{$IFDEF CHECK_POSITION}
 //writeln('[TControl.Adjustsize] ',Name,':',ClassName);
-  if not (csLoading in ComponentState) then SetBounds(Left, Top, Width, Height);
+{$ENDIF}
+  //if not (csLoading in ComponentState) then SetBounds(Left, Top, Width, Height);
 end;
 
 {------------------------------------------------------------------------------
@@ -218,15 +222,14 @@ end;
 {------------------------------------------------------------------------------}
 Function TControl.Perform(Msg:Cardinal; WParam , LParam : LongInt): LongInt;
 var
-Message : TLMessage;
+  Message : TLMessage;
 begin
-Message.Msg := Msg;
-Message.WParam := WParam;
-Message.LParam := LParam;
-Message.Result := 0;
-If Self <> nil then WindowProc(Message);
-   result := Message.Result;
-
+  Message.Msg := Msg;
+  Message.WParam := WParam;
+  Message.LParam := LParam;
+  Message.Result := 0;
+  If Self <> nil then WindowProc(Message);
+    Result := Message.Result;
 end;
 
 {------------------------------------------------------------------------------}
@@ -680,7 +683,9 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.SetBoundsRect(const Rect : TRect);
 Begin
-//writeln('[TControl.SetBoundsRect] ',Name,':',ClassName);
+{$IFDEF CHECK_POSITION}
+writeln('[TControl.SetBoundsRect] ',Name,':',ClassName);
+{$ENDIF}
   with Rect do
     SetBounds(Left,Top,Right - Left, Bottom - Top);
 end;
@@ -693,9 +698,11 @@ begin
   if FCursor <> Value 
   then begin
     FCursor := Value;
-    //This should not be called if it is already set to VALUE but if
-    //it's not created when it's set, and you set it again it skips this, so for now I do it this way.
-    //later, I'll create the cursor in the CreateComponent (or something like that)
+    // This should not be called if it is already set to VALUE but if
+    // it's not created when it's set, and you set it again it skips this,
+    // so for now I do it this way.
+    // later, I'll create the cursor in the CreateComponent
+    // (or something like that)
     CNSendMessage(LM_SetCursor,Self,Nil);
   end;
 
@@ -858,6 +865,7 @@ end;
 procedure TControl.Resize;
 begin
 //writeln('[TControl.Resize] ',ClassName);
+  if (csLoading in ComponentState) then exit;
   if (FLastResizeWidth<>Width) or (FLastResizeHeight<>Height) then begin
     FLastResizeWidth:=Width;
     FLastResizeHeight:=Height;
@@ -872,6 +880,9 @@ procedure TControl.SetBounds(ALeft, ATop, AWidth, AHeight : integer);
 begin
   if (ALeft = Left) and (ATop = Top) and (AWidth = Width) and (AHeight = Height)
   then Exit;
+{$IFDEF CHECK_POSITION}
+writeln('[TControl.SetBounds] ',Name,':',ClassName,' Old=',Left,',',Top,',',Width,',',Height,' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight);
+{$ENDIF}
   IsResizing := True;
   try
     FLeft := ALeft;
@@ -920,6 +931,9 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetLeft(Value: Integer);
 begin
+{$IFDEF CHECK_POSITION}
+writeln('[TControl.SetLeft] ',Name,':',ClassName,' ',Value);
+{$ENDIF}
   SetBounds(Value, FTop, FWidth, FHeight);
 end;
 
@@ -928,6 +942,9 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetTop(Value: Integer);
 begin
+{$IFDEF CHECK_POSITION}
+writeln('[TControl.SetTop] ',Name,':',ClassName,' ',Value);
+{$ENDIF}
   SetBounds(FLeft, Value, FWidth, FHeight);
 end;
 
@@ -936,6 +953,9 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetWidth(Value: Integer);
 begin
+{$IFDEF CHECK_POSITION}
+writeln('[TControl.SetWidth] ',Name,':',ClassName,' ',Value);
+{$ENDIF}
   SetBounds(FLeft, FTop, Value, FHeight);
 end;
 
@@ -944,6 +964,9 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetHeight(Value: Integer);
 begin
+{$IFDEF CHECK_POSITION}
+writeln('[TControl.SetHeight] ',Name,':',ClassName,' ',Value);
+{$ENDIF}
   SetBounds(FLeft, FTop, FWidth, Value);
 end;
 
@@ -1256,7 +1279,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.CreateComponent(AOwner : TComponent);
 begin
-   CNSendMessage(LM_CREATE, Self, nil);
+  CNSendMessage(LM_CREATE, Self, nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1264,11 +1287,8 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.DoEvents;
 begin
-
-// used to make sure that events are handled while in long loops.
-
-   InterfaceObject.DoEvents;
-
+  // used to make sure that events are handled while in long loops.
+  InterfaceObject.DoEvents;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1329,6 +1349,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.31  2002/01/01 15:50:14  lazarus
+  MG: fixed initial component aligning
+
   Revision 1.30  2001/12/08 08:54:45  lazarus
   MG: added TControl.Refresh
 

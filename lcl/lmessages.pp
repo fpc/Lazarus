@@ -432,7 +432,7 @@ TLMMouseMove = TLMMOuse;
 
 TLMMove = record
   Msg: Cardinal;
-  Unused: Integer;
+  MoveType: Integer; // 0 = update, 1 = force RequestAlign
   case Integer of
     0: (
       XPos: Smallint;
@@ -650,7 +650,7 @@ end;
 
 TLMSize = packed record
   Msg: Cardinal;
-  SizeType: LongInt;
+  SizeType: LongInt; // 0 = update, 1 = force realign
   Width : Word;
   Height : Word;
   Result : LongInt;
@@ -787,6 +787,9 @@ end.
 
 {
   $Log$
+  Revision 1.17  2002/01/01 15:50:14  lazarus
+  MG: fixed initial component aligning
+
   Revision 1.16  2001/12/14 18:38:55  lazarus
   Changed code for TListView
   Added a generic Breakpoints dialog

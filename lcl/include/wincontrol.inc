@@ -66,16 +66,32 @@ var
     R: TRect;
   begin
 {$IFDEF CHECK_POSITION}
-writeln('[TWinControl.AlignControls.DoPosition] A Control=',Control.Name);
+with Control do
+  writeln('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' recalculate the anchors=',(AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]));
 {$ENDIF}
     with Rect do
     begin
-      { Just recalculate the anchors }
-      if (AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]) then
+      { Just recalculate the anchors
+        
+        Use Anchors to ensure that a control maintains its current position 
+        relative to an edge of its parent, even if the parent is resized. When
+        its parent is resized, the control holds its position relative to the 
+        edges to which it is anchored.
+        If a control is anchored to opposite edges of its parent, the control 
+        stretches when its parent is resized. For example, if a control has its 
+        Anchors property set to [akLeft,akRight], the control stretches when the 
+        width of its parent changes.
+        Anchors is enforced only when the parent is resized. Thus, for example, 
+        if a control is anchored to opposite edges of a form at design time and 
+        the form is created in a maximized state, the control is not stretched 
+        because the form is not resized after the control is created.
+      }
+      if (AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]) then 
         with Control do
         begin
           Width2 := Parent.FLastResize.X + FLastWidth;
           Height2 := Parent.FLastResize.Y + FLastHeight;
+//writeln('  FLastWidth=',FLastWidth,' akLeft=',akLeft in Anchors,' akRight=',akRight in Anchors,' akTop=',akTop in Anchors);
           R := BoundsRect;
           if not (akLeft in Anchors) then
             if not (akRight in Anchors) then
@@ -91,14 +107,23 @@ writeln('[TWinControl.AlignControls.DoPosition] A Control=',Control.Name);
               OffsetRect(R, 0, Parent.FLastResize.Y)
           else if akBottom in Anchors then
             R.Bottom := R.Top + Height2;
+//with R do writeln(' R=',Left,',',Top,',',Right,',',Bottom);
           BoundsRect := R;
           FLastWidth := Width2;
           FLastHeight := Height2;
           if AAlign = alNone then Exit;
         end;
 
-      { Realign }
+      { Realign 
+
+        Use Align to align a control to the top, bottom, left, or right of a 
+        form or panel and have it remain there even if the size of the form, 
+        panel, or component that contains the control changes. When the parent 
+        is resized, an aligned control also resizes so that it continues to span 
+        the top, bottom, left, or right edge of the parent.
+      }
       Width2 := Right - Left;
+//writeln('  Realign Width2=',Width2,' ',AAlign in [alLeft, alRight],' ',Control.Width);
       if (Width2 < 0) or (AAlign in [alLeft, alRight]) then
         Width2 := Control.Width;
       Height2 := Bottom - Top;
@@ -126,11 +151,13 @@ writeln('[TWinControl.AlignControls.DoPosition] A Control=',Control.Name);
     if (Control.Left <> Left2) or (Control.Top <> Top2)
     or (Control.Width <> Width2) or (Control.Height <> Height2) then begin
 {$IFDEF CHECK_POSITION}
-writeln('[TWinControl.AlignControls.DoPosition] B1');
+with Control do
+  writeln('[TWinControl.AlignControls.DoPosition] B1 Control=',Name,':',ClassName,' ',Left2,',',Top2,',',Width2,',',Height2);
 {$ENDIF}
       Control.SetBounds(Left2, Top2, Width2, Height2);
 {$IFDEF CHECK_POSITION}
-writeln('[TWinControl.AlignControls.DoPosition] B2');
+with Control do
+  writeln('[TWinControl.AlignControls.DoPosition] B2 Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
 {$ENDIF}
     end;  
 
@@ -150,7 +177,8 @@ writeln('[TWinControl.AlignControls.DoPosition] B2');
             end;
         end;
 {$IFDEF CHECK_POSITION}
-writeln('[TWinControl.AlignControls.DoPosition] END Control=',Control.Name);
+with Control do
+  writeln('[TWinControl.AlignControls.DoPosition] END Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
 {$ENDIF}
   end;
 
@@ -183,13 +211,15 @@ writeln('[TWinControl.AlignControls.DoPosition] END Control=',Control.Name);
     for I := 0 to ControlCount - 1 do
     begin
       Control := Controls[I];
-      if (Control.Align = AAlign) and ((AAlign = alNone) or (Control.Visible or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
+      if (Control.Align = AAlign) 
+      and ((AAlign = alNone) or (Control.Visible or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
           [csAcceptsControls, csNoDesignVisible])) or (csDesigning in Control.ComponentState) and not (csNoDesignVisible in Control.ControlStyle)) then
       begin
         if Control = AControl then Continue;
         X := 0;
-        while (X < AlignList.Count) and not InsertBefore(Control, TControl(AlignList[X]), AAlign) do 
-              Inc(X);
+        while (X < AlignList.Count) 
+        and not InsertBefore(Control, TControl(AlignList[X]), AAlign) do 
+          Inc(X);
         AlignList.Insert(X, Control);
       end;
     end;
@@ -201,6 +231,7 @@ begin
   if AlignWork then
   begin
     AdjustClientRect(Rect);
+//writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom);
     AlignList := TList.Create;
     try
       DoAlign(alTop);
@@ -208,7 +239,7 @@ begin
       DoAlign(alLeft);
       DoAlign(alRight);
       DoAlign(alClient);
-      DoAlign(alNone);// Anchored controls are not currently used in Lazarus, but in the future, this will move them
+      DoAlign(alNone);
     finally
       AlignList.Free;
     end;
@@ -1397,18 +1428,23 @@ end;
   Returns:  nothing
 
   event handler.
+  
+  Message.SizeType=Size_Restored is the default. All other values will force a
+  ReAlign.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMSize(Var Message : TLMSize);
 begin
+  if (Message.SizeType=Size_Restored) 
+  and (FWidth=Message.Width) and (FHeight=Message.Height) then exit;
 {$IFDEF CHECK_POSITION}
 writeln('[TWinControl.WMSize] Name=',Name,' Message.Width=',Message.Width,' Message.Height=',Message.Height,' Width=',Width,' Height=',Height);
 {$ENDIF}
-  if (FWidth=Message.Width) and (FHeight=Message.Height) then exit;
   Assert(False, Format('Trace:[TWinControl.WMSize] %s', [ClassName]));
   { Just coordinate the bounds }
   FWidth  := Message.Width;
   FHeight := Message.Height;
-//  Realign;
+  Realign;
+  RequestAlign;
   if not (csLoading in ComponentState) then Resize;
 end;
 
@@ -1418,21 +1454,20 @@ end;
   Returns:  nothing
 
   event handler.
+  
+  Message.MoveType=0 is the default, all other values will force a RequestAlign.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMMove(var Message: TLMMove);
 begin
+  if (Message.MoveType=0) and (FLeft=Message.XPos) and (FTop=Message.YPos) then
+    exit;
 {$IFDEF CHECK_POSITION}
 writeln('[TWinControl.WMMove] Name=',Name,' Message.XPos=',Message.XPos,' Message.YPos=',Message.YPos,' Left=',Left,' Top=',Top);
 {$ENDIF}
-  //if (FLeft=Message.XPos) and (FTop=Message.YPos) then exit;
   { Just sync the coordinates }
-//Writeln('[TWINCONTROL].WMMOVE');
-//Writeln(Format('MOVE is LEft=%d    Top= %d',[Message.XPos,MEssage.YPos]));
   FLeft := Message.XPos;
   FTop  := Message.YPos;
-  { TODO : When anchors are implemented, update its rules instead }
   RequestAlign;
-  if not (csLoading in ComponentState) then Resize;
 end;                          
 
 {------------------------------------------------------------------------------
@@ -1582,7 +1617,7 @@ end;
 procedure TWinControl.WMWindowPosChanged(var Message : TLMWindowPosChanged);
 begin
 {$IFDEF CHECK_POSITION}
-Writeln('[TWinControl.WMWindowPosChanged] Name=',Name,' Old=',FLeft,',',FTop,',',FWidth,',',FHeight);
+Writeln('[TWinControl.WMWindowPosChanged] ',Name,':',Classname,' Old=',FLeft,',',FTop,',',FWidth,',',FHeight);
 {$ENDIF}
   if Message.WindowPos <> nil then
   with Message.WindowPos^ do
@@ -1592,9 +1627,10 @@ Writeln('[TWinControl.WMWindowPosChanged] Name=',Name,' Old=',FLeft,',',FTop,','
     FTop := Y;
     FHeight := cY;
 {$IFDEF CHECK_POSITION}
-Writeln('[TWinControl.WMWindowPosChanged] B Name=',Name,' New=',FLeft,',',FTop,',',FWidth,',',FHeight);
+Writeln('[TWinControl.WMWindowPosChanged] B ',Name,':',Classname,' New=',FLeft,',',FTop,',',FWidth,',',FHeight);
 {$ENDIF}
     Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos(%d, %d)(%d, %d)', [ClassName, X, Y, cx, cy]));
+    Message.Result := 1; // message handled
   end
   else Assert(False, Format('Trace:[TWinControl.WMWindowPosChanged] %s --> Message.WindowPos = nil', [ClassName]));
 
@@ -1660,9 +1696,12 @@ begin
   AttachSignals;
   InitializeWnd;
 
-  if FWInControls <> nil then begin
-    for n := 0 to FWInControls.Count - 1 do
-      with TWinControl(FWInControls.Items[n]) do
+//writeln('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+  RequestAlign;
+  
+  if FWinControls <> nil then begin
+    for n := 0 to FWinControls.Count - 1 do
+      with TWinControl(FWinControls.Items[n]) do
         if Visible then
           HandleNeeded;
   end;
@@ -1688,6 +1727,7 @@ begin
   Assert(False, 'Trace:TODO: [TWinControl.InitializeWnd] move this code to the interface');
   
   R:= Rect(Left, Top, Width, Height);
+//writeln('[TWinControl.InitializeWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
   CNSendMessage(LM_SETSIZE, Self, @R);
   CNSendMessage(LM_SHOWHIDE, Self, nil);
   CNSendMessage(LM_SETCOLOR, Self, nil);
@@ -1813,15 +1853,13 @@ begin
   if (ALeft = Left) and (ATop = Top) and (AWidth = Width) and (AHeight = Height)
   then Exit;
 {$IFDEF CHECK_POSITION}
-writeln('[TWinControl.SetBounds] ',Name,':',Classname,' Old=',Left,',',Top,',',Width,',',Height);
+writeln('[TWinControl.SetBounds] ',Name,':',ClassName,' Old=',Left,',',Top,',',Width,',',Height,' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight);
 {$ENDIF}
+//if (ALeft=0) and (ATop=0) and (AWidth=0) and (AHeight=0) then Halt;
   FLeft := aLeft;
   FTop := aTop;
   FWidth := aWidth;
   FHeight := aHeight;
-{$IFDEF CHECK_POSITION}
-writeln('[TWinControl.SetBounds] ',Name,':',Classname,' New=',Left,',',Top,',',Width,',',Height);
-{$ENDIF}
 
   if HandleAllocated
   then begin
@@ -1957,6 +1995,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.48  2002/01/01 15:50:15  lazarus
+  MG: fixed initial component aligning
+
   Revision 1.47  2001/12/31 22:43:00  lazarus
   Added a TViewColumn editor to be used in the object inspector as TViewColumn's property editor.
   Shane

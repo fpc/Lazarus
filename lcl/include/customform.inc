@@ -288,6 +288,7 @@ Writeln('[TCustomForm.WMSize] Name=',Name,' Class=',ClassName,' Message.Width=',
        SIZEFULLSCREEN : FWindowstate := wsMaximized;
       end;
   RequestAlign;
+  ReAlign;
   Resize;
 End;
 
@@ -437,13 +438,11 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.RequestAlign;
 Begin
-  if Parent = nil then
-     Begin
-     //Screen.AlignForm(Self);
-     end
-     else
-     inherited RequestAlign;
-
+  if Parent = nil then begin
+    //Screen.AlignForm(Self);
+  end
+  else
+  inherited RequestAlign;
 end;
 
 {------------------------------------------------------------------------------}
@@ -973,6 +972,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2002/01/01 15:50:14  lazarus
+  MG: fixed initial component aligning
+
   Revision 1.33  2001/12/28 15:12:02  lazarus
   MG: LM_SIZE and LM_MOVE messages are now send directly, not queued
 

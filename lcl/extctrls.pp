@@ -68,6 +68,7 @@ type
     procedure AddControl; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    procedure AdjustClientRect(var ARect: TRect); override;
   published
     property Caption;
     //property Height;
@@ -354,6 +355,9 @@ end.
 
  {
   $Log$
+  Revision 1.16  2002/01/01 15:50:13  lazarus
+  MG: fixed initial component aligning
+
   Revision 1.15  2001/12/21 18:16:59  lazarus
   Added TImage class
   Shane

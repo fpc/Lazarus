@@ -2186,7 +2186,7 @@ begin
 	     LastFileSelectRow := -1;
              gtk_signal_connect( gtk_object(PGtkCList(PGtkFileSelection(P)^.file_list)), 'select-row', gtk_signal_func(@gtkOpenDialogRowSelectCB), Sender);
              gtk_clist_set_selection_mode(
-PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_MULTIPLE);
+              PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_MULTIPLE);
            end;
          end;
       end;
@@ -2512,24 +2512,25 @@ PGtkCList(PGtkFileSelection(P)^.file_list),GTK_SELECTION_MULTIPLE);
 
       csGroupBox:
       begin
-         P := gtk_frame_new (StrTemp);
-         TempWidget := gtk_fixed_new();
-         gtk_container_add(GTK_CONTAINER(p), TempWidget);
-         gtk_widget_show(TempWidget);
-         SetFixedWidget(p, TempWidget);
-         SetMainWidget(p, TempWidget);
-         gtk_widget_show (P);
+        P := gtk_frame_new (StrTemp);
+        TempWidget := gtk_fixed_new();
+        gtk_container_add(GTK_CONTAINER(p), TempWidget);
+        gtk_widget_show(TempWidget);
+        SetFixedWidget(p, TempWidget);
+        SetMainWidget(p, TempWidget);
+        gtk_widget_show (P);
       end;
 
       csPage:    // TPage - Notebook page 
       begin
-         P := gtk_hbox_new(false, 0);
-         TempWidget := gtk_fixed_new();
-         gtk_container_add(GTK_CONTAINER(P), TempWidget);
-         gtk_widget_show(TempWidget);
-         SetFixedWidget(p, TempWidget);
-         SetMainWidget(p, TempWidget);
-         gtk_widget_show (P);
+        // create a fixed widget in a horizontal box
+        P := gtk_hbox_new(false, 0);
+        TempWidget := gtk_fixed_new();
+        gtk_container_add(GTK_CONTAINER(P), TempWidget);
+        gtk_widget_show(TempWidget);
+        SetFixedWidget(p, TempWidget);
+        SetMainWidget(p, TempWidget);
+        gtk_widget_show(P);
       end;
 
       csPopupMenu :
@@ -3655,6 +3656,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.97  2002/01/01 15:50:16  lazarus
+  MG: fixed initial component aligning
+
   Revision 1.96  2001/12/28 15:12:02  lazarus
   MG: LM_SIZE and LM_MOVE messages are now send directly, not queued
 

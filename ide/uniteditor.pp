@@ -1522,6 +1522,7 @@ var
   I : Integer;
 begin
   inherited Create(AOwner);
+  Name:='SourceNotebook';
   Caption := 'Lazarus Source Editor';
   FProcessingCommand := false;
 
@@ -2040,6 +2041,7 @@ CheckHeap('[TSourceNotebook.CreateNotebook] C '+IntToStr(GetMem_Cnt));
 {$ENDIF}
       with Notebook do
         Begin
+          Name:='SrcEditNotebook';
           Parent := Self;
 {$IFDEF IDE_DEBUG}
 writeln('[TSourceNotebook.CreateNotebook] D');

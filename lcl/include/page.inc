@@ -7,7 +7,6 @@
 procedure TPage.AddControl;
 begin
   // nothing yet
-  // put here the call to LM_AddPage
 end;
 
 {------------------------------------------------------------------------------
@@ -16,7 +15,9 @@ end;
 constructor TPage.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {set the default height and widths}
+  {set the default height and width}
+  Width:=120;
+  Height:=100;
 
   {create the control}
   fCompStyle := csPage;
@@ -88,8 +89,20 @@ begin
    inherited Destroy;
 end;
 
+{------------------------------------------------------------------------------
+  TPage AdjustClientRect
+  Params: Rect
+ ------------------------------------------------------------------------------}
+procedure TPage.AdjustClientRect(var ARect: TRect);
+begin
+  ARect:=GetClientRect;
+end;
+
 {
   $Log$
+  Revision 1.4  2002/01/01 15:50:14  lazarus
+  MG: fixed initial component aligning
+
   Revision 1.3  2001/06/26 21:44:32  lazarus
   MG: reduced paint messages
 

@@ -536,7 +536,7 @@ TCMDialogKey = TLMKEY;
     property Color : TColor read FCOlor write SetColor;  {should change the WRITE to do something eventually}
     property ControlState: TControlState read FControlState write FControlState;
     property ClientOrigin: TPoint read GetClientOrigin;
-    property CLientRect: TRect read GetClientRect;
+    property ClientRect: TRect read GetClientRect;
     property Ctl3D : Boolean read FCtl3D write FCtl3D;  //Is this needed for anything other than compatability?
     property ControlStyle : TControlStyle read FControlStyle write FControlStyle;
     property Enabled: Boolean read GetEnabled write SetEnabled default True;
@@ -1148,6 +1148,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/01/01 15:50:13  lazarus
+  MG: fixed initial component aligning
+
   Revision 1.27  2001/12/08 08:54:45  lazarus
   MG: added TControl.Refresh
 

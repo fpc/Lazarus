@@ -828,6 +828,8 @@ var
   SizeMsg: TLMSize;
   MoveMsg: TLMMove;
   Dummy: TPoint;
+  OldLeft, OldTop, OldWidth, OldHeight: integer;
+  TopLeftChanged, WidthHeightChanged: boolean;
 begin
   EventTrace('size-allocate', data);
 
@@ -837,6 +839,18 @@ begin
   MoveMsg.Result := -1;
   
   with Size^ do Assert(False, Format('Trace:[gtksize_allocateCB] %s --> X: %d, Y: %d, Width: %d, Height: %d', [TObject(data).ClassName, X, Y, Width, Height]));
+  
+  if (TObject(Data) is TControl) then begin
+    OldLeft:=TControl(Data).Left;
+    OldTop:=TControl(Data).Top;
+    OldWidth:=TControl(Data).Width;
+    OldHeight:=TControl(Data).Height;
+  end else begin
+    OldLeft:=0;
+    OldTop:=0;
+    OldWidth:=0;
+    OldHeight:=0;
+  end;
   
   New(PosMsg.WindowPos);
   try
@@ -863,9 +877,13 @@ begin
       cy := Size^.Height;
       flags := 0;
     end;
-    Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_WINDOWPOSCHANGED');
+    TopLeftChanged:=(OldLeft<>Size^.X) or (OldTop<>Size^.Y);
+    WidthHeightChanged:=(OldWidth<>Size^.Width) or (OldHeight<>Size^.Height);
+    if TopLeftChanged or WidthHeightChanged then begin
+      Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_WINDOWPOSCHANGED');
 //writeln('[gtksize_allocateCB] Sending LM_WINDOWPOSCHANGED message: Target=',TObject(Data).ClassName,' Left=',Size^.X,' Top=',Size^.Y,' Width=',Size^.Width,' Height=',Size^.Height);
-    Result := DeliverMessage(Data, PosMsg) = 0;
+      Result := DeliverMessage(Data, PosMsg) = 0;
+    end;
   finally
     Dispose(PosMsg.WindowPos);
   end;
@@ -884,27 +902,31 @@ Writeln('***********************');
   if (PosMsg.Result <> 0 ) then 
   begin
     // message is not handled. A LM_SIZE and LM_MOVE should be sent
-    with SizeMsg do
-    begin
-      Msg := LM_SIZE;
-      SizeType := 0; //?? -->SIZE_RESTORED
-      Width := Size^.Width;
-      Height := Size^.Height;
-    end;
-    Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_SIZE');
-    
+    if WidthHeightChanged then begin
+      with SizeMsg do
+      begin
+        Msg := LM_SIZE;
+        SizeType := 6; // force ReAlign
+        Width := Size^.Width;
+        Height := Size^.Height;
+      end;
+      Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_SIZE');
 //writeln('[gtksize_allocateCB] Sending LM_SIZE message: Target=',TObject(Data).ClassName,' Width=',SizeMsg.Width,' Height=',SizeMsg.Height);
-    Result := (DeliverMessage(Data, SizeMsg) = 0) or Result;
-    
-    with MoveMsg do
-    begin
-      Msg := LM_MOVE;
-      XPos := Size^.X;
-      YPos := Size^.Y;
+      Result := (DeliverMessage(Data, SizeMsg) = 0) or Result;
     end;
-    Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_MOVE');
+    
+    if TopLeftChanged then begin
+      with MoveMsg do
+      begin
+        Msg := LM_MOVE;
+        MoveType := 1; // force RequestAlign
+        XPos := Size^.X;
+        YPos := Size^.Y;
+      end;
+      Assert(False, 'Trace:[gtksize_allocateCB] DeliverMessage LM_MOVE');
 //writeln('[gtksize_allocateCB] Sending LM_MOVE message: Target=',TObject(Data).ClassName,' XPos=',MoveMsg.XPos,' YPos=',MoveMsg.YPos);
-    Result := (DeliverMessage(Data,  MoveMsg) = 0) or Result;
+      Result := (DeliverMessage(Data,  MoveMsg) = 0) or Result;
+    end;
   end;
   
 end;
@@ -1592,6 +1614,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2002/01/01 15:50:16  lazarus
+  MG: fixed initial component aligning
+
   Revision 1.57  2001/12/28 15:12:02  lazarus
   MG: LM_SIZE and LM_MOVE messages are now send directly, not queued
 

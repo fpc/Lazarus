@@ -242,6 +242,7 @@ writeln('[TCustomNotebook.CreateWnd] B');
   for n := 0 to FPageList.Count -1 do begin
     // this is workaround til visible=true is default in TControl
     TControl(FPageList[n]).Visible:=true;
+    
     Msg.Parent := Self;
     Msg.Child := TControl(FPageList[n]);
     Msg.fCompStyle := FCompStyle;
@@ -525,6 +526,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/01/01 15:50:14  lazarus
+  MG: fixed initial component aligning
+
   Revision 1.11  2001/11/05 18:18:19  lazarus
   added popupmenu+arrows to notebooks, added target filename
 

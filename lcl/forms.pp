@@ -425,7 +425,7 @@ function InitResourceComponent(Instance: TComponent;
       try
         Write(CompResource.Value[1],length(CompResource.Value));
         Position:=0;
-        writeln('F orm Stream Signature=',copy(CompResource.Value,1,4));
+        writeln('Form Stream Signature=',copy(CompResource.Value,1,4));
         try
           Instance:=ReadComponent(Instance);
           // MG: workaround til Visible=true is default

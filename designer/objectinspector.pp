@@ -233,7 +233,7 @@ type
     procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
     procedure Paint;  override;
     procedure Clear;
-    constructor Create(AOwner:TComponent;
+    constructor Create(AnOwner:TComponent;
        APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
     destructor Destroy;  override;
   end;
@@ -283,7 +283,7 @@ type
       read FPropertyEditorHook write SetPropertyEditorHook;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     procedure DoInnerResize;
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
   end;
 
@@ -293,10 +293,10 @@ implementation
 
 { TOIPropertyGrid }
 
-constructor TOIPropertyGrid.Create(AOwner:TComponent;
-APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
+constructor TOIPropertyGrid.Create(AnOwner:TComponent;
+  APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
 begin
-  inherited Create(AOwner);
+  inherited Create(AnOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     SetBounds(1,1,200,300);
     ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
@@ -330,32 +330,35 @@ begin
 
   ValueEdit:=TEdit.Create(Self);
   with ValueEdit do begin
+    Name:='ValueEdit';
     Parent:=Self;
-    OnExit:=@ValueEditExit;
-    OnChange:=@ValueEditChange;
-    OnKeyDown:=@ValueEditKeyDown;
     Visible:=false;
     Enabled:=false;
     OnMouseMove := @ResetHintTimer;
     OnMouseDown := @CurrentEditMouseDown;
     OnDblClick := @CurrentEditDblClick;
+    OnExit:=@ValueEditExit;
+    OnChange:=@ValueEditChange;
+    OnKeyDown:=@ValueEditKeyDown;
   end;
 
   ValueComboBox:=TComboBox.Create(Self);
   with ValueComboBox do begin
-    OnExit:=@ValueComboBoxExit;
-    OnChange:=@ValueComboBoxChange;
-    OnKeyDown:=@ValueComboBoxKeyDown;
+    Name:='ValueComboBox';
     Visible:=false;
     Enabled:=false;
     Parent:=Self;
     OnMouseMove := @ResetHintTimer;
     OnMouseDown := @CurrentEditMouseDown;
     OnDblClick := @CurrentEditDblClick;
+    OnExit:=@ValueComboBoxExit;
+    OnChange:=@ValueComboBoxChange;
+    OnKeyDown:=@ValueComboBoxKeyDown;
   end;
 
   ValueButton:=TButton.Create(Self);
   with ValueButton do begin
+    Name:='ValueButton';
     Visible:=false;
     Enabled:=false;
     OnClick:=@ValueButtonClick;
@@ -375,12 +378,9 @@ begin
   FHintWindow := THintWindow.Create(nil);
 
   FHIntWindow.Visible := False;
-  FHintWindow.Caption := 'This is a hint window'#13#10'NEat huh?';
+  FHintWindow.Caption := 'This is a hint window'#13#10'Neat huh?';
   FHintWindow.HideInterval := 4000;
   FHintWindow.AutoHide := True;
-  
-
-
 end;
 
 procedure TOIPropertyGrid.UpdateScrollBar;
@@ -955,7 +955,7 @@ end;
 
 procedure TOIPropertyGrid.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
 begin
-//writeln('[TOIPropertyGrid.SetBounds] ',aLeft,',',aTop,',',aWidth,',',aHeight);
+//writeln('[TOIPropertyGrid.SetBounds] ',Name,' ',aLeft,',',aTop,',',aWidth,',',aHeight,' Visible=',Visible);
   inherited SetBounds(aLeft,aTop,aWidth,aHeight);
   if Visible then begin
     SplitterX:=SplitterX;
@@ -1568,6 +1568,7 @@ end;
 procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspector);
 begin
   if FSaveBounds then begin
+//writeln('[TOIOptions.AssignTo] ',AnObjInspector.Name,' ',FLeft,',',FTop,',',FWidth,',',FHeight);
     AnObjInspector.SetBounds(FLeft,FTop,FWidth,FHeight);
     AnObjInspector.PropertyGrid.SplitterX:=FPropertyGridSplitterX;
     AnObjInspector.EventGrid.SplitterX:=FEventGridSplitterX;
@@ -1582,7 +1583,7 @@ end;
 
 { TObjectInspector }
 
-constructor TObjectInspector.Create(AOwner: TComponent);
+constructor TObjectInspector.Create(AnOwner: TComponent);
 
   procedure AddPopupMenuItem(var NewMenuItem:TmenuItem;
      ParentMenuItem:TMenuItem; AName,ACaption,AHint:string;
@@ -1605,7 +1606,7 @@ constructor TObjectInspector.Create(AOwner: TComponent);
   end;
 
 begin
-  inherited Create(AOwner);
+  inherited Create(AnOwner);
   Caption := 'Object Inspector';
   FPropertyEditorHook:=nil;
   FComponentList:=TComponentSelectionList.Create;
@@ -1712,6 +1713,7 @@ begin
 
   // notebook
   NewTop:=AvailCompsComboBox.Top+AvailCompsComboBox.Height+2;
+//writeln('[TObjectInspector.DoInnerResize]');
   NoteBook.SetBounds(0,NewTop,MaxX,MaxY-NewTop);
 end;
 
@@ -1830,6 +1832,7 @@ end;
 
 procedure TObjectInspector.SetBounds(aLeft,aTop,aWidth,aHeight:integer);
 begin
+//writeln('[TObjectInspector.SetBounds] ',aLeft,',',aTop,',',aWidth,',',aHeight);
   inherited SetBounds(aLeft,aTop,aWidth,aHeight);
   DoInnerResize;
 end;
