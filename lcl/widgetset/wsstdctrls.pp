@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  StdCtrls,
+  StdCtrls, Graphics,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, Classes;
 
@@ -148,6 +148,9 @@ type
   { TWSCustomLabel }
 
   TWSCustomLabel = class(TWSWinControl)
+    class procedure SetAlignment(const ACustomLabel: TCustomLabel; const NewAlignment: TAlignment); virtual;
+    class procedure SetLayout(const ACustomLabel: TCustomLabel; const NewLayout: TTextLayout); virtual;
+    class procedure SetWordWrap(const ACustomLabel: TCustomLabel; const NewWordWrap: boolean); virtual;
   end;
   TWSCustomLabelClass = class of TWSCustomLabel;
 
@@ -345,6 +348,20 @@ end;
 { TWSCustomMemo }
 
 procedure TWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; AText: string);
+begin
+end;
+
+{ TWSCustomLabel }
+
+procedure TWSCustomLabel.SetAlignment(const ACustomLabel: TCustomLabel; const NewAlignment: TAlignment);
+begin
+end;
+
+procedure TWSCustomLabel.SetLayout(const ACustomLabel: TCustomLabel; const NewLayout: TTextLayout);
+begin
+end;
+
+procedure TWSCustomLabel.SetWordWrap(const ACustomLabel: TCustomLabel; const NewWordWrap: boolean);
 begin
 end;
 

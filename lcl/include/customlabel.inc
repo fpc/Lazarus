@@ -69,7 +69,7 @@ begin
     fAlignment:= value;
     if HandleAllocated then begin
       Invalidate;
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      TWSCustomLabelClass(WidgetSetClass).SetAlignment(Self, Value);
     end;
   end;
 end;
@@ -132,7 +132,7 @@ begin
   if FLayout <> Value then begin
     FLayout:= Value;
     if HandleAllocated then
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      TWSCustomLabelClass(WidgetSetClass).SetLayout(Self, Value);
   end;
 end;
 
@@ -162,7 +162,7 @@ begin
     fWordWrap:= value;
     if HandleAllocated then begin
       Invalidate;
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      TWSCustomLabelClass(WidgetSetClass).SetWordWrap(Self, Value);
     end;
   end;
 end;
@@ -185,6 +185,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/09/22 14:50:18  micha
+  convert LM_SETPROPERTIES message for tcustomlabel to interface methods
+
   Revision 1.16  2004/09/10 09:43:12  micha
   convert LM_SETLABEL message to interface methods
 

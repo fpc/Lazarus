@@ -6383,15 +6383,6 @@ begin
         //Not here (Delphi compatibility):  gtk_signal_emit_by_name (GTK_Object (Widget), 'value_changed');
      end;
 
-  csLabel :
-     with TLabel(Sender) do
-     begin
-       gtk_label_set_justify(GTK_LABEL(wHandle), cLabelAlign[Alignment]);
-       gtk_misc_set_alignment(GTK_MISC(wHandle), cLabelAlignX[Alignment],
-                              cLabelAlignY[Layout]);
-       gtk_label_set_line_wrap(GTK_LABEL(wHandle), WordWrap);
-     end;
-
   csListView :
   {$IfDef GTK2}
     DebugLn('TODO: TGtkWidgetSet.SetProperties csListView');
@@ -7660,6 +7651,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.591  2004/09/22 14:50:18  micha
+  convert LM_SETPROPERTIES message for tcustomlabel to interface methods
+
   Revision 1.590  2004/09/21 13:28:10  micha
   convert LM_SETPROPERTIES to interface methods for TCustomEdit
 

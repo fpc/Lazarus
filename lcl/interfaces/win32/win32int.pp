@@ -87,16 +87,6 @@ const
   ICC_DATE_CLASSES       = $00000100;
   
 Type
-  { Virtual alignment-control record }
-  TAlignment = Record
-    Parent: HWnd;     // Parent Control
-    Self: HWnd;       // Virtual control handle of alignment
-    XAlign: Integer;  // Horizontal alignment
-    YAlign: Integer;  // Vertical alignment
-    XScale: Real;     // Horizontal scaling
-    YScale: Real;     // Vertical scaling
-  End;
-
   PInitCommonControlsEx = ^TInitCommonControlsEx;
   TInitCommonControlsEx = packed record
     dwSize: dword;
@@ -275,6 +265,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.116  2004/09/22 14:50:18  micha
+  convert LM_SETPROPERTIES message for tcustomlabel to interface methods
+
   Revision 1.115  2004/09/19 18:50:28  micha
   convert LM_SETVALUE message to interface methods
 

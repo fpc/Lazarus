@@ -729,13 +729,13 @@ type
     procedure Notification(AComponent : TComponent; Operation : TOperation); override;
     procedure SetFocusControl(Val : TWinControl); virtual;
     procedure SetShowAccelChar(Val : boolean); virtual;
+  public
+    constructor Create(AOwner : TComponent); override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
     property ShowAccelChar : boolean read FShowAccelChar write SetShowAccelChar default true;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default false;
-  public
-    constructor Create(AOwner : TComponent); override;
   end;
 
 
@@ -1174,6 +1174,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.168  2004/09/22 14:50:18  micha
+  convert LM_SETPROPERTIES message for tcustomlabel to interface methods
+
   Revision 1.167  2004/09/17 10:56:25  micha
   convert LM_SHORTCUT message to interface methods
 

@@ -1821,39 +1821,6 @@ begin
       End;
       //Not here (Delphi compatibility)
     End;
-
-  csLabel:
-    With TLabel(Sender) Do
-    Begin
-      if Wordwrap then
-      begin
-        Style := SS_LEFTNOWORDWRAP;
-      end else begin
-        case Alignment of
-          taLeftJustify:
-            Style := SS_LEFT;
-          taCenter:
-            Style := SS_CENTER;
-          taRightJustify:
-            Style := SS_RIGHT;
-        else
-          Style := SS_LEFT; // default, shouldn't happen
-        end;
-      end;
-      case Layout of
-        tlTop:
-          Style := Style or BS_TOP;
-        tlCenter:
-          Style := Style or BS_VCENTER;
-        tlBottom:
-          Style := Style or BS_BOTTOM;
-      else
-        Style := Style or BS_BOTTOM; //default, shouldn't happen
-      end;
-      SetWindowLong(Handle, GWL_STYLE, (GetWindowLong(Handle, GWL_STYLE) and $FFFF0000) or Style);
-      Assert(False, 'TRACE:Wordwrapping of labels is not currently implemented');
-      Assert(False, 'Trace:TODO: Code wordwrapping labels');
-    End;
   Else
     Assert (True, Format('WARNING: [TWin32WidgetSet.SetProperties] failed for %S', [Sender.ClassName]));
   End;
@@ -1879,6 +1846,9 @@ End;
 
 {
   $Log$
+  Revision 1.280  2004/09/22 14:50:18  micha
+  convert LM_SETPROPERTIES message for tcustomlabel to interface methods
+
   Revision 1.279  2004/09/21 13:28:10  micha
   convert LM_SETPROPERTIES to interface methods for TCustomEdit
 

@@ -33,9 +33,9 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  StdCtrls, Controls,
+  Classes, StdCtrls, Controls, Graphics,
 ////////////////////////////////////////////////////
-  WSStdCtrls, WSLCLClasses, Classes, Windows, Win32Int, Win32Proc, InterfaceBase, LCLType;
+  WSStdCtrls, WSLCLClasses, Windows, Win32Int, Win32Proc, InterfaceBase, LCLType;
 
 type
 
@@ -171,6 +171,9 @@ type
   private
   protected
   public
+    class procedure SetAlignment(const ACustomLabel: TCustomLabel; const NewAlignment: TAlignment); override;
+    class procedure SetLayout(const ACustomLabel: TCustomLabel; const NewLayout: TTextLayout); override;
+    class procedure SetWordWrap(const ACustomLabel: TCustomLabel; const NewWordWrap: boolean); override;
   end;
 
   { TWin32WSLabel }
@@ -549,6 +552,51 @@ begin
   end;
 end;
 
+{ TWin32WSCustomLabel }
+
+procedure TWin32WSCustomLabel.SetAlignment(const ACustomLabel: TCustomLabel; const NewAlignment: TAlignment);
+var
+  Style: dword;
+begin
+  if ACustomLabel.WordWrap then
+  begin
+    case NewAlignment of
+      taLeftJustify:
+        Style := SS_LEFT;
+      taCenter:
+        Style := SS_CENTER;
+      taRightJustify:
+        Style := SS_RIGHT;
+    else
+      Style := SS_LEFT; // default, shouldn't happen
+    end;
+  end else begin
+    Style := SS_LEFTNOWORDWRAP;
+  end;
+  UpdateWindowStyle(ACustomLabel.Handle, Style, SS_LEFT or SS_CENTER or SS_RIGHT or SS_LEFTNOWORDWRAP);
+end;
+
+procedure TWin32WSCustomLabel.SetLayout(const ACustomLabel: TCustomLabel; const NewLayout: TTextLayout);
+var
+  Style: dword;
+begin
+  case NewLayout of
+    tlTop:
+      Style := BS_TOP;
+    tlCenter:
+      Style := BS_VCENTER;
+  else
+    {tlBottom:}
+    Style := BS_BOTTOM;
+  end;
+  UpdateWindowStyle(ACustomLabel.Handle, Style, BS_TOP or BS_VCENTER or BS_BOTTOM);
+end;
+
+procedure TWin32WSCustomLabel.SetWordWrap(const ACustomLabel: TCustomLabel; const NewWordWrap: boolean);
+begin
+  SetAlignment(ACustomLabel, ACustomLabel.Alignment);
+end;
+
 { TWin32WSCustomCheckBox }
 
 function  TWin32WSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
@@ -599,7 +647,7 @@ initialization
   RegisterWSComponent(TCustomMemo, TWin32WSCustomMemo);
 //  RegisterWSComponent(TEdit, TWin32WSEdit);
 //  RegisterWSComponent(TMemo, TWin32WSMemo);
-//  RegisterWSComponent(TCustomLabel, TWin32WSCustomLabel);
+  RegisterWSComponent(TCustomLabel, TWin32WSCustomLabel);
 //  RegisterWSComponent(TLabel, TWin32WSLabel);
 //  RegisterWSComponent(TButtonControl, TWin32WSButtonControl);
   RegisterWSComponent(TCustomCheckBox, TWin32WSCustomCheckBox);

@@ -27,7 +27,7 @@ unit GtkWSStdCtrls;
 interface
 
 uses
-  StdCtrls, SysUtils, Controls,
+  StdCtrls, SysUtils, Controls, Graphics,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
@@ -169,6 +169,9 @@ type
   private
   protected
   public
+    class procedure SetAlignment(const ACustomLabel: TCustomLabel; const NewAlignment: TAlignment); override;
+    class procedure SetLayout(const ACustomLabel: TCustomLabel; const NewLayout: TTextLayout); override;
+    class procedure SetWordWrap(const ACustomLabel: TCustomLabel; const NewWordWrap: boolean); override;
   end;
 
   { TGtkWSLabel }
@@ -672,6 +675,32 @@ begin
   WidgetSetSelLength(GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget, NewLength);
 end;
 
+{ TGtkWSCustomLabel }
+
+procedure TGtkWSCustomLabel.SetAlignment(const ACustomLabel: TCustomLabel; const NewAlignment: TAlignment);
+const
+  cLabelAlignX : array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
+  cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
+  cLabelAlign : array[TAlignment] of TGtkJustification = (GTK_JUSTIFY_LEFT, GTK_JUSTIFY_RIGHT, GTK_JUSTIFY_CENTER);
+var
+  wHandle: HWND;
+begin
+  wHandle := ACustomLabel.Handle;
+  gtk_label_set_justify(GTK_LABEL(wHandle), cLabelAlign[NewAlignment]);
+  gtk_misc_set_alignment(GTK_MISC(wHandle), cLabelAlignX[NewAlignment],
+                        cLabelAlignY[ACustomLabel.Layout]);
+end;
+
+procedure TGtkWSCustomLabel.SetLayout(const ACustomLabel: TCustomLabel; const NewLayout: TTextLayout);
+begin
+  SetAlignment(ACustomLabel, ACustomLabel.Alignment);
+end;
+
+procedure TGtkWSCustomLabel.SetWordWrap(const ACustomLabel: TCustomLabel; const NewWordWrap: boolean);
+begin
+  gtk_label_set_line_wrap(GTK_LABEL(ACustomLabel.Handle), NewWordWrap);
+end;
+
 { TGtkWSCustomCheckBox }
 
 function  TGtkWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
@@ -734,7 +763,7 @@ initialization
   RegisterWSComponent(TCustomMemo, TGtkWSCustomMemo);
 //  RegisterWSComponent(TEdit, TGtkWSEdit);
 //  RegisterWSComponent(TMemo, TGtkWSMemo);
-//  RegisterWSComponent(TCustomLabel, TGtkWSCustomLabel);
+  RegisterWSComponent(TCustomLabel, TGtkWSCustomLabel);
 //  RegisterWSComponent(TLabel, TGtkWSLabel);
 //  RegisterWSComponent(TButtonControl, TGtkWSButtonControl);
   RegisterWSComponent(TCustomCheckBox, TGtkWSCustomCheckBox);
