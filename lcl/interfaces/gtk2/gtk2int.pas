@@ -122,6 +122,7 @@ var
   Attr : PPangoAttribute;
   RGBColor : TColor;
   X, Y, Width, Height : Integer;
+  DCOrigin: TPoint;
 begin
   if (Str=nil) or (Str[0]=#0) then exit;
   Assert(False, Format('trace:> [Tgtk2Object.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
@@ -138,10 +139,15 @@ begin
     end
     else begin
       if (Str<>nil) and (Count>0) then begin
-        if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then
+        if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) or
+          ((Flags and DT_INTERNAL) = DT_INTERNAL)
+        then
           UseFontDesc := GetDefaultFontDesc(false)
         else
           UseFontDesc := CurrentFont^.GDIFontObject;
+
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
+
         GetStyle('default');
         Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
         pango_layout_set_font_description(Layout, UseFontDesc);
@@ -224,7 +230,7 @@ begin
           exit;
         end;
 
-        gdk_draw_layout(drawable, gc, X, Y, Layout);
+        gdk_draw_layout(drawable, gc, X+DCOrigin.X, Y+DCOrigin.Y, Layout);
         g_object_unref(Layout);
         Result := 0;
       end;
@@ -1040,6 +1046,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2003/09/17 20:30:57  ajgenius
+  fix(?) DCOffset for DrawText
+
   Revision 1.13  2003/09/17 19:40:46  ajgenius
   Initial DoubleBuffering Support for GTK2
 
