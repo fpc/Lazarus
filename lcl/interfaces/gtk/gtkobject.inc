@@ -380,6 +380,7 @@ var
   QueueItem, OldQueueItem: PLazQueueItem; // currently only used by LM_DESTROY
   MsgPtr    : PMsg;                  // currently only used by LM_DESTROY
   Count     : Integer;               //Used in TListView LM_LV_CHANGEITEM
+  Titles    : Array [0..255] of PChar;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -471,6 +472,7 @@ begin
       begin
         if (Sender is TListView) then
         begin
+          writeln('IN LM_LV_DELETEITEM');
           Num := Integer(data^);
           gtk_clist_remove(PgtkCList(handle),Num);
         end;
@@ -483,29 +485,19 @@ begin
           Num := Integer(data^);
           Writeln('NUM,Rows = ',num,',',PGTKCList(Handle)^.rows);
 
-             AddItemListItem := TListView(sender).Items[Num];
-             pStr := StrAlloc(length(AddItemListItem.Caption) + 1);
-             StrPCopy(pStr, AddItemListItem.Caption);
-             Writeln('Additesm..caption = ',AddItemListItem.Caption);
-             if PgtkCList(handle)^.rows-1 < Num then
-                gtk_clist_append(PgtkCList(handle),PPGChar([pStr]))
-                else
-                gtk_clist_set_text(PgtkCList(handle),num,0,pStr);
-             StrDispose(pStr);
-             //redo every column text
-             for Count := 1 to PgtkCList(Handle)^.Columns-1 do
-                 begin
-                   //if there aren't anymore subitems then get out.
-                   if AddItemListItem.SubItems.Count < Count then Break;
-                   pStr := StrAlloc(length(AddItemListItem.SubItems.Strings[Count-1]) + 1);
-                   StrPCopy(pStr, AddItemListItem.SubItems.Strings[Count-1]);
-                   gtk_clist_set_text(PgtkCList(handle),num,Count,pStr);
-                   StrDispose(pStr);
-
-                 end;
-                 
-
-        
+          AddItemListItem := TListView(sender).Items[Num];
+          Writeln('AddItemListItem.Caption = ',AddItemListItem.Caption);
+          pStr := StrAlloc(length(AddItemListItem.Caption) + 1);
+          StrPCopy(pStr, AddItemListItem.Caption);
+          gtk_clist_set_text(PgtkCList(handle),num,0,pStr);
+          StrDispose(pStr);
+          for count := 0 to AddItemListItem.SubItems.Count-1 do
+             Begin
+               pStr := StrAlloc(length(AddItemListItem.SubItems.Strings[Count]) + 1);
+               StrPCopy(pStr, AddItemListItem.SubItems.Strings[Count]);
+               gtk_clist_set_text(PgtkCList(handle),num,count+1,pStr);
+               StrDispose(pStr);
+             end;
         end;
       end;
       
@@ -515,15 +507,18 @@ begin
         begin
           //get last item and add it..
           Writeln('LV_AddItem');
-          Writeln('1');
-          Num := gtk_clist_append(PgtkCList(handle),@[@AddItemListItem.Caption]);
-          Writeln('2');
-
-          AddItemListItem := TListView(sender).Items[TListView(sender).Items.Count];
+          pStr := StrAlloc(length('Test') + 1);
+          StrPCopy(pStr, 'Test');
+          Titles[0] := pStr;
+          for Count := 1 to 255 do
+            Titles[Count] := nil;
+          Num := gtk_clist_append(PgtkCList(handle),@Titles);
+          Writeln('NUm in AddItem is =',num);
+          StrDispose(pStr);
+          AddItemListItem := TListView(sender).Items[TListView(sender).Items.Count-1];
           if AddItemListItem <> nil then
             Begin
              gtk_clist_set_text(PgtkCList(handle),num,0,@AddItemListItem.Caption);
-             
             end;
         Writeln('LV_AddItem DONE');
         end;
@@ -3614,6 +3609,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.91  2001/12/18 21:10:01  lazarus
+  MOre additions for breakpoints dialog
+  Added a TSynEditPlugin in SourceEditor to get notified of lines inserted and deleted from the source.
+  Shane
+
   Revision 1.90  2001/12/16 22:24:55  lazarus
   MG: changes for new compiler 20011216
 

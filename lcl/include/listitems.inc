@@ -51,9 +51,15 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItems.Delete(Index : Integer);
 begin
+  Writeln('--------');
   if (FItems.Items[index] <> nil) then
-  TListItem(FItems.Items[Index]).Delete;
+  Item[Index].Delete;
+  FItems.Delete(index);
+//  if (FItems.Items[index] <> nil) then
+//  TListItem(FItems.Items[Index]).Delete;
+  Writeln('--------');
   FOwner.ItemDeleted(Index);
+  Writeln('--Item Deleted Called------');
 end;
 
 {------------------------------------------------------------------------------}
@@ -81,6 +87,7 @@ var
 begin
   Writeln('ITEM CHANGED');
   Index := FItems.IndexOf(TListItem(sender));
+  Writeln('Calling Item Changed with Index ',Index);
   if Index > -1 then
   FOwner.ItemChanged(Index);
 end;

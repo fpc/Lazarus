@@ -54,6 +54,28 @@ type
             Command: integer; var Handled: boolean) of object;
   TOnUserCommandProcessed = procedure(Sender: TObject;
             Command: integer; var Handled: boolean) of object;
+            
+  TOnLinesInsertedDeleted = procedure(Sender : TObject;
+             FirstLine,Count : Integer) of Object;
+  
+  TSynEditPlugin1 = class(TSynEditPlugin)
+  private
+    FOnLinesInserted : TOnLinesInsertedDeleted;
+    FOnLinesDeleted : TOnLinesInsertedDeleted;
+  protected
+    procedure AfterPaint(ACanvas: TCanvas; AClip: TRect;
+      FirstLine, LastLine: integer); override;
+    procedure LinesInserted(FirstLine, Count: integer); override;
+    procedure LinesDeleted(FirstLine, Count: integer); override;
+  protected
+  public
+    property OnLinesInserted : TOnLinesInsertedDeleted read FOnLinesinserted write FOnLinesInserted;
+    property OnLinesDeleted : TOnLinesInsertedDeleted read FOnLinesDeleted write FOnLinesDeleted;
+
+    constructor Create(AOwner: TCustomSynEdit);
+//    destructor Destroy; override;
+  end;
+
 
 {---- TSource Editor ---
   TSourceEditor is the class that controls access for the Editor and the source
@@ -63,11 +85,10 @@ type
   TSourceEditor = class
   private
     //FAOwner is normally a TSourceNotebook.  This is set in the Create constructor.
+    FEditPlugin : TSynEditPlugin1;  //used to get the LinesInserted and LinesDeleted messages
     FAOwner : TComponent;
     FEditor : TSynEdit;
     FCodeTemplates: TSynEditAutoComplete;
-    //if this is a Form or Datamodule, this is used
-//    FControl: TComponent;  //commented out on 11-14-2001
 
     FCodeBuffer: TCodeBuffer;
     FIgnoreCodeBufferLock: integer;
@@ -147,6 +168,9 @@ type
     procedure SetExecutionLine(NewLine: integer);
     procedure OnCodeBufferChanged(Sender: TSourceLog;
       SrcLogEntry: TSourceLogEntry);
+      
+    procedure LinesInserted(sender : TObject; FirstLine,Count : Integer);
+    procedure LinesDeleted(sender : TObject; FirstLine,Count : Integer);
 
     property Visible : Boolean read FVisible write FVisible default False;
   public
@@ -178,7 +202,6 @@ type
     Function GetCaretPosFromCursorPos(CursorPos : TPoint) : TPoint;
     
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
-//    property Control : TComponent read FControl write FControl; //commented out on 11-14-2001
     property CurrentCursorXLine : Integer
        read GetCurrentCursorXLine write SetCurrentCursorXLine;
     property CurrentCursorYLine : Integer
@@ -253,6 +276,10 @@ type
     FOnUserCommandProcessed: TOnProcessUserCommand;
     FOnViewJumpHistory: TNotifyEvent;
     FOnAddWatchAtCursor: TNotifyEvent;
+    
+    FOnCreateBreakPoint: TOnCreateDeleteBreakPoint;
+    FOnDeleteBreakPoint: TOnCreateDeleteBreakPoint;
+
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -268,6 +295,9 @@ type
     Procedure FindDeclarationClicked(Sender : TObject);
     Procedure BookmarkGoTo(Value: Integer);
     Procedure BookMarkToggle(Value : Integer);
+
+    Procedure BreakPointCreated(Sender : TObject; Line : Integer);
+    Procedure BreakPointDeleted(Sender : TObject; Line : Integer);
   protected
     ccSelection : String;
     MarksImgList : TImageList;
@@ -301,6 +331,7 @@ type
     function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
     function GetEditors(Index:integer):TSourceEditor;
     
+
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
 
   public
@@ -405,6 +436,11 @@ type
        read FOnViewJumpHistory write FOnViewJumpHistory;
     property OnAddWatchAtCursor: TNotifyEvent
        read FOnAddWatchAtCursor write FOnAddWatchAtCursor;
+    property OnCreateBreakPoint: TOnCreateDeleteBreakPoint
+       read FOnCreateBreakPoint write FOnCreateBreakPoint;
+    property OnDeleteBreakPoint: TOnCreateDeleteBreakPoint
+       read FOnDeleteBreakPoint write FOnDeleteBreakPoint;
+
  end;
 
 {Goto dialog}
@@ -465,6 +501,10 @@ Begin
 //  FControl := nil; //commented out on 11-14-2001
 //writeln('TSourceEditor.Create B ');
   CreateEditor(AOwner,AParent);
+
+  FEditPlugin := TSynEditPlugin1.Create(FEditor);
+  FEditPlugin.OnLinesInserted := @LinesInserted;
+  FEditPlugin.OnLinesDeleted := @LinesDeleted;
 //writeln('TSourceEditor.Create END ');
 end;
 
@@ -736,7 +776,7 @@ var Handled: boolean;
 begin
   Handled:=true;
   case Command of
-    ecUndo:
+  ecUndo:
       if (FEditor.Modified=false) and (CodeBuffer<>nil) then 
         CodeBuffer.Assign(FEditor.Lines);
   else
@@ -1430,6 +1470,21 @@ begin
   Texts := Copy(Texts,1,XLine);
 
   Result := Texts;
+end;
+
+procedure TSourceEditor.LinesDeleted(sender : TObject; FirstLine,
+  Count : Integer);
+begin
+  //notify the notebook that lines were deleted.
+  //bookmarks will use this to update themselves
+end;
+
+procedure TSourceEditor.LinesInserted(sender : TObject; FirstLine,
+  Count : Integer);
+begin
+  //notify the notebook that lines were Inserted.
+  //bookmarks will use this to update themselves
+
 end;
 
 {------------------------------------------------------------------------}
@@ -2182,6 +2237,8 @@ writeln('TSourceNotebook.NewSE C ');
   Result.OnEditorChange := @EditorChanged;
   Result.OnMouseMove := @EditorMouseMove;
   Result.OnMouseDown := @EditorMouseDown;
+  Result.OnCreateBreakPoint := @BreakPointCreated;
+  Result.OnDeleteBreakPoint := @BreakPointDeleted;
 {$IFDEF IDE_DEBUG}
 writeln('TSourceNotebook.NewSE end ');
 {$ENDIF}
@@ -3057,6 +3114,20 @@ begin
      OnAddWatchAtCursor(Self);
 end;
 
+Procedure TSourceNotebook.BreakPointCreated(Sender : TObject; Line : Integer);
+begin
+  if Assigned(OnCreateBreakPoint) then
+      OnCreateBreakPoint(self,Line);
+end;
+
+Procedure TSourceNotebook.BreakPointDeleted(Sender : TObject; Line : Integer);
+begin
+  if Assigned(OnDeleteBreakPoint) then
+      OnDeleteBreakPoint(self,Line);
+
+end;
+
+
 
 
 {  GOTO DIALOG}
@@ -3150,7 +3221,33 @@ begin
 end;
 
 
-initialization
+{ TSynEditPlugin1 }
+
+constructor TSynEditPlugin1.Create(AOwner: TCustomSynEdit);
+Begin
+  inherited;
+end;
+
+
+procedure TSynEditPlugin1.AfterPaint(ACanvas: TCanvas; AClip: TRect; FirstLine,
+  LastLine: integer);
+begin
+  //don't do anything
+end;
+
+procedure TSynEditPlugin1.LinesDeleted(FirstLine, Count: integer);
+begin
+  if Assigned(OnLinesDeleted) then
+     OnLinesDeleted(self,Firstline,Count);
+end;
+
+procedure TSynEditPlugin1.LinesInserted(FirstLine, Count: integer);
+begin
+  if Assigned(OnLinesInserted) then
+     OnLinesInserted(self,Firstline,Count);
+end;
+
+ initialization
   InternalInit;
 
 {$I images/bookmark.lrs}

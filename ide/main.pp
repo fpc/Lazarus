@@ -247,6 +247,8 @@ type
     Procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
     Procedure OnSrcNotebookViewJumpHistory(Sender : TObject);
     Procedure OnSrcNotebookAddWatchesAtCursor(Sender : TObject);
+    Procedure OnSrcNotebookCreateBreakPoint(Sender : TObject; Line : Integer);
+    Procedure OnSrcNotebookDeleteBreakPoint(Sender : TObject; Line : Integer);
     
     // ObjectInspector events
     procedure OIOnAddAvailableComponent(AComponent:TComponent;
@@ -661,6 +663,9 @@ begin
   SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
   SourceNotebook.OnViewJumpHistory := @OnSrcNotebookViewJumpHistory;
   SourceNotebook.OnAddWatchAtCursor := @OnSrcNotebookAddWatchesAtCursor;
+  SourceNotebook.OnCreateBreakPoint := @OnSrcNotebookCreateBreakPoint;
+  SourceNotebook.OnDeleteBreakPoint := @OnSrcNotebookDeleteBreakPoint;
+
   // search menus
   itmSearchFind.OnClick := @SourceNotebook.FindClicked;
   itmSearchFindNext.OnClick := @SourceNotebook.FindNextClicked;
@@ -5416,6 +5421,23 @@ begin
   SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSe.Modified;
 end;
 
+Procedure TMainIDE.OnSrcNotebookCreateBreakPoint(Sender : TObject;
+  Line : Integer);
+begin
+  if SourceNotebook.Notebook = nil then Exit;
+
+  Breakpoints_Dlg.AddBreakPoint(TSourceNotebook(sender).GetActiveSe.FileName,Line);
+
+end;
+
+Procedure TMainIDE.OnSrcNotebookDeleteBreakPoint(Sender : TObject;
+  Line : Integer);
+begin
+  if SourceNotebook.Notebook = nil then Exit;
+
+  Breakpoints_Dlg.DeleteBreakPoint(TSourceNotebook(sender).GetActiveSe.FileName,Line);
+end;
+
 //-----------------------------------------------------------------------------
 
 initialization
@@ -5430,6 +5452,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.190  2001/12/18 21:09:58  lazarus
+  MOre additions for breakpoints dialog
+  Added a TSynEditPlugin in SourceEditor to get notified of lines inserted and deleted from the source.
+  Shane
+
   Revision 1.189  2001/12/18 21:00:59  lazarus
   MG: compiler, fpc source and lazarus src can now be changed without restart
 

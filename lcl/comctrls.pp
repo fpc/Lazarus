@@ -385,6 +385,9 @@ type
     Procedure SetCaption(const Value : String);
 //    Procedure SetSubItems(Value : TStrings);
     Function GetIndex : Integer;
+  protected
+    Procedure ItemChanged(sender : TObject);  //called by the onchange of the tstringlist in TListItem
+
   public
     constructor Create(AOwner : TListItems);
     destructor Destroy; override;
@@ -403,7 +406,7 @@ type
   protected
     Function GetItem(Index : Integer): TListItem;
     procedure SetITem(Index : Integer; Value : TListItem);
-    Procedure ItemChanged(sender : TObject);  //called by the onchange of the tstringlist in TListItem
+    Procedure ItemChanged(sender : TObject);  //called by TListItem in response to SubItems changing
   public
     constructor Create(AOwner : TCustomListView);
     destructor Destroy; override;
@@ -976,6 +979,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/12/18 21:10:01  lazarus
+  MOre additions for breakpoints dialog
+  Added a TSynEditPlugin in SourceEditor to get notified of lines inserted and deleted from the source.
+  Shane
+
   Revision 1.7  2001/12/14 19:51:48  lazarus
   More changes to TListView
   Shane

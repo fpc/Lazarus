@@ -5,7 +5,7 @@ constructor TListItem.Create(AOwner : TListItems);
 begin
   FOwner := AOwner;
   SubItems := TStringList.Create;
-  TStringList(SubItems).OnChange := @FOwner.ItemChanged;
+  TStringList(SubItems).OnChange := @ItemChanged;
 end;
 
 {------------------------------------------------------------------------------}
@@ -43,6 +43,14 @@ end;
 procedure TListItem.Delete;
 begin
   free;
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItem ItemChanged                                                      }
+{------------------------------------------------------------------------------}
+procedure TListItem.ItemChanged(sender : TObject);
+begin
+  FOwner.ItemChanged(self);
 end;
 
 {------------------------------------------------------------------------------}
