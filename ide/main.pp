@@ -6945,7 +6945,7 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
-  writeln('[TMainIDE.OnPropHookShowMethod] ************');
+  writeln('[TMainIDE.OnPropHookShowMethod] ************ "',AMethodName,'" ',ActiveUnitInfo.Filename);
   {$ENDIF}
   if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
     ActiveUnitInfo.Form.ClassName,AMethodName,
@@ -7042,7 +7042,7 @@ procedure TMainIDE.OnPropHookDeleteComponent(AComponent: TComponent);
 var
   ADesigner: TDesigner;
 begin
-writeln('TMainIDE.OnPropHookDeleteComponent A ',AComponent.Name,':',AComponent.ClassName);
+  writeln('TMainIDE.OnPropHookDeleteComponent A ',AComponent.Name,':',AComponent.ClassName);
   ADesigner:=TDesigner(FindRootDesigner(AComponent));
   if ADesigner=nil then exit;
   ADesigner.RemoveComponent(AComponent);
@@ -7288,6 +7288,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.405  2002/10/06 16:46:44  lazarus
+  MG: added selection changes checks
+
   Revision 1.404  2002/10/05 14:17:50  lazarus
   MG: jump point is now added if method jumping not revertable
 
