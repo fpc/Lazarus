@@ -124,7 +124,6 @@ type
     // general options
     fSynEditOptions: TSynEditorOptions;
     fUndoAfterSave:boolean;
-    fDoubleClickLine:boolean;
     fFindTextAtCursor:boolean;
     fUseSyntaxHighlight:boolean;
     fBlockIndent:integer;
@@ -200,8 +199,6 @@ type
         default SYNEDIT_DEFAULT_OPTIONS;
     property UndoAfterSave:boolean
         read fUndoAfterSave write fUndoAfterSave default true;
-    property DoubleClickLine:boolean
-        read fDoubleClickLine write fDoubleClickLine default false;
     property FindTextAtCursor:boolean
         read fFindTextAtCursor write fFindTextAtCursor default true;
     property UseSyntaxHighlight:boolean
@@ -1025,6 +1022,7 @@ begin
         eoAltSetsColumnMode:SynEditOptName:='AltSetsColumnMode';
         eoAutoIndent:SynEditOptName:='AutoIndent';
         eoBracketHighlight:SynEditOptName:='BracketHighlight';
+        eoDoubleClickSelectsLine:SynEditOptName:='DoubleClickSelectsLine';
         eoDragDropEditing:SynEditOptName:='DragDropEditing';
         eoDropFiles:SynEditOptName:='DropFiles';
         eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
@@ -1052,8 +1050,6 @@ begin
 
     fUndoAfterSave:=
       XMLConfig.GetValue('EditorOptions/General/Editor/UndoAfterSave',true);
-    fDoubleClickLine:=
-      XMLConfig.GetValue('EditorOptions/General/Editor/DoubleClickLine',false);
     fFindTextAtCursor:=
       XMLConfig.GetValue('EditorOptions/General/Editor/FindTextAtCursor',true);
     fUseSyntaxHighlight:=
@@ -1150,6 +1146,7 @@ begin
         eoAltSetsColumnMode:SynEditOptName:='AltSetsColumnMode';
         eoAutoIndent:SynEditOptName:='AutoIndent';
         eoBracketHighlight:SynEditOptName:='BracketHighlight';
+        eoDoubleClickSelectsLine:SynEditOptName:='DoubleClickSelectsLine';
         eoDragDropEditing:SynEditOptName:='DragDropEditing';
         eoDropFiles:SynEditOptName:='DropFiles';
         eoHalfPageScroll:SynEditOptName:='HalfPageScroll';
@@ -1174,8 +1171,6 @@ begin
 
     XMLConfig.SetValue('EditorOptions/General/Editor/UndoAfterSave'
       ,fUndoAfterSave);
-    XMLConfig.SetValue('EditorOptions/General/Editor/DoubleClickLine'
-      ,fDoubleClickLine);
     XMLConfig.SetValue('EditorOptions/General/Editor/FindTextAtCursor'
       ,fFindTextAtCursor);
     XMLConfig.SetValue('EditorOptions/General/Editor/UseSyntaxHighlight'
@@ -1964,6 +1959,8 @@ begin
     CodeTemplateIndentTypeRadioGroup.ItemIndex:=0
   else
     CodeTemplateIndentTypeRadioGroup.ItemIndex:=1;
+    
+  MainNoteBook.PageIndex:=0;
   FormCreating:=false;
 end;
 
@@ -2002,6 +1999,7 @@ begin
   SetOption(AltSetsColumnModeCheckBox,eoAltSetsColumnMode);
   SetOption(AutoIndentCheckBox,eoAutoIndent);
   //SetOption(BracketHighlightCheckBox,eoBracketHighlight);
+  SetOption(DoubleClickLineCheckBox,eoDoubleClickSelectsLine);
   SetOption(DragDropEditingCheckBox,eoDragDropEditing);
   SetOption(DropFilesCheckBox,eoDropFiles);
   SetOption(HalfPageScrollCheckBox,eoHalfPageScroll);
@@ -3221,7 +3219,7 @@ begin
     Width:=ChkBoxW;
     Height:=AltSetsColumnModeCheckBox.Height;
     Caption:='Double click line';
-    Checked:=EditorOpts.DoubleClickLine;
+    Checked:=eoDoubleClickSelectsLine in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Show;
   end;
@@ -4369,7 +4367,6 @@ begin
 
   // general
   EditorOpts.UndoAfterSave:=UndoAfterSaveCheckBox.Checked;
-  EditorOpts.DoubleClickLine:=DoubleClickLineCheckBox.Checked;
   EditorOpts.FindTextAtCursor:=FindTextAtCursorCheckBox.Checked;
   EditorOpts.UseSyntaxHighlight:=UseSyntaxHighlightCheckBox.Checked;
   i:=StrToIntDef(UndoLimitComboBox.Text,32767);

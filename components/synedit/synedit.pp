@@ -164,7 +164,9 @@ type
   TSynStateFlags = set of TSynStateFlag;
 
   TSynEditorOption = (eoAltSetsColumnMode, eoAutoIndent,
-    {$IFDEF SYN_LAZARUS}eoBracketHighlight, eoHideRightMargin,{$ENDIF}
+    {$IFDEF SYN_LAZARUS}
+    eoBracketHighlight, eoHideRightMargin, eoDoubleClickSelectsLine,
+    {$ENDIF}
     eoDragDropEditing,     //mh 2000-11-20
     eoDropFiles, eoHalfPageScroll, eoKeepCaretX, eoNoCaret, eoNoSelection,
     eoScrollByOneLess, eoScrollPastEof, eoScrollPastEol, eoShowScrollHint,
@@ -436,6 +438,9 @@ type
     procedure SetTopLine(Value: Integer);
     procedure SetWantTabs(const Value: boolean);
     procedure SetWordBlock(Value: TPoint);
+    {$IFDEF SYN_LAZARUS}
+    procedure SetLineBlock(Value: TPoint);
+    {$ENDIF}
     procedure SizeOrFontChanged(bFont: boolean);
     procedure StatusChanged(AChanges: TSynStatusChanges);
     procedure TrimmedSetLine(ALine: integer; ALineText: string);
@@ -1672,6 +1677,7 @@ var
   EndOfBlock: TPoint;
   {$ENDIF}
 begin
+//writeln('TCustomSynEdit.MouseDown START Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   {$IFDEF SYN_LAZARUS}
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
@@ -1679,6 +1685,7 @@ begin
     exit;
   end;
   {$ENDIF}
+//writeln('TCustomSynEdit.MouseDown Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 //  if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) and SelAvail
   if (Button = mbRight) and SelAvail then                                       //lt 2000-10-12
     exit;
@@ -1687,7 +1694,7 @@ begin
   if Button = mbLeft then begin
     if ssDouble in Shift then Exit;
     if SelAvail then begin
-        //remember selection state, as it will be cleared later
+      //remember selection state, as it will be cleared later
       bWasSel := true;
       fMouseDownX := X;
       fMouseDownY := Y;
@@ -1703,8 +1710,9 @@ begin
   ComputeCaret(X, Y);
   fLastCaretX := fCaretX;                                                       //mh 2000-10-19
   if Button = mbLeft then begin
+//writeln('====================== START CAPTURE ===========================');
     MouseCapture := True;
-      //if mousedown occured in selected block then begin drag operation
+    //if mousedown occured in selected block then begin drag operation
     Exclude(fStateFlags, sfWaitForDragging);
     if bWasSel and (eoDragDropEditing in fOptions) and (X >= fGutterWidth + 2)
       and (SelectionMode = smNormal) and IsPointInSelection(CaretXY)          
@@ -1755,6 +1763,7 @@ begin
   {$ELSE}
   Windows.SetFocus(Handle);
   {$ENDIF}
+//writeln('TCustomSynEdit.MouseDown END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
 
 procedure TCustomSynEdit.MouseMove(Shift: TShiftState; X, Y: Integer);
@@ -1762,12 +1771,6 @@ var
   Z: integer;
 begin
   inherited MouseMove(Shift, x, y);
-  {$IFDEF SYN_LAZARUS}
-  if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
-  begin
-    exit;
-  end;
-  {$ENDIF}
   if MouseCapture and (sfWaitForDragging in fStateFlags) then begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
@@ -1776,7 +1779,8 @@ begin
       BeginDrag(false);
     end;
   end else if (ssLeft in Shift) and MouseCapture then begin
-    if (X >= fGutterWidth) 
+//writeln('AAA TCustomSynEdit.MouseMove CAPTURE Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y,' Client=',ClientWidth-ScrollBarWidth,',',ClientHeight-ScrollBarWidth);
+    if (X >= fGutterWidth)
       and (X < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
       and (Y >= 0) 
       and (Y < ClientHeight{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
@@ -1810,19 +1814,63 @@ begin
       fScrollDeltaY := Min(Z div fTextHeight, 0);
     end;
     fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
+  {$IFDEF SYN_LAZARUS}
+  end else if MouseCapture then begin
+    MouseCapture:=false;
+    fScrollTimer.Enabled := False;
+  {$ENDIF}
   end;
 end;
 
 procedure TCustomSynEdit.ScrollTimerHandler(Sender: TObject);
 var
   C: TPoint;
+  {$IFDEF SYN_LAZARUS}
+  CurMousePos: TPoint;
+  Z: integer;
+  {$ENDIF}
   X, Y: Integer;
 begin
+  {$IFNDEF SYN_LAZARUS}
   GetCursorPos(C);
   C := PixelsToRowColumn(ScreenToClient(C));
+  {$ENDIF}
   // changes to line / column in one go
   IncPaintLock;
   try
+    {$IFDEF SYN_LAZARUS}
+    GetCursorPos(CurMousePos);
+    CurMousePos:=ScreenToClient(CurMousePos);
+    C := PixelsToRowColumn(CurMousePos);
+    // recalculate scroll deltas
+    Dec(CurMousePos.X, fGutterWidth);
+    // calculate chars past right
+    Z := CurMousePos.X - (fCharsInWindow * fCharWidth);
+    if Z > 0 then
+      Inc(Z, fCharWidth);
+    fScrollDeltaX := Max(Z div fCharWidth, 0);
+    if fScrollDeltaX = 0 then begin
+      // calculate chars past left
+      Z := CurMousePos.X;
+      if Z < 0 then
+        Dec(Z, fCharWidth);
+      fScrollDeltaX := Min(Z div fCharWidth, 0);
+    end;
+    // calculate lines past bottom
+    Z := CurMousePos.Y - (fLinesInWindow * fTextHeight);
+    if Z > 0 then
+      Inc(Z, fTextHeight);
+    fScrollDeltaY := Max(Z div fTextHeight, 0);
+    if fScrollDeltaY = 0 then begin
+      // calculate lines past top
+      Z := CurMousePos.Y;
+      if Z < 0 then
+        Dec(Z, fTextHeight);
+      fScrollDeltaY := Min(Z div fTextHeight, 0);
+    end;
+    fScrollTimer.Enabled := (fScrollDeltaX <> 0) or (fScrollDeltaY <> 0);
+    // now scroll
+    {$ENDIF}
     if fScrollDeltaX <> 0 then begin
       LeftChar := LeftChar + fScrollDeltaX;
       X := LeftChar;
@@ -1850,14 +1898,16 @@ end;
 procedure TCustomSynEdit.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
+//writeln('TCustomSynEdit.MouseUp Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
   inherited MouseUp(Button, Shift, X, Y);
+  fScrollTimer.Enabled := False;
   {$IFDEF SYN_LAZARUS}
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
+    MouseCapture := False;
     exit;
   end;
   {$ENDIF}
-  fScrollTimer.Enabled := False;                                           
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
     exit;
   MouseCapture := False;
@@ -1879,6 +1929,7 @@ begin
   end;
   Exclude(fStateFlags, sfDblClicked);
   Exclude(fStateFlags, sfPossibleGutterClick);
+//writeln('TCustomSynEdit.MouseUp END Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
 end;
 
 procedure TCustomSynEdit.DoOnGutterClick(X, Y: integer);
@@ -4135,6 +4186,19 @@ begin
   InvalidateLine(Value.Y);
   StatusChanged([scSelection]);
 end;
+
+{$ENDIF}
+
+{$IFDEF SYN_LAZARUS}
+procedure TCustomSynEdit.SetLineBlock(Value: TPoint);
+begin
+  fBlockBegin:=Point(1,MinMax(Value.y, 1, Lines.Count));
+  fBlockEnd:=Point(1,MinMax(Value.y+1, 1, Lines.Count));
+  CaretXY:=fBlockEnd;
+//writeln(' FFF2 ',Value.X,',',Value.Y,' BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y);
+  InvalidateLine(Value.Y);
+  StatusChanged([scSelection]);
+end;
 {$ENDIF}
 
 procedure TCustomSynEdit.DblClick;
@@ -4144,8 +4208,16 @@ begin
   GetCursorPos(ptMouse);
   ptMouse := ScreenToClient(ptMouse);
   if ptMouse.X >= fGutterWidth + 2 then begin
-    if not (eoNoSelection in fOptions) then
+    if not (eoNoSelection in fOptions) then begin
+      {$IFDEF SYN_LAZARUS}
+      if (eoDoubleClickSelectsLine in fOptions) then
+        SetLineBlock(PixelsToRowColumn(ptMouse))
+      else
+        SetWordBlock(PixelsToRowColumn(ptMouse));
+      {$ELSE}
       SetWordBlock(CaretXY);
+      {$ENDIF}
+    end;
     inherited;
     Include(fStateFlags, sfDblClicked);
     MouseCapture := FALSE;

@@ -904,6 +904,7 @@ writeln('[TFindDeclarationTool.FindDeclarationOfIdentifier] Identifier=',
 {$ENDIF}
   Result:=false;
   MoveCursorToCleanPos(Params.Identifier);
+  ReadNextAtom;
   OldContextNode:=Params.ContextNode;
   NewContext:=FindContextNodeAtCursor(Params);
   Params.Flags:=fdfAllClassVisibilities
@@ -1540,26 +1541,37 @@ writeln('');
     begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
-      RaiseException('identifier expected, but '
-                      +GetAtom+' found');
+      RaiseException('identifier expected, but '+GetAtom+' found');
     end;
     Result:=CreateFindContext(Self,Params.ContextNode);
     exit;
   end;
+  
+  // skip bracket content
   if (CurAtomType in [atRoundBracketClose,atEdgedBracketClose]) then begin
     ReadBackTilBracketClose(true);
     CurAtom.StartPos:=CurPos.StartPos;
   end;
+  
+write('[TFindDeclarationTool.FindContextNodeAtCursor] A ',
+  ' Context=',Params.ContextNode.DescAsString,
+  ' CurAtom=',AtomTypeNames[CurAtomType],
+  ' "',copy(Src,CurAtom.StartPos,CurAtom.EndPos-CurAtom.StartPos),'"',
+  ' NextAtom=',AtomTypeNames[NextAtomType]
+  );
+writeln('');
+  // check if current atom belongs to the expression, or if next atom is
+  // the start of the variable
   if (CurAtomType in [atAS,atRead,atWrite,atINHERITED,atNone])
-  or ((CurAtomType in [atIdentifier,atPreDefIdentifier])
+  or ((CurAtomType in [atIdentifier,atPreDefIdentifier,atNone])
       and (NextAtomType in [atIdentifier,atPreDefIdentifier]))
   then begin
     // this is the start of the variable
-    Result:=CreateFindContext(Self,Params.ContextNode)
-  end else begin
-    // find prior context
-    Result:=FindContextNodeAtCursor(Params);
+    Result:=CreateFindContext(Self,Params.ContextNode);
+    exit;
   end;
+  // find prior context
+  Result:=FindContextNodeAtCursor(Params);
   if (Result.Node=nil) then exit;
   
   // the left side has been parsed and

@@ -394,7 +394,6 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] no type : found -> ignore pr
       if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos) then 
         RaiseException('default parameter expected, but '+GetAtom+' found');
-      ReadConstant(true,false,[]);
       Parts[ppDefault].StartPos:=CurPos.StartPos;
       if not ReadConstant(true,false,[]) then exit;
       Parts[ppDefault].EndPos:=LastAtoms.GetValueAt(0).EndPos;
