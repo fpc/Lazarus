@@ -237,6 +237,10 @@ constructor TForm1.Create(AOwner: TComponent);
           ms.Position:=0;
           PixMap.LoadFromStream(ms);
           Result:=true;
+          Writeln('PIXMAP LOADED.');
+          Writeln('Width='+inttostr(Pixmap.Width));
+          Writeln('Height='+inttostr(Pixmap.Height));
+
         finally
           ms.Free;
         end;
@@ -479,7 +483,7 @@ begin
   with Speedbutton5 do
    Begin
     Parent := self;
-    Enabled := True;
+    Enabled := False;
     Top := 28;
     Left := Speedbutton4_2.Left + 13;
     OnClick := @mnuSaveCLicked;
@@ -500,7 +504,7 @@ begin
   with Speedbutton6 do
    Begin
     Parent := self;
-    Enabled := True;
+    Enabled := False;
     Top := 28;
     Left := Speedbutton5.left + 26;
     OnClick := @mnuSaveAllCLicked;
@@ -1431,6 +1435,9 @@ Begin
   MenuItem.Caption := Filename;
   MenuItem.OnClick := @SourceNotebook.OpenClicked;
   OpenFilePopupMenu.Items.Add(MenuItem);
+//enable save buttons here
+SpeedButton5.Enabled := True;
+SpeedButton6.Enabled := True;
 
 end;
 
@@ -1743,7 +1750,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.27  2000/12/29 19:20:27  lazarus
+  Revision 1.28  2000/12/29 20:32:32  lazarus
+  Speedbuttons can now draw disabled images.
   Shane
 
   Revision 1.25  2000/12/29 13:35:50  lazarus

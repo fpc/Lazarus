@@ -5,16 +5,6 @@
 procedure TBitMap.Assign(Source: TPersistent);
 begin
 //TODO: Finish TBITMAP ASSIGN
-Assert(False, 'Trace:***********************************');
-Assert(False, 'Trace:***********************************');
-Assert(False, 'Trace:***********************************');
-Assert(False, 'Trace:***********************************');
-Assert(False, 'Trace:****TBITMAP ASSIGN NOT FINISHED****');
-Assert(False, 'Trace:***********************************');
-Assert(False, 'Trace:***********************************');
-Assert(False, 'Trace:***********************************');
-Assert(False, 'Trace:***********************************');
-
 end;
 
 procedure TBitmap.Draw(ACanvas: TCanvas; const Rect: TRect);
@@ -182,6 +172,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/12/29 20:32:33  lazarus
+  Speedbuttons can now draw disabled images.
+  Shane
+
   Revision 1.1  2000/07/13 10:28:24  michael
   + Initial import
 
