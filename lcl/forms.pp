@@ -243,6 +243,75 @@ type
   end;
 
 
+  { TCustomFrame - not implemented yet }
+
+  TCustomFrame = class(TScrollingWinControl)
+  private
+    procedure AddActionList(ActionList: TCustomActionList);
+    procedure RemoveActionList(ActionList: TCustomActionList);
+  protected
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    procedure Notification(AComponent: TComponent;
+      Operation: TOperation); override;
+    procedure SetParent(AParent: TWinControl); override;
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
+
+  TCustomFrameClass = class of TCustomFrame;
+
+
+  { TFrame - not implemented yet }
+
+  TFrame = class(TCustomFrame)
+  published
+    property Align;
+    property Anchors;
+    property AutoScroll;
+    property AutoSize;
+    property Constraints;
+    //property DockSite;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Color nodefault;
+    property Ctl3D;
+    property Font;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property OnClick;
+    property OnConstrainedResize;
+    property OnContextPopup;
+    property OnDblClick;
+    //property OnDockDrop;
+    //property OnDockOver;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDock;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    //property OnGetSiteInfo;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnMouseWheel;
+    property OnMouseWheelDown;
+    property OnMouseWheelUp;
+    property OnResize;
+    property OnStartDock;
+    property OnStartDrag;
+    //property OnUnDock;
+  end;
+
   { TCustomForm }
 
   TIDesigner = class;
@@ -321,6 +390,7 @@ type
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMSize(var message: TLMSize); message LM_Size;
   protected
+    FActionLists: TList;
     function CloseQuery : boolean; virtual;
     function FormUpdating: boolean;
     procedure Activate; dynamic;
@@ -1371,6 +1441,7 @@ end;
 {$I controlscrollbar.inc}
 {$I scrollingwincontrol.inc}
 {$I scrollbox.inc}
+{$I customframe.inc}
 {$I customform.inc}
 {$I screen.inc}
 {$I application.inc}

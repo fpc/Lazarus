@@ -43,7 +43,8 @@ begin
   FItems:= NewStrings;
 
   UpdateSorted;
-  CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
+  if FItemIndex <> -1 then
+    CNSendMessage(LM_SETITEMINDEX, Self, Pointer(FItemIndex));
   CNSendMessage(LM_SETPROPERTIES, Self, nil);
 end;
 
@@ -788,6 +789,9 @@ end;
 
 {
   $Log$
+  Revision 1.30  2003/08/27 09:20:44  mattias
+  added TFrame definition, no implementation
+
   Revision 1.29  2003/07/26 13:26:56  mattias
   fixed WindowProc
 

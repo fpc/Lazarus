@@ -115,6 +115,7 @@ begin
     FreeThenNil(FMenu);
     FreeThenNil(FIcon);
     Screen.RemoveForm(Self);
+    FreeThenNil(FActionLists);
     //writeln('[TCustomForm.Destroy] B ',Name,':',ClassName);
     inherited Destroy;
     //writeln('[TCustomForm.Destroy] END ',Name,':',ClassName);
@@ -140,36 +141,38 @@ End;
 {------------------------------------------------------------------------------
   Method: TCustomForm.Notification
  ------------------------------------------------------------------------------}
-Procedure TCustomForm.Notification(AComponent : TComponent;
-  Operation : TOperation);
+Procedure TCustomForm.Notification(AComponent: TComponent;
+  Operation: TOperation);
 Begin
   inherited Notification(AComponent,Operation);
+
   case Operation of
+
   opInsert:
     begin
-      {if AComponent is TCustomActionList then
-      begin
-        if FActionLists = nil then FActionLists := TList.Create;
+      if AComponent is TCustomActionList then begin
+        if FActionLists=nil then FActionLists:=TList.Create;
         FActionLists.Add(AComponent);
       end
-      else }if not (csLoading in ComponentState) and (Menu = nil) and
-        (AComponent.Owner = Self) and (AComponent is TMainMenu) then
-        Menu := TMainMenu(AComponent);
+      else if not (csLoading in ComponentState) and (Menu = nil)
+      and (AComponent.Owner=Self) and (AComponent is TMainMenu) then
+        Menu:=TMainMenu(AComponent);
     end;
+
   opRemove:
     begin
-      {if (FActionLists <> nil) and (AComponent is TCustomActionList) then
+      if (FActionLists<>nil) and (AComponent is TCustomActionList) then
         FActionLists.Remove(AComponent)
       else
-      begin}
+      begin
         if Menu = AComponent then Menu := nil;
         //if WindowMenu = AComponent then WindowMenu := nil;
         //if ObjectMenuItem = AComponent then ObjectMenuItem := nil;
-      //end;
+      end;
       if FActiveControl=AComponent then FActiveControl:=nil;
     end;
   end;
-  if FDesigner <> nil then FDesigner.Notification(AComponent,Operation);
+  if FDesigner<>nil then FDesigner.Notification(AComponent,Operation);
 End;
 
 {------------------------------------------------------------------------------
@@ -1423,6 +1426,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.110  2003/08/27 09:20:44  mattias
+  added TFrame definition, no implementation
+
   Revision 1.109  2003/08/12 21:35:11  mattias
   TApplication now descends from TCustomApplication
 

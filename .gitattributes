@@ -773,6 +773,7 @@ lcl/include/customcombobox.inc svneol=native#text/pascal
 lcl/include/customcontrol.inc svneol=native#text/pascal
 lcl/include/customedit.inc svneol=native#text/pascal
 lcl/include/customform.inc svneol=native#text/pascal
+lcl/include/customframe.inc svneol=native#text/pascal
 lcl/include/customgroupbox.inc svneol=native#text/pascal
 lcl/include/customlabel.inc svneol=native#text/pascal
 lcl/include/customlabelededit.inc svneol=native#text/pascal
