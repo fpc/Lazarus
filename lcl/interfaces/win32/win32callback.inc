@@ -81,7 +81,7 @@ Begin
   RemoveProp(Window, Str);
   Result := True;
   Assert(False, 'Trace:PropEnumProc - Exit');
-End;
+End;                                              
 
 {------------------------------------------------------------------------------
  Function: CallDefaultWndProc
@@ -205,8 +205,8 @@ Var
     // note: ignores the received DC
     // do not use default deliver message
     if (OwnerObject=nil) or (not (OwnerObject is TWinControl)) then
-      exit;
-
+      exit;              
+    
     // create a paint message
     AWinControl := TWinControl(OwnerObject);
     if AWinControl.DoubleBuffered then
@@ -219,6 +219,7 @@ Var
       OldBitmap := Windows.SelectObject(MemDC, MemBitmap);
       PaintMsg.DC := MemDC;
     end;
+    
     GetLclClientOriginOffset(AWinControl.Handle, LeftOffset, TopOffset);
     try
       DC := Windows.BeginPaint(Window, @PS);
@@ -489,7 +490,7 @@ Begin
       End;
     End;
     WM_ERASEBKGND:
-    Begin
+    Begin 
       LMessage.Msg := LM_ERASEBKGND;
       LMessage.WParam := WParam;
       LMessage.LParam := LParam;
@@ -708,7 +709,7 @@ Begin
     WM_PAINT:
     Begin
       SendPaintMessage;
-      WinProcess := false;
+      WinProcess := False; 
     End;
     WM_PASTE:
     Begin
@@ -839,8 +840,8 @@ Begin
   End;
 
   If WinProcess Then
-  begin
-    PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+  begin    
+    PLMsg^.Result := CallDefaultWindowProc(Window, Msg, WParam, LParam); 
   end;
 
   Case Msg Of
@@ -1155,6 +1156,9 @@ end;
 
 {
   $Log$
+  Revision 1.106  2004/05/20 21:28:54  marc
+  * Fixed win32 listview
+
   Revision 1.105  2004/05/14 21:37:29  vincents
   combobox change event after selecting in list fixed
 

@@ -548,7 +548,7 @@ type
     property Anchors;
 //    property BorderStyle;
     property BorderWidth;
-    property Color;
+    property Color default clWindow;
     property Columns;
 //    property ColumnClick;
     property Constraints;
@@ -2258,6 +2258,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.126  2004/05/20 21:28:54  marc
+  * Fixed win32 listview
+
   Revision 1.125  2004/05/20 14:45:47  mattias
   implemented showing treenode completely on single selection
 

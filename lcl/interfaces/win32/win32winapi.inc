@@ -160,11 +160,7 @@ var
     MoveWindowOrgEx(PaintMsg.DC,-ClientBoundRect.Left,-ClientBoundRect.Top);
     try
       // call win32 paint handler
-      PrevWndProc := Pointer(Windows.GetProp(Handle, 'DefWndProc'));
-      if PrevWndProc = nil then
-        Windows.DefWindowProc(Handle, WM_PAINT, PaintMsg.DC, 0)
-      else
-        Windows.CallWindowProc(WNDPROC(PrevWndProc), Handle, WM_PAINT, PaintMsg.DC, 0);
+      CallDefaultWindowProc(Handle, WM_PAINT, PaintMsg.DC, 0);
     finally
       // restore DC origin
       MoveWindowOrgEx(PaintMsg.DC, ClientBoundRect.Left, ClientBoundRect.Top);
@@ -3000,6 +2996,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.112  2004/05/20 21:28:54  marc
+  * Fixed win32 listview
+
   Revision 1.111  2004/05/14 17:48:39  micha
   fix itemheight of listbox, handle measureitem message
 

@@ -34,6 +34,8 @@ begin
   FSelected := nil;
   TabStop := true;
   SetInitialBounds(0,0,100,90);
+  ParentColor := False;
+  Color := clWindow;
 end;
 
 {------------------------------------------------------------------------------}
@@ -618,6 +620,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2004/05/20 21:28:54  marc
+  * Fixed win32 listview
+
   Revision 1.35  2004/05/18 23:10:41  marc
   * Started to move TListview to the WS interface
 

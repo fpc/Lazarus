@@ -35,7 +35,8 @@ program ListViewTest;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Classes, Buttons, Controls, ComCtrls, Forms, SysUtils, StdCtrls;
+  Interfaces, Classes, Buttons, Controls, ComCtrls, Forms, SysUtils, 
+  Graphics, StdCtrls;
 
 type
   TMyForm = class(TForm)
@@ -68,7 +69,6 @@ begin
   ListView := TListView.Create(Self);
   ListView.Parent := Self;
   ListView.Height := 150;
-//  ListView.Width := 250;
   ListView.Align := alTop;
   ListView.ViewStyle := vsReport;
   ListView.Show;
@@ -166,6 +166,9 @@ end.
 
 {
   $Log$
+  Revision 1.6  2004/05/20 21:28:54  marc
+  * Fixed win32 listview
+
   Revision 1.5  2004/05/18 23:10:41  marc
   * Started to move TListview to the WS interface
 

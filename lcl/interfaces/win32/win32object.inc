@@ -145,6 +145,9 @@ Begin
     FMessageFont := Windows.CreateFontIndirect(@FMetrics.lfMessageFont);
   end;
 
+  //TODO: Remove when the WS interface is implemented
+  //      Common controls only need to be initialized when used
+  //      So they are initialized in the CreateHandle for common controls
   InitCommonControls;
 
   // Create parent of all windows, `button on taskbar'
@@ -386,7 +389,7 @@ Var
   //CBI: COMBOBOXINFO;
   DC: HDC;
   Handle: HWND;
-  I, Num: Integer;
+  I, Num, Idx: Integer;
   ListItemIndex: TListItem;
   LVI: LV_ITEM;
   PStr, PStr2: PChar;
@@ -528,47 +531,64 @@ Begin
       LM_LV_CHANGEITEM:
       Begin
         If Sender Is TListView Then
-        Begin
-          Num := Integer(Data^);
-          ListView_SetItemCount(Handle, Num);
-          ListItemIndex := (Sender As TListView).Items[Num];
+        Begin                   
+          idx := Integer(Data^);
+          ListItemIndex := (Sender As TListView).Items[idx];
           With LVI Do
           Begin
             Mask := LVIF_TEXT;
-            IItem := Num;
-            PSzText := PChar(ListItemIndex.Caption);
-            WriteLn('item: ', Num, ', caption: ', String(PSzText));
+            IItem := idx;
+            iSubItem := 0;
+            pszText := PChar(ListItemIndex.Caption);
             ListView_SetItem(Handle, LVI);
           End;
-          For I := 0 To ListItemIndex.SubItems.Count - 1 Do
-          Begin
-            With LVI Do
-            Begin
-              Mask := LVIF_TEXT;
-              IItem := Num;
-              ISubItem := I + 1;
-              PSzText := PChar(ListItemIndex.SubItems.Strings[I]);
-              ListView_SetItem(Handle, LVI);
-            End;
-          End;
+          num := TListView(Sender).Columns.Count - 1;
+          if num > ListItemIndex.SubItems.Count
+          then num := ListItemIndex.SubItems.Count;
+          for i := 1 to num do
+          begin            
+            LVI.iSubItem := i;
+            LVI.pszText := PChar(ListItemIndex.SubItems[i - 1]);
+            ListView_SetItem(Handle, LVI);
+          end;
+          for i := num + 1 to TListView(Sender).Columns.Count - 1 do
+          begin
+            LVI.iSubItem := i;
+            LVI.pszText := #0;                
+            ListView_SetItem(Handle, LVI);
+          end;
         End;
       End;
       LM_LV_ADDITEM:
       Begin
         If Sender Is TListView Then
         Begin
-          ListItemIndex := TListView(Sender).Items[TListView(Sender).Items.Count - 1];
+          idx := TListView(Sender).Items.Count - 1;
+          ListItemIndex := TListView(Sender).Items[idx];
           With LVI Do
           Begin
             Mask := LVIF_TEXT;
-            IItem := TListView(Sender).Items.Count - 1;
-            CCHTextMax := MAX_PATH;
-            PSzText := StrAlloc(Length(ListItemIndex.Caption) + 1);
-            StrPCopy(PSzText, ListItemIndex.Caption);
-            ListView_InsertItem(Handle, LVI);
-            ListView_Update(Handle, IItem);
-            StrDispose(PSzText);
+            iItem := idx;    
+            iSubItem := 0;
+            pszText := PChar(ListItemIndex.Caption);
           End;
+          ListView_InsertItem(Handle, LVI);
+          num := TListView(Sender).Columns.Count - 1;
+          if num > ListItemIndex.SubItems.Count
+          then num := ListItemIndex.SubItems.Count;
+          for i := 1 to num do
+          begin            
+            LVI.iSubItem := i;
+            LVI.pszText := PChar(ListItemIndex.SubItems[i - 1]);
+            ListView_SetItem(Handle, LVI);
+          end;
+          for i := num + 1 to TListView(Sender).Columns.Count - 1 do
+          begin
+            LVI.iSubItem := i;
+            LVI.pszText := #0;
+            ListView_SetItem(Handle, LVI);
+          end;
+          
         End;
       End;
       LM_BRINGTOFRONT:
@@ -1822,7 +1842,8 @@ End;
 Procedure TWin32WidgetSet.SetColor(Sender: TObject);
 Begin
 
-End;
+End;              
+
 
 {------------------------------------------------------------------------------
   Function: TWin32WidgetSet.CreateComponent
@@ -1850,6 +1871,10 @@ Const
     CBS_DROPDOWN, CBS_SIMPLE, CBS_DROPDOWNLIST,
     CBS_DROPDOWNLIST or CBS_OWNERDRAWFIXED,
     CBS_DROPDOWNLIST or CBS_OWNERDRAWVARIABLE);
+          
+  LISTVIEWSTYLES: array[TViewStyle] of DWORD = (
+    LVS_LIST, LVS_REPORT
+  );
 Begin
   Assert(False, 'Trace:CreateComponent - Start');
   Assert(False, 'Trace:CreateComponent - Value of Sender is $' + IntToHex(LongInt(Sender), 8));
@@ -2076,7 +2101,8 @@ Begin
     Begin
       pClassName := WC_LISTVIEW;
       WindowTitle := StrCaption;
-      Flags := Flags Or LVS_LIST Or LVS_SINGLESEL;
+      Flags := Flags or LISTVIEWSTYLES[TListView(Sender).ViewStyle] or LVS_SINGLESEL;
+      FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;   
     End;
     csMemo:
     Begin
@@ -2274,7 +2300,7 @@ Begin
       MenuHandle := HMENU(nil);
     end;
     Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
-        Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);
+        Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);  
     if Window = 0 then
     begin
       raise exception.create('failed to create win32 control, error: '+IntToStr(GetLastError()));
@@ -2287,7 +2313,8 @@ Begin
     Windows.SetWindowPos(Window, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
   end;
   
-  Result := Window;
+  Result := Window;      
+  
 
   If (Sender Is TWinControl) Or (CompStyle = csImage) Then
   Begin
@@ -2643,11 +2670,17 @@ End;
   the calling object to the corresponding Window.
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.SetProperties(Sender: TObject): Integer;
+const
+  LVS_TYPEMASK = LVS_LIST or LVS_REPORT or LVS_SMALLICON or LVS_ICON;
+  LISTVIEWSTYLES: array[TViewStyle] of DWORD = (
+    LVS_LIST, LVS_REPORT
+  );
 Var
   Handle: HWND;
-  I: Integer;
+  I, Count: Integer;
   LVC: LV_COLUMN;
   Style: Integer;
+  H: THandle;
 begin
   Result := 0; // default if nobody sets it
 
@@ -2672,8 +2705,19 @@ begin
   csListView:
     With TListView(Sender) Do
     Begin
-      If ViewStyle = vsReport Then
-      Begin
+      Style := GetWindowLong(Handle, GWL_STYLE);
+      if (Style and LVS_TYPEMASK) <> LISTVIEWSTYLES[ViewStyle]
+      then begin
+        Style := Style and not LVS_TYPEMASK or LISTVIEWSTYLES[ViewStyle];
+        SetWindowLong(Handle, GWL_STYLE, Style);
+      end;
+      
+      if ViewStyle = vsReport Then
+      Begin 
+//        H := ListView_GetHeader(Handle);
+        H := SendMessage(Handle, $1000 + 31 {LVM_GETHEADER}, 0, 0);
+        Count := Header_GetItemCount(H);
+        
         For I := 0 To Columns.Count - 1 Do
         Begin
           With LVC Do
@@ -2683,8 +2727,13 @@ begin
             CX := Columns.Items[I].Width;
             PSzText := PChar(Columns.Items[I].Caption);
           End;
-          ListView_SetColumn(Handle, I, LVC);
+          if i >= Count 
+          then ListView_InsertColumn(Handle, i, lvc)
+          else ListView_SetColumn(Handle, I, LVC);
         End;
+        for i := Columns.Count to Count - 1 do
+          ListView_DeleteColumn(Handle, i);  
+        Count := Header_GetItemCount(H);
       End;
       //If Sorted Then
         //ListView_SortItems(Handle, @CompareFunc, 0);
@@ -2948,6 +2997,9 @@ End;
 
 {
   $Log$
+  Revision 1.196  2004/05/20 21:28:54  marc
+  * Fixed win32 listview
+
   Revision 1.195  2004/05/16 20:59:53  vincents
   page caption not retrieved from interface, fixed setting caption for page not yet added
 
