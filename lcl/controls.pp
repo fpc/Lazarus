@@ -1849,14 +1849,13 @@ type
     FDragThreshold: Integer;
     Procedure SetCapture(const Value: HWND);
     Function GetCapture: HWND;
-    Procedure SetCursorPos(value: TPoint);
     Function GetCursorPos: TPoint;
     function GetIsDragging: Boolean;
   public
     constructor Create;
     destructor Destroy; override;
     property Capture: HWND read GetCapture write SetCapture;
-    property CursorPos: TPoint read GetCursorPos write SetCursorPos;
+    property CursorPos: TPoint read GetCursorPos;
     property DragImmediate: Boolean read FDragImmediate write FDragImmediate default True;
     property DragThreshold: Integer read FDragThreshold write FDragThreshold default 5;
     property IsDragging: Boolean read GetIsDragging;
@@ -2890,6 +2889,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.292  2005/03/31 20:49:39  micha
+  remove TMouse.SetCursorPos (tricky and not cross-platform)
+
   Revision 1.291  2005/03/30 18:34:42  micha
   fix bug 659 and 660: LM_RBUTTONUP message returns true whenever popupmenu was invoked
 

@@ -45,11 +45,6 @@ Begin
   FCapture := GetCapture;
 end;
 
-Procedure TMouse.SetCursorPos(Value : Tpoint);
-Begin
-
-end;
-
 Function TMouse.GetCursorPos : TPoint;
 var
   p : TPoint;
