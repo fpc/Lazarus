@@ -23,7 +23,7 @@
 }
 //##apiwiz##sps##   // Do not remove
 
-function TInterfaceBase.Arc(DC: HDC; 
+function TInterfaceBase.Arc(DC: HDC;
   x,y,width,height,angle1,angle2 : Integer): Boolean;
 var
   Points : PPoint;
@@ -1650,6 +1650,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.81  2003/02/28 10:14:29  mattias
+  started package system (packager)
+
   Revision 1.80  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 
