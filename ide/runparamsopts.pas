@@ -38,7 +38,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
-  ExtCtrls, LResources, XMLCfg;
+  ExtCtrls, LResources, XMLCfg, DOS, IDEProcs;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
@@ -108,18 +108,29 @@ type
     DisplayGroupBox: TGroupBox;
     DisplayEdit: TEdit;
     SystemVariablesGroupBox: TGroupBox;
+    SystemVariablesListView: TListView;
     UserOverridesGroupBox: TGroupBox;
+    UserOverridesListView: TListView;
+    UserOverridesAddButton: TButton;
+    UserOverridesEditButton: TButton;
+    UserOverridesDeleteButton: TButton;
     IncludeSystemVariablesCheckBox: TCheckBox;
     OkButton: TButton;
     CancelButton: TButton;
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
+    procedure HostApplicationEditClick(Sender: TObject);
+    procedure WorkingDirectoryBtnClick(Sender: TObject);
+    procedure UserOverridesAddButtonClick(Sender: TObject);
+    procedure UserOverridesEditButtonClick(Sender: TObject);
+    procedure UserOverridesDeleteButtonClick(Sender: TObject);
   private
     fOptions: TRunParamsOptions;
     procedure SetupNotebook;
     procedure SetupLocalPage;
     procedure SetupEnvironmentPage;
     procedure SetOptions(NewOptions: TRunParamsOptions);
+    procedure FillSystemVariablesListView;
     procedure SaveToOptions;
   public
     constructor Create(AnOwner: TComponent); override;
@@ -189,8 +200,8 @@ function TRunParamsOptions.Load(XMLConfig: TXMLConfig;
     Cnt:=XMLConfig.GetValue(APath+'Count',0);
     for i:=0 to Cnt-1 do begin
       fUserOverrides.Values[XMLConfig.GetValue(
-        APath+'Variable'+IntToStr(i)+'/Name','')]:=
-          XMLConfig.GetValue(APath+'Variable'+IntToStr(i)+'/Value','');
+          APath+'Variable'+IntToStr(i)+'/Name','')]
+        :=XMLConfig.GetValue(APath+'Variable'+IntToStr(i)+'/Value','');
     end;
   end;
 
@@ -329,7 +340,6 @@ begin
     Parent:=NoteBook.Page[0];
     SetBounds(5,5,w,60);
     Caption:='Host application';
-    Enabled:=false;
     Visible:=true;
   end;
   
@@ -339,7 +349,6 @@ begin
     Parent:=HostApplicationGroupBox;
     SetBounds(5,5,w-10-35,25);
     Caption:='';
-    Enabled:=false;
     Visible:=true;
   end;
   
@@ -349,7 +358,7 @@ begin
     Parent:=HostApplicationGroupBox;
     SetBounds(HostApplicationEdit.Left+HostApplicationEdit.Width+2,5,25,25);
     Caption:='...';
-    Enabled:=false;
+    HostApplicationEdit.OnClick:=@HostApplicationEditClick;
     Visible:=true;
   end;
   
@@ -360,7 +369,6 @@ begin
     SetBounds(5,HostApplicationGroupBox.Top+HostApplicationGroupBox.Height+5,
                  w,60);
     Caption:='Command line parameters (without application name)';
-    Enabled:=false;
     Visible:=true;
   end;
   
@@ -370,7 +378,6 @@ begin
     Parent:=CmdLineParametersGroupBox;
     SetBounds(5,5,w-15,25);
     Caption:='';
-    Enabled:=false;
     Visible:=true;
   end;
   
@@ -380,7 +387,6 @@ begin
     Parent:=NoteBook.Page[0];
     SetBounds(
       5,CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,w,60);
-    Enabled:=false;
     Visible:=true;
   end;
   
@@ -389,10 +395,9 @@ begin
     Name:='UseLaunchingApplicationCheckBox';
     Parent:=NoteBook.Page[0];
     SetBounds(UseLaunchingApplicationBevel.Left+10,
-      UseLaunchingApplicationBevel.Top,100,25);
+      UseLaunchingApplicationBevel.Top,250,25);
     Caption:='Use launching application';
     Checked:=false;
-    Enabled:=false;
     Visible:=true;
   end;
   
@@ -403,7 +408,6 @@ begin
     SetBounds(UseLaunchingApplicationBevel.Left+5,
                  UseLaunchingApplicationBevel.Top+25,w-15,25);
     Caption:='';
-    Enabled:=false;
     Visible:=true;
   end;
   
@@ -414,7 +418,6 @@ begin
     SetBounds(5,UseLaunchingApplicationBevel.Top
                    +UseLaunchingApplicationBevel.Height+10,w,60);
     Caption:='Working directory';
-    Enabled:=false;
     Visible:=true;
   end;
   
@@ -424,7 +427,6 @@ begin
     Parent:=WorkingDirectoryGroupBox;
     SetBounds(5,5,w-10-35,25);
     Caption:='';
-    Enabled:=false;
     Visible:=true;
   end;
   
@@ -434,7 +436,7 @@ begin
     Parent:=WorkingDirectoryGroupBox;
     SetBounds(WorkingDirectoryEdit.Left+WorkingDirectoryEdit.Width+2,5,25,25);
     Caption:='...';
-    Enabled:=false;
+    WorkingDirectoryBtn.OnClick:=@WorkingDirectoryBtnClick;
     Visible:=true;
   end;
   
@@ -445,7 +447,6 @@ begin
     SetBounds(5,WorkingDirectoryGroupBox.Top+WorkingDirectoryGroupBox.Height+10,
                  w,60);
     Caption:='Display (not for win32)';
-    Enabled:=false;
     Visible:=true;
   end;
   
@@ -455,7 +456,6 @@ begin
     Parent:=DisplayGroupBox;
     SetBounds(5,5,w-15,25);
     Caption:='';
-    Enabled:=false;
     Visible:=true;
   end;
 end;
@@ -471,7 +471,25 @@ begin
     Parent:=NoteBook.Page[1];
     SetBounds(5,5,w,150);
     Caption:='System variables';
-    Enabled:=false;
+    Visible:=true;
+  end;
+  
+  SystemVariablesListView:=TListView.Create(Self);
+  with SystemVariablesListView do begin
+    Name:='SystemVariablesListView';
+    Parent:=SystemVariablesGroupBox;
+    Left:=5;
+    Top:=5;
+    Width:=Parent.ClientWidth-17;
+    Height:=Parent.ClientHeight-28;
+    Columns.Clear;
+    Columns.Updating := true;
+    Columns.Add('Variable');
+    Columns.Add('Value');
+    Columns[0].Width:=130;
+    Columns.Updating := False;
+    ViewStyle := vsReport;
+    Sorted := true;
     Visible:=true;
   end;
   
@@ -482,10 +500,64 @@ begin
     SetBounds(5,SystemVariablesGroupBox.Top+SystemVariablesGroupBox.Height+10,
                  w,150);
     Caption:='User overrides';
-    Enabled:=false;
     Visible:=true;
   end;
   
+  UserOverridesListView:=TListView.Create(Self);
+  with UserOverridesListView do begin
+    Name:='UserOverridesListView';
+    Parent:=UserOverridesGroupBox;
+    Left:=5;
+    Top:=5;
+    Width:=Parent.ClientWidth-17;
+    Height:=Parent.ClientHeight-68;
+    Columns.Clear;
+    Columns.Updating := true;
+    Columns.Add('Variable');
+    Columns.Add('Value');
+    Columns[0].Width:=130;
+    Columns.Updating := False;
+    ViewStyle := vsReport;
+    Sorted := true;
+    Visible:=true;
+  end;
+  
+  UserOverridesAddButton:=TButton.Create(Self);
+  with UserOverridesAddButton do begin
+    Name:='UserOverridesAddButton';
+    Parent:=UserOverridesGroupBox;
+    Left:=5;
+    Top:=Parent.ClientWidth-Height-28;
+    Width:=100;
+    Caption:='Add';
+    OnClick:=@UserOverridesAddButtonClick;
+    Visible:=true;
+  end;
+
+  UserOverridesEditButton:=TButton.Create(Self);
+  with UserOverridesEditButton do begin
+    Name:='UserOverridesEditButton';
+    Parent:=UserOverridesGroupBox;
+    Left:=UserOverridesAddButton.Left+UserOverridesAddButton.Width+10;
+    Top:=UserOverridesAddButton.Top;
+    Width:=100;
+    Caption:='Edit';
+    OnClick:=@UserOverridesEditButtonClick;
+    Visible:=true;
+  end;
+
+  UserOverridesDeleteButton:=TButton.Create(Self);
+  with UserOverridesDeleteButton do begin
+    Name:='UserOverridesDeleteButton';
+    Parent:=UserOverridesGroupBox;
+    Left:=UserOverridesEditButton.Left+UserOverridesEditButton.Width+10;
+    Top:=UserOverridesEditButton.Top;
+    Width:=100;
+    Caption:='Delete';
+    OnClick:=@UserOverridesDeleteButtonClick;
+    Visible:=true;
+  end;
+
   IncludeSystemVariablesCheckBox:=TCheckBox.Create(Self);
   with IncludeSystemVariablesCheckBox do begin
     Name:='IncludeSystemVariablesCheckBox';
@@ -493,7 +565,6 @@ begin
     SetBounds(5,UserOverridesGroupBox.Top+UserOverridesGroupBox.Height+10,w,25);
     Caption:='Include system variables';
     Checked:=false;
-    Enabled:=false;
     Visible:=true;
   end;
 end;
@@ -509,6 +580,61 @@ begin
   ModalResult:=mrCancel;
 end;
 
+procedure TRunParamsOptsDlg.HostApplicationEditClick(Sender: TObject);
+var OpenDialog: TOpenDialog;
+begin
+  OpenDialog:=TOpenDialog.Create(Self);
+  with OpenDialog do begin
+    if HostApplicationEdit.Text<>'' then
+      OpenDialog.InitialDir:=ExtractFilePath(HostApplicationEdit.Text);
+    OpenDialog.Filename:=HostApplicationEdit.Text;
+    if OpenDialog.Execute then begin
+      if (FileIsExecutable(OpenDialog.Filename))
+      or (MessageDlg('File not executable',
+          'The host application "'+OpenDialog.Filename+'" is not executable.',
+          mtWarning,[mbCancel,mbIgnore],0)=mrIgnore) then
+      begin
+        HostApplicationEdit.Text:=OpenDialog.Filename;
+      end;
+    end;
+  end;
+end;
+
+procedure TRunParamsOptsDlg.WorkingDirectoryBtnClick(Sender: TObject);
+var OpenDialog: TOpenDialog;
+begin
+  OpenDialog:=TOpenDialog.Create(Self);
+  with OpenDialog do begin
+    if WorkingDirectoryEdit.Text<>'' then
+      OpenDialog.InitialDir:=ExtractFilePath(WorkingDirectoryEdit.Text);
+    OpenDialog.Filename:=HostApplicationEdit.Text;
+    if OpenDialog.Execute then begin
+      if (DirectoryExists(OpenDialog.Filename))
+      or (MessageDlg('Directory does not exist',
+          'The directory "'+OpenDialog.Filename+'" does not exist.',
+          mtWarning,[mbIgnore,mbCancel],0)=mrIgnore) then
+      begin
+        WorkingDirectoryEdit.Text:=OpenDialog.Filename;
+      end;
+    end;
+  end;
+end;
+
+procedure TRunParamsOptsDlg.UserOverridesAddButtonClick(Sender: TObject);
+begin
+
+end;
+
+procedure TRunParamsOptsDlg.UserOverridesEditButtonClick(Sender: TObject);
+begin
+
+end;
+
+procedure TRunParamsOptsDlg.UserOverridesDeleteButtonClick(Sender: TObject);
+begin
+
+end;
+
 procedure TRunParamsOptsDlg.SaveToOptions;
 begin
   // local
@@ -520,6 +646,9 @@ begin
   fOptions.Display:=DisplayEdit.Text;
   
   // environment
+
+  // ToDo: User Overrides
+
   fOptions.IncludeSystemVariables:=IncludeSystemVariablesCheckBox.Checked;
 end;
 
@@ -536,7 +665,38 @@ begin
   DisplayEdit.Text:=fOptions.Display;
   
   // environment
+  FillSystemVariablesListView;
+  // ToDo: User Overrides
+  
   IncludeSystemVariablesCheckBox.Checked:=fOptions.IncludeSystemVariables;
+end;
+
+procedure TRunParamsOptsDlg.FillSystemVariablesListView;
+var
+  i, SysVarCount, e: integer;
+  Variable, Value: string;
+Begin
+  with SystemVariablesListView.Items do begin
+    //BeginUpdate;
+    SysVarCount:=EnvCount;
+    for i:=0 to SysVarCount-1 do begin
+      Variable:=EnvStr(i+1);
+      e:=1;
+      while (e<=length(Variable)) and (Variable[e]<>'=') do inc(e);
+      Value:=copy(Variable,e+1,length(Variable)-e);
+      Variable:=LeftStr(Variable,e-1);
+      if Count<=i then begin
+        // add line to listview
+        Add;
+        Item[i].SubItems.Add('');
+      end;
+      Item[i].Caption:=Variable;
+      Item[i].SubItems[0]:=Value;
+    end;
+    while Count>EnvCount do
+      Delete(Count-1);
+    //EndUpdate;
+  end;
 end;
 
 

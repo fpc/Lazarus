@@ -927,6 +927,7 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
     // search for missing proc bodies
     if (ProcBodyNodes.Count=0) then begin
       // there were no old proc bodies of the class -> start class
+      
       if NodeHasParentOfType(ClassNode,ctnInterface) then begin
         // class is in interface section
         // -> insert at the end of the implementation section

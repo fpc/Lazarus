@@ -134,7 +134,8 @@ type
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
     FOnAfterApplyChanges: TOnAfterApplyChanges;
     FUpdateLock: integer;
-    Src: string;
+    Src: string; // current cleaned source
+    SrcLen: integer; // same as length(Src)
     procedure DeleteOldText(CleanFromPos,CleanToPos: integer);
     procedure InsertNewText(ACode: TCodeBuffer; DirectPos: integer;
         const InsertText: string);
@@ -439,6 +440,7 @@ writeln('TSourceChangeCache.Apply EntryCount=',FEntries.Count);
   end;
   try
     Src:=MainScanner.CleanedSrc;
+    SrcLen:=length(Src);
     // apply the changes beginning with the last
     CurNode:=FEntries.FindHighest;
     while CurNode<>nil do begin
@@ -452,8 +454,8 @@ writeln('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
       case FirstEntry.AfterGap of
         gtSpace:
           begin
-            if ((FirstEntry.ToPos>MainScanner.CleanedLen)
-                or (not IsSpaceChar[MainScanner.Src[FirstEntry.ToPos]])) then
+            if ((FirstEntry.ToPos>SrcLen)
+                or (not IsSpaceChar[Src[FirstEntry.ToPos]])) then
               InsertText:=InsertText+' ';
           end;
         gtNewLine:
@@ -472,9 +474,9 @@ writeln('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
       if FirstEntry.AfterGap in [gtNewLine,gtEmptyLine] then begin
         // move the rest of the line behind the insert position to the next line
         // with auto indent
-        NeededIndent:=GetLineIndent(MainScanner.Src,FirstEntry.ToPos);
+        NeededIndent:=GetLineIndent(Src,FirstEntry.ToPos);
         j:=FirstEntry.ToPos;
-        while (j<=MainScanner.SrcLen) and (IsSpaceChar[MainScanner.Src[j]]) do
+        while (j<=SrcLen) and (IsSpaceChar[Src[j]]) do
           inc(j);
         dec(NeededIndent,j-FirstEntry.ToPos);
         if NeededIndent>0 then
@@ -511,7 +513,7 @@ writeln('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
         gtSpace:
           begin
             if (CurEntry.FromPos=1)
-            or (not IsSpaceChar[MainScanner.Src[CurEntry.FromPos-1]]) then
+            or (not IsSpaceChar[Src[CurEntry.FromPos-1]]) then
               InsertText:=' '+InsertText;
           end;
         gtNewLine:
@@ -535,7 +537,7 @@ writeln('TSourceChangeCache.Apply Pos=',FirstEntry.FromPos,'-',FirstEntry.ToPos,
         // no line end was inserted in front
         // -> adjust the FromPos to replace the space in the existing line
         while (FirstEntry.FromPos+FromPosAdjustment>1)
-        and (not (MainScanner.Src[FirstEntry.FromPos+FromPosAdjustment-1]
+        and (not (Src[FirstEntry.FromPos+FromPosAdjustment-1]
           in [#10,#13]))
         do dec(FromPosAdjustment);
       end;
@@ -559,12 +561,12 @@ var c:char;
 begin
   Result:=MinLineEnds;
   if CleanPos<1 then exit;
-  while (CleanPos<=length(Src)) do begin
+  while (CleanPos<=SrcLen) do begin
     c:=Src[CleanPos];
     if IsLineEndChar[c] then begin
       dec(Result);
       inc(CleanPos);
-      if (CleanPos<=length(Src))
+      if (CleanPos<=SrcLen)
       and (IsLineEndChar[Src[CleanPos]])
       and (Src[CleanPos]<>c) then
         inc(CleanPos);
@@ -580,7 +582,7 @@ function TSourceChangeCache.CountNeededLineEndsToAddBackward(
 var c:char;
 begin
   Result:=MinLineEnds;
-  if (CleanPos>length(Src)) then exit;
+  if (CleanPos>SrcLen) then exit;
   while (CleanPos>=1) do begin
     c:=Src[CleanPos];
     if IsLineEndChar[c] then begin
