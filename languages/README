@@ -1,6 +1,10 @@
 The <lazarusdir>/languages directory contains all the stuff for
 internationalization of the lazarus IDE.
 
+There are a few other directories for the codetools and the lcl. They work
+all the same. All language files can easily be updated with the
+<lazarusdir>/localize.sh script.
+
 All text and messages used in the IDE (except the special designer units)
 should be placed into the unit lazarusidestrconsts.pas. This unit uses a
 resourcestring section, so that the compiler will create the
@@ -28,6 +32,8 @@ msgfmt -v -o lazaruside.xx.mo lazaruside.xx.po
 where xx is the language id.
 
 
-(The same for objinspstrconsts.xx.po)
+(The same for objinspstrconsts.xx.po, codetoolsstrconsts.xx.po, lcl.xx.po)
+
+
 
 
