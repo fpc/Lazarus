@@ -5451,15 +5451,18 @@ begin
 end;
 
 procedure TCustomSynEdit.EnsureCursorPosVisible;
+var
+  PhysCaretXY: TPoint;
 begin
   IncPaintLock;
   try
     // Make sure X is visible
 //writeln('[TCustomSynEdit.EnsureCursorPosVisible] A CaretX=',CaretX,' LeftChar=',LeftChar,' CharsInWindow=',CharsInWindow,' ClientWidth=',ClientWidth);
-    if CaretX < LeftChar then
-      LeftChar := CaretX
-    else if CaretX > CharsInWindow + LeftChar then
-      LeftChar := CaretX - CharsInWindow + 1
+    PhysCaretXY:=LogicalToPhysicalPos(CaretXY);
+    if PhysCaretXY.X < LeftChar then
+      LeftChar := PhysCaretXY.X
+    else if PhysCaretXY.X > CharsInWindow + LeftChar then
+      LeftChar := PhysCaretXY.X - CharsInWindow + 1
     else
       LeftChar := LeftChar;                                                     //mh 2000-10-19
     // Make sure Y is visible
