@@ -26,6 +26,7 @@ Function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc; Override;
 Function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; Override;
 Function BringWindowToTop(HWnd: HWND): Boolean; Override;
 
+procedure CallDefaultWndHandler(Sender: TObject; var Message); Override;
 Function CallNextHookEx(HHk: HHOOK; NCode: Integer; WParam, LParam: LongInt): Integer; Override;
 Function CallWindowProc(LPPrevWndFunc: TFarProc; Handle: HWND; Msg: UINT; WParam, LParam: LongInt): Integer; Override;
 Function CheckMenuItem(HndMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean): Boolean; Override;
@@ -176,6 +177,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2003/07/04 10:12:16  mattias
+  added default message handler to win32 interface
+
   Revision 1.25  2003/07/03 17:19:20  mattias
   added RectVisible from Micha
 

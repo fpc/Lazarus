@@ -130,6 +130,25 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:  CallDefaultWndHandler
+  Params:  Sender - object, that sent the message
+           Message - a TLMessage
+  Returns: -
+
+  Called by TWinControl.DefaultHandler to let the interface call some default
+  functions for the message.
+ ------------------------------------------------------------------------------}
+Procedure TWin32Object.CallDefaultWndHandler(Sender: TObject; var Message);
+begin
+  case TLMessage(Message).Msg of
+  
+  LM_PAINT:
+    CNSendMessage(LM_PAINT, Sender, Pointer(TLMessage(Message).WParam));
+
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method:  CallNextHookEx
   Params:  HHk    - handle of the current hook
            NCode  - Hook code
@@ -2315,6 +2334,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2003/07/04 10:12:16  mattias
+  added default message handler to win32 interface
+
   Revision 1.40  2003/07/03 17:19:20  mattias
   added RectVisible from Micha
 

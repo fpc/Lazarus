@@ -56,7 +56,12 @@ begin
   Result := InterfaceObject.BringWindowToTop(hWnd);
 end;
 
-function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer; 
+procedure CallDefaultWndHandler(Sender: TObject; var Message);
+begin
+  InterfaceObject.CallDefaultWndHandler(Sender,Message);
+end;
+
+function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer;
 begin
   Result := InterfaceObject.CallNExtHookEx(hhk,ncode,wparam,lParam);
 end;
@@ -1629,6 +1634,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.89  2003/07/04 10:12:16  mattias
+  added default message handler to win32 interface
+
   Revision 1.88  2003/07/02 15:56:15  mattias
   fixed win32 painting and started creating bitmaps from rawimages
 

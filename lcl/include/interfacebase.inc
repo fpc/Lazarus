@@ -72,6 +72,11 @@ begin
   Result := false;
 end;
 
+procedure TInterfaceBase.CallDefaultWndHandler(Sender: TObject; var Message);
+begin
+
+end;
+
 function TInterfaceBase.CallNextHookEx(hhk : HHOOK; ncode : Integer;
   wParam, lParam : Longint) : Integer;
 begin
@@ -1775,6 +1780,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.95  2003/07/04 10:12:16  mattias
+  added default message handler to win32 interface
+
   Revision 1.94  2003/07/02 15:56:15  mattias
   fixed win32 painting and started creating bitmaps from rawimages
 

@@ -57,7 +57,8 @@ Var
   R: TRect;
   OwnerObject: TObject;
   WinProcess: Boolean;
-  C: integer;
+  PrevWndProc: Pointer;
+
   procedure ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean);
   var
     NoteBook: TCustomNotebook;
@@ -491,7 +492,13 @@ Begin
   End;
 
   If WinProcess Then
-    Result := DefWindowProc(Window, Msg, WParam, LParam);
+  begin
+    PrevWndProc := GetProp(Window, 'DefWndProc');
+    if PrevWndProc = nil then
+      Result := DefWindowProc(Window, Msg, WParam, LParam)
+    else
+      Result := CallWindowProc(PrevWndProc, Window, Msg, WParam, LParam);
+  end;
 
   {$IFDEF VER1_1} 
     List := TMsgArray(GetProp(Window, 'MsgList'));
@@ -553,6 +560,9 @@ end;
 
 {
   $Log$
+  Revision 1.36  2003/07/04 10:12:16  mattias
+  added default message handler to win32 interface
+
   Revision 1.35  2003/07/03 21:39:44  mattias
   fixed remove props on destroy from Micha
 

@@ -956,6 +956,10 @@ activate_time :	the time at which the activation event occurred.
             SetAccelKey(TLMShortCut(Data^).Handle, TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier, FAccelGroup);
           End;
         End;
+        LM_PAINT:
+          begin
+            Result := CallWindowProc(GetProp(Handle, 'DefWndProc'), Handle, WM_PAINT, WParam(Data), 0);
+          end;
         Else
           Assert(True, Format ('WARNING: Unhandled message %d in IntSendMessage3 send by %s --> message:Redraw', [LM_Message, Sender.ClassName]));
           // unhandled message
@@ -1183,7 +1187,7 @@ Begin
   With WindowClass Do
   Begin
     Style := 0{CS_HRedraw or CS_VRedraw};
-    LPFnWndProc := WndProc(@WindowProc);
+    LPFnWndProc := @WindowProc;
     CbClsExtra := 40;
     CbWndExtra := 40;
     HInstance := System.HInstance;
@@ -1695,6 +1699,7 @@ Var
   DC: HDC;
   Flags: DWord;
   Height, Width: Integer;
+  DoSubClass: Boolean;
   Parent: HWND;
   PStr, StrTemp: PChar;
   R: TRect;
@@ -1726,6 +1731,7 @@ Begin
   Else
     Parent := 0;
 
+  DoSubClass := true;
   CompStyle := csNone;
   Assert(False, 'Trace:Setting compstyle');
   //Caption := '';
@@ -1785,7 +1791,7 @@ Begin
     End;
     csBitBtn:
     Begin
-      Window := CreateWindow('BUTTON', Nil, Flags Or BS_BITMAP, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow('BUTTON', Nil, Flags or BS_PUSHBUTTON Or BS_BITMAP, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       IntSendMessage3(LM_LOADXPM, Sender, StrTemp);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
@@ -1816,6 +1822,7 @@ Begin
       AProcess.Free;
       AProcess := Nil;
     End;
+{
     csCanvas:
     Begin
       Assert(False, 'Trace:TODO: Code TWin32Object.CreateComponent: style csCanvas');
@@ -1823,6 +1830,7 @@ Begin
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
+}
     csCheckbox:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_AUTOCHECKBOX, Left, Top, Width, Height, Parent, HMenu(Nil), HInstance, Nil);
@@ -1873,6 +1881,7 @@ Begin
       Window := CreateWindow(ClsName, StrTemp, Flags, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
+      DoSubClass := false;
     End;
     csFont:
     Begin
@@ -1885,16 +1894,6 @@ Begin
     csForm, csHintWindow:
     Begin
       Assert(False, 'Trace:CreateComponent - Creating a Form Window');
-//  Not needed since the size is set later
-//      If Left = 0 Then
-//        Left := CW_USEDEFAULT;
-//      If Top = 0 Then
-//        Top := CW_USEDEFAULT;
-//      If Width = 0 Then
-//        Width := CW_USEDEFAULT;
-//      If Height = 0 Then
-//        Width := CW_USEDEFAULT;
-//      Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       try
         Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
       except
@@ -1905,6 +1904,7 @@ Begin
       FParentWindow := Window;
       Assert(False, 'Trace:CreateComponent - Form Window Handle Value = $' + IntToHex(Window, 8));
       Assert(False, 'Trace:Creating a Form - SetProp');
+      DoSubClass := false;
       SetProp(Window, 'Lazarus', Sender);
       If Window = 0 then
       Begin
@@ -1922,6 +1922,7 @@ Begin
       Window := CreateWindow(pStr, ClsName, WS_OverlappedWindow, CW_UseDefault, CW_UseDefault, CW_UseDefault, CW_UseDefault, Parent, HMENU(Nil), HInstance, Nil);
       FParentWindow := Window;
       StrDispose(PStr);
+      DoSubClass := false;
       Assert(False, 'Trace:CreateComponent - MainForm Window Handle Value = $' + IntToHex(Window, 8));
       Assert(False, 'Trace:Creating a Form - MainForm SetProp');
       SetProp(Window, 'Lazarus', Sender);
@@ -1947,7 +1948,7 @@ Begin
     End;}
     csLabel:
     Begin
-      Window := CreateWindow('STATIC', StrTemp, Flags Or SS_LEFT Or SS_SIMPLE, (Sender As TControl).Left, (Sender As TControl).Top, (Sender As TControl).Width, (Sender As TControl).Height, FParentWindow, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow('STATIC', StrTemp, Flags Or SS_LEFT, (Sender As TControl).Left, (Sender As TControl).Top, (Sender As TControl).Width, (Sender As TControl).Height, FParentWindow, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
     End;
@@ -2077,6 +2078,7 @@ Begin
       Window := CreateWindow(@ToolBtnClsName, LPSTR(nil), 0, Left, Top, Width, Height, Parent, HMENU(nil), HInstance, nil);
       SetProp(Window, 'Lazarus', Sender);
       SetName(Window, StrTemp);
+      DoSubClass := false;
     End;
     {csGroupBox:
     Begin
@@ -2091,6 +2093,7 @@ Begin
       Window := CreateWindowEx(WS_EX_CONTROLPARENT, @ClsName, Nil, WS_CHILD or WS_CLIPCHILDREN or WS_CLIPSIBLINGS, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       ShowWindow(Window, SW_HIDE);
       SetProp(Window, 'Lazarus', Sender);
+      DoSubClass := false;
     End;
     csPopupMenu:
     Begin
@@ -2125,7 +2128,11 @@ Begin
   Begin
     TWinControl(Sender).Handle := Window;
     If Window <> HWND(Nil) Then
+    begin
       SetProp(Window, 'Sender', @Sender);
+      if DoSubClass then
+        SetProp(Window, 'DefWndProc', Pointer(SetWindowLong(Window, GWL_WNDPROC, LongInt(@WindowProc))));
+    end;
   End
   Else If (Sender Is TMenuItem) Then
     TMenuItem(Sender).Handle := Window
@@ -2741,6 +2748,9 @@ End;
 
 {
   $Log$
+  Revision 1.72  2003/07/04 10:12:16  mattias
+  added default message handler to win32 interface
+
   Revision 1.71  2003/07/03 18:10:55  mattias
   added fontdialog options to win32 intf from Wojciech Malinowski
 

@@ -496,6 +496,11 @@ begin
   end;
 end;
 
+procedure TWinControl.DefaultHandler(var Message);
+begin
+  CallDefaultWndHandler(Self,Message);
+end;
+
 
 {------------------------------------------------------------------------------}
 {  TWinControl CanFocus                                                        }
@@ -2885,6 +2890,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.151  2003/07/04 10:12:16  mattias
+  added default message handler to win32 interface
+
   Revision 1.150  2003/07/02 15:56:15  mattias
   fixed win32 painting and started creating bitmaps from rawimages
 

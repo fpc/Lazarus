@@ -1073,8 +1073,9 @@ type
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     procedure DoAdjustClientRectChange;
     procedure InvalidateClientRectCache;
-    Function Focused : Boolean; Override;
+    Function Focused : Boolean; override;
     Procedure BroadCast(var Message);
+    procedure DefaultHandler(var Message); override;
     Procedure DisableAlign;
     Procedure EnableAlign;
     Procedure Invalidate; override;
@@ -1090,6 +1091,7 @@ type
     Procedure GetTabOrderList(List : TList);
     function HandleAllocated : Boolean;
     procedure HandleNeeded;
+  public
     property BoundsLockCount: integer read FBoundsLockCount;
     property Brush: TBrush read FBrush;
     property Controls[Index: Integer]: TControl read GetControl;
@@ -1627,6 +1629,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.136  2003/07/04 10:12:16  mattias
+  added default message handler to win32 interface
+
   Revision 1.135  2003/06/30 14:58:29  mattias
   implemented multi file add to package editor
 
