@@ -486,6 +486,8 @@ function IndexOfStyle(const WName : String): integer;
 Procedure ReleaseStyle(const WName : String);
 function GetStyle(const WName : String) : PGTKStyle;
 Function GetStyleWidget(const WName : String) : PGTKWidget;
+Procedure StyleFillRectangle(drawable : PGDKDrawable; GC : PGDKGC; Color : TColorRef; x, y, width, height : gint);
+Function StyleForegroundColor(Color : TColorRef; DefaultColor : PGDKColor): PGDKColor;
 
 {$Ifdef GTK2}
 function LoadDefaultFontDesc: PPangoFontDescription;

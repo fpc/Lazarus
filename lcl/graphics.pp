@@ -231,6 +231,8 @@ const
   clHotLight                = TColor(SYS_COLOR_BASE or COLOR_HOTLIGHT);
   clGradientActiveCaption   = TColor(SYS_COLOR_BASE or COLOR_GRADIENTACTIVECAPTION);
   clGradientInactiveCaption = TColor(SYS_COLOR_BASE or COLOR_GRADIENTINACTIVECAPTION);
+  clForm                    = TColor(SYS_COLOR_BASE or COLOR_FORM);
+
   clEndColors               = TColor(SYS_COLOR_BASE or COLOR_ENDCOLORS);
   clColorDesktop            = TColor(SYS_COLOR_BASE or COLOR_DESKTOP);
   cl3DFace                  = TColor(SYS_COLOR_BASE or COLOR_3DFACE);
@@ -1115,7 +1117,7 @@ type
 { Color mapping routines }
 
 const
-  Colors: array[0..41] of TIdentMapEntry = (
+  Colors: array[0..42] of TIdentMapEntry = (
     (Value: clBlack; Name: 'clBlack'),
     (Value: clMaroon; Name: 'clMaroon'),
     (Value: clGreen; Name: 'clGreen'),
@@ -1151,6 +1153,7 @@ const
     (Value: clBtnShadow; Name: 'clBtnShadow'),
     (Value: clGrayText; Name: 'clGrayText'),
     (Value: clBtnText; Name: 'clBtnText'),
+    (Value: clForm; Name: 'clForm'),
     (Value: clInactiveCaptionText; Name: 'clInactiveCaptionText'),
     (Value: clBtnHighlight; Name: 'clBtnHighlight'),
     (Value: cl3DDkShadow; Name: 'cl3DDkShadow'),
@@ -1256,6 +1259,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.93  2003/10/15 20:33:36  ajgenius
+  add csForm, start fixing Style matching for syscolors and fonts
+
   Revision 1.92  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

@@ -68,7 +68,7 @@ type
   public
     function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
     function CreateFontIndirectEx(const LogFont: TLogFont; const LongFontName: string): HFONT; override;
-    function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
+    function PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; //override;
     Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; override;
     function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; override;
     function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
@@ -562,6 +562,9 @@ end.
 
 {
   $Log$
+  Revision 1.25  2003/10/15 20:33:37  ajgenius
+  add csForm, start fixing Style matching for syscolors and fonts
+
   Revision 1.24  2003/10/03 01:25:01  ajgenius
   add more gtk1i<->gtk2 key & event wrappers,
   move more GTK2 workarounds from gtk to gtk2 interface,

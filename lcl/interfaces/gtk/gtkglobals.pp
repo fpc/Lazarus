@@ -128,7 +128,8 @@ const
     $000000,     {unasigned}
     $000000,     {COLOR_HOTLIGHT}
     $000000,     {COLOR_GRADIENTACTIVECAPTION}
-    $000000      {COLOR_GRADIENTINACTIVECAPTION}
+    $000000,     {COLOR_GRADIENTINACTIVECAPTION}
+    $D0D0D0      {COLOR_FORM}
   ); {end _SysColors}
 
 const

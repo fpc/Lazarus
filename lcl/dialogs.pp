@@ -329,6 +329,8 @@ procedure Register;
 
 implementation
 
+uses Math;
+
 const
   //
   //TODO: all the constants below should be replaced in the future
@@ -421,6 +423,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.38  2003/10/15 20:33:36  ajgenius
+  add csForm, start fixing Style matching for syscolors and fonts
+
   Revision 1.37  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 

@@ -146,6 +146,8 @@ end;
 procedure TPromptDialog.Paint;
 begin
   Inherited Paint;
+  Canvas.Brush.Color := clForm;
+  Canvas.Brush.Style := bsSolid;
   Canvas.TextRect(TextBox, 0, 0, MSG, TextStyle);
   if assigned (FBitmap) then
     Canvas.CopyRect(Bounds(cBitmapX, cBitmapY,FBitmap.Width,FBitmap.Height),
@@ -167,7 +169,6 @@ begin
   MSG         := AMSG;
   Buttons     := nil;
   FBitmap := nil;
-
   Case DialogType of
     idDialogConfirm,
     idDialogInfo,
@@ -229,13 +230,14 @@ var
   ButtonIndex : integer;
   Avg : TPoint;
 begin
-  FillChar(TextStyle, SizeOf(TextStyle), 0);
+  FillChar(TextStyle, SizeOf(TTextStyle), 0);
 
   With TextStyle do
   begin
     Clipping   := True;
     Wordbreak  := True;
     SystemFont := True;
+    Opaque     := True;
   end;
 
   // calculate the width & height we need to display the Message
@@ -272,7 +274,7 @@ begin
   reqWidth:= reqBtnWidth;
 
   If FBitmap <> nil then
-    cMinLeft := cBitmapX + 32 + cLabelSpacing
+    cMinLeft := cBitmapX + max(32,FBitmap.Width) + cLabelSpacing
   else
     cMinLeft := cLabelSpacing;
 
@@ -280,9 +282,10 @@ begin
 
   ButtonLeft := ((reqWidth - reqBtnWidth) div 2) + cLabelSpacing;
 
-  reqHeight:= TextBox.Bottom;
+  reqHeight:= max(TextBox.Bottom, 32);
 
-  if reqHeight < 32 then reqHeight := 32;
+  if (FBitmap <> nil) and (FBitmap.Height > reqHeight) then
+    reqHeight := FBitmap.Height;
 
   OffsetRect(TextBox, ((reqWidth - cMinLeft - TextBox.Right) div 2) + cMinLeft, cLabelSpacing);
 
@@ -375,6 +378,9 @@ end;
 
 {
    $Log$
+   Revision 1.9  2003/10/15 20:33:37  ajgenius
+   add csForm, start fixing Style matching for syscolors and fonts
+
    Revision 1.8  2003/09/18 09:21:03  mattias
    renamed LCLLinux to LCLIntf
 

@@ -179,7 +179,7 @@ end;
   inherited routine apears to work fine so, turned off for now. Doesn't work
   properly, and needs to take & into account before its fully useable....
  ------------------------------------------------------------------------------}
-function TGTK2Object.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+function TGTK2Object.PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
 
   Function Alignment : TPangoAlignment;
   begin
@@ -209,6 +209,7 @@ var
   AttrList : PPangoAttrList;
   Attr : PPangoAttribute;
   RGBColor : TColor;
+  Foreground : PGDKColor;
   X, Y, Width, Height : Integer;
   DCOrigin: TPoint;
 begin
@@ -274,6 +275,9 @@ begin
                                         gushort(GetBValue(RGBColor)) shl 8);
 
         pango_attr_list_change(AttrList,Attr);
+
+        Foreground := StyleForegroundColor(CurrentTextColor.ColorRef, nil);
+
         //fix me... then generate markup for all this?
         //the same routine could then be used for both
         //DrawText and ExtTextOut
@@ -322,7 +326,7 @@ begin
           exit;
         end;
 
-        gdk_draw_layout(drawable, gc, X+DCOrigin.X, Y+DCOrigin.Y, Layout);
+        gdk_draw_layout_with_colors(drawable, gc, X+DCOrigin.X, Y+DCOrigin.Y, Layout, Foreground, nil);
         g_object_unref(Layout);
         Result := 0;
       end;
@@ -366,7 +370,8 @@ var
   StrikeOut : Boolean;
 
   RGBColor : Longint;
-
+  Foreground : PGDKColor;
+  
   Layout : PPangoLayout;
   UseFontDesc : PPangoFontDescription;
   AttrList : PPangoAttrList;
@@ -390,7 +395,7 @@ var
 
       OffsetRect(aRect, X+DCOrigin.X,Y+DCOrigin.Y);
 
-      gdk_draw_layout(drawable, gc, aRect.Left, aRect.Top, Layout);
+      gdk_draw_layout_with_colors(drawable, gc, aRect.Left, aRect.Top, Layout, Foreground, nil);
     end;
   end;
 
@@ -517,7 +522,9 @@ begin
           EnsureGCColor(DC, dccCurrentTextColor, True, False);
           Case TColor(CurrentTextColor.ColorRef) of
             clScrollbar..clEndColors:
-              RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
+              begin
+                RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
+              end;
             else
               RGBColor := CurrentTextColor.ColorRef and $FFFFFF;
           end;
@@ -529,6 +536,8 @@ begin
           pango_attr_list_change(AttrList,Attr);
 
           pango_layout_set_attributes(Layout, AttrList);
+
+          Foreground := StyleForegroundColor(CurrentTextColor.ColorRef, nil);
 
           LineStart:=Str;
           if LineLen < 0 then begin
@@ -728,7 +737,7 @@ var
   StrikeOut : Boolean;
 
   RGBColor : Longint;
-
+  Foreground : PGDKColor;
   Layout : PPangoLayout;
   UseFontDesc : PPangoFontDescription;
   AttrList : PPangoAttrList;
@@ -798,6 +807,8 @@ begin
         pango_attr_list_change(AttrList,Attr);
         pango_layout_set_attributes(Layout, AttrList);
 
+        Foreground := StyleForegroundColor(CurrentTextColor.ColorRef, nil);
+
         pango_layout_set_single_paragraph_mode(Layout, TRUE);
         pango_layout_set_width(Layout, -1);
 
@@ -817,7 +828,7 @@ begin
         OffsetRect(aRect, X+DCOrigin.X,Y+DCOrigin.Y);
         FillRect(DC,aRect,hBrush(CurrentBrush));
 
-        gdk_draw_layout(drawable, gc, aRect.Left, aRect.Top, Layout);
+        gdk_draw_layout_with_colors(drawable, gc, aRect.Left, aRect.Top, Layout, Foreground, nil);
         g_object_unref(Layout);
         Result := True;
         If UnRef then
@@ -837,6 +848,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2003/10/15 20:33:37  ajgenius
+  add csForm, start fixing Style matching for syscolors and fonts
+
   Revision 1.3  2003/10/03 04:01:22  ajgenius
   minor pango/gtk2 font fixes
 

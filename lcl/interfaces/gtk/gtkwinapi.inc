@@ -2618,8 +2618,12 @@ begin
         SelectGDKBrushProps(DC);
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         If not CurrentBrush^.IsNullBrush then
-	  gdk_draw_rectangle(Drawable, GC, 1, R.Left+DCOrigin.X, R.Top+DCOrigin.Y,
-                           Width, Height);
+          if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and (TColor(CurrentBrush^.GDIBrushColor.ColorRef) in [clForm, clInfoBk]) then
+            StyleFillRectangle(Drawable, GC, CurrentBrush^.GDIBrushColor.ColorRef,
+                               R.Left+DCOrigin.X, R.Top+DCOrigin.Y, Width, Height)
+          else
+   	    gdk_draw_rectangle(Drawable, GC, 1, R.Left+DCOrigin.X, R.Top+DCOrigin.Y,
+                               Width, Height);
       end;
 
       EndGDKErrorTrap;
@@ -3149,7 +3153,10 @@ begin
         EnsureGCColor(DC, dccCurrentBackColor, True, False);
         BeginGDKErrorTrap;
         buffer := gdk_pixmap_new(Drawable, Width, Height, -1);
-        gdk_draw_rectangle(buffer, GC, 1, 0, 0, Width, Height);
+        if TColor(CurrentBackColor.ColorRef)  in [clForm, clInfoBk] then
+          StyleFillRectangle(buffer, GC, CurrentBackColor.ColorRef, 0, 0, Width, Height)
+        else
+          gdk_draw_rectangle(buffer, GC, 1, 0, 0, Width, Height);
         EndGDKErrorTrap;
         buffered := True;
       end else
@@ -3250,9 +3257,12 @@ begin
         If not CurrentBrush^.IsNullBrush then begin
           DCOrigin:=GetDCOffset(TDeviceContext(DC));
           //writeln('FillRect DC=',HexStr(Cardinal(DC),8),' Drawable',HexStr(Cardinal(Drawable),8));
-          gdk_draw_rectangle(Drawable, GC, 1,
-                             Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
-                             Width, Height);
+          if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and (TColor(CurrentBrush^.GDIBrushColor.ColorRef)  in [clForm, clInfoBk]) then
+            StyleFillRectangle(drawable, GC, CurrentBrush^.GDIBrushColor.ColorRef, Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y, Width, Height)
+          else
+            gdk_draw_rectangle(Drawable, GC, 1,
+                               Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
+                               Width, Height);
         end;
         // Restore current brush
         if not CompareGDIBrushes(PGdiObject(Brush),OldCurrentBrush) then begin
@@ -6431,8 +6441,11 @@ begin
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       BeginGDKErrorTrap;
       If not CurrentBrush^.IsNullBrush then
-        gdk_draw_rectangle(Drawable, GC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
-                         Width, Height);
+        if (CurrentBrush^.GDIBrushFill = GDK_SOLID) and (TColor(CurrentBrush^.GDIBrushColor.ColorRef)  in [clForm, clInfoBk]) then
+          StyleFillRectangle(Drawable, GC, CurrentBrush^.GDIBrushColor.ColorRef, Left+DCOrigin.X, Top+DCOrigin.Y, Width, Height)
+        else
+          gdk_draw_rectangle(Drawable, GC, 1, Left+DCOrigin.X, Top+DCOrigin.Y,
+                           Width, Height);
 
       // Draw outline
       SelectGDKPenProps(DC);
@@ -8965,6 +8978,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.291  2003/10/15 20:33:37  ajgenius
+  add csForm, start fixing Style matching for syscolors and fonts
+
   Revision 1.290  2003/10/06 16:13:52  ajgenius
   partly fixed gtk2 mouse offsets;
   added new includes to gtk2 lpk

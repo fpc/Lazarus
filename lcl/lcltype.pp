@@ -1170,7 +1170,8 @@ const
   COLOR_HOTLIGHT = 26;
   COLOR_GRADIENTACTIVECAPTION = 27;
   COLOR_GRADIENTINACTIVECAPTION = 28;
-  COLOR_ENDCOLORS = COLOR_GRADIENTINACTIVECAPTION;
+  COLOR_FORM = 29;
+  COLOR_ENDCOLORS = COLOR_FORM;
 
   COLOR_DESKTOP = COLOR_BACKGROUND;
   COLOR_3DFACE = COLOR_BTNFACE;
@@ -1813,6 +1814,9 @@ end.
 
 {
   $Log$
+  Revision 1.43  2003/10/15 20:33:36  ajgenius
+  add csForm, start fixing Style matching for syscolors and fonts
+
   Revision 1.42  2003/09/10 19:15:15  mattias
   implemented copying graphics from/to clipboard
 
