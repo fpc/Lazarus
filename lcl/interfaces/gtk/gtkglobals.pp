@@ -128,6 +128,7 @@ const
   ); {end _SysColors}
 
 const
+  {$ifdef GTK2}GTK_WINDOW_DIALOG=GTK_WINDOW_TOPLEVEL;{$endif}
   FormStyleMap : array[TFormBorderStyle] of TGtkWindowType = (
     GTK_WINDOW_DIALOG,  // bsNone
     GTK_WINDOW_TOPLEVEL,// bsSingle
@@ -161,7 +162,7 @@ type
     signal_id:        guint16;
     func:             TGtkSignalFunc;
     func_data:        gpointer;
-    destroy_func:     TGtkSignalDestroy;
+    destroy_func:     {$ifdef GTK2}TGtkSignalFunc{$else}TGtkSignalDestroy{$endif};
   end;
 
 const
