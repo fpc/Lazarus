@@ -1403,6 +1403,9 @@ end;
 procedure TWinControl.WMMove(var Message: TLMMove);
 begin
   { Just sync the coordinates }
+Writeln('[TWINCONTROL].WMMOVE');
+Writeln(Format('MOVE is LEft=%d    Top= %d',[Message.XPos,MEssage.YPos]));
+
   FLeft := Message.XPos;
   FTop  := Message.YPos;
   { TODO : When anchors are implemented, update its rules instead }
@@ -1929,6 +1932,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2001/02/28 13:17:33  lazarus
+  Added some debug code for the top,left reporting problem.
+  Shane
+
   Revision 1.19  2001/02/06 20:59:17  lazarus
   Trying to get the last control of the last form focused when a dialog closes.
   Still working on it.

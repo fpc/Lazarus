@@ -594,6 +594,15 @@ begin
   finally
     Dispose(PosMsg.WindowPos);
   end;
+
+Writeln('***********************');
+Writeln('[gtksize_allocateCB]');
+Writeln(Format('Size is stated as x=%d y=%d width=%d height=%d',[Size^.x,Size^.y,Size^.width, Size^.height]));
+Writeln('if PosMsg.Result <> 0 then it sends out a LMMOVE and LMSIZE');
+Writeln(Format('PosMsg.Result is %d',[PosMsg.Result]));
+if (TOBject(data) is TWinControl) then
+Writeln('The control name is '+TControl(data).Name);
+Writeln('***********************');
   
   if (PosMsg.Result <> 0 ) then 
   begin
@@ -1080,6 +1089,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2001/02/28 13:17:34  lazarus
+  Added some debug code for the top,left reporting problem.
+  Shane
+
   Revision 1.22  2001/02/20 16:53:27  lazarus
   Changes for wordcompletion and many other things from Mattias.
   Shane

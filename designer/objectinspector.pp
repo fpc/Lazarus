@@ -1364,6 +1364,7 @@ begin
   FPropertyEditorHook:=nil;
   FComponentList:=TComponentSelectionList.Create;
   FUpdatingAvailComboBox:=false;
+  Name := 'ObjectInspector';
 
   // StatusBar
   StatusBar:=TStatusBar.Create(Self);

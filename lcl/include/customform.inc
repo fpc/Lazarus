@@ -205,6 +205,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMSize(var Message: TLMSize);
 Begin
+Writeln('[TCUSTOMFORM].WMSIZE');
+Writeln(Format('Size is width=%d    height= %d',[Message.Width,MEssage.height]));
 Assert(False, 'Trace:WMSIZE in TCustomForm');
 if not (csDesigning in ComponentState) then
     Case Message.SizeType of
@@ -853,6 +855,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/02/28 13:17:33  lazarus
+  Added some debug code for the top,left reporting problem.
+  Shane
+
   Revision 1.12  2001/02/06 20:59:17  lazarus
   Trying to get the last control of the last form focused when a dialog closes.
   Still working on it.
