@@ -312,6 +312,7 @@ type
     function IsEqual(const AItem: TListItem): Boolean;
   public
     procedure Assign(ASource: TPersistent); override;
+
     constructor Create(AOwner : TListItems);
     destructor Destroy; override;
     procedure Delete;
@@ -546,6 +547,11 @@ type
     property OnDeletion: TLVDeletedEvent read FOnDeletion write FOnDeletion;
     property OnSelectItem: TLVSelectItemEvent read FOnSelectItem write FOnSelectItem;
     property BorderStyle default bsSingle;
+    {$ifdef ver1_0}
+    // repeated as workaround for fpc 1.0.x bug,
+    // which can't access a protected property defined in another unit.
+    property WidgetSetClass;
+    {$endif}
   public
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
@@ -2298,6 +2304,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.137  2004/07/14 15:57:53  mattias
+  fixed 1.0.10 compilation  from Vincent
+
   Revision 1.136  2004/07/11 17:20:47  marc
   * Implemented most of TListColoum/Item in the Ws for gtk and win32
 

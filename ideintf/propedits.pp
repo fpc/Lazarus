@@ -2155,7 +2155,8 @@ end;
 
 function TPropertyEditor.GetObjectValueAt(Index: Integer): TObject;
 begin
-  with FPropList^[Index] do Result:=GetObjectProp(Instance,PropInfo);
+  with FPropList^[Index] do
+    Result:=GetObjectProp(Instance,PropInfo,nil); // nil for fpc 1.0.x
 end;
 
 function TPropertyEditor.GetDefaultOrdValue: Longint;

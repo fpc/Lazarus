@@ -1470,6 +1470,11 @@ type
     // properties which are not supported by all descendents
     property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
     property OnGetSiteInfo: TGetSiteInfoEvent read FOnGetSiteInfo write FOnGetSiteInfo;
+    {$ifdef ver1_0}
+    // repeated as workaround for fpc 1.0.x bug,
+    // which can't access a protected property defined in another unit.
+    property WidgetSetClass;
+    {$endif}
   public
     // properties which are supported by all descendents
     property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
@@ -2341,6 +2346,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.226  2004/07/14 15:57:53  mattias
+  fixed 1.0.10 compilation  from Vincent
+
   Revision 1.225  2004/07/11 13:03:53  mattias
   extended RolesForForm to manage multiple roles for on control
 
