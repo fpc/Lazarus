@@ -114,7 +114,9 @@ begin
       CurrentTextColor := SourceDC^.CurrentTextColor;
       CurrentBackColor := SourceDC^.CurrentBackColor;
       DeleteObject(ClipRegion);
-      ClipRegion := SourceDC^.ClipRegion;
+      ClipRegion := 0;
+      If SourceDC^.ClipRegion <> 0 then
+        SelectClipRGN(hDC(DestinationDC), SourceDC^.ClipRegion);
       SavedContext := nil;
     end;
   end;
@@ -147,6 +149,7 @@ begin
     gdk_gc_set_fill(GC, GDIBrushFill);
     gdk_gc_set_foreground(GC, @GDIBrushColor);
     gdk_gc_set_background(GC, @CurrentBackColor);
+    SelectGDIRegion(DC);
     //TODO: Brush pixmap
   end;
 end;
@@ -2378,6 +2381,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.65  2002/08/19 20:34:48  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.64  2002/08/19 18:00:03  lazarus
   MG: design signals for gtk internal widgets
 
