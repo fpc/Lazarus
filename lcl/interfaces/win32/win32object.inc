@@ -713,8 +713,7 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_GETTEXT :
         Begin
-         Assert (true, 'WARNING:[TWin32Object.IntSendMessage3] usage of LM_GETTEXT superfluous, use interface-function GetText instead'); 
-         Result := Integer(Nil);
+          Result := Integer(GetText(Sender As TComponent,PString(Data)^));
         End;
         LM_GETITEMINDEX :
         Begin
@@ -993,54 +992,6 @@ Begin
     MainForm := FMainForm;
   if MainForm<> Nil then
     DestroyWindow(MainForm.Handle);
-End;
-
-{------------------------------------------------------------------------------
-  Method: TWin32Object.UpdateHint
-  Params:  Sender - the lcl object which called this func 
-  Returns: currently always 0
-
-  Sets the tooltip text of the sending control.
- ------------------------------------------------------------------------------}
-Function TWin32Object.UpdateHint(Sender: TObject): Integer;
-Var
-  StrTemp : PChar;
-  TI: TOOLINFO;
-begin
-  Result := 0;     // default if nobody sets it
-  If Sender Is TWinControl Then
-    With Sender As TWinControl Do
-    Begin
-      If (Length(Hint) > 0) And (ShowHint or (csDesigning in ComponentState)) Then
-      Begin
-        StrTemp := StrAlloc(Length(Hint) + 1);
-        Try
-          StrPCopy(StrTemp, Hint);
-          // ?? TODO something with short and long hints ??
-          Assert(False, 'TRACE:TRYING to update the hint');
-          With TI Do
-          Begin
-            CbSize := SizeOf(TI);
-            HWnd := Handle;
-            LPSzText := StrTemp;
-          End;
-          Assert(False, 'TRACE:Updating the hint to ' + StrPas(StrTemp));
-          SendMessage(FToolTipWindow, TTM_UPDATETIPTEXT, 0, LPARAM(@TI));
-        Finally
-          StrDispose(StrTemp);
-        End;
-      End 
-      Else
-      Begin
-        With TI Do
-        Begin
-          CbSize := SizeOf(TI);
-          HWnd := Handle;
-          LPSzText := Nil;
-        End;
-        SendMessage(FToolTipWindow, TTM_UPDATETIPTEXT, 0, LPARAM(@TI));
-      End;
-    End;
 End;
 
 {------------------------------------------------------------------------------
@@ -2624,6 +2575,9 @@ End;
 
 {
   $Log$
+  Revision 1.30  2002/12/04 20:39:16  mattias
+  patch from Vincent: clean ups and fixed crash on destroying window
+
   Revision 1.29  2002/12/04 19:25:10  mattias
   fix for resizing window with a menu from Martin Smat
 
