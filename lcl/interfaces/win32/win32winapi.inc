@@ -507,10 +507,13 @@ Begin
 
   if (FormatCount=0) or (OnRequestProc=nil) then begin
   { The LCL indicates is doesn't have the clipboard data anymore
-    and the interface can't use the OnRequestProc anymore.
-    We can ignore this, because we don't use delayed rendering}
+    and the interface can't use the OnRequestProc anymore.}
+    OnClipBoardRequest := nil;
     Result := true;
   end else begin
+  { clear OnClipBoardRequest to prevent destroying the LCL clipboard,
+    when emptying the clipboard}
+    OnClipBoardRequest := nil;
     if not Windows.OpenClipboard(FAppHandle) then exit;
     try
       if not Windows.EmptyClipboard then exit;
@@ -520,6 +523,7 @@ Begin
       for I := 0 To FormatCount-1 do begin
         if Formats[i]=Windows.CF_TEXT then PutTextOnClipBoard;
       end;
+      OnClipBoardRequest := OnRequestProc;
     finally
       Windows.CloseClipboard;
     end;
@@ -2983,6 +2987,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.120  2004/06/18 20:47:34  vincents
+  fixed pasting from clipboard
+
   Revision 1.119  2004/06/18 19:55:43  micha
   fix xp themes drawing image on bitbtn
 

@@ -39,8 +39,8 @@ Begin
   begin
     FMetrics.iMenuHeight := GetSystemMetrics(SM_CYMENU);
   end;
-
-  // see if XP themes are available, first check if correct 
+  OnClipBoardRequest := nil;
+  // see if XP themes are available, first check if correct
   // common control library is loaded for themes support
   if ((GetFileVersion('comctl32.dll') shr 16) and $FFFF) >= 6 then
   begin
@@ -3270,6 +3270,9 @@ End;
 
 {
   $Log$
+  Revision 1.209  2004/06/18 20:47:34  vincents
+  fixed pasting from clipboard
+
   Revision 1.208  2004/06/18 20:15:06  micha
   remove obsolete LM_LOADXPM message
 

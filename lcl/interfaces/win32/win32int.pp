@@ -252,7 +252,9 @@ const
   ClsName : array[0..20] of char = 'LazarusForm'#0;
   ToolBtnClsName : array[0..20] of char = 'ToolbarButton'#0;
 
-//{$I win32proc.inc}
+var
+  OnClipBoardRequest: TClipboardRequestEvent;
+
 {$I win32listsl.inc}
 {$I win32callback.inc}
 {$I win32object.inc}
@@ -272,6 +274,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.86  2004/06/18 20:47:34  vincents
+  fixed pasting from clipboard
+
   Revision 1.85  2004/06/18 19:55:43  micha
   fix xp themes drawing image on bitbtn
 

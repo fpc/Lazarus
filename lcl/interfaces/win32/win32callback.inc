@@ -492,6 +492,14 @@ Begin
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
     End;
+    WM_DESTROYCLIPBOARD:
+    Begin
+      if assigned(OnClipBoardRequest) then begin
+        OnClipBoardRequest(0, nil);
+        OnClipBoardRequest := nil;
+        LMessage.Result := 0;
+      end;
+    End;
     WM_DRAWITEM:
     Begin
       OwnerObject := TObject(WParam);
@@ -1252,6 +1260,9 @@ end;
 
 {
   $Log$
+  Revision 1.117  2004/06/18 20:47:33  vincents
+  fixed pasting from clipboard
+
   Revision 1.116  2004/06/18 19:55:43  micha
   fix xp themes drawing image on bitbtn
 
