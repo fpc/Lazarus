@@ -1576,7 +1576,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenudiff
 msgid "Diff"
-msgstr ""
+msgstr "Eroavuudet"
 
 #: lazarusidestrconsts:dlgdirection
 msgid "Direction"
@@ -3556,7 +3556,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisuidno
 msgid "no"
-msgstr "ei"
+msgstr ""
 
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
@@ -3692,7 +3692,7 @@ msgstr "Avaa"
 
 #: lazarusidestrconsts:lisdiffdlgopendiffineditor
 msgid "Open Diff in editor"
-msgstr ""
+msgstr "Avaa eroavuudet editorissa"
 
 #: lazarusidestrconsts:lisopenfile
 msgid "Open file"
@@ -4052,15 +4052,15 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagepolish
 msgid "Polish"
-msgstr ""
+msgstr "puola"
 
 #: lazarusidestrconsts:rslanguagepolishwin
 msgid "Polish(CP1250)"
-msgstr ""
+msgstr "puola (CP1250)"
 
 #: lazarusidestrconsts:rslanguagepolishiso
 msgid "Polish(ISO 8859-2)"
-msgstr ""
+msgstr "puola (ISO 8859-2)"
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"
@@ -6380,7 +6380,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
-msgstr "Näytä lomakkeet(Forms)"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"

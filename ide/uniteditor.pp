@@ -4508,6 +4508,7 @@ begin
       Parent := self;
       Top := 10;
       Left := 5;
+      Width:=Self.Width-2*Left;
       Caption := lisUEGotoLine;
       Visible := True;
     end;
@@ -4517,7 +4518,7 @@ begin
     Begin
       Parent := self;
       Top := 30;
-      Width := self.width-40;
+      Width := Self.width-40;
       Left := 5;
       Caption := '';
       OnKeyDown:=@Edit1KeyDown;
