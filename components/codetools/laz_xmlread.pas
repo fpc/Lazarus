@@ -1261,7 +1261,7 @@ begin
   GetMem(buf, f.Size + 1);
   f.Read(buf^, f.Size);
   buf[f.Size] := #0;
-
+  
   reader := TXMLReader.Create;
   reader.ProcessXML(buf, AFilename);
   FreeMem(buf, f.Size + 1);
@@ -1363,6 +1363,9 @@ end.
 
 {
   $Log$
+  Revision 1.9  2003/12/18 23:47:03  mattias
+  added classes incpath
+
   Revision 1.8  2002/12/16 12:12:50  mattias
   fixes for fpc 1.1
 
