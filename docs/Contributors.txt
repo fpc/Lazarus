@@ -1,8 +1,10 @@
 The following people contributed to Lazarus:
 
 Andrew Johnson
+Andreas Hausladen
 Bob Wingard
 Cliff Baeseman
+Colin Western
 Curtis White
 Darek Mazur
 GongYu     
