@@ -217,22 +217,22 @@ function gtkListBoxSelectionChangedCB(widget: PGtkWidget;
 
 // gtkDragCallback.inc headers
 Function edit_drag_data_received(widget: pgtkWidget;
-			          Context: pGdkDragContext;
-			          X: Integer;
-			          Y: Integer;
-			          seldata: pGtkSelectionData;
-			          info: Integer;
-			          time: Integer;
+             Context: pGdkDragContext;
+             X: Integer;
+             Y: Integer;
+             seldata: pGtkSelectionData;
+             info: Integer;
+             time: Integer;
                                   data: pointer): GBoolean; cdecl;
 Function edit_source_drag_data_get(widget: pgtkWidget;
-			          Context: pGdkDragContext;
-			          Selection_data: pGtkSelectionData;
-			          info: Integer;
-			          time: Integer;
+             Context: pGdkDragContext;
+             Selection_data: pGtkSelectionData;
+             info: Integer;
+             time: Integer;
                                   data: pointer): GBoolean; cdecl;
 Function Edit_source_drag_data_delete (widget: pGtkWidget;
-			                context: pGdkDragContext;
-			                data: gpointer): gBoolean ; cdecl;
+                   context: pGdkDragContext;
+                   data: gpointer): gBoolean ; cdecl;
 
 // gtklistviewcallbacks.inc headers
 function gtkLVHScroll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
@@ -409,6 +409,9 @@ procedure RememberKeyEventWasHandledByLCL(Event: PGdkEventKey;
                                           BeforeEvent: boolean);
 function KeyEventWasHandledByLCL(Event: PGdkEventKey;
                                  BeforeEvent: boolean): boolean;
+function HandleGTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
+  Data: gPointer; BeforeEvent: boolean) : GBoolean;
+
 // ----
 
 // common dialogs

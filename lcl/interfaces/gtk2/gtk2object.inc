@@ -62,15 +62,10 @@ end;
 
 function GTK2KeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey;
   Data: gPointer) : GBoolean; cdecl;
-var
-  Status : gBoolean;
 begin
-  Status := GTKKeyUpDown(Widget, Event, Data);
-
-  if GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) then
-    Result := Status
-  else
-    Result := False;
+  Result := GtkWidgetIsA(Widget,GTK_APIWIDGETCLIENT_TYPE) and
+            HandleGtkKeyUpDown(Widget, Event, Data, True) and
+            HandleGtkKeyUpDown(Widget, Event, Data, False);
 end;
 
 function GTK2KillFocusCB(widget: PGtkWidget; event:PGdkEventFocus;
@@ -190,7 +185,7 @@ begin
     case TWinControl(Sender).fCompStyle of
       csMemo:
       begin
-      	Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.CoreWidget;
+       Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.CoreWidget;
         aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
         gtk_text_buffer_begin_user_action(aTextBuffer);
         gtk_text_buffer_get_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
@@ -267,11 +262,11 @@ begin
         gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
         gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
         g_signal_connect (renderer, 'toggled',
-					  G_CALLBACK (@gtk_clb_toggle),
-					  Sender);
+       G_CALLBACK (@gtk_clb_toggle),
+       Sender);
         g_signal_connect (TempWidget, 'row_activated',
-					  G_CALLBACK (@gtk_clb_toggle_row_activated),
-					  Sender);
+       G_CALLBACK (@gtk_clb_toggle_row_activated),
+       Sender);
         TempInt := 1;
       end;
 
@@ -346,7 +341,7 @@ begin
            end;
 
    csMemo    : begin
-      	          Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.CoreWidget;
+                 Widget:= GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.CoreWidget;
                   aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
                   gtk_text_buffer_get_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
                   CS := gtk_text_buffer_get_text(aTextBuffer, @aTextIter1, @aTextIter2, True);
@@ -378,15 +373,15 @@ begin
           SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
         end;
 
-	csMemo:
-	begin
+ csMemo:
+ begin
          // SetCallback(LM_CHANGED, AGTKObject,ALCLObject);
           //SetCallback(LM_ACTIVATE, AGTKObject,ALCLObject);
           SetCallback(LM_CUTTOCLIP, AGTKObject,ALCLObject);
           SetCallback(LM_COPYTOCLIP, AGTKObject,ALCLObject);
           SetCallback(LM_PASTEFROMCLIP, AGTKObject,ALCLObject);
-	  //SetCallback(LM_INSERTTEXT, AGTKObject,ALCLObject);
-	end;
+   //SetCallback(LM_INSERTTEXT, AGTKObject,ALCLObject);
+ end;
       end; //case
     end
     else
@@ -578,14 +573,14 @@ begin
           case TControl(Sender).fCompStyle of
             csMemo:
               begin
-    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
+             Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
                 aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
                 gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, nil);
                 result := gtk_text_iter_get_offset(@aTextIter1);
               end;
             csEdit:
               begin
-    	        Widget:= GTK_WIDGET(Pointer(Handle));
+             Widget:= GTK_WIDGET(Pointer(Handle));
                 if not gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),@result, nil) then
                    result := gtk_editable_get_position(GTK_EDITABLE(Widget));
               end;
@@ -625,15 +620,15 @@ begin
         if (Sender is TControl) then begin
           case TControl(Sender).fCompStyle of
             csMemo:
-    	      begin
-    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
+           begin
+             Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
                 aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
                 gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
                 result:= Abs(gtk_text_iter_get_offset(@aTextIter2) - gtk_text_iter_get_offset(@aTextIter1));
-  	      end;
+         end;
             csEdit:
               begin
-    	        Widget:= GTK_WIDGET(Pointer(Handle));
+             Widget:= GTK_WIDGET(Pointer(Handle));
                 if gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),@result, @TempInt) then
                    result := TempInt - Result
                 else
@@ -723,7 +718,7 @@ begin
           case TControl(Sender).fCompStyle of
             csMemo:
               begin
-    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
+             Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
                 aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
                 Debugln('TODO(GTK2): IntSendMessage3, LM_SETSELSTART, csMemo');
                 {gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, nil);
@@ -732,7 +727,7 @@ begin
 
             csEdit:
               begin
-    	        Widget:= GTK_WIDGET(Pointer(Handle));
+             Widget:= GTK_WIDGET(Pointer(Handle));
                 if gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),nil, @TempInt) then
                   If (Integer(Data) >= 0) and (Integer(Data)<=TempInt) then
                     gtk_editable_select_region(GTK_EDITABLE(Widget), Integer(Data), TempInt+1);
@@ -753,17 +748,17 @@ begin
         if (Sender is TControl) then begin
           case TControl(Sender).fCompStyle of
             csMemo:
-    	      begin
-    	        Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
+           begin
+             Widget:= GetWidgetInfo(Pointer(Handle), true)^.CoreWidget;
                 aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(Widget));
                 Debugln('TODO(GTK2): IntSendMessage3, LM_SETSELLEN, csMemo');
                 {gtk_text_buffer_get_selection_bounds(aTextBuffer, @aTextIter1, @aTextIter2);
                 result:= Abs(gtk_text_iter_get_offset(@aTextIter2) - gtk_text_iter_get_offset(@aTextIter1));}
-  	      end;
+         end;
 
             csEdit:
               begin
-    	        Widget:= GTK_WIDGET(Pointer(Handle));
+             Widget:= GTK_WIDGET(Pointer(Handle));
                 if gtk_editable_get_selection_bounds(GTK_EDITABLE(Widget),@TempInt, nil) then
                   gtk_editable_select_region(GTK_EDITABLE(Widget), TempInt, TempInt+Integer(Data)+1)
                 else
@@ -1033,15 +1028,15 @@ begin
           AccelKey:= gtk_label_get_mnemonic_keyval(pGtkLabel(Widget));
           Accelerate(TComponent(Sender),Widget,AccelKey,0,'grab_focus');
         finally
-	  StrDispose(aLabel);
-	end;
+   StrDispose(aLabel);
+ end;
 
       end else begin
         If TLabel(sender).WordWrap then begin
           DC := GetDC(TLabel(Sender).Handle);
           aLabel := ForceLineBreaks(DC, pLabel, TLabel(Sender).Width, False);
           gtk_label_set_label(PGtkLabel(Widget), aLabel);
-	  StrDispose(aLabel);
+   StrDispose(aLabel);
           DeleteDC(DC);
         end
         else
@@ -1158,12 +1153,12 @@ begin
 
       If (TCustomMemo(Sender).MaxLength >= 0) then begin
           aTextBuffer := gtk_text_view_get_buffer(GTK_TEXT_VIEW(ImplWidget));
-	  i:= gtk_text_buffer_get_char_count(aTextBuffer);
-	  if i > TCustomMemo(Sender).MaxLength then begin
+   i:= gtk_text_buffer_get_char_count(aTextBuffer);
+   if i > TCustomMemo(Sender).MaxLength then begin
              gtk_text_buffer_get_bounds(aTextBuffer, nil, @aTextIter2);
              gtk_text_buffer_get_iter_at_offset(aTextBuffer, @aTextIter1, i);
              gtk_text_buffer_delete(aTextBuffer, @aTextIter1, @aTextIter2);
-	  end;
+   end;
       end;
     end;
   else
@@ -1380,6 +1375,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.14  2004/07/30 14:26:11  mazen
+  * move HandleGtkKeyUpDown to gtkProc.inc make it visible to gtk2
+    this allow saving a call in a hevely called callback
+
   Revision 1.13  2004/07/15 10:43:39  mattias
   added TCustomButton, TCustomBitBtn, TCustomSpeedButton
 

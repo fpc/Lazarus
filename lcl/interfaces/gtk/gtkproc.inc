@@ -24,8 +24,8 @@
 
 {$IFOPT C-}
 // Uncomment for local trace
-//  {$C+}
-//  {$DEFINE ASSERT_IS_ON}
+  //{$C+}
+  //{$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
 function gtk_widget_get_xthickness(Style : PGTKStyle) : gint;
@@ -1817,6 +1817,261 @@ begin
   else begin
     Result := P^[AKeySym and $FF];
   end;
+end;
+
+function HandleGTKKeyUpDown(Widget: PGtkWidget; Event: PGdkEventKey;
+  Data: gPointer; BeforeEvent: boolean) : GBoolean;
+{off $DEFINE VerboseKeyboard}
+var
+  Msg: TLMKey;
+  EventStopped: Boolean;
+  EventString: PChar; // GTK1 and GTK2 workaround
+                      // (and easy access to bytes)
+
+  procedure StopKeyEvent(const AnEventName: PChar);
+  begin
+    {$IFDEF VerboseKeyboard}
+    DebugLn('StopKeyEvent AnEventName="',AnEventName,'"');
+    {$ENDIF}
+    if not EventStopped
+    then begin
+      g_signal_stop_emission_by_name(PGtkObject(Widget), AnEventName);
+      EventStopped := True;
+    end;
+
+    //MWE: still need to skip on win32 ?
+    {MWE:.$IfNDef Win32}
+    if EventString <> nil
+    then begin
+      EventString^ := #0;
+      // MG: should we set Event^.length := 0; or is this used for mem allocation?
+      gdk_event_key_set_string(Event,EventString);
+    end;
+    {MWE:.$EndIf}
+
+    Event^.KeyVal := 0;
+  end;
+
+  function CanSendChar: Boolean;
+  begin
+    Result := False;
+    if Event^.Length > 1 then Exit;
+
+    // to be delphi compatible we should not send a space here
+    if Event^.KeyVal = GDK_KEY_KP_SPACE then Exit;
+
+    // Check if CTRL is pressed
+    if ((Event^.State and GDK_CONTROL_MASK) <> 0)
+    then begin
+      // Check if we pressed ^@
+      if (Event^.Length = 0)
+      and (Event^.KeyVal = GDK_KEY_AT)
+      then begin
+        Result := True;
+        Exit;
+      end;
+      // check if we send the ^Char subset
+      if (Event^.Length = 1) and (EventString <> nil)
+      then begin
+        Result := (EventString^ > #0) and (EventString^ < ' ');
+      end;
+      Exit;
+    end;
+
+    Result := (Event^.Length = 1) and (EventString <> nil);
+  end;
+
+var
+  VKey: TVKeyRecord;
+  CommonKeyData: Integer;
+  Flags: Integer;
+  SysKey: Boolean;
+  //TopLevel: PGtkWidget;
+  FocusedWidget: PGtkWidget;
+  LCLObject: TObject;
+  FocusedWinControl: TWinControl;
+  HandledByLCL: Boolean;
+  TargetWidget: PGtkWidget;
+  TargetData: gPointer;
+begin
+  Result := True;
+  EventStopped := False;
+  HandledByLCL:=KeyEventWasHandledByLCL(Event,BeforeEvent);
+
+  {$IFDEF VerboseKeyboard}
+  DebugLn('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,
+    ' ',dbgs(Event^.theType),' Widget=',GetWidgetClassName(Widget),
+    ' Before=',dbgs(BeforeEvent),' HandledByLCL=',dbgs(HandledByLCL));
+  {$ENDIF}
+
+  // handle every key event only once
+  if HandledByLCL then exit;
+
+  TargetWidget:=Widget;
+  TargetData:=Data;
+
+  // The gtk sends keys first to the gtkwindow and then to the focused control.
+  // The LCL expects only once to the focused control.
+  // And some gtk widgets (combo) eats keys, so that the LCL has no chance to
+  // handle it. Therefore keys to the form are immediately redirected to the
+  // focused control without changing the normal gtk event path.
+  if GtkWidgetIsA(Widget,gtk_window_get_type) then begin
+    FocusedWidget:=PGtkWindow(Widget)^.focus_widget;
+    if FocusedWidget<>nil then begin
+      LCLObject:=GetNearestLCLObject(FocusedWidget);
+      if LCLObject is TWinControl then begin
+        FocusedWinControl:=TWinControl(LCLObject);
+        if FocusedWidget<>Widget then begin
+          {$IFDEF VerboseKeyboard}
+          DebugLn('[HandleGTKKeyUpDown] REDIRECTING ',
+            ' FocusedWidget=',GetWidgetClassName(FocusedWidget),
+            ' Control=',FocusedWinControl.Name,':',FocusedWinControl.ClassName);
+          {$ENDIF}
+          // redirect key to lcl control
+          TargetWidget:=FocusedWidget;
+          TargetData:=FocusedWinControl;
+        end;
+      end;
+    end;
+  end;
+
+  // remember this event
+  RememberKeyEventWasHandledByLCL(Event,BeforeEvent);
+
+  if TargetWidget=nil then exit;
+
+  gdk_event_key_get_string(Event, EventString);
+  FillChar(Msg,SizeOf(Msg),0);
+
+  VKey := KeySymToVKey(Event^.keyval);
+
+  Flags := 0;
+  if (VKey.Flags and VKEY_FLAG_EXT) <> 0
+  then Flags := KF_EXTENDED;
+
+  SysKey := False;
+  if (VKey.Flags and VKEY_FLAG_ALT) = 0
+  then begin
+    // VKey is without ALT so Alt is syskey
+    SysKey := (Event^.State and GDK_MOD1_MASK) <> 0;
+  end
+  else begin
+    // VKey is with ALT so SHIFT Alt is syskey
+    SysKey := (Event^.State and (GDK_MOD1_MASK or GDK_SHIFT_MASK))
+               = (GDK_MOD1_MASK or GDK_SHIFT_MASK);
+  end;
+
+  if SysKey
+  then Flags := Flags or KF_ALTDOWN;
+  CommonKeyData := MVKeyInfo[VKey.VKey].KeyCode shl 16; // ScanCode
+
+  case gdk_event_get_type(Event) of
+  GDK_KEY_RELEASE:
+    begin
+      {$IFDEF VerboseKeyboard}
+      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_RELEASE VKey=',dbgs(VKey.VKey));
+      {$ENDIF}
+
+      Msg.CharCode := VKey.VKey;
+      if BeforeEvent then begin
+        if SysKey
+        then Msg.msg := CN_SYSKEYUP
+        else Msg.msg := CN_KEYUP;
+      end else begin
+        if SysKey
+        then Msg.msg := LM_SYSKEYUP
+        else Msg.msg := LM_KEYUP;
+      end;
+
+      Flags := Flags or KF_UP or KF_REPEAT;
+
+      Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {always};
+
+      // send the message directly to the LCL
+      Msg.Result:=0;
+      NotifyApplicationUserInput(Msg.Msg);
+      Result := DeliverMessage(TargetData, Msg) = 0;
+
+      if Msg.CharCode <> VKey.VKey
+      then begin
+        // key was handled by LCL
+        StopKeyEvent('key_release_event');
+      end;
+    end;
+
+  GDK_KEY_PRESS:
+    begin
+      {$IFDEF VerboseKeyboard}
+      DebugLn('[HandleGTKKeyUpDown] GDK_KEY_PRESS VKey=',dbgs(VKey.VKey));
+      {$ENDIF}
+
+      Msg.CharCode := VKey.VKey;
+
+      if BeforeEvent then begin
+        if SysKey
+        then Msg.msg := CN_SYSKEYDOWN
+        else Msg.msg := CN_KEYDOWN;
+      end else begin
+        if SysKey
+        then Msg.msg := LM_SYSKEYDOWN
+        else Msg.msg := LM_KEYDOWN;
+      end;
+
+      // todo  repeat
+      // Flags := Flags or KF_REPEAT;
+
+      Msg.KeyData := CommonKeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
+
+      // send the message directly to the LCL
+      NotifyApplicationUserInput(Msg.Msg);
+      Result := DeliverMessage(TargetData, Msg) = 0;
+
+      if Msg.CharCode <> Vkey.Vkey
+      then begin
+        // key was changed by LCL
+        StopKeyEvent('key_press_event');
+      end;
+
+      if not EventStopped and CanSendChar
+      then begin
+        EventTrace('char', data);
+        FillChar(Msg,SizeOf(Msg),0);
+
+        Msg.KeyData := CommonKeyData;
+
+        if BeforeEvent then begin
+          if SysKey
+          then Msg.msg := CN_SYSCHAR
+          else Msg.msg := CN_CHAR;
+        end else begin
+          if SysKey
+          then Msg.msg := LM_SYSCHAR
+          else Msg.msg := LM_CHAR;
+        end;
+
+        if Event^.Length = 0
+        then Msg.CharCode := 0 // ^@ was pressed
+        else Msg.CharCode := ord(EventString^);
+        Msg.Result:=0;
+        // send the message directly (not queued) to the LCL
+        Result := DeliverMessage(TargetData, Msg) = 0;
+
+        if (EventString<>nil) and (Msg.CharCode <> ord(EventString^))
+        then begin
+          //writeln('HandleGTKKeyUpDown A ',Msg.CharCode,' BeforeEvent=',BeforeEvent);
+          // key was changed by lcl
+          if Msg.CharCode=0 then
+            StopKeyEvent('key_press_event')
+          else begin
+            EventString^:=chr(Msg.CharCode);
+            EventString[1]:=#0;
+            gdk_event_key_set_string(Event,EventString);
+          end;
+        end;
+      end;
+    end;
+  end;
+//DebugLn('[HandleGTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -3923,8 +4178,8 @@ begin
       gtk_menu_set_accel_group(PGtkMenu(Widget), AnAccelGroup)
     else begin
       {$IfDef GTK2}
-       // Gtk2ToDo
-       DebugLn('ToDo: gtkproc.inc SetAccelGroup');
+      Assert(GtkWidgetIsA(Widget,GTK_TYPE_WINDOW));
+      gtk_window_add_accel_group(GTK_WINDOW(widget), AnAccelGroup)
       {$else}
       gtk_accel_group_attach(AnAccelGroup, PGtkObject(Widget));
       {$endif}
@@ -6847,6 +7102,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.289  2004/07/30 14:26:11  mazen
+  * move HandleGtkKeyUpDown to gtkProc.inc make it visible to gtk2
+    this allow saving a call in a hevely called callback
+
   Revision 1.288  2004/07/10 18:17:30  mattias
   added Delphi ToDo support, Application.WndProc, small bugfixes  from Colin
 
