@@ -34,7 +34,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-{$IF VER1_0_8 or VER1_0_10}
+{$IFDEF VER1_0_8 or VER1_0_10}
 {$DEFINE UseFCLDataModule}
 {$ENDIF}
 
