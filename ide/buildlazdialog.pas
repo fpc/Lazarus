@@ -405,6 +405,7 @@ var
   MakeIDECfgFilename: String;
   NewTargetFilename: String;
   NewTargetDirectory: String;
+  DefaultTargetOS: string;
 begin
   Result:=mrOk;
   CurItem:=Options.Items[ItemIndex];
@@ -461,14 +462,16 @@ begin
     end else begin
       // no user defined target directory
       // => find it automatically
-      
-      if (Options.TargetOS<>'') and (Options.TargetOS<>{$I %FPCTARGETOS%}) then
+
+      DefaultTargetOS:={$I %FPCTARGETOS%};
+      if (Options.TargetOS<>'')
+      and (CompareText(Options.TargetOS,DefaultTargetOS)<>0) then
       begin
         // Case 2. crosscompiling the IDE
         // create directory <primary config dir>/bin/<TargetOS>
         NewTargetDirectory:=AppendPathDelim(GetPrimaryConfigPath)+'bin'
                             +PathDelim+Options.TargetOS;
-        debugln('CreateBuildLazarusOptions Options.TargetOS=',Options.TargetOS);
+        debugln('CreateBuildLazarusOptions Options.TargetOS=',Options.TargetOS,' DefaultOS=',DefaultTargetOS);
         Result:=ForceDirectoryInteractive(NewTargetDirectory,[]);
         if Result<>mrOk then exit;
       end else begin
