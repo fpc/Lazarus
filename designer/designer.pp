@@ -39,7 +39,7 @@ uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
   Dialogs, ExtCtrls, Menus, ClipBrd, IDEProcs,
   LazarusIDEStrConsts, EnvironmentOpts, KeyMapping, ComponentReg,
-  NonControlForms, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
+  NonControlForms, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, TabOrderDlg,
   DesignerProcs, PropEdits, ComponentEditors, CustomFormEditor,
   ControlSelection;
 
@@ -80,9 +80,11 @@ type
   private
     FAlignMenuItem: TMenuItem;
     FBringToFrontMenuItem: TMenuItem;
-    FForm: TCustomForm;
+    FCopyMenuItem: TMenuItem;
+    FCutMenuItem: TMenuItem;
     FDeleteSelectionMenuItem: TMenuItem;
     FFlags: TDesignerFlags;
+    FForm: TCustomForm;
     FGridColor: TColor;
     FLookupRoot: TComponent;
     FMirrorHorizontalMenuItem: TMenuItem;
@@ -102,6 +104,7 @@ type
     FOnSetDesigning: TOnSetDesigning;
     FOnShowOptions: TNotifyEvent;
     FOnUnselectComponentClass: TNotifyEvent;
+    FPasteMenuItem: TMenuItem;
     FPopupMenu: TPopupMenu;
     FScaleMenuItem: TMenuItem;
     FSendToBackMenuItem: TMenuItem;
@@ -110,6 +113,7 @@ type
     FSizeMenuItem: TMenuItem;
     FSnapToGridOptionMenuItem: TMenuItem;
     FSnapToGuideLinesOptionMenuItem: TMenuItem;
+    FTabOrderMenuItem: TMenuItem;
     FTheFormEditor: TCustomFormEditor;
 
     //hint stuff
@@ -168,6 +172,7 @@ type
     procedure SelectParentOfSelection;
     function DoCopySelectionToClipboard: boolean;
     procedure DoPasteSelectionFromClipboard;
+    procedure DoShowTabOrderEditor;
 
     // popup menu
     procedure BuildPopupMenu;
@@ -176,8 +181,12 @@ type
     procedure OnMirrorVerticalPopupMenuClick(Sender: TObject);
     procedure OnScalePopupMenuClick(Sender: TObject);
     procedure OnSizePopupMenuClick(Sender: TObject);
+    procedure OnTabOrderMenuClick(Sender: TObject);
     procedure OnBringToFrontMenuClick(Sender: TObject);
     procedure OnSendToBackMenuClick(Sender: TObject);
+    procedure OnCopyMenuClick(Sender: TObject);
+    procedure OnCutMenuClick(Sender: TObject);
+    procedure OnPasteMenuClick(Sender: TObject);
     procedure OnDeleteSelectionMenuClick(Sender: TObject);
     procedure OnSnapToGridOptionMenuClick(Sender: TObject);
     procedure OnComponentEditorVerbMenuItemClick(Sender: TObject);
@@ -282,7 +291,6 @@ type
                                        read FTheFormEditor write FTheFormEditor;
   end;
 
-function GetClipBrdSelectionFormat: TClipboardFormat;
 
 implementation
 
@@ -296,17 +304,6 @@ const
   mk_shift   =   4;
   mk_control =   8;
   mk_mbutton = $10;
-
-var
-  ClipBrdSelectionFormat: TClipboardFormat;
-
-function GetClipBrdSelectionFormat: TClipboardFormat;
-begin
-  if ClipBrdSelectionFormat=0 then
-    ClipBrdSelectionFormat:=
-      RegisterClipboardFormat('application/lazarus.componentselection');
-  Result:=ClipBrdSelectionFormat;
-end;
 
 constructor TDesigner.Create(TheDesignerForm: TCustomForm;
   AControlSelection: TControlSelection);
@@ -504,9 +501,7 @@ function TDesigner.DoCopySelectionToClipboard: boolean;
   
 var
   AllComponentsStream: TMemoryStream;
-  {$IFDEF VerboseDesigner}
-  s: string;
-  {$ENDIF}
+  AllComponentText: string;
 begin
   Result:=false;
   if ControlSelection.Count=0 then exit;
@@ -519,21 +514,15 @@ begin
   try
     // copy components to stream
     if not CopySelectionToStream(AllComponentsStream) then exit;
-    {$IFDEF VerboseDesigner}
-    SetLength(s,AllComponentsStream.Size);
-    if s<>'' then begin
+    SetLength(AllComponentText,AllComponentsStream.Size);
+    if AllComponentText<>'' then begin
       AllComponentsStream.Position:=0;
-      AllComponentsStream.Read(s[1],length(s));
+      AllComponentsStream.Read(AllComponentText[1],length(AllComponentText));
     end;
-    writeln('TDesigner.DoCopySelectionToClipboard==============================');
-    writeln(s);
-    writeln('TDesigner.DoCopySelectionToClipboard==============================');
-    {$ENDIF}
 
     // copy to clipboard
     try
-      AllComponentsStream.Position:=0;
-      ClipBoard.SetFormat(GetClipBrdSelectionFormat,AllComponentsStream);
+      ClipBoard.AsText:=AllComponentText;
     except
       on E: Exception do begin
         MessageDlg('Unable copy components to clipboard',
@@ -551,12 +540,12 @@ end;
 
 procedure TDesigner.DoPasteSelectionFromClipboard;
 var
-  AllComponentsStream: TMemoryStream;
   AllComponentText: string;
   StartPos: Integer;
   EndPos: Integer;
   CurTextCompStream: TStream;
   PasteParent: TWinControl;
+  NewSelection: TControlSelection;
   
   procedure GetPasteParent;
   var
@@ -639,7 +628,9 @@ var
       FOnPasteComponent(Self,FLookupRoot,TextCompStream,
                         PasteParent,NewComponent);
       if NewComponent=nil then exit;
+      Modified;
       FindUniquePosition(NewComponent);
+      NewSelection.Add(NewComponent);
     end;
 
     Result:=true;
@@ -650,21 +641,13 @@ begin
 
   PasteParent:=nil;
   GetPasteParent;
-
-  AllComponentsStream:=TMemoryStream.Create;
+  NewSelection:=TControlSelection.Create;
   try
-    // read component stream from clipboard
-    ClipBoard.GetFormat(GetClipBrdSelectionFormat,AllComponentsStream);
-    if AllComponentsStream.Size=0 then exit;
-    
-    SetLength(AllComponentText,AllComponentsStream.Size);
-    if AllComponentText<>'' then begin
-      AllComponentsStream.Position:=0;
-      AllComponentsStream.Read(AllComponentText[1],length(AllComponentText));
-    end;
 
-    AllComponentsStream.Position:=0;
-    
+    // read component stream from clipboard
+    AllComponentText:=ClipBoard.AsText;
+    if AllComponentText='' then exit;
+
     StartPos:=1;
     EndPos:=StartPos;
     // read till 'end'
@@ -682,10 +665,12 @@ begin
         do
           inc(EndPos);
         // extract text for the current component
+        {$IFDEF VerboseDesigner}
         writeln('TDesigner.DoPasteSelectionFromClipboard==============================');
         writeln(copy(AllComponentText,StartPos,EndPos-StartPos));
         writeln('TDesigner.DoPasteSelectionFromClipboard==============================');
-        
+        {$ENDIF}
+
         CurTextCompStream:=TMemoryStream.Create;
         try
           CurTextCompStream.Write(AllComponentText[StartPos],EndPos-StartPos);
@@ -696,7 +681,7 @@ begin
         finally
           CurTextCompStream.Free;
         end;
-        
+
         StartPos:=EndPos;
       end else begin
         inc(EndPos);
@@ -704,8 +689,16 @@ begin
     end;
 
   finally
-    AllComponentsStream.Free;
+    if NewSelection.Count>0 then
+      ControlSelection.Assign(NewSelection);
+    NewSelection.Free;
   end;
+end;
+
+procedure TDesigner.DoShowTabOrderEditor;
+begin
+  if ShowTabOrderDialog(FLookupRoot)=mrOk then
+    Modified;
 end;
 
 procedure TDesigner.SelectOnlyThisComponent(AComponent:TComponent);
@@ -1519,7 +1512,7 @@ Begin
 end;
 
 
-{-----------------------------------------K E Y U P --------------------------------}
+{------------------------------------K E Y U P --------------------------------}
 Procedure TDesigner.KeyUp(Sender : TControl; var TheMessage:TLMKEY);
 Begin
   {$IFDEF VerboseDesigner}
@@ -1546,9 +1539,11 @@ begin
   // clear selection by selecting the LookupRoot
   SelectOnlythisComponent(FLookupRoot);
   // delete marked components
+  if DeletingComponents.Count=0 then exit;
   while DeletingComponents.Count>0 do
     RemoveComponentAndChilds(
       TComponent(DeletingComponents[DeletingComponents.Count-1]));
+  Modified;
 end;
 
 procedure TDesigner.DoDeleteComponent(AComponent: TComponent;
@@ -1825,6 +1820,26 @@ end;
 procedure TDesigner.OnSnapToGuideLinesOptionMenuClick(Sender: TObject);
 begin
   EnvironmentOptions.SnapToGuideLines:=not EnvironmentOptions.SnapToGuideLines;
+end;
+
+procedure TDesigner.OnCopyMenuClick(Sender: TObject);
+begin
+  CopySelection;
+end;
+
+procedure TDesigner.OnCutMenuClick(Sender: TObject);
+begin
+  CutSelection;
+end;
+
+procedure TDesigner.OnPasteMenuClick(Sender: TObject);
+begin
+  PasteSelection;
+end;
+
+procedure TDesigner.OnTabOrderMenuClick(Sender: TObject);
+begin
+  DoShowTabOrderEditor;
 end;
 
 function TDesigner.GetGridColor: TColor;
@@ -2123,7 +2138,16 @@ begin
   
   AddSeparator;
   
-  // menuitem: BringToFront, SendToBack
+  // menuitems: TabOrder, BringToFront, SendToBack
+  FTabOrderMenuItem := TMenuItem.Create(FPopupMenu);
+  with FTabOrderMenuItem do begin
+    Caption:= 'Tab Order';
+    OnClick:=@OnTabOrderMenuClick;
+    Enabled:= (FLookupRoot is TWinControl)
+              and (TWinControl(FLookupRoot).ControlCount>0);
+  end;
+  FPopupMenu.Items.Add(FTabOrderMenuItem);
+
   FBringToFrontMenuItem := TMenuItem.Create(FPopupMenu);
   with FBringToFrontMenuItem do begin
     Caption:= fdmBringTofront;
@@ -2142,7 +2166,31 @@ begin
   
   AddSeparator;
   
-  // menuitem: delete selection
+  // menuitems: Cut/Copy/Paste/Delete
+  FCutMenuItem:= TMenuItem.Create(FPopupMenu);
+  with FCutMenuItem do begin
+    Caption:= lisMenuCut;
+    OnClick:=@OnCutMenuClick;
+    Enabled:= CompsAreSelected;
+  end;
+  FPopupMenu.Items.Add(FCutMenuItem);
+
+  FCopyMenuItem:= TMenuItem.Create(FPopupMenu);
+  with FCopyMenuItem do begin
+    Caption:= lisMenuCopy;
+    OnClick:=@OnCopyMenuClick;
+    Enabled:= CompsAreSelected;
+  end;
+  FPopupMenu.Items.Add(FCopyMenuItem);
+
+  FPasteMenuItem:= TMenuItem.Create(FPopupMenu);
+  with FPasteMenuItem do begin
+    Caption:= lisMenuPaste;
+    OnClick:=@OnPasteMenuClick;
+    Enabled:= CanPaste;
+  end;
+  FPopupMenu.Items.Add(FPasteMenuItem);
+
   FDeleteSelectionMenuItem:=TMenuItem.Create(FPopupMenu);
   with FDeleteSelectionMenuItem do begin
     Caption:= fdmDeleteSelection;
@@ -2360,9 +2408,6 @@ function TDesigner.GetPropertyEditorHook: TPropertyEditorHook;
 begin
   Result:=TheFormEditor.PropertyEditorHook;
 end;
-
-initialization
-  ClipBrdSelectionFormat:=0;
 
 end.
 

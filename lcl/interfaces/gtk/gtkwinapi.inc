@@ -1193,11 +1193,11 @@ begin
           end;
           BytesPerPixel:=biBitCount div 8;
 
-          writeln('TgtkObject.InternalGetDIBits A BitSize=',BitSize,
+          {writeln('TgtkObject.InternalGetDIBits A BitSize=',BitSize,
           ' biSizeImage=',biSizeImage,' biHeight=',biHeight,' biWidth=',biWidth,
           ' NumScans=',NumScans,' StartScan=',StartScan,
           ' Bits=',HexStr(Cardinal(Bits),8),' MemSize(Bits)=',MemSize(Bits),
-          ' biBitCount=',biBitCount);
+          ' biBitCount=',biBitCount);}
           If BitSize <= 0 then
             BitSize := SizeOf(Byte)*(Longint(biSizeImage) div biHeight)
                                    *(NumScans + StartScan);
@@ -3409,8 +3409,22 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.GetCapture: HWND;
+var
+  Widget: PGtkWidget;
+  AWindow: PGtkWindow;
+  IsModal: boolean;
 begin
-  Result := HWnd(gtk_grab_get_current);
+  Widget:=gtk_grab_get_current;
+  // for the LCL a modal window is not capturing
+  if Widget<>nil then begin
+    if GtkWidgetIsA(Widget,GTk_WINDOW_TYPE) then begin
+      AWindow:=PGtkWindow(Widget);
+      IsModal:=(AWindow^.flag0 and bm_modal)<>0;
+      if IsModal then
+        Widget:=nil;
+    end;
+  end;
+  Result := HWnd(Widget);
 end;
 
 {------------------------------------------------------------------------------
@@ -8256,6 +8270,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.244  2003/06/18 11:21:07  mattias
+  fixed taborder=0, implemented TabOrder Editor
+
   Revision 1.243  2003/06/13 21:08:53  mattias
   moved TColorButton to dialogs.pp
 
