@@ -392,6 +392,9 @@ type
     function GetFont: TFont;
     function GetHookedCommandHandlersCount: integer;
     function GetLineText: string;
+    {$IFDEF SYN_LAZARUS}
+    function GetLineTextExtended: string;
+    {$ENDIF}
     function GetMaxUndo: Integer;
     function GetSelAvail: Boolean;
     function GetSelText: string;
@@ -653,6 +656,9 @@ type
     property LineHeight: integer read fTextHeight;
     property LinesInWindow: Integer read fLinesInWindow;
     property LineText: string read GetLineText write SetLineText;
+    {$IFDEF SYN_LAZARUS}
+    property LineTextExtended: string read GetLineTextExtended write SetLineText;
+    {$ENDIF}
     property Lines: TStrings read fLines write SetLines;
     property Marks: TSynEditMarkList read fMarkList;
     property MaxLeftChar: integer read fMaxLeftChar write SetMaxLeftChar
@@ -1343,6 +1349,16 @@ begin
   else
     Result := '';
 end;
+
+{$IFDEF SYN_LAZARUS}
+function TCustomSynEdit.GetLineTextExtended: string;
+begin
+  if (CaretY >= 1) and (CaretY <= Lines.Count) then
+    Result := TSynEditStringList(Lines).ExpandedStrings[CaretY - 1]
+  else
+    Result := '';
+end;
+{$ENDIF}
 
 function TCustomSynEdit.GetSelAvail: Boolean;
 begin
