@@ -1846,6 +1846,7 @@ var
   Tmp : hRGN;
   X, Y : Longint;
 begin
+  Result := SIMPLEREGION;
   If not IsValidDC(DC) then
     Result := ERROR;
   if Result <> ERROR
@@ -2722,6 +2723,7 @@ end;
 function TgtkObject.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
 begin
+  Result := SIMPLEREGION;
   If not IsValidDC(DC) then
     Result := ERROR;
   if Result <> ERROR
@@ -3177,6 +3179,7 @@ var
   X, Y : Longint;
   DCOrigin: Tpoint;
 begin
+  Result := SIMPLEREGION;
   If not IsValidDC(DC) then
     Result := ERROR;
   If lpRect <> nil then
@@ -3260,6 +3263,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TGTKObject.GetClipRGN(DC : hDC; RGN : hRGN) : longint;
 begin
+  Result := SIMPLEREGION;
   If not IsValidDC(DC) then
     Result := ERROR;
   if Result <> ERROR
@@ -4594,6 +4598,7 @@ end;
 function TGTKObject.IntersectClipRect(dc: hdc;
   Left, Top, Right, Bottom: Integer): Integer;
 begin
+  Result := SIMPLEREGION;
   If not IsValidDC(DC) then
     Result := ERROR;
   if Result <> ERROR
@@ -5745,7 +5750,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TgtkObject.SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 begin
-  Result := 0;
+  Result := SIMPLEREGION;
   If not IsValidDC(DC) then
     Result := ERROR;
   if Result <> ERROR then
@@ -7479,6 +7484,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.174  2002/10/29 12:30:45  lazarus
+  AJ: fixed initial result in clipping/region routines
+
   Revision 1.173  2002/10/28 23:25:36  lazarus
   AJ: initialize SelectClipRgn Result
 
