@@ -70,7 +70,7 @@ Type
     FStatusFont: HFONT;
     FMessageFont: HFONT;
 
-    Procedure CreateComponent(Sender: TObject);
+    Function  CreateComponent(Sender: TObject): THandle;
     Function  RecreateWnd(Sender: TWinControl): Integer; virtual;
     Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
     Function  GetText(Sender: TComponent; Handle: HWND; var Data: String): Boolean; virtual;
@@ -191,6 +191,12 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.69  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.68  2004/02/23 08:19:04  micha
   revert intf split
 

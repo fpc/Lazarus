@@ -118,11 +118,12 @@ begin
       FOrientation := Value;
       if HandleAllocated then
       begin
+        RecreateWnd;
 //TODO: Use "RecreateWnd;" instead of the calls below!
-	 CNSendMessage (LM_Destroy, Self, nil);
-         CreateComponent (Owner);
+//	 CNSendMessage (LM_Destroy, Self, nil);
+//         CreateComponent (Owner);
+//TODO: MWE: check if th next lines are stil needed while we're usin RecreateWnd
          SetBounds (Left, Top, Width, Height);
-//         AttachSignals;
 	 ApplyChanges;	{ update min, max and current position }
 	 Show;
       end;
@@ -382,6 +383,12 @@ end;
 
 {
   $Log$
+  Revision 1.10  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.9  2004/02/23 08:19:04  micha
   revert intf split
 

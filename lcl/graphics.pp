@@ -1138,9 +1138,10 @@ var
   OnLoadGraphicFromClipboardFormat: TOnLoadGraphicFromClipboardFormat;
   OnSaveGraphicToClipboardFormat: TOnSaveGraphicToClipboardFormat;
 
-function TestStreamBitmapNativeType(Stream: TCustomMemoryStream): TBitmapNativeType;
-function TestStreamIsBMP(Stream: TCustomMemoryStream): boolean;
-function TestStreamIsXPM(Stream: TCustomMemoryStream): boolean;
+function TestStreamBitmapNativeType(const AStream: TStream): TBitmapNativeType;
+function TestStreamIsBMP(const AStream: TStream): boolean;
+function TestStreamIsXPM(const AStream: TStream): boolean;
+
 function XPMToPPChar(const XPM: string): PPChar;
 function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
 function ReadXPMFromStream(Stream: TStream; Size: integer): PPChar;
@@ -1452,6 +1453,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.121  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.120  2004/02/24 19:40:17  mattias
   TBitmap can now read form streams without knowing the size
 

@@ -34,7 +34,7 @@ program Lazarus;
 
 {$mode objfpc}{$H+}
 
-//{$I ide.inc}
+{$I ide.inc}
 
 {$IFDEF WIN32}
   {$R *.res}
@@ -99,6 +99,12 @@ end.
 
 {
   $Log$
+  Revision 1.54  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.53  2004/01/04 03:53:35  marc
   * Changed TComponentSelectionList to TPersistentSelectionList
   + Added SSHdebugger property

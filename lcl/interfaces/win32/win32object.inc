@@ -1900,7 +1900,7 @@ End;
 
   Tells Windows to create a control
  ------------------------------------------------------------------------------}
-Procedure TWin32Object.CreateComponent(Sender: TObject);
+Function TWin32Object.CreateComponent(Sender: TObject): THandle;
 Var
   Buddy, Parent, Handle, Window: HWnd;
   CompStyle, Left, Top, Height, Width: Integer;
@@ -1923,7 +1923,9 @@ Begin
   Assert(False, 'Trace:CreateComponent - Start');
   Assert(False, 'Trace:CreateComponent - Value of Sender is $' + IntToHex(LongInt(Sender), 8));
   Assert(False, 'Trace:CreateComponent - 1');
-
+   
+  Result := 0;
+   
   Flags := WS_CHILD or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
   FlagsEx := 0;
   Assert(False, 'Trace:Setting flags');
@@ -2139,7 +2141,7 @@ Begin
       Height := LongInt(CW_USEDEFAULT);
       SubClassWndProc := nil;
     End;
-    csFrame, csGroupBox:
+    {csFrame,} csGroupBox:
     Begin
       pClassName := 'BUTTON';
       WindowTitle := StrCaption;
@@ -2231,7 +2233,8 @@ Begin
       Top := LongInt(CW_USEDEFAULT);
       Width := LongInt(CW_USEDEFAULT);
       Height := LongInt(CW_USEDEFAULT);
-    End;
+    End; 
+(*    
     csGTKTable:
     Begin
       // Commented out because of error in 1.0.5 (bug?)
@@ -2241,6 +2244,7 @@ Begin
       //IntSendMessage3(LM_CREATE, Sender, Nil);
       Assert(False, 'TRACE:GTK Table not created');
     End;
+*)    
     csToggleBox:
     Begin
       Assert(False, 'TRACE: CreateComponent - Creating toggle box');
@@ -2309,12 +2313,14 @@ Begin
       End;
       csSelectDirectoryDialog:
         CreateSelectDirectoryDialog(TSelectDirectoryDialog(Sender));
+(*
       csFont:
       Begin
         Assert(False, 'Trace:CreateComponent - Creating a font');
         With LPLogFont(@Sender)^ Do
           Window := CreateFont(LFHeight, LFWidth, LFEscapement, LFOrientation, LFWeight, LFItalic, LFUnderLine, LFStrikeOut, LFCharSet, LFOutPrecision, LFClipPrecision, LFQuality, LFPitchAndFamily, LFFaceName);
       End;
+*)      
       csMainMenu, csMenuBar, csMenuItem:
       Begin
         Window := CreateMenu;
@@ -2351,6 +2357,8 @@ Begin
     Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
         Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);
   end;
+  
+  Result := Window;
 
   If (Sender Is TWinControl) Or (CompStyle = csImage) Then
   Begin
@@ -2408,7 +2416,7 @@ Begin
     begin
       Windows.SendMessage(Window, LB_SETCOLUMNWIDTH, Windows.WPARAM(TCListBox(Sender).Width Div (TCListBox(Sender).ListColumns)), 0);
     end;
-    csFrame, csGroupBox:
+    {csFrame,} csGroupBox:
       TWinControl(Sender).InvalidateClientRectCache(true);
     csListView:
       SetOwner(Window, Sender);
@@ -3013,6 +3021,12 @@ End;
 
 {
   $Log$
+  Revision 1.176  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.175  2004/02/26 21:01:42  micha
   fixed: focussing issue combobox
 

@@ -17,7 +17,7 @@
  *****************************************************************************
 }
 
-function TestStreamIsXPM(Stream: TCustomMemoryStream): boolean;
+function TestStreamIsXPM(const AStream: TStream): boolean;
 type
   TXPMRange = (xrCode,xrStaticKeyWord, xrCharKeyWord);
   
@@ -27,7 +27,7 @@ type
   begin
     Result:=false;
     SetLength(Buf,length(s));
-    if Stream.Read(Buf[1],length(Buf))<>length(Buf) then exit;
+    if AStream.Read(Buf[1],length(Buf))<>length(Buf) then exit;
     if Buf<>s then exit;
     Result:=true;
   end;
@@ -39,22 +39,22 @@ var
   LastChar: Char;
 begin
   Result:=false;
-  OldPosition:=Stream.Position;
+  OldPosition:=AStream.Position;
   // skip comments and search 'static char*'
   Range:=xrCode;
   try
     repeat
-      if Stream.Read(c,1)<>1 then exit;
+      if AStream.Read(c,1)<>1 then exit;
       case c of
       ' ',#9,#10,#13: ;
       '/':
         begin
           // read comment
-          if Stream.Read(c,1)<>1 then exit;
+          if AStream.Read(c,1)<>1 then exit;
           if c<>'*' then exit;
           repeat
             LastChar:=c;
-            if Stream.Read(c,1)<>1 then exit;
+            if AStream.Read(c,1)<>1 then exit;
             if c in [#0..#8,#11,#12,#14..#31] then exit;
           until (c='/') and (LastChar='*');
         end;
@@ -65,7 +65,7 @@ begin
           if not Check('tatic') then exit;
           Range:=xrStaticKeyWord;
           // read space
-          if (Stream.Read(c,1)<>1) or (not (c in [' ',#9,#10,#13])) then exit;
+          if (AStream.Read(c,1)<>1) or (not (c in [' ',#9,#10,#13])) then exit;
         end;
       'c':
         begin
@@ -86,7 +86,7 @@ begin
     until false;
 
   finally
-    Stream.Position:=OldPosition;
+    AStream.Position:=OldPosition;
   end;
 end;
 
@@ -286,6 +286,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.25  2004/02/24 19:40:17  mattias
   TBitmap can now read form streams without knowing the size
 

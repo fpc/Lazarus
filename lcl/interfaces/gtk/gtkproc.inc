@@ -2624,38 +2624,48 @@ end;
 // ----------------------------------------------------------------------
 function GetMainWidget(const Widget: Pointer): Pointer;
 begin
-  if Widget<>nil then begin
-    Result := gtk_object_get_data(Widget, 'Main');
-    if Result = nil then Result := Widget; // the widget is the main widget itself.
-  end else
-    RaiseException('GetMainWidget Widget=nil');
+  if Widget = nil
+  then raise EInterfaceException.Create('GetMainWidget Widget=nil');
+  
+  Result := gtk_object_get_data(Widget, 'Main');
+  if Result = nil then Result := Widget; // the widget is the main widget itself.
 end;
 
 procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
 begin
-  if ChildWidget<>nil then begin
-    if (ParentWidget<>ChildWidget) then
-      gtk_object_set_data(ChildWidget, 'Main', ParentWidget)
-    else
-      raise Exception.Create('SetMainWidget ChildWidget=ParentWidget');
-  end else
-    RaiseException('SetMainWidget ChildWidget=nil');
+  if ParentWidget = nil
+  then raise EInterfaceException.Create('SetMainWidget ParentWidget=nil');
+  if ChildWidget = nil
+  then raise EInterfaceException.Create('SetMainWidget ChildWidget=nil');
+  if ParentWidget = ChildWidget
+  then raise EInterfaceException.Create('SetMainWidget ParentWidget=ChildWidget');
+
+  gtk_object_set_data(ChildWidget, 'Main', ParentWidget)
 end;
 
 { ------------------------------------------------------------------------------
  Get the fixed widget of a widget.
  Every LCL control with a clientarea, has at least a main widget for the control
  and a fixed widget for the client area. If the Fixed widget is not set, use
- the widget itself as a fallback.
+ try to get it trough WinWidgetInfo
 ------------------------------------------------------------------------------ }
+//TODO: remove when WinWidgetInfo implementation is complete
 function GetFixedWidget(const Widget: Pointer): Pointer;
+var
+  WidgetInfo: PWinWidgetInfo;
 begin
-  if Widget<>nil then begin
-    Result := gtk_object_get_data(Widget, 'Fixed');
-    if Result = nil then Result:= Widget;
-  end else begin
-    RaiseException('GetFixedWidget Widget=nil');
-  end;
+  if Widget = nil
+  then raise EInterfaceException.Create('GetFixedWidget Widget=nil');
+
+  WidgetInfo := GetWidgetInfo(Widget, False);
+  if WidgetInfo <> nil
+  then Result := WidgetInfo^.ClientWidget
+  else Result := nil;
+  if Result <> nil then Exit;
+  
+  Result := gtk_object_get_data(Widget, 'Fixed');
+  // A last resort
+  if Result = nil then Result := Widget;
 end;
 
 { ------------------------------------------------------------------------------
@@ -2664,11 +2674,88 @@ end;
  and a fixed widget for the client area.
 ------------------------------------------------------------------------------ }
 procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
+var
+  WidgetInfo: PWinWidgetInfo;
 begin
-  if (ParentWidget<>nil) then
-    gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget)
-  else
-    RaiseException('SetFixedWidget ParentWidget=nil');
+  if ParentWidget = nil
+  then raise EInterfaceException.Create('SetFixedWidget ParentWidget=nil');
+  
+  WidgetInfo := GetWidgetInfo(ParentWidget, True);
+  WidgetInfo^.ClientWidget := FixedWidget;
+  //TODO: remove old compatebility
+  gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget)
+end;
+
+{-------------------------------------------------------------------------------
+  Set the LCLobject which created this widget.
+
+-------------------------------------------------------------------------------}
+procedure SetLCLObject(const Widget: Pointer; const AnObject: TObject);
+var
+  WidgetInfo: PWinWidgetInfo;
+begin
+  if Widget = nil
+  then raise EInterfaceException.Create('SetLCLObject Widget=nil');
+  if AnObject = nil
+  then raise EInterfaceException.Create('SetLCLObject AnObject=nil');
+
+  WidgetInfo := GetWidgetInfo(Widget, True);
+  WidgetInfo^.LCLObject := AnObject;
+  //TODO: remove old compatebility
+  gtk_object_set_data(Widget, 'Class', Pointer(AnObject));
+end;
+
+//TODO: cleanup when WidgetInfo is fully implemented
+function GetLCLObject(const Widget: Pointer): TObject;
+var
+  WidgetInfo: PWinWidgetInfo;
+begin
+  if Widget = nil
+  then raise EInterfaceException.Create('GetLCLObject Widget=nil');
+
+  WidgetInfo := GetWidgetInfo(Widget);
+  if WidgetInfo <> nil
+  then Result := WidgetInfo^.LCLObject
+  else Result := nil;
+
+  // Fallback;
+  if Result = nil
+  then Result := TObject(gtk_object_get_data(Widget, 'Class'));
+end;
+
+{-------------------------------------------------------------------------------
+ Some need the HiddenLCLobject which created a parent of this widget.
+
+ MWE: is this obsolete ?
+-------------------------------------------------------------------------------}
+procedure SetHiddenLCLObject(const Widget: Pointer; const AnObject: TObject);
+begin
+  if (Widget <> nil) then
+    gtk_object_set_data(Widget, 'LCLHiddenClass', Pointer(AnObject));
+end;
+
+function GetHiddenLCLObject(const Widget: Pointer): TObject;
+begin
+  Result := TObject(gtk_object_get_data(Widget, 'LCLHiddenClass'));
+end;
+
+{-------------------------------------------------------------------------------
+  function GetNearestLCLObject(Widget: PGtkWidget): TObject;
+  
+  Retrieves the LCLObject belonging to the widget. If the widget is created as
+  child of a main widget, the parent is queried.
+  
+  This function probably obsoletes Get/SetMainWidget
+-------------------------------------------------------------------------------}
+//TODO: check if Get/SetMainWidget is still required
+function GetNearestLCLObject(Widget: PGtkWidget): TObject;
+begin
+  while (Widget<>nil) do begin
+    Result:=GetLCLObject(Widget);
+    if Result<>nil then exit;
+    Widget:=Widget^.Parent;
+  end;
+  Result:=nil;
 end;
 
 {------------------------------------------------------------------------------
@@ -2830,51 +2917,78 @@ begin
   end;
 end;
 
-// ----------------------------------------------------------------------
-// Creates a WinWidget info structure for the given widget
-// Info needed by the API of a HWND (=Widget) 
-//
-// This structure obsoletes:
-//   "core-child", "fixed", "class"
-// ----------------------------------------------------------------------
-function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
+
+
+{------------------------------------------------------------------------------
+  function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
+
+ Creates a WinWidget info structure for the given widget
+ Info needed by the API of a HWND (=Widget)
+
+ This structure obsoletes all other object data, like
+   "core-child", "fixed", "class"
+ ------------------------------------------------------------------------------}
+function CreateWidgetInfo(const AWidget: Pointer): PWinWidgetInfo;
 begin
-  if Widget = nil then Result:= nil
+  if AWidget = nil then Result:= nil
   else begin
     New(Result);
     FillChar(Result^, SizeOf(Result^), 0);
-    gtk_object_set_data(Widget, 'widgetinfo', Result);
+    gtk_object_set_data(AWidget, 'widgetinfo', Result);
   end;
+end;
+
+function CreateWidgetInfo(const AHandle: THandle; const AObject: TObject; const AParams: TCreateParams): PWinWidgetInfo;
+begin
+  Result := CreateWidgetInfo(Pointer(AHandle));
+  if Result = nil then Exit;
+  
+  Result^.LCLObject := AObject;
+  //in most cases the created widger is teimplementation widget
+  // so default to it
+  Result^.ImplementationWidget := Pointer(AHandle);
+  Result^.Style := AParams.Style;
+  Result^.ExStyle := AParams.ExStyle;
+  Result^.WndProc := Integer(AParams.WindowClass.lpfnWndProc);
+end;
+
+function GetWidgetInfo(const Widget: Pointer {; const Create: Boolean = False}): PWinWidgetInfo;
+begin
+  Result := GetWidgetInfo(Widget, False);
 end;
 
 function GetWidgetInfo(const Widget: Pointer;
   const Create: Boolean): PWinWidgetInfo;
-var MainWidget: PGtkObject;
+var
+  MainWidget: PGtkObject;
 begin
-  if Widget <> nil then begin
-    MainWidget:= GetMainWidget(Widget);
-    if MainWidget = nil then MainWidget:= Widget;
-    Result:= gtk_object_get_data(MainWidget, 'widgetinfo');
-    if (Result = nil) and Create then begin
+  if Widget <> nil
+  then begin
+    MainWidget := GetMainWidget(Widget);
+    if MainWidget = nil then MainWidget := Widget;
+    Result := gtk_object_get_data(MainWidget, 'widgetinfo');
+    if (Result = nil) and Create
+    then begin
       Result := CreateWidgetInfo(MainWidget);
-      Result^.ImplementationWidget:= PGtkWidget(MainWidget);
+      Result^.ImplementationWidget := PGtkWidget(MainWidget);
     end;  
-  end else
-    Result:=nil;
+  end
+  else Result := nil;
 end;
 
 procedure FreeWinWidgetInfo(Widget: Pointer);
 var
   WinWidgetInfo: PWinWidgetInfo;
 begin
-  if Widget=nil then exit;
+  if Widget = nil then Exit;
   WinWidgetInfo := gtk_object_get_data(Widget, 'widgetinfo');
-  if WinWidgetInfo<>nil then begin
-    if WinWidgetInfo^.DoubleBuffer<>nil then
+  if WinWidgetInfo = nil then Exit;
+
+  if WinWidgetInfo^.DoubleBuffer <> nil then
       gdk_pixmap_unref(WinWidgetInfo^.DoubleBuffer);
-    Dispose(WinWidgetInfo);
-    gtk_object_set_data(Widget,'widgetinfo',nil);
-  end;
+  gtk_object_set_data(Widget,'widgetinfo',nil);
+
+  Dispose(WinWidgetInfo);
 end;
 
 {-------------------------------------------------------------------------------
@@ -2943,46 +3057,6 @@ begin
     inc(Result);
     AListItem:=AListItem^.Next;
   end;
-end;
-
-{-------------------------------------------------------------------------------
- Some need the LCLobject which created this widget.
-
--------------------------------------------------------------------------------}
-procedure SetLCLObject(const Widget: Pointer; const AnObject: TObject);
-begin
-  if (Widget <> nil) then
-    gtk_object_set_data(Widget, 'Class', Pointer(AnObject));
-end;
-
-function GetLCLObject(const Widget: Pointer): TObject;
-begin
-  Result := TObject(gtk_object_get_data(Widget, 'Class'));
-end;
-
-function GetNearestLCLObject(Widget: PGtkWidget): TObject;
-begin
-  while (Widget<>nil) do begin
-    Result:=GetLCLObject(Widget);
-    if Result<>nil then exit;
-    Widget:=Widget^.Parent;
-  end;
-  Result:=nil;
-end;
-
-{-------------------------------------------------------------------------------
- Some need the HiddenLCLobject which created a parent of this widget.
-
--------------------------------------------------------------------------------}
-procedure SetHiddenLCLObject(const Widget: Pointer; const AnObject: TObject);
-begin
-  if (Widget <> nil) then
-    gtk_object_set_data(Widget, 'LCLHiddenClass', Pointer(AnObject));
-end;
-
-function GetHiddenLCLObject(const Widget: Pointer): TObject;
-begin
-  Result := TObject(gtk_object_get_data(Widget, 'LCLHiddenClass'));
 end;
 
 {-------------------------------------------------------------------------------
@@ -3324,8 +3398,8 @@ begin
 end;
 
 procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
-  const ACallBackProc: Pointer; LCLComponent: TComponent;
-  const ReqSignalMask: TGdkEventMask; SFlags: TConnectSignalFlags);
+  const ACallBackProc: Pointer; const ALCLObject: TObject;
+  const AReqSignalMask: TGdkEventMask; const ASFlags: TConnectSignalFlags);
 var
   RealizeHandler, Handler: PGTKHandler;
   RealizeID, SignalID: guint;
@@ -3343,12 +3417,12 @@ begin
   SignalID := g_signal_lookup(ASignal, GTK_OBJECT_TYPE(AnObject));
   if SignalID<0 then
     RaiseGDBException('ConnectSignal');
-  if csfConnectRealize in SFlags then
+  if csfConnectRealize in ASFlags then
     RealizeID := g_signal_lookup('realize', GTK_OBJECT_TYPE(AnObject))
   else
     RealizeID := 0;
   RealizeHandler := nil;
-  DesignSignalType:=DesignSignalNameToType(ASignal,csfAfter in SFlags);
+  DesignSignalType:=DesignSignalNameToType(ASignal,csfAfter in ASFlags);
 
   while (Handler <> nil) do begin
     with Handler^ do
@@ -3357,32 +3431,32 @@ begin
       if  (Id > 0)
       and (Signal_ID = SignalID)
       and (Func = TGTKSignalFunc(ACallBackProc))
-      and (func_data = Pointer(LCLComponent))
-      and (((flags and bmSignalAfter)<>0)=(csfAfter in SFlags))
+      and (func_data = Pointer(ALCLObject))
+      and (((flags and bmSignalAfter)<>0)=(csfAfter in ASFlags))
       then begin
-        Assert(False, Format('Trace:WARNING: [TGTKObject.SetCallback] %s signal <%s> set twice', [LCLComponent.ClassName, ASignal]));
+        Assert(False, Format('Trace:WARNING: [TGTKObject.SetCallback] %s signal <%s> set twice', [ALCLObject.ClassName, ASignal]));
         // signal is already connected
         // update the DesignSignalMask
-        if (DesignSignalType<>dstUnknown)
-        and (not (csfDesignOnly in SFlags)) then begin
-          OldDesignMask:=GetDesignSignalMask(PGtkWidget(AnObject));
-          NewDesignMask:=
+        if (DesignSignalType <> dstUnknown)
+        and (not (csfDesignOnly in ASFlags))
+        then begin
+          OldDesignMask := GetDesignSignalMask(PGtkWidget(AnObject));
+          NewDesignMask :=
             OldDesignMask and not DesignSignalMasks[DesignSignalType];
-          if OldDesignMask<>NewDesignMask then
-            SetDesignSignalMask(PGtkWidget(AnObject),NewDesignMask);
+          if OldDesignMask <> NewDesignMask
+          then SetDesignSignalMask(PGtkWidget(AnObject),NewDesignMask);
         end;
         Exit;
       end;
 
       // look for realize handler
-      if  (csfConnectRealize in SFlags)
+      if  (csfConnectRealize in ASFlags)
       and (Id > 0)
       and (Signal_ID = RealizeID)
       and (Func = TGTKSignalFunc(@GTKRealizeCB))
-      and (func_data = Pointer(LCLComponent))
+      and (func_data = Pointer(ALCLObject))
       and ((flags and bmSignalAfter)=0) // test if not after
-      then
-        RealizeHandler := Handler;
+      then RealizeHandler := Handler;
 
       Handler := Next;
     end;
@@ -3391,35 +3465,38 @@ begin
   // if we are here, then no handler was defined yet
   // -> register handler
   //if (Msg=LM_LBUTTONUP) then writeln('CONNECT ',ReqSignalMask,' Widget=',HexStr(Cardinal(AnObject),8));
-  if csfAfter in SFlags then
+  if csfAfter in ASFlags then
     g_signal_connect_after(AnObject, ASignal,
-                           TGTKSignalFunc(ACallBackProc),LCLComponent)
+                           TGTKSignalFunc(ACallBackProc), ALCLObject)
   else
     g_signal_connect      (AnObject, ASignal,
-                           TGTKSignalFunc(ACallBackProc),LCLComponent);
+                           TGTKSignalFunc(ACallBackProc), ALCLObject);
 
   // update signal mask which will be set in the realize handler
-  if (csfUpdateSignalMask in SFlags) and (ReqSignalMask <> 0) then begin
-    MainWidget:=GetMainWidget(PGtkWidget(AnObject));
-    if MainWidget=nil then
-      MainWidget:=PGtkWidget(AnObject);
-    WinWidgetInfo:=GetWidgetInfo(MainWidget,true);
-    WinWidgetInfo^.EventMask:=WinWidgetInfo^.EventMask or ReqSignalMask;
+  if (csfUpdateSignalMask in ASFlags) and (AReqSignalMask <> 0)
+  then begin
+    MainWidget := GetMainWidget(PGtkWidget(AnObject));
+    if MainWidget=nil
+    then MainWidget := PGtkWidget(AnObject);
+    WinWidgetInfo := GetWidgetInfo(MainWidget,true);
+    WinWidgetInfo^.EventMask := WinWidgetInfo^.EventMask or AReqSignalMask;
   end;
   // -> register realize handler
-  if (csfConnectRealize in SFlags)
-  and (RealizeHandler = nil) and (RealizeID<>0) then begin
+  if (csfConnectRealize in ASFlags)
+  and (RealizeHandler = nil) and (RealizeID<>0)
+  then begin
     //writeln('REALIZE CONNECT Widget=',HexStr(Cardinal(AnObject),8));
     g_signal_connect(AnObject, 'realize',
-      TGTKSignalFunc(@GTKRealizeCB), LCLComponent);
+      TGTKSignalFunc(@GTKRealizeCB), ALCLObject);
     g_signal_connect_after(AnObject, 'realize',
-      TGTKSignalFunc(@GTKRealizeAfterCB), LCLComponent);
+      TGTKSignalFunc(@GTKRealizeAfterCB), ALCLObject);
   end;
 
   // update the DesignSignalMask
-  if (DesignSignalType<>dstUnknown) then begin
+  if (DesignSignalType <> dstUnknown)
+  then begin
     OldDesignMask:=GetDesignSignalMask(PGtkWidget(AnObject));
-    if csfDesignOnly in SFlags then
+    if csfDesignOnly in ASFlags then
       NewDesignMask:=OldDesignMask or DesignSignalMasks[DesignSignalType]
     else
       NewDesignMask:=OldDesignMask and not DesignSignalMasks[DesignSignalType];
@@ -3429,31 +3506,31 @@ begin
 end;
 
 procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
-  const ACallBackProc: Pointer; LCLComponent: TComponent;
-  const ReqSignalMask: TGdkEventMask);
+  const ACallBackProc: Pointer; const ALCLObject: TObject;
+  const AReqSignalMask: TGdkEventMask);
 begin
-  ConnectSignal(AnObject,ASignal,ACallBackProc,LCLComponent,ReqSignalMask,
+  ConnectSignal(AnObject,ASignal,ACallBackProc, ALCLObject, AReqSignalMask,
                 [csfConnectRealize,csfUpdateSignalMask]);
 end;
 
 procedure ConnectSignalAfter(const AnObject:PGTKObject; const ASignal: PChar;
-  const ACallBackProc: Pointer; LCLComponent: TComponent;
-  const ReqSignalMask: TGdkEventMask);
+  const ACallBackProc: Pointer; const ALCLObject: TObject;
+  const AReqSignalMask: TGdkEventMask);
 begin
-  ConnectSignal(AnObject,ASignal,ACallBackProc,LCLComponent,ReqSignalMask,
+  ConnectSignal(AnObject,ASignal,ACallBackProc, ALCLObject, AReqSignalMask,
                 [csfConnectRealize,csfUpdateSignalMask,csfAfter]);
 end;
 
 procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
-  const ACallBackProc: Pointer; LCLComponent: TComponent);
+  const ACallBackProc: Pointer; const ALCLObject: TObject);
 begin
-  ConnectSignal(AnObject,ASignal,ACallBackProc,LCLComponent,0);
+  ConnectSignal(AnObject,ASignal,ACallBackProc, ALCLObject, 0);
 end;
 
 procedure ConnectSignalAfter(const AnObject:PGTKObject; const ASignal: PChar;
-  const ACallBackProc: Pointer; LCLComponent: TComponent);
+  const ACallBackProc: Pointer; const ALCLObject: TObject);
 begin
-  ConnectSignalAfter(AnObject,ASignal,ACallBackProc,LCLComponent,0);
+  ConnectSignalAfter(AnObject,ASignal,ACallBackProc, ALCLObject, 0);
 end;
 
 {------------------------------------------------------------------------------
@@ -6098,6 +6175,47 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  function Ampersands2Underscore(const ASource: String): String;
+
+  Deletes escaping ampersands, replaces the first single
+  ampersand with an underscore and deleting all other single ampersands.
+-------------------------------------------------------------------------------}
+function Ampersands2Underscore(const ASource: String): String;
+var
+  n: Integer;
+  FirstFound: Boolean;
+begin
+  //TODO: escape underscores
+  FirstFound := False;
+  Result := ASource;
+  n := 1;
+  while n <= Length(Result) do
+  begin
+    if Result[n] = '&'
+    then begin
+      if (n < Length(Result))
+      and (Result[n + 1] = '&')
+      then begin
+        // we got a &&, remove the first
+        Delete(Result, n, 1);
+        Inc(n);
+        Continue;
+      end;
+      if FirstFound
+      then begin
+        // simply remove it
+        Delete(Result, n, 1);
+        Continue;
+      end;
+      // if we are here it's our first
+      FirstFound := True;
+      Result[n] := '_';
+    end;
+    Inc(n);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
   Function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
 
   Creates a new PChar removing all escaping ampersands.
@@ -6154,6 +6272,89 @@ begin
   end;
   Result[NewLength]:=#0;
 end;
+
+{-------------------------------------------------------------------------------
+  function RemoveAmpersands(const ASource: String): String;
+
+  Removing all escaping ampersands.
+-------------------------------------------------------------------------------}
+function RemoveAmpersands(const ASource: String): String;
+var
+  n: Integer;
+begin
+  Result := ASource;
+  n := 1;
+  while n <= Length(Result) do
+  begin
+    if Result[n] = '&'
+    then begin
+      if (n < Length(Result))
+      and (Result[n + 1] = '&')
+      then begin
+        // we got a &&, remove the first
+        Delete(Result, n, 1);
+        Inc(n);
+        Continue;
+      end;
+      // simply remove it
+      Delete(Result, n, 1);
+      Continue;
+    end;
+    Inc(n);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure LabelFromAmpersands(var AText, APattern: String; var AAccelChar: Char)
+
+  Removes all escaping ampersands, creates an underscore pattern and returns
+  the first ampersand char as accelerator char
+-------------------------------------------------------------------------------}
+procedure LabelFromAmpersands(var AText, APattern: String; var AAccelChar: Char);
+var
+  n: Integer;
+  FirstFound: Boolean;
+begin
+  //TODO: escape underscores
+  FirstFound := False;
+  APattern := StringOfChar(' ', Length(AText));
+  AAccelChar := #0;
+  n := 1;
+  while n <= Length(AText) do
+  begin
+    case AText[n] of
+      '&': begin
+        if (n < Length(AText))
+        and (AText[n + 1] = '&')
+        then begin
+          // we got a &&, remove the first
+          Delete(AText, n, 1);
+          Delete(APattern, n, 1);
+          Inc(n);
+          Continue;
+        end;
+
+        Delete(AText, n, 1);
+        Delete(APattern, n, 1);
+        if FirstFound
+        then Continue; // simply remove it
+
+        // if we are here it's our first
+        FirstFound := True;
+        AAccelChar := LowerCase(AText[n]);
+        // is there a next char we can underline ?
+        if n <= Length(APattern)
+        then APattern[n] := '_';
+      end;
+      '_': begin
+        AText[n] := ' ';
+        APattern[n] := '_';
+      end;
+    end;
+    Inc(n);
+  end;
+end;
+
 
 {-------------------------------------------------------------------------------
   Function GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
@@ -6402,6 +6603,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.262  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.261  2004/02/23 23:15:14  mattias
   improved FindDragTarget
 

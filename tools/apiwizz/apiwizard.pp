@@ -39,10 +39,10 @@ type
     cbgLCLPlatform: TCHECKGROUP;
     cmdGenerate: TButton;
     Groupbox1: TGROUPBOX;
+    txtDeclarations: TMemo;
     rbIndependent: TRADIOBUTTON;
     rbDependent: TRADIOBUTTON;
     rdgApiType: TRadioGroup;
-    txtDeclare: TEdit;
     lblDeclare: TLabel;
     txtLazarus: TEdit;
     lblLazarus: TLabel;
@@ -333,7 +333,7 @@ var
   S, DeclarationText: String;
   ProcName, FileName, IntfBase: String;
   PlatformPrefix, PlatformDir, PlatformObject: String;
-  n, Idx, PlatformIdx: Integer;
+  Line, LineCount, n, Idx, PlatformIdx: Integer;
   ProcType: TProcType;
 
   procedure CreateLeadingCR;
@@ -347,49 +347,50 @@ var
     then ProcLines.Add('');
   end;
 begin
-  DeclarationText := Trim(txtDeclare.Text);
-
-  while (Length(DeclarationText) > 0) and (DeclarationText[Length(DeclarationText)] in [';', ' ']) do
-  begin
-    Delete(DeclarationText, Length(DeclarationText), 1);
-  end;
-
-  if Trim(DeclarationText) = ''
+  if txtDeclarations.Lines.Count = 0
   then begin
     ShowMessage('No declaration specified');
     Exit;
   end;
 
-  ProcParams := TStringList.Create;
-  try
-    if not SplitDeclaration(DeclarationText, ProcType, ProcName, ProcParams)
-    then begin
-      ShowMessage('Bad formatted declaration');
-      Exit;
+  case rdgApiType.ItemIndex of
+    0: begin
+      FileName := 'winapi';
+      IntfBase := 'intfbasewinapi.inc';
     end;
-    
-    case rdgApiType.ItemIndex of
-      0: begin
-        FileName := 'winapi';
-        IntfBase := 'intfbasewinapi.inc';
-      end;
-      1: begin
-        FileName := 'lclintf';
-        IntfBase := 'intfbaselcl.inc';
-//        if Lowercase(copy(Procname, 1, 3)) <> 'lcl'
-//        then begin
-//          ShowMessage('LCL interface functions should start with LCL');
-//          Exit;
-//        end;
-      end;
-    else
-      ShowMessage('No API type selected');
-      Exit;
+    1: begin
+      FileName := 'lclintf';
+      IntfBase := 'intfbaselcl.inc';
     end;
+  else
+    ShowMessage('No API type selected');
+    Exit;
+  end;
 
-    ApiText := TStringList.Create;
-    ProcLines := TStringList.Create;
-    try
+  LineCount := 0;
+  ProcParams := TStringList.Create;
+  ApiText := TStringList.Create;
+  ProcLines := TStringList.Create;
+  try
+    for Line := 0 to txtDeclarations.Lines.Count - 1 do
+    begin
+      DeclarationText := Trim(txtDeclarations.Lines[Line]);
+
+      while (Length(DeclarationText) > 0) and (DeclarationText[Length(DeclarationText)] in [';', ' ']) do
+      begin
+        Delete(DeclarationText, Length(DeclarationText), 1);
+      end;
+
+      if Length(DeclarationText) = 0 then Continue;
+
+      if not SplitDeclaration(DeclarationText, ProcType, ProcName, ProcParams)
+      then begin
+        if MessageDlg(Format('Line %d, bad formatted declaration: %s', [Line + 1, DeclarationText]),
+                   mtError, [mbIgnore, mbAbort], 0) = mrIgnore then Continue;
+        Exit;
+      end;
+      Inc(LineCount);
+
       //--------------------------------
       // open winapih.inc / lclintfh.inc
       //--------------------------------
@@ -519,12 +520,12 @@ begin
         for PlatformIdx := 0 to cbgLCLPlatform.Items.Count - 1 do
         begin
           if not cbgLCLPlatform.Checked[PlatformIdx] then Continue;
-          
+
           // for now they can all be based on the check caption
           PlatformPrefix := cbgLCLPlatform.Items[PlatformIdx];
           PlatformDir := PlatformPrefix;
           PlatformObject := 'T' + UpperCase(PlatformPrefix) + 'Object';
-          
+
           //------------------
           // open *winapih.inc
           //------------------
@@ -577,12 +578,13 @@ begin
           end;
         end;
       end;
-    finally
-      ApiText.Free;
-      ProcLines.Free;
     end;
   finally
+    ApiText.Free;
+    ProcLines.Free;
     ProcParams.Free;
+
+    ShowMessage(Format('%d lines inserted', [LineCount]));
   end;
 end;
 
@@ -603,6 +605,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.4  2003/12/13 01:12:01  marc
   * Applied patch from Vincent Snijders
   + Added LCLplatform implementations

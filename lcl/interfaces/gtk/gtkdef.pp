@@ -208,7 +208,13 @@ type
   // Info needed by the API of a HWND (=Widget) 
   PWinWidgetInfo = ^TWinWidgetInfo;
   TWinWidgetInfo = record
-    ImplementationWidget: PGTKWidget; // used to be "fixed" or "core-child"
+    LCLObject: TObject;               // the object which created this widget
+    ClientWidget: PGTKWidget;         // the widget which contains the childwidgets
+                                      // used to be "fixed" or "core-child"
+    ImplementationWidget: PGTKWidget; // the widget which implements the mainfunctionality
+                                      // For a TListBox the GTKList is the ImplementationWidget
+                                      // and the scrollbox around it is the handle
+                                      // So in most cases handle = ImplementationWidget
     UpdateRect: TRect;                // used by LM_Paint, beginpaint etc
     WndProc: Integer;                 // window data 
     Style: Integer;                   
@@ -548,6 +554,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.54  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.53  2004/02/04 22:17:09  mattias
   removed workaround VirtualCreate
 

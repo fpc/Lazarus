@@ -29,6 +29,247 @@
 //##apiwiz##sps##   // Do not remove
 
 {------------------------------------------------------------------------------
+  Function: AlignmentCreateHandle
+  Params: AAlignment:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ArrowCreateHandle
+  Params: AArrow:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: BitBtnCreateHandle
+  Params: ABitBtn:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ButtonCreateHandle
+  Params: AButton:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
+var
+  Caption, Pattern: String;
+  AccelKey: Char;
+  Button: TButton;
+  WidgetInfo: PWinWidgetInfo;
+  Allocation: TGTKAllocation;
+begin
+  //TODO: support utf accelkey
+  
+  Button := AButton as TButton;
+
+  Caption := Button.Caption;
+  LabelFromAmpersands(Caption, Pattern, AccelKey);
+  Result := THandle(gtk_button_new_with_label(PChar(Caption)));
+  if Result = 0 then Exit;
+  
+  gtk_label_set_pattern(PGtkLabel(Result), PChar(Pattern));
+  Accelerate(Button, PGtkWidget(Result), Ord(AccelKey), 0, 'clicked');
+  
+  WidgetInfo := CreateWidgetInfo(Result, Button, AParams);
+  WidgetInfo^.ImplementationWidget := PGtkWidget(Result);
+  
+  Allocation.X := AParams.X;
+  Allocation.Y := AParams.Y;
+  Allocation.Width := AParams.Width;
+  Allocation.Height := AParams.Height;
+  gtk_widget_size_allocate(PGtkWidget(Result), @Allocation);
+
+  HookWincontrolSignals(PGTKObject(Result), Button);
+  SetCallback(LM_CLICKED, PGTKObject(Result), Button);
+end;
+
+{------------------------------------------------------------------------------
+  Function: CalendarCreateHandle
+  Params: ACalendar:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: CheckboxCreateHandle
+  Params: ACheckBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: CheckListBoxCreateHandle
+  Params: ACheckListBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: CListBoxCreateHandle
+  Params: ACListBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ColorDialogCreateHandle
+  Params: AColorDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ComboBoxCreateHandle
+  Params: AComboBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+
+{------------------------------------------------------------------------------
+  function TGTKObject.DrawSplitter(DC: HDC; const ARect: TRect;
+    Horizontal: boolean): Integer;
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.DrawSplitter(DC: HDC; const ARect: TRect;
+  Horizontal: boolean): boolean;
+var
+  Widget: PGtkWidget;
+  ClientWidget: Pointer;
+  DCOrigin: TPoint;
+  Detail: PChar;
+  Area: TGdkRectangle;
+  Style: PGtkStyle;
+  AWindow: PGdkWindow;
+begin
+  Result := False;
+  if not IsValidDC(DC) then exit;
+
+  Widget:=PGtkWidget(TDeviceContext(DC).Wnd);
+  ClientWidget:=GetFixedWidget(Widget);
+  if ClientWidget<>nil then
+    Widget:=ClientWidget;
+  AWindow:=TDeviceContext(DC).Drawable;
+
+  Style:=GetStyle(lgsButton);
+  if Horizontal then begin
+    Detail:='hpaned';
+  end else begin
+    Detail:='vpaned';
+  end;
+
+  DCOrigin:=GetDCOffset(TDeviceContext(DC));
+  Area.X:=ARect.Left+DCOrigin.X;
+  Area.Y:=ARect.Top+DCOrigin.Y;
+  Area.Width:=ARect.Right-ARect.Left;
+  Area.Height:=ARect.Bottom-ARect.Top;
+
+  gtk_paint_box(Style, AWindow,
+    GTK_WIDGET_STATE(Widget),
+    GTK_SHADOW_OUT,
+    @Area, Widget, Detail,
+    Area.X,Area.Y,Area.Width,Area.Height);
+
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  Function: EditCreateHandle
+  Params: AEdit:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: FileDialogCreateHandle
+  Params: AFileDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.FileDialogCreateHandle(const AFileDialog: TObject): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: FontDialogCreateHandle
+  Params: AFontDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.FontDialogCreateHandle(const AFontDialog: TObject): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: FormCreateHandle
+  Params: AForm:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
   Function: GetAcceleratorString
   Params: AVKey:
           AShiftState:
@@ -245,6 +486,125 @@ begin
     end;
   end;
 end;
+
+{------------------------------------------------------------------------------
+  Function: GroupBoxCreateHandle
+  Params: AGroupBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: HintWindowCreateHandle
+  Params: AHintWindow:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ImageCreateHandle
+  Params: AImage:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: IntfCreateHandle
+  Params: AObject:
+          AParams:
+  Returns:
+
+  This is a temporary routine until all controls are created directly
+ ------------------------------------------------------------------------------}
+function TGTKObject.IntfCreateHandle(const AObject: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := CreateComponent(AObject);
+end;
+
+{------------------------------------------------------------------------------
+  Function: LabelCreateHandle
+  Params: ALabel:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ListBoxCreateHandle
+  Params: AListBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ListViewCreateHandle
+  Params: AListView:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: MainMenuCreateHandle
+  Params: AMainMenu:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.MainMenuCreateHandle(const AMainMenu: TObject): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: MemoCreateHandle
+  Params: AMemo:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: MenuItemCreateHandle
+  Params: AMenuItem:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.MenuItemCreateHandle(const AMenuItem: TObject): THandle;
+begin
+  // Your code here
+end;
 {$EndIf}
 
 {------------------------------------------------------------------------------
@@ -301,50 +661,225 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TGTKObject.DrawSplitter(DC: HDC; const ARect: TRect;
-    Horizontal: boolean): Integer;
+  Function: NotebookCreateHandle
+  Params: ANotebook:
+          AParams:
+  Returns:
 
  ------------------------------------------------------------------------------}
-function TGTKObject.DrawSplitter(DC: HDC; const ARect: TRect;
-  Horizontal: boolean): boolean;
-var
-  Widget: PGtkWidget;
-  ClientWidget: Pointer;
-  DCOrigin: TPoint;
-  Detail: PChar;
-  Area: TGdkRectangle;
-  Style: PGtkStyle;
-  AWindow: PGdkWindow;
+function TGTKObject.NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
 begin
-  Result := False;
-  if not IsValidDC(DC) then exit;
-  
-  Widget:=PGtkWidget(TDeviceContext(DC).Wnd);
-  ClientWidget:=GetFixedWidget(Widget);
-  if ClientWidget<>nil then
-    Widget:=ClientWidget;
-  AWindow:=TDeviceContext(DC).Drawable;
-  
-  Style:=GetStyle(lgsButton);
-  if Horizontal then begin
-    Detail:='hpaned';
-  end else begin
-    Detail:='vpaned';
-  end;
+  // Your code here
+end;
 
-  DCOrigin:=GetDCOffset(TDeviceContext(DC));
-  Area.X:=ARect.Left+DCOrigin.X;
-  Area.Y:=ARect.Top+DCOrigin.Y;
-  Area.Width:=ARect.Right-ARect.Left;
-  Area.Height:=ARect.Bottom-ARect.Top;
+{------------------------------------------------------------------------------
+  Function: OpenFileDialogCreateHandle
+  Params: AOpenFileDialog:
+  Returns:
 
-  gtk_paint_box(Style, AWindow,
-    GTK_WIDGET_STATE(Widget),
-    GTK_SHADOW_OUT,
-    @Area, Widget, Detail,
-    Area.X,Area.Y,Area.Width,Area.Height);
+ ------------------------------------------------------------------------------}
+function TGTKObject.OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
+begin
+  // Your code here
+end;
 
-  Result:=true;
+{------------------------------------------------------------------------------
+  Function: PageCreateHandle
+  Params: APage:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: PairSplitterCreateHandle
+  Params: APairSplitter:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: PairSplitterSideCreateHandle
+  Params: APairSplitterSide:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: PanelCreateHandle
+  Params: APanel:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: PopupMenuCreateHandle
+  Params: APopupMenu:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: PreviewFileControlCreateHandle
+  Params: APreviewFileControl:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: PreviewFileDialogCreateHandle
+  Params: APreviewFileDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ProgressBarCreateHandle
+  Params: AProgressBar:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: RadioButtonCreateHandle
+  Params: ARadioButton:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: SaveFileDialogCreateHandle
+  Params: ASaveFileDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ScrollBarCreateHandle
+  Params: AScrollBar:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ScrollBoxCreateHandle
+  Params: AScrollBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ScrolledWindowCreateHandle
+  Params: AScrolledWindow:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: SelectDirectoryDialogCreateHandle
+  Params: ASelectDirectoryDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: SpeedButtonCreateHandle
+  Params: ASpeedButton:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: SpineditCreateHandle
+  Params: ASpinEdit:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: StatusBarCreateHandle
+  Params: AStatusBar:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
 end;
 
 {------------------------------------------------------------------------------
@@ -402,11 +937,77 @@ begin
   UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
 end;
 
+{------------------------------------------------------------------------------
+  Function: ToggleBoxCreateHandle
+  Params: AToggleBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ToolbarCreateHandle
+  Params: AToolbar:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: ToolButtonCreateHandle
+  Params: AToolButton:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: TrackBarCreateHandle
+  Params: ATrackBar:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
+{------------------------------------------------------------------------------
+  Function: WincontrolCreateHandle
+  Params: AFixed:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TGTKObject.WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your code here
+end;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.15  2004/02/17 00:32:25  mattias
   fixed TCustomImage.DoAutoSize fixing uninitialized vars
 

@@ -39,6 +39,11 @@ begin
   SetInitialBounds(1, 1, 75, 25);
 end;
 
+function TButton.CreateWindowHandle(const AParams: TCreateParams): THandle;
+begin
+  Result := ButtonCreateHandle(Self, APArams);
+end;
+
 {------------------------------------------------------------------------------
   Method:  TButton.CreateWnd
   Params:  None
@@ -143,6 +148,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.20  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

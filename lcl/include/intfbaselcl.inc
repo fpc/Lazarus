@@ -25,12 +25,54 @@
 }
 //##apiwiz##sps##   // Do not remove
 
+function TInterfaceBase.AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
 procedure TInterfaceBase.AttachMenuToWindow(AMenuObject: TComponent);
 begin
 end;
 
+function TInterfaceBase.BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
 procedure TInterfaceBase.CallDefaultWndHandler(Sender: TObject; var Message);
 begin
+end;
+
+function TInterfaceBase.CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
 end;
 
 // the clipboard functions are internally used by TClipboard
@@ -65,6 +107,24 @@ function TInterfaceBase.ClipboardRegisterFormat(
   const AMimeType: string): TClipboardFormat;
 begin
   Result := 0;
+end;
+
+function TInterfaceBase.CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
 end;
 
 function TInterfaceBase.ComboBoxDropDown(Handle: HWND;
@@ -111,6 +171,30 @@ end;
 
 procedure TInterfaceBase.DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 begin
+end;
+
+function TInterfaceBase.EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.FileDialogCreateHandle(const AFileDialog: TObject): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.FontDialogCreateHandle(const AFontDialog: TObject): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
 end;
 
 function TInterfaceBase.Frame(DC: HDC; const ARect: TRect) : integer;
@@ -347,6 +431,30 @@ function TInterfaceBase.GetWindowSize(Handle : hwnd;
 begin
   Result:=false;
 end;
+
+function TInterfaceBase.GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.IntfCreateHandle(const AObject: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
            
 
 Function TInterfaceBase.InvalidateFrame(aHandle : HWND; ARect : pRect;
@@ -383,6 +491,42 @@ begin
   BorderRect.Top:=Max(BorderRect.Top,BorderRect.Bottom-BorderWidth);
   if not InvalidateRect(aHandle,@BorderRect,bErase) then exit;
   Result:=true;
+end;
+
+function TInterfaceBase.LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.MainMenuCreateHandle(const AMainMenu: TObject): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.MenuItemCreateHandle(const AMenuItem: TObject): THandle;
+begin
+  // Your default here
+  // Result := 
 end;
 
 function TInterfaceBase.MenuItemSetCheck(AMenuItem: TComponent): Boolean;
@@ -445,10 +589,34 @@ Begin
   Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, @P);
 end;
 
+function TInterfaceBase.NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
 function TInterfaceBase.PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
   Side: integer): Boolean;
 begin
   Result:=false;
+end;
+
+function TInterfaceBase.PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
 end;
 
 function TInterfaceBase.PairSplitterGetInterfaceInfo: boolean;
@@ -466,6 +634,42 @@ function TInterfaceBase.PairSplitterSetPosition(SplitterHandle: hWnd;
   var NewPosition: integer): Boolean;
 begin
   Result:=false;
+end;
+
+function TInterfaceBase.PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
 end;
 
 Function TInterfaceBase.PromptUser(const DialogCaption, DialogMessage : String;
@@ -538,6 +742,12 @@ begin
   Result := True;
 end;
 
+function TInterfaceBase.RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
 function TInterfaceBase.RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
 begin
   Result := false;
@@ -568,6 +778,36 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
 procedure TInterfaceBase.SendCachedLCLMessages;
 begin
 end;
@@ -593,6 +833,24 @@ begin
   Result := false;
 end;
 
+function TInterfaceBase.SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
 procedure TInterfaceBase.StatusBarPanelUpdate(StatusBar: TObject;
   PanelIndex: integer);
 begin
@@ -615,10 +873,46 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
+function TInterfaceBase.WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
+begin
+  // Your default here
+  // Result := 
+end;
+
 //##apiwiz##eps##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.22  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.21  2004/02/23 08:19:04  micha
   revert intf split
 

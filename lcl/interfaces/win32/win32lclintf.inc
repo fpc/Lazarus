@@ -40,6 +40,184 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: AlignmentCreateHandle
+  Params: AAlignment:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
+begin         
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ArrowCreateHandle
+  Params: AArrow:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: BitBtnCreateHandle
+  Params: ABitBtn:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ButtonCreateHandle
+  Params: AButton:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := CreateComponent(AButton);
+end;
+
+{------------------------------------------------------------------------------
+  Function: CalendarCreateHandle
+  Params: ACalendar:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: CheckboxCreateHandle
+  Params: ACheckBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: CheckListBoxCreateHandle
+  Params: ACheckListBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: CListBoxCreateHandle
+  Params: ACListBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ColorDialogCreateHandle
+  Params: AColorDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ComboBoxCreateHandle
+  Params: AComboBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: EditCreateHandle
+  Params: AEdit:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: FileDialogCreateHandle
+  Params: AFileDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.FileDialogCreateHandle(const AFileDialog: TObject): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: FontDialogCreateHandle
+  Params: AFontDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.FontDialogCreateHandle(const AFontDialog: TObject): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: FormCreateHandle
+  Params: AForm:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetAcceleratorString
   Params: AVKey:
           AShiftState:
@@ -48,7 +226,8 @@ end;
  ------------------------------------------------------------------------------}
 function TWin32Object.GetAcceleratorString(const AVKey: Byte; const AShiftState: TShiftState): String;
 begin
-  // Your code here
+  //TODO: Implement
+  Result := '';
 end;
 
 {------------------------------------------------------------------------------
@@ -98,6 +277,375 @@ begin
       Result := lo(Result)
     else Result := -1;
   end;
+end;
+
+{------------------------------------------------------------------------------
+  Function: GroupBoxCreateHandle
+  Params: AGroupBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: HintWindowCreateHandle
+  Params: AHintWindow:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ImageCreateHandle
+  Params: AImage:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: IntfCreateHandle
+  Params: AObject:
+          AParams:
+  Returns:
+
+  This is a temporary routine until all controls are created directly
+ ------------------------------------------------------------------------------}
+function TWIN32Object.IntfCreateHandle(const AObject: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := CreateComponent(AObject);
+end;
+
+{------------------------------------------------------------------------------
+  Function: LabelCreateHandle
+  Params: ALabel:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ListBoxCreateHandle
+  Params: AListBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ListViewCreateHandle
+  Params: AListView:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: MainMenuCreateHandle
+  Params: AMainMenu:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.MainMenuCreateHandle(const AMainMenu: TObject): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: MemoCreateHandle
+  Params: AMemo:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: MenuItemCreateHandle
+  Params: AMenuItem:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.MenuItemCreateHandle(const AMenuItem: TObject): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: NotebookCreateHandle
+  Params: ANotebook:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: OpenFileDialogCreateHandle
+  Params: AOpenFileDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: PageCreateHandle
+  Params: APage:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: PairSplitterCreateHandle
+  Params: APairSplitter:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: PairSplitterSideCreateHandle
+  Params: APairSplitterSide:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: PanelCreateHandle
+  Params: APanel:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: PopupMenuCreateHandle
+  Params: APopupMenu:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: PreviewFileControlCreateHandle
+  Params: APreviewFileControl:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: PreviewFileDialogCreateHandle
+  Params: APreviewFileDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ProgressBarCreateHandle
+  Params: AProgressBar:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: RadioButtonCreateHandle
+  Params: ARadioButton:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: SaveFileDialogCreateHandle
+  Params: ASaveFileDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ScrollBarCreateHandle
+  Params: AScrollBar:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ScrollBoxCreateHandle
+  Params: AScrollBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ScrolledWindowCreateHandle
+  Params: AScrolledWindow:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: SelectDirectoryDialogCreateHandle
+  Params: ASelectDirectoryDialog:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: SpeedButtonCreateHandle
+  Params: ASpeedButton:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: SpineditCreateHandle
+  Params: ASpinEdit:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: StatusBarCreateHandle
+  Params: AStatusBar:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -195,11 +743,82 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Function: ToggleBoxCreateHandle
+  Params: AToggleBox:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ToolbarCreateHandle
+  Params: AToolbar:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: ToolButtonCreateHandle
+  Params: AToolButton:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: TrackBarCreateHandle
+  Params: ATrackBar:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
+{------------------------------------------------------------------------------
+  Function: WincontrolCreateHandle
+  Params: AFixed:
+          AParams:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+function TWIN32Object.WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
+begin
+  //TODO: Implement
+  Result := 0;
+end;
+
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
 
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.14  2004/02/23 08:19:04  micha
   revert intf split
 

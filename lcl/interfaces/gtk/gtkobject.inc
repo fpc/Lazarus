@@ -1,7 +1,7 @@
 {******************************************************************************
                                    TGTKObject
  ******************************************************************************
- 
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -135,10 +135,10 @@ end;
 
   Contructor for the class.
  ------------------------------------------------------------------------------}
-constructor TGtkObject.Create; 
+constructor TGtkObject.Create;
 begin
   inherited Create;
-  
+
   // DCs, GDIObjects
   FDeviceContexts := TDynHashArray.Create(-1);
   FDeviceContexts.Options:=FDeviceContexts.Options+[dhaoCacheContains];
@@ -158,7 +158,7 @@ begin
   FWidgetsResized := TDynHashArray.Create(-1);
   FWidgetsResized.Options:=FWidgetsResized.Options+[dhaoCacheContains];
   FFixWidgetsResized := TDynHashArray.Create(-1);
-  
+
   FTimerData  := TList.Create;
   {$IFDEF Use_KeyStateList}
   FKeyStateList_ := TList.Create;
@@ -172,7 +172,7 @@ begin
 
   // call init and pass cmd line args
   PassCmdLineOptions;
-  
+
   // set glib log handler
   FLogHandlerID := g_log_set_handler(nil, -1, @GLogFunc, Self);
 
@@ -297,7 +297,7 @@ begin
       fMessageQueue.RemoveMessage(QueueItem,FPMF_All,true);
     QueueItem := NextQueueItem;
   end;
-  
+
   if fMessageQueue.HasPaintMessages then begin
     WriteLn(ProcName, Format(rsWarningUnremovedPaintMessages,
       [IntToStr(fMessageQueue.NumberOfPaintMessages)]));
@@ -307,11 +307,11 @@ begin
   then begin
     WriteLN(ProcName, Format(rsWarningUnreleasedDCsDump,
       [FDeviceContexts.Count]));
-    
+
     n:=0;
     write(ProcName,'  DCs:  ');
     HashItem:=FDeviceContexts.FirstHashItem;
-    while (n<7) and (HashItem<>nil) do 
+    while (n<7) and (HashItem<>nil) do
     begin
       write(' ',HexStr(Cardinal(HashItem^.Item),8));
       HashItem:=HashItem^.Next;
@@ -320,13 +320,13 @@ begin
     writeln();
   end;
 
-  if (FGDIObjects.Count > 0)  
-  then begin  
+  if (FGDIObjects.Count > 0)
+  then begin
     WriteLN(ProcName,Format(rsWarningUnreleasedGDIObjectsDump,
        [FGDIObjects.Count]));
     for GDIType := Low(GDIType) to High(GDIType) do
       GDITypeCount[GDIType] := 0;
-      
+
     n:=0;
     write(ProcName,'   GDIOs:');
     HashItem := FGDIObjects.FirstHashItem;
@@ -340,8 +340,8 @@ begin
       Inc(n);
     end;
     Writeln();
-    
-    for GDIType := Low(GDIType) to High(GDIType) do 
+
+    for GDIType := Low(GDIType) to High(GDIType) do
       if GDITypeCount[GDIType] > 0 then
         WriteLN(ProcName,Format('   %s: %d', [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
   end;
@@ -377,10 +377,10 @@ begin
   FKeyStateList_.Free;
   {$ENDIF}
   FTimerData.Free;
-  
+
   // finally remove our loghandler
   g_log_remove_handler(nil, FLogHandlerID);
-  
+
   inherited Destroy;
 end;
 
@@ -402,20 +402,20 @@ begin
   if Width<=0 then Width:=1;
   Height:=AWinControl.Height;
   if Height<=0 then Height:=1;
-    
+
   //writeln('TgtkObject.SetWindowSizeAndPosition ',AWinControl.Name,':',AWinControl.ClassName,' ',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.Width,',',PGtkWidget(Window)^.allocation.Width,' New=',Width,',',Height);
   // set geometry default size
   //Info:=gtk_window_get_geometry_info(Window, TRUE);
   //if (Info^.default_width<>Width) or (Info^.default_height<>Height) then
     gtk_window_set_default_size(Window,Width,Height);
-    
+
   // resize
   //if (PGtkWidget(Window)^.allocation.Width<>Width)
   //and (PGtkWidget(Window)^.allocation.Height<>Height) then begin
     gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
     gtk_widget_set_usize(PGtkWidget(Window),Width,Height);
   //end;
-  
+
   // reposition
   {$IFDEF VerboseSizeMsg}
   writeln('TgtkObject.SetWindowSizeAndPosition B ',AWinControl.Name,':',AWinControl.ClassName,' Visible=',AWinControl.Visible,' Old=',PGtkWidget(Window)^.allocation.X,',',PGtkWidget(Window)^.allocation.Y,' New=',AWinControl.Left,',',AWinControl.Top,',',Width,',',Height);
@@ -725,20 +725,20 @@ procedure TgtkObject.SendCachedLCLMessages;
     TopologicalList: TList; // list of PGtkWidget;
     i, LCLWidth, LCLHeight: integer;
     WinWidgetInfo: PWinWidgetInfo;
-    
+
     procedure WriteBigWarning;
     begin
       writeln('WARNING: resizing BIG ',
         ' Control=',LCLControl.Name,':',LCLControl.ClassName,
         ' NewSize=',LCLWidth,',',LCLHeight);
     end;
-    
+
     procedure RaiseWidgetWithoutControl;
     begin
       RaiseException('ERROR: TgtkObject.SendCachedLCLMessages Widget '
         +HexStr(Cardinal(Widget),8)+' without LCL control');
     end;
-    
+
     procedure WriteWarningParentWidgetNotFound;
     begin
       writeln('WARNING: TgtkObject.SendCachedLCLMessages - '
@@ -748,13 +748,13 @@ procedure TgtkObject.SendCachedLCLMessages;
         ' ParentWidget=',HexStr(Cardinal(ParentWidget),8),
         '');
     end;
-    
+
   begin
     if FWidgetsWithResizeRequest.Count=0 then exit;
     {$IFDEF VerboseSizeMsg}
     writeln('GGG1 SendCachedLCLResizeRequests SizeMsgCount=',FWidgetsWithResizeRequest.Count);
     {$ENDIF}
-    
+
     TopologicalList:=CreateTopologicalSortedWidgets(FWidgetsWithResizeRequest);
     for i:=0 to TopologicalList.Count-1 do begin
       Widget:=TopologicalList[i];
@@ -769,7 +769,7 @@ procedure TgtkObject.SendCachedLCLMessages;
       writeln('SendCachedLCLMessages ',LCLControl.Name,':',LCLControl.ClassName,
         ' ',LCLControl.Left,',',LCLControl.Top,',',LCLControl.Width,',',LCLControl.Height);
       {$ENDIF}
-      
+
       IsTopLevelWidget:= (LCLControl is TCustomForm)
                          and (LCLControl.Parent = nil);
 
@@ -866,7 +866,7 @@ procedure TGtkObject.SendCachedGtkMessages;
       TopLeftChanged:=(LCLLeft<>GtkLeft) or (LCLTop<>GtkTop);
       WidthHeightChanged:=(LCLWidth<>GtkWidth) or (LCLHeight<>GtkHeight);
     end;
-    
+
   begin
     LCLControl:=TWinControl(GetLCLObject(MainWidget));
     if LCLControl=nil then exit;
@@ -889,7 +889,7 @@ procedure TGtkObject.SendCachedGtkMessages;
     if GtkWidth<0 then GtkWidth:=0;
     GtkHeight:=MainWidget^.Allocation.Height;
     if GtkHeight<0 then GtkHeight:=0;
-    
+
     IsTopLevelWidget:=(LCLControl is TCustomForm) and (LCLControl.Parent=nil);
     if IsTopLevelWidget then begin
       if not GTK_WIDGET_VISIBLE(MainWidget) then begin
@@ -908,7 +908,7 @@ procedure TGtkObject.SendCachedGtkMessages;
         GtkLeft,',',GtkTop,',',GtkWidth,',',GtkHeight);
       {$ENDIF}
     end;
-    
+
     UpdateLCLRect;
 
     {$IFDEF VerboseSizeMsg}
@@ -976,7 +976,7 @@ procedure TGtkObject.SendCachedGtkMessages;
       if not MessageDelivered then exit;
     end;
   end;
-  
+
   procedure SendCachedGtkResizeNotifications;
   { This proc sends all cached size messages from the gtk to lcl but in an
     optimized order.
@@ -994,7 +994,7 @@ procedure TGtkObject.SendCachedGtkMessages;
     LCLControl: TWinControl;
     List: TList;
     i: integer;
-    
+
     procedure RaiseInvalidLCLControl;
     begin
       RaiseException('SendCachedGtkResizeNotifications'
@@ -1003,10 +1003,10 @@ procedure TGtkObject.SendCachedGtkMessages;
         +' LCLControl='+HexStr(Cardinal(LCLControl),8)
         );
     end;
-    
+
   begin
     if (FFixWidgetsResized.Count=0) and (FWidgetsResized.Count=0) then exit;
-    
+
     List:=TList.Create;
 
     { if any fixed widget was resized then a client area of a LCL control was
@@ -1025,7 +1025,7 @@ procedure TGtkObject.SendCachedGtkMessages;
         RaiseInvalidLCLControl;
       LCLControl.InvalidateClientRectCache(false);
     end;
-    
+
     { if any main widget (= not fixed widget) was resized
       then a LCL control was resized
       -> send WMSize, WMMove, and WMWindowPosChanged messages
@@ -1090,7 +1090,7 @@ var
 begin
   if NewWidth<=0 then NewWidth:=1;
   if NewHeight<=0 then NewHeight:=1;
-  
+
   {$IFDEF VerboseSizeMsg}
   LCLObject:=GetParentLCLObject(Widget);
   write('TgtkObject.RealizeWidgetSize Widget=',HexStr(Cardinal(Widget),8),
@@ -1102,7 +1102,7 @@ begin
     writeln(' LCL=',HexStr(Cardinal(LCLObject),8));
   end;
   {$ENDIF}
-  
+
   if GtkWidgetIsA(Widget,GTK_TYPE_SCROLLBAR) then
   begin
     // the width of a scrollbar is fixed and depends only on the theme
@@ -1115,9 +1115,9 @@ begin
     end;
     //writeln('TgtkObject.RealizeWidgetSize A ',Newwidth,',',Newheight);
   end;
-  
+
   gtk_widget_set_usize(Widget, NewWidth, NewHeight);
-  
+
   if GtkWidgetIsA(Widget, GTK_TYPE_COMBO) then
   begin
     // the combobox has an entry, which height is not resized
@@ -1220,7 +1220,7 @@ var
 
     if AMessage.WParam<>0 then
       ReleaseDC(0,HDC(AMessage.WParam));
-      
+
     { Normally the childwindows should be explored too, but there are some
       widgets with bad gdkwindows. ToDo: find a way to determine, if a
       gdkwindow is good
@@ -1231,7 +1231,7 @@ var
       Child:=Child^.Next;
     end;}
   end;
-  
+
   procedure ForAllChilds(PaintWidget: PgtkWidget);
   var
     LCLObject: TObject;
@@ -1359,7 +1359,7 @@ begin
 
     // send cached gtk messages to the lcl
     SendCachedGtkMessages;
-	
+
     // then handle our own messages
     while not Application.Terminated do begin
       // fetch first message
@@ -1387,7 +1387,7 @@ begin
       with vlMsg^ do SendMessage(hWND, Message, WParam, LParam);
       Dispose(vlMsg);
     end;
-    
+
     // proceed until all messages are handled
   until (not PendingGtkMessagesExists) or Application.Terminated;
 end;
@@ -1497,7 +1497,7 @@ end;
   Method: TGtkObject.RecreateWnd
   Params:  Sender: TObject - the lcl wincontrol, that is to recreated
   Returns: none
-  
+
   Destroys Handle and child Handles and recreates them.
 -------------------------------------------------------------------------------}
 function TgtkObject.RecreateWnd(Sender: TObject): Integer;
@@ -1606,7 +1606,7 @@ begin
   Window:=nil; // use the X root window for colormap
 
   BeginGDKErrorTrap;
-  
+
   if Window<>nil then
     ColorMap:=gdk_window_get_colormap(Window)
   else
@@ -1617,7 +1617,7 @@ begin
   GdiObject^.GDIBitmapType:=gbPixmap;
   gdk_drawable_get_size(GdiObject^.GDIPixmapObject,@Width, @Height);
   Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject);
-  
+
  If GdiObject^.Visual <> nil then
    GDK_Visual_UnRef(GdiObject^.Visual);
 
@@ -1632,7 +1632,7 @@ begin
 
   GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
   EndGDKErrorTrap;
-  
+
   TheBitmap.Handle := HBITMAP(GdiObject);
   If GdiObject^.GDIBitmapMaskObject <> nil then
     TheBitmap.Transparent := True
@@ -1791,7 +1791,7 @@ Type
       Colormap := gdk_colormap_new(Visual, GdkTrue);
 
       EndGDKErrorTrap;
-      
+
       GDK_Pixbuf_Unref(Src);
     end;
 
@@ -2907,12 +2907,12 @@ begin
     else
       SelectionMode:= GTK_SELECTION_BROWSE;
     case AControl.fCompStyle of
-  
+
     csListBox, csCheckListBox:
       gtk_list_set_selection_mode(PGtkList(
         GetWidgetInfo(Widget, True)^.ImplementationWidget),
         SelectionMode);
-        
+
     csCListBox:
       gtk_clist_set_selection_mode(PGtkCList(
         GetWidgetInfo(Widget, True)^.ImplementationWidget),
@@ -2947,8 +2947,8 @@ end;
            data       - pointer to (optional)
   Returns: depends on the message and the sender
 
-  Processes messages from different components. 
-  
+  Processes messages from different components.
+
   WARNING: the result of this function sometimes is not always really an
            integer!!!!!
  ------------------------------------------------------------------------------}
@@ -2976,7 +2976,7 @@ var
 begin
   Result := 0;   //default value just in case nothing sets it
 
-  Assert(False, 'Trace:Message received'); 
+  Assert(False, 'Trace:Message received');
   if Sender <> nil then
     Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Sent LM_Message: $%x (%s); Data: %d', [Sender.ClassName, LM_Message, GetMessageName(LM_Message), Integer(data)]));
 
@@ -2990,9 +2990,9 @@ begin
 
   LM_SETCOLOR : SetColor(Sender);
 
-  LM_SETPixel : SetPixel(Sender,Data); 
+  LM_SETPixel : SetPixel(Sender,Data);
 
-  LM_GETPixel : GetPixel(Sender,Data); 
+  LM_GETPixel : GetPixel(Sender,Data);
 
   LM_ShowHide :
     begin
@@ -3007,9 +3007,9 @@ begin
   LM_GETVALUE  : Result := GetValue(Sender, data);
 
   LM_SETVALUE  : Result := SetValue(Sender, data);
- 
+
   LM_SETPROPERTIES: Result := SetProperties(Sender);
-  
+
   LM_SETDESIGNING :
     // Used by the form editor to set anything specifically needed
     // when setting controls to Designing.
@@ -3020,11 +3020,11 @@ begin
     end;
 
   LM_RECREATEWND : Result := RecreateWnd(sender);
-  
+
   LM_ATTACHMENU: AttachMenu(Sender);
-  
+
   LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TCustomPage(Sender));
-  
+
   LM_LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
   LM_LB_SETTOPINDEX: Result:=SetTopIndex(Sender,integer(Data));
 
@@ -3097,11 +3097,11 @@ begin
       begin
   {         Assert(False, 'Trace:TODO:bringtofront');
          //For now just hide and show again.
-  	 if (Sender is TControl) then begin
-  	   TControl(Sender).Parent.RemoveControl(TControl(Sender));
-  	   writeln('Removed control ', TControl(Sender).Name);
-  	   TControl(Sender).Parent.InsertControl(TControl(Sender));
-  	   writeln('Inserted control ', TControl(Sender).Name);
+     if (Sender is TControl) then begin
+       TControl(Sender).Parent.RemoveControl(TControl(Sender));
+       writeln('Removed control ', TControl(Sender).Name);
+       TControl(Sender).Parent.InsertControl(TControl(Sender));
+       writeln('Inserted control ', TControl(Sender).Name);
     end;
     }
         if (Sender is TCustomForm) then
@@ -3281,13 +3281,13 @@ begin
           func and data parameters.
           The default menu positioning function will position the menu at the
           current pointer position.
-          menu :	a GtkMenu.
+          menu :  a GtkMenu.
           parent_menu_shell: the menu shell containing the triggering menu item.
           parent_menu_item: the menu item whose activation triggered the popup.
-          func :	a user supplied function used to position the menu.
-          data :	user supplied data to be passed to func.
-          button :	the button which was pressed to initiate the event.
-          activate_time :	the time at which the activation event occurred.
+          func :  a user supplied function used to position the menu.
+          data :  user supplied data to be passed to func.
+          button :  the button which was pressed to initiate the event.
+          activate_time : the time at which the activation event occurred.
           }
 
         end;
@@ -3631,18 +3631,18 @@ begin
             Widget:= PGtkWidget(PGtkCombo(Handle)^.entry);
           {$IfDef GTK1}
           csEdit, csMemo:
-  	    Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+        Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
           {$EndIf}
-  	  else
-  	    Widget:= nil;
+      else
+        Widget:= nil;
           end;
-  	  if Widget <> nil then begin
+      if Widget <> nil then begin
             if PGtkOldEditable(Widget)^.selection_start_pos
                < PGtkOldEditable(Widget)^.selection_end_pos
             then
               Result:= PGtkOldEditable(Widget)^.selection_start_pos
-  	    else
-  	      Result:= PGtkOldEditable(Widget)^.current_pos;// selection_end_pos
+        else
+          Result:= PGtkOldEditable(Widget)^.current_pos;// selection_end_pos
           end else Result:= 0;
         end;
       end;
@@ -3657,12 +3657,12 @@ begin
             end;
           {$IfDef GTK1}
           csEdit, csMemo:
-  	    begin
-  	      Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
+        begin
+          Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
               with PGtkOldEditable(Widget)^ do begin
                 Result:=Abs(integer(selection_end_pos)-integer(selection_start_pos));
               end;
-  	    end;
+        end;
           {$EndIf}
           end;
         end;
@@ -3691,7 +3691,7 @@ begin
 
           else
             Widget:=nil;
-      	  end;
+          end;
 
           if Widget<>nil then begin
             gtk_editable_set_position(PGtkOldEditable(Widget), Integer(Data));
@@ -3713,14 +3713,14 @@ begin
 
           else
             Widget:=nil;
-      	  end;
+          end;
 
           if Widget<>nil then begin
             gtk_editable_select_region(PGtkOldEditable(Widget),
               gtk_editable_get_position(PGtkOldEditable(Widget)),
               gtk_editable_get_position(PGtkOldEditable(Widget)) + Integer(Data));
-      	  end;
-      	end;
+          end;
+        end;
       end;
 
       LM_GetLineCount :
@@ -3745,7 +3745,7 @@ begin
         end;
       end;
       {$EndIf}
-      
+
       LM_GETSEL :
       {$IFdef GTK2}
       begin
@@ -3962,21 +3962,21 @@ begin
           Widget:= PGtkWidget(TWinControl(Sender).Handle);
           if Widget <> nil then begin
             with Geometry, TControl(Sender) do begin
-      	      if Constraints.MinWidth > 0 then
+              if Constraints.MinWidth > 0 then
                 min_width:= Constraints.MinWidth else min_width:= 1;
-      	      if Constraints.MaxWidth > 0 then
+              if Constraints.MaxWidth > 0 then
                 max_width:= Constraints.MaxWidth else max_width:= 32767;
-      	      if Constraints.MinHeight > 0 then
+              if Constraints.MinHeight > 0 then
                 min_height:= Constraints.MinHeight else min_height:= 1;
-      	      if Constraints.MaxHeight > 0 then
+              if Constraints.MaxHeight > 0 then
                 max_height:= Constraints.MaxHeight else max_height:= 32767;
-      	      base_width:= Width;
-      	      base_height:= Height;
-      	      width_inc:= 1;
-      	      height_inc:= 1;
-      	      min_aspect:= 0;
-      	      max_aspect:= 1;
-      	    end;
+              base_width:= Width;
+              base_height:= Height;
+              width_inc:= 1;
+              height_inc:= 1;
+              min_aspect:= 0;
+              max_aspect:= 1;
+            end;
             gtk_window_set_geometry_hints(PGtkWindow(Widget), nil, @Geometry,
                                         GDK_HINT_MIN_SIZE or GDK_HINT_MAX_SIZE);
           end;
@@ -4015,7 +4015,7 @@ begin
        Text := StrPas(gtk_entry_get_text(PGtkEntry(PGtkCombo(
                                          TComboBox(Sender).Handle)^.entry)));
      end;
-     
+
    {$IfDef GTK1}
    csEdit, csSpinEdit:
        Text:= StrPas(gtk_entry_get_text(PgtkEntry(TWinControl(Sender).Handle)));
@@ -4063,7 +4063,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TGtkObject.AddChild
-  Params:  parent - 
+  Params:  parent -
            child  -
            left, top -
   Returns: Nothing
@@ -4126,7 +4126,7 @@ var
   CurMemoLen: cardinal;
 begin
   if Str=nil then exit;
-  
+
   if (Sender is TWinControl) then begin
    {$IfDef GTK1}
     case TWinControl(Sender).fCompStyle of
@@ -4188,7 +4188,7 @@ procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
     if MenuLabelWidget<>nil then
       gtk_label_set_text(pGtkLabel(MenuLabelWidget), NewText);
   end;
-  
+
   procedure SetMenuItemCaption;
   var
     MenuItemWidget: PGtkWidget;
@@ -4199,7 +4199,7 @@ procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
     MenuItemWidget:=PGtkWidget(MenuItem.Handle);
     UpdateInnerMenuItem(MenuItem,MenuItemWidget);
   end;
-  
+
 
 var
   DC : hDC;
@@ -4254,7 +4254,7 @@ begin
       end;
     end;
 
-  csForm, 
+  csForm,
   csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
   csPreviewFileDialog,
   csColorDialog,
@@ -4274,14 +4274,14 @@ begin
           AccelKey:= gtk_label_parse_uline(pGtkLabel(p), aLabel);
           Accelerate(TComponent(Sender),PGtkWidget(p),AccelKey,0,'grab_focus');
         finally
-	  StrDispose(aLabel);
-	end;
+    StrDispose(aLabel);
+  end;
       end else begin
         If TLabel(sender).WordWrap then begin
           DC := GetDC(TLabel(Sender).Handle);
           aLabel := ForceLineBreaks(DC, pLabel, TLabel(Sender).Width, False);
           gtk_label_set_text(PGtkLabel(p), aLabel);
-	  StrDispose(aLabel);
+    StrDispose(aLabel);
           DeleteDC(DC);
         end
         else
@@ -4305,7 +4305,7 @@ begin
         StrDispose(aLabel);
       end;
     end;
-    
+
   csGroupBox    : gtk_frame_set_label(pgtkFrame(P),pLabel);
 
   {$IfDef GTK1}
@@ -4317,18 +4317,18 @@ begin
 
   csMemo        : begin
                     P:= GetWidgetInfo(P, True)^.ImplementationWidget;
-                    
+
                     gtk_text_freeze(PGtkText(P));
                     gtk_text_set_point(PGtkText(P), 0);
                     gtk_text_forward_delete(PGtkText(P), gtk_text_get_length(PGtkText(P)));
                     gtk_text_insert(PGtkText(P), nil, nil, nil, pLabel, -1);
                     gtk_text_thaw(PGtkText(P));
-                  end;      
+                  end;
 
    {$EndIf}
   csPage:
     SetNotebookPageTabLabel;
-    
+
   csComboBox    :
     begin
       //writeln('SetLabel: ',TComboBox(Sender).Name,':',TComboBox(Sender).ClassName,
@@ -4354,41 +4354,43 @@ end;
 
 {------------------------------------------------------------------------------
   Function: TGTKObject.SetCallback
-  Params: Msg - message for which to set a callback
-          sender - object to which callback will be send
+  Params: AMsg - message for which to set a callback
+          AGTKObject - object to which callback will be send
+          ALCLObject - for compatebility reasons provided, will be used when
+                       AGTKObject = nil
   Returns:  nothing
 
   Applies a Message to the sender
  ------------------------------------------------------------------------------}
-procedure TGTKObject.SetCallback(Msg : LongInt; Sender: TObject);
+//TODO: remove ALCLObject when creation splitup is finished
+procedure TGTKObject.SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject);
 
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
     const ACallBackProc: Pointer);
   begin
-    ConnectSignal(AnObject,ASignal,ACallBackProc,TComponent(Sender));
+    ConnectSignal(AnObject,ASignal,ACallBackProc,ALCLObject);
   end;
 
   procedure ConnectSenderSignalAfter(const AnObject:PGTKObject;
     const ASignal: PChar; const ACallBackProc: Pointer);
   begin
-    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,TComponent(Sender));
+    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,ALCLObject);
   end;
 
   procedure ConnectSenderSignal(const AnObject:PGTKObject; const ASignal: PChar;
-    const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
+    const ACallBackProc: Pointer; const AReqSignalMask: TGdkEventMask);
   begin
-    ConnectSignal(AnObject,ASignal,ACallBackProc,TComponent(Sender),
-                  ReqSignalMask);
+    ConnectSignal(AnObject,ASignal,ACallBackProc,ALCLObject, AReqSignalMask);
   end;
 
   procedure ConnectSenderSignalAfter(const AnObject:PGTKObject;
     const ASignal: PChar; const ACallBackProc: Pointer;
-    const ReqSignalMask: TGdkEventMask);
+    const AReqSignalMask: TGdkEventMask);
   begin
-    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,TComponent(Sender),
-                       ReqSignalMask);
+    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,ALCLObject,
+                       AReqSignalMask);
   end;
-  
+
   procedure ConnectFocusEvents(const AnObject: PGTKObject);
   begin
     ConnectSenderSignal(AnObject, 'focus-in-event', @gtkFocusCB);
@@ -4400,9 +4402,11 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender: TObject);
 var
   gObject, gFixed, gCore, Scroll: PGTKObject;
 begin
-  gObject := ObjectToGTKObject(Sender);
+  if AGTKObject = nil
+  then gObject := ObjectToGTKObject(ALCLObject)
+  else gObject := AGTKObject;
   if gObject = nil then Exit;
-  
+
   // gFixed is the widget with the client area (e.g. TGroupBox, TForm have this)
   gFixed := PGTKObject(GetFixedWidget(gObject));
   if gFixed = nil then gFixed := gObject;
@@ -4410,7 +4414,7 @@ begin
   // gCore is the main widget (e.g. TListView has this)
   gCore:= PGtkObject(GetWidgetInfo(gObject, True)^.ImplementationWidget);
 
-  case Msg of
+  case AMsg of
     LM_SHOWWINDOW :
     begin
       ConnectSenderSignal(gObject, 'show', @gtkshowCB);
@@ -4421,7 +4425,7 @@ begin
     begin
       ConnectSenderSignal(gObject, 'destroy', @gtkdestroyCB);
     end;
-    
+
     LM_CLOSEQUERY :
     begin
       ConnectSenderSignal(gObject, 'delete-event', @gtkdeleteCB);
@@ -4429,10 +4433,10 @@ begin
 
     LM_ACTIVATE :
     begin
-      if (Sender is TCustomForm) then begin
+      if (ALCLObject is TCustomForm) then begin
         ConnectSenderSignalAfter(gObject, 'focus-in-event', @gtkfrmactivateAfter);
         ConnectSenderSignalAfter(gObject, 'focus-out-event', @gtkfrmdeactivateAfter);
-      end else if Sender is TCustomMemo then
+      end else if ALCLObject is TCustomMemo then
         ConnectSenderSignal(gCore, 'activate', @gtkactivateCB)
       else
         ConnectSenderSignal(gObject, 'activate', @gtkactivateCB);
@@ -4445,27 +4449,27 @@ begin
 
     LM_CHANGED :
     begin
-       if Sender is TTrackBar then
+       if ALCLObject is TTrackBar then
        begin
          ConnectSenderSignal(gtk_Object(
                    gtk_range_get_adjustment(GTK_RANGE(gObject))) ,
                       'value_changed', @gtkvaluechanged);
        end
        else
-       if Sender is TCustomNotebook then
+       if ALCLObject is TCustomNotebook then
          ConnectSenderSignal(gObject, 'switch-page', @gtkswitchpage)
        else
-       if Sender is TCustomCombobox then
+       if ALCLObject is TCustomCombobox then
          ConnectSenderSignal (PGtkObject(
                    PGtkCombo(gObject)^.entry), 'changed', @gtkchangedCB)
        else 
-       if Sender is TCustomMemo then
+       if ALCLObject is TCustomMemo then
          ConnectSenderSignal(gCore, 'changed', @gtkchanged_editbox)
        else
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
     end;
 
-    LM_CLICKED :
+    LM_CLICKED:
     begin
       ConnectSenderSignal(gObject, 'clicked', @gtkclickedCB);
     end;
@@ -4474,7 +4478,7 @@ begin
     begin
       ConnectSenderSignal(gObject, 'configure-event', @gtkconfigureevent);
     end;
-    
+
     LM_DAYCHANGED :  //calendar
     Begin
       ConnectSenderSignal(gObject, 'day-selected', @gtkdaychanged);
@@ -4492,14 +4496,14 @@ begin
 
     LM_FOCUS :
     begin
-      if (Sender is TCustomComboBox) then begin
+      if (ALCLObject is TCustomComboBox) then begin
         ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.entry));
         ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.list));
       end else begin
         ConnectFocusEvents(gCore);
       end;
     end;
-    
+
     LM_GRABFOCUS:
     begin
       ConnectSenderSignal(gObject, 'grab_focus', @gtkActivateCB);
@@ -4512,13 +4516,13 @@ begin
     LM_SYSCHAR,
     LM_SYSKEYUP:
     begin
-      if (Sender is TCustomComboBox) then begin
+      if (ALCLObject is TCustomComboBox) then begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
       end
-      else if (Sender is TCustomForm) then begin
+      else if (ALCLObject is TCustomForm) then begin
         ConnectSenderSignal(gObject, 'key-press-event', @GTKKeyUpDown,
                             GDK_KEY_PRESS_MASK);
         ConnectSenderSignal(gObject, 'key-release-event', @GTKKeyUpDown,
@@ -4529,7 +4533,7 @@ begin
       ConnectSenderSignal(gCore, 'key-release-event', @GTKKeyUpDown,
                           GDK_KEY_RELEASE_MASK);
     end;
-    
+
     LM_MONTHCHANGED :  //calendar
     Begin
       ConnectSenderSignal(gObject, 'month-changed', @gtkmonthchanged);
@@ -4556,7 +4560,7 @@ begin
 
     LM_MOUSEMOVE:
     begin
-      if (Sender is TCustomComboBox) then
+      if (ALCLObject is TCustomComboBox) then
       begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'motion-notify-event',
@@ -4585,7 +4589,7 @@ begin
     LM_MBUTTONDOWN,
     LM_MOUSEWHEEL :
     begin
-      if (sender is TCustomComboBox) then
+      if (ALCLObject is TCustomComboBox) then
       begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
               'button-press-event',  @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
@@ -4613,7 +4617,7 @@ begin
     LM_RBUTTONUP,
     LM_MBUTTONUP:
     begin
-      if (sender is TCustomComboBox) then
+      if (ALCLObject is TCustomComboBox) then
       Begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'button-release-event',  @gtkMouseBtnRelease, GDK_BUTTON_RELEASE_MASK);
@@ -4641,7 +4645,7 @@ begin
 
     LM_ENTER :
     begin
-      if Sender is TButton then
+      if ALCLObject is TButton then
         ConnectSenderSignal(gObject, 'enter', @gtkenterCB)
       else
         ConnectSenderSignal(gObject, 'focus-in-event', @gtkFocusInNotifyCB); //TODO: check this focus in is mapped to focus
@@ -4649,7 +4653,7 @@ begin
 
     LM_EXIT :
     begin
-      if Sender is TButton then
+      if ALCLObject is TButton then
         ConnectSenderSignal(gObject, 'leave', @gtkleaveCB)
       else
         ConnectSenderSignal(gObject, 'focus-out-event', @gtkFocusOutNotifyCB);
@@ -4707,7 +4711,7 @@ begin
     begin
       ConnectSenderSignal(gObject, 'move-to-column', @gtkmovetocolumn);
     end;
-    
+
     LM_MOUSEENTER:
     begin
       if gCore<>nil then
@@ -4737,7 +4741,7 @@ begin
 
     LM_CUTTOCLIP :
     begin
-      if (sender is TCustomMemo) then
+      if (ALCLObject is TCustomMemo) then
         ConnectSenderSignal(gCore, 'cut-clipboard', @gtkcuttoclip)
       else
         ConnectSenderSignal(gObject, 'cut-clipboard', @gtkcuttoclip);
@@ -4745,7 +4749,7 @@ begin
 
     LM_COPYTOCLIP :
     begin
-      if (sender is TCustomMemo) then
+      if (ALCLObject is TCustomMemo) then
         ConnectSenderSignal(gCore, 'copy-clipboard', @gtkcopytoclip)
       else
         ConnectSenderSignal(gObject, 'copy-clipboard', @gtkcopytoclip);
@@ -4753,7 +4757,7 @@ begin
 
     LM_PASTEFROMCLIP :
     begin
-      if (sender is TCustomMemo) then
+      if (ALCLObject is TCustomMemo) then
         ConnectSenderSignal(gCore, 'paste-clipboard', @gtkpastefromclip)
       else
         ConnectSenderSignal(gObject, 'paste-clipboard', @gtkpastefromclip);
@@ -4761,16 +4765,16 @@ begin
 
     LM_HSCROLL:
     begin
-      //if Sender is TCustomListView
+      //if ALCLObject is TCustomListView
       //then begin
       //  ConnectSenderSignal(gObject, 'scroll-horizontal', @gtkLVHScroll);
       //end
       //else begin
-      If Sender is TScrollBar then
+      If ALCLObject is TScrollBar then
         ConnectSenderSignal(
                 PGTKObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment),
                            'value-changed', @GTKHScrollCB)
-      else If Sender is TScrollBox then begin
+      else If ALCLObject is TScrollBox then begin
         Scroll := gtk_object_get_data(gObject, odnScrollArea);
         ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
           PGTKScrolledWindow(Scroll))), 'value-changed', @GTKHScrollCB);
@@ -4783,16 +4787,16 @@ begin
 
     LM_VSCROLL:
     begin
-      //if Sender is TCustomListView
+      //if ALCLObject is TCustomListView
       //then begin
       //  ConnectSenderSignal(gObject, 'scroll-vertical', @gtkLVVScroll);
       //end
       //else begin
-      If Sender is TScrollBar then
+      If ALCLObject is TScrollBar then
         ConnectSenderSignal(
                 PGTKObject(PgtkhScrollBar(gObject)^.Scrollbar.Range.Adjustment),
                            'value-changed', @GTKVScrollCB)
-      else If Sender is TScrollBox then begin
+      else If ALCLObject is TScrollBox then begin
         Scroll := gtk_object_get_data(gObject, odnScrollArea);
         ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(
           PGTKScrolledWindow(Scroll))), 'value-changed', @GTKVScrollCB);
@@ -4802,48 +4806,48 @@ begin
           PGTKScrolledWindow(gObject))), 'value-changed', @GTKVScrollCB);
       //end;
     end;
-    
+
     LM_YEARCHANGED :  //calendar
     Begin
       ConnectSenderSignal(gObject, 'prev-year', @gtkyearchanged);
       ConnectSenderSignal(gObject, 'next-year', @gtkyearchanged);
-    end;    
-    
+    end;
+
     // Listview & Header control
-    
+
     //HDN_BEGINTRACK
     //HDN_DIVIDERDBLCLICK
 
-    HDN_ENDTRACK, 
+    HDN_ENDTRACK,
     HDN_TRACK:
     begin
       ConnectSenderSignal(gObject, 'resize-column', @gtkLVResizeColumn);
       ConnectSenderSignal(gObject, 'abort-column-resize',
                           @gtkLVAbortColumnResize);
     end;
-     
+
     HDN_ITEMCHANGED,
-    HDN_ITEMCHANGING: 
+    HDN_ITEMCHANGING:
     begin
       ConnectSenderSignal(gObject, 'resize-column', @gtkLVResizeColumn);
     end;
 
-//    HDN_ITEMDBLCLICK 
+//    HDN_ITEMDBLCLICK
     HDN_ITEMCLICK,
-    LVN_COLUMNCLICK: 
+    LVN_COLUMNCLICK:
     begin
       ConnectSenderSignal(gCore, 'click-column', @gtkLVClickColumn);
     end;
 
 //    LVN_DELETEALLITEMS,
-    LVN_DELETEITEM, 
+    LVN_DELETEITEM,
     LVN_INSERTITEM:
     begin
       ConnectSenderSignal(gCore, 'row-move', @gtkLVRowMove);
     end;
 
     LVN_ITEMCHANGED,
-    LVN_ITEMCHANGING: 
+    LVN_ITEMCHANGING:
     begin
       ConnectSenderSignal(gCore, 'select-row', @gtkLVSelectRow);
       ConnectSenderSignal(gCore, 'unselect-row', @gtkLVUnSelectRow);
@@ -4852,26 +4856,26 @@ begin
       ConnectSenderSignal(gCore, 'unselect-all', @gtkLVUnSelectAll);
       ConnectSenderSignal(gCore, 'end-selection', @gtkLVEndSelection);
     end;
-    
+
     LM_COMMAND:
     begin
-      if Sender is TCustomComboBox then begin
+      if ALCLObject is TCustomComboBox then begin
         ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.popwin),
           'show', @gtkComboBoxShowCB);
         ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.popwin),
           'hide', @gtkComboBoxHideCB);
       end;
     end;
-    
+
 (*
     LM_WINDOWPOSCHANGED:
     begin
       ConnectSenderSignal(gObject, 'size-allocate', @gtkSizeAllocateCB);
 //      ConnectSenderSignal(gObject, 'move_resize', @gtkmoveresize);
-    end; 
+    end;
 *)
   else
-    Assert(False, Format('Trace:ERROR:  Signal %d not found!', [Msg]));
+    Assert(False, Format('Trace:ERROR:  Signal %d not found!', [AMsg]));
   end;
 end;
 
@@ -4926,9 +4930,9 @@ begin
   Widget:=PGtkWidget(Handle);
   if WidgetIsDestroyingHandle(Widget) then exit;
   SetWidgetIsDestroyingHandle(Widget);
-  
+
   //writeln('TGTKObject.DestroyLCLComponent A ',GetWidgetClassName(Widget));
-  
+
   // if one of its widgets has the focus then unfocus
   GtkWindow:=gtk_widget_get_toplevel(Widget);
   if GtkWidgetIsA(GtkWindow,GTK_TYPE_WINDOW)
@@ -4996,7 +5000,7 @@ begin
   end;
 
   FixWidget:=GetFixedWidget(Widget);
-  
+
   // clipboard widget
 
   // Remove control accelerators - has to be done due to GTK+ bug?
@@ -5071,135 +5075,149 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  TgtkObject.HookSignals
-  Params: Sender: TObject
-  
-  Set default Callbacks
+  TgtkObject.HookWincontrolSignals
+  Params: ALCLObject: TObject;
+          AGTKObject: PGTKObject;
+
+  Set default Callbacks for TWincontrol descendants defined by AGTKObject.
 -------------------------------------------------------------------------------}
-procedure TgtkObject.HookSignals(Sender: TObject);
+//TODO: Remove ALCLObject when the creation splitup is finished
+procedure TgtkObject.HookWincontrolSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject);
 begin
-  if (Sender is TWinControl) then
-     Begin
-       SetCallback(LM_SHOWWINDOW,Sender);
-       SetCallback(LM_DESTROY,Sender);
-       SetCallback(LM_FOCUS,Sender);
-       SetCallback(LM_WINDOWPOSCHANGED,Sender);
-       SetCallback(LM_PAINT,Sender);
-       SetCallback(LM_EXPOSEEVENT,Sender);
-       SetCallback(LM_KEYDOWN,Sender);
-       SetCallback(LM_KEYUP,Sender);
-       SetCallback(LM_CHAR,Sender);
-       SetCallback(LM_MOUSEMOVE,Sender);
-       SetCallback(LM_LBUTTONDOWN,Sender);
-       SetCallback(LM_LBUTTONUP,Sender);
-       SetCallback(LM_RBUTTONDOWN,Sender);
-       SetCallback(LM_RBUTTONUP,Sender);
-       SetCallback(LM_MBUTTONDOWN,Sender);
-       SetCallback(LM_MBUTTONUP,Sender);
-       SetCallback(LM_MOUSEWHEEL,Sender);
-     End;
+  SetCallback(LM_SHOWWINDOW, AGTKObject, ALCLObject);
+  SetCallback(LM_DESTROY, AGTKObject, ALCLObject);
+  SetCallback(LM_FOCUS, AGTKObject, ALCLObject);
+  SetCallback(LM_WINDOWPOSCHANGED, AGTKObject, ALCLObject);
+  SetCallback(LM_PAINT, AGTKObject, ALCLObject);
+  SetCallback(LM_EXPOSEEVENT, AGTKObject, ALCLObject);
+  SetCallback(LM_KEYDOWN, AGTKObject, ALCLObject);
+  SetCallback(LM_KEYUP, AGTKObject, ALCLObject);
+  SetCallback(LM_CHAR, AGTKObject, ALCLObject);
+  SetCallback(LM_MOUSEMOVE, AGTKObject, ALCLObject);
+  SetCallback(LM_LBUTTONDOWN, AGTKObject, ALCLObject);
+  SetCallback(LM_LBUTTONUP, AGTKObject, ALCLObject);
+  SetCallback(LM_RBUTTONDOWN, AGTKObject, ALCLObject);
+  SetCallback(LM_RBUTTONUP, AGTKObject, ALCLObject);
+  SetCallback(LM_MBUTTONDOWN, AGTKObject, ALCLObject);
+  SetCallback(LM_MBUTTONUP, AGTKObject, ALCLObject);
+  SetCallback(LM_MOUSEWHEEL, AGTKObject, ALCLObject);
+end;
 
-  if (Sender is TControl) then
-    Begin
-      case TControl(sender).FCompStyle of
+{-------------------------------------------------------------------------------
+  TgtkObject.HookSignals
+  Params: ALCLObject: TObject;
+          AGTKObject: PGTKObject;
 
-        csButton,csBitBtn:
-        Begin
-          SetCallback(LM_CLICKED,Sender);
-        End;
+  Set default Callbacks defined by AGTKObject
+-------------------------------------------------------------------------------}
+//TODO: Remove when the creation splitup is finished.
+//      In that case all code here is moved to the specific creation parts
+procedure TgtkObject.HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject);
+begin
+  if (ALCLObject is TWinControl)
+  then HookWincontrolSignals(AGTKObject, ALCLObject);
 
-        csCalendar:
-        Begin
-          SetCallback(LM_MONTHCHANGED,Sender);
-          SetCallback(LM_YEARCHANGED,Sender);
-          SetCallback(LM_DAYCHANGED,Sender);
-        End;
+  if (ALCLObject is TControl)
+  then begin
+    case TControl(ALCLObject).FCompStyle of
 
-        csComboBox:
-        Begin
-          SetCallback(LM_CHANGED,Sender);
-          SetCallback(LM_COMMAND,Sender);
-        End;
-
-        csNotebook,csTrackBar :
-        Begin
-          SetCallback(LM_CHANGED,Sender);
-        End;
-
-        {$IfDef GTK1}
-        csEdit, csSpinEdit:
-        begin
-          SetCallback(LM_CHANGED, Sender);
-          SetCallback(LM_ACTIVATE, Sender);
-          SetCallback(LM_CUTTOCLIP, Sender);
-          SetCallback(LM_COPYTOCLIP, Sender);
-          SetCallback(LM_PASTEFROMCLIP, Sender);
-        end;
-        
-	csMemo:
-	begin
-          SetCallback(LM_CHANGED, Sender);
-          SetCallback(LM_ACTIVATE, Sender);
-          SetCallback(LM_CUTTOCLIP, Sender);
-          SetCallback(LM_COPYTOCLIP, Sender);
-          SetCallback(LM_PASTEFROMCLIP, Sender);
-	  SetCallback(LM_INSERTTEXT, Sender);
-	end;
-        {$EndIf}
-        
-        csFixed :
-        begin
-          SetCallback(LM_HSCROLL,Sender);
-          SetCallback(LM_VSCROLL,Sender);
-        end;
-
-        csForm:
-        Begin
-          SetCallback(LM_CONFIGUREEVENT,Sender);
-          SetCallback(LM_CLOSEQUERY,Sender);
-          SetCallBack(LM_Activate,Sender);
-          //SetCallback(LM_MOUSEENTER,Sender);
-          //SetCallback(LM_MOUSELEAVE,Sender);
-        end;
-        
-        csLabel:
-        Begin
-          SetCallback(LM_GRABFOCUS,Sender);
-        end;
-
-        {$IfDef GTK1}
-        csListview:
-        begin
-          SetCallback(LM_HSCROLL,Sender);
-          SetCallback(LM_VSCROLL,Sender);
-          SetCallback(LVN_COLUMNCLICK,Sender); 
-          SetCallback(LVN_ITEMCHANGED,Sender);
-          SetCallback(LVN_ITEMCHANGING,Sender);
-          SetCallback(LVN_DELETEITEM,Sender);
-          SetCallback(LVN_INSERTITEM,Sender);
-        end;
-        {$EndIf}
-
-        csScrollBox :
-        Begin
-          SetCallback(LM_HSCROLL,Sender);
-          SetCallback(LM_VSCROLL,Sender);
-        end;
-        
-        csScrollBar:
-        if TScrollBar(Sender).Kind = sbHorizontal then
-          SetCallback(LM_HSCROLL,Sender)
-        else
-          SetCallback(LM_VSCROLL,Sender);
-
-      end; //case
-    end
-    else
-    If (Sender is TMenuItem) then
+      {csButton,} csBitBtn:
       Begin
-        SetCallback(LM_ACTIVATE,Sender);
+        SetCallback(LM_CLICKED, AGTKObject, ALCLObject);
+      End;
+
+      csCalendar:
+      Begin
+        SetCallback(LM_MONTHCHANGED, AGTKObject, ALCLObject);
+        SetCallback(LM_YEARCHANGED, AGTKObject, ALCLObject);
+        SetCallback(LM_DAYCHANGED, AGTKObject, ALCLObject);
+      End;
+
+      csComboBox:
+      Begin
+        SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
+        SetCallback(LM_COMMAND, AGTKObject, ALCLObject);
+      End;
+
+      csNotebook,csTrackBar :
+      Begin
+        SetCallback(LM_CHANGED, AGTKObject, ALCLObject);
+      End;
+
+      {$IfDef GTK1}
+      csEdit, csSpinEdit:
+      begin
+        SetCallback(LM_CHANGED,  AGTKObject, ALCLObject);
+        SetCallback(LM_ACTIVATE,  AGTKObject, ALCLObject);
+        SetCallback(LM_CUTTOCLIP,  AGTKObject, ALCLObject);
+        SetCallback(LM_COPYTOCLIP,  AGTKObject, ALCLObject);
+        SetCallback(LM_PASTEFROMCLIP,  AGTKObject, ALCLObject);
       end;
 
+      csMemo:
+      begin
+        SetCallback(LM_CHANGED,  AGTKObject, ALCLObject);
+        SetCallback(LM_ACTIVATE,  AGTKObject, ALCLObject);
+        SetCallback(LM_CUTTOCLIP,  AGTKObject, ALCLObject);
+        SetCallback(LM_COPYTOCLIP,  AGTKObject, ALCLObject);
+        SetCallback(LM_PASTEFROMCLIP,  AGTKObject, ALCLObject);
+        SetCallback(LM_INSERTTEXT,  AGTKObject, ALCLObject);
+      end;
+      {$EndIf}
+
+      csWinControl:
+      begin
+        SetCallback(LM_HSCROLL, AGTKObject, ALCLObject);
+        SetCallback(LM_VSCROLL, AGTKObject, ALCLObject);
+      end;
+
+      csForm:
+      Begin
+        SetCallback(LM_CONFIGUREEVENT, AGTKObject, ALCLObject);
+        SetCallback(LM_CLOSEQUERY, AGTKObject, ALCLObject);
+        SetCallBack(LM_Activate, AGTKObject, ALCLObject);
+        //SetCallback(LM_MOUSEENTER, AGTKObject, ALCLObject);
+        //SetCallback(LM_MOUSELEAVE, AGTKObject, ALCLObject);
+      end;
+
+      csLabel:
+      Begin
+        SetCallback(LM_GRABFOCUS, AGTKObject, ALCLObject);
+      end;
+
+      {$IfDef GTK1}
+      csListview:
+      begin
+        SetCallback(LM_HSCROLL, AGTKObject, ALCLObject);
+        SetCallback(LM_VSCROLL, AGTKObject, ALCLObject);
+        SetCallback(LVN_COLUMNCLICK, AGTKObject, ALCLObject);
+        SetCallback(LVN_ITEMCHANGED, AGTKObject, ALCLObject);
+        SetCallback(LVN_ITEMCHANGING, AGTKObject, ALCLObject);
+        SetCallback(LVN_DELETEITEM, AGTKObject, ALCLObject);
+        SetCallback(LVN_INSERTITEM, AGTKObject, ALCLObject);
+      end;
+      {$EndIf}
+
+      csScrollBox :
+      Begin
+        SetCallback(LM_HSCROLL, AGTKObject, ALCLObject);
+        SetCallback(LM_VSCROLL, AGTKObject, ALCLObject);
+      end;
+
+      csScrollBar:
+      begin
+        if TScrollBar(ALCLObject).Kind = sbHorizontal
+        then SetCallback(LM_HSCROLL, AGTKObject, ALCLObject)
+        else SetCallback(LM_VSCROLL, AGTKObject, ALCLObject);
+      end;
+
+    end; //case
+  end
+  else
+  if (ALCLObject is TMenuItem)
+  then begin
+    SetCallback(LM_ACTIVATE, AGTKObject, ALCLObject);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -5360,7 +5378,7 @@ var
       CurMaskStart:=CurMaskEnd+1;
     end;
   end;
-  
+
   procedure AddEntry(const Desc, Mask: string);
   var NewFilterEntry: PFileSelFilterEntry;
   begin
@@ -5372,7 +5390,7 @@ var
     NewFilterEntry^.FilterIndex:=CurFilterIndex;
     FilterList.Add(NewFilterEntry);
   end;
-  
+
   // remove all but one masks from description string
   function RemoveOtherMasks(const Desc: string; MaskIndex: integer): string;
   var i, StartPos, EndPos: integer;
@@ -5399,7 +5417,7 @@ var
       System.Delete(Result,StartPos,EndPos-StartPos);
     end;
   end;
-  
+
   procedure AddEntries(const Desc: string; MultiMask: string);
   var i: integer;
     CurDesc: string;
@@ -5416,7 +5434,7 @@ var
     end;
     inc(CurFilterIndex);
   end;
-  
+
 var
   CurDescStart, CurDescEnd, CurMultiMaskStart, CurMultiMaskEnd: integer;
   CurDesc, CurMultiMask: string;
@@ -5510,7 +5528,7 @@ begin
   end;
   gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterMenu', MenuWidget);
   gtk_object_set_data(PGtkObject(SelWidget), 'LCLFilterList', FilterList);
-  
+
   // set the initial filter
   if FilterList.Count>0 then begin
     i:=0;
@@ -5659,7 +5677,7 @@ begin
     FileDetailLabel:=nil;
   gtk_object_set_data(PGtkObject(SelWidget), 'FileDetailLabel',
                       FileDetailLabel);
-                      
+
   // preview
   if (OpenDialog is TPreviewFileDialog) then
     CreatePreviewDialogControl(TPreviewFileDialog(OpenDialog),SelWidget);
@@ -5753,12 +5771,12 @@ begin
   ComboBox:=TComboBox(ComboBoxObject);
   Result:= gtk_combo_new();
   Widget:= PGTKCombo(Result);
-  
+
   SetMainWidget(Result, Widget^.entry);
-  
+
   gtk_combo_disable_activate(Widget);
   gtk_combo_set_case_sensitive(Widget, GdkTrue);
-  
+
   // Items
   ItemList:= TGtkListStringList.Create(PGtkList(Widget^.List),ComboBox,False);
   gtk_object_set_data(PGtkObject(Widget), 'LCLList', ItemList);
@@ -5777,46 +5795,47 @@ begin
 end;
 
 
-Procedure TgtkObject.FinishComponentCreate(Sender : TObject;
-  Handle : Pointer; SetupProps : Boolean);
+procedure TgtkObject.FinishComponentCreate(const ALCLObject: TObject; const AGTKObject: Pointer; const ASetupProps : Boolean);
 begin
   // MWE: next will be obsoleted by WinWidgetInfo
-  if Handle <> nil then
+  if AGTKObject <> nil then
   Begin
-    SetLCLObject(Handle, Sender);
-    gtk_object_set_data(pgtkObject(Handle),'Style',GtkNil);
-    gtk_object_set_data(pgtkObject(Handle),'ExStyle',GtkNil);
+    SetLCLObject(AGTKObject, ALCLObject);
+    gtk_object_set_data(AGTKObject, 'Style',GtkNil);
+    gtk_object_set_data(AGTKObject, 'ExStyle',GtkNil);
   end;
   //--------------------------
 
-  if (Sender is TWinControl) then
+  // in the new (compatebility) situation setting the handle should not be needed
+  // however lazarus fails to start, so I'm enabling it for now
+  if (ALCLObject is TWinControl) then
   begin
-    TWinControl(Sender).Handle := THandle(Handle);
-    if Handle <> nil then begin
-      gtk_object_set_data(pgtkobject(Handle),'Sender',Sender);
-      SetResizeRequest(Handle);
+    TWinControl(ALCLObject).Handle := THandle(AGTKObject);
+    if AGTKObject <> nil then begin
+      gtk_object_set_data(AGTKObject, 'Sender', ALCLObject);
+      SetResizeRequest(AGTKObject);
     end;
   end
   else
-  if (Sender is TMenuItem) then
-    TMenuItem(Sender).Handle := HMenu(Handle)
+  if (ALCLObject is TMenuItem) then
+    TMenuItem(ALCLObject).Handle := HMenu(AGTKObject)
   else
-  if (Sender is TMenu) then
-    TMenu(Sender).Items.Handle := HMenu(Handle)
+  if (ALCLObject is TMenu) then
+    TMenu(ALCLObject).Items.Handle := HMenu(AGTKObject)
   else
-  if (Sender is TCommonDialog) then
-    TCommonDialog(Sender).Handle:= THandle(Handle);
+  if (ALCLObject is TCommonDialog) then
+    TCommonDialog(ALCLObject).Handle:= THandle(AGTKObject);
 
-  Set_RC_Name(Sender, Handle);
+  Set_RC_Name(ALCLObject, AGTKObject);
 
-  if SetupProps then SetProperties(Sender);
+  if ASetupProps then SetProperties(ALCLObject);
 
-  if Handle <> nil then begin
+  if AGTKObject <> nil then begin
     {$IFNDEF NoStyle}
-    if Sender is TCustomForm then
-      gtk_widget_set_app_paintable(Handle,true);
+    if ALCLObject is TCustomForm then
+      gtk_widget_set_app_paintable(AGTKObject, true);
     {$ENDIF}
-    HookSignals(Sender);
+    HookSignals(AGTKObject, ALCLObject);
   end;
 end;
 
@@ -5875,7 +5894,7 @@ begin
                         PGTKScrolledWindow(Result)^.VScrollBar);
     Step_Increment := 1;
   end;
-  
+
   Adjustment :=
     gtk_scrolled_window_get_hadjustment(PGTKScrolledWindow(Result));
   if Adjustment <> nil
@@ -5902,7 +5921,7 @@ begin
   if (ABorderStyle=bsNone) and (ACustomForm.FormStyle=fsStayOnTop) then begin
     WindowType:=GTK_WINDOW_POPUP;
   end;
-  
+
   Result := gtk_window_new(WindowType);
 
   gtk_window_set_policy(GTK_WINDOW(Result), FormResizableMap[ABorderStyle],
@@ -6019,7 +6038,7 @@ begin
 
   SetMainWidget(MainWidget, ImpWidget);
   GetWidgetInfo(MainWidget, True)^.ImplementationWidget := ImpWidget;
-  
+
   Result:=MainWidget;
 end;
 {$EndIF}
@@ -6077,7 +6096,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TgtkObject.UpdateStatusBarPanels(StatusBar: TObject;
     StatusBarWidget: PGtkWidget);
-    
+
   Update the widget(s) of a TStatusBar.
  ------------------------------------------------------------------------------}
 procedure TgtkObject.UpdateStatusBarPanels(StatusBar: TObject;
@@ -6098,7 +6117,7 @@ begin
   HBox:=PGtkWidget(StatusBarWidget);
   if (not GtkWidgetIsA(StatusBarWidget,GTK_HBOX_TYPE)) then
     RaiseGDBException('');
-  
+
   // create needed panels
   CurPanelCount:=integer(g_list_length(PGtkBox(HBox)^.children));
   if AStatusBar.SimplePanel or (AStatusBar.Panels.Count<1) then
@@ -6275,7 +6294,7 @@ end;
 
   Tells GTK Engine to create a widget
  ------------------------------------------------------------------------------}
-procedure TgtkObject.CreateComponent(Sender : TObject);
+function TgtkObject.CreateComponent(Sender : TObject): THandle;
 var
   Caption : ansistring;          // the caption of "Sender"
   StrTemp : PChar;               // same as "caption" but as PChar
@@ -6381,7 +6400,7 @@ begin
                                      GTK_POLICY_AUTOMATIC,
                                      GTK_POLICY_AUTOMATIC);
       gtk_widget_show(p);
-      
+
       with TCListBox(Sender)
       do begin
         TempWidget:= gtk_clist_new(ListColumns);
@@ -6403,7 +6422,7 @@ begin
                        TCListBox(Sender).ExtendedSelect)
     end;
     {$EndIf}
-    
+
   csColorDialog :
     begin
       P := gtk_color_selection_dialog_new(StrTemp);
@@ -6428,19 +6447,18 @@ begin
   csFontDialog :
     InitializeFontDialog(TFontDialog(Sender),p,StrTemp);
 
-  csFixed: // used for TWinControl (and TCustomControl),
-           // maybe change this to csWinControl
+  csWinControl:
     p:=CreateAPIWidget(TWinControl(Sender));
 
   csForm :
     p:=CreateForm(TCustomForm(Sender));
-
+(*
   csFrame :
     begin
       P := gtk_frame_new(' ');
       gtk_frame_set_shadow_type(pGtkFrame(P),GTK_SHADOW_NONE);
     end;
-
+*)
   csGroupBox:
     begin
       P := gtk_frame_new (StrTemp);
@@ -6451,12 +6469,12 @@ begin
       SetMainWidget(p, TempWidget);
       gtk_widget_show (P);
     end;
-
+(*
   csGTKTable  :
     begin
       P := gtk_table_new(2,2,False);
     end;
-
+*)
   csHintWindow :
     Begin
        p := gtk_window_new(gtk_window_popup);
@@ -6529,7 +6547,7 @@ begin
                          TCustomListBox(Sender).ExtendedSelect);
     end;
    {$EndIf}
-  
+
   csListView :
     Begin
       p:=CreateListView(Sender);
@@ -6650,18 +6668,18 @@ begin
       TempWidget:= nil;
       if (Parent <> nil) then begin
         for TempInt:= 0 to Parent.ControlCount - 1 do begin
-          if (Parent.Controls[TempInt] is TRadioButton) 
+          if (Parent.Controls[TempInt] is TRadioButton)
           and TWinControl(Parent.Controls[TempInt]).HandleAllocated then begin
             TempWidget:= PGtkWidget(TWinControl(Parent.Controls[TempInt]).Handle);
             Break;
-          end;  
+          end;
         end;
       end;
       AccelText := Ampersands2Underscore(StrTemp);
       if TempWidget <> nil then
         P:= gtk_radio_button_new_with_label(PGtkRadioButton(TempWidget)^.group,
                                             AccelText)
-      else  
+      else
         P:= gtk_radio_button_new_with_label(nil, AccelText);
       AccelKey:=gtk_label_parse_uline(
                                    pGtkLabel(gtk_bin_get_child(@PGTKToggleButton(P)^.Button)),
@@ -6763,7 +6781,7 @@ begin
       gtk_widget_show(TempWidget);
 
       gtk_object_set_data(P,odnScrollArea, TempWidget);
-      
+
       TempWidget2 := gtk_layout_new(nil, nil);
       gtk_container_add(PGTKContainer(TempWidget), TempWidget2);
       gtk_widget_show(TempWidget2);
@@ -6780,11 +6798,12 @@ begin
   end; //end case
   StrDispose(StrTemp);
   FinishComponentCreate(Sender, P, SetupProps);
+  Result := THandle(P);
 end;
 
 {------------------------------------------------------------------------------
   procedure TgtkObject.DestroyEmptySubmenu(Sender: TObject);
-  
+
   Used by DestroyLCLComponent to destroy empty submenus, when destroying the
   last menu item.
 ------------------------------------------------------------------------------}
@@ -6933,17 +6952,15 @@ begin
         end;
       end;
     end;
-    
   end
-  else Begin
-  
+  else begin
     if (ACustomForm<>nil) then begin
       UnshareWindowAccelGroups(SenderWidget);
     end;
 
     if not gtk_widget_visible(SenderWidget) then
       exit;
-      
+
     gtk_widget_hide(SenderWidget);
 
     if GtkWidgetIsA(SenderWidget,GTK_TYPE_WINDOW) then begin
@@ -7075,7 +7092,7 @@ end;
 
 {-------------------------------------------------------------------------------
   procedure RemoveDummyNoteBookPage(NoteBookWidget: PGtkNotebook);
-  
+
   Removes the dummy page.
   See also AddDummyNoteBookPage
 -------------------------------------------------------------------------------}
@@ -7201,7 +7218,7 @@ var
       end;
     end;
   end;
-  
+
   procedure UpdateTabLabel;
   var TheCaption: PChar;
   begin
@@ -7212,7 +7229,7 @@ var
     if MenuLabelWidget<>nil then
       gtk_label_set_text(PGtkLabel(MenuLabelWidget),TheCaption);
   end;
-  
+
   procedure UpdateTabCloseBtn;
   var
     {$IfDef GTK1}
@@ -7265,7 +7282,7 @@ var
       end;
     end;
   end;
-  
+
 begin
   ThePage:=TCustomPage(APage);
   TheNoteBook:=TCustomNotebook(ANoteBook);
@@ -7289,7 +7306,7 @@ begin
     TabLabelWidget:=nil;
     TabCloseBtnWidget:=nil;
   end;
-  
+
   // get the menu container and its components: pixmap and label
   MenuWidget:=gtk_notebook_get_menu_label(PGtkNoteBook(NotebookWidget),
                                           PageWidget);
@@ -7310,7 +7327,7 @@ end;
   method TGtkObject AddNBPage
   Params: ANoteBook, APage: TObject; Index: Integer
   Result: none
-  
+
   Inserts a new page to a notebook at position Index. The ANotebook is a
   TCustomNoteBook, the APage one of its TCustomPage. Both handles must already
   be created. ANoteBook Handle is a PGtkNoteBook and APage handle is a
@@ -7381,7 +7398,7 @@ end;
 
 {------------------------------------------------------------------------------
   procedure TgtkObject.MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);
-  
+
   Move a notebook page.
 ------------------------------------------------------------------------------}
 procedure TgtkObject.MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);
@@ -7480,7 +7497,6 @@ var
   Pixel: LongWord;
 begin
   TLMSetGetPixel(data^).PixColor := clNone;
-
   aDC := TDeviceContext((Sender as TCanvas).Handle);
   if (aDC = nil) or (aDC.Drawable = nil) then exit;
 
@@ -7551,7 +7567,7 @@ end;
 
   Depending on the compStyle, this function will get the current value
   of a GTK object and save it in the variable referenced by 'data'.
-  
+
   This function should be used to synchronize the state of an lcl-object
   with the corresponding GTK-object.
  ------------------------------------------------------------------------------}
@@ -7571,7 +7587,7 @@ begin
 
   Handle    := Pointer(TWinControl(Sender).Handle);
   Assert (Handle = nil, 'WARNING: [TgtkObject.GetValue] --> got nil pointer (no gtkobject)');
-   
+
   case TControl(Sender).fCompStyle of
   csTrackbar   :
     if (handle <> nil) then begin
@@ -7587,7 +7603,7 @@ begin
     if gtk_toggle_button_get_active (PGtkToggleButton (handle))
     then PCheckBoxState(data)^ := cbChecked
     else PCheckBoxState(data)^ := cbUnChecked;
-                    
+
   csCalendar :
     Begin
       gtk_calendar_get_date(PgtkCalendar(handle),@Year, @Month, @Day);
@@ -7599,7 +7615,7 @@ begin
     Begin
       Single(Data^):=gtk_spin_button_get_value_As_Float(PgtkSpinButton(Handle));
     end;
-    
+
   else
     writeln('Warning: TgtkObject.GetValue not implemented for ',Sender.ClassName);
   end;
@@ -7626,7 +7642,7 @@ var
    Year,Month,Day : String;
    gtkcalendardisplayoptions : TGtkCalendarDisplayOptions;
    Num : Integer;
-   
+
    ArrowType : TGTKArrowType;
    ShadowType : TGTKShadowType;
 begin
@@ -7638,7 +7654,7 @@ begin
 
   Handle    := Pointer(TWinControl(Sender).Handle);
 //   Assert (Handle = nil, 'WARNING: [TgtkObject.SetValue] --> got nil pointer (no gtkobject)');
-   
+
   case TControl(Sender).fCompStyle of
   csProgressBar: gtk_progress_set_value (GTK_PROGRESS (handle), integer (data^));
 
@@ -7660,7 +7676,7 @@ begin
         (TCheckBoxState(data^) = cbChecked));
       LockOnChange(PGtkObject(Handle),-1);
     end;
-                    
+
   csCalendar   :
     Begin
        Date := TLMCalendar(data^).Date;
@@ -7669,18 +7685,18 @@ begin
        Day := FormatDateTime('dd',Date);
        gtk_calendar_select_month(PgtkCalendar(handle),StrtoInt(Month)-1,StrToInt(Year));
        gtk_calendar_select_day(PgtkCalendar(handle),StrToInt(Day));
-       
+
        //set display options
        Num := 0;
        if (dsShowHeadings in TLMCalendar(data^).DisplaySettings) then
           num := Num + (1 shl 0);
-                
+
        if (dsShowDayNames in TLMCalendar(data^).DisplaySettings) then
           num := Num  + (1 shl 1);
 
        if (dsNoMonthChange in TLMCalendar(data^).DisplaySettings) then
           num := Num  + (1 shl 2);
-          
+
        if (dsShowWeekNumbers in TLMCalendar(data^).DisplaySettings) then
            num := Num  + (1 shl 3);
 
@@ -7688,9 +7704,9 @@ begin
            num := Num  + (1 shl 4);
 
        gtkCalendarDisplayOptions := TgtkCalendarDisplayOPtions(num);
-       
+
        gtk_Calendar_Display_options(PgtkCalendar(handle),gtkCalendarDisplayOptions);
-       
+
        //readonly
        if TLMCalendar(data^).ReadOnly then
           gtk_calendar_freeze(PgtkCalendar(handle))
@@ -7698,7 +7714,7 @@ begin
           gtk_calendar_thaw(PgtkCalendar(handle));
 
      end;
-     
+
   csArrow :
     begin
       if TLmArrow(data^).ArrowType = atUp then
@@ -7721,10 +7737,10 @@ begin
       else
         ShadowType := GTK_SHADOW_NONE;
       end;
-              
+
       gtk_arrow_set(PgtkArrow(handle),ArrowType,ShadowType);
     end;
-                 
+
   else
     Assert (true, Format ('WARNING:[TgtkObject.SetValue] failed for %s', [Sender.ClassName]));
   end;
@@ -7762,7 +7778,7 @@ begin
 
   wHandle:= Pointer(TWinControl(Sender).Handle);
   Widget:= GTK_WIDGET(wHandle);
-   
+
   case TControl(Sender).fCompStyle of
   csComboBox:
     begin
@@ -7795,7 +7811,7 @@ begin
       begin
         // XXX TODO: GTK 1.x does not support EchoMode emNone.
         // This will have to be coded around, but not a priority
-      
+
         gtk_entry_set_editable(GTK_ENTRY(wHandle), not (TCustomEdit(Sender).ReadOnly));
         gtk_entry_set_max_length(GTK_ENTRY(wHandle),
           guint16(TCustomEdit(Sender).MaxLength));
@@ -7826,7 +7842,7 @@ begin
         gtk_progress_bar_set_orientation(GTK_PROGRESS_BAR(wHandle),
                                           GTK_PROGRESS_LEFT_TO_RIGHT);
       end;
-      if BarShowText then 
+      if BarShowText then
       begin
          gtk_progress_set_format_string (GTK_PROGRESS(wHandle),
                                          '%v from [%l-%u] (=%p%%)');
@@ -7852,7 +7868,7 @@ begin
            GTK_ADJUSTMENT(Widget)^.page_increment := LargeChange;
          end;
 
-  csTrackbar   : 
+  csTrackbar   :
      with (TTrackBar (Sender)) do
      begin
         Widget := GTK_WIDGET(gtk_range_get_adjustment (GTK_RANGE(wHandle)));
@@ -7887,7 +7903,7 @@ begin
                               cLabelAlignY[Layout]);
        gtk_label_set_line_wrap(GTK_LABEL(wHandle), WordWrap);
      end;
-     
+
   csListView :
   {$IfDef GTK2}
     Writeln('TODO: TgtkObject.SetProperties csListView');
@@ -7896,10 +7912,10 @@ begin
       // set up columns..
 
       Widget:= GetWidgetInfo(wHandle, True)^.ImplementationWidget;
-      
+
       gtk_clist_freeze(GTK_CLIST(Widget));
-      
-      
+
+
       for I := 0 to TListview(sender).Columns.Count-1 do
       begin
         gtk_clist_set_column_title(GTK_CLIST(Widget),I,
@@ -7936,7 +7952,7 @@ begin
 
       gtk_clist_set_sort_column(GTK_CLIST(Widget),
         TListview(sender).SortColumn);
-            
+
       //multiselect
       gtk_clist_set_selection_mode(GTK_CLIST(Widget),
         aGTkSelectionMode[TListview(sender).MultiSelect]);
@@ -7954,7 +7970,7 @@ begin
         //do image if one is assigned....
         // TODO: Largeimage support
         if  (TListview(sender).SmallImages <> nil)
-        and (TListItem(TListview(sender).Items[i]).ImageIndex > -1) 
+        and (TListItem(TListview(sender).Items[i]).ImageIndex > -1)
         then begin
           Writeln('Checking images');
           if (TListItem(TListview(sender).Items[i]).ImageIndex
@@ -7963,11 +7979,11 @@ begin
             //draw image
             //Writeln('drawing image');
             //Writeln('TListItem(TListview(sender).Items[i]).ImageIndex is ',TListItem(TListview(sender).Items[i]).ImageIndex);
-                  
+
             BitImage := TBitmap.Create;
             TListview(sender).SmallImages.GetBitmap(
                TListItem(TListview(sender).Items[i]).ImageIndex,BitImage);
-            
+
             gtk_clist_set_pixmap(GTK_CLIST(Widget),I,0,
               pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
               nil);
@@ -7978,11 +7994,11 @@ begin
           end;
         end;
 
-        if (TListview(sender).ViewStyle = vsReport) 
+        if (TListview(sender).ViewStyle = vsReport)
         then begin //columns showing
           for X := 1 to TListview(sender).Columns.Count-1 do
           begin
-            if ( X <= TListItem(TListview(sender).Items[i]).SubItems.Count) 
+            if ( X <= TListItem(TListview(sender).Items[i]).SubItems.Count)
             then begin
               pRowText:=PChar(TListItem(
                 TListview(sender).Items[i]).SubItems.Strings[X-1]);
@@ -7998,7 +8014,7 @@ begin
   csMemo:
     begin
       ImplWidget:= GetWidgetInfo(wHandle, true)^.ImplementationWidget;
-    
+
       gtk_text_set_editable (GTK_TEXT(ImplWidget), not (Sender as TCustomMemo).ReadOnly);
       if TCustomMemo(Sender).WordWrap then
         gtk_text_set_line_wrap(GTK_TEXT(ImplWidget), GdkTrue)
@@ -8030,12 +8046,12 @@ begin
                                        GTK_POLICY_NEVER, GTK_POLICY_NEVER);
       end;
 
-	if (TCustomMemo(Sender).MaxLength >= 0) then begin
-	  i:= gtk_text_get_length(GTK_TEXT(ImplWidget));
-	  if i > TCustomMemo(Sender).MaxLength then begin
+  if (TCustomMemo(Sender).MaxLength >= 0) then begin
+    i:= gtk_text_get_length(GTK_TEXT(ImplWidget));
+    if i > TCustomMemo(Sender).MaxLength then begin
           gtk_editable_delete_text(PGtkOldEditable(ImplWidget), TCustomMemo(Sender).MaxLength, i);
-	  end;
-	end;  
+    end;
+  end;
     end;
   {$EndIf}
 
@@ -8063,7 +8079,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TGtkObject.AttachMenu
-  Params:  Sender : the lcl object which called this func 
+  Params:  Sender : the lcl object which called this func
   Returns: nothing
 
   Attaches the calling Menu to its Parent
@@ -8074,7 +8090,7 @@ var
   //AccelGroup: PGTKAccelGroup;
   MenuItem, ParentMenuWidget, ContainerMenu: PGtkWidget;
   LCLMenuItem: TMenuItem;
-  
+
   procedure SetContainerMenuToggleSize;
   var MenuClass: PGtkWidgetClass;
   begin
@@ -8086,7 +8102,7 @@ var
       MenuClass^.size_request:=@MenuSizeRequest;
     end;
   end;
-  
+
 begin
   LCLMenuItem:=TMenuItem(Sender);
   //writeln('TGtkObject.AttachMenu START ',LCLMenuItem.Name,':',LCLMenuItem.ClassName,' Parent=',LCLMenuItem.Parent.Name,':',LCLMenuItem.Parent.ClassName);
@@ -8106,7 +8122,7 @@ begin
     end
     else begin
       // menu item
-      
+
       // find the menu container
       ContainerMenu := PGtkWidget(gtk_object_get_data(
                                                    PGtkObject(ParentMenuWidget),
@@ -8125,9 +8141,9 @@ begin
       end;
       gtk_menu_insert(ContainerMenu, MenuItem, LCLMenuItem.MenuIndex);
     end;
-    
+
     SetContainerMenuToggleSize;
-    
+
     if GtkWidgetIsA(MenuItem, GTK_TYPE_RADIO_MENU_ITEM) then
       RegroupMenuItem(HMENU(MenuItem),GroupIndex);
   end;
@@ -8165,7 +8181,7 @@ begin
              gbBitmap: Result := GDIBitmapObject <> nil;
              gbImage:  Result := GDI_RGBImageObject <> nil;
            else
-             Result := False; 
+             Result := False;
            end;
         end;
         gdiBrush  : Result := True; //Result := GDIBrushPixmap <> nil; //GDIBrushPixmap may be nil
@@ -8173,7 +8189,7 @@ begin
         gdiPen    : Result := True;
         gdiRegion : Result := True;
       else
-        Result := False; 
+        Result := False;
       end;
 end;
 
@@ -8203,9 +8219,9 @@ procedure TGTKObject.SelectGDKBrushProps(DC: HDC);
 begin
   if (TDeviceContext(DC).SelectedColors=dcscBrush) or
      TDeviceContext(DC).CurrentBrush^.IsNullBrush
-  then 
+  then
     exit;
-  
+
   with TDeviceContext(DC), CurrentBrush^ do
   begin
     EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
@@ -8232,7 +8248,7 @@ end;
 procedure TGTKObject.SelectGDKTextProps(DC: HDC);
 begin
   if TDeviceContext(DC).SelectedColors=dcscFont then exit;
-  
+
   with TDeviceContext(DC) do
   begin
     EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
@@ -8349,13 +8365,13 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateDCForWidget(TheWidget: PGtkWidget;
   TheWindow: PGdkWindow; WithChildWindows: boolean): HDC;
-  
+
   procedure RaiseWidgetWithoutClientArea;
   begin
     RaiseException('TgtkObject.CreateWindowDC widget '
       +HexStr(Cardinal(TheWidget),8)+' has no client area');
   end;
-  
+
 var
   aDC: TDeviceContext;
   ClientWidget: PGtkWidget;
@@ -8427,10 +8443,10 @@ begin
     end
     else GdiObject := CreateDefaultFont;
     {$EndIf}
-     
+
     If GdiObject = nil then
       GdiObject := CreateDefaultFont;
-  
+
     aDC.CurrentFont := GdiObject;
     aDC.CurrentBrush := CreateDefaultBrush;
     aDC.CurrentPen := CreateDefaultPen;
@@ -8862,7 +8878,7 @@ end;
   Function: SetClipboardWidget
   Params: TargetWidget: PGtkWidget - This widget will be connected to all
                   clipboard signals which are all handled by the TGtkObject
-                  itself. 
+                  itself.
   Returns: none
 
   All supported targets are added to the new widget. This way, no one,
@@ -8877,7 +8893,7 @@ type
   PGtkTargetSelectionList = ^TGtkTargetSelectionList;
 const
   gtk_selection_handler_key: PChar = 'gtk-selection-handlers';
-  
+
   {$IFDEF DEBUG_CLIPBOARD}
   function gtk_selection_target_list_get(Widget: PGtkWidget;
     ClipboardType: TClipboardType): PGtkTargetList;
@@ -8899,7 +8915,7 @@ const
     end;
     Result:=nil;
   end;
-  
+
   procedure WriteTargetLists(Widget: PGtkWidget);
   var c: TClipboardType;
     TargetList: PGtkTargetList;
@@ -8922,7 +8938,7 @@ const
     writeln('  WriteTargetLists WWW END');
   end;
   {$ENDIF}
-  
+
   procedure ClearTargetLists(Widget: PGtkWidget);
   // MG: Reading in gtk internals is dirty, but there seems to be no other way
   //     to clear the old target lists
@@ -8948,7 +8964,7 @@ const
     writeln('  ClearTargetLists WWW END');
     {$ENDIF}
   end;
-  
+
 var c: TClipboardType;
 begin
   if ClipboardWidget=TargetWidget then exit;
@@ -9232,6 +9248,12 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.473  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.472  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

@@ -284,9 +284,13 @@ procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
 function GetFixedWidget(const Widget: Pointer): Pointer;
 procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
 Function GetControlWindow(Widget: Pointer) : PGDKWindow;
-function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
+
+function CreateWidgetInfo(const AWidget: Pointer): PWinWidgetInfo;
+function CreateWidgetInfo(const AHandle: THandle; const AObject: TObject; const AParams: TCreateParams): PWinWidgetInfo;
+function GetWidgetInfo(const Widget: Pointer {; const Create: Boolean = False}): PWinWidgetInfo;
 function GetWidgetInfo(const Widget: Pointer; const Create: Boolean): PWinWidgetInfo;
 procedure FreeWinWidgetInfo(Widget: Pointer);
+
 procedure DestroyWidget(Widget: PGtkWidget);
 procedure SetLCLObject(const Widget: Pointer; const AnObject: TObject);
 function GetLCLObject(const Widget: Pointer): TObject;
@@ -488,18 +492,18 @@ function GetDesignOnlySignalFlag(Widget: PGtkWidget;
 
 // signals
 procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
-  const ACallBackProc: Pointer; LCLComponent: TComponent;
-  const ReqSignalMask: TGdkEventMask; SFlags: TConnectSignalFlags);
+  const ACallBackProc: Pointer; const ALCLObject: TObject;
+  const AReqSignalMask: TGdkEventMask; const ASFlags: TConnectSignalFlags);
 procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
-  const ACallBackProc: Pointer; LCLComponent: TComponent;
-  const ReqSignalMask: TGdkEventMask);
+  const ACallBackProc: Pointer; const ALCLObject: TObject;
+  const AReqSignalMask: TGdkEventMask);
 procedure ConnectSignalAfter(const AnObject:PGTKObject; const ASignal: PChar;
-  const ACallBackProc: Pointer; LCLComponent: TComponent;
-  const ReqSignalMask: TGdkEventMask);
+  const ACallBackProc: Pointer; const ALCLObject: TObject;
+  const AReqSignalMask: TGdkEventMask);
 procedure ConnectSignal(const AnObject:PGTKObject; const ASignal: PChar;
-  const ACallBackProc: Pointer; LCLComponent: TComponent);
+  const ACallBackProc: Pointer; const ALCLObject: TObject);
 procedure ConnectSignalAfter(const AnObject:PGTKObject; const ASignal: PChar;
-  const ACallBackProc: Pointer; LCLComponent: TComponent);
+  const ACallBackProc: Pointer; const ALCLObject: TObject);
 
 procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
   AWinControl: TWinControl);
@@ -507,7 +511,10 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
 // accelerators
 Function DeleteAmpersands(var Str : String) : Longint;
 function Ampersands2Underscore(Src: PChar) : PChar;
+function Ampersands2Underscore(const ASource: String): String;
 function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
+function RemoveAmpersands(const ASource: String): String;
+procedure LabelFromAmpersands(var AText, APattern: String; var AAccelChar: Char);
 
 function GetAccelGroup(const Widget: PGtkWidget;
   CreateIfNotExists: boolean): PGTKAccelGroup;

@@ -68,6 +68,7 @@ type
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     procedure Click; override;
+    function CreateWindowHandle(const AParams: TCreateParams): THandle; override;
     procedure CreateWnd; override;
     procedure DoSendBtnDefault; virtual;
 
@@ -326,6 +327,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.61  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.60  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

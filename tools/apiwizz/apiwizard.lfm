@@ -1,62 +1,55 @@
 object ApiWizForm: TApiWizForm
   Caption = 'ApiWiZZ'
-  ClientHeight = 273
-  ClientWidth = 504
+  ClientHeight = 383
+  ClientWidth = 583
   OnCreate = ApiWizFormCreate
   Position = PODEFAULTPOSONLY
-  HorzScrollBar.Page = 505
-  VertScrollBar.Page = 274
-  Left = 358
-  Height = 273
-  Top = 185
-  Width = 504
+  HorzScrollBar.Page = 584
+  VertScrollBar.Page = 384
+  Left = 392
+  Height = 383
+  Top = 134
+  Width = 583
   object lblDeclare: TLabel
-    Caption = 'Declaration:'
+    Anchors = [AKTOP, AKLEFT, AKRIGHT]
+    Caption = 'Declaration (each line is a separate entry):'
     Layout = TLTOP
     Left = 4
     Height = 16
-    Top = 68
-    Width = 120
+    Top = 56
+    Width = 404
   end
   object lblLazarus: TLabel
     Caption = 'Lazarus dir:'
     Layout = TLTOP
     Left = 4
     Height = 16
-    Top = 16
+    Top = 8
     Width = 120
   end
-  object txtDeclare: TEdit
+  object cmdGenerate: TButton
+    Anchors = [AKTOP, AKRIGHT]
+    Caption = 'Generate'
+    TabStop = True
+    TabOrder = 1
+    OnClick = cmdGenerateClick
+    Left = 416
+    Height = 28
+    Top = 256
+    Width = 162
+  end
+  object txtLazarus: TEdit
     Anchors = [AKTOP, AKLEFT, AKRIGHT]
     TabStop = True
     TabOrder = 0
     Left = 4
     Height = 24
-    Top = 88
-    Width = 492
-  end
-  object cmdGenerate: TButton
-    Anchors = [AKRIGHT, AKBOTTOM]
-    Caption = 'Generate'
-    TabStop = True
-    TabOrder = 2
-    OnClick = cmdGenerateClick
-    Left = 421
-    Height = 28
-    Top = 238
-    Width = 75
-  end
-  object txtLazarus: TEdit
-    Anchors = [AKTOP, AKLEFT, AKRIGHT]
-    TabStop = True
-    TabOrder = 1
-    Left = 4
-    Height = 24
-    Top = 36
-    Width = 492
+    Top = 24
+    Width = 404
     Tag = 493
   end
   object rdgApiType: TRadioGroup
+    Anchors = [AKTOP, AKRIGHT]
     Caption = 'Api type'
     ItemIndex = 0
     Items.Strings = (
@@ -64,37 +57,23 @@ object ApiWizForm: TApiWizForm
       'LCL interface'
     )
     OnClick = rdgApiTypeClick
-    Left = 176
+    Left = 416
     Height = 72
-    Top = 128
-    Width = 158
+    Top = 176
+    Width = 162
   end
   object Groupbox1: TGroupBox
+    Anchors = [AKTOP, AKRIGHT]
     Caption = 'LCL Platform'
-    ClientHeight = 121
-    ClientWidth = 160
+    ClientHeight = 143
+    ClientWidth = 158
     ParentColor = True
     ParentCtl3D = False
-    TabOrder = 6
-    Left = 4
-    Height = 138
-    Top = 128
-    Width = 164
-    object cbgLCLPlatform: TCheckGroup
-      Enabled = False
-      Items.Strings = (
-        'gtk'
-        'gtk2'
-        'win32'
-      )
-      Left = 26
-      Height = 80
-      Top = 30
-      Width = 128
-      Data = {
-        03000000020202
-      }
-    end
+    TabOrder = 5
+    Left = 416
+    Height = 160
+    Top = 8
+    Width = 162
     object rbIndependent: TRadioButton
       AutoSize = True
       AllowGrayed = True
@@ -102,7 +81,7 @@ object ApiWizForm: TApiWizForm
       Checked = True
       State = CBCHECKED
       DragCursor = 65524
-      TabOrder = 1
+      TabOrder = 0
       TabStop = True
       OnClick = rbPlatformDependencyClick
       Left = 10
@@ -110,12 +89,29 @@ object ApiWizForm: TApiWizForm
       Top = 3
       Width = 115
     end
+    object cbgLCLPlatform: TCheckGroup
+      Enabled = False
+      Items.Strings = (
+        'gnome'
+        'gtk'
+        'gtk2'
+        'qt'
+        'win32'
+      )
+      Left = 26
+      Height = 107
+      Top = 30
+      Width = 128
+      Data = {
+        050000000202020202
+      }
+    end
     object rbDependent: TRadioButton
       AutoSize = True
       AllowGrayed = True
       Caption = 'Dependent'
       DragCursor = 65524
-      TabOrder = 2
+      TabOrder = 1
       TabStop = True
       OnClick = rbPlatformDependencyClick
       Left = 10
@@ -123,5 +119,17 @@ object ApiWizForm: TApiWizForm
       Top = 30
       Width = 106
     end
+  end
+  object txtDeclarations: TMemo
+    Anchors = [AKTOP, AKLEFT, AKRIGHT, AKBOTTOM]
+    ScrollBars = SSBOTH
+    Tabstop = True
+    WordWrap = False
+    TabStop = True
+    TabOrder = 6
+    Left = 4
+    Height = 303
+    Top = 72
+    Width = 404
   end
 end

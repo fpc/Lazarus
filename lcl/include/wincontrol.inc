@@ -2435,8 +2435,9 @@ end;
  ------------------------------------------------------------------------------}
 constructor TWinControl.Create(TheOwner : TComponent);
 begin
+  FCreatingHandle := False;
   inherited Create(TheOwner);
-  FCompStyle := csFixed;
+  FCompStyle := csWinControl;
   FChildSizing:=TControlChildSizing.Create(Self);
   FChildSizing.OnChange:=@DoChildSizingChange;
   FBrush := nil; // Brush will be created on demand. Only few controls need it.
@@ -2930,11 +2931,23 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TWinControl.CreateWindowHandle
+  Params:  AParams: The createparams to use
+  Returns: The handle created
+
+  Creates the interface object and assigns the handle
+ ------------------------------------------------------------------------------}
+function TWinControl.CreateWindowHandle(const AParams: TCreateParams): THandle;
+begin
+  Result := IntfCreateHandle(Self, APArams);
+end;
+
+{------------------------------------------------------------------------------
   Method:  TWinControl.CreateWnd
   Params:  None
   Returns: Nothing
 
-  Creates the interface object.
+  Prepares the creeation of the interface object.
  ------------------------------------------------------------------------------}
 procedure TWinControl.CreateWnd;
 var
@@ -2966,7 +2979,18 @@ begin
     Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
   end;
 
-  CreateComponent(nil);
+  if FCreatingHandle
+  then begin
+    WriteLN('[WARNING] Recursive call to CreateWindowHandle for ', ClassName, ' (', Name, ')');
+    Exit;
+  end;
+
+  FCreatingHandle := True;
+  try
+    FHandle := CreateWindowHandle(Params);
+  finally
+    FCreatingHandle := False;
+  end;
 
   //WriteClientRect('A');
   if Parent <> nil then AddControl;
@@ -2993,6 +3017,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TWinControl.CreateComponent(TheOwner : TComponent);
 ------------------------------------------------------------------------------}
+(*
 procedure TWinControl.CreateComponent(TheOwner : TComponent);
 
   procedure RaiseError(const Msg: string);
@@ -3009,6 +3034,7 @@ begin
   if not HandleAllocated then
     RaiseError('Handle creation failed');
 end;
+*)
 
 {------------------------------------------------------------------------------
   TWinControl Destroy Component
@@ -3392,6 +3418,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.209  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.208  2004/02/23 23:15:13  mattias
   improved FindDragTarget
 

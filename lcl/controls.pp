@@ -1042,17 +1042,9 @@ type
   end;
 
 
-  TCreateParams = record
-    Caption: PChar;
-    Style: Cardinal;
-    ExStyle: Cardinal;
-    X, Y: Integer;
-    Width, Height: Integer;
-    WndParent: HWnd;
-    Param: Pointer;
-    WindowClass: TWndClass;
-    WinClassName: array[0..63] of Char;
-  end;
+  // Moved to LCLType ot avoid unit circles
+  // TCreateParams is part of th interface
+  TCreateParams = LCLType.TCreateParams;
 
   TBorderWidth = 0..MaxInt;
 
@@ -1255,6 +1247,8 @@ type
     FTabList: TList;
     FUseDockManager: Boolean;
     FWinControls: TList;
+    FCreatingHandle: Boolean; // Set when constructing the handle
+                              // Only used for checking
     procedure AlignControl(AControl : TControl);
     function GetBrush: TBrush;
     function GetControl(const Index: Integer): TControl;
@@ -1291,7 +1285,7 @@ type
     procedure DoSendBoundsToInterface; virtual;
     procedure RealizeBounds; virtual;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
-    procedure CreateComponent(TheOwner: TComponent); virtual;
+//    procedure CreateComponent(TheOwner: TComponent); virtual;
     procedure DestroyComponent; virtual;
     procedure DoConstraintsChange(Sender : TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
@@ -1336,6 +1330,7 @@ type
     procedure SetText(const Value: TCaption); override;
     procedure UpdateControlState;
     procedure CreateHandle; virtual;
+    function CreateWindowHandle(const AParams: TCreateParams): THandle; virtual;
     procedure CreateWnd; virtual; //creates the window
     procedure InitializeWnd; virtual; //gets called after the window is created
     procedure Loaded; override;
@@ -1459,15 +1454,6 @@ type
     property Showing: Boolean read FShowing;
     property CachedClientWidth: integer read FClientWidth;
     property CachedClientHeight: integer read FClientHeight;
-  end;
-
-
-  { TScrolledWindow }
-
-  TScrolledWindow = Class(TWinControl)
-  public
-    constructor Create(AOwner: TComponent);override;
-    destructor Destroy; override;
   end;
 
 
@@ -2163,7 +2149,6 @@ end;
 {$I basedragcontrolobject.inc}
 {$I controlsproc.inc}
 {$I controlcanvas.inc}
-{$I scrolledwindow.inc}
 {$I wincontrol.inc}
 {$I controlactionlink.inc}
 {$I control.inc}
@@ -2389,6 +2374,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.185  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.184  2004/02/24 21:53:12  mattias
   added StdActns definitions, no code yet
 

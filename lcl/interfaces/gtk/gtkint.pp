@@ -145,8 +145,8 @@ type
     function CreateStatusBarPanel(StatusBar: TObject; Index: integer): PGtkWidget;
     function CreateSimpleClientAreaWidget(Sender: TObject;
       NotOnParentsClientArea: boolean): PGtkWidget;
+    function CreateComponent(Sender : TObject): THandle; virtual;
     function CreateToolBar(ToolBarObject: TObject): PGtkWidget;
-    procedure CreateComponent(Sender : TObject);virtual;
     procedure DestroyEmptySubmenu(Sender: TObject);virtual;
     procedure DestroyLCLComponent(Sender: TObject);virtual;
     procedure DestroyConnectedWidget(Widget: PGtkWidget;
@@ -282,21 +282,23 @@ type
                                    StatusPanelWidget: PGtkWidget); virtual;
 
     // control functions for messages, callbacks
-    Procedure HookSignals(Sender : TObject); virtual;  //hooks all signals for controls
+    procedure HookWincontrolSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;
+    procedure HookSignals(const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;  //hooks all signals for controls
+
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);virtual;
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
     procedure RemoveCallbacks(Widget: PGtkWidget); virtual;
   public
     // for gtk specific components:
-    procedure SetCallback(Msg : LongInt; Sender : TObject); virtual;
+    procedure SetCallback(const AMsg: LongInt; const AGTKObject: PGTKObject; const ALCLObject: TObject); virtual;
     procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
     procedure RealizeWidgetSize(Widget: PGtkWidget;
                                 NewWidth, NewHeight: integer); virtual;
-    Procedure FinishComponentCreate(Sender : TObject; Handle : Pointer;
-                                    SetupProps : Boolean); Virtual;
+    procedure FinishComponentCreate(const ALCLObject: TObject;
+              const AGTKObject: Pointer; const ASetupProps : Boolean); virtual;
   public
     constructor Create;
     destructor Destroy; override;
@@ -423,6 +425,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.170  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.169  2004/02/23 18:24:38  mattias
   completed new TToolBar
 

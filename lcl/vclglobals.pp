@@ -41,17 +41,17 @@ const
 
   csNone = 0;
   csAlignment = 1;
-  csBox = 2;
+//  csBox = 2;
   csButton = 3;
   csComboBox = 4;
   csCheckbox = 5;
   csEdit = 6;
   csForm= 7;
   csLabel = 8;
-  csgtkTable = 9;
+//  csgtkTable = 9;
   csScrollBar = 10;
   csListView = 11;
-  csMainForm = 12;
+//  csMainForm = 12;
   csMemo = 13;
   csMainMenu = 14;
   csMenuBar = 15;
@@ -62,17 +62,17 @@ const
   csScrolledWindow= 20;
   csSpinedit = 21;
   csStatusBar = 22;
-  csTable = 23;
+//  csTable = 23;
   csToggleBox = 24;
   //csVScrollBar = 25;
-  csFrame = 26;
-  csButtonBox = 27;
-  csCanvas = 28;
+//  csFrame = 26;
+//  csButtonBox = 27;
+//  csCanvas = 28;
   csGroupBox = 29;
 
-  csFont = 30;
-  csPen = 31;
-  csBrush = 32;
+//  csFont = 30;
+//  csPen = 31;
+//  csBrush = 32;
   //csTimer = 33;
   csPage = 34;
 
@@ -81,7 +81,8 @@ const
   csFontDialog = 37;
   csProgressBar = 38;
   csTrackBar = 39;
-  csFixed = 40;
+  csWinControl = 40;
+  csFixed = csWinControl; //TODO remove
   csImage = 41;
   csToolbar = 42;
   csToolButton = 43;
@@ -138,8 +139,8 @@ Begin
       Result := 'csNone';
     csAlignment:
       Result := 'csAlignment';
-    csBox:
-      Result := 'csBox';
+//    csBox:
+//      Result := 'csBox';
     csButton:
       Result := 'csButton';
     csComboBox:
@@ -152,14 +153,14 @@ Begin
       Result := 'csForm';
     csLabel:
       Result := 'csLabel';
-    csGTKTable:
-      Result := 'csGTKTable';
+//    csGTKTable:
+//      Result := 'csGTKTable';
     csScrollBar:
       Result := 'csScrollBar';
     csListView:
       Result := 'csListView';
-    csMainForm:
-      Result := 'csMainForm';
+//    csMainForm:
+//      Result := 'csMainForm';
     csMemo:
       Result := 'csMemo';
     csMainMenu:
@@ -186,28 +187,28 @@ Begin
       Result := 'csSpinEdit';
     csStatusBar:
       Result := 'csStatusBar';
-    csTable:
-      Result := 'csTable';
+//    csTable:
+//      Result := 'csTable';
     csToggleBox:
       Result := 'csToggleBox';
-    25: //csVScrollBar
-      Result := 'csVScrollBar';
-    csFrame:
-      Result := 'csFrame';
-    csButtonBox:
-      Result := 'csButtonBox';
-    csCanvas:
-      Result := 'csCanvas';
+//    25: //csVScrollBar
+//      Result := 'csVScrollBar';
+//    csFrame:
+//      Result := 'csFrame';
+//    csButtonBox:
+//      Result := 'csButtonBox';
+//    csCanvas:
+//      Result := 'csCanvas';
     csGroupBox:
       Result := 'csGroupBox';
-    csFont:
-      Result := 'csFont';
-    csPen:
-      Result := 'csPen';
-    csBrush:
-      Result := 'csBrush';
-    33: //csTimer
-      Result := 'csTimer';
+//    csFont:
+//      Result := 'csFont';
+//    csPen:
+//      Result := 'csPen';
+//    csBrush:
+//      Result := 'csBrush';
+//    33: //csTimer
+//      Result := 'csTimer';
     csPage:
       Result := 'csPage';
     csColorDialog:

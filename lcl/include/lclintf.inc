@@ -32,14 +32,49 @@
  ******************************************************************************}
 //##apiwiz##sps##   // Do not remove
 
+function AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.AlignmentCreateHandle(AAlignment, AParams);
+end;
+
+function ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ArrowCreateHandle(AArrow, AParams);
+end;
+
 procedure AttachMenuToWindow(AMenuObject: TComponent);
 begin
   InterfaceObject.AttachMenuToWindow(AMenuObject);
 end;
 
+function BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.BitBtnCreateHandle(ABitBtn, AParams);
+end;
+
+function ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ButtonCreateHandle(AButton, AParams);
+end;
+
+function CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.CalendarCreateHandle(ACalendar, AParams);
+end;
+
 procedure CallDefaultWndHandler(Sender: TObject; var Message);
 begin
   InterfaceObject.CallDefaultWndHandler(Sender,Message);
+end;
+
+function CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.CheckboxCreateHandle(ACheckBox, AParams);
+end;
+
+function CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.CheckListBoxCreateHandle(ACheckListBox, AParams);
 end;
 
 // the clipboard functions are internally used by TClipboard
@@ -72,6 +107,21 @@ end;
 function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat;
 begin
   Result := InterfaceObject.ClipboardRegisterFormat(AMimeType);
+end;
+
+function CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.CListBoxCreateHandle(ACListBox, AParams);
+end;
+
+function ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
+begin
+  Result := InterfaceObject.ColorDialogCreateHandle(AColorDialog);
+end;
+
+function ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ComboBoxCreateHandle(AComboBox, AParams);
 end;
 
 function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
@@ -109,6 +159,26 @@ end;
 procedure DrawArrow(Arrow: TComponent; Canvas: TPersistent);
 begin
   InterfaceObject.DrawArrow(Arrow, Canvas);
+end;
+
+function EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.EditCreateHandle(AEdit, AParams);
+end;
+
+function FileDialogCreateHandle(const AFileDialog: TObject): THandle;
+begin
+  Result := InterfaceObject.FileDialogCreateHandle(AFileDialog);
+end;
+
+function FontDialogCreateHandle(const AFontDialog: TObject): THandle;
+begin
+  Result := InterfaceObject.FontDialogCreateHandle(AFontDialog);
+end;
+
+function FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.FormCreateHandle(AForm, AParams);
 end;
 
 function Frame(DC: HDC; const ARect: TRect): Integer;
@@ -262,6 +332,26 @@ begin
   Result := InterfaceObject.GetWindowRelativePosition(Handle,Left,Top);
 end;
 
+function GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.GroupBoxCreateHandle(AGroupBox, AParams);
+end;
+
+function HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.HintWindowCreateHandle(AHintWindow, AParams);
+end;
+
+function ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ImageCreateHandle(AImage, AParams);
+end;
+
+function IntfCreateHandle(const AObject: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.IntfCreateHandle(AObject, AParams);
+end;
+
 {------------------------------------------------------------------------------
   Function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean;
     BorderWidth: integer) : Boolean;
@@ -273,9 +363,39 @@ begin
   Result := InterfaceObject.InvalidateFrame(aHandle,ARect,bErase,BorderWidth);
 end;
 
+function LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.LabelCreateHandle(ALabel, AParams);
+end;
+
+function ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ListBoxCreateHandle(AListBox, AParams);
+end;
+
+function ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ListViewCreateHandle(AListView, AParams);
+end;
+
 function LoadStockPixmap(StockID: longint) : HBitmap;
 begin
   Result := InterfaceObject.LoadStockPixmap(StockID);
+end;
+
+function MainMenuCreateHandle(const AMainMenu: TObject): THandle;
+begin
+  Result := InterfaceObject.MainMenuCreateHandle(AMainMenu);
+end;
+
+function MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.MemoCreateHandle(AMemo, AParams);
+end;
+
+function MenuItemCreateHandle(const AMenuItem: TObject): THandle;
+begin
+  Result := InterfaceObject.MenuItemCreateHandle(AMenuItem);
 end;
 
 function MenuItemSetCheck(AMenuItem: TComponent): Boolean;
@@ -293,10 +413,30 @@ begin
   Result := InterfaceObject.MoveWindowOrgEx(DC, dX, dY);
 end;
 
+function NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.NotebookCreateHandle(ANotebook, AParams);
+end;
+
+function OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
+begin
+  Result := InterfaceObject.OpenFileDialogCreateHandle(AOpenFileDialog);
+end;
+
+function PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.PageCreateHandle(APage, AParams);
+end;
+
 function PairSplitterAddSide(SplitterHandle, SideHandle: hWnd;
   Side: integer): Boolean;
 begin
   Result:=InterfaceObject.PairSplitterAddSide(SplitterHandle,SideHandle,Side);
+end;
+
+function PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.PairSplitterCreateHandle(APairSplitter, AParams);
 end;
 
 function PairSplitterGetInterfaceInfo: boolean;
@@ -312,6 +452,36 @@ end;
 function PairSplitterSetPosition(SplitterHandle: hWnd; var NewPosition: integer): Boolean;
 begin
   Result:=InterfaceObject.PairSplitterSetPosition(SplitterHandle,NewPosition);
+end;
+
+function PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.PairSplitterSideCreateHandle(APairSplitterSide, AParams);
+end;
+
+function PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.PanelCreateHandle(APanel, AParams);
+end;
+
+function PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
+begin
+  Result := InterfaceObject.PopupMenuCreateHandle(APopupMenu);
+end;
+
+function PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
+begin
+  Result := InterfaceObject.PreviewFileControlCreateHandle(APreviewFileControl);
+end;
+
+function PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
+begin
+  Result := InterfaceObject.PreviewFileDialogCreateHandle(APreviewFileDialog);
+end;
+
+function ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ProgressBarCreateHandle(AProgressBar, AParams);
 end;
 
 function PromptUser(const DialogMessage : String; DialogType : longint; Buttons : PLongint;
@@ -359,6 +529,11 @@ begin
   Result := InterfaceObject.RadialPieWithAngles(DC, X,Y,Width,Height,Angle1,Angle2);
 end;
 
+function RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.RadioButtonCreateHandle(ARadioButton, AParams);
+end;
+
 function RadioMenuItemGroup(hndMenu: HMENU; bRadio: Boolean): Boolean;
 begin
   Result := InterfaceObject.RadioMenuItemGroup(hndMenu,bRadio);
@@ -385,6 +560,31 @@ begin
   Result := InterfaceObject.RightJustifyMenuItem(hndMenu, bRightJustify);
 end;
 
+function SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
+begin
+  Result := InterfaceObject.SaveFileDialogCreateHandle(ASaveFileDialog);
+end;
+
+function ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ScrollBarCreateHandle(AScrollBar, AParams);
+end;
+
+function ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ScrollBoxCreateHandle(AScrollBox, AParams);
+end;
+
+function ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ScrolledWindowCreateHandle(AScrolledWindow, AParams);
+end;
+
+function SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
+begin
+  Result := InterfaceObject.SelectDirectoryDialogCreateHandle(ASelectDirectoryDialog);
+end;
+
 procedure SendCachedLCLMessages;
 begin
 end;
@@ -404,6 +604,21 @@ function SetComboMinDropDownSize(Handle: HWND;
 begin
   Result := InterfaceObject.SetComboMinDropDownSize(Handle,
                                    MinItemsWidth, MinItemsHeight, MinItemCount);
+end;
+
+function SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.SpeedButtonCreateHandle(ASpeedButton, AParams);
+end;
+
+function SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.SpineditCreateHandle(ASpinEdit, AParams);
+end;
+
+function StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.StatusBarCreateHandle(AStatusBar, AParams);
 end;
 
 procedure StatusBarPanelUpdate(StatusBar: TObject; PanelIndex: integer);
@@ -427,6 +642,31 @@ function StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer;
 begin
   Result := InterfaceObject.StretchMaskBlt(DestDC, X, Y, Width, Height,
                SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Mask, XMask, YMask, Rop);
+end;
+
+function ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ToggleBoxCreateHandle(AToggleBox, AParams);
+end;
+
+function ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ToolbarCreateHandle(AToolbar, AParams);
+end;
+
+function ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.ToolButtonCreateHandle(AToolButton, AParams);
+end;
+
+function TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.TrackBarCreateHandle(ATrackBar, AParams);
+end;
+
+function WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
+begin
+  Result := InterfaceObject.WincontrolCreateHandle(AFixed, AParams);
 end;
 
 //##apiwiz##eps##   // Do not remove
@@ -517,6 +757,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.19  2004/02/23 08:19:04  micha
   revert intf split
 

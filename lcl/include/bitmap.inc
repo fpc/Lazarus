@@ -18,28 +18,26 @@
  *****************************************************************************
 }
 
-function TestStreamBitmapNativeType(
-  Stream: TCustomMemoryStream): TBitmapNativeType;
+function TestStreamBitmapNativeType(const AStream: TStream): TBitmapNativeType;
 begin
-  if TestStreamIsBMP(Stream) then
+  if TestStreamIsBMP(AStream) then
     Result:=bnWinBitmap
-  else if TestStreamIsXPM(Stream) then
+  else if TestStreamIsXPM(AStream) then
     Result:=bnXPixmap
   else
     Result:=bnNone;
 end;
 
-function TestStreamIsBMP(Stream: TCustomMemoryStream): boolean;
+function TestStreamIsBMP(const AStream: TStream): boolean;
 var
-  BmpHeadbfType: word;
+  Signature: array[0..1] of Char;
   ReadSize: Integer;
   OldPosition: TStreamSeekType;
 begin
-  BmpHeadbfType:=0;
-  OldPosition:=Stream.Position;
-  ReadSize:=Stream.Read(BmpHeadbfType,2);
-  Result:=(ReadSize=2) and (BmpHeadbfType=word($4D42));
-  Stream.Position:=OldPosition;
+  OldPosition:=AStream.Position;
+  ReadSize:=AStream.Read(Signature, SizeOf(Signature));
+  Result:=(ReadSize=2) and (Signature[0]='B') and (Signature[1]='M');
+  AStream.Position:=OldPosition;
 end;
 
 procedure TBitMap.Assign(Source: TPersistent);
@@ -1108,6 +1106,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.73  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.72  2004/02/24 19:40:17  mattias
   TBitmap can now read form streams without knowing the size
 

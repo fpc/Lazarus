@@ -1864,6 +1864,21 @@ type
   _MSG = tagMSG;
 
 
+type
+  // Moved from Controls to avoid circles
+  // Since it is part of the interface now
+  TCreateParams = record
+    Caption: PChar;
+    Style: Cardinal;
+    ExStyle: Cardinal;
+    X, Y: Integer;
+    Width, Height: Integer;
+    WndParent: HWnd;
+    Param: Pointer;
+    WindowClass: TWndClass;
+    WinClassName: array[0..63] of Char;
+  end;
+
 //------------------------------------------------------------------------------
 // prototype for timer callback
 type
@@ -1983,6 +1998,12 @@ end.
 
 {
   $Log$
+  Revision 1.59  2004/02/27 00:42:41  marc
+  * Interface CreateComponent splitup
+  * Implemented CreateButtonHandle on GTK interface
+    on win32 interface it still needs to be done
+  * Changed ApiWizz to support multilines and more interfaces
+
   Revision 1.58  2004/02/13 15:49:54  mattias
   started advanced LCL auto sizing
 
