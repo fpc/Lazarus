@@ -135,8 +135,12 @@ end;
 procedure TGtkWSCommonDialog.ShowModal(const ACommonDialog: TCommonDialog);
 var
   GtkWindow: PGtkWindow;
+  {$IFDEF Gtk1}
+  {$IFNDEF VER1_0}
   Requisition: TGtkRequisition;
-begin    
+  {$ENDIF}
+  {$ENDIF}
+begin
   ReleaseMouseCapture;
   GtkWindow:=PGtkWindow(ACommonDialog.Handle);
   gtk_window_set_title(GtkWindow,PChar(ACommonDialog.Title));

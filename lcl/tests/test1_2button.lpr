@@ -12,23 +12,41 @@
  *                                                                           *
  *****************************************************************************
  
-  LCL Test 1_1
+  LCL Test 1_2
 
-  Showing a form at 0,0,320,240
+  Showing a form at 0,0,320,240 with a single button at 100,80,75x25
 }
-program Test1_1SimpleForm1;
+program test1_2button;
 
 {$mode objfpc}{$H+}
 
 uses
   Interfaces, FPCAdds, LCLProc, LCLType, Classes, Controls, Forms, TypInfo,
-  LMessages;
+  LMessages, Buttons;
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
+    Button1: TButton;
+    procedure Button1ChangeBounds(Sender: TObject);
+    procedure Button1Click(Sender: TObject);
+    procedure Button1Enter(Sender: TObject);
+    procedure Button1Exit(Sender: TObject);
+    procedure Button1KeyDown(Sender: TObject; var Key: Word; Shift: TShiftState
+      );
+    procedure Button1KeyPress(Sender: TObject; var Key: char);
+    procedure Button1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure Button1MouseDown(Sender: TOBject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Button1MouseEnter(Sender: TObject);
+    procedure Button1MouseLeave(Sender: TObject);
+    procedure Button1MouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure Button1MouseUp(Sender: TOBject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure Button1Resize(Sender: TObject);
     procedure Form1Activate(Sender: TObject);
     procedure Form1ChangeBounds(Sender: TObject);
     procedure Form1Click(Sender: TObject);
@@ -69,6 +87,83 @@ type
 
 { TForm1 }
 
+procedure TForm1.Button1ChangeBounds(Sender: TObject);
+begin
+  debugln('TForm1.Button1ChangeBounds ',DbgSName(Sender),' Bounds=',dbgs(TControl(Sender).BoundsRect));
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+  debugln('TForm1.Button1Click ',DbgSName(Sender));
+end;
+
+procedure TForm1.Button1Enter(Sender: TObject);
+begin
+  debugln('TForm1.Button1Enter ',DbgSName(Sender));
+end;
+
+procedure TForm1.Button1Exit(Sender: TObject);
+begin
+  debugln('TForm1.Button1Exit ',DbgSName(Sender));
+end;
+
+procedure TForm1.Button1KeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  Debugln('TForm1.Button1KeyDown ',DbgSName(Sender),' Key=',dbgs(Key),
+          ' Shift=',dbgs(Shift));
+end;
+
+procedure TForm1.Button1KeyPress(Sender: TObject; var Key: char);
+begin
+  debugln('TForm1.Button1KeyPress ',DbgSName(Sender),' Key=',DbgStr(Key));
+end;
+
+procedure TForm1.Button1KeyUp(Sender: TObject; var Key: Word; Shift: TShiftState
+  );
+begin
+  Debugln('TForm1.Button1KeyUp ',DbgSName(Sender),' Key=',dbgs(Key),
+          ' Shift=',dbgs(Shift));
+end;
+
+procedure TForm1.Button1MouseDown(Sender: TOBject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  debugln('TForm1.Button1MouseDown ',DbgSName(Sender),
+    ' Button=',GetEnumName(TypeInfo(TMouseButton),ord(Button)),
+    ' X=',dbgs(X),' Y=',dbgs(Y),' Shift=',dbgs(Shift));
+end;
+
+procedure TForm1.Button1MouseEnter(Sender: TObject);
+begin
+  debugln('TForm1.Button1MouseEnter ',DbgSName(Sender));
+end;
+
+procedure TForm1.Button1MouseLeave(Sender: TObject);
+begin
+  debugln('TForm1.Button1MouseLeave ',DbgSName(Sender));
+end;
+
+procedure TForm1.Button1MouseMove(Sender: TObject; Shift: TShiftState; X,
+  Y: Integer);
+begin
+  debugln('TForm1.Button1MouseMove ',DbgSName(Sender),
+    ' X=',dbgs(X),' Y=',dbgs(Y),' Shift=',dbgs(Shift));
+end;
+
+procedure TForm1.Button1MouseUp(Sender: TOBject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  debugln('TForm1.Button1MouseUp ',DbgSName(Sender),
+    ' Button=',GetEnumName(TypeInfo(TMouseButton),ord(Button)),
+    ' X=',dbgs(X),' Y=',dbgs(Y),' Shift=',dbgs(Shift));
+end;
+
+procedure TForm1.Button1Resize(Sender: TObject);
+begin         ;
+  debugln('TForm1.Button1Resize ',DbgSName(Sender),' Bounds=',dbgs(TControl(Sender).BoundsRect));
+end;
+
 procedure TForm1.Form1Activate(Sender: TObject);
 begin
   debugln('TForm1.Form1Activate ',DbgSName(Sender));
@@ -98,6 +193,25 @@ end;
 procedure TForm1.Form1Create(Sender: TObject);
 begin
   debugln('TForm1.Form1Create ',DbgSName(Sender));
+  Button1:=TButton.Create(Self);
+  with Button1 do begin
+    Name:='Button1';
+    SetBounds(100,80,75,25);
+    Parent:=Self;
+    OnChangeBounds:=@Button1ChangeBounds;
+    OnClick:=@Button1Click;
+    OnEnter:=@Button1Enter;
+    OnExit:=@Button1Exit;
+    OnKeyDown:=@Button1KeyDown;
+    OnKeyPress:=@Button1KeyPress;
+    OnKeyUp:=@Button1KeyUp;
+    OnMouseDown:=@Button1MouseDown;
+    OnMouseEnter:=@Button1MouseEnter;
+    OnMouseLeave:=@Button1MouseLeave;
+    OnMouseMove:=@Button1MouseMove;
+    OnMouseUp:=@Button1MouseUp;
+    OnResize:=@Button1Resize;
+  end;
 end;
 
 procedure TForm1.Form1Deactivate(Sender: TObject);
@@ -203,7 +317,7 @@ end;
 
 procedure TForm1.Form1Resize(Sender: TObject);
 begin
-  debugln('TForm1.Form1Resize ',DbgSName(Sender),' Bounds=',dbgs(BoundsRect));
+  debugln('TForm1.Form1Resize ',DbgSName(Sender),' Bounds=',dbgs(TControl(Sender).BoundsRect));
 end;
 
 procedure TForm1.Form1Shortcut(var Msg: TLMKey; var Handled: Boolean);
@@ -266,7 +380,6 @@ var
 begin
   Application.Initialize;
   Application.CreateForm(TForm1,Form1);
-  debugln('Form1.Bounds=',dbgs(Form1.BoundsRect));
   Application.Run;
 end.
 

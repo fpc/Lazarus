@@ -109,6 +109,7 @@ type
     property Enabled;
     property Font;
     property ModalResult;
+    property OnChangeBounds;
     property OnClick;
     property OnEnter;
     property OnExit;
@@ -116,6 +117,8 @@ type
     property OnKeyPress;
     property OnKeyUp;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
@@ -389,6 +392,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.89  2005/02/19 17:52:56  mattias
+  published TButton.OnMouseEnter/Leave, added lcl test for single button
+
   Revision 1.88  2005/02/09 11:25:19  mattias
   fixed loading TSpeedButton.Down  from Yoyong
 
