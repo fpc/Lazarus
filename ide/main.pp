@@ -161,6 +161,7 @@ type
 
     // view menu
     procedure mnuViewInspectorClicked(Sender : TObject);
+    procedure mnuViewSourceEditorClicked(Sender : TObject);
     procedure mnuViewUnitsClicked(Sender : TObject);
     procedure mnuViewFormsClicked(Sender : TObject);
     procedure mnuViewUnitDependenciesClicked(Sender : TObject);
@@ -477,12 +478,12 @@ type
     procedure DoViewUnitDependencies;
 
     // project(s)
-    function DoNewProject(NewProjectType:TProjectType):TModalResult;
-    function DoSaveProject(Flags: TSaveFlags):TModalResult;
-    function DoCloseProject:TModalResult;
-    function DoOpenProjectFile(AFileName:string; Flags: TOpenFlags):TModalResult;
+    function DoNewProject(NewProjectType: TProjectType): TModalResult;
+    function DoSaveProject(Flags: TSaveFlags): TModalResult;
+    function DoCloseProject: TModalResult;
+    function DoOpenProjectFile(AFileName: string; Flags: TOpenFlags): TModalResult;
     function DoPublishProject(Flags: TSaveFlags;
-                              ShowDialog: boolean):TModalResult;
+                              ShowDialog: boolean): TModalResult;
     function DoShowProjectInspector: TModalResult; override;
     function DoAddActiveUnitToProject: TModalResult;
     function DoRemoveFromProjectDialog: TModalResult;
@@ -551,6 +552,8 @@ type
     function GetFormOfSource(AnUnitInfo: TUnitInfo;
       LoadForm: boolean): TCustomForm;
     procedure UpdateCaption; override;
+    procedure HideIDE; override;
+    procedure HideUnmodifiedDesigners;
     function DoConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
     
     // methods for codetools
@@ -1542,6 +1545,7 @@ procedure TMainIDE.SetupViewMenu;
 begin
   inherited;
   itmViewInspector.OnClick := @mnuViewInspectorClicked;
+  itmViewSourceEditor.OnClick := @mnuViewSourceEditorClicked;
   itmViewCodeExplorer.OnClick := @mnuViewCodeExplorerClick;
   itmViewUnits.OnClick := @mnuViewUnitsClicked;
   itmViewForms.OnClick := @mnuViewFormsClicked;
@@ -1633,7 +1637,6 @@ end;
 
 procedure TMainIDE.ConnectMainBarEvents;
 begin
-  //OnShow := @FormShow;
   OnClose := @FormClose;
   OnCloseQuery := @FormCloseQuery;
 end;
@@ -2173,6 +2176,11 @@ begin
   DoBringToFrontFormOrInspector;
 end;
 
+procedure TMainIDE.mnuViewSourceEditorClicked(Sender: TObject);
+begin
+  SourceNotebook.ShowOnTop;
+end;
+
 {------------------------------------------------------------------------------}
 
 Procedure TMainIDE.mnuViewUnitsClicked(Sender : TObject);
@@ -2192,12 +2200,12 @@ end;
 
 Procedure TMainIDE.mnuViewCodeExplorerClick(Sender : TObject);
 begin
-  SourceNotebook.Show;
+  SourceNotebook.ShowOnTop;
 end;
 
 Procedure TMainIDE.mnuViewMessagesClick(Sender : TObject);
 Begin
-  MessagesView.Show;
+  MessagesView.ShowOnTop;
 End;
 
 
@@ -6262,10 +6270,51 @@ begin
       NewCaption:=Format(lisnewProject, [NewCaption])
   end;
   case ToolStatus of
-  itBuilder:  NewCaption:=NewCaption+' (compiliing ...)';
-  itDebugger: NewCaption:=NewCaption+' (debugging ...)';
+  itBuilder:  NewCaption:=Format(liscompiling, [NewCaption]);
+  itDebugger: NewCaption:=Format(lisdebugging, [NewCaption]);
   end;
   Caption:=NewCaption;
+end;
+
+procedure TMainIDE.HideIDE;
+var
+  i: Integer;
+  AForm: TCustomForm;
+  WindowsList: TList;
+begin
+  HideUnmodifiedDesigners;
+
+  WindowsList:=TList.Create;
+  // collect all windows except the main bar
+  for i:=0 to Screen.CustomFormCount-1 do begin
+    AForm:=Screen.CustomForms[i];
+    if (AForm<>Self)
+    and (AForm.Designer=nil) and (AForm.Visible)
+    and (WindowsList.IndexOf(AForm)<0)
+    and (not (fsModal in AForm.FormState)) then
+      WindowsList.Add(AForm);
+  end;
+  // hide all collected windows
+  for i:=0 to WindowsList.Count-1 do begin
+    AForm:=TCustomForm(WindowsList[i]);
+    AForm.Hide;
+  end;
+  // clean up
+  WindowsList.Free;
+end;
+
+procedure TMainIDE.HideUnmodifiedDesigners;
+var
+  AnUnitInfo: TUnitInfo;
+  NextUnitInfo: TUnitInfo;
+begin
+  AnUnitInfo:=Project1.FirstUnitWithForm;
+  while AnUnitInfo<>nil do begin
+    NextUnitInfo:=AnUnitInfo.NextUnitWithForm;
+    if not AnUnitInfo.NeedsSaveToDisk then
+      CloseDesignerForm(AnUnitInfo);
+    AnUnitInfo:=NextUnitInfo;
+  end;
 end;
 
 procedure TMainIDE.DoBringToFrontFormOrUnit;
@@ -8773,6 +8822,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.579  2003/05/24 11:06:43  mattias
+  started Hide IDE on run
+
   Revision 1.578  2003/05/24 08:51:40  mattias
   implemented designer close query
 
