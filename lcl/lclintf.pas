@@ -68,9 +68,9 @@ function CharUpper(c: char): char;
 function GetTickCount: DWord; cdecl; external;
 {$ELSE}
 function GetTickCount: DWord;
+function GetTickStep: DWord;
 {$ENDIF}
 
-function GetTickStep: DWord;
 
 implementation
 
@@ -88,9 +88,6 @@ var
   UpperCaseChars: array[char] of char;
   LastTickValid: boolean;
   LastTick: DWord;
-  
-//const
-//  MaxTick = 24*60*60*1000;
 
 {$IFNDEF Win32}
 function GetTickCount: DWord;
@@ -100,7 +97,6 @@ begin
   GetTime(hour, minutes, secs, msecs, usecs);
   Result:=(((hour*60)+minutes)*60+secs)*1000+msecs;
 end;
-{$ENDIF}
 
 function GetTickStep: DWord;
 var
@@ -120,6 +116,7 @@ begin
   LastTickValid:=true;
   LastTick:=CurTick;
 end;
+{$ENDIF}
 
 function MakeLong(A,B : Word) : LongInt;
 begin
@@ -178,6 +175,9 @@ end.
 
 {
   $Log$
+  Revision 1.9  2004/02/18 08:50:42  mattias
+  moved GetTickStep to non win32
+
   Revision 1.8  2004/02/17 22:17:40  mattias
   accelerated conversion from data to lrs
 
