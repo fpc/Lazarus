@@ -182,7 +182,7 @@ endif
 
 # Clean
 
-override EXTRACLEANUNITS+=$(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT)))
+override EXTRACLEANUNITS+=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
 override EXTRACLEANFILES+=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
 
 # Install

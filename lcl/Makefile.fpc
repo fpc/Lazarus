@@ -12,14 +12,14 @@ options=-Ca
 packages=fcl gtk
 
 [clean]
-units=$(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT)))
+units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
 files=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
 
 [dirs]
 # target dir needs to be . or a full path otherwise the 
 # unittargetdir will be corrupt
 # not with the lazarusmake.ini
-#targetdir=.
+# targetdir=.
 unittargetdir=./units
 unitdir=$(UNITTARGETDIR) . ./interfaces/$(LCLPLATFORM) 
 incdir=./include ./interfaces/$(LCLPLATFORM)
