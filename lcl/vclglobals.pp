@@ -85,6 +85,8 @@ csCListBox = 45;
 csSpeedButton = 46;
 csPopupMenu = 47;
 csHintWindow = 48;
+
+csCalendar = 49;
 type
 
   //TODO: check this against lcllinux

@@ -178,6 +178,9 @@ const
 type
   TWinControl = class;
   TControl = class;
+  
+  TDate = type TDateTime;
+  TTime = type TDateTime;
 
 TCMMouseWheel = record
   MSg: Cardinal;
@@ -1144,6 +1147,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2001/12/05 17:23:44  lazarus
+  Added Calendar component
+  Shane
+
   Revision 1.25  2001/11/10 10:48:00  lazarus
   MG: fixed set formicon on invisible forms
 

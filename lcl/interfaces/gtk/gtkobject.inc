@@ -1966,6 +1966,12 @@ begin
          p := gtk_button_new_with_label(StrTemp);
       end;
       
+      csCalendar :
+      begin
+         p := gtk_calendar_new();
+         
+      end;
+
       csCheckbox :
       begin
          p := gtk_check_button_new_with_label(strTemp);
@@ -2711,6 +2717,7 @@ end;
 function TgtkObject.GetValue (Sender : TObject; data : pointer) : integer;
 var
    Handle    : Pointer;
+   Year,Month,Day : Integer;  //used for csCalendar
 begin
    result := 0;     // default if nobody sets it
 
@@ -2734,6 +2741,14 @@ begin
       csCheckbox   : if gtk_toggle_button_get_active (PGtkToggleButton (handle))
                         then TCheckBoxState (data^) := cbChecked
                         else TCheckBoxState (data^) := cbUnChecked;
+      csCalendar :Begin
+                    gtk_calendar_get_date(PgtkCalendar(handle),@Year, @Month, @Day);
+                    //TODO:  account for local settings like date format
+                    //Form some reason, the month is zero based.
+                    TLMCalendar(data^).Date := StrtoDate(Inttostr(Day)+'-'+Inttostr(Month+1)+'-'+Inttostr(Year));
+                    
+
+                  end;
    else
       Assert (true, Format ('WARNING:[TgtkObject.GetValue] failed for %s', [Sender.ClassName]));
    end;
@@ -2755,6 +2770,11 @@ end;
 function TgtkObject.SetValue (Sender : TObject; data : pointer) : integer;
 var
    Handle    : Pointer;
+   //used for csCalendar
+   Date : TDateTime;
+   Year,Month,Day : String;
+   gtkcalendardisplayoptions : TGtkCalendarDisplayOptions;
+   NUm : Integer;
 begin
    result := 0;     // default if nobody sets it
 
@@ -2780,6 +2800,36 @@ begin
       csCheckbox   : if TCheckBoxState (data^) = cbChecked
                         then gtk_toggle_button_set_active( PGtkToggleButton (handle), TRUE)
                         else gtk_toggle_button_set_active( PGtkToggleButton (handle), FALSE);
+      csCalendar   : Begin
+                       Date := TLMCalendar(data^).Date;
+                       Year := FormatDateTime('yyyy',Date);
+                       Month := FormatDateTime('mm',Date);
+                       Day := FormatDateTime('dd',Date);
+                       gtk_calendar_select_month(PgtkCalendar(handle),StrtoInt(Month)-1,StrToInt(Year));
+                       gtk_calendar_select_day(PgtkCalendar(handle),StrToInt(Day));
+                       
+                       //set display options
+                       Num := 0;
+                       if (dsShowHeadings in TLMCalendar(data^).DisplaySettings) then
+                          num := Num + (1 shl 0);
+                                
+                       if (dsShowDayNames in TLMCalendar(data^).DisplaySettings) then
+                          num := Num  + (1 shl 1);
+
+                       if (dsNoMonthChange in TLMCalendar(data^).DisplaySettings) then
+                          num := Num  + (1 shl 2);
+                          
+                       if (dsShowWeekNumbers in TLMCalendar(data^).DisplaySettings) then
+                           num := Num  + (1 shl 3);
+
+                       if (dsStartMonday in TLMCalendar(data^).DisplaySettings) then
+                           num := Num  + (1 shl 4);
+
+                       gtkCalendarDisplayOptions := TgtkCalendarDisplayOPtions(num);
+                       
+                       gtk_Calendar_Display_options(PgtkCalendar(handle),gtkCalendarDisplayOptions);
+                     end;
+                     
    else
       Assert (true, Format ('WARNING:[TgtkObject.SetValue] failed for %s', [Sender.ClassName]));
    end;
@@ -3358,6 +3408,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.78  2001/12/05 17:23:45  lazarus
+  Added Calendar component
+  Shane
+
   Revision 1.77  2001/11/26 14:19:34  lazarus
   Added some code to make the interbae components work better.
   Shane
