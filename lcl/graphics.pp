@@ -527,10 +527,10 @@ type
     Procedure BrushCopy(Dest : TRect; InternalImages: TBitmap; Src : TRect;
                         TransparentColor :TColor);
     constructor Create;
+    destructor Destroy; override;
     procedure Chord(x,y,width,height,angle1,angle2 : Integer);
     procedure Chord(x,y,width,height,SX,SY,EX,EY : Integer);
     Procedure CopyRect(const Dest : TRect; Canvas : TCanvas; const Source : TRect);
-    destructor Destroy; override;
     Procedure Draw(X,Y: Integer; Graphic : TGraphic);
     procedure StretchDraw(const Rect: TRect; Graphic: TGraphic);
     procedure Ellipse(x1, y1, x2, y2: Integer);
@@ -911,6 +911,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.54  2002/10/27 11:51:34  lazarus
+  MG: fixed memleaks
+
   Revision 1.53  2002/10/26 15:15:46  lazarus
   MG: broke LCL<->interface circles
 
