@@ -970,14 +970,14 @@ begin
   try
     // build code tree
     {$IFDEF CTDEBUG}
-    DebugLn(DebugPrefix,'TFindDeclarationTool.FindDeclaration A CursorPos=',CursorPos.X,',',CursorPos.Y);
+    DebugLn(DebugPrefix,'TFindDeclarationTool.FindDeclaration A CursorPos=',dbgs(CursorPos.X),',',dbgs(CursorPos.Y));
     {$ENDIF}
     if DirtySrc<>nil then DirtySrc.Clear;
     BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
                   [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}
                    btLoadDirtySource,btCursorPosOutAllowed]);
     {$IFDEF CTDEBUG}
-    DebugLn(DebugPrefix,'TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos);
+    DebugLn(DebugPrefix,'TFindDeclarationTool.FindDeclaration C CleanCursorPos=',dbgs(CleanCursorPos));
     {$ENDIF}
     // find CodeTreeNode at cursor
     if (Tree.Root<>nil) and (Tree.Root.StartPos<=CleanCursorPos) then begin
@@ -1003,7 +1003,7 @@ begin
       // raise exception
       FindDeepestNodeAtPos(CleanCursorPos,true);
     {$IFDEF CTDEBUG}
-    DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChilds=',CursorNode.FirstChild<>nil);
+    DebugLn('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsString(CursorNode.Desc),' HasChilds=',dbgs(CursorNode.FirstChild<>nil));
     {$ENDIF}
     if (not IsDirtySrcValid)
     and (CursorNode.Desc=ctnUsesSection) then begin
@@ -2071,8 +2071,8 @@ var
             // a WithVariable ranges from the start of its expression
             // to the end of the with statement
             {$IFDEF ShowExprEval}
-            DebugLn('SearchNextNode WithVar StartContextNode.StartPos=',StartContextNode.StartPos,
-              ' ContextNode=',ContextNode.StartPos,'-',ContextNode.EndPos,
+            DebugLn('SearchNextNode WithVar StartContextNode.StartPos=',dbgs(StartContextNode.StartPos),
+              ' ContextNode=',dbgs(ContextNode.StartPos),'-',dbgs(ContextNode.EndPos),
               ' WithStart="',StringToPascalConst(copy(Src,ContextNode.StartPos,15)),'"');
             {$ENDIF}
             if (StartContextNode.StartPos>=ContextNode.StartPos)
@@ -3212,7 +3212,7 @@ var
 begin
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.FindExpressionResultType] Start',
-  ' Pos=',StartPos,'-',EndPos,
+  ' Pos=',dbgs(StartPos),'-',dbgs(EndPos),
   '="',copy(Src,StartPos,EndPos-StartPos),'" Context=',Params.ContextNode.DescAsString);
   {$ENDIF}
   Result:=CleanExpressionType;
@@ -3239,7 +3239,7 @@ begin
     ReadNextAtom;
     {$IFDEF ShowExprEval}
     DebugLn('[TFindDeclarationTool.FindExpressionResultType] Operator: ',
-      GetAtom,' CurPos.EndPos=',CurPos.EndPos,' EndPos=',EndPos);
+      GetAtom,' CurPos.EndPos=',dbgs(CurPos.EndPos),' EndPos=',dbgs(EndPos));
     {$ENDIF}
     // check if expression completely parsed
     if (CurPos.EndPos>EndPos) or (CurExprType.Desc=xtNone) then begin
@@ -3848,7 +3848,7 @@ function TFindDeclarationTool.FindExpressionTypeOfVariable(
 type
   TIsIdentEndOfVar = (iieovYes, iieovNo, iieovUnknown);
 var
-  CurAtomType, NextAtomType: TVariableAtomType;
+  CurAtomType, NextAtomType, LastAtomType: TVariableAtomType;
   CurAtom, NextAtom: TAtomPosition;
   CurAtomBracketEndPos: integer;
   StartContext: TFindContext;
@@ -3895,6 +3895,7 @@ var
     {$IFDEF ShowExprEval}
     DebugLn('  InitAtomQueue Expr="',copy(Src,StartPos,EndPos-StartPos),'"');
     {$ENDIF}
+    LastAtomType:=vatNone;
     MoveCursorToCleanPos(StartPos);
     ReadNextAtom;
     CurAtom:=CurPos;
@@ -3914,6 +3915,7 @@ var
   
   procedure ReadNextExpressionAtom;
   begin
+    LastAtomType:=CurAtomType;
     CurAtom:=NextAtom;
     CurAtomType:=NextAtomType;
     MoveCursorToCleanPos(NextAtom.StartPos);
@@ -4328,7 +4330,7 @@ var
       ReadNextAtom;
       RaiseIllegalQualifierFound;
     end;
-    if ExprType.Context.Node<>StartContext.Node then begin
+    if LastAtomType<>vatNone then begin
       // typecast or function
     end else begin
       // expression
@@ -4852,8 +4854,8 @@ begin
 
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.IsParamExprListCompatibleToNodeList] ',
-  ' ExprParamList.Count=',SourceExprParamList.Count,
-  ' MinParamCnt=',MinParamCnt,' MaxParamCnt=',MaxParamCnt
+  ' ExprParamList.Count=',dbgs(SourceExprParamList.Count),
+  ' MinParamCnt=',dbgs(MinParamCnt),' MaxParamCnt=',dbgs(MaxParamCnt)
   );
     try
   {$ENDIF}
@@ -4939,8 +4941,8 @@ begin
 
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.IsParamNodeListCompatibleToExprList] ',
-  ' ExprParamList.Count=',TargetExprParamList.Count,' ',
-  ' MinParamCnt=',MinParamCnt,' MaxParamCnt=',MaxParamCnt
+  ' ExprParamList.Count=',dbgs(TargetExprParamList.Count),' ',
+  ' MinParamCnt=',dbgs(MinParamCnt),' MaxParamCnt=',dbgs(MaxParamCnt)
   );
     try
   {$ENDIF}
@@ -5447,13 +5449,12 @@ begin
         ExprStartPos:=CurPos.StartPos;
         // read til comma or bracket close
         repeat
-          if AtomIsChar('(') or AtomIsChar('[') then begin
+          if CurPos.Flag in [cafRoundBracketOpen,cafEdgedBracketOpen] then begin
             ReadTilBracketClose(true);
           end;
           ReadNextAtom;
           if (CurPos.StartPos>SrcLen)
-          or ((CurPos.EndPos=CurPos.StartPos+1)
-            and (Src[CurPos.StartPos] in [')',']',',']))
+          or (CurPos.Flag in [cafRoundBracketClose,cafEdgedBracketClose,cafComma])
           then
             break;
         until false;
@@ -5473,7 +5474,7 @@ begin
   end;
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.CreateParamExprListFromStatement] END ',
-  'ParamCount=',Result.Count,' "',copy(Src,StartPos,40),'"');
+  'ParamCount=',dbgs(Result.Count),' "',copy(Src,StartPos,40),'"');
   DebugLn('  ExprList=[',Result.AsString,']');
   {$ENDIF}
 end;
@@ -5499,7 +5500,7 @@ begin
   end;
   {$IFDEF ShowExprEval}
   DebugLn('[TFindDeclarationTool.CreateParamExprListFromProcNode] END ',
-  'ParamCount=',Result.Count,' "',copy(Src,ProcNode.StartPos,40),'"');
+  'ParamCount=',dbgs(Result.Count),' "',copy(Src,ProcNode.StartPos,40),'"');
   DebugLn('  ExprList=[',Result.AsString,']');
   {$ENDIF}
 end;
