@@ -468,7 +468,9 @@ type
   TControlShowHintEvent = procedure(Sender: TObject; HintInfo: Pointer) of object;
   
   TControlFlag = (
-    cfRequestAlignNeeded
+    cfRequestAlignNeeded,
+    cfClientWidthLoaded,
+    cfClientHeightLoaded
     );
   TControlFlags = set of TControlFlag;
 
@@ -515,6 +517,7 @@ type
     FLastResizeHeight: integer;
     FLastResizeWidth: integer;
     FLeft: Integer;
+    FLoadedClientSize: TPoint;
     FMouseEntered: boolean;
     FOnChangeBounds: TNotifyEvent;
     FOnClick: TNotifyEvent;
@@ -628,7 +631,8 @@ type
     procedure Resize; virtual;
     procedure Loaded; override;
     procedure RequestAlign; dynamic;
-    procedure UpdateBaseBounds; virtual;
+    procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,
+                               UseLoadedValues: boolean); virtual;
     procedure LockBaseBounds;
     procedure UnlockBaseBounds;
     procedure UpdateAnchorRules;
@@ -1530,6 +1534,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.127  2003/06/13 14:38:01  mattias
+  fixed using streamed clientwith/height for child anchors
+
   Revision 1.126  2003/06/13 12:53:51  mattias
   fixed TUpDown and added handler lists for TControl
 

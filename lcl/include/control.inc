@@ -1429,6 +1429,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.SetClientHeight(Value: Integer);
 begin
+  if csLoading in ComponentState then begin
+    FLoadedClientSize.Y:=Value;
+    Include(FControlFlags,cfClientHeightLoaded);
+  end;
   SetClientSize(Point(ClientWidth, Value));
 end;
 
@@ -1449,6 +1453,10 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetClientWidth(Value: Integer);
 begin
+  if csLoading in ComponentState then begin
+    FLoadedClientSize.X:=Value;
+    Include(FControlFlags,cfClientWidthLoaded);
+  end;
   SetClientSize(Point(Value, ClientHeight));
 end;
 
@@ -1695,7 +1703,12 @@ end;
 procedure TControl.Loaded;
 begin
   inherited Loaded;
-  UpdateBaseBounds;
+  {writeln('TControl.Loaded A ',Name,':',ClassName,
+    ' CW=',cfClientWidthLoaded in FControlFlags,'=',FLoadedClientSize.X,
+    ' CH=',cfClientHeightLoaded in FControlFlags,'=',FLoadedClientSize.Y,
+    '');}
+  UpdateBaseBounds(true,true,true);
+  
   // align this control and the brothers
   if cfRequestAlignNeeded in FControlFlags then
     RequestAlign;
@@ -1745,17 +1758,30 @@ begin
   Exclude(FControlFlags,cfRequestAlignNeeded);
 end;
 
-procedure TControl.UpdateBaseBounds;
+procedure TControl.UpdateBaseBounds(StoreBounds,
+  StoreParentClientSize, UseLoadedValues: boolean);
 var
   NewBaseBounds: TRect;
   NewBaseParentClientSize: TPoint;
 begin
   if (csLoading in ComponentState) or (fBaseBoundsLock>0) then exit;
-  NewBaseBounds:=BoundsRect;
-  if Parent<>nil then
-    NewBaseParentClientSize:=Point(Parent.ClientWidth,Parent.ClientHeight)
+  if StoreBounds then
+    NewBaseBounds:=BoundsRect
   else
-    NewBaseParentClientSize:=Point(0,0);
+    NewBaseBounds:=FBaseBounds;
+  if StoreParentClientSize then begin
+    if Parent<>nil then begin
+      NewBaseParentClientSize:=Point(Parent.ClientWidth,Parent.ClientHeight);
+      if UseLoadedValues then begin
+        if cfClientWidthLoaded in Parent.FControlFlags then
+          NewBaseParentClientSize.X:=Parent.FLoadedClientSize.X;
+        if cfClientHeightLoaded in Parent.FControlFlags then
+          NewBaseParentClientSize.Y:=Parent.FLoadedClientSize.Y;
+      end;
+    end else
+      NewBaseParentClientSize:=Point(0,0);
+  end else
+    NewBaseParentClientSize:=FBaseParentClientSize;
   if CompareRect(@NewBaseBounds,@FBaseBounds)
   and (NewBaseParentClientSize.X=FBaseParentClientSize.X)
   and (NewBaseParentClientSize.Y=FBaseParentClientSize.Y)
@@ -1785,7 +1811,7 @@ end;
 
 procedure TControl.UpdateAnchorRules;
 begin
-  UpdateBaseBounds;
+  UpdateBaseBounds(true,true,false);
 end;
 
 {------------------------------------------------------------------------------
@@ -2388,6 +2414,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.134  2003/06/13 14:38:01  mattias
+  fixed using streamed clientwith/height for child anchors
+
   Revision 1.133  2003/06/13 12:53:52  mattias
   fixed TUpDown and added handler lists for TControl
 
