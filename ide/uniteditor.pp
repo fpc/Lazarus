@@ -56,12 +56,17 @@ type
     FEditor     : TmwCustomEdit;
 {$endif}
     FControl: TComponent;  //if this is a Form or Datamodule, this is used
-    FCurrentCursorXLine : Integer;  //pulled out of the editor by the Function Getxxx
-    FCurrentCursorYLine : Integer;  //pulled out of the editor by the Function Getxxx
+
+    //pulled out of the editor by the Function Getxxx
+    FCurrentCursorXLine : Integer;
+    //pulled out of the editor by the Function Getxxx
+    FCurrentCursorYLine : Integer;
     FFileName : String;
     FPopUpMenu : TPopupMenu;
     FModified : Boolean;
-    FSource : TStringList; //pulled out of the editor by the Function Getxxx
+
+    //pulled out of the editor by getting it's TStrings
+    FSource : TStringList;
     FUnitName : String;
 
     FOnAfterClose : TNotifyEvent;

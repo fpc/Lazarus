@@ -1409,6 +1409,8 @@ begin
     FormEditor1.CreateComponent(nil,TForm,
        ObjectInspector1.Left+ObjectInspector1.Width+5,ObjectInspector1.Top,
        400,300));
+
+  CInterface.SetPropByName('Designing',True);
   TempForm:=TForm(CInterface.Control);
   TempForm.Designer :=
     TDesigner.Create(TCustomForm(CInterface.Control));
@@ -1543,12 +1545,12 @@ writeln('FILESAVEDEVENT');
 If TSourceEditor(Sender).IsControlUnit then
   begin
    Writeln('*****************CREATING LFM********************');
-   Writeln('Result = '+Inttostr(CreateLFM(TCustomForm(TSourceEditor(Sender).Control))));
+//   Writeln('Result = '+Inttostr(CreateLFM(TCustomForm(TSourceEditor(Sender).Control))));
 //  writeln('RESULT IS '+inttostr(CreateLFM(Self)));
 //   Writeln('Result = '+Inttostr(CreateLFM(ViewUnits1)));
 //   Writeln('Result = '+Inttostr(CreateLFM(ViewForms1)));
 //   Writeln('Result = '+Inttostr(CreateLFM(MessageDlg)));
-//   Writeln('Result = '+Inttostr(CreateLFM(TCustomForm(TSourceEditor(Sender).Control))));
+//   Writeln('Result = '+Inttostr(CreateLFM(FindDialog1)));
    end;
 end;
 
@@ -1867,10 +1869,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.33  2001/01/05 17:44:37  lazarus
-  ViewUnits1, ViewForms1 and MessageDlg are all loaded from their resources and all controls are auto-created on them.
-  There are still a few problems with some controls so I haven't converted all forms.
-  Shane
+  Revision 1.34  2001/01/05 18:56:23  lazarus
+  Minor changes
 
   Revision 1.32  2001/01/04 20:33:53  lazarus
   Moved lresources.

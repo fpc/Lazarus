@@ -406,9 +406,9 @@ procedure TControl.WndPRoc(var Message : TLMessage);
 Var
   Form : TCustomForm;
 begin
+  if (csDesigning in ComponentState) then
+   Writeln('CSDesigning in ComponentState');
 
-//Assert(False, Format('Trace:[TControl.WndPRoc] %s --> Message = %d',[CLASSNAME, Message.msg]));
-//Assert(False, 'Trace:-----------IN TCONTROL WNDPROC----------');
   if (csDesigning in ComponentState) then
   begin
       Form := GetParentForm(Self);
@@ -1276,6 +1276,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.8  2001/01/05 18:56:23  lazarus
+  Minor changes
+
   Revision 1.7  2000/12/29 18:33:54  lazarus
   TStatusBar's create and destroy were not set to override TWinControls so they were never called.
   Shane

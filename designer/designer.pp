@@ -98,7 +98,13 @@ end;
 
 function TDesigner.IsDesignMsg(Sender: TControl; var Message: TLMessage): Boolean;
 Begin
-
+result := false;
+Writeln('In ISDESIGNMSG');
+if ((Message.msg >= LM_MOUSEFIRST) and (Message.msg <= LM_MOUSELAST)) then
+Result := true;
+if Result then Writeln('It IS a design message')
+else
+Writeln('It IS NOT a design message')
 end;
 
 procedure TDesigner.LoadFile(FileName: string);

@@ -293,11 +293,14 @@ type
   public
      constructor Create (AOwner : TComponent); override;
   published
+     property Align;
+     property Caption;
      property Enabled;
      property ItemIndex;
      property Items;
      property Columns;
      property Visible;
+     property OnClick;
   end;
 
 const
@@ -321,6 +324,9 @@ end.
 
  {
   $Log$
+  Revision 1.4  2001/01/05 18:56:23  lazarus
+  Minor changes
+
   Revision 1.3  2001/01/04 20:33:53  lazarus
   Moved lresources.
   Moved CreateLFM to Main.pp

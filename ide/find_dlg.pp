@@ -32,7 +32,7 @@ uses
 
 type
 
- TFindDialog = class(TCustomForm)
+ TFindDialog = class(TForm)
     lblTexttofind : TLabel;
     edtTexttoFind: TEdit;
     btnOK : TButton;
@@ -64,7 +64,7 @@ implementation
 constructor TFindDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fCompStyle := csForm;
+  Name := 'FindDialog1';
 
   Caption := 'Find';
   Setbounds(0,0,450,250);
@@ -77,6 +77,7 @@ begin
     Left := 10;
     Top := 5;
     Caption := 'Text to find:';
+    Name := 'lblTextToFind';
     Visible := True;
     end;
 
@@ -87,6 +88,7 @@ begin
     Left := lblTextToFind.LEft+lblTextToFind.Width+5;
     Width := Self.Width - Left - 5;
     Top := 5;
+    Name := 'edtTextToFind';
     Visible := True;
     end;
 
@@ -100,6 +102,7 @@ begin
     Width :=(Self.Width div 2) - 10;
     Height := (Self.Height div 2) -35;
     Caption := 'Options';
+    Name := 'gbGroupBox';
     Visible := True;
    end;
 
@@ -113,6 +116,7 @@ begin
      left := 5;
      top := 5;
      Caption := 'Case Sensitive';
+     Name := 'cbCaseSensitive';
      visible := True;
     end;
 
@@ -122,6 +126,7 @@ begin
      left := 5;
      top := 25;
      Caption := 'Whole Words';
+     Name := 'cbWholeWords';
      visible := True;
     end;
 
@@ -131,6 +136,7 @@ begin
      left := 5;
      top := 50;
      Caption := 'Regular Expressions';
+     Name := 'cbRegularExpressions';
      visible := True;
     end;
 
@@ -145,6 +151,7 @@ begin
      Caption := 'Direction';
      Items.Add('Forward');
      Items.Add('Backward');
+     Name := 'rgForwardBack';
      visible := True;
      ItemIndex := 0;
     end;
@@ -159,6 +166,7 @@ begin
      Caption := 'OK';
      ModalResult := mrOK;
      visible := True;
+     Name := 'btnOK';
      OnCLick := @BTnOKClicked;
      end;
 
@@ -171,6 +179,7 @@ begin
      Height := 25;
      Caption := 'Cancel';
      ModalResult := mrCancel;
+     Name := 'btnCancel';
      visible := True;
      OnCLick := @BTnCancelClicked;
      end;
@@ -184,6 +193,7 @@ begin
      Height := 25;
      Caption := 'Help';
 //     ModalResult := mrHelp;
+     Name := 'btnHelp';
      visible := True;
      OnCLick := @BTnHelpClicked;
      end;
