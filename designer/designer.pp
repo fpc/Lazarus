@@ -37,14 +37,11 @@ interface
 
 uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
-  Dialogs, IDEProcs, ControlSelection, CustomFormEditor, UnitEditor, Menus,
-  {$IFDEF DisablePkgs}
-  CompReg,
-  {$ELSE}
-  ComponentReg,
-  {$ENDIF}
-  AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts,
-  DesignerProcs, PropEdits, ComponentEditors, KeyMapping,LazarusIDEStrConsts;
+  Dialogs, ExtCtrls, Menus, IDEProcs,
+  LazarusIDEStrConsts, EnvironmentOpts, KeyMapping, ComponentReg,
+  NonControlForms, AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg,
+  DesignerProcs, PropEdits, ComponentEditors, CustomFormEditor,
+  ControlSelection;
 
 type
   TDesigner = class;
@@ -80,10 +77,11 @@ type
   private
     FAlignMenuItem: TMenuItem;
     FBringToFrontMenuItem: TMenuItem;
-    FCustomForm: TCustomForm;
+    FForm: TCustomForm;
     FDeleteSelectionMenuItem: TMenuItem;
     FFlags: TDesignerFlags;
     FGridColor: TColor;
+    FLookupRoot: TComponent;
     FMirrorHorizontalMenuItem: TMenuItem;
     FMirrorVerticalMenuItem: TMenuItem;
     FOnActivated: TNotifyEvent;
@@ -108,7 +106,6 @@ type
     FSizeMenuItem: TMenuItem;
     FSnapToGridOptionMenuItem: TMenuItem;
     FSnapToGuideLinesOptionMenuItem: TMenuItem;
-    FSourceEditor: TSourceEditor;
     FTheFormEditor: TCustomFormEditor;
 
     //hint stuff
@@ -189,7 +186,7 @@ type
     ControlSelection : TControlSelection;
     DDC: TDesignerDeviceContext;
     
-    constructor Create(Customform : TCustomform;
+    constructor Create(TheDesignerForm: TCustomForm;
        AControlSelection: TControlSelection);
     procedure DeleteFormAndFree;
     destructor Destroy; override;
@@ -224,11 +221,12 @@ type
 
   public
     property Flags: TDesignerFlags read FFlags;
-    property Form: TCustomForm read FCustomForm write FCustomForm;
+    property Form: TCustomForm read FForm;
     property GridSizeX: integer read GetGridSizeX write SetGridSizeX;
     property GridSizeY: integer read GetGridSizeY write SetGridSizeY;
     property GridColor: TColor read GetGridColor write SetGridColor;
     property IsControl: Boolean read GetIsControl write SetIsControl;
+    property LookupRoot: TComponent read FLookupRoot;
     property OnActivated: TNotifyEvent read FOnActivated write FOnActivated;
     property OnCloseQuery: TNotifyEvent read FOnCloseQuery write FOnCloseQuery;
     property OnComponentAdded: TOnComponentAdded
@@ -264,7 +262,6 @@ type
                                              read GetShowComponentCaptionHints
                                              write SetShowComponentCaptionHints;
     property SnapToGrid: boolean read GetSnapToGrid write SetSnapToGrid;
-    property SourceEditor : TSourceEditor read FSourceEditor write FSourceEditor;
     property TheFormEditor: TCustomFormEditor
                                        read FTheFormEditor write FTheFormEditor;
   end;
@@ -284,11 +281,16 @@ const
   mk_mbutton = $10;
 
 
-constructor TDesigner.Create(CustomForm : TCustomForm; 
+constructor TDesigner.Create(TheDesignerForm: TCustomForm;
   AControlSelection: TControlSelection);
 begin
   inherited Create;
-  FCustomForm := CustomForm;
+  FForm := TheDesignerForm;
+  if FForm is TNonControlForm then
+    FLookupRoot:=TNonControlForm(FForm).LookupRoot
+  else
+    FLookupRoot:=FForm;
+  
   ControlSelection:=AControlSelection;
   FFlags:=[];
   FGridColor:=clGray;
@@ -312,7 +314,7 @@ end;
 procedure TDesigner.DeleteFormAndFree;
 begin
   Include(FFlags,dfDestroyingForm);
-  TheFormEditor.DeleteControl(Form,true);
+  TheFormEditor.DeleteControl(FLookupRoot,true);
   Free;
 end;
 
@@ -334,7 +336,7 @@ Begin
   Writeln('[TDesigner.NudgeControl]');
   {$ENDIF}
   if (ControlSelection.SelectionForm<>Form)
-  or (ControlSelection.IsSelected(Form)) then exit;
+  or ControlSelection.LookupRootSelected then exit;
   ControlSelection.MoveSelection(DiffX, DiffY);
 end;
 
@@ -344,7 +346,7 @@ Begin
   Writeln('[TDesigner.NudgeSize]');
   {$ENDIF}
   if (ControlSelection.SelectionForm<>Form)
-  or (ControlSelection.IsSelected(Form)) then exit;
+  or ControlSelection.LookupRootSelected then exit;
   ControlSelection.SizeSelection(DiffX, DiffY);
 end;
 
@@ -352,14 +354,14 @@ procedure TDesigner.SelectParentOfSelection;
 var
   i: Integer;
 begin
-  if ControlSelection.IsSelected(Form) then begin
-    SelectOnlyThisComponent(Form);
+  if ControlSelection.LookupRootSelected then begin
+    SelectOnlyThisComponent(FLookupRoot);
     exit;
   end;
   i:=ControlSelection.Count-1;
   while (i>=0)
   and ((ControlSelection[i].ParentInSelection)
-    or (not (ControlSelection[i].Component is TControl))
+    or (not ControlSelection[i].IsTControl)
     or (TControl(ControlSelection[i].Component).Parent=nil)) do dec(i);
   if i>=0 then
     SelectOnlyThisComponent(TControl(ControlSelection[i].Component).Parent);
@@ -419,7 +421,7 @@ begin
     else
       TControl(AComponent).Invalidate;
   end else begin
-    FCustomForm.Invalidate;
+    FForm.Invalidate;
   end;
 end;
 
@@ -552,14 +554,21 @@ Begin
   FHintTimer.Enabled := False;
   Exclude(FFLags,dfHasSized);
   SetCaptureControl(nil);
-  ParentForm:=getParentForm(Sender);
+  ParentForm:=GetParentForm(Sender);
   if (ParentForm=nil) then exit;
+
+  MouseDownPos:=GetFormRelativeMousePosition(Form);
+  LastMouseMovePos:=MouseDownPos;
+
+  NonVisualComp:=NonVisualComponentAtPos(MouseDownPos.X,MouseDownPos.Y);
+  if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
 
   if MouseDownComponent=nil then begin
     MouseDownComponent:=GetDesignedComponent(Sender);
     if MouseDownComponent=nil then exit;
-    MouseDownSender:=Sender;
   end;
+  MouseDownSender:=Sender;
+
   case TheMessage.Msg of
   LM_LBUTTONDOWN,LM_MBUTTONDOWN,LM_RBUTTONDOWN:
     MouseDownClickCount:=1;
@@ -582,8 +591,6 @@ Begin
   if (TheMessage.keys and MK_Control) = MK_Control then
     Include(Shift,ssCtrl);
 
-  MouseDownPos:=GetFormRelativeMousePosition(Form);
-  LastMouseMovePos:=MouseDownPos;
 
   {$IFDEF VerboseDesigner}
   writeln('************************************************************');
@@ -606,8 +613,6 @@ Begin
 
   SelectedCompClass:=GetSelectedComponentClass;
 
-  NonVisualComp:=NonVisualComponentAtPos(MouseDownPos.X,MouseDownPos.Y);
-  if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
 
   if (TheMessage.Keys and MK_LButton) > 0 then begin
     // left button
@@ -655,7 +660,7 @@ Begin
       end else begin
         // mouse down on grabber -> begin sizing
         // grabber is already activated
-        // the sizing is handled in mousemove
+        // the sizing is handled in mousemove and mouseup
       end;
     end else begin
       // add component mode  -> handled in mousemove and mouseup
@@ -680,7 +685,6 @@ var
   RubberBandWasActive: boolean;
   ParentClientOrigin: TPoint;
   SelectedCompClass: TRegisteredComponent;
-  NewParent: TWinControl;
   SelectionChanged, NewRubberbandSelection: boolean;
   
   procedure GetShift;
@@ -706,6 +710,9 @@ var
   end;
   
   procedure AddComponent;
+  var
+    NewParent: TComponent;
+    NewParentControl: TWinControl;
   begin
     if MouseDownComponent=nil then exit;
 
@@ -714,15 +721,21 @@ var
     ControlSelection.Clear;
 
     // find a parent for the new component
-    if MouseDownComponent is TWinControl then
-      NewParent:=TWinControl(MouseDownComponent)
-    else
-      NewParent:=WinControlAtPos(MouseDownPos.X,MouseUpPos.X);
-    while (NewParent<>nil)
-    and ((not (csAcceptsControls in NewParent.ControlStyle))
-      or ((NewParent.Owner<>Form) and (NewParent<>Form)))
-    do begin
-      NewParent:=NewParent.Parent;
+    if FLookupRoot is TCustomForm then begin
+      if MouseDownComponent is TWinControl then
+        NewParentControl:=TWinControl(MouseDownComponent)
+      else
+        NewParentControl:=WinControlAtPos(MouseDownPos.X,MouseUpPos.X);
+      while (NewParentControl<>nil)
+      and ((not (csAcceptsControls in NewParentControl.ControlStyle))
+        or ((NewParentControl.Owner<>FLookupRoot)
+             and (NewParentControl<>FLookupRoot)))
+      do begin
+        NewParentControl:=NewParentControl.Parent;
+      end;
+      NewParent:=NewParentControl;
+    end else begin
+      NewParent:=FLookupRoot;
     end;
     ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
     if not Assigned(ParentCI) then exit;
@@ -797,18 +810,18 @@ var
     // check if start new selection or add/remove:
     NewRubberbandSelection:= (not (ssShift in Shift))
       or (ControlSelection.SelectionForm<>Form);
-    // if user press Control key, then component candidates are only childs of
-    // the control, where the mouse started
+    // if user press the Control key, then component candidates are only
+    // childs of the control, where the mouse started
     if (ssCtrl in shift) and (MouseDownComponent is TControl) then
       MaxParentControl:=TControl(MouseDownComponent)
     else
       MaxParentControl:=Form;
     SelectionChanged:=false;
     ControlSelection.SelectWithRubberBand(
-      Form,NewRubberbandSelection,ssShift in Shift,SelectionChanged,
+      FLookupRoot,NewRubberbandSelection,ssShift in Shift,SelectionChanged,
       MaxParentControl);
     if ControlSelection.Count=0 then begin
-      ControlSelection.Add(Form);
+      ControlSelection.Add(FLookupRoot);
       SelectionChanged:=true;
     end;
     ControlSelection.RubberbandActive:=false;
@@ -824,8 +837,7 @@ var
   begin
     if (not (ssShift in Shift)) then begin
       // select only the mouse down component
-      if ControlSelection.AssignComponent(MouseDownComponent) then
-        {Form.Invalidate};
+      ControlSelection.AssignComponent(MouseDownComponent);
       if (MouseDownClickCount=2)
       and (ControlSelection.SelectionForm=Form) then begin
         // Double Click -> invoke 'Edit' of the component editor
@@ -840,7 +852,6 @@ var
   begin
     if ControlSelection.RubberbandActive then begin
       ControlSelection.RubberbandActive:=false;
-      //Form.Invalidate;
     end;
   end;
   
@@ -849,6 +860,7 @@ Begin
   SetCaptureControl(nil);
   
   // check if the message is for the designed form
+  // and there was a mouse down before
   SenderParentForm:=GetParentForm(Sender);
   if (MouseDownComponent=nil) or (SenderParentForm=nil)
   or (SenderParentForm<>Form)
@@ -929,7 +941,7 @@ begin
   if [dfShowEditorHints,dfShowComponentCaptionHints]*FFlags<>[] then begin
     FHintTimer.Enabled := False;
 
-    { don't want it enabled when a mouse button is pressed. }
+    // hide hint
     FHintTimer.Enabled :=
           (TheMessage.keys or (MK_LButton and MK_RButton and MK_MButton) = 0);
     if FHintWindow.Visible then
@@ -990,13 +1002,13 @@ begin
           CurSnappedMousePos.Y-OldSnappedMousePos.Y);
         if Assigned(OnModified) then OnModified(Self);
       end else begin
-        // no grabber resizing
+        // no grabber active
         SelectedCompClass:=GetSelectedComponentClass;
         if (not ControlSelection.RubberBandActive)
+        and (SelectedCompClass=nil)
         and (Shift=[])
         and (ControlSelection.Count>=1)
-        and not (ControlSelection.IsSelected(Form))
-        and (SelectedCompClass=nil)
+        and (not ControlSelection.LookupRootSelected)
         then begin
           // move selection
           if not (dfHasSized in FFlags) then begin
@@ -1011,7 +1023,7 @@ begin
         end
         else
         begin
-          // rubberband sizing
+          // rubberband sizing (selection or creation)
           ControlSelection.RubberBandBounds:=Rect(MouseDownPos.X,MouseDownPos.Y,
                                                   LastMouseMovePos.X,
                                                   LastMouseMovePos.Y);
@@ -1115,18 +1127,18 @@ var
 begin
   if (ControlSelection.Count=0) or (ControlSelection.SelectionForm<>Form) then
     exit;
-  if (ControlSelection.IsSelected(FCustomForm)) then begin
+  if (ControlSelection.LookupRootSelected) then begin
     if ControlSelection.Count>1 then
       MessageDlg('Invalid delete',
-       'Selections can not be deleted, if the form is selected.',mtInformation,
+       'The root component can not be deleted.',mtInformation,
        [mbOk],0);
     exit;
   end;
   // mark selected components for deletion
   for i:=0 to ControlSelection.Count-1 do
     MarkComponentForDeletion(ControlSelection[i].Component);
-  // clear selection by selecting the form
-  SelectOnlythisComponent(FCustomForm);
+  // clear selection by selecting the LookupRoot
+  SelectOnlythisComponent(FLookupRoot);
   // delete marked components
   while DeletingComponents.Count>0 do
     RemoveComponentAndChilds(
@@ -1209,7 +1221,6 @@ end;
 procedure TDesigner.Modified;
 Begin
   ControlSelection.SaveBounds;
-  //Form.Invalidate;
   if Assigned(FOnModified) then FOnModified(Self);
 end;
 
@@ -1222,14 +1233,14 @@ Begin
   {$IFDEF VerboseDesigner}
   Writeln('[TDesigner.RemoveComponentAndChilds] ',AComponent.Name,':',AComponent.ClassName);
   {$ENDIF}
-  if AComponent=Form then exit;
-  // remove all child controls owned by the form
+  if (AComponent=FLookupRoot) or (AComponent=Form) then exit;
+  // remove all child controls owned by the LookupRoot
   if (AComponent is TWinControl) then begin
     AWinControl:=TWinControl(AComponent);
     i:=AWinControl.ControlCount-1;
     while (i>=0) do begin
       ChildControl:=AWinControl.Controls[i];
-      if ChildControl.Owner=Form then begin
+      if ChildControl.Owner=FLookupRoot then begin
         RemoveComponentAndChilds(ChildControl);
         // the component list of the form has changed
         // -> restart the search
@@ -1337,12 +1348,12 @@ end;
 procedure TDesigner.ValidateRename(AComponent: TComponent;
   const CurName, NewName: string);
 Begin
-  // check if contol is initialized
+  // check if component is initialized
   if (CurName='') or (NewName='')
   or ((AComponent<>nil) and (csDestroying in AComponent.ComponentState)) then
     exit;
-  // check if control is the form
-  if AComponent=nil then AComponent:=FCustomForm;
+  // check if component is the LookupRoot
+  if AComponent=nil then AComponent:=FLookupRoot;
   // consistency check
   if CurName<>AComponent.Name then
     writeln('WARNING: TDesigner.ValidateRename: OldComponentName="',CurName,'"');
@@ -1357,7 +1368,7 @@ end;
 
 function TDesigner.CreateUniqueComponentName(const AClassName: string): string;
 begin
-  Result:=TheFormEditor.CreateUniqueComponentName(AClassName,Form);
+  Result:=TheFormEditor.CreateUniqueComponentName(AClassName,FLookupRoot);
 end;
 
 procedure TDesigner.OnComponentEditorVerbMenuItemClick(Sender: TObject);
@@ -1487,10 +1498,10 @@ var
   IconCanvas: TCanvas;
   AComponent: TComponent;
 begin
-  for i:=0 to FCustomForm.ComponentCount-1 do begin
-    AComponent:=FCustomForm.Components[i];
+  for i:=0 to FLookupRoot.ComponentCount-1 do begin
+    AComponent:=FLookupRoot.Components[i];
     if (not (AComponent is TControl))
-    and (not (AComponent is TMenuItem)) then begin
+    and (not ComponentIsInvisible(AComponent)) then begin
       Diff:=aDDC.FormOrigin;
       // non-visual component
       ItemLeftTop:=NonVisualComponentLeftTop(AComponent);
@@ -1545,11 +1556,15 @@ end;
 function TDesigner.GetDesignedComponent(AComponent: TComponent): TComponent;
 begin
   Result:=AComponent;
-  while (Result<>nil)
-  and (Result<>Form)
-  and (Result.Owner<>Form)
-  and (Result is TControl) do
-    Result:=TControl(Result).Parent;
+  if AComponent=Form then begin
+    AComponent:=FLookupRoot;
+  end else begin
+    while (Result<>nil)
+    and (Result<>FLookupRoot)
+    and (Result.Owner<>FLookupRoot)
+    and (Result is TControl) do
+      Result:=TControl(Result).Parent;
+  end;
 end;
 
 function TDesigner.GetComponentEditorForSelection: TBaseComponentEditor;
@@ -1588,10 +1603,10 @@ function TDesigner.NonVisualComponentAtPos(x,y: integer): TComponent;
 var i: integer;
   LeftTop: TPoint;
 begin
-  for i:=FCustomForm.ComponentCount-1 downto 0 do begin
-    Result:=FCustomForm.Components[i];
+  for i:=FLookupRoot.ComponentCount-1 downto 0 do begin
+    Result:=FLookupRoot.Components[i];
     if (not (Result is TControl))
-    and (not (Result is TMenuItem))then begin
+    and (not ComponentIsInvisible(Result)) then begin
       with Result do begin
         LeftTop:=NonVisualComponentLeftTop(Result);
         if (LeftTop.x<=x) and (LeftTop.y<=y)
@@ -1608,8 +1623,8 @@ function TDesigner.WinControlAtPos(x, y: integer): TWinControl;
 var i: integer;
   WinControlBounds: TRect;
 begin
-  for i:=FCustomForm.ComponentCount-1 downto 0 do begin
-    Result:=TWinControl(FCustomForm.Components[i]);
+  for i:=FLookupRoot.ComponentCount-1 downto 0 do begin
+    Result:=TWinControl(FLookupRoot.Components[i]);
     if (Result is TWinControl) then begin
       with Result do begin
         WinControlBounds:=GetParentFormRelativeBounds(Result);
@@ -1638,18 +1653,18 @@ procedure TDesigner.BuildPopupMenu;
 
 var
   ControlSelIsNotEmpty,
-  FormIsSelected,
+  LookupRootIsSelected,
   OnlyNonVisualCompsAreSelected,
   CompsAreSelected: boolean;
 begin
   if FPopupMenu<>nil then FPopupMenu.Free;
 
   ControlSelIsNotEmpty:=(ControlSelection.Count>0)
-     and (ControlSelection.SelectionForm=Form);
-  FormIsSelected:=ControlSelection.IsSelected(Form);
+                        and (ControlSelection.SelectionForm=Form);
+  LookupRootIsSelected:=ControlSelection.LookupRootSelected;
   OnlyNonVisualCompsAreSelected:=
-    ControlSelection.OnlyNonVisualComponentsSelected;
-  CompsAreSelected:=ControlSelIsNotEmpty and not FormIsSelected;
+                               ControlSelection.OnlyNonVisualComponentsSelected;
+  CompsAreSelected:=ControlSelIsNotEmpty and not LookupRootIsSelected;
 
   FPopupMenu:=TPopupMenu.Create(nil);
 
@@ -1722,7 +1737,7 @@ begin
   with FDeleteSelectionMenuItem do begin
     Caption:= fdmDeleteSelection;
     OnClick:=@OnDeleteSelectionMenuClick;
-    Enabled:= ControlSelIsNotEmpty and (not FormIsSelected);
+    Enabled:= ControlSelIsNotEmpty and (not LookupRootIsSelected);
   end;
   FPopupMenu.Items.Add(FDeleteSelectionMenuItem);
 
@@ -1852,7 +1867,7 @@ begin
   end;
 end;
 
-Procedure TDesigner.HintTimer(sender : TObject);
+Procedure TDesigner.HintTimer(Sender: TObject);
 var
   Rect : TRect;
   AHint : String;
@@ -1866,8 +1881,8 @@ begin
 
   Position := Mouse.CursorPos;
   AWinControl := FindLCLWindow(Position);
-  if not(Assigned(AWinControl)) then Exit;
-  if GetParentForm(AWinControl)<>Form then exit;
+  if not (Assigned(AWinControl)) then Exit;
+  if GetDesignerForm(AWinControl)<>Form then exit;
 
   // first search a non visual component at the position
   ClientPos:=Form.ScreenToClient(Position);
