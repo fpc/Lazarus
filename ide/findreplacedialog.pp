@@ -133,7 +133,7 @@ begin
       Parent:=Self;
       Left:=8;
       Top:=8;
-      Width:= 100;
+      Width:= TextToFindComboBox.Left-Left;
       Caption:=dlgTextToFing;
       FocusControl:= TextToFindComboBox;
     end;
@@ -142,9 +142,9 @@ begin
     with ReplaceTextComboBox do begin
       Name:='ReplaceTextComboBox';
       Parent:=Self;
-      Left:=90;
+      Left:=TextToFindComboBox.Left;
       Top:=28;
-      Width:= 306;
+      Width:= TextToFindComboBox.Width;
       Anchors:= [akLeft, akTop, akRight];
       Text:='';
       OnKeyDown:=@TextToFindComboBoxKeyDown;
@@ -154,9 +154,9 @@ begin
     with ReplaceWithLabel do begin
       Name:='ReplaceWithLabel';
       Parent:=Self;	
-      Left:=8;
+      Left:=TextToFindLabel.Left;
       Top:=32;
-      Width:= 100;
+      Width:= TextToFindLabel.Width;
       Caption:=dlgReplaceWith;
       FocusControl:= ReplaceTextComboBox;
     end;

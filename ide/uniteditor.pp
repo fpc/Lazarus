@@ -516,14 +516,31 @@ type
     procedure ToggleFormUnitClicked(Sender: TObject);
     procedure ToggleObjectInspClicked(Sender: TObject);
 
+    // find / replace text
     procedure InitFindDialog;
     procedure FindClicked(Sender: TObject);
     procedure FindNextClicked(Sender: TObject);
     procedure FindPreviousClicked(Sender: TObject);
     procedure ReplaceClicked(Sender: TObject);
     procedure IncrementalFindClicked(Sender: TObject);
+
+    // incremental find
+    procedure EndIncrementalFind;
+    property IncrementalSearchStr: string
+      read FIncrementalSearchStr write SetIncrementalSearchStr;
+
+    // FindInFiles
     procedure FindInFiles(AProject: TProject);
     procedure ShowSearchResultsView;
+    function CreateFindInFilesDialog: TLazFindInFilesDialog;
+    procedure LoadFindInFilesHistory(ADialog: TLazFindInFilesDialog);
+    procedure SaveFindInFilesHistory(ADialog: TLazFindInFilesDialog);
+    procedure FIFSearchProject(AProject: TProject;
+                               ADialog: TLazFindInFilesDialog);
+    procedure FIFSearchOpenFiles(ADialog: TLazFindInFilesDialog);
+    procedure FIFSearchDir(ADialog: TLazFindInFilesDialog);
+    function FIFCreateSearchForm(ADialog:TLazFindInFilesDialog): TSearchForm;
+    procedure DoFindInFiles(ASearchForm: TSearchForm);
 
     procedure GotoLineClicked(Sender: TObject);
 
@@ -558,20 +575,6 @@ type
 
     procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
                   Shift:TShiftState; FindDlgComponent: TFindDlgComponent);
-
-    procedure EndIncrementalFind;
-    property IncrementalSearchStr: string
-      read FIncrementalSearchStr write SetIncrementalSearchStr;
-    //FindInFiles
-    function CreateFindInFilesDialog: TLazFindInFilesDialog;
-    procedure LoadFindInFilesHistory(ADialog: TLazFindInFilesDialog);
-    procedure SaveFindInFilesHistory(ADialog: TLazFindInFilesDialog);
-    procedure FIFSearchProject(AProject: TProject;
-                               ADialog: TLazFindInFilesDialog);
-    procedure FIFSearchOpenFiles(ADialog: TLazFindInFilesDialog);
-    procedure FIFSearchDir(ADialog: TLazFindInFilesDialog);
-    function FIFCreateSearchForm(ADialog:TLazFindInFilesDialog): TSearchForm;
-    procedure DoFindInFiles(ASearchForm: TSearchForm);
 
   published
     property OnAddJumpPoint: TOnAddJumpPoint
@@ -744,7 +747,13 @@ begin
     P := ClientToScreen(Point(CaretXPix, CaretYPix));
   Left:=EditorComponent.ClientOrigin.X+(EditorComponent.Width - Width) div 2;
   Top:=P.Y-Height-2*EditorComponent.LineHeight;
-  if Top<10 then Top:=P.y+2*EditorComponent.LineHeight;
+  if Top<10 then begin
+    Top:=P.y+2*EditorComponent.LineHeight;
+    if Top+Height>SCreen.Height then begin
+      Top:=(Screen.Height-Height) div 2;
+      if Top<0 then Top:=0;
+    end;
+  end;
 end;
 
 procedure TSourceEditor.ActivateHint(ClientPos: TPoint; const TheHint: string);
