@@ -3991,6 +3991,20 @@ begin
     exit;
   end;
   
+  // check
+  if ([ofRegularFile,ofRevert,ofProjectLoading]*Flags=[]) then begin
+    if CompareFileExt(AFilename,'.lpi',false)=0 then begin
+      if MessageDlg('Open Project?',
+        'Open the project '+AFilename+'?'#13
+        +'Answer No to load is as xml file.',
+        mtConfirmation,[mbYes,mbNo],0)=mrYes
+      then begin
+        Result:=DoOpenProjectFile(AFilename);
+        exit;
+      end;
+    end;
+  end;
+  
   // check if the project knows this file
   if (not (ofRevert in Flags)) then begin
     UnitIndex:=Project1.IndexOfFilename(AFilename);
@@ -7814,6 +7828,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.474  2003/03/06 22:41:33  mattias
+  open file now asks on .lpi files
+
   Revision 1.473  2003/03/02 09:04:02  mattias
   added make resourcestring dialog, not finished
 
