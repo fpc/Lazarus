@@ -804,7 +804,7 @@ var
   PS : PPaintStruct;
   DC : TDeviceContext;
 begin
-  if Msg^.Msg=LM_PAINT then begin
+  if (Msg^.Msg=LM_PAINT) or (Msg^.Msg=LM_INTERNALPAINT) then begin
     If Msg^.LParam <> 0 then begin
        PS := PPaintStruct(Msg^.LParam);
        If Msg^.WParam<>0 then
@@ -831,7 +831,7 @@ var
   PS : PPaintStruct;
   DC : TDeviceContext;
 begin
-  if Msg^.Message=LM_PAINT then begin
+  if (Msg^.Message=LM_PAINT) or (Msg^.Message=LM_INTERNALPAINT) then begin
     If Msg^.LParam <> 0 then begin
        PS := PPaintStruct(Msg^.LParam);
        If Msg^.WParam<>0 then
@@ -2560,6 +2560,7 @@ begin
     ' Message=',GetMessageName(TLMessage(AMessage).Msg));
   {$ENDIF}
   if (TLMessage(AMessage).Msg=LM_PAINT)
+  or (TLMessage(AMessage).Msg=LM_INTERNALPAINT)
   or (TLMessage(AMessage).Msg=LM_GtkPaint) then
     CurrentSentPaintMessageTarget:=TObject(Target);
   try
@@ -3465,6 +3466,10 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     for DesignSignalType:=Low(TDesignSignalType) to High(TDesignSignalType) do
     begin
       if DesignSignalType=dstUnknown then continue;
+      if (not DesignSignalBefore[DesignSignalType])
+      and (not DesignSignalAfter[DesignSignalType]) then
+        continue;
+
       DesignFlags:=[csfDesignOnly];
       if DesignSignalAfter[DesignSignalType] then
         Include(DesignFlags,csfAfter);
@@ -6205,6 +6210,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.249  2004/01/26 11:55:35  mattias
+  fixed resizing synedit
+
   Revision 1.248  2004/01/23 13:55:30  mattias
   style widgets are now realized, so all values are initialized
 

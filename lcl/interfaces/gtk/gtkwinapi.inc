@@ -7448,7 +7448,8 @@ var
       //and (TargetObject is TWinControl) then
       //  SendPaintMessagesForInternalWidgets(TWinControl(TargetObject));
     end else
-    if (AMessage.Msg=LM_PAINT) and (AMessage.WParam<>0) then begin
+    if ((AMessage.Msg=LM_PAINT) or (AMessage.Msg=LM_INTERNALPAINT))
+    and (AMessage.WParam<>0) then begin
       // free DC
       ReleaseDC(0,AMessage.WParam);
       AMessage.WParam:=0;
@@ -7480,7 +7481,7 @@ begin
     // deliver it
     Result := DeliverMessage(Target, AMessage);
     
-    if (Msg=LM_PAINT) or (Msg=LM_GtkPaint) then begin
+    if (Msg=LM_PAINT) or (Msg=LM_INTERNALPAINT) or (Msg=LM_GtkPaint) then begin
       DisposePaintMessage(Target,AMessage);
     end;
   end;
@@ -8700,6 +8701,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.322  2004/01/26 11:55:35  mattias
+  fixed resizing synedit
+
   Revision 1.321  2004/01/23 13:55:30  mattias
   style widgets are now realized, so all values are initialized
 

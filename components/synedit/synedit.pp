@@ -2180,7 +2180,7 @@ var
 begin
   // Get the invalidated rect. Compute the invalid area in lines / columns.
   {$IFDEF SYN_LAZARUS}
-  rcClip:=Rect(0,0,Width,Height);
+  rcClip:=Rect(0,0,ClientWidth,ClientHeight);
   StartPaintBuffer(rcClip);
   Include(fStateFlags,sfPainting);
   {$ELSE}
@@ -3213,15 +3213,22 @@ end;
 
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.StartPaintBuffer(const ClipRect: TRect);
+var
+  NewBufferWidth: Integer;
+  NewBufferHeight: Integer;
 begin
   if (SavedCanvas<>nil) then RaiseGDBException('');
   {$IFNDEF DisableDoubleBuf}
   if BufferBitmap=nil then
     BufferBitmap:=TBitmap.Create;
-  if BufferBitmap.Width<ClipRect.Right then
-    BufferBitmap.Width:=ClipRect.Right;
-  if BufferBitmap.Height<ClipRect.Bottom then
-    BufferBitmap.Height:=ClipRect.Bottom;
+  NewBufferWidth:=BufferBitmap.Width;
+  NewBufferHeight:=BufferBitmap.Height;
+  if NewBufferWidth<ClipRect.Right then
+    NewBufferWidth:=ClipRect.Right;
+  if NewBufferHeight<ClipRect.Bottom then
+    NewBufferHeight:=ClipRect.Bottom;
+  BufferBitmap.Width:=NewBufferWidth;
+  BufferBitmap.Height:=NewBufferHeight;
   SavedCanvas:=Canvas;
   Canvas:=BufferBitmap.Canvas;
   {$ENDIF}
@@ -3236,9 +3243,7 @@ begin
   if not (SavedCanvas is TControlCanvas) then RaiseGDBException('');
   Canvas:=SavedCanvas;
   SavedCanvas:=nil;
-  //writeln('TCustomSynEdit.EndPaintBuffer A');
   Canvas.CopyRect(ClipRect,BufferBitmap.Canvas,ClipRect);
-  //writeln('TCustomSynEdit.EndPaintBuffer END');
   {$ENDIF}
 end;
 

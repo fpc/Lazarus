@@ -240,6 +240,7 @@ begin
     end;
   end;
 
+  // otherwise create a default handle
   if (FImage.FHandle = 0) then begin
     case PixelFormat of
       pfDevice : n:= ScreenInfo.ColorDepth;
@@ -569,12 +570,9 @@ begin
   with FImage do
     if (FDIB.dsbm.bmHeight <> NewHeight) or (FDIB.dsbm.bmWidth <> NewWidth) then
     begin
+      FreeImage;
       FDIB.dsbm.bmWidth := NewWidth;
       FDIB.dsbm.bmHeight := NewHeight;
-      If (NewWidth > 0) and (NewHeight > 0) then
-        HandleNeeded
-      else
-        FreeImage;
       Changed(Self);
     end;
 end;
@@ -885,7 +883,7 @@ begin
   with FImage do begin
     FreeHandle;
     FHandle:=Value;
-    FillChar(FDIB, sizeof(FDIB), 0);
+    FillChar(FDIB, SizeOf(FDIB), 0);
     if FHandle <> 0 then
       GetObject(FHandle, SizeOf(FDIB), @FDIB);
     Changed(Self);
@@ -1013,6 +1011,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.56  2004/01/26 11:55:35  mattias
+  fixed resizing synedit
+
   Revision 1.55  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

@@ -435,28 +435,39 @@ type
   TDesignSignalMask = longint;
 
 const
-    DesignSignalNames: array[TDesignSignalType] of PChar = (
+  DesignSignalBefore: array[TDesignSignalType] of boolean = (
+    true,  // dstUnknown
+    true,  // dstMousePress
+    true,  // dstMouseMotion
+    true,  // dstMouseRelease
+    false, // dstDrawAfter
+    false  // dstExposeAfter
+    );
+
+  DesignSignalAfter: array[TDesignSignalType] of boolean = (
+    false, // dstUnknown
+    false, // dstMousePress
+    false, // dstMouseMotion
+    false, // dstMouseRelease
+    false, // dstDrawAfter
+    false  // dstExposeAfter
+    );
+
+  DesignSignalNames: array[TDesignSignalType] of PChar = (
     '',
     'button-press-event',
     'motion-notify-event',
     'button-release-event',
-{$Ifdef GTK1}
     'draw',
-{$EndIf}
     'expose-event'
     );
-
-  DesignSignalAfter: array[TDesignSignalType] of boolean =
-    (false,false,false,false,{$Ifdef GTK1}true,{$EndIf}true);
 
   DesignSignalFuncs: array[TDesignSignalType] of Pointer = (
     nil,
     @gtkMouseBtnPress,
     @gtkMotionNotify,
     @gtkMouseBtnRelease,
-{$Ifdef GTK1}
     @gtkDrawAfter,
-{$EndIf}
     @gtkExposeEventAfter
     );
 
