@@ -12,7 +12,7 @@ options=-gl -k-lGL
 unitdir=. ../../../lcl/units ../../../lcl/units/gtk
 
 [target]
-units=gtkglarea
+units=gtkglareacontrol
 implicitunits=gtkglarea_int nvgl gtkglareacontrol
 
 [default]

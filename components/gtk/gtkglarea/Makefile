@@ -205,7 +205,7 @@ endif
 PACKAGESDIR:=$(wildcard $(FPCDIR) $(FPCDIR)/packages/base $(FPCDIR)/packages/extra)
 override PACKAGE_NAME=gtkopengl
 override PACKAGE_VERSION=1.0
-override TARGET_UNITS+=gtkglarea
+override TARGET_UNITS+=gtkglareacontrol
 override TARGET_IMPLICITUNITS+=gtkglarea_int nvgl gtkglareacontrol
 override CLEAN_FILES+=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
 override DIST_ZIPNAME=lazarus.gtkglarea.$(ZIPSUFFIX)
