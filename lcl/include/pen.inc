@@ -208,8 +208,9 @@ function TPen.GetHandle: HPEN;
 const
   PEN_STYLES: array[TPenStyle] of Word = (
     {$IFDEF UseFPCanvas}
-    PS_NULL, ps_Solid, ps_Dash, ps_Dot, ps_DashDot, ps_DashDotDot,
-    ps_insideFrame, ps_Solid // TODO pattern
+    ps_Solid, ps_Dash, ps_Dot, ps_DashDot, ps_DashDotDot, ps_insideFrame,
+    ps_Solid,{ ToDo ps_Pattern,}
+    ps_NULL
     {$ELSE}
     PS_SOLID,PS_DASH,PS_DOT,PS_DASHDOT,PS_DASHDOTDOT,PS_NULL,PS_INSIDEFRAME
     {$ENDIF}
@@ -306,6 +307,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2005/01/20 00:31:39  mattias
+  fixed fpCanvas TPenStyle to LCL intf pen styles
+
   Revision 1.20  2005/01/13 22:55:04  mattias
   fixed fpcanvas TPen.Style
 
