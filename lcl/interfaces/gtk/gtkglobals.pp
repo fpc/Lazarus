@@ -33,6 +33,7 @@ uses
 var
   // gtk-interface options
   UseTransientForModalWindows: boolean;
+  UpdatingTransientWindows: boolean;
 
 var
   //drag icons
@@ -287,6 +288,7 @@ implementation
 initialization
   ModalWindows:=nil;
   UseTransientForModalWindows:=true;
+  UpdatingTransientWindows:=false;
 
 end.
 
