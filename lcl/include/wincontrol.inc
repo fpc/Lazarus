@@ -920,6 +920,14 @@ begin
   end;
 end;
 
+procedure TWinControl.SetColor(Value: TColor);
+begin
+  if Value=Color then exit;
+  inherited SetColor(Value);
+  if HandleAllocated then
+    CNSendMessage(LM_SETCOLOR, Self, nil);
+end;
+
 procedure TWinControl.PaintHandler(var TheMessage: TLMPaint);
 
   function ControlMustBeClipped(AControl: TControl): boolean;
@@ -2542,6 +2550,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.109  2002/12/27 17:46:04  mattias
+  fixed SetColor
+
   Revision 1.108  2002/12/27 17:12:38  mattias
   added more Delphi win32 compatibility functions
 
