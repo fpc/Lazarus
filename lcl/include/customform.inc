@@ -3,7 +3,7 @@
 {******************************************************************************
                                      TCustomForm
  ******************************************************************************
- 
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -225,7 +225,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TCustomForm.GetIconHandle
-  Returns: handle of form icon 
+  Returns: handle of form icon
  ------------------------------------------------------------------------------}
 function TCustomForm.GetIconHandle: HICON;
 begin
@@ -462,7 +462,7 @@ End;
   Params:   none
   Returns:  nothing
 
-  Calls user handler  
+  Calls user handler
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoCreate;
 begin
@@ -476,7 +476,7 @@ end;
   Params:   none
   Returns:  nothing
 
-  Calls user handler  
+  Calls user handler
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoClose(var Action: TCloseAction);
 begin
@@ -488,7 +488,7 @@ end;
   Params:   none
   Returns:  nothing
 
-  Calls user handler  
+  Calls user handler
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoDestroy;
 begin
@@ -517,7 +517,7 @@ end;
   Params:   none
   Returns:  nothing
 
-  Calls user handler  
+  Calls user handler
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoHide;
 begin
@@ -529,7 +529,7 @@ end;
   Params:   none
   Returns:  nothing
 
-  Calls user handler  
+  Calls user handler
  ------------------------------------------------------------------------------}
 procedure TCustomForm.DoShow;
 begin
@@ -682,7 +682,7 @@ begin
         if (Msg = LM_SetFocus) and not (csDesigning in ComponentState)
         then begin
           FocusHandle := 0;
-          if FormStyle = fsMDIFORM 
+          if FormStyle = fsMDIFORM
           then begin
             // ToDo
           end
@@ -702,25 +702,25 @@ begin
           end;
         end;
       end;
-    CM_EXIT:  
+    CM_EXIT:
       begin
         //TODO: deal with docking                if HostDockSite <> nil then DeActivate;
       end;
-    CM_ENTER:  
+    CM_ENTER:
       begin
         //TODO: Deal with docking                if HostDockSite <> nil then Activate;
       end;
     LM_WINDOWPOSCHANGING:
-      if ([csLoading, csDesigning] * ComponentState = [csLoading]) 
+      if ([csLoading, csDesigning] * ComponentState = [csLoading])
       then begin
-        if  (Position in [poDefault, poDefaultPosOnly]) 
-        and (WindowState <> wsMaximized) 
+        if  (Position in [poDefault, poDefaultPosOnly])
+        and (WindowState <> wsMaximized)
         then
           with PWindowPos(TheMessage.lParam)^ do
             flags := flags or SWP_NOMOVE;
-        
-        if  (Position in [poDefault, poDefaultSizeOnly]) 
-        and (BorderStyle in [bsSizeable, bsSizeToolWin]) 
+
+        if  (Position in [poDefault, poDefaultSizeOnly])
+        and (BorderStyle in [bsSizeable, bsSizeToolWin])
         then
           with PWindowPos(TheMessage.lParam)^ do
             flags := flags or SWP_NOSIZE;
@@ -728,10 +728,10 @@ begin
     LM_DRAWITEM:
       with PDrawItemStruct(TheMessage.LParam)^ do
       begin
-        if (CtlType = ODT_MENU) and Assigned(Menu) 
+        if (CtlType = ODT_MENU) and Assigned(Menu)
         then begin
           MenuItem := Menu.FindItem(itemID, fkCommand);
-          if MenuItem <> nil 
+          if MenuItem <> nil
           then begin
             {Canvas2 := TControlCanvas.Create;
             with Canvas2 do
@@ -758,11 +758,11 @@ riteln('[TCustomForm.WndPRoc] 1');
 {
     LM_MEASUREITEM:
       with PMeasureItemStruct(Message.LParam)^ do
-      begin 
-        if (CtlType = ODT_MENU) and Assigned(Menu) 
+      begin
+        if (CtlType = ODT_MENU) and Assigned(Menu)
         then begin
           MenuItem := Menu.FindItem(itemID, fkCommand);
-          if MenuItem <> nil 
+          if MenuItem <> nil
           then begin
             DC := GetWindowDC(Handle);
             try
@@ -785,13 +785,13 @@ riteln('[TCustomForm.WndPRoc] 1');
             finally
               ReleaseDC(Handle, DC);
             end;
-          
+
             Exit;
           end;
         end;
       end;
 }
-    LM_SHOWWINDOW:  
+    LM_SHOWWINDOW:
       begin
         Assert(False, 'Trace:LM_SHOWWINDOW RECEIVED!!!!!!!!!!!');
       end;
@@ -836,6 +836,7 @@ begin
     FMenu.Parent:=Self;
     if HandleAllocated and (not (csLoading in ComponentState)) then
       FMenu.HandleNeeded;
+      InterfaceObject.AttachMenuToWindow(FMenu);
   end;
 end;
 
@@ -928,7 +929,7 @@ begin
   if Value <> FPosition then begin
     FPosition := Value;
     UpdateControlState;
-  end;    
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1075,7 +1076,7 @@ begin
 	Exit;
        end;
     end;}
-  end;    
+  end;
   Result := true;
   if Assigned(FOnCloseQuery) then FOnCloseQuery(Self, Result);
 end;
@@ -1149,7 +1150,7 @@ begin
       FActiveControl := Control
     else
       FActiveControl := nil;
-      
+
   // update Screen object
   Screen.FActiveControl := Control;
   Screen.FActiveCustomForm := Self;
@@ -1158,18 +1159,18 @@ begin
     Screen.FActiveForm := TForm(Self)
   else
     Screen.FActiveForm := nil;
-    
+
   {$IFDEF VerboseFocus}
   write('TCustomForm.SetFocusedControl Self=',Name,':',ClassName,' ');
   write(' Control=',Control.Name,':',Control.ClassName,' Control.HandleAllocated=',Control.HandleAllocated);
   writeln();
   {$ENDIF}
-  
+
   Result:=true;
-    
+
   {
   Inc(FocusCount);
-  
+
   // prevent looping
   if (csFocusing in Control.ControlState) then exit;
   Control.ControlState := Control.ControlState + [csFocusing];
@@ -1226,7 +1227,7 @@ end;
 {------------------------------------------------------------------------------}
 {       TCustomForm Method WantChildKey            }
 {------------------------------------------------------------------------------}
-function TCustomForm.WantChildKey(Child : TControl; 
+function TCustomForm.WantChildKey(Child : TControl;
   var Message : TLMessage):Boolean;
 begin
   Result := False;
@@ -1251,7 +1252,7 @@ begin
   FPixelsPerInch:=GetDeviceCaps(DC,LOGPIXELSX);
   ReleaseDC(Handle,DC);
 
-  Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');  
+  Assert(False, 'Trace:[TCustomForm.CreateWnd] FMenu.HandleNeeded');
   if FMenu <> nil then FMenu.HandleNeeded;
 
   // activate focus if visible
@@ -1301,7 +1302,7 @@ end;
   Here the initial form left and top are determined.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.UpdateShowing;
-var 
+var
   X, Y : integer;
 begin
   {$IFDEF CHECK_POSITION}
@@ -1312,14 +1313,14 @@ begin
     // first make sure X and Y are assigned
     X := Left;
     Y := Top;
-    
-    if  (Position = poMainFormCenter) 
-    and (FormStyle = fsMDIChild) 
-    and (Self <> Application.Mainform) 
+
+    if  (Position = poMainFormCenter)
+    and (FormStyle = fsMDIChild)
+    and (Self <> Application.Mainform)
     then begin
       X:= (Application.Mainform.ClientWidth - Width) div 2;
       Y:= (Application.Mainform.ClientHeight - Height) div 2;
-    end 
+    end
     else begin
       case Position of
       //TODO:poDefault, poDefaultPosOnly, poDefaultSizeOnly
@@ -1339,7 +1340,7 @@ begin
           Y:= ((TCustomForm(Owner).Height - Height) div 2) + TCustomForm(Owner).Top;
         end;
       end;
-    end;  
+    end;
     if X < 0 then X := 0;
     if Y < 0 then Y := 0;
     SetBounds(X, Y, Width, Height);
@@ -1418,7 +1419,7 @@ begin
         end;
         Application.Idle;
       until false;
-      
+
       Result := ModalResult;
       if HandleAllocated and (GetActiveWindow <> Handle) then
         ActiveWindow := 0;
@@ -1446,6 +1447,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.119  2003/12/18 08:00:37  micha
+  setmenu fix, notify interface (from darek)
+
   Revision 1.118  2003/11/23 00:28:51  mattias
   fixed closing IDE while debugging
 
