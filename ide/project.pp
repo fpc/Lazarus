@@ -1346,7 +1346,7 @@ procedure TProject.OnLoadSaveFilename(var AFilename:string; Load:boolean);
     {$ELSE}
     // windows
     Result:=(length(TheFilename)<3) or (copy(TheFilename,1,2)='\\')
-        or ((upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\');
+        or ((upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\'));
     {$ENDIF}
   end;
 
@@ -1399,6 +1399,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2001/03/09 17:54:45  lazarus
+  Fixed error in Windows section of OnLoadSaveFilename - missing ')'
+
   Revision 1.14  2001/03/09 11:38:20  lazarus
   auto load last project
 
