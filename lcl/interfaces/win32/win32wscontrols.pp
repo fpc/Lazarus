@@ -74,6 +74,8 @@ type
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
     class procedure ConstraintsChange(const AWinControl: TWinControl); override;
+    class function  CreateHandle(const AWinControl: TWinControl;
+          const AParams: TCreateParams): HWND; override;
     class procedure DestroyHandle(const AWinControl: TWinControl); override;
     class procedure Invalidate(const AWinControl: TWinControl); override;
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -93,8 +95,6 @@ type
   private
   protected
   public
-    class function  CreateHandle(const AWinControl: TWinControl;
-          const AParams: TCreateParams): HWND; override;
   end;
 
   { TWin32WSImageList }
@@ -256,6 +256,25 @@ end;
 
 { TWin32WSWinControl }
 
+function TWin32WSWinControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
+var
+  Params: TCreateWindowExParams;
+begin
+  // general initialization of Params
+  PrepareCreateWindow(AWinControl, Params);
+  // customization of Params
+  with Params do
+  begin
+    pClassName := @ClsName;
+    WindowTitle := StrCaption;
+    SubClassWndProc := nil;
+  end;
+  // create window
+  FinishCreateWindow(AWinControl, Params, false);
+  Result := Params.Window;
+end;
+
 procedure TWin32WSWinControl.AddControl(const AControl: TControl);
 var
   ParentPanelHandle, ParentHandle, ChildHandle: HWND;
@@ -345,27 +364,6 @@ begin
   TWin32WidgetSet(InterfaceObject).ShowHide(AWinControl);
 end;
 
-{ TWin32WSCustomControl }
-
-function TWin32WSCustomControl.CreateHandle(const AWinControl: TWinControl;
-  const AParams: TCreateParams): HWND;
-var
-  Params: TCreateWindowExParams;
-begin
-  // general initialization of Params
-  PrepareCreateWindow(AWinControl, Params);
-  // customization of Params
-  with Params do
-  begin
-    pClassName := @ClsName;
-    WindowTitle := StrCaption;
-    SubClassWndProc := nil;
-  end;
-  // create window
-  FinishCreateWindow(AWinControl, Params, false);
-  Result := Params.Window;
-end;
-
 
 
 initialization
@@ -380,7 +378,7 @@ initialization
   RegisterWSComponent(TControl, TWin32WSControl);
   RegisterWSComponent(TWinControl, TWin32WSWinControl);
 //  RegisterWSComponent(TGraphicControl, TWin32WSGraphicControl);
-  RegisterWSComponent(TCustomControl, TWin32WSCustomControl);
+//  RegisterWSComponent(TCustomControl, TWin32WSCustomControl);
 //  RegisterWSComponent(TImageList, TWin32WSImageList);
 ////////////////////////////////////////////////////
 end.
