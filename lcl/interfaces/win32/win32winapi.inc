@@ -2154,24 +2154,9 @@ Begin
 End;
 
 Function TWin32WidgetSet.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer): Boolean;
-Var
-  MaskDC: HDC;
-  SaveObj: HGDIOBJ;
-  PrevTextColor, PrevBkColor: COLORREF;
-Begin
-  MaskDC := CreateCompatibleDC(0);
-  SaveObj := SelectObject(MaskDC, Mask);
-  PrevTextColor := Windows.SetTextColor(DestDC, RGB(255,255,255));
-  PrevBkColor := Windows.SetBkColor(DestDC, RGB(0,0,0));
-  Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
-  Windows.BitBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SRCAND);
-  Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
-  Windows.SetTextColor(DestDC, PrevTextColor);
-  Windows.SetBkColor(DestDC, PrevBkColor);
-  SelectObject(MaskDC, SaveObj);
-  DeleteDC(MaskDC);
-  Result := true;
-End;
+begin
+  Result := StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Width, Height, Mask, XMask, YMask, SRCCOPY);
+end;
 
 {------------------------------------------------------------------------------
   Method:  MessageBox
@@ -2936,16 +2921,41 @@ End;
   the destination device context.
  ------------------------------------------------------------------------------}
 Function TWin32WidgetSet.StretchMaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
+Var
+  MaskDC: HDC;
+  SaveObj: HGDIOBJ;
+  PrevTextColor, PrevBkColor: COLORREF;
 Begin
-  if (Width = SrcWidth) and (Height = SrcHeight) then
+  if Mask = 0 then
   begin
-    Result := MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask);
+    if (Width = SrcWidth) and (Height = SrcHeight) then
+    begin
+      Result := BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SRCCOPY);
+    end else begin
+      Result := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCCOPY);
+    end;
   end else begin
-    { TODO: does not use the mask }
-    Result := StretchBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop);
+    MaskDC := CreateCompatibleDC(0);
+    SaveObj := SelectObject(MaskDC, Mask);
+    PrevTextColor := Windows.SetTextColor(DestDC, RGB(255,255,255));
+    PrevBkColor := Windows.SetBkColor(DestDC, RGB(0,0,0));
+    if (Width = SrcWidth) and (Height = SrcHeight) then
+    begin
+      Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
+      Windows.BitBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SRCAND);
+      Windows.BitBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SRCINVERT);
+    end else begin
+      Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SrcWidth, SrcHeight, SRCINVERT);
+      Windows.StretchBlt(DestDC, X, Y, Width, Height, MaskDC, XSrc, YSrc, SrcWidth, SrcHeight, SRCAND);
+      Windows.StretchBlt(DestDC, X, Y, Width, Height, SrcDC,  XSrc, YSrc, SrcWidth, SrcHeight, SRCINVERT);
+    end;
+    Windows.SetTextColor(DestDC, PrevTextColor);
+    Windows.SetBkColor(DestDC, PrevBkColor);
+    SelectObject(MaskDC, SaveObj);
+    DeleteDC(MaskDC);
   end;
-  //Result := False; //Windows.StretchMaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Mask, XMask, YMask, Rop);
-End;
+  Result := true;
+end;
 
 {------------------------------------------------------------------------------
   Method:  TextOut
@@ -3032,6 +3042,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.131  2005/01/01 11:39:02  micha
+  make stretchmaskblt handle the general case, and let maskblt call stretchmaskblt
+
   Revision 1.130  2004/12/27 17:42:01  micha
   fix transparency while drawing (bug 462)
 
