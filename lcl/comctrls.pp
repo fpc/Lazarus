@@ -24,7 +24,7 @@
 }
 {
 @abstract(Just a try to provide the same objects as the Delphi comctrls unit)
-@author(TProgressBar - Stefan Hille <stoppok@osibisa.ms.sub.org>)
+@author(TCustomProgressBar - Stefan Hille <stoppok@osibisa.ms.sub.org>)
 @author(TTrackBar - Stefan Hille <stoppok@osibisa.ms.sub.org>)
 @created(1999)
 @lastmod(1999)
@@ -860,13 +860,13 @@ type
 
   TProgressBarOrientation = (pbHorizontal, pbVertical, pbRightToLeft, pbTopDown);
 
-  { TProgressBar }
+  { TCustomProgressBar }
   {
     @abstract(Simple progressbar.)
     Introduced by Author Name <stoppok@osibisa.ms.sub.org>
     Currently maintained by Maintainer Name <stoppok@osibisa.ms.sub.org>
   }
-  TProgressBar = class(TWinControl)
+  TCustomProgressBar = class(TWinControl)
   private
     FMin              : Integer;
     FMax              : Integer;
@@ -895,6 +895,20 @@ type
     constructor Create(AOwner: TComponent); override;
     procedure StepIt;
     procedure StepBy(Delta: Integer);
+  public
+    property Max: Integer read GetMax write SetMax;
+    property Min: Integer read GetMin write SetMin;
+    property Orientation: TProgressBarOrientation read FOrientation write SetOrientation default pbHorizontal;
+    property Position: Integer read GetPosition write SetPosition default 0;
+    property Smooth : boolean read FSmooth write SetSmooth default false;
+    property Step: Integer read FStep write SetStep default 10;
+    property BarShowText : boolean read FBarShowText write SetBarShowText;
+  end;
+ 
+ 
+  { TProgressBar }
+ 
+  TProgressBar = class(TCustomProgressBar)
   published
     property Align;
     property Anchors;
@@ -906,8 +920,8 @@ type
     property DragMode;
     property Enabled;
     property Hint;
-    property Max: Integer read GetMax write SetMax;
-    property Min: Integer read GetMin write SetMin;
+    property Max;
+    property Min;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -918,28 +932,22 @@ type
     property OnMouseUp;
     property OnStartDock;
     property OnStartDrag;
-    property Orientation: TProgressBarOrientation read FOrientation write SetOrientation default pbHorizontal;
+    property Orientation;
     property ParentShowHint;
     property PopupMenu;
-    property Position: Integer read GetPosition write SetPosition default 0;
+    property Position;
     property ShowHint;
-    property Smooth : boolean read FSmooth write SetSmooth default false;
-    property Step: Integer read FStep write SetStep default 10;
+    property Smooth;
+    property Step;
     property TabOrder;
     property TabStop;
     property Visible;
-{ ... to be implemented for Delphi compatibility
-//    property Anchors;
-//  property Constraints;
-//  property OnStartDock;
-//  property OnEndDock;
-}
- published { additional functionality }
-    property BarShowText : boolean read FBarShowText write SetBarShowText;
-{   property BarTextFormat : string read FBarTextFormat write SetBarTextFormat; }
- end;
+    property BarShowText;
+  end;
+ 
 
-{ TUpDown }
+  { TUpDown }
+  
   TUDAlignButton = (udLeft, udRight, udTop, udBottom);
   TUDOrientation = (udHorizontal, udVertical);
   TUDBtnType = (btNext, btPrev);
@@ -2247,7 +2255,7 @@ end;
 
 procedure Register;
 begin
-  RegisterComponents('Common Controls',[TTrackbar,TProgressBar,TTreeView,
+  RegisterComponents('Common Controls',[TTrackbar,TCustomProgressBar,TTreeView,
     TListView,TStatusBar,TToolBar,TUpDown,TPageControl,TTabControl]);
   RegisterNoIcon([TToolButton,TTabSheet]);
 end;
@@ -2276,6 +2284,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.154  2005/01/01 18:56:47  mattias
+  implemented TTIProgressBar
+
   Revision 1.153  2004/12/27 19:40:59  mattias
   published BorderSpacing for many controls
 
@@ -2504,7 +2515,7 @@ end.
   started TTabSheet and TPageControl
 
   Revision 1.80  2003/06/25 21:02:19  mattias
-  reduced TProgressBar setproperties calls
+  reduced TCustomProgressBar setproperties calls
 
   Revision 1.79  2003/06/19 16:36:35  mattias
   started codeexplorer

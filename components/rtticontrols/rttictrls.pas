@@ -1236,6 +1236,69 @@ Type
   end;
   
 
+  { TTICustomProgressBar }
+
+  TTICustomProgressBar = class(TCustomProgressBar)
+  private
+    FLink: TPropertyLink;
+    FUseRTTIMinMax: boolean;
+    procedure SetLink(const AValue: TPropertyLink);
+    procedure SetUseRTTIMinMax(const AValue: boolean);
+  protected
+    procedure LinkLoadFromProperty(Sender: TObject); virtual;
+    procedure LinkSaveToProperty(Sender: TObject); virtual;
+    procedure LinkEditorChanged(Sender: TObject); virtual;
+    procedure GetRTTIMinMax; virtual;
+  public
+    constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
+    procedure Loaded; override;
+    procedure EditingDone; override;
+    property Link: TPropertyLink read FLink write SetLink;
+    property UseRTTIMinMax: boolean read FUseRTTIMinMax write SetUseRTTIMinMax default true;
+  end;
+
+
+  { TTIProgressBar }
+
+  TTIProgressBar = class(TTICustomProgressBar)
+  published
+    property Align;
+    property Anchors;
+    property BorderSpacing;
+    property BorderWidth;
+    property Constraints;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Enabled;
+    property Hint;
+    property Max;
+    property Min;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDock;
+    property OnStartDrag;
+    property Orientation;
+    property ParentShowHint;
+    property PopupMenu;
+    property Position;
+    property ShowHint;
+    property Smooth;
+    property Step;
+    property TabOrder;
+    property TabStop;
+    property Visible;
+    property BarShowText;
+  end;
+
+
   { TTICustomColorButton }
 
   TTICustomColorButton = class(TColorButton)
@@ -1349,7 +1412,8 @@ begin
   RegisterComponents('RTTI',[TTIEdit,TTIComboBox,TTIButton,TTICheckBox,
     TTILabel,TTIGroupBox,TTIRadioGroup,TTICheckGroup,TTICheckListBox,
     TTIListBox,TTIMemo,TTICalendar,TTIImage,TTISpinEdit,TTITrackBar,
-    TTIMaskEdit,TTIColorButton,TTIPropertyGrid,TMultiPropertyLink]);
+    TTIProgressBar,TTIMaskEdit,TTIColorButton,TTIPropertyGrid,
+    TMultiPropertyLink]);
 end;
 
 { TAliasStrings }
@@ -3563,6 +3627,114 @@ begin
       FreeThenNil(FElementPropEdits);
     end;
   end;
+end;
+
+{ TTICustomProgressBar }
+
+procedure TTICustomProgressBar.SetLink(const AValue: TPropertyLink);
+begin
+  if FLink=AValue then exit;
+  FLink.Assign(AValue);
+end;
+
+procedure TTICustomProgressBar.SetUseRTTIMinMax(const AValue: boolean);
+begin
+  if FUseRTTIMinMax=AValue then exit;
+  FUseRTTIMinMax:=AValue;
+  if UseRTTIMinMax then GetRTTIMinMax;
+end;
+
+procedure TTICustomProgressBar.LinkLoadFromProperty(Sender: TObject);
+begin
+  if Sender=nil then ;
+  if (FLink.Editor=nil) then exit;
+  try
+    Position:=StrToInt(FLink.GetAsText);
+  except
+  end;
+end;
+
+procedure TTICustomProgressBar.LinkSaveToProperty(Sender: TObject);
+begin
+  if Sender=nil then ;
+  if (FLink.Editor=nil) then exit;
+  FLink.SetAsText(IntToStr(Position));
+end;
+
+procedure TTICustomProgressBar.LinkEditorChanged(Sender: TObject);
+begin
+  if Sender=nil then ;
+  if UseRTTIMinMax then GetRTTIMinMax;
+end;
+
+procedure TTICustomProgressBar.GetRTTIMinMax;
+var
+  TypeData: PTypeData;
+  PropKind: TTypeKind;
+  OldLinkSaveEnabled: Boolean;
+  i: Integer;
+begin
+  if FLink.Editor=nil then exit;
+  OldLinkSaveEnabled:=FLink.SaveEnabled;
+  FLink.SaveEnabled:=false;
+  try
+    PropKind:=FLink.Editor.GetPropType^.Kind;
+    case PropKind of
+
+    tkInteger,tkChar,tkEnumeration,tkWChar:
+      begin
+        TypeData:=GetTypeData(FLink.Editor.GetPropType);
+        Min:=TypeData^.MinValue;
+        Max:=TypeData^.MaxValue;
+      end;
+
+    else
+      begin
+        try
+          i:=StrToInt(FLink.GetAsText);
+        except
+        end;
+        if i<Min then Min:=i;
+        if i>Max then Max:=i;
+      end;
+
+    end;
+  finally
+    FLink.SaveEnabled:=OldLinkSaveEnabled;
+  end;
+end;
+
+constructor TTICustomProgressBar.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  FUseRTTIMinMax:=true;
+  FLink:=TPropertyLink.Create(Self);
+  FLink.Filter:=[{tkUnknown,}tkInteger,{tkChar,tkEnumeration,}
+                 tkFloat,{tkSet,tkMethod,}tkSString,tkLString,tkAString,
+                 tkWString{,tkVariant,tkArray,tkRecord,tkInterface,}
+                 {tkClass,tkObject,tkWChar,tkBool,tkInt64,}
+                 {tkQWord,tkDynArray,tkInterfaceRaw}];
+  FLink.OnLoadFromProperty:=@LinkLoadFromProperty;
+  FLink.OnSaveToProperty:=@LinkSaveToProperty;
+  FLink.OnEditorChanged:=@LinkEditorChanged;
+end;
+
+destructor TTICustomProgressBar.Destroy;
+begin
+  FreeThenNil(FLink);
+  inherited Destroy;
+end;
+
+procedure TTICustomProgressBar.Loaded;
+begin
+  inherited Loaded;
+  FLink.LoadFromProperty;
+end;
+
+procedure TTICustomProgressBar.EditingDone;
+begin
+  inherited EditingDone;
+  FLink.EditingDone;
 end;
 
 initialization

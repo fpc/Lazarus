@@ -2931,6 +2931,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.255  2005/01/01 18:56:47  mattias
+  implemented TTIProgressBar
+
   Revision 1.254  2004/12/21 22:49:29  mattias
   implemented scrollbar codes for gtk intf  from Jesus
 
@@ -2950,7 +2953,7 @@ end;
   calling updating notebook tab after realize, needed for close btns
 
   Revision 1.248  2004/09/21 10:05:26  mattias
-  fixed disable at designtime and bounding TProgressBar position
+  fixed disable at designtime and bounding TCustomProgressBar position
 
   Revision 1.247  2004/09/10 16:28:50  mattias
   implemented very rudimentary TTabControl

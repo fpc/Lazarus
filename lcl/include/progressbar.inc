@@ -1,6 +1,6 @@
 {%MainUnit ../comctrls.pp}
 {******************************************************************************
-                                  TProgressBar
+                                  TCustomProgressBar
  ******************************************************************************
 
  *****************************************************************************
@@ -34,13 +34,13 @@
 
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.Create
+  Method: TCustomProgressBar.Create
   Params:  AOwner: the owner of the class
   Returns: Nothing
 
   Constructor for the progressbar.
  ------------------------------------------------------------------------------}
-constructor TProgressBar.Create (AOwner : TComponent);
+constructor TCustomProgressBar.Create (AOwner : TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csProgressBar;
@@ -56,69 +56,69 @@ begin
 end;   
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.InitializeWnd
+  Method: TCustomProgressBar.InitializeWnd
   Params: none
   Returns: Nothing
 
   Set all properties after visual component has been created. Will be called
   from TWinControl.
  ------------------------------------------------------------------------------}
-procedure TProgressBar.InitializeWnd;
+procedure TCustomProgressBar.InitializeWnd;
 begin
   inherited InitializeWnd;
   ApplyChanges;
 end;
 
-procedure TProgressBar.Loaded;
+procedure TCustomProgressBar.Loaded;
 begin
   inherited Loaded;
   ApplyChanges;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.GetMin
+  Method: TCustomProgressBar.GetMin
   Params:  Nothing
   Returns: actual minimum value of the progressbar
 
   Retrieve the actual minimum value of the progressbar.
  ------------------------------------------------------------------------------}
-function TProgressBar.GetMin: Integer;
+function TCustomProgressBar.GetMin: Integer;
 begin
   Result := FMin;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.GetMax
+  Method: TCustomProgressBar.GetMax
   Params:  Nothing
   Returns: actual maximum value of the progressbar
 
   Retrieve the actual maximum value of the progressbar.
  ------------------------------------------------------------------------------}
-function TProgressBar.GetMax: Integer;
+function TCustomProgressBar.GetMax: Integer;
 begin
   Result := FMax;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.GetPosition
+  Method: TCustomProgressBar.GetPosition
   Params:  Nothing
   Returns: actual position of the progressbar
 
   Retrieve the position of the progressbar.
  ------------------------------------------------------------------------------}
-function TProgressBar.GetPosition: Integer;
+function TCustomProgressBar.GetPosition: Integer;
 begin
   Result := FPosition;
 end;
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.SetParams
+  Method: TCustomProgressBar.SetParams
   Params:  Min & Max for the progressbar
   Returns: Nothing
 
   Set new minimum and maximum values for the progressbar.
  ------------------------------------------------------------------------------}
-procedure TProgressBar.SetParams(AMin, AMax: Integer);
+procedure TCustomProgressBar.SetParams(AMin, AMax: Integer);
 begin
   SetMax(AMax);
   SetMin(AMin);
@@ -126,13 +126,13 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.SetMin
+  Method: TCustomProgressBar.SetMin
   Params:  Minimum value for the progressbar
   Returns: Nothing
 
   Set new minimum value for the progressbar.
  ------------------------------------------------------------------------------}
-procedure TProgressBar.SetMin(Value: Integer);
+procedure TCustomProgressBar.SetMin(Value: Integer);
 begin
   if FMin <> Value then
   begin
@@ -143,13 +143,13 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.SetMax
+  Method: TCustomProgressBar.SetMax
   Params:  Maximum value for the progressbar
   Returns: Nothing
 
   Set new maximum value for the progressbar.
  ------------------------------------------------------------------------------}
-procedure TProgressBar.SetMax(Value: Integer);
+procedure TCustomProgressBar.SetMax(Value: Integer);
 begin
   if FMax <> Value then
   begin
@@ -159,13 +159,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.SetPosition
+  Method: TCustomProgressBar.SetPosition
   Params:  New acutal position for the progressbar
   Returns: Nothing
 
   Set new new acutal position for the progressbar
  ------------------------------------------------------------------------------}
-procedure TProgressBar.SetPosition(Value: Integer);
+procedure TCustomProgressBar.SetPosition(Value: Integer);
 begin
   if FPosition <> Value then
   begin
@@ -176,13 +176,13 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.SetPosition
+  Method: TCustomProgressBar.SetPosition
   Params:  New stepping value for the progressbar
   Returns: Nothing
 
   Set new stepping value for the progressbar
  ------------------------------------------------------------------------------}
-procedure TProgressBar.SetStep(Value: Integer);
+procedure TCustomProgressBar.SetStep(Value: Integer);
 begin
   if FStep <> Value then
   begin
@@ -192,13 +192,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.SetPosition
+  Method: TCustomProgressBar.SetPosition
   Params:  New orientation of the progressbar
   Returns: Nothing
 
   Set new orientation.
  ------------------------------------------------------------------------------}
-procedure TProgressBar.SetOrientation (Value : TProgressBarOrientation);
+procedure TCustomProgressBar.SetOrientation (Value : TProgressBarOrientation);
 begin
   if FOrientation <> Value then
   begin
@@ -208,13 +208,13 @@ begin
 end;
  
 {------------------------------------------------------------------------------
-  Method: TProgressBar.StepIt
+  Method: TCustomProgressBar.StepIt
   Params:  Nothing
   Returns: Nothing
 
   Let the progressbar proceed from actual position to actualposition + Step
  ------------------------------------------------------------------------------}
-procedure TProgressBar.StepIt;
+procedure TCustomProgressBar.StepIt;
 begin
   inc (FPosition, FStep);
   if FPosition > FMax then FPosition := FMax;
@@ -224,7 +224,7 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.StepIt
+  Method: TCustomProgressBar.StepIt
   Params:  Delta : the value to add to actual position
   Returns: Nothing
 
@@ -234,7 +234,7 @@ end;
    StepBy is realized by faking the current position to get a solution
    which is independant from the widget set in use.
  ------------------------------------------------------------------------------}
-procedure TProgressBar.StepBy(Delta: Integer);
+procedure TCustomProgressBar.StepBy(Delta: Integer);
 begin
   if FStep < Delta then FPosition := FPosition + (Delta - FStep);
   if FStep > Delta then FPosition := FPosition - (Delta);
@@ -242,13 +242,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.ApplyChanges
+  Method: TCustomProgressBar.ApplyChanges
   Params:  Nothing
   Returns: Nothing
 
   Apply the current parameters to the object
  ------------------------------------------------------------------------------}
-procedure TProgressBar.ApplyChanges;
+procedure TCustomProgressBar.ApplyChanges;
 begin
   if not (csLoading in ComponentState) then begin
     if FMin>Max then FMin:=Max;
@@ -262,13 +262,13 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.SetSmooth
+  Method: TCustomProgressBar.SetSmooth
   Params:  Value : Smoothing on or off
   Returns: Nothing
 
   Set the style of the progressbar
  ------------------------------------------------------------------------------}
-procedure TProgressBar.SetSmooth (Value : boolean);
+procedure TCustomProgressBar.SetSmooth (Value : boolean);
 begin
   if FSmooth <> value then
   begin
@@ -279,7 +279,7 @@ end;
 
 
 {------------------------------------------------------------------------------
-  Method: TProgressBar.SetBarShowText
+  Method: TCustomProgressBar.SetBarShowText
   Params:  Value : ShowText on or off
   Returns: Nothing
 
@@ -289,7 +289,7 @@ end;
   Implementation detail:
    This functionality is not Delphi-compatible
  ------------------------------------------------------------------------------}
-procedure TProgressBar.SetBarShowText (Value : boolean);
+procedure TCustomProgressBar.SetBarShowText (Value : boolean);
 begin
   if FBarShowText <> Value then
   begin
@@ -302,14 +302,17 @@ end;
 
 {
   $Log$
+  Revision 1.12  2005/01/01 18:56:47  mattias
+  implemented TTIProgressBar
+
   Revision 1.11  2004/12/12 03:54:09  mattias
   implemented open project after open standard windows
 
   Revision 1.10  2004/09/23 14:50:47  micha
-  convert LM_SETPROPERTIES message to interface method for TProgressBar
+  convert LM_SETPROPERTIES message to interface method for TCustomProgressBar
 
   Revision 1.9  2004/09/21 10:05:26  mattias
-  fixed disable at designtime and bounding TProgressBar position
+  fixed disable at designtime and bounding TCustomProgressBar position
 
   Revision 1.8  2004/09/19 18:50:28  micha
   convert LM_SETVALUE message to interface methods
@@ -321,7 +324,7 @@ end;
   revert intf split
 
   Revision 1.4  2003/06/25 21:02:20  mattias
-  reduced TProgressBar setproperties calls
+  reduced TCustomProgressBar setproperties calls
 
   Revision 1.3  2002/05/10 06:05:55  lazarus
   MG: changed license to LGPL

@@ -109,8 +109,8 @@ type
 
   TWSProgressBarClass = class of TWSProgressBar;
   TWSProgressBar = class(TWSWinControl)
-    class procedure ApplyChanges(const AProgressBar: TProgressBar); virtual;
-    class procedure SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer); virtual;
+    class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); virtual;
+    class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); virtual;
   end;
 
   { TWSCustomUpDown }
@@ -263,11 +263,12 @@ end;
 
 { TWSProgressBar }
 
-procedure TWSProgressBar.ApplyChanges(const AProgressBar: TProgressBar);
+procedure TWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
 begin
 end;
 
-procedure TWSProgressBar.SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer);
+procedure TWSProgressBar.SetPosition(const AProgressBar: TCustomProgressBar;
+  const NewPosition: integer);
 begin
 end;
 

@@ -6952,7 +6952,7 @@ begin
     if Result<>mrOk then exit;
   end;
   // rename files (.pas,.dfm) lowercase
-  // TODO: rename if files in project
+  // TODO: rename files in project
   DebugLn('TMainIDE.DoConvertDelphiUnit Rename files');
   LazarusUnitFilename:='';
   LFMFilename:='';
@@ -7086,8 +7086,9 @@ begin
     end;
   end;
 
+  // TODO: get all compiler options from .dpr
   // TODO: read .dof file
-  // TODO: get all compiler options (Flags)
+  // TODO: read .cfg file
   // TODO: get all search paths
   // TODO: get all needed packages
 
@@ -11274,6 +11275,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.817  2005/01/01 18:56:46  mattias
+  implemented TTIProgressBar
+
   Revision 1.816  2005/01/01 17:02:53  mattias
   changed default online help paths to lazarus-ccr
 

@@ -710,6 +710,9 @@ end;
 
 {
   $Log$
+  Revision 1.303  2005/01/01 18:56:47  mattias
+  implemented TTIProgressBar
+
   Revision 1.302  2004/12/27 10:18:21  micha
   implement support for tthread.synchronize
 
@@ -775,7 +778,7 @@ end;
   convert LM_SETPROPERTIES message to interface method for TScrollBar
 
   Revision 1.282  2004/09/23 14:50:47  micha
-  convert LM_SETPROPERTIES message to interface method for TProgressBar
+  convert LM_SETPROPERTIES message to interface method for TCustomProgressBar
 
   Revision 1.281  2004/09/22 18:06:32  micha
   convert LM_SETPROPERTIES message to interface methods for TCustomListView

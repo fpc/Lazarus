@@ -116,8 +116,8 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure ApplyChanges(const AProgressBar: TProgressBar); override;
-    class procedure SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer); override;
+    class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
+    class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
   end;
 
   { TWin32WSCustomUpDown }
@@ -667,7 +667,7 @@ begin
   // customization of Params
   with Params do
   begin
-    with TProgressBar(AWinControl) do
+    with TCustomProgressBar(AWinControl) do
     begin
       if Smooth then
         Flags := Flags or PBS_SMOOTH;
@@ -681,7 +681,8 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSProgressBar.ApplyChanges(const AProgressBar: TProgressBar);
+procedure TWin32WSProgressBar.ApplyChanges(
+  const AProgressBar: TCustomProgressBar);
 begin
   with AProgressBar do
   begin
@@ -706,7 +707,8 @@ begin
   end;
 end;
 
-procedure TWin32WSProgressBar.SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer);
+procedure TWin32WSProgressBar.SetPosition(
+  const AProgressBar: TCustomProgressBar; const NewPosition: integer);
 begin
   Windows.SendMessage(AProgressBar.Handle, PBM_SETPOS, Windows.WPARAM(NewPosition), 0);
 end;
@@ -876,7 +878,7 @@ initialization
 //  RegisterWSComponent(TCustomPageControl, TWin32WSPageControl);
   RegisterWSComponent(TCustomListView, TWin32WSCustomListView);
 //  RegisterWSComponent(TCustomListView, TWin32WSListView);
-  RegisterWSComponent(TProgressBar, TWin32WSProgressBar);
+  RegisterWSComponent(TCustomProgressBar, TWin32WSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TWin32WSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TWin32WSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TWin32WSToolButton);

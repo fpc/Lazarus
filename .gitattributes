@@ -183,6 +183,7 @@ components/rtticontrols/ttilabel.xpm -text svneol=native#image/x-xpixmap
 components/rtticontrols/ttilistbox.xpm -text svneol=native#image/x-xpixmap
 components/rtticontrols/ttimaskedit.xpm -text svneol=native#image/x-xpixmap
 components/rtticontrols/ttimemo.xpm -text svneol=native#image/x-xpixmap
+components/rtticontrols/ttiprogressbar.xpm -text svneol=native#image/x-xpixmap
 components/rtticontrols/ttipropertygrid.xpm -text svneol=native#image/x-xpixmap
 components/rtticontrols/ttiradiogroup.xpm -text svneol=native#image/x-xpixmap
 components/rtticontrols/ttispinedit.xpm -text svneol=native#image/x-xpixmap

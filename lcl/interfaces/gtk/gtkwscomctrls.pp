@@ -115,8 +115,8 @@ type
   private
   protected
   public
-    class procedure ApplyChanges(const AProgressBar: TProgressBar); override;
-    class procedure SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer); override;
+    class procedure ApplyChanges(const AProgressBar: TCustomProgressBar); override;
+    class procedure SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer); override;
   end;
 
   { TGtkWSCustomUpDown }
@@ -886,7 +886,7 @@ end;
 
 { TGtkWSProgressBar }
 
-procedure TGtkWSProgressBar.ApplyChanges(const AProgressBar: TProgressBar);
+procedure TGtkWSProgressBar.ApplyChanges(const AProgressBar: TCustomProgressBar);
 var
   wHandle: HWND;
 begin
@@ -924,7 +924,7 @@ begin
   end;
 end;
 
-procedure TGtkWSProgressBar.SetPosition(const AProgressBar: TProgressBar; const NewPosition: integer);
+procedure TGtkWSProgressBar.SetPosition(const AProgressBar: TCustomProgressBar; const NewPosition: integer);
 begin
   gtk_progress_set_value(GTK_PROGRESS(Pointer(AProgressBar.Handle)), NewPosition);
 end;
@@ -1087,7 +1087,7 @@ initialization
 //  RegisterWSComponent(TCustomPageControl, TGtkWSPageControl);
   RegisterWSComponent(TCustomListView, TGtkWSCustomListView);
 //  RegisterWSComponent(TCustomListView, TGtkWSListView);
-  RegisterWSComponent(TProgressBar, TGtkWSProgressBar);
+  RegisterWSComponent(TCustomProgressBar, TGtkWSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TGtkWSCustomUpDown);
 //  RegisterWSComponent(TCustomUpDown, TGtkWSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TGtkWSToolButton);

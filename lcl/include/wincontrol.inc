@@ -4184,6 +4184,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.293  2005/01/01 18:56:47  mattias
+  implemented TTIProgressBar
+
   Revision 1.292  2004/12/01 16:17:17  mattias
   updated fpdoc sceletons for lcl and gtk intf
 
@@ -4223,7 +4226,7 @@ end;
   convert LM_SETGEOMETRY message to interface method
 
   Revision 1.280  2004/09/21 10:05:26  mattias
-  fixed disable at designtime and bounding TProgressBar position
+  fixed disable at designtime and bounding TCustomProgressBar position
 
   Revision 1.279  2004/09/18 12:43:15  micha
   convert LM_DESTROY message to interface methods
