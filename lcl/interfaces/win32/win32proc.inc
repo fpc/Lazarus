@@ -588,9 +588,8 @@ begin
     end;
   end;
   // Set the properties in the same order as in CreateComponent
-  SetProp(NewHandle,'Lazarus',ListControl);
+  Windows.SetProp(NewHandle, 'Lazarus', Integer(ListControl));
   TWinControl(ListControl).Handle:=NewHandle;
-  SetProp(NewHandle,'Sender',@ListControl);
   Windows.SetProp(NewHandle, 'DefWndProc',SetWindowLong (NewHandle, GWL_WNDPROC, Main_WndProc));
   SendMessage(NewHandle, WM_SETFONT, GetStockObject(DEFAULT_GUI_FONT), 0);
 
@@ -612,18 +611,6 @@ end;
 (***********************************************************************
   Widget member Functions
 ************************************************************************)
-
-// ----------------------------------------------------------------------
-// Some need the LCLobject which created this control.
-// 
-// MWE: IMO this shouldn't be needed
-// ----------------------------------------------------------------------
-Procedure SetLCLObject(Const Control: HWND; Const AnObject: TObject);
-Begin
-  Assert(False, 'TRACE:Using function SetLCLObject which isn''t implemented yet');
-  If (Control <> HWND(Nil)) Then
-    SetProp(Control, 'Class', Pointer(AnObject));
-End;
 
 {-------------------------------------------------------------------------------
   function LCLBoundsNeedsUpdate(Sender: TObject;
@@ -787,6 +774,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.23  2003/08/27 15:15:42  mattias
+  improved setprop from Micha
+
   Revision 1.22  2003/08/26 08:12:33  mattias
   applied listbox/combobox patch from Karl
 
