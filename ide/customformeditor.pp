@@ -114,9 +114,9 @@ TCustomFormEditor
   TCustomFormEditor = class(TAbstractFormEditor)
   private
     FModified     : Boolean;
-    FComponentInterfaceList : TList; //used to track and find controls
-    FSelectedComponents : TComponentSelectionList;
-    FObj_Inspector : TObjectInspector;
+    FComponentInterfaceList: TList; //used to track and find controls
+    FSelectedComponents: TComponentSelectionList;
+    FObj_Inspector: TObjectInspector;
     function GetPropertyEditorHook: TPropertyEditorHook;
   protected
     Procedure RemoveFromComponentInterfaceList(Value :TIComponentInterface);
@@ -125,6 +125,11 @@ TCustomFormEditor
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); virtual;
     procedure JITFormListReaderError(Sender: TObject; ErrorType: TJITFormError;
           var Action: TModalResult); virtual;
+
+    Function GetComponentByHandle(const Value : Longint): TIComponentInterface; override;
+
+    Function GetSelCount : Integer; override;
+    Function GetSelComponent(Index : Integer) : TIComponentInterface; override;
   public
     JITFormList : TJITForms;
     constructor Create;
@@ -151,7 +156,7 @@ TCustomFormEditor
     Procedure ClearSelected;
     
     function TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): integer;
-    
+  public
     property SelectedComponents: TComponentSelectionList
       read FSelectedComponents write SetSelectedComponents;
     property Obj_Inspector : TObjectInspector
@@ -882,6 +887,24 @@ begin
       end;
   end;
   Action:=MessageDlg(aCaption,aMsg,DlgType,Buttons,HelpCtx);
+end;
+
+function TCustomFormEditor.GetComponentByHandle(const Value: Longint
+  ): TIComponentInterface;
+begin
+  // ToDo:
+  Result:=nil;
+end;
+
+function TCustomFormEditor.GetSelCount: Integer;
+begin
+  Result:=FComponentInterfaceList.Count;
+end;
+
+function TCustomFormEditor.GetSelComponent(Index: Integer
+  ): TIComponentInterface;
+begin
+  Result:=TIComponentInterface(FComponentInterfaceList[Index]);
 end;
 
 function TCustomFormEditor.GetPropertyEditorHook: TPropertyEditorHook;

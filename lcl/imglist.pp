@@ -41,7 +41,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, Graphics, GraphType, vclGlobals;
+  SysUtils, Classes, vclGlobals, Graphics, GraphType;
 
 type
   TImageIndex = type integer;
@@ -164,6 +164,9 @@ end.
 
 {
   $Log$
+  Revision 1.9  2002/12/16 12:12:50  mattias
+  fixes for fpc 1.1
+
   Revision 1.8  2002/11/09 15:02:06  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 

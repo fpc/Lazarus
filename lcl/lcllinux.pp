@@ -126,12 +126,14 @@ procedure InternalInit;
 var
   AClipboardFormat: TPredefinedClipboardFormat;
   c: char;
+  s: string;
 begin
   for AClipboardFormat:=Low(TPredefinedClipboardFormat) to
     High(TPredefinedClipboardFormat) do
       FPredefinedClipboardFormats[AClipboardFormat]:=0;
   for c:=Low(char) to High(char) do begin
-    LowerCaseChars[c]:=lowercase(c)[1];
+    s:=lowercase(c);
+    LowerCaseChars[c]:=s[1];
     UpperCaseChars[c]:=upcase(c);
   end;
 end;
@@ -143,6 +145,9 @@ end.
 
 {
   $Log$
+  Revision 1.25  2002/12/16 12:12:50  mattias
+  fixes for fpc 1.1
+
   Revision 1.24  2002/12/12 17:47:45  mattias
   new constants for compatibility
 

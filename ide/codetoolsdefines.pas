@@ -213,7 +213,7 @@ type
     function ConsistencyCheck: integer;
     procedure SetValuesEditable(AValue: boolean);
   public
-    procedure Assign(ACodeToolBoss: TCodeToolManager;
+    procedure SetOptions(ACodeToolBoss: TCodeToolManager;
       Options: TCodeToolsOptions);
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -354,7 +354,7 @@ function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
 var CodeToolsDefinesEditor: TCodeToolsDefinesEditor;
 begin
   CodeToolsDefinesEditor:=TCodeToolsDefinesEditor.Create(Application);
-  CodeToolsDefinesEditor.Assign(ACodeToolBoss,Options);
+  CodeToolsDefinesEditor.SetOptions(ACodeToolBoss,Options);
   CodeToolsDefinesEditor.Macros:=Macros;
   Result:=CodeToolsDefinesEditor.ShowModal;
   if Result=mrOk then begin
@@ -1919,7 +1919,7 @@ begin
   InsertFilePathBitBtn.Enabled:=AValue;
 end;
 
-procedure TCodeToolsDefinesEditor.Assign(ACodeToolBoss: TCodeToolManager;
+procedure TCodeToolsDefinesEditor.SetOptions(ACodeToolBoss: TCodeToolManager;
   Options: TCodeToolsOptions);
 begin
   FLastSelectedNode:=nil;

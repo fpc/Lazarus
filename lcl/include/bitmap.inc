@@ -173,6 +173,16 @@ begin
 
 end;
 
+procedure TBitmap.LoadFromClipboardFormat(FormatID: TClipboardFormat);
+begin
+  // ToDo
+end;
+
+procedure TBitmap.SaveToClipboardFormat(FormatID: TClipboardFormat);
+begin
+  // ToDo
+end;
+
 Procedure TBitmap.LoadFromXPMFile(const Filename : String);
 var
   pstr : PChar;
@@ -518,6 +528,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/12/16 12:12:50  mattias
+  fixes for fpc 1.1
+
   Revision 1.24  2002/12/12 17:47:46  mattias
   new constants for compatibility
 

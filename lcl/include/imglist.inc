@@ -1,3 +1,5 @@
+// included by imglist.pp
+
 {******************************************************************************
                                   TCustomImageList
  ******************************************************************************
@@ -847,10 +849,14 @@ begin
   inherited Destroy;
 end;
 
+// included by imglist.pp
 
 {
 
   $Log$
+  Revision 1.14  2002/12/16 12:12:50  mattias
+  fixes for fpc 1.1
+
   Revision 1.13  2002/11/09 15:02:07  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 

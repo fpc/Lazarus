@@ -1281,12 +1281,16 @@ var
 begin
   ADoc := nil;
   FileStream := TFileStream.Create(AFilename, fmOpenRead);
+  if FileStream=nil then exit;
   MemStream := TMemoryStream.Create;
   try
     try
       MemStream.LoadFromStream(FileStream);
     except
-      exit;
+      on E: Exception do begin
+        writeln('ERROR reading file "',AFilename,'": ',E.Message);
+        exit;
+      end;
     end;
     ReadXMLFile(ADoc, MemStream, AFilename);
   finally
@@ -1359,6 +1363,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2002/12/16 12:12:50  mattias
+  fixes for fpc 1.1
+
   Revision 1.7  2002/10/22 08:48:04  lazarus
   MG: fixed segfault on loading xmlfile
 
