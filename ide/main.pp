@@ -197,6 +197,8 @@ type
     Procedure OnSrcNoteBookActivated(Sender : TObject);
     Procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer; 
       APageIndex: integer; DeleteForwardHistory: boolean);
+    Procedure OnSrcNoteBookCtrlMouseUp(Sender : TObject;
+      Button : TMouseButton; Shift: TShiftstate; X, Y: Integer);
     Procedure OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
     Procedure OnSrcNotebookEditorVisibleChanged(Sender : TObject);
 
@@ -213,8 +215,8 @@ type
     Procedure OnSrcNotebookFindDeclaration(Sender : TObject);
     Procedure OnSrcNotebookJumpToHistoryPoint(var NewCaretXY: TPoint;
       var NewTopLine, NewPageIndex: integer; Action: TJumpHistoryAction);
-    Procedure OnSrcNoteBookCtrlMouseUp(Sender : TObject;
-      Button : TMouseButton; Shift: TShiftstate; X, Y: Integer);
+    procedure OnSrcNotebookMovingPage(Sender: TObject;
+      OldPageIndex, NewPageIndex: integer);
     Procedure OnSrcNotebookSaveAll(Sender : TObject);
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
     Procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
@@ -1067,17 +1069,18 @@ begin
   SourceNotebook.OnActivate := @OnSrcNoteBookActivated;
   SourceNotebook.OnAddJumpPoint := @OnSrcNoteBookAddJumpPoint;
   SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
+  SourceNotebook.OnCtrlMouseUp := @OnSrcNoteBookCtrlMouseUp;
   SourceNotebook.OnDeleteLastJumpPoint := @OnSrcNotebookDeleteLastJumPoint;
   SourceNotebook.OnEditorVisibleChanged := @OnSrcNotebookEditorVisibleChanged;
   SourceNotebook.OnEditorChanged := @OnSrcNotebookEditorChanged;
   SourceNotebook.OnEditorPropertiesClicked := @mnuEnvEditorOptionsClicked;
   SourceNotebook.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
   SourceNotebook.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
+  SourceNotebook.OnMovingPage := @OnSrcNotebookMovingPage;
   SourceNotebook.OnNewClicked := @OnSrcNotebookFileNew;
   SourceNotebook.OnOpenClicked := @OnSrcNotebookFileOpen;
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
   SourceNotebook.OnProcessUserCommand := @OnProcessIDECommand;
-  SourceNotebook.OnCtrlMouseUp := @OnSrcNoteBookCtrlMouseUp;
   SourceNotebook.OnSaveClicked := @OnSrcNotebookFileSave;
   SourceNotebook.OnSaveAsClicked := @OnSrcNotebookFileSaveAs;
   SourceNotebook.OnSaveAllClicked := @OnSrcNotebookSaveAll;
@@ -6616,6 +6619,12 @@ begin
   //Project1.JumpHistory.WriteDebugReport;
 end;
 
+procedure TMainIDE.OnSrcNotebookMovingPage(Sender: TObject; OldPageIndex,
+  NewPageIndex: integer);
+begin
+  Project1.MoveEditorIndex(OldPageIndex,NewPageIndex);
+end;
+
 Procedure TMainIDE.OnSrcNotebookViewJumpHistory(Sender : TObject);
 begin
   // ToDo
@@ -7188,6 +7197,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.392  2002/09/20 11:40:05  lazarus
+  MG: added Move Page Left/Right for sourcenotebook
+
   Revision 1.391  2002/09/20 08:36:42  lazarus
   MG: workaround for TBinaryObjectWriter till we announce the new compiler
 
