@@ -64,7 +64,8 @@ type
     FDefault: Boolean;
     FModalResult: TModalResult;
     FShortCut: TLMShortcut;
-    Procedure SetDefault(Value : Boolean);
+    procedure SetCancel(NewCancel: boolean);
+    procedure SetDefault(Value : Boolean);
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     procedure Click; override;
@@ -85,7 +86,7 @@ type
     property Default : Boolean read FDefault write SetDefault default false;
     property Enabled;
     property ModalResult: TModalResult read FModalResult write FModalResult default mrNone;
-    property Cancel: Boolean read FCancel write FCancel default False;
+    property Cancel: Boolean read FCancel write SetCancel default false;
     property Caption;
     property Font;
     property TabStop default true;
@@ -329,6 +330,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.68  2004/06/30 11:07:20  micha
+  implement return key clicks default button; escape key clicks cancel button
+
   Revision 1.67  2004/05/22 14:35:32  mattias
   fixed button return key
 

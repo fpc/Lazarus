@@ -1784,6 +1784,7 @@ uses
   WSControls, // Widgetset uses circle is allowed
 
   Forms, // the circle can't be broken without breaking Delphi compatibility
+  Buttons, // needed for clicking default and cancel buttons
   Math;  // Math is in RTL and only a few functions are used.
 
 var
@@ -2323,6 +2324,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.217  2004/06/30 11:07:20  micha
+  implement return key clicks default button; escape key clicks cancel button
+
   Revision 1.216  2004/06/29 10:23:00  micha
   fix cnkeydown to check wm_getdlgcode result
   fix win32 intf to also send wm_keydown of cn_keydown wasn't processed

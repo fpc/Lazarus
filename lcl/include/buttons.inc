@@ -87,14 +87,39 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:  TButton.SetCancel
+  Params:  NewCancel - new cancel value
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+procedure TButton.SetCancel(NewCancel: boolean);
+var
+  Form: TCustomForm;
+begin
+  if FCancel = NewCancel then Exit;
+  FCancel := NewCancel;
+  Form := GetParentForm(Self);
+  if NewCancel then
+    Form.EscapeButton := Self
+  else
+    Form.EscapeButton := nil;
+end;
+ 
+{------------------------------------------------------------------------------
   Method:  TButton.SetDefault
   Params:  Value
   Returns: Nothing
  ------------------------------------------------------------------------------}
 procedure TButton.SetDefault(Value : Boolean);
+var
+  Form: TCustomForm;
 begin
   if FDefault = Value then Exit;
   FDefault := Value;
+  Form := GetParentForm(Self);
+  if Value then
+    Form.DefaultButton := Self
+  else
+    Form.DefaultButton := nil;
   DoSendBtnDefault;
 End;
 
@@ -157,6 +182,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/06/30 11:07:20  micha
+  implement return key clicks default button; escape key clicks cancel button
+
   Revision 1.27  2004/06/29 14:38:28  micha
   fix default button notification win32 intf
 

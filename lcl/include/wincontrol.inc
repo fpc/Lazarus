@@ -2063,11 +2063,30 @@ end;
 {  TWinControl ControlKeyUp                                                    }
 {------------------------------------------------------------------------------}
 procedure TWinControl.ControlKeyDown(var Key: Word; Shift: TShiftState);
+var
+  Form: TCustomForm;
 begin
   // handle tab keys
   if (Key=VK_Tab) and ((Shift+[ssShift])=[ssShift]) and Focused then begin
     Key:=VK_UNKNOWN;
     PerformTab(not (ssShift in Shift));
+  end;
+  if (Shift = []) and ((Key = VK_RETURN) or (Key = VK_ESCAPE)) then
+  begin
+    Form := GetParentForm(Self);
+    case Key of
+      VK_RETURN:
+      begin
+        if Form.DefaultButton <> nil then
+          (Form.DefaultButton as TButton).Click;
+      end;
+      
+      VK_ESCAPE:
+      begin
+        if Form.EscapeButton <> nil then
+          (Form.EscapeButton as TButton).Click;
+      end;
+    end;
   end;
 end;
 
@@ -3706,6 +3725,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.245  2004/06/30 11:07:20  micha
+  implement return key clicks default button; escape key clicks cancel button
+
   Revision 1.244  2004/06/29 10:23:00  micha
   fix cnkeydown to check wm_getdlgcode result
   fix win32 intf to also send wm_keydown of cn_keydown wasn't processed

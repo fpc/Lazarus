@@ -192,6 +192,41 @@ begin
   Result:=FKeyPreview=true;
 end;
 
+procedure TCustomForm.SetEscapeButton(NewButton: TControl);
+var
+  lButton: TControl;
+begin
+  if NewButton <> FEscapeButton then
+  begin
+    // prevent inf. recursion problems
+    lButton := FEscapeButton;
+    FEscapeButton := nil;
+    // TODO: TControl -> TButton so we don't have to check type ?
+    if lButton <> nil then
+      (lButton as TButton).Cancel := false;
+    FEscapeButton := NewButton;
+    if NewButton <> nil then
+      (NewButton as TButton).Cancel := true;
+  end;
+end;
+
+procedure TCustomForm.SetDefaultButton(NewButton: TControl);
+var
+  lButton: TControl;
+begin
+  if NewButton <> FDefaultButton then
+  begin
+    // prevent inf. recursion problems
+    lButton := FDefaultButton;
+    FDefaultButton := nil;
+    if lButton <> nil then
+      (lButton as TButton).Default := false;
+    FDefaultButton := NewButton;
+    if NewButton <> nil then
+      (NewButton as TButton).Default := true;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TCustomForm.SetIcon
   Params: the new icon
@@ -1607,6 +1642,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.141  2004/06/30 11:07:20  micha
+  implement return key clicks default button; escape key clicks cancel button
+
   Revision 1.140  2004/05/22 11:06:27  mattias
   fixed grids SetBorderStyle
 
