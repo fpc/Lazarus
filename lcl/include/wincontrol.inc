@@ -43,7 +43,7 @@ var
     Result := True;
 
     for I := ControlCount - 1 downto 0 do
- begin
+    begin
       if (Controls[I].Align <> alNone) or
          (Controls[I].Anchors <> [akLeft, akTop]) then Exit;
     end;	 
@@ -68,10 +68,10 @@ var
     Left2, Top2, Width2, Height2: Integer;
     R: TRect;
   begin
-{$IFDEF CHECK_POSITION}
-with Control do
-  writeln('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' recalculate the anchors=',(AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]));
-{$ENDIF}
+    {$IFDEF CHECK_POSITION}
+    with Control do
+      writeln('[TWinControl.AlignControls.DoPosition] A Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height,' recalculate the anchors=',(AAlign = alNone) or (Control.Anchors <> AnchorAlign[AAlign]));
+    {$ENDIF}
     with Rect do
     begin
       { Just recalculate the anchors
@@ -94,7 +94,7 @@ with Control do
         begin
           Width2 := Parent.FLastResize.X + FLastWidth;
           Height2 := Parent.FLastResize.Y + FLastHeight;
-//writeln('  FLastWidth=',FLastWidth,' akLeft=',akLeft in Anchors,' akRight=',akRight in Anchors,' akTop=',akTop in Anchors);
+          //writeln('  FLastWidth=',FLastWidth,' akLeft=',akLeft in Anchors,' akRight=',akRight in Anchors,' akTop=',akTop in Anchors);
           R := BoundsRect;
           if not (akLeft in Anchors) then
             if not (akRight in Anchors) then
@@ -110,7 +110,7 @@ with Control do
               OffsetRect(R, 0, Parent.FLastResize.Y)
           else if akBottom in Anchors then
             R.Bottom := R.Top + Height2;
-//with R do writeln(' R=',Left,',',Top,',',Right,',',Bottom);
+          //with R do writeln(' R=',Left,',',Top,',',Right,',',Bottom);
           BoundsRect := R;
           FLastWidth := Width2;
           FLastHeight := Height2;
@@ -126,7 +126,7 @@ with Control do
         the top, bottom, left, or right edge of the parent.
       }
       Width2 := Right - Left;
-//writeln('  Realign Width2=',Width2,' ',AAlign in [alLeft, alRight],' ',Control.Width);
+      //writeln('  Realign Width2=',Width2,' ',AAlign in [alLeft, alRight],' ',Control.Width);
       if (Width2 < 0) or (AAlign in [alLeft, alRight]) then
         Width2 := Control.Width;
       Height2 := Bottom - Top;
@@ -153,15 +153,15 @@ with Control do
     end;
     if (Control.Left <> Left2) or (Control.Top <> Top2)
     or (Control.Width <> Width2) or (Control.Height <> Height2) then begin
-{$IFDEF CHECK_POSITION}
-with Control do
-  writeln('[TWinControl.AlignControls.DoPosition] B1 Control=',Name,':',ClassName,' ',Left2,',',Top2,',',Width2,',',Height2);
-{$ENDIF}
+      {$IFDEF CHECK_POSITION}
+      with Control do
+        writeln('[TWinControl.AlignControls.DoPosition] B1 Control=',Name,':',ClassName,' ',Left2,',',Top2,',',Width2,',',Height2);
+      {$ENDIF}
       Control.SetBounds(Left2, Top2, Width2, Height2);
-{$IFDEF CHECK_POSITION}
-with Control do
-  writeln('[TWinControl.AlignControls.DoPosition] B2 Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
-{$ENDIF}
+      {$IFDEF CHECK_POSITION}
+      with Control do
+        writeln('[TWinControl.AlignControls.DoPosition] B2 Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+      {$ENDIF}
     end;  
 
     {Sometimes the control doesn't resize.  This will verifiy that it is the
@@ -179,10 +179,10 @@ with Control do
               Inc(Bottom, Height2 - Control.Height);
             end;
         end;
-{$IFDEF CHECK_POSITION}
-with Control do
-  writeln('[TWinControl.AlignControls.DoPosition] END Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
-{$ENDIF}
+    {$IFDEF CHECK_POSITION}
+    with Control do
+      writeln('[TWinControl.AlignControls.DoPosition] END Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+    {$ENDIF}
   end;
 
   function InsertBefore(Control1, Control2: TControl; AAlign: TAlign): Boolean;
@@ -204,11 +204,10 @@ with Control do
     AlignList.Clear;
     if (AControl <> nil) and
        ((AAlign = alNone)
- or AControl.Visible
-	 or (csDesigning in AControl.ComponentState)
-	 and not (csNoDesignVisible in AControl.ControlStyle))
-       and (AControl.Align = AAlign) then
-       
+    or AControl.Visible
+	  or (csDesigning in AControl.ComponentState)
+	  and not (csNoDesignVisible in AControl.ControlStyle))
+    and (AControl.Align = AAlign) then
       AlignList.Add(AControl);
 
     for I := 0 to ControlCount - 1 do
@@ -219,7 +218,6 @@ with Control do
       and ((AAlign = alNone) or (Control.Visible or (Control.ControlStyle * [csAcceptsControls, csNoDesignVisible] =
           [csAcceptsControls, csNoDesignVisible])) or (csDesigning in Control.ComponentState) and not (csNoDesignVisible in Control.ControlStyle)) then
       begin
-      
         if Control = AControl then Continue;
 
         X := 0;
@@ -237,7 +235,7 @@ begin
   if AlignWork then
   begin
     AdjustClientRect(Rect);
-//writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom);
+    //writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom);
     AlignList := TList.Create;
     try
       DoAlign(alTop);
@@ -2017,6 +2015,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2002/03/31 23:20:38  lazarus
+  MG: fixed initial size of TPage
+
   Revision 1.54  2002/03/29 14:32:49  lazarus
   MG: further internationalization
 
