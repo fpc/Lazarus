@@ -29,7 +29,8 @@
   Author: Mattias Gaertner
 
   Abstract:
-
+    Defines TOpenInstalledPackagesDlg - The dialog let the user choose one of
+    the installed packages.
 }
 unit OpenInstalledPkgDlg;
 

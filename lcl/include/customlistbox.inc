@@ -178,6 +178,9 @@ begin
     begin
       FCanvas.Brush.Color := clHighlight;
       FCanvas.Font.Color := clHighlightText
+    end else begin
+      FCanvas.Brush.Color:=clWindow;
+      FCanvas.Font.Color:=clWindowText;
     end;
     DrawItem(ItemID, Area, ItemState);
     if odFocused in ItemState then
@@ -275,8 +278,11 @@ end;
 
 procedure TCustomListBox.SetItemHeight(Value: Integer);
 begin
-  if (FItemHeight <> Value) and (Value > 0) then
+  if (FItemHeight <> Value) and (Value > 0) then begin
     FItemHeight := Value;
+    if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+    RecreateWnd;
+  end;
 end;
 
 {------------------------------------------------------------------------------}

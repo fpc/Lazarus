@@ -45,8 +45,8 @@ unit PackageDefs;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Laz_XMLCfg, CompilerOptions, Forms, FileCtrl,
-  IDEProcs, ComponentReg;
+  Classes, SysUtils, LCLProc, LResources, Graphics, Laz_XMLCfg, CompilerOptions,
+  Forms, FileCtrl, IDEProcs, ComponentReg;
 
 type
   TLazPackage = class;
@@ -60,14 +60,20 @@ type
   TPkgComponent = class(TIDEComponent)
   private
     FPkgFile: TPkgFile;
+    FIcon: TBitmap;
+    FIconLoaded: boolean;
+    procedure SetPkgFile(const AValue: TPkgFile);
   public
     constructor Create(ThePkgFile: TPkgFile; TheComponentClass: TComponentClass;
       const ThePageName: string);
+    destructor Destroy; override;
     function GetUnitName: string; override;
     function GetPriority: TComponentPriority; override;
     procedure ConsistencyCheck; override;
+    function Icon: TBitmap;
+    function HasIcon: boolean;
   public
-    property PkgFile: TPkgFile read FPkgFile write FPkgFile;
+    property PkgFile: TPkgFile read FPkgFile write SetPkgFile;
   end;
 
 
@@ -107,17 +113,20 @@ type
   TPkgFile = class
   private
     FComponentPriority: TComponentPriority;
+    FComponents: TList; // list of TPkgComponent
     FFilename: string;
     FFileType: TPkgFileType;
     FFlags: TPkgFileFlags;
     FPackage: TLazPackage;
     FUnitName: string;
+    function GetComponents(Index: integer): TPkgComponent;
     function GetHasRegisteredProc: boolean;
     procedure SetFilename(const AValue: string);
     procedure SetFileType(const AValue: TPkgFileType);
     procedure SetFlags(const AValue: TPkgFileFlags);
     procedure SetHasRegisteredProc(const AValue: boolean);
     procedure UpdateUnitName;
+    function GetComponentList: TList;
   public
     constructor Create(ThePackage: TLazPackage);
     destructor Destroy; override;
@@ -127,6 +136,8 @@ type
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure ConsistencyCheck;
     function IsVirtual: boolean;
+    function GetShortFilename: string;
+    function ComponentCount: integer;
   public
     property Filename: string read FFilename write SetFilename;
     property FileType: TPkgFileType read FFileType write SetFileType;
@@ -137,6 +148,7 @@ type
     property UnitName: string read FUnitName write FUnitName;
     property ComponentPriority: TComponentPriority read FComponentPriority
                                                    write FComponentPriority;
+    property Components[Index: integer]: TPkgComponent read GetComponents;
   end;
   
   
@@ -173,6 +185,7 @@ type
     function Compare(Dependency2: TPkgDependency): integer;
     procedure ConsistencyCheck;
     function IsCompatible(Pkg: TLazPackage): boolean;
+    function AsString: string;
   public
     property PackageName: string read FPackageName write SetPackageName;
     property Flags: TPkgDependencyFlags read FFlags write SetFlags;
@@ -474,6 +487,11 @@ begin
   Result:=pffHasRegisterProc in FFlags;
 end;
 
+function TPkgFile.GetComponents(Index: integer): TPkgComponent;
+begin
+  Result:=TPkgComponent(FComponents[Index]);
+end;
+
 procedure TPkgFile.SetFileType(const AValue: TPkgFileType);
 begin
   if FFileType=AValue then exit;
@@ -507,6 +525,12 @@ begin
     FUnitName:='';
 end;
 
+function TPkgFile.GetComponentList: TList;
+begin
+  if FComponents=nil then FComponents:=TList.Create;
+  Result:=FComponents;
+end;
+
 constructor TPkgFile.Create(ThePackage: TLazPackage);
 begin
   Clear;
@@ -524,6 +548,7 @@ begin
   FFilename:='';
   FFlags:=[];
   FFileType:=pftUnit;
+  FComponents.Free;
 end;
 
 procedure TPkgFile.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -566,6 +591,20 @@ end;
 function TPkgFile.IsVirtual: boolean;
 begin
   Result:=FilenameIsAbsolute(FFilename);
+end;
+
+function TPkgFile.GetShortFilename: string;
+begin
+  Result:=FFilename;
+  LazPackage.ShortenFilename(Result);
+end;
+
+function TPkgFile.ComponentCount: integer;
+begin
+  if FComponents<>nil then
+    Result:=FComponents.Count
+  else
+    Result:=0;
 end;
 
 { TPkgDependency }
@@ -681,6 +720,15 @@ end;
 function TPkgDependency.IsCompatible(Pkg: TLazPackage): boolean;
 begin
   Result:=IsCompatible(Pkg.Name,Pkg.Version);
+end;
+
+function TPkgDependency.AsString: string;
+begin
+  Result:=FPackageName;
+  if pdfMinVersion in FFlags then
+    Result:=Result+' (>='+MinVersion.AsString+')';
+  if pdfMaxVersion in FFlags then
+    Result:=Result+' (<='+MaxVersion.AsString+')';
 end;
 
 { TPkgVersion }
@@ -1279,11 +1327,28 @@ end;
 
 { TPkgComponent }
 
+procedure TPkgComponent.SetPkgFile(const AValue: TPkgFile);
+begin
+  if FPkgFile=AValue then exit;
+  if (FPkgFile<>nil) and (FPkgFile.FComponents<>nil) then
+    FPkgFile.FComponents.Remove(Self);
+  FPkgFile:=AValue;
+  if FPkgFile<>nil then
+    FPkgFile.GetComponentList.Add(Self);
+end;
+
 constructor TPkgComponent.Create(ThePkgFile: TPkgFile;
   TheComponentClass: TComponentClass; const ThePageName: string);
 begin
   inherited Create(TheComponentClass,ThePageName);
-  FPkgFile:=ThePkgFile;
+  PkgFile:=ThePkgFile;
+end;
+
+destructor TPkgComponent.Destroy;
+begin
+  PkgFile:=nil;
+  if fIconLoaded then FIcon.Free;
+  inherited Destroy;
 end;
 
 function TPkgComponent.GetUnitName: string;
@@ -1305,6 +1370,37 @@ begin
     RaiseGDBException('TIDEComponent.ConsistencyCheck FPkgFile.LazPackage=nil');
   if FPkgFile.LazPackage.IndexOfPkgComponent(Self)<0 then
     RaiseGDBException('TIDEComponent.ConsistencyCheck FPkgFile.LazPackage.IndexOfPkgComponent(Self)<0');
+  if PkgFile.FComponents=nil then
+    RaiseGDBException('TIDEComponent.ConsistencyCheck PkgFile.FComponents=nil');
+  if PkgFile.FComponents.IndexOf(Self)<0 then
+    RaiseGDBException('TIDEComponent.ConsistencyCheck PkgFile.FComponents.IndexOf(Self)<0');
+end;
+
+function TPkgComponent.Icon: TBitmap;
+var
+  ResName: string;
+  res: TLResource;
+begin
+  if not fIconLoaded then begin
+    if Page.PageName<>'' then begin
+      FIcon:=TPixmap.Create;
+      FIcon.TransparentColor:=clWhite;
+      ResName:=ComponentClass.ClassName;
+      res:=LazarusResources.Find(ResName);
+      if (res<>nil) and (res.Value<>'') and (res.ValueType='XPM') then begin
+        FIcon.LoadFromLazarusResource(ResName);
+      end else begin
+        FIcon.LoadFromLazarusResource('default');
+      end;
+    end;
+    fIconLoaded:=true;
+  end;
+  Result:=FIcon;
+end;
+
+function TPkgComponent.HasIcon: boolean;
+begin
+  Result:=Page.PageName<>'';
 end;
 
 end.

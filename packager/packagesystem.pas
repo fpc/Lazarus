@@ -277,14 +277,18 @@ begin
       RegistrationError('Register procedure is nil');
       exit;
     end;
+    {$IFNDEF StopOnError}
     try
+    {$ENDIF}
       // call the registration procedure
       RegisterProc();
+    {$IFNDEF StopOnError}
     except
       on E: Exception do begin
         RegistrationError(E.Message);
       end;
     end;
+    {$ENDIF}
     // clean up
   finally
     FRegistrationUnitName:='';
@@ -319,18 +323,22 @@ begin
   for i:=Low(ComponentClasses) to High(ComponentClasses) do begin
     CurComponent:=ComponentClasses[i];
     if (CurComponent=nil) then continue;
+    {$IFNDEF StopOnError}
     try
+    {$ENDIF}
       CurClassname:=CurComponent.Classname;
       if not IsValidIdent(CurClassname) then begin
         RegistrationError('Invalid component class');
         continue;
       end;
+    {$IFNDEF StopOnError}
     except
       on E: Exception do begin
         RegistrationError(E.Message);
         continue;
       end;
     end;
+    {$ENDIF}
     if IDEComponentPalette.FindComponent(CurClassname)<>nil then begin
       RegistrationError(
         'Component Class "'+CurComponent.ClassName+'" already defined');
