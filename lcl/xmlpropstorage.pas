@@ -19,6 +19,7 @@ unit XMLPropStorage;
 
 interface
 
+{$IFNDEF VER1_0}
 uses
   Classes, SysUtils, Forms, PropertyStorage, XMLCfg, DOM;
 
@@ -62,6 +63,7 @@ type
     property OnSaveProperties;
     property OnRestoreProperties;
   end;
+{$ENDIF not VER1_0}
 
 procedure Register;
 
@@ -76,6 +78,7 @@ begin
   {$ENDIF}
 end;
 
+{$IFNDEF VER1_0}
 { TCustomXMLPropStorage }
 
 procedure TCustomXMLPropStorage.StorageNeeded(ReadOnly: Boolean);
@@ -166,4 +169,5 @@ begin
     Node.Free;
 end;
 
+{$ENDIF not VER1_0}
 end.

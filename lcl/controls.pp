@@ -1608,12 +1608,14 @@ type
   end;
 
 
+  {$IFNDEF VER1_0}
   { TControlPropertyStorage }
 
   TControlPropertyStorage = class(TCustomPropertyStorage)
   protected
     procedure GetPropertyList(List : TStrings); override;
   end;
+  {$ENDIF not VER1_0}
 
 
   { TDockZone }
@@ -2335,6 +2337,7 @@ begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
+{$IFNDEF VER1_0}
 { TControlPropertyStorage }
 
 procedure TControlPropertyStorage.GetPropertyList(List: TStrings);
@@ -2363,6 +2366,7 @@ begin
     end;
   end;
 end;
+{$ENDIF not VER1_0}
 
 initialization
 
@@ -2384,6 +2388,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.230  2004/07/25 22:54:38  mattias
+  fixed fpc 1.0.10 compilation
+
   Revision 1.229  2004/07/25 15:39:55  mattias
   added rx components  from Michal Van Canneyt
 

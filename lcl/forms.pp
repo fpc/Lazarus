@@ -994,6 +994,7 @@ type
   end;
   
   
+  {$IFNDEF VER1_0}
   { TFormPropertyStorage }
   
   TFormPropertyStorage = class(TControlPropertyStorage)
@@ -1004,6 +1005,7 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
+  {$ENDIF not VER1_0}
 
 
 {$IFNDEF UseFCLDataModule}
@@ -1546,6 +1548,7 @@ end;
 {$I applicationproperties.inc}
 
 //==============================================================================
+  {$IFNDEF VER1_0}
 { TFormPropertyStorage }
 
 procedure TFormPropertyStorage.FormFirstShow(Sender: TObject);
@@ -1577,6 +1580,7 @@ begin
   inherited Destroy;
 end;
 
+{$ENDIF not VER1_0}
 //==============================================================================
 
 {$I hintwindow.inc}

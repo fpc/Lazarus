@@ -19,6 +19,7 @@ unit PropertyStorage;
 
 interface
 
+{$IFNDEF VER1_0}
 uses
   Classes, SysUtils, RTLConst
   {$IFDEF EnableSessionProps}, RTTIUtils{$ENDIF};
@@ -160,10 +161,10 @@ Type
     property OnRestoreProperties : TNotifyEvent read FOnRestoreProperties  write FOnRestoreProperties;
   end;
   
-
+{$ENDIF not VER1_0}
 implementation
 
-
+{$IFNDEF VER1_0}
 function XorEncode(const Key, Source: string): string;
 var
   I: Integer;
@@ -609,17 +610,19 @@ begin
 end;
 
 procedure TCustomPropertyStorage.FinishPropertyList(List: TStrings);
+{$IFDEF EnableSessionProps}
 var
   i: Integer;
   CompName: string;
   PropName: string;
   ARoot: TComponent;
   AComponent: TComponent;
+{$ENDIF}
 begin
+  {$IFDEF EnableSessionProps}
   // set Objects (i.e. the component of each property)
   ARoot:=Root;
   for i:=List.Count-1 downto 0 do begin
-    {$IFDEF EnableSessionProps}
     if ParseStoredItem(List[I], CompName, PropName) then begin
       if CompareText(ARoot.Name,CompName)=0 then
         List.Objects[i]:=ARoot
@@ -633,8 +636,8 @@ begin
     end else begin
       List.Delete(i);
     end;
-    {$ENDIF}
   end;
+  {$ENDIF}
 end;
 
 function TCustomPropertyStorage.DoReadInteger(const Section, Ident: String;
@@ -713,6 +716,8 @@ procedure TCustomPropertyStorage.SetStoredValue(const AName: string; Value: TSto
 begin
   StoredValues.StoredValue[AName] := Value;
 end;
+
+{$ENDIF not VER1_0}
 
 end.
 

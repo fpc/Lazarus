@@ -19,6 +19,7 @@ unit IniPropStorage;
 
 interface
 
+{$IFNDEF VER1_0}
 uses
   Classes, SysUtils, Forms, IniFiles, PropertyStorage;
 
@@ -62,6 +63,8 @@ Type
     property OnRestoreProperties;
   end;
 
+{$ENDIF not VER1_0}
+
 Procedure Register;
 
 
@@ -75,6 +78,7 @@ begin
   {$ENDIF}
 end;
 
+{$IFNDEF VER1_0}
 { Should move to strutils when 1.9.6 is out. }
 
 function FindPart(const HelpWilds, InputStr: string): Integer;
@@ -292,5 +296,6 @@ begin
   end;
 end;
 
+{$ENDIF not VER1_0}
 end.
 

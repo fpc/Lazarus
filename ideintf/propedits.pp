@@ -3220,7 +3220,7 @@ end;
 function TListPropertyEditor.GetElementName(Element: TListElementPropertyEditor
   ): shortstring;
 begin
-
+  Result:='';
 end;
 
 procedure TListPropertyEditor.GetElementProperties(
