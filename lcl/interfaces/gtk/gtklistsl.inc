@@ -129,6 +129,7 @@ begin
     'TGtkListStringList.Create Unspecified owner');
   FOwner:=TheOwner;
   //writeln('TGtkListStringList.Create Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(List),8),' Owner=',HexStr(Cardinal(Owner),8));
+  Include(FStates,glsItemCacheNeedsUpdate);
   ConnectAllCallbacks;
 end;
 
@@ -136,8 +137,58 @@ destructor TGtkListStringList.Destroy;
 begin
   // don't destroy the widgets
   RemoveAllCallbacks;
+  ReAllocMem(FCachedItems,0);
   //writeln('TGtkListStringList.Destroy Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(FGtkList),8),' Owner=',HexStr(Cardinal(Owner),8));
   inherited Destroy;
+end;
+
+function TGtkListStringList.Add(const S: string): Integer;
+var li : PGtkWidget;
+  l, m, r, cmp: integer;
+begin
+  BeginUpdate;
+  try
+    if FSorted then begin
+      l:=0;
+      r:=Count-1;
+      m:=l;
+      while (l<=r) do begin
+        m:=(l+r) shr 1;
+        cmp:=AnsiCompareText(S,Strings[m]);
+
+        if cmp<0 then
+          r:=m-1
+        else if cmp>0 then
+          l:=m+1
+        else
+          break;
+      end;
+      if (m<Count) and (AnsiCompareText(S,Strings[m])>0) then
+        inc(m);
+      Result:=m;
+    end else
+      Result:=Count;
+      
+    if (Result < 0) or (Result > Count) then
+      RaiseException('TGtkListStringList.Add: Result='+IntToStr(Result)
+        +' out of bounds. Count='+IntToStr(Count));
+    if Owner = nil then RaiseException(
+      'TGtkListStringList.Insert Unspecified owner');
+
+    // ToDo:
+    //  - CustomDraw needs expose/draw events
+    //  - Icons
+    //  - measure item
+
+    li:=gtk_list_item_new_with_label(PChar(S));
+    ConnectItemCallbacks(PGtkListItem(li));
+    Include(FStates,glsItemCacheNeedsUpdate);
+    gtk_widget_show(li);
+    gtk_list_insert_items(FGtkList, g_list_append(nil, li), Result);
+  finally
+    EndUpdate;
+  end;
+//writeln('[TGtkListStringList.Insert] END Index=',Index,' Count=',Count,' ',S,',',Count);
 end;
 
 {------------------------------------------------------------------------------
@@ -160,10 +211,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.ConnectItemCallbacks(Index: integer);
 var
-  li: PGtkListItem;
+  ListItem: PGtkListItem;
 begin
-  li:=g_list_nth_data(FGtkList^.children, Index);
-  ConnectItemCallbacks(li);
+  UpdateItemCache;
+  ListItem:=FCachedItems[Index];
+  ConnectItemCallbacks(ListItem);
 end;
 
 {------------------------------------------------------------------------------
@@ -190,9 +242,11 @@ procedure TGtkListStringList.ConnectAllCallbacks;
 var
   i, Cnt: integer;
 begin
+  BeginUpdate;
   Cnt:=Count-1;
   for i:=0 to Cnt-1 do
     ConnectItemCallbacks(i);
+  EndUpdate;
 end;
 
 {------------------------------------------------------------------------------
@@ -203,7 +257,8 @@ procedure TGtkListStringList.RemoveItemCallbacks(Index: integer);
 var
   ListItem: PGtkListItem;
 begin
-  ListItem:=g_list_nth_data(FGtkList^.children, Index);
+  UpdateItemCache;
+  ListItem:=FCachedItems[Index];
   gtk_object_set_data(PGtkObject(ListItem),GtkListItemLCLListTag,nil);
   gtk_object_set_data(PGtkObject(ListItem),GtkListItemGtkListTag,nil);
   gtk_signal_disconnect_by_func(
@@ -218,8 +273,49 @@ procedure TGtkListStringList.RemoveAllCallbacks;
 var
   i: integer;
 begin
+  BeginUpdate;
   for i:=0 to Count-1 do
     RemoveItemCallbacks(i);
+  EndUpdate;
+end;
+
+procedure TGtkListStringList.UpdateItemCache;
+var
+  CurListItem: PGList;
+  i: integer;
+begin
+  if not (glsItemCacheNeedsUpdate in FStates) then exit;
+  if (FGtkList<>nil) and (FGtkList^.children<>nil) then
+    FCachedCount:=g_list_length(FGtkList^.children)
+  else
+    FCachedCount:=0;
+  ReAllocMem(FCachedItems,SizeOf(PGtkListItem)*FCachedCount);
+  if FGtkList<>nil then begin
+    CurListItem:=FGtkList^.children;
+    i:=0;
+    while CurListItem<>nil do begin
+      FCachedItems[i]:=PGtkListItem(CurListItem^.Data);
+      inc(i);
+      CurListItem:=CurListItem^.Next;
+    end;
+  end;
+  Exclude(FStates,glsItemCacheNeedsUpdate);
+end;
+
+procedure TGtkListStringList.PutObject(Index: Integer; AnObject: TObject);
+var
+  ListItem : PGtkListItem;
+begin
+//writeln('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
+  if (Index < 0) or (Index >= Count) then
+    RaiseException('TGtkListStringList.PutObject Out of bounds.')
+  else if FGtkList<>nil then begin
+    UpdateItemCache;
+    ListItem:=FCachedItems[Index];
+    if ListItem <> nil then begin
+      gtk_object_set_data(PGtkObject(ListItem),'LCLStringsObject',AnObject);
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -232,6 +328,7 @@ procedure TGtkListStringList.Sort;
 var
   sl: TStringList;
 begin
+  BeginUpdate;
   // sort internally (sorting in the widget would be slow and unpretty ;)
   sl:=TStringList.Create;
   sl.Assign(Self);
@@ -241,6 +338,47 @@ begin
              // ToDo: replace by mergesort and add customsort
   Assign(sl);
   sl.Free;
+  EndUpdate;
+end;
+
+function TGtkListStringList.IsEqual(List: TStrings): boolean;
+var
+  i, Cnt: integer;
+  CmpList: TStringList;
+begin
+  if List=Self then begin
+    Result:=true;
+    exit;
+  end;
+  Result:=false;
+  if List=nil then exit;
+  BeginUpdate;
+  Cnt:=Count;
+  if (Cnt<>List.Count) then exit;
+  CmpList:=TStringList.Create;
+  try
+    CmpList.Assign(List);
+    CmpList.Sorted:=FSorted;
+    for i:=0 to Cnt-1 do begin
+      if (Strings[i]<>CmpList[i]) or (Objects[i]<>CmpList.Objects[i]) then exit;
+    end;
+  finally
+    CmpList.Free;
+  end;
+  Result:=true;
+  EndUpdate;
+end;
+
+procedure TGtkListStringList.BeginUpdate;
+begin
+  if FUpdateCount=0 then Include(FStates,glsItemCacheNeedsUpdate);
+  inc(FUpdateCount);
+end;
+
+procedure TGtkListStringList.EndUpdate;
+begin
+  dec(FUpdateCount);
+  if FUpdateCount=0 then Include(FStates,glsItemCacheNeedsUpdate);
 end;
 
 {------------------------------------------------------------------------------
@@ -250,21 +388,34 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Assign(Source : TPersistent);
-var Counter : integer;
+var
+  i, Cnt: integer;
 begin
   if (Source=Self) or (Source=nil) then exit;
   if ((Source is TGtkListStringList)
     and (TGtkListStringList(Source).FGtkList=FGtkList))
   then
     RaiseException('TGtkListStringList.Assign: There 2 lists with the same FGtkList');
+  BeginUpdate;
 //writeln('[TGtkListStringList.Assign] A ',Source.Classname,' Self=',HexStr(Cardinal(Self),8),' Source=',HexStr(Cardinal(Source),8));
-  { Do not call inherited Assign as it does things we do not want to happen }
-  if Source is TStrings then begin
-    Clear;
-    for Counter:= TStrings(Source).Count - 1 downto 0 do begin
-      InsertObject(0, TStrings(Source)[Counter],TStrings(Source).Objects[Counter]);
-    end;
-  end else inherited Assign(Source);
+  try
+    if Source is TStrings then begin
+      // clearing and resetting can change other properties of the widget,
+      // => don't change if the content is already the same
+      if IsEqual(TStrings(Source)) then exit;
+      Clear;
+      Cnt:=TStrings(Source).Count;
+      for i:=0 to Cnt - 1 do begin
+        AddObject(TStrings(Source)[i],TStrings(Source).Objects[i]);
+      end;
+      // ToDo: restore other settings
+
+      // Do not call inherited Assign as it does things we do not want to happen
+    end else
+      inherited Assign(Source);
+  finally
+    EndUpdate;
+  end;
 //writeln('[TGtkListStringList.Assign] END ',Source.Classname);
 end;
 
@@ -275,19 +426,17 @@ end;
 
  ------------------------------------------------------------------------------}
 function TGtkListStringList.Get(Index : integer) : string;
-var Item : PChar;
-      ALabel : PGtkWidget;
-      ListItem : PGtkListItem;
+var
+  Item : PChar;
+  ALabel : PGtkWidget;
+  ListItem : PGtkListItem;
 begin
 //writeln('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
   if (Index < 0) or (Index >= Count) then
     RaiseException('TGtkListStringList.Get Out of bounds.')
   else begin
-    if FGtkList=nil then begin
-      Result:='';
-      exit;
-    end;
-    ListItem:= g_list_nth_data(FGtkList^.children, Index);
+    UpdateItemCache;
+    ListItem:=FCachedItems[Index];
     ALabel:= PGtkBin(ListItem)^.child;
     if ALabel = nil then
       Result:= ''
@@ -299,6 +448,23 @@ begin
   end;      
 end;
 
+function TGtkListStringList.GetObject(Index: Integer): TObject;
+var
+  ListItem : PGtkListItem;
+begin
+//writeln('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
+  Result:=nil;
+  if (Index < 0) or (Index >= Count) then
+    RaiseException('TGtkListStringList.GetObject Out of bounds.')
+  else if FGtkList<>nil then begin
+    UpdateItemCache;
+    ListItem:=FCachedItems[Index];
+    if ListItem<>nil then begin
+      Result:=TObject(gtk_object_get_data(PGtkObject(ListItem),'LCLStringsObject'));
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Method: TGtkListStringList.GetCount
   Params: 
@@ -307,10 +473,12 @@ end;
  ------------------------------------------------------------------------------}
 function TGtkListStringList.GetCount: integer;
 begin
-  if FGtkList^.children = nil then
+  if (FGtkList<>nil) and (FGtkList^.children <> nil) then begin
+    UpdateItemCache;
+    Result:=FCachedCount;
+  end else begin
     Result:= 0
-  else
-    Result:= g_list_length(FGtkList^.children);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -322,6 +490,7 @@ end;
 procedure TGtkListStringList.Clear;
 begin
   RemoveAllCallbacks;
+  Include(FStates,glsItemCacheNeedsUpdate);
   gtk_list_clear_items(FGtkList, 0, Count);
 end;  
 
@@ -334,19 +503,15 @@ end;
 procedure TGtkListStringList.Delete(Index : integer);
 begin
   RemoveItemCallbacks(Index);
+  Include(FStates,glsItemCacheNeedsUpdate);
   gtk_list_clear_items(FGtkList, Index, Index + 1);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TGtkListStringList.Insert
-  Params: 
-  Returns: 
-
- ------------------------------------------------------------------------------}
-procedure TGtkListStringList.Insert(Index : integer; const S : string);
-var li : PGtkWidget;
+function TGtkListStringList.IndexOf(const S: string): Integer;
+var
   l, m, r, cmp: integer;
 begin
+  BeginUpdate;
   if FSorted then begin
     l:=0;
     r:=Count-1;
@@ -359,28 +524,68 @@ begin
         r:=m-1
       else if cmp>0 then
         l:=m+1
-      else
-        break;
+      else begin
+        Result:=m;
+        exit;
+      end;
     end;
-    if (m<Count) and (AnsiCompareText(S,Strings[m])>0) then
-      inc(m);
-    Index:=m;
+    Result:=-1;
+  end else begin
+    Result:=inherited IndexOf(S);
   end;
-  if (Index < 0) or (Index > Count) then 
-    RaiseException('TGtkListStringList.Insert: Index '+IntToStr(Index)
-      +' out of bounds. Count='+IntToStr(Count));
-  if Owner = nil then RaiseException(
-    'TGtkListStringList.Insert Unspecified owner');
+  EndUpdate;
+end;
 
-  // ToDo:
-  //  - CustomDraw needs expose/draw events
-  //  - Icons
-  //  - measure item
-  
-  li:=gtk_list_item_new_with_label(PChar(S));
-  ConnectItemCallbacks(PGtkListItem(li));
-  gtk_widget_show(li);
-  gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
+{------------------------------------------------------------------------------
+  Method: TGtkListStringList.Insert
+  Params: 
+  Returns: 
+
+ ------------------------------------------------------------------------------}
+procedure TGtkListStringList.Insert(Index : integer; const S : string);
+var li : PGtkWidget;
+  l, m, r, cmp: integer;
+begin
+  BeginUpdate;
+  try
+    if FSorted then begin
+      l:=0;
+      r:=Count-1;
+      m:=l;
+      while (l<=r) do begin
+        m:=(l+r) shr 1;
+        cmp:=AnsiCompareText(S,Strings[m]);
+
+        if cmp<0 then
+          r:=m-1
+        else if cmp>0 then
+          l:=m+1
+        else
+          break;
+      end;
+      if (m<Count) and (AnsiCompareText(S,Strings[m])>0) then
+        inc(m);
+      Index:=m;
+    end;
+    if (Index < 0) or (Index > Count) then
+      RaiseException('TGtkListStringList.Insert: Index '+IntToStr(Index)
+        +' out of bounds. Count='+IntToStr(Count));
+    if Owner = nil then RaiseException(
+      'TGtkListStringList.Insert Unspecified owner');
+
+    // ToDo:
+    //  - CustomDraw needs expose/draw events
+    //  - Icons
+    //  - measure item
+
+    li:=gtk_list_item_new_with_label(PChar(S));
+    ConnectItemCallbacks(PGtkListItem(li));
+    Include(FStates,glsItemCacheNeedsUpdate);
+    gtk_widget_show(li);
+    gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
+  finally
+    EndUpdate;
+  end;
 //writeln('[TGtkListStringList.Insert] END Index=',Index,' Count=',Count,' ',S,',',Count);
 end;
 
@@ -566,6 +771,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/11/17 11:10:04  mattias
+  TComboBox and TListBox accelerated and now supports objects
+
   Revision 1.10  2002/10/04 14:24:15  lazarus
   MG: added DrawItem to TComboBox/TListBox
 
