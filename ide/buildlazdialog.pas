@@ -778,7 +778,10 @@ begin
       DestRect.Top:=ARect.Top+((ARect.Bottom-ARect.Top-IconHeight) div 2);
       DestRect.Right:=DestRect.Left+IconWidth;
       DestRect.Bottom:=DestRect.Top+IconHeight;
-      ItemsListBox.Canvas.CopyRect(DestRect,CurIcon.Canvas,IconRect);
+      StretchMaskBlt(ItemsListBox.Canvas.Handle, 
+        DestRect.Left, DestRect.Top, IconWidth, IconHeight, 
+        CurIcon.Canvas.Handle, 0, 0, IconWidth, IconHeight,
+        CurIcon.MaskHandle, 0, 0, SRCCOPY);
     end;
     inc(x,ButtonWidth);
   end;
