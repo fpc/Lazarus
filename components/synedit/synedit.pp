@@ -127,11 +127,6 @@ const
 {$ENDIF}
 
 type
-  TSynSearchOption = (ssoMatchCase, ssoWholeWord, ssoBackwards,
-    ssoEntireScope, ssoSelectedOnly, ssoReplace, ssoReplaceAll, ssoPrompt
-    {$IFDEF SYN_LAZARUS}, ssoRegExpr, ssoRegExprMultiLine{$ENDIF});
-  TSynSearchOptions = set of TSynSearchOption;
-
   TSynReplaceAction = (raCancel, raSkip, raReplace, raReplaceAll);
 
   ESynEditError = class(Exception);

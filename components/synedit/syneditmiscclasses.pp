@@ -43,12 +43,11 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLLinux,
- LCLType, GraphType,
+  LCLLinux, LCLType, GraphType,
   {$ELSE}
   Windows,
   {$ENDIF}
-  Classes, Graphics, Controls, SysUtils;
+  Classes, Graphics, Controls, SysUtils, SynEditTypes;
 
 type
   TSynSelectedColor = class(TPersistent)
@@ -200,6 +199,27 @@ type
     procedure DrawMarkTransparent(ACanvas: TCanvas; Number, X, Y,
       LineHeight: integer; TransparentColor: TColor);
   end;
+  
+  
+  { TSynEditSearchCustom }
+
+  TSynEditSearchCustom = class(TComponent)
+  protected
+    function GetPattern: string; virtual; abstract;
+    procedure SetPattern(const Value: string); virtual; abstract;
+    function GetLength(aIndex: integer): integer; virtual; abstract;
+    function GetResult(aIndex: integer): integer; virtual; abstract;
+    function GetResultCount: integer; virtual; abstract;
+    procedure SetOptions(const Value: TSynSearchOptions); virtual; abstract;
+  public
+    function FindAll(const NewText: string): integer; virtual; abstract;
+    property Pattern: string read GetPattern write SetPattern;
+    property ResultCount: integer read GetResultCount;
+    property Results[aIndex: integer]: integer read GetResult;
+    property Lengths[aIndex: integer]: integer read GetLength;
+    property Options: TSynSearchOptions write SetOptions;
+  end;
+
 
 implementation
 

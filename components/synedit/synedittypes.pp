@@ -56,6 +56,11 @@ type
   PSynSelectionMode = ^TSynSelectionMode;
   TSynSelectionMode = (smNormal, smLine, smColumn);
 
+  TSynSearchOption = (ssoMatchCase, ssoWholeWord, ssoBackwards,
+    ssoEntireScope, ssoSelectedOnly, ssoReplace, ssoReplaceAll, ssoPrompt
+    {$IFDEF SYN_LAZARUS}, ssoRegExpr, ssoRegExprMultiLine{$ENDIF});
+  TSynSearchOptions = set of TSynSearchOption;
+
 implementation
 
 end.
