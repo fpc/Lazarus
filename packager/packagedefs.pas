@@ -1821,13 +1821,14 @@ begin
   FMacros.OnSubstitution:=@OnMacroListSubstitution;
   FCompilerOptions:=TPkgCompilerOptions.Create(Self);
   FCompilerOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
-  FCompilerOptions.ParsedOpts.InvalidateGraphOnChange:=true;
   FCompilerOptions.DefaultMakeOptionsFlags:=[ccloNoLinkerOpts];
   FUsageOptions:=TPkgAdditionalCompilerOptions.Create(Self);
   FUsageOptions.ParsedOpts.OnLocalSubstitute:=@SubstitutePkgMacro;
   FDefineTemplates:=TLazPackageDefineTemplates.Create(Self);
   fPublishOptions:=TPublishPackageOptions.Create(Self);
   Clear;
+  FCompilerOptions.ParsedOpts.InvalidateGraphOnChange:=true;
+  FUsageOptions.ParsedOpts.InvalidateGraphOnChange:=true;
 end;
 
 destructor TLazPackage.Destroy;

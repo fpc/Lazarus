@@ -40,7 +40,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Buttons, LResources, ExtCtrls, StdCtrls,
   Spin, Dialogs, PathEditorDlg, IDEProcs, IDEOptionDefs, LazarusIDEStrConsts,
-  BrokenDependenciesDlg, PackageDefs, PackageSystem;
+  BrokenDependenciesDlg, PackageDefs, PackageSystem, CompilerOptions;
   
 type
   TPackageOptionsDialog = class(TForm)
@@ -394,10 +394,10 @@ begin
   else LazPackage.AutoUpdate:=pupAsNeeded;
   end;
   with LazPackage.UsageOptions do begin
-    UnitPath:=UnitPathEdit.Text;
-    IncludePath:=IncludePathEdit.Text;
-    ObjectPath:=ObjectPathEdit.Text;
-    LibraryPath:=LibraryPathEdit.Text;
+    UnitPath:=TrimSearchPath(UnitPathEdit.Text,'');
+    IncludePath:=TrimSearchPath(IncludePathEdit.Text,'');
+    ObjectPath:=TrimSearchPath(ObjectPathEdit.Text,'');
+    LibraryPath:=TrimSearchPath(LibraryPathEdit.Text,'');
     LinkerOptions:=LinkerOptionsMemo.Text;
     CustomOptions:=CustomOptionsMemo.Text;
   end;

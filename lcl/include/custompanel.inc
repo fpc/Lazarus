@@ -36,8 +36,7 @@ begin
   FBevelInner := bvNone;
   FBevelWidth := 1;
   FAlignment := taCenter;
-  Height := 41;
-  Width := 185;
+  SetInitialBounds(0,0,170,50);
   Color:= clBackground;
   ParentColor := True;
 end;
