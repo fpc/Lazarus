@@ -748,7 +748,6 @@ type
     FTabOrder: integer;
     FTabStop : Boolean;
     FTBDockHeight: Integer;
-    FText : TCaption;
     FTop: Integer;
     FUndockHeight: Integer;
     FUndockWidth: Integer;
@@ -2261,6 +2260,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.197  2004/04/20 23:39:01  marc
+  * Fixed setting of TWincontrol.Text during load
+
   Revision 1.196  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

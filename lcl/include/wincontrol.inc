@@ -2083,7 +2083,7 @@ begin
   FillChar(Params, SizeOf(Params),0);
   with Params do
   begin
-    Caption := @FText;
+    Caption := @FCaption;
     Style := WS_CHILD or WS_CLIPSIBLINGS;
     if (Parent <> nil) then WndParent := Parent.Handle;
   end;
@@ -3061,7 +3061,7 @@ begin
   Assert(False, Format('Trace:[TWinControl.InitializeWnd]  %s', [ClassName]));
   // set all cached properties
 
-//writeln('[TWinControl.InitializeWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+  //writeln('[TWinControl.InitializeWnd] ',Name,':',ClassName,':', FCaption,' ',Left,',',Top,',',Width,',',Height);
   DoSendBoundsToInterface;
   CNSendMessage(LM_SHOWHIDE, Self, nil);
 
@@ -3073,8 +3073,10 @@ begin
   end;
 
   EnableWindow(Handle, Enabled);
-
-  RealSetText(FCaption);
+  
+  // Delay the setting of text until it is complete loaded
+  if not (csLoading in ComponentState) 
+  then TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
 
   SetProp(Handle,'WinControl',TWinControl(Self));
   SetProp(Handle,'Control',TControl(Self));
@@ -3116,12 +3118,20 @@ begin
   inherited Loaded;
   RealizeBounds;
   FixupTabList;
-  if ([wcfColorChanged,wcfFontChanged]*FFlags<>[]) and HandleAllocated then
-  begin
-    // ToDo: replace by update style call
-    CNSendMessage(LM_SETCOLOR, Self, nil);
-    FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
+  
+  if HandleAllocated
+  then begin              
+    // Set cached caption
+    TWSWinControlClass(WidgetSetClass).SetText(Self, FCaption);
+  
+    if [wcfColorChanged,wcfFontChanged]*FFlags<>[] then
+    begin
+      // ToDo: replace by update style call
+      CNSendMessage(LM_SETCOLOR, Self, nil);
+      FFlags:=FFlags-[wcfColorChanged,wcfFontChanged];
+    end;
   end;
+  
   // align the childs
   if wcfReAlignNeeded in FFlags then
     ReAlign;
@@ -3342,7 +3352,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.RealSetText(const Value: TCaption);
 begin
-  if HandleAllocated and (not (csLoading in ComponentState)) 
+  if HandleAllocated 
+  and (not (csLoading in ComponentState)) 
   then TWSWinControlClass(WidgetSetClass).SetText(Self, Value);
   inherited;
 end;
@@ -3460,6 +3471,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.220  2004/04/20 23:39:01  marc
+  * Fixed setting of TWincontrol.Text during load
+
   Revision 1.219  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

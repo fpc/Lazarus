@@ -43,7 +43,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomLabel.GetLabelText: String;
 begin
-  Result := Caption;
+  Result := Caption;  
 end;
 
 {------------------------------------------------------------------------------
@@ -185,6 +185,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/04/20 23:39:01  marc
+  * Fixed setting of TWincontrol.Text during load
+
   Revision 1.14  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 
