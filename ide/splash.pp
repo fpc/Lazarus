@@ -2,7 +2,7 @@
 {
  /***************************************************************************
                                Splash.pp
-                             -------------------
+                               ---------
 
 
 
@@ -72,7 +72,6 @@ begin
 
   FPixmap := TPixmap.Create;
   FPixmap.LoadFromLazarusResource('splash_logo');
-  //FBitmap.Handle := CreatePixmapIndirect(@SPLASH_IMAGE, ColorToRGB(clBtnFace));
 
   FTimer := TTimer.Create(self);
   with FTimer do
@@ -141,6 +140,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/09/30 20:19:12  lazarus
+  MG: fixed flickering of modal forms
+
   Revision 1.16  2002/09/27 20:52:18  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
 
