@@ -686,13 +686,25 @@ var AccessParam, AccessParamPrefix, CleanAccessFunc, AccessFunc,
                 'procedure '+AccessParam
                 +'(const '+SetPropertyVariablename+': '+PropType+');';
               if VariableName<>'' then begin
-                // read spec is a variable -> add simple assign code to body
+                { read spec is a variable -> add simple assign code to body
+                  For example:
+                  
+                  procedure SetMyInt(AValue: integer);
+                  begin
+                    if FMyInt=AValue then exit;
+                    FMyInt:=AValue;
+                  end;
+                
+                }
                 ProcBody:=
                   'procedure '
                   +ExtractClassName(PropNode.Parent.Parent,false)+'.'+AccessParam
                   +'(const '+SetPropertyVariablename+': '+PropType+');'
                   +BeautifyCodeOpts.LineEnd
                   +'begin'+BeautifyCodeOpts.LineEnd
+                  +GetIndentStr(BeautifyCodeOpts.Indent)+
+                    +'if '+VariableName+'='+SetPropertyVariablename+' then exit;'
+                    +BeautifyCodeOpts.LineEnd
                   +GetIndentStr(BeautifyCodeOpts.Indent)+
                     +VariableName+':='+SetPropertyVariablename+';'
                     +BeautifyCodeOpts.LineEnd
@@ -791,13 +803,13 @@ begin
   ReadPropertyKeywordAndName;
   ReadPropertyParamList;
   
-{$IFDEF CTDEBUG}
-writeln('[TCodeCompletionCodeTool.CompleteProperty] Checking Property ',GetAtom);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TCodeCompletionCodeTool.CompleteProperty] Checking Property ',GetAtom);
+  {$ENDIF}
   if not AtomIsChar(':') then begin
-{$IFDEF CTDEBUG}
-writeln('[TCodeCompletionCodeTool.CompleteProperty] no type : found -> ignore property');
-{$ENDIF}
+    {$IFDEF CTDEBUG}
+    writeln('[TCodeCompletionCodeTool.CompleteProperty] no type : found -> ignore property');
+    {$ENDIF}
     // no type -> ignore this property
     Result:=true;
     exit;
