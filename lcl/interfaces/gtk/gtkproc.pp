@@ -215,41 +215,70 @@ function gtkLVUnSelectAll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 function gtkLVEndSelection(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 
 (* gtkComboBoxCallback.inc headers *)
-
 function gtkComboBoxShowCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 function gtkComboBoxHideCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 
+// functions
 procedure Set_RC_Name(Sender : TObject; AWidget: PGtkWidget);
 
 procedure RaiseException(const Msg: string);
+
 function CreatePChar(const s: string): PChar;
 function ComparePChar(P1, P2: PChar): boolean;
 function FindChar(c: char; p:PChar; Max: integer): integer;
+
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
 function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
 function LockOnChange(GtkObject: PGtkObject; LockOffset: integer): integer;
+function ObjectToGTKObject(const AObject: TObject): PGtkObject;
+function GetMainWidget(const Widget: Pointer): Pointer;
+procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
+function GetFixedWidget(const Widget: Pointer): Pointer;
+procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
+Function GetControlWindow(Control: Pointer) : PGDKWindow;
+function GetDCOffset(DC: TDeviceContext): TPoint;
+function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
+function GetWidgetInfo(const Widget: Pointer; const Create: Boolean): PWinWidgetInfo;
+procedure FreeWinWidgetInfo(Widget: Pointer);
+procedure DestroyWidget(Widget: PGtkWidget);
+procedure SetLCLObject(const Widget: Pointer; const AnObject: TObject);
+function GetLCLObject(const Widget: Pointer): TObject;
+function GetParentLCLObject(Widget: PGtkWidget): TObject;
+procedure SetHiddenLCLObject(const Widget: Pointer; const AnObject: TObject);
+function GetHiddenLCLObject(const Widget: Pointer): TObject;
+Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
+Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
+
 procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
 function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
 procedure SetComboBoxItemIndex(ComboBox: TComboBox; Index: integer);
+
 function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
+
 function NewGDIRawImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDIRawImage;
-function AllocGDKColor(const AColor: LongInt): TGDKColor;
+
 function CopyDCData(DestinationDC, SourceDC: TDeviceContext): Boolean;
+
 Function RegionType(RGN : PGDKRegion) : Longint;
 Procedure SelectGDIRegion(const DC: HDC);
-Procedure FreeGDIColor(var GDIColor : TGDIColor);
-Procedure AllocGDIColor(DC : hDC; var GDIColor : TGDIColor);
+
+Procedure FreeGDIColor(GDIColor : PGDIColor);
+Procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);
+procedure BuildColorRefFromGDKColor(var GDIColor : TGDIColor);
 procedure SetGDIColorRef(var GDIColor : TGDIColor; NewColorRef: TColorRef);
 Procedure EnsureGCColor(DC: hDC; ColorType: TDevContextsColorType;
   IsSolidBrush: Boolean; AsBackground: Boolean);
+procedure CopyGDIColor(var SourceGDIColor, DestGDIColor: TGDIColor);
+function AllocGDKColor(const AColor: LongInt): TGDKColor;
+function TGDKColorToTColor(const value : TGDKColor) : TColor;
+function TColortoTGDKColor(const value : TColor) : TGDKColor;
+procedure UpdateSysColorMap(Widget: PGtkWidget);
+
 function CompareGDIColor(const Color1, Color2: TGDIColor): boolean;
 function CompareGDIFill(const Fill1, Fill2: TGdkFill): boolean;
 function CompareGDIBrushes(Brush1, Brush2: PGdiObject): boolean;
-
-function GetIndexAsKey(p: pointer): pointer;
-function GetRGBAsKey(p: pointer): pointer;
 
 function PaletteIndexExists(Pal : PGDIObject; I : longint): Boolean;
 function PaletteRGBExists(Pal : PGDIObject; RGB : longint): Boolean;
@@ -258,35 +287,22 @@ function PaletteDeleteIndex(Pal : PGDIObject; I : Longint): Boolean;
 function PaletteIndexToRGB(Pal : PGDIObject; I : longint): longint;
 function PaletteRGBToIndex(Pal : PGDIObject; RGB : longint): longint;
 Procedure InitializePalette(Pal : PGDIObject; Entries : PPALETTEENTRY; RGBCount : Longint);
+function GetIndexAsKey(p: pointer): pointer;
+function GetRGBAsKey(p: pointer): pointer;
 
 function GTKEventState2ShiftState(KeyState: Word): TShiftState;
 function KeyToListCode(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
 procedure GetGTKKeyInfo(const Event: PGDKEventKey; var KeyCode,VirtualKey: Word;
   var SysKey, Extended, Toggle: Boolean; var ShiftState: TShiftState);
+
 procedure StoreCommonDialogSetup(ADialog: TCommonDialog);
 procedure DestroyCommonDialogAddOns(ADialog: TCommonDialog);
-function ObjectToGTKObject(const AObject: TObject): PGtkObject;
-function GetMainWidget(const Widget: Pointer): Pointer;
-procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
-function GetFixedWidget(const Widget: Pointer): Pointer;
-procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
-Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
-Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
-Function GetControlWindow(Control: Pointer) : PGDKWindow;
-function GetDCOffset(DC: TDeviceContext): TPoint;
-function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
-function GetWidgetInfo(const Widget: Pointer; const Create: Boolean): PWinWidgetInfo;
-procedure FreeWinWidgetInfo(Widget: Pointer);
-procedure DestroyWidget(Widget: PGtkWidget);
+
 function GetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook): PGtkWidget;
 procedure SetGtkNoteBookDummyPage(ANoteBookWidget: PGtkNoteBook;
   DummyWidget: PGtkWidget);
 procedure UpdateNoteBookClientWidget(ANoteBook: TObject);
-procedure SetLCLObject(const Widget: Pointer; const AnObject: TObject);
-function GetLCLObject(const Widget: Pointer): TObject;
-function GetParentLCLObject(Widget: PGtkWidget): TObject;
-procedure SetHiddenLCLObject(const Widget: Pointer; const AnObject: TObject);
-function GetHiddenLCLObject(const Widget: Pointer): TObject;
+
 function GetWidgetOrigin(TheWidget: PGtkWidget): TPoint;
 function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
 function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
@@ -411,9 +427,6 @@ procedure SaveSizeNotification(Widget: PGtkWidget);
 procedure SaveClientSizeNotification(FixWidget: PGtkWidget);
 function CreateTopologicalSortedWidgets(HashArray: TDynHashArray): TList;
 Procedure ReportNotObsolete(const Texts : String);
-function TGDKColorToTColor(value : TGDKColor) : TColor;
-function TColortoTGDKColor(value : TColor) : TGDKColor;
-procedure UpdateSysColorMap(Widget: PGtkWidget);
 function WaitForClipbrdAnswerDummyTimer(Client: Pointer): gint; cdecl;
 function WaitForClipboardAnswer(c: PClipboardEventData): boolean;
 function RequestSelectionData(ClipboardWidget: PGtkWidget;

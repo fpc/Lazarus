@@ -2072,7 +2072,7 @@ begin
             if (GDIBrushPixmap <> nil)
             then gdk_bitmap_unref(GDIBrushPixmap);
             
-            FreeGDIColor(GDIBrushColor);
+            FreeGDIColor(@GDIBrushColor);
           end;
         gdiBitmap:
           begin
@@ -2085,7 +2085,7 @@ begin
           end;
         gdiPen:
           begin
-            FreeGDIColor(GDIPenColor);
+            FreeGDIColor(@GDIPenColor);
           end;
         gdiRegion:
           begin
@@ -5984,7 +5984,7 @@ begin
       DeleteObject(HGDIObj(aDC.ClipRegion));
       {FreeGDIColor(aDC.CurrentTextColor);
       FreeGDIColor(aDC.CurrentBackColor);}
-      
+
       try
         { On root window, we don't allocate a graphics context and so we dont free}
         if aDC.GC <> nil then begin
@@ -8078,6 +8078,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.237  2003/05/19 08:16:33  mattias
+  fixed allocation of dc backcolor
+
   Revision 1.236  2003/04/26 10:45:34  mattias
   fixed right control release
 
