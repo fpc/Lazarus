@@ -16,7 +16,7 @@
 {------------------------------------------------------------------------------}
 {       TForm Destructor                                                       }
 {------------------------------------------------------------------------------}
-destructor TForm.destroy;
+destructor TForm.Destroy;
 begin
   Assert(False, 'Trace:Destroying signals for TForm');
   inherited Destroy;
@@ -28,7 +28,6 @@ end;
 constructor TForm.Create(AOwner : TComponent);
 begin
   inherited Create(AOwner);
-  Icon := TIcon.Create;
 end;
 
 

@@ -767,7 +767,7 @@ Begin
   FBorderStyle := bsSizeable;
   FWindowState := wsNormal;
 //  FDefaultMonitor := dmActiveForm;
-  FIcon := nil;
+  FIcon := TIcon.Create;
 //  FInCMParentBiDiModeChanged := False;
   {apply a drawing surface}
   FCanvas := TControlCanvas.Create;
@@ -1133,6 +1133,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2002/09/16 16:18:50  lazarus
+  MG: fixed mem leak in TPixmap
+
   Revision 1.58  2002/09/09 14:01:05  lazarus
   MG: improved TScreen and ShowModal
 

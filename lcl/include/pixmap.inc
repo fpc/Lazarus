@@ -222,18 +222,23 @@ var
   NewWidth, NewHeight, NewColorCount: integer;
 begin
   XPM:=ReadXPMFromStream(Stream,Size);
-  if not ReadXPMSize(XPM,NewWidth,NewHeight,NewColorCount) then
-    raise Exception.Create('TPixmap.ReadStream: ERROR: reading xpm');
+  try
+    if not ReadXPMSize(XPM,NewWidth,NewHeight,NewColorCount) then
+      raise Exception.Create('TPixmap.ReadStream: ERROR: reading xpm');
 
-  // free old pixmap
-  // Create the pixmap
-  if FTransparentColor = clNone then
-    // create a transparent pixmap (with mask)
-    Handle := CreatePixmapIndirect(XPM, -1)
-  else
-    // create an opaque pixmap.
-    // Transparent pixels are filled with FTransparentColor
-    Handle := CreatePixmapIndirect(XPM, ColorToRGB(FTransparentColor));
+    // free old pixmap
+    // Create the pixmap
+    if FTransparentColor = clNone then
+      // create a transparent pixmap (with mask)
+      Handle := CreatePixmapIndirect(XPM, -1)
+    else
+      // create an opaque pixmap.
+      // Transparent pixels are filled with FTransparentColor
+      Handle := CreatePixmapIndirect(XPM, ColorToRGB(FTransparentColor));
+  finally
+    if XPM<>nil then
+      FreeMem(XPM);
+  end;
 
   FWidth:=NewWidth;
   FHeight:=NewHeight;
@@ -244,6 +249,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/09/16 16:18:50  lazarus
+  MG: fixed mem leak in TPixmap
+
   Revision 1.14  2002/09/02 08:13:17  lazarus
   MG: fixed GraphicClass.Create
 
