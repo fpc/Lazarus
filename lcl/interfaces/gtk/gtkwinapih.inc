@@ -103,7 +103,8 @@ Function GetParent(Handle : HWND): HWND; override;
 Function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
 Function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
 function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
-function GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean; override;
+function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
+function GetScrollInfo(Handle: HWND; SBStyle: Integer; var ScrollInfo: TScrollInfo): Boolean; override;
 function GetStockObject(Value: Integer): LongInt; override;
 function GetSysColor(nIndex: Integer): DWORD; override;
 function GetSystemMetrics(nIndex: Integer): Integer;  override;
@@ -200,6 +201,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2003/03/29 17:20:05  mattias
+  added TMemoScrollBar
+
   Revision 1.65  2003/03/17 20:53:16  mattias
   removed SetRadioButtonGroupMode
 
