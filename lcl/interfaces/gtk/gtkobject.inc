@@ -3277,12 +3277,6 @@ begin
           *)
       end;
 
-      //TBitBtn
-      LM_IMAGECHANGED:  
-        DebugLn('[WARNING] Obsolete messagecall to LM_IMAGECHANGED for ', Sender.ClassName); 
-      LM_LAYOUTCHANGED:
-        DebugLn('[WARNING] Obsolete messagecall to LM_LAYOUTCHANGED for ', Sender.ClassName); 
-
       LM_POPUPSHOW :
         Begin
           ReleaseMouseCapture;
@@ -9268,6 +9262,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.532  2004/08/25 16:11:06  micha
+  remove obsolete message handlers
+
   Revision 1.531  2004/08/23 15:05:09  mattias
   implemented help jump to FPDoc html unit
 
