@@ -59,7 +59,7 @@ const
   );
   
   PascalExtension: array[TPascalExtType] of string = ('', '.pas', '.pp');
-
+  
 type
 
   { class for storing environment options }

@@ -73,6 +73,11 @@ begin
   end;
 end;
 
+function FindDefaultCompilerPath: string;
+begin
+  Result:='';
+end;
+
 
 initialization
   PrimaryConfigPath:=ExtractFilePath(Paramstr(0));
@@ -85,6 +90,9 @@ initialization
 
 {
   $Log$
+  Revision 1.3  2001/12/10 08:44:23  lazarus
+  MG: added search for compiler, if not set
+
   Revision 1.2  2001/05/27 11:52:01  lazarus
   MG: added --primary-config-path=<filename> cmd line option
 

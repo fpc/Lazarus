@@ -476,6 +476,8 @@ begin
   with EnvironmentOptions do begin
     SetLazarusDefaultFilename;
     Load(false);
+    if EnvironmentOptions.CompilerFilename='' then
+      EnvironmentOptions.CompilerFilename:=FindDefaultCompilerPath;
   end;
   UpdateDefaultPascalFileExtensions;
 
@@ -5088,6 +5090,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.166  2001/12/10 08:44:23  lazarus
+  MG: added search for compiler, if not set
+
   Revision 1.165  2001/12/07 20:12:13  lazarus
   Added a watch dialog.
   Shane

@@ -81,6 +81,15 @@ begin
   end;
 end;
 
+function FindDefaultCompilerPath: string;
+begin
+  if FileIsExecutable('/usr/bin/ppc386') then
+    Result:='/usr/bin/ppc386'
+  else if FileIsExecutable('/opt/fpc/ppc386') then
+    Result:='/opt/fpc/ppc386'
+  else
+    Result:='';
+end;
 
 initialization
   PrimaryConfigPath:=FExpand('~/.lazarus');
@@ -88,6 +97,9 @@ initialization
 
 {
   $Log$
+  Revision 1.4  2001/12/10 08:44:23  lazarus
+  MG: added search for compiler, if not set
+
   Revision 1.3  2001/10/24 09:51:40  lazarus
   MG: fpc 1.1: linux.pp is replaced by unix.pp
 
