@@ -18,8 +18,8 @@ packages=rtl fcl
 [compiler]
 options=-gl
 unitdir=. $(LAZDIR)/lcl/units/$(CPU_TARGET)/$(OS_TARGET) \
-          $(LAZDIR)/lcl/units/$(LCL_PLATFORM)/$(CPU_TARGET)/$(OS_TARGET) \
-          $(LAZDIR)/components/units
+          $(LAZDIR)/lcl/units/$(CPU_TARGET)/$(OS_TARGET)/$(LCL_PLATFORM) \
+          $(LAZDIR)/components/units/$(CPU_TARGET)/$(OS_TARGET)
 targetdir=.
 
 [prerules]
