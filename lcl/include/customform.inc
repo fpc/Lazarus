@@ -395,9 +395,8 @@ begin
   if Root = Self then
     for I := 0 to ComponentCount - 1 do begin
       OwnedComponent := Components[I];
-      if (not (OwnedComponent is TControl))
-      or (TControl(OwnedComponent).Parent=nil)
-      then Proc(OwnedComponent);
+      if OwnedComponent.HasParent = False
+        then Proc(OwnedComponent);
     end;
 end;
 
@@ -1034,6 +1033,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2002/05/30 21:17:27  lazarus
+  lcl/controls.pp
+
   Revision 1.46  2002/05/15 05:58:17  lazarus
   MG: added TMainMenu.Parent
 
