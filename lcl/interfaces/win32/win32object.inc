@@ -1265,7 +1265,7 @@ begin
     hIcon := 0{LoadIcon(0, IDI_Application)};
     hCursor := 0{LoadCursor(0, IDC_Arrow)};
     hbrBackground := GetStockObject(WHITE_BRUSH);
-    lpszMenuName := HMenu(nil);
+    lpszMenuName := nil;
     lpszClassName := @ToolBtnClsName;
   end;
   Result := Windows.RegisterClass(@WinClass) <> 0;
@@ -1330,12 +1330,12 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32Object.SetLimitText(Window: HWND; Limit: Word);
 Var
-  Cls: PChar;
+  Cls: array[0..5] of Char;
   Msg: Cardinal;
   Str: String;
 Begin
-  GetClassInfo(Window, @Cls, 5);
-  Str := LowerCase(String(PChar(@Cls)));
+  GetClassName(Window, @Cls[0], 5);
+  Str := Lowercase(PChar(@Cls[0]));
   If Str = 'edit' Then
     Msg := CB_LIMITTEXT
   Else If Str = 'combo' Then
@@ -1539,7 +1539,7 @@ Begin
     Else
       FileName := '';
 
-    FreeMem(OpenFile.LPStrFile,SizeStr); // FName Address is changed, so free the initial @
+    FreeMem(OpenFile.LPStrFile,SizeStr+2); // FName Address is changed, so free the initial @
   End;
   csFontDialog:
   With TFontDialog(Sender) do
@@ -2887,6 +2887,9 @@ End;
 
 {
   $Log$
+  Revision 1.145  2003/12/18 10:27:26  micha
+  fix fpc 1.9.x compile, limittext, mem free
+
   Revision 1.144  2003/12/18 10:17:00  micha
   remove non-useful variable wndlist (thx vincent)
 
