@@ -937,7 +937,7 @@ procedure TWinControl.SetColor(Value: TColor);
 begin
   if Value=Color then exit;
   inherited SetColor(Value);
-  if HandleAllocated then
+  if HandleAllocated and (not (csLoading in ComponentState)) then
     CNSendMessage(LM_SETCOLOR, Self, nil);
 end;
 
@@ -2563,6 +2563,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.112  2002/12/29 18:13:38  mattias
+  identifier completion: basically working, still hidden
+
   Revision 1.111  2002/12/28 17:43:43  mattias
   fixed FindControl and searching overloaded procs
 
