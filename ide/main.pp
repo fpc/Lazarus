@@ -55,7 +55,7 @@ uses
   BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions, TypInfo,
   IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory,
   DiskDiffsDialog, UnitDependencies, PublishProjectDlg, ClipBoardHistory,
-  ProcessList, InitialSetupDlgs,
+  ProcessList, InitialSetupDlgs, NewDialog,
   // main ide
   BaseDebugManager, DebugManager, MainBar;
 
@@ -1356,6 +1356,7 @@ begin
   inherited;
   itmFileNewUnit.OnClick := @mnuNewUnitClicked;
   itmFileNewForm.OnClick := @mnuNewFormClicked;
+  itmFileNewOther.OnClick := @mnuNewOtherClicked;
   itmFileOpen.OnClick := @mnuOpenClicked;
   itmFileRevert.OnClick := @mnuRevertClicked;
   SetRecentFilesMenu;
@@ -2063,7 +2064,7 @@ var
   NewProjectType: TProjectType;
 Begin
   if ChooseNewProject(NewProjectType)=mrCancel then exit;
-  DoNewProject(NewprojectType);
+  DoNewProject(NewProjectType);
 end;
 
 procedure TMainIDE.mnuNewProjectFromFileClicked(Sender: TObject);
@@ -3758,9 +3759,27 @@ begin
 end;
 
 function TMainIDE.DoNewOther: TModalResult;
+var
+  NewIDEItem: TNewIDEItem;
 begin
-  Result:=mrCancel;
-  MessageDlg('Not implemented yet','Not implemented yet',mtInformation,[mbOk],0);
+  Result:=ShowNewIDEItemDialog(NewIDEItem);
+  try
+    if Result<>mrOk then exit;
+    case NewIDEItem.TheType of
+    niiText: Result:=DoNewEditorFile(nuText,'',[]);
+    niiUnit: Result:=DoNewEditorFile(nuUnit,'',[]);
+    niiForm: Result:=DoNewEditorFile(nuForm,'',[]);
+    niiApplication: DoNewProject(ptApplication);
+    niiFPCProject: DoNewProject(ptProgram);
+    niiCustomProject: DoNewProject(ptCustomProgram);
+    else
+      MessageDlg('Not implemented yet',
+                 'Sorry, this type is not yet implemented',
+        mtInformation,[mbOk],0);
+    end;
+  finally
+    NewIDEItem.Free;
+  end;
 end;
 
 function TMainIDE.DoSaveEditorFile(PageIndex:integer;
@@ -7787,6 +7806,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.472  2003/02/28 19:10:25  mattias
+  added new ... dialog
+
   Revision 1.471  2003/02/28 15:38:00  mattias
   bookmarks are now saved also for closed files and merged when possible
 
