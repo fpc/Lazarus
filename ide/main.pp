@@ -33,7 +33,7 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, LclLinux, Compiler, StdCtrls, Forms, Buttons, Menus, ComCtrls, Spin,
-  Project, Sysutils, FileCtrl, Controls, Graphics, ExtCtrls, Dialogs, LazConf,
+  Project, SysUtils, FileCtrl, Controls, Graphics, ExtCtrls, Dialogs, LazConf,
   CompReg, CodeToolManager, CodeCache, DefineTemplates, MsgView, NewProjectDlg,
   IDEComp, AbstractFormEditor, FormEditor, CustomFormEditor, ObjectInspector,
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
@@ -275,20 +275,24 @@ type
                                     var Abort: boolean);
     procedure OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
     
-    // Debugger Events
+    // Debugger events
     procedure OnDebuggerChangeState(Sender: TObject);
     procedure OnDebuggerCurrentLine(Sender: TObject; 
        const ALocation: TDBGLocationRec);
     Procedure OnDebuggerWatchChanged(Sender : TObject);
     
-    // MessagesView Events
+    // MessagesView events
     procedure MessagesViewSelectionChanged(sender : TObject);
-    
-    //Hint Timer
+
+    // Hint Timer events
     Procedure HintTimer1Timer(Sender : TObject);
     
-    //Watch Dialog
+    // Watch Dialog events
     Procedure OnWatchAdded(Sender : TObject; AnExpression : String);
+    
+    // External Tools events
+    procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
+                      var Abort: boolean);
     
   private
     FHintSender : TObject;
@@ -4200,8 +4204,21 @@ end;
 //-----------------------------------------------------------------------------
 
 function TMainIDE.DoRunExternalTool(Index: integer): TModalResult;
+var OldToolStatus: TIDEToolStatus;
 begin
-  Result:=EnvironmentOptions.ExternalTools.Run(Index,MacroList);
+  OldToolStatus:=ToolStatus;
+  try
+    EnvironmentOptions.ExternalTools.OnNeedsOutputFilter:=
+      @OnExtToolNeedsOutputFilter;
+    Result:=EnvironmentOptions.ExternalTools.Run(Index,MacroList);
+  except
+    on e: EOutputFilterError do begin
+      DoJumpToCompilerMessage(-1,true);
+      Result:=mrCancel;
+    end;
+  end;
+  if (OldToolStatus=itNone) and (ToolStatus=itBuilder) then
+    ToolStatus:=itNone;
 end;
 
 function TMainIDE.DoCheckSyntax: TModalResult;
@@ -4713,10 +4730,15 @@ begin
         end;
       end;
     end else begin
-      MessageDlg('Unable to find file "'+Filename+'".'
-         +' Check search path in'
-         +' Project->Compiler Options...->Search Paths->Other Unit Files',
-         mtInformation,[mbOk],0);
+      if FilenameIsAbsolute(Filename) then begin
+        MessageDlg('Unable to find file "'+Filename+'".',
+           mtInformation,[mbOk],0)
+      end else begin
+        MessageDlg('Unable to find file "'+Filename+'".'#13
+           +'Check search path in'#13
+           +'Run->Compiler Options...->Search Paths->Other Unit Files',
+           mtInformation,[mbOk],0);
+      end;
     end;
   end;
 end;
@@ -5606,6 +5628,26 @@ begin
   Breakpoints_Dlg.DeleteBreakPoint(TSourceNotebook(sender).GetActiveSe.FileName,Line);
 end;
 
+procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
+  var Abort: boolean);
+var ActiveSrcEdit: TSourceEditor;
+begin
+  OutputFilter:=TheOutputFilter;
+  OutputFilter.Project:=Project;
+  if ToolStatus<>itNone then begin
+    Abort:=true;
+    exit;
+  end;
+  ActiveSrcEdit:=SourceNotebook.GetActiveSE;
+  if ActiveSrcEdit<>nil then ActiveSrcEdit.ErrorLine:=-1;
+
+  ToolStatus:=itBuilder;
+  MessagesView.Clear;
+  DoArrangeSourceEditorAndMessageView;
+
+  TheOutputFilter.OnOutputString:=@MessagesView.Add;
+end;
+
 //-----------------------------------------------------------------------------
 
 initialization
@@ -5622,6 +5664,9 @@ end.
 =======
 
   $Log$
+  Revision 1.205  2002/01/23 22:12:54  lazarus
+  MG: external tool output parsing for fpc and make messages
+
   Revision 1.204  2002/01/23 20:07:20  lazarus
   MG: added outputfilter
 
@@ -5668,6 +5713,9 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.205  2002/01/23 22:12:54  lazarus
+  MG: external tool output parsing for fpc and make messages
+
   Revision 1.204  2002/01/23 20:07:20  lazarus
   MG: added outputfilter
 

@@ -31,35 +31,46 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLLinux, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
   Dialogs, ExtCtrls, LResources, XMLCfg, ExtToolEditDlg, Process, KeyMapping,
-  TransferMacros, IDEProcs;
+  TransferMacros, IDEProcs, OutputFilter;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
 
 type
+  TOnNeedsOutputFilter = procedure(var OutputFilter: TOutputFilter;
+                           var Abort: boolean) of object;
+
   {
     the storage object for all external tools
   }
   TExternalToolList = class(TList)
   private
+    fOnNeedsOutputFilter: TOnNeedsOutputFilter;
+    fRunningTools: TList; // list of TProcess
     function GetToolOpts(Index: integer): TExternalToolOptions;
     procedure SetToolOpts(Index: integer; NewTool: TExternalToolOptions);
+    procedure AddRunningTool(TheProcess: TProcess; ExecuteProcess: boolean);
   public
     procedure Add(NewTool: TExternalToolOptions);
     procedure Assign(Source: TExternalToolList);
-    constructor Create; 
+    procedure Clear; override;
+    constructor Create;
     procedure Delete(Index: integer); 
     destructor Destroy; override;
-    procedure Clear; override;
+    procedure FreeStoppedProcesses;
     procedure Insert(Index: integer; NewTool: TExternalToolOptions);
     function Load(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     procedure LoadShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
+    function Run(ExtTool: TExternalToolOptions;
+      Macros: TTransferMacroList): TModalResult;
     function Run(Index: integer; Macros: TTransferMacroList): TModalResult;
     function Save(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     procedure SaveShortCuts(KeyCommandRelationList: TKeyCommandRelationList);
     
     property Items[Index: integer]: TExternalToolOptions
-           read GetToolOpts write SetToolOpts; default;
+      read GetToolOpts write SetToolOpts; default;
+    property OnNeedsOutputFilter: TOnNeedsOutputFilter
+      read fOnNeedsOutputFilter write fOnNeedsOutputFilter;
   end;
   
   {
@@ -170,6 +181,8 @@ end;
 
 destructor TExternalToolList.Destroy;
 begin
+  if fRunningTools<>nil then
+    fRunningTools.Free;
   inherited Destroy;
 end;
 
@@ -221,14 +234,26 @@ end;
 
 function TExternalToolList.Run(Index: integer;
   Macros: TTransferMacroList): TModalResult;
-var WorkingDir, Filename, Params, CmdLine: string;
-  TheProcess: TProcess;
 begin
   Result:=mrCancel;
   if (Index<0) or (Index>=Count) then exit;
-  Filename:=Items[Index].Filename;
-  WorkingDir:=Items[Index].WorkingDirectory;
-  Params:=Items[Index].CmdLineParams;
+  Run(Items[Index],Macros);
+end;
+
+function TExternalToolList.Run(ExtTool: TExternalToolOptions;
+  Macros: TTransferMacroList): TModalResult;
+var WorkingDir, Filename, Params, CmdLine, Title: string;
+  TheProcess: TProcess;
+  TheOutputFilter: TOutputFilter;
+  Abort: boolean;
+begin
+  Result:=mrCancel;
+  if ExtTool=nil then exit;
+  Filename:=ExtTool.Filename;
+  WorkingDir:=ExtTool.WorkingDirectory;
+  Params:=ExtTool.CmdLineParams;
+  Title:=ExtTool.Title;
+  if Title='' then Title:=Filename;
   if Macros.SubstituteStr(Filename) 
   and Macros.SubstituteStr(WorkingDir)
   and Macros.SubstituteStr(Params) then begin
@@ -243,12 +268,45 @@ writeln('[TExternalToolList.Run] ',CmdLine);
       TheProcess.Options:= [poUsePipes, poNoConsole];
       TheProcess.ShowWindow := swoNone;
       TheProcess.CurrentDirectory := WorkingDir;
-      TheProcess.Execute;
+      if (ExtTool.NeedsOutputFilter)
+      and Assigned(OnNeedsOutputFilter) then begin
+        Abort:=false;
+        OnNeedsOutputFilter(TheOutputFilter,Abort);
+        if Abort then begin
+          Result:=mrAbort;
+          exit;
+        end;
+      end else
+        TheOutputFilter:=nil;
+      if (TheOutputFilter<>nil) then begin
+        TheOutputFilter.PrgSourceFilename:='';
+        TheOutputFilter.Options:=[ofoExceptionOnError,ofoMakeFilenamesAbsolute];
+        if ExtTool.ScanOutputForFPCMessages then
+          TheOutputFilter.Options:=TheOutputFilter.Options
+                                   +[ofoSearchForFPCMessages];
+        if ExtTool.ScanOutputForMakeMessages then
+          TheOutputFilter.Options:=TheOutputFilter.Options
+                                   +[ofoSearchForMakeMessages];
+        try
+          if TheOutputFilter.IsParsing then begin
+            TheOutputFilter.Execute(TheProcess);
+            TheOutputFilter.ReadLine('"'+Title+'" successfully runned :)',true);
+          end else
+            TheProcess.Execute;
+        finally
+          TheProcess.WaitOnExit;
+          TheProcess.Free;
+        end;
+      end else begin
+        AddRunningTool(TheProcess,true);
+      end;
     except
+      on e: EOutputFilterError do begin
+        raise;
+      end;
       on e: Exception do
         MessageDlg('Failed to run tool',
-          'Unable to run the tool "'+Items[Index].Title+'":'#13
-          +e.Message,mtError,[mbOk],0);
+          'Unable to run the tool "'+Title+'":'#13+e.Message,mtError,[mbOk],0);
     end;
   end;
   Result:=mrOk;
@@ -282,6 +340,42 @@ begin
     end;
   end;
 end;
+
+procedure TExternalToolList.AddRunningTool(TheProcess: TProcess;
+  ExecuteProcess: boolean);
+begin
+  if fRunningTools=nil then fRunningTools:=TList.Create;
+  fRunningTools.Add(TheProcess);
+  if ExecuteProcess then
+    TheProcess.Execute;
+end;
+
+procedure TExternalToolList.FreeStoppedProcesses;
+var i: integer;
+  TheProcess: TProcess;
+begin
+  if fRunningTools=nil then exit;
+  i:=fRunningTools.Count-1;
+  while i>=0 do begin
+    try
+      TheProcess:=TProcess(fRunningTools[i]);
+      if not TheProcess.Running then begin
+        try
+          TheProcess.WaitOnExit;
+          TheProcess.Free;
+        finally
+          fRunningTools.Delete(i);
+        end;
+      end;
+    except
+      on E: Exception do begin
+        writeln('Error freeing stopped process: ',E.Message);
+      end;
+    end;
+    dec(i);
+  end;
+end;
+
 
 { TExternalToolDialog }
 

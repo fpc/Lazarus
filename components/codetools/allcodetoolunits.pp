@@ -28,6 +28,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/01/23 22:12:54  lazarus
+  MG: external tool output parsing for fpc and make messages
+
   Revision 1.5  2001/12/15 22:57:19  lazarus
   MG: added find declaration (not useful yet)
 

@@ -60,6 +60,7 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    function NeedsOutputFilter: boolean;
     function Load(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     function Save(XMLConfig: TXMLConfig; const Path: string): TModalResult;
     function ShortDescription: string;
@@ -168,6 +169,8 @@ begin
     fWorkingDirectory:=Source.fWorkingDirectory;
     fKey:=Source.fKey;
     fShift:=Source.fShift;
+    fScanOutputForFPCMessages:=Source.fScanOutputForFPCMessages;
+    fScanOutputForMakeMessages:=Source.fScanOutputForMakeMessages;
   end;
 end;
 
@@ -219,9 +222,9 @@ begin
   XMLConfig.SetValue(Path+'Filename/Value',fFilename);
   XMLConfig.SetValue(Path+'CmdLineParams/Value',fCmdLineParams);
   XMLConfig.SetValue(Path+'WorkingDirectory/Value',fWorkingDirectory);
-  XMLConfig.GetValue(
+  XMLConfig.SetValue(
                Path+'ScanOutputForFPCMessages/Value',fScanOutputForFPCMessages);
-  XMLConfig.GetValue(
+  XMLConfig.SetValue(
              Path+'ScanOutputForMakeMessages/Value',fScanOutputForMakeMessages);
   // key and shift are saved with the keymapping in the editoroptions
   Result:=mrOk;
@@ -230,6 +233,11 @@ end;
 function TExternalToolOptions.ShortDescription: string;
 begin
   Result:=Title;
+end;
+
+function TExternalToolOptions.NeedsOutputFilter: boolean;
+begin
+  Result:=ScanOutputForFPCMessages or ScanOutputForMakeMessages;
 end;
 
 

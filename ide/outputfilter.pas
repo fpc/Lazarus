@@ -31,8 +31,12 @@ uses
 type
   TOnOutputString = procedure (const Value: String) of Object;
   
-  TOuputFilterOption = (ofoSearchForFPCMessages, ofoSearchForMakeMessages,
-        ofoExceptionOnError);
+  TOuputFilterOption = (
+        ofoSearchForFPCMessages, // scan for freepascal compiler messages
+        ofoSearchForMakeMessages,// scan for make/gmake messages
+        ofoExceptionOnError,     // raise exception on panic, fatal errors
+        ofoMakeFilenamesAbsolute // convert relative filenames to absolute ones
+        );
   TOuputFilterOptions = set of TOuputFilterOption;
   
   TOutputMessageType = (omtNone, omtFPC, omtLinker, omtMake);
@@ -41,9 +45,11 @@ type
 
   TOutputFilter = class
   private
+    fCurrentDirectory: string;
     fFilteredOutput: TStringList;
     fLastErrorType: TErrorType;
     fLastMessageType: TOutputMessageType;
+    fMakeDirHistory: TStringList;
     fOnOutputString: TOnOutputString;
     fOptions: TOuputFilterOptions;
     fProject: TProject;
@@ -58,10 +64,13 @@ type
     destructor Destroy; override;
     function IsHintForUnusedProjectUnit(const OutputLine,
       ProgramSrcFile: string): boolean;
+    function IsParsing: boolean;
     procedure ReadLine(const s: string; DontFilterLine: boolean);
     function ReadFPCompilerLine(const s: string): boolean;
+    function ReadMakeLine(const s: string): boolean;
+    property CurrentDirectory: string read fCurrentDirectory;
     property FilteredLines: TStringList read fFilteredOutput;
-    property LastErrorType: TErrorType;
+    property LastErrorType: TErrorType read fLastErrorType;
     property LastMessageType: TOutputMessageType read fLastMessageType;
     property PrgSourceFilename: string
       read fPrgSourceFilename write fPrgSourceFilename;
@@ -115,6 +124,12 @@ var
   OutputLine, Buf : String;
 begin
   TheProcess.Execute;
+  fCurrentDirectory:=TheProcess.CurrentDirectory;
+  if fCurrentDirectory='' then fCurrentDirectory:=GetCurrentDir;
+  if (fCurrentDirectory<>'')
+  and (fCurrentDirectory[length(fCurrentDirectory)]<>PathDelim) then
+    fCurrentDirectory:=fCurrentDirectory+PathDelim;
+  if fMakeDirHistory<>nil then fMakeDirHistory.Clear;
   SetLength(Buf,BufSize);
   Application.ProcessMessages;
 
@@ -154,6 +169,9 @@ begin
   end else if (ofoSearchForFPCMessages in Options) and (ReadFPCompilerLine(s))
   then begin
     exit;
+  end else if (ofoSearchForMakeMessages in Options) and (ReadMakeLine(s))
+  then begin
+    exit;
   end;
 end;
 
@@ -167,8 +185,8 @@ function TOutputFilter.ReadFPCompilerLine(const s: string): boolean;
      <filename>(123) <ErrorType>: <some text>
      <filename>(456) <ErrorType>: <some text> in line (123)
 }
-var i, j: integer;
-  MsgTypeName: string;
+var i, j, FilenameEndPos: integer;
+  MsgTypeName, Filename, Msg: string;
   MsgType: TErrorType;
   SkipMessage: boolean;
 begin
@@ -204,6 +222,7 @@ begin
   // search for round bracket open
   i:=1;
   while (i<=length(s)) and (s[i]<>'(') do inc(i);
+  FilenameEndPos:=i-1;
   inc(i);
   // search for number
   if (i>=length(s)) or (not (s[i] in ['0'..'9'])) then exit;
@@ -227,47 +246,56 @@ begin
       // -> filter message
       fLastErrorType:=MsgType;
       SkipMessage:=true;
-      case MsgType of
-      
-      etHint:
-        begin
-          SkipMessage:=not (Project.CompilerOptions.ShowHints
-                            or Project.CompilerOptions.ShowAll);
-          if (not SkipMessage)
-          and (not Project.CompilerOptions.ShowAll)
-          and (not Project.CompilerOptions.ShowHintsForUnusedProjectUnits)
-          and (PrgSourceFilename<>'')
-          and (IsHintForUnusedProjectUnit(s,PrgSourceFilename)) then
-            SkipMessage:=true;
-        end;
-        
-      etNote:
-        begin
-          SkipMessage:=not (Project.CompilerOptions.ShowNotes
-                            or Project.CompilerOptions.ShowAll);
-        end;
+      if Project<>nil then begin
+        case MsgType of
 
-      etError:
-        begin
-          SkipMessage:=not (Project.CompilerOptions.ShowErrors
-                            or Project.CompilerOptions.ShowAll);
-        end;
-        
-      etWarning:
-        begin
-          SkipMessage:=not (Project.CompilerOptions.ShowWarn
-                            or Project.CompilerOptions.ShowAll);
-        end;
+        etHint:
+          begin
+            SkipMessage:=not (Project.CompilerOptions.ShowHints
+                              or Project.CompilerOptions.ShowAll);
+            if (not SkipMessage)
+            and (not Project.CompilerOptions.ShowAll)
+            and (not Project.CompilerOptions.ShowHintsForUnusedProjectUnits)
+            and (PrgSourceFilename<>'')
+            and (IsHintForUnusedProjectUnit(s,PrgSourceFilename)) then
+              SkipMessage:=true;
+          end;
 
-      etPanic, etFatal:
+        etNote:
+          begin
+            SkipMessage:=not (Project.CompilerOptions.ShowNotes
+                              or Project.CompilerOptions.ShowAll);
+          end;
+
+        etError:
+          begin
+            SkipMessage:=not (Project.CompilerOptions.ShowErrors
+                              or Project.CompilerOptions.ShowAll);
+          end;
+
+        etWarning:
+          begin
+            SkipMessage:=not (Project.CompilerOptions.ShowWarn
+                              or Project.CompilerOptions.ShowAll);
+          end;
+
+        etPanic, etFatal:
+          SkipMessage:=false;
+
+        end;
+      end else
         SkipMessage:=false;
-
+      Msg:=s;
+      if (ofoMakeFilenamesAbsolute in Options) then begin
+        Filename:=copy(s,1,FilenameEndPos);
+        if not FilenameIsAbsolute(Filename) then
+          Msg:=fCurrentDirectory+Msg;
       end;
       if not SkipMessage then
-        DoAddFilteredLine(s);
+        DoAddFilteredLine(Msg);
       if (ofoExceptionOnError in Options) and (MsgType in [etPanic, etFatal])
       then
-        raise EOutputFilterError.Create(s);
+        raise EOutputFilterError.Create(Msg);
       Result:=true;
       exit;
     end;
@@ -363,7 +391,56 @@ end;
 destructor TOutputFilter.Destroy;
 begin
   fFilteredOutput.Free;
+  fMakeDirHistory.Free;
   inherited Destroy;
+end;
+
+function TOutputFilter.IsParsing: boolean;
+begin
+  Result:=([ofoSearchForFPCMessages,ofoSearchForMakeMessages]*Options)<>[];
+end;
+
+function TOutputFilter.ReadMakeLine(const s: string): boolean;
+{ returns true, if it is a make/gmake message
+   Examples for make messages:
+     make[1]: Entering directory `<filename>'
+     make[1]: Leaving directory `<filename>'
+}
+var i: integer;
+begin
+  Result:=false;
+  i:=length('make[');
+  if copy(s,1,i)<>'make[' then exit;
+  inc(i);
+  if (i>length(s)) or (not (s[i] in ['0'..'9'])) then exit;
+  while (i<=length(s)) and (s[i] in ['0'..'9']) do inc(i);
+  if (i>length(s)) or (s[i]<>']') then exit;
+  if copy(s,i,length(']: Leaving directory `'))=']: Leaving directory `' then
+  begin
+    if (fMakeDirHistory<>nil) and (fMakeDirHistory.Count>0) then begin
+      fCurrentDirectory:=fMakeDirHistory[fMakeDirHistory.Count-1];
+      fMakeDirHistory.Delete(fMakeDirHistory.Count-1);
+      Result:=true;
+      exit;
+    end else begin
+      // leaving what directory???
+      fCurrentDirectory:='';
+    end;
+  end;
+  if copy(s,i,length(']: Entering directory `'))=']: Entering directory `' then
+  begin
+    inc(i,length(']: Entering directory `'));
+    if (fCurrentDirectory<>'') then begin
+      if (fMakeDirHistory=nil) then fMakeDirHistory:=TStringList.Create;
+      fMakeDirHistory.Add(fCurrentDirectory);
+    end;
+    fCurrentDirectory:=copy(s,i,length(s)-i);
+    if (fCurrentDirectory<>'')
+    and (fCurrentDirectory[length(fCurrentDirectory)]<>PathDelim) then
+      fCurrentDirectory:=fCurrentDirectory+PathDelim;
+    Result:=true;
+    exit;
+  end;
 end;
 
 
