@@ -1168,6 +1168,53 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+       TControl SetTabOrder
+------------------------------------------------------------------------------}
+procedure TWinControl.SetTabOrder(NewTabOrder: TTabOrder);
+begin
+  if csLoading in ComponentState then
+    FTabOrder := NewTabOrder
+  else
+    UpdateTabOrder(NewTabOrder);
+end;
+
+procedure TWinControl.SetTabStop(NewTabStop: Boolean);
+begin
+  if FTabStop = NewTabStop then
+    exit;
+
+  FTabStop := NewTabStop;
+  UpdateTabOrder(FTabOrder);
+end;
+
+{------------------------------------------------------------------------------
+  TControl UpdateTabOrder
+------------------------------------------------------------------------------}
+procedure TWinControl.UpdateTabOrder(NewTabOrder: TTabOrder);
+var
+  Count: Integer;
+begin
+  if FParent <> nil then
+  begin
+    FTabOrder := GetTabOrder;
+    if NewTabOrder < 0 then NewTabOrder := 0;
+    Count := FParent.FTabList.Count;
+    if FTabOrder = -1 then Inc(Count);
+    if NewTabOrder >= Count then NewTabOrder := Count - 1;
+    if NewTabOrder <> FTabOrder then
+    begin
+      if FTabOrder <> - 1 then
+        FParent.FTabList.Delete(FTabOrder);
+      if NewTabOrder <> -1 then
+      begin
+        FParent.FTabList.Insert(NewTabOrder, Self);
+        FTabOrder := NewTabOrder;
+      end;
+    end;
+  end;
+end;
+
 {-------------------------------------------------------------------------------
   procedure TWinControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
   
@@ -1389,7 +1436,7 @@ Function TWinControl.FindNextControl(CurrentControl: TControl;
   GoForward, CheckTabStop, CheckParent, OnlyWinControls: Boolean) : TControl;
 var
   List : TList;
-  Next : TControl;
+  Next : TWinControl;
   I, J : Longint;
 begin
   Try
@@ -1414,7 +1461,7 @@ begin
         end;
         if I=J then exit;
 
-        Next := TControl(List[I]);
+        Next := TWinControl(List[I]);
         {DebugLn('TWinControl.FindNextControl B ',Next.Name,' ',dbgs(I),
           +' ChckTabStop='+dbgs(CheckTabStop)+' TabStop='+dbgs(Next.TabStop)
           +' ChckParent='+dbgs(CheckParent)+' Parent=Self='+dbgs(Next.Parent = Self)
@@ -1424,7 +1471,7 @@ begin
           +' TestEnVi='+dbgs(Next.Enabled and Next.IsVisible)
           +' TestWinC='+dbgs((not OnlyWinControls) or (Next is TWinControl))
           );}
-        If (((Not CheckTabStop) or Next.TabStop)
+        If (((not CheckTabStop) or Next.TabStop)
         and ((not CheckParent) or (Next.Parent = Self)))
         and (Next.Enabled and Next.IsVisible)
         and ((not OnlyWinControls) or (Next is TWinControl)) then
@@ -1483,15 +1530,14 @@ end;
 Procedure TWinControl.GetTabOrderList(List: TList);
 var
   I : Integer;
-  Control : TControl;
+  lWinControl : TWinControl;
 begin
   If FTabList <> nil then
     For I := 0 to FTabList.Count - 1 do begin
-      Control := TControl(FTabList[I]);
-      If Control.CanTab and Control.TabStop then
-        List.Add(Control);
-      If Control is TWinControl then
-        TWinControl(Control).GetTabOrderList(List);
+      lWinControl := TWinControl(FTabList[I]);
+      If lWinControl.CanTab and lWinControl.TabStop then
+        List.Add(lWinControl);
+      lWinControl.GetTabOrderList(List);
     end;
 end;
 
@@ -2170,25 +2216,6 @@ Begin
   end;
 end;
 
-procedure TWinControl.UpdateTabOrder(NewTabValue: TTabOrder);
-var
-  CurIndex, Count: Integer;
-begin
-  if FParent=nil then exit;
-  CurIndex := GetTabOrder;
-  if CurIndex >= 0 then
-  begin
-    if NewTabValue < 0 then NewTabValue := 0;
-    Count := FParent.FTabList.Count;
-    if NewTabValue >= Count then NewTabValue := Count - 1;
-    if NewTabValue <> CurIndex then
-    begin
-      FParent.FTabList.Delete(CurIndex);
-      FParent.FTabList.Insert(NewTabValue, Self);
-    end;
-  end;
-end;
-
 procedure TWinControl.AssignTo(Dest: TPersistent);
 begin
   inherited AssignTo(Dest);
@@ -2611,7 +2638,12 @@ begin
       FWinControls.Insert(Index,AControl)
     else
       ListAdd(FWinControls, AControl);
-    ListAdd(FTabList, AControl);
+    if TWinControl(AControl).TabOrder <> -1 then
+      ListAdd(FTabList, AControl);
+
+    if (csDesigning in ComponentState) and (not (csLoading in ComponentState))
+    and AControl.CanTab then
+      TWinControl(AControl).TabStop := true;
   end else begin
     if (FControls<>nil) and (Index<FControls.Count) then
       FControls.Insert(Index,AControl)
@@ -2620,10 +2652,6 @@ begin
   end;
 
   AControl.FParent := Self;
-
-  If (csDesigning in ComponentState) and (not (csLoading in ComponentState))
-  and AControl.CanTab then
-    AControl.TabStop := True;
 end;
 
 {------------------------------------------------------------------------------
@@ -2902,6 +2930,9 @@ begin
   FChildSizing.OnChange:=@DoChildSizingChange;
   FBrush := nil; // Brush will be created on demand. Only few controls need it.
   FParentCtl3D:=true;
+  FTabOrder := -1;
+  FTabStop := False;
+  FTabList := TList.Create;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2970,6 +3001,7 @@ begin
   FreeThenNil(FBrush);
   FreeThenNil(FChildSizing);
   FreeThenNil(FDockClients);
+  FreeThenNil(FTabList);
   //DebugLn('[TWinControl.Destroy] D  ',Name,':',ClassName);
   inherited Destroy;
   //DebugLn('[TWinControl.Destroy] END  ',Name,':',ClassName);
@@ -3881,7 +3913,7 @@ begin
   if FParent <> nil then
     Result := TTabOrder(FParent.FTabList.IndexOf(Self))
   else
-    Result := -1;
+    Result := FTabOrder;
 end;
 
 {------------------------------------------------------------------------------
@@ -4232,6 +4264,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.296  2005/01/08 14:23:56  micha
+  move taborder and tabstop to twincontrol
+
   Revision 1.295  2005/01/04 11:26:26  micha
   let canfocus imply that setfocus can be called
 

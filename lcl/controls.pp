@@ -851,8 +851,6 @@ type
     FSessionProperties: string;
     FShowHint: Boolean;
     FSizeLock: integer;
-    FTabOrder: integer;
-    FTabStop: Boolean;
     FTBDockHeight: Integer;
     FTop: Integer;
     FUndockHeight: Integer;
@@ -868,7 +866,6 @@ type
     function GetLRDockWidth: Integer;
     function GetMouseCapture: Boolean;
     function GetTBDockHeight: Integer;
-    function GetTabOrder: TTabOrder;
     function GetText: TCaption; 
     function GetUndockHeight: Integer;
     function GetUndockWidth: Integer;
@@ -909,13 +906,10 @@ type
     procedure SetParentColor(Value: Boolean);
     procedure SetPopupMenu(Value: TPopupMenu);
     procedure SetShowHint(Value: Boolean);
-    Procedure SetTabOrder(Value: TTabOrder);
-    procedure SetTabStop(Value: Boolean);
     procedure SetText(const Value: TCaption); 
     procedure SetTop(Value: Integer);
     procedure SetVisible(Value: Boolean);
     procedure SetWidth(Value: Integer);
-    Procedure UpdateTabOrder(value: TTabOrder);
   protected
     FControlState: TControlState;
   protected
@@ -1195,8 +1189,6 @@ type
     property Parent: TWinControl read FParent write SetParent;
     property PopupMenu: TPopupmenu read GetPopupmenu write SetPopupMenu;
     property ShowHint: Boolean read FShowHint write SetShowHint stored IsShowHintStored default False;
-    property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
-    property TabStop: Boolean read FTabStop write SetTabStop default false;
     property Visible: Boolean read FVisible write SetVisible stored IsVisibleStored default True;
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
   public
@@ -1427,6 +1419,8 @@ type
     FHandle: Hwnd;
     FShowing: Boolean;
     FShowingValid: Boolean;
+    FTabOrder: integer;
+    FTabStop: Boolean;
     FTabList: TList;
     FUseDockManager: Boolean;
     FWinControls: TList;
@@ -1445,8 +1439,10 @@ type
     procedure SetHandle(NewHandle: HWND);
     procedure SetBorderWidth(Value: TBorderWidth);
     procedure SetParentCtl3D(Value: Boolean);
+    Procedure SetTabOrder(NewTabOrder: TTabOrder);
+    procedure SetTabStop(NewTabStop: Boolean);
     procedure SetUseDockManager(const AValue: Boolean);
-    procedure UpdateTabOrder(NewTabValue: TTabOrder);
+    procedure UpdateTabOrder(NewTabOrder: TTabOrder);
     function  WantsKeyBeforeInterface(Key: word; Shift: TShiftState): boolean;
   protected
     procedure AssignTo(Dest: TPersistent); override;
@@ -1613,6 +1609,8 @@ type
     property DoubleBuffered: Boolean read FDoubleBuffered write FDoubleBuffered;
     property Handle: HWND read GetHandle write SetHandle;
     property IsResizing: Boolean read GetIsResizing;
+    property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
+    property TabStop: Boolean read FTabStop write SetTabStop default false;
     property OnDockDrop: TDockDropEvent read FOnDockDrop write FOnDockDrop;
     property OnDockOver: TDockOverEvent read FOnDockOver write FOnDockOver;
     property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
@@ -2810,6 +2808,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.265  2005/01/08 14:23:56  micha
+  move taborder and tabstop to twincontrol
+
   Revision 1.264  2005/01/07 21:02:48  micha
   add tcontrolclass, needed by codetoolsdefines
 

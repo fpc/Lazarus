@@ -269,7 +269,7 @@ procedure NotebookTabChanged(Notebook: TCustomNotebook; NewIndex: integer);
 var
   Page: TCustomPage;
   ControlList: TList;
-  Control: TControl;
+  lWinControl: TWinControl;
   I: integer;
 begin
   Page := Notebook.CustomPage(NewIndex);
@@ -279,11 +279,10 @@ begin
     I := 0;
     while I < ControlList.Count do
     begin
-      Control := TControl(ControlList[I]);
-      if Control.TabStop and Control.Enabled and
-        (Control is TWinControl) and TWinControl(Control).CanFocus then
+      lWinControl := TWinControl(ControlList[I]);
+      if lWinControl.TabStop and lWinControl.Enabled and lWinControl.CanFocus then
       begin
-        TWinControl(Control).SetFocus;
+        lWinControl.SetFocus;
         break;
       end;
       Inc(I);

@@ -109,7 +109,6 @@ begin
   FButtonType := ButtonType;
 
   Parent := FUpDown;
-  TabStop := False;
   ControlStyle := ControlStyle + [csNoFocus];
   OnMouseDown := @ButtonMouseDown;
   OnMouseUp := @ButtonMouseUp;

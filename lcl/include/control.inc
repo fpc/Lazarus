@@ -491,14 +491,6 @@ begin
   //Implemented by TWinControl, or other descendent
 end;
 
-procedure TControl.SetTabStop(Value : Boolean);
-begin
-  If FTabStop = Value then
-    exit;
-
-  FTabStop := Value;
-end;
-
 {------------------------------------------------------------------------------}
 {       TControl.GetClientHeight                                               }
 {------------------------------------------------------------------------------}
@@ -645,17 +637,6 @@ begin
   Result := (ActionLink = nil) or not ActionLink.IsVisibleLinked;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl GetTabOrder                                                   }
-{------------------------------------------------------------------------------}
-Function TControl.GetTabOrder : TTabOrder;
-Begin
-  If Parent <> nil then
-    Result := TTabOrder(ListIndexOf(Parent.FTabList, Self))
-  else
-    Result := -1;
-end;
-
 function TControl.GetUndockHeight: Integer;
 begin
   if FUndockHeight>0 then
@@ -680,41 +661,6 @@ end;
 function TControl.IsVisible: Boolean;
 begin
   Result := FVisible and ((Parent = nil) or (Parent.IsVisible));
-end;
-
-{------------------------------------------------------------------------------
-       TControl SetTabOrder
-------------------------------------------------------------------------------}
-Procedure TControl.SetTabOrder(Value : TTabOrder);
-Begin
-  if csLoading in ComponentState then
-    FTabOrder := Value
-  else
-    UpdateTabOrder(Value);
-end;
-
-{------------------------------------------------------------------------------
-  TControl UpdateTabOrder
-------------------------------------------------------------------------------}
-Procedure TControl.UpdateTabOrder(Value : TTabOrder);
-var
-  CurentOrder,
-  OrderCount    : Integer;
-begin
-  If (Parent = nil) or not CanTab then
-    exit;
-  CurentOrder := GetTabOrder;
-  If CurentOrder >= 0 then begin
-    OrderCount := ListCount(Parent.FTabList);
-    If (Value < 0) or (Value >= OrderCount) then
-      Value := OrderCount - 1;
-    If Value <> CurentOrder then begin
-      ListRemove(Parent.FTabList, Self);
-      ListInsert(Parent.FTabList, Value,Self);
-    end;
-  end
-  else
-    ListAdd(Parent.FTabList, Self);
 end;
 
 {------------------------------------------------------------------------------}
@@ -3247,8 +3193,6 @@ begin
   FIsControl := False;
   FEnabled := True;
   FHelpType := htContext;
-  FTabOrder := -1;
-  FTabStop := False;
   FDragCursor := crDrag;
   FFloatingDockSiteClass := TCustomDockForm;
   //DebugLn('TControl.Create END ',Name,':',ClassName);
@@ -3459,6 +3403,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.232  2005/01/08 14:23:56  micha
+  move taborder and tabstop to twincontrol
+
   Revision 1.231  2005/01/07 01:31:44  mattias
   implemented TCheckBox.State=cbGrayed for gtk intf without visual representation
 
