@@ -74,6 +74,7 @@ type
 
   TProcHeadAttribute = (
       phpWithStart,          // proc keyword e.g. 'function', 'class procedure'
+      phpWithoutClassKeyword,// without 'class' proc keyword
       phpAddClassname,       // extract/add 'ClassName.'
       phpWithoutClassName,   // skip classname
       phpWithoutName,        // skip function name
@@ -2964,7 +2965,8 @@ begin
   ExtractNextAtom(false,Attr);
   // read procedure start keyword
   if (UpAtomIs('CLASS') or UpAtomIs('STATIC')) then
-    ExtractNextAtom(phpWithStart in Attr,Attr);
+    ExtractNextAtom((phpWithStart in Attr)
+                    and not (phpWithoutClassKeyword in Attr),Attr);
   if (UpAtomIs('PROCEDURE')) or (UpAtomIs('FUNCTION'))
   or (UpAtomIs('CONSTRUCTOR')) or (UpAtomIs('DESTRUCTOR'))
   or (UpAtomIs('OPERATOR')) then

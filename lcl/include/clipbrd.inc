@@ -499,15 +499,10 @@ begin
   raise Exception.Create('TClipboard.AssignToPixmap not implemented yet');
 end;
 
-procedure TClipboard.AssignTo(Dest: TPersistent);
+procedure TClipboard.AssignToIcon(Dest: TIcon);
 begin
-  if Dest is TPicture then
-    AssignToPicture(TPicture(Dest))
-  else if Dest is TBitmap then
-    AssignToBitmap(TBitmap(Dest))
-  else if Dest is TPixmap then
-    AssignToPixmap(TPixmap(Dest))
-  else inherited AssignTo(Dest);
+  // ToDo
+  raise Exception.Create('TClipboard.AssignToIcon not implemented yet');
 end;
 
 procedure TClipboard.AssignPicture(Source: TPicture);
@@ -529,6 +524,17 @@ begin
   else if Source is TGraphic then
     AssignGraphic(TGraphic(Source))
   else inherited Assign(Source);
+end;
+
+procedure TClipboard.AssignTo(Dest: TPersistent);
+begin
+  if Dest is TPicture then
+    AssignToPicture(TPicture(Dest))
+  else if Dest is TBitmap then
+    AssignToBitmap(TBitmap(Dest))
+  else if Dest is TPixmap then
+    AssignToPixmap(TPixmap(Dest))
+  else inherited AssignTo(Dest);
 end;
 
 {function TClipboard.GetAsHandle(Format: Word): THandle;
@@ -588,6 +594,9 @@ end;
 
 {
   $Log$
+  Revision 1.6  2002/03/09 11:55:13  lazarus
+  MG: fixed class method completion
+
   Revision 1.5  2001/11/14 19:10:03  lazarus
   MG: fixes for parser and linkscanner and small cleanups
 

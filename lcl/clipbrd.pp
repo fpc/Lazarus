@@ -221,6 +221,7 @@ type
     procedure AssignPicture(Source: TPicture);
     procedure AssignToBitmap(Dest: TBitmap);
     procedure AssignToPixmap(Dest: TPixmap);
+    procedure AssignToIcon(Dest: TIcon);
     //procedure AssignToMetafile(Dest: TMetafile);
     procedure AssignToPicture(Dest: TPicture);
     function GetAsText: string;
@@ -405,6 +406,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2002/03/09 11:55:13  lazarus
+  MG: fixed class method completion
+
   Revision 1.6  2002/02/03 00:24:00  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

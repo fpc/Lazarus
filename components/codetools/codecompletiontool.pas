@@ -968,7 +968,8 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
         if (ProcCode='') then begin
           ANode:=TCodeTreeNodeExtension(MissingNode.Data).Node;
           if (ANode<>nil) and (ANode.Desc=ctnProcedure) then begin
-            ProcCode:=ExtractProcHead(ANode,[phpWithStart,phpAddClassname,
+            ProcCode:=ExtractProcHead(ANode,[phpWithStart,
+                 phpWithoutClassKeyword,phpAddClassname,
                  phpWithParameterNames,phpWithResultType,phpWithVarModifiers]);
           end;
         end;

@@ -263,6 +263,7 @@ type
     FTransparent: Boolean;
     FOnChange: TNotifyEvent;
     FOnProgress: TProgressEvent;
+    FPaletteModified: Boolean;
     procedure SetModified(Value: Boolean);
   protected
     procedure Changed(Sender: TObject); virtual;
@@ -291,10 +292,11 @@ type
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
     property Modified: Boolean read FModified write SetModified;
-    property Transparent: Boolean read GetTransparent write SetTransparent;
-    property Width: Integer read GetWidth write SetWidth;
+    property PaletteModified: Boolean read FPaletteModified write FPaletteModified;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnProgress: TProgressEvent read FOnProgress write FOnProgress;
+    property Transparent: Boolean read GetTransparent write SetTransparent;
+    property Width: Integer read GetWidth write SetWidth;
   end;
 
   TGraphicClass = class of TGraphic;
@@ -305,10 +307,20 @@ type
     polymorphic. For example, if the TPicture is holding an Icon, you can
     LoadFromFile a bitmap file, where if the class is TIcon you could only read
     .ICO files.
-      LoadFromFile - Reads a picture from disk.  The TGraphic class created
-        determined by the file extension of the file.  If the file extension is
+    
+      LoadFromFile - Reads a picture from disk. The TGraphic class created
+        determined by the file extension of the file. If the file extension is
         not recognized an exception is generated.
       SaveToFile - Writes the picture to disk.
+      LoadFromClipboardFormat - ToDo: Reads the picture from the handle provided in
+        the given clipboard format.  If the format is not supported, an
+        exception is generated.
+      SaveToClipboardFormats - ToDo: Allocates a global handle and writes the picture
+        in its native clipboard format (CF_BITMAP for bitmaps, CF_METAFILE
+        for metafiles, etc.).  Formats will contain the formats written.
+        Returns the number of clipboard items written to the array pointed to
+        by Formats and Datas or would be written if either Formats or Datas are
+        nil.
       SupportsClipboardFormat - Returns true if the given clipboard format
         is supported by LoadFromClipboardFormat.
       Assign - Copys the contents of the given TPicture.  Used most often in
@@ -325,10 +337,10 @@ type
       Graphic - The TGraphic object contained by the TPicture
       Bitmap - Returns a bitmap.  If the contents is not already a bitmap, the
         contents are thrown away and a blank bitmap is returned.
-      Pixmap - Returns a pixmap.  If the contents is not already a pixmap, the
-        contents are thrown away and a blank pixmap is returned.
       Icon - Returns an icon.  If the contents is not already an icon, the
         contents are thrown away and a blank icon is returned.
+      Pixmap - Returns a pixmap.  If the contents is not already a pixmap, the
+        contents are thrown away and a blank pixmap is returned.
       }
 
   TPicture = class(TPersistent)
@@ -338,10 +350,14 @@ type
     FOnProgress: TProgressEvent;
     procedure ForceType(GraphicType: TGraphicClass);
     function GetBitmap: TBitmap;
+    function GetPixmap: TPixmap;
+    function GetIconp: TIcon;
     function GetHeight: Integer;
     function GetWidth: Integer;
     procedure ReadData(Stream: TStream);
     procedure SetBitmap(Value: TBitmap);
+    procedure SetPixmap(Value: TPixmap);
+    procedure SetIconp(Value: TIcon);
     procedure SetGraphic(Value: TGraphic);
     procedure WriteData(Stream: TStream);
   protected
@@ -349,22 +365,27 @@ type
     procedure Changed(Sender: TObject); dynamic;
     procedure DefineProperties(Filer: TFiler); override;
     procedure Progress(Sender: TObject; Stage: TProgressStage;
-      PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
-      const Msg: string); dynamic;
+                       PercentDone: Byte;  RedrawNow: Boolean; const R: TRect;
+                       const Msg: string); dynamic;
   public
     constructor Create;
     destructor Destroy; override;
     procedure LoadFromFile(const Filename: string);
     procedure SaveToFile(const Filename: string);
-    //class function SupportsClipboardFormat(AFormat: Word): Boolean;
+    procedure LoadFromClipboardFormat(FormatID: TClipboardFormat);
+    procedure SaveToClipboardFormat(FormatID: TClipboardFormat);
+    class function SupportsClipboardFormat(FormatID: TClipboardFormat): Boolean;
     procedure Assign(Source: TPersistent); override;
     class procedure RegisterFileFormat(const AnExtension, ADescription: string;
       AGraphicClass: TGraphicClass);
-    //class procedure RegisterClipboardFormat(AFormat: Word;
-    //  AGraphicClass: TGraphicClass);
+    class procedure RegisterClipboardFormat(FormatID: TClipboardFormat;
+      AGraphicClass: TGraphicClass);
     class procedure UnregisterGraphicClass(AClass: TGraphicClass);
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
+    property Pixmap: TPixmap read GetPixmap write SetPixmap;
+    property Icon: TIcon read GetIcon write SetIcon;
     property Graphic: TGraphic read FGraphic write SetGraphic;
+    //property PictureAdapter: IChangeNotifier read FNotify write FNotify;
     property Height: Integer read GetHeight;
     property Width: Integer read GetWidth;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -723,6 +744,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/03/09 11:55:13  lazarus
+  MG: fixed class method completion
+
   Revision 1.24  2002/03/08 16:16:55  lazarus
   MG: fixed parser of end blocks in initialization section added label sections
 
