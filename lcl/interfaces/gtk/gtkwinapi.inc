@@ -8213,7 +8213,6 @@ function TGtkWidgetSet.SetWindowLong(Handle: HWND; Idx: Integer;
   NewLong: Longint): LongInt;
 var
   Data: Pointer;
-  WI: PWidgetInfo;
 begin
   //TODO: Finish this;
   Assert(False, Format('Trace:> [TGtkWidgetSet.SETWINDOWLONG] HWND: 0x%x, idx: 0x%x(%d), Value: 0x%x(%d)', [Handle, idx, idx, newlong, newlong]));
@@ -8894,6 +8893,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.395  2005/02/05 22:48:51  mattias
+  clean up
+
   Revision 1.394  2005/02/05 16:09:52  marc
   * first 64bit changes
 
