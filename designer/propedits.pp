@@ -39,7 +39,7 @@ interface
 
 uses 
   Classes, TypInfo, SysUtils, Forms, Controls, GraphType, Graphics, StdCtrls,
-  Buttons, ComCtrls, Menus, LCLType;
+  Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLLinux;
 
 const
   MaxIdentLength: Byte = 63;
@@ -465,6 +465,24 @@ type
     function GetValue: ansistring; override;
   end;
 
+ {TPixmapPropertyEditor
+  The default property editor for all TGraphic's and sub types (e.g. TBitmap,
+  TPixmap, TIcon, etc.). }
+
+  TPixmapPropertyEditor = class(TClassPropertyEditor)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+  end;
+
+{ TPicturePropertyEditor
+  The default property editor for TPicture}
+
+  TPicturePropertyEditor = class(TPixmapPropertyEditor)
+  public
+    procedure Edit; override;
+  end;
+  
 { TMethodPropertyEditor
   Property editor for all method properties. }
 
@@ -970,6 +988,8 @@ type
   end;
 
 //==============================================================================
+
+  Function ClassTypeInfo(Value : TClass) : PTypeInfo;
 
 implementation
 
@@ -2119,6 +2139,359 @@ end;
 function TClassPropertyEditor.GetValue: ansistring;
 begin
   Result:='('+GetPropType^.Name+')';
+end;
+
+{Form For Picture/Graphic Property Editor}
+type
+  TPicturePropertyEditorForm = class(TForm)
+  protected
+    Opendlg: TOPENDIALOG;
+    Savedlg: TSAVEDIALOG;
+
+    OKBTN: TBITBTN;
+    CANCELBTN: TBITBTN;
+
+    LoadBTN: TBUTTON;
+    SaveBTN: TBUTTON;
+    ClearBTN : TBUTTON;
+
+    ScrollPanel : TPanel;
+
+    ScrollBox : TScrollBox;
+
+    procedure LoadBTNCLICK(Sender: TObject);
+    procedure SaveBTNCLICK(Sender: TObject);
+    procedure ClearBTNCLICK(Sender: TObject);
+
+  public
+    Preview: TIMAGE;
+
+    FileName : String;
+    Constructor Create(AOwner : TComponent); Override;
+  end;
+
+Constructor TPicturePropertyEditorForm.Create(AOwner : TComponent);
+begin
+  Inherited Create(AOwner);
+
+  FileName := '';
+  Position := poDesktopCenter;
+
+  Caption := 'Load Image Dialog';
+
+  HEIGHT := 419;
+  WIDTH  := 403;
+
+  With CONSTRAINTS do begin
+    MAXHEIGHT := Height;
+    MAXWIDTH  := Width;
+    MINHEIGHT := Height;
+    MINWIDTH  := Width;
+  end;
+
+  Opendlg := TOPENDIALOG.Create(Self);
+  With Opendlg do begin
+    OPTIONS := [ofextensiondifferent, ofpathmustexist, offilemustexist, ofenablesizing];
+    DEFAULTEXT := '.xpm';
+    FILTER := '*.xpm';
+  end;
+
+  Savedlg := TSAVEDIALOG.Create(Self);
+  With Savedlg do begin
+    OPTIONS := [ofextensiondifferent, ofpathmustexist, offilemustexist, ofenablesizing];
+    DEFAULTEXT := '.xpm';
+    FILTER := '*.xpm';
+  end;
+
+  OKBTN := TBITBTN.Create(Self);
+  With OKBTN do begin
+    Parent := Self;
+    KIND := bkok;
+    SPACING := 3;
+    MODALRESULT := mrOK;
+    CAPTION := '&OK';
+    LEFT := 325;
+    HEIGHT := 29;
+    TOP := 8;
+    WIDTH := 72;
+    Show;
+  end;
+
+  ScrollBox := TScrollBox.Create(Self);
+  With ScrollBox do begin
+    Parent := Self;
+    LEFT := 8;
+    HEIGHT := 365;
+    TOP := 8;
+    WIDTH := 310;
+    AutoSize := False;
+    AutoScroll := True;
+    Show;
+  end;
+
+  ScrollPanel := TPanel.Create(ScrollBox);
+  With ScrollPanel do begin
+    Parent := ScrollBox;
+    Caption := '';
+    BorderStyle := bsNone;
+    BevelInner := bvNone;
+    BevelOuter := bvNone;
+    Color := clWhite;
+    LEFT := 0;
+    HEIGHT := 356;
+    TOP := 0;
+    WIDTH := 302;
+    Show;
+  end;
+
+  Preview := TIMAGE.Create(ScrollPanel);
+  With Preview do begin
+    Parent := ScrollPanel;
+    LEFT := 0;
+    HEIGHT := 356;
+    TOP := 0;
+    WIDTH := 302;
+    With CONSTRAINTS do begin
+      MINHEIGHT := Height;
+      MINWIDTH  := Width;
+    end;
+    AutoSize := True;
+    Transparent := True;
+    Center := True;
+    Stretch := False;
+    Show;
+  end;
+
+  ScrollPanel.AutoSize := True;
+
+  CANCELBTN := TBITBTN.Create(Self);
+  With CANCELBTN do begin
+    Parent := Self;
+    KIND := bkcancel;
+    SPACING := 3;
+    MODALRESULT := mrCancel;
+    CAPTION := '&Cancel';
+    LEFT := 325;
+    HEIGHT := 30;
+    TOP := 48;
+    WIDTH := 72;
+    Show;
+  end;
+
+  LoadBTN := TBUTTON.Create(Self);
+  With LoadBTN do begin
+    Parent := Self;
+    CAPTION := '&Load';
+    ONCLICK := @LoadBTNCLICK;
+    LEFT := 8;
+    HEIGHT := 29;
+    TOP := 384;
+    WIDTH := 82;
+    Show;
+  end;
+
+  SaveBTN := TBUTTON.Create(Self);
+  With SaveBTN do begin
+    Parent := Self;
+    ENABLED := False;
+    CAPTION := '&Save';
+    ONCLICK := @SaveBTNCLICK;
+    LEFT := 123;
+    HEIGHT := 29;
+    TOP := 384;
+    WIDTH := 76;
+    Show;
+  end;
+
+  ClearBTN := TBUTTON.Create(Self);
+  With ClearBTN do begin
+    Parent := Self;
+    CAPTION := 'C&lear';
+    ONCLICK := @ClearBTNCLICK;
+    LEFT := 236;
+    HEIGHT := 29;
+    TOP := 384;
+    WIDTH := 82;
+    Show;
+  end;
+end;
+
+procedure TPicturePropertyEditorForm.LoadBTNCLICK(Sender: TObject);
+Const
+  Formats : Array[0..1{7}] of String =
+    ('.xpm',
+     '.bmp'{,
+     '.ico',
+     '.png',
+     '.gif',
+     '.jpg',
+     '.jpeg',
+     '.tiff'});
+     //Until Graphics Handlers Have been Added for these others,
+     //Only .xpm, and .bpm can actually load using TPicture.
+     //We esspecially need to make an icon handler that will
+     //support .ico AND .xpm,  for windows/*nix compatibility.
+var
+  Ext : String;
+  I : Integer;
+begin
+  If OpenDlg.Execute then begin
+    Ext := ExtractFileExt(OpenDlg.FileName);
+    FileName := OpenDlg.FileName;
+    For I := Low(Formats) to High(Formats) do
+      If AnsiCompareText(Ext,Formats[I]) = 0 then
+        Preview.Picture.LoadFromFile(OpenDlg.FileName);
+  end;
+  SaveBTN.Enabled := False;
+  If Assigned(Preview.Picture.Graphic) then
+    If not Preview.Picture.Graphic.Empty then
+      SaveBTN.Enabled := True;
+end;
+
+procedure TPicturePropertyEditorForm.SaveBTNCLICK(Sender: TObject);
+begin
+  If SaveDlg.Execute then
+    Preview.Picture.SaveToFile(SaveDlg.FileName);
+end;
+
+procedure TPicturePropertyEditorForm.ClearBTNCLICK(Sender: TObject);
+begin
+  With Preview do begin
+    Picture.Graphic := nil;
+    Width := 0;
+    Height := 0;
+  end;
+  SaveBTN.Enabled := False;
+end;
+
+{ TPixmapPropertyEditor }
+procedure TPixmapPropertyEditor.Edit;
+var
+  TheDialog: TPicturePropertyEditorForm;
+  Pixmap : TPixmap;
+begin
+  Pixmap := TPixmap(GetOrdValue);
+  TheDialog := TPicturePropertyEditorForm.Create(Application);
+  If not Pixmap.Empty then begin
+    TheDialog.Preview.Picture.Pixmap.Width := Pixmap.Width;
+    TheDialog.Preview.Picture.Pixmap.Height := Pixmap.Height;
+    With TheDialog.Preview.Picture.Pixmap.Canvas do begin
+      Brush.Color := clWhite;
+      FillRect(Rect(0, 0, Pixmap.Width, Pixmap.Height));
+      Draw(0, 0, Pixmap);
+    end;
+  end;
+  try
+    if (TheDialog.ShowModal = mrOK) then begin
+      If TheDialog.Preview.Picture.Graphic <> nil then begin
+        If TheDialog.FileName <> '' then
+          If FileExists(TheDialog.FileName) then
+            Pixmap.LoadFromFile(TheDialog.FileName);
+      end
+      else
+        Pixmap.FreeImage;
+    end;
+  finally
+    TheDialog.Free;
+  end;
+end;
+
+function TPixmapPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paDialog, paRevertable, paReadOnly];
+end;
+
+{ TPicturePropertyEditor }
+procedure TPicturePropertyEditor.Edit;
+var
+  TheDialog: TPicturePropertyEditorForm;
+  Picture : TPicture;
+begin
+  Picture := TPicture(GetOrdValue);
+  TheDialog := TPicturePropertyEditorForm.Create(Application);
+  If (Picture.Graphic <> nil) and (Picture.Graphic is TBitmap) then begin
+    TheDialog.Preview.Picture.Bitmap.Width := Picture.Width;
+    TheDialog.Preview.Picture.Bitmap.Height := Picture.Height;
+    With TheDialog.Preview.Picture.Bitmap.Canvas do begin
+      Brush.Color := clWhite;
+      FillRect(Rect(0, 0, Picture.Width, Picture.Height));
+      Draw(0, 0, Picture.Graphic);
+    end;
+  end;
+  try
+    if (TheDialog.ShowModal = mrOK) then begin
+      If TheDialog.Preview.Picture.Graphic <> nil then begin
+        If TheDialog.FileName <> '' then
+          If FileExists(TheDialog.FileName) then
+            Picture.LoadFromFile(TheDialog.FileName);
+      end
+      else
+        Picture.Graphic := nil;
+    end;
+  finally
+    TheDialog.Free;
+  end;
+end;
+
+Type
+  TButtonGlyphPropEditor = class(TPixmapPropertyEditor)
+  public
+    procedure Edit; override;
+  end;
+
+procedure TButtonGlyphPropEditor.Edit;
+var
+  TheDialog: TPicturePropertyEditorForm;
+  Pixmap : TPixmap;
+  Component : TComponent;
+begin
+  Component := TComponent(GetComponent(0));
+  If (Component = nil) or ((not (Component is TSpeedButton)) and
+    (not (Component is TBitBtn))) or (LowerCase(GetName) <> 'glyph')
+  then begin
+    Inherited Edit;
+    exit;
+  end;
+  Pixmap := TPixmap(GetOrdValue);
+  TheDialog := TPicturePropertyEditorForm.Create(Application);
+  If not Pixmap.Empty then begin
+    TheDialog.Preview.Picture.Pixmap.Width := Pixmap.Width;
+    TheDialog.Preview.Picture.Pixmap.Height := Pixmap.Height;
+    With TheDialog.Preview.Picture.Pixmap.Canvas do begin
+      Brush.Color := clWhite;
+      FillRect(Rect(0, 0, Pixmap.Width, Pixmap.Height));
+      Draw(0, 0, Pixmap);
+    end;
+  end;
+  try
+    if (TheDialog.ShowModal = mrOK) then begin
+      If TheDialog.Preview.Picture.Graphic <> nil then begin
+        If Component is TSpeedButton then begin
+          Pixmap := TPixmap.Create;
+          If TheDialog.FileName <> '' then
+            If FileExists(TheDialog.FileName) then
+              Pixmap.LoadFromFile(TheDialog.FileName);
+          TSpeedButton(Component).Glyph := Pixmap;
+        end
+        else
+          If Component is TBitBTN then begin
+            Pixmap := TPixmap.Create;
+            If TheDialog.FileName <> '' then
+              If FileExists(TheDialog.FileName) then
+                Pixmap.LoadFromFile(TheDialog.FileName);
+            TBitBTN(Component).Glyph := Pixmap;
+          end
+       else
+         If TheDialog.FileName <> '' then
+           If FileExists(TheDialog.FileName) then
+             Pixmap.LoadFromFile(TheDialog.FileName);
+      end
+      else
+        Pixmap.FreeImage;
+    end;
+  finally
+    TheDialog.Free;
+  end;
 end;
 
 { TMethodPropertyEditor }
@@ -3632,6 +4005,11 @@ var
 
 //******************************************************************************
 
+Function ClassTypeInfo(Value : TClass) : PTypeInfo;
+begin
+  Result := PTypeInfo(Value.ClassInfo);
+end;
+
 procedure InitPropEdits;
 begin
   PropertyClassList:=TList.Create;
@@ -3672,6 +4050,12 @@ begin
     nil,'',TShortCutPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TDateTime'),
     nil,'',TShortCutPropertyEditor);
+  RegisterPropertyEditor(ClassTypeInfo(TPixmap), nil,'',TPixmapPropertyEditor);
+  RegisterPropertyEditor(ClassTypeInfo(TBitmap), nil,'',TPixmapPropertyEditor);
+  RegisterPropertyEditor(ClassTypeInfo(TPicture), nil,'',TPicturePropertyEditor);
+
+  RegisterPropertyEditor(ClassTypeInfo(TBitmap), TSpeedButton,'Glyph',TButtonGlyphPropEditor);
+  RegisterPropertyEditor(ClassTypeInfo(TBitmap), TBitBTN,'Glyph',TButtonGlyphPropEditor);
 end;
 
 procedure FinalPropEdits;
