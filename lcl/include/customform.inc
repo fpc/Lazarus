@@ -114,8 +114,6 @@ begin
     // ------
     FMenu.Free;
     FMenu:=nil;
-    FCanvas.Free;
-    FCanvas:=nil;
     FIcon.Free;
     FIcon:=nil;
     Screen.RemoveForm(Self);
@@ -1170,6 +1168,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2002/10/28 18:17:02  lazarus
+  MG: impoved focussing, unfocussing on destroy and fixed unit search
+
   Revision 1.67  2002/10/27 15:46:58  lazarus
   MWE:
     * Moved call to BeforeDestruction to CustomForm

@@ -1009,7 +1009,7 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
   
   function SearchUnitInUnitLinks(const TheUnitName: string): TCodeBuffer;
   var UnitLinks, CurFilename: string;
-    UnitLinkStart, UnitLinkEnd: integer;
+    UnitLinkStart, UnitLinkEnd, UnitLinkLen: integer;
   begin
     Result:=nil;
     UnitLinks:=Scanner.Values[ExternalMacroStart+'UnitLinks'];
@@ -1025,12 +1025,14 @@ function TFindDeclarationTool.FindUnitSource(const AnUnitName,
       while (UnitLinkEnd<=length(UnitLinks)) and (UnitLinks[UnitLinkEnd]<>' ')
       do
         inc(UnitLinkEnd);
-      if UnitLinkEnd>UnitLinkStart then begin
+      UnitLinkLen:=UnitLinkEnd-UnitLinkStart;
+      if UnitLinkLen>0 then begin
         {$IFDEF ShowTriedFiles}
         //writeln('  unit "',copy(UnitLinks,UnitLinkStart,UnitLinkEnd-UnitLinkStart),'"');
         {$ENDIF}
-        if CompareSubStrings(TheUnitName,UnitLinks,1,
-          UnitLinkStart,UnitLinkEnd-UnitLinkStart,false)=0
+        if (UnitLinkLen=length(TheUnitName))
+        and (CompareSubStrings(TheUnitName,UnitLinks,1,
+          UnitLinkStart,UnitLinkLen,false)=0)
         then begin
           // unit found -> parse filename
           UnitLinkStart:=UnitLinkEnd+1;
