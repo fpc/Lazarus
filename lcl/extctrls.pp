@@ -461,6 +461,8 @@ type
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
     property OnResize;
 //    property OnStartDock;
@@ -923,6 +925,9 @@ end.
 
  {
   $Log$
+  Revision 1.99  2004/02/24 21:53:12  mattias
+  added StdActns definitions, no code yet
+
   Revision 1.98  2004/02/22 10:43:20  mattias
   added child-parent checks
 

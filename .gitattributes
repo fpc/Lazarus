@@ -1123,6 +1123,7 @@ lcl/pairsplitter.pas svneol=native#text/pascal
 lcl/postscriptprinter.pas svneol=native#text/pascal
 lcl/printers.pas svneol=native#text/pascal
 lcl/spin.pp svneol=native#text/pascal
+lcl/stdactns.pas svneol=native#text/pascal
 lcl/stdctrls.pp svneol=native#text/pascal
 lcl/stringhashlist.pas svneol=native#text/pascal
 lcl/templates/template.inc svneol=native#text/pascal

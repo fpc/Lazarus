@@ -39,7 +39,7 @@ uses
   // the interface base
   InterfaceBase, {$IFNDEF DisableFPImage}IntfGraphics,{$ENDIF}
   // components and functions
-  Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
+  StdActns, Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, CheckLst, PairSplitter, ExtDlgs,
@@ -52,6 +52,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/02/24 21:53:12  mattias
+  added StdActns definitions, no code yet
+
   Revision 1.9  2004/02/10 00:38:43  mattias
   deactivated fpImage or fpc 1.0.10
 

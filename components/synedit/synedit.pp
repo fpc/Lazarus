@@ -145,7 +145,7 @@ type
     var Command: TSynEditorCommand; var AChar: char; Data: pointer) of object;
 
   TReplaceTextEvent = procedure(Sender: TObject; const ASearch, AReplace:
-    string; Line, Column: integer; var Action: TSynReplaceAction) of object;
+    string; Line, Column: integer; var ReplaceAction: TSynReplaceAction) of object;
 
   TSpecialLineColorsEvent = procedure(Sender: TObject; Line: integer;
     var Special: boolean; var FG, BG: TColor) of object;
@@ -600,10 +600,7 @@ type
     procedure EndUpdate;
     procedure EnsureCursorPosVisible;
 {$IFDEF SYN_COMPILER_4_UP}
-{$IFNDEF SYN_LAZARUS}
-// ToDo TBasicAction
-    function ExecuteAction(Action: TBasicAction): boolean; override;
-{$ENDIF}
+    function ExecuteAction(ExeAction: TBasicAction): boolean; override;
 {$ENDIF}
     procedure ExecuteCommand(Command: TSynEditorCommand; AChar: char;
       Data: pointer); virtual;
@@ -652,10 +649,7 @@ type
     procedure Undo;
     procedure UnregisterCommandHandler(AHandlerProc: THookedCommandEvent);
 {$IFDEF SYN_COMPILER_4_UP}
-{$IFNDEF SYN_LAZARUS}
-// ToDo TBasicAction
-    function UpdateAction(Action: TBasicAction): boolean; override;
-{$ENDIF}
+    function UpdateAction(TheAction: TBasicAction): boolean; override;
 {$ENDIF}
     procedure WndProc(var Msg: TMessage); override;
   public
@@ -862,10 +856,7 @@ implementation
 
 uses
 {$IFDEF SYN_COMPILER_4_UP}
-{$IFNDEF SYN_LAZARUS}
-// ToDo StdActions
   StdActns,
-{$ENDIF}
 {$ENDIF}
   Clipbrd,
 {$IFNDEF SYN_LAZARUS}
@@ -7588,54 +7579,52 @@ begin
 end;
 
 {$IFDEF SYN_COMPILER_4_UP}
-{$IFNDEF SYN_LAZARUS}
-function TCustomSynEdit.ExecuteAction(Action: TBasicAction): boolean;
+function TCustomSynEdit.ExecuteAction(ExeAction: TBasicAction): boolean;
 begin
-  if Action is TEditAction then
+  if ExeAction is TEditAction then
   begin
     Result := TRUE;
-    if Action is TEditCut then
+    if ExeAction is TEditCut then
       CutToClipboard
-    else if Action is TEditCopy then
+    else if ExeAction is TEditCopy then
       CopyToClipboard
-    else if Action is TEditPaste then
+    else if ExeAction is TEditPaste then
       PasteFromClipboard
 {$IFDEF SYN_COMPILER_5_UP}
-    else if Action is TEditDelete then
+    else if ExeAction is TEditDelete then
       ClearSelection
-    else if Action is TEditUndo then
+    else if ExeAction is TEditUndo then
       Undo
-    else if Action is TEditSelectAll then
+    else if ExeAction is TEditSelectAll then
       SelectAll;
 {$ENDIF}
   end else
-    Result := inherited ExecuteAction(Action);
+    Result := inherited ExecuteAction(ExeAction);
 end;
 
-function TCustomSynEdit.UpdateAction(Action: TBasicAction): boolean;
+function TCustomSynEdit.UpdateAction(TheAction: TBasicAction): boolean;
 begin
-  if Action is TEditAction then
+  if TheAction is TEditAction then
   begin
     Result := Focused;
     if Result then
     begin
-      if (Action is TEditCut) or (Action is TEditCopy) then
-        TEditAction(Action).Enabled := SelAvail
-      else if Action is TEditPaste then
-        TEditAction(Action).Enabled := CanPaste
+      if (TheAction is TEditCut) or (TheAction is TEditCopy) then
+        TEditAction(TheAction).Enabled := SelAvail
+      else if TheAction is TEditPaste then
+        TEditAction(TheAction).Enabled := CanPaste
 {$IFDEF SYN_COMPILER_5_UP}
-      else if Action is TEditDelete then
-        TEditAction(Action).Enabled := TRUE
-      else if Action is TEditUndo then
-        TEditAction(Action).Enabled := CanUndo
-      else if Action is TEditSelectAll then
-        TEditAction(Action).Enabled := TRUE;
+      else if TheAction is TEditDelete then
+        TEditAction(TheAction).Enabled := TRUE
+      else if TheAction is TEditUndo then
+        TEditAction(TheAction).Enabled := CanUndo
+      else if TheAction is TEditSelectAll then
+        TEditAction(TheAction).Enabled := TRUE;
 {$ENDIF}
     end;
   end else
-    Result := inherited UpdateAction(Action);
+    Result := inherited UpdateAction(TheAction);
 end;
-{$ENDIF}
 {$ENDIF}
 
 procedure TCustomSynEdit.SetModified(Value: boolean);

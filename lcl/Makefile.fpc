@@ -54,6 +54,7 @@ implicitunits= \
   postscriptprinter \
   printers \
   spin \
+  stdactns \
   stdctrls \
   stringhashlist \
   textstrings \

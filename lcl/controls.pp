@@ -861,7 +861,7 @@ type
     procedure QuadClick; dynamic;
     procedure DoStartDrag(var DragObject: TDragObject); dynamic;
     procedure DragOver(Source: TObject; X,Y: Integer; State: TDragState;
-                       var Accept:Boolean); dynamic;
+                       var Accept: Boolean); dynamic;
     procedure DragCanceled; dynamic;
     procedure DoEndDrag(Target: TObject; X,Y : Integer); dynamic;
     procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
@@ -2389,6 +2389,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.184  2004/02/24 21:53:12  mattias
+  added StdActns definitions, no code yet
+
   Revision 1.183  2004/02/23 23:15:12  mattias
   improved FindDragTarget
 
