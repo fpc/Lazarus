@@ -1943,9 +1943,9 @@ resourcestring
     +'file for package %s is not a valid executable:%s%s';
   lisPkgMangPackageHasNoValidOutputDirectory = 'Package %s%s%s has no valid '
     +'output directory:%s%s%s%s';
-  lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit = '{ This file '
+  lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit = '%s This file '
     +'was automatically created by Lazarus. Do not edit!%s  This source is '
-    +'only used to compile and install%s  the package %s.%s}%s';
+    +'only used to compile and install%s  the package %s.%s';
   lisPkgMangpackageMainSourceFile = 'package main source file';
   lisPkgMangRenameFileInPackage = 'Rename file in package?';
   lisPkgMangThePackageOwnsTheFileShouldTheFileBeRenamed = 'The package %s '

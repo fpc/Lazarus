@@ -677,7 +677,7 @@ type
  * introduced. These functions interface with the LCLInterface. The
  * default Get/SetTextbuf implementation calls the RealGet/SetText.
  * As long as the Get/SetTextBuf isn't overridden Get/SetText 
- * calls RealGet/SetText to avoid PChar copiing.
+ * calls RealGet/SetText to avoid PChar copying.
  * To keep things optimal, LCL implementations should always 
  * override RealGet/SetText. Get/SetTextBuf is only kept for
  * compatibility.
@@ -731,6 +731,7 @@ type
     FOnConstrainedResize : TConstrainedResizeEvent;
     FOnContextPopup: TContextPopupEvent;
     FOnDblClick: TNotifyEvent;
+    FOnDoneEditing: TNotifyEvent;
     FOnDragDrop: TDragDropEvent;
     FOnDragOver: TDragOverEvent;
     FOnEndDock: TEndDragEvent;
@@ -786,7 +787,8 @@ type
     procedure CheckMenuPopup(const P : TSmallPoint);
     procedure DoBeforeMouseMessage;
     procedure DoConstrainedResize(var NewWidth, NewHeight : integer);
-    procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton; Shift:TShiftState);
+    procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
+                          Shift:TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
     procedure SetBorderSpacing(const AValue: TControlBorderSpacing);
     procedure SetBoundsRect(const ARect : TRect);
@@ -868,7 +870,7 @@ type
     procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
     procedure WMRButtonUp(var Message: TLMRButtonUp); message LM_RBUTTONUP;
     procedure WMMButtonUp(var Message: TLMMButtonUp); message LM_MBUTTONUP;
-    procedure WMDragStart(Var Message: TLMessage); message LM_DRAGSTART;  //not in delphi
+    procedure WMDragStart(Var Message: TLMessage); message LM_DRAGSTART;//not in delphi
     procedure WMMove(var Message: TLMMove); message LM_MOVE;
     procedure WMSize(var Message: TLMSize); message LM_SIZE;
     procedure WMWindowPosChanged(var Message: TLMWindowPosChanged); message LM_WINDOWPOSCHANGED;
@@ -904,7 +906,7 @@ type
     procedure EraseDragDockImage(DragDockObject: TDragDockObject); dynamic;
     procedure PositionDockRect(DragDockObject: TDragDockObject); dynamic;
     procedure SetDragMode(Value: TDragMode); virtual;
-    //procedure SendDockNotification; virtual;
+    //procedure SendDockNotification; virtual; MG: probably not needed
   protected
     // mouse
     procedure Click; dynamic;
@@ -966,7 +968,7 @@ type
     property MouseCapture: Boolean read GetMouseCapture write SetMouseCapture;
     property ParentFont: Boolean  read FParentFont write FParentFont;
     property ParentColor: Boolean  read FParentColor write SetParentColor;
-    property ParentShowHint : Boolean read FParentShowHint write SetParentShowHint default True;
+    property ParentShowHint: Boolean read FParentShowHint write SetParentShowHint default True;
     property Text: TCaption read GetText write SetText;
     property OnConstrainedResize: TConstrainedResizeEvent read FOnConstrainedResize write FOnConstrainedResize;
     property OnContextPopup: TContextPopupEvent read FOnContextPopup write FOnContextPopup;
@@ -984,6 +986,7 @@ type
     property OnMouseLeave: TNotifyEvent read FOnMouseLeave write FOnMouseLeave;
     property OnStartDock: TStartDockEvent read FOnStartDock write FOnStartDock;
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
+    property OnDoneEditing: TNotifyEvent read FOnDoneEditing write FOnDoneEditing;
   public
     FCompStyle: Byte; // enables (valid) use of 'IN' operator (this is a hack
       // for speed. It will be replaced by the use of the widgetset classes.
@@ -999,9 +1002,10 @@ type
     function ReplaceDockedControl(Control: TControl; NewDockSite: TWinControl;
       DropControl: TControl; ControlSide: TAlign): Boolean;
   public
-    constructor Create(AOwner: TComponent);override;
+    constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
     Function PerformTab(ForwardTab: boolean): Boolean; Virtual;
+    procedure DoneEditing; virtual;
     procedure ExecuteDefaultAction; virtual;
     procedure ExecuteCancelAction; virtual;
     procedure BeginDrag(Immediate: Boolean; Threshold: Integer);
@@ -2330,6 +2334,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.222  2004/07/03 14:59:42  mattias
+  fixed keydown geting all keys
+
   Revision 1.221  2004/07/03 13:06:29  mattias
   improved key handling for OI
 

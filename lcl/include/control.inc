@@ -219,14 +219,28 @@ begin
   Result := False;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.Change
-}
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TControl.Change
+------------------------------------------------------------------------------}
 Procedure TControl.Changed;
 Begin
   Perform(CM_CHANGED, 0, LParam(self));
 End;
+
+{------------------------------------------------------------------------------
+  TControl.DoneEditing
+  
+  Called when user has finished editing. This procedure can be used by data
+  links to commit the changes.
+  For example:
+  - When focus switches to another control (default)
+  - When user selected another item
+  It's totally up to the control, what events will commit.
+------------------------------------------------------------------------------}
+procedure TControl.DoneEditing;
+begin
+
+end;
 
 procedure TControl.FontChanged(Sender: TObject);
 begin
@@ -3028,11 +3042,11 @@ end;
 
   Contructor for the class.
  ------------------------------------------------------------------------------}
-constructor TControl.Create(AOwner : TComponent);
+constructor TControl.Create(TheOwner : TComponent);
 begin
   //if AnsiCompareText(ClassName,'TSpeedButton')=0 then
   //  DebugLn('TControl.Create START ',Name,':',ClassName);
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
 
   FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks,
                     csOpaque];
@@ -3199,6 +3213,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.201  2004/07/03 14:59:42  mattias
+  fixed keydown geting all keys
+
   Revision 1.200  2004/07/01 20:42:11  micha
   implement better ExecuteXXAction design; break dependency on TButton class in TCustomForm
 

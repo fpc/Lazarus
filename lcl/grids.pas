@@ -384,8 +384,8 @@ type
     procedure DblClick; override;
     procedure DefineProperties(Filer: TFiler); override;
     procedure DestroyHandle; override;
-    procedure doExit; override;
-    procedure doEnter; override;
+    procedure DoExit; override;
+    procedure DoEnter; override;
     procedure DrawBackGround; virtual;
     procedure DrawBorder;
     procedure DrawByRows; virtual;
@@ -2875,12 +2875,12 @@ begin
     {$IfDef dbgFocus}DebugLn('DoExit - Ext');{$Endif}
     Invalidate;
   end;
-  inherited doExit;
+  inherited DoExit;
 end;
 
-procedure TCustomGrid.doEnter;
+procedure TCustomGrid.DoEnter;
 begin
-  inherited doEnter;
+  inherited DoEnter;
   if FEditorHiding then begin
     {$IfDef dbgFocus}DebugLn('DoEnter - EditorHiding');{$Endif}
   end else begin

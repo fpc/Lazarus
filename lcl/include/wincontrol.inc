@@ -2057,8 +2057,7 @@ end;
 procedure TWinControl.KeyDownBeforeInterface(var Key: Word; Shift: TShiftState
   );
 begin
-  if WantsKeyBeforeInterface(Key,Shift) then
-    KeyDown(Key,Shift);
+  KeyDown(Key,Shift);
 end;
 
 {------------------------------------------------------------------------------
@@ -2066,8 +2065,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TWinControl.KeyDownAfterInterface(var Key: Word; Shift: TShiftState);
 begin
-  if not WantsKeyBeforeInterface(Key,Shift) then
-    KeyDown(Key,Shift);
+
 end;
 
 {------------------------------------------------------------------------------
@@ -2832,6 +2830,7 @@ procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
 begin
   //DebugLn('TWinControl.WMKillFocus A ',Name,':',ClassName);
   Assert(False, Format('Trace: %s', [ClassName]));
+  DoneEditing;
   DoExit;
 end;
 
@@ -3756,6 +3755,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.251  2004/07/03 14:59:42  mattias
+  fixed keydown geting all keys
+
   Revision 1.250  2004/07/03 11:11:08  mattias
   TGTKListStringList now keeps selection on Put and Move
 

@@ -2349,9 +2349,8 @@ begin
 
   // create source
   HeaderSrc:=
-       Format(lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit, [e,
-         e, APackage.IDAsString, e, e
-      +e]);
+       Format(lisPkgMangThisFileWasAutomaticallyCreatedByLazarusDoNotEdit,
+       ['{ ', e, e, APackage.IDAsString, e+' }'+e+e]);
   Src:='unit '+APackage.Name+';'+e
       +e
       +'interface'+e
