@@ -730,7 +730,7 @@ type
     {$ENDIF}
     procedure GetChildren(Proc : TGetChildProc; Root : TComponent); override;
     procedure PaintControls(DC: HDC; First: TControl);
-    procedure PaintHandler(var Message: TLMPaint);
+    procedure PaintHandler(var TheMessage: TLMPaint);
     procedure PaintWindow(DC: HDC); virtual;
     procedure CMEnabledChanged(var Message: TLMEssage); message CM_ENABLEDCHANGED;
     procedure WMEraseBkgnd(var Message : TLMEraseBkgnd); message LM_ERASEBKGND;
@@ -781,7 +781,7 @@ type
     function  GetClientOrigin: TPoint; override;
     function  GetClientRect: TRect; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
-    Function  IsControlMouseMsg(var Message : TLMMouse): Boolean;
+    Function  IsControlMouseMsg(var TheMessage : TLMMouse): Boolean;
     property  BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
     property  DefWndProc: Pointer read FDefWndProc write FDefWndPRoc;
     property  IsResizing : Boolean read GetIsResizing;
@@ -1236,6 +1236,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.53  2002/06/21 15:41:56  lazarus
+  MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
+
   Revision 1.52  2002/06/19 19:46:08  lazarus
   MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
 
