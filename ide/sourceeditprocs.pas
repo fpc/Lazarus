@@ -35,26 +35,51 @@ interface
 
 uses
   Classes, SysUtils, BasicCodeTools, CodeTree, CodeToolManager,
-  IdentCompletionTool, GraphType, Graphics, EditorOptions,
+  PascalParserTool, IdentCompletionTool, GraphType, Graphics, EditorOptions,
   SynEdit, SynCompletion;
 
 type
   TCompletionType = (
     ctNone, ctWordCompletion, ctTemplateCompletion, ctIdentCompletion);
+  TIdentComplValue = (
+    icvIdentifier, icvProcWithParams, icvIndexedProp);
 
 procedure PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y: integer; ItemSelected: boolean; Index: integer;
   aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType);
+  
+function GetIdentCompletionValue(aCompletion : TSynCompletion;
+  var ValueType: TIdentComplValue): string;
 
 implementation
 
 procedure PaintCompletionItem(const AKey: string; ACanvas: TCanvas;
   X, Y: integer; ItemSelected: boolean; Index: integer;
   aCompletion : TSynCompletion; CurrentCompletionType: TCompletionType);
+  
+  function InvertColor(AColor: TColor): TColor;
+  var Red, Green, Blue: integer;
+  begin
+    Result:=clWhite;
+    Red:=(AColor shr 16) and $ff;
+    Green:=(AColor shr 8) and $ff;
+    Blue:=AColor and $ff;
+    if Red+Green+Blue>$180 then
+      Result:=clBlack;
+  end;
+
+  procedure SetFontColor(NewColor: TColor);
+  begin
+    if ItemSelected then NewColor:=InvertColor(NewColor);
+    ACanvas.Font.Color:=NewColor;
+  end;
+  
 var
   i: Integer;
   s: string;
   IdentItem: TIdentifierListItem;
+  AColor: TColor;
+  ANode: TCodeTreeNode;
 begin
   with ACanvas do begin
     if CurrentCompletionType=ctIdentCompletion then begin
@@ -65,9 +90,92 @@ begin
         exit;
       end;
       // first write the type
-      // var, procedure, property,
+      // var, procedure, property, function, type, const
+      case IdentItem.Node.Desc of
+
+      ctnVarDefinition:
+        begin
+          AColor:=clMaroon;
+          s:='var';
+        end;
+
+      ctnTypeDefinition:
+        begin
+          AColor:=clDkGray;
+          s:='type';
+        end;
+
+      ctnConstDefinition:
+        begin
+          AColor:=clOlive;
+          s:='const';
+        end;
+
+      ctnProcedure:
+        if IdentItem.Tool.NodeIsFunction(IdentItem.Node) then begin
+          AColor:=clTeal;
+          s:='function';
+        end else begin
+          AColor:=clNavy;
+          s:='procedure';
+        end;
+        
+      ctnProperty:
+        begin
+          AColor:=clPurple;
+          s:='property';
+        end;
+
+      else
+        AColor:=clGray;
+        s:='';
+      end;
       
+      SetFontColor(AColor);
+      TextOut(x+1,y,s);
+      inc(x,TextWidth('procedure '));
+
+      SetFontColor(clBlack);
+      Font.Style:=Font.Style+[fsBold];
       s:=GetIdentifier(IdentItem.Identifier);
+      TextOut(x+1,y,s);
+      inc(x,TextWidth(s));
+      Font.Style:=Font.Style-[fsBold];
+
+      case IdentItem.Node.Desc of
+      
+      ctnProcedure:
+        begin
+          s:=IdentItem.Tool.ExtractProcHead(IdentItem.Node,
+            [phpWithoutClassName,phpWithoutName,phpWithVarModifiers,
+             phpWithParameterNames,phpWithDefaultValues,phpWithResultType,
+             phpWithOfObject]);
+        end;
+        
+      ctnVarDefinition:
+        begin
+          ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(IdentItem.Node);
+          s:=' : '+IdentItem.Tool.ExtractNode(ANode,[]);
+        end;
+
+      ctnTypeDefinition:
+        begin
+          ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(IdentItem.Node);
+          s:=' = '+IdentItem.Tool.ExtractNode(ANode,[]);
+        end;
+
+      ctnConstDefinition:
+        begin
+          ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(IdentItem.Node);
+          s:=' = '+IdentItem.Tool.ExtractNode(ANode,[]);
+        end;
+
+      else
+        exit;
+      
+      end;
+      
+      SetFontColor(clBlack);
       TextOut(x+1,y,s);
 
     end else begin
@@ -103,6 +211,32 @@ begin
       end;
     end;
   end;
+end;
+
+function GetIdentCompletionValue(aCompletion : TSynCompletion;
+  var ValueType: TIdentComplValue): string;
+var
+  Index: Integer;
+  IdentItem: TIdentifierListItem;
+begin
+  Index:=aCompletion.Position;
+  IdentItem:=CodeToolBoss.IdentifierList.FilteredItems[Index];
+  ValueType:=icvIdentifier;
+  if IdentItem<>nil then begin
+    Result:=GetIdentifier(IdentItem.Identifier);
+    case IdentItem.Node.Desc of
+    
+    ctnProcedure:
+      if IdentItem.Tool.ProcNodeHasParamList(IdentItem.Node) then
+        ValueType:=icvProcWithParams;
+
+    ctnProperty:
+      if IdentItem.Tool.PropertyNodeHasParamList(IdentItem.Node) then
+        ValueType:=icvIndexedProp;
+
+    end;
+  end else
+    Result:='';
 end;
 
 end.

@@ -309,7 +309,7 @@ begin
   FTextSelectedColor:=clWhite;
   {$ENDIF}
   Visible := false;
-  FFontHeight := Canvas.TextHeight('Cyrille de Brebisson');
+  FFontHeight := Canvas.TextHeight('Cyrille de Brebisson')+2;
   Color := clWindow;
   ClSelect := clHighlight;
   TStringList(FItemList).OnChange := {$IFDEF FPC}@{$ENDIF}StringListChange;
@@ -441,7 +441,7 @@ begin
       if i + Scroll.Position = Position then begin
         Canvas.Brush.Color := clSelect;
         Canvas.Pen.Color := clSelect;
-        Canvas.Rectangle(0, FFontHeight * i, width, FFontHeight * (i + 1));
+        Canvas.Rectangle(0, (FFontHeight * i)+1, width, (FFontHeight * (i + 1))+1);
         Canvas.Pen.Color := clBlack;
         {$IFDEF SYN_LAZARUS}
         Canvas.Font.Color := TextSelectedColor;
@@ -455,7 +455,7 @@ begin
           Canvas.Brush.Color := Color;
           {$IFDEF SYN_LAZARUS}
           Canvas.Font.Color := TextColor;
-          Canvas.FillRect(Rect(0, FFontHeight * i, width, FFontHeight * (i + 1)));
+          Canvas.FillRect(Rect(0, (FFontHeight * i)+1, width, (FFontHeight * (i + 1))+1));
           {$ELSE}
           Canvas.Font.Color := clBlack;
           {$ENDIF}
@@ -479,7 +479,7 @@ begin
     // paint the rest of the background
     if NbLinesInWindow > ItemList.Count then begin
       canvas.brush.color := color;
-      i:=FFontHeight * ItemList.Count;
+      i:=(FFontHeight * ItemList.Count)+1;
       canvas.FillRect(Rect(0, i, Width, Height));
     end;
     {$ENDIF}

@@ -42,6 +42,8 @@ interface
 
 // verbosity
 {$DEFINE CTDEBUG}
+{ $DEFINE ShowFoundIdents}
+{ $DEFINE ShowFilteredIdents}
 
 // new features
 { $DEFINE IgnoreErrorAfterCursor}
@@ -187,19 +189,22 @@ var
 begin
   if not (ilfFilteredListNeedsUpdate in FFlags) then exit;
   if FFilteredList=nil then FFilteredList:=TList.Create;
-  if Prefix='' then exit;
+  FFilteredList.Clear;
   AnAVLNode:=FItems.FindLowest;
   while AnAVLNode<>nil do begin
     CurItem:=TIdentifierListItem(AnAVLNode.Data);
     if (CurItem.Identifier<>nil)
     and ComparePrefixIdent(PChar(Prefix),CurItem.Identifier) then begin
-      {$IFDEF CTDEBUG}
+      {$IFDEF ShowFilteredIdents}
       writeln('::: FILTERED ITEM ',FFilteredList.Count,' ',GetIdentifier(CurItem.Identifier));
       {$ENDIF}
       FFilteredList.Add(CurItem);
     end;
     AnAVLNode:=FItems.FindSuccessor(AnAVLNode);
   end;
+  {$IFDEF CTDEBUG}
+  writeln('TIdentifierList.UpdateFilteredList ',FFilteredList.Count,' of ',FItems.Count);
+  {$ENDIF}
   Exclude(FFlags,ilfFilteredListNeedsUpdate);
 end;
 
@@ -261,9 +266,11 @@ begin
   // proceed searching ...
   Result:=ifrProceedSearch;
 
+  {$IFDEF ShowFoundIdents}
   writeln('::: COLLECT IDENT ',FoundContext.Node.DescAsString,
     ' "',StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)),'"'
     ,' ',fdfIgnoreUsedUnits in Params.Flags);
+  {$ENDIF}
     
   if LastGatheredIdentParent<>FoundContext.Node.Parent then begin
     // new context level
@@ -291,6 +298,9 @@ begin
   ctnProcedure,ctnProcedureHead:
     Ident:=FoundContext.Tool.GetProcNameIdentifier(FoundContext.Node);
     
+  ctnProperty:
+    Ident:=FoundContext.Tool.GetPropertyNameIdentifier(FoundContext.Node);
+    
   end;
   if Ident=nil then exit;
 
@@ -303,7 +313,9 @@ begin
   NewItem.Node:=FoundContext.Node;
   NewItem.Tool:=FoundContext.Tool;
   
+  {$IFDEF ShowFoundIdents}
   writeln('  IDENT COLLECTED: ',NewItem.AsString);
+  {$ENDIF}
   
   CurrentIdentifierList.Add(NewItem);
 end;

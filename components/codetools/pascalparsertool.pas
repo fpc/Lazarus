@@ -198,6 +198,9 @@ type
 
     function DoAtom: boolean; override;
 
+    function ExtractNode(ANode: TCodeTreeNode;
+        Attr: TProcHeadAttributes): string;
+
     function ExtractPropName(PropNode: TCodeTreeNode;
         InUpperCase: boolean): string;
     function ExtractPropType(PropNode: TCodeTreeNode;
@@ -218,6 +221,8 @@ type
     function ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
         ProcSpec: TProcedureSpecifier): boolean;
     function GetProcNameIdentifier(ProcNode: TCodeTreeNode): PChar;
+
+    function GetPropertyNameIdentifier(PropNode: TCodeTreeNode): PChar;
 
     function FindVarNode(StartNode: TCodeTreeNode;
         const UpperVarName: string): TCodeTreeNode;
@@ -249,7 +254,9 @@ type
     function NodeIsConstructor(ProcNode: TCodeTreeNode): boolean;
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
-    
+    function PropertyNodeHasParamList(PropNode: TCodeTreeNode): boolean;
+    function ProcNodeHasParamList(ProcNode: TCodeTreeNode): boolean;
+
     procedure MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
     procedure ReadPriorUsedUnit(var UnitNameAtom, InAtom: TAtomPosition);
     
@@ -1653,6 +1660,22 @@ begin
     end;
   end else
     Result:=false;
+end;
+
+function TPascalParserTool.ExtractNode(ANode: TCodeTreeNode;
+  Attr: TProcHeadAttributes): string;
+begin
+  Result:='';
+  ExtractProcHeadPos:=phepNone;
+  if (ANode=nil) or (ANode.StartPos<1) then exit;
+  InitExtraction;
+  // reparse the clean source
+  MoveCursorToNodeStart(ANode);
+  while (ANode.EndPos>CurPos.StartPos)
+  and (CurPos.StartPos<=SrcLen) do
+    ExtractNextAtom(true,Attr);
+  // copy memorystream to Result string
+  Result:=GetExtraction;
 end;
 
 function TPascalParserTool.KeyWordFuncSection: boolean;
@@ -3932,6 +3955,39 @@ begin
   Result:=UpAtomIs('DEFAULT');
 end;
 
+function TPascalParserTool.PropertyNodeHasParamList(PropNode: TCodeTreeNode
+  ): boolean;
+begin
+
+  // ToDo: ppu, ppw, dcu
+
+  Result:=false;
+  MoveCursorToNodeStart(PropNode);
+  ReadNextAtom; // read 'property'
+  ReadNextAtom; // read name
+  ReadNextAtom;
+  Result:=AtomIsChar('[');
+end;
+
+function TPascalParserTool.ProcNodeHasParamList(ProcNode: TCodeTreeNode
+  ): boolean;
+begin
+
+  // ToDo: ppu, ppw, dcu
+
+  Result:=false;
+  if ProcNode.Desc=ctnProcedure then
+    ProcNode:=ProcNode.FirstChild;
+  MoveCursorToNodeStart(ProcNode);
+  ReadNextAtom; // read name
+  ReadNextAtom;
+  if AtomIsChar('.') then begin
+    ReadNextAtom;
+    ReadNextAtom;
+  end;
+  Result:=AtomIsChar('(');
+end;
+
 procedure TPascalParserTool.MoveCursorToUsesEnd(UsesNode: TCodeTreeNode);
 begin
   if (UsesNode=nil) or (UsesNode.Desc<>ctnUsesSection) then
@@ -4051,7 +4107,28 @@ begin
     ProcNode:=ProcNode.FirstChild;
     if ProcNode=nil then exit;
   end;
-  Result:=@Src[ProcNode.StartPos];
+  MoveCursorToNodeStart(ProcNode);
+  ReadNextAtom;
+  if not AtomIsIdentifier(false) then exit;
+  Result:=@Src[CurPos.StartPos];
+  ReadNextAtom;
+  if not AtomIsChar('.') then exit;
+  ReadNextAtom;
+  Result:=@Src[CurPos.StartPos];
+end;
+
+function TPascalParserTool.GetPropertyNameIdentifier(PropNode: TCodeTreeNode
+  ): PChar;
+begin
+
+  // ToDo: ppu, ppw, dcu
+
+  Result:=nil;
+  if PropNode=nil then exit;
+  MoveCursorToNodeStart(PropNode);
+  ReadNextAtom; // read 'propery'
+  ReadNextAtom; // read name
+  Result:=@Src[CurPos.StartPos];
 end;
 
 function TPascalParserTool.ClassSectionNodeStartsWithWord(
