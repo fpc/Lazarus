@@ -835,6 +835,8 @@ Begin
     WM_SETFOCUS:
     Begin
       LMessage.Msg := LM_SETFOCUS;
+      if (TheWinControl <> nil) and (TheWinControl.FCompStyle = csEdit) then
+        Windows.SendMessage(Window, EM_SETSEL, 0, -1);
     End;
     WM_SHOWWINDOW:
     Begin
@@ -1313,6 +1315,9 @@ end;
 
 {
   $Log$
+  Revision 1.136  2004/08/27 19:06:40  micha
+  select all text upon entry in edit control
+
   Revision 1.135  2004/08/27 15:13:03  micha
   fix choosing taskbar button "close" to close app
 
