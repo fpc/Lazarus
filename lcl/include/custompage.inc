@@ -26,12 +26,8 @@ begin
   fCompStyle := csPage;
   ControlStyle := ControlStyle + [csAcceptsControls,csDesignFixedBounds];
 
-  // set the default height and width
-  if (Owner<>nil) and (Owner is TControl) then begin
-    Align:=alClient;
-  end else begin
-    SetInitialBounds(0,0,120,100);
-  end;
+  // height and width dependent on parent, align to client rect
+  Align := alClient;
   Caption := '';
   Visible := false;
 end;
