@@ -56,6 +56,11 @@ begin
   Result := True;
 end;
 
+function TInterfaceBase.BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
+begin
+  Result:=GetDC(Handle);
+end;
+
 function TInterfaceBase.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
@@ -689,6 +694,11 @@ end;
 function TInterfaceBase.EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
   Result := False;
+end;
+
+Function TInterfaceBase.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+Begin
+  Result:=1;
 end;
 
 function TInterfaceBase.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
@@ -1739,6 +1749,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.92  2003/07/01 14:06:45  mattias
+  made Begin/EndPaint interface dependent
+
   Revision 1.91  2003/07/01 09:29:51  mattias
   attaching menuitems topdown
 

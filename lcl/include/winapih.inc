@@ -35,6 +35,7 @@
 function Arc(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
+Function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function BringWindowToTop(hWnd : HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -93,6 +94,7 @@ function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: C
 function EnableMenuItem(hndMenu: HMENU; uIDEnableItem: Integer; bEnable: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function EnableScrollBar(Wnd: HWND; wSBflags, wArrows: Cardinal): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function EqualRect --> independent
 Function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -323,8 +325,6 @@ type
 function AdjustWindowRectEx(Var Rect: TRect; Style1: Word; MenuExist : Boolean;
   Style2 : Word) : Boolean;
 
-Function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc;
-
 Function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
 function CopyRect(var DestRect: TRect; const SrcRect: TRect): Boolean;
 function CreateEllipticRgnIndirect(const ARect: TRect): HRGN;
@@ -334,7 +334,6 @@ function CreateFont(Height, Width, Escapement, Orientation, Weight: Integer;
 function CreatePen(Style, Width: Integer; Color: TColorRef): HPEN;
 function CreateRectRgnIndirect(const ARect: TRect): HRGN;
 
-Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
 function EqualRect(const lprc1, lprc2: TRect): Boolean;
 
 function GetScrollPos(Handle: HWND; nBar: Integer): Integer;
@@ -384,6 +383,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.78  2003/07/01 14:06:45  mattias
+  made Begin/EndPaint interface dependent
+
   Revision 1.77  2003/07/01 09:29:51  mattias
   attaching menuitems topdown
 

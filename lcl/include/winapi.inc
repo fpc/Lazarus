@@ -41,7 +41,12 @@ begin
   Result := InterfaceObject.AngleChord(DC,x,y,width,height,angle1,angle2);
 end;
 
-function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; 
+function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc;
+begin
+  Result := InterfaceObject.BeginPaint(Handle,PS);
+end;
+
+function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
   Result := InterfaceObject.BitBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Rop);
 end;
@@ -231,6 +236,11 @@ end;
 function EnableWindow(hWnd: HWND; bEnable: Boolean): Boolean;
 begin
   Result := InterfaceObject.EnableWindow(hWnd, bEnable);
+end;
+
+Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+Begin
+  Result:=InterfaceObject.EndPaint(Handle,PS);
 end;
 
 function Ellipse(DC: HDC; x1,y1,x2,y2: Integer): Boolean;
@@ -1108,23 +1118,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: BeginPaint
-  Params:
-  Returns:
-
- ------------------------------------------------------------------------------}
-function BeginPaint(Handle : hwnd; Var PS : TPaintStruct) : hdc;
-begin
-  Assert(False, Format('Trace:> [BeginPaint] HWND: 0x%x', [Handle]));
-  
-  //TODO: Finish this.  BEGINPAINT
-  // Move to platform dependent ??
-  Result := Getdc(Handle);
-
-  Assert(False, Format('Trace:< [BeginPaint] HWND: 0x%x --> 0x%x', [Handle, Result]));
-end;
-
-{------------------------------------------------------------------------------
   Function: CharLowerBuff
   Params: pStr:
           Len:
@@ -1233,20 +1226,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: EndPaint
-  Params:
--------------------------------------------------------------------------------}
-Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
-Begin
-  Assert(False, Format('Trace:> [EndPaint] HWND: 0x%x', [Handle]));
-
-  //TODO: Finish EndPaint in winapi.inc
-  Result := 1;
-  Assert(False, Format('Trace:< [EndPaint] HWND: 0x%x --> 0x%x', [Handle, Result]));
-end;
-
-
-{------------------------------------------------------------------------------
   Function: EqualRect
   Params:   Rect to Compare
   Returns:
@@ -1258,7 +1237,6 @@ begin
   Result := (lprc1.Left = lprc2.Left) And (lprc1.Right = lprc2.Right) And
             (lprc1.Top = lprc2.Top) And (lprc1.Bottom = lprc2.Bottom);
 end;
-
 
 {------------------------------------------------------------------------------
   Function: GetScrollPos
@@ -1623,6 +1601,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.85  2003/07/01 14:06:45  mattias
+  made Begin/EndPaint interface dependent
+
   Revision 1.84  2003/07/01 09:29:51  mattias
   attaching menuitems topdown
 
