@@ -96,6 +96,16 @@ Environment -> General Options -> Files -> FPC source path
 1. Linux
 ++++++++
 
+
+--------------------------------------------------------------------------------
+I have SuSE and I get
+/usr/bin/ld: cannot find -lgtk
+Error: Error while linking
+
+SuSE installs the gtk devel libs under /opt/gnome/lib, which is not in
+the standard lib path. Simply add it to your /etc/fpc.cfg.
+(-Fl/opt/gnome/lib).
+
 --------------------------------------------------------------------------------
 How can I debug lazarus and lcl on Linux?
 
