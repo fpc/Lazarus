@@ -2893,6 +2893,7 @@ var
   NewIdentIsMethod: boolean;
 begin
   CurValue:=GetValue;
+  if CurValue=NewValue then exit;
 writeln('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
   NewMethodExists:=IsValidIdent(NewValue)
                and PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
@@ -2924,10 +2925,9 @@ writeln('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,
         exit;
     end;
   end;
-  if NewMethodExists and (CurValue=NewValue) then exit;
+  if NewMethodExists then exit;
 writeln('### TMethodPropertyEditor.SetValue C');
   if IsValidIdent(CurValue) and IsValidIdent(NewValue)
-  and (CurValue<>NewValue)
   and (not NewMethodExists)
   and (not PropertyHook.MethodFromAncestor(GetMethodValue)) then begin
     // rename the method
