@@ -85,12 +85,13 @@ const
   ecNewUnit              = ecUserFirst + 202;
   ecNewForm              = ecUserFirst + 203;
   ecOpen                 = ecUserFirst + 204;
-  ecSave                 = ecUserFirst + 205;
-  ecSaveAs               = ecUserFirst + 206;
-  ecSaveAll              = ecUserFirst + 207;
-  ecClose                = ecUserFirst + 208;
-  ecCloseAll             = ecUserFirst + 209;
-  ecQuit                 = ecUserFirst + 210;
+  ecRevert               = ecUserFirst + 205;
+  ecSave                 = ecUserFirst + 206;
+  ecSaveAs               = ecUserFirst + 207;
+  ecSaveAll              = ecUserFirst + 208;
+  ecClose                = ecUserFirst + 209;
+  ecCloseAll             = ecUserFirst + 210;
+  ecQuit                 = ecUserFirst + 211;
 
   ecJumpToEditor         = ecUserFirst + 300;
   ecToggleFormUnit       = ecUserFirst + 301;
@@ -451,6 +452,7 @@ begin
     ecNewUnit: Result:='new unit';
     ecNewForm: Result:='new form';
     ecOpen: Result:= 'open';
+    ecRevert: Result:= 'revert';
     ecSave: Result:= 'save';
     ecSaveAs: Result:= 'save as';
     ecSaveAll: Result:= 'save all';
@@ -1209,6 +1211,7 @@ begin
   Add(C,'NewUnit',ecNewUnit,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'NewForm',ecNewForm,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Open',ecOpen,VK_O,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Revert',ecRevert,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Save',ecSave,VK_S,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'SaveAs',ecSaveAs,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'SaveAll',ecSaveAll,VK_S,[ssCtrl,ssShift],VK_UNKNOWN,[]);

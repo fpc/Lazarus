@@ -73,6 +73,7 @@ type
     procedure mnuNewUnitClicked(Sender : TObject);
     procedure mnuNewFormClicked(Sender : TObject);
     procedure mnuOpenClicked(Sender : TObject);
+    procedure mnuRevertClicked(Sender : TObject);
     procedure mnuSaveClicked(Sender : TObject);
     procedure mnuSaveAsClicked(Sender : TObject);
     procedure mnuSaveAllClicked(Sender : TObject);
@@ -304,9 +305,12 @@ type
         var NewUnitInfo: TUnitInfo; var Handled: boolean): TModalResult;
     procedure DoRestoreBookMarks(AnUnitInfo: TUnitInfo; ASrcEdit:TSourceEditor);
     function DoOpenFileInSourceNotebook(AnUnitInfo: TUnitInfo;
-        Flags: TOpenFlags): TModalResult;
+        PageIndex: integer; Flags: TOpenFlags): TModalResult;
     function DoLoadLFM(AnUnitInfo: TUnitInfo; Flags: TOpenFlags): TModalResult;
     
+    // methods for 'close unit'
+    function CloseDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;
+
     // methods for 'save project'
     procedure GetMainUnit(var MainUnitInfo: TUnitInfo;
         var MainUnitSrcEdit: TSourceEditor; UpdateModified: boolean);
@@ -323,13 +327,13 @@ type
     destructor Destroy; override;
 
     // files/units
-    function DoNewEditorUnit(NewUnitType:TNewUnitType;
+    function DoNewEditorFile(NewUnitType:TNewUnitType;
         NewFilename: string):TModalResult;
-    function DoSaveEditorUnit(PageIndex:integer;
+    function DoSaveEditorFile(PageIndex:integer;
         Flags: TSaveFlags): TModalResult;
-    function DoCloseEditorUnit(PageIndex:integer;
+    function DoCloseEditorFile(PageIndex:integer;
         SaveFirst: boolean):TModalResult;
-    function DoOpenEditorFile(const AFileName:string;
+    function DoOpenEditorFile(AFileName:string; PageIndex: integer;
         Flags: TOpenFlags): TModalResult; override;
     function DoOpenFileAtCursor(Sender: TObject): TModalResult;
     function DoSaveAll: TModalResult;
@@ -1198,6 +1202,12 @@ begin
   itmFileOpen.OnClick := @mnuOpenClicked;
   mnuFile.Add(itmFileOpen);
 
+  itmFileRevert := TMenuItem.Create(Self);
+  itmFileRevert.Name:='itmFileRevert';
+  itmFileRevert.Caption := lisMenuRevert;
+  itmFileRevert.OnClick := @mnuRevertClicked;
+  mnuFile.Add(itmFileRevert);
+
   itmFileRecentOpen := TMenuItem.Create(Self);
   itmFileRecentOpen.Name:='itmFileRecentOpen';
   itmFileRecentOpen.Caption := lisMenuOpenRecent;
@@ -1763,12 +1773,12 @@ end;
 
 procedure TMainIDE.mnuNewUnitClicked(Sender : TObject);
 begin
-  DoNewEditorUnit(nuUnit,'');
+  DoNewEditorFile(nuUnit,'');
 end;
 
 procedure TMainIDE.mnuNewFormClicked(Sender : TObject);
 begin
-  DoNewEditorUnit(nuForm,'');
+  DoNewEditorFile(nuForm,'');
 end;
 
 procedure TMainIDE.mnuOpenClicked(Sender : TObject);
@@ -1787,7 +1797,7 @@ begin
         For I := 0 to OpenDialog.Files.Count-1 do
           Begin
             AFilename:=ExpandFilename(OpenDialog.Files.Strings[i]);
-            if DoOpenEditorFile(AFilename,[])=mrOk then begin
+            if DoOpenEditorFile(AFilename,-1,[])=mrOk then begin
               EnvironmentOptions.AddToRecentOpenFiles(AFilename);
           end;
         end;
@@ -1799,11 +1809,17 @@ begin
     end;
   end else if Sender is TMenuItem then begin
     AFileName:=ExpandFilename(TMenuItem(Sender).Caption);
-    if DoOpenEditorFile(AFilename,[])=mrOk then begin
+    if DoOpenEditorFile(AFilename,-1,[])=mrOk then begin
       EnvironmentOptions.AddToRecentOpenFiles(AFilename);
       SaveEnvironment;
     end;
   end;
+end;
+
+procedure TMainIDE.mnuRevertClicked(Sender : TObject);
+begin
+  if SourceNoteBook.NoteBook=nil then exit;
+  DoOpenEditorFile('',SourceNoteBook.NoteBook.PageIndex,[ofRevert]);
 end;
 
 procedure TMainIDE.mnuOpenFileAtCursorClicked(Sender : TObject);
@@ -1820,13 +1836,13 @@ end;
 procedure TMainIDE.mnuSaveClicked(Sender : TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
-  DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,[]);
+  DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,[]);
 end;
 
 procedure TMainIDE.mnuSaveAsClicked(Sender : TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
-  DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,[sfSaveAs]);
+  DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,[sfSaveAs]);
 end;
 
 procedure TMainIDE.mnuSaveAllClicked(Sender : TObject);
@@ -1845,13 +1861,13 @@ begin
   end else begin
     PageIndex:=SourceNoteBook.NoteBook.PageIndex;
   end;
-  DoCloseEditorUnit(PageIndex,true);
+  DoCloseEditorFile(PageIndex,true);
 end;
 
 procedure TMainIDE.mnuCloseAllClicked(Sender : TObject);
 begin
   while (SourceNoteBook.NoteBook<>nil)
-  and (DoCloseEditorUnit(SourceNoteBook.NoteBook.PageIndex,true)=mrOk) do ;
+  and (DoCloseEditorFile(SourceNoteBook.NoteBook.PageIndex,true)=mrOk) do ;
 end;
 
 Procedure TMainIDE.OnSrcNotebookFileNew(Sender : TObject);
@@ -2958,9 +2974,9 @@ begin
   begin
     // create new file
     if FilenameIsPascalSource(AFilename) then
-      Result:=DoNewEditorUnit(nuUnit,AFilename)
+      Result:=DoNewEditorFile(nuUnit,AFilename)
     else
-      Result:=DoNewEditorUnit(nuEmpty,AFilename);
+      Result:=DoNewEditorFile(nuEmpty,AFilename);
   end else if ofOnlyIfExists in Flags then begin
     MessageDlg('File not found','File "'+AFilename+'" not found.'#13,
                mtInformation,[mbCancel],0);
@@ -3069,6 +3085,8 @@ var
   CInterface: TComponentInterface;
   TempForm: TCustomForm;
 begin
+  CloseDesignerForm(AnUnitInfo);
+
   LFMFilename:=ChangeFileExt(AnUnitInfo.Filename,'.lfm');
   LFMBuf:=nil;
   if FileExists(LFMFilename) then begin
@@ -3145,12 +3163,44 @@ begin
           FLastFormActivated:=TempForm;
         end;
       end;
-{$IFDEF IDE_DEBUG}
-writeln('[TMainIDE.DoLoadLFM] LFM end');
-{$ENDIF}
+      {$IFDEF IDE_DEBUG}
+      writeln('[TMainIDE.DoLoadLFM] LFM end');
+      {$ENDIF}
     finally
       BinLFMStream.Free;
     end;
+  end;
+  Result:=mrOk;
+end;
+
+{-------------------------------------------------------------------------------
+  function TMainIDE.CloseDesignerForm
+  
+  Params: AnUnitInfo: TUnitInfo
+  Result: TModalResult;
+  
+  Free the designer form of a unit.
+-------------------------------------------------------------------------------}
+function TMainIDE.CloseDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;
+var
+  AForm: TCustomForm;
+  i: integer;
+  OldDesigner: TDesigner;
+begin
+  AForm:=TCustomForm(AnUnitInfo.Form);
+  if AForm<>nil then begin
+    if FLastFormActivated=AForm then
+      FLastFormActivated:=nil;
+    // unselect controls
+    for i:=AForm.ComponentCount-1 downto 0 do
+      TheControlSelection.Remove(
+        AForm.Components[i]);
+    TheControlSelection.Remove(AForm);
+    // free designer and design form
+    OldDesigner:=TDesigner(AForm.Designer);
+    FormEditor1.DeleteControl(AForm);
+    OldDesigner.Free;
+    AnUnitInfo.Form:=nil;
   end;
   Result:=mrOk;
 end;
@@ -3390,19 +3440,32 @@ begin
 end;
 
 function TMainIDE.DoOpenFileInSourceNotebook(AnUnitInfo: TUnitInfo;
-  Flags: TOpenFlags): TModalResult;
+  PageIndex: integer; Flags: TOpenFlags): TModalResult;
 var NewSrcEdit: TSourceEditor;
   AFilename: string;
+  NewSrcEditorCreated: boolean;
 begin
   AFilename:=AnUnitInfo.Filename;
 
-  // create a new source editor
+  // get syntax highlighter type
   if not AnUnitInfo.CustomHighlighter then
     AnUnitInfo.SyntaxHighlighter:=
       ExtensionToLazSyntaxHighlighter(ExtractFileExt(AFilename));
-  SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.UnitName,
-    AFilename,-1),AnUnitInfo.Source);
-  NewSrcEdit:=SourceNotebook.GetActiveSE;
+      
+  if (not (ofRevert in Flags)) or (PageIndex<0) then begin
+    // create a new source editor
+    SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.UnitName,
+      AFilename,-1),AnUnitInfo.Source);
+    NewSrcEdit:=SourceNotebook.GetActiveSE;
+    NewSrcEditorCreated:=true;
+  end else begin
+    // revert code in existing source editor
+    NewSrcEdit:=SourceNotebook.FindSourceEditorWithPageIndex(PageIndex);
+    AnUnitInfo.Source.AssignTo(NewSrcEdit.EditorComponent.Lines);
+    NewSrcEdit.Modified:=false;
+    AnUnitInfo.Modified:=false;
+    NewSrcEditorCreated:=false;
+  end;
 
   if ofProjectLoading in Flags then begin
     // reloading the project -> restore marks
@@ -3410,9 +3473,9 @@ begin
   end;
 
   // update editor indices in project
-  if not (ofProjectLoading in Flags) then
+  if (not (ofProjectLoading in Flags)) and NewSrcEditorCreated then
     Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
-  AnUnitInfo.EditorIndex:=SourceNotebook.NoteBook.PageIndex;
+  AnUnitInfo.EditorIndex:=SourceNotebook.FindPageWithEditor(NewSrcEdit);
 
   // restore source editor settings
   NewSrcEdit.SyntaxHighlighterType:=AnUnitInfo.SyntaxHighlighter;
@@ -3430,14 +3493,14 @@ begin
   Result:=mrOk;
 end;
   
-function TMainIDE.DoNewEditorUnit(NewUnitType:TNewUnitType;
+function TMainIDE.DoNewEditorFile(NewUnitType:TNewUnitType;
   NewFilename: string):TModalResult;
 var NewUnitInfo:TUnitInfo;
   NewSrcEdit: TSourceEditor;
   NewUnitName: string;
   NewBuffer: TCodeBuffer;
 begin
-  writeln('TMainIDE.DoNewEditorUnit A NewFilename=',NewFilename);
+  writeln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   SaveSourceEditorChangesToCodeCache(-1);
   Result:=CreateNewCodeBuffer(NewUnitType,NewFilename,NewBuffer,NewUnitName);
   if Result<>mrOk then exit;
@@ -3495,7 +3558,7 @@ begin
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
 end;
 
-function TMainIDE.DoSaveEditorUnit(PageIndex:integer; 
+function TMainIDE.DoSaveEditorFile(PageIndex:integer;
   Flags: TSaveFlags):TModalResult;
 var ActiveSrcEdit:TSourceEditor;
   ActiveUnitInfo:TUnitInfo;
@@ -3503,7 +3566,7 @@ var ActiveSrcEdit:TSourceEditor;
   ResourceCode, LFMCode: TCodeBuffer;
 begin
   {$IFDEF IDE_VERBOSE}
-  writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex,' SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
+  writeln('TMainIDE.DoSaveEditorFile A PageIndex=',PageIndex,' SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',sfSaveToTestDir in Flags);
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Result:=mrCancel;
@@ -3599,20 +3662,19 @@ begin
   SourceNoteBook.UpdateStatusBar;
 
   {$IFDEF IDE_VERBOSE}
-  writeln('TMainIDE.DoSaveEditorUnit END');
+  writeln('TMainIDE.DoSaveEditorFile END');
   {$ENDIF}
   Result:=mrOk;
 end;
 
-function TMainIDE.DoCloseEditorUnit(PageIndex:integer; 
+function TMainIDE.DoCloseEditorFile(PageIndex:integer;
   SaveFirst: boolean):TModalResult;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   ACaption,AText: string;
   i:integer;
-  OldDesigner: TDesigner;
 begin
-  writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
+  writeln('TMainIDE.DoCloseEditorFile A PageIndex=',PageIndex);
   Result:=mrCancel;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
@@ -3638,28 +3700,15 @@ begin
     ACaption:='Source modified';
     if Messagedlg(ACaption, AText, mtConfirmation, [mbYes, mbNo], 0)=mrYes then
     begin
-      Result:=DoSaveEditorUnit(PageIndex,[]);
+      Result:=DoSaveEditorFile(PageIndex,[]);
       if Result=mrAbort then exit;
     end;
     Result:=mrOk;
   end;
   
   // close form
-  if ActiveUnitInfo.Form<>nil then begin
-    if FLastFormActivated=ActiveUnitInfo.Form then
-      FLastFormActivated:=nil;
-    // unselect controls
-    for i:=TWinControl(ActiveUnitInfo.Form).ComponentCount-1 downto 0 do
-      TheControlSelection.Remove(
-        TWinControl(ActiveUnitInfo.Form).Components[i]);
-    TheControlSelection.Remove(TControl(ActiveUnitInfo.Form));
-    // free designer and design form
-    OldDesigner:=TDesigner(TCustomForm(ActiveUnitInfo.Form).Designer);
-    FormEditor1.DeleteControl(ActiveUnitInfo.Form);
-    OldDesigner.Free;
-    ActiveUnitInfo.Form:=nil;
-  end;
-  
+  CloseDesignerForm(ActiveUnitInfo);
+
   // close source editor
   SourceNoteBook.CloseFile(PageIndex);
   
@@ -3671,14 +3720,14 @@ begin
     Project1.RemoveUnit(i);
   end;
   
-  writeln('TMainIDE.DoCloseEditorUnit end');
+  writeln('TMainIDE.DoCloseEditorFile end');
   Result:=mrOk;
 end;
 
-function TMainIDE.DoOpenEditorFile(const AFileName:string;
-  Flags: TOpenFlags):TModalResult;
+function TMainIDE.DoOpenEditorFile(AFileName:string;
+  PageIndex: integer; Flags: TOpenFlags):TModalResult;
 var
-  i: integer;
+  UnitIndex: integer;
   ReOpen, Handled:boolean;
   NewUnitInfo:TUnitInfo;
   NewBuf: TCodeBuffer;
@@ -3689,41 +3738,72 @@ begin
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   Result:=mrCancel;
-  if ExtractFilenameOnly(AFilename)='' then exit;
   
+  if (not (ofRevert in Flags))
+  and (ExtractFilenameOnly(AFilename)='') then
+    exit;
+
+  // check if this is a hidden unit:
   // if this is a virtual (new, unsaved) project, the main unit is already
   // loaded and needs only to be shown in the sourceeditor/formeditor
-  if (Project1.IsVirtual)
+  if (not (ofRevert in Flags))
+  and (Project1.IsVirtual)
   and (CompareFilenames(Project1.MainFilename,AFilename)=0)
   then begin
     Result:=DoOpenMainUnit(ofProjectLoading in Flags);
     exit;
   end;
   // check if the project knows this file
-  i:=Project1.IndexOfFilename(AFilename);
-  ReOpen:=(i>=0);
-  if ReOpen then begin
-    NewUnitInfo:=Project1.Units[i];
-    if (not (ofProjectLoading in Flags)) and NewUnitInfo.Loaded then begin
-      // file already open -> change source notebook page
-      SourceNoteBook.NoteBook.PageIndex:=NewUnitInfo.EditorIndex;
-      Result:=mrOk;
+  if (not (ofRevert in Flags)) then begin
+    UnitIndex:=Project1.IndexOfFilename(AFilename);
+    ReOpen:=(UnitIndex>=0);
+    if ReOpen then begin
+      NewUnitInfo:=Project1.Units[UnitIndex];
+      if (not (ofProjectLoading in Flags)) and NewUnitInfo.Loaded then begin
+        // file already open -> change source notebook page
+        SourceNoteBook.NoteBook.PageIndex:=NewUnitInfo.EditorIndex;
+        Result:=mrOk;
+        exit;
+      end;
+    end;
+  end else begin
+    // revert
+    NewUnitInfo:=Project1.UnitWithEditorIndex(PageIndex);
+    UnitIndex:=Project1.IndexOf(NewUnitInfo);
+    AFilename:=NewUnitInfo.Filename;
+    if NewUnitInfo.IsVirtual then begin
+      if (not (ofQuiet in Flags)) then begin
+        MessageDlg('Revert failed','File "'+AFilename+'" is virtual.',
+          mtInformation,[mbCancel],0);
+      end;
+      Result:=mrCancel;
       exit;
     end;
+    ReOpen:=true;
   end;
   
   // check if file exists
   if (not FileExists(AFilename)) then begin
     // file does not exists
-    Result:=DoOpenNotExistingFile(AFilename,Flags);
-    exit;
+    if (ofRevert in Flags) then begin
+      // revert failed, due to missing file
+      if not (ofQuiet in Flags) then begin
+        MessageDlg('Revert failed','File "'+AFilename+'" not found.',
+          mtError,[mbCancel],0);
+      end;
+      Result:=mrCancel;
+      exit;
+    end else begin
+      Result:=DoOpenNotExistingFile(AFilename,Flags);
+      exit;
+    end;
   end;
   
   // load the source
   if ReOpen then begin
     // project knows this file => all the meta data is known
     // -> just load the source
-    NewUnitInfo:=Project1.Units[i];
+    NewUnitInfo:=Project1.Units[UnitIndex];
     Result:=DoLoadCodeBuffer(NewBuf,AFileName,
                              [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert]);
     if Result<>mrOk then exit;
@@ -3746,7 +3826,7 @@ begin
   writeln('[TMainIDE.DoOpenEditorFile] B');
   {$ENDIF}
   // open file in source notebook
-  Result:=DoOpenFileInSourceNoteBook(NewUnitInfo,Flags);
+  Result:=DoOpenFileInSourceNoteBook(NewUnitInfo,PageIndex,Flags);
   if Result<>mrOk then exit;
 
   {$IFDEF IDE_DEBUG}
@@ -3758,6 +3838,9 @@ begin
     // this could be a unit -> try to load the lfm file
     Result:=DoLoadLFM(NewUnitInfo,Flags);
     if Result<>mrOk then exit;
+  end else if NewUnitInfo.Form<>nil then begin
+    // close form (Note: e.g. close form on revert)
+    CloseDesignerForm(NewUnitInfo);
   end;
 
   Result:=mrOk;
@@ -3785,7 +3868,7 @@ begin
   // open file in source notebook
   OpenFlags:=[];
   if ProjectLoading then Include(OpenFlags,ofProjectLoading);
-  Result:=DoOpenFileInSourceNoteBook(MainUnitInfo,OpenFlags);
+  Result:=DoOpenFileInSourceNoteBook(MainUnitInfo,-1,OpenFlags);
   if Result<>mrOk then exit;
 
   // build a nice pagename for the sourcenotebook
@@ -3864,7 +3947,7 @@ Begin
             if MainUnitIndex=i then
               Result:=DoOpenMainUnit(false)
             else
-              Result:=DoOpenEditorFile(AnUnitInfo.Filename,[ofOnlyIfExists]);
+              Result:=DoOpenEditorFile(AnUnitInfo.Filename,-1,[ofOnlyIfExists]);
             if Result=mrAbort then exit;
           end;
         end;
@@ -3990,7 +4073,7 @@ begin
   if FindFile(FName,SPath) then begin
     result:=mrOk;
     InputHistories.FileDialogSettings.InitialDir:=ExtractFilePath(FName);
-    if DoOpenEditorFile(FName,[])=mrOk then begin
+    if DoOpenEditorFile(FName,-1,[])=mrOk then begin
       EnvironmentOptions.AddToRecentOpenFiles(FName);
       SaveEnvironment;
     end;
@@ -4051,7 +4134,7 @@ writeln('TMainIDE.DoNewProject A');
        +';'+
         '$(LazarusDir)'+ds+'lcl'+ds+'interfaces'+ds+'$(LCLWidgetType)';
       // create a first form unit
-      DoNewEditorUnit(nuForm,'');
+      DoNewEditorFile(nuForm,'');
     end;
     
   ptProgram,ptCustomProgram:
@@ -4094,7 +4177,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
   for i:=0 to Project1.UnitCount-1 do begin
     if (Project1.Units[i].Loaded) and (Project1.Units[i].IsVirtual)
     and (Project1.MainUnit<>i) then begin
-      Result:=DoSaveEditorUnit(Project1.Units[i].EditorIndex,
+      Result:=DoSaveEditorFile(Project1.Units[i].EditorIndex,
            [sfSaveAs,sfProjectSaving]+[sfSaveToTestDir]*Flags);
       if (Result=mrAbort) or (Result=mrCancel) then exit;
     end;
@@ -4135,7 +4218,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
   if MainUnitInfo<>nil then begin
     if MainUnitInfo.Loaded then begin
       // loaded in source editor
-      Result:=DoSaveEditorUnit(MainUnitInfo.EditorIndex,
+      Result:=DoSaveEditorFile(MainUnitInfo.EditorIndex,
                                [sfProjectSaving]+[sfSaveToTestDir]*Flags);
       if Result=mrAbort then exit;
     end else begin
@@ -4164,7 +4247,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',sfSaveAs in Flags,' SaveToTestDir=',s
     for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
       if (Project1.MainUnit<0)
       or (Project1.MainUnitInfo.EditorIndex<>i) then begin
-        Result:=DoSaveEditorUnit(i,[sfProjectSaving]+[sfSaveToTestDir]*Flags);
+        Result:=DoSaveEditorFile(i,[sfProjectSaving]+[sfSaveToTestDir]*Flags);
         if Result=mrAbort then exit;
       end;
     end;
@@ -4180,7 +4263,7 @@ begin
   // close all loaded files
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
   while SourceNotebook.NoteBook<>nil do begin
-    Result:=DoCloseEditorUnit(SourceNotebook.Notebook.Pages.Count-1,false);
+    Result:=DoCloseEditorFile(SourceNotebook.Notebook.Pages.Count-1,false);
     if Result=mrAbort then exit;
   end;
   {$IFDEF IDE_MEM_CHECK}CheckHeap(IntToStr(GetMem_Cnt));{$ENDIF}
@@ -4291,7 +4374,7 @@ begin
     end;
     if LowestEditorIndex>=0 then begin
       // reopen file
-      Result:=DoOpenEditorFile(Project1.Units[LowestUnitIndex].Filename,
+      Result:=DoOpenEditorFile(Project1.Units[LowestUnitIndex].Filename,-1,
                     [ofProjectLoading,ofOnlyIfExists]);
       if Result=mrAbort then begin
         // mark all files, that are left to load as unloaded:
@@ -5076,7 +5159,7 @@ begin
   if MacroName='save' then begin
     Handled:=true;
     if SourceNoteBook.NoteBook<>nil then
-      Abort:=(DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,[])<>mrOk);
+      Abort:=(DoSaveEditorFile(SourceNoteBook.NoteBook.PageIndex,[])<>mrOk);
     s:='';
   end else if MacroName='saveall' then begin
     Handled:=true;
@@ -5187,7 +5270,7 @@ begin
       // open the file in the source editor
       Ext:=lowercase(ExtractFileExt(SearchedFilename));
       if (not FilenameIsFormText(SearchedFilename)) and (Ext<>'.lpi') then begin
-        Result:=(DoOpenEditorFile(SearchedFilename,[ofOnlyIfExists])=mrOk);
+        Result:=(DoOpenEditorFile(SearchedFilename,-1,[ofOnlyIfExists])=mrOk);
         if Result then begin
           // set caret position
           SourceNotebook.AddJumpPointClicked(Self);
@@ -5576,7 +5659,7 @@ begin
     // open all sources in editor
     for i:=0 to Manager.SourceChangeCache.BuffersToModifyCount-1 do begin
       if DoOpenEditorFile(Manager.SourceChangeCache.BuffersToModify[i].Filename,
-        [ofOnlyIfExists])<>mrOk then
+        -1,[ofOnlyIfExists])<>mrOk then
       begin
         Abort:=true;
         exit;
@@ -5650,7 +5733,7 @@ begin
   end;
   if NewSource<>ActiveUnitInfo.Source then begin
     // jump to other file -> open it
-    Result:=DoOpenEditorFile(NewSource.Filename,[ofOnlyIfExists]);
+    Result:=DoOpenEditorFile(NewSource.Filename,-1,[ofOnlyIfExists]);
     if Result<>mrOk then exit;
     GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,NewSrcEdit,
       NewUnitInfo);
@@ -5723,7 +5806,7 @@ begin
   if CodeToolBoss.ErrorCode<>nil then begin
     SourceNotebook.AddJumpPointClicked(Self);
     ErrorCaret:=Point(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine);
-    if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,[ofOnlyIfExists])=mrOk
+    if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,-1,[ofOnlyIfExists])=mrOk
     then begin
       ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
       with ActiveSrcEdit.EditorComponent do begin
@@ -6453,6 +6536,7 @@ begin
     itmFileNewUnit.ShortCut:=CommandToShortCut(ecNewUnit);
     itmFileNewForm.ShortCut:=CommandToShortCut(ecNewForm);
     itmFileOpen.ShortCut:=CommandToShortCut(ecOpen);
+    itmFileRevert.ShortCut:=CommandToShortCut(ecRevert);
     //itmFileRecentOpen.ShortCut:=CommandToShortCut(ec);
     itmFileSave.ShortCut:=CommandToShortCut(ecSave);
     itmFileSaveAs.ShortCut:=CommandToShortCut(ecSaveAs);
@@ -6568,6 +6652,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.324  2002/07/06 06:37:04  lazarus
+  MG: added Revert
+
   Revision 1.323  2002/07/05 12:54:27  lazarus
   MG: syntax highlighter is now set on open non existing file
 

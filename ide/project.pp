@@ -531,7 +531,7 @@ begin
     if Assigned(fOnUnitNameChange) then
       fOnUnitNameChange(Self,fUnitName,NewUnitName,false,Allowed);
     // (ignore Allowed)
-    if fSource<>nil then begin
+    if (fSource<>nil) then begin
       CodeToolBoss.RenameSource(fSource,NewUnitName);
     end;
     fUnitName:=NewUnitName;
@@ -1458,6 +1458,9 @@ end.
 
 {
   $Log$
+  Revision 1.66  2002/07/06 06:37:06  lazarus
+  MG: added Revert
+
   Revision 1.65  2002/05/16 13:00:57  lazarus
   MG: fixed changing syntax highlighter on save as
 

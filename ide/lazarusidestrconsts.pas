@@ -95,6 +95,7 @@ ResourceString
   lisMenuNewUnit = 'New Unit';
   lisMenuNewForm = 'New Form';
   lisMenuOpen = 'Open';
+  lisMenuRevert = 'Revert';
   lisMenuOpenRecent = 'Open Recent';
   lisMenuSave = 'Save';
   lisMenuSaveAs = 'Save As';

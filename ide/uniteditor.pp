@@ -373,7 +373,6 @@ type
        var Command: TSynEditorCommand; var AChar: char; Data: pointer;
        var Handled: boolean);
     function FindBookmark(BookmarkID: integer): TSourceEditor;
-    function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
     function GetEditors(Index:integer):TSourceEditor;
     
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
@@ -387,6 +386,7 @@ type
     property Editors[Index:integer]:TSourceEditor read GetEditors;
     function EditorCount:integer;
     function FindSourceEditorWithPageIndex(PageIndex:integer):TSourceEditor;
+    function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
     Function GetActiveSE : TSourceEditor;
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;

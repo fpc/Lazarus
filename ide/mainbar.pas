@@ -68,8 +68,10 @@ type
 
   TSaveFlag = (sfSaveAs, sfSaveToTestDir, sfProjectSaving);
   TSaveFlags = set of TSaveFlag;
-  TOpenFlag = (ofProjectLoading, ofOnlyIfExists);
+  TOpenFlag = (ofProjectLoading, ofOnlyIfExists, ofRevert, ofQuiet);
   TOpenFlags = set of TOpenFlag;
+  TRevertFlag = (rfQuiet);
+  TRevertFlags = set of TRevertFlag;
   TLoadBufferFlag = (lbfUpdateFromDisk, lbfRevert, lbfCheckIfText);
   TLoadBufferFlags = set of TLoadBufferFlag;
 
@@ -110,6 +112,7 @@ type
     itmFileNewUnit : TMenuItem;
     itmFileNewForm : TMenuItem;
     itmFileOpen: TMenuItem;
+    itmFileRevert: TMenuItem;
     itmFileRecentOpen: TMenuItem;
     itmFileSave: TMenuItem;
     itmFileSaveAs: TMenuItem;
@@ -210,7 +213,7 @@ type
     function GetTestUnitFilename(AnUnitInfo: TUnitInfo): string; virtual; abstract;
     function GetRunCommandLine: string; virtual; abstract;
 
-    function DoOpenEditorFile(const AFileName:string;
+    function DoOpenEditorFile(AFileName:string; PageIndex: integer;
         Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoInitProjectRun: TModalResult; virtual; abstract;
     

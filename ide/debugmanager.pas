@@ -230,7 +230,7 @@ begin
   UnitFile := MainIDE.FindUnitFile(ALocation.SrcFile);
   if UnitFile = ''
   then UnitFile := ALocation.SrcFile;
-  if MainIDE.DoOpenEditorFile(UnitFile, [ofOnlyIfExists]) <> mrOk then exit;
+  if MainIDE.DoOpenEditorFile(UnitFile,-1,[ofOnlyIfExists]) <> mrOk then exit;
 
   ActiveSrcEdit := SourceNoteBook.GetActiveSE;
   if ActiveSrcEdit=nil then exit;
