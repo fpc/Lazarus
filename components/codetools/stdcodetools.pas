@@ -51,6 +51,13 @@ uses
 
 type
   TStandardCodeTool = class(TFindDeclarationTool)
+  private
+    BlockKeywordFuncList: TKeyWordFunctionList;
+    procedure BuildBlockKeyWordFuncList;
+    function ReadTilGuessedUnclosedBlock(MinCleanPos: integer;
+      ReadOnlyOneBlock: boolean): boolean;
+    function ReadForwardTilAnyBracketClose: boolean;
+    function ReadBackwardTilAnyBracketClose: boolean;
   public
     // source name  e.g. 'unit UnitName;'
     function GetSourceNamePos(var NamePos: TAtomPosition): boolean;
@@ -119,11 +126,26 @@ type
     // blocks (e.g. begin..end)
     function FindBlockCounterPart(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
-    //function GuessBrokenBlock(StartPos: integer): boolean;
+    function GuessUnclosedBlock(CursorPos: TCodeXYPosition;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
   end;
 
 
 implementation
+
+type
+  TBlockKeyword = (bkwNone, bkwBegin, bkwAsm, bkwTry, bkwCase, bkwRepeat,
+                   bkwRecord, bkwClass, bkwObject, bkwInterface,
+                   bkwDispInterface, bkwEnd, bkwUntil, bkwFinally,
+                   bkwExcept);
+
+const
+  BlockKeywords: array[TBlockKeyword] of string = (
+      '(unknown)', 'BEGIN', 'ASM', 'TRY', 'CASE', 'REPEAT', 'RECORD', 'CLASS',
+      'OBJECT', 'INTERFACE', 'DISPINTERFACE', 'END', 'UNTIL', 'FINALLY',
+      'EXCEPT'
+    );
+
 
 
 { TStandardCodeTool }
@@ -956,40 +978,334 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TStandardCodeTool.FindBlockCounterPart A CursorPos=',CursorPos.X,',',CursorPos.Y);
 {$ENDIF}
-  BeginParsing(true,false);
+  if UpdateNeeded(false) then BeginParsing(true,false);
   // find the CursorPos in cleaned source
   Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
   if (Dummy<>0) and (Dummy<>-1) then
     RaiseException('cursor pos outside of code');
   // read word at cursor
   MoveCursorToCleanPos(CleanCursorPos);
-  if Src[CurPos.StartPos] in [';','.'] then dec(CurPos.StartPos);
-  CurPos.EndPos:=CurPos.StartPos;
-  while (CurPos.StartPos>2) and IsWordChar[Src[CurPos.StartPos-1]] do
-    dec(CurPos.StartPos);
-  while (CurPos.EndPos<SrcLen) and (IsWordChar[Src[CurPos.EndPos]]) do
-    inc(CurPos.EndPos);
-  if CurPos.EndPos=CurPos.StartPos then exit;
+  if Src[CurPos.StartPos] in ['(','[','{'] then begin
+    // jump forward to matching bracket
+    CurPos.EndPos:=CurPos.StartPos+1;
+    if not ReadForwardTilAnyBracketClose then exit;
+  end else if Src[CurPos.StartPos] in [')',']','}'] then begin
+    // jump backward to matching bracket
+    CurPos.EndPos:=CurPos.StartPos+1;
+    if not ReadBackwardTilAnyBracketClose then exit;
+  end else begin;
+    if Src[CurPos.StartPos] in [';','.'] then dec(CurPos.StartPos);
+    CurPos.EndPos:=CurPos.StartPos;
+    while (CurPos.StartPos>2) and IsWordChar[Src[CurPos.StartPos-1]] do
+      dec(CurPos.StartPos);
+    while (CurPos.EndPos<SrcLen) and (IsWordChar[Src[CurPos.EndPos]]) do
+      inc(CurPos.EndPos);
+    if CurPos.EndPos=CurPos.StartPos then exit;
 {$IFDEF CTDEBUG}
 writeln('TStandardCodeTool.FindBlockCounterPart C  Word=',GetAtom);
 {$ENDIF}
-  // read till block keyword counterpart
-  if UpAtomIs('BEGIN') or UpAtomIs('CASE') or UpAtomIs('ASM')
-  or UpAtomIs('RECORD') or UpAtomIs('CLASS') or UpAtomIs('OBJECT')
-  or UpAtomIs('TRY') then begin
-    // read forward till END, FINALLY, EXCEPT
-    ReadTilBlockEnd(true);
-  end else if UpAtomIs('END') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT') then
-  begin
-    // read backward till BEGIN, CASE, ASM, RECORD, CLASS, OBJECT
-    ReadBackTilBlockEnd(true);
-  end else
-    exit;
+    // read till block keyword counterpart
+    if UpAtomIs('BEGIN') or UpAtomIs('CASE') or UpAtomIs('ASM')
+    or UpAtomIs('RECORD') or UpAtomIs('TRY') or UpAtomIs('REPEAT') then begin
+      // read forward till END, FINALLY, EXCEPT
+      ReadTilBlockEnd(true);
+    end else if UpAtomIs('END') or UpAtomIs('FINALLY') or UpAtomIs('EXCEPT')
+    or UpAtomIs('UNTIL') then
+    begin
+      // read backward till BEGIN, CASE, ASM, RECORD, REPEAT
+      ReadBackTilBlockEnd(true);
+    end else
+      exit;
+  end;
   // CursorPos now contains the counter block keyword
   Result:=CleanPosToCaretAndTopLine(CurPos.StartPos,NewPos,NewTopLine);
 end;
 
+function TStandardCodeTool.GuessUnclosedBlock(CursorPos: TCodeXYPosition;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+{ search a block (e.g. begin..end) that looks unclosed, i.e. 'begin'
+  without 'end' or 'begin' with 'end' in a different column.
+  This function can be used as GuessNextUnclosedBlock, because it ignores blocks
+  in front of CursorPos.
+  
+  Examples for good blocks:
+    
+    repeat
+    until
+    
+    begin end           // start and end of block in the same line
+    
+    if expr then begin  // first char in line is relevant, not the block keyword
+    end
+
+        
+  Examples for bad blocks:
+    
+    begin               // block start and end has different indenting
+      end
+      
+    asm                 // 'end.' is source end, never asm end
+    end.
+    
+      try               // different indenting
+    finally
+    
+    repeat              // keywords do not match
+    end
+    
+}
+var Dummy, CleanCursorPos: integer;
+begin
+  Result:=false;
+  // scan code
+{$IFDEF CTDEBUG}
+writeln('TStandardCodeTool.GuessUnclosedBlock A CursorPos=',CursorPos.X,',',CursorPos.Y);
+{$ENDIF}
+  if UpdateNeeded(false) then BeginParsing(true,false);
+  // find the CursorPos in cleaned source
+  Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
+  if (Dummy<>0) and (Dummy<>-1) then
+    RaiseException('cursor pos outside of code');
+  // start reading at beginning of code
+  MoveCursorToCleanPos(1);
+  BuildBlockKeyWordFuncList;
+  if ReadTilGuessedUnclosedBlock(CleanCursorPos,false) then
+    Result:=CleanPosToCaretAndTopLine(CurPos.StartPos,NewPos,NewTopLine);
+end;
+
+function TStandardCodeTool.ReadTilGuessedUnclosedBlock(
+  MinCleanPos: integer;  ReadOnlyOneBlock: boolean): boolean;
+// returns true if unclosed block found
+var BlockType, CurBlockWord: TBlockKeyword;
+  BlockStart: integer;
+begin
+  Result:=false;
+  BlockType:=bkwNone;
+  BlockStart:=-1;
+  // read til this block is closed
+  while (CurPos.StartPos<=SrcLen) do begin
+    if BlockKeywordFuncList.DoItUppercase(UpperSrc,
+      CurPos.StartPos,CurPos.EndPos-CurPos.StartPos) then
+    begin
+      for CurBlockWord:=Low(TBlockKeyword) to High(TBlockKeyword) do
+        if UpAtomIs(BlockKeywords[CurBlockWord]) then
+          break;
+      if (CurBlockWord=bkwInterface) and (not LastAtomIs(0,'=')) then
+        CurBlockWord:=bkwNone;
+        
+      if (CurBlockWord=bkwEnd) then begin
+        ReadNextAtom;
+        if AtomIsChar('.') then begin
+          // source end found
+          if BlockType in [bkwBegin,bkwNone] then begin
+            CurPos.StartPos:=SrcLen+1;
+            exit;
+          end else begin
+            MoveCursorToCleanPos(BlockStart);
+            Result:=true;
+            exit;
+          end;
+        end else
+          UndoReadNextAtom;
+      end;
+      
+      if BlockType=bkwNone then begin
+        case CurBlockWord of
+
+        bkwBegin,bkwRepeat,bkwCase,bkwTry,bkwRecord,bkwClass,bkwObject,
+        bkwInterface,bkwDispInterface:
+          begin
+            BlockType:=CurBlockWord;
+            BlockStart:=CurPos.StartPos;
+          end;
+
+        bkwEnd,bkwUntil:
+          begin
+            // close block keywords found, but no block was opened
+            //  -> unclosed block found
+            Result:=true;
+            exit;
+          end;
+          
+        end;
+      end
+      else
+      if ((BlockType in [bkwBegin, bkwAsm, bkwCase, bkwRecord, bkwClass,
+        bkwObject, bkwFinally, bkwExcept, bkwInterface, bkwDispInterface])
+        and (CurBlockWord=bkwEnd))
+      or ((BlockType=bkwRepeat) and (CurBlockWord=bkwUntil)) then begin
+        // block end found
+        if (MinCleanPos<=CurPos.StartPos)
+        and (GetLineIndent(Src,CurPos.StartPos)<>GetLineIndent(Src,BlockStart))
+        then begin
+          // different indent -> unclosed block found
+          if GetLineIndent(Src,BlockStart)>=GetLineIndent(Src,CurPos.StartPos)
+          then begin
+            // the current block is more or equal indented than the next block
+            // -> probably the current block misses a block end
+            MoveCursorToCleanPos(BlockStart);
+          end;
+          Result:=true;
+          exit;
+        end;
+        // end block
+        BlockType:=bkwNone;
+        if ReadOnlyOneBlock then break;
+      end
+      else
+      if (BlockType=bkwTry) and (CurBlockWord in [bkwFinally,bkwExcept]) then
+      begin
+        // try..finally, try..except found
+        if (MinCleanPos<=CurPos.StartPos)
+        and (GetLineIndent(Src,CurPos.StartPos)<>GetLineIndent(Src,BlockStart))
+        then begin
+          // different indent -> unclosed block found
+          //   probably a block start is missing, so the error position is
+          //   here at block end
+          Result:=true;
+          exit;
+        end;
+        // change blocktype
+        BlockType:=CurBlockWord;
+        BlockStart:=CurPos.StartPos;
+      end
+      else
+      if ((BlockType in [bkwBegin,bkwRepeat,bkwTry,bkwFinally,bkwExcept,
+          bkwCase])
+        and (CurBlockWord in [bkwBegin,bkwRepeat,bkwTry,bkwCase]))
+      or ((BlockType in [bkwClass,bkwInterface,bkwDispInterface,bkwObject,
+          bkwRecord])
+        and (CurBlockWord in [bkwRecord])) then
+      begin
+        // sub blockstart found -> read recursively
+        Result:=ReadTilGuessedUnclosedBlock(MinCleanPos,true);
+        if Result then exit;
+      end
+      else
+      if (BlockType=bkwRecord) and (CurBlockWord=bkwCase) then begin
+        // variant record
+      end
+      else
+      begin
+        // unexpected keyword found
+        if GetLineIndent(Src,BlockStart)>=GetLineIndent(Src,CurPos.StartPos)
+        then begin
+          // the current block is more or equal indented than the next block
+          // -> probably the current block misses a block end
+          MoveCursorToCleanPos(BlockStart);
+        end;
+        Result:=true;
+        exit;
+      end;
+    end;
+    ReadNextAtom;
+  end;
+end;
+
+procedure TStandardCodeTool.BuildBlockKeyWordFuncList;
+var BlockWord: TBlockKeyword;
+begin
+  if BlockKeywordFuncList=nil then begin
+    BlockKeywordFuncList:=TKeyWordFunctionList.Create;
+    for BlockWord:=Low(TBlockKeyword) to High(TBlockKeyword) do
+      with BlockKeywordFuncList do
+        Add(BlockKeywords[BlockWord],{$ifdef FPC}@{$endif}AllwaysTrue);
+    AddKeyWordFuncList(BlockKeywordFuncList);
+  end;
+end;
+
+function TStandardCodeTool.ReadForwardTilAnyBracketClose: boolean;
+// this function reads any bracket
+// (the ReadTilBracketClose function reads only brackets in code, not comments)
+var OpenBracket: char;
+  CommentLvl: integer;
+begin
+  Result:=false;
+  OpenBracket:=Src[CurPos.StartPos];
+  if OpenBracket='{' then begin
+    // read til end of comment
+    CommentLvl:=1;
+    inc(CurPos.StartPos);
+    while (CurPos.StartPos<=SrcLen) and (CommentLvl>0) do begin
+      case Src[CurPos.StartPos] of
+      '{': if Scanner.NestedComments then inc(CommentLvl);
+      '}':
+        if CommentLvl=1 then begin
+          Result:=true;
+          break;
+        end else
+          dec(CommentLvl);
+      end;
+      inc(CurPos.StartPos);
+    end;
+  end else if OpenBracket='(' then begin
+    if (CurPos.StartPos<SrcLen) and (Src[CurPos.StartPos+1]='*') then begin
+      // read til end of comment
+      inc(CurPos.StartPos,3);
+      while true do begin
+        if (CurPos.StartPos<=SrcLen)
+        and ((Src[CurPos.StartPos-1]='*') and (Src[CurPos.StartPos]=')')) then
+        begin
+          Result:=true;
+          exit;
+        end;
+        inc(CurPos.StartPos);
+      end;
+    end else begin
+      Result:=ReadTilBracketClose(false);
+    end;
+  end else if OpenBracket='[' then begin
+    Result:=ReadTilBracketClose(false);
+  end;
+end;
+
+function TStandardCodeTool.ReadBackwardTilAnyBracketClose: boolean;
+// this function reads any bracket
+// (the ReadBackTilBracketClose function reads only brackets in code,
+//  not comments)
+var OpenBracket: char;
+  CommentLvl: integer;
+begin
+  Result:=false;
+  OpenBracket:=Src[CurPos.StartPos];
+  if OpenBracket='}' then begin
+    // read backwards til end of comment
+    CommentLvl:=1;
+    dec(CurPos.StartPos);
+    while (CurPos.StartPos>=1) and (CommentLvl>0) do begin
+      case Src[CurPos.StartPos] of
+      '}': if Scanner.NestedComments then inc(CommentLvl);
+      '{':
+        if CommentLvl=1 then begin
+          Result:=true;
+          break;
+        end else
+          dec(CommentLvl);
+      end;
+      dec(CurPos.StartPos);
+    end;
+  end else if OpenBracket=')' then begin
+    if (CurPos.StartPos>1) and (Src[CurPos.StartPos-1]='*') then begin
+      // read til end of comment
+      dec(CurPos.StartPos,3);
+      while true do begin
+        if (CurPos.StartPos>=1)
+        and ((Src[CurPos.StartPos+11]='*') and (Src[CurPos.StartPos]='(')) then
+        begin
+          Result:=true;
+          exit;
+        end;
+        dec(CurPos.StartPos);
+      end;
+    end else begin
+      Result:=ReadBackTilBracketClose(false);
+    end;
+  end else if OpenBracket=']' then begin
+    Result:=ReadBackTilBracketClose(false);
+  end;
+end;
 
 
 end.
+
 

@@ -31,7 +31,9 @@
     
 
   ToDo:
-  
+    - ReadBackTilBlockEnd: case could also be in a record, then it should not
+        close the block
+
 }
 unit PascalParserTool;
 
@@ -198,13 +200,16 @@ type
   end;
   
 
+
+
 implementation
 
 
 type
-  TEndBlockType = (ebtBegin, ebtAsm, ebtTry, ebtCase, ebtRepeat, ebtRecord);
+  TEndBlockType = (ebtBegin, ebtAsm, ebtTry, ebtCase, ebtRepeat, ebtRecord,
+                   ebtClass, ebtObject);
   TTryType = (ttNone, ttFinally, ttExcept);
-
+  
 
 { TMultiKeyWordListCodeTool }
 
@@ -1519,7 +1524,8 @@ begin
     begin
       if BlockType=ebtAsm then
         RaiseException('syntax error: unexpected keyword "'+GetAtom+'" found');
-      ReadTilBlockEnd(false);
+      if (BlockType<>ebtRecord) or (not UpAtomIs('CASE')) then
+        ReadTilBlockEnd(false);
     end else if UpAtomIs('UNTIL') then begin
       if BlockType=ebtRepeat then
         break;
@@ -1586,6 +1592,7 @@ begin
     end else if UpAtomIs('BEGIN') or UpAtomIs('CASE') or UpAtomIs('ASM')
       or UpAtomIs('RECORD') then
     begin
+      // Todo: case could also be in a record, then it should not close the block
       if BlockType=ebtBegin then
         break
       else

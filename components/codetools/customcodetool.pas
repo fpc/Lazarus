@@ -95,6 +95,7 @@ type
     procedure MoveCursorToCleanPos(ACleanPos: integer); virtual;
     function ReadTilSection(SectionType: TCodeTreeNodeDesc): boolean;
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
+    function ReadBackTilBracketClose(ExceptionOnNotFound: boolean): boolean;
     function DoAtom: boolean; virtual;
     procedure ReadNextAtom; virtual;
     procedure UndoReadNextAtom; virtual;
@@ -916,6 +917,7 @@ end;
 
 function TCustomCodeTool.ReadTilBracketClose(
   ExceptionOnNotFound: boolean): boolean;
+// reads code brackets (not comment brackets)
 var CloseBracket, AntiCloseBracket: char;
   Start: TAtomPosition;
 begin
@@ -946,6 +948,44 @@ begin
     end;
     if (AtomIsChar('(')) or (AtomIsChar('[')) then begin
       if not ReadTilBracketClose(ExceptionOnNotFound) then exit;
+    end;
+  until false;
+  Result:=true;
+end;
+
+function TCustomCodeTool.ReadBackTilBracketClose(
+  ExceptionOnNotFound: boolean): boolean;
+// reads code brackets (not comment brackets)
+var CloseBracket, AntiCloseBracket: char;
+  Start: TAtomPosition;
+begin
+  Result:=false;
+  if AtomIsChar(')') then begin
+    CloseBracket:='(';
+    AntiCloseBracket:='[';
+  end else if AtomIsChar(']') then begin
+    CloseBracket:='[';
+    AntiCloseBracket:='(';
+  end else begin
+    if ExceptionOnNotFound then
+      RaiseException(
+        'syntax error: bracket close expected, but '+GetAtom+' found');
+    exit;
+  end;
+  Start:=CurPos;
+  repeat
+    ReadPriorAtom;
+    if (AtomIsChar(CloseBracket)) then break;
+    if (CurPos.StartPos<1) or AtomIsChar(AntiCloseBracket)
+    or UpAtomIs('END') or UpAtomIs('BEGIN') then begin
+      CurPos:=Start;
+      if ExceptionOnNotFound then
+        RaiseException(
+          'syntax error: bracket '+CloseBracket+' not found');
+      exit;
+    end;
+    if (AtomIsChar(')')) or (AtomIsChar(']')) then begin
+      if not ReadBackTilBracketClose(ExceptionOnNotFound) then exit;
     end;
   until false;
   Result:=true;

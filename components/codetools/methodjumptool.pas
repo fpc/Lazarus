@@ -181,8 +181,10 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint B');
   if CleanCursorPos>=LastAtomEnd then CleanCursorPos:=LastAtomEnd-1;
   // find CodeTreeNode at cursor
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos);
-  if CursorNode=nil then
+  if CursorNode=nil then begin
+    WriteDebugTreeReport;
     RaiseException('no node found at cursor');
+  end;
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint C ',NodeDescriptionAsString(CursorNode.Desc));
 {$ENDIF}
@@ -213,15 +215,6 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint D ',CleanCursorPos,', |',copy(Src,
     or (not (CursorNode.Desc in [ctnProcedureHead,ctnProcedure])) then
       exit;
     // build the method name + parameter list (without default values)
-    //SearchedProc:=ExtractProcHead(CursorNode,
-    //                             [phpWithParameterNames,phpAddClassname]);
-{$IFDEF CTDEBUG}
-//writeln('TMethodJumpingCodeTool.FindJumpPoint E SearchedProc="',SearchedProc,'"');
-{$ENDIF}
-    //if SearchedProc='' then exit;
-    // search the method
-    //ProcNode:=FindProcNode(TypeSectionNode,SearchedProc,
-    //             [phpWithParameterNames,phpIgnoreForwards]);
     Result:=FindBestProcNode(CursorNode,[phpAddClassName,phpInUpperCase],
                              TypeSectionNode,[phpIgnoreForwards,phpInUpperCase]);
 {$IFDEF CTDEBUG}
@@ -309,17 +302,8 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint 2B ');
 {$ENDIF}
 
       // build the method name + parameter list (without default values)
-      //SearchedProc:=ExtractProcHead(ProcNode,[phpInUpperCase]);
-{$IFDEF CTDEBUG}
-//writeln('TMethodJumpingCodeTool.FindJumpPoint 2C SearchedProc="',SearchedProc,'"');
-{$ENDIF}
-      //if SearchedProc='' then exit;
-      // search the method
-      //ProcNode:=FindProcNode(ProcNode,SearchedProc,
-      //             [phpInUpperCase,phpIgnoreForwards]);
       Result:=FindBestProcNode(ProcNode,[phpInUpperCase],
                                ProcNode,[phpInUpperCase,phpIgnoreForwards]);
-      //if ProcNode=nil then exit;
       // find good position in procedure body
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint 2D');
@@ -365,18 +349,6 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint 4D ',StartNode<>nil);
 {$IFDEF CTDEBUG}
 writeln('TMethodJumpingCodeTool.FindJumpPoint 4E ',Result);
 {$ENDIF}
-        //if ProcNode=nil then begin
-          // there is no exact corresponding proc
-          // -> search for a proc with the same name but different param list
-         // SearchedProc:=ExtractProcHead(ProcNode,
-         //              [phpWithoutClassName,phpInUpperCase,phpWithoutBrackets,
-         //               phpWithoutParamList]);
-         // ProcNode:=FindProcNode(StartNode,SearchedProc,[phpInUpperCase,
-         //               phpWithoutBrackets,phpWithoutParamList]);
-{$IFDEF CTDEBUG}
-//writeln('TMethodJumpingCodeTool.FindJumpPoint 4E2 ',ProcNode<>nil,' ',SearchedProc);
-{$ENDIF}
-        //end;
         if not Result then begin
           // search first undefined proc node with body
           SearchForNodes:=GatherProcNodes(StartNode,
@@ -427,18 +399,8 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint 4G ',DiffNode<>nil);
         end;
       end else begin
         // search forward procedure
-        //SearchedProc:=ExtractProcHead(ProcNode,[phpWithParameterNames]);
-        //ProcNode:=FindProcNode(StartNode,SearchedProc,
-        //             [phpWithParameterNames,phpIgnoreProcsWithBody]);
-        //if ProcNode=nil then exit;
         Result:=FindBestProcNode(ProcNode,[phpInUpperCase],
                              StartNode,[phpInUpperCase,phpIgnoreProcsWithBody]);
-        // find good position in forward procedure
-{$IFDEF CTDEBUG}
-//writeln('TMethodJumpingCodeTool.FindJumpPoint 4B');
-{$ENDIF}
-        //ProcNode:=ProcNode.FirstChild;
-        //Result:=JumpToNode(ProcNode,NewPos,NewTopLine);
       end;
     end;
   end;

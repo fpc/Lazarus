@@ -147,6 +147,7 @@ type
     
     itmToolConfigure: TMenuItem;
     itmToolSyntaxCheck: TMenuItem;
+    itmToolGuessUnclosedBlockCheck: TMenuItem;
 
     itmEnvGeneralOptions: TMenuItem; 
     itmEnvEditorOptions: TMenuItem; 
@@ -216,6 +217,7 @@ type
     // tools menu
     procedure mnuToolConfigureClicked(Sender : TObject);
     procedure mnuToolSyntaxCheckClicked(Sender : TObject);
+    procedure mnuToolGuessUnclosedBlockClicked(Sender : TObject);
 
     // enironment menu
     procedure mnuEnvGeneralOptionsClicked(Sender : TObject);
@@ -385,6 +387,7 @@ type
     procedure DoJumpToCodeToolBossError;
     function DoCheckSyntax: TModalResult;
     procedure DoGoToPascalBlockEnd;
+    procedure DoJumpToGuessedUnclosedBlock(FindNext: boolean);
     
     // methods for debugging, compiling and external tools
     function DoJumpToCompilerMessage(Index:integer;
@@ -1403,6 +1406,12 @@ begin
   itmToolSyntaxCheck.OnClick := @mnuToolSyntaxCheckClicked;
   mnuTools.Add(itmToolSyntaxCheck);
 
+  itmToolGuessUnclosedBlockCheck := TMenuItem.Create(Self);
+  itmToolGuessUnclosedBlockCheck.Name:='itmToolGuessUnclosedBlockCheck';
+  itmToolGuessUnclosedBlockCheck.Caption := 'Guess unclosed block';
+  itmToolGuessUnclosedBlockCheck.OnClick := @mnuToolGuessUnclosedBlockClicked;
+  mnuTools.Add(itmToolGuessUnclosedBlockCheck);
+
 
 //--------------
 // Environment
@@ -1775,6 +1784,9 @@ begin
     
    ecSyntaxCheck:
      DoCheckSyntax;
+     
+   ecGuessUnclosedBlock:
+     DoJumpToGuessedUnclosedBlock(true);
     
   else
     Handled:=false;
@@ -2103,6 +2115,11 @@ end;
 procedure TMainIDE.mnuToolSyntaxCheckClicked(Sender : TObject);
 begin
   DoCheckSyntax;
+end;
+
+procedure TMainIDE.mnuToolGuessUnclosedBlockClicked(Sender : TObject);
+begin
+  DoJumpToGuessedUnclosedBlock(true);
 end;
 
 //------------------------------------------------------------------------------
@@ -5176,6 +5193,33 @@ writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
     DoJumpToCodeToolBossError;
 end;
 
+procedure TMainIDE.DoJumpToGuessedUnclosedBlock(FindNext: boolean);
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  StartX, StartY, NewX, NewY, NewTopLine: integer;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo) then exit;
+{$IFDEF IDE_DEBUG}
+writeln('');
+writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
+{$ENDIF}
+  if FindNext then begin
+    StartX:=ActiveSrcEdit.EditorComponent.CaretX;
+    StartY:=ActiveSrcEdit.EditorComponent.CaretY;
+  end else begin
+    StartX:=1;
+    StartY:=1;
+  end;
+  if CodeToolBoss.GuessUnclosedBlock(ActiveUnitInfo.Source,
+    StartX,StartY,NewSource,NewX,NewY,NewTopLine) then
+  begin
+    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo, 
+      NewSource, NewX, NewY, NewTopLine);
+  end else 
+    DoJumpToCodeToolBossError;
+end;
+
 procedure TMainIDE.DoCompleteCodeAtCursor;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -5534,8 +5578,8 @@ end.
 =======
 
   $Log$
-  Revision 1.198  2002/01/11 15:57:49  lazarus
-  MG: added  find block end
+  Revision 1.199  2002/01/11 20:41:52  lazarus
+  MG: added  guess unclosed block
 
   Revision 1.197  2002/01/02 13:32:52  lazarus
   MG: fixed clean abort of project loading
@@ -5565,8 +5609,8 @@ end.
 
 <<<<<<< main.pp
   $Log$
-  Revision 1.198  2002/01/11 15:57:49  lazarus
-  MG: added  find block end
+  Revision 1.199  2002/01/11 20:41:52  lazarus
+  MG: added  guess unclosed block
 
   Revision 1.197  2002/01/02 13:32:52  lazarus
   MG: fixed clean abort of project loading

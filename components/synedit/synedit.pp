@@ -843,7 +843,6 @@ var
 begin
   if (not SelAvail) 
   or (PrimarySelection.OnRequest=@PrimarySelectionRequest) then exit;
-writeln('>>> TCustomSynEdit.AquirePrimarySelection <<<');
   FormatList:=CF_TEXT;
   try
     PrimarySelection.SetSupportedFormats(1,@FormatList);
