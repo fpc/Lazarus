@@ -1078,7 +1078,7 @@ type
   end;
 
 
-  { TLabel }
+  { TCustomLabel }
 
   TCustomLabel = class(TGraphicControl)
   Private
@@ -1137,8 +1137,6 @@ type
     property PopupMenu;
     property ShowAccelChar;
     property ShowHint;
-    property TabOrder;
-    property TabStop;
     property Visible;
     property WordWrap;
     property OnClick;
@@ -1218,6 +1216,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.180  2005/01/07 21:53:48  micha
+  label can not bew focused anymore, hide tabstop/taborder
+
   Revision 1.179  2005/01/07 21:36:37  micha
   publish Layout property (compatibility with situation before swap with tstatictext)
 
