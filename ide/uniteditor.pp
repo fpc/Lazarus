@@ -218,6 +218,10 @@ type
     procedure TabsToSpacesInSelection;
     procedure CommentSelection;
     procedure UncommentSelection;
+    procedure SelectToBrace;
+    procedure SelectCodeBlock;
+    procedure SelectLine;
+    procedure SelectParagraph;
 
 
     // editor commands
@@ -893,6 +897,18 @@ Begin
 
   ecSelectionUnComment:
     UncommentSelection;
+    
+  ecSelectToBrace:
+    SelectToBrace;
+
+  ecSelectCodeBlock:
+    SelectCodeBlock;
+
+  ecSelectLine:
+    SelectLine;
+
+  ecSelectParagraph:
+    SelectParagraph;
 
   else
     begin
@@ -1077,6 +1093,27 @@ begin
   FEditor.BlockEnd:=OldBlockEnd;
   FEditor.EndUndoBlock;
   FEditor.EndUpdate;
+end;
+
+procedure TSourceEditor.SelectToBrace;
+begin
+  EditorComponent.SelectToBrace;
+end;
+
+procedure TSourceEditor.SelectCodeBlock;
+begin
+  // ToDo:
+  
+end;
+
+procedure TSourceEditor.SelectLine;
+begin
+  EditorComponent.SelectLine;
+end;
+
+procedure TSourceEditor.SelectParagraph;
+begin
+  EditorComponent.SelectParagraph;
 end;
 
 procedure TSourceEditor.RemoveBreakPoint(const ABreakPointMark: TSynEditMark);
