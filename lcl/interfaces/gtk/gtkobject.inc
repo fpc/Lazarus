@@ -3260,19 +3260,6 @@ begin
       LM_LAYOUTCHANGED:
         DebugLn('[WARNING] Obsolete messagecall to LM_LAYOUTCHANGED for ', Sender.ClassName); 
 
-  //SH: think of TBitmap.handle!!!!
-     LM_LOADXPM:
-         Begin
-           if (sender is TBitmap) then
-             If LowerCase(ExtractFileExt(String(PChar(Data)))) = '.xpm' then
-             Begin
-               LoadFromXPMFile(TBitmap(Sender),PChar(data));
-             end
-             else
-               LoadFromPixbufFile(TBitmap(Sender),PChar(data));
-         end;
-
-
       LM_POPUPSHOW :
         Begin
           ReleaseMouseCapture;
@@ -9213,6 +9200,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.508  2004/06/19 00:06:47  mattias
+  fixed compilation
+
   Revision 1.507  2004/05/31 08:21:52  mattias
   fsStayOnTop is now ignored in design mode
 
