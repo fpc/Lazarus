@@ -3874,20 +3874,24 @@ begin
   csRadioButton :
     with TRadioButton(Sender) do
     begin
-       if group = 0 then
-       begin
-          P := gtk_radio_button_new_with_label(PGsList(group),StrTemp);
-          group := THandle (gtk_radio_button_group (GTk_Radio_Button(P)));
-       end
-       else
-       begin
-          P := gtk_radio_button_new_with_label(
-                               gtk_radio_button_group (GTk_Radio_Button(group)),
-                               StrTemp);
-       end;
-    end;
+      { Look for our parent's control and use the first radio we find for grouping }
+      TempWidget:= nil;
+      if Parent <> nil then begin
+        for TempInt:= 0 to Parent.ControlCount - 1 do begin
+          if (Parent.Controls[TempInt] is TRadioButton) 
+          and TWinControl(Parent.Controls[TempInt]).HandleAllocated then begin
+            TempWidget:= PGtkWidget(TWinControl(Parent.Controls[TempInt]).Handle);
+            Break;
+          end;  
+        end;
+      end;
+      if TempWidget <> nil then
+        P:= gtk_radio_button_new_with_label(PGtkRadioButton(TempWidget)^.group, StrTemp)
+      else  
+        P:= gtk_radio_button_new_with_label(nil, StrTemp);
+    end;  
 
-    csScrollBar :
+  csScrollBar :
     begin
       if (TScrollBar(sender).kind = sbHorizontal) then
       begin
@@ -3907,39 +3911,39 @@ begin
       end;
     end;
 
-    csScrolledWindow :
+  csScrolledWindow :
     begin
        P := gtk_scrolled_window_new(nil,nil);
     end;
 
-    csSpeedButton:
+  csSpeedButton:
     Begin
      p := gtk_button_new_with_label(StrTemp);
     end;
 
-    csSpinEdit :
+  csSpinEdit :
     begin
       p := gtk_spin_button_new(PgtkAdjustment(
                                         gtk_adjustment_new(1,1,100,1,1,1)),1,0);
     end;
 
-    csSTATUSBAR :
+  csStatusBar :
     begin
        P := gtk_statusbar_new();
     end;
 
-    csToggleBox :
+  csToggleBox :
     begin
        P := gtk_toggle_button_new_with_label(StrTemp);
     end;
 
-    csToolbar:
+  csToolbar:
     begin
        p := gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,GTK_TOOLBAR_BOTH);
        gtk_widget_show (P);
     end;
 
-    csToolButton:
+  csToolButton:
     begin
       Accel := Ampersands2Underscore(StrTemp);
       //p := gtk_button_new_with_label(StrTemp);
@@ -3954,7 +3958,7 @@ begin
       gtk_widget_show (P);
     end;
 
-    csTrackBar:
+  csTrackBar:
     with (TTrackBar (Sender)) do
     begin
        TempWidget := PGtkWidget( gtk_adjustment_new (Position, Min, Max, linesize, pagesize, 0));
@@ -3965,7 +3969,7 @@ begin
        gtk_scale_set_digits (PGTKSCALE (P), 0);
     end;
 
-    csScrollBox :
+  csScrollBox :
     begin
       Assert(Sender is TScrollBox);
       P := gtk_scrolled_window_new(nil,nil);
@@ -5665,6 +5669,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.207  2002/09/08 19:09:55  lazarus
+  Fixed and simplified TRadioButton
+
   Revision 1.206  2002/09/08 10:02:00  lazarus
   MG: fixed streaming visible=false
 
