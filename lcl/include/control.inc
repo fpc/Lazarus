@@ -1160,7 +1160,7 @@ end;
 {  TControl InvalidateControl                                                            }
 {------------------------------------------------------------------------------}
 procedure TControl.InvalidateControl(IsVisible, IsOpaque : Boolean);
-{var
+var
   Rect: TRect;
 
   function BackgroundClipped: Boolean;
@@ -1176,7 +1176,7 @@ procedure TControl.InvalidateControl(IsVisible, IsOpaque : Boolean);
     while I > 0 do
     begin
       Dec(I);
-      C := List[I];
+      C := TControl(List[I]);
       with C do
         if C.Visible and (csOpaque in ControlStyle) then
         begin
@@ -1185,16 +1185,21 @@ procedure TControl.InvalidateControl(IsVisible, IsOpaque : Boolean);
         end;
     end;
     Result := False;
-  end;}
+  end;
 
 begin
-  if (IsVisible or (csDesigning in ComponentState) and
-    not (csNoDesignVisible in ControlStyle)) and (Parent <> nil) and
-    Parent.HandleAllocated then
+  if (IsVisible or (csDesigning in ComponentState)
+  and not (csNoDesignVisible in ControlStyle)) and (Parent <> nil)
+  and Parent.HandleAllocated then
   begin
-    //Rect := BoundsRect;
-    //InvalidateRect(Parent.Handle, @Rect, not (IsOpaque or
-    //  (csOpaque in Parent.ControlStyle) or BackgroundClipped));
+    Rect := BoundsRect;
+    // ToDo: don't invalidate non TWinControls. Because some of them do not
+    //       invalidate, but wants to paint
+    //       This is a hack, till all TControls are fixed
+    if Self is TWinControl then begin
+      InvalidateRect(Parent.Handle, @Rect, not (IsOpaque or
+        (csOpaque in Parent.ControlStyle) or BackgroundClipped));
+    end;
     CNSendMessage(LM_REDRAW,Self,Nil);
   end;
 end;
@@ -1798,6 +1803,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.78  2002/09/05 13:46:19  lazarus
+  MG: activated InvalidateControl for TWinControls
+
   Revision 1.77  2002/09/05 12:11:43  lazarus
   MG: TNotebook is now streamable
 
