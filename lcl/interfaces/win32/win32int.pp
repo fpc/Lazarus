@@ -266,7 +266,7 @@ Initialization
 {$endif}
   EraseBkgndStack := 0;
 
-{$ifdef USE_SYNCHRONIZE}
+{$ifndef VER1_0}
   { TThread.Synchronize support }
   SynchronizeMethodProc := @PrepareSynchronize;
 {$endif}
@@ -280,6 +280,10 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.131  2005/01/15 10:09:23  micha
+  fix bug 558: title bar redraw (win32)
+  USE_SYNCHRONIZE enabled per default for 1.9.x
+
   Revision 1.130  2005/01/14 12:16:39  vincents
   added elements to LclCursorToWin32CursorMap for new crXXX constants
 

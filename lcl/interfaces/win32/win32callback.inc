@@ -480,9 +480,20 @@ Begin
     End;
     WM_ACTIVATEAPP:
     Begin
-      if WParam <> 0 then
-        if Window = TWin32WidgetSet(InterfaceObject).AppHandle then
-          Windows.SetWindowPos(TWin32WidgetSet(InterfaceObject).AppHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+      if Window = TWin32WidgetSet(InterfaceObject).AppHandle then
+      begin
+        if WParam <> 0 then
+        begin
+          Windows.SetWindowPos(TWin32WidgetSet(InterfaceObject).AppHandle, HWND_TOP, 
+            0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+        end;
+        // activate/deactivate main window
+        if (Application <> nil) and (Application.MainForm <> nil) and
+            Application.MainForm.HandleAllocated then
+        begin
+          CallDefaultWindowProc(Application.MainForm.Handle, WM_NCACTIVATE, WParam, 0);
+        end;
+      end;
     End;
     BM_SETCHECK:
     Begin
@@ -1359,12 +1370,12 @@ begin
     WM_KEYFIRST..WM_KEYLAST, WM_MOUSEFIRST..WM_MOUSELAST:
     begin
       // parent of overlay is the form
-      Windows.PostMessage(Windows.GetParent(Window), Msg, WParam, LParam);
+      Result := Windows.SendMessage(Windows.GetParent(Window), Msg, WParam, LParam);
     end;
     WM_NCDESTROY:
     begin
       // free our own data associated with window
-      DisposeWindowInfo(Window)
+      DisposeWindowInfo(Window);
     end;
   else
     Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
@@ -1516,6 +1527,10 @@ end;
 
 {
   $Log$
+  Revision 1.184  2005/01/15 10:09:23  micha
+  fix bug 558: title bar redraw (win32)
+  USE_SYNCHRONIZE enabled per default for 1.9.x
+
   Revision 1.183  2005/01/10 20:30:10  vincents
   fixed fpc 1.0.x compilation
 

@@ -306,7 +306,7 @@ Begin
       TranslateMessage(@AMessage);
       DispatchMessage(@AMessage);
     End;
-{$ifdef USE_SYNCHRONIZE}
+{$ifndef VER1_0}
     // check for pending to-be synchronized methods
     CheckSynchronize;
 {$endif}
@@ -717,6 +717,10 @@ end;
 
 {
   $Log$
+  Revision 1.305  2005/01/15 10:09:23  micha
+  fix bug 558: title bar redraw (win32)
+  USE_SYNCHRONIZE enabled per default for 1.9.x
+
   Revision 1.304  2005/01/03 16:29:48  micha
   take windowstate into account when showing window
 

@@ -32,7 +32,7 @@ interface
 uses
   SysUtils, Classes, FPCAdds,
   {$IFDEF UNIX}
-{$ifdef USE_SYNCHRONIZE}
+{$ifndef VER1_0}
   baseunix, unix,
 {$endif}
   {$IFDEF GTK1}
@@ -921,7 +921,7 @@ end;
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
 
-{$ifdef USE_SYNCHRONIZE}
+{$ifndef VER1_0}
 
 var
   threadsync_pipein, threadsync_pipeout: cint;
@@ -971,7 +971,7 @@ begin
   for lgs:=Low(TLazGtkStyle) to High(TLazGtkStyle) do
     StandardStyles[lgs]:=nil;
 
-{$ifdef USE_SYNCHRONIZE}
+{$ifndef VER1_0}
   { TThread.Synchronize ``glue'' }
   SynchronizeMethodProc := @PrepareSynchronize;
   assignpipe(threadsync_pipein, threadsync_pipeout);
@@ -993,7 +993,7 @@ begin
 
   DoneKeyboardTables;
 
-{$ifdef USE_SYNCHRONIZE}
+{$ifndef VER1_0}
   SynchronizeMethodProc := nil;
 {$endif}
 end;
