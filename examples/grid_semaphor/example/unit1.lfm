@@ -1,0 +1,288 @@
+object Form1: TForm1
+  ActiveControl = Button1
+  Caption = 'Try SemaphorGrid'
+  ClientHeight = 299
+  ClientWidth = 536
+  OnCreate = Form1Create
+  PixelsPerInch = 96
+  HorzScrollBar.Page = 537
+  VertScrollBar.Page = 300
+  Left = 18
+  Height = 299
+  Top = 141
+  Width = 536
+  object Button1: TButton
+    Caption = 'Toggle Semaphor'
+    OnClick = Button1Click
+    TabOrder = 0
+    Left = 8
+    Height = 25
+    Top = 232
+    Width = 112
+  end
+  object Button2: TButton
+    Caption = 'Next Semafore Style'
+    OnClick = Button2Click
+    TabOrder = 1
+    Left = 128
+    Height = 25
+    Top = 232
+    Width = 126
+  end
+  object Button3: TButton
+    Caption = 'Next Alignment'
+    OnClick = Button3Click
+    TabOrder = 2
+    Left = 8
+    Height = 25
+    Top = 264
+    Width = 114
+  end
+  object Button4: TButton
+    Caption = 'Close'
+    OnClick = Button4Click
+    TabOrder = 3
+    Left = 331
+    Height = 25
+    Top = 264
+    Width = 75
+  end
+  object Button5: TButton
+    Caption = 'Save to File'
+    OnClick = Button5Click
+    TabOrder = 4
+    Left = 128
+    Height = 25
+    Top = 264
+    Width = 88
+  end
+  object Button6: TButton
+    Caption = 'Load from File'
+    OnClick = Button6Click
+    TabOrder = 5
+    Left = 227
+    Height = 25
+    Top = 264
+    Width = 96
+  end
+  object Button7: TButton
+    Caption = 'AutoWidth'
+    OnClick = Button7Click
+    TabOrder = 6
+    Left = 264
+    Height = 17
+    Top = 232
+    Width = 67
+  end
+  object Button8: TButton
+    Caption = 'AutoHeight'
+    OnClick = Button8Click
+    TabOrder = 7
+    Left = 334
+    Height = 17
+    Top = 232
+    Width = 72
+  end
+  object Button9: TButton
+    Caption = 'Sort Cols[4]'
+    OnClick = Button9Click
+    TabOrder = 8
+    Left = 176
+    Height = 20
+    Top = 167
+    Width = 75
+  end
+  object RadioButton1: TRadioButton
+    Caption = 'Ascending'
+    Checked = True
+    State = cbChecked
+    TabOrder = 9
+    Left = 259
+    Height = 23
+    Top = 164
+    Width = 92
+  end
+  object RadioButton2: TRadioButton
+    Caption = 'Descending'
+    TabOrder = 10
+    Left = 259
+    Height = 23
+    Top = 185
+    Width = 102
+  end
+  object Button10: TButton
+    Caption = 'Hide/Show Cols[1]'
+    OnClick = Button10Click
+    TabOrder = 11
+    Left = 8
+    Height = 25
+    Top = 164
+    Width = 142
+  end
+  object Button11: TButton
+    Caption = 'Clear'
+    OnClick = Button11Click
+    TabOrder = 12
+    Left = 8
+    Height = 25
+    Top = 196
+    Width = 44
+  end
+  object CheckBox1: TCheckBox
+    Caption = 'OnlyValue'
+    TabOrder = 13
+    Left = 60
+    Height = 23
+    Top = 196
+    Width = 90
+  end
+  object Panel1: TPanel
+    Caption = 'Panel1'
+    ClientHeight = 154
+    ClientWidth = 464
+    FullRepaint = False
+    TabOrder = 14
+    Left = 8
+    Height = 154
+    Top = 8
+    Width = 464
+    object SemaphorGrid1: TSemaphorGrid
+      Alignment = taCenter
+      CHSEP = 'ÿ'
+      Semaphor = True
+      StringRed = 'no'
+      StringYellow = 'maybe'
+      StringGreen = 'yes'
+      SemaphorShape = ssDisk
+      Color = clWhite
+      ColCount = 5
+      DefaultColWidth = 64
+      DefaultRowHeight = 24
+      FixedColor = clBtnFace
+      GridLineWidth = 0
+      Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goSmoothScroll]
+      RowCount = 5
+      ScrollBars = ssAutoBoth
+      TabOrder = 0
+      TabStop = True
+      VisibleColCount = 4
+      VisibleRowCount = 4
+      Height = 148
+      Width = 456
+      Cells = (
+        24
+        0
+        0
+        'a\n'
+        0
+        1
+        'a'
+        0
+        2
+        'b'
+        0
+        3
+        'c'
+        0
+        4
+        'd'
+        1
+        0
+        '1'
+        1
+        1
+        'no'
+        1
+        2
+        'alpha'
+        1
+        3
+        'zed'
+        1
+        4
+        'maybe'
+        2
+        0
+        '2'
+        2
+        1
+        'yes'
+        2
+        2
+        'Salvatore'
+        2
+        3
+        '0.9877'
+        2
+        4
+        'yes'
+        3
+        0
+        '3'
+        3
+        2
+        'no'
+        3
+        3
+        'Coppola'
+        3
+        4
+        'maybe'
+        4
+        0
+        '4'
+        4
+        1
+        '5'
+        4
+        2
+        '12'
+        4
+        3
+        '-1'
+        4
+        4
+        '2'
+      )
+    end
+  end
+  object Button12: TButton
+    Caption = 'Sort Cols[1]'
+    OnClick = Button12Click
+    TabOrder = 15
+    Left = 176
+    Height = 18
+    Top = 190
+    Width = 75
+  end
+  object ToggleBox1: TToggleBox
+    Caption = 'UnEditable'
+    OnClick = ToggleBox1Click
+    TabOrder = 16
+    Left = 384
+    Height = 25
+    Top = 167
+    Width = 90
+  end
+  object CheckBox2: TCheckBox
+    Caption = 'Only Float'
+    OnClick = CheckBox2Click
+    TabOrder = 17
+    Left = 384
+    Height = 23
+    Top = 203
+    Width = 89
+  end
+  object SaveDialog1: TSaveDialog
+    Title = 'Save file as'
+    FilterIndex = 0
+    left = 40
+    top = 360
+  end
+  object OpenDialog1: TOpenDialog
+    Title = 'Open existing file'
+    FilterIndex = 0
+    left = 8
+    top = 360
+  end
+end
