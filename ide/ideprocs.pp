@@ -100,6 +100,8 @@ function FilenameIsFormText(const Filename: string): boolean;
 function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
 function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
                                      DirStartPos: integer): integer;
+function CreateRelativePath(const Filename, BaseDirectory: string): string;
+function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -126,6 +128,7 @@ function CrossReplaceChars(const Src: string; PrefixChar: char;
 function SimpleSyntaxToRegExpr(const Src: string): string;
 function NameToValidIdentifier(const s: string): string;
 function BinaryStrToText(const s: string): string;
+function SplitString(const s: string; Delimiter: char): TStringList;
 
 // translation/internationalization/localization
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
@@ -323,6 +326,122 @@ begin
       if i<0 then begin
         Result:=StartPos;
         exit;
+      end;
+    end;
+    StartPos:=EndPos;
+  end;
+end;
+
+function CreateRelativePath(const Filename, BaseDirectory: string): string;
+var
+  FileNameLength: Integer;
+  BaseDirLen: Integer;
+  MinLen: Integer;
+  SamePos: Integer;
+  UpDirCount: Integer;
+  BaseDirPos: Integer;
+  ResultPos: Integer;
+  i: Integer;
+  FileNameRestLen: Integer;
+begin
+  Result:=Filename;
+  if (BaseDirectory='') or (Filename='') then exit;
+  // check for different windows file drives
+  if (AnsiCompareText(ExtractFileDrive(Filename),
+                     ExtractFileDrive(BaseDirectory))<>0)
+  then
+    exit;
+    
+  FileNameLength:=length(Filename);
+  BaseDirLen:=length(BaseDirectory);
+
+  // skip matching directories
+  MinLen:=FileNameLength;
+  if MinLen>BaseDirLen then MinLen:=BaseDirLen;
+  SamePos:=1;
+  while (SamePos<=MinLen) do begin
+    {$IFDEF win32}
+    if AnsiStrLIComp(@FileName[SamePos],@BaseDirectory[SamePos],1)=0
+    {$ELSE}
+    if FileName[SamePos]=BaseDirectory[SamePos]
+    {$ENDIF}
+    then
+      inc(SamePos)
+    else
+      break;
+  end;
+  if (SamePos>MinLen)
+  and (((SamePos<=BaseDirLen) and (BaseDirectory[SamePos]=PathDelim))
+    or ((SamePos<=FileNameLength) and (Filename[SamePos]=PathDelim))
+    or (BaseDirLen=FileNameLength))
+  then begin
+    // Filename lies in BaseDirectory
+    // or Filename is parent directory of BaseDirectory
+    // or Filename is BaseDirectory
+  end else begin
+    // difference found -> step back to path delimiter
+    repeat
+      dec(SamePos);
+      if (SamePos<1) then exit;
+    until (FileName[SamePos]=PathDelim);
+  end;
+  if (SamePos=1) and (Filename[1]=PathDelim) then exit;
+
+  // calculate needed up directories
+  UpDirCount:=0;
+  BaseDirPos:=SamePos+1;
+  while (BaseDirPos<=BaseDirLen) do begin
+    if BaseDirectory[BaseDirPos]=PathDelim then inc(UpDirCount);
+    inc(BaseDirPos);
+  end;
+  if BaseDirectory[BaseDirLen]<>PathDelim then inc(UpDirCount);
+  
+  // create relative filename
+  FileNameRestLen:=FileNameLength-SamePos;
+  SetLength(Result,3*UpDirCount+FileNameRestLen);
+  ResultPos:=1;
+  for i:=1 to UpDirCount do begin
+    Result[ResultPos]:='.';
+    Result[ResultPos+1]:='.';
+    Result[ResultPos+2]:=PathDelim;
+    inc(ResultPos,3);
+  end;
+  if FileNameRestLen>0 then
+    Move(Filename[SamePos+1],Result[ResultPos],FileNameRestLen);
+end;
+
+function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string
+  ): string;
+var
+  PathLen: Integer;
+  EndPos: Integer;
+  StartPos: Integer;
+  CurDir: String;
+  NewCurDir: String;
+  DiffLen: Integer;
+begin
+  Result:=SearchPath;
+  if (SearchPath='') or (BaseDirectory='') then exit;
+  
+  PathLen:=length(Result);
+  EndPos:=1;
+  while EndPos<=PathLen do begin
+    StartPos:=EndPos;
+    while (Result[StartPos]=';') do begin
+      inc(StartPos);
+      if StartPos>PathLen then exit;
+    end;
+    EndPos:=StartPos;
+    while (EndPos<=PathLen) and (Result[EndPos]<>';') do inc(EndPos);
+    CurDir:=copy(Result,StartPos,EndPos-StartPos);
+    if FilenameIsAbsolute(CurDir) then begin
+      NewCurDir:=CreateRelativePath(CurDir,BaseDirectory);
+      if NewCurDir<>CurDir then begin
+        DiffLen:=length(NewCurDir)-length(CurDir);
+        Result:=copy(Result,1,StartPos-1)+NewCurDir
+                +copy(Result,EndPos,PathLen-EndPos+1);
+        inc(EndPos,DiffLen);
+        inc(PathLen,DiffLen);
       end;
     end;
     StartPos:=EndPos;
@@ -1040,6 +1159,32 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  function SplitString(const s: string; Delimiter: char): TStringList;
+-------------------------------------------------------------------------------}
+function SplitString(const s: string; Delimiter: char): TStringList;
+var
+  SLen: Integer;
+  StartPos: Integer;
+  EndPos: Integer;
+begin
+  Result:=TStringList.Create;
+  SLen:=length(s);
+  StartPos:=1;
+  EndPos:=1;
+  repeat
+    if (EndPos<=sLen) and (s[EndPos]<>Delimiter) then
+      inc(EndPos)
+    else begin
+      if EndPos>StartPos then
+        Result.Add(copy(s,StartPos,EndPos-StartPos));
+      StartPos:=EndPos+1;
+      if StartPos>sLen then exit;
+      inc(EndPos);
+    end;
+  until false;
+end;
+
+{-------------------------------------------------------------------------------
   ConvertSpecialFileChars
 
   Params: const Filename: string
@@ -1510,7 +1655,7 @@ begin
     c:=Src[SrcPos];
     if (c<>PrefixChar) then begin
       if System.Pos(c,SpecialChars)>=1 then begin
-        // in front of each SpecialChars will be PrefixChar inserted
+        // in front of each SpecialChar will be a PrefixChar inserted
         inc(DestLen);
         NeedsChange:=true;
       end;
