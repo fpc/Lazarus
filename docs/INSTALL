@@ -53,6 +53,8 @@ properly:
 1.2 Installing FreePascal under Windows:
 
     ToDo: Write me.
+    
+    See www.freepascal.org.
 
 
 2. Installing Lazarus
@@ -115,6 +117,45 @@ properly:
 
 2.1 Installing Lazarus under Windows:
 
-    ToDo: Write me.
+  Under windows the IDE does not run well. So don't expect too much.
+
+  Thx to Joe for this Step-by-step description:
+
+  You have to download the lazarus source:
+  ftp://ftp.freepascal.org/pub/fpc/source/lazarus.zip
+
+  Then unzip it to c:\lazarus for example.
+  You have to install at least fpc1.0.6. It compiles to me and lazarus.exe
+  works. The path to my fpc is: c:\pp\bin\win32. In this directory you
+  can find a lot of exe (make, grep, ppc386, and so on).
+
+  Open a command line. Start->Run...>command or choose MS-DOS icon.
+  Type:
+  cd c:\lazarus
+  set path=c:\pp\bin\win32;c:\lazarus  //of course change the first to
+                                       //the path of yours
+  windres -i lazarus.rc -o lazarus.res
+  make
+
+  If you are lucky then you can type: lazarus.exe
+  At this moment I do not suggest to try source editor (if you compiled
+  with 1.0.6 on win98se). Maybe you have to reboot. Dialogs work and the
+  property editor but... Look and you will see.
+  (With fpc1.0.7 no hangs.)
+
+  You can compile examples also:
+  cd examples
+  make
+
+  If you extracted lazarus to another drive, eg.: d:\lazarus. It can happen
+  that you need the gnu utility to make it. If you have it, you can take its
+  path to set path=...;<gmakepath> but it is simpler not to choose drive d:\
+
+  That's all.
 
 
+3.1 Installing Lazarus under BSD
+
+  ToDo: Write Me.
+  
+  
