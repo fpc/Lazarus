@@ -620,7 +620,7 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_SETSIZE:
         Begin
-          If Sender Is TWinControl Then
+          If (Sender Is TWinControl) and TWinControl(Sender).HandleAllocated Then
           begin
             With PRect(Data)^ do
             begin
@@ -634,14 +634,12 @@ activate_time :	the time at which the activation event occurred.
               begin
                 if (Sender As TWinControl).Parent.Handle<>0 then
                 begin
-                  Windows.GetClientRect((Sender As TWinControl).Parent.Handle,@R);
                   Windows.SendMessage((Sender As TWinControl).Parent.Handle, TCM_AdjustRect, 0, LPARAM(@R));
                   Left := R.Left;
                   Top := R.Top;
                 end
               end;
               R := Rect(Left, Top, R.Right - R.Left, R.Bottom - R.Top);
-              If TWinControl(Sender).HandleAllocated Then
                   ResizeChild(Sender, R.Left, R.Top, R.Right , R.Bottom);
             end;
           end;
@@ -2241,7 +2239,8 @@ Begin
     Windows.SendMessage(Handle, TCM_INSERTITEM, Index, integer(@TabControlItem));
     // Set page caption in tabcontrol
     SetLabel(NewPage, PChar(PageCaption));
-    // Adjust page size to fit in tabcontrol, no bounds needed.
+    // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
+    Windows.GetClientRect(Handle, @R);
     IntSendMessage3(LM_SETSIZE, NewPage, @R);
     // Do the page switch. The are no tabcontrol notifications so we have to
     // do the hiding and showing ourselves.
@@ -2744,6 +2743,9 @@ End;
 
 {
   $Log$
+  Revision 1.75  2003/07/25 09:28:03  mattias
+  fixed notebook page resize from Micha
+
   Revision 1.74  2003/07/04 17:46:27  mattias
   fixed notebook positioning from Micha
 
