@@ -231,6 +231,8 @@ Begin
     inc(MouseDownPos.X,TControl(Sender).Left);
     inc(MouseDownPos.Y,TControl(Sender).Top);
   end;
+
+  Writeln('Setting mousedowncontrol to'+TCOntrol(sender).name);
   MouseDownControl:=Sender;
   LastMouseMovePos:=MouseDownPos;
   Writeln(TComponent(Sender).Name+'.OnMouseDown at '+inttostr(MouseDownPos.x)
@@ -258,6 +260,7 @@ var
   CaptureGrabber:TGrabber;
   Button : TMouseButton;
   Shift : TShiftState;
+  X,Y : Integer;
 Begin
    Writeln('In UpOnControl');
   if (TLMMouse(Message).keys and MK_LButton) = MK_LButton then
@@ -274,11 +277,21 @@ Begin
     shift := shift +[ssCTRL];
 
 
+  X := TLMMOuse(Message).pos.X;
+  Y := TLMMOuse(Message).pos.Y;
   CaptureGrabber:=GetCaptureGrabber;
   if CaptureGrabber<>nil then begin
+     Writeln('CaptureGrabber <> nil');
     CaptureGrabber.CaptureMouseUp(TControl(Sender),Button,Shift,TLMMouse(Message).pos.X,TLMMouse(Message).pos.Y);
     exit;
   end;
+
+  if MOuseDownControl = Sender then
+    Begin
+    ControlSelection.MoveSelection(X-LastMouseMovePos.X, Y-LastMouseMovePos.Y);
+    //do somerthing like ControlSelection.Sizecontent but move x and y from where
+    // the grabber started to where it finished.
+    end;
 
   MouseUpPos.X := TLMMouse(Message).pos.X;
   MouseUpPos.Y := TLMMouse(Message).pos.Y;
@@ -410,10 +423,10 @@ if Message.msg = LM_MOUSEMOVE then
    MouseMoveonCOntrol(Sender, Message);
 
 
-if Result then Writeln('It IS a design message')
+{if Result then Writeln('It IS a design message')
 else
 Writeln('It IS NOT a design message');
-
+ }
 end;
 
 procedure TDesigner.LoadFile(FileName: string);

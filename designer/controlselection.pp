@@ -77,13 +77,13 @@ type
     procedure ControlMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure DoChange;
     procedure SetGrabbers;
-    procedure MoveContent(dx, dy: Integer);
     procedure SizeContent;
     procedure SetVisible(const Value: Boolean);
     procedure GrabberMove(Sender: TObject; dx, dy: Integer);
     procedure GrabberMoved(Sender: TObject; dx, dy: Integer);
   protected
   public
+    procedure MoveContent(dx, dy: Integer);
     procedure Add(AControl: TControl);
     procedure Clear;
     constructor Create(AOwner: TWinControl); virtual;
@@ -127,6 +127,9 @@ var
 
 procedure SetCaptureGrabber(AGrabber:TGrabber);
 begin
+Writeln('SETCAPTUREGRABBER to....');
+if AGrabber <> nil then Writeln('something') else writeln('nil');
+
   CaptureGrabber:=AGrabber;
 end;
 
@@ -254,10 +257,11 @@ end;
 
 procedure TControlSelection.MoveSelection(dx, dy: integer);
 begin
+Writeln('Move Selection');
   if (dx<>0) or (dy<>0) then begin
     Inc(FLeft,dx);
     Inc(FTop,dy);
-    MoveContent(dx,dy);
+    //MoveContent(dx,dy);
     SetGrabbers;
   end;
 end;
@@ -372,12 +376,15 @@ end;
 
 procedure TControlSelection.ControlMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
 begin
+Writeln('ControlMOuseMove in TCOntrolSelection');
   if FDragging
   then begin
     Inc(FLeft, X - FStart.X);
     Inc(FTop, Y - FStart.Y);
     SetGrabbers;
-    MoveContent(X - FStart.X, Y - FStart.Y);
+    Writeln(format('X-FStart.x = %d-%d=%d',[X,FStart.x,X-FStart.x]));
+    Writeln(format('Y-FStart.Y = %d-%d=%d',[Y,FStart.y,Y-FStart.y]));
+   // MoveContent(X - FStart.x, Y - FStart.Y);
   end;
 end;
 
@@ -386,6 +393,8 @@ begin
   if (Button = mbLeft) and FDragging
   then begin
     FDragging := False;
+    Writeln(format('X-FStart.x = %d-%d=%d',[X,FStart.x,X-FStart.x]));
+    Writeln(format('Y-FStart.Y = %d-%d=%d',[Y,FStart.y,Y-FStart.y]));
     MoveContent(X - FStart.X, Y - FStart.Y);
   end;
 end;
