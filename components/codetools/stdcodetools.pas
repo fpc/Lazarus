@@ -2701,7 +2701,7 @@ begin
     TypeNode:=FindTypeNodeOfDefinition(VarNode);
     MoveCursorToNodeStart(TypeNode);
     ReadNextAtom;
-    if AtomIs(VarType) then begin
+    if UpAtomIs(UpperCaseStr(VarType)) then begin
       // rename the identifier
       MoveCursorToNodeStart(VarNode);
       ReadNextAtom;
