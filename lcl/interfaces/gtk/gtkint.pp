@@ -35,9 +35,10 @@ interface
  
 { $DEFINE ClientRectBugFix}
 {$IFDEF ClientRectBugFix}
-  {$DEFINE VerboseResizeChild}
-  {$DEFINE VerboseSizeMsg}
-  {$DEFINE VerboseGetClientRect}
+  { $DEFINE VerboseClientRectBugFix}
+  { $DEFINE VerboseResizeChild}
+  { $DEFINE VerboseSizeMsg}
+  { $DEFINE VerboseGetClientRect}
 {$ENDIF}
 
 uses 
@@ -360,6 +361,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.40  2002/05/13 14:47:01  lazarus
+  MG: fixed client rectangles, TRadioGroup, RecreateWnd
+
   Revision 1.39  2002/05/12 04:56:20  lazarus
   MG: client rect bugs nearly completed
 
