@@ -844,6 +844,54 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TGtkObject.SetCursor
+  Params:  Sender - the control which invoked this method
+  Returns: Nothing
+
+  Sets the cursor for a widget
+ ------------------------------------------------------------------------------}
+procedure SetCursor(AWinControl : TWinControl);
+var
+  AWidget, FixWidget: PGtkWidget;
+  AWindow: PGdkWindow;
+begin
+  If not (AWinControl is TWinControl)
+  or (not AWinControl.HandleAllocated)
+  then exit;
+  
+  AWidget:=PGtkWidget(AWinControl.Handle);
+  FixWidget:=GetFixedWidget(AWidget);
+  if FixWidget<>nil then
+    AWindow:=FixWidget^.Window
+  else
+    AWindow:=AWidget^.Window;
+  if AWindow=nil then exit;
+
+  if csDesigning in AWinControl.ComponentState then begin
+    gdk_window_set_cursor (AWindow, Cursor_Arrow);
+  end else begin
+    case AWinControl.Cursor of
+    crAppStart : gdk_window_set_cursor (AWindow, Cursor_Watch);
+    crArrow    : gdk_window_set_cursor (AWindow, Cursor_Arrow);
+    crCross    : gdk_window_set_cursor (AWindow, Cursor_Cross);
+    crHandPoint: gdk_window_set_cursor (AWindow, Cursor_hand1);
+    crIBeam    : gdk_window_set_cursor (AWindow, Cursor_XTerm);
+    crHourGlass: gdk_window_set_cursor (AWindow, Cursor_Watch);
+    crDefault  : gdk_window_set_cursor (AWindow, Cursor_StdArrow);
+    crHSplit   : gdk_window_set_cursor (AWindow, Cursor_HSplit);
+    crVSplit   : gdk_window_set_cursor (AWindow, Cursor_VSplit);
+    crSizeNWSE : gdk_window_set_cursor (AWindow, Cursor_SizeNWSE);
+    crSizeNS   : gdk_window_set_cursor (AWindow, Cursor_SizeNS);
+    crSizeNESW : gdk_window_set_cursor (AWindow, Cursor_SizeNESW);
+    crSizeWE   : gdk_window_set_cursor (AWindow, Cursor_SizeWE);
+    else
+      Exit;
+    end;
+  end;
+end;
+
+
 // ----------------------------------------------------------------------
 // The Accelgroup and AccelKey is needed by menus
 // ----------------------------------------------------------------------
@@ -1431,6 +1479,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.48  2002/06/21 16:59:16  lazarus
+  MG: TControl.Cursor is now set, reduced auto reaction of widgets in design mode
+
   Revision 1.47  2002/06/19 19:46:10  lazarus
   MG: Form Editing: snapping, guidelines, modified on move/resize, creating components in csDesigning, ...
 
