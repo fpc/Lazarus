@@ -3579,7 +3579,7 @@ begin
   Result:=false;
   if ANode=nil then exit;
   case ANode.Desc of
-  ctnClass,ctnClassInterface,ctnProcedure,ctnBeginBlock:
+  ctnClass,ctnClassInterface,ctnProcedureHead,ctnBeginBlock:
     Result:=(ANode.SubDesc and ctnsNeedJITParsing)>0;
   end;
 end;
@@ -3589,10 +3589,11 @@ function TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos(
   ): TCodeTreeNode;
 begin
   Result:=FindDeepestNodeAtPos(StartNode,P,ExceptionOnNotFound);
-  //debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos A ');
-  if NodeNeedsBuildSubTree(Result) then begin
+  //debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos A ',Result.DescAsString,' ',dbgs(NodeNeedsBuildSubTree(Result)));
+  while NodeNeedsBuildSubTree(Result) do begin
     BuildSubTree(Result);
     Result:=FindDeepestNodeAtPos(Result,P,ExceptionOnNotFound);
+    //debugln('TPascalParserTool.BuildSubTreeAndFindDeepestNodeAtPos B ',Result.DescAsString,' ',dbgs(NodeNeedsBuildSubTree(Result)));
   end;
 end;
 

@@ -3162,6 +3162,7 @@ var
                                                       JumpToProcAttr);
     ctnVarDefinition:
       if DeclarationNode.HasParentOfType(ctnProcedureHead) then begin
+        // this is a parameter name
         ProcNode:=DeclarationNode.GetNodeOfType(ctnProcedure);
         // search alias for parameter
         ProcNode:=FindCorrespondingProcNode(ProcNode,JumpToProcAttr);
