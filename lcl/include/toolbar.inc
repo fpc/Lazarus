@@ -929,7 +929,8 @@ function TToolBar.InternalButtonCount: Integer;
 begin
 //  Result := Perform(TB_BUTTONCOUNT, 0, 0);
   if HandleAllocated then
-    Result := CNSendMessage(LM_TB_BUTTONCOUNT,Self,Nil);
+    Result := CNSendMessage(LM_TB_BUTTONCOUNT,Self,Nil)
+  else Result := 0;
 end;
 
 function TToolBar.ButtonIndex(OldIndex, ALeft, ATop: Integer): Integer;
@@ -1491,6 +1492,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2004/01/20 21:39:30  marc
+  * applied patch from Darek Mazur
+
   Revision 1.13  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 
