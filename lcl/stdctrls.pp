@@ -138,6 +138,16 @@ type
     property Anchors;
     property Caption;
     property Visible;
+    property OnClick;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
   end;
   
   
@@ -1272,6 +1282,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.49  2002/10/02 16:16:40  lazarus
+  MG: accelerated unitdependencies
+
   Revision 1.48  2002/10/02 14:23:22  lazarus
   MG: added various history lists
 

@@ -103,8 +103,6 @@ type
     function HandleException(AnException: Exception): boolean;
     function OnGetCodeToolForBuffer(Sender: TObject;
       Code: TCodeBuffer): TFindDeclarationTool;
-    procedure ActivateWriteLock;
-    procedure DeactivateWriteLock;
     procedure OnToolSetWriteLock(Lock: boolean);
     procedure OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;
       var WriteLockStep: integer);
@@ -116,6 +114,9 @@ type
     SourceChangeCache: TSourceChangeCache; // cache for write accesses
     GlobalValues: TExpressionEvaluator;
     
+    procedure ActivateWriteLock;
+    procedure DeactivateWriteLock;
+
     // file handling
     property SourceExtensions: string
           read FSourceExtensions write FSourceExtensions;

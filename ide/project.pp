@@ -204,18 +204,21 @@ type
 
   TProject = class(TObject)
   private
-    fFirstPartOfProject: TUnitInfo;
     FFlags: TProjectFlags;
+    fPublishOptions: TPublishProjectOptions;
     xmlconfig: TXMLConfig;
+
+    fUnitList: TList;                      // list of _all_ units (TUnitInfo)
+    fFirstAutoRevertLockedUnit: TUnitInfo; // units with IsAutoRevertLocked=true
+    fFirstLoadedUnit: TUnitInfo;           // units with Loaded=true
+    fFirstPartOfProject: TUnitInfo;        // units with IsPartOfProject=true
+    fFirstUnitWithEditorIndex: TUnitInfo;  // units with EditorIndex>=0
+    fFirstUnitWithForm: TUnitInfo;         // units with Form<>nil
 
     { Variables }
     fActiveEditorIndexAtStart: integer;
     fBookmarks: TProjectBookmarkList;
     fCompilerOptions: TCompilerOptions;
-    fFirstAutoRevertLockedUnit: TUnitInfo; // units with IsAutoRevertLocked=true
-    fFirstLoadedUnit: TUnitInfo; // units with Loaded=true
-    fFirstUnitWithEditorIndex: TUnitInfo;// units with EditorIndex>=0
-    fFirstUnitWithForm: TUnitInfo; // units with Form<>nil
     fIconPath: String;
     fJumpHistory: TProjectJumpHistory;
     fMainUnit: Integer;  // only for ptApplication
@@ -227,7 +230,6 @@ type
     fSrcPath: string; // source path addition for units in ProjectDir
     fTargetFileExt: String;
     fTitle: String;
-    fUnitList: TList;  // list of TUnitInfo
     fUnitOutputDirectory: String;
     fRunParameterOptions: TRunParamsOptions;
     
@@ -297,7 +299,8 @@ type
     procedure Clear;
     function SomethingModified: boolean;
     function AddCreateFormToProjectFile(const AClassName,AName:string):boolean;
-    function RemoveCreateFormFromProjectFile(const AClassName,AName:string):boolean;
+    function RemoveCreateFormFromProjectFile(const AClassName,
+       AName: string):boolean;
     function FormIsCreatedInProjectFile(const AClassname,AName:string):boolean;
     function UnitIsUsed(const ShortUnitName:string):boolean;
     function GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer):TCodeBuffer;
@@ -335,10 +338,13 @@ type
     property ProjectInfoFile: string
        read GetProjectInfoFile write SetProjectInfoFile;
     property ProjectType: TProjectType read fProjectType write fProjectType;
+    property PublishOptions: TPublishProjectOptions
+       read fPublishOptions write fPublishOptions;
     property RunParameterOptions: TRunParamsOptions read fRunParameterOptions;
     property SrcPath: string read fSrcPath write fSrcPath;
     property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
-    property TargetFilename: string read GetTargetFilename write SetTargetFilename;
+    property TargetFilename: string
+       read GetTargetFilename write SetTargetFilename;
     property Title: String read fTitle write fTitle;
     property UnitOutputDirectory: String
        read fUnitOutputDirectory write fUnitOutputDirectory;
@@ -964,6 +970,7 @@ begin
   fModified := false;
   fOutputDirectory := '.';
   fProjectInfoFile := '';
+  fPublishOptions:=TPublishProjectOptions.Create;
   fRunParameterOptions:=TRunParamsOptions.Create;
   fSrcPath := '';
   fTargetFileExt := DefaultTargetFileExt;
@@ -1024,6 +1031,7 @@ begin
   if (xmlconfig <> nil) then xmlconfig.Free;
   fUnitList.Free;
   fJumpHistory.Free;
+  fPublishOptions.Free;
   fRunParameterOptions.Free;
   fCompilerOptions.Free;
 
@@ -1111,6 +1119,10 @@ begin
         CompilerOptions.ProjectFile := confPath;
         CompilerOptions.SaveCompilerOptions(true);
         
+        // save the Publish Options
+        PublishOptions.SaveToXMLConfig(xmlconfig,
+                                       'ProjectOptions/PublishOptions/');
+
         // save the Run Parameter Options
         RunParameterOptions.Save(xmlconfig,'ProjectOptions/');
 
@@ -1204,6 +1216,9 @@ begin
     CompilerOptions.ProjectFile := MainFilename;
     CompilerOptions.LoadCompilerOptions(true);
     CreateProjectDefineTemplate(CompilerOptions,FSrcPath);
+
+    // load the Publish Options
+    PublishOptions.LoadFromXMLConfig(xmlconfig,'ProjectOptions/PublishOptions/');
 
     // load the Run Parameter Options
     RunParameterOptions.Load(xmlconfig,'ProjectOptions/');
@@ -1315,8 +1330,9 @@ begin
   fModified := false;
   fOutputDirectory := '.';
   fProjectInfoFile := '';
+  fPublishOptions.Clear;
   fSrcPath := '';
-  fTargetFileExt := {$IFDEF win32}'.exe'{$ELSE}''{$ENDIF};
+  fTargetFileExt := DefaultTargetFileExt;
   fTitle := '';
   fUnitOutputDirectory := '.';
 end;
@@ -2050,6 +2066,9 @@ end.
 
 {
   $Log$
+  Revision 1.81  2002/10/02 16:16:39  lazarus
+  MG: accelerated unitdependencies
+
   Revision 1.80  2002/09/30 23:45:58  lazarus
   MG: added part of project list to project
 

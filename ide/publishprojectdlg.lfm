@@ -1,40 +1,41 @@
 object PublishProjectDialog: TPublishProjectDialog
   CAPTION = 'Publish Project'
   COLOR = -2147483633
-  CLIENTHEIGHT = 377
-  CLIENTWIDTH = 470
+  CLIENTHEIGHT = 403
+  CLIENTWIDTH = 469
   POSITION = poscreencenter
   ONRESIZE = PublishProjectDialogRESIZE
   LEFT = 343
-  HEIGHT = 377
+  HEIGHT = 403
   TOP = 289
-  WIDTH = 470
+  WIDTH = 469
   object OkButton: TBUTTON
-    ANCHORS = [aktop, akleft]
+    ANCHORS = [aktop, akright]
     MODALRESULT = 1
     CAPTION = 'Ok'
     TABSTOP = True
-    LEFT = 80
+    ONCLICK = OkButtonCLICK
+    LEFT = 76
     HEIGHT = 25
-    TOP = 336
+    TOP = 368
     WIDTH = 75
   end
   object CancelButton: TBUTTON
-    ANCHORS = [aktop, akleft]
+    ANCHORS = [aktop, akright]
     MODALRESULT = 2
     CAPTION = 'Cancel'
     TABSTOP = True
     TABORDER = 1
-    LEFT = 377
+    LEFT = 375
     HEIGHT = 25
-    TOP = 336
+    TOP = 368
     WIDTH = 75
   end
   object DestDirGroupBox: TGROUPBOX
     ANCHORS = [aktop, akleft]
     CAPTION = 'Destination directory'
     LEFT = 8
-    HEIGHT = 91
+    HEIGHT = 111
     TOP = 8
     WIDTH = 450
     object DestDirComboBox: TCOMBOBOX
@@ -70,16 +71,27 @@ object PublishProjectDialog: TPublishProjectDialog
       TEXT = 'CommandAfterCombobox'
       LEFT = 6
       HEIGHT = 25
-      TOP = 39
+      TOP = 58
       WIDTH = 430
+    end
+    object CommandAfterLabel: TLABEL
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Command after:'
+      COLOR = -2147483643
+      LAYOUT = tltop
+      LEFT = 6
+      HEIGHT = 17
+      TOP = 33
+      WIDTH = 428
     end
   end
   object FilesGroupbox: TGROUPBOX
     ANCHORS = [aktop, akleft]
     CAPTION = 'Files'
+    ONRESIZE = FilesGroupboxRESIZE
     LEFT = 8
     HEIGHT = 139
-    TOP = 104
+    TOP = 128
     WIDTH = 450
     object UseIncludeFilterCheckbox: TCHECKBOX
       AUTOSIZE = True
@@ -134,9 +146,10 @@ object PublishProjectDialog: TPublishProjectDialog
   object ProjectInfoGroupbox: TGROUPBOX
     ANCHORS = [aktop, akleft]
     CAPTION = 'Project Information'
+    ONRESIZE = ProjectInfoGroupboxRESIZE
     LEFT = 8
     HEIGHT = 69
-    TOP = 248
+    TOP = 280
     WIDTH = 450
     object SaveClosedEditorFilesInfoCheckbox: TCHECKBOX
       AUTOSIZE = True
@@ -168,13 +181,14 @@ object PublishProjectDialog: TPublishProjectDialog
     end
   end
   object SaveSettingsButton: TBUTTON
-    ANCHORS = [aktop, akleft]
+    ANCHORS = [aktop, akright]
     CAPTION = 'Save settings'
     TABSTOP = True
     TABORDER = 5
-    LEFT = 206
+    ONCLICK = SaveSettingsButtonCLICK
+    LEFT = 202
     HEIGHT = 25
-    TOP = 336
+    TOP = 368
     WIDTH = 120
   end
 end

@@ -368,7 +368,9 @@ end;
 
 procedure TUnitDependenciesView.RebuildTree;
 begin
+  CodeToolBoss.ActivateWriteLock;
   BeginUpdate;
+  
   ClearTree;
   if RootFilename='' then exit;
   FRootNode:=TUnitNode.Create;
@@ -378,7 +380,9 @@ begin
   UnitTreeView.Items.Clear;
   FRootNode.TreeNode:=UnitTreeView.Items.Add(nil,'');
   FRootNode.CreateChilds;
+  
   EndUpdate;
+  CodeToolBoss.DeActivateWriteLock;
 end;
 
 procedure TUnitDependenciesView.SetRootFilename(const AValue: string);

@@ -37,6 +37,11 @@ interface
 uses
   Classes, SysUtils, IDEProcs, Laz_XMLCfg, LazConf, Dialogs;
 
+const
+  // these are the names of the various history lists in the IDE:
+  PublishProjectDestDirs = 'PublishProjectDestinationDirectories';
+  
+
 type
   TFileDialogSettings = record
     InitialDir: string;
@@ -55,7 +60,7 @@ type
   public
     constructor Create;
     destructor Destroy;  override;
-    function Add(const Entry: string): integer; override;
+    function Push(const Entry: string): integer;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     property Name: string read FName write SetName;
@@ -400,7 +405,7 @@ begin
   inherited Destroy;
 end;
 
-function THistoryList.Add(const Entry: string): integer;
+function THistoryList.Push(const Entry: string): integer;
 begin
   AddToRecentList(Entry,Self,MaxCount);
   Result:=-1;
@@ -516,7 +521,7 @@ end;
 
 procedure THistoryLists.Add(const ListName, Entry: string);
 begin
-  GetList(ListName,true).Add(Entry);
+  GetList(ListName,true).Push(Entry);
 end;
 
 end.
