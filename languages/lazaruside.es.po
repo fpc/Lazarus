@@ -38,8 +38,8 @@ msgstr ""
 msgid "%s directory"
 msgstr ""
 
-#: lazarusidestrconsts:lisisalreadypartoftheproject1
-msgid "%s is already part of the Project1."
+#: lazarusidestrconsts:lisisalreadypartoftheproject
+msgid "%s is already part of the Project."
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsprojectdirectory2
@@ -4443,7 +4443,7 @@ msgid "Shift Tab"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangshouldthefilerenamedlowercaseto
-msgid "Should the file renamed lowercase to%s%s%s%s?"
+msgid "Should the file be renamed lowercase to%s%s%s%s?"
 msgstr ""
 
 #: lazarusidestrconsts:lisaf2pshowall
@@ -5267,7 +5267,7 @@ msgid "Type:"
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletoaddtoprojectbecausethereisalreadyaunitwith
-msgid "Unable to add %s to project, because there is already a unit with the same name in the Project1."
+msgid "Unable to add %s to project, because there is already a unit with the same name in the Project."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletoaddresourceheadercommenttoresourcefile
