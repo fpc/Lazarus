@@ -1115,6 +1115,7 @@ begin
   itmSearchFindPrevious.OnClick := @SourceNotebook.FindPreviousClicked;
   itmSearchFindInFiles.OnClick := @SourceNotebook.FindInFilesClicked;
   itmSearchReplace.OnClick := @SourceNotebook.ReplaceClicked;
+  itmIncrementalFind.OnClick := @SourceNotebook.IncrementalFindClicked;
   itmGotoLine.OnClick := @SourceNotebook.GotoLineClicked;
   itmJumpBack.OnClick := @SourceNotebook.JumpBackClicked;
   itmJumpForward.OnClick := @SourceNotebook.JumpForwardClicked;
@@ -7555,6 +7556,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.447  2003/01/02 04:33:55  mattias
+  implemented incremental find and unit usage counts
+
   Revision 1.446  2002/12/29 22:43:46  mattias
   activated identifier completion
 
