@@ -94,8 +94,9 @@ begin
   // create window
   FinishCreateWindow(AWinControl, Params, true);
   // init buddy
-  Params.SubClassWndProc := @ChildEditWindowProc;
+  Params.SubClassWndProc := @WindowProc;
   WindowCreateInitBuddy(AWinControl, Params);
+  Params.BuddyWindowInfo^.isChildEdit := true;
   Result := Params.Window;
 end;
 

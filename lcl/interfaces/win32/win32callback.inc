@@ -495,7 +495,20 @@ Begin
 
   Assert(False, 'Trace:WindowProc - Getting Object With Callback Procedure');
   WindowInfo := GetWindowInfo(Window);
-  lWinControl := WindowInfo^.WinControl;
+  if WindowInfo^.isChildEdit then
+  begin
+    lWinControl := WindowInfo^.AWinControl;
+    // filter messages we want to pass on to LCL
+    if (Msg <> WM_KILLFOCUS) and (Msg <> WM_SETFOCUS)
+      and ((Msg < WM_KEYFIRST) or (Msg > WM_KEYLAST))
+      and ((Msg < WM_MOUSEFIRST) or (Msg > WM_MOUSELAST)) then
+    begin
+      Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
+      exit;
+    end;
+  end else begin
+    lWinControl := WindowInfo^.WinControl;
+  end;
   Assert(False, 'Trace:WindowProc - Getting Callback Object');
 
   Assert(False, 'Trace:WindowProc - Checking Proc');
@@ -1479,90 +1492,6 @@ begin
 end;
     
 {------------------------------------------------------------------------------
- Function: ChildEditWindowProc
- Params: Window - The window that receives a message
-         Msg    - The message received
-         WParam - Word parameter
-         LParam - Long-integer parameter
-  Returns: 0 if Msg is handled; non-zero long-integer result otherwise
-
-  Handles the messages sent to the edit child of a (combobox, spinedit) control 
-  by Windows or other applications
- ------------------------------------------------------------------------------}
-function ChildEditWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
-var
-  LMessage: TLMessage;
-  LMKey: TLMKey;
-  PLMsg: PLMessage;
-  NotifyUserInput: boolean;
-  WinProcess: boolean;
-  lWinControl: TWinControl;
-begin
-  // filter messages we want to send to LCL
-  WinProcess := true;
-  if (Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS) or 
-     ((Msg >= WM_KEYFIRST) and (Msg <= WM_KEYLAST)) then
-  begin
-    // TODO: code copied from WindowProc
-    PLMsg := @LMessage;
-    case Msg of
-      WM_KILLFOCUS, WM_SETFOCUS:
-      begin
-        LMessage.Msg := Msg;
-      end;
-      WM_KEYDOWN:
-      begin
-        NotifyUserInput := True;
-        PLMsg:=@LMKey;
-        with LMKey Do
-        begin
-          Msg := CN_KEYDOWN;
-          KeyData := LParam;
-          CharCode := Word(WParam);
-          Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-        end;
-      end;
-      WM_KEYUP:
-      begin
-        NotifyUserInput := True;
-        PLMsg:=@LMKey;
-        with LMKey do
-        begin
-          Msg := CN_KEYUP;
-          KeyData := LParam;
-          CharCode := Word(WParam);
-          Assert(False,Format('WM_KEYUP KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-        end;
-      end;
-    end;
-    // application processing
-    if NotifyUserInput then
-      NotifyApplicationUserInput(PLMsg^.Msg);
-
-    lWinControl := GetWindowInfo(Window)^.AWinControl;
-    DeliverMessage(lWinControl, PLMsg^);
-
-    case Msg of
-      WM_KEYDOWN, WM_KEYUP:
-      begin
-        // if not yet processed, resend normally
-        if LMKey.CharCode <> VK_UNKNOWN then
-        begin
-          LMKey.Msg := Msg;
-          DeliverMessage(lWinControl, LMKey);
-          // still not handled? then do default processing
-          WinProcess := LMKey.CharCode <> VK_UNKNOWN;
-        end;
-      end;
-    end;
-  end;
-    
-  if WinProcess then
-    Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
-end;
-
-{------------------------------------------------------------------------------
  Procedure: TimerCallBackProc
  Params: window_hnd - handle of window for timer message, not set in this implementation
          msg        - WM_TIMER message
@@ -1594,6 +1523,9 @@ end;
 
 {
   $Log$
+  Revision 1.193  2005/02/10 21:07:29  micha
+  let general WindowProc also handle childedit of combobox, reduces code duplication, implements doubleclick for combobox
+
   Revision 1.192  2005/02/07 19:10:31  micha
   revert unwanted commit
 

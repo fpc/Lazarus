@@ -197,8 +197,6 @@ function WindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
 function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
     LParam: Windows.LParam): LResult; stdcall;
-function ChildEditWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
-    LParam: Windows.LParam): LResult; stdcall;
 function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult;
     
@@ -286,6 +284,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.133  2005/02/10 21:07:29  micha
+  let general WindowProc also handle childedit of combobox, reduces code duplication, implements doubleclick for combobox
+
   Revision 1.132  2005/02/07 16:19:14  micha
   force default width and height for calendar control
 

@@ -564,8 +564,9 @@ begin
     // If the style is CBS_DROPDOWNLIST, GetTopWindow returns null,
     // because the combobox has no edit in that case.
     if Buddy<>HWND(nil) then begin
-      SubClassWndProc := @ChildEditWindowProc;
+      SubClassWndProc := @WindowProc;
       WindowCreateInitBuddy(AWinControl, Params);
+      BuddyWindowInfo^.isChildEdit := true;
       BuddyWindowInfo^.isComboEdit := true;
     end else BuddyWindowInfo:=nil;
   end;
