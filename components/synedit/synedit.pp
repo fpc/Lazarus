@@ -4218,7 +4218,7 @@ begin
   // ToDo WMGetDlgCode
   inherited;
   {$ENDIF}
-  Msg.Result := DLGC_WANTARROWS or DLGC_WANTCHARS;
+  Msg.Result := DLGC_WANTARROWS or DLGC_WANTCHARS or DLGC_WANTALLKEYS;
   if fWantTabs and (GetKeyState(VK_CONTROL) >= 0) then
     Msg.Result := Msg.Result or DLGC_WANTTAB;
 end;
