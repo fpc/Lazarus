@@ -383,6 +383,7 @@ Var
   Procedure DrawOwnerButton;
   var flags:integer; // How the button looks like (pressed or not pressed)
       BitmapHandle: HBITMAP; // Handle of bitmap
+      OldBitmapHandle: HBITMAP; // Handle of provious bitmap in hdcBitmap
       BitmapBuf: BITMAP; // Buffer for bitmap
       hdcBitmap: HDC; // Memory device context for the bitmap
       xDestBitmap: integer; // X coordinate of destination rectangle for bitmap
@@ -401,7 +402,7 @@ Var
       BitmapHandle:=TBitBtn(Sender).Glyph.Handle;
       hdcBitmap := CreateCompatibleDC(_HDC);
       GetObject(BitmapHandle, sizeof(BitmapBuf), @BitmapBuf);
-      SelectObject(hdcBitmap, BitmapHandle);
+      OldBitmapHandle := SelectObject(hdcBitmap, BitmapHandle);
       GetTextExtentPoint32(_HDC, LPSTR(TBitBtn(Sender).Caption), length(TBitBtn(Sender).Caption), TextSize);
       case TBitBtn(Sender).Layout of
         blGlyphLeft: begin
@@ -431,7 +432,7 @@ Var
       end;
       BitBlt(_HDC, xDestBitmap, yDestBitmap, BitmapBuf.bmWidth, BitmapBuf.bmHeight, hdcBitmap, 0, 0, SRCCOPY);
       DrawText(_HDC, LPSTR(TBitBtn(Sender).Caption), -1, rcItem, TextPosFlags);
-      DeleteObject(BitmapHandle);
+      if OldBitmapHandle <> 0 then SelectObject(hdcBitmap, OldBitmapHandle);
       DeleteDC(hdcBitmap);
     end;
   end;
@@ -2807,6 +2808,9 @@ End;
 
 {
   $Log$
+  Revision 1.128  2003/11/16 16:59:02  marc
+  * Fixed DrawOwnerButton
+
   Revision 1.127  2003/11/09 10:35:19  mattias
   started Menu icons for win32 intf from Martin Smat
 
