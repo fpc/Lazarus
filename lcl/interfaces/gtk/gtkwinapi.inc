@@ -1695,8 +1695,8 @@ begin
       gdk_pixmap_colormap_create_from_xpm_d(Window,Colormap,
              {$IfDef GTK1}@{$EndIf}(GdiObject^.GDIBitmapMaskObject), p, Data);
 
-    gdk_window_get_geometry(GdiObject^.GDIPixmapObject, nil, nil, nil, nil, @Depth);
-
+//    gdk_window_get_geometry(GdiObject^.GDIPixmapObject, nil, nil, nil, nil, @Depth);
+    Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject);
     If GdiObject^.Visual <> nil then
       GDK_Visual_UnRef(GdiObject^.Visual);
 
@@ -3757,8 +3757,6 @@ var
   xmask: Cardinal;
   TopList, List: PGList;
 begin
-  // TODO: GTK2 native implementation with gdk_display_get_pointer
-
   Result := False;
 
   TopList := gdk_window_get_toplevels;
@@ -3782,7 +3780,6 @@ begin
   then g_list_free(TopList);
 {$Else}
 begin
-  result := False;
 {$EndIf}
 end;
 
@@ -3848,7 +3845,8 @@ begin
     If Drawable = nil then
       Result := GDK_Visual_Get_System^.Depth
     else
-      gdk_window_get_geometry(Drawable, nil, nil, nil, nil, @Result);
+      //gdk_window_get_geometry(Drawable, nil, nil, nil, nil, @Result);
+      Result := gdk_drawable_get_depth(Drawable);
 
   PLANES : { Number of planes }
     // ToDo
@@ -4129,8 +4127,10 @@ begin
                   end;
                 gbPixmap:
                   If GDIPixmapObject <> nil then begin
-                    gdk_window_get_geometry(GDIPixmapObject, nil, nil,
-                      @biWidth, @biHeight, @biBitCount);
+                    //gdk_window_get_geometry(GDIPixmapObject, nil, nil,
+                     // @biWidth, @biHeight, @biBitCount);
+                     biBitCount := gdk_drawable_get_depth(GDIPixmapObject);
+                     gdk_drawable_get_size(GDIPixmapObject,@biWidth, @biHeight);
                   end;
                 gbImage :
                   If GDI_RGBImageObject <> nil then
@@ -7409,7 +7409,7 @@ begin
     NewFocusWidget:=Widget;
   end;
   
-  if not gtk_widget_has_focus(NewFocusWidget) then begin
+  if (NewFocusWidget <> nil) and not gtk_widget_has_focus(NewFocusWidget) then begin
     // grab the focus to the parent window
     if (Screen<>nil)
     and (Screen.FocusedForm<>nil)
@@ -8711,6 +8711,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.274  2003/09/06 17:24:52  ajgenius
+  gtk2 changes for pixmap, getcursorpos, mouse events workaround
+
   Revision 1.273  2003/09/05 19:29:38  mattias
   Success: The first gtk2 application ran without error
 

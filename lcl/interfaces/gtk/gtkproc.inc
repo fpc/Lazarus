@@ -106,6 +106,17 @@ Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
 begin
   result := gdk_regions_xor(source1, source2);
 end;
+
+Function gdk_drawable_get_depth(Drawable : PGDKDrawable) : gint;
+begin
+  gdk_window_get_geometry(Drawable, nil, nil, nil, nil, @result);
+end;
+
+Procedure gdk_drawable_get_size(Drawable : PGDKDrawable; Width, Height : PGInt);
+begin
+  gdk_window_get_geometry(Drawable, nil, nil, Width, Height, nil);
+end;
+
 {$EndIf}
 
 {$Ifdef GTK2}
@@ -4523,6 +4534,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.197  2003/09/06 17:24:52  ajgenius
+  gtk2 changes for pixmap, getcursorpos, mouse events workaround
+
   Revision 1.196  2003/09/05 19:29:38  mattias
   Success: The first gtk2 application ran without error
 

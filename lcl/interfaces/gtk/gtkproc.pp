@@ -497,6 +497,9 @@ function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
   Function gdk_region_union(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
   Function gdk_region_subtract(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
   Function gdk_region_xor(source1:PGdkRegion; source2:PGdkRegion) : PGdkRegion;
+
+  Function gdk_drawable_get_depth(Drawable : PGDKDrawable) : gint;
+  Procedure gdk_drawable_get_size(Drawable : PGDKDrawable; Width, Height : PGInt);
 {$EndIF}
 
 {$Ifdef GTK2}

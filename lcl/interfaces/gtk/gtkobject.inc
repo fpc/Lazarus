@@ -1582,9 +1582,11 @@ begin
            {$ENDIF}
            p, Filename);
   GdiObject^.GDIBitmapType:=gbPixmap;
-  gdk_window_get_geometry(GdiObject^.GDIPixmapObject,
-    nil, nil, @Width, @Height, @Depth);
-
+//  gdk_window_get_geometry(GdiObject^.GDIPixmapObject,
+//    nil, nil, @Width, @Height, @Depth);
+  gdk_drawable_get_size(GdiObject^.GDIPixmapObject,@Width, @Height);
+  Depth := gdk_drawable_get_depth(GdiObject^.GDIPixmapObject);
+  
  If GdiObject^.Visual <> nil then
    GDK_Visual_UnRef(GdiObject^.Visual);
 
@@ -1637,8 +1639,10 @@ var
       {$ENDIF}
       0);
 
-    gdk_window_get_geometry(PGDIObject(TMP)^.GDIPixmapObject,
-      nil, nil, nil, nil, @Depth);
+//    gdk_window_get_geometry(PGDIObject(TMP)^.GDIPixmapObject,
+//      nil, nil, nil, nil, @Depth);
+
+  Depth := gdk_drawable_get_depth(PGDIObject(TMP)^.GDIPixmapObject);
 
     If PGDIObject(TMP)^.Visual <> nil then
       GDK_Visual_UnRef(PGDIObject(TMP)^.Visual);
@@ -1747,9 +1751,10 @@ Type
         {$ENDIF}
         0);
 
-      gdk_window_get_geometry(GDIPixmapObject,
-        nil, nil, nil, nil, @Depth);
+//      gdk_window_get_geometry(GDIPixmapObject,
+//        nil, nil, nil, nil, @Depth);
 
+  Depth := gdk_drawable_get_depth(GDIPixmapObject);
       If Visual <> nil then
         GDK_Visual_UnRef(Visual);
 
@@ -2620,7 +2625,7 @@ begin
       Begin
         if (TButton(Sender).Default)
         and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(handle))) then
-          gtk_widget_grab_default(pgtkwidget(handle))
+          //gtk_widget_grab_default(pgtkwidget(handle))
         else begin
           {writeln('LM_BTNDEFAULT_CHANGED ',TButton(Sender).Name,':',Sender.ClassName,' widget can not grab default ',
             ' visible=',GTK_WIDGET_VISIBLE(PGtkWidget(Handle)),
@@ -3926,7 +3931,7 @@ begin
     LM_PAINT :
     begin
       ConnectSenderSignalAfter(gFixed, 'expose-event', @GTKExposeEventAfter);
-      {$IFNDEF Gtk2}
+      {$IFDEF Gtk1}
       ConnectSenderSignalAfter(gFixed, 'draw', @GTKDrawAfter);
       {$ENDIF}
       ConnectSenderSignal(gFixed,'style-set', @GTKStyleChanged);
@@ -3969,6 +3974,7 @@ begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
       end
+      {$IfDef GTK1}
       else if (Sender is TCustomForm) then begin
         ConnectSenderSignal(gObject, 'key-press-event', @GTKKeyUpDown,
                             GDK_KEY_PRESS_MASK);
@@ -3979,6 +3985,7 @@ begin
                           GDK_KEY_PRESS_MASK);
       ConnectSenderSignal(gCore, 'key-release-event', @GTKKeyUpDown,
                           GDK_KEY_RELEASE_MASK);
+      {$EndIf}
     end;
     
     LM_MONTHCHANGED :  //calendar
@@ -4024,10 +4031,12 @@ begin
           @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
       end
       else begin
+      {$IfDef GTK1}
         ConnectSenderSignal(gFixed, 'motion-notify-event', @GTKMotionNotify,
                       GDK_POINTER_MOTION_MASK);
         ConnectSenderSignalAfter(gFixed, 'motion-notify-event',
                       @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
+      {$EndIf}
       end;
     end;
 
@@ -4053,10 +4062,12 @@ begin
         //    'button-press-event',  @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
       end
       else begin
+      {$IfDef GTK1}
         ConnectSenderSignal(gFixed, 'button-press-event', @gtkMouseBtnPress,
                       GDK_BUTTON_PRESS_MASK);
         ConnectSenderSignalAfter(gFixed, 'button-press-event',
                       @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
+      {$EndIf}
       end;
     end;
 
@@ -4083,10 +4094,12 @@ begin
         //                GDK_BUTTON_RELEASE_MASK);
       end
       else begin
+      {$IfDef GTK1}
         ConnectSenderSignal(gFixed, 'button-release-event', @gtkMouseBtnRelease,
                       GDK_BUTTON_RELEASE_MASK);
         ConnectSenderSignalAfter(gFixed, 'button-release-event',
                            @gtkMouseBtnReleaseAfter,GDK_BUTTON_RELEASE_MASK);
+      {$EndIf}
       end;
     end;
 
@@ -8151,6 +8164,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.408  2003/09/06 17:24:52  ajgenius
+  gtk2 changes for pixmap, getcursorpos, mouse events workaround
+
   Revision 1.407  2003/09/05 19:29:38  mattias
   Success: The first gtk2 application ran without error
 

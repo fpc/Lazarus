@@ -31,20 +31,79 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, gdk2pixbuf, gtk2, gdk2, glib2, gtkInt;
+  Classes, SysUtils,
+  {$IfNDef GTK2_2}
+  X, XLib, XUtil,
+  {$EndIf}
+  gdk2pixbuf, gtk2, gdk2, glib2, gtkInt;
 
 type
   TGtk2Object = class(TGtkObject)
+  public
+    function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
   end;
+
+
+{$IfDef GTK2_2}//we need a GTK2_2 FLAG somehow
+Procedure  gdk_display_get_pointer(display : PGdkDisplay; screen :PGdkScreen; x :Pgint; y : Pgint; mask : PGdkModifierType); cdecl; external gdklib;
+function gdk_display_get_default:PGdkDisplay; cdecl; external gdklib;
+{$Else}
+Function gdk_x11_drawable_get_xdisplay(drawable : PGdkDrawable) :   PDisplay; cdecl; external gdklib;
+Function gdk_x11_drawable_get_xid(drawable : PGdkDrawable) :  Integer; cdecl; external gdklib;
+{$EndIf}
 
 
 implementation
 
+ {------------------------------------------------------------------------------
+  Function: GetCursorPos
+  Params:  lpPoint: The cursorposition
+  Returns: True if succesful
+
+ ------------------------------------------------------------------------------}
+function Tgtk2Object.GetCursorPos(var lpPoint: TPoint ): Boolean;
+{$IfnDef GTK2_2} //we need a GTK2_2 FLAG somehow
+var
+  root, child: pointer;
+  winx, winy: Integer;
+  xmask: Cardinal;
+  TopList, List: PGList;
+{$EndIf}
+begin
+  Result := False;
+{$IfDef GTK2_2} //we need a GTK2_2 FLAG somehow
+  gdk_display_get_pointer(gdk_display_get_default(), nil, @lpPoint.X, @lpPoint.Y, nil);
+  Result := True;
+{$Else}
+  TopList := gdk_window_get_toplevels;
+  List := TopList;
+  while List <> nil do
+  begin
+    if (List^.Data <> nil)
+    and gdk_window_is_visible(List^.Data)
+    then begin
+      XQueryPointer(gdk_x11_drawable_get_xdisplay (List^.Data),
+                    gdk_x11_drawable_get_xid(List^.Data),
+                    @root, @child, @lpPoint.X, @lpPoint.Y, @winx, @winy, @xmask);
+
+      Result := True;
+      Break;
+    end;
+    List := g_list_next(List);
+  end;
+
+  if TopList <> nil
+  then g_list_free(TopList);
+{$EndIf}
+end;
 
 end.
 
 {
   $Log$
+  Revision 1.3  2003/09/06 17:24:52  ajgenius
+  gtk2 changes for pixmap, getcursorpos, mouse events workaround
+
   Revision 1.2  2003/08/27 20:55:51  mattias
   fixed updating codetools on changing pkg output dir
 
