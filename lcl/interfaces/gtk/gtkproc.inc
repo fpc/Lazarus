@@ -1023,8 +1023,9 @@ var
   AFilterEntry: PFileSelFilterEntry;
   i: integer;
 begin
-  if (ADialog=nil) or (ADialog.Handle=0) then exit;
+  if (ADialog=nil) or (not ADialog.HandleAllocated) then exit;
   DlgWindow:=PGtkWidget(ADialog.Handle);
+  gtk_window_set_transient_for(PGtkWindow(DlgWindow),nil);
   if ADialog is TOpenDialog then begin
   
     // free history
@@ -3992,6 +3993,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.162  2003/03/15 09:42:50  mattias
+  fixed transient windows
+
   Revision 1.161  2003/03/09 21:13:32  mattias
   localized gtk interface
 
