@@ -2160,7 +2160,7 @@ Begin
     csMemo:
     Begin
       Assert(False, 'Trace:TWin32Object.CreateComponent - Creating a MEMO...');
-      Flags := Flags Or ES_AUTOVSCROLL Or ES_MULTILINE;
+      Flags := Flags Or ES_AUTOVSCROLL Or ES_MULTILINE Or ES_WANTRETURN;
       If TCustomMemo(Sender).ReadOnly Then
         Flags := Flags Or ES_READONLY;
       If not TCustomMemo(Sender).WordWrap Then
@@ -2301,7 +2301,7 @@ Begin
       Begin
         Assert(False, 'Trace:TODO: TWin32Object.CreateComponent - Figure out what a csArrow is and code it');
         Assert(False, 'Trace:TWin32Object.CreateComponent - Creating a cursor. This will have to be good enough for now.');
-        LoadCursor(HInst(Nil), IDC_SizeWE);
+        Window := LoadCursor(System.HInstance, IDC_UPARROW);
       End;
       csFileDialog, csOpenFileDialog, csSaveFileDialog,
       csColorDialog, csFontDialog:
@@ -3007,6 +3007,9 @@ End;
 
 {
   $Log$
+  Revision 1.169  2004/02/19 14:37:20  micha
+  fixed: memo eats return key (from vincent)
+
   Revision 1.168  2004/02/16 22:01:31  marc
   * Applied patch from Martin Smat
     this patch fixes showing menuitem initially defined as Checked=true
