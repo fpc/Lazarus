@@ -334,6 +334,7 @@ Var
   LB: TLogBrush;
 Begin
   LB := LogBrush;
+  LB.lbColor := ColorToRGB(LB.lbColor);
   Assert(False, Format('Trace:> [TWin32Object.CreateBrushIndirect]  Style: %d, Color: %8x', [lb.lbStyle, lb.lbColor]));
   Result := Windows.CreateBrushIndirect(Windows.LOGBRUSH(LB));
   Assert(False, Format('Trace:< [TWin32Object.CreateBrushIndirect] Got --> %x', [Result]));
@@ -411,6 +412,7 @@ Var
   LP: TLogPen;
 Begin
   LP := LogPen;
+  Lp.lopnColor := ColorToRGB(Lp.lopnColor);
   Assert(False, 'Trace:[TWin32Object.CreatePenIndirect]');
   Result := Windows.CreatePenIndirect(Windows.LOGPEN(LP));
 End;
@@ -1840,7 +1842,7 @@ End;
 Function TWin32Object.SetBKColor(DC: HDC; Color: TColorRef): TColorRef;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.SetBKColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
-  Result := Windows.SetBkColor(DC, Color);
+  Result := Windows.SetBkColor(DC, ColorToRGB(Color));
   Assert(False, Format('Trace:< [TWin32Object.SetBKColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 End;
 
@@ -2024,7 +2026,7 @@ End;
 Function TWin32Object.SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 Begin
   Assert(False, Format('Trace:> [TWin32Object.SetTextColor] DC: 0x%x Color: %8x', [Integer(DC), Color]));
-  Result := Windows.SetTextColor(DC, Color);
+  Result := Windows.SetTextColor(DC, ColorToRGB(Color));
   Assert(False, Format('Trace:< [TWin32Object.SetTextColor] DC: 0x%x Color: %8x --> %8x', [Integer(DC), Color, Result]));
 End;
 
@@ -2305,6 +2307,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/09/18 17:07:30  lazarus
+  MG: added patch from Andrew
+
   Revision 1.18  2002/09/10 06:49:24  lazarus
   MG: scrollingwincontrol from Andrew
 

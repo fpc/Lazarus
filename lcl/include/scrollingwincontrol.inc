@@ -306,7 +306,7 @@ begin
     try
       FCanvas.Handle := DC;
       try
-        FCanvas.Color := Self.Color;
+        FCanvas.Brush.Color := Self.Color;
         FCanvas.FillRect(ClientRect);
       finally
         FCanvas.Handle := 0;

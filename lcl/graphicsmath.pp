@@ -366,6 +366,10 @@ begin
       ScaleY := Height / Width;
       B := A;
     end;
+  end
+  else begin
+    ScaleX := 1;
+    ScaleY := 1;
   end;
 
   Angle1 := DegToRad(Angle1/16);
@@ -1047,6 +1051,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/09/18 17:07:24  lazarus
+  MG: added patch from Andrew
+
   Revision 1.5  2002/08/19 20:34:47  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 

@@ -91,17 +91,17 @@ Begin
     PW := Panels[PanelNum].Width;
 
   Canvas.Brush.Color := Color;
-  Canvas.FillRect(Rect(XLeft,Top,XLeft+PW,Top+Height));
+  Canvas.FillRect(Rect(XLeft, Top, XLeft + PW, Top + Height));
 
   if Panels[PanelNum].Bevel = pbRaised then
   begin
-   Colora:=clWhite;
-   Colorb:=clGray;
+   Colora:=clBtnHighlight;
+   Colorb:=clBtnShadow;
   end;
   if Panels[PanelNum].Bevel = pbLowered then
   begin
-   Colora:=clGray;
-   Colorb:=clWhite;
+   Colora:=clBtnShadow;
+   Colorb:=clBtnHighlight;
   end;
 
   Canvas.Pen.Width:=1;

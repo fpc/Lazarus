@@ -32,6 +32,7 @@ begin
 //  FHintFont.Name := 'courier';
   FHintFont.Style := [];
   FHintFont.Size := 12;
+  FHintFont.Color := clInfoText;
   FHintFont.Pitch := fpDefault;
   FSaveFocusedList := TList.Create;
 end;

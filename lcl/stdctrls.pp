@@ -373,7 +373,6 @@ type
     property TabStop default true;
   end;
 
-
   TCustomMemo = class(TCustomEdit)
   private
     FFont : TFont;
@@ -717,6 +716,7 @@ end;
 
 {$I edit.inc}
 {$I buttoncontrol.inc}
+
 {$I checkbox.inc}
 {$I radiobutton.inc}
 {$I togglebox.inc}
@@ -726,6 +726,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.45  2002/09/18 17:07:24  lazarus
+  MG: added patch from Andrew
+
   Revision 1.44  2002/09/09 07:26:42  lazarus
   MG: started TCollectionPropertyEditor
 
