@@ -341,7 +341,7 @@ type
     function DoNewEditorUnit(NewUnitType:TNewUnitType;
         const NewFilename: string):TModalResult;
     function DoSaveEditorUnit(PageIndex:integer;
-                   SaveAs, SaveToTestDir:boolean):TModalResult;
+        SaveAs, SaveToTestDir, ProjectSaving:boolean):TModalResult;
     function DoCloseEditorUnit(PageIndex:integer;
         SaveFirst: boolean):TModalResult;
     function DoOpenEditorFile(const AFileName:string;
@@ -426,7 +426,6 @@ type
       var Handled, Abort: boolean);
     function OnMacroPromptFunction(const s:string; var Abort: boolean):string;
     procedure OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
-    Function SearchPaths : String;
 
     // form editor and designer
     property SelectedComponent : TRegisteredComponent 
@@ -981,10 +980,8 @@ begin
 
   ButtonTop := 1;
   ButtonLeft := 1;
-  Writeln('XXX Creating NewUnit Button');
   NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, 'New Unit');
 
-  Writeln('XXX Creating OpenFile Button');
   OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, 'Open');
 
   // store left
@@ -1540,11 +1537,6 @@ Begin
 end;
 
 
-Function TMainIDE.SearchPaths : String;
-Begin
-  Result :=  Project.CompilerOptions.OtherUnitFiles;
-End;
-
 {
 ------------------------------------------------------------------------
 -------------------ControlClick-----------------------------------------
@@ -1726,13 +1718,13 @@ end;
 procedure TMainIDE.mnuSaveClicked(Sender : TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
-  DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,false,false);
+  DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,false,false,false);
 end;
 
 procedure TMainIDE.mnuSaveAsClicked(Sender : TObject);
 begin
   if SourceNoteBook.NoteBook=nil then exit;
-  DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,true,false);
+  DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,true,false,false);
 end;
 
 procedure TMainIDE.mnuSaveAllClicked(Sender : TObject);
@@ -2124,9 +2116,10 @@ begin
   try
     frmCompilerOptions.CompilerOpts:=Project.CompilerOptions;
     frmCompilerOptions.GetCompilerOptions;
+    frmCompilerOptions.OtherSourcePath:=Project.SrcPath;
     if frmCompilerOptions.ShowModal=mrOk then begin
-      SourceNoteBook.SearchPaths:=SearchPaths;
-      SetCompilerOptionsToCodeToolBoss(Project.CompilerOptions);
+      Project.SrcPath:=frmCompilerOptions.OtherSourcePath;
+      CreateProjectDefineTemplate(Project.CompilerOptions,Project.SrcPath);
     end;
   finally
     frmCompilerOptions.Free;
@@ -2474,7 +2467,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
 end;
 
 function TMainIDE.DoSaveEditorUnit(PageIndex:integer; 
-  SaveAs, SaveToTestDir:boolean):TModalResult;
+  SaveAs, SaveToTestDir, ProjectSaving:boolean):TModalResult;
 var ActiveSrcEdit:TSourceEditor;
   ActiveUnitInfo:TUnitInfo;
   SaveDialog:TSaveDialog;
@@ -2499,9 +2492,9 @@ CheckHeap(IntToStr(GetMem_Cnt));
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
   
-  if (not SaveToTestDir) and (Project.MainUnit>=0)
-  and (Project.Units[Project.MainUnit]=ActiveUnitInfo)
-  and (ActiveUnitInfo.IsVirtual) then begin
+  if (not ProjectSaving) and Project.IsVirtual
+  and ActiveUnitInfo.IsPartOfProject then
+  begin
     Result:=DoSaveProject(false,SaveToTestDir);
     exit;
   end;
@@ -2817,7 +2810,7 @@ writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
     ACaption:='Source mofified';
     if Messagedlg(ACaption, AText, mtconfirmation, [mbyes, mbno], 0)=mryes then
     begin
-      Result:=DoSaveEditorUnit(PageIndex,false,false);
+      Result:=DoSaveEditorUnit(PageIndex,false,false,false);
       if Result=mrAbort then exit;
     end;
     Result:=mrOk;
@@ -3362,17 +3355,21 @@ writeln('TMainIDE.DoNewProject A');
   Project.OnFileBackup:=@DoBackupFile;
   Project.Title := 'project1';
   Project.CompilerOptions.CompilerPath:='$(CompPath)';
-  SourceNotebook.SearchPaths:=Project.CompilerOptions.OtherUnitFiles;
 
   ds:=PathDelim;
   case NewProjectType of
    ptApplication:
     begin
-      // add lcl units to search path
+      // add lcl ppu dirs to unit search path
       Project.CompilerOptions.OtherUnitFiles:=
         '$(LazarusDir)'+ds+'lcl'+ds+'units'
        +';'+
         '$(LazarusDir)'+ds+'lcl'+ds+'units'+ds+'$(LCLWidgetType)';
+      // add lcl pp/pas dirs to source search path
+      Project.SrcPath:=
+        '$(LazarusDir)'+ds+'lcl'
+       +';'+
+        '$(LazarusDir)'+ds+'lcl'+ds+'interfaces'+ds+'$(LCLWidgetType)';
       // create a first form unit
       DoNewEditorUnit(nuForm,'');
     end;
@@ -3383,7 +3380,7 @@ writeln('TMainIDE.DoNewProject A');
     end;
   end;
   
-  SetCompilerOptionsToCodeToolBoss(Project.CompilerOptions);
+  CreateProjectDefineTemplate(Project.CompilerOptions,Project.SrcPath);
  
   // set all modified to false
   for i:=0 to Project.UnitCount-1 do
@@ -3415,7 +3412,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',SaveAs,' SaveToTestDir=',SaveToTestDi
     if (Project.Units[i].Loaded) and (Project.Units[i].IsVirtual)
     and (Project.MainUnit<>i) then begin
       Result:=DoSaveEditorUnit(Project.Units[i].EditorIndex,true,
-                               SaveToTestDir);
+                               SaveToTestDir,true);
       if (Result=mrAbort) or (Result=mrCancel) then exit;
     end;
   end;
@@ -3571,7 +3568,8 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
   if MainUnitInfo<>nil then begin
     if MainUnitInfo.Loaded then begin
       // shown in source editor
-      Result:=DoSaveEditorUnit(MainUnitInfo.EditorIndex,false,SaveToTestDir);
+      Result:=DoSaveEditorUnit(MainUnitInfo.EditorIndex,false,SaveToTestDir,
+                               true);
       if Result=mrAbort then exit;
     end else begin
       // not shown in source editor, but code internally loaded
@@ -3600,7 +3598,7 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
     for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
       if (Project.MainUnit<0)
       or (Project.Units[Project.MainUnit].EditorIndex<>i) then begin
-        Result:=DoSaveEditorUnit(i,false,SaveToTestDir);
+        Result:=DoSaveEditorUnit(i,false,SaveToTestDir,true);
         if Result=mrAbort then exit;
       end;
     end;
@@ -3692,10 +3690,6 @@ CheckHeap(IntToStr(GetMem_Cnt));
   LPIFilename:=ChangeFileExt(AFilename,'.lpi');
   Project:=TProject.Create(ptProgram);
   Project.ReadProject(LPIFilename);
-  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
-    ExtractFilePath(Project.ProjectFile);
-  CodeToolBoss.DefineTree.ClearCache;
-  SetCompilerOptionsToCodeToolBoss(Project.CompilerOptions);
   if Project.MainUnit>=0 then begin
     // read MainUnit Source
     Result:=DoLoadCodeBuffer(NewBuf,Project.Units[Project.MainUnit].Filename,
@@ -3821,7 +3815,6 @@ writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
   Ext:=ExtractFileExt(ProgramTitle);
   ProgramTitle:=copy(ProgramTitle,1,length(ProgramTitle)-length(Ext));
   Project.Title:=ProgramTitle;
-  SourceNotebook.SearchPaths:=Project.CompilerOptions.OtherUnitFiles;
   MainUnitInfo:=Project.Units[Project.MainUnit];
   MainUnitInfo.Source:=ProgramBuf;
   Project.ProjectFile:=ProgramBuf.Filename;
@@ -4684,8 +4677,8 @@ begin
   if MacroName='save' then begin
     Handled:=true;
     if SourceNoteBook.NoteBook<>nil then
-      Abort:=(DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,false,false)
-              <>mrOk);
+      Abort:=(DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,false,false,
+              false)<>mrOk);
     s:='';
   end else if MacroName='saveall' then begin
     Handled:=true;
@@ -4776,8 +4769,8 @@ function TMainIDE.DoJumpToCompilerMessage(Index:integer;
     OldCurrDir:=GetCurrentDir;
     try
       SetCurrentDir(ProjectDir);
-      SearchPath:=Project.CompilerOptions.OtherUnitFiles;
       Delimiter:=';';
+      SearchPath:=Project.CompilerOptions.OtherUnitFiles+';'+Project.SrcPath;
       PathStart:=1;
       while (PathStart<=length(SearchPath)) do begin
         while (PathStart<=length(SearchPath)) 
@@ -5813,8 +5806,8 @@ end.
 
 { =============================================================================
   $Log$
-  Revision 1.216  2002/02/08 16:45:07  lazarus
-  MG: added codetools options
+  Revision 1.217  2002/02/08 21:08:00  lazarus
+  MG: saving of virtual project files will now save the whole project
 
   Revision 1.214  2002/02/07 18:18:59  lazarus
   MG: fixed deactivating hints

@@ -121,8 +121,9 @@ type
     procedure Assign(ADefineTemplate: TDefineTemplate); virtual;
     function  IsEqual(ADefineTemplate: TDefineTemplate;
       CheckSubNodes: boolean): boolean;
+    function FindChildByName(const AName: string): TDefineTemplate;
     function LoadFromXMLConfig(XMLConfig: TXMLConfig;
-        const Path: string): boolean;
+      const Path: string): boolean;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function CreateCopy: TDefineTemplate;
     function SelfOrParentContainsFlag(AFlag: TDefineTemplateFlag): boolean;
@@ -131,7 +132,7 @@ type
     procedure Clear;
     constructor Create;
     constructor Create(const AName, ADescription, AVariable, AValue: string;
-        AnAction: TDefineAction);
+      AnAction: TDefineAction);
     destructor Destroy; override;
     function ConsistencyCheck: integer; // 0 = ok
     procedure WriteDebugReport;
@@ -707,6 +708,15 @@ begin
     Node:=Node.Parent;
   end;
   Result:=false;
+end;
+
+function TDefineTemplate.FindChildByName(const AName: string): TDefineTemplate;
+begin
+  Result:=FirstChild;
+  while Result<>nil do begin
+    if AnsiCompareText(Result.Name,AName)=0 then exit;
+    Result:=Result.Next;
+  end;
 end;
 
 

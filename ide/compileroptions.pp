@@ -301,14 +301,17 @@ type
     edtErrorCnt: TEdit;
 
     { Search Paths Controls }
+    grpOtherUnits: TGroupBox;
+    edtOtherUnits: TEdit;
+
     grpIncludeFiles: TGroupBox;
     edtIncludeFiles: TEdit;
 
+    grpOtherSources: TGroupBox;
+    edtOtherSources: TEdit;
+
     grpLibraries: TGroupBox;
     edtLibraries: TEdit;
-
-    grpOtherUnits: TGroupBox;
-    edtOtherUnits: TEdit;
 
     grpCompiler: TGroupBox;
     edtCompiler: TEdit;
@@ -323,6 +326,8 @@ type
     btnOK: TButton;
     btnCancel: TButton;
     btnApply: TButton;
+    function GetOtherSourcePath: string;
+    procedure SetOtherSourcePath(const AValue: string);
     
     { Other variables }
 //    fPath: String;
@@ -348,6 +353,9 @@ type
 
     procedure GetCompilerOptions;
     procedure PutCompilerOptions;
+    
+    property OtherSourcePath: string
+      read GetOtherSourcePath write SetOtherSourcePath;
   end;
 
 var
@@ -1536,9 +1544,9 @@ begin
   
   edtErrorCnt.Text := IntToStr(CompilerOpts.StopAfterErrCount);
     
+  edtOtherUnits.Text := CompilerOpts.OtherUnitFiles;
   edtIncludeFiles.Text := CompilerOpts.IncludeFiles;
   edtLibraries.Text := CompilerOpts.Libraries;
-  edtOtherUnits.Text := CompilerOpts.OtherUnitFiles;
   edtCompiler.Text := CompilerOpts.CompilerPath;
   edtUnitOutputDir.Text := CompilerOpts.UnitOutputDirectory;
   
@@ -2643,69 +2651,15 @@ end;
 procedure TfrmCompilerOptions.SetupSearchPathsTab(Sender: TObject);
 begin
   // Setup the Search Paths Tab
-  Assert(False, 'Trace:Setting up compiler options search paths tab');
-
-  grpIncludeFiles := TGroupBox.Create(Self);
-  with grpIncludeFiles do
-  begin
-    Parent := nbMain.Page[4];
-    Top := 10;
-    Left := 10;
-    Height := 55;
-    Width := Self.ClientWidth-28;
-    Caption := 'Include Files:';
-    Visible := True;
-  end;
-
-  edtIncludeFiles := TEdit.Create(grpIncludeFiles);
-  with edtIncludeFiles do
-  begin
-    Parent := grpIncludeFiles;
-    Top := 8;
-    Left := 8;
-    Height := 23;
-    Width := Parent.ClientWidth-2*Left;
-    Text := '';
-    Visible := True;
-  end;
-
-
-  {------------------------------------------------------------}
-
-  grpLibraries := TGroupBox.Create(Self);
-  with grpLibraries do
-  begin
-    Parent := nbMain.Page[4];
-    Top := grpIncludeFiles.Top + grpIncludeFiles.Height + 7;
-    Left := 10;
-    Height := 55;
-    Width := Self.ClientWidth-28;
-    Caption := 'Libraries:';
-    Visible := True;
-  end;
-
-  edtLibraries := TEdit.Create(grpLibraries);
-  with edtLibraries do
-  begin
-    Parent := grpLibraries;
-    Top := 8;
-    Left := 8;
-    Height := 23;
-    Width := Parent.ClientWidth-2*Left;
-    Text := '';
-    Visible := True;
-  end;
-
-  {------------------------------------------------------------}
 
   grpOtherUnits := TGroupBox.Create(Self);
   with grpOtherUnits do
   begin
     Parent := nbMain.Page[4];
-    Top := grpLibraries.Top + grpLibraries.Height + 7;
     Left := 10;
-    Height := 55;
+    Top := 7;
     Width := Self.ClientWidth-28;
+    Height := 50;
     Caption := 'Other Unit Files (Delimiter is semicolon):';
     Visible := True;
   end;
@@ -2714,24 +2668,102 @@ begin
   with edtOtherUnits do
   begin
     Parent := grpOtherUnits;
-    Top := 8;
+    Left := 8;
+    Top := 5;
+    Width := Parent.ClientWidth-2*Left;
+    Height := 23;
+    Text := '';
+    Visible := True;
+  end;
+
+  {------------------------------------------------------------}
+  
+  grpIncludeFiles := TGroupBox.Create(Self);
+  with grpIncludeFiles do
+  begin
+    Parent := nbMain.Page[4];
+    Left := grpOtherUnits.Left;
+    Top := grpOtherUnits.Top+grpOtherUnits.Height+5;
+    Width := grpOtherUnits.Width;
+    Height := grpOtherUnits.Height;
+    Caption := 'Include Files:';
+    Visible := True;
+  end;
+
+  edtIncludeFiles := TEdit.Create(grpIncludeFiles);
+  with edtIncludeFiles do
+  begin
+    Parent := grpIncludeFiles;
+    Top := 5;
+    Left := 8;
+    Width := Parent.ClientWidth-2*Left;
+    Height := 23;
+    Text := '';
+    Visible := True;
+  end;
+
+  {------------------------------------------------------------}
+
+  grpOtherSources := TGroupBox.Create(Self);
+  with grpOtherSources do
+  begin
+    Parent := nbMain.Page[4];
+    Top := grpIncludeFiles.Top+grpIncludeFiles.Height+5;
+    Left := grpOtherUnits.Left;
+    Width := grpOtherUnits.Width;
+    Height := grpOtherUnits.Height;
+    Caption := 'Other Sources:  (.pp/.pas files)';
+    Visible := True;
+  end;
+
+  edtOtherSources := TEdit.Create(grpIncludeFiles);
+  with edtOtherSources do
+  begin
+    Parent := grpOtherSources;
+    Top := 5;
     Left := 8;
     Height := 23;
     Width := Parent.ClientWidth-2*Left;
     Text := '';
     Visible := True;
   end;
-  
+
+  {------------------------------------------------------------}
+
+  grpLibraries := TGroupBox.Create(Self);
+  with grpLibraries do
+  begin
+    Parent := nbMain.Page[4];
+    Top := grpOtherSources.Top + grpOtherSources.Height + 5;
+    Left := grpOtherUnits.Left;
+    Width := grpOtherUnits.Width;
+    Height := grpOtherUnits.Height;
+    Caption := 'Libraries:';
+    Visible := True;
+  end;
+
+  edtLibraries := TEdit.Create(grpLibraries);
+  with edtLibraries do
+  begin
+    Parent := grpLibraries;
+    Top := 5;
+    Left := 8;
+    Height := 23;
+    Width := Parent.ClientWidth-2*Left;
+    Text := '';
+    Visible := True;
+  end;
+
   {------------------------------------------------------------}
 
   grpCompiler := TGroupBox.Create(Self);
   with grpCompiler do
   begin
     Parent := nbMain.Page[4];
-    Top := grpOtherUnits.Top + grpOtherUnits.Height + 7;
-    Left := 10;
-    Height := 55;
-    Width := Self.ClientWidth-28;
+    Top := grpLibraries.Top + grpLibraries.Height + 5;
+    Left := grpOtherUnits.Left;
+    Width := grpOtherUnits.Width;
+    Height := grpOtherUnits.Height;
     Caption := 'Path To Compiler:';
     Visible := True;
   end;
@@ -2740,7 +2772,7 @@ begin
   with edtCompiler do
   begin
     Parent := grpCompiler;
-    Top := 8;
+    Top := 5;
     Left := 8;
     Height := 23;
     Width := Parent.ClientWidth-2*Left;
@@ -2754,10 +2786,10 @@ begin
   with grpUnitOutputDir do
   begin
     Parent := nbMain.Page[4];
-    Top := grpCompiler.Top + grpCompiler.Height + 7;
-    Left := 10;
-    Height := 55;
-    Width := Self.ClientWidth-28;
+    Top := grpCompiler.Top + grpCompiler.Height + 5;
+    Left := grpOtherUnits.Left;
+    Width := grpOtherUnits.Width;
+    Height := grpOtherUnits.Height;
     Caption := 'Unit output directory:';
     Visible := True;
   end;
@@ -2766,7 +2798,7 @@ begin
   with edtUnitOutputDir do
   begin
     Parent := grpUnitOutputDir;
-    Top := 8;
+    Top := 5;
     Left := 8;
     Height := 23;
     Width := Parent.ClientWidth-2*Left;
@@ -2774,15 +2806,14 @@ begin
     Visible := True;
   end;  
   
-  
   {------------------------------------------------------------}
   
   LCLWidgetTypeRadioGroup:=TRadioGroup.Create(Self);
   with LCLWidgetTypeRadioGroup do begin
     Name:='LCLWidgetTypeRadioGroup';
     Parent:=nbMain.Page[4];
-    Top:=grpUnitOutputDir.Top+grpUnitOutputDir.Height+7;
-    Left:=grpUnitOutputDir.Left;
+    Left := grpOtherUnits.Left;
+    Top:=grpUnitOutputDir.Top+grpUnitOutputDir.Height+5;
     Width:=150;
     Height:=45;
     Caption:='LCL Widget Type';
@@ -2856,6 +2887,16 @@ begin
     OnClick := @ButtonTestClicked;
     Visible := True;
   end;
+end;
+
+function TfrmCompilerOptions.GetOtherSourcePath: string;
+begin
+  Result:=edtOtherSources.Text;
+end;
+
+procedure TfrmCompilerOptions.SetOtherSourcePath(const AValue: string);
+begin
+  edtOtherSources.Text:=AValue;
 end;
 
   

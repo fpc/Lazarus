@@ -353,7 +353,7 @@ var
 begin
   try
     XMLConfig:=TXMLConfig.Create(FFileName);
-    XMLConfig.SetValue('EnvironmentOptions/Version/Value',
+    XMLConfig.SetValue('CodeToolsOptions/Version/Value',
       CodeToolsOptionsVersion);
 
     // General

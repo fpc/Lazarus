@@ -31,9 +31,9 @@ unit Project;
 interface
 
 uses
-  Classes, SysUtils, LCLLinux, LCLType, XMLCfg, LazConf, CompilerOptions, FileCtrl,
-  CodeToolManager, CodeCache, Forms, Controls, EditorOptions, Dialogs, IDEProcs,
-  RunParamsOpts, ProjectDefs;
+  Classes, SysUtils, LCLLinux, LCLType, XMLCfg, LazConf, CompilerOptions,
+  FileCtrl, CodeToolManager, CodeCache, Forms, Controls, EditorOptions, Dialogs,
+  IDEProcs, RunParamsOpts, ProjectDefs, EditDefineTree, DefineTemplates;
 
 type
   TUnitInfo = class;
@@ -143,6 +143,7 @@ type
     fOutputDirectory: String;
     fProjectFile: String;  // the lpi filename
     fProjectType: TProjectType;
+    fSrcPath: string; // source path addition for units in ProjectDir
     fTargetFileExt: String;
     fTitle: String;
     fUnitList: TList;  // list of TUnitInfo
@@ -163,6 +164,7 @@ type
        const OldUnitName, NewUnitName: string;  var Allowed: boolean);
     function JumpHistoryCheckPosition(
        APosition:TProjectJumpHistoryPosition): boolean;
+    procedure SetSrcPath(const NewSrcPath: string);
   public
     constructor Create(TheProjectType: TProjectType);
     destructor Destroy; override;
@@ -217,6 +219,7 @@ type
        read GetProjectInfoFile write SetProjectInfoFile;
     property ProjectType: TProjectType read fProjectType write fProjectType;
     property RunParameterOptions: TRunParamsOptions read fRunParameterOptions;
+    property SrcPath: string read fSrcPath write fSrcPath;
     property TargetFileExt: String read fTargetFileExt write fTargetFileExt;
     property TargetFilename: string read GetTargetFilename write SetTargetFilename;
     property Title: String read fTitle write fTitle;
@@ -607,6 +610,7 @@ begin
   fOutputDirectory := '.';
   fProjectFile := '';
   fRunParameterOptions:=TRunParamsOptions.Create;
+  fSrcPath := '';
   fTargetFileExt := DefaultTargetFileExt;
   fTitle := '';
   fUnitList := TList.Create;  // list of TUnitInfo
@@ -708,6 +712,7 @@ begin
         fBookmarks.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
         fJumpHistory.DeleteInvalidPositions;
         fJumpHistory.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
+        xmlconfig.SetValue('ProjectOptions/General/SrcPath/Value',fSrcPath);
 
         // Set options for each Unit
         xmlconfig.SetValue('ProjectOptions/Units/Count',UnitCount);
@@ -778,6 +783,7 @@ begin
        'ProjectOptions/General/UnitOutputDirectory/Value', '.');
     fBookmarks.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
     fJumpHistory.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
+    FSrcPath := xmlconfig.GetValue('ProjectOptions/General/SrcPath/Value','');
 
     NewUnitCount:=xmlconfig.GetValue('ProjectOptions/Units/Count',0);
     for i := 0 to NewUnitCount - 1 do begin
@@ -791,10 +797,14 @@ begin
     CompilerOptions.XMLConfigFile := xmlconfig;
     CompilerOptions.ProjectFile := ProjectFile;
     CompilerOptions.LoadCompilerOptions(true);
+    CreateProjectDefineTemplate(CompilerOptions,FSrcPath);
 
     // load the Run Parameter Options
     RunParameterOptions.Load(xmlconfig,'ProjectOptions/');
     
+    CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
+      ExtractFilePath(ProjectFile);
+    CodeToolBoss.DefineTree.ClearCache;
   finally
     xmlconfig.Free;
     xmlconfig:=nil;
@@ -885,6 +895,7 @@ begin
   fModified := false;
   fOutputDirectory := '.';
   fProjectFile := '';
+  fSrcPath := '';
   fTargetFileExt := {$IFDEF win32}'.exe'{$ELSE}''{$ENDIF};
   fTitle := '';
   fUnitOutputDirectory := '.';
@@ -1280,6 +1291,12 @@ begin
   end;
 end;
 
+procedure TProject.SetSrcPath(const NewSrcPath: string);
+begin
+  if FSrcPath=NewSrcPath then exit;
+  fSrcPath:=NewSrcPath;
+end;
+
 
 end.
 
@@ -1287,6 +1304,9 @@ end.
 
 {
   $Log$
+  Revision 1.49  2002/02/08 21:08:00  lazarus
+  MG: saving of virtual project files will now save the whole project
+
   Revision 1.48  2002/02/03 00:23:55  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can
