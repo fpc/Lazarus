@@ -6654,7 +6654,10 @@ begin
   if NewSource<>ActiveUnitInfo.Source then begin
     // jump to other file -> open it
     Result:=DoOpenEditorFile(NewSource.Filename,-1,[ofOnlyIfExists]);
-    if Result<>mrOk then exit;
+    if Result<>mrOk then begin
+      UpdateSourceNames;
+      exit;
+    end;
     GetUnitWithPageIndex(SourceNoteBook.NoteBook.PageIndex,NewSrcEdit,
       NewUnitInfo);
   end else begin
@@ -6737,8 +6740,8 @@ var
   ActiveSrcEdit:TSourceEditor;
   ErrorCaret: TPoint;
 begin
+  UpdateSourceNames;
   if CodeToolBoss.ErrorMessage='' then begin
-    UpdateSourceNames;
     exit;
   end;
   // syntax error -> show error and jump
@@ -6756,7 +6759,6 @@ begin
     MessagesView.Add(CodeToolBoss.ErrorMessage);
   MessagesView.SelectedMessageIndex:=MessagesView.MsgCount-1;
 
-    
   // jump to error in source editor
   if CodeToolBoss.ErrorCode<>nil then begin
     SourceNotebook.AddJumpPointClicked(Self);
@@ -6777,7 +6779,6 @@ begin
       ActiveSrcEdit.ErrorLine:=ErrorCaret.Y;
     end;
   end;
-  UpdateSourceNames;
 end;
 
 procedure TMainIDE.DoFindDeclarationAtCursor;
@@ -7984,6 +7985,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.488  2003/03/14 23:27:46  mattias
+  launching in terminal now keeps terminal open after execution
+
   Revision 1.487  2003/03/14 22:51:24  mattias
   improved case renaming of pascal files
 
