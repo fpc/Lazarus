@@ -33,9 +33,8 @@ interface
 {$endif}
  
 uses 
-  InterfaceBase, sysutils, lmessages, Classes, Controls,
-  extctrls, forms,dialogs, VclGlobals,stdctrls, comctrls, 
-  LCLIntf, qt;
+  InterfaceBase, sysutils, LCLType, LMessages, Classes, Controls,
+  ExtCtrls, Forms, Dialogs, StdCtrls, Comctrls, LCLIntf, qt;
  
 
 

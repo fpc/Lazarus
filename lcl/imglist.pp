@@ -54,8 +54,8 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, FPCAdds, LCLStrConsts, LCLIntf, LResources, vclGlobals,
-  LCLType, LCLProc, Graphics, GraphType, LCLClasses
+  SysUtils, Classes, FPCAdds, LCLStrConsts, LCLIntf, LResources, LCLType,
+  LCLProc, Graphics, GraphType, LCLClasses
   {$IFNDEF DisableFPImage}
   ,IntfGraphics, FPReadBMP
   {$ENDIF}
@@ -219,6 +219,9 @@ end.
 
 {
   $Log$
+  Revision 1.24  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.23  2004/08/15 17:00:58  mattias
   improved DefineProperties to read/write endian independent
 

@@ -23,7 +23,7 @@ program ListBoxTest;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Buttons, Classes, Forms, StdCtrls, SysUtils, Vclglobals, Controls{,
+  Interfaces, Buttons, Classes, Forms, StdCtrls, SysUtils, Controls{,
   CListBox};
 
 type

@@ -30,7 +30,7 @@ unit Spin;
 interface
 
 uses
-  Classes, Controls, SysUtils, VCLGlobals, LMessages, ClipBrd, StdCtrls;
+  Classes, Controls, SysUtils, LCLType, LMessages, ClipBrd, StdCtrls;
 
 type
   { TCustomSpinEdit }

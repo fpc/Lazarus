@@ -104,7 +104,7 @@ interface
 ////////////////////////////////////////////////////////////////////////////////
 uses
   {$IFDEF HL_LAZARUS}
-  Classes, SysUtils, VCLGlobals, LCLType, GraphType, Graphics;
+  Classes, SysUtils, LCLType, GraphType, Graphics;
   {$ELSE}
   sysutils,
   Windows,

@@ -40,7 +40,7 @@ interface
 
 uses
   //glib, gdk, gtk,
-  Classes, Controls, SysUtils, stdCtrls, vclGlobals, lMessages;
+  Classes, Controls, SysUtils, LCLType, StdCtrls, lMessages;
 
 
 type
@@ -80,6 +80,9 @@ end.
 
 {
   $Log$
+  Revision 1.2  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.1  2000/07/13 10:28:31  michael
   + Initial import
 

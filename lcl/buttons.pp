@@ -38,8 +38,8 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, VCLGlobals, LCLType, LCLProc, LCLIntf, LCLStrConsts,
-  GraphType, Graphics, ImgList, ActnList, Controls, StdCtrls, lMessages, Forms;
+  Classes, SysUtils, LCLType, LCLProc, LCLIntf, LCLStrConsts, GraphType,
+  Graphics, ImgList, ActnList, Controls, StdCtrls, lMessages, Forms;
 
 type
   { TButton }
@@ -381,6 +381,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.76  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.75  2004/07/16 10:16:32  mattias
   added texttolols.pas and published TBitBtn.Caption
 

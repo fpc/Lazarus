@@ -41,7 +41,6 @@ interface
 uses
   {$IFDEF IP_LAZARUS}
   //MemCheck,
-  VCLGlobals,
   LCLType,
   GraphType,
   LCLIntf,
@@ -17590,6 +17589,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.14  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.13  2004/05/25 20:18:00  mattias
   icon added
 

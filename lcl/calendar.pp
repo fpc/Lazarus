@@ -33,7 +33,7 @@ unit Calendar;
 interface
 
 uses
-  SysUtils, Classes, LCLStrConsts, vclGlobals, lMessages, Controls;
+  SysUtils, Classes, LCLType, LCLStrConsts, lMessages, Controls;
   
   
 Type

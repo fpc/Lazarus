@@ -28,7 +28,7 @@ unit Messages;
 interface
  
 uses
-  Classes, VCLGlobals, LMessages;
+  Classes, LCLType, LMessages;
 
 const
   WM_DROPFILES     = LM_DROPFILES;

@@ -38,9 +38,9 @@ interface
 
 uses
   InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
-  glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals,
-  LCLIntf, LCLType, gtkDef, DynHashArray, lazlinkedlist, GraphType,
-  GraphMath, gtkInt, {$Ifndef NoGdkImlib}gdk_imlib,{$EndIf}
+  glib, SysUtils, LMessages, Classes, Controls, Forms, LCLIntf, LCLType, gtkDef,
+  DynHashArray, LazLinkedList, GraphType, GraphMath, gtkInt,
+  {$Ifndef NoGdkImlib}gdk_imlib,{$EndIf}
   libgnome, libart, libgnomeui;
 
 type
@@ -278,6 +278,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.26  2004/07/15 10:43:38  mattias
   added TCustomButton, TCustomBitBtn, TCustomSpeedButton
 

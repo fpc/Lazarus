@@ -40,12 +40,10 @@ uses
 
   gdk2pixbuf, gtk2, gdk2, glib2, Pango,
 
-  LMessages, Controls, Forms, VclGlobals, LCLProc,
-  LCLStrConsts, LCLIntf, LCLType, DynHashArray, LazLinkedList,
-  GraphType, GraphMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls,
-  ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl, ExtCtrls,
-  Dialogs, ExtDlgs, FileCtrl, LResources, Math, GTKGlobals,
-
+  LMessages, Controls, Forms, LCLProc, LCLStrConsts, LCLIntf, LCLType,
+  DynHashArray, LazLinkedList, GraphType, GraphMath, Graphics, Buttons, Menus,
+  GTKWinApiWindow, StdCtrls, ComCtrls, CListBox, Calendar, Arrow, Spin,
+  CommCtrl, ExtCtrls, Dialogs, ExtDlgs, FileCtrl, LResources, Math, GTKGlobals,
   gtkDef, gtkInt;
 
 type
@@ -596,6 +594,9 @@ end.
 
 {
   $Log$
+  Revision 1.33  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.32  2004/03/17 19:59:56  marc
   * Fixes some typos and changes uses clause cases
 

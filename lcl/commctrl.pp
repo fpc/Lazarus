@@ -37,7 +37,7 @@ unit CommCtrl;
 interface          
 
 uses
-  Classes, lMessages, vclGlobals, LCLType;
+  Classes, lMessages, LCLType;
 
 //-------------
 // Common

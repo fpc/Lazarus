@@ -15,7 +15,7 @@ interface
 
 {$IFDEF HL_LAZARUS}
 uses
-  Classes, SysUtils, LCLIntf, LMessages, Messages, LCLType, VCLGlobals,
+  Classes, SysUtils, LCLIntf, LMessages, Messages, LCLType,
   GraphType, Graphics, Controls, StdCtrls, Forms, Dialogs, ExtCtrls, Menus,
   Clipbrd, LiteUn2, LiteSubs, LiteSbs1, LitePars, LiteReadThd;
 {$ELSE not HL_LAZARUS}

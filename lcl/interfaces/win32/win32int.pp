@@ -38,7 +38,7 @@ Interface
 Uses
   Windows, Classes, ComCtrls, Controls, Buttons, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def, Graphics, Menus;
+  LMessages, StdCtrls, SysUtils, Win32Def, Graphics, Menus;
 
 const
 
@@ -285,6 +285,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.92  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.91  2004/07/15 10:43:39  mattias
   added TCustomButton, TCustomBitBtn, TCustomSpeedButton
 

@@ -33,8 +33,8 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, Math, FPCAdds, LCLStrConsts, LCLType, LCLProc, VCLGlobals,
-  LMessages, GraphType, GraphMath;
+  Classes, SysUtils, Math, FPCAdds, LCLStrConsts, LCLType, LCLProc, LMessages,
+  GraphType, GraphMath;
 
 type
 
@@ -114,6 +114,9 @@ end.
 
 {
   $Log$
+  Revision 1.48  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.47  2004/08/11 20:57:09  mattias
   moved intfstrconsts.pp to lclstrconsts.pas, implemented TPenHandleCache
 

@@ -41,8 +41,8 @@ unit LCLIntf;
 interface
 
 uses
-  Math, Classes, SysUtils, LCLType, LCLProc, VCLGlobals, GraphType,
-  InterfaceBase, LResources;
+  Math, Classes, SysUtils, LCLType, LCLProc, GraphType, InterfaceBase,
+  LResources;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -182,6 +182,9 @@ end.
 
 {
   $Log$
+  Revision 1.16  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.15  2004/05/02 12:01:15  mattias
   removed unneeded units in uses sections
 

@@ -38,8 +38,8 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, InterfaceBase, FileCtrl, LCLStrConsts, LCLType,
-  VCLGlobals, LMessages, Forms, Controls, GraphType, Graphics, Buttons,
-  StdCtrls, LCLClasses;
+  LMessages, Forms, Controls, GraphType, Graphics, Buttons, StdCtrls,
+  LCLClasses;
 
 
 type
@@ -419,6 +419,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.51  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.50  2004/08/01 14:35:26  micha
   publish Title property on dialogs for .dfm streaming
 

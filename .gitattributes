@@ -1444,7 +1444,6 @@ lcl/templates/template.pp svneol=native#text/pascal
 lcl/textstrings.pas svneol=native#text/pascal
 lcl/toolwin.pp svneol=native#text/pascal
 lcl/utrace.pp svneol=native#text/pascal
-lcl/vclglobals.pp svneol=native#text/pascal
 lcl/widgetset/wsactnlist.pp svneol=native#text/pascal
 lcl/widgetset/wsarrow.pp svneol=native#text/pascal
 lcl/widgetset/wsbuttons.pp svneol=native#text/pascal

@@ -43,7 +43,7 @@ unit LiteSubs;
 interface
 uses
   {$IFDEF HL_LAZARUS}
-  Classes, SysUtils, VCLGlobals, LCLType, LCLIntf, Messages,
+  Classes, SysUtils, LCLType, LCLIntf, Messages,
   GraphType, Graphics, Controls, Forms, Dialogs, Buttons, StdCtrls, ExtCtrls,
   LiteUn2, LiteGif2;
   {$ELSE}

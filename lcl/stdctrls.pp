@@ -30,9 +30,9 @@ interface
 
 
 uses
-  VCLGlobals, Classes, SysUtils, LCLStrConsts, LCLType, LCLProc,
-  LMessages, Graphics, GraphType, ExtendedStrings, LCLIntf,
-  ClipBrd, ActnList, GraphMath, Controls, Forms;
+  Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LMessages, Graphics,
+  GraphType, GraphMath, ExtendedStrings, LCLIntf, ClipBrd, ActnList, Controls,
+  Forms;
 
 type
 
@@ -1172,6 +1172,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.161  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.160  2004/08/17 19:01:36  mattias
   gtk intf now ignores size notifications of unrealized widgets
 

@@ -66,8 +66,7 @@ implicitunits= \
   textstrings \
   toolwin \
   utrace \
-  xmlpropstorage \
-  vclglobals
+  xmlpropstorage
 
 rsts=lclstrconsts
 

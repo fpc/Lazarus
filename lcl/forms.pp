@@ -45,9 +45,9 @@ interface
 {$ENDIF}
 
 uses
-  Classes, Controls, LCLStrConsts, VCLGlobals, SysUtils, LCLType, LCLProc,
-  LCLIntf, InterfaceBase, LResources, GraphType, Graphics, Menus, LMessages,
-  CustomTimer, ActnList, ClipBrd, CustApp, LCLClasses;
+  Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LCLIntf, InterfaceBase,
+  LResources, GraphType, Graphics, Menus, LMessages, CustomTimer, ActnList,
+  ClipBrd, CustApp, LCLClasses, Controls;
 
 type
   TProcedure = procedure;

@@ -45,9 +45,8 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, VCLGlobals,
-  LCLIntf, InterfaceBase, LMessages, ActnList, Graphics, ImgList, 
-  LCLClasses;
+  Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, LCLIntf, InterfaceBase,
+  LMessages, ActnList, Graphics, ImgList, LCLClasses;
 
 
 type
@@ -411,6 +410,9 @@ end.
 
 {
   $Log$
+  Revision 1.70  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.69  2004/08/13 10:20:19  mattias
   fixed codetools ConstSet, implemented notifying TApplication whenmenu popups
 

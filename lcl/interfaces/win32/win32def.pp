@@ -30,7 +30,7 @@ Unit Win32Def;
 Interface
 
 Uses
-  Windows, VCLGlobals, Classes, LCLType;
+  Windows, Classes, LCLType;
 
 Const
   // Used by TCalendar
@@ -140,6 +140,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.10  2003/12/29 14:22:22  micha
   fix a lot of range check errors win32
 

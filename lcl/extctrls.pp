@@ -45,8 +45,8 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, LCLStrConsts, LCLProc, LResources, Controls, Forms,
-  StdCtrls, vclGlobals, lMessages, GraphType, Graphics, LCLIntf, CustomTimer;
+  SysUtils, Classes, LCLStrConsts, LCLType, LCLProc, LResources, Controls,
+  Forms, StdCtrls, lMessages, GraphType, Graphics, LCLIntf, CustomTimer;
 
 type
   { workaround problem with fcl }
@@ -967,6 +967,9 @@ end.
 
  {
   $Log$
+  Revision 1.115  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.114  2004/08/15 17:00:58  mattias
   improved DefineProperties to read/write endian independent
 

@@ -25,8 +25,7 @@ uses
   {$ELSE}
   glib, gdk, gtk,
   {$ENDIF}
-  LMessages, Controls, Forms,
-  VclGlobals, LCLIntf, LCLType, GTKDef, DynHashArray;
+  LMessages, Controls, Forms, LCLIntf, LCLType, GTKDef, DynHashArray;
 
 {$I dragicons.inc}
 

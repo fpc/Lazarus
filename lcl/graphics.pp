@@ -43,8 +43,8 @@ uses
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
   {$ENDIF}
   AvgLvlTree,
-  LCLStrConsts, vclGlobals, LCLType, LCLProc, LMessages, LCLIntf, LResources,
-  LCLResCache, GraphType, GraphMath;
+  LCLStrConsts, LCLType, LCLProc, LMessages, LCLIntf, LResources, LCLResCache,
+  GraphType, GraphMath;
 
 type
   PColor = ^TColor;
@@ -1745,6 +1745,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.143  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.142  2004/08/11 22:05:07  mattias
   fixed brush handle cache size
 

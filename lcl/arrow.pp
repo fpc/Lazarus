@@ -33,7 +33,7 @@ unit Arrow;
 interface
 
 uses
-  SysUtils, Classes, Controls, vclGlobals, lMessages;
+  SysUtils, Classes, LCLType, Controls, lMessages;
   
   
 Type

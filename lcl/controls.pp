@@ -40,7 +40,7 @@ interface
 {$ENDIF}
 
 uses
-  Classes, SysUtils, DynHashArray, LCLStrConsts, vclglobals, LCLType, LCLProc,
+  Classes, SysUtils, DynHashArray, LCLStrConsts, LCLType, LCLProc,
   GraphType, Graphics, LMessages, LCLIntf, InterfaceBase, ImgList, UTrace,
   PropertyStorage, Menus, ActnList, LCLClasses;
 
@@ -2405,6 +2405,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.237  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.236  2004/08/18 09:08:33  mattias
   fixed deleting of collection item in prop editor
 

@@ -30,7 +30,7 @@ unit CListBox;
 interface
 
 uses
-  Classes, Controls, StdCtrls;
+  Classes, Controls, LCLType, StdCtrls;
 
 type
   TCListBox = class(TCustomListBox)
@@ -52,9 +52,6 @@ type
 
 implementation
 
-uses
-  Vclglobals;
-
 {------------------------------------------------------------------------------}
 {  constructor TCListBox.Create                                                }
 {------------------------------------------------------------------------------}
@@ -70,6 +67,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.3  2002/05/10 06:05:48  lazarus
   MG: changed license to LGPL
 

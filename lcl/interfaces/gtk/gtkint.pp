@@ -76,7 +76,7 @@ uses
   {$ENDIF}
   // LCL
   ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
-  VclGlobals, LCLProc, LCLIntf, LCLType, gtkDef, DynHashArray, gtkMsgQueue,
+  LCLProc, LCLIntf, LCLType, gtkDef, DynHashArray, gtkMsgQueue,
   GraphType, GraphMath, Graphics, Menus;
 
 
@@ -459,6 +459,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.185  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.184  2004/08/10 17:34:13  mattias
   implemented font cache for gtk, which accelerates switching fonts
 

@@ -13,7 +13,7 @@ unit LiteUn2;
 interface
 uses
   {$IFDEF HL_LAZARUS}
-  LCLIntf, LCLType, VCLGlobals, SysUtils, Classes, GraphType,
+  LCLIntf, LCLType, SysUtils, Classes, GraphType,
   Graphics, Controls, Forms, Dialogs, StdCtrls;
   {$ELSE}
   Windows, SysUtils, Messages, Classes, Graphics, Controls,
@@ -1510,10 +1510,8 @@ try
     end
   else
     Result.LoadFromStream(Stream);
-  {$else}
-  Result.LoadFromStream(Stream);
-  {$endif}
   {$ENDIF not HL_LAZARUS}
+  {$endif ver100_plus}
   if Transparent = LLCorner then
     Mask := GetImageMask(Result, False, 0);
   Result := ConvertImage(Result);

@@ -41,8 +41,7 @@ interface
 {$endif}
 
 uses
-  Classes, Controls, SysUtils, stdCtrls, GraphType, Graphics, vclGlobals,
-  LCLType, LCLIntf;
+  Classes, Controls, SysUtils, GraphType, Graphics, LCLType, LCLIntf, StdCtrls;
 
 type
 

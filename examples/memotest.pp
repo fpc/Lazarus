@@ -23,7 +23,7 @@ program MemoTest;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Buttons, Classes, Forms, StdCtrls, SysUtils, VclGlobals;
+  Interfaces, Buttons, Classes, Forms, StdCtrls, SysUtils;
 
 type
   TMemoTestForm = class(TForm)

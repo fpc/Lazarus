@@ -42,8 +42,8 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLProc, LCLType, LCLIntf, Controls,
-  GraphType, Graphics, Forms, VCLGlobals, DynamicArray, LMessages,
-  XMLCfg, StdCtrls, LResources, MaskEdit;
+  GraphType, Graphics, Forms, DynamicArray, LMessages, XMLCfg, StdCtrls,
+  LResources, MaskEdit;
 
 const
   //GRIDFILEVERSION = 1; // Original

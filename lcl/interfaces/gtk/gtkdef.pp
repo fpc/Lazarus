@@ -37,8 +37,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  Classes, LCLIntf, LCLProc, LCLType, VclGlobals, LCLMemManager, DynHashArray,
-  GraphType;
+  Classes, LCLIntf, LCLProc, LCLType, LCLMemManager, DynHashArray, GraphType;
 
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
@@ -575,6 +574,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.63  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.62  2004/08/10 17:34:13  mattias
   implemented font cache for gtk, which accelerates switching fonts
 

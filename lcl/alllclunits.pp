@@ -35,8 +35,7 @@ uses
   FPCAdds, LazLinkedList, DynHashArray, LCLMemManager, AvgLvlTree,
   StringHashList, ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
-  LCLProc, LCLType, LCLResCache, VCLGlobals, GraphMath, FileCtrl, LMessages,
-  LResources,
+  LCLProc, LCLType, LCLResCache, GraphMath, FileCtrl, LMessages, LResources,
   // the interface base
   InterfaceBase,
   {$IFNDEF DisableFPImage}IntfGraphics,{$ENDIF}
@@ -64,6 +63,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.19  2004/08/15 14:39:36  mattias
   implemented platform independent binary object streamer
 

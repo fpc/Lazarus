@@ -29,7 +29,7 @@ unit LMessages;
 
 interface
 
-uses Classes, SysUtils, vclGlobals, LCLType, GraphType
+uses Classes, SysUtils, LCLType, GraphType
   {$ifdef win32}
   {$ifndef ver1_0}
   ,messages
@@ -1080,6 +1080,9 @@ end.
 
 {
   $Log$
+  Revision 1.69  2004/08/18 09:31:21  mattias
+  removed obsolete unit vclglobals
+
   Revision 1.68  2004/08/11 20:57:09  mattias
   moved intfstrconsts.pp to lclstrconsts.pas, implemented TPenHandleCache
 

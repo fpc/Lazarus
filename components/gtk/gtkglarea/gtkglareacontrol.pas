@@ -20,10 +20,9 @@ unit GTKGLAreaControl;
 interface
 
 uses
-  Classes, SysUtils, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF}, Forms,
-  Controls, Graphics, LMessages, VCLGlobals, InterfaceBase, GTKInt,
-  WSLCLClasses, WSControls, LResources,
-  GLib, Gtk, NVGL, GTKGLArea_Int;
+  Classes, SysUtils, LCLType, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF}, Forms,
+  Controls, Graphics, LMessages, InterfaceBase, WSLCLClasses, WSControls,
+  LResources, GTKInt, GLib, Gtk, NVGL, GTKGLArea_Int;
   
 type
   TGtkGlAreaMakeCurrentEvent = procedure(Sender: TObject;
