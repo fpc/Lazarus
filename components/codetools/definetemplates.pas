@@ -3343,6 +3343,7 @@ var
   i: Integer;
   CurCPU, CurOS, CurWidgetSet, ExtraSrcPath: string;
   ElseTemplate: TDefineTemplate;
+  LCLWidgetSetDir: TDefineTemplate;
 begin
   Result:=nil;
   if (LazarusSrcDir='') or (WidgetType='') then exit;
@@ -3569,9 +3570,17 @@ begin
      'include',da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['widgetset']),
-    ExternalMacroStart+'SrcPath',d('widgetset;'+SrcPath),da_Define));
+    ExternalMacroStart+'SrcPath','widgetset;'+SrcPath,da_Define));
   MainDir.AddChild(DirTempl);
   
+  // <LazarusSrcDir>/lcl/widgetset
+  LCLWidgetSetDir:=TDefineTemplate.Create('WidgetSet',Format(ctsNamedDirectory,['WidgetSet']),
+    '','widgetset',da_Directory);
+  LCLWidgetSetDir.AddChild(TDefineTemplate.Create('LCL path addition',
+    Format(ctsAddsDirToSourcePath,['..']),
+    ExternalMacroStart+'SrcPath','..;'+SrcPath,da_Define));
+  DirTempl.AddChild(LCLWidgetSetDir);
+
   // <LazarusSrcDir>/lcl/units
   LCLUnitsDir:=TDefineTemplate.Create('Units',Format(ctsNamedDirectory,['Units']),
     '','units',da_Directory);

@@ -21,7 +21,8 @@ interface
 
 uses
   Classes, SysUtils, {$IFDEF VER1_0}Linux{$ELSE}Unix{$ENDIF}, Forms,
-  Controls, Graphics, LMessages, VCLGlobals, InterfaceBase, GTKInt, LResources,
+  Controls, Graphics, LMessages, VCLGlobals, InterfaceBase, GTKInt,
+  WSLCLClasses, LResources,
   GLib, NVGL, GTKGLArea_Int;
   
 type
@@ -41,7 +42,6 @@ type
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     function GetWidget: PGtkGLArea;
-    function CreateWindowHandle(const AParams: TCreateParams): THandle; override;
     procedure UpdateFrameTimeDiff;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -90,6 +90,15 @@ type
     property PopupMenu;
     property ShowHint;
     property Visible;
+  end;
+  
+  
+  { TWSGTKGLAreaControl }
+  
+  TWSGTKGLAreaControl = class(TWSLCLComponent)
+  public
+    class function CreateHandle(const AComponent: TComponent;
+                                const AParams: TCreateParams): THandle; override;
   end;
   
 
@@ -259,20 +268,6 @@ begin
     Result:=nil;
 end;
 
-function TCustomGTKGLAreaControl.CreateWindowHandle(const AParams: TCreateParams
-  ): THandle;
-var
-  NewWidget: Pointer;
-begin
-  if csDesigning in ComponentState then
-    Result:=inherited CreateWindowHandle(AParams)
-  else begin
-    NewWidget:=gtk_gl_area_new(Plongint(@InitAttrList));
-    Result:=longint(NewWidget);
-    TGTKWidgetSet(InterfaceObject).FinishComponentCreate(Self,NewWidget,true);
-  end;
-end;
-
 procedure TCustomGTKGLAreaControl.UpdateFrameTimeDiff;
 var
   hour, minutes, secs, msecs, usecs: word;
@@ -288,10 +283,27 @@ begin
   FLastFrameTime:=FCurrentFrameTime;
 end;
 
+{ TWSGTKGLAreaControl }
+
+function TWSGTKGLAreaControl.CreateHandle(const AComponent: TComponent;
+  const AParams: TCreateParams): THandle;
+var
+  NewWidget: Pointer;
+begin
+  if csDesigning in AComponent.ComponentState then
+    Result:=inherited CreateHandle(AComponent,AParams)
+  else begin
+    NewWidget:=gtk_gl_area_new(Plongint(@InitAttrList));
+    Result:=longint(NewWidget);
+    TGTKWidgetSet(InterfaceObject).FinishComponentCreate(AComponent,NewWidget,true);
+  end;
+end;
+
 initialization
   {$i gtkglarea.lrs}
   GtkGLAreaControlStack:=nil;
-  
+  RegisterWSComponent(TCustomGTKGLAreaControl,TWSGTKGLAreaControl);
+
 finalization
   FreeAndNil(GtkGLAreaControlStack);
 
