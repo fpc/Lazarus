@@ -64,11 +64,6 @@ type
     procedure ValidateRename(AComponent: TComponent; const CurName, NewName: string); override;
     Procedure SelectOnlyThisComponent(AComponent:TComponent);
 
-    procedure MouseUpOnForm(Sender : TObject; Button: TMouseButton;
-                            Shift : TShiftState; X, Y: Integer);
-    procedure MouseDownOnForm(Sender : TObject; Button: TMouseButton;
-                              Shift : TShiftState; X, Y: Integer);
-    procedure MouseMoveOnForm(Sender : TObject; Shift : TShiftState; X, Y: Integer);
 
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property Form: TCustomForm read FCustomForm write FCustomForm;
@@ -123,105 +118,11 @@ begin
 end;
 
 
-procedure TDesigner.MouseDownOnForm(Sender : TObject; Button: TMouseButton;
-Shift : TShiftState; X, Y: Integer);
-Begin
-Writeln('MOUSEDOWNONFORM');
-  if GetCaptureGrabber<>nil then exit;
-
-  MouseDownPos.X := X;
-  MouseDownPos.Y := Y;
-  MouseDownControl:=Sender;
-  LastMouseMovePos:=MouseDownPos;
-
-End;
-
-procedure TDesigner.MouseMoveOnForm(Sender : TObject;
-Shift : TShiftState; X, Y: Integer);
-var
-  CurDesigner: TDesigner;
-  CaptureGrabber:TGrabber;
-Begin
-  Writeln('MouseMoveOnForm');
-  CaptureGrabber:=GetCaptureGrabber;
-  if CaptureGrabber<>nil then begin
-    CaptureGrabber.CaptureMouseMove(TControl(Sender),Shift,X,Y);
-  end else begin
-
-    if Assigned(MouseDownControl) then begin
-       LastMouseMovePos:=Point(X,Y);
-          end;
-        end;
-End;
-
-procedure TDesigner.MouseUpOnForm(Sender : TObject; Button: TMouseButton;
-Shift : TShiftState; X, Y: Integer);
-var
-  ParentCI, NewCI : TComponentInterface;
-  NewLeft, NewTop, NewWidth, NewHeight : Integer;
-//  CInterface : TComponentInterface;
-  CaptureGrabber:TGrabber;
-Begin
-  Writeln('MouseUpOnForm');
-  CaptureGrabber:=GetCaptureGrabber;
-  if CaptureGrabber<>nil then begin
-    CaptureGrabber.CaptureMouseUp(TControl(Sender),Button,Shift,X,Y);
-    exit;
-  end;
-  MouseUpPos.X := X;
-  MouseUpPos.Y := Y;
-
-
-  if FMainIDE.SelectedComponent = nil then
-  Begin //mouse pointer button pressed.
-      SelectOnlyThisComponent(TComponent(Sender));
-  end
-  else
-  Begin  //add a new control
-    ParentCI:=TComponentInterface(FFormEditor.FindComponent(TComponent(Sender)));
-    if (TComponent(Sender) is TWinControl)
-      and (not (csAcceptsControls in TWinControl(Sender).ControlStyle)) then
-    begin
-      ParentCI:=TComponentInterface(
-        FFormEditor.FindComponent(TWinControl(Sender).Parent));
-    end;
-    if Assigned(ParentCI) then begin
-      NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
-      NewWidth:=Abs(MouseUpPos.X-MouseDownPos.X);
-      NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y);
-      NewHeight:=Abs(MouseUpPos.Y-MouseDownPos.Y);
-      if Abs(NewWidth+NewHeight)<7 then begin
-        // this very small component is probably only a wag, take default size
-        NewWidth:=0;
-        NewHeight:=0;
-      end;
-      NewCI := TComponentInterface(FFormEditor.CreateComponent(ParentCI,FMainIDE.SelectedComponent.ComponentClass
-        ,NewLeft,NewTop,NewWidth,NewHeight));
-      NewCI.SetPropByName('Visible',True); //Control).Visible := True;
-
-      ObjectInspector1.FillComponentComboBox;
-      AddControlCode(NewCI.Control);
-      Writeln('2222');
-      if NewCI.Control is TControl then begin
-        // set the OnMouseDown and OnMouseUp event so we know when the control
-        // is selected or a new control is dropped
-          FMainIDE.SetDesigning(NewCI.Control);
-//        NewCI.SetPropByName('OnMouseUp',@MouseUpOnControl);
-//        NewCI.SetPropByName('OnMouseDown',@MouseDownOnControl);
-//        NewCI.SetPropByName('OnMouseMove',@MouseMoveOnControl);
-        SelectOnlyThisComponent(TComponent(NewCI.Control));
-      end;
-      Writeln('Calling ControlClick with Nil from MouseUponForm');
-      FMainIDE.ControlClick(FMainIDE.Notebook1);  //this resets it to the mouse.
-    end;
-  end;
-
-  MouseDownControl:=nil;
-  Writeln('Exiting MouseUPOnForm');
-end;
-
 procedure TDesigner.MouseDownOnControl(Sender : TControl; Message : TLMessage);
 Begin
+  if assigned(MouseDownControl) and (MOuseDownControl <> Sender) then Exit;
+  Writeln('Left is '+Inttostr(TCOntrol(Sender).left));
+  Writeln('Top is '+Inttostr(TCOntrol(Sender).Top));
   Writeln('***************************');
   Writeln('TDesigner.MouseDownOnControl');
   Writeln(Format('X,Y = %d,%d',[TLMMOuse(Message).pos.x,TLMMOuse(Message).pos.Y]));
@@ -241,11 +142,8 @@ Begin
     inc(MouseDownPos.Y,TControl(Sender).Top);
   end;
 
-  Writeln('Setting mousedowncontrol to'+TCOntrol(sender).name);
   MouseDownControl:=Sender;
   LastMouseMovePos:=MouseDownPos;
-  Writeln(TComponent(Sender).Name+'.OnMouseDown at '+inttostr(MouseDownPos.x)
-    +','+inttostr(MouseDownPos.Y));
 
   if FMainIDE.SelectedComponent = nil then
   Begin //mouse pointer button pressed.
@@ -271,6 +169,8 @@ var
   Shift : TShiftState;
   X,Y : Integer;
 Begin
+
+
   Writeln('***************************');
    Writeln('In TDesigner.UpOnControl');
   Writeln(Format('X,Y = %d,%d',[TLMMOuse(Message).pos.x,TLMMOuse(Message).pos.Y]));
@@ -293,15 +193,26 @@ Begin
   Y := TLMMOuse(Message).pos.Y;
   CaptureGrabber:=GetCaptureGrabber;
   if CaptureGrabber<>nil then begin
-     Writeln('CaptureGrabber <> nil');
     CaptureGrabber.CaptureMouseUp(TControl(Sender),Button,Shift,TLMMouse(Message).pos.X,TLMMouse(Message).pos.Y);
     exit;
   end;
 
+  if   ((not (Sender is TCustomForm))
+        or (( X < TControl(sender).left) or ( X > (TControl(sender).left+TControl(sender).Width)))
+        or (( Y < TControl(sender).Top) or ( Y > (TControl(sender).Top+TControl(sender).Height)))) then begin
+    inc(X,TControl(Sender).Left);
+    inc(Y,TControl(Sender).Top);
+    end;
+
+
   if MouseDownControl = Sender then
     Begin
+    Writeln('***************');
+    Writeln(Format('MouseLAstPos.X,Y= %d,%d',[LastMOuseMovePos.X,LastMouseMovePos.Y]));
+    Writeln(Format('MouseDownPos.X,Y= %d,%d',[MOuseDownPos.X,MouseDownPos.Y]));
+
     ControlSelection.MoveSelection(X-LastMouseMovePos.X, Y-LastMouseMovePos.Y);
-    //do somerthing like ControlSelection.Sizecontent but move x and y from where
+    //do something like ControlSelection.Sizecontent but move x and y from where
     // the grabber started to where it finished.
     ControlSelection.MoveContent(X-MouseDownPos.X,Y-MouseDownPos.Y);
     end;
@@ -312,7 +223,6 @@ Begin
     inc(MouseUpPos.X,TControl(Sender).Left);
     inc(MouseUpPos.Y,TControl(Sender).Top);
   end;
-  Writeln(TComponent(Sender).Name+'.OnMouseUp at '+inttostr(TLMMouse(Message).pos.x)+','+inttostr(TLMMouse(Message).pos.y));
 
   if FMainIDE.SelectedComponent = nil then
   Begin //mouse pointer button pressed.
@@ -321,6 +231,8 @@ Begin
   end
   else
   Begin  //add a new control
+
+    FMainIDE.SetDesigning(FCustomForm,False);
     ParentCI:=TComponentInterface(FFormEditor.FindComponent(TComponent(Sender)));
     if (TComponent(Sender) is TWinControl)
       and (not (csAcceptsControls in TWinControl(Sender).ControlStyle)) then
@@ -341,21 +253,18 @@ Begin
       NewCI := TComponentInterface(FFormEditor.CreateComponent(ParentCI,FMainIDE.SelectedComponent.ComponentClass
         ,NewLeft,NewTop,NewWidth,NewHeight));
       NewCI.SetPropByName('Visible',True); //Control).Visible := True;
-
-      ObjectInspector1.FillComponentComboBox;
+{      if (NewCI.Control is TCOntrol) then Begin
+          Writeln('Setting visbile 2');
+          TCOntrol(NewCI.Control).Visible := True;
+          end;
+}      ObjectInspector1.FillComponentComboBox;
       AddControlCode(NewCI.Control);
 
-      if NewCI.Control is TControl then begin
-        // set the OnMouseDown and OnMouseUp event so we know when the control
-        // is selected or a new control is dropped
-//why cant I do this here???          NewCI.Control.SetDesigning(True);
-//        NewCI.SetPropByName('OnMouseUp',@MouseUpOnControl);
-//        NewCI.SetPropByName('OnMouseDown',@MouseDownOnControl);
-//        NewCI.SetPropByName('OnMouseMove',@MouseMoveOnControl);
         SelectOnlyThisComponent(TComponent(NewCI.Control));
-      end;
-        Writeln('Calling ControlClick with ni from MouseUpOnControl');
+        Writeln('Calling ControlClick with nil from MouseUpOnControl');
         FMainIDE.ControlClick(FMainIDE.Notebook1);  //this resets it to the mouse.
+        FMainIDE.SetDesigning(FCustomForm,True);
+
     end;
   end;
 
@@ -377,15 +286,23 @@ var
   Shift : TShiftState;
   X,Y : Integer;
 Begin
+
+//  if assigned(MouseDownControl) and (MOuseDownControl <> Sender) then Exit;
   Writeln('MouseMoveOnControl');
   X :=TLMMouse(Message).Pos.x;
   Y := TLMMouse(Message).Pos.Y;
   Writeln('MousePos');
   Writeln(Format('X,y = %d,%d',[Mouse.CursorPos.X,MOuse.CursorPos.Y]));
   Writeln('X and Y are '+inttostr(x)+','+inttostr(y));
+  If (sender is TControl) then Begin
+      Writeln('Sender is '+TControl(sender).Name);
+      Writeln('Left is '+Inttostr(TControl(sender).Left));
+      Writeln('Width is '+Inttostr(TControl(sender).Width));
+      Writeln('Top is '+Inttostr(TControl(sender).Top));
+      Writeln('Height is '+Inttostr(TControl(sender).Height));
+      end;
+  if Assigned(MouseDownControl) then Writeln('MouseDownControl is '+TCOntrol(MouseDownControl).Name);
 
-
-Writeln('Keys is '+inttostr(TlmMouse(Message).keys));
   if (TLMMouse(Message).keys and MK_LButton) = MK_LButton then
     Button := mbLEft
    else
@@ -400,19 +317,20 @@ Writeln('Keys is '+inttostr(TlmMouse(Message).keys));
 
   CaptureGrabber:=GetCaptureGrabber;
   if CaptureGrabber<>nil then begin
-    Writeln('CaptureGrabber is <> nil');
     CaptureGrabber.CaptureMouseMove(TControl(Sender),Shift,X,Y);
   end else begin
     if Assigned(MouseDownControl) then begin
-    Writeln('MouseDownControl is assigned');
       if FMainIDE.SelectedComponent = nil then begin
         // mouse pointer button pressed
-    Writeln('SelectedComponent = nil');
-
         if not (Sender is TCustomForm) then begin
           // move selection
-             ControlSelection.MoveSelection(
-              X-LastMouseMovePos.X, Y-LastMouseMovePos.Y);
+             Writeln('moving stuff');
+            {  if not(X in ([0 ..(TControl(sender).Width)])) or
+              not(Y in ([0 ..(TControl(sender).Height)])) then
+              exit;    }
+             ControlSelection.MoveSelection(X-LastMouseMovePos.X, Y-LastMouseMovePos.Y);
+//             ControlSelection.MoveContent(X-LastMouseMovePos.X, Y-LastMouseMovePos.Y);
+
             LastMouseMovePos:=Point(X,Y);
           end;
         end;
@@ -424,7 +342,14 @@ function TDesigner.IsDesignMsg(Sender: TControl; var Message: TLMessage): Boolea
 Begin
 result := false;
 if ((Message.msg >= LM_MOUSEFIRST) and (Message.msg <= LM_MOUSELAST)) then
-Result := true;
+Result := true
+else
+if ((Message.msg >= LM_KeyFIRST) and (Message.msg <= LM_KeyLAST)) then
+    Begin
+     Writeln('KEY MESSAGE in IsDesignMsg');
+     Result := true;
+    end;
+
 
 if (Message.msg=LM_LBUTTONDOWN) then
    begin
@@ -437,7 +362,8 @@ if (Message.msg=LM_LBUTTONUP) then
    end
 else
 if Message.msg = LM_MOUSEMOVE then
-   MouseMoveonCOntrol(Sender, Message);
+   MouseMoveonCOntrol(Sender, Message)
+
 
 
 {if Result then Writeln('It IS a design message')

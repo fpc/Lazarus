@@ -127,9 +127,6 @@ var
 
 procedure SetCaptureGrabber(AGrabber:TGrabber);
 begin
-Writeln('SETCAPTUREGRABBER to....');
-if AGrabber <> nil then Writeln('something') else writeln('nil');
-
   CaptureGrabber:=AGrabber;
 end;
 
@@ -142,7 +139,6 @@ end;
 
 constructor TGrabber.Create(AOwner: TComponent);
 begin
-writeln('[TGrabber.Create]');
   inherited Create(AOwner);
   ControlState := ControlState + [csCustomPaint];
   FDragging := False;
@@ -150,7 +146,7 @@ end;
 
 procedure TGrabber.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-writeln('[TGrabber.MouseDown] X='+IntToStr(X+Left)+',Y='+IntToStr(Y+Top));
+//writeln('[TGrabber.MouseDown] X='+IntToStr(X+Left)+',Y='+IntToStr(Y+Top));
   if CaptureGrabber<>nil then exit;
   // compute absolute mouse coordinates
   if (Button = mbLeft) and (not FDragging)
@@ -171,7 +167,7 @@ begin
     CaptureGrabber.CaptureMouseMove(Self,Shift, X, Y);
   end else begin
     if FDragging then begin
-writeln('[TGrabber.MouseMove] X='+IntToStr(X)+',Y='+IntToStr(Y));
+//writeln('[TGrabber.MouseMove] X='+IntToStr(X)+',Y='+IntToStr(Y));
       DoDragMove(X+Left,Y+Top);
     end else
       inherited MouseMove(Shift, X, Y);
@@ -182,10 +178,12 @@ procedure TGrabber.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integ
 var
   dx, dy: Integer;
 begin
+//Writeln('MouseUp in TGrabber');
+
   if (CaptureGrabber<>nil) and (CaptureGrabber<>Self) then begin
     CaptureGrabber.CaptureMouseUp(Self,Button, Shift, X, Y);
   end else begin
-writeln('[TGrabber.MouseUp] X='+IntToStr(X+Left)+',Y='+IntToStr(Y+Top));
+//writeln('[TGrabber.MouseUp] X='+IntToStr(X+Left)+',Y='+IntToStr(Y+Top));
     if FDragging then
       EndDragging(X+Left,Y+Top)
     else
@@ -196,14 +194,16 @@ end;
 procedure TGrabber.CaptureMouseMove(Sender:TControl;Shift: TShiftState;
 X, Y: Integer);
 begin
+//Writeln('CaptureMouseMove in TGrabber');
   if CaptureGrabber<>Self then exit;
-writeln('[TGrabber.CaptureMouseMove]');
+//writeln('[TGrabber.CaptureMouseMove]');
   MouseMove(Shift,X-CaptureGrabber.Left,Y-CaptureGrabber.Top);
 end;
 
 procedure TGrabber.CaptureMouseUp(Sender:TControl;Button: TMouseButton;
 Shift: TShiftState; X, Y: Integer);
 begin
+//Writeln('CaptureMouseUp in TGrabber');
   if CaptureGrabber<>Self then exit;
   if not (Sender is TCustomForm) then begin
     inc(X,TControl(Sender).Left);
@@ -216,7 +216,7 @@ procedure TGrabber.DoDragMove(NewX, NewY: integer);
 var dx, dy: Integer;
 begin
   if FDragging then begin
-writeln('[TGrabber.DoDragMove] NewX='+IntToStr(NewX)+',NewY='+IntToStr(NewY));
+//writeln('[TGrabber.DoDragMove] NewX='+IntToStr(NewX)+',NewY='+IntToStr(NewY));
     if [gpLeft, gpRight] * Positions <> []
     then dx := NewX - FLastMouseMove.X
     else dx := 0;
@@ -233,7 +233,7 @@ procedure TGrabber.EndDragging(NewX, NewY: integer);
 var dx, dy: Integer;
 begin
   if FDragging then begin
-writeln('[TGrabber.EndDragging] NewX='+IntToStr(NewX)+',NewY='+IntToStr(NewY));
+//writeln('[TGrabber.EndDragging] NewX='+IntToStr(NewX)+',NewY='+IntToStr(NewY));
     DoDragMove(NewX, NewY);
     FDragging := False;
     SetCaptureGrabber(nil);
@@ -257,16 +257,16 @@ end;
 
 procedure TControlSelection.MoveSelection(dx, dy: integer);
 begin
-Writeln('**********');
+{Writeln('**********');
 Writeln('Move Selection');
 Writeln(Format('dx,dy = %d,%d',[dx,dy]));
 Writeln(Format('FLeft,FTop= %d,%d',[FLeft,FTop]));
 Writeln('**********');
-
+ }
   if (dx<>0) or (dy<>0) then begin
     Inc(FLeft,dx);
     Inc(FTop,dy);
-  //  MoveContent(dx,dy);
+    MoveContent(dx,dy);
     SetGrabbers;
   end;
 end;
@@ -299,6 +299,8 @@ procedure TControlSelection.AdjustSize(AControl: TControl; Initial: Boolean);
 var
   n: Integer;
 begin
+Writeln('AdjustSize in TCOntrolSelection');
+
   if AControl <> nil
   then begin
     if Initial
@@ -372,6 +374,8 @@ end;
 
 procedure TControlSelection.ControlMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+Writeln('ControlMOuseDown in TCOntrolSelection');
+
   if Button = mbLeft
   then begin
     FStart := Point(X, Y);
@@ -401,7 +405,7 @@ Writeln('TCOntrolSelection.ControlMOuseUp');
     FDragging := False;
     Writeln(format('X-FStart.x = %d-%d=%d',[X,FStart.x,X-FStart.x]));
     Writeln(format('Y-FStart.Y = %d-%d=%d',[Y,FStart.y,Y-FStart.y]));
-    MoveContent(X - FStart.X, Y - FStart.Y);
+    //MoveContent(X - FStart.X, Y - FStart.Y);
   end;
 end;
 
@@ -438,6 +442,7 @@ begin
       OnMoved := @GrabberMoved;
     end;
   end;
+Writeln('Done in TControlSelection.Create');
 end;
 
 destructor TControlSelection.Destroy;
@@ -494,6 +499,7 @@ begin
   writeln('[TControlSelection.MoveContent] dx='+IntToStr(dx)+', dy='+IntToStr(dy));
   if FControlList.Count = 1 then
      begin
+      if (TCOntrol(FControlList[0]) is TCustomForm) then exit;
       TControl(FControlList[0]).SetBounds(FLeft, FTop, FWidth, FHeight);
      end
   else

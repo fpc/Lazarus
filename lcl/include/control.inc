@@ -407,9 +407,6 @@ Var
   Form : TCustomForm;
 begin
   if (csDesigning in ComponentState) then
-   Writeln('CSDesigning in ComponentState');
-
-  if (csDesigning in ComponentState) then
   begin
       Form := GetParentForm(Self);
       if (Form <> nil) and (Form.Designer <> nil) and
@@ -704,8 +701,8 @@ procedure TControl.SetMouseCapture(Value : Boolean);
 const
   BOOLTXT: array[Boolean] of String = ('False', 'True');
 begin
-  Assert(False, Format('trace:[TControl.SetMouseCapture] %s --> %s', [ClassName, BOOLTXT[Value]]));
 
+Writeln('SetMOuseCapture '+Self.Classname);
   if MouseCapture <> Value 
   then begin
     if Value 
@@ -991,14 +988,14 @@ Begin
 //The next line is commented out because it throws an exception.
 
 {if (CaptureControl <> self) and (dragging) then exit;
-
    begin
    CaptureControl.Perform(CM_MOUSELEAVE,0,0);
    if not CaptureControl.Dragging then
    CaptureControl := Self;
    end;
-}
-  if not (csNoStdEvents in COntrolStyle) 
+ }
+
+  if not (csNoStdEvents in COntrolStyle)
   then with Message do
     MouseMove(KeystoShiftState(Keys), XPos, YPos);
 
@@ -1276,6 +1273,10 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.9  2001/01/09 18:23:20  lazarus
+  Worked on moving controls.  It's just not working with the X and Y coord's I'm getting.
+  Shane
+
   Revision 1.8  2001/01/05 18:56:23  lazarus
   Minor changes
 

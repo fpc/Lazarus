@@ -331,6 +331,7 @@ var
   Msg: TLMMouseMove;
   ShiftState: TShiftState;
 begin
+
   ShiftState := GTKEventState2ShiftState(Event^.State);
   with Msg do
   begin
@@ -344,9 +345,13 @@ begin
     Writeln('  '+inttostr(XPos));
     Writeln('Y = ');
     Writeln('  '+inttostr(YPos));
+    Writeln('X_root = ');
+    Writeln('  '+inttostr(round(Event^.X_Root)));
+    Writeln('Y_root = ');
+    Writeln('  '+inttostr(round(Event^.Y_Root)));
     writeln('widget is ='+inttostr(longint(widget)));
     Writeln('------------------');
-}
+ }
     Keys := 0;
     if ssShift in ShiftState then Keys := Keys or MK_SHIFT;
     if ssCtrl in ShiftState then Keys := Keys or MK_CONTROL;
@@ -1090,6 +1095,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/01/09 18:23:21  lazarus
+  Worked on moving controls.  It's just not working with the X and Y coord's I'm getting.
+  Shane
+
   Revision 1.10  2001/01/04 15:09:05  lazarus
   Tested TCustomEdit.Readonly, MaxLength and CharCase.
   Shane

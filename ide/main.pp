@@ -187,7 +187,7 @@ type
     Procedure FormKill(Sender : TObject);
     Procedure SetFlags(SLIst : TUnitInfo);
     Procedure SetName_Form(SList : TUnitInfo);
-    Procedure SetDesigning(Control : TComponent);
+    Procedure SetDesigning(Control : TComponent; Value : Boolean);
     procedure FormPaint(Sender : TObject);
     //these numbers are used to determine where the mouse was when the button was pressed
     MouseDownPos, MouseUpPos, LastMouseMovePos : TPoint;
@@ -1138,9 +1138,9 @@ FControlLastActivated := Sender;
 
 end;
 
-Procedure TMainIDE.SetDesigning(Control : TComponent);
+Procedure TMainIDE.SetDesigning(Control : TComponent; Value : Boolean);
 Begin
-Control.SetDesigning(True);
+Control.SetDesigning(Value);
 end;
 
 
@@ -1426,7 +1426,6 @@ begin
        400,300));
 
   TempForm:=TForm(CInterface.Control);
-  //TempForm.SetDesigning(true);
 
   TempForm.Designer :=
     TDesigner.Create(TCustomForm(CInterface.Control));
@@ -1437,13 +1436,14 @@ begin
 
   TDesigner(tempForm.Designer).SourceEditor := SourceNotebook.CreateUnitFromForm(TempForm);
 
-  TempForm.OnMouseDown := @TDesigner(TempForm.Designer).MouseDownOnForm;
-  TempForm.OnMouseUp := @TDesigner(TempForm.Designer).MouseUpOnForm;
-  TempForm.OnMouseMove := @TDesigner(TempForm.Designer).MouseMoveOnForm;
+//  TempForm.OnMouseDown := @TDesigner(TempForm.Designer).MouseDownOnForm;
+//  TempForm.OnMouseUp := @TDesigner(TempForm.Designer).MouseUpOnForm;
+//  TempForm.OnMouseMove := @TDesigner(TempForm.Designer).MouseMoveOnForm;
+
   TempForm.OnActivate := @CodeOrFormActivated;
-  Writeln('display form');
   TempForm.Show;
-  Writeln('display form');
+
+  SetDesigning(TempForm,True);
 
   PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
   FormEditor1.ClearSelected;
@@ -1890,6 +1890,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.37  2001/01/09 18:23:20  lazarus
+  Worked on moving controls.  It's just not working with the X and Y coord's I'm getting.
+  Shane
+
   Revision 1.36  2001/01/08 23:48:33  lazarus
   MWE:
     ~ Changed makefiles

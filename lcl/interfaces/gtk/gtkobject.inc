@@ -2000,9 +2000,12 @@ end;
 {------------------------------------------------------------------------------}
 procedure TgtkObject.ShowHide(Sender : TObject);
 begin
-   if TControl(Sender).Visible
-   then gtk_widget_show(PgtkWidget(TWinControl(Sender).Handle))
-   else gtk_widget_hide(PgtkWidget(TWinControl(Sender).Handle));
+   if TControl(Sender).Visible then begin
+      gtk_widget_show(PgtkWidget(TWinControl(Sender).Handle))
+      end
+   else Begin
+        gtk_widget_hide(PgtkWidget(TWinControl(Sender).Handle));
+        end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -2700,6 +2703,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.16  2001/01/09 18:23:21  lazarus
+  Worked on moving controls.  It's just not working with the X and Y coord's I'm getting.
+  Shane
+
   Revision 1.15  2001/01/04 15:09:05  lazarus
   Tested TCustomEdit.Readonly, MaxLength and CharCase.
   Shane

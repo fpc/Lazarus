@@ -163,7 +163,6 @@ type
     property ActivePage;
     property PageIndex;
     property Pages;
-    property Page;
     property PageList;
     property OnPageChanged;
   end;
@@ -324,6 +323,10 @@ end.
 
  {
   $Log$
+  Revision 1.5  2001/01/09 18:23:20  lazarus
+  Worked on moving controls.  It's just not working with the X and Y coord's I'm getting.
+  Shane
+
   Revision 1.4  2001/01/05 18:56:23  lazarus
   Minor changes
 

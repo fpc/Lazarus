@@ -220,16 +220,13 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.CMDrag(var MEssage: TCMDrag);
 Begin
-Assert(False, 'Trace:*********************');
-Assert(False, 'Trace:*********************');
-Assert(False, 'Trace:************CMDRAG*********');
-Assert(False, 'Trace:*********************');
  with Message, DragRec^ do
    Begin
    case DragMessage of
          dmDragEnter, dmDragLEave,dmDragMOve, dmDragDrop :
                                    if target <> nil then TControl(target).DoDragMsg(Message);
          dmFindTarget:begin
+                       Writeln('dmFindTarget');
                        result := longint(ControlatPos(ScreentoClient(pos),False));
                        if Result = 0 then Result := longint(Self);
                       end;
@@ -439,28 +436,33 @@ begin
   then begin
 //    WriteLN(Format('[TWinControl.IsControlMouseMsg] %s --> We are capture', [ClassName]));
     Control := nil;
-//    if CaptureControl <> nil 
-//    then WriteLN(Format('[TWinControl.IsControlMouseMsg] %s --> CaptureControl = %s', [ClassName, CaptureControl.ClassName]));
-
+{    if CaptureControl <> nil
+    then WriteLN(Format('[TWinControl.IsControlMouseMsg] %s --> CaptureControl = %s', [ClassName, CaptureControl.ClassName]));
+}
     if (CaptureControl <> nil) 
     and (CaptureControl.Parent = Self) 
     then Control := CaptureControl;
   end
   else Control := ControlAtPos(SmallPointtoPoint(Message.Pos),False);
 
+    if CaptureControl <> nil
+    then WriteLN(Format('[TWinControl.IsControlMouseMsg] %s --> CaptureControl = %s', [ClassName, CaptureControl.ClassName]));
+
 {if Control <> nil then
-  Writeln('---------------COntrol is present')
+  Writeln('---------------COntrol is present.  Its '+TCOntrol(Control).name)
   else
   Writeln('ISCONTROLMOUSEMSG - Control=nil');
- }
+}
   Result := False;
   if Control <> nil 
   then begin
+//    Writeln('Control <> nil');
     P.X := Message.XPos - Control.Left;
     P.Y := Message.YPos - Control.Top;
 //    writeln('P.x and P.y = '+inttostr(p.x)+'  '+inttostr(p.y));
-//    WriteLN(Format('[TWinControl.IsControlMouseMsg] %s --> perform message', [ClassName]));
+//    WriteLN(Format('[TWinControl.IsControlMouseMsg] %s --> perform message', [Control.ClassName]));
     Control.Perform(Message.Msg, Message.Keys, LongInt(PointtoSmallPoint(P)));
+//    Writeln('done');
     Result := True;
   end;
 end;
@@ -1890,6 +1892,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/01/09 18:23:21  lazarus
+  Worked on moving controls.  It's just not working with the X and Y coord's I'm getting.
+  Shane
+
   Revision 1.6  2000/12/29 18:33:54  lazarus
   TStatusBar's create and destroy were not set to override TWinControls so they were never called.
   Shane
