@@ -1013,10 +1013,7 @@ begin
       if (Screen.Forms[I].Menu = Value) and (Screen.Forms[I] <> Self) then
         raise EInvalidOperation.CreateFmt(sDuplicateMenus, [Value.Name]);
 
-  if FMenu<>nil then begin
-    FMenu.Parent:=nil;
-    
-  end;
+  if FMenu<>nil then FMenu.Parent:=nil;
 
   if (csDestroying in ComponentState) or
     ((Value <> nil) and (csDestroying in Value.ComponentState))
@@ -1823,6 +1820,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.167  2004/12/05 13:25:47  mattias
+  destroying clean up
+
   Revision 1.166  2004/12/05 13:20:29  mattias
   destroying TMenu Handle when Set Parent=nil
 

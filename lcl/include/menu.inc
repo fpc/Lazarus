@@ -54,8 +54,10 @@ procedure TMenu.SetParent(const AValue: TComponent);
 begin
   if FParent=AValue then exit;
   FParent:=AValue;
-  if (Items<>nil) and Items.HandleAllocated then
+  if (FParent=nil) and (Items<>nil) and Items.HandleAllocated then begin
+    // disconnect from form
     DestroyHandle;
+  end;
 end;
 
 procedure TMenu.ImageListChange(Sender: TObject);
@@ -242,6 +244,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/12/05 13:25:47  mattias
+  destroying clean up
+
   Revision 1.27  2004/12/05 13:20:29  mattias
   destroying TMenu Handle when Set Parent=nil
 
