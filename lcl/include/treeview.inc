@@ -4478,8 +4478,6 @@ begin
 end;}
 
 procedure TCustomTreeView.WMVScroll(var Msg: TLMScroll);
-var
-  ScrollInfo: TScrollInfo;
 begin
   case Msg.ScrollCode of
       // Scrolls to start / end of the text
@@ -4495,21 +4493,13 @@ begin
                                      + FDefItemHeight;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
-    SB_THUMBTRACK:
-      begin
-        FillChar(ScrollInfo,SizeOf(ScrollInfo),0);
-        ScrollInfo.fMask:=SIF_POS;
-        GetScrollInfo(Handle,SB_VERT,ScrollInfo);
-        ScrolledTop := ScrollInfo.nPos;
-      end;
+    SB_THUMBTRACK: ScrolledTop := Msg.Pos;
 
     SB_ENDSCROLL: ; // Ends scrolling
   end;
 end;
 
 procedure TCustomTreeView.WMHScroll(var Msg: TLMScroll);
-var
-  ScrollInfo: TScrollInfo;
 begin
   case Msg.ScrollCode of
       // Scrolls to start / end of the text
@@ -4525,12 +4515,7 @@ begin
                                        + FDefItemHeight;
       // Scrolls to the current scroll bar position
     SB_THUMBPOSITION,
-    SB_THUMBTRACK: begin
-        FillChar(ScrollInfo,SizeOf(ScrollInfo),0);
-        ScrollInfo.fMask:=SIF_POS;
-        GetScrollInfo(Handle,SB_HORZ,ScrollInfo);
-        ScrolledLeft := ScrollInfo.nPos;
-      end;
+    SB_THUMBTRACK: ScrolledLeft := Msg.Pos;
       
     SB_ENDSCROLL: ;// Ends scrolling
   end;
