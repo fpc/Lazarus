@@ -191,7 +191,7 @@ override EXEOBJECTS+=hello notebk comdialogs progressbar trackbar listboxtest bi
 
 # Clean
 
-override EXTRACLEANUNITS+=$(basename $(wildcard *$(PPUEXT)))
+override EXTRACLEANUNITS+=$(notdir $(basename $(wildcard *$(PPUEXT))))
 
 # Install
 
@@ -205,9 +205,6 @@ ZIPTARGET=install
 # Directories
 
 override NEEDUNITDIR=. ../lcl/units ../components/units ../designer
-ifndef TARGETDIR
-TARGETDIR=.
-endif
 
 # Packages
 
@@ -1011,11 +1008,12 @@ endif
 ifdef INSTALLPPUFILES
 override INSTALLPPUFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(INSTALLPPUFILES))
 ifdef PPUFILES
-INSTALLPPULINKFILES:=$(shell $(PPUFILES) -S -O $(INSTALLPPUFILES))
+INSTALLPPULINKFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(shell $(PPUFILES) -S -O $(INSTALLPPUFILES)))
 else
 INSTALLPPULINKFILES:=$(wildcard $(subst $(PPUEXT),$(OEXT),$(INSTALLPPUFILES)) $(addprefix $(LIBPREFIX),$(subst $(PPUEXT),$(STATICLIBEXT),$(INSTALLPPUFILES))))
 endif
-override INSTALLPPULINKFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(INSTALLPPULINKFILES))
+# MWE: not here UNITTARGETDIRPREFIX is already added when no PPUFILES
+# override INSTALLPPULINKFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(INSTALLPPULINKFILES))
 endif
 
 ifdef INSTALLEXEFILES
@@ -1128,7 +1126,7 @@ ifndef PACKDIR
 ifndef inUnix
 PACKDIR=$(BASEDIR)/pack_tmp
 else
-PACKDIR=/tmp/fpc-pack
+PACKDIR=/tmp/lazarus-pack
 endif
 endif
 
@@ -1220,11 +1218,12 @@ ifdef CLEANPPUFILES
 override CLEANPPUFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(CLEANPPUFILES))
 # Get the .o and .a files created for the units
 ifdef PPUFILES
-CLEANPPULINKFILES:=$(shell $(PPUFILES) $(CLEANPPUFILES))
+CLEANPPULINKFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(shell $(PPUFILES) $(CLEANPPUFILES)))
 else
 CLEANPPULINKFILES:=$(wildcard $(subst $(PPUEXT),$(OEXT),$(CLEANPPUFILES)) $(addprefix $(LIBPREFIX),$(subst $(PPUEXT),$(STATICLIBEXT),$(CLEANPPUFILES))))
 endif
-override CLEANPPULINKFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(CLEANPPULINKFILES))
+# MWE: not here UNITTARGETDIRPREFIX is already added when no PPUFILES
+# override CLEANPPULINKFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(CLEANPPULINKFILES))
 endif
 
 fpc_clean: $(CLEANTARGET)

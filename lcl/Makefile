@@ -172,6 +172,21 @@ endif
 endif
 endif
 
+ifndef PACKAGESDIR
+PACKAGESDIR=$(FPCDIR)/packages
+endif
+ifndef TOOLKITSDIR
+TOOLKITSDIR=
+endif
+ifndef COMPONENTSDIR
+COMPONENTSDIR=
+endif
+
+# Create units dir
+ifneq ($(FPCDIR),.)
+UNITSDIR=$(FPCDIR)/units/$(OS_TARGET)
+endif
+
 #####################################################################
 # User Settings
 #####################################################################
@@ -183,7 +198,6 @@ endif
 # Clean
 
 override EXTRACLEANUNITS+=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
-override EXTRACLEANFILES+=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
 
 # Install
 
@@ -205,7 +219,7 @@ endif
 
 # Packages
 
-override PACKAGES+=fcl gtk
+override PACKAGES+=rtl fcl gtk
 
 # Libraries
 
@@ -484,12 +498,56 @@ endif
 endif
 
 
+# Check if the dirs really exists, else turn it off
+ifeq ($(wildcard $(UNITSDIR)),)
+UNITSDIR=
+endif
+ifeq ($(wildcard $(TOOLKITSDIR)),)
+TOOLKITSDIR=
+endif
+ifeq ($(wildcard $(PACKAGESDIR)),)
+PACKAGESDIR=
+endif
+ifeq ($(wildcard $(COMPONENTSDIR)),)
+COMPONENTSDIR=
+endif
+
 
 # PACKAGESDIR packages
 
+PACKAGERTL=1
 PACKAGEFCL=1
 PACKAGEGTK=1
 
+ifdef PACKAGERTL
+ifneq ($(wildcard $(FPCDIR)/rtl),)
+ifneq ($(wildcard $(FPCDIR)/rtl/$(OS_TARGET)),)
+PACKAGEDIR_RTL=$(FPCDIR)/rtl/$(OS_TARGET)
+else
+PACKAGEDIR_RTL=$(FPCDIR)/rtl
+endif
+ifeq ($(wildcard $(PACKAGEDIR_RTL)/$(FPCMADE)),)
+override COMPILEPACKAGES+=package_rtl
+package_rtl:
+	$(MAKE) -C $(PACKAGEDIR_RTL) all
+endif
+UNITDIR_RTL=$(PACKAGEDIR_RTL)
+else
+PACKAGEDIR_RTL=
+ifneq ($(wildcard $(UNITSDIR)/rtl),)
+ifneq ($(wildcard $(UNITSDIR)/rtl/$(OS_TARGET)),)
+UNITDIR_RTL=$(UNITSDIR)/rtl/$(OS_TARGET)
+else
+UNITDIR_RTL=$(UNITSDIR)/rtl
+endif
+else
+UNITDIR_RTL=
+endif
+endif
+ifdef UNITDIR_RTL
+override NEEDUNITDIR+=$(UNITDIR_RTL)
+endif
+endif
 ifdef PACKAGEFCL
 ifneq ($(wildcard $(FPCDIR)/fcl),)
 ifneq ($(wildcard $(FPCDIR)/fcl/$(OS_TARGET)),)
@@ -952,11 +1010,12 @@ endif
 ifdef INSTALLPPUFILES
 override INSTALLPPUFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(INSTALLPPUFILES))
 ifdef PPUFILES
-INSTALLPPULINKFILES:=$(shell $(PPUFILES) -S -O $(INSTALLPPUFILES))
+INSTALLPPULINKFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(shell $(PPUFILES) -S -O $(INSTALLPPUFILES)))
 else
 INSTALLPPULINKFILES:=$(wildcard $(subst $(PPUEXT),$(OEXT),$(INSTALLPPUFILES)) $(addprefix $(LIBPREFIX),$(subst $(PPUEXT),$(STATICLIBEXT),$(INSTALLPPUFILES))))
 endif
-override INSTALLPPULINKFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(INSTALLPPULINKFILES))
+# MWE: not here UNITTARGETDIRPREFIX is already added when no PPUFILES
+# override INSTALLPPULINKFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(INSTALLPPULINKFILES))
 endif
 
 ifdef INSTALLEXEFILES
@@ -1069,7 +1128,7 @@ ifndef PACKDIR
 ifndef inUnix
 PACKDIR=$(BASEDIR)/pack_tmp
 else
-PACKDIR=/tmp/fpc-pack
+PACKDIR=/tmp/lazarus-pack
 endif
 endif
 
@@ -1161,11 +1220,12 @@ ifdef CLEANPPUFILES
 override CLEANPPUFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(CLEANPPUFILES))
 # Get the .o and .a files created for the units
 ifdef PPUFILES
-CLEANPPULINKFILES:=$(shell $(PPUFILES) $(CLEANPPUFILES))
+CLEANPPULINKFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(shell $(PPUFILES) $(CLEANPPUFILES)))
 else
 CLEANPPULINKFILES:=$(wildcard $(subst $(PPUEXT),$(OEXT),$(CLEANPPUFILES)) $(addprefix $(LIBPREFIX),$(subst $(PPUEXT),$(STATICLIBEXT),$(CLEANPPUFILES))))
 endif
-override CLEANPPULINKFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(CLEANPPULINKFILES))
+# MWE: not here UNITTARGETDIRPREFIX is already added when no PPUFILES
+# override CLEANPPULINKFILES:=$(addprefix $(UNITTARGETDIRPREFIX),$(CLEANPPULINKFILES))
 endif
 
 fpc_clean: $(CLEANTARGET)

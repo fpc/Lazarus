@@ -4,19 +4,16 @@
 #
 
 [targets]
-dirs=synedit mwedit
+dirs=apiwizz
 
 [dirs]
 # target dir needs to be . or a full path otherwise the 
 # unittargetdir will be corrupt
 # not with the lazarusmake.ini
 # targetdir=.
-unittargetdir=./units
 
 [install]
-units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
-packagename=components
-
+packagename=tools
 
 [presettings]
 

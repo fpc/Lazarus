@@ -8,12 +8,14 @@
 # loaders=allunits
 
 [require]
+rtl=1
 options=-Ca
 packages=fcl gtk
 
 [clean]
 units=$(notdir $(basename $(wildcard $(UNITTARGETDIR)/*$(PPUEXT))))
-files=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
+# not with the lazarusmake.ini
+# files=$(wildcard $(UNITTARGETDIR)/*$(OEXT))
 
 [dirs]
 # target dir needs to be . or a full path otherwise the 

@@ -7,13 +7,15 @@ programs=hello notebk comdialogs progressbar trackbar listboxtest \
          bitbutton combobox checkbox selection scrollbar
 
 [clean]
-units=$(basename $(wildcard *$(PPUEXT))) 
+units=$(notdir $(basename $(wildcard *$(PPUEXT)))) 
 
 [require]
+rtl=1
 packages=fcl gtk
 
 [dirs]
-targetdir=.
+# not with the lazarusmake.ini
+# targetdir=.
 unitdir=. ../lcl/units ../components/units ../designer
 
 [install]

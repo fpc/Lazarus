@@ -6,8 +6,10 @@
 programs=apiwizz
 
 [clean]
+units=apiwizard
 
 [require]
+rtl=1
 packages=fcl gtk
 
 [presettings]
@@ -16,15 +18,7 @@ LAZDIR=../..
 [dirs]
 fpcdir=$(LAZDIR)/..
 targetdir=.
-##############################
-# replace following lines by the next line as soon
-# as the compiler dependency bug is fixed 
-##############################
-#unitdir=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units 
-##############################
-unitdir=. $(LAZDIR)/lcl/units $(LAZDIR)/lcl $(LAZDIR)/lcl/interfaces/units $(LAZDIR)/lcl/interfaces/gtk 
-incdir=. $(LAZDIR)/lcl/include
-##############################
+unitdir=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units 
 
 [libs]
 

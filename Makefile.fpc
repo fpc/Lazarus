@@ -4,18 +4,20 @@
 
 [targets]
 programs=lazarus
-#dirs=lcl components designer
 dirs=lcl components 
 exampledirs=examples
 
 [clean]
-units=$(basename $(wildcard *$(PPUEXT)))
+units=$(basename $(wildcard *$(PPUEXT))) $(basename $(wildcard ./designer/*$(PPUEXT)))
+files=$(wildcard ./designer/*$(OEXT))
 
 [require]
+rtl=1
 packages=fcl gtk
 
 [dirs]
-targetdir=.
+# not with the lazarusmake.ini
+# targetdir=.
 unitdir=. ./lcl/units ./components/units ./designer
 incdir=. ./include ./include/$(OS_TARGET)
 
@@ -25,7 +27,7 @@ packagename=lazarus
 [presettings]
 
 [rules]
-.PHONY: examples lcl components ide
+.PHONY: examples lcl components ide tools
 
 lcl: lcl_all 
 
@@ -36,5 +38,8 @@ components: lcl components_all
 
 ide: 
         $(MAKE) --assume-new=lazarus.pp lazarus$(EXEEXT)
+
+tools: lcl components 
+        $(MAKE) -C tools
 
 all: lcl components ide

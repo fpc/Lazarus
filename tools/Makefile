@@ -127,11 +127,6 @@ endif
 export FPC OS_TARGET OS_SOURCE CPU_TARGET CPU_SOURCE FPC_VERSION
 
 #####################################################################
-# Pre Settings
-#####################################################################
-
-LAZDIR=../..
-#####################################################################
 # FPCDIR Setting
 #####################################################################
 
@@ -145,16 +140,6 @@ endif
 endif
 else
 override FPCDIR=wrong
-endif
-
-# Default FPCDIR
-ifeq ($(FPCDIR),wrong)
-override FPCDIR=$(LAZDIR)/..
-ifeq ($(wildcard $(FPCDIR)/rtl),)
-ifeq ($(wildcard $(FPCDIR)/units),)
-override FPCDIR=wrong
-endif
-endif
 endif
 
 # Detect FPCDIR
@@ -180,21 +165,6 @@ endif
 endif
 endif
 
-ifndef PACKAGESDIR
-PACKAGESDIR=$(FPCDIR)/packages
-endif
-ifndef TOOLKITSDIR
-TOOLKITSDIR=
-endif
-ifndef COMPONENTSDIR
-COMPONENTSDIR=
-endif
-
-# Create units dir
-ifneq ($(FPCDIR),.)
-UNITSDIR=$(FPCDIR)/units/$(OS_TARGET)
-endif
-
 #####################################################################
 # User Settings
 #####################################################################
@@ -202,14 +172,14 @@ endif
 
 # Targets
 
-override EXEOBJECTS+=apiwizz
+override DIROBJECTS+=$(wildcard apiwizz)
 
 # Clean
 
-override EXTRACLEANUNITS+=apiwizard
 
 # Install
 
+PACKAGENAME=tools
 ZIPTARGET=install
 
 # Defaults
@@ -217,14 +187,9 @@ ZIPTARGET=install
 
 # Directories
 
-override NEEDUNITDIR=. $(LAZDIR)/lcl/units $(LAZDIR)/components/units
-ifndef TARGETDIR
-TARGETDIR=.
-endif
 
 # Packages
 
-override PACKAGES+=rtl fcl gtk
 
 # Libraries
 
@@ -503,115 +468,6 @@ endif
 endif
 
 
-# Check if the dirs really exists, else turn it off
-ifeq ($(wildcard $(UNITSDIR)),)
-UNITSDIR=
-endif
-ifeq ($(wildcard $(TOOLKITSDIR)),)
-TOOLKITSDIR=
-endif
-ifeq ($(wildcard $(PACKAGESDIR)),)
-PACKAGESDIR=
-endif
-ifeq ($(wildcard $(COMPONENTSDIR)),)
-COMPONENTSDIR=
-endif
-
-
-# PACKAGESDIR packages
-
-PACKAGERTL=1
-PACKAGEFCL=1
-PACKAGEGTK=1
-
-ifdef PACKAGERTL
-ifneq ($(wildcard $(FPCDIR)/rtl),)
-ifneq ($(wildcard $(FPCDIR)/rtl/$(OS_TARGET)),)
-PACKAGEDIR_RTL=$(FPCDIR)/rtl/$(OS_TARGET)
-else
-PACKAGEDIR_RTL=$(FPCDIR)/rtl
-endif
-ifeq ($(wildcard $(PACKAGEDIR_RTL)/$(FPCMADE)),)
-override COMPILEPACKAGES+=package_rtl
-package_rtl:
-	$(MAKE) -C $(PACKAGEDIR_RTL) all
-endif
-UNITDIR_RTL=$(PACKAGEDIR_RTL)
-else
-PACKAGEDIR_RTL=
-ifneq ($(wildcard $(UNITSDIR)/rtl),)
-ifneq ($(wildcard $(UNITSDIR)/rtl/$(OS_TARGET)),)
-UNITDIR_RTL=$(UNITSDIR)/rtl/$(OS_TARGET)
-else
-UNITDIR_RTL=$(UNITSDIR)/rtl
-endif
-else
-UNITDIR_RTL=
-endif
-endif
-ifdef UNITDIR_RTL
-override NEEDUNITDIR+=$(UNITDIR_RTL)
-endif
-endif
-ifdef PACKAGEFCL
-ifneq ($(wildcard $(FPCDIR)/fcl),)
-ifneq ($(wildcard $(FPCDIR)/fcl/$(OS_TARGET)),)
-PACKAGEDIR_FCL=$(FPCDIR)/fcl/$(OS_TARGET)
-else
-PACKAGEDIR_FCL=$(FPCDIR)/fcl
-endif
-ifeq ($(wildcard $(PACKAGEDIR_FCL)/$(FPCMADE)),)
-override COMPILEPACKAGES+=package_fcl
-package_fcl:
-	$(MAKE) -C $(PACKAGEDIR_FCL) all
-endif
-UNITDIR_FCL=$(PACKAGEDIR_FCL)
-else
-PACKAGEDIR_FCL=
-ifneq ($(wildcard $(UNITSDIR)/fcl),)
-ifneq ($(wildcard $(UNITSDIR)/fcl/$(OS_TARGET)),)
-UNITDIR_FCL=$(UNITSDIR)/fcl/$(OS_TARGET)
-else
-UNITDIR_FCL=$(UNITSDIR)/fcl
-endif
-else
-UNITDIR_FCL=
-endif
-endif
-ifdef UNITDIR_FCL
-override NEEDUNITDIR+=$(UNITDIR_FCL)
-endif
-endif
-ifdef PACKAGEGTK
-ifneq ($(wildcard $(PACKAGESDIR)/gtk),)
-ifneq ($(wildcard $(PACKAGESDIR)/gtk/$(OS_TARGET)),)
-PACKAGEDIR_GTK=$(PACKAGESDIR)/gtk/$(OS_TARGET)
-else
-PACKAGEDIR_GTK=$(PACKAGESDIR)/gtk
-endif
-ifeq ($(wildcard $(PACKAGEDIR_GTK)/$(FPCMADE)),)
-override COMPILEPACKAGES+=package_gtk
-package_gtk:
-	$(MAKE) -C $(PACKAGEDIR_GTK) all
-endif
-UNITDIR_GTK=$(PACKAGEDIR_GTK)
-else
-PACKAGEDIR_GTK=
-ifneq ($(wildcard $(UNITSDIR)/gtk),)
-ifneq ($(wildcard $(UNITSDIR)/gtk/$(OS_TARGET)),)
-UNITDIR_GTK=$(UNITSDIR)/gtk/$(OS_TARGET)
-else
-UNITDIR_GTK=$(UNITSDIR)/gtk
-endif
-else
-UNITDIR_GTK=
-endif
-endif
-ifdef UNITDIR_GTK
-override NEEDUNITDIR+=$(UNITDIR_GTK)
-endif
-endif
-
 
 #####################################################################
 # Default Directories
@@ -816,10 +672,6 @@ ifdef VERBOSE
 override FPCOPT+=-vwni
 endif
 
-ifdef NEEDUNITDIR
-override FPCOPT+=$(addprefix -Fu,$(NEEDUNITDIR))
-endif
-
 ifdef UNITSDIR
 override FPCOPT+=-Fu$(UNITSDIR)
 endif
@@ -891,15 +743,17 @@ endif
 # Standard rules
 #####################################################################
 
-debug: fpc_debug
+all: fpc_all $(addsuffix _all,$(DIROBJECTS))
 
-smart: fpc_smart
+debug: fpc_debug $(addsuffix _debug,$(DIROBJECTS))
 
-shared: fpc_shared
+smart: fpc_smart $(addsuffix _smart,$(DIROBJECTS))
 
-showinstall: fpc_showinstall
+shared: fpc_shared $(addsuffix _shared,$(DIROBJECTS))
 
-install: fpc_install
+showinstall: fpc_showinstall $(addsuffix _showinstall,$(DIROBJECTS))
+
+install: fpc_install $(addsuffix _install,$(DIROBJECTS))
 
 sourceinstall: fpc_sourceinstall
 
@@ -911,33 +765,17 @@ zipsourceinstall: fpc_zipsourceinstall
 
 zipexampleinstall: fpc_zipexampleinstall
 
-clean: fpc_clean
+clean: fpc_clean $(addsuffix _clean,$(DIROBJECTS))
 
-distclean: fpc_distclean
+distclean: fpc_distclean $(addsuffix _distclean,$(DIROBJECTS))
 
-cleanall: fpc_cleanall
+cleanall: fpc_cleanall $(addsuffix _cleanall,$(DIROBJECTS))
+
+require: $(addsuffix _require,$(DIROBJECTS))
 
 info: fpc_info
 
-.PHONY:  debug smart shared showinstall install sourceinstall exampleinstall zipinstall zipsourceinstall zipexampleinstall clean distclean cleanall info
-
-#####################################################################
-# Exes
-#####################################################################
-
-.PHONY: fpc_exes
-
-ifdef EXEOBJECTS
-override EXEFILES=$(addsuffix $(EXEEXT),$(EXEOBJECTS))
-override EXEOFILES:=$(addsuffix $(OEXT),$(EXEOBJECTS)) $(addprefix $(LIBPREFIX),$(addsuffix $(STATICLIBEXT),$(EXEOBJECTS)))
-
-override ALLTARGET+=fpc_exes
-override INSTALLEXEFILES+=$(EXEFILES)
-override CLEANEXEFILES+=$(EXEFILES) $(EXEOFILES)
-
-endif
-
-fpc_exes: $(EXEFILES)
+.PHONY:  all debug smart shared showinstall install sourceinstall exampleinstall zipinstall zipsourceinstall zipexampleinstall clean distclean cleanall require info
 
 #####################################################################
 # General compile rules
@@ -1342,6 +1180,72 @@ endif
 	@$(ECHO)
 
 #####################################################################
+# Directories
+#####################################################################
+
+OBJECTDIRAPIWIZZ=1
+
+# Dir apiwizz
+
+ifdef OBJECTDIRAPIWIZZ
+.PHONY:  apiwizz_all apiwizz_debug apiwizz_examples apiwizz_test apiwizz_smart apiwizz_shared apiwizz_showinstall apiwizz_install apiwizz_sourceinstall apiwizz_exampleinstall apiwizz_zipinstall apiwizz_zipsourceinstall apiwizz_zipexampleinstall apiwizz_clean apiwizz_distclean apiwizz_cleanall apiwizz_require apiwizz_info
+
+apiwizz_all:
+	$(MAKE) -C apiwizz all
+
+apiwizz_debug:
+	$(MAKE) -C apiwizz debug
+
+apiwizz_examples:
+	$(MAKE) -C apiwizz examples
+
+apiwizz_test:
+	$(MAKE) -C apiwizz test
+
+apiwizz_smart:
+	$(MAKE) -C apiwizz smart
+
+apiwizz_shared:
+	$(MAKE) -C apiwizz shared
+
+apiwizz_showinstall:
+	$(MAKE) -C apiwizz showinstall
+
+apiwizz_install:
+	$(MAKE) -C apiwizz install
+
+apiwizz_sourceinstall:
+	$(MAKE) -C apiwizz sourceinstall
+
+apiwizz_exampleinstall:
+	$(MAKE) -C apiwizz exampleinstall
+
+apiwizz_zipinstall:
+	$(MAKE) -C apiwizz zipinstall
+
+apiwizz_zipsourceinstall:
+	$(MAKE) -C apiwizz zipsourceinstall
+
+apiwizz_zipexampleinstall:
+	$(MAKE) -C apiwizz zipexampleinstall
+
+apiwizz_clean:
+	$(MAKE) -C apiwizz clean
+
+apiwizz_distclean:
+	$(MAKE) -C apiwizz distclean
+
+apiwizz_cleanall:
+	$(MAKE) -C apiwizz cleanall
+
+apiwizz_require:
+	$(MAKE) -C apiwizz require
+
+apiwizz_info:
+	$(MAKE) -C apiwizz info
+endif
+
+#####################################################################
 # Local Makefile
 #####################################################################
 
@@ -1349,9 +1253,3 @@ ifneq ($(wildcard fpcmake.loc),)
 include fpcmake.loc
 endif
 
-#####################################################################
-# Users rules
-#####################################################################
-
-all: 
-	$(MAKE) --assume-new=apiwizz.pp apiwizz$(EXEEXT)
