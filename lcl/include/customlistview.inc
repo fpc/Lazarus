@@ -66,7 +66,6 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.CNNotify(var AMessage: TLMNotify);
 var
-  n: Integer;
   nm: PNMListView;
   Item: TListItem;
 begin
@@ -428,6 +427,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/03/27 08:57:17  lazarus
+  MG: reduced compiler warnings
+
   Revision 1.16  2002/03/27 00:33:54  lazarus
   MWE:
     * Cleanup in lmessages

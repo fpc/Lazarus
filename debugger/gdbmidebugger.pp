@@ -207,8 +207,8 @@ end;
 { =========================================================================== }
 
 function TGDBMIDebugger.ChangeFileName: Boolean;
-var
-  S: String;
+//var
+//  S: String;
 begin
   FHasSymbols := True; // True untilproven otherwise
   Result := ExecuteCommand('-file-exec-and-symbols %s', [FileName]) and inherited ChangeFileName;   
@@ -893,6 +893,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.4  2002/03/27 08:57:16  lazarus
+  MG: reduced compiler warnings
+
   Revision 1.3  2002/03/23 15:54:30  lazarus
   MWE:
     + Added locals dialog

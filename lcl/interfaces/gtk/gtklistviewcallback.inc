@@ -130,15 +130,15 @@ begin
 end;
 
 function gtkLVToggleFocusRow(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
-var
-  msg: TLMNotify;
-  NM: TNMListView;
+//var
+  //msg: TLMNotify;
+  //NM: TNMListView;
 begin
   EventTrace('toggle-focus-row', Adata);
-  msg.Msg := LM_NOTIFY;                 
+  //msg.Msg := LM_NOTIFY;
 (*
   TODO:
-  Do we need this
+  Do we need this?
 *)
   Result := False;
 end;
@@ -174,11 +174,13 @@ end;
 function gtkLVUnSelectAll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 begin
   EventTrace('unselect-all', Adata);
+  Result:=true;
 end;
 
 function gtkLVEndSelection(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 begin
   EventTrace('end-selection', Adata);
+  Result:=true;
 end;
          
          
