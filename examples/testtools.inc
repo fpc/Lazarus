@@ -346,7 +346,6 @@ cbbPenStyle := TComboBox.Create(Self); //Canvas.PenStyle
      Items.Add('psDashDot');
      Items.Add('psDashDotDot');
      Items.Add('psDot');
-     Items.Add('psInsideFrame');
      Items.Add('psSolid');
      Show;
    end;
@@ -1892,8 +1891,6 @@ begin
     BenchForm[5].Canvas.Pen.Style := psDashDotDot
   Else If cbbPenStyle.Text = 'psDot' then
     BenchForm[5].Canvas.Pen.Style := psDot
-  Else If cbbPenStyle.Text = 'psInsideFrame' then
-    BenchForm[5].Canvas.Pen.Style := psInsideFrame
   Else If cbbPenStyle.Text = 'psSolid' then
     BenchForm[5].Canvas.Pen.Style := psSolid;
 
@@ -2886,6 +2883,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.16  2005/02/27 10:09:41  mattias
+  fixed example compiling
+
   Revision 1.15  2004/03/08 00:12:42  mattias
   fixed compilation
 
