@@ -90,6 +90,7 @@ begin
 
 end;
 
+
 {$I interfacebase.inc}
 
 
@@ -101,6 +102,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2002/10/15 07:01:29  lazarus
+  MG: fixed timer checking
+
   Revision 1.17  2002/10/12 16:36:39  lazarus
   AJ: added new QueryUser/NotifyUser
 
