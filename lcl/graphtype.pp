@@ -219,18 +219,20 @@ type
     RedPrec: cardinal; // red precision. bits for red
     RedShift: cardinal;
     GreenPrec: cardinal;
-    GreenShift: cardinal;
+    GreenShift: cardinal; // bitshift. Direction: from least to most signifikant
     BluePrec: cardinal;
     BlueShift: cardinal;
-    AlphaMask: boolean; // the alpha is stored as separate Mask
     AlphaPrec: cardinal;
     AlphaShift: cardinal;
+    AlphaSeparate: boolean; // the alpha is stored as separate Mask
     // The next values are only valid, if there is a separate alpha mask
     AlphaBitsPerPixel: cardinal; // bits per alpha mask pixel.
     AlphaLineEnd: TRawImageLineEnd;
   end;
   PRawImageDescription = ^TRawImageDescription;
   
+  // Note: not all devices/images have all parts at any time. But if a part can
+  // be applied to the device/image, the 'Description' describes its structure.
   TRawImage = record
     Description: TRawImageDescription;
     Data: PByte;
@@ -249,6 +251,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2003/07/03 18:10:55  mattias
+  added fontdialog options to win32 intf from Wojciech Malinowski
+
   Revision 1.15  2003/07/02 10:02:51  mattias
   fixed TPaintStruct
 

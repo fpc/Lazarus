@@ -136,11 +136,13 @@ begin
         end;
     4 : with TFontDialog.Create(Self) do
         begin
-          Execute;
+          Font.Assign(Self.Font);
+          if Execute then Self.Font.Assign(Font);
           Free;
         end;
     5 : with TColorDialog.Create(Self) do
         begin
+          Color := Self.Color;
           if Execute then Self.Color := Color;
           Free;
         end;

@@ -1904,8 +1904,8 @@ begin
   Desc^.GreenShift:=Visual^.green_shift;
   Desc^.BluePrec:=Visual^.blue_prec;
   Desc^.BlueShift:=Visual^.blue_shift;
-  Desc^.AlphaMask:=true;
-  Desc^.AlphaPrec:=0;
+  Desc^.AlphaSeparate:=true;
+  Desc^.AlphaPrec:=1;
   Desc^.AlphaShift:=0;
   // AlphaBitsPerPixel and AlphaLineEnd
   Desc^.AlphaBitsPerPixel:=Desc^.AlphaPrec;
@@ -1930,7 +1930,7 @@ begin
       ' GreenShift=',GreenShift,
       ' BluePrec=',BluePrec,
       ' BlueShift=',BlueShift,
-      ' AlphaMask=',AlphaMask,
+      ' AlphaSeparate=',AlphaSeparate,
       ' AlphaPrec=',AlphaPrec,
       ' AlphaShift=',AlphaShift,
       ' AlphaBitsPerPixel=',AlphaBitsPerPixel,
@@ -7882,6 +7882,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.389  2003/07/03 18:10:55  mattias
+  added fontdialog options to win32 intf from Wojciech Malinowski
+
   Revision 1.388  2003/07/02 15:56:15  mattias
   fixed win32 painting and started creating bitmaps from rawimages
 

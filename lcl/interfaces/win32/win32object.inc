@@ -1395,6 +1395,27 @@ Var
       Result := Result Or OFN_SHOWHELP;
   End;
 
+  Function GetFlagsFromOptions(Options : TFontDialogOptions): DWord;
+  Begin
+    Result := 0;
+    If fdAnsiOnly In Options Then Result := Result Or CF_ANSIONLY;
+    If fdTrueTypeOnly In Options Then Result := Result Or CF_TTONLY;
+    If fdEffects In Options Then Result := Result Or CF_EFFECTS;
+    If fdFixedPitchOnly In Options then Result := Result Or CF_FIXEDPITCHONLY;
+    If fdForceFontExist In Options then Result := Result Or CF_FORCEFONTEXIST;
+    If fdNoFaceSel In Options then Result := Result Or CF_NOFACESEL;
+    If fdNoOEMFonts In Options then Result := Result Or CF_NOOEMFONTS;
+    If fdNoSimulations In Options then Result := Result Or CF_NOSIMULATIONS;
+    If fdNoSizeSel In Options then Result := Result Or CF_NOSIZESEL;
+    If fdNoStyleSel In Options then Result := Result Or CF_NOSTYLESEL;
+    If fdNoVectorFonts In Options then Result := Result Or CF_NOVECTORFONTS;
+    If fdShowHelp In Options then Result := Result Or CF_SHOWHELP;
+    If fdWysiwyg In Options then Result := Result Or CF_WYSIWYG;
+    If fdLimitSize In Options then Result := Result Or CF_LIMITSIZE;
+    If fdScalableOnly In Options then Result := Result Or CF_SCALABLEONLY;
+    If fdApplyButton In Options then Result := Result Or CF_APPLY;
+  End;
+
   function GetOwnerHandle: HWND;
   begin
     if (Sender As TComponent).Owner Is TWinControl then
@@ -1462,22 +1483,41 @@ Begin
   End
   Else If Sender Is TFontDialog Then
   Begin
-    //CF := LPChooseFont(@Sender)^;
     ZeroMemory(@CF, SizeOf(TChooseFont));
-    LF.LFFaceName := (Sender As TFontDialog).Font.Name;
+    ZeroMemory(@LF, SizeOf(LogFont));
+    With LF Do
+    Begin
+      LFHeight := (Sender As TFontDialog).Font.Height;
+      LFFaceName := TFontDataName((Sender As TFontDialog).Font.Name);
+      If (fsBold In (Sender As TFontDialog).Font.Style) then LFWeight:= FW_BOLD;
+      LFItalic := Byte(fsItalic In (Sender As TFontDialog).Font.Style);
+      LFStrikeOut := Byte(fsStrikeOut In (Sender As TFontDialog).Font.Style);
+      LFUnderline := Byte(fsUnderline In (Sender As TFontDialog).Font.Style);
+      LFCharSet := (Sender As TFontDialog).Font.CharSet;
+    End;
     With CF Do
     Begin
       LStructSize := SizeOf(TChooseFont);
       HWndOwner := GetOwnerHandle;
       LPLogFont := @LF;
-      Flags := CF_EFFECTS Or CF_FORCEFONTEXIST Or CF_INITTOLOGFONTSTRUCT Or CF_SCREENFONTS;
-      //RGBColors := (Sender As TFontDialog).Color;
+      Flags := GetFlagsFromOptions((Sender As TFontDialog).Options);
+      Flags := Flags Or CF_INITTOLOGFONTSTRUCT Or CF_BOTH;
+      RGBColors := (Sender As TFontDialog).Font.Color;
     End;
     Ret := ChooseFont(@CF);
   End;
 
   If Ret Then
-    (Sender As TCommonDialog).UserChoice := mrOK
+  Begin
+    If Sender Is TFontDialog then
+    Begin
+      (Sender As TFontDialog).Font.Assign(LF);
+      (Sender As TFontDialog).Font.Color := CF.RGBColors;
+    End;
+    If Sender Is TColorDialog then
+      (Sender As TColorDialog).Color := CC.RGBResult;
+    (Sender As TCommonDialog).UserChoice := mrOK;
+  End
   Else
     (Sender As TCommonDialog).UserChoice := mrCancel;
 
@@ -2701,6 +2741,9 @@ End;
 
 {
   $Log$
+  Revision 1.71  2003/07/03 18:10:55  mattias
+  added fontdialog options to win32 intf from Wojciech Malinowski
+
   Revision 1.70  2003/07/03 17:19:19  mattias
   added RectVisible from Micha
 

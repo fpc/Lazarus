@@ -837,11 +837,22 @@ function TgtkObject.CreateBitmapFromRawImage(const RawImage: TRawImage;
 var
   GdiObject: PGDIObject;
   DefGDkWindow: PGdkWindow;
-  fg, bg: TGdkColor;
+  GDkWindow: PGdkWindow;
+  GC: PGdkGC;
+  ImgData: PDWord;
+  ImgWidth: Cardinal;
+  ImgHeight: Cardinal;
+  ImgDepth: Cardinal;
+  Visual: PGdkVisual;
+  GdkImage: PGdkImage;
+  ImgDataSize: Cardinal;
 begin
   Result:=false;
   Bitmap:=0;
   MaskBitmap:=0;
+  
+  if (RawImage.Description.Width=0) or (RawImage.Description.Height=0) then
+    exit;
   
   writeln('TgtkObject.CreateBitmapFromRawImage A ',
     ' Depth=',RawImage.Description.Depth,
@@ -858,23 +869,45 @@ begin
   // ToDo: check description
   
   DefGdkWindow := nil;
-  gdk_color_white(gdk_colormap_get_system, @fg);
-  gdk_color_black(gdk_colormap_get_system, @bg);
-
   GdiObject := NewGDIObject(gdiBitmap);
   GdiObject^.GDIBitmapType := gbPixmap;
 
   if RawImage.Data<>nil then begin
-    GdiObject^.GDIPixmapObject :=
+    { The gdk_pixmap_create_from_data seems to be buggy.
+      It only creates pixmaps of Depth 1
         gdk_pixmap_create_from_data(DefGdkWindow,PGChar(RawImage.Data),
                       RawImage.Description.Width, RawImage.Description.Height,
-                      RawImage.Description.Depth, @fg,@bg);
+                      RawImage.Description.Depth, @fg,@bg);}
+    ImgData:=PDWord(RawImage.Data);
+    ImgDataSize:=RawImage.DataSize;
+    ImgWidth:=RawImage.Description.Width;
+    ImgHeight:=RawImage.Description.Height;
+    ImgDepth:=RawImage.Description.Depth;
+    GdiObject^.GDIPixmapObject :=
+        gdk_pixmap_new(DefGdkWindow,ImgWidth,imgHeight,ImgDepth);
+    GDkWindow:=PGdkWindow(GdiObject^.GDIPixmapObject);
+
+    Visual:=gdk_visual_get_best_with_depth(ImgDepth);
+    GdkImage:=gdk_image_new(GDK_IMAGE_FASTEST,Visual,ImgWidth,ImgHeight);
+    if ImgDataSize<>GdkImage^.bpl*ImgHeight then
+      RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible DataSize');
+    System.Move(ImgData^,GdkImage^.mem^,ImgDataSize);
+    {for y:=0 to ImgHeight-1 do begin
+      for x:=0 to ImgWidth-1 do begin
+        gdk_image_put_pixel(GdkImage,X,Y,ImgData[X+Y*ImgWidth]);
+      end;
+    end;}
+    GC:=gdk_gc_new(GDkWindow);
+    gdk_draw_image(PGDKDrawable(GdiObject^.GDIPixmapObject),GC,
+                   GdkImage,0,0,0,0,ImgWidth,ImgHeight);
+    gdk_gc_unref(GC);
+    gdk_image_destroy(GdkImage);
   end else
-    GdiObject^.GDIBitmapObject :=
+    GdiObject^.GDIPixmapObject :=
         gdk_pixmap_new(DefGdkWindow,
                        RawImage.Description.Width, RawImage.Description.Height,
                        RawImage.Description.Depth);
-  GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIBitmapObject);
+  GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
   Bitmap:=HBITMAP(GdiObject);
 
   If (RawImage.Mask<>nil) then begin
@@ -4190,63 +4223,71 @@ begin
     exit;
   end;
 
-  // get rawimage for Bitmap
-  GDIImg:=PGDIObject(SrcBitmap);
-  GdkPixmap:=nil;
-  case GDIImg^.GDIBitmapType of
-  gbBitmap: GdkPixmap:=PGdkPixmap(GDIImg^.GDIBitmapObject);
-  gbPixmap: GdkPixmap:=PGdkPixmap(GDIImg^.GDIPixmapObject);
-  else
-    writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] GDI_RGBImage not implemented');
-    exit;
-  end;
-  writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] A GdkPixmap=',HexStr(Cardinal(GdkPixmap),8));
-  if not GetRawImageFromGdkWindow(PGdkWindow(GdkPixmap),SrcRect,NewRawImage)
-  then exit;
-  
-  // the bitmap is ready. If there is no mask the rawimage is complete
-  if SrcMaskBitmap=0 then begin
+  try
+    // get rawimage for Bitmap
+    GDIImg:=PGDIObject(SrcBitmap);
+    GdkPixmap:=nil;
+    case GDIImg^.GDIBitmapType of
+    gbBitmap: GdkPixmap:=PGdkPixmap(GDIImg^.GDIBitmapObject);
+    gbPixmap: GdkPixmap:=PGdkPixmap(GDIImg^.GDIPixmapObject);
+    else
+      writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] GDI_RGBImage not implemented');
+      exit;
+    end;
+    writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] A GdkPixmap=',HexStr(Cardinal(GdkPixmap),8));
+    if not GetRawImageFromGdkWindow(PGdkWindow(GdkPixmap),SrcRect,NewRawImage)
+    then exit;
+
+    // the bitmap is ready. If there is no mask the rawimage is complete
+    if SrcMaskBitmap=0 then begin
+      Result:=true;
+      exit;
+    end;
+
+    // get rawimage for MaskBitmap
+    GDIMaskImg:=PGDIObject(SrcMaskBitmap);
+    GdkMaskBitmap:=nil;
+    case GDIMaskImg^.GDIBitmapType of
+    gbBitmap: GdkMaskBitmap:=PGdkPixmap(GDIMaskImg^.GDIBitmapObject);
+    else
+      writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] invalid MaskBitmap');
+      exit;
+    end;
+    if not GetRawImageFromGdkWindow(PGdkWindow(GdkMaskBitmap),SrcRect,
+                                    MaskRawImage)
+    then exit;
+
+    // check if mask is compatible
+    if (MaskRawImage.Description.Width<>NewRawImage.Description.Width)
+    or (MaskRawImage.Description.Height<>NewRawImage.Description.Height) then begin
+      writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap has different Size than Bitmap');
+      exit;
+    end;
+    if (MaskRawImage.Description.Depth<>1) then begin
+      writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap Depth<>1');
+      exit;
+    end;
+    if (MaskRawImage.Description.HasPalette) then begin
+      writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap HasPalette');
+      exit;
+    end;
+
+    // merge mask
+    if NewRawImage.Mask<>nil then FreeMem(NewRawImage.Mask);
+    NewRawImage.Mask:=MaskRawImage.Data;
+    NewRawImage.MaskSize:=MaskRawImage.DataSize;
+    NewRawImage.Description.AlphaSeparate:=true;
+    NewRawImage.Description.AlphaPrec:=MaskRawImage.Description.Depth;
+    NewRawImage.Description.AlphaShift:=0;
+
     Result:=true;
-    exit;
+  finally
+    if not Result then begin
+      ReAllocMem(NewRawImage.Data,0);
+      ReAllocMem(NewRawImage.Mask,0);
+      ReAllocMem(NewRawImage.Palette,0);
+    end;
   end;
-
-  // get rawimage for MaskBitmap
-  GDIMaskImg:=PGDIObject(SrcMaskBitmap);
-  GdkMaskBitmap:=nil;
-  case GDIMaskImg^.GDIBitmapType of
-  gbBitmap: GdkMaskBitmap:=PGdkPixmap(GDIMaskImg^.GDIBitmapObject);
-  else
-    writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] invalid MaskBitmap');
-    exit;
-  end;
-  if not GetRawImageFromGdkWindow(PGdkWindow(GdkMaskBitmap),SrcRect,
-                                  MaskRawImage)
-  then exit;
-  
-  // check if mask is compatible
-  if (MaskRawImage.Description.Width<>NewRawImage.Description.Width)
-  or (MaskRawImage.Description.Height<>NewRawImage.Description.Height) then begin
-    writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap has different Size than Bitmap');
-    exit;
-  end;
-  if (MaskRawImage.Description.Depth<>1) then begin
-    writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap Depth<>1');
-    exit;
-  end;
-  if (MaskRawImage.Description.HasPalette) then begin
-    writeln('WARNING: [TgtkObject.GetRawImageFromBitmap] MaskBitmap HasPalette');
-    exit;
-  end;
-
-  // merge mask
-  if NewRawImage.Mask<>nil then FreeMem(NewRawImage.Mask);
-  NewRawImage.Mask:=MaskRawImage.Data;
-  NewRawImage.MaskSize:=MaskRawImage.DataSize;
-  NewRawImage.Description.AlphaMask:=true;
-  NewRawImage.Description.AlphaPrec:=MaskRawImage.Description.Depth;
-  NewRawImage.Description.AlphaShift:=0;
-
-  Result:=true;
 end;
 
 {------------------------------------------------------------------------------
@@ -8509,6 +8550,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.257  2003/07/03 18:10:55  mattias
+  added fontdialog options to win32 intf from Wojciech Malinowski
+
   Revision 1.256  2003/07/02 15:56:15  mattias
   fixed win32 painting and started creating bitmaps from rawimages
 

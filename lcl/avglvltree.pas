@@ -39,6 +39,7 @@ type
     constructor Create;
     destructor Destroy; override;
   end;
+  PAvgLvlTreeNode = ^TAvgLvlTreeNode;
 
   TAvgLvlTree = class
   private
@@ -86,6 +87,7 @@ type
     constructor Create;
     destructor Destroy; override;
   end;
+  PAvgLvlTree = ^TAvgLvlTree;
 
   TAvgLvlTreeNodeMemManager = class
   private
