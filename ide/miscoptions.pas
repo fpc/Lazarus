@@ -30,7 +30,8 @@ unit MiscOptions;
 interface
 
 uses
-  Classes, SysUtils, BuildLazDialog, LazConf, IDEProcs, Laz_XMLCfg;
+  Classes, SysUtils, BuildLazDialog, CodeToolsStructs, LazConf, IDEProcs,
+  Laz_XMLCfg;
 
 type
   TSortDirection = (sdAscending, sdDescending);
@@ -40,6 +41,7 @@ type
   private
     fBuildLazOpts: TBuildLazarusOptions;
     fFilename: string;
+    FMakeResourceStringInsertPolicy: TResourcestringInsertPolicy;
     FSortSelDirection: TSortDirection;
     FSortSelDomain: TSortDomain;
     function GetFilename: string;
@@ -55,6 +57,9 @@ type
     property SortSelDirection: TSortDirection read FSortSelDirection
                                               write FSortSelDirection;
     property SortSelDomain: TSortDomain read FSortSelDomain write FSortSelDomain;
+    property MakeResourceStringInsertPolicy: TResourcestringInsertPolicy
+                                          read FMakeResourceStringInsertPolicy
+                                          write FMakeResourceStringInsertPolicy;
   end;
 
 const
@@ -62,12 +67,15 @@ const
     'Ascending', 'Descending');
   SortDomainNames: array[TSortDomain] of string = (
     'Words', 'Lines', 'Paragraphs');
+  ResourcestringInsertPolicyNames: array[TResourcestringInsertPolicy] of string
+    = ('None', 'Append', 'Alphabetically', 'Context');
 
 var MiscellaneousOptions: TMiscellaneousOptions;
 
 function SortDirectionNameToType(const s: string): TSortDirection;
 function SortDomainNameToType(const s: string): TSortDomain;
-
+function ResourcestringInsertPolicyNameToType(
+  const s: string): TResourcestringInsertPolicy;
 
 implementation
 
@@ -88,6 +96,15 @@ begin
   for Result:=Low(TSortDomain) to High(TSortDomain) do
     if AnsiCompareText(SortDomainNames[Result],s)=0 then exit;
   Result:=sdLines;
+end;
+
+function ResourcestringInsertPolicyNameToType(
+  const s: string): TResourcestringInsertPolicy;
+begin
+  for Result:=Low(TResourcestringInsertPolicy)
+  to High(TResourcestringInsertPolicy) do
+    if AnsiCompareText(ResourcestringInsertPolicyNames[Result],s)=0 then exit;
+  Result:=rsipAppend;
 end;
 
 { TMiscellaneousOptions }
@@ -143,6 +160,9 @@ begin
            Path+'SortSelection/Direction',SortDirectionNames[sdAscending]));
       SortSelDomain:=SortDomainNameToType(XMLConfig.GetValue(
            Path+'SortSelection/Domain',SortDomainNames[sdLines]));
+      MakeResourceStringInsertPolicy:=ResourcestringInsertPolicyNameToType(
+           XMLConfig.GetValue(Path+'MakeResourcestringInsertPolicy/Value',
+                              ResourcestringInsertPolicyNames[rsipAppend]));
     finally
       XMLConfig.Free;
     end;
@@ -178,7 +198,9 @@ begin
            SortDirectionNames[sdAscending]);
       XMLConfig.SetDeleteValue(Path+'SortSelection/Domain',
            SortDomainNames[SortSelDomain],SortDomainNames[sdLines]);
-
+      XMLConfig.SetDeleteValue(Path+'MakeResourcestringInsertPolicy/Value',
+           ResourcestringInsertPolicyNames[MakeResourceStringInsertPolicy],
+           ResourcestringInsertPolicyNames[rsipAppend]);
       XMLConfig.Flush;
     finally
       XMLConfig.Free;

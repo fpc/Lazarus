@@ -18,6 +18,10 @@ msgstr ""
 msgid " The key \"%s\" is already connected to \"%s\"."
 msgstr ""
 
+#: lazarusidestrconsts:lisuidbytes
+msgid "%s bytes"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsdirectory
 msgid "%s directory"
 msgstr ""
@@ -32,6 +36,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsprojectspecific
 msgid "%s, project specific"
+msgstr ""
+
+#: lazarusidestrconsts:lisuereadonly
+msgid "%s/ReadOnly"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpasautolower
@@ -164,6 +172,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuaddcurunittopkg
+msgid "Add active unit to a package"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuaddunittoproject
@@ -318,6 +330,10 @@ msgstr "Respaldar"
 msgid "Behind methods"
 msgstr "Atrás de métodos"
 
+#: lazarusidestrconsts:lispkgfiletypebinary
+msgid "Binary"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsblock
 msgid "Block"
 msgstr ""
@@ -370,7 +386,7 @@ msgstr "Construir todo"
 msgid "build all files of program/project"
 msgstr ""
 
-#: lazarusidestrconsts:lislazbuildbuildcodetools
+#: lazarusidestrconsts:lisbuildcodetools
 msgid "Build CodeTools"
 msgstr ""
 
@@ -391,6 +407,10 @@ msgid "Build IDE"
 msgstr ""
 
 #: lazarusidestrconsts:lisbuildjitform
+msgid "Build JIT Form"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr ""
 
@@ -400,6 +420,10 @@ msgstr "Construir Lazarus"
 
 #: lazarusidestrconsts:lisbuildlcl
 msgid "Build LCL"
+msgstr ""
+
+#: lazarusidestrconsts:lisbuildpkgreg
+msgid "Build Package Registration"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecbuild
@@ -470,8 +494,28 @@ msgstr "Verificar:"
 msgid "Choose code template file (*.dci)"
 msgstr "Escoja archivo plantilla de código (*.dci)"
 
+#: lazarusidestrconsts:lischoosecompilerpath
+msgid "Choose compiler filename (ppc386)"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosedebuggerpath
+msgid "Choose debugger filename"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosedirectory
 msgid "Choose directory"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosefpcsourcedir
+msgid "Choose FPC source directory"
+msgstr ""
+
+#: lazarusidestrconsts:lischooselazarussourcedirectory
+msgid "Choose Lazarus Directory"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosetestbuilddir
+msgid "Choose the directory for tests"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcdtclassorder
@@ -509,10 +553,6 @@ msgstr ""
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Cerrar todos los archivos del editor"
-
-#: lazarusidestrconsts:dlgclosebuttonsnotebook
-msgid "Close buttons in notebook"
-msgstr "Cerrar botones en notebook"
 
 #: lazarusidestrconsts:dlgcodecreation
 msgid "Code Creation"
@@ -1074,6 +1114,10 @@ msgstr "Opciones del Entorno"
 msgid "Error"
 msgstr ""
 
+#: lazarusidestrconsts:lisueerrorinregularexpression
+msgid "Error in regular expression"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefserrorreading
 msgid "Error reading %s%s%s%s%s"
 msgstr ""
@@ -1338,6 +1382,10 @@ msgstr "Ir a directiva de inclusión"
 msgid "Goto line"
 msgstr "Ir a línea"
 
+#: lazarusidestrconsts:lisuegotoline
+msgid "Goto line :"
+msgstr ""
+
 #: lazarusidestrconsts:dlgtodolistgotoline
 msgid "Goto selected source line"
 msgstr ""
@@ -1526,9 +1574,17 @@ msgstr ""
 msgid "In front of methods"
 msgstr "Delante de métodos"
 
+#: lazarusidestrconsts:lisuidinproject
+msgid "in Project:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgassertcode
 msgid "Include Assertion Code"
 msgstr "Incluir código de Aserción"
+
+#: lazarusidestrconsts:lispkgfiletypeinclude
+msgid "Include file"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcoincfiles
 msgid "Include Files:"
@@ -1537,6 +1593,10 @@ msgstr "Archivos de Inclusión:"
 #: lazarusidestrconsts:dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Incluir variables del sistema"
+
+#: lazarusidestrconsts:lisuidincludedby
+msgid "Included by:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuincrementalfind
 msgid "Incremental Find"
@@ -1558,6 +1618,14 @@ msgstr "Sangrar selección"
 msgid "Info"
 msgstr "Información"
 
+#: lazarusidestrconsts:lisinformationaboutunit
+msgid "Information about %s"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoinherited
+msgid "Inherited"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "INS"
@@ -1572,6 +1640,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecinsertchangelogentry
 msgid "Insert ChangeLog entry"
+msgstr ""
+
+#: lazarusidestrconsts:lismakeresstrinsertcontexttsensitive
+msgid "Insert context sensitive"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecinsertdatetime
@@ -1822,6 +1894,10 @@ msgstr ""
 msgid "lazarus [options] <project-filename>\n\nIDE Options:\n\n--help or -?             this help message\n\n"
 msgstr "lazarus [opciones] <nombrearchivo-proyecto>\n\nOpciones del IDE:\n\n--help o -?             este mensaje de ayuda\n\n"
 
+#: lazarusidestrconsts:lisconfigdirectory
+msgid "Lazarus config directory"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusdirectory
 msgid "Lazarus directory"
 msgstr "Directorio de Lazarus"
@@ -1873,6 +1949,10 @@ msgstr "Nivel 2 (Nivel 1 + optimizaciones más lentas)"
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + Uncertain)"
 msgstr "Nivel 3 (Nivel 2 + Inciertas)"
+
+#: lazarusidestrconsts:lispkgfiletypelfm
+msgid "LFM - Lazarus form text"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuinsertlgplnotice
 msgid "LGPL notice"
@@ -1937,6 +2017,10 @@ msgstr "Selección en minúsculas"
 #: lazarusidestrconsts:dlg1up2low
 msgid "Lowercase, first letter up"
 msgstr "Minúsculas, primera letra mayúscula"
+
+#: lazarusidestrconsts:lispkgfiletypelrs
+msgid "LRS - Lazarus resource"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmainmenu
 msgid "Main Menu"
@@ -2162,6 +2246,10 @@ msgstr ""
 msgid "Next"
 msgstr ""
 
+#: lazarusidestrconsts:lisuidno
+msgid "no"
+msgstr ""
+
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
 msgstr "No se encontraron errores en accesos rápidos"
@@ -2188,6 +2276,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecnormalselect
 msgid "Normal selection mode"
+msgstr ""
+
+#: lazarusidestrconsts:lisuenotfound
+msgid "Not found"
 msgstr ""
 
 #: lazarusidestrconsts:uenotimplcap
@@ -2250,13 +2342,17 @@ msgstr ""
 msgid "Open filename at cursor"
 msgstr "Abrir nombre de archivo a cursor"
 
-#: lazarusidestrconsts:lismenuopeninstalledpkg
-msgid "Open installed package"
-msgstr ""
-
 #: lazarusidestrconsts:dlgqopenlastprj
 msgid "Open last project at start"
 msgstr "Abrir último proyecto al iniciar"
+
+#: lazarusidestrconsts:lismenuopenpackage
+msgid "Open package"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuopenpackagefile
+msgid "Open package file"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project"
@@ -2269,6 +2365,10 @@ msgstr "Abrir archivo de Proyecto"
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent"
 msgstr "Abrir Reciente"
+
+#: lazarusidestrconsts:lismenuopenrecentpkg
+msgid "Open recent package"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project"
@@ -2334,6 +2434,10 @@ msgstr ""
 msgid "OVR"
 msgstr "SOB"
 
+#: lazarusidestrconsts:lismenupackagegraph
+msgid "Package Graph"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsparentnodecannotcontainch
 msgid "Parent node can not contain child nodes."
 msgstr ""
@@ -2357,6 +2461,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgtofpcpath
 msgid "Path To Compiler:"
 msgstr "Ruta al compilador:"
+
+#: lazarusidestrconsts:lisuidpathsreadonly
+msgid "Paths (Read Only)"
+msgstr ""
 
 #: lazarusidestrconsts:lismenupause
 msgid "Pause"
@@ -2450,6 +2558,14 @@ msgstr "Nombre de archivo del Proyecto"
 msgid "Project files"
 msgstr "Archivos del proyecto"
 
+#: lazarusidestrconsts:lisprojectincpath
+msgid "Project Include Path"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuprojectinspector
+msgid "Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
 msgstr ""
@@ -2461,6 +2577,14 @@ msgstr "Opciones del Proyecto"
 #: lazarusidestrconsts:lismenuprojectoptions
 msgid "Project Options..."
 msgstr "Opciones del proyecto..."
+
+#: lazarusidestrconsts:lisprojectsrcpath
+msgid "Project Src Path"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectunitpath
+msgid "Project Unit Path"
+msgstr ""
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
@@ -2540,6 +2664,10 @@ msgstr "Reemplazar todo"
 
 #: lazarusidestrconsts:srkmecreplace
 msgid "Replace text"
+msgstr ""
+
+#: lazarusidestrconsts:lisuereplacethisoccurrenceofwith
+msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
 msgstr ""
 
 #: lazarusidestrconsts:dlgreport
@@ -2714,6 +2842,14 @@ msgstr ""
 msgid "Search Paths"
 msgstr "Rutas de búsquedas"
 
+#: lazarusidestrconsts:lisuesearchstringnotfound
+msgid "Search string '%s' not found!"
+msgstr ""
+
+#: lazarusidestrconsts:lisuesearching
+msgid "Searching: %s"
+msgstr ""
+
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
 msgstr "seg"
@@ -2874,6 +3010,10 @@ msgstr ""
 msgid "Show all procs on error"
 msgstr "Mostrar todos los procs sobre error"
 
+#: lazarusidestrconsts:dlgclosebuttonsnotebook
+msgid "Show Close Buttons in notebook"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show Compiled Procedures"
 msgstr "Mostrar Procedimientos Compilados"
@@ -3016,6 +3156,10 @@ msgstr "Espacio"
 
 #: lazarusidestrconsts:srvk_space
 msgid "Space key"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidsrc
+msgid "Src"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcostack
@@ -3165,6 +3309,10 @@ msgstr "Directorio de prueba"
 #: lazarusidestrconsts:lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
 msgstr "Directorio de prueba \"%s\" no encontrado."
+
+#: lazarusidestrconsts:lispkgfiletypetext
+msgid "Text"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtextattributes
 msgid "Text attributes"
@@ -3326,6 +3474,10 @@ msgstr "Ajustar los espacios finales"
 msgid "Type"
 msgstr "Tipo"
 
+#: lazarusidestrconsts:lisuidtype
+msgid "Type:"
+msgstr ""
+
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
 msgstr "Optimizaciones inciertas"
@@ -3369,6 +3521,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuunindentselection
 msgid "Unindent selection"
 msgstr "Desangrar selección"
+
+#: lazarusidestrconsts:lispkgfiletypeunit
+msgid "Unit"
+msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
@@ -3602,6 +3758,10 @@ msgstr ""
 msgid "Window Positions"
 msgstr "Posiciones de las ventanas"
 
+#: lazarusidestrconsts:lislazbuildwithstaticpackages
+msgid "With Packages"
+msgstr ""
+
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
 msgstr ""
@@ -3629,4 +3789,8 @@ msgstr ""
 #: lazarusidestrconsts:dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "Prefijo de escribir"
+
+#: lazarusidestrconsts:lisuidyes
+msgid "yes"
+msgstr ""
 

@@ -157,6 +157,8 @@ type
     // search & replace
     function ReplaceIdentifiers(IdentList: TStrings;
           SourceChangeCache: TSourceChangeCache): boolean;
+    function FindNearestIdentifierNode(const CursorPos: TCodeXYPosition;
+          IdentTree: TAVLTree): TAVLTreeNode;
 
     // expressions
     function GetStringConstBounds(const CursorPos: TCodeXYPosition;
@@ -175,8 +177,15 @@ type
     function GatherResourceStringsWithValue(const CursorPos: TCodeXYPosition;
           const StringValue: string;
           PositionList: TCodeXYPositions): boolean;
+    function GatherResourceStringIdents(const SectionPos: TCodeXYPosition;
+          var IdentTree: TAVLTree): boolean;
+    function FindNearestResourceString(const CursorPos,
+          SectionPos: TCodeXYPosition;
+          var NearestPos: TCodeXYPosition): boolean;
     function AddResourcestring(const SectionPos: TCodeXYPosition;
-          const NewIdentifier, NewValue: string; InsertAlphabetically: boolean;
+          const NewIdentifier, NewValue: string;
+          InsertPolicy: TResourcestringInsertPolicy;
+          const NearestPos: TCodeXYPosition;
           SourceChangeCache: TSourceChangeCache): boolean;
     function CreateIdentifierFromStringConst(
           const StartCursorPos, EndCursorPos: TCodeXYPosition;
@@ -208,7 +217,7 @@ const
 
 var
   BlockKeywordFuncList: TKeyWordFunctionList;
-
+  
 procedure BuildBlockKeyWordFuncList;
 var BlockWord: TBlockKeyword;
 begin
@@ -1215,11 +1224,42 @@ begin
   Result:=true;
 end;
 
+function TStandardCodeTool.FindNearestIdentifierNode(
+  const CursorPos: TCodeXYPosition; IdentTree: TAVLTree): TAVLTreeNode;
+var
+  CleanCursorPos: integer;
+  BestDiff: Integer;
+  CurIdentNode: TAVLTreeNode;
+  CurDiff: Integer;
+begin
+  Result:=nil;
+  if IdentTree=nil then exit;
+  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,[],true);
+  BestDiff:=SrcLen+1;
+  MoveCursorToCleanPos(1);
+  repeat
+    ReadNextAtom;
+    if AtomIsIdentifier(false) then begin
+      CurIdentNode:=
+        IdentTree.FindKey(@Src[CurPos.StartPos],@CompareIdentifiers);
+      if CurIdentNode<>nil then begin
+        CurDiff:=CurPos.StartPos-CleanCursorPos;
+        if CurDiff<0 then CurDiff:=-CurDiff;
+        if (Result=nil) or (CurDiff<BestDiff) then begin
+          BestDiff:=CurDiff;
+          Result:=CurIdentNode;
+        end;
+      end;
+    end;
+  until CurPos.EndPos>SrcLen
+end;
+
 function TStandardCodeTool.GetStringConstBounds(
   const CursorPos: TCodeXYPosition;
   var StartPos, EndPos: TCodeXYPosition; ResolveComments: boolean): boolean;
 // examples:
 //   's1'+'s2'#13+AFunction(...)+inherited AMethod
+{ $DEFINE VerboseGetStringConstBounds}
 type
   TStrConstTokenType = (scatNone, scatStrConst, scatPlus, scatIdent,
     scatInherited, scatPoint, scatUp,
@@ -1263,31 +1303,41 @@ var
   SameArea: TAtomPosition;
   LastToken, CurrentToken: TStrConstTokenType;
   StartCleanPos, EndCleanPos: integer;
+  StringConstantFound: Boolean;
 begin
   StartPos:=CursorPos;
   EndPos:=CursorPos;
   Result:=true;
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[],true);
-  //writeln('TStandardCodeTool.GetStringConstBounds A ',CleanCursorPos,' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
+  {$IFDEF VerboseGetStringConstBounds}
+  writeln('TStandardCodeTool.GetStringConstBounds A ',CleanCursorPos,' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
+  {$ENDIF}
   GetCleanPosInfo(-1,CleanCursorPos,ResolveComments,SameArea);
-  //writeln('TStandardCodeTool.GetStringConstBounds B ',SameArea.StartPos,'-',SameArea.EndPos,' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
+  {$IFDEF VerboseGetStringConstBounds}
+  writeln('TStandardCodeTool.GetStringConstBounds B ',SameArea.StartPos,'-',SameArea.EndPos,' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
+  {$ENDIF}
   if (SameArea.EndPos=SameArea.StartPos) or (SameArea.StartPos>SrcLen) then
     exit;
   // read til end of string constant
   MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
-  //writeln('TStandardCodeTool.GetStringConstBounds read til end of string  ',GetAtom);
+  {$IFDEF VerboseGetStringConstBounds}
+  writeln('TStandardCodeTool.GetStringConstBounds read til end of string  ',GetAtom);
+  {$ENDIF}
   CurrentToken:=GetCurrentTokenType;
   if (CurrentToken=scatNone) then exit;
+  StringConstantFound:=(CurrentToken=scatStrConst);
   repeat
     EndCleanPos:=CurPos.EndPos;
     ReadNextAtom;
     LastToken:=CurrentToken;
     CurrentToken:=GetCurrentTokenType;
-    //writeln('TStandardCodeTool.GetStringConstBounds Read Forward: ',GetAtom,' EndCleanPos=',EndCleanPos,
-    //' LastToken=',StrConstTokenTypeName[LastToken],
-    //' CurrentToken=',StrConstTokenTypeName[CurrentToken],
-    //' ',StrConstTokenTypeName[GetCurrentTokenType]);
+    {$IFDEF VerboseGetStringConstBounds}
+    writeln('TStandardCodeTool.GetStringConstBounds Read Forward: ',GetAtom,' EndCleanPos=',EndCleanPos,
+    ' LastToken=',StrConstTokenTypeName[LastToken],
+    ' CurrentToken=',StrConstTokenTypeName[CurrentToken],
+    ' ',StrConstTokenTypeName[GetCurrentTokenType]);
+    {$ENDIF}
     case CurrentToken of
     scatNone, scatEdgedBracketClose, scatRoundBracketClose:
       if not (LastToken in [scatStrConst,scatIdent,scatUp,
@@ -1298,7 +1348,10 @@ begin
         break;
 
     scatStrConst:
-      if not (LastToken in [scatPlus]) then exit;
+      if not (LastToken in [scatPlus]) then
+        exit
+      else
+        StringConstantFound:=true;
       
     scatPlus:
       if not (LastToken in [scatStrConst, scatIdent, scatUp,
@@ -1327,12 +1380,16 @@ begin
   // read til start of string constant
   MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
-  //writeln('TStandardCodeTool.GetStringConstBounds Read til start of string ',GetAtom);
+  {$IFDEF VerboseGetStringConstBounds}
+  writeln('TStandardCodeTool.GetStringConstBounds Read til start of string ',GetAtom);
+  {$ENDIF}
   CurrentToken:=GetCurrentTokenType;
   repeat
     StartCleanPos:=CurPos.StartPos;
     ReadPriorAtom;
-    //writeln('TStandardCodeTool.GetStringConstBounds Read backward: ',GetAtom,' StartCleanPos=',StartCleanPos);
+    {$IFDEF VerboseGetStringConstBounds}
+    writeln('TStandardCodeTool.GetStringConstBounds Read backward: ',GetAtom,' StartCleanPos=',StartCleanPos);
+    {$ENDIF}
     LastToken:=CurrentToken;
     CurrentToken:=GetCurrentTokenType;
     case CurrentToken of
@@ -1343,7 +1400,10 @@ begin
         break;
 
     scatStrConst:
-      if not (LastToken in [scatPlus]) then exit;
+      if not (LastToken in [scatPlus]) then
+        exit
+      else
+        StringConstantFound:=true;
 
     scatPlus:
       if not (LastToken in [scatStrConst, scatIdent, scatRoundBracketOpen]) then
@@ -1371,7 +1431,12 @@ begin
   until false;
   
   // convert start and end position
-  //writeln('TStandardCodeTool.GetStringConstBounds END "',copy(Src,StartCleanPos,EndCleanPos-StartCleanPos),'"');
+  {$IFDEF VerboseGetStringConstBounds}
+  writeln('TStandardCodeTool.GetStringConstBounds END "',copy(Src,StartCleanPos,EndCleanPos-StartCleanPos),'" StringConstantFound=',StringConstantFound);
+  {$ENDIF}
+  if not StringConstantFound then begin
+    EndCleanPos:=StartCleanPos;
+  end;
   if not CleanPosToCaret(StartCleanPos,StartPos) then exit;
   if not CleanPosToCaret(EndCleanPos,EndPos) then exit;
 
@@ -1740,8 +1805,71 @@ begin
   end;
 end;
 
+function TStandardCodeTool.GatherResourceStringIdents(
+  const SectionPos: TCodeXYPosition; var IdentTree: TAVLTree): boolean;
+var
+  CleanCursorPos: integer;
+  ANode: TCodeTreeNode;
+begin
+  Result:=false;
+  IdentTree:=nil;
+  // parse source and find clean positions
+  BuildTreeAndGetCleanPos(trAll,SectionPos,CleanCursorPos,[],true);
+  // find resource string section
+  ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  if (ANode=nil) then exit;
+  ANode:=ANode.GetNodeOfType(ctnResStrSection);
+  if ANode=nil then exit;
+  // search identifier in section
+  ANode:=ANode.FirstChild;
+  while ANode<>nil do begin
+    if (ANode.Desc=ctnConstDefinition) then begin
+      if IdentTree=nil then
+        IdentTree:=TAVLTree.Create(@BasicCodeTools.CompareIdentifiers);
+      IdentTree.Add(@Src[ANode.StartPos]);
+    end;
+    ANode:=ANode.NextBrother;
+  end;
+  Result:=true;
+end;
+
+function TStandardCodeTool.FindNearestResourceString(const CursorPos,
+  SectionPos: TCodeXYPosition; var NearestPos: TCodeXYPosition): boolean;
+var
+  CursorTool, SectionTool: TStandardCodeTool;
+  IdentTree: TAVLTree;
+  NearestNode: TAVLTreeNode;
+  NearestCleanPos: Integer;
+begin
+  Result:=false;
+  NearestPos.Code:=nil;
+  // get both codetools
+  if not Assigned(OnGetCodeToolForBuffer) then exit;
+  CursorTool:=TStandardCodeTool(OnGetCodeToolForBuffer(Self,CursorPos.Code));
+  SectionTool:=TStandardCodeTool(OnGetCodeToolForBuffer(Self,SectionPos.Code));
+  if (CursorTool=nil) or (SectionTool=nil) then exit;
+  // get all resourcestring identifiers
+  IdentTree:=nil;
+  Result:=SectionTool.GatherResourceStringIdents(SectionPos,IdentTree);
+  if IdentTree=nil then exit;
+  try
+    // find nearest resourcestring identifier in the cursor source
+    NearestNode:=CursorTool.FindNearestIdentifierNode(CursorPos,IdentTree);
+    if NearestNode=nil then exit;
+    // convert node to cleanpos
+    NearestCleanPos:=Integer(NearestNode.Data)-Integer(@SectionTool.Src[1])+1;
+    // convert cleanpos to caret
+    CleanPosToCaret(NearestCleanPos,NearestPos);
+  finally
+    IdentTree.Free;
+  end;
+  Result:=true;
+end;
+
 function TStandardCodeTool.AddResourcestring(const SectionPos: TCodeXYPosition;
-  const NewIdentifier, NewValue: string; InsertAlphabetically: boolean;
+  const NewIdentifier, NewValue: string;
+  InsertPolicy: TResourcestringInsertPolicy;
+  const NearestPos: TCodeXYPosition;
   SourceChangeCache: TSourceChangeCache): boolean;
 var
   CleanSectionPos: integer;
@@ -1749,21 +1877,24 @@ var
   Indent: Integer;
   InsertPos: Integer;
   InsertSrc: String;
+  NearestCleanPos: integer;
 begin
   Result:=false;
-  //writeln('TStandardCodeTool.AddResourcestring A ',NewIdentifier,'=',NewValue);
+  //writeln('TStandardCodeTool.AddResourcestring A ',NewIdentifier,'=',NewValue,' ');
   if (NewIdentifier='') or (length(NewIdentifier)>255) then exit;
   if SourceChangeCache=nil then exit;
   SourceChangeCache.MainScanner:=Scanner;
   // parse source and find clean positions
+  //writeln('TStandardCodeTool.AddResourcestring B');
   BuildTreeAndGetCleanPos(trAll,SectionPos,CleanSectionPos,[],true);
+  //writeln('TStandardCodeTool.AddResourcestring C');
   // find resource string section
   SectionNode:=FindDeepestNodeAtPos(CleanSectionPos,true);
   if (SectionNode=nil) then exit;
   SectionNode:=SectionNode.GetNodeOfType(ctnResStrSection);
   if SectionNode=nil then exit;
   
-  //writeln('TStandardCodeTool.AddResourcestring B SectionChilds=',SectionNode.FirstChild<>nil,' InsertAlphabetically=',InsertAlphabetically);
+  //writeln('TStandardCodeTool.AddResourcestring D SectionChilds=',SectionNode.FirstChild<>nil);
   // find insert position
   if SectionNode.FirstChild=nil then begin
     // no resourcestring in this section yet -> append as first child
@@ -1772,37 +1903,71 @@ begin
     InsertPos:=SectionNode.StartPos+length('RESOURCESTRING');
   end else begin
     // search insert position
-    if InsertAlphabetically then begin
-      // insert new identifier alphabetically
-      ANode:=SectionNode.FirstChild;
-      while (ANode<>nil) do begin
-        if (ANode.Desc=ctnConstDefinition)
-        and (CompareIdentifiers(@Src[ANode.StartPos],PChar(NewIdentifier))<0)
-        then
-          break;
-        ANode:=ANode.NextBrother;
+    case InsertPolicy of
+    rsipAlphabetically:
+      begin
+        // insert new identifier alphabetically
+        ANode:=SectionNode.FirstChild;
+        while (ANode<>nil) do begin
+          if (ANode.Desc=ctnConstDefinition)
+          and (CompareIdentifiers(@Src[ANode.StartPos],PChar(NewIdentifier))<0)
+          then
+            break;
+          ANode:=ANode.NextBrother;
+        end;
+        if ANode=nil then begin
+          // append new identifier as last
+          Indent:=GetLineIndent(Src,SectionNode.LastChild.StartPos);
+          InsertPos:=FindLineEndOrCodeAfterPosition(SectionNode.LastChild.EndPos);
+        end else begin
+          // insert in front of node
+          Indent:=GetLineIndent(Src,ANode.StartPos);
+          InsertPos:=FindLineEndOrCodeInFrontOfPosition(ANode.StartPos);
+        end;
       end;
-      if ANode=nil then begin
-        // append new identifier as last
+      
+    rsipContext:
+      begin
+        // find nearest
+        ANode:=nil;
+        if (NearestPos.Code<>nil)
+        and (CaretToCleanPos(NearestPos,NearestCleanPos)=0) then begin
+          ANode:=SectionNode.FirstChild;
+          while (ANode<>nil) do begin
+            if (ANode.Desc=ctnConstDefinition)
+            and (ANode.StartPos<=NearestCleanPos)
+            and (ANode.EndPos>NearestCleanPos)
+            then begin
+              break;
+            end;
+            ANode:=ANode.NextBrother;
+          end;
+        end;
+        if ANode=nil then begin
+          // append new identifier as last
+          Indent:=GetLineIndent(Src,SectionNode.LastChild.StartPos);
+          InsertPos:=FindLineEndOrCodeAfterPosition(SectionNode.LastChild.EndPos);
+        end else begin
+          // insert behind node
+          Indent:=GetLineIndent(Src,ANode.StartPos);
+          InsertPos:=FindLineEndOrCodeAfterPosition(ANode.EndPos);
+        end;
+      end;
+      
+    else
+      begin
+        // append new identifier
         Indent:=GetLineIndent(Src,SectionNode.LastChild.StartPos);
         InsertPos:=FindLineEndOrCodeAfterPosition(SectionNode.LastChild.EndPos);
-      end else begin
-        // insert in front of node
-        Indent:=GetLineIndent(Src,ANode.StartPos);
-        InsertPos:=FindLineEndOrCodeInFrontOfPosition(ANode.StartPos);
       end;
-    end else begin
-      // append new identifier
-      Indent:=GetLineIndent(Src,SectionNode.LastChild.StartPos);
-      InsertPos:=FindLineEndOrCodeAfterPosition(SectionNode.LastChild.EndPos);
     end;
   end;
 
-  //writeln('TStandardCodeTool.AddResourcestring C Indent=',Indent,' InsertPos=',InsertPos,' ',copy(Src,InsertPos-9,8),'|',copy(Src,InsertPos,8));
+  //writeln('TStandardCodeTool.AddResourcestring E Indent=',Indent,' InsertPos=',InsertPos,' ',copy(Src,InsertPos-9,8),'|',copy(Src,InsertPos,8));
   // insert
   InsertSrc:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
                      NewIdentifier+' = '+NewValue+';',Indent);
-  //writeln('TStandardCodeTool.AddResourcestring D "',InsertSrc,'"');
+  //writeln('TStandardCodeTool.AddResourcestring F "',InsertSrc,'"');
   SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,InsertSrc);
   SourceChangeCache.Apply;
   Result:=true;

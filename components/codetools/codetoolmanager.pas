@@ -271,10 +271,10 @@ type
     function GatherResourceStringsWithValue(SectionCode: TCodeBuffer;
           SectionX, SectionY: integer; const StringValue: string;
           CodePositions: TCodeXYPositions): boolean;
-    function AddResourcestring(SectionCode: TCodeBuffer;
-          SectionX, SectionY: integer;
+    function AddResourcestring(CursorCode: TCodeBuffer; X,Y: integer;
+          SectionCode: TCodeBuffer; SectionX, SectionY: integer;
           const NewIdentifier, NewValue: string;
-          InsertAlphabetically: boolean): boolean;
+          InsertPolicy: TResourcestringInsertPolicy): boolean;
 
     // expressions
     function GetStringConstBounds(Code: TCodeBuffer; X,Y: integer;
@@ -1077,23 +1077,34 @@ begin
   end;
 end;
 
-function TCodeToolManager.AddResourcestring(SectionCode: TCodeBuffer; SectionX,
-  SectionY: integer; const NewIdentifier, NewValue: string;
-  InsertAlphabetically: boolean): boolean;
+function TCodeToolManager.AddResourcestring(
+  CursorCode: TCodeBuffer; X,Y: integer;
+  SectionCode: TCodeBuffer; SectionX, SectionY: integer;
+  const NewIdentifier, NewValue: string;
+  InsertPolicy: TResourcestringInsertPolicy): boolean;
 var
-  CursorPos: TCodeXYPosition;
+  CursorPos, SectionPos, NearestPos: TCodeXYPosition;
 begin
   Result:=false;
   {$IFDEF CTDEBUG}
   writeln('TCodeToolManager.AddResourcestring A ',SectionCode.Filename,' x=',Sectionx,' y=',Sectiony);
   {$ENDIF}
   if not InitCurCodeTool(SectionCode) then exit;
-  CursorPos.X:=SectionX;
-  CursorPos.Y:=SectionY;
-  CursorPos.Code:=SectionCode;
+  SectionPos.X:=SectionX;
+  SectionPos.Y:=SectionY;
+  SectionPos.Code:=SectionCode;
   try
-    Result:=FCurCodeTool.AddResourcestring(CursorPos, NewIdentifier, NewValue,
-                                        InsertAlphabetically,SourceChangeCache);
+    NearestPos.Code:=nil;
+    if InsertPolicy=rsipContext then begin
+      CursorPos.X:=X;
+      CursorPos.Y:=Y;
+      CursorPos.Code:=CursorCode;
+      Result:=FCurCodeTool.FindNearestResourceString(CursorPos, SectionPos,
+                                                     NearestPos);
+      if not Result then exit;
+    end;
+    Result:=FCurCodeTool.AddResourcestring(SectionPos, NewIdentifier, NewValue,
+                                     InsertPolicy,NearestPos,SourceChangeCache);
   except
     on e: Exception do HandleException(e);
   end;

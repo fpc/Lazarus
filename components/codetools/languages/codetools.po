@@ -146,12 +146,20 @@ msgstr ""
 msgid "unexpected end of source"
 msgstr ""
 
+#: codetoolsstrconsts:ctsendofsourceexpectedbutatomfound
+msgid "expected end., but %s found"
+msgstr ""
+
 #: codetoolsstrconsts:ctspointstartat
 msgid ". start at "
 msgstr ""
 
 #: codetoolsstrconsts:ctsunexpectedkeywordinasmblock
 msgid "unexpected keyword \"%s\" in asm block found"
+msgstr ""
+
+#: codetoolsstrconsts:ctsunexpectedkeywordinbeginendblock
+msgid "unexpected keyword \"%s\" in begin..end found"
 msgstr ""
 
 #: codetoolsstrconsts:ctsunexpectedkeywordwhilereadingbackwards
@@ -414,6 +422,10 @@ msgstr ""
 msgid "SrcPath Initialization"
 msgstr ""
 
+#: codetoolsstrconsts:ctsunitpathinitialization
+msgid "UnitPath Initialization"
+msgstr ""
+
 #: codetoolsstrconsts:ctsnestedcommentson
 msgid "Nested Comments On"
 msgstr ""
@@ -518,8 +530,28 @@ msgstr ""
 msgid "Designer Directory"
 msgstr ""
 
+#: codetoolsstrconsts:ctsjitformdirectory
+msgid "JITForm Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdesignerunitsdirectory
+msgid "Designer Units"
+msgstr ""
+
+#: codetoolsstrconsts:ctscompiledsrcpath
+msgid "Compiled SrcPath"
+msgstr ""
+
 #: codetoolsstrconsts:ctspackagerdirectory
 msgid "Packager Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctspackagerregistrationdirectory
+msgid "Packager Registration Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctspackagerunitsdirectory
+msgid "Packager Units Directory"
 msgstr ""
 
 #: codetoolsstrconsts:ctslazarusmaindirectory

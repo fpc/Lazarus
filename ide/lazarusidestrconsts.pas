@@ -1217,6 +1217,7 @@ resourcestring
   lisMakeResStrStringsWithSameValue = 'Strings with same value:';
   lisMakeResStrAppendToSection = 'Append to section';
   lisMakeResStrInsertAlphabetically = 'Insert alphabetically';
+  lisMakeResStrInsertContexttSensitive = 'Insert context sensitive';
   lisMakeResStrSourcePreview = 'Source preview';
   
   // diff dialog
@@ -1248,6 +1249,33 @@ resourcestring
   lisPkgFileTypeInclude = 'Include file';
   lisPkgFileTypeText = 'Text';
   lisPkgFileTypeBinary = 'Binary';
+
+  // view project units dialog
+  lisViewProjectUnits = 'View Project Units';
+  
+  // unit info dialog
+  lisInformationAboutUnit = 'Information about %s';
+  lisUIDyes = 'yes';
+  lisUIDno = 'no';
+  lisUIDbytes = '%s bytes';
+  lisUIDName = 'Name:';
+  lisUIDType = 'Type:';
+  lisUIDinProject = 'in Project:';
+  lisUIDIncludedBy = 'Included by:';
+  lisUIDClear = 'Clear';
+  lisUIDPathsReadOnly = 'Paths (Read Only)';
+  lisUIDSrc = 'Src';
+  lisUIDOk = 'Ok';
+  
+  // unit editor
+  lisUEErrorInRegularExpression = 'Error in regular expression';
+  lisUENotFound = 'Not found';
+  lisUESearchStringNotFound = 'Search string ''%s'' not found!';
+  lisUEReplaceThisOccurrenceOfWith = 'Replace this occurrence of %s%s%s%s '
+    +'with %s%s%s?';
+  lisUESearching = 'Searching: %s';
+  lisUEReadOnly = '%s/ReadOnly';
+  lisUEGotoLine = 'Goto line :';
 
 implementation
 end.

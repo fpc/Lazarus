@@ -18,6 +18,10 @@ msgstr " конфликтует с "
 msgid " The key \"%s\" is already connected to \"%s\"."
 msgstr "Клавика \"%s\" уже сопоставлена с \"%s\"."
 
+#: lazarusidestrconsts:lisuidbytes
+msgid "%s bytes"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsdirectory
 msgid "%s directory"
 msgstr "%s - это каталог"
@@ -33,6 +37,10 @@ msgstr "%s, автосоздан"
 #: lazarusidestrconsts:liscodetoolsdefsprojectspecific
 msgid "%s, project specific"
 msgstr "%s, связан с проектом"
+
+#: lazarusidestrconsts:lisuereadonly
+msgid "%s/ReadOnly"
+msgstr ""
 
 #: lazarusidestrconsts:dlgpasautolower
 msgid "%sSave As%s always saves pascal files lowercase"
@@ -165,6 +173,10 @@ msgstr "Действие: %s"
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
 msgstr "Добавить"
+
+#: lazarusidestrconsts:lismenuaddcurunittopkg
+msgid "Add active unit to a package"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuaddunittoproject
 msgid "Add active unit to Project"
@@ -318,6 +330,10 @@ msgstr "Резервирование"
 msgid "Behind methods"
 msgstr "После методов"
 
+#: lazarusidestrconsts:lispkgfiletypebinary
+msgid "Binary"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsblock
 msgid "Block"
 msgstr "Блок"
@@ -370,7 +386,7 @@ msgstr "Собрать все"
 msgid "build all files of program/project"
 msgstr "собрать все файлы программы/проекта"
 
-#: lazarusidestrconsts:lislazbuildbuildcodetools
+#: lazarusidestrconsts:lisbuildcodetools
 msgid "Build CodeTools"
 msgstr "Собрать CodeTools"
 
@@ -391,6 +407,10 @@ msgid "Build IDE"
 msgstr "Собрать IDE"
 
 #: lazarusidestrconsts:lisbuildjitform
+msgid "Build JIT Form"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
 msgstr "Собрать JITForm"
 
@@ -401,6 +421,10 @@ msgstr "Собрать Lazarus"
 #: lazarusidestrconsts:lisbuildlcl
 msgid "Build LCL"
 msgstr "Собрать LCL"
+
+#: lazarusidestrconsts:lisbuildpkgreg
+msgid "Build Package Registration"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecbuild
 msgid "build program/project"
@@ -470,9 +494,29 @@ msgstr "Проверка:"
 msgid "Choose code template file (*.dci)"
 msgstr "Выберите файл шаблонов кода (*.dci)"
 
+#: lazarusidestrconsts:lischoosecompilerpath
+msgid "Choose compiler filename (ppc386)"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosedebuggerpath
+msgid "Choose debugger filename"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosedirectory
 msgid "Choose directory"
 msgstr "Выбор каталога"
+
+#: lazarusidestrconsts:lischoosefpcsourcedir
+msgid "Choose FPC source directory"
+msgstr ""
+
+#: lazarusidestrconsts:lischooselazarussourcedirectory
+msgid "Choose Lazarus Directory"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosetestbuilddir
+msgid "Choose the directory for tests"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcdtclassorder
 msgid "Class order"
@@ -509,10 +553,6 @@ msgstr "Закрыть все"
 #: lazarusidestrconsts:lismenucloseall
 msgid "Close all editor files"
 msgstr "Закрыть все файлы редактора"
-
-#: lazarusidestrconsts:dlgclosebuttonsnotebook
-msgid "Close buttons in notebook"
-msgstr "Кнопки закрытия на закладках"
 
 #: lazarusidestrconsts:dlgcodecreation
 msgid "Code Creation"
@@ -1074,6 +1114,10 @@ msgstr "Параметры окружения"
 msgid "Error"
 msgstr "Ошибка"
 
+#: lazarusidestrconsts:lisueerrorinregularexpression
+msgid "Error in regular expression"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefserrorreading
 msgid "Error reading %s%s%s%s%s"
 msgstr "Ошибка чтения %s%s%s%s%s"
@@ -1338,6 +1382,10 @@ msgstr "Переход по директиве $I"
 msgid "Goto line"
 msgstr "Переход к строке"
 
+#: lazarusidestrconsts:lisuegotoline
+msgid "Goto line :"
+msgstr ""
+
 #: lazarusidestrconsts:dlgtodolistgotoline
 msgid "Goto selected source line"
 msgstr "Переход к выделенной строке исходника"
@@ -1526,9 +1574,17 @@ msgstr ""
 msgid "In front of methods"
 msgstr "Перед методами"
 
+#: lazarusidestrconsts:lisuidinproject
+msgid "in Project:"
+msgstr ""
+
 #: lazarusidestrconsts:dlgassertcode
 msgid "Include Assertion Code"
 msgstr "Включить код Assert"
+
+#: lazarusidestrconsts:lispkgfiletypeinclude
+msgid "Include file"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcoincfiles
 msgid "Include Files:"
@@ -1537,6 +1593,10 @@ msgstr "Включаемые файлы:"
 #: lazarusidestrconsts:dlgincludesystemvariables
 msgid "Include system variables"
 msgstr "Включить системные переменные"
+
+#: lazarusidestrconsts:lisuidincludedby
+msgid "Included by:"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuincrementalfind
 msgid "Incremental Find"
@@ -1558,6 +1618,14 @@ msgstr "Сдвинуть блок вправо"
 msgid "Info"
 msgstr "Информация"
 
+#: lazarusidestrconsts:lisinformationaboutunit
+msgid "Information about %s"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoinherited
+msgid "Inherited"
+msgstr ""
+
 #: lazarusidestrconsts:uepins
 msgid "INS"
 msgstr "ВСТ"
@@ -1573,6 +1641,10 @@ msgstr "Вставить по алфавиту"
 #: lazarusidestrconsts:srkmecinsertchangelogentry
 msgid "Insert ChangeLog entry"
 msgstr "Вставить элемент ChangeLog"
+
+#: lazarusidestrconsts:lismakeresstrinsertcontexttsensitive
+msgid "Insert context sensitive"
+msgstr ""
 
 #: lazarusidestrconsts:srkmecinsertdatetime
 msgid "Insert current date and time"
@@ -1822,6 +1894,10 @@ msgstr "Командная строка для запуска"
 msgid "lazarus [options] <project-filename>\n\nIDE Options:\n\n--help or -?             this help message\n\n"
 msgstr "lazarus [опции] <имя файла проекта>\n\nНастройки IDE :\n\n--help или -?             это сообщение\n\n"
 
+#: lazarusidestrconsts:lisconfigdirectory
+msgid "Lazarus config directory"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusdirectory
 msgid "Lazarus directory"
 msgstr "Каталог Lazarus"
@@ -1873,6 +1949,10 @@ msgstr "Уровень 2 (уровень 1 + более медленная)"
 #: lazarusidestrconsts:dlglevel3opt
 msgid "Level 3 (Level 2 + Uncertain)"
 msgstr "Уровень 3 (уровень 3 + нестандартная)"
+
+#: lazarusidestrconsts:lispkgfiletypelfm
+msgid "LFM - Lazarus form text"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuinsertlgplnotice
 msgid "LGPL notice"
@@ -1937,6 +2017,10 @@ msgstr "Нижний регистр выделения"
 #: lazarusidestrconsts:dlg1up2low
 msgid "Lowercase, first letter up"
 msgstr "Только 1я буква заглавная"
+
+#: lazarusidestrconsts:lispkgfiletypelrs
+msgid "LRS - Lazarus resource"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmainmenu
 msgid "Main Menu"
@@ -2162,6 +2246,10 @@ msgstr "Новый элемент"
 msgid "Next"
 msgstr "Следующий"
 
+#: lazarusidestrconsts:lisuidno
+msgid "no"
+msgstr ""
+
 #: lazarusidestrconsts:dlgednoerr
 msgid "No errors in key mapping found."
 msgstr "Не найдено ошибок раскладок."
@@ -2189,6 +2277,10 @@ msgstr "Ничего не выбрано"
 #: lazarusidestrconsts:srkmecnormalselect
 msgid "Normal selection mode"
 msgstr "Нормальный режим выбора"
+
+#: lazarusidestrconsts:lisuenotfound
+msgid "Not found"
+msgstr ""
 
 #: lazarusidestrconsts:uenotimplcap
 msgid "Not implemented yet"
@@ -2250,13 +2342,17 @@ msgstr "Открыть файл у курсора"
 msgid "Open filename at cursor"
 msgstr "Открыть имя файла под курсором"
 
-#: lazarusidestrconsts:lismenuopeninstalledpkg
-msgid "Open installed package"
-msgstr "Открыть установленный пакет"
-
 #: lazarusidestrconsts:dlgqopenlastprj
 msgid "Open last project at start"
 msgstr "Грузить последний проект при пуске"
+
+#: lazarusidestrconsts:lismenuopenpackage
+msgid "Open package"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuopenpackagefile
+msgid "Open package file"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenproject
 msgid "Open Project"
@@ -2269,6 +2365,10 @@ msgstr "Открыть проект"
 #: lazarusidestrconsts:lismenuopenrecent
 msgid "Open Recent"
 msgstr "Открыть недавнее"
+
+#: lazarusidestrconsts:lismenuopenrecentpkg
+msgid "Open recent package"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuopenrecentproject
 msgid "Open Recent Project"
@@ -2334,6 +2434,10 @@ msgstr "Режим замены"
 msgid "OVR"
 msgstr "ЗАМ"
 
+#: lazarusidestrconsts:lismenupackagegraph
+msgid "Package Graph"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsdefsparentnodecannotcontainch
 msgid "Parent node can not contain child nodes."
 msgstr "Родительский элемент не может содержать дочерних."
@@ -2357,6 +2461,10 @@ msgstr "Вставить из буфера в текущую позицию"
 #: lazarusidestrconsts:dlgtofpcpath
 msgid "Path To Compiler:"
 msgstr "Путь к компилятору:"
+
+#: lazarusidestrconsts:lisuidpathsreadonly
+msgid "Paths (Read Only)"
+msgstr ""
 
 #: lazarusidestrconsts:lismenupause
 msgid "Pause"
@@ -2450,6 +2558,14 @@ msgstr "Имя файла проекта"
 msgid "Project files"
 msgstr "Файлы проекта"
 
+#: lazarusidestrconsts:lisprojectincpath
+msgid "Project Include Path"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuprojectinspector
+msgid "Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:srkmcatprojectmenu
 msgid "Project menu commands"
 msgstr "Команды меню Проект"
@@ -2461,6 +2577,14 @@ msgstr "Параметры проекта"
 #: lazarusidestrconsts:lismenuprojectoptions
 msgid "Project Options..."
 msgstr "Параметры проекта..."
+
+#: lazarusidestrconsts:lisprojectsrcpath
+msgid "Project Src Path"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectunitpath
+msgid "Project Unit Path"
+msgstr ""
 
 #: lazarusidestrconsts:lispromptforvalue
 msgid "Prompt for value"
@@ -2541,6 +2665,10 @@ msgstr "Заменить все"
 #: lazarusidestrconsts:srkmecreplace
 msgid "Replace text"
 msgstr "Заменить текст"
+
+#: lazarusidestrconsts:lisuereplacethisoccurrenceofwith
+msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
+msgstr ""
 
 #: lazarusidestrconsts:dlgreport
 msgid "Report"
@@ -2714,6 +2842,14 @@ msgstr "Прокрутить вверх 1 строку"
 msgid "Search Paths"
 msgstr "Пути поиска"
 
+#: lazarusidestrconsts:lisuesearchstringnotfound
+msgid "Search string '%s' not found!"
+msgstr ""
+
+#: lazarusidestrconsts:lisuesearching
+msgid "Searching: %s"
+msgstr ""
+
 #: lazarusidestrconsts:dlgtimesecondunit
 msgid "sec"
 msgstr "сек"
@@ -2874,6 +3010,10 @@ msgstr ""
 msgid "Show all procs on error"
 msgstr "Все проц-ры при ошибках"
 
+#: lazarusidestrconsts:dlgclosebuttonsnotebook
+msgid "Show Close Buttons in notebook"
+msgstr ""
+
 #: lazarusidestrconsts:dlgshowcompiledprocedures
 msgid "Show Compiled Procedures"
 msgstr "Откомпирированные проц-ры"
@@ -3017,6 +3157,10 @@ msgstr "Пробел"
 #: lazarusidestrconsts:srvk_space
 msgid "Space key"
 msgstr "Кнопка пробел"
+
+#: lazarusidestrconsts:lisuidsrc
+msgid "Src"
+msgstr ""
 
 #: lazarusidestrconsts:dlgcostack
 msgid "Stack"
@@ -3165,6 +3309,10 @@ msgstr "Каталог проб"
 #: lazarusidestrconsts:lisenvoptdlgtestdirnotfoundmsg
 msgid "Test directory \"%s\" not found."
 msgstr "Каталог проб \"%s\" не найден."
+
+#: lazarusidestrconsts:lispkgfiletypetext
+msgid "Text"
+msgstr ""
 
 #: lazarusidestrconsts:dlgtextattributes
 msgid "Text attributes"
@@ -3326,6 +3474,10 @@ msgstr "Обрезать хвостовые пробелы"
 msgid "Type"
 msgstr "Тип"
 
+#: lazarusidestrconsts:lisuidtype
+msgid "Type:"
+msgstr ""
+
 #: lazarusidestrconsts:dlguncertopt
 msgid "Uncertain Optimizations"
 msgstr "Нестандартная оптимизация"
@@ -3369,6 +3521,10 @@ msgstr "Отменить отделение блока"
 #: lazarusidestrconsts:lismenuunindentselection
 msgid "Unindent selection"
 msgstr "Сдвинуть блок влево"
+
+#: lazarusidestrconsts:lispkgfiletypeunit
+msgid "Unit"
+msgstr ""
 
 #: lazarusidestrconsts:dlgunitdepcaption
 msgid "Unit dependencies"
@@ -3602,6 +3758,10 @@ msgstr "Ширина:"
 msgid "Window Positions"
 msgstr "Позиции окна"
 
+#: lazarusidestrconsts:lislazbuildwithstaticpackages
+msgid "With Packages"
+msgstr ""
+
 #: lazarusidestrconsts:liswordatcursorincurrenteditor
 msgid "Word at cursor in current editor"
 msgstr "Слово под курсором в этом редакторе"
@@ -3629,4 +3789,8 @@ msgstr "Ошибка записи"
 #: lazarusidestrconsts:dlgcdtwriteprefix
 msgid "Write prefix"
 msgstr "Префикс WRITE"
+
+#: lazarusidestrconsts:lisuidyes
+msgid "yes"
+msgstr ""
 

@@ -132,6 +132,10 @@ msgstr ""
 msgid "Comment end not found"
 msgstr "Fin de commentaire non trouvé"
 
+#: codetoolsstrconsts:ctscompiledsrcpath
+msgid "Compiled SrcPath"
+msgstr ""
+
 #: codetoolsstrconsts:ctscompiler
 msgid "Compiler"
 msgstr "Compilateur"
@@ -220,6 +224,10 @@ msgstr "Sources de définitions de Lazarus"
 msgid "Designer Directory"
 msgstr "Répertoire concepteur"
 
+#: codetoolsstrconsts:ctsdesignerunitsdirectory
+msgid "Designer Units"
+msgstr ""
+
 #: codetoolsstrconsts:ctsduplicateidentifier
 msgid "duplicate identifier: %s"
 msgstr "identificateur %s dupliqué"
@@ -251,6 +259,10 @@ msgstr "erreur dans paramlist"
 #: codetoolsstrconsts:ctsexecuteaccessdeniedforfile
 msgid "execute access denied for %s"
 msgstr "droits d'exécution refusés pour %s"
+
+#: codetoolsstrconsts:ctsendofsourceexpectedbutatomfound
+msgid "expected end., but %s found"
+msgstr ""
 
 #: codetoolsstrconsts:ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
@@ -388,6 +400,10 @@ msgstr "plage non valide"
 msgid "invalid type"
 msgstr "type non valide"
 
+#: codetoolsstrconsts:ctsjitformdirectory
+msgid "JITForm Directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctskeyword
 msgid "keyword"
 msgstr "mot-clé"
@@ -471,6 +487,14 @@ msgstr "Répertoires de paquet"
 #: codetoolsstrconsts:ctspackagerdirectory
 msgid "Packager Directory"
 msgstr "Répertoire de paquet"
+
+#: codetoolsstrconsts:ctspackagerregistrationdirectory
+msgid "Packager Registration Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctspackagerunitsdirectory
+msgid "Packager Units Directory"
+msgstr ""
 
 #: codetoolsstrconsts:ctsprocedureorfunction
 msgid "procedure or function"
@@ -580,6 +604,10 @@ msgstr "mot-clé \"%s\" inattendu trouvé lors de la lecture des blocs vers le hau
 msgid "unexpected keyword \"%s\" in asm block found"
 msgstr "mot-clé \"%s\" inattendu trouvé dans le bloc asm"
 
+#: codetoolsstrconsts:ctsunexpectedkeywordinbeginendblock
+msgid "unexpected keyword \"%s\" in begin..end found"
+msgstr ""
+
 #: codetoolsstrconsts:ctsunexpectedsubrangeoperatorfound
 msgid "unexpected subrange operator '..' found"
 msgstr "opérateur plage '..' inattendu trouvé"
@@ -587,6 +615,10 @@ msgstr "opérateur plage '..' inattendu trouvé"
 #: codetoolsstrconsts:ctsunitnotfound
 msgid "unit not found: %s"
 msgstr "unité %s non trouvée"
+
+#: codetoolsstrconsts:ctsunitpathinitialization
+msgid "UnitPath Initialization"
+msgstr ""
 
 #: codetoolsstrconsts:ctsunknownfunction
 msgid "Unknown function %s"

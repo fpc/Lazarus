@@ -1942,7 +1942,7 @@ begin
         SameArea.StartPos:=SameArea.EndPos;
         MoveCursorToCleanPos(SameArea.StartPos);
         ReadTillCommentEnd;
-        SameArea.EndPos:=CurPos.EndPos;
+        SameArea.EndPos:=CurPos.StartPos;
         if (SameArea.StartPos=SameArea.EndPos) then
           RaiseException('TCustomCodeTool.GetCleanPosInfo Internal Error A');
         if CleanPos<SameArea.EndPos then begin

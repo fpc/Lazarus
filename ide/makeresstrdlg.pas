@@ -43,15 +43,9 @@ uses
   Classes, SysUtils, Forms, Controls, Buttons, ComCtrls, StdCtrls, Dialogs,
   ExtCtrls, LResources, LazarusIDEStrConsts, IDEOptionDefs, CodeToolManager,
   CodeAtom, CodeToolsStructs, CodeCache, SynHighlighterPas, SynEdit,
-  EditorOptions, InputHistory;
+  EditorOptions, InputHistory, MiscOptions;
   
 type
-  TResourcestringInsertPolicy = (
-    rsipNone,          // do not add/insert
-    rsipAppend,        // append at end
-    rsipAlphabetically // insert alphabetically
-    );
-
   TMakeResStrDialog = class(TForm)
     // source synedit
     StringConstGroupBox: TGroupBox;
@@ -77,6 +71,7 @@ type
     // insert position type
     AppendResStrRadioButton: TRadioButton;
     InsertAlphabeticallyResStrRadioButton: TRadioButton;
+    InsertContextSensitiveRadioButton: TRadioButton;
     
     // preview
     SrcPreviewGroupBox: TGroupBox;
@@ -126,6 +121,7 @@ type
     procedure SaveHistories;
     procedure SaveIdentPrefixes;
     procedure SaveIdentLengths;
+    procedure Save;
   end;
   
 function ShowMakeResStrDialog(
@@ -172,6 +168,8 @@ begin
     else begin
       if MakeResStrDialog.InsertAlphabeticallyResStrRadioButton.Checked then
         InsertPolicy:=rsipAlphabetically
+      else if MakeResStrDialog.InsertContextSensitiveRadioButton.Checked then
+        InsertPolicy:=rsipContext
       else
         InsertPolicy:=rsipAppend;
     end;
@@ -263,13 +261,20 @@ begin
   with AppendResStrRadioButton do begin
     SetBounds(IdentPrefixLabel.Left,
               ResStrWithSameValuesCombobox.Top+ResStrWithSameValuesCombobox.Height+7,
-              Min((Parent.ClientWidth-3*Left) div 2,150),Height);
+              Min(Max(50,(Parent.ClientWidth-3*Left) div 3),150),Height);
   end;
 
   with InsertAlphabeticallyResStrRadioButton do begin
     SetBounds(AppendResStrRadioButton.Left+AppendResStrRadioButton.Width+5,
               AppendResStrRadioButton.Top,
-              Parent.ClientWidth-Left-5,Height);
+              AppendResStrRadioButton.Width,Height);
+  end;
+
+  with InsertContextSensitiveRadioButton do begin
+    SetBounds(InsertAlphabeticallyResStrRadioButton.Left
+              +InsertAlphabeticallyResStrRadioButton.Width+5,
+              InsertAlphabeticallyResStrRadioButton.Top,
+              Max(100,Parent.ClientWidth-Left-5),Height);
   end;
 end;
 
@@ -351,7 +356,7 @@ begin
     then
       exit;
   end;
-  SaveHistories;
+  Save;
   ModalResult:=mrOk;
 end;
 
@@ -492,6 +497,13 @@ begin
     Name:='InsertAlphabeticallyResStrRadioButton';
     Parent:=ConversionGroupBox;
     Caption:=lisMakeResStrInsertAlphabetically;
+  end;
+
+  InsertContextSensitiveRadioButton:=TRadioButton.Create(Self);
+  with InsertContextSensitiveRadioButton do begin
+    Name:='InsertContextSensitiveRadioButton';
+    Parent:=ConversionGroupBox;
+    Caption:=lisMakeResStrInsertContexttSensitive;
   end;
 
   // converted source preview
@@ -797,6 +809,8 @@ begin
 end;
 
 procedure TMakeResStrDialog.Init;
+var
+  InsertPolicy: TResourcestringInsertPolicy;
 begin
   // string constant
   StringConstSynEdit.Text:=Code.GetLines(StartPos.Y,EndPos.Y);
@@ -813,6 +827,13 @@ begin
   CodeToolBoss.CreateIdentifierFromStringConst(Code,StartPos.X,StartPos.Y,
      Code,EndPos.X,EndPos.Y,DefaultIdentifier,50);
   UpdateIdentifier;
+  // insert policy
+  InsertPolicy:=MiscellaneousOptions.MakeResourceStringInsertPolicy;
+  case InsertPolicy of
+  rsipAlphabetically: InsertAlphabeticallyResStrRadioButton.Checked:=true;
+  rsipContext:        InsertContextSensitiveRadioButton.Checked:=true;
+  else                AppendResStrRadioButton.Checked:=true;
+  end;
   // show new source
   UpdateSourcePreview;
 end;
@@ -849,6 +870,21 @@ begin
   if HistoryList.Count=0 then
     HistoryList.Assign(IdentLengthComboBox.Items);
   HistoryList.Push(IdentLengthComboBox.Text);
+end;
+
+procedure TMakeResStrDialog.Save;
+var
+  InsertPolicy: TResourcestringInsertPolicy;
+begin
+  SaveHistories;
+  if InsertContextSensitiveRadioButton.Checked then
+    InsertPolicy:=rsipContext
+  else if InsertAlphabeticallyResStrRadioButton.Checked then
+    InsertPolicy:=rsipAlphabetically
+  else
+    InsertPolicy:=rsipAppend;
+  MiscellaneousOptions.MakeResourceStringInsertPolicy:=InsertPolicy;
+  MiscellaneousOptions.Save;
 end;
 
 

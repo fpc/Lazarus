@@ -2,7 +2,7 @@
 {
  /***************************************************************************
                           ViewUnit_dlg.pp
-                        -------------------
+                          ---------------
    TViewUnit is the application dialog for displaying all units in a project.
 
 
@@ -122,7 +122,7 @@ begin
   inherited Create(AOwner);
 
   if LazarusResources.Find(Classname)=nil then begin
-    Caption := 'View Project Units';
+    Caption := lisViewProjectUnits;
     Width:=325;
     Height:=200;
     Position:=poScreenCenter;
@@ -249,6 +249,9 @@ initialization
 end.
 {
   $Log$
+  Revision 1.16  2003/05/02 22:22:15  mattias
+  localization, added context policy to make resource string dialog
+
   Revision 1.15  2003/03/08 01:33:35  mattias
   localization from Olivier
 
@@ -295,96 +298,5 @@ end.
   Revision 1.1  2000/07/13 10:27:48  michael
   + Initial import
 
-  Revision 1.8  2000/05/10 02:34:43  lazarus
-  Changed writelns to Asserts except for ERROR and WARNING messages.   CAW
-
-  Revision 1.7  2000/03/24 14:40:41  lazarus
-  A little polishing and bug fixing.
-
-  Revision 1.6  2000/03/19 03:52:08  lazarus
-  Added onclick events for the speedbuttons.
-  Shane
-
-  Revision 1.5  2000/03/03 20:22:02  lazarus
-  Trying to add TBitBtn
-  Shane
-
-  Revision 1.4  2000/02/24 09:10:12  lazarus
-  TListBox.Selected bug fixed.
-
-  Revision 1.3  2000/02/22 21:29:42  lazarus
-  Added a few more options in the editor like closeing a unit.  Also am keeping track of what page , if any, they are currently on.
-  Shane
-
-  Revision 1.2  2000/02/21 21:08:29  lazarus
-  Bug fix in GetCaption.  Added the line to check if a handle is allocated for a csEdit.   Otherwise when creating it, it check's it's caption.  It then sends a LM_GETTEXT and the edit isn't created, so it calls LM_CREATE which in turn checks the caption again, etc.
-  Shane
-
-  Revision 1.1  2000/02/21 17:38:04  lazarus
-  Added modalresult to TCustomForm
-  Added a View Units dialog box
-  Added a View Forms dialog box
-  Added a New Unit menu selection
-  Added a New Form menu selection
-  Shane
-
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

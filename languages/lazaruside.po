@@ -98,6 +98,22 @@ msgstr ""
 msgid "Publish project directory"
 msgstr ""
 
+#: lazarusidestrconsts:lisprojectunitpath
+msgid "Project Unit Path"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectincpath
+msgid "Project Include Path"
+msgstr ""
+
+#: lazarusidestrconsts:lisprojectsrcpath
+msgid "Project Src Path"
+msgstr ""
+
+#: lazarusidestrconsts:lisconfigdirectory
+msgid "Lazarus config directory"
+msgstr ""
+
 #: lazarusidestrconsts:lismenufile
 msgid "&File"
 msgstr ""
@@ -450,6 +466,10 @@ msgstr ""
 msgid "Publish Project"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuprojectinspector
+msgid "Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddunittoproject
 msgid "Add active unit to Project"
 msgstr ""
@@ -510,12 +530,28 @@ msgstr ""
 msgid "Run Parameters ..."
 msgstr ""
 
-#: lazarusidestrconsts:lismenuconfigcustomcomps
-msgid "Configure custom components"
+#: lazarusidestrconsts:lismenuopenpackage
+msgid "Open package"
 msgstr ""
 
-#: lazarusidestrconsts:lismenuopeninstalledpkg
-msgid "Open installed package"
+#: lazarusidestrconsts:lismenuopenrecentpkg
+msgid "Open recent package"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuopenpackagefile
+msgid "Open package file"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuaddcurunittopkg
+msgid "Add active unit to a package"
+msgstr ""
+
+#: lazarusidestrconsts:lismenupackagegraph
+msgid "Package Graph"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuconfigcustomcomps
+msgid "Configure custom components"
 msgstr ""
 
 #: lazarusidestrconsts:lismenusettings
@@ -586,6 +622,10 @@ msgstr ""
 msgid "Open Project File"
 msgstr ""
 
+#: lazarusidestrconsts:lisopenpackagefile
+msgid "Open Package File"
+msgstr ""
+
 #: lazarusidestrconsts:lissavespace
 msgid "Save "
 msgstr ""
@@ -596,6 +636,26 @@ msgstr ""
 
 #: lazarusidestrconsts:lischoosedirectory
 msgid "Choose directory"
+msgstr ""
+
+#: lazarusidestrconsts:lischooselazarussourcedirectory
+msgid "Choose Lazarus Directory"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosecompilerpath
+msgid "Choose compiler filename (ppc386)"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosefpcsourcedir
+msgid "Choose FPC source directory"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosedebuggerpath
+msgid "Choose debugger filename"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosetestbuilddir
+msgid "Choose the directory for tests"
 msgstr ""
 
 #: lazarusidestrconsts:lissavechangestoproject
@@ -1179,7 +1239,7 @@ msgid "Scroll Past End of Line"
 msgstr ""
 
 #: lazarusidestrconsts:dlgclosebuttonsnotebook
-msgid "Close buttons in notebook"
+msgid "Show Close Buttons in notebook"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowscrollhint
@@ -1580,6 +1640,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcoother
 msgid "Other"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcoinherited
+msgid "Inherited"
 msgstr ""
 
 #: lazarusidestrconsts:dlgshowcompileroptions
@@ -3170,10 +3234,6 @@ msgstr ""
 msgid "Refresh"
 msgstr ""
 
-#: lazarusidestrconsts:lisbuildjitform
-msgid "Build JITForm"
-msgstr ""
-
 #: lazarusidestrconsts:liscleanlazarussource
 msgid "Clean Lazarus Source"
 msgstr ""
@@ -3186,8 +3246,20 @@ msgstr ""
 msgid "Build Component"
 msgstr ""
 
+#: lazarusidestrconsts:lisbuildcodetools
+msgid "Build CodeTools"
+msgstr ""
+
 #: lazarusidestrconsts:lisbuildsynedit
 msgid "Build SynEdit"
+msgstr ""
+
+#: lazarusidestrconsts:lisbuildjitform
+msgid "Build JIT Form"
+msgstr ""
+
+#: lazarusidestrconsts:lisbuildpkgreg
+msgid "Build Package Registration"
 msgstr ""
 
 #: lazarusidestrconsts:lisbuildide
@@ -3244,6 +3316,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lislazbuildbuildjitform
 msgid "Build JITForm"
+msgstr ""
+
+#: lazarusidestrconsts:lislazbuildwithstaticpackages
+msgid "With Packages"
 msgstr ""
 
 #: lazarusidestrconsts:lislazbuildok
@@ -3762,6 +3838,10 @@ msgstr ""
 msgid "Insert alphabetically"
 msgstr ""
 
+#: lazarusidestrconsts:lismakeresstrinsertcontexttsensitive
+msgid "Insert context sensitive"
+msgstr ""
+
 #: lazarusidestrconsts:lismakeresstrsourcepreview
 msgid "Source preview"
 msgstr ""
@@ -3828,5 +3908,109 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgtodolistoptions
 msgid "ToDo options..."
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypeunit
+msgid "Unit"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypelfm
+msgid "LFM - Lazarus form text"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypelrs
+msgid "LRS - Lazarus resource"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypeinclude
+msgid "Include file"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypetext
+msgid "Text"
+msgstr ""
+
+#: lazarusidestrconsts:lispkgfiletypebinary
+msgid "Binary"
+msgstr ""
+
+#: lazarusidestrconsts:lisviewprojectunits
+msgid "View Project Units"
+msgstr ""
+
+#: lazarusidestrconsts:lisinformationaboutunit
+msgid "Information about %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidyes
+msgid "yes"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidno
+msgid "no"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidbytes
+msgid "%s bytes"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidname
+msgid "Name:"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidtype
+msgid "Type:"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidinproject
+msgid "in Project:"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidincludedby
+msgid "Included by:"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidclear
+msgid "Clear"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidpathsreadonly
+msgid "Paths (Read Only)"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidsrc
+msgid "Src"
+msgstr ""
+
+#: lazarusidestrconsts:lisuidok
+msgid "Ok"
+msgstr ""
+
+#: lazarusidestrconsts:lisueerrorinregularexpression
+msgid "Error in regular expression"
+msgstr ""
+
+#: lazarusidestrconsts:lisuenotfound
+msgid "Not found"
+msgstr ""
+
+#: lazarusidestrconsts:lisuesearchstringnotfound
+msgid "Search string '%s' not found!"
+msgstr ""
+
+#: lazarusidestrconsts:lisuereplacethisoccurrenceofwith
+msgid "Replace this occurrence of %s%s%s%s with %s%s%s?"
+msgstr ""
+
+#: lazarusidestrconsts:lisuesearching
+msgid "Searching: %s"
+msgstr ""
+
+#: lazarusidestrconsts:lisuereadonly
+msgid "%s/ReadOnly"
+msgstr ""
+
+#: lazarusidestrconsts:lisuegotoline
+msgid "Goto line :"
 msgstr ""
 

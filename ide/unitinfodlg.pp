@@ -27,7 +27,8 @@ unit UnitInfoDlg;
 interface
 
 uses
-  Classes, SysUtils, Controls, StdCtrls, Forms, Buttons, ExtCtrls, IDEProcs;
+  Classes, SysUtils, Controls, StdCtrls, Forms, Buttons, ExtCtrls, IDEProcs,
+  LazarusIDEStrConsts;
 
 type
   TUnitInfoDlg = class(TFORM)
@@ -96,15 +97,15 @@ var Dlg: TUnitInfoDlg;
 begin
   Dlg:=TUnitInfoDlg.Create(Application);
   with Dlg do begin
-    Caption:='Information about '+AnUnitName;
+    Caption:=Format(lisInformationAboutUnit, [AnUnitName]);
     setFilePath(FilePath);
     setShortName(AnUnitName);
     setType(AType);
     if IsPartOfProject then
-      setInProject('yes')
+      setInProject(lisUIDyes)
     else
-      setInProject('no');
-    setSize(IntToStr(SizeInBytes)+' bytes');
+      setInProject(lisUIDno);
+    setSize(Format(lisUIDbytes, [IntToStr(SizeInBytes)]));
     setLines(IntToStr(LineCount));
     setPath(FilePath);
     setIncludedBy(IncludedBy);
@@ -125,7 +126,6 @@ begin
   inherited Create(AOwner);
   if LazarusResources.Find(ClassName)=nil then begin
 
-    Caption:='Unit Info for unit ???';
     Width:=500;
     Height:=300;
     position:=poScreenCenter;
@@ -137,7 +137,7 @@ begin
       Parent:=self;
       Left:=4;
       top:=4;
-      caption:='Name:';
+      caption:=lisUIDName;
     end;
 
     utype:=TLabel.create(self);
@@ -146,7 +146,7 @@ begin
       Parent:=self;
       Left:=UName.Left;
       top:=24;
-      caption:='Type:';
+      caption:=lisUIDType;
     end;
 
     uinproject:=TLabel.create(self);
@@ -155,7 +155,7 @@ begin
       Parent:=self;
       Left:=UName.Left;
       top:=44;
-      caption:='in Project:';
+      caption:=lisUIDinProject;
     end;
 
     usize:=TLabel.create(self);
@@ -191,7 +191,7 @@ begin
       Parent:=self;
       Left:=UName.Left;
       top:=124;
-      caption:='Included by:';
+      caption:=lisUIDIncludedBy;
     end;
 
     outname:=TLabel.create(self);
@@ -211,7 +211,6 @@ begin
       Left:=outname.Left;
       top:=24;
       Width:=Self.ClientWidth-Left-5;
-      caption:='temp';
     end;
 
     outinproject:=TLabel.create(self);
@@ -221,7 +220,6 @@ begin
       Left:=outname.Left;
       top:=44;
       Width:=Self.ClientWidth-Left-5;
-      caption:='temp';
     end;
 
     outsize:=TLabel.create(self);
@@ -231,7 +229,6 @@ begin
       Left:=outname.Left;
       top:=64;
       Width:=Self.ClientWidth-Left-5;
-      caption:='temp';
     end;
 
     outlines:=TLabel.create(self);
@@ -241,7 +238,6 @@ begin
       Left:=outname.Left;
       top:=84;
       Width:=Self.ClientWidth-Left-5;
-      caption:='temp';
     end;
 
     outpath:=TLabel.create(self);
@@ -250,7 +246,6 @@ begin
       Parent:=self;
       Left:=outname.Left;
       top:=104;
-      caption:='temp';
       Width:=Self.ClientWidth-Left-5;
       autosize:=true;
     end;
@@ -261,7 +256,6 @@ begin
       Parent:=self;
       Left:=outname.Left;
       top:=124;
-      caption:='temp';
       Width:=Self.ClientWidth-Left-57;
       autosize:=true;
     end;
@@ -273,7 +267,7 @@ begin
       Left:=Self.ClientWidth-55;
       Top:=122;
       Width:=50;
-      Caption:='Clear';
+      Caption:=lisUIDClear;
       OnClick:=@clearIncludedByClick;
     end;
     
@@ -285,7 +279,7 @@ begin
       Top:=outIncludedBy.Top+outIncludedBy.Height+5;
       Width:=Self.ClientWidth-2*Left;
       Height:=100;
-      Caption:='Paths (Read Only)';
+      Caption:=lisUIDPathsReadOnly;
       OnResize:=@PathsGroupBoxResize;
     end;
     
@@ -331,7 +325,7 @@ begin
       Parent:=PathsGroupBox;
       Left:=2;
       Top:=52;
-      Caption:='Src';
+      Caption:=lisUIDSrc;
     end;
 
     SrcPathEdit:=TEdit.Create(Self);
@@ -351,7 +345,7 @@ begin
       Width:=75;
       Height:=25;
       Left:=(Self.ClientWidth-Width) div 2;
-      Caption:='Ok';
+      Caption:=lisUIDOk;
       Default:=true;
       OnClick:=@OkButtonClick;
     end;
@@ -362,22 +356,22 @@ end;
 
 procedure TUnitInfoDlg.setShortName(const str:string);
 begin
-    outname.caption:=str;
+  outname.caption:=str;
 end;
 
 procedure TUnitInfoDlg.setType(const str:string);
 begin
-    outtype.caption:=str;
+  outtype.caption:=str;
 end;
 
 procedure TUnitInfoDlg.setInProject(const str:string);
 begin
-    outinproject.caption:=str;
+  outinproject.caption:=str;
 end;
 
 procedure TUnitInfoDlg.setSize(const str:string);
 begin
-    outsize.caption:=str;
+  outsize.caption:=str;
 end;
 
 procedure TUnitInfoDlg.setLines(const str:string);

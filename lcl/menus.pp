@@ -186,28 +186,28 @@ type
     property Parent: TMenuItem read GetParent;
   published
     property AutoCheck: boolean read FAutoCheck write SetAutoCheck default False;
-    property Caption: String
-      read FCaption write SetCaption stored IsCaptionStored;
-    property Checked: Boolean
-      read FChecked write SetChecked stored IsCheckedStored default False;
+    property Caption: String read FCaption write SetCaption
+                             stored IsCaptionStored;
+    property Checked: Boolean read FChecked write SetChecked
+                              stored IsCheckedStored default False;
     property Default: Boolean read FDefault write SetDefault default False;
-    property Enabled: Boolean
-      read FEnabled write SetEnabled stored IsEnabledStored default True;
+    property Enabled: Boolean read FEnabled write SetEnabled
+                              stored IsEnabledStored default True;
     property Graphic: TGraphic read FGraphic write SetGraphic;
     property GroupIndex: Byte read FGroupIndex write SetGroupIndex default 0;
-    property Hint : String read FHint write FHint;
-    property ImageIndex : Integer read FImageIndex write SetImageIndex;
-    property RadioItem: Boolean
-      read FRadioItem write SetRadioItem default False;
+    property Hint: String read FHint write FHint;
+    property ImageIndex: Integer read FImageIndex write SetImageIndex;
+    property RadioItem: Boolean read FRadioItem write SetRadioItem
+                                default False;
     property RightJustify: boolean read FRightJustify write SetRightJustify;
-    property ShortCut: TShortCut
-      read FShortCut write SetShortCut stored IsShortCutStored default 0;
-    property ShowAlwaysCheckable: boolean
-      read FShowAlwaysCheckable write SetShowAlwaysCheckable;
-    property SubMenuImages: TCustomImageList
-      read FSubMenuImages write SetSubMenuImages;
-    property Visible: Boolean
-      read FVisible write SetVisible stored IsVisibleStored default True;
+    property ShortCut: TShortCut read FShortCut write SetShortCut
+                                 stored IsShortCutStored default 0;
+    property ShowAlwaysCheckable: boolean read FShowAlwaysCheckable
+                                          write SetShowAlwaysCheckable;
+    property SubMenuImages: TCustomImageList read FSubMenuImages
+                                             write SetSubMenuImages;
+    property Visible: Boolean read FVisible write SetVisible
+                              stored IsVisibleStored default True;
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
@@ -231,7 +231,8 @@ type
     procedure DoChange(Source: TMenuItem; Rebuild: Boolean); virtual;
     function GetHandle: HMENU; virtual;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-    procedure MenuChanged(Sender: TObject; Source: TMenuItem; Rebuild: Boolean); virtual;
+    procedure MenuChanged(Sender: TObject; Source: TMenuItem;
+                          Rebuild: Boolean); virtual;
     property OnChange: TMenuChangeEvent read FOnChange write FOnChange;
     procedure UpdateItems;
   public
@@ -276,11 +277,11 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure PopUp(X, Y : Integer);
-    property PopupComponent : TComponent
-      read FPopupComponent write FPopupComponent;
+    property PopupComponent: TComponent read FPopupComponent
+                                        write FPopupComponent;
     property PopupPoint: TPoint read FPopupPoint;
   published
-    property AutoPopup : Boolean read FAutoPopup write FAutoPopup default True;
+    property AutoPopup: Boolean read FAutoPopup write FAutoPopup default True;
     property OnPopup: TNotifyEvent read FOnPopup write FOnPopup;
   end;
 
@@ -378,6 +379,9 @@ end.
 
 {
   $Log$
+  Revision 1.42  2003/05/02 22:22:15  mattias
+  localization, added context policy to make resource string dialog
+
   Revision 1.41  2003/04/19 18:37:58  mattias
   implemented adding OnClick, when clicking on designer menuitem
 

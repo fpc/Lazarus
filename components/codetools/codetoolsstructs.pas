@@ -38,6 +38,12 @@ uses
   Classes, SysUtils, CodeCache, CodeAtom;
   
 type
+  TResourcestringInsertPolicy = (
+    rsipNone,          // do not add/insert
+    rsipAppend,        // append at end
+    rsipAlphabetically,// insert alphabetically
+    rsipContext        // insert context sensitive
+    );
 
   { TCodeXYPositions - a list of PCodeXYPosition }
 

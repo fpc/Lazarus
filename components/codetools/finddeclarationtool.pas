@@ -127,9 +127,6 @@ type
   TOnGetSrcPathForCompiledUnit =
     function(Sender: TObject; const Filename: string): string of object;
 
-  TOnGetCodeToolForBuffer = function(Sender: TObject;
-    Code: TCodeBuffer): TFindDeclarationTool of object;
-
   //----------------------------------------------------------------------------
   // flags/states for searching
   TFindDeclarationFlag = (
@@ -383,6 +380,8 @@ type
     const FoundContext: TFindContext): TIdentifierFoundResult of object;
   TOnFindUsedUnit = function(SrcTool: TFindDeclarationTool;
     const TheUnitName, TheUnitInFilename: string): TCodeBuffer of object;
+  TOnGetCodeToolForBuffer = function(Sender: TObject;
+    Code: TCodeBuffer): TFindDeclarationTool of object;
 
   TFindDeclarationInput = record
     Flags: TFindDeclarationFlags;
@@ -463,8 +462,8 @@ type
   TFindDeclarationTool = class(TPascalParserTool)
   private
     FInterfaceIdentifierCache: TInterfaceIdentifierCache;
-    FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
     FOnFindUsedUnit: TOnFindUsedUnit;
+    FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
     FOnGetUnitSourceSearchPath: TOnGetSearchPath;
     FOnGetSrcPathForCompiledUnit: TOnGetSrcPathForCompiledUnit;
     FFirstNodeCache: TCodeTreeNodeCache;
@@ -619,14 +618,14 @@ type
 
     property InterfaceIdentifierCache: TInterfaceIdentifierCache
       read FInterfaceIdentifierCache;
-    property OnGetCodeToolForBuffer: TOnGetCodeToolForBuffer
-      read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
     property OnGetUnitSourceSearchPath: TOnGetSearchPath
       read FOnGetUnitSourceSearchPath write FOnGetUnitSourceSearchPath;
     property OnFindUsedUnit: TOnFindUsedUnit
       read FOnFindUsedUnit write FOnFindUsedUnit;
     property OnGetSrcPathForCompiledUnit: TOnGetSrcPathForCompiledUnit
       read FOnGetSrcPathForCompiledUnit write FOnGetSrcPathForCompiledUnit;
+    property OnGetCodeToolForBuffer: TOnGetCodeToolForBuffer
+      read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
   end;
 
 const
