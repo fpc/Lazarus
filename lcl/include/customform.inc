@@ -835,8 +835,10 @@ begin
   if FMenu<>nil then begin
     FMenu.Parent:=Self;
     if HandleAllocated and (not (csLoading in ComponentState)) then
+    begin
       FMenu.HandleNeeded;
       InterfaceObject.AttachMenuToWindow(FMenu);
+    end;
   end;
 end;
 
@@ -1447,6 +1449,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.120  2003/12/18 08:15:25  micha
+  setmenu fix, now correctly (sigh)
+
   Revision 1.119  2003/12/18 08:00:37  micha
   setmenu fix, notify interface (from darek)
 
