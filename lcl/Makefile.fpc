@@ -14,7 +14,9 @@ implicitunits=arrow buttons calendar clipbrd clistbox comctrls controls \
         dialogs dynhasharray extctrls filectrl forms graphics \
         imglist interfacebase lazqueue lcllinux lmessages lresources \
         menus messages registry spin stdctrls toolwin utrace \
-        vclglobals interfaces
+        vclglobals
+# !!! do not add interfaces. interfaces.ppu belongs to the interface(s).
+
 rsts=dialogs
 
 [require]
