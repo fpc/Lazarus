@@ -960,6 +960,7 @@ type
     procedure DebuggerEnvironmentChanged(Sender: TObject);
     procedure EnvironmentChanged(Sender: TObject);
     function  GetState: TDBGState;
+    function GetTargetWidth: Byte;
     function  ReqCmd(const ACommand: TDBGCommand;
                      const AParams: array of const): Boolean;
     procedure SetDebuggerEnvironment (const AValue: TStrings );
@@ -1027,11 +1028,12 @@ type
     property ExitCode: Integer read FExitCode;
     property ExternalDebugger: String read FExternalDebugger;                    // The name of the debugger executable
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
-    property Locals: TDBGLocals read FLocals;
+    property Locals: TDBGLocals read FLocals;                                    // list of all localvars etc
     property Signals: TDBGSignals read FSignals;                                 // A list of actions for signals we know
     property State: TDBGState read FState;                                       // The current state of the debugger
     property SupportedCommands: TDBGCommands read GetSupportedCommands;          // All available commands of the debugger
-    property Watches: TDBGWatches read FWatches;                                 // list of all watches localvars etc
+    property TargetWidth: Byte read GetTargetWidth;                              // Currently only 32 or 64
+    property Watches: TDBGWatches read FWatches;                                 // list of all watches etc
     property WorkingDir: String read FWorkingDir write FWorkingDir;              // The working dir of the exe being debugged
     // Events
     property OnCurrent: TDBGCurrentLineEvent read FOnCurrent write FOnCurrent;   // Passes info about the current line being debugged
@@ -1393,6 +1395,11 @@ end;
 function TDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [];
+end;
+
+function TDebugger.GetTargetWidth: Byte;
+begin
+  Result := 32;
 end;
 
 procedure TDebugger.Init;
@@ -3544,6 +3551,9 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.64  2004/11/21 18:52:47  marc
+  * fixed resetting internal breakpoints
+
   Revision 1.63  2004/11/21 15:19:08  marc
   * worked aound lack of %u as formatspecifier
   + introduced dbgptr for dealing with pointers on the target

@@ -423,12 +423,24 @@ function TGDBMIDebugger.ChangeFileName: Boolean;
       Insert('/', Result, SeperatorPos);
     until False;
   end;              
+  
+  procedure ClearBreakpoint(var ABreakID: Integer);
+  begin
+    if ABreakID = -1 then Exit;
+    ExecuteCommand('-break-delete %d', [ABreakID], [cfIgnoreError]);
+    ABreakID := -1;
+  end;
 var
   S: String;
   ResultState: TDBGState;
 begin
-  Result:=false;
+  Result := False;
   
+  //Cleanup our own breakpoints
+  ClearBreakpoint(FExceptionBreakID);
+  ClearBreakpoint(FBreakErrorBreakID);
+  ClearBreakpoint(FRunErrorBreakID);
+
 
   S := GetFileNameForGDB; 
   if not ExecuteCommand('-file-exec-and-symbols %s', [S], ResultState, [cfIgnoreError]) then Exit;
@@ -817,6 +829,8 @@ function TGDBMIDebugger.GDBEvaluate(const AExpression: String;
         Result := Result + Format('#%d', [Ord(AString[n])]);
       end;
     end;
+    if InString
+    then Result := Result + '''';
   end;
   
 var
@@ -862,16 +876,17 @@ begin
         Val(AResult, addr, e);
         if e <> 0 then Exit;
 
-        if Addr = 0
-        then AResult := 'nil';
-
         S := Lowercase(ResultInfo.TypeName);
         if (S = 'character')
         or (S = 'ansistring')
         then begin
-          AResult := MakePrintable(GetText(addr));
+          if Addr = 0
+          then AResult := ''''''
+          else AResult := MakePrintable(GetText(Addr));
         end
         else begin
+          if Addr = 0
+          then AResult := 'nil';
           if S = 'pointer' then Exit;
           if Length(S) = 0 then Exit;
           if S[1] = 't'
@@ -885,16 +900,9 @@ begin
       skClass: begin
         Val(AResult, addr, e);
         if e <> 0 then Exit;
+
         S := GetInstanceClassName(Addr);
-        if S = ''
-        then S := '???'
-        else begin
-          if S[1] = 't'
-          then begin
-            S[1] := 'T';
-            if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
-          end;
-        end;
+        if S = '' then S := '???';
         AResult := S + ' ' + AResult;
       end;
     end;
@@ -2642,6 +2650,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.55  2004/11/21 18:52:47  marc
+  * fixed resetting internal breakpoints
+
   Revision 1.54  2004/11/21 15:19:08  marc
   * worked aound lack of %u as formatspecifier
   + introduced dbgptr for dealing with pointers on the target
