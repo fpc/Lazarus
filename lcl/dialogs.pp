@@ -317,7 +317,7 @@ procedure Register;
 begin
   RegisterComponents('Dialogs',[TOpenDialog,TSaveDialog,
                                     TColorDialog,TFontDialog]);
-  RegisterComponents('Additional',[TColorButton]);
+  RegisterComponents('Misc',[TColorButton]);
 end;
 
 function ShowMessageBox(Text, Caption : PChar; Flags : Longint) : Integer;
@@ -386,6 +386,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.32  2003/06/13 21:32:17  mattias
+  moved TColorButton to misc palette
+
   Revision 1.31  2003/06/13 21:08:53  mattias
   moved TColorButton to dialogs.pp
 
