@@ -37,7 +37,7 @@ uses
   // synedit
   SynRegExpr,
   // ide
-  LazarusIDEStrConsts, FindInFilesDlg, SearchResultView;
+  LazarusIDEStrConsts, InputHistory, FindInFilesDlg, SearchResultView;
 
 
 type
@@ -161,7 +161,7 @@ begin
   frecursive:= (fifIncludeSubDirs in TheOptions);
   fSearchProject:= (fifSearchProject in TheOptions);
   fSearchOpen:= (fifSearchOpen in TheOptions);
-  fSearchFiles:= (fifSearchFiles in TheOptions);
+  fSearchFiles:= (fifSearchDirectories in TheOptions);
 end;//SetOptions
 
 function TSearchForm.GetOptions: TLazFindInFileSearchOptions;
@@ -173,7 +173,7 @@ begin
   if fRecursive then include(Result,fifIncludeSubDirs);
   if fSearchProject then include(Result, fifSearchProject);
   if fSearchOpen then include(Result,fifSearchOpen);
-  if fSearchFiles then include(Result,fifSearchFiles);
+  if fSearchFiles then include(Result,fifSearchDirectories);
 end;//GetOptions
 
 procedure TSearchForm.DoSearch;

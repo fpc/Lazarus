@@ -39,7 +39,8 @@ interface
 uses
   Classes, SysUtils, Math, LResources, Forms, Controls, Graphics, Dialogs,
   ComCtrls, ExtCtrls, StdCtrls, Buttons, LCLType,
-  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, FindInFilesDlg, Project;
+  IDEOptionDefs, LazarusIDEStrConsts, EnvironmentOpts, InputHistory,
+  FindInFilesDlg, Project;
 
 
  {TLazSearchMatchPos}

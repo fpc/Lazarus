@@ -24,14 +24,8 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
-  LResources, FileCtrl, LazarusIDEStrConsts, Dialogs, SynEditTypes;
-
-type
-  TLazFindInFileSearchOption = (fifMatchCase, fifWholeWord, fifRegExpr,
-                                fifSearchProject, fifSearchOpen, fifSearchFiles,
-                                fifIncludeSubDirs);
-                                
-  TLazFindInFileSearchOptions = set of TLazFindInFileSearchOption;
+  LResources, FileCtrl, LazarusIDEStrConsts, Dialogs, SynEditTypes,
+  InputHistory;
 
 type
   TLazFindInFilesDialog = class(TForm)
@@ -66,8 +60,8 @@ type
     procedure SetFindText(const NewFindText: string);
   public
     constructor Create(AOwner:TComponent); override;
-    property Options:TLazFindInFileSearchOptions read GetOptions
-                                                 write SetOptions;
+    property Options: TLazFindInFileSearchOptions read GetOptions
+                                                  write SetOptions;
     property FindText: string read GetFindText write SetFindText;
     property SynSearchOptions: TSynSearchOptions read GetSynOptions
                                                  write SetSynOptions;
@@ -358,14 +352,14 @@ end;
 procedure TLazFindInFilesDialog.WhereRadioGroupClick(Sender: TObject);
 begin
   DirectoryOptionsGroupBox.Enabled:= (WhereRadioGroup.ItemIndex = 2)
-end;//WhereRaidoGroupClick
+end;
 
 procedure TLazFindInFilesDialog.DirectoryBrowseClick(Sender: TObject);
 begin
   SelectDirectoryDialog.InitialDir:= GetCurrentDir;
   if SelectDirectoryDialog.Execute then
     DirectoryComboBox.Text:= SelectDirectoryDialog.FileName;
-end;//DirectoryBrowseClick
+end;
 
 procedure TLazFindInFilesDialog.SetOptions(
                                        NewOptions: TLazFindInFileSearchOptions);
@@ -373,11 +367,12 @@ begin
   CaseSensitiveCheckBox.Checked:=fifMatchCase in NewOptions;
   WholeWordsOnlyCheckBox.Checked:=fifWholeWord in NewOptions;
   RegularExpressionsCheckBox.Checked:=fifRegExpr in NewOptions;
-  IncludeSubDirsCheckBox.Checked:= fifIncludeSubDirs in NewOptions;
+  DirectoryOptionsGroupBox.Enabled:=fifSearchDirectories in NewOptions;
+  IncludeSubDirsCheckBox.Checked:=fifIncludeSubDirs in NewOptions;
   if fifSearchProject in NewOptions then WhereRadioGroup.ItemIndex:= 0;
   if fifSearchOpen in NewOptions then WhereRadioGroup.ItemIndex:= 1;
-  if fifSearchFiles in NewOptions then WhereRadioGroup.ItemIndex:= 2;
-end;//SetOptions
+  if fifSearchDirectories in NewOptions then WhereRadioGroup.ItemIndex:= 2;
+end;
 
 function TLazFindInFilesDialog.GetOptions: TLazFindInFileSearchOptions;
 begin
@@ -390,9 +385,9 @@ begin
   case WhereRadioGroup.ItemIndex of
     0: Include(Result,fifSearchProject);
     1: Include(Result,fifSearchOpen);
-    2: Include(Result,fifSearchFiles);
+    2: Include(Result,fifSearchDirectories);
   end;//case
-end;//GetOptions
+end;
 
 function TLazFindInFilesDialog.GetSynOptions: TSynSearchOptions;
 begin

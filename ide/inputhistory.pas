@@ -148,6 +148,15 @@ type
   
   { TInputHistories }
 
+  TLazFindInFileSearchOption = (
+    fifMatchCase, fifWholeWord, fifRegExpr,
+    fifSearchProject, // search in all project files
+    fifSearchOpen,    // search in all open files in editor
+    fifSearchDirectories,// search in directories
+    fifIncludeSubDirs
+    );
+  TLazFindInFileSearchOptions = set of TLazFindInFileSearchOption;
+  
   TInputHistories = class
   private
     FDiffFlags: TTextDiffFlags;
@@ -158,11 +167,10 @@ type
   
     // Find- and replace-history
     FFindHistory: TStringList;
+    FFindInFilesSearchOptions: TLazFindInFileSearchOptions;
     FReplaceHistory: TStringList;
     FFindInFilesPathHistory: TStringList;
     FFindInFilesMaskHistory: TStringList;
-    FFindInFilesWhere : Integer;
-    FFindInFilesSubDirs : boolean;
     FMaxFindHistory: Integer;
     
     // Unit dependencies
@@ -204,17 +212,18 @@ type
     procedure ApplyFileDialogSettings(DestDialog: TFileDialog);
     procedure StoreFileDialogSettings(SourceDialog: TFileDialog);
   public
+    property Filename: string read FFilename write SetFilename;
+
     // Find- and replace-history
+    property MaxFindHistory: Integer read FMaxFindHistory write FMaxFindHistory;
     property FindHistory: TStringList read FFindHistory write FFindHistory;
     property ReplaceHistory: TStringList read FReplaceHistory write FReplaceHistory;
     property FindInFilesPathHistory: TStringList read FFindInFilesPathHistory
                                                  write FFindInFilesPathHistory;
     property FindInFilesMaskHistory: TStringList read FFindInFilesMaskHistory
                                                  write FFindInFilesMaskHistory;
-    property MaxFindHistory: Integer read FMaxFindHistory write FMaxFindHistory;
-    property FindInFilesWhere: Integer read FFindInFilesWhere write FFindInFilesWhere;
-    property FindInFilesSubDirs: Boolean read FFindInFilesSubDirs write FFindInFilesSubDirs;
-    property Filename: string read FFilename write SetFilename;
+    property FindInFilesSearchOptions: TLazFindInFileSearchOptions
+               read FFindInFilesSearchOptions write FFindInFilesSearchOptions;
 
     // Unit dependencies
     property UnitDependenciesHistory: TStringList read FUnitDependenciesHistory;
@@ -237,6 +246,18 @@ type
     property DiffText2OnlySelection: boolean read FDiffText2OnlySelection
                                              write FDiffText2OnlySelection;
   end;
+
+const
+  LazFindInFileSearchOptionsDefault = [fifSearchOpen];
+  LazFindInFileSearchOptionNames: array[TLazFindInFileSearchOption] of string =(
+    'MatchCase',
+    'WholeWord',
+    'RegExpr',
+    'SearchProject',
+    'SearchOpen',
+    'SearchDirectories',
+    'IncludeSubDirs'
+    );
 
 var
   InputHistories: TInputHistories;
@@ -261,13 +282,16 @@ end;
 constructor TInputHistories.Create;
 begin
   inherited Create;
+  FFilename:='';
+
   // Find- and replace-history
+  FMaxFindHistory:=20;
   FFindHistory:=TStringList.Create;
   FReplaceHistory:=TStringList.Create;
   FFindInFilesPathHistory:=TStringList.Create;
   FFindInFilesMaskHistory:=TStringList.Create;
-  FMaxFindHistory:=20;
-  
+  FFindInFilesSearchOptions:=LazFindInFileSearchOptionsDefault;
+
   // unit dependencies
   FUnitDependenciesHistory:=TStringList.Create;
   FMaxUnitDependenciesHistory:=20;
@@ -281,7 +305,6 @@ begin
   
   FFPCConfigCache:=TFPCConfigCache.Create;
   
-  FFilename:='';
   Clear;
 end;
 
@@ -321,6 +344,7 @@ procedure TInputHistories.LoadFromXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   DiffFlag: TTextDiffFlag;
+  FIFOption: TLazFindInFileSearchOption;
 begin
   // Find- and replace-history
   fMaxFindHistory:=XMLConfig.GetValue(Path+'Find/History/Max',FMaxFindHistory);
@@ -330,9 +354,16 @@ begin
                                             'FindInFiles/History/Paths/');
   LoadRecentList(XMLConfig,FFindInFilesMaskHistory,Path+
                                             'FindInFiles/History/Masks/');
-  FFindInFilesWhere:=XMLConfig.GetValue(Path+'FindInFiles/Where',FFindInFilesWhere);
-  FFIndInFilesSubDirs:=
-    XMLConfig.GetValue(Path+'FindInFiles/SubDirs',false);
+  FFindInFilesSearchOptions:=[];
+  for FIFOption:=Low(TLazFindInFileSearchOption)
+  to High(TLazFindInFileSearchOption) do begin
+    if XMLConfig.GetValue(
+      Path+'FindInFiles/Options/'+LazFindInFileSearchOptionNames[FIFOption],
+      FIFOption in LazFindInFileSearchOptionsDefault)
+    then
+      Include(FFindInFilesSearchOptions,FIFOption);
+  end;
+
   // unit dependencies
   LoadRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/');
   // fpc config cache
@@ -365,6 +396,7 @@ procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var
   DiffFlag: TTextDiffFlag;
+  FIFOption: TLazFindInFileSearchOption;
 begin
   // Find- and replace-history
   XMLConfig.SetDeleteValue(Path+'Find/History/Max',FMaxFindHistory,20);
@@ -374,9 +406,14 @@ begin
                                             'FindInFiles/History/Paths/');
   SaveRecentList(XMLConfig,FFindInFilesMaskHistory,Path+
                                             'FindInFiles/History/Masks/');
-  XMLConfig.SetDeleteValue(Path+'FindInFiles/Where',FFindInFilesWhere,0);
-  XMLConfig.SetDeleteValue(Path+'FindInFiles/SubDirs',
-                           FFindInFilesSubDirs,false);
+  for FIFOption:=Low(TLazFindInFileSearchOption)
+  to High(TLazFindInFileSearchOption) do begin
+    XMLConfig.SetDeleteValue(
+      Path+'FindInFiles/Options/'+LazFindInFileSearchOptionNames[FIFOption],
+      FIFOption in FindInFilesSearchOptions,
+      FIFOption in LazFindInFileSearchOptionsDefault);
+  end;
+
   // unit dependencies
   SaveRecentList(XMLConfig,FUnitDependenciesHistory,Path+'UnitDependencies/History/');
   // fpc config cache

@@ -3414,12 +3414,10 @@ begin
       TextToFindComboBox.Items.Assign(InputHistories.FindHistory);
       DirectoryComboBox.Items.Assign(InputHistories.FindInFilesPathHistory);
       FileMaskComboBox.Items.Assign(InputHistories.FindInFilesMaskHistory);
-      WhereRadioGroup.ItemIndex:=InputHistories.FindInFilesWhere;
-      IncludeSubDirsCheckBox.Checked:=InputHistories.FindInFilesSubDirs;
-      DirectoryOptionsGroupBox.Enabled:= (WhereRadioGroup.ItemIndex = 2);
-    end;//With
-  end;//if
-end;//LoadFindInFilesHistory
+      Options:=InputHistories.FindInFilesSearchOptions;
+    end;
+  end;
+end;
 
 procedure TSourceNoteBook.SaveFindInFilesHistory(ADialog: TLazFindInFilesDialog);
 begin
@@ -3430,12 +3428,11 @@ begin
       InputHistories.AddToFindHistory(FindText);
       InputHistories.AddToFindInFilesPathHistory(DirectoryComboBox.Text);
       InputHistories.AddToFindInFilesMaskHistory(FileMaskComboBox.Text);
-      InputHistories.FindInFilesWhere:=WhereRadioGroup.ItemIndex;
-      InputHistories.FindInFilesSubDirs:=IncludeSubDirsCheckBox.Checked;
-    end;//with
+      InputHistories.FindInFilesSearchOptions:=Options;
+    end;
     InputHistories.Save;
-  end;//if
-end;//SaveFindInFilesHistory
+  end;
+end;
 
 {Search All the files in a project and add the results to the SearchResultsView
  Dialog}
@@ -3586,7 +3583,7 @@ Begin
     end;//if
   end;//if
   IDEDialogLayoutList.SaveLayout(FindInFilesDialog);
-End;//FindInFilesClicked
+End;
 
 procedure TSourceNotebook.ShowSearchResultsView;
 begin

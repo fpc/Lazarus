@@ -1811,7 +1811,7 @@ resourcestring
   lisFindFilesearchAllOpenFiles = 'search all open files';
   lisFindFilesearchInDirectories = 'search in directories';
   lisFindFileDirectoryOptions = 'Directory options';
-  lisFindFileFileMaskBak = 'File mask (*, *.*, *.bak?)';
+  lisFindFileFileMaskBak = 'File mask (*;*.*;*.bak?)';
   lisFindFileIncludeSubDirectories = 'Include sub directories';
   lisFindFileOnlyTextFiles = 'Only text files';
 
