@@ -277,6 +277,10 @@ msgstr "Zatwierdź"
 msgid "Action: %s"
 msgstr "Akcja: %s"
 
+#: lazarusidestrconsts:lisactivateregularexpressionsyntaxfortextandreplaceme
+msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
 msgstr "Dodaj"
@@ -389,6 +393,10 @@ msgstr "Wszystkie pakiety"
 msgid "Allow LABEL and GOTO"
 msgstr "Pozwalaj na instrukcje LABEL i GOTO"
 
+#: lazarusidestrconsts:lisallowsearchingformultiplelines
+msgid "Allow searching for multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts:dlgalphabetically
 msgid "Alphabetically"
 msgstr "Alfabetycznie"
@@ -476,6 +484,10 @@ msgstr "Rosnąco"
 #: lazarusidestrconsts:dlgenvask
 msgid "Ask"
 msgstr "Zapytaj"
+
+#: lazarusidestrconsts:lisaskbeforereplacingeachfoundtext
+msgid "Ask before replacing each found text"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
@@ -1632,6 +1644,10 @@ msgstr "Ekran (nie dotyczy win32), np. 198.112.45.11:0, x.org:1, hydra:0.1"
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
 msgstr "Wyświetlaj numery linii w zrzucie błędu uruchomieniowego:"
+
+#: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
+msgid "Distinguish big and small letters e.g. A and a"
+msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"
@@ -3708,6 +3724,10 @@ msgstr "Ok"
 #: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
 msgid "Online Help not yet implemented"
 msgstr "Pomoc sieciowa jeszcze nie działa"
+
+#: lazarusidestrconsts:lisonlysearchforwholewords
+msgid "Only search for whole words"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgonlyselection
 msgid "Only selection"

@@ -276,6 +276,10 @@ msgstr ""
 msgid "Action: %s"
 msgstr ""
 
+#: lazarusidestrconsts:lisactivateregularexpressionsyntaxfortextandreplaceme
+msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
 msgstr ""
@@ -388,6 +392,10 @@ msgstr ""
 msgid "Allow LABEL and GOTO"
 msgstr ""
 
+#: lazarusidestrconsts:lisallowsearchingformultiplelines
+msgid "Allow searching for multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts:dlgalphabetically
 msgid "Alphabetically"
 msgstr ""
@@ -474,6 +482,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgenvask
 msgid "Ask"
+msgstr ""
+
+#: lazarusidestrconsts:lisaskbeforereplacingeachfoundtext
+msgid "Ask before replacing each found text"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptsat
@@ -1630,6 +1642,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
+msgstr ""
+
+#: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
+msgid "Distinguish big and small letters e.g. A and a"
 msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
@@ -3706,6 +3722,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
 msgid "Online Help not yet implemented"
+msgstr ""
+
+#: lazarusidestrconsts:lisonlysearchforwholewords
+msgid "Only search for whole words"
 msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgonlyselection

@@ -277,6 +277,10 @@ msgstr "קבל"
 msgid "Action: %s"
 msgstr "%s :פעולה"
 
+#: lazarusidestrconsts:lisactivateregularexpressionsyntaxfortextandreplaceme
+msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
 msgstr "הוסף"
@@ -389,6 +393,10 @@ msgstr "כל החבילות"
 msgid "Allow LABEL and GOTO"
 msgstr "GOTO ו LABEL הרשה"
 
+#: lazarusidestrconsts:lisallowsearchingformultiplelines
+msgid "Allow searching for multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts:dlgalphabetically
 msgid "Alphabetically"
 msgstr "בסדר הא\"ב"
@@ -476,6 +484,10 @@ msgstr "עולה"
 #: lazarusidestrconsts:dlgenvask
 msgid "Ask"
 msgstr "שאל"
+
+#: lazarusidestrconsts:lisaskbeforereplacingeachfoundtext
+msgid "Ask before replacing each found text"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
@@ -1631,6 +1643,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
+msgstr ""
+
+#: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
+msgid "Distinguish big and small letters e.g. A and a"
 msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
@@ -3707,6 +3723,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
 msgid "Online Help not yet implemented"
+msgstr ""
+
+#: lazarusidestrconsts:lisonlysearchforwholewords
+msgid "Only search for whole words"
 msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgonlyselection

@@ -2914,20 +2914,40 @@ msgstr ""
 msgid "Case Sensitive"
 msgstr ""
 
+#: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
+msgid "Distinguish big and small letters e.g. A and a"
+msgstr ""
+
 #: lazarusidestrconsts:dlgwholewordsonly
 msgid "Whole Words Only"
+msgstr ""
+
+#: lazarusidestrconsts:lisonlysearchforwholewords
+msgid "Only search for whole words"
 msgstr ""
 
 #: lazarusidestrconsts:dlgregularexpressions
 msgid "Regular Expressions"
 msgstr ""
 
+#: lazarusidestrconsts:lisactivateregularexpressionsyntaxfortextandreplaceme
+msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
+msgstr ""
+
 #: lazarusidestrconsts:dlgmultiline
 msgid "Multi Line"
 msgstr ""
 
+#: lazarusidestrconsts:lisallowsearchingformultiplelines
+msgid "Allow searching for multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts:dlgpromptonreplace
 msgid "Prompt On Replace"
+msgstr ""
+
+#: lazarusidestrconsts:lisaskbeforereplacingeachfoundtext
+msgid "Ask before replacing each found text"
 msgstr ""
 
 #: lazarusidestrconsts:dlgsrorigin

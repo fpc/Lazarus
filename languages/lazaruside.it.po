@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
-"PO-Revision-Date: 2004-06-21 22:27+0200\n"
+"PO-Revision-Date: 2004-06-29 13:31+0200\n"
 "Project-Id-Version: lazaruside.it\n"
 "Language-Team: Italian <tp@lists.linux.it>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -276,6 +276,10 @@ msgstr "Accetta"
 msgid "Action: %s"
 msgstr "Azione: %s"
 
+#: lazarusidestrconsts:lisactivateregularexpressionsyntaxfortextandreplaceme
+msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
+msgstr "Attiva la sintassi delle espressioni regolari per il testo e per la sostituzione (quasi come in perl)"
+
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
 msgstr "Aggiungi"
@@ -388,6 +392,10 @@ msgstr "Tutti i pacchetti"
 msgid "Allow LABEL and GOTO"
 msgstr "Consenti LABEL e GOTO"
 
+#: lazarusidestrconsts:lisallowsearchingformultiplelines
+msgid "Allow searching for multiple lines"
+msgstr "Permetti la ricerca per righe multiple"
+
 #: lazarusidestrconsts:dlgalphabetically
 msgid "Alphabetically"
 msgstr "Alfabeticamente"
@@ -475,6 +483,10 @@ msgstr "Ascendente"
 #: lazarusidestrconsts:dlgenvask
 msgid "Ask"
 msgstr "Chiede"
+
+#: lazarusidestrconsts:lisaskbeforereplacingeachfoundtext
+msgid "Ask before replacing each found text"
+msgstr "Chiedi prima di sostituire ogni testo trovato"
 
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
@@ -1632,6 +1644,10 @@ msgstr "Display (non per win32, per esempio 198.112.45.11:0, x.org:1, hydra:0.1)
 msgid "Display Line Numbers in Run-time Error Backtraces"
 msgstr "Mostra i numeri di linea nelle backtrace degli errori di esecuzione"
 
+#: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
+msgid "Distinguish big and small letters e.g. A and a"
+msgstr "Distingui tra lettere maiuscole e minuscole per es. tra A e a"
+
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"
 msgstr "Non spezzare le righe dietro a:"
@@ -2234,7 +2250,7 @@ msgstr "Genera codice per gprof"
 
 #: lazarusidestrconsts:dlgcovalgrind
 msgid "Generate code for valgrind"
-msgstr ""
+msgstr "Genera codice per valgrind"
 
 #: lazarusidestrconsts:dlgcodbx
 msgid "Generate Debugging Info For DBX (Slows Compiling)"
@@ -2386,7 +2402,7 @@ msgstr "Ampiezza dell'Heap"
 
 #: lazarusidestrconsts:rslanguagehebrew
 msgid "Hebrew"
-msgstr ""
+msgstr "Ebraico"
 
 #: lazarusidestrconsts:dlgheightpos
 msgid "Height:"
@@ -3707,6 +3723,10 @@ msgstr "Ok"
 #: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
 msgid "Online Help not yet implemented"
 msgstr "Guida in linea non ancora implementata"
+
+#: lazarusidestrconsts:lisonlysearchforwholewords
+msgid "Only search for whole words"
+msgstr "Ricerca solo parole intere"
 
 #: lazarusidestrconsts:lisdiffdlgonlyselection
 msgid "Only selection"
@@ -5714,7 +5734,7 @@ msgstr "La unit %s%s%s non è minuscola.%sIl compilatore FreePascal 1.0.x necess
 
 #: lazarusidestrconsts:listheunititselfhasalreadythenamepascalidentifiersmus
 msgid "The unit itself has already the name %s%s%s. Pascal identifiers must be unique."
-msgstr ""
+msgstr "La unit stessa ha gia il nome %s%s%s. Gli identificatori Pascal devono essere unici."
 
 #: lazarusidestrconsts:lisprojaddtheunitnamealreadyexistsintheproject
 msgid "The unit name %s%s%s already exists in the project%swith file: %s%s%s."
@@ -5798,7 +5818,7 @@ msgstr "Esiste già un pacchetto %s%s%s caricato%sdal file %s%s%s.%sVedere Compo
 
 #: lazarusidestrconsts:listhereisalreadyaunitwiththenamepascalidentifiersmus
 msgid "There is already a unit with the name %s%s%s. Pascal identifiers must be unique."
-msgstr ""
+msgstr "C'è già una unit con il nome %s%s%s. Gli identificativi Pascal devono essere unici."
 
 #: lazarusidestrconsts:lispkgmangthereisalreadyanotherpackagewiththename
 msgid "There is already another package with the name %s%s%s.%sConflict package: %s%s%s%sFile: %s%s%s"

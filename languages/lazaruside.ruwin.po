@@ -266,6 +266,10 @@ msgstr "Принять"
 msgid "Action: %s"
 msgstr "Действие: %s"
 
+#: lazarusidestrconsts:lisactivateregularexpressionsyntaxfortextandreplaceme
+msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
 msgstr "Добавить"
@@ -378,6 +382,10 @@ msgstr "Все пакеты"
 msgid "Allow LABEL and GOTO"
 msgstr "Разрешить LABEL и GOTO"
 
+#: lazarusidestrconsts:lisallowsearchingformultiplelines
+msgid "Allow searching for multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts:dlgalphabetically
 msgid "Alphabetically"
 msgstr "По алфавиту"
@@ -465,6 +473,10 @@ msgstr "Наследуемый"
 #: lazarusidestrconsts:dlgenvask
 msgid "Ask"
 msgstr "Спросить"
+
+#: lazarusidestrconsts:lisaskbeforereplacingeachfoundtext
+msgid "Ask before replacing each found text"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
@@ -1621,6 +1633,10 @@ msgstr "Дисплей (не для win32, напр., 198.112.45.11:0, x.org:1, hydra:0.1)"
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
 msgstr "Выдать номера строк в ошибках времени исполнения"
+
+#: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
+msgid "Distinguish big and small letters e.g. A and a"
+msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"
@@ -3697,6 +3713,10 @@ msgstr "ОК"
 #: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
 msgid "Online Help not yet implemented"
 msgstr "Контекстная справка ещё не реализована"
+
+#: lazarusidestrconsts:lisonlysearchforwholewords
+msgid "Only search for whole words"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgonlyselection
 msgid "Only selection"

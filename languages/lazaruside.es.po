@@ -277,6 +277,10 @@ msgstr "Aceptar"
 msgid "Action: %s"
 msgstr "Acción: %s"
 
+#: lazarusidestrconsts:lisactivateregularexpressionsyntaxfortextandreplaceme
+msgid "Activate regular expression syntax for text and replacement (pretty much like perl)"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetempladd
 msgid "Add"
 msgstr "Añadir"
@@ -389,6 +393,10 @@ msgstr "Todos los paquetes"
 msgid "Allow LABEL and GOTO"
 msgstr "Permitir LABEL y GOTO"
 
+#: lazarusidestrconsts:lisallowsearchingformultiplelines
+msgid "Allow searching for multiple lines"
+msgstr ""
+
 #: lazarusidestrconsts:dlgalphabetically
 msgid "Alphabetically"
 msgstr "Alfabéticamente"
@@ -476,6 +484,10 @@ msgstr "Ascendiendo"
 #: lazarusidestrconsts:dlgenvask
 msgid "Ask"
 msgstr "Preguntar"
+
+#: lazarusidestrconsts:lisaskbeforereplacingeachfoundtext
+msgid "Ask before replacing each found text"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsoptsat
 msgid "At"
@@ -1632,6 +1644,10 @@ msgstr "Pantalla (no para win32, e.j. 198.112.45.11:0, x.org:1, hydra:0.1)"
 #: lazarusidestrconsts:dlglnumsbct
 msgid "Display Line Numbers in Run-time Error Backtraces"
 msgstr "Visualizar números de líneas en los errores de tiempo de ejecución en trazados inversos"
+
+#: lazarusidestrconsts:lisdistinguishbigandsmalllettersegaanda
+msgid "Distinguish big and small letters e.g. A and a"
+msgstr ""
 
 #: lazarusidestrconsts:dlgnotsplitlineafter
 msgid "Do not split line after:"
@@ -3708,6 +3724,10 @@ msgstr "Aceptar"
 #: lazarusidestrconsts:lispkgedonlinehelpnotyetimplemented
 msgid "Online Help not yet implemented"
 msgstr "Ayuda en línea no implementada todavía"
+
+#: lazarusidestrconsts:lisonlysearchforwholewords
+msgid "Only search for whole words"
+msgstr ""
 
 #: lazarusidestrconsts:lisdiffdlgonlyselection
 msgid "Only selection"

@@ -1,14 +1,13 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.3\n"
-"PO-Revision-Date: 2004-06-21 23:30 +1\n"
+"PO-Revision-Date: 2004-06-29 13:23+0200\n"
 "Last-Translator: Marco Ciampa <ciampix@libero.it>\n"
 "Language-Team: Italian <it@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Il tasto \"%s\" è già assegnato ad un altro comando dell'editor.\n"
-"La scorciatoia per questa voce non è stata cambiata"
+"Il tasto \"%s\" è già assegnato ad un altro comando dell'editor.\015\nLa scorciatoia per questa voce non è stata cambiata"
 
 #: syneditstrconst:syns_scrollinfofmt
 msgid "%d - %d"
