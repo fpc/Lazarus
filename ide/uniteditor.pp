@@ -54,7 +54,7 @@ uses
   FindReplaceDialog, WordCompletion, FindInFilesDlg, IDEProcs, IDEOptionDefs,
   MsgView, InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger,
   TypInfo, LResources, LazConf, EnvironmentOpts, Compiler,
-  SortSelectionDlg, ClipBoardHistory, DiffDialog,
+  SortSelectionDlg, EncloseSelectionDlg, ClipBoardHistory, DiffDialog,
   SourceEditProcs, SourceMarks;
 
 type
@@ -228,6 +228,7 @@ type
     function GetText(OnlySelection: boolean): string;
     Procedure SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
     procedure ReplaceLines(StartLine, EndLine: integer; const NewText: string);
+    procedure EncloseSelection;
     procedure UpperCaseSelection;
     procedure LowerCaseSelection;
     procedure TabsToSpacesInSelection;
@@ -1049,6 +1050,9 @@ Begin
     end;
     
   ecSelectionUpperCase:
+    EncloseSelection;
+
+  ecSelectionEnclose:
     UpperCaseSelection;
     
   ecSelectionLowerCase:
@@ -1734,6 +1738,14 @@ begin
   FEditor.BlockEnd:=Point(length(FEditor.Lines[Endline-1])+1,EndLine);
   FEditor.SelText:=NewText;
   FEditor.EndUndoBlock;
+end;
+
+procedure TSourceEditor.EncloseSelection;
+var
+  EncloseType: TEncloseSelectionType;
+begin
+  if ShowEncloseSelectionDialog(EncloseType)<>mrOk then exit;
+
 end;
 
 Function TSourceEditor.GetModified : Boolean;

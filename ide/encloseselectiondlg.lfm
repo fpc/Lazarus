@@ -1,0 +1,43 @@
+object EncloseSelectionDialog: TEncloseSelectionDialog
+  CAPTION = 'Enclose Selection'
+  CLIENTHEIGHT = 244
+  CLIENTWIDTH = 341
+  ONCREATE = EncloseSelectionDialogCREATE
+  POSITION = poscreencenter
+  HORZSCROLLBAR.PAGE = 342
+  VERTSCROLLBAR.PAGE = 245
+  LEFT = 406
+  HEIGHT = 244
+  TOP = 308
+  WIDTH = 341
+  object OkButton: TBUTTON
+    ANCHORS = [akleft, akbottom]
+    MODALRESULT = 1
+    CAPTION = 'Ok'
+    TABSTOP = True
+    TABORDER = 0
+    LEFT = 80
+    HEIGHT = 25
+    TOP = 208
+    WIDTH = 75
+  end
+  object CancelButton: TBUTTON
+    ANCHORS = [akleft, akbottom]
+    MODALRESULT = 2
+    CAPTION = 'Cancel'
+    TABSTOP = True
+    TABORDER = 1
+    LEFT = 184
+    HEIGHT = 25
+    TOP = 208
+    WIDTH = 75
+  end
+  object TypeRadiogroup: TRADIOGROUP
+    ANCHORS = [aktop, akleft, akright, akbottom]
+    CAPTION = 'Type'
+    LEFT = 8
+    HEIGHT = 189
+    TOP = 8
+    WIDTH = 323
+  end
+end

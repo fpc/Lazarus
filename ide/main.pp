@@ -118,6 +118,7 @@ type
     procedure mnuEditPasteClicked(Sender: TObject);
     procedure mnuEditIndentBlockClicked(Sender: TObject);
     procedure mnuEditUnindentBlockClicked(Sender: TObject);
+    procedure mnuEditEncloseBlockClicked(Sender: TObject);
     procedure mnuEditUpperCaseBlockClicked(Sender: TObject);
     procedure mnuEditLowerCaseBlockClicked(Sender: TObject);
     procedure mnuEditTabsToSpacesBlockClicked(Sender: TObject);
@@ -1430,6 +1431,7 @@ begin
   itmEditPaste.OnClick:=@mnuEditPasteClicked;
   itmEditIndentBlock.OnClick:=@mnuEditIndentBlockClicked;
   itmEditUnindentBlock.OnClick:=@mnuEditUnindentBlockClicked;
+  itmEditEncloseBlock.OnClick:=@mnuEditEncloseBlockClicked;
   itmEditUpperCaseBlock.OnClick:=@mnuEditUpperCaseBlockClicked;
   itmEditLowerCaseBlock.OnClick:=@mnuEditLowerCaseBlockClicked;
   itmEditTabsToSpacesBlock.OnClick:=@mnuEditTabsToSpacesBlockClicked;
@@ -9185,6 +9187,11 @@ begin
   DoEditMenuCommand(ecBlockUnindent);
 end;
 
+procedure TMainIDE.mnuEditEncloseBlockClicked(Sender: TObject);
+begin
+  DoEditMenuCommand(ecSelectionEnclose);
+end;
+
 procedure TMainIDE.mnuEditUpperCaseBlockClicked(Sender: TObject);
 begin
   DoEditMenuCommand(ecSelectionUpperCase);
@@ -9414,6 +9421,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.638  2003/08/16 09:45:44  mattias
+  started enclose selection
+
   Revision 1.637  2003/08/15 16:19:53  mattias
   implemented message blocks for package compilation
 

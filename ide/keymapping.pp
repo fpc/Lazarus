@@ -80,13 +80,14 @@ const
   ecSelectionUpperCase   = ecUserFirst + 50;
   ecSelectionLowerCase   = ecUserFirst + 51;
   ecSelectionTabs2Spaces = ecUserFirst + 52;
-  ecSelectionComment     = ecUserFirst + 53;
-  ecSelectionUncomment   = ecUserFirst + 54;
-  ecSelectionSort        = ecUserFirst + 55;
-  ecSelectToBrace        = ecUserFirst + 56;
-  ecSelectCodeBlock      = ecUserFirst + 57;
-  ecSelectLine           = ecUserFirst + 58;
-  ecSelectParagraph      = ecUserFirst + 59;
+  ecSelectionEnclose     = ecUserFirst + 53;
+  ecSelectionComment     = ecUserFirst + 54;
+  ecSelectionUncomment   = ecUserFirst + 55;
+  ecSelectionSort        = ecUserFirst + 56;
+  ecSelectToBrace        = ecUserFirst + 57;
+  ecSelectCodeBlock      = ecUserFirst + 58;
+  ecSelectLine           = ecUserFirst + 59;
+  ecSelectParagraph      = ecUserFirst + 60;
   
   // insert text
   ecInsertGPLNotice      = ecUserFirst + 80;
@@ -547,6 +548,7 @@ begin
     ecSelectionUpperCase    : Result:= lismenuuppercaseselection;
     ecSelectionLowerCase    : Result:= lismenulowercaseselection;
     ecSelectionTabs2Spaces  : Result:= srkmecSelectionTabs2Spaces;
+    ecSelectionEnclose      : Result:= lismenucommentselection;
     ecSelectionComment      : Result:= lismenucommentselection;
     ecSelectionUncomment    : Result:= lismenuuncommentselection;
     ecSelectionSort         : Result:= lismenusortselection;
@@ -1314,6 +1316,7 @@ begin
   Add(C,'Uppercase selection',ecSelectionUpperCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Lowercase selection',ecSelectionLowerCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Convert tabs to spaces in selection',ecSelectionTabs2Spaces,VK_UNKNOWN, [],VK_UNKNOWN,[]);
+  Add(C,'Enclose selection',ecSelectionEnclose,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Comment selection',ecSelectionComment,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Uncomment selection',ecSelectionUncomment,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Sort selection',ecSelectionSort,VK_UNKNOWN, [],VK_UNKNOWN,[]);

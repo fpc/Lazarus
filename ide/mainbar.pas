@@ -212,6 +212,7 @@ type
     itmEditPaste: TMenuItem;
     itmEditIndentBlock: TMenuItem;
     itmEditUnindentBlock: TMenuItem;
+    itmEditEncloseBlock: TMenuItem;
     itmEditUpperCaseBlock: TMenuItem;
     itmEditLowerCaseBlock: TMenuItem;
     itmEditTabsToSpacesBlock: TMenuItem;
@@ -671,6 +672,12 @@ begin
   itmEditUnindentBlock.Caption := lisMenuUnindentSelection;
   itmEditUnindentBlock.Graphic:=LoadPixmap('menu_unindent');
   mnuEdit.Add(itmEditUnindentBlock);
+
+  itmEditEncloseBlock := TMenuItem.Create(Self);
+  itmEditEncloseBlock.Name:='itmEditEncloseBlock';
+  itmEditEncloseBlock.Caption := lisMenuEncloseSelection;
+  itmEditEncloseBlock.Enabled:=false;
+  mnuEdit.Add(itmEditEncloseBlock);
 
   mnuEdit.Add(CreateMenuSeparator);
 
@@ -1360,6 +1367,7 @@ begin
     itmEditPaste.ShortCut:=CommandToShortCut(ecPaste);
     itmEditIndentBlock.ShortCut:=CommandToShortCut(ecBlockIndent);
     itmEditUnindentBlock.ShortCut:=CommandToShortCut(ecBlockUnindent);
+    itmEditEncloseBlock.ShortCut:=CommandToShortCut(ecSelectionEnclose);
     itmEditUpperCaseBlock.ShortCut:=CommandToShortCut(ecSelectionUpperCase);
     itmEditLowerCaseBlock.ShortCut:=CommandToShortCut(ecSelectionLowerCase);
     itmEditTabsToSpacesBlock.ShortCut:=CommandToShortCut(ecSelectionTabs2Spaces);
