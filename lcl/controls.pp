@@ -602,6 +602,7 @@ type
     procedure CMVisibleChanged(var Message : TLMessage); message CM_VISIBLECHANGED;
     procedure ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize); virtual;
     function  GetPalette: HPalette; virtual;
+    procedure DoOnResize; virtual;
     procedure Resize; virtual;
     procedure RequestAlign; dynamic;
     procedure BeginAutoDrag; dynamic;
@@ -1446,6 +1447,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.109  2003/03/17 23:39:30  mattias
+  added TCheckGroup
+
   Revision 1.108  2003/03/17 08:51:09  mattias
   added IsWindowVisible
 
