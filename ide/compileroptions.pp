@@ -3001,9 +3001,9 @@ begin
     AButton:=TPathEditorButton(Sender);
     if AButton=OtherUnitsPathEditBtn then begin
       OldPath:=edtOtherUnits.Text;
-      Templates:=
+      Templates:=SetDirSeparators(
             '$(LazarusDir)/lcl/units'
-          +';$(LazarusDir)/lcl/$(LCLWidgetType)';
+          +';$(LazarusDir)/lcl/units/$(LCLWidgetType)');
     end else
     if AButton=IncludeFilesPathEditBtn then begin
       OldPath:=edtIncludeFiles.Text;
@@ -3011,9 +3011,9 @@ begin
     end else
     if AButton=OtherSourcesPathEditBtn then begin
       OldPath:=edtOtherSources.Text;
-      Templates:=
+      Templates:=SetDirSeparators(
             '$(LazarusDir)/lcl'
-          +';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)';
+          +';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
     end else
     if AButton=LibrariesPathEditBtn then begin
       OldPath:=edtLibraries.Text;
