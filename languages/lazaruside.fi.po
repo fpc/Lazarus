@@ -2252,7 +2252,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrifindorrenameidentifier
 msgid "Find or Rename Identifier"
-msgstr ""
+msgstr "Etsi tai vaihda tunnisteiden nimiä"
 
 #: lazarusidestrconsts:lismenufindblockotherendofcodeblock
 msgid "Find other end of code block"
@@ -3548,11 +3548,11 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgmaxrecentfiles
 msgid "Max recent files"
-msgstr ""
+msgstr "Tallessa pidettävien viimeiseksi käytettyjen tiedostojen nimien lukumäärä"
 
 #: lazarusidestrconsts:dlgmaxrecentprojs
 msgid "Max recent project files"
-msgstr ""
+msgstr "Tallessa pidettävien viimeiseksi käytettyjen projektien lukumäärä"
 
 #: lazarusidestrconsts:dlgmaxcntr
 msgid "Maximum counter"
@@ -4024,7 +4024,7 @@ msgstr "Avaa kohdistimen osoittama tiedosto"
 
 #: lazarusidestrconsts:dlgqopenlastprj
 msgid "Open last project at start"
-msgstr ""
+msgstr "Avaa viimeksi käsitelty projekti Lazaruksen käynnistyksen yhteydessä"
 
 #: lazarusidestrconsts:lismenuopenpackage
 msgid "Open loaded package"
@@ -4732,7 +4732,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrirename
 msgid "Rename"
-msgstr ""
+msgstr "Nimeä uudelleen"
 
 #: lazarusidestrconsts:lisfrirenameallreferences
 msgid "Rename all References"
@@ -4760,7 +4760,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrirenameto
 msgid "Rename to"
-msgstr ""
+msgstr "Uusi nimi on"
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
@@ -5080,7 +5080,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuviewsearchresults
 msgid "Search Results"
-msgstr ""
+msgstr "Hakutulokset"
 
 #: lazarusidestrconsts:lisuesearchstringnotfound
 msgid "Search string '%s' not found!"
@@ -5092,7 +5092,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisfrisearchwhere
 msgid "Search where"
-msgstr ""
+msgstr "Mistä etsitään"
 
 #: lazarusidestrconsts:dlgsearchcaption
 msgid "Searching..."
