@@ -130,6 +130,7 @@ function SimpleSyntaxToRegExpr(const Src: string): string;
 function NameToValidIdentifier(const s: string): string;
 function BinaryStrToText(const s: string): string;
 function SplitString(const s: string; Delimiter: char): TStringList;
+function SpecialCharsToSpaces(const s: string): string;
 
 // translation/internationalization/localization
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
@@ -149,6 +150,7 @@ function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
 function CompareBoolean(b1, b2: boolean): integer;
+function AnsiSearchInStringList(List: TStrings; const s: string): integer;
 
 const
   {$IFDEF Win32}
@@ -868,6 +870,15 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
+  function AnsiSearchInStringList(List: TStrings; const s: string): integer;
+-------------------------------------------------------------------------------}
+function AnsiSearchInStringList(List: TStrings; const s: string): integer;
+begin
+  Result:=List.Count-1;
+  while (Result>=0) and (AnsiCompareText(List[Result],s)<>0) do dec(Result);
+end;
+
+{-------------------------------------------------------------------------------
   function TrimSearchPath(const SearchPath, BaseDirectory: string): boolean;
   
   - Removes empty paths.
@@ -1081,6 +1092,21 @@ begin
 
   FallbackLang := Copy(Lang, 1, 2);
   Lang := Copy(Lang, 1, 5);
+end;
+
+{-------------------------------------------------------------------------------
+  function SpecialCharsToSpaces(const s: string): string;
+-------------------------------------------------------------------------------}
+function SpecialCharsToSpaces(const s: string): string;
+var
+  i: Integer;
+begin
+  Result:=s;
+  for i:=1 to length(Result) do
+    if Result[i]<' ' then Result[i]:=' ';
+  if Result='' then exit;
+  if (Result[1]=' ') or (Result[length(Result)]=' ') then
+    Result:=Trim(Result);
 end;
 
 {-------------------------------------------------------------------------------
