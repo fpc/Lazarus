@@ -61,7 +61,7 @@ function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): H
 Function CreatePolygonRgn(Points: PPoint; NumPts: Integer; FillMode: integer): HRGN; Override;
 function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; override;
 
-Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
+procedure DeleteCriticalSection(var CritSection: TCriticalSection); override;
 function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
 function DestroyCaret(Handle : HWND): Boolean; override;
@@ -214,6 +214,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.92  2005/01/16 11:40:11  mattias
+  fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
+
   Revision 1.91  2005/01/08 11:03:18  mattias
   implemented TPen.Mode=pmXor  from Jesus
 

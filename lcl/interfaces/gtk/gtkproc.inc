@@ -1470,7 +1470,9 @@ var
   aRect : TGDKRectangle;
   SimpleRGN: PGdkRegion;
 begin
+  {$IFDEF DebugGDK}
   BeginGDKErrorTrap;
+  {$ENDIF}
   If RGN = nil then
     Result := ERROR
   else
@@ -1485,7 +1487,9 @@ begin
       Result := COMPLEXREGION;
     gdk_region_destroy(SimpleRGN);
   end;
+  {$IFDEF DebugGDK}
   EndGDKErrorTrap;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -1501,7 +1505,9 @@ var
 begin
   with TDeviceContext(DC) do
   begin
+    {$IFDEF DebugGDK}
     BeginGDKErrorTrap;
+    {$ENDIF}
     gdk_gc_set_clip_region(gc,  nil);
     gdk_gc_set_clip_rectangle (gc,  nil);
     If (ClipRegion <> 0) then begin
@@ -1511,7 +1517,9 @@ begin
         gdk_gc_set_clip_region(gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
       end;
     end;
+    {$IFDEF DebugGDK}
     EndGDKErrorTrap;
+    {$ENDIF}
    end;
 end;
 
@@ -1523,8 +1531,8 @@ begin
   BeginGDKErrorTrap;
   gdk_region_get_clipbox(RGN,@aRect);
   EndGDKErrorTrap;
-  Result:=Result+'('+IntToStr(aRect.x)+','+IntToStr(aRect.y)+','
-                    +IntToStr(aRect.Width)+','+IntToStr(aRect.Height)+' '
+  Result:=Result+'(x='+IntToStr(Integer(aRect.x))+',y='+IntToStr(Integer(aRect.y))+',w='
+                    +IntToStr(aRect.Width)+',h='+IntToStr(aRect.Height)+' '
                     +'Type='+IntToStr(RegionType(RGN))+')';
 end;
 
@@ -1536,9 +1544,13 @@ begin
   GDkRect.y:=ARect.Top;
   GDkRect.Width:=ARect.Right-ARect.Left;
   GDkRect.Height:=ARect.Bottom-ARect.Top;
+  {$IFDEF DebugGDK}
   BeginGDKErrorTrap;
+  {$ENDIF}
   Result:=gdk_region_rectangle(@GDKRect);
+  {$IFDEF DebugGDK}
   EndGDKErrorTrap;
+  {$ENDIF}
 end;
 
 Procedure FreeGDIColor(GDIColor: PGDIColor);
@@ -7900,6 +7912,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.328  2005/01/16 11:40:10  mattias
+  fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
+
   Revision 1.327  2005/01/11 21:40:29  micha
   fix gtk compilation for tstatictext.layout
 

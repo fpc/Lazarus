@@ -704,7 +704,7 @@ begin
   GetClipRGN(DC, OldC);
   Clip := CreateEmptyRegion;
   //DebugLn('TWidgetSet.ExtSelectClipRGN A OldC=',HexStr(Cardinal(OldC),8),
-  //  ' Clip=',HexStr(Cardinal(Clip),8),' RGn=',HexStr(Cardinal(RGN),8),' Mode=',Mode);
+  //  ' Clip=',HexStr(Cardinal(Clip),8),' RGn=',HexStr(Cardinal(RGN),8),' Mode=',dbgs(Mode));
   Result := CombineRGN(Clip, OldC, RGN, Mode);
   //DebugLn('TWidgetSet.ExtSelectClipRGN B Result=',Result);
   If Result <> ERROR then
@@ -962,9 +962,10 @@ var
   RRGN : hRGN;
 begin
   RRGN := CreateRectRgn(Left, Top, Right, Bottom);
-  //DebugLn('TWidgetSet.IntersectClipRect A RGN=',HexStr(Cardinal(RRGN),8),' ',Left,',',Top,',',Right,',',Bottom);
+  //DebugLn('TWidgetSet.IntersectClipRect A RGN=',HexStr(Cardinal(RRGN),8),
+  //  ' ',dbgs(Left),',',dbgs(Top),',',dbgs(Right),',',dbgs(Bottom));
   If not DCClipRegionValid(DC) then
-    Result := ExtSelectClipRGN(DC, RRGN, RGN_COPY)
+    Result := SelectClipRGN(DC, RRGN)
   else
     Result := ExtSelectClipRGN(DC, RRGN, RGN_AND);
   DeleteObject(RRGN);
@@ -1414,6 +1415,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2005/01/16 11:40:10  mattias
+  fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
+
   Revision 1.16  2005/01/08 11:03:18  mattias
   implemented TPen.Mode=pmXor  from Jesus
 

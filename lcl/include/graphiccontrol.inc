@@ -41,7 +41,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TGraphicControl.Destroy;
 begin
-  FCanvas.Free;
+  FreeAndNil(FCanvas);
   inherited Destroy;
 end;
 
@@ -58,6 +58,7 @@ begin
   begin
     Canvas.Lock;
     try
+      //debugln('TGraphicControl.WMPaint A ',DbgSName(Self));
       Canvas.Handle := Message.DC;
       try
         Paint;
@@ -89,6 +90,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2005/01/16 11:40:10  mattias
+  fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
+
   Revision 1.9  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

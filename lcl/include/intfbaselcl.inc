@@ -105,6 +105,7 @@ var
   Clip: hRGN;
 begin
   // If the interface has a better way to check a region it can override this
+  //debugln('TWidgetSet.DCClipRegionValid DC=',HexStr(Cardinal(DC),8));
   Clip:=CreateEmptyRegion;
   Result:=GetClipRGN(DC,Clip)>=0;
   DeleteObject(Clip);
@@ -632,6 +633,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2005/01/16 11:40:10  mattias
+  fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
+
   Revision 1.31  2004/10/23 14:47:44  micha
   remove old code: statusbar methods in twidgetset
 

@@ -1631,8 +1631,9 @@ var
   DC: HDC;
   PS: TPaintStruct; //defined in LCLIntf.pp
   ControlsNeedsClipping: boolean;
+  CurControl: TControl;
 begin
-//DebugLn('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
+  //DebugLn('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',HexStr(TheMessage.DC,8));
   if (csDestroying in ComponentState) or (not HandleAllocated) then exit;
 
   {$IFDEF VerboseDsgnPaintMsg}
@@ -1644,7 +1645,8 @@ begin
   DC := TheMessage.DC;
   if DC = 0 then DC := BeginPaint(Handle, PS);
   try
-    // check if child controls needs clipping
+    // check if child controls need clipping
+    //DebugLn('[TWinControl.PaintHandler] ',DbgSName(Self),' B');
     ControlsNeedsClipping:=false;
     if FControls<>nil then
       for I := 0 to FControls.Count - 1 do
@@ -1653,24 +1655,29 @@ begin
           break;
         end;
     // exclude child controls and send new paint message
-    if not ControlsNeedsClipping then
+    if not ControlsNeedsClipping then begin
+      //DebugLn('[TWinControl.PaintHandler] ',DbgSName(Self),' no clipping ...');
       PaintWindow(DC)
-    else
+    end else
     begin
       SaveIndex := SaveDC(DC);
       Clip := SimpleRegion;
-      for I := 0 to FControls.Count - 1 do
-        if ControlMustBeClipped(TControl(FControls[I])) then
-          with TControl(FControls[I]) do begin
-            //DebugLn('TWinControl.PaintHandler Exclude Child ',Self.Name,':',Self.ClassName,' Control=',Name,':',ClassName);
+      for I := 0 to FControls.Count - 1 do begin
+        CurControl:=TControl(FControls[I]);
+        if ControlMustBeClipped(CurControl) then
+          with CurControl do begin
+            //DebugLn('TWinControl.PaintHandler Exclude Child ',DbgSName(Self),' Control=',DbgSName(CurControl),'(',dbgs(CurControl.BoundsRect),')');
             Clip := ExcludeClipRect(DC, Left, Top, Left + Width, Top + Height);
             if Clip = NullRegion then Break;
           end;
+      end;
+      //DebugLn('[TWinControl.PaintHandler] ',DbgSName(Self),' with clipping ...');
       if Clip <> NullRegion then
         PaintWindow(DC);
       RestoreDC(DC, SaveIndex);
     end;
     // paint controls
+    //DebugLn('[TWinControl.PaintHandler] ',DbgSName(Self),' PaintControls ...');
     PaintControls(DC, nil);
   finally
     if TheMessage.DC = 0 then EndPaint(Handle, PS);
@@ -1683,7 +1690,10 @@ procedure TWinControl.PaintControls(DC: HDC; First: TControl);
 var
   I, Count, SaveIndex: Integer;
 //  FrameBrush: HBRUSH;
-  TempControl : TCOntrol;
+  TempControl : TControl;
+  {$IFDEF VerboseControlDCOrigin}
+  P: TPoint;
+  {$ENDIF}
 begin
 //DebugLn('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',HexStr(DC,8));
   if (csDestroying in ComponentState)
@@ -1710,7 +1720,7 @@ begin
     begin
       TempControl := TControl(FControls.Items[I]);
       //DebugLn('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',TempControl.Name,':',TempControl.ClassName,' ',TempControl.Left,',',TempControl.Top,',',TempControl.Width,',',TempControl.Height);
-      with (TempControl) do
+      with TempControl do
         if (Visible
         or ((csDesigning in ComponentState)
             and not (csNoDesignVisible in ControlStyle)))
@@ -1720,8 +1730,16 @@ begin
             Include(FControlState, csPaintCopy);
           SaveIndex := SaveDC(DC);
           MoveWindowOrg(DC, Left, Top);
-          //DebugLn('TWinControl.PaintControls B Self=',Self.Name,':',Self.ClassName,' Control=',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+          {$IFDEF VerboseControlDCOrigin}
+          DebugLn('TWinControl.PaintControls B Self=',DbgSName(Self),' Control=',DbgSName(TempControl),' ',dbgs(Left),',',dbgs(Top),',',dbgs(Width),',',dbgs(Height));
+          {$ENDIF}
           IntersectClipRect(DC, 0, 0, Width, Height);
+          {$IFDEF VerboseControlDCOrigin}
+          DebugLn('TWinControl.PaintControls C');
+          P:=Point(-1,-1);
+          GetWindowOrgEx(DC,@P);
+          debugln('  DCOrigin=',dbgs(P));
+          {$ENDIF}
           Perform(LM_PAINT, WParam(DC), 0);
           RestoreDC(DC, SaveIndex);
           Exclude(FControlState, csPaintCopy);
@@ -4281,6 +4299,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.298  2005/01/16 11:40:10  mattias
+  fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
+
   Revision 1.297  2005/01/13 19:52:50  mattias
   added desgntime check for TControl.Width/Height for negative values
 

@@ -185,11 +185,11 @@ type
   published
     property Align;
     property Anchors;
-    property AutoSize default True;
+    property AutoSize;
     //property AutoScroll;
     property BorderSpacing;
     //property BiDiMode;
-    property BorderStyle default bsSingle;
+    property BorderStyle;
     property ChildSizing;
     property Constraints;
     //property DockSite;

@@ -26,13 +26,15 @@ end;
 procedure TPaintBox.Paint;
 begin
   if csDesigning in ComponentState then begin
-    Canvas.Font := Font;
     Canvas.Brush.Color := Color;
     with Canvas do
     begin
       Pen.Style := psDash;
+      Pen.Color:=clBlack;
       Brush.Style := bsClear;
       Rectangle(0, 0, Width - 1, Height - 1);
+      Line(0,0,Width-1,Height-1);
+      Line(Width-1,0,0,Height-1);
     end;
     exit;
   end;

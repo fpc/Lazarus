@@ -28,14 +28,14 @@ LazarusResources.Add('TCondForm','FORMDATA',[
   +'ck'#4'Left'#3#134#0#6'Height'#2#25#3'Top'#2#6#5'Width'#2'R'#0#0#7'TBitBtn'#9
   +'RemoveBtn'#7'Anchors'#11#5'akTop'#7'akRight'#0#7'OnClick'#7#14'RemoveBtnCli'
   +'ck'#7'Anchors'#11#5'akTop'#7'akRight'#0#7'Caption'#6#7'&Remove'#8'TabOrder'
-  +#2#5#7'OnClick'#7#14'RemoveBtnClick'#4'Left'#3#133#0#6'Height'#2#25#3'Top'#2
+  +#2#5#7'OnClick'#7#14'RemoveBtnClick'#4'Left'#3#134#0#6'Height'#2#25#3'Top'#2
   +'@'#5'Width'#2'R'#0#0#7'TBitBtn'#5'OkBtn'#7'Anchors'#11#5'akTop'#7'akRight'#0
   +#7'Default'#9#4'Kind'#7#4'bkOK'#11'ModalResult'#2#1#7'Anchors'#11#5'akTop'#7
   +'akRight'#0#7'Default'#9#11'ModalResult'#2#1#7'Caption'#6#3'&OK'#8'TabOrder'
   +#2#6#4'Left'#3#134#0#6'Height'#2#25#3'Top'#2'_'#5'Width'#2'R'#0#0#7'TBitBtn'
   +#7'BitBtn1'#7'Anchors'#11#5'akTop'#7'akRight'#0#4'Kind'#7#8'bkCancel'#11'Mod'
   +'alResult'#2#2#7'Anchors'#11#5'akTop'#7'akRight'#0#11'ModalResult'#2#2#6'Can'
-  +'cel'#9#7'Caption'#6#6'Cancel'#8'TabOrder'#2#7#4'Left'#3#136#0#6'Height'#2#25
+  +'cel'#9#7'Caption'#6#6'Cancel'#8'TabOrder'#2#7#4'Left'#3#134#0#6'Height'#2#25
   +#3'Top'#2'}'#5'Width'#2'R'#0#0#7'TButton'#10'AddInverse'#7'Anchors'#11#5'akT'
   +'op'#7'akRight'#0#7'Caption'#6#11'Add Inverse'#8'TabOrder'#2#4#7'OnClick'#7
   +#15'AddInverseCLICK'#4'Left'#3#134#0#6'Height'#2#25#3'Top'#2'"'#5'Width'#2'R'

@@ -816,7 +816,7 @@ begin
     end;
     gdk_visual_ref(GdiObject^.Visual);
     GdiObject^.SystemVisual := False;
-	    
+
     // the visual is created only when needed
     {If GdiObject^.Visual <> nil then
       gdk_visual_ref(GdiObject^.Visual)
@@ -3104,19 +3104,7 @@ end;
 function TGtkWidgetSet.ExcludeClipRect(dc: hdc;
   Left, Top, Right, Bottom : Integer) : Integer;
 begin
-  Result := SIMPLEREGION;
-  If (not IsValidDC(DC)) then
-    Result := ERROR
-  else with TDeviceContext(DC) do
-  begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.ExcludeClipRect] Uninitialized GC');
-      Result := ERROR;
-    end
-    else
-      Result := Inherited ExcludeClipRect(DC, Left, Top, Right, Bottom);
-  end;
+  Result := Inherited ExcludeClipRect(DC, Left, Top, Right, Bottom);
 end;
 
 {------------------------------------------------------------------------------
@@ -3153,6 +3141,7 @@ var
   Clip,
   Tmp : hRGN;
   X, Y : Longint;
+  DCOrigin: TPoint;
 begin
   Result := SIMPLEREGION;
   If not IsValidDC(DC) then
@@ -3165,8 +3154,8 @@ begin
       Result := ERROR;
     end
     else begin
-      //DebugLn('TGtkWidgetSet.ExtSelectClipRGN A ClipRegValid=',DCClipRegionValid(DC),
-      //  ' Mode=',Mode,' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
+      //DebugLn('TGtkWidgetSet.ExtSelectClipRGN A ClipRegValid=',dbgs(DCClipRegionValid(DC)),
+      //  ' Mode=',dbgs(Mode),' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
       If ClipRegion=0 then begin
         // there is no clipping region in the DC
         Case Mode of
@@ -3181,18 +3170,19 @@ begin
           RGN_AND,
           RGN_DIFF:
             begin
-              {$IFDEF DebugGDKTraps}
-              BeginGDKErrorTrap;
-              {$ENDIF}
+              // get existing clip
               GDK_Window_Get_Size(Drawable, @X, @Y);
-              {$IFDEF DebugGDKTraps}
-              EndGDKErrorTrap;
-              {$ENDIF}
-              Clip := CreateRectRGN(0,0,X,Y);
+              DCOrigin:=GetDCOffset(TDeviceContext(DC));
+              Clip := CreateRectRGN(-DCOrigin.X,-DCOrigin.Y,X-DCOrigin.X,Y-DCOrigin.Y);
+              // create target clip
               Tmp := CreateEmptyRegion;
-              Result := CombineRGN(Tmp, Clip, RGN, mode);
-              DeleteObject(Clip);
+              // combine
+              Result := CombineRGN(Tmp, Clip, RGN, Mode);
+              // commit
+              //DebugLn('TGtkWidgetSet.ExtSelectClipRGN B ClipRegValid=',dbgs(ClipRegion),' TmpRGN=',GDKRegionAsString(PGdiObject(Tmp)^.GDIRegionObject));
               SelectClipRGN(DC, Tmp);
+              // clean up
+              DeleteObject(Clip);
               DeleteObject(Tmp);
             end;
           end;
@@ -4075,26 +4065,11 @@ end;
     -1 = error
  ------------------------------------------------------------------------------}
 Function TGtkWidgetSet.GetClipRGN(DC : hDC; RGN : hRGN) : longint;
-
-  function GetDefaultClipRgn: longint;
-  var
-    ARect: TRect;
-    GdiObject: PGDIObject;
-  begin
-    Result:=SimpleRegion;
-    GetClipBox(DC,@ARect);
-    GdiObject:=PGdiObject(RGN);
-    if GdiObject^.GDIRegionObject<>nil then
-      gdk_region_destroy(GdiObject^.GDIRegionObject);
-    GdiObject^.GDIRegionObject:=CreateRectGDKRegion(ARect);
-    //DebugLn('TGtkWidgetSet.GetClipRGN A DC=',HexStr(Cardinal(DC),8),
-    //  ' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject),
-    //  ' Result=',Result);
-  end;
-
 var
   DCOrigin: TPoint;
   ClipRegionWithDCOffset: PGdkRegion;
+  CurRegionObject: PGdkRegion;
+  ARect: TRect;
 begin
   Result := SIMPLEREGION;
   If (not IsValidDC(DC)) then
@@ -4103,19 +4078,29 @@ begin
     Result := ERROR;
     DebugLn('WARNING: [TGtkWidgetSet.GetClipRGN] Invalid HRGN');
   end
-  else if TDeviceContext(DC).ClipRegion=0 then
-    Result:=GetDefaultClipRgn
-  else if (not IsValidGDIObject(TDeviceContext(DC).ClipRegion)) then
+  else if (TDeviceContext(DC).ClipRegion<>0)
+  and (not IsValidGDIObject(TDeviceContext(DC).ClipRegion)) then
     Result := ERROR
   else with TDeviceContext(DC) do
   begin
-    // create a copy of the current clipregion
-    ClipRegionWithDCOffset:= gdk_region_copy(PGdiObject(ClipRegion)^.GDIRegionObject);
-    // move it to the DC offset
-    // Example: if the ClipRegion is at 10,10 and the DCOrigin is at 10,10,
-    //          then the ClipRegion must be moved to 0,0
-    DCOrigin:=GetDCOffset(TDeviceContext(DC));
-    gdk_region_offset(ClipRegionWithDCOffset,-DCOrigin.x,-DCOrigin.Y);
+    CurRegionObject:=nil;
+    if ClipRegion<>0 then
+      CurRegionObject:=PGdiObject(ClipRegion)^.GDIRegionObject;
+    ARect:=Rect(0,0,0,0);
+    if CurRegionObject<>nil then begin
+      // create a copy of the current clipregion
+      ClipRegionWithDCOffset:=gdk_region_copy(CurRegionObject);
+      // move it to the DC offset
+      // Example: if the ClipRegion is at 10,10 and the DCOrigin is at 10,10,
+      //          then the ClipRegion must be moved to 0,0
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
+      //debugln('TGtkWidgetSet.GetClipRGN DCOrigin=',dbgs(DCOrigin),' CurRegionObject=',dbgs(CurRegionObject),' ',dbgs(ARect));
+      gdk_region_offset(ClipRegionWithDCOffset,-DCOrigin.x,-DCOrigin.Y);
+    end else begin
+      // create a default clipregion
+      GetClipBox(DC,@ARect);
+      ClipRegionWithDCOffset:=CreateRectGDKRegion(ARect);
+    end;
     // free the old region in RGN
     if PGdiObject(RGN)^.GDIRegionObject<>nil then
       gdk_region_destroy(PGdiObject(RGN)^.GDIRegionObject);
@@ -4124,7 +4109,7 @@ begin
 
     Result := RegionType(ClipRegionWithDCOffset);
     //DebugLn('TGtkWidgetSet.GetClipRGN B DC=',HexStr(Cardinal(DC),8),
-    //  ' DCOrigin=',DCOrigin.X,',',DCOrigin.Y,' RGN=',GDKRegionAsString(ClipRegionWithDCOffset),' Result=',Result);
+    //  ' DCOrigin=',dbgs(DCOrigin),' RGN=',GDKRegionAsString(ClipRegionWithDCOffset),' Result=',dbgs(Result));
     If Result = NULLREGION then
       Result := 0
     else If Result <> ERROR then
@@ -5883,20 +5868,7 @@ end;
 function TGtkWidgetSet.IntersectClipRect(dc: hdc;
   Left, Top, Right, Bottom: Integer): Integer;
 begin
-  Result := SIMPLEREGION;
-  If not IsValidDC(DC) then
-    Result := ERROR
-  else with TDeviceContext(DC) do
-  begin
-    if GC = nil
-    then begin
-      DebugLn('WARNING: [TGtkWidgetSet.IntersectClipRect] Uninitialized GC');
-      Result := ERROR;
-    end
-    else begin
-      Result := Inherited IntersectClipRect(DC, Left, Top, Right, Bottom);
-    end;
-  end;
+  Result := Inherited IntersectClipRect(DC, Left, Top, Right, Bottom);
 end;
 
 {------------------------------------------------------------------------------
@@ -7247,10 +7219,12 @@ var
   RegObj: PGdkRegion;
   DCOrigin: TPoint;
 begin
+  If not IsValidDC(DC) then begin
+    Result := ERROR;
+    exit;
+  end;
   Result := SIMPLEREGION;
-  If not IsValidDC(DC) then
-    Result := ERROR
-  else with TDeviceContext(DC) do
+  with TDeviceContext(DC) do
   begin
     if (GC = nil) and (RGN <> 0)
     then begin
@@ -7273,9 +7247,10 @@ begin
           ClipRegion := CreateRegionCopy(RGN);
           RegObj:=PGdiObject(ClipRegion)^.GDIRegionObject;
           DCOrigin:=GetDCOffset(TDeviceContext(DC));
+          //DebugLn('TGtkWidgetSet.SelectClipRGN A RegObj=',GDKRegionAsString(RegObj),' DCOrigin=',dbgs(DCOrigin),' RGN=',GDKRegionAsString(PGdiObject(RGN)^.GDIRegionObject));
           gdk_region_offset(RegObj,DCOrigin.x,DCOrigin.Y);
           Result := RegionType(RegObj);
-          //DebugLn('TGtkWidgetSet.SelectClipRGN RGN=',GDKRegionAsString(RegObj),' DCOrigin=',DCOrigin.X,',',DCOrigin.Y);
+          //DebugLn('TGtkWidgetSet.SelectClipRGN B RegObj=',GDKRegionAsString(RegObj),' DCOrigin=',dbgs(DCOrigin));
           SelectGDIRegion(DC);
         end
         else begin
@@ -8865,6 +8840,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.385  2005/01/16 11:40:11  mattias
+  fixed TGtkWidgetSet.ExtSelectClipRGN for DCOrigin
+
   Revision 1.384  2005/01/08 11:03:18  mattias
   implemented TPen.Mode=pmXor  from Jesus
 

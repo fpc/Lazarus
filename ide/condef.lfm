@@ -103,7 +103,7 @@ object CondForm: TCondForm
     Caption = '&Remove'
     TabOrder = 5
     OnClick = RemoveBtnClick
-    Left = 133
+    Left = 134
     Height = 25
     Top = 64
     Width = 82
@@ -132,7 +132,7 @@ object CondForm: TCondForm
     Cancel = True
     Caption = 'Cancel'
     TabOrder = 7
-    Left = 136
+    Left = 134
     Height = 25
     Top = 125
     Width = 82
