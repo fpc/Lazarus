@@ -229,7 +229,7 @@ type
     procedure SetAutoEnabled(const AValue: boolean); virtual;
     procedure DoOnIdle(Sender: TObject); virtual;
     procedure DoOnIdleEnd(Sender: TObject); virtual;
-    procedure DoOnUserInput(Sender: TObject); virtual;
+    procedure DoOnUserInput(Sender: TObject; Msg: Cardinal); virtual;
     procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -555,6 +555,9 @@ end.
 
  {
   $Log$
+  Revision 1.44  2002/11/05 20:03:41  lazarus
+  MG: implemented hints
+
   Revision 1.43  2002/11/04 11:48:48  lazarus
   MG: implemented TIdleTimer and fixed small bugs
 
