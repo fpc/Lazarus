@@ -1035,22 +1035,46 @@ begin
   Assert(False, Format('Trace:< [TgtkObject.CreateCompatibleBitmap] DC: 0x%x --> 0x%x', [DC, Result]));
 end;
 
-function Tgtkobject.InternalGetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
-  BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
+{------------------------------------------------------------------------------
+  function Tgtkobject.InternalGetDIBits(DC: HDC; Bitmap: HBitmap;
+    StartScan, NumScans: UINT;
+    BitSize : Longint; Bits: Pointer;
+    var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
+ ------------------------------------------------------------------------------}
+function Tgtkobject.InternalGetDIBits(DC: HDC; Bitmap: HBitmap;
+  StartScan, NumScans: UINT;
+  BitSize : Longint; Bits: Pointer;
+  var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
 const
   PadLine : array[0..12] of Byte = (0,0,0,0,0,0,0,0,0,0,1,0,0);
   TempBuffer : array[0..2] of Byte = (0,0,0);
 var
   {$IfNDef NoGDKPixbuflib}
-  Source : PGDKPixbuf;
-  rowstride, PixelPos : Longint;
-  Pixels : PByte;
+  Source: PGDKPixbuf;
+  rowstride, PixelPos: Longint;
+  Pixels: PByte;
   {$Else}
-  Source : PGDKImage;//The MONDO slow way...
+  Source: PGDKImage;//The MONDO slow way...
   {$EndIf}
-  FDIB : TDIBSection;
-  X, Y : Longint;
-  PadSize, Pos : Longint;
+  FDIB: TDIBSection;
+  X, Y: Longint;
+  PadSize, Pos, BytesPerPixel: Longint;
+  TrapIsSet: boolean;
+  Buf16Bit: word;
+  
+  procedure BeginGDKErrorTrap;
+  begin
+    if TrapIsSet then exit;
+    gdk_error_trap_push; //try to prevent GDK from killing us...
+    TrapIsSet:=true;
+  end;
+  
+  procedure EndGDKErrorTrap;
+  begin
+    if not TrapIsSet then exit;
+    gdk_error_trap_pop;
+    TrapIsSet:=false;
+  end;
   
   Procedure DataSourceInitialize(Bitmap : PGDIObject; Width : Longint);
   begin
@@ -1065,7 +1089,7 @@ var
            rowstride := gdk_pixbuf_get_rowstride(Source);
            Pixels := PByte(gdk_pixbuf_get_pixels(Source));
          {$else}
-           gdk_error_trap_push; //try to prevent GDK from killing us...
+           BeginGDKErrorTrap;
            Source := gdk_image_get(Bitmap^.GDIBitmapObject, 0, StartScan, Width,
              StartScan + NumScans);
          {$EndIf}
@@ -1078,7 +1102,7 @@ var
            rowstride := gdk_pixbuf_get_rowstride(Source);
            Pixels := PByte(gdk_pixbuf_get_pixels(Source));
          {$else}
-           gdk_error_trap_push; //try to prevent GDK from killing us...
+           BeginGDKErrorTrap;
            Source := gdk_image_get(Bitmap^.GDIPixmapObject, StartScan, 0, Width,
              StartScan + NumScans);
          {$EndIf}
@@ -1110,7 +1134,7 @@ var
   begin
     Pixel := 0;
 
-    gdk_error_trap_push;//try to prevent GDK from killing us...
+    BeginGDKErrorTrap;
 
     Pixel := gdk_image_get_pixel(Source, X, Y);
 
@@ -1123,7 +1147,7 @@ var
   {$IfNDef NoGDKPixbuflib}
     GDK_Pixbuf_Unref(Source);
   {$else}
-    gdk_error_trap_push; //try to prevent GDK from killing us...
+    BeginGDKErrorTrap;
     gdk_image_destroy(Source);
   {$EndIf}
   end;
@@ -1137,69 +1161,101 @@ var
     Inc(Pos, Size);
   end;
 
+  Procedure WriteData(Value : Word);
+  begin
+    PByte(Bits)[Pos] := Lo(Value);
+    inc(Pos);
+    PByte(Bits)[Pos] := Hi(Value);
+    inc(Pos);
+  end;
+
 begin
   Assert(False, 'trace:[TgtkObject.InternalGetDIBits]');
   Result := 0;
+  TrapIsSet:=false;
   if IsValidGDIObject(Bitmap)
   then begin
     case PGDIObject(Bitmap)^.GDIType of
-      gdiBitmap:
-        begin
-          FillChar(FDIB, sizeof(FDIB), 0);
-          GetObject(Bitmap, SizeOf(FDIB), @FDIB);
-          BitInfo.bmiHeader := FDIB.dsBmih;
+    gdiBitmap:
+      begin
+        FillChar(FDIB, SizeOf(FDIB), 0);
+        GetObject(Bitmap, SizeOf(FDIB), @FDIB);
+        BitInfo.bmiHeader := FDIB.dsBmih;
 
-          With PGDIObject(Bitmap)^, BitInfo.bmiHeader do begin
-            If not DIB then begin
-              NumScans := biHeight;
-              StartScan := 0;
-            end;
+        With PGDIObject(Bitmap)^, BitInfo.bmiHeader do begin
+          If not DIB then begin
+            NumScans := biHeight;
+            StartScan := 0;
+          end;
+          BytesPerPixel:=biBitCount div 8;
 
-            If BitSize <= 0 then
-              BitSize := SizeOf(Byte)*(Longint(biSizeImage) div biHeight)
-                                     *(NumScans + StartScan);
-            If MemSize(Bits) <> BitSize then begin
-              writeln('WARNING: [TgtkObject.InternalGetDIBits] not enough memory allocated for Bits!');
-              exit;
-            end;
-            Pos := 0;
-            PadSize := (Longint(biSizeImage) div biHeight) - biWidth*3;
-            DataSourceInitialize(PGDIObject(Bitmap), biWidth);
+          writeln('TgtkObject.InternalGetDIBits A BitSize=',BitSize,
+          ' biSizeImage=',biSizeImage,' biHeight=',biHeight,' biWidth=',biWidth,
+          ' NumScans=',NumScans,' StartScan=',StartScan,
+          ' Bits=',HexStr(Cardinal(Bits),8),' MemSize(Bits)=',MemSize(Bits),
+          ' biBitCount=',biBitCount);
+          If BitSize <= 0 then
+            BitSize := SizeOf(Byte)*(Longint(biSizeImage) div biHeight)
+                                   *(NumScans + StartScan);
+          If MemSize(Bits) < BitSize then begin
+            writeln('WARNING: [TgtkObject.InternalGetDIBits] not enough memory allocated for Bits!');
+            exit;
+          end;
+          // ToDo: other bitcounts
+          if (biBitCount<>24) and (biBitCount<>16) then begin
+            writeln('WARNING: [TgtkObject.InternalGetDIBits] unsupported biBitCount=',biBitCount);
+            exit;
+          end;
+          Pos := 0;
+          PadSize := (Longint(biSizeImage) div biHeight)
+                     - biWidth*BytesPerPixel;
+          DataSourceInitialize(PGDIObject(Bitmap), biWidth);
+          if NumScans - 1<>0 then begin
             If DIB then begin
-              for Y := NumScans - 1 downto 0 do begin
-                for X := 0 to biwidth - 1 do begin
-                  With DataSourceGetGDIRGB(PGDIObject(Bitmap), X, Y) do begin
-                    TempBuffer[0]  := Blue;
-                    TempBuffer[1] := Green;
-                    TempBuffer[2]   := Red;
-                  end;
-                  WriteData(TempBuffer, 3);
-                end;
-                WriteData(PadLine, PadSize);
-              end;
-            end
-            else
-              for Y := 0 to NumScans - 1 do begin
-                for X := 0 to biwidth - 1 do begin
-                  With DataSourceGetGDIRGB(PGDIObject(Bitmap), X, Y) do begin
-                    TempBuffer[0]  := Blue;
-                    TempBuffer[1] := Green;
-                    TempBuffer[2]   := Red;
-                  end;
-                  WriteData(TempBuffer, 3);
-                end;
-                WriteData(PadLine, PadSize);
-              end;
+              Y:=NumScans - 1;
+            end else begin
+              Y:=0;
             end;
-          DataSourceFinalize;
+            repeat
+              if biBitCount=24 then begin
+                for X := 0 to biwidth - 1 do begin
+                  With DataSourceGetGDIRGB(PGDIObject(Bitmap), X, Y) do begin
+                    TempBuffer[0]  := Blue;
+                    TempBuffer[1] := Green;
+                    TempBuffer[2]   := Red;
+                  end;
+                  WriteData(TempBuffer, BytesPerPixel);
+                end;
+              end else if biBitCount=16 then begin
+                for X := 0 to biwidth - 1 do begin
+                  With DataSourceGetGDIRGB(PGDIObject(Bitmap), X, Y) do begin
+                    Buf16Bit:=(Blue shr 3) shl 11
+                             +(Green shr 2) shl 5
+                             +(Red shr 3);
+                  end;
+                  WriteData(Buf16Bit);
+                end;
+              end;
+              WriteData(PadLine, PadSize);
+              If DIB then begin
+                dec(y);
+                if Y<=0 then break;
+              end else begin
+                inc(y);
+                if Y>=NumScans - 1 then break;
+              end;
+            until false;
+          end
         end;
-      else
-        writeln('WARNING: [TgtkObject.InternalGetDIBits] not a Bitmap!');
+        DataSourceFinalize;
+      end;
+    else
+      writeln('WARNING: [TgtkObject.InternalGetDIBits] not a Bitmap!');
     end;
   end
   else
     writeln('WARNING: [TgtkObject.InternalGetDIBits] invalid Bitmap!');
-  gdk_error_trap_pop;
+  EndGDKErrorTrap;
 end;
 
 function Tgtkobject.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
@@ -7703,6 +7759,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.209  2003/02/04 14:36:19  mattias
+  fixed set method in OI
+
   Revision 1.208  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 
