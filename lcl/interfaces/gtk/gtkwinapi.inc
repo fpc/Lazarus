@@ -3494,7 +3494,7 @@ begin
   if Widget<>nil then begin
     if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
       AWindow:=PGtkWindow(Widget);
-      IsModal:=gtk_window_get_modal(AWindow);
+      IsModal:=(gtk_window_get_modal(AWindow) = true);
       if IsModal then
         Widget:=nil;
     end;
@@ -9036,6 +9036,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.305  2003/12/23 11:16:41  mattias
+  started key combinations, fixed some range check errors
+
   Revision 1.304  2003/11/29 15:23:23  mattias
   ct parser now understands interconst:const
 

@@ -41,8 +41,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
   Dialogs, ExtCtrls, LResources, Laz_XMLCfg, ExtToolEditDlg, Process,
-  KeyMapping, TransferMacros, IDEProcs, CompilerOptions, OutputFilter, FileCtrl,
-  LazarusIDEStrConsts;
+  IDECommands, KeyMapping, TransferMacros, IDEProcs, CompilerOptions,
+  OutputFilter, FileCtrl, LazarusIDEStrConsts;
 
 const
   MaxExtTools = ecExtToolLast-ecExtToolFirst+1;
@@ -244,8 +244,8 @@ begin
   for i:=0 to Count-1 do begin
     KeyCommandRelation:=KeyCommandRelationList.FindByCommand(ecExtToolFirst+i);
     if KeyCommandRelation<>nil then begin
-      Items[i].Key:=KeyCommandRelation.Key1;
-      Items[i].Shift:=KeyCommandRelation.Shift1;
+      Items[i].Key:=KeyCommandRelation.KeyA.Key1;
+      Items[i].Shift:=KeyCommandRelation.KeyA.Shift1;
     end else begin
       Items[i].Key:=VK_UNKNOWN;
       Items[i].Shift:=[];
@@ -388,8 +388,8 @@ begin
   for i:=0 to Count-1 do begin
     KeyCommandRelation:=KeyCommandRelationList.FindByCommand(ecExtToolFirst+i);
     if KeyCommandRelation<>nil then begin
-      KeyCommandRelation.Key1:=Items[i].Key;
-      KeyCommandRelation.Shift1:=Items[i].Shift;
+      KeyCommandRelation.KeyA:=IDECommandKey(Items[i].Key,Items[i].Shift,
+                                             VK_UNKNOWN,[]);
     end else begin
       writeln('[TExternalToolList.SaveShortCuts] Error: '
         +'unable to save shortcut for external tool "',Items[i].Title,'"');

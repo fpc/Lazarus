@@ -52,7 +52,7 @@ const
    IDE experts: They are handled in the IDE interface units.
              
   }
-  ecNone                 = SynEditKeyCmds.ecNone;
+  ecNone                 = 0;
   
   // search
   ecFind                 = ecUserFirst + 1;
@@ -262,25 +262,9 @@ type
   
   //---------------------------------------------------------------------------
   // class for storing the keys of a single command (key-command relationship)
-  TKeyCommandRelation = class
-  private
-    fParent: TKeyCommandCategory;
-    procedure SetParent(const AValue: TKeyCommandCategory);
+  TKeyCommandRelation = class(TIDECommandKeys)
   public
-    Name: ShortString;
-    Command: word;  // see the ecXXX constants above
-    Key1: word;
-    Shift1: TShiftState;
-    Key2: word;
-    Shift2: TShiftState;
-    property Parent: TKeyCommandCategory read fParent write SetParent;
-    constructor Create(AParent: TKeyCommandCategory; AName:ShortString;
-      ACommand: word;
-      AKey1:Word; AShift1:TShiftState; AKey2:Word; AShift2:TShiftState);
-    function AsShortCut: TShortCut;
-    procedure GetDefaultValues(var AKey1:Word; var AShift1:TShiftState;
-                               var AKey2:Word; var AShift2:TShiftState);
-    function LocalizedName: string;
+    function GetLocalizedName: string; override;
   end;
 
   //---------------------------------------------------------------------------
@@ -295,11 +279,9 @@ type
     function GetRelation(Index:integer):TKeyCommandRelation;
     function AddCategory(const Name, Description: string;
        TheAreas: TCommandAreas): integer;
-    function Add(Category: TKeyCommandCategory; const Name:shortstring;
-       Command:word;
-       Key1:Word; Shift1:TShiftState; 
-       Key2:Word; Shift2:TShiftState):integer;
-    function AddDefault(Category: TKeyCommandCategory; const Name:shortstring;
+    function Add(Category: TKeyCommandCategory; const Name: string;
+       Command:word;  const TheKeyA, TheKeyB: TIDECommandKey):integer;
+    function AddDefault(Category: TKeyCommandCategory; const Name: string;
        Command:word):integer;
     procedure SetCustomKeyCount(const NewCount: integer);
     procedure SetExtToolCount(NewCount: integer);
@@ -377,16 +359,13 @@ function EditorCommandLocalizedName(cmd: word;
 function EditorKeyStringToVKCode(const s: string): integer;
 
 procedure GetDefaultKeyForCommand(Command: word;
-  var Key1: word; var Shift1: TShiftState;
-  var Key2: word; var Shift2: TShiftState);
+  var TheKeyA, TheKeyB: TIDECommandKey);
 procedure GetDefaultKeyForClassicScheme(Command: word;
-  var Key1: word; var Shift1: TShiftState;
-  var Key2: word; var Shift2: TShiftState);
+  var TheKeyA, TheKeyB: TIDECommandKey);
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 
 function ShiftStateToStr(Shift:TShiftState):AnsiString;
-function KeyValuesToStr(Key1: word; Shift1: TShiftState;
-  Key2: word; Shift2: TShiftState): string;
+function KeyValuesToStr(const KeyA, KeyB: TIDECommandKey): string;
 function EditorKeyStringIsIrregular(const s: string): boolean;
 
 var KeyMappingEditForm: TKeyMappingEditForm;
@@ -438,26 +417,21 @@ begin
 end;
 
 procedure GetDefaultKeyForCommand(Command: word;
-  var Key1: word; var Shift1: TShiftState;
-  var Key2: word; var Shift2: TShiftState);
+  var TheKeyA, TheKeyB: TIDECommandKey);
 
-  procedure SetResult(NewKey1: word; NewShift1: TShiftState;
-    NewKey2: word; NewShift2: TShiftState);
+  procedure SetResult(NewKeyA: word; NewShiftA: TShiftState;
+    NewKeyB: word; NewShiftB: TShiftState);
   begin
-    Key1:=NewKey1;
-    Shift1:=NewShift1;
-    Key2:=NewKey2;
-    Shift2:=NewShift2;
+    TheKeyA:=IDECommandKey(NewKeyA,NewShiftA,VK_UNKNOWN,[]);
+    TheKeyB:=IDECommandKey(NewKeyB,NewShiftB,VK_UNKNOWN,[]);
   end;
 
-  procedure SetResult(NewKey1: word; NewShift1: TShiftState);
+  procedure SetResult(NewKeyA: word; NewShiftA: TShiftState);
   begin
-    SetResult(NewKey1,NewShift1,VK_UNKNOWN,[]);
+    SetResult(NewKeyA,NewShiftA,VK_UNKNOWN,[]);
   end;
 
 begin
-  SetResult(VK_UNKNOWN,[]);
-
   case Command of
   // moving
   ecWordLeft: SetResult(VK_LEFT, [ssCtrl],VK_UNKNOWN,[]);
@@ -703,27 +677,27 @@ begin
   ecCutComponents: SetResult(VK_X,[ssCtrl],VK_Delete,[ssShift]);
   ecPasteComponents: SetResult(VK_V,[ssCtrl],VK_Insert,[ssShift]);
   ecSelectParentComponent: SetResult(VK_ESCAPE,[],VK_UNKNOWN,[]);
+
+  else
+    SetResult(VK_UNKNOWN,[]);
   end;
 end;
 
 procedure GetDefaultKeyForClassicScheme(Command: word;
-  var Key1: word; var Shift1: TShiftState;
-  var Key2: word; var Shift2: TShiftState);
+  var TheKeyA, TheKeyB: TIDECommandKey);
   
-  procedure SetResult(NewKey1: word; NewShift1: TShiftState;
-    NewKey2: word; NewShift2: TShiftState);
+  procedure SetResult(NewKeyA: word; NewShiftA: TShiftState;
+    NewKeyB: word; NewShiftB: TShiftState);
   begin
-    Key1:=NewKey1;
-    Shift1:=NewShift1;
-    Key2:=NewKey2;
-    Shift2:=NewShift2;
+    TheKeyA:=IDECommandKey(NewKeyA,NewShiftA,VK_UNKNOWN,[]);
+    TheKeyB:=IDECommandKey(NewKeyB,NewShiftB,VK_UNKNOWN,[]);
   end;
-  
-  procedure SetResult(NewKey1: word; NewShift1: TShiftState);
+
+  procedure SetResult(NewKeyA: word; NewShiftA: TShiftState);
   begin
-    SetResult(NewKey1,NewShift1,VK_UNKNOWN,[]);
+    SetResult(NewKeyA,NewShiftA,VK_UNKNOWN,[]);
   end;
-  
+
 begin
   SetResult(VK_UNKNOWN,[]);
 
@@ -908,7 +882,7 @@ begin
 //Ctrl+S          Incremental search
 //Ctrl+T          Displays the Type Cast dialog
   else
-    GetDefaultKeyForCommand(Command,Key1,Shift1,Key2,Shift2);
+    GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
   end;
 end;
 
@@ -932,11 +906,10 @@ begin
   Result:=IntToStr(i);
 end;
 
-function KeyValuesToStr(Key1: word; Shift1: TShiftState;
-  Key2: word; Shift2: TShiftState): string;
+function KeyValuesToStr(const KeyA, KeyB: TIDECommandKey): string;
 begin
-  Result:=IntToStr(Key1)+','+ShiftStateToStr(Shift1)
-        +','+IntToStr(Key2)+','+ShiftStateToStr(Shift2);
+  Result:=IntToStr(KeyA.Key1)+','+ShiftStateToStr(KeyA.Shift1)
+        +','+IntToStr(KeyB.Key1)+','+ShiftStateToStr(KeyB.Shift1);
 end;
 
 function EditorKeyStringIsIrregular(const s: string): boolean;
@@ -950,7 +923,7 @@ begin
 end;
 
 function ShowKeyMappingEditForm(Index:integer;
-  AKeyCommandRelationList:TKeyCommandRelationList):TModalResult;
+  AKeyCommandRelationList: TKeyCommandRelationList):TModalResult;
    
   procedure InitComboBox(AComboBox: TComboBox; AKey: integer);
   var s: string;
@@ -980,19 +953,19 @@ begin
       with KeyCommandRelationList.Relations[Index] do
       begin
         CommandLabel.Caption:=srkmCommand+LocalizedName;
-        if Key1<>VK_UNKNOWN then
+        if (KeyA.Key1<>VK_UNKNOWN) then
         begin
-          Key1CtrlCheckBox.Checked:=ssCtrl in Shift1;
-          Key1AltCheckBox.Checked:=ssAlt in Shift1;
-          Key1ShiftCheckBox.Checked:=ssShift in Shift1;
-          InitComboBox(Key1KeyComboBox,Key1);
+          Key1CtrlCheckBox.Checked:=ssCtrl in KeyA.Shift1;
+          Key1AltCheckBox.Checked:=ssAlt in KeyA.Shift1;
+          Key1ShiftCheckBox.Checked:=ssShift in KeyA.Shift1;
+          InitComboBox(Key1KeyComboBox,KeyA.Key1);
         end;
-        if Key2<>VK_UNKNOWN then
+        if (KeyB.Key1<>VK_UNKNOWN) then
         begin
-          Key2CtrlCheckBox.Checked:=ssCtrl in Shift2;
-          Key2AltCheckBox.Checked:=ssAlt in Shift2;
-          Key2ShiftCheckBox.Checked:=ssShift in Shift2;
-          InitComboBox(Key2KeyComboBox,Key2);
+          Key2CtrlCheckBox.Checked:=ssCtrl in KeyB.Shift1;
+          Key2AltCheckBox.Checked:=ssAlt in KeyB.Shift1;
+          Key2ShiftCheckBox.Checked:=ssShift in KeyB.Shift1;
+          InitComboBox(Key2KeyComboBox,KeyB.Key1);
         end;
       end;
       Result:=ShowModal;
@@ -1267,9 +1240,8 @@ begin
       then
         continue;
       if ((Key1.Key=Key2.Key) and (Key1.Shift=Key2.Shift))
-      or ((Key1.Key2<>VK_UNKNOWN)
-        and (Key1.Key2=Key2.Key) and (Key1.Shift2=Key2.Shift2)) then
-      begin
+      and ((Key1.Key2=Key2.Key2) and (Key1.Shift2=Key2.Shift2))
+      then begin
         // consistency error
         if Result=0 then begin
           Index1:=a;
@@ -1640,12 +1612,13 @@ begin
   
   // search for conflict
   DummyRelation:=KeyCommandRelationList.Find(NewKey1,NewShiftState1,
-                                                      CurRelation.Parent.Areas);
+                                                    CurRelation.Category.Areas);
   if (DummyRelation<>nil) 
   and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then
   begin
     AText:=Format(srkmAlreadyConnected,
-            [KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),DummyRelation.Name]);
+            [KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),
+            DummyRelation.Name]);
     MessageDlg(AText,mtError,[mbok],0);
     exit;
   end;
@@ -1660,13 +1633,14 @@ begin
     if Key2ShiftCheckBox.Checked then include(NewShiftState2,ssShift);
   end;
   DummyRelation:=KeyCommandRelationList.Find(NewKey2,NewShiftState2,
-                                             CurRelation.Parent.Areas);
+                                             CurRelation.Category.Areas);
   
   if (DummyRelation<>nil)
   and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then
   begin
     AText:=Format(srkmAlreadyConnected,
-            [KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2),DummyRelation.Name]);
+            [KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2),
+            DummyRelation.Name]);
     MessageDlg(AText,mterror,[mbok],0);
     exit;
   end;
@@ -1678,13 +1652,8 @@ begin
     NewKey2:=VK_UNKNOWN;
   end;
 
-  with CurRelation do
-  begin
-    Key1:=NewKey1;
-    Shift1:=NewShiftState1;
-    Key2:=NewKey2;
-    Shift2:=NewShiftState2;
-  end;
+  CurRelation.KeyA:=IDECommandKey(NewKey1,NewShiftState1,VK_UNKNOWN,[]);
+  CurRelation.KeyB:=IDECommandKey(NewKey2,NewShiftState2,VK_UNKNOWN,[]);
   ModalResult:=mrOk;
 end;
 
@@ -1792,55 +1761,7 @@ end;
 
 { TKeyCommandRelation }
 
-constructor TKeyCommandRelation.Create(AParent: TKeyCommandCategory;
-  AName:ShortString; ACommand:word;
-  AKey1:Word;AShift1:TShiftState;AKey2:Word;AShift2:TShiftState);
-begin
-  Name:=AName;
-  Command:=ACommand;
-  Key1:=AKey1;
-  Shift1:=AShift1;
-  Key2:=AKey2;
-  Shift2:=AShift2;
-  Parent:=AParent;
-end;
-
-procedure TKeyCommandRelation.SetParent(const AValue: TKeyCommandCategory);
-begin
-  if Parent<>AValue then
-  begin
-    // unbind
-    if Parent<>nil then
-    begin
-      Parent.Remove(Self);
-    end;
-    // bind
-    fParent:=AValue;
-    if Parent<>nil then
-    begin
-      Parent.Add(Self);
-    end;
-  end;
-end;
-
-function TKeyCommandRelation.AsShortCut: TShortCut;
-begin
-  Result:=Key1;
-  if ssCtrl in Shift1 then
-    Result:=Result+scCtrl;
-  if ssShift in Shift1 then
-    Result:=Result+scShift;
-  if ssAlt in Shift1 then
-    Result:=Result+scAlt;
-end;
-
-procedure TKeyCommandRelation.GetDefaultValues(var AKey1: Word;
-  var AShift1: TShiftState; var AKey2: Word; var AShift2: TShiftState);
-begin
-  GetDefaultKeyForCommand(Command,AKey1,AShift1,AKey2,AShift2);
-end;
-
-function TKeyCommandRelation.LocalizedName: string;
+function TKeyCommandRelation.GetLocalizedName: string;
 begin
   Result:=EditorCommandLocalizedName(Command,Name);
 end;
@@ -2165,22 +2086,20 @@ begin
 end;
 
 function TKeyCommandRelationList.Add(Category: TKeyCommandCategory;
-  const Name:shortstring;
-  Command:word;
-  Key1:Word; Shift1:TShiftState; Key2:Word; Shift2:TShiftState):integer;
+  const Name: string;
+  Command:word; const TheKeyA, TheKeyB: TIDECommandKey):integer;
 begin
   Result:=FRelations.Add(TKeyCommandRelation.Create(Category,Name,Command
-      ,Key1,Shift1,Key2,Shift2));
+      ,TheKeyA, TheKeyB));
 end;
 
 function TKeyCommandRelationList.AddDefault(Category: TKeyCommandCategory;
-  const Name: shortstring; Command: word): integer;
+  const Name: string; Command: word): integer;
 var
-  Key1:Word; Shift1:TShiftState;
-  Key2:Word; Shift2:TShiftState;
+  TheKeyA, TheKeyB: TIDECommandKey;
 begin
-  GetDefaultKeyForCommand(Command,Key1,Shift1,Key2,Shift2);
-  Result:=Add(Category,Name,Command,Key1,Shift1,Key2,Shift2);
+  GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
+  Result:=Add(Category,Name,Command,TheKeyA,TheKeyB);
 end;
 
 procedure TKeyCommandRelationList.SetCustomKeyCount(const NewCount: integer);
@@ -2194,7 +2113,8 @@ begin
     // increase available custom commands
     while NewCount>FCustomKeyCount do begin
       Add(CustomCat,Format(srkmecCustomTool,[FCustomKeyCount]),
-           ecCustomToolFirst+FCustomKeyCount,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+          ecCustomToolFirst+FCustomKeyCount,
+          CleanIDECommandKey,CleanIDECommandKey);
       inc(FCustomKeyCount);
     end;
   end else begin
@@ -2226,7 +2146,7 @@ begin
     // increase available external tool commands
     while NewCount>fExtToolCount do begin
       Add(ExtToolCat,Format(srkmecExtTool,[fExtToolCount]),
-           ecExtToolFirst+fExtToolCount,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+           ecExtToolFirst+fExtToolCount,CleanIDECommandKey,CleanIDECommandKey);
       inc(fExtToolCount);
     end;
   end else begin
@@ -2275,7 +2195,11 @@ var a,b,p:integer;
   end;
 
 // LoadFromXMLConfig
-var FileVersion: integer;
+var
+  FileVersion: integer;
+  TheKeyA, TheyKeyB: TIDECommandKey;
+  Key: word;
+  Shift: TShiftState;
 begin
   FileVersion:=XMLConfig.GetValue(Prefix+'Version/Value',0);
   ExtToolCount:=XMLConfig.GetValue(Prefix+'ExternalToolCount/Value',0);
@@ -2283,20 +2207,21 @@ begin
     Name:=lowercase(Relations[a].Name);
     for b:=1 to length(Name) do
       if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
-    with Relations[a] do
-      DefaultStr:=IntToStr(Key1)+','+ShiftStateToStr(Shift1)
-              +','+IntToStr(Key2)+','+ShiftStateToStr(Shift2);
+    with Relations[a] do begin
+      GetDefaultKeyForCommand(Command,TheKeyA,TheyKeyB);
+      DefaultStr:=KeyValuesToStr(TheKeyA, TheyKeyB);
+    end;
     if FileVersion<2 then
       NewValue:=XMLConfig.GetValue(Prefix+Name,DefaultStr)
     else
       NewValue:=XMLConfig.GetValue(Prefix+Name+'/Value',DefaultStr);
     p:=1;
-    with Relations[a] do begin
-      Key1:=ReadNextInt;
-      Shift1:=IntToShiftState(ReadNextInt);
-      Key2:=ReadNextInt;
-      Shift2:=IntToShiftState(ReadNextInt);
-    end;
+    Key:=ReadNextInt;
+    Shift:=IntToShiftState(ReadNextInt);
+    Relations[a].KeyA:=IDECommandKey(Key,Shift,VK_UNKNOWN,[]);
+    Key:=ReadNextInt;
+    Shift:=IntToShiftState(ReadNextInt);
+    Relations[a].KeyB:=IDECommandKey(Key,Shift,VK_UNKNOWN,[]);
   end;
   Result:=true;
 end;
@@ -2307,8 +2232,7 @@ var a,b: integer;
   Name: String;
   CurKeyStr: String;
   DefaultKeyStr: string;
-  AKey1: Word; AShift1: TShiftState;
-  AKey2: Word; AShift2: TShiftState;
+  TheKeyA, TheyKeyB: TIDECommandKey;
 begin
   XMLConfig.SetValue(Prefix+'Version/Value',KeyMappingFormatVersion);
   XMLConfig.SetDeleteValue(Prefix+'ExternalToolCount/Value',ExtToolCount,0);
@@ -2317,9 +2241,9 @@ begin
     for b:=1 to length(Name) do
       if not (Name[b] in ['a'..'z','A'..'Z','0'..'9']) then Name[b]:='_';
     with Relations[a] do begin
-      CurKeyStr:=KeyValuesToStr(Key1,Shift1,Key2,Shift2);
-      GetDefaultValues(AKey1,AShift1,AKey2,AShift2);
-      DefaultKeyStr:=KeyValuesToStr(AKey1,AShift1,AKey2,AShift2);;
+      CurKeyStr:=KeyValuesToStr(KeyA,KeyB);
+      GetDefaultKeyForCommand(Command,TheKeyA,TheyKeyB);
+      DefaultKeyStr:=KeyValuesToStr(TheKeyA, TheyKeyB);
     end;
     //writeln('TKeyCommandRelationList.SaveToXMLConfig A ',Prefix+Name,' ',CurKeyStr=DefaultKeyStr);
     XMLConfig.SetDeleteValue(Prefix+Name+'/Value',CurKeyStr,DefaultKeyStr);
@@ -2334,9 +2258,9 @@ begin
   Result:=nil;
   if AKey=VK_UNKNOWN then exit;
   for a:=0 to FRelations.Count-1 do with Relations[a] do begin
-    if Parent.Areas*Areas=[] then continue;
-    if ((Key1=AKey) and (Shift1=AShiftState)) 
-    or ((Key2=AKey) and (Shift2=AShiftState)) then begin
+    if Category.Areas*Areas=[] then continue;
+    if ((KeyA.Key1=AKey) and (KeyA.Shift1=AShiftState))
+    or ((KeyB.Key1=AKey) and (KeyB.Shift1=AShiftState)) then begin
       Result:=Relations[a];
       exit;
     end;
@@ -2364,10 +2288,10 @@ var
 begin
   for a:=0 to FRelations.Count-1 do begin
     CurRelation:=Relations[a];
-    if (CurRelation.Key1=VK_UNKNOWN)
-    or ((CurRelation.Parent.Areas*Areas)=[]) then
+    if (CurRelation.KeyA.Key1=VK_UNKNOWN)
+    or ((CurRelation.Category.Areas*Areas)=[]) then
       MaxKeyCnt:=0
-    else if CurRelation.Key2=VK_UNKNOWN then
+    else if CurRelation.KeyB.Key1=VK_UNKNOWN then
       MaxKeyCnt:=1
     else
       MaxKeyCnt:=2;
@@ -2383,16 +2307,16 @@ begin
           Key.Free;
         end else if KeyCnt=1 then begin
           // Define key1 for this command
-          Key.Key:=CurRelation.Key1;
-          Key.Shift:=CurRelation.Shift1;
-          Key.Key2:=VK_UNKNOWN;
-          Key.Shift2:=[];
+          Key.Key:=CurRelation.KeyA.Key1;
+          Key.Shift:=CurRelation.KeyA.Shift1;
+          Key.Key2:=CurRelation.KeyA.Key2;
+          Key.Shift2:=CurRelation.KeyA.Shift2;
         end else if KeyCnt=2 then begin
           // Define key2 for this command
-          Key.Key:=CurRelation.Key2;
-          Key.Shift:=CurRelation.Shift2;
-          Key.Key2:=VK_UNKNOWN;
-          Key.Shift2:=[];
+          Key.Key:=CurRelation.KeyB.Key1;
+          Key.Shift:=CurRelation.KeyB.Shift1;
+          Key.Key2:=CurRelation.KeyB.Key2;
+          Key.Shift2:=CurRelation.KeyB.Shift2;
         end;
         inc(KeyCnt);
       end;
@@ -2403,14 +2327,16 @@ begin
       Key:=ASynEditKeyStrokes.Add;
       Key.Command:=CurRelation.Command;
       if KeyCnt=1 then begin
-        Key.Key:=CurRelation.Key1;
-        Key.Shift:=CurRelation.Shift1;
+        Key.Key:=CurRelation.KeyA.Key1;
+        Key.Shift:=CurRelation.KeyA.Shift1;
+        Key.Key2:=CurRelation.KeyA.Key2;
+        Key.Shift2:=CurRelation.KeyA.Shift2;
       end else begin
-        Key.Key:=CurRelation.Key2;
-        Key.Shift:=CurRelation.Shift2;
+        Key.Key:=CurRelation.KeyB.Key1;
+        Key.Shift:=CurRelation.KeyB.Shift1;
+        Key.Key2:=CurRelation.KeyB.Key2;
+        Key.Shift2:=CurRelation.KeyB.Shift2;
       end;
-      Key.Key2:=VK_UNKNOWN;
-      Key.Shift2:=[];
       inc(KeyCnt);
     end;
   end;
@@ -2433,9 +2359,9 @@ begin
   // copy keys
   for i:=0 to List.Count-1 do begin
     CurRelation:=List.Relations[i];
-    CurCategory:=FindCategoryByName(CurRelation.fParent.Name);
+    CurCategory:=FindCategoryByName(CurRelation.Category.Name);
     Add(CurCategory,CurRelation.Name,CurRelation.Command,
-      CurRelation.Key1,CurRelation.Shift1,CurRelation.Key2,CurRelation.Shift2);
+      CurRelation.KeyA,CurRelation.KeyB);
   end;
 
   // copy ExtToolCount
@@ -2447,24 +2373,20 @@ var
   i: Integer;
   CurRelation: TKeyCommandRelation;
   NewScheme: TKeyMapScheme;
-  Key1: word; Shift1: TShiftState;
-  Key2: word; Shift2: TShiftState;
+  TheKeyA, TheKeyB: TIDECommandKey;
 begin
   NewScheme:=KeySchemeNameToSchemeType(SchemeName);
   // set all keys to new scheme
   for i:=0 to Count-1 do begin
     CurRelation:=Relations[i];
     case NewScheme of
-    kmsLazarus: GetDefaultKeyForCommand(CurRelation.Command,
-                                        Key1,Shift1,Key2,Shift2);
+    kmsLazarus: GetDefaultKeyForCommand(CurRelation.Command,TheKeyA,TheKeyB);
     kmsClassic: GetDefaultKeyForClassicScheme(CurRelation.Command,
-                                        Key1,Shift1,Key2,Shift2);
+                                              TheKeyA,TheKeyB);
     kmsCustom: ;
     end;
-    CurRelation.Key1:=Key1;
-    CurRelation.Shift1:=Shift1;
-    CurRelation.Key2:=Key2;
-    CurRelation.Shift2:=Shift2;
+    CurRelation.KeyA:=TheKeyA;
+    CurRelation.KeyB:=TheKeyB;
   end;
 end;
 

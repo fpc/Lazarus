@@ -172,7 +172,7 @@ begin
     begin
       lopnStyle := PEN_STYLES[FPenData.Style];
       lopnWidth.X := FPenData.Width;
-      lopnColor := FPenData.Color;
+      lopnColor := ColorRef(FPenData.Color);
     end;
     FPenData.Handle := CreatePenIndirect(LogPen);
   end;
@@ -201,6 +201,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2003/12/23 11:16:41  mattias
+  started key combinations, fixed some range check errors
+
   Revision 1.6  2003/12/02 12:25:17  micha
   try: gdi memory leak fix for pen
 

@@ -166,7 +166,7 @@ begin
           lbHatch := Ord(FBrushData.Style) - Ord(bsHorizontal);
         end;
       end;
-      lbColor := FBrushData.Color;
+      lbColor := ColorRef(FBrushData.Color);
     end;
     FBrushData.Handle := CreateBrushIndirect(LogBrush);
   end;
@@ -194,6 +194,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/12/23 11:16:41  mattias
+  started key combinations, fixed some range check errors
+
   Revision 1.4  2002/10/31 04:27:59  lazarus
   AJ: added TShape
 

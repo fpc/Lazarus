@@ -135,7 +135,7 @@ begin
   if (OldHandle<>Brush.Handle) and (FSavedBrushHandle=0) then
     FSavedBrushHandle:=OldHandle;
   Include(FState, csBrushValid);
-  SetBkColor(FHandle, Brush.Color);
+  SetBkColor(FHandle, ColorRef(Brush.Color));
   SetBkMode(FHandle, TRANSPARENT);
 end;
 
@@ -772,7 +772,7 @@ begin
     FillRect(fRect);
   end;
   If Style.SystemFont then
-    SetTextColor(Self.Handle, Font.Color);
+    SetTextColor(Self.Handle, ColorRef(Font.Color));
   DrawText(Self.Handle, pChar(Text), Length(Text), fRect, Options);
   Changed;
 end;
@@ -1254,6 +1254,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.57  2003/12/23 11:16:41  mattias
+  started key combinations, fixed some range check errors
+
   Revision 1.56  2003/12/02 12:25:17  micha
   try: gdi memory leak fix for pen
 

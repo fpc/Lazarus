@@ -3008,13 +3008,14 @@ begin
     end else
       s:='';
     Result:=Result+s;
-    if (Key1=VK_UNKNOWN) and (Key2=VK_UNKNOWN) then
+    if (KeyA.Key1=VK_UNKNOWN) and (KeyB.Key1=VK_UNKNOWN) then
       Result:=Result+'none'
-    else if (Key2=VK_UNKNOWN) then
-      Result:=Result+KeyAndShiftStateToEditorKeyString(Key1,Shift1)
+    else if (KeyB.Key1=VK_UNKNOWN) then
+      Result:=Result+KeyAndShiftStateToEditorKeyString(KeyA.Key1,KeyA.Shift1)
     else
-      Result:=Result+KeyAndShiftStateToEditorKeyString(Key1,Shift1)+'  or  '+
-           KeyAndShiftStateToEditorKeyString(Key2,Shift2);
+      Result:=Result+KeyAndShiftStateToEditorKeyString(KeyA.Key1,KeyA.Shift1)
+           +'  or  '+
+           KeyAndShiftStateToEditorKeyString(KeyB.Key1,KeyB.Shift1);
   end;
 end;
 

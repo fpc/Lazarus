@@ -451,7 +451,7 @@ end;
 
 function TCustomCodeTool.NodeDescToStr(Desc: integer): string;
 begin
-  Result:=NodeDescriptionAsString(Desc);
+  Result:=NodeDescriptionAsString(TCodeTreeNodeDesc(Desc));
 end;
 
 function TCustomCodeTool.NodeSubDescToStr(Desc, SubDesc: integer): string;

@@ -3176,7 +3176,8 @@ begin
           csEdit, csMemo:
   	    begin
   	      Widget:= GetWidgetInfo(Pointer(Handle), true)^.ImplementationWidget;
-              Result:= Abs(PGtkOldEditable(Widget)^.selection_end_pos - PGtkOldEditable(Widget)^.selection_start_pos);
+              Result:= Abs(PGtkOldEditable(Widget)^.selection_end_pos
+                           - PGtkOldEditable(Widget)^.selection_start_pos);
   	    end;
           {$EndIf}
           end;
@@ -8465,6 +8466,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.442  2003/12/23 11:16:41  mattias
+  started key combinations, fixed some range check errors
+
   Revision 1.441  2003/12/16 14:01:27  mattias
   fixed compilation gtk and fpc 1.9
 

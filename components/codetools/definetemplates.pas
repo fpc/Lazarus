@@ -2013,7 +2013,7 @@ var
     FuncData.Param:=MacroVariable;
     FuncData.Result:='';
     Result:=FMacroFunctions.DoDataFunction(
-            @MacroVariable[1],length(MacroVariable),@FuncData);
+            PChar(MacroVariable),length(MacroVariable),@FuncData);
     if Result then
       MacroVariable:=FuncData.Result;
   end;
