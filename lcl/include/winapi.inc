@@ -54,6 +54,12 @@ begin
   Result := InterfaceObject.CallWindowProc(lpPrevWndFunc, Handle, Msg, wParam, lParam);
 end;
 
+function CheckMenuItem(hMenu: HMENU; uIDEnableItem: Integer;
+  bChecked: Boolean): Boolean;
+begin
+  Result:=false;
+end;
+
 Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
 Begin
   Result := InterfaceObject.ClientToScreen(Handle, P);
@@ -1093,6 +1099,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2002/08/05 10:45:03  lazarus
+  MG: TMenuItem.Caption can now be set after creation
+
   Revision 1.33  2002/06/21 15:41:56  lazarus
   MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
 

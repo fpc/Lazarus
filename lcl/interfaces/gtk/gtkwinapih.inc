@@ -27,6 +27,7 @@ Function BringWindowToTop(hWnd : HWND): Boolean; override;
 
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer; override;
 Function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer; override;
+function CheckMenuItem(hMenu: HMENU; uIDEnableItem: Integer; bChecked: Boolean): Boolean; override;
 Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;override;
 
 // clipboard
@@ -157,6 +158,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2002/08/05 10:45:08  lazarus
+  MG: TMenuItem.Caption can now be set after creation
+
   Revision 1.32  2002/06/21 15:41:57  lazarus
   MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
 

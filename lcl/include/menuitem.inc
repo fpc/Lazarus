@@ -270,22 +270,26 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.Insert(Index: Integer; Item: TMenuItem);
 begin
-  if (Item <> nil) then
-  begin
-    if Item.Parent <> nil then
-      raise EMenuError.Create('Menu inserted twice');
-    
-    // create items if needed;
-    if FItems = nil then FItems := TList.Create;
-    
-    // check if we are the main menu
-    // mainmenuitems have csMenu style
+  if (Item = nil) then exit;
+  if Item.Parent <> nil then
+    raise EMenuError.Create('Menu inserted twice');
+  
+  // create Items if needed
+  if FItems = nil then FItems := TList.Create;
+
+  // adjust GroupIndex
+  if (Index>0) and (Index < FItems.Count) then
+    if Item.GroupIndex < TMenuItem(FItems[Index - 1]).GroupIndex then
+      Item.GroupIndex := TMenuItem(FItems[Index - 1]).GroupIndex;
+  VerifyGroupIndex(Index, Item.GroupIndex);
+
+  // check if we are the main menu
+  // mainmenuitems have csMenu style
 //    if FMenu <> nil then Item.FCompStyle := csMenu;
 
-    Item.FParent := Self;
-    FItems.Insert(Index, Item);
-    MenuChanged(FItems.Count = 1);
-  end;
+  Item.FParent := Self;
+  FItems.Insert(Index, Item);
+  MenuChanged(FItems.Count = 1);
 end;
 
 {------------------------------------------------------------------------------
@@ -336,10 +340,11 @@ end;
 
   Sets the caption of a menuItem.
  ------------------------------------------------------------------------------}
-procedure TMenuItem.SetCaption(const Value: string);
+procedure TMenuItem.SetCaption(const AValue: string);
 begin
-  FCaption := Value;
-  //TODO: Add runtime code here
+  if FCaption = AValue then exit;
+  FCaption := AValue;
+  InterfaceObject.IntSendMessage3(LM_SetLabel, Self, PChar(AValue));
 end;
 
 {------------------------------------------------------------------------------
@@ -347,12 +352,19 @@ end;
   Params:  Value:
   Returns: Nothing
 
-  Places a checkmark in fron of the label.
+  Places a checkmark in front of the label.
  ------------------------------------------------------------------------------}
-procedure TMenuItem.SetChecked(Value: Boolean);
+procedure TMenuItem.SetChecked(AValue: Boolean);
 begin
-  FChecked := Value;
-  //TODO: Add runtime code here
+  if FChecked <> AValue then
+  begin
+    FChecked := AValue;
+    if AValue and FRadioItem then
+      TurnSiblingsOff;
+    if (FParent <> nil) and not (csReading in ComponentState)
+    and (HandleAllocated) then
+      CheckMenuItem(Handle, FCommand, FChecked);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -362,9 +374,9 @@ end;
 
   Makes a menuItem the default item (BOLD).
  ------------------------------------------------------------------------------}
-procedure TMenuItem.SetDefault(Value: Boolean);
+procedure TMenuItem.SetDefault(AValue: Boolean);
 begin
-  FDefault := Value;
+  FDefault := AValue;
   //TODO: Add runtime code here
 end;
 
@@ -375,14 +387,24 @@ end;
 
   Enables a menuItem.
  ------------------------------------------------------------------------------}
-procedure TMenuItem.SetEnabled(Value: Boolean);
+procedure TMenuItem.SetEnabled(AValue: Boolean);
 begin
-  if FEnabled <> Value
-  then begin
-    FEnabled := Value;
+  if FEnabled <> AValue then begin
+    FEnabled := AValue;
     if HandleAllocated and (Parent <> nil) then
       EnableMenuItem(Handle, FCommand, FEnabled);
     MenuChanged(False);
+  end;
+end;
+
+procedure TMenuItem.SetRadioItem(const AValue: Boolean);
+begin
+  if FRadioItem <> AValue then
+  begin
+    FRadioItem := AValue;
+    if FChecked and FRadioItem then
+      TurnSiblingsOff;
+    MenuChanged(True);
   end;
 end;
 
@@ -406,40 +428,61 @@ end;
 
   Enables a menuItem.
  ------------------------------------------------------------------------------}
-Procedure TMenuItem.SetParentComponent(Value : TComponent);
+Procedure TMenuItem.SetParentComponent(AValue : TComponent);
 begin
-   if assigned (FParent) and (FParent = Value) 
+   if assigned (FParent) and (FParent = AValue)
       then exit;
 
-   if assigned (FParent) and (FParent <> Value) 
+   if assigned (FParent) and (FParent <> AValue)
       then TMenuItem (FParent).Remove (self);
 
-   if assigned (value) then
+   if assigned (AValue) then
    begin
-      if (Value is TMenu) 
-         then TMenu (value).Items.Add (self)
-      else if (Value is TMenuItem) 
-         then TMenuItem (value).Add (self)
+      if (AValue is TMenu)
+         then TMenu (AValue).Items.Add (Self)
+      else if (AValue is TMenuItem)
+         then TMenuItem (AValue).Add (Self)
       else
          raise Exception.Create ('TMenuItem.SetParentComponent: suggestet parent not of type TMenu or TMenuItem');
    end;
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TMenuItem.SetGroupIndex
+  Params:  Value: Byte
+  Returns: Nothing
+
+  Set the GroupIndex
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.SetGroupIndex(AValue: Byte);
+begin
+  if FGroupIndex <> AValue then
+  begin
+    if Parent <> nil then
+      Parent.VerifyGroupIndex(Parent.IndexOf(Self), AValue);
+    FGroupIndex := AValue;
+    if FChecked and FRadioItem then
+      TurnSiblingsOff;
+    // tell the interface to regroup this menuitem
+    if HandleAllocated then
+      ; // ToDo: RegroupMenuItem(Self);
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method:  TMenuItem.SetShortCut
-  Params:  Value:
+  Params:  Value: TShortCut
   Returns: Nothing
 
-  Description of the procedure for the class.
+  Set the shortcut
  ------------------------------------------------------------------------------}
-Procedure TMenuItem.SetShortCut(Value : TShortCut);
+Procedure TMenuItem.SetShortCut(AValue : TShortCut);
 Begin
-  if FShortCut <> Value then
+  if FShortCut <> AValue then
   begin
     //MenuChanged(True);
-    ShortcutChanged(FShortcut, Value);
-    FShortCut := Value;
+    ShortcutChanged(FShortcut, AValue);
+    FShortCut := AValue;
   end;
 end;
 
@@ -450,10 +493,10 @@ end;
 
   Description of the procedure for the class.
  ------------------------------------------------------------------------------}
-procedure TMenuItem.SetVisible(Value: Boolean);
+procedure TMenuItem.SetVisible(AValue: Boolean);
 begin
 //  HandleNeeded;
-  FVisible := Value;
+  FVisible := AValue;
 end;
 
 {------------------------------------------------------------------------------
@@ -483,12 +526,60 @@ begin
   InterfaceObject.IntSendMessage3(LM_SETSHORTCUT, Self, @Msg);
 end;
 
+{------------------------------------------------------------------------------
+  Method:  TMenuItem.TurnSiblingsOff
+  Params:  none
+  Returns: Nothing
+
+  Unchecks all siblings.
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.TurnSiblingsOff;
+var
+  I: Integer;
+  Item: TMenuItem;
+begin
+  if FParent <> nil then
+    for I := 0 to FParent.Count - 1 do
+    begin
+      Item := FParent[I];
+      if (Item <> Self)
+      and Item.FRadioItem and (Item.GroupIndex = GroupIndex) then
+        Item.FChecked:=false;
+    end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:  TMenuItem.VerifyGroupIndex
+  Params:  Position: Integer; Value: Byte
+  Returns: Nothing
+
+  Make sure, that all GroupIndex are in ascending order.
+ ------------------------------------------------------------------------------}
+procedure TMenuItem.VerifyGroupIndex(Position: Integer; Value: Byte);
+var
+  i: Integer;
+begin
+  for i:=0 to GetCount-1 do
+    if i<Position then begin
+      if Items[i].GroupIndex>Value then
+        raise EMenuError.Create('GroupIndex cannot be less than a previous '
+                                +'menu item''s GroupIndex')
+    end
+    else
+      { Ripple change to menu items at Position and after }
+      if Items[i].GroupIndex<Value then
+        Items[i].FGroupIndex:=Value;
+end;
+
 // included by menus.pp
 
 
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/08/05 10:45:03  lazarus
+  MG: TMenuItem.Caption can now be set after creation
+
   Revision 1.15  2002/08/05 08:56:56  lazarus
   MG: TMenuItems can now be enabled and disabled
 
@@ -562,6 +653,9 @@ end;
 
 
   $Log$
+  Revision 1.16  2002/08/05 10:45:03  lazarus
+  MG: TMenuItem.Caption can now be set after creation
+
   Revision 1.15  2002/08/05 08:56:56  lazarus
   MG: TMenuItems can now be enabled and disabled
 

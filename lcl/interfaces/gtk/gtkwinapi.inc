@@ -295,6 +295,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: CheckMenuItem
+  Params:  none
+  Returns: Nothing
+ ------------------------------------------------------------------------------}
+function TgtkObject.CheckMenuItem(hMenu: HMENU; uIDEnableItem: Integer;
+  bChecked: Boolean): Boolean;
+begin
+  // ToDo
+  Result:=false;
+end;
+
+{------------------------------------------------------------------------------
   Function: ClientToScreen
   Params:  none
   Returns: Nothing
@@ -4826,6 +4838,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.86  2002/08/05 10:45:06  lazarus
+  MG: TMenuItem.Caption can now be set after creation
+
   Revision 1.85  2002/08/05 08:56:57  lazarus
   MG: TMenuItems can now be enabled and disabled
 

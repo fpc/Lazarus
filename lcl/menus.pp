@@ -66,12 +66,14 @@ type
     FCommand: integer;
     FDefault: Boolean;
     FEnabled: Boolean;
+    FGroupIndex: Byte;
     FHandle: HMenu;
     FHint : String;
     FImageIndex : Integer;
-    FItems: TList;
+    FItems: TList; // list of TMenuItem
     FMenu: TMenu;
     FParent: TMenuItem;
+    FRadioItem: Boolean;
     FShortCut: TShortCut;	
     FVisible: Boolean;
     FOnChange: TMenuChangeEvent;
@@ -79,20 +81,24 @@ type
     function GetCount: Integer;
     function GetItem(Index: Integer): TMenuItem;
     function GetParent: TMenuItem;
-    procedure SetCaption(const Value: string);
-    procedure SetChecked(Value: Boolean);
-    procedure SetDefault(Value: Boolean);
-    procedure SetEnabled(Value: Boolean);
+    procedure SetCaption(const AValue: string);
+    procedure SetChecked(AValue: Boolean);
+    procedure SetDefault(AValue: Boolean);
+    procedure SetEnabled(AValue: Boolean);
+    procedure SetRadioItem(const AValue: Boolean);
     procedure ShortcutChanged(const OldValue, Value : TShortcut);
+    procedure TurnSiblingsOff;
+    procedure VerifyGroupIndex(Position: Integer; Value: Byte);
   protected
     procedure CreateHandle; virtual;
     procedure DoClicked(var msg); message LM_ACTIVATE;               //'activate';
     function GetHandle: HMenu;
     Procedure SetImageIndex(value : Integer);
-    procedure SetShortCut(Value : TShortCut);
-    procedure SetVisible(Value: Boolean);
+    procedure SetGroupIndex(AValue: Byte);
+    procedure SetShortCut(AValue : TShortCut);
+    procedure SetVisible(AValue: Boolean);
     procedure MenuChanged(Rebuild : Boolean);
-    procedure SetParentComponent(Value : TComponent); override;
+    procedure SetParentComponent(AValue : TComponent); override;
     procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
   public
     FCompStyle : LongInt;
@@ -116,8 +122,10 @@ type
     property Checked: Boolean read FChecked write SetChecked {stored IsCheckedStored} default False;
     property Default: Boolean read FDefault write SetDefault default False;
     property Enabled: Boolean read FEnabled write SetEnabled {stored IsEnabledStored} default True;
+    property GroupIndex: Byte read FGroupIndex write SetGroupIndex default 0;
     property Hint : String read FHint write FHint;
     property ImageIndex : Integer read FImageIndex write SetImageIndex;
+    property RadioItem: Boolean read FRadioItem write SetRadioItem default False;
     property ShortCut: TShortCut read FShortCut write SetShortCut {stored IsShortCutStored} default 0;
     property Visible: Boolean read FVisible write SetVisible {stored IsVisibleStored} default True;
     property OnClick: TNotifyEvent read FOnClick write FOnclick; 
@@ -233,6 +241,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2002/08/05 10:45:02  lazarus
+  MG: TMenuItem.Caption can now be set after creation
+
   Revision 1.14  2002/08/05 08:56:56  lazarus
   MG: TMenuItems can now be enabled and disabled
 

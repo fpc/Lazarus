@@ -40,6 +40,8 @@ Function BringWindowToTop(hWnd : HWND): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function CharLowerBuff --> independent
+function CheckMenuItem(hMenu: HMENU; uIDEnableItem: Integer;
+  bChecked: Boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
 // the clipboard functions are internally used by TClipboard
@@ -269,6 +271,9 @@ function UnionRect(var DestRect: TRect; const SrcRect1, SrcRect2: TRect): Boolea
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/08/05 10:45:03  lazarus
+  MG: TMenuItem.Caption can now be set after creation
+
   Revision 1.28  2002/06/21 15:41:56  lazarus
   MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
 
