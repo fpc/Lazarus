@@ -2245,7 +2245,13 @@ begin
               FSelectActive:=true;
             End;
           End;
-          MoveExtend(False, fSplitter.X, fSplitter.y);
+          If TryMoveSelection(False, FSplitter.X, FSplitter.Y) Then Begin
+            MoveExtend(False, FSplitter.X, FSplitter.Y);
+          End Else begin
+            // user clicked on selected cell
+            // -> fire an OnSelection event
+            MoveSelection;
+          End;
         End Else begin
           If TryMoveSelection(False, FSplitter.X, FSplitter.Y) Then Begin
             MoveExtend(False, FSplitter.X, FSplitter.Y);
@@ -4255,38 +4261,6 @@ begin
 end;
 
 
-
-initialization
-
-LazarusResources.Add('tdrawgrid','XPM',[
-  '/* XPM */'#10'static char *tdrawgrid[]={'#10'"23 23 8 1",'#10'"# c #000000",'
-  +#10'"f c #0000c0",'#10'"b c #808080",'#10'". c #a0a0a0",'#10'"c c #ff0000",'
-  +#10'"d c #ff00ff",'#10'"a c #ffffc0",'#10'"e c #ffffff",'#10'"....#.....#...'
-  +'..#.....#",'#10'"....#.....#.....#.....#",'#10'"....#.....#.....#.....#",'
-  +#10'"....#.....#.....#.....#",'#10'"#######################",'#10'"....#aaaa'
-  +'abaaaaabaaaaaa",'#10'"....#aaaaabaaaaabaaaaaa",'#10'"....#aaacccccccabaaaaa'
-  +'a",'#10'"....#aaacccccccabaadaaa",'#10'"#####bbbcccccccbbbdddbb",'#10'"....'
-  +'#eeecccccccebedddee",'#10'"....#eeecccccccebddddde",'#10'"....#eeecccccffff'
-  +'ddddde",'#10'"....#eeeccccffffffddddd",'#10'"#####bbbbbbbffffffddddd",'#10
-  +'"....#aaaaabaffffffaaaaa",'#10'"....#aaaaabaffffffaaaaa",'#10'"....#aaaaaba'
-  +'affffaaaaaa",'#10'"....#aaaaabaaaaabaaaaaa",'#10'"#####bbbbbbbbbbbbbbbbbb",'
-  +#10'"....#eeeeebeeeeebeeeeee",'#10'"....#eeeeebeeeeebeeeeee",'#10'"....#eeee'
-  +'ebeeeeebeeeeee"};'#10
-]);
-LazarusResources.Add('tstringgrid','XPM',[
-  '/* XPM */'#10'static char *tstringgrid[]={'#10'"23 23 5 1",'#10'"# c #000000'
-  +'",'#10'"b c #808080",'#10'". c #a0a0a0",'#10'"a c #ffffc0",'#10'"c c #fffff'
-  +'f",'#10'"....#.....#.....#.....#",'#10'"....#.....#.....#.....#",'#10'"....'
-  +'#.....#.....#.....#",'#10'"....#.....#.....#.....#",'#10'"#################'
-  +'######",'#10'"....#aaaaabaaaaabaaaaaa",'#10'"....#aaaaabaaaaabaaaaaa",'#10
-  +'"....#aaaaabaaaaabaaaaaa",'#10'"....#aaaaabaaaaabaaaaaa",'#10'"#####bbbbbbb'
-  +'bbbbbbbbbbb",'#10'"....#cccccbcccccbcccccc",'#10'"....#cccccbcccccbcccccc",'
-  +#10'"....#cccccbcccccbcccccc",'#10'"....#cccccbcccccbcccccc",'#10'"#####bbbb'
-  +'bbbbbbbbbbbbbb",'#10'"....#aaaaabaaaaabaaaaaa",'#10'"....#aaaaabaaaaabaaaaa'
-  +'a",'#10'"....#aaaaabaaaaabaaaaaa",'#10'"....#aaaaabaaaaabaaaaaa",'#10'"####'
-  +'#bbbbbbbbbbbbbbbbbb",'#10'"....#cccccbcccccbcccccc",'#10'"....#cccccbcccccb'
-  +'cccccc",'#10'"....#cccccbcccccbcccccc"};'#10
-]);
 
 end.
 
