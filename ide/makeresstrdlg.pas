@@ -111,6 +111,10 @@ type
       const NewStartPos, NewEndPos: TPoint);
     function ResourceStringExists(const Identifier: string): boolean;
     procedure GetNewSource(var NewSource, ResourceStringValue: string);
+    procedure Init;
+    procedure SaveHistories;
+    procedure SaveIdentPrefixes;
+    procedure SaveIdentLengths;
   end;
   
 function ShowMakeResStrDialog(
@@ -142,34 +146,21 @@ var
   ResourcestringSectionID: Integer;
 begin
   MakeResStrDialog:=TMakeResStrDialog.Create(Application);
+  MakeResStrDialog.Positions:=CodeToolBoss.Positions;
   MakeResStrDialog.SetSource(Code,StartPos,EndPos);
-  // string constant
-  MakeResStrDialog.StringConstSynEdit.Text:=Code.GetLines(StartPos.Y,EndPos.Y);
-  // reachable resourcestring sections
-  MakeResStrDialog.FillResourceStringSections(Positions);
-  // identifier prefixes
-  MakeResStrDialog.FillIdentPrefixes;
-  // identifier lengths
-  MakeResStrDialog.FillIdentLengths;
-  // identifier
-  MakeResStrDialog.CustomIdentifierCheckBox.Checked:=false;
-  CodeToolBoss.CreateIdentifierFromStringConst(Code,StartPos.X,StartPos.Y,
-     Code,EndPos.X,EndPos.Y,MakeResStrDialog.DefaultIdentifier,50);
-  MakeResStrDialog.UpdateIdentifier;
-  // show new source
-  MakeResStrDialog.UpdateSourcePreview;
+  MakeResStrDialog.Init;
 
   // show dialog
   Result:=MakeResStrDialog.ShowModal;
   if Result=mrOk then begin
     // return results
     NewIdentifier:=MakeResStrDialog.GetIdentifier;
-    ResourcestringSectionID:=MakeResStrDialog.ResStrSectionComboBox.ItemIndex;
     MakeResStrDialog.GetNewSource(NewSourceLines,NewIdentifierValue);
     if MakeResStrDialog.InsertAlphabeticallyResStrRadioButton.Checked then
       InsertPolicy:=rsipAlphabetically
     else
       InsertPolicy:=rsipAppend;
+    ResourcestringSectionID:=MakeResStrDialog.ResStrSectionComboBox.ItemIndex;
     Section:=CodeToolBoss.Positions[ResourcestringSectionID];
     ResStrSectionCode:=Section^.Code;
     ResStrSectionXY:=Point(Section^.X,Section^.Y);
@@ -177,6 +168,7 @@ begin
 
   // save settings and clean up
   IDEDialogLayoutList.SaveLayout(MakeResStrDialog);
+
   MakeResStrDialog.Free;
 end;
 
@@ -320,6 +312,7 @@ begin
       mtError,[mbCancel],0);
     exit;
   end;
+  SaveHistories;
   ModalResult:=mrOk;
 end;
 
@@ -579,7 +572,12 @@ var
   NewSource, NewValue: string;
 begin
   GetNewSource(NewSource,NewValue);
-  SrcPreviewSynEdit.Text:=NewSource;
+  SrcPreviewSynEdit.Text:=NewSource+#13#10
+     +StringOfChar('-',
+                  CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.LineLength)
+     +#13#10
+     +CodeToolBoss.SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+        GetIdentifier+' = '''+NewValue+'''',0);
 end;
 
 function TMakeResStrDialog.GetIdentifier: string;
@@ -655,6 +653,55 @@ begin
     NewSource:=BeautifyStatement(NewSource,0);
 
   ResourceStringValue:=FormatStringConstant;
+end;
+
+procedure TMakeResStrDialog.Init;
+begin
+  // string constant
+  StringConstSynEdit.Text:=Code.GetLines(StartPos.Y,EndPos.Y);
+  // reachable resourcestring sections
+  FillResourceStringSections(Positions);
+  // identifier prefixes
+  FillIdentPrefixes;
+  // identifier lengths
+  FillIdentLengths;
+  // identifier
+  CustomIdentifierCheckBox.Checked:=false;
+  CodeToolBoss.CreateIdentifierFromStringConst(Code,StartPos.X,StartPos.Y,
+     Code,EndPos.X,EndPos.Y,DefaultIdentifier,50);
+  UpdateIdentifier;
+  // show new source
+  UpdateSourcePreview;
+end;
+
+procedure TMakeResStrDialog.SaveHistories;
+begin
+  SaveIdentPrefixes;
+  SaveIdentLengths;
+end;
+
+procedure TMakeResStrDialog.SaveIdentPrefixes;
+var
+  HistoryList: THistoryList;
+begin
+  if (not CustomIdentifierCheckBox.Checked)
+  or (IdentPrefixComboBox.Text='') then
+    exit;
+  HistoryList:=
+    InputHistories.HistoryLists.GetList(hlMakeResourceStringPrefixes,true);
+  HistoryList.Push(IdentPrefixComboBox.Text);
+end;
+
+procedure TMakeResStrDialog.SaveIdentLengths;
+var
+  HistoryList: THistoryList;
+begin
+  if (not CustomIdentifierCheckBox.Checked)
+  or (IdentLengthComboBox.Text='') then
+    exit;
+  HistoryList:=
+    InputHistories.HistoryLists.GetList(hlMakeResourceStringLengths,true);
+  HistoryList.Push(IdentLengthComboBox.Text);
 end;
 
 

@@ -1255,15 +1255,15 @@ begin
   EndPos:=CursorPos;
   Result:=true;
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
-  writeln('TStandardCodeTool.GetStringConstBounds A ',CleanCursorPos,' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
+  //writeln('TStandardCodeTool.GetStringConstBounds A ',CleanCursorPos,' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
   GetCleanPosInfo(-1,CleanCursorPos,ResolveComments,SameArea);
-  writeln('TStandardCodeTool.GetStringConstBounds B ',SameArea.StartPos,'-',SameArea.EndPos,' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
+  //writeln('TStandardCodeTool.GetStringConstBounds B ',SameArea.StartPos,'-',SameArea.EndPos,' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
   if (SameArea.EndPos=SameArea.StartPos) or (SameArea.StartPos>SrcLen) then
     exit;
   // read til end of string constant
   MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
-  writeln('TStandardCodeTool.GetStringConstBounds read til end of string  ',GetAtom);
+  //writeln('TStandardCodeTool.GetStringConstBounds read til end of string  ',GetAtom);
   CurrentToken:=GetCurrentTokenType;
   if (CurrentToken=scatNone) then exit;
   repeat
@@ -1271,10 +1271,10 @@ begin
     ReadNextAtom;
     LastToken:=CurrentToken;
     CurrentToken:=GetCurrentTokenType;
-    writeln('TStandardCodeTool.GetStringConstBounds Read Forward: ',GetAtom,' EndCleanPos=',EndCleanPos,
-    ' LastToken=',StrConstTokenTypeName[LastToken],
-    ' CurrentToken=',StrConstTokenTypeName[CurrentToken],
-    ' ',StrConstTokenTypeName[GetCurrentTokenType]);
+    //writeln('TStandardCodeTool.GetStringConstBounds Read Forward: ',GetAtom,' EndCleanPos=',EndCleanPos,
+    //' LastToken=',StrConstTokenTypeName[LastToken],
+    //' CurrentToken=',StrConstTokenTypeName[CurrentToken],
+    //' ',StrConstTokenTypeName[GetCurrentTokenType]);
     case CurrentToken of
     scatNone, scatEdgedBracketClose, scatRoundBracketClose:
       if not (LastToken in [scatStrConst,scatIdent,scatUp,
@@ -1314,12 +1314,12 @@ begin
   // read til start of string constant
   MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
-  writeln('TStandardCodeTool.GetStringConstBounds Read til start of string ',GetAtom);
+  //writeln('TStandardCodeTool.GetStringConstBounds Read til start of string ',GetAtom);
   CurrentToken:=GetCurrentTokenType;
   repeat
     StartCleanPos:=CurPos.StartPos;
     ReadPriorAtom;
-    writeln('TStandardCodeTool.GetStringConstBounds Read backward: ',GetAtom,' StartCleanPos=',StartCleanPos);
+    //writeln('TStandardCodeTool.GetStringConstBounds Read backward: ',GetAtom,' StartCleanPos=',StartCleanPos);
     LastToken:=CurrentToken;
     CurrentToken:=GetCurrentTokenType;
     case CurrentToken of
@@ -1358,7 +1358,7 @@ begin
   until false;
   
   // convert start and end position
-  writeln('TStandardCodeTool.GetStringConstBounds END "',copy(Src,StartCleanPos,EndCleanPos-StartCleanPos),'"');
+  //writeln('TStandardCodeTool.GetStringConstBounds END "',copy(Src,StartCleanPos,EndCleanPos-StartCleanPos),'"');
   if not CleanPosToCaret(StartCleanPos,StartPos) then exit;
   if not CleanPosToCaret(EndCleanPos,EndPos) then exit;
 
@@ -1398,7 +1398,7 @@ function TStandardCodeTool.GatherResourceStringSections(
           if ANode.Desc=ctnResStrSection then begin
             if not NewCodeTool.CleanPosToCaret(ANode.StartPos,NewCaret) then
               break;
-            writeln('TStandardCodeTool.GatherResourceStringSections Found Other ',NewCodeTool.MainFilename,' Y=',NewCaret.Y);
+            //writeln('TStandardCodeTool.GatherResourceStringSections Found Other ',NewCodeTool.MainFilename,' Y=',NewCaret.Y);
             PositionList.Add(NewCaret);
           end;
           ANode:=ANode.PriorBrother;
@@ -1419,7 +1419,7 @@ var
   ANode: TCodeTreeNode;
 begin
   Result:=false;
-  writeln('TStandardCodeTool.GatherResourceStringSections A ');
+  //writeln('TStandardCodeTool.GatherResourceStringSections A ');
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   PositionList.Clear;
@@ -1430,7 +1430,7 @@ begin
     ctnResStrSection:
       begin
         if not CleanPosToCaret(ANode.StartPos,NewCaret) then exit;
-        writeln('TStandardCodeTool.GatherResourceStringSections Found Same Y=',NewCaret.Y);
+        //writeln('TStandardCodeTool.GatherResourceStringSections Found Same Y=',NewCaret.Y);
         PositionList.Add(NewCaret);
       end;
       
