@@ -947,14 +947,13 @@ Begin
     end;
 
   ecWordCompletion :
-    if TCustomSynEdit(Sender).ReadOnly=false then begin
+    if not TCustomSynEdit(Sender).ReadOnly then begin
       CurrentCompletionType:=ctWordCompletion;
       TextS := FEditor.LineTextExtended;
       i := FEditor.CaretX - 1;
       if i > length(TextS) then
         TextS2 := ''
       else begin
-        dec(i);
         while (i > 0) and (TextS[i] in ['a'..'z','A'..'Z','0'..'9','_']) do
           dec(i);
         TextS2 := Trim(copy(TextS, i + 1, FEditor.CaretX - i - 1));
