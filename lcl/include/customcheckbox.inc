@@ -134,7 +134,7 @@ begin
    begin
       ApplyChanges;
       if assigned (OnClick)
-      	then OnCLick (self);
+      	then OnClick (self);
    end;
 end;
 
@@ -168,6 +168,9 @@ end;
 
 {
   $Log$
+  Revision 1.5  2002/07/23 07:40:51  lazarus
+  MG: fixed get widget position for inherited gdkwindows
+
   Revision 1.4  2002/05/10 06:05:51  lazarus
   MG: changed license to LGPL
 

@@ -341,6 +341,9 @@ type
       property OnChange;
    end;
 
+
+  { TCustomLabel }
+
   TCustomLabel = class(TWinControl)
   private
     FAlignment : TAlignment;
@@ -359,6 +362,8 @@ type
   end;
 
 
+  { TLabel }
+
   TLabel = class(TCustomLabel)
   published
     property Alignment;
@@ -371,80 +376,78 @@ type
   end;
 
 
-   TButtonControl = class(TWinControl)
-   private
-     FClicksDisabled: Boolean;
-   protected
-     function GetChecked: Boolean; virtual;
-     procedure SetChecked(Value: Boolean); virtual;
-     property Checked: Boolean read GetChecked write SetChecked;// stored IsCheckedStored default False;
-     property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;
-   public
-     constructor Create(AOwner: TComponent); override;
-   end;
+  { TButtonControl }
+
+  TButtonControl = class(TWinControl)
+  private
+    FClicksDisabled: Boolean;
+  protected
+    function GetChecked: Boolean; virtual;
+    procedure SetChecked(Value: Boolean); virtual;
+    property Checked: Boolean read GetChecked write SetChecked;// stored IsCheckedStored default False;
+    property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
 
 
+  { TCHECKBOX }
 
-                        {TCHECKBOX}
+  // ToDo: delete TLeftRight when in classesh.inc
+  TLeftRight = taLeftJustify..taRightJustify;
 
-   // ToDo: delete TLeftRight when in classesh.inc
-   TLeftRight = taLeftJustify..taRightJustify;
+  TCheckBoxState = (cbUnchecked, cbChecked, cbGrayed);
 
-   TCheckBoxState = (cbUnchecked, cbChecked, cbGrayed);
+  TCustomCheckBox = class(TButtonControl)
+  private
+    // FAlignment: TLeftRight;
+    FAllowGrayed: Boolean;
+    FState: TCheckBoxState;
+    procedure SetState(Value: TCheckBoxState);
+    function GetState : TCheckBoxState;
+  protected
+    procedure InitializeWnd; override;
+    procedure Toggle; virtual;
+    function GetChecked: Boolean; override;
+    procedure SetChecked(Value: Boolean); override;
+    procedure ApplyChanges; virtual;
+    property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
+    property State: TCheckBoxState read GetState write SetState;
+  public
+    constructor Create(AOwner: TComponent); override;
+  end;
 
-   TCustomCheckBox = class(TButtonControl)
-   private
-      // FAlignment: TLeftRight;
-      FAllowGrayed: Boolean;
-      FState: TCheckBoxState;
-      procedure SetState(Value: TCheckBoxState);
-      function GetState : TCheckBoxState;
-   protected
-      procedure InitializeWnd; override;
-//      procedure Click; override;
-      procedure Toggle; virtual;
-      function GetChecked: Boolean; override;
-      procedure SetChecked(Value: Boolean); override;
-      procedure ApplyChanges; virtual;
-      property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
-      property State: TCheckBoxState read GetState write SetState;
-
-   public
-      constructor Create(AOwner: TComponent); override;
-
-   end;
-
-   TCheckBox = class(TCustomCheckBox)
-   private
-   public
-      constructor Create(AOwner: TComponent); override;
-   published
-      property AllowGrayed;
-      property Caption;
-      property Checked;
-      property State;
-      property Visible;
-      property Enabled;
-      property OnEnter;
-      property OnExit;
-      property DragCursor;
-      property DragKind;
-      property DragMode;
-      property Hint;
-      property ParentShowHint;
-      property PopupMenu;
-      property ShowHint;
-      property TabOrder;
-      property TabStop;
-      property OnClick;
-      property OnDragDrop;
-      property OnDragOver;
-      property OnEndDrag;
-      property OnMouseDown;
-      property OnMouseMove;
-      property OnMouseUp;
-      property OnStartDrag;
-   end;
+  TCheckBox = class(TCustomCheckBox)
+  private
+  public
+    constructor Create(AOwner: TComponent); override;
+  published
+    property AllowGrayed;
+    property Caption;
+    property Checked;
+    property State;
+    property Visible;
+    property Enabled;
+    property OnEnter;
+    property OnExit;
+    property DragCursor;
+    property DragKind;
+    property DragMode;
+    property Hint;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property OnClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnStartDrag;
+  end;
 
 
 
@@ -452,7 +455,6 @@ type
    private
    public
       constructor Create(AOwner: TComponent); override;
-
    published
       property AllowGrayed;
       property Caption;
@@ -524,8 +526,7 @@ type
 
 
 
-
-implementation {*******}
+implementation
 
 uses LCLLinux, LCLType;
 
@@ -593,6 +594,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/07/23 07:40:51  lazarus
+  MG: fixed get widget position for inherited gdkwindows
+
   Revision 1.30  2002/05/20 14:19:03  lazarus
   MG: activated the clientrect bugfixes
 

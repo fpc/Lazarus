@@ -107,7 +107,7 @@ end;
 -------------------------------------------------------------------------------}
 function GTKRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 var
-  WinWidgetInfo, ClientWidgetInfo: PWinWidgetInfo;
+  WinWidgetInfo: PWinWidgetInfo;
   HiddenLCLObject, LCLObject: TObject;
   NewEventMask: TGdkEventMask;
   TheWinControl: TWinControl;
@@ -138,13 +138,11 @@ begin
         NewEventMask:=gdk_window_get_events(Widget^.Window)
                       or WinWidgetInfo^.EventMask;
         gdk_window_set_events(Widget^.Window,NewEventMask);
-        if (ClientWidget<>nil) and (ClientWidget^.Window<>nil) then begin
-          ClientWidgetInfo:=GetWidgetInfo(ClientWidget,false);
-          if ClientWidgetInfo<>nil then begin
-            NewEventMask:=gdk_window_get_events(ClientWidget^.Window)
-                          or ClientWidgetInfo^.EventMask;
-            gdk_window_set_events(ClientWidget^.Window,NewEventMask);
-          end;
+        if (ClientWidget<>nil) and (ClientWidget^.Window<>nil)
+        and (ClientWidget^.Window<>Widget^.Window) then begin
+          NewEventMask:=gdk_window_get_events(ClientWidget^.Window)
+                        or WinWidgetInfo^.EventMask;
+          gdk_window_set_events(ClientWidget^.Window,NewEventMask);
         end;
         //writeln('BBB1 ',HexStr(Cardinal(NewEventMask),8),' ',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8));
       end else begin
@@ -2157,6 +2155,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.92  2002/07/23 07:40:51  lazarus
+  MG: fixed get widget position for inherited gdkwindows
+
   Revision 1.91  2002/07/22 18:25:12  lazarus
   MG: reduced output
 

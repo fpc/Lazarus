@@ -1147,7 +1147,7 @@ begin
   Add(C,'Jump forward',ecJumpForward,VK_H,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   Add(C,'Add jump point',ecAddJumpPoint,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'View jump history',ecViewJumpHistory,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Open file at cursor',ecOpenFileAtCursor,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Open file at cursor',ecOpenFileAtCursor,VK_RETURN,[ssCtrl],VK_UNKNOWN,[]);
 
   // marker
   C:=Categories[AddCategory('Marker','Marker commands')];

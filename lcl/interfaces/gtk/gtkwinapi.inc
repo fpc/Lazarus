@@ -301,27 +301,23 @@ end;
  ------------------------------------------------------------------------------}
 Function TgtkObject.ClientToScreen(Handle : HWND; var P : TPoint) : Boolean;
 var
-  X, Y: Integer;
-  Widget: PGTKWidget;
+  Position: TPoint;
 Begin
   if Handle = 0
   then begin
-    X := 0;
-    Y := 0;
+    Position.X := 0;
+    Position.Y := 0;
   end
   else begin
-    Widget := GetFixedWidget(pgtkwidget(Handle));
-    if Widget = nil then Widget := pgtkwidget(Handle); 
-    gdk_window_get_origin(Widget^.Window, @X, @Y);
+    Position:=GetWidgetClientOrigin(PGtkWidget(Handle));
   end;
 
   // Todo: calculate offset, since platform specific
-  Inc(P.X, X);  
-  Inc(P.Y, Y); 
+  Inc(P.X, Position.X);
+  Inc(P.Y, Position.Y);
   
   Assert(False, Format('Trace:  [GTKObject.ClientToScreen] Handle: 0x%x --> (%d, %d)', [Integer(Handle), P.X, P.y]));
   Result := True;
-  
 end;
 
 {------------------------------------------------------------------------------
@@ -4824,6 +4820,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.83  2002/07/23 07:40:52  lazarus
+  MG: fixed get widget position for inherited gdkwindows
+
   Revision 1.82  2002/07/20 13:47:04  lazarus
   MG: fixed eventmask for realized windows
 
