@@ -281,6 +281,8 @@ Procedure TWin32WidgetSet.SetLabel(Sender: TObject; Data: Pointer);
       fMask:=MIIM_TYPE or MIIM_STATE;
       fType:=Style;
       dwTypeData:=Data;
+      if Data <> nil then
+        cch := StrLen(PChar(Data));
     end;
     SetMenuItemInfo(TMenuItem(Sender).Parent.Handle,
                     TMenuItem(Sender).Command, false, @MenuInfo);
@@ -2483,10 +2485,14 @@ Begin
       Begin
         // nothing to do
       End;
-      csMainMenu, csMenuBar, csMenuItem:
-      Begin
+      csMainMenu, csMenuBar:
+      begin
         Window := CreateMenu;
-      End;
+      end;
+      csMenuItem, csPopupMenu:
+      begin
+        Window := CreatePopupMenu;
+      end;
       csSpinEdit:
       Begin
         //this needs to be created in the actual code because it requires a gtkadjustment Win32Control
@@ -2498,10 +2504,6 @@ Begin
           Trunc(TSpinEdit(Sender).MaxValue),
           Trunc(TSpinEdit(Sender).MinValue),
           Trunc(TSpinEdit(Sender).Value));
-      End;
-      csPopupMenu:
-      Begin
-        Window := CreatePopupMenu;
       End;
     end;
   End; {Case}
@@ -3187,11 +3189,8 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32WidgetSet.AttachMenu(Sender: TObject);
 var MenuInfo: MENUITEMINFO;
-    MenuHandle: HMenu;
     ParentMenuHandle: HMenu;
     ParentOfParent: HMenu;
-    Style: integer;
-    Mask: integer;
     Msg: TLMShortCut;
     AMenuItem: TMenuItem;
 
@@ -3269,19 +3268,37 @@ Begin
     end;
   end;
 
-  Mask := MIIM_ID or MIIM_DATA or MIIM_STATE;
-  Style:=0;
-  if (AMenuItem.Count > 0) then Mask := Mask or MIIM_SUBMENU;
-  MenuHandle := AMenuItem.Handle;
   with MenuInfo do begin
     cbsize:=sizeof(MENUITEMINFO);
     if AMenuItem.Enabled then fState:=MFS_ENABLED else fstate:=MFS_GRAYED;
     if AMenuItem.Checked then fState:=fState or MFS_CHECKED;
-    fMask:=Mask;
-    fType:=Style;
+    fMask:=MIIM_ID or MIIM_DATA or MIIM_STATE or MIIM_TYPE;
     wID:=AMenuItem.Command; {value may only be 16 bit wide!}
-    hSubmenu:=MenuHandle;
     dwItemData:=integer(Sender);
+    // Note: can't use "and MFT_STRING", because MFT_STRING is zero :-)
+    if (AMenuItem.Count > 0) then 
+    begin
+      fMask := fMask or MIIM_SUBMENU;
+      hSubMenu := AMenuItem.Handle;
+    end else
+      hSubMenu := 0;
+    if AMenuItem.Caption <> '-' then
+    begin
+      fType:=MFT_STRING;
+      if AMenuItem.ShortCut <> 0 then
+      begin
+        Msg.Handle:=hSubMenu;
+        ShortCutToKey(AMenuItem.ShortCut, Msg.NewKey, Msg.NewModifier);
+        dwTypeData:=LPSTR(AMenuItem.Caption+#9+ShortCutToText(ShortCut(Msg.NewKey, Msg.NewModifier)));
+      end else begin
+        dwTypeData:=LPSTR(AMenuItem.Caption);
+      end;
+      cch:=StrLen(dwTypeData);
+    end else begin
+      fType:=MFT_SEPARATOR;
+      dwTypeData:=nil;
+      cch:=0;
+    end;
     if AmenuItem.HasIcon then {adds the menuitem icon}
     begin
       fMask:=fMask or MIIM_CHECKMARKS;
@@ -3291,14 +3308,13 @@ Begin
        implemented in LCL}
     end;
   end;
-  InsertMenuItem(ParentMenuHandle, AMenuItem.Parent.IndexOf(AMenuItem), true, @MenuInfo);
-  if AMenuItem.ShortCut <> 0 then
-  begin
-    Msg.Handle:=MenuHandle;
-    ShortCutToKey(AMenuItem.ShortCut, Msg.NewKey, Msg.NewModifier);
-    IntSendMessage3(LM_SETSHORTCUT, Sender, @Msg);
-  end
-  else SetLabel(Sender, LPSTR(AMenuItem.Caption));
+  if dword(InsertMenuItem(ParentMenuHandle, AMenuItem.Parent.IndexOf(AMenuItem), true, @MenuInfo)) = 0 then
+    DebugLn('InsertMenuItem failed with error: ', IntToStr(Windows.GetLastError));
+  // owner could be a popupmenu too
+  if (TMenuItem(Sender).Owner is TWinControl) and
+      TWinControl(TMenuItem(Sender).Owner).HandleAllocated and
+      ([csLoading,csDestroying] * TWinControl(TMenuItem(Sender).Owner).ComponentState = []) then
+    DrawMenuBar(TWinControl(TMenuItem(Sender).Owner).Handle);
 End;
 
 
@@ -3322,6 +3338,9 @@ End;
 
 {
   $Log$
+  Revision 1.220  2004/07/08 20:29:05  micha
+  fix win95 compatibility, do not send seperate lm_setshortcut message
+
   Revision 1.219  2004/07/04 20:05:44  micha
   set properties before setting subclassed window proc
 
