@@ -685,8 +685,7 @@ begin
           and not (csNoDesignVisible in ControlStyle))
           and not (csReadingState in ControlState);
 
-  if bShow then
-  begin
+  if bShow then begin
     if not HandleAllocated then CreateHandle;
     if FWinControls <> nil 
     then begin
@@ -709,7 +708,6 @@ begin
       end;
     end;
   end;
-
 end;
 
 {-------------------------------------------------------------------------------
@@ -2515,6 +2513,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.99  2002/11/09 18:13:33  lazarus
+  MG: fixed gdkwindow checks
+
   Revision 1.98  2002/11/03 22:40:28  lazarus
   MG: fixed ControlAtPos
 
