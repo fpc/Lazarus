@@ -390,7 +390,7 @@ begin
   FItemIndex:=-1;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-  SetBounds(1, 1, 100, 80);
+  SetInitialBounds(0, 0, 100, 80);
 end;
 
 {------------------------------------------------------------------------------}

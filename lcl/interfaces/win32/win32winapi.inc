@@ -1097,8 +1097,31 @@ End;
   Retrieves the coordinates of a window's client area.
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetClientRect(Handle: HWND; Var Rect: TRect): Boolean;
+var
+  OwnerObject: TObject;
+  TheWinControl: TWinControl;
+  TM: TextMetricA;
+  DC: HDC;
 Begin
   Result := Windows.GetClientRect(Handle, @Rect);
+  OwnerObject := TObject(GetProp(Handle, 'Lazarus'));
+  if OwnerObject is TWinControl then begin
+    TheWinControl:=TWinControl(OwnerObject);
+    if TheWinControl is TGroupBox then begin
+      // The client area of a groupbox under win32 is the whole size, including
+      // the frame. The LCL defines the client area without the frame.
+      // -> Adjust the client size
+      DC := GetDC(Handle);
+      GetTextMetrics(DC, TM);
+      dec(Rect.Bottom,TM.TMHeight+2); // subtract the top frame with the caption
+                                     // and subtract the bottom frame
+      dec(Rect.Right,2+2); // subtract the left and right frame border
+      ReleaseDC(Handle, DC);
+      {writeln('TWin32Object.GetClientRect ',TheWinControl.Name,':',TheWinControl.ClassName,
+        ' ClientRect=',Rect.Right,',',Rect.Bottom,
+        ' CurLCLBounds=',TheWinControl.Left,',',TheWinControl.Top,',',TheWinControl.Width,',',TheWinControl.Height);}
+    end;
+  end;
 End;
 
 {------------------------------------------------------------------------------
@@ -1410,11 +1433,16 @@ End;
   returns the current widget Left, Top, relative to the client origin of its
   parent
  ------------------------------------------------------------------------------}
-Function TWin32Object.GetWindowRelativePosition(Handle : HWND; var Left, Top:integer): boolean;
+Function TWin32Object.GetWindowRelativePosition(Handle : HWND;
+  var Left, Top:integer): boolean;
 var
   LeftTop:TPoint;
   R: TRect;
   ParentHandle: THandle;
+  OwnerObject: TObject;
+  TheWinControl: TWinControl;
+  DC: HDC;
+  TM: TextMetricA;
 begin
   Result:=Windows.GetWindowRect(Handle,@R);
   LeftTop.X:=R.Left;
@@ -1425,17 +1453,56 @@ begin
       Result:=False;  
   Left:=LeftTop.X;
   Top:=LeftTop.Y;  
+  OwnerObject := TObject(GetProp(Handle, 'Lazarus'));
+  if OwnerObject is TWinControl then begin
+    TheWinControl:=TWinControl(OwnerObject);
+    if TheWinControl is TGroupBox then begin
+      // The client area of a groupbox under win32 is the whole size, including
+      // the frame. The LCL defines the client area without the frame.
+      // -> Adjust the position
+      DC := GetDC(Handle);
+      GetTextMetrics(DC, TM);
+      dec(Left,TM.TMHeight+2); // subtract the top frame with the caption
+                                     // and subtract the bottom frame
+      dec(Top,2+2); // subtract the left and right frame border
+      ReleaseDC(Handle, DC);
+      {writeln('TWin32Object.GetClientRect ',TheWinControl.Name,':',TheWinControl.ClassName,
+        ' ClientRect=',Rect.Right,',',Rect.Bottom,
+        ' CurLCLBounds=',TheWinControl.Left,',',TheWinControl.Top,',',TheWinControl.Width,',',TheWinControl.Height);}
+    end;
+  end;
 end;
 
-Function TWin32Object.GetWindowSize(Handle : hwnd; var Width, Height: integer): boolean;
+{------------------------------------------------------------------------------
+  Function: GetWindowSize
+  Params:  Handle : hwnd;
+  Returns: true on success
+
+  Returns the current widget Width and Height
+ ------------------------------------------------------------------------------}
+Function TWin32Object.GetWindowSize(Handle : hwnd;
+  var Width, Height: integer): boolean;
 var
   R: TRect;
+  OwnerObject: TObject;
+  TheForm: TCustomForm;
 begin
-  Result := GetClientRect(Handle, R);
+  Result := Windows.GetWindowRect(Handle,@R);
+  If (Windows.GetParent(Handle) = 0) then begin
+    OwnerObject := TObject(GetProp(Handle, 'Lazarus'));
+    if OwnerObject is TCustomForm then begin
+      // the LCL defines the size of a form without the borders.
+      // That means for the win32: The client area + menu
+      TheForm:=TCustomForm(OwnerObject);
+      Result:=GetClientRect(Handle,R);
+      // add menu
+      // ToDo
+    end;
+  end;
   with R Do
   begin
-    Width := right - left;
-    Height := bottom - top;
+    Width := Right - Left;
+    Height := Bottom - Top;
   end;
 end;
 
@@ -2381,6 +2448,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2003/08/17 12:26:00  mattias
+  fixed parts of the win32 intf size system
+
   Revision 1.50  2003/08/13 21:23:10  mattias
   fixed log
 

@@ -369,13 +369,14 @@ Var
   ListItemIndex: TListItem;
   LVI: LV_ITEM;
   PStr, PStr2: PChar;
-  R, R2: TRECT;
+  R, R2, NewRect: TRECT;
   S: String;
   //SelectionMode: DWORD; // currently only used for listboxes
   TBB: TBBUTTON;
   WindowStyle: Integer; //used by LM_SETTABPOSITION
   OldPageIndex: Integer; //used by LM_SETITEMINDEX of a csNotebook
   AMenu: TMenu;
+  TheWinControl: TWinControl;
 Begin
   Result := 0;   //default value just in case nothing sets it
   Assert(False, 'Trace:IntSendMessage3 - Start, Received (' + GetMessageName(LM_Message) + ')');
@@ -636,36 +637,46 @@ activate_time :	the time at which the activation event occurred.
         Begin
           If (Sender Is TWinControl) and TWinControl(Sender).HandleAllocated Then
           begin
-            With PRect(Data)^ do
+            TheWinControl:=TWinControl(Sender);
+            NewRect := PRect(Data)^;
+            {Get the width and height for the form}
+            If TheWinControl.FCompStyle = csForm Then
             begin
-              R := PRect(Data)^;
-              {Get the width and height for the form}
-              If TControl(Sender).FCompStyle = csForm Then
+              // the LCL defines the size of a form without border, win32 with
+              // adjust size
+              //writeln('win32 LM_SETSIZE before adjusting form: ',
+              //  ' New=',NewRect.Left,',',NewRect.Top,',',NewRect.Right - NewRect.Left,',',NewRect.Bottom - NewRect.Top);
+              R:=NewRect;
+              Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW,false);
+              //                         (Sender as TCustomForm).Menu<>nil);
+              NewRect.Right:=NewRect.Left+(R.Right-R.Left);
+              NewRect.Bottom:=NewRect.Top+(R.Bottom-R.Top);
+              //writeln('win32 LM_SETSIZE after adjusting form: ',
+              //  ' New=',NewRect.Left,',',NewRect.Top,',',NewRect.Right - NewRect.Left,',',NewRect.Bottom - NewRect.Top);
+            end
+            else if TheWinControl.FCompStyle = csPage then
+            begin
+              if TheWinControl.Parent.HandleAllocated then
               begin
-                Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW, (Sender as TCustomForm).Menu<>nil);
+                Windows.SendMessage(TheWinControl.Parent.Handle,
+                                    TCM_AdjustRect, 0, LPARAM(@R));
               end
-              else if TControl(Sender).FCompStyle = csPage then
+            end
+            else if TheWinControl.FCompStyle = csComboBox then
               begin
-                if (Sender As TWinControl).Parent.HandleAllocated then
-                begin
-                  Windows.SendMessage((Sender As TWinControl).Parent.Handle, TCM_AdjustRect, 0, LPARAM(@R));
-                  Left := R.Left;
-                  Top := R.Top;
-                end
-              end
-              else if TControl(Sender).FCompStyle = csComboBox then
-                begin
-                  Windows.GetWindowRect(TWinControl(Sender).Handle,@R);
-                  R.Right:=Right;
-                  R.Left:=Left;
-                end;
-              {Adjust for scrollbar}
+                // the height of a combobox is fixed
+                Windows.GetWindowRect(TheWinControl.Handle,@R);
+                NewRect.Bottom:=NewRect.Top+(R.Bottom-R.Top);
+              end;
+            {Adjust for scrollbar}
 //              if (Windows.GetWindowLong(TWinControl(Sender).Handle, GWL_STYLE) and WS_VSCROLL) <> 0 then
 //                R.Right := R.Right + GetSystemMetrics(SM_CXVSCROLL);
 //              if (Windows.GetWindowLong(TWinControl(Sender).Handle, GWL_STYLE) and WS_HSCROLL) <> 0 then
 //                R.Bottom := R.Bottom + GetSystemMetrics(SM_CYHSCROLL);
-               ResizeChild(Sender, Left, Top, R.Right - R.Left, R.Bottom - R.Top);
-            end;
+            {writeln('win32: LM_SETSIZE ',TheWinControl.Name,':',TheWinControl.ClassName,
+                ' New=',NewRect.Left,',',NewRect.Top,',',NewRect.Right - NewRect.Left,',',NewRect.Bottom - NewRect.Top);}
+            ResizeChild(Sender, NewRect.Left, NewRect.Top,
+                        NewRect.Right - NewRect.Left, NewRect.Bottom - NewRect.Top);
           end;
         End;
         LM_SHOWMODAL:
@@ -1630,8 +1641,8 @@ Var
 Begin
   Handle := (Sender As TWinControl).Handle;
   LCLBoundsToWin32Bounds(Sender, Left, Top, Width, Height);
-  If Handle <> HWND(Nil) Then
-    MoveWindow(Handle, Left, Top, Width, Height, True)
+  If Handle <> 0 Then
+    MoveWindow(Handle, Left, Top, Width, Height, True);
 End;
 
 {------------------------------------------------------------------------------
@@ -1943,6 +1954,7 @@ Begin
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_GROUPBOX, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
+      TWinControl(Sender).InvalidateClientRectCache;
     End;
     {csHintWindow:
     Begin
@@ -2742,6 +2754,9 @@ End;
 
 {
   $Log$
+  Revision 1.88  2003/08/17 12:26:00  mattias
+  fixed parts of the win32 intf size system
+
   Revision 1.87  2003/08/14 10:36:55  mattias
   added TSelectDirectoryDialog
 

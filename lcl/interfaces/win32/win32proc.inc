@@ -709,19 +709,26 @@ Begin
   Result := GetProp(Control, 'AccelKey');
 End;
 
-Procedure LCLBoundsToWin32Bounds(Sender: TObject; var Left, Top, Width, Height: Integer);
+Procedure LCLBoundsToWin32Bounds(Sender: TObject;
+  var Left, Top, Width, Height: Integer);
 var
   TM: TextMetricA;
   DC: HDC;
   Handle: HWND;
+  TheWinControl: TWinControl;
 Begin
-  if Sender = nil then exit;
-  If (TControl(Sender).Parent Is TCustomGroupBox) Then
+  if (Sender = nil) or (not (Sender is TWinControl)) then exit;
+  TheWinControl:=TWinControl(Sender);
+  If (TheWinControl.Parent Is TCustomGroupBox) Then
   Begin
-    Handle := TControl(Sender).Parent.Handle;
+    // The client area of a groupbox under win32 is the whole size, including
+    // the frame. The LCL defines the client area without the frame.
+    // -> Adjust the position
+    Handle := TheWinControl.Parent.Handle;
     DC := GetDC(Handle);
     GetTextMetrics(DC, TM);
-    Top := Top + TM.TMHeight;
+    inc(Top,TM.TMHeight); // add the upper frame with the caption
+    inc(Left,2); // add the left frame border
     ReleaseDC(Handle, DC);
   End;
 End;
@@ -731,15 +738,20 @@ var
   TM: TextMetricA;
   DC: HDC;
   Handle: HWND;
+  TheWinControl: TWinControl;
 Begin
-  if Sender = nil then exit;
-  // check for groupbox client pos
-  If (TControl(Sender).Parent Is TCustomGroupBox) Then
+  if (Sender = nil) or (not (Sender is TWinControl)) then exit;
+  TheWinControl:=TWinControl(Sender);
+  If (TheWinControl.Parent Is TCustomGroupBox) Then
   Begin
-    Handle := TControl(Sender).Parent.Handle;
+    // The client area of a groupbox under win32 is the whole size, including
+    // the frame. The LCL defines the client area without the frame.
+    // -> Adjust the position
+    Handle := TheWinControl.Parent.Handle;
     DC := GetDC(Handle);
     GetTextMetrics(DC, TM);
-    Top := Top - TM.TMHeight;
+    dec(Top,TM.TMHeight); // subtract the upper frame with the caption
+    dec(Left,2); // subtract the left frame border
     ReleaseDC(Handle, DC);
   End;
 End;
@@ -752,6 +764,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.20  2003/08/17 12:26:00  mattias
+  fixed parts of the win32 intf size system
+
   Revision 1.19  2003/08/13 21:23:10  mattias
   fixed log
 

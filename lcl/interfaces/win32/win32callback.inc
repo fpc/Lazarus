@@ -86,10 +86,13 @@ Var
   LMessage: TLMessage;
   PLMsg: PLMessage;
   R: TRect;
+  NewLeft, NewTop, NewWidth, NewHeight: integer;
+  NewClientWidth, NewClientHeight: integer;
   OwnerObject: TObject;
+  TheWinControl: TWinControl;
   WinProcess: Boolean;
   PrevWndProc: Pointer;
-  
+
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
   LMKey: TLMKey; // used by WM_KEYDOWN WM_KEYUP
@@ -406,27 +409,6 @@ Begin
         UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
       End;
     End;
-    WM_MOVE:
-    Begin
-      PLMsg:=@LMMove;
-      With LMMove Do
-      Begin
-        Msg := LM_MOVE;
-        // MoveType := WParam;   WParam is not defined!
-        MoveType := Move_SourceIsInterface;
-        //If OwnerObject Is TCustomForm then begin
-          If Windows.GetParent(Window) = 0 then begin 
-          Windows.GetWindowRect(Window,@R);
-          XPos := R.Left;
-          YPos := R.Top;
-        end 
-        Else begin
-          XPos := LoWord(LParam);
-          YPos := HiWord(LParam);
-        end;  
-        Win32PosToLCLPos(OwnerObject, XPos, YPos);
-      End;
-    End;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
     WM_NCLBUTTONDOWN:
     Begin
@@ -516,23 +498,6 @@ Begin
         Status := LParam;
       End;
     End;
-    WM_SIZE:
-    Begin      
-      With TLMSize(LMessage) Do
-      Begin
-        Msg := LM_SIZE;
-        SizeType := WParam or Size_SourceIsInterface;
-        if OwnerObject is TWinControl then
-          TWinControl(OwnerObject).InvalidateClientRectCache;
-        Width := LoWord(LParam);
-        Height := HiWord(LParam);
-        // adjust size for scrollbars
-        if (Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0 then
-          Width := Width - GetSystemMetrics(SM_CXVSCROLL);
-        if (Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0 then
-          Height := Height - GetSystemMetrics(SM_CYHSCROLL);
-      End;
-    End;
     WM_SYSKEYDOWN:
     Begin
       PLMsg:=@LMKey;
@@ -593,6 +558,77 @@ Begin
     else
       Result := CallWindowProc(PrevWndProc, Window, Msg, WParam, LParam);
   end;
+  
+  Case Msg Of
+    WM_MOVE:
+    Begin
+      PLMsg:=@LMMove;
+      With LMMove Do
+      Begin
+        Msg := LM_MOVE;
+        // MoveType := WParam;   WParam is not defined!
+        MoveType := Move_SourceIsInterface;
+        If (Windows.GetParent(Window) = 0)
+        and (OwnerObject is TCustomForm)
+        and (TCustomForm(OwnerObject).Parent=nil) then begin
+          Windows.GetWindowRect(Window,@R);
+          XPos := R.Left;
+          YPos := R.Top;
+        end
+        Else begin
+          GetWindowRelativePosition(Window,NewLeft,NewTop);
+          XPos := NewLeft; //LoWord(LParam);
+          YPos := NewTop; //HiWord(LParam);
+        end;
+        Win32PosToLCLPos(OwnerObject, XPos, YPos);
+        if OwnerObject is TWinControl then begin
+          TheWinControl:=TWinControl(OwnerObject);
+          {writeln('Win32CallBack WM_MOVE ',TheWinControl.Name,':',TheWinControl.ClassName,
+            ' NewPos=',XPos,',',YPos);}
+          if (TheWinControl.Left=XPos) and (TheWinControl.Top=YPos) then
+            exit;
+        end;
+      End;
+    End;
+    WM_SIZE:
+    Begin
+      With TLMSize(LMessage) Do
+      Begin
+        Msg := LM_SIZE;
+        SizeType := WParam or Size_SourceIsInterface;
+        GetWindowSize(Window,NewWidth,NewHeight);
+        Width:=NewWidth;
+        Height:=NewHeight;
+        {Width := LoWord(LParam);
+        Height := HiWord(LParam);
+        // adjust size for scrollbars
+        if (Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0 then
+          Width := Width + GetSystemMetrics(SM_CXVSCROLL);
+        if (Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0 then
+          Height := Height + GetSystemMetrics(SM_CYHSCROLL);}
+        if (OwnerObject is TWinControl) then begin
+          TheWinControl:=TWinControl(OwnerObject);
+          GetClientRect(Window,R);
+          NewClientWidth:=R.Right-R.Left;
+          NewClientHeight:=R.Bottom-R.Top;
+          {writeln('Win32Callback: WM_SIZE ',TheWinControl.Name,':',TheWinControl.ClassName,
+            ' NewSize=',Width,',',Height,
+            ' HasVScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
+            ' HasHScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
+            ' OldClientSize=',TheWinControl.ClientWidth,',',TheWinControl.ClientHeight,
+            ' NewClientSize=',R.Right,',',R.Bottom);
+          }
+          if (TheWinControl.Width=Width)
+          and (TheWinControl.Height=Height)
+          and (TheWinControl.ClientWidth=R.Right)
+          and (TheWinControl.ClientHeight=R.Bottom) then
+            exit;
+          TheWinControl.InvalidateClientRectCache;
+        end;
+      End;
+    End;
+  end;
+
 
   {$IFDEF VER1_1} 
     List := TMsgArray(GetProp(Window, 'MsgList'));
@@ -654,6 +690,9 @@ end;
 
 {
   $Log$
+  Revision 1.52  2003/08/17 12:26:00  mattias
+  fixed parts of the win32 intf size system
+
   Revision 1.51  2003/08/13 21:23:10  mattias
   fixed log
 

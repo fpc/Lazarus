@@ -18,6 +18,8 @@
 
 Unit WinExt;
 
+{$mode objfpc}{$H+}
+
 {$IFDEF TRACE}
   {$ASSERTIONS ON}
 {$ENDIF}

@@ -23,14 +23,14 @@
  
 Unit Win32Int;
 
-{$H+}
+{$mode objfpc}{$H+}
 
 Interface
 
 {$IFDEF Trace}
 {$ASSERTIONS ON}
 {$ENDIF}
- 
+
 { 
   When editing this unit list, be sure to keep Windows listed first to ensure
   successful compilation.
@@ -188,6 +188,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2003/08/17 12:26:00  mattias
+  fixed parts of the win32 intf size system
+
   Revision 1.29  2003/03/13 19:57:38  mattias
   added identcompletion context information and fixed win32 intf
 

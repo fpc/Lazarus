@@ -25,8 +25,7 @@
 
 Unit Win32Def;
 
-{$MODE OBJFPC}
-{$LONGSTRINGS ON}
+{$mode objfpc}{$H+}
 
 Interface 
 
@@ -132,6 +131,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.6  2003/08/17 12:26:00  mattias
+  fixed parts of the win32 intf size system
+
   Revision 1.5  2002/11/23 13:48:48  mattias
   added Timer patch from Vincent Snijders
 

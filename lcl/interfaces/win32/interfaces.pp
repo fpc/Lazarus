@@ -22,10 +22,9 @@
  *****************************************************************************
 }
 
-Unit interfaces;
+Unit Interfaces;
 
-{$MODE OBJFPC}
-{$LONGSTRINGS ON}
+{$mode objfpc}{$H+}
 
 Interface 
 
