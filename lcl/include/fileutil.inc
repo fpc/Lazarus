@@ -922,6 +922,8 @@ begin
       '*': begin
           // Anything. Will be handled by the 'else' part below
           inc(MaskPos);
+          if MaskPos=MaskEndPos then
+            FilePos:=FileLen+1;
         end;
         
       else
@@ -1155,6 +1157,9 @@ end;
 
 {
   $Log$
+  Revision 1.11  2005/03/21 09:03:54  mattias
+  implemented Multi Masks for gtk1 filedialogs
+
   Revision 1.10  2005/01/27 00:55:04  mattias
   implemented allowing parent as AnchorSide.Control
 

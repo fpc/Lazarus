@@ -5229,8 +5229,10 @@ begin
   with TFileFilterPropertyEditorForm.Create(Application) do
   try
     Filter:=GetStrProp(GetComponent(0), 'Filter');
-    if ShowModal=mrOk then
+    if ShowModal=mrOk then begin
       SetStrProp(GetComponent(0), 'Filter', Filter);
+      Modified;
+    end;
   finally
     Free;
   end;

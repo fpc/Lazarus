@@ -4049,7 +4049,8 @@ end;
         'Pascal files (*.pp)'  + '*.pp'
         'Pascal files (*.lpr)' + '*.lpr'
  ------------------------------------------------------------------------------}
-procedure ExtractFilterList(const Filter: string; var FilterList: TList);
+procedure ExtractFilterList(const Filter: string; var FilterList: TList;
+  SplitMultiMask: boolean);
 var
   Masks: TStringList;
   CurFilterIndex: integer;
@@ -4065,10 +4066,14 @@ var
     CurMaskStart:=1;
     while CurMaskStart<=length(MultiMask) do begin
       CurMaskEnd:=CurMaskStart;
-      while (CurMaskEnd<=length(MultiMask)) and (MultiMask[CurMaskEnd]<>';') do
-        inc(CurMaskEnd);
+      if SplitMultiMask then begin
+        while (CurMaskEnd<=length(MultiMask)) and (MultiMask[CurMaskEnd]<>';')
+        do
+          inc(CurMaskEnd);
+      end else begin
+        CurMaskEnd:=length(MultiMask)+1;
+      end;
       s:=Trim(copy(MultiMask,CurMaskStart,CurMaskEnd-CurMaskStart));
-      if s='*.*' then s:='';
       Masks.Add(s);
       CurMaskStart:=CurMaskEnd+1;
     end;
@@ -4125,6 +4130,7 @@ var
           CurDesc:=CurDesc+' ';
         CurDesc:=CurDesc+'('+Masks[i]+')';
       end;
+      //debugln('AddEntries ',CurDesc,' ',Masks[i]);
       AddEntry(CurDesc,Masks[i]);
     end;
     inc(CurFilterIndex);
@@ -4177,7 +4183,7 @@ var
   i, j, CurMask: integer;
   s: String;
 begin
-  ExtractFilterList(OpenDialog.Filter,FilterList);
+  ExtractFilterList(OpenDialog.Filter,FilterList,false);
   if FilterList.Count>0 then begin
 
     // create a HBox so that the filter pulldown is left justified
@@ -6905,6 +6911,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.645  2005/03/21 09:03:54  mattias
+  implemented Multi Masks for gtk1 filedialogs
+
   Revision 1.644  2005/03/18 14:43:53  mattias
   creating gtk_calendar in a gtk_frame - calendar seems to need a parent window
 

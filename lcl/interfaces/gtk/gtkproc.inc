@@ -3179,6 +3179,7 @@ var
   DirName: PChar;
   Dir: string;
   StrList: TStringList;
+  CurFileMask: String;
   
   procedure Add(List: PGtkCList; const s: string);
   begin
@@ -3190,8 +3191,10 @@ var
   var
     i: integer;
   begin
+    StrList.Sorted := True;
     for i:=0 to StrList.Count-1 do
       Add(List, StrList[i]);
+    StrList.Sorted := False;
   end;
   
 begin
@@ -3220,17 +3223,23 @@ begin
         StrList.Add(AppendPathDelim(Info.Name));
     until FindNext(Info) <> 0;
   FindClose(Info);
-  StrList.Sorted := True;
   AddList(Dirs);
   // add required files
   StrList.Clear;
-  Dir := AppendPathDelim(Dir)+Mask;
-  if Mask = '' then Dir := Dir + GetAllFilesMask;
-  if FindFirst(Dir, faAnyFile, Info) = 0 then
+  CurFileMask:=Mask;
+  if CurFileMask='' then CurFileMask:=GetAllFilesMask;
+  if FindFirst(AppendPathDelim(Dir)+GetAllFilesMask, faAnyFile, Info) = 0 then
+  begin
     repeat
-      if (Info.Attr and faDirectory) <> faDirectory then
-        Strlist.Add(Info.Name);
+      if ((Info.Attr and faDirectory) <> faDirectory) then begin
+        //debugln('PopulateFileAndDirectoryLists CurFileMask="',CurFileMask,'" Info.Name="',Info.Name,'" ',dbgs(FileInFilenameMasks(Info.Name,CurFileMask)));
+        if (CurFileMask='') or (FileInFilenameMasks(Info.Name,CurFileMask)) then
+        begin
+          Strlist.Add(Info.Name);
+        end;
+      end;
     until FindNext(Info) <> 0;
+  end;
   FindClose(Info);
   AddList(Files);
   StrList.Free;
@@ -8114,6 +8123,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.352  2005/03/21 09:03:54  mattias
+  implemented Multi Masks for gtk1 filedialogs
+
   Revision 1.351  2005/03/21 08:24:59  mattias
   gtk intf sorting directories in filedialg  from Jesus
 
