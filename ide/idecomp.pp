@@ -29,7 +29,7 @@ unit idecomp;
 interface
 
 uses
-  Classes, LclLinux, StdCtrls, Forms, Buttons, Menus, ComCtrls,
+  Classes, LclLinux, StdCtrls, Forms, Buttons, Menus, ComCtrls,Arrow,
   Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs,Calendar
 
 {$IFDEF DATABASE}
@@ -308,6 +308,7 @@ begin
           ,TProgressBar,TToolBar,TTrackbar]);
 
   RegisterComponents('Misc','Calendar',[TCalendar]);
+  RegisterComponents('Misc','Arrow',[TArrow]);
 
   RegisterComponents('System','ExtCtrls',[TTimer]);
   RegisterComponents('Dialogs','Dialogs',[TOpenDialog,TSaveDialog

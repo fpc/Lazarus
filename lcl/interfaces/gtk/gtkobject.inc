@@ -1932,6 +1932,11 @@ begin
          gtk_widget_show(p);
       end;
 
+      csArrow :
+      begin
+         p := gtk_arrow_new(gtk_arrow_left,gtk_shadow_etched_in);
+      end;
+      
       csBitBtn :
       begin
         Assert(False, 'Trace:CSBITBTN CREATE*************************');
@@ -2790,6 +2795,9 @@ var
    Year,Month,Day : String;
    gtkcalendardisplayoptions : TGtkCalendarDisplayOptions;
    NUm : Integer;
+   
+   ArrowType : TGTKArrowType;
+   ShadowType : TGTKShadowType;
 begin
    result := 0;     // default if nobody sets it
 
@@ -2851,6 +2859,31 @@ begin
                           gtk_calendar_thaw(PgtkCalendar(handle));
 
                      end;
+     csArrow : Begin
+               if TLmArrow(data^).ArrowType = atUp then
+                      ArrowType := GTK_ARROW_UP
+                      else
+               if TLMArrow(data^).ArrowType = atLeft then
+                      ArrowType := GTK_ARROW_LEFT
+                      else
+               if TLMArrow(data^).ArrowType = atRight then
+                      ArrowType := GTK_ARROW_RIGHT
+                      else
+                      ArrowType := GTK_ARROW_DOWN;
+
+               case TLMArrow(data^).ShadowType of
+                      stNONE : ShadowType := GTK_SHADOW_NONE;
+                      stIN : ShadowType := GTK_SHADOW_IN;
+                      stOut : ShadowType := GTK_SHADOW_OUT;
+                      stEtchedIn : ShadowType := GTK_SHADOW_ETCHED_IN;
+                      stEtchedOut : ShadowType := GTK_SHADOW_ETCHED_OUT;
+                      else
+                      ShadowType := GTK_SHADOW_NONE;
+                      end;
+                      
+                      gtk_arrow_set(PgtkArrow(handle),ArrowType,ShadowType);
+
+               end
                      
    else
       Assert (true, Format ('WARNING:[TgtkObject.SetValue] failed for %s', [Sender.ClassName]));
@@ -3430,6 +3463,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.81  2001/12/06 13:39:36  lazarus
+  Added TArrow component
+  Shane
+
   Revision 1.80  2001/12/05 18:23:48  lazarus
   Added events to Calendar
   Shane

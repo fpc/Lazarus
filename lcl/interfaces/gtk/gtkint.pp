@@ -32,7 +32,7 @@ interface
 uses 
   InterfaceBase, gtk, gdk, glib, SysUtils, LMessages, Classes, Controls,
   ExtCtrls, Forms, Dialogs, VclGlobals, StdCtrls, ComCtrls, LCLLinux, gtkdef,
-  DynHashArray, LazQueue,Calendar;
+  DynHashArray, LazQueue,Calendar,Arrow;
 
 type
    TgtkObject = class(TInterfaceBase)
@@ -324,6 +324,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.25  2001/12/06 13:39:36  lazarus
+  Added TArrow component
+  Shane
+
   Revision 1.24  2001/12/05 17:23:45  lazarus
   Added Calendar component
   Shane

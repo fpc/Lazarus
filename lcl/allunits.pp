@@ -14,7 +14,7 @@ uses
   interfacebase, interfaces,
 	buttons,    extctrls,        registry,     vclglobals,   calendar,
 	clipbrd,    filectrl,        forms,        lcllinux,     spin, 
-	comctrls,   graphics,        lmessages,    stdctrls, 
+	comctrls,   graphics,        lmessages,    stdctrls,     arrow,
 	controls,   imglist,         menus,        toolwin, 
 	dialogs,    messages,        utrace,       dynhasharray,
 	clistbox,   lazqueue;
@@ -25,6 +25,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.10  2001/12/06 13:39:36  lazarus
+  Added TArrow component
+  Shane
+
   Revision 1.9  2001/12/05 18:19:11  lazarus
   MG: added calendar to allunits and removed unused vars
 

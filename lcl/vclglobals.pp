@@ -87,6 +87,8 @@ csPopupMenu = 47;
 csHintWindow = 48;
 
 csCalendar = 49;
+
+csArrow = 50;
 type
 
   //TODO: check this against lcllinux

@@ -77,6 +77,9 @@ Type
     property ReadOnly : Boolean read FReadOnly write SetReadOnly;
     property Visible;
 //    property OnChange;
+    property OnClick;
+    property OnMouseMove;
+    property OnMouseDown;
     property OnDayChanged : TNotifyEvent read FDayChanged write FDayChanged;
     property OnMonthChanged : TNotifyEvent read FMonthChanged write FMonthChanged;
     property OnYearChanged : TNotifyEvent read FYearChanged write FYearChanged;
@@ -109,10 +112,9 @@ begin
 end;
 
 procedure TCalendar.SetDate(const AValue: String);
-//var Temp : TDateTime;
 begin
    try
-     {Temp := }StrtoDate(AValue);  //test to see if valid date....
+     StrtoDate(AValue);  //test to see if valid date....
 
      FDate := AValue;
      SetProps;
