@@ -93,6 +93,8 @@ function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
              OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod;
              Data: TObject): boolean;
 function ProgramDirectory: string;
+function FindFilesCaseInsensitive(const Directory,
+  CaseInsensitiveFilename: string; IgnoreExact: boolean): TStringList;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -150,6 +152,13 @@ uses
      {$ENDIF}
   {$EndIf};
 
+const
+  {$IFDEF Win32}
+  FindMask = '*.*';
+  {$ELSE}
+  FindMask = '*';
+  {$ENDIF}
+
 function AddToRecentList(const s: string; RecentList: TStringList;
   Max: integer): boolean;
 begin
@@ -180,6 +189,37 @@ procedure SaveRecentList(XMLConfig: TXMLConfig; List: TStringList;
   const Path: string);
 begin
   SaveStringList(XMLConfig,List,Path);
+end;
+
+{-------------------------------------------------------------------------------
+  function FindFilesCaseInsensitive(const Directory,
+    CaseInsensitiveFilename: string; IgnoreExact: boolean): TStringLists;
+
+  Search case insensitive in Directory for all files
+  named CaseInsensitiveFilename
+-------------------------------------------------------------------------------}
+function FindFilesCaseInsensitive(const Directory,
+  CaseInsensitiveFilename: string; IgnoreExact: boolean): TStringList;
+var
+  FileInfo: TSearchRec;
+begin
+  Result:=nil;
+  if SysUtils.FindFirst(AppendPathDelim(Directory)+FindMask,
+                        faAnyFile,FileInfo)=0
+  then begin
+    repeat
+      // check if special file
+      if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+      if (AnsiCompareText(CaseInsensitiveFilename,FileInfo.Name)=0)
+      and ((not IgnoreExact)
+           or (CaseInsensitiveFilename<>FileInfo.Name))
+      then begin
+        if Result=nil then Result:=TStringList.Create;
+        Result.Add(FileInfo.Name);
+      end;
+    until SysUtils.FindNext(FileInfo)<>0;
+  end;
+  SysUtils.FindClose(FileInfo);
 end;
 
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -1152,12 +1192,6 @@ function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
   
   function CopyDir(const CurSrcDir, CurDestDir: string): boolean;
   // both dirs must end with PathDelim
-  const
-    {$IFDEF Win32}
-    FindMask = '*.*';
-    {$ELSE}
-    FindMask = '*';
-    {$ENDIF}
   var
     FileInfo: TSearchRec;
     CurFilename,
