@@ -525,7 +525,7 @@ begin
   if VirtualKey=VK_UNKNOWN then begin
     // map all other keys to VK_IRREGULAR + KeyCode
     if ShortInt(KeyCode)>=0 then
-      VirtualKey := VK_IRREGULAR + KeyCode
+      VirtualKey := MapIrregularVirtualKey(VK_IRREGULAR + KeyCode)
     else
       VirtualKey := VK_IRREGULAR;
   end;
@@ -2207,6 +2207,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.61  2002/08/17 11:38:04  lazarus
+  MG: fixed keygrabbing key translation
+
   Revision 1.60  2002/08/16 17:47:39  lazarus
   MG: added some IDE menuicons, fixed submenu indicator bug
 
