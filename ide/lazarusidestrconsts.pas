@@ -108,7 +108,7 @@ resourcestring
   lisMenuSaveAs = 'Save As';
   lisMenuSaveAll = 'Save All';
   lisMenuClose = 'Close';
-  lisMenuCloseAll = 'Close All';
+  lisMenuCloseAll = 'Close all editor files';
   lisMenuQuit = 'Quit';
   
   lisMenuUndo = 'Undo';
