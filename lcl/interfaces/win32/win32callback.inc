@@ -843,6 +843,16 @@ Begin
         Show := WParam <> 0;
         Status := LParam;
       End;
+
+      if (assigned(Application.MainForm) and
+        (Application.MainForm.Handle=Window)) then begin
+        if WParam=0 then
+          Windows.ShowWindow(TWin32WidgetSet(InterfaceObject).FAppHandle,
+            SW_HIDE)
+        else
+          Windows.ShowWindow(TWin32WidgetSet(InterfaceObject).FAppHandle,
+            SW_SHOW)
+      end;
     End;
     WM_SYSKEYDOWN:
     Begin
@@ -1314,6 +1324,9 @@ end;
 
 {
   $Log$
+  Revision 1.132  2004/08/16 18:15:28  vincents
+  The taskbar button is now hidden, if the main form is hidden
+
   Revision 1.131  2004/08/04 07:32:01  micha
   fix win32 keyhandling, send cn_char
 
