@@ -1233,6 +1233,7 @@ begin
         end;
         OutputLine:=copy(Buf,LineStart,OutLen-LineStart+1);
       until OutLen=0;
+      TheProcess.WaitOnExit;
     finally
       TheProcess.Free;
     end;
@@ -1274,6 +1275,7 @@ begin
         end;
         inc(i);
       end;
+      TheProcess.WaitOnExit;
     finally
       TheProcess.Free;
     end;
@@ -1303,6 +1305,7 @@ begin
         end;
         inc(i);
       end;
+      TheProcess.WaitOnExit;
     finally
       TheProcess.Free;
     end;

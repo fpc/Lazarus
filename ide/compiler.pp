@@ -247,6 +247,7 @@ begin
           end;
           OutputLine:=copy(Buf,LineStart,Count-LineStart+1);
         until Count=0;
+        TheProcess.WaitOnExit;
       finally
         TheProcess.Free;
       end;
@@ -355,6 +356,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2002/01/15 08:49:56  lazarus
+  MG: fixed zombie compilers
+
   Revision 1.26  2002/01/13 12:46:17  lazarus
   MG: fixed linker options, compiler options dialog
 
