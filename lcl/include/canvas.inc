@@ -72,7 +72,7 @@ Begin
   if Canvas <> nil
   then begin
     Canvas.RequiredState([csHandleValid, csBrushValid]);
-    RequiredState([csHandleValid, csFontValid, csBrushValid]);
+    RequiredState([csHandleValid, csBrushValid]);
 
     SH := Source.Bottom - Source.Top;
     SW := Source.Right - Source.Left;
@@ -740,9 +740,21 @@ begin
   MoveTo(X + TextWidth(Text), Y);
 end;
 
+{------------------------------------------------------------------------------
+  function TCanvas.HandleAllocated: boolean;
+ ------------------------------------------------------------------------------}
 function TCanvas.HandleAllocated: boolean;
 begin
   Result:=(FHandle<>0);
+end;
+
+{------------------------------------------------------------------------------
+  function TCanvas.GetUpdatedHandle(ReqState: TCanvasState): HDC;
+ ------------------------------------------------------------------------------}
+function TCanvas.GetUpdatedHandle(ReqState: TCanvasState): HDC;
+begin
+  RequiredState(ReqState+[csHandleValid]);
+  Result:=FHandle;
 end;
 
 {------------------------------------------------------------------------------
@@ -1157,6 +1169,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2003/04/02 13:23:23  mattias
+  fixed default font
+
   Revision 1.42  2003/03/12 14:39:29  mattias
   fixed clipping origin in stretchblt
 

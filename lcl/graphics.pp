@@ -500,10 +500,6 @@ type
     procedure BrushChanged(ABrush: TObject);
     procedure FontChanged(AFont: TObject);
     procedure RegionChanged(ARegion: TObject);
-    procedure CreateBrush;
-    procedure CreateFont;
-    Procedure CreatePen;
-    Procedure CreateRegion;
     procedure DeselectHandles;
     function GetCanvasClipRect: TRect;
     Function GetColor: TColor;
@@ -521,6 +517,10 @@ type
     Procedure SetPixel(X,Y : Integer; Value : TColor);
     Procedure SetRegion(value : TRegion);
   protected
+    procedure CreateFont; virtual;
+    procedure CreateBrush;
+    Procedure CreatePen;
+    Procedure CreateRegion;
     procedure CreateHandle; virtual;
     procedure RequiredState(ReqState: TCanvasState);
   public
@@ -586,6 +586,7 @@ type
     function TextHeight(const Text: string): Integer;
     function TextWidth(const Text: string): Integer;
     function HandleAllocated: boolean;
+    function GetUpdatedHandle(ReqState: TCanvasState): HDC;
   public
     property ClipRect: TRect read GetCanvasClipRect;
     property PenPos: TPoint read GetPenPos write SetPenPos;
@@ -962,6 +963,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.66  2003/04/02 13:23:23  mattias
+  fixed default font
+
   Revision 1.65  2003/03/12 14:39:29  mattias
   fixed clipping origin in stretchblt
 
