@@ -419,7 +419,7 @@ const
 implementation
 
 uses
-  ViewUnit_dlg, Math, LResources;
+  ViewUnit_dlg, Math, LResources, aboutfrm;
 
 //==============================================================================
 {
@@ -2313,8 +2313,11 @@ end;
 
 procedure TMainIDE.mnuHelpAboutLazarusClicked(Sender : TObject);
 begin
-  MessageDlg(lisAboutLazarus,'Lazarus '+Version_String+#13+lisAboutLazarusMsg
-    ,mtInformation, [mbOk], 0);
+
+AboutForm.ShowModal;
+
+//  MessageDlg(lisAboutLazarus,'Lazarus '+Version_String+#13+lisAboutLazarusMsg
+//    ,mtInformation, [mbOk], 0);
 end;
 
 //------------------------------------------------------------------------------
@@ -6326,6 +6329,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.292  2002/05/08 14:45:55  lazarus
+     New About Dialog Window added; Splash screen modified to stay visible
+     longer.  MAH
+
   Revision 1.291  2002/05/06 12:21:35  lazarus
   MG: nicer default window positions
 

@@ -40,7 +40,8 @@ uses
   MainBar,
   MsgView,
   FindReplaceDialog,
-  FindInFilesDlg;
+  FindInFilesDlg,
+  aboutfrm;
 
 begin
   Application.Initialize;
@@ -62,6 +63,7 @@ CheckHeap('TMainIDE created');
 
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
   Application.CreateForm(TLazFindInFilesDialog, FindInFilesDialog);
+  Application.CreateForm(TAboutForm, AboutForm);
   SplashForm.StartTimer;
   Application.Run;
   SplashForm.Free;
@@ -72,6 +74,10 @@ end.
 
 {
   $Log$
+  Revision 1.31  2002/05/08 14:45:55  lazarus
+     New About Dialog Window added; Splash screen modified to stay visible
+     longer.  MAH
+
   Revision 1.30  2002/03/30 07:29:15  lazarus
   MG: fixed splash screen, fixed parser of resource strings
 

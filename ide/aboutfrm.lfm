@@ -1,0 +1,52 @@
+object About_frm: TAboutForm
+  CAPTION = 'About Lazarus'
+  COLOR = -2147483633
+  CLIENTHEIGHT = 245
+  CLIENTWIDTH = 577
+  POSITION = poscreencenter
+  LEFT = 223
+  HEIGHT = 245
+  TOP = 261
+  WIDTH = 577
+  object Memo1: TMEMO
+    FONT.COLOR = -2147483640
+    LINES.Strings = (
+      'License: GPL/LGPL'
+      ' '
+      'Lazarus are the class libraries for Free Pascal that'
+      'emulate Delphi. Free Pascal is a (L)GPL''ed compiler that'
+      'runs on Linux, Win32, OS/2, 68K and more. Free Pascal'
+      'is designed to be able to understand and compile Delphi'
+      'syntax, which is of course OOP.'
+      ' '
+      'Lazarus is the missing part of the puzzle that will allow'
+      'you to develop Delphi like programs in all of the above'
+      'platforms. The IDE will eventually become a RAD tool like'
+      'Delphi.'
+      ' '
+      'As Lazarus is growing we need more developers.'
+    )
+    LEFT = 225
+    HEIGHT = 219
+    TOP = 14
+    WIDTH = 339
+  end
+  object Button1: TBUTTON
+    MODALRESULT = 1
+    CAPTION = 'Close'
+    FONT.COLOR = -2147483640
+    LEFT = 78
+    HEIGHT = 25
+    TOP = 184
+    WIDTH = 75
+  end
+  object Label1: TLABEL
+    ALIGNMENT = tacenter
+    CAPTION = 'Version #:'
+    FONT.COLOR = -2147483640
+    LEFT = 14
+    HEIGHT = 17
+    TOP = 6
+    WIDTH = 200
+  end
+end

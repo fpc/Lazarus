@@ -67,7 +67,7 @@ begin
   FTimer := TTimer.Create(self);
   with FTimer do
   begin
-    Interval := 500;
+    Interval := 2000;
     OnTimer := @HideFormTimer;
     Enabled := False;
   end;
@@ -101,7 +101,7 @@ end;
 
 procedure TSplashForm.ApplicationOnIdle(Sender: TObject; var Done: Boolean);
 begin
-  Hide;
+//  Hide;
 end;
 
 procedure TSplashForm.HideFormTimer(Sender : TObject);
@@ -131,6 +131,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/05/08 14:45:57  lazarus
+     New About Dialog Window added; Splash screen modified to stay visible
+     longer.  MAH
+
   Revision 1.12  2002/05/06 08:58:33  lazarus
   MG: removed unused splash image
 
