@@ -134,7 +134,6 @@ type
     procedure mnuViewUnitDependenciesClicked(Sender : TObject);
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
-    procedure MessageViewDblClick(Sender : TObject);
     procedure mnuToggleFormUnitClicked(Sender : TObject);
 
     // project menu
@@ -243,10 +242,11 @@ type
     procedure OnDesignerUnselectComponentClass(Sender: TObject);
     procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
       Value: boolean);
-    procedure OnDesignerComponentListChanged(Sender: TObject);
     procedure OnDesignerPropertiesChanged(Sender: TObject);
     procedure OnDesignerComponentAdded(Sender: TObject; AComponent: TComponent;
       AComponentClass: TRegisteredComponent);
+    procedure OnDesignerComponentDeleted(Sender: TObject;
+      AComponent: TComponent);
     procedure OnDesignerRemoveComponent(Sender: TObject; AComponent: TComponent);
     procedure OnDesignerModified(Sender: TObject);
     Procedure OnDesignerActivated(Sender : TObject);
@@ -271,6 +271,7 @@ type
     
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender : TObject);
+    procedure MessageViewDblClick(Sender : TObject);
 
     // Hint Timer events
     Procedure HintTimer1Timer(Sender : TObject);
@@ -1694,7 +1695,8 @@ begin
    ecRunToCursor: DebugBoss.DoRunToCursor;
    ecStopProgram: DebugBoss.DoStopProject;
     
-   ecFindProcedureDefinition,ecFindProcedureMethod:
+   ecFindProcedureDefinition,
+   ecFindProcedureMethod:
      DoJumpToProcedureSection;
       
    ecFindDeclaration:
@@ -1732,7 +1734,10 @@ begin
      
    ecConfigBuildLazarus:
      mnuToolConfigBuildLazClicked(Self);
-    
+     
+   ecToggleFormUnit:
+     mnuToggleFormUnitClicked(Self);
+
   else
     Handled:=false;
   end;
@@ -1863,9 +1868,9 @@ Begin
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnUnselectComponentClass:=@OnDesignerUnselectComponentClass;
     OnSetDesigning:=@OnDesignerSetDesigning;
-    OnComponentListChanged:=@OnDesignerComponentListChanged;
     OnPropertiesChanged:=@OnDesignerPropertiesChanged;
     OnComponentAdded:=@OnDesignerComponentAdded;
+    OnComponentDeleted:=@OnDesignerComponentDeleted;
     OnRemoveComponent:=@OnDesignerRemoveComponent;
     OnGetNonVisualCompIconCanvas:=@IDECompList.OnGetNonVisualCompIconCanvas;
     OnModified:=@OnDesignerModified;
@@ -3197,8 +3202,7 @@ begin
     TheControlSelection.Remove(AForm);
     // free designer and design form
     OldDesigner:=TDesigner(AForm.Designer);
-    FormEditor1.DeleteControl(AForm);
-    OldDesigner.Free;
+    OldDesigner.DeleteFormAndFree;
     AnUnitInfo.Form:=nil;
   end;
   Result:=mrOk;
@@ -5899,11 +5903,6 @@ begin
   SetDesigning(Component,Value);
 end;
 
-procedure TMainIDE.OnDesignerComponentListChanged(Sender: TObject);
-begin
-  ObjectInspector1.FillComponentComboBox;
-end;
-
 procedure TMainIDE.OnDesignerPropertiesChanged(Sender: TObject);
 begin
   ObjectInspector1.RefreshPropertyValues;
@@ -5939,6 +5938,17 @@ begin
   ObjectInspector1.FillComponentComboBox;
 end;
 
+procedure TMainIDE.OnDesignerComponentDeleted(Sender: TObject;
+  AComponent: TComponent);
+var
+  CurDesigner: TDesigner;
+begin
+  CurDesigner:=TDesigner(Sender);
+  if dfDestroyingForm in CurDesigner.Flags then exit;
+  
+  ObjectInspector1.FillComponentComboBox;
+end;
+
 procedure TMainIDE.OnDesignerRemoveComponent(Sender: TObject;
   AComponent: TComponent);
 var i: integer;
@@ -5946,9 +5956,13 @@ var i: integer;
   ActiveUnitInfo: TUnitInfo;
   ActiveSrcEdit: TSourceEditor;
   FormClassName: string;
+  CurDesigner: TDesigner;
 begin
-  BeginCodeTool(TDesigner(Sender),ActiveSrcEdit,ActiveUnitInfo,true);
-  ActiveForm:=TDesigner(Sender).Form;
+  CurDesigner:=TDesigner(Sender);
+  if dfDestroyingForm in CurDesigner.Flags then exit;
+  
+  BeginCodeTool(CurDesigner,ActiveSrcEdit,ActiveUnitInfo,true);
+  ActiveForm:=CurDesigner.Form;
   if ActiveForm=nil then begin
     RaiseException('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
   end;
@@ -5962,8 +5976,6 @@ begin
   FormClassName:=ActiveForm.ClassName;
   CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,FormClassName,
     AComponent.Name);
-
-  ObjectInspector1.FillComponentComboBox;
 end;
 
 procedure TMainIDE.OnDesignerModified(Sender: TObject);
@@ -7160,7 +7172,7 @@ begin
   writeln('TMainIDE.OnPropHookDeleteComponent A ',AComponent.Name,':',AComponent.ClassName);
   ADesigner:=TDesigner(FindRootDesigner(AComponent));
   if ADesigner=nil then exit;
-  ADesigner.RemoveComponent(AComponent);
+  ADesigner.RemoveComponentAndChilds(AComponent);
 end;
 
 procedure TMainIDE.mnuEditCopyClicked(Sender: TObject);
@@ -7403,6 +7415,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.417  2002/10/23 14:12:01  lazarus
+  MG: implemented indirect deletion of designed components
+
   Revision 1.416  2002/10/22 17:53:35  lazarus
   MG: fixed updating OI when adding/emoving component and selecting in OI
 
