@@ -1933,83 +1933,125 @@ begin
   end;
 end;
 
-procedure gtk_combo_get_pos(combo : PGtkCombo; var x : gint; var  y : gint;
-  var height : gint; var width : gint);
-{var
-  popwin : PGtkbin;
-  widget : PGtkWidget;
-  popup : PGtkScrolledwindow;
-  real_height : gint;
-  list_requisition : PGtkRequisition;
-  show_hscroll : gboolean;
-  show_vscroll : gboolean;
-  avail_height : gint;
-  min_height : gint;
-  alloc_width : gint;
-  work_height : gint;
-  old_height : gint;
-  old_width : gint;
-  okay_to_exit : boolean;
-const
-  EMPTY_LIST_HEIGHT = 15;}
-begin
-{  show_hscroll := False;
-  show_vscroll := False;
-  widget := GTK_WIDGET(combo);
-  popup  := GTK_SCROLLED_WINDOW (combo^.popup);
-  popwin := GTK_BIN (combo^.popwin);
-  gdk_window_get_origin (combo^.entry^.window, @x, @y);
-  real_height := MIN (combo^.entry^.requisition.height,
-           combo^.entry^.allocation.height);
-  y := y + real_height;
-  avail_height := gdk_screen_height () - y;
-  New(list_requisition);
-  gtk_widget_size_request (combo^.list, list_requisition);
-  min_height := list_requisition^.height;
-  min_height := MIN (list_requisition^.height,popup^.vscrollbar^.requisition.height);
-  if  GTK_LIST (combo^.list)^.children = nil then
-    list_requisition^.height := list_requisition^.height + EMPTY_LIST_HEIGHT;
-  alloc_width := (widget^.allocation.width -
-    2 * PGtkStyle(popwin^.child^.thestyle)^.klass^.xthickness -
-    2 * border_width(GTK_CONTAINER (popwin^.child)^) -
-    2 * border_width(GTK_CONTAINER (combo^.popup)^) -
-    2 * border_width(GTK_CONTAINER (GTK_BIN (popup)^.child)^) -
-    2 * PGtkStyle(GTK_BIN (popup)^.child^.thestyle)^.klass^.xthickness);
-  work_height := (2 * (PGtkStyle(popwin^.child^.thestyle)^.klass^.ythickness) +
-        2 * border_width(GTK_CONTAINER (popwin^.child)^) +
-        2 * border_width(GTK_CONTAINER (combo^.popup)^) +
-        2 * border_width(GTK_CONTAINER (GTK_BIN (popup)^.child)^) +
-        2 * PGtkStyle(GTK_BIN (popup)^.child^.thestyle)^.klass^.xthickness);
-  repeat
-    okay_to_exit := True;
-    old_width := alloc_width;
-    old_height := work_height;
-    if ((not show_hscroll) and (alloc_width < list_requisition^.width)) then
-    begin
-      work_height := work_height +  popup^.hscrollbar^.requisition.height +
-        GTK_SCROLLED_WINDOW_CLASS(GTK_OBJECT (combo^.popup)^.klass)^.scrollbar_spacing;
-      show_hscroll := TRUE;
-      okay_to_exit := False;
-    end;
-    if ((not show_vscroll) and (work
-
-  }
-end;
-
 {------------------------------------------------------------------------------
   function TgtkObject.ComboBoxDropDown(Handle: HWND;
                                        DropDown: boolean): boolean; override;
 ------------------------------------------------------------------------------}
 function TgtkObject.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
+
+  procedure gtk_combo_get_pos(combo : PGtkCombo; var x : gint; var  y : gint;
+    var height : gint; var width : gint);
+  var
+    popwin : PGtkbin;
+    widget : PGtkWidget;
+    popup : PGtkScrolledwindow;
+    real_height : gint;
+    list_requisition : PGtkRequisition;
+    show_hscroll : gboolean;
+    show_vscroll : gboolean;
+    avail_height : gint;
+    min_height : gint;
+    alloc_width : gint;
+    work_height : gint;
+    old_height : gint;
+    old_width : gint;
+    okay_to_exit : boolean;
+  const
+    EMPTY_LIST_HEIGHT = 15;
+  begin
+    show_hscroll := False;
+    show_vscroll := False;
+
+    widget := GTK_WIDGET(combo);
+    popup  := GTK_SCROLLED_WINDOW (combo^.popup);
+    popwin := GTK_BIN (combo^.popwin);
+    gdk_window_get_origin (combo^.entry^.window, @x, @y);
+    real_height := MIN (combo^.entry^.requisition.height,
+                    combo^.entry^.allocation.height);
+    y := y + real_height;
+    avail_height := gdk_screen_height () - y;
+    New(list_requisition);
+    gtk_widget_size_request (combo^.list, list_requisition);
+
+    min_height := MIN (list_requisition^.height,popup^.vscrollbar^.requisition.height);
+    if  GTK_LIST (combo^.list)^.children = nil then
+      list_requisition^.height := list_requisition^.height + EMPTY_LIST_HEIGHT;
+
+    alloc_width := (widget^.allocation.width -
+      2 * PGtkStyle(popwin^.child^.thestyle)^.klass^.xthickness -
+      2 * border_width(GTK_CONTAINER (popwin^.child)^) -
+      2 * border_width(GTK_CONTAINER (combo^.popup)^) -
+      2 * border_width(GTK_CONTAINER (GTK_BIN (popup)^.child)^) -
+      2 * PGtkStyle(GTK_BIN (popup)^.child^.thestyle)^.klass^.xthickness);
+
+    work_height := (2 * (PGtkStyle(popwin^.child^.thestyle)^.klass^.ythickness) +
+                 2 * border_width(GTK_CONTAINER (popwin^.child)^) +
+                 2 * border_width(GTK_CONTAINER (combo^.popup)^) +
+                 2 * border_width(GTK_CONTAINER (GTK_BIN (popup)^.child)^) +
+                 2 * PGtkStyle(GTK_BIN (popup)^.child^.thestyle)^.klass^.xthickness);
+
+    repeat
+      okay_to_exit := True;
+      old_width := alloc_width;
+      old_height := work_height;
+
+      if ((not show_hscroll) and (alloc_width < list_requisition^.width)) then
+      begin
+           work_height := work_height +  popup^.hscrollbar^.requisition.height +
+          GTK_SCROLLED_WINDOW_CLASS(GTK_OBJECT (combo^.popup)^.klass)^.scrollbar_spacing;
+        show_hscroll := TRUE;
+        okay_to_exit := False;
+      end;
+      if ((not show_vscroll) and (work_height + list_requisition^.height > avail_height)) then
+      begin
+        if ((work_height + min_height > avail_height) and (y - real_height > avail_height)) then
+        begin
+          y := y - (work_height + list_requisition^.height + real_height);
+          break;
+        end;
+        alloc_width := alloc_width -
+          popup^.vscrollbar^.requisition.width +
+          GTK_SCROLLED_WINDOW_CLASS(GTK_OBJECT (combo^.popup)^.klass)^.scrollbar_spacing;
+        show_vscroll := TRUE;
+        okay_to_exit := False;
+      end;
+    until ((old_width <> alloc_width) or (old_height <> work_height) or okay_to_exit);
+
+    width := widget^.allocation.width;
+    if (show_vscroll) then
+      height := avail_height
+    else
+      height := work_height + list_requisition^.height;
+    if (x < 0) then
+      x := 0;
+
+    Dispose(list_requisition);
+  end;
+
 var
   ComboWidget: PGtkCombo;
+  height, width, x, y : gint;
+  old_width, old_height : gint;
 begin
   Result:=false;
   if Handle=0 then exit;
   ComboWidget:=PGtkCombo(Handle);
   if DropDown<>GTK_WIDGET_VISIBLE(ComboWidget^.popwin) then begin
     if DropDown then begin
-      writeln('TgtkObject.ComboBoxDropDown ToDo: Find the trick to popup the combobox');
+      old_width := ComboWidget^.popwin^.allocation.width;
+      old_height := ComboWidget^.popwin^.allocation.height;
+      gtk_combo_get_pos(ComboWidget,x,y,height,width);
+      if ((old_width <> width) or (old_height <> height)) then
+      begin
+        gtk_widget_hide (GTK_SCROLLED_WINDOW(ComboWidget^.popup)^.hscrollbar);
+        gtk_widget_hide (GTK_SCROLLED_WINDOW(ComboWidget^.popup)^.vscrollbar);
+      end;
+      gtk_widget_set_uposition (comboWidget^.popwin,x, y);
+      gtk_widget_set_usize(ComboWidget^.popwin,width ,height);
+      gtk_widget_realize(ComboWidget^.popwin);
+      gdk_window_resize(ComboWidget^.popwin^.window,width,height);
+      gtk_widget_show (ComboWidget^.popwin);
+      gtk_widget_grab_focus(ComboWidget^.popwin);
     end else
       gtk_widget_hide (ComboWidget^.popwin);
   end;
@@ -8156,6 +8198,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.241  2003/06/07 13:04:03  mattias
+  ComboBoxDropDown from Yoyong
+
   Revision 1.240  2003/06/07 09:34:21  mattias
   added ambigius compiled unit test for packages
 
