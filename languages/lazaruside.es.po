@@ -1069,6 +1069,10 @@ msgstr ""
 msgid "Codetools options"
 msgstr ""
 
+#: lazarusidestrconsts:lismenucollectpofil
+msgid "Collect .po files"
+msgstr ""
+
 #: lazarusidestrconsts:liscodetoolsoptscolon
 msgid "Colon"
 msgstr "Dos puntos"
@@ -1356,6 +1360,10 @@ msgstr "Copyright (C) <year> <name of author>%sThis program is free software; yo
 #: lazarusidestrconsts:dlgsmbcounter
 msgid "Counter (.pp;1)"
 msgstr "Contador (.pp;1)"
+
+#: lazarusidestrconsts:lismenucreatepofile
+msgid "Create .po files"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefscreatedefinesfordirectory
 msgid "Create Defines for %s Directory"
@@ -1924,6 +1932,10 @@ msgstr "Introducir datos"
 #: lazarusidestrconsts:lismacropromptenterrunparameters
 msgid "Enter run parameters"
 msgstr "Introducir parámetros de ejecución"
+
+#: lazarusidestrconsts:lisentertransla
+msgid "Enter translation language"
+msgstr ""
 
 #: lazarusidestrconsts:dlgentirescope
 msgid "Entire Scope"
@@ -3455,6 +3467,10 @@ msgstr "Directorio de Lazarus \"%s\" no encontrado."
 
 #: lazarusidestrconsts:lislazarusdirectorynotfound
 msgid "Lazarus directory not found"
+msgstr ""
+
+#: lazarusidestrconsts:lisleaveemptyfo
+msgid "Leave empty for default .po file"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_left
@@ -5016,6 +5032,10 @@ msgstr "Ruso"
 #: lazarusidestrconsts:rslanguagerussianwin
 msgid "Russian(CP1251)"
 msgstr "Ruso(CP1251)"
+
+#: lazarusidestrconsts:rslanguagerussianutf
+msgid "Russian(UTF8)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgbckupsubdir
 msgid "Same name (in subdirectory)"

@@ -9,12 +9,7 @@
       <TargetFileExt Value=""/>
       <Title Value="Example for the Object Inspector"/>
     </General>
-    <JumpHistory Count="1" HistoryIndex="0">
-      <Position1>
-        <Filename Value="mainunit.pas"/>
-        <Caret Line="67" Column="17" TopLine="44"/>
-      </Position1>
-    </JumpHistory>
+    <JumpHistory Count="0" HistoryIndex="-1"/>
     <Units Count="2">
       <Unit0>
         <CursorPos X="6" Y="10"/>

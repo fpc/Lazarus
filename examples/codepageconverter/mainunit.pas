@@ -27,7 +27,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons, ComCtrls, FileFind, Menus;
+  StdCtrls, Buttons, ComCtrls, FileFind, Menus{$IFDEF TRANSLATESTRING}, DefaultTranslator{$ENDIF};
 
 type
   TLazConverterForm = class(TForm)
@@ -344,6 +344,5 @@ end;
 
 initialization
   {$I mainunit.lrs}
-
 end.
 

@@ -1,64 +1,64 @@
 { This is an automatically generated lazarus resource file }
 
 LazarusResources.Add('TViewForm','FORMDATA',[
-  'TPF0'#9'TViewForm'#8'ViewForm'#7'Caption'#6#4'VIEW'#12'ClientHeight'#3#210#1
-  +#11'ClientWidth'#3#147#2#13'PixelsPerInch'#2'^'#18'HorzScrollBar.Page'#3#148
-  +#2#18'VertScrollBar.Page'#3#211#1#4'Left'#3#31#1#6'Height'#3#210#1#3'Top'#3
-  +#183#0#5'Width'#3#147#2#0#8'TSynMemo'#8'SynMemo1'#5'Align'#7#8'alClient'#5'C'
-  +'olor'#7#7'clBlack'#11'Font.Height'#2#241#9'Font.Name'#6#7'courier'#6'Height'
-  +#3#210#1#4'Name'#6#8'SynMemo1'#9'PopupMenu'#7#10'PopupMenu1'#8'TabOrder'#2#0
-  +#5'Width'#3#147#2#24'BookMarkOptions.OnChange'#13#15'Gutter.OnChange'#13#11
-  +'Highlighter'#7#10'SynPasSyn1'#10'Keystrokes'#14#1#7'Command'#2#3#8'ShortCut'
-  +#2'&'#0#1#7'Command'#2'g'#8'ShortCut'#3'& '#0#1#7'Command'#3#211#0#8'ShortCu'
-  +'t'#3'&@'#0#1#7'Command'#2#4#8'ShortCut'#2'('#0#1#7'Command'#2'h'#8'ShortCut'
-  +#3'( '#0#1#7'Command'#3#212#0#8'ShortCut'#3'(@'#0#1#7'Command'#2#1#8'ShortCu'
-  +'t'#2'%'#0#1#7'Command'#2'e'#8'ShortCut'#3'% '#0#1#7'Command'#2#5#8'ShortCut'
-  +#3'%@'#0#1#7'Command'#2'i'#8'ShortCut'#3'%`'#0#1#7'Command'#2#2#8'ShortCut'#2
-  +''''#0#1#7'Command'#2'f'#8'ShortCut'#3''' '#0#1#7'Command'#2#6#8'ShortCut'#3
-  +'''@'#0#1#7'Command'#2'j'#8'ShortCut'#3'''`'#0#1#7'Command'#2#10#8'ShortCut'
-  +#2'"'#0#1#7'Command'#2'n'#8'ShortCut'#3'" '#0#1#7'Command'#2#14#8'ShortCut'#3
-  +'"@'#0#1#7'Command'#2'r'#8'ShortCut'#3'"`'#0#1#7'Command'#2#9#8'ShortCut'#2
-  +'!'#0#1#7'Command'#2'm'#8'ShortCut'#3'! '#0#1#7'Command'#2#13#8'ShortCut'#3
-  +'!@'#0#1#7'Command'#2'q'#8'ShortCut'#3'!`'#0#1#7'Command'#2#7#8'ShortCut'#2
-  +'$'#0#1#7'Command'#2'k'#8'ShortCut'#3'$ '#0#1#7'Command'#2#15#8'ShortCut'#3
-  +'$@'#0#1#7'Command'#2's'#8'ShortCut'#3'$`'#0#1#7'Command'#2#8#8'ShortCut'#2
-  +'#'#0#1#7'Command'#2'l'#8'ShortCut'#3'# '#0#1#7'Command'#2#16#8'ShortCut'#3
-  +'#@'#0#1#7'Command'#2't'#8'ShortCut'#3'#`'#0#1#7'Command'#3#223#0#8'ShortCut'
-  +#2'-'#0#1#7'Command'#3#201#0#8'ShortCut'#3'-@'#0#1#7'Command'#3'\'#2#8'Short'
-  +'Cut'#3'- '#0#1#7'Command'#3#246#1#8'ShortCut'#2'.'#0#1#7'Command'#3'['#2#8
-  +'ShortCut'#3'. '#0#1#7'Command'#3#245#1#8'ShortCut'#2#8#0#1#7'Command'#3#245
-  +#1#8'ShortCut'#3#8' '#0#1#7'Command'#3#248#1#8'ShortCut'#3#8'@'#0#1#7'Comman'
-  +'d'#3'Y'#2#8'ShortCut'#4#8#128#0#0#0#1#7'Command'#3'Z'#2#8'ShortCut'#4#8#160
-  +#0#0#0#1#7'Command'#3#253#1#8'ShortCut'#2#13#0#1#7'Command'#3#199#0#8'ShortC'
-  +'ut'#3'A@'#0#1#7'Command'#3#201#0#8'ShortCut'#3'C@'#0#1#7'Command'#3'b'#2#8
-  +'ShortCut'#3'I`'#0#1#7'Command'#3#253#1#8'ShortCut'#3'M@'#0#1#7'Command'#3
-  +#254#1#8'ShortCut'#3'N@'#0#1#7'Command'#3#247#1#8'ShortCut'#3'T@'#0#1#7'Comm'
-  +'and'#3'c'#2#8'ShortCut'#3'U`'#0#1#7'Command'#3'\'#2#8'ShortCut'#3'V@'#0#1#7
-  +'Command'#3'['#2#8'ShortCut'#3'X@'#0#1#7'Command'#3#251#1#8'ShortCut'#3'Y@'#0
-  +#1#7'Command'#3#250#1#8'ShortCut'#3'Y`'#0#1#7'Command'#3'Y'#2#8'ShortCut'#3
-  +'Z@'#0#1#7'Command'#3'Z'#2#8'ShortCut'#3'Z`'#0#1#7'Command'#3'-'#1#8'ShortCu'
-  +'t'#3'0@'#0#1#7'Command'#3'.'#1#8'ShortCut'#3'1@'#0#1#7'Command'#3'/'#1#8'Sh'
-  +'ortCut'#3'2@'#0#1#7'Command'#3'0'#1#8'ShortCut'#3'3@'#0#1#7'Command'#3'1'#1
-  +#8'ShortCut'#3'4@'#0#1#7'Command'#3'2'#1#8'ShortCut'#3'5@'#0#1#7'Command'#3
-  +'3'#1#8'ShortCut'#3'6@'#0#1#7'Command'#3'4'#1#8'ShortCut'#3'7@'#0#1#7'Comman'
-  +'d'#3'5'#1#8'ShortCut'#3'8@'#0#1#7'Command'#3'6'#1#8'ShortCut'#3'9@'#0#1#7'C'
-  +'ommand'#3'_'#1#8'ShortCut'#3'0`'#0#1#7'Command'#3'`'#1#8'ShortCut'#3'1`'#0#1
-  +#7'Command'#3'a'#1#8'ShortCut'#3'2`'#0#1#7'Command'#3'b'#1#8'ShortCut'#3'3`'
-  +#0#1#7'Command'#3'c'#1#8'ShortCut'#3'4`'#0#1#7'Command'#3'd'#1#8'ShortCut'#3
-  +'5`'#0#1#7'Command'#3'e'#1#8'ShortCut'#3'6`'#0#1#7'Command'#3'f'#1#8'ShortCu'
-  +'t'#3'7`'#0#1#7'Command'#3'g'#1#8'ShortCut'#3'8`'#0#1#7'Command'#3'h'#1#8'Sh'
-  +'ortCut'#3'9`'#0#1#7'Command'#3#231#0#8'ShortCut'#3'N`'#0#1#7'Command'#3#232
-  +#0#8'ShortCut'#3'C`'#0#1#7'Command'#3#233#0#8'ShortCut'#3'L`'#0#1#7'Command'
-  +#3'd'#2#8'ShortCut'#2#9#0#1#7'Command'#3'e'#2#8'ShortCut'#3#9' '#0#1#7'Comma'
-  +'nd'#3#250#0#8'ShortCut'#3'B`'#0#0#8'ReadOnly'#9#22'SelectedColor.OnChange'
-  +#13#6'Cursor'#7#7'crIBeam'#6'Height'#3#210#1#5'Width'#3#147#2#0#0#10'TSynPas'
-  +'Syn'#10'SynPasSyn1'#19'AsmAttri.Foreground'#7#6'clLime'#23'CommentAttri.For'
-  +'eground'#7#8'clSilver'#26'IdentifierAttri.Foreground'#7#7'clWhite'#19'KeyAt'
-  +'tri.Foreground'#7#6'clAqua'#22'NumberAttri.Foreground'#7#9'clFuchsia'#21'Sp'
-  +'aceAttri.Foreground'#7#7'clWhite'#22'StringAttri.Foreground'#7#8'clYellow'
-  +#22'SymbolAttri.Foreground'#7#6'clAqua'#25'DirectiveAttri.Foreground'#7#5'cl'
-  +'Red'#4'left'#2#16#3'top'#2'('#0#0#10'TPopupMenu'#10'PopupMenu1'#4'left'#2'0'
-  +#3'top'#2'('#0#9'TMenuItem'#9'MenuItem1'#7'Caption'#6#4'Font'#7'OnClick'#7#14
-  +'MenuItem1Click'#0#0#0#11'TFontDialog'#11'FontDialog1'#5'Title'#6#13'Select '
-  +'a font'#11'PreviewText'#6#12'Preview Text'#4'left'#2#16#3'top'#2'H'#0#0#0
+  'TPF0'#9'TViewForm'#8'ViewForm'#13'ActiveControl'#7#8'SynMemo1'#7'Caption'#6#4
+  +'VIEW'#12'ClientHeight'#3#210#1#11'ClientWidth'#3#147#2#13'PixelsPerInch'#2
+  +'Q'#18'HorzScrollBar.Page'#3#148#2#18'VertScrollBar.Page'#3#211#1#4'Left'#3
+  +#31#1#6'Height'#3#210#1#3'Top'#3#183#0#5'Width'#3#147#2#0#8'TSynMemo'#8'SynM'
+  +'emo1'#5'Align'#7#8'alClient'#5'Color'#7#7'clBlack'#11'Font.Height'#2#241#9
+  +'Font.Name'#6#7'courier'#6'Height'#3#210#1#4'Name'#6#8'SynMemo1'#9'PopupMenu'
+  +#7#10'PopupMenu1'#8'TabOrder'#2#0#5'Width'#3#147#2#11'Highlighter'#7#10'SynP'
+  +'asSyn1'#10'Keystrokes'#14#1#7'Command'#2#3#8'ShortCut'#2'&'#0#1#7'Command'#2
+  +'g'#8'ShortCut'#3'& '#0#1#7'Command'#3#211#0#8'ShortCut'#3'&@'#0#1#7'Command'
+  +#2#4#8'ShortCut'#2'('#0#1#7'Command'#2'h'#8'ShortCut'#3'( '#0#1#7'Command'#3
+  +#212#0#8'ShortCut'#3'(@'#0#1#7'Command'#2#1#8'ShortCut'#2'%'#0#1#7'Command'#2
+  +'e'#8'ShortCut'#3'% '#0#1#7'Command'#2#5#8'ShortCut'#3'%@'#0#1#7'Command'#2
+  +'i'#8'ShortCut'#3'%`'#0#1#7'Command'#2#2#8'ShortCut'#2''''#0#1#7'Command'#2
+  +'f'#8'ShortCut'#3''' '#0#1#7'Command'#2#6#8'ShortCut'#3'''@'#0#1#7'Command'#2
+  +'j'#8'ShortCut'#3'''`'#0#1#7'Command'#2#10#8'ShortCut'#2'"'#0#1#7'Command'#2
+  +'n'#8'ShortCut'#3'" '#0#1#7'Command'#2#14#8'ShortCut'#3'"@'#0#1#7'Command'#2
+  +'r'#8'ShortCut'#3'"`'#0#1#7'Command'#2#9#8'ShortCut'#2'!'#0#1#7'Command'#2'm'
+  +#8'ShortCut'#3'! '#0#1#7'Command'#2#13#8'ShortCut'#3'!@'#0#1#7'Command'#2'q'
+  +#8'ShortCut'#3'!`'#0#1#7'Command'#2#7#8'ShortCut'#2'$'#0#1#7'Command'#2'k'#8
+  +'ShortCut'#3'$ '#0#1#7'Command'#2#15#8'ShortCut'#3'$@'#0#1#7'Command'#2's'#8
+  +'ShortCut'#3'$`'#0#1#7'Command'#2#8#8'ShortCut'#2'#'#0#1#7'Command'#2'l'#8'S'
+  +'hortCut'#3'# '#0#1#7'Command'#2#16#8'ShortCut'#3'#@'#0#1#7'Command'#2't'#8
+  +'ShortCut'#3'#`'#0#1#7'Command'#3#223#0#8'ShortCut'#2'-'#0#1#7'Command'#3#201
+  +#0#8'ShortCut'#3'-@'#0#1#7'Command'#3'\'#2#8'ShortCut'#3'- '#0#1#7'Command'#3
+  +#246#1#8'ShortCut'#2'.'#0#1#7'Command'#3'['#2#8'ShortCut'#3'. '#0#1#7'Comman'
+  +'d'#3#245#1#8'ShortCut'#2#8#0#1#7'Command'#3#245#1#8'ShortCut'#3#8' '#0#1#7
+  +'Command'#3#248#1#8'ShortCut'#3#8'@'#0#1#7'Command'#3'Y'#2#8'ShortCut'#4#8
+  +#128#0#0#0#1#7'Command'#3'Z'#2#8'ShortCut'#4#8#160#0#0#0#1#7'Command'#3#253#1
+  +#8'ShortCut'#2#13#0#1#7'Command'#3#199#0#8'ShortCut'#3'A@'#0#1#7'Command'#3
+  +#201#0#8'ShortCut'#3'C@'#0#1#7'Command'#3'b'#2#8'ShortCut'#3'I`'#0#1#7'Comma'
+  +'nd'#3#253#1#8'ShortCut'#3'M@'#0#1#7'Command'#3#254#1#8'ShortCut'#3'N@'#0#1#7
+  +'Command'#3#247#1#8'ShortCut'#3'T@'#0#1#7'Command'#3'c'#2#8'ShortCut'#3'U`'#0
+  +#1#7'Command'#3'\'#2#8'ShortCut'#3'V@'#0#1#7'Command'#3'['#2#8'ShortCut'#3'X'
+  +'@'#0#1#7'Command'#3#251#1#8'ShortCut'#3'Y@'#0#1#7'Command'#3#250#1#8'ShortC'
+  +'ut'#3'Y`'#0#1#7'Command'#3'Y'#2#8'ShortCut'#3'Z@'#0#1#7'Command'#3'Z'#2#8'S'
+  +'hortCut'#3'Z`'#0#1#7'Command'#3'-'#1#8'ShortCut'#3'0@'#0#1#7'Command'#3'.'#1
+  +#8'ShortCut'#3'1@'#0#1#7'Command'#3'/'#1#8'ShortCut'#3'2@'#0#1#7'Command'#3
+  +'0'#1#8'ShortCut'#3'3@'#0#1#7'Command'#3'1'#1#8'ShortCut'#3'4@'#0#1#7'Comman'
+  +'d'#3'2'#1#8'ShortCut'#3'5@'#0#1#7'Command'#3'3'#1#8'ShortCut'#3'6@'#0#1#7'C'
+  +'ommand'#3'4'#1#8'ShortCut'#3'7@'#0#1#7'Command'#3'5'#1#8'ShortCut'#3'8@'#0#1
+  +#7'Command'#3'6'#1#8'ShortCut'#3'9@'#0#1#7'Command'#3'_'#1#8'ShortCut'#3'0`'
+  +#0#1#7'Command'#3'`'#1#8'ShortCut'#3'1`'#0#1#7'Command'#3'a'#1#8'ShortCut'#3
+  +'2`'#0#1#7'Command'#3'b'#1#8'ShortCut'#3'3`'#0#1#7'Command'#3'c'#1#8'ShortCu'
+  +'t'#3'4`'#0#1#7'Command'#3'd'#1#8'ShortCut'#3'5`'#0#1#7'Command'#3'e'#1#8'Sh'
+  +'ortCut'#3'6`'#0#1#7'Command'#3'f'#1#8'ShortCut'#3'7`'#0#1#7'Command'#3'g'#1
+  +#8'ShortCut'#3'8`'#0#1#7'Command'#3'h'#1#8'ShortCut'#3'9`'#0#1#7'Command'#3
+  +#231#0#8'ShortCut'#3'N`'#0#1#7'Command'#3#232#0#8'ShortCut'#3'C`'#0#1#7'Comm'
+  +'and'#3#233#0#8'ShortCut'#3'L`'#0#1#7'Command'#3'd'#2#8'ShortCut'#2#9#0#1#7
+  +'Command'#3'e'#2#8'ShortCut'#3#9' '#0#1#7'Command'#3#250#0#8'ShortCut'#3'B`'
+  +#0#0#8'ReadOnly'#9#6'Cursor'#7#7'crIBeam'#6'Height'#3#210#1#5'Width'#3#147#2
+  +#0#0#10'TSynPasSyn'#10'SynPasSyn1'#19'AsmAttri.Foreground'#7#6'clLime'#23'Co'
+  +'mmentAttri.Foreground'#7#8'clSilver'#26'IdentifierAttri.Foreground'#7#7'clW'
+  +'hite'#19'KeyAttri.Foreground'#7#6'clAqua'#22'NumberAttri.Foreground'#7#9'cl'
+  +'Fuchsia'#21'SpaceAttri.Foreground'#7#7'clWhite'#22'StringAttri.Foreground'#7
+  +#8'clYellow'#22'SymbolAttri.Foreground'#7#6'clAqua'#25'DirectiveAttri.Foregr'
+  +'ound'#7#5'clRed'#7'Enabled'#8#4'left'#2#16#3'top'#2'('#0#0#10'TPopupMenu'#10
+  +'PopupMenu1'#4'left'#2'0'#3'top'#2'('#0#9'TMenuItem'#9'MenuItem1'#7'Caption'
+  +#6#4'Font'#7'OnClick'#7#14'MenuItem1Click'#0#0#0#11'TFontDialog'#11'FontDial'
+  +'og1'#5'Title'#6#13'Select a font'#11'PreviewText'#6#12'Preview Text'#4'left'
+  +#2#16#3'top'#2'H'#0#0#0
 ]);

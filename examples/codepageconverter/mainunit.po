@@ -1,0 +1,60 @@
+#
+msgid  "Codepage LazConverter for PAS, LFM, LRS & INC files v0.0.4"
+msgstr ""
+
+#
+msgid  "Path to your project:"
+msgstr ""
+
+#
+msgid  "Path"
+msgstr ""
+
+#
+msgid  "Convert From:"
+msgstr ""
+
+#
+msgid  "Convert To:"
+msgstr ""
+
+#
+msgid  "Include subdirectories"
+msgstr ""
+
+#
+msgid  "Search"
+msgstr ""
+
+#
+msgid  "Convert"
+msgstr ""
+
+#
+msgid  "Directory:"
+msgstr ""
+
+#
+msgid  "Ready..."
+msgstr ""
+
+#
+msgid  "Remove from conversion"
+msgstr ""
+
+#
+msgid  "View"
+msgstr ""
+
+#
+msgid  "View File"
+msgstr ""
+
+#
+msgid  "-"
+msgstr ""
+
+#
+msgid  "Remove From Conversion"
+msgstr ""
+

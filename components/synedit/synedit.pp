@@ -510,7 +510,7 @@ type
     procedure SetTabWidth(Value: integer);
     procedure SynSetText(const Value: string); 
     {$IFDEF SYN_LAZARUS}
-    procedure RealSetText(const Value: string); override;
+    procedure RealSetText(const Value: TCaption); override;
     {$ENDIF}
     procedure SetTopLine(Value: Integer);
     procedure SetWantTabs(const Value: boolean);
@@ -4896,7 +4896,7 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TCustomSynEdit.RealSetText(const Value: string);
+procedure TCustomSynEdit.RealSetText(const Value: TCaption);
 begin
   Lines.Text := Value;
 end;

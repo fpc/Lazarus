@@ -1,0 +1,330 @@
+msgid ""
+msgstr ""
+""
+"Last-Translator: Vasily <vvi@localhost.localdomain>\n"
+"PO-Revision-Date: 2003-01-15 22:38+0300\n"
+"Language-Team: ru_RU.cp1251 \n"
+"Content-Type: text/plain; charset=CP1251\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.6\n"
+
+#: objinspstrconsts:sccsilcmbimglist
+msgid " Images "
+msgstr " Рисунки "
+
+#: objinspstrconsts:sccslvedtgrprcaption
+msgid " Item property "
+msgstr " Свойство элемента "
+
+#: objinspstrconsts:sccslvedtgrplcaption
+msgid " Items "
+msgstr " Элементы "
+
+#: objinspstrconsts:sccsilcmbimgsel
+msgid " Selected image "
+msgstr " Выбранный рисунок "
+
+#: objinspstrconsts:oishelpalreadyregistered
+msgid "%s: Already registered"
+msgstr "%s: Уже зарешистрирован"
+
+#: objinspstrconsts:oishelpnotregistered
+msgid "%s: Not registered"
+msgstr "%s: Не зарегистрирован"
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
+msgstr "%u элементов выбрано"
+
+#: objinspstrconsts:oiscadd
+msgid "&Add"
+msgstr "&Добавить"
+
+#: objinspstrconsts:oiscancel
+msgid "&Cancel"
+msgstr "&Отмена"
+
+#: objinspstrconsts:oiscdelete
+msgid "&Delete"
+msgstr "&Удалить"
+
+#: objinspstrconsts:oisload
+msgid "&Load"
+msgstr "&Загрузить"
+
+#: objinspstrconsts:oisok
+msgid "&OK"
+msgstr ""
+
+#: objinspstrconsts:oissave
+msgid "&Save"
+msgstr "&Сохранить"
+
+#: objinspstrconsts:cactionlisteditorallcategory
+msgid "(All)"
+msgstr "(Все)"
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr "(Неизвестно)"
+
+#: objinspstrconsts:oisaction
+msgid "Action"
+msgstr "Действие"
+
+#: objinspstrconsts:oisactionlisteditor
+msgid "Action List Editor"
+msgstr "Редактор списка действий"
+
+#: objinspstrconsts:oisadd
+msgid "Add"
+msgstr "Добавить"
+
+#: objinspstrconsts:sccsilbtnadd
+msgid "Add ..."
+msgstr "Добавить..."
+
+#: objinspstrconsts:oisall
+msgid "All"
+msgstr "Все"
+
+#: objinspstrconsts:oisallfiles
+msgid "All files (*.*)|*.*"
+msgstr "Все файлы (*.*)|*.*"
+
+#: objinspstrconsts:oisarray
+msgid "Array"
+msgstr ""
+
+#: objinspstrconsts:oisboolean
+msgid "Boolean"
+msgstr ""
+
+#: objinspstrconsts:oishelpbrowsernotexecutable
+msgid "Browser %s%s%s not executable."
+msgstr "Просмотрщик %s%s%s не исполняемый."
+
+#: objinspstrconsts:oishelpbrowsernotfound
+msgid "Browser %s%s%s not found."
+msgstr ""
+
+#: objinspstrconsts:oisclear
+msgid "C&lear"
+msgstr ""
+
+#: objinspstrconsts:oiscategory
+msgid "Category"
+msgstr "Категория"
+
+#: objinspstrconsts:oischar
+msgid "Char"
+msgstr ""
+
+#: objinspstrconsts:oisclass
+msgid "Class"
+msgstr ""
+
+#: objinspstrconsts:sccsilbtnclear
+msgid "Clear"
+msgstr "Очистить"
+
+#: objinspstrconsts:oisconfirmdelete
+msgid "Confirm delete"
+msgstr "Подтвердить удаление"
+
+#: objinspstrconsts:sccsilconfirme
+msgid "Confirme clear all images ?"
+msgstr "Подтверждаете очистку всех изображений ?"
+
+#: objinspstrconsts:sccslvedtbtndel
+msgid "Delete"
+msgstr "Удалить"
+
+#: objinspstrconsts:oisdeleteitem
+msgid "Delete item %s%s%s?"
+msgstr "Удалить элемент %s%s%s?"
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr "Правка списка действий..."
+
+#: objinspstrconsts:oisenumeration
+msgid "Enumeration"
+msgstr "Перечисление"
+
+#: objinspstrconsts:oiserror
+msgid "Error"
+msgstr "Ошибка"
+
+#: objinspstrconsts:oiserrorloadingimage
+msgid "Error loading image"
+msgstr "Ошибка загрузки изображения"
+
+#: objinspstrconsts:oiserrorloadingimage2
+msgid "Error loading image %s%s%s:%s%s"
+msgstr "Ошибка загрузки изображения %s%s%s:%s%s"
+
+#: objinspstrconsts:oishelperrorwhileexecuting
+msgid "Error while executing %s%s%s:%s%s"
+msgstr "Ошибка при выполнении %s%s%s:%s%s"
+
+#: objinspstrconsts:oisevents
+msgid "Events"
+msgstr "События"
+
+#: objinspstrconsts:oisfloat
+msgid "Float"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr "Справочная база %s%s%s не нашла просмотрщика для страницы справки типа %s"
+
+#: objinspstrconsts:oishelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr "Справочная база %s%s%s не найдена"
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr "Контекст справки %s не найден в Базе данных %s%s%s."
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr "Контекст справки %s не найден."
+
+#: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
+msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgstr "Справочный ключ %s%s%s не найден в базе данных %s%s%s"
+
+#: objinspstrconsts:oishelphelpkeywordnotfound
+msgid "Help keyword %s%s%s not found."
+msgstr "Справочный ключ %s%s%s не найден"
+
+#: objinspstrconsts:oishelphelpnodehasnohelpdatabase
+msgid "Help node %s%s%s has no Help Database"
+msgstr "Справочный элемент %s%s%s не имеет справочной базы"
+
+#: objinspstrconsts:sccslvedtimgindexcaption
+msgid "Image index"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtcaption
+msgid "Image list editor"
+msgstr "Редактор списка рисунков"
+
+#: objinspstrconsts:oisint64
+msgid "Int64"
+msgstr ""
+
+#: objinspstrconsts:oisinteger
+msgid "Integer"
+msgstr ""
+
+#: objinspstrconsts:oisinterface
+msgid "Interface"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtlabcaption
+msgid "Label"
+msgstr "Метка"
+
+#: objinspstrconsts:sccslvedtcaption
+msgid "ListView editor"
+msgstr "Редактор ListView"
+
+#: objinspstrconsts:oisloadimagedialog
+msgid "Load Image Dialog"
+msgstr "Диалог загрузки изображения"
+
+#: objinspstrconsts:oismethod
+msgid "Method"
+msgstr "Метод"
+
+#: objinspstrconsts:sccslvedtbtnadd
+msgid "New"
+msgstr "Создать"
+
+#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr "Не найдено браузера HTML.%sОпределите его в Справка->Настроить справку->Просмотрщики"
+
+#: objinspstrconsts:oisobject
+msgid "Object"
+msgstr ""
+
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr "инспектор объектов"
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr "Свойства"
+
+#: objinspstrconsts:oisrecord
+msgid "Record"
+msgstr ""
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Выберите файл"
+
+#: objinspstrconsts:oisset
+msgid "Set"
+msgstr ""
+
+#: objinspstrconsts:oissettodefaultvalue
+msgid "Set to default value"
+msgstr "Установить в значение по умолчанию"
+
+#: objinspstrconsts:oissettodefault
+msgid "Set to default: %s"
+msgstr "Установить по умолчанию: %s"
+
+#: objinspstrconsts:oissort
+msgid "Sort"
+msgstr "Сортировка"
+
+#: objinspstrconsts:oisstring
+msgid "String"
+msgstr ""
+
+#: objinspstrconsts:cesstringgrideditor2
+msgid "StringGrid Editor"
+msgstr "Редактор Сетки строк"
+
+#: objinspstrconsts:cesstringgrideditor
+msgid "StringGrid Editor ..."
+msgstr "Редактор Сетки строк ..."
+
+#: objinspstrconsts:oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr "Диалог ввода строк"
+
+#: objinspstrconsts:sccslvedtbtnaddsub
+msgid "Sub item"
+msgstr "Подэлемент"
+
+#: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
+msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgstr "Справочная база %s%s%s не смогла найти файл %s%s%s."
+
+#: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
+msgid "The macro %s in BrowserParams will be replaced by the URL."
+msgstr "Макрос %s в параметрах обзора будер заменён на URL."
+
+#: objinspstrconsts:oisunknown
+msgid "Unknown"
+msgstr "Неизвестный"
+
+#: objinspstrconsts:oisvalue
+msgid "Value:"
+msgstr "Значение:"
+
+#: objinspstrconsts:oisvariant
+msgid "Variant"
+msgstr ""
+
+#: objinspstrconsts:oisword
+msgid "Word"
+msgstr ""
+

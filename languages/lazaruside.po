@@ -1,5 +1,21 @@
+#: lazarusidestrconsts:lisentertransla
+msgid "Enter translation language"
+msgstr ""
+
 #: lazarusidestrconsts:lislazarusversionstring
 msgid "0.9.3 beta"
+msgstr ""
+
+#: lazarusidestrconsts:lisleaveemptyfo
+msgid "Leave empty for default .po file"
+msgstr ""
+
+#: lazarusidestrconsts:lismenucollectpofil
+msgid "Collect .po files"
+msgstr ""
+
+#: lazarusidestrconsts:lismenucreatepofile
+msgid "Create .po files"
 msgstr ""
 
 #: lazarusidestrconsts:listhishelpmessage
@@ -4416,6 +4432,10 @@ msgstr ""
 
 #: lazarusidestrconsts:rslanguagerussianwin
 msgid "Russian(CP1251)"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagerussianutf
+msgid "Russian(UTF8)"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguagepolish

@@ -55,7 +55,10 @@ uses
   WSForms, WSGrids, WSImgList, WSMaskEdit,
   WSMenus, WSPairSplitter, WSSpin, WSStdCtrls,
   WSToolwin,
-  WSProc;
+  WSProc
+  {$ifdef TRANSLATESTRING}
+  ,DefaultTranslator
+  {$ENDIF};
 
 implementation
 
@@ -64,6 +67,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/12/27 12:56:42  mattias
+  started TTranslateStrings and .lrt files support  from Vasily
+
   Revision 1.23  2004/10/04 09:05:23  mattias
   added postscript canvas example  from Olivier
 

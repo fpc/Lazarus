@@ -107,6 +107,8 @@ begin
     Result:=rsLanguageRussian
   else if AnsiCompareText(ID,'ruwin')=0 then
     Result:=rsLanguageRussianWin
+  else if AnsiCompareText(ID,'ruutf')=0 then
+    Result:=rsLanguageRussianUTF
   else if AnsiCompareText(ID,'es')=0 then
     Result:=rsLanguageSpanish
   else if AnsiCompareText(ID,'fi')=0 then

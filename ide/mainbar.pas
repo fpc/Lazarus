@@ -196,6 +196,10 @@ type
     itmProjectViewToDos: TMenuItem;
     itmProjectOptions: TMenuItem;
     itmProjectCompilerOptions: TMenuItem;
+    {$IFDEF TRANSLATESTRING}
+    itmProjectCreatePoFiles:TMenuItem;
+    itmProjectCollectPoFiles:TMenuItem;
+    {$ENDIF}
 
     // run menu
     itmRunMenuBuild: TMenuItem;

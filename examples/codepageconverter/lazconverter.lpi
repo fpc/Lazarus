@@ -8,7 +8,7 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="0"/>
       <IconPath Value="./"/>
       <TargetFileExt Value=""/>
       <Title Value="lazconverter"/>
@@ -20,22 +20,22 @@
         <IsPartOfProject Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="lazconverter"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="30"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="15" Y="29"/>
+        <CursorPos X="31" Y="143"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainunit.pas"/>
         <ComponentName Value="LazConverterForm"/>
         <IsPartOfProject Value="True"/>
         <Loaded Value="True"/>
         <ResourceFilename Value="mainunit.lrs"/>
-        <TopLine Value="23"/>
+        <TopLine Value="130"/>
         <UnitName Value="mainunit"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="30"/>
       </Unit1>
       <Unit2>
-        <CursorPos X="6" Y="26"/>
+        <CursorPos X="36" Y="9"/>
         <EditorIndex Value="1"/>
         <Filename Value="viewunit.pas"/>
         <ComponentName Value="ViewForm"/>
@@ -44,7 +44,7 @@
         <ResourceFilename Value="viewunit.lrs"/>
         <TopLine Value="1"/>
         <UnitName Value="viewunit"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="23"/>
       </Unit2>
     </Units>
     <PublishOptions>
@@ -98,6 +98,7 @@
       </Options>
     </Linking>
     <Other>
+      <CustomOptions Value="-dTRANSLATESTRING"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

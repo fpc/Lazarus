@@ -1,0 +1,60 @@
+#
+msgid  "Codepage LazConverter for PAS, LFM, LRS & INC files v0.0.4"
+msgstr "Преобразователь кодировок LazConverter для pas, lfm, lrs и inc файлов v0.0.4"
+
+#
+msgid  "Path to your project:"
+msgstr "Путь к Вашему проекту:"
+
+#
+msgid  "Path"
+msgstr "Путь"
+
+#
+msgid  "Convert From:"
+msgstr "Преобразовать Из:"
+
+#
+msgid  "Convert To:"
+msgstr "Преобразовать в:"
+
+#
+msgid  "Include subdirectories"
+msgstr "Включая подкаталоги"
+
+#
+msgid  "Search"
+msgstr "Поиск"
+
+#
+msgid  "Convert"
+msgstr "Преобразовать"
+
+#
+msgid  "Directory:"
+msgstr "Каталог:"
+
+#
+msgid  "Ready..."
+msgstr "Готов..."
+
+#
+msgid  "Remove from conversion"
+msgstr "Убрать из преобразования"
+
+#
+msgid  "View"
+msgstr "Просмотр"
+
+#
+msgid  "View File"
+msgstr "Просмотр файла"
+
+#
+msgid  "-"
+msgstr ""
+
+#
+msgid  "Remove From Conversion"
+msgstr "Убрать из преобразования"
+

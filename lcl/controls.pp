@@ -160,9 +160,6 @@ const
 
 type
 
-  {$IFNDEF TRANSLATESTRING}
-  TTranslateString = string;//for backward compatibility
-  {$ENDIF}
   TWinControl = class;
   TControl = class;
   TWinControlClass = class of TWinControl;
@@ -208,6 +205,7 @@ const
   asrRight = asrBottom;
 
 type
+  TTranslateString = type String;
   TCaption = TTranslateString;
   TCursor = -32768..32767;
 
@@ -721,7 +719,7 @@ type
     function DoShowHint(var HintStr: string): Boolean; virtual;
     procedure SetCaption(const Value: string); override;
     procedure SetEnabled(Value: Boolean); override;
-    procedure SetHint(const Value: string); override;
+    procedure SetHint(const Value: String); override;
     procedure SetHelpContext(Value: THelpContext); override;
     procedure SetHelpKeyword(const Value: string); override;
     procedure SetHelpType(Value: THelpType); override;
@@ -2600,6 +2598,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.261  2004/12/27 12:56:42  mattias
+  started TTranslateStrings and .lrt files support  from Vasily
+
   Revision 1.260  2004/12/23 00:33:43  mattias
   fixed crash on readonly projects
 

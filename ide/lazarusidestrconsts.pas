@@ -41,8 +41,12 @@ uses
   Classes, SysUtils; 
   
 resourcestring
+  lisEnterTransla = 'Enter translation language';
   // version
   lisLazarusVersionString = '0.9.3 beta';
+  lisLeaveEmptyFo = 'Leave empty for default .po file';
+  lisMenuCollectPoFil = 'Collect .po files';
+  lisMenuCreatePoFile = 'Create .po files';
 
   // command line help
   listhisHelpMessage = 'this help message';
@@ -1402,6 +1406,7 @@ resourcestring
   rsLanguageFrench      = 'French';
   rsLanguageRussian     = 'Russian';
   rsLanguageRussianWin  = 'Russian(CP1251)';
+  rsLanguageRussianUTF  = 'Russian(UTF8)';
   rsLanguagePolish      = 'Polish';
   rsLanguagePolishISO   = 'Polish(ISO 8859-2)';
   rsLanguagePolishWin   = 'Polish(CP1250)';

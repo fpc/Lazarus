@@ -91,6 +91,10 @@ uses
   {$ELSE}
   MenuPropEdit,
   {$ENDIF}
+  {$IFDEF TRANSLATESTRING}
+  //LRT stuff
+  LrtPoTools,
+  {$ENDIF}
   // debugger
   RunParamsOpts, BaseDebugManager, DebugManager,
   // packager
@@ -217,6 +221,10 @@ type
     procedure mnuViewProjectSourceClicked(Sender: TObject);
     procedure mnuViewProjectTodosClicked(Sender: TObject);
     procedure mnuProjectOptionsClicked(Sender: TObject);
+    {$IFDEF TRANSLATESTRING}
+    procedure mnuProjectCreatePoFilesClicked(Sender : TObject);
+    procedure mnuProjectCollectPoFilesClicked(Sender : TObject);
+    {$ENDIF}
 
     // run menu
     procedure mnuBuildProjectClicked(Sender: TObject);
@@ -1073,13 +1081,9 @@ procedure TMainIDE.CreateSearchResultWindow;
 begin
   if SearchResultsView<>nil then exit;
   Application.CreateForm(TSearchResultsView, SearchResultsView);
-  with SearchResultsView do
-  begin
-//    ListBoxFont.Name:= EditorOpts.EditorFont;
-//    ListBoxFont.Size:= EditorOpts.EditorFontHeight;
-//    ListBoxFont.Style:=[];
+  with SearchResultsView do begin
     OnSelectionChanged:= @SearchResultsViewSelectionChanged;
-  end;//with
+  end;
 end;
 
 procedure TMainIDE.OIOnSelectPersistents(Sender: TObject);
@@ -1703,6 +1707,10 @@ begin
     itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
     itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
     itmProjectViewToDos.OnClick := @mnuViewProjectTodosClicked;
+    {$IFDEF TRANSLATESTRING}
+    itmProjectCreatePoFiles.OnClick:=@mnuProjectCreatePoFilesClicked;
+    itmProjectCollectPoFiles.OnClick:=@mnuProjectCollectPoFilesClicked;
+    {$ENDIF}
   end;
 end;
 
@@ -2586,6 +2594,50 @@ begin
 
   end;
 end;
+{$IFDEF TRANSLATESTRING}
+procedure TMainIDE.mnuProjectCreatePoFilesClicked(Sender: TObject);
+var
+  i: Integer;
+begin
+  //Ensure the project is saved
+  if DoSaveAll([sfCheckAmbigiousFiles])<>mrOk then exit;
+  //Ensure the project is compiled, so all rst files are present
+  if DoBuildProject(crBuild)<>mrOk then exit;
+  for i:=0 to Project1.FileCount-1 do
+  begin
+    if FileExists(ChangeFileExt(Project1.Files[i].Filename,'.lrt'))
+     or FileExists(ChangeFileExt(Project1.Files[i].Filename,'.rst')) then
+      Lrt2Po(ChangeFileExt(Project1.Files[i].Filename,'.lrt'),postStandard);
+      //TODO: Style must be in options
+  end;
+end;
+
+procedure TMainIDE.mnuProjectCollectPoFilesClicked(Sender: TObject);
+var
+  SL: TStringList;
+  LNG: String;
+  ext: String;
+  i: Integer;
+begin
+  if DoSaveAll([sfCheckAmbigiousFiles])<>mrOk then exit;
+  LNG:=InputBox(lisEnterTransla, lisLeaveEmptyFo, '');
+  SL:=TStringList.Create;
+  if LNG='' then ext:='.po' else ext:='.'+LNG+'.po';
+  for i:=0 to Project1.FileCount-1 do
+  begin
+    if not Project1.Files[i].IsPartOfProject then continue;
+    if ChangeFileExt(Project1.Files[i].Filename,'.po')=ChangeFileExt(Project1.MainFilename,'.po')
+      then continue;
+    if FileExists(ChangeFileExt(Project1.Files[i].Filename,ext)) then
+    SL.Add(ChangeFileExt(Project1.Files[i].Filename,ext));
+  end;
+  try//If I haven't made mistake, this try is not needed
+    CombinePoFiles(SL,ChangeFileExt(Project1.MainFilename,ext));
+  finally
+    SL.Free;
+  end;
+end;
+{$ENDIF}
 
 Procedure TMainIDE.mnuBuildProjectClicked(Sender: TObject);
 Begin
@@ -3294,6 +3346,43 @@ begin
   Result:=DoRenameUnit(AnUnitInfo,NewFilename,NewUnitName,ResourceCode);
 end;
 
+{$IFDEF TRANSLATESTRING}
+{ TLRTGrubber }
+type
+  TLRTGrubber=class(TObject)
+     private
+       FGrubbed: TStrings;
+     public
+       constructor Create;
+       destructor Destroy;override;
+       procedure Grub(Sender:TObject; const Instance: TPersistent; PropInfo: PPropInfo; var Content:string);
+       property Grubbed:TStrings read FGrubbed;
+     end;
+
+
+constructor TLRTGrubber.Create;
+begin
+  inherited Create;
+  FGrubbed:=TStringList.Create;
+end;
+
+destructor TLRTGrubber.Destroy;
+begin
+  FGrubbed.Free;
+  inherited Destroy;
+end;
+
+procedure TLRTGrubber.Grub(Sender: TObject; const Instance: TPersistent;
+  PropInfo: PPropInfo; var Content: string);
+begin
+  if not Assigned(Instance) then exit;
+  if not Assigned(PropInfo) then exit;
+  if (AnsiUpperCase(PropInfo^.PropType^.Name)<>'TTRANSLATESTRING')
+  and not (Instance is TMenuItem) then exit;
+  FGrubbed.Add(AnsiUpperCase(Instance.ClassName+'.'+PropInfo^.Name)+'='+Content);
+end;
+{$ENDIF}
+
 function TMainIDE.DoSaveFileResources(AnUnitInfo: TUnitInfo;
   ResourceCode, LFMCode: TCodeBuffer; Flags: TSaveFlags): TModalResult;
 const
@@ -3305,17 +3394,22 @@ var
   Writer: TWriter;
   ACaption, AText: string;
   CompResourceCode, LFMFilename, TestFilename, ResTestFilename: string;
+  UnitSaveFilename: String;
+  {$IFDEF TRANSLATESTRING}Grubber:TLRTGrubber;{$ENDIF}
 begin
   Result:=mrCancel;
 
   // save lrs - lazarus resource file and lfm - lazarus form text file
   // Note: When there is a bug in the source, the include directive of the
-  //       resource code can not be found, but the LFM file should always
-  //       be saved. Therefore each TUnitInfo stores the resource filename.
+  //       resource code can not be found, therefore the LFM file should always
+  //       be saved first.
+  //       And therefore each TUnitInfo stores the resource filename (.lrs).
 
   // the lfm file is saved before the lrs file, because the IDE only needs the
   // lfm file to recreate the lrs file.
-
+  // by VVI - now a LRT file is saved in addition to LFM and LRS
+  // LRT file format (in present) are lines
+  // <ClassName>.<PropertyName>=<PropertyValue>
 
   if (AnUnitInfo.Component<>nil) then begin
     // stream component to resource code and to lfm file
@@ -3336,6 +3430,14 @@ begin
         try
           BinCompStream.Position:=0;
           Writer:=CreateLRSWriter(BinCompStream,DestroyDriver);
+          {$IFDEF TRANSLATESTRING}
+          //The original idea was make a callback just in IDE
+          //There is a theoretical possibility that in unusual situation
+          //we will grub two components simultaneously. How?
+          //I don't know, now this is not possible.
+          Grubber:=TLRTGrubber.Create;
+          Writer.OnWriteStringProperty:=@Grubber.Grub;
+          {$ENDIF}
           Writer.WriteDescendent(AnUnitInfo.Component,nil);
           if DestroyDriver then Writer.Driver.Free;
           Writer.Free;
@@ -3360,11 +3462,10 @@ begin
       if ComponentSavingOk then begin
         if ResourceCode=nil then begin
           if (sfSaveToTestDir in Flags) then
-            ResTestFilename:=ChangeFileExt(GetTestUnitFilename(AnUnitInfo),
-                                           ResourceFileExt)
+            UnitSaveFilename:=GetTestUnitFilename(AnUnitInfo)
           else
-            ResTestFilename:=ChangeFileExt(AnUnitInfo.Filename,
-                                           ResourceFileExt);
+            UnitSaveFilename:=AnUnitInfo.Filename;
+          ResTestFilename:=ChangeFileExt(UnitSaveFilename,ResourceFileExt);
           ResourceCode:=CodeToolBoss.CreateFile(ResTestFilename);
           ComponentSavingOk:=(ResourceCode<>nil);
         end;
@@ -3390,7 +3491,7 @@ begin
           {$IFDEF IDE_DEBUG}
           writeln('TMainIDE.SaveFileResources E ',CompResourceCode);
           {$ENDIF}
-          // replace lazarus form resource code in include file
+          // replace lazarus form resource code in include file (.lrs)
           if not (sfSaveToTestDir in Flags) then begin
             // if resource name has changed, delete old resource
             if (AnUnitInfo.ComponentName<>AnUnitInfo.ComponentResourceName)
@@ -3406,7 +3507,7 @@ begin
               AText:=Format(lisUnableToAddResourceHeaderCommentToResourceFile, [
                 #13, '"', ResourceCode.FileName, '"', #13]);
               Result:=MessageDlg(ACaption,AText,mtError,[mbIgnore,mbAbort],0);
-              if Result=mrAbort then exit;
+              if Result<>mrIgnore then exit;
             end;
             // add resource to resource file
             if (not CodeToolBoss.AddLazarusResource(ResourceCode,
@@ -3419,7 +3520,7 @@ begin
                 #13, '"', ResourceCode.FileName, '"', #13]
                 );
               Result:=MessageDlg(ACaption, AText, mtError, [mbIgnore, mbAbort],0);
-              if Result=mrAbort then exit;
+              if Result<>mrIgnore then exit;
             end else begin
               AnUnitInfo.ResourceFileName:=ResourceCode.Filename;
               AnUnitInfo.ComponentResourceName:=AnUnitInfo.ComponentName;
@@ -3434,9 +3535,10 @@ begin
           if LFMCode=nil then begin
             LFMCode:=CodeToolBoss.CreateFile(LFMFilename);
             if LFMCode=nil then begin
-              MessageDlg(lisUnableToCreateFile,
+              Result:=MessageDlg(lisUnableToCreateFile,
                 Format(lisUnableToCreateFile2, ['"', LFMFilename, '"']),
-                mtWarning,[mbIgnore,mbCancel],0);
+                mtWarning,[mbIgnore,mbCancel,mbAbort],0);
+              if Result<>mrIgnore then exit;
             end;
           end;
           if LFMCode<>nil then begin
@@ -3482,17 +3584,39 @@ begin
           end;
         end;
       end;
+      // Now the most important file (.lfm) is saved.
+      // Now save the secondary files
+      {$IFDEF TRANSLATESTRING}
+      // save the .lrt file containing the list of all translatable strings of
+      // the component
+      if ComponentSavingOk and (Grubber.Grubbed.Count>0)
+      and not (sfSaveToTestDir in Flags) then begin
+        // TODO: Add to project or environment options making .po files
+        Result:=SaveStringToFile(ChangeFileExt(AnUnitInfo.Filename,'.lrt'),
+                                 Grubber.Grubbed.Text,[mbIgnore,mbAbort]);
+        if (Result<>mrOk) and (Result<>mrIgnore) then exit;
+      end;
+      {$ENDIF}
     finally
-      BinCompStream.Free;
-      if DestroyDriver and (Writer<>nil) then Writer.Driver.Free;
-      Writer.Free;
+      try
+        BinCompStream.Free;
+        if DestroyDriver and (Writer<>nil) then Writer.Driver.Free;
+        Writer.Free;
+        {$IFDEF TRANSLATESTRING}
+        Grubber.Free;
+        {$ENDIF}
+      except
+        on E: Exception do begin
+          debugln('TMainIDE.SaveFileResources Error cleaning up: ',E.Message);
+        end;
+      end;
     end;
   end;
   {$IFDEF IDE_DEBUG}
   if ResourceCode<>nil then
     writeln('TMainIDE.SaveFileResources F ',ResourceCode.Modified);
   {$ENDIF}
-  // save binary stream
+  // save binary stream (.lrs)
   if ResourceCode<>nil then begin
     if not (sfSaveToTestDir in Flags) then begin
       if (ResourceCode.Modified) then begin
@@ -10982,6 +11106,11 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.811  2004/12/27 12:56:41  mattias
+  started TTranslateStrings and .lrt files support  from Vasily
+
+  25/12/2004 21:32:05 Applied TranslateString patch by vvi
+  
   Revision 1.810  2004/12/18 10:20:17  mattias
   updatepofiles is now case sensitive,
   replaced many places, where Application was needlessly Owner

@@ -1,8 +1,9 @@
 object ViewForm: TViewForm
+  ActiveControl = SynMemo1
   Caption = 'VIEW'
   ClientHeight = 466
   ClientWidth = 659
-  PixelsPerInch = 94
+  PixelsPerInch = 81
   HorzScrollBar.Page = 660
   VertScrollBar.Page = 467
   Left = 287
@@ -19,8 +20,6 @@ object ViewForm: TViewForm
     PopupMenu = PopupMenu1
     TabOrder = 0
     Width = 659
-    BookMarkOptions.OnChange = nil
-    Gutter.OnChange = nil
     Highlighter = SynPasSyn1
     Keystrokes = <    
       item
@@ -344,7 +343,6 @@ object ViewForm: TViewForm
         ShortCut = 24642
       end>
     ReadOnly = True
-    SelectedColor.OnChange = nil
     Cursor = crIBeam
     Height = 466
     Width = 659
@@ -359,6 +357,7 @@ object ViewForm: TViewForm
     StringAttri.Foreground = clYellow
     SymbolAttri.Foreground = clAqua
     DirectiveAttri.Foreground = clRed
+    Enabled = False
     left = 16
     top = 40
   end

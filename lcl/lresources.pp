@@ -66,9 +66,19 @@ type
     property Items[Index: integer]: TLResource read GetItems;
   end;
   
+{$IFDEF TRANSLATESTRING}
+  { TAbstractTranslator}
+  TAbstractTranslator = class(TObject)//Should it be somewhat more than TObject?
+  public
+    procedure TranslateStringProperty(Sender:TObject; const Instance: TPersistent; PropInfo: PPropInfo; var Content:string);virtual;abstract;
+   //seems like we need nothing more here
+  end;
 
-  { TLRSObjectReader }
 
+var LRSTranslator: TAbstractTranslator;
+type
+{$ENDIF}
+   { TLRSObjectReader }
   TLRSObjectReader = class(TAbstractObjectReader)
   private
     FStream: TStream;
@@ -1864,6 +1874,10 @@ var
   Driver: TAbstractObjectReader;
 begin
   Result:=TReader.Create(s,4096);
+  {$IFDEF TRANSLATESTRING}
+  if Assigned(LRSTranslator) then
+   Result.OnReadStringProperty:=@(LRSTranslator.TranslateStringProperty);
+  {$ENDIF}
   DestroyDriver:=false;
   if Result.Driver.ClassType=LRSObjectReaderClass then exit;
   // hack to set a write protected variable.
