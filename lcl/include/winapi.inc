@@ -812,6 +812,11 @@ begin
   Result := InterfaceObject.SetCaretRespondToFocus(Handle,ShowHideOnFocus);
 end;
  
+function SetCursor(hCursor: HICON): HCURSOR;
+begin
+  Result := InterfaceObject.SetCursor(hCursor);
+end;
+ 
 Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 Begin
   Result := InterfaceObject.SetProp(Handle,Str,Data);
@@ -871,7 +876,7 @@ begin
 end;
 
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer;
-  var OldPoint: TPoint) : Boolean;
+  OldPoint: PPoint) : Boolean;
 begin
   Result := InterfaceObject.SetWindowOrgEx(dc, NewX, NewY, OldPoint);
 end;
@@ -889,6 +894,11 @@ end;
 function ShowScrollBar(Handle: HWND; wBar: Integer; bShow: Boolean): Boolean;
 begin
   Result := InterfaceObject.ShowScrollBar(Handle, wBar, bShow);
+end;
+
+procedure Sleep(dwMilliseconds: DWORD);
+begin
+  InterfaceObject.Sleep(dwMilliseconds);
 end;
 
 function StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
@@ -1438,6 +1448,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.67  2002/12/26 11:00:14  mattias
+  added included by to unitinfo and a few win32 functions
+
   Revision 1.66  2002/12/25 13:30:37  mattias
   added more windows funcs and fixed jump to compiler error end of file
 
