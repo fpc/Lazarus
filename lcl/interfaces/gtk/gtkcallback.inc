@@ -136,8 +136,7 @@ begin
       //write('GTKRealizeAfterCB ');
       //if TheWinControl<>nil then write(' ',TheWinControl.Name,':',TheWinControl.ClassName,' ',HexStr(Cardinal(TheWinControl.Handle),8));
       //writeln(' Widget=',HexStr(Cardinal(Widget),8),' Fixed=',HexStr(Cardinal(GetFixedWidget(Widget)),8),' Main=',HexStr(Cardinal(GetMainWidget(Widget)),8));
-      if (TheWinControl<>nil)
-      and (not (csDesigning in TheWinControl.ComponentState)) then begin
+      if (TheWinControl<>nil) then begin
         NewEventMask:=gdk_window_get_events(Widget^.Window)
                       or WinWidgetInfo^.EventMask;
         gdk_window_set_events(Widget^.Window,NewEventMask);
@@ -148,8 +147,6 @@ begin
           gdk_window_set_events(ClientWidget^.Window,NewEventMask);
         end;
         //writeln('BBB1 ',HexStr(Cardinal(NewEventMask),8),' ',HexStr(Cardinal(gdk_window_get_events(Widget^.Window)),8));
-      end else begin
-        //SetEventMaskForDesignMode(Widget^.Window);
       end;
 
       if TheWinControl<>nil then begin
@@ -505,7 +502,7 @@ begin
   
   HiddenLCLObject:=GetHiddenLCLObject(Widget);
   if HiddenLCLObject<>nil then begin
-    // this is a hidden widget (= a child widget of a lcl widget)
+    // this is a hidden widget (= a gtk internal widget of a lcl widget)
     if not (csDesigning in TControl(HiddenLCLObject).ComponentState) then begin
       // if not in design mode, hidden widgets are controlled by the gtk ...
       exit;
@@ -594,6 +591,45 @@ var
   //parWindow : PgdkWindow;  //the Parent's GDKWindow
   HiddenLCLObject: TObject;
 { $DEFINE VerboseMouseBugfix}
+
+  function CheckMouseButtonDown(var ButtonDown: boolean;
+    var LastClick: TDateTime;
+    BtnKey, MsgNormal, MsgDouble, MsgTriple: longint): boolean;
+  begin
+    if (ButtonDown) and
+      (not ((Event^.theType = gdk_2button_press)
+         or (Event^.theType = gdk_3button_press)))
+    then begin
+      Result:=false;
+      Exit;
+    end;
+
+    MessI.Keys := MessI.Keys or BtnKey;
+    if ((now - LLastClick) <= ((1/86400)*(DblClickTime/1000)))
+    and (not (Event^.theType = gdk_3button_press))
+    then
+      Event^.theType := gdk_2Button_press;
+    LLastClick := Now;
+
+    if event^.thetype = gdk_button_press then
+      MessI.Msg := MsgNormal
+    else
+    if event^.thetype = gdk_2button_press then
+    begin
+      MessI.Msg := MsgDouble;
+      LLastClick := -1;
+    end
+    else
+    if event^.thetype = gdk_3button_press then
+    begin
+      MessI.Msg := MsgTriple;
+      LLastClick := -1;
+    end;
+
+    ButtonDown := True;
+    Result:=true;
+  end;
+
 begin
   Result:=true;
   
@@ -671,101 +707,18 @@ begin
     MessI.Keys := 0;
     case event^.Button of
     
-    1:begin
-       if (LMouseButtonDown) and
-         (not ((Event^.theType = gdk_2button_press)
-            or (Event^.theType = gdk_3button_press)))
-       then
-         Exit;
-       MessI.Keys := MessI.Keys or MK_LBUTTON;
-       if ((now - LLastClick) <= ((1/86400)*(DblClickTime/1000)))
-       and (not (Event^.theType = gdk_3button_press))
-       then
-         Event^.theType := gdk_2Button_press;
-       LLastClick := Now;
+    1: if not CheckMouseButtonDown(LMouseButtonDown, LLastClick,
+              MK_LBUTTON, LM_LBUTTONDOWN, LM_LBUTTONDBLCLK, LM_LBUTTONTRIPLECLK)
+       then exit;
 
-       if event^.thetype = gdk_button_press then
-         MessI.Msg := LM_LBUTTONDOWN
-       else
-       if event^.thetype = gdk_2button_press then
-       begin
-         MessI.Msg := LM_LBUTTONDBLCLK;
-         LLastClick := -1;
-       end
-       else
-       if event^.thetype = gdk_3button_press then
-       begin
-         MessI.Msg := LM_LBUTTONTRIPLECLK;
-         LLastClick := -1;
-       end;
+    2: if not CheckMouseButtonDown(MMouseButtonDown, MLastClick,
+              MK_MBUTTON, LM_MBUTTONDOWN, LM_MBUTTONDBLCLK, LM_MBUTTONTRIPLECLK)
+       then exit;
 
-       LMouseButtonDown := True;
-     end;
-     
-    2:begin
-       if (MMouseButtonDown)
-       and (not ((Event^.theType = gdk_2button_press)
-         or (Event^.theType = gdk_3button_press)))
-       then
-         Exit;
+    3: if not CheckMouseButtonDown(RMouseButtonDown, RLastClick,
+              MK_RBUTTON, LM_RBUTTONDOWN, LM_RBUTTONDBLCLK, LM_RBUTTONTRIPLECLK)
+       then exit;
 
-       MessI.Keys := MessI.Keys or MK_MBUTTON;
-
-       if ((now - MLastClick) <= ((1/86400)*(DblClickTime/1000)))
-       and (not (Event^.theType = gdk_3button_press))
-       then
-         Event^.theType := gdk_2Button_press;
-       MLastClick := Now;
-
-       if event^.thetype = gdk_button_press then
-         MessI.Msg := LM_MBUTTONDOWN
-       else
-       if event^.thetype = gdk_2button_press then
-       Begin
-         MessI.Msg := LM_MBUTTONDBLCLK;
-         MLastClick := -1;
-       end
-       else
-       if event^.thetype = gdk_3button_press then
-       begin
-         MessI.Msg := LM_MBUTTONTRIPLECLK;
-         LLastClick := -1;
-       end;
-       
-       MMouseButtonDown := True;
-     end;
-     
-     3:begin
-       if (RMouseButtonDown)
-       and (not ((Event^.theType = gdk_2button_press)
-         or (Event^.theType = gdk_3button_press)))
-       then Exit;
-       MessI.Keys := MessI.Keys or MK_RBUTTON;
-
-       if ((now - RLastClick) <= ((1/86400)*(DblClickTime/1000)))
-       and (not (Event^.theType = gdk_3button_press))
-       then
-         Event^.theType := gdk_2Button_press;
-       RLastClick := Now;
-
-       if event^.thetype = gdk_button_press then
-         MessI.Msg := LM_RBUTTONDOWN
-       else
-       if event^.thetype = gdk_2button_press then
-       Begin
-         MessI.Msg := LM_RBUTTONDBLCLK;
-         RLastClick := -1;
-       end
-       else
-       if event^.thetype = gdk_3button_press then
-       begin
-         MessI.Msg := LM_RBUTTONTRIPLECLK;
-         LLastClick := -1;
-       end;
-       
-       RMouseButtonDown := True;
-     end;
-     
     else
       begin
         MessI.Msg := LM_NULL;
@@ -2169,6 +2122,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.96  2002/08/04 08:17:30  lazarus
+  MG: fixed normal events in design mode
+
   Revision 1.95  2002/08/04 07:44:44  lazarus
   MG: fixed xml reading writing of special chars
 
