@@ -1139,18 +1139,18 @@ end;
 {  TControl InvalidateControl                                                            }
 {------------------------------------------------------------------------------}
 procedure TControl.InvalidateControl(IsVisible, IsOpaque : Boolean);
-var
+{var
   Rect: TRect;
 
   function BackgroundClipped: Boolean;
-  {var
+  var
     R: TRect;
     List: TList;
     I: Integer;
-    C: TControl;}
+    C: TControl;
   begin
     Result := True;
-    {List := FParent.FControls;
+    List := FParent.FControls;
     I := List.IndexOf(Self);
     while I > 0 do
     begin
@@ -1163,18 +1163,18 @@ var
           if EqualRect(R, Rect) then Exit;
         end;
     end;
-    Result := False;}
-  end;
+    Result := False;
+  end;}
 
 begin
   if (IsVisible or (csDesigning in ComponentState) and
     not (csNoDesignVisible in ControlStyle)) and (Parent <> nil) and
     Parent.HandleAllocated then
   begin
-    Rect := BoundsRect;
-    InvalidateRect(Parent.Handle, @Rect, not (IsOpaque or
-      (csOpaque in Parent.ControlStyle) or BackgroundClipped));
-    //CNSendMessage(LM_REDRAW,Self,Nil);
+    //Rect := BoundsRect;
+    //InvalidateRect(Parent.Handle, @Rect, not (IsOpaque or
+    //  (csOpaque in Parent.ControlStyle) or BackgroundClipped));
+    CNSendMessage(LM_REDRAW,Self,Nil);
   end;
 end;
 
@@ -1776,6 +1776,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.68  2002/08/29 00:07:01  lazarus
+  MG: fixed TComboBox and InvalidateControl
+
   Revision 1.67  2002/08/28 11:41:53  lazarus
   MG: activated environment opts in debugger
 
