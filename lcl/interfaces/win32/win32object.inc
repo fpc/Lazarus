@@ -291,8 +291,7 @@ Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
   End;
 
 Var
-  Handle, HOwner: HWnd;
-  R: TRect;
+  Handle: HWnd;
   TCI: TC_ITEM;
 Const
   TermChar: PChar = #0#0;
@@ -308,7 +307,6 @@ Begin
     Assert(False, Format('Trace:WARNING: [TWin32Object.SetLabel] %S --> No Decendant of TWinControl', [Sender.ClassName]));
 
   Handle := (Sender As TWinControl).Handle;
-  HOwner := GetAncestor(Handle, GA_ROOTOWNER);
   Assert(Handle<>0,'Trace:WARNING: [TWin32Object.SetLabel] --> Got NULL handle');
   Assert(False, 'Trace:Setting the label in TWin32Object.SetLabel');
 
@@ -369,16 +367,8 @@ Begin
       Data := StrCat(Data, TermChar);
       SendMessage(TControl(Sender).Parent.Handle, TB_ADDSTRING, 0, MakeLong(Word(Integer(Data)), 0));
     End;
-    Else
-      SetWindowText(Handle, Data);
-
-    If TControl(Sender).FCompStyle = csLabel Then
-    Begin
-      GetClientRect(HOwner, R);
-      InvalidateRect(HOwner, @R, True);
-      UpdateWindow(HOwner);
-    End;
-
+  Else
+    Windows.SetWindowText(Handle, Data);
   End;
   Assert(False, Format('Trace:[TWin32Object.SetLabel] %S --> END', [Sender.ClassName]));
 End;
@@ -3014,6 +3004,9 @@ End;
 
 {
   $Log$
+  Revision 1.167  2004/02/15 19:26:48  micha
+  fixed: remove GetAncestor dependency; code obsolete? works without too...
+
   Revision 1.166  2004/02/09 19:52:52  mattias
   implemented ByteOrder for TLazIntfImage and added call of to LM_SETFONT
 
