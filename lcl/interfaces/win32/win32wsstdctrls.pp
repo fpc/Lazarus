@@ -842,11 +842,11 @@ begin
     if not TCustomMemo(AWinControl).WordWrap then
       Flags := Flags or ES_AUTOHSCROLL;
     case TCustomMemo(AWinControl).ScrollBars of
-      ssHorizontal:
+      ssHorizontal, ssAutoHorizontal:
         Flags := Flags or WS_HSCROLL;
-      ssVertical:
+      ssVertical, ssAutoVertical:
         Flags := Flags or WS_VSCROLL;
-      ssBoth:
+      ssBoth, ssAutoBoth:
         Flags := Flags or WS_HSCROLL or WS_VSCROLL;
     end;
     FlagsEx := FlagsEx or WS_EX_CLIENTEDGE;
