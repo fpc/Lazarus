@@ -1369,20 +1369,34 @@ begin
       end;
           
       LM_SETITEMINDEX :
-      begin
-        case (Sender as TControl).fCompStyle of
-          csComboBox: gtk_list_select_item(PGTKLIST(PGTKCOMBO(Handle)^.list), Integer(Data));
-          csListBox : gtk_list_select_item(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), Integer(Data));
-          csCListBox: gtk_clist_select_row(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))), Integer(Data), 1);    // column
+        if Handle<>0 then begin
+          case (Sender as TControl).fCompStyle of
+        
+          csComboBox:
+            gtk_list_select_item(PGTKLIST(PGTKCOMBO(Handle)^.list),
+                                 Integer(Data));
+          csListBox :
+            begin
+              gtk_list_select_item(
+                PGtkList(GetCoreChildWidget(PGtkWidget(Handle))),
+                Integer(Data));
+            end;
+            
+          csCListBox:
+            gtk_clist_select_row(
+              PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),
+              Integer(Data), 1);    // column
+              
           csNotebook:
-          begin
-            Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
-            //writeln('LM_SETITEMINDEX A ',HexStr(Cardinal(Handle),8),', ',TLMNotebookEvent(Data^).Page);
-            gtk_notebook_set_page(PGtkNotebook(Handle), TLMNotebookEvent(Data^).Page);
-            //writeln('LM_SETITEMINDEX B ',TLMNotebookEvent(Data^).Page);
+            begin
+              Assert(False, 'Trace:Setting Page to ' + IntToStr(TLMNotebookEvent(Data^).Page));
+              //writeln('LM_SETITEMINDEX A ',HexStr(Cardinal(Handle),8),', ',TLMNotebookEvent(Data^).Page);
+              gtk_notebook_set_page(PGtkNotebook(Handle),
+                                    TLMNotebookEvent(Data^).Page);
+              //writeln('LM_SETITEMINDEX B ',TLMNotebookEvent(Data^).Page);
+            end;
           end;
         end;
-      end;
           
       LM_GETSELSTART :
       begin
@@ -1486,23 +1500,33 @@ begin
  
       LM_SETSEL :
       begin
-         if (Sender is TControl) and 
-            (TControl(Sender).fCompStyle in [csListBox, csCListBox]) and
-            assigned (data) then 
-         begin
-            if (TControl(Sender).fCompStyle = csListBox) then 
-            begin
-               if TLMSetSel(Data^).Selected 
-                  then gtk_list_select_item(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), TLMSetSel(Data^).Index)
-                  else gtk_list_unselect_item(PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), TLMSetSel(Data^).Index);
-            end
-            else if (TControl(Sender).fCompStyle = csCListBox) then
-            begin
-               if TLMSetSel(Data^).Selected
-                    then gtk_clist_select_row(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),TLMSetSel(Data^).Index,0)
-                  else gtk_clist_unselect_row(PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),TLMSetSel(Data^).Index,0);
-            end;
-         end;  
+        if (Sender is TControl)
+        and (TControl(Sender).fCompStyle in [csListBox, csCListBox])
+        and assigned (data) then
+        begin
+          if (TControl(Sender).fCompStyle = csListBox) then
+          begin
+            if TLMSetSel(Data^).Selected then begin
+              gtk_list_select_item(
+                PGtkList(GetCoreChildWidget(PGtkWidget(Handle))),
+                TLMSetSel(Data^).Index);
+            end else
+              gtk_list_unselect_item(
+                PGtkList(GetCoreChildWidget(PGtkWidget(Handle))),
+                TLMSetSel(Data^).Index);
+          end
+          else if (TControl(Sender).fCompStyle = csCListBox) then
+          begin
+            if TLMSetSel(Data^).Selected then
+              gtk_clist_select_row(
+                PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),
+                TLMSetSel(Data^).Index,0)
+            else
+              gtk_clist_unselect_row(
+                PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),
+                TLMSetSel(Data^).Index,0);
+          end;
+        end;
       end;
  
       LM_SETSELMODE :
@@ -4998,6 +5022,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.134  2002/06/05 19:04:15  lazarus
+  MG: fixed LM_SetItemIndex gtk warning
+
   Revision 1.133  2002/06/05 12:33:57  lazarus
   MG: fixed fonts in XLFD format and styles
 
