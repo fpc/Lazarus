@@ -454,6 +454,7 @@ procedure TLazFindReplaceDialog.SetComboBoxText(AComboBox:TComboBox;
 var a:integer;
 begin
   a:=AComboBox.Items.IndexOf(AText);
+writeln('TLazFindReplaceDialog.SetComboBoxText ',AText,' ',a);
   if a>=0 then
     AComboBox.ItemIndex:=a
   else begin
