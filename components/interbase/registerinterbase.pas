@@ -30,7 +30,7 @@ implementation
 
 procedure RegisterUnitInterbase;
 begin
-  RegisterComponents('Interbase',[TIBDatabase,TIBTransaction,TIBQuery]);
+  RegisterComponents('Interbase',[TIBDatabase,TIBTransaction{,TIBQuery}]);
 end;
 
 procedure Register;
