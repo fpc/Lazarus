@@ -104,6 +104,9 @@ const
 
   ctnWithVariable    = 90;
   ctnWithStatement   = 91;
+  ctnCaseBlock       = 92;
+  ctnCaseVariable    = 93;
+  ctnCaseStatement   = 94;
 
 
   // combined values

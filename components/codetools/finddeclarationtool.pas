@@ -175,6 +175,8 @@ type
       Node: TCodeTreeNode): TFindContext;
     function FindClassOfMethod(ProcNode: TCodeTreeNode;
       Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
+    function FindAncestorOfClass(ClassNode: TCodeTreeNode;
+      Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
     function FindForwardIdentifier(Params: TFindDeclarationParams;
       var IsForward: boolean): boolean;
     function FindExpressionResultType(Params: TFindDeclarationParams;
@@ -1008,7 +1010,7 @@ write('[TFindDeclarationTool.FindContextNodeAtCursor] A ',
   );
 writeln('');
   if not (CurAtomType in [atIdentifier,atPoint,atUp,atAs,atEdgedBracketClose,
-    atRoundBracketClose,atRead,atWrite])
+    atRoundBracketClose,atRead,atWrite,atINHERITED])
   then begin
     // no special context found -> the context node is the deepest node at
     // cursor, and this should already be in Params.ContextNode
@@ -1027,7 +1029,8 @@ writeln('');
     ReadBackTilBracketClose(true);
     CurAtom.StartPos:=CurPos.StartPos;
   end;
-  if not (CurAtomType in [atAS,atRead,atWrite]) then
+  if (not (CurAtomType in [atAS,atRead,atWrite,atINHERITED]))
+  and ((CurAtomType<>atIdentifier) or (NextAtomType<>atIdentifier)) then
     Result:=FindContextNodeAtCursor(Params)
   else
     Result:=CreateFindContext(Self,Params.ContextNode);
@@ -1252,7 +1255,35 @@ writeln('');
       end;
     end;
 
-  // ToDo: atINHERITED
+  atINHERITED:
+    begin
+      // for example: inherited A;
+      if not (NextAtomType in [atSpace,atIdentifier]) then begin
+        MoveCursorToCleanPos(NextAtom.StartPos);
+        ReadNextAtom;
+        RaiseException('identifier expected, but '+GetAtom+' found');
+      end;
+      // find ancestor of class of method
+      ProcNode:=Result.Node;
+      while (ProcNode<>nil) do begin
+        if not (ProcNode.Desc in [ctnProcedure,ctnProcedureHead,ctnBeginBlock,
+           ctnAsmBlock,ctnWithVariable,ctnWithStatement,ctnCaseBlock,
+           ctnCaseVariable,ctnCaseStatement]) then
+        begin
+          break;
+        end;
+        if ProcNode.Desc=ctnProcedure then begin
+          Result.Tool.FindClassOfMethod(ProcNode,Params,true);
+          // find class ancestor
+          Params.NewCodeTool.FindAncestorOfClass(Params.NewNode,Params,true);
+          Result:=CreateFindContext(Params);
+          exit;
+        end;
+        ProcNode:=ProcNode.Parent;
+      end;
+      MoveCursorToCleanPos(CurAtom.StartPos);
+      RaiseException('inherited keyword only allowed in methods');
+    end;
 
   else
     // expression start found
@@ -1538,7 +1569,8 @@ writeln('[TFindDeclarationTool.FindClassOfMethod] A ');
     // -> search the class
     Params.Save(OldInput);
     try
-      Params.Flags:=[fdfIgnoreCurContextNode,fdfSearchInParentNodes]
+      Params.Flags:=[fdfIgnoreCurContextNode,fdfSearchInParentNodes,
+                     fdfExceptionOnNotFound,fdfIgnoreUsedUnits]
                     +(fdfGlobals*Params.Flags);
       Params.ContextNode:=ProcNode;
       Params.Identifier:=@Src[ClassNameAtom.StartPos];
@@ -1568,6 +1600,76 @@ writeln('[TFindDeclarationTool.FindClassOfMethod]  searching class of method   c
     end;
   end else begin
     // proc is not a method
+  end;
+end;
+
+function TFindDeclarationTool.FindAncestorOfClass(ClassNode: TCodeTreeNode;
+  Params: TFindDeclarationParams; FindClassContext: boolean): boolean;
+var AncestorAtom: TAtomPosition;
+  OldInput: TFindDeclarationInput;
+  AncestorNode, ClassIdentNode: TCodeTreeNode;
+  SearchTObject: boolean;
+  AncestorContext: TFindContext;
+begin
+  if (ClassNode=nil) or (ClassNode.Desc<>ctnClass) then
+    RaiseException('[TFindDeclarationTool.FindAncestorOfClass] '
+      +' invalid classnode');
+  Result:=false;
+  // search the ancestor name
+  MoveCursorToNodeStart(ClassNode);
+  ReadNextAtom; // read keyword 'class', 'object', 'interface', 'dispinterface'
+  if UpAtomIs('PACKED') then ReadNextAtom;
+  ReadNextAtom;
+  if not AtomIsChar('(') then begin
+    // no ancestor class specified
+    // check class name
+    ClassIdentNode:=ClassNode.Parent;
+    if (ClassIdentNode=nil) or (ClassIdentNode.Desc<>ctnTypeDefinition) then
+    begin
+      MoveCursorToNodeStart(ClassNode);
+      RaiseException('class without name');
+    end;
+    // if this class is not TObject, TObject is class ancestor
+    SearchTObject:=not CompareSrcIdentifier(ClassIdentNode.StartPos,'TObject');
+    if not SearchTObject then exit;
+  end else begin
+    ReadNextAtom;
+    if not AtomIsIdentifier(false) then exit;
+    // ancestor name found
+    AncestorAtom:=CurPos;
+    SearchTObject:=false;
+  end;
+{$IFDEF CTDEBUG}
+writeln('[TFindDeclarationTool.FindAncestorOfClass] ',
+' search ancestor class = ',GetAtom);
+{$ENDIF}
+  // search ancestor class context
+  CurPos.StartPos:=CurPos.EndPos;
+  Params.Save(OldInput);
+  try
+    Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
+                   fdfExceptionOnNotFound]
+                  +(fdfGlobals*Params.Flags);
+    if not SearchTObject then
+      Params.Identifier:=@Src[AncestorAtom.StartPos]
+    else begin
+      Params.Identifier:='TObject';
+      Exclude(Params.Flags,fdfExceptionOnNotFound);
+    end;
+    Params.ContextNode:=ClassNode;
+    if not FindIdentifierInContext(Params) then begin
+      MoveCursorToNodeStart(ClassNode);
+//writeln('  AQ2*** ',TCodeBuffer(Scanner.MainCode).Filename,' ',CurPos.StartPos);
+      RaiseException('default class ancestor TObject not found');
+    end;
+    if FindClassContext then begin
+      AncestorNode:=Params.NewNode;
+      AncestorContext:=Params.NewCodeTool.FindBaseTypeOfNode(Params,
+                                                             AncestorNode);
+      Params.SetResult(AncestorContext);
+    end;
+  finally
+    Params.Load(OldInput);
   end;
 end;
 
@@ -1688,7 +1790,7 @@ writeln('[TFindDeclarationTool.FindIdentifierInAncestors] ',
   try
     Params.Flags:=[fdfSearchInParentNodes,fdfIgnoreCurContextNode,
                    fdfExceptionOnNotFound]
-                  +fdfGlobals*Params.Flags;
+                  +(fdfGlobals*Params.Flags);
     if not SearchTObject then
       Params.Identifier:=@Src[AncestorAtom.StartPos]
     else begin
