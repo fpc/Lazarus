@@ -1885,6 +1885,7 @@ type
     FStates: TTreeViewStates;
     FTopItem: TTreeNode;
     FTreeLineColor: TColor;
+    FExpandSignColor : TColor;
     FTreeNodes: TTreeNodes;
     FUpdateCount: integer;
     procedure CanvasChanged(Sender: TObject);
@@ -2109,7 +2110,8 @@ type
     property SelectionColor: TColor read FSelectedColor write SetSelectedColor default clHighlight;
     property SeparatorColor: TColor read fSeparatorColor write SetSeparatorColor default clGray;
     property TopItem: TTreeNode read GetTopItem write SetTopItem;
-    property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default clWindowFrame;
+    property TreeLineColor: TColor read FTreeLineColor write FTreeLineColor default cl3DLight;
+    property ExpandSignColor: TColor read FExpandSignColor write FExpandSignColor default clWindowFrame;
   published
     property TabStop default true;
   end;
@@ -2200,6 +2202,8 @@ type
     //property OnStartDock;
     property OnStartDrag;
     property Items;
+    property TreeLineColor;
+    property ExpandSignColor;
   end;
 
 
@@ -2288,6 +2292,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.158  2005/01/25 01:18:09  mattias
+  added TTreeView.ExpandSignColor  from Sergio
+
   Revision 1.157  2005/01/07 17:40:59  mattias
   fixed TTabSheet.SetPageControl
 

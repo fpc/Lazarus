@@ -2518,7 +2518,9 @@ begin
   FStateChangeLink := TChangeLink.Create;
   FStateChangeLink.OnChange := @ImageListChange;
   FStates:=[tvsMaxLvlNeedsUpdate,tvsMaxRightNeedsUpdate,tvsScrollbarChanged];
-  FTreeLineColor := clWindowFrame;
+  FTreeLineColor := cl3DLight;
+  FExpandSignColor := clWindowFrame;
+
 end;
 
 destructor TCustomTreeView.Destroy;
@@ -3762,7 +3764,7 @@ var
     if not ShowButtons then exit;
     with Canvas do begin
       Brush.Color:=BackgroundColor;
-      Pen.Color:=TreeLineColor;
+      Pen.Color:=FExpandSignColor;
       Pen.Style:=psSolid;
       HalfSize:=fExpandSignSize shr 1;
       if ((FExpandSignSize and 1)=0) then dec(HalfSize);
