@@ -2214,7 +2214,7 @@ end;
 procedure TObjectInspector.SetSelections(
   const NewSelections:TComponentSelectionList);
 begin
-//writeln('[TObjectInspector.SetSelections]');
+//writeln('[TObjectInspector.SetSelections] ',NewSelections.Count);
   if FComponentList.IsEqual(NewSelections) then exit;
   FComponentList.Assign(NewSelections);
   SetAvailComboBoxText;

@@ -144,28 +144,29 @@ Procedure TCustomForm.Notification(AComponent : TComponent;
 Begin
   inherited Notification(AComponent,Operation);
   case Operation of
-    opInsert:
+  opInsert:
+    begin
+      {if AComponent is TCustomActionList then
       begin
-        {if AComponent is TCustomActionList then
-        begin
-          if FActionLists = nil then FActionLists := TList.Create;
-          FActionLists.Add(AComponent);
-        end
-        else }if not (csLoading in ComponentState) and (Menu = nil) and
-          (AComponent.Owner = Self) and (AComponent is TMainMenu) then
-          Menu := TMainMenu(AComponent);
-      end;
-    opRemove:
-      begin
-        {if (FActionLists <> nil) and (AComponent is TCustomActionList) then
-          FActionLists.Remove(AComponent)
-        else
-        begin}
-          if Menu = AComponent then Menu := nil;
-          //if WindowMenu = AComponent then WindowMenu := nil;
-          //if ObjectMenuItem = AComponent then ObjectMenuItem := nil;
-        //end;
-      end;
+        if FActionLists = nil then FActionLists := TList.Create;
+        FActionLists.Add(AComponent);
+      end
+      else }if not (csLoading in ComponentState) and (Menu = nil) and
+        (AComponent.Owner = Self) and (AComponent is TMainMenu) then
+        Menu := TMainMenu(AComponent);
+    end;
+  opRemove:
+    begin
+      {if (FActionLists <> nil) and (AComponent is TCustomActionList) then
+        FActionLists.Remove(AComponent)
+      else
+      begin}
+        if Menu = AComponent then Menu := nil;
+        //if WindowMenu = AComponent then WindowMenu := nil;
+        //if ObjectMenuItem = AComponent then ObjectMenuItem := nil;
+      //end;
+      if FActiveControl=AComponent then FActiveControl:=nil;
+    end;
   end;
   if FDesigner <> nil then FDesigner.Notification(AComponent,Operation);
 End;
@@ -1183,6 +1184,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.78  2002/12/25 14:21:28  mattias
+  fixed setting activecontrol to nil when removing component
+
   Revision 1.77  2002/12/25 11:53:47  mattias
   Button.Default now sets focus
 

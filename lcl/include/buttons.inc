@@ -57,7 +57,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TButton.DoSendBtnDefault;
 begin
-  if HandleAllocated then
+  if HandleAllocated and (not (csDesigning in ComponentState)) then
     CNSendMessage(LM_BTNDEFAULT_CHANGED,Self,nil);
 end;
 
@@ -165,6 +165,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/12/25 14:21:28  mattias
+  fixed setting activecontrol to nil when removing component
+
   Revision 1.11  2002/12/25 11:53:47  mattias
   Button.Default now sets focus
 
