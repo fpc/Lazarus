@@ -631,17 +631,12 @@ var
   CommonKeyData: Integer;
   Flags: Integer;
   SysKey: Boolean;
-  R: Boolean;
   TopLevel: PGtkWidget;
 begin
-  R := True;
+  Result := True;
   EventStopped := False;
 
-  {$IFDEF GTK2}
-  EventString := Pointer(Event^._string);
-  {$ELSE}
-  EventString := Pointer(Event^.theString);
-  {$ENDIF}
+  gdk_event_key_get_string(Event, EventString);
 
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
   FillChar(Msg,SizeOf(Msg),0);
@@ -684,7 +679,7 @@ begin
       // send the message directly to the LCL
       Msg.Result:=0;
       NotifyApplicationUserInput(Msg.Msg);
-      R := DeliverMessage(Data, Msg) = 0;
+      Result := DeliverMessage(Data, Msg) = 0;
 
       if Msg.CharCode <> VKey.VKey
       then begin
@@ -710,7 +705,7 @@ begin
       
       // send the message directly to the LCL
       NotifyApplicationUserInput(Msg.Msg);
-      R := DeliverMessage(Data, Msg) = 0;
+      Result := DeliverMessage(Data, Msg) = 0;
 
       if Msg.CharCode <> Vkey.Vkey
       then begin
@@ -734,7 +729,7 @@ begin
         else Msg.CharCode := EventString^[0];
         Msg.Result:=0;
         // send the message directly (not queued) to the LCL
-        R := DeliverMessage(Data, Msg) = 0;
+        Result := DeliverMessage(Data, Msg) = 0;
 
         if (Event^.Length > 0) and (Msg.CharCode <> EventString^[0])
         then begin
@@ -755,8 +750,8 @@ begin
           StopKeyEvent('key_press_event');
           // ??? Forward was true when shift was pressed
           //     to me that is backward
-          R := TControl(Data).PerformTab((Event^.State and GDK_SHIFT_MASK) = 0);
-          if R
+          Result := TControl(Data).PerformTab((Event^.State and GDK_SHIFT_MASK) = 0);
+          if Result
           then begin
             //MWE: still need to skip on win32 ?
             {MWE:.$IfNDef Win32}
@@ -772,13 +767,6 @@ begin
       end;
     end;
   end;
-
-  {$IFDEF GTK1}
-  Result := R;
-  {$ELSE}
-  Result := False;
-  {$ENDIF}
-
 //writeln('AAA1 [GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
 end;
 
@@ -1269,7 +1257,7 @@ var
     then begin
       {$IFDEF VerboseMouseBugfix}
       writeln(' NO CLICK: LastMouse.Down=',LastMouse.Down,
-              ' Event^.theType=',Event^._Type);
+              ' Event^.theType=',gdk_event_get_type(Event));
       {$ENDIF}
       Exit;
     end;
@@ -2888,7 +2876,7 @@ begin
   
   // TODO: Remove when KeyStateList is obsolete
 
-  case {$IFDEF GTK2} Event^._Type {$ELSE} Event^.theType {$ENDIF} of
+  case gdk_event_get_type(Event) of
     GDK_KEY_PRESS: Pressed := True;
     GDK_KEY_RELEASE: Pressed := False;
   else
@@ -3186,6 +3174,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.203  2003/10/17 03:21:21  ajgenius
+  fix GTK2 compiling for new Keyboard changes
+
   Revision 1.202  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

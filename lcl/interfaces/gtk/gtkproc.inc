@@ -64,12 +64,12 @@ begin
   result := gtk_widget_get_ythickness(gtk_widget_get_style(Style));
 end;
 
-procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString : PPgchar);
+procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString : Pointer);
 begin
   {$IfDef GTK2}
-  theString := @Event^._String;
+  theString := Pointer(Event^._String);
   {$Else}
-  theString := @Event^.TheString;
+  theString := Pointer(Event^.TheString);
   {$EndIF}
 end;
 
@@ -5454,6 +5454,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.218  2003/10/17 03:21:21  ajgenius
+  fix GTK2 compiling for new Keyboard changes
+
   Revision 1.217  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

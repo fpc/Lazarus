@@ -43,7 +43,7 @@ uses
   LMessages, Controls, Forms, VclGlobals, LCLProc,
   LCLStrConsts, LCLIntf, LCLType, DynHashArray, LazLinkedList,
   GraphType, GraphMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls,
-  ComCtrls, CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls,
+  ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl, ExtCtrls,
   Dialogs, ExtDlgs, FileCtrl, LResources, Math, GTKGlobals,
 
   gtkDef, gtkProc, gtkInt;
@@ -562,6 +562,9 @@ end.
 
 {
   $Log$
+  Revision 1.26  2003/10/17 03:21:21  ajgenius
+  fix GTK2 compiling for new Keyboard changes
+
   Revision 1.25  2003/10/15 20:33:37  ajgenius
   add csForm, start fixing Style matching for syscolors and fonts
 

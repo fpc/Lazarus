@@ -39,6 +39,7 @@ uses
   InterfaceBase,
   {$IFDEF gtk2}
   glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+  X, XLib, XUtil, //Keyboard handling
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
@@ -411,7 +412,7 @@ const
 var
   DesignSignalMasks: array[TDesignSignalType] of TDesignSignalMask;
   
-{$IFDEF GTK1}
+{$IFNDEF GTK2_2}
 // MWE:
 // TODO: check if the new keyboard routines require X on GTK2
 function X11Display: Pointer;
@@ -535,7 +536,7 @@ function gtk_widget_get_ythickness(Style : PGTKStyle) : gint; overload;
 function gtk_widget_get_xthickness(Style : PGTKWidget) : gint; overload;
 function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
 
-procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString : PPgchar);
+procedure gdk_event_key_get_string(Event : PGDKEventKey; var theString : Pointer);
 function gdk_event_get_type(Event : Pointer) : guint;
 
 procedure BeginGDKErrorTrap;
@@ -651,7 +652,7 @@ var
   MKeySymToVK: array[Byte] of PVKeyArray3;
 
 {$IFDEF UNIX}
-{$IFDEF GTK1}
+{$IFNDEF GTK2_2}
   MX11Display: Pointer;
 {$ENDIF}
 {$ENDIF}
@@ -694,7 +695,7 @@ begin
 end;
 
 {$IFDEF UNIX}
-{$IFDEF GTK1}
+{$IFNDEF GTK2_2}
 // MWE:
 // TODO: check if the new keyboard routines require X on GTK2
 function X11Display: Pointer;
@@ -712,7 +713,7 @@ end;
 
 initialization
 {$IFDEF UNIX}
-{$IFDEF GTK1}
+{$IFNDEF GTK2_2}
   MX11Display := nil;
 {$ENDIF}
 {$ENDIF}
@@ -728,7 +729,7 @@ initialization
 
 finalization
   {$IFDEF UNIX}
-  {$IFDEF GTK1}
+  {$IFNDEF GTK2_2}
   if MX11Display <> nil
   then XCloseDisplay(MX11Display);
 

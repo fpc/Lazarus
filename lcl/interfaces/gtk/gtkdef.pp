@@ -261,7 +261,7 @@ type
  
 
 // Keys found on some "Internet" keyboards.
-
+const
   GDKX_KEY_Standby          = $1008FF10;
   GDKX_KEY_AudioLowerVolume = $1008FF11;
   GDKX_KEY_AudioMute        = $1008FF12;
@@ -545,6 +545,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.50  2003/10/17 03:21:21  ajgenius
+  fix GTK2 compiling for new Keyboard changes
+
   Revision 1.49  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 
