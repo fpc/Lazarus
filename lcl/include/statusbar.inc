@@ -3,19 +3,15 @@
 {------------------------------------------------------------------------------}
 constructor TStatusBar.Create(AOwner : TComponent);
 begin
- Assert(False, 'Trace:Inside TStatusBar Constructor');
  inherited Create(AOwner);
 
  fCompStyle := csStatusBar;
+ Align := alBottom;
 
- CreateComponent(AOwner);
- Height := 15;
- Width := 100;
- Top := 3;
- Left := 1;
+ Setbounds(0,TWinControl(AOwner).Height-15,TWInControl(AOwner).Width,15);
+
 
  FContext := 0;
-Align := alBottom;
  FMessage := -1;
 end;
 

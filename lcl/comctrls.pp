@@ -309,8 +309,8 @@ type
     FAlignmentWidget : TAlignment;
     procedure SetSimpleText(Value : String);
   public
-    constructor Create(AOwner : TComponent);
-    destructor Destroy;
+    constructor Create(AOwner : TComponent); override;
+    destructor Destroy; override;
   published
     property SimpleText : String read FSimpleText write SetSimpleText;
     property Visible;
@@ -876,6 +876,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2000/12/29 18:33:54  lazarus
+  TStatusBar's create and destroy were not set to override TWinControls so they were never called.
+  Shane
+
   Revision 1.1  2000/07/13 10:28:23  michael
   + Initial import
 

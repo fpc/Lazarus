@@ -1739,8 +1739,6 @@ begin
       if (Parent <> nil) 
       then  Parent.HandleNeeded;
     end;
-    // MWE: moved to createwnd
-    // if fCompStyle <> csNone then
     CreateHandle;
   end;
 end;
@@ -1892,6 +1890,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2000/12/29 18:33:54  lazarus
+  TStatusBar's create and destroy were not set to override TWinControls so they were never called.
+  Shane
+
   Revision 1.5  2000/12/29 13:14:05  lazarus
   Using the lresources.pp and registering components.
   This is a major change but will create much more flexibility for the IDE.

@@ -1192,16 +1192,9 @@ end;
  ------------------------------------------------------------------------------}
 constructor TControl.Create(AOwner : TComponent);
 begin
-{  if AOwner = nil
-  then Assert(False, Format('Trace:[TControl.Create] %s --> Create(AOwner: nil)', [ClassName]))
-  else Assert(False, Format('Trace:[TControl.Create] %s --> Create(AOwner: %s)', [ClassName, AOwner.ClassNAme]));
-}
   inherited Create(AOwner);
 
-  FControlStyle := [csCaptureMouse,
-                    csClickEvents,
-                    csSetCaption,
-                    csDoubleClicks];
+  FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks];
   FAnchors := [akLeft,akTop];
   FAlign := alNone;
   // initial control isn't visible (It isn't created yet)
@@ -1283,6 +1276,10 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.7  2000/12/29 18:33:54  lazarus
+  TStatusBar's create and destroy were not set to override TWinControls so they were never called.
+  Shane
+
   Revision 1.6  2000/12/29 13:14:05  lazarus
   Using the lresources.pp and registering components.
   This is a major change but will create much more flexibility for the IDE.

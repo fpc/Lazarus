@@ -985,22 +985,8 @@ begin
    else        
       writeln ('STOPPOK: [TGtkObject.SetText] Possible superfluous use of SetText, use SetLabel instead!');
    end;
-{STOPPOK: Code seems superfluous, see SetLabel instead
-var
-   pStr: PChar;
-   // Stoppok: Hmm, this cast looks quite dangerous if the code above is also valid
-   case TLMNotebookEvent(Data^).fCompStyle of
-      csNotebook :  
-      begin
-writeln ('STOPPOK: [TGtkObject.SetText] Notebook: Why the hell are we getting here?');
-         pStr := StrAlloc(Length(TLMNotebookEvent(Data^).Str) + 1);
-         StrPCopy(pStr, TLMNotebookEvent(Data^).Str);
-         gtk_notebook_set_tab_label_text(PGtkNotebook(TWinControl(TLMNotebookEvent(Data^).Parent).handle),
-                            PGtkWidget(TWinControl(TLMNotebookEvent(Data^).Child).handle),
-                            pStr);
-      end;
-   end;
-}
+{STOPPOK: Code seems superfluous, see SetLabel instead}
+
 end;
 
 {------------------------------------------------------------------------------
@@ -1848,6 +1834,15 @@ begin
 
       csSTATUSBAR :
       begin
+         Writeln('*****************************');
+         Writeln('*****************************');
+         Writeln('*****************************');
+         Writeln('*****************************');
+         Writeln('*******gtk_status_bar********');
+         Writeln('*****************************');
+         Writeln('*****************************');
+         Writeln('*****************************');
+         Writeln('*****************************');
          P := gtk_statusbar_new();
          Assert(False, 'Trace:In CreateComponent --StatusBar');
       end;
@@ -2702,6 +2697,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.12  2000/12/29 18:33:54  lazarus
+  TStatusBar's create and destroy were not set to override TWinControls so they were never called.
+  Shane
+
   Revision 1.11  2000/12/22 19:55:38  lazarus
   Added the Popupmenu code to the LCL.
   Now you can right click on the editor and a PopupMenu appears.
