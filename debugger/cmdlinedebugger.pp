@@ -154,6 +154,7 @@ begin
 {$ENDIF}
 end;
 
+(*
 procedure SetPGid(APID, APGID: Integer);
 var
   sr: SyscallRegs;
@@ -162,7 +163,8 @@ begin
   sr.reg3 := APGID;
   SysCall(Syscall_nr_setpgid, sr);
 end;
-  
+*)
+
 //////////////////////////////////////////////////
 
 { TCmdLineDebugger }
@@ -376,11 +378,12 @@ begin
 end;
 
 initialization
-//  setpgid(0, 0);
-
 end.
 { =============================================================================
   $Log$
+  Revision 1.19  2003/08/02 00:23:08  marc
+  - removed accidently committed testcode
+
   Revision 1.18  2003/08/02 00:20:20  marc
   * fixed environment handling to debuggee
 
