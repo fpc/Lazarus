@@ -1269,6 +1269,24 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TgtkObject.GetTopIndex(ListBoxObj: TObject): integer;
+------------------------------------------------------------------------------}
+function TgtkObject.GetTopIndex(ListBoxObj: TObject): integer;
+begin
+  Result:=0;
+end;
+
+{------------------------------------------------------------------------------
+  function TgtkObject.SetTopIndex(ListBoxObj: TObject; NewTopIndex: integer
+    ): integer;
+------------------------------------------------------------------------------}
+function TgtkObject.SetTopIndex(ListBoxObj: TObject; NewTopIndex: integer
+  ): integer;
+begin
+  Result:=0;
+end;
+
+{------------------------------------------------------------------------------
   procedure TgtkObject.BringFormToFront(Sender: TObject);
 ------------------------------------------------------------------------------}
 procedure TgtkObject.BringFormToFront(Sender: TObject);
@@ -1367,6 +1385,9 @@ begin
     
     LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TPage(Sender));
     
+    LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
+    LB_SETTOPINDEX: Result:=SetTopIndex(Sender,integer(Data));
+
   else begin
     handle := hwnd(ObjectToGtkObject(Sender));
     //???   if handle = nil then assert (false, Format ('Trace:  [TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName]));
@@ -6733,6 +6754,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.307  2002/12/27 08:46:32  mattias
+  changes for fpc 1.1
+
   Revision 1.306  2002/12/26 11:00:14  mattias
   added included by to unitinfo and a few win32 functions
 
