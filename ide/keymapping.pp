@@ -830,9 +830,9 @@ begin
 
   // normal synedit commands
   Add('Select All',ecSelectAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add('Copy selection to clipboard',ecCopy,VK_C,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Cut selection to clipboard',ecCut,VK_X,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Paste clipboard to current position',ecPaste,VK_V,[ssCtrl],VK_UNKNOWN,[]);
+  Add('Copy selection to clipboard',ecCopy,VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
+  Add('Cut selection to clipboard',ecCut,VK_X,[ssCtrl],VK_Delete,[ssShift]);
+  Add('Paste clipboard to current position',ecPaste,VK_V,[ssCtrl],VK_Insert,[ssShift]);
   Add('Undo',ecUndo,VK_Z,[ssCtrl],VK_UNKNOWN,[]);
   Add('Redo',ecRedo,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add('Normal selection mode',ecNormalSelect,VK_UNKNOWN,[],VK_UNKNOWN,[]);
