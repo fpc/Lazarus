@@ -469,85 +469,94 @@ end;
 {  TfrmCompilerOptions LoadTheCompilerOptions                                  }
 {------------------------------------------------------------------------------}
 procedure TCompilerOptions.LoadTheCompilerOptions;
+var
+  p: String;
 begin
   { Load the compiler options from the XML file }
 
   { Target }
-  TargetFilename := XMLConfigFile.GetValue('CompilerOptions/Target/Filename/Value', '');
+  p:='CompilerOptions/Target/';
+  TargetFilename := XMLConfigFile.GetValue(p+'Filename/Value', '');
 
   { SearchPaths }
-  IncludeFiles := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', '');
-  Libraries := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/Libraries/Value', '');
-  OtherUnitFiles := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', '');
-  CompilerPath := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/CompilerPath/Value', '/opt/fpc/ppc386');
-  UnitOutputDirectory := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/UnitOutputDirectory/Value', '');
-  LCLWidgetType := XMLConfigFile.GetValue('CompilerOptions/SearchPaths/LCLWidgetType/Value', 'gtk');
+  p:='CompilerOptions/SearchPaths/';
+  IncludeFiles := XMLConfigFile.GetValue(p+'IncludeFiles/Value', '');
+  Libraries := XMLConfigFile.GetValue(p+'Libraries/Value', '');
+  OtherUnitFiles := XMLConfigFile.GetValue(p+'OtherUnitFiles/Value', '');
+  CompilerPath := XMLConfigFile.GetValue(p+'CompilerPath/Value', '/opt/fpc/ppc386');
+  UnitOutputDirectory := XMLConfigFile.GetValue(p+'UnitOutputDirectory/Value', '');
+  LCLWidgetType := XMLConfigFile.GetValue(p+'LCLWidgetType/Value', 'gtk');
 
   { Parsing }
-  Style := XMLConfigFile.GetValue('CompilerOptions/Parsing/Style/Value', 1);
-  D2Extensions := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/D2Extensions/Value', true);
-  CStyleOperators := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/CStyleOperator/Value', true);
-  IncludeAssertionCode := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/IncludeAssertionCode/Value', true);
-  AllowLabel := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/AllowLabel/Value', true);
-  CPPInline := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/CPPInline/Value', true);
-  CStyleMacros := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/CStyleMacros/Value', false);
-  TPCompatible := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/TPCompatible/Value', false);
-  InitConstructor := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/InitConstructor/Value', false);
-  StaticKeyword := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/StaticKeyword/Value', false);
-  DelphiCompat := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/DelphiCompat/Value', false);
-  UseAnsiStrings := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/UseAnsiStrings/Value', false);
-  GPCCompat := XMLConfigFile.GetValue('CompilerOptions/Parsing/SymantecChecking/GPCCompat/Value', false);
+  p:='CompilerOptions/Parsing/';
+  Style := XMLConfigFile.GetValue(p+'Style/Value', 1);
+  D2Extensions := XMLConfigFile.GetValue(p+'SymantecChecking/D2Extensions/Value', true);
+  CStyleOperators := XMLConfigFile.GetValue(p+'SymantecChecking/CStyleOperator/Value', true);
+  IncludeAssertionCode := XMLConfigFile.GetValue(p+'SymantecChecking/IncludeAssertionCode/Value', false);
+  AllowLabel := XMLConfigFile.GetValue(p+'SymantecChecking/AllowLabel/Value', true);
+  CPPInline := XMLConfigFile.GetValue(p+'SymantecChecking/CPPInline/Value', true);
+  CStyleMacros := XMLConfigFile.GetValue(p+'SymantecChecking/CStyleMacros/Value', false);
+  TPCompatible := XMLConfigFile.GetValue(p+'SymantecChecking/TPCompatible/Value', false);
+  InitConstructor := XMLConfigFile.GetValue(p+'SymantecChecking/InitConstructor/Value', false);
+  StaticKeyword := XMLConfigFile.GetValue(p+'SymantecChecking/StaticKeyword/Value', false);
+  DelphiCompat := XMLConfigFile.GetValue(p+'SymantecChecking/DelphiCompat/Value', false);
+  UseAnsiStrings := XMLConfigFile.GetValue(p+'SymantecChecking/UseAnsiStrings/Value', false);
+  GPCCompat := XMLConfigFile.GetValue(p+'SymantecChecking/GPCCompat/Value', false);
 
   { CodeGeneration }
-  UnitStyle := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/UnitStyle/Value', 1);
-  IOChecks := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Checks/IOChecks/Value', false);
-  RangeChecks := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Checks/RangeChecks/Value', false);
-  OverflowChecks := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Checks/OverflowChecks/Value', false);
-  StackChecks := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Checks/StackChecks/Value', false);
-  HeapSize := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/HeapSize/Value', 8000000);
-  Generate := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Generate/Value', 1);
-  TargetProcessor := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/TargetProcessor/Value', 1);
-  VariablesInRegisters := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Optimizations/VariablesInRegisters/Value', false);
-  UncertainOptimizations := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Optimizations/UncertainOptimizations/Value', false);
-  OptimizationLevel := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/Optimizations/OptimizationLevel/Value', 1);
-  TargetOS := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/TargetOS/Value', 'linux');
+  p:='CompilerOptions/CodeGeneration/';
+  UnitStyle := XMLConfigFile.GetValue(p+'UnitStyle/Value', 1);
+  IOChecks := XMLConfigFile.GetValue(p+'Checks/IOChecks/Value', false);
+  RangeChecks := XMLConfigFile.GetValue(p+'Checks/RangeChecks/Value', false);
+  OverflowChecks := XMLConfigFile.GetValue(p+'Checks/OverflowChecks/Value', false);
+  StackChecks := XMLConfigFile.GetValue(p+'Checks/StackChecks/Value', false);
+  HeapSize := XMLConfigFile.GetValue(p+'HeapSize/Value', 8000000);
+  Generate := XMLConfigFile.GetValue(p+'Generate/Value', 1);
+  TargetProcessor := XMLConfigFile.GetValue(p+'TargetProcessor/Value', 1);
+  VariablesInRegisters := XMLConfigFile.GetValue(p+'Optimizations/VariablesInRegisters/Value', false);
+  UncertainOptimizations := XMLConfigFile.GetValue(p+'Optimizations/UncertainOptimizations/Value', false);
+  OptimizationLevel := XMLConfigFile.GetValue(p+'Optimizations/OptimizationLevel/Value', 1);
+  TargetOS := XMLConfigFile.GetValue(p+'TargetOS/Value', 'linux');
 
   { Linking }
-  GenerateDebugInfo := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', false);
-  GenerateDebugDBX := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/GenerateDebugDBX/Value', false);
-  UseLineInfoUnit := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/UseLineInfoUnit/Value', true);
-  UseHeaptrc := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/UseHeaptrc/Value', false);
-  GenGProfCode := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/GenGProfCode/Value', false);
-  StripSymbols := XMLConfigFile.GetValue('CompilerOptions/Linking/Debugging/StripSymbols/Value', false);
-  LinkStyle := XMLConfigFile.GetValue('CompilerOptions/CodeGeneration/LinkStyle/Value', 1);
-  PassLinkerOptions := XMLConfigFile.GetValue('CompilerOptions/Linking/Options/PassLinkerOptions/Value', false);
-  LinkerOptions := XMLConfigFile.GetValue('CompilerOptions/Linking/Options/LinkerOptions/Value', '');
+  p:='CompilerOptions/Linking/';
+  GenerateDebugInfo := XMLConfigFile.GetValue(p+'Debugging/GenerateDebugInfo/Value', false);
+  GenerateDebugDBX := XMLConfigFile.GetValue(p+'Debugging/GenerateDebugDBX/Value', false);
+  UseLineInfoUnit := XMLConfigFile.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
+  UseHeaptrc := XMLConfigFile.GetValue(p+'Debugging/UseHeaptrc/Value', false);
+  GenGProfCode := XMLConfigFile.GetValue(p+'Debugging/GenGProfCode/Value', false);
+  StripSymbols := XMLConfigFile.GetValue(p+'Debugging/StripSymbols/Value', false);
+  LinkStyle := XMLConfigFile.GetValue(p+'LinkStyle/Value', 1);
+  PassLinkerOptions := XMLConfigFile.GetValue(p+'Options/PassLinkerOptions/Value', false);
+  LinkerOptions := XMLConfigFile.GetValue(p+'Options/LinkerOptions/Value', '');
     
   { Messages }
-  ShowErrors := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowErrors/Value', true);
-  ShowWarn := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowWarn/Value', true);
-  ShowNotes := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowNotes/Value', true);
-  ShowHints := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowHints/Value', true);
-  ShowGenInfo := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowGenInfo/Value', true);
-  ShowLineNum := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShoLineNum/Value', false);
-  ShowAll := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowAll/Value', false);
-  ShowAllProcsOnError := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowAllProcsOnError/Value', false);
-  ShowDebugInfo := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowDebugInfo/Value', false);
-  ShowUsedFiles := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowUsedFiles/Value', false);
-  ShowTriedFiles := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowTriedFiles/Value', false);
-  ShowDefMacros := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowDefMacros/Value', false);
-  ShowCompProc := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowCompProc/Value', false);
-  ShowCond := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowCond/Value', false);
-  ShowNothing := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowNothing/Value', false);
-  ShowHintsForUnusedProjectUnits := XMLConfigFile.GetValue('CompilerOptions/Other/Verbosity/ShowHintsForUnusedProjectUnits/Value', false);
-  WriteFPCLogo := XMLConfigFile.GetValue('CompilerOptions/Other/WriteFPCLogo/Value', true);
-  StopAfterErrCount := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/StopAfterErrCount/Value', 1);
+  p:='CompilerOptions/Other/';
+  ShowErrors := XMLConfigFile.GetValue(p+'Verbosity/ShowErrors/Value', true);
+  ShowWarn := XMLConfigFile.GetValue(p+'Verbosity/ShowWarn/Value', true);
+  ShowNotes := XMLConfigFile.GetValue(p+'Verbosity/ShowNotes/Value', true);
+  ShowHints := XMLConfigFile.GetValue(p+'Verbosity/ShowHints/Value', true);
+  ShowGenInfo := XMLConfigFile.GetValue(p+'Verbosity/ShowGenInfo/Value', true);
+  ShowLineNum := XMLConfigFile.GetValue(p+'Verbosity/ShoLineNum/Value', false);
+  ShowAll := XMLConfigFile.GetValue(p+'Verbosity/ShowAll/Value', false);
+  ShowAllProcsOnError := XMLConfigFile.GetValue(p+'Verbosity/ShowAllProcsOnError/Value', false);
+  ShowDebugInfo := XMLConfigFile.GetValue(p+'Verbosity/ShowDebugInfo/Value', false);
+  ShowUsedFiles := XMLConfigFile.GetValue(p+'Verbosity/ShowUsedFiles/Value', false);
+  ShowTriedFiles := XMLConfigFile.GetValue(p+'Verbosity/ShowTriedFiles/Value', false);
+  ShowDefMacros := XMLConfigFile.GetValue(p+'Verbosity/ShowDefMacros/Value', false);
+  ShowCompProc := XMLConfigFile.GetValue(p+'Verbosity/ShowCompProc/Value', false);
+  ShowCond := XMLConfigFile.GetValue(p+'Verbosity/ShowCond/Value', false);
+  ShowNothing := XMLConfigFile.GetValue(p+'Verbosity/ShowNothing/Value', false);
+  ShowHintsForUnusedProjectUnits := XMLConfigFile.GetValue(p+'Verbosity/ShowHintsForUnusedProjectUnits/Value', false);
+  WriteFPCLogo := XMLConfigFile.GetValue(p+'WriteFPCLogo/Value', true);
+  StopAfterErrCount := XMLConfigFile.GetValue(p+'ConfigFile/StopAfterErrCount/Value', 1);
 
   { Other }
-  DontUseConfigFile := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/DontUseConfigFile/Value', false);
-  AdditionalConfigFile := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/AdditionalConfigFile/Value', false);
-  ConfigFilePath := XMLConfigFile.GetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', './fpc.cfg');
-  CustomOptions := XMLConfigFile.GetValue('CompilerOptions/Other/CustomOptions/Value', '');
+  p:='CompilerOptions/Other/';
+  DontUseConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/DontUseConfigFile/Value', false);
+  AdditionalConfigFile := XMLConfigFile.GetValue(p+'ConfigFile/AdditionalConfigFile/Value', false);
+  ConfigFilePath := XMLConfigFile.GetValue(p+'ConfigFile/ConfigFilePath/Value', './fpc.cfg');
+  CustomOptions := XMLConfigFile.GetValue(p+'CustomOptions/Value', '');
 end;
 
 {------------------------------------------------------------------------------}
@@ -576,85 +585,94 @@ end;
 {  TfrmCompilerOptions SaveTheCompilerOptions                                  }
 {------------------------------------------------------------------------------}
 procedure TCompilerOptions.SaveTheCompilerOptions;
+var
+  P: string;
 begin
   { Save the compiler options to the XML file }
   
   { Target }
-  XMLConfigFile.SetValue('CompilerOptions/Target/Filename/Value', TargetFilename);
+  p:='CompilerOptions/Target/';
+  XMLConfigFile.SetDeleteValue(p+'Filename/Value', TargetFilename,'');
 
   { SearchPaths }
-  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/IncludeFiles/Value', IncludeFiles);
-  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/Libraries/Value', Libraries);
-  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/OtherUnitFiles/Value', OtherUnitFiles);
-  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/CompilerPath/Value', CompilerPath);
-  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/UnitOutputDirectory/Value', UnitOutputDirectory);
-  XMLConfigFile.SetValue('CompilerOptions/SearchPaths/LCLWidgetType/Value', LCLWidgetType);
+  p:='CompilerOptions/SearchPaths/';
+  XMLConfigFile.SetDeleteValue(p+'IncludeFiles/Value', IncludeFiles,'');
+  XMLConfigFile.SetDeleteValue(p+'Libraries/Value', Libraries,'');
+  XMLConfigFile.SetDeleteValue(p+'OtherUnitFiles/Value', OtherUnitFiles,'');
+  XMLConfigFile.SetDeleteValue(p+'CompilerPath/Value', CompilerPath,'');
+  XMLConfigFile.SetDeleteValue(p+'UnitOutputDirectory/Value', UnitOutputDirectory,'');
+  XMLConfigFile.SetDeleteValue(p+'LCLWidgetType/Value', LCLWidgetType,'');
 
   { Parsing }
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/Style/Value', Style);
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/D2Extensions/Value', D2Extensions);
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/CStyleOperator/Value', CStyleOperators);
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/IncludeAssertionCode/Value', IncludeAssertionCode);
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/AllowLabel/Value', AllowLabel);
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/CPPInline/Value', CPPInline);
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/CStyleMacros/Value', CStyleMacros);
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/TPCompatible/Value', TPCompatible);
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/InitConstructor/Value', InitConstructor);
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/StaticKeyword/Value', StaticKeyword);
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/DelphiCompat/Value', DelphiCompat);
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/UseAnsiStrings/Value', UseAnsiStrings);
-  XMLConfigFile.SetValue('CompilerOptions/Parsing/SymantecChecking/GPCCompat/Value', GPCCompat);
+  p:='CompilerOptions/Parsing/';
+  XMLConfigFile.SetDeleteValue(p+'Style/Value', Style,1);
+  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/D2Extensions/Value', D2Extensions,true);
+  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/CStyleOperator/Value', CStyleOperators,true);
+  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/IncludeAssertionCode/Value', IncludeAssertionCode,false);
+  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/AllowLabel/Value', AllowLabel,true);
+  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/CPPInline/Value', CPPInline,true);
+  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/CStyleMacros/Value', CStyleMacros,false);
+  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/TPCompatible/Value', TPCompatible,false);
+  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/InitConstructor/Value', InitConstructor,false);
+  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/StaticKeyword/Value', StaticKeyword,false);
+  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/DelphiCompat/Value', DelphiCompat,false);
+  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/UseAnsiStrings/Value', UseAnsiStrings,false);
+  XMLConfigFile.SetDeleteValue(p+'SymantecChecking/GPCCompat/Value', GPCCompat,false);
   
   { CodeGeneration }
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/UnitStyle/Value', UnitStyle);
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Checks/IOChecks/Value', IOChecks);
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Checks/RangeChecks/Value', RangeChecks);
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Checks/OverflowChecks/Value', OverflowChecks);
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Checks/StackChecks/Value', StackChecks);
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/HeapSize/Value', HeapSize);
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Generate/Value', Generate);
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/TargetProcessor/Value', TargetProcessor);
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/VariablesInRegisters/Value', VariablesInRegisters);
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/UncertainOptimizations/Value', UncertainOptimizations);
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/Optimizations/OptimizationLevel/Value', OptimizationLevel);
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/TargetOS/Value', TargetOS);
+  p:='CompilerOptions/CodeGeneration/';
+  XMLConfigFile.SetDeleteValue(p+'UnitStyle/Value', UnitStyle,1);
+  XMLConfigFile.SetDeleteValue(p+'Checks/IOChecks/Value', IOChecks,false);
+  XMLConfigFile.SetDeleteValue(p+'Checks/RangeChecks/Value', RangeChecks,false);
+  XMLConfigFile.SetDeleteValue(p+'Checks/OverflowChecks/Value', OverflowChecks,false);
+  XMLConfigFile.SetDeleteValue(p+'Checks/StackChecks/Value', StackChecks,false);
+  XMLConfigFile.SetDeleteValue(p+'HeapSize/Value', HeapSize,8000000);
+  XMLConfigFile.SetDeleteValue(p+'Generate/Value', Generate,1);
+  XMLConfigFile.SetDeleteValue(p+'TargetProcessor/Value', TargetProcessor,1);
+  XMLConfigFile.SetDeleteValue(p+'Optimizations/VariablesInRegisters/Value', VariablesInRegisters,false);
+  XMLConfigFile.SetDeleteValue(p+'Optimizations/UncertainOptimizations/Value', UncertainOptimizations,false);
+  XMLConfigFile.SetDeleteValue(p+'Optimizations/OptimizationLevel/Value', OptimizationLevel,1);
+  XMLConfigFile.SetDeleteValue(p+'TargetOS/Value', TargetOS,'linux');
+  XMLConfigFile.SetDeleteValue(p+'LinkStyle/Value', LinkStyle,1);
 
   { Linking }
-  XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugInfo/Value', GenerateDebugInfo);
-  XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/GenerateDebugDBX/Value', GenerateDebugDBX);
-  XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/UseLineInfoUnit/Value', UseLineInfoUnit);
-  XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/UseHeaptrc/Value', UseHeaptrc);
-  XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/GenGProfCode/Value', GenGProfCode);
-  XMLConfigFile.SetValue('CompilerOptions/Linking/Debugging/StripSymbols/Value', StripSymbols);
-  XMLConfigFile.SetValue('CompilerOptions/CodeGeneration/LinkStyle/Value', LinkStyle);
-  XMLConfigFile.SetValue('CompilerOptions/Linking/Options/PassLinkerOptions/Value', PassLinkerOptions);
-  XMLConfigFile.SetValue('CompilerOptions/Linking/Options/LinkerOptions/Value', LinkerOptions);
+  p:='CompilerOptions/Linking/';
+  XMLConfigFile.SetDeleteValue(p+'Debugging/GenerateDebugInfo/Value', GenerateDebugInfo,false);
+  XMLConfigFile.SetDeleteValue(p+'Debugging/GenerateDebugDBX/Value', GenerateDebugDBX,false);
+  XMLConfigFile.SetDeleteValue(p+'Debugging/UseLineInfoUnit/Value', UseLineInfoUnit,true);
+  XMLConfigFile.SetDeleteValue(p+'Debugging/UseHeaptrc/Value', UseHeaptrc,false);
+  XMLConfigFile.SetDeleteValue(p+'Debugging/GenGProfCode/Value', GenGProfCode,false);
+  XMLConfigFile.SetDeleteValue(p+'Debugging/StripSymbols/Value', StripSymbols,false);
+  XMLConfigFile.SetDeleteValue(p+'Options/PassLinkerOptions/Value', PassLinkerOptions,false);
+  XMLConfigFile.SetDeleteValue(p+'Options/LinkerOptions/Value', LinkerOptions,'');
     
   { Messages }
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowErrors/Value', ShowErrors);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowWarn/Value', ShowWarn);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowNotes/Value', ShowNotes);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowHints/Value', ShowHints);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowGenInfo/Value', ShowGenInfo);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShoLineNum/Value', ShowLineNum);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowAll/Value', ShowAll);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowAllProcsOnError/Value', ShowAllProcsOnError);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowDebugInfo/Value', ShowDebugInfo);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowUsedFiles/Value', ShowUsedFiles);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowTriedFiles/Value', ShowTriedFiles);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowDefMacros/Value', ShowDefMacros);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowCompProc/Value', ShowCompProc);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowCond/Value', ShowCond);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowNothing/Value', ShowNothing);
-  XMLConfigFile.SetValue('CompilerOptions/Other/Verbosity/ShowHintsForUnusedProjectUnits/Value', ShowHintsForUnusedProjectUnits);
-  XMLConfigFile.SetValue('CompilerOptions/Other/WriteFPCLogo/Value', WriteFPCLogo);
-  XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/StopAfterErrCount/Value', StopAfterErrCount);
+  p:='CompilerOptions/Other/';
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowErrors/Value', ShowErrors,true);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowWarn/Value', ShowWarn,true);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowNotes/Value', ShowNotes,true);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowHints/Value', ShowHints,true);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowGenInfo/Value', ShowGenInfo,true);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShoLineNum/Value', ShowLineNum,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowAll/Value', ShowAll,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowAllProcsOnError/Value', ShowAllProcsOnError,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowDebugInfo/Value', ShowDebugInfo,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowUsedFiles/Value', ShowUsedFiles,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowTriedFiles/Value', ShowTriedFiles,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowDefMacros/Value', ShowDefMacros,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowCompProc/Value', ShowCompProc,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowCond/Value', ShowCond,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowNothing/Value', ShowNothing,false);
+  XMLConfigFile.SetDeleteValue(p+'Verbosity/ShowHintsForUnusedProjectUnits/Value', ShowHintsForUnusedProjectUnits,false);
+  XMLConfigFile.SetDeleteValue(p+'WriteFPCLogo/Value', WriteFPCLogo,true);
+  XMLConfigFile.SetDeleteValue(p+'ConfigFile/StopAfterErrCount/Value', StopAfterErrCount,1);
 
   { Other }
-  XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/DontUseConfigFile/Value', DontUseConfigFile);
-  XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/AdditionalConfigFile/Value', AdditionalConfigFile);
-  XMLConfigFile.SetValue('CompilerOptions/Other/ConfigFile/ConfigFilePath/Value', ConfigFilePath);
-  XMLConfigFile.SetValue('CompilerOptions/Other/CustomOptions/Value', CustomOptions);
+  p:='CompilerOptions/Other/';
+  XMLConfigFile.SetDeleteValue(p+'ConfigFile/DontUseConfigFile/Value', DontUseConfigFile,false);
+  XMLConfigFile.SetDeleteValue(p+'ConfigFile/AdditionalConfigFile/Value', AdditionalConfigFile,false);
+  XMLConfigFile.SetDeleteValue(p+'ConfigFile/ConfigFilePath/Value', ConfigFilePath,'./fpc.cfg');
+  XMLConfigFile.SetDeleteValue(p+'CustomOptions/Value', CustomOptions,'');
 
   XMLConfigFile.Flush;
 end;

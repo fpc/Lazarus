@@ -274,7 +274,7 @@ function TRunParamsOptions.Save(XMLConfig: TXMLConfig;
   procedure SaveUserOverrides(const APath: string);
   var i: integer;
   begin
-    XMLConfig.SetValue(APath+'Count',fUserOverrides.Count);
+    XMLConfig.SetDeleteValue(APath+'Count',fUserOverrides.Count,0);
     for i:=0 to fUserOverrides.Count-1 do begin
       XMLConfig.SetValue(APath+'Variable'+IntToStr(i)+'/Name',
         fUserOverrides.Names[i]);
@@ -289,25 +289,25 @@ begin
     RunParamsOptionsVersion);
 
   // local options
-  XMLConfig.SetValue(Path+'RunParams/local/HostApplicationFilename/Value',
-    fHostApplicationFilename);
-  XMLConfig.SetValue(Path+'RunParams/local/CommandLineParams/Value',
-    fCmdLineParams);
-  XMLConfig.SetValue(Path+'RunParams/local/LaunchingApplication/Use',
-    fUseLaunchingApplication);
-  XMLConfig.SetValue(Path+'RunParams/local/LaunchingApplication/PathPlusParams',
-    fLaunchingApplicationPathPlusParams);
-  XMLConfig.SetValue(Path+'RunParams/local/WorkingDirectory/Value',
-    fWorkingDirectory);
-  XMLConfig.SetValue(Path+'RunParams/local/Display/Use',
-    fUseDisplay);
-  XMLConfig.SetValue(Path+'RunParams/local/Display/Value',
-    fDisplay);
+  XMLConfig.SetDeleteValue(Path+'RunParams/local/HostApplicationFilename/Value',
+    fHostApplicationFilename,'');
+  XMLConfig.SetDeleteValue(Path+'RunParams/local/CommandLineParams/Value',
+    fCmdLineParams,'');
+  XMLConfig.SetDeleteValue(Path+'RunParams/local/LaunchingApplication/Use',
+    fUseLaunchingApplication,false);
+  XMLConfig.SetDeleteValue(Path+'RunParams/local/LaunchingApplication/PathPlusParams',
+    fLaunchingApplicationPathPlusParams,'');
+  XMLConfig.SetDeleteValue(Path+'RunParams/local/WorkingDirectory/Value',
+    fWorkingDirectory,'');
+  XMLConfig.SetDeleteValue(Path+'RunParams/local/Display/Use',
+    fUseDisplay,false);
+  XMLConfig.SetDeleteValue(Path+'RunParams/local/Display/Value',
+    fDisplay,':0');
 
   // environment options
   SaveUserOverrides(Path+'RunParams/environment/UserOverrides/');
-  XMLConfig.SetValue(Path+'RunParams/environment/IncludeSystemVariables/Value',
-    fIncludeSystemVariables);
+  XMLConfig.SetDeleteValue(Path+'RunParams/environment/IncludeSystemVariables/Value',
+    fIncludeSystemVariables,false);
   
   Result:=mrOk;
 end;

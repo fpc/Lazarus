@@ -445,7 +445,7 @@ procedure TProjectBookmarkList.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var a:integer;
 begin
-  XMLConfig.SetValue(Path+'Bookmarks/Count',Count);
+  XMLConfig.SetDeleteValue(Path+'Bookmarks/Count',Count,0);
   for a:=0 to Count-1 do
     Items[a].SaveToXMLConfig(XMLConfig,Path+'Bookmarks/Mark'+IntToStr(a)+'/');
 end;
@@ -638,7 +638,7 @@ procedure TProjectBreakPointList.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const Path: string);
 var a:integer;
 begin
-  XMLConfig.SetValue(Path+'BreakPoints/Count',Count);
+  XMLConfig.SetDeleteValue(Path+'BreakPoints/Count',Count,0);
   for a:=0 to Count-1 do
     Items[a].SaveToXMLConfig(XMLConfig,Path+'BreakPoints/Point'+IntToStr(a)+'/');
 end;
@@ -1159,18 +1159,24 @@ procedure TPublishProjectOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
 begin
   XMLConfig.SetValue(APath+'Version/Value',PublishProjectOptsVersion);
   XMLConfig.SetValue(APath+'DestinationDirectory/Value',DestinationDirectory);
-  XMLConfig.SetValue(APath+'CommandAfter/Value',CommandAfter);
-  XMLConfig.SetValue(APath+'IgnoreBinaries/Value',IgnoreBinaries);
-  XMLConfig.SetValue(APath+'UseIncludeFileFilter/Value',UseIncludeFileFilter);
-  XMLConfig.SetValue(APath+'IncludeFilterSimpleSyntax/Value',IncludeFilterSimpleSyntax);
-  XMLConfig.SetValue(APath+'IncludeFileFilter/Value',IncludeFileFilter);
-  XMLConfig.SetValue(APath+'UseExcludeFileFilter/Value',UseExcludeFileFilter);
-  XMLConfig.SetValue(APath+'ExcludeFilterSimpleSyntax/Value',ExcludeFilterSimpleSyntax);
-  XMLConfig.SetValue(APath+'ExcludeFileFilter/Value',ExcludeFileFilter);
-  XMLConfig.SetValue(APath+'SaveClosedEditorFilesInfo/Value',
-                     SaveClosedEditorFilesInfo);
-  XMLConfig.SetValue(APath+'SaveEditorInfoOfNonProjectFiles/Value',
-                     SaveEditorInfoOfNonProjectFiles);
+  XMLConfig.SetDeleteValue(APath+'CommandAfter/Value',CommandAfter,'');
+  XMLConfig.SetDeleteValue(APath+'IgnoreBinaries/Value',IgnoreBinaries,true);
+  XMLConfig.SetDeleteValue(APath+'UseIncludeFileFilter/Value',
+    UseIncludeFileFilter,true);
+  XMLConfig.SetDeleteValue(APath+'IncludeFilterSimpleSyntax/Value',
+    IncludeFilterSimpleSyntax,true);
+  XMLConfig.SetDeleteValue(APath+'IncludeFileFilter/Value',
+    IncludeFileFilter,DefPublProjIncFilter);
+  XMLConfig.SetDeleteValue(APath+'UseExcludeFileFilter/Value',
+    UseExcludeFileFilter,false);
+  XMLConfig.SetDeleteValue(APath+'ExcludeFilterSimpleSyntax/Value',
+    ExcludeFilterSimpleSyntax,true);
+  XMLConfig.SetDeleteValue(APath+'ExcludeFileFilter/Value',
+    ExcludeFileFilter,DefPublProjExcFilter);
+  XMLConfig.SetDeleteValue(APath+'SaveClosedEditorFilesInfo/Value',
+    SaveClosedEditorFilesInfo,false);
+  XMLConfig.SetDeleteValue(APath+'SaveEditorInfoOfNonProjectFiles/Value',
+    SaveEditorInfoOfNonProjectFiles,false);
 end;
 
 function TPublishProjectOptions.FileCanBePublished(

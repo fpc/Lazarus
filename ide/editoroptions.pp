@@ -582,7 +582,8 @@ end;
 function StrToLazSyntaxHighlighter(const s: string): TLazSyntaxHighlighter;
 begin
   for Result:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
-    if (lowercase(s)=lowercase(LazSyntaxHighlighterNames[Result])) then exit;
+    if (AnsiCompareText(s,LazSyntaxHighlighterNames[Result])=0)
+    then exit;
   Result:=lshFreePascal;
 end;
 

@@ -591,8 +591,9 @@ begin
   if Assigned(fOnLoadSaveFilename) then
     fOnLoadSaveFilename(AFilename,false);
   XMLConfig.SetDeleteValue(Path+'ResourceFilename/Value',AFilename,'');
-  XMLConfig.SetValue(Path+'SyntaxHighlighter/Value'
-     ,LazSyntaxHighlighterNames[fSyntaxHighlighter]);
+  XMLConfig.SetDeleteValue(Path+'SyntaxHighlighter/Value',
+     LazSyntaxHighlighterNames[fSyntaxHighlighter],
+     LazSyntaxHighlighterNames[lshFreePascal]);
   XMLConfig.SetDeleteValue(Path+'TopLine/Value',fTopLine,-1);
   XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,'');
   fBreakpoints.SaveToXMLConfig(XMLConfig,Path);
@@ -1056,8 +1057,8 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
   var f: TProjectFlag;
   begin
     for f:=Low(TProjectFlag) to High(TProjectFlag) do begin
-      xmlconfig.SetValue('ProjectOptions/General/Flags/'
-            +ProjectFlagNames[f]+'/Value', f in Flags);
+      xmlconfig.SetDeleteValue('ProjectOptions/General/Flags/'
+            +ProjectFlagNames[f]+'/Value', f in Flags,f in DefaultProjectFlags);
     end;
   end;
   
@@ -1086,7 +1087,7 @@ function TProject.WriteProject(ProjectWriteFlags: TProjectWriteFlags;
         inc(SaveUnitCount);
       end;
     end;
-    xmlconfig.SetValue('ProjectOptions/Units/Count',SaveUnitCount);
+    xmlconfig.SetDeleteValue('ProjectOptions/Units/Count',SaveUnitCount,0);
   end;
 
 
@@ -1109,24 +1110,26 @@ begin
   try
     repeat
       try
-        xmlconfig.SetValue('ProjectOptions/General/ProjectType/Value',
-            ProjectTypeNames[ProjectType]);
+        xmlconfig.SetDeleteValue('ProjectOptions/General/ProjectType/Value',
+            ProjectTypeNames[ProjectType],'');
         SaveFlags;
-        xmlconfig.SetValue('ProjectOptions/General/MainUnit/Value', MainUnit);
-        xmlconfig.SetValue('ProjectOptions/General/ActiveEditorIndexAtStart/Value'
-            ,ActiveEditorIndexAtStart);
-        xmlconfig.SetValue('ProjectOptions/General/IconPath/Value', IconPath);
+        xmlconfig.SetDeleteValue('ProjectOptions/General/MainUnit/Value', MainUnit,-1);
+        xmlconfig.SetDeleteValue('ProjectOptions/General/ActiveEditorIndexAtStart/Value'
+            ,ActiveEditorIndexAtStart,-1);
+        xmlconfig.SetDeleteValue('ProjectOptions/General/IconPath/Value',
+             IconPath,'');
         xmlconfig.SetValue('ProjectOptions/General/TargetFileExt/Value'
             ,TargetFileExt);
-        xmlconfig.SetValue('ProjectOptions/General/Title/Value', Title);
-        xmlconfig.SetValue('ProjectOptions/General/OutputDirectory/Value'
-            ,OutputDirectory);
-        xmlconfig.SetValue('ProjectOptions/General/UnitOutputDirectory/Value'
-            ,UnitOutputDirectory);
+        xmlconfig.SetDeleteValue('ProjectOptions/General/Title/Value', Title,'');
+        xmlconfig.SetDeleteValue('ProjectOptions/General/OutputDirectory/Value'
+            ,OutputDirectory,'');
+        xmlconfig.SetDeleteValue('ProjectOptions/General/UnitOutputDirectory/Value'
+            ,UnitOutputDirectory,'');
         fBookmarks.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
         fJumpHistory.DeleteInvalidPositions;
         fJumpHistory.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
-        xmlconfig.SetValue('ProjectOptions/General/SrcPath/Value',fSrcPath);
+        xmlconfig.SetDeleteValue('ProjectOptions/General/SrcPath/Value',
+             fSrcPath,'');
 
         SaveUnits;
 
@@ -2101,6 +2104,9 @@ end.
 
 {
   $Log$
+  Revision 1.88  2002/12/28 13:26:36  mattias
+  reduced lpi size
+
   Revision 1.87  2002/12/28 12:42:38  mattias
   focus fixes, reduced lpi size
 
