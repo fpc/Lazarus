@@ -157,7 +157,7 @@ Begin
   Begin
     // save any text in edit box
     if FSender.FCompStyle=csComboBox then
-      TWin32WSComboBox.GetText(FSender, EditText);
+      TWin32WSWinControl.GetText(FSender, EditText);
 
     Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
     For Counter := 0 To (TStrings(Source).Count - 1) Do
@@ -170,7 +170,7 @@ Begin
     begin
       SetComboHeight(FSender, FSender.Left, FSender.Top, FSender.Width, ComboHeight);
       // restore text in edit box
-      TWin32WSCustomComboBox.SetText(FSender, EditText);
+      TWin32WSWinControl.SetText(FSender, EditText);
     end;
   End
   Else
@@ -549,6 +549,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2004/09/11 12:15:45  micha
+  fix forget text after assigning items, need to give exact right class
+
   Revision 1.32  2004/09/10 14:38:29  micha
   convert lm_gettext to new interface methods
   remove lm_settext replacement settext methods in twidgetsets
