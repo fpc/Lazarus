@@ -2163,7 +2163,7 @@ end;
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
 var UnitList: TList;
   i, ProgramNameStart, ProgramNameEnd:integer;
-  MainUnitName: string;
+  MainUnitName, Ext: string;
   MainUnitInfo, AnUnitInfo: TUnitInfo;
   MainUnitIndex: integer;
 Begin
@@ -2173,11 +2173,13 @@ Begin
     for i:=0 to Project.UnitCount-1 do begin
       if Project.Units[i].IsPartOfProject then begin
         if OnlyForms then begin
+          if Project.MainUnit=i then MainUnitIndex:=i;
           if Project.Units[i].FormName<>'' then
             UnitList.Add(TViewUnitsEntry.Create(
               Project.Units[i].FormName,i,false));
         end else begin
           if Project.Units[i].UnitName<>'' then begin
+            if Project.MainUnit=i then MainUnitIndex:=i;
             UnitList.Add(TViewUnitsEntry.Create(
               Project.Units[i].UnitName,i,false));
           end else if Project.MainUnit=i then begin
@@ -2190,6 +2192,11 @@ Begin
               if MainUnitName='' then begin
                 MainUnitName:=FindProgramNameInSource(MainUnitInfo.Source.Source
                   ,ProgramNameStart,ProgramNameEnd);
+              end;
+              if MainUnitName='' then begin
+                MainUnitName:=ExtractFileName(MainUnitInfo.Filename);
+                Ext:=ExtractFileExt(MainUnitName);
+                MainUnitName:=copy(MainUnitName,1,length(MainUnitName)-length(Ext));
               end;
               if MainUnitName<>'' then begin
                 MainUnitIndex:=UnitList.Count;
@@ -2446,6 +2453,8 @@ end;
 function TMainIDE.DoOpenProjectFile(AFileName:string):TModalResult;
 var Ext,AText,ACaption,LPIFilename:string;
   LowestEditorIndex,LowestUnitIndex,LastEditorIndex,i:integer;
+  SrcStream: TMemoryStream;
+  NewSource: string;
 begin
 writeln('TMainIDE.DoOpenProjectFile 1');
   Result:=mrCancel;
@@ -2483,6 +2492,20 @@ writeln('TMainIDE.DoOpenProjectFile 1');
   LPIFilename:=ChangeFileExt(AFilename,'.lpi');
   Project:=TProject.Create(ptProgram);
   Project.ReadProject(LPIFilename);
+  if Project.MainUnit=0 then begin
+    // read MainUnit Source
+    SrcStream:=TMemoryStream.Create;
+    try
+      Result:=DoLoadMemoryStreamFromFile(SrcStream
+           ,ChangeFileExt(AFilename,'.lpr'));
+      if Result=mrAbort then exit;
+      SetLength(NewSource,SrcStream.Size);
+      SrcStream.Read(NewSource[1],length(NewSource));
+      Project.Units[Project.MainUnit].Source.Source:=NewSource;
+    finally
+      SrcStream.Free;
+    end;
+  end;
   UpdateCaption;
   // restore files
   LastEditorIndex:=-1;
@@ -3201,6 +3224,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.85  2001/03/29 13:11:33  lazarus
+  MG: fixed loading program file bug
+
   Revision 1.84  2001/03/29 12:38:59  lazarus
   MG: new environment opts, ptApplication bugfixes
 
