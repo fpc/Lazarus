@@ -57,7 +57,12 @@ uses
   Project, ProjectDefs, NewProjectDlg, ProjectOpts, PublishProjectDlg,
   // designer
   CompReg, IDEComp, AbstractFormEditor, Designer, FormEditor, CustomFormEditor,
-  ObjectInspector, PropEdits, ControlSelection, ColumnDlg, MenuPropEdit,
+  ObjectInspector, PropEdits, ControlSelection, ColumnDlg,
+  {$IFDEF UseNewMenuEditor}
+  MenuEditorForm,
+  {$ELSE}
+  MenuPropEdit,
+  {$ENDIF}
   // debugger
   RunParamsOpts, BaseDebugManager, DebugManager,
   // packager
@@ -8116,6 +8121,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.507  2003/04/03 20:05:43  mattias
+  added menueditor from Martin Patik, not yet working
+
   Revision 1.506  2003/04/03 15:02:23  mattias
   fixed loading .files
 
