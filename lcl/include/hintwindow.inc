@@ -130,9 +130,8 @@ function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
 begin
   Result := Rect(0,0, MaxWidth, ClientHeight);
   if AHint='' then exit;
-  SelectObject(Canvas.Handle, Canvas.Font.Handle);
-  DrawText(Canvas.Handle, PChar(AHint), Length(AHint), Result, DT_CalcRect or
-    DT_NOPREFIX);
+  DrawText(Canvas.GetUpdatedHandle([csFontValid]), PChar(AHint), Length(AHint),
+           Result, DT_CalcRect or DT_NOPREFIX);
   InflateRect(Result, 2, 2);
   Inc(Result.Right, 3);
 end;

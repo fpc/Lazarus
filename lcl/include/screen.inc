@@ -342,8 +342,9 @@ begin
   if not InterfaceObject.InitHintFont(FHintFont) then
   begin
 //    FHintFont.Name := 'courier';
+    FHintFont.Name:=DefFontData.Name;
     FHintFont.Style := [];
-    FHintFont.Size := 12;
+    FHintFont.Size := DefFontData.Height;
     FHintFont.Color := clInfoText;
     FHintFont.Pitch := fpDefault;
   end;
