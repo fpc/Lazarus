@@ -416,8 +416,8 @@ Var
     if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState) 
       and (Lo(LParam) = HTCLIENT) then
     begin
-      Windows.GetCursorPos(P);
-      Windows.ScreenToClient(Window, P);
+      Windows.GetCursorPos(Windows.POINT(P));
+      Windows.ScreenToClient(Window, Windows.POINT(P));
       if GetLCLClientBoundsOffset(lWinControl.Parent, BoundsOffset) then
       begin
         Dec(P.X, BoundsOffset.Left);
@@ -1516,6 +1516,9 @@ end;
 
 {
   $Log$
+  Revision 1.183  2005/01/10 20:30:10  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.182  2005/01/08 22:19:51  micha
   fix cursor handling, and statictext alignment
 
