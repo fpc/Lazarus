@@ -79,7 +79,6 @@ type
     procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
     procedure AssignSelf(Child ,Data : Pointer);
     procedure ReDraw(Child : Pointer);
-    Procedure SetCursor(Sender : TObject);
     procedure SetClipboardWidget(TargetWidget: PGtkWidget);
     
     function IsValidDC(const DC: HDC): Boolean;
@@ -127,20 +126,6 @@ type
     procedure SendCachedGtkMessages;
     procedure SetCallback(Msg : LongInt; Sender : TObject); override;
     procedure RemoveCallbacks(Sender : TObject); override;
-  protected
-    Cursor_Watch    : pGDKCursor;
-    Cursor_Arrow    : pGDKCursor;
-    Cursor_Cross    : pGDKCursor;
-    Cursor_Hand1    : pGDKCursor;
-    Cursor_XTerm    : pGDKCursor;
-    Cursor_StdArrow : pGDKCursor;
-    Cursor_HSplit   : pGDKCursor;
-    Cursor_VSplit   : pGDKCursor;
-    Cursor_SizeNWSE : pGDKCursor;
-    Cursor_SizeNS   : pGDKCursor;
-    Cursor_SizeNESW : pGDKCursor;
-    Cursor_SizeWE   : pGDKCursor;
-
   public
     constructor Create; 
     destructor Destroy; override;
@@ -190,8 +175,20 @@ var
   //Dragging : Boolean;
 
   MCaptureHandle: HWND;
-  
 
+  // mouse cursors
+  Cursor_Watch    : pGDKCursor;
+  Cursor_Arrow    : pGDKCursor;
+  Cursor_Cross    : pGDKCursor;
+  Cursor_Hand1    : pGDKCursor;
+  Cursor_XTerm    : pGDKCursor;
+  Cursor_StdArrow : pGDKCursor;
+  Cursor_HSplit   : pGDKCursor;
+  Cursor_VSplit   : pGDKCursor;
+  Cursor_SizeNWSE : pGDKCursor;
+  Cursor_SizeNS   : pGDKCursor;
+  Cursor_SizeNESW : pGDKCursor;
+  Cursor_SizeWE   : pGDKCursor;
 
 const
   KEYMAP_VKUNKNOWN = $10000;
@@ -390,6 +387,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.51  2002/06/21 16:59:15  lazarus
+  MG: TControl.Cursor is now set, reduced auto reaction of widgets in design mode
+
   Revision 1.50  2002/06/11 13:41:10  lazarus
   MG: fixed mouse coords and fixed mouse clicked thru bug
 
