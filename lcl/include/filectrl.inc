@@ -930,6 +930,16 @@ end;
   function CopyFile(const SrcFilename, DestFilename: string): boolean;
  ------------------------------------------------------------------------------}
 function CopyFile(const SrcFilename, DestFilename: string): boolean;
+begin
+  result := CopyFile(SrcFilename, DestFilename, false);
+end;
+
+{------------------------------------------------------------------------------
+  function CopyFile(const SrcFilename, DestFilename: string PreserveTime:
+    boolean): boolean;
+ ------------------------------------------------------------------------------}
+function CopyFile(const SrcFilename, DestFilename: string; PreserveTime: boolean
+  ): boolean;
 var
   SrcFS: TFileStream;
   DestFS: TFileStream;
@@ -940,6 +950,8 @@ begin
       DestFS:=TFileStream.Create(DestFilename,fmCreate);
       try
         DestFS.CopyFrom(SrcFS,SrcFS.Size);
+        if PreserveTime then
+          FileSetDate(DestFS.Handle, FileGetDate(SrcFS.Handle));
       finally
         DestFS.Free;
       end;
@@ -1056,6 +1068,9 @@ end;
 
 {
   $Log$
+  Revision 1.50  2004/09/27 10:35:51  vincents
+  Added CopyFile with PerserveTime parameter
+
   Revision 1.49  2004/09/01 09:43:24  mattias
   implemented registration of project file types
 
