@@ -5675,7 +5675,10 @@ var
   PkgOptions: string;
 begin
   // prepare static auto install packages
-  if blfWithStaticPackages in Flags then begin
+  PkgOptions:='';
+  {$IFDEF EnablePkgs}
+  if (blfWithStaticPackages in Flags)
+  or MiscellaneousOptions.BuildLazOpts.WithStaticPackages then begin
     // compile auto install static packages
     Result:=PkgBoss.DoCompileAutoInstallPackages([]);
     if Result<>mrOk then exit;
@@ -5686,8 +5689,8 @@ begin
     
     // create inherited compiler options
     PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions;
-  end else
-    PkgOptions:='';
+  end;
+  {$ENDIF}
 
   SourceNotebook.ClearErrorLines;
   Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
@@ -8621,6 +8624,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.545  2003/04/29 13:35:39  mattias
+  improved configure build lazarus dialog
+
   Revision 1.544  2003/04/29 09:31:09  mattias
   changed macro name ProjectDir to ProjPath
 
