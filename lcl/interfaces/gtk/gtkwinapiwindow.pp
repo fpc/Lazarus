@@ -718,6 +718,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/01/27 21:08:40  lazarus
+  MWE: Removed ^M
+
   Revision 1.20  2002/01/21 14:17:47  lazarus
   MG: added find-block-start and renamed find-block-other-end
 
