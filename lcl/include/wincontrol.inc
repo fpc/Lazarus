@@ -455,7 +455,7 @@ end;
 procedure TWinControl.DoConstraintsChange(Sender : TObject);
 begin
   inherited DoConstraintsChange(Sender);
-  InterfaceObject.IntSendMessage3(LM_SETGEOMETRY, Self, nil);
+  SendMsgToInterface(LM_SETGEOMETRY, Self, nil);
 end;
 
 {-------------------------------------------------------------------------------
@@ -643,7 +643,7 @@ begin
     SetZOrderPosition(i);
   end
   else if FHandle <> 0 then begin
-    InterfaceObject.SetWindowPos(FHandle, WindowPos[TopMost], 0, 0, 0, 0,
+    SetWindowPos(FHandle, WindowPos[TopMost], 0, 0, 0, 0,
       SWP_NOMOVE + SWP_NOSIZE);
   end;
 end;
@@ -2460,6 +2460,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.94  2002/10/26 15:15:49  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.93  2002/10/09 10:22:54  lazarus
   MG: fixed client origin coordinates
 
