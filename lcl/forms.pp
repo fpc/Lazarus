@@ -1212,7 +1212,15 @@ end;
 
 
 //------------------------------------------------------------------------------
+{$IFNDEF VER1_0}
+  {$IFNDEF VER1_9_6}
+procedure ExceptionOccurred(Sender: TObject; Addr:Pointer; FrameCount:Longint; Frames: PPointer);
+  {$ELSE}
 procedure ExceptionOccurred(Sender: TObject; Addr,Frame: Pointer);
+  {$ENDIF}
+{$ELSE}
+procedure ExceptionOccurred(Sender: TObject; Addr,Frame: Pointer);
+{$ENDIF}
 Begin
   DebugLn('[FORMS.PP] ExceptionOccurred ');
   if HaltingProgram or HandlingException then Halt;
