@@ -137,12 +137,12 @@ type
     FLocals: TStringList;
     FLocalsValid: Boolean;
     procedure LocalsNeeded;
+    procedure AddLocals(const AParams:String);
   protected
     procedure DoStateChange; override;
     function GetName(const AnIndex: Integer): String; override;
     function GetValue(const AnIndex: Integer): String; override;
   public
-    procedure AddLocals(const AParams:String);
     function Count: Integer; override;
     constructor Create(const ADebugger: TDebugger);
     destructor Destroy; override;
@@ -509,8 +509,9 @@ begin
     Result := '';
   end
   else begin
-    WriteLN('GetText: "', S, '"');
-    Result := GetPart('\t ''', '', S);
+    S := StripLN(S);
+    S := GetPart('\t ''', '', S);
+    Result := LeftStr(S, Length(S) - 1);
   end;
 end;
 
@@ -599,7 +600,7 @@ begin
            TargetPIDPart:=GetPart('child Thread ', ' ', S);
          FTargetPID := StrToIntDef(TargetPIDPart, 0);
 
-         WriteLN('Target PID: ', FTargetPID);
+         WriteLN('[Debugger] Target PID: ', FTargetPID);
       end
       else begin
         FTargetPID := 0;
@@ -724,9 +725,15 @@ begin
     if ExecuteCommand('-gdb-version', [], S, True)
     then FVersion := GetPart('(', ')', S)
     else FVersion := '';
-    WriteLN('Running GDB version: ', FVersion);
+    if FVersion < '5.3'
+    then begin
+      WriteLN('[WARNING] Debugger: Running an old (< 5.3) GDB version: ', FVersion);
+      WriteLN('                    Not all functionality will be supported.');
+    end
+    else begin
+      WriteLN('[Debugger] Running GDB version: ', FVersion);
+    end;
 
-    
     inherited Init;
   end
   else begin
@@ -784,11 +791,18 @@ begin
           if Pos('no debugging symbols', S) > 0
           then begin
             FHasSymbols := False;
-            WriteLN('WARNING: File ''',FileName, ''' has no debug symbols');
+            WriteLN('[WARNING] Debugger: File ''',FileName, ''' has no debug symbols');
           end
           else if ANoMICommand 
           then begin
-            AResultValues := AResultValues + Copy(S, 3, Length(S) - 5) + LINE_END;
+            // Strip surrounding ~" "
+            S := Copy(S, 3, Length(S) - 3);
+            if (RightStr(S, 2) = '\n') and (RightStr(S, 3) <> '\\n')
+            then begin
+              // Delete lineend symbol & add lineend
+              S := Copy(S, 1, Length(S) - 2) + LINE_END;
+            end;
+            AResultValues := AResultValues + S;
           end
           else begin
             WriteLN('[Debugger] Console output: ', S);
@@ -937,7 +951,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
       Location.SrcFile := GetPart('\"', '\"', S);
     end;
 
-    DoException(-1, Format('%s: %s', [ExceptionName, ExceptionMessage]));
+    DoException(ExceptionName, ExceptionMessage);
     DoCurrent(Location);
   end;
   
@@ -959,7 +973,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
       Location.SrcFile := GetPart('\"', '\"', S);
     end;
 
-    DoException(ErrorNo, Format('RunError(%d)', [ErrorNo]));
+    DoException(Format('RunError(%d)', [ErrorNo]), '');
     DoCurrent(Location);
   end;
 
@@ -989,20 +1003,18 @@ begin
     if Reason = 'exited-signalled'
     then begin
       SetState(dsStop);
-      // TODO: define signal no
-      DoException(0, List.Values['signal-name']);
-      ProcessFrame(List.Values['frame']);
+      DoException('External: ' + List.Values['signal-name'], '');
+      // ProcessFrame(List.Values['frame']);
       Exit;
     end;
     
     if Reason = 'signal-received'
     then begin
       // TODO: check to run (un)handled
-      // TODO: define signal no
       SetState(dsPause);
       S := List.Values['signal-name'];
       if S <> 'SIGINT'
-      then DoException(0, S);
+      then DoException('External: ' + S, '');
       ProcessFrame(List.Values['frame']);
       Exit;
     end;   
@@ -1226,9 +1238,9 @@ end;
 
 procedure TGDBMILocals.AddLocals(const AParams: String);
 var
-  n: Integer;
+  n, addr: Integer;
   LocList, List: TStrings;
-  Name: String;
+  S, Name, Value: String;
 begin
   LocList := CreateMIValueList(AParams);
   for n := 0 to LocList.Count - 1 do
@@ -1237,7 +1249,19 @@ begin
     Name := List.Values['name'];
     if Name = 'this'
     then Name := 'Self';
-    FLocals.Add(Name + '=' + List.Values['value']);
+
+    Value := List.Values['value'];
+    // try to deref. strings
+    S := GetPart(['(pchar) ', '(ansistring) '], [], Value, True, False);
+    if S <> ''
+    then begin
+      addr := StrToIntDef(S, 0);
+      if addr = 0
+      then Value := ''''''
+      else Value := '''' + TGDBMIDebugger(Debugger).GDBGetText(Pointer(addr)) + '''';
+    end;
+
+    FLocals.Add(Name + '=' + Value);
     FreeAndNil(List);
   end;
   FreeAndNil(LocList);
@@ -1745,6 +1769,10 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.19  2003/05/29 17:40:10  marc
+  MWE: * Fixed string resolving
+       * Updated exception handling
+
   Revision 1.18  2003/05/29 07:25:02  mattias
   added Destroying flag, debugger now always shuts down
 
