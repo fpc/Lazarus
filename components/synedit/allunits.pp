@@ -9,7 +9,7 @@
 }
 unit allunits;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -17,7 +17,7 @@ uses
   syntextdrawer, syneditkeycmds, synedittypes, syneditstrconst,
   syneditmiscclasses, syneditmiscprocs, syneditsearch, synedittextbuffer,
   synedit, synhighlighterpas, {synedithighlighter,} syncompletion,
-  syneditautocomplete;
+  syneditautocomplete, synhighlighterhtml, synhighlightercpp;
 	
 implementation
 
@@ -26,6 +26,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2001/03/12 23:42:40  lazarus
+  MG: added synhighlighter for cpp and html
+
   Revision 1.4  2001/02/21 22:55:25  lazarus
   small bugfixes + added TOIOptions
 
