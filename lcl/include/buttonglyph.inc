@@ -57,8 +57,8 @@ begin
       else if State = bsDown then
          Result := Rect(2 * gWidth, 0, (3 * gWidth) - 1, gHeight - 1)
       else
-         Result := Rect(0, 0, gWidth - 1, gHeidht - 1);
-   end
+         Result := Rect(0, 0, gWidth - 1, gHeight - 1);
+   end;
 
    Canvas.Copyrect(Client, TPixmap(FOriginal).Canvas, Result);
 end;
