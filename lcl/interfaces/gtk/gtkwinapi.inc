@@ -5710,22 +5710,91 @@ end;
   Params:  hndMenu: HMENU; GroupIndex: integer
   Returns: Nothing
 
-  Move a menuitem into another group
+  Move a menuitem into its group
+  This function is called by the LCL, after some menuitems were regrouped to
+  GroupIndex. The hndMenu is one of them.
+  Update all radio groups.
  ------------------------------------------------------------------------------}
 function TgtkObject.RegroupMenuItem(hndMenu: HMENU;
   GroupIndex: Integer): Boolean;
+  
+  function GetGroup(ParentMenuItem: TMenuItem;
+    GrpIndex, LastRadioItem: integer): PGSList;
+  var
+    i: Integer;
+  begin
+    for i:=LastRadioItem downto 0 do begin
+      if ParentMenuItem[i].RadioItem
+      and (ParentMenuItem[i].GroupIndex=GrpIndex)
+      and ParentMenuItem[i].HandleAllocated
+      and GtkWidgetIsA(Pointer(ParentMenuItem[i].Handle),
+                       GTK_RADIO_MENU_ITEM_TYPE)
+      then begin
+        Result:=gtk_radio_menu_item_group(
+                                 GTK_RADIO_MENU_ITEM(ParentMenuItem[i].Handle));
+        //writeln('TgtkObject.RegroupMenuItem.GetGroup A i=',i,' ',ParentMenuItem[i].Name,' GrpIndex=',ParentMenuItem[i].GroupIndex,' LastRadioItem=',LastRadioItem,' Result=',HexStr(Cardinal(Result),8));
+        exit;
+      end;
+    end;
+    Result:=nil;
+  end;
+  
 var
   RadioGroup: PGSList;
+  AMenuItem: TMenuItem;
+  ParentMenuItem: TMenuItem;
+  LastRadioGroupStart: integer;
+  i: Integer;
 begin
   if GTK_IS_RADIO_MENU_ITEM(Pointer(hndMenu)) then begin
-    // set group
-    RadioGroup:=GetRadioMenuItemGroup(PGtkRadioMenuItem(hndMenu));
-    gtk_radio_menu_item_set_group(PGtkRadioMenuItem(hndMenu),RadioGroup);
+    AMenuItem:=TMenuItem(GetLCLObject(Pointer(hndMenu)));
+    if AMenuItem=nil then exit;
+    ParentMenuItem:=AMenuItem.Parent;
+    if ParentMenuItem=nil then exit;
+    //writeln('TgtkObject.RegroupMenuItem A ',AMenuItem.Name,' ',ParentMenuItem.Name,' GroupIndex=',AMenuItem.GroupIndex);
+    LastRadioGroupStart:=-1;
+    for i:=0 to ParentMenuItem.Count-1 do begin
+      if ParentMenuItem[i].RadioItem
+      and ParentMenuItem[i].HandleAllocated
+      and GtkWidgetIsA(Pointer(ParentMenuItem[i].Handle),
+                       GTK_RADIO_MENU_ITEM_TYPE)
+      then begin
+        //writeln('TgtkObject.RegroupMenuItem B i=',i,' ',ParentMenuItem[i].Name,
+        //' GrpIndex=',ParentMenuItem[i].GroupIndex,
+        //' LastRadioGroupStart=',LastRadioGroupStart,
+        //' LastGroup=',HexStr(Cardinal(gtk_radio_menu_item_group(
+        //                                 GTK_RADIO_MENU_ITEM(ParentMenuItem[i].Handle))),8)
+        //);
+        if (ParentMenuItem[i].GroupIndex<>0) then begin
+          // item has a group -> bind to group
+          RadioGroup:=GetGroup(ParentMenuItem,ParentMenuItem[i].GroupIndex,
+                               LastRadioGroupStart);
+          gtk_radio_menu_item_set_group(
+            PGtkRadioMenuItem(ParentMenuItem[i].Handle),RadioGroup);
+          if (LastRadioGroupStart<0)
+          or (ParentMenuItem[LastRadioGroupStart].GroupIndex
+              <>ParentMenuItem[i].GroupIndex)
+          then
+            LastRadioGroupStart:=i;
+        end else begin
+          // item has no group -> unbind
+          if gtk_radio_menu_item_group(
+                            GTK_RADIO_MENU_ITEM(ParentMenuItem[i].Handle))
+            <>nil
+          then
+            gtk_radio_menu_item_set_group(
+              PGtkRadioMenuItem(ParentMenuItem[i].Handle),nil);
+        end;
+      end;
+    end;
+    // update checks
     RadioGroup:=gtk_radio_menu_item_group(PGtkRadioMenuItem(hndMenu));
     UpdateRadioGroupChecks(RadioGroup);
     Result:=true;
-  end else
+  end else begin
+    writeln('WARNING: TgtkObject.RegroupMenuItem: handle is not a GTK_RADIO_MENU_ITEM');
     Result:=false;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -7761,6 +7830,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.211  2003/02/23 10:42:06  mattias
+  implemented changing TMenuItem.GroupIndex at runtime
+
   Revision 1.210  2003/02/16 01:40:43  mattias
   fixed uninitialized style
 
