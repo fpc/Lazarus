@@ -275,18 +275,19 @@ const
   // if this fails
   // search for a proc node with same name and jump to difference in param list
   // returns true on jumped, false if no target proc found
-  var SearchedProcHead: string;
-    //FromProcHead, ToProcHead: string;
-    //Attr: TProcHeadAttributes;
-    //DiffPos: integer;
+  var
+    SearchedProcHead: string;
     ProcNode: TCodeTreeNode;
   begin
     Result:=false;
     SearchedProcHead:=ExtractProcHead(SearchForProcNode,SearchForProcAttr);
+    {$IFDEF CTDEBUG}
+    writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode Searching ',ProcNode<>nil,' "',SearchedProcHead,'"');
+    {$ENDIF}
     if SearchedProcHead='' then exit;
     ProcNode:=FindProcNode(StartNode,SearchedProcHead,SearchInProcAttr);
     {$IFDEF CTDEBUG}
-    writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode A ',ProcNode<>nil,' "',SearchedProcHead,'"');
+    writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode Found:',ProcNode<>nil);
     {$ENDIF}
     if ProcNode<>nil then begin
       Result:=JumpToProc(SearchForProcNode,JumpToProcAttr,
@@ -302,10 +303,13 @@ const
     SearchForProcAttr:=SearchForProcAttr+[phpWithoutBrackets,
        phpWithoutParamList];
     SearchedProcHead:=ExtractProcHead(SearchForProcNode,SearchForProcAttr);
+    {$IFDEF CTDEBUG}
+    writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode Searching without params "',SearchedProcHead,'"');
+    {$ENDIF}
     if SearchedProcHead='' then exit;
     ProcNode:=FindProcNode(StartNode,SearchedProcHead,SearchForProcAttr);
     {$IFDEF CTDEBUG}
-    writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode B ',ProcNode<>nil,' "',SearchedProcHead,'"');
+    writeln('TMethodJumpingCodeTool.FindJumpPoint.FindBestProcNode Found:',ProcNode<>nil);
     {$ENDIF}
     if ProcNode<>nil then begin
       // there is a proc with the same name, but with different parameters
@@ -434,13 +438,13 @@ begin
   // then test if cursor is in a procedure
   ProcNode:=CursorNode.GetNodeOfType(ctnProcedure);
   {$IFDEF CTDEBUG}
-  writeln('TMethodJumpingCodeTool.FindJumpPoint 2A ',ProcNode<>nil);
+  writeln('TMethodJumpingCodeTool.FindJumpPoint Checking if in a proc ... ',ProcNode<>nil);
   {$ENDIF}
   while (ProcNode<>nil) and (ProcNode.Desc=ctnProcedure) do begin
     if (ProcNode.SubDesc and ctnsForwardDeclaration)>0 then begin
       // forward declaration -> search procedure
       {$IFDEF CTDEBUG}
-      writeln('TMethodJumpingCodeTool.FindJumpPoint 2B ');
+      writeln('TMethodJumpingCodeTool.FindJumpPoint This is a forward proc ... ');
       {$ENDIF}
 
       // build the method name + parameter list (without default values)
@@ -449,6 +453,9 @@ begin
                                false);
       if Result then exit;
       
+      {$IFDEF CTDEBUG}
+      writeln('TMethodJumpingCodeTool.FindJumpPoint Searching left over ... ');
+      {$ENDIF}
       // there is no proc with same name and param list
       // gather forward procs
       if (ProcNode.Parent.Desc=ctnImplementation)

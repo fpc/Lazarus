@@ -3412,7 +3412,7 @@ begin
     // read procedure head (= name + parameterlist + resulttype;)
     CurNode:=ProcNode.FirstChild;
     ReadNextAtom;// read first atom of head
-    if IsOperator then AtomIsIdentifier(true);
+    if not IsOperator then AtomIsIdentifier(true);
     ReadNextAtom;
     if (CurPos.Flag=cafPoint) then begin
       // read procedure name of a class method (the name after the . )

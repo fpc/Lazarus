@@ -302,6 +302,9 @@ var
   GrandPaNode: TCodeTreeNode;
   TheClassName, s: string;
   HasClassName, IsProcType: boolean;
+  IsProcedure: Boolean;
+  IsFunction: Boolean;
+  IsOperator: Boolean;
 begin
   Result:='';
   ExtractProcHeadPos:=phepNone;
@@ -333,16 +336,20 @@ begin
   if (UpAtomIs('CLASS') or UpAtomIs('STATIC')) then
     ExtractNextAtom((phpWithStart in Attr)
                     and not (phpWithoutClassKeyword in Attr),Attr);
-  if (UpAtomIs('PROCEDURE')) or (UpAtomIs('FUNCTION'))
+  IsProcedure:=UpAtomIs('PROCEDURE');
+  IsProcedure:=UpAtomIs('PROCEDURE');
+  IsFunction:=(not IsProcedure) and UpAtomIs('FUNCTION');
+  IsOperator:=(not IsProcedure) and (not IsFunction) and UpAtomIs('OPERATOR');
+  if IsProcedure or IsFunction or IsOperator
   or (UpAtomIs('CONSTRUCTOR')) or (UpAtomIs('DESTRUCTOR'))
-  or (UpAtomIs('OPERATOR')) then
+  then
     ExtractNextAtom(phpWithStart in Attr,Attr)
   else
     exit;
   ExtractProcHeadPos:=phepStart;
   if not IsProcType then begin
     // read name
-    if not AtomIsIdentifier(false) then exit;
+    if (not IsOperator) and (not AtomIsIdentifier(false)) then exit;
     ReadNextAtom;
     HasClassName:=(CurPos.Flag=cafPoint);
     UndoReadNextAtom;

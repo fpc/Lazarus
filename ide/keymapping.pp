@@ -280,7 +280,7 @@ type
     function AddCategory(const Name, Description: string;
        TheAreas: TCommandAreas): integer;
     function Add(Category: TKeyCommandCategory; const Name: string;
-       Command:word;  const TheKeyA, TheKeyB: TIDECommandKey):integer;
+       Command:word;  const TheKeyA, TheKeyB: TIDEShortCut):integer;
     function AddDefault(Category: TKeyCommandCategory; const Name: string;
        Command:word):integer;
     procedure SetCustomKeyCount(const NewCount: integer);
@@ -359,13 +359,13 @@ function EditorCommandLocalizedName(cmd: word;
 function EditorKeyStringToVKCode(const s: string): integer;
 
 procedure GetDefaultKeyForCommand(Command: word;
-  var TheKeyA, TheKeyB: TIDECommandKey);
+  var TheKeyA, TheKeyB: TIDEShortCut);
 procedure GetDefaultKeyForClassicScheme(Command: word;
-  var TheKeyA, TheKeyB: TIDECommandKey);
+  var TheKeyA, TheKeyB: TIDEShortCut);
 function KeySchemeNameToSchemeType(const SchemeName: string): TKeyMapScheme;
 
 function ShiftStateToStr(Shift:TShiftState):AnsiString;
-function KeyValuesToStr(const KeyA, KeyB: TIDECommandKey): string;
+function KeyValuesToStr(const KeyA, KeyB: TIDEShortCut): string;
 function EditorKeyStringIsIrregular(const s: string): boolean;
 
 var KeyMappingEditForm: TKeyMappingEditForm;
@@ -417,13 +417,13 @@ begin
 end;
 
 procedure GetDefaultKeyForCommand(Command: word;
-  var TheKeyA, TheKeyB: TIDECommandKey);
+  var TheKeyA, TheKeyB: TIDEShortCut);
 
   procedure SetResult(NewKeyA: word; NewShiftA: TShiftState;
     NewKeyB: word; NewShiftB: TShiftState);
   begin
-    TheKeyA:=IDECommandKey(NewKeyA,NewShiftA,VK_UNKNOWN,[]);
-    TheKeyB:=IDECommandKey(NewKeyB,NewShiftB,VK_UNKNOWN,[]);
+    TheKeyA:=IDEShortCut(NewKeyA,NewShiftA,VK_UNKNOWN,[]);
+    TheKeyB:=IDEShortCut(NewKeyB,NewShiftB,VK_UNKNOWN,[]);
   end;
 
   procedure SetResult(NewKeyA: word; NewShiftA: TShiftState);
@@ -684,13 +684,13 @@ begin
 end;
 
 procedure GetDefaultKeyForClassicScheme(Command: word;
-  var TheKeyA, TheKeyB: TIDECommandKey);
+  var TheKeyA, TheKeyB: TIDEShortCut);
   
   procedure SetResult(NewKeyA: word; NewShiftA: TShiftState;
     NewKeyB: word; NewShiftB: TShiftState);
   begin
-    TheKeyA:=IDECommandKey(NewKeyA,NewShiftA,VK_UNKNOWN,[]);
-    TheKeyB:=IDECommandKey(NewKeyB,NewShiftB,VK_UNKNOWN,[]);
+    TheKeyA:=IDEShortCut(NewKeyA,NewShiftA,VK_UNKNOWN,[]);
+    TheKeyB:=IDEShortCut(NewKeyB,NewShiftB,VK_UNKNOWN,[]);
   end;
 
   procedure SetResult(NewKeyA: word; NewShiftA: TShiftState);
@@ -906,7 +906,7 @@ begin
   Result:=IntToStr(i);
 end;
 
-function KeyValuesToStr(const KeyA, KeyB: TIDECommandKey): string;
+function KeyValuesToStr(const KeyA, KeyB: TIDEShortCut): string;
 begin
   Result:=IntToStr(KeyA.Key1)+','+ShiftStateToStr(KeyA.Shift1)
         +','+IntToStr(KeyB.Key1)+','+ShiftStateToStr(KeyB.Shift1);
@@ -1652,8 +1652,8 @@ begin
     NewKey2:=VK_UNKNOWN;
   end;
 
-  CurRelation.KeyA:=IDECommandKey(NewKey1,NewShiftState1,VK_UNKNOWN,[]);
-  CurRelation.KeyB:=IDECommandKey(NewKey2,NewShiftState2,VK_UNKNOWN,[]);
+  CurRelation.KeyA:=IDEShortCut(NewKey1,NewShiftState1,VK_UNKNOWN,[]);
+  CurRelation.KeyB:=IDEShortCut(NewKey2,NewShiftState2,VK_UNKNOWN,[]);
   ModalResult:=mrOk;
 end;
 
@@ -2087,16 +2087,16 @@ end;
 
 function TKeyCommandRelationList.Add(Category: TKeyCommandCategory;
   const Name: string;
-  Command:word; const TheKeyA, TheKeyB: TIDECommandKey):integer;
+  Command:word; const TheKeyA, TheKeyB: TIDEShortCut):integer;
 begin
-  Result:=FRelations.Add(TKeyCommandRelation.Create(Category,Name,Command
-      ,TheKeyA, TheKeyB));
+  Result:=FRelations.Add(TKeyCommandRelation.Create(Category,Name,Command,
+                         TheKeyA,TheKeyB));
 end;
 
 function TKeyCommandRelationList.AddDefault(Category: TKeyCommandCategory;
   const Name: string; Command: word): integer;
 var
-  TheKeyA, TheKeyB: TIDECommandKey;
+  TheKeyA, TheKeyB: TIDEShortCut;
 begin
   GetDefaultKeyForCommand(Command,TheKeyA,TheKeyB);
   Result:=Add(Category,Name,Command,TheKeyA,TheKeyB);
@@ -2114,7 +2114,7 @@ begin
     while NewCount>FCustomKeyCount do begin
       Add(CustomCat,Format(srkmecCustomTool,[FCustomKeyCount]),
           ecCustomToolFirst+FCustomKeyCount,
-          CleanIDECommandKey,CleanIDECommandKey);
+          CleanIDEShortCut,CleanIDEShortCut);
       inc(FCustomKeyCount);
     end;
   end else begin
@@ -2146,7 +2146,7 @@ begin
     // increase available external tool commands
     while NewCount>fExtToolCount do begin
       Add(ExtToolCat,Format(srkmecExtTool,[fExtToolCount]),
-           ecExtToolFirst+fExtToolCount,CleanIDECommandKey,CleanIDECommandKey);
+           ecExtToolFirst+fExtToolCount,CleanIDEShortCut,CleanIDEShortCut);
       inc(fExtToolCount);
     end;
   end else begin
@@ -2197,7 +2197,7 @@ var a,b,p:integer;
 // LoadFromXMLConfig
 var
   FileVersion: integer;
-  TheKeyA, TheyKeyB: TIDECommandKey;
+  TheKeyA, TheyKeyB: TIDEShortCut;
   Key: word;
   Shift: TShiftState;
 begin
@@ -2218,10 +2218,10 @@ begin
     p:=1;
     Key:=ReadNextInt;
     Shift:=IntToShiftState(ReadNextInt);
-    Relations[a].KeyA:=IDECommandKey(Key,Shift,VK_UNKNOWN,[]);
+    Relations[a].KeyA:=IDEShortCut(Key,Shift,VK_UNKNOWN,[]);
     Key:=ReadNextInt;
     Shift:=IntToShiftState(ReadNextInt);
-    Relations[a].KeyB:=IDECommandKey(Key,Shift,VK_UNKNOWN,[]);
+    Relations[a].KeyB:=IDEShortCut(Key,Shift,VK_UNKNOWN,[]);
   end;
   Result:=true;
 end;
@@ -2232,7 +2232,7 @@ var a,b: integer;
   Name: String;
   CurKeyStr: String;
   DefaultKeyStr: string;
-  TheKeyA, TheyKeyB: TIDECommandKey;
+  TheKeyA, TheyKeyB: TIDEShortCut;
 begin
   XMLConfig.SetValue(Prefix+'Version/Value',KeyMappingFormatVersion);
   XMLConfig.SetDeleteValue(Prefix+'ExternalToolCount/Value',ExtToolCount,0);
@@ -2373,7 +2373,7 @@ var
   i: Integer;
   CurRelation: TKeyCommandRelation;
   NewScheme: TKeyMapScheme;
-  TheKeyA, TheKeyB: TIDECommandKey;
+  TheKeyA, TheKeyB: TIDEShortCut;
 begin
   NewScheme:=KeySchemeNameToSchemeType(SchemeName);
   // set all keys to new scheme

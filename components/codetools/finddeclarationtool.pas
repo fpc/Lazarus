@@ -2672,6 +2672,7 @@ begin
   // -> find class name
   MoveCursorToNodeStart(ProcContextNode.FirstChild);
   ReadNextAtom; // read name
+  if not AtomIsIdentifier(false) then exit; // ignore operator procs
   NameAtom:=CurPos;
   ReadNextAtom;
   if AtomIsChar('.') then begin
@@ -2679,8 +2680,8 @@ begin
     // -> proceed the search normally ...
   end else begin
     // proc is a proc declaration
-    if (fdfCollect in Params.Flags)
-    or CompareSrcIdentifiers(NameAtom.StartPos,Params.Identifier) then begin
+    if ((fdfCollect in Params.Flags)
+    or CompareSrcIdentifiers(NameAtom.StartPos,Params.Identifier)) then begin
       // proc identifier found
       {$IFDEF ShowTriedContexts}
       writeln('[TFindDeclarationTool.FindIdentifierInProcContext]  Proc-Identifier found="',GetIdentifier(Params.Identifier),'"');

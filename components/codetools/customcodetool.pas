@@ -1865,6 +1865,8 @@ begin
     ErrorPosition.Code:=TCodeBuffer(Scanner.MainCode);
     ErrorPosition.Y:=-1;
   end;
+  if AnsiCompareText(TheException.Message,'identifier expected, but keyword + found')=0 then
+    RaiseCatchableException(TheException.Message);
   // raise the exception
   CurrentPhase:=CodeToolPhaseNone;
   if not RaiseUnhandableExceptions then

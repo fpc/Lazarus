@@ -11,7 +11,22 @@
  *****************************************************************************
 
  Abstract:
+   Under construction by Mattias
+ 
+ 
    Interface unit for IDE commands.
+   IDE commands are functions like open file, save, build, ... .
+   
+   Every command can have up to two shortcuts. For example:
+     ecCopy: two shortcuts: Ctrl+C and Ctrl+Insert
+     ecDeleteChar: one shortcut: Delete
+     ecInsertDateTime: no shortcut
+   
+   Commands are sorted into categories. For example:
+     ecCopy is in the category 'Selection'.
+     
+   Every command can have a menu item.
+
 }
 unit IDECommands;
 
@@ -23,12 +38,10 @@ uses
   Classes, SysUtils, LCLType;
   
 type
-  TIDECommandCategory = class;
-
   TCommandArea = (caSourceEditor, caDesigner);
   TCommandAreas = set of TCommandArea;
   
-  TIDECommandKey = record
+  TIDEShortCut = record
     Key1: word;
     Shift1: TShiftState;
     Key2: word;
@@ -36,34 +49,7 @@ type
   end;
 
   //---------------------------------------------------------------------------
-  // class for storing the keys of a single command (key-command relationship)
-  TIDECommandKeys = class
-  private
-    FCategory: TIDECommandCategory;
-    FCommand: word;
-    FLocalizedName: string;
-    FName: String;
-  protected
-    function GetLocalizedName: string; virtual;
-    procedure SetLocalizedName(const AValue: string); virtual;
-    procedure SetCategory(const AValue: TIDECommandCategory); virtual;
-  public
-    function AsShortCut: TShortCut; virtual;
-    constructor Create(TheCategory: TIDECommandCategory; const TheName: String;
-      TheCommand: word; const TheKeyA, TheKeyB: TIDECommandKey);
-  public
-    KeyA: TIDECommandKey;
-    KeyB: TIDECommandKey;
-    DefaultKeyA: TIDECommandKey;
-    DefaultKeyB: TIDECommandKey;
-    property Name: String read FName;
-    property Command: word read FCommand;  // see the ecXXX constants above
-    property LocalizedName: string read GetLocalizedName write SetLocalizedName;
-    property Category: TIDECommandCategory read FCategory write SetCategory;
-  end;
-
-  //---------------------------------------------------------------------------
-  // TIDECommandCategory is used to divide the key commands in handy packets
+  // TIDECommandCategory is used to divide the commands in handy packets
   TIDECommandCategory = class(TList)
   protected
     FAreas: TCommandAreas;
@@ -77,20 +63,48 @@ type
     property Areas: TCommandAreas read FAreas;
     procedure Delete(Index: Integer); virtual;
   end;
-  
+
+  //---------------------------------------------------------------------------
+  // class for storing the keys of a single command
+  // (shortcut-command relationship)
+  TIDECommandKeys = class
+  private
+    FCategory: TIDECommandCategory;
+    FCommand: word;
+    FLocalizedName: string;
+    FName: String;
+  protected
+    function GetLocalizedName: string; virtual;
+    procedure SetLocalizedName(const AValue: string); virtual;
+    procedure SetCategory(const AValue: TIDECommandCategory); virtual;
+  public
+    function AsShortCut: TShortCut; virtual;
+    constructor Create(TheCategory: TIDECommandCategory; const TheName: String;
+      TheCommand: word; const TheKeyA, TheKeyB: TIDEShortCut);
+  public
+    KeyA: TIDEShortCut;
+    KeyB: TIDEShortCut;
+    DefaultKeyA: TIDEShortCut;
+    DefaultKeyB: TIDEShortCut;
+    property Name: String read FName;
+    property Command: word read FCommand;  // see the ecXXX constants above
+    property LocalizedName: string read GetLocalizedName write SetLocalizedName;
+    property Category: TIDECommandCategory read FCategory write SetCategory;
+  end;
+
 const
-  CleanIDECommandKey: TIDECommandKey =
+  CleanIDEShortCut: TIDEShortCut =
     (Key1: VK_UNKNOWN; Shift1: []; Key2: VK_UNKNOWN; Shift2: []);
 
-function IDECommandKey(Key1: word; Shift1: TShiftState;
-  Key2: word; Shift2: TShiftState): TIDECommandKey;
+function IDEShortCut(Key1: word; Shift1: TShiftState;
+  Key2: word; Shift2: TShiftState): TIDEShortCut;
 
 
 implementation
 
 
-function IDECommandKey(Key1: word; Shift1: TShiftState;
-  Key2: word; Shift2: TShiftState): TIDECommandKey;
+function IDEShortCut(Key1: word; Shift1: TShiftState;
+  Key2: word; Shift2: TShiftState): TIDEShortCut;
 begin
   Result.Key1:=Key1;
   Result.Shift1:=Shift1;
@@ -135,14 +149,14 @@ end;
 
 function TIDECommandKeys.AsShortCut: TShortCut;
 var
-  CurKey: TIDECommandKey;
+  CurKey: TIDEShortCut;
 begin
   if (KeyA.Key1<>VK_UNKNOWN) and (KeyA.Key2=VK_UNKNOWN) then
     CurKey:=KeyA
   else if (KeyB.Key1<>VK_UNKNOWN) and (KeyB.Key2=VK_UNKNOWN) then
     CurKey:=KeyB
   else
-    CurKey:=CleanIDECommandKey;
+    CurKey:=CleanIDEShortCut;
   Result:=CurKey.Key1;
   if ssCtrl in CurKey.Shift1 then
     Result:=Result+scCtrl;
@@ -154,7 +168,7 @@ end;
 
 constructor TIDECommandKeys.Create(TheCategory: TIDECommandCategory;
   const TheName: String; TheCommand: word;
-  const TheKeyA, TheKeyB: TIDECommandKey);
+  const TheKeyA, TheKeyB: TIDEShortCut);
 begin
   fCommand:=TheCommand;
   fName:=TheName;

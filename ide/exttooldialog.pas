@@ -388,8 +388,8 @@ begin
   for i:=0 to Count-1 do begin
     KeyCommandRelation:=KeyCommandRelationList.FindByCommand(ecExtToolFirst+i);
     if KeyCommandRelation<>nil then begin
-      KeyCommandRelation.KeyA:=IDECommandKey(Items[i].Key,Items[i].Shift,
-                                             VK_UNKNOWN,[]);
+      KeyCommandRelation.KeyA:=IDEShortCut(Items[i].Key,Items[i].Shift,
+                                           VK_UNKNOWN,[]);
     end else begin
       writeln('[TExternalToolList.SaveShortCuts] Error: '
         +'unable to save shortcut for external tool "',Items[i].Title,'"');
