@@ -621,7 +621,12 @@ begin
   Result := InterfaceObject.ReleaseDC(hWnd, DC);
 end;
 
-Function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
+function RemoveProp(Handle: hwnd; Str: PChar): THandle;
+begin
+  Result := InterfaceObject.RemoveProp(Handle, Str);
+end;
+
+function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean;
 begin
   Result := InterfaceObject.RoundRect(DC, X1, Y1, X2, Y2, RX, RY);
 end;
@@ -1330,6 +1335,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.119  2005/02/23 01:15:56  marc
+  + Added RemoveProp winapi call
+
   Revision 1.118  2005/02/05 16:09:52  marc
   * first 64bit changes
 

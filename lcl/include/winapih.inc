@@ -181,6 +181,7 @@ function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; {$IFDEF IF_BASE_M
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseCapture : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function RemoveProp(Handle: hwnd; Str: PChar): THandle; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -201,7 +202,7 @@ function SetCaretPosEx(handle: HWnd; X, Y: Integer): Boolean; {$IFDEF IF_BASE_ME
 function SetCursor(hCursor: HICON): HCURSOR; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetFocus(hWnd: HWND): HWND; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetMapMode(DC: HDC; MapMode: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 //function SetRect --> independent
 //function SetRectEmpty --> independent
 function SetROP2(DC: HDC; Mode: Integer): Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -300,6 +301,9 @@ function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.106  2005/02/23 01:15:56  marc
+  + Added RemoveProp winapi call
+
   Revision 1.105  2005/02/05 16:09:52  marc
   * first 64bit changes
 

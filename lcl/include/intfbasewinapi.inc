@@ -1132,6 +1132,11 @@ begin
   Result := 0;
 end;
 
+function TWidgetSet.RemoveProp(Handle: hwnd; Str: PChar): THandle;
+begin
+  Result := 0;
+end;
+
 function TWidgetSet.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 begin
   Result := False;
@@ -1420,6 +1425,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2005/02/23 01:15:56  marc
+  + Added RemoveProp winapi call
+
   Revision 1.19  2005/02/05 16:09:52  marc
   * first 64bit changes
 
