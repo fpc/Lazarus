@@ -1450,7 +1450,7 @@ begin
       RunParameterOptions.Load(xmlconfig,'ProjectOptions/');
 
       {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
-      CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
+      CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
             ProjectDirectory;
       CodeToolBoss.DefineTree.ClearCache;
       
@@ -2654,6 +2654,9 @@ end.
 
 {
   $Log$
+  Revision 1.115  2003/04/29 09:31:10  mattias
+  changed macro name ProjectDir to ProjPath
+
   Revision 1.114  2003/04/24 16:44:28  mattias
   implemented define templates for projects with packages
 

@@ -124,7 +124,7 @@ begin
 
   // create the template for the project directory
   ProjectDir:=TDefineTemplate.Create(ProjectDirDefTemplName,
-    'Current Project Directory','','$(#ProjectDir)',da_Directory);
+    'Current Project Directory','','$(#ProjPath)',da_Directory);
   Result.AddChild(ProjectDir);
   ProjectDirTemplate:=ProjectDir;
   

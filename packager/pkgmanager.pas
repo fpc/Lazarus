@@ -1352,12 +1352,29 @@ begin
   ConflictPkg:=PackageGraph.FindAPackageWithName(APackage.Name,nil);
   if ConflictPkg<>nil then begin
     if not PackageGraph.PackageCanBeReplaced(ConflictPkg,APackage) then begin
-      Result:=MessageDlg('Package Name already loaded',
-        'There is already a package with the name "'+APackage.Name+'" loaded'#13
+      Result:=MessageDlg('Package conflicts',
+        'There is already a package "'+ConflictPkg.IDAsString+'" loaded'#13
         +'from file "'+ConflictPkg.Filename+'".'#13
-        +'See Components -> Package Graph.',
+        +'See Components -> Package Graph.'#13
+        +'Replace is impossible.',
         mtError,[mbCancel,mbAbort],0);
       exit;
+    end;
+    
+    if ConflictPkg.Modified and (not ConflictPkg.ReadOnly) then begin
+      Result:=MessageDlg('Save Package?',
+        'Loading package '+APackage.IDAsString
+        +' will replace package '+ConflictPkg.IDAsString+#13
+        +'from file '+ConflictPkg.Filename+'.'#13
+        +'The old package is modified.'#13
+        +#13
+        +'Save old package '+ConflictPkg.Filename+'?',
+        mtConfirmation,[mbYes,mbNo,mbCancel,mbAbort],0);
+      if Result=mrNo then Result:=mrOk;
+      if Result=mrYes then begin
+        Result:=DoSavePackage(ConflictPkg,[]);
+      end;
+      if Result<>mrOk then exit;
     end;
     
     // replace package
