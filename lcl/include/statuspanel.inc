@@ -26,6 +26,17 @@ begin
   inherited Create(aCollection);
 end;
 
+destructor TStatusPanel.Destroy;
+var
+  OldStatusBar: TStatusBar;
+begin
+  //debugln('TStatusPanel.Destroy A ',dbgsName(Self),' StatusBar=',dbgsName(StatusBar));
+  OldStatusBar:=StatusBar;
+  inherited Destroy;
+  if OldStatusBar<>nil then
+    OldStatusBar.InvalidatePanel(-1,[ppText]);
+end;
+
 procedure TStatusPanel.Assign(Source: TPersistent);
 begin
   if Source is TStatusPanel then

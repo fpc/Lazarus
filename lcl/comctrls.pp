@@ -80,6 +80,7 @@ type
     procedure SetIndex(Value: Integer); override;
   public
     constructor Create(aCollection: TCollection); override;
+    destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     function StatusBar: TStatusBar;
   published
@@ -2403,6 +2404,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.167  2005/02/28 18:12:36  mattias
+  fixed TCollectionPropertyEditor deleting TStatuspanel
+
   Revision 1.166  2005/02/26 17:08:41  marc
   * Reworked listviews to match new interface
 

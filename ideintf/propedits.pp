@@ -3474,7 +3474,7 @@ Type
   end;
 
 const
-  CollectionForm : TCollectionPropertyEditorForm = nil;
+  CollectionForm: TCollectionPropertyEditorForm = nil;
 
 procedure TCollectionPropertyEditorForm.ListClick(Sender: TObject);
 begin
@@ -3530,6 +3530,7 @@ begin
         CollectionListBox.ItemIndex:=NewItemIndex;
         SelectInObjectInspector(false);
       end;
+      //debugln('TCollectionPropertyEditorForm.DeleteClick B');
       Modified;
     end;
   end;
@@ -3603,6 +3604,7 @@ end;
 procedure TCollectionPropertyEditorForm.PersistentDeleting(
   APersistent: TPersistent);
 begin
+  //debugln('TCollectionPropertyEditorForm.PersistentDeleting A APersistent=',dbgsName(APersistent),' OwnerPersistent=',dbgsName(OwnerPersistent));
   if APersistent=OwnerPersistent then begin
     SetCollection(nil,nil,'');
     Hide;
@@ -3738,6 +3740,7 @@ begin
           NewSelection.Add(Collection.Items[i]);
     end;
     GlobalDesignHook.SetSelection(NewSelection);
+    GlobalDesignHook.LookupRoot:=GetLookupRootForComponent(OwnerPersistent);
   finally
     NewSelection.Free;
   end;
