@@ -131,7 +131,7 @@ TCustomFormEditor
     destructor Destroy; override;
 
     Function AddSelected(Value : TComponent) : Integer;
-    Procedure DeleteControl(Value : TComponent);
+    Procedure DeleteControl(Value : TComponent; FreeComponent: boolean);
     Function FormModified : Boolean; override;
     Function FindComponentByName(const Name : ShortString) : TIComponentInterface; override;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
@@ -649,7 +649,8 @@ Begin
   Obj_Inspector.Selections := FSelectedComponents;
 end;
 
-Procedure TCustomFormEditor.DeleteControl(Value : TComponent);
+Procedure TCustomFormEditor.DeleteControl(Value : TComponent;
+  FreeComponent: boolean);
 var
   Temp : TComponentInterface;
   i: integer;
@@ -660,21 +661,27 @@ Begin
   begin
     RemoveFromComponentInterfaceList(Temp);
     if (Value is TCustomForm) then begin
-      AForm:=TCustomForm(Value);
-      i:=AForm.ComponentCount-1;
-      while i>=0 do begin
-        DeleteControl(AForm.Components[i]);
-        dec(i);
-        if i>AForm.ComponentCount-1 then
-          i:=AForm.ComponentCount-1;
+      if FreeComponent then begin
+        AForm:=TCustomForm(Value);
+        i:=AForm.ComponentCount-1;
+        while i>=0 do begin
+          DeleteControl(AForm.Components[i],true);
+          dec(i);
+          if i>AForm.ComponentCount-1 then
+            i:=AForm.ComponentCount-1;
+        end;
+        if not (AForm is TForm) then
+          writeln('WARNING: TCustomFormEditor.DeleteControl ',AForm.ClassName);
+        JITFormList.DestroyJITForm(TForm(AForm));
       end;
-      if not (AForm is TForm) then
-        writeln('WARNING: TCustomFormEditor.DeleteControl ',AForm.ClassName);
-      JITFormList.DestroyJITForm(TForm(AForm));
       Temp.Free;
     end
-    else
-      Temp.Delete;
+    else begin
+      if FreeComponent then
+        Temp.Delete
+      else
+        Temp.Free;
+    end;
   end;
 end;
 

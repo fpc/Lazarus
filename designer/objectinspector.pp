@@ -2041,7 +2041,7 @@ begin
   and (FPropertyEditorHook.LookupRoot<>nil) then begin
     Root:=FPropertyEditorHook.LookupRoot;
     AddComponentToAvailComboBox(Root);
-//writeln('[TObjectInspector.FillComponentComboBox] B  ',Root.Name,'  ',Root.ComponentCount);
+writeln('[TObjectInspector.FillComponentComboBox] B  ',Root.Name,'  ',Root.ComponentCount);
     for a:=0 to Root.ComponentCount-1 do
       AddComponentToAvailComboBox(Root.Components[a]);
   end;
