@@ -979,6 +979,7 @@ lcl/comctrls.pp svneol=native#text/pascal
 lcl/commctrl.pp svneol=native#text/pascal
 lcl/controls.pp svneol=native#text/pascal
 lcl/customtimer.pas svneol=native#text/pascal
+lcl/dbactns.pp svneol=native#text/pascal
 lcl/dbctrls.pp svneol=native#text/pascal
 lcl/dbgrids.pas svneol=native#text/pascal
 lcl/dialogs.pp svneol=native#text/pascal

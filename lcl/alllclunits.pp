@@ -44,7 +44,7 @@ uses
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
   Printers, PostScriptPrinter, CheckLst, PairSplitter, ExtDlgs,
-  DBCtrls, DBGrids, EditBtn, ExtGraphics,
+  DBCtrls, DBGrids, DBActns, EditBtn, ExtGraphics,
   PropertyStorage, IniPropStorage, XMLPropStorage,
   // widgetset skeleton
   WSActnList, WSArrow, WSButtons, WSCalendar,
@@ -63,6 +63,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/08/03 10:01:22  mattias
+  added DBActns  from Michael VC
+
   Revision 1.16  2004/07/25 15:39:55  mattias
   added rx components  from Michal Van Canneyt
 
