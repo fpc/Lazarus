@@ -2472,8 +2472,7 @@ begin
   dec(FUpdateCount);
   if FUpdateCount=0 then begin
     // ToDo: only refresh if something changed
-    if tvsScrollbarChanged in FStates then
-      UpdateScrollBars;
+    UpdateScrollBars;
     Invalidate;
   end;
 end;
@@ -2560,6 +2559,7 @@ begin
   if (FScrollBars <> Value) then begin
     FScrollBars := Value;
     RecreateWnd;
+    Include(FStates,tvsScrollbarChanged);
     UpdateScrollBars;
   end;
 end;
@@ -3059,9 +3059,12 @@ procedure TCustomTreeView.UpdateScrollbars;
 var
   ScrollInfo: TScrollInfo;
 begin
+  if not (tvsScrollbarChanged in FStates) then exit;
   if not HandleAllocated or (FUpdateCount>0) then begin
-    Include(FStates,tvsScrollbarChanged);
+    //Include(FStates,tvsScrollbarChanged);
   end else begin
+    if ScrolledLeft>GetMaxScrollLeft then ScrolledLeft:=GetMaxScrollLeft;
+    if ScrolledTop>GetMaxScrollTop then ScrolledTop:=GetMaxScrollTop;
     Exclude(FStates,tvsScrollbarChanged);
     if fScrollBars <> ssNone then begin
       ScrollInfo.cbSize := SizeOf(ScrollInfo);
@@ -3588,8 +3591,7 @@ var a,HalfBorderWidth:integer;
   Node: TTreeNode;
 begin
   if tvsUpdating in FStates then exit;
-  if (tvsScrollbarChanged in FStates) then
-    UpdateScrollbars;
+  UpdateScrollbars;
   with Canvas do begin
     // draw nodes
     Node:=TopItem;
@@ -3951,7 +3953,7 @@ begin
     if CursorNode.HasChildren
     and (x>=CursorNode.DisplayExpandSignLeft)
     and (x<CursorNode.DisplayExpandSignRight) then begin
-      // mousedown occured on expand sign -> exapnd/collapse
+      // mousedown occured on expand sign -> expand/collapse
       CursorNode.Expanded:=not CursorNode.Expanded;
     end else if x>=CursorNode.DisplayTextLeft then begin
       // mousedown occured in text -> select node and begin drag operation
