@@ -1667,6 +1667,16 @@ var
     until false;
     Result:=true;
   end;
+  
+  procedure CacheResult(Found: boolean);
+  begin
+    if Found and (not (fdfDoNotCache in Params.NewFlags))
+    and (FirstSearchedNode<>nil) then begin
+      // cache result
+      AddResultToNodeCaches(FirstSearchedNode,ContextNode,
+        fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
+    end;
+  end;
 
 begin
   Result:=false;
@@ -1800,12 +1810,21 @@ begin
       end;
     until ContextNode=nil;
     
-  finally
-    if Result and (not (fdfDoNotCache in Params.NewFlags))
-    and (FirstSearchedNode<>nil) then begin
-      // cache result
-      AddResultToNodeCaches(FirstSearchedNode,ContextNode,
-        fdfSearchForward in Params.Flags,Params,SearchRangeFlags);
+  except
+    on E: ECodeToolError do begin
+      CacheResult(Result);
+      exit;
+    end;
+    on E: ELinkScannerError do begin
+      CacheResult(Result);
+      exit;
+    end;
+    
+    // unexpected exception
+    on E: Exception do begin
+      writeln('Unexpected Exception during find declaration: ',E.Message);
+      writeln('  MainFilename=',MainFilename);
+      raise;
     end;
   end;
   // if we are here, the identifier was not found
