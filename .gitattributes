@@ -387,6 +387,7 @@ images/components/ttoolbar.xpm -text svneol=native#image/x-xpixmap
 images/components/ttrackbar.ico -text svneol=unset#image/x-icon
 images/components/ttrackbar.xpm -text svneol=native#image/x-xpixmap
 images/components/ttreeview.xpm -text svneol=native#image/x-xpixmap
+images/components/unregisteredcomponent.xpm -text svneol=native#image/x-xpixmap
 images/components_images.lrs svneol=native#text/pascal
 images/downarrow.ico -text svneol=unset#image/x-icon
 images/downarrow.xpm -text svneol=native#image/x-xpixmap

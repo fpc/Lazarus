@@ -60,7 +60,7 @@ uses
   ProjectInspector,
   // designer
   {$IFDEF EnablePkgs}
-  ComponentReg,
+  ComponentPalette, ComponentReg,
   {$ELSE}
   CompReg, IDEComp,
   {$ENDIF}
@@ -220,7 +220,9 @@ type
 
     procedure OpenFileDownArrowClicked(Sender : TObject);
     procedure mnuOpenFilePopupClick(Sender : TObject);
+    {$IFNDEF EnablePkgs}
     procedure ControlClick(Sender : TObject);
+    {$ENDIF}
 
   published
     // Global IDE events
@@ -346,15 +348,14 @@ type
     FDisplayState : TDisplayState;
     FLastFormActivated : TCustomForm;// used to find the last form so you can
                                      // display the correct tab
+    {$IFNDEF EnablePkgs}
     FSelectedComponent : TRegisteredComponent;
+    {$ENDIF}
     FOpenEditorsOnCodeToolChange: boolean;
 
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
 
-    CustomExtToolMenuSeparator: TMenuItem;
-
     procedure SetDefaultsForForm(aForm : TCustomForm);
-
     procedure InvalidateAllDesignerForms;
   protected
     procedure ToolButtonClick(Sender : TObject);
@@ -440,6 +441,7 @@ type
       var Handled: boolean; Data: TObject);
 
   public
+    CustomExtToolMenuSeparator: TMenuItem;
     class procedure ParseCmdLineOptions;
     
     constructor Create(TheOwner: TComponent); override;
@@ -587,8 +589,10 @@ type
       NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags); override;
 
     // form editor and designer
-    property SelectedComponent : TRegisteredComponent 
+    {$IFNDEF EnablePkgs}
+    property SelectedComponent : TRegisteredComponent
       read FSelectedComponent write FSelectedComponent;
+    {$ENDIF}
     procedure DoBringToFrontFormOrUnit;
     procedure DoBringToFrontFormOrInspector;
     procedure DoShowDesignerFormOfCurrentSrc;
@@ -845,7 +849,7 @@ begin
   // Main IDE bar created and setup completed -> Show it
   Show;
 
-  // load packages
+  // load installed packages
   PkgBoss.LoadInstalledPackages;
 
   UpdateWindowsMenu;
@@ -1605,6 +1609,7 @@ Begin
 end;
 
 {------------------------------------------------------------------------------}
+{$IFNDEF EnablePkgs}
 procedure TMainIDE.ControlClick(Sender : TObject);
 var
   IDECOmp : TIDEComponent;
@@ -1631,6 +1636,7 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuFindDeclarationClicked(Sender : TObject);
@@ -2058,7 +2064,12 @@ Begin
     OnActivated:=@OnDesignerActivated;
     OnComponentAdded:=@OnDesignerComponentAdded;
     OnComponentDeleted:=@OnDesignerComponentDeleted;
+    {$IFDEF EnablePkgs}
+    OnGetNonVisualCompIconCanvas:=
+      @TComponentPalette(IDEComponentPalette).OnGetNonVisualCompIconCanvas;
+    {$ELSE}
     OnGetNonVisualCompIconCanvas:=@IDECompList.OnGetNonVisualCompIconCanvas;
+    {$ENDIF}
     OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
     OnModified:=@OnDesignerModified;
     OnProcessCommand:=@OnProcessIDECommand;
@@ -6613,12 +6624,20 @@ end;
 procedure TMainIDE.OnDesignerGetSelectedComponentClass(Sender: TObject; 
   var RegisteredComponent: TRegisteredComponent);
 begin
+  {$IFDEF EnablePkgs}
+  RegisteredComponent:=TComponentPalette(IDEComponentPalette).Selected;
+  {$ELSE}
   RegisteredComponent:=SelectedComponent;
+  {$ENDIF}
 end;
 
 procedure TMainIDE.OnDesignerUnselectComponentClass(Sender: TObject);
 begin
+  {$IFDEF EnablePkgs}
+  TComponentPalette(IDEComponentPalette).Selected:=nil;
+  {$ELSE}
   ControlClick(ComponentNoteBook);
+  {$ENDIF}
 end;
 
 procedure TMainIDE.OnDesignerSetDesigning(Sender: TObject; 
@@ -6654,7 +6673,7 @@ begin
 
   // add needed unit to source
   CodeToolBoss.AddUnitToMainUsesSection(ActiveUnitInfo.Source,
-                                        AComponentClass.UnitName,'');
+      AComponentClass.{$IFDEF EnablePkgs}GetUnitName{$ELSE}UnitName{$ENDIF},'');
   // add component definition to form source
   FormClassName:=TDesigner(Sender).Form.ClassName;
   if not CodeToolBoss.PublishedVariableExists(ActiveUnitInfo.Source,
@@ -8190,7 +8209,11 @@ var
   ADesigner: TIDesigner;
 begin
 writeln('TMainIDE.OnPropHookComponentAdded A ',AComponent.Name,':',AComponent.ClassName);
+  {$IFDEF EnablePkgs}
+  ComponentClass:=IDEComponentPalette.FindComponent(AComponent.ClassName);
+  {$ELSE}
   ComponentClass:=FindRegsiteredComponentClass(AComponent.ClassName);
+  {$ENDIF}
   if ComponentClass=nil then begin
     writeln('TMainIDE.OnPropHookComponentAdded ',AComponent.ClassName,
             ' not registered');
@@ -8485,6 +8508,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.534  2003/04/22 13:27:09  mattias
+  implemented installing components in component palette
+
   Revision 1.533  2003/04/22 07:56:17  mattias
   implemented dynamic component palette
 
