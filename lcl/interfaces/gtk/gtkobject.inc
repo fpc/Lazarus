@@ -1270,21 +1270,87 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.GetTopIndex(ListBoxObj: TObject): integer;
+  function TgtkObject.GetTopIndex(Sender: TObject): integer;
 ------------------------------------------------------------------------------}
-function TgtkObject.GetTopIndex(ListBoxObj: TObject): integer;
+function TgtkObject.GetTopIndex(Sender: TObject): integer;
+var
+  ScrolledWindow: PGtkScrolledWindow;
+  VertAdj: PGTKAdjustment;
+  AdjValue: integer;
+  ListWidget: PGtkList;
+  AWidget: PGtkWidget;
+  GListItem: PGList;
+  ListItemWidget: PGtkWidget;
 begin
-  Result:=0;
+  Result:=-1;
+  if not (Sender is TWinControl) then exit;
+  case TWinControl(Sender).fCompStyle of
+
+  csListBox:
+    begin
+      AWidget:=PGtkWidget(TWinControl(Sender).Handle);
+      ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
+      ScrolledWindow:=PGtkScrolledWindow(AWidget);
+      VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
+      if VertAdj=nil then
+        AdjValue:=0
+      else
+        AdjValue:=round(VertAdj^.value);
+      GListItem:=ListWidget^.children;
+      while GListItem<>nil do begin
+        inc(Result);
+        ListItemWidget:=PGtkWidget(GListItem^.data);
+        dec(AdjValue,ListItemWidget^.Allocation.Height);
+        if AdjValue<0 then break;
+        GListItem:=GListItem^.next;
+      end;
+    end;
+
+  end;
 end;
 
 {------------------------------------------------------------------------------
-  function TgtkObject.SetTopIndex(ListBoxObj: TObject; NewTopIndex: integer
+  function TgtkObject.SetTopIndex(Sender: TObject; NewTopIndex: integer
     ): integer;
 ------------------------------------------------------------------------------}
-function TgtkObject.SetTopIndex(ListBoxObj: TObject; NewTopIndex: integer
+function TgtkObject.SetTopIndex(Sender: TObject; NewTopIndex: integer
   ): integer;
+var
+  ScrolledWindow: PGtkScrolledWindow;
+  VertAdj: PGTKAdjustment;
+  AdjValue, MaxAdjValue: integer;
+  ListWidget: PGtkList;
+  AWidget: PGtkWidget;
+  GListItem: PGList;
+  ListItemWidget: PGtkWidget;
+  i: Integer;
 begin
   Result:=0;
+  if not (Sender is TWinControl) then exit;
+  case TWinControl(Sender).fCompStyle of
+
+  csListBox:
+    begin
+      AWidget:=PGtkWidget(TWinControl(Sender).Handle);
+      ListWidget:=PGtkList(GetWidgetInfo(AWidget, True)^.ImplementationWidget);
+      ScrolledWindow:=PGtkScrolledWindow(AWidget);
+      AdjValue:=0;
+      GListItem:=ListWidget^.children;
+      i:=0;
+      while GListItem<>nil do begin
+        ListItemWidget:=PGtkWidget(GListItem^.data);
+        if i>=NewTopIndex then break;
+        inc(AdjValue,ListItemWidget^.Allocation.Height);
+        inc(i);
+        GListItem:=GListItem^.next;
+      end;
+      VertAdj:=gtk_scrolled_window_get_vadjustment(ScrolledWindow);
+      MaxAdjValue:=round(VertAdj^.upper-VertAdj^.page_size);
+      if AdjValue>MaxAdjValue then AdjValue:=MaxAdjValue;
+      gtk_adjustment_set_value(VertAdj,AdjValue);
+    end;
+
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -6755,6 +6821,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.309  2002/12/27 10:23:40  mattias
+  implemented TListBox.TopIndex
+
   Revision 1.308  2002/12/27 09:05:50  mattias
   fixed uninitialized logbrush
 
