@@ -109,9 +109,6 @@
       <LCLWidgetType Value="gtk"/>
     </SearchPaths>
     <Other>
-      <Verbosity>
-        <ShoLineNum Value="True"/>
-      </Verbosity>
       <CustomOptions Value="-dGTK2"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>

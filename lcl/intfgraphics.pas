@@ -263,6 +263,8 @@ procedure CreateRawImageLineStarts(Width, Height, BitsPerPixel: cardinal;
 function GetBitsPerLine(Width, BitsPerPixel: cardinal;
                         LineEnd: TRawImageLineEnd): cardinal;
 function ReadCompleteStreamToString(Str: TStream; StartSize: integer): string;
+procedure ReadCompleteStreamToStream(SrcStream, DestStream: TStream;
+                                     StartSize: integer);
 procedure ReadRawImageBits(TheData: PByte; const Position: TRawImagePosition;
                        BitsPerPixel, Prec, Shift: cardinal; var Bits: word);
 procedure WriteRawImageBits(TheData: PByte; const Position: TRawImagePosition;
@@ -365,6 +367,34 @@ begin
       SetLength(Result,length(Result)*2);
     until false;
     SetLength(Result,NewLength);
+  end;
+end;
+
+procedure ReadCompleteStreamToStream(SrcStream, DestStream: TStream;
+                                     StartSize: integer);
+var
+  NewLength: Integer;
+  ReadLen: Integer;
+  Buffer: string;
+begin
+  if (SrcStream is TMemoryStream) or (SrcStream is TFileStream)
+  or (SrcStream is TStringStream)
+  then begin
+    // read as one block
+    DestStream.CopyFrom(SrcStream,SrcStream.Size-SrcStream.Position);
+  end else begin
+    // read exponential
+    if StartSize<=0 then StartSize:=1024;
+    SetLength(Buffer,StartSize);
+    NewLength:=0;
+    repeat
+      ReadLen:=SrcStream.Read(Buffer[NewLength+1],length(Buffer)-NewLength);
+      inc(NewLength,ReadLen);
+      if NewLength<length(Buffer) then break;
+      SetLength(Buffer,length(Buffer)*2);
+    until false;
+    if NewLength>0 then
+      DestStream.Write(Buffer[1],NewLength);
   end;
 end;
 
