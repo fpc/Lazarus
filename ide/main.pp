@@ -4169,7 +4169,8 @@ writeln('TMainIDE.DoNewProject A');
   // close current project first
   If Project1<>nil then begin
     if SomethingOfProjectIsModified then begin
-        if MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject, [Project1.Title]), 
+        if MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
+         [Project1.Title]),
           mtconfirmation, [mbYes, mbNo, mbCancel], 0) = mrYes then begin
         if DoSaveProject([])=mrAbort then begin
           Result:=mrAbort;
@@ -4228,7 +4229,7 @@ writeln('TMainIDE.DoNewProject A');
   // (i.e. remove old project specific things and create new)
   Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,'');
   CreateProjectDefineTemplate(Project1.CompilerOptions,Project1.SrcPath);
- 
+
   // set all modified to false
   for i:=0 to Project1.UnitCount-1 do
     Project1.Units[i].Modified:=false;
@@ -4526,6 +4527,7 @@ function TMainIDE.DoCreateProjectForProgram(
   ProgramBuf: TCodeBuffer): TModalResult;
 var NewProjectType:TProjectType;
   MainUnitInfo: TUnitInfo;
+  ds: char;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
@@ -4533,7 +4535,8 @@ begin
   Result:=mrCancel;
 
   if SomethingOfProjectIsModified then begin
-    if MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject, [Project1.Title]),
+    if MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
+      [Project1.Title]),
       mtconfirmation, [mbYes, mbNo, mbCancel], 0)=mrYes then
     begin
       if DoSaveProject([])=mrAbort then begin
@@ -4554,6 +4557,10 @@ begin
     end;
   end;
 
+  // switch codetools to new project directory
+  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
+    ExpandFilename(ExtractFilePath(ProgramBuf.Filename));
+
   // create a new project
   Project1:=TProject.Create(NewProjectType);
   Project1.OnFileBackup:=@DoBackupFile;
@@ -4564,13 +4571,21 @@ begin
   UpdateCaption;
 
   // set project type specific things
-  if NewProjectType=ptApplication then begin
-    Project1.CompilerOptions.OtherUnitFiles:=
-       '$(LazarusDir)'+PathDelim+'lcl'+PathDelim+'units'
-      +';'+
-       '$(LazarusDir)'+PathDelim+'lcl'+PathDelim+'units'
-       +PathDelim
-       +CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'LCLWidgetType'];
+  ds:=PathDelim;
+  case NewProjectType of
+  ptApplication:
+    begin
+      // add lcl ppu dirs to unit search path
+      Project1.CompilerOptions.OtherUnitFiles:=
+        '$(LazarusDir)'+ds+'lcl'+ds+'units'
+       +';'+
+        '$(LazarusDir)'+ds+'lcl'+ds+'units'+ds+'$(LCLWidgetType)';
+      // add lcl pp/pas dirs to source search path
+      Project1.SrcPath:=
+        '$(LazarusDir)'+ds+'lcl'
+       +';'+
+        '$(LazarusDir)'+ds+'lcl'+ds+'interfaces'+ds+'$(LCLWidgetType)';
+    end;
   end;
   
   // rebuild project specific codetools defines
@@ -7130,6 +7145,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.388  2002/09/17 22:19:32  lazarus
+  MG: fixed creating project from file
+
   Revision 1.387  2002/09/17 21:33:14  lazarus
   MG: accelerated designer mouse move and added Delete Selection to designer popupmenu
 
