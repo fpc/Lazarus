@@ -287,9 +287,10 @@ writeln('TMethodJumpingCodeTool.FindJumpPoint D ',CleanCursorPos,', |',copy(Src,
       TypeSectionNode:=TypeSectionNode.Parent;
     // search the method node under the cursor
     CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,false);
-    if (CursorNode=nil)
-    or (not (CursorNode.Desc in [ctnProcedureHead,ctnProcedure])) then
-      exit;
+    while (CursorNode<>nil)
+    and (not (CursorNode.Desc in [ctnProcedureHead,ctnProcedure])) do
+      CursorNode:=CursorNode.Parent;
+    if (CursorNode=nil) then exit;
     // search corresponding proc node
     Result:=FindBestProcNode(CursorNode,[phpAddClassName,phpInUpperCase],
                              TypeSectionNode,[phpIgnoreForwards,phpInUpperCase]);

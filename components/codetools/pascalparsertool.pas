@@ -2768,14 +2768,9 @@ begin
     if AtomIsChar(')') or UpAtomIs('END') then break;
     CreateChildNode;
     CurNode.Desc:=ctnRecordVariant;
-    repeat
-      ReadNextAtom;  // read till ':'
-      if AtomIsChar(':') then break
-      else if AtomIsChar('(') or AtomIsChar('[') then
-        ReadTilBracketClose(true)
-      else if UpAtomIs('END') or AtomIsChar(')') or AtomIsKeyWord then
-        RaiseException(': expected, but '+GetAtom+' found');
-    until false;
+    ReadConstant(true,false,[]);
+    if not AtomIsChar(':') then
+      RaiseException(': expected, but '+GetAtom+' found');
     ReadNextAtom;  // read '('
     if not AtomIsChar('(') then
       RaiseException('( expected, but '+GetAtom+' found');
