@@ -1781,6 +1781,7 @@ end;
  ------------------------------------------------------------------------------}
 constructor TControl.Create(AOwner : TComponent);
 begin
+  //writeln('TControl.Create START ',Name,':',ClassName);
   inherited Create(AOwner);
 
   FControlStyle := [csCaptureMouse, csClickEvents, csSetCaption, csDoubleClicks,
@@ -1800,6 +1801,7 @@ begin
   FIsControl := False;
   FEnabled := True;
   TabStop := False;
+  //writeln('TControl.Create END ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1934,6 +1936,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.89  2002/10/08 22:32:26  lazarus
+  MG: fixed cool little bug (menu double attaching bug)
+
   Revision 1.88  2002/09/29 15:08:38  lazarus
   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
     Patch includes:
