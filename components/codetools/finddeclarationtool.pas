@@ -1266,7 +1266,10 @@ begin
                 NewTool.ReadNextAtom;
                 Result:=Result+' = '+NewTool.GetAtom;
               end;
-
+              
+            else
+              writeln('ToDo: TFindDeclarationTool.FindSmartHint TypeNode=',
+                TypeNode.DescAsString);
             end;
           end;
           if NewNode.Desc=ctnConstDefinition then begin
