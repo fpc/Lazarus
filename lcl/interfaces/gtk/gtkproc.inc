@@ -389,7 +389,7 @@ begin
     if (GDIColor.Colormap <> nil) then
       gdk_colormap_free_colors(GDIColor.Colormap,@GDIColor.Color, 1);
 
-    GDIColor.Color.Pixel := -1;
+    //GDIColor.Color.Pixel := -1;
     Exclude(GDIColor.ColorFlags,cfColorAllocated);
   end;
 end;
@@ -3737,8 +3737,8 @@ end;
 Procedure FillScreenFonts(ScreenFonts : TStrings);
 var
   theFonts : PPChar;
-  Tmp,Tmp2 : AnsiString;
-  I, N,L : Integer;
+  Tmp: AnsiString;
+  I, N: Integer;
 begin
   ScreenFonts.Clear;
   {$IfNdef Win32}
@@ -3763,6 +3763,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.133  2002/10/20 21:54:04  lazarus
+  MG: fixes for 1.1
+
   Revision 1.132  2002/10/20 21:49:11  lazarus
   MG: fixes for fpc1.1
 
