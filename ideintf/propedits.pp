@@ -1718,7 +1718,7 @@ begin
       end;
     end;
   end;
-  if Result<>nil then begin
+  if Result=nil then begin
     PropType:=PropInfo^.PropType;
     I:=0;
     C:=nil;
