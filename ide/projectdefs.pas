@@ -46,6 +46,45 @@ type
   TProjectWriteFlags = set of TProjectWriteFlag;
 
   //---------------------------------------------------------------------------
+  // bookmarks of a single file
+  TFileBookmark = class
+  private
+    fCursorPos: TPoint;
+    fID: integer;
+  public
+    constructor Create;
+    constructor Create(NewX,NewY,AnID: integer);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    function X: integer;
+    function Y: integer;
+  public
+    property CursorPos: TPoint read fCursorPos write fCursorPos;
+    property ID: integer read fID write fID;
+  end;
+  
+  TFileBookmarks = class
+  private
+    FBookmarks:TList;  // list of TFileBookmark
+    function GetBookmarks(Index:integer):TFileBookmark;
+    procedure SetBookmarks(Index:integer; ABookmark: TFileBookmark);
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Items[Index:integer]:TFileBookmark
+       read GetBookmarks write SetBookmarks; default;
+    function Count:integer;
+    procedure Delete(Index:integer);
+    procedure Clear;
+    function Add(ABookmark: TFileBookmark):integer;
+    function Add(X,Y,ID: integer):integer;
+    function IndexOfID(ID:integer):integer;
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+  end;
+  
+  //---------------------------------------------------------------------------
+  // The currently visible bookmarks of the project
   TProjectBookmark = class
   private
     fCursorPos: TPoint;
@@ -75,8 +114,10 @@ type
     procedure Delete(Index:integer);
     procedure Clear;
     function Add(ABookmark: TProjectBookmark):integer;
+    function Add(X,Y,EditorID,ID: integer):integer;
     procedure DeleteAllWithEditorIndex(EditorIndex:integer);
     function IndexOfID(ID:integer):integer;
+    function BookmarkWithIndex(ID: integer): TProjectBookmark;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
@@ -419,6 +460,18 @@ begin
   while (Result>=0) and (Items[Result].ID<>ID) do dec(Result);
 end;
 
+function TProjectBookmarkList.BookmarkWithIndex(ID: integer
+  ): TProjectBookmark;
+var
+  i: Integer;
+begin
+  i:=IndexOfID(ID);
+  if i>=0 then
+    Result:=Items[i]
+  else
+    Result:=nil;
+end;
+
 procedure TProjectBookmarkList.Delete(Index:integer);
 begin
   Items[Index].Free;
@@ -437,8 +490,17 @@ begin
 end;
 
 function TProjectBookmarkList.Add(ABookmark: TProjectBookmark):integer;
+var
+  i: Integer;
 begin
+  i:=IndexOfID(ABookmark.ID);
+  if i>=0 then Delete(i);
   Result:=fBookmarks.Add(ABookmark);
+end;
+
+function TProjectBookmarkList.Add(X, Y, EditorID, ID: integer): integer;
+begin
+  Result:=Add(TProjectBookmark.Create(X,Y,EditorID,ID));
 end;
 
 procedure TProjectBookmarkList.SaveToXMLConfig(XMLConfig: TXMLConfig; 
@@ -1211,6 +1273,137 @@ begin
     Include(Result,pwfDontSaveClosedUnits);
 end;
 
+
+{ TFileBookmark }
+
+constructor TFileBookmark.Create;
+begin
+
+end;
+
+constructor TFileBookmark.Create(NewX, NewY, AnID: integer);
+begin
+  fCursorPos.X:=NewX;
+  fCursorPos.Y:=NewY;
+  fID:=AnID;
+end;
+
+procedure TFileBookmark.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  XMLConfig.SetValue(Path+'X',fCursorPos.X);
+  XMLConfig.SetValue(Path+'Y',fCursorPos.Y);
+  XMLConfig.SetValue(Path+'ID',fID);
+end;
+
+procedure TFileBookmark.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  fCursorPos.X:=XMLConfig.GetValue(Path+'X',1);
+  fCursorPos.Y:=XMLConfig.GetValue(Path+'Y',1);
+  fID:=XMLConfig.GetValue(Path+'ID',0);
+end;
+
+function TFileBookmark.X: integer;
+begin
+  Result:=fCursorPos.X;
+end;
+
+function TFileBookmark.Y: integer;
+begin
+  Result:=fCursorPos.Y;
+end;
+
+{ TFileBookmarks }
+
+function TFileBookmarks.GetBookmarks(Index: integer): TFileBookmark;
+begin
+  Result:=TFileBookmark(FBookmarks[Index]);
+end;
+
+procedure TFileBookmarks.SetBookmarks(Index: integer; ABookmark: TFileBookmark
+  );
+begin
+  FBookmarks[Index]:=ABookmark;
+end;
+
+constructor TFileBookmarks.Create;
+begin
+  FBookmarks:=TList.Create;
+  Clear;
+end;
+
+destructor TFileBookmarks.Destroy;
+begin
+  Clear;
+  FBookmarks.Free;
+  inherited Destroy;
+end;
+
+function TFileBookmarks.Count: integer;
+begin
+  Result:=FBookmarks.Count;
+end;
+
+procedure TFileBookmarks.Delete(Index: integer);
+begin
+  Items[Index].Free;
+  FBookmarks.Delete(Index);
+end;
+
+procedure TFileBookmarks.Clear;
+var
+  i: Integer;
+begin
+  for i:=0 to FBookmarks.Count-1 do Items[i].Free;
+  FBookmarks.Clear;
+end;
+
+function TFileBookmarks.Add(ABookmark: TFileBookmark): integer;
+var
+  i: Integer;
+begin
+  i:=IndexOfID(ABookmark.ID);
+  if i>=0 then Delete(i);
+  Result:=FBookmarks.Add(ABookmark);
+end;
+
+function TFileBookmarks.Add(X, Y, ID: integer): integer;
+begin
+  Result:=Add(TFileBookmark.Create(X,Y,ID));
+end;
+
+function TFileBookmarks.IndexOfID(ID: integer): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (Items[Result].ID<>ID) do dec(Result);
+end;
+
+procedure TFileBookmarks.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  i: Integer;
+begin
+  XMLConfig.SetDeleteValue(Path+'Count',Count,0);
+  for i:=0 to Count-1 do
+    Items[i].SaveToXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
+end;
+
+procedure TFileBookmarks.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  NewCount: Integer;
+  NewBookmark: TFileBookmark;
+  i: Integer;
+begin
+  Clear;
+  NewCount:=XMLConfig.GetValue(Path+'Count',0);
+  for i:=0 to NewCount-1 do begin
+    NewBookmark:=TFileBookmark.Create;
+    NewBookmark.LoadFromXMLConfig(XMLConfig,Path+'Item'+IntToStr(i)+'/');
+    Add(NewBookmark);
+  end;
+end;
 
 end.
 

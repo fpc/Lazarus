@@ -663,7 +663,7 @@ resourcestring
   uemOpenFileAtCursor = '&Open file at cursor';
   uemClosePage = '&Close Page';
   uemGotoBookmark = '&Goto Bookmark';
-  uemBookmarkN = 'Bookmark ';
+  uemBookmarkN = 'Bookmark';
   uemSetBookmark = '&Set Bookmark';
   uemReadOnly = 'Read Only';
   uemUnitInfo = 'Unit Info';

@@ -78,6 +78,7 @@ type
   private
     { Variables }
     fAutoRevertLockCount: integer;
+    fBookmarks: TFileBookmarks;
     fBreakpoints: TProjectBreakPointList;
     fCursorPos: TPoint;
     fCustomHighlighter: boolean; // do not change highlighter on file extension change
@@ -86,7 +87,8 @@ type
     fFileReadOnly: Boolean;
     fForm: TComponent;
     fFormName: string; { classname is always T<FormName>
-         this attribute contains the formname even if the unit is not loaded }
+         this attribute contains the formname, even if the unit is not loaded,
+         or the designer form is not created }
     fFormResourceName: string;
     fHasResources: boolean; // source has resource file
     FIgnoreFileDateOnDiskValid: boolean;
@@ -161,6 +163,7 @@ type
 
     { Properties }
   public
+    // Unit views
     property NextUnitWithEditorIndex: TUnitInfo read fNextUnitWithEditorIndex;
     property PrevUnitWithEditorIndex: TUnitInfo read fPrevUnitWithEditorIndex;
     property NextUnitWithForm: TUnitInfo read fNextUnitWithForm;
@@ -172,8 +175,9 @@ type
     property NextPartOfProject: TUnitInfo read fNextPartOfProject;
     property PrevPartOfProject: TUnitInfo read fPrevPartOfProject;
   public
+    property Bookmarks: TFileBookmarks read FBookmarks write FBookmarks;
     property Breakpoints: TProjectBreakPointList
-        read fBreakpoints write fBreakpoints;
+          read fBreakpoints write fBreakpoints;
     property CursorPos: TPoint read fCursorPos write fCursorPos;
     property CustomHighlighter: boolean
           read fCustomHighlighter write fCustomHighlighter;
@@ -215,7 +219,6 @@ type
   TProject = class(TObject)
   private
     FFlags: TProjectFlags;
-    fPublishOptions: TPublishProjectOptions;
     xmlconfig: TXMLConfig;
 
     fUnitList: TList;                      // list of _all_ units (TUnitInfo)
@@ -239,12 +242,13 @@ type
     fOutputDirectory: String;
     fProjectInfoFile: String;  // the lpi filename
     fProjectType: TProjectType;
+    fPublishOptions: TPublishProjectOptions;
+    fRunParameterOptions: TRunParamsOptions;
     fSrcPath: string; // source path addition for units in ProjectDir
     fTargetFileExt: String;
     fTitle: String;
     fUnitOutputDirectory: String;
-    fRunParameterOptions: TRunParamsOptions;
-    
+
     function GetMainFilename: String;
     function GetMainUnitInfo: TUnitInfo;
     function GetProjectInfoFile: string;
@@ -313,22 +317,32 @@ type
 
     procedure Clear;
     function SomethingModified: boolean;
-    function AddCreateFormToProjectFile(const AClassName,AName:string):boolean;
+    
+    // Application.CreateForm statements
+    function AddCreateFormToProjectFile(const AClassName, AName:string):boolean;
     function RemoveCreateFormFromProjectFile(const AClassName,
        AName: string):boolean;
-    function FormIsCreatedInProjectFile(const AClassname,AName:string):boolean;
+    function FormIsCreatedInProjectFile(const AClassname, AName:string):boolean;
+    
+    // uses section
     function UnitIsUsed(const ShortUnitName:string):boolean;
-    function GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer):TCodeBuffer;
-    function SearchFile(const Filename,SearchPaths,InitialDir:string):string;
+    
+    // resources
     function GetMainResourceFilename(AnUnitInfo: TUnitInfo): string;
+    function GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer):TCodeBuffer;
+
     function IsVirtual: boolean;
     function RemoveProjectPathFromFilename(const AFilename: string): string;
     function ProjectDirectory: string;
     function FileIsInProjectDir(const AFilename: string): boolean;
     procedure GetVirtualDefines(DefTree: TDefineTree; DirDef: TDirectoryDefines);
-    
-    procedure GetUnitsChangedOnDisk(var AnUnitList: TList);
+    function SearchFile(const Filename,SearchPaths,InitialDir:string):string;
 
+    procedure GetUnitsChangedOnDisk(var AnUnitList: TList);
+    
+    procedure SetBookmark(AnUnitInfo: TUnitInfo; X,Y,ID: integer);
+    procedure MergeBookmarks(AnUnitInfo: TUnitInfo);
+  public
     property ActiveEditorIndexAtStart: integer 
        read fActiveEditorIndexAtStart write fActiveEditorIndexAtStart;
     property Bookmarks: TProjectBookmarkList read fBookmarks write fBookmarks;
@@ -443,6 +457,7 @@ constructor TUnitInfo.Create(ACodeBuffer: TCodeBuffer);
 begin
   inherited Create;
   Assert(False, 'Project Unit Info Class Created');
+  FBookmarks:=TFileBookmarks.Create;
   fBreakPoints:=TProjectBreakPointList.Create;
   Clear;
   Source := ACodeBuffer;
@@ -456,8 +471,8 @@ end;
 destructor TUnitInfo.Destroy;
 begin
   Source:=nil;
-  fBreakPoints.Free;
-  fBreakPoints:=nil;
+  FreeAndNil(fBreakPoints);
+  FreeAndNil(FBookmarks);
   Project:=nil;
   inherited Destroy;
 end;
@@ -560,6 +575,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TUnitInfo.Clear;
 begin
+  FBookmarks.Clear;
   fBreakPoints.Clear;
   fCursorPos.X := -1;
   fCursorPos.Y := -1;
@@ -613,6 +629,7 @@ begin
   XMLConfig.SetDeleteValue(Path+'UnitName/Value',fUnitName,'');
   XMLConfig.SetDeleteValue(Path+'UsageCount/Value',round(fUsageCount),-1);
   fBreakpoints.SaveToXMLConfig(XMLConfig,Path);
+  FBookmarks.SaveToXMLConfig(XMLConfig,Path+'Bookmarks/');
 end;
 
 {------------------------------------------------------------------------------
@@ -651,6 +668,7 @@ begin
       UpdateUsageCount(uuIsPartOfProject,1);
   end;
   fBreakpoints.LoadFromXMLConfig(XMLConfig,Path);
+  FBookmarks.LoadFromXMLConfig(XMLConfig,Path+'Bookmarks/');
 end;
 
 procedure TUnitInfo.SetUnitName(const NewUnitName:string);
@@ -1189,57 +1207,53 @@ begin
   xmlconfig := TXMLConfig.Create(confPath);
   UpdateUsageCounts;
 
-  try
-    repeat
-      try
-        xmlconfig.SetDeleteValue('ProjectOptions/General/ProjectType/Value',
-            ProjectTypeNames[ProjectType],'');
-        SaveFlags;
-        xmlconfig.SetDeleteValue('ProjectOptions/General/MainUnit/Value', MainUnit,-1);
-        xmlconfig.SetDeleteValue('ProjectOptions/General/ActiveEditorIndexAtStart/Value'
-            ,ActiveEditorIndexAtStart,-1);
-        xmlconfig.SetDeleteValue('ProjectOptions/General/IconPath/Value',
-             IconPath,'');
-        xmlconfig.SetValue('ProjectOptions/General/TargetFileExt/Value'
-            ,TargetFileExt);
-        xmlconfig.SetDeleteValue('ProjectOptions/General/Title/Value', Title,'');
-        xmlconfig.SetDeleteValue('ProjectOptions/General/OutputDirectory/Value'
-            ,OutputDirectory,'');
-        xmlconfig.SetDeleteValue('ProjectOptions/General/UnitOutputDirectory/Value'
-            ,UnitOutputDirectory,'');
-        fBookmarks.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
-        fJumpHistory.DeleteInvalidPositions;
-        fJumpHistory.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
-        xmlconfig.SetDeleteValue('ProjectOptions/General/SrcPath/Value',
-             fSrcPath,'');
+  repeat
+    try
+      xmlconfig.SetDeleteValue('ProjectOptions/General/ProjectType/Value',
+          ProjectTypeNames[ProjectType],'');
+      SaveFlags;
+      xmlconfig.SetDeleteValue('ProjectOptions/General/MainUnit/Value', MainUnit,-1);
+      xmlconfig.SetDeleteValue('ProjectOptions/General/ActiveEditorIndexAtStart/Value'
+          ,ActiveEditorIndexAtStart,-1);
+      xmlconfig.SetDeleteValue('ProjectOptions/General/IconPath/Value',
+           IconPath,'');
+      xmlconfig.SetValue('ProjectOptions/General/TargetFileExt/Value'
+          ,TargetFileExt);
+      xmlconfig.SetDeleteValue('ProjectOptions/General/Title/Value', Title,'');
+      xmlconfig.SetDeleteValue('ProjectOptions/General/OutputDirectory/Value'
+          ,OutputDirectory,'');
+      xmlconfig.SetDeleteValue('ProjectOptions/General/UnitOutputDirectory/Value'
+          ,UnitOutputDirectory,'');
+      fJumpHistory.DeleteInvalidPositions;
+      fJumpHistory.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
+      xmlconfig.SetDeleteValue('ProjectOptions/General/SrcPath/Value',
+           fSrcPath,'');
 
-        SaveUnits;
+      SaveUnits;
 
-        // Save the compiler options
-        CompilerOptions.XMLConfigFile := xmlconfig;
-        CompilerOptions.SaveCompilerOptions(true);
-        
-        // save the Publish Options
-        PublishOptions.SaveToXMLConfig(xmlconfig,
-                                       'ProjectOptions/PublishOptions/');
+      // Save the compiler options
+      CompilerOptions.XMLConfigFile := xmlconfig;
+      CompilerOptions.SaveCompilerOptions(true);
+      
+      // save the Publish Options
+      PublishOptions.SaveToXMLConfig(xmlconfig,
+                                     'ProjectOptions/PublishOptions/');
 
-        // save the Run Parameter Options
-        RunParameterOptions.Save(xmlconfig,'ProjectOptions/');
+      // save the Run Parameter Options
+      RunParameterOptions.Save(xmlconfig,'ProjectOptions/');
 
-        xmlconfig.Flush;
-        Modified:=false;
-      except
-        ACaption:='Write error';
-        AText:='Unable to write to file "'+confPath+'".';
-        Result:=Application.MessageBox(PChar(ACaption),PChar(AText),MB_ABORTRETRYIGNORE);
-        if Result=mrIgnore then Result:=mrOk;
-        if Result=mrAbort then exit;
-      end;
-    until Result<>mrRetry;
-  finally
-    xmlconfig.Free;
-    xmlconfig:=nil;
-  end;
+      xmlconfig.Flush;
+      Modified:=false;
+    except
+      ACaption:='Write error';
+      AText:='Unable to write to file "'+confPath+'".';
+      Result:=Application.MessageBox(PChar(ACaption),PChar(AText),MB_ABORTRETRYIGNORE);
+      if Result=mrIgnore then Result:=mrOk;
+      if Result=mrAbort then exit;
+    end;
+  until Result<>mrRetry;
+  xmlconfig.Free;
+  xmlconfig:=nil;
   Result := mrOk;
 end;
 
@@ -1299,7 +1313,6 @@ begin
        'ProjectOptions/General/OutputDirectory/Value', '.');
     UnitOutputDirectory := xmlconfig.GetValue(
        'ProjectOptions/General/UnitOutputDirectory/Value', '.');
-    fBookmarks.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
     fJumpHistory.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
     FSrcPath := xmlconfig.GetValue('ProjectOptions/General/SrcPath/Value','');
 
@@ -1968,6 +1981,31 @@ begin
   end;
 end;
 
+procedure TProject.SetBookmark(AnUnitInfo: TUnitInfo; X, Y, ID: integer);
+begin
+  if AnUnitInfo.EditorIndex>=0 then
+    Bookmarks.Add(X,Y,AnUnitInfo.EditorIndex,ID);
+  AnUnitInfo.Bookmarks.Add(X,Y,ID);
+end;
+
+procedure TProject.MergeBookmarks(AnUnitInfo: TUnitInfo);
+// merge the bookmarks of the unit with the bookmarks in the source editor
+var
+  i: Integer;
+  UnitMark: TFileBookmark;
+  ProjectMark: TProjectBookmark;
+begin
+  if AnUnitInfo.EditorIndex<=0 then exit;
+  for i:=0 to AnUnitInfo.Bookmarks.Count-1 do begin
+    UnitMark:=AnUnitInfo.Bookmarks[i];
+    ProjectMark:=Bookmarks.BookmarkWithIndex(UnitMark.ID);
+    // merge the bookmark into the currently existing bookmarks, if the ID is
+    // free
+    if (ProjectMark=nil) then
+      Bookmarks.Add(UnitMark.X,UnitMark.Y,AnUnitInfo.EditorIndex,UnitMark.ID);
+  end;
+end;
+
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo; 
   const OldUnitName, NewUnitName: string;  CheckIfAllowed: boolean;
   var Allowed: boolean);
@@ -2202,6 +2240,9 @@ end.
 
 {
   $Log$
+  Revision 1.93  2003/02/28 15:38:00  mattias
+  bookmarks are now saved also for closed files and merged when possible
+
   Revision 1.92  2003/02/28 10:14:28  mattias
   started package system (packager)
 
