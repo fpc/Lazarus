@@ -395,6 +395,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TControl.DoOnResize;
+------------------------------------------------------------------------------}
+procedure TControl.DoOnResize;
+begin
+  if Assigned(FOnResize) then FOnResize(Self);
+end;
+
+{------------------------------------------------------------------------------
   procedure TControl.DoBeforeMouseMessage;
 ------------------------------------------------------------------------------}
 procedure TControl.DoBeforeMouseMessage;
@@ -1506,7 +1514,7 @@ begin
     FLastResizeHeight:=Height;
     FLastResizeClientWidth:=ClientWidth;
     FLastResizeClientHeight:=ClientHeight;
-    if Assigned(FOnResize) then FOnResize(Self);
+    DoOnResize;
   end;
 end;
 
@@ -2071,6 +2079,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.119  2003/03/17 23:39:30  mattias
+  added TCheckGroup
+
   Revision 1.118  2003/03/13 10:11:41  mattias
   fixed TControl.Show in design mode
 
