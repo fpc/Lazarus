@@ -38,7 +38,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils;
+  Classes, SysUtils, CodeToolsStrConsts;
 
 const
   // ToDo: find the constant in the fpc units.
@@ -91,7 +91,7 @@ begin
   // TProcess does not report, if a program can not be executed
   // to get good error messages consider the OS
   if not FileExists(AFilename) then begin
-    raise Exception.Create('file "'+AFilename+'" does not exist');
+    raise Exception.CreateFmt(ctsFileDoesNotExists,[AFilename]);
   end;
   {$IFNDEF win32}
   if not{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
@@ -99,14 +99,13 @@ begin
   begin
     AText:='"'+AFilename+'"';
     case LinuxError of
-    sys_eacces: AText:='execute access denied for '+AText;
-    sys_enoent: AText:='a directory component in '+AText
-                          +' does not exist or is a dangling symlink';
-    sys_enotdir: AText:='a directory component in '+Atext+' is not a directory';
-    sys_enomem: AText:='insufficient memory';
-    sys_eloop: AText:=AText+' has a circular symbolic link';
+    sys_eacces: AText:=Format(ctsExecuteAccessDeniedForFile,[AText]);
+    sys_enoent: AText:=Format(ctsDirComponentDoesNotExistsOrIsDanglingSymLink,[AText]);
+    sys_enotdir: AText:=Format(ctsDirComponentIsNotDir,[AText]);
+    sys_enomem: AText:=ctsInsufficientMemory;
+    sys_eloop: AText:=Format(ctsFileHasCircularSymLink,[AText]);
     else
-      AText:=AText+' is not executable';
+      AText:=Format(ctsFileIsNotExecutable,[AText]);
     end;
     raise Exception.Create(AText);
   end;

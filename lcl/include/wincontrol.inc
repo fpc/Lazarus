@@ -1661,7 +1661,7 @@ var
   Params: TCreateParams;
   n: Integer;
 begin
-//writeln('[TWinControl.CreateWnd] START ',Classname);
+  //writeln('[TWinControl.CreateWnd] START ',Classname);
   if (FCompstyle = csNone) then 
   begin
     WriteLn(Format('WARNING: [TWinControl.CreateWnd] %s --> FCompstyle = csNone', [ClassName]));
@@ -1671,7 +1671,7 @@ begin
   CreateParams(Params);
   with Params do begin
     if (WndParent = 0) and (Style and WS_CHILD <> 0) then begin
-//      raise EInvalidOperation.CreateFmt('Control ''%s'' has no parent', [Name]);
+      // raise EInvalidOperation.CreateFmt('Control ''%s'' has no parent', [Name]);
       exit;
     end;
     Assert((parent <> nil) or (WndParent = 0), 'TODO: find parent if parent=nil and WndParent <> 0');
@@ -1682,7 +1682,7 @@ begin
   
   InitializeWnd;
 
-//writeln('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+  //writeln('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
   RequestAlign;
   
   if FWinControls <> nil then begin
@@ -1690,7 +1690,7 @@ begin
       with TWinControl(FWinControls.Items[n]) do
         if Visible then HandleNeeded;
   end;
-//writeln('[TWinControl.CreateWnd] END ',Classname);
+  //writeln('[TWinControl.CreateWnd] END ',Classname);
 end;
 
 {------------------------------------------------------------------------------
@@ -2017,6 +2017,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.54  2002/03/29 14:32:49  lazarus
+  MG: further internationalization
+
   Revision 1.53  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane
