@@ -1078,13 +1078,13 @@ end;
 procedure TDebugManager.OnDebuggerChangeState(ADebugger: TDebugger;
   OldState: TDBGState);
 const
-  // dsNone, dsIdle, dsStop, dsPause, dsRun, dsError
+  // dsNone, dsIdle, dsStop, dsPause, dsInit, dsRun, dsError
   TOOLSTATEMAP: array[TDBGState] of TIDEToolStatus = (
-    // dsNone, dsIdle, dsStop, dsPause, dsRun,      dsError
-    itNone, itNone, itNone, itDebugger, itDebugger, itDebugger
+    // dsNone, dsIdle, dsStop, dsPause, dsInit,     dsRun,      dsError
+    itNone, itNone, itNone, itDebugger, itDebugger, itDebugger, itDebugger
   );
   STATENAME: array[TDBGState] of string = (
-    'dsNone', 'dsIdle', 'dsStop', 'dsPause', 'dsRun', 'dsError'
+    'dsNone', 'dsIdle', 'dsStop', 'dsPause', 'dsInit', 'dsRun', 'dsError'
   );
 var
   Editor: TSourceEditor;
@@ -1148,6 +1148,7 @@ begin
         MessageDlg(lisExecutionStopped,
           Format(lisExecutionStoppedOn, [#13#13]),
           mtInformation, [mbOK],0);
+        FDebugger.FileName := '';   
       end;
     end;
 
@@ -1577,7 +1578,7 @@ begin
   then begin
     MessageDlg(lisLaunchingApplicationInvalid,
       Format(lisTheLaunchingApplicationDoesNotExistsOrIsNotExecuta, ['"',
-        EnvironmentOptions.DebuggerFilename, '"', #13, #13, #13]),
+        LaunchingCmdLine, '"', #13, #13, #13]),
       mtError, [mbOK],0);
     Exit;
   end;
@@ -1642,13 +1643,14 @@ begin
     end;
   end;
 
-  FDebugger.FileName := LaunchingApplication;
-  FDebugger.Arguments := LaunchingParams;
   Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
   NewWorkingDir:=Project1.RunParameterOptions.WorkingDirectory;
   if NewWorkingDir=''
   then NewWorkingDir:=Project1.ProjectDirectory;
   FDebugger.WorkingDir:=NewWorkingDir;
+  // set filename after workingdir
+  FDebugger.FileName := LaunchingApplication;
+  FDebugger.Arguments := LaunchingParams;
 
   // check if debugging needs restart
   // mwe: can this still happen ?
@@ -1894,6 +1896,10 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.76  2004/10/11 23:33:36  marc
+  * Fixed interrupting GDB on win32
+  * Reset exename after run so that the exe is not locked on win32
+
   Revision 1.75  2004/09/27 22:05:40  vincents
   splitted off unit FileUtil, it doesn't depend on other LCL units
 
