@@ -193,6 +193,9 @@ type
     fMaxUndoActions: integer;
     fNextChangeNumber: integer;                                                 //sbs 2000-11-19
     fOnAdded: TNotifyEvent;
+    {$IFDEF SYN_LAZARUS}
+    fUnModifiedItem: integer;
+    {$ENDIF}
     procedure EnsureMaxEntries;
     function GetCanUndo: boolean;
     function GetItemCount: integer;
@@ -210,6 +213,11 @@ type
     function PopItem: TSynEditUndoItem;
     procedure PushItem(Item: TSynEditUndoItem);
     procedure Unlock;
+    {$IFDEF SYN_LAZARUS}
+    procedure MarkTopAsUnmodified;
+    function IsTopMarkedAsUnmodified: boolean;
+    function UnModifiedMarkerExists: boolean;
+    {$ENDIF}
   public
     property BlockChangeNumber: integer read fBlockChangeNumber                 //sbs 2000-11-19
       write fBlockChangeNumber;
@@ -936,6 +944,9 @@ begin
   fItems := TList.Create;
   fMaxUndoActions := 1024;
   fNextChangeNumber := 1;                                                       //sbs 2000-11-19
+  {$IFDEF SYN_LAZARUS}
+  fUnModifiedItem:=-1;
+  {$ENDIF}
 end;
 
 destructor TSynEditUndoList.Destroy;
@@ -996,6 +1007,9 @@ begin
     TSynEditUndoItem(fItems[i]).Free;
   fItems.Clear;
   fFullUndoImposible := FALSE;                                                  //mh 2000-10-03
+  {$IFDEF SYN_LAZARUS}
+  fUnModifiedItem:=-1;
+  {$ENDIF}
 end;
 
 {begin}                                                                         //sbs 2000-11-19
@@ -1023,6 +1037,9 @@ begin
       Item := TSynEditUndoItem(fItems[0]);
       Item.Free;
       fItems.Delete(0);
+      {$IFDEF SYN_LAZARUS}
+      if fUnModifiedItem>=0 then dec(fUnModifiedItem);
+      {$ENDIF}
     end;
   end;
 end;
@@ -1061,6 +1078,9 @@ begin
   if iLast >= 0 then begin
     Result := TSynEditUndoItem(fItems[iLast]);
     fItems.Delete(iLast);
+    {$IFDEF SYN_LAZARUS}
+    if fUnModifiedItem>fItems.Count then fUnModifiedItem:=-1;
+    {$ENDIF}
   end;
 end;
 
@@ -1089,6 +1109,24 @@ begin
   if fLockCount > 0 then
     Dec(fLockCount);
 end;
+
+{$IFDEF SYN_LAZARUS}
+procedure TSynEditUndoList.MarkTopAsUnmodified;
+begin
+  fUnModifiedItem:=fItems.Count;
+end;
+
+function TSynEditUndoList.IsTopMarkedAsUnmodified: boolean;
+begin
+  Result:=(fItems.Count=fUnModifiedItem);
+end;
+
+function TSynEditUndoList.UnModifiedMarkerExists: boolean;
+begin
+  Result:=fUnModifiedItem>=0;
+end;
+
+{$ENDIF}
 
 end.
 

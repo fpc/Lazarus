@@ -4535,6 +4535,10 @@ begin
       Exclude(fOptions, eoScrollPastEol);
     Item.Free;
     DecPaintLock;
+    {$IFDEF SYN_LAZARUS}
+    if fRedoList.IsTopMarkedAsUnmodified then
+      fUndoList.MarkTopAsUnmodified;
+    {$ENDIF}
   end;
 end;
 
@@ -4690,6 +4694,10 @@ begin
       Exclude(fOptions, eoScrollPastEol);
     Item.Free;
     DecPaintLock;
+    {$IFDEF SYN_LAZARUS}
+    if fUndoList.IsTopMarkedAsUnmodified then
+      fRedoList.MarkTopAsUnmodified;
+    {$ENDIF}
   end;
 end;
 
@@ -6900,6 +6908,13 @@ procedure TCustomSynEdit.SetModified(Value: boolean);
 begin
   if Value <> fModified then begin
     fModified := Value;
+    {$IFDEF SYN_LAZARUS}
+    if not fModified then begin
+      // the current state should be the unmodified state.
+      fUndoList.MarkTopAsUnmodified;
+      fRedoList.MarkTopAsUnmodified;
+    end;
+    {$ENDIF}
     StatusChanged([scModified]);
   end;
 end;
@@ -7181,7 +7196,14 @@ end;
 procedure TCustomSynEdit.UndoRedoAdded(Sender: TObject);
 begin
 //  Modified := TRUE;
-  Modified := fUndoList.CanUndo or fUndoList.FullUndoImpossible;                //mh 2000-10-03
+  {$IFDEF SYN_LAZARUS}
+  if fUndoList.UnModifiedMarkerExists then
+    Modified:=not fUndoList.IsTopMarkedAsUnmodified
+  else if fRedoList.UnModifiedMarkerExists then
+    Modified:=not fRedoList.IsTopMarkedAsUnmodified
+  else
+  {$ENDIF}
+    Modified := fUndoList.CanUndo or fUndoList.FullUndoImpossible;              //mh 2000-10-03
   // we have to clear the redo information, since adding undo info removes
   // the necessary context to undo earlier edit actions
   if (Sender = fUndoList) and not (sfInsideRedo in fStateFlags) then            //mh 2000-10-30
