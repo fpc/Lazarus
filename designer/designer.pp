@@ -655,39 +655,53 @@ var
         NewParent:=NewParent.Parent;
       end;
       ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
-      if Assigned(ParentCI) then begin
-        ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
-        NewLeft:=Min(MouseDownPos.X,MouseUpPos.X)-ParentClientOrigin.X;
-        NewWidth:=Abs(MouseUpPos.X-MouseDownPos.X);
-        NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y)-ParentClientOrigin.Y;
-        NewHeight:=Abs(MouseUpPos.Y-MouseDownPos.Y);
-        if Abs(NewWidth+NewHeight)<7 then begin
-          // this very small component is probably only a wag, take default size
-          NewWidth:=0;
-          NewHeight:=0;
-        end;
-
-        NewCI := TComponentInterface(TheFormEditor.CreateComponent(
-           ParentCI,SelectedCompClass.ComponentClass
-          ,NewLeft,NewTop,NewWidth,NewHeight));
-        if NewCI.Component is TControl then
-          TControl(NewCI.Component).Visible:=true;
-        if Assigned(FOnSetDesigning) then
-          FOnSetDesigning(Self,NewCI.Component,True);
-        if Assigned(FOnComponentAdded) then
-          FOnComponentAdded(Self,NewCI.Component,SelectedCompClass);
-
-        SelectOnlyThisComponent(TComponent(NewCI.Component));
-        if not (ssShift in Shift) then
-          if Assigned(FOnUnselectComponentClass) then
-            // this resets the component palette to the selection tool
-            FOnUnselectComponentClass(Self);
-        Form.Invalidate;
-        {$IFDEF VerboseDesigner}
-        writeln('NEW COMPONENT ADDED: Form.ComponentCount=',Form.ComponentCount,
-           '  NewCI.Control.Owner.Name=',NewCI.Component.Owner.Name);
-        {$ENDIF}
+      if not Assigned(ParentCI) then exit;
+      
+      // calculate initial bounds
+      ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
+      NewLeft:=Min(MouseDownPos.X,MouseUpPos.X);
+      NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y);
+      if SelectedCompClass.ComponentClass.InheritsFrom(TControl) then begin
+        // adjust left,top to parent origin
+        dec(NewLeft,ParentClientOrigin.X);
+        dec(NewTop,ParentClientOrigin.Y);
       end;
+      NewWidth:=Abs(MouseUpPos.X-MouseDownPos.X);
+      NewHeight:=Abs(MouseUpPos.Y-MouseDownPos.Y);
+      if Abs(NewWidth+NewHeight)<7 then begin
+        // this very small component is probably only a wag, take default size
+        NewWidth:=0;
+        NewHeight:=0;
+      end;
+
+      // create component and component interface
+      NewCI := TComponentInterface(TheFormEditor.CreateComponent(
+         ParentCI,SelectedCompClass.ComponentClass
+        ,NewLeft,NewTop,NewWidth,NewHeight));
+        
+      // set initial properties
+      if NewCI.Component is TControl then
+        TControl(NewCI.Component).Visible:=true;
+      if Assigned(FOnSetDesigning) then
+        FOnSetDesigning(Self,NewCI.Component,True);
+        
+      // tell IDE about the new component (e.g. add it to the source)
+      if Assigned(FOnComponentAdded) then
+        FOnComponentAdded(Self,NewCI.Component,SelectedCompClass);
+
+      // creation completed
+      // -> select new component
+      SelectOnlyThisComponent(TComponent(NewCI.Component));
+      if not (ssShift in Shift) then
+        if Assigned(FOnUnselectComponentClass) then
+          // this resets the component palette to the selection tool
+          FOnUnselectComponentClass(Self);
+          
+      Form.Invalidate;
+      {$IFDEF VerboseDesigner}
+      writeln('NEW COMPONENT ADDED: Form.ComponentCount=',Form.ComponentCount,
+         '  NewCI.Control.Owner.Name=',NewCI.Component.Owner.Name);
+      {$ENDIF}
     finally
       ControlSelection.EndUpdate;
     end;
