@@ -304,6 +304,7 @@ type
     function GetAttributes: TPropertyAttributes; virtual;
     function IsReadOnly: boolean; virtual;
     function GetPersistent(Index: Integer): TPersistent;
+    function GetComponent(Index: Integer): TComponent;// for Delphi compatibility
     function GetEditLimit: Integer; virtual;
     function GetName: shortstring; virtual;
     procedure GetProperties(Proc: TGetPropEditProc); virtual;
@@ -1908,6 +1909,11 @@ end;
 function TPropertyEditor.GetPersistent(Index: Integer): TPersistent;
 begin
   Result:=FPropList^[Index].Instance;
+end;
+
+function TPropertyEditor.GetComponent(Index: Integer): TComponent;
+begin
+  Result:=TComponent(FPropList^[Index].Instance);
 end;
 
 function TPropertyEditor.GetFloatValue:Extended;
