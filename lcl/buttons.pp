@@ -284,7 +284,7 @@ const
   BitBtnImages : array[TBitBtnKind] of Longint = (
     idButtonOk, idButtonOk, idButtonCancel, idButtonHelp, idButtonYes,
     idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore,
-    idButtonAll, idButtonAll, idButtonAll);
+    idButtonAll, idButtonNoToAll, idButtonYesToAll);
 
 procedure Register;
 begin
@@ -307,6 +307,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.47  2002/08/18 00:03:45  mattias
+  fixed bitbtn image for NoToAll
+
   Revision 1.46  2002/08/17 23:41:34  mattias
   many clipping fixes
 

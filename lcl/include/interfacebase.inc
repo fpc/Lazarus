@@ -1133,7 +1133,7 @@ begin
     idButtonYesToAll :
       Result := CreatePixmapIndirect(@IMGAll_Check[0], GetSysColor(COLOR_BTNFACE));
     idButtonNoToAll :
-      Result := CreatePixmapIndirect(@IMGAll_Check[0], GetSysColor(COLOR_BTNFACE));
+      Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
     idButtonAbort :
       Result := CreatePixmapIndirect(@IMGCancel_X[0], GetSysColor(COLOR_BTNFACE));
     idButtonRetry : 
@@ -1715,6 +1715,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.89  2002/08/18 00:03:45  mattias
+  fixed bitbtn image for NoToAll
+
   Revision 1.88  2002/08/17 23:41:34  mattias
   many clipping fixes
 
