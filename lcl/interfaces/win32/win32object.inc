@@ -851,7 +851,8 @@ activate_time :	the time at which the activation event occurred.
         Begin
           If (Sender Is TControl)
           And (TControl(Sender).FCompStyle = csComboBox) Then
-            SendMessage(Handle, CB_SETEDITSEL, 0, MakeLParam(Word(Integer(Data)), -1));
+            SendMessage(Handle, CB_SETEDITSEL, 0,
+                        MakeLParam(Word(Integer(Data)), High(Word)));
         End;
         LM_SETSELLEN:
         Begin
@@ -2610,6 +2611,7 @@ Begin
   end;
 
   Mask := MIIM_ID or MIIM_DATA;
+  Style:=0;
   if ((Sender as TMenuItem).Count > 0) then Mask := Mask or MIIM_SUBMENU;
   MenuHandle := (Sender as TMenuItem).Handle;
   with MenuInfo do begin
@@ -2669,6 +2671,9 @@ End;
 
 {
   $Log$
+  Revision 1.63  2003/06/29 07:16:17  mattias
+  fixed compiler warnings
+
   Revision 1.62  2003/06/28 16:20:19  mattias
   fixed some win32 intf warnings
 
