@@ -144,8 +144,6 @@ Function InvalidateRect(aHandle : HWND; Rect : pRect; bErase : Boolean) : Boolea
 //function IsCharAlphaNumeric --> independent
 //function IsRectEmpty --> independent
 
-function KillTimer (hWnd : HWND; uIDEvent : cardinal) : boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-
 function LineTo(DC: HDC; X, Y: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function LoadStockPixmap(StockID: longint) : HBitmap; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 
@@ -205,7 +203,6 @@ function SetScrollInfo(Handle: HWND; SBStyle : Integer; ScrollInfo: TScrollInfo;
 function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): Longint;{$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var OldPoint: TPoint): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
@@ -336,6 +333,9 @@ Function RGB(R, G, B : Byte) : TColorRef;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2002/11/23 13:48:44  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.54  2002/11/09 15:02:07  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 

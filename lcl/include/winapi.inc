@@ -508,11 +508,6 @@ begin
   Result := InterfaceObject.InvalidateRect(aHandle, Rect, bErase);
 end;
 
-function KillTimer (hWnd : HWND; uIDEvent : cardinal) : boolean;
-begin
-  Result := InterfaceObject.KillTimer(hWnd, uIDEvent);
-end;
-
 function LineTo(DC: HDC; X, Y: Integer): Boolean;
 begin
   Result := InterfaceObject.LineTo(DC, X, Y);
@@ -831,11 +826,6 @@ end;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef;
 begin
   Result := InterfaceObject.SetTextColor(DC, Color);
-end;
-
-function SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer;
-begin
-  Result := InterfaceObject.SetTimer(hWnd, nIDEvent, uElapse, lpTimerFunc);
 end;
 
 function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt;
@@ -1386,6 +1376,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2002/11/23 13:48:44  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.61  2002/11/09 15:02:07  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 
