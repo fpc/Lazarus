@@ -11,7 +11,6 @@ unit objectinspector;
 
 
   ToDo:
-   - the abstract
    - connect to TFormEditor
    - TCustomComboBox has a bug: it can not store objects
    - MouseDown is always fired two times -> workaround
@@ -21,8 +20,8 @@ unit objectinspector;
    - TCustomComboBox don't know custom draw yet
    - improve TextHeight function
    - combobox can't sort (exception)
-   - TEdit.OnChange and TEdit.OnExit don't work
-   - TEdit has no ReadOnly and Maxlength
+   - TEdit has no Maxlength property
+   - TEdit Readonly property is protected
    - backgroundcolor=clNone
    - DoubleClick on Property
 
@@ -58,6 +57,7 @@ type
     procedure GetLvl;
   public
     Index:integer;
+    LastPaintedValue:string;
     property Editor:TPropertyEditor read FEditor;
     property Top:integer read FTop write FTop;
     property Height:integer read FHeight write FHeight;
@@ -112,6 +112,7 @@ type
     function GetTreeIconX(Index:integer):integer;
     function RowRect(ARow:integer):TRect;
     procedure PaintRow(ARow:integer);
+    procedure DoPaint(PaintOnlyChangedValues:boolean);
 
     procedure SetSelections(const NewSelections:TComponentSelectionList);
 
@@ -138,6 +139,7 @@ type
 
     property Selections:TComponentSelectionList read FComponentList write SetSelections;
     procedure BuildPropertyList;
+    procedure RefreshPropertyValues;
 
     property RowCount:integer read GetRowCount;
     property Rows[Index:integer]:TOIPropertyGridRow read GetRow;
@@ -185,6 +187,7 @@ type
     procedure SetBounds(aLeft,aTop,aWidth,aHeight:integer); override;
     property Selections:TComponentSelectionList read FComponentList write SetSelections;
     procedure RefreshSelections;
+    procedure RefreshPropertyValues;
     procedure FillComponentComboBox;
     property RootComponent:TComponent read FRootComponent write SetRootComponent;
     procedure DoInnerResize;
@@ -357,18 +360,14 @@ begin
   if (FChangingItemIndex=false) and (FCurrentEdit<>nil)
   and (FItemIndex>=0) and (FItemIndex<FRows.Count) then begin
     CurRow:=Rows[FItemIndex];
-      if FCurrentEdit=ValueEdit then
-        NewValue:=ValueEdit.Text
-      else
-        NewValue:=ValueComboBox.Text;
+    if FCurrentEdit=ValueEdit then
+      NewValue:=ValueEdit.Text
+    else
+      NewValue:=ValueComboBox.Text;
     if NewValue<>CurRow.Editor.GetVisualValue then begin
       try
         CurRow.Editor.SetValue(NewValue);
       except
-        if FCurrentEdit=ValueEdit then
-          ValueEdit.Text:=CurRow.Editor.GetVisualValue
-        else
-          ValueComboBox.Text:=CurRow.Editor.GetVisualValue;
       end;
     end;
   end;
@@ -450,7 +449,6 @@ procedure TOIPropertyGrid.SetItemIndex(NewIndex:integer);
 var NewRow:TOIPropertyGridRow;
   NewValue:string;
 begin
-  // XXX
   SetRowValue;
   FChangingItemIndex:=true;
   if (FItemIndex<>NewIndex) then begin
@@ -895,9 +893,10 @@ begin
       CurRow.Editor.PropDrawValue(Canvas,ValueRect,DrawState);
       Font:=OldFont;
     end;
+    CurRow.LastPaintedValue:=CurRow.Editor.GetVisualValue;
     // draw frame
     Pen.Color:=cl3DDkShadow;
-    MoveTo(ValueRect.Left,ValueRect.Bottom-1);
+    MoveTo(ValueRect.Left-1,ValueRect.Bottom-1);
     LineTo(ValueRect.Right,ValueRect.Bottom-1);
     Pen.Color:=cl3DLight;
     MoveTo(ValueRect.Left,ValueRect.Bottom-1);
@@ -905,36 +904,56 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.Paint;
+procedure TOIPropertyGrid.DoPaint(PaintOnlyChangedValues:boolean);
 var a:integer;
   SpaceRect:TRect;
 begin
-  inherited Paint;
-  with Canvas do begin
-    // draw properties
+  if not PaintOnlyChangedValues then begin
+    with Canvas do begin
+      // draw properties
+      for a:=0 to FRows.Count-1 do begin
+        PaintRow(a);
+      end;
+      // draw unused space below rows
+      SpaceRect:=Rect(BorderWidth,BorderWidth,TrackBar.Left-1,Height-BorderWidth);
+      if FRows.Count>0 then
+        SpaceRect.Top:=Rows[FRows.Count-1].Bottom-FTopY+BorderWidth;
+// TWinControl(Parent).InvalidateRect(Self,SpaceRect,true);
+      if FBackgroundColor<>clNone then begin
+        Brush.Color:=FBackgroundColor;
+        FillRect(SpaceRect);
+      end;
+      // draw border
+      Pen.Color:=cl3DDkShadow;
+      for a:=0 to BorderWidth-1 do begin
+        MoveTo(a,Self.Height-1-a);
+        LineTo(a,a);
+        LineTo(Self.Width-1-a,a);
+      end;
+      Pen.Color:=cl3DLight;
+      for a:=0 to BorderWidth-1 do begin
+        MoveTo(Self.Width-1-a,a);
+        LineTo(Self.Width-1-a,Self.Height-1-a);
+        LineTo(a,Self.Height-1-a);
+      end;
+    end;
+  end else begin
     for a:=0 to FRows.Count-1 do begin
-      PaintRow(a);
-    end;
-    // draw unused space below rows
-    SpaceRect:=Rect(BorderWidth,BorderWidth,TrackBar.Left-1,Height-BorderWidth);
-    Brush.Color:=FBackgroundColor;
-    if FRows.Count>0 then
-      SpaceRect.Top:=Rows[FRows.Count-1].Bottom-FTopY+BorderWidth;
-    FillRect(SpaceRect);
-    // draw border
-    Pen.Color:=cl3DDkShadow;
-    for a:=0 to BorderWidth-1 do begin
-      MoveTo(a,Self.Height-1-a);
-      LineTo(a,a);
-      LineTo(Self.Width-1-a,a);
-    end;
-    Pen.Color:=cl3DLight;
-    for a:=0 to BorderWidth-1 do begin
-      MoveTo(Self.Width-1-a,a);
-      LineTo(Self.Width-1-a,Self.Height-1-a);
-      LineTo(a,Self.Height-1-a);
+      if Rows[a].Editor.GetVisualValue<>Rows[a].LastPaintedValue then
+        PaintRow(a);
     end;
   end;
+end;
+
+procedure TOIPropertyGrid.Paint;
+begin
+  inherited Paint;
+  DoPaint(false);
+end;
+
+procedure TOIPropertyGrid.RefreshPropertyValues;
+begin
+  DoPaint(true);
 end;
 
 function TOIPropertyGrid.RowRect(ARow:integer):TRect;
@@ -1008,6 +1027,7 @@ begin
   FTop:=0;
   FHeight:=FTree.DefaultItemHeight;
   Index:=-1;
+  LastPaintedValue:='';
 end;
 
 destructor TOIPropertyGridRow.Destroy;
@@ -1184,6 +1204,12 @@ begin
 //writeln('OI: Refresh Selections');
   PropertyGrid.Selections:=FComponentList;
   EventGrid.Selections:=FComponentList;
+end;
+
+procedure TObjectinspector.RefreshPropertyValues;
+begin
+  PropertyGrid.RefreshPropertyValues;
+  EventGrid.RefreshPropertyValues;
 end;
 
 procedure TObjectinspector.SetBounds(aLeft,aTop,aWidth,aHeight:integer);

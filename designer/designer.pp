@@ -34,6 +34,8 @@ type
       y: integer;
     end;
 
+
+
  TDesigner = class(TIDesigner)
   private
     FCustomForm: TCustomForm;
@@ -68,8 +70,11 @@ GridPoints : TGridPoint;
 constructor TDesigner.Create(CustomForm : TCustomForm);
 begin
 inherited Create;
+
+
 FCustomForm := CustomForm;
-ControlSelection := TControlSelection.Create(FCustomForm);
+//The controlselection should NOT be owned by the form.  When it is it shows up in the OI
+ControlSelection := TControlSelection.Create(CustomForm);
 end;
 
 destructor TDesigner.Destroy;

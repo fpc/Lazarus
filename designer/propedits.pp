@@ -51,7 +51,7 @@ type
   private
     FComponents:TList;
     function GetItems(Index: integer): TComponent;
-    procedure SetItems(Index: integer; const Value: TComponent);
+    procedure SetItems(Index: integer; const CompValue: TComponent);
     function GetCount: integer;
     function GetCapacity:integer;
     procedure SetCapacity(const NewCapacity:integer);
@@ -276,15 +276,15 @@ type
     function GetMethodValueAt(Index:Integer):TMethod;
     function GetOrdValue:Longint;
     function GetOrdValueAt(Index:Integer):Longint;
-    function GetStrValue:string;
-    function GetStrValueAt(Index:Integer):string;
+    function GetStrValue:AnsiString;
+    function GetStrValueAt(Index:Integer):AnsiString;
     function GetVarValue:Variant;
     function GetVarValueAt(Index:Integer):Variant;
     procedure SetFloatValue(NewValue:Extended);
     procedure SetMethodValue(const NewValue:TMethod);
     procedure SetInt64Value(NewValue:Int64);
     procedure SetOrdValue(NewValue:Longint);
-    procedure SetStrValue(const NewValue:string);
+    procedure SetStrValue(const NewValue:AnsiString);
     procedure SetVarValue(const NewValue:Variant);
     procedure Modified;
   public
@@ -324,7 +324,7 @@ type
     //property Designer:IFormDesigner read FDesigner;
     property PrivateDirectory:string read GetPrivateDirectory;
     property PropCount:Integer read FPropCount;
-    property Value2:string read GetValue write SetValue;
+    property FirstValue:string read GetValue write SetValue;
   end;
 
   TPropertyEditorClass=class of TPropertyEditor;
@@ -356,7 +356,7 @@ type
   TCharPropertyEditor = class(TOrdinalPropertyEditor)
   public
     function GetValue: string; override;
-    procedure SetValue(const Value: string); override;
+    procedure SetValue(const NewValue: string); override;
   end;
 
 { TEnumPropertyEditor
@@ -368,7 +368,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const Value: string); override;
+    procedure SetValue(const NewValue: string); override;
   end;
 
 { TBoolPropertyEditor
@@ -377,7 +377,7 @@ type
   TBoolPropertyEditor = class(TEnumPropertyEditor)
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const Value: string); override;
+    procedure SetValue(const NewValue: string); override;
   end;
 
 { TInt64PropertyEditor
@@ -388,7 +388,7 @@ type
     function AllEqual: Boolean; override;
     function GetEditLimit: Integer; override;
     function GetValue: string; override;
-    procedure SetValue(const Value: string); override;
+    procedure SetValue(const NewValue: string); override;
   end;
 
 { TFloatPropertyEditor
@@ -399,7 +399,7 @@ type
   public
     function AllEqual: Boolean; override;
     function GetValue: string; override;
-    procedure SetValue(const Value: string); override;
+    procedure SetValue(const NewValue: string); override;
   end;
 
 { TStringPropertyEditor
@@ -411,7 +411,7 @@ type
     function AllEqual: Boolean; override;
     function GetEditLimit: Integer; override;
     function GetValue: string; override;
-    procedure SetValue(const Value: string); override;
+    procedure SetValue(const NewValue: string); override;
   end;
 
 { TNestedPropertyEditor
@@ -441,7 +441,7 @@ type
     function GetName: string; override;
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const Value: string); override;
+    procedure SetValue(const NewValue: string); override;
    end;
 
 { TSetPropertyEditor
@@ -497,7 +497,7 @@ type
     function GetEditLimit: Integer; override;
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const Value: string); override;
+    procedure SetValue(const NewValue: string); override;
   end;
 
 { TComponentNamePropertyEditor
@@ -509,7 +509,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
     function GetEditLimit: Integer; override;
     function GetValue: string; override;
-    procedure SetValue(const Value: string); override;
+    procedure SetValue(const NewValue: string); override;
   end;
 
 { TModalResultPropertyEditor }
@@ -519,7 +519,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const Value: string); override;
+    procedure SetValue(const NewValue: string); override;
   end;
 
 { TColorPropertyEditor
@@ -533,11 +533,11 @@ type
     function GetAttributes: TPropertyAttributes; override;
     function GetValue: string; override;
     procedure GetValues(Proc: TGetStringProc); override;
-    procedure SetValue(const Value: string); override;
+    procedure SetValue(const NewValue: string); override;
 
-    procedure ListMeasureWidth(const NewValue:string; Index:integer;
+    procedure ListMeasureWidth(const CurValue:string; Index:integer;
       ACanvas:TCanvas;  var AWidth:Integer);  override;
-    procedure ListDrawValue(const NewValue:string; Index:integer;
+    procedure ListDrawValue(const CurValue:string; Index:integer;
       ACanvas:TCanvas;  const ARect:TRect; AState: TPropEditDrawState); override;
     procedure PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
       AState:TPropEditDrawState); override;
@@ -548,9 +548,9 @@ type
 
   TBrushStylePropertyEditor = class(TEnumPropertyEditor)
   public
-    procedure ListMeasureWidth(const Value: string; Index:integer;
+    procedure ListMeasureWidth(const CurValue: string; Index:integer;
       ACanvas: TCanvas;  var AWidth: Integer); override;
-    procedure ListDrawValue(const Value: string; Index:integer;
+    procedure ListDrawValue(const CurValue: string; Index:integer;
       ACanvas: TCanvas;  const ARect: TRect; AState: TPropEditDrawState); override;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       AState:TPropEditDrawState); override;
@@ -561,9 +561,9 @@ type
 
   TPenStylePropertyEditor = class(TEnumPropertyEditor)
   public
-    procedure ListMeasureWidth(const Value: string; Index:integer;
+    procedure ListMeasureWidth(const CurValue: string; Index:integer;
       ACanvas: TCanvas;  var AWidth: Integer); override;
-    procedure ListDrawValue(const Value: string; Index:integer;
+    procedure ListDrawValue(const CurValue: string; Index:integer;
       ACanvas: TCanvas;  const ARect: TRect; AState: TPropEditDrawState); override;
     procedure PropDrawValue(ACanvas: TCanvas; const ARect: TRect;
       AState:TPropEditDrawState); override;
@@ -713,6 +713,7 @@ implementation
 uses Dialogs, Math;
 
 //==============================================================================
+// simple error messages
 
 procedure ShowMessageDialog(const s:string);
 var MessageDialog:TMessageDialog;
@@ -791,6 +792,113 @@ const
     TInt64PropertyEditor,  // tkInt64
     nil                    // tkQWord
     );
+
+// XXX ToDo: There is a big in the typinfo.pp. Thus this workaround -------
+
+Procedure SetIndexValues (P: PPRopInfo; Var Index,IValue : Longint);
+begin
+  Index:=((P^.PropProcs shr 6) and 1);
+  If Index<>0 then
+    IValue:=P^.Index
+  else
+    IValue:=0;
+end;
+
+function CallIntegerProc(s : Pointer;Address : Pointer;Value : Integer;
+Index,IValue : Longint) : Integer;  assembler;
+asm
+   movl S,%esi
+   movl Address,%edi
+   // Push value to set
+   movl Value,%eax
+   pushl %eax
+   // ? Indexed procedure
+   movl Index,%eax
+   testl %eax,%eax
+   je .LIPNoPush
+   movl IValue,%eax
+   pushl %eax
+.LIPNoPush:
+   pushl %esi
+   call %edi
+end;
+
+procedure CallSStringProc(s : Pointer;Address : Pointer;
+  const Value : ShortString; Index,IVAlue : Longint);  assembler;
+asm
+   movl S,%esi
+   movl Address,%edi
+   // Push value to set
+   movl Value,%eax
+   pushl %eax
+   // ? Indexed procedure
+   movl Index,%eax
+   testl %eax,%eax
+   // MG: here was a bug (jnz)
+   je .LSSPNoPush
+   movl IValue,%eax
+   pushl %eax
+.LSSPNoPush:
+   // MG: and here was a bug too (push)
+   pushl %esi
+   call %edi
+end;
+
+procedure SetAStrProp(Instance : TObject;PropInfo : PPropInfo;
+  const Value : AnsiString);
+//Dirty trick based on fact that AnsiString is just a pointer,
+//hence can be treated like an integer type.
+var
+  s: AnsiString;
+  Index,Ivalue : Longint;
+begin
+  { Another dirty trick which is necessary to increase the reference
+   counter of Value... }
+  s := Value;
+  Pointer(s) := nil;
+
+  SetIndexValues(PropInfo,Index,IValue);
+  case (PropInfo^.PropProcs shr 2) and 3 of
+    ptfield:
+      PLongint(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=
+        Longint(Pointer(Value)) ;
+    ptstatic:
+      CallIntegerProc(
+        Instance,PropInfo^.SetProc,Longint(Pointer(Value)),Index,IValue);
+    ptvirtual:
+      CallIntegerProc(Instance
+        ,PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.SetProc))^
+        ,Longint(Pointer(Value)),Index,IValue);
+  end;
+end;
+
+procedure SetSStrProp(Instance : TObject;PropInfo : PPropInfo;
+  const Value : ShortString);
+var Index,IValue: longint;
+begin
+  SetIndexValues(PropInfo,Index,IValue);
+  case (PropInfo^.PropProcs shr 2) and 3 of
+    ptfield:
+      PShortString(Pointer(Instance)+Longint(PropInfo^.SetProc))^:=Value;
+    ptstatic:
+      // MG: here was a bug (Getproc)
+      CallSStringProc(Instance,PropInfo^.SetProc,Value,Index,IValue);
+    ptvirtual:
+      // MG: here was a bug (Getproc)
+      CallSStringProc(Instance,PPointer(Pointer(Instance.ClassType)+Longint(PropInfo^.SetProc))^,Value,Index,IValue);
+  end;
+end;
+
+procedure SetStrProp(Instance : TObject;PropInfo : PPropInfo;
+  const Value : AnsiString);
+begin
+  case Propinfo^.PropType^.Kind of
+    tkSString : SetSStrProp(Instance,PropInfo,Value);
+    tkAString : SetAStrProp(Instance,Propinfo,Value);
+  end;
+end;
+
+
 
 // XXX ToDo: These variables/functions have bugs. Thus I provide my own ------
 
@@ -1218,7 +1326,7 @@ end;
 
 procedure TPropertyEditor.Edit;
 type
-  TGetStrFunc=function(const Value:string):Integer of object;
+  TGetStrFunc=function(const StrValue:string):Integer of object;
 var
   I:Integer;
   Values:TStringList;
@@ -1231,9 +1339,9 @@ begin
     AddValue:=@Values.Add;
     GetValues(TGetStringProc(AddValue));
     if Values.Count > 0 then begin
-      I:=Values.IndexOf(Value2)+1;
+      I:=Values.IndexOf(FirstValue)+1;
       if I=Values.Count then I:=0;
-      Value2:=Values[I];
+      FirstValue:=Values[I];
     end;
   finally
     Values.Free;
@@ -1318,12 +1426,12 @@ begin
   Result:=FPropList^[0].PropInfo^.PropType;
 end;
 
-function TPropertyEditor.GetStrValue:string;
+function TPropertyEditor.GetStrValue:AnsiString;
 begin
   Result:=GetStrValueAt(0);
 end;
 
-function TPropertyEditor.GetStrValueAt(Index:Integer):string;
+function TPropertyEditor.GetStrValueAt(Index:Integer):AnsiString;
 begin
   with FPropList^[Index] do Result:=GetStrProp(Instance,PropInfo);
 end;
@@ -1397,14 +1505,13 @@ end;
 procedure TPropertyEditor.SetPropEntry(Index:Integer;
   AInstance:TPersistent; APropInfo:PPropInfo);
 begin
-  with FPropList^[Index] do
-  begin
+  with FPropList^[Index] do begin
     Instance:=AInstance;
     PropInfo:=APropInfo;
   end;
 end;
 
-procedure TPropertyEditor.SetStrValue(const NewValue:string);
+procedure TPropertyEditor.SetStrValue(const NewValue:AnsiString);
 var
   I:Integer;
 begin
@@ -1603,13 +1710,14 @@ begin
     Result:='#'+IntToStr(Ord(Ch));
 end;
 
-procedure TCharPropertyEditor.SetValue(const Value: string);
+procedure TCharPropertyEditor.SetValue(const NewValue: string);
 var
   L: Longint;
 begin
-  if Length(Value) = 0 then L := 0 else
-    if Length(Value) = 1 then L := Ord(Value[1]) else
-      if Value[1] = '#' then L := StrToInt(Copy(Value, 2, Maxint)) else begin
+  if Length(NewValue) = 0 then L := 0 else
+    if Length(NewValue) = 1 then L := Ord(NewValue[1]) else
+      if NewValue[1] = '#' then L := StrToInt(Copy(NewValue, 2, Maxint)) else
+      begin
         {raise EPropertyError.CreateRes(@SInvalidPropertyValue)};
         exit;
       end;
@@ -1648,11 +1756,11 @@ begin
     for I := MinValue to MaxValue do Proc(GetEnumName(EnumType, I));
 end;
 
-procedure TEnumPropertyEditor.SetValue(const Value: string);
+procedure TEnumPropertyEditor.SetValue(const NewValue: string);
 var
   I: Integer;
 begin
-  I := GetEnumValue(GetPropType, Value);
+  I := GetEnumValue(GetPropType, NewValue);
   if I < 0 then begin
     {raise EPropertyError.CreateRes(@SInvalidPropertyValue)};
     exit;
@@ -1676,16 +1784,16 @@ begin
   Proc('True');
 end;
 
-procedure TBoolPropertyEditor.SetValue(const Value: string);
+procedure TBoolPropertyEditor.SetValue(const NewValue: string);
 var
   I: Integer;
 begin
-  if CompareText(Value, 'False') = 0 then
+  if CompareText(NewValue, 'False') = 0 then
     I := 0
-  else if CompareText(Value, 'True') = 0 then
+  else if CompareText(NewValue, 'True') = 0 then
     I := -1
   else
-    I := StrToInt(Value);
+    I := StrToInt(NewValue);
   SetOrdValue(I);
 end;
 
@@ -1716,9 +1824,9 @@ begin
   Result := IntToStr(GetInt64Value);
 end;
 
-procedure TInt64PropertyEditor.SetValue(const Value: string);
+procedure TInt64PropertyEditor.SetValue(const NewValue: string);
 begin
-  SetInt64Value(StrToInt64(Value));
+  SetInt64Value(StrToInt64(NewValue));
 end;
 
 
@@ -1747,9 +1855,9 @@ begin
     Precisions[GetTypeData(GetPropType)^.FloatType], 0);
 end;
 
-procedure TFloatPropertyEditor.SetValue(const Value: string);
+procedure TFloatPropertyEditor.SetValue(const NewValue: string);
 begin
-  SetFloatValue(StrToFloat(Value));
+  SetFloatValue(StrToFloat(NewValue));
 end;
 
 { TStringPropertyEditor }
@@ -1780,9 +1888,9 @@ begin
   Result := GetStrValue;
 end;
 
-procedure TStringPropertyEditor.SetValue(const Value: string);
+procedure TStringPropertyEditor.SetValue(const NewValue: string);
 begin
-  SetStrValue(Value);
+  SetStrValue(NewValue);
 end;
 
 { TNestedPropertyEditor }
@@ -1851,12 +1959,12 @@ begin
   Proc(BooleanIdents[True]);
 end;
 
-procedure TSetElementPropertyEditor.SetValue(const Value: string);
+procedure TSetElementPropertyEditor.SetValue(const NewValue: string);
 var
   S: TIntegerSet;
 begin
   Integer(S) := GetOrdValue;
-  if CompareText(Value, 'True') = 0 then
+  if CompareText(NewValue, 'True') = 0 then
     Include(S, FElement) else
     Exclude(S, FElement);
   SetOrdValue(Integer(S));
@@ -2104,10 +2212,10 @@ begin
   {Designer.GetComponentNames(GetTypeData(GetPropType), Proc);}
 end;
 
-procedure TComponentPropertyEditor.SetValue(const Value: string);
+procedure TComponentPropertyEditor.SetValue(const NewValue: string);
 {var Component: TComponent;}
 begin
-  {if Value = '' then Component := nil else
+  {if NewValue = '' then Component := nil else
   begin
     Component := Designer.GetComponent(Value);
     if not (Component is GetTypeData(GetPropType)^.ClassType) then
@@ -2134,9 +2242,9 @@ begin
   //writeln('OI: Get ComponentName Len'+IntToStr(length(Result))+',Name='''+Result+'''');
 end;
 
-procedure TComponentNamePropertyEditor.SetValue(const Value: string);
+procedure TComponentNamePropertyEditor.SetValue(const NewValue: string);
 begin
-  inherited SetValue(Value);
+  inherited SetValue(NewValue);
   //writeln('OI: Set ComponentName Len'+IntToStr(length(Value))+',Name='''+Value+'''');
 end;
 
@@ -2181,22 +2289,21 @@ begin
   for I := Low(ModalResults) to High(ModalResults) do Proc(ModalResults[I]);
 end;
 
-procedure TModalResultPropertyEditor.SetValue(const Value: string);
+procedure TModalResultPropertyEditor.SetValue(const NewValue: string);
 var
   I: Integer;
 begin
-  if Value = '' then
-  begin
+  if NewValue = '' then begin
     SetOrdValue(0);
     Exit;
   end;
   for I := Low(ModalResults) to High(ModalResults) do
-    if CompareText(ModalResults[I], Value) = 0 then
+    if CompareText(ModalResults[I], NewValue) = 0 then
     begin
       SetOrdValue(I);
       Exit;
     end;
-  inherited SetValue(Value);
+  inherited SetValue(NewValue);
 end;
 
 { TColorPropertyEditor }
@@ -2275,7 +2382,7 @@ begin
     inherited PropDrawValue(ACanvas, ARect, AState);
 end;
 
-procedure TColorPropertyEditor.ListDrawValue(const NewValue:string;
+procedure TColorPropertyEditor.ListDrawValue(const CurValue:string;
 Index:integer; ACanvas:TCanvas;  const ARect:TRect; AState: TPropEditDrawState);
 
   function ColorToBorderColor(AColor: TColor): TColor;
@@ -2313,7 +2420,7 @@ begin
     Rectangle(ARect.Left, ARect.Top, vRight, vBottom);
 
     // set things up and do the work
-    Brush.Color := StringToColor(NewValue);
+    Brush.Color := StringToColor(CurValue);
     Pen.Color := ColorToBorderColor(ColorToRGB(Brush.Color));
     Rectangle(ARect.Left + 1, ARect.Top + 1, vRight - 1, vBottom - 1);
 
@@ -2321,26 +2428,26 @@ begin
     Brush.Color := vOldBrushColor;
     Pen.Color := vOldPenColor;
   finally
-    inherited ListDrawValue(NewValue, Index, ACanvas,
+    inherited ListDrawValue(CurValue, Index, ACanvas,
                             Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),
                             AState);
   end;
 end;
 
-procedure TColorPropertyEditor.ListMeasureWidth(const NewValue:string;
+procedure TColorPropertyEditor.ListMeasureWidth(const CurValue:string;
   Index:integer;  ACanvas:TCanvas;  var AWidth:Integer);
 begin
   AWidth := AWidth + ACanvas.TextHeight('M') {* 2};
 end;
 
-procedure TColorPropertyEditor.SetValue(const Value: string);
+procedure TColorPropertyEditor.SetValue(const NewValue: string);
 var
-  NewValue: Longint;
+  CValue: Longint;
 begin
-  if IdentToColor(Value, NewValue) then
-    SetOrdValue(NewValue)
+  if IdentToColor(NewValue, CValue) then
+    SetOrdValue(CValue)
   else
-    inherited SetValue(Value);
+    inherited SetValue(NewValue);
 end;
 
 { TBrushStylePropertyEditor }
@@ -2354,7 +2461,7 @@ begin
     inherited PropDrawValue(ACanvas, ARect, AState);
 end;
 
-procedure TBrushStylePropertyEditor.ListDrawValue(const Value: string;
+procedure TBrushStylePropertyEditor.ListDrawValue(const CurValue: string;
   Index:integer;  ACanvas: TCanvas; const ARect: TRect; AState:TPropEditDrawState);
 var
   vRight, vBottom: Integer;
@@ -2377,7 +2484,7 @@ begin
 
     // set things up
     Pen.Color := clWindowText;
-    Brush.Style := TBrushStyle(GetEnumValue(GetPropInfo^.PropType, Value));
+    Brush.Style := TBrushStyle(GetEnumValue(GetPropInfo^.PropType, CurValue));
 
     // bsClear hack
     if Brush.Style = bsClear then begin
@@ -2395,13 +2502,13 @@ begin
     Brush.Style := vOldBrushStyle;
     Pen.Color := vOldPenColor;
   finally
-    inherited ListDrawValue(Value, Index, ACanvas,
+    inherited ListDrawValue(CurValue, Index, ACanvas,
                             Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),
                             AState);
   end;
 end;
 
-procedure TBrushStylePropertyEditor.ListMeasureWidth(const Value: string;
+procedure TBrushStylePropertyEditor.ListMeasureWidth(const CurValue: string;
   Index:integer;  ACanvas: TCanvas; var AWidth: Integer);
 begin
   AWidth := AWidth + ACanvas.TextHeight('A') {* 2};
@@ -2418,7 +2525,7 @@ begin
     inherited PropDrawValue(ACanvas, ARect, AState);
 end;
 
-procedure TPenStylePropertyEditor.ListDrawValue(const Value: string;
+procedure TPenStylePropertyEditor.ListDrawValue(const CurValue: string;
   Index:integer;  ACanvas: TCanvas; const ARect: TRect; AState:TPropEditDrawState);
 var
   vRight, vTop, vBottom: Integer;
@@ -2446,7 +2553,7 @@ begin
 
     // set thing up and do work
     Pen.Color := clWindowText;
-    Pen.Style := TPenStyle(GetEnumValue(GetPropInfo^.PropType, Value));
+    Pen.Style := TPenStyle(GetEnumValue(GetPropInfo^.PropType, CurValue));
     MoveTo(ARect.Left + 1, vTop);
     LineTo(vRight - 1, vTop);
     MoveTo(ARect.Left + 1, vTop + 1);
@@ -2457,13 +2564,13 @@ begin
     Pen.Style := vOldPenStyle;
     Pen.Color := vOldPenColor;
   finally
-    inherited ListDrawValue(Value, -1, ACanvas,
+    inherited ListDrawValue(CurValue, -1, ACanvas,
                             Rect(vRight, ARect.Top, ARect.Right, ARect.Bottom),
                             AState);
   end;
 end;
 
-procedure TPenStylePropertyEditor.ListMeasureWidth(const Value: string;
+procedure TPenStylePropertyEditor.ListMeasureWidth(const CurValue: string;
   Index:integer;  ACanvas: TCanvas; var AWidth: Integer);
 begin
   AWidth := AWidth + ACanvas.TextHeight('X') * 2;
@@ -2543,9 +2650,9 @@ begin
 end;
 
 procedure TComponentSelectionList.SetItems(Index: integer;
-  const Value: TComponent);
+  const CompValue: TComponent);
 begin
-  FComponents[Index]:=Value;
+  FComponents[Index]:=CompValue;
 end;
 
 function TComponentSelectionList.GetCapacity:integer;

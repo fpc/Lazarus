@@ -25,7 +25,7 @@ unit CustomFormEditor;
 interface
 
 uses
-  classes, abstractformeditor, controls,propedits,Typinfo,ObjectInspector;
+  classes, abstractformeditor, controls,propedits,Typinfo,ObjectInspector,forms;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 
@@ -40,6 +40,7 @@ each control that's dropped onto the form
 TCustomFormEditor = class; //forward declaration
 TSetProc = Procedure (const Value) of Object;
 TGetProc = Function : Variant of Object;
+
 
 
   TComponentInterface = class(TIComponentInterface)

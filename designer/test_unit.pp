@@ -58,17 +58,21 @@ type
     FMyEnum:TMyEnum;
     FMySet:TMySet;
     FMyFont:TFont;
-    FMyString:string;
+    FMyAnsiString:AnsiString;
+    FMyShortString:ShortString;
     FMyBool:boolean;
     FMyBrush:TBrush;
     FMyPen:TPen;
+    procedure SetMyAnsiString(const NewValue:AnsiString);
+    procedure SetMyShortString(const NewValue:ShortString);
   published
     property MyInteger:integer read FMyInteger write FMyInteger;
     property MyCardinal:cardinal read FMyCardinal write FMyCardinal;
     property MyEnum:TMyEnum read FMyEnum write FMyEnum;
     property MySet:TMySet read FMySet write FMySet;
     property MyFont:TFont read FMyFont write FMyFont;
-    property MyString:string read FMyString write FMyString;
+    property MyAnsiString:AnsiString read FMyAnsiString write SetMyAnsiString;
+    property MyShortString:ShortString read FMyShortString write SetMyShortString;
     property MyBool:Boolean read FMyBool write FMyBool;
     property MyBrush:TBrush read FMyBrush write FMyBrush;
     property MyPen:TPen read FMyPen write FMyPen;
@@ -80,8 +84,17 @@ var
 
 implementation
 
+procedure TForm1.SetMyAnsiString(const NewValue:AnsiString);
+begin
+  FMyAnsiString:=NewValue;
+end;
 
-constructor TForm1.Create(AOwner: TComponent);	
+procedure TForm1.SetMyShortString(const NewValue:ShortString);
+begin
+  FMyShortString:=NewValue;
+end;
+
+constructor TForm1.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   FMySet:=[MyEnum1];
@@ -125,7 +138,7 @@ end;
 
 procedure TForm1.OIRefreshButtonClick(Sender : TObject);
 begin
-  OI.RefreshSelections;
+  OI.RefreshPropertyValues;
 end;
 
 procedure TForm1.EditToComboButtonClick(Sender : TObject);
