@@ -607,7 +607,6 @@ Begin
   While Num < FComponentInterfaceList.Count do
   Begin
     Result := TIComponentInterface(FComponentInterfaceList.Items[Num]);
-writeln('TCustomFormEditor.FindComponent ',TComponentInterface(Result).Component.Name);
     if TComponentInterface(Result).Component = AComponent then exit;
     inc(num);
   end;
@@ -686,7 +685,6 @@ Begin
       for I := 0 to Temp.Component.Owner.ComponentCount-1 do
       begin
         DummyComponent:=Temp.Component.Owner.Components[i];
-writeln('AAA1 ',DummyComponent.Name,' ',TempName+IntToStr(Num));
         if AnsiCompareText(DummyComponent.Name,TempName+IntToStr(Num))=0 then
         begin
           Found := True;

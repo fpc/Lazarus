@@ -34,6 +34,8 @@ unit ControlSelection;
 
 interface
 
+{ $DEFINE VerboseDesigner}
+
 uses
   Classes, LCLLinux, LCLType, Controls, Forms, GraphType, Graphics, SysUtils,
   EnvironmentOpts;
@@ -86,6 +88,7 @@ type
     FOldTop: integer;
     FOldWidth: integer;
     FOldHeight: integer;
+    FOldFormRelativeLeftTop: TPoint;
     function GetLeft: integer;
     procedure SetLeft(ALeft: integer);
     function GetTop: integer;
@@ -106,8 +109,11 @@ type
     property OldTop:integer read FOldTop write FOldTop;
     property OldWidth:integer read FOldWidth write FOldWidth;
     property OldHeight:integer read FOldHeight write FOldHeight;
+    property OldFormRelativeLeftTop: TPoint
+      read FOldFormRelativeLeftTop write FOldFormRelativeLeftTop;
     function ParentForm: TCustomForm;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
+    procedure SetFormRelativeBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SaveBounds;
     function IsTopLvl: boolean;
   end;
@@ -302,6 +308,7 @@ const
 function GetParentFormRelativeTopLeft(Component: TComponent): TPoint;
 function GetParentFormRelativeBounds(Component: TComponent): TRect;
 function GetParentFormRelativeClientOrigin(Component: TComponent): TPoint;
+function GetParentFormRelativeParentClientOrigin(Component: TComponent): TPoint;
 function GetFormRelativeMousePosition(Form: TCustomForm): TPoint;
 function ComponentIsTopLvl(AComponent: TComponent): boolean;
 procedure GetComponentBounds(AComponent: TComponent;
@@ -335,14 +342,19 @@ const
   );
 
 function GetParentFormRelativeTopLeft(Component: TComponent): TPoint;
-var FormOrigin: TPoint;
+var
+  FormOrigin: TPoint;
+  ParentForm: TCustomForm;
+  Parent: TWinControl;
 begin
   if Component is TControl then begin
-    if TControl(Component).Parent=nil then begin
+    ParentForm:=GetParentForm(TControl(Component));
+    Parent:=TControl(Component).Parent;
+    if (Parent=nil) or (ParentForm=nil) then begin
       Result:=Point(0,0);
     end else begin
-      Result:=TControl(Component).Parent.ClientOrigin;
-      FormOrigin:=GetParentForm(TControl(Component)).ClientOrigin;
+      Result:=Parent.ClientOrigin;
+      FormOrigin:=ParentForm.ClientOrigin;
       Result.X:=Result.X-FormOrigin.X+TControl(Component).Left;
       Result.Y:=Result.Y-FormOrigin.Y+TControl(Component).Top;
     end;
@@ -363,20 +375,45 @@ begin
 end;
 
 function GetParentFormRelativeClientOrigin(Component: TComponent): TPoint;
-var FormOrigin: TPoint;
+var
+  FormOrigin: TPoint;
+  ParentForm: TCustomForm;
 begin
   if Component is TControl then begin
-    if TControl(Component).Parent=nil then begin
+    ParentForm:=GetParentForm(TControl(Component));
+    if ParentForm=nil then begin
       Result:=Point(0,0);
     end else begin
       Result:=TControl(Component).ClientOrigin;
-      FormOrigin:=GetParentForm(TControl(Component)).ClientOrigin;
+      FormOrigin:=ParentForm.ClientOrigin;
       Result.X:=Result.X-FormOrigin.X;
       Result.Y:=Result.Y-FormOrigin.Y;
     end;
   end else begin
     Result.X:=LongRec(Component.DesignInfo).Lo;
     Result.Y:=LongRec(Component.DesignInfo).Hi;
+  end;
+end;
+
+function GetParentFormRelativeParentClientOrigin(Component: TComponent): TPoint;
+var
+  FormOrigin, ParentOrigin: TPoint;
+  ParentForm: TCustomForm;
+  Parent: TWinControl;
+begin
+  if Component is TControl then begin
+    ParentForm:=GetParentForm(TControl(Component));
+    Parent:=TControl(Component).Parent;
+    if (Parent=nil) or (ParentForm=nil) then begin
+      Result:=Point(0,0);
+    end else begin
+      ParentOrigin:=Parent.ClientOrigin;
+      FormOrigin:=ParentForm.ClientOrigin;
+      Result.X:=ParentOrigin.X-FormOrigin.X;
+      Result.Y:=ParentOrigin.Y-FormOrigin.Y;
+    end;
+  end else begin
+    Result:=Point(0,0);
   end;
 end;
 
@@ -496,12 +533,22 @@ begin
   end;
 end;
 
+procedure TSelectedControl.SetFormRelativeBounds(ALeft, ATop, AWidth,
+  AHeight: integer);
+var
+  ParentOffset: TPoint;
+begin
+  ParentOffset:=GetParentFormRelativeParentClientOrigin(FComponent);
+  //writeln('TSelectedControl.SetFormRelativeBounds ',FComponent.Name,
+  //  ' Left=',ALeft,' LeftOff=',ParentOffset.X,
+  //  ' Top=',ATop,' TopOff=',ParentOffset.Y);
+  SetBounds(ALeft-ParentOffset.X,ATop-ParentOffset.Y,AWidth,AHeight);
+end;
+
 procedure TSelectedControl.SaveBounds;
 begin
-  FOldLeft:=Left;
-  FOldTop:=Top;
-  FOldWidth:=Width;
-  FOldHeight:=Height;
+  GetComponentBounds(FComponent,FOldLeft,FOldTop,FOldWidth,FOldHeight);
+  FOldFormRelativeLeftTop:=GetParentFormRelativeTopLeft(FComponent);
 //writeln('[TSelectedControl.SaveBounds] ',Component.Name,':',Component.ClassName
 //  ,'  ',FOldLeft,',',FOldTop);
 end;
@@ -702,7 +749,9 @@ end;
 
 procedure TControlSelection.DoApplyUserBounds;
 var
-  i, NewLeft, NewTop, NewRight, NewBottom, NewWidth, NewHeight: integer;
+  i: integer;
+  OldLeftTop: TPoint;
+  NewLeft, NewTop, NewRight, NewBottom, NewWidth, NewHeight: integer;
 begin
   BeginUpdate;
   if Count=1 then begin
@@ -715,7 +764,7 @@ begin
     writeln('[TControlSelection.DoApplyUserBounds] S Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
     ' User=',FLeft,',',FTop,',',FWidth,',',FHeight);
     {$ENDIF}
-    Items[0].SetBounds(
+    Items[0].SetFormRelativeBounds(
       Min(NewLeft,NewRight),
       Min(NewTop,NewBottom),
       Abs(FWidth),
@@ -732,8 +781,9 @@ begin
       
         // ToDo: if a parent and a child is selected, only move the parent
       
-        NewLeft:=FLeft + (((Items[i].OldLeft-FOldLeft) * FWidth) div FOldWidth);
-        NewTop:=FTop + (((Items[i].OldTop-FOldTop) * FHeight) div FOldHeight);
+        OldLeftTop:=Items[i].OldFormRelativeLeftTop;
+        NewLeft:=FLeft + (((OldLeftTop.X-FOldLeft) * FWidth) div FOldWidth);
+        NewTop:=FTop + (((OldLeftTop.Y-FOldTop) * FHeight) div FOldHeight);
         NewWidth:=(Items[i].OldWidth*FWidth) div FOldWidth;
         NewHeight:=(Items[i].OldHeight*FHeight) div FOldHeight;
         if NewWidth<0 then begin
@@ -746,7 +796,7 @@ begin
           dec(NewTop,NewHeight);
         end;
         if NewHeight<1 then NewHeight:=1;
-        Items[i].SetBounds(NewLeft,NewTop,NewWidth,NewHeight);
+        Items[i].SetFormRelativeBounds(NewLeft,NewTop,NewWidth,NewHeight);
         {$IFDEF VerboseDesigner}
         writeln('  i=',i,
         ' ',Items[i].Left,',',Items[i].Top,',',Items[i].Width,',',Items[i].Height);
@@ -1309,7 +1359,7 @@ begin
   if (Count=0) or (IsResizing) then exit;
   {$IFDEF VerboseDesigner}
   writeln('[TControlSelection.MoveSelectionWithSnapping] A  ',
-    TotalDX,',',TotalDY);
+    TotalDX,',',TotalDY,' OldBounds=',FLeft,',',FTop,',',FWidth,',',FHeight);
   {$ENDIF}
   BeginResizing;
   FLeft:=FindNearestSnapLeft(FOldLeft+TotalDX,FWidth);
