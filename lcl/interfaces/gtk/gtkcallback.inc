@@ -2113,13 +2113,17 @@ end;
 
   Handler for style changes. For example the user changes the the theme.
 -------------------------------------------------------------------------------}
-Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle;
-  Data: Pointer); cdecl;
+Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle; Data: Pointer); cdecl;
 begin
   EventTrace('style-set', nil);
-  if Data<>nil then
+  if Data<>nil then begin
     if TObject(Data) is TButton then
-      ReleaseStyle('button');
+      ReleaseStyle('button')
+    else
+      ReleaseStyle('default');
+  end
+    else
+      ReleaseStyle('default');
 end;
 
 {$I gtkDragCallback.inc}
@@ -2135,6 +2139,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.107  2002/08/24 06:51:22  lazarus
+  MG: from Andrew: style list fixes, autosize for radio/checkbtns
+
   Revision 1.106  2002/08/22 16:43:35  lazarus
   MG: improved theme support from Andrew
 
