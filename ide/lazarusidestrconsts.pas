@@ -125,6 +125,8 @@ ResourceString
   lisMenuInsertText = 'Insert text';
   lisMenuInsertGeneral = 'General';
   lisMenuInsertGPLNotice = 'GPL notice';
+  lisMenuInsertUserName = 'Current username';
+  lisMenuInsertDateTime = 'Current date and time';
   lisMenuCompleteCode = 'Complete Code';
 
   lisMenuFind = 'Find';

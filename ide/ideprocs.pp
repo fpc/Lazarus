@@ -90,6 +90,7 @@ function CommentText(const s: string; CommentType: TCommentType): string;
 function UncommentLines(const s: string): string;
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 function NameToValidIdentifier(const s: string): string;
+function GetCurrentUserName: string;
 
 
 implementation
@@ -970,6 +971,11 @@ begin
     end;
   end;
   Result:=Dest;
+end;
+
+function GetCurrentUserName: string;
+begin
+  Result:=GetEnv('USER');
 end;
 
 end.

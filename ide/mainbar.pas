@@ -157,6 +157,8 @@ type
     itmEditInsertText: TMenuItem;
     itmEditInsertGeneral: TMenuItem;
     itmEditInsertGPLNotice: TMenuItem;
+    itmEditInsertUsername: TMenuItem;
+    itmEditInsertDateTime: TMenuItem;
     itmEditCompleteCode: TMenuItem;
 
     itmSearchFind: TMenuItem;
@@ -550,6 +552,16 @@ begin
       itmEditInsertGPLNotice.Name:='itmEditInsertGPLNotice';
       itmEditInsertGPLNotice.Caption := lisMenuInsertGPLNotice;
       itmEditInsertGeneral.Add(itmEditInsertGPLNotice);
+
+      itmEditInsertUsername := TMenuItem.Create(Self);
+      itmEditInsertUsername.Name:='itmEditInsertUsername';
+      itmEditInsertUsername.Caption := lisMenuInsertUsername;
+      itmEditInsertGeneral.Add(itmEditInsertUsername);
+
+      itmEditInsertDateTime := TMenuItem.Create(Self);
+      itmEditInsertDateTime.Name:='itmEditInsertDateTime';
+      itmEditInsertDateTime.Caption := lisMenuInsertDateTime;
+      itmEditInsertGeneral.Add(itmEditInsertDateTime);
     end;
   end;
 
@@ -948,6 +960,8 @@ begin
     itmEditSelectLine.ShortCut:=CommandToShortCut(ecSelectLine);
     itmEditSelectParagraph.ShortCut:=CommandToShortCut(ecSelectParagraph);
     itmEditInsertGPLNotice.ShortCut:=CommandToShortCut(ecInsertGPLNotice);
+    itmEditInsertUsername.ShortCut:=CommandToShortCut(ecInsertUserName);
+    itmEditInsertDateTime.ShortCut:=CommandToShortCut(ecInsertDateTime);
     itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
 
     itmSearchFind.ShortCut:=CommandToShortCut(ecFind);

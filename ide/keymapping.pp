@@ -83,6 +83,8 @@ const
   ecSelectParagraph      = ecUserFirst + 58;
   
   ecInsertGPLNotice      = ecUserFirst + 80;
+  ecInsertUserName       = ecUserFirst + 81;
+  ecInsertDateTime       = ecUserFirst + 82;
 
   ecWordCompletion       = ecUserFirst + 100;
   ecCompleteCode         = ecUserFirst + 101;
@@ -503,6 +505,8 @@ begin
     ecSelectLine: Result:= 'Select line';
     ecSelectParagraph: Result:= 'Select paragraph';
     ecInsertGPLNotice: Result:='Insert GPL notice';
+    ecInsertUserName: Result:='Insert current username';
+    ecInsertDateTime: Result:='Insert current date and time';
 
     // search menu
     ecFind: Result:= 'Find text';
@@ -1170,7 +1174,6 @@ begin
   Add(C,'Select code block',ecSelectCodeBlock,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Select line',ecSelectLine,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Select paragraph',ecSelectParagraph,VK_UNKNOWN,[],VK_UNKNOWN,[]);
-  Add(C,'Insert GPL notice',ecInsertGPLNotice,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Uppercase selection',ecSelectionUpperCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Lowercase selection',ecSelectionLowerCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Convert tabs to spaces in selection',ecSelectionTabs2Spaces,VK_UNKNOWN, [],VK_UNKNOWN,[]);
@@ -1191,6 +1194,9 @@ begin
   Add(C,'Delete whole text',ecClearAll,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Break line and move cursor',ecLineBreak,VK_RETURN,[],VK_UNKNOWN,[]);
   Add(C,'Break line, leave cursor',ecInsertLine,VK_N,[ssCtrl],VK_UNKNOWN,[]);
+  Add(C,'Insert GPL notice',ecInsertGPLNotice,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Insert username',ecInsertUserName,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Insert date and time',ecInsertDateTime,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // command commands
   C:=Categories[AddCategory('CommandCommands','Command commands',caAll)];
