@@ -1,6 +1,20 @@
-(******************************************************************************
+{******************************************************************************
                                TGraphicsObject
- ******************************************************************************)
+ ******************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 
 procedure TGraphicsObject.DoChange(var msg);
 begin
@@ -26,6 +40,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2002/05/10 06:05:52  lazarus
+  MG: changed license to LGPL
+
   Revision 1.1  2000/07/13 10:28:25  michael
   + Initial import
 

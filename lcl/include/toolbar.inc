@@ -1,6 +1,21 @@
 {******************************************************************************
                                   TToolbar
- ******************************************************************************}
+ ******************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+
+}
 {------------------------------------------------------------------------------
   Method: TToolbar.Create
   Params:  AOwner: the owner of the class
@@ -1478,6 +1493,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/05/10 06:05:55  lazarus
+  MG: changed license to LGPL
+
   Revision 1.5  2001/09/30 08:34:50  lazarus
   MG: fixed mem leaks and fixed range check errors
 

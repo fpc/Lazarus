@@ -1,8 +1,22 @@
-(******************************************************************************
+{******************************************************************************
                                  gtklistsl.inc
                  TGtkListStringList and TGtkCListStringList
                  
- ******************************************************************************)
+ ******************************************************************************
+ 
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 
 {$IFOPT H+} 
   {$DEFINE H_PLUS} 
@@ -385,6 +399,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/05/10 06:05:57  lazarus
+  MG: changed license to LGPL
+
   Revision 1.4  2001/11/27 15:06:13  lazarus
   MG: added multi language syntax hilighting
 

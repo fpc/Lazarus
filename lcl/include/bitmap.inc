@@ -1,6 +1,20 @@
-(******************************************************************************
+{******************************************************************************
                                      TBitMap
- ******************************************************************************)
+ ******************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 
 procedure TBitMap.Assign(Source: TPersistent);
 begin
@@ -345,6 +359,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/05/10 06:05:51  lazarus
+  MG: changed license to LGPL
+
   Revision 1.12  2001/12/21 18:16:59  lazarus
   Added TImage class
   Shane

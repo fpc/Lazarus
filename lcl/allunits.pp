@@ -1,30 +1,48 @@
 {  $Id$  }
 {
- /***************************************************************************
+ *****************************************************************************
                                allunits.pp
 
-                      dummy unit to compile all units 
+                      dummy unit to compile all units
 
- /***************************************************************************
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
 }
-unit allunits;
+unit AllUnits;
+
 {$mode objfpc}{$H+}
+
 interface
+
 uses
-  interfacebase, interfaces,
-	buttons,    extctrls,        registry,     vclglobals,   calendar,
-	clipbrd,    filectrl,        forms,        lcllinux,     spin, 
-	comctrls,   graphics,        lmessages,    stdctrls,     arrow,
-	controls,   imglist,         menus,        toolwin, 
-	dialogs,    messages,        utrace,       dynhasharray,
-	clistbox,   lazqueue;
+  InterfaceBase, Interfaces,
+	Buttons,    Extctrls,        Registry,     VCLGlobals,   Calendar,
+	Clipbrd,    Filectrl,        Forms,        LCLLinux,     Spin,
+	Comctrls,   Graphics,        LMessages,    Stdctrls,     Arrow,
+	Controls,   Imglist,         Menus,        Toolwin,
+	Dialogs,    Messages,        UTrace,       DynHashArray,
+	Clistbox,   Lazqueue;
 
 implementation
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/05/10 06:05:48  lazarus
+  MG: changed license to LGPL
+
   Revision 1.10  2001/12/06 13:39:36  lazarus
   Added TArrow component
   Shane

@@ -1,21 +1,25 @@
 {
  /***************************************************************************
                                Toolwin.pp
-                             -------------------
+                               ----------
                              Component Library ToolWindow Controls
                    Initial Revision  : THU Dec 9th 11:00am CST
 
 
  ***************************************************************************/
 
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
 }
 
 {
@@ -29,7 +33,6 @@ Detailed description of the Unit.
 
 unit Toolwin;
 
-//{$mode delphi}
 {$mode objfpc}{$H+}
 
 interface
@@ -40,7 +43,7 @@ interface
 
 uses
   Classes, Controls, SysUtils, stdCtrls, GraphType, Graphics, vclGlobals,
-  lMessages, LCLType, LCLLinux;
+  LMessages, LCLType, LCLLinux;
 
 
 type

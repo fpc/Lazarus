@@ -1,6 +1,21 @@
 {******************************************************************************
                                   TTimer
- ******************************************************************************}
+ ******************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+
+}
 {
   TTimer Delphi compatibility:
 
@@ -156,6 +171,9 @@ end;
 
  {
   $Log$
+  Revision 1.5  2002/05/10 06:05:55  lazarus
+  MG: changed license to LGPL
+
   Revision 1.4  2001/11/19 21:48:54  lazarus
   MG: fixed splash timer AV, incomplete project loading, application save as
 

@@ -1,0 +1,16 @@
+This is the file COPYING.LCL, it applies to the Lazarus Component Library (LCL)
+and interfaces distributed by members of the Lazarus Development Team.
+
+The source code of the Lazarus Component Library and interfaces are
+distributed under the Library GNU General Public License 
+(see the file COPYING) with the following modification:
+
+- object files and libraries linked into an application may be
+  distributed without source code.
+
+If you didn't receive a copy of the file COPYING, contact:
+      Free Software Foundation, Inc.,
+      59 Temple Place - Suite 330
+      Boston, MA 02111
+      USA
+

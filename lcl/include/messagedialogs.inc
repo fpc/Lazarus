@@ -1,7 +1,19 @@
 {******************************************************************************
                                   MessageDialogs
- ******************************************************************************}
-{ 
+ ******************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
   current design flaws:
 
   - The actual design ignores any features provided by the underlying 
@@ -463,6 +475,9 @@ end;
 
 {
    $Log$
+   Revision 1.9  2002/05/10 06:05:53  lazarus
+   MG: changed license to LGPL
+
    Revision 1.8  2001/12/10 22:39:37  lazarus
    MG: added perl highlighter
 
