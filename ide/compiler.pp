@@ -29,7 +29,7 @@ unit compiler;
 interface
 
 uses
-  classes, sysutils, forms, compileroptions, Project,Global,Process,dlgMessage;
+  classes, sysutils, forms, compileroptions, Project,Process,dlgMessage;
 
 type
 
@@ -236,6 +236,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2001/01/31 06:26:23  lazarus
+  Removed global unit.                                         CAW
+
   Revision 1.4  2001/01/13 06:11:06  lazarus
   Minor fixes
   Shane
