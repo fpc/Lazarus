@@ -7,8 +7,8 @@
                              Component Library Code
 
 
-                   Initial Revision  : Sun Mar 28 23:15:32 CST 1999
-                   Revised : Sat Jul 3 1999
+                   Initial Revision : Sun Mar 28 23:15:32 CST 1999
+                   Revised: Sat Jul 3 1999
 
  ***************************************************************************/
 
@@ -66,7 +66,7 @@ type
     FModalResult: TModalResult;
     FShortCut: TShortcut;
     procedure SetCancel(NewCancel: boolean);
-    procedure SetDefault(Value : Boolean);
+    procedure SetDefault(Value: Boolean);
     procedure WMDefaultClicked(var Message: TLMessage); message LM_CLICKED;
   protected
     procedure Click; override;
@@ -171,11 +171,11 @@ type
     procedure RealizeKind;
 
     //Return the caption associated with the aKind value.
-    function GetCaptionOfKind(aKind: TBitBtnKind) : String;
+    function GetCaptionOfKind(aKind: TBitBtnKind): String;
   protected
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); override;
     procedure Click; override;
-    procedure GlyphChanged(Sender : TObject);
+    procedure GlyphChanged(Sender: TObject);
     procedure InitializeWnd; override;
   public
     constructor Create(TheOwner: TComponent); override;
@@ -244,22 +244,20 @@ type
 
   TCustomSpeedButton = class(TGraphicControl)
   private
-    FAllowAllUp : Boolean;
-    FDown : Boolean;
-    FDragging : Boolean;
-    FFlat : Boolean;
+    FAllowAllUp: Boolean;
+    FDown: Boolean;
+    FDragging: Boolean;
+    FFlat: Boolean;
     FGlyph:   TButtonGlyph;
-    FGroupIndex : Integer;
+    FGroupIndex: Integer;
     FLastDrawFlags: integer;
     FLayout: TButtonLayout;
-    FMargin : integer;
-    FMouseInControl : Boolean;
-    FShortcut : Longint;
-    FSpacing : integer;
-    FTransparent : Boolean;
-    FDCNowAvailable : Boolean; //this is for gtk1, DeviceContext not available during creation process????
-    FDownWaiting : Boolean; //when this one is true, need to down button when DC is available
-    function GetGlyph : TBitmap;
+    FMargin: integer;
+    FMouseInControl: Boolean;
+    FShortcut: Longint;
+    FSpacing: integer;
+    FTransparent: Boolean;
+    function GetGlyph: TBitmap;
     procedure UpdateExclusive;
     procedure SetAllowAllUp(Value: Boolean);
     procedure SetGlyph(Value: TBitmap);
@@ -271,20 +269,20 @@ type
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
   protected
     FState: TButtonState;
-    function GetNumGlyphs : Integer;
-    procedure GlyphChanged(Sender : TObject);
+    function GetNumGlyphs: Integer;
+    procedure GlyphChanged(Sender: TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
     procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
     procedure Paint; override;
-    procedure SetDown(Value : Boolean);
-    procedure SetGroupIndex(const Value : Integer);
-    procedure SetFlat(const Value : Boolean);
-    procedure SetMargin(const Value : integer);
-    procedure SetNumGlyphs(Value : integer);
-    procedure SetSpacing(const Value : integer);
+    procedure SetDown(Value: Boolean);
+    procedure SetGroupIndex(const Value: Integer);
+    procedure SetFlat(const Value: Boolean);
+    procedure SetMargin(const Value: integer);
+    procedure SetNumGlyphs(Value: integer);
+    procedure SetSpacing(const Value: integer);
     procedure RealSetText(const Value: TCaption); override;
     procedure UpdateState(InvalidateOnChange: boolean); virtual;
     function GetDrawFlags: integer; virtual;
@@ -352,12 +350,12 @@ uses
   WSButtons;
 
 const
-  BitBtnModalResults : array[TBitBtnKind] of TModalResult = (
+  BitBtnModalResults: array[TBitBtnKind] of TModalResult = (
     0, mrOK, mrCancel, 0, mrYes, mrNo,
     0, mrAbort, mrRetry, mrIgnore, mrAll,
     mrNoToAll, mrYesToAll);
 
-  BitBtnImages : array[TBitBtnKind] of Longint = (
+  BitBtnImages: array[TBitBtnKind] of Longint = (
     idButtonOk, idButtonOk, idButtonCancel, idButtonHelp, idButtonYes,
     idButtonNo, idButtonClose, idButtonAbort, idButtonRetry, idButtonIgnore,
     idButtonAll, idButtonNoToAll, idButtonYesToAll);
@@ -373,9 +371,6 @@ end;
 {$I buttonglyph.inc}
 {$I speedbutton.inc}
 
-initialization
-finalization
-
 end.
 
 
@@ -383,6 +378,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.81  2004/10/15 13:28:22  mattias
+  codeexplorer: using lower recursive depth
+
   Revision 1.80  2004/10/15 12:04:09  mattias
   calling updating notebook tab after realize, needed for close btns
 

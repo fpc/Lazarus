@@ -7922,7 +7922,7 @@ begin
     ' bRedraw=',bRedraw,
     ' Handle=',HexStr(Cardinal(Handle),8));}
 
-    // do we have to set this allways ?
+    // do we have to set this always ?
     if bRedraw then
     begin
       if GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
@@ -8695,6 +8695,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.370  2004/10/15 13:28:22  mattias
+  codeexplorer: using lower recursive depth
+
   Revision 1.369  2004/10/01 13:16:44  mattias
   fixed unselecting TCanvas objects
 

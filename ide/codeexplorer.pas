@@ -316,57 +316,56 @@ var
   ShowNode: Boolean;
   ShowChilds: Boolean;
 begin
-  if CodeNode=nil then exit;
-  
-  ShowNode:=true;
-  ShowChilds:=true;
+  while CodeNode<>nil do begin
+    ShowNode:=true;
+    ShowChilds:=true;
 
-  // don't show statements
-  if (CodeNode.Desc in AllPascalStatements+[ctnParameterList]) then exit;
-  // don't show parameter lists
-  if (CodeNode.Desc in [ctnProcedureHead]) then begin
-    ShowNode:=false;
-    ShowChilds:=false;
-  end;
-  // don't show forward class definitions
-  if (CodeNode.Desc=ctnTypeDefinition)
-  and (CodeNode.FirstChild<>nil) and (CodeNode.FirstChild.Desc=ctnClass)
-  and ((CodeNode.FirstChild.SubDesc and ctnsForwardDeclaration)>0) then begin
-    ShowNode:=false;
-    ShowChilds:=false;
-  end;
+    // don't show statements
+    if (CodeNode.Desc in AllPascalStatements+[ctnParameterList]) then begin
+      ShowNode:=false;
+      ShowChilds:=false;
+    end;
+    // don't show parameter lists
+    if (CodeNode.Desc in [ctnProcedureHead]) then begin
+      ShowNode:=false;
+      ShowChilds:=false;
+    end;
+    // don't show forward class definitions
+    if (CodeNode.Desc=ctnTypeDefinition)
+    and (CodeNode.FirstChild<>nil) and (CodeNode.FirstChild.Desc=ctnClass)
+    and ((CodeNode.FirstChild.SubDesc and ctnsForwardDeclaration)>0) then begin
+      ShowNode:=false;
+      ShowChilds:=false;
+    end;
 
-  // don't show keyword nodes
-  if CodeNode.Desc in [ctnIdentifier,ctnRangedArrayType,
-    ctnOpenArrayType,ctnOfConstType,ctnRangeType,ctnTypeType,ctnFileType,
-    ctnVariantType]
-  then
-    ShowNode:=false;
+    // don't show keyword nodes
+    if CodeNode.Desc in [ctnIdentifier,ctnRangedArrayType,
+      ctnOpenArrayType,ctnOfConstType,ctnRangeType,ctnTypeType,ctnFileType,
+      ctnVariantType]
+    then
+      ShowNode:=false;
 
-  if ShowNode then begin
-    NodeData:=TViewNodeData.Create(CodeNode);
-    NodeText:=GetNodeDescription(ACodeTool,CodeNode);
-    NodeImageIndex:=GetNodeImage(CodeNode);
-    if InFrontViewNode<>nil then
-      ViewNode:=CodeTreeview.Items.InsertObjectBehind(
-                                              InFrontViewNode,NodeText,NodeData)
-    else if ParentViewNode<>nil then
-      ViewNode:=CodeTreeview.Items.AddChildObject(
-                                               ParentViewNode,NodeText,NodeData)
-    else
-      ViewNode:=CodeTreeview.Items.AddObject(nil,NodeText,NodeData);
-    ViewNode.ImageIndex:=NodeImageIndex;
-    ViewNode.SelectedIndex:=NodeImageIndex;
+    ViewNode:=ParentViewNode;
+    if ShowNode then begin
+      NodeData:=TViewNodeData.Create(CodeNode);
+      NodeText:=GetNodeDescription(ACodeTool,CodeNode);
+      NodeImageIndex:=GetNodeImage(CodeNode);
+      if InFrontViewNode<>nil then
+        ViewNode:=CodeTreeview.Items.InsertObjectBehind(
+                                                InFrontViewNode,NodeText,NodeData)
+      else if ParentViewNode<>nil then
+        ViewNode:=CodeTreeview.Items.AddChildObject(
+                                                 ParentViewNode,NodeText,NodeData)
+      else
+        ViewNode:=CodeTreeview.Items.AddObject(nil,NodeText,NodeData);
+      ViewNode.ImageIndex:=NodeImageIndex;
+      ViewNode.SelectedIndex:=NodeImageIndex;
+      InFrontViewNode:=ViewNode;
+    end;
     if ShowChilds then
       CreateNodes(ACodeTool,CodeNode.FirstChild,ViewNode,nil,true);
-    if CreateSiblings then
-      CreateNodes(ACodeTool,CodeNode.NextBrother,ParentViewNode,ViewNode,true);
-  end else begin
-    if ShowChilds then
-      CreateNodes(ACodeTool,CodeNode.FirstChild,ParentViewNode,nil,true);
-    if CreateSiblings then
-      CreateNodes(ACodeTool,CodeNode.NextBrother,ParentViewNode,InFrontViewNode,
-                  true);
+    if not CreateSiblings then break;
+    CodeNode:=CodeNode.NextBrother;
   end;
 end;
 

@@ -3524,9 +3524,9 @@ begin
         SetScrollInfo(Handle, SB_VERT, ScrollInfo, true);
       end;
     end;
-    //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert On nMin=',ScrollInfo.nMin,
-    //' nMax=',ScrollInfo.nMax,' nPage=',ScrollInfo.nPage,
-    //' nPos=',ScrollInfo.nPos,' GetMaxScrollTop=',GetMaxScrollTop);
+    //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert On nMin=',dbgs(ScrollInfo.nMin),
+    //' nMax=',dbgs(ScrollInfo.nMax),' nPage=',dbgs(ScrollInfo.nPage),
+    //' nPos=',dbgs(ScrollInfo.nPos),' GetMaxScrollTop=',dbgs(GetMaxScrollTop));
   end else begin
     //DebugLn('>>>>>>>>>> [TCustomTreeView.UpdateScrollbars] Vert Off ');
     FLastVertScrollInfo.cbSize:=0;
