@@ -470,6 +470,7 @@ ide/ideprocs.pp svneol=native#text/pascal
 ide/imexportcompileropts.lfm svneol=native#text/plain
 ide/imexportcompileropts.lrs svneol=native#text/pascal
 ide/imexportcompileropts.pas svneol=native#text/pascal
+ide/include/darwin/lazconf.inc svneol=native#text/pascal
 ide/include/freebsd/lazconf.inc svneol=native#text/pascal
 ide/include/ide.inc svneol=native#text/pascal
 ide/include/linux/lazconf.inc svneol=native#text/pascal
