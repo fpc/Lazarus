@@ -1900,9 +1900,9 @@ function TCodeToolsDefinesEditor.ConsistencyCheck: integer;
     if (ATreeNode.GetNextSibling<>nil)
     and (TDefineTemplate(ATreeNode.GetNextSibling.Data)<>ADefNode.Next) then
     begin
-      write(' ERROR: ',ATreeNode.GetNextSibling.Text,' ');
-      if ADefNode.Next<>nil then write('ADefNode.Next=',ADefNode.Next.Name,' ')
-      else write('ADefNode.Next=nil ');
+      DbgOut(' ERROR: ',ATreeNode.GetNextSibling.Text,' ');
+      if ADefNode.Next<>nil then DbgOut('ADefNode.Next=',ADefNode.Next.Name,' ')
+      else DbgOut('ADefNode.Next=nil ');
       DummyDefNode:=TDefineTemplate(ATreeNode.GetNextSibling.Data);
       if DummyDefNode<>nil then
         DebugLn('ATreeNode.GetNextSibling.Next=',DummyDefNode.Name)
