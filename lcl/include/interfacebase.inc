@@ -1628,24 +1628,31 @@ end;
 
 Procedure TInterfaceBase.InitializeCriticalSection(var CritSection: TCriticalSection);
 begin
+  writeln('TInterfaceBase.InitializeCriticalSection Not implemented yet');
 end;
 
 Procedure TInterfaceBase.EnterCriticalSection(var CritSection: TCriticalSection);
 begin
+  writeln('TInterfaceBase.EnterCriticalSection Not implemented yet');
 end;
 
 Procedure TInterfaceBase.LeaveCriticalSection(var CritSection: TCriticalSection);
 begin
+  writeln('TInterfaceBase.LeaveCriticalSection Not implemented yet');
 end;
 
 Procedure TInterfaceBase.DeleteCriticalSection(var CritSection: TCriticalSection);
 begin
+  writeln('TInterfaceBase.DeleteCriticalSection Not implemented yet');
 end;
 
 //##apiwiz##eps##   // Do not remove
 { =============================================================================
 
   $Log$
+  Revision 1.80  2003/02/26 12:44:52  mattias
+  readonly flag is now only saved if user set
+
   Revision 1.79  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 
