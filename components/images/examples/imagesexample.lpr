@@ -7,6 +7,7 @@ uses
   Forms, MainForm;
 
 begin
+  Application.Title:='Images Example';
   Application.Initialize;
   Application.CreateForm(TImagesExampleForm, ImagesExampleForm);
   Application.Run;

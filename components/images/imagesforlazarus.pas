@@ -8,7 +8,7 @@ unit ImagesForLazarus;
 interface
 
 uses
-  Lazpng, Lazpnm, Lazjpg, LazarusPackageIntf; 
+  Lazpng, Lazpnm, Lazjpg, LazBMP, LazTGA, LazXPM, LazarusPackageIntf; 
 
 implementation
 

@@ -20,10 +20,10 @@
 "/>
     <License Value="LGPL"/>
     <Version Major="1" Release="1"/>
-    <Files Count="4">
+    <Files Count="7">
       <Item1>
         <Filename Value="lazpng.pas"/>
-        <UnitName Value="lazpng"/>
+        <UnitName Value="Lazpng"/>
       </Item1>
       <Item2>
         <Filename Value="readme.txt"/>
@@ -37,6 +37,18 @@
         <Filename Value="lazjpg.pas"/>
         <UnitName Value="Lazjpg"/>
       </Item4>
+      <Item5>
+        <Filename Value="lazbmp.pas"/>
+        <UnitName Value="LazBMP"/>
+      </Item5>
+      <Item6>
+        <Filename Value="laztga.pas"/>
+        <UnitName Value="LazTGA"/>
+      </Item6>
+      <Item7>
+        <Filename Value="lazxpm.pas"/>
+        <UnitName Value="LazXPM"/>
+      </Item7>
     </Files>
     <Type Value="RunAndDesignTime"/>
     <RequiredPkgs Count="1">

@@ -14,7 +14,7 @@
   along with this library; if not, write to the Free Software Foundation,
   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 }
-unit Lazjpg;
+unit LazJPG;
 
 {$mode objfpc}{$H+}
 
@@ -26,14 +26,14 @@ uses
   ClipBrd;
 
 type
-  TJPEGQualityRange = TFPJPEGCompressionQuality;
-  TJPEGPerformance = TJPEGReadPerformance;
+  TJPGQualityRange = TFPJPEGCompressionQuality;
+  TJPGPerformance = TJPEGReadPerformance;
 
-  TJPEGImage = class(TFPImageBitmap)
+  TJPGImage = class(TFPImageBitmap)
   private
-    FPerformance: TJPEGPerformance;
+    FPerformance: TJPGPerformance;
     FProgressiveEncoding: boolean;
-    FQuality: TJPEGQualityRange;
+    FQuality: TJPGQualityRange;
   protected
     procedure InitFPImageReader(ImgReader: TFPCustomImageReader); override;
     procedure FinalizeFPImageReader(ImgReader: TFPCustomImageReader); override;
@@ -44,64 +44,64 @@ type
     class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
     class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
   public
-    property CompressionQuality: TJPEGQualityRange read FQuality write FQuality;
+    property CompressionQuality: TJPGQualityRange read FQuality write FQuality;
     property ProgressiveEncoding: boolean read FProgressiveEncoding;
-    property Performance: TJPEGPerformance read FPerformance write FPerformance;
+    property Performance: TJPGPerformance read FPerformance write FPerformance;
   end;
 
 const
-  DefaultJPEGMimeType = 'image/jpeg';
+  DefaultJPGMimeType = 'image/jpeg';
 
 implementation
 
-{ TJPEGImage }
+{ TJPGImage }
 
-procedure TJPEGImage.InitFPImageReader(ImgReader: TFPCustomImageReader);
+procedure TJPGImage.InitFPImageReader(ImgReader: TFPCustomImageReader);
 var
-  JPEGReader: TFPReaderJPEG;
+  JPGReader: TFPReaderJPEG;
 begin
   if ImgReader is TFPReaderJPEG then begin
-    JPEGReader:=TFPReaderJPEG(ImgReader);
-    JPEGReader.Performance:=Performance;
+    JPGReader:=TFPReaderJPEG(ImgReader);
+    JPGReader.Performance:=Performance;
   end;
   inherited InitFPImageReader(ImgReader);
 end;
 
-procedure TJPEGImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
+procedure TJPGImage.FinalizeFPImageReader(ImgReader: TFPCustomImageReader);
 var
-  JPEGReader: TFPReaderJPEG;
+  JPGReader: TFPReaderJPEG;
 begin
   if ImgReader is TFPReaderJPEG then begin
-    JPEGReader:=TFPReaderJPEG(ImgReader);
-    FProgressiveEncoding:=JPEGReader.ProgressiveEncoding;
+    JPGReader:=TFPReaderJPEG(ImgReader);
+    FProgressiveEncoding:=JPGReader.ProgressiveEncoding;
   end;
   inherited FinalizeFPImageReader(ImgReader);
 end;
 
-procedure TJPEGImage.InitFPImageWriter(ImgWriter: TFPCustomImageWriter);
+procedure TJPGImage.InitFPImageWriter(ImgWriter: TFPCustomImageWriter);
 var
-  JPEGWriter: TFPWriterJPEG;
+  JPGWriter: TFPWriterJPEG;
 begin
   if ImgWriter is TFPWriterJPEG then begin
-    JPEGWriter:=TFPWriterJPEG(ImgWriter);
-    if JPEGWriter<>nil then ;
-    JPEGWriter.ProgressiveEncoding:=ProgressiveEncoding;
-    JPEGWriter.CompressionQuality:=CompressionQuality;
+    JPGWriter:=TFPWriterJPEG(ImgWriter);
+    if JPGWriter<>nil then ;
+    JPGWriter.ProgressiveEncoding:=ProgressiveEncoding;
+    JPGWriter.CompressionQuality:=CompressionQuality;
   end;
   inherited InitFPImageWriter(ImgWriter);
 end;
 
-function TJPEGImage.GetDefaultFPReader: TFPCustomImageReaderClass;
+function TJPGImage.GetDefaultFPReader: TFPCustomImageReaderClass;
 begin
   Result:=TFPReaderJPEG;
 end;
 
-function TJPEGImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
+function TJPGImage.GetDefaultFPWriter: TFPCustomImageWriterClass;
 begin
   Result:=TFPWriterJPEG;
 end;
 
-constructor TJPEGImage.Create;
+constructor TJPGImage.Create;
 begin
   inherited Create;
   FPerformance:=jpBestQuality;
@@ -109,20 +109,19 @@ begin
   FQuality:=75;
 end;
 
-function TJPEGImage.GetFileExtensions: string;
+function TJPGImage.GetFileExtensions: string;
 begin
   Result:='jpg;jpeg';
-  WriteLn('Sending result=',result);
 end;
 
 initialization
-  TPicture.RegisterFileFormat('jpg', 'JPEG Image File', TJPEGImage);
-  TPicture.RegisterFileFormat('jpeg', 'JPEG Image File', TJPEGImage);
-  TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultJPEGMimeType),
-    TJPEGImage);
+  TPicture.RegisterFileFormat('jpg', 'JPEG Image File', TJPGImage);
+  TPicture.RegisterFileFormat('jpeg', 'JPEG Image File', TJPGImage);
+  TPicture.RegisterClipboardFormat(RegisterClipboardFormat(DefaultJPGMimeType),
+    TJPGImage);
 
 finalization
-  TPicture.UnregisterGraphicClass(TJPEGImage);
+  TPicture.UnregisterGraphicClass(TJPGImage);
 
 end.
 

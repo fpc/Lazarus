@@ -1,9 +1,9 @@
 { Copyright (C) 2004 Mattias Gaertner
 
-  Example for loading and saving jpeg images.
+  Example for loading and saving images.
   
   Important:
-    This example uses the JPEGForLazarusPackage (see in the directory above).
+    This example uses the ImagesForLazarus Package (see in the directory above).
     You must first open once this package so that the IDE knows, where to find
     the lpk file.
     
@@ -32,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, StdCtrls,
-  ExtCtrls, Buttons, ExtDlgs, LazJPEG;
+  ExtCtrls, Buttons, ExtDlgs;
 
 type
   TImagesExampleForm = class(TForm)
@@ -57,11 +57,17 @@ var
 
 implementation
 
+uses
+{Load for all package units : LazPNG, LazPNM, LazJPG, LazBMP, LazTGA, LazXPM}
+  ImagesForLazarus,
+{Need LazJPG to use TJPGImage class}
+  LazJPG;
+
 { TImagesExampleForm }
 
 procedure TImagesExampleForm.LoadJPEGButtonClick(Sender: TObject);
 var
-  JPEG: TJPEGImage;
+  JPEG: TJPGImage;
 begin
   OpenPictureDialog1.Options:=OpenPictureDialog1.Options+[ofFileMustExist];
   if not OpenPictureDialog1.Execute then exit;
@@ -69,7 +75,7 @@ begin
     //--------------------------------------------------------------------------
     // Create a TJPEGImage and load the file, then copy it to the TImage.
     // A TJPEGImage can only load jpeg images.
-    JPEG:=TJPEGImage.Create;
+    JPEG:=TJPGImage.Create;
     try
       JPEG.LoadFromFile(OpenPictureDialog1.Filename);
       // copy jpeg content to a TImage
@@ -88,7 +94,7 @@ end;
 
 procedure TImagesExampleForm.LoadImageButtonClick(Sender: TObject);
 var
-  JPEG: TJPEGImage;
+  JPEG: TJPGImage;
 begin
   OpenPictureDialog1.Options:=OpenPictureDialog1.Options+[ofFileMustExist];
   if not OpenPictureDialog1.Execute then exit;
@@ -110,7 +116,7 @@ end;
 
 procedure TImagesExampleForm.SaveJPEGButtonClick(Sender: TObject);
 var
-  JPEG: TJPEGImage;
+  JPEG: TJPGImage;
 begin
   if Image1.Picture.Graphic=nil then begin
     MessageDlg('No image','Please open an image, before save',mtError,
@@ -124,7 +130,7 @@ begin
     //--------------------------------------------------------------------------
     // Create a TImage1 and copy the TImage into it. Then save to file.
     // This will ignore the file extension. TImage1 will always save as jpeg.
-    JPEG:=TJPEGImage.Create;
+    JPEG:=TJPGImage.Create;
     try
       // copy content of the TImage to jpeg
       JPEG.Assign(Image1.Picture.Graphic);
@@ -145,7 +151,7 @@ end;
 
 procedure TImagesExampleForm.SaveImageButtonClick(Sender: TObject);
 var
-  JPEG: TJPEGImage;
+  JPEG: TJPGImage;
 begin
   if Image1.Picture.Graphic=nil then begin
     MessageDlg('No image','Please open an image, before save',mtError,
