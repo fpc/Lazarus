@@ -4993,7 +4993,7 @@ begin
   style := nil;
   Result := DefaultColor;
 
-  Case Color of
+  Case TColor(Color) of
     clINFOTEXT :
       begin
         Style := GetStyle('tooltip');
@@ -5539,6 +5539,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.225  2003/11/07 22:50:44  mattias
+  fixed finding sysutilh.inc
+
   Revision 1.224  2003/11/01 10:27:41  mattias
   fpc 1.1 fixes, started scrollbar hiding, started polymorphing client areas
 

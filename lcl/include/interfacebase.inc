@@ -282,7 +282,8 @@ Begin
   Result := False;
 end;
 
-function TInterfaceBase.DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+function TInterfaceBase.DrawText(DC: HDC; Str: PChar; Count: Integer;
+  var Rect: TRect; Flags: Cardinal): Integer;
 var
   AP : TSize;
   TM : TTextmetric;
@@ -580,7 +581,7 @@ begin
       DeleteAmpersands(tmpString);
 
     If tmpString > '' then begin
-      TextExtent(DC, tmpString);
+      AP:=TextExtent(DC, tmpString);
       AP.cX := AP.cX div Length(tmpString);
     end
     else begin
@@ -1847,6 +1848,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.109  2003/11/07 22:50:44  mattias
+  fixed finding sysutilh.inc
+
   Revision 1.108  2003/11/07 18:48:52  micha
   symmetry getdesignerdc, releasedesignerdc
 

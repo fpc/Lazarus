@@ -3045,6 +3045,7 @@ begin
   MainDir.AddChild(RTLDir);
   s:=IncPathMacro
     +';'+Dir+'rtl'+DS+'objpas'+DS
+    +';'+Dir+'rtl'+DS+'objpas'+DS+'sysutils'
     +';'+Dir+'rtl'+DS+'inc'+DS
     +';'+Dir+'rtl'+DS+TargetProcessor+DS
     +';'+Dir+'rtl'+DS+SrcOS+DS;

@@ -646,6 +646,7 @@ begin
     Add('IOCHECK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LOCAL'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NEAR'         ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('OLDFPCCALL'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('OVERLOAD'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PASCAL'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PLATFORM'     ,{$ifdef FPC}@{$endif}AllwaysTrue);

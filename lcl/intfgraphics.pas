@@ -111,6 +111,8 @@ type
   protected
     procedure SetInternalColor(x, y: integer; const Value: TFPColor); override;
     function GetInternalColor(x, y: integer): TFPColor; override;
+    procedure SetInternalPixel (x,y:integer; Value:integer); override;
+    function GetInternalPixel (x,y:integer) : integer; override;
     procedure FreeAllData; virtual;
     procedure FreePixelData; virtual;
     procedure FreeMaskData; virtual;
@@ -645,6 +647,16 @@ begin
     Result.Blue:=0;
     Result.Alpha:=0;
   end;
+end;
+
+procedure TLazIntfImage.SetInternalPixel(x, y: integer; Value: integer);
+begin
+
+end;
+
+function TLazIntfImage.GetInternalPixel(x, y: integer): integer;
+begin
+  Result:=0;
 end;
 
 procedure TLazIntfImage.FreeAllData;

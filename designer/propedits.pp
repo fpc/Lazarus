@@ -2096,6 +2096,7 @@ var
   I:Integer;
   Changed: boolean;
 begin
+  Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do
       Changed:=Changed or (GetStrProp(Instance,PropInfo)<>NewValue);
@@ -2111,6 +2112,7 @@ var
   I:Integer;
   Changed: boolean;
 begin
+  Changed:=false;
   for I:=0 to FPropCount-1 do
     with FPropList^[I] do
       Changed:=Changed or (GetVariantProp(Instance,PropInfo)<>NewValue);
