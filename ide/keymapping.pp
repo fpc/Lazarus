@@ -1222,8 +1222,8 @@ begin
   Add(C,'Pause program',ecPause,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Step into',ecStepInto,VK_F7,[],VK_UNKNOWN,[]);
   Add(C,'Step over',ecStepOver,VK_F8,[],VK_UNKNOWN,[]);
-  Add(C,'Run to cursor',ecStepOver,VK_F4,[],VK_UNKNOWN,[]);
-  Add(C,'Stop program',ecStepOver,VK_F2,[SSCtrl],VK_UNKNOWN,[]);
+  Add(C,'Run to cursor',ecRunToCursor,VK_F4,[],VK_UNKNOWN,[]);
+  Add(C,'Stop program',ecStopProgram,VK_F2,[SSCtrl],VK_UNKNOWN,[]);
   Add(C,'Compiler options',ecCompilerOptions,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Run parameters',ecRunParameters,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
