@@ -224,7 +224,8 @@ begin
   XPM:=ReadXPMFromStream(Stream,Size);
   try
     if not ReadXPMSize(XPM,NewWidth,NewHeight,NewColorCount) then
-      raise Exception.Create('TPixmap.ReadStream: ERROR: reading xpm');
+      RaiseGDBException('AAA1');
+      //raise Exception.Create('TPixmap.ReadStream: ERROR: reading xpm');
 
     // free old pixmap
     // Create the pixmap
@@ -249,6 +250,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/12/18 17:52:18  mattias
+  fixed lazarus xml files for fpc 1.1
+
   Revision 1.15  2002/09/16 16:18:50  lazarus
   MG: fixed mem leak in TPixmap
 
