@@ -1064,12 +1064,18 @@ begin
   if (OldFormName='') or (OldFormClassName='')
   or (NewFormName='') or (NewFormClassName='')
   or (SourceChangeCache=nil) then exit;
+  if (OldFormName=NewFormName)
+  and (OldFormClassName=NewFormClassName) then exit;
   IdentList:=TStringList.Create;
   try
-    IdentList.Add(OldFormName);
-    IdentList.Add(NewFormName);
-    IdentList.Add(OldFormClassName);
-    IdentList.Add(NewFormClassName);
+    if (OldFormName<>NewFormName) then begin
+      IdentList.Add(OldFormName);
+      IdentList.Add(NewFormName);
+    end;
+    if (OldFormClassName<>NewFormClassName) then begin
+      IdentList.Add(OldFormClassName);
+      IdentList.Add(NewFormClassName);
+    end;
     Result:=ReplaceIdentifiers(IdentList,SourceChangeCache);
   finally
     IdentList.Free;
@@ -1097,6 +1103,7 @@ function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
     MaxPos:=length(CurSource);
     StartPos:=1;
     // go through all source parts between compiler directives
+    writeln('TStandardCodeTool.ReplaceIdentifiers ',ACode.Filename);
     repeat
       EndPos:=FindNextCompilerDirective(CurSource,StartPos,
                                         Scanner.NestedComments);
@@ -1107,11 +1114,16 @@ function TStandardCodeTool.ReplaceIdentifiers(IdentList: TStrings;
         if IdentStart<EndPos then begin
           i:=0;
           while i<IdentList.Count do begin
-            if BasicCodeTools.CompareIdentifiers(PChar(IdentList[i]),
-                                                 @CurSource[IdentStart])=0 then
+            if (IdentList[i]<>'')
+            and (BasicCodeTools.CompareIdentifiers(PChar(IdentList[i]),
+                                                   @CurSource[IdentStart])=0)
+            and (IdentList[i]<>IdentList[i+1]) then
             begin
               // identifier found -> replace
               IdentEnd:=IdentStart+length(IdentList[i]);
+              writeln('TStandardCodeTool.ReplaceIdentifiers replacing: ',
+              ' "',copy(CurSource,IdentStart,IdentEnd-IdentStart),'" -> "',IdentList[i+1],'" at ',IdentStart
+              );
               SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,
                 ACode,IdentStart,IdentEnd,IdentList[i+1]);
               break;

@@ -1498,8 +1498,8 @@ function TProject.IndexOfUnitWithFormName(const AFormName: string;
 begin
   Result:=UnitCount-1;
   while (Result>=0) do begin
-    if (OnlyProjectUnits and Units[Result].IsPartOfProject)
-    or (not OnlyProjectUnits)
+    if ((OnlyProjectUnits and Units[Result].IsPartOfProject)
+    or (not OnlyProjectUnits))
     and (IgnoreUnit<>Units[Result]) then begin
       if (AnsiCompareText(Units[Result].FormName,AFormName)=0)
       or ((Units[Result].Form<>nil)
@@ -2066,6 +2066,9 @@ end.
 
 {
   $Log$
+  Revision 1.82  2002/10/04 21:31:56  lazarus
+  MG: added some component rename checks
+
   Revision 1.81  2002/10/02 16:16:39  lazarus
   MG: accelerated unitdependencies
 

@@ -374,12 +374,14 @@ begin
     writeln('DirectCode=',DirectCode.Filename,' DirectPos=',FromDirectPos,'-',ToDirectPos);
   {$ENDIF}
   Result:=false;
-  if (MainScanner=nil) or (FromPos>ToPos) or (FromPos<1)
-  or (ToPos>MainScanner.CleanedLen+1) then
-    exit;
   IsDirectChange:=DirectCode<>nil;
+  if not IsDirectChange then begin
+    if (MainScanner=nil) or (FromPos>ToPos) or (FromPos<1)
+    or (ToPos>MainScanner.CleanedLen+1) then
+      exit;
+  end;
   if FindEntryInRange(FromPos,ToPos)<>nil then exit;
-  
+
   if ToPos>FromPos then begin
     // this is a delete operation -> check the whole range for writable buffers
     if not MainScanner.WholeRangeIsWritable(FromPos,ToPos) then exit;
@@ -581,7 +583,7 @@ begin
       InsertText:=FirstEntry.Text;
       // add after gap
       AddAfterGap(FirstEntry);
-      // add text from nodes inserted at the same position
+      // add text from every nodes inserted at the same position
       PrecNode:=FEntries.FindPrecessor(CurNode);
       CurEntry:=FirstEntry;
       while (PrecNode<>nil) do begin
