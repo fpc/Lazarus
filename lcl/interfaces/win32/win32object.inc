@@ -330,20 +330,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_SORT:
-      Begin
-        If  (Sender Is TControl) And Assigned(Data) Then
-        Begin
-          Case TControl(Sender).FCompStyle Of
-            csListBox:
-              TWin32ListStringList(TLMSort(Data^).List).Sorted :=
-                TLMSort(Data^).IsSorted;
-            csCListBox:
-              TWin32CListStringList(TLMSort(Data^).List).Sorted :=
-                TLMSort(Data^).IsSorted;
-          End
-        End
-      End;
       LM_SETSEL:
       Begin
         If (Sender is TControl) And (TControl(Sender).FCompStyle In [csListBox, csCListBox]) And Assigned(Data) Then
@@ -2131,6 +2117,9 @@ End;
 
 {
   $Log$
+  Revision 1.267  2004/09/16 13:30:48  micha
+  convert LM_SORT message to interface method
+
   Revision 1.266  2004/09/15 19:38:56  micha
   convert LM_GETSEL message to interface method
 

@@ -98,6 +98,7 @@ type
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; virtual;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); virtual;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); virtual;
+    class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); virtual;
   end;
   TWSCustomListBoxClass = class of TWSCustomListBox;
   
@@ -213,6 +214,10 @@ begin
 end;
 
 procedure TWSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
+begin
+end;
+
+procedure TWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
 begin
 end;
 

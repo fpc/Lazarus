@@ -103,6 +103,7 @@ type
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
     class procedure SetStyle(const ACustomListBox: TCustomListBox); override;
+    class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
   end;
     
   { TWin32WSListBox }
@@ -311,6 +312,16 @@ procedure TWin32WSCustomListBox.SetStyle(const ACustomListBox: TCustomListBox);
 begin
   // The listbox styles can't be updated, so recreate the listbox
   TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomListBox);
+end;
+
+procedure TWin32WSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
+begin
+  case ACustomListBox.FCompStyle of
+    csListBox:
+      TWin32ListStringList(AList).Sorted := ASorted;
+    csCListBox:
+      TWin32CListStringList(AList).Sorted := ASorted;
+  end;
 end;
 
 { TWin32WSCustomComboBox }

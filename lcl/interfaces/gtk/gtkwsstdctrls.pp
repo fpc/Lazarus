@@ -102,6 +102,7 @@ type
     class function  GetStrings(const ACustomListBox: TCustomListBox): TStrings; override;
     class function  GetItemIndex(const ACustomListBox: TCustomListBox): integer; override;
     class procedure SetItemIndex(const ACustomListBox: TCustomListBox; const AIndex: integer); override;
+    class procedure SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean); override;
   end;
 
   { TGtkWSListBox }
@@ -424,6 +425,21 @@ begin
     DebugLn('TODO: TGtkWSCustomListBox.SetItemIndex');
     {$EndIf}
   end;
+end;
+
+procedure TGtkWSCustomListBox.SetSorted(const ACustomListBox: TCustomListBox; AList: TStrings; ASorted: boolean);
+begin
+  case ACustomListBox.fCompStyle of
+  csListBox,
+  csCheckListBox:
+                 TGtkListStringList(AList).Sorted := ASorted;
+  {$IfDef GTK1}
+  csCListBox: TGtkCListStringList(AList).Sorted := ASorted;
+  {$Else}
+  else
+     DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_SORT');
+  {$Endif}
+  end
 end;
 
 { TGtkWSCustomComboBox }

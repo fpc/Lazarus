@@ -163,16 +163,10 @@ end;
   procedure TCustomListBox.UpdateSorted;
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.UpdateSorted;
-var AMessage : TLMSort;
 begin
   if not HandleAllocated then exit;
-  with AMessage do begin
-    Msg:= LM_SORT;
-    List:= FItems;
-    IsSorted:= FSorted;
-  end;
   LockSelectionChange;
-  CNSendMessage(LM_SORT, Self, @AMessage);
+  TWSCustomListBoxClass(WidgetSetClass).SetSorted(Self, FItems, FSorted);
   UnlockSelectionChange;
 end;
 

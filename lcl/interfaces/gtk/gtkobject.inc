@@ -3124,26 +3124,6 @@ begin
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
       end;
 
-      LM_SORT:
-      begin
-        if  (Sender is TControl) and assigned (data) then
-        begin
-          case TControl(Sender).fCompStyle of
-          csListBox,
-          csCheckListBox:
-                         TGtkListStringList(TLMSort(Data^).List).Sorted:=
-                              TLMSort(Data^).IsSorted;
-          {$IfDef GTK1}
-          csCListBox: TGtkCListStringList(TLMSort(Data^).List).Sorted :=
-                              TLMSort(Data^).IsSorted;
-          {$Else}
-          else
-             DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_SORT');
-          {$Endif}
-          end
-        end
-      end;
-
       LM_SETSEL:
       {$IFdef GTK2}
       begin
@@ -8010,6 +7990,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.574  2004/09/16 13:30:48  micha
+  convert LM_SORT message to interface method
+
   Revision 1.573  2004/09/15 19:38:55  micha
   convert LM_GETSEL message to interface method
 
