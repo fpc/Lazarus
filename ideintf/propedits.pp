@@ -734,7 +734,7 @@ type
     SavedElements: TList;
     SavedPropertyEditors: TList;
     function ReadElementCount: integer; virtual;
-    function ReadElement(Index: integer): TObject; virtual;
+    function ReadElement(Index: integer): TPersistent; virtual;
     function CreateElementPropEditor(
       Index: integer): TListElementPropertyEditor; virtual;
     procedure DoSaveElements; virtual;
@@ -775,7 +775,7 @@ type
   private
   protected
     function ReadElementCount: integer; override;
-    function ReadElement(Index: integer): TObject; override;
+    function ReadElement(Index: integer): TPersistent; override;
     function GetElementAttributes(
       Element: TListElementPropertyEditor): TPropertyAttributes; override;
     function GetElementName(
@@ -2908,9 +2908,9 @@ begin
     Result:=0;
 end;
 
-function TListPropertyEditor.ReadElement(Index: integer): TObject;
+function TListPropertyEditor.ReadElement(Index: integer): TPersistent;
 begin
-  Result:=TObject(TList(GetOrdValue).Items[Index]);
+  Result:=TPersistent(TList(GetOrdValue).Items[Index]);
 end;
 
 function TListPropertyEditor.CreateElementPropEditor(Index: integer
@@ -3181,7 +3181,7 @@ end;
 
 //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-function TCollectionPropertyEditor.ReadElement(Index: integer): TObject;
+function TCollectionPropertyEditor.ReadElement(Index: integer): TPersistent;
 var
   Collection: TCollection;
 begin
