@@ -60,6 +60,7 @@ type
     FOnLeave: TNotifyEvent;
     FOnEnter: TNotifyEvent;
     //FOnResize: TNotifyEvent;
+    FShortCut : TLMShortcut;
     Procedure SetDefault(Value : Boolean);
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER; 
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
@@ -68,6 +69,9 @@ type
     procedure Click; override;
     //TODO: make this compatible
     procedure CreateWnd; override;
+
+    procedure SetText(const Value: TCaption); override;
+
     property OnMouseEnter : TNotifyEvent read FOnEnter write FOnEnter;
     property OnMouseLeave : TNotifyEvent read FOnLeave write FOnLeave;
   public
@@ -247,6 +251,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2002/08/27 06:40:50  lazarus
+  MG: ShortCut support for buttons from Andrew
+
   Revision 1.17  2002/08/26 17:28:20  lazarus
   MG: fixed speedbutton in designmode
 
