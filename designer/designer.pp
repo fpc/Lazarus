@@ -1105,6 +1105,7 @@ Begin
     // -> check if a grabber was activated
     ControlSelection.ActiveGrabber:=
       ControlSelection.GrabberAtPos(MouseDownPos.X,MouseDownPos.Y);
+    SetCaptureControl(ParentForm);
 
     if SelectedCompClass = nil then begin
       // selection mode
@@ -1430,7 +1431,6 @@ var
   SelectedCompClass: TRegisteredComponent;
   CurSnappedMousePos, OldSnappedMousePos: TPoint;
 begin
-  SetCaptureControl(nil);
   if [dfShowEditorHints,dfShowComponentCaptionHints]*FFlags<>[] then begin
     FHintTimer.Enabled := False;
 
@@ -1819,16 +1819,12 @@ var
   Count: integer;
   x,y, StepX, StepY, MaxX, MaxY: integer;
   i: integer;
-  SavedDC: hDC;
-  LogPen: TLogPen;
-  Pen, OldPen: HPen;
-  OldPoint: TPoint;
 begin
   if (AWinControl=nil)
   or (not (csAcceptsControls in AWinControl.ControlStyle))
   or (not ShowGrid) then exit;
 
-  SavedDC:=SaveDC(aDDC.DC);
+  aDDC.Save;
   try
     // exclude all child control areas
     Count:=AWinControl.ControlCount;
@@ -1843,16 +1839,6 @@ begin
       end;
     end;
 
-    // select color
-    with LogPen do
-    begin
-      lopnStyle := PS_SOLID;
-      lopnWidth.X := 1;
-      lopnColor := GridColor;
-    end;
-    Pen := CreatePenIndirect(LogPen);
-    OldPen:=SelectObject(aDDC.DC, Pen);
-
     // paint points
     StepX:=GridSizeX;
     StepY:=GridSizeY;
@@ -1862,19 +1848,13 @@ begin
     while x <= MaxX do begin
       y := 0;
       while y <= MaxY do begin
-        MoveToEx(aDDC.DC,x,y,@OldPoint);
-        LineTo(aDDC.DC,x+1,y);
+        aDDC.Canvas.Pixels[x, y] := GridColor;
         Inc(y, StepY);
       end;
       Inc(x, StepX);
     end;
-
-    // restore pen
-    SelectObject(aDDC.DC,OldPen);
-    DeleteObject(Pen);
-
   finally
-    RestoreDC(aDDC.DC,SavedDC);
+    aDDC.Restore;
   end;
 end;
 
@@ -2068,13 +2048,14 @@ begin
         continue;
       aDDC.Save;
       with aDDC.Canvas do begin
-        Brush.Color:=clWhite;
+        Pen.Width:=1;
+        Pen.Color:=clWhite;
         for j:=0 to NonVisualCompBorder-1 do begin
           MoveTo(ItemLeft+j,ItemBottom-j);
           LineTo(ItemLeft+j,ItemTop+j);
           LineTo(ItemRight-j,ItemTop+j);
         end;
-        Brush.Color:=clBlack;
+        Pen.Color:=clBlack;
         for j:=0 to NonVisualCompBorder-1 do begin
           MoveTo(ItemLeft+j,ItemBottom-j);
           LineTo(ItemRight-j,ItemBottom-j);
