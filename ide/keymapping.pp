@@ -716,7 +716,8 @@ var
   
   procedure AddKey;
   begin
-    AddStr(' ');
+    if p>0 then
+      AddStr(' ');
     case Key of
     VK_UNKNOWN    :AddStr('Unknown');
     VK_LBUTTON    :AddStr('Mouse Button Left');
@@ -780,9 +781,10 @@ var
     VK_SLASH      :AddStr('/');
     VK_AT         :AddStr('@');
     else
-      if (Key>=VK_IRREGULAR+33) and (Key<=VK_IRREGULAR+255) then
-        AddStr(chr(Key-VK_IRREGULAR))
-      else begin
+      if (Key>=VK_IRREGULAR+33) and (Key<=VK_IRREGULAR+255) then begin
+        AddStr('Irregular ');
+        AddStr(chr(Key-VK_IRREGULAR));
+      end else begin
         AddStr(UnknownVKPrefix);
         AddStr(IntToStr(Key));
         AddStr(UnknownVKPostfix);
@@ -1145,10 +1147,10 @@ end;
 procedure TKeyMappingEditForm.FormKeyUp(Sender: TObject; var Key: Word;
   Shift:TShiftState);
 begin
-  //writeln('TKeyMappingEditForm.FormKeyUp Sender=',Classname
-  //   ,' Key=',Key,' Ctrl=',ssCtrl in Shift,' Shift=',ssShift in Shift
-  //   ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToStr(Key,Shift)
-  //   );
+  {writeln('TKeyMappingEditForm.FormKeyUp Sender=',Classname
+     ,' Key=',Key,' Ctrl=',ssCtrl in Shift,' Shift=',ssShift in Shift
+     ,' Alt=',ssAlt in Shift,' AsString=',KeyAndShiftStateToStr(Key,Shift)
+     );}
   if Key in [VK_CONTROL, VK_SHIFT, VK_LCONTROL, VK_RCONTROl,
              VK_LSHIFT, VK_RSHIFT] then exit;
   if (GrabbingKey in [1,2]) then begin
