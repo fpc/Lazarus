@@ -3199,7 +3199,7 @@ begin
 
   y:=2;
 
-  chkSymD2Ext := TCheckBox.Create(grpSymantecChk);
+  chkSymD2Ext := TCheckBox.Create(Self);
   with chkSymD2Ext do
   begin
     Parent := grpSymantecChk;
@@ -3211,7 +3211,7 @@ begin
   end;
 
   inc(y,yDiff);
-  chkSymCOper := TCheckBox.Create(grpSymantecChk);
+  chkSymCOper := TCheckBox.Create(Self);
   with chkSymCOper do
   begin
     Parent := grpSymantecChk;
@@ -3223,7 +3223,7 @@ begin
   end;
 
   inc(y,yDiff);
-  chkSymIncludeAssertions := TCheckBox.Create(grpSymantecChk);
+  chkSymIncludeAssertions := TCheckBox.Create(Self);
   with chkSymIncludeAssertions do
   begin
     Parent := grpSymantecChk;
@@ -3235,7 +3235,7 @@ begin
   end;
   
   inc(y,yDiff);
-  chkSymAllowLab := TCheckBox.Create(grpSymantecChk);
+  chkSymAllowLab := TCheckBox.Create(Self);
   with chkSymAllowLab do
   begin
     Parent := grpSymantecChk;
@@ -3247,7 +3247,7 @@ begin
   end;
 
   inc(y,yDiff);
-  chkSymCPPInline := TCheckBox.Create(grpSymantecChk);
+  chkSymCPPInline := TCheckBox.Create(Self);
   with chkSymCPPInline do
   begin
     Parent := grpSymantecChk;
@@ -3259,7 +3259,7 @@ begin
   end;
 
   inc(y,yDiff);
-  chkSymCMacros := TCheckBox.Create(grpSymantecChk);
+  chkSymCMacros := TCheckBox.Create(Self);
   with chkSymCMacros do
   begin
     Parent := grpSymantecChk;
@@ -3271,7 +3271,7 @@ begin
   end;
 
   inc(y,yDiff);
-  chkSymTP7Compat := TCheckBox.Create(grpSymantecChk);
+  chkSymTP7Compat := TCheckBox.Create(Self);
   with chkSymTP7Compat do
   begin
     Parent := grpSymantecChk;
@@ -3283,7 +3283,7 @@ begin
   end;
 
   inc(y,yDiff);
-  chkSymConstInit := TCheckBox.Create(grpSymantecChk);
+  chkSymConstInit := TCheckBox.Create(Self);
   with chkSymConstInit do
   begin
     Parent := grpSymantecChk;
@@ -3295,7 +3295,7 @@ begin
   end;
 
   inc(y,yDiff);
-  chkSymStaticKwd := TCheckBox.Create(grpSymantecChk);
+  chkSymStaticKwd := TCheckBox.Create(Self);
   with chkSymStaticKwd do
   begin
     Parent := grpSymantecChk;
@@ -3307,7 +3307,7 @@ begin
   end;
   
   inc(y,yDiff);
-  chkSymDelphiCompat := TCheckBox.Create(grpSymantecChk);
+  chkSymDelphiCompat := TCheckBox.Create(Self);
   with chkSymDelphiCompat do
   begin
     Parent := grpSymantecChk;
@@ -3319,7 +3319,7 @@ begin
   end;
 
   inc(y,yDiff);
-  chkSymUseAnsiStrings := TCheckBox.Create(grpSymantecChk);
+  chkSymUseAnsiStrings := TCheckBox.Create(Self);
   with chkSymUseAnsiStrings do
   begin
     Parent := grpSymantecChk;
@@ -3331,7 +3331,7 @@ begin
   end;
 
   inc(y,yDiff);
-  chkSymGPCCompat := TCheckBox.Create(grpSymantecChk);
+  chkSymGPCCompat := TCheckBox.Create(Self);
   with chkSymGPCCompat do
   begin
     Parent := grpSymantecChk;
@@ -3381,7 +3381,7 @@ begin
     Caption := dlgCOChecks ;
   end;
 
-  chkChecksIO := TCheckBox.Create(grpChecks);
+  chkChecksIO := TCheckBox.Create(Self);
   with chkChecksIO do
   begin
     Parent := grpChecks;
@@ -3392,7 +3392,7 @@ begin
     Width := 70;
   end;
 
-  chkChecksRange := TCheckBox.Create(grpChecks);
+  chkChecksRange := TCheckBox.Create(Self);
   with chkChecksRange do
   begin
     Parent := grpChecks;
@@ -3403,7 +3403,7 @@ begin
     Width := 90;
   end;
 
-  chkChecksOverflow := TCheckBox.Create(grpChecks);
+  chkChecksOverflow := TCheckBox.Create(Self);
   with chkChecksOverflow do
   begin
     Parent := grpChecks;
@@ -3414,7 +3414,7 @@ begin
     Width := 80;
   end;
 
-  chkChecksStack := TCheckBox.Create(grpChecks);
+  chkChecksStack := TCheckBox.Create(Self);
   with chkChecksStack do
   begin
     Parent := grpChecks;
@@ -3546,7 +3546,7 @@ begin
     Caption :=   dlgOptimiz ;
   end;
 
-  chkOptVarsInReg := TCheckBox.Create(grpOptimizations);
+  chkOptVarsInReg := TCheckBox.Create(Self);
   with chkOptVarsInReg do
   begin
     Parent := grpOptimizations;
@@ -3557,7 +3557,7 @@ begin
     Width := 330;
   end;
 
-  chkOptUncertain := TCheckBox.Create(grpOptimizations);
+  chkOptUncertain := TCheckBox.Create(Self);
   with chkOptUncertain do
   begin
     Parent := grpOptimizations;
@@ -3649,7 +3649,7 @@ begin
     Caption := dlgCODebugging ;
   end;
 
-  chkDebugGDB := TCheckBox.Create(grpDebugging);
+  chkDebugGDB := TCheckBox.Create(Self);
   with chkDebugGDB do
   begin
     Parent := grpDebugging;
@@ -3660,7 +3660,7 @@ begin
     Width := 360;
   end;
 
-  chkDebugDBX := TCheckBox.Create(grpDebugging);
+  chkDebugDBX := TCheckBox.Create(Self);
   with chkDebugDBX do
   begin
     Parent := grpDebugging;
@@ -3671,7 +3671,7 @@ begin
     Width := 360;
   end;
 
-  chkUseLineInfoUnit := TCheckBox.Create(grpDebugging);
+  chkUseLineInfoUnit := TCheckBox.Create(Self);
   with chkUseLineInfoUnit do
   begin
     Parent := grpDebugging;
@@ -3682,7 +3682,7 @@ begin
     Width := 360;
   end;
 
-  chkUseHeaptrc := TCheckBox.Create(grpDebugging);
+  chkUseHeaptrc := TCheckBox.Create(Self);
   with chkUseHeaptrc do
   begin
     Parent := grpDebugging;
@@ -3693,7 +3693,7 @@ begin
     Width := 360;
   end;
 
-  chkGenGProfCode := TCheckBox.Create(grpDebugging);
+  chkGenGProfCode := TCheckBox.Create(Self);
   with chkGenGProfCode do
   begin
     Parent := grpDebugging;
@@ -3704,7 +3704,7 @@ begin
     Width := 360;
   end;
 
-  chkSymbolsStrip := TCheckBox.Create(grpDebugging);
+  chkSymbolsStrip := TCheckBox.Create(Self);
   with chkSymbolsStrip do
   begin
     Parent := grpDebugging;
@@ -3728,7 +3728,7 @@ begin
     Caption := dlgLinkLibraries ;
   end;
 
-  radLibsLinkDynamic := TRadioButton.Create(grpLinkLibraries);
+  radLibsLinkDynamic := TRadioButton.Create(Self);
   with radLibsLinkDynamic do
   begin
     Parent := grpLinkLibraries;
@@ -3739,7 +3739,7 @@ begin
     Width := Parent.Width-10;
   end;
 
-  radLibsLinkStatic := TRadioButton.Create(grpLinkLibraries);
+  radLibsLinkStatic := TRadioButton.Create(Self);
   with radLibsLinkStatic do
   begin
     Parent := grpLinkLibraries;
@@ -3750,7 +3750,7 @@ begin
     Width := Parent.Width-10;
   end;
 
-  radLibsLinkSmart := TRadioButton.Create(grpLinkLibraries);
+  radLibsLinkSmart := TRadioButton.Create(Self);
   with radLibsLinkSmart do
   begin
     Parent := grpLinkLibraries;
@@ -3773,13 +3773,13 @@ begin
     Caption := lisCOTargetOSSpecificOptions;
   end;
 
-  chkWin32GraphicApp := TCheckBox.Create(grpOptions);
+  chkWin32GraphicApp := TCheckBox.Create(Self);
   with chkWin32GraphicApp do
   begin
     Parent := TargetSpecificsGrpBox;
     Caption := 'Win32 gui application (-WG)';
     Top := 5;
-    Left := 0;
+    Left := 2;
     Height := 22;
     Width := Parent.Width-10;
   end;
@@ -3797,7 +3797,7 @@ begin
     Caption := dlgCOOpts;
   end;
 
-  chkOptionsLinkOpt := TCheckBox.Create(grpOptions);
+  chkOptionsLinkOpt := TCheckBox.Create(Self);
   with chkOptionsLinkOpt do
   begin
     Parent := grpOptions;
@@ -3839,7 +3839,7 @@ begin
     Caption := dlgVerbosity;
   end;
 
-  chkErrors := TCheckBox.Create(grpVerbosity);
+  chkErrors := TCheckBox.Create(Self);
   with chkErrors do
   begin
     Parent := grpVerbosity;
@@ -3850,7 +3850,7 @@ begin
     Width := (grpVerbosity.ClientWidth div 2)-12;
   end;
 
-  chkWarnings := TCheckBox.Create(grpVerbosity);
+  chkWarnings := TCheckBox.Create(Self);
   with chkWarnings do
   begin
     Parent := grpVerbosity;
@@ -3861,7 +3861,7 @@ begin
     Width := chkErrors.Width;
   end;
 
-  chkNotes := TCheckBox.Create(grpVerbosity);
+  chkNotes := TCheckBox.Create(Self);
   with chkNotes do
   begin
     Parent := grpVerbosity;
@@ -3872,7 +3872,7 @@ begin
     Width := chkErrors.Width;
   end;
 
-  chkHints := TCheckBox.Create(grpVerbosity);
+  chkHints := TCheckBox.Create(Self);
   with chkHints do
   begin
     Parent := grpVerbosity;
@@ -3883,7 +3883,7 @@ begin
     Width := chkErrors.Width;
   end;
 
-  chkGeneralInfo := TCheckBox.Create(grpVerbosity);
+  chkGeneralInfo := TCheckBox.Create(Self);
   with chkGeneralInfo do
   begin
     Parent := grpVerbosity;
@@ -3894,7 +3894,7 @@ begin
     Width := chkErrors.Width;
   end;
 
-  chkLineNumbers := TCheckBox.Create(grpVerbosity);
+  chkLineNumbers := TCheckBox.Create(Self);
   with chkLineNumbers do
   begin
     Parent := grpVerbosity;
@@ -3905,7 +3905,7 @@ begin
     Width := chkErrors.Width;
   end;
 
-  chkAllProcsOnError := TCheckBox.Create(grpVerbosity);
+  chkAllProcsOnError := TCheckBox.Create(Self);
   with chkAllProcsOnError do
   begin
     Parent := grpVerbosity;
@@ -3916,7 +3916,7 @@ begin
     Width := chkErrors.Width;
   end;
 
-  chkEverything := TCheckBox.Create(grpVerbosity);
+  chkEverything := TCheckBox.Create(Self);
   with chkEverything do
   begin
     Parent := grpVerbosity;
@@ -3927,7 +3927,7 @@ begin
     Width := chkErrors.Width;
   end;
 
-  chkDebugInfo := TCheckBox.Create(grpVerbosity);
+  chkDebugInfo := TCheckBox.Create(Self);
   with chkDebugInfo do
   begin
     Parent := grpVerbosity;
@@ -3938,7 +3938,7 @@ begin
     Width := (grpVerbosity.ClientWidth div 2)-12;
   end;
 
-  chkUsedFiles := TCheckBox.Create(grpVerbosity);
+  chkUsedFiles := TCheckBox.Create(Self);
   with chkUsedFiles do
   begin
     Parent := grpVerbosity;
@@ -3949,7 +3949,7 @@ begin
     Width := chkDebugInfo.Width;
   end;
 
-  chkTriedFiles := TCheckBox.Create(grpVerbosity);
+  chkTriedFiles := TCheckBox.Create(Self);
   with chkTriedFiles do
   begin
     Parent := grpVerbosity;
@@ -3960,7 +3960,7 @@ begin
     Width := chkDebugInfo.Width;
   end;
 
-  chkDefinedMacros := TCheckBox.Create(grpVerbosity);
+  chkDefinedMacros := TCheckBox.Create(Self);
   with chkDefinedMacros do
   begin
     Parent := grpVerbosity;
@@ -3971,7 +3971,7 @@ begin
     Width := chkDebugInfo.Width;
   end;
 
-  chkCompiledProc := TCheckBox.Create(grpVerbosity);
+  chkCompiledProc := TCheckBox.Create(Self);
   with chkCompiledProc do
   begin
     Parent := grpVerbosity;
@@ -3982,7 +3982,7 @@ begin
     Width := chkDebugInfo.Width;
   end;
 
-  chkConditionals := TCheckBox.Create(grpVerbosity);
+  chkConditionals := TCheckBox.Create(Self);
   with chkConditionals do
   begin
     Parent := grpVerbosity;
@@ -3993,7 +3993,7 @@ begin
     Width := chkDebugInfo.Width;
   end;
 
-  chkNothing := TCheckBox.Create(grpVerbosity);
+  chkNothing := TCheckBox.Create(Self);
   with chkNothing do
   begin
     Parent := grpVerbosity;
@@ -4015,7 +4015,7 @@ begin
     Width := chkDebugInfo.Width;
   end;
 
-  chkHintsForUnusedProjectUnits := TCheckBox.Create(grpVerbosity);
+  chkHintsForUnusedProjectUnits := TCheckBox.Create(Self);
   with chkHintsForUnusedProjectUnits do
   begin
     Parent := grpVerbosity;
@@ -4066,7 +4066,7 @@ begin
     Caption := dlgConfigFiles ;
   end;
 
-  chkConfigFile := TCheckBox.Create(grpConfigFile);
+  chkConfigFile := TCheckBox.Create(Self);
   with chkConfigFile do
   begin
     Parent := grpConfigFile;
@@ -4077,7 +4077,7 @@ begin
     Width := 330;
   end;
 
-  chkAdditionalConfigFile := TCheckBox.Create(grpConfigFile);
+  chkAdditionalConfigFile := TCheckBox.Create(Self);
   with chkAdditionalConfigFile do
   begin
     Parent := grpConfigFile;
@@ -4318,7 +4318,7 @@ begin
     inc(y,Height+5);
   end;
 
-  edtOtherUnits := TEdit.Create(grpOtherUnits);
+  edtOtherUnits := TEdit.Create(Self);
   with edtOtherUnits do
   begin
     Parent := grpOtherUnits;
@@ -4356,7 +4356,7 @@ begin
     inc(y,Height+5);
   end;
 
-  edtIncludeFiles := TEdit.Create(grpIncludeFiles);
+  edtIncludeFiles := TEdit.Create(Self);
   with edtIncludeFiles do
   begin
     Parent := grpIncludeFiles;
@@ -4393,7 +4393,7 @@ begin
     inc(y,Height+5);
   end;
 
-  edtOtherSources := TEdit.Create(grpIncludeFiles);
+  edtOtherSources := TEdit.Create(Self);
   with edtOtherSources do
   begin
     Parent := grpOtherSources;
@@ -4430,7 +4430,7 @@ begin
     inc(y,Height+5);
   end;
 
-  edtLibraries := TEdit.Create(grpLibraries);
+  edtLibraries := TEdit.Create(Self);
   with edtLibraries do
   begin
     Parent := grpLibraries;

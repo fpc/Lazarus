@@ -530,13 +530,7 @@ begin
 end;
 
 procedure TBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
-{$IFDEF UseFPImage}
-begin
-  WriteStreamWithFPImage(Stream,WriteSize,TFPWriterBMP);
-  if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
-    FImage.SaveStreamType:=bnWinBitmap;
-end;
-{$ELSE}
+{$IFNDEF UseFPImage}
 Type
   TBITMAPHEADER = packed record
     FileHeader : tagBitmapFileHeader;
@@ -546,6 +540,24 @@ Type
 var
   MemStream: TMemoryStream;
 
+
+  Procedure DoWriteStreamSize(DestStream: TStream; Size: longint);
+  begin
+    if WriteSize then
+      DestStream.WriteBuffer(Size, SizeOf(Size));
+  end;
+
+  procedure DoWriteOriginal;
+  begin
+    DoWriteStreamSize(Stream,FImage.SaveStream.Size);
+    FImage.SaveStream.Position:=0;
+    Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
+  end;
+
+  Procedure DoWriteSize(Header: TBitmapHeader);
+  begin
+    DoWriteStreamSize(MemStream,Header.FileHeader.bfSize);
+  end;
 
   Procedure FillBitmapInfo(Bitmap : hBitmap; var Bits : Pointer;
     Var Header : TBitmapHeader);
@@ -583,17 +595,6 @@ var
       bfSize      := SizeOf(Header) + biSizeImage;
       bfOffBits   := SizeOf(Header);
     end;
-  end;
-
-  Procedure DoWriteStreamSize(DestStream: TStream; Size: longint);
-  begin
-    if WriteSize then
-      DestStream.WriteBuffer(Size, SizeOf(Size));
-  end;
-
-  Procedure DoWriteSize(Header: TBitmapHeader);
-  begin
-    DoWriteStreamSize(MemStream,Header.FileHeader.bfSize);
   end;
 
   Procedure WriteBitmapHeader(Header : TBitmapHeader);
@@ -642,17 +643,16 @@ var
     MemStream.WriteBuffer(Bits^, Header.InfoHeader.biSizeImage);
   end;
   
-  procedure DoWriteOriginal;
-  begin
-    DoWriteStreamSize(Stream,FImage.SaveStream.Size);
-    FImage.SaveStream.Position:=0;
-    Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
-  end;
-  
 var
   Bits: PByte;
   Header: TBitmapHeader;
+{$ENDIF}
 begin
+  {$IFDEF UseFPImage}
+  WriteStreamWithFPImage(Stream,WriteSize,TFPWriterBMP);
+  if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
+    FImage.SaveStreamType:=bnWinBitmap;
+  {$ELSE}
   if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0)
   and (FImage.SaveStreamType<>bnNone) then begin
     DoWriteOriginal;
@@ -681,8 +681,8 @@ begin
     ReallocMem(Bits, 0);
     MemStream.Free;
   end;
+  {$ENDIF}
 end;
-{$ENDIF}
 
 procedure TBitmap.StoreOriginalStream(Stream: TStream);
 var
@@ -953,6 +953,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.50  2003/11/23 14:09:45  mattias
+  fixed mem leak  thx to Vincent
+
   Revision 1.49  2003/10/22 18:43:23  mattias
   prepared image sharing
 
