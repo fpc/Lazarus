@@ -337,6 +337,7 @@ begin
   // disconnect old Associate
   if FAssociate <> nil then
   begin
+    FAssociate.RemoveAllControlHandlersOfObject(Self);
     FAssociate.OnKeyDown := OldKeyDown;
     OldKeyDown := nil;
     FAssociate := nil;
@@ -350,10 +351,11 @@ begin
   begin
     FAssociate := Value;
     UpdateUpDownPositionText;
-    UpdateOrientation;
+    UpdateAlignButtonPos;
     if not (csDesigning in ComponentState) then
       OldKeyDown := FAssociate.OnKeyDown;
     FAssociate.OnKeyDown := @AssociateKeyDown;
+    FAssociate.AddHandlerOnChangeBounds(@OnAssociateChangeBounds,true);
   end;
 end;
 
@@ -372,6 +374,17 @@ begin
         VK_Left:
           TSpeedButton(MinBtn).Click;
       end;
+end;
+
+procedure TCustomUpDown.OnAssociateChangeBounds(Sender: TObject);
+begin
+  UpdateAlignButtonPos;
+end;
+
+procedure TCustomUpDown.DoOnResize;
+begin
+  inherited DoOnResize;
+  UpdateOrientation;
 end;
 
 procedure TCustomUpDown.Notification(AComponent: TComponent;

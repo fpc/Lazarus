@@ -528,24 +528,26 @@ type
     FAlignButton: TUDAlignButton;
     FOrientation: TUDOrientation;
     FOnChanging: TUDChangingEvent;
-    procedure SetAssociate(Value: TWinControl);
     function GetPosition: SmallInt;
-    procedure SetMin(Value: SmallInt);
-    procedure SetMax(Value: SmallInt);
-    procedure SetIncrement(Value: Integer);
-    procedure SetPosition(Value: SmallInt);
+    Procedure BTimerExec(Sender : TObject);
     procedure SetAlignButton(Value: TUDAlignButton);
-    procedure SetOrientation(Value: TUDOrientation);
     procedure SetArrowKeys(Value: Boolean);
+    procedure SetAssociate(Value: TWinControl);
+    procedure SetIncrement(Value: Integer);
+    procedure SetMax(Value: SmallInt);
+    procedure SetMin(Value: SmallInt);
+    procedure SetOrientation(Value: TUDOrientation);
+    procedure SetPosition(Value: SmallInt);
     procedure SetThousands(Value: Boolean);
     procedure SetWrap(Value: Boolean);
-    Procedure BTimerExec(Sender : TObject);
-    procedure UpdateUpDownPositionText;
-    procedure UpdateOrientation;
     procedure UpdateAlignButtonPos;
+    procedure UpdateOrientation;
+    procedure UpdateUpDownPositionText;
   protected
     OldKeyDown : TKeyEvent;
     Procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
+    procedure OnAssociateChangeBounds(Sender: TObject);
+    procedure DoOnResize; override;
     //procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer); Override;
     function CanChange: Boolean; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -1760,6 +1762,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.76  2003/06/13 12:53:51  mattias
+  fixed TUpDown and added handler lists for TControl
+
   Revision 1.75  2003/06/13 11:58:46  mattias
   fixed readonly of properties
 
