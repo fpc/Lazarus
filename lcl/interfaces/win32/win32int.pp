@@ -58,6 +58,9 @@ const
   IDC_HAND      = MakeIntResource(32649);
   IDC_APPSTARTING = MakeIntResource(32650);
   IDC_HELP      = MakeIntResource(32651);
+
+{
+  These are add-ons, don't exist in windows itself!
   IDC_NODROP    = MakeIntResource(32767);
   IDC_DRAG      = MakeIntResource(32766);
   IDC_HSPLIT    = MakeIntResource(32765);
@@ -65,6 +68,14 @@ const
   IDC_MULTIDRAG = MakeIntResource(32763);
   IDC_SQLWAIT   = MakeIntResource(32762);
   IDC_HANDPT    = MakeIntResource(32761);
+}
+  IDC_NODROP    = IDC_NO;
+  IDC_DRAG      = IDC_ARROW;
+  IDC_HSPLIT    = IDC_SIZEWE;
+  IDC_VSPLIT    = IDC_SIZENS;
+  IDC_MULTIDRAG = IDC_ARROW;
+  IDC_SQLWAIT   = IDC_WAIT;
+  IDC_HANDPT    = IDC_HAND;
 
   LclCursorToWin32CursorMap: array[crLow..crHigh] of PChar = (
      IDC_SIZEALL, IDC_HANDPT, IDC_HELP, IDC_APPSTARTING, IDC_NO, IDC_SQLWAIT,
@@ -253,6 +264,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.84  2004/06/13 14:32:15  micha
+  fix cursors to use what's available
+
   Revision 1.83  2004/06/10 22:07:58  vincents
   listbox style changes are notified to the widgetset
 
