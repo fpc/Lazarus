@@ -441,6 +441,7 @@ var
   TheText: string;
   TheTop: integer;
   MatchPos: TLazSearchMatchPos;
+  TextEnd: integer;
 begin
   With Control as TLazSearchResultLB do
   begin
@@ -460,17 +461,17 @@ begin
       LastPart:= copy(TheText, MatchPos.MatchStart + BoldLen,
                       Length(TheText) - (MatchPos.MatchStart + BoldLen) + 2);
       Canvas.TextOut(ARect.Left, TheTop, FirstPart);
+      TextEnd:= ARect.Left + Canvas.TextWidth(FirstPart);
       Canvas.Font.Style:= Canvas.Font.Style + [fsBold];
-      {TODO: Find out why bold is 1 pixel off}
-      Canvas.TextOut(ARect.Left + Canvas.TextWidth(FirstPart),
-                     TheTop - 1, BoldPart);
+      {TODO: Find out why bold is 1 pixel off in gtk}
+      Canvas.TextOut(TextEnd, TheTop, BoldPart);
+      TextEnd:= TextEnd + Canvas.TextWidth(BoldPart);
       Canvas.Font.Style:= Canvas.Font.Style  - [fsBold];
-      Canvas.TextOut(ARect.Left + Canvas.TextWidth(FirstPart + BoldPart),
-                     TheTop, LastPart);
+      Canvas.TextOut(TextEnd, TheTop, LastPart);
     end//if
     else
     begin
-      Canvas.TextOut(ARect.Left, ARect.Top + 1, TheText);
+      Canvas.TextOut(ARect.Left, ARect.Top, TheText);
     end;//else
   end;//with
 end;//ListBoxDrawItem
