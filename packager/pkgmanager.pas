@@ -174,6 +174,8 @@ type
     function LoadInstalledPackage(const PackageName: string): TLazPackage;
     procedure LoadAutoInstallPackages;
     procedure SortAutoInstallDependencies;
+    procedure AddUnitToProjectMainUsesSection(AProject: TProject;
+                                    const AnUnitName, AnUnitInFilename: string);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -219,10 +221,17 @@ type
     function CanOpenDesignerForm(AnUnitInfo: TUnitInfo): TModalResult; override;
     procedure AddDefaultDependencies(AProject: TProject); override;
     procedure AddProjectDependency(AProject: TProject; APackage: TLazPackage); override;
+    function AddProjectDependency(AProject: TProject; ADependency: TPkgDependency): TModalResult;
     procedure AddProjectRegCompDependency(AProject: TProject;
                           ARegisteredComponent: TRegisteredComponent); override;
     procedure AddProjectLCLDependency(AProject: TProject); override;
     function OnProjectInspectorOpen(Sender: TObject): boolean; override;
+    function OnProjectInspectorAddDependency(Sender: TObject;
+                           ADependency: TPkgDependency): TModalResult; override;
+    function OnProjectInspectorRemoveDependency(Sender: TObject;
+                           ADependency: TPkgDependency): TModalResult; override;
+    function OnProjectInspectorReAddDependency(Sender: TObject;
+                           ADependency: TPkgDependency): TModalResult; override;
 
     // package editors
     function DoNewPackage: TModalResult; override;
@@ -743,8 +752,33 @@ var
   LowerFilename: String;
   BrokenDependencies: TList;
   RenameDependencies: Boolean;
+  OldPkgName: String;
+  
+  procedure RenamePackageInProject;
+  var
+    AProject: TProject;
+    OldUnitName: String;
+    NewUnitName: String;
+  begin
+    AProject:=Project1;
+    if (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
+    and (APackage.PackageType in [lptRunTime,lptRunAndDesignTime])
+    and (AProject.MainUnitInfo<>nil) then begin
+      OldUnitName:=OldPkgName;
+      NewUnitName:=APackage.Name;
+      if (OldUnitName<>NewUnitName) then begin
+        MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1);
+        if CodeToolBoss.RenameUsedUnit(
+          AProject.MainUnitInfo.Source,OldUnitName,NewUnitName,'')
+        then
+          AProject.MainUnitInfo.Modified:=true;
+      end;
+    end;
+  end;
+  
 begin
   OldPkgFilename:=APackage.Filename;
+  OldPkgName:=APackage.Name;
 
   SaveDialog:=TSaveDialog.Create(nil);
   try
@@ -829,7 +863,7 @@ begin
         continue; // try again
       end;
       
-      // check file name conflicts with other packages
+      // check file name conflicts with files in other packages
       PkgFile:=PackageGraph.FindFileInAllPackages(NewFilename,true,true);
       if PkgFile<>nil then begin
         Result:=MessageDlg(lisPkgMangFilenameIsUsedByOtherPackage,
@@ -883,6 +917,7 @@ begin
   PackageGraph.ChangePackageID(APackage,NewPkgName,APackage.Version,
                                RenameDependencies);
   SaveAutoInstallDependencies(false);
+  RenamePackageInProject;
 
   // clean up old package file to reduce ambigiousities
   if FileExists(OldPkgFilename)
@@ -1632,6 +1667,23 @@ begin
                                                false);
 end;
 
+procedure TPkgManager.AddUnitToProjectMainUsesSection(AProject: TProject;
+  const AnUnitName, AnUnitInFilename: string);
+begin
+  // add unit to project main source file
+  if (pfMainUnitHasUsesSectionForAllUnits in AProject.Flags)
+  and (AProject.MainUnitInfo<>nil) then begin
+    debugln('TPkgManager.AddUnitToProjectMainUsesSection B ',AnUnitName);
+    if (AnUnitName<>'') then begin
+      MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1);
+      if CodeToolBoss.AddUnitToMainUsesSection(
+        AProject.MainUnitInfo.Source,AnUnitName,AnUnitInFilename)
+      then
+        AProject.MainUnitInfo.Modified:=true;
+    end;
+  end;
+end;
+
 constructor TPkgManager.Create(TheOwner: TComponent);
 var
   CompPalette: TComponentPalette;
@@ -1930,8 +1982,19 @@ begin
     exit;
   // add a dependency for the package to the project
   NewDependency:=APackage.CreateDependencyForThisPkg(AProject);
-  AProject.AddRequiredDependency(NewDependency);
-  PackageGraph.OpenDependency(NewDependency);
+  AddProjectDependency(AProject,NewDependency);
+end;
+
+function TPkgManager.AddProjectDependency(AProject: TProject;
+  ADependency: TPkgDependency): TModalResult;
+begin
+  Result:=mrOk;
+  AProject.AddRequiredDependency(ADependency);
+  PackageGraph.OpenDependency(ADependency);
+  if (ADependency.RequiredPackage<>nil)
+  and (not ADependency.RequiredPackage.AutoCreated) then begin
+    AddUnitToProjectMainUsesSection(AProject,ADependency.PackageName,'');
+  end;
 end;
 
 procedure TPkgManager.AddProjectRegCompDependency(AProject: TProject;
@@ -2250,8 +2313,7 @@ var
 begin
   Result:=mrOk;
   if (Dependencies=nil) or (Dependencies.Count=0) then exit;
-  Msg:='The following package(s) failed to load:'#13
-       +#13;
+  Msg:=Format(lisTheFollowingPackageSFailedToLoad, [#13, #13]);
   for i:=0 to Dependencies.Count-1 do begin
     ADependency:=TPkgDependency(Dependencies[i]);
     Msg:=Msg+ADependency.AsString+#13;
@@ -2263,11 +2325,11 @@ begin
     // broken dependency used by project -> show project inspector
     if ADependency.Owner=Project1 then begin
       Result:=MainIDE.DoShowProjectInspector;
-      Msg:=Msg+'See Project -> Project Inspector';
+      Msg:=Format(lisSeeProjectProjectInspector, [Msg]);
     end;
   end;
   
-  Result:=MessageDlg('Missing Packages',Msg,mtError,[mbOk],0);
+  Result:=MessageDlg(lisMissingPackages, Msg, mtError, [mbOk], 0);
 end;
 
 function TPkgManager.DoCompileProjectDependencies(AProject: TProject;
@@ -3469,6 +3531,53 @@ begin
   if PackageGraph.OpenDependency(Dependency)<>lprSuccess then
     exit;
   DoOpenPackage(Dependency.RequiredPackage);
+end;
+
+function TPkgManager.OnProjectInspectorAddDependency(Sender: TObject;
+  ADependency: TPkgDependency): TModalResult;
+begin
+  Result:=AddProjectDependency(Project1,ADependency);
+end;
+
+function TPkgManager.OnProjectInspectorRemoveDependency(Sender: TObject;
+  ADependency: TPkgDependency): TModalResult;
+var
+  ShortUnitName: String;
+  Dummy: Boolean;
+begin
+  Result:=mrOk;
+  Project1.RemoveRequiredDependency(ADependency);
+  //debugln('TPkgManager.OnProjectInspectorRemoveDependency A');
+  if (Project1.MainUnitID>=0)
+  and (pfMainUnitHasUsesSectionForAllUnits in Project1.Flags)
+  then begin
+    MainIDEInterface.SaveSourceEditorChangesToCodeCache(-1);
+    ShortUnitName:=ADependency.PackageName;
+    //debugln('TPkgManager.OnProjectInspectorRemoveDependency B ShortUnitName="',ShortUnitName,'"');
+    if (ShortUnitName<>'') then begin
+      Dummy:=CodeToolBoss.RemoveUnitFromAllUsesSections(
+                                    Project1.MainUnitInfo.Source,ShortUnitName);
+      if Dummy then
+        Project1.MainUnitInfo.Modified:=true
+      else begin
+        MainIDEInterface.DoJumpToCodeToolBossError;
+        Result:=mrCancel;
+        exit;
+      end;
+    end;
+  end;
+end;
+
+function TPkgManager.OnProjectInspectorReAddDependency(Sender: TObject;
+  ADependency: TPkgDependency): TModalResult;
+begin
+  Result:=mrOk;
+  Project1.ReaddRemovedDependency(ADependency);
+  PackageGraph.OpenDependency(ADependency);
+  if (ADependency.RequiredPackage<>nil)
+  and (not ADependency.RequiredPackage.AutoCreated) then begin
+    AddUnitToProjectMainUsesSection(Project1,ADependency.PackageName,'');
+  end;
 end;
 
 function TPkgManager.CanOpenDesignerForm(AnUnitInfo: TUnitInfo): TModalResult;

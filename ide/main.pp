@@ -5971,7 +5971,12 @@ begin
     ProjInspector.OnOpen:=@ProjInspectorOpen;
     ProjInspector.OnShowOptions:=@mnuProjectOptionsClicked;
     ProjInspector.OnAddUnitToProject:=@ProjInspectorAddUnitToProject;
+    ProjInspector.OnAddDependency:=@PkgBoss.OnProjectInspectorAddDependency;
     ProjInspector.OnRemoveFile:=@ProjInspectorRemoveFile;
+    ProjInspector.OnRemoveDependency:=
+                                    @PkgBoss.OnProjectInspectorRemoveDependency;
+    ProjInspector.OnReAddDependency:=
+                                    @PkgBoss.OnProjectInspectorReAddDependency;
 
     ProjInspector.LazProject:=Project1;
   end;
@@ -6054,8 +6059,8 @@ end;
 
 function TMainIDE.DoAddActiveUnitToProject: TModalResult;
 var
-  ActiveSourceEditor:TSourceEditor;
-  ActiveUnitInfo:TUnitInfo;
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
   s, ShortUnitName: string;
 begin
   Result:=mrCancel;
@@ -11397,6 +11402,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.846  2005/02/18 18:08:20  mattias
+  project dependencies are now added/removed/renamed in the project main uses section
+
   Revision 1.845  2005/02/06 11:28:30  mattias
   adding focus check for source editor shortcuts in IDE main menu
 

@@ -49,6 +49,10 @@ type
     function(Sender: TObject; AnUnitInfo: TUnitInfo): TModalresult of object;
   TRemoveProjInspFileEvent =
     function(Sender: TObject; AnUnitInfo: TUnitInfo): TModalResult of object;
+  TRemoveProjInspDepEvent = function(Sender: TObject;
+                           ADependency: TPkgDependency): TModalResult of object;
+  TAddProjInspDepEvent = function(Sender: TObject;
+                           ADependency: TPkgDependency): TModalResult of object;
 
   TProjectInspectorFlag = (
     pifItemsChanged,
@@ -56,6 +60,8 @@ type
     pifTitleChanged
     );
   TProjectInspectorFlags = set of TProjectInspectorFlag;
+
+  { TProjectInspectorForm }
 
   TProjectInspectorForm = class(TForm)
     OpenBitBtn: TBitBtn;
@@ -78,8 +84,11 @@ type
     procedure ReAddMenuItemClick(Sender: TObject);
     procedure RemoveBitBtnClick(Sender: TObject);
   private
+    FOnAddDependency: TAddProjInspDepEvent;
     FOnAddUnitToProject: TOnAddUnitToProject;
     FOnOpen: TNotifyEvent;
+    FOnReAddDependency: TAddProjInspDepEvent;
+    FOnRemoveDependency: TRemoveProjInspDepEvent;
     FOnRemoveFile: TRemoveProjInspFileEvent;
     FOnShowOptions: TNotifyEvent;
     FUpdateLock: integer;
@@ -127,8 +136,14 @@ type
     property OnShowOptions: TNotifyEvent read FOnShowOptions write FOnShowOptions;
     property OnAddUnitToProject: TOnAddUnitToProject read FOnAddUnitToProject
                                                      write FOnAddUnitToProject;
+    property OnAddDependency: TAddProjInspDepEvent
+                             read FOnAddDependency write FOnAddDependency;
     property OnRemoveFile: TRemoveProjInspFileEvent read FOnRemoveFile
                                                     write FOnRemoveFile;
+    property OnRemoveDependency: TRemoveProjInspDepEvent
+                             read FOnRemoveDependency write FOnRemoveDependency;
+    property OnReAddDependency: TAddProjInspDepEvent
+                             read FOnReAddDependency write FOnReAddDependency;
   end;
   
 var
@@ -248,8 +263,8 @@ begin
   a2pRequiredPkg:
     begin
       BeginUpdate;
-      LazProject.AddRequiredDependency(AddResult.Dependency);
-      PackageGraph.OpenDependency(AddResult.Dependency);
+      if Assigned(OnAddDependency) then
+        OnAddDependency(Self,AddResult.Dependency);
       UpdateItems;
       EndUpdate;
     end;
@@ -334,8 +349,7 @@ begin
   if (Dependency=nil) or (not Dependency.Removed)
   or (not CheckAddingDependency(LazProject,Dependency)) then exit;
   BeginUpdate;
-  LazProject.ReaddRemovedDependency(Dependency);
-  PackageGraph.OpenDependency(Dependency);
+  if Assigned(OnReAddDependency) then OnReAddDependency(Self,Dependency);
   EndUpdate;
 end;
 
@@ -350,7 +364,7 @@ begin
       Format(lisProjInspDeleteDependencyFor, [CurDependency.AsString]),
       mtConfirmation,[mbYes,mbNo],0)<>mrYes
     then exit;
-    LazProject.RemoveRequiredDependency(CurDependency);
+    if Assigned(OnRemoveDependency) then OnRemoveDependency(Self,CurDependency);
     exit;
   end;
   

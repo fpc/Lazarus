@@ -100,6 +100,12 @@ type
     function CheckProjectHasInstalledPackages(AProject: TProject): TModalResult; virtual; abstract;
     function CanOpenDesignerForm(AnUnitInfo: TUnitInfo): TModalResult; virtual; abstract;
     function OnProjectInspectorOpen(Sender: TObject): boolean; virtual; abstract;
+    function OnProjectInspectorAddDependency(Sender: TObject;
+                  ADependency: TPkgDependency): TModalResult; virtual; abstract;
+    function OnProjectInspectorRemoveDependency(Sender: TObject;
+                  ADependency: TPkgDependency): TModalResult; virtual; abstract;
+    function OnProjectInspectorReAddDependency(Sender: TObject;
+                  ADependency: TPkgDependency): TModalResult; virtual; abstract;
 
     // package editors
     function DoNewPackage: TModalResult; virtual; abstract;

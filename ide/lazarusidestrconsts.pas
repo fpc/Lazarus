@@ -2145,6 +2145,10 @@ resourcestring
   lisPkgMangErrorWritingPackage = 'Error Writing Package';
   lisPkgMangUnableToWritePackageToFileError = 'Unable to write package %s%s%s%'
     +'sto file %s%s%s.%sError: %s';
+  lisTheFollowingPackageSFailedToLoad = 'The following package(s) failed to '
+    +'load:%s%s';
+  lisSeeProjectProjectInspector = '%sSee Project -> Project Inspector';
+  lisMissingPackages = 'Missing Packages';
   lisPkgManginvalidCompilerFilename = 'invalid Compiler filename';
   lisPkgMangTheCompilerFileForPackageIsNotAValidExecutable = 'The compiler '
     +'file for package %s is not a valid executable:%s%s';
