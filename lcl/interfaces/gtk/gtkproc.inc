@@ -254,6 +254,28 @@ begin
   Assert(False, Format('Trace:< [CopyDCData] DestDC:0x%x, SourceDC:0x%x --> %d', [Integer(DestinationDC), Integer(SourceDC), Integer(Result)]));
 end;
 
+Function RegionType(RGN : PGDKRegion) : Longint;
+var
+  aRect : TGDKRectangle;
+  rRGN  : hRGN;
+begin
+  If RGN = nil then
+    Result := ERROR
+  else
+    If gdk_region_empty(RGN) then
+      Result := NULLREGION
+  else begin
+    gdk_region_get_clipbox(RGN,@aRect);
+    With aRect do
+      rRGN := CreateRectRgn(X, Y, X + Width, Y + Height);
+    if gdk_region_equal(PGDIObject(rRGN)^.GDIRegionObject, RGN) then
+      Result := SIMPLEREGION
+    else
+      Result := COMPLEXREGION;
+    DeleteObject(rRGN);
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Procedure SelectGDIRegion(const DC: HDC);
 
@@ -264,19 +286,134 @@ Procedure SelectGDIRegion(const DC: HDC);
 var
   Region: PGdiObject;
   DCOrigin: TPoint;
+  RGNType : Longint;
 begin
   with PDeviceContext(DC)^ do
   begin
     gdk_gc_set_clip_region(gc,  nil);
     gdk_gc_set_clip_rectangle (gc,  nil);
-    If ClipRegion <> 0 then begin
+    If (ClipRegion <> 0) then begin
       Region:=PGDIObject(ClipRegion);
-      DCOrigin:=GetDCOffset(PDeviceContext(DC));
-      if (DCOrigin.X<>0) or (DCOrigin.Y<>0) then
-        gdk_region_offset(Region^.GDIRegionObject,DCOrigin.X,DCOrigin.Y);
-      gdk_gc_set_clip_region(gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
-      if (DCOrigin.X<>0) or (DCOrigin.Y<>0) then
-        gdk_region_offset(Region^.GDIRegionObject,-DCOrigin.X,-DCOrigin.Y);
+      RGNType := RegionType(Region^.GDIRegionObject);
+      If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
+        DCOrigin:=GetDCOffset(PDeviceContext(DC));
+        if (DCOrigin.X<>0) or (DCOrigin.Y<>0) then
+          gdk_region_offset(Region^.GDIRegionObject,DCOrigin.X,DCOrigin.Y);
+        gdk_gc_set_clip_region(gc,  PGDIObject(ClipRegion)^.GDIRegionObject);
+        if (DCOrigin.X<>0) or (DCOrigin.Y<>0) then
+          gdk_region_offset(Region^.GDIRegionObject,-DCOrigin.X,-DCOrigin.Y);
+      end;
+    end;
+  end;
+end;
+
+Procedure FreeGDIColor(var GDIColor : TGDIColor);
+begin
+  If (GDIColor.Color.Pixel <> -1) and (GDIColor.Colormap <> nil) then
+    gdk_colormap_free_colors(GDIColor.Colormap,@GDIColor.Color, 1);
+
+  GDIColor.Color.Pixel := -1;
+end;
+
+Procedure AllocGDIColor(DC : hDC; var GDIColor : TGDIColor);
+var
+  RGBColor : Longint;
+begin
+  FreeGDIColor(GDIColor);
+  
+  Case GDIColor.ColorRef of
+    clScrollbar..clEndColors:
+      RGBColor := GetSysColor(GDIColor.ColorRef and $FF);
+    else
+      RGBColor := GDIColor.ColorRef and $FFFFFF;
+  end;
+  
+  With GDIColor.Color do begin
+    Red := RGB(0,GetRValue(RGBColor),0);
+    Green := RGB(0,GetGValue(RGBColor),0);
+    Blue := RGB(0,GetBValue(RGBColor),0);
+    Pixel := 0;
+  end;
+
+  with PDeviceContext(DC)^ do
+    If CurrentPalette <> nil then
+      GDIColor.Colormap := CurrentPalette^.PaletteColormap
+    else
+      GDIColor.Colormap := GDK_Colormap_get_system;
+
+  gdk_colormap_alloc_color(GDIColor.Colormap, @GDIColor.Color,True,True);
+end;
+
+Procedure EnsureGCColor(DC : hDC; GC : PGDKGC; var GDIColor : TGDIColor;
+  IsSolidBrush : Boolean; AsBackground : Boolean);
+
+  Procedure EnsureAsGCValues;
+  var
+    AllocFG : Boolean;
+  begin
+    FreeGDIColor(GDIColor);
+    With GetSysGCValues(GDIColor.ColorRef) do begin
+      gdk_gc_set_fill(GC, fill);
+      AllocFG := Foreground.Pixel = 0;
+      If AllocFG then
+        gdk_colormap_alloc_color(GDK_Colormap_get_system, @Foreground,True,True);
+      gdk_gc_set_foreground(GC, @foreground);
+      Case Fill of
+        GDK_TILED :
+          If Tile <> nil then
+          begin
+            gdk_gc_set_ts_origin(GC, ts_x_origin, ts_y_origin);
+            gdk_gc_set_tile(GC, Tile);
+          end;
+        GDK_STIPPLED,
+        GDK_OPAQUE_STIPPLED:
+          If stipple <> nil then begin
+            gdk_gc_set_background(GC, @background);
+            gdk_gc_set_ts_origin(GC, ts_x_origin, ts_y_origin);
+            gdk_gc_set_stipple(GC, stipple);
+          end;
+      end;
+      If AllocFG then
+        gdk_colormap_free_colors(GDK_Colormap_get_system, @Foreground,1);
+    end;
+  end;
+
+  Procedure EnsureAsColor;
+  begin
+    AllocGDIColor(DC, GDIColor);
+    If AsBackground then
+      gdk_gc_set_background(GC, @GDIColor.Color)
+    else begin
+      gdk_gc_set_fill(GC, GDK_SOLID);
+      gdk_gc_set_foreground(GC, @GDIColor.Color);
+    end;
+  end;
+  
+begin
+  with PDeviceContext(DC)^ do
+  begin
+    Case GDIColor.ColorRef of
+      clScrollbar,
+      clInfoBk,
+      clMenu,
+      clHighlight,
+      clHighlightText,
+      clBtnFace:  //often have a BK Pixmap
+        If IsSolidBrush then
+          EnsureAsGCValues
+        else
+          EnsureAsColor;//GC's with Pixmaps can't work w/Hatch's (yet)
+      clBtnShadow,
+      clBtnHighlight,
+      clBtnText,
+      clInfoText,
+      clWindow,
+      clWindowText,
+      clMenuText,
+      clGrayText ://should never have a BK Pixmap
+        EnsureAsGCValues;
+      else
+        EnsureAsColor;
     end;
   end;
 end;
@@ -292,12 +429,17 @@ procedure SelectGDKBrushProps(const DC: HDC);
 begin
   with PDeviceContext(DC)^, CurrentBrush^ do
   begin
-    Assert(False, Format('Trace:  [SelectGDKBrushProps] Fill: %d | Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [Integer(GDIBrushFill), GDIBrushColor.Pixel, GDIBrushColor.Red, GDIBrushColor.Green, GDIBrushColor.Blue]));
-    gdk_gc_set_fill(GC, GDIBrushFill);
-    gdk_gc_set_foreground(GC, @GDIBrushColor);
-    gdk_gc_set_background(GC, @CurrentBackColor);
-    //SelectGDIRegion(DC);
-    //TODO: Brush pixmap
+    Assert(False, Format('Trace:  [SelectGDKBrushProps] Fill: %d | Color: 0x%x', [Integer(GDIBrushFill), GDIBrushColor.ColorRef]));
+
+    EnsureGCColor(DC, GC, CurrentBackColor, True, True);//BKColor
+    EnsureGCColor(DC, GC, GDIBrushColor, GDIBrushFill = GDK_Solid, False);//Brush Color
+    
+    If GDIBrushFill <> GDK_Solid then
+      If GDIBrushPixmap <> nil then begin
+        gdk_gc_set_fill(GC, GDIBrushFill);
+        gdk_error_trap_push;//Image errors can kill us
+        gdk_gc_set_Stipple(GC,GDIBrushPixmap);
+      end
   end;
 end;
 
@@ -312,10 +454,10 @@ procedure SelectGDKPenProps(const DC: HDC);
 begin
   with PDeviceContext(DC)^, CurrentPen^ do
   begin
-    gdk_gc_set_foreground(GC, @GDIPenColor);
-    gdk_gc_set_background(GC, @CurrentBackColor);
-    gdk_gc_set_fill(GC, GDK_SOLID);
-    if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME) 
+    IsNullPen := GDIPenStyle = PS_NULL;
+    EnsureGCColor(DC, GC, CurrentBackColor, True, True);//BKColor
+    EnsureGCColor(DC, GC, GDIPenColor, False, False);//Pen Color
+    if (GDIPenStyle = PS_SOLID) or (GDIPenStyle = PS_INSIDEFRAME)
     then begin
       gdk_gc_set_line_attributes(GC, GDIPenWidth, GDK_LINE_SOLID, 0, 0)
     end 
@@ -326,7 +468,8 @@ begin
         PS_DOT:        gdk_gc_set_dashes(GC, 0, [2,2], 2);
         PS_DASHDOT:    gdk_gc_set_dashes(GC, 0, [4,2,2,2,0], 4);
         PS_DASHDOTDOT: gdk_gc_set_dashes(GC, 0, [4,2,2,2,2,2], 6);
-        PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
+       {This is DEADLY!!!}
+        //PS_NULL:       gdk_gc_set_dashes(GC, 0, [0,4], 2);
       end;  
     end;
   end;
@@ -343,10 +486,9 @@ procedure SelectGDKTextProps(const DC: HDC);
 begin
   with PDeviceContext(DC)^ do
   begin
-    gdk_gc_set_fill(GC, GDK_SOLID);
-    gdk_gc_set_foreground(GC, @CurrentTextColor);
-    gdk_gc_set_background(GC, @CurrentBackColor);
-    Assert(False, Format('trace:  [SelectGDKTextProps] Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [CurrentTextColor.Pixel, CurrentTextColor.Red, CurrentTextColor.Green, CurrentTextColor.Blue]));
+    EnsureGCColor(DC, GC, CurrentBackColor, True, True);//BKColor
+    EnsureGCColor(DC, GC, CurrentTextColor, False, False);//Font Color
+    Assert(False, Format('trace:  [SelectGDKTextProps] Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [CurrentTextColor.Color.Pixel, CurrentTextColor.Color.Red, CurrentTextColor.Color.Green, CurrentTextColor.Color.Blue]));
   end;
 end;
 
@@ -2428,27 +2570,6 @@ begin
 
 end;
 
-{------------------------------------------------------------------------------
-  Function: GetPen
-  Params: f : PgdkDrawable; Value : TgdkColor
-  Result: pgdkGC;
-
-
- ------------------------------------------------------------------------------}
-Function GetPen(f : PgdkDrawable; Value : TgdkColor) : pgdkGC;
-Var
-  gc : PgdkGC;
-Begin
-  ReportNotObsolete('GetPen');
-
-  gdk_color_alloc (gdk_colormap_get_system (), @value);
-  gc := gdk_gc_new (f);
-  gdk_gc_set_foreground (gc, @value);
-  result := gc;
-
-  Assert(False, 'Trace:OBSOLETE gtkproc.inc GetPen');
-end;
-
 
 {------------------------------------------------------------------------------
   Function: WaitForClipbrdAnswerDummyTimer
@@ -2653,6 +2774,7 @@ end;
 function GetStyle(const WName : String) : PGTKStyle;
 var
   Wd : PGTKWidget;
+  Tp : Pointer;
   l : Longint;
   Style: PGtkStyle;
 begin
@@ -2673,9 +2795,29 @@ begin
       If AnsiCompareText(WName,'radiobutton')=0 then
         Wd := GTK_RADIO_BUTTON_NEW(nil)
     else
+      If AnsiCompareText(WName,'menu')=0 then
+        Wd := GTK_MENU_NEW
+    else
+      If AnsiCompareText(WName,'menuitem')=0 then
+        Wd := GTK_MENU_ITEM_NEW
+    else
+      If AnsiCompareText(WName,'scrollbar')=0 then
+        Wd := gtk_hscrollbar_new(nil)//can't dif. between Horiz/Vert. Styles
+    else
+      If AnsiCompareText(WName,'tooltip')=0 then begin
+        TP := gtk_tooltips_new;
+        wd := GTK_Button_New;
+        gtk_tooltips_set_tip(TP,WD,'Dummy', 'Dummy Style Test');
+        GTK_Tooltips_Force_Window(TP);
+        gtk_widget_ensure_style(PGTKTooltips(TP)^.Tip_Window);
+        Style:=GTK_RC_GET_STYLE(PGTKTooltips(TP)^.Tip_Window);
+      end
+    else
       exit;
-    gtk_widget_ensure_style(Wd);
-    Style:=GTK_RC_GET_STYLE(Wd);
+    If AnsiCompareText(WName,'tooltip')<>0 then begin
+      gtk_widget_ensure_style(Wd);
+      Style:=GTK_RC_GET_STYLE(Wd);
+    end;
     If Style <> nil then
       Style:=GTK_Style_Ref(Style);
     if Style <> nil then begin
@@ -2683,6 +2825,8 @@ begin
       Result:=Style;
       UpdateSysColorMap(Wd);
     end;
+    If AnsiCompareText(WName,'tooltip')=0 then
+      GTK_Object_Destroy(Tp);
     GTK_Widget_Destroy(Wd);
   end else
     Result := PGTKStyle(Styles.Objects[l]);
@@ -2717,6 +2861,223 @@ begin
 
   If Result = nil then
     Result := gdk_fontset_load('-*-fixed-*-*-*-*-*-120-*-*-*-*-*-*');
+end;
+
+Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
+var
+  Style : PGTKStyle;
+  GC : PGDKGC;
+  Pixmap : PGDKPixmap;
+  SysColor : TColorRef;
+begin
+  Color := Color and $FF;
+
+  {Set defaults in case something goes wrong}
+  FillChar(Result, SizeOf(Result), 0);
+  SysColor := GetSysColor(Color);
+  Result.foreground.Red := RGB(0,GetRValue(SysColor),0);
+  Result.foreground.Green := RGB(0,GetGValue(SysColor),0);
+  Result.foreground.Blue := RGB(0,GetBValue(SysColor),0);
+  Result.Fill := GDK_Solid;
+  {$IfDef Disable_GC_SysColors}
+    exit;
+  {$EndIf}
+  Case Color of
+    {These are WM/X defined, but might be possible to get}
+
+    {COLOR_BACKGROUND
+    COLOR_CAPTIONTEXT
+    COLOR_INACTIVECAPTIONTEXT}
+
+    {These Are incompatible or WM defined}
+    
+    {COLOR_ACTIVECAPTION
+    COLOR_INACTIVECAPTION
+    COLOR_GRADIENTACTIVECAPTION
+    COLOR_GRADIENTINACTIVECAPTION
+    COLOR_WINDOWFRAME
+    COLOR_ACTIVEBORDER
+    COLOR_INACTIVEBORDER}
+
+    COLOR_INFOBK :
+      begin
+        Style := GetStyle('tooltip');
+
+        If Style = nil then
+          exit;
+
+        Pixmap := Style^.bg_pixmap[GTK_STATE_NORMAL];
+        If Pixmap <> nil then begin
+          Result.Fill := GDK_Tiled;
+          Result.Tile := Pixmap;
+        end else begin
+          GC := Style^.bg_gc[GTK_STATE_NORMAL];
+          If GC = nil then begin
+            Result.Fill := GDK_Solid;
+            Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
+          end
+          else
+            GDK_GC_Get_Values(GC, @Result);
+        end;
+      end;
+
+    COLOR_INFOTEXT :
+      begin
+        Style := GetStyle('tooltip');
+
+        If Style = nil then
+          exit;
+
+        GC := Style^.fg_gc[GTK_STATE_NORMAL];
+        If GC = nil then begin
+          Result.Fill := GDK_Solid;
+          Result.foreground := Style^.fg[GTK_STATE_NORMAL];
+        end
+        else
+          GDK_GC_Get_Values(GC, @Result);
+      end;
+
+    COLOR_Menu,
+    COLOR_SCROLLBAR,
+    COLOR_BTNFACE :
+      begin
+        Case Color of
+          COLOR_BTNFACE : Style := GetStyle('button');
+          COLOR_MENU : Style := GetStyle('menu');
+          COLOR_SCROLLBAR : Style := GetStyle('scrollbar');
+        end;
+          
+        If Style = nil then
+          exit;
+          
+        Pixmap := Style^.bg_pixmap[GTK_STATE_NORMAL];
+        If Pixmap <> nil then begin
+          Result.Fill := GDK_Tiled;
+          Result.Tile := Pixmap;
+        end else begin
+          GC := Style^.bg_gc[GTK_STATE_NORMAL];
+          If GC = nil then begin
+            Result.Fill := GDK_Solid;
+            Result.foreground := Style^.fg[GTK_STATE_NORMAL];
+          end
+          else
+            GDK_GC_Get_Values(GC, @Result);
+        end;
+      end;
+
+    COLOR_3DDKSHADOW,
+    COLOR_BTNSHADOW :
+      begin
+        Style := GetStyle('button');
+        If Style = nil then
+          exit;
+        GC := Style^.dark_gc[GTK_STATE_NORMAL];
+        If GC = nil then begin
+          Result.Fill := GDK_Solid;
+          Result.foreground := Style^.dark[GTK_STATE_NORMAL];
+        end
+        else
+          GDK_GC_Get_Values(GC, @Result);
+      end;
+
+    COLOR_GRAYTEXT :
+      begin
+        Style := GetStyle('default');
+        If Style = nil then
+          exit;
+        GC := Style^.text_gc[GTK_STATE_INSENSITIVE];
+        GDK_GC_Get_Values(GC, @Result);
+      end;
+
+    COLOR_MENUTEXT,
+    COLOR_WINDOWTEXT,
+    COLOR_BTNTEXT :
+      begin
+        Case Color of
+          COLOR_BTNTEXT : Style := GetStyle('button');
+          COLOR_MENUTEXT : Style := GetStyle('menuitem');
+          COLOR_WINDOWTEXT : Style := GetStyle('default');
+        end;
+        If Style = nil then
+          exit;
+        GC := Style^.text_gc[GTK_STATE_NORMAL];
+        If GC = nil then begin
+          Result.Fill := GDK_Solid;
+          Result.foreground := Style^.text[GTK_STATE_NORMAL];
+        end
+        else
+          GDK_GC_Get_Values(GC, @Result);
+      end;
+
+    COLOR_3DLIGHT,
+    COLOR_BTNHIGHLIGHT :
+      begin
+        Style := GetStyle('button');
+        If Style = nil then
+          exit;
+        GC := Style^.light_gc[GTK_STATE_NORMAL];
+        If GC = nil then begin
+          Result.Fill := GDK_Solid;
+          Result.foreground := Style^.light[GTK_STATE_NORMAL];
+        end
+        else
+          GDK_GC_Get_Values(GC, @Result);
+      end;
+
+    COLOR_WINDOW :
+      begin
+        Style := GetStyle('default');
+        If Style = nil then
+          exit;
+        GC := Style^.base_gc[GTK_STATE_ACTIVE];
+        If GC = nil then begin
+          Result.Fill := GDK_Solid;
+          Result.foreground := Style^.base[GTK_STATE_ACTIVE];
+        end
+        else
+          GDK_GC_Get_Values(GC, @Result);
+      end;
+
+    COLOR_HIGHLIGHT :
+      begin
+        Style := GetStyle('default');
+        If Style = nil then
+          exit;
+        GC := Style^.bg_gc[GTK_STATE_SELECTED];
+        If GC = nil then begin
+          Result.Fill := GDK_Solid;
+          Result.foreground := Style^.bg[GTK_STATE_SELECTED];
+        end
+        else
+          GDK_GC_Get_Values(GC, @Result);
+      end;
+
+    COLOR_HIGHLIGHTTEXT :
+      begin
+        Style := GetStyle('default');
+        If Style = nil then
+          exit;
+        GC := Style^.bg_gc[GTK_STATE_PRELIGHT];
+        If GC = nil then begin
+          Result.Fill := GDK_Solid;
+          Result.foreground := Style^.bg[GTK_STATE_PRELIGHT];
+        end
+        else
+          GDK_GC_Get_Values(GC, @Result);
+      end;
+
+    {?????????????
+    COLOR_HOTLIGHT :
+      begin
+      end;
+    ?????????????}
+
+    {?????????????????
+    COLOR_APPWORKSPACE :
+      begin
+      end;
+    ?????????????????}
+  end;
 end;
 
 Function DeleteAmpersands(var Str : String) : Longint;
@@ -2861,6 +3222,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.100  2002/09/18 17:07:29  lazarus
+  MG: added patch from Andrew
+
   Revision 1.99  2002/09/16 15:56:02  lazarus
   Resize cursors in designer.
 
