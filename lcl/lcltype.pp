@@ -704,9 +704,9 @@ const
 
   SWP_NOSIZE = 1;
   SWP_NOMOVE = 2;
-  SWP_NOZORDER = 3;
-  SWP_NOREDRAW = 4;
-  SWP_NOACTIVATE = 5;
+  SWP_NOZORDER = 4;
+  SWP_NOREDRAW = 8;
+  SWP_NOACTIVATE = $10;
 
 { WMSIZE Message Constants}
   Size_Restored = 0; // the default
@@ -714,7 +714,7 @@ const
   Size_Maximized = 2;
   Size_MaxShow = 3;
   Size_MaxHide = 4;
-  Size_SourceIsInterface = 128; // this is flag. Can be combined with the above
+  Size_SourceIsInterface = 128; // this is a flag. Can be combined with the above
 
   SIZENORMAL = Size_Restored;
   SIZEICONIC = Size_Minimized;
@@ -1983,6 +1983,9 @@ end.
 
 {
   $Log$
+  Revision 1.58  2004/02/13 15:49:54  mattias
+  started advanced LCL auto sizing
+
   Revision 1.57  2004/02/04 13:40:19  mattias
   ShortCutToText now deletes any modifier
 

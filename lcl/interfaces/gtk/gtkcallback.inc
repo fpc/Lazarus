@@ -623,7 +623,7 @@ begin
   if GtkWidgetIsA(Widget,gtk_window_get_type) then begin
     FocusedWidget:=PGtkWindow(Widget)^.focus_widget;
     if FocusedWidget<>nil then begin
-      LCLObject:=GetParentLCLObject(FocusedWidget);
+      LCLObject:=GetNearestLCLObject(FocusedWidget);
       if LCLObject is TWinControl then begin
         FocusedWinControl:=TWinControl(LCLObject);
         if FocusedWidget<>Widget then begin
@@ -1419,8 +1419,9 @@ begin
     if not ControlGetsMouseDownBefore(TControl(Data)) then exit;
 
     // grabbing for TSplitter -> Maybe ths is the key for drag&drop
-    if TWinControl(Data) is TCustomSplitter then begin
-      CaptureWidget:=PGtkWidget(TCustomSplitter(Data).Handle);
+    CaptureWidget:=PGtkWidget(TWinControl(Data).Handle);
+    if (GtkWidgetIsA(CaptureWidget,GTKAPIWidget_GetType))
+    or (TWinControl(Data) is TCustomSplitter) then begin
       CaptureWidget:=GetWidgetInfo(CaptureWidget,true)^.ImplementationWidget;
       if not gtk_widget_has_focus(CaptureWidget) then
         gtk_widget_grab_focus(CaptureWidget);
@@ -1586,8 +1587,9 @@ begin
   if not (csDesigning in TComponent(Data).ComponentState) then begin
     DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
     
-    if TWinControl(Data) is TCustomSplitter then begin
-      CaptureWidget:=PGtkWidget(TCustomSplitter(Data).Handle);
+    CaptureWidget:=PGtkWidget(TWinControl(Data).Handle);
+    if GtkWidgetIsA(CaptureWidget,GTKAPIWidget_GetType)
+    or (TWinControl(Data) is TCustomSplitter) then begin
       CaptureWidget:=GetWidgetInfo(CaptureWidget,true)^.ImplementationWidget;
       if Event^.button=1 then
         gtk_grab_remove(CaptureWidget);
@@ -3069,6 +3071,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.219  2004/02/13 15:49:54  mattias
+  started advanced LCL auto sizing
+
   Revision 1.218  2004/02/07 18:04:14  mattias
   fixed grids OnDrawCells
 

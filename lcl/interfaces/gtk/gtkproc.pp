@@ -290,12 +290,13 @@ procedure FreeWinWidgetInfo(Widget: Pointer);
 procedure DestroyWidget(Widget: PGtkWidget);
 procedure SetLCLObject(const Widget: Pointer; const AnObject: TObject);
 function GetLCLObject(const Widget: Pointer): TObject;
-function GetParentLCLObject(Widget: PGtkWidget): TObject;
+function GetNearestLCLObject(Widget: PGtkWidget): TObject;
 procedure SetHiddenLCLObject(const Widget: Pointer; const AnObject: TObject);
 function GetHiddenLCLObject(const Widget: Pointer): TObject;
-function GetParentWidget(Child: PGtkWidget): PGtkWidget;
-function GetParentFixedWidget(Child: PGtkWidget): PGtkWidget;
-function FindFixedChild(ParentFixed: PGtkFixed; Child: PGtkWidget): PGList;
+function GetWinControlWidget(Child: PGtkWidget): PGtkWidget;
+function GetWinControlFixedWidget(Child: PGtkWidget): PGtkWidget;
+function FindFixedChildListItem(ParentFixed: PGtkFixed; Child: PGtkWidget): PGList;
+function FindFixedLastChildListItem(ParentFixed: PGtkFixed): PGList;
 
 // fixed widgets
 Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);

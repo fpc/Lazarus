@@ -519,6 +519,11 @@ begin
   if Showing then AdjustSize;
 end;
 
+procedure TWinControl.DoChildSizingChange(Sender: TObject);
+begin
+  AdjustSize;
+end;
+
 Procedure TWinControl.DoAutoSize;
 var
   I : Integer;
@@ -965,13 +970,13 @@ const
 var
   i: integer;
 begin
-  if FParent <> nil then
-  begin
+  if FParent <> nil then begin
     if TopMost then
       i := FParent.FWinControls.Count - 1
     else
       i := 0;
-    if FParent.FControls <> nil then inc(i, FParent.FControls.Count);
+    if FParent.FControls <> nil then
+      inc(i, FParent.FControls.Count);
     SetZOrderPosition(i);
   end
   else if HandleAllocated then begin
@@ -1024,16 +1029,6 @@ begin
     end;
     WindowProc(TLMessage(MoveMsg));
   end;
-{//  Flags := SWP_NOZORDER or SWP_NOACTIVATE;
-  Flags := $14;
-  if not SizeChanged then
-//    Flags := Flags or SWP_NOSIZE
-    Flags := Flags or $1
-  else
-  // if not PosChanged then
-//    Flags := Flags or SWP_NOMOVE;
-    Flags := Flags or $2;
-  SetWindowPos(Handle, 0, FLeft, FTop, FWidth, FHeight, Flags);}
 end;
 
 {------------------------------------------------------------------------------}
@@ -1078,38 +1073,39 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  procedure TWinControl.SetZOrderPosition(Position: Integer);
+  procedure TWinControl.SetZOrderPosition(NewPosition: Integer);
 
 -------------------------------------------------------------------------------}
-procedure TWinControl.SetZOrderPosition(Position: Integer);
+procedure TWinControl.SetZOrderPosition(NewPosition: Integer);
 var
-  I, Count: Integer;
+  OldPosition, Count: Integer;
   Pos: HWND;
 begin
   if FParent <> nil then
   begin
     if FParent.FControls <> nil then
-      Dec(Position, FParent.FControls.Count);
-    I := FParent.FWinControls.IndexOf(Self);
-    if I >= 0 then
+      Dec(NewPosition, FParent.FControls.Count);
+    OldPosition := FParent.FWinControls.IndexOf(Self);
+    if OldPosition >= 0 then
     begin
       Count := FParent.FWinControls.Count;
-      if Position < 0 then Position := 0;
-      if Position >= Count then Position := Count - 1;
-      if Position <> I then
+      if NewPosition < 0 then NewPosition := 0;
+      if NewPosition >= Count then NewPosition := Count - 1;
+      if NewPosition <> OldPosition then
       begin
-        FParent.FWinControls.Delete(I);
-        FParent.FWinControls.Insert(Position, Self);
+        FParent.FWinControls.Move(OldPosition,NewPosition);
       end;
     end;
     if HandleAllocated then
     begin
-      if Position = 0 then Pos := HWND_BOTTOM
-      else if Position = FParent.FWinControls.Count - 1 then Pos := HWND_TOP
-      else if Position > I then
-        Pos := TWinControl(FParent.FWinControls[Position + 1]).Handle
-      else if Position < I then
-        Pos := TWinControl(FParent.FWinControls[Position]).Handle
+      if NewPosition = 0 then
+        Pos := HWND_BOTTOM
+      else if NewPosition = FParent.FWinControls.Count - 1 then
+        Pos := HWND_TOP
+      else if NewPosition > OldPosition then
+        Pos := TWinControl(FParent.FWinControls[NewPosition + 1]).Handle
+      else if NewPosition < OldPosition then
+        Pos := TWinControl(FParent.FWinControls[NewPosition]).Handle
       else Exit;
       SetWindowPos(Handle, Pos, 0, 0, 0, 0, SWP_NOMOVE + SWP_NOSIZE);
     end;
@@ -1693,37 +1689,34 @@ end;
 -------------------------------------------------------------------------------}
 procedure TWinControl.SetControlIndex(AControl: TControl; NewIndex: integer);
 begin
-  if AControl<>nil then
-    AControl.SetZOrderPosition(NewIndex);
+  if AControl=nil then exit;
+  AControl.SetZOrderPosition(NewIndex);
 end;
 
 {------------------------------------------------------------------------------}
 {  TWinControl DestroyHandle                                                   }
 {------------------------------------------------------------------------------}
 procedure TWinControl.DestroyHandle;
-var i : integer;
+var
+  i: integer;
+  AWinControl: TWinControl;
 begin
   if not HandleAllocated then begin
     writeln('Warning: TWinControl.DestroyHandle ',Name,':',ClassName,' Handle not Allocated');
-    // create an gdb catchable exception:
-    // if (length(Name) div (length(Name) div 10000))=0 then ;
+    //RaiseGDBException('');
   end;
 
-  { Destroy all children handles, too }
-  { If we don't do that, GTK does this without notification for us and we crash }
-  { TODO : We can enable HandleAllocated condition only when all controls, especially
-    TNotebook / TPage set their Handles correctly, i.e. mirror the GTK behavior }
-//  if HandleAllocated then begin
-    if FWinControls <> nil then begin
-      for i:= 0 to FWinControls.Count - 1 do begin
-        //writeln('  i=',i);
-        //writeln('  ',TWinControl(FWinControls[i]).Name,':',TWinControl(FWinControls[i]).ClassName);
-        if TWinControl(FWinControls[i]).HandleAllocated then
-          TWinControl(FWinControls[i]).DestroyHandle;
-      end;
+  // First destroy all children handles
+  if FWinControls <> nil then begin
+    for i:= 0 to FWinControls.Count - 1 do begin
+      //writeln('  i=',i);
+      //writeln('  ',TWinControl(FWinControls[i]).Name,':',TWinControl(FWinControls[i]).ClassName);
+      AWinControl:=TWinControl(FWinControls[i]);
+      if AWinControl.HandleAllocated then
+        AWinControl.DestroyHandle;
     end;
-    DestroyWnd;
-//  end;
+  end;
+  DestroyWnd;
 end;
 
 {------------------------------------------------------------------------------
@@ -2133,30 +2126,40 @@ end;
 {------------------------------------------------------------------------------}
 procedure TWinControl.Insert(AControl : TControl);
 begin
-  if AControl <> nil then
-  begin
-    if AControl = Self
-    then begin
-      Assert(False, 'Trace:[TControl.SetParent] EInvalidOperation --> AControl = Self');
-      raise EInvalidOperation.Create(rsAControlCanNotHaveItselfAsParent);
-    end;
-
-    if AControl is TWinControl then
-    begin
-      ListAdd(FWinControls, AControl);
-      ListAdd(FTabList, AControl);
-    end else
-      ListAdd(FControls, AControl);
-
-    AControl.FParent := Self;
-
-    If (csDesigning in ComponentState)
-    and not (csLoading in ComponentState)
-    then
-      If AControl.CanTab then
-        AControl.TabStop := True;
-  end;
+  Insert(AControl,ControlCount);
 End;
+
+{------------------------------------------------------------------------------
+  procedure TWinControl.Insert(AControl: TControl; Index: integer);
+------------------------------------------------------------------------------}
+procedure TWinControl.Insert(AControl: TControl; Index: integer);
+begin
+  if AControl = nil then exit;
+  
+  if AControl = Self then
+    raise EInvalidOperation.Create(rsAControlCanNotHaveItselfAsParent);
+
+  if AControl is TWinControl then
+  begin
+    if (FControls<>nil) then dec(Index,FControls.Count);
+    if (FWinControls<>nil) and (Index<FWinControls.Count) then
+      FWinControls.Insert(Index,AControl)
+    else
+      ListAdd(FWinControls, AControl);
+    ListAdd(FTabList, AControl);
+  end else begin
+    if (FControls<>nil) and (Index<FControls.Count) then
+      FControls.Insert(Index,AControl)
+    else
+      ListAdd(FControls, AControl);
+  end;
+
+  AControl.FParent := Self;
+
+  If (csDesigning in ComponentState) and (not (csLoading in ComponentState))
+  and AControl.CanTab then
+    AControl.TabStop := True;
+end;
 
 {------------------------------------------------------------------------------
   TWinControl ReAlign
@@ -2229,9 +2232,14 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.InsertControl(AControl : TControl);
 Begin
+  InsertControl(AControl,ControlCount);
+End;
+
+procedure TWinControl.InsertControl(AControl: TControl; Index: integer);
+begin
   AControl.ValidateContainer(Self);
   Perform(CM_CONTROLLISTCHANGE, WParam(AControl), LParam(True));
-  Insert(AControl);
+  Insert(AControl,Index);
   if not (csReadingState in AControl.ControlState) then
   begin
     AControl.Perform(CM_PARENTCOLORCHANGED, 0, 0);
@@ -2248,7 +2256,7 @@ Begin
   end;
   AControl.RequestAlign;
   Perform(CM_CONTROLCHANGE, WParam(AControl), LParam(True));
-End;
+end;
 
 {------------------------------------------------------------------------------}
 {  TWinControl removeControl                                                   }
@@ -2407,6 +2415,8 @@ constructor TWinControl.Create(TheOwner : TComponent);
 begin
   inherited Create(TheOwner);
   FCompStyle := csFixed;
+  FChildSizing:=TControlChildSizing.Create(Self);
+  FChildSizing.OnChange:=@DoChildSizingChange;
   FBrush := nil; // Brush will be created on demand. Only few controls need it.
 end;
 
@@ -2473,8 +2483,8 @@ begin
     n := ControlCount;
   end;
 
-  FBrush.Free;
-  FBrush:=nil;
+  FreeThenNil(FBrush);
+  FreeThenNil(FChildSizing);
   //writeln('[TWinControl.Destroy] D  ',Name,':',ClassName);
   inherited Destroy;
   //writeln('[TWinControl.Destroy] END  ',Name,':',ClassName);
@@ -3172,6 +3182,12 @@ begin
   Result:=0;
 end;
 
+procedure TWinControl.SetChildSizing(const AValue: TControlChildSizing);
+begin
+  if FChildSizing=AValue then exit;
+  FChildSizing.Assign(AValue);
+end;
+
 procedure TWinControl.SetDockSite(const AValue: Boolean);
 begin
   if FDockSite=AValue then exit;
@@ -3354,6 +3370,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.201  2004/02/13 15:49:54  mattias
+  started advanced LCL auto sizing
+
   Revision 1.200  2004/02/12 18:09:10  mattias
   removed win32 specific TToolBar code in new TToolBar, implemented TWinControl.FlipChildren
 

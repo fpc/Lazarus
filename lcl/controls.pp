@@ -26,6 +26,7 @@ unit Controls;
 
 {$mode objfpc}{$H+}
 {off $DEFINE BUFFERED_WMPAINT}
+
 interface
 
 {$ifdef Trace}
@@ -493,6 +494,10 @@ type
 
   TConstraintSize = 0..MaxInt;
 
+  TSizeConstraintsOption = (scoAdviceWidthAsMin, scoAdviceWidthAsMax,
+    scoAdviceHeightAsMin, scoAdviceHeightAsMax);
+  TSizeConstraintsOptions = set of TSizeConstraintsOption;
+
   TSizeConstraints = class(TPersistent)
   private
     FControl: TControl;
@@ -505,6 +510,8 @@ type
     FMinInterfaceWidth: integer;
     FMinWidth: TConstraintSize;
     FOnChange: TNotifyEvent;
+    FOptions: TSizeConstraintsOptions;
+    procedure SetOptions(const AValue: TSizeConstraintsOptions);
   protected
     procedure Change; dynamic;
     procedure AssignTo(Dest: TPersistent); override;
@@ -527,6 +534,7 @@ type
     property MinInterfaceHeight: integer read FMinInterfaceHeight;
     property MinInterfaceWidth: integer read FMinInterfaceWidth;
     property Control: TControl read FControl;
+    property Options: TSizeConstraintsOptions read FOptions write SetOptions default [];
   published
     property MaxHeight: TConstraintSize read FMaxHeight write SetMaxHeight default 0;
     property MaxWidth: TConstraintSize read FMaxWidth write SetMaxWidth default 0;
@@ -538,7 +546,58 @@ type
       var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize) of object;
 
 
-  TTabOrder = -1..32767;
+  { TControlBorderSpacing }
+  
+  { TControlBorderSpacing defines the spacing around a control, around its
+    childs and between its childs.
+
+    Left, Top, Right, Bottom: integer;
+        minimum space left to the control.
+        For example: Control A lies left of control B.
+        A has borderspacing Right=10 and B has borderspacing Left=5.
+        Then A and B will have a minimum space of 10 between.
+
+    Around: integer;
+        same as Left, Top, Right and Bottom all at once. This will be added to
+        the effective Left, Top, Right and Bottom.
+        Example: Left=3 and Around=5 results in a minimum spacing to the left
+        of 8.
+
+  }
+  
+  TSpacingSize = 0..MaxInt;
+
+  TControlBorderSpacing = class(TPersistent)
+  private
+    FAround: TSpacingSize;
+    FBottom: TSpacingSize;
+    FControl: TControl;
+    FLeft: TSpacingSize;
+    FOnChange: TNotifyEvent;
+    FRight: TSpacingSize;
+    FTop: TSpacingSize;
+    procedure SetAround(const AValue: TSpacingSize);
+    procedure SetBottom(const AValue: TSpacingSize);
+    procedure SetLeft(const AValue: TSpacingSize);
+    procedure SetRight(const AValue: TSpacingSize);
+    procedure SetTop(const AValue: TSpacingSize);
+  protected
+    procedure Change; dynamic;
+  public
+    constructor Create(OwnerControl: TControl);
+    procedure Assign(Source: TPersistent); override;
+    procedure AssignTo(Dest: TPersistent); override;
+    function IsEqual(Spacing: TControlBorderSpacing): boolean;
+  public
+    property Control: TControl read FControl;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  published
+    property Left: TSpacingSize read FLeft write SetLeft;
+    property Top: TSpacingSize read FTop write SetTop;
+    property Right: TSpacingSize read FRight write SetRight;
+    property Bottom: TSpacingSize read FBottom write SetBottom;
+    property Around: TSpacingSize read FAround write SetAround;
+  end;
 
 
   { TControlActionLink }
@@ -569,6 +628,8 @@ type
 
   { TControl }
 
+  TTabOrder = -1..32767;
+
   TControlShowHintEvent = procedure(Sender: TObject; HintInfo: Pointer) of object;
   TContextPopupEvent = procedure(Sender: TObject; MousePos: TPoint; var Handled: Boolean) of object;
 
@@ -595,6 +656,7 @@ type
     FBaseBounds: TRect;
     FBaseBoundsLock: integer;
     FBaseParentClientSize: TPoint;
+    FBorderSpacing: TControlBorderSpacing;
     FCaption : TCaption;
     FColor : TColor;
     FConstraints : TSizeConstraints;
@@ -693,6 +755,7 @@ type
     procedure DoDragMsg(var Dragmsg : TCMDrag);
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton; Shift:TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
+    procedure SetBorderSpacing(const AValue: TControlBorderSpacing);
     procedure SetBoundsRect(const ARect : TRect);
     procedure SetClientHeight(Value: Integer);
     procedure SetClientSize(Value: TPoint);
@@ -718,17 +781,36 @@ type
     procedure SetWidth(Value: Integer);
     Procedure UpdateTabOrder(value : TTabOrder);
   protected
-    AutoSizing : Boolean;
     FControlState: TControlState;
+  protected
+    // sizing/aligning
+    AutoSizing: Boolean;
     procedure AdjustSize; dynamic;
     procedure DoAutoSize; Virtual;
     procedure SetAlign(Value: TAlign); virtual;
     procedure SetAnchors(const AValue: TAnchors); virtual;
     procedure SetAutoSize(const Value : Boolean); virtual;
     procedure BoundsChanged; dynamic;
-    procedure DoConstraintsChange(Sender : TObject); virtual;
+    procedure DoConstraintsChange(Sender: TObject); virtual;
+    procedure DoBorderSpacingChange(Sender: TObject); virtual;
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); virtual;
-    procedure Changed;
+    procedure ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize); virtual;
+    procedure DoOnResize; virtual;
+    procedure DoOnChangeBounds; virtual;
+    procedure Resize; virtual;
+    procedure RequestAlign; dynamic;
+    procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,
+                               UseLoadedValues: boolean); virtual;
+    procedure LockBaseBounds;
+    procedure UnlockBaseBounds;
+    procedure UpdateAnchorRules;
+    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
+    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
+    procedure ChangeScale(M,D : Integer); dynamic;
+    Function CanAutoSize(var NewWidth, NewHeight : Integer): Boolean; virtual;
+    procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
+  protected
+    // protected messages
     procedure WMLButtonDown(Var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMRButtonDown(Var Message: TLMRButtonDown); message LM_RBUTTONDOWN;
     procedure WMMButtonDown(Var Message: TLMMButtonDown); message LM_MBUTTONDOWN;
@@ -758,22 +840,10 @@ type
     procedure CMParentColorChanged(var Message : TLMessage); message CM_PARENTCOLORCHANGED;
     procedure CMParentShowHintChanged(var Message : TLMessage); message CM_PARENTSHOWHINTCHANGED;
     procedure CMVisibleChanged(var Message : TLMessage); message CM_VISIBLECHANGED;
-    procedure ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize); virtual;
+    procedure Changed;
     function  GetPalette: HPalette; virtual;
-    procedure DoOnResize; virtual;
-    procedure DoOnChangeBounds; virtual;
-    procedure Resize; virtual;
     procedure Loaded; override;
     procedure AssignTo(Dest: TPersistent); override;
-    procedure RequestAlign; dynamic;
-    procedure UpdateBaseBounds(StoreBounds, StoreParentClientSize,
-                               UseLoadedValues: boolean); virtual;
-    procedure LockBaseBounds;
-    procedure UnlockBaseBounds;
-    procedure UpdateAnchorRules;
-    procedure ChangeBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
-    procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
-    procedure ChangeScale(M,D : Integer); dynamic;
     procedure BeginAutoDrag; dynamic;
     procedure DoEndDock(Target: TObject; X, Y: Integer); dynamic;
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); dynamic;
@@ -809,7 +879,6 @@ type
     procedure MouseMove(Shift: TShiftState; X,Y: Integer); Dynamic;
     procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
-    Function CanAutoSize(var NewWidth, NewHeight : Integer): Boolean; virtual;
     Function CanTab: Boolean; virtual;
     Function Focused : Boolean; dynamic;
     Procedure SetFocus; virtual;
@@ -822,7 +891,6 @@ type
     Function GetEnabled: Boolean; virtual;
     Function GetPopupMenu: TPopupMenu; dynamic;
     procedure DoOnShowHint(HintInfo: Pointer);
-    procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure VisibleChanging; dynamic;
     procedure AddControlHandler(HandlerType: TControlHandlerType;
                                 AMethod: TMethod; AsLast: boolean);
@@ -831,12 +899,13 @@ type
     procedure DoContextPopup(const MousePos: TPoint; var Handled: Boolean); virtual;
     procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
   protected
+    // optional properties (not every descendent supports them)
     property ActionLink: TControlActionLink read FActionLink write FActionLink;
     property AutoSize: Boolean read FAutoSize write SetAutoSize default FALSE;
+    property Ctl3D: Boolean read FCtl3D write FCtl3D;//Is this needed for anything other than compatability?
     property DragCursor: TCursor read FDragCursor write SetDragCursor default crDrag;
     property DragKind: TDragKind read FDragKind write FDragKind default dkDrag;
     property DragMode: TDragMode read fDragMode write SetDragMode default dmManual;
-    property IsControl: Boolean read FIsControl write FIsControl;
     property MouseCapture: Boolean read GetMouseCapture write SetMouseCapture;
     property ParentFont: Boolean  read FParentFont write FParentFont;
     property ParentColor: Boolean  read FParentColor write SetParentColor;
@@ -895,8 +964,8 @@ type
     Function  Dragging : Boolean;
     procedure Show;
     procedure Update; virtual;
-    procedure SetZOrderPosition(Position : Integer); virtual;
-    Procedure SetZOrder(Topmost: Boolean); virtual;
+    procedure SetZOrderPosition(NewPosition: Integer); virtual;
+    Procedure SetZOrder(TopMost: Boolean); virtual;
     function HandleObjectShouldBeVisible: boolean; virtual;
     procedure InitiateAction; virtual;
   public
@@ -908,9 +977,11 @@ type
                                        AsLast: boolean);
     procedure RemoveHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent);
   public
+    // standard properties, which should be supported by all descendents
     property Anchors: TAnchors read FAnchors write SetAnchors default [akLeft,akTop];
     property Action: TBasicAction read GetAction write SetAction;
     property Align: TAlign read FAlign write SetAlign;
+    property BorderSpacing: TControlBorderSpacing read FBorderSpacing write SetBorderSpacing;
     property BoundsRect: TRect read GetBoundsRect write SetBoundsRect;
     property Caption: TCaption read GetText write SetText stored IsCaptionStored;
     property ClientOrigin: TPoint read GetClientOrigin;
@@ -921,9 +992,13 @@ type
     property ControlState: TControlState read FControlState write FControlState;
     property ControlStyle: TControlStyle read FControlStyle write FControlStyle;
     property Color: TColor read FColor write SetColor stored ColorIsStored default clWindow;
-    property Ctl3D: Boolean read FCtl3D write FCtl3D;//Is this needed for anything other than compatability?
     property Enabled: Boolean read GetEnabled write SetEnabled stored IsEnabledStored default True;
     property Font: TFont read FFont write SetFont stored IsFontStored;
+    property IsControl: Boolean read FIsControl write FIsControl;
+    property OnResize: TNotifyEvent read FOnResize write FOnResize;
+    property OnChangeBounds: TNotifyEvent read FOnChangeBounds write FOnChangeBounds;
+    property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
+    property OnShowHint: TControlShowHintEvent read FOnShowHint write FOnShowHint;
     property Parent: TWinControl read FParent write SetParent;
     property PopupMenu: TPopupmenu read GetPopupmenu write SetPopupMenu;
     property ShowHint: Boolean read FShowHint write SetShowHint stored IsShowHintStored default False;
@@ -941,11 +1016,6 @@ type
     property TBDockHeight: Integer read GetTBDockHeight write FTBDockHeight;
     property UndockHeight: Integer read GetUndockHeight write FUndockHeight;
     property UndockWidth: Integer read GetUndockWidth write FUndockWidth;
-  public
-    property OnResize: TNotifyEvent read FOnResize write FOnResize;
-    property OnChangeBounds: TNotifyEvent read FOnChangeBounds write FOnChangeBounds;
-    property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
-    property OnShowHint: TControlShowHintEvent read FOnShowHint write FOnShowHint;
   published
     property Cursor: TCursor read FCursor write SetCursor default crDefault;
     property Left: Integer read FLeft write SetLeft;
@@ -974,6 +1044,140 @@ type
   TBorderWidth = 0..MaxInt;
 
   TGetChildProc = procedure(Child: TComponent) of Object;
+
+  { TControlChildSizing }
+
+  { LeftRightSpacing, TopBottomSpacing: integer;
+        minimum space between left client border and left most childs.
+        For example: ClientLeftRight=5 means childs Left position is at least 5.
+
+    HorizontalSpacing, VerticalSpacing: integer;
+        minimum space between each child horizontally
+  }
+
+  {   Defines how child controls are resized/aligned.
+
+      cesAnchorAligning, cssAnchorAligning
+        Anchors and Align work like Delphi. For example if Anchors property of
+        the control is [akLeft], it means fixed distance between left border of
+        parent's client area. [akRight] means fixed distance between right
+        border of the control and the right border of the parent's client area.
+        When the parent is resized the child is moved to keep the distance.
+        [akLeft,akRight] means fixed distance to left border and fixed distance
+        to right border. When the parent is resized, the controls width is
+        changed (resized) to keep the left and right distance.
+        Same for akTop,akBottom.
+
+        Align=alLeft for a control means set Left leftmost, Top topmost and
+        maximize Height. The width is kept, if akRight is not set. If akRight
+        is set in the Anchors property, then the right distance is kept and
+        the control's width is resized.
+        If there several controls with Align=alLeft, they will not overlapp and
+        be put side by side.
+        Same for alRight, alTop, alBottom. (Always expand 3 sides).
+
+        Align=alClient. The control will fill the whole remaining space.
+        Setting two childs to Align=alClient does only make sense, if you set
+        maximum Constraints.
+
+        Order: First all alTop childs are resized, then alBottom, then alLeft,
+        then alRight and finally alClient.
+
+      cesScaleChilds, cssScaleChilds
+        Scale childs, keep space between them fixed.
+        Childs are resized to their normal/adviced size. If there is some space
+        left in the client area of the parent, then the childs are scaled to
+        fill the space. You can set maximum Constraints. Then the other childs
+        are scaled more.
+        For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and
+        C.Width=30 (total=60). If the Parent's client area has a ClientWidth of
+        120, then the childs are scaled with Factor 2.
+        If B has a maximum constraint width of 30, then first the childs will be
+        scaled with 1.5 (A.Width=15, B.Width=30, C.Width=45). Then A and C
+        (15+45=60 and 30 pixel space left) will be scaled by 1.5 again, to a
+        final result of: A.Width=23, B.Width=30, C.Width=67 (23+30+67=120).
+
+      cesHomogenousChildGrowth, cssHomogenousChildDecrease
+        Enlarge childs equally.
+        Childs are resized to their normal/adviced size. If there is some space
+        left in the client area of the parent, then the remaining space is
+        distributed equally to each child.
+        For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and
+        C.Width=30 (total=60). If the Parent's client area has a ClientWidth of
+        120, then 60/3=20 is added to each Child.
+        If B has a maximum constraint width of 30, then first 10 is added to
+        all childs (A.Width=20, B.Width=30, C.Width=40). Then A and C
+        (20+40=60 and 30 pixel space left) will get 30/2=15 additional,
+        resulting in: A.Width=35, B.Width=30, C.Width=55 (35+30+55=120).
+
+
+      cesHomogenousSpaceGrowth
+        Enlarge space between childs equally.
+        Childs are resized to their normal/adviced size. If there is some space
+        left in the client area of the parent, then the space between the childs
+        if expanded.
+        For example: 3 child controls A, B, C with A.Width=10, B.Width=20 and
+        C.Width=30 (total=60). If the Parent's client area has a ClientWidth of
+        120, then there will be 60/2=30 space between A and B and between
+        B and C.
+  }
+
+  TChildControlEnlargeStyle = (
+      cesAnchorAligning, // (like Delphi)
+      cesScaleChilds, // scale childs, keep space between childs fixed
+      cesHomogenousChildGrowth, // enlarge childs equally
+      cesHomogenousSpaceGrowth  // enlarge space between childs equally
+    );
+  TChildControlShrinkStyle = (
+      cssAnchorAligning, // (like Delphi)
+      cssScaleChilds, // scale childs
+      cssHomogenousChildDecrease // shrink childs equally
+    );
+
+  TControlChildSizing = class(TPersistent)
+  private
+    FControl: TControl;
+    FEnlargeHorizontal: TChildControlEnlargeStyle;
+    FEnlargeVertical: TChildControlEnlargeStyle;
+    FHorizontalSpacing: integer;
+    FLeftRightSpacing: integer;
+    FOnChange: TNotifyEvent;
+    FShrinkHorizontal: TChildControlShrinkStyle;
+    FShrinkVertical: TChildControlShrinkStyle;
+    FTopBottomSpacing: integer;
+    FVerticalSpacing: integer;
+    procedure SetEnlargeHorizontal(const AValue: TChildControlEnlargeStyle);
+    procedure SetEnlargeVertical(const AValue: TChildControlEnlargeStyle);
+    procedure SetHorizontalSpacing(const AValue: integer);
+    procedure SetLeftRightSpacing(const AValue: integer);
+    procedure SetShrinkHorizontal(const AValue: TChildControlShrinkStyle);
+    procedure SetShrinkVertical(const AValue: TChildControlShrinkStyle);
+    procedure SetTopBottomSpacing(const AValue: integer);
+    procedure SetVerticalSpacing(const AValue: integer);
+  protected
+    procedure Change; dynamic;
+  public
+    constructor Create(OwnerControl: TControl);
+    procedure Assign(Source: TPersistent); override;
+    procedure AssignTo(Dest: TPersistent); override;
+    function IsEqual(Sizing: TControlChildSizing): boolean;
+  public
+    property Control: TControl read FControl;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+  published
+    property LeftRightSpacing: integer read FLeftRightSpacing write SetLeftRightSpacing;
+    property TopBottomSpacing: integer read FTopBottomSpacing write SetTopBottomSpacing;
+    property HorizontalSpacing: integer read FHorizontalSpacing write SetHorizontalSpacing;
+    property VerticalSpacing: integer read FVerticalSpacing write SetVerticalSpacing;
+    property EnlargeHorizontal: TChildControlEnlargeStyle read FEnlargeHorizontal
+                           write SetEnlargeHorizontal default cesAnchorAligning;
+    property EnlargeVertical: TChildControlEnlargeStyle read FEnlargeVertical
+                             write SetEnlargeVertical default cesAnchorAligning;
+    property ShrinkHorizontal: TChildControlShrinkStyle read FShrinkHorizontal
+                            write SetShrinkHorizontal default cssAnchorAligning;
+    property ShrinkVertical: TChildControlShrinkStyle read FShrinkVertical
+                              write SetShrinkVertical default cssAnchorAligning;
+  end;
 
 
   { TWinControlActionLink }
@@ -1008,6 +1212,7 @@ type
     FBoundsRealized: TRect;
     FBrush: TBrush;
     FAdjustClientRectRealized: TRect;
+    FChildSizing: TControlChildSizing;
     FControls: TList;
     FDefWndProc: Pointer;
     //FDockSite: Boolean;
@@ -1047,6 +1252,7 @@ type
     function GetIsResizing: boolean;
     function GetTabOrder: TTabOrder;
     function GetVisibleDockClientCount: Integer;
+    procedure SetChildSizing(const AValue: TControlChildSizing);
     procedure SetDockSite(const AValue: Boolean);
     procedure SetHandle(NewHandle: HWND);
     Procedure SetBorderWidth(Value : TBorderWidth);
@@ -1060,6 +1266,7 @@ type
     procedure AdjustSize; override;
     procedure AdjustClientRect(var Rect: TRect); virtual;
     procedure AlignControls(AControl : TControl; var ARect: TRect); virtual;
+    procedure DoChildSizingChange(Sender: TObject); virtual;
     Function CanTab: Boolean; override;
     Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
@@ -1152,11 +1359,12 @@ type
     function  IsControlMouseMsg(var TheMessage : TLMMouse): Boolean;
     procedure FontChanged(Sender: TObject); override;
     procedure SetColor(Value : TColor); override;
-    procedure SetZOrderPosition(Position: Integer); override;
+    procedure SetZOrderPosition(NewPosition: Integer); override;
     procedure SetZOrder(Topmost: Boolean); override;
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
   public
-    property BorderWidth : TBorderWidth read FBorderWidth write SetBorderWidth default 0;
+    property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
+    property ChildSizing: TControlChildSizing read FChildSizing write SetChildSizing;
     property DefWndProc: Pointer read FDefWndProc write FDefWndPRoc;
     property DockClientCount: Integer read GetDockClientCount;
     property DockClients[Index: Integer]: TControl read GetDockClients;
@@ -1207,11 +1415,13 @@ type
     Procedure DisableAlign;
     Procedure EnableAlign;
     Procedure Invalidate; override;
-    Procedure RemoveControl(AControl : TControl);
-    Procedure InsertControl(AControl : TControl);
-    Procedure Insert(AControl : TControl);
-    Procedure Remove(AControl : TControl);
-    procedure SetBounds(aLeft, aTop, aWidth, aHeight : integer); override;
+    Procedure InsertControl(AControl: TControl);
+    Procedure InsertControl(AControl: TControl; Index: integer);
+    Procedure RemoveControl(AControl: TControl);
+    Procedure Insert(AControl: TControl);
+    Procedure Insert(AControl: TControl; Index: integer);
+    Procedure Remove(AControl: TControl);
+    procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); override;
     procedure Hide;
     procedure Repaint; override;
     Procedure SetFocus; override;
@@ -1887,6 +2097,204 @@ end;
 {$I mouse.inc}
 {$I dragobject.inc}
 
+{ TControlBorderSpacing }
+
+procedure TControlBorderSpacing.SetAround(const AValue: TSpacingSize);
+begin
+  if FAround=AValue then exit;
+  FAround:=AValue;
+  Change;
+end;
+
+procedure TControlBorderSpacing.SetBottom(const AValue: TSpacingSize);
+begin
+  if FBottom=AValue then exit;
+  FBottom:=AValue;
+  Change;
+end;
+
+procedure TControlBorderSpacing.SetLeft(const AValue: TSpacingSize);
+begin
+  if FLeft=AValue then exit;
+  FLeft:=AValue;
+  Change;
+end;
+
+procedure TControlBorderSpacing.SetRight(const AValue: TSpacingSize);
+begin
+  if FRight=AValue then exit;
+  FRight:=AValue;
+  Change;
+end;
+
+procedure TControlBorderSpacing.SetTop(const AValue: TSpacingSize);
+begin
+  if FTop=AValue then exit;
+  FTop:=AValue;
+  Change;
+end;
+
+constructor TControlBorderSpacing.Create(OwnerControl: TControl);
+begin
+  FControl:=OwnerControl;
+  inherited Create;
+end;
+
+procedure TControlBorderSpacing.Assign(Source: TPersistent);
+var
+  SrcSpacing: TControlBorderSpacing;
+begin
+  if Source is TControlBorderSpacing then begin
+    SrcSpacing:=TControlBorderSpacing(Source);
+    if IsEqual(SrcSpacing) then exit;
+    
+    FAround:=SrcSpacing.Around;
+    FBottom:=SrcSpacing.Bottom;
+    FLeft:=SrcSpacing.Left;
+    FRight:=SrcSpacing.Right;
+    FTop:=SrcSpacing.Top;
+    
+    Change;
+  end else
+    inherited Assign(Source);
+end;
+
+procedure TControlBorderSpacing.AssignTo(Dest: TPersistent);
+begin
+  Dest.Assign(Self);
+end;
+
+function TControlBorderSpacing.IsEqual(Spacing: TControlBorderSpacing
+  ): boolean;
+begin
+  Result:=(FAround=Spacing.Around)
+      and (FBottom=Spacing.Bottom)
+      and (FLeft=Spacing.Left)
+      and (FRight=Spacing.Right)
+      and (FTop=Spacing.Top);
+end;
+
+procedure TControlBorderSpacing.Change;
+begin
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
+{ TControlChildSizing }
+
+procedure TControlChildSizing.SetEnlargeHorizontal(
+  const AValue: TChildControlEnlargeStyle);
+begin
+  if FEnlargeHorizontal=AValue then exit;
+  FEnlargeHorizontal:=AValue;
+  Change;
+end;
+
+procedure TControlChildSizing.SetEnlargeVertical(
+  const AValue: TChildControlEnlargeStyle);
+begin
+  if FEnlargeVertical=AValue then exit;
+  FEnlargeVertical:=AValue;
+  Change;
+end;
+
+procedure TControlChildSizing.SetHorizontalSpacing(const AValue: integer);
+begin
+  if FHorizontalSpacing=AValue then exit;
+  FHorizontalSpacing:=AValue;
+  Change;
+end;
+
+procedure TControlChildSizing.SetLeftRightSpacing(const AValue: integer);
+begin
+  if FLeftRightSpacing=AValue then exit;
+  FLeftRightSpacing:=AValue;
+  Change;
+end;
+
+procedure TControlChildSizing.SetShrinkHorizontal(
+  const AValue: TChildControlShrinkStyle);
+begin
+  if FShrinkHorizontal=AValue then exit;
+  FShrinkHorizontal:=AValue;
+  Change;
+end;
+
+procedure TControlChildSizing.SetShrinkVertical(
+  const AValue: TChildControlShrinkStyle);
+begin
+  if FShrinkVertical=AValue then exit;
+  FShrinkVertical:=AValue;
+  Change;
+end;
+
+procedure TControlChildSizing.SetTopBottomSpacing(const AValue: integer);
+begin
+  if FTopBottomSpacing=AValue then exit;
+  FTopBottomSpacing:=AValue;
+  Change;
+end;
+
+procedure TControlChildSizing.SetVerticalSpacing(const AValue: integer);
+begin
+  if FVerticalSpacing=AValue then exit;
+  FVerticalSpacing:=AValue;
+  Change;
+end;
+
+constructor TControlChildSizing.Create(OwnerControl: TControl);
+begin
+  FControl:=OwnerControl;
+  inherited Create;
+  FEnlargeHorizontal:=cesAnchorAligning;
+  FEnlargeVertical:=cesAnchorAligning;
+  FShrinkHorizontal:=cssAnchorAligning;
+  FShrinkVertical:=cssAnchorAligning;
+end;
+
+procedure TControlChildSizing.Assign(Source: TPersistent);
+var
+  SrcSizing: TControlChildSizing;
+begin
+  if Source is TControlChildSizing then begin
+    SrcSizing:=TControlChildSizing(Source);
+    if IsEqual(SrcSizing) then exit;
+
+    FEnlargeHorizontal:=SrcSizing.EnlargeHorizontal;
+    FEnlargeVertical:=SrcSizing.EnlargeVertical;
+    FShrinkHorizontal:=SrcSizing.ShrinkHorizontal;
+    FShrinkVertical:=SrcSizing.ShrinkVertical;
+    FEnlargeHorizontal:=SrcSizing.EnlargeHorizontal;
+    FEnlargeVertical:=SrcSizing.EnlargeVertical;
+    FShrinkHorizontal:=SrcSizing.ShrinkHorizontal;
+    FShrinkVertical:=SrcSizing.ShrinkVertical;
+
+    Change;
+  end else
+    inherited Assign(Source);
+end;
+
+procedure TControlChildSizing.AssignTo(Dest: TPersistent);
+begin
+  Dest.Assign(Self);
+end;
+
+function TControlChildSizing.IsEqual(Sizing: TControlChildSizing): boolean;
+begin
+  Result:=(FEnlargeHorizontal=Sizing.EnlargeHorizontal)
+      and (FEnlargeVertical=Sizing.EnlargeVertical)
+      and (FShrinkHorizontal=Sizing.ShrinkHorizontal)
+      and (FShrinkVertical=Sizing.ShrinkVertical)
+      and (FEnlargeHorizontal=Sizing.EnlargeHorizontal)
+      and (FEnlargeVertical=Sizing.EnlargeVertical)
+      and (FShrinkHorizontal=Sizing.ShrinkHorizontal)
+      and (FShrinkVertical=Sizing.ShrinkVertical);
+end;
+
+procedure TControlChildSizing.Change;
+begin
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
 initialization
 
   //writeln('controls.pp - initialization');
@@ -1904,6 +2312,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.175  2004/02/13 15:49:54  mattias
+  started advanced LCL auto sizing
+
   Revision 1.174  2004/02/12 18:09:10  mattias
   removed win32 specific TToolBar code in new TToolBar, implemented TWinControl.FlipChildren
 

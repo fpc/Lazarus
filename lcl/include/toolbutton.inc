@@ -168,19 +168,6 @@ begin
   inherited Paint;
 end;
 
-procedure TToolButton.ChangeBounds(NewLeft, NewTop, NewWidth, NewHeight: Integer);
-begin
-  if ((NewLeft=Left) and (NewTop=Top) and (NewWidth=Width) and (NewHeight=Height))
-  or (FUpdateCount>0) or ([csLoading,csDestroying]*ComponentState<>[])
-  or (FToolBar=nil) or (not FToolBar.HandleAllocated) then
-  begin
-    inherited ChangeBounds(NewLeft, NewTop, NewWidth, NewHeight);
-    exit;
-  end;
-  
-  // ToDo
-end;
-
 function TToolButton.CalculateButtonState: Word;
 begin
   Result := 0;
@@ -338,7 +325,6 @@ end;
 procedure TToolButton.EndUpdate;
 begin
   Dec(FUpdateCount);
-  // ToDo: update changed
 end;
 
 function TToolButton.GetIndex: Integer;
@@ -356,7 +342,7 @@ end;
 
 procedure TToolButton.RefreshControl;
 begin
-  UpdateVisibleToolbar;
+  UpdateControl;
 end;
 
 procedure TToolButton.UpdateControl;
@@ -902,6 +888,9 @@ end;
 
 {
   $Log$
+  Revision 1.8  2004/02/13 15:49:54  mattias
+  started advanced LCL auto sizing
+
   Revision 1.7  2004/02/12 18:09:10  mattias
   removed win32 specific TToolBar code in new TToolBar, implemented TWinControl.FlipChildren
 

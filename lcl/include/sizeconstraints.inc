@@ -169,6 +169,12 @@ begin
   end;
 end;
 
+procedure TSizeConstraints.SetOptions(const AValue: TSizeConstraintsOptions);
+begin
+  if FOptions=AValue then exit;
+  FOptions:=AValue;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TSizeConstraints.Change
   Params:  none

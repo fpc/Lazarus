@@ -757,6 +757,11 @@ begin
   AdjustSize;
 end;
 
+procedure TControl.DoBorderSpacingChange(Sender: TObject);
+begin
+  AdjustSize;
+end;
+
 {------------------------------------------------------------------------------
   procedure TControl.SendMoveSizeMessages(SizeChanged, PosChanged: boolean);
 ------------------------------------------------------------------------------}
@@ -1365,6 +1370,12 @@ begin
   if not (csNoStdEvents in ControlStyle)
   then with Message do
     MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
+end;
+
+procedure TControl.SetBorderSpacing(const AValue: TControlBorderSpacing);
+begin
+  if FBorderSpacing=AValue then exit;
+  FBorderSpacing.Assign(AValue);
 end;
 
 {------------------------------------------------------------------------------
@@ -2344,24 +2355,23 @@ end;
 {       TControl.SetZOrder
 }
 {------------------------------------------------------------------------------}
-Procedure TControl.SetZOrder(Topmost : Boolean);
-var AParent : TWinControl;
-    AControl : TControl;
+Procedure TControl.SetZOrder(Topmost: Boolean);
 begin
-//if FParent <> nil then
-//     if Topmost then SetZOrderPosition(FParent.FControls.Count-1)
-//   else
-//   SetZOrderPosition(0);
-  if Parent <> nil then begin
+  if FParent = nil then exit;
+  if Topmost then
+    SetZOrderPosition(Parent.ControlCount-1)
+  else
+    SetZOrderPosition(0);
+  {if Parent <> nil then begin
     AParent:= Parent;
-    { Just reinsert the control on top. Don't if it already is }
+     Just reinsert the control on top. Don't if it already is
     if Topmost then begin
       if (AParent.Controls[AParent.ControlCount - 1] <> Self) then begin
         AParent.RemoveControl(Self);
         AParent.InsertControl(Self);
       end;
     end else begin
-      { Move all other controls over this one }
+      // Move all other controls over this one
       if (AParent.Controls[0] <> Self) then begin
         AParent.RemoveControl(Self);
         AParent.InsertControl(Self);
@@ -2372,7 +2382,7 @@ begin
       	end;
       end;
     end;
-  end;
+  end;  }
 end;
 
 {------------------------------------------------------------------------------
@@ -2449,27 +2459,32 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-       TControl.SetZOrderPosition
+  TControl.SetZOrderPosition
+  
+  Set the position of the child control in the Controls list of its parent.
+  TWinControl overrides this and will position itself in the FWinControls
+  while this function position itself in the FControls list.
+
+  Notes:
+    The FControls are always below the FWinControls.
+    TWinControl overrides this and will position itself in the FWinControls
+    list.
 ------------------------------------------------------------------------------}
-Procedure TControl.SetZOrderPosition(Position: Integer);
+Procedure TControl.SetZOrderPosition(NewPosition: Integer);
 Var
-  I : Integer;
-  Count : Integer;
+  OldPosition: Integer;
+  Count: Integer;
 begin
-  if FParent <> nil then
-  Begin
-    I := FParent.FControls.Indexof(self);
-    if I >= 0 then
-    begin
-      Count := FParent.FControls.Count;
-      if Position < 0 then Position := 0;
-      if Position >= Count then Position := Count-1;
-      if Position <> I then
-      begin
-        FParent.FControls.Delete(i);
-        FParent.FControls.Insert(Position,Self);
-        InvalidateControl(Visible,True,True);
-      end;
+  if Parent = nil then exit;
+  OldPosition := FParent.FControls.IndexOf(self);
+  if (OldPosition >= 0) then
+  begin
+    Count := FParent.FControls.Count;
+    if NewPosition < 0 then NewPosition := 0;
+    if NewPosition >= Count then NewPosition := Count-1;
+    if NewPosition <> OldPosition then begin
+      FParent.FControls.Move(OldPosition,NewPosition);
+      InvalidateControl(Visible,True,True);
     end;
   end;
 end;
@@ -2542,6 +2557,7 @@ begin
   Application.ControlDestroyed(Self);
   SetParent(nil);
   FreeThenNil(FActionLink);
+  FreeThenNil(FBorderSpacing);
   FreeThenNil(FConstraints);
   FreeThenNil(FFont);
   //writeln('[TControl.Destroy] B ',Name,':',ClassName);
@@ -2568,6 +2584,8 @@ begin
                     csOpaque];
   FConstraints:= TSizeConstraints.Create(Self);
   FConstraints.OnChange:= @DoConstraintsChange;
+  FBorderSpacing:=TControlBorderSpacing.Create(Self);
+  FBorderSpacing.OnChange:= @DoBorderSpacingChange;
 
   FAnchors := [akLeft,akTop];
   FAlign := alNone;
@@ -2735,6 +2753,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.168  2004/02/13 15:49:54  mattias
+  started advanced LCL auto sizing
+
   Revision 1.167  2004/02/04 23:30:18  mattias
   completed TControl actions
 

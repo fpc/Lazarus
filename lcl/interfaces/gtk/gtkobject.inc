@@ -4930,7 +4930,7 @@ begin
   // if one of its widgets has the focus then unfocus
   GtkWindow:=gtk_widget_get_toplevel(Widget);
   if GtkWidgetIsA(GtkWindow,GTK_TYPE_WINDOW)
-  and (GetParentLCLObject(PGtkWindow(GtkWindow)^.Focus_Widget)=Sender)
+  and (GetNearestLCLObject(PGtkWindow(GtkWindow)^.Focus_Widget)=Sender)
   then begin
     gtk_window_set_focus(PGtkWindow(GtkWindow),nil);
   end;
@@ -9201,6 +9201,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.468  2004/02/13 15:49:54  mattias
+  started advanced LCL auto sizing
+
   Revision 1.467  2004/02/12 18:09:10  mattias
   removed win32 specific TToolBar code in new TToolBar, implemented TWinControl.FlipChildren
 

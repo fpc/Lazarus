@@ -1,3 +1,5 @@
+// included by controls.pp
+
 {
  *****************************************************************************
  *                                                                           *
@@ -27,25 +29,24 @@ End;
 Function ListIndexOf(var List : TList; Item: Pointer) : Longint;
 Begin
   Result := -1;
-  if List = nil then exit;
-  Result := List.IndexOf(Item);
+  if List <> nil then Result := List.IndexOf(Item);
 End;
 
 Function ListCount(List : TList) : Longint;
 Begin
   Result := 0;
-  if List = nil then exit;
-  Result := List.Count;
+  if List <> nil then Result := List.Count;
 End;
 
 Procedure ListRemove(var List : TList; Item: Pointer);
 Begin
   if List=nil then exit;
   List.Remove(Item);
-  if List.Count = 0 then
-	Begin
-	List.Free;
-	List := nil;
-	End;
-
+  if List.Count = 0 then begin
+    List.Free;
+    List := nil;
+  End;
 End;
+
+// included by controls.pp
+

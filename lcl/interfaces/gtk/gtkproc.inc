@@ -605,7 +605,7 @@ begin
   Result:=HexStr(Cardinal(Widget),8);
   if Widget=nil then exit;
   Result:=Result+'='+GetWidgetClassName(Widget);
-  LCLObject:=GetParentLCLObject(Widget);
+  LCLObject:=GetNearestLCLObject(Widget);
   Result:=Result+' LCLObject='+HexStr(Cardinal(LCLObject),8);
   if LCLObject=nil then exit;
   if LCLObject is TControl then
@@ -720,7 +720,7 @@ var
   IsAPIWidget: Boolean;
 begin
   MainWidget:=ChildWidget;
-  LCLObject:=GetParentLCLObject(ChildWidget);
+  LCLObject:=GetNearestLCLObject(ChildWidget);
   if (LCLObject is TWinControl) then
     MainWidget:=PGtkWidget(TWinControl(LCLObject).Handle);
   IsAPIWidget:=GtkWidgetIsA(MainWidget,GTKAPIWidget_GetType);
@@ -2716,26 +2716,27 @@ begin
     RaiseInvalidFixedWidget;
 end;
 
-function GetParentWidget(Child: PGtkWidget): PGtkWidget;
+function GetWinControlWidget(Child: PGtkWidget): PGtkWidget;
+// return the first widget, which is associated with a TWinControl handle
 var
   LCLParent: TObject;
 begin
   Result:=nil;
-  LCLParent:=GetParentLCLObject(Child);
+  LCLParent:=GetNearestLCLObject(Child);
   if (LCLParent=nil) or (not (LCLParent is TWinControl))
   or (not TWinControl(LCLParent).HandleAllocated)
   then exit;
   Result:=PGtkWidget(TWinControl(LCLParent).Handle);
 end;
 
-function GetParentFixedWidget(Child: PGtkWidget): PGtkWidget;
+function GetWinControlFixedWidget(Child: PGtkWidget): PGtkWidget;
 begin
-  Result:=GetParentWidget(Child);
+  Result:=GetWinControlWidget(Child);
   if Result=nil then exit;
   Result:=GetFixedWidget(Result);
 end;
 
-function FindFixedChild(ParentFixed: PGtkFixed; Child: PGtkWidget): PGList;
+function FindFixedChildListItem(ParentFixed: PGtkFixed; Child: PGtkWidget): PGList;
 begin
   Result:=ParentFixed^.children;
   while (Result<>nil) do begin
@@ -2745,11 +2746,23 @@ begin
   end;
 end;
 
+function FindFixedLastChildListItem(ParentFixed: PGtkFixed): PGList;
+begin
+  Result:=g_list_last(ParentFixed^.children);
+end;
+
+{------------------------------------------------------------------------------
+  procedure MoveGListLinkBehind(First, Item, After: PGList);
+
+  Move the list item 'Item' behind the list item 'After'.
+  If After=nil then insert as first item.
+------------------------------------------------------------------------------}
 procedure MoveGListLinkBehind(First, Item, After: PGList);
 var
   Data: Pointer;
   NewPos: Integer;
 begin
+  if (Item=After) or (Item^.Next=After) then exit;
   if (g_list_position(First,Item)<0) then
     RaiseException('MoveGListLinkBehind Item not found');
   if (After<>nil) and (g_list_position(First,After)<0) then
@@ -2947,7 +2960,7 @@ begin
   Result := TObject(gtk_object_get_data(Widget, 'Class'));
 end;
 
-function GetParentLCLObject(Widget: PGtkWidget): TObject;
+function GetNearestLCLObject(Widget: PGtkWidget): TObject;
 begin
   while (Widget<>nil) do begin
     Result:=GetLCLObject(Widget);
@@ -6307,6 +6320,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.259  2004/02/13 15:49:54  mattias
+  started advanced LCL auto sizing
+
   Revision 1.258  2004/02/08 11:31:32  mattias
   TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
 

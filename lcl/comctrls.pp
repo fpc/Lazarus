@@ -840,7 +840,6 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     function CheckMenuDropdown: Boolean; dynamic;
-    procedure ChangeBounds(NewLeft, NewTop, NewWidth, NewHeight: Integer); override;
     property Index: Integer read GetIndex;
   published
     property Action;
@@ -2235,6 +2234,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.109  2004/02/13 15:49:54  mattias
+  started advanced LCL auto sizing
+
   Revision 1.108  2004/02/12 18:09:10  mattias
   removed win32 specific TToolBar code in new TToolBar, implemented TWinControl.FlipChildren
 

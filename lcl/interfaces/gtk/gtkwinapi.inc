@@ -132,7 +132,7 @@ var
 begin
   {$IFDEF Gtk1}
   Widget:=PGtkWidget(Handle);
-  TargetObject:=GetParentLCLObject(Widget);
+  TargetObject:=GetNearestLCLObject(Widget);
   IsDoubleBuffered:=(TargetObject is TWinControl)
                     and TWinControl(TargetObject).DoubleBuffered;
   // check if Handle is the paint widget of the LCL component
@@ -7837,7 +7837,7 @@ begin
     if (Screen<>nil)
     and (Screen.FocusedForm<>nil)
     and (fsModal in Screen.FocusedForm.FormState)
-    and (GetParentLCLObject(TopLevel)<>Screen.FocusedForm) then begin
+    and (GetNearestLCLObject(TopLevel)<>Screen.FocusedForm) then begin
       {$IFDEF VerboseFocus}
       writeln('[TgtkObject.SetFocus] there is a modal form -> not grabbing');
       {$ENDIF}
@@ -8146,17 +8146,80 @@ end;
   function TgtkObject.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
     X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
 
+  hWnd: Widget to move
+  hWndInsertAfter:
+    HWND_BOTTOM to move bottommost
+    HWND_TOP to move topmost
+    the Widget, that should ly just on top of hWnd
+  uFlags:
+    SWP_NOMOVE: ignore X, Y
+    SWP_NOSIZE: ignore cx, cy
+    SWP_NOZORDER: ignore hWndInsertAfter
+    SWP_NOREDRAW: skip instant redraw
+    SWP_NOACTIVATE: skip switching focus
+
  ------------------------------------------------------------------------------}
 function TgtkObject.SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
   X, Y, cx, cy: Integer; uFlags: UINT): Boolean;
-var Widget: PGTKWidget;
- { FixedWidget: PGtkWidget;
-  OldListItem: PGList;
-  AfterWidget: PGtkWidget;
-  AfterListItem: PGList;}
+  
+  procedure SetZOrderOnFixedWidget(Widget, FixedWidget: PGtkWidget);
+  var
+    OldListItem: PGList;
+    AfterWidget: PGtkWidget;
+    AfterListItem: PGList;
+  begin
+    OldListItem:=FindFixedChildListItem(PGtkFixed(FixedWidget),Widget);
+    if OldListItem=nil then begin
+      writeln('TgtkObject.SetWindowPos WARNING: Widget not on parents fixed widget');
+      exit;
+    end;
+    AfterWidget:=nil;
+    AfterListItem:=nil;
+    if hWndInsertAfter=HWND_BOTTOM then begin
+      // HWND_BOTTOM
+    end else if hWndInsertAfter=HWND_TOP then begin
+      // HWND_TOP
+      AfterListItem:=FindFixedLastChildListItem(PGtkFixed(FixedWidget));
+    end else begin
+      // hWndInsertAfter
+      AfterWidget:=PGtkWidget(hWndInsertAfter);
+      AfterListItem:=FindFixedChildListItem(PGtkFixed(FixedWidget),AfterWidget);
+    end;
+    if (AfterListItem=nil) and (AfterWidget<>nil) then begin
+      writeln('TgtkObject.SetWindowPos WARNING: AfterWidget not on parents fixed widget');
+      exit;
+    end;
+    if (OldListItem=AfterListItem) or (OldListItem^.next=AfterListItem) then
+      exit;
+    writeln('TgtkObject.SetWindowPos Moving GList entry');
+    
+    // reorder
+    // This trick does not work properly
+    exit;
+    MoveGListLinkBehind(PGtkFixed(FixedWidget)^.children,
+                        OldListItem,AfterListItem);
+    if GTK_WIDGET_VISIBLE(FixedWidget) and GTK_WIDGET_VISIBLE (Widget)
+    and GTK_WIDGET_MAPPED(Widget) then begin
+      gtk_widget_queue_resize(FixedWidget);
+    end;
+  end;
+  
+  procedure SetZOrderOnLayoutWidget(Widget, LayoutWidget: PGtkWidget);
+  begin
+    writeln('ToDO: SetZOrderOnLayoutWidget');
+  end;
+
+var
+  Widget: PGTKWidget;
+  FixedWidget: PGtkWidget;
 begin
-  //writeln('[TgtkObject.SetWindowPos] Top=',hWndInsertAfter=HWND_TOP,' ');
   Widget:=PGtkWidget(hWnd);
+  writeln('[TgtkObject.SetWindowPos] ',GetWidgetDebugReport(Widget),
+    ' Top=',hWndInsertAfter=HWND_TOP,
+    ' SWP_NOZORDER=',(SWP_NOZORDER and uFlags)<>0,
+    ' SWP_NOSIZE=',(SWP_NOSIZE and uFlags)<>0,
+    ' SWP_NOMOVE=',(SWP_NOMOVE and uFlags)<>0,
+    '');
   if GtkWidgetIsA(Widget,GTK_TYPE_WINDOW) then begin
     { case hWndInsertAfter of
         HWND_BOTTOM: ;  //gdk_window_lower(Widget^.Window);
@@ -8164,22 +8227,20 @@ begin
                     //gdk_window_raise(Widget^.Window);
       end;
     }
-  end else begin
-    {AfterWidget:=PGtkWidget(hWndInsertAfter);
-    FixedWidget:=GetParentFixedWidget(Widget);
+  end else if (SWP_NOZORDER and uFlags)=0 then begin
+    FixedWidget:=Widget^.Parent;
     if FixedWidget=nil then exit;
-    OldListItem:=FindFixedChild(FixedWidget,Widget);
-    if OldListItem=nil then begin
-      writeln('TgtkObject.SetWindowPos WARNING: Widget not on parents fixed widget');
+    
+    writeln('TgtkObject.SetWindowPos ZOrdering .. on ',GetWidgetDebugReport(FixedWidget));
+    if GtkWidgetIsA(FixedWidget,GTK_Fixed_Get_Type) then begin
+      // parent's client area is a gtk_fixed widget
+      SetZOrderOnFixedWidget(Widget,FixedWidget);
+      exit;
+    end else if GtkWidgetIsA(FixedWidget,GTK_Layout_Get_Type) then begin
+      // parent's client area is a gtk_layout widget
+      SetZOrderOnLayoutWidget(Widget,FixedWidget);
       exit;
     end;
-    AfterListItem:=FindFixedChild(FixedWidget,AfterWidget);
-    if (AfterListItem=nil) and (AfterWidget<>nil) then begin
-      writeln('TgtkObject.SetWindowPos WARNING: AfterWidget not on parents fixed widget');
-      exit;
-    end;
-    MoveGListLinkBehind(PGtkFixed(FixedWidget)^.children,
-                        OldListItem,AfterListItem);}
   end;
   Result:=true;
 end;
@@ -8682,6 +8743,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.329  2004/02/13 15:49:54  mattias
+  started advanced LCL auto sizing
+
   Revision 1.328  2004/02/10 00:05:03  mattias
   TSpeedButton now uses MaskBlt
 
