@@ -194,9 +194,6 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property Page;
-    property PageCount;
-    property Pages;
   published
     property ActivePage;
     property Images;
@@ -205,7 +202,6 @@ type
     property OnPageChanged;
     property Options;
     property PageIndex;
-    property PageList;
     property ShowTabs;
   end;
 
@@ -510,6 +506,9 @@ end.
 
  {
   $Log$
+  Revision 1.32  2002/09/09 07:26:42  lazarus
+  MG: started TCollectionPropertyEditor
+
   Revision 1.31  2002/09/05 12:11:42  lazarus
   MG: TNotebook is now streamable
 
