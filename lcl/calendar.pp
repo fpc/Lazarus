@@ -50,6 +50,9 @@ Type
     FDate : String;
     FDisplaySettings : TDisplaySettings;
     FReadOnly: Boolean;
+    FDayChanged: TNotifyEvent;
+    FMonthChanged: TNotifyEvent;
+    FYearChanged: TNotifyEvent;
     procedure SetReadOnly(const AValue: Boolean);
     Procedure GetProps;
     Procedure SetProps;
@@ -58,7 +61,11 @@ Type
 
     function GetDate: String;
     procedure SetDate(const AValue: String);
-
+  protected
+    procedure AttachSignals; override;
+    procedure LMMonthChanged(var Message: TLMessage); message LM_MONTHCHANGED;
+    procedure LMYEARChanged(var Message: TLMessage); message LM_YEARCHANGED;
+    procedure LMDAYChanged(var Message: TLMessage); message LM_DAYCHANGED;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -69,6 +76,10 @@ Type
 //    Property Date : TDate read GetDate write SetDate;
     property ReadOnly : Boolean read FReadOnly write SetReadOnly;
     property Visible;
+//    property OnChange;
+    property OnDayChanged : TNotifyEvent read FDayChanged write FDayChanged;
+    property OnMonthChanged : TNotifyEvent read FMonthChanged write FMonthChanged;
+    property OnYearChanged : TNotifyEvent read FYearChanged write FYearChanged;
   end;
   
 implementation
@@ -155,6 +166,34 @@ begin
         Temp.ReadOnly := fReadOnly;
         CNSendMessage(LM_SETVALUE, Self, @temp);	// Get the info
       End;
+
+end;
+
+procedure TCalendar.AttachSignals;
+begin
+  inherited;
+  SetCallback(LM_MONTHCHANGED);
+  SetCallback(LM_YEARCHANGED);
+  SetCallback(LM_DAYCHANGED);
+end;
+
+procedure TCalendar.LMDAYChanged(var Message: TLMessage);
+begin
+  if Assigned(OnDayChanged) then
+     OnDayChanged(self);
+end;
+
+procedure TCalendar.LMMonthChanged(var Message: TLMessage);
+begin
+  if Assigned(OnMonthChanged) then
+     OnMonthChanged(self);
+
+end;
+
+procedure TCalendar.LMYEARChanged(var Message: TLMessage);
+begin
+  if Assigned(OnYearChanged) then
+     OnYearChanged(self);
 
 end;
 

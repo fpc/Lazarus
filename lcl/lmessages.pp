@@ -204,6 +204,9 @@ LM_DROPFILES = $0233;
 
 LM_PARENTNOTIFY  = $0210;
 
+//Calendar
+
+
 
 // lcl messages
 
@@ -273,12 +276,17 @@ LM_CLOSEQUERY = LM_USER+62;
 LM_DRAGSTART = LM_USER+63;
 LM_DEACTIVATE = LM_USER+64;  //used when a form is no longer in front
 
+LM_MONTHCHANGED = LM_USER+65;
+LM_YEARCHANGED = LM_USER+66;
+LM_DAYCHANGED = LM_USER+67;
+
 LM_CB_FIRST = LM_USER+100;
 LM_CB_GETCOUNT = LM_CB_FIRST+1;
 LM_CB_GETTEXT = LM_CB_FIRST+2;
 LM_CB_ADDTEXT = LM_CB_FIRST+3;
 
 LM_CB_LAST = LM_CB_FIRST+10;  //LM_USER+110
+
 
 LM_UNKNOWN = LM_User+99;
 
@@ -773,6 +781,10 @@ end.
 
 {
   $Log$
+  Revision 1.14  2001/12/05 18:23:47  lazarus
+  Added events to Calendar
+  Shane
+
   Revision 1.13  2001/11/21 19:32:32  lazarus
   TComboBox can now be moved in FormEditor
   Shane

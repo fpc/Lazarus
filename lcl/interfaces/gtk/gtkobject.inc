@@ -465,12 +465,6 @@ begin
 
       LM_BRINGTOFRONT:
       begin
-      Writeln('----------------------------');
-      Writeln('----------------------------');
-      Writeln('----------------------------');
-      Writeln('----------------------------');
-      Writeln('----------------------------');
-      Writeln('----------------------------');
 {         Assert(False, 'Trace:TODO:bringtofront');
          //For now just hide and show again.
 	 if (Sender is TControl) then begin
@@ -1587,6 +1581,13 @@ begin
     begin
       ConnectSignal(gObject, 'configure-event', @gtkconfigureevent);
     end;
+    
+    LM_DAYCHANGED :  //calendar
+    Begin
+      ConnectSignal(gObject, 'day-selected', @gtkdaychanged);
+      ConnectSignal(gObject, 'day-selected-double-click', @gtkdaychanged);
+
+    end;
 
     LM_PAINT :
     begin
@@ -1636,6 +1637,13 @@ begin
       ConnectSignal(gFixed, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
     end;
     
+    LM_MONTHCHANGED :  //calendar
+    Begin
+      ConnectSignal(gObject, 'month-changed', @gtkmonthchanged);
+      ConnectSignal(gObject, 'prev-month', @gtkmonthchanged);
+      ConnectSignal(gObject, 'next-month', @gtkmonthchanged);
+    end;
+
     LM_MOUSEMOVE:
     begin
       if (sender is TComboBox) then Begin
@@ -1799,6 +1807,13 @@ begin
     begin
       ConnectSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(PGTKScrolledWindow(gObject))), 'value-changed', @GTKVScrollCB);
     end;
+    
+    LM_YEARCHANGED :  //calendar
+    Begin
+      ConnectSignal(gObject, 'prev-year', @gtkyearchanged);
+      ConnectSignal(gObject, 'next-year', @gtkyearchanged);
+    end;
+
 (*
     LM_WINDOWPOSCHANGED:
     begin
@@ -3415,6 +3430,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.80  2001/12/05 18:23:48  lazarus
+  Added events to Calendar
+  Shane
+
   Revision 1.79  2001/12/05 17:40:00  lazarus
   Added READONLY to Calendar.
   Shane

@@ -104,6 +104,17 @@ begin
    Result := DeliverMessage(Data, Mess) = 0;
 end;
 
+function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+var
+  MSG: TLMessage;
+begin
+  Result := True;
+  EventTrace('day changed', data);
+  MSG.Msg := LM_DAYCHANGED;
+  Result := DeliverPostMessage(Data, MSG);
+//   Result := DeliverMessage(Data, MSG) = 0;
+end;
+
 function gtkdraw(Widget: PGtkWidget; area: PGDKRectangle; data: gPointer) : GBoolean; cdecl;
 var
   MSG: TLMPaint;
@@ -331,6 +342,18 @@ begin
 //   TControl(data).WindowProc(TLMessage(Mess));
  Assert(False, 'Trace:TODO: [gtkresizeCB] fix (or remove) to new LM_SIZE');
 //TObject(data).Dispatch(Mess);
+end;
+
+
+function gtkmonthchanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+var
+  MSG: TLMessage;
+begin
+  Result := True;
+  EventTrace('month changed', data);
+  MSG.Msg := LM_MONTHCHANGED;
+  Result := DeliverPostMessage(Data, MSG);
+//   Result := DeliverMessage(Data, MSG) = 0;
 end;
 
 function GTKMotionNotify(widget:PGTKWidget; event: PGDKEventMotion; data: gPointer):GBoolean; cdecl;
@@ -1270,6 +1293,17 @@ begin
   Result := 0;
 end;
 
+function gtkyearchanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+var
+  MSG: TLMessage;
+begin
+  Result := True;
+  EventTrace('year changed', data);
+  MSG.Msg := LM_YEARCHANGED;
+  Result := DeliverPostMessage(Data, MSG);
+end;
+
+
 {------------------------------------------------------------------------------
   ClipboardSelectionReceivedHandler
 
@@ -1465,6 +1499,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.50  2001/12/05 18:23:47  lazarus
+  Added events to Calendar
+  Shane
+
   Revision 1.49  2001/11/30 16:41:59  lazarus
   Improved hints with overlapping windows.
   Shane
