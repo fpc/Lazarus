@@ -114,11 +114,7 @@ begin
   if Assigned(FOnChange) then FOnChange(Self);
   for I := 0 to FActions.Count - 1 do
     TContainedAction(FActions.List^[I]).Change;
-  if csDesigning in ComponentState then
-  begin
-    if (Owner is TForm) and (TForm(Owner).Designer <> nil) then
-      TForm(Owner).Designer.Modified;
-  end;
+  OwnerFormDesignerModified(Self);
 end;
 
 { ToDo:

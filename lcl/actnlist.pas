@@ -285,12 +285,12 @@ const
     function (AOwner: TComponent;
               ActionClass: TBasicActionClass): TBasicAction = nil;
 
+var
+  ApplicationActionComponent: TComponent;
+
 
 implementation
 
-
-uses
-  Forms;
 
 const
   SInvalidActionRegistration = 'Invalid action registration';
@@ -335,6 +335,9 @@ end;
 {$I shortcutlist.inc}
 {$I customaction.inc}
 {$I action.inc}
+
+initialization
+  ApplicationActionComponent:=nil;
 
 end.
 

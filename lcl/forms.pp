@@ -37,8 +37,8 @@ interface
 
 
 uses
-  Classes, Controls, VCLGlobals, SysUtils, GraphType, Graphics, Menus,
-  LCLLinux, LCLType, LMessages, CustomTimer{, StdCtrls};
+  Classes, Controls, VCLGlobals, SysUtils, LCLLinux, LCLType, LCLProc,
+  GraphType, Graphics, Menus, LMessages, CustomTimer, ActnList;
 
 type
   // form position policies:
@@ -454,6 +454,7 @@ type
     procedure ControlDestroyed(AControl: TControl);
     Procedure BringToFront;
     procedure CreateForm(NewForm : TFormClass; var ref);
+    function HandleAllocated: boolean;
     procedure HandleException(Sender: TObject);
     procedure HandleMessage;
     procedure HintMouseMEssage(Control : TControl; var Message: TLMessage);
@@ -682,7 +683,6 @@ begin
   end;
 end;
 
-
 function FindRootDesigner(AComponent: TComponent): TIDesigner;
 var
   Form: TCustomForm;
@@ -705,6 +705,23 @@ begin
   end;
 end;
 
+function SendApplicationMsg(Msg: Cardinal; WParam, LParam: Longint): Longint;
+begin
+  if (Application<>nil) and (Application.HandleAllocated) then
+    Result := SendMessage(Application.Handle, Msg, WParam, LParam)
+  else
+    Result := 0;
+end;
+
+procedure IfOwnerIsFormThenDesignerModified(AComponent: TComponent);
+begin
+  if (AComponent<>nil) and (AComponent.Owner<>nil)
+  and ([csDesigning,csLoading]*AComponent.ComponentState=[csDesigning])
+  and (AComponent.Owner is TForm)
+  and (TForm(AComponent.Owner).Designer <> nil) then
+    TForm(AComponent.Owner).Designer.Modified;
+end;
+
 //==============================================================================
 
 
@@ -720,10 +737,14 @@ end;
 initialization
   Screen:= TScreen.Create(nil);
   Application:= TApplication.Create(nil);
+  LCLProc.SendApplicationMessageFunction:=@SendApplicationMsg;
+  LCLProc.OwnerFormDesignerModifiedProc:=@IfOwnerIsFormThenDesignerModified;
   Focusmessages := True;
 
 finalization
   writeln('forms.pp - finalization section');
+  LCLProc.SendApplicationMessageFunction:=nil;
+  LCLProc.OwnerFormDesignerModifiedProc:=nil;
   Application.Free;
   Application:= nil;
   Screen.Free;
