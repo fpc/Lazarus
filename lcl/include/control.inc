@@ -600,6 +600,7 @@ procedure TControl.WndPRoc(var Message : TLMessage);
 Var
   Form : TCustomForm;
 begin
+  //writeln('CCC TControl.WndPRoc ',Name,':',ClassName);
   if (csDesigning in ComponentState) then
   begin
       Form := GetParentForm(Self);
@@ -647,26 +648,30 @@ begin
         end;
         
         case Message.Msg of
+        
           LM_MOUSEMOVE:
             begin
-            Application.HintMouseMessage(Self, Message);
-            if Dragging then DragObject.MouseMsg(Message);
+              Application.HintMouseMessage(Self, Message);
+              if Dragging then DragObject.MouseMsg(Message);
             end;
+            
           LM_LBUTTONDOWN,
-          LM_LBUTTONDBLCLK: begin
-            if FDragMode = dmAutomatic 
-            then begin
-              Assert(False, 'Trace:Begin AutoDrag called');
-              BeginAutoDrag;
-              Exit;
+          LM_LBUTTONDBLCLK:
+            begin
+              if FDragMode = dmAutomatic
+              then begin
+                Assert(False, 'Trace:Begin AutoDrag called');
+                BeginAutoDrag;
+                Exit;
+              end;
+              Include(FControlState,csLButtonDown);
             end;
-            Include(FControlState,csLButtonDown);
-          end;
+            
           LM_LBUTTONUP:
-             Begin
-               Exclude(FControlState, csLButtonDown);
-               if Dragging then DragObject.MouseMsg(Message);
-             end;
+            begin
+              Exclude(FControlState, csLButtonDown);
+              if Dragging then DragObject.MouseMsg(Message);
+            end;
         end;
       end
       else begin
@@ -701,11 +706,13 @@ end;
 {------------------------------------------------------------------------------}
 {       TControl DoMouseDown  "Event Handler"                                 }
 {------------------------------------------------------------------------------}
-procedure TControl.DoMouseDown(var Message: TLMMouse; Button: TMOuseButton; Shift:TShiftState);
+procedure TControl.DoMouseDown(var Message: TLMMouse; Button: TMOuseButton;
+  Shift:TShiftState);
 begin
   if not (csNoStdEvents in ControlStyle) then
   Begin
-    with Message do MouseDown(Button, KeysToShiftState(Keys) + Shift, XPos, YPos);
+    with Message do
+      MouseDown(Button, KeysToShiftState(Keys) + Shift, XPos, YPos);
   end;
 end;
 
@@ -715,7 +722,8 @@ end;
 procedure TControl.DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
 begin
   if not (csNoStdEvents in ControlStyle)
-  then with Message do MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
+  then with Message do
+    MouseUp(Button, KeysToShiftState(Keys), XPos, YPos);
 end;
 
 {------------------------------------------------------------------------------
@@ -727,11 +735,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonDown(var Message: TLMLButtonDown);
 begin
-//  Writeln('TCONTROL WMLBUTTONDOWN 1');
+  {$IFDEF VerboseMouseBugfix}
+  Writeln('TCONTROL WMLBUTTONDOWN A ',Name,':',ClassName);
+  {$ENDIF}
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then Include(FControlState, csClicked);
   DoMouseDown(Message, mbLeft, []);
-//  Writeln('TCONTROL WMLBUTTONDOWN 2');
+  //Writeln('TCONTROL WMLBUTTONDOWN B ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -1351,8 +1361,8 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.WMDragStart(Var Message: TLMessage);
 Begin
-//do this here?
-BeginDrag(true);
+  //do this here?
+  BeginDrag(true);
 end;
 
 
@@ -1362,9 +1372,12 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.WMMouseMove(Var Message: TLMMouseMove);
 Begin
-  if not (csNoStdEvents in COntrolStyle)
+  {$IFDEF VerboseMouseBugfix}
+  writeln('[TControl.WMMouseMove] ',Name,':',ClassName);
+  {$ENDIF}
+  if not (csNoStdEvents in ControlStyle)
   then with Message do
-       MouseMove(KeystoShiftState(Keys), XPos, YPos);
+    MouseMove(KeystoShiftState(Keys), XPos, YPos);
 End;
 
 {------------------------------------------------------------------------------}
@@ -1375,7 +1388,7 @@ End;
 Procedure TControl.MouseDown(Button: TMouseButton; Shift:TShiftState;
   X, Y: Integer);
 begin
-  if Assigned(FOnMOuseDown) then FOnMOuseDOwn(Self, Button, Shift, X,Y);
+  if Assigned(FOnMouseDown) then FOnMouseDown(Self, Button, Shift, X,Y);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1385,7 +1398,7 @@ end;
 
 Procedure TControl.MouseMove(Shift:TShiftState; X, Y: Integer);
 begin
-  if Assigned(FOnMOuseMove) then FOnMOuseMove(Self, Shift, X,Y);
+  if Assigned(FOnMouseMove) then FOnMouseMove(Self, Shift, X,Y);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1396,7 +1409,7 @@ end;
 Procedure TControl.MouseUp(Button: TMouseButton; Shift:TShiftState;
   X, Y: Integer);
 begin
-  if Assigned(FOnMOuseUp) then FOnMOuseUp(Self, Button, Shift, X,Y);
+  if Assigned(FOnMouseUp) then FOnMouseUp(Self, Button, Shift, X,Y);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1727,6 +1740,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.52  2002/05/24 07:16:31  lazarus
+  MG: started mouse bugfix and completed Makefile.fpc
+
   Revision 1.51  2002/05/20 11:25:29  lazarus
   MG: readded ssTriple/ssQuad compiler directives
 
