@@ -34,8 +34,14 @@ type
     function Get(Index : Integer) : string; override;
     function GetCount : integer; override;
     procedure SetSorted(Val : boolean); virtual;
+    procedure ConnectItemCallbacks(Index: integer);
+    procedure ConnectItemCallbacks(Li: PGtkListItem); virtual;
+    procedure ConnectAllCallbacks; virtual;
+    procedure RemoveItemCallbacks(Index: integer); virtual;
+    procedure RemoveAllCallbacks; virtual;
   public
     constructor Create(List : PGtkList; TheOwner: TWinControl);
+    destructor Destroy; override;
     procedure Assign(Source : TPersistent); override;
     procedure Clear; override;
     procedure Delete(Index : integer); override;
@@ -74,6 +80,9 @@ type
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/10/04 14:24:15  lazarus
+  MG: added DrawItem to TComboBox/TListBox
+
   Revision 1.4  2002/10/03 14:47:31  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 

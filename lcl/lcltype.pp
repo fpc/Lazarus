@@ -659,6 +659,8 @@ type
   TNMHdr = tagNMHDR;
   NMHDR = tagNMHDR;
 
+{painting stuff}
+
   PDrawItemStruct = ^TDrawItemStruct;
   tagDrawItemStruct = packed record
     ctlType: UINT;
@@ -673,8 +675,25 @@ type
   end;
   TDrawItemStruct = tagDrawItemStruct;
   DrawItemStruct = tagDrawItemStruct;
+  
 
-{painting stuff}
+  TOwnerDrawStateType = (
+    odSelected, odGrayed, odDisabled, odChecked,
+    odFocused, odDefault, odHotLight, odInactive, odNoAccel,
+    odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit,
+    odPainted  // item already painted
+    );
+  TOwnerDrawState = set of TOwnerDrawStateType;
+
+  PDrawListItemStruct = ^TDrawListItemStruct;
+  TDrawListItemStruct = record
+    ItemID: longint;
+    Area: TRect;
+    DC: HDC;
+    ItemState: TOwnerDrawState;
+  end;
+
+
   PPaintStruct = ^TPaintStruct;
   tagPAINTSTRUCT = packed record
     hdc: HDC;
@@ -1579,6 +1598,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2002/10/04 14:24:14  lazarus
+  MG: added DrawItem to TComboBox/TListBox
+
   Revision 1.18  2002/10/03 18:04:46  lazarus
   MG: started customdrawitem
 

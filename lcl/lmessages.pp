@@ -273,73 +273,76 @@ const
   // of messages send to the interface
   //-------------
   LM_USER = $400; // MWE: changed from $100 to $400 since they were in the windows range
-  WM_USER = LM_USER;
-  LM_DESTROY = LM_User+2;
-  LM_ACTIVATEITEM = LM_User+4;
-  LM_CHANGED = LM_User+5;
-  LM_FOCUS = LM_User+6;
-  LM_CLICKED = LM_User+7;
-  LM_PRESSED = LM_User+8;
-  LM_RELEASED = LM_User+9;
-  LM_MOVECURSOR = LM_User+10;
-  LM_ENTER = LM_User+11;
-  LM_LEAVE = LM_User+12;
+  WM_USER           = LM_USER;
+  LM_DESTROY        = LM_User+2;
+  LM_ACTIVATEITEM   = LM_User+4;
+  LM_CHANGED        = LM_User+5;
+  LM_FOCUS          = LM_User+6;
+  LM_CLICKED        = LM_User+7;
+  LM_PRESSED        = LM_User+8;
+  LM_RELEASED       = LM_User+9;
+  LM_MOVECURSOR     = LM_User+10;
+  LM_ENTER          = LM_User+11;
+  LM_LEAVE          = LM_User+12;
   //LM_SIZEALLOCATE = LM_User+13;
-  LM_CHECKRESIZE = LM_User+14;
+  LM_CHECKRESIZE    = LM_User+14;
   //LM_SHOW = LM_User+15; // Windows Compatability
-  LM_INSERTTEXT = LM_User+16;
-  LM_DELETETEXT = LM_User+17;
-  LM_SETEDITABLE = LM_User+18;
-  LM_MOVEWORD = LM_User+19;
-  LM_MOVEPAGE = LM_User+20;
-  LM_MOVETOROW = LM_User+21;
-  LM_MOVETOCOLUMN = LM_User+22;
-  LM_KILLCHAR = LM_User+23;
-  LM_KILLWORD = LM_User+24;
-  LM_KILLLINE = LM_User+25;
-  LM_CUTTOCLIP = LM_User+26;
-  LM_COPYTOCLIP = LM_User+27;
-  LM_PASTEFROMCLIP = LM_User+28;
-  //LM_MOVERESIZE = LM_User+29;
-  LM_EXPOSEEVENT = LM_User+30;
+  LM_INSERTTEXT     = LM_User+16;
+  LM_DELETETEXT     = LM_User+17;
+  LM_SETEDITABLE    = LM_User+18;
+  LM_MOVEWORD       = LM_User+19;
+  LM_MOVEPAGE       = LM_User+20;
+  LM_MOVETOROW      = LM_User+21;
+  LM_MOVETOCOLUMN   = LM_User+22;
+  LM_KILLCHAR       = LM_User+23;
+  LM_KILLWORD       = LM_User+24;
+  LM_KILLLINE       = LM_User+25;
+  LM_CUTTOCLIP      = LM_User+26;
+  LM_COPYTOCLIP     = LM_User+27;
+  LM_PASTEFROMCLIP  = LM_User+28;
+  //LM_MOVERESIZE   = LM_User+29;
+  LM_EXPOSEEVENT    = LM_User+30;
   LM_CONFIGUREEVENT = LM_User+31;
-  //LM_DRAW = LM_User+32;  //LM_DRAW and LM_PAINT are the same.
-  LM_PAINT = LM_User+32;
-  LM_SHOWMODAL = LM_USER+33;
-  LM_SETFILTER = LM_USER+34;
-  LM_SETFILENAME = LM_USER+35;
-  LM_OK_CLICKED = LM_USER+36;
+  //LM_DRAW         = LM_User+32;  //LM_DRAW and LM_PAINT are the same.
+  LM_PAINT          = LM_User+32;
+  LM_SHOWMODAL      = LM_USER+33;
+  LM_SETFILTER      = LM_USER+34;
+  LM_SETFILENAME    = LM_USER+35;
+  LM_OK_CLICKED     = LM_USER+36;
   LM_CANCEL_CLICKED = LM_USER+37;
-  //LM_KEYDOWN = LM_User+38; // Windows Compatability
-  //LM_KEYUP = LM_USER+39;  // Windows Compatability
-  LM_TIMER  = LM_USER+40;
+  //LM_KEYDOWN      = LM_User+38; // Windows Compatability
+  //LM_KEYUP        = LM_USER+39;  // Windows Compatability
+  LM_TIMER          = LM_USER+40;
   //LM_MOUSEBTNPRESS  = LM_USER+41;
   //LM_MOUSEBTNRELEASE  = LM_USER+42;
-  LM_EXIT	   = LM_USER+60;
-  LM_SCREENINIT = LM_USER+61;
-  LM_CLOSEQUERY = LM_USER+62;
-  LM_DRAGSTART = LM_USER+63;
-  LM_DEACTIVATE = LM_USER+64;  //used when a form is no longer in front
+  LM_EXIT           = LM_USER+60;
+  LM_SCREENINIT     = LM_USER+61;
+  LM_CLOSEQUERY     = LM_USER+62;
+  LM_DRAGSTART      = LM_USER+63;
+  LM_DEACTIVATE     = LM_USER+64;  //used when a form is no longer in front
 
-  LM_MONTHCHANGED = LM_USER+65;
-  LM_YEARCHANGED = LM_USER+66;
-  LM_DAYCHANGED = LM_USER+67;
+  LM_MONTHCHANGED   = LM_USER+65;
+  LM_YEARCHANGED    = LM_USER+66;
+  LM_DAYCHANGED     = LM_USER+67;
 
-  LM_MOUSEFIRST2 = LM_USER+68;
+  LM_MOUSEFIRST2    = LM_USER+68;
   LM_LBUTTONTRIPLECLK = LM_USER+68;
   LM_LBUTTONQUADCLK = LM_USER+69;
   LM_MBUTTONTRIPLECLK = LM_USER+70;
   LM_MBUTTONQUADCLK = LM_USER+71;
   LM_RBUTTONTRIPLECLK = LM_USER+72;
   LM_RBUTTONQUADCLK = LM_USER+73;
-  LM_MOUSELAST2 = LM_RBUTTONQUADCLK;
+  LM_MOUSELAST2     = LM_RBUTTONQUADCLK;
 
-  LM_GRABFOCUS = LM_USER+74;
+  LM_GRABFOCUS      = LM_USER+74;
 
+  LM_DRAWLISTITEM   = LM_User+80;
+
+  // these IDs are reserved for internal messages in the interfaces
   LM_INTERFACEFIRST = LM_User+99;
-  LM_INTERFACELAST = LM_User+199;
+  LM_INTERFACELAST  = LM_User+199;
 
-  LM_UNKNOWN = LM_INTERFACELAST+1;
+  LM_UNKNOWN        = LM_INTERFACELAST+1;
 
 
 type
@@ -347,12 +350,20 @@ type
   BOOL = Boolean;
 
 
-  {Linux Messages}
+  { LCL Messages }
 
   TLMDrawItems = record
     Msg: Cardinal;
     Ctl : HWND;
     DrawItemStruct : PDrawItemStruct;
+    Result : LongInt;
+  end;
+  
+  TLMDrawListItem = record
+    // message from the interface to the LCL
+    Msg: Cardinal;
+    Unused : LongInt;
+    DrawListItemStruct : PDrawListItemStruct;
     Result : LongInt;
   end;
 
@@ -871,6 +882,9 @@ end.
 
 {
   $Log$
+  Revision 1.35  2002/10/04 14:24:14  lazarus
+  MG: added DrawItem to TComboBox/TListBox
+
   Revision 1.34  2002/10/03 18:04:46  lazarus
   MG: started customdrawitem
 

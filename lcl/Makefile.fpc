@@ -11,10 +11,11 @@ version=0.8a
 dirs=interfaces
 units=allunits
 implicitunits=arrow actnlist buttons calendar clipbrd clistbox comctrls \
-        commctrl controls dialogs dynhasharray extctrls filectrl forms \
-        graphics graphicsmath graphtype imglist interfacebase lazqueue \
-        lclmemmanager lcllinux lclstrconsts lcltype lmessages lresources menus \
-        messages registry spin stdctrls stringhashlist toolwin utrace vclglobals
+        commctrl controls dialogs dynhasharray extctrls extendedstrings \
+        filectrl forms graphics graphicsmath graphtype imglist interfacebase \
+        lazqueue lclmemmanager lcllinux lclstrconsts lcltype lmessages \
+        lresources menus messages registry spin stdctrls stringhashlist \
+        toolwin utrace vclglobals
 # !!! do not add interfaces. interfaces.ppu belongs to the interface(s).
 # and do not add allunits. It is just a dummy unit used for compiling.
 

@@ -74,16 +74,16 @@ end;
 
 
  ------------------------------------------------------------------------------}
-procedure TCustomComboBox.DrawItem(Index: Integer; Rect: TRect;
+procedure TCustomComboBox.DrawItem(Index: Integer; ARect: TRect;
   State: TOwnerDrawState);
 begin
   //TControlCanvas(FCanvas).UpdateTextFlags;
   if Assigned(FOnDrawItem) then
-    FOnDrawItem(Self, Index, Rect, State)
-  else
+    FOnDrawItem(Self, Index, ARect, State)
+  else if not (odPainted in State) then
   begin
-    FCanvas.FillRect(Rect);
-    FCanvas.TextOut(Rect.Left + 2, Rect.Top, Items[Index]);
+    FCanvas.FillRect(ARect);
+    FCanvas.TextOut(ARect.Left + 2, ARect.Top, Items[Index]);
   end;
 end;
 
@@ -508,8 +508,6 @@ begin
   FDropDownCount:=8;
   FCanvas := TControlCanvas.Create;
   TControlCanvas(FCanvas).Control := Self;
-//   FItems:= TComboBoxStrings.Create;
-//   TComboBoxStrings(FItems).ComboBox := Self;
 end;
 
 {------------------------------------------------------------------------------
@@ -648,35 +646,29 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure TCustomComboBox.CNDrawItems(var TheMessage : TLMDrawItems);
+  Procedure TCustomComboBox.LMDrawListItem(var TheMessage : TLMDrawListItem);
 
   Handler for custom drawing items.
  ------------------------------------------------------------------------------}
-Procedure TCustomComboBox.CNDrawItems(var TheMessage : TLMDrawItems);
-//var
-//  State: TOwnerDrawState;
+Procedure TCustomComboBox.LMDrawListItem(var TheMessage : TLMDrawListItem);
 begin
-  {with TheMessage.DrawItemStruct^ do
+  with TheMessage.DrawListItemStruct^ do
   begin
-    State := TOwnerDrawState(LongRec(itemState).Lo);
-    if itemState and ODS_COMBOBOXEDIT <> 0 then
-      Include(State, odComboBoxEdit);
-    if itemState and ODS_DEFAULT <> 0 then
-      Include(State, odDefault);
-    FCanvas.Handle := hDC;
-    FCanvas.Font := Font;
-    FCanvas.Brush := Brush;
-    if (Integer(itemID) >= 0) and (odSelected in State) then
+    FCanvas.Handle := DC;
+    if Font<>nil then
+      FCanvas.Font := Font;
+    if Brush<>nil then
+      FCanvas.Brush := Brush;
+    if (ItemID >= 0) and (odSelected in ItemState) then
     begin
       FCanvas.Brush.Color := clHighlight;
       FCanvas.Font.Color := clHighlightText
     end;
-    if Integer(itemID) >= 0 then
-      DrawItem(itemID, rcItem, State) else
-      FCanvas.FillRect(rcItem);
-    if odFocused in State then DrawFocusRect(hDC, rcItem);
+    DrawItem(ItemID, Area, ItemState);
+    if odFocused in ItemState then
+      {DrawFocusRect(hDC, rcItem)};
     FCanvas.Handle := 0;
-  end;}
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -727,6 +719,9 @@ end;
 
 {
   $Log$
+  Revision 1.18  2002/10/04 14:24:14  lazarus
+  MG: added DrawItem to TComboBox/TListBox
+
   Revision 1.17  2002/10/03 18:04:46  lazarus
   MG: started customdrawitem
 

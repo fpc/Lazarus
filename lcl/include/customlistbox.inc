@@ -14,46 +14,88 @@
  *****************************************************************************
 }
 { if not HandleAllocated then
-    FItems contains a normal TStringList
+    FItems contains a TExtendedStringList
   else
     FItems contains an interface specific TStrings descendent
 }
 
+type
+  TCustomListBoxItemFlag = (clbiSelected);
+  TCustomListBoxItemFlags = set of TCustomListBoxItemFlag;
+  
+  TCustomListBoxItemRecord = record
+    TheObject: TObject;
+    Flags: TCustomListBoxItemFlags;
+  end;
+  PCustomListBoxItemRecord = ^TCustomListBoxItemRecord;
+
+
+function GetListBoxItemRecord(ListBoxInternalItems: TStrings;
+  Index: integer): PCustomListBoxItemRecord;
+begin
+  Result:=PCustomListBoxItemRecord(
+                      TExtendedStringList(ListBoxInternalItems).Records[Index]);
+end;
 
 {------------------------------------------------------------------------------}
 { procedure TCustomListBox.CreateHandle                                        }
 {------------------------------------------------------------------------------}
 procedure TCustomListBox.CreateHandle;
-var NewStrings : TStrings;
+var
+  NewStrings : TStrings;
+  i: integer;
 begin
-//writeln('[TCustomListBox.CreateHandle] A ',FItems.ClassName);
+  //writeln('[TCustomListBox.CreateHandle] A ',FItems.ClassName);
   inherited CreateHandle;
-//writeln('[TCustomListBox.CreateHandle] B ',FItems.ClassName);
+  //writeln('[TCustomListBox.CreateHandle] B ',FItems.ClassName);
   // create
-  NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
-  NewStrings.Assign(Items);
-  FItems.Free;
-  FItems:= NewStrings;
-  { Sync other properties }
   CNSendMessage(LM_SETBORDER, Self, nil);
   UpdateSelectionMode;
-//writeln('[TCustomListBox.CreateHandle] END ',FItems.ClassName);
+  UpdateSorted;
+
+  // fetch the interface item list
+  NewStrings:= TStrings(Pointer(CNSendMessage(LM_GETITEMS, Self, nil)));
+  // copy the items (text+objects)
+  NewStrings.Assign(Items);
+  // copy items attributes
+  for i:=0 to Items.Count-1 do begin
+    if clbiSelected in GetListBoxItemRecord(FItems,i)^.Flags then
+      SendItemSelected(i,True);
+  end;
+  // free old items
+  FItems.Free;
+  
+  // new item list is the interface item list
+  FItems:= NewStrings;
+  //writeln('[TCustomListBox.CreateHandle] END ',FItems.ClassName);
 end;
 
 {------------------------------------------------------------------------------}
 { procedure TCustomListBox.DestroyHandle                                        }
 {------------------------------------------------------------------------------}
 procedure TCustomListBox.DestroyHandle;
-var NewStrings : TStrings;
+var
+  NewStrings : TStrings;
+  i, Cnt: integer;
 begin
-//writeln('[TCustomListBox.DestroyHandle] A ',FItems.ClassName);
-  NewStrings:= TStringList.Create;
+  //writeln('[TCustomListBox.DestroyHandle] A ',FItems.ClassName);
+  // create internal item list
+  NewStrings:= TExtendedStringList.Create(SizeOf(TCustomListBoxItemRecord));
+  // copy items (text+objects) from the interface items list
   NewStrings.Assign(Items);
+  // copy items attributes
+  Cnt:=Items.Count;
+  for i:=0 to Cnt-1 do begin
+    if Selected[i] then
+      Include(GetListBoxItemRecord(NewStrings,i)^.Flags,clbiSelected);
+  end;
+  // free the interface items list
   FItems.Free;
+  // new item list is the internal item list
   FItems:= NewStrings;
-//writeln('[TCustomListBox.DestroyHandle] B ',FItems.ClassName);
+  //writeln('[TCustomListBox.DestroyHandle] B ',FItems.ClassName);
   inherited DestroyHandle;
-//writeln('[TCustomListBox.DestroyHandle] END ',FItems.ClassName);
+  //writeln('[TCustomListBox.DestroyHandle] END ',FItems.ClassName);
 end;
 
 {------------------------------------------------------------------------------}
@@ -71,11 +113,70 @@ end;
 { procedure TCustomListBox.UpdateSelectionMode                                 }
 {------------------------------------------------------------------------------}
 procedure TCustomListBox.UpdateSelectionMode;
-var Message : TLMSetSelMode;
+var
+  Msg : TLMSetSelMode;
 begin
-  Message.ExtendedSelect:= ExtendedSelect;
-  Message.MultiSelect:= MultiSelect;
-  if HandleAllocated then CNSendMessage(LM_SETSELMODE, Self, @Message);
+  if not HandleAllocated then exit;
+  Msg.ExtendedSelect:= ExtendedSelect;
+  Msg.MultiSelect:= MultiSelect;
+  CNSendMessage(LM_SETSELMODE, Self, @Msg);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomListBox.UpdateSorted;
+------------------------------------------------------------------------------}
+procedure TCustomListBox.UpdateSorted;
+var AMessage : TLMSort;
+begin
+  if not HandleAllocated then exit;
+  with AMessage do begin
+    Msg:= LM_SORT;
+    List:= Items;
+    IsSorted:= FSorted;
+  end;
+  CNSendMessage(LM_SORT, Self, @AMessage);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomListBox.LMDrawListItem(var TheMessage: TLMDrawListItem);
+
+  Handler for custom drawing items.
+ ------------------------------------------------------------------------------}
+procedure TCustomListBox.LMDrawListItem(var TheMessage: TLMDrawListItem);
+begin
+  with TheMessage.DrawListItemStruct^ do
+  begin
+    FCanvas.Handle := DC;
+    if Font<>nil then
+      FCanvas.Font := Font;
+    if Brush<>nil then
+      FCanvas.Brush := Brush;
+    if (ItemID >= 0) and (odSelected in ItemState) then
+    begin
+      FCanvas.Brush.Color := clHighlight;
+      FCanvas.Font.Color := clHighlightText
+    end;
+    DrawItem(ItemID, Area, ItemState);
+    if odFocused in ItemState then
+      {DrawFocusRect(hDC, rcItem)};
+    FCanvas.Handle := 0;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomListBox.SendItemSelected(Index: integer; IsSelected: boolean);
+
+  Tell the interface whether an item is selected.
+------------------------------------------------------------------------------}
+procedure TCustomListBox.SendItemSelected(Index: integer; IsSelected: boolean);
+var
+  Msg : TLMSetSel;
+begin
+  if HandleAllocated then begin
+    Msg.Index:= Index;
+    Msg.Selected:= IsSelected;
+    CNSendMessage(LM_SETSEL, Self, @Msg);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -104,17 +205,20 @@ end;
 { procedure TCustomListBox.SetSelected                                         }
 {------------------------------------------------------------------------------}
 procedure TCustomListBox.SetSelected(Index : integer; Val : boolean);
-var Message : TLMSetSel;
 begin
   if (Index < 0) or (Index >= Items.Count) then
     raise Exception.Create('List index out of bounds');
-//writeln('TCustomListBox.SetSelected A ',Items.Count);
-  HandleNeeded;
-//writeln('TCustomListBox.SetSelected B ',Items.Count);
-  Message.Index:= Index;
-  Message.Selected:= Val;
-  CNSendMessage(LM_SETSEL, Self, @Message);
-//writeln('TCustomListBox.SetSelected END ',Items.Count);
+  //writeln('TCustomListBox.SetSelected A ',Items.Count);
+  if HandleAllocated then begin
+    //writeln('TCustomListBox.SetSelected B ',Items.Count);
+    SendItemSelected(Index,Val);
+    //writeln('TCustomListBox.SetSelected END ',Items.Count);
+  end else begin
+    if Val then
+      Include(GetListBoxItemRecord(FItems,Index)^.Flags,clbiSelected)
+    else
+      Exclude(GetListBoxItemRecord(FItems,Index)^.Flags,clbiSelected)
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -125,7 +229,10 @@ begin
   if (Index < 0) or (Index >= Items.Count) then
     raise Exception.Create('TCustomListBox.GetSelected: index '+IntToStr(Index)
       +' out of bound. Count='+IntToStr(Items.Count));
-  Result:= (CNSendMessage(LM_GETSEL, Self, @Index) >= 0);
+  if HandleAllocated then
+    Result:= (CNSendMessage(LM_GETSEL, Self, @Index) >= 0)
+  else
+    Result:=clbiSelected in GetListBoxItemRecord(FItems,Index)^.Flags;
 end;
 
 {------------------------------------------------------------------------------}
@@ -133,7 +240,10 @@ end;
 {------------------------------------------------------------------------------}
 function TCustomListBox.GetSelCount : integer;
 begin
-  Result:= CNSendMessage(LM_GETSELCOUNT, Self, nil);
+  if HandleAllocated then
+    Result:= CNSendMessage(LM_GETSELCOUNT, Self, nil)
+  else
+    Result:=0;
 end;
 
 function TCustomListBox.GetItemHeight: Integer;
@@ -151,16 +261,10 @@ end;
 { procedure TCustomListBox.SetSorted                                          }
 {------------------------------------------------------------------------------}
 procedure TCustomListBox.SetSorted(Val : boolean);
-var AMessage : TLMSort;
 begin
   if Val <> FSorted then begin
-    with AMessage do begin
-      Msg:= LM_SORT;
-      List:= Items;
-      IsSorted:= Val;
-    end;
-    CNSendMessage(LM_SORT, Self, @AMessage);
     FSorted:= Val;
+    UpdateSorted;
   end;
 end;
 
@@ -171,6 +275,34 @@ procedure TCustomListBox.SetStyle(Val : TListBoxStyle);
 begin
   if Val <> FStyle then begin
     FStyle:= Val;
+  end;
+end;
+
+procedure TCustomListBox.DrawItem(Index: Integer; ARect: TRect;
+  State: TOwnerDrawState);
+{var
+  Flags: Longint;
+  Data: String;}
+begin
+  if Assigned(FOnDrawItem) then
+    FOnDrawItem(Self, Index, ARect, State)
+  else if not (odPainted in State) then
+  begin
+    FCanvas.FillRect(ARect);
+    if (Index>=0) and (Index < Items.Count) then
+    begin
+      {Flags := DrawTextBiDiModeFlags(DT_SINGLELINE or DT_VCENTER or DT_NOPREFIX);
+      if not UseRightToLeftAlignment then
+        Inc(Rect.Left, 2)
+      else
+        Dec(Rect.Right, 2);
+      Data := '';
+      if (Style in [lbVirtual, lbVirtualOwnerDraw]) then
+        Data := DoGetData(Index)
+      else
+        Data := Items[Index];
+      DrawText(FCanvas.Handle, PChar(Data), Length(Data), Rect, Flags);}
+    end;
   end;
 end;
 
@@ -194,7 +326,10 @@ begin
   fCompStyle := csListBox;
 
   FBorderStyle:= bsSingle;
-  FItems := TStringList.Create;
+  FItems := TExtendedStringList.Create(SizeOf(TCustomListBoxItemRecord));
+  FItemIndex:=-1;
+  FCanvas := TControlCanvas.Create;
+  TControlCanvas(FCanvas).Control := Self;
   SetBounds(1, 1, 100, 25);
 end;
 
@@ -203,6 +338,8 @@ end;
 {------------------------------------------------------------------------------}
 destructor TCustomListBox.Destroy;
 begin
+  FCanvas.Free;
+  FCanvas:=nil;
   inherited Destroy;
   FItems.Free;
 end;
@@ -210,7 +347,11 @@ end;
 function TCustomListBox.GetItemIndex : integer;
 begin
 //writeln('[TCustomListBox.GetItemIndex] A ',FItems.ClassName);
-  Result:= CNSendMessage(LM_GETITEMINDEX, Self, nil);
+  if HandleAllocated then begin
+    Result:= CNSendMessage(LM_GETITEMINDEX, Self, nil);
+    FItemIndex:=Result;
+  end else
+    Result:=FItemIndex;
 //writeln('[TCustomListBox.GetItemIndex] END ');
 end;
 
@@ -218,7 +359,9 @@ procedure TCustomListBox.SetItemIndex(Val : integer);
 begin
   if (Val < 0) or (Val >= FItems.Count) then raise Exception.Create('Out of bounds');
 //writeln('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
-  CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
+  FItemIndex:=Val;
+  if HandleAllocated then
+    CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
 //writeln('[TCustomListBox.SetItemIndex] END ',FItems.ClassName);
 end;
 

@@ -37,8 +37,8 @@ interface
 
 
 uses
-  VCLGlobals, Classes, SysUtils, Graphics, GraphType, LMessages, Controls,
-  Forms;
+  VCLGlobals, Classes, SysUtils, LCLType, Graphics, GraphType, LMessages,
+  Controls, Forms, ExtendedStrings;
 
 
 type
@@ -164,18 +164,14 @@ type
     property OnResize;
   end;
 
+
   { TCustomComboBox }
 
   TComboBoxStyle = (csDropDown, csSimple, csDropDownList, csOwnerDrawFixed,
                     csOwnerDrawVariable);
-  TOwnerDrawStateType = (
-    odSelected, odGrayed, odDisabled, odChecked,
-    odFocused, odDefault, odHotLight, odInactive, odNoAccel,
-    odNoFocusRect, odReserved1, odReserved2, odComboBoxEdit);
-  TOwnerDrawState = set of TOwnerDrawStateType;
 
   TDrawItemEvent = procedure(Control: TWinControl; Index: Integer;
-    Rect: TRect; State: TOwnerDrawState) of object;
+    ARect: TRect; State: TOwnerDrawState) of object;
   TMeasureItemEvent = procedure(Control: TWinControl; Index: Integer;
     var Height: Integer) of object;
 
@@ -204,12 +200,12 @@ type
     function GetItemWidth: Integer;
     procedure SetItemWidth(const AValue: Integer);
     procedure SetItems(Value : TStrings);
-    procedure CNDrawItems(var TheMessage : TLMDrawItems); message CN_DrawItem;
+    procedure LMDrawListItem(var TheMessage : TLMDrawListItem); message LM_DrawListItem;
     procedure CNCommand(var TheMessage : TLMCommand); message CN_Command;
   protected
     procedure CreateHandle; override;
     procedure DestroyHandle; override;
-    procedure DrawItem(Index: Integer; Rect: TRect;
+    procedure DrawItem(Index: Integer; ARect: TRect;
       State: TOwnerDrawState); virtual;
     procedure DoChange(var msg); message LM_CHANGED;
     procedure Change; dynamic;
@@ -318,16 +314,22 @@ type
   { TCustomListBox }
     
   TListBoxStyle = (lbStandard, lbOwnerDrawFixed, lbOwnerDrawVariable);
-
+  
   TCustomListBox = class(TWinControl)
   private
     FBorderStyle : TBorderStyle;
+    FCanvas: TCanvas;
     FExtendedSelect, FMultiSelect : boolean;
     FItems : TStrings;
     FItemHeight: Integer;
+    FItemIndex: integer;
+    FOnDrawItem: TDrawItemEvent;
     FSorted : boolean;
     FStyle : TListBoxStyle;
     procedure UpdateSelectionMode;
+    procedure UpdateSorted;
+    procedure LMDrawListItem(var TheMessage : TLMDrawListItem); message LM_DrawListItem;
+    procedure SendItemSelected(Index: integer; IsSelected: boolean);
   protected
     procedure CreateHandle; override;
     procedure DestroyHandle; override;
@@ -344,25 +346,31 @@ type
     procedure SetSelected(Index : integer; Val : boolean);
     procedure SetSorted(Val : boolean); virtual;
     procedure SetStyle(Val : TListBoxStyle); virtual;
+    procedure DrawItem(Index: Integer; ARect: TRect;
+      State: TOwnerDrawState); virtual;
+  protected
     property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle;
     property ExtendedSelect : boolean read FExtendedSelect write SetExtendedSelect;
     property Sorted : boolean read FSorted write SetSorted;
     property Style : TListBoxStyle read FStyle write SetStyle;
     property ItemHeight: Integer read GetItemHeight write SetItemHeight;
+    property OnDrawItem: TDrawItemEvent read FOnDrawItem write FOnDrawItem;
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
     procedure Clear;
+    property Canvas: TCanvas read FCanvas;
     property ItemIndex : integer read GetItemIndex write SetItemIndex;
     property Items : TStrings read FItems write SetItems;
     property MultiSelect : boolean read FMultiSelect write SetMultiSelect;
     property SelCount : integer read GetSelCount;
     property Selected[Index : integer] : boolean read GetSelected write SetSelected;
   end;
+  
+  
+  { TListBox }
     
   TListBox = class(TCustomListBox)
-  public
-    property ItemIndex;
   published
     property Align;
     property Anchors;
@@ -380,6 +388,7 @@ type
     property Visible;
     property OnClick;
     property OnDblClick;
+    property OnDrawItem;
     property OnEnter;
     property OnExit;
     property OnKeyPress;
@@ -390,6 +399,9 @@ type
     property OnMouseUp;
     property OnResize;
   end;
+
+
+  { TCustomEdit }
 
   TEditCharCase = (ecNormal, ecUppercase, ecLowerCase);
   TEchoMode = (emNormal, emNone, emPassword);
@@ -440,6 +452,9 @@ type
     property TabStop;
     property TabOrder;
   end;
+  
+  
+  { TCustomMemo }
 
   TCustomMemo = class(TCustomEdit)
   private
@@ -452,7 +467,6 @@ type
     procedure SetWordWrap(const Value : boolean);
     procedure SetScrollBars(const Value : TScrollStyle);
   public
-  
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Append(const Value : String);
@@ -461,6 +475,9 @@ type
     property WordWrap: Boolean read FWordWrap write SetWordWrap;
     property Font : TFont read FFont write FFont;
   end;
+  
+  
+  { TEdit }
 
   TEdit = class(TCustomEdit)
   published
@@ -484,6 +501,9 @@ type
     Property OnKeyDown;
     Property OnKeyUp;
   end;
+  
+  
+  { TMemo }
 
   TMemo = class(TCustomMemo)
   published
@@ -505,6 +525,7 @@ type
     Property OnKeyDown;
     Property OnKeyUp;
   end;
+
 
   { TCustomLabel }
 
@@ -570,7 +591,7 @@ type
   end;
 
 
-  { TCHECKBOX }
+  { TCustomCheckBox }
 
   // ToDo: delete TLeftRight when in classesh.inc
   TLeftRight = taLeftJustify..taRightJustify;
@@ -751,6 +772,7 @@ type
     property OnStartDrag;
   end;
 
+
   {TRadioButton}
    
   TRadioButton = class(TCustomCheckBox)
@@ -789,11 +811,13 @@ type
     property OnStartDrag;
   end;
 
+
 Function DeleteAmpersands(var Str : String) : Longint;
+
 
 implementation
 
-uses LCLLinux, LCLType, Interfaces;
+uses LCLLinux, Interfaces;
 
 
 type
@@ -1316,6 +1340,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.53  2002/10/04 14:24:14  lazarus
+  MG: added DrawItem to TComboBox/TListBox
+
   Revision 1.52  2002/10/03 18:04:46  lazarus
   MG: started customdrawitem
 
