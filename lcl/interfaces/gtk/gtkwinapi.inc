@@ -1339,7 +1339,7 @@ var
   ColorMap: PGdkColormap;
   P: Pointer;
 begin
-  GdiObject := NewGDIObject(gdiBitmap); 
+  GdiObject := NewGDIObject(gdiBitmap);
   if TransColor >= 0 then begin
     GDKColor := AllocGDKColor(TransColor);
     p := @GDKColor;
@@ -6261,6 +6261,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.118  2002/09/02 08:13:17  lazarus
+  MG: fixed GraphicClass.Create
+
   Revision 1.117  2002/08/30 13:43:38  lazarus
   MG: fixed drawing of non visual components in designer
 
