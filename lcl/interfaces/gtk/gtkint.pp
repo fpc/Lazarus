@@ -260,7 +260,6 @@ type
     function  GetValue(Sender : TObject; Data : pointer) : integer;virtual;
     function  SetValue(Sender : TObject; Data : pointer) : integer;virtual;
     function  SetProperties (Sender: TObject) : integer;virtual;
-    procedure AttachMenu(Sender: TObject);virtual;
     procedure SetColorDialogColor(ColorSelection: PGtkColorSelection;
       Color: TColor);virtual;
     procedure WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
@@ -354,7 +353,7 @@ uses
 // GtkWSGrids,
 // GtkWSImgList,
 // GtkWSMaskEdit,
-// GtkWSMenus,
+ GtkWSMenus,
 // GtkWSPairSplitter,
  GtkWSSpin,
  GtkWSStdCtrls,
@@ -459,6 +458,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.197  2004/09/10 18:58:22  micha
+  convert LM_ATTACHMENU to interface method
+
   Revision 1.196  2004/09/10 17:59:57  micha
   convert LM_APPENDTEXT to interface method
 

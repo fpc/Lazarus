@@ -33,7 +33,9 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
   {$ENDIF}
-  WSStdCtrls, WSLCLClasses, GtkInt, Classes;
+  WSStdCtrls, WSLCLClasses, GtkInt, Classes,
+  GTKWinApiWindow, gtkglobals, gtkproc;
+
 
 type
 
@@ -217,11 +219,6 @@ type
 
 
 implementation
-
-uses
-   Buttons, PairSplitter, Math,
-     GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl,
-       ExtCtrls, FileCtrl, LResources, gtkglobals, gtkproc;
 
 
 { helper routines }

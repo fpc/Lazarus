@@ -31,6 +31,7 @@ begin
   fCompStyle := csMemo;
   FWordWrap := True;
   FLines := TMemoStrings.Create(Self);
+  TMemoStrings(FLines).MemoWidgetClass := TWSCustomMemoClass(WidgetSetClass);
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
   SetInitialBounds(0,0,185,90);
@@ -173,6 +174,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2004/09/10 18:58:21  micha
+  convert LM_ATTACHMENU to interface method
+
   Revision 1.28  2004/08/26 19:09:34  mattias
   moved navigation key handling to TApplication and added options for custom navigation
 

@@ -147,7 +147,6 @@ Type
     Function GetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetProperties(Sender: TObject): Integer;
-    Procedure AttachMenu(Sender: TObject);
 
     Procedure AllocAndCopy(const BitmapInfo: Windows.TBitmap; const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
     procedure FillRawImageDescriptionColors(Desc: PRawImageDescription);
@@ -281,6 +280,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.102  2004/09/10 18:58:22  micha
+  convert LM_ATTACHMENU to interface method
+
   Revision 1.101  2004/09/10 14:38:29  micha
   convert lm_gettext to new interface methods
   remove lm_settext replacement settext methods in twidgetsets

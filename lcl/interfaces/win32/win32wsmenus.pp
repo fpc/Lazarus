@@ -36,7 +36,9 @@ uses
   Menus,
 ////////////////////////////////////////////////////
   WSMenus, WSLCLClasses,
-  Windows, Controls, Classes;
+  {TODO: remove when TLMShortCut removed from AttachMenu}
+  LMessages,
+  Windows, Controls, Classes, SysUtils, Win32Int, InterfaceBase, LCLProc;
 
 type
 
@@ -46,6 +48,7 @@ type
   private
   protected
   public
+    class procedure AttachMenu(const AMenuItem: TMenuItem); override;
     class procedure SetCaption(const AMenuItem: TMenuItem; const ACaption: string); override;
   end;
 
@@ -75,6 +78,140 @@ type
 
 
 implementation
+
+procedure TWin32WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
+var 
+  MenuInfo: MENUITEMINFO;
+  ParentMenuHandle: HMenu;
+  ParentOfParent: HMenu;
+  Msg: TLMShortCut;
+
+  function GetCheckBitmap(checked: boolean): HBitmap;
+  {TODO: create "checked" icon}
+  var 
+    hbmpCheck, hbmpTrans, hbmpMask: HBITMAP;
+    rectBitmap: Windows.RECT;
+    hbrTrans: HBRUSH;
+    OldCheckMark, OldOrigBitmap, OldTransBitmap: HBITMAP;
+    hdcNewBitmap, hdcOrigBitmap, hdcTransBitmap: HDC;
+    hdcScreen: HDC;
+    maxWidth, newWidth, bmpWidth: integer;
+    maxHeight, newHeight, bmpHeight: integer;
+  begin
+    maxWidth:=GetSystemMetrics(SM_CXMENUCHECK);
+    maxHeight:=GetSystemMetrics(SM_CYMENUCHECK);
+    if (maxWidth>=AMenuItem.Bitmap.Width) and (maxHeight>=AMenuItem.Bitmap.Height) then Result:=AMenuItem.Bitmap.Handle
+    else
+    begin
+      bmpWidth := AMenuItem.Bitmap.Width;
+      bmpHeight := AMenuItem.Bitmap.Height;
+      newWidth := min(maxWidth, bmpWidth);
+      newHeight := min(maxHeight, bmpHeight);
+      hdcScreen := GetDC(GetDesktopWindow);
+      hdcOrigBitmap  := CreateCompatibleDC(hdcScreen);
+      hdcNewBitmap   := CreateCompatibleDC(hdcScreen);
+      hdcTransBitmap := CreateCompatibleDC(hdcScreen);
+      hbmpCheck := CreateCompatibleBitmap(hdcScreen, newWidth, newHeight);
+      hbmpTrans := CreateCompatibleBitmap(hdcScreen, bmpWidth, bmpHeight);
+      hbmpMask  := AMenuItem.Bitmap.MaskHandle;
+      ReleaseDC(GetDesktopWindow, hdcScreen);
+      hbrTrans := CreateSolidBrush(GetSysColor(COLOR_MENU));
+      OldOrigBitmap  := SelectObject(hdcOrigBitmap, AMenuItem.Bitmap.Handle);
+      OldCheckmark   := SelectObject(hdcNewBitmap, hbmpCheck);
+      OldTransBitmap := SelectObject(hdcTransBitmap, hbmpTrans);
+      // fill transparent-bitmap with transparent color
+      rectBitmap := RECT(0, 0, bmpWidth, bmpHeight);
+      FillRect(hdcTransBitmap, rectBitmap, hbrTrans);
+      // blit menu icon transparently
+      TWin32WidgetSet(InterfaceObject).MaskBlt(hdcTransBitmap, 0, 0, bmpWidth, 
+        bmpHeight, hdcOrigBitmap, 0, 0, hbmpMask, 0, 0);
+      // scale to correct size
+      StretchBlt(hdcNewBitmap, 0, 0, newWidth, newHeight, hdcTransBitmap, 0, 0, bmpWidth, bmpHeight, SRCCOPY);
+      // free mem
+      SelectObject(hdcOrigBitmap, OldOrigBitmap);
+      SelectObject(hdcTransBitmap, OldTransBitmap);
+      SelectObject(hdcNewBitmap, OldCheckmark);
+      DeleteDC(hdcOrigBitmap);
+      DeleteDC(hdcTransBitmap);
+      DeleteDC(hdcNewBitmap);
+      DeleteObject(hbmpTrans);
+      DeleteObject(hbrTrans);
+      {TODO: Add hbmpCheck into a list of object they must be deleted}
+      Result := hbmpCheck;
+    end;
+  end;
+
+begin
+  ParentMenuHandle := AMenuItem.Parent.Handle;
+
+  {Following part fixes the case when an item is added in runtime
+  but the parent item has not defined the submenu flag (hSubmenu=0) }
+  if AMenuItem.Parent.Parent<>nil then
+  begin
+    ParentOfParent := AMenuItem.Parent.Parent.Handle;
+    with MenuInfo do begin
+      cbSize:=sizeof(MENUITEMINFO);
+      fMask:=MIIM_SUBMENU;
+    end;
+    GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
+                    false, @MenuInfo);
+    if MenuInfo.hSubmenu=0 then // the parent menu item is not yet defined with submenu flag
+    begin
+      MenuInfo.hSubmenu:=ParentMenuHandle;
+      SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
+                      false, MenuInfo);
+    end;
+  end;
+
+  with MenuInfo do begin
+    cbsize:=sizeof(MENUITEMINFO);
+    if AMenuItem.Enabled then fState:=MFS_ENABLED else fstate:=MFS_GRAYED;
+    if AMenuItem.Checked then fState:=fState or MFS_CHECKED;
+    fMask:=MIIM_ID or MIIM_DATA or MIIM_STATE or MIIM_TYPE;
+    wID:=AMenuItem.Command; {value may only be 16 bit wide!}
+    dwItemData:=PtrInt(AMenuItem);
+    // Note: can't use "and MFT_STRING", because MFT_STRING is zero :-)
+    if (AMenuItem.Count > 0) then 
+    begin
+      fMask := fMask or MIIM_SUBMENU;
+      hSubMenu := AMenuItem.Handle;
+    end else
+      hSubMenu := 0;
+    if AMenuItem.Caption <> '-' then
+    begin
+      fType:=MFT_STRING;
+      if AMenuItem.ShortCut <> 0 then
+      begin
+        Msg.Handle:=hSubMenu;
+        ShortCutToKey(AMenuItem.ShortCut, Msg.NewKey, Msg.NewModifier);
+        dwTypeData:=LPSTR(AMenuItem.Caption+#9+ShortCutToText(ShortCut(Msg.NewKey, Msg.NewModifier)));
+      end else begin
+        dwTypeData:=LPSTR(AMenuItem.Caption);
+      end;
+      cch:=StrLen(dwTypeData);
+    end else begin
+      fType:=MFT_SEPARATOR;
+      dwTypeData:=nil;
+      cch:=0;
+    end;
+    if AmenuItem.HasIcon then {adds the menuitem icon}
+    begin
+      fMask:=fMask or MIIM_CHECKMARKS;
+      hbmpUnchecked:=GetCheckBitmap(false);
+      hbmpChecked:=0;
+      {TODO: add support for getting icon from SubmenuImages as it will be
+       implemented in LCL}
+    end;
+  end;
+  if dword(InsertMenuItem(ParentMenuHandle, AMenuItem.Parent.IndexOf(AMenuItem), true, @MenuInfo)) = 0 then
+    DebugLn('InsertMenuItem failed with error: ', IntToStr(Windows.GetLastError));
+  // owner could be a popupmenu too
+  if (AMenuItem.Owner is TWinControl) and
+      TWinControl(AMenuItem.Owner).HandleAllocated and
+      ([csLoading,csDestroying] * TWinControl(AMenuItem.Owner).ComponentState = []) then
+    DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
+end;
+
 
 procedure TWin32WSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: string);
 var 

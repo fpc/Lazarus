@@ -70,7 +70,6 @@ const
   LM_SETPROPERTIES  = LM_ComUser+39;         // update object to reflect current properties
   LM_SETVALUE       = LM_ComUser+40;         // set actual value of object to visual object
   LM_GETVALUE       = LM_ComUser+41;         // get actual value from visual object
-  LM_ATTACHMENU     = LM_ComUser+42;
 
   LM_TB_BUTTONCOUNT = LM_ComUser+45;
   LM_INSERTTOOLBUTTON = LM_ComUser+46;
@@ -878,7 +877,6 @@ begin
   LM_SETPROPERTIES  :Result:='LM_SETPROPERTIES';
   LM_SETVALUE       :Result:='LM_SETVALUE';
   LM_GETVALUE       :Result:='LM_GETVALUE';
-  LM_ATTACHMENU     :Result:='LM_ATTACHMENU';
 
   LM_TB_BUTTONCOUNT :Result:='LM_TB_BUTTONCOUNT';
   LM_INSERTTOOLBUTTON :Result:='LM_INSERTTOOLBUTTON';
@@ -1031,6 +1029,9 @@ end.
 
 {
   $Log$
+  Revision 1.82  2004/09/10 18:58:21  micha
+  convert LM_ATTACHMENU to interface method
+
   Revision 1.81  2004/09/10 18:06:12  micha
   remove LM_GETLABEL since it is not used (anymore)
 

@@ -125,7 +125,7 @@ begin
   begin
     Parent.HandleNeeded;
     if Parent.HandleAllocated then
-      SendMsgToInterface(LM_ATTACHMENU, Self, nil);
+      TWSMenuItemClass(WidgetSetClass).AttachMenu(Self);
   end;
   if (Parent<>nil) then
   begin
@@ -1164,6 +1164,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.61  2004/09/10 18:58:21  micha
+  convert LM_ATTACHMENU to interface method
+
   Revision 1.60  2004/09/10 09:43:13  micha
   convert LM_SETLABEL message to interface methods
 
@@ -1372,6 +1375,9 @@ end;
 
 
   $Log$
+  Revision 1.61  2004/09/10 18:58:21  micha
+  convert LM_ATTACHMENU to interface method
+
   Revision 1.60  2004/09/10 09:43:13  micha
   convert LM_SETLABEL message to interface methods
 

@@ -271,8 +271,6 @@ Begin
       if Data<>nil then EnableWindow((Sender As TWinControl).Handle, boolean(Data^));
     LM_RECREATEWND:
       Result := RecreateWnd(TWinControl(Sender));
-    LM_ATTACHMENU:
-      AttachMenu(Sender);
         //SH: think of TBitmap.handle!!!!
     LM_SCREENINIT:
     Begin
@@ -2603,144 +2601,6 @@ begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.AttachMenu
-  Params:  Sender - the lcl object which called this func
-  Returns: nothing
-
-  Attaches the calling Menu to its Parent
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.AttachMenu(Sender: TObject);
-var MenuInfo: MENUITEMINFO;
-    ParentMenuHandle: HMenu;
-    ParentOfParent: HMenu;
-    Msg: TLMShortCut;
-    AMenuItem: TMenuItem;
-
-  function GetCheckBitmap(checked: boolean): HBitmap;
-  {TODO: create "checked" icon}
-  var hbmpCheck, hbmpTrans, hbmpMask: HBITMAP;
-      hbrTrans: HBRUSH;
-      OldCheckMark, OldOrigBitmap, OldTransBitmap: HBITMAP;
-      hdcNewBitmap, hdcOrigBitmap, hdcTransBitmap: HDC;
-      hdcScreen: HDC;
-      maxWidth, newWidth, bmpWidth: integer;
-      maxHeight, newHeight, bmpHeight: integer;
-  begin
-    maxWidth:=GetSystemMetrics(SM_CXMENUCHECK);
-    maxHeight:=GetSystemMetrics(SM_CYMENUCHECK);
-    if (maxWidth>=AMenuItem.Bitmap.Width) and (maxHeight>=AMenuItem.Bitmap.Height) then Result:=AMenuItem.Bitmap.Handle
-    else
-    begin
-      bmpWidth := AMenuItem.Bitmap.Width;
-      bmpHeight := AMenuItem.Bitmap.Height;
-      newWidth := min(maxWidth, bmpWidth);
-      newHeight := min(maxHeight, bmpHeight);
-      hdcScreen := GetDC(GetDesktopWindow);
-      hdcOrigBitmap  := CreateCompatibleDC(hdcScreen);
-      hdcNewBitmap   := CreateCompatibleDC(hdcScreen);
-      hdcTransBitmap := CreateCompatibleDC(hdcScreen);
-      hbmpCheck := CreateCompatibleBitmap(hdcScreen, newWidth, newHeight);
-      hbmpTrans := CreateCompatibleBitmap(hdcScreen, bmpWidth, bmpHeight);
-      hbmpMask  := AMenuItem.Bitmap.MaskHandle;
-      ReleaseDC(GetDesktopWindow, hdcScreen);
-      hbrTrans := CreateSolidBrush(GetSysColor(COLOR_MENU));
-      OldOrigBitmap  := SelectObject(hdcOrigBitmap, AMenuItem.Bitmap.Handle);
-      OldCheckmark   := SelectObject(hdcNewBitmap, hbmpCheck);
-      OldTransBitmap := SelectObject(hdcTransBitmap, hbmpTrans);
-      // fill transparent-bitmap with transparent color
-      FillRect(hdcTransBitmap, RECT(0, 0, bmpWidth, bmpHeight), hbrTrans);
-      // blit menu icon transparently
-      MaskBlt(hdcTransBitmap, 0, 0, bmpWidth, bmpHeight, hdcOrigBitmap, 0, 0, hbmpMask, 0, 0);
-      // scale to correct size
-      StretchBlt(hdcNewBitmap, 0, 0, newWidth, newHeight, hdcTransBitmap, 0, 0, bmpWidth, bmpHeight, SRCCOPY);
-      // free mem
-      SelectObject(hdcOrigBitmap, OldOrigBitmap);
-      SelectObject(hdcTransBitmap, OldTransBitmap);
-      SelectObject(hdcNewBitmap, OldCheckmark);
-      DeleteDC(hdcOrigBitmap);
-      DeleteDC(hdcTransBitmap);
-      DeleteDC(hdcNewBitmap);
-      DeleteObject(hbmpTrans);
-      DeleteObject(hbrTrans);
-      {TODO: Add hbmpCheck into a list of object they must be deleted}
-      Result := hbmpCheck;
-    end;
-  end;
-
-Begin
-  AMenuItem:=TMenuItem(Sender);
-  ParentMenuHandle := AMenuItem.Parent.Handle;
-
-  {Following part fixes the case when an item is added in runtime
-  but the parent item has not defined the submenu flag (hSubmenu=0) }
-  if AMenuItem.Parent.Parent<>nil then
-  begin
-    ParentOfParent := AMenuItem.Parent.Parent.Handle;
-    with MenuInfo do begin
-      cbSize:=sizeof(MENUITEMINFO);
-      fMask:=MIIM_SUBMENU;
-    end;
-    GetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
-                    false, @MenuInfo);
-    if MenuInfo.hSubmenu=0 then // the parent menu item is not yet defined with submenu flag
-    begin
-      MenuInfo.hSubmenu:=ParentMenuHandle;
-      SetMenuItemInfo(ParentOfParent, AMenuItem.Parent.Command,
-                      false, MenuInfo);
-    end;
-  end;
-
-  with MenuInfo do begin
-    cbsize:=sizeof(MENUITEMINFO);
-    if AMenuItem.Enabled then fState:=MFS_ENABLED else fstate:=MFS_GRAYED;
-    if AMenuItem.Checked then fState:=fState or MFS_CHECKED;
-    fMask:=MIIM_ID or MIIM_DATA or MIIM_STATE or MIIM_TYPE;
-    wID:=AMenuItem.Command; {value may only be 16 bit wide!}
-    dwItemData:=integer(Sender);
-    // Note: can't use "and MFT_STRING", because MFT_STRING is zero :-)
-    if (AMenuItem.Count > 0) then 
-    begin
-      fMask := fMask or MIIM_SUBMENU;
-      hSubMenu := AMenuItem.Handle;
-    end else
-      hSubMenu := 0;
-    if AMenuItem.Caption <> '-' then
-    begin
-      fType:=MFT_STRING;
-      if AMenuItem.ShortCut <> 0 then
-      begin
-        Msg.Handle:=hSubMenu;
-        ShortCutToKey(AMenuItem.ShortCut, Msg.NewKey, Msg.NewModifier);
-        dwTypeData:=LPSTR(AMenuItem.Caption+#9+ShortCutToText(ShortCut(Msg.NewKey, Msg.NewModifier)));
-      end else begin
-        dwTypeData:=LPSTR(AMenuItem.Caption);
-      end;
-      cch:=StrLen(dwTypeData);
-    end else begin
-      fType:=MFT_SEPARATOR;
-      dwTypeData:=nil;
-      cch:=0;
-    end;
-    if AmenuItem.HasIcon then {adds the menuitem icon}
-    begin
-      fMask:=fMask or MIIM_CHECKMARKS;
-      hbmpUnchecked:=GetCheckBitmap(false);
-      hbmpChecked:=0;
-      {TODO: add support for getting icon from SubmenuImages as it will be
-       implemented in LCL}
-    end;
-  end;
-  if dword(InsertMenuItem(ParentMenuHandle, AMenuItem.Parent.IndexOf(AMenuItem), true, @MenuInfo)) = 0 then
-    DebugLn('InsertMenuItem failed with error: ', IntToStr(Windows.GetLastError));
-  // owner could be a popupmenu too
-  if (TMenuItem(Sender).Owner is TWinControl) and
-      TWinControl(TMenuItem(Sender).Owner).HandleAllocated and
-      ([csLoading,csDestroying] * TWinControl(TMenuItem(Sender).Owner).ComponentState = []) then
-    DrawMenuBar(TWinControl(TMenuItem(Sender).Owner).Handle);
-End;
-
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.SetOwner
   Params: Window - Window to which an owner will be set
           Owner  - The owner to set
@@ -2760,6 +2620,9 @@ End;
 
 {
   $Log$
+  Revision 1.240  2004/09/10 18:58:22  micha
+  convert LM_ATTACHMENU to interface method
+
   Revision 1.239  2004/09/10 17:59:58  micha
   convert LM_APPENDTEXT to interface method
 

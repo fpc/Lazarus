@@ -3144,8 +3144,6 @@ begin
 
   LM_RECREATEWND : Result := RecreateWnd(sender);
 
-  LM_ATTACHMENU: AttachMenu(Sender);
-
   LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TCustomPage(Sender));
 
   LM_LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
@@ -7617,79 +7615,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGtkWidgetSet.AttachMenu
-  Params:  Sender : the lcl object which called this func
-  Returns: nothing
-
-  Attaches the calling Menu to its Parent
- ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.AttachMenu(Sender: TObject);
-var
-  //AccelKey: Integer;
-  //AccelGroup: PGTKAccelGroup;
-  MenuItem, ParentMenuWidget, ContainerMenu: PGtkWidget;
-  LCLMenuItem: TMenuItem;
-
-  procedure SetContainerMenuToggleSize;
-  var MenuClass: PGtkWidgetClass;
-  begin
-    if GtkWidgetIsA(ContainerMenu,GTK_TYPE_MENU) then begin
-      MenuClass:=GTK_WIDGET_CLASS(gtk_object_get_class(ContainerMenu));
-      if OldMenuSizeRequestProc=nil then begin
-        OldMenuSizeRequestProc:=MenuClass^.size_request;
-      end;
-      MenuClass^.size_request:=@MenuSizeRequest;
-    end;
-  end;
-
-begin
-  LCLMenuItem:=TMenuItem(Sender);
-  //DebugLn('TGtkWidgetSet.AttachMenu START ',LCLMenuItem.Name,':',LCLMenuItem.ClassName,' Parent=',LCLMenuItem.Parent.Name,':',LCLMenuItem.Parent.ClassName);
-  with LCLMenuItem do
-  begin
-    MenuItem := PGtkWidget(Handle);
-    if MenuItem=nil then
-      RaiseException('TGtkWidgetSet.AttachMenu Handle=0');
-    ParentMenuWidget := PGtkWidget(Parent.Handle);
-    if ParentMenuWidget=nil then
-      RaiseException('TGtkWidgetSet.AttachMenu ParentMenuWidget=nil');
-
-    if GtkWidgetIsA(ParentMenuWidget,GTK_TYPE_MENU_BAR) then begin
-      // mainmenu (= a menu bar)
-      ContainerMenu:=ParentMenuWidget;
-      gtk_menu_bar_insert(ParentMenuWidget,MenuItem, LCLMenuItem.MenuIndex);
-    end
-    else begin
-      // menu item
-
-      // find the menu container
-      ContainerMenu := PGtkWidget(gtk_object_get_data(
-                                                   PGtkObject(ParentMenuWidget),
-                                                   'ContainerMenu'));
-      if ContainerMenu = nil then begin
-        if (GetParentMenu is TPopupMenu) and (Parent.Parent=nil) then begin
-          ContainerMenu:=PGtkWidget(GetParentMenu.Handle);
-          gtk_object_set_data(PGtkObject(ContainerMenu), 'ContainerMenu',
-                              ContainerMenu);
-        end else begin
-          ContainerMenu := gtk_menu_new;
-          gtk_object_set_data(PGtkObject(ParentMenuWidget), 'ContainerMenu',
-                              ContainerMenu);
-          gtk_menu_item_set_submenu(PGTKMenuItem(ParentMenuWidget),ContainerMenu);
-        end;
-      end;
-      gtk_menu_insert(ContainerMenu, MenuItem, LCLMenuItem.MenuIndex);
-    end;
-
-    SetContainerMenuToggleSize;
-
-    if GtkWidgetIsA(MenuItem, GTK_TYPE_RADIO_MENU_ITEM) then
-      RegroupMenuItem(HMENU(MenuItem),GroupIndex);
-  end;
-  //DebugLn('TGtkWidgetSet.AttachMenu END ',LCLMenuItem.Name,':',LCLMenuItem.ClassName);
-end;
-
-{------------------------------------------------------------------------------
   Function: IsValidDC
   Params:  DC: a (LCL) devicecontext
   Returns: True if valid
@@ -8823,6 +8748,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.548  2004/09/10 18:58:22  micha
+  convert LM_ATTACHMENU to interface method
+
   Revision 1.547  2004/09/10 17:59:58  micha
   convert LM_APPENDTEXT to interface method
 
