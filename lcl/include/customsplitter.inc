@@ -52,11 +52,13 @@ begin
   FMinSize:=AValue;
 end;
 
-procedure TCustomSplitter.StartSplitterMove(Restart: boolean; const MouseXY: TPoint);
+procedure TCustomSplitter.StartSplitterMove(Restart: boolean;
+  const MouseXY: TPoint);
 begin
   if (not Restart) and FSplitDragging then exit;
   FSplitDragging:=true;
-  fSplitterStartXY:=MouseXY;
+  fSplitterStartMouseXY:=MouseXY;
+  fSplitterStartLeftTop:=Point(Left,Top);
 end;
 
 procedure TCustomSplitter.MouseDown(Button: TMouseButton; Shift: TShiftState; X,
@@ -67,7 +69,6 @@ begin
   inherited MouseDown(Button, Shift, X, Y);
   // While resizing X, Y are not valid. Use absolute mouse position.
   GetCursorPos(MousePos);
-  MousePos:=ScreenToClient(MousePos);
   StartSplitterMove(true,MousePos);
 end;
 
@@ -87,10 +88,10 @@ begin
   if (ssLeft in Shift) and (Parent<>nil) then begin
     // While resizing X, Y are not valid. Use absolute mouse position.
     GetCursorPos(MousePos);
-    MousePos:=ScreenToClient(MousePos);
     StartSplitterMove(false,MousePos);
     if Align in [alLeft,alRight] then begin
-      Offset:=MousePos.X-fSplitterStartXY.X;
+      Offset:=(MousePos.X-fSplitterStartMouseXY.X)
+             -(Left-fSplitterStartLeftTop.X);
       if Offset=0 then exit;
       MinLeft:=0;
       MaxLeft:=Parent.ClientWidth-Width;
@@ -112,8 +113,10 @@ begin
           AlignControl.Left:=NewLeft+Width;
       end else
         Left:=NewLeft;
-    end else begin
-      Offset:=MousePos.Y-fSplitterStartXY.Y;
+    end
+    else if Align in [alTop, alBottom] then begin
+      Offset:=(MousePos.Y-fSplitterStartMouseXY.Y)
+             -(Top-fSplitterStartLeftTop.Y);
       if Offset=0 then exit;
       MinTop:=0;
       MaxTop:=Parent.ClientHeight-Height;

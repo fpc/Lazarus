@@ -370,7 +370,8 @@ type
     FOnMoved: TNotifyEvent;
     FResizeStyle: TResizeStyle;
     FSplitDragging: Boolean;
-    fSplitterStartXY: TPoint;
+    fSplitterStartMouseXY: TPoint; // in screen coordinates
+    fSplitterStartLeftTop: TPoint; // in screen coordinates
     procedure SetAutoSnap(const AValue: boolean);
     procedure SetBeveled(const AValue: boolean);
     procedure SetMinSize(const AValue: integer);
@@ -930,6 +931,9 @@ end.
 
  {
   $Log$
+  Revision 1.107  2004/07/01 18:29:35  mattias
+  fixed TSplitter moving for asynchroneous resizing
+
   Revision 1.106  2004/06/20 21:21:49  micha
   fix GetVisible to return this control's visibility, instead introduce IsVisible to check for recursive visibility
 

@@ -29,7 +29,7 @@ unit MaskEdit;
 interface
 
 uses
-  Classes, SysUtils, StdCtrls, Controls, LMessages, lclType, Graphics;
+  Classes, SysUtils, StdCtrls, Controls, LMessages, LCLType, Graphics;
   
 const
   DefaultBlank: Char = '_';
