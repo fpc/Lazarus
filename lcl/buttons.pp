@@ -37,7 +37,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-uses StdCtrls, VCLGlobals, Classes, LCLType, LCLLinux,
+uses StdCtrls, VCLGlobals, Classes, LCLType, LCLProc, LCLLinux,
   GraphType, Graphics, SysUtils, Controls, lMessages, Forms, Messages;
 
 type
@@ -273,6 +273,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/10/25 09:47:37  lazarus
+  MG: added inputdialog.inc
+
   Revision 1.30  2002/10/10 13:29:08  lazarus
   AJ: added LoadStockPixmap routine & minor fixes to/for GNOMEInt
 
