@@ -24,9 +24,10 @@ cp -a $LazSrcDir /tmp/lazarus
 echo "cleaning up (CVS, ppu, o) ..."
 cd /tmp/lazarus
 make cleanall
-find . -name '*.ppu' -exec rm -rf {} \;
-find . -name '*.o' -exec rm -rf {} \;
-find . -name '*.rst' -exec rm -rf {} \;
+for Ext in ppu ppw ppl o ow rst cvsignore bak; do
+  find . -name "*.$Ext" -exec rm -f {} \;
+done
+find . -name "*.~*" -exec rm -f {} \;
 rm -rf tools/install/*.tgz
 cd -
 

@@ -16,7 +16,7 @@ Month=`date +%m`
 Day=`date +%d`
 
 Date=20$Year$Month$Day
-LazVersion=0.8.5.4
+LazVersion=0.9.0.1
 LazRelease=`dpkg -s fp-compiler | grep '^Version' | sed -e 's/Version: //'`
 LazRelease=`echo $LazRelease | sed -e 's/-/_/g'`
 SrcTGZ=lazarus-$Date.tgz
@@ -27,6 +27,7 @@ LazDeb=$CurDir/lazarus-$LazVersion-fpc_$LazRelease.deb
 DebianSrcDir=$CurDir/debian_lazarus
 LazDestDir=$LazBuildDir/usr/share/lazarus
 FPCVersion=`echo $LazRelease | sed -e 's/_.*//'`
+ChangeLogDate=`date --rfc-822`
 
 # download lazarus cvs if necessary
 if [ ! -f $SrcTGZ ]; then

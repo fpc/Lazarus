@@ -2,7 +2,7 @@ The package was originally put together by:
   Mattias Gaertner <mattias@freepascal.org>
 
 From sources obtained from:
-  ftp://lazarus.freepascal.org/lazarus/
+  CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
 
 The files and libraries are released under the terms of the GNU
 Library General Public License, which can be found in the file
