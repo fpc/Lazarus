@@ -30,7 +30,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process,
-  IDEProcs, FileCtrl, LazConf;
+  IDEProcs, FileCtrl, LclProc, LazConf;
 
 type
   TOnOutputString = procedure(const Msg, Directory: String) of Object;
@@ -824,18 +824,20 @@ procedure TOutputFilter.WriteOutput(Flush: boolean);
 var
   CurTime: Double;
   s: String;
+const
+  HalfASecond =0.5/(24*60*60); // 0.5 divided by the number of seconds per day
 begin
   CurTime:=Now;
-  if ((CurTime-fLastOutputTime)>500) or Flush or (FBufferingOutputLock<=0) then
-  begin
+  if ((CurTime-fLastOutputTime)>HalfASecond) or
+    Flush or (FBufferingOutputLock<=0) then begin
     s:='';
     while FLastOutputLine<fOutput.Count-1 do begin
       inc(FLastOutputLine);
       s:=s+fOutput[FLastOutputLine]+LineEnding;
     end;
     if s<>'' then write(s);
+    fLastOutputTime:=CurTime;
   end;
-  fLastOutputTime:=CurTime;
 end;
 
 procedure TOutputFilter.BeginBufferingOutput;
