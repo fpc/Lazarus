@@ -1060,38 +1060,15 @@ var
   
   procedure SaveDebuggerItems;
   begin
-    // copy the break point list without the group references
-//@@    OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
-//@@    OldBreakpoints.Assign(FBreakPoints);
-
-    // copy the groups and all group references
-//@@    OldBreakPointGroups := TDBGBreakPointGroups.Create;
-//@@    OldBreakPointGroups.Regroup(FBreakPointGroups,FBreakPoints,OldBreakPoints);
-
     // copy the watches
     OldWatches := TDBGWatches.Create(nil, TDBGWatch);
     OldWatches.Assign(FWatches);
 
-//@@    FBreakPointGroups := nil;
-//@@    FBreakPoints := nil;
     FWatches := nil;
   end;
   
   procedure RestoreDebuggerItems;
   begin
-    // restore the break point list without the group references
-//@@    if (OldBreakpoints<>nil) then
-//@@      FBreakPoints.Assign(OldBreakpoints);
-
-    // restore the groups and all group references
-//@@    if (OldBreakPointGroups<>nil) then begin
-//@@      if (OldBreakpoints<>nil) then
-//@@        FBreakPointGroups.Regroup(OldBreakPointGroups,OldBreakpoints,
-//@@                                  FBreakPoints)
-//@@      else
-//@@        FBreakPointGroups.Assign(OldBreakPointGroups);
-//@@    end;
-
     // restore the watches
     if OldWatches<>nil then
       FWatches.Assign(OldWatches);
@@ -1118,8 +1095,6 @@ begin
   SplitCmdLine(LaunchingCmdLine,LaunchingApplication,LaunchingParams);
   if (not FileExists(LaunchingApplication)) then exit;
 
-//@@  OldBreakpoints := nil;
-//@@  OldBreakPointGroups := nil;
   OldWatches := nil;
 
   BeginUpdateDialogs;
@@ -1141,8 +1116,6 @@ begin
           then begin
             SaveDebuggerItems;
             FDebugger := TGDBMIDebugger.Create(EnvironmentOptions.DebuggerFilename);
-//@@            FBreakPointGroups := FDebugger.BreakPointGroups;
-//@@            FBreakPoints := FDebugger.BreakPoints;
 
             TManagedBreakPoints(FBreakPoints).Master := FDebugger.BreakPoints; //!!
             
@@ -1158,8 +1131,6 @@ begin
         exit;
       end;
     finally
-//@@      OldBreakpoints.Free;
-//@@      OldBreakPointGroups.Free;
       OldWatches.Free;
     end;
     FDebugger.OnState     := @OnDebuggerChangeState;
@@ -1171,6 +1142,7 @@ begin
 
     FDebugger.FileName := LaunchingApplication;
     FDebugger.Arguments := LaunchingParams;
+    FDebugger.WorkingDir := Project1.RunParameterOptions.WorkingDirectory;
     Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
 
     if FDialogs[ddtOutput] <> nil
@@ -1417,6 +1389,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.49  2003/06/09 14:39:52  mattias
+  implemented setting working directory for debugger
+
   Revision 1.48  2003/06/05 15:25:28  mattias
   deactivated our TDataModule for fpc 1.0.8 and 1.1
 
