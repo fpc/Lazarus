@@ -848,16 +848,8 @@ begin
 end;
 
 function  TWin32WSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
-var
-  Handle: HWND;
 begin
-  if ATrackBar.HandleAllocated then
-  begin
-    Handle := ATrackBar.Handle;
-    Result := SendMessage(Handle, TBM_GETRANGEMAX, 0, 0) - 
-      SendMessage(Handle, TBM_GETRANGEMIN, 0, 0);
-  end else
-    Result := 0;
+  Result := SendMessage(ATrackBar.Handle, TBM_GETPOS, 0, 0)
 end;
 
 procedure TWin32WSTrackBar.SetPosition(const ATrackBar: TCustomTrackBar; const NewPosition: integer);

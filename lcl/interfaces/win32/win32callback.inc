@@ -386,6 +386,28 @@ Var
       DisposeWindowInfo(Buddy);
   end;
   
+  procedure HandleScrollMessage(LMsg: integer);
+  var
+    TargetWindow: HWND;
+  begin
+    TargetWindow := HWND(LParam);
+    if TargetWindow<>0 then
+      lWinControl := GetWindowInfo(TargetWindow)^.WinControl;
+    if lWinControl is TCustomTrackBar then begin
+      LMessage.Msg := LM_CHANGED;
+    end
+    else begin
+      PLMsg:=@LMScroll;
+      With LMScroll Do
+      Begin
+        Msg := LMsg;
+        ScrollCode := SmallInt(Lo(WParam));
+        Pos := SmallInt(Hi(WParam));
+        ScrollBar := TargetWindow;
+      End;
+    end;
+  end;
+  
 Begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -666,21 +688,7 @@ Begin
       then DrawBitBtnImage(TCustomBitBtn(lWinControl), PChar(TCustomBitBtn(lWinControl).Caption));
     End;
     WM_HSCROLL:
-    Begin
-      PLMsg:=@LMScroll;
-      With LMScroll Do
-      Begin
-        Msg := LM_HSCROLL;
-        ScrollCode := SmallInt(Lo(WParam));
-        Pos := SmallInt(Hi(WParam));
-        ScrollBar := HWND(LParam);
-        if ScrollBar <> 0 then
-        begin
-          // send message to actual scrollbar window
-          lWinControl := GetWindowInfo(ScrollBar)^.WinControl;
-        end;
-      End;
-    End;
+      HandleScrollMessage(LM_HSCROLL);
     WM_ERASEBKGND:
     Begin 
       eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
@@ -1068,21 +1076,7 @@ Begin
       LMessage.LParam := LParam;
     End;
     WM_VSCROLL:
-    Begin
-      PLMsg:=@LMScroll;
-      With LMScroll Do
-      Begin
-        Msg := LM_VSCROLL;
-        ScrollCode := SmallInt(Lo(WParam));
-        Pos := SmallInt(Hi(WParam));
-        ScrollBar := HWND(LParam);
-        if ScrollBar <> 0 then
-        begin
-          // send message to actual scrollbar window
-          lWinControl := GetWindowInfo(ScrollBar)^.WinControl;
-        end;
-      End;
-    End;
+      HandleScrollMessage(LM_VSCROLL);
     WM_WINDOWPOSCHANGED:
     Begin
       With TLMWindowPosMsg(LMessage) Do
@@ -1499,6 +1493,9 @@ end;
 
 {
   $Log$
+  Revision 1.181  2005/01/07 10:51:07  vincents
+  send LM_CHANGE message for trackbar
+
   Revision 1.180  2005/01/03 15:50:35  micha
   WM_SIZE can also mean windowstate change, always send message
 
