@@ -34,7 +34,7 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, VCLGlobals, LMessages,
-  GraphType, GraphMath, MenuType;
+  GraphType, GraphMath;
 
 type
 
@@ -108,6 +108,9 @@ end.
 
 {
   $Log$
+  Revision 1.38  2003/11/27 23:02:30  mattias
+  removed menutype.pas
+
   Revision 1.37  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 

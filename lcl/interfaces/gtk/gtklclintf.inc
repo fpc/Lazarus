@@ -35,7 +35,7 @@
   
   Checks or unchecks the specified menu item.
  ------------------------------------------------------------------------------}
-function TgtkObject.LclCheckMenuItem(BaseMenuItem: TBaseMenuItem): Boolean;
+function TgtkObject.LclCheckMenuItem(BaseMenuItem: TComponent): Boolean;
 var
   IsRadio: Boolean;
   Group: PGSList;
@@ -72,7 +72,7 @@ end;
 
   Enables, disables, or grays the specified menu item.
  ------------------------------------------------------------------------------}
-function TGTKObject.LclEnableMenuItem(BaseMenuItem: TBaseMenuItem): Boolean;
+function TGTKObject.LclEnableMenuItem(BaseMenuItem: TComponent): Boolean;
 var
   AMenuItem: TMenuItem;
 begin
@@ -87,6 +87,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2003/11/27 23:02:30  mattias
+  removed menutype.pas
+
   Revision 1.3  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 

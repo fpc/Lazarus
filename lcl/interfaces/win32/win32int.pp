@@ -38,8 +38,7 @@ Interface
 Uses
   Windows, Classes, LCLStrConsts, ComCtrls, Controls, Dialogs, DynHashArray,
   ExtCtrls, Forms, GraphMath, GraphType, InterfaceBase, LCLIntf, LCLType,
-  LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def, Graphics, Menus,
-  MenuType;
+  LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def, Graphics, Menus;
 
 Type
   { Virtual alignment-control record }
@@ -188,6 +187,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.57  2003/11/27 23:02:30  mattias
+  removed menutype.pas
+
   Revision 1.56  2003/11/26 21:55:15  mattias
   fixed win32 TBaseMenuitem
 

@@ -71,7 +71,7 @@ uses
   {$ENDIF}
   SysUtils, Classes, ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
   VclGlobals, LCLProc, LCLIntf, LCLType, gtkDef, DynHashArray, gtkMsgQueue,
-  GraphType, GraphMath, Graphics, MenuType, Menus;
+  GraphType, GraphMath, Graphics, Menus;
 
 
 type
@@ -401,6 +401,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.160  2003/11/27 23:02:30  mattias
+  removed menutype.pas
+
   Revision 1.159  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 

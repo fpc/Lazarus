@@ -46,7 +46,7 @@ interface
 
 uses
   Classes, SysUtils, LCLStrConsts, LCLType, LCLProc, VCLGlobals,
-  LCLIntf, InterfaceBase, LMessages, ActnList, Graphics, ImgList, MenuType;
+  LCLIntf, InterfaceBase, LMessages, ActnList, Graphics, ImgList;
 
 
 type
@@ -92,7 +92,7 @@ type
 
   { TMenuItem }
 
-  TMenuItem = class(TBaseMenuItem)
+  TMenuItem = class(TComponent)
   private
     FActionLink: TMenuActionLink;
     FAutoCheck: boolean;
@@ -385,6 +385,9 @@ end.
 
 {
   $Log$
+  Revision 1.57  2003/11/27 23:02:30  mattias
+  removed menutype.pas
+
   Revision 1.56  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 

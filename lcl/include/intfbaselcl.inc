@@ -258,12 +258,12 @@ begin
   Result:=true;
 end;
 
-function TInterfaceBase.LclCheckMenuItem(AMenuItem: TBaseMenuItem): Boolean;
+function TInterfaceBase.LclCheckMenuItem(AMenuItem: TComponent): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.LclEnableMenuItem(AMenuItem: TBaseMenuItem): Boolean;
+function TInterfaceBase.LclEnableMenuItem(AMenuItem: TComponent): Boolean;
 begin
   Result := False;
 end;
@@ -468,6 +468,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/11/27 23:02:30  mattias
+  removed menutype.pas
+
   Revision 1.4  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 

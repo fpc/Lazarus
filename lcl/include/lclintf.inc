@@ -224,12 +224,12 @@ begin
   Result := InterfaceObject.InvalidateFrame(aHandle,ARect,bErase,BorderWidth);
 end;
 
-function LclCheckMenuItem(AMenuItem: TBaseMenuItem): Boolean;
+function LclCheckMenuItem(AMenuItem: TComponent): Boolean;
 begin
   Result := InterfaceObject.LclCheckMenuItem(AMenuItem);
 end;
 
-function LclEnableMenuItem(AMenuItem: TBaseMenuItem): Boolean;
+function LclEnableMenuItem(AMenuItem: TComponent): Boolean;
 begin
   Result := InterfaceObject.LclEnableMenuItem(AMenuItem);
 end;
@@ -448,6 +448,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.5  2003/11/27 23:02:30  mattias
+  removed menutype.pas
+
   Revision 1.4  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 

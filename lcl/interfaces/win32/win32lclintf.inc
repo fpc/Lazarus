@@ -35,7 +35,7 @@
 
   Checks or unchecks the specified menu item.
  ------------------------------------------------------------------------------}
-Function TWin32Object.LclCheckMenuItem(BaseMenuItem: TBaseMenuItem): Boolean;
+Function TWin32Object.LclCheckMenuItem(BaseMenuItem: TComponent): Boolean;
 var
   CheckFlag: Integer;
   AMenuItem: TMenuItem;
@@ -54,7 +54,7 @@ End;
 
   Enables, disables, or grays the specified menu item.
  ------------------------------------------------------------------------------}
-Function TWin32Object.LclEnableMenuItem(BaseMenuItem: TBaseMenuItem): Boolean;
+Function TWin32Object.LclEnableMenuItem(BaseMenuItem: TComponent): Boolean;
 Var
   EnableFlag: Integer;
   AMenuItem: TMenuItem;
@@ -73,6 +73,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/11/27 23:02:30  mattias
+  removed menutype.pas
+
   Revision 1.2  2003/11/26 21:55:15  mattias
   fixed win32 TBaseMenuitem
 

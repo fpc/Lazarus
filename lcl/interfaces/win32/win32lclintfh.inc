@@ -28,8 +28,8 @@
 
 //##apiwiz##sps##   // Do not remove
 
-function LclCheckMenuItem(BaseMenuItem: TBaseMenuItem): Boolean; override;
-function LclEnableMenuItem(BaseMenuItem: TBaseMenuItem): Boolean; override;
+function LclCheckMenuItem(BaseMenuItem: TComponent): Boolean; override;
+function LclEnableMenuItem(BaseMenuItem: TComponent): Boolean; override;
 
 
 //##apiwiz##eps##   // Do not remove, no wizard declaration after this line
@@ -37,6 +37,9 @@ function LclEnableMenuItem(BaseMenuItem: TBaseMenuItem): Boolean; override;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/11/27 23:02:30  mattias
+  removed menutype.pas
+
   Revision 1.2  2003/11/26 21:55:15  mattias
   fixed win32 TBaseMenuitem
 

@@ -31,7 +31,7 @@ uses
   LazLinkedList, DynHashArray, LCLMemManager, AvgLvlTree, StringHashList,
   ExtendedStrings, DynamicArray, UTrace, TextStrings,
   // base types and base functions
-  LCLProc, LCLType, GraphMath, VCLGlobals, FileCtrl, LMessages, MenuType,
+  LCLProc, LCLType, GraphMath, VCLGlobals, FileCtrl, LMessages,
   // the interface base
   InterfaceBase, {$IFDEF UseFPImage}IntfGraphics,{$ENDIF}
   // components and functions
@@ -48,6 +48,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2003/11/27 23:02:30  mattias
+  removed menutype.pas
+
   Revision 1.2  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 

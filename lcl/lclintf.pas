@@ -42,7 +42,7 @@ interface
 
 uses
   Classes, SysUtils, LCLType, LCLProc, VCLGlobals, GraphType, InterfaceBase,
-  LResources, MenuType;
+  LResources;
 
 {$ifdef Trace}
   {$ASSERTIONS ON}
@@ -151,6 +151,9 @@ end.
 
 {
   $Log$
+  Revision 1.6  2003/11/27 23:02:30  mattias
+  removed menutype.pas
+
   Revision 1.5  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 
