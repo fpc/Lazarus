@@ -5715,8 +5715,8 @@ begin
           if TopLine<1 then TopLine:=1;
           if FocusEditor then begin
             //SourceNotebook.BringToFront;
-            SrcEdit.EditorComponent.SetFocus;
             BringWindowToTop(SourceNoteBook.Handle);
+            SrcEdit.EditorComponent.SetFocus;
           end;
           SrcEdit.EditorComponent.CaretXY:=CaretXY;
           SrcEdit.EditorComponent.TopLine:=TopLine;
@@ -7375,6 +7375,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.413  2002/10/14 07:59:56  lazarus
+  MG: fixed clicking on message view on same selection
+
   Revision 1.412  2002/10/14 07:16:34  lazarus
   MG: fixed showing form
 
