@@ -44,18 +44,25 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Calendar,
+  Calendar,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls;
 
 type
   { TWSCalendar }
 
+  TWSCalendarClass = class of TWSCalendar;
   TWSCalendar = class(TWSWinControl)
+    class function  GetDateTime(const ACalender: TCustomCalendar): TDateTime; virtual;
   end;
 
 
 implementation
+
+function  TWSCalendar.GetDateTime(const ACalender: TCustomCalendar): TDateTime;
+begin
+  Result := 0.0;
+end;
 
 initialization
 

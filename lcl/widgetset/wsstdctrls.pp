@@ -157,6 +157,7 @@ type
 
   TWSCustomCheckBoxClass = class of TWSCustomCheckBox;
   TWSCustomCheckBox = class(TWSButtonControl)
+    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; virtual;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; 
       const OldShortCut, NewShortCut: TShortCut); virtual;
   end;
@@ -310,6 +311,11 @@ begin
 end;
 
 { TWSCustomCheckBox }
+
+function  TWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+begin
+  Result := cbUnchecked;
+end;
 
 procedure TWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox; const OldShortCut, NewShortCut: TShortCut);
 begin

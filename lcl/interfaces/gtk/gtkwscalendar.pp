@@ -27,6 +27,12 @@ unit GtkWSCalendar;
 interface
 
 uses
+  SysUtils,
+  {$IFDEF gtk2}
+  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
+  {$ELSE}
+  glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} GtkFontCache,
+  {$ENDIF}
   Calendar, WSCalendar, WSLCLClasses;
 
 type
@@ -37,10 +43,20 @@ type
   private
   protected
   public
+    class function  GetDateTime(const ACalendar: TCustomCalendar): TDateTime; override;
   end;
 
 
 implementation
+
+function  TGtkWSCalendar.GetDateTime(const ACalendar: TCustomCalendar): TDateTime;
+var
+  Year, Month, Day: word;  //used for csCalendar
+begin
+  gtk_calendar_get_date(PGtkCalendar(ACalendar.Handle), @Year, @Month, @Day);
+  //For some reason, the month is zero based.
+  Result := EncodeDate(Year,Month+1,Day);
+end;
 
 initialization
 
@@ -50,6 +66,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCalendar, TGtkWSCalendar);
+  RegisterWSComponent(TCalendar, TGtkWSCalendar);
 ////////////////////////////////////////////////////
 end.

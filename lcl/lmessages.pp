@@ -58,7 +58,6 @@ const
 
   LM_SETPROPERTIES  = LM_ComUser+39;         // update object to reflect current properties
   LM_SETVALUE       = LM_ComUser+40;         // set actual value of object to visual object
-  LM_GETVALUE       = LM_ComUser+41;         // get actual value from visual object
 
   LM_MINIMIZE       = LM_COMUSER+59;
 
@@ -779,7 +778,6 @@ begin
 
   LM_SETPROPERTIES  :Result:='LM_SETPROPERTIES';
   LM_SETVALUE       :Result:='LM_SETVALUE';
-  LM_GETVALUE       :Result:='LM_GETVALUE';
 
   LM_MINIMIZE       :Result:='LM_MINIMIZE';
 
@@ -897,6 +895,9 @@ end.
 
 {
   $Log$
+  Revision 1.113  2004/09/18 17:07:57  micha
+  convert LM_GETVALUE message to interface method
+
   Revision 1.112  2004/09/18 11:06:47  micha
   remove LM_RECREATEWND message, as it is not used by LCL
 

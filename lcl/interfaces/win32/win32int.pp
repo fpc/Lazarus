@@ -134,7 +134,6 @@ Type
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
 
     Procedure SetText(Window: HWND; Data: Pointer);
-    Function GetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetValue (Sender: TObject; Data: Pointer): Integer;
     Function SetProperties(Sender: TObject): Integer;
 
@@ -215,7 +214,7 @@ Uses
 // Win32WSActnList,
 // Win32WSArrow,
  Win32WSButtons,
-// Win32WSCalendar,
+ Win32WSCalendar,
  Win32WSCheckLst,
 // Win32WSCListBox,
  Win32WSComCtrls,
@@ -277,6 +276,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.114  2004/09/18 17:07:58  micha
+  convert LM_GETVALUE message to interface method
+
   Revision 1.113  2004/09/18 10:52:48  micha
   convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
 

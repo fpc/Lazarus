@@ -188,6 +188,9 @@ type
   private
   protected
   public
+    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
+    class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+          const OldShortCut, NewShortCut: TShortCut); override;
   end;
 
   { TWin32WSCheckBox }
@@ -505,6 +508,23 @@ begin
   end;
 end;
 
+{ TWin32WSCustomCheckBox }
+
+function  TWin32WSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+begin
+  case SendMessage(ACustomCheckBox.Handle, BM_GETCHECK, 0, 0) of
+    BST_CHECKED:       Result := cbChecked;
+    BST_INDETERMINATE: Result := cbGrayed;
+  else
+    {BST_UNCHECKED:}   Result := cbUnChecked;
+  end;
+end;
+
+procedure TWin32WSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
+  const OldShortCut, NewShortCut: TShortCut);
+begin
+  // TODO: implement me!
+end;
 
 initialization
 

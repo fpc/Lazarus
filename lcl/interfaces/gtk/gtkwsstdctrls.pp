@@ -185,6 +185,7 @@ type
   private
   protected
   public
+    class function  RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState; override;
     class procedure SetShortCut(const ACustomCheckBox: TCustomCheckBox; 
       const OldShortCut, NewShortCut: TShortCut); override;
   end;
@@ -597,6 +598,13 @@ begin
 end;
 
 { TGtkWSCustomCheckBox }
+
+function  TGtkWSCustomCheckBox.RetrieveState(const ACustomCheckBox: TCustomCheckBox): TCheckBoxState;
+begin
+  if gtk_toggle_button_get_active (PGtkToggleButton(ACustomCheckBox.Handle))
+  then Result := cbChecked
+  else Result := cbUnChecked;
+end;
 
 procedure TGtkWSCustomCheckBox.SetShortCut(const ACustomCheckBox: TCustomCheckBox;
   const OldShortCut, NewShortCut: TShortCut);

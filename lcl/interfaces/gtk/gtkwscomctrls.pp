@@ -157,6 +157,7 @@ type
   private
   protected
   public
+    class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
   end;
 
   { TGtkWSCustomTreeView }
@@ -823,6 +824,18 @@ end;
 
 {$endif}
 
+{ TGtkWSTrackBar }
+
+function  TGtkWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
+begin
+  if ATrackBar.HandleAllocated then 
+  begin
+    Result := RoundToInt(gtk_range_get_adjustment(
+      GTK_RANGE(ATrackBar.Handle))^.value);
+  end else
+    Result := 0;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -841,7 +854,7 @@ initialization
 //  RegisterWSComponent(TCustomUpDown, TGtkWSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TGtkWSToolButton);
   RegisterWSComponent(TToolBar, TGtkWSToolBar);
-//  RegisterWSComponent(TCustomTrackBar, TGtkWSTrackBar);
+  RegisterWSComponent(TCustomTrackBar, TGtkWSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TGtkWSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TGtkWSTreeView);
 ////////////////////////////////////////////////////

@@ -79,8 +79,9 @@ end;
 function TCustomCheckBox.RetrieveState: TCheckBoxState;
 begin
   Result:=FState;
-  if HandleAllocated
-  then CNSendMessage (LM_GETVALUE, Self, @Result);	// get the actual state of the component
+  // get the actual state of the component
+  if HandleAllocated then 
+    Result := TWSCustomCheckBoxClass(WidgetSetClass).RetrieveState(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -209,6 +210,9 @@ end;
 
 {
   $Log$
+  Revision 1.25  2004/09/18 17:07:57  micha
+  convert LM_GETVALUE message to interface method
+
   Revision 1.24  2004/09/17 10:56:25  micha
   convert LM_SHORTCUT message to interface methods
 

@@ -148,6 +148,7 @@ type
   private
   protected
   public
+    class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; override;
   end;
 
   { TWin32WSCustomTreeView }
@@ -514,6 +515,21 @@ end;
 
 {$endif}
 
+{ TWin32WSTrackBar }
+
+function  TWin32WSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
+var
+  Handle: HWND;
+begin
+  if ATrackBar.HandleAllocated then
+  begin
+    Handle := ATrackBar.Handle;
+    Result := SendMessage(Handle, TBM_GETRANGEMAX, 0, 0) - 
+      SendMessage(Handle, TBM_GETRANGEMIN, 0, 0);
+  end else
+    Result := 0;
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -532,7 +548,7 @@ initialization
 //  RegisterWSComponent(TCustomUpDown, TWin32WSUpDown);
 //  RegisterWSComponent(TCustomToolButton, TWin32WSToolButton);
   RegisterWSComponent(TToolBar, TWin32WSToolBar);
-//  RegisterWSComponent(TCustomTrackBar, TWin32WSTrackBar);
+  RegisterWSComponent(TCustomTrackBar, TWin32WSTrackBar);
 //  RegisterWSComponent(TCustomTreeView, TWin32WSCustomTreeView);
 //  RegisterWSComponent(TCustomTreeView, TWin32WSTreeView);
 ////////////////////////////////////////////////////

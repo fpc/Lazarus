@@ -132,7 +132,9 @@ type
 
   { TWSTrackBar }
 
+  TWSTrackBarClass = class of TWSTrackBar;
   TWSTrackBar = class(TWSWinControl)
+    class function  GetPosition(const ATrackBar: TCustomTrackBar): integer; virtual;
   end;
 
   { TWSCustomTreeView }
@@ -247,6 +249,13 @@ begin
 end;
 
 {$endif}
+
+{ TWSTrackBar }
+
+function  TWSTrackBar.GetPosition(const ATrackBar: TCustomTrackBar): integer;
+begin
+  Result := 0;
+end;
 
 initialization
 

@@ -265,8 +265,6 @@ Begin
   Case LM_Message Of
     LM_CREATE:
       CreateComponent(Sender);
-    LM_GETVALUE:
-      Result := GetValue(Sender, Data);
     LM_SETVALUE:
       Result := SetValue(Sender, Data);
     LM_SETPROPERTIES:
@@ -1680,58 +1678,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.GetValue
-  Params:  Sender - the lcl object which called this func via SenMessage
-           Data   - pointer to component specific variable
-  Returns: currently always 0
-
-  Depending on the compStyle, this function will get the current value
-  of a Window and save it in the variable referenced by 'Data'.
-
-  This function should be used to synchronize the state of an lcl-object
-  with the corresponding Windows object.
- ------------------------------------------------------------------------------}
-Function TWin32WidgetSet.GetValue(Sender: TObject; Data: Pointer): Integer;
-Var
-  Handle: HWnd;
-  ST: SystemTime;
-Begin
-  Result := 0;     // default if nobody sets it
-
-  If Sender Is TWinControl Then
-    Assert(False, Format('Trace:[TWin32WidgetSet.GetValue] %S', [Sender.ClassName]))
-  Else
-    Assert(False, Format('Trace:WARNING: [TWin32WidgetSet.GetValue] %S --> No Decendant of TWinControl', [Sender.ClassName]));
-
-  Handle := TWinControl(Sender).Handle;
-  Assert (Handle = 0, 'Trace:WARNING: TWin32WidgetSet.GetValue --> got no window');
-
-  Case TControl(Sender).FCompStyle Of
-    csTrackbar:
-      If (Handle <> HWnd(Nil)) Then
-      Begin
-        LResult(Data^) := SendMessage(Handle, TBM_GETRANGEMAX, 0, 0) - SendMessage(Handle, TBM_GETRANGEMIN, 0, 0);
-      End
-      Else
-        LResult(Data^) := 0;
-    csRadiobutton, csCheckbox:
-      case SendMessage(Handle, BM_GETCHECK, 0, 0) of
-        BST_CHECKED: TCheckBoxState(Data^) := cbChecked;
-        BST_INDETERMINATE: TCheckBoxState(Data^) := cbGrayed;
-        BST_UNCHECKED: TCheckBoxState(Data^) := cbUnChecked;
-      end;
-    csCalendar:
-    Begin
-      SendMessage(Handle,MCM_GETCURSEL, 0, Integer(@ST));
-      With ST Do
-        TLMCalendar(Data^).Date := EncodeDate(WYear,WMonth,WDay);
-    End;
-    Else
-      Assert (True, Format('WARNING:[TWin32WidgetSet.GetValue]] failed for %S', [Sender.ClassName]));
-  End;
-End;
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.SetValue
   Params:  Sender - the lcl object which called this func via SendMessage
            Data   - pointer to component specific variable
@@ -2010,6 +1956,9 @@ End;
 
 {
   $Log$
+  Revision 1.275  2004/09/18 17:07:58  micha
+  convert LM_GETVALUE message to interface method
+
   Revision 1.274  2004/09/18 12:43:15  micha
   convert LM_DESTROY message to interface methods
 

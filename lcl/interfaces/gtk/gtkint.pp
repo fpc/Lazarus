@@ -333,7 +333,7 @@ uses
 // GtkWSActnList,
 // GtkWSArrow,
  GtkWSButtons,
-// GtkWSCalendar,
+ GtkWSCalendar,
  GtkWSCheckLst,
 // GtkWSCListBox,
  GtkWSComCtrls,
@@ -455,6 +455,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.209  2004/09/18 17:07:57  micha
+  convert LM_GETVALUE message to interface method
+
   Revision 1.208  2004/09/18 12:43:15  micha
   convert LM_DESTROY message to interface methods
 

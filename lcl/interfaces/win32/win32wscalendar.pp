@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  Calendar,
+  Calendar,
 ////////////////////////////////////////////////////
   WSCalendar, WSLCLClasses;
 
@@ -45,10 +45,20 @@ type
   private
   protected
   public
+    class function  GetDateTime(const ACalender: TCustomCalender): TDateTime; override;
   end;
 
 
 implementation
+
+function  TWin32WSCalender.GetDateTime(const ACalender: TCustomCalender): TDateTime;
+var
+  ST: SystemTime;
+begin
+  SendMessage(ACalender.Handle, MCM_GETCURSEL, 0, LPARAM(@ST));
+  with ST do
+    Result := EncodeDate(WYear,WMonth,WDay);
+end;
 
 initialization
 
@@ -58,6 +68,6 @@ initialization
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-//  RegisterWSComponent(TCalendar, TWin32WSCalendar);
+  RegisterWSComponent(TCalendar, TWin32WSCalendar);
 ////////////////////////////////////////////////////
 end.

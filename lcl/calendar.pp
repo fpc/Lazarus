@@ -130,6 +130,9 @@ procedure Register;
   
 implementation
 
+uses
+  WSCalendar;
+
 procedure Register;
 begin
   RegisterComponents('Misc',[TCalendar]);
@@ -236,13 +239,10 @@ begin
 end;
 
 Procedure TCustomCalendar.GetProps;
-var
-  Temp : TLMCalendar;
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
-    CNSendMessage(LM_GETVALUE, Self, @temp);	// Get the info
-    FDate := Temp.Date;
+    FDate := TWSCalendarClass(WidgetSetClass).GetDateTime(Self);
     FDateAsString := FormatDateTime(ShortDateFormat,FDate);
     {$IFDEF VerboseCalenderSetDate}
     DebugLn('TCustomCalendar.GetProps A ',FDate,' ',FDateAsString);

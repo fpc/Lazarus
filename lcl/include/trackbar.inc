@@ -290,12 +290,9 @@ end;
   Update position and call user's callback for Change event.
  ------------------------------------------------------------------------------}
 procedure TCustomTrackBar.DoChange(var msg);
-var
-  tmpPosition : longint;
 begin
-  CNSendMessage (LM_GetValue, Self, @tmpPosition);
+  FPosition := TWSTrackBarClass(WidgetSetClass).GetPosition(Self);
   Assert(True, 'Trace:Trackbar received a message -CHANGE');
-  FPosition := TmpPosition;
   if [csLoading,csDestroying,csDesigning]*ComponentState<>[] then exit;
   EditingDone;
   if Assigned (FOnChange) then FOnChange(Self);
@@ -334,6 +331,9 @@ end;
 { -------------------- unimplemented stuff below ------------------------------}
 {
   $Log$
+  Revision 1.14  2004/09/18 17:07:57  micha
+  convert LM_GETVALUE message to interface method
+
   Revision 1.13  2004/07/16 21:49:00  mattias
   added RTTI controls
 

@@ -3083,8 +3083,6 @@ begin
   case LM_Message of
   LM_Create   : CreateComponent(Sender);
 
-  LM_GETVALUE  : Result := GetValue(Sender, data);
-
   LM_SETVALUE  : Result := SetValue(Sender, data);
 
   LM_SETPROPERTIES: Result := SetProperties(Sender);
@@ -6240,7 +6238,6 @@ type
   PCheckBoxState = ^TCheckBoxState;
 var
   Handle    : Pointer;
-  Year, Month, Day: word;  //used for csCalendar
 begin
   Result := 0;     // default if nobody sets it
 
@@ -6253,27 +6250,6 @@ begin
   Assert (Handle = nil, 'WARNING: [TGtkWidgetSet.GetValue] --> got nil pointer (no gtkobject)');
 
   case TControl(Sender).fCompStyle of
-  csTrackbar   :
-    if (handle <> nil) then begin
-      integer(data^) := RoundToInt(gtk_range_get_adjustment(
-                                                    GTK_RANGE (handle))^.value);
-    end else
-      integer(data^) := 0;
-
-
-  csRadiobutton,
-  csCheckbox,
-  csToggleBox:
-    if gtk_toggle_button_get_active (PGtkToggleButton (handle))
-    then PCheckBoxState(data)^ := cbChecked
-    else PCheckBoxState(data)^ := cbUnChecked;
-
-  csCalendar :
-    Begin
-      gtk_calendar_get_date(PgtkCalendar(handle),@Year, @Month, @Day);
-      //For some reason, the month is zero based.
-      TLMCalendar(data^).Date := EncodeDate(Year,Month+1,Day);
-    end;
 
   csSpinEdit :
     Begin
@@ -7887,6 +7863,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.584  2004/09/18 17:07:57  micha
+  convert LM_GETVALUE message to interface method
+
   Revision 1.583  2004/09/18 12:43:15  micha
   convert LM_DESTROY message to interface methods
 
