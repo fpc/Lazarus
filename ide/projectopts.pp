@@ -37,7 +37,8 @@ interface
 
 uses
   Classes, LCLLinux, SysUtils, Forms, Controls, Graphics, StdCtrls, ExtCtrls,
-  Project, LResources, Buttons, Dialogs, IDEProcs, CodeToolManager;
+  Project, LResources, Buttons, Dialogs, IDEProcs, CodeToolManager,
+  LazarusIDEStrConsts;
 
 type
   TProjectOptionsDialog = class(TForm)
@@ -131,7 +132,7 @@ begin
     Height:=375;
     Position:=poScreenCenter;
     OnResize:=@ProjectOptionsDialogResize;
-    Caption:='Project Options';
+    Caption:=dlgProjectOptions;
     
     NoteBook:=TNoteBook.Create(Self);
     with NoteBook do begin
@@ -139,11 +140,11 @@ begin
       Parent:=Self;
       SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
       if PageCount>0 then
-        Pages[0]:='Application'
+        Pages[0]:=dlgPOApplication
       else
-        Pages.Add('Application');
-      Pages.Add('Forms');
-      Pages.Add('Info');
+        Pages.Add(dlgPOApplication);
+      Pages.Add(dlgPOFroms);
+      Pages.Add(dlgPOInfo);
       Visible:=true;
     end;
 
@@ -159,7 +160,7 @@ begin
       Height:=23;
       Left:=Self.ClientWidth-Width-15;
       Top:=Self.ClientHeight-Height-15;
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Show;
     end;
@@ -193,7 +194,7 @@ begin
     Top:=5;
     Width:=MaxX-2*Left;
     Height:=60;
-    Caption:='Application Settings';
+    Caption:=dlgApplicationSettings;
     Visible:=true;
   end;
 
@@ -201,11 +202,11 @@ begin
   with TitleLabel do begin
     Name:='TitleLabel';
     Parent:=AppSettingsGroupBox;
-    Left:=5;
+    Left:=15;
     Top:=1;
-    Width:=50;
+    Width:=100;
     Height:=23;
-    Caption:='Title:';
+    Caption:=dlgPOTitle;
     Visible:=true;
   end;
 
@@ -228,7 +229,7 @@ begin
     Top:=AppSettingsGroupBox.Top+AppSettingsGroupBox.Height+5;
     Width:=AppSettingsGroupBox.Width;
     Height:=60;
-    Caption:='Output Settings';
+    Caption:=dlgPOOutputSettings ;
     Visible:=true;
   end;
 
@@ -238,9 +239,9 @@ begin
     Parent:=OutputSettingsGroupBox;
     Left:=5;
     Top:=1;
-    Width:=100;
+    Width:=200;
     Height:=23;
-    Caption:='Target file name:';
+    Caption:=dlgPOTargetFileName ;
     Visible:=true;
   end;
 
@@ -266,7 +267,7 @@ begin
     Top:=1;
     Width:=150;
     Height:=23;
-    Caption:='Auto-create forms:';
+    Caption:=dlgAutoCreateForms;
     Visible:=true;
   end;
 
@@ -289,7 +290,7 @@ begin
     Top:=FormsAutoCreatedLabel.Top;
     Width:=FormsAutoCreatedLabel.Width;
     Height:=FormsAutoCreatedLabel.Height;
-    Caption:='Available forms:';
+    Caption:=dlgAvailableForms ;
     Visible:=true;
   end;
 
@@ -370,7 +371,7 @@ begin
     Top:=FormsAutoCreatedListBox.Top+FormsAutoCreatedListBox.Height+5;
     Width:=200;
     Height:=25;
-    Caption:='Auto create new forms';
+    Caption:=dlgAutoCreateNewForms ;
     Enabled:=false;
     Visible:=true;
   end;
@@ -384,8 +385,8 @@ begin
     Parent:=NoteBook.Page[2];
     Left:=10;
     Top:=10;
-    Width:=250;
-    Caption:='Save editor info for closed files';
+    Width:=350;
+    Caption:=dlgSaveEditorInfo ;
     Visible:=true;
   end;
   
@@ -396,7 +397,7 @@ begin
     Left:=SaveClosedUnitInfoCheckBox.Left;
     Top:=SaveClosedUnitInfoCheckBox.Top+SaveClosedUnitInfoCheckBox.Height+10;
     Width:=SaveClosedUnitInfoCheckBox.Width;
-    Caption:='Save editor info only for project files';
+    Caption:=dlgSaveEditorInfoProject;
     Visible:=true;
   end;
 end;
@@ -416,7 +417,7 @@ begin
   with TitleLabel do begin
     Left:=5;
     Top:=1;
-    Width:=50;
+    Width:=100;
     Height:=23;
   end;
 
@@ -436,7 +437,7 @@ begin
   with TargetFileLabel do begin
     Left:=5;
     Top:=1;
-    Width:=100;
+    Width:=160;
     Height:=23;
   end;
 
@@ -525,7 +526,7 @@ begin
   with SaveClosedUnitInfoCheckBox do begin
     Left:=10;
     Top:=10;
-    Width:=250;
+    Width:=350;
   end;
 
   with SaveOnlyProjectUnitInfoCheckBox do begin

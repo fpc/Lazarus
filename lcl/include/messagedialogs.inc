@@ -272,61 +272,95 @@ end;
   Params:  nothing
   Returns: Nothing
  ------------------------------------------------------------------------------}
+Function GetAvgCharSize(Handle : hDC) : TPoint;
+var
+  I : integer;
+  Buffer : Array[0..51] of Char;
+begin
+  For I := 0 to 25 do Buffer[I] := chr(I + Ord('A'));
+  For I := 0 to 25 do Buffer[I + 26] := chr(I + Ord('a'));
+  GetTextExtentPoint(Handle,Buffer,52,TSize(Result));
+  Result.X := Result.X div 52;
+end;
+
 procedure TMessageBox.ReLayout;
 const
-  cBtnWidth  = 90;     //TODO: Take into account different languages; button width may vary!
-  cBtnHeight = 25;
-  cBtnDist   = cBtnWidth + 4;
+  cBtnCalcWidth  = 50;
+  cBtnCalcHeight = 13;
+  cBtnCalcSpace   = 4;
   cMinLeft   = cBitmapX + cBitmapWidth + cLabelSpacing;
 var
   aBitmap     : TBitmap;    // temp. variable to create bitmaps for buttons
   curBtn      : TMsgDlgBtn; // variable to loop through TMsgDlgButtons
+  cBtnWidth,
+  cBtnHeight,
+  curBtnWidth,
+  cBtnDist,
   ButtonLeft  : integer;    // left position of button(s)
-  LabelLeft   : integer;    // left position of labels
   reqBtnWidth : integer;    // width neccessary to display buttons
   reqWidth, reqHeight : integer;    // width and height neccessary to display all
-  LabelWidth  : integer;    // max width of labels
-  LabelHeight : integer;
-  i, j        : integer;
+  i        : integer;
   ButtonIndex : integer;
+  Avg : TPoint;
+  TextBox : TRect;
+  TextStyle : TTextStyle;
 begin
   if FUpdateCounter > 0 then exit;
+
+  FillChar(TextStyle, SizeOf(TextStyle), 0);
   
-  // calculate label width
-  LabelWidth:= 0;
-  for i:=0 to FMsgLines.Count - 1 do begin
-    j:=LineWidth(i);
-    if j > LabelWidth then LabelWidth:= j;
+  With TextStyle do begin
+    Clipping   := True;
+    Wordbreak  := True;
+    SystemFont := True;
   end;
-  LabelHeight:= LineHeight * FMsgLines.Count;
-  
+
+  // calculate the width & height we need to display the Message
+  TextBox := Rect(0,0, Screen.Width div 2,Screen.Height - 100);
+  SelectObject(Canvas.Handle, GetStockObject(SYSTEM_FONT));
+  DrawText(Canvas.Handle, PChar(FMsgLines.Text), Length(FMsgLines.Text),
+    TextBox, DT_WORDBREAK or DT_INTERNAL or DT_CALCRECT);
+
   // destroy old BitBtns
   for i:=ComponentCount-1 downto 0 do
     if Components[i] is TBitBtn then
       Components[i].Free;
 
   // calculate the width we need to display the buttons
+  SelectObject(Canvas.Handle, GetStockObject(SYSTEM_FONT));
+  Avg := GetAvgCharSize(Canvas.Handle);
   reqBtnWidth := 0;
+  cBtnWidth := (cBtnCalcWidth*Avg.X) div 4;
+  cBtnHeight := (cBtnCalcHeight*AVG.Y) div 8;
+  cBtnDist := (cBtnCalcSpace * Avg.X) div 4;
   for curBtn := Low(TMsgDlgBtn) to High(TMsgDlgBtn) do
-    if curBtn in FButtons then inc(reqBtnWidth, cBtnDist);
-  if reqBtnWidth > 0 then Dec(reqBtnWidth, 4);
-    
+    if curBtn in FButtons then
+    begin
+      curBtnWidth := Canvas.TextWidth(cMbCaption[curBtn]) + 8;
+      if curBtnWidth > cBtnWidth then
+        cBtnWidth := curBtnWidth;
+      Inc(reqBtnWidth, cBtnWidth + cBtnDist)
+    end;
+  if reqBtnWidth > 0 then Dec(reqBtnWidth, cBtnDist);
+  Inc(cBtnDist, cBtnWidth);
+
   // patch positions to center label and buttons
   reqWidth:= reqBtnWidth;
-  if reqWidth < (LabelWidth + cMinLeft) then reqWidth:= LabelWidth + cMinLeft;
+  if reqWidth < (TextBox.Right + cMinLeft) then reqWidth:= TextBox.Right + cMinLeft;
   
-  LabelLeft := ((reqWidth - cMinLeft - LabelWidth) div 2) + cMinLeft;
   ButtonLeft := ((reqWidth - reqBtnWidth) div 2) + cLabelSpacing;
 
-  reqHeight:= LabelHeight;
+  reqHeight:= TextBox.Bottom;
   if reqHeight < cBitmapHeight then reqHeight:= cBitmapHeight;
+
+  OffsetRect(TextBox, ((reqWidth - cMinLeft - TextBox.Right) div 2) + cMinLeft,cLabelSpacing);
 
   // set size of form
   SetBounds(Left, Top, reqWidth + 2 * cLabelSpacing,
         3 * cLabelSpacing + reqHeight + cBtnHeight);
   
   // set up labels
-  FLabel.SetBounds(LabelLeft, cLabelSpacing, LabelWidth, LabelHeight);
+  FLabel.SetBounds(TextBox.Left, TextBox.Top, TextBox.Right, TextBox.Bottom);
   Flabel.Caption:= Trim(FMsgLines.Text);
 
   // create the buttons
@@ -433,16 +467,19 @@ begin
   end;
 end;
 
-function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
-  Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer;
-var
-  aDialog : TForm;
+function MessageDlgPos(const aMsg: String; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons; Helpctx : Longint; X,Y : Integer): Integer;
 begin
-  aDialog := CreateMessageDialog (aMsg, DlgType, buttons);
-  aDialog.Position:=poDefault;
-  aDialog.Left := x;
-  aDialog.Top := y;
-  Result := aDialog.ShowModal;
+  with CreateMessageDialog (aMsg, DlgType, Buttons) do
+    try
+      Position := poDesigned;
+      Left := X;
+      Top := Y;
+      //HelpContext := Helpctx;
+      Result := ShowModal;
+    finally
+      Close;
+    end;
 end;
 
 function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
@@ -451,7 +488,7 @@ function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
 begin
   writeln ('MessageDlgPosHelp ****** NOT YET FULLY IMPLEMENTED ********');
 //TODO: set helpcontext and helpfile
-  result := MessageDlg (aMsg, DlgType, buttons, helpctx);
+  result := MessageDlgPos(aMsg, DlgType, buttons, helpctx, X, Y);
 end;
 
 procedure ShowMessage(const aMsg: string);
@@ -466,12 +503,163 @@ end;
 
 procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
 begin
-  writeln ('ShowMessagePos ****** NOT YET FULLY IMPLEMENTED ********');
-  MessageDlg (aMsg, mtInformation, [mbOK], 0);
+  MessageDlgPos(aMsg, mtInformation, [mbOK], 0, X, Y);
+end;
+
+//----------------------------------------------------------------------------//
+//-----------------------Prompt User For Information--------------------------//
+Function InputBox(const ACaption, APrompt, ADefault : String) : String;
+begin
+  Result := ADefault;
+  InputQuery(ACaption, APrompt, Result);
+end;
+
+Function InputQuery(const ACaption, APrompt : String; var Value : String) : Boolean;
+var
+  Form : TForm;
+  Prompt : TLabel;
+  Edit : TEdit;
+  T : String;
+  ButtonTop, ButtonWidth, ButtonHeight : Integer;
+  Avg : TPoint;
+begin
+  Result := False;
+  Form := TForm.CreateNew(nil, 0);
+  With Form do begin
+    BorderStyle := bsDialog;
+    Caption := ACaption;
+    Prompt := TLabel.Create(Form);
+    With Prompt do begin
+      Parent := Form;
+      Caption := APrompt;
+      Visible := True;
+    end;
+    SelectObject(Canvas.Handle, GetStockObject(SYSTEM_FONT));
+    AVG := GetAvgCharSize(Canvas.Handle);
+    Position := poScreenCenter;
+    Prompt.Left := (7*AVG.X) div 4;
+    Prompt.Top := (8*AVG.Y) div 8;
+    Prompt.Width := AVG.X * Length(APrompt) + 1;
+    ClientWidth := (172*AVG.X) div 4;
+    ClientHeight := (58*AVG.Y) div 8;
+    ButtonTop := (39*AVG.Y) div 8;
+    ButtonWidth := (50*AVG.X) div 4;
+    ButtonHeight := (13*AVG.Y) div 8;
+    Edit := TEdit.Create(Form);
+    With Edit do begin
+      Parent := Form;
+      Left := Prompt.Left;
+      Top := (19*AVG.Y) div 8;
+      Width := (160*AVG.X) div 4;
+      Height := (7*AVG.Y) div 4;
+      Text := Value;
+      TabStop := True;
+      Visible := True;
+      TabOrder := 0;
+    end;
+    With TBitBtn.Create(Form) do begin
+      Parent := Form;
+      Kind := bkOk;
+      Default := True;
+      ModalResult := mrOk;
+      Left := (37*AVG.X) div 4;
+      Top := ButtonTop;
+      Height := ButtonHeight;
+      Width := ButtonWidth;
+      TabStop := True;
+      Visible := True;
+      TabOrder := 1;
+    end;
+    With TBitBtn.Create(Form) do begin
+      Parent := Form;
+      Kind := bkCancel;
+      Cancel := True;
+      Left := (92*AVG.X) div 4;
+      Top := ButtonTop;
+      Height := ButtonHeight;
+      Width := ButtonWidth;
+      TabStop := True;
+      Visible := True;
+      TabOrder := 2;
+    end;
+    Show;
+    Edit.SetFocus;
+    Hide;
+    If ShowModal = mrOk then
+    begin
+      T := Edit.Text;
+      Result := True;
+    End;
+    Form.Close;
+  end;
+  Value := T;
 end;
 
 {
    $Log$
+   Revision 1.14  2002/09/27 20:52:23  lazarus
+   MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+
+   Here is the run down of what it includes -
+
+    -Vasily Volchenko's Updated Russian Localizations
+
+    -improvements to GTK Styles/SysColors
+    -initial GTK Palette code - (untested, and for now useless)
+
+    -Hint Windows and Modal dialogs now try to stay transient to
+     the main program form, aka they stay on top of the main form
+     and usually minimize/maximize with it.
+
+    -fixes to Form BorderStyle code(tool windows needed a border)
+
+    -fixes DrawFrameControl DFCS_BUTTONPUSH to match Win32 better
+     when flat
+
+    -fixes DrawFrameControl DFCS_BUTTONCHECK to match Win32 better
+     and to match GTK theme better. It works most of the time now,
+     but some themes, noteably Default, don't work.
+
+    -fixes bug in Bitmap code which broke compiling in NoGDKPixbuf
+     mode.
+
+    -misc other cleanups/ fixes in gtk interface
+
+    -speedbutton's should now draw correctly when flat in Win32
+
+    -I have included an experimental new CheckBox(disabled by
+     default) which has initial support for cbGrayed(Tri-State),
+     and WordWrap, and misc other improvements. It is not done, it
+     is mostly a quick hack to test DrawFrameControl
+     DFCS_BUTTONCHECK, however it offers many improvements which
+     can be seen in cbsCheck/cbsCrissCross (aka non-themed) state.
+
+    -fixes Message Dialogs to more accurately determine
+     button Spacing/Size, and Label Spacing/Size based on current
+     System font.
+    -fixes MessageDlgPos, & ShowMessagePos in Dialogs
+    -adds InputQuery & InputBox to Dialogs
+
+    -re-arranges & somewhat re-designs Control Tabbing, it now
+     partially works - wrapping around doesn't work, and
+     subcontrols(Panels & Children, etc) don't work. TabOrder now
+     works to an extent. I am not sure what is wrong with my code,
+     based on my other tests at least wrapping and TabOrder SHOULD
+     work properly, but.. Anyone want to try and fix?
+
+    -SynEdit(Code Editor) now changes mouse cursor to match
+     position(aka over scrollbar/gutter vs over text edit)
+
+    -adds a TRegion property to Graphics.pp, and Canvas. Once I
+     figure out how to handle complex regions(aka polygons) data
+     properly I will add Region functions to the canvas itself
+     (SetClipRect, intersectClipRect etc.)
+
+    -BitBtn now has a Stored flag on Glyph so it doesn't store to
+     lfm/lrs if Glyph is Empty, or if Glyph is not bkCustom(aka
+     bkOk, bkCancel, etc.) This should fix most crashes with older
+     GDKPixbuf libs.
+
    Revision 1.13  2002/09/03 20:02:01  lazarus
    Intermediate UI patch to show a bug.
 

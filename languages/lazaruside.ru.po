@@ -1625,3 +1625,122 @@ msgstr "Показать модули проекта"
 msgid "Multi"
 msgstr "Мульти"
 
+#: lazarusidestrconsts:dlgprojectoptions
+msgid "Project Options"
+msgstr "Параметры проекта"
+
+#: lazarusidestrconsts:dlgpoapplication
+msgid "Application"
+msgstr "Приложение"
+
+#: lazarusidestrconsts:dlgpofroms
+msgid "Forms"
+msgstr "Формы"
+
+#: lazarusidestrconsts:dlgpoinfo
+msgid "Info"
+msgstr "Информация"
+
+#: lazarusidestrconsts:dlgapplicationsettings
+msgid "Application Settings"
+msgstr "Параметры приложения"
+
+#: lazarusidestrconsts:dlgpotitle
+msgid "Title:"
+msgstr "Заголовок:"
+
+#: lazarusidestrconsts:dlgpooutputsettings
+msgid "Output Settings"
+msgstr "Параметры вывода"
+
+#: lazarusidestrconsts:dlgpotargetfilename
+msgid "Target file name:"
+msgstr "Имя исполняемого файла:"
+
+#: lazarusidestrconsts:dlgautocreateforms
+msgid "Auto-create forms:"
+msgstr "Автосоздаваемые формы:"
+
+#: lazarusidestrconsts:dlgavailableforms
+msgid "Available forms:"
+msgstr "Доступные формы:"
+
+#: lazarusidestrconsts:dlgautocreatenewforms
+msgid "Auto create new forms"
+msgstr "Создавать автоматически новые формы"
+
+#: lazarusidestrconsts:dlgsaveeditorinfo
+msgid "Save editor info for closed files"
+msgstr "Сохранять сведения о закрываемых файлах"
+
+#: lazarusidestrconsts:dlgsaveeditorinfoproject
+msgid "Save editor info only for project files"
+msgstr "Сохранять сведения только о файлах проекта"
+
+#: lazarusidestrconsts:dlgrunparameters
+msgid "Run parameters"
+msgstr "Параметры запуска"
+
+#: lazarusidestrconsts:dlgrunolocal
+msgid "Local"
+msgstr "Локальные"
+
+#: lazarusidestrconsts:dlgrunoenvironment
+msgid "Environment"
+msgstr "Окружения"
+
+#: lazarusidestrconsts:dlghostapplication
+msgid "Host application"
+msgstr "Главное приложение"
+
+#: lazarusidestrconsts:dlgcommandlineparams
+msgid "Command line parameters (without application name)"
+msgstr "Параметры командной строки (без имени приложения)"
+
+#: lazarusidestrconsts:dlguselaunchingapp
+msgid "Use launching application"
+msgstr "Использовать приложение для запуска"
+
+#: lazarusidestrconsts:dlgroworkingdirectory
+msgid "Working directory"
+msgstr "Рабочий каталог"
+
+#: lazarusidestrconsts:dlgrunodisplay
+msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
+msgstr "Дисплей (не для win32, напр., 198.112.45.11:0, x.org:1, hydra:0.1)"
+
+#: lazarusidestrconsts:dlgrunousedisplay
+msgid "Use display"
+msgstr "Использовать дисплей"
+
+#: lazarusidestrconsts:dlgrunosystemvariables
+msgid "System variables"
+msgstr "Системные переменные"
+
+#: lazarusidestrconsts:dlgrunovariable
+msgid "Variable"
+msgstr "Переменная"
+
+#: lazarusidestrconsts:dlgrunovalue
+msgid "Value"
+msgstr "Значение"
+
+#: lazarusidestrconsts:dlgrunouseroverrides
+msgid "User overrides"
+msgstr "Пользовательские замены"
+
+#: lazarusidestrconsts:dlgincludesystemvariables
+msgid "Include system variables"
+msgstr "Включить системные переменные"
+
+#: lazarusidestrconsts:dlgdirectorydoesnotexist
+msgid "Directory does not exist"
+msgstr "Каталог не существует"
+
+#: lazarusidestrconsts:dlgthedirectory
+msgid "The directory \""
+msgstr "Каталог \""
+
+#: lazarusidestrconsts:dlgdoesnotexist
+msgid "\" does not exist."
+msgstr "\" не существует."

@@ -65,6 +65,15 @@ Begin
   Result := Kind = bkCustom;
 end;
 
+Function TBitbtn.IsGlyphStored : Boolean;
+begin
+  Result := IsCustom;
+  If Result then
+    Result := TButtonGlyph(FGlyph).Glyph <> nil;
+  If Result then
+    Result := not TButtonGlyph(FGlyph).Glyph.Empty;
+end;
+
 Procedure TBitbtn.SetGlyph(Value : TBitmap);
 Begin
   Assert(False, 'Trace:SETGLYPH');

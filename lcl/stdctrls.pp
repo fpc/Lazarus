@@ -32,7 +32,7 @@ Detailed description of the Unit.
 unit StdCtrls;
 
 {$mode objfpc}{$H+}
-
+{off $Define NewCheckBox}
 interface
 
 
@@ -105,7 +105,7 @@ type
     property ShowHint;
     property SmallChange: TScrollBarInc read FSmallChange write FSmallChange default 1;
     property TabOrder;
-    property TabStop default True;
+    property TabStop;
     property Visible;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
     property OnDragDrop;
@@ -249,6 +249,8 @@ type
     property MaxLength;
     property Sorted;
     property Style;
+    property TabOrder;
+    property TabStop;
     property Text;
     property Visible;
     property OnChange;
@@ -256,6 +258,8 @@ type
     property OnEnter;
     property OnExit;
     property OnKeyPress;
+    Property OnKeyDown;
+    Property OnKeyUp;
   end;
     
 
@@ -323,6 +327,8 @@ type
     property OnResize;
     property Sorted;
     property Style;
+    property TabOrder;
+    property TabStop;
     property Visible;
   end;    
 
@@ -370,7 +376,8 @@ type
     property Modified : Boolean read GetModified write SetModified;
     property Text;
   published
-    property TabStop default true;
+    property TabStop;
+    property TabOrder;
   end;
 
   TCustomMemo = class(TCustomEdit)
@@ -384,6 +391,7 @@ type
     procedure SetWordWrap(const Value : boolean);
     procedure SetScrollBars(const Value : TScrollStyle);
   public
+  
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Append(const Value : String);
@@ -408,6 +416,9 @@ type
     property OnClick;
     property OnEnter;
     property OnExit;
+    property OnKeyPress;
+    Property OnKeyDown;
+    Property OnKeyUp;
   end;
 
   TMemo = class(TCustomMemo)
@@ -426,6 +437,9 @@ type
     property OnChange;
     property OnEnter;
     property OnExit;
+    property OnKeyPress;
+    Property OnKeyDown;
+    Property OnKeyUp;
   end;
 
   { TCustomLabel }
@@ -514,8 +528,12 @@ type
     property State: TCheckBoxState read GetState write SetState;
   public
     constructor Create(AOwner: TComponent); override;
+  published
+    property TabOrder;
+    property TabStop;
   end;
 
+{$IFNDef NewCheckBox}
   TCheckBox = class(TCustomCheckBox)
   protected
     procedure DoAutoSize; Override;
@@ -551,6 +569,86 @@ type
     property OnMouseUp;
     property OnStartDrag;
   end;
+{$Else NewCheckBox}
+  TCBAlignment = (alLeftJustify, alRightJustify);
+
+  TCheckBoxStyle = (cbsSystem, cbsCrissCross, cbsCheck);
+
+  TCheckBox = Class(TCustomControl)
+  Private
+    FAllowGrayed,
+    FWordWrap,
+    FAttachTextToBox : Boolean;
+    FAlignment : TCBAlignment;
+    FState  : TCheckBoxState;
+    FCheckBoxStyle : TCheckBoxStyle;
+    FMouseIsDragging,
+    FMouseInControl: Boolean;
+  Protected
+    Procedure DoAutoSize; Override;
+    Procedure SetAlignment(Value : TCBAlignment);
+    Procedure SetState(Value : TCheckBoxState);
+
+    Function GetChecked : Boolean;
+    procedure SetChecked(Value : Boolean);
+    procedure SetCheckBoxStyle(Value : TCheckBoxStyle);
+    procedure SetAttachTextToBox(Value : Boolean);
+
+    procedure CMMouseEnter(var Message: TLMMouse); message CM_MOUSEENTER;
+    procedure CMMouseLeave(var Message: TLMMouse); message CM_MOUSELEAVE;
+    Procedure WMMouseDown(var Message : TLMMouseEvent); Message LM_LBUTTONDOWN;
+    Procedure WMMouseUp(var Message : TLMMouseEvent); Message LM_LBUTTONUP;
+    Procedure WMKeyDown(var Message : TLMKeyDown); Message LM_KeyDown;
+    Procedure WMKeyUp(var Message : TLMKeyUp); Message LM_KeyUp;
+  public
+    procedure Paint; Override;
+    Procedure PaintCheck(var PaintRect: TRect);
+    Procedure PaintText(var PaintRect: TRect);
+
+    Constructor Create(AOwner: TComponent); Override;
+    Function CheckBoxRect : TRect;
+    procedure Click; Override;
+
+    Property MouseInControl : Boolean read FMouseInControl;
+    Property MouseIsDragging : Boolean read FMouseIsDragging;
+  published
+    property Alignment : TCBAlignment read FAlignment write SetAlignment;
+    Property AllowGrayed : Boolean read FAllowGrayed write FAllowGrayed;
+    Property Checked : Boolean read GetChecked write SetChecked;
+    property State : TCheckBoxState read FState write SetState;
+    property CheckBoxStyle : TCheckBoxStyle read FCheckBoxStyle write SetCheckBoxStyle;
+    property AttachToBox : Boolean read FAttachTextToBox write SetAttachTextToBox default True;
+
+    property Align;
+    Property AutoSize;
+    property WordWrap : Boolean read FWordWrap write FWordWrap;
+    //property OnMouseEnter;
+    //property OnMouseExit;
+    property TabStop;
+
+    property Anchors;
+    property Constraints;
+    property Hint;
+    property Font;
+    property OnClick;
+    property OnDblClick;
+    property OnKeyDown;
+    property OnKeyUp;
+    property OnKeyPress;
+    property OnMouseDown;
+    property OnMouseUp;
+    property OnMouseMove;
+    property Visible;
+    property Caption;
+    property Enabled;
+    property ShowHint;
+    property ParentFont;
+    property ParentShowHint;
+    property TabOrder;
+    property OnEnter;
+    property OnExit;
+  end;
+{$EndIf NewCheckBox}
 
   TToggleBox = class(TCustomCheckBox)
   private
@@ -702,6 +800,427 @@ begin
   Str := Tmp;
 end;
 
+{$IFDef NewCheckBox}
+Procedure TCheckbox.DoAutoSize;
+var
+  R : TRect;
+  DC : hDC;
+begin
+  If AutoSizing or not AutoSize then
+    Exit;
+  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  AutoSizing := True;
+  DC := GetDC(Handle);
+  Try
+    R := Rect(0,0, Width, Height);
+    DrawText(DC, PChar(Caption), Length(Caption), R,
+      DT_CalcRect or DT_NOPrefix);
+    If R.Right > Width then
+      Width := R.Right + 25;
+    If R.Bottom > Height then
+      Height := R.Bottom + 2;
+  Finally
+    ReleaseDC(Handle, DC);
+    AutoSizing := False;
+  end;
+end;
+
+Function TCheckBox.GetChecked : Boolean;
+begin
+  Result := (State = cbChecked);
+end;
+
+Procedure TCheckBox.SetChecked(Value : Boolean);
+begin
+  If Value then
+    State := cbChecked
+  else
+    State := cbUnchecked
+end;
+
+procedure TCheckBox.SetCheckBoxStyle(Value : TCheckBoxStyle);
+begin
+  FCheckBoxStyle := Value;
+  Invalidate;
+end;
+
+procedure TCheckBox.SetAttachTextToBox(Value : Boolean);
+begin
+  FAttachTextToBox := Value;
+  Invalidate;
+end;
+
+Procedure TCheckbox.SetAlignment(Value : TCBAlignment);
+begin
+  FAlignment := Value;
+  Invalidate;
+end;
+
+Procedure TCheckbox.SetState(Value : TCheckBoxState);
+begin
+  If Value = cbGrayed then begin
+    If AllowGrayed then
+      FState := Value
+    else
+      FState := cbUnchecked;
+  end
+  else
+    FState := Value;
+  Invalidate;
+end;
+
+Procedure TCheckbox.CMMouseEnter(var Message: TLMMouse);
+begin
+  if not MouseInControl
+  and Enabled and (GetCapture = 0)
+  then begin
+    FMouseInControl := True;
+    Invalidate;
+  end;
+end;
+
+procedure TCheckbox.CMMouseLeave(var Message: TLMMouse);
+begin
+  if MouseInControl
+  and Enabled and (GetCapture = 0)
+  and not MouseIsDragging
+  then begin
+    FMouseInControl := False;
+    Invalidate;
+  end;
+end;
+
+Procedure TCheckbox.WMMouseDown(var Message : TLMMouseEvent);
+begin
+  if Enabled then
+    If not MouseInControl then
+      FMouseInControl := True;
+  if MouseInControl and Enabled then begin
+    FMouseIsDragging := True;
+    Invalidate;
+  end;
+end;
+
+Procedure TCheckbox.WMMouseUp(var Message : TLMMouseEvent);
+begin
+  If MouseInControl and Enabled then begin
+    FMouseIsDragging := False;
+    Case State of
+      cbUnchecked :
+       begin
+          If AllowGrayed then
+            State := cbGrayed
+          else
+            State := cbChecked;
+        end;
+      cbGrayed :
+        State := cbChecked;
+      cbChecked :
+        State := cbUnchecked;
+    end;
+    Click;
+  end;
+end;
+
+Procedure TCheckbox.WMKeyDown(var Message : TLMKeyDown);
+begin
+  ControlState := ControlState -  [csClicked];
+  Case Message.CharCode of
+    32:
+      begin
+        FMouseInControl := True;
+        Invalidate;
+      end;
+    27:
+      If MouseInControl then begin
+        FMouseInControl := False;
+        Invalidate;
+      end;
+  end;
+  Message.Result := 1
+end;
+
+Procedure TCheckbox.WMKeyUp(var Message : TLMKeyUp);
+begin
+  Case Message.CharCode of
+    32:
+      begin
+        If MouseInControl then begin
+          FMouseInControl := False;
+          Case State of
+            cbUnchecked :
+              begin
+                If AllowGrayed then
+                  State := cbGrayed
+                else
+                  State := cbChecked;
+              end;
+            cbGrayed :
+              State := cbChecked;
+            cbChecked :
+              State := cbUnchecked;
+          end;
+          Click;
+        end;
+      end;
+  end;
+  Message.Result := 1
+end;
+
+Procedure TCheckBox.PaintCheck(var PaintRect: TRect);
+
+  Procedure DrawBorder(Highlight, Shadow : TColor; Rect : TRect; Down : Boolean);
+  begin
+    With Canvas, Rect do begin
+      Pen.Style := psSolid;
+      If Down then
+        Pen.Color := shadow
+      else
+        Pen.Color := Highlight;
+      MoveTo(Left, Top);
+      LineTo(Right - 1,Top);
+      MoveTo(Left, Top);
+      LineTo(Left,Bottom - 1);
+      If Down then
+        Pen.Color := Highlight
+      else
+        Pen.Color := shadow;
+      MoveTo(Left,Bottom - 1);
+      LineTo(Right - 1,Bottom - 1);
+      MoveTo(Right - 1, Top);
+      LineTo(Right - 1,Bottom);
+    end;
+  end;
+
+var
+  FD1, FD2 : TPoint;
+  BD1, BD2 : TPoint;
+  APaintRect : TRect;
+  DrawFlags : Longint;
+begin
+  If CheckBoxStyle <> cbsSystem then begin
+    If (State = cbGrayed) or (not Enabled) then begin
+      If (MouseInControl and MouseIsDragging) or (not Enabled) then
+        Canvas.Brush.Color := clBtnFace
+      else
+        Canvas.Brush.Color := clBtnHighlight;
+      Canvas.FillRect(CheckBoxRect);
+      Canvas.Pen.Color := clBtnShadow;
+    end
+    else begin
+      If MouseInControl and MouseIsDragging then
+        Canvas.Brush.Color := clBtnFace
+      else
+        Canvas.Brush.Color := clWindow;
+      Canvas.FillRect(CheckBoxRect);
+      Canvas.Pen.Color := clWindowText;
+    end;
+    If State <> cbUnchecked then begin
+      Case CheckBoxStyle of
+        cbsCrissCross:
+          begin
+            Canvas.Pen.Width := 1;
+
+            {Backward Diagonal}
+              BD1 := Point(CheckBoxRect.Left + 3,CheckBoxRect.Top + 3);
+              BD2 := Point(CheckBoxRect.Right - 3,CheckBoxRect.Bottom - 3);
+
+              Canvas.MoveTo(BD1.X + 1, BD1.Y);
+              Canvas.LineTo(BD2.X, BD2.Y - 1);{Top Line}
+              Canvas.MoveTo(BD1.X, BD1.Y);
+              Canvas.LineTo(BD2.X, BD2.Y);{Center Line}
+              Canvas.MoveTo(BD1.X, BD1.Y + 1);
+              Canvas.LineTo(BD2.X - 1, BD2.Y);{Bottom Line}
+
+            {Forward Diagonal}
+              FD1 := Point(CheckBoxRect.Left + 3,CheckBoxRect.Bottom - 4);
+              FD2 := Point(CheckBoxRect.Right - 3,CheckBoxRect.Top + 2);
+
+              Canvas.MoveTo(FD1.X, FD1.Y - 1);
+              Canvas.LineTo(FD2.X - 1, FD2.Y);{Top Line}
+              Canvas.MoveTO(FD1.X, FD1.Y);
+              Canvas.LineTo(FD2.X, FD2.Y);{Center Line}
+              Canvas.MoveTo(FD1.X + 1, FD1.Y);
+              Canvas.LineTo(FD2.X, FD2.Y + 1);{Bottom Line}
+
+            Canvas.Pen.Width := 0;
+          end;
+        cbsCheck:
+          begin
+            Canvas.Pen.Width := 1;
+
+            {Short Diagonal}
+              BD1 := Point(CheckBoxRect.Left + 4,CheckBoxRect.Bottom - 8);
+              BD2 := Point(CheckBoxRect.Left + 4,CheckBoxRect.Bottom - 5);
+
+              Canvas.MoveTO(BD1.X - 1, BD1.Y);
+              Canvas.LineTo(BD2.X - 1, BD2.Y);{Left Line}
+              Canvas.MoveTo(BD1.X, BD1.Y + 1);
+              Canvas.LineTo(BD2.X, BD2.Y + 1);{Right Line}
+
+            {Long Diagonal}
+              FD1 := Point(CheckBoxRect.Left + 5,CheckBoxRect.Bottom - 6);
+              FD2 := Point(CheckBoxRect.Right - 3,CheckBoxRect.Top + 2);
+
+              Canvas.MoveTo(FD1.X,FD1.Y);
+              Canvas.LineTo(FD2.X, FD2.Y);{Top Line}
+              Canvas.MoveTo(FD1.X, FD1.Y + 1);
+              Canvas.LineTo(FD2.X, FD2.Y + 1);{Center Line}
+              Canvas.MoveTo(FD1.X, FD1.Y + 2);
+              Canvas.LineTo(FD2.X, FD2.Y + 2);{Bottom Line}
+
+            Canvas.Pen.Width := 0;
+          end;
+      end;
+    end;
+    DrawBorder(clBtnHighlight, clBtnShadow, CheckBoxRect, True);
+    InflateRect(APaintRect, -1, -1);
+    DrawBorder(clBtnFace, clBlack, APaintRect, True);
+  end
+  else begin
+    DrawFlags:=DFCS_BUTTONPUSH + DFCS_FLAT;
+    If MouseInControl and Enabled then
+      Inc(DrawFlags,DFCS_CHECKED);
+    DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
+
+    DrawFlags:=DFCS_BUTTONCHECK;
+    if Checked or (State = cbGrayed) then inc(DrawFlags,DFCS_PUSHED);
+    if not Enabled then inc(DrawFlags,DFCS_INACTIVE);
+    If MouseInControl and Enabled then
+      Inc(DrawFlags,DFCS_CHECKED);
+
+    APaintRect := CheckBoxRect;
+    DrawFrameControl(Canvas.Handle, APaintRect, DFC_BUTTON, DrawFlags);
+  end;
+end;
+
+Procedure TCheckBox.PaintText(var PaintRect: TRect);
+var
+  Sz : Integer;
+  AR : TRect;
+  dish, dis : TColor;
+
+  Procedure DoDrawText(theRect : TRect);
+  var
+    TextStyle : TTextStyle;
+  begin
+    With TextStyle do begin
+      Layout     := tlCenter;
+      SingleLine := False;
+      Clipping   := True;
+      ExpandTabs := False;
+      ShowPrefix := False;
+      Wordbreak  := Wordwrap;
+      Opaque     := False;
+      SystemFont := CheckBoxStyle = cbsSystem;
+    end;
+
+    Case Alignment of
+      alLeftJustify:
+        begin
+          If not FAttachTextToBox then begin
+            TextStyle.Alignment  := taLeftJustify;
+          end
+          else
+            TextStyle.Alignment  := taRightJustify;
+        end;
+      alRightJustify:
+        begin
+          If not FAttachTextToBox then begin
+            TextStyle.Alignment  := taRightJustify;
+          end
+          else
+            TextStyle.Alignment  := taLeftJustify;
+        end;
+    end;
+    Canvas.TextRect(theRect, 0, 0, Caption, TextStyle);
+  end;
+
+  Procedure DoDisabledTextRect(Rect : TRect; Highlight, Shadow : TColor);
+  var
+    FC : TColor;
+  begin
+    FC := Canvas.Font.Color;
+    Canvas.Font.Color := Highlight;
+    OffsetRect(Rect, 1, 1);
+    DoDrawText(Rect);
+    Canvas.Font.Color := Shadow;
+    OffsetRect(Rect, -1, -1);
+    DoDrawText(Rect);
+    Canvas.Font.Color := FC;
+  end;
+
+begin
+  If Caption = '' then
+    exit;
+  Sz := CheckBoxRect.Right - CheckBoxRect.Left;
+  AR.Top := PaintRect.Top;
+  AR.Bottom := PaintRect.Bottom;
+  If Alignment = alRightJustify then begin
+    AR.Left := PaintRect.Left + Sz + 6;
+    AR.Right := PaintRect.Right;
+  end
+  else begin
+    AR.Left := PaintRect.Left;
+    AR.Right := PaintRect.Right - Sz - 6;
+  end;
+  dish := clBtnHighlight;
+  dis := clBtnShadow;
+  Canvas.Font := Self.Font;
+  If Enabled then begin
+    If CheckBoxStyle = cbsSystem then
+      Canvas.Font.Color := clBtnText;
+    DoDrawText(AR)
+  end
+  else
+    DoDisabledTextRect(AR,dish,dis);
+end;
+
+procedure TCheckbox.Paint;
+var
+  PaintRect: TRect;
+begin
+  PaintRect := Rect(0, 0, Width, Height);
+  Canvas.Color := clBtnFace;
+
+  Canvas.Brush.Style := bsSolid;
+  Canvas.FillRect(ClientRect);
+  PaintCheck(PaintRect);
+  PaintText(PaintRect);
+end;
+
+Constructor TCheckbox.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  controlstyle := controlstyle - [csAcceptsControls];
+  Alignment := alRightJustify;
+  FAttachTextToBox := True
+end;
+
+Function TCheckBox.CheckBoxRect : TRect;
+var
+  Sz : Integer;
+begin
+  Sz := 13;
+  Result.Top := (Height div 2) - (Sz div 2);
+  Result.Bottom := Result.Top + Sz;
+  If Alignment = alRightJustify then begin
+    Result.Left := 2;
+    Result.Right := Result.Left + Sz;
+  end
+  else begin
+    Result.Right := Width - 2;
+    Result.Left := Result.Right - Sz;
+  end;
+end;
+
+procedure TCheckBox.Click;
+begin
+  If Assigned(OnClick) then
+    OnClick(Self);
+end;
+{$EndIf NewCheckbox}
+
 {$I customgroupbox.inc}
 {$I customcombobox.inc}                                                                                            
 {$I customlistbox.inc}
@@ -717,7 +1236,10 @@ end;
 {$I edit.inc}
 {$I buttoncontrol.inc}
 
-{$I checkbox.inc}
+{$IFNDef NewCheckBox}
+  {$I checkbox.inc}
+{$EndIf Not NewCheckbox}
+
 {$I radiobutton.inc}
 {$I togglebox.inc}
 
@@ -726,6 +1248,69 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.46  2002/09/27 20:52:22  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+
+  Here is the run down of what it includes -
+
+   -Vasily Volchenko's Updated Russian Localizations
+
+   -improvements to GTK Styles/SysColors
+   -initial GTK Palette code - (untested, and for now useless)
+
+   -Hint Windows and Modal dialogs now try to stay transient to
+    the main program form, aka they stay on top of the main form
+    and usually minimize/maximize with it.
+
+   -fixes to Form BorderStyle code(tool windows needed a border)
+
+   -fixes DrawFrameControl DFCS_BUTTONPUSH to match Win32 better
+    when flat
+
+   -fixes DrawFrameControl DFCS_BUTTONCHECK to match Win32 better
+    and to match GTK theme better. It works most of the time now,
+    but some themes, noteably Default, don't work.
+
+   -fixes bug in Bitmap code which broke compiling in NoGDKPixbuf
+    mode.
+
+   -misc other cleanups/ fixes in gtk interface
+
+   -speedbutton's should now draw correctly when flat in Win32
+
+   -I have included an experimental new CheckBox(disabled by
+    default) which has initial support for cbGrayed(Tri-State),
+    and WordWrap, and misc other improvements. It is not done, it
+    is mostly a quick hack to test DrawFrameControl
+    DFCS_BUTTONCHECK, however it offers many improvements which
+    can be seen in cbsCheck/cbsCrissCross (aka non-themed) state.
+
+   -fixes Message Dialogs to more accurately determine
+    button Spacing/Size, and Label Spacing/Size based on current
+    System font.
+   -fixes MessageDlgPos, & ShowMessagePos in Dialogs
+   -adds InputQuery & InputBox to Dialogs
+
+   -re-arranges & somewhat re-designs Control Tabbing, it now
+    partially works - wrapping around doesn't work, and
+    subcontrols(Panels & Children, etc) don't work. TabOrder now
+    works to an extent. I am not sure what is wrong with my code,
+    based on my other tests at least wrapping and TabOrder SHOULD
+    work properly, but.. Anyone want to try and fix?
+
+   -SynEdit(Code Editor) now changes mouse cursor to match
+    position(aka over scrollbar/gutter vs over text edit)
+
+   -adds a TRegion property to Graphics.pp, and Canvas. Once I
+    figure out how to handle complex regions(aka polygons) data
+    properly I will add Region functions to the canvas itself
+    (SetClipRect, intersectClipRect etc.)
+
+   -BitBtn now has a Stored flag on Glyph so it doesn't store to
+    lfm/lrs if Glyph is Empty, or if Glyph is not bkCustom(aka
+    bkOk, bkCancel, etc.) This should fix most crashes with older
+    GDKPixbuf libs.
+
   Revision 1.45  2002/09/18 17:07:24  lazarus
   MG: added patch from Andrew
 

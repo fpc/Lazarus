@@ -1757,7 +1757,7 @@ begin
     Top := 10;
     Left := 10;
     Height := 45;
-    Width := 250;
+    Width := 300;
     Caption := dlgCOStyle;
     Visible := True;
   end;
@@ -1781,7 +1781,7 @@ begin
     Top := 5;
     Left := 80;
     Height := 16;
-    Width := 50;
+    Width := 70;
     Caption := 'AT&T';
     Visible := True;
   end;
@@ -1791,9 +1791,9 @@ begin
   begin
     Parent := grpStyle;
     Top := 5;
-    Left := 150;
+    Left := 170;
     Height := 16;
-    Width := 50;
+    Width := 100;
     Caption := dlgCOAsIs ;
     Visible := True;
   end;
@@ -1971,7 +1971,7 @@ begin
     Top := 10;
     Left := 10;
     Height := 70;
-    Width := 85;
+    Width := 120;
     Caption := dlgCOUnitStyle ;
     with Items do begin
       Add(dlgStatic );
@@ -1989,7 +1989,7 @@ begin
     Top := 10;
     Left := grpUnitStyle.Left + grpUnitStyle.Width + 10;
     Height := 70;
-    Width := 165;
+    Width := 175;
     Caption := dlgCOChecks ;
     Visible := True;
   end;
@@ -2014,7 +2014,7 @@ begin
     Top := 8;
     Left := 85;
     Height := 16;
-    Width := 70;
+    Width := 90;
     Visible := True;
   end;
 
@@ -2026,7 +2026,7 @@ begin
     Top := 29;
     Left := 5;
     Height := 16;
-    Width := 70;
+    Width := 80;
     Visible := True;
   end;
 
@@ -2078,7 +2078,7 @@ begin
     Top := grpUnitStyle.Top + grpUnitStyle.Height + 6;
     Left := 10;
     Height := 70;
-    Width := 110;
+    Width := 115;
     Caption := dlgCOGenerate ;
     Visible := True;
   end;
@@ -2090,7 +2090,7 @@ begin
     Top := 8;
     Left := 5;
     Height := 16;
-    Width := 95;
+    Width := 100;
     Caption := dlgCOFast;
     Visible := True;
   end;
@@ -2102,7 +2102,7 @@ begin
     Top := 29;
     Left := 5;
     Height := 16;
-    Width := 95;
+    Width := 100;
     Caption := dlgCOSmaller ;
     Visible := True;
   end;
@@ -2117,7 +2117,7 @@ begin
     Top := grpGenerate.Top;
     Left := grpGenerate.Left + grpGenerate.Width + 10;
     Height := 90;
-    Width := 230;
+    Width := 270;
     Caption := dlgTargetProc ;
     Visible := True;
   end;
@@ -2168,7 +2168,7 @@ begin
     Top := grpTargetProc.Top + grpTargetProc.Height + 6;
     Left := 10;
     Height := 132;
-    Width := 350;
+    Width := 395;
     Caption :=   dlgOptimiz ;
     Visible := True;
   end;
@@ -2294,7 +2294,7 @@ begin
     Top := 6;
     Left := 8;
     Height := 16;
-    Width := 330;
+    Width := 360;
     Visible := True;
   end;
 
@@ -2306,7 +2306,7 @@ begin
     Top := 27;
     Left := 8;
     Height := 16;
-    Width := 330;
+    Width := 360;
     Visible := True;
   end;
 
@@ -2318,7 +2318,7 @@ begin
     Top := 48;
     Left := 8;
     Height := 16;
-    Width := 330;
+    Width := 360;
     Visible := True;
   end;
 
@@ -2330,7 +2330,7 @@ begin
     Top := 69;
     Left := 8;
     Height := 16;
-    Width := 330;
+    Width := 360;
     Visible := True;
   end;
 
@@ -2342,7 +2342,7 @@ begin
     Top := 90;
     Left := 8;
     Height := 16;
-    Width := 330;
+    Width := 360;
     Visible := True;
   end;
 
@@ -2354,7 +2354,7 @@ begin
     Top := 111;
     Left := 8;
     Height := 16;
-    Width := 330;
+    Width := 360;
     Visible := True;
   end;
 
@@ -2380,7 +2380,7 @@ begin
     Top := 6;
     Left := 8;
     Height := 16;
-    Width := 330;
+    Width := 360;
     Visible := True;
   end;
 
@@ -2961,7 +2961,7 @@ begin
     Parent:=nbMain.Page[Page];
     Left := grpOtherUnits.Left;
     Top:=grpUnitOutputDir.Top+grpUnitOutputDir.Height+5;
-    Width:=150;
+    Width:=200;
     Height:=45;
     Caption:=dlgLCLWidgetType ;
     with Items do begin

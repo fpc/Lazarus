@@ -1702,3 +1702,123 @@ msgstr ""
 msgid "Multi"
 msgstr ""
 
+#: lazarusidestrconsts:dlgprojectoptions
+msgid "Project Options"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoapplication
+msgid "Application"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpofroms
+msgid "Forms"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpoinfo
+msgid "Info"
+msgstr ""
+
+#: lazarusidestrconsts:dlgapplicationsettings
+msgid "Application Settings"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpotitle
+msgid "Title:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpooutputsettings
+msgid "Output Settings"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpotargetfilename
+msgid "Target file name:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgautocreateforms
+msgid "Auto-create forms:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgavailableforms
+msgid "Available forms:"
+msgstr ""
+
+#: lazarusidestrconsts:dlgautocreatenewforms
+msgid "Auto create new forms"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsaveeditorinfo
+msgid "Save editor info for closed files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsaveeditorinfoproject
+msgid "Save editor info only for project files"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrunparameters
+msgid "Run parameters"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrunolocal
+msgid "Local"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrunoenvironment
+msgid "Environment"
+msgstr ""
+
+#: lazarusidestrconsts:dlghostapplication
+msgid "Host application"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcommandlineparams
+msgid "Command line parameters (without application name)"
+msgstr ""
+
+#: lazarusidestrconsts:dlguselaunchingapp
+msgid "Use launching application"
+msgstr ""
+
+#: lazarusidestrconsts:dlgroworkingdirectory
+msgid "Working directory"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrunodisplay
+msgid "Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrunousedisplay
+msgid "Use display"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrunosystemvariables
+msgid "System variables"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrunovariable
+msgid "Variable"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrunovalue
+msgid "Value"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrunouseroverrides
+msgid "User overrides"
+msgstr ""
+
+#: lazarusidestrconsts:dlgincludesystemvariables
+msgid "Include system variables"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdirectorydoesnotexist
+msgid "Directory does not exist"
+msgstr ""
+
+#: lazarusidestrconsts:dlgthedirectory
+msgid "The directory \""
+msgstr ""
+
+#: lazarusidestrconsts:dlgdoesnotexist
+msgid "\" does not exist."
+msgstr ""
+

@@ -553,7 +553,36 @@ resourcestring
   dlgMainViewForms = 'View project forms';
   dlgMainViewUnits = 'View project units';
   dlgMulti = 'Multi';
-  
+  dlgProjectOptions = 'Project Options';
+  dlgPOApplication = 'Application';
+  dlgPOFroms = 'Forms';
+  dlgPOInfo = 'Info';
+  dlgApplicationSettings = 'Application Settings';
+  dlgPOTitle = 'Title:';
+  dlgPOOutputSettings = 'Output Settings';
+  dlgPOTargetFileName = 'Target file name:';
+  dlgAutoCreateForms = 'Auto-create forms:';
+  dlgAvailableForms = 'Available forms:';
+  dlgAutoCreateNewForms = 'Auto create new forms';
+  dlgSaveEditorInfo = 'Save editor info for closed files';
+  dlgSaveEditorInfoProject = 'Save editor info only for project files';
+  dlgRunParameters = 'Run parameters';
+  dlgRunOLocal = 'Local';
+  dlgRunOEnvironment = 'Environment';
+  dlgHostApplication = 'Host application';
+  dlgCommandLineParams = 'Command line parameters (without application name)';
+  dlgUseLaunchingApp = 'Use launching application';
+  dlgROWorkingDirectory = 'Working directory';
+  dlgRunODisplay = 'Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)';
+  dlgRunOUsedisplay = 'Use display';
+  dlgRunOSystemVariables = 'System variables';
+  dlgRunOVariable = 'Variable';
+  dlgRunOValue = 'Value';
+  dlgRunOUserOverrides = 'User overrides';
+  dlgIncludeSystemVariables = 'Include system variables';
+  dlgDirectoryDoesNotExist = 'Directory does not exist';
+  dlgTheDirectory = 'The directory "';
+  dlgDoesNotExist = '" does not exist.';
 implementation
 
 end.

@@ -49,7 +49,7 @@ uses
   {$ENDIF}
   Classes, SysUtils, Controls, Forms, Buttons, StdCtrls, ComCtrls, Dialogs,
   ExtCtrls, LResources, Laz_XMLCfg, DOS, IDEProcs, SysVarUserOverrideDlg,
-  InputHistory;
+  InputHistory,LazarusIDEStrConsts;
 
 { The xml format version:
     When the format changes (new values, changed formats) we can distinguish old
@@ -362,7 +362,7 @@ begin
     Width:=500;
     Height:=450;
     Position:=poScreenCenter;
-    Caption:='Run parameters';
+    Caption:=dlgRunParameters;
     OnResize:=@RunParamsOptsDlgResize;
 
     SetupNotebook;
@@ -382,7 +382,7 @@ begin
       Name:='CancelButton';
       Parent:=Self;
       SetBounds(390,OkButton.Top,100,25);
-      Caption:='Cancel';
+      Caption:=dlgCancel;
       OnClick:=@CancelButtonClick;
       Visible:=true;
     end;
@@ -399,10 +399,10 @@ begin
     Parent:=Self;
     SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
     if PageCount>0 then
-      Pages[0]:='Local'
+      Pages[0]:=dlgRunOLocal 
     else
-      Pages.Add('Local');
-    Pages.Add('Environment');
+      Pages.Add(dlgRunOLocal);
+    Pages.Add(dlgRunOEnvironment);
     Visible:=true;
   end;
 
@@ -419,7 +419,7 @@ begin
     Name:='HostApplicationGroupBox';
     Parent:=NoteBook.Page[0];
     SetBounds(5,5,w,60);
-    Caption:='Host application';
+    Caption:=dlgHostApplication ;
     Visible:=true;
   end;
   
@@ -448,7 +448,7 @@ begin
     Parent:=NoteBook.Page[0];
     SetBounds(5,HostApplicationGroupBox.Top+HostApplicationGroupBox.Height+5,
                  w,60);
-    Caption:='Command line parameters (without application name)';
+    Caption:=dlgCommandLineParams ;
     Visible:=true;
   end;
   
@@ -476,7 +476,7 @@ begin
     Parent:=NoteBook.Page[0];
     SetBounds(15,
       CmdLineParametersGroupBox.Top+CmdLineParametersGroupBox.Height+10,245,25);
-    Caption:='Use launching application';
+    Caption:=dlgUseLaunchingApp ;
     Checked:=false;
     Visible:=true;
   end;
@@ -506,7 +506,7 @@ begin
     Parent:=NoteBook.Page[0];
     SetBounds(5,UseLaunchingApplicationComboBox.Top
                    +UseLaunchingApplicationComboBox.Height+15,w,60);
-    Caption:='Working directory';
+    Caption:=dlgROWorkingDirectory;
     Visible:=true;
   end;
   
@@ -535,7 +535,7 @@ begin
     Parent:=NoteBook.Page[0];
     SetBounds(5,WorkingDirectoryGroupBox.Top+WorkingDirectoryGroupBox.Height+10,
                  w,80);
-    Caption:='Display (not for win32, e.g. 198.112.45.11:0, x.org:1, hydra:0.1)';
+    Caption:=dlgRunODisplay ;
     Visible:=true;
   end;
   
@@ -544,7 +544,7 @@ begin
     Name:='UseDisplayCheckBox';
     Parent:=DisplayGroupBox;
     SetBounds(5,3,200,Height);
-    Caption:='Use display';
+    Caption:=dlgRunOUsedisplay;
     Checked:=false;
     Visible:=true;
   end;
@@ -569,7 +569,7 @@ begin
     Name:='SystemVariablesGroupBox';
     Parent:=NoteBook.Page[1];
     SetBounds(5,5,w,150);
-    Caption:='System variables';
+    Caption:=dlgRunOSystemVariables ;
     Visible:=true;
   end;
   
@@ -581,9 +581,9 @@ begin
     Columns.Clear;
     Columns.Add;
     Columns.Add;
-    Columns[0].Caption:='Variable';
+    Columns[0].Caption:=dlgRunOVariable;
     Columns[0].Width:=130;
-    Columns[1].Caption:='Value';
+    Columns[1].Caption:=dlgRunOValue;
     Columns.EndUpdate;
     ViewStyle := vsReport;
     SortType := stText;
@@ -597,7 +597,7 @@ begin
     Parent:=NoteBook.Page[1];
     SetBounds(5,SystemVariablesGroupBox.Top+SystemVariablesGroupBox.Height+10,
                  w,150);
-    Caption:='User overrides';
+    Caption:=dlgRunOUserOverrides;
     OnResize:=@UserOverridesGroupBoxResize;
     Visible:=true;
   end;
@@ -614,9 +614,9 @@ begin
     Columns.Clear;
     Columns.Add;
     Columns.Add;
-    Columns[0].Caption:='Variable';
+    Columns[0].Caption:=dlgRunOVariable;
     Columns[0].Width:=130;
-    Columns[1].Caption:='Value';
+    Columns[1].Caption:=dlgRunOValue;
     Columns.EndUpdate;
     ViewStyle := vsReport;
     SortType := stText;
@@ -630,7 +630,7 @@ begin
     Left:=5;
     Top:=Parent.ClientHeight-Height-28;
     Width:=100;
-    Caption:='Add';
+    Caption:=dlgEdAdd;
     OnClick:=@UserOverridesAddButtonClick;
     Visible:=true;
   end;
@@ -642,7 +642,7 @@ begin
     Left:=UserOverridesAddButton.Left+UserOverridesAddButton.Width+10;
     Top:=UserOverridesAddButton.Top;
     Width:=100;
-    Caption:='Edit';
+    Caption:=dlgEdEdit;
     OnClick:=@UserOverridesEditButtonClick;
     Visible:=true;
   end;
@@ -654,7 +654,7 @@ begin
     Left:=UserOverridesEditButton.Left+UserOverridesEditButton.Width+10;
     Top:=UserOverridesEditButton.Top;
     Width:=100;
-    Caption:='Delete';
+    Caption:=dlgEdDelete;
     OnClick:=@UserOverridesDeleteButtonClick;
     Visible:=true;
   end;
@@ -664,7 +664,7 @@ begin
     Name:='IncludeSystemVariablesCheckBox';
     Parent:=NoteBook.Page[1];
     SetBounds(5,UserOverridesGroupBox.Top+UserOverridesGroupBox.Height+10,w,25);
-    Caption:='Include system variables';
+    Caption:=dlgIncludeSystemVariables ;
     Checked:=false;
     Enabled:=false;
     Visible:=true;
@@ -850,8 +850,8 @@ begin
     OpenDialog.Filename:=HostApplicationEdit.Text;
     if OpenDialog.Execute then begin
       if (DirectoryExists(OpenDialog.Filename))
-      or (MessageDlg('Directory does not exist',
-          'The directory "'+OpenDialog.Filename+'" does not exist.',
+      or (MessageDlg(dlgDirectoryDoesNotExist ,
+          dlgTheDirectory +OpenDialog.Filename+dlgDoesNotExist ,
           mtWarning,[mbIgnore,mbCancel],0)=mrIgnore) then
       begin
         WorkingDirectoryEdit.Text:=OpenDialog.Filename;

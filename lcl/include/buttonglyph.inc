@@ -22,6 +22,7 @@ constructor TButtonGlyph.Create;
 begin
 //  Inherited Create;
   FOriginal := TBitmap.Create;
+  FOriginal.Handle := 0;
   FOriginal.OnChange := @GlyphChanged;
 end;
 
