@@ -127,7 +127,7 @@ begin
 
     Bmp:=TBitMap.Create;
     try
-      Bmp.LoadFromFile(ExpandFileName('./10.bmp'));
+      Bmp.LoadFromFile(ExpandFileName('../../images/LazarusForm.bmp'));
       DRaw(10,450,BMP);
     finally
       Bmp.Free;
@@ -135,7 +135,7 @@ begin
 
     xpm:=TPixMap.Create;
     try
-      xpm.LoadFromFile(ExpandFileName('./10.xpm'));
+      xpm.LoadFromFile(ExpandFileName('../../images/lazarus.xpm'));
       StretchDraw(Rect(10,500,110,600),xpm);
     finally
       xpm.Free;
