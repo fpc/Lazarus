@@ -32,7 +32,7 @@ uses
   CodeTools, MsgView, NewProjectDlg, Process, IDEComp, AbstractFormEditor,
   FormEditor, CustomFormEditor, ObjectInspector, ControlSelection, PropEdits,
   UnitEditor, CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros,
-  KeyMapping, ProjectOpts;
+  KeyMapping, ProjectOpts, IDEProcs;
 
 const
   Version_String = '0.7';
@@ -86,6 +86,8 @@ type
     itmProjectOpen: TMenuItem;
     itmProjectSave: TMenuItem;
     itmProjectSaveAs: TMenuItem;
+    itmProjectAddTo: TMenuItem;
+    itmProjectRemoveFrom: TMenuItem;
     itmProjectViewSource: TMenuItem;
     itmProjectBuild: TMenuItem;
     itmProjectRun: TMenuItem;
@@ -146,6 +148,8 @@ type
     procedure mnuOpenProjectClicked(Sender : TObject);
     procedure mnuSaveProjectClicked(Sender : TObject);
     procedure mnuSaveProjectAsClicked(Sender : TObject);
+    procedure mnuAddToProjectClicked(Sender : TObject);
+    procedure mnuRemoveFromProjectClicked(Sender : TObject);
     procedure mnuViewProjectSourceClicked(Sender : TObject);
     procedure mnuBuildProjectClicked(Sender : TObject);
     procedure mnuRunProjectClicked(Sender : TObject);
@@ -221,6 +225,8 @@ type
     function DoSaveProject(SaveAs:boolean):TModalResult;
     function DoCloseProject:TModalResult;
     function DoOpenProjectFile(AFileName:string):TModalResult;
+    function DoAddActiveUnitToProject: TModalResult;
+    function DoRemoveFromProjectDialog: TModalResult;
     function DoBuildProject: TModalResult;
     function SomethingOfProjectIsModified: boolean;
     function DoCreateProjectForProgram(ProgramFilename
@@ -290,7 +296,7 @@ var
 implementation
 
 uses
-  ViewUnit_dlg, ViewForm_dlg, Math,LResources, Designer;
+  ViewUnit_dlg, Math, LResources, Designer;
 
 
 { TMainIDE }
@@ -961,6 +967,20 @@ begin
 
   mnuProject.Add(CreateSeperator);
 
+  itmProjectAddTo := TMenuItem.Create(Self);
+  itmProjectAddTo.Name:='itmProjectAddTo';
+  itmProjectAddTo.Caption := 'Add active unit to Project';
+  itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
+  mnuProject.Add(itmProjectAddTo);
+
+  itmProjectRemoveFrom := TMenuItem.Create(Self);
+  itmProjectRemoveFrom.Name:='itmProjectRemoveFrom';
+  itmProjectRemoveFrom.Caption := 'Remove from Project';
+  itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
+  mnuProject.Add(itmProjectRemoveFrom);
+
+  mnuProject.Add(CreateSeperator);
+
   itmProjectViewSource := TMenuItem.Create(Self);
   itmProjectViewSource.Name:='itmProjectViewSource';
   itmProjectViewSource.Caption := 'View Source';
@@ -1438,6 +1458,16 @@ end;
 procedure TMainIDE.mnuSaveProjectAsClicked(Sender : TObject);
 begin
   DoSaveProject(true);
+end;
+
+procedure TMainIDE.mnuAddToProjectClicked(Sender : TObject);
+begin
+  DoAddActiveUnitToProject;
+end;
+
+procedure TMainIDE.mnuRemoveFromProjectClicked(Sender : TObject);
+begin
+  DoRemoveFromProjectDialog;
 end;
 
 procedure TMainIDE.mnuViewProjectSourceClicked(Sender : TObject);
@@ -2178,7 +2208,7 @@ end;
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
 var UnitList: TList;
   i, ProgramNameStart, ProgramNameEnd:integer;
-  MainUnitName, Ext: string;
+  MainUnitName, Ext, DlgCaption: string;
   MainUnitInfo, AnUnitInfo: TUnitInfo;
   MainUnitIndex: integer;
 Begin
@@ -2223,7 +2253,11 @@ Begin
         end;
       end;
     end;
-    if ShowViewUnitsDlg(UnitList,true)=mrOk then begin
+    if OnlyForms then
+      DlgCaption:='View forms'
+    else
+      DlgCaption:='View units';
+    if ShowViewUnitsDlg(UnitList,true,DlgCaption)=mrOk then begin
       for i:=0 to UnitList.Count-1 do begin
         if TViewUnitsEntry(UnitList[i]).Selected then begin
           AnUnitInfo:=Project.Units[TViewUnitsEntry(UnitList[i]).ID];
@@ -2614,6 +2648,102 @@ writeln('[TMainIDE.DoCreateProjectForProgram] 1');
   UpdateCaption;
 
 writeln('[TMainIDE.DoCreateProjectForProgram] END');
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoAddActiveUnitToProject: TModalResult;
+var
+  ActiveSourceEditor:TSourceEditor; 
+  ActiveUnitInfo:TUnitInfo;
+  s, ShortUnitName: string;
+  UnitNameStart, UnitNameEnd: integer;
+begin
+  Result:=mrCancel;
+  GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+  if ActiveUnitInfo<>nil then begin
+    if ActiveUnitInfo.IsPartOfProject=false then begin
+      if ActiveUnitInfo.Filename<>'' then
+        s:='"'+ActiveUnitInfo.Filename+'"'
+      else
+        s:='"'+SourceNotebook.Notebook.Pages[SourceNotebook.Notebook.PageIndex]
+          +'"';
+      if (Project.ProjectType in [ptProgram, ptApplication])
+      and (ActiveUnitInfo.UnitName<>'')
+      and (Project.IndexOfUnitWithName(ActiveUnitInfo.UnitName,true)>=0) then begin
+        MessageDlg('Unable to add '+s+' to project, because there is already a '
+           +'unit with the same name in the project.',mtInformation,[mbOk],0);
+      end else begin
+        if MessageDlg('Add '+s+' to project?',mtConfirmation,[mbOk,mbCancel],0)
+          =mrOk then
+        begin
+          ActiveUnitInfo.IsPartOfProject:=true;
+          if (ActiveUnitInfo.UnitName<>'')
+          and (Project.ProjectType in [ptProgram, ptApplication]) then begin
+            ShortUnitName:=FindUnitNameInSource(ActiveUnitInfo.Source.Source,
+              UnitNameStart,UnitNameEnd);
+            if ShortUnitName='' then ShortUnitName:=ActiveUnitInfo.UnitName;
+            if (ShortUnitName<>'') then
+              AddToProgramUsesSection(Project.Units[Project.MainUnit].Source
+                ,ShortUnitName,'');
+          end;
+          Project.Modified:=true;
+        end;
+      end;
+    end else begin
+      if ActiveUnitInfo.Filename<>'' then
+        s:='The file "'+ActiveUnitInfo.Filename+'"'
+      else
+        s:='The file "'
+          +SourceNotebook.Notebook.Pages[SourceNotebook.Notebook.PageIndex]
+          +'"';
+      s:=s+' is already part of the project.';
+      MessageDlg(s,mtInformation,[mbOk],0);
+    end;
+  end else begin
+    Result:=mrOk;
+  end;
+end;
+
+function TMainIDE.DoRemoveFromProjectDialog: TModalResult;
+var UnitList: TList;
+  i:integer;
+  AName: string;
+  AnUnitInfo: TUnitInfo;
+Begin
+  UnitList:=TList.Create;
+  try
+    for i:=0 to Project.UnitCount-1 do begin
+      AnUnitInfo:=Project.Units[i];
+      if (AnUnitInfo.IsPartOfProject) and (i<>Project.MainUnit) then begin
+        AName:=AnUnitInfo.FileName;
+        if (AName='') and (AnUnitInfo.Loaded) then begin
+          AName:=SourceNotebook.NoteBook.Pages[AnUnitInfo.EditorIndex];
+        end;
+        if AName<>'' then
+          UnitList.Add(TViewUnitsEntry.Create(AName,i,false));
+      end;
+    end;
+    if ShowViewUnitsDlg(UnitList,true,'Remove from project')=mrOk then begin
+      for i:=0 to UnitList.Count-1 do begin
+        if TViewUnitsEntry(UnitList[i]).Selected then begin
+          AnUnitInfo:=Project.Units[TViewUnitsEntry(UnitList[i]).ID];
+          AnUnitInfo.IsPartOfProject:=false;
+          if (Project.MainUnit>=0)
+          and (Project.ProjectType in [ptProgram, ptApplication]) then begin
+            if (AnUnitInfo.UnitName<>'') then
+              RemoveFromProgramUsesSection(
+                Project.Units[Project.MainUnit].Source,AnUnitInfo.UnitName);
+            if (AnUnitInfo.FormName<>'') then
+              Project.RemoveCreateFormFromProjectFile(
+                  'T'+AnUnitInfo.FormName,AnUnitInfo.FormName);
+            UpdateMainUnitSrcEdit;
+          end;
+        end;
+      end;
+    end;
+  finally
+    UnitList.Free;
+  end;
   Result:=mrOk;
 end;
 
@@ -3015,20 +3145,6 @@ end;
 
 function TMainIDE.DoJumpToCompilerMessage(Index:integer;
   FocusEditor: boolean): boolean;
-
-  function FilenameIsAbsolute(TheFilename: string):boolean;
-  begin
-    DoDirSeparators(TheFilename);
-    {$IFDEF linux}
-    Result:=(TheFilename<>'') and (TheFilename[1]='/');
-    {$ELSE}
-    // windows
-    Result:=(copy(TheFilename,1,2)='\\') or ((length(TheFilename)>3) and 
-       (upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\'));
-    {$ENDIF}
-  end;
-
-// TMainIDE.DoJumpToCompilerMessage
 var MaxMessages: integer;
   Filename, Ext: string;
   CaretXY: TPoint;
@@ -3257,8 +3373,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.87  2001/04/03 12:14:43  lazarus
-  MG: added project options
+  Revision 1.88  2001/04/04 12:20:34  lazarus
+  MG: added  add to/remove from project, small bugfixes
 
   Revision 1.86  2001/03/31 13:35:22  lazarus
   MG: added non-visual-component code to IDE and LCL

@@ -254,6 +254,10 @@ function TCompiler.GetSourcePosition(Line: string; var Filename:string;
   var CaretXY: TPoint; var MsgType: TErrorType): boolean;
 {This assumes the line will have the format
 <filename>(123,45) <ErrorType>: <some text>
+
+ToDo: parse format:
+<filename>(456) <ErrorType>: <some text> in line (123)
+
 }
 var StartPos, EndPos: integer;
 begin
@@ -270,18 +274,37 @@ begin
   while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
   if EndPos>length(Line) then exit;
   CaretXY.Y:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
-  // read column
-  StartPos:=EndPos+1;
-  EndPos:=StartPos;
-  while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
-  if EndPos>length(Line) then exit;
-  CaretXY.X:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
-  // read error type
-  StartPos:=EndPos+2;
-  while (EndPos<=length(Line)) and (Line[EndPos]<>':') do inc(EndPos);
-  if EndPos>length(Line) then exit;
-  MsgType:=ErrorTypeNameToType(copy(Line,StartPos,EndPos-StartPos));
-  Result:=true;
+  if Line[EndPos]=',' then begin
+    // format: <filename>(123,45) <ErrorType>: <some text>
+    // read column
+    StartPos:=EndPos+1;
+    EndPos:=StartPos;
+    while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
+    if EndPos>length(Line) then exit;
+    CaretXY.X:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
+    // read error type
+    StartPos:=EndPos+2;
+    while (EndPos<=length(Line)) and (Line[EndPos]<>':') do inc(EndPos);
+    if EndPos>length(Line) then exit;
+    MsgType:=ErrorTypeNameToType(copy(Line,StartPos,EndPos-StartPos));
+    Result:=true;
+  end else if Line[EndPos]=')' then begin
+    // <filename>(456) <ErrorType>: <some text> in line (123)
+    // read error type
+    StartPos:=EndPos+2;
+    while (EndPos<=length(Line)) and (Line[EndPos]<>':') do inc(EndPos);
+    if EndPos>length(Line) then exit;
+    MsgType:=ErrorTypeNameToType(copy(Line,StartPos,EndPos-StartPos));
+    // read second linenumber (more useful)
+    while (EndPos<=length(Line)) and (Line[EndPos]<>'(') do inc(EndPos);
+    if EndPos>length(Line) then exit;
+    StartPos:=EndPos+1;
+    EndPos:=StartPos;
+    while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
+    if EndPos>length(Line) then exit;
+    CaretXY.Y:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
+    Result:=true;
+  end;
 end;
 
 
@@ -289,6 +312,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2001/04/04 12:20:34  lazarus
+  MG: added  add to/remove from project, small bugfixes
+
   Revision 1.11  2001/03/31 13:35:22  lazarus
   MG: added non-visual-component code to IDE and LCL
 

@@ -20,7 +20,6 @@
  ***************************************************************************/
 
 }
-
 unit project;
 
 {$mode objfpc}{$H+}
@@ -33,7 +32,7 @@ interface
 
 uses
   Classes, SysUtils, LCLLinux, XMLCfg, LazConf, CompilerOptions, FileCtrl,
-  CodeTools, Forms, Controls, EditorOptions, Dialogs;
+  CodeTools, Forms, Controls, EditorOptions, Dialogs, IDEProcs;
 
 type
   //---------------------------------------------------------------------------
@@ -1331,20 +1330,6 @@ begin
 end;
 
 procedure TProject.OnLoadSaveFilename(var AFilename:string; Load:boolean);
-
-  function FilenameIsAbsolute(TheFilename: string):boolean;
-  begin
-    DoDirSeparators(TheFilename);
-    {$IFDEF linux}
-    Result:=(TheFilename='') or (TheFilename[1]='/');
-    {$ELSE}
-    // windows
-    Result:=(length(TheFilename)<3) or (copy(TheFilename,1,2)='\\')
-        or ((upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\'));
-    {$ENDIF}
-  end;
-
-// OnLoadSaveFilename
 var ProjectPath:string;
 begin
   ProjectPath:=ExtractFilePath(ProjectFile);
@@ -1397,6 +1382,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2001/04/04 12:20:34  lazarus
+  MG: added  add to/remove from project, small bugfixes
+
   Revision 1.18  2001/03/29 12:38:59  lazarus
   MG: new environment opts, ptApplication bugfixes
 

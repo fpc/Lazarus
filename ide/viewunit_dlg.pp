@@ -49,7 +49,8 @@ type
   end;
 
 
-function ShowViewUnitsDlg(Entries: TList; MultiSelect: boolean): TModalResult;
+function ShowViewUnitsDlg(Entries: TList; MultiSelect: boolean;
+  Caption: string): TModalResult;
    // Entries is a list of TViewUnitsEntry(s)
 
 
@@ -57,12 +58,13 @@ implementation
 
 
 function ShowViewUnitsDlg(Entries: TList;
-  MultiSelect: boolean): TModalResult;
+  MultiSelect: boolean; Caption: string): TModalResult;
 var ViewUnits: TViewUnits;
   i: integer;
 begin
   ViewUnits:=TViewUnits.Create(Application);
   try
+    ViewUnits.Caption:=Caption;
     ViewUnits.ListBox.Visible:=false;
     ViewUnits.ListBox.MultiSelect:=MultiSelect;
     with ViewUnits.ListBox.Items do begin
@@ -169,6 +171,9 @@ initialization
 end.
 {
   $Log$
+  Revision 1.8  2001/04/04 12:20:34  lazarus
+  MG: added  add to/remove from project, small bugfixes
+
   Revision 1.7  2001/03/08 15:59:06  lazarus
   IDE bugfixes and viewunit/forms functionality
 
