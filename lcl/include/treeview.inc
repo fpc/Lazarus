@@ -510,16 +510,26 @@ begin
   TreeView_SetItem(Handle, Item);}
 end;
 
-{function TTreeNode.GetDropTarget: Boolean;
+function TTreeNode.GetDropTarget: Boolean;
 begin
   Result := GetState(nsDropHilited);
-end;}
+end;
 
-{procedure TTreeNode.SetDropTarget(Value: Boolean);
+procedure TTreeNode.SetDropTarget(AValue: Boolean);
 begin
-  if Value then TreeView_SelectDropTarget(Handle, ItemId)
-  else if DropTarget then TreeView_SelectDropTarget(Handle, nil);
-end;}
+  if AValue=GetDropTarget then exit;
+  if AValue then begin
+    Include(FStates,nsDropHilited);
+    if TreeView<>nil then
+      TreeView.FLastDropTarget:=Self;
+  end else begin
+    Exclude(FStates,nsDropHilited);
+    if TreeView<>nil then
+      TreeView.FLastDropTarget:=nil;
+  end;
+  {if Value then TreeView_SelectDropTarget(Handle, ItemId)
+  else if DropTarget then TreeView_SelectDropTarget(Handle, nil);}
+end;
 
 function TTreeNode.GetHasChildren: Boolean;
 begin
@@ -869,6 +879,8 @@ begin
     if Owner.Owner<>nil then begin
       Owner.Owner.FStates:=Owner.Owner.FStates+[tvsMaxRightNeedsUpdate,
         tvsTopsNeedsUpdate,tvsTopItemNeedsUpdate,tvsBottomItemNeedsUpdate];
+      if Owner.Owner.FLastDropTarget=Self then
+        Owner.Owner.FLastDropTarget:=nil;
     end;
   end;
   UnbindFromMultiSelected;
@@ -3374,15 +3386,17 @@ begin
   Result := FChangeTimer.Interval;
 end;
 
-{function TCustomTreeView.GetDropTarget: TTreeNode;
+function TCustomTreeView.GetDropTarget: TTreeNode;
 begin
   if HandleAllocated then
   begin
-    Result := Items.GetNode(TreeView_GetDropHilite(Handle));
-    if Result = nil then Result := FLastDropTarget;
+    //Result := Items.GetNode(TreeView_GetDropHilite(Handle));
+    //if Result = nil then Result := FLastDropTarget;
+    Result := FLastDropTarget;
   end
-  else Result := nil;
-end;}
+  else
+    Result := nil;
+end;
 
 function TCustomTreeView.GetHideSelection: boolean;
 begin
@@ -3414,12 +3428,14 @@ begin
   Result:=(tvoRowSelect in FOptions);
 end;
 
-{procedure TCustomTreeView.SetDropTarget(Value: TTreeNode);
+procedure TCustomTreeView.SetDropTarget(Value: TTreeNode);
 begin
   if HandleAllocated then
-    if Value <> nil then Value.DropTarget := True
-    else TreeView_SelectDropTarget(Handle, nil);
-end;}
+    if Value <> nil then
+      Value.DropTarget := True;
+    {else
+      TreeView_SelectDropTarget(Handle, nil);}
+end;
 
 {function TCustomTreeView.GetNodeFromItem(const Item: TTVItem): TTreeNode;
 begin
@@ -3672,14 +3688,14 @@ begin
     end;
 end;}
 
-{function TCustomTreeView.GetDragImages: TDragImageList;
+function TCustomTreeView.GetDragImages: TDragImageList;
 begin
   if FDragImage.Count > 0 then
     Result := FDragImage
   else
     Result := nil;
 end;
-}
+
 procedure TCustomTreeView.WndProc(var Message: TLMessage);
 begin
   if not (csDesigning in ComponentState)
@@ -3732,14 +3748,15 @@ begin
   FLastDropTarget := nil;
 end;
 
-{procedure TCustomTreeView.CMDrag(var Message: TCMDrag);
+procedure TCustomTreeView.CMDrag(var AMessage: TCMDrag);
 begin
-  inherited;
-  with Message, DragRec^ do
+  inherited CMDrag(AMessage);
+writeln('TCustomTreeView.CMDrag ',ord(AMessage.DragMessage));
+  with AMessage, DragRec^ do
     case DragMessage of
       dmDragMove:
         with ScreenToClient(Pos) do
-          DoDragOver(Source, X, Y, Message.Result <> 0);
+          DoDragOver(Source, X, Y, AMessage.Result <> 0);
       dmDragLeave:
         begin
           TDragObject(Source).HideDragImage;
@@ -3749,23 +3766,24 @@ begin
         end;
       dmDragDrop: FLastDropTarget := nil;
     end;
-end;}
+end;
 
-{procedure TCustomTreeView.DoDragOver(Source: TDragObject; X, Y: Integer;
+procedure TCustomTreeView.DoDragOver(Source: TDragObject; X, Y: Integer;
   CanDrop: Boolean);
 var
   Node: TTreeNode;
 begin
   Node := GetNodeAt(X, Y);
-  if (Node <> nil) and
-    ((Node <> DropTarget) or (Node = FLastDropTarget)) then
+writeln('TCustomTreeView.DoDragOver ',Node<>nil,' ',Node <> DropTarget,' ',Node = FLastDropTarget);
+  if (Node <> nil)
+  and ((Node <> DropTarget) or (Node = FLastDropTarget)) then
   begin
     FLastDropTarget := nil;
     TDragObject(Source).HideDragImage;
     Node.DropTarget := True;
     TDragObject(Source).ShowDragImage;
   end;
-end;}
+end;
 
 procedure TCustomTreeView.DoPaint;
 var
@@ -4181,22 +4199,16 @@ begin
           end else begin
             Items.ClearMultiSelection;
             CursorNode.MultiSelected:=true;
-            writeln('AAA1 ',CursorNode.MultiSelected);
           end;
         end;
         bStartDrag := true;
       end;
     end;
-    if (Button = mbLeft) and bStartDrag then
-      Include(fStates, tvsWaitForDragging)
-    else begin
-      if ([tvsDblClicked,tvsTripleClicked,tvsQuadClicked]*fStates)<>[] then
-      begin
-        if Button=mbMiddle then begin
-          // insert primary selection text
+    if (bStartDrag) then
+      Include(fStates, tvsWaitForDragging);
+    if Button=mbMiddle then begin
+      // insert primary selection text
 
-        end;
-      end;
     end;
   end;
   //LCLLinux.SetFocus(Handle);
@@ -4205,20 +4217,13 @@ end;
 procedure TCustomTreeView.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
   inherited MouseMove(Shift, x, y);
-  if (X>=ClientWidth-ScrollBarWidth) or (Y>=(ClientHeight-ScrollBarWidth)) then
-  begin
-    // workaround vs scrollbar clientrect bug in lcl
-    exit;
-  end;
-  if MouseCapture and (tvsWaitForDragging in fStates) then begin
+  if {MouseCapture and} (tvsWaitForDragging in fStates) then begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
-      or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
+    or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin
       Exclude(fStates, tvsWaitForDragging);
-      //BeginDrag(false);
+      BeginDrag(false);
     end;
-  end else if (ssLeft in Shift) and MouseCapture then begin
-
   end;
 end;
 
@@ -4226,22 +4231,17 @@ procedure TCustomTreeView.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
   inherited MouseUp(Button, Shift, X, Y);
-  if (X>=ClientWidth-ScrollBarWidth) or (Y>=(ClientHeight-ScrollBarWidth)) then
-  begin
-    exit;
-  end;
   if (Button = mbRight) and (Shift = [ssRight]) and Assigned(PopupMenu) then
     exit;
   MouseCapture := False;
-  if fStates * [tvsDblClicked, tvsWaitForDragging] = [tvsWaitForDragging] then
-  begin
-    Exclude(fStates, tvsWaitForDragging);
-  end;
+  Exclude(fStates, tvsWaitForDragging);
   if (Button=mbLeft)
-  and (fStates * [tvsDblClicked, tvsWaitForDragging] = []) then begin
+  and (fStates * [tvsDblClicked, tvsTripleClicked, tvsQuadClicked,
+    tvsWaitForDragging] = [])
+  then begin
     //AquirePrimarySelection;
   end;
-  Exclude(fStates, tvsDblClicked);
+  fStates:=fStates-[tvsDblClicked,tvsTripleClicked,tvsQuadClicked];
 end;
 
 procedure TCustomTreeView.Notification(AComponent: TComponent;
@@ -4383,7 +4383,7 @@ begin
   end;
 end;
 
-procedure TCustomTreeView.WMLButtonDown(var Message: TLMLButtonDown);
+procedure TCustomTreeView.WMLButtonDown(var AMessage: TLMLButtonDown);
 var
   Node: TTreeNode;
   MousePos: TPoint;
@@ -4401,7 +4401,7 @@ begin
           Perform(LM_LBUTTONUP, 0, MakeLong(X, Y));
       end
       else begin
-        Node := GetNodeAt(Message.XPos, Message.YPos);
+        Node := GetNodeAt(AMessage.XPos, AMessage.YPos);
         if Node <> nil then
         begin
           Node.Focused := True;
@@ -4415,7 +4415,7 @@ begin
   end;
 end;
 
-procedure TCustomTreeView.WMNotify(var Message: TLMNotify);
+procedure TCustomTreeView.WMNotify(var AMessage: TLMNotify);
 {var
   Node: TTreeNode;
   MaxTextLen: Integer;

@@ -932,7 +932,7 @@ type
     function GetHasChildren: Boolean;
     function GetCount: Integer;
     function GetCut: boolean;
-    //function GetDropTarget: Boolean;
+    function GetDropTarget: Boolean;
     function GetExpanded: Boolean;
     function GetFocused: Boolean;
     function GetHeight: integer;
@@ -953,7 +953,7 @@ type
     procedure ReadDelphiData(Stream: TStream; Info: PDelphiNodeInfo);
     procedure SetCut(AValue: Boolean);
     procedure SetData(AValue: Pointer);
-    //procedure SetDropTarget(Value: Boolean);
+    procedure SetDropTarget(AValue: Boolean);
     procedure SetExpanded(AValue: Boolean);
     procedure SetFocused(AValue: Boolean);
     procedure SetHasChildren(AValue: Boolean);
@@ -1023,7 +1023,7 @@ type
     property Data: Pointer read FData write SetData;
     property Deleting: Boolean read FDeleting;
     property Focused: Boolean read GetFocused write SetFocused;
-    //property DropTarget: Boolean read GetDropTarget write SetDropTarget;
+    property DropTarget: Boolean read GetDropTarget write SetDropTarget;
     property Expanded: Boolean read GetExpanded write SetExpanded;
     property Handle: THandle read GetHandle;
     property HasChildren: Boolean read GetHasChildren write SetHasChildren;
@@ -1174,8 +1174,7 @@ type
     tvoRowSelect,
     tvoKeepCollapsedNodes,
     tvoShowSeparators,
-    tvoAllowMultiselect,
-    tvoAutoItemHeight
+    tvoAllowMultiselect
     );
   TTreeViewOptions = set of TTreeViewOption;
 
@@ -1245,14 +1244,14 @@ type
     //procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
     //procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
     //procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
-    //procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
+    procedure CMDrag(var AMessage: TCMDrag); message CM_DRAG;
     //procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
     procedure EditWndProc(var Message: TLMessage);
-    //procedure DoDragOver(Source: TDragObject; X, Y: Integer; CanDrop: Boolean);
+    procedure DoDragOver(Source: TDragObject; X, Y: Integer; CanDrop: Boolean);
     function GetAutoExpand: boolean;
     function GetBottomItem: TTreeNode;
     function GetChangeDelay: Integer;
-    //function GetDropTarget: TTreeNode;
+    function GetDropTarget: TTreeNode;
     function GetHideSelection: boolean;
     function GetHotTrack: boolean;
     function GetKeepCollapsedNodes: boolean;
@@ -1276,7 +1275,7 @@ type
     procedure SetChangeDelay(Value: Integer);
     procedure SetDefaultItemHeight(Value: integer);
     procedure SetExpandSignType(Value: TTreeViewExpandSignType);
-    //procedure SetDropTarget(Value: TTreeNode);
+    procedure SetDropTarget(Value: TTreeNode);
     procedure SetHideSelection(Value: Boolean);
     procedure SetHotTrack(Value: Boolean);
     //procedure SetImageList(Value: HImageList; Flags: Integer);
@@ -1310,8 +1309,8 @@ type
     procedure UpdateScrollbars;
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
-    procedure WMLButtonDown(var Message: TLMLButtonDown); message LM_LBUTTONDOWN;
-    procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
+    procedure WMLButtonDown(var AMessage: TLMLButtonDown); message LM_LBUTTONDOWN;
+    procedure WMNotify(var AMessage: TLMNotify); message LM_NOTIFY;
     procedure WMSize(var Msg: TLMSize); message LM_SIZE;
     //procedure WMContextMenu(var Message: TLMContextMenu); message LM_CONTEXTMENU;
     //procedure CMSysColorChange(var Message: TMessage); message CM_SYSCOLORCHANGE;
@@ -1340,7 +1339,7 @@ type
     procedure EndEditing;
     procedure EnsureNodeIsVisible(ANode: TTreeNode);
     procedure Expand(Node: TTreeNode); dynamic;
-    //function GetDragImages: TDragImageList; override;
+    function GetDragImages: TDragImageList; //override;
     procedure GetImageIndex(Node: TTreeNode); virtual;
     function GetMaxLvl: integer;
     function GetMaxScrollLeft: integer;
@@ -1433,7 +1432,7 @@ type
     property BorderWidth;
     property BottomItem: TTreeNode read GetBottomItem write SetBottomItem;
     property Canvas: TCanvas read FCanvas;
-    //property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
+    property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property DefaultItemHeight: integer
       read FDefItemHeight write SetDefaultItemHeight;
     property ExpandSignType: TTreeViewExpandSignType
@@ -1462,7 +1461,7 @@ type
     property ChangeDelay;
     property Color;
     property Ctl3D;
-    //property Constraints;
+    property Constraints;
     property DefaultItemHeight;
     property DragKind;
     property DragCursor;
@@ -1656,6 +1655,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.41  2002/09/09 19:04:01  lazarus
+  MG: started TTreeView dragging
+
   Revision 1.40  2002/09/09 17:41:18  lazarus
   MG: added multiselection to TTreeView
 
