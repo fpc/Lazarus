@@ -362,6 +362,7 @@ type
     procedure SaveToClipboardFormat(FormatID: TClipboardFormat); virtual; abstract;
     constructor Create;
     constructor VirtualCreate; virtual;
+  public
     property Empty: Boolean read GetEmpty;
     property Height: Integer read GetHeight write SetHeight;
     property Modified: Boolean read FModified write SetModified;
@@ -911,6 +912,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.55  2002/11/09 15:02:06  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.54  2002/10/27 11:51:34  lazarus
   MG: fixed memleaks
 
