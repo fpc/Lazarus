@@ -116,7 +116,7 @@ begin
         else
           // deleting last page
           NewPageIndex:=-1;
-          
+
         if NewPageIndex>=0 then
           fNoteBook.PageIndex:=NewPageIndex;
       end;
@@ -159,7 +159,7 @@ procedure TNBPages.Delete(Index: Integer);
 var
   APage: TCustomPage;
 begin
-  // Make sure Index is in the range of valid pages to delete 
+  // Make sure Index is in the range of valid pages to delete
   {$IFDEF NOTEBOOK_DEBUG}
   //writeln('TNBPages.Delete A Index=',Index);
   writeln('TNBPages.Delete B ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
@@ -261,15 +261,15 @@ var
 begin
   if CurIndex=NewIndex then exit;
   NewPageIndex:=NewIndex;
-  
+
   APage:=TCustomPage(fPageList[CurIndex]);
-  
+
   // calculate new control index (i.e. ZOrderPosition)
   if NewIndex>=fPageList.Count-1 then
     NewControlIndex:=fNoteBook.ControlCount-1
   else
     NewControlIndex:=fNoteBook.GetControlIndex(TCustomPage(fPageList[NewIndex]));
-    
+
   // calculate new PageIndex
   if fNoteBook.PageIndex=CurIndex then
     NewPageIndex:=NewIndex
@@ -283,7 +283,7 @@ begin
 
   // move Page in fPageList
   fPageList.Move(CurIndex, NewIndex);
-  
+
   // move in wincontrol list
   fNoteBook.SetControlIndex(APage,NewControlIndex);
 
@@ -397,7 +397,7 @@ end;
 
 {------------------------------------------------------------------------------
   function TCustomNotebook.TabIndexAtClientPos(ClientPos: TPoint): integer;
-  
+
   Returns the index of the page of the tab at the client position.
   For example:
     Index:=NoteBook1.PageIndexAtClientPos(
@@ -441,7 +441,7 @@ end;
   method TCustomNotebook DoCloseTabClicked
   Params: APage: TCustomPage
   Result: none
-  
+
   Called whenever the user closes the tab.
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.DoCloseTabClicked(APage: TCustomPage);
@@ -642,7 +642,7 @@ end;
   method TCustomNotebook UpdateTabProperties
   Params: none
   Result: none
-  
+
   Tells the interface to update all tabs.
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.UpdateTabProperties;
@@ -691,7 +691,7 @@ Begin
     else
       begin
         writeln('');
-        writeln('[TCustomNotebook.CNNotify]');
+        writeln('TCustomNotebook.CNNotify: unhandled NMHdr code:', NMHdr^.code);
         writeln('');
       end;
     end;
@@ -779,6 +779,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.38  2003/11/25 21:48:29  micha
+  clearer notebook error message
+
   Revision 1.37  2003/11/10 19:05:44  mattias
   fixed some bugs by Andreas
 
