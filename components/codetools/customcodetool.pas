@@ -70,6 +70,26 @@ type
   end;
   
   
+  { TDirtySource - class to store a dirty source }
+
+  TDirtySource = class
+  public
+    Src: string;
+    GapSrc: string;
+    Code: TCodeBuffer;
+    Valid: boolean;
+    CurPos: TAtomPosition;
+    StartPos: integer;
+    GapStart: integer;
+    GapEnd: integer;
+    LockCount: integer;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    procedure SetCode(NewCode: TCodeBuffer);
+    procedure SetGap(NewDirtyStartPos,NewDirtyGapStart,NewDirtyGapEnd: integer);
+  end;
+
+
   // types for user aborts
   TOnParserProgress = function(Tool: TCustomCodeTool): boolean of object;
 
@@ -119,6 +139,8 @@ type
     procedure ClearLastError;
     procedure RaiseLastError;
     procedure DoProgress;
+    // dirty/dead source
+    procedure LoadDirtySource(const CursorPos: TCodeXYPosition);
   public
     Tree: TCodeTree;
 
@@ -137,6 +159,8 @@ type
     JumpCentered: boolean;
     CursorBeyondEOL: boolean;
     
+    DirtySrc: TDirtySource;
+
     ErrorPosition: TCodeXYPosition;
     
     property Scanner: TLinkScanner read FScanner write SetScanner;
@@ -279,6 +303,8 @@ begin
   LastAtoms.Free;
   Tree.Free;
   KeyWordFuncList.Free;
+  DirtySrc.Free;
+  DirtySrc:=nil;
   inherited Destroy;
 end;
 
@@ -347,6 +373,40 @@ begin
     RaiseExceptionClass('Abort',EParserAbort);
   end;
 end;
+
+procedure TCustomCodeTool.LoadDirtySource(const CursorPos: TCodeXYPosition);
+// - create the DirtySrc object
+// - load the unparsed source at CursorPos
+// - find the gap bounds
+var
+  NewDirtyStartPos: integer;
+  NewDirtyGapStart: integer;
+  NewDirtyGapEnd: integer;
+  CursorInLink: Boolean;
+  BestLinkIndex: Integer;
+  BestLink: TSourceLink;
+begin
+  if DirtySrc=nil then DirtySrc:=TDirtySource.Create;
+  DirtySrc.SetCode(CursorPos.Code);
+  CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,NewDirtyStartPos);
+  if NewDirtyStartPos<1 then
+    RaiseCatchableException('NewDirtyStartPos<1');
+  CursorInLink:=false;
+  BestLinkIndex:=Scanner.LinkIndexNearCursorPos(NewDirtyStartPos,
+                                                DirtySrc.Code,CursorInLink);
+  if BestLinkIndex<0 then
+    RaiseCatchableException('BestLinkIndex<0');
+  if CursorInLink then
+    RaiseCatchableException('CursorInLink');
+  BestLink:=Scanner.Links[BestLinkIndex];
+  NewDirtyGapStart:=BestLink.SrcPos+Scanner.LinkSize(BestLinkIndex);
+  if BestLinkIndex<Scanner.LinkCount then
+    NewDirtyGapEnd:=Scanner.Links[BestLinkIndex+1].SrcPos
+  else
+    NewDirtyGapEnd:=DirtySrc.Code.SourceLength;
+  DirtySrc.SetGap(NewDirtyStartPos,NewDirtyGapStart,NewDirtyGapEnd);
+end;
+
 
 procedure TCustomCodeTool.SetScanner(NewScanner: TLinkScanner);
 begin
@@ -1493,6 +1553,8 @@ begin
       SrcLen:=length(Src);
       FForceUpdateNeeded:=true;
       if DeleteNodes then DoDeleteNodes;
+      DirtySrc.Free;
+      DirtySrc:=nil;
     end else begin
       if LastErrorPhase=CodeToolPhaseScan then
         RaiseLastError;
@@ -1854,14 +1916,14 @@ end;
 function TCustomCodeTool.CaretToCleanPos(Caret: TCodeXYPosition;
   var CleanPos: integer): integer;
 begin
-//writeln('TCustomCodeTool.CaretToCleanPos A ',Caret.Code.Filename,' ',Caret.Code.SourceLength);
+  //writeln('TCustomCodeTool.CaretToCleanPos A ',Caret.Code.Filename,' ',Caret.Code.SourceLength);
   Caret.Code.LineColToPosition(Caret.Y,Caret.X,CleanPos);
-//writeln('TCustomCodeTool.CaretToCleanPos B ',CleanPos,',',Caret.Y,',',Caret.X);
+  //writeln('TCustomCodeTool.CaretToCleanPos B ',CleanPos,',',Caret.Y,',',Caret.X);
   if (CleanPos>=1) then
     Result:=Scanner.CursorToCleanPos(CleanPos,Caret.Code,CleanPos)
   else
     Result:=-2; // x,y beyond source
-//writeln('TCustomCodeTool.CaretToCleanPos C CleanPos=',CleanPos,' Result=',Result);
+  //writeln('TCustomCodeTool.CaretToCleanPos C CleanPos=',CleanPos,' Result=',Result);
 end;
 
 function TCustomCodeTool.CleanPosToCodePos(CleanPos: integer;
@@ -2202,6 +2264,42 @@ constructor ECodeToolFileNotFound.Create(ASender: TCustomCodeTool;
 begin
   inherited Create(ASender,AMessage);
   Filename:=AFilename;
+end;
+
+{ TDirtySource }
+
+procedure TDirtySource.BeginUpdate;
+begin
+  inc(LockCount);
+end;
+
+procedure TDirtySource.EndUpdate;
+begin
+  if LockCount<=0 then
+    RaiseCatchableException('TDirtySource.EndUpdate');
+  dec(LockCount);
+end;
+
+procedure TDirtySource.SetCode(NewCode: TCodeBuffer);
+begin
+  if (LockCount>0) and (Code<>NewCode) then
+    RaiseCatchableException('TDirtySource.SetCode');
+  Code:=NewCode;
+  Src:=Code.Source;
+end;
+
+procedure TDirtySource.SetGap(NewDirtyStartPos, NewDirtyGapStart,
+  NewDirtyGapEnd: integer);
+begin
+  if (LockCount>0) then
+    if (NewDirtyStartPos<>StartPos)
+    or (NewDirtyGapStart<>GapStart)
+    or (NewDirtyGapEnd<>GapEnd) then
+    RaiseCatchableException('TDirtySource.SetGap');
+  StartPos:=NewDirtyStartPos;
+  GapStart:=NewDirtyGapStart;
+  GapEnd:=NewDirtyGapEnd;
+  GapSrc:=copy(Src,GapStart,GapEnd-GapStart);
 end;
 
 initialization

@@ -38,6 +38,9 @@ unit LinkScanner;
 
 { $DEFINE ShowIgnoreErrorAfter}
 
+// debugging
+{ $DEFINE ShowUpdateCleanedSrc}
+
 interface
 
 uses
@@ -140,8 +143,11 @@ type
   
   TLinkScanner = class(TObject)
   private
-    FLinks: TList; // list of PSourceLink
+    FLinks: PSourceLink; // list of TSourceLink
+    FLinkCount: integer;
+    FLinkCapacity: integer;
     FCleanedSrc: string;
+    FLastCleanedSrcLen: integer;
     FOnGetSource: TOnGetSource;
     FOnGetFileName: TOnGetFileName;
     FOnGetSourceStatus: TOnGetSourceStatus;
@@ -287,28 +293,30 @@ type
     function LinkCleanedEndPos(Index: integer): integer;
     function FindFirstSiblingLink(LinkIndex: integer): integer;
     function FindParentLink(LinkIndex: integer): integer;
+    function LinkIndexNearCursorPos(ACursorPos: integer; ACode: Pointer;
+                                    var CursorInLink: boolean): integer;
 
     // source mapping (Cleaned <-> Original)
     function CleanedSrc: string;
     function CursorToCleanPos(ACursorPos: integer; ACode: pointer;
-        var ACleanPos: integer): integer; // 0=valid CleanPos
-              //-1=CursorPos was skipped, CleanPos between two links
-              // 1=CursorPos beyond scanned code
+                    var ACleanPos: integer): integer; // 0=valid CleanPos
+                          //-1=CursorPos was skipped, CleanPos between two links
+                          // 1=CursorPos beyond scanned code
     function CleanedPosToCursor(ACleanedPos: integer; var ACursorPos: integer;
-        var ACode: Pointer): boolean;
+                                var ACode: Pointer): boolean;
     function LastErrorsInFrontOfCleanedPos(ACleanedPos: integer): boolean;
     procedure RaiseLastErrorIfInFrontOfCleanedPos(ACleanedPos: integer);
 
     // ranges
     function WholeRangeIsWritable(CleanStartPos, CleanEndPos: integer): boolean;
     procedure FindCodeInRange(CleanStartPos, CleanEndPos: integer;
-        UniqueSortedCodeList: TList);
+                              UniqueSortedCodeList: TList);
     procedure DeleteRange(CleanStartPos,CleanEndPos: integer);
 
     // scanning
     procedure Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean);
     function UpdateNeeded(OnlyInterfaceNeeded,
-        CheckFilesOnDisk: boolean): boolean;
+                          CheckFilesOnDisk: boolean): boolean;
     procedure SetIgnoreErrorAfter(ACursorPos: integer; ACode: Pointer);
     procedure ClearIgnoreErrorAfter;
     function IgnoreErrAfterPositionIsInFrontOfLastErrMessage: boolean;
@@ -316,8 +324,9 @@ type
     function IgnoreErrorAfterValid: boolean;
 
     function GuessMisplacedIfdefEndif(StartCursorPos: integer;
-        StartCode: pointer;
-        var EndCursorPos: integer; var EndCode: Pointer): boolean;
+                                      StartCode: pointer;
+                                      var EndCursorPos: integer;
+                                      var EndCode: Pointer): boolean;
 
     property ChangeStep: integer read FChangeStep;
 
@@ -325,41 +334,40 @@ type
     procedure ActivateGlobalWriteLock;
     procedure DeactivateGlobalWriteLock;
     property OnGetGlobalWriteLockInfo: TOnGetWriteLockInfo
-      read FOnGetGlobalWriteLockInfo write FOnGetGlobalWriteLockInfo;
+                 read FOnGetGlobalWriteLockInfo write FOnGetGlobalWriteLockInfo;
     property OnSetGlobalWriteLock: TOnSetWriteLock
-      read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
+                         read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
 
     // properties
     property OnGetSource: TOnGetSource read FOnGetSource write FOnGetSource;
     property OnLoadSource: TOnLoadSource read FOnLoadSource write FOnLoadSource;
     property OnDeleteSource: TOnDeleteSource
-        read FOnDeleteSource write FOnDeleteSource;
+                                     read FOnDeleteSource write FOnDeleteSource;
     property OnGetSourceStatus: TOnGetSourceStatus
-        read FOnGetSourceStatus write FOnGetSourceStatus;
+                               read FOnGetSourceStatus write FOnGetSourceStatus;
     property OnGetFileName: TOnGetFileName
-        read FOnGetFileName write FOnGetFileName;
+                                       read FOnGetFileName write FOnGetFileName;
     property OnCheckFileOnDisk: TOnCheckFileOnDisk
-        read FOnCheckFileOnDisk write FOnCheckFileOnDisk;
+                               read FOnCheckFileOnDisk write FOnCheckFileOnDisk;
     property OnGetInitValues: TOnGetInitValues
-        read FOnGetInitValues write FOnGetInitValues;
+                                   read FOnGetInitValues write FOnGetInitValues;
     property OnIncludeCode: TOnIncludeCode
-        read FOnIncludeCode write FOnIncludeCode;
+                                       read FOnIncludeCode write FOnIncludeCode;
     property OnProgress: TLinkScannerProgress
-        read FOnProgress write FOnProgress;
-    property IgnoreMissingIncludeFiles: boolean
-        read FIgnoreMissingIncludeFiles write SetIgnoreMissingIncludeFiles;
+                                             read FOnProgress write FOnProgress;
+    property IgnoreMissingIncludeFiles: boolean read FIgnoreMissingIncludeFiles
+                                             write SetIgnoreMissingIncludeFiles;
     property InitialValues: TExpressionEvaluator
-        read FInitValues write FInitValues;
+                                             read FInitValues write FInitValues;
     property MainCode: pointer read FMainCode write SetMainCode;
-    property IncludeFileIsMissing: boolean
-        read GetIncludeFileIsMissing;
+    property IncludeFileIsMissing: boolean read GetIncludeFileIsMissing;
     property NestedComments: boolean read FNestedComments;
     property CompilerMode: TCompilerMode
-        read FCompilerMode write SetCompilerMode;
+                                       read FCompilerMode write SetCompilerMode;
     property PascalCompiler: TPascalCompiler
-        read FPascalCompiler write FPascalCompiler;
-    property ScanTillInterfaceEnd: boolean
-        read FScanTillInterfaceEnd write SetScanTillInterfaceEnd;
+                                     read FPascalCompiler write FPascalCompiler;
+    property ScanTillInterfaceEnd: boolean read FScanTillInterfaceEnd
+                                           write SetScanTillInterfaceEnd;
         
     procedure Clear;
     function ConsistencyCheck: integer;
@@ -528,15 +536,21 @@ end;
 { TLinkScanner }
 
 procedure TLinkScanner.AddLink(ACleanedPos, ASrcPos: integer; ACode: pointer);
-var NewLink: PSourceLink;
+var
+  NewCapacity: Integer;
 begin
-  NewLink:=PSourceLinkMemManager.NewPSourceLink;
-  with NewLink^ do begin
+  if FLinkCount=FLinkCapacity then begin
+    NewCapacity:=FLinkCapacity*2;
+    if NewCapacity<16 then NewCapacity:=16;
+    ReAllocMem(FLinks,NewCapacity*SizeOf(TSourceLink));
+    FLinkCapacity:=NewCapacity;
+  end;
+  with FLinks[FLinkCount] do begin
     CleanedPos:=ACleanedPos;
     SrcPos:=ASrcPos;
     Code:=ACode;
   end;
-  FLinks.Add(NewLink);
+  inc(FLinkCount);
 end;
 
 function TLinkScanner.CleanedSrc: string;
@@ -545,6 +559,7 @@ begin
     SetLength(FCleanedSrc,CleanedLen);
   end;
   Result:=FCleanedSrc;
+  if FLastCleanedSrcLen<CleanedLen then FLastCleanedSrcLen:=CleanedLen;
 end;
 
 procedure TLinkScanner.Clear;
@@ -559,11 +574,7 @@ begin
     PSourceLinkMemManager.DisposePSourceLink(PLink);
   end;
   FIncludeStack.Clear;
-  for i:=0 to LinkCount-1 do begin
-    PLink:=PSourceLink(FLinks[i]);
-    PSourceLinkMemManager.DisposePSourceLink(PLink);
-  end;
-  FLinks.Clear;
+  FLinkCount:=0;
   FCleanedSrc:='';
   for i:=0 to FSourceChangeSteps.Count-1 do begin
     PStamp:=PSourceChangeStep(FSourceChangeSteps[i]);
@@ -576,7 +587,6 @@ end;
 constructor TLinkScanner.Create;
 begin
   inherited Create;
-  FLinks:=TList.Create;
   FInitValues:=TExpressionEvaluator.Create;
   Values:=TExpressionEvaluator.Create;
   FChangeStep:=0;
@@ -602,7 +612,7 @@ begin
   FSourceChangeSteps.Free;
   Values.Free;
   FInitValues.Free;
-  FLinks.Free;
+  ReAllocMem(FLinks,0);
   FDirectiveFuncList.Free;
   FSkipDirectiveFuncList.Free;
   inherited Destroy;
@@ -610,7 +620,7 @@ end;
 
 function TLinkScanner.GetLinks(Index: integer): TSourceLink;
 begin
-  Result:=PSourceLink(FLinks[Index])^;
+  Result:=FLinks[Index];
 end;
 
 function TLinkScanner.LinkSize(Index: integer): integer;
@@ -625,14 +635,14 @@ begin
   if (Index<0) or (Index>=LinkCount) then
     IndexOutOfBounds;
   if Index<LinkCount-1 then
-    Result:=Links[Index+1].CleanedPos-Links[Index].CleanedPos
+    Result:=FLinks[Index+1].CleanedPos-FLinks[Index].CleanedPos
   else
-    Result:=CleanedLen-Links[Index].CleanedPos;
+    Result:=CleanedLen-FLinks[Index].CleanedPos;
 end;
 
 function TLinkScanner.LinkCleanedEndPos(Index: integer): integer;
 begin
-  Result:=Links[Index].CleanedPos+LinkSize(Index);
+  Result:=FLinks[Index].CleanedPos+LinkSize(Index);
 end;
 
 function TLinkScanner.FindFirstSiblingLink(LinkIndex: integer): integer;
@@ -675,6 +685,36 @@ function TLinkScanner.FindParentLink(LinkIndex: integer): integer;
 begin
   Result:=FindFirstSiblingLink(LinkIndex);
   if Result>=0 then dec(Result);
+end;
+
+function TLinkScanner.LinkIndexNearCursorPos(ACursorPos: integer;
+  ACode: Pointer; var CursorInLink: boolean): integer;
+// returns the nearest link at cursorpos
+// (either covering the cursorpos or in front)
+var
+  CurLinkSize: integer;
+  BestLinkIndex: integer;
+begin
+  BestLinkIndex:=-1;
+  Result:=0;
+  CursorInLink:=false;
+  while Result<LinkCount do begin
+    if (ACode=FLinks[Result].Code) and (ACursorPos>=FLinks[Result].SrcPos) then
+    begin
+      CurLinkSize:=LinkSize(Result);
+      if ACursorPos<FLinks[Result].SrcPos+CurLinkSize then begin
+        CursorInLink:=true;
+        exit;
+      end else begin
+        if (BestLinkIndex<0)
+        or (FLinks[BestLinkIndex].SrcPos<FLinks[Result].SrcPos) then begin
+          BestLinkIndex:=Result;
+        end;
+      end;
+    end;
+    inc(Result);
+  end;
+  Result:=BestLinkIndex;
 end;
 
 function TLinkScanner.LinkIndexAtCleanPos(ACleanPos: integer): integer;
@@ -723,15 +763,13 @@ end;
 function TLinkScanner.LinkIndexAtCursorPos(ACursorPos: integer; ACode: Pointer
   ): integer;
 var
-  CurLink: TSourceLink;
   CurLinkSize: integer;
 begin
   Result:=0;
   while Result<LinkCount do begin
-    CurLink:=Links[Result];
-    if (ACode=CurLink.Code) and (ACursorPos>=CurLink.SrcPos) then begin
+    if (ACode=FLinks[Result].Code) and (ACursorPos>=FLinks[Result].SrcPos) then begin
       CurLinkSize:=LinkSize(Result);
-      if ACursorPos<CurLink.SrcPos+CurLinkSize then begin
+      if ACursorPos<FLinks[Result].SrcPos+CurLinkSize then begin
         exit;
       end;
     end;
@@ -794,48 +832,59 @@ end;
 
 function TLinkScanner.LinkCount: integer;
 begin
-  Result:=FLinks.Count;
+  Result:=FLinkCount;
 end;
 
 procedure TLinkScanner.ReadNextToken;
+
+  function ReturnFromIncludeFileAndCheck: boolean;
+  begin
+    Result:=false;
+    if not ReturnFromIncludeFile then begin
+      TokenStart:=SrcPos;
+      TokenType:=lsttSrcEnd;
+      Result:=true;
+    end;
+  end;
+
 var
-  c1, c2: char;
+  c1: char;
+  c2: char;
 begin
   // Skip all spaces and comments
   //writeln(' TLinkScanner.ReadNextToken SrcPos=',SrcPos,' SrcLen=',SrcLen,' "',copy(Src,SrcPos,5),'"');
-  if (SrcPos>SrcLen) then ReturnFromIncludeFile;
-  while SrcPos<=SrcLen do begin
-    if IsCommentStartChar[Src[SrcPos]] then begin
-      case Src[SrcPos] of
-      '{' :
-        SkipComment;
-      '/':
-        if (SrcPos<SrcLen) and (Src[SrcPos+1]='/') then
-          SkipDelphiComment
-        else
-          break;
-      '(':
-        if (SrcPos<SrcLen) and (Src[SrcPos+1]='*') then
-          SkipOldTPComment
-        else
-          break;
-      end;
-    end else if IsSpaceChar[Src[SrcPos]] then begin
-      repeat
-        inc(SrcPos);
-      until (SrcPos>SrcLen) or (not (IsSpaceChar[Src[SrcPos]]));
-    end else
-      break;
-    if (SrcPos>SrcLen) then ReturnFromIncludeFile;
+  if (SrcPos>SrcLen) and ReturnFromIncludeFileAndCheck then exit;
+  c1:=Src[SrcPos];
+  if IsCommentStartChar[c1] or IsSpaceChar[c1] then begin
+    while true do begin
+      if IsCommentStartChar[c1] then begin
+        case c1 of
+        '{' :
+          SkipComment;
+        '/':
+          if (SrcPos<SrcLen) and (Src[SrcPos+1]='/') then
+            SkipDelphiComment
+          else
+            break;
+        '(':
+          if (SrcPos<SrcLen) and (Src[SrcPos+1]='*') then
+            SkipOldTPComment
+          else
+            break;
+        end;
+      end else if IsSpaceChar[c1] then begin
+        repeat
+          inc(SrcPos);
+        until (SrcPos>SrcLen) or (not (IsSpaceChar[Src[SrcPos]]));
+      end else
+        break;
+      if (SrcPos>SrcLen) and ReturnFromIncludeFileAndCheck then exit;
+      c1:=Src[SrcPos];
+    end;
   end;
   TokenStart:=SrcPos;
-  if SrcPos>SrcLen then begin
-    TokenType:=lsttSrcEnd;
-    exit;
-  end;
   TokenType:=lsttNone;
   // read token
-  c1:=Src[SrcPos];
   case c1 of
     '_','A'..'Z','a'..'z':
       begin
@@ -937,6 +986,7 @@ var
   s: string;
   LastProgressPos: integer;
   CheckForAbort: boolean;
+  NewSrcLen: Integer;
 begin
   if not UpdateNeeded(TillInterfaceEnd,CheckFilesOnDisk) then begin
     // input is the same as last time -> output is the same
@@ -958,7 +1008,10 @@ begin
   writeln('TLinkScanner.Scan B ');
   {$ENDIF}
   SetSource(FMainCode);
-  SetLength(FCleanedSrc,length(Src));
+  NewSrcLen:=length(Src);
+  if NewSrcLen<FLastCleanedSrcLen+1000 then
+    NewSrcLen:=FLastCleanedSrcLen+1000;
+  SetLength(FCleanedSrc,NewSrcLen);
   CleanedLen:=0;
   {$IFDEF CTDEBUG}
   writeln('TLinkScanner.Scan C ',SrcLen);
@@ -971,9 +1024,11 @@ begin
   PascalCompiler:=pcFPC;
   IfLevel:=0;
   FSkippingTillEndif:=false;
+  //writeln('TLinkScanner.Scan D --------');
+  
+  // initialize Defines
   if Assigned(FOnGetInitValues) then
     FInitValues.Assign(FOnGetInitValues(FMainCode,FInitValuesChangeStep));
-  //writeln('TLinkScanner.Scan D --------');
   Values.Assign(FInitValues);
 
   // compiler
@@ -1009,31 +1064,40 @@ begin
   writeln('TLinkScanner.Scan F ',SrcLen);
   {$ENDIF}
   try
-    repeat
-      // check every 10.000 bytes for abort
-      if CheckForAbort and ((LastProgressPos-LastCleanSrcPos)>10000) then begin
-        LastProgressPos:=LastCleanSrcPos;
-        DoCheckAbort;
-      end;
-      ReadNextToken;
-      //writeln('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
-      UpdateCleanedSource(SrcPos-1);
-      if (SrcPos<=SrcLen+1) then begin
-        if (LastTokenType<>lsttEqual)
-        and (TokenType=lsttEndOfInterface) then begin
-          EndOfInterfaceFound:=true
-        end else if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
-          EndOfInterfaceFound:=true;
-          EndOfSourceFound:=true;
-          break;
+    try
+      repeat
+        // check every 10.000 bytes for abort
+        if CheckForAbort and ((LastProgressPos-LastCleanSrcPos)>10000) then begin
+          LastProgressPos:=LastCleanSrcPos;
+          DoCheckAbort;
         end;
-        LastTokenType:=TokenType;
-      end else
-        break;
-    until (SrcPos>SrcLen) or EndOfSourceFound
-    or (ScanTillInterfaceEnd and EndOfInterfaceFound);
+        ReadNextToken;
+        //writeln('TLinkScanner.Scan G "',copy(Src,TokenStart,SrcPos-TokenStart),'"');
+        if (SrcPos<=SrcLen+1) then begin
+          if (TokenType=lsttEndOfInterface) and (LastTokenType<>lsttEqual) then
+          begin
+            EndOfInterfaceFound:=true;
+            if ScanTillInterfaceEnd then break;
+          end else if (LastTokenType=lsttEnd) and (TokenType=lsttPoint) then begin
+            EndOfInterfaceFound:=true;
+            EndOfSourceFound:=true;
+            break;
+          end;
+          LastTokenType:=TokenType;
+        end else
+          break;
+      until false;
+    finally
+      if not FSkippingTillEndif then begin
+        {$IFDEF ShowUpdateCleanedSrc}
+        writeln('TLinkScanner.Scan UpdatePos=',SrcPos-1);
+        {$ENDIF}
+        UpdateCleanedSource(SrcPos-1);
+      end;
+    end;
     IncreaseChangeStep;
     FForceUpdateNeeded:=false;
+    FLastCleanedSrcLen:=CleanedLen;
   except
     on E: ELinkScannerError do begin
       if (not IgnoreErrorAfterValid)
@@ -1051,7 +1115,7 @@ end;
 
 procedure TLinkScanner.SetLinks(Index: integer; const Value: TSourceLink);
 begin
-  PSourceLink(FLinks[Index])^:=Value;
+  FLinks[Index]:=Value;
 end;
 
 procedure TLinkScanner.SkipComment;
@@ -1144,6 +1208,11 @@ begin
     inc(CleanedLen);
     FCleanedSrc[CleanedLen]:=Src[i];
   end;
+  {$IFDEF ShowUpdateCleanedSrc}
+  writeln('TLinkScanner.UpdateCleanedSource A ',LastCleanSrcPos,'-',SourcePos,'="',
+    StringToPascalConst(copy(Src,LastCleanSrcPos+1,20)),
+    '".."',StringToPascalConst(copy(Src,SourcePos-19,20)),'"');
+  {$ENDIF}
   LastCleanSrcPos:=SourcePos;
 end;
 
@@ -1212,18 +1281,16 @@ end;
 
 function TLinkScanner.ConsistencyCheck: integer;
 var i: integer;
-  sl: TSourceLink;
 begin
+  if (FLinks=nil) xor (FLinkCapacity=0) then begin
+    Result:=-1; exit;
+  end;
   if FLinks<>nil then begin
-    for i:=0 to FLinks.Count-1 do begin
-      if FLinks[i]=nil then begin
-        Result:=-1;  exit;
-      end;
-      sl:=PSourceLink(FLinks[i])^;
-      if sl.Code=nil then begin
+    for i:=0 to FLinkCount-1 do begin
+      if FLinks[i].Code=nil then begin
         Result:=-2;  exit;
       end;
-      if (sl.CleanedPos<1) or (sl.CleanedPos>SrcLen) then begin
+      if (FLinks[i].CleanedPos<1) or (FLinks[i].CleanedPos>SrcLen) then begin
         Result:=-3;  exit;
       end;
     end;
@@ -2125,6 +2192,9 @@ begin
       if ExtractFileExt(IncFilename)='' then
         IncFilename:=IncFilename+'.pas';
     end;
+    {$IFDEF ShowUpdateCleanedSrc}
+    writeln('TLinkScanner.IncludeDirective A IncFilename=',IncFilename,' UpdatePos=',CommentEndPos-1);
+    {$ENDIF}
     UpdateCleanedSource(CommentEndPos-1);
     // put old position on stack
     PushIncludeLink(CleanedLen,CommentEndPos,Code);
@@ -2421,7 +2491,12 @@ end;
 function TLinkScanner.ReturnFromIncludeFile: boolean;
 var OldPos: TSourceLink;
 begin
-  if not FSkippingTillEndif then UpdateCleanedSource(SrcPos-1);
+  if not FSkippingTillEndif then begin
+    {$IFDEF ShowUpdateCleanedSrc}
+    writeln('TLinkScanner.ReturnFromIncludeFile A UpdatePos=',SrcPos-1);
+    {$ENDIF}
+    UpdateCleanedSource(SrcPos-1);
+  end;
   while SrcPos>SrcLen do begin
     Result:=FIncludeStack.Count>0;
     if not Result then exit;
@@ -2467,8 +2542,12 @@ end;
 
 procedure TLinkScanner.SkipTillEndifElse;
 var OldDirectiveFuncList: TKeyWordFunctionList;
+  c1: Char;
 begin
   SrcPos:=CommentEndPos;
+  {$IFDEF ShowUpdateCleanedSrc}
+  writeln('TLinkScanner.SkipTillEndifElse A UpdatePos=',SrcPos-1);
+  {$ENDIF}
   UpdateCleanedSource(SrcPos-1);
   OldDirectiveFuncList:=FDirectiveFuncList;
   FDirectiveFuncList:=FSkipDirectiveFuncList;
@@ -2476,31 +2555,44 @@ begin
     // parse till $else or $endif without adding the code to FCleanedSrc
     FSkippingTillEndif:=true;
     FSkipIfLevel:=IfLevel;
-    while (SrcPos<=SrcLen) and (FSkippingTillEndif) do begin
-      if IsCommentStartChar[Src[SrcPos]] then begin
-        case Src[SrcPos] of
-          '{': SkipComment;
-          '/': if (Src[SrcPos+1]='/') then
-                 SkipDelphiComment
-               else
-                 inc(SrcPos);
-          '(': if (Src[SrcPos+1]='*') then
-                 SkipOldTPComment
-               else
-                 inc(SrcPos);
+    if (SrcPos<=SrcLen) then begin
+      while true do begin
+        c1:=Src[SrcPos];
+        if IsCommentStartChar[c1] then begin
+          case c1 of
+            '{': begin
+                   SkipComment;
+                   if not FSkippingTillEndif then break;
+                 end;
+            '/': if (Src[SrcPos+1]='/') then begin
+                   SkipDelphiComment;
+                   if not FSkippingTillEndif then break;
+                 end else
+                   inc(SrcPos);
+            '(': if (Src[SrcPos+1]='*') then begin
+                   SkipOldTPComment;
+                   if not FSkippingTillEndif then break;
+                 end else
+                   inc(SrcPos);
+          end;
+        end else if c1='''' then begin
+          // skip string constant
+          inc(SrcPos);
+          while (SrcPos<=SrcLen) and (Src[SrcPos]<>'''') do inc(SrcPos);
+          inc(SrcPos);
+        end else begin
+          inc(SrcPos);
+          if (SrcPos>SrcLen) and not ReturnFromIncludeFile then
+            break;
         end;
-      end else if Src[SrcPos]='''' then begin
-        // skip string constant
-        inc(SrcPos);
-        while (SrcPos<=SrcLen) and (Src[SrcPos]<>'''') do inc(SrcPos);
-        inc(SrcPos);
-      end else begin
-        inc(SrcPos);
-        if SrcPos>SrcLen then ReturnFromIncludeFile;
       end;
     end;
     LastCleanSrcPos:=CommentStartPos-1;
     AddLink(CleanedLen+1,CommentStartPos,Code);
+    {$IFDEF ShowUpdateCleanedSrc}
+    writeln('TLinkScanner.SkipTillEndifElse B Continuing after: ',
+      '"',StringToPascalConst(copy(Src,LastCleanSrcPos+1,20)),'"');
+    {$ENDIF}
   finally
     FDirectiveFuncList:=OldDirectiveFuncList;
     FSkippingTillEndif:=false;

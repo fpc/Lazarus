@@ -90,9 +90,13 @@ type
   
   TBuildTreeFlag = (
     btSetIgnoreErrorPos,
-    btKeepIgnoreErrorPos
+    btKeepIgnoreErrorPos,
+    btLoadDirtySource
     );
   TBuildTreeFlags = set of TBuildTreeFlag;
+  
+
+  { TPascalParserTool }
   
   TPascalParserTool = class(TMultiKeyWordListCodeTool)
   private
@@ -111,6 +115,7 @@ type
     procedure RaiseIllegalQualifier;
     procedure RaiseEndOfSourceExpected;
   protected
+    // code extraction
     procedure InitExtraction;
     function GetExtraction: string;
     function ExtractStreamEndIsIdentChar: boolean;
@@ -190,6 +195,7 @@ type
     InterfaceSectionFound: boolean;
     ImplementationSectionFound: boolean;
     EndOfSourceFound: boolean;
+    
 
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
     procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
@@ -3240,10 +3246,11 @@ procedure TPascalParserTool.BuildTreeAndGetCleanPos(
   var CleanCursorPos: integer; BuildTreeFlags: TBuildTreeFlags;
   ExceptionOnCursorPosOut: boolean);
 var
-  Dummy: integer;
+  CaretType: integer;
   IgnorePos: TCodePosition;
 begin
   if (btSetIgnoreErrorPos in BuildTreeFlags) then begin
+    // ignore errors after cursor position
     if (CursorPos.Code<>nil) then begin
       IgnorePos.Code:=CursorPos.Code;
       IgnorePos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,IgnorePos.P);
@@ -3252,8 +3259,9 @@ begin
     end else
       ClearIgnoreErrorAfter;
   end
-  else if (btKeepIgnoreErrorPos in BuildTreeFlags) then
+  else if not (btKeepIgnoreErrorPos in BuildTreeFlags) then
     ClearIgnoreErrorAfter;
+    
   if (TreeRange=trTillCursor) and (not UpdateNeeded(true)) then begin
     // interface tree is valid
     // -> if there was an error, raise it again
@@ -3263,9 +3271,13 @@ begin
     then
       RaiseLastError;
     // check if cursor is in interface
-    Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
-    if (Dummy=0) or (Dummy=-1) then begin
+    CaretType:=CaretToCleanPos(CursorPos, CleanCursorPos);
+    if (CaretType=0) or (CaretType=-1) then begin
       BuildSubTree(CleanCursorPos);
+      if (CaretType=-1) and (btLoadDirtySource in BuildTreeFlags) then begin
+        // cursor position lies in dead code (skipped code between IFDEF/ENDIF)
+        LoadDirtySource(CursorPos);
+      end;
       exit;
     end;
     // cursor is not in partially parsed code -> parse complete code
@@ -3276,12 +3288,16 @@ begin
   if (not IgnoreErrorAfterValid) and (not EndOfSourceFound) then
     SaveRaiseException(ctsEndOfSourceNotFound);
   // find the CursorPos in cleaned source
-  Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
-  if (Dummy=0) or (Dummy=-1) then begin
+  CaretType:=CaretToCleanPos(CursorPos, CleanCursorPos);
+  if (CaretType=0) or (CaretType=-1) then begin
     BuildSubTree(CleanCursorPos);
+      if (CaretType=-1) and (btLoadDirtySource in BuildTreeFlags) then begin
+      // cursor position lies in dead code (skipped code between IFDEF/ENDIF)
+      LoadDirtySource(CursorPos);
+    end;
     exit;
   end;
-  if (Dummy=-2) or ExceptionOnCursorPosOut then
+  if (CaretType=-2) or ExceptionOnCursorPosOut then
     RaiseException(ctsCursorPosOutsideOfCode);
   // cursor outside of clean code
   CleanCursorPos:=-1;
