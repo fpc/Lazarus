@@ -57,11 +57,13 @@ type
     FHasSymbols: Boolean;
     FStoppedParams: String;
     FTargetPID: Integer;
+    FBreakErrorBreakID: Integer;
+    FExceptionBreakID: Integer;
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
     function  GDBEvaluate(const AExpression: String; var AResult: String): Boolean;
     function  GDBRun: Boolean;
     function  GDBPause: Boolean;
-    function  GDBStart: Boolean;
+    function  GDBStart(const AContinueRunning: Boolean): Boolean;
     function  GDBStop: Boolean;
     function  GDBStepOver: Boolean;
     function  GDBStepInto: Boolean;
@@ -100,6 +102,15 @@ type
 implementation
 
 type
+  TGDBMIBreakPoints = class(TDBGBreakPoints)
+  private
+  protected
+    procedure DoStateChange; override;
+    procedure SetBreakPoints;
+  public
+  end;
+
+
   TGDBMIBreakPoint = class(TDBGBreakPoint)
   private
     FBreakID: Integer;
@@ -109,7 +120,6 @@ type
     procedure DoActionChange; override;
     procedure DoEnableChange; override;
     procedure DoExpressionChange; override;
-    procedure DoStateChange; override;
     procedure SetLocation(const ASource: String; const ALine: Integer); override;
   public
     constructor Create(ACollection: TCollection); override;
@@ -173,6 +183,7 @@ type
     function DumpExpression: String;
     function GetExpression(var AResult: String): Boolean;
   end;
+
 
 function CreateMIValueList(AResultValues: String): TStringList;
 var
@@ -306,6 +317,8 @@ end;
 
 constructor TGDBMIDebugger.Create(const AExternalDebugger: String);
 begin
+  FBreakErrorBreakID := -1;
+  FExceptionBreakID := -1;
   FCommandQueue := TStringList.Create;
   FTargetPID := 0;
   inherited;
@@ -313,7 +326,7 @@ end;
 
 function TGDBMIDebugger.CreateBreakPoints: TDBGBreakPoints;
 begin
-  Result := TDBGBreakPoints.Create(Self, TGDBMIBreakPoint);
+  Result := TGDBMIBreakPoints.Create(Self, TGDBMIBreakPoint);
 end;
 
 function TGDBMIDebugger.CreateCallStack: TDBGCallStack; 
@@ -394,6 +407,8 @@ function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
   AValues: array of const; const AIgnoreError: Boolean;
   var AResultState: TDBGState; var AResultValues: String;
   const ANoMICommand: Boolean): Boolean;
+var
+  S: String;
 begin
   FCommandQueue.AddObject(ACommand, TObject(Integer(ANoMICommand)));
   if FCommandQueue.Count > 1 then Exit;
@@ -406,14 +421,15 @@ begin
       if (AResultState <> dsNone)
       and ((AResultState <> dsError) or not AIgnoreError)
       then SetState(AResultState);
-      if State = dsRun
+      if AResultState = dsRun
       then Result := ProcessRunning;
     end;
     FCommandQueue.Delete(0);
     if FStoppedParams <> ''
     then begin
-      ProcessStopped(FStoppedParams);
+      S := FStoppedParams;
       FStoppedParams := '';
+      ProcessStopped(S);
     end;
   until not Result or (FCommandQueue.Count = 0);
 end;
@@ -477,14 +493,7 @@ begin
   Result := False;
   case State of
     dsStop: begin
-      GDBStart;
-      if State = dsPause
-      then begin
-        Result := ExecuteCommand('-exec-continue', False);
-      end
-      else begin
-        //error???
-      end;
+      Result := GDBStart(True);
     end;
     dsPause: begin
       Result := ExecuteCommand('-exec-continue', False);
@@ -504,10 +513,11 @@ begin
   Result := ExecuteCommand('-exec-until %s:%d', [ASource, ALine], False);
 end;
 
-function TGDBMIDebugger.GDBStart: Boolean;
+function TGDBMIDebugger.GDBStart(const AContinueRunning: Boolean): Boolean;
 var
   S: String;
   ResultState: TDBGState;
+  ResultList, BkptList: TStringList;
 begin
   if State in [dsStop]
   then begin
@@ -518,31 +528,54 @@ begin
       ExecuteCommand('-break-insert -t main', False);
       ExecuteCommand('-exec-run', False);
 
-      // try to find PID
-
-//(*
-      SendCmdLn('info program', []);
-      ReadLine; // skip repeated command
-      S := ReadLine;
-//*)    
-//      if ExecuteCommand('info program', [], True, ResultState, S, True)
-//      then begin
-        FTargetPID := StrToIntDef(GetPart('child process ', '.', S), 0);
-//        if ResultState = dsNone
-//        then SetState(dsPause)
-//        else SetState(ResultState);
-//      end
-//      else FTargetPID := 0;
-
-//(*
-      if ProcessResult(ResultState, S, True)
+      // Insert Exception breakpoint
+      if FExceptionBreakID = -1
       then begin
-        if ResultState = dsNone
-        then SetState(dsPause)
-        else SetState(ResultState);
+        ExecuteCommand('-break-insert FPC_RAISEEXCEPTION', [], True, ResultState, S, False);
+        ResultList := CreateMIValueList(S);
+        BkptList := CreateMIValueList(ResultList.Values['bkpt']);
+        FExceptionBreakID := StrToIntDef(BkptList.Values['number'], -1);
+        ResultList.Free;
+        BkptList.Free;
       end;
-//*)
 
+      // Insert Break breakpoint
+      if FBreakErrorBreakID = -1
+      then begin
+        ExecuteCommand('-break-insert FPC_BREAK_ERROR', [], True, ResultState, S, False);
+        ResultList := CreateMIValueList(S);
+        BkptList := CreateMIValueList(ResultList.Values['bkpt']);
+        FBreakErrorBreakID := StrToIntDef(BkptList.Values['number'], -1);
+        ResultList.Free;
+        BkptList.Free;
+      end;
+
+      // try to find PID
+      if ExecuteCommand('info program', [], True, ResultState, S, True)
+      then begin
+         FTargetPID := StrToIntDef(GetPart('child process ', '.', S), 0);
+         WriteLN('Target PID: ', FTargetPID);
+      end
+      else begin
+        FTargetPID := 0;
+      end;
+      
+      if FTargetPID = 0
+      then begin
+        Result := False;
+        SetState(dsError);
+        Exit;
+      end;
+      
+      TGDBMIBreakPoints(BreakPoints).SetBreakPoints;
+
+      if ResultState = dsNone
+      then begin
+        if AContinueRunning
+        then Result := ExecuteCommand('-exec-continue', False)
+        else SetState(dsPause);
+      end
+      else SetState(ResultState);
     end;
   end;
   Result := True;
@@ -552,7 +585,7 @@ function TGDBMIDebugger.GDBStepInto: Boolean;
 begin
   case State of
     dsIdle, dsStop: begin
-      Result := GDBStart;
+      Result := GDBStart(False);
     end;
     dsPause: begin
       Result := ExecuteCommand('-exec-step', False);
@@ -566,7 +599,7 @@ function TGDBMIDebugger.GDBStepOver: Boolean;
 begin
   case State of
     dsIdle, dsStop: begin
-      Result := GDBStart;
+      Result := GDBStart(False);
     end;
     dsPause: begin
       Result := ExecuteCommand('-exec-next', False);
@@ -590,6 +623,8 @@ begin
   if State = dsRun
   then GDBPause;
 
+  ExecuteCommand('kill', True);
+(*
   if State = dsPause
   then begin
     // not supported yet
@@ -597,6 +632,7 @@ begin
     ExecuteCommand('kill', True);
     SetState(dsStop); //assume stop until abort is supported;
   end;
+*)
   Result := True;
 end;
 
@@ -811,77 +847,158 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
 
     DoCurrent(Location);
   end;
+
+  procedure ProcessException;
+  var
+    S: String;
+    ExceptionName: String;
+    ResultList: TStringList;
+    Location: TDBGLocationRec;
+  begin
+    ExceptionName := 'Unknown';
+    if ExecuteCommand('-data-evaluate-expression pshortstring(^pointer(^Pointer(^Pointer($fp+8)^)^+12)^)^', [], S, False)
+    then begin
+      ResultList := CreateMIValueList(S);
+      ExceptionName := ResultList.Values['value'];
+      ExceptionName := GetPart('''', '''', ExceptionName);
+      ResultList.Free;
+    end;
+
+    Location.SrcLine := -1;
+    Location.SrcFile := '';
+    Location.Adress := nil;
+    Location.FuncName := '';
+    if ExecuteCommand('info line * ^pointer($fp+12)^', [], S, True)
+    then begin
+      Location.SrcLine := StrToIntDef(GetPart('Line ', ' of', S), -1);
+      Location.SrcFile := GetPart('\"', '\"', S);
+    end;
+
+    if ExecuteCommand('-data-evaluate-expression ^pointer($fp+12)^', [], S, False)
+    then begin
+      ResultList := CreateMIValueList(S);
+      Location.Adress := Pointer(StrToIntDef(ResultList.Values['value'], 0));
+      ResultList.Free;
+    end;
+
+    DoException(-1, ExceptionName);
+    DoCurrent(Location);
+  end;
+  
+  procedure ProcessBreak;
+  begin
+  end;
+
 var
   List: TStringList;
   S, Reason: String;
+  BreakID: Integer;
   BreakPoint: TGDBMIBreakPoint;
 begin
   Result := True;
   List := CreateMIValueList(AParams);
-  Reason := List.Values['reason'];
-  if Reason = 'exited-normally'
-  then begin
-    SetState(dsStop);
-  end
-  else if Reason = 'exited'
-  then begin
-    SetExitCode(StrToIntDef(List.Values['exit-code'], 0));
-    SetState(dsStop);
-  end
-  else if Reason = 'exited-signalled'
-  then begin
-    SetState(dsStop);
-    // TODO: define signal no
-    DoException(0, List.Values['signal-name']);
-    ProcessFrame(List.Values['frame']);
-  end
-  else if Reason = 'signal-received'
-  then begin
-    // TODO: check to run (un)handled
-    // TODO: define signal no
-    SetState(dsPause);
-    S := List.Values['signal-name'];
-    if S <> 'SIGINT'
-    then DoException(0, S);
-    ProcessFrame(List.Values['frame']);
-  end
-  else if Reason = 'breakpoint-hit'
-  then begin
-    BreakPoint := TGDBMIBreakPoint(FindBreakpoint(StrToIntDef(List.Values['bkptno'], -1)));
-    if BreakPoint <> nil
+  try
+    Reason := List.Values['reason'];
+    if Reason = 'exited-normally'
     then begin
-      BreakPoint.Hit;
-      if (bpaStop in BreakPoint.Actions)
+      SetState(dsStop);
+      Exit;
+    end;
+    
+    if Reason = 'exited'
+    then begin
+      SetExitCode(StrToIntDef(List.Values['exit-code'], 0));
+      SetState(dsStop);
+      Exit;
+    end;
+    
+    if Reason = 'exited-signalled'
+    then begin
+      SetState(dsStop);
+      // TODO: define signal no
+      DoException(0, List.Values['signal-name']);
+      ProcessFrame(List.Values['frame']);
+      Exit;
+    end;
+    
+    if Reason = 'signal-received'
+    then begin
+      // TODO: check to run (un)handled
+      // TODO: define signal no
+      SetState(dsPause);
+      S := List.Values['signal-name'];
+      if S <> 'SIGINT'
+      then DoException(0, S);
+      ProcessFrame(List.Values['frame']);
+      Exit;
+    end;   
+    
+    if Reason = 'breakpoint-hit'
+    then begin
+      BreakID := StrToIntDef(List.Values['bkptno'], -1);
+      if BreakID = -1
+      then begin
+        SetState(dsError);
+        // ???
+        Exit;
+      end;
+
+      if BreakID = FBreakErrorBreakID
       then begin
         SetState(dsPause);
-        ProcessFrame(List.Values['frame']);
-      end
-      else begin
-        ExecuteCommand('-exec-continue', False);
+        ProcessBreak;
+        Exit;
       end;
+
+      if BreakID = FExceptionBreakID
+      then begin
+        SetState(dsPause);
+        ProcessException;
+        Exit;
+      end;
+      
+      BreakPoint := TGDBMIBreakPoint(FindBreakpoint(BreakID));
+      if BreakPoint <> nil
+      then begin
+        BreakPoint.Hit;
+        if (bpaStop in BreakPoint.Actions)
+        then begin
+          SetState(dsPause);
+          ProcessFrame(List.Values['frame']);
+        end
+        else begin
+          ExecuteCommand('-exec-continue', False);
+        end;
+      end;
+      Exit;
     end;
-  end
-  else if Reason = 'function-finished'
-  then begin
-    SetState(dsPause);
-    ProcessFrame(List.Values['frame']);
-  end
-  else if Reason = 'end-stepping-range'
-  then begin
-    SetState(dsPause);
-    ProcessFrame(List.Values['frame']);
-  end
-  else if Reason = 'location-reached'
-  then begin
-    SetState(dsPause);
-    ProcessFrame(List.Values['frame']);
-  end
-  else begin
+    
+    if Reason = 'function-finished'
+    then begin
+      SetState(dsPause);
+      ProcessFrame(List.Values['frame']);
+      Exit;
+    end;
+    
+    if Reason = 'end-stepping-range'
+    then begin
+      SetState(dsPause);
+      ProcessFrame(List.Values['frame']);
+      Exit;
+    end;
+    
+    if Reason = 'location-reached'
+    then begin
+      SetState(dsPause);
+      ProcessFrame(List.Values['frame']);
+      Exit;
+    end;
+    
     Result := False;
     WriteLN('[WARNING] Debugger: Unknown stopped reason: ', Reason);
-  end;
-
-  List.Free;
+  finally
+    List.Free;
+  end; 
 end;
 
 function TGDBMIDebugger.RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean;
@@ -898,9 +1015,35 @@ begin
   end;
 end;
 
+
 procedure TGDBMIDebugger.TestCmd(const ACommand: String);
 begin
   ExecuteCommand(ACommand, False);
+end;
+
+{ =========================================================================== }
+{ TGDBMIBreakPoints }
+{ =========================================================================== }
+
+procedure TGDBMIBreakPoints.DoStateChange;
+begin
+  inherited DoStateChange;
+  if (Debugger <> nil)
+  and (Debugger.State in [dsStop, dsPause])
+  then SetBreakPoints;
+end;
+
+procedure TGDBMIBreakPoints.SetBreakPoints;
+var
+  n: Integer;
+  BreakPoint: TGDBMIBreakPoint;
+begin
+  for n := 0 to Count - 1 do
+  begin
+    BreakPoint := TGDBMIBreakPoint(Items[n]);
+    if Breakpoint.FBreakID = 0
+    then BreakPoint.SetBreakPoint;
+  end;
 end;
 
 { =========================================================================== }
@@ -937,14 +1080,6 @@ end;
 
 procedure TGDBMIBreakPoint.DoExpressionChange;
 begin
-end;
-
-procedure TGDBMIBreakPoint.DoStateChange;
-begin
-  inherited;
-  if  (Debugger.State in [dsStop, dsPause])
-  and (FBreakID = 0)
-  then SetBreakpoint;
 end;
 
 procedure TGDBMIBreakPoint.Hit;
@@ -1528,6 +1663,11 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.11  2003/05/27 08:01:31  marc
+  MWE: + Added exception break
+       * Reworked adding/removing breakpoints
+       + Added Unknown breakpoint type
+
   Revision 1.10  2003/05/23 14:12:51  mattias
   implemented restoring breakpoints
 
