@@ -374,7 +374,6 @@ procedure TCanvas.PolyBezier(const Points: array of TPoint;
 var NPoints, i: integer;
   PointArray: ^TPoint;
 begin
-  Changing;
   NPoints:=High(Points)-Low(Points)+1;
   if NPoints<=0 then exit;
   GetMem(PointArray,SizeOf(TPoint)*NPoints);
@@ -382,7 +381,6 @@ begin
     PointArray[i]:=Points[i+Low(Points)];
   PolyBezier(PointArray, NPoints, Filled, Continuous);
   FreeMem(PointArray);
-  Changed;
 end;
 
 procedure TCanvas.PolyBezier(Points: PPoint; NumPts: Integer;
@@ -1181,10 +1179,8 @@ begin
   Result.cX := 0;
   Result.cY := 0;
   if Text='' then exit;
-  Changing;
   RequiredState([csHandleValid, csFontValid]);
   GetTextExtentPoint(FHandle, PChar(Text), Length(Text), Result);
-  Changed;
 end;
 
 {------------------------------------------------------------------------------
@@ -1244,6 +1240,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.79  2004/09/14 18:02:44  mattias
+  made TCanvas methods virtual
+
   Revision 1.78  2004/09/14 10:06:26  micha
   convert LM_REDRAW message to interface method (in twidgetset)
 

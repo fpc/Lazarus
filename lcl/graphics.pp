@@ -835,47 +835,47 @@ type
     Procedure CreatePen; virtual;
     Procedure CreateRegion; virtual;
     procedure CreateHandle; virtual;
-    procedure RequiredState(ReqState: TCanvasState);
+    procedure RequiredState(ReqState: TCanvasState); virtual;
     procedure SetHandle(NewHandle: HDC); virtual;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Lock;
-    procedure Unlock;
-    procedure Refresh;
+    procedure Lock; virtual;
+    procedure Unlock; virtual;
+    procedure Refresh; virtual;
     procedure Changing; virtual;
     procedure Changed; virtual;
 
-    procedure Arc(x,y,width,height,angle1,angle2: Integer);
-    procedure Arc(x,y,width,height,SX,SY,EX,EY: Integer);
+    procedure Arc(x,y,width,height,angle1,angle2: Integer); virtual;
+    procedure Arc(x,y,width,height,SX,SY,EX,EY: Integer); virtual;
     Procedure BrushCopy(Dest: TRect; InternalImages: TBitmap; Src: TRect;
-                        TransparentColor: TColor);
-    procedure Chord(x, y, width, height, angle1, angle2: Integer);
-    procedure Chord(x, y, width, height, SX, SY, EX, EY: Integer);
-    Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas; const Source: TRect);
-    Procedure Draw(X,Y: Integer; SrcGraphic: TGraphic);
-    procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic);
+                        TransparentColor: TColor); virtual;
+    procedure Chord(x, y, width, height, angle1, angle2: Integer); virtual;
+    procedure Chord(x, y, width, height, SX, SY, EX, EY: Integer); virtual;
+    Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas; const Source: TRect); virtual;
+    Procedure Draw(X,Y: Integer; SrcGraphic: TGraphic); virtual;
+    procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic); virtual;
     procedure Ellipse(const ARect: TRect);
-    procedure Ellipse(x1, y1, x2, y2: Integer);
-    Procedure FillRect(const ARect: TRect);
+    procedure Ellipse(x1, y1, x2, y2: Integer); virtual;
+    Procedure FillRect(const ARect: TRect); virtual;
     Procedure FillRect(X1,Y1,X2,Y2: Integer);
-    procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle);
+    procedure FloodFill(X, Y: Integer; FillColor: TColor; FillStyle: TFillStyle); virtual;
     procedure Frame3d(var ARect: TRect; const FrameWidth: integer;
-                      const Style: TGraphicsBevelCut);
-    procedure Frame(const ARect: TRect);        // border using pen
+                      const Style: TGraphicsBevelCut); virtual;
+    procedure Frame(const ARect: TRect); virtual; // border using pen
     procedure Frame(X1,Y1,X2,Y2: Integer);     // border using pen
-    procedure FrameRect(const ARect: TRect);    // border using brush
+    procedure FrameRect(const ARect: TRect); virtual; // border using brush
     procedure FrameRect(X1,Y1,X2,Y2: Integer); // border using brush
-    Procedure Line(X1,Y1,X2,Y2: Integer); // short for MoveTo();LineTo();
-    Procedure LineTo(X1,Y1: Integer);
-    Procedure MoveTo(X1,Y1: Integer);
-    procedure RadialPie(x,y,width,height,angle1,angle2: Integer);
-    procedure RadialPie(x,y,width,height,sx,sy,ex,ey: Integer);
+    Procedure Line(X1,Y1,X2,Y2: Integer); virtual; // short for MoveTo();LineTo();
+    Procedure LineTo(X1,Y1: Integer); virtual;
+    Procedure MoveTo(X1,Y1: Integer); virtual;
+    procedure RadialPie(x,y,width,height,angle1,angle2: Integer); virtual;
+    procedure RadialPie(x,y,width,height,sx,sy,ex,ey: Integer); virtual;
     procedure Pie(EllipseX1,EllipseY1,EllipseX2,EllipseY2,
-                  StartX,StartY,EndX,EndY: Integer);
+                  StartX,StartY,EndX,EndY: Integer); virtual;
     procedure PolyBezier(Points: PPoint; NumPts: Integer;
                          Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
-                         Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
+                         Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF}); virtual;
     procedure PolyBezier(const Points: array of TPoint;
                          Filled: boolean{$IFNDEF VER1_0} = False{$ENDIF};
                          Continuous: boolean{$IFNDEF VER1_0} = False{$ENDIF});
@@ -887,26 +887,26 @@ type
                       StartIndex: Integer{$IFNDEF VER1_0} = 0{$ENDIF};
                       NumPts: Integer {$IFNDEF VER1_0} = -1{$ENDIF});
     procedure Polygon(Points: PPoint; NumPts: Integer;
-                      Winding: boolean{$IFNDEF VER1_0} = False{$ENDIF});
+                      Winding: boolean{$IFNDEF VER1_0} = False{$ENDIF}); virtual;
     Procedure Polygon(const Points: array of TPoint);
     procedure Polyline(const Points: array of TPoint;
                        StartIndex: Integer;
                        NumPts: Integer {$IFNDEF VER1_0} = -1{$ENDIF});
-    procedure Polyline(Points: PPoint; NumPts: Integer);
+    procedure Polyline(Points: PPoint; NumPts: Integer); virtual;
     procedure Polyline(const Points: array of TPoint);
-    Procedure Rectangle(X1,Y1,X2,Y2: Integer);
+    Procedure Rectangle(X1,Y1,X2,Y2: Integer); virtual;
     Procedure Rectangle(const Rect: TRect);
-    Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer);
+    Procedure RoundRect(X1, Y1, X2, Y2: Integer; RX,RY: Integer); virtual;
     Procedure RoundRect(const Rect: TRect; RX,RY: Integer);
-    procedure TextOut(X,Y: Integer; const Text: String);
+    procedure TextOut(X,Y: Integer; const Text: String); virtual;
     procedure TextRect(ARect: TRect; X, Y: integer; const Text: string);
     procedure TextRect(ARect: TRect; X, Y: integer; const Text: string;
-                       const Style: TTextStyle);
-    function TextExtent(const Text: string): TSize;
-    function TextHeight(const Text: string): Integer;
-    function TextWidth(const Text: string): Integer;
-    function HandleAllocated: boolean;
-    function GetUpdatedHandle(ReqState: TCanvasState): HDC;
+                       const Style: TTextStyle); virtual;
+    function TextExtent(const Text: string): TSize; virtual;
+    function TextHeight(const Text: string): Integer; virtual;
+    function TextWidth(const Text: string): Integer; virtual;
+    function HandleAllocated: boolean; virtual;
+    function GetUpdatedHandle(ReqState: TCanvasState): HDC; virtual;
   public
     property ClipRect: TRect read GetCanvasClipRect;
     property PenPos: TPoint read GetPenPos write SetPenPos;
@@ -1756,6 +1756,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.150  2004/09/14 18:02:44  mattias
+  made TCanvas methods virtual
+
   Revision 1.149  2004/09/14 10:23:44  mattias
   implemented finding DefineProperties in registered TPersistent, implemented auto commenting of missing units for Delphi unit conversion
 
