@@ -34,6 +34,9 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
+{$IF VER1_0_8 or VER1_0_10}
+{$DEFINE UseFCLDataModule}
+{$ENDIF}
 
 uses
   Classes, Controls, LCLStrConsts, VCLGlobals, SysUtils, LCLType, LCLProc,
@@ -788,7 +791,7 @@ type
     function UniqueName(const BaseName: string): string; virtual; abstract;
   end;
 
-{$IFNDEF VER1_0_8}
+{$IFNDEF UseFCLDataModule}
 type
 { TDataModule }
 
@@ -1141,7 +1144,7 @@ begin
 end;
 
 
-{$IFNDEF VER1_0_8}
+{$IFNDEF UseFCLDataModule}
 { TDataModule }
 
 constructor TDataModule.Create(TheOwner: TComponent);

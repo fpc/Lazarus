@@ -86,7 +86,8 @@ type
 implementation
 
 var
-  IsWordChar, IsNumberBeginChar, IsNumberChar:array[#0..#255] of boolean;
+  IsWordChar, IsIdentifierChar, IsNumberBeginChar, IsNumberChar:
+    array[#0..#255] of boolean;
 
 procedure InternalInit;
 var c:char;
@@ -95,6 +96,7 @@ begin
     IsWordChar[c]:=(c in ['a'..'z','A'..'Z','_']);
     IsNumberBeginChar[c]:=(c in ['0'..'9','$','%']);
     IsNumberChar[c]:=(c in ['0'..'9','.','E','e']);
+    IsIdentifierChar[c]:=(c in ['a'..'z','A'..'Z','_','0'..'9']);
   end;
 end;
 
@@ -214,10 +216,13 @@ function TExpressionEvaluator.EvalAtPos: string;
 var r: string;   // current result
   c,o1,o2: char;
   OldPos: integer;
+  AtomCount: Integer;
 begin
   Result:='';
+  AtomCount:=0;
   repeat
     if (not ReadNextAtom) then exit;
+    inc(AtomCount);
     c:=Expr[AtomStart];
     if IsWordChar[c] then begin
       // identifier or keyword
@@ -236,7 +241,7 @@ begin
           Result:=EvalAtPos();
           if ErrorPos>=0 then exit;
           if (Result='') then ErrorPos:=CurPos;
-        end else if (Result='') then ErrorPos:=CurPos;
+        end else if (AtomCount<=1) then ErrorPos:=CurPos;
         exit;
       end else if (CompAtom('XOR')) then begin
         if (Result='') then begin
@@ -419,7 +424,7 @@ begin
       AtomStart:=CurPos;
       repeat
         inc(CurPos);
-      until (CurPos>Max) or (IsWordChar[Expr[CurPos]]=false);
+      until (CurPos>Max) or (not IsIdentifierChar[Expr[CurPos]]);
       AtomEnd:=CurPos;
       Result:=true;
       exit;
