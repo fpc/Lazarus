@@ -17,10 +17,10 @@
  *                                                                         *
  ***************************************************************************/
 }
-{$H+}
 unit AbstractFormEditor;
 
-{$mode objfpc}
+{$mode objfpc}{$H-}
+
 interface
 
 uses
@@ -70,7 +70,7 @@ or use TPropertyType
 
   TIFormInterface = class
     public
-      Function Filename            : String; virtual; abstract;
+      Function Filename            : AnsiString; virtual; abstract;
       Function FormModified        : Boolean; virtual; abstract;
       Function MArkModified        : Boolean; virtual; abstract;
       Function GetFormComponent    : TIComponentInterface; virtual; abstract;
@@ -92,7 +92,7 @@ or use TPropertyType
 
   TAbstractFormEditor = class
    public
-     Function Filename : String; virtual; abstract;
+     Function Filename : AnsiString; virtual; abstract;
      Function FormModified : Boolean; virtual; abstract;
      Function FindComponentByName(const Name : String) : TIComponentInterface; virtual; abstract;
      Function FindComponent(AComponent: TComponent): TIComponentInterface; virtual; abstract;

@@ -1536,7 +1536,7 @@ begin
   end;
   // load active breakpoint image
   Pixmap1:=TPixMap.Create;
-  //Pixmap1.TransparentColor:=clBtnFace;
+  Pixmap1.TransparentColor:=clBtnFace;
   if not LoadPixmapRes('ActiveBreakPoint',Pixmap1) then
          LoadPixmapRes('default',Pixmap1);
   MarksImgList.Add(Pixmap1,nil);

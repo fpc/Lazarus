@@ -114,7 +114,7 @@ type
     itmEnvEditorOptions: TMenuItem; 
 
     CheckBox1 : TCheckBox; 
-    Notebook1 : TNotebook;
+    ComponentNotebook : TNotebook;
     cmdTest: TButton;
     cmdTest2: TButton;
     Label2 : TLabel;
@@ -205,6 +205,7 @@ type
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     
     // project(s)
+    property Project: TProject read fProject write fProject;
     function DoNewProject(NewProjectType:TProjectType):TModalResult;
     function DoSaveProject(SaveAs:boolean):TModalResult;
     function DoCloseProject:TModalResult;
@@ -237,9 +238,18 @@ type
     procedure FormPaint(Sender : TObject);
     procedure LoadFormFromFile(Value : String);
 
+    // form editor and designer
     property SelectedComponent : TRegisteredComponent 
       read FSelectedComponent write FSelectedComponent;
-    property Project: TProject read fProject write fProject;
+    procedure OnDesignerGetSelectedComponentClass(Sender: TObject;
+      var RegisteredComponent: TRegisteredComponent);
+    procedure OnDesignerUnselectComponentClass(Sender: TObject);
+    procedure OnDesignerSetDesigning(Sender: TObject; Component: TComponent;
+      Value: boolean);
+    procedure OnDesignerComponentListChanged(Sender: TObject);
+    procedure OnDesignerPropertiesChanged(Sender: TObject);
+    procedure OnDesignerAddComponent(Sender: TObject; Component: TComponent;
+      ComponentClass: TRegisteredComponent);
 
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
@@ -345,15 +355,16 @@ begin
   Bitmap1 := TBitmap.Create;
   Bitmap1.Handle := CreatePixmapIndirect(@IMGOK_Check, ColorToRGB(clBtnFace));
 
-  Notebook1 := TNotebook.Create(Self);
-  Notebook1.Parent := Self;
-  Notebook1.Align := alBottom;
-  Notebook1.Left := 1;
-//  Notebook1.Top :=50+ mnuBarMain.Top+MnuBarMain.Height + 2;
-  Notebook1.Top :=50+ 2;
-  Notebook1.Width := ClientWidth;
-  Notebook1.Height := 100; //ClientHeight - Notebook1.Top;
-
+  ComponentNotebook := TNotebook.Create(Self);
+  with ComponentNotebook do begin
+    Parent := Self;
+    Align := alBottom;
+    Left := 1;
+//  ComponentNotebook.Top :=50+ MnuBarMain.Top+MnuBarMain.Height + 2;
+    Top :=50+ 2;
+    Width := Self.ClientWidth;
+    Height := 100; //Self.ClientHeight - ComponentNotebook.Top;
+  end;
 
   SelectionPointerPixmap:=LoadSpeedBtnPixMap('tmouse');
   PageCount := 0;
@@ -363,12 +374,12 @@ begin
     if RegCompPage.Name <> '' then
     Begin
       if (pagecount = 0) then
-         Notebook1.Pages.Strings[pagecount] := RegCompPage.Name
-      else Notebook1.Pages.Add(RegCompPage.Name);
+         ComponentNotebook.Pages.Strings[pagecount] := RegCompPage.Name
+      else ComponentNotebook.Pages.Add(RegCompPage.Name);
       GlobalMouseSpeedButton := TSpeedButton.Create(Self);
       with GlobalMouseSpeedButton do
       Begin
-        Parent := Notebook1.Page[PageCount];
+        Parent := ComponentNotebook.Page[PageCount];
         Enabled := True;
         Width := 25;
         Height := 25;
@@ -386,7 +397,7 @@ begin
         IDEComponent := TIDEComponent.Create;
         IdeComponent.RegisteredComponent := RegComp;
         Writeln('Name is '+RegComp.ComponentClass.ClassName);
-        IDEComponent._SpeedButton(Self,Notebook1.Page[PageCount]);
+        IDEComponent._SpeedButton(Self,ComponentNotebook.Page[PageCount]);
         IDEComponent.SpeedButton.OnClick := @ControlClick;
         IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
         IDEComponent.SpeedButton.Name := IDEComponent.SpeedButton.Hint;
@@ -395,10 +406,10 @@ begin
       inc(PageCount);
     end;
    end;
-  Notebook1.PageIndex := 0;   // Set it to the first page
-  Notebook1.Show;
-  Notebook1.OnPageChanged := @ControlClick;
-  Notebook1.Name := 'Notebook1';
+  ComponentNotebook.PageIndex := 0;   // Set it to the first page
+  ComponentNotebook.Show;
+  ComponentNotebook.OnPageChanged := @ControlClick;
+  ComponentNotebook.Name := 'ComponentNotebook';
 
   ViewUnitsSpeedBtn := TSpeedButton.Create(Self);
   with ViewUnitsSpeedBtn do
@@ -631,7 +642,7 @@ end;
 procedure TMainIDE.OIOnAddAvailableComponent(AComponent:TComponent;
 var Allowed:boolean);
 begin
-  Allowed:=(not (AComponent is TGrabber));
+  //Allowed:=(not (AComponent is TGrabber));
 end;
 
 procedure TMainIDE.OIOnSelectComponent(AComponent:TComponent);
@@ -1054,13 +1065,13 @@ begin
          := False
     else begin
       Temp := nil;
-      for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
+      for i := 0 to ComponentNotebook.Page[ComponentNotebook.Pageindex].ControlCount-1 do
       begin
         if CompareText(
-            TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name
-            ,'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
+            TControl(ComponentNotebook.Page[ComponentNotebook.Pageindex].Controls[I]).Name
+            ,'GlobalMouseSpeedButton'+inttostr(ComponentNotebook.Pageindex)) = 0 then
         begin
-          temp := TControl(Notebook1.Page[Notebook1.Pageindex].Controls[i]);
+          temp := TControl(ComponentNotebook.Page[ComponentNotebook.Pageindex].Controls[i]);
           Break;
         end;
       end;
@@ -1068,7 +1079,7 @@ begin
         TSpeedButton(Temp).down := False
       else
         Writeln('*****************ERROR - Control ',
-           'GlobalMouseSpeedButton',inttostr(Notebook1.Pageindex),' not found');
+           'GlobalMouseSpeedButton',inttostr(ComponentNotebook.Pageindex),' not found');
     end;
     if IDECOmp <> nil then Begin
       //draw this button down
@@ -1077,13 +1088,13 @@ begin
     end else begin
       SelectedComponent := nil;
       Temp := nil;
-      for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
+      for i := 0 to ComponentNotebook.Page[ComponentNotebook.Pageindex].ControlCount-1 do
       begin
         if CompareText(
-          TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name
-           ,'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
+          TControl(ComponentNotebook.Page[ComponentNotebook.Pageindex].Controls[I]).Name
+           ,'GlobalMouseSpeedButton'+inttostr(ComponentNotebook.Pageindex)) = 0 then
         begin
-          temp := TControl(Notebook1.Page[Notebook1.Pageindex].Controls[i]);
+          temp := TControl(ComponentNotebook.Page[ComponentNotebook.Pageindex].Controls[i]);
           Break;
         end;
       end;
@@ -1091,7 +1102,7 @@ begin
         TSpeedButton(Temp).down := True
       else
         Writeln('*****************ERROR - Control '
-           +'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
+           +'GlobalMouseSpeedButton'+inttostr(ComponentNotebook.Pageindex)+' not found');
     end;
   end
   else
@@ -1104,13 +1115,13 @@ begin
            := False;
     SelectedComponent := nil;
     Temp := nil;
-    for i := 0 to Notebook1.Page[Notebook1.Pageindex].ControlCount-1 do
+    for i := 0 to ComponentNotebook.Page[ComponentNotebook.Pageindex].ControlCount-1 do
     begin
       if CompareText(
-         TControl(Notebook1.Page[Notebook1.Pageindex].Controls[I]).Name
-         ,'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)) = 0 then
+         TControl(ComponentNotebook.Page[ComponentNotebook.Pageindex].Controls[I]).Name
+         ,'GlobalMouseSpeedButton'+inttostr(ComponentNotebook.Pageindex)) = 0 then
       begin
-        temp := TControl(Notebook1.Page[Notebook1.Pageindex].Controls[i]);
+        temp := TControl(ComponentNotebook.Page[ComponentNotebook.Pageindex].Controls[i]);
         Break;
       end;
     end;
@@ -1118,7 +1129,7 @@ begin
       TSpeedButton(Temp).down := True
     else
       Writeln('*****************ERROR - Control '
-        +'GlobalMouseSpeedButton'+inttostr(Notebook1.Pageindex)+' not found');
+        +'GlobalMouseSpeedButton'+inttostr(ComponentNotebook.Pageindex)+' not found');
   end;
   Writeln('Exiting ControlClick');
 end;
@@ -1295,8 +1306,15 @@ end;
 Procedure TMainIDE.SetDefaultsforForm(aForm : TCustomForm);
 Begin
   aForm.Designer := TDesigner.Create(aForm);
-  TDesigner(aForm.Designer).MainIDE := Self;
-  TDesigner(aForm.Designer).FormEditor := FormEditor1;
+  with TDesigner(aForm.Designer) do begin
+    FormEditor := FormEditor1;
+    OnGetSelectedComponentClass:=@OnDesignerGetSelectedComponentClass;
+    OnUnselectComponentClass:=@OnDesignerUnselectComponentClass;
+    OnSetDesigning:=@OnDesignerSetDesigning;
+    OnComponentListChanged:=@OnDesignerComponentListChanged;
+    OnPropertiesChanged:=@OnDesignerPropertiesChanged;
+    OnAddComponent:=@OnDesignerAddComponent;
+  end;
 end;
 
 
@@ -2683,6 +2701,92 @@ begin
   end;
 end;
 
+procedure TMainIDE.OnDesignerGetSelectedComponentClass(Sender: TObject; 
+  var RegisteredComponent: TRegisteredComponent);
+begin
+  RegisteredComponent:=SelectedComponent;
+end;
+
+procedure TMainIDE.OnDesignerUnselectComponentClass(Sender: TObject);
+begin
+  ControlClick(ComponentNoteBook);
+end;
+
+procedure TMainIDE.OnDesignerSetDesigning(Sender: TObject; 
+  Component: TComponent;  Value: boolean);
+begin
+  SetDesigning(Component,Value);
+end;
+
+procedure TMainIDE.OnDesignerComponentListChanged(Sender: TObject);
+begin
+  ObjectInspector1.FillComponentComboBox;
+end;
+
+procedure TMainIDE.OnDesignerPropertiesChanged(Sender: TObject);
+begin
+  ObjectInspector1.RefreshPropertyValues;
+end;
+
+procedure TMainIDE.OnDesignerAddComponent(Sender: TObject; 
+  Component: TComponent; ComponentClass: TRegisteredComponent);
+var i: integer;
+  ActiveForm: TCustomForm;
+  ActiveUnitInfo: TUnitInfo;
+  SrcTxt: string;
+  SrcTxtChanged: boolean;
+  ActiveSrcEdit: TSourceEditor;
+  FormClassName: string;
+  FormClassNameStartPos, FormBodyStartPos: integer;
+begin
+  ActiveForm:=TDesigner(Sender).Form;
+  if ActiveForm=nil then begin
+    writeln('[TMainIDE.OnDesignerAddComponent] Error: TDesigner without a form');
+    halt;
+  end;
+  // find source for form
+  i:=Project.UnitCount-1;
+  while (i>=0) do begin
+    if (Project.Units[i].Loaded) 
+    and (Project.Units[i].Form=ActiveForm) then break;
+    dec(i);
+  end;
+  if i<0 then begin
+    writeln('[TMainIDE.OnDesignerAddComponent] Error: form without source');
+    halt;
+  end;
+  ActiveUnitInfo:=Project.Units[i];
+  SrcTxt:=ActiveUnitInfo.Source.Text;
+  SrcTxtChanged:=false;
+  // add needed unit to source
+  SrcTxtChanged:=SrcTxtChanged 
+      or AddToInterfaceUsesSection(SrcTxt,ComponentClass.UnitName,'');
+  // add component definition to form source
+  FormClassName:=ActiveForm.ClassName;
+  if FindFormClassDefinitionInSource(SrcTxt,FormClassName,
+     FormClassNameStartPos, FormBodyStartPos) then begin
+    if AddFormComponentToSource(SrcTxt,FormBodyStartPos,
+      Component.Name, Component.ClassName) then begin
+      SrcTxtChanged:=true;
+    end else begin
+      Application.MessageBox('No insert point in source for the new component found.'
+           ,'Code tool failure',mb_ok);
+    end;
+  end else begin
+    // the form is not mentioned in the source?
+    // ignore silently
+  end;
+  // update source
+  if SrcTxtChanged then begin
+    ActiveUnitInfo.Source.Text:=SrcTxt;
+    ActiveUnitInfo.Modified:=true;
+    ActiveSrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
+        ActiveUnitInfo.EditorIndex);
+    ActiveSrcEdit.EditorComponent.Lines.Text:=SrcTxt;
+    ActiveSrcEdit.EditorComponent.Modified:=true;
+  end;
+end;
+
 initialization
   {$I images/laz_images.lrs}
 
@@ -2695,8 +2799,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.73  2001/03/12 09:34:52  lazarus
-  MG: added transfermacros, renamed dlgmessage.pp to msgview.pp
+  Revision 1.74  2001/03/12 18:57:31  lazarus
+  MG: new designer and controlselection code
 
   Revision 1.68  2001/03/03 11:06:15  lazarus
   added project support, codetools

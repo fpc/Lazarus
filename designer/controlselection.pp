@@ -1,4 +1,4 @@
-{ /***************************************************************************
+{/***************************************************************************
                              ControlSelection.pp   
                              -------------------
                          cointains selected controls.
@@ -20,12 +20,12 @@
 }
 unit ControlSelection;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, Controls, LCLLinux, Forms;
+  Classes, Controls, LCLLinux, Forms, Graphics;
 
 type
   TGrabberMoveEvent = procedure(Sender: TObject; dx, dy: Integer) of object;
@@ -35,83 +35,133 @@ type
   TGrabPosition = (gpTop, gpBottom, gpLeft, gpRight);
   TGrabPositions = set of TGrabPosition;
 
-  TGrabber = class(TWinControl)
+  // A TGrabber is one of the 8 small black rectangles at the boundaries of
+  // a selection
+  TGrabber = class
   private
-    FDragging: Boolean;
-    FLastMouseMove, FStart: TPoint;
     FPositions: TGrabPositions;
-    FOnMove: TGrabberMoveEvent;
-    FOnMoved: TGrabberMoveEvent;
-  protected
-    procedure PaintWindow(DC: HDC); override;
-    procedure DoDragMove(NewX, NewY: integer);
-    procedure EndDragging(NewX, NewY: integer);
-    procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseMove(Shift: TShiftState; X, Y: Integer); override;
-    procedure MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer); override;
+    FHeight: integer;
+    FTop: integer;
+    FWidth: integer;
+    FLeft: integer;
+    FOldLeft: integer;
+    FOldTop: integer;
+    FOldWidth: integer;
+    FOldHeight: integer;
   public
-    procedure CaptureMouseMove(Sender:TControl;Shift: TShiftState; X, Y: Integer);
-    procedure CaptureMouseUp(Sender:TControl;Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    constructor Create(AOwner: TComponent); override;
-    property IsDragging:Boolean read FDragging;
     property Positions: TGrabPositions read FPositions write FPositions;
-    property OnMove: TGrabberMoveEvent read FOnMove write FOnMove;
-    property OnMoved: TGrabberMoveEvent read FOnMoved write FOnMoved;
+    property Left:integer read FLeft write FLeft;
+    property Top:integer read FTop write FTop;
+    property Width:integer read FWidth write FWidth;
+    property Height:integer read FHeight write FHeight;
+    property OldLeft:integer read FOldLeft write FOldLeft;
+    property OldTop:integer read FOldTop write FOldTop;
+    property OldWidth:integer read FOldWidth write FOldWidth;
+    property OldHeight:integer read FOldHeight write FOldHeight;
+    procedure SaveBounds;
   end;
+
+
+  TSelectedControl = class
+  private
+    FControl:TControl;
+    FOldLeft: integer;
+    FOldTop: integer;
+    FOldWidth: integer;
+    FOldHeight: integer;
+  public
+    constructor Create(AControl:TControl);
+    destructor Destroy; override;
+    property Control:TControl read FControl write FControl;
+    property OldLeft:integer read FOldLeft write FOldLeft;
+    property OldTop:integer read FOldTop write FOldTop;
+    property OldWidth:integer read FOldWidth write FOldWidth;
+    property OldHeight:integer read FOldHeight write FOldHeight;
+    procedure SaveBounds;
+  end;
+
 
   TControlSelection = class(TObject)
   private
-    FDragging: Boolean;
-    FVisible: Boolean;
+    FControls: TList;  // list of TSelectedComponent
+
+    // current bounds (only valid when Count>0)
+    FLeft: Integer;
+    FTop: Integer;
     FWidth: Integer;
     FHeight: Integer;
-    FTop: Integer;
-    FLeft: Integer;
-    FStart: TPoint;
+    // saved bounds
+    FOldLeft: integer;
+    FOldTop: integer;
+    FOldWidth: integer;
+    FOldHeight: integer;
+
+    FCustomForm: TCustomForm;
     FGrabbers: array[TGrabIndex] of TGrabber;
-    FControlList: TList;
+    FGrabberSize: integer;
+    FMarkerSize: integer;
+    FActiveGrabber:TGrabber;
+    FRubberBandBounds:TRect;
+    FVisible:boolean;
+
     FOnChange: TNotifyEvent;
-    procedure AdjustSize(AControl: TControl; Initial: Boolean);
-    procedure ControlMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-    procedure ControlMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-    procedure ControlMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+
+    procedure SetCustomForm;
+    function GetGrabbers(AGrabIndex:TGrabIndex): TGrabber;
+    procedure SetGrabbers(AGrabIndex:TGrabIndex; const AGrabber: TGrabber);
+    procedure SetGrabberSize(const NewSize: integer);
+    procedure AdjustSize;
+    procedure AdjustGrabber;
     procedure DoChange;
-    procedure SetGrabbers;
-    procedure SizeContent;
     procedure SetVisible(const Value: Boolean);
-    procedure GrabberMove(Sender: TObject; dx, dy: Integer);
-    procedure GrabberMoved(Sender: TObject; dx, dy: Integer);
+    function GetItems(Index:integer):TSelectedControl;
+    procedure SetItems(Index:integer; ASelectedControl:TSelectedControl);
+    procedure SetActiveGrabber(AGrabber:TGrabber);
+    procedure SetRubberBandBounds(ARect:TRect);
   protected
   public
-    procedure MoveContent(dx, dy: Integer);
-    procedure Add(AControl: TControl);
-    procedure Clear;
-    constructor Create(AOwner: TWinControl); virtual;
-    destructor Destroy; override;
-    function IsSelected(AControl: TControl): Boolean;
+    property Items[Index:integer]:TSelectedControl read GetItems write SetItems; default;
+    function Count:integer;
+    function IndexOf(AControl:TControl):integer;
+    function Add(AControl: TControl):integer;
     procedure Remove(AControl: TControl);
+    procedure Delete(Index:integer);
+    procedure Clear;
+    procedure Assign(AControlSelection:TControlSelection);
+    function IsSelected(AControl: TControl): Boolean;
+    procedure SaveBounds;
     procedure MoveSelection(dx, dy: integer);
-    procedure SizeSelection(dx, dy: integer);
-    property Visible: Boolean read FVisible write SetVisible;
+    procedure SizeSelection(dx, dy: integer);  
+      // size all controls depending on ActiveGrabber.
+      // if ActiveGrabber=nil then Left,Top
+    property GrabberSize:integer read FGrabberSize write SetGrabberSize;
+    procedure DrawGrabbers;
+    function GrabberAtPos(X,Y:integer):TGrabber;
+    property Grabbers[AGrabIndex:TGrabIndex]:TGrabber read GetGrabbers write SetGrabbers;
+    property MarkerSize:integer read FMarkerSize write FMarkerSize;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-
+    procedure DrawMarker(AControl:TControl; DC:HDC);
+    property ActiveGrabber:TGrabber read FActiveGrabber write SetActiveGrabber;
+    property Left:integer read FLeft;
+    property Top:integer read FTop;
+    property Width:integer read FWidth;
+    property Height:integer read FHeight;
+    property RubberbandBounds:TRect read FRubberbandBounds write SetRubberbandBounds;
+    procedure DrawRubberband(DeleteOld:boolean; ARect:TRect);
+    procedure SelectWithRubberBand(ACustomForm:TCustomForm);
+    property Visible:boolean read FVisible write SetVisible;
+    constructor Create; 
+    destructor Destroy; override;
   end;
 
-  procedure SetCaptureGrabber(AGrabber:TGrabber);
-  function GetCaptureGrabber:TGrabber;
 
 implementation
+
 
 uses
   Sysutils, Math;
 
-type
-  TSelectControl = class(TControl)//;
-  end;
-
 const
-  GRAB_SIZE = 6;
-
   GRAB_CURSOR: array[TGrabIndex] of TCursor = (
     crSizeNWSE, crSizeNS, crSizeNESW,
     crSizeWE,             crSizeWE,
@@ -124,349 +174,150 @@ const
     [gpLeft, gpBottom], [gpBottom], [gpBottom, gpRight]
   );
 
-var
-  CaptureGrabber:TGrabber;
-
-procedure SetCaptureGrabber(AGrabber:TGrabber);
-begin
-  Write('SETCAPTUREGRABBER to.... ');
-  if AGrabber <> nil then Writeln(Format('0x%x', [AGrabber.handle])) else writeln('nil');
-
-  CaptureGrabber:=AGrabber;
-end;
-
-function GetCaptureGrabber:TGrabber;
-begin
-  Result:=CaptureGrabber;
-end;
 
 { TGrabber }
 
-constructor TGrabber.Create(AOwner: TComponent);
+procedure TGrabber.SaveBounds;
 begin
-  inherited Create(AOwner);
-  ControlState := ControlState + [csCustomPaint];
-  FDragging := False;
+  FOldLeft:=FLeft;
+  FOldTop:=FTop;
+  FOldWidth:=FWidth;
+  FOldHeight:=FHeight;
 end;
 
-procedure TGrabber.MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+
+{ TSelectedControl }
+
+constructor TSelectedControl.Create(AControl:TControl);
 begin
-//writeln('[TGrabber.MouseDown] X='+IntToStr(X+Left)+',Y='+IntToStr(Y+Top));
-  if CaptureGrabber<>nil then exit;
-  // compute absolute mouse coordinates
-  if (Button = mbLeft) and (not FDragging)
-  then begin
-    FLastMouseMove := Point(X+Left, Y+Top);
-    FStart := FLastMouseMove;
-    FDragging := True;
-    SetCaptureGrabber(Self);
-  end else
-    inherited MouseDown(Button, Shift, X, Y);
+  inherited Create;
+  FControl:=AControl;
 end;
 
-procedure TGrabber.MouseMove(Shift: TShiftState; X, Y: Integer);
+destructor TSelectedControl.Destroy;
 begin
-  if (CaptureGrabber<>nil) and (CaptureGrabber<>Self) then begin
-    CaptureGrabber.CaptureMouseMove(Self,Shift, X, Y);
-  end else begin
-    if FDragging then begin
-//writeln('[TGrabber.MouseMove] X='+IntToStr(X)+',Y='+IntToStr(Y));
-      DoDragMove(X+Left,Y+Top);
-    end else
-      inherited MouseMove(Shift, X, Y);
-  end;
+  inherited Destroy;
 end;
 
-procedure TGrabber.MouseUp(Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+procedure TSelectedControl.SaveBounds;
 begin
-//Writeln('MouseUp in TGrabber');
-
-  if (CaptureGrabber<>nil) and (CaptureGrabber<>Self) then begin
-    CaptureGrabber.CaptureMouseUp(Self,Button, Shift, X, Y);
-  end else begin
-//writeln('[TGrabber.MouseUp] X='+IntToStr(X+Left)+',Y='+IntToStr(Y+Top));
-    if FDragging then
-      EndDragging(X+Left,Y+Top)
-    else
-      inherited MouseUp(Button, Shift, X, Y);
-  end;
-end;
-
-procedure TGrabber.CaptureMouseMove(Sender:TControl;Shift: TShiftState;
-X, Y: Integer);
-begin
-//Writeln('CaptureMouseMove in TGrabber');
-  if CaptureGrabber<>Self then exit;
-//writeln('[TGrabber.CaptureMouseMove]');
-  MouseMove(Shift,X-CaptureGrabber.Left,Y-CaptureGrabber.Top);
-end;
-
-procedure TGrabber.CaptureMouseUp(Sender:TControl;Button: TMouseButton;
-Shift: TShiftState; X, Y: Integer);
-begin
-//Writeln('CaptureMouseUp in TGrabber');
-  if CaptureGrabber<>Self then exit;
-  if not (Sender is TCustomForm) then begin
-    inc(X,TControl(Sender).Left);
-    inc(Y,TControl(Sender).Top);
-  end;
-  MouseUp(Button,Shift,X-CaptureGrabber.Left,Y-CaptureGrabber.Top);
-end;
-
-procedure TGrabber.DoDragMove(NewX, NewY: integer);
-var dx, dy: Integer;
-begin
-  if FDragging then begin
-//writeln('[TGrabber.DoDragMove] NewX='+IntToStr(NewX)+',NewY='+IntToStr(NewY));
-    if [gpLeft, gpRight] * Positions <> []
-    then dx := NewX - FLastMouseMove.X
-    else dx := 0;
-    if [gpTop, gpBottom] * Positions <> []
-    then dy := NewY - FLastMouseMove.Y
-    else dy := 0;
-    FLastMouseMove:=Point(NewX,NewY);
-
-    if Assigned(FOnMove) then FOnMove(Self, dx, dy);
-  end;
-end;
-
-procedure TGrabber.EndDragging(NewX, NewY: integer);
-var dx, dy: Integer;
-begin
-  if FDragging then begin
-//writeln('[TGrabber.EndDragging] NewX='+IntToStr(NewX)+',NewY='+IntToStr(NewY));
-    DoDragMove(NewX, NewY);
-    FDragging := False;
-    SetCaptureGrabber(nil);
-    if [gpLeft, gpRight] * Positions <> []
-    then dx := NewX - FStart.X
-    else dx := 0;
-    if [gpTop, gpBottom] * Positions <> []
-    then dy := NewY - FStart.Y
-    else dy := 0;
-    if Assigned(FOnMoved) then FOnMoved(Self, dx, dy);
-  end;
-end;
-
-procedure TGrabber.PaintWindow(DC: HDC);
-begin
-  FillRect(DC, Rect(0, 0, Width, Height), GetStockObject(BLACK_BRUSH));
+  FOldLeft:=Control.Left;
+  FOldTop:=Control.Top;
+  FOldWidth:=Control.Width;
+  FOldHeight:=Control.Height;
 end;
 
 { TControlSelection }
 
-procedure TControlSelection.MoveSelection(dx, dy: integer);
+constructor TControlSelection.Create;
+var g:TGrabIndex;
 begin
-{Writeln('**********');
-Writeln('Move Selection');
-Writeln(Format('dx,dy = %d,%d',[dx,dy]));
-Writeln(Format('FLeft,FTop= %d,%d',[FLeft,FTop]));
-Writeln('**********');
- }
-  if (dx<>0) or (dy<>0) then begin
-    Inc(FLeft,dx);
-    Inc(FTop,dy);
-    MoveContent(dx,dy);
-    SetGrabbers;
+  inherited;
+  FControls:=TList.Create;
+  FGrabberSize:=6;
+  FMarkerSize:=4;
+  for g:=Low(TGrabIndex) to High(TGrabIndex) do begin
+    FGrabbers[g]:=TGrabber.Create;
+    FGrabbers[g].Positions:=GRAB_POSITIONS[g];
   end;
-end;
-
-procedure TControlSelection.SizeSelection(dx, dy: integer);
-begin
-{Writeln('**********');
-Writeln('Size Selection');
-Writeln(Format('dx,dy = %d,%d',[dx,dy]));
-Writeln(Format('FLeft,FTop= %d,%d',[FLeft,FTop]));
-Writeln('**********');
- }
-  if (dx<>0) or (dy<>0) then begin
-    Inc(FWidth,dx);
-    Inc(FHeight,dy);
-    SizeContent;
-    SetGrabbers;
-  end;
-end;
-
-
-procedure TControlSelection.Add(AControl: TControl);
-begin
-  if AControl <> nil
-  then begin
-    WriteLn(Format('[TControlSelection.Add] %s', [AControl.ClassName]));
-
-    if (FControlList.Count>0) and (AControl is TCustomForm) then begin
-      writeln('TCustomForm not added to multiselection');
-    end else begin;
-      FControlList.Add(AControl);
-    end;
-    AdjustSize(Acontrol, FControlList.Count = 1);
-    Visible:=not (AControl is TCustomForm);
-    //This is taken care of in SETVISIBLE    SetGrabbers;
-    with TSelectControl(AControl) do
-    begin
-      {OnMouseDown := @ControlMouseDown;
-      OnMouseMove := @ControlMouseMove;
-      OnMouseUp := @ControlMouseUp;}
-    end;
-    DoChange;
-  end;
-end;
-
-procedure TControlSelection.AdjustSize(AControl: TControl; Initial: Boolean);
-var
-  n: Integer;
-begin
-Writeln('AdjustSize in TCOntrolSelection');
-
-  if AControl <> nil
-  then begin
-    if Initial
-    then begin
-      FLeft := AControl.Left;
-      FTop := AControl.Top;
-      FWidth := AControl.Width;
-      FHeight := AControl.Height;
-      WriteLn(Format(
-        '[TControlSelection.AdjustSize] Initializing to X:%d, Y:%d, W:%d, H: %d'
-        , [FLeft, FTop, FWidth, FHeight]));
-    end
-    else begin
-      WriteLn(Format(
-        '[TControlSelection.AdjustSize] current X:%d, Y:%d, W:%d, H: %d'
-        , [FLeft, FTop, FWidth, FHeight]));
-      with AControl do
-        WriteLn(Format(
-          '[TControlSelection.AdjustSize] '+
-          'Adjust for %s --> X:%d, Y:%d, W:%d, H: %d'
-          , [Classname, Left, Top, Width, Height]));
-      n := FLeft - AControl.Left;
-      if n > 0
-      then begin
-        FLeft := AControl.Left;
-        Inc(FWidth , n);
-      end;
-
-      n := FTop - AControl.Top;
-      if n > 0
-      then begin
-        FTop := AControl.Top;
-        Inc(FHeight, n);
-      end;
-
-      n := Max(FLeft + FWidth, AControl.Left + AControl.Width);
-      FWidth := n - FLeft;
-
-      n := Max(FTop + FHeight, AControl.Top + AControl.Height);
-      FHeight := n - FTop;
-      WriteLn(Format(
-        '[TControlSelection.AdjustSize] Adjusted to X:%d, Y:%d, W:%d, H: %d'
-        , [FLeft, FTop, FWidth, FHeight]));
-    end;
-  end;
-end;
-
-procedure TControlSelection.Clear;
-var
-  n:  Integer;
-begin
-  writeln('[TControlSelection.Clear]');
-  with FControlList do
-  begin
-    for n := 0 to Count -1 do
-      with TSelectControl(Items[n]) do
-      begin
-        {OnMouseDown := nil;
-        OnMouseMove := nil;
-        OnMouseUp := nil;}
-      end;
-
-    Clear;
-  end;
-  FWidth := 0;
-  FHeight := 0;
-  Visible := False;
-  //This is set in SETVISIBLE   SetGrabbers;
-  DoChange;
-end;
-
-procedure TControlSelection.ControlMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-Writeln('ControlMOuseDown in TCOntrolSelection');
-
-  if Button = mbLeft
-  then begin
-    FStart := Point(X, Y);
-    FDragging := True;
-  end;
-end;
-
-procedure TControlSelection.ControlMouseMove(Sender: TObject; Shift: TShiftState; X, Y: Integer);
-begin
-Writeln('ControlMOuseMove in TCOntrolSelection');
-  if FDragging
-  then begin
-    Inc(FLeft, X - FStart.X);
-    Inc(FTop, Y - FStart.Y);
-    SetGrabbers;
-    Writeln(format('X-FStart.x = %d-%d=%d',[X,FStart.x,X-FStart.x]));
-    Writeln(format('Y-FStart.Y = %d-%d=%d',[Y,FStart.y,Y-FStart.y]));
-    MoveContent(X - FStart.x, Y - FStart.Y);
-  end;
-end;
-
-procedure TControlSelection.ControlMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-Writeln('TCOntrolSelection.ControlMOuseUp');
-  if (Button = mbLeft) and FDragging
-  then begin
-    FDragging := False;
-    Writeln(format('X-FStart.x = %d-%d=%d',[X,FStart.x,X-FStart.x]));
-    Writeln(format('Y-FStart.Y = %d-%d=%d',[Y,FStart.y,Y-FStart.y]));
-    MoveContent(X - FStart.X, Y - FStart.Y);
-  end;
-end;
-
-constructor TControlSelection.Create(AOwner: TWinControl);
-var
-  GrabPos: TGrabIndex;
-begin
-  writeln('[TControlSelection.Create] '+TComponent(AOwner).Name);
-  inherited Create;
-
-  FWidth := 0;
-  FHeight := 0;
-  FLeft := 0;
-  FTop := 0;
-  FVisible := False;
-
-  FDragging := False;
-
-  FControlList := TList.Create;
-
-  for GrabPos := Low(TGrabIndex) to High(TGrabIndex) do
-  begin
-    WriteLN(Format('[TControlSelection.Create] Create grabber %d',  [Ord(GrabPos)]));
-    FGrabbers[GrabPos] := TGrabber.Create(AOwner);
-    with FGrabbers[GrabPos] do
-    begin
-      Parent := AOwner;
-      Width := GRAB_SIZE;
-      Height := GRAB_SIZE;
-      Visible := False;
-      Cursor := GRAB_CURSOR[GrabPos];
-      Positions := GRAB_POSITIONS[GrabPos];
-      OnMove := @GrabberMove;
-      OnMoved := @GrabberMoved;
-    end;
-  end;
-Writeln('Done in TControlSelection.Create');
+  FCustomForm:=nil;
+  FActiveGrabber:=nil;
 end;
 
 destructor TControlSelection.Destroy;
+var g:TGrabIndex;
 begin
   Clear;
-  FControlList.Free;
+  FControls.Free;
+  for g:=Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].Free;
   inherited Destroy;
+end;
+
+procedure TControlSelection.SetCustomForm;
+var NewCustomForm:TCustomForm;
+begin
+  if Count>0 then begin
+    NewCustomForm:=GetParentForm(Items[0].Control);
+  end else begin
+    NewCustomForm:=nil;
+  end;
+  if NewCustomForm=FCustomForm then exit;
+  FCustomForm:=NewCustomForm;
+end;
+
+function TControlSelection.GetGrabbers(AGrabIndex:TGrabIndex): TGrabber;
+begin
+  Result:=FGrabbers[AGrabIndex];
+end;
+
+procedure TControlSelection.SetGrabbers(AGrabIndex:TGrabIndex;
+  const AGrabber: TGrabber);
+begin
+  FGrabbers[AGrabIndex]:=AGrabber;
+end;
+
+procedure TControlSelection.SetGrabberSize(const NewSize: integer);
+begin
+  if NewSize=FGrabberSize then exit;
+  FGrabberSize:=NewSize;
+end;
+
+procedure TControlSelection.AdjustSize;
+var i,ALeft,ATop:integer;
+  FormOrigin:TPoint;
+
+  procedure AbsoluteLeftTop(AControl:TControl; var ALeft, ATop:integer);
+  var ControlOrigin:TPoint;
+  begin
+    ControlOrigin:=AControl.ClientOrigin;
+    ALeft:=ControlOrigin.X-FormOrigin.X;
+    ATop:=ControlOrigin.Y-FormOrigin.Y;
+  end;
+
+begin
+  if FControls.Count>=1 then begin
+    FormOrigin:=FCustomForm.ClientOrigin;
+    AbsoluteLeftTop(Items[0].Control,ALeft,ATop);
+    FLeft:=ALeft;
+    FTop:=ATop;
+    FHeight:=Items[0].Control.Height;
+    FWidth:=Items[0].Control.Width;
+    for i:=1 to FControls.Count-1 do begin
+      AbsoluteLeftTop(Items[i].Control,ALeft,ATop);
+      if FLeft>ALeft then begin
+        inc(FWidth,FLeft-ALeft);
+        FLeft:=ALeft;
+      end;
+      if FTop>ATop then begin
+        inc(FHeight,FTop-ATop);
+        FTop:=ATop;
+      end;
+      FWidth:=Max(FLeft+FWidth,ALeft+Items[i].Control.Width)-FLeft;
+      FHeight:=Max(FTop+FHeight,ATop+Items[i].Control.Height)-FTop;
+    end;
+    AdjustGrabber;
+  end;
+end;
+
+procedure TControlSelection.AdjustGrabber;
+var g:TGrabIndex;
+begin
+  for g:=Low(TGrabIndex) to High(TGrabIndex) do begin
+    if gpLeft in FGrabbers[g].Positions then
+      FGrabbers[g].Left:=FLeft-GrabberSize
+    else if gpRight in FGrabbers[g].Positions then
+      FGrabbers[g].Left:=FLeft+FWidth
+    else
+      FGrabbers[g].Left:=FLeft+((FWidth-GrabberSize) div 2);
+    if gpTop in FGrabbers[g].Positions then
+      FGrabbers[g].Top:=FTop-GrabberSize
+    else if gpBottom in FGrabbers[g].Positions then
+      FGrabbers[g].Top:=FTop+FHeight
+    else
+      FGrabbers[g].Top:=FTop+((FHeight-GrabberSize) div 2);
+    FGrabbers[g].Width:=GrabberSize;
+    FGrabbers[g].Height:=GrabberSize;
+  end;
 end;
 
 procedure TControlSelection.DoChange;
@@ -474,173 +325,313 @@ begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-procedure TControlSelection.GrabberMove(Sender: TObject; dx, dy: Integer);
+procedure TControlSelection.SetVisible(const Value: Boolean);
 begin
-  writeln('[TControlSelection.GrabberMove] '+TComponent(Sender).Name+
-    ' dx='+IntToStr(dx)+',dy='+IntToStr(dy));
-
-  if gpLeft in TGrabber(Sender).Positions
-  then begin
-    Inc(FLeft, dx);
-    Dec(FWidth, dx);
-  end;
-  if gpRight in TGrabber(Sender).Positions then Inc(FWidth, dx);
-
-  if gpTop in TGrabber(Sender).Positions
-  then begin
-    Inc(FTop, dy);
-    Dec(FHeight, dy)
-  end;
-  if gpBottom in TGrabber(Sender).Positions then Inc(FHeight, dy);
-
-  SetGrabbers;
+  if FVisible=Value then exit;
+  FVisible:=Value;
+  DoChange;
 end;
 
-procedure TControlSelection.GrabberMoved(Sender: TObject; dx, dy: Integer);
+function TControlSelection.GetItems(Index:integer):TSelectedControl;
 begin
-  writeln('[TControlSelection.GrabberMoved] '+TComponent(Sender).Name
-    +',dx='+IntToStr(dx)+', dy='+IntToStr(dy));
-  SizeContent;
+  Result:=TSelectedControl(FControls[Index]);
+end;
+
+procedure TControlSelection.SetItems(Index:integer;
+  ASelectedControl:TSelectedControl);
+begin
+  FControls[Index]:=ASelectedControl;
+end;
+
+procedure TControlSelection.SaveBounds;
+var i:integer;
+  g:TGrabIndex;
+begin
+  for i:=0 to FControls.Count-1 do Items[i].SaveBounds;
+  for g:=Low(TGrabIndex) to High(TGrabIndex) do FGrabbers[g].SaveBounds;
+  FOldLeft:=FLeft;
+  FOldTop:=FTop;
+  FOldWidth:=FWidth;
+  FOldHeight:=FHeight;
+end;
+
+procedure TControlSelection.SetActiveGrabber(AGrabber:TGrabber);
+begin
+  FActiveGrabber:=AGrabber;
+end;
+
+function TControlSelection.Count:integer;
+begin
+  Result:=FControls.Count;
+end;
+
+function TControlSelection.IndexOf(AControl:TControl):integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (Items[Result].Control<>AControl) do dec(Result);
+end;
+
+function TControlSelection.Add(AControl: TControl):integer;
+var NewSelectedControl:TSelectedControl;
+begin
+  NewSelectedControl:=TSelectedControl.Create(AControl);
+  if GetParentForm(AControl)<>FCustomForm then Clear;
+  Result:=FControls.Add(NewSelectedControl);
+  if Count=1 then SetCustomForm;
+  AdjustSize;
+  DoChange;  
+end;
+
+procedure TControlSelection.Remove(AControl: TControl);
+var i:integer;
+begin
+  i:=IndexOf(AControl);
+  if i>=0 then Delete(i);
+end;
+
+procedure TControlSelection.Delete(Index:integer);
+begin
+  if Index<0 then exit;
+  Items[Index].Free;
+  FControls.Delete(Index);
+  if Count=0 then SetCustomForm;
+  AdjustSize;
+  DoChange;
+end;
+
+procedure TControlSelection.Clear;
+var i:integer;
+begin
+  for i:=0 to FControls.Count-1 do Items[i].Free;
+  FControls.Clear;
+  FCustomForm:=nil;
+  AdjustSize;
+  DoChange;
+end;
+
+procedure TControlSelection.Assign(AControlSelection:TControlSelection);
+var i:integer;
+begin
+  if AControlSelection=Self then exit;
+  Clear;
+  FControls.Capacity:=AControlSelection.Count;
+  for i:=0 to AControlSelection.Count-1 do
+    Add(AControlSelection[i].Control);
+  SetCustomForm;
+  AdjustSize;
+  DoChange;
 end;
 
 function TControlSelection.IsSelected(AControl: TControl): Boolean;
 begin
-  WriteLn(Format('[TControlSelection.IsSelected] %s --> index %d', [AControl.ClassName, FControlList.IndexOf(AControl)]));
-  Result := FControlList.IndexOf(AControl) <> -1;
+  Result:=(IndexOf(AControl)>=0);
 end;
 
-procedure TControlSelection.MoveContent(dx, dy: Integer);
-var
-  n: Integer;
+procedure TControlSelection.MoveSelection(dx, dy: integer);
+var i:integer;
+  g:TGrabIndex;
 begin
-  writeln('[TControlSelection.MoveContent] dx='+IntToStr(dx)+', dy='+IntToStr(dy));
-  if FControlList.Count = 1 then
-     begin
-      if (TCOntrol(FControlList[0]) is TCustomForm) then exit;
-      TControl(FControlList[0]).SetBounds(FLeft, FTop, FWidth, FHeight);
-     end
+  if (dx=0) and (dy=0) then exit;
+  for i:=0 to FControls.Count-1 do
+    with Items[i] do
+      Control.SetBounds(OldLeft+dx,OldTop+dy
+         ,Control.Width,Control.Height);
+  for g:=Low(TGrabIndex) to High(TGrabIndex) do begin
+    FGrabbers[g].Left:=FGrabbers[g].OldLeft+dx;
+    FGrabbers[g].Top:=FGrabbers[g].OldTop+dy;
+  end;
+end;
+
+procedure TControlSelection.SizeSelection(dx, dy: integer);  
+// size all controls depending on ActiveGrabber.
+// if ActiveGrabber=nil then Left,Top
+var i:integer;
+  GrabberPos:TGrabPositions;
+begin
+  if Count=0 then exit;
+  if FActiveGrabber<>nil then
+    GrabberPos:=FActiveGrabber.Positions
   else
-  with FControlList do
-    for n := 0 to Count -1 do
-      with TControl(Items[n]) do
-      begin
-
-        SetBounds(Left+dx,Top+dy,Width,Height);
-        //Left := Left + dx;
-        //Top := Top + dy;
+    GrabberPos:=[gpLeft,gpTop];
+  if [gpTop,gpBottom] * GrabberPos = [] then dy:=0;
+  if [gpLeft,gpRight] * GrabberPos = [] then dx:=0;
+  if (dx=0) and (dy=0) then exit;
+  if gpLeft in GrabberPos then begin
+    FLeft:=FOldLeft+dx;
+    FWidth:=FOldWidth-dx;
+  end;
+  if gpRight in GrabberPos then begin
+    FWidth:=FOldWidth+dx;
+  end;
+  if gpTop in GrabberPos then begin
+    FTop:=FOldTop+dy;
+    FHeight:=FOldHeight-dy;
+  end;
+  if gpBottom in GrabberPos then begin
+    FHeight:=FOldHeight+dy;
+  end;
+  AdjustGrabber;
+  if Count=1 then begin
+    // single selection
+    Items[0].Control.SetBounds(FLeft,FTop,FWidth,FHeight);
+  end else if Count>1 then begin
+    // multi selection
+    if (FOldWidth<>0) and (FOldHeight<>0) then begin
+      for i:=0 to Count-1 do begin
+        Items[i].Control.SetBounds(
+          FOldLeft + (((Items[i].OldLeft-FOldLeft) * FWidth) div FOldWidth),
+          FOldTop + (((Items[i].OldTop-FOldTop) * FHeight) div FOldHeight),
+          Max(1,Abs((Items[i].OldWidth * FWidth) div FOldWidth)),
+          Max(1,Abs((Items[i].OldHeight * FHeight) div FOldHeight))
+        );
       end;
+    end;
+  end;
+  DoChange;
 end;
 
-procedure TControlSelection.Remove(AControl: TControl);
-var
-  n: Integer;
+procedure TControlSelection.DrawGrabbers;
+var OldBrushColor:TColor;
+  g:TGrabIndex;
 begin
-  with AControl do
-    WriteLn(Format(
-      '[TControlSelection.Remove] Remove %s --> X:%d, Y:%d, W:%d, H: %d'
-      ,[Classname, Left, Top, Width, Height]));
+  if (Count=0) or (FCustomForm=nil)
+  or (Items[0].Control is TCustomForm) then exit;
+  with FCustomForm.Canvas do begin
+    OldBrushColor:=Brush.Color;
+    Brush.Color:=clBlack;
+    for g:=Low(TGrabIndex) to High(TGrabIndex) do
+      FillRect(Rect(FGrabbers[g].Left,FGrabbers[g].Top
+        ,FGrabbers[g].Left+FGrabbers[g].Width
+        ,FGrabbers[g].Top+FGrabbers[g].Height));
+    Brush.Color:=OldbrushColor;
+  end;
+end;
 
-  if (FControlList.Remove(AControl) <> -1)
-  then begin
-    if FControlList.Count > 0
-    then begin
-      for n := 0 to FControlList.Count - 1 do
-        AdjustSize(TControl(FControlList[n]), n = 0);
-    end
-    else FVisible := False;
+function TControlSelection.GrabberAtPos(X,Y:integer):TGrabber;
+var g:TGrabIndex;
+begin
+  if FControls.Count>0 then begin
+    for g:=Low(TGrabIndex) to High(TGrabIndex) do
+      if (FGrabbers[g].Left<=x) and (FGrabbers[g].Top<=y)
+      and (FGrabbers[g].Left+FGrabbers[g].Width>x)
+      and (FGrabbers[g].Top+FGrabbers[g].Height>y) then begin
+        Result:=FGrabbers[g];
+        exit;
+      end;
+  end;
+  Result:=nil;
+end;
 
-    SetGrabbers;
+procedure TControlSelection.DrawMarker(AControl:TControl; DC:HDC);
+var OldBrushColor:TColor;
+  ALeft,ATop:integer;
+  FormOrigin,AControlOrigin:TPoint;
+  SaveIndex:HDC;
+begin
+  if (Count<1) or (FCustomForm=nil) or (AControl is TCustomForm)
+  or (not IsSelected(AControl)) then exit;
+  FormOrigin:=FCustomForm.ClientOrigin;
+  AControlOrigin:=AControl.ClientOrigin;
+  // MoveWindowOrg is currently truned off in the gtk
+  // this is a workaround
+  ALeft:=0; //AControlOrigin.X-FormOrigin.X;
+  ATop:=0; //AControlOrigin.Y-FormOrigin.Y;
+  SaveIndex := SaveDC(DC);
+  //MoveWindowOrg(DC, 15,5);
+  FCustomForm.Canvas.Handle:=DC;
+writeln('DrawMarker A ',FCustomForm.Name,'='
+    ,FormOrigin.X,',',FormOrigin.Y
+    ,' Control=',AControl.Name,',',AControlOrigin.X,',',AControlOrigin.Y
+    ,' DC=',FCustomForm.Canvas.Handle,' ',Cardinal(Pointer(FCustomForm))
+    ,' MS=',MarkerSize);
+  with FCustomForm.Canvas do begin
+    OldBrushColor:=Brush.Color;
+    Brush.Color:=clDKGray;
+//FillRect(Rect(0,0,6,500));
+    FillRect(Rect(ALeft,ATop,ALeft+MarkerSize,ATop+MarkerSize));
+    FillRect(Rect(ALeft,ATop+AControl.Height-MarkerSize
+             ,ALeft+MarkerSize,ATop+AControl.Height));
+    FillRect(Rect(ALeft+AControl.Width-MarkerSize,ATop
+                 ,ALeft+AControl.Width,ATop+MarkerSize));
+    FillRect(Rect(ALeft+AControl.Width-MarkerSize
+                 ,ATop+AControl.Height-MarkerSize
+                 ,ALeft+AControl.Width,ATop+AControl.Height));
+    Brush.Color:=OldbrushColor;
+  end;
+  FCustomForm.Canvas.Handle:=0;
+  RestoreDC(DC, SaveIndex);
+end;
 
-    with TSelectControl(AControl) do
+procedure TControlSelection.DrawRubberband(DeleteOld:boolean; ARect:TRect);
+
+  procedure DrawInvertFrameRect(x1,y1,x2,y2:integer);
+  var i:integer;
+    procedure InvertPixel(x,y:integer);
+    var c:TColor;
     begin
-     { OnMouseDown := nil;
-      OnMouseMove := nil;
-      OnMouseUp := nil;}
+      c:=FCustomForm.Canvas.Pixels[x,y];
+      c:=c xor $ffffff;
+      FCustomForm.Canvas.Pixels[x,y]:=c;
     end;
-    FDragging := False;
-    DoChange;
-  end;
-end;
-
-procedure TControlSelection.SetGrabbers;
-var
-  GrabPos: TGrabIndex;
-  Grabber: TGrabber;
-  GrabLeft, GrabTop: Integer;
-begin
-  WriteLn(Format(
-    '[TControlSelection.SetGrabbers] Selection --> X:%d, Y:%d, W:%d, H:%d'
-    , [FLeft, FTop, FWidth, FHeight]));
-  for GrabPos := Low(TGrabIndex) to High(TGrabIndex) do
   begin
-    Grabber := FGrabbers[GrabPos]; 
-
-    //if FVisible then
-     begin
-      //Write('[TControlSelection.SetGrabbers] Setting grabber ',Ord(GrabPos),' --> ');
-      if gpLeft in Grabber.Positions
-      then begin
-        GrabLeft := FLeft - GRAB_SIZE;
-        //Write('Left,   ');
-      end
-      else begin
-        if gpRight in Grabber.Positions
-        then begin
-          //Write('Right,  ');
-          GrabLeft := FLeft + FWidth;
-        end
-        else begin
-          //Write('Center, ');
-          GrabLeft := FLeft + (FWidth - GRAB_SIZE) div 2;
-        end;
-      end;
-
-      if gpTop in Grabber.Positions
-      then begin
-        GrabTop := FTop - GRAB_SIZE;
-        //Write('Top    ');
-      end
-      else begin
-        if gpBottom in Grabber.Positions
-        then begin
-          //Write('Bottom ');
-          GrabTop := FTop + FHeight;
-        end
-        else begin
-          //Write('Center ');
-          GrabTop := FTop + (FHeight - GRAB_SIZE) div 2;
-        end;
-      end;
-      
-      Grabber.SetBounds(GrabLeft,GrabTop,GRAB_SIZE,GRAB_SIZE);
-
-      //WriteLN(Format('X:%d, Y:%d',  [Grabber.Left, Grabber.Top]));
+    if FCustomForm=nil then exit;
+    if x1>x2 then begin i:=x1; x1:=x2; x2:=i; end;
+    if y1>y2 then begin i:=y1; y1:=y2; y2:=i; end;
+    i:=x1+1;
+    while i<x2-1 do begin
+      InvertPixel(i,y1);
+      InvertPixel(i,y2);
+      inc(i,2);
     end;
-      Grabber.Visible := FVisible;
-
+    i:=y1;
+    while i<y2 do begin
+      InvertPixel(x1,i);
+      InvertPixel(x2,i);
+      inc(i,2);
+    end;
   end;
+
+// DrawRubberband
+begin
+  if DeleteOld then
+    with FRubberBandBounds do
+      DrawInvertFrameRect(Left,Top,Right,Bottom);
+  FRubberBandBounds:=ARect;
+  with FRubberBandBounds do
+    DrawInvertFrameRect(Left,Top,Right,Bottom);
 end;
 
-procedure TControlSelection.SetVisible(const Value: Boolean);
-begin
-  if FVisible <> Value
-  then begin
-    FVisible := Value;
-    SetGrabbers;
-  end;
-end;
+procedure TControlSelection.SelectWithRubberBand(ACustomForm:TCustomForm);
+var i:integer;
+  FormOrigin:TPoint;
 
-procedure TControlSelection.SizeContent;
-begin
-  WriteLn('[TControlSelection.SizeContent]');
-  if FControlList.Count = 1 then
+  function ControlInRubberBand(AControl:TControl):boolean;
+  var ALeft,ATop,ARight,ABottom:integer;
+    Origin:TPoint;
   begin
-    TControl(FControlList[0]).SetBounds(FLeft, FTop, FWidth, FHeight);
+    Origin:=AControl.ClientOrigin;
+    ALeft:=Origin.X-FormOrigin.X;
+    ATop:=Origin.Y-FormOrigin.Y;
+    ARight:=ALeft+AControl.Width;
+    ABottom:=ATop+AControl.Height;
+    Result:=(ALeft<FRubberBandBounds.Right)
+        and (ATop<FRubberBandBounds.Bottom)
+        and (ARight>=FRubberBandBounds.Left)
+        and (ABottom>=FRubberBandBounds.Top);
   end;
+
+// SelectWithRubberBand
+begin
+  FormOrigin:=ACustomForm.ClientOrigin;
+  Clear;
+  for i:=0 to ACustomForm.ControlCount-1 do
+    if ControlInRubberBand(ACustomForm.Controls[i]) then
+      Add(ACustomForm.Controls[i]);
 end;
 
-initialization
-
-CaptureGrabber:=nil;
+procedure TControlSelection.SetRubberBandBounds(ARect:TRect);
+begin
+  FRubberBandBounds:=ARect;
+end;
 
 end.

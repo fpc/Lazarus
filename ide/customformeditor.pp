@@ -17,10 +17,9 @@
  *                                                                         *
  ***************************************************************************/
 }
-{$H+}
 unit CustomFormEditor;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -47,27 +46,27 @@ each control that's dropped onto the form
 
   protected
     Function GetPPropInfobyIndex(Index : Integer) : PPropInfo;
-    Function GetPPropInfobyName(Name : String) : PPropInfo;
+    Function GetPPropInfobyName(Name : ShortString) : PPropInfo;
 
   public
     constructor Create;
     destructor Destroy; override;
 
-    Function GetComponentType    : String; override;
+    Function GetComponentType    : ShortString; override;
     Function GetComponentHandle  : LongInt; override;
     Function GetParent           : TIComponentInterface; override;
     Function IsTControl          : Boolean; override;
     Function GetPropCount	   : Integer; override;
     Function GetPropType(Index : Integer) : TTypeKind; override;
     Function GetPropTypeInfo(Index : Integer) : PTypeInfo;
-    Function GetPropName(Index : Integer) : String; override;
-    Function GetPropTypeName(Index : Integer) : String; override;
-    Function GetPropTypebyName(Name : String) : TTypeKind; override;
+    Function GetPropName(Index : Integer) : ShortString; override;
+    Function GetPropTypeName(Index : Integer) : ShortString; override;
+    Function GetPropTypebyName(Name : ShortString) : TTypeKind; override;
 
     Function GetPropValue(Index : Integer; var Value) : Boolean; override;
-    Function GetPropValuebyName(Name: String; var Value) : Boolean; override;
+    Function GetPropValuebyName(Name: ShortString; var Value) : Boolean; override;
     Function SetProp(Index : Integer; const Value) : Boolean; override;
-    Function SetPropbyName(Name : String; const Value) : Boolean; override;
+    Function SetPropbyName(Name : ShortString; const Value) : Boolean; override;
 
 
     Function GetControlCount: Integer; override;
@@ -105,7 +104,7 @@ TCustomFormEditor
     Procedure DeleteControl(Value : TComponent);
     Function Filename : String; override;
     Function FormModified : Boolean; override;
-    Function FindComponentByName(const Name : String) : TIComponentInterface; override;
+    Function FindComponentByName(const Name : ShortString) : TIComponentInterface; override;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
     Function GetFormComponent : TIComponentInterface; override;
 //    Function CreateComponent(CI : TIComponentInterface; TypeName : String;
@@ -115,7 +114,8 @@ TCustomFormEditor
       TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface; override;
     Function NewFormFromLFM(_Filename : String): TCustomform;
     Procedure ClearSelected;
-    property SelectedComponents : TComponentSelectionList read FSelectedComponents write FSelectedComponents;
+    property SelectedComponents : TComponentSelectionList 
+      read FSelectedComponents write FSelectedComponents;
     property Obj_Inspector : TObjectInspector read FObj_Inspector write FObj_Inspector;
 
   end;
@@ -156,7 +156,7 @@ writeln('Index = '+inttostr(PRI^.index));
   tkAString,
   tkWString : Begin
               Writeln('String...');
-              SetStrProp(FControl,PRI,String(Value));
+              SetStrProp(FControl,PRI,ShortString(Value));
               Result := True;
              end;
   tkInteger,
@@ -195,7 +195,7 @@ Result := True;
        tkAString,
        tkWString : Begin
                     Writeln('Get String...');
-                    String(Value) := GetStrProp(FControl,PRI);
+                    ShortString(Value) := GetStrProp(FControl,PRI);
                     Writeln('The string returned is '+String(value));
                     Writeln('*Get String...');
                    end;
@@ -243,7 +243,7 @@ Begin
    Freemem(PP);
 end;
 
-Function TComponentInterface.GetPPropInfoByName(Name:String): PPropInfo;
+Function TComponentInterface.GetPPropInfoByName(Name:ShortString): PPropInfo;
 var
   PT : PTypeData;
   PP : PPropList;
@@ -268,7 +268,7 @@ Begin
    Freemem(PP);
 end;
 
-Function TComponentInterface.GetComponentType    : String;
+Function TComponentInterface.GetComponentType    : ShortString;
 Begin
   Result:=FControl.ClassName;
 end;
@@ -340,11 +340,11 @@ end;
 
 
 {This returns "Integer" or "Boolean"}
-Function TComponentInterface.GetPropTypeName(Index : Integer) : String;
+Function TComponentInterface.GetPropTypeName(Index : Integer) : ShortString;
 var
-PT : PTypeData;
-PP : PPropList;
-PI : PTypeInfo;
+  PT : PTypeData;
+  PP : PPropList;
+  PI : PTypeInfo;
 Begin
   PI:=FControl.ClassInfo;
   PT:=GetTypeData(PI);
@@ -359,7 +359,7 @@ end;
 
 
 {This returns "Left" "Align" "Visible"}
-Function TComponentInterface.GetPropName(Index : Integer) : String;
+Function TComponentInterface.GetPropName(Index : Integer) : ShortString;
 var
 PT : PTypeData;
 PP : PPropList;
@@ -377,7 +377,7 @@ Begin
   freemem(PP);
 end;
 
-Function TComponentInterface.GetPropTypebyName(Name : String) : TTypeKind;
+Function TComponentInterface.GetPropTypebyName(Name : ShortString) : TTypeKind;
 var
   PT  : PTypeData;
   PP  : PPropList;
@@ -411,7 +411,7 @@ PP := GetPPropInfoByIndex(Index);
 Result := FGetProp(PP,Value);
 end;
 
-Function TComponentInterface.GetPropValuebyName(Name: String; var Value) : Boolean;
+Function TComponentInterface.GetPropValuebyName(Name: ShortString; var Value) : Boolean;
 var
 PRI : PPropInfo;
 Begin
@@ -435,7 +435,7 @@ Begin
 end;
 
 
-Function TComponentInterface.SetPropbyName(Name : String; const Value) : Boolean;
+Function TComponentInterface.SetPropbyName(Name : ShortString; const Value) : Boolean;
 var
   PRI : PPropInfo;
 Begin
@@ -563,7 +563,8 @@ Begin
   Result := FModified;
 end;
 
-Function TCustomFormEditor.FindComponentByName(const Name : String) : TIComponentInterface;
+Function TCustomFormEditor.FindComponentByName(
+  const Name : ShortString) : TIComponentInterface;
 Var
   Num : Integer;
 Begin
@@ -593,7 +594,7 @@ Begin
 end;
 
 Function TCustomFormEditor.CreateComponent(ParentCI : TIComponentInterface;
-TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface;
+  TypeClass : TComponentClass;  X,Y,W,H : Integer): TIComponentInterface;
 Var
   Temp : TComponentInterface;
   TempName    : String;
@@ -615,9 +616,9 @@ Begin
    else
   Begin
     //this should be a form
-       NewFormIndex := JITFormList.AddNewJITForm;
-       if NewFormIndex >= 0 then
-       Temp.FControl := JITFormList[NewFormIndex];
+    NewFormIndex := JITFormList.AddNewJITForm;
+    if NewFormIndex >= 0 then
+      Temp.FControl := JITFormList[NewFormIndex];
   end;
 
   if Assigned(ParentCI) then
@@ -638,21 +639,20 @@ Begin
       end;
     end;
 
-  if ParentCI <> nil then
-   Begin
+  if ParentCI <> nil then Begin
     Writeln('ParentCI <> nil');
     TempName := Temp.FControl.ClassName;
     delete(TempName,1,1);
     writeln('TempName is '''+TempName+'''');
     Num := 0;
     Found := True;
-    While Found do
-    Begin
+    While Found do Begin
       Found := False;
       inc(num);
       for I := 0 to FComponentInterfaceList.Count-1 do
       begin
-        DummyComponent:=TComponent(TComponentInterface(FComponentInterfaceList.Items[i]).FControl);
+        DummyComponent:=TComponent(TComponentInterface(
+          FComponentInterfaceList.Items[i]).FControl);
         if UpCase(DummyComponent.Name)=UpCase(TempName+IntToStr(Num)) then
         begin
           Found := True;
@@ -662,7 +662,7 @@ Begin
     end;
     Temp.FControl.Name := TempName+IntToStr(Num);
     Writeln('TempName + num = '+TempName+Inttostr(num));
-   end;
+  end;
 
   if (Temp.FControl is TControl) then
   Begin

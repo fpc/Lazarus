@@ -73,6 +73,15 @@ function FindResourceInCode(Source:string; AddCode:string;
    var Position,EndPosition:integer):boolean;
 function AddResourceCode(var Source:string; AddCode:string):boolean;
 
+// form components
+function FindFormClassDefinitionInSource(Source:string; FormClassName:string;
+   var FormClassNameStartPos, FormBodyStartPos: integer
+   ):boolean;
+function FindFormComponentInSource(Source: string; FormBodyStartPos: integer;
+  ComponentName, ComponentClassName: string): integer;
+function AddFormComponentToSource(var Source:string; FormBodyStartPos: integer;
+  ComponentName, ComponentClassName: string): boolean;
+
 // code search
 function SearchCodeInSource(Source,Find:string; StartPos:integer;
    var EndFoundPosition:integer;  CaseSensitive:boolean):integer;
@@ -620,6 +629,89 @@ begin
     Source:=Source+EndOfLine+AddCode;
   end;
   Result:=true;
+end;
+
+function FindFormClassDefinitionInSource(Source:string; FormClassName:string;
+  var FormClassNameStartPos, FormBodyStartPos: integer
+  ):boolean;
+var AtomEnd,AtomStart: integer;
+begin
+  Result:=false;
+  if FormClassName='' then exit;
+  repeat
+    FormClassNameStartPos:=SearchCodeInSource(Source,
+      FormClassName+'=class(TForm)',1,FormBodyStartPos,false);
+    if FormClassNameStartPos<1 then exit;
+    AtomEnd:=FormBodyStartPos;
+  until ReadNextPascalAtom(Source,AtomEnd,AtomStart)<>';';
+  Result:=true;
+end;
+
+function FindFormComponentInSource(Source: string; FormBodyStartPos: integer;
+  ComponentName, ComponentClassName: string): integer;
+var AtomStart, OldPos: integer;
+  Atom: string;
+begin
+  ComponentName:=lowercase(ComponentName);
+  ComponentClassName:=lowercase(ComponentClassName);
+  Result:=FormBodyStartPos;
+  repeat
+    Atom:=lowercase(ReadNextPascalAtom(Source,Result,AtomStart));
+    if (Atom='public') or (Atom='published') or (Atom='private') or (Atom='end')
+    or (Atom='protected') or (Atom='') then begin
+      Result:=-1;
+      exit;
+    end;
+    OldPos:=Result;
+    if (lowercase(ReadNextPascalAtom(Source,Result,AtomStart))=ComponentName)
+    and (ReadNextPascalAtom(Source,Result,AtomStart)=':')
+    and (lowercase(ReadNextPascalAtom(Source,Result,AtomStart))=ComponentClassName)
+    and (ReadNextPascalAtom(Source,Result,AtomStart)=';') then begin
+      Result:=OldPos;
+      exit;
+    end;
+  until Result>length(Source);
+  Result:=-1;
+end;
+
+function AddFormComponentToSource(var Source:string; FormBodyStartPos: integer;
+  ComponentName, ComponentClassName: string): boolean;
+var Position, AtomStart: integer;
+  Atom: string;
+  PriorSpaces, NextSpaces: string;
+begin
+  Result:=false;
+  if FindFormComponentInSource(Source,FormBodyStartPos
+       ,ComponentName,ComponentClassName)>0 then begin
+    Result:=true;
+    exit;
+  end;
+  repeat
+    // find a good position to insert the component
+    // in front of next section and in front of procedures/functions
+    Position:=FormBodyStartPos;
+    Atom:=lowercase(ReadNextPascalAtom(Source,Position,AtomStart));
+    if (Atom='procedure') or (Atom='function') or (Atom='end') or (Atom='class')
+    or (Atom='constructor') or (Atom='destructor')
+    or (Atom='public') or (Atom='private') or (Atom='protected')
+    or (Atom='published') or (Atom='class') or (Atom='property') then begin
+      // insert component definition in source
+      if (Atom='public') or (Atom='private') or (Atom='protected')
+      or (Atom='published') then begin
+        PriorSpaces:='  ';
+        NextSpaces:='  ';
+      end else begin
+        PriorSpaces:='';
+        NextSpaces:='    ';
+      end;
+      Source:=copy(Source,1,AtomStart-1)
+             +PriorSpaces+ComponentName+': '+ComponentClassName+';'+EndOfLine
+             +NextSpaces+copy(Source,AtomStart,length(Source)-AtomStart+1);
+      Result:=true;
+      exit;
+    end;
+  until Position>length(Source);
+  Result:=false;
 end;
 
 function SearchCodeInSource(Source,Find:string; StartPos:integer;

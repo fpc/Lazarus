@@ -31,7 +31,7 @@ type
     property Page:TRegisteredComponentPage read FPage;
     property ComponentClass:TComponentClass read FComponentClass;
     property IndexInPage:integer read FIndexInPage;
-    property UnitName:ShortString;
+    property UnitName:ShortString read FUnitName;
     constructor Create(APage:TRegisteredComponentPage; TheIndexInPage:integer;
       AUnitName:ShortString;  AComponentClass:TComponentClass);
   end;
