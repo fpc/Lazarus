@@ -1194,7 +1194,7 @@ begin
   if Dest is TIDEBreakPoint
   then begin
     DestBreakPoint := TIDEBreakPoint(Dest);
-    writeln('TIDEBreakPoint.AssignTo Src=',ClassName,' Dest=',Dest.ClassName,' File="',FSource,'" Line=',FLine);
+    //writeln('TIDEBreakPoint.AssignTo Src=',ClassName,' Dest=',Dest.ClassName,' File="',FSource,'" Line=',FLine);
     DestBreakPoint.BeginUpdate;
     try
       DestBreakPoint.Actions := FActions;
@@ -1606,7 +1606,7 @@ var
 begin
   Clear;
   NewCount:=XMLConfig.GetValue(Path+'Count',0);
-  writeln('TIDEBreakPoints.LoadFromXMLConfig NewCount=',NewCount);
+  //writeln('TIDEBreakPoints.LoadFromXMLConfig NewCount=',NewCount);
   for i:=0 to NewCount-1 do
   begin
     LoadBreakPoint := TIDEBreakPoint.Create(nil);
@@ -1614,9 +1614,9 @@ begin
       Path+'Item'+IntToStr(i+1)+'/',OnLoadFilename,OnGetGroup);
       
     BreakPoint := Find(LoadBreakPoint.Source, LoadBreakPoint.Line, LoadBreakPoint);
-    writeln('TIDEBreakPoints.LoadFromXMLConfig i=',i,' ',
-      LoadBreakPoint.InitialEnabled,' ',LoadBreakPoint.Source,' ',LoadBreakPoint.Line,
-      ' OldBreakPoint=',BreakPoint<>nil);
+    //writeln('TIDEBreakPoints.LoadFromXMLConfig i=',i,' ',
+    //  LoadBreakPoint.InitialEnabled,' ',LoadBreakPoint.Source,' ',LoadBreakPoint.Line,
+    //  ' OldBreakPoint=',BreakPoint<>nil);
 
     if BreakPoint = nil
     then BreakPoint := Add(LoadBreakPoint.Source, LoadBreakPoint.Line);
@@ -1720,7 +1720,7 @@ end;
 function TBaseBreakPoints.Add (const ASource: String; const ALine: Integer ): TBaseBreakPoint;
 begin
   Result := TBaseBreakPoint(inherited Add);
-  writeln('TBaseBreakPoints.Add ',Result.ClassName,' ',ASource,' ',ALine);
+  //writeln('TBaseBreakPoints.Add ',Result.ClassName,' ',ASource,' ',ALine);
   Result.SetLocation(ASource, ALine);
 end;
 
@@ -2454,6 +2454,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.39  2003/06/03 16:12:14  mattias
+  fixed loading bookmarks for editor index 0
+
   Revision 1.38  2003/06/03 10:29:22  mattias
   implemented updates between source marks and breakpoints
 

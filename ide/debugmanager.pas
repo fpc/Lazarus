@@ -353,7 +353,6 @@ procedure TManagedBreakPoint.SetLocation(const ASource: String;
 begin
   if (Source = ASource) and (Line = ALine) then exit;
   inherited SetLocation(ASource, ALine);
-  writeln('TManagedBreakPoint.SetLocation ',Line);
   if FMaster<>nil then FMaster.SetLocation(ASource,ALine);
 end;
 
@@ -1370,6 +1369,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.44  2003/06/03 16:12:14  mattias
+  fixed loading bookmarks for editor index 0
+
   Revision 1.43  2003/06/03 10:29:22  mattias
   implemented updates between source marks and breakpoints
 

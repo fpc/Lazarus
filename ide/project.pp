@@ -2238,12 +2238,13 @@ var
   UnitMark: TFileBookmark;
   ProjectMark: TProjectBookmark;
 begin
-  if AnUnitInfo.EditorIndex<=0 then exit;
+  if AnUnitInfo.EditorIndex<0 then exit;
   for i:=0 to AnUnitInfo.Bookmarks.Count-1 do begin
     UnitMark:=AnUnitInfo.Bookmarks[i];
     ProjectMark:=Bookmarks.BookmarkWithIndex(UnitMark.ID);
     // merge the bookmark into the currently existing bookmarks, if the ID is
     // free
+    //writeln('TProject.MergeBookmarks ',AnUnitInfo.Filename,' Y=',UnitMark.Y);
     if (ProjectMark=nil) then
       Bookmarks.Add(UnitMark.X,UnitMark.Y,AnUnitInfo.EditorIndex,UnitMark.ID);
   end;
@@ -2638,6 +2639,9 @@ end.
 
 {
   $Log$
+  Revision 1.127  2003/06/03 16:12:14  mattias
+  fixed loading bookmarks for editor index 0
+
   Revision 1.126  2003/06/01 21:09:09  mattias
   implemented datamodules
 
