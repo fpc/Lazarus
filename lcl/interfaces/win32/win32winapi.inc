@@ -1751,8 +1751,9 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.GetScrollInfo(Handle: HWND; BarFlag: Integer; var ScrollInfo: TScrollInfo): Boolean;
 Begin
+  ScrollInfo.cbSize:=sizeof(ScrollInfo);
   Assert(False, 'Trace:TODO: [TWin32Object.GetScrollInfo]');
-  Result := Boolean(Windows.GetScrollInfo(Handle, BarFlag, Windows.LPSCROLLINFO(@ScrollInfo)));
+  Result := Boolean(Windows.GetScrollInfo(Handle, BarFlag, @ScrollInfo));
 End;
 
 {------------------------------------------------------------------------------
@@ -2608,9 +2609,9 @@ End;
 Function TWin32Object.SetScrollInfo(Handle: HWND; SBStyle: Integer; ScrollInfo: TScrollInfo; BRedraw: Boolean): Integer;
 Begin
 //  Assert(False, 'Trace:[TWin32Object.SetScrollInfo]');
-  With ScrollInfo Do
+  //With ScrollInfo Do
    // Assert(False, Format('Trace:> [TWin32Object.SetScrollInfo] Mask:0x%x, Min:%d, Max:%d, Page:%d, Pos:%d', [FMask, NMin, NMax, NPage, NPos]));
-
+  ScrollInfo.cbSize:=sizeof(ScrollInfo);
   Result := Windows.SetScrollInfo(Handle, SBStyle, @ScrollInfo, BRedraw);
   With ScrollInfo Do
     Assert(False, Format('Trace:> [TWin32Object.SetScrollInfo] --> %d', [Result]));
@@ -2903,6 +2904,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.93  2004/01/17 11:11:42  micha
+  scrollbar fix (from martin smat)
+
   Revision 1.92  2004/01/12 08:20:50  micha
   implement overlay window for designer
 

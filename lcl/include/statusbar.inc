@@ -248,7 +248,7 @@ Begin
   if (Panels[PanelNum].Bevel in [pbRaised,pbLowered]) then begin
     Canvas.Brush.Color := Color;
     Canvas.FillRect(Rect(XLeft+1, Top+1, XLeft + PW-1, Top + Height - 1));
-    
+
     if Panels[PanelNum].Bevel = pbRaised then
     begin
       LeftTopColor:=clBtnHighlight;

@@ -696,7 +696,7 @@ const
   SIF_PAGE = 2;
   SIF_POS = 4;
   SIF_DISABLENOSCROLL = 8;
-  SIF_TRACKPOS = 100;
+  SIF_TRACKPOS = $10;
   SIF_ALL = (SIF_RANGE or SIF_PAGE or SIF_POS or SIF_TRACKPOS);
 
 
@@ -1916,6 +1916,9 @@ end.
 
 {
   $Log$
+  Revision 1.55  2004/01/17 11:11:42  micha
+  scrollbar fix (from martin smat)
+
   Revision 1.54  2004/01/03 21:06:05  micha
   - fix win32/checklistbox
   - implement proper lcl to interface move/size notify via setwindowpos
