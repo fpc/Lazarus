@@ -87,22 +87,32 @@ begin
     Result:=MinInterfaceHeight;
 end;
 
+// EffectiveMaxWidth is the minumum of MaxWidth and MaxInterfaceWidth,
+// but is at least MinInterfaceWidth.
+// A value of zero is interpreted as unconstraint.
 function TSizeConstraints.EffectiveMaxWidth: integer;
 begin
-  if (MaxWidth<MaxInterfaceWidth) then begin
+  if (MaxInterfaceWidth>0) and
+    ((MaxWidth=0) or (MaxInterfaceWidth<MaxWidth)) then
+    Result := MaxInterfaceWidth
+  else
     Result:=MaxWidth;
-    if (Result<MinInterfaceWidth) then Result:=MinInterfaceWidth;
-  end else
-    Result:=MaxInterfaceWidth;
+  if (Result>0) and (MinInterfaceWidth>0) and (Result<MinInterfaceWidth) then
+    Result:=MinInterfaceWidth;
 end;
 
+// EffectiveMaxHeight is the minumum of MaxHeight and MaxInterfaceHeight,
+// but is at least MinInterfaceHeight.
+// A value of zero is interpreted as unconstraint.
 function TSizeConstraints.EffectiveMaxHeight: integer;
 begin
-  if (MaxHeight<MaxInterfaceHeight) then begin
+  if (MaxInterfaceHeight>0) and
+    ((MaxHeight=0) or (MaxInterfaceHeight<MaxHeight)) then
+    Result := MaxInterfaceHeight
+  else
     Result:=MaxHeight;
-    if Result<MinInterfaceHeight then Result:=MinInterfaceHeight;
-  end else
-    Result:=MaxInterfaceHeight;
+  if (Result>0) and (MinInterfaceHeight>0) and (Result<MinInterfaceHeight) then
+    Result:=MinInterfaceHeight;
 end;
 
 function TSizeConstraints.MinMaxWidth(Width: integer): integer;
