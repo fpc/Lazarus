@@ -2141,31 +2141,34 @@ begin
       end;
   
       LM_GETSEL :
-      begin
-        if (Sender as TWinControl).fCompStyle = csListBox then
-        begin
-          { Get the child in question of that index }
-          ListItem:= g_list_nth_data(PGtkList(GetWidgetInfo(Pointer(Handle),
-                       True)^.ImplementationWidget)^.children, Integer(Data^));
-          Result:= g_list_index(PGtkList(GetWidgetInfo(Pointer(Handle),
-                            True)^.ImplementationWidget)^.selection, ListItem);
-        end
-        else if (Sender as TControl).fCompStyle = csCListBox then
-        begin
-          { Get the selections }
-          GList:= PGtkCList(GetWidgetInfo(Pointer(Handle),
-                                       True)^.ImplementationWidget)^.selection;
-          Result := -1;      { assume: nothing found }
-          while Assigned(GList) do begin
-            if integer(GList^.data) = integer(Data^) then begin
-              Result:= 0;
-              Break;
-            end else
-              GList := GList^.Next;
+        case (Sender as TControl).fCompStyle of
+        csListBox:
+          begin
+            { Get the child in question of that index }
+            Widget:=GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+            ListItem:= g_list_nth_data(PGtkList(Widget)^.children, Integer(Data^));
+            if (ListItem<>nil)
+            and (g_list_index(PGtkList(Widget)^.selection, ListItem)>=0) then
+              Result:=1
+            else
+              Result:=0;
+          end;
+        csCListBox:
+          begin
+            { Get the selections }
+            Widget:=GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+            GList:= PGtkCList(Widget)^.selection;
+            Result := 0;      { assume: nothing found }
+            while Assigned(GList) do begin
+              if integer(GList^.data) = integer(Data^) then begin
+                Result:= 1;
+                Break;
+              end else
+                GList := GList^.Next;
+            end;
           end;
         end;
-      end;
-  
+
       LM_SETLIMITTEXT :
       begin
          if (Sender is TControl) and (TControl(Sender).fCompStyle = csComboBox) 
@@ -6824,6 +6827,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.316  2003/01/01 10:46:59  mattias
+  fixes for win32 listbox/combobox from Karl Brandt
+
   Revision 1.315  2002/12/29 18:13:38  mattias
   identifier completion: basically working, still hidden
 
