@@ -44,7 +44,7 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeToolMemManager, FileProcs,
-  ExprEval, SourceLog, KeywordFuncLists;
+  ExprEval, SourceLog, KeywordFuncLists, BasicCodeTools;
 
 const
   PascalCompilerDefine = ExternalMacroStart+'Compiler';
@@ -246,6 +246,7 @@ type
     property Links[Index: integer]: TSourceLink read GetLinks write SetLinks;
     function LinkCount: integer;
     function LinkIndexAtCleanPos(ACleanPos: integer): integer;
+    function LinkIndexAtCursorPos(ACursorPos: integer; ACode: Pointer): integer;
     function LinkSize(Index: integer): integer;
     function FindFirstSiblingLink(LinkIndex: integer): integer;
     function FindParentLink(LinkIndex: integer): integer;
@@ -290,11 +291,16 @@ type
         read FPascalCompiler write FPascalCompiler;
     property ScanTillInterfaceEnd: boolean
         read FScanTillInterfaceEnd write SetScanTillInterfaceEnd;
+        
     procedure Scan(TillInterfaceEnd, CheckFilesOnDisk: boolean);
-    
     function UpdateNeeded(OnlyInterfaceNeeded,
         CheckFilesOnDisk: boolean): boolean;
+    function GuessMisplacedIfdefEndif(StartCursorPos: integer;
+        StartCode: pointer;
+        var EndCursorPos: integer; var EndCode: Pointer): boolean;
+
     property ChangeStep: integer read FChangeStep;
+
     procedure ActivateGlobalWriteLock;
     procedure DeactivateGlobalWriteLock;
     property OnGetGlobalWriteLockInfo: TOnGetWriteLockInfo
@@ -595,6 +601,26 @@ begin
   end;
   raise Exception.Create(
       'TLinkScanner.LinkAtCleanPos Consistency-Error 1');
+end;
+
+function TLinkScanner.LinkIndexAtCursorPos(ACursorPos: integer; ACode: Pointer
+  ): integer;
+var
+  CurLink: TSourceLink;
+  CurLinkSize: integer;
+begin
+  Result:=0;
+  while Result<LinkCount do begin
+    CurLink:=Links[Result];
+    if (ACode=CurLink.Code) and (ACursorPos>=CurLink.SrcPos) then begin
+      CurLinkSize:=LinkSize(Result);
+      if ACursorPos<CurLink.SrcPos+CurLinkSize then begin
+        exit;
+      end;
+    end;
+    inc(Result);
+  end;
+  Result:=-1;
 end;
 
 procedure TLinkScanner.SetSource(ACode: pointer);
@@ -1144,6 +1170,391 @@ begin
   FForceUpdateNeeded:=false;
   //writeln('TLinkScanner.UpdateNeeded END');
   Result:=false;
+end;
+
+{-------------------------------------------------------------------------------
+  function TLinkScanner.GuessMisplacedIfdefEndif
+  Params: StartCursorPos: integer; StartCode: pointer;
+          var EndCursorPos: integer; var EndCode: Pointer;
+  Result: boolean;
+
+
+-------------------------------------------------------------------------------}
+function TLinkScanner.GuessMisplacedIfdefEndif(StartCursorPos: integer;
+  StartCode: pointer;
+  var EndCursorPos: integer; var EndCode: Pointer): boolean;
+  
+  type
+    TIf = record
+      StartPos: integer; // comment start e.g. {
+      EndPos: integer;   // comment end  e.g. the char behind }
+      Expression: string;
+      HasElse: boolean;
+    end;
+    PIf = ^TIf;
+    
+    TTokenType = (ttNone,
+                  ttCommentStart, ttCommentEnd, // '{' '}'
+                  ttTPCommentStart, ttTPCommentEnd, // '(*' '*)'
+                  ttDelphiCommentStart, // '//'
+                  ttLineEnd
+                  );
+                  
+    TTokenRange = (trCode, trComment, trTPComment, trDelphiComment);
+
+    TToken = record
+      StartPos: integer;
+      EndPos: integer;
+      TheType: TTokenType;
+      Range: TTokenRange;
+      NestedComments: boolean;
+    end;
+    
+    TDirectiveType = (dtUnknown, dtIf, dtIfDef, dtElse, dtEndif);
+    
+  const
+    DirectiveTypeLen: array[TDirectiveType] of integer = (0,2,5,4,5);
+    
+    
+  function FindNextToken(const ASrc: string; var AToken: TToken): boolean;
+  var
+    ASrcLen: integer;
+    OldRange: TTokenRange;
+  begin
+    Result:=true;
+    AToken.StartPos:=AToken.EndPos;
+    ASrcLen:=length(ASrc);
+    OldRange:=AToken.Range;
+    
+    while (AToken.StartPos<=ASrcLen) do begin
+      case ASrc[AToken.StartPos] of
+      '{': // pascal comment start
+        begin
+          AToken.EndPos:=AToken.StartPos+1;
+          AToken.TheType:=ttCommentStart;
+          AToken.Range:=trComment;
+          if (OldRange=trCode) then
+            exit
+          else if AToken.NestedComments then begin
+            if (not FindNextToken(ASrc,AToken)) then begin
+              Result:=false;
+              exit;
+            end;
+            AToken.StartPos:=AToken.EndPos-1;
+            AToken.Range:=OldRange;
+          end;
+        end;
+        
+      '(': // check if Turbo Pascal comment start
+        if (AToken.StartPos<ASrcLen) and (ASrc[AToken.StartPos+1]='*') then
+        begin
+          AToken.EndPos:=AToken.StartPos+2;
+          AToken.TheType:=ttTPCommentStart;
+          AToken.Range:=trTPComment;
+          if (OldRange=trCode) then
+            exit
+          else if AToken.NestedComments then begin
+            if (not FindNextToken(ASrc,AToken)) then begin
+              Result:=false;
+              exit;
+            end;
+            AToken.StartPos:=AToken.EndPos-1;
+            AToken.Range:=OldRange;
+          end;
+        end;
+        
+      '/': // check if Delphi comment start
+        if (AToken.StartPos<ASrcLen) and (ASrc[AToken.StartPos+1]='/') then
+        begin
+          AToken.EndPos:=AToken.StartPos+2;
+          AToken.TheType:=ttDelphiCommentStart;
+          AToken.Range:=trDelphiComment;
+          if (OldRange=trCode) then
+            exit
+          else if AToken.NestedComments then begin
+            if (not FindNextToken(ASrc,AToken)) then begin
+              Result:=false;
+              exit;
+            end;
+            AToken.StartPos:=AToken.EndPos-1;
+            AToken.Range:=OldRange;
+          end;
+        end;
+        
+      '}': // pascal comment end
+        case AToken.Range of
+        trComment:
+          begin
+            AToken.EndPos:=AToken.StartPos+1;
+            AToken.TheType:=ttCommentEnd;
+            AToken.Range:=trCode;
+            exit;
+          end;
+          
+        trCode:
+          begin
+            // error (comment was never openend)
+            // -> skip rest of code
+            AToken.StartPos:=ASrcLen;
+          end;
+
+        else
+          // in different kind of comment -> ignore
+        end;
+        
+      '*': // turbo pascal comment end
+        if (AToken.StartPos<ASrcLen) and (ASrc[AToken.StartPos+1]=')') then
+        begin
+          case AToken.Range of
+          trTPComment:
+            begin
+              AToken.EndPos:=AToken.StartPos+1;
+              AToken.TheType:=ttTPCommentEnd;
+              AToken.Range:=trCode;
+              exit;
+            end;
+
+          trCode:
+            begin
+              // error (comment was never openend)
+              // -> skip rest of code
+              AToken.StartPos:=ASrcLen;
+            end;
+
+          else
+            // in different kind of comment -> ignore
+          end;
+        end;
+
+      #10,#13: // line end
+        if AToken.Range in [trDelphiComment] then begin
+          AToken.EndPos:=AToken.StartPos+1;
+          if (AToken.StartPos<ASrcLen)
+          and (ASrc[AToken.StartPos+1] in [#10,#13])
+          and (ASrc[AToken.StartPos+1]<>ASrc[AToken.StartPos]) then
+            inc(AToken.EndPos);
+          AToken.TheType:=ttLineEnd;
+          AToken.Range:=trCode;
+          exit;
+        end else begin
+          // in different kind of comment -> ignore
+        end;
+
+      '''': // skip string constant
+        begin
+          inc(AToken.StartPos);
+          while (AToken.StartPos<=ASrcLen) do begin
+            if (not (ASrc[AToken.StartPos] in ['''',#10,#13])) then begin
+              inc(AToken.StartPos);
+            end else begin
+              break;
+            end;
+          end;
+        end;
+        
+      end;
+      inc(AToken.StartPos);
+    end;
+    
+    // at the end of the code
+    AToken.EndPos:=AToken.StartPos;
+    AToken.TheType:=ttNone;
+    Result:=false;
+  end;
+
+  procedure FreeIfStack(var IfStack: TList);
+  var
+    i: integer;
+    AnIf: PIf;
+  begin
+    if IfStack=nil then exit;
+    for i:=0 to IfStack.Count-1 do begin
+      AnIf:=PIf(IfStack[i]);
+      AnIf^.Expression:='';
+      Dispose(AnIf);
+    end;
+    IfStack.Free;
+    IfStack:=nil;
+  end;
+  
+  function InitGuessMisplaced(var CurToken: TToken; ACode: Pointer;
+    var ASrc: string; var ASrcLen: integer): boolean;
+  var
+    ASrcLog: TSourceLog;
+  begin
+    Result:=false;
+    
+    // get source
+    if (FOnGetSource=nil) then exit;
+    ASrcLog:=FOnGetSource(Self,ACode);
+    if ASrcLog=nil then exit;
+    ASrc:=ASrcLog.Source;
+    ASrcLen:=length(ASrc);
+
+    CurToken.StartPos:=1;
+    CurToken.EndPos:=1;
+    CurToken.Range:=trCode;
+    CurToken.TheType:=ttNone;
+    CurToken.NestedComments:=NestedComments;
+    Result:=true;
+  end;
+  
+  function ReadDirectiveType(const ASrc: string;
+    AToken: TToken): TDirectiveType;
+  var
+    ASrcLen, p: integer;
+  begin
+    Result:=dtUnknown;
+    ASrcLen:=length(ASrc);
+    p:=AToken.EndPos;
+    if (p<ASrcLen) and (ASrc[p]='$') then
+    begin
+      // compiler directive
+      inc(p);
+      if CompareIdentifiers(@ASrc[p],'IFDEF')=0 then
+        Result:=dtIfDef
+      else if CompareIdentifiers(@ASrc[p],'IF')=0 then
+        Result:=dtIf
+      else if CompareIdentifiers(@ASrc[p],'ELSE')=0 then
+        Result:=dtElse
+      else if CompareIdentifiers(@ASrc[p],'ENDIF')=0 then
+        Result:=dtEndif;
+    end;
+  end;
+  
+  procedure PushIfOnStack(const ASrc: string; AToken: TToken;
+    DirectiveType: TDirectiveType; IfStack: TList);
+  var
+    NewIf: PIf;
+  begin
+    New(NewIf);
+    FillChar(NewIf^,SizeOf(PIf),0);
+    NewIf^.StartPos:=AToken.StartPos;
+    FindNextToken(ASrc,AToken);
+    NewIf^.EndPos:=AToken.EndPos;
+    NewIf^.Expression:=copy(ASrc,NewIf^.StartPos+1,
+                            AToken.EndPos-NewIf^.StartPos-1);
+    NewIf^.HasElse:=false;
+    IfStack.Add(NewIf);
+  end;
+  
+  procedure PopIfFromStack(IfStack: TList);
+  var Topif: PIf;
+  begin
+    TopIf:=PIf(IfStack[IfStack.Count-1]);
+    Dispose(TopIf);
+    IfStack.Delete(IfStack.Count-1);
+  end;
+
+  function GuessMisplacedIfdefEndifInCode(ACode: Pointer;
+    StartCursorPos: integer; StartCode: Pointer;
+    var EndCursorPos: integer; var EndCode: Pointer): boolean;
+  var
+    ASrc: string;
+    ASrcLen: integer;
+    CurToken: TToken;
+    IfStack: TList;
+    DirectiveType: TDirectiveType;
+  begin
+    Result:=false;
+    if not InitGuessMisplaced(CurToken,ACode,ASrc,ASrcLen) then exit;
+
+    IfStack:=TList.Create;
+    try
+      repeat
+        FindNextToken(ASrc,CurToken);
+        if CurToken.Range in [trComment] then begin
+          DirectiveType:=ReadDirectiveType(ASrc,CurToken);
+
+          case DirectiveType of
+
+          dtIf, dtIfDef:
+            PushIfOnStack(ASrc,CurToken,DirectiveType,IfStack);
+
+          dtElse:
+            begin
+              if (IfStack.Count=0) or (PIf(IfStack[IfStack.Count-1])^.HasElse)
+              then begin
+                // this $ELSE has no $IF
+                // -> misplaced directive found
+                EndCursorPos:=CurToken.EndPos;
+                EndCode:=ACode;
+                Result:=true;
+                exit;
+              end;
+              PIf(IfStack[IfStack.Count-1])^.HasElse:=true;
+            end;
+            
+          dtEndif:
+            begin
+              if (IfStack.Count=0) then begin
+                // this $ENDIF has no $IF
+                // -> misplaced directive found
+                EndCursorPos:=CurToken.EndPos;
+                EndCode:=ACode;
+                Result:=true;
+                exit;
+              end;
+              PopIfFromStack(IfStack);
+            end;
+
+          end;
+        end;
+      until CurToken.TheType=ttNone;
+      if IfStack.Count>0 then begin
+        // there is an $IF without $ENDIF
+        // -> misplaced directive found
+        EndCursorPos:=PIf(IfStack[IfStack.Count-1])^.StartPos+1;
+        EndCode:=ACode;
+        Result:=true;
+        exit;
+      end;
+    finally
+      FreeIfStack(IfStack);
+    end;
+  end;
+        
+var
+  LinkID, i, BestSrcPos: integer;
+  CurLink: TSourceLink;
+  LastCode: Pointer;
+  SearchedCodes: TList;
+begin
+  Result:=false;
+  
+  // search link before start position
+  LinkID:=-1;
+  BestSrcPos:=0;
+  i:=0;
+  while i<LinkCount do begin
+    CurLink:=Links[i];
+    if (StartCode=CurLink.Code) and (StartCursorPos>=CurLink.SrcPos) then begin
+      if (LinkID<0) or (BestSrcPos<CurLink.SrcPos) then
+        LinkID:=i;
+    end;
+    inc(i);
+  end;
+  if LinkID<0 then exit;
+  
+  // go through all following sources and guess misplaced ifdef/endif
+  SearchedCodes:=TList.Create;
+  try
+    while LinkId<LinkCount do begin
+      Result:=GuessMisplacedIfdefEndifInCode(Links[LinkID].Code,
+        StartCursorPos,StartCode,EndCursorPos,EndCode);
+      if Result then exit;
+      // search next code
+      LastCode:=Links[LinkID].Code;
+      SearchedCodes.Add(LastCode);
+      repeat
+        inc(LinkID);
+        if LinkID>=LinkCount then exit;
+      until (Links[LinkID].Code<>LastCode)
+      and (SearchedCodes.IndexOf(Links[LinkID].Code)<0);
+    end;
+  finally
+    SearchedCodes.Free;
+  end;
 end;
 
 procedure TLinkScanner.SetMainCode(const Value: pointer);

@@ -1321,6 +1321,7 @@ begin
       UpperSrc:=UpperCaseStr(Src);
       SrcLen:=length(Src);
       FForceUpdateNeeded:=true;
+      if DeleteNodes then DoDeleteNodes;
     end else begin
       if LastErrorPhase=CodeToolPhaseScan then
         RaiseLastError;
@@ -1330,7 +1331,6 @@ begin
     LastAtoms.Clear;
     NextPos.StartPos:=-1;
     CurNode:=nil;
-    if DeleteNodes then DoDeleteNodes;
   finally
     CurrentPhase:=CodeToolPhaseNone;
   end;

@@ -181,7 +181,8 @@ type
 
     itmToolConfigure: TMenuItem;
     itmToolSyntaxCheck: TMenuItem;
-    itmToolGuessUnclosedBlockCheck: TMenuItem;
+    itmToolGuessUnclosedBlock: TMenuItem;
+    itmToolGuessMisplacedIFDEF: TMenuItem;
     itmToolBuildLazarus: TMenuItem;
     itmToolConfigureBuildLazarus: TMenuItem;
 

@@ -47,7 +47,8 @@ uses
   {$ENDIF}
   Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom,
   FindDeclarationTool, PascalParserTool, SourceLog, KeywordFuncLists,
-  BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
+  BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger,
+  CustomCodeTool;
 
 type
   TStandardCodeTool = class(TFindDeclarationTool)
@@ -132,7 +133,9 @@ type
     function GuessUnclosedBlock(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
       
-    // include directives
+    // compiler directives
+    function GuessMisplacedIfdefEndif(CursorPos: TCodeXYPosition;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindEnclosingIncludeDirective(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
   end;
@@ -1182,6 +1185,37 @@ begin
   if ReadTilGuessedUnclosedBlock(CleanCursorPos,false) then
     Result:=CleanPosToCaretAndTopLine(CurPos.StartPos,NewPos,NewTopLine);
   //WriteDebugTreeReport;
+end;
+
+function TStandardCodeTool.GuessMisplacedIfdefEndif(CursorPos: TCodeXYPosition;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+var
+  StartCursorPos, EndCursorPos: integer;
+  StartCode, EndCode: Pointer;
+begin
+  Result:=false;
+  try
+    BeginParsing(true,false);
+  except
+    // ignore scanner and parser errors
+    on e: ELinkScannerError do ;
+    on e: ECodeToolError do ;
+  end;
+  if Scanner<>nil then begin
+    CursorPos.Code.LineColToPosition(CursorPos.Y,CursorPos.X,StartCursorPos);
+    StartCode:=CursorPos.Code;
+    Result:=Scanner.GuessMisplacedIfdefEndif(StartCursorPos,StartCode,
+                                             EndCursorPos,EndCode);
+    if Result then begin
+      NewPos.Code:=TCodeBuffer(EndCode);
+      NewPos.Code.AbsoluteToLineCol(EndCursorPos,NewPos.Y,NewPos.X);
+      if JumpCentered then begin
+        NewTopLine:=NewPos.Y-(VisibleEditorLines shr 1);
+        if NewTopLine<1 then NewTopLine:=1;
+      end else
+        NewTopLine:=NewPos.Y;
+    end;
+  end;
 end;
 
 function TStandardCodeTool.FindEnclosingIncludeDirective(

@@ -284,6 +284,7 @@ var
   Reader:TReader;
   NewClassName:shortstring;
   a:integer;
+  NewName: string;
 begin
   Result:=-1;
   NewClassName:=GetClassNameFromStream(BinStream);
@@ -324,6 +325,12 @@ begin
       writeln('[TJITForms.AddJITFormFromStream] 4');
       {$ENDIF}
       Reader.ReadRootComponent(FCurReadForm);
+      if FCurReadForm.Name='' then begin
+        NewName:=FCurReadForm.ClassName;
+        if NewName[1] in ['T','t'] then
+          System.Delete(NewName,1,1);
+        FCurReadForm.Name:=NewName;
+      end;
 
       {$IFDEF IDE_VERBOSE}
       writeln('[TJITForms.AddJITFormFromStream] 5');

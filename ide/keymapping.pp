@@ -69,7 +69,7 @@ const
   ecFindBlockStart       = ecUserFirst + 22;
   ecOpenFileAtCursor     = ecUserFirst + 23;
   ecGotoIncludeDirective = ecUserFirst + 24;
-  
+
   ecSelectionUpperCase   = ecUserFirst + 50;
   ecSelectionLowerCase   = ecUserFirst + 51;
 
@@ -78,6 +78,7 @@ const
   ecIdentCompletion      = ecUserFirst + 102;
   ecSyntaxCheck          = ecUserFirst + 103;
   ecGuessUnclosedBlock   = ecUserFirst + 104;
+  ecGuessMisplacedIFDEF  = ecUserFirst + 105;
 
   ecNew                  = ecUserFirst + 201;
   ecNewUnit              = ecUserFirst + 202;
@@ -496,6 +497,7 @@ begin
     ecIdentCompletion: Result:= 'identifier completion';
     ecSyntaxCheck: Result:='syntax check';
     ecGuessUnclosedBlock: Result:='guess unclosed block';
+    ecGuessMisplacedIFDEF: Result:='guess misplaced $IFDEF';
     ecFindDeclaration: Result:='find declaration';
     ecFindBlockOtherEnd: Result:='find block other end';
     ecFindBlockStart: Result:='find block start';
@@ -1173,6 +1175,7 @@ begin
   Add(C,'Identifier completion',ecIdentCompletion,VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'Syntax check',ecSyntaxCheck,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Guess unclosed block',ecGuessUnclosedBlock,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Guess misplaced $IFDEF',ecGuessMisplacedIFDEF,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Find procedure definiton',ecFindProcedureDefinition,
                                  VK_UP,[ssShift,SSCtrl],VK_UNKNOWN,[]);
   Add(C,'Find procedure method',ecFindProcedureMethod,

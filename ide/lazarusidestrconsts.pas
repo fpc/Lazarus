@@ -144,6 +144,7 @@ ResourceString
   lisMenuSettings = 'Settings ...';
   lisMenuQuickSyntaxCheck = 'Quick syntax check';
   lisMenuGuessUnclosedBlock = 'Guess unclosed block';
+  lisMenuGuessMisplacedIFDEF = 'Guess misplaced IFDEF/ENDIF';
   lisMenuBuildLazarus = 'Build Lazarus';
   lisMenuConfigureBuildLazarus = 'Configure "Build Lazarus"';
   

@@ -99,8 +99,8 @@ end;
   Params: Widget: PGtkWidget; Data: Pointer
   Result: GBoolean
 
-  GTKRealizeCB is called by the gtk, whenever a widget is realized (ie mapped),
-  and after the widget itself got the realize signal.
+  GTKRealizeAfterCB is called by the gtk, whenever a widget is realized
+  (ie mapped), and after the widget itself got the realize signal.
   That means that the gdk window on the xserver has been created and the widget
   has initialized the gdkwindow. This function is used for the second part of
   the initialization of a widget.
@@ -108,21 +108,62 @@ end;
 function GTKRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 var
   WinWidgetInfo: PWinWidgetInfo;
+  HiddenLCLObject, LCLObject: TObject;
+  NewEventMask: TGdkEventMask;
+  TheWinControl: TWinControl;
 begin
-  EventTrace('realize', nil);
+  EventTrace('realizeafter', nil);
   
-  // set extra signal masks after the widget window is created
-  // define extra events we're interrested in
-  WinWidgetInfo:=GetWidgetInfo(Widget,true);
-  gdk_window_set_events(Widget^.Window,
-             gdk_window_get_events(Widget^.Window) or WinWidgetInfo^.EventMask);
+  HiddenLCLObject:=GetHiddenLCLObject(Widget);
+  if HiddenLCLObject=nil then begin
+    // this is a normal lcl wigdet
+  
+    WinWidgetInfo:=GetWidgetInfo(Widget,true);
+    LCLObject:=GetLCLObject(Widget);
+    if (LCLObject<>nil) and (WinWidgetInfo<>nil) then begin
+      if (LCLObject is TWinControl) then
+        TheWinControl:=TWinControl(LCLObject)
+      else
+        TheWinControl:=nil;
+        
+      // set extra signal masks after the widget window is created
+      // define extra events we're interrested in
+      if (TheWinControl=nil)
+      or (csDesigning in TheWinControl.ComponentState) then begin
+        NewEventMask:=gdk_window_get_events(Widget^.Window)
+                      or WinWidgetInfo^.EventMask;
+        gdk_window_set_events(Widget^.Window,NewEventMask);
+      end else begin
+        SetEventMaskForDesignMode(Widget^.Window);
+      end;
 
-  if Data<>nil then begin
-    if TObject(Data) is TWinControl then begin
-      SetCursor(TWinControl(Data));
+      if TheWinControl<>nil then begin
+        SetCursor(TheWinControl);
+        ConnectHiddenWidgetsSignals(TheWinControl);
+      end;
     end;
+  end else begin
+    // this is a hidden child widget of a lcl widget
+    
   end;
 
+  Result := True;
+end;
+
+{-------------------------------------------------------------------------------
+  function GTKHiddenRealizeAfterCB
+  Params: Widget: PGtkWidget; Data: Pointer
+  Result: GBoolean
+
+  GTKHiddenRealizeAfterCB is called by the gtk, whenever a hidden widget is
+  realized (ie mapped), and after the widget itself got the realize signal.
+  That means that the gdk window on the xserver has been created and the widget
+  has initialized the gdkwindow.
+-------------------------------------------------------------------------------}
+function GTKHiddenRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
+begin
+  EventTrace('hiddenrealizeafter', nil);
+writeln('CCC1 ',HexStr(Cardinal(Widget),8));
   Result := True;
 end;
 
@@ -435,14 +476,25 @@ end;
   If the mouse is on the top-left pixel of the container widget then the
   coordinates can be negative, if there is frame around the client area.
 -------------------------------------------------------------------------------}
-function GTKMotionNotify(widget:PGTKWidget; event: PGDKEventMotion;
+function GTKMotionNotify(Widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
 var
   Msg: TLMMouseMove;
   ShiftState: TShiftState;
   MappedXY: TPoint;
+  HiddenLCLObject: TObject;
 begin
   Result:=true;
+  
+  HiddenLCLObject:=GetHiddenLCLObject(Widget);
+  if HiddenLCLObject<>nil then begin
+    // this is a hidden widget (= a child widget of a lcl widget)
+    if not (csDesigning in TControl(HiddenLCLObject).ComponentState) then begin
+      // if not in design mode, hidden widgets are controlled by the gtk ...
+      exit;
+    end;
+  end;
+
   {$IFDEF VerboseMouseBugfix}
   writeln('[GTKMotionNotify] ',
     TControl(Data).Name,':',TControl(Data).ClassName,
@@ -523,8 +575,21 @@ var
   MappedXY: TPoint;
   //ShowDebugging : Boolean;
   //parWindow : PgdkWindow;  //the Parent's GDKWindow
+  HiddenLCLObject: TObject;
 begin
   Result:=true;
+  
+  HiddenLCLObject:=GetHiddenLCLObject(Widget);
+  if HiddenLCLObject<>nil then begin
+writeln('DDD1 Hidden=',HexStr(Cardinal(Data),8),' ',HexStr(Cardinal(HiddenLCLObject),8));
+writeln('     ',TControl(Data).Name,':',TControl(Data).ClassName);
+    // this is a hidden widget (= a child widget of a lcl widget)
+    if not (csDesigning in TControl(HiddenLCLObject).ComponentState) then begin
+      // if not in design mode, hidden widgets are controlled by the gtk ...
+      exit;
+    end;
+  end;
+
   {$IFDEF VerboseMouseBugfix}
   writeln('[gtkMouseBtnPress] ',
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
@@ -731,8 +796,19 @@ var
   MessI : TLMMouse;
   ShiftState: TShiftState;
   MappedXY: TPoint;
+  HiddenLCLObject: TObject;
 begin
   Result:=true;
+
+  HiddenLCLObject:=GetHiddenLCLObject(Widget);
+  if HiddenLCLObject<>nil then begin
+    // this is a hidden widget (= a child widget of a lcl widget)
+    if not (csDesigning in TControl(HiddenLCLObject).ComponentState) then begin
+      // if not in design mode, hidden widgets are controlled by the gtk ...
+      exit;
+    end;
+  end;
+  
   {$IFDEF VerboseMouseBugfix}
   writeln('[gtkMouseBtnRelease] ',
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
@@ -2057,6 +2133,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.88  2002/06/26 15:11:09  lazarus
+  MG: added new tool: Guess misplaced $IFDEF/$ENDIF
+
   Revision 1.87  2002/06/21 17:54:23  lazarus
   MG: in design mode the mouse cursor is now also set for hidden gdkwindows
 

@@ -136,6 +136,7 @@ type
     procedure mnuToolConfigureClicked(Sender : TObject);
     procedure mnuToolSyntaxCheckClicked(Sender : TObject);
     procedure mnuToolGuessUnclosedBlockClicked(Sender : TObject);
+    procedure mnuToolGuessMisplacedIFDEFClicked(Sender : TObject);
     procedure mnuToolBuildLazarusClicked(Sender : TObject);
     procedure mnuToolConfigBuildLazClicked(Sender : TObject);
 
@@ -397,6 +398,7 @@ type
     procedure DoGoToPascalBlockOtherEnd;
     procedure DoGoToPascalBlockStart;
     procedure DoJumpToGuessedUnclosedBlock(FindNext: boolean);
+    procedure DoJumpToGuessedMisplacedIFDEF(FindNext: boolean);
     procedure DoGotoIncludeDirective;
     procedure SaveIncludeLinks;
 
@@ -1620,11 +1622,17 @@ begin
   itmToolSyntaxCheck.OnClick := @mnuToolSyntaxCheckClicked;
   mnuTools.Add(itmToolSyntaxCheck);
 
-  itmToolGuessUnclosedBlockCheck := TMenuItem.Create(Self);
-  itmToolGuessUnclosedBlockCheck.Name:='itmToolGuessUnclosedBlockCheck';
-  itmToolGuessUnclosedBlockCheck.Caption := lisMenuGuessUnclosedBlock;
-  itmToolGuessUnclosedBlockCheck.OnClick := @mnuToolGuessUnclosedBlockClicked;
-  mnuTools.Add(itmToolGuessUnclosedBlockCheck);
+  itmToolGuessUnclosedBlock := TMenuItem.Create(Self);
+  itmToolGuessUnclosedBlock.Name:='itmToolGuessUnclosedBlock';
+  itmToolGuessUnclosedBlock.Caption := lisMenuGuessUnclosedBlock;
+  itmToolGuessUnclosedBlock.OnClick := @mnuToolGuessUnclosedBlockClicked;
+  mnuTools.Add(itmToolGuessUnclosedBlock);
+
+  itmToolGuessMisplacedIFDEF := TMenuItem.Create(Self);
+  itmToolGuessMisplacedIFDEF.Name:='itmToolGuessMisplacedIFDEF';
+  itmToolGuessMisplacedIFDEF.Caption := lisMenuGuessMisplacedIFDEF;
+  itmToolGuessMisplacedIFDEF.OnClick := @mnuToolGuessMisplacedIFDEFClicked;
+  mnuTools.Add(itmToolGuessMisplacedIFDEF);
 
   itmToolBuildLazarus := TMenuItem.Create(Self);
   itmToolBuildLazarus.Name:='itmToolBuildLazarus';
@@ -1926,6 +1934,9 @@ begin
    ecGuessUnclosedBlock:
      DoJumpToGuessedUnclosedBlock(true);
     
+   ecGuessMisplacedIFDEF:
+     DoJumpToGuessedMisplacedIFDEF(true);
+
    ecBuildLazarus:
      DoBuildLazarus;
     
@@ -2212,6 +2223,11 @@ end;
 procedure TMainIDE.mnuToolGuessUnclosedBlockClicked(Sender : TObject);
 begin
   DoJumpToGuessedUnclosedBlock(true);
+end;
+
+procedure TMainIDE.mnuToolGuessMisplacedIFDEFClicked(Sender : TObject);
+begin
+  DoJumpToGuessedMisplacedIFDEF(true);
 end;
 
 procedure TMainIDE.mnuToolBuildLazarusClicked(Sender : TObject);
@@ -5786,7 +5802,7 @@ begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
   {$IFDEF IDE_DEBUG}
   writeln('');
-  writeln('[TMainIDE.DoGoToPascalBlockEnd] ************');
+  writeln('[TMainIDE.DoJumpToGuessedUnclosedBlock] ************');
   {$ENDIF}
   if FindNext then begin
     StartX:=ActiveSrcEdit.EditorComponent.CaretX;
@@ -5804,6 +5820,33 @@ begin
     DoJumpToCodeToolBossError;
 end;
 
+procedure TMainIDE.DoJumpToGuessedMisplacedIFDEF(FindNext: boolean);
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  StartX, StartY, NewX, NewY, NewTopLine: integer;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
+  {$IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.DoJumpToGuessedMisplacedIFDEF] ************');
+  {$ENDIF}
+  if FindNext then begin
+    StartX:=ActiveSrcEdit.EditorComponent.CaretX;
+    StartY:=ActiveSrcEdit.EditorComponent.CaretY;
+  end else begin
+    StartX:=1;
+    StartY:=1;
+  end;
+  if CodeToolBoss.GuessMisplacedIfdefEndif(ActiveUnitInfo.Source,
+    StartX,StartY,NewSource,NewX,NewY,NewTopLine) then
+  begin
+    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
+      NewSource, NewX, NewY, NewTopLine, true);
+  end else
+    DoJumpToCodeToolBossError;
+end;
+
 procedure TMainIDE.DoGotoIncludeDirective;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
@@ -5811,10 +5854,10 @@ var ActiveSrcEdit: TSourceEditor;
   NewX, NewY, NewTopLine: integer;
 begin
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,false) then exit;
-{ $IFDEF IDE_DEBUG}
-writeln('');
-writeln('[TMainIDE.DoGotoIncludeDirective] ************');
-{ $ENDIF}
+  { $IFDEF IDE_DEBUG}
+  writeln('');
+  writeln('[TMainIDE.DoGotoIncludeDirective] ************');
+  { $ENDIF}
   if CodeToolBoss.FindEnclosingIncludeDirective(ActiveUnitInfo.Source,
     ActiveSrcEdit.EditorComponent.CaretX,
     ActiveSrcEdit.EditorComponent.CaretY,
@@ -6454,7 +6497,8 @@ begin
 
     itmToolConfigure.ShortCut:=CommandToShortCut(ecExtToolSettings);
     itmToolSyntaxCheck.ShortCut:=CommandToShortCut(ecSyntaxCheck);
-    itmToolGuessUnclosedBlockCheck.ShortCut:=CommandToShortCut(ecGuessUnclosedBlock);
+    itmToolGuessUnclosedBlock.ShortCut:=CommandToShortCut(ecGuessUnclosedBlock);
+    itmToolGuessMisplacedIFDEF.ShortCut:=CommandToShortCut(ecGuessMisplacedIFDEF);
     itmToolBuildLazarus.ShortCut:=CommandToShortCut(ecBuildLazarus);
     itmToolConfigureBuildLazarus.ShortCut:=CommandToShortCut(ecConfigBuildLazarus);
 
@@ -6502,6 +6546,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.316  2002/06/26 15:11:07  lazarus
+  MG: added new tool: Guess misplaced $IFDEF/$ENDIF
+
   Revision 1.315  2002/06/21 17:54:22  lazarus
   MG: in design mode the mouse cursor is now also set for hidden gdkwindows
 
