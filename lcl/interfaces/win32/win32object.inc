@@ -611,25 +611,22 @@ activate_time :	the time at which the activation event occurred.
           begin
             With PRect(Data)^ do
             begin
-              R := Rect(Left,Top,Right,Bottom);
-            {Get the width and height for the form}
-            If TControl(Sender).FCompStyle = csForm Then
+              R := PRect(Data)^;
+              {Get the width and height for the form}
+              If TControl(Sender).FCompStyle = csForm Then
               begin
-                 R.Right:=Left + Right;
-                 R.Bottom:=Top + Bottom;
-                 Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW, (Sender as TCustomForm).Menu<>nil);
-                 R := Rect(Left, Top, R.Right - R.Left, R.Bottom - R.Top)
+                Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW, (Sender as TCustomForm).Menu<>nil);
               end
-            else if TControl(Sender).FCompStyle = csPage then
+              else if TControl(Sender).FCompStyle = csPage then
               begin
                 if (Sender As TWinControl).Parent.Handle<>0 then
                 begin
                   Windows.GetClientRect((Sender As TWinControl).Parent.Handle,@R);
                   Windows.SendMessage((Sender As TWinControl).Parent.Handle, TCM_AdjustRect, 0, LPARAM(@R));
-                  R := Rect(R.Left, R.Top, R.Right - R.Left, R.Bottom - R.Top);
                 end
               end;
-            If TWinControl(Sender).HandleAllocated Then
+              R := Rect(Left, Top, R.Right - R.Left, R.Bottom - R.Top);
+              If TWinControl(Sender).HandleAllocated Then
                   ResizeChild(Sender, R.Left, R.Top, R.Right , R.Bottom);
             end;
           end;
@@ -2664,6 +2661,9 @@ End;
 
 {
   $Log$
+  Revision 1.60  2003/06/28 12:49:26  mattias
+  fixed LM_SETSIZE from Micha
+
   Revision 1.59  2003/06/26 14:46:24  mattias
   fixed menu attaching from Micha
 
