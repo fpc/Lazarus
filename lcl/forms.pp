@@ -436,9 +436,6 @@ type
   // MWE:Do we need this ??
     // function ProcessMessage(Var Msg : TMsg) : Boolean;
     procedure wndproc(var Message : TLMessage);
-// Shane: the following is used for Messagebox button clicks.  Temporary until I figure out a better way.
-    procedure DefaultOnClick(Sender : TObject);
-//----      
     function GetExename: String;
     function GetIconHandle: HICON;
     function GetTitle: string;
@@ -517,7 +514,7 @@ implementation
 
 
 uses 
-  Buttons, StdCtrls, Interfaces, LResources, dialogs,ExtCtrls {,designer}, Math;
+  StdCtrls, Interfaces, LResources, Dialogs, ExtCtrls, Math;
 
 const
   FocusMessages : Boolean = true;
