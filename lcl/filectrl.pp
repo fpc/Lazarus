@@ -100,7 +100,7 @@ uses
 {$IFDEF win32}
   Dos;
 {$ELSE}
-  {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF};
+  {$IFDEF Ver1_0}Linux{$ELSE}Unix,BaseUnix{$ENDIF};
 {$ENDIF}
 
 var
@@ -127,6 +127,10 @@ end.
 
 {
   $Log$
+  Revision 1.19  2003/10/31 14:25:59  mazen
+  * Fixing VER1_1 compile problem to allow using 1.1 compiler
+  * Most of oldlinux unit calls are now in BaseUnix unit with prefix Fp
+
   Revision 1.18  2003/09/02 21:32:56  mattias
   implemented TOpenPictureDialog
 

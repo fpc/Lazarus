@@ -28,7 +28,7 @@
 }
 uses
   {$IFDEF VER1_1}
-  unix;
+  unix,BaseUnix;
   {$ELSE}
   linux;
   {$ENDIF}
@@ -39,6 +39,10 @@ uses
 
 {
   $Log$
+  Revision 1.15  2003/10/31 14:25:59  mazen
+  * Fixing VER1_1 compile problem to allow using 1.1 compiler
+  * Most of oldlinux unit calls are now in BaseUnix unit with prefix Fp
+
   Revision 1.14  2003/08/15 14:01:20  mattias
   combined lazconf things for unix
 

@@ -193,7 +193,7 @@ uses
      {$IFDEF Ver1_0}
        ,Linux
      {$ELSE}
-       ,Unix
+       ,Unix,BaseUnix
      {$ENDIF}
   {$EndIf};
 
@@ -1104,7 +1104,7 @@ begin
   {$IFDEF Win32}
   OldAttr:=FileGetAttr(Filename);
   {$ELSE}
-  FStat(Filename,OldInfo);
+  {$IFDEF Ver1_0}FStat{$ELSE}FpStat{$ENDIF}(Filename,OldInfo);
   {$ENDIF}
   
   if not FileIsSymlink(Filename) then begin
@@ -1126,7 +1126,7 @@ begin
   {$IFDEF Win32}
   FileSetAttr(FileName,OldAttr);
   {$ELSE}
-  Chmod(Filename,
+  {$IFDEF Ver1_0}Chmod{$ELSE}FpChmod{$ENDIF}(Filename,
          OldInfo.Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
                            +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
   {$ENDIF}
@@ -1880,7 +1880,7 @@ begin
   {$IFDEF Win32}
   OldAttr:=FileGetAttr(SrcFilename);
   {$ELSE}
-  FStat(SrcFilename,OldInfo);
+  {$IFDEF Ver1_0}FStat{$ELSE}FpStat{$ENDIF}(SrcFilename,OldInfo);
   {$ENDIF}
   
   //writeln('CopyFileWithMethods ',SrcFilename,' ',DestFilename);
@@ -1905,7 +1905,7 @@ begin
   {$IFDEF Win32}
   FileSetAttr(DestFileName,OldAttr);
   {$ELSE}
-  Chmod(DestFilename,
+  {$IFDEF Ver1_0}Chmod{$ELSE}FpChmod{$ENDIF}(DestFilename,
          OldInfo.Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
                            +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
   {$ENDIF}

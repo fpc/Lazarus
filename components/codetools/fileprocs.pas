@@ -75,7 +75,7 @@ implementation
 // to get more detailed error messages consider the os
 {$IFNDEF win32}
 uses
-  {$IFDEF Ver1_0} Linux {$ELSE} Unix {$ENDIF};
+  {$IFDEF Ver1_0} Linux {$ELSE} Unix,BaseUnix {$ENDIF};
 {$ENDIF}
 
 var
@@ -134,8 +134,8 @@ begin
     raise Exception.CreateFmt(ctsFileDoesNotExists,[AFilename]);
   end;
   {$IFNDEF win32}
-  if not{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK) then
+  if not{$IFDEF Ver1_0}Linux.Access{$ELSE}BaseUnix.FpAccess{$ENDIF}(
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.X_OK){$IFNDEF Ver1_0}=0{$ENDIF} then
   begin
     AText:='"'+AFilename+'"';
     case LinuxError of
@@ -224,8 +224,8 @@ begin
   {$IFDEF win32}
   Result:=true;
   {$ELSE}
-  Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.R_OK);
+  Result:={$IFDEF Ver1_0}Linux.Access{$ELSE}BaseUnix.FpAccess{$ENDIF}(
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.R_OK){$IFNDEF Ver1_0}=0{$ENDIF};
   {$ENDIF}
 end;
 
@@ -234,8 +234,8 @@ begin
   {$IFDEF win32}
   Result:=((FileGetAttr(AFilename) and faReadOnly)>0);
   {$ELSE}
-  Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.W_OK);
+  Result:={$IFDEF Ver1_0}Linux.Access{$ELSE}BaseUnix.FpAccess{$ENDIF}(
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.W_OK){$IFNDEF Ver1_0}=0{$ENDIF};
   {$ENDIF}
 end;
 

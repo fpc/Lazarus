@@ -378,7 +378,7 @@ begin
   {$IFDEF win32}
   raise Exception.Create('"'+AFilename+'" is not symlink');
   {$ELSE}
-  if {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.ReadLink(AFilename)='' then begin
+  if {$IFDEF Ver1_0}Linux.ReadLink{$ELSE}Unix.FpReadLink{$ENDIF}(AFilename)='' then begin
     AText:='"'+AFilename+'"';
     case LinuxError of
     {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
@@ -408,7 +408,7 @@ begin
   {$IFDEF win32}
   Result:=false;
   {$ELSE}
-  Result:=({$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.ReadLink(AFilename)<>'');
+  Result:=({$IFDEF Ver1_0}Linux.ReadLink{$ELSE}Unix.FpReadLink{$ENDIF}(AFilename)<>'');
   {$ENDIF}
 end;
 
@@ -420,8 +420,8 @@ begin
   {$IFDEF win32}
   Result:=true;
   {$ELSE}
-  Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.R_OK);
+  Result:={$IFDEF Ver1_0}Linux.Access({$ELSE}BaseUnix.FpAccess({$ENDIF}
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.R_OK){$IFNDEF Ver1_0}=0{$ENDIF};
   {$ENDIF}
 end;
 
@@ -433,8 +433,8 @@ begin
   {$IFDEF win32}
   Result:=((FileGetAttr(AFilename) and faReadOnly)=0);
   {$ELSE}
-  Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.W_OK);
+  Result:={$IFDEF Ver1_0}Linux.Access{$ELSE}BaseUnix.FpAccess{$ENDIF}(
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.W_OK){$IFNDEF Ver1_0}=0{$ENDIF};
   {$ENDIF}
 end;
 
@@ -445,7 +445,7 @@ function GetFileDescription(const AFilename: string): string;
 {$IFDEF win32}
 {$ELSE}
 var
-  info: stat;
+  info: Stat;
   // permissions
   // user
   // group
@@ -458,7 +458,7 @@ begin
   {$IFDEF win32}
 
   {$ELSE}
-  if not FStat(AFilename,info) then exit;
+  if not {$IFDEF Ver1_0}FStat{$ELSE}FpStat{$ENDIF}(AFilename,info){$IFNDEF Ver1_0}=0{$ENDIF} then exit;
   
   // permissions
   // file type
@@ -550,7 +550,7 @@ begin
 
   {$ELSE}
   repeat
-    LinkFilename:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.ReadLink(Result);
+    LinkFilename:={$IFDEF Ver1_0}Linux.ReadLink{$ELSE}Unix.FpReadLink{$ENDIF}(Result);
     if LinkFilename='' then begin
       AText:='"'+Filename+'"';
       case LinuxError of
@@ -603,8 +603,8 @@ begin
   {$IFDEF win32}
   Result:=true;
   {$ELSE}
-  Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK);
+  Result:={$IFDEF Ver1_0}Linux.Access{$ELSE}BaseUnix.FpAccess{$ENDIF}(
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.X_OK){$IFNDEF Ver1_0}=0{$ENDIF};
   {$ENDIF}
 end;
 
@@ -625,8 +625,8 @@ begin
     raise Exception.Create('file "'+AFilename+'" is a directory and not an executable');
   end;
   {$IFNDEF win32}
-  if not{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK) then
+  if not{$IFDEF Ver1_0}Linux.Access{$ELSE}BaseUnix.FpAccess{$ENDIF}(
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}BaseUnix{$ENDIF}.X_OK){$IFNDEF Ver1_0}=0{$ENDIF} then
   begin
     AText:='"'+AFilename+'"';
     case LinuxError of
@@ -715,7 +715,7 @@ begin
   Result:=ParamStr(0);
   if ExtractFilePath(Result)='' then begin
     // program was started via PATH
-    Result:=SearchFileInPath(Result,'',GetEnv('PATH'),':',
+    Result:=SearchFileInPath(Result,'',{$IFDEF Ver1_0}GetEnv{$ELSE}FpGetEnv{$ENDIF}('PATH'),':',
                              [sffDontSearchInBasePath]);
   end;
   // resolve links
@@ -886,6 +886,10 @@ end;
 
 {
   $Log$
+  Revision 1.30  2003/10/31 14:25:59  mazen
+  * Fixing VER1_1 compile problem to allow using 1.1 compiler
+  * Most of oldlinux unit calls are now in BaseUnix unit with prefix Fp
+
   Revision 1.29  2003/09/12 07:17:47  mattias
   fixed win32 FileIsWritable
 

@@ -84,7 +84,7 @@ uses
  {$IFDEF Ver1_0}
    Linux,
  {$ELSE}
-   Unix,
+   Unix,BaseUnix,
  {$ENDIF}     
 {$ENDIF}
   SysUtils;
@@ -99,7 +99,7 @@ begin
 {.$IFDEF Linux}
 {$IFDEF UNIX}
   if AHandle <> 0
-  then Kill(AHandle, SIGINT);
+  then {$IFDEF Ver1_0}Kill{$ELSE}FpKill{$ENDIF}(AHandle, SIGINT);
 {$ENDIF}
 end;
 
@@ -121,19 +121,19 @@ begin
   Count := High(AHandles);
   if Count < 0 then Exit;
   if Count > 31 then Count := 31;
-  FD_ZERO(FDS);
+  {$IFDEF Ver1_0}FD_ZERO{$ELSE}FpFD_ZERO{$ENDIF}(FDS);
 
   for n := 0 to Count do   
   begin
     if Max < AHandles[n] then Max := AHandles[n];
     if AHandles[n] <> 0
-    then FD_Set(AHandles[n], FDS);
+    then {$IFDEF Ver1_0}FD_Set{$ELSE}FpFD_Set{$ENDIF}(AHandles[n], FDS);
   end;
 
   repeat
     FDSWait := FDS;
     TimeOut := 10;
-    R := Select(Max + 1, @FDSWait, nil, nil, TimeOut);
+    R := {$IFDEF Ver1_0}Select{$ELSE}FpSelect{$ENDIF}(Max + 1, @FDSWait, nil, nil, TimeOut);
     Application.ProcessMessages;
   until R <> 0;
   
@@ -141,7 +141,7 @@ begin
   then begin
     for n := 0 to Count do   
       if  (AHandles[n] <> 0) 
-      and (FD_ISSET(AHandles[n], FDSWait))
+      and ({$IFDEF Ver1_0}FD_ISSET{$ELSE}FpFD_ISSET{$ENDIF}(AHandles[n], FDSWait){$IFNDEF Ver1_0}=0{$ENDIF})
       then begin
         Result := Result or 1 shl n;
         Dec(R);
@@ -371,6 +371,10 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.23  2003/10/31 14:25:59  mazen
+  * Fixing VER1_1 compile problem to allow using 1.1 compiler
+  * Most of oldlinux unit calls are now in BaseUnix unit with prefix Fp
+
   Revision 1.22  2003/10/16 23:54:27  marc
   Implemented new gtk keyevent handling
 

@@ -133,7 +133,7 @@ end;
  ---------------------------------------------------------------------------}
 function FindDefaultCompilerPath: string;
 begin
-  Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':',
+  Result:=SearchFileInPath('ppc386','',{$IFDEF Ver1_0}GetEnv{$ELSE}FpGetEnv{$ENDIF}('PATH'),':',
                            [sffDontSearchInBasePath]);
 end;
 
@@ -142,7 +142,7 @@ end;
  ---------------------------------------------------------------------------}
 function FindDefaultMakePath: string;
 begin
-  Result:=SearchFileInPath('make','',GetEnv('PATH'),':',
+  Result:=SearchFileInPath('make','',{$IFDEF Ver1_0}GetEnv{$ELSE}FpGetEnv{$ENDIF}('PATH'),':',
                            [sffDontSearchInBasePath]);
 end;
 
