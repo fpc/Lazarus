@@ -201,6 +201,13 @@ type
   TAlignSet = set of TAlign;
   TAnchorKind = (akTop, akLeft, akRight, akBottom);
   TAnchors = set of TAnchorKind;
+  TAnchorSideReference = (asrTop, asrBottom, asrCenter);
+
+const
+  asrLeft = asrTop;
+  asrRight = asrBottom;
+
+type
   TCaption = TTranslateString;
   TCursor = -32768..32767;
 
@@ -635,6 +642,68 @@ type
     property Bottom: TSpacingSize read FBottom write SetBottom;
     property Around: TSpacingSize read FAround write SetAround;
   end;
+  
+  
+  { TAnchorSide
+    Class holding the reference sides of the anchors of a TControl.
+    Every TControl has four AnchorSides:
+    AnchorSide[akLeft], AnchorSide[akRight], AnchorSide[akTop] and
+    AnchorSide[akBottom].
+    Normally if Anchors contain akLeft, and the Parent is resized, the LCL
+    tries to keep the distance between the left side of the control and the
+    right side of its parent client area.
+    With AnchorSide[akLeft] you can define a different reference side. The
+    kept distance is defined by the BorderSpacing.
+    
+    Example1:
+       +-----+  +-----+
+       |  B  |  |  C  |
+       |     |  +-----+
+       +-----+
+
+      If you want to have the top of B the same as the top of C use
+        B.AnchorSide[akTop].Control:=C;
+        B.AnchorSide[akTop].Side:=asrTop;
+      If you want to keep a distance of 10 pixels between B and C use
+        B.BorderSpacing.Right:=10;
+        B.AnchorSide[akRight].Control:=C;
+        B.AnchorSide[akRight].Side:=asrLeft;
+
+      Do not setup in both directions, because this will create a circle, and
+      circles are not allowed.
+      
+    Example2:
+            +-------+
+      +---+ |       |
+      | A | |   B   |
+      +---+ |       |
+            +-------+
+            
+      Centering A relative to B:
+        A.AnchorSide[akTop].Control:=B;
+        A.AnchorSide[akTop].Side:=arsCenter;
+      Or use this. It's equivalent:
+        A.AnchorSide[akBottom].Control:=B;
+        A.AnchorSide[akBottom].Side:=arsCenter;
+
+
+    }
+  TAnchorSide = class(TPersistent)
+  private
+    FControl: TControl;
+    FKind: TAnchorKind;
+    FOwner: TControl;
+    FSide: TAnchorSideReference;
+    procedure SetControl(const AValue: TControl);
+    procedure SetSide(const AValue: TAnchorSideReference);
+  public
+    constructor Create(TheOwner: TControl; TheKind: TAnchorKind);
+    property Owner: TControl read FOwner;
+    property Kind: TAnchorKind read FKind;
+  published
+    property Control: TControl read FControl write SetControl;
+    property Side: TAnchorSideReference read FSide write SetSide;
+  end;
 
 
   { TControlActionLink }
@@ -705,6 +774,7 @@ type
     FActionLink: TControlActionLink;
     FAlign: TAlign;
     FAnchors: TAnchors;
+    FAnchorSides: array[TAnchorKind] of TAnchorSide;
     FAutoSize: Boolean;
     FBaseBounds: TRect;
     FBaseBoundsLock: integer;
@@ -785,6 +855,7 @@ type
     FWidth: Integer;
     FWindowProc: TWndMethod;
     procedure DoActionChange(Sender: TObject);
+    function GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
     function GetBoundsRect: TRect;
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
@@ -846,6 +917,7 @@ type
     AutoSizing: Boolean;
     procedure AdjustSize; virtual;
     procedure DoAutoSize; virtual;
+    procedure AnchorSideChanged(TheAnchorSide: TAnchorSide); virtual;
     function AutoSizeCanStart: boolean; virtual;
     function AutoSizeDelayed: boolean; virtual;
     procedure SetAlign(Value: TAlign); virtual;
@@ -1089,37 +1161,38 @@ type
     procedure RemoveHandlerOnChangeBounds(OnChangeBoundsEvent: TNotifyEvent);
   public
     // standard properties, which should be supported by all descendents
-    property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored;
     property Action: TBasicAction read GetAction write SetAction;
     property Align: TAlign read FAlign write SetAlign;
+    property Anchors: TAnchors read FAnchors write SetAnchors stored IsAnchorsStored;
+    property AnchorSide[Kind: TAnchorKind]: TAnchorSide read GetAnchorSide;
     property BorderSpacing: TControlBorderSpacing read FBorderSpacing write SetBorderSpacing;
     property BoundsRect: TRect read GetBoundsRect write SetBoundsRect;
     property BoundsRectForNewParent: TRect read FBoundsRectForNewParent write SetBoundsRectForNewParent;
     property Caption: TCaption read GetText write SetText stored IsCaptionStored;
+    property ClientHeight: Integer read GetClientHeight write SetClientHeight stored False;
     property ClientOrigin: TPoint read GetClientOrigin;
     property ClientRect: TRect read GetClientRect;
-    property ClientHeight: Integer read GetClientHeight write SetClientHeight stored False;
     property ClientWidth: Integer read GetClientWidth write SetClientWidth stored False;
-    property ControlOrigin: TPoint read GetControlOrigin;
+    property Color: TColor read FColor write SetColor stored ColorIsStored default clWindow;
     property Constraints: TSizeConstraints read FConstraints write SetConstraints;
+    property ControlOrigin: TPoint read GetControlOrigin;
     property ControlState: TControlState read FControlState write FControlState;
     property ControlStyle: TControlStyle read FControlStyle write FControlStyle;
-    property Color: TColor read FColor write SetColor stored ColorIsStored default clWindow;
     property Enabled: Boolean read GetEnabled write SetEnabled stored IsEnabledStored default True;
     property Font: TFont read FFont write SetFont stored IsFontStored;
     property IsControl: Boolean read FIsControl write FIsControl;
-    property OnResize: TNotifyEvent read FOnResize write FOnResize;
+    property MouseEntered: Boolean read FMouseEntered;
     property OnChangeBounds: TNotifyEvent read FOnChangeBounds write FOnChangeBounds;
     property OnClick: TNotifyEvent read FOnClick write FOnClick stored IsOnClickStored;
+    property OnResize: TNotifyEvent read FOnResize write FOnResize;
     property OnShowHint: TControlShowHintEvent read FOnShowHint write FOnShowHint;
     property Parent: TWinControl read FParent write SetParent;
     property PopupMenu: TPopupmenu read GetPopupmenu write SetPopupMenu;
     property ShowHint: Boolean read FShowHint write SetShowHint stored IsShowHintStored default False;
+    property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
+    property TabStop: Boolean read FTabStop write SetTabStop default false;
     property Visible: Boolean read FVisible write SetVisible stored IsVisibleStored default True;
     property WindowProc: TWndMethod read FWindowProc write FWindowProc;
-    property TabStop: Boolean read FTabStop write SetTabStop default false;
-    property TabOrder: TTabOrder read GetTabOrder write SetTaborder default -1;
-    property MouseEntered: Boolean read FMouseEntered;
   public
     // docking properties
     property DockOrientation: TDockOrientation read FDockOrientation write FDockOrientation;
@@ -2442,6 +2515,29 @@ begin
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
+{ TAnchorSide }
+
+procedure TAnchorSide.SetControl(const AValue: TControl);
+begin
+  if FControl=AValue then exit;
+  FControl:=AValue;
+  FOwner.AnchorSideChanged(Self);
+end;
+
+procedure TAnchorSide.SetSide(const AValue: TAnchorSideReference);
+begin
+  if FSide=AValue then exit;
+  FSide:=AValue;
+  FOwner.AnchorSideChanged(Self);
+end;
+
+constructor TAnchorSide.Create(TheOwner: TControl; TheKind: TAnchorKind);
+begin
+  inherited Create;
+  FOwner:=TheOwner;
+  FKind:=TheKind;
+end;
+
 {$IFNDEF VER1_0}
 { TControlPropertyStorage }
 
@@ -2504,6 +2600,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.259  2004/12/22 23:54:20  mattias
+  started TControl.AnchorSide
+
   Revision 1.258  2004/12/20 00:11:24  mattias
   changed TControl.Anchors default value to AnchorAlign[Align]
 

@@ -118,8 +118,8 @@ type
   TPenStyle = (psSolid, psDash, psDot, psDashDot, psDashDotDot, psClear,
                psInsideframe);
   TPenMode = (pmBlack, pmWhite, pmNop, pmNot, pmCopy, pmNotCopy, pmMergePenNot,
-              pmMaskPenNot, pmMergeNotPen, pmMaskNotPen, pmMerge,pmNotMerge, pmMask,
-              pmNotMask, pmXor, pmNotXor
+              pmMaskPenNot, pmMergeNotPen, pmMaskNotPen, pmMerge,pmNotMerge,
+              pmMask, pmNotMask, pmXor, pmNotXor
              );
 
   TBrushStyle = (bsSolid, bsClear, bsHorizontal, bsVertical, bsFDiagonal,
@@ -436,11 +436,11 @@ type
     {$IFDEF UseFPCanvas}
     {$ELSE}
     FFontName: string;
-    FHeight: integer; // FHeight = -(FSize * FPixelsPerInch) div 72
     FSize: Integer;   // Important: because of rounding errors both are stored
                       //    This way setting Height and reading it will result
                       //    in the same value
     {$ENDIF}
+    FHeight: integer; // FHeight = -(FSize * FPixelsPerInch) div 72
     procedure FreeHandle;
     procedure GetData(var FontData: TFontData);
     function IsNameStored: boolean;
@@ -516,7 +516,11 @@ type
     constructor Create;
   end;
 
+  {$IFDEF UseFPCanvas}
+  TPen = class(TFPCustomPen)
+  {$ELSE}
   TPen = class(TGraphicsObject)
+  {$ENDIF}
   private
     FHandle: HPen;
     FColor: TColor;
@@ -526,6 +530,11 @@ type
     FPenHandleCached: boolean;
     procedure FreeHandle;
   protected
+    {$IFDEF UseFPCanvas}
+    procedure DoAllocateResources; override;
+    procedure DoDeAllocateResources; override;
+    procedure DoCopyProps(From: TFPCanvasHelper); override;
+    {$ENDIF}
     function GetHandle: HPEN;
     procedure SetHandle(const Value: HPEN);
     procedure SetColor(Value: TColor);
@@ -533,7 +542,7 @@ type
     procedure SetStyle(Value: TPenStyle);
     procedure SetWidth(value: Integer);
   public
-    constructor Create;
+    constructor Create; {$IFDEF UseFPCanvas}override;{$ENDIF}
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     property Handle: HPEN read GetHandle write SetHandle;
@@ -563,7 +572,10 @@ type
 
   TBrush = class(TGraphicsObject)
   private
-    FBrushData: TBrushData;
+    FHandle: HBrush;
+    FColor: TColor;
+    FBitmap: TBitmap;
+    FStyle: TBrushStyle;
     FBrushHandleCached: boolean;
     procedure FreeHandle;
   protected
@@ -576,11 +588,11 @@ type
     procedure Assign(Source: TPersistent); override;
     constructor Create;
     destructor Destroy; override;
-    property Bitmap: TBitmap read FBrushData.Bitmap write SetBitmap;
+    property Bitmap: TBitmap read FBitmap write SetBitmap;
     property Handle: HBRUSH read GetHandle write SetHandle;
   published
-    property Color: TColor read FBrushData.Color write SetColor default clWhite;
-    property Style: TBrushStyle read FBrushData.Style write SetStyle default bsSolid;
+    property Color: TColor read FColor write SetColor default clWhite;
+    property Style: TBrushStyle read FStyle write SetStyle default bsSolid;
   end;
 
 
@@ -1815,6 +1827,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.163  2004/12/22 23:54:21  mattias
+  started TControl.AnchorSide
+
   Revision 1.162  2004/12/22 19:56:44  mattias
   started TFont mirgration to fpCanvas font
 

@@ -1398,6 +1398,11 @@ begin
   if Sender = Action then ActionChange(Sender, False);
 end;
 
+function TControl.GetAnchorSide(Kind: TAnchorKind): TAnchorSide;
+begin
+  Result:=FAnchorSides[Kind];
+end;
+
 {------------------------------------------------------------------------------
        TControl GetClientRect
 ------------------------------------------------------------------------------}
@@ -1935,6 +1940,11 @@ end;
 Procedure TControl.DoAutoSize;
 Begin
   //Handled by TWinControl, or other descendants
+end;
+
+procedure TControl.AnchorSideChanged(TheAnchorSide: TAnchorSide);
+begin
+
 end;
 
 {------------------------------------------------------------------------------
@@ -3179,11 +3189,14 @@ end;
 destructor TControl.Destroy;
 var
   HandlerType: TControlHandlerType;
+  Side: TAnchorKind;
 begin
   //DebugLn('[TControl.Destroy] A ',Name,':',ClassName);
   Application.ControlDestroyed(Self);
   SetParent(nil);
   FreeThenNil(FActionLink);
+  for Side:=Low(FAnchorSides) to High(FAnchorSides) do
+    FreeThenNil(FAnchorSides[Side]);
   FreeThenNil(FBorderSpacing);
   FreeThenNil(FConstraints);
   FreeThenNil(FFont);
@@ -3202,6 +3215,8 @@ end;
   Contructor for the class.
  ------------------------------------------------------------------------------}
 constructor TControl.Create(TheOwner: TComponent);
+var
+  Side: TAnchorKind;
 begin
   //if AnsiCompareText(ClassName,'TSpeedButton')=0 then
   //  DebugLn('TControl.Create START ',Name,':',ClassName);
@@ -3213,6 +3228,8 @@ begin
   FConstraints.OnChange:= @DoConstraintsChange;
   FBorderSpacing:=TControlBorderSpacing.Create(Self);
   FBorderSpacing.OnChange:= @DoBorderSpacingChange;
+  for Side:=Low(FAnchorSides) to High(FAnchorSides) do
+    FAnchorSides[Side]:=TAnchorSide.Create(Self,Side);
 
   FAnchors := [akLeft,akTop];
   FAlign := alNone;
@@ -3439,6 +3456,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.227  2004/12/22 23:54:21  mattias
+  started TControl.AnchorSide
+
   Revision 1.226  2004/12/21 19:01:00  mattias
   fixed saving default value of TControl.Anchors
 

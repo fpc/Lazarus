@@ -42,10 +42,10 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TBrush.SetColor(Value : TColor);
 begin
-  if FBrushData.Color <> Value
+  if FColor <> Value
   then begin
     FreeHandle;
-    FBrushData.Color := Value;
+    FColor := Value;
     Changed;
   end;
 end;
@@ -59,10 +59,10 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TBrush.SetStyle(Value : TBrushStyle);
 begin
-  if FBrushData.Style <> Value
+  if FStyle <> Value
   then begin
     FreeHandle;
-    FBrushData.Style := Value;
+    FStyle := Value;
     Changed;
   end;
 end;
@@ -76,10 +76,10 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TBrush.SetBitmap(Value : TBitmap);
 begin
-  if FBrushData.Bitmap <> Value
+  if FBitmap <> Value
   then begin
     FreeHandle;
-    FBrushData.Bitmap := Value;
+    FBitmap := Value;
     Changed;
   end;
 end;
@@ -94,13 +94,10 @@ end;
 constructor TBrush.Create;
 begin
   inherited Create;
-  with FBrushData do
-  begin
-    Bitmap := nil;
-    Handle := 0;
-    Color := clWhite;
-    Style := bsSolid;
-  end;
+  FBitmap := nil;
+  FHandle := 0;
+  FColor := clWhite;
+  FStyle := bsSolid;
 end;
 
 {------------------------------------------------------------------------------
@@ -144,10 +141,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TBrush.SetHandle(const Value: HBRUSH);
 begin
-  if FBrushData.Handle <> Value
+  if FHandle <> Value
   then begin
     FreeHandle;
-    FBrushData.Handle := Value;
+    FHandle := Value;
     //TODO: query new parameters
     Changed;
   end;
@@ -165,41 +162,41 @@ var
   LogBrush: TLogBrush;
   CachedBrush: TBlockResourceCacheDescriptor;
 begin
-  if FBrushData.Handle = 0
+  if FHandle = 0
   then begin
     FillChar(LogBrush,SizeOf(LogBrush),0);
     with LogBrush do
     begin
-      if FBrushData.Bitmap <> nil
+      if FBitmap <> nil
       then begin
         lbStyle := BS_PATTERN;
         //FBrushData.Bitmap.HandleType := bmDDB;
-        lbHatch := FBrushData.Bitmap.Handle;
+        lbHatch := FBitmap.Handle;
       end else
       begin
         lbHatch := 0;
-        case FBrushData.Style of
+        case FStyle of
           bsSolid: lbStyle := BS_SOLID;
           bsClear: lbStyle := BS_HOLLOW;
         else
           lbStyle := BS_HATCHED;
-          lbHatch := Ord(FBrushData.Style) - Ord(bsHorizontal);
+          lbHatch := Ord(FStyle) - Ord(bsHorizontal);
         end;
       end;
-      lbColor := ColorRef(FBrushData.Color);
+      lbColor := ColorRef(FColor);
     end;
     CachedBrush:=BrushResourceCache.FindDescriptor(@LogBrush);
     if CachedBrush<>nil then begin
       CachedBrush.Item.IncreaseRefCount;
-      FBrushData.Handle := CachedBrush.Item.Handle;
+      FHandle := CachedBrush.Item.Handle;
     end else begin
-      FBrushData.Handle := CreateBrushIndirect(LogBrush);
-      BrushResourceCache.AddResource(FBrushData.Handle,@LogBrush);
+      FHandle := CreateBrushIndirect(LogBrush);
+      BrushResourceCache.AddResource(FHandle,@LogBrush);
     end;
     FBrushHandleCached:=true;
   end;
 
-  Result := FBrushData.Handle;
+  Result := FHandle;
 end;
 
 {------------------------------------------------------------------------------
@@ -211,20 +208,23 @@ end;
  ------------------------------------------------------------------------------}
 procedure TBrush.FreeHandle;
 begin
-  if FBrushData.Handle <> 0
+  if FHandle <> 0
   then begin
     if FBrushHandleCached then begin
-      BrushResourceCache.FindItem(FBrushData.Handle).DecreaseRefCount;
+      BrushResourceCache.FindItem(FHandle).DecreaseRefCount;
       FBrushHandleCached:=false;
     end else
-      DeleteObject(FBrushData.Handle);
-    FBrushData.Handle := 0;
+      DeleteObject(FHandle);
+    FHandle := 0;
   end;
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.13  2004/12/22 23:54:21  mattias
+  started TControl.AnchorSide
+
   Revision 1.12  2004/11/07 01:10:05  mattias
   fixed double calling destructor for resource cache items
 

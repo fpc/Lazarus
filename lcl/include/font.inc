@@ -1013,7 +1013,11 @@ begin
     {$ENDIF}
     FreeHandle;
     FHandle := FontData.Handle;
+    {$IFDEF UseFPCanvas}
+    inherited SetSize(-(FontData.Height * 72) div FPixelsPerInch);
+    {$ELSE}
     FSize := -(FontData.Height * 72) div FPixelsPerInch;
+    {$ENDIF}
     FHeight := FontData.Height;
     FPitch:=FontData.Pitch;
     FStyle:=FontData.Style;
@@ -1067,6 +1071,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2004/12/22 23:54:21  mattias
+  started TControl.AnchorSide
+
   Revision 1.22  2004/12/22 19:56:44  mattias
   started TFont mirgration to fpCanvas font
 

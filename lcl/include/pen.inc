@@ -228,9 +228,37 @@ begin
   end;
 end;
 
+{$IFDEF UseFPCanvas}
+procedure TPen.DoAllocateResources;
+begin
+  inherited DoAllocateResources;
+  GetHandle;
+end;
+
+procedure TPen.DoDeAllocateResources;
+begin
+  FreeHandle;
+  inherited DoDeAllocateResources;
+end;
+
+procedure TPen.DoCopyProps(From: TFPCanvasHelper);
+begin
+  if From is TPen then begin
+    FreeHandle;
+    inherited DoCopyProps(From);
+    //TODO: query new parameters
+    Changed;
+  end else
+    inherited DoCopyProps(From);
+end;
+{$ENDIF}
+
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/12/22 23:54:21  mattias
+  started TControl.AnchorSide
+
   Revision 1.14  2004/12/22 19:56:44  mattias
   started TFont mirgration to fpCanvas font
 
