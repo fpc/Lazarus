@@ -986,9 +986,12 @@ end;
 
   Frees the CaptureHandle
  ------------------------------------------------------------------------------}
-procedure Uncapturehandle;
+procedure UncaptureHandle;
 begin
   if MCaptureHandle <> 0 then begin
+    {$IfDef VerboseMouseCapture}
+    writeln('UncaptureHandle ',HexStr(Cardinal(MCaptureHandle),8));
+    {$ENDIF}
     //gdk_pointer_ungrab(0);
     gtk_grab_remove(pgtkwidget(MCaptureHandle));
     MCaptureHandle:=0;
@@ -1501,7 +1504,10 @@ var
   begin
     if CurMouseCaptureHandle=nil then exit;
     CurControl:=GetLCLObject(CurMouseCaptureHandle);
-    if CurControl=nil then exit;
+    if CurControl=nil then begin
+      MCaptureHandle:=0;
+      exit;
+    end;
     with CaptureChangedMsg do begin
       Msg := Msg;
       WParam := LM_CAPTURECHANGED;
@@ -1522,7 +1528,7 @@ begin
   CurMouseCaptureHandle:=gtk_grab_get_current;
   if OldMouseCaptureHandle<>CurMouseCaptureHandle then begin
     // mouse capture widget has changed
-    Uncapturehandle;
+    UncaptureHandle;
     MCaptureHandle:=integer(CurMouseCaptureHandle); // ToDo: 64bit faulty
     NotifyCurCaptureControl;
   end;
@@ -1941,6 +1947,7 @@ begin
   GDKKey:= VK2GDK(Msg.NewKey);
 
   { Set the accelerator }
+  // ToDo: use accelerator group of Form
   gtk_widget_add_accelerator(Widget, PChar(Signal),
     gtk_accel_group_get_default(), GDKKey, GDKModifier, GTK_ACCEL_VISIBLE);
 end;
@@ -3553,6 +3560,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.128  2002/10/17 15:09:33  lazarus
+  MG: made mouse capturing more strict
+
   Revision 1.127  2002/10/15 22:28:06  lazarus
   AJ: added forcelinebreaks
 
