@@ -209,9 +209,10 @@ begin
   Extended := False;
   Toggle := False;
   
+writeln('[GetGTKKeyInfo] Event^.KeyVal=',Event^.KeyVal);
   case Event^.KeyVal of
     // Normal ASCII chars
-    32..255 : 
+    32..255:
       begin
         { Assign key code}
         KeyCode := Event^.KeyVal;
@@ -230,6 +231,11 @@ begin
         { look for control code }
         if CtrlDown and (Chr(KeyCode) in ['@'..'Z'])
         then Dec(KeyCode, Ord('@'));
+      end;
+      
+    GDK_dead_circumflex:
+      begin
+        KeyCode := Ord('^');
       end;
       
     GDK_KP_Space:
@@ -890,6 +896,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.27  2001/12/10 11:13:15  lazarus
+  MG: added GDK_dead_circumflex key
+
   Revision 1.26  2001/11/16 20:08:41  lazarus
   Object inspector has hints now.
   Shane
