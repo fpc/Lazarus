@@ -120,9 +120,16 @@ end;
 procedure TDBComboBox.FocusRequest(Sender: TObject);
 begin
   //the FieldLink has requested the control
-  //recieve focus for some reason..
+  //receive focus for some reason..
   //perhaps an error occured?
   SetFocus;
+end;
+
+procedure TDBComboBox.Loaded;
+begin
+  inherited Loaded;
+  if (csDesigning in ComponentState) then
+    DataChange(Self);
 end;
 
 constructor TDBComboBox.Create(TheOwner: TComponent);

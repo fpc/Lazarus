@@ -133,6 +133,13 @@ begin
   SetFocus;
 end;
 
+procedure TDBMemo.Loaded;
+begin
+  inherited Loaded;
+  if (csDesigning in ComponentState) then
+    DataChange(Self);
+end;
+
 destructor TDBMemo.Destroy;
 begin
   FDataLink.Free;

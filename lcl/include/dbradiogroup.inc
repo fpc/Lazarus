@@ -142,6 +142,13 @@ begin
   end;
 end;
 
+procedure TDBRadioGroup.Loaded;
+begin
+  inherited Loaded;
+  if (csDesigning in ComponentState) then
+    DataChange(Self);
+end;
+
 constructor TDBRadioGroup.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);

@@ -92,6 +92,13 @@ begin
     Picture.Assign(FDataLink.Field);
 end;
 
+procedure TDBImage.Loaded;
+begin
+  inherited Loaded;
+  if (csDesigning in ComponentState) then
+    DataChange(Self);
+end;
+
 constructor TDBImage.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);

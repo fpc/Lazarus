@@ -2,7 +2,7 @@
 {
  /***************************************************************************
                                DbCtrls.pp
-                             -------------------
+                               ----------
                      An interface to DB aware Controls
                      Initial Revision : Sun Sep 14 2003
 
@@ -218,20 +218,19 @@ Type
     destructor Destroy; override;
     property Field: TField read GetField;
   published
-    property DataField: string read GetDataField write SetDataField;
-    property DataSource: TDataSource read GetDataSource write SetDataSource;
-
     property Align;
     property Alignment;
-    property AutoSize;
     property Anchors;
+    property AutoSize;
     property Caption;
     property Color;
+    property DataField: string read GetDataField write SetDataField;
+    property DataSource: TDataSource read GetDataSource write SetDataSource;
     property FocusControl;
     property Font;
-    property Visible;
     property Layout;
     property ShowAccelChar;
+    property Visible;
     property WordWrap;
   end;
 
@@ -341,6 +340,7 @@ Type
     property DataLink: TFieldDataLink read FDataLink;
     function GetButtonValue(Index: Integer): string;
     procedure UpdateRadioButtonStates; override;
+    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -393,6 +393,7 @@ Type
     procedure FocusRequest(Sender: TObject); virtual;
     procedure Notification(AComponent: TComponent;
                            Operation: TOperation); override;
+    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -456,6 +457,7 @@ Type
                            Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
+    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -523,6 +525,7 @@ Type
                            Operation: TOperation); override;
     procedure UpdateData(Sender: TObject); virtual;
     procedure FocusRequest(Sender: TObject); virtual;
+    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -629,6 +632,7 @@ Type
     procedure DataChange(Sender: TObject); virtual;
     procedure UpdateData(Sender: TObject); virtual;
     procedure LoadPicture; virtual;
+    procedure Loaded; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -1066,6 +1070,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2003/09/18 21:17:13  mattias
+  added DataChange after Loaded
+
   Revision 1.11  2003/09/18 21:01:18  mattias
   started TDBImage
 

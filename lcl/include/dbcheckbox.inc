@@ -136,6 +136,13 @@ begin
   end;
 end;
 
+procedure TDBCheckBox.Loaded;
+begin
+  inherited Loaded;
+  if (csDesigning in ComponentState) then
+    DataChange(Self);
+end;
+
 function TDBCheckBox.ValueEqualsField(const AValue, AFieldText: string
   ): boolean;
 begin
