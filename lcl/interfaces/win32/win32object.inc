@@ -1978,6 +1978,9 @@ Begin
         Flags := Flags or BS_PUSHBUTTON;
       pClassName := 'BUTTON';
       WindowTitle := StrCaption;
+      // weird drawing bug in winxp when using themes, button on groupbox: 
+      // background button is drawn in black, ws_ex_transparent seems to fix this
+      FlagsEx := FlagsEx or WS_EX_TRANSPARENT;
     End;
     csCalendar:
     Begin
@@ -2136,6 +2139,9 @@ Begin
       // BS_AUTORADIOBUTTON may hang the application,
       // if the radiobuttons are not consecutive controls.
       Flags := Flags Or BS_RADIOBUTTON;
+      // weird drawing bug in winxp when using themes, button on groupbox: 
+      // background button is drawn in black, ws_ex_transparent seems to fix this
+      FlagsEx := FlagsEx or WS_EX_TRANSPARENT;
     End;
     csScrollBar:
     Begin
@@ -3003,6 +3009,9 @@ End;
 
 {
   $Log$
+  Revision 1.204  2004/06/15 14:41:38  micha
+  fix drawing bug in xp with themes
+
   Revision 1.203  2004/06/10 18:14:09  vincents
   converted win32proc.inc to unit
 
