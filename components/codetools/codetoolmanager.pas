@@ -59,6 +59,7 @@ type
   TOnCodeToolCheckAbort = function: boolean of object;
 
   TCodeToolManager = class
+    function OnScannerProgress(Sender: TLinkScanner): boolean;
   private
     FAbortable: boolean;
     FAddInheritedCodeToOverrideMethod: boolean;
@@ -522,6 +523,7 @@ begin
     Code.Scanner.OnGetInitValues:=@OnScannerGetInitValues;
     Code.Scanner.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
     Code.Scanner.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
+    Code.Scanner.OnProgress:=@OnScannerProgress;
   end;
 end;
 
@@ -1546,6 +1548,14 @@ begin
 end;
 
 function TCodeToolManager.OnParserProgress(Tool: TCustomCodeTool): boolean;
+begin
+  Result:=false;
+  if not FAbortable then exit;
+  if not Assigned(OnCheckAbort) then exit;
+  Result:=not OnCheckAbort();
+end;
+
+function TCodeToolManager.OnScannerProgress(Sender: TLinkScanner): boolean;
 begin
   Result:=false;
   if not FAbortable then exit;

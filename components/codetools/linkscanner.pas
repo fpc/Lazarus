@@ -128,7 +128,7 @@ type
   
   ELinkScannerErrors = class of ELinkScannerError;
   
-  TLinkScannerProgress = function(Sender: TLinkScanner): boolean;
+  TLinkScannerProgress = function(Sender: TLinkScanner): boolean of object;
   
   ELinkScannerAbort = class(ELinkScannerError)
   end;
