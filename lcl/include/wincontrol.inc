@@ -1421,7 +1421,7 @@ procedure TWinControl.FontChanged(Sender: TObject);
 begin
   if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
   begin
-    CNSendMessage(LM_SETFONT, Self, Pointer(Font.Handle));
+    TWSWinControlClass(WidgetSetClass).SetFont(Self, Font);
     Exclude(FFlags,wcfFontChanged);
     //NotifyControls(CM_ ...);
   end else
@@ -3912,6 +3912,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.276  2004/09/12 13:52:26  micha
+  convert LM_SETFONT to interface method
+
   Revision 1.275  2004/09/10 16:28:50  mattias
   implemented very rudimentary TTabControl
 

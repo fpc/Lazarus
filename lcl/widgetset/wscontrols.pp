@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls,
+  Controls, Graphics,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSImgList;
 
@@ -71,6 +71,7 @@ type
 
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); virtual;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); virtual;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); virtual;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); virtual;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); virtual;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); virtual;
@@ -137,6 +138,10 @@ begin
 end;
   
 procedure TWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); 
+begin
+end;
+    
+procedure TWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
 begin
 end;
 

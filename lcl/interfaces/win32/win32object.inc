@@ -336,12 +336,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_SETFONT:
-      begin
-        if Sender is TControl then begin
-                Windows.SendMessage(Handle, WM_SETFONT, windows.wParam(integer(data)), 1);
-        end;
-      end;
       LM_SETSIZE:
       Begin
         If (Sender Is TWinControl) Then // Handle is already tested --> see above
@@ -2499,6 +2493,9 @@ End;
 
 {
   $Log$
+  Revision 1.250  2004/09/12 13:52:26  micha
+  convert LM_SETFONT to interface method
+
   Revision 1.249  2004/09/12 13:30:13  micha
   remove handling of LM_SETFOCUS in interface, as it is never sent from LCL
 

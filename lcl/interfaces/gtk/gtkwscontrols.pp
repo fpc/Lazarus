@@ -29,7 +29,7 @@ interface
 uses
   {$IFDEF GTK2} Gtk2, Glib2, {$ELSE} Gtk, Glib, {$ENDIF}
   SysUtils, Classes, Controls, LMessages, InterfaceBase,
-  WSControls, WSLCLClasses;
+  WSControls, WSLCLClasses, Graphics;
 
 type
 
@@ -63,6 +63,7 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
     class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
@@ -219,6 +220,12 @@ end;
 procedure TGtkWSWinControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
 begin
   GtkProc.SetCursor(AControl as TWinControl, ACursor); 
+end;
+
+procedure TGtkWSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
+begin
+  DebugLn('TGtkWSWinControl.SetFont: implement me!');
+  // TODO: implement me!
 end;
 
 procedure TGtkWSWinControl.SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); 

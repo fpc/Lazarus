@@ -33,7 +33,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-  Controls,
+  Controls, Graphics,
 ////////////////////////////////////////////////////
   WSControls, WSLCLClasses, SysUtils,
   { TODO: needs to move }
@@ -69,6 +69,7 @@ type
     class function  GetText(const AWinControl: TWinControl; var AText: String): Boolean; override;
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetColor(const AWinControl: TWinControl); override;
+    class procedure SetFont(const AWinControl: TWinControl; const AFont: TFont); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
 
     class procedure ShowHide(const AWinControl: TWinControl); override;
@@ -179,6 +180,11 @@ end;
 procedure TWin32WSWinControl.SetColor(const AWinControl: TWinControl);
 begin
   // TODO: to be implemented, had no implementation in LM_SETCOLOR message
+end;
+
+procedure TWin32WSWinControl.SetFont(const AWinControl: TWinControl; const AFont: TFont);
+begin
+  Windows.SendMessage(AWinControl.Handle, WM_SETFONT, Windows.WParam(AFont.Handle), 1);
 end;
 
 procedure TWin32WSWinControl.SetText(const AWinControl: TWinControl; const AText: string);
