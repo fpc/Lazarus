@@ -1987,35 +1987,35 @@ begin
   EventTrace ('TimerCB', nil);
   Result := 0;  // assume: timer will stop
   
+  TimerInfo:=PGtkITimerinfo(Data);
+
   if (FTimerData=nil) or (FTimerData.IndexOf(Data)<0) then begin
     // timer was killed
     Result:=0; // stop timer
-    exit;
-  end;
-  
-  TimerInfo:=PGtkITimerinfo(Data);
-  if TimerInfo^.TimerFunc <> nil
-  then begin
-    // Call users timer function
-    TimerInfo^.TimerFunc(TimerInfo^.Handle,
-                         LM_TIMER,
-                         TimerInfo^.IDEvent,
-                         0{WARN: should be: GetTickCount});
-    Result:=1; // timer will go on
-  end
-  else if (pointer (TimerInfo^.Handle) <> nil)
-  then begin    // Handle through default message handler
-    Mess.msg    := LM_TIMER;
-    Mess.WParam := TimerInfo^.IDEvent;
-    Mess.LParam := LongInt (TimerInfo^.TimerFunc);
-    Mess.Result := 0;
-    if DeliverMessage (Pointer (TimerInfo^.Handle), Mess)=0 then
-      Result:=1
-    else
-      Result:=0;
-  end
-  else begin
-    Result := 0;       // stop timer
+  end else begin
+    if TimerInfo^.TimerFunc <> nil
+    then begin
+      // Call users timer function
+      TimerInfo^.TimerFunc(TimerInfo^.Handle,
+                           LM_TIMER,
+                           TimerInfo^.IDEvent,
+                           0{WARN: should be: GetTickCount});
+      Result:=1; // timer will go on
+    end
+    else if (pointer (TimerInfo^.Handle) <> nil)
+    then begin    // Handle through default message handler
+      Mess.msg    := LM_TIMER;
+      Mess.WParam := TimerInfo^.IDEvent;
+      Mess.LParam := LongInt (TimerInfo^.TimerFunc);
+      Mess.Result := 0;
+      if DeliverMessage (Pointer (TimerInfo^.Handle), Mess)=0 then
+        Result:=1
+      else
+        Result:=0;
+    end
+    else begin
+      Result := 0;       // stop timer
+    end;
   end;
   
   if (Result<>0) and (FTimerData.IndexOf(Data)<0) then begin
@@ -2496,6 +2496,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.147  2002/10/15 07:01:29  lazarus
+  MG: fixed timer checking
+
   Revision 1.146  2002/10/14 19:00:49  lazarus
   MG: fixed zombie timers
 
