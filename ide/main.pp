@@ -2038,7 +2038,7 @@ var Ext,ACaption,AText:string;
   TempForm: TCustomForm;
   sl: TStringList;
 begin
-writeln('TMainIDE.DoOpenEditorFile "',AFilename,'"');
+//writeln('TMainIDE.DoOpenEditorFile "',AFilename,'"');
   Result:=mrCancel;
   if AFileName='' then exit;
   Ext:=lowercase(ExtractFileExt(AFilename));
@@ -2222,14 +2222,14 @@ writeln('TMainIDE.DoOpenEditorFile "',AFilename,'"');
           PropertyEditorHook1.LookupRoot := TForm(CInterface.Control);
           TDesigner(TempForm.Designer).SelectOnlyThisComponent(TempForm);
         end;
-writeln('TMainIDE.DoOpenEditorFile  LFM end');
+//writeln('TMainIDE.DoOpenEditorFile  LFM end');
       finally
         BinLFMStream.Free;
       end;
     end;
   end;
   Result:=mrOk;
-writeln('TMainIDE.DoOpenEditorFile END "',AFilename,'"');
+//writeln('TMainIDE.DoOpenEditorFile END "',AFilename,'"');
 end;
 
 function TMainIDE.DoOpenMainUnit(ProjectLoading: boolean): TModalResult;
@@ -2239,7 +2239,7 @@ var MainUnitInfo: TUnitInfo;
   ProgramNameStart,ProgramNameEnd: integer;
   sl: TStringList;
 begin
-writeln('[TMainIDE.DoOpenMainUnit] A');
+//writeln('[TMainIDE.DoOpenMainUnit] A');
   Result:=mrCancel;
   if Project.MainUnit<0 then exit;
   MainUnitInfo:=Project.Units[Project.MainUnit];
@@ -2276,7 +2276,7 @@ writeln('[TMainIDE.DoOpenMainUnit] A');
   NewSrcEdit.EditorComponent.CaretXY:=MainUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=MainUnitInfo.TopLine;
   Result:=mrOk;
-writeln('[TMainIDE.DoOpenMainUnit] END');
+//writeln('[TMainIDE.DoOpenMainUnit] END');
 end;
 
 function TMainIDE.DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
@@ -2625,7 +2625,7 @@ var Ext,AText,ACaption,LPIFilename:string;
   SrcStream: TMemoryStream;
   NewSource: string;
 begin
-writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
+//writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   Result:=mrCancel;
   if AFileName='' then exit;
   AFilename:=ExpandFileName(AFilename);
@@ -2714,7 +2714,7 @@ writeln('TMainIDE.DoOpenProjectFile A "'+AFileName+'"');
   Project.Modified:=false;
   EnvironmentOptions.LastSavedProjectFile:=Project.ProjectInfoFile;
   EnvironmentOptions.Save(false);
-writeln('TMainIDE.DoOpenProjectFile end ');
+//writeln('TMainIDE.DoOpenProjectFile end ');
 end;
 
 function TMainIDE.DoCreateProjectForProgram(ProgramFilename
@@ -3334,8 +3334,53 @@ end;
 
 function TMainIDE.DoJumpToCompilerMessage(Index:integer;
   FocusEditor: boolean): boolean;
+  
+  function SearchFile(const AFilename: string): string;
+  var OldCurrDir, SearchPath, Delimiter, ProjectDir: string;
+    PathStart, PathEnd: integer;
+  begin
+    if FilenameIsAbsolute(AFilename) then begin
+      Result:=AFileName;
+      exit;
+    end;
+    // search file in project directory
+    ProjectDir:=ExtractFilePath(Project.ProjectFile);
+    Result:=ProjectDir+AFilename;
+    if FileExists(Result) then exit;
+    // search file with unit search path
+    OldCurrDir:=GetCurrentDir;
+    try
+      SetCurrentDir(ProjectDir);
+      SearchPath:=Project.CompilerOptions.OtherUnitFiles;
+      Delimiter:=';';
+      PathStart:=1;
+      while (PathStart<=length(SearchPath)) do begin
+        while (PathStart<=length(SearchPath)) 
+        and (Pos(SearchPath[PathStart],Delimiter)>0) do
+          inc(PathStart);
+        PathEnd:=PathStart;
+        while (PathEnd<=length(SearchPath)) 
+        and (Pos(SearchPath[PathEnd],Delimiter)<1) do
+          inc(PathEnd);
+        if PathEnd>PathStart then begin
+          Result:=ExpandFileName(copy(SearchPath,PathStart,PathEnd-PathStart));
+          if Result<>'' then begin
+            if Result[length(Result)]<>OSDirSeparator then
+              Result:=Result+OSDirSeparator;
+            Result:=Result+AFileName;
+            if FileExists(Result) then exit;
+          end;
+        end;
+        PathStart:=PathEnd;
+      end;
+    finally
+      SetCurrentDir(OldCurrDir);
+    end;
+    Result:='';
+  end;
+  
 var MaxMessages: integer;
-  Filename, Ext: string;
+  Filename, Ext, SearchedFilename: string;
   CaretXY: TPoint;
   TopLine: integer;
   MsgType: TErrorType;
@@ -3359,29 +3404,33 @@ begin
   end;
   if Compiler1.GetSourcePosition(MessagesView.MessageView.Items[Index],
         Filename,CaretXY,MsgType) then begin
-    // search the file
-    if not FilenameIsAbsolute(Filename) then begin
-      Filename:=ExtractFilePath(Project.ProjectFile)+Filename;
-    end;
-    // open the file in the source editor
-    Ext:=lowercase(ExtractFileExt(Filename));
-    if (Ext<>'.lfm') or (Ext='.lpi') then begin
-      Result:=(DoOpenEditorFile(Filename,false)=mrOk);
-      if Result then begin
-        // set caret position
-        SrcEdit:=SourceNoteBook.GetActiveSE;
-        TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
-        if TopLine<1 then TopLine:=1;
-        SrcEdit.EditorComponent.CaretXY:=CaretXY;
-        SrcEdit.EditorComponent.TopLine:=TopLine;
-        SrcEdit.ErrorLine:=CaretXY.Y;
-        if FocusEditor then begin
+    SearchedFilename:=SearchFile(Filename);
+    if SearchedFilename<>'' then begin
+      // open the file in the source editor
+      Ext:=lowercase(ExtractFileExt(SearchedFilename));
+      if (Ext<>'.lfm') or (Ext='.lpi') then begin
+        Result:=(DoOpenEditorFile(SearchedFilename,false)=mrOk);
+        if Result then begin
+          // set caret position
+          SrcEdit:=SourceNoteBook.GetActiveSE;
+          TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
+          if TopLine<1 then TopLine:=1;
+          SrcEdit.EditorComponent.CaretXY:=CaretXY;
+          SrcEdit.EditorComponent.TopLine:=TopLine;
+          SrcEdit.ErrorLine:=CaretXY.Y;
+          if FocusEditor then begin
 //writeln('[TMainIDE.DoJumpToCompilerMessage] A');
-          SourceNotebook.BringToFront;
+            SourceNotebook.BringToFront;
 //writeln('[TMainIDE.DoJumpToCompilerMessage] B');
-          SrcEdit.EditorComponent.SetFocus;
+            SrcEdit.EditorComponent.SetFocus;
+          end;
         end;
       end;
+    end else begin
+      MessageDlg('Unable to find file "'+Filename+'".'
+         +' Check search path in'
+         +' Project->Compiler Options...->Search Paths->Other Unit Files',
+         mtInformation,[mbOk],0);
     end;
   end;
 end;
@@ -3598,6 +3647,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.111  2001/07/29 20:33:23  lazarus
+  MG: bugfixed event propeditor, DoJumpToMethod with searchpath
+
   Revision 1.110  2001/07/10 10:44:15  lazarus
   MG: save unit only if modified
 

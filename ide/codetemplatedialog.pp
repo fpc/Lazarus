@@ -9,7 +9,7 @@
 }
 unit CodeTemplateDialog;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 

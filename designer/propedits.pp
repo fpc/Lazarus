@@ -2843,17 +2843,20 @@ begin
   if Assigned(FOnGetMethodName) then
     Result:=FOnGetMethodName(Method)
   else begin
-    if Assigned(Method.Code) then
+    if Assigned(Method.Code) then begin
       if Assigned(LookupRoot) then begin
         Result:=LookupRoot.MethodName(Method.Code);
         if Result='' then
           Result:='Unpublished';
       end else
         Result:='No LookupRoot';
+    end else
+      Result:='';
   end;
 end;
 
-procedure TPropertyEditorHook.GetMethods(TypeData:PTypeData; Proc:TGetStringProc);
+procedure TPropertyEditorHook.GetMethods(TypeData:PTypeData;
+  Proc:TGetStringProc);
 begin
   if Assigned(FOnGetMethods) then
     FOnGetMethods(TypeData,Proc);
@@ -2864,7 +2867,7 @@ begin
   if Assigned(FOnMethodExists) then
     Result:=FOnMethodExists(Name)
   else
-    Result:=false;
+    Result:=Assigned(LookupRoot) and (LookupRoot.MethodAddress(Name)<>nil);
 end;
 
 procedure TPropertyEditorHook.RenameMethod(const CurName, NewName:ShortString);
