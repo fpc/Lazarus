@@ -2324,8 +2324,13 @@ begin
             SetComboBoxItemIndex(TComboBox(Sender),Integer(Data));
 
           csListBox :
-            gtk_list_select_item(PGtkList(GetWidgetInfo(Pointer(Handle),
-                                   True)^.ImplementationWidget), Integer(Data));
+            if Integer(Data)>=0 then
+              gtk_list_select_item(
+                PGtkList(GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget),
+                Integer(Data))
+            else
+              gtk_list_unselect_all(
+                PGtkList(GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget));
 
           csCListBox:
             gtk_clist_select_row(PGtkCList(GetWidgetInfo(Pointer(Handle),
@@ -7214,6 +7219,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.352  2003/04/11 17:10:20  mattias
+  added but not implemented ComboBoxDropDown
+
   Revision 1.351  2003/04/11 12:48:07  mattias
   fixed gtk warning on setting item height
 
