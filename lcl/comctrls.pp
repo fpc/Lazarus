@@ -650,7 +650,6 @@ type
   private
     MinBtn,
     MaxBtn : TControl;//TSpeedButton's
-    BTimer : TTimer;
     BTimerProc : Procedure of Object;
     BTimerBounds : TRect;
     FArrowKeys: Boolean;
@@ -1937,6 +1936,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.92  2003/11/30 18:35:19  mattias
+  fixed fpc 1.9.1 warns
+
   Revision 1.91  2003/11/07 15:57:45  mattias
   implemented auto selection visible for component tree
 

@@ -8390,7 +8390,7 @@ begin
 
   // create Lines
   CurLineEntry:=Lines;
-  CurLineStart:=PChar(Lines)+ArraySize;
+  CurLineStart:=PChar(CurLineEntry)+ArraySize;
   i:=0;
   while i<LinesList.Count do begin
     // set the pointer to the start of the current line
@@ -8465,6 +8465,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.440  2003/11/30 18:35:19  mattias
+  fixed fpc 1.9.1 warns
+
   Revision 1.439  2003/11/29 13:17:38  mattias
   made gtklayout using window theme at start
 

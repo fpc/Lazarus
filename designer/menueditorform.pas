@@ -112,7 +112,7 @@ begin
   fEditor:=aEditor;
 
   
-  DesignerMainMenu:=TDesignerMainMenu.Create(Self, fMenu, fEditor);
+  DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu, fEditor);
   PopupMenu:=DesignerMainMenu.MainPopupMenu;
   
   Cmp2:=TScrollBox.Create(self);
@@ -215,7 +215,7 @@ begin
           fMenu:=TMenu(fDesigner.Form.Components[j]);
         end;
       end;
-      DesignerMainMenu:=TDesignerMainMenu.Create(Self, fMenu, fEditor);
+      DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu, fEditor);
       with DesignerMainMenu do
       begin
         Parent:=Self;

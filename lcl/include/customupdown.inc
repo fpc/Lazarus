@@ -23,6 +23,7 @@ Type
 
   TUpDownButton = Class(TSpeedButton)
   Private
+    BTimer : TTimer;
     FUpDown : TCustomUpDown;
     FButtonType : TUDBtnType;
   Protected

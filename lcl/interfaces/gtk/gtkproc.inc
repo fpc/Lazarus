@@ -5108,7 +5108,7 @@ begin
     clMENUTEXT,
     clBTNTEXT :
       begin
-        Case Color of
+        Case TColor(Color) of
           clBTNTEXT : Style := GetStyle('button');
           clMENUTEXT : Style := GetStyle('menuitem');
         end;
@@ -5159,7 +5159,7 @@ var
 begin
   style := nil;
   
-  Case Color of
+  Case TColor(Color) of
    { clMenu:
       begin
         Style := GetStyle('menuitem');
@@ -5620,6 +5620,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.232  2003/11/30 18:35:20  mattias
+  fixed fpc 1.9.1 warns
+
   Revision 1.231  2003/11/29 13:17:38  mattias
   made gtklayout using window theme at start
 

@@ -56,8 +56,8 @@ type
     subitem_level: Integer;
     fAction: Integer;
   public
-    constructor Create(AOwner: TComponent; aAction: Integer);
-    procedure OkButtonCLick(Sender: TObject);
+    constructor CreateWithAction(AOwner: TComponent; aAction: Integer);
+    procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonCLick(Sender: TObject);
     function GetSelectedMenuTemplate: Integer;
     function GetDescription: string;
@@ -100,7 +100,8 @@ type
     TemplateMenuForm: TTemplateMenuForm;
   public
     // Constructor and destructor
-    constructor Create(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor);
+    constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu;
+      aEditor: TComponentEditor);
     destructor Destroy; override;
     
     // Properties for  accesing private variables
@@ -189,7 +190,8 @@ var
   XMLConfig: TXMLConfig;
 
 //
-constructor TDesignerMainMenu.Create(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor);
+constructor TDesignerMainMenu.CreateWithMenu(aOwner: TComponent; aMenu: TMenu;
+  aEditor: TComponentEditor);
 var
   PopupMenuItem: TMenuItem;
 begin
@@ -831,7 +833,7 @@ var
   templatemenuitem: string;
   temp_designermenuitem: PDesignerMenuItem;
 begin
-  TemplateMenuForm:=TTemplateMenuForm.Create(self, 1);
+  TemplateMenuForm:=TTemplateMenuForm.CreateWithAction(self, 1);
   if (TemplateMenuForm.ShowModal = mrOK) then
   begin
   
@@ -1090,7 +1092,7 @@ begin
   i:=1;
   Str(i,str_i);
   templatemenuitem:='menu_' + str_i;
-  TemplateMenuForm:=TTemplateMenuForm.Create(self, 2);
+  TemplateMenuForm:=TTemplateMenuForm.CreateWithAction(self, 2);
   if (TemplateMenuForm.ShowModal = mrOK) then
   begin
     while (XMLConfig.GetValue(templatemenuitem + '/Name/Value','does_not_exists') <> 'does_not_exists') do
@@ -1141,7 +1143,7 @@ begin
   //SelectedDesignerMenuItem:=GetSelectedDesignerMenuItem(Root);
   i:=1;
   j:=1;
-  TemplateMenuForm:=TTemplateMenuForm.Create(self, 3);
+  TemplateMenuForm:=TTemplateMenuForm.CreateWithAction(self, 3);
   if (TemplateMenuForm.ShowModal = mrOK) and (TemplateMenuForm.GetSelectedMenuTemplate > 0) then
   begin
     i:=TemplateMenuForm.GetSelectedMenuTemplate;
@@ -1796,7 +1798,8 @@ end;
 // TTemplateMenuForm ---/
 // ---------------------/
  
-constructor TTemplateMenuForm.Create(AOwner: TComponent; aAction: Integer);
+constructor TTemplateMenuForm.CreateWithAction(AOwner: TComponent;
+  aAction: Integer);
 var
   i: Integer;
   templatemenuitem, str_i: string;
