@@ -90,7 +90,11 @@ begin
   Label1.Caption := lisVersion+' #: '+lisLazarusVersionString;
   Label2.Caption := lisDate+': '+GetLocalizedBuildDate;
   
-  Memo1.Lines.Text:=Format(lisAboutLazarusMsg,[LineEnding,LineEnding,LineEnding]);
+  Memo1.Lines.Text:=Format(lisAboutLazarusMsg,[LineEnding,LineEnding,LineEnding])
+    +LineEnding+LineEnding
+    +'http://sourceforge.net/projects/lazarus/'+LineEnding
+    +'http://sourceforge.net/projects/lazarus-ccr/'+LineEnding
+    ;
   Button1.Caption:=lisClose;
 
   OnResize:=@AboutFormResize;
