@@ -4152,7 +4152,7 @@ begin
   if not (csDesigning in ComponentState) then begin
     RegisterDockSite(Self,NewDockSite);
     if not NewDockSite then begin
-      FreeThenNil(FDockClients);
+      FreeAndNil(FDockClients);
       FDockClients := nil;
       FDockManager := nil;
     end
@@ -4486,6 +4486,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.318  2005/03/07 23:21:36  mattias
+  fixed DefaultRowHeight=18 and various published properties  from Jesus
+
   Revision 1.317  2005/03/07 21:59:45  vincents
   changed hexstr(cardinal()) for pointers to dbgs() and other 64-bits fixes   from Peter Vreman
 

@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, LCLIntf, LCLProc, Graphics, SysUtils, LCLType, stdctrls, DB,
-  LMessages, Grids, Controls;
+  LMessages, Grids, Dialogs, Controls;
 
 type
   TCustomDbGrid = class;
@@ -296,6 +296,12 @@ type
   TdbGrid=class(TCustomDbGrid)
   public
     property Canvas;
+    property ExtendedColSizing;
+    property FocusColor;
+    property FocusRectVisible;
+    property GridLineColor;
+    property GridLineStyle;
+    property SelectedColor;
     //property SelectedRows;
   published
     property Align;
@@ -310,7 +316,7 @@ type
     property Constraints;
     property DataSource;
     property DefaultDrawing;
-    property DefaultRowHeight default 20;
+    property DefaultRowHeight default 18;
     //property DragCursor;
     //property DragKind;
     //property DragMode;
@@ -358,7 +364,7 @@ type
     //property OnStartDrag;
     property OnTitleClick;
   end;
-
+  
 procedure Register;
   
 implementation
@@ -391,7 +397,7 @@ begin
       begin //
         Canvas.Brush.Color:=clBlack;
         Canvas.Pen.Color:=clBlack;
-        y:= R.top+ (R.Bottom-R.Top) div 2;
+        y:= R.top+ (R.Bottom-R.Top) div 2-1;
         x:= R.Left+2;
         Canvas.Polygon([point(x,y-dy),point(x+dx,y),point(x, y+dy),point(x,y-dy)]);
        end;
@@ -1109,7 +1115,10 @@ procedure TCustomDbGrid.DefaultDrawCell(aCol, aRow: Integer; aRect: TRect;
       Classes.taLeftJustify: Inc(aRect.Left, 3);
       Classes.taRightJustify: Dec(aRect.Right, 3);
     end;
-    Inc(aRect.Top, 2);
+    case Canvas.TextStyle.Layout of
+      tlTop: Inc(aRect.Top, 3);
+      tlBottom: Dec(aRect.Bottom, 3);
+    end;
   end;
 var
   S: string;
@@ -1180,6 +1189,13 @@ procedure TCustomDbGrid.KeyDown(var Key: Word; Shift: TShiftState);
   end;
 begin
   case Key of
+    VK_DELETE:
+      if (ssCtrl in Shift) and GridCanModify then begin
+        if not (dgConfirmDelete in Options) or
+          (MessageDlg('Delete record?',mtConfirmation,mbOKCancel,0)<>mrCancel)
+        then
+          FDatalink.Dataset.Delete;
+      end;
     VK_DOWN:
       if FDatalink.DataSet <> nil then
       with FDatalink.Dataset do begin
@@ -1264,6 +1280,7 @@ begin
         end;
         Key:=0;
       end;
+
     else
       inherited KeyDown(Key, Shift);
   end;
@@ -1559,7 +1576,7 @@ begin
       if i>=0 then
         Columns[i].Width := ColWidths[Index];
     end;
-    FDefaultColWidths := True;
+    FDefaultColWidths := False;
   end;
 end;
 
@@ -1664,9 +1681,10 @@ begin
   
   // What a dilema!, we need ssAutoHorizontal and ssVertical!!!
   ScrolLBars:=ssBoth;
-  DefaultTextStyle.Wordbreak := false;
-  
-  DefaultRowHeight := 20;
+  DefaultTextStyle.Wordbreak := False;
+  DefaultTextStyle.Layout := tlCenter;
+
+  DefaultRowHeight := 18;
 end;
 
 procedure TCustomDbGrid.DefaultDrawColumnCell(const Rect: TRect;
@@ -1685,7 +1703,10 @@ procedure TCustomDbGrid.DefaultDrawColumnCell(const Rect: TRect;
       Classes.taLeftJustify: Inc(Result.Left, 3);
       Classes.taRightJustify: Dec(Result.Right, 3);
     end;
-    Inc(Result.Top, 2);
+    case Canvas.TextStyle.Layout of
+      tlTop: Inc(Result.Top, 3);
+      tlBottom: Dec(Result.Bottom, 3);
+    end;
   end;
 var
   S: string;
@@ -1708,7 +1729,6 @@ begin
       S := '';
     R := FixRectangle();
     Canvas.TextRect(R,R.Left,R.Top,S);
-    //Canvas.TextOut(aRect.Left+2,ARect.Top+2, S);
   end;
 end;
 
@@ -2024,6 +2044,9 @@ end.
 
 {
   $Log$
+  Revision 1.34  2005/03/07 23:21:36  mattias
+  fixed DefaultRowHeight=18 and various published properties  from Jesus
+
   Revision 1.33  2005/03/04 07:06:18  vincents
   added initialization of FEditingColumn   from Luiz Americo
 

@@ -178,6 +178,8 @@ type
     procedure msg_GetValue(var Msg: TGridMessage); message GM_GETVALUE;
     procedure msg_SetGrid(var Msg: TGridMessage); message GM_SETGRID;
     procedure msg_SelectAll(var Msg: TGridMessage); message GM_SELECTALL;
+  public
+    constructor Create(AOwner: TComponent); override;
   end;
 
   TButtonCellEditor = class(TButton)
@@ -740,7 +742,7 @@ type
     property FocusRectVisible: Boolean read FFocusRectVisible write SetFocusRectVisible;
     property GCache: TGridDataCache read FGCAChe;
     property GridHeight: Integer read FGCache.GridHeight;
-    property GridLineColor: TColor read FGridLineColor write SetGridLineColor;
+    property GridLineColor: TColor read FGridLineColor write SetGridLineColor default clSilver;
     property GridLineStyle: TPenStyle read FGridLineStyle write SetGridLineStyle;
     property GridLineWidth: Integer read FGridLineWidth write SetGridLineWidth default 1;
     property GridWidth: Integer read FGCache.GridWidth;
@@ -2264,7 +2266,6 @@ begin
   if FUpdateCount=0 then begin
     //DebugLn('Paint: FGCache.ValidGrid=',FGCache.ValidGrid );
     //DebugRect('Paint.ClipRect=',Canvas.ClipRect);
-    DrawEdges;
     DrawBackGround;
     if FGCache.ValidGrid then begin
       {
@@ -2275,6 +2276,7 @@ begin
       DrawByRows;
       DrawColRowMoving;
     end;
+    DrawEdges;
     DrawBorder;
   end;
 end;
@@ -2297,6 +2299,7 @@ begin
       Canvas.Brush.Color := GetColumnColor(aCol, gdFixed in AState);
       SetCanvasFont(GetColumnFont(aCol, gdFixed in aState));
     end;
+    Canvas.TextStyle := DefaultTextStyle;
     Canvas.TextStyle.Alignment := GetColumnAlignment(aCol, gdFixed in AState);
     Canvas.TextStyle.Layout := GetColumnLayout(aCol, gdFixed in AState);
   end else begin
@@ -5163,7 +5166,7 @@ begin
   fGridState:=gsNormal;
   fDefColWidth:=64;//40;
   fDefRowHeight:=24;//18;
-  fGridLineColor:=clGray;
+  fGridLineColor:=clSilver;//clGray;
   FGridLineStyle:=psSolid;
   fFocusColor:=clRed;
   FFixedColor:=clBtnFace;
@@ -5177,7 +5180,8 @@ begin
   FixedRows:=1;
   Editor:=nil;
   BorderStyle := bsSingle;
-  Color:=clWhite;
+  ParentColor := False;
+  Color:=clWindow;
   FDefaultTextStyle := Canvas.TextStyle;
   
   FButtonEditor := TButtonCellEditor.Create(nil);
@@ -5523,6 +5527,12 @@ begin
 end;
 }
 { TStringCellEditor }
+
+constructor TStringCellEditor.Create(AOWner: TComponent);
+begin
+  inherited Create(AOwner);
+  BorderStyle := bsNone;
+end;
 
 procedure TStringCellEditor.Change;
 begin
@@ -6046,7 +6056,10 @@ begin
       Classes.taLeftJustify: Inc(aRect.Left, 3);
       Classes.taRightJustify: Dec(aRect.Right, 3);
     end;
-    Inc(aRect.Top, 2);
+    case Canvas.TextStyle.Layout of
+      tlTop: Inc(aRect.Top, 3);
+      tlBottom: Dec(aRect.Bottom, 3);
+    end;
     Canvas.TextRect(aRect,ARect.Left,ARect.Top, Cells[aCol,aRow]);
     //MyTExtRect(aRect, 3, 0, Cells[aCol,aRow], Canvas.Textstyle.Clipping);
   end;
@@ -6408,7 +6421,7 @@ begin
     if TmpGrid<>nil then
       result := TmpGrid.Color
     else
-      result := clWhite
+      result := clWindow
   else
     result := FColor^
 end;
