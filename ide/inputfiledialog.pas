@@ -29,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Dialogs, Buttons, StdCtrls, IDEProcs,
-  LResources, TransferMacros, InputHistory;
+  LResources, TransferMacros, InputHistory, FileCtrl;
 
 type
   TInputFileFlag = (iftDirectory, iftFilename, iftCmdLine,
