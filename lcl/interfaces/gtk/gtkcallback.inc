@@ -834,43 +834,6 @@ end;
 
 function gtksize_allocateCB(widget: PGtkWidget; size :pGtkAllocation;
   data: gPointer) : GBoolean; cdecl;
-  
-  {$IFDEF ClientRectBugFix}
-  procedure UpdateParentSizes(AParent: TWinControl);
-  var
-    OldLeft, OldTop, OldWidth, OldHeight: integer;
-    NewLeft, NewTop, NewWidth, NewHeight: integer;
-    ParentWidget: PGtkWidget;
-  begin
-    if AParent=nil then exit;
-    AParent.InvalidateClientRectCache;
-    UpdateParentSizes(AParent.Parent);
-    if (not AParent.HandleAllocated) then exit;
-    
-    // update size
-    OldLeft:=AParent.Left;
-    OldTop:=AParent.Top;
-    OldWidth:=AParent.Width;
-    OldHeight:=AParent.Height;
-    
-    ParentWidget:=PGtkWidget(AParent.Handle);
-    NewLeft:=ParentWidget^.Allocation.x;
-    NewTop:=ParentWidget^.Allocation.y;
-    NewWidth:=ParentWidget^.Allocation.Width;
-    NewHeight:=ParentWidget^.Allocation.Height;
-    {$IFDEF VerboseSizeMsg}
-    writeln('    UpdateParentSizes ',AParent.Name,':',AParent.ClassName,
-      ' LCL=',OldLeft,',',OldTop,',',OldWidth,',',OldHeight,
-      ' GTK=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight
-      );
-    {$ENDIF}
-
-    // update client rectangle
-    if AParent is TWinControl then
-      TWinControl(AParent).DoAdjustClientRectChange;
-  end;
-  {$ENDIF}
-  
 var
   PosMsg : TLMWindowPosChanged;
   SizeMsg: TLMSize;
@@ -914,8 +877,6 @@ begin
   SaveSizeNotification(Widget);
   Result:=true;
   exit;
-  
-  UpdateParentSizes(TControl(Data).Parent);
   {$ENDIF}
 
   OldLeft:=TControl(Data).Left;
@@ -1027,13 +988,9 @@ end;}
     end;
   end;
   
-  {$IFDEF ClientRectBugFix}
-  {$ELSE}
   if not (TopLeftChanged or WidthHeightChanged)
   and (TObject(Data) is TWinControl) then
     TWinControl(Data).DoAdjustClientRectChange;
-  {$ENDIF}
-  
 end;
 
 {$IFDEF ClientRectBugFix}
@@ -1757,6 +1714,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.74  2002/05/13 14:47:01  lazarus
+  MG: fixed client rectangles, TRadioGroup, RecreateWnd
+
   Revision 1.73  2002/05/10 06:05:56  lazarus
   MG: changed license to LGPL
 

@@ -1657,6 +1657,8 @@ endif
 tools: lcl components tools_all
 all: lcl components ide
 cleanide:
+	$(DEL) $(wildcard *$(OEXT))
+	$(DEL) $(wildcard *$(PPUEXT))
 	$(DEL) $(wildcard ./designer/*$(OEXT))
 	$(DEL) $(wildcard ./designer/*$(PPUEXT))
 	$(DEL) $(wildcard ./debugger/*$(OEXT))

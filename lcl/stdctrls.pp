@@ -483,8 +483,6 @@ type
 
    {TRadioButton}
    
-   TRadioButton = Class; //Forward Declaration
-
    TRadioButton = class(TCustomCheckBox)
    private
      fGroup : THandle; // handle to the previous button in the group this button belongs to
@@ -492,6 +490,7 @@ type
      function GetGroup : THandle;
    protected
      procedure CreateWnd; override;
+     procedure DestroyWnd; override;
    public
      constructor Create (AOwner: TComponent); override;
      property group : THandle read GetGroup write SetGroup;
@@ -594,6 +593,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.29  2002/05/13 14:47:00  lazarus
+  MG: fixed client rectangles, TRadioGroup, RecreateWnd
+
   Revision 1.28  2002/05/10 06:05:50  lazarus
   MG: changed license to LGPL
 

@@ -48,15 +48,12 @@
  ------------------------------------------------------------------------------}
 constructor TRadioButton.Create(AOwner : TComponent);
 begin
-  if assigned(AOwner) then
-  begin
-    inherited Create(AOwner);
-    fCompStyle := csRadioButton;
-    Visible := False;
-    Hint := 'Radiobutton';
-    ShowHint := True;
-    fGroup := 0;
-  end;
+  inherited Create(AOwner);
+  fCompStyle := csRadioButton;
+  Visible := False;
+  Hint := 'Radiobutton';
+  ShowHint := True;
+  fGroup := 0;
 end;
 
 {------------------------------------------------------------------------------
@@ -73,23 +70,54 @@ end;
 	property will be 0.
 	In the interface we can then use the group property to decide if
 	a new group has to be created or which radiobutton is the
-	predecessor.
+	predecessor. The first radiobutton, which handle is created, will get as Group
+  the group handle.
 	This behaviour is especially neccessary for the GTK bindings.
  ------------------------------------------------------------------------------}
 procedure TRadioButton.CreateWnd;
 var
-   i : integer;
-   temp : TComponent;
+  i : integer;
+  temp : TComponent;
 begin
-   i :=  Owner.ComponentCount-1;
-   while (i >= 0) and (fGroup = 0) do
-   begin  // search for radiobutton which is predecessor
-      Temp := Owner.Components [i];
-      if (Temp is TRadioButton) and (TRadioButton (temp).fGroup <> 0)
-         then fGroup := THandle (TRadioButton(Temp).Handle); // set group to our predecessor
-      dec (i);
-   end;
-   inherited CreateWnd;
+  fGroup:=0;
+  i :=  Owner.ComponentCount-1;
+  while (i >= 0) and (fGroup = 0) do
+  begin  // search for radiobutton which is predecessor
+    Temp := Owner.Components [i];
+    if (Temp is TRadioButton) and (TRadioButton (temp).fGroup <> 0) then
+      fGroup := THandle (TRadioButton(Temp).Handle); // set group to our predecessor
+    dec (i);
+  end;
+  inherited CreateWnd;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TRadioButton.DestroyWnd
+  Params:  none
+  Returns: Nothing
+
+  The handle is destroyed, and therefore the radiobutton does not belong any
+  longer to a group. The Group property is the handle of the predecessor
+  TRadioButton.
+  -> Bind the successor TRadioButton to our predecessor
+ ------------------------------------------------------------------------------}
+procedure TRadioButton.DestroyWnd;
+var
+  i: integer;
+  ARadioButton: TRadioButton;
+begin
+  if fGroup<>0 then begin
+    if HandleAllocated then begin
+      for i:=0 to Owner.ComponentCount-1 do
+        if (Owner.Components[i] is TRadioButton) then begin
+          ARadioButton:=TRadioButton(Owner.Components[i]);
+          if ARadioButton.fGroup=Handle then
+            ARadioButton.fGroup:=fGroup;
+        end;
+    end;
+    fGroup:=0;
+  end;
+  inherited DestroyWnd;
 end;
 
 {------------------------------------------------------------------------------
@@ -101,8 +129,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TRadioButton.SetGroup(Value : THandle);
 begin
-   Assert(False, 'Trace:IN SETGROUP.  Caption = '+ Self.Caption);
-   FGroup := Value;
+  Assert(False, 'Trace:IN SETGROUP.  Caption = '+ Self.Caption);
+  FGroup := Value;
 //SH?   ReCreate;
 end;
 
@@ -115,7 +143,7 @@ end;
  ------------------------------------------------------------------------------}
 function TRadioButton.GetGroup : THandle;
 begin
-   GetGroup := FGroup;
+  GetGroup := FGroup;
 end;
 
 // included by stdctrls.pp
@@ -153,6 +181,9 @@ end;
 
 {
   $Log$
+  Revision 1.5  2002/05/13 14:47:00  lazarus
+  MG: fixed client rectangles, TRadioGroup, RecreateWnd
+
   Revision 1.4  2002/05/13 06:12:57  lazarus
   MG: fixed saving unitlinks after changing fpc soure path
 

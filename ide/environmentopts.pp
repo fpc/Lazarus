@@ -34,6 +34,9 @@ unit EnvironmentOpts;
 interface
 
 uses
+{$IFDEF IDE_MEM_CHECK}
+  MemCheck,
+{$ENDIF}
   Classes, SysUtils, Forms, Controls, Buttons, XMLCfg, ObjectInspector,
   ExtCtrls, StdCtrls, EditorOptions, LResources, LazConf, Dialogs,
   ExtToolDialog, IDEProcs, IDEOptionDefs;

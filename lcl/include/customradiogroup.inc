@@ -97,62 +97,40 @@ procedure TCustomRadioGroup.CreateWnd;
 var
   i       : integer;
   temp    : TRadioButton;
-  nextTop : integer;
-  nextLeft: integer;
-  vertDist: integer;
-  horzDist: integer;
-  rbWidth : integer;
 begin
   if FCreatingWnd then exit;
   FCreatingWnd := true;
-//writeln('[TCustomRadioGroup.CreateWnd] A ',FItems.Count);
+  //writeln('[TCustomRadioGroup.CreateWnd] A ',Name,':',ClassName,' ',FItems.Count);
+  // destroy radiobuttons, if there are too many
+  while FButtonList.Count>FItems.Count do begin
+    TRadioButton(FButtonList[FButtonList.Count-1]).Free;
+    FButtonList.Delete(FButtonList.Count-1);
+  end;
   if FItems.Count>0 then begin
-    if (FItemIndex>=FItems.Count) or (FItemIndex<0) then FItemIndex:=0;
-    vertDist := (Height - 20) DIV (((FItems.Count-1) DIV FColumns)+1);
-    horzDist := (Width - 20) DIV FColumns;
-    nextTop  := 0;
-    nextLeft := 10;
-    rbWidth  := horzDist;
-    // destroy if there are too many
-    for i:=0 to FButtonList.Count-1 do
-      TRadioButton(FButtonList[i]).Free;
-    FButtonList.Clear;
-    {while (FButtonList.Count>FItems.Count) do begin
-      Temp:=TRadioButton(FButtonList[FButtonList.Count-1]);
-      Temp.Free;
-      FButtonList.Delete(FButtonList.Count-1);
-    end;}
     // create as many TRadioButton as needed
     while (FButtonList.Count<FItems.Count) do begin
       Temp := TRadioButton.Create (self);
-      Temp.Parent := self;
+      Temp.Parent := Self;
       Temp.OnClick := @Clicked;
       FButtonList.Add(Temp);
     end;
-    // position in rows and columns
+    
+    if (FItemIndex>=FItems.Count) or (FItemIndex<0) then FItemIndex:=0;
+    
+    DoPositionButtons;
+    
     i := 0;
     while i < FItems.Count do begin
       Temp := TRadioButton(FButtonList[i]);
-      Temp.Top    := nextTop;
-      Temp.Left   := nextLeft;
-      Temp.Width  := rbWidth;
-      Temp.Height := vertDist;
       Temp.Caption := FItems.Strings[i];
       Temp.Checked := (i = FItemIndex);
-
-      inc (i);
-      if (i MOD FColumns) = 0 then begin
-        inc(nextTop, vertDist);
-        nextLeft := 10;
-      end else begin
-        inc(nextLeft, horzDist);
-      end;
       Temp.Visible:=true;
+      inc(i);
     end;
   end;
-//writeln('[TCustomRadioGroup.CreateWnd] B ',FItems.Count);
+  //writeln('[TCustomRadioGroup.CreateWnd] B ',Name,':',ClassName,' ',FItems.Count);
   inherited CreateWnd;
-//writeln('[TCustomRadioGroup.CreateWnd] C ',FItems.Count);
+  //writeln('[TCustomRadioGroup.CreateWnd] C ',Name,':',ClassName,' ',FItems.Count);
   FCreatingWnd := false;
 end;
 
@@ -199,7 +177,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomRadioGroup.SetItem (value : TStrings);
 begin
-  if Value <> FItems then 
+  if (Value <> FItems) then
   begin
      FItems.Assign(Value);
      if HandleAllocated then RecreateWnd;
@@ -253,14 +231,27 @@ begin
       // when a button is pressed	
       while (i < FButtonList.Count) and (Result = -1) do
       begin	// find the actice button
-	 if TRadioButton (FButtonList [i]).Checked 
-            then result := i;
-         inc (i);
+        if TRadioButton (FButtonList [i]).Checked
+          then result := i;
+        inc (i);
       end;
       FItemIndex := Result;
    end
    else
       Result := FItemIndex;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomRadioGroup.WMSize
+  Params:  Message: TLMSize
+  Returns: none
+
+  Reposition buttons on resize
+ ------------------------------------------------------------------------------}
+procedure TCustomRadioGroup.WMSize(var Message: TLMSize);
+begin
+  if HandleAllocated then DoPositionButtons;
+  inherited;
 end;
 
 {------------------------------------------------------------------------------
@@ -303,8 +294,50 @@ Begin
   if Assigned (FOnClick) then FOnClick(Self);
 end;
 
+{------------------------------------------------------------------------------
+  Method: TCustomRadioGroup.DoPositionButtons
+  Params: none
+
+  Set bounds of radio buttons
+ ------------------------------------------------------------------------------}
+procedure TCustomRadioGroup.DoPositionButtons;
+var
+  i       : integer;
+  temp    : TRadioButton;
+  nextTop : integer;
+  nextLeft: integer;
+  vertDist: integer;
+  horzDist: integer;
+  rbWidth : integer;
+begin
+  if FItems.Count>0 then begin
+    // position in rows and columns
+    vertDist := (Height - 20) DIV (((FItems.Count-1) DIV FColumns)+1);
+    horzDist := (Width - 20) DIV FColumns;
+    nextTop  := 0;
+    nextLeft := 10;
+    rbWidth  := horzDist;
+    i := 0;
+    while i < FItems.Count do begin
+      Temp := TRadioButton(FButtonList[i]);
+      Temp.SetBounds(nextLeft,nextTop,rbWidth,vertDist);
+
+      inc (i);
+      if (i MOD FColumns) = 0 then begin
+        inc(nextTop, vertDist);
+        nextLeft := 10;
+      end else begin
+        inc(nextLeft, horzDist);
+      end;
+    end;
+  end;
+end;
+
 {
   $Log$
+  Revision 1.11  2002/05/13 14:47:00  lazarus
+  MG: fixed client rectangles, TRadioGroup, RecreateWnd
+
   Revision 1.10  2002/05/13 06:12:57  lazarus
   MG: fixed saving unitlinks after changing fpc soure path
 

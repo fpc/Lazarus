@@ -296,11 +296,6 @@ type
     (currently) maintained by Stefan Hille (stoppok@osibisa.ms.sub.org)
   }
   TCustomRadioGroup = class(TCustomGroupBox)
-  public
-    constructor Create (AOwner : TComponent); override;
-    destructor Destroy; override;
-    function CanModify : boolean; virtual;
-    procedure CreateWnd; override;
   private
     FButtonList : TList; // list of TRadioButton
     FCreatingWnd: boolean;
@@ -311,12 +306,19 @@ type
     FOnClick    : TNotifyEvent;
     procedure ItemsChanged (Sender : TObject);
     procedure Clicked(Sender : TObject); virtual;
+    procedure DoPositionButtons;
+  public
+    constructor Create (AOwner : TComponent); override;
+    destructor Destroy; override;
+    function CanModify : boolean; virtual;
+    procedure CreateWnd; override;
   protected
     procedure ReadState(Reader: TReader); override;
     procedure SetItem (value : TStrings);
     procedure SetColumns (value : integer);
     procedure SetItemIndex (value : integer);
     function GetItemIndex : integer;
+    procedure WMSize(var Message: TLMSize); message LM_SIZE;
     property ItemIndex : integer read GetItemIndex write SetItemIndex default -1;
     property Items : TStrings read FItems write SetItem;
     property Columns : integer read FColumns write SetColumns default 1;
@@ -441,6 +443,9 @@ end.
 
  {
   $Log$
+  Revision 1.24  2002/05/13 14:47:00  lazarus
+  MG: fixed client rectangles, TRadioGroup, RecreateWnd
+
   Revision 1.23  2002/05/10 06:05:50  lazarus
   MG: changed license to LGPL
 
