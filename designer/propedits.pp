@@ -1546,12 +1546,19 @@ end;
 
 procedure TPropertyEditor.ListDrawValue(const NewValue:ansistring; Index:integer;
   ACanvas:TCanvas; const ARect:TRect; AState: TPropEditDrawState);
-var TextY:integer;
+var
+  Style : TTextStyle;
 begin
-  TextY:=((ARect.Bottom-ARect.Top-abs(ACanvas.Font.Height)) div 2)+ARect.Top-5;
-  if ACanvas.Brush.Color<>clNone then
-    ACanvas.FillRect(ARect);
-  ACanvas.TextOut(ARect.Left+2,TextY,NewValue);
+  With Style do begin
+    Alignment := taLeftJustify;
+    Layout := tlCenter;
+    Opaque := ACanvas.Brush.Color<>clNone;
+    Clipping := True;
+    ShowPrefix := True;
+    WordBreak := False;
+    SingleLine := True;
+  end;
+  ACanvas.TextRect(ARect, 2,0,NewValue, Style);
 end;
 
 { these three procedures implement the default render behavior of the
@@ -1565,18 +1572,36 @@ end;
 
 procedure TPropertyEditor.PropDrawName(ACanvas:TCanvas; const ARect:TRect;
   AState:TPropEditDrawState);
-var TextY:integer;
+var
+  Style : TTextStyle;
 begin
-  TextY:=((ARect.Bottom-ARect.Top-abs(ACanvas.Font.Height)) div 2)+ARect.Top-5;
-  ACanvas.TextOut(ARect.Left+2,TextY,GetName);
+  With Style do begin
+    Alignment := taLeftJustify;
+    Layout := tlCenter;
+    Opaque := False;
+    Clipping := True;
+    ShowPrefix := False;
+    WordBreak := False;
+    SingleLine := True;
+  end;
+  ACanvas.TextRect(ARect, 2,0,GetName, Style);
 end;
 
 procedure TPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
   AState:TPropEditDrawState);
-var TextY:integer;
+var
+  Style : TTextStyle;
 begin
-  TextY:=((ARect.Bottom-ARect.Top-abs(ACanvas.Font.Height)) div 2)+ARect.Top-5;
-  ACanvas.TextOut(ARect.Left+3,TextY,GetVisualValue)
+  With Style do begin
+    Alignment := taLeftJustify;
+    Layout := tlCenter;
+    Opaque := False;
+    Clipping := True;
+    ShowPrefix := True;
+    WordBreak := False;
+    SingleLine := True;
+  end;
+  ACanvas.TextRect(ARect, 3,0,GetVisualValue, Style);
 end;
 
 { TOrdinalPropertyEditor }
