@@ -41,7 +41,12 @@ unit Project;
 
 interface
 
+{$I ide.inc}
+
 uses
+{$IFDEF IDE_MEM_CHECK}
+  MemCheck,
+{$ENDIF}
   Classes, SysUtils, LCLLinux, LCLType, Laz_XMLCfg, LazConf, CompilerOptions,
   FileCtrl, CodeToolManager, CodeCache, Forms, Controls, EditorOptions, Dialogs,
   IDEProcs, RunParamsOpts, ProjectDefs, EditDefineTree, DefineTemplates;
@@ -251,7 +256,7 @@ type
     constructor Create(TheProjectType: TProjectType);
     destructor Destroy; override;
 
-    function ReadProject(LPIFilename: string): TModalResult;
+    function ReadProject(const LPIFilename: string): TModalResult;
     function WriteProject: TModalResult;
 
     property Units[Index: integer]:TUnitInfo read GetUnits write SetUnits;
@@ -1097,7 +1102,7 @@ end;
 {------------------------------------------------------------------------------
   TProject ReadProject
  ------------------------------------------------------------------------------}
-function TProject.ReadProject(LPIFilename: string): TModalResult;
+function TProject.ReadProject(const LPIFilename: string): TModalResult;
 
   procedure LoadFlags;
   var f: TProjectFlag;
@@ -1122,7 +1127,9 @@ begin
 
   ProjectInfoFile:=LPIFilename;
   try
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject A reading lpi');{$ENDIF}
     xmlconfig := TXMLConfig.Create(ProjectInfoFile);
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject B done lpi');{$ENDIF}
   except
     MessageDlg('Unable to read the project info file'#13'"'+ProjectInfoFile+'".'
         ,mtError,[mbOk],0);
@@ -1131,6 +1138,7 @@ begin
   end;
 
   try
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject C reading values');{$ENDIF}
     ProjectType := ProjectTypeNameToType(xmlconfig.GetValue(
        'ProjectOptions/General/ProjectType/Value', ''));
     LoadFlags;
@@ -1149,6 +1157,7 @@ begin
     fJumpHistory.LoadFromXMLConfig(xmlconfig,'ProjectOptions/');
     FSrcPath := xmlconfig.GetValue('ProjectOptions/General/SrcPath/Value','');
 
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject D reading units');{$ENDIF}
     NewUnitCount:=xmlconfig.GetValue('ProjectOptions/Units/Count',0);
     for i := 0 to NewUnitCount - 1 do begin
       NewUnitInfo:=TUnitInfo.Create(nil);
@@ -1157,6 +1166,7 @@ begin
          xmlconfig,'ProjectOptions/Units/Unit'+IntToStr(i)+'/');
     end;
 
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject E reading comp sets');{$ENDIF}
     // Load the compiler options
     CompilerOptions.XMLConfigFile := xmlconfig;
     CompilerOptions.ProjectFile := MainFilename;
@@ -1166,14 +1176,17 @@ begin
     // load the Run Parameter Options
     RunParameterOptions.Load(xmlconfig,'ProjectOptions/');
     
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject update ct boss');{$ENDIF}
     CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
           ProjectDirectory;
     CodeToolBoss.DefineTree.ClearCache;
   finally
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject freeing xml');{$ENDIF}
     xmlconfig.Free;
     xmlconfig:=nil;
   end;
 
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TProject.ReadProject END');{$ENDIF}
   Result := mrOk;
 end;
 
@@ -1916,6 +1929,9 @@ end.
 
 {
   $Log$
+  Revision 1.75  2002/09/13 16:58:26  lazarus
+  MG: removed the 1x1 bitmap from TBitBtn
+
   Revision 1.74  2002/09/05 19:03:36  lazarus
   MG: improved handling of ambigious source files
 

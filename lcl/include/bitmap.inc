@@ -1,3 +1,5 @@
+// included by graphics.pp
+
 {******************************************************************************
                                      TBitMap
  ******************************************************************************
@@ -457,9 +459,15 @@ begin
     end;
 end;
 
+// included by graphics.pp
+
+
 { =============================================================================
 
   $Log$
+  Revision 1.19  2002/09/13 16:58:27  lazarus
+  MG: removed the 1x1 bitmap from TBitBtn
+
   Revision 1.18  2002/09/12 05:56:15  lazarus
   MG: gradient fill, minor issues from Andrew
 

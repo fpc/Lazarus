@@ -21,6 +21,7 @@
 
 { $DEFINE IDE_VERBOSE}
 
+// !!! if you change this flag, you have to make cleanide !!!
 { $DEFINE IDE_MEM_CHECK}
 
 { $DEFINE IDE_DEBUG}

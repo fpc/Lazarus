@@ -160,21 +160,27 @@ end;
 
 const
   LastWrittenGetMemCnt: longint = 0;
+  HiddenGetMemCnt: longint = 0;
 
 procedure CheckHeapWrtMemCnt(const txt: ansistring);
 var
   p: pointer;
-  CurGetMemCount, DiffGetMemCount: longint;
+  StartGetMemCnt, CurGetMemCount, DiffGetMemCount: longint;
 begin
-  CurGetMemCount:=MemCheck_getmem_cnt;
+  StartGetMemCnt:=MemCheck_getmem_cnt;
+  CurGetMemCount:=StartGetMemCnt-HiddenGetMemCnt;
   DiffGetMemCount:=CurGetMemCount-LastWrittenGetMemCnt;
   LastWrittenGetMemCnt:=CurGetMemCount;
+  
   writeln('>>> memcheck.pp - CheckHeap2 "',txt,'" ',
-    CurGetMemCount,' +',DiffGetMemCount);
+    CurGetMemCount,'(',StartGetMemCnt,') +',DiffGetMemCount);
   QuickTrace:=false;
   GetMem(p,4);
   FreeMem(p);
   QuickTrace:=true;
+
+  // don't count mem counts of this proc
+  inc(HiddenGetMemCnt,MemCheck_getmem_cnt-StartGetMemCnt);
 end;
 
 function MemCheck_getmem_cnt: longint;

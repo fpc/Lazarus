@@ -39,6 +39,7 @@ const
   DefaultMainIDEName = 'MainIDE';
   DefaultSourceNoteBookName = 'SourceNotebook';
   DefaultMessagesViewName = 'MessagesView';
+  DefaultUnitDependenciesName = 'UnitDependencies';
 
 type
   { TIDEWindowLayout stores information about the position, min/maximized state
@@ -87,6 +88,7 @@ type
     fOnApply: TOnApplyIDEWindowLayout;
     fDefaultWindowPlacement: TIDEWindowPlacement;
     function GetFormID: string;
+    function GetXMLFormID: string;
     procedure SetFormID(const AValue: string);
     procedure SetOnGetDefaultIDEWindowPos(const AValue: TOnGetDefaultIDEWindowPos);
     procedure SetDockModesAllowed(const AValue: TIDEWindowDockModes);
@@ -319,7 +321,7 @@ begin
   Clear;
   // read settings
   // build path
-  P:=GetFormID;
+  P:=GetXMLFormID;
   if P='' then exit;
   P:=Path+P+'/';
   // placement
@@ -353,7 +355,7 @@ var
   i: integer;
 begin
   // build path
-  P:=GetFormID;
+  P:=GetXMLFormID;
   if P='' then exit;
   P:=Path+P+'/';
   // placement
@@ -423,6 +425,16 @@ begin
     Result:=fFormID
   else
     Result:=FForm.Name;
+end;
+
+function TIDEWindowLayout.GetXMLFormID: string;
+var
+  i: integer;
+begin
+  Result:=GetFormID;
+  for i:=1 to length(Result) do
+    if not (Result[i] in ['A'..'Z','a'..'z','_']) then
+      Result[i]:='_';
 end;
 
 procedure TIDEWindowLayout.SetDockParent(const AValue: string);

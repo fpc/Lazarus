@@ -129,6 +129,10 @@ type
   TEnvironmentOptions = class
   private
     FFilename: string;
+    FFileAge: longint;
+    FXMLCfg: TXMLConfig;
+    FFileHasChangedOnDisk: boolean;
+    
     FOnApplyWindowLayout: TOnApplyIDEWindowLayout;
 
     // auto save
@@ -199,9 +203,12 @@ type
     
     procedure SetOnApplyWindowLayout(const AValue: TOnApplyIDEWindowLayout);
 
-    procedure SetFileName(const NewFilename: string);
     procedure InitLayoutList;
     procedure InternOnApplyWindowLayout(ALayout: TIDEWindowLayout);
+    procedure SetFileName(const NewFilename: string);
+    function FileHasChangedOnDisk: boolean;
+    function GetXMLCfg: TXMLConfig;
+    procedure FileUpdated;
   public
     constructor Create;
     destructor Destroy; override;
@@ -633,6 +640,7 @@ begin
   FIDEDialogLayoutList.Free;
   IDEOptionDefs.IDEDialogLayoutList:=nil;
   fIDEWindowLayoutList.Free;
+  FXMLCfg.Free;
   inherited Destroy;
 end;
 
@@ -645,13 +653,14 @@ begin
   if (not FileExists(ConfFileName)) then begin
     writeln('Note: environment config file not found - using defaults');
   end;
-  FFilename:=ConfFilename;
+  Filename:=ConfFilename;
 end;
 
 procedure TEnvironmentOptions.SetFileName(const NewFilename: string);
 begin
   if FFilename=NewFilename then exit;
   FFilename:=NewFilename;
+  FFileHasChangedOnDisk:=true;
 end;
 
 procedure TEnvironmentOptions.Load(OnlyDesktop:boolean);
@@ -715,7 +724,7 @@ var XMLConfig: TXMLConfig;
 
 begin
   try
-    XMLConfig:=TXMLConfig.Create(FFileName);
+    XMLConfig:=GetXMLCfg;
     FileVersion:=XMLConfig.GetValue('EnvironmentOptions/Version/Value',0);
     
     // language
@@ -856,12 +865,11 @@ begin
       'EnvironmentOptions/AmbigiousFileAction/Value',
         AmbigiousFileActionNames[fAmbigiousFileAction]));
 
-    XMLConfig.Free;
-
     // object inspector
-    FObjectInspectorOptions.Filename:=FFilename;
     FObjectInspectorOptions.Load;
     FObjectInspectorOptions.SaveBounds:=false;
+    
+    FileUpdated;
   except
     // ToDo
     on E: Exception do
@@ -905,7 +913,7 @@ var XMLConfig: TXMLConfig;
 
 begin
   try
-    XMLConfig:=TXMLConfig.Create(FFileName);
+    XMLConfig:=GetXMLCfg;
     XMLConfig.SetValue('EnvironmentOptions/Version/Value',EnvOptsVersion);
 
     // language
@@ -1016,17 +1024,15 @@ begin
     XMLConfig.SetValue('EnvironmentOptions/AutoDeleteAmbigiousSources/Value',
       AmbigiousFileActionNames[fAmbigiousFileAction]);
 
-    XMLConfig.Flush;
-    XMLConfig.Free;
-
     // object inspector
-    FObjectInspectorOptions.Filename:=FFilename;
     FObjectInspectorOptions.SaveBounds:=false;
     FObjectInspectorOptions.Save;
     
+    XMLConfig.Flush;
+    FileUpdated;
   except
     // ToDo
-    writeln('[TEnvironmentOptions.Save]  error writing "',FFilename,'"');
+    writeln('[TEnvironmentOptions.Save]  error writing "',Filename,'"');
   end;
 end;
 
@@ -1053,48 +1059,31 @@ begin
 end;
 
 procedure TEnvironmentOptions.InitLayoutList;
+
+  procedure CreateWindowLayout(const TheFormID: string);
+  var
+    NewLayout: TIDEWindowLayout;
+  begin
+    NewLayout:=TIDEWindowLayout.Create;
+    with NewLayout do begin
+      FormID:=TheFormID;
+      WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
+         iwpCustomPosition,iwpUseWindowManagerSetting];
+    end;
+    IDEWindowLayoutList.Add(NewLayout);
+  end;
+  
 var
-  NewLayout: TIDEWindowLayout;
   i: integer;
 begin
   fIDEWindowLayoutList:=TIDEWindowLayoutList.Create;
 
-  // Main IDE bar
-  NewLayout:=TIDEWindowLayout.Create;
-  with NewLayout do begin
-    FormID:=DefaultMainIDEName;
-    WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
-       iwpCustomPosition,iwpUseWindowManagerSetting];
-  end;
-  IDEWindowLayoutList.Add(NewLayout);
+  CreateWindowLayout(DefaultMainIDEName);
+  CreateWindowLayout(DefaultObjectInspectorName);
+  CreateWindowLayout(DefaultSourceNoteBookName);
+  CreateWindowLayout(DefaultMessagesViewName);
+  CreateWindowLayout(DefaultUnitDependenciesName);
 
-  // object inspector
-  NewLayout:=TIDEWindowLayout.Create;
-  with NewLayout do begin
-    FormID:=DefaultObjectInspectorName;
-    WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
-       iwpCustomPosition,iwpUseWindowManagerSetting];
-  end;
-  IDEWindowLayoutList.Add(NewLayout);
-
-  // source editor
-  NewLayout:=TIDEWindowLayout.Create;
-  with NewLayout do begin
-    FormID:=DefaultSourceNoteBookName;
-    WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
-       iwpCustomPosition,iwpUseWindowManagerSetting];
-  end;
-  IDEWindowLayoutList.Add(NewLayout);
-
-  // messages view
-  NewLayout:=TIDEWindowLayout.Create;
-  with NewLayout do begin
-    FormID:=DefaultMessagesViewName;
-    WindowPlacementsAllowed:=[iwpRestoreWindowGeometry,iwpDefault,
-       iwpCustomPosition,iwpUseWindowManagerSetting];
-  end;
-  IDEWindowLayoutList.Add(NewLayout);
-  
   for i:=0 to fIDEWindowLayoutList.Count-1 do begin
     IDEWindowLayoutList[i].OnApply:=@InternOnApplyWindowLayout;
     IDEWindowLayoutList[i].DefaultWindowPlacement:=iwpRestoreWindowGeometry;
@@ -1105,6 +1094,33 @@ procedure TEnvironmentOptions.InternOnApplyWindowLayout(
   ALayout: TIDEWindowLayout);
 begin
   if Assigned(OnApplyWindowLayout) then OnApplyWindowLayout(ALayout);
+end;
+
+function TEnvironmentOptions.FileHasChangedOnDisk: boolean;
+begin
+  Result:=FFileHasChangedOnDisk
+      or ((FFilename<>'') and (FFileAge<>0) and (FileAge(FFilename)<>FFileAge));
+  FFileHasChangedOnDisk:=Result;
+end;
+
+function TEnvironmentOptions.GetXMLCfg: TXMLConfig;
+begin
+  if FileHasChangedOnDisk or (FXMLCfg=nil) then begin
+    FXMLCfg.Free;
+    FXMLCfg:=TXMLConfig.Create(Filename);
+    ObjectInspectorOptions.Filename:=Filename;
+    ObjectInspectorOptions.CustomXMLCfg:=FXMLCfg;
+  end;
+  Result:=FXMLCfg;
+end;
+
+procedure TEnvironmentOptions.FileUpdated;
+begin
+  FFileHasChangedOnDisk:=false;
+  if FFilename<>'' then
+    FFileAge:=FileAge(FFilename)
+  else
+    FFileAge:=0;
 end;
 
 procedure TEnvironmentOptions.SetOnApplyWindowLayout(

@@ -47,8 +47,12 @@ type
 
   TOIOptions = class
   private
+    FCustomXMLCfg: TXMLConfig;
     FFilename:string;
-    
+    FFileAge: longint;
+    FXMLCfg: TXMLConfig;
+    FFileHasChangedOnDisk: boolean;
+
     FSaveBounds: boolean;
     FLeft: integer;
     FTop: integer;
@@ -59,6 +63,10 @@ type
 
     FGridBackgroundColor: TColor;
     FShowHints: boolean;
+    procedure SetFilename(const NewFilename: string);
+    function FileHasChangedOnDisk: boolean;
+    function GetXMLCfg: TXMLConfig;
+    procedure FileUpdated;
   public
     constructor Create;
     destructor Destroy;  override;
@@ -66,7 +74,8 @@ type
     function Save:boolean;
     procedure Assign(AnObjInspector: TObjectInspector);
     procedure AssignTo(AnObjInspector: TObjectInspector);
-    property Filename:string read FFilename write FFilename;
+    property Filename:string read FFilename write SetFilename;
+    property CustomXMLCfg: TXMLConfig read FCustomXMLCfg write FCustomXMLCfg;
 
     property SaveBounds:boolean read FSaveBounds write FSaveBounds;
     property Left:integer read FLeft write FLeft;
@@ -1548,6 +1557,42 @@ end;
 
 { TOIOptions }
 
+procedure TOIOptions.SetFilename(const NewFilename: string);
+begin
+  if FFilename=NewFilename then exit;
+  FFilename:=NewFilename;
+  FFileHasChangedOnDisk:=true;
+end;
+
+function TOIOptions.FileHasChangedOnDisk: boolean;
+begin
+  Result:=FFileHasChangedOnDisk
+      or ((FFilename<>'') and (FFileAge<>0) and (FileAge(FFilename)<>FFileAge));
+  FFileHasChangedOnDisk:=Result;
+end;
+
+function TOIOptions.GetXMLCfg: TXMLConfig;
+begin
+  if CustomXMLCfg<>nil then begin
+    Result:=CustomXMLCfg;
+  end else begin
+    if FileHasChangedOnDisk or (FXMLCfg=nil) then begin
+      FXMLCfg.Free;
+      FXMLCfg:=TXMLConfig.Create(FFilename);
+    end;
+    Result:=FXMLCfg;
+  end;
+end;
+
+procedure TOIOptions.FileUpdated;
+begin
+  FFileHasChangedOnDisk:=false;
+  if FFilename<>'' then
+    FFileAge:=FileAge(FFilename)
+  else
+    FFileAge:=0;
+end;
+
 constructor TOIOptions.Create;
 begin
   inherited Create;
@@ -1566,7 +1611,7 @@ end;
 
 destructor TOIOptions.Destroy;
 begin
-
+  FXMLCfg.Free;
   inherited Destroy;
 end;
 
@@ -1576,30 +1621,27 @@ begin
   Result:=false;
   if not FileExists(FFilename) then exit;
   try
-    XMLConfig:=TXMLConfig.Create(FFileName);
-    try
-      FSaveBounds:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Valid'
-                       ,false);
-      if FSaveBounds then begin
-        FLeft:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Left',0);
-        FTop:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Top',0);
-        FWidth:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Width',250);
-        FHeight:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Height',400);
-      end;
-      FPropertyGridSplitterX:=XMLConfig.GetValue(
-         'ObjectInspectorOptions/Bounds/PropertyGridSplitterX',110);
-      if FPropertyGridSplitterX<10 then FPropertyGridSplitterX:=10;
-      FEventGridSplitterX:=XMLConfig.GetValue(
-         'ObjectInspectorOptions/Bounds/EventGridSplitterX',110);
-      if FEventGridSplitterX<10 then FEventGridSplitterX:=10;
+    XMLConfig:=GetXMLCfg;
 
-      FGridBackgroundColor:=XMLConfig.GetValue(
-           'ObjectInspectorOptions/GridBackgroundColor',clBtnFace);
-      FShowHints:=XMLConfig.GetValue(
-           'ObjectInspectorOptions/ShowHints',false);
-    finally
-      XMLConfig.Free;
+    FSaveBounds:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Valid'
+                     ,false);
+    if FSaveBounds then begin
+      FLeft:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Left',0);
+      FTop:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Top',0);
+      FWidth:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Width',250);
+      FHeight:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Height',400);
     end;
+    FPropertyGridSplitterX:=XMLConfig.GetValue(
+       'ObjectInspectorOptions/Bounds/PropertyGridSplitterX',110);
+    if FPropertyGridSplitterX<10 then FPropertyGridSplitterX:=10;
+    FEventGridSplitterX:=XMLConfig.GetValue(
+       'ObjectInspectorOptions/Bounds/EventGridSplitterX',110);
+    if FEventGridSplitterX<10 then FEventGridSplitterX:=10;
+
+    FGridBackgroundColor:=XMLConfig.GetValue(
+         'ObjectInspectorOptions/GridBackgroundColor',clBtnFace);
+    FShowHints:=XMLConfig.GetValue(
+         'ObjectInspectorOptions/ShowHints',false);
   except
     exit;
   end;
@@ -1611,29 +1653,27 @@ var XMLConfig: TXMLConfig;
 begin
   Result:=false;
   try
-    XMLConfig:=TXMLConfig.Create(FFileName);
-    try
-      XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Valid',FSaveBounds);
-      if FSaveBounds then begin
-        XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Left',FLeft);
-        XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Top',FTop);
-        XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Width',FWidth);
-        XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Height',FHeight);
-      end;
-      XMLConfig.SetValue(
-         'ObjectInspectorOptions/Bounds/PropertyGridSplitterX'
-         ,FPropertyGridSplitterX);
-      XMLConfig.SetValue(
-         'ObjectInspectorOptions/Bounds/EventGridSplitterX'
-         ,FEventGridSplitterX);
+    XMLConfig:=GetXMLCfg;
 
-      XMLConfig.SetValue('ObjectInspectorOptions/GridBackgroundColor'
-         ,FGridBackgroundColor);
-      XMLConfig.SetValue('ObjectInspectorOptions/ShowHints',FShowHints);
-    finally
-      XMLConfig.Flush;
-      XMLConfig.Free;
+    XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Valid',FSaveBounds);
+    if FSaveBounds then begin
+      XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Left',FLeft);
+      XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Top',FTop);
+      XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Width',FWidth);
+      XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Height',FHeight);
     end;
+    XMLConfig.SetValue(
+       'ObjectInspectorOptions/Bounds/PropertyGridSplitterX'
+       ,FPropertyGridSplitterX);
+    XMLConfig.SetValue(
+       'ObjectInspectorOptions/Bounds/EventGridSplitterX'
+       ,FEventGridSplitterX);
+
+    XMLConfig.SetValue('ObjectInspectorOptions/GridBackgroundColor'
+       ,FGridBackgroundColor);
+    XMLConfig.SetValue('ObjectInspectorOptions/ShowHints',FShowHints);
+
+    if XMLConfig<>CustomXMLCfg then XMLConfig.Flush;
   except
     exit;
   end;

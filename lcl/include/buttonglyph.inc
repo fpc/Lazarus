@@ -1,3 +1,5 @@
+// included by buttons.pp
+
 {
  *****************************************************************************
  *                                                                           *
@@ -44,6 +46,7 @@ begin
   FOriginal.Free;
   FOriginal:= Value;
   FOriginal.OnChange := @GlyphChanged;
+  FNumGlyphs:=1;
   if (FOriginal <> nil) and (FOriginal.Height > 0) then begin
     if FOriginal.Width mod FOriginal.Height = 0 then begin
       GlyphCount:= FOriginal.Width div FOriginal.Height;
@@ -112,3 +115,6 @@ begin
     GlyphChanged(FOriginal);
   end;
 end;
+
+// included by buttons.pp
+
