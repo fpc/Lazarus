@@ -2538,20 +2538,20 @@ tools: lcl components
 	$(MAKE) -C tools
 all: lcl components packager/registration ideintf designer packager ide starter
 cleanide:
-	$(DEL) $(wildcard *$(OEXT))
-	$(DEL) $(wildcard *$(PPUEXT))
-	$(DEL) $(wildcard *$(RSTEXT))
-	$(DEL) $(wildcard ./designer/*$(OEXT))
-	$(DEL) $(wildcard ./designer/*$(PPUEXT))
-	$(DEL) $(wildcard ./debugger/*$(OEXT))
-	$(DEL) $(wildcard ./debugger/*$(PPUEXT))
-	$(DEL) $(wildcard ./packager/*$(OEXT))
-	$(DEL) $(wildcard ./packager/*$(PPUEXT))
-	$(DEL) $(wildcard ./doceditor/*$(OEXT))
-	$(DEL) $(wildcard ./doceditor/*$(PPUEXT))
+	-$(DEL) $(wildcard *$(OEXT))
+	-$(DEL) $(wildcard *$(PPUEXT))
+	-$(DEL) $(wildcard *$(RSTEXT))
+	-$(DEL) $(wildcard ./designer/*$(OEXT))
+	-$(DEL) $(wildcard ./designer/*$(PPUEXT))
+	-$(DEL) $(wildcard ./debugger/*$(OEXT))
+	-$(DEL) $(wildcard ./debugger/*$(PPUEXT))
+	-$(DEL) $(wildcard ./packager/*$(OEXT))
+	-$(DEL) $(wildcard ./packager/*$(PPUEXT))
+	-$(DEL) $(wildcard ./doceditor/*$(OEXT))
+	-$(DEL) $(wildcard ./doceditor/*$(PPUEXT))
 ifeq ($(OS_TARGET), win32)
-	$(DEL) $(wildcard *.res)
-	$(DEL) lazarus.owr
+	-$(DEL) $(wildcard *.res)
+	-$(DEL) lazarus.owr
 endif
 clean: cleanall cleanide
 purge: cleanall cleanide
