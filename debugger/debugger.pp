@@ -1411,6 +1411,7 @@ begin
       NewBreakPoint.InitialEnabled,' ',NewBreakPoint.Source,' ',NewBreakPoint.Line,
       ' OldBreakPoint=',OldBreakPoint<>nil);
     if OldBreakPoint<>nil then NewBreakPoint.Free;
+    Add(NewBreakPoint);
   end;
 end;
 
@@ -2145,6 +2146,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.26  2003/05/26 11:08:20  mattias
+  fixed double breakpoints
+
   Revision 1.25  2003/05/26 10:34:47  mattias
   implemented search, fixed double loading breakpoints
 

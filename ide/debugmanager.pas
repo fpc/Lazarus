@@ -850,6 +850,10 @@ function TDebugManager.DoCreateBreakPoint(const AFilename: string; Line: integer
 var
   NewBreak: TDBGBreakPoint;
 begin
+  if FBreakPoints.Find(AFilename,Line)<>nil then begin
+    Result:=mrOk;
+    exit;
+  end;
   Result:=DoBeginChangeDebugger;
   if Result<>mrOk then exit;
   NewBreak := FBreakPoints.Add(AFilename,Line);
@@ -937,6 +941,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.27  2003/05/26 11:08:20  mattias
+  fixed double breakpoints
+
   Revision 1.26  2003/05/26 10:34:46  mattias
   implemented search, fixed double loading breakpoints
 
