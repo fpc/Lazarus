@@ -24,6 +24,8 @@ begin
     Result:=bnWinBitmap
   else if TestStreamIsXPM(AStream) then
     Result:=bnXPixmap
+  else if TestStreamIsIcon(AStream) then
+    Result := bnIcon
   else
     Result:=bnNone;
 end;
@@ -497,6 +499,7 @@ begin
     case StreamType of
     bnWinBitmap:  ReaderClass:=TLazReaderBMP;
     bnXPixmap:    ReaderClass:=TLazReaderXPM;
+    bnIcon:       ReaderClass:=TLazReaderIcon;
     else
       RaiseInvalidBitmapHeader;
     end;
@@ -1193,6 +1196,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.84  2004/04/10 00:11:16  mattias
+  added basic TIcon reading  from Colin
+
   Revision 1.83  2004/04/05 11:41:05  mattias
   fixed retrieving gdkbitmaps  LineEnding=rileDWordBoundary
 

@@ -903,7 +903,8 @@ type
   TBitmapNativeType = (
     bnNone,
     bnWinBitmap,
-    bnXPixmap
+    bnXPixmap,
+    bnIcon
     );
   TBitmapNativeTypes = set of TBitmapNativeType;
 
@@ -1109,9 +1110,11 @@ type
   { TIcon }
   {
     TIcon reads and writes .ICO file format.
-    ! Currently it is only a TBitmap !
+    ! Currently it is almost a TBitmap !
   }
   TIcon = class(TBitmap)
+  protected
+    procedure ReadData(Stream: TStream); override;
   end;
 
 
@@ -1175,6 +1178,7 @@ var
 function TestStreamBitmapNativeType(const AStream: TStream): TBitmapNativeType;
 function TestStreamIsBMP(const AStream: TStream): boolean;
 function TestStreamIsXPM(const AStream: TStream): boolean;
+function TestStreamIsIcon(const AStream: TStream): boolean;
 
 function XPMToPPChar(const XPM: string): PPChar;
 function LazResourceXPMToPPChar(const ResourceName: string): PPChar;
@@ -1212,7 +1216,6 @@ const
 (***************************************************************************
  ***************************************************************************)
 implementation
-
 
 function SendIntfMessage(LM_Message : integer; Sender : TObject;
   Data : pointer) : integer;
@@ -1583,6 +1586,35 @@ begin
   Result:='image/'+DefaultFileExt;
 end;
 
+{ TIcon }
+
+function TestStreamIsIcon(const AStream: TStream): boolean;
+var
+  Signature: array[0..3] of char;
+  ReadSize: Integer;
+  OldPosition: TStreamSeekType;
+begin
+  OldPosition:=AStream.Position;
+  ReadSize:=AStream.Read(Signature, SizeOf(Signature));
+  Result:=(ReadSize=SizeOf(Signature)) and (Signature=#0#0#1#0);
+  AStream.Position:=OldPosition;
+end;
+
+procedure TIcon.ReadData(Stream: TStream);
+var
+  Size: longint;
+  Position: TStreamSeekType;
+begin
+  Position := Stream.Position;
+  Stream.Read(Size, SizeOf(Size));
+  if Size = $10000 then begin // Icon starts 00 00 01 00
+    // Assume Icon - stream without explicit size
+    Stream.Position := Position;
+    ReadStream(Stream, false, Size);
+  end else
+    ReadStream(Stream, true, Size);
+end;
+
 initialization
   PicClipboardFormats:=nil;
   PicFileFormats:=nil;
@@ -1604,6 +1636,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.132  2004/04/10 00:11:16  mattias
+  added basic TIcon reading  from Colin
+
   Revision 1.131  2004/04/03 16:47:46  mattias
   implemented converting gdkbitmap to RawImage mask
 
