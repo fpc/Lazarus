@@ -78,6 +78,11 @@ Const
   TCS_BOTTOM = $0002;
   TCS_VERTICAL = $0080;
   TCS_MULTILINE = $0200;
+  
+{$IFDEF VER1_0}
+  ICON_SMALL			       = 0;
+  ICON_BIG  			       = 1;
+{$ENDIF}
 
   { BrowseForFolder dialog}
   BIF_RETURNONLYFSDIRS = 1;

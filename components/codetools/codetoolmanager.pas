@@ -993,10 +993,12 @@ end;
 procedure TCodeToolManager.FreeListOfPCodeXYPosition(var List: TList);
 var
   i: Integer;
+  CursorPos: PCodeXYPosition;
 begin
   if List<>nil then begin
     for i:=0 to List.Count-1 do begin
-      Dispose(PCodeXYPosition(List[i]));
+      CursorPos := PCodeXYPosition(List[i]);
+      Dispose(CursorPos);
     end;
     List.Free;
     List:=nil;
