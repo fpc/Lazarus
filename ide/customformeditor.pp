@@ -509,7 +509,6 @@ end;
 
 Function TComponentInterface.Delete : Boolean;
 Begin
-writeln('TComponentInterface.Delete  ',Component.Name,':',Component.ClassName);
   Component.Free;
   Destroy;
   Result := True;
