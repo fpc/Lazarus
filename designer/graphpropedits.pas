@@ -354,23 +354,25 @@ var
 begin
   Pixmap := TBitmap(GetOrdValue);
   TheDialog := TGraphicPropertyEditorForm.Create(Application);
-  If (Pixmap <> nil) and not Pixmap.Empty then begin
-    TheDialog.Preview.Picture.Pixmap.Width := Pixmap.Width;
-    TheDialog.Preview.Picture.Pixmap.Height := Pixmap.Height;
-    With TheDialog.Preview.Picture.Pixmap.Canvas do begin
-      Brush.Color := clWhite;
-      FillRect(Rect(0, 0, Pixmap.Width, Pixmap.Height));
-      Draw(0, 0, Pixmap);
-    end;
-  end
-  else
-    Pixmap := TPixmap.Create;
   try
+    If (Pixmap <> nil) and not Pixmap.Empty then begin
+      TheDialog.Preview.Picture.Pixmap.Width := Pixmap.Width;
+      TheDialog.Preview.Picture.Pixmap.Height := Pixmap.Height;
+      With TheDialog.Preview.Picture.Pixmap.Canvas do begin
+        Brush.Color := clWhite;
+        FillRect(Rect(0, 0, Pixmap.Width, Pixmap.Height));
+        Draw(0, 0, Pixmap);
+      end;
+    end
+    else
+      Pixmap := nil;
+      
     if (TheDialog.ShowModal = mrOK) then begin
       If TheDialog.Preview.Picture.Graphic <> nil then begin
-        If TheDialog.FileName <> '' then
+        If TheDialog.FileName <> '' then begin
           If FileExists(TheDialog.FileName) then begin
             Ext := Lowercase(ExtractFileName(TheDialog.FileName));
+            if Pixmap=nil then Pixmap:=TPixmap.Create;
             If ((Pixmap is TPixmap) and (AnsiCompareText(Ext, '.xpm') = 0))
             then
               Pixmap.LoadFromFile(TheDialog.FileName)
@@ -383,12 +385,16 @@ begin
                 Draw(0, 0, TheDialog.Preview.Picture.Graphic);
               end;
             end;
+            // ToDo: check if pixmap has changed
+            SetOrdValue(longint(Pixmap));
+            Modified;
           end;
+        end;
       end
-      else
-        Pixmap.FreeImage
+      else if Pixmap<>nil then begin
+        Pixmap.FreeImage;
+      end;
     end;
-    SetOrdValue(longint(Pixmap));
   finally
     TheDialog.Free;
   end;
@@ -442,7 +448,7 @@ var
   var
     ext : String;
   begin
-    Ext := ExtractFileName(TheDialog.FileName);
+    Ext := ExtractFileExt(TheDialog.FileName);
     Pixmap := TPixmap.Create;
     if AnsiCompareText(Ext, '.xpm') = 0 then begin
       If FileExists(TheDialog.FileName) then
@@ -462,19 +468,20 @@ var
 begin
   Pixmap := TPixmap(GetOrdValue);
   TheDialog := TGraphicPropertyEditorForm.Create(Application);
-  If not Pixmap.Empty then begin
-    TheDialog.Preview.Picture.Pixmap.Width := Pixmap.Width;
-    TheDialog.Preview.Picture.Pixmap.Height := Pixmap.Height;
-    With TheDialog.Preview.Picture.Pixmap.Canvas do begin
-      Brush.Color := clWhite;
-      FillRect(Rect(0, 0, Pixmap.Width, Pixmap.Height));
-      Draw(0, 0, Pixmap);
-    end;
-  end;
   try
+    If not Pixmap.Empty then begin
+      TheDialog.Preview.Picture.Pixmap.Width := Pixmap.Width;
+      TheDialog.Preview.Picture.Pixmap.Height := Pixmap.Height;
+      With TheDialog.Preview.Picture.Pixmap.Canvas do begin
+        Brush.Color := clWhite;
+        FillRect(Rect(0, 0, Pixmap.Width, Pixmap.Height));
+        Draw(0, 0, Pixmap);
+      end;
+    end;
     if (TheDialog.ShowModal = mrOK) then begin
       If TheDialog.Preview.Picture.Graphic <> nil then begin
         LoadPixmap;
+        // ToDo: check if button glyph has changed
         SetOrdValue(Longint(Pixmap));
       end
       else
