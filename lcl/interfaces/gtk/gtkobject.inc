@@ -4945,7 +4945,7 @@ end;
 {------------------------------------------------------------------------------
   procedure TgtkObject.DisposeDC(DC: PDeviceContext);
 
-  Disposes DC
+  Disposes a DC
  ------------------------------------------------------------------------------}
 procedure TgtkObject.DisposeDC(pDC: PDeviceContext);
 begin
@@ -5311,6 +5311,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.172  2002/08/22 07:30:15  lazarus
+  MG: freeing more unused GCs
+
   Revision 1.171  2002/08/21 14:06:40  lazarus
   MG: added TDeviceContextMemManager
 
