@@ -39,10 +39,15 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, ComCtrls, Buttons,
-  LResources, Graphics, LCLType,
-  LazarusIDEStrConsts, IDEOptionDefs, PackageDefs, AddToPackageDlg;
+  LResources, Graphics, LCLType, Menus, LazarusIDEStrConsts, IDEOptionDefs,
+  PackageDefs, AddToPackageDlg, PackageSystem;
   
 type
+  TOnOpenFile =
+    function(Sender: TObject; const Filename: string): TModalResult of Object;
+  TOnOpenPackage =
+    function(Sender: TObject; APackage: TLazPackage): TModalResult of Object;
+
   { TPackageEditorForm }
 
   TPackageEditorForm = class(TBasePackageEditor)
@@ -58,10 +63,13 @@ type
     RegisteredListBox: TListBox;
     StatusBar: TStatusBar;
     ImageList: TImageList;
+    FilesPopupMenu: TPopupMenu;
     procedure AddBitBtnClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure FilesTreeViewMouseUp(Sender: TOBject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure FilesPopupMenuPopup(Sender: TObject);
+    procedure OpenFileMenuItemClick(Sender: TObject);
     procedure PackageEditorFormResize(Sender: TObject);
     procedure RegisteredListBoxDrawItem(Control: TWinControl; Index: Integer;
       ARect: TRect; State: TOwnerDrawState);
@@ -94,6 +102,8 @@ type
   TPackageEditors = class
   private
     FItems: TList; // list of TPackageEditorForm
+    FOnOpenFile: TOnOpenFile;
+    FOnOpenPackage: TOnOpenPackage;
     function GetEditors(Index: integer): TPackageEditorForm;
   public
     constructor Create;
@@ -104,8 +114,13 @@ type
     function IndexOfPackage(Pkg: TLazPackage): integer;
     function FindEditor(Pkg: TLazPackage): TPackageEditorForm;
     function OpenEditor(Pkg: TLazPackage): TPackageEditorForm;
+    function OpenFile(Sender: TObject; const Filename: string): TModalResult;
+    function OpenDependency(Sender: TObject;
+                            Dependency: TPkgDependency): TModalResult;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
+    property OnOpenFile: TOnOpenFile read FOnOpenFile write FOnOpenFile;
+    property OnOpenPackage: TOnOpenPackage read FOnOpenPackage write FOnOpenPackage;
   end;
   
 var
@@ -153,6 +168,61 @@ begin
   inc(y,h+3);
   h:=120;
   FilePropsGroupBox.SetBounds(x,y,w,h);
+end;
+
+procedure TPackageEditorForm.FilesPopupMenuPopup(Sender: TObject);
+var
+  CurNode: TTreeNode;
+  ItemCnt: Integer;
+  
+  procedure AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent);
+  var
+    CurMenuItem: TMenuItem;
+  begin
+    if FilesPopupMenu.Items.Count<=ItemCnt then begin
+      CurMenuItem:=TMenuItem.Create(Self);
+      FilesPopupMenu.Items.Add(CurMenuItem);
+    end else
+      CurMenuItem:=FilesPopupMenu.Items[FilesPopupMenu.Items.Count-1];
+    CurMenuItem.Caption:=ACaption;
+    CurMenuItem.OnClick:=AnEvent;
+    inc(ItemCnt);
+  end;
+
+begin
+  CurNode:=FilesTreeView.Selected;
+  ItemCnt:=0;
+  if CurNode<>nil then begin
+    if CurNode.Parent=FilesNode then begin
+      AddPopupMenuItem('Open file',@OpenFileMenuItemClick);
+    end else if (CurNode.Parent=RequiredPackagesNode)
+    or (CurNode.Parent=ConflictPackagesNode) then begin
+      AddPopupMenuItem('Open package',@OpenFileMenuItemClick);
+    end;
+  end else begin
+
+  end;
+  while FilesPopupMenu.Items.Count>ItemCnt do
+    FilesPopupMenu.Items.Delete(FilesPopupMenu.Items.Count-1);
+end;
+
+procedure TPackageEditorForm.OpenFileMenuItemClick(Sender: TObject);
+var
+  CurNode: TTreeNode;
+  NodeIndex: Integer;
+  CurFile: TPkgFile;
+  CurDependency: TPkgDependency;
+begin
+  CurNode:=FilesTreeView.Selected;
+  if CurNode=nil then exit;
+  NodeIndex:=CurNode.Index;
+  if CurNode.Parent=FilesNode then begin
+    CurFile:=LazPackage.Files[NodeIndex];
+    PackageEditors.OpenFile(Self,CurFile.Filename);
+  end else if CurNode.Parent=RequiredPackagesNode then begin
+    CurDependency:=LazPackage.RequiredPkgs[NodeIndex];
+    PackageEditors.OpenDependency(Self,CurDependency);
+  end;
 end;
 
 procedure TPackageEditorForm.RegisteredListBoxDrawItem(Control: TWinControl;
@@ -273,7 +343,7 @@ begin
     AddResImg('pkg_text');
     AddResImg('pkg_binary');
   end;
-
+  
   CompileBitBtn:=TBitBtn.Create(Self);
   with CompileBitBtn do begin
     Name:='CompileBitBtn';
@@ -312,6 +382,11 @@ begin
     Caption:='Options';
   end;
 
+  FilesPopupMenu:=TPopupMenu.Create(Self);
+  with FilesPopupMenu do begin
+    OnPopup:=@FilesPopupMenuPopup;
+  end;
+
   FilesTreeView:=TTreeView.Create(Self);
   with FilesTreeView do begin
     Name:='FilesTreeView';
@@ -328,7 +403,9 @@ begin
     ConflictPackagesNode.ImageIndex:=2;
     ConflictPackagesNode.SelectedIndex:=ConflictPackagesNode.ImageIndex;
     EndUpdate;
+    PopupMenu:=FilesPopupMenu;
     OnMouseUp:=@FilesTreeViewMouseUp;
+    Options:=Options+[tvoRightClickSelect];
   end;
 
   FilePropsGroupBox:=TGroupBox.Create(Self);
@@ -616,6 +693,28 @@ begin
     Result:=TPackageEditorForm.Create(Application);
     Result.LazPackage:=Pkg;
     FItems.Add(Result);
+  end;
+end;
+
+function TPackageEditors.OpenFile(Sender: TObject; const Filename: string
+  ): TModalResult;
+begin
+  if Assigned(OnOpenFile) then
+    Result:=OnOpenFile(Sender,Filename)
+  else
+    Result:=mrCancel;
+end;
+
+function TPackageEditors.OpenDependency(Sender: TObject;
+  Dependency: TPkgDependency): TModalResult;
+var
+  APackage: TLazPackage;
+begin
+  Result:=mrCancel;
+  if PackageGraph.OpenDependency(Dependency,
+    fpfSearchPackageEverywhere,APackage)=lprSuccess then
+  begin
+    if Assigned(OnOpenPackage) then Result:=OnOpenPackage(Sender,APackage);
   end;
 end;
 

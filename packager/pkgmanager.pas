@@ -51,6 +51,8 @@ uses
 
 type
   TPkgManager = class(TBasePkgManager)
+    function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
+      ): TModalResult;
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
     procedure mnuOpenInstalledPckClicked(Sender: TObject);
   public
@@ -73,6 +75,12 @@ implementation
 
 { TPkgManager }
 
+function TPkgManager.OnPackageEditorOpenPackage(Sender: TObject;
+  APackage: TLazPackage): TModalResult;
+begin
+  Result:=DoOpenPackage(APackage);
+end;
+
 procedure TPkgManager.mnuConfigCustomCompsClicked(Sender: TObject);
 begin
   ShowConfigureCustomComponents;
@@ -87,14 +95,21 @@ constructor TPkgManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   IDEComponentPalette:=TIDEComponentPalette.Create;
+  
+  PkgLinks:=TPackageLinks.Create;
+  
   PackageGraph:=TLazPackageGraph.Create;
+  
   PackageEditors:=TPackageEditors.Create;
+  PackageEditors.OnOpenFile:=@MainIDE.DoOpenMacroFile;
+  PackageEditors.OnOpenPackage:=@OnPackageEditorOpenPackage;
 end;
 
 destructor TPkgManager.Destroy;
 begin
   FreeThenNil(PackageEditors);
   FreeThenNil(PackageGraph);
+  FreeThenNil(PkgLinks);
   FreeThenNil(IDEComponentPalette);
   inherited Destroy;
 end;

@@ -305,7 +305,7 @@ type
     procedure CheckInnerDependencies;
     function Compare(Package2: TLazPackage): integer;
     procedure ShortenFilename(var ExpandedFilename: string);
-    procedure LongenFilename(var ExpandedFilename: string);
+    procedure LongenFilename(var AFilename: string);
     procedure IterateComponentClasses(Event: TIterateComponentClassesEvent;
                                       WithRequiredPackages: boolean);
     procedure ConsistencyCheck;
@@ -477,6 +477,7 @@ var
 begin
   NewFilename:=AValue;
   DoDirSeparators(NewFilename);
+  LazPackage.LongenFilename(NewFilename);
   if FFilename=NewFilename then exit;
   FFilename:=NewFilename;
   UpdateUnitName;
@@ -1215,8 +1216,8 @@ var
   PkgDir: String;
   CurPath: String;
 begin
-  if IsVirtual then exit;
-  PkgDir:=Directory;
+  PkgDir:=FDirectory;
+  if (PkgDir='') and (PkgDir[length(PkgDir)]<>PathDelim) then exit;
   CurPath:=copy(ExtractFilePath(ExpandedFilename),1,length(PkgDir));
   if CompareFilenames(PkgDir,CurPath)=0 then begin
     ExpandedFilename:=copy(ExpandedFilename,length(CurPath)+1,
@@ -1224,11 +1225,11 @@ begin
   end;
 end;
 
-procedure TLazPackage.LongenFilename(var ExpandedFilename: string);
+procedure TLazPackage.LongenFilename(var AFilename: string);
 begin
-  if IsVirtual then exit;
-  if not FilenameIsAbsolute(ExpandedFilename) then
-    ExpandedFilename:=TrimFilename(Directory+ExpandedFilename);
+  if (FDirectory='') and (FDirectory[length(FDirectory)]<>PathDelim) then exit;
+  if not FilenameIsAbsolute(AFilename) then
+    AFilename:=TrimFilename(Directory+AFilename);
 end;
 
 procedure TLazPackage.IterateComponentClasses(

@@ -73,13 +73,25 @@ type
 
 
   { TPackageLinks }
+  
+  TPkgLinksState = (
+    plsUserLinksNeedUpdate,
+    plsGlobalLinksNeedUpdate
+    );
+  TPkgLinksStates = set of TPkgLinksState;
 
   TPackageLinks = class
   private
     FGlobalLinks: TAVLTree; // tree of TPackageLink
     FUserLinks: TAVLTree; // tree of TPackageLink
+    fUpdateLock: integer;
+    FStates: TPkgLinksStates;
     function FindLeftMostNode(LinkTree: TAVLTree;
       const PkgName: string): TAVLTreeNode;
+    function FindLinkWithPkgNameInTree(LinkTree: TAVLTree;
+      const PkgName: string): TPackageLink;
+    function FindLinkWithDependencyInTree(LinkTree: TAVLTree;
+      Dependency: TPkgDependency): TPackageLink;
   public
     constructor Create;
     destructor Destroy; override;
@@ -87,14 +99,14 @@ type
     procedure UpdateGlobalLinks;
     procedure UpdateUserLinks;
     procedure UpdateAll;
-    function FindPkgFileName(LinkTree: TAVLTree;
-      const PkgName: string): TPackageLink;
-    function FindPkgFilename(LinkTree: TAVLTree;
-      Dependency: TPkgDependency): TPackageLink;
-    function FindPkgFileName(const PkgName: string): TPackageLink;
-    function FindPkgFilename(Dependency: TPkgDependency): TPackageLink;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function FindLinkWithPkgName(const PkgName: string): TPackageLink;
+    function FindLinkWithDependency(Dependency: TPkgDependency): TPackageLink;
   end;
   
+var
+  PkgLinks: TPackageLinks;
 
 implementation
 
@@ -211,6 +223,7 @@ procedure TPackageLinks.Clear;
 begin
   FGlobalLinks.FreeAndClear;
   FUserLinks.FreeAndClear;
+  FStates:=[plsUserLinksNeedUpdate,plsGlobalLinksNeedUpdate];
 end;
 
 procedure TPackageLinks.UpdateGlobalLinks;
@@ -271,6 +284,12 @@ var
   CurFilename: String;
   NewFilename: string;
 begin
+  if fUpdateLock>0 then begin
+    Include(FStates,plsGlobalLinksNeedUpdate);
+    exit;
+  end;
+  Exclude(FStates,plsGlobalLinksNeedUpdate);
+  
   FGlobalLinks.FreeAndClear;
   GlobalLinksDir:=AppendPathDelim(EnvironmentOptions.LazarusDirectory)
                                   +'packager'+PathDelim+'globallinks'+PathDelim;
@@ -300,6 +319,7 @@ begin
       sl.Free;
       
       NewPkgLink:=TPackageLink.Create;
+      NewPkgLink.Origin:=ploGlobal;
       NewPkgLink.PkgName:=NewPkgName;
       NewPkgLink.Version.Assign(PkgVersion);
       NewPkgLink.Filename:=NewFilename;
@@ -325,6 +345,12 @@ var
   NewPkgLink: TPackageLink;
   ItemPath: String;
 begin
+  if fUpdateLock>0 then begin
+    Include(FStates,plsUserLinksNeedUpdate);
+    exit;
+  end;
+  Exclude(FStates,plsUserLinksNeedUpdate);
+  
   FUserLinks.FreeAndClear;
   ConfigFilename:=AppendPathDelim(GetPrimaryConfigPath)+'packagefiles.xml';
   XMLConfig:=nil;
@@ -336,6 +362,7 @@ begin
     for i:=0 to LinkCount-1 do begin
       ItemPath:=Path+'Item'+IntToStr(i)+'/';
       NewPkgLink:=TPackageLink.Create;
+      NewPkgLink.Origin:=ploUser;
       NewPkgLink.PkgName:=XMLConfig.GetValue(ItemPath+'PkgName/Value','');
       NewPkgLink.Version.LoadFromXMLConfig(XMLConfig,ItemPath+'Version/',
                                                           LazPkgXMLFileVersion);
@@ -361,7 +388,20 @@ begin
   UpdateUserLinks;
 end;
 
-function TPackageLinks.FindPkgFileName(LinkTree: TAVLTree;
+procedure TPackageLinks.BeginUpdate;
+begin
+  inc(fUpdateLock);
+end;
+
+procedure TPackageLinks.EndUpdate;
+begin
+  if fUpdateLock<=0 then RaiseException('TPackageLinks.EndUpdate');
+  dec(fUpdateLock);
+  if (plsGlobalLinksNeedUpdate in FStates) then UpdateGlobalLinks;
+  if (plsUserLinksNeedUpdate in FStates) then UpdateUserLinks;
+end;
+
+function TPackageLinks.FindLinkWithPkgNameInTree(LinkTree: TAVLTree;
   const PkgName: string): TPackageLink;
 // find left most link with PkgName
 var
@@ -374,7 +414,7 @@ begin
   Result:=TPackageLink(CurNode.Data);
 end;
 
-function TPackageLinks.FindPkgFilename(LinkTree: TAVLTree;
+function TPackageLinks.FindLinkWithDependencyInTree(LinkTree: TAVLTree;
   Dependency: TPkgDependency): TPackageLink;
 var
   Link: TPackageLink;
@@ -399,20 +439,24 @@ begin
   end;
 end;
 
-function TPackageLinks.FindPkgFileName(const PkgName: string): TPackageLink;
+function TPackageLinks.FindLinkWithPkgName(const PkgName: string): TPackageLink;
 begin
-  Result:=FindPkgFileName(FUserLinks,PkgName);
+  Result:=FindLinkWithPkgNameInTree(FUserLinks,PkgName);
   if Result=nil then
-    Result:=FindPkgFileName(FGlobalLinks,PkgName);
+    Result:=FindLinkWithPkgNameInTree(FGlobalLinks,PkgName);
 end;
 
-function TPackageLinks.FindPkgFilename(Dependency: TPkgDependency
+function TPackageLinks.FindLinkWithDependency(Dependency: TPkgDependency
   ): TPackageLink;
 begin
-  Result:=FindPkgFileName(FUserLinks,Dependency);
+  Result:=FindLinkWithDependencyInTree(FUserLinks,Dependency);
   if Result=nil then
-    Result:=FindPkgFileName(FGlobalLinks,Dependency);
+    Result:=FindLinkWithDependencyInTree(FGlobalLinks,Dependency);
 end;
+
+
+initialization
+  PkgLinks:=nil;
 
 end.
 

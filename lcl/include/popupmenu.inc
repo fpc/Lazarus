@@ -44,6 +44,7 @@ Procedure TPopupMenu.PopUp(X,Y : Integer);
 begin
   FPopupPoint := Point(X, Y);
   DoPopup(Self);
+  if Items.Count=0 then exit;
   HandleNeeded;
   SendMsgToInterface(LM_POPUPSHOW, Self, @FPopupPoint);
 end;
@@ -51,6 +52,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2003/04/06 22:39:47  mattias
+  implemented searching packages
+
   Revision 1.6  2002/10/26 15:15:48  lazarus
   MG: broke LCL<->interface circles
 

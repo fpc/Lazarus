@@ -92,7 +92,8 @@ type
     ofQuiet,         // less messages
     ofAddToRecent,   // add file to recent files
     ofRegularFile,   // open as regular file (e.g. not a whole project)
-    ofVirtualFile    // open the virtual file
+    ofVirtualFile,   // open the virtual file
+    ofConvertMacros  // replace macros in filename
     );
   TOpenFlags = set of TOpenFlag;
   
@@ -334,6 +335,8 @@ type
     function DoOpenEditorFile(AFileName:string; PageIndex: integer;
         Flags: TOpenFlags): TModalResult; virtual; abstract;
     function DoInitProjectRun: TModalResult; virtual; abstract;
+    function DoOpenMacroFile(Sender: TObject;
+        const AFilename: string): TModalResult; virtual;
     
     function DoCheckFilesOnDisk: TModalResult; virtual; abstract;
     function DoCheckAmbigiousSources(const AFilename: string;
@@ -358,7 +361,8 @@ const
      'ofQuiet',
      'ofAddToRecent',
      'ofRegularFile',
-     'ofVirtualFile'
+     'ofVirtualFile',
+     'ofConvertMacros'
     );
     
   SaveFlagNames: array[TSaveFlag] of string = (
@@ -1287,6 +1291,13 @@ begin
     // help menu
     itmHelpAboutLazarus.ShortCut:=CommandToShortCut(ecAboutLazarus);
   end;
+end;
+
+function TMainIDEBar.DoOpenMacroFile(Sender: TObject; const AFilename: string
+  ): TModalResult;
+begin
+  Result:=DoOpenEditorFile(AFilename,-1,
+                  [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros]);
 end;
 
 {-------------------------------------------------------------------------------

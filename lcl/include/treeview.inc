@@ -4208,8 +4208,14 @@ begin
       // ToDo: insert clipboard text into node text
       //  :=PrimarySelection.AsText;
     end;
+  end else if Button=mbRight then begin
+    if RightClickSelect then begin
+      Selected:=GetNodeAt(X,Y);
+    end;
   end;
+  
   inherited MouseDown(Button, Shift, X, Y);
+  
   CursorNode:=GetNodeAt(X,Y);
   bStartDrag := false;
   if ([ssDouble,ssTriple,ssQuad]*Shift)=[] then begin

@@ -43,6 +43,28 @@ uses
   ComponentReg, RegisterLCL, RegisterFCL;
   
 type
+  TLoadPackageResult = (
+    lprUndefined,
+    lprSuccess,
+    lprNotFound,
+    lprLoadError
+    );
+    
+  TFindPackageFlag = (
+    fpfSearchInInstalledPckgs,
+    fpfSearchInAutoInstallPckgs,
+    fpfSearchInPckgsWithEditor,
+    fpfSearchInPkgLinks,
+    fpfIgnoreVersion
+    );
+  TFindPackageFlags = set of TFindPackageFlag;
+  
+const
+  fpfSearchPackageEverywhere =
+    [fpfSearchInInstalledPckgs,fpfSearchInAutoInstallPckgs,
+     fpfSearchInPckgsWithEditor,fpfSearchInPkgLinks];
+
+type
   TLazPackageGraph = class
   private
     FAbortRegistration: boolean;
@@ -67,6 +89,8 @@ type
     function Count: integer;
     function FindLeftMostByName(const PkgName: string): TAVLTreeNode;
     function FindNextSameName(ANode: TAVLTreeNode): TAVLTreeNode;
+    function FindWithDependency(Dependency: TPkgDependency;
+      Flags: TFindPackageFlags): TAVLTreeNode;
     function PackageNameExists(const PkgName: string;
       IgnorePackage: TLazPackage): boolean;
     function CreateUniquePkgName(const Prefix: string;
@@ -81,6 +105,8 @@ type
     procedure AddPackage(APackage: TLazPackage);
     procedure AddStaticBasePackages;
     procedure RegisterStaticPackages;
+    function OpenDependency(Dependency: TPkgDependency;
+      Flags: TFindPackageFlags; var APackage: TLazPackage): TLoadPackageResult;
   public
     property Packages[Index: integer]: TLazPackage read GetPackages; default;
     property RegistrationPackage: TLazPackage read FRegistrationPackage
@@ -200,6 +226,34 @@ begin
                       TLazPackage(NextNode.Data).Name)<>0)
   then exit;
   Result:=NextNode;
+end;
+
+function TLazPackageGraph.FindWithDependency(Dependency: TPkgDependency;
+  Flags: TFindPackageFlags): TAVLTreeNode;
+var
+  CurPkg: TLazPackage;
+begin
+  // search in all packages with the same name
+  Result:=FindLeftMostByName(Dependency.PackageName);
+  while Result<>nil do begin
+    CurPkg:=TLazPackage(Result.Data);
+    // check version
+    if (not (fpfIgnoreVersion in Flags))
+    and (not Dependency.IsCompatible(CurPkg)) then begin
+      Result:=FindNextSameName(Result);
+      continue;
+    end;
+    // check installed packages
+    if (fpfSearchInInstalledPckgs in Flags)
+    and (CurPkg.Installed<>pitNope) then exit;
+    // check autoinstall packages
+    if (fpfSearchInAutoInstallPckgs in Flags)
+    and (CurPkg.AutoInstall<>pitNope) then exit;
+    // check packages with opened editor
+    if (fpfSearchInPckgsWithEditor in Flags) and (CurPkg.Editor<>nil) then exit;
+    // search next package node with same name
+    Result:=FindNextSameName(Result);
+  end;
 end;
 
 function TLazPackageGraph.PackageNameExists(const PkgName: string;
@@ -385,7 +439,7 @@ begin
     AutoCreated:=true;
     Name:='FCL';
     Title:='FreePascal Component Library';
-    Filename:='$(#FPCSrcDir)/fcl/';
+    Filename:='$(FPCSrcDir)/fcl/';
     Version.SetValues(1,0,1,1);
     Author:='FPC team';
     AutoInstall:=pitStatic;
@@ -409,7 +463,7 @@ begin
     AutoCreated:=true;
     Name:='LCL';
     Title:='Lazarus Component Library';
-    Filename:='$(#LazarusDir)/lcl/';
+    Filename:='$(LazarusDir)/lcl/';
     Version.SetValues(1,0,1,1);
     Author:='Lazarus';
     AutoInstall:=pitStatic;
@@ -469,6 +523,35 @@ begin
 
   // clean up
   RegistrationPackage:=nil;
+end;
+
+function TLazPackageGraph.OpenDependency(Dependency: TPkgDependency;
+  Flags: TFindPackageFlags; var APackage: TLazPackage): TLoadPackageResult;
+var
+  ANode: TAVLTreeNode;
+  PkgLink: TPackageLink;
+begin
+  Result:=lprUndefined;
+  // search in opened packages
+  ANode:=FindWithDependency(Dependency,Flags);
+  if (ANode=nil) then begin
+    // package not yet open
+    if (fpfSearchInPkgLinks in Flags) then begin
+      PkgLinks.UpdateAll;
+      PkgLink:=PkgLinks.FindLinkWithDependency(Dependency);
+      if PkgLink<>nil then begin
+      
+        // ToDo
+        
+      end;
+    end;
+  end;
+  if ANode<>nil then begin
+    APackage:=TLazPackage(ANode.Data);
+    Result:=lprSuccess;
+  end else begin
+    Result:=lprSuccess;
+  end;
 end;
 
 initialization
