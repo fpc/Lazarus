@@ -22,6 +22,32 @@ const
     'No interface object. '
     +'Plz check if "interfaces" was added to the programs uses section.';
 
+  DefHintColor = clInfoBk;  { default hint window color }
+  DefHintPause = 500;       { default pause before hint window displays (ms) }
+  DefHintShortPause = 0;    { default reshow pause }
+  DefHintHidePause = DefHintPause * 5; { default pause before hint is hidden }
+
+
+function GetHintInfoAtMouse: THintInfoAtMouse;
+begin
+  if Mouse<>nil then begin
+    Result.MousePos:=Mouse.CursorPos;
+    Result.Control:=FindLCLControl(Result.MousePos);
+    Result.ControlHasHint:=(Result.Control<>nil)
+      and (Result.Control.ShowHint)
+      and (Result.Control.Hint<>'')
+      and ([csDesigning,csDestroying,csLoading]*Result.Control.ComponentState=[])
+      and (GetCapture=0)
+      and (GetKeyState(VK_LBUTTON)=0)
+      and (GetKeyState(VK_MBUTTON)=0)
+      and (GetKeyState(VK_RBUTTON)=0);
+  end else begin
+    Result.MousePos:=Point(0,0);
+    Result.Control:=nil;
+    Result.ControlHasHint:=false;
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 {       TApplication Constructor                                               }
 {------------------------------------------------------------------------------}
@@ -34,6 +60,11 @@ begin
   FMainForm := nil;
   FMouseControl := nil;
   FHandle := 0;
+  FHintColor := DefHintColor;
+  FHintPause := DefHintPause;
+  FHintShortCuts := True;
+  FHintShortPause := DefHintShortPause;
+  FHintHidePause := DefHintHidePause;
   FList := nil;
   FOnIdle := nil;
   FIcon := nil;
@@ -50,9 +81,11 @@ end;
 {------------------------------------------------------------------------------}
 destructor TApplication.Destroy;
 begin
+  CancelHint;
+  ShowHint := False;
   ApplicationActionComponent:=nil;
   FreeThenNil(FIcon);
-  FList.Free;
+  FreeThenNil(FList);
   FreeThenNil(FOnIdleHandler);
   FreeThenNil(FOnIdleEndHandler);
   FreeThenNil(FOnUserInputHandler);
@@ -119,6 +152,7 @@ procedure TApplication.ControlDestroyed(AControl: TControl);
 begin
   if AControl=FMouseControl then FMouseControl:=nil;
   if AControl = MainForm then FMainForm:= nil;
+  if FHintControl = AControl then FHintControl:=nil;
 end;
 
 {------------------------------------------------------------------------------}
@@ -147,9 +181,10 @@ end;
 {------------------------------------------------------------------------------}
 {       TApplication HintMouseMEssage     }
 {------------------------------------------------------------------------------}
-procedure TApplication.HintMouseMessage(Control : TControl; var Message : TLMessage);
+procedure TApplication.HintMouseMessage(Control : TControl;
+  var AMessage : TLMessage);
 begin
-//TODO: Needs to be finished
+  // ToDo
 end;
 
 
@@ -229,11 +264,11 @@ begin
   NotifyIdleHandler;
   if Done then begin
     // wait till something happens
-    Include(FState,AppWaiting);
-    Exclude(FState,AppIdleEndSent);
+    Include(FFlag,AppWaiting);
+    Exclude(FFlag,AppIdleEndSent);
     InterfaceObject.WaitMessage;
     DoOnIdleEnd;
-    Exclude(FState,AppWaiting);
+    Exclude(FFlag,AppWaiting);
   end;
 end;
 
@@ -251,6 +286,31 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TApplication.SetShowHint(const AValue: Boolean);
+ ------------------------------------------------------------------------------}
+procedure TApplication.SetShowHint(const AValue: Boolean);
+begin
+  if FShowHint=AValue then exit;
+  FShowHint:=AValue;
+  if FShowHint then
+  begin
+    FHintWindow := HintWindowClass.Create(Self);
+    FHintWindow.Color := FHintColor;
+  end else
+  begin
+    FHintWindow.Free;
+    FHintWindow := nil;
+  end;
+end;
+
+procedure TApplication.StopHintTimer;
+begin
+  if FHintTimer<>nil then
+    FHintTimer.Enabled:=false;
+  FHintTimerType:=ahtNone;
+end;
+
+{------------------------------------------------------------------------------
   procedure TApplication.NotifyIdleHandler;
 
  ------------------------------------------------------------------------------}
@@ -259,8 +319,13 @@ var
   i: integer;
 begin
   if FOnIdleHandler=nil then exit;
-  for i:=0 to FOnIdleHandler.Count-1 do
+  i:=FOnIdleHandler.Count-1;
+  while (i>=0) and (FOnIdleHandler<>nil) do begin
     TNotifyEvent(FOnIdleHandler[i])(Self);
+    dec(i);
+    if (FOnIdleHandler<>nil) and (i>FOnIdleHandler.Count-1) then
+      i:=FOnIdleHandler.Count-1;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -272,8 +337,127 @@ var
   i: integer;
 begin
   if FOnIdleEndHandler=nil then exit;
-  for i:=0 to FOnIdleEndHandler.Count-1 do
+  i:=FOnIdleHandler.Count-1;
+  while (i>=0) and (FOnIdleEndHandler<>nil) do begin
     TNotifyEvent(FOnIdleEndHandler[i])(Self);
+    dec(i);
+    if (FOnIdleEndHandler<>nil) and (i>FOnIdleEndHandler.Count-1) then
+      i:=FOnIdleEndHandler.Count-1;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  function TApplication.IsHintMsg(var Msg: TMsg): Boolean;
+
+ ------------------------------------------------------------------------------}
+function TApplication.IsHintMsg(var Msg: TMsg): Boolean;
+begin
+  Result := False;
+  {if (FHintWindow <> nil) and FHintWindow.IsHintMsg(Msg) then
+    CancelHint;}
+end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.DoOnMouseMove;
+
+ ------------------------------------------------------------------------------}
+procedure TApplication.DoOnMouseMove;
+var
+  Info: THintInfoAtMouse;
+begin
+  Info:=GetHintInfoAtMouse;
+  //writeln('TApplication.DoOnMouseMove Info.ControlHasHint=',Info.ControlHasHint,' Type=',ord(FHintTimerType));
+  if Info.ControlHasHint then begin
+    case FHintTimerType of
+    ahtNone,ahtShowHint:
+      StartHintTimer(HintPause,ahtShowHint);
+    ahtHideHint:
+      ShowHintWindow(Info);
+    else
+      HideHint;
+    end;
+  end else begin
+    HideHint;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.ShowHintWindow(const Info: THintInfoAtMouse);
+ ------------------------------------------------------------------------------}
+procedure TApplication.ShowHintWindow(const Info: THintInfoAtMouse);
+var
+  ARect: TRect;
+  AHint: string;
+begin
+  // create hint window
+  if FHintWindow=nil then begin
+    FHintWindow:=THintWindow.Create(Self);
+    with FHintWindow do begin
+      Visible := False;
+      Caption := '';
+      AutoHide := False;
+      Color := Self.HintColor;
+    end;
+  end;
+  // show hint window
+  AHint := Info.Control.Hint;
+  ARect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
+  ARect.Left := Info.MousePos.X+10;
+  ARect.Top := Info.MousePos.Y+10;
+  ARect.Right := ARect.Left + ARect.Right;
+  ARect.Bottom := ARect.Top + ARect.Bottom;
+  //writeln('TApplication.ShowHintWindow Info.ControlHasHint=',Info.ControlHasHint,' Type=',ord(FHintTimerType));
+  FHintWindow.ActivateHint(ARect,AHint);
+  // start hide timer
+  StartHintTimer(HintHidePause,ahtHideHint);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.StartHintTimer(Interval: integer;
+    TimerType: TAppHintTimerType);
+ ------------------------------------------------------------------------------}
+procedure TApplication.StartHintTimer(Interval: integer;
+  TimerType: TAppHintTimerType);
+begin
+  StopHintTimer;
+  FHintTimerType:=TimerType;
+  if Interval>0 then begin
+    if FHintTimer=nil then
+      FHintTimer:=TCustomTimer.Create(Self);
+    FHintTimer.Interval:=Interval;
+    FHintTimer.OnTimer:=@OnHintTimer;
+    FHintTimer.Enabled:=true;
+  end else begin
+    OnHintTimer(Self);
+  end
+end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.OnHintTimer(Sender: TObject);
+ ------------------------------------------------------------------------------}
+procedure TApplication.OnHintTimer(Sender: TObject);
+var
+  Info: THintInfoAtMouse;
+  OldHintTimerType: TAppHintTimerType;
+begin
+  //writeln('TApplication.OnHintTimer Type=',ord(FHintTimerType));
+  OldHintTimerType:=FHintTimerType;
+  StopHintTimer;
+  case OldHintTimerType of
+  
+  ahtShowHint:
+    begin
+      Info:=GetHintInfoAtMouse;
+      if Info.ControlHasHint then begin
+        ShowHintWindow(Info);
+      end else begin
+        HideHint;
+      end;
+    end;
+
+  else
+    CancelHint;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -348,15 +532,43 @@ begin
   Idle;
 end;
 
+{------------------------------------------------------------------------------
+  function TApplication.IsWaiting: boolean;
+------------------------------------------------------------------------------}
 function TApplication.IsWaiting: boolean;
 begin
-  Result:=AppWaiting in FState;
+  Result:=AppWaiting in FFlag;
 end;
 
-{------------------------------------------------------------------------------}
-{       TApplication Run                                                       }
-{       MainForm is loaded and control is passed to event processor.           }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  procedure TApplication.CancelHint;
+------------------------------------------------------------------------------}
+procedure TApplication.CancelHint;
+begin
+  if FHintTimer<>nil then FHintTimer.Enabled:=false;
+  HideHint;
+  if FHintControl <> nil then
+  begin
+    FHintControl := nil;
+    //FHintActive := False;
+    //UnhookHintHooks;
+    //StopHintTimer;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TApplication.HideHint;
+------------------------------------------------------------------------------}
+procedure TApplication.HideHint;
+begin
+  if FHintWindow<>nil then
+    FHintWindow.Visible:=false;
+end;
+
+{------------------------------------------------------------------------------
+       TApplication Run
+       MainForm is loaded and control is passed to event processor.
+------------------------------------------------------------------------------}
 procedure TApplication.Run;
 begin
   if FMainForm <> nil
@@ -373,16 +585,45 @@ end;
 {       TApplication WndPRoc                                                   }
 {                                                                              }
 {------------------------------------------------------------------------------}
-procedure TApplication.wndproc(var Message : TLMessage);
+procedure TApplication.WndProc(var AMessage : TLMessage);
 begin
+
+end;
+
+procedure TApplication.SetHint(const AValue: string);
+begin
+  if FHint=AValue then exit;
+  FHint:=AValue;
+  if Assigned(FOnHint) then
+    FOnHint(Self)
+  else begin
+    { Fire THintAction to anyone interested }
+    {with THintAction.Create(Self) do
+    begin
+      Hint := Value;
+      try
+        Execute;
+      finally
+        Free;
+      end;
+    end;}
+  end;
+end;
+
+procedure TApplication.SetHintColor(const AValue: TColor);
+begin
+  if FHintColor=AValue then exit;
+  FHintColor:=AValue;
+  if FHintWindow <> nil then
+    FHintWindow.Color := FHintColor;
 end;
 
 procedure TApplication.DoOnIdleEnd;
 begin
-  if (AppIdleEndSent in FState) then exit;
+  if (AppIdleEndSent in FFlag) then exit;
   if Assigned(OnIdleEnd) then OnIdleEnd(Self);
   NotifyIdleEndHandler;
-  Include(FState,AppIdleEndSent);
+  Include(FFlag,AppIdleEndSent);
 end;
 
 {------------------------------------------------------------------------------}
@@ -411,13 +652,23 @@ end;
   procedure TApplication.NotifyUserInputHandler;
 
  ------------------------------------------------------------------------------}
-procedure TApplication.NotifyUserInputHandler;
+procedure TApplication.NotifyUserInputHandler(Msg: Cardinal);
 var
   i: integer;
 begin
+  case Msg of
+  LM_MOUSEMOVE: DoOnMouseMove;
+  else          CancelHint;
+  end;
+
   if FOnUserInputHandler=nil then exit;
-  for i:=0 to FOnUserInputHandler.Count-1 do
-    TNotifyEvent(FOnUserInputHandler[i])(Self);
+  i:=FOnUserInputHandler.Count-1;
+  while (i>=0) and (FOnUserInputHandler<>nil) do begin
+    TOnUserInputEvent(FOnUserInputHandler[i])(Self,Msg);
+    dec(i);
+    if (FOnUserInputHandler<>nil) and (i>FOnUserInputHandler.Count-1) then
+      i:=FOnUserInputHandler.Count-1;
+  end;
 end;
 
 procedure TApplication.AddOnIdleHandler(AnOnIdleHandler: TNotifyEvent);
@@ -447,7 +698,7 @@ begin
 end;
 
 procedure TApplication.AddOnUserInputHandler(
-  AnOnUserInputHandler: TNotifyEvent);
+  AnOnUserInputHandler: TOnUserInputEvent);
 begin
   if FOnUserInputHandler=nil then
     FOnUserInputHandler:=TMethodList.Create;
@@ -455,7 +706,7 @@ begin
 end;
 
 procedure TApplication.RemoveOnUserInputHandler(
-  AnOnUserInputHandler: TNotifyEvent);
+  AnOnUserInputHandler: TOnUserInputEvent);
 begin
   if FOnUserInputHandler<>nil then
     FOnUserInputHandler.Remove(TMethod(AnOnUserInputHandler));
@@ -499,6 +750,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2002/11/05 20:03:42  lazarus
+  MG: implemented hints
+
   Revision 1.31  2002/11/02 22:25:36  lazarus
   MG: implemented TMethodList and Application Idle handlers
 
