@@ -478,6 +478,10 @@ msgstr "Sovellus"
 msgid "Application Settings"
 msgstr ""
 
+#: lazarusidestrconsts:lisapplicationagraphicallclfreepascalprogramtheprogra
+msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
+msgstr ""
+
 #: lazarusidestrconsts:dlgbutapply
 msgid "Apply"
 msgstr ""
@@ -1478,6 +1482,14 @@ msgstr ""
 msgid "Custom Identifier"
 msgstr ""
 
+#: lazarusidestrconsts:liscustomprogram
+msgid "Custom Program"
+msgstr ""
+
+#: lazarusidestrconsts:liscustomprogramafreepascalprogram
+msgid "Custom Program%sA freepascal program."
+msgstr ""
+
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
 msgstr ""
@@ -1504,6 +1516,10 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmeccut
 msgid "Cut selection to clipboard"
+msgstr ""
+
+#: lazarusidestrconsts:lishlpoptsdatabases
+msgid "Databases"
 msgstr ""
 
 #: lazarusidestrconsts:lisdate
@@ -4030,6 +4046,10 @@ msgstr ""
 msgid "Normal selection mode"
 msgstr ""
 
+#: lazarusidestrconsts:lisnotadelphiproject
+msgid "Not a Delphi project"
+msgstr ""
+
 #: lazarusidestrconsts:lisnotadelphiunit
 msgid "Not a Delphi unit"
 msgstr ""
@@ -4518,6 +4538,10 @@ msgstr ""
 msgid "Procedure with interface"
 msgstr "Aliohjelma ja interface osaan sen esittely"
 
+#: lazarusidestrconsts:lisprogram
+msgid "Program"
+msgstr ""
+
 #: lazarusidestrconsts:lisprogramdetected
 msgid "Program detected"
 msgstr ""
@@ -4525,6 +4549,10 @@ msgstr ""
 #: lazarusidestrconsts:lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Ohjelman lähkekoodin tiedosto tarkennin pitää olla .pas, .pp tai .lpr"
+
+#: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
+msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
+msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
 msgid "Programfilename:"
@@ -5594,6 +5622,10 @@ msgstr "Lähdekoodi editori"
 msgid "Source Notebook commands"
 msgstr ""
 
+#: lazarusidestrconsts:lissourceanddestinationarethesame
+msgid "Source and Destination are the same:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr ""
@@ -6066,6 +6098,10 @@ msgstr ""
 msgid "The file %s%s%s is already in the package."
 msgstr ""
 
+#: lazarusidestrconsts:listhefileisnotadelphiprojectdpr
+msgid "The file %s%s%s is not a Delphi project (.dpr)"
+msgstr ""
+
 #: lazarusidestrconsts:listhefileisnotadelphiunit
 msgid "The file %s%s%s is not a Delphi unit."
 msgstr ""
@@ -6530,8 +6566,16 @@ msgstr ""
 msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgstr ""
 
+#: lazarusidestrconsts:lisunabletocopyfile
+msgid "Unable to copy file"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletocopyfileto
 msgid "Unable to copy file %s%s%s%sto %s%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocopyfileto2
+msgid "Unable to copy file %s%s%s%sto %s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts:lisunabletocreatebackupdirectory

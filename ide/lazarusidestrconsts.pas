@@ -304,6 +304,9 @@ resourcestring
   lisUnitLFMFile = 'Unit: %s%sLFM file: %s';
   lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs '
     +'and write lrs file.';
+  lisNotADelphiProject = 'Not a Delphi project';
+  lisTheFileIsNotADelphiProjectDpr = 'The file %s%s%s is not a Delphi '
+    +'project (.dpr)';
   lisUnableToLoadOldResourceFileTheResourceFileIs = 'Unable to load old '
     +'resource file.%sThe resource file is the first include file in the%'
     +'sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax '
@@ -387,7 +390,11 @@ resourcestring
   lisUnableToWrite = 'Unable to write %s%s%s%s%s.';
   lisFileNotText = 'File not text';
   lisUnableToRenameFile = 'Unable to rename file';
+  lisUnableToCopyFile = 'Unable to copy file';
+  lisSourceAndDestinationAreTheSame =
+    'Source and Destination are the same:%s%s';
   lisUnableToRenameFileTo2 = 'Unable to rename file %s%s%s%sto %s%s%s.';
+  lisUnableToCopyFileTo2 = 'Unable to copy file %s%s%s%sto %s%s%s.';
   lisFileDoesNotLookLikeATextFileOpenItAnyway = 'File %s%s%s%sdoes not look '
     +'like a text file.%sOpen it anyway?';
   lisInvalidCommand = 'Invalid command';
@@ -979,6 +986,9 @@ resourcestring
   // project options dialog
   dlgProjectOptions = 'Project Options';
   dlgPOApplication = 'Application';
+  lisApplicationAGraphicalLclFreepascalProgramTheProgra = 'Application%sA '
+    +'graphical lcl/freepascal program. The program file is automatically '
+    +'maintained by lazarus.';
   dlgPOFroms = 'Forms';
   dlgPOMisc = 'Miscellaneous';
   dlgApplicationSettings = 'Application Settings';
@@ -2638,6 +2648,12 @@ resourcestring
   lisRightSpaceEqually = 'Right space equally';
   lisVertical = 'Vertical';
   lisScalingFactor = 'Scaling factor:';
+  lisCustomProgram = 'Custom Program';
+  lisProgram = 'Program';
+  lisProgramAFreepascalProgramTheProgramFileIsAutomatic = 'Program%sA '
+    +'freepascal program. The program file is automatically maintained by '
+    +'lazarus.';
+  lisCustomProgramAFreepascalProgram = 'Custom Program%sA freepascal program.';
 
 implementation
 end.

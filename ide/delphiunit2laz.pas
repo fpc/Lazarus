@@ -71,8 +71,13 @@ function FixMissingUnits(const LazarusUnitFilename: string): TModalResult;
 function LoadUnitAndLFMFile(const UnitFileName: string;
   var UnitCode, LFMCode: TCodeBuffer; LFMMustExist: boolean): TModalResult;
 function ConvertLFMtoLRSfile(const LFMFilename: string): TModalResult;
+function CheckDelphiProjectExt(const Filename: string): TModalResult;
+function CreateLPRFileForDPRFile(const DelphiProjectFilename: string;
+  AddLRSCode: boolean; var LPRCode: TCodeBuffer): TModalResult;
+
 
 implementation
+
 
 function CheckDelphiFileExt(const Filename: string): TModalResult;
 begin
@@ -322,6 +327,37 @@ begin
     Result:=MessageDlg(lisErrorCreatingLrs,
       lisUnableToConvertLfmToLrsAndWriteLrsFile,
       mtError,[mbCancel],0);
+    exit;
+  end;
+  Result:=mrOk;
+end;
+
+function CheckDelphiProjectExt(const Filename: string): TModalResult;
+begin
+  if CompareFileExt(Filename,'.dpr',false)<>0 then begin
+    Result:=MessageDlg(lisNotADelphiProject,
+      Format(lisTheFileIsNotADelphiProjectDpr, ['"', Filename, '"']),
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+  Result:=mrOk;
+end;
+
+function CreateLPRFileForDPRFile(const DelphiProjectFilename: string;
+  AddLRSCode: boolean; var LPRCode: TCodeBuffer): TModalResult;
+var
+  LPRFilename: String;
+  CTResult: Boolean;
+begin
+  LPRFilename:=ChangeFileExt(DelphiProjectFilename,'.lpr');
+  Result:=CopyFileWithErrorDialogs(DelphiProjectFilename,LPRFilename,[]);
+  if Result<>mrOk then exit;
+  Result:=LoadCodeBuffer(LPRCode,LPRFilename,
+                         [lbfCheckIfText,lbfUpdateFromDisk]);
+  if Result<>mrOk then exit;
+  CTResult:=CodeToolBoss.ConvertDelphiToLazarusSource(LPRCode,AddLRSCode);
+  if not CTResult then begin
+    Result:=mrCancel;
     exit;
   end;
   Result:=mrOk;

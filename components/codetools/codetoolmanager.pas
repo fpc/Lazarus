@@ -386,6 +386,8 @@ type
           ImplementationUsesSection: TStrings): boolean;
     function FindMissingUnits(Code: TCodeBuffer;
           var MissingUnits: TStrings): boolean;
+    function FindDelphiProjectUnits(Code: TCodeBuffer;
+          var FoundInUnits, MissingInUnits, NormalUnits: TStrings): boolean;
     function CommentUnitsInUsesSections(Code: TCodeBuffer;
           MissingUnits: TStrings): boolean;
 
@@ -2400,6 +2402,22 @@ begin
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.FindMissingUnits(MissingUnits);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindDelphiProjectUnits(Code: TCodeBuffer;
+  var FoundInUnits, MissingInUnits, NormalUnits: TStrings): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDelphiProjectUnits A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindDelphiProjectUnits(FoundInUnits,
+                                                MissingInUnits, NormalUnits);
   except
     on e: Exception do Result:=HandleException(e);
   end;

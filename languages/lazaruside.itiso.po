@@ -488,6 +488,10 @@ msgstr "Applicazione"
 msgid "Application Settings"
 msgstr "Impostazioni dell'applicazione"
 
+#: lazarusidestrconsts:lisapplicationagraphicallclfreepascalprogramtheprogra
+msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
+msgstr ""
+
 #: lazarusidestrconsts:dlgbutapply
 msgid "Apply"
 msgstr "Applica"
@@ -1488,6 +1492,14 @@ msgstr "Personalizzato"
 msgid "Custom Identifier"
 msgstr "Identificatore personalizzato"
 
+#: lazarusidestrconsts:liscustomprogram
+msgid "Custom Program"
+msgstr ""
+
+#: lazarusidestrconsts:liscustomprogramafreepascalprogram
+msgid "Custom Program%sA freepascal program."
+msgstr ""
+
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
 msgstr "Comandi personalizzati"
@@ -1515,6 +1527,10 @@ msgstr "Taglia i componenti selezionati negli appunti"
 #: lazarusidestrconsts:srkmeccut
 msgid "Cut selection to clipboard"
 msgstr "Taglia la selezione negli appunti"
+
+#: lazarusidestrconsts:lishlpoptsdatabases
+msgid "Databases"
+msgstr ""
 
 #: lazarusidestrconsts:lisdate
 msgid "Date"
@@ -4040,6 +4056,10 @@ msgstr "Codice normale"
 msgid "Normal selection mode"
 msgstr "Modalità di selezione normale"
 
+#: lazarusidestrconsts:lisnotadelphiproject
+msgid "Not a Delphi project"
+msgstr ""
+
 #: lazarusidestrconsts:lisnotadelphiunit
 msgid "Not a Delphi unit"
 msgstr ""
@@ -4528,6 +4548,10 @@ msgstr "Criterio di inserimento procedure"
 msgid "Procedure with interface"
 msgstr ""
 
+#: lazarusidestrconsts:lisprogram
+msgid "Program"
+msgstr ""
+
 #: lazarusidestrconsts:lisprogramdetected
 msgid "Program detected"
 msgstr "Rilevato programma"
@@ -4535,6 +4559,10 @@ msgstr "Rilevato programma"
 #: lazarusidestrconsts:lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "I sorgenti del programma devono avere un'estensione tipo pascal come .pas, .pp o .lpr"
+
+#: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
+msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
+msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
 msgid "Programfilename:"
@@ -5604,6 +5632,10 @@ msgstr "Editor sorgente"
 msgid "Source Notebook commands"
 msgstr "Comandi sorgenti appunti"
 
+#: lazarusidestrconsts:lissourceanddestinationarethesame
+msgid "Source and Destination are the same:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr ""
@@ -6076,6 +6108,10 @@ msgstr "Il file %s%s%s"
 msgid "The file %s%s%s is already in the package."
 msgstr "Il file %s%s%s è già nel pacchetto."
 
+#: lazarusidestrconsts:listhefileisnotadelphiprojectdpr
+msgid "The file %s%s%s is not a Delphi project (.dpr)"
+msgstr ""
+
 #: lazarusidestrconsts:listhefileisnotadelphiunit
 msgid "The file %s%s%s is not a Delphi unit."
 msgstr ""
@@ -6540,9 +6576,17 @@ msgstr "Impossibile convertire lfm in lrs e scrivere un file lrs."
 msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgstr "Impossibile convertire dati di form testo del file %s%s%s%s%sin formato di stream binario. (%s)"
 
+#: lazarusidestrconsts:lisunabletocopyfile
+msgid "Unable to copy file"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletocopyfileto
 msgid "Unable to copy file %s%s%s%sto %s%s%s"
 msgstr "Impossibile copiare il file %s%s%s%sin %s%s%s"
+
+#: lazarusidestrconsts:lisunabletocopyfileto2
+msgid "Unable to copy file %s%s%s%sto %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletocreatebackupdirectory
 msgid "Unable to create backup directory %s%s%s."

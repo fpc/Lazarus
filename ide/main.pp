@@ -591,6 +591,7 @@ type
     function DoRunProject: TModalResult;
     function SomethingOfProjectIsModified: boolean;
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
+    function DoSaveProjectIfChanged: TModalResult;
     function DoSaveProjectToTestDirectory: TModalResult;
     function DoShowToDoList: TModalResult;
     function DoTestCompilerSettings(
@@ -1752,9 +1753,7 @@ begin
     itmToolDiff.OnClick := @mnuToolDiffClicked;
     itmToolConvertDFMtoLFM.OnClick := @mnuToolConvertDFMtoLFMClicked;
     itmToolConvertDelphiUnit.OnClick := @mnuToolConvertDelphiUnitClicked;
-    {$IFDEF EnableConvertDelphiProject}
     itmToolConvertDelphiProject.OnClick := @mnuToolConvertDelphiProjectClicked;
-    {$ENDIF}
     itmToolBuildLazarus.OnClick := @mnuToolBuildLazarusClicked;
     itmToolConfigureBuildLazarus.OnClick := @mnuToolConfigBuildLazClicked;
   end;
@@ -2826,13 +2825,16 @@ var
   OpenDialog: TOpenDialog;
   AFilename: string;
 begin
+  //MessageDlg('ConvertDelphiProject','Under construction',mtInformation,[mbCancel],0); exit;
+
   OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisChooseDelphiUnit;
     OpenDialog.Options:=OpenDialog.Options;
-    if OpenDialog.Execute and (OpenDialog.Files.Count>0) then begin
+    if OpenDialog.Execute then begin
       AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      //debugln('TMainIDE.mnuToolConvertDelphiProjectClicked A ',AFilename);
       if FileExists(AFilename) then
         DoConvertDelphiProject(AFilename);
       UpdateEnvironment;
@@ -5891,19 +5893,8 @@ begin
   {$IFDEF IDE_VERBOSE}
   writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
   {$ENDIF}
-  Result:=mrCancel;
-
-  if SomethingOfProjectIsModified then begin
-    if MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
-      [Project1.Title]),
-      mtconfirmation, [mbYes, mbNo, mbCancel], 0)=mrYes then
-    begin
-      if DoSaveProject([])=mrAbort then begin
-        Result:=mrAbort;
-        exit;
-      end;
-    end;
-  end;
+  Result:=DoSaveProjectIfChanged;
+  if Result=mrAbort then exit;
 
   // let user choose the program type
   NewProjectDesc:=nil;
@@ -5947,6 +5938,22 @@ begin
   {$IFDEF IDE_VERBOSE}
   writeln('[TMainIDE.DoCreateProjectForProgram] END');
   {$ENDIF}
+  Result:=mrOk;
+end;
+
+function TMainIDE.DoSaveProjectIfChanged: TModalResult;
+begin
+  if SomethingOfProjectIsModified then begin
+    if MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
+      [Project1.Title]),
+      mtconfirmation, [mbYes, mbNo, mbCancel], 0)=mrYes then
+    begin
+      if DoSaveProject([])=mrAbort then begin
+        Result:=mrAbort;
+        exit;
+      end;
+    end;
+  end;
   Result:=mrOk;
 end;
 
@@ -7023,9 +7030,149 @@ end;
 
 function TMainIDE.DoConvertDelphiProject(const DelphiFilename: string
   ): TModalResult;
+var
+  DPRCode: TCodeBuffer;
+  ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  FoundInUnits, MissingInUnits, NormalUnits: TStrings;
+  NotFoundUnits: String;
+  LPRCode: TCodeBuffer;
+  NewProjectDesc: TProjectEmptyProgramDescriptor;
+  i: Integer;
+  CurUnitInfo: TUnitInfo;
+  MainUnitInfo: TUnitInfo;
 begin
-  // TODO
-  Result:=mrCancel;
+  debugln('TMainIDE.DoConvertDelphiProject DelphiFilename="',DelphiFilename,'"');
+  if MessagesView<>nil then MessagesView.Clear;
+  // check Delphi project file
+  Result:=CheckDelphiProjectExt(DelphiFilename);
+  if Result<>mrOk then exit;
+  // close Delphi file in editor
+  debugln('TMainIDE.DoConvertDelphiProject closing in editor dpr ...');
+  Result:=DoCloseEditorFile(DelphiFilename,[cfSaveFirst]);
+  if Result<>mrOk then exit;
+  // commit source editor changes to codetools
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then begin
+    Result:=mrCancel;
+    exit;
+  end;
+  // load Delphi project file
+  debugln('TMainIDE.DoConvertDelphiProject loading dpr ...');
+  Result:=LoadCodeBuffer(DPRCode,DelphiFilename,
+                         [lbfCheckIfText,lbfUpdateFromDisk]);
+  if Result<>mrOk then exit;
+  // create .lpr file
+  debugln('TMainIDE.DoConvertDelphiProject creating lpr ...');
+  Result:=CreateLPRFileForDPRFile(DelphiFilename,false,LPRCode);
+  if Result<>mrOk then begin
+    if CodeToolBoss.ErrorMessage<>'' then DoJumpToCodeToolBossError;
+    exit;
+  end;
+
+  // close old project
+  debugln('TMainIDE.DoConvertDelphiProject closing current project ...');
+  If Project1<>nil then begin
+    if DoCloseProject=mrAbort then begin
+      Result:=mrAbort;
+      exit;
+    end;
+  end;
+
+  // TODO: get all compiler options (Flags)
+  // TODO: get all search paths
+  // TODO: get all needed packages
+
+  // switch codetools to new project directory
+  CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjPath']:=
+    ExpandFilename(ExtractFilePath(LPRCode.Filename));
+
+  // create a new project
+  debugln('TMainIDE.DoConvertDelphiProject creating new project ...');
+  NewProjectDesc:=TProjectEmptyProgramDescriptor.Create;
+  Project1:=CreateProjectObject(NewProjectDesc);
+  Project1.BeginUpdate(true);
+  try
+    if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
+    MainUnitInfo:=TUnitInfo.Create(DPRCode);
+    MainUnitInfo.SyntaxHighlighter:=
+              ExtensionToLazSyntaxHighlighter(ExtractFileExt(LPRCode.Filename));
+    MainUnitInfo.IsPartOfProject:=true;
+    Project1.AddFile(MainUnitInfo,false);
+    Project1.MainFileID:=0;
+    Project1.ProjectInfoFile:=ChangeFileExt(LPRCode.Filename,'.lpi');
+    Project1.CompilerOptions.CompilerPath:='$(CompPath)';
+    UpdateCaption;
+    IncreaseCompilerParseStamp;
+
+    // add and load default required packages
+    // TODO: add packages
+    // WORKAROUND: add LCL
+    // add lcl pp/pas dirs to source search path
+    Project1.AddSrcPath('$(LazarusDir)/lcl;'
+                 +'$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
+    Project1.AddPackageDependency('LCL');
+    Project1.LazCompilerOptions.Win32GraphicApp:=true;
+    PkgBoss.AddDefaultDependencies(Project1);
+  finally
+    Project1.EndUpdate;
+    NewProjectDesc.Free;
+  end;
+
+  // show program unit
+  debugln('TMainIDE.DoConvertDelphiProject open lpr in editor ...');
+  Result:=DoOpenEditorFile(LPRCode.Filename,-1,[ofAddToRecent,ofRegularFile]);
+  if Result=mrAbort then exit;
+
+  // add and convert all project files
+  FoundInUnits:=nil;
+  MissingInUnits:=nil;
+  NormalUnits:=nil;
+  try
+    // TODO: set compiler options, packages and search paths
+
+    debugln('TMainIDE.DoConvertDelphiProject gathering all project units ...');
+    if not CodeToolBoss.FindDelphiProjectUnits(LPRCode,FoundInUnits,
+                                               MissingInUnits, NormalUnits) then
+    begin
+      DoJumpToCodeToolBossError;
+      exit;
+    end;
+    debugln('TMainIDE.DoConvertDelphiProject FoundInUnits=[',FoundInUnits.Text,']',
+      ' MissingInUnits=[',MissingInUnits.Text,']',
+      ' NormalUnits=[',NormalUnits.Text,']');
+    // warn about missing units
+    if (MissingInUnits<>nil) and (MissingInUnits.Count>0) then begin
+      NotFoundUnits:=MissingInUnits.Text;
+      Result:=MessageDlg('Units not found',
+        'Some units of the delphi project were not found:'#13
+        +NotFoundUnits,mtWarning,[mbIgnore,mbAbort],0);
+      if Result<>mrIgnore then exit;
+    end;
+
+    // TODO: add all units to the project
+    debugln('TMainIDE.DoConvertDelphiProject adding all project units to project ...');
+    for i:=0 to FoundInUnits.Count-1 do begin
+      CurUnitInfo:=TUnitInfo.Create(nil);
+      TUnitInfo(CurUnitInfo).Filename:=FoundInUnits[i];
+      Project1.AddFile(CurUnitInfo,false);
+    end;
+    
+    // save project
+    debugln('TMainIDE.DoConvertDelphiProject Saving new project ...');
+    Result:=DoSaveProject([]);
+    if Result<>mrOk then exit;
+
+    // TODO: convert all units
+
+
+  finally
+    FoundInUnits.Free;
+    MissingInUnits.Free;
+    NormalUnits.Free;
+  end;
+
+  debugln('TMainIDE.DoConvertDelphiProject Done');
+  Result:=mrOk;
 end;
 
 {-------------------------------------------------------------------------------
@@ -11106,6 +11253,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.812  2004/12/30 11:24:05  mattias
+  updated russian utf translation  from Vasily
+
   Revision 1.811  2004/12/27 12:56:41  mattias
   started TTranslateStrings and .lrt files support  from Vasily
 

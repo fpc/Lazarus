@@ -54,6 +54,8 @@ type
 
 function RenameFileWithErrorDialogs(const SrcFilename, DestFilename: string;
   ExtraButtons: TMsgDlgButtons): TModalResult;
+function CopyFileWithErrorDialogs(const SrcFilename, DestFilename: string;
+  ExtraButtons: TMsgDlgButtons): TModalResult;
 function LoadCodeBuffer(var ACodeBuffer: TCodeBuffer; const AFilename: string;
   Flags: TLoadBufferFlags): TModalResult;
 function CreateEmptyFile(const Filename: string;
@@ -85,6 +87,33 @@ begin
       DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
       Result:=MessageDlg(lisUnableToRenameFile,
         Format(lisUnableToRenameFileTo2, ['"', SrcFilename, '"', #13, '"',
+          DestFilename, '"']),
+        mtError,DlgButtons,0);
+      if (Result<>mrRetry) then exit;
+    end;
+  until false;
+  Result:=mrOk;
+end;
+
+function CopyFileWithErrorDialogs(const SrcFilename, DestFilename: string;
+  ExtraButtons: TMsgDlgButtons): TModalResult;
+var
+  DlgButtons: TMsgDlgButtons;
+begin
+  if CompareFilenames(SrcFilename,DestFilename)=0 then begin
+    Result:=mrAbort;
+    MessageDlg(lisUnableToCopyFile,
+      Format(lisSourceAndDestinationAreTheSame, [#13, SrcFilename]), mtError, [
+        mbAbort], 0);
+    exit;
+  end;
+  repeat
+    if CopyFile(SrcFilename,DestFilename) then begin
+      break;
+    end else begin
+      DlgButtons:=[mbCancel,mbRetry]+ExtraButtons;
+      Result:=MessageDlg(lisUnableToCopyFile,
+        Format(lisUnableToCopyFileTo2, ['"', SrcFilename, '"', #13, '"',
           DestFilename, '"']),
         mtError,DlgButtons,0);
       if (Result<>mrRetry) then exit;

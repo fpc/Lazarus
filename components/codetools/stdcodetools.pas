@@ -102,6 +102,8 @@ type
           ImplementationUsesSection: TStrings): boolean;
     function FindUsedUnitFiles(var MainUsesSection,
           ImplementationUsesSection: TStrings): boolean;
+    function FindDelphiProjectUnits(var FoundInUnits, MissingInUnits,
+                                    NormalUnits: TStrings): boolean;
     function UsesSectionToFilenames(UsesNode: TCodeTreeNode): TStrings;
     function UsesSectionToUnitnames(UsesNode: TCodeTreeNode): TStrings;
     function FindMissingUnits(var MissingUnits: TStrings): boolean;
@@ -651,6 +653,70 @@ begin
     FreeAndNil(ImplementationUsesSection);
     raise;
   end;
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
+  function TStandardCodeTool.FindDelphiProjectUnits(var FoundInUnits,
+    MissingInUnits, NormalUnits: TStrings): boolean;
+
+  Reads the main uses section backwards and tries to find each unit file having
+  an 'in' modifier.
+  The associated objects in the list will be the found codebuffers.
+  FoundInUnits returns the list of found 'in' unitnames plus TCodeBuffer
+  MissingInUnits returns the list of missing 'in' unitnames
+  NormalUnits returns the list of unitnames plus TCodeBuffer (if found)
+
+  If no codebuffer was found/created then the filename will be the unit name
+  plus the 'in' extension.
+------------------------------------------------------------------------------}
+function TStandardCodeTool.FindDelphiProjectUnits(var FoundInUnits,
+  MissingInUnits, NormalUnits: TStrings): boolean;
+var
+  InAtom, UnitNameAtom: TAtomPosition;
+  AnUnitName, AnUnitInFilename: string;
+  NewCode: TCodeBuffer;
+  UsesNode: TCodeTreeNode;
+begin
+  Result:=false;
+  FoundInUnits:=nil;
+  MissingInUnits:=nil;
+  NormalUnits:=nil;
+  // find the uses sections
+  BuildTree(false);
+  UsesNode:=FindMainUsesSection;
+  if UsesNode=nil then exit;
+  MoveCursorToUsesEnd(UsesNode);
+  FoundInUnits:=TStringList.Create;
+  MissingInUnits:=TStringList.Create;
+  NormalUnits:=TStringList.Create;
+  repeat
+    // read prior unit name
+    ReadPriorUsedUnit(UnitNameAtom, InAtom);
+    AnUnitName:=GetAtom(UnitNameAtom);
+    if InAtom.StartPos>0 then begin
+      AnUnitInFilename:=copy(Src,InAtom.StartPos+1,
+                             InAtom.EndPos-InAtom.StartPos-2);
+    end else
+      AnUnitInFilename:='';
+    // find unit file
+    NewCode:=FindUnitSource(AnUnitName,AnUnitInFilename,false);
+    if AnUnitInFilename<>'' then begin
+      // An 'in' unit => Delphi project file
+      if (NewCode=nil) then begin
+        // no source found
+        MissingInUnits.Add(AnUnitName+' in '+AnUnitInFilename);
+      end else begin
+        // source found => add filename to list
+        FoundInUnits.AddObject(AnUnitName+' in '+AnUnitInFilename,NewCode);
+      end;
+    end else begin
+      // the non 'in' units are 'Forms' or units added by the user
+      NormalUnits.AddObject(AnUnitName,NewCode);
+    end;
+    // read keyword 'uses' or comma
+    ReadPriorAtom;
+  until not AtomIsChar(',');
   Result:=true;
 end;
 

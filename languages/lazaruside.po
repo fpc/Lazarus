@@ -882,6 +882,14 @@ msgstr ""
 msgid "Unable to convert lfm to lrs and write lrs file."
 msgstr ""
 
+#: lazarusidestrconsts:lisnotadelphiproject
+msgid "Not a Delphi project"
+msgstr ""
+
+#: lazarusidestrconsts:listhefileisnotadelphiprojectdpr
+msgid "The file %s%s%s is not a Delphi project (.dpr)"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletoloadoldresourcefiletheresourcefileis
 msgid "Unable to load old resource file.%sThe resource file is the first include file in the%sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax error."
 msgstr ""
@@ -1106,8 +1114,20 @@ msgstr ""
 msgid "Unable to rename file"
 msgstr ""
 
+#: lazarusidestrconsts:lisunabletocopyfile
+msgid "Unable to copy file"
+msgstr ""
+
+#: lazarusidestrconsts:lissourceanddestinationarethesame
+msgid "Source and Destination are the same:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletorenamefileto2
 msgid "Unable to rename file %s%s%s%sto %s%s%s."
+msgstr ""
+
+#: lazarusidestrconsts:lisunabletocopyfileto2
+msgid "Unable to copy file %s%s%s%sto %s%s%s."
 msgstr ""
 
 #: lazarusidestrconsts:lisfiledoesnotlooklikeatextfileopenitanyway
@@ -2964,6 +2984,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgpoapplication
 msgid "Application"
+msgstr ""
+
+#: lazarusidestrconsts:lisapplicationagraphicallclfreepascalprogramtheprogra
+msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
 msgstr ""
 
 #: lazarusidestrconsts:dlgpofroms
@@ -7686,6 +7710,10 @@ msgstr ""
 msgid "Properties:"
 msgstr ""
 
+#: lazarusidestrconsts:lishlpoptsdatabases
+msgid "Databases"
+msgstr ""
+
 #: lazarusidestrconsts:lisencloseselection
 msgid "Enclose Selection"
 msgstr ""
@@ -7844,5 +7872,21 @@ msgstr ""
 
 #: lazarusidestrconsts:lisscalingfactor
 msgid "Scaling factor:"
+msgstr ""
+
+#: lazarusidestrconsts:liscustomprogram
+msgid "Custom Program"
+msgstr ""
+
+#: lazarusidestrconsts:lisprogram
+msgid "Program"
+msgstr ""
+
+#: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
+msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
+msgstr ""
+
+#: lazarusidestrconsts:liscustomprogramafreepascalprogram
+msgid "Custom Program%sA freepascal program."
 msgstr ""
 

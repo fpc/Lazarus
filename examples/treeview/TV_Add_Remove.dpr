@@ -3,10 +3,9 @@ program TV_Add_Remove;
 uses
   Interfaces,
   Forms,
-  TV_Add_Remove_U1;
-   //in 'TV_Add_Remove_U1.pas' {Form1};
+  TV_Add_Remove_U1 in 'TV_Add_Remove_U1.pas' {Form1};
 
-//{$R *.RES}
+{$R *.RES}
 
 begin
   Application.Initialize;

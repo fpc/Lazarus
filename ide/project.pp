@@ -48,8 +48,9 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, SysUtils, FPCAdds, LCLProc, LCLIntf, LCLType, Laz_XMLCfg, LazConf,
-  CompilerOptions, FileUtil, CodeToolManager, CodeCache, Forms, Controls,
-  EditorOptions, Dialogs, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs,
+  Forms, Controls, Dialogs, FileUtil,
+  LazarusIDEStrConsts, CompilerOptions, CodeToolManager, CodeCache,
+  EditorOptions, IDEProcs, RunParamsOpts, ProjectIntf, ProjectDefs,
   EditDefineTree, DefineTemplates, PackageDefs, LazIDEIntf;
 
 type
@@ -138,6 +139,7 @@ type
     procedure SetUserReadOnly(const NewValue: boolean);
   protected
     function GetFileName: string; override;
+    procedure SetFilename(const AValue: string); override;
     procedure SetIsPartOfProject(const AValue: boolean); override;
     procedure UpdateList(ListType: TUnitInfoList; Add: boolean);
   public
@@ -324,12 +326,22 @@ type
   { TProjectManualProgramDescriptor }
 
   TProjectManualProgramDescriptor = class(TProjectDescriptor)
+  private
+    FAddMainSource: boolean;
   public
     constructor Create; override;
     function GetLocalizedName: string; override;
     function GetLocalizedDescription: string; override;
     procedure InitProject(AProject: TLazProject); override;
     procedure CreateStartFiles(AProject: TLazProject); override;
+    property AddMainSource: boolean read FAddMainSource write FAddMainSource;
+  end;
+
+  { TProjectEmptyProgramDescriptor }
+
+  TProjectEmptyProgramDescriptor = class(TProjectManualProgramDescriptor)
+  public
+    constructor Create; override;
   end;
 
   { TProject }
@@ -679,8 +691,8 @@ begin
   repeat
     NewSource:=CodeToolBoss.LoadFile(fFilename,true,Revert);
     if NewSource=nil then begin
-      ACaption:='Read error';
-      AText:='Unable to read file "'+fFilename+'"!';
+      ACaption:=lisCodeToolsDefsReadError;
+      AText:=Format(lisUnableToReadFile2, ['"', fFilename, '"']);
       Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
          ,MB_ABORTRETRYIGNORE);
       if Result in [mrAbort,mrIgnore] then
@@ -866,6 +878,14 @@ function TUnitInfo.GetFileName: string;
 begin
   if fSource<>nil then Result:=fSource.Filename
   else Result:=fFileName;
+end;
+
+procedure TUnitInfo.SetFilename(const AValue: string);
+begin
+  if fSource<>nil then
+    RaiseException('TUnitInfo.SetFilename Source<>nil')
+  else
+    fFileName:=AValue;
 end;
 
 function TUnitInfo.IsVirtual: boolean;
@@ -1170,10 +1190,6 @@ end;
 constructor TProject.Create(ProjectDescription: TProjectDescriptor);
 begin
   inherited Create(ProjectDescription);
-
-  Assert(False, 'Trace:Project Class Created');
-
-  //fProjectType:=TheProjectType;
 
   fActiveEditorIndexAtStart := -1;
   FAutoCreateForms := true;
@@ -2960,14 +2976,12 @@ end;
 
 function TProjectProgramDescriptor.GetLocalizedName: string;
 begin
-  Result:='Program';
+  Result:=lisProgram;
 end;
 
 function TProjectProgramDescriptor.GetLocalizedDescription: string;
 begin
-  Result:='Program'#13
-         +'A freepascal program. The program file is automatically '
-         +'maintained by lazarus.';
+  Result:=Format(lisProgramAFreepascalProgramTheProgramFileIsAutomatic, [#13]);
 end;
 
 procedure TProjectProgramDescriptor.InitProject(AProject: TLazProject);
@@ -3015,14 +3029,12 @@ end;
 
 function TProjectApplicationDescriptor.GetLocalizedName: string;
 begin
-  Result:='Application';
+  Result:=dlgPOApplication;
 end;
 
 function TProjectApplicationDescriptor.GetLocalizedDescription: string;
 begin
-  Result:='Application'#13
-         +'A graphical lcl/freepascal program. The program file is '
-         +'automatically maintained by lazarus.';
+  Result:=Format(lisApplicationAGraphicalLclFreepascalProgramTheProgra, [#13]);
 end;
 
 procedure TProjectApplicationDescriptor.InitProject(AProject: TLazProject);
@@ -3079,17 +3091,17 @@ begin
   Flags:=Flags-[pfMainUnitHasUsesSectionForAllUnits,
                 pfMainUnitHasCreateFormStatements,
                 pfMainUnitHasTitleStatement];
+  FAddMainSource:=true;
 end;
 
 function TProjectManualProgramDescriptor.GetLocalizedName: string;
 begin
-  Result:='Custom Program';
+  Result:=lisCustomProgram;
 end;
 
 function TProjectManualProgramDescriptor.GetLocalizedDescription: string;
 begin
-  Result:='Custom Program'#13
-         +'A freepascal program.'
+  Result:=Format(lisCustomProgramAFreepascalProgram, [#13])
 end;
 
 procedure TProjectManualProgramDescriptor.InitProject(AProject: TLazProject);
@@ -3099,26 +3111,28 @@ var
   MainFile: TLazProjectFile;
 begin
   inherited InitProject(AProject);
+  
+  if AddMainSource then begin
+    MainFile:=AProject.CreateProjectFile('project1.pas');
+    MainFile.IsPartOfProject:=true;
+    AProject.AddFile(MainFile,false);
+    AProject.MainFileID:=0;
 
-  MainFile:=AProject.CreateProjectFile('project1.pas');
-  MainFile.IsPartOfProject:=true;
-  AProject.AddFile(MainFile,false);
-  AProject.MainFileID:=0;
-
-  // create program source
-  le:=LineEnding;
-  NewSource:='program Project1;'+le
-    +le
-    +'{$mode objfpc}{$H+}'+le
-    +le
-    +'uses'+le
-    +'  Classes, SysUtils'+le
-    +'  { add your units here };'+le
-    +le
-    +'begin'+le
-    +'end.'+le
-    +le;
-  AProject.MainFile.SetSourceText(NewSource);
+    // create program source
+    le:=LineEnding;
+    NewSource:='program Project1;'+le
+      +le
+      +'{$mode objfpc}{$H+}'+le
+      +le
+      +'uses'+le
+      +'  Classes, SysUtils'+le
+      +'  { add your units here };'+le
+      +le
+      +'begin'+le
+      +'end.'+le
+      +le;
+    AProject.MainFile.SetSourceText(NewSource);
+  end;
 end;
 
 procedure TProjectManualProgramDescriptor.CreateStartFiles(AProject: TLazProject
@@ -3128,10 +3142,21 @@ begin
                               [ofProjectLoading,ofRegularFile]);
 end;
 
+{ TProjectEmptyProgramDescriptor }
+
+constructor TProjectEmptyProgramDescriptor.Create;
+begin
+  inherited Create;
+  FAddMainSource:=false;
+end;
+
 end.
 
 {
   $Log$
+  Revision 1.173  2004/12/30 11:24:05  mattias
+  updated russian utf translation  from Vasily
+
   Revision 1.172  2004/12/23 00:33:43  mattias
   fixed crash on readonly projects
 

@@ -255,6 +255,7 @@ type
     FIsPartOfProject: boolean;
   protected
     function GetFilename: string; virtual; abstract;
+    procedure SetFilename(const AValue: string); virtual; abstract;
     procedure SetIsPartOfProject(const AValue: boolean); virtual;
   public
     procedure SetSourceText(const SourceText: string); virtual; abstract;
@@ -262,7 +263,7 @@ type
   public
     property IsPartOfProject: boolean read FIsPartOfProject
                                       write SetIsPartOfProject;
-    property Filename: string read GetFilename;
+    property Filename: string read GetFilename write SetFilename;
   end;
   TLazProjectFileClass = class of TLazProjectFile;
   

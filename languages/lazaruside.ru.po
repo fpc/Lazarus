@@ -478,6 +478,10 @@ msgstr "Приложение"
 msgid "Application Settings"
 msgstr "Параметры приложения"
 
+#: lazarusidestrconsts:lisapplicationagraphicallclfreepascalprogramtheprogra
+msgid "Application%sA graphical lcl/freepascal program. The program file is automatically maintained by lazarus."
+msgstr ""
+
 #: lazarusidestrconsts:dlgbutapply
 msgid "Apply"
 msgstr "Применить"
@@ -1478,6 +1482,14 @@ msgstr "Пользовательский"
 msgid "Custom Identifier"
 msgstr "Пользовательский ID"
 
+#: lazarusidestrconsts:liscustomprogram
+msgid "Custom Program"
+msgstr ""
+
+#: lazarusidestrconsts:liscustomprogramafreepascalprogram
+msgid "Custom Program%sA freepascal program."
+msgstr ""
+
 #: lazarusidestrconsts:liskeycatcustom
 msgid "Custom commands"
 msgstr "Команды пользователя"
@@ -1505,6 +1517,10 @@ msgstr "Вырезать выбранные компоненты в буфер"
 #: lazarusidestrconsts:srkmeccut
 msgid "Cut selection to clipboard"
 msgstr "Вырезать выделение в буфер"
+
+#: lazarusidestrconsts:lishlpoptsdatabases
+msgid "Databases"
+msgstr ""
 
 #: lazarusidestrconsts:lisdate
 msgid "Date"
@@ -4030,6 +4046,10 @@ msgstr "Нормальный код"
 msgid "Normal selection mode"
 msgstr "Нормальный режим выбора"
 
+#: lazarusidestrconsts:lisnotadelphiproject
+msgid "Not a Delphi project"
+msgstr ""
+
 #: lazarusidestrconsts:lisnotadelphiunit
 msgid "Not a Delphi unit"
 msgstr "Не модуль Delphi"
@@ -4518,6 +4538,10 @@ msgstr "Политика вставки процедур"
 msgid "Procedure with interface"
 msgstr "Процедура с интерфейсом"
 
+#: lazarusidestrconsts:lisprogram
+msgid "Program"
+msgstr ""
+
 #: lazarusidestrconsts:lisprogramdetected
 msgid "Program detected"
 msgstr "Обнаружена программа"
@@ -4525,6 +4549,10 @@ msgstr "Обнаружена программа"
 #: lazarusidestrconsts:lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
 msgstr "Исходник программы должен иметь расширение паскаля, напр. .pas, .pp или .lpr"
+
+#: lazarusidestrconsts:lisprogramafreepascalprogramtheprogramfileisautomatic
+msgid "Program%sA freepascal program. The program file is automatically maintained by lazarus."
+msgstr ""
 
 #: lazarusidestrconsts:lisedtexttoolprogramfilename
 msgid "Programfilename:"
@@ -5594,6 +5622,10 @@ msgstr "Редактор исходников"
 msgid "Source Notebook commands"
 msgstr "Команды закладок исходника"
 
+#: lazarusidestrconsts:lissourceanddestinationarethesame
+msgid "Source and Destination are the same:%s%s"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuaddbpsource
 msgid "Source breakpoint"
 msgstr "Точка останова в исходнике"
@@ -6066,6 +6098,10 @@ msgstr "Файл %s%s%s"
 msgid "The file %s%s%s is already in the package."
 msgstr "Файл %s%s%s уже в пакете."
 
+#: lazarusidestrconsts:listhefileisnotadelphiprojectdpr
+msgid "The file %s%s%s is not a Delphi project (.dpr)"
+msgstr ""
+
 #: lazarusidestrconsts:listhefileisnotadelphiunit
 msgid "The file %s%s%s is not a Delphi unit."
 msgstr "Файл %s%s%s - не модуль Delphi."
@@ -6530,9 +6566,17 @@ msgstr "Невозможно преобразовать lfm в lrs и записать lrs-файл."
 msgid "Unable to convert text form data of file %s%s%s%s%sinto binary stream. (%s)"
 msgstr "Не могу превратить текстовые данные формы файла %s%s%s%s%sв двоичный поток. (%s)"
 
+#: lazarusidestrconsts:lisunabletocopyfile
+msgid "Unable to copy file"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletocopyfileto
 msgid "Unable to copy file %s%s%s%sto %s%s%s"
 msgstr "Не могу скопировать файл %s%s%s%sв %s%s%s"
+
+#: lazarusidestrconsts:lisunabletocopyfileto2
+msgid "Unable to copy file %s%s%s%sto %s%s%s."
+msgstr ""
 
 #: lazarusidestrconsts:lisunabletocreatebackupdirectory
 msgid "Unable to create backup directory %s%s%s."
