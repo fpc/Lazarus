@@ -171,7 +171,6 @@ type
     procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
     property Page[Index: Integer]: TCustomPage read GetPage;
-    property Pages: TStrings read fAccess write SetPages;
     property ActivePageComponent: TCustomPage read GetActivePageComponent
                                               write SetActivePageComponent;
     property ActivePage: String read GetActivePage write SetActivePage
@@ -183,9 +182,11 @@ type
     function CanTab: boolean; override;
     function GetImageIndex(ThePageIndex: Integer): Integer; virtual;
     function IndexOf(APage: TCustomPage): integer;
+    function CustomPage(Index: integer): TCustomPage;
   public
     //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
     property PageCount: integer read GetPageCount;
+    property Pages: TStrings read fAccess write SetPages;
     property PageIndex: Integer read GetPageIndex write SetPageIndex default -1;
     property PageList: TList read fPageList;
     property OnPageChanged: TNotifyEvent read fOnPageChanged write fOnPageChanged;
@@ -824,6 +825,9 @@ end.
 
  {
   $Log$
+  Revision 1.79  2003/09/20 15:24:54  mattias
+  implemented TPageControl and TTabSheet
+
   Revision 1.78  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

@@ -130,8 +130,6 @@ type
   end;
   
   
-  {$IFDEF UsePageControl}
-
   { TTabSheet }
 
   TPageControl = class;
@@ -264,7 +262,6 @@ type
     //property OnUnDock;
   end;
   
-  {$ENDIF UsePageControl}
 
   { Custom draw }
 
@@ -534,7 +531,7 @@ type
     property Color;
     property Columns;
 //    property ColumnClick;
-//    property Constraints;
+    property Constraints;
     property Enabled;
     property Font;
 //    property HideSelection;
@@ -596,40 +593,41 @@ type
     procedure ApplyChanges;
     procedure InitializeWnd; override;
     procedure Loaded; override;
-{    procedure SetBarTextFormat; }
   public
     constructor Create(AOwner: TComponent); override;
     procedure StepIt;
     procedure StepBy(Delta: Integer);
   published
-    property Min: Integer read GetMin write SetMin;
-    property Max: Integer read GetMax write SetMax;
-    property Position: Integer read GetPosition write SetPosition default 0;
-    property Step: Integer read FStep write SetStep default 10;
-    property Smooth : boolean read FSmooth write SetSmooth default false;
     property Align;
-    property Visible;
-    property Orientation: TProgressBarOrientation read FOrientation write SetOrientation default pbHorizontal;
-    property Enabled;
-    property OnEnter;
-    property OnExit;
     property BorderWidth;
+    property Constraints;
     property DragCursor;
     property DragKind;
     property DragMode;
+    property Enabled;
     property Hint;
-    property ParentShowHint;
-    property PopupMenu;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
+    property Max: Integer read GetMax write SetMax;
+    property Min: Integer read GetMin write SetMin;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
+    property OnEnter;
+    property OnExit;
     property OnMouseDown;
     property OnMouseMove;
     property OnMouseUp;
+    property OnStartDock;
     property OnStartDrag;
+    property Orientation: TProgressBarOrientation read FOrientation write SetOrientation default pbHorizontal;
+    property ParentShowHint;
+    property PopupMenu;
+    property Position: Integer read GetPosition write SetPosition default 0;
+    property ShowHint;
+    property Smooth : boolean read FSmooth write SetSmooth default false;
+    property Step: Integer read FStep write SetStep default 10;
+    property TabOrder;
+    property TabStop;
+    property Visible;
 { ... to be implemented for Delphi compatibility
 //    property Anchors;
 //  property Constraints;
@@ -687,7 +685,6 @@ type
     Procedure AssociateKeyDown(Sender: TObject; var Key: Word; ShiftState : TShiftState);
     procedure OnAssociateChangeBounds(Sender: TObject);
     procedure DoOnResize; override;
-    //procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer); Override;
     function CanChange: Boolean; dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     procedure Click(Button: TUDBtnType); dynamic; overload;
@@ -740,7 +737,7 @@ type
   end;
 
 
-{ TToolBar }
+  { TToolBar }
 
 const
   CN_DROPDOWNCLOSED = LM_USER + $1000;
@@ -859,7 +856,6 @@ type
     FOldHandle: HBitmap;
     FUpdateCount: Integer;
     FHeightMargin: Integer;
-    { Toolbar menu support }
     FCaptureChangeCancels: Boolean;
     FInMenuLoop: Boolean;
     FTempMenu: TPopupMenu;
@@ -1014,11 +1010,6 @@ type
   TTickStyle = (tsNone, tsAuto, tsManual);
   TTrackBarScalePos = (trLeft, trRight, trTop, trBottom);
 
-  {
-    @abstract(Simple trackbar.)
-    Introduced by Author Name <stoppok@osibisa.ms.sub.org>
-    Currently maintained by Maintainer Name <stoppok@osibisa.ms.sub.org>
-  }
   TTrackBar = class(TWinControl)
   private
     FOrientation: TTrackBarOrientation;
@@ -1203,7 +1194,6 @@ type
     FHeight: integer;     // height in pixels
     FInTree: Boolean;
     FImageIndex: integer;
-    //FItemId: HTreeItem;
     FItems: TTreeNodeArray;  // first level child nodes
     FNextBrother: TTreeNode; // next sibling
     FNextMultiSelected: TTreeNode;
@@ -1330,7 +1320,6 @@ type
     property Index: Integer read GetIndex;
     property IsVisible: Boolean read IsNodeVisible;
     property Items[ItemIndex: Integer]: TTreeNode read GetItems write SetItems; default;
-    //property ItemId: HTreeItem read FItemId;
     property Level: Integer read GetLevel;
     property MultiSelected: Boolean read GetMultiSelected write SetMultiSelected;
     property OverlayIndex: Integer read FOverlayIndex write SetOverlayIndex;
@@ -1383,12 +1372,9 @@ type
     procedure WriteData(Stream: TStream);
     procedure WriteExpandedState(Stream: TStream);
   protected
-    //function AddItem(Parent, Target: HTreeItem; const Item: TTVItem;
-    //  AddMode: TAddMode): HTreeItem;
     function InternalAddObject(Node: TTreeNode; const S: string;
       Data: Pointer; AddMode: TAddMode): TTreeNode;
     procedure DefineProperties(Filer: TFiler); override;
-    //function CreateItem(Node: TTreeNode): TTVItem;
     function GetCount: Integer;
     procedure SetItem(Index: Integer; AValue: TTreeNode);
     procedure SetUpdateState(Updating: Boolean);
@@ -1415,7 +1401,6 @@ type
     procedure Delete(Node: TTreeNode);
     procedure EndUpdate;
     function GetFirstNode: TTreeNode;
-    //function GetNode(ItemId: HTreeItem): TTreeNode;
     function GetLastNode: TTreeNode; // last top level node
     function GetLastSubNode: TTreeNode; // absolute last node
     function GetLastExpandedSubNode: TTreeNode; // absolute last node
@@ -1428,7 +1413,6 @@ type
     function ConsistencyCheck: integer;
     procedure WriteDebugReport(const Prefix: string; AllNodes: boolean);
     property Count: Integer read GetCount;
-    //property Handle: HWND read GetHandle;
     property Items[Index: Integer]: TTreeNode read GetNodeFromIndex; default;
     property KeepCollapsedNodes: boolean
       read FKeepCollapsedNodes write FKeepCollapsedNodes;
@@ -1512,7 +1496,6 @@ type
     FLastVertScrollInfo: TScrollInfo;
     FMaxLvl: integer; // maximum level of all nodes
     FMaxRight: integer; // maximum text width of all nodes (needed for horizontal scrolling)
-    //FMemStream: TMemoryStream;
     fMouseDownX: integer;
     fMouseDownY: integer;
     FOnAdvancedCustomDraw: TTVAdvancedCustomDrawEvent;
@@ -1534,9 +1517,7 @@ type
     FOnSelectionChanged: TNotifyEvent;
     FOptions: TTreeViewOptions;
     FRClickNode: TTreeNode;
-    //FSaveIndex: Integer;
     FSaveItems: TStringList;
-    //FSaveTopIndex: Integer;
     FScrollBars: TScrollStyle;
     FScrolledLeft: integer; // horizontal scrolled pixels (hidden pixels at left)
     FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
@@ -1552,13 +1533,8 @@ type
     FTreeLineColor: TColor;
     FTreeNodes: TTreeNodes;
     FUpdateCount: integer;
-    //FWideText: WideString;
     procedure CanvasChanged(Sender: TObject);
-    //procedure CMColorChanged(var Message: TMessage); message CM_COLORCHANGED;
-    //procedure CMCtl3DChanged(var Message: TMessage); message CM_CTL3DCHANGED;
-    //procedure CMFontChanged(var Message: TMessage); message CM_FONTCHANGED;
     procedure CMDrag(var AMessage: TCMDrag); message CM_DRAG;
-    //procedure CNNotify(var Message: TWMNotify); message CN_NOTIFY;
     procedure EditWndProc(var Message: TLMessage);
     procedure DoDragOver(Source: TDragObject; X, Y: Integer; CanDrop: Boolean);
     function GetAutoExpand: boolean;
@@ -1568,7 +1544,6 @@ type
     function GetHideSelection: boolean;
     function GetHotTrack: boolean;
     function GetKeepCollapsedNodes: boolean;
-    //function GetNodeFromItem(const Item: TTVItem): TTreeNode;
     function GetReadOnly: boolean;
     function GetRightClickSelect: boolean;
     function GetRowSelect: boolean;
@@ -1591,7 +1566,6 @@ type
     procedure SetDropTarget(Value: TTreeNode);
     procedure SetHideSelection(Value: Boolean);
     procedure SetHotTrack(Value: Boolean);
-    //procedure SetImageList(Value: HImageList; Flags: Integer);
     procedure SetIndent(Value: Integer);
     procedure SetImages(Value: TCustomImageList);
     procedure SetInsertMarkNode(const AValue: TTreeNode);
@@ -1627,12 +1601,9 @@ type
     procedure WMLButtonDown(var AMessage: TLMLButtonDown); message LM_LBUTTONDOWN;
     procedure WMNotify(var AMessage: TLMNotify); message LM_NOTIFY;
     procedure WMSize(var Msg: TLMSize); message LM_SIZE;
-    //procedure WMContextMenu(var Message: TLMContextMenu); message LM_CONTEXTMENU;
-    //procedure CMSysColorChange(var Message: TMessage); message CM_SYSCOLORCHANGE;
     procedure InternalSelectionChanged;
   protected
     FChangeTimer: TTimer;
-    //procedure Edit(const Item: TTVItem); dynamic;
     function CanChange(Node: TTreeNode): Boolean; dynamic;
     function CanCollapse(Node: TTreeNode): Boolean; dynamic;
     function CanEdit(Node: TTreeNode): Boolean; dynamic;
@@ -1841,7 +1812,7 @@ type
     property OnCollapsed;
     property OnCollapsing;
     property OnCompare;
-    //property OnContextPopup;
+    property OnContextPopup;
     property OnCustomDraw;
     property OnCustomDrawItem;
     property OnDblClick;
@@ -1920,14 +1891,6 @@ const
 { Toolbar menu support }
 
 var
-  //ToolMenuKeyHook: HHOOK;
-  //ToolMenuHook: HHOOK;
-  //InitDone: Boolean;
-  //MenuToolBar: TToolBar;
-  //MenuToolBar2: TToolBar;
-  //MenuButtonIndex: Integer;
-  //LastMenuItem: TMenuItem;
-  //LastMousePos: TPoint;
   StillModal: Boolean;
 
 
@@ -1944,19 +1907,15 @@ end;
 procedure Register;
 begin
   RegisterComponents('Common Controls',[TTrackbar,TProgressBar,TTreeView,
-    TListView,TStatusBar,TToolBar,TUpDown]);
-  RegisterNoIcon([TToolButton]);
+    TListView,TStatusBar,TToolBar,TUpDown,TPageControl]);
+  RegisterNoIcon([TToolButton,TTabSheet]);
 end;
 
 {$I statusbar.inc}
 {$I statuspanel.inc}
 {$I statuspanels.inc}
-
-{$IFDEF UsePageControl}
 {$I tabsheet.inc}
 {$I pagecontrol.inc}
-{$ENDIF UsePageControl}
-
 { $I alignment.inc}
 {$I listcolumns.inc}
 {$I listcolumn.inc}
@@ -1976,6 +1935,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.89  2003/09/20 15:24:54  mattias
+  implemented TPageControl and TTabSheet
+
   Revision 1.88  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

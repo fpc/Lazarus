@@ -431,6 +431,11 @@ begin
   Result:=FPageList.IndexOf(APage);
 end;
 
+function TCustomNotebook.CustomPage(Index: integer): TCustomPage;
+begin
+  Result:=GetPage(Index);
+end;
+
 {------------------------------------------------------------------------------
   method TCustomNotebook DoCloseTabClicked
   Params: APage: TCustomPage
@@ -773,6 +778,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.36  2003/09/20 15:24:54  mattias
+  implemented TPageControl and TTabSheet
+
   Revision 1.35  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

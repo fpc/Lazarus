@@ -186,7 +186,7 @@ type
   end;
   
 { TNotebookComponentEditor
-  The default component editor for TNotebook. }
+  The default component editor for TCustomNotebook. }
   TNotebookComponentEditor = class(TDefaultComponentEditor)
   protected
     procedure AddNewPageToDesigner(Index: integer); virtual;
@@ -203,16 +203,16 @@ type
     function GetVerb(Index: Integer): string; override;
     function GetVerbCount: Integer; override;
     procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
-    function Notebook: TNotebook; virtual;
+    function Notebook: TCustomNotebook; virtual;
   end;
   
 { TPageComponentEditor
-  The default component editor for TPage. }
+  The default component editor for TCustomPage. }
   TPageComponentEditor = class(TNotebookComponentEditor)
   protected
   public
-    function Notebook: TNotebook; override;
-    function Page: TPage; virtual;
+    function Notebook: TCustomNotebook; override;
+    function Page: TCustomPage; virtual;
   end;
   
 { Register a component editor to be created when a component derived from
@@ -462,19 +462,18 @@ begin
   NewPageIndex:=AMenuItem.MenuIndex;
   if (NewPageIndex<0) or (NewPageIndex>=Notebook.PageCount) then exit;
   NoteBook.PageIndex:=NewPageIndex;
-  GetDesigner.SelectOnlyThisComponent(
-    TPage(NoteBook.PageList[NoteBook.PageIndex]));
+  GetDesigner.SelectOnlyThisComponent(NoteBook.CustomPage(NoteBook.PageIndex));
 end;
 
 procedure TNotebookComponentEditor.AddNewPageToDesigner(Index: integer);
 var
   Hook: TPropertyEditorHook;
-  NewPage: TPage;
+  NewPage: TCustomPage;
   NewName: string;
 begin
   Hook:=nil;
   if not GetHook(Hook) then exit;
-  NewPage:=NoteBook.Page[Index];
+  NewPage:=NoteBook.CustomPage(Index);
   NewName:=GetDesigner.CreateUniqueComponentName(NewPage.ClassName);
   NewPage.Caption:=NewName;
   NewPage.Name:=NewName;
@@ -554,8 +553,7 @@ begin
   for i:=0 to NoteBook.PageCount-1 do begin
     NewMenuItem:=TMenuItem.Create(ParentMenuItem);
     NewMenuItem.Name:='ShowPage'+IntToStr(i);
-    NewMenuItem.Caption:=
-      TPage(Notebook.PageList[i]).Name+' "'+Notebook.Pages[i]+'"';
+    NewMenuItem.Caption:=Notebook.CustomPage(i).Name+' "'+Notebook.Pages[i]+'"';
     NewMenuItem.OnClick:=@ShowPageMenuItemClick;
     ParentMenuItem.Add(NewMenuItem);
   end;
@@ -605,25 +603,25 @@ begin
   end;
 end;
 
-function TNotebookComponentEditor.Notebook: TNotebook;
+function TNotebookComponentEditor.Notebook: TCustomNotebook;
 begin
-  Result:=TNotebook(GetComponent);
+  Result:=TCustomNotebook(GetComponent);
 end;
 
 { TPageComponentEditor }
 
-function TPageComponentEditor.Notebook: TNotebook;
+function TPageComponentEditor.Notebook: TCustomNotebook;
 var
-  APage: TPage;
+  APage: TCustomPage;
 begin
   APage:=Page;
-  if (APage.Parent<>nil) and (APage.Parent is TNoteBook) then
-    Result:=TNoteBook(APage.Parent);
+  if (APage.Parent<>nil) and (APage.Parent is TCustomNoteBook) then
+    Result:=TCustomNoteBook(APage.Parent);
 end;
 
-function TPageComponentEditor.Page: TPage;
+function TPageComponentEditor.Page: TCustomPage;
 begin
-  Result:=TPage(GetComponent);
+  Result:=TCustomPage(GetComponent);
 end;
 
 //------------------------------------------------------------------------------
@@ -644,8 +642,8 @@ end;
 
 initialization
   RegisterComponentEditorProc:=@DefaultRegisterComponentEditorProc;
-  RegisterComponentEditor(TNotebook,TNotebookComponentEditor);
-  RegisterComponentEditor(TPage,TPageComponentEditor);
+  RegisterComponentEditor(TCustomNotebook,TNotebookComponentEditor);
+  RegisterComponentEditor(TCustomPage,TPageComponentEditor);
   
 finalization
   InternalFinal;
