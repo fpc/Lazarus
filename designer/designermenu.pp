@@ -265,7 +265,8 @@ begin
   PopupMenuItem.OnClick:=@DeleteFromTemplateClick;
   DesignerPopupMenu.Items.Add(PopupMenuItem);
 
-  //Handle for renaming a caption in the OI for some menuitem to rename also a propriet designermenuitem
+  //Handle for renaming a caption in the OI for some menuitem to rename also a
+  // propriet designermenuitem
   GlobalDesignHook.AddHandlerModified(@OnComponentModified);
 
   new(Root);
@@ -282,6 +283,7 @@ end;
 
 destructor TDesignerMainMenu.Destroy;
 begin
+  GlobalDesignHook.RemoveAllHandlersForObject(Self);
   Dispose(Root);
   inherited Destroy;
 end;
