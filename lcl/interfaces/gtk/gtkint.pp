@@ -230,7 +230,7 @@ type
 
     // listview
     procedure ListViewChangeItem(TheListView: TObject; Index: integer);
-    procedure ListViewAddItem(TheListView: TObject);
+    procedure ListViewAddItem(TheListView: TObject; Index: Integer);
 
     // listbox
     function GetTopIndex(Sender: TObject): integer;virtual;
@@ -457,6 +457,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.175  2004/03/18 22:35:52  mattias
+  improved TCustomListView.ItemAdded with an Index param  from Andrew
+
   Revision 1.174  2004/03/17 19:59:56  marc
   * Fixes some typos and changes uses clause cases
 

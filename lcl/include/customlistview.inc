@@ -228,7 +228,7 @@ End;
 {------------------------------------------------------------------------------}
 {   TCustomListView ItemAdded                                                  }
 {------------------------------------------------------------------------------}
-Procedure TCustomListView.ItemAdded;
+Procedure TCustomListView.ItemAdded(Index: Integer);
 Begin
   if csDestroying in Componentstate Then Exit;
   if FUpdateCount>0 then
@@ -236,7 +236,7 @@ Begin
   else begin
     //notify the interface....
     if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    CNSendMessage(LM_LV_ADDITEM,self,nil);
+    CNSendMessage(LM_LV_ADDITEM,self,@Index);
   end;
 End;
 
@@ -565,6 +565,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2004/03/18 22:35:52  mattias
+  improved TCustomListView.ItemAdded with an Index param  from Andrew
+
   Revision 1.30  2004/03/06 18:44:06  mattias
   workaround for fpc bug 2859
 

@@ -2825,9 +2825,9 @@ end;
 {$EndIf}
 
 {------------------------------------------------------------------------------
-  procedure TGtkWidgetSet.ListViewAddItem(TheListView: TObject);
+  procedure TGtkWidgetSet.ListViewAddItem(TheListView: TObject;Index: Integer);
 ------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.ListViewAddItem(TheListView: TObject);
+procedure TGtkWidgetSet.ListViewAddItem(TheListView: TObject; Index: Integer);
 {$IfDef GTK2}
 begin
   Writeln('TODO: TGtkWidgetSet.ListViewAddItem');
@@ -2850,7 +2850,10 @@ begin
   GetMem(Titles,SizeOf(PGChar)*Count);
   Titles[0]:=#0;
   for i:=1 to Count-1 do Titles[i]:=nil;
-  gtk_clist_append(ListViewWidget,Titles);
+  if Index = -1 then
+    gtk_clist_append(ListViewWidget,Titles)
+  else
+    gtk_clist_insert(ListViewWidget,Index,Titles);
   FreeMem(Titles);
 end;
 {$EndIf}
@@ -3110,8 +3113,20 @@ begin
       LM_LV_ADDITEM :
       if (Sender is TListView) then
       begin
-        ListViewAddItem(Sender);
-        ListViewChangeItem(Sender,TListView(Sender).Items.Count-1);
+        if data <> nil then begin
+          if Integer(data^) < 0 then begin
+            ListViewAddItem(Sender, -1);
+            ListViewChangeItem(Sender,TListView(Sender).Items.Count-1);
+          end
+          else begin
+            ListViewAddItem(Sender,Integer(data^));
+            ListViewChangeItem(Sender,Integer(data^));
+          end;
+        end
+        else begin
+          ListViewAddItem(Sender,Integer(data^));
+          ListViewChangeItem(Sender,Integer(data^));
+        end;
       end;
 
       LM_LV_SELECTITEM:
@@ -9282,6 +9297,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.481  2004/03/18 22:35:53  mattias
+  improved TCustomListView.ItemAdded with an Index param  from Andrew
+
   Revision 1.480  2004/03/18 00:55:56  mattias
   fixed memleak in gtk opendlg
 

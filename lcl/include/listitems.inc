@@ -60,7 +60,7 @@ begin
   Result := TListItem.Create(self);
   FItems.Add(Result);
   //Notify parent TListView that something was added.
-  FOwner.ItemAdded;
+  FOwner.ItemAdded(-1);
 end;
 
 {------------------------------------------------------------------------------
@@ -97,8 +97,11 @@ end;
 {------------------------------------------------------------------------------}
 function TListItems.Insert(const AIndex: Integer): TListItem;
 begin
-  // ToDo
-  Result:=nil;
+  Result := TListItem.Create(self);
+  FItems.Insert(AIndex, Result);
+  //Notify parent TListView that something was added.
+  FOwner.ItemAdded(AIndex);
+
 end;
 
 {------------------------------------------------------------------------------}
@@ -247,7 +250,7 @@ begin
     Owner.EndUpdate;
 
     if Flag then
-       Owner.ItemAdded;
+       Owner.ItemAdded(-1);
   end;
 end;
 
@@ -328,6 +331,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2004/03/18 22:35:52  mattias
+  improved TCustomListView.ItemAdded with an Index param  from Andrew
+
   Revision 1.17  2003/02/24 19:00:42  mattias
   added TlistView.SubItem improvements from Olivier Guilbaud
 

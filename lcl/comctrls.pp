@@ -496,7 +496,7 @@ type
     procedure ItemChanged(Index : Integer);  //called by TListItems
     procedure ItemDeleted(Index : Integer);  //called by TListItems
     procedure ImageChanged(Sender : TObject);
-    procedure ItemAdded;  //called by TListItems
+    procedure ItemAdded(Index: Integer);  //called by TListItems
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
 //    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
@@ -2241,6 +2241,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.120  2004/03/18 22:35:52  mattias
+  improved TCustomListView.ItemAdded with an Index param  from Andrew
+
   Revision 1.119  2004/03/06 18:44:06  mattias
   workaround for fpc bug 2859
 
