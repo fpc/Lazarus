@@ -93,14 +93,23 @@ type
       SourceChangeCache: TSourceChangeCache;
       ProcNode: TCodeTreeNode;
       var Indent, InsertPos: integer);
+    function CheckLocalVarAssignmentSyntax(CleanCursorPos: integer;
+      var VarNameAtom,AssignmentOperator,TermAtom: TAtomPosition): boolean;
+    function AddLocalVariable(CleanCursorPos: integer; OldTopLine: integer;
+      VariableName, VariableType: string;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer;
+      SourceChangeCache: TSourceChangeCache): boolean;
+    procedure AdjustCursor(OldCodePos: TCodePosition; OldTopLine: integer;
+      var NewPos: TCodeXYPosition; var NewTopLine: integer);
+  protected
     property CodeCompleteClassNode: TCodeTreeNode
       read ClassNode write SetCodeCompleteClassNode;
     property CodeCompleteSrcChgCache: TSourceChangeCache
       read ASourceChangeCache write SetCodeCompleteSrcChgCache;
   public
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
-          SourceChangeCache: TSourceChangeCache): boolean; override;
-    function CompleteCode(CursorPos: TCodeXYPosition;
+        SourceChangeCache: TSourceChangeCache): boolean; override;
+    function CompleteCode(CursorPos: TCodeXYPosition; OldTopLine: integer;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
         SourceChangeCache: TSourceChangeCache): boolean;
     constructor Create;
@@ -469,6 +478,131 @@ begin
 
   RaiseException('TCodeCompletionCodeTool.FindInsertPositionForForwardProc '
    +' Internal Error: no insert position found');
+end;
+
+function TCodeCompletionCodeTool.CheckLocalVarAssignmentSyntax(
+  CleanCursorPos: integer; var VarNameAtom, AssignmentOperator,
+  TermAtom: TAtomPosition): boolean;
+begin
+  Result:=false;
+  MoveCursorToCleanPos(CleanCursorPos);
+  
+  // find variable name
+  GetIdentStartEndAtPosition(Src,CleanCursorPos,
+    VarNameAtom.StartPos,VarNameAtom.EndPos);
+  if VarNameAtom.StartPos=VarNameAtom.EndPos then exit;
+  MoveCursorToCleanPos(VarNameAtom.StartPos);
+  ReadNextAtom;
+  if AtomIsKeyWord then exit;
+  
+  // find assignment operator
+  ReadNextAtom;
+  if not AtomIs(':=') then exit;
+  AssignmentOperator:=CurPos;
+  
+  // find term
+  ReadNextAtom;
+  TermAtom.StartPos:=CurPos.StartPos;
+  TermAtom.EndPos:=FindEndOfExpression(TermAtom.StartPos);
+
+  Result:=true;
+end;
+
+function TCodeCompletionCodeTool.AddLocalVariable(
+  CleanCursorPos: integer; OldTopLine: integer;
+  VariableName, VariableType: string;
+  var NewPos: TCodeXYPosition;
+  var NewTopLine: integer; SourceChangeCache: TSourceChangeCache): boolean;
+var
+  CursorNode, ProcNode, BeginNode, VarSectionNode, VarNode: TCodeTreeNode;
+  Indent, InsertPos: integer;
+  InsertTxt: string;
+  OldCodePos: TCodePosition;
+begin
+  //writeln('TCodeCompletionCodeTool.AddLocalVariable A ');
+  Result:=false;
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  if not CleanPosToCodePos(CleanCursorPos,OldCodePos) then begin
+    RaiseException('TCodeCompletionCodeTool.AddLocalVariable Internal Error: '
+      +'CleanPosToCodePos');
+  end;
+
+  //writeln('TCodeCompletionCodeTool.AddLocalVariable A2 ',CursorNode<>nil);
+  
+  // find proc at cursor
+  ProcNode:=CursorNode;
+  while (ProcNode<>nil) and (ProcNode.Desc<>ctnProcedure) do begin
+    ProcNode:=ProcNode.Parent;
+  end;
+  if ProcNode=nil then begin
+    writeln('TCodeCompletionCodeTool.AddLocalVariable - Not in Procedure');
+    exit;
+  end;
+  
+  //writeln('TCodeCompletionCodeTool.AddLocalVariable B ');
+
+  // find main begin block of proc
+  BeginNode:=ProcNode.FirstChild;
+  while (BeginNode<>nil) and (BeginNode.Desc<>ctnBeginBlock) do
+    BeginNode:=BeginNode.NextBrother;
+  if BeginNode=nil then begin
+    writeln('TCodeCompletionCodeTool.AddLocalVariable - Procedure without Begin Block');
+    exit;
+  end;
+  
+  //writeln('TCodeCompletionCodeTool.AddLocalVariable C ');
+
+  // find last 'var' section node
+  VarSectionNode:=BeginNode;
+  while (VarSectionNode<>nil) and (VarSectionNode.Desc<>ctnVarSection) do
+    VarSectionNode:=VarSectionNode.PriorBrother;
+    
+  InsertTxt:=VariableName+':'+VariableType+';';
+  //writeln('TCodeCompletionCodeTool.AddLocalVariable C ',InsertTxt,' ');
+
+  if (VarSectionNode<>nil) and (VarSectionNode.FirstChild<>nil) then begin
+    // there is already a var section
+    // -> append variable
+    VarNode:=VarSectionNode.FirstChild;
+    Indent:=GetLineIndent(Src,VarNode.StartPos);
+    // search last variable in var section
+    while (VarNode.NextBrother<>nil) do
+      VarNode:=VarNode.NextBrother;
+    InsertPos:=FindLineEndOrCodeAfterPosition(VarNode.EndPos);
+  end else begin
+    // there is no var section yet
+    // -> create a new var section and append variable
+    InsertTxt:='var'+SourceChangeCache.BeautifyCodeOptions.LineEnd
+                +GetIndentStr(SourceChangeCache.BeautifyCodeOptions.Indent)
+                +InsertTxt;
+    Indent:=GetLineIndent(Src,BeginNode.StartPos);
+    InsertPos:=BeginNode.StartPos;
+  end;
+  
+  // insert new code
+  InsertTxt:=SourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
+                InsertTxt,Indent);
+  //writeln('TCodeCompletionCodeTool.AddLocalVariable E ',InsertTxt,' ');
+  SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,InsertTxt);
+  if not SourceChangeCache.Apply then exit;
+
+  // adjust cursor position
+  AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
+
+  Result:=true;
+end;
+
+procedure TCodeCompletionCodeTool.AdjustCursor(OldCodePos: TCodePosition;
+  OldTopLine: integer; var NewPos: TCodeXYPosition; var NewTopLine: integer);
+begin
+  OldCodePos.Code.AdjustPosition(OldCodePos.P);
+  NewPos.Code:=OldCodePos.Code;
+  OldCodePos.Code.AbsoluteToLineCol(OldCodePos.P,NewPos.Y,NewPos.X);
+  NewTopLine:=NewPos.Y-VisibleEditorLines+1;
+  if NewTopLine<1 then NewTopLine:=1;
+  if NewTopLine<OldTopLine then
+    NewTopLine:=OldTopLine;
+  //writeln('TCodeCompletionCodeTool.AdjustCursor END NewPos: Line=',NewPos.Y,' Col=',NewPos.X,' NewTopLine=',NewTopLine);
 end;
 
 function TCodeCompletionCodeTool.AddPublishedVariable(const UpperClassName,
@@ -1709,7 +1843,7 @@ begin
 end;
 
 function TCodeCompletionCodeTool.CompleteCode(CursorPos: TCodeXYPosition;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer;
+  OldTopLine: integer; var NewPos: TCodeXYPosition; var NewTopLine: integer;
   SourceChangeCache: TSourceChangeCache): boolean;
 var CleanCursorPos, Indent, insertPos: integer;
   CursorNode, ProcNode, ImplementationNode, SectionNode, AClassNode,
@@ -1717,6 +1851,8 @@ var CleanCursorPos, Indent, insertPos: integer;
   ProcCode: string;
 
   procedure CompleteClass;
+  var
+    OldCodePos: TCodePosition;
   begin
     {$IFDEF CTDEBUG}
     writeln('TCodeCompletionCodeTool.CompleteCode In-a-class ',NodeDescriptionAsString(AClassNode.Desc));
@@ -1767,6 +1903,8 @@ var CleanCursorPos, Indent, insertPos: integer;
       writeln('TCodeCompletionCodeTool.CompleteCode Apply ... ');
       {$ENDIF}
       // apply the changes and jump to first new proc body
+      if not CleanPosToCodePos(CleanCursorPos,OldCodePos) then
+        RaiseException('TCodeCompletionCodeTool.CompleteCode Internal Error CleanPosToCodePos');
       if not SourceChangeCache.Apply then
         RaiseException(ctsUnableToApplyChanges);
 
@@ -1803,10 +1941,7 @@ var CleanCursorPos, Indent, insertPos: integer;
         {$ENDIF}
         // there was no new proc body
         // -> adjust cursor
-        NewPos:=CursorPos;
-        NewPos.Code.AdjustCursor(NewPos.Y,NewPos.X);
-        NewTopLine:=NewPos.Y-(VisibleEditorLines div 2);
-        if NewTopLine<1 then NewTopLine:=1;
+        AdjustCursor(OldCodePos,OldTopLine,NewPos,NewTopLine);
         Result:=true;
       end;
 
@@ -2146,19 +2281,69 @@ var CleanCursorPos, Indent, insertPos: integer;
     CompleteCode:=true;
   end;
   
-  function IsNonExistingIdentAssignment: boolean;
+  function IsLocalVariableAssignment: boolean;
+  var
+    VarNameAtom, AssignmentOperator, TermAtom: TAtomPosition;
+    NewType: string;
+    Params: TFindDeclarationParams;
   begin
     Result:=false;
 
     {$IFDEF CTDEBUG}
-    writeln('  IsEventAssignment: IsNonExistingIdentAssignment...');
+    writeln('  IsLocalVariableAssignment: A');
+    {$ENDIF}
+    if not ((CursorNode.Desc=ctnBeginBlock)
+            or CursorNode.HasParentOfType(ctnBeginBlock)) then exit;
+    if CursorNode.Desc=ctnBeginBlock then
+      BuildSubTreeForBeginBlock(CursorNode);
+    CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+
+    {$IFDEF CTDEBUG}
+    writeln('  IsLocalVariableAssignment: B CheckLocalVarAssignmentSyntax ...');
     {$ENDIF}
     // check assigment syntax
-    {if not CheckLocalVarAssignmentSyntax(VarNameAtom, AssignmentOperator,
-      TermAtom)
+    if not CheckLocalVarAssignmentSyntax(CleanCursorPos,
+      VarNameAtom,AssignmentOperator,TermAtom)
     then
-      exit;}
+      exit;
 
+    // search variable
+    ActivateGlobalWriteLock;
+    Params:=TFindDeclarationParams.Create;
+    try
+      {$IFDEF CTDEBUG}
+      writeln('  IsLocalVariableAssignment: check if variable is already defined ...');
+      {$ENDIF}
+      // check if identifier exists
+      Result:=IdentifierIsDefined(VarNameAtom,CursorNode,Params);
+      if Result then begin
+        MoveCursorToCleanPos(VarNameAtom.StartPos);
+        ReadNextAtom;
+        RaiseExceptionFmt(ctsIdentifierAlreadyDefined,[GetAtom]);
+      end;
+
+      {$IFDEF CTDEBUG}
+      writeln('  IsLocalVariableAssignment: Find type of term... ');
+      {$ENDIF}
+      // find type of term
+      NewType:=FindTermTypeAsString(TermAtom,CursorNode,Params);
+      if NewType='' then
+        RaiseException('IsLocalVariableAssignment Internal error: NewType=""');
+
+    finally
+      Params.Free;
+      DeactivateGlobalWriteLock;
+    end;
+    
+    // all needed parameters found
+    Result:=true;
+
+    // add local variable
+    if not AddLocalVariable(CleanCursorPos, OldTopLine,
+      GetAtom(VarNameAtom), NewType,
+      NewPos, NewTopLine, SourceChangeCache)
+    then
+      RaiseException('IsLocalVariableAssignment Internal error: AddLocalVariable');
   end;
   
 // function CompleteCode(CursorPos: TCodeXYPosition;
@@ -2202,10 +2387,12 @@ begin
   end;
   
   // test if Event assignment
-  if IsEventAssignment then exit;
+  Result:=IsEventAssignment;
+  if Result then exit;
   
   // test if Local variable assignment
-  if IsNonExistingIdentAssignment then exit;
+  Result:=IsLocalVariableAssignment;
+  if Result then exit;
 
   {$IFDEF CTDEBUG}
   writeln('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');
