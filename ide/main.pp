@@ -867,7 +867,6 @@ procedure TMainIDE.SetupSpeedButtons;
       if mfLeft in AMoveFlags then Inc(ALeft, Width);
       Hint := AHint;
       OnMouseMove := @MainMouseMoved;
-      Visible := True;
     end;
   end;
 var
@@ -884,7 +883,6 @@ begin
     Caption:= '';
     BevelWidth:=1;
     BevelOuter:=bvRaised;
-    Visible := True;
   end;
 
 
@@ -971,12 +969,10 @@ begin
       begin
         Parent := ComponentNotebook.Page[PageCount];
         Parent.OnMouseMove := @MainMouseMoved;  //this is for the hints
-        Enabled := True;
         Width := ComponentPaletteBtnWidth;
         Height := ComponentPaletteBtnHeight;
         OnClick := @ControlClick;
         Glyph := SelectionPointerPixmap;
-        Visible := True;
         Flat := True;
         GroupIndex:= 1;
         Down := True;
@@ -7291,6 +7287,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.408  2002/10/09 20:08:39  lazarus
+  Cleanups
+
   Revision 1.407  2002/10/09 12:27:44  lazarus
   MG: fixed maxdist of guidelines
 
