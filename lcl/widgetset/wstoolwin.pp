@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                               wstoolwin.pp                                * 
+ *                               WSToolwin.pp                                * 
  *                               ------------                                * 
  *                                                                           *
  *                                                                           *
@@ -20,7 +20,7 @@
  *                                                                           *
  *****************************************************************************
 }
-unit WSToolWin;
+unit WSToolwin;
 
 {$mode objfpc}{$H+}
 
@@ -31,11 +31,11 @@ uses
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
 // To get as little as posible circles,
-// Uncomment only when needed for registration
+// uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  toolwin,
+//  Toolwin,
 ////////////////////////////////////////////////////
-  wslclclasses, wscontrols;
+  WSLCLClasses, WSControls;
 
 type
 

@@ -151,32 +151,33 @@ Uses
 // I M P O R T A N T
 ////////////////////////////////////////////////////
 // To get as litle as posible circles,
-// Uncomment only those units with implementation
+// uncomment only those units with implementation
 ////////////////////////////////////////////////////
-// win32wsactnlist,
-// win32wsarrow,
-// win32wsbuttons,
-// win32wscalendar,
-// win32wschecklst,
-// win32wscomctrls,
-// win32wscontrols,
-// win32wsdbctrls,
-// win32wsdbgrids,
-// win32wsdialogs,
-// win32wsdirsel,
-// win32wseditbtn,
-// win32wsextctrls,
-// win32wsextdlgs,
-// win32wsfilectrl,
-// win32wsforms,
-// win32wsgrids,
-// win32wsimglist,
-// win32wsmaskedit,
-// win32wsmenus,
-// win32wspairsplitter,
-// win32wsspin,
-// win32wsstdctrls,
-// win32wstoolwin,
+// Win32WSActnList,
+// Win32WSArrow,
+// Win32WSButtons,
+// Win32WSCalendar,
+// Win32WSCheckLst,
+// Win32WSCListBox,
+// Win32WSComCtrls,
+// Win32WSControls,
+// Win32WSDbCtrls,
+// Win32WSDBGrids,
+// Win32WSDialogs,
+// Win32WSDirSel,
+// Win32WSEditBtn,
+// Win32WSExtCtrls,
+// Win32WSExtDlgs,
+// Win32WSFileCtrl,
+// Win32WSForms,
+// Win32WSGrids,
+// Win32WSImgList,
+// Win32WSMaskEdit,
+// Win32WSMenus,
+// Win32WSPairSplitter,
+// Win32WSSpin,
+// Win32WSStdCtrls,
+// Win32WSToolwin,
 ////////////////////////////////////////////////////
   Arrow, Buttons, Calendar, CListBox, Spin, CheckLst, WinExt;
 
@@ -222,6 +223,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.73  2004/03/17 19:59:56  marc
+  * Fixes some typos and changes uses clause cases
+
   Revision 1.72  2004/03/17 00:34:37  marc
   * Interface reconstruction. Created skeleton units, classes and wscontrols
 

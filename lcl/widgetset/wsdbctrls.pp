@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                               wsdbctrls.pp                                * 
+ *                               WSDbCtrls.pp                                * 
  *                               ------------                                * 
  *                                                                           *
  *                                                                           *
@@ -20,9 +20,9 @@
  *                                                                           *
  *****************************************************************************
 }
-unit wsdbctrls;
+unit WSDbCtrls;
 
-{$mode objfpc}{H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -30,13 +30,13 @@ uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
-// To get as litle as posible circles,
-// Uncomment only when needed for registration
+// To get as little as posible circles,
+// uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  dbctrls,
+//  DbCtrls,
 ////////////////////////////////////////////////////
-  wslclclasses, wsmaskedit, wsstdctrls, wsextctrls,
-  wscalendar, wsbuttons;
+  WSLCLClasses, WSMaskEdit, WSStdCtrls, WSExtCtrls,
+  WSCalendar, WSButtons;
 
 type
 

@@ -329,33 +329,33 @@ uses
 // I M P O R T A N T
 ////////////////////////////////////////////////////
 // To get as litle as posible circles,
-// Uncomment only those units with implementation
+// uncomment only those units with implementation
 ////////////////////////////////////////////////////
-// gtkwsactnlist,
-// gtkwsarrow,
-// gtkwsbuttons,
-// gtkwscalendar,
-// gtkwschecklst,
-// gtkwsclistbox,
-// gtkwscomctrls,
-// gtkwscontrols,
-// gtkwsdbctrls,
-// gtkwsdbgrids,
-// gtkwsdialogs,
-// gtkwsdirsel,
-// gtkwseditbtn,
-// gtkwsextctrls,
-// gtkwsextdlgs,
-// gtkwsfilectrl,
-// gtkwsforms,
-// gtkwsgrids,
-// gtkwsimglist,
-// gtkwsmaskedit,
-// gtkwsmenus,
-// gtkwspairsplitter,
-// gtkwsspin,
-// gtkwsstdctrls,
-// gtkwstoolwin,
+// GtkWSActnList,
+// GtkWSArrow,
+// GtkWSButtons,
+// GtkWSCalendar,
+// GtkWSCheckLst,
+// GtkWSCListBox,
+// GtkWSComCtrls,
+// GtkWSControls,
+// GtkWSDbCtrls,
+// GtkWSDBGrids,
+// GtkWSDialogs,
+// GtkWSDirSel,
+// GtkWSEditBtn,
+// GtkWSExtCtrls,
+// GtkWSExtDlgs,
+// GtkWSFileCtrl,
+// GtkWSForms,
+// GtkWSGrids,
+// GtkWSImgList,
+// GtkWSMaskEdit,
+// GtkWSMenus,
+// GtkWSPairSplitter,
+// GtkWSSpin,
+// GtkWSStdCtrls,
+// GtkWSToolwin,
 ////////////////////////////////////////////////////
   Buttons, StdCtrls, PairSplitter, Math,
   GTKWinApiWindow, ComCtrls, CListBox, Calendar, Arrow, Spin, CommCtrl,
@@ -457,6 +457,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.174  2004/03/17 19:59:56  marc
+  * Fixes some typos and changes uses clause cases
+
   Revision 1.173  2004/03/17 00:34:37  marc
   * Interface reconstruction. Created skeleton units, classes and wscontrols
 

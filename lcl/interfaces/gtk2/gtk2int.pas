@@ -135,33 +135,33 @@ uses
 // I M P O R T A N T
 ////////////////////////////////////////////////////
 // To get as litle as posible circles,
-// Uncomment only those units with implementation
+// uncomment only those units with implementation
 ////////////////////////////////////////////////////
-// gtk2wsactnlist,
-// gtk2wsarrow,
-// gtk2wsbuttons,
-// gtk2wscalendar,
-// gtk2wschecklst,
-// gtk2wsclistbox,
-// gtk2wscomctrls,
-// gtk2wscontrols,
-// gtk2wsdbctrls,
-// gtk2wsdbgrids,
-// gtk2wsdialogs,
-// gtk2wsdirsel,
-// gtk2wseditbtn,
-// gtk2wsextctrls,
-// gtk2wsextdlgs,
-// gtk2wsfilectrl,
-// gtk2wsforms,
-// gtk2wsgrids,
-// gtk2wsimglist,
-// gtk2wsmaskedit,
-// gtk2wsmenus,
-// gtk2wspairsplitter,
-// gtk2wsspin,
-// gtk2wsstdctrls,
-// gtk2wstoolwin,
+// Gtk2WSActnList,
+// Gtk2WSArrow,
+// Gtk2WSButtons,
+// Gtk2WSCalendar,
+// Gtk2WSCheckLst,
+// Gtk2WSCListBox,
+// Gtk2WSComCtrls,
+// Gtk2WSControls,
+// Gtk2WSDbCtrls,
+// Gtk2WSDBGrids,
+// Gtk2WSDialogs,
+// Gtk2WSDirSel,
+// Gtk2WSEditBtn,
+// Gtk2WSExtCtrls,
+// Gtk2WSExtDlgs,
+// Gtk2WSFileCtrl,
+// Gtk2WSForms,
+// Gtk2WSGrids,
+// Gtk2WSImgList,
+// Gtk2WSMaskEdit,
+// Gtk2WSMenus,
+// Gtk2WSPairSplitter,
+// Gtk2WSSpin,
+// Gtk2WSStdCtrls,
+// Gtk2WSToolwin,
 ////////////////////////////////////////////////////
   gtkProc;
 
@@ -596,6 +596,9 @@ end.
 
 {
   $Log$
+  Revision 1.32  2004/03/17 19:59:56  marc
+  * Fixes some typos and changes uses clause cases
+
   Revision 1.31  2004/03/17 00:34:37  marc
   * Interface reconstruction. Created skeleton units, classes and wscontrols
 

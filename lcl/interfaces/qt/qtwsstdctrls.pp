@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                              qtwsstdctrls.pp                              * 
+ *                              QtWSStdCtrls.pp                              * 
  *                              ---------------                              * 
  *                                                                           *
  *                                                                           *
@@ -20,9 +20,9 @@
  *                                                                           *
  *****************************************************************************
 }
-unit qtwsstdctrls;
+unit QtWSStdCtrls;
 
-{$mode objfpc}{H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -30,12 +30,12 @@ uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
-// To get as litle as posible circles,
-// Uncomment only when needed for registration
+// To get as little as posible circles,
+// uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  stdctrls,
+//  StdCtrls,
 ////////////////////////////////////////////////////
-  wsstdctrls, wslclclasses;
+  WSStdCtrls, WSLCLClasses;
 
 type
 

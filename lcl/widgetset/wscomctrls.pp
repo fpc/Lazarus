@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                               wscomctrls.pp                               * 
+ *                               WSComCtrls.pp                               * 
  *                               -------------                               * 
  *                                                                           *
  *                                                                           *
@@ -20,9 +20,9 @@
  *                                                                           *
  *****************************************************************************
 }
-unit wscomctrls;
+unit WSComCtrls;
 
-{$mode objfpc}{H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -30,13 +30,13 @@ uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
-// To get as litle as posible circles,
-// Uncomment only when needed for registration
+// To get as little as posible circles,
+// uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  comctrls,
+//  ComCtrls,
 ////////////////////////////////////////////////////
-  wslclclasses, wscontrols, wsextctrls, wsstdctrls,
-  wstoolwin;
+  WSLCLClasses, WSControls, WSExtCtrls, WSStdCtrls,
+  WSToolwin;
 
 type
 

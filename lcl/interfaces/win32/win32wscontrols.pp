@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                            win32wscontrols.pp                             * 
+ *                            Win32WSControls.pp                             * 
  *                            ------------------                             * 
  *                                                                           *
  *                                                                           *
@@ -20,9 +20,9 @@
  *                                                                           *
  *****************************************************************************
 }
-unit win32wscontrols;
+unit Win32WSControls;
 
-{$mode objfpc}{H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -30,12 +30,12 @@ uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
-// To get as litle as posible circles,
-// Uncomment only when needed for registration
+// To get as little as posible circles,
+// uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  controls,
+//  Controls,
 ////////////////////////////////////////////////////
-  wscontrols, wslclclasses;
+  WSControls, WSLCLClasses;
 
 type
 

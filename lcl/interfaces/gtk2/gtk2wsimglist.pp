@@ -1,7 +1,7 @@
 { $Id$}
 {
  *****************************************************************************
- *                             gtk2wsimglist.pp                              * 
+ *                             Gtk2WSImgList.pp                              * 
  *                             ----------------                              * 
  *                                                                           *
  *                                                                           *
@@ -20,9 +20,9 @@
  *                                                                           *
  *****************************************************************************
 }
-unit gtk2wsimglist;
+unit Gtk2WSImgList;
 
-{$mode objfpc}{H+}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -30,12 +30,12 @@ uses
 ////////////////////////////////////////////////////
 // I M P O R T A N T                                
 ////////////////////////////////////////////////////
-// To get as litle as posible circles,
-// Uncomment only when needed for registration
+// To get as little as posible circles,
+// uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  imglist,
+//  ImgList,
 ////////////////////////////////////////////////////
-  wsimglist, wslclclasses;
+  WSImgList, WSLCLClasses;
 
 type
 
