@@ -1,0 +1,45 @@
+#   $Id$
+#
+#   Makefile.fpc for Lazarus for Free Pascal
+#
+
+[package]
+name=lazarus/htmllite
+version=0.8a
+
+[compiler]
+unitdir=../../lcl/units/$(LCL_PLATFORM) ../../lcl/units .
+options=-gl -dHL_LAZARUS
+
+[target]
+units=htmllite
+implicitunits=htmllite litepars litesubs litedith litegif2 litereadthd liteun2 \
+  litesbs1
+
+[clean]
+files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
+[require]
+packages=fcl
+
+[default]
+lcldir=../../lcl
+
+[prerules]
+# LCL Platform
+ifndef LCL_PLATFORM
+ifeq ($(OS_TARGET),win32)
+LCL_PLATFORM=win32
+else
+LCL_PLATFORM=gtk
+endif
+endif
+export LCL_PLATFORM
+
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) htmllite$(PPUEXT)
+
+all: cleartarget htmllite$(PPUEXT)

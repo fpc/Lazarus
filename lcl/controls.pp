@@ -959,9 +959,9 @@ type
     FCanvas: TCanvas;
   protected
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
+  public
     Procedure Paint; virtual;
     property Canvas: TCanvas read FCanvas write FCanvas;
-  public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
   end;
@@ -1436,6 +1436,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.99  2002/12/27 18:18:05  mattias
+  fixes for htmllite
+
   Revision 1.98  2002/12/27 17:46:04  mattias
   fixed SetColor
 
