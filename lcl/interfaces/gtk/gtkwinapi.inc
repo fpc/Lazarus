@@ -3919,8 +3919,14 @@ function TgtkObject.GetDeviceRawImageDescription(DC: HDC;
 var
   Visual: PGdkVisual;
   Width, Height: integer;
+  Image: PGdkImage;
 begin
   Result := false;
+  if Desc=nil then begin
+    RaiseGDBException('TgtkObject.GetDeviceRawImageDescription');
+    exit;
+  end;
+  
   Visual:=nil;
   If IsValidDC(DC) then
     with TDeviceContext(DC) do begin
@@ -3934,11 +3940,10 @@ begin
   end;
     
 
-  FillChar(Desc,SizeOf(TRawImageDescription),0);
+  FillChar(Desc^,SizeOf(TRawImageDescription),0);
   
   // Format
   case Visual^.thetype of
-
   GDK_VISUAL_STATIC_GRAY:  Desc^.Format:=ricfGray;
   GDK_VISUAL_GRAYSCALE:    Desc^.Format:=ricfPalette;
   GDK_VISUAL_STATIC_COLOR: Desc^.Format:=ricfPalette;
@@ -3965,9 +3970,19 @@ begin
   // ColorCount
   Desc^.ColorCount:=0;
   // BitsPerPixel
-  Desc^.BitsPerPixel:=Visual^.bits_per_rgb;
+  case Desc^.Depth of
+  0..8:   Desc^.BitsPerPixel:=8;
+  9..16:  Desc^.BitsPerPixel:=16;
+  17..32: Desc^.BitsPerPixel:=32;
+  else    Desc^.BitsPerPixel:=64;
+  end;
   // LineEnd
-  Desc^.LineEnd:=rileByteBoundary;
+  case Desc^.Depth of
+  0..8:   Desc^.LineEnd:=rileByteBoundary;
+  9..16:  Desc^.LineEnd:=rileWordBoundary;
+  17..32: Desc^.LineEnd:=rileDWordBoundary;
+  else    Desc^.LineEnd:=rileQWordBoundary;
+  end;
   // Precisions and Shifts
   Desc^.RedPrec:=Visual^.red_prec;
   Desc^.RedShift:=Visual^.red_shift;
@@ -3979,8 +3994,47 @@ begin
   Desc^.AlphaShift:=0;
   // AlphaBitsPerPixel and AlphaLineEnd
   Desc^.AlphaBitsPerPixel:=Desc^.AlphaPrec;
-  Desc^.AlphaLineEnd:=rileByteBoundary;
-  
+  Desc^.AlphaLineEnd:=rileDWordBoundary;
+
+  with Desc^ do begin
+    writeln('TgtkObject.GetDeviceRawImageDescription A ',
+      ' Format=',ord(Format),
+      ' Depth=',Depth,
+      ' Width=',Width,
+      ' Height=',Height,
+      ' ByteOrder=',ord(ByteOrder),
+      ' LineOrder=',ord(LineOrder),
+      ' ColorCount=',ColorCount,
+      ' BitsPerPixel=',BitsPerPixel,
+      ' LineEnd=',ord(LineEnd),
+      ' RedPrec=',RedPrec,
+      ' RedShift=',RedShift,
+      ' GreenPrec=',GreenPrec,
+      ' GreenShift=',GreenShift,
+      ' BluePrec=',BluePrec,
+      ' BlueShift=',BlueShift,
+      ' AlphaPrec=',AlphaPrec,
+      ' AlphaShift=',AlphaShift,
+      ' AlphaBitsPerPixel=',AlphaBitsPerPixel,
+      ' AlphaLineEnd=',ord(AlphaLineEnd),
+    '');
+  end;
+
+  If IsValidDC(DC) then
+    If TDeviceContext(DC).Drawable <> nil then begin
+      Image:=gdk_image_get(PGdkWindow(TDeviceContext(DC).Drawable),0,0,10,10);
+      with Image^ do begin
+        writeln('TgtkObject.GetDeviceRawImageDescription B ',
+         ' byte_order=',byte_order,
+         ' width=',width,
+         ' height=',height,
+         ' depth=',depth,
+         ' bpp=',bpp,
+         ' bpl=',bpl,
+         '');
+      end;
+    end;
+
   Result:=true;
 end;
 
@@ -8589,6 +8643,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.254  2003/07/01 13:49:36  mattias
+  clean up
+
   Revision 1.253  2003/07/01 09:29:51  mattias
   attaching menuitems topdown
 

@@ -418,16 +418,7 @@ end;
 procedure TCustomForm.WMPaint(var Message: TLMPaint);
 begin
 //writeln('[TCustomForm.WMPaint] ',Name,':',ClassName);
-  Assert(False, Format('Trace: [TCustomForm.LMPaint] %s', [ClassName]));
-  
-  Include(FControlState, csCustomPaint);
-  try
-    ControlState := ControlState + [csCustomPaint];
-    inherited WMPaint(Message);
-    ControlState := ControlState - [csCustomPaint];
-  finally
-    Exclude(FControlState, csCustomPaint);
-  end;
+  inherited WMPaint(Message);
 //writeln('[TCustomForm.WMPaint] END ',Name,':',ClassName);
 end;
 
@@ -1432,6 +1423,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.108  2003/07/01 13:49:36  mattias
+  clean up
+
   Revision 1.107  2003/06/30 07:00:18  mattias
   activated EraseBckGrd messages in doublebuffer WMPaint section
 

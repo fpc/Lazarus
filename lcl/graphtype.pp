@@ -156,6 +156,7 @@ type
   
   TBevelCut = (bvNone, bvLowered, bvRaised);
 
+  { For Delphi compatibility }
   TPixelFormat = (
     pfDevice,
     pf1bit,
@@ -224,7 +225,7 @@ type
     BlueShift: cardinal;
     AlphaPrec: cardinal;
     AlphaShift: cardinal;
-    // The next values are only valid if there is a separate alpha mask
+    // The next values are only valid, if there is a separate alpha mask
     AlphaBitsPerPixel: cardinal; // bits per alpha mask pixel.
     AlphaLineEnd: TRawImageLineEnd;
   end;
@@ -237,6 +238,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2003/07/01 13:49:36  mattias
+  clean up
+
   Revision 1.12  2003/07/01 09:29:51  mattias
   attaching menuitems topdown
 

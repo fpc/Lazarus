@@ -66,9 +66,7 @@ procedure TScrollingWinControl.WMPaint(var Message: TLMPaint);
 begin
   Include(FControlState, csCustomPaint);
   try
-    ControlState := ControlState + [csCustomPaint];
     inherited WMPaint(Message);
-    ControlState := ControlState - [csCustomPaint];
   finally
     Exclude(FControlState, csCustomPaint);
   end;
