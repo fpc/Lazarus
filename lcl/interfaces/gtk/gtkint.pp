@@ -171,6 +171,7 @@ type
     // listbox
     function GetTopIndex(Sender: TObject): integer;
     function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer;
+    function GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
 
     // forms and dialogs
     procedure BringFormToFront(Sender: TObject);
@@ -337,6 +338,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.126  2003/04/29 13:35:39  mattias
+  improved configure build lazarus dialog
+
   Revision 1.125  2003/04/08 00:09:03  mattias
   added LM_APPENDTEXT from hernan
 
