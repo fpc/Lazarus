@@ -38,7 +38,8 @@ uses
   Splash,
   Main,
   MsgView,
-  FindReplaceDialog;
+  FindReplaceDialog,
+  FindInFilesDlg;
 
 begin
   Application.Initialize;
@@ -57,6 +58,7 @@ CheckHeap('TMainIDE created');
 {$ENDIF}
   Application.CreateForm(TMessagesView, MessagesView);
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
+  Application.CreateForm(TLazFindInFilesDialog, FindInFilesDialog);
   SplashForm.StartTimer;
   Application.Run;
   SplashForm.Free;
@@ -67,6 +69,9 @@ end.
 
 {
   $Log$
+  Revision 1.24  2001/11/06 16:42:23  lazarus
+  MG: added facade for find in files
+
   Revision 1.23  2001/10/26 20:36:48  lazarus
   Added an OnSelectionChanged event in Main.pp fired by MSgView dialog.  This fires when the ListBox gets clicked on.
   This allows the editor to highlight different lines when you click on different error messages.

@@ -99,6 +99,7 @@ ide/compreg.pp svneol=native#text/pascal
 ide/customformeditor.pp svneol=native#text/pascal
 ide/editoroptions.pp svneol=native#text/pascal
 ide/environmentopts.pp svneol=native#text/pascal
+ide/findinfilesdlg.pas svneol=native#text/pascal
 ide/findreplacedialog.pp svneol=native#text/pascal
 ide/formeditor.pp svneol=native#text/pascal
 ide/global.inc svneol=native#text/pascal

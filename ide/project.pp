@@ -1023,7 +1023,6 @@ begin
   Clear;
 
   ProjectInfoFile:=LPIFilename;
-writeln('TProject.ReadProject A');
   try
     xmlconfig := TXMLConfig.Create(ProjectInfoFile);
   except
@@ -1032,7 +1031,6 @@ writeln('TProject.ReadProject A');
     Result:=mrCancel;
     exit;
   end;
-writeln('TProject.ReadProject B');
 
   try
     ProjectType := ProjectTypeNameToType(xmlconfig.GetValue(
@@ -1506,8 +1504,8 @@ end.
 
 {
   $Log$
-  Revision 1.37  2001/11/06 16:21:05  lazarus
-  MG: fixed run parameter saving
+  Revision 1.38  2001/11/06 16:42:23  lazarus
+  MG: added facade for find in files
 
   Revision 1.36  2001/11/06 15:47:32  lazarus
   MG: added build all

@@ -38,7 +38,7 @@ uses
   FindReplaceDialog, EditorOptions, CustomFormEditor, KeyMapping, StdCtrls,
   Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
-  SynEditKeyCmds,SynCompletion, Graphics, Extctrls, Menus, Splash;
+  SynEditKeyCmds,SynCompletion, Graphics, Extctrls, Menus, Splash, FindInFilesDlg;
 
 type
   // --------------------------------------------------------------------------
@@ -2369,13 +2369,14 @@ End;
 
 Procedure TSourceNotebook.FindInFilesClicked(Sender : TObject);
 Begin
-  Application.MessageBox('If You can help us implement this feature, mail to'#13
-     +'lazarus@miraclec.com','Not implemented yet',mb_IconInformation+mb_OK);
-  
-{  MessageDlg('Not implemented yet',
-    'If you can help us to implement this feature, mail to'#13
-   +'lazarus@miraclec.com', mtInformation,[mbCancel],0);
-   }
+  if MessageDlg('Not implemented yet',
+    'If You can help us to implement this feature, mail to'#13
+   +'lazarus@miraclec.com', mtInformation,[mbOk,mbCancel],0)=mrCancel then exit;
+  if FindInFilesDialog.ShowModal=mrOk then begin
+    MessageDlg('I told You: Not implemented yet',
+      'If You can help us to implement this feature, mail to'#13
+     +'lazarus@miraclec.com', mtInformation,[mbOk,mbCancel],0);
+  end;
 End;
 
 Procedure TSourceNotebook.BookMarkClicked(Sender : TObject);
