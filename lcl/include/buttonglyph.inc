@@ -38,12 +38,13 @@ Function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
 var
   gWidth : integer;
   gHeight : integer;
+  DestRect: TRect;
 begin
   // for default assume only 1 glyph
 
   gWidth := TPixMap(FOriginal).Width;
   gHeight := TPixMap(FOriginal).Height;
-  Result := Rect(0, 0, gWidth - 1, gHeight - 1);
+  Result := Rect(0, 0, gWidth, gHeight);
 
   if NumGlyphs > 1 then
   begin
@@ -60,8 +61,13 @@ begin
         Result := Rect(0, 0, gWidth - 1, gHeight - 1);
   end;
 
+  DestRect:=Client;
+  inc(DestRect.Left,Offset.X);
+  inc(DestRect.Right,Offset.X);
+  inc(DestRect.Top,Offset.Y);
+  inc(DestRect.Bottom,Offset.Y);
   if not Transparent then
-    Canvas.Copyrect(Client, TPixmap(FOriginal).Canvas, Result)
+    Canvas.Copyrect(DestRect, TPixmap(FOriginal).Canvas, Result)
   else
     ;    
 end;

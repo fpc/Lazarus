@@ -290,6 +290,10 @@ begin
     Offset.X := 0;
     Offset.Y := 0;
   end;
+  inc(Offset.X,(PaintRect.Right-PaintRect.Left
+                -TButtonGlyph(FGlyph).Glyph.Width) div 2);
+  inc(Offset.Y,(PaintRect.Bottom-PaintRect.Top
+                -TButtonGlyph(FGlyph).Glyph.Height) div 2);
 
   //this needs to be done yet.
   Assert(False,'Trace:TODO: DRAWTEXTBIDIMODEFLAGS');
@@ -522,6 +526,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/07/03 10:30:32  lazarus
+  MG: speedbuttonglyph centered, buttonglyph border fixed
+
   Revision 1.8  2001/06/14 14:57:58  lazarus
   MG: small bugfixes and less notes
 
