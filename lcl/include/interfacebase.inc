@@ -971,8 +971,8 @@ begin
   Result := false;
 end;
 
-function TInterfaceBase.PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; 
-  lParam: LongInt): Boolean;
+function TInterfaceBase.PostMessage(Handle: HWND; Msg: Cardinal;
+  wParam: LongInt; lParam: LongInt): Boolean;
 begin
   Result := False;
 end;
@@ -1219,6 +1219,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.43  2002/08/28 09:40:49  lazarus
+  MG: reduced paint messages and DC getting/releasing
+
   Revision 1.42  2002/08/25 13:31:35  lazarus
   MG: replaced C-style operators
 
