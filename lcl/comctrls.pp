@@ -147,8 +147,9 @@ type
     FData: Pointer;
     FImageIndex: Integer;
     FDestroying: Boolean;
-    function GetState(const AIndex: Integer): Boolean;
-    procedure SetState(const AIndex: Integer; const AState: Boolean);
+    FState:byte;//by VVI - for state (currently Selected) accumulating
+    function GetState(const AnIndex: Integer): Boolean;
+    procedure SetState(const AnIndex: Integer; const AState: Boolean);
 
     procedure SetData(const AValue: Pointer);
     procedure SetImageIndex(const AValue: Integer);
@@ -172,11 +173,14 @@ type
     property SubItems : TStrings read FSubItems write FSubItems;//SetSubItems;
     property ImageIndex : Integer read FImageIndex write SetImageIndex default -1;
   end;
-
+  
+  
+  { TListItems }
+  
   TListItems = class(TPersistent)
   private
-    FOwner : TCustomListView;
-    FItems : TList;
+    FOwner: TCustomListView;
+    FItems: TList;
     function GetCount : Integer;
     procedure ItemDeleted(const AItem: TListItem); //called by TListItem when freed
   protected
@@ -246,18 +250,23 @@ type
     constructor Create(AOwner: TCustomListView);
     function Add: TListColumn;
     property Owner: TCustomListView read FOwner;
-    property Items[const AIndex: Integer]: TListColumn read GetItem write SetItem; default;
+    property Items[const AIndex: Integer]: TListColumn
+      read GetItem write SetItem; default;
     procedure Assign(Source: TPersistent); override;
   end;
 
   TItemChange = (ctText, ctImage, ctState);
   TViewStyle = (vsList,vsReport);
 
-  TLVChangeEvent = procedure(Sender: TObject; Item: TListItem; Change: TItemChange) of object;
-  TLVColumnClickEvent = procedure(Sender: TObject; Column: TListColumn) of object;
-  TLVColumnRClickEvent = procedure(Sender: TObject; Column: TListColumn; Point: TPoint) of object;
+  TLVChangeEvent = procedure(Sender: TObject; Item: TListItem;
+                             Change: TItemChange) of object;
+  TLVColumnClickEvent = procedure(Sender: TObject;
+                                  Column: TListColumn) of object;
+  TLVColumnRClickEvent = procedure(Sender: TObject; Column: TListColumn;
+                                   Point: TPoint) of object;
   TLVDeletedEvent = procedure(Sender: TObject; Item: TListItem) of object;
-  TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem; Selected: Boolean) of object;
+  TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem;
+                                 Selected: Boolean) of object;
   
   TListViewState = (lvMultiSelect, lvUpdateNeeded);
   TListViewStates = set of TListViewState;
@@ -1699,6 +1708,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.60  2002/11/25 11:37:18  mattias
+  applied patch from Vasily
+
   Revision 1.59  2002/11/18 13:38:44  mattias
   fixed buffer overrun and added several checks
 

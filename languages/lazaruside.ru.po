@@ -1817,3 +1817,136 @@ msgstr "Заменить все"
 #: lazarusidestrconsts:dlgtargetos
 msgid "Target OS"
 msgstr "Для какой ОС"
+
+#: lazarusidestrconsts:uemfinddeclaration
+msgid "&Find Declaration"
+msgstr "&Найти описание"
+
+#: lazarusidestrconsts:uemopenfileatcursor
+msgid "&Open file at cursor"
+msgstr "&Открыть файл у курсора"
+
+#: lazarusidestrconsts:uemclosepage
+msgid "&Close Page"
+msgstr "&Закрыть страницу"
+
+#: lazarusidestrconsts:uemgotobookmark
+msgid "&Goto Bookmark"
+msgstr "&Переход по закладке"
+
+#: lazarusidestrconsts:uembookmarkn
+msgid "Bookmark "
+msgstr "Закладка "
+
+#: lazarusidestrconsts:uemsetbookmark
+msgid "&Set Bookmark"
+msgstr "&Установить закладку"
+
+#: lazarusidestrconsts:uemreadonly
+msgid "Read Only"
+msgstr "Только чтение"
+
+#: lazarusidestrconsts:uemunitinfo
+msgid "Unit Info"
+msgstr "Сведения о модуле"
+
+#: lazarusidestrconsts:uemdebugword
+msgid "Debug"
+msgstr "Отладка"
+
+#: lazarusidestrconsts:uemtogglebreakpoint
+msgid "&Toggle Breakpoint"
+msgstr "&Вкл/выкл точку останова"
+
+#: lazarusidestrconsts:uemaddwatchatcursor
+msgid "&Add Watch At Cursor"
+msgstr "&Добавить наблюдение у курсора"
+
+#: lazarusidestrconsts:uemruntocursor
+msgid "&Run to Cursor"
+msgstr "&Пуск до курсора"
+
+#: lazarusidestrconsts:uemmoveeditorleft
+msgid "Move Editor Left"
+msgstr "Подвинуть страницу влево"
+
+#: lazarusidestrconsts:uemmoveeditorright
+msgid "Move Editor Right"
+msgstr "Подвинуть страницу вправо"
+
+#: lazarusidestrconsts:uemeditorproperties
+msgid "Editor properties"
+msgstr "Настройки редактора"
+
+#: lazarusidestrconsts:uenotimplcap
+msgid "Not implemented yet"
+msgstr "Еще не реализовано"
+
+#: lazarusidestrconsts:uenotimpltext
+msgid "If You can help us to implement this feature, mail to\015lazarus@miraclec.com"
+msgstr "Если Вы можете помочь реализовать эту возможность, пишите \015lazarus@miraclec.com"
+
+#: lazarusidestrconsts:uenotimplcapagain
+msgid "I told You: Not implemented yet"
+msgstr "Вам сказано - не реализовано"
+
+#: lazarusidestrconsts:uefilerocap
+msgid "File is readonly"
+msgstr "Файл только для чтения"
+
+#: lazarusidestrconsts:uefilerotext1
+msgid "The file \""
+msgstr "Файл \""
+
+#: lazarusidestrconsts:uefilerotext2
+msgid "\" is not writable."
+msgstr "\" не для записи."
+
+#: lazarusidestrconsts:fdinvalidmutliselectioncap
+msgid "Invalid mutliselection"
+msgstr "Неправильный множественный выбор"
+
+#: lazarusidestrconsts:fdinvalidmutliselectiontext
+msgid "Multiselected components must be of a single form."
+msgstr "Множественный выбор компонентов должен быть на одной форме"
+
+#: lazarusidestrconsts:fdmalignword
+msgid "Align"
+msgstr "Выравнивание"
+
+#: lazarusidestrconsts:fdmmirrorhorizontal
+msgid "Mirror horizontal"
+msgstr "Отразить по горизонтали"
+
+#: lazarusidestrconsts:fdmmirrorvertical
+msgid "Mirror vertical"
+msgstr "Отразить по вертикали"
+
+#: lazarusidestrconsts:fdmscaleword
+msgid "Scale"
+msgstr "Масштаб"
+
+#: lazarusidestrconsts:fdmsizeword
+msgid "Size"
+msgstr "Размер"
+
+#: lazarusidestrconsts:fdmbringtofront
+msgid "Bring to front"
+msgstr "Перенесть наверх"
+
+#: lazarusidestrconsts:fdmsendtoback
+msgid "Send to back"
+msgstr "Перенести вниз"
+
+#: lazarusidestrconsts:fdmdeleteselection
+msgid "Delete selection"
+msgstr "Удалить выбранное"
+
+#: lazarusidestrconsts:lisoiproperties
+msgid "Properties"
+msgstr "Свойства"
+
+#: lazarusidestrconsts:lisoievents
+msgid "Events"
+msgstr "События"
+

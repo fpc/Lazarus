@@ -17,9 +17,14 @@ unit ObjInspStrConsts;
 interface
 
 resourcestring
-  // component editors commands
+  //
+  oisObjectInspector = 'Object Inspector';
   oiscAdd = '&Add';
   oiscDelete = '&Delete';
+
+  // component editors commands
+  oisProperties='Properties';
+  oisEvents='Events';
 
 
 implementation

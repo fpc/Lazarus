@@ -570,10 +570,6 @@ msgstr ""
 msgid "Please check the compiler name"
 msgstr ""
 
-#: lazarusidestrconsts:lisaboutlazarus
-msgid "About Lazarus"
-msgstr ""
-
 #: lazarusidestrconsts:lisaboutlazarusmsg
 msgid "License: GPL/LGPL\nLazarus are the class libraries for Free Pascal that emulate Delphi.\nFree Pascal is a (L)GPL'ed compiler that runs on Linux,\nWin32, OS/2, 68K and more. Free Pascal is designed to be able to\nunderstand and compile Delphi syntax, which is of course OOP.\nLazarus is the missing part of the puzzle that will allow you to\ndevelop Delphi like programs in all of the above platforms.\nThe IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers."
 msgstr ""
@@ -598,24 +594,8 @@ msgstr ""
 msgid "Copy Error"
 msgstr ""
 
-#: lazarusidestrconsts:lishintnewunit
-msgid "New Unit"
-msgstr ""
-
-#: lazarusidestrconsts:lishintopen
-msgid "Open"
-msgstr ""
-
-#: lazarusidestrconsts:lishintsave
-msgid "Save"
-msgstr ""
-
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
-msgstr ""
-
-#: lazarusidestrconsts:lishintnewform
-msgid "New Form"
 msgstr ""
 
 #: lazarusidestrconsts:lishinttoggleformunit
@@ -628,14 +608,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
-msgstr ""
-
-#: lazarusidestrconsts:lishintrun
-msgid "Run"
-msgstr ""
-
-#: lazarusidestrconsts:lishintpause
-msgid "Pause"
 msgstr ""
 
 #: lazarusidestrconsts:lishintstepinto
@@ -688,10 +660,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgfrmeditor
 msgid "Form Editor"
-msgstr ""
-
-#: lazarusidestrconsts:dlgobjinsp
-msgid "Object Inspector"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvfiles
@@ -760,10 +728,6 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgsrcedit
 msgid "Source Editor"
-msgstr ""
-
-#: lazarusidestrconsts:dlgmsgs
-msgid "Messages"
 msgstr ""
 
 #: lazarusidestrconsts:dlgprojfiles
@@ -1658,6 +1622,10 @@ msgstr ""
 msgid "Link With Static Libraries"
 msgstr ""
 
+#: lazarusidestrconsts:dlglinksmart
+msgid "Link Smart"
+msgstr ""
+
 #: lazarusidestrconsts:dlgpassoptslinker
 msgid "Pass Options To The Linker (Delimiter is space)"
 msgstr ""
@@ -1770,20 +1738,12 @@ msgstr ""
 msgid "Unit output directory:"
 msgstr ""
 
-#: lazarusidestrconsts:dlglclwidgettype
-msgid "LCL Widget Type"
-msgstr ""
-
 #: lazarusidestrconsts:dlgbutapply
 msgid "Apply"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcoshowoptions
 msgid "Show Options"
-msgstr ""
-
-#: lazarusidestrconsts:dlgmainviewforms
-msgid "View project forms"
 msgstr ""
 
 #: lazarusidestrconsts:dlgmainviewunits
@@ -1980,5 +1940,153 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace All"
+msgstr ""
+
+#: lazarusidestrconsts:uemfinddeclaration
+msgid "&Find Declaration"
+msgstr ""
+
+#: lazarusidestrconsts:uemopenfileatcursor
+msgid "&Open file at cursor"
+msgstr ""
+
+#: lazarusidestrconsts:uemclosepage
+msgid "&Close Page"
+msgstr ""
+
+#: lazarusidestrconsts:uemgotobookmark
+msgid "&Goto Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:uembookmarkn
+msgid "Bookmark "
+msgstr ""
+
+#: lazarusidestrconsts:uemsetbookmark
+msgid "&Set Bookmark"
+msgstr ""
+
+#: lazarusidestrconsts:uemreadonly
+msgid "Read Only"
+msgstr ""
+
+#: lazarusidestrconsts:uemunitinfo
+msgid "Unit Info"
+msgstr ""
+
+#: lazarusidestrconsts:uemdebugword
+msgid "Debug"
+msgstr ""
+
+#: lazarusidestrconsts:uemtogglebreakpoint
+msgid "&Toggle Breakpoint"
+msgstr ""
+
+#: lazarusidestrconsts:uemaddwatchatcursor
+msgid "&Add Watch At Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:uemruntocursor
+msgid "&Run to Cursor"
+msgstr ""
+
+#: lazarusidestrconsts:uemmoveeditorleft
+msgid "Move Editor Left"
+msgstr ""
+
+#: lazarusidestrconsts:uemmoveeditorright
+msgid "Move Editor Right"
+msgstr ""
+
+#: lazarusidestrconsts:uemeditorproperties
+msgid "Editor properties"
+msgstr ""
+
+#: lazarusidestrconsts:uenotimplcap
+msgid "Not implemented yet"
+msgstr ""
+
+#: lazarusidestrconsts:uenotimpltext
+msgid "If You can help us to implement this feature, mail to\015lazarus@miraclec.com"
+msgstr ""
+
+#: lazarusidestrconsts:uenotimplcapagain
+msgid "I told You: Not implemented yet"
+msgstr ""
+
+#: lazarusidestrconsts:uefilerocap
+msgid "File is readonly"
+msgstr ""
+
+#: lazarusidestrconsts:uefilerotext1
+msgid "The file \""
+msgstr ""
+
+#: lazarusidestrconsts:uefilerotext2
+msgid "\" is not writable."
+msgstr ""
+
+#: lazarusidestrconsts:uemodified
+msgid "Modified"
+msgstr ""
+
+#: lazarusidestrconsts:uepreadonly
+msgid "Readonly"
+msgstr ""
+
+#: lazarusidestrconsts:uepins
+msgid "INS"
+msgstr ""
+
+#: lazarusidestrconsts:uepovr
+msgid "OVR"
+msgstr ""
+
+#: lazarusidestrconsts:fdinvalidmutliselectioncap
+msgid "Invalid mutliselection"
+msgstr ""
+
+#: lazarusidestrconsts:fdinvalidmutliselectiontext
+msgid "Multiselected components must be of a single form."
+msgstr ""
+
+#: lazarusidestrconsts:fdmalignword
+msgid "Align"
+msgstr ""
+
+#: lazarusidestrconsts:fdmmirrorhorizontal
+msgid "Mirror horizontal"
+msgstr ""
+
+#: lazarusidestrconsts:fdmmirrorvertical
+msgid "Mirror vertical"
+msgstr ""
+
+#: lazarusidestrconsts:fdmscaleword
+msgid "Scale"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsizeword
+msgid "Size"
+msgstr ""
+
+#: lazarusidestrconsts:fdmbringtofront
+msgid "Bring to front"
+msgstr ""
+
+#: lazarusidestrconsts:fdmsendtoback
+msgid "Send to back"
+msgstr ""
+
+#: lazarusidestrconsts:fdmdeleteselection
+msgid "Delete selection"
+msgstr ""
+
+#: lazarusidestrconsts:lisoiproperties
+msgid "Properties"
+msgstr ""
+
+#: lazarusidestrconsts:lisoievents
+msgid "Events"
 msgstr ""
 

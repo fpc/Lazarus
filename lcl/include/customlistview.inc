@@ -177,6 +177,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.DoSelectItem(AItem: TListItem; ASelected: Boolean); 
 begin                                   
+  AItem.Selected:=ASelected;
   if Assigned(FOnSelectItem) then FOnSelectItem(Self, AItem, ASelected);
 end;
 
@@ -556,6 +557,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/11/25 11:37:18  mattias
+  applied patch from Vasily
+
   Revision 1.24  2002/11/18 13:38:44  mattias
   fixed buffer overrun and added several checks
 

@@ -279,17 +279,18 @@ resourcestring
    +'You should have received a copy of the GNU General Public License '
    +'along with this program; if not, write to the Free Software '
    +'Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. ';
-//IDE components   
-   ideStandard = 'Standard';
-   ideAdditional = 'Additional';
-   ideMisc = 'Misc';
-   ideSystem = 'System';
-   ideDialogs = 'Dialogs';
-//I''ve skipped samples as sample components are usually placed there.
-//Unfortunately, not in lazarus now... It might be a bad idea to have two
-//palletes, for example 'Примеры' and 'Samples'
-   ideDataAccess = 'Data Access';
-   ideInterbase = 'Interbase Data Access';
+
+  //IDE components
+  ideStandard = 'Standard';
+  ideAdditional = 'Additional';
+  ideMisc = 'Misc';
+  ideSystem = 'System';
+  ideDialogs = 'Dialogs';
+  //I''ve skipped samples as sample components are usually placed there.
+  //Unfortunately, not in lazarus now... It might be a bad idea to have two
+  //palletes, for example 'Примеры' and 'Samples'
+  ideDataAccess = 'Data Access';
+  ideInterbase = 'Interbase Data Access';
 
   //Environment dialog
   dlgEnvOpts = 'Environment Options';
@@ -358,7 +359,6 @@ resourcestring
   dlgAutoRen = 'Auto rename file';
   dlgAmbigWarn = 'Warn on compile';
   dlgIgnoreVerb = 'Ignore';
-  //It''s OK then
   dlgBackColor = 'Background color';
   dlgEnvColors = 'Colors';
   dlgEnvBackupHelpNote =
@@ -639,7 +639,47 @@ resourcestring
   
   // Code Explorer
   lisCodeExplorer = 'Code Explorer';
-  
+
+  // Unit editor
+  uemFindDeclaration = '&Find Declaration';
+  uemOpenFileAtCursor = '&Open file at cursor';
+  uemClosePage = '&Close Page';
+  uemGotoBookmark = '&Goto Bookmark';
+  uemBookmarkN = 'Bookmark ';
+  uemSetBookmark = '&Set Bookmark';
+  uemReadOnly = 'Read Only';
+  uemUnitInfo = 'Unit Info';
+  uemDebugWord = 'Debug';
+  uemToggleBreakpoint = '&Toggle Breakpoint';
+  uemAddWatchAtCursor = '&Add Watch At Cursor';
+  uemRunToCursor='&Run to Cursor';
+  uemMoveEditorLeft='Move Editor Left';
+  uemMoveEditorRight='Move Editor Right';
+  uemEditorproperties='Editor properties';
+  ueNotImplCap='Not implemented yet';
+  ueNotImplText='If You can help us to implement this feature, mail to'#13
+   +'lazarus@miraclec.com';
+  ueNotImplCapAgain='I told You: Not implemented yet';
+  ueFileROCap= 'File is readonly';
+  ueFileROText1='The file "';
+  ueFileROText2='" is not writable.';
+  ueModified='Modified';
+  uepReadonly= 'Readonly';
+  uepIns='INS';
+  uepOvr='OVR';
+
+  // Form designer
+  fdInvalidMutliselectionCap='Invalid mutliselection';
+  fdInvalidMutliselectionText='Multiselected components must be of a single form.';
+  fdmAlignWord='Align';
+  fdmMirrorHorizontal='Mirror horizontal';
+  fdmMirrorVertical='Mirror vertical';
+  fdmScaleWord='Scale';
+  fdmSizeWord='Size';
+  fdmBringTofront='Bring to front';
+  fdmSendtoback='Send to back';
+  fdmDeleteSelection='Delete selection';
+
 implementation
 
 end.

@@ -34,7 +34,7 @@ interface
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
   LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, PropEdits, GraphPropEdits,
-  TypInfo, Messages, LResources, Laz_XMLCfg, Menus, Dialogs,LazarusIdeStrConsts;
+  TypInfo, Messages, LResources, Laz_XMLCfg, Menus, Dialogs, ObjInspStrConsts;
 
 
 type
@@ -2027,7 +2027,7 @@ constructor TObjectInspector.Create(AnOwner: TComponent);
 
 begin
   inherited Create(AnOwner);
-  Caption := dlgObjInsp;
+  Caption := oisObjectInspector;
   FPropertyEditorHook:=nil;
   FComponentList:=TComponentSelectionList.Create;
   FUpdatingAvailComboBox:=false;
@@ -2079,10 +2079,10 @@ begin
     Name:='NoteBook';
     Parent:=Self;
     if PageCount>0 then
-      Pages.Strings[0]:='Properties'
+      Pages.Strings[0]:=oisProperties
     else
-      Pages.Add('Properties');
-    Pages.Add('Events');
+      Pages.Add(oisProperties);
+    Pages.Add(oisEvents);
     PopupMenu:=MainPopupMenu;
     Align:= alClient;
     Visible:=true;

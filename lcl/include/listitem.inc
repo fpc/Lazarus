@@ -24,6 +24,7 @@ begin
   FSubItems := TStringList.Create;
   TStringList(FSubItems).OnChange := @ItemChanged;
   FDestroying := False;
+  FState:=0;
 end;
 
 {------------------------------------------------------------------------------}
@@ -49,20 +50,12 @@ end;
 {------------------------------------------------------------------------------}
 function TListItem.GetIndex : Integer;
 begin
-  if Assigned(FOwner) 
-  then Result := FOwner.FItems.IndexOf(self)
-  else Result := -1;
+  if Assigned(FOwner) then
+    Result := FOwner.FItems.IndexOf(self)
+  else
+    Result := -1;
 end;
 
-{------------------------------------------------------------------------------}
-{   TListItem SetSubItems                                                      }
-{------------------------------------------------------------------------------}
-{procedure TListItem.SetSubItems(Value : TStrings);
-begin
-  SubItems.Assign(Value);
-  //call itemchanged here r does the onchange event fire for each?
-end;
- }
 {------------------------------------------------------------------------------}
 {   TListItem Delete                                                           }
 {------------------------------------------------------------------------------}
@@ -104,21 +97,28 @@ end;
 {------------------------------------------------------------------------------}
 {   TListItem GetState                                                         }
 {------------------------------------------------------------------------------}
-function TListItem.GetState(const AIndex: Integer): Boolean;
+function TListItem.GetState(const AnIndex: Integer): Boolean;
 begin
-  Result := False;
+  Result := ((FState AND (1 shl AnIndex))<>0);
 end;
 
 {------------------------------------------------------------------------------}
 {   TListItem SetState                                                         }
 {------------------------------------------------------------------------------}
-procedure TListItem.SetState(const AIndex: Integer; const AState: Boolean);
+procedure TListItem.SetState(const AnIndex: Integer; const AState: Boolean);
 begin
+ if AState then
+   FState:=FState or (1 shl AnIndex)
+ else
+   FState:=FState AND (not (1 shl AnIndex));
 end;
 
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/11/25 11:37:18  mattias
+  applied patch from Vasily
+
   Revision 1.11  2002/11/18 13:38:44  mattias
   fixed buffer overrun and added several checks
 
