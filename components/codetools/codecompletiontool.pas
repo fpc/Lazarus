@@ -104,6 +104,10 @@ type
                           SourceChangeCache: TSourceChangeCache): boolean;
     procedure AdjustCursor(OldCodePos: TCodePosition; OldTopLine: integer;
                           var NewPos: TCodeXYPosition; var NewTopLine: integer);
+    function CompleteLocalVariableAssignment(CleanCursorPos,
+                       OldTopLine: integer; CursorNode: TCodeTreeNode;
+                       var NewPos: TCodeXYPosition; var NewTopLine: integer;
+                       SourceChangeCache: TSourceChangeCache): boolean;
   protected
     property CodeCompleteClassNode: TCodeTreeNode
                                   read ClassNode write SetCodeCompleteClassNode;
@@ -592,6 +596,76 @@ begin
     NewTopLine:=OldTopLine;
   //writeln('TCodeCompletionCodeTool.AdjustCursor END NewPos: Line=',NewPos.Y,' Col=',NewPos.X,' NewTopLine=',NewTopLine);
 end;
+
+function TCodeCompletionCodeTool.CompleteLocalVariableAssignment(
+  CleanCursorPos, OldTopLine: integer;
+  CursorNode: TCodeTreeNode;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer;
+  SourceChangeCache: TSourceChangeCache): boolean;
+var
+  VarNameAtom, AssignmentOperator, TermAtom: TAtomPosition;
+  NewType: string;
+  Params: TFindDeclarationParams;
+begin
+  Result:=false;
+
+  {$IFDEF CTDEBUG}
+  writeln('  CompleteLocalVariableAssignment: A');
+  {$ENDIF}
+  if not ((CursorNode.Desc=ctnBeginBlock)
+          or CursorNode.HasParentOfType(ctnBeginBlock)) then exit;
+  if CursorNode.Desc=ctnBeginBlock then
+    BuildSubTreeForBeginBlock(CursorNode);
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+
+  {$IFDEF CTDEBUG}
+  writeln('  CompleteLocalVariableAssignment: B CheckLocalVarAssignmentSyntax ...');
+  {$ENDIF}
+  // check assignment syntax
+  if not CheckLocalVarAssignmentSyntax(CleanCursorPos,
+    VarNameAtom,AssignmentOperator,TermAtom)
+  then
+    exit;
+
+  // search variable
+  ActivateGlobalWriteLock;
+  Params:=TFindDeclarationParams.Create;
+  try
+    {$IFDEF CTDEBUG}
+    writeln('  CompleteLocalVariableAssignment: check if variable is already defined ...');
+    {$ENDIF}
+    // check if identifier exists
+    Result:=IdentifierIsDefined(VarNameAtom,CursorNode,Params);
+    if Result then begin
+      MoveCursorToCleanPos(VarNameAtom.StartPos);
+      ReadNextAtom;
+      RaiseExceptionFmt(ctsIdentifierAlreadyDefined,[GetAtom]);
+    end;
+
+    {$IFDEF CTDEBUG}
+    writeln('  CompleteLocalVariableAssignment: Find type of term... ');
+    {$ENDIF}
+    // find type of term
+    NewType:=FindTermTypeAsString(TermAtom,CursorNode,Params);
+    if NewType='' then
+      RaiseException('CompleteLocalVariableAssignment Internal error: NewType=""');
+
+  finally
+    Params.Free;
+    DeactivateGlobalWriteLock;
+  end;
+
+  // all needed parameters found
+  Result:=true;
+
+  // add local variable
+  if not AddLocalVariable(CleanCursorPos, OldTopLine,
+    GetAtom(VarNameAtom), NewType,
+    NewPos, NewTopLine, SourceChangeCache)
+  then
+    RaiseException('CompleteLocalVariableAssignment Internal error: AddLocalVariable');
+end;
+
 
 function TCodeCompletionCodeTool.AddPublishedVariable(const UpperClassName,
   VarName, VarType: string; SourceChangeCache: TSourceChangeCache): boolean;
@@ -2012,7 +2086,7 @@ var CleanCursorPos, Indent, insertPos: integer;
     Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine,RevertableJump);
   end;
 
-  function IsEventAssignment: boolean;
+  function CompleteEventAssignment: boolean;
   var SearchedClassName: string;
   { examples:
       Button1.OnClick:=|
@@ -2179,7 +2253,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       Result:=false;
       
       {$IFDEF CTDEBUG}
-      writeln('  IsEventAssignment: Extract method param list...');
+      writeln('  CompleteEventAssignment: Extract method param list...');
       {$ENDIF}
       // extract method param list and result type
       CleanMethodDefinition:=UpperCaseStr(AnEventName)
@@ -2187,7 +2261,7 @@ var CleanCursorPos, Indent, insertPos: integer;
                          [phpWithoutClassName, phpWithoutName, phpInUpperCase]);
 
       {$IFDEF CTDEBUG}
-      writeln('  IsEventAssignment: Initializing CodeCompletion...');
+      writeln('  CompleteEventAssignment: Initializing CodeCompletion...');
       {$ENDIF}
       // initialize class for code completion
       CodeCompleteClassNode:=AClassNode;
@@ -2202,7 +2276,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       MethodDefinition:=SourceChangeCache.BeautifyCodeOptions.
                      AddClassAndNameToProc(MethodDefinition, '', AnEventName);
       {$IFDEF CTDEBUG}
-      writeln('  IsEventAssignment: Add Method To Class...');
+      writeln('  CompleteEventAssignment: Add Method To Class...');
       {$ENDIF}
       if not ProcExistsInCodeCompleteClass(CleanMethodDefinition) then begin
         // insert method definition into class
@@ -2220,7 +2294,7 @@ var CleanCursorPos, Indent, insertPos: integer;
         RaiseException(ctsErrorDuringCreationOfNewProcBodies);
 
       {$IFDEF CTDEBUG}
-      writeln('  IsEventAssignment: Changing right side of assignment...');
+      writeln('  CompleteEventAssignment: Changing right side of assignment...');
       {$ENDIF}
       // add new event name as right value of assignment
       // add address operator @ if needed or user provided it himself
@@ -2243,7 +2317,7 @@ var CleanCursorPos, Indent, insertPos: integer;
                                 RValue);
         
       {$IFDEF CTDEBUG}
-      writeln('  IsEventAssignment: Applying changes...');
+      writeln('  CompleteEventAssignment: Applying changes...');
       {$ENDIF}
       // apply the changes
       if not SourceChangeCache.Apply then
@@ -2251,7 +2325,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       Result:=true;
     end;
         
-  // function IsEventAssignment: boolean
+  // function CompleteEventAssignment: boolean
   var
     UserEventAtom, PropertyAtom: TAtomPosition;
     AssignmentOperator, AddrOperatorPos, SemicolonPos: integer;
@@ -2263,7 +2337,7 @@ var CleanCursorPos, Indent, insertPos: integer;
     Result:=false;
     
     {$IFDEF CTDEBUG}
-    writeln('  IsEventAssignment: CheckEventAssignmentSyntax...');
+    writeln('  CompleteEventAssignment: CheckEventAssignmentSyntax...');
     {$ENDIF}
     // check assigment syntax
     if not CheckEventAssignmentSyntax(PropertyAtom, AssignmentOperator,
@@ -2272,7 +2346,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       exit;
 
     {$IFDEF CTDEBUG}
-    writeln('  IsEventAssignment: find class of method...');
+    writeln('  CompleteEventAssignment: find class of method...');
     {$ENDIF}
     if not FindClassAndProcNode then exit;
 
@@ -2280,7 +2354,7 @@ var CleanCursorPos, Indent, insertPos: integer;
     Params:=TFindDeclarationParams.Create;
     try
       {$IFDEF CTDEBUG}
-      writeln('  IsEventAssignment: FindEventTypeAtCursor...');
+      writeln('  CompleteEventAssignment: FindEventTypeAtCursor...');
       {$ENDIF}
       // check if identifier is event property and build
       Result:=FindEventTypeAtCursor(PropertyAtom,PropertyContext,ProcContext,
@@ -2288,7 +2362,7 @@ var CleanCursorPos, Indent, insertPos: integer;
       if not Result then exit;
       
       {$IFDEF CTDEBUG}
-      writeln('  IsEventAssignment: CreateEventFullName... UserEventAtom.StartPos=',UserEventAtom.StartPos);
+      writeln('  CompleteEventAssignment: CreateEventFullName... UserEventAtom.StartPos=',UserEventAtom.StartPos);
       {$ENDIF}
       // create a nice event name
       FullEventName:=CreateEventFullName(UserEventAtom,PropertyAtom);
@@ -2304,82 +2378,17 @@ var CleanCursorPos, Indent, insertPos: integer;
       AssignmentOperator,AddrOperatorPos,SemicolonPos,UserEventAtom,
       AMethodDefinition, AMethodAttr)
     then
-      RaiseException('IsEventAssignment Internal Error 1');
+      RaiseException('CompleteEventAssignment Internal Error 1');
       
     {$IFDEF CTDEBUG}
-    writeln('  IsEventAssignment: jumping to new method body...');
+    writeln('  CompleteEventAssignment: jumping to new method body...');
     {$ENDIF}
     // jump to new method body
     if not JumpToMethod(AMethodDefinition,AMethodAttr,NewPos,NewTopLine,false)
     then
-      RaiseException('IsEventAssignment Internal Error 2');
+      RaiseException('CompleteEventAssignment Internal Error 2');
       
     CompleteCode:=true;
-  end;
-  
-  function IsLocalVariableAssignment: boolean;
-  var
-    VarNameAtom, AssignmentOperator, TermAtom: TAtomPosition;
-    NewType: string;
-    Params: TFindDeclarationParams;
-  begin
-    Result:=false;
-
-    {$IFDEF CTDEBUG}
-    writeln('  IsLocalVariableAssignment: A');
-    {$ENDIF}
-    if not ((CursorNode.Desc=ctnBeginBlock)
-            or CursorNode.HasParentOfType(ctnBeginBlock)) then exit;
-    if CursorNode.Desc=ctnBeginBlock then
-      BuildSubTreeForBeginBlock(CursorNode);
-    CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-
-    {$IFDEF CTDEBUG}
-    writeln('  IsLocalVariableAssignment: B CheckLocalVarAssignmentSyntax ...');
-    {$ENDIF}
-    // check assignment syntax
-    if not CheckLocalVarAssignmentSyntax(CleanCursorPos,
-      VarNameAtom,AssignmentOperator,TermAtom)
-    then
-      exit;
-
-    // search variable
-    ActivateGlobalWriteLock;
-    Params:=TFindDeclarationParams.Create;
-    try
-      {$IFDEF CTDEBUG}
-      writeln('  IsLocalVariableAssignment: check if variable is already defined ...');
-      {$ENDIF}
-      // check if identifier exists
-      Result:=IdentifierIsDefined(VarNameAtom,CursorNode,Params);
-      if Result then begin
-        MoveCursorToCleanPos(VarNameAtom.StartPos);
-        ReadNextAtom;
-        RaiseExceptionFmt(ctsIdentifierAlreadyDefined,[GetAtom]);
-      end;
-
-      {$IFDEF CTDEBUG}
-      writeln('  IsLocalVariableAssignment: Find type of term... ');
-      {$ENDIF}
-      // find type of term
-      NewType:=FindTermTypeAsString(TermAtom,CursorNode,Params);
-      if NewType='' then
-        RaiseException('IsLocalVariableAssignment Internal error: NewType=""');
-
-    finally
-      Params.Free;
-      DeactivateGlobalWriteLock;
-    end;
-    
-    // all needed parameters found
-    Result:=true;
-
-    // add local variable
-    if not AddLocalVariable(CleanCursorPos, OldTopLine,
-      GetAtom(VarNameAtom), NewType,
-      NewPos, NewTopLine, SourceChangeCache)
-    then
-      RaiseException('IsLocalVariableAssignment Internal error: AddLocalVariable');
   end;
   
 // function CompleteCode(CursorPos: TCodeXYPosition;
@@ -2426,11 +2435,12 @@ begin
   end;
   
   // test if Event assignment
-  Result:=IsEventAssignment;
+  Result:=CompleteEventAssignment;
   if Result then exit;
   
   // test if Local variable assignment
-  Result:=IsLocalVariableAssignment;
+  Result:=CompleteLocalVariableAssignment(CleanCursorPos,OldTopLine,CursorNode,
+                                          NewPos,NewTopLine,SourceChangeCache);
   if Result then exit;
 
   {$IFDEF CTDEBUG}
