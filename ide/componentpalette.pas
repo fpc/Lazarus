@@ -425,15 +425,14 @@ begin
             Name:='PaletteBtnPage'+IntToStr(i)+'_'+IntToStr(j)
                   +'_'+CurComponent.ComponentClass.ClassName;
             Parent := CurNoteBookPage;
+            SetBounds(ButtonX,0,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
             Glyph := CurComponent.GetIconCopy;
-            Width := ComponentPaletteBtnWidth;
-            Height := ComponentPaletteBtnHeight;
             GroupIndex := 1;
             Flat := true;
             OnClick := @ComponentBtnClick;
             Hint := CurComponent.ComponentClass.ClassName;
-            SetBounds(ButtonX,0,ComponentPaletteBtnWidth,ComponentPaletteBtnHeight);
             CurBtn.PopupMenu:=Self.PopupMenu;
+            Visible:=true;
           end;
           //writeln('TComponentPalette.UpdateNoteBookButtons Created Button: ',CurComponent.ComponentClass.ClassName,' ',CurComponent.Button.Name);
         end;
