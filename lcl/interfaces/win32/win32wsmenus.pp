@@ -247,7 +247,8 @@ begin
        implemented in LCL}
     end;
   end;
-  if dword(InsertMenuItem(ParentMenuHandle, AMenuItem.Parent.IndexOf(AMenuItem), true, @MenuInfo)) = 0 then
+  if dword(InsertMenuItem(ParentMenuHandle,
+       AMenuItem.Parent.VisibleIndexOf(AMenuItem), true, @MenuInfo)) = 0 then
     DebugLn('InsertMenuItem failed with error: ', IntToStr(Windows.GetLastError));
   // owner could be a popupmenu too
   if (AMenuItem.Owner is TWinControl) and
