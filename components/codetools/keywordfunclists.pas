@@ -951,7 +951,6 @@ begin
     Add('INITIALIZATION',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('INTERFACE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('LIBRARY',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PACKAGE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PROCEDURE',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('PROGRAM',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('RECORD',{$ifdef FPC}@{$endif}AllwaysTrue);
