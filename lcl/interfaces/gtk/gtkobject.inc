@@ -3216,7 +3216,8 @@ begin
   //  writeln('[TgtkObject.ShowHide] START ',Sender.ClassName,' Visible=',TControl(Sender).Visible,' Window=',FormWidget^.Window<>nil);
   if TControl(Sender).Visible then begin
     {$IFDEF ClientRectBugFix}
-    if (Sender is TCustomForm) then begin
+    if (Sender is TCustomForm) and (not gtk_widget_visible(FormWidget)) then
+    begin
       gtk_window_set_default_size(PgtkWindow(FormWidget),
                                TControl(Sender).Width,TControl(Sender).Height);
       gtk_widget_set_uposition(PgtkWidget(FormWidget),
@@ -4310,6 +4311,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.125  2002/05/16 15:42:54  lazarus
+  MG: fixed TForm ShowHide repositioning
+
   Revision 1.124  2002/05/15 05:58:17  lazarus
   MG: added TMainMenu.Parent
 
