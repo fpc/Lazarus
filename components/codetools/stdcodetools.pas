@@ -45,9 +45,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeTree, CodeAtom, FindDeclarationTool, SourceLog,
-  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo,
-  SourceChanger;
+  Classes, SysUtils, CodeTree, CodeAtom, FindDeclarationTool, PascalParserTool,
+  SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
+  TypInfo, SourceChanger;
 
 type
   TStandardCodeTool = class(TFindDeclarationTool)
@@ -1146,7 +1146,7 @@ var
   CleanCursorPos, LinkIndex, NewCleanPos: integer;
 begin
   Result:=false;
-  BuildTreeAndGetCleanPos(false,CursorPos,CleanCursorPos);
+  BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos);
   LinkIndex:=Scanner.LinkIndexAtCleanPos(CleanCursorPos);
   LinkIndex:=Scanner.FindParentLink(LinkIndex);
   if LinkIndex<0 then

@@ -576,7 +576,7 @@ begin
     {$IFDEF CTDEBUG}
     writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration A CursorPos=',CursorPos.X,',',CursorPos.Y);
     {$ENDIF}
-    BuildTreeAndGetCleanPos(false,CursorPos,CleanCursorPos);
+    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos);
     {$IFDEF CTDEBUG}
     writeln(DebugPrefix,'TFindDeclarationTool.FindDeclaration C CleanCursorPos=',CleanCursorPos);
     {$ENDIF}
@@ -3640,9 +3640,7 @@ begin
     if (Result.Desc=ctnProperty) then
       Result:=Result.FirstChild
     else if Result.Desc in [ctnProcedure,ctnProcedureHead] then begin
-writeln('AAA3');
       BuildSubTreeForProcHead(Result);
-writeln('AAA4');
       if Result.Desc=ctnProcedure then
         Result:=Result.FirstChild;
       if Result.Desc=ctnProcedureHead then
@@ -3654,9 +3652,7 @@ end;
 function TFindDeclarationTool.GetFirstParameterNode(Node: TCodeTreeNode
   ): TCodeTreeNode;
 begin
-writeln('AAA1');
   Result:=GetParameterNode(Node);
-writeln('AAA2');
   if Result<>nil then Result:=Result.FirstChild;
 end;
 

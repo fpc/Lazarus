@@ -1488,7 +1488,7 @@ var CleanCursorPos, Indent, insertPos: integer;
         // -> find it and jump to
 
         // reparse code
-        BuildTreeAndGetCleanPos(false,CursorPos,CleanCursorPos);
+        BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos);
         // find CodeTreeNode at cursor
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
@@ -1869,7 +1869,7 @@ begin
   if (SourceChangeCache=nil) then 
     RaiseException('need a SourceChangeCache');
   // in a class or in a forward proc?
-  BuildTreeAndGetCleanPos(false,CursorPos, CleanCursorPos);
+  BuildTreeAndGetCleanPos(trAll,CursorPos, CleanCursorPos);
   // find CodeTreeNode at cursor
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
   CodeCompleteSrcChgCache:=SourceChangeCache;

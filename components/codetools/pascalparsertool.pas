@@ -108,6 +108,8 @@ type
   
   TProcHeadExtractPos = (phepNone, phepStart, phepName, phepParamList,
     phepResultType);
+    
+  TTreeRange = (trInterface, trAll, trTillCursor);
 
   TPascalParserTool = class(TMultiKeyWordListCodeTool)
   private
@@ -197,7 +199,7 @@ type
     function CleanPosIsInComment(CleanPos, CleanCodePosInFront: integer;
         var CommentStart, CommentEnd: integer): boolean;
     procedure BuildTree(OnlyInterfaceNeeded: boolean); virtual;
-    procedure BuildTreeAndGetCleanPos(OnlyInterfaceNeeded: boolean;
+    procedure BuildTreeAndGetCleanPos(TreeRange: TTreeRange;
         CursorPos: TCodeXYPosition; var CleanCursorPos: integer);
     procedure BuildSubTreeForClass(ClassNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForBeginBlock(BeginNode: TCodeTreeNode); virtual;
@@ -3436,11 +3438,21 @@ begin
 end;
 
 procedure TPascalParserTool.BuildTreeAndGetCleanPos(
-  OnlyInterfaceNeeded: boolean; CursorPos: TCodeXYPosition;
+  TreeRange: TTreeRange; CursorPos: TCodeXYPosition;
   var CleanCursorPos: integer);
 var Dummy: integer;
 begin
-  BuildTree(OnlyInterfaceNeeded);
+  if (TreeRange=trTillCursor) and (not UpdateNeeded(true)) then begin
+    // interface tree is valid
+    // -> if there was an error, raise it again
+    if LastErrorPhase in [CodeToolPhaseScan,CodeToolPhaseParse] then
+      RaiseLastError;
+    // check if cursor is in interface
+    Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
+    if (Dummy in [0,-1]) then
+      exit;
+  end;
+  BuildTree(TreeRange=trInterface);
   if not EndOfSourceFound then
     SaveRaiseException(ctsEndOfSourceNotFound);
   // find the CursorPos in cleaned source
@@ -3600,25 +3612,21 @@ begin
   CurrentPhase:=CodeToolPhaseParse;
   try
     if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
-writeln('BBB1');
     if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)
     or (ProcNode.FirstChild=nil) then
       SaveRaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
         +'internal error: invalid ProcNode');
-writeln('BBB2');
     if (ProcNode.FirstChild.SubDesc and ctnsNeedJITParsing)=0 then exit;
     IsMethod:=ProcNode.HasParentOfType(ctnClass);
     MoveCursorToNodeStart(ProcNode);
     ReadNextAtom;
     if UpAtomIs('CLASS') then
       ReadNextAtom;
-writeln('BBB3 ',GetAtom);
     IsFunction:=UpAtomIs('FUNCTION');
     IsOperator:=UpAtomIs('OPERATOR');
     // read procedure head (= name + parameterlist + resulttype;)
     CurNode:=ProcNode.FirstChild;
     ReadNextAtom;// read first atom of head
-writeln('BBB4 ',GetAtom);
     if IsOperator then AtomIsIdentifier(true);
     ReadNextAtom;
     if AtomIsChar('.') then begin
@@ -3627,16 +3635,13 @@ writeln('BBB4 ',GetAtom);
       AtomIsIdentifier(true);
       ReadNextAtom;
     end;
-writeln('BBB5');
     // read rest of procedure head and build nodes
     HasForwardModifier:=false;
     ParseAttr:=[pphCreateNodes];
     if IsMethod then Include(ParseAttr,pphIsMethod);
     if IsFunction then Include(ParseAttr,pphIsFunction);
     if IsOperator then Include(ParseAttr,pphIsOperator);
-writeln('BBB6');
     ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
-writeln('BBB7');
     ProcNode.FirstChild.SubDesc:=ctnsNone;
   finally
     CurrentPhase:=OldPhase;
