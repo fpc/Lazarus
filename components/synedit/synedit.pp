@@ -6321,11 +6321,7 @@ procedure TCustomSynEdit.DoBlockUnindent;
 var
   OrgCaretPos,
   BB, BE: TPoint;
-  {$IFDEF FPC}
-  FullStrToDelete: AnsiString;
-  {$ELSE}
   FullStrToDelete: PChar;
-  {$ENDIF}
   Line, Run,
   StrToDelete: PChar;
   Len,
@@ -6370,26 +6366,26 @@ begin
     // build string to delete
     StrToDeleteLen := (FTabWidth + 2) * (e - BB.y) + FTabWidth + 1;
     //                 chars per line * lines-1    + last line + null char
-    StrToDelete := StrAlloc(StrToDeleteLen);
+    FullStrToDelete := StrAlloc(StrToDeleteLen);
     try
-      StrToDelete[0] := #0;
+      FullStrToDelete[0] := #0;
       SomethingToDelete := False;
       for x := BB.Y to e-1 do
       begin
         Line := PChar(Lines[x-1]);
         TempString:=StringOfChar(' ', GetDelLen);
-        StrCat(StrToDelete,PChar(TempString));
-        StrCat(StrToDelete,PChar(#13#10));
+        StrCat(FullStrToDelete,PChar(TempString));
+        StrCat(FullStrToDelete,PChar(#13#10));
       end;
       Line := PChar(Lines[e-1]);
       TempString:=StringOfChar(' ', GetDelLen);
-      StrCat(StrToDelete,PChar(TempString));
+      StrCat(FullStrToDelete,PChar(TempString));
 
       FirstIndent := -1;
       // Delete string
       if SomethingToDelete then
       begin
-        FullStrToDelete := StrToDelete;
+        StrToDelete := FullStrToDelete;
         CaretY := BB.Y;
         repeat
           Run := GetEOL(StrToDelete);
@@ -6413,7 +6409,7 @@ begin
           StrToDelete := Run;
         until Run^ = #0;
         LastIndent := Len;
-        fUndoList.AddChange(crUnindent, BB, BE, FullStrToDelete, smColumn);
+        fUndoList.AddChange(crUnindent, BB, BE, StrToDelete, smColumn);
       end;
       // restore selection
       fSelectionMode := OrgSelectionMode;
@@ -6422,7 +6418,7 @@ begin
       SetCaretAndSelection(OrgCaretPos, Point(BB.x - FirstIndent, BB.Y),
         Point(BE.x - LastIndent, BE.y));
     finally
-      StrDispose(StrToDelete);
+      StrDispose(FullStrToDelete);
     end;
   end;
 end;
