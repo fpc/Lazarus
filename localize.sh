@@ -24,14 +24,14 @@ set +e
 # IDE without objectinspector
 rstconv -i lazarusidestrconsts.rst -o languages/lazaruside.po
 ./tools/updatepofiles languages/lazaruside.po
-for lang in de ru es fr pl it; do
+for lang in de ru es fr pl it ca; do
   msgfmt languages/lazaruside.$lang.po -o languages/lazaruside.$lang.mo
 done
 
 # Object Inspector
 rstconv -i objinspstrconsts.rst -o languages/objinspstrconsts.po
 tools/updatepofiles languages/objinspstrconsts.po
-for lang in de es fr ru pl it; do
+for lang in de es fr ru pl it ca; do
   msgfmt languages/objinspstrconsts.$lang.po \
     -o languages/objinspstrconsts.$lang.mo
 done
@@ -40,7 +40,7 @@ done
 rstconv -i components/units/codetoolsstrconsts.rst \
   -o components/codetools/languages/codetools.po
 ./tools/updatepofiles components/codetools/languages/codetools.po
-for lang in de fr pl it; do
+for lang in de fr pl it ca; do
   msgfmt components/codetools/languages/codetools.$lang.po \
     -o components/codetools/languages/codetools.$lang.mo
 done
@@ -49,7 +49,7 @@ done
 rstconv -i components/units/syneditstrconst.rst \
   -o components/synedit/languages/synedit.po
 ./tools/updatepofiles components/synedit/languages/synedit.po
-for lang in de fr pl; do
+for lang in de fr pl ca; do
   msgfmt components/synedit/languages/synedit.$lang.po \
     -o components/synedit/languages/synedit.$lang.mo
 done
@@ -58,7 +58,7 @@ done
 rstconv -i components/units/synmacrorecorder.rst \
   -o components/synedit/languages/synmacrorecorder.po
 ./tools/updatepofiles components/synedit/languages/synmacrorecorder.po
-for lang in de fr ru pl; do
+for lang in de fr ru pl ca; do
   msgfmt components/synedit/languages/synmacrorecorder.$lang.po \
     -o components/synedit/languages/synmacrorecorder.$lang.mo
 done
@@ -66,7 +66,7 @@ done
 # LCL
 rstconv -i lcl/units/lclstrconsts.rst -o lcl/languages/lcl.po
 ./tools/updatepofiles lcl/languages/lcl.po
-for lang in de es fr ru pl it; do
+for lang in de es fr ru pl it ca; do
   msgfmt lcl/languages/lcl.$lang.po -o lcl/languages/lcl.$lang.mo
 done
 

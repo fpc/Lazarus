@@ -1,0 +1,84 @@
+#: objinspstrconsts:sccsilcmbimglist
+msgid " Images "
+msgstr " Imatges "
+
+#: objinspstrconsts:sccslvedtgrprcaption
+msgid " Item property "
+msgstr " Propietat de l'element "
+
+#: objinspstrconsts:sccslvedtgrplcaption
+msgid " Items "
+msgstr " Elements "
+
+#: objinspstrconsts:oisitemsselected
+msgid " items selected"
+msgstr "elements seleccionats"
+
+#: objinspstrconsts:sccsilcmbimgsel
+msgid " Selected image "
+msgstr " Imatge seleccionada "
+
+#: objinspstrconsts:oiscadd
+msgid "&Add"
+msgstr "&Afegir"
+
+#: objinspstrconsts:oiscdelete
+msgid "&Delete"
+msgstr "&Esborrar"
+
+#: objinspstrconsts:sccsilbtnadd
+msgid "Add ..."
+msgstr "Afegir ..."
+
+#: objinspstrconsts:sccsilbtnclear
+msgid "Clear"
+msgstr "Netejar"
+
+#: objinspstrconsts:sccsilconfirme
+msgid "Confirme clear all images ?"
+msgstr "Confirmar esborrar totes les imatges ?"
+
+#: objinspstrconsts:sccslvedtbtndel
+msgid "Delete"
+msgstr "Esborrar"
+
+#: objinspstrconsts:oisevents
+msgid "Events"
+msgstr "Esdeveniments"
+
+#: objinspstrconsts:sccslvedtimgindexcaption
+msgid "Image index"
+msgstr "Índex d'imatges"
+
+#: objinspstrconsts:sccsiledtcaption
+msgid "Image list editor"
+msgstr "Editor de llista d'imatges"
+
+#: objinspstrconsts:sccslvedtlabcaption
+msgid "Label"
+msgstr "Etiqueta"
+
+#: objinspstrconsts:sccslvedtcaption
+msgid "ListView editor"
+msgstr "Editor de ListView"
+
+#: objinspstrconsts:sccslvedtbtnadd
+msgid "New"
+msgstr "Nou"
+
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr "Inspector d'objectes"
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr "Propietats"
+
+#: objinspstrconsts:sccslvedtbtnaddsub
+msgid "Sub item"
+msgstr "Sub-element"
+
+#: objinspstrconsts:oisunknown
+msgid "Unknown"
+msgstr ""
+
