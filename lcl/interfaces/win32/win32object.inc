@@ -857,11 +857,6 @@ activate_time : the time at which the activation event occurred.
         If Sender Is TCustomListBox then
           Result := Windows.SendMessage(Handle, LB_GETSEL, Windows.WParam(Data^), 0);
       End;
-      LM_SETLIMITTEXT:
-      Begin
-        If (Sender Is TControl) Then
-          SetLimitText(Handle, Word(Data^));
-      End;
       LM_SORT:
       Begin
         If  (Sender Is TControl) And Assigned(Data) Then
@@ -1241,31 +1236,6 @@ Begin
   Str := String(IconName);
   NormalizeIconName(Str);
   IconName := StrToPChar(Str);
-End;
-
-{------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.SetLimitText
-  Params: Window - The window that has the text to be limited
-          Limit  - Number of characters to limit the text to
-  Returns: Nothing
-
-  Sets the text limit
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.SetLimitText(Window: HWND; Limit: Word);
-Var
-  Cls: array[0..5] of Char;
-  Msg: Cardinal;
-  Str: String;
-Begin
-  GetClassName(Window, @Cls[0], 5);
-  Str := Lowercase(PChar(@Cls[0]));
-  If Str = 'edit' Then
-    Msg := CB_LIMITTEXT
-  Else
-    Exit;
-
-  SendMessage(Window, Msg, Limit, 0);
-  SetProp(Window, 'LIMIT_TEXT', @Limit);
 End;
 
 {------------------------------------------------------------------------------
@@ -3009,6 +2979,9 @@ End;
 
 {
   $Log$
+  Revision 1.232  2004/09/07 10:18:11  micha
+  fix win32 interface, remove lm_setlimittext (obsolete)
+
   Revision 1.231  2004/09/07 09:44:46  micha
   convert lcl messages to new interface using methods: LM_{G,S}ETSELSTART, LM_{G,S}ETSELLEN, LM_{G,S}ETLIMITTEXT
 

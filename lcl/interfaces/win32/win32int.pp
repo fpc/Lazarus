@@ -137,7 +137,6 @@ Type
     Procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
-    Procedure SetLimitText(Window: HWND; Limit: Word);
 
     Procedure ShowHide(Sender: TObject);
     procedure ChangeActivePage(const Data: TLMNotebookEvent);
@@ -285,6 +284,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.96  2004/09/07 10:18:10  micha
+  fix win32 interface, remove lm_setlimittext (obsolete)
+
   Revision 1.95  2004/09/07 09:44:46  micha
   convert lcl messages to new interface using methods: LM_{G,S}ETSELSTART, LM_{G,S}ETSELLEN, LM_{G,S}ETLIMITTEXT
 

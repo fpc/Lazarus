@@ -116,9 +116,11 @@ type
   public
     class function  GetSelStart(const ACustomEdit: TCustomEdit): integer; override;
     class function  GetSelLength(const ACustomEdit: TCustomEdit): integer; override;
+    class function  GetMaxLength(const ACustomEdit: TCustomEdit): integer; {override;}
 
     class procedure SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer); override;
     class procedure SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); {override;}
   end;
 
   { TWin32WSCustomMemo }
@@ -350,6 +352,11 @@ begin
   Result := EditGetSelLength(ACustomEdit.Handle);
 end;
 
+function  TWin32WSCustomEdit.GetMaxLength(const ACustomEdit: TCustomEdit): integer;
+begin
+  Result := integer(GetProp(ACustomEdit.Handle, 'MAXLENGTH'));
+end;
+
 procedure TWin32WSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit; NewStart: integer);
 begin
   EditSetSelStart(ACustomEdit.Handle, NewStart);
@@ -358,6 +365,15 @@ end;
 procedure TWin32WSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit; NewLength: integer);
 begin
   EditSetSelLength(ACustomEdit.Handle, NewLength);
+end;
+
+procedure TWin32WSCustomEdit.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+var
+  winhandle: HWND;
+begin
+  winhandle := ACustomEdit.Handle;
+  SendMessage(winhandle, EM_LIMITTEXT, NewLength, 0);
+  SetProp(winhandle, 'MAXLENGTH', NewLength);
 end;
 
 initialization
