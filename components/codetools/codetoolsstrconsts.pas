@@ -62,7 +62,41 @@ ResourceString
   ctsUnexpectedKeyword = 'unexpected keyword "%s"';
   ctsNoPascalCodeFound = 'no pascal code found (first token is %s)';
   ctsStringConstant = 'string constant';
+  ctsAnoymDefinitionsAreNotAllowed = 'Anonym %s definitions are not allowed';
+  ctsEndForRecordNotFound = 'end for record not found';
+  ctsMissingEnumList = 'missing enum list';
+  ctsMissingTypeIdentifier = 'missing type identifier';
+  ctsProcedureOrFunction = 'procedure or function';
+  ctsMethodName = 'method name';
+  ctsIdentifier = 'identifier';
+  ctsSemicolonNotFound = 'semicolon not found';
+  ctsKeyword = 'keyword';
+  ctsKeywordExampleExpectedButAtomFound = 'keyword (e.g. %s) expected, but %s found';
+  ctsConstant = 'constant';
+  ctsSemicolonAfterPropSpecMissing =
+    '; expected after "%s" property specifier, but %s found';
+  ctsUnknownSectionKeyword = 'unknown section keyword %s found';
+  ctsIllegalQualifier = 'illegal qualifier %s found';
+  ctsUnexpectedEndOfSource = 'unexpected end of source';
+  ctsPointStartAt = '. start at ';
+  ctsUnexpectedKeywordInAsmBlock = 'unexpected keyword "%s" in asm block found';
+  ctsUnexpectedKeywordWhileReadingBackwards =
+    'unexpected keyword "%s" found while reading blocks backwards';
+  ctsWordNotFound = '"%s" not found';
+  ctsPointHintProcStartAt = '.  Hint: proc start at ';
+  ctsMissingPointAfterEnd = 'missing . after end';
+  ctsEndForClassNotFound = '"end" for class/object not found';
+  ctsUnexpectedSubRangeOperatorFound = 'unexpected subrange operator ''..'' found';
+  ctsInvalidSubrange = 'invalid subrange';
+  ctsInvalidType = 'invalid type';
   
+  // find declaration
+  ctsUnitNotFound = 'unit not found: %s';
+  ctsIdentifierNotFound = 'identifier not found: %s';
+  ctsExprTypeIsNotVariable = 'expression type is not a variable';
+  ctsInheritedKeywordOnlyAllowedInMethods =
+     'inherited keyword only allowed in methods';
+
   // codecompletion
   ctsPropertySpecifierAlreadyDefined = 'property specifier already defined: %s';
   ctsErrorInParamList = 'error in paramlist';
