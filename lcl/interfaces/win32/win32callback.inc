@@ -547,8 +547,8 @@ Begin
     End;
     WM_GETDLGCODE:
     Begin
-      // let windows set default flags, then user can override them
       LMessage.Msg := LM_GETDLGCODE;
+      WinProcess := false;
     End;
     WM_KEYDOWN:
     Begin
@@ -1276,6 +1276,9 @@ end;
 
 {
   $Log$
+  Revision 1.127  2004/07/12 13:04:14  micha
+  cleanup: move default handling to DefaultHandler
+
   Revision 1.126  2004/07/07 08:15:28  micha
   fix not listening to Key := #0 in WM_CHAR message
 

@@ -291,6 +291,11 @@ begin
       // provide default wheel scrolling functionality
       CallMouseWheelHandler;
     end;
+
+    LM_GETDLGCODE:
+    begin
+      TLMessage(Message).Result := CallDefaultWindowProc(Handle, WM_GETDLGCODE, 0, 0);
+    end;
     
   end;
 end;
@@ -3008,6 +3013,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.125  2004/07/12 13:04:15  micha
+  cleanup: move default handling to DefaultHandler
+
   Revision 1.124  2004/07/02 20:28:18  micha
   draw 1-pixel border using inner flag, outer seems to not draw top-left
 
