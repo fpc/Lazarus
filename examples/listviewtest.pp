@@ -35,17 +35,23 @@ program ListViewTest;
 {$mode objfpc}{$H+}
 
 uses
-  Interfaces, Classes, Buttons, ComCtrls, Forms, SysUtils;
+  Interfaces, Classes, Buttons, Controls, ComCtrls, Forms, SysUtils, StdCtrls;
 
 type
   TMyForm = class(TForm)
   private
-    FItemIndex: Cardinal;
+    FItemIndex: Cardinal;          
   public
     ListView: TListView;
     Button1: TButton;
+    Button2: TButton;
+    Edit1: TEdit;
+    Edit2: TEdit;
     constructor Create(AOwner: TComponent); override;
     procedure Button1Click(Sender: TObject);
+    procedure Button2Click(Sender: TObject);
+    procedure Edit1Change(Sender: TObject);
+    procedure Edit2Change(Sender: TObject);
   end;
 
 var
@@ -56,21 +62,27 @@ begin
   inherited Create(AOwner);
 
   Caption := 'List View Test';
-  Width := 175;
-  Height := 195;
+  Width := 300;
+  Height := 200;
 
   ListView := TListView.Create(Self);
   ListView.Parent := Self;
-  ListView.Height := 120;
-  ListView.Width := 150;
+  ListView.Height := 150;
+//  ListView.Width := 250;
+  ListView.Align := alTop;
+  ListView.ViewStyle := vsReport;
   ListView.Show;
+  
+  ListView.Columns.Add.Caption := 'Column 1';
+  ListView.Columns.Add.Caption := 'Column 2';
+  ListView.Columns.Add.Caption := 'Column 3';
   
   Button1 := TButton.Create(Self);
   with Button1 do
   begin
     Parent := Self;
     Caption := 'Add Item';
-    Top := 130;
+    Top := 160;
     Left := 10;
     Height := 25;
     Width := 65;
@@ -78,16 +90,72 @@ begin
     Show;
   end;
 
+  Button2 := TButton.Create(Self);
+  with Button2 do
+  begin
+    Parent := Self;
+    Caption := 'Del Item';
+    Top := 160;
+    Left := 80;
+    Height := 25;
+    Width := 65;
+    OnClick := @Button2Click;
+    Show;
+  end;
+  
+  Edit1 := TEdit.Create(Self);
+  with Edit1 do
+  begin
+    Parent := Self;
+    Top := 160;
+    Left := 150;
+    Height := 25;
+    Width := 65;
+    OnChange := @Edit1Change;
+    Show;
+  end;
+  
+  Edit2 := TEdit.Create(Self);
+  with Edit2 do
+  begin
+    Parent := Self;
+    Top := 160;
+    Left := 220;
+    Height := 25;
+    Width := 65;
+    OnChange := @Edit2Change;
+    Show;
+  end;
+  
   Show;
 end;
 
 procedure TMyForm.Button1Click(Sender: TObject);
 var
   Item: TListItem;
-begin
+begin                                        
   Inc(FItemIndex);
   Item := ListView.Items.Add;
-  Item.Caption := Format('Item %D', [FItemIndex]);
+  Item.Caption := Format('Item %d', [FItemIndex]);
+  Item.SubItems.Add(Format('Sub %d.1', [FItemIndex]));
+  Item.SubItems.Add(Format('Sub %d.2', [FItemIndex]));
+end;
+
+procedure TMyForm.Button2Click(Sender: TObject);
+begin
+  ListView.Selected.Free;
+end;
+
+procedure TMyForm.Edit1Change(Sender: TObject);
+begin
+  if ListView.Selected = nil then Exit;
+  ListView.Selected.Caption := Edit1.Text;
+end;
+
+procedure TMyForm.Edit2Change(Sender: TObject);
+begin
+  if ListView.Selected = nil then Exit;
+  ListView.Selected.SubItems[1] := Edit2.Text;
 end;
 
 begin
@@ -98,6 +166,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2004/05/18 23:10:41  marc
+  * Started to move TListview to the WS interface
+
   Revision 1.4  2002/10/29 08:22:32  lazarus
   MG: added interfaces unit
 

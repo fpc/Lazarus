@@ -314,7 +314,7 @@ type
     property Data: Pointer read FData write SetData;
     property DropTarget: Boolean index 1 read GetState write SetState;
     property Focused: Boolean index 2 read GetState write SetState;
-    property Index : Integer read GetIndex;
+    property Index: Integer read GetIndex;
     property ImageIndex : Integer read FImageIndex write SetImageIndex default -1;
     property Owner : TListItems read FOwner;
     property Selected: Boolean index 3 read GetState write SetState;
@@ -487,6 +487,12 @@ type
     procedure DoUpdate;
     procedure UpdateProperties;
   protected
+    //called by TListItems
+    procedure ItemChanged(const AItem: TListItem; const AIndex : Integer);  
+    procedure ItemDeleted(const AIndex: Integer);  
+    procedure ItemInserted(const AItem: TListItem; const AIndex: Integer);  
+
+  protected
     procedure InitializeWnd; override;
     procedure Loaded; override;
     procedure Change(AItem: TListItem; AChange: Integer); dynamic;
@@ -499,10 +505,7 @@ type
     function GetMaxScrolledLeft : Integer;
     function GetMaxScrolledTop : Integer;
     procedure ColumnsChanged; //called by TListColumns
-    procedure ItemChanged(Index : Integer);  //called by TListItems
-    procedure ItemDeleted(Index : Integer);  //called by TListItems
     procedure ImageChanged(Sender : TObject);
-    procedure ItemAdded(Index: Integer);  //called by TListItems
     procedure WMHScroll(var Msg: TLMScroll); message LM_HSCROLL;
     procedure WMVScroll(var Msg: TLMScroll); message LM_VSCROLL;
 //    property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
@@ -2201,7 +2204,10 @@ procedure CheckCommonControl(CC: Integer);
 
 procedure Register;
 
-Implementation
+implementation
+
+uses
+  WSComCtrls;
 
 const
   ScrollBarWidth=0;
@@ -2249,6 +2255,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.123  2004/05/18 23:10:41  marc
+  * Started to move TListview to the WS interface
+
   Revision 1.122  2004/05/11 09:49:46  mattias
   started sending CN_KEYUP
 

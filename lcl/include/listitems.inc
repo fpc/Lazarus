@@ -38,9 +38,9 @@ end;
 {------------------------------------------------------------------------------}
 function TListItems.GetItem(const AIndex: Integer): TListItem;
 begin
-  Result:=nil;
-  if (FItems.Count-1 < AIndex) then Exit;
-  Result := TListItem(FItems.Items[AIndex]);
+  if FItems.Count - 1 < AIndex
+  then Result := nil
+  else Result := TListItem(FItems.Items[AIndex]);
 end;
 
 {------------------------------------------------------------------------------}
@@ -48,9 +48,9 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItems.SetItem(const AIndex: Integer; const AValue: TListItem);
 begin
-  if FItems.Count-1 < AIndex then Exit;
+  if FItems.Count - 1 < AIndex then Exit;
   FItems.Items[AIndex] := AValue;
-  FOwner.ItemChanged(AIndex);
+  FOwner.ItemChanged(AValue, AIndex);
 end;
 
 {------------------------------------------------------------------------------}
@@ -61,7 +61,8 @@ begin
   Result := TListItem.Create(self);
   FItems.Add(Result);
   //Notify parent TListView that something was added.
-  FOwner.ItemAdded(-1);
+  if FOwner <> nil
+  then FOwner.ItemInserted(Result, -1);
 end;
 
 {------------------------------------------------------------------------------
@@ -88,8 +89,8 @@ var
   idx: Integer;
 begin
   idx := FItems.IndexOf(AItem);
-  if assigned(FOwner)
-    then FOwner.ItemDeleted(idx);
+  if FOwner <> nil
+  then FOwner.ItemDeleted(idx);
   FItems.Remove(AItem);
 end;
 
@@ -101,8 +102,7 @@ begin
   Result := TListItem.Create(self);
   FItems.Insert(AIndex, Result);
   //Notify parent TListView that something was added.
-  FOwner.ItemAdded(AIndex);
-
+  FOwner.ItemInserted(Result, AIndex);
 end;
 
 {------------------------------------------------------------------------------}
@@ -137,13 +137,12 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TListItems.ItemChanged(Sender : TObject);  //called by the onchange of the tstringlist in TListItem
 var
-  Index : Integer;
+  idx : Integer;
 begin
-//  Writeln('ITEM CHANGED');
-  Index := FItems.IndexOf(TListItem(sender));
-//  Writeln('Calling Item Changed with Index ',Index);
-  if Index > -1 then
-  FOwner.ItemChanged(Index);
+  idx := FItems.IndexOf(sender);
+  if idx >= 0 
+  then FOwner.ItemChanged(TListItem(Sender), idx)
+  else DebugLN('TListItems.ItemChanged for unknown item');
 end;
 
 procedure TListItems.DefineProperties(Filer: TFiler);
@@ -249,9 +248,11 @@ begin
   finally
     FreeMem(ItemHeader, Size);
     Owner.EndUpdate;
-
-    if Flag then
-       Owner.ItemAdded(-1);
+      
+    // MWE: Still needed ???  
+    //      ENdUpdate already added all items.
+    //if Flag then
+    //   Owner.ItemAdded(-1);
   end;
 end;
 
@@ -332,6 +333,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2004/05/18 23:10:41  marc
+  * Started to move TListview to the WS interface
+
   Revision 1.19  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

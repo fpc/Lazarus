@@ -44,7 +44,7 @@ uses
 // To get as little as posible circles,
 // uncomment only when needed for registration
 ////////////////////////////////////////////////////
-//  ComCtrls,
+  ComCtrls,
 ////////////////////////////////////////////////////
   WSLCLClasses, WSControls, WSExtCtrls, WSStdCtrls,
   WSToolwin;
@@ -65,12 +65,18 @@ type
   TWSPageControl = class(TWSCustomNotebook)
   end;
 
-  { TWSCustomListView }
-
+  { TWSCustomListView }                              
+  
+  TWSCustomListViewClass = class of TWSCustomListView;
   TWSCustomListView = class(TWSWinControl)
+    class procedure ChangeItem(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); virtual;
+    class procedure DeleteItem(const ALV: TCustomListView; const AIndex: Integer); virtual;
+    class procedure InsertItem(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); virtual;
+    class procedure SelectItem(const ALV: TCustomListView; const AItem: TListItem); virtual;
+    class procedure ShowItem(const ALV: TCustomListView; const AItem: TListItem); virtual;
   end;
 
-  { TWSListView }
+  { TWSListView }                             
 
   TWSListView = class(TWSCustomListView)
   end;
@@ -118,6 +124,44 @@ type
 
 implementation
 
+uses
+  // TODO: remove when implemented on win32
+  Controls, LMessages;
+
+
+  { TWSCustomListView }
+
+procedure TWSCustomListView.ChangeItem(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); 
+begin
+  // TODO: remove when implemented on win32
+  CNSendMessage(LM_LV_CHANGEITEM, ALV, @AIndex);
+end;
+
+procedure TWSCustomListView.DeleteItem(const ALV: TCustomListView; const AIndex: Integer); 
+begin
+  // TODO: remove when implemented on win32
+  CNSendMessage(LM_LV_DELETEITEM, ALV ,@AIndex);
+end;
+
+procedure TWSCustomListView.InsertItem(const ALV: TCustomListView; const AIndex: Integer; const AItem: TListItem); 
+begin
+  // TODO: remove when implemented on win32
+  CNSendMessage(LM_LV_ADDITEM, ALV, @AIndex);
+end;
+
+procedure TWSCustomListView.SelectItem(const ALV: TCustomListView; const AItem: TListItem); 
+begin
+  // TODO: remove when implemented on win32
+  CNSendMessage(LM_LV_SELECTITEM, ALV, AItem);
+end;
+
+procedure TWSCustomListView.ShowItem(const ALV: TCustomListView; const AItem: TListItem); 
+begin
+  // TODO: remove when implemented on win32
+  CNSendMessage(LM_LV_SHOWITEM, ALV, AItem);
+end;
+
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -127,7 +171,7 @@ initialization
 //  RegisterWSComponent(TStatusBar, TWSStatusBar);
 //  RegisterWSComponent(TTabSheet, TWSTabSheet);
 //  RegisterWSComponent(TPageControl, TWSPageControl);
-//  RegisterWSComponent(TCustomListView, TWSCustomListView);
+  RegisterWSComponent(TCustomListView, TWSCustomListView);
 //  RegisterWSComponent(TListView, TWSListView);
 //  RegisterWSComponent(TProgressBar, TWSProgressBar);
 //  RegisterWSComponent(TCustomUpDown, TWSCustomUpDown);

@@ -2914,96 +2914,6 @@ begin
     gdk_pixmap_unref(TempMaskPixmap);
 end;
 
-procedure TGtkWidgetSet.ListViewChangeItem(TheListView: TObject; Index: integer);
-{$IfDef GTK2}
-begin
-  DebugLn('TODO: TGtkWidgetSet.ListViewChangeItem');
-end;
-{$Else}
-var
-  ListView: TListView;
-  LVWidget: PgtkCList;
-  pStr: PChar;
-  ListItem: TListItem;
-  i, ColCount: integer;
-  Pixmap: PGdkPixmap;
-  Mask: PGdkBitmap;
-  ImageBitmap, MaskBitmap: TBitmap;
-  ImageRect: TRect;
-begin
-  ListView:=TListView(TheListView);
-  LVWidget:= PgtkCList(
-           GetWidgetInfo(Pointer(ListView.Handle), True)^.CoreWidget);
-  ListItem := ListView.Items[Index];
-  // set caption (= first column text)
-  pStr:=PChar(ListItem.Caption);
-  if pStr=nil then pStr:=#0;
-  gtk_clist_set_text(LVWidget,Index,0,pStr);
-
-  // set image
-  if (ListView.SmallImages <> nil) and (ListItem.ImageIndex >= 0)
-  and (ListItem.ImageIndex < Listview.SmallImages.Count)
-  then begin
-    //draw image
-    ListView.SmallImages.GetInternalImage(ListItem.ImageIndex,
-      ImageBitmap, MaskBitmap, ImageRect);
-    if (ImageRect.Left<>0) or (ImageRect.Top<>0) then
-      DebugLn('WARNING: TGtkWidgetSet.ListViewChangeItem does not support combined imagelists');
-    Pixmap:=PgdiObject(ImageBitmap.Handle)^.GDIPixmapObject;
-    Mask:=pgdkBitmap(PgdiObject(ImageBitmap.Handle)^.GDIBitmapMaskObject);
-    gtk_clist_set_pixtext(LVWidget,Index,0,pStr,3,Pixmap,Mask);
-  end;
-
-  // set the other column texts
-  ColCount:=LVWidget^.Columns;
-  for i := 1 to ColCount-1 do
-  begin
-    if i<=ListItem.SubItems.Count then begin
-      // the first subitem is the second column
-      pStr:=PChar(ListItem.SubItems.Strings[i-1]);
-      if pStr=nil then pStr:=#0;
-    end else begin
-      pStr:=#0
-    end;
-    gtk_clist_set_text(LVWidget,Index,i,pStr);
-  end;
-end;
-{$EndIf}
-
-{------------------------------------------------------------------------------
-  procedure TGtkWidgetSet.ListViewAddItem(TheListView: TObject;Index: Integer);
-------------------------------------------------------------------------------}
-procedure TGtkWidgetSet.ListViewAddItem(TheListView: TObject; Index: Integer);
-{$IfDef GTK2}
-begin
-  DebugLn('TODO: TGtkWidgetSet.ListViewAddItem');
-end;
-{$Else}
-var
-  ListView: TListView;
-  ListViewWidget: PGtkCList;
-  Titles: PPGChar;
-  i, Count: integer;
-begin
-  ListView:=TListView(TheListView);
-  ListViewWidget:= PGtkCList(GetWidgetInfo(
-                         Pointer(ListView.Handle), True)^.CoreWidget);
-  Count:=ListViewWidget^.columns;
-  if Count=0 then begin
-    DebugLn('WARNING: TGtkWidgetSet.ListViewAddItem  ListViewWidget^.columns=0');
-    exit;
-  end;
-  GetMem(Titles,SizeOf(PGChar)*Count);
-  Titles[0]:=#0;
-  for i:=1 to Count-1 do Titles[i]:=nil;
-  if Index = -1 then
-    gtk_clist_append(ListViewWidget,Titles)
-  else
-    gtk_clist_insert(ListViewWidget,Index,Titles);
-  FreeMem(Titles);
-end;
-{$EndIf}
-
 {------------------------------------------------------------------------------
   function TGtkWidgetSet.GetTopIndex(Sender: TObject): integer;
 ------------------------------------------------------------------------------}
@@ -3231,70 +3141,36 @@ begin
         end;
       end;
 
-      LM_LV_DELETEITEM :
-      begin
-        if (Sender is TListView) then
-        begin
-          {$IfDef GTK2}
+      LM_LV_DELETEITEM:
+       {$IfDef GTK2}
           DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_DELETEITEM');
-          {$Else}
-          Num := Integer(data^);
-          Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-          gtk_clist_remove(PgtkCList(Widget),Num);
-          {$EndIf}
-        end;
-      end;
+       {$Else}
+          DebugLn('[WARNING] Obsolete messagecall to LM_LV_DELETEITEM for ', Sender.ClassName); 
+       {$EndIf}
 
-      LM_LV_CHANGEITEM :
-        if (Sender is TListView) then
-          ListViewChangeItem(Sender,Integer(data^));
+      LM_LV_CHANGEITEM:
+       {$IfDef GTK2}
+          DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_CHANGEITEM');
+       {$Else}
+          DebugLn('[WARNING] Obsolete messagecall to LM_LV_CHANGEITEM for ', Sender.ClassName); 
+       {$EndIf}
 
-      LM_LV_ADDITEM :
-      if (Sender is TListView) then
-      begin
-        if data <> nil then begin
-          if Integer(data^) < 0 then begin
-            ListViewAddItem(Sender, -1);
-            ListViewChangeItem(Sender,TListView(Sender).Items.Count-1);
-          end
-          else begin
-            ListViewAddItem(Sender,Integer(data^));
-            ListViewChangeItem(Sender,Integer(data^));
-          end;
-        end
-        else begin
-          ListViewAddItem(Sender,-1);
-          ListViewChangeItem(Sender,TListView(Sender).Items.Count-1);
-        end;
-      end;
+      LM_LV_ADDITEM:
+       {$IfDef GTK2}
+          DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_ADDITEM');
+       {$Else}
+          DebugLn('[WARNING] Obsolete messagecall to LM_LV_ADDITEM for ', Sender.ClassName); 
+       {$EndIf}
 
       LM_LV_SELECTITEM:
-      if (Sender is TListView) then
-      begin
        {$IfDef GTK2}
-        DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_SELECTITEM');
+          DebugLn('TODO: TGtkWidgetSet.IntSendMessage3 LM_LV_SELECTITEM');
        {$Else}
-        Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-        gtk_clist_unselect_all(PGtkCList(Widget));
-        if Data<>nil then
-          gtk_clist_select_row(PGtkCList(Widget),TListItem(Data).Index,0);
+          DebugLn('[WARNING] Obsolete messagecall to LM_LV_SELECTITEM for ', Sender.ClassName); 
        {$EndIf}
-      end;
+      
       LM_LV_SHOWITEM:
-      if (Sender is TListView) then
-      begin
-        if Data<>nil 
-        then begin
-          Widget:= GetWidgetInfo(Pointer(Handle), True)^.CoreWidget;
-          //0=NotVisible
-          //1=PartiallyVisible
-          //2=Fully Visible
-          if gtk_clist_row_is_visible(PGtkCList(Widget),
-                               TListItem(Data).Index) < 2 
-          then gtk_clist_moveto(PGtkCList(Widget),TListItem(Data).Index,0,1,0);
-          
-        end;
-      end;
+        DebugLn('[WARNING] Obsolete messagecall to LM_LV_SHOWITEM for ', Sender.ClassName); 
 
       LM_BRINGTOFRONT:
       begin
@@ -3379,7 +3255,7 @@ begin
       end;
 
       //TBitBtn
-      LM_IMAGECHANGED:
+      LM_IMAGECHANGED:  
         DebugLn('[WARNING] Obsolete messagecall to LM_IMAGECHANGED for ', Sender.ClassName); 
       LM_LAYOUTCHANGED:
         DebugLn('[WARNING] Obsolete messagecall to LM_LAYOUTCHANGED for ', Sender.ClassName); 
@@ -9323,6 +9199,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.503  2004/05/18 23:10:41  marc
+  * Started to move TListview to the WS interface
+
   Revision 1.502  2004/05/16 23:24:41  marc
   + Added WSBitBtn interface
   + Implemented WSBitBtn interface for gtk

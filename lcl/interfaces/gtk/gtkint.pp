@@ -230,10 +230,6 @@ type
     procedure RemoveNBPage(ANoteBook: TObject; Index: Integer);virtual;
     procedure MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);virtual;
 
-    // listview
-    procedure ListViewChangeItem(TheListView: TObject; Index: integer);
-    procedure ListViewAddItem(TheListView: TObject; Index: Integer);
-
     // listbox
     function GetTopIndex(Sender: TObject): integer;virtual;
     function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer;virtual;
@@ -344,7 +340,7 @@ uses
 // GtkWSCalendar,
 // GtkWSCheckLst,
 // GtkWSCListBox,
-// GtkWSComCtrls,
+ GtkWSComCtrls,
  GtkWSControls,
 // GtkWSDbCtrls,
 // GtkWSDBGrids,
@@ -464,6 +460,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.182  2004/05/18 23:10:41  marc
+  * Started to move TListview to the WS interface
+
   Revision 1.181  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

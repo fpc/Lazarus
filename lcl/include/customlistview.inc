@@ -167,8 +167,8 @@ procedure TCustomListView.InitializeWnd;
 begin
   inherited InitializeWnd;
   CNSendMessage(LM_SETPROPERTIES,Self,nil);
-  if FSelected<>nil then
-    CNSendMessage(LM_LV_SELECTITEM,Self,FSelected);
+  if FSelected <> nil 
+  then TWSCustomListViewClass(WidgetSetClass).SelectItem(Self, FSelected);
 end;
 
 procedure TCustomListView.Loaded;
@@ -197,7 +197,7 @@ end;
 {------------------------------------------------------------------------------}
 {   TCustomListView ItemChanged                                                }
 {------------------------------------------------------------------------------}
-Procedure TCustomListView.ItemChanged(Index : Integer);  //called by TListItems
+procedure TCustomListView.ItemChanged(const AItem: TListItem; const AIndex: Integer);  //called by TListItems
 Begin
   if csDestroying in Componentstate Then Exit;
   if FUpdateCount>0 then
@@ -205,39 +205,40 @@ Begin
   else begin
     //notify the interface....
     if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    CNSendMessage(LM_LV_CHANGEITEM,self,@Index);
+    TWSCustomListViewClass(WidgetSetClass).ChangeItem(Self, AIndex, AItem);
   end;
 End;
 
 {------------------------------------------------------------------------------}
 {   TCustomListView ItemDeleted                                                }
 {------------------------------------------------------------------------------}
-Procedure TCustomListView.ItemDeleted(Index : Integer);  //called by TListItems
-Begin
+procedure TCustomListView.ItemDeleted(const AIndex : Integer);  //called by TListItems
+begin
   if csDestroying in Componentstate Then Exit;
-  if FSelected= FListItems[Index] then FSelected:=nil;
-  DoDeletion(FListItems[Index]);
+  if FSelected = FListItems[AIndex] then FSelected := nil;
+  DoDeletion(FListItems[AIndex]);
   if FUpdateCount>0 then
     Include(FStates,lvUpdateNeeded)
   else begin
     //notify the interface....
-    if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    CNSendMessage(LM_LV_DELETEITEM,self,@Index);
+    if (not HandleAllocated) or (csLoading in ComponentState) then Exit;
+    TWSCustomListViewClass(WidgetSetClass).DeleteItem(Self, AIndex);
   end;
 End;
 
 {------------------------------------------------------------------------------}
-{   TCustomListView ItemAdded                                                  }
+{   TCustomListView ItemInserted                                               }
 {------------------------------------------------------------------------------}
-Procedure TCustomListView.ItemAdded(Index: Integer);
-Begin
+procedure TCustomListView.ItemInserted(const AItem: TListItem; const AIndex: Integer);
+begin
   if csDestroying in Componentstate Then Exit;
-  if FUpdateCount>0 then
+  if FUpdateCount > 0 
+  then
     Include(FStates,lvUpdateNeeded)
   else begin
     //notify the interface....
-    if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    CNSendMessage(LM_LV_ADDITEM,self,@Index);
+    if (not HandleAllocated) or (csLoading in ComponentState) then Exit;
+    TWSCustomListViewClass(WidgetSetClass).InsertItem(Self, AIndex, AItem);
   end;
 End;
 
@@ -246,14 +247,15 @@ End;
 {------------------------------------------------------------------------------}
 procedure TCustomListView.SetItems(const AValue : TListItems);
 begin
-end;
+end; 
+
 {------------------------------------------------------------------------------}
 {   TCustomListView SetItemVisible                                             }
 {------------------------------------------------------------------------------}
 procedure TCustomListView.SetItemVisible(const AValue : TListItem);
 begin
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  CNSendMessage(LM_LV_SHOWITEM,self,AValue);
+  TWSCustomListViewClass(WidgetSetClass).ShowItem(Self, AValue);
 end;
 {------------------------------------------------------------------------------}
 {   TCustomListView Delete                                                     }
@@ -411,7 +413,9 @@ begin
   if FSelected=AValue then exit;
   FSelected := AValue;
   if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  CNSendMessage(LM_LV_SELECTITEM,self,FSelected);
+  
+  TWSCustomListViewClass(WidgetSetClass).SelectItem(Self, FSelected);
+
   //DoSelectItem(FSelected, True);
 end;
 
@@ -614,6 +618,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.35  2004/05/18 23:10:41  marc
+  * Started to move TListview to the WS interface
+
   Revision 1.34  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 
