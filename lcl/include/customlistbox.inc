@@ -150,8 +150,10 @@ end;
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.SetTopIndex(const AValue: Integer);
 begin
+  // don't check if changed. If the item is only partly visible, the message
+  // will make it complete visible.
   FTopIndex:=AValue;
-  if HandleAllocated then
+  if HandleAllocated and ([csLoading,csDestroying]*ComponentState=[]) then
     CNSendMessage(LM_LB_SETTOPINDEX, Self, Pointer(FTopIndex));
 end;
 
@@ -508,6 +510,16 @@ begin
   if not GetListBoxItemRect(Self,Index,ARect) then exit;
   if (ARect.Bottom<0) or (ARect.Top>ClientHeight) then exit;
   Result:=true;
+end;
+
+procedure TCustomListBox.MakeCurrentVisible;
+var
+  i: Integer;
+  ARect: TRect;
+begin
+  i:=ItemIndex;
+  if (i<0) or (i>=Items.Count) then exit;
+  TopIndex:=ItemIndex;
 end;
 
 

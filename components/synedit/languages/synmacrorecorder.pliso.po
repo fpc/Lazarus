@@ -4,24 +4,24 @@ msgstr ""
 "PO-Revision-Date: 2004-02-06 02:28+0100\n"
 "Project-Id-Version: synmacrorecorder\n"
 "Language-Team: polski <pl@li.org>\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ISO_8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
 "Plural-Forms:  nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: synmacrorecorder:scannotpause
 msgid "Can only pause when recording"
-msgstr "Makro nie jest nagrywane - nie moÅ¼na wstrzymaÄ‡"
+msgstr "Makro nie jest nagrywane - nie mo¿na wstrzymaæ"
 
 #: synmacrorecorder:scannotresume
 msgid "Can only resume when paused"
-msgstr "MoÅ¼na wznowiÄ‡ tylko po wstrzymaniu"
+msgstr "Mo¿na wznowiæ tylko po wstrzymaniu"
 
 #: synmacrorecorder:scannotplay
 msgid "Cannot playback macro when recording"
-msgstr "Nie moÅ¼na odtwarzaÄ‡ makra podczas nagrywania"
+msgstr "Nie mo¿na odtwarzaæ makra podczas nagrywania"
 
 #: synmacrorecorder:scannotrecord
 msgid "Cannot record macro when recording"
-msgstr "Nie moÅ¼na nagrywaÄ‡ dwÃ³ch makr naraz"
+msgstr "Nie mo¿na nagrywaæ dwóch makr naraz"
 

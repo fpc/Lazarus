@@ -4039,8 +4039,16 @@ msgid "Point"
 msgstr "Точка"
 
 #: lazarusidestrconsts:rslanguagepolish
-msgid "polski"
-msgstr "польский"
+msgid "Polish"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagepolishwin
+msgid "Polish(CP1250)"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagepolishiso
+msgid "Polish(ISO 8859-2)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgwrdpreview
 msgid "Preview"

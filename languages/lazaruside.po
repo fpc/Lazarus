@@ -4055,7 +4055,15 @@ msgid "Russian(CP1251)"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguagepolish
-msgid "polski"
+msgid "Polish"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagepolishiso
+msgid "Polish(ISO 8859-2)"
+msgstr ""
+
+#: lazarusidestrconsts:rslanguagepolishwin
+msgid "Polish(CP1250)"
 msgstr ""
 
 #: lazarusidestrconsts:rslanguageitalian
@@ -6823,7 +6831,7 @@ msgid "Create Submenu"
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditorhandleonclickevent
-msgid "Handle OnCLick Event"
+msgid "Handle OnClick Event"
 msgstr ""
 
 #: lazarusidestrconsts:lismenueditormoveup

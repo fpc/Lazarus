@@ -391,6 +391,7 @@ type
     function ItemAtPos(const Pos: TPoint; Existing: Boolean): Integer;
     function ItemRect(Index: Integer): TRect;
     function ItemVisible(Index: Integer): boolean;
+    procedure MakeCurrentVisible;
     procedure Clear;
   public
     property BorderStyle : TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
@@ -1495,6 +1496,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.129  2004/02/06 16:58:58  mattias
+  updated polish translation
+
   Revision 1.128  2004/02/05 13:53:38  mattias
   fixed GetConstraints for win32 intf
 

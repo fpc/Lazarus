@@ -4,7 +4,7 @@ msgstr ""
 "PO-Revision-Date: 2004-02-06 02:26+0100\n"
 "Project-Id-Version: objinspstrconsts\n"
 "Language-Team: polski <pl@li.org>\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ISO_8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
 "Plural-Forms:  nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
@@ -15,7 +15,7 @@ msgstr " Obrazki "
 
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
-msgstr " WÅ‚aÅ›ciwoÅ›Ä‡ elementu "
+msgstr " W³a¶ciwo¶æ elementu "
 
 #: objinspstrconsts:sccslvedtgrplcaption
 msgid " Items "
@@ -27,7 +27,7 @@ msgstr " Wybrany obrazek "
 
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
-msgstr "wybrano %u elementÃ³w"
+msgstr "wybrano %u elementów"
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"
@@ -35,7 +35,7 @@ msgstr "&Dodaj"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
-msgstr "&UsuÅ„"
+msgstr "&Usuñ"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
@@ -47,19 +47,19 @@ msgstr "Wszystkie"
 
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
-msgstr "WyczyÅ›Ä‡"
+msgstr "Wyczy¶æ"
 
 #: objinspstrconsts:sccsilconfirme
 msgid "Confirme clear all images ?"
-msgstr "Chcesz wyczyÅ›ciÄ‡ wszystkie obrazki ?"
+msgstr "Chcesz wyczy¶ciæ wszystkie obrazki ?"
 
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
-msgstr "UsuÅ„"
+msgstr "Usuñ"
 
 #: objinspstrconsts:oiserror
 msgid "Error"
-msgstr "BÅ‚Ä…d"
+msgstr "B³±d"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -71,7 +71,7 @@ msgstr "Indeks obrazka"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
-msgstr "Edytor listy obrazkÃ³w"
+msgstr "Edytor listy obrazków"
 
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
@@ -87,19 +87,19 @@ msgstr "Nowy"
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
-msgstr "Inspektor obiektÃ³w"
+msgstr "Inspektor obiektów"
 
 #: objinspstrconsts:oisproperties
 msgid "Properties"
-msgstr "WÅ‚aÅ›ciwoÅ›ci"
+msgstr "W³a¶ciwo¶ci"
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
-msgstr "Ustaw domyÅ›lnÄ… wartoÅ›Ä‡"
+msgstr "Ustaw domy¶ln± warto¶æ"
 
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
-msgstr "Ustaw domyÅ›lnÄ… wartoÅ›Ä‡: %s"
+msgstr "Ustaw domy¶ln± warto¶æ: %s"
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
@@ -119,5 +119,5 @@ msgstr "Nieznany"
 
 #: objinspstrconsts:oisvalue
 msgid "Value:"
-msgstr "WartoÅ›Ä‡:"
+msgstr "Warto¶æ:"
 

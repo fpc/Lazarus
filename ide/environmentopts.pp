@@ -95,6 +95,8 @@ type
     llGerman,
     llItalian,
     llPolish,
+    llPolishISO_8859_2,
+    llPolishCP1251,
     llRussian,
     llRussianCP1251,
     llSpanish,
@@ -112,6 +114,8 @@ const
     'German',
     'Italian',
     'Polish',
+    'Polish(ISO 8859-2)',
+    'Polish(CP1250)',    
     'Russian',
     'Russian(CP1251)',
     'Spanish',
@@ -119,7 +123,7 @@ const
   );
 
   LazarusLanguageIDs: array[TLazarusLanguage] of string = (
-    '', 'ca', 'en', 'fr', 'de', 'it', 'pl', 'ru', 'ruwin', 'es', 'fi'
+    '', 'ca', 'en', 'fr', 'de', 'it', 'pl', 'pliso', 'plwin', 'ru', 'ruwin', 'es', 'fi'
   );
   
   
@@ -673,6 +677,8 @@ begin
     llRussian  : Result:=rsLanguageRussian;
     llRussianCP1251: Result:=rsLanguageRussianWin;
     llPolish   : Result:=rsLanguagePolish;
+    llPolishISO_8859_2   : Result:=rsLanguagePolishISO;    
+    llPolishCP1251   : Result:=rsLanguagePolishWin;        
     llItalian  : Result:=rsLanguageItalian;
     llCatalan  : Result:=rsLanguageCatalan;
     llFinnish  : Result:=rsLanguageFinnish;

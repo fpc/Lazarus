@@ -4,7 +4,7 @@ msgstr ""
 "PO-Revision-Date: 2004-02-06 02:27+0100\n"
 "Project-Id-Version: synedit\n"
 "Language-Team: polski <pl@li.org>\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=ISO_8859-2\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.3\n"
 "Plural-Forms:  nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
@@ -47,7 +47,7 @@ msgstr "Pliki Cache (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
 
 #: syneditstrconst:syns_filtercss
 msgid "Cascading Stylesheets (*.css)|*.css"
-msgstr "Kaskadowe arkusze styl√≥w (*.css)|*.css"
+msgstr "Kaskadowe arkusze stylÛw (*.css)|*.css"
 
 #: syneditstrconst:syns_filtercorbaidl
 msgid "CORBA IDL files (*.idl)|*.idl"
@@ -171,7 +171,7 @@ msgstr "Pliki Semanta DD (*.sdd)|*.sdd"
 
 #: syneditstrconst:syns_eduplicateshortcut
 msgid "Shortcut already exists"
-msgstr "Skr√≥t ju≈º istnieje"
+msgstr "SkrÛt juø istnieje"
 
 #: syneditstrconst:syns_filtersql
 msgid "SQL Files (*.sql)|*.sql"
@@ -187,15 +187,15 @@ msgstr "Pliki Tcl/Tk (*.tcl)|*.tcl"
 
 #: syneditstrconst:syns_duplicateshortcutmsg
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr "Klawisz \"%s\" jest ju≈º przypisany do innego polecenia edytora. (%s)"
+msgstr "Klawisz \"%s\" jest juø przypisany do innego polecenia edytora. (%s)"
 
 #: syneditstrconst:syns_duplicateshortcutmsg2
 msgid "The keystroke \"%s\" is already assigned to another editor command.\015\nThe shortcut for this item has not been changed."
-msgstr "Klawisz \"%s\" jest ju≈º przypisany do innego polecenia edytora.\015\nSkr√≥t nie zosta≈Ç zmieniony."
+msgstr "Klawisz \"%s\" jest juø przypisany do innego polecenia edytora.\015\nSkrÛt nie zosta≥ zmieniony."
 
 #: syneditstrconst:syns_scrollinfofmttop
 msgid "Top Line: %d"
-msgstr "G√≥rna linia: %d"
+msgstr "GÛrna linia: %d"
 
 #: syneditstrconst:syns_filterunixshellscript
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
