@@ -1,0 +1,272 @@
+{  $Id$  }
+{
+ /***************************************************************************
+                       idemacros.pp  -  macros for tools
+                       ---------------------------------
+
+
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+  Author: Mattias Gaertner
+
+  Abstract:
+    This unit defines the classes TTransferMacro and TTransferMacroList. These
+    classes stores and substitutes macros in strings. Transfer macros are an
+    easy way to transfer some ide variables to programs like the compiler,
+    the debugger and all the other tools.
+    Transfer macros have the form $(macro_name). It is also possible to define
+    macro functions, which have the form $macro_func_name(parameter).
+    The default macro functions are:
+      $Ext(filename) - equal to ExtractFileExt
+      $Path(filename) - equal to ExtractFilePath
+      $Name(filename) - equal to ExtractFileName
+      $NameOnly(filename) - equal to ExtractFileName but without extension.
+}
+unit TransferMacros;
+
+{$mode objfpc}{$H+}
+
+interface
+
+uses Classes, SysUtils;
+
+type
+  TTransferMacro = class;
+
+  TOnSubstitution = procedure(TheMacro: TTransferMacro; var s:string;
+    var Handled, Abort: boolean) of object;
+
+  TMacroFunction = function(s:string):string of object;
+
+  TTransferMacro = class
+  public
+    Name: string;
+    Value: string;
+    MacroFunction: TMacroFunction;
+    constructor Create(AName, AValue:string; AMacroFunction: TMacroFunction);
+  end;
+
+  TTransferMacroList = class
+  private
+    fItems: TList;  // list of TTransferMacro
+    fOnSubstitution: TOnSubstitution;
+    function GetItems(Index: integer): TTransferMacro;
+    procedure SetItems(Index: integer; NewMacro: TTransferMacro);
+  protected
+    function MF_Ext(Filename:string):string; virtual;
+    function MF_Path(Filename:string):string; virtual;
+    function MF_Name(Filename:string):string; virtual;
+    function MF_NameOnly(Filename:string):string; virtual;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    property Items[Index: integer]: TTransferMacro read GetItems write SetItems; default;
+    procedure SetValue(MacroName, NewValue: string);
+    function Count: integer;
+    procedure Clear;
+    procedure Delete(Index: integer);
+    procedure Add(NewMacro: TTransferMacro);
+    function SubstituteStr(var s:string): boolean; virtual;
+    property OnSubstitution: TOnSubstitution
+       read fOnSubstitution write fOnSubstitution;
+    function FindByName(MacroName: string): TTransferMacro; virtual;
+  end;
+
+
+implementation
+
+
+{ TTransferMacro }
+
+constructor TTransferMacro.Create(AName, AValue:string;
+  AMacroFunction: TMacroFunction);
+begin
+  Name:=AName;
+  Value:=AValue;
+  MacroFunction:=AMacroFunction;
+end;
+
+{ TTransferMacroList }
+
+constructor TTransferMacroList.Create;
+begin
+  inherited Create;
+  fItems:=TList.Create;
+  Add(TTransferMacro.Create('Ext','',@MF_Ext));
+  Add(TTransferMacro.Create('Path','',@MF_Path));
+  Add(TTransferMacro.Create('Name','',@MF_Name));
+  Add(TTransferMacro.Create('NameOnly','',@MF_NameOnly));
+end;
+
+destructor TTransferMacroList.Destroy;
+begin
+  Clear;
+  fItems.Free;
+  inherited Destroy;
+end;
+
+function TTransferMacroList.GetItems(Index: integer): TTransferMacro;
+begin
+  Result:=TTransferMacro(fItems[Index]);
+end;
+
+procedure TTransferMacroList.SetItems(Index: integer;
+  NewMacro: TTransferMacro);
+begin
+  fItems[Index]:=NewMacro;
+end;
+
+procedure TTransferMacroList.SetValue(MacroName, NewValue: string);
+var AMacro:TTransferMacro;
+begin
+  AMacro:=FindByName(MacroName);
+  if AMacro<>nil then AMacro.Value:=NewValue;
+end;
+
+function TTransferMacroList.Count: integer;
+begin
+  Result:=fItems.Count;
+end;
+
+procedure TTransferMacroList.Clear;
+var i:integer;
+begin
+  for i:=0 to fItems.Count-1 do Items[i].Free;
+  fItems.Clear;
+end;
+
+procedure TTransferMacroList.Delete(Index: integer);
+begin
+  Items[Index].Free;
+  fItems.Delete(Index);
+end;
+
+procedure TTransferMacroList.Add(NewMacro: TTransferMacro);
+begin
+  fItems.Add(NewMacro);
+end;
+
+function TTransferMacroList.SubstituteStr(var s:string): boolean;
+var MacroStart,MacroEnd: integer;
+  MacroName, MacroStr, MacroParam: string;
+  AMacro: TTransferMacro;
+  Handled, Abort: boolean;
+
+  function SearchBracketClose(Position:integer): integer;
+  var BracketClose:char;
+  begin
+    if s[Position]='(' then BracketClose:=')'
+    else BracketClose:='{';
+    inc(Position);
+    while (Position<=length(s)) and (s[Position]<>BracketClose) do begin
+      if s[Position]='\' then
+        inc(Position)
+      else if (s[Position] in ['(','{']) then
+        Position:=SearchBracketClose(Position);
+      inc(Position);
+    end;
+    Result:=Position;
+  end;
+
+begin
+  Result:=true;
+  MacroStart:=1;
+  repeat
+    while (MacroStart<=length(s))
+    and ((s[MacroStart]<>'$') or ((MacroStart>1) and (s[MacroStart-1]='\'))) do
+      inc(MacroStart);
+    if MacroStart>length(s) then exit;
+    MacroEnd:=MacroStart+1;
+    while (MacroEnd<=length(s)) 
+    and (s[MacroEnd] in ['a'..'z','A'..'Z','0'..'9','_']) do
+      inc(MacroEnd);
+    MacroName:=copy(s,MacroStart+1,MacroEnd-MacroStart-1);
+    if (MacroEnd<length(s)) and (s[MacroEnd] in ['(','{']) then begin
+      MacroEnd:=SearchBracketClose(MacroEnd)+1;
+      if MacroEnd>length(s) then exit;
+      MacroStr:=copy(s,MacroStart,MacroEnd-MacroStart);
+      // Macro found
+      Handled:=false;
+      Abort:=false;
+      if MacroName<>'' then begin
+        // Macro function -> substitute macro parameter first
+        MacroParam:=copy(MacroStr,length(MacroName)+3
+            ,length(MacroStr)-length(MacroName)-3);
+        SubstituteStr(MacroParam);
+        MacroStr:=copy(MacroStr,1,length(MacroName)+2)+MacroParam
+            +copy(MacroStr,length(MacroStr),1);
+        AMacro:=FindByName(MacroName);
+        if Assigned(fOnSubstitution) then
+          fOnSubstitution(AMacro,MacroStr,Handled,Abort);
+        if Abort then begin
+          Result:=false;
+          exit;
+        end;
+        if (not Handled) and (AMacro<>nil) and (Assigned(AMacro.MacroFunction)) then
+          MacroStr:=AMacro.MacroFunction(MacroStr);
+      end else begin
+        // Macro variable
+        MacroName:=copy(s,MacroStart+2,MacroEnd-MacroStart-3);
+        AMacro:=FindByName(MacroName);
+        if Assigned(fOnSubstitution) then
+          fOnSubstitution(AMacro,MacroStr,Handled,ABort);
+        if Abort then begin
+          Result:=false;
+          exit;
+        end;
+        if (not Handled) and (AMacro<>nil) then
+          MacroStr:=AMacro.Value;
+      end;
+      s:=copy(s,1,MacroStart-1)+MacroStr+copy(s,MacroEnd,length(s)-MacroEnd+1);
+      MacroEnd:=MacroStart+length(MacroStr);
+    end;
+    MacroStart:=MacroEnd;
+  until false;
+end;
+
+function TTransferMacroList.FindByName(MacroName: string): TTransferMacro;
+var i:integer;
+begin
+  MacroName:=lowercase(MacroName);
+  for i:=0 to Count-1 do
+    if MacroName=lowercase(Items[i].Name) then begin
+      Result:=Items[i];
+      exit;
+    end;
+  Result:=nil;
+end;
+
+function TTransferMacroList.MF_Ext(Filename:string):string;
+begin
+  Result:=ExtractFileExt(Filename);
+end;
+
+function TTransferMacroList.MF_Path(Filename:string):string;
+begin
+  Result:=ExtractFilePath(Filename);
+end;
+
+function TTransferMacroList.MF_Name(Filename:string):string;
+begin
+  Result:=ExtractFilename(Filename);
+end;
+
+function TTransferMacroList.MF_NameOnly(Filename:string):string;
+var Ext:string;
+begin
+  Result:=ExtractFileName(Filename);
+  Ext:=ExtractFileExt(Result);
+  Result:=copy(Result,1,length(Result)-length(Ext));
+end;
+
+
+end.

@@ -1,8 +1,8 @@
 {  $Id$  }
 {
  /***************************************************************************
-                          compiler.pp  -  Main application unit
-                             -------------------
+                        compiler.pp  -  Main application unit
+                        -------------------------------------
                    TCompiler is responsible for configuration and running
                    the PPC386 compiler.
 
@@ -29,40 +29,59 @@ unit compiler;
 interface
 
 uses
-  classes, sysutils, forms, compileroptions, Project,Process,dlgMessage;
+  Classes, SysUtils, Forms, Controls, CompilerOptions, Project, Process;
 
 type
-
-  TOutString = procedure (Value: String) of Object;
-  TErrorType = (etNone, etHint, etError, etFatal, etWarning);
+  TOnOutputString = procedure (Value: String) of Object;
+  TErrorType = (etNone, etHint, etWarning, etError, etFatal);
+  TOnCmdLineCreate = procedure(var CmdLine: string; var Abort:boolean)
+     of object;
   
   TCompiler = class(TObject)
   private
-    FOutputString : TOutString;
+    FOnOutputString : TOnOutputString;
     FOutputList : TStringList;
+    FOnCmdLineCreate : TOnCmdLineCreate;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure Compile(MainUnit : String);
-    function GetLineNumber(Value : String) : Integer;
-    function GetColumnNumber(Value : String) : Integer;
-    function GetMessageType(Value : String) : TErrorType;
-    function GetUnitName(Value : String) : String;
-    property OutputString : TOutString read FOutputString write FOutputString;
+    function Compile(AProject: TProject): TModalResult;
+    function GetSourcePosition(Line: string; var Filename:string;
+       var CaretXY: TPoint; var MsgType: TErrorType): boolean;
+    property OnOutputString : TOnOutputString read FOnOutputString write FOnOutputString;
     property OutputList : TStringList read FOutputList;
+    property OnCommandLineCreate: TOnCmdLineCreate
+       read FOnCmdLineCreate write FOnCmdLineCreate;
   end;
+
+const
+  ErrorTypeNames : array[TErrorType] of string = (
+      'None','Hint','Warning','Error','Fatal'
+    );
 
 var
   Compiler1 : TCompiler;
 
+function ErrorTypeNameToType(Name:string): TErrorType;
+
 implementation
 
+function ErrorTypeNameToType(Name:string): TErrorType;
+begin
+  Name:=lowercase(Name);
+  for Result:=Low(TErrorType) to High(TErrorType) do
+    if lowercase(ErrorTypeNames[Result])=Name then exit;
+  Result:=etNone;
+end;
+
+{ TCompiler }
 
 {------------------------------------------------------------------------------}
 {  TCompiler Constructor                                                       }
 {------------------------------------------------------------------------------}
 constructor TCompiler.Create;
 begin
+  inherited Create;
   FOutputList := TStringList.Create;
 end;
 
@@ -72,151 +91,140 @@ end;
 destructor TCompiler.Destroy;
 begin
   FOutputList.Free;
+  inherited Destroy;
 end;
 
 {------------------------------------------------------------------------------}
 {  TCompiler Compile                                                           }
 {------------------------------------------------------------------------------}
-procedure TCompiler.Compile(MainUnit : String);
+function TCompiler.Compile(AProject: TProject): TModalResult;
 const
   BufSize = 1024;
 var
-  TheProgram : String;
+  CmdLine : String;
   Buf : Array[1..BUFSIZE] of char;
-  I,Count : longint;
+  I, Count, LineStart : longint;
   Texts : String;
-  WriteMessage : Boolean;
-
+  WriteMessage, ABort : Boolean;
+  OldCurDir: string;
   TheProcess : TProcess;
 begin
-
-  Texts := '';
-  FOutputList.Clear;
-  TheProgram := CompilerOPts.CompilerPath;
-  //TheProgram := TheProgram + ' -Ch'+inttostr(CompilerOpts.HeapSize);
-  TheProgram := TheProgram + ' '+ CompilerOpts.MakeOptionsString;
-  TheProgram := TheProgram + ' '+ MainUnit;
-  Writeln('TheProgram = '+TheProgram);
-
-  Assert(False, 'Trace:' + TheProgram);
-
-  TheProcess:=TProcess.Create(TheProgram,[poExecuteOnCreate,poUsePipes,poNoConsole]);
-//  TheProcess.Execute;
-
-  if Assigned(OutputString) 
-  then 
-  repeat
-    Count:=TheProcess.output.read(buf,BufSize);
-    WriteMessage := False;
-    for I:=1 to Count do
-    begin
-      if buf[i] = #10
-      then begin
-        //determine what type of message it is
-        if (pos(') Hint:',Texts) <> 0) then WriteMessage := CompilerOpts.ShowHints
-        else
-        if (pos(') Note:',Texts) <> 0) then WriteMessage := CompilerOpts.ShowNotes
-        else
-        if (pos(') Error:',Texts) <> 0) then WriteMessage := CompilerOpts.ShowErrors
-        else
-        if (pos(') Warning:',Texts) <> 0) then WriteMessage := CompilerOpts.ShowWarn
-        else
-        WriteMessage := True;
-
-        FOutputList.Add(Texts);
-
-        if (WriteMessage) or (CompilerOpts.ShowAll)
-        then begin
-          OutputString(Texts);
-        end;
-//        Application.ProcessMessages;
-
-        Texts := '';
-      end
-      else Texts := Texts + buf[i];
+  Result:=mrCancel;
+  if AProject.MainUnit<0 then exit;
+  OldCurDir:=GetCurrentDir;
+  if not SetCurrentDir(ExtractFilePath(AProject.ProjectFile)) then exit;
+  try
+    Texts := '';
+    FOutputList.Clear;
+    CmdLine := CompilerOpts.CompilerPath;
+    CmdLine := CmdLine + ' '+ CompilerOpts.MakeOptionsString;
+    CmdLine := CmdLine + ' '+ AProject.ProjectFile;
+    Writeln('[TCompiler.Compile] CmdLine="',CmdLine,'"');
+    if Assigned(FOnCmdLineCreate) then begin
+      Abort:=false;
+      FOnCmdLineCreate(CmdLine,Abort);
+      if Abort then begin
+        Result:=mrAbort;
+        exit;
+      end;
     end;
-  until Count=0;
-  TheProcess.Free;
-Writeln('-----------Exiting Compiler.Compile');
-Application.ProcessMessages;
-end;
 
-{--------------------------------------------------------------------------
-            TCompiler GetLineNumber
----------------------------------------------------------------------------}
-function TCompiler.GetLineNumber(Value : String) : Integer;
-var
-  Texts : String;
-  num : Integer;
-  Temp : String;
-begin
-  {This assumes the error message will have the line number
-   in the format like:
-   (123,45)
-  }
+    try
+      TheProcess:=TProcess.Create(CmdLine,[poExecuteOnCreate,poUsePipes
+         ,poNoConsole,poStdErrToOutput]);
 
-  Result := -1;
-  Texts := Value;
+      repeat
+        Count:=TheProcess.Output.Read(Buf,BufSize);
+writeln('[TCompiler.Compile] ',Count,' ',TheProcess.Running,' ',TheProcess.ExitStatus);
+        if (Count=0) then begin
+          TheProcess.Free;
+          TheProcess:=nil;
+        end;
+        LineStart:=1;
+        WriteMessage := False;
+        for I:=1 to Count do begin
+          if Buf[i] in [#10,#13] then begin
+            SetLength(TextS,i-LineStart);
+            if TextS<>'' then
+              Move(Buf[LineStart],TextS[1],length(TextS));
+writeln('[TCompiler.Compile] Output="',TextS,'"');
+            //determine what type of message it is
+            if (pos(') Hint:',Texts) <> 0) then
+              WriteMessage := CompilerOpts.ShowHints or CompilerOpts.ShowAll
+            else if (pos(') Note:',Texts) <> 0) then
+              WriteMessage := CompilerOpts.ShowNotes or CompilerOpts.ShowAll
+            else if (pos(') Error:',Texts) <> 0) then
+              WriteMessage := CompilerOpts.ShowErrors or CompilerOpts.ShowAll
+            else if (pos(') Warning:',Texts) <> 0) then
+              WriteMessage := CompilerOpts.ShowWarn or CompilerOpts.ShowAll
+            else if (copy(TextS,1,5)='Panic') or (pos(') Fatal:',Texts) <> 0) then
+              WriteMessage := true;
+            FOutputList.Add(Texts);
 
-  Num := Pos('(',Texts);
-  if Num = 0 then Exit;
-  try
-    Temp := Copy(Texts,num+1,(pos(',',texts)-1)-Num);
-    Result := StrtoInt(Temp);
-  except
+            if (WriteMessage) and Assigned(OnOutputString) then
+              OnOutputString(Texts);
+
+//            Application.ProcessMessages;
+            if (Buf[i]=#13) and (i<Count) and (Buf[i+1]=#10) then inc(i);
+            LineStart:=i+1;
+          end;
+        end;
+      until Count=0;
+      Writeln('-----------Exiting Compiler.Compile');
+      Application.ProcessMessages;
+      writeln('[TCompiler.Compile] 2');
+    except
+      on e: Exception do begin
+        writeln('[TCompiler.Compile] exectpion "',E.Message,'"');
+        FOutputList.Add(E.Message);
+        if Assigned(OnOutputString) then
+          OnOutputString(E.Message);
+        Result:=mrCancel;
+        exit;
+      end;
+    end;
+  finally
+    SetCurrentDir(OldCurDir);
   end;
-
-end;
-
-
-{--------------------------------------------------------------------------
-            TCompiler GetColumnNumber
----------------------------------------------------------------------------}
-function TCompiler.GetColumnNumber(Value : String) : Integer;
-var
-  Texts : String;
-  num : Integer;
-  Temp : String;
-begin
-  {This assumes the error message will have the line number
-   in the format like:
-   (123,45)
-  }
-
-  Result := -1;
-  Texts := Value;
-
-  Num := Pos(',',Texts);
-  if Num = 0 then Exit;
-  try
-    Temp := Copy(Texts,num+1,(pos(')',texts)-1)-Num);
-    Result := StrtoInt(Temp);
-  except
-  end;
+  Result:=mrOk;
+  writeln('[TCompiler.Compile] end');
 end;
 
 {--------------------------------------------------------------------------
-            TCompiler GetMessageType
+            TCompiler GetSourcePosition
 ---------------------------------------------------------------------------}
-function TCompiler.GetMessageType(Value : String) : TErrorType;
+function TCompiler.GetSourcePosition(Line: string; var Filename:string;
+  var CaretXY: TPoint; var MsgType: TErrorType): boolean;
+{This assumes the line will have the format
+<filename>(123,45) <ErrorType>: <some text>
+}
+var StartPos, EndPos: integer;
 begin
-  {This assumes the error message will have the line number
-   in the format like:
-   (123,45)
-  }
-  Result := etNone;
-end;
-
-{--------------------------------------------------------------------------
-            TCompiler GetUnitname
----------------------------------------------------------------------------}
-function TCompiler.GetUnitName(Value : String) : String;
-begin
-  {This assumes the error message will have the line number
-   in the format like:
-  Unitname(123,45)
-  }
-  Result := Copy(Value,1,pos('(',Value)-1);
+  Result:=false;
+  StartPos:=1;
+  // find filename
+  EndPos:=StartPos;
+  while (EndPos<=length(Line)) and (Line[EndPos]<>'(') do inc(EndPos);
+  if EndPos>length(Line) then exit;
+  FileName:=copy(Line,StartPos,EndPos-StartPos);
+  // read linenumber
+  StartPos:=EndPos+1;
+  EndPos:=StartPos;
+  while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
+  if EndPos>length(Line) then exit;
+  CaretXY.Y:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
+  // read column
+  StartPos:=EndPos+1;
+  EndPos:=StartPos;
+  while (EndPos<=length(Line)) and (Line[EndPos] in ['0'..'9']) do inc(EndPos);
+  if EndPos>length(Line) then exit;
+  CaretXY.X:=StrToIntDef(copy(Line,StartPos,EndPos-StartPos),-1);
+  // read error type
+  StartPos:=EndPos+2;
+  while (EndPos<=length(Line)) and (Line[EndPos]<>':') do inc(EndPos);
+  if EndPos>length(Line) then exit;
+  MsgType:=ErrorTypeNameToType(copy(Line,StartPos,EndPos-StartPos));
+  Result:=true;
 end;
 
 
@@ -224,6 +232,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2001/03/12 09:34:51  lazarus
+  MG: added transfermacros, renamed dlgmessage.pp to msgview.pp
+
   Revision 1.7  2001/02/06 13:38:57  lazarus
   Fixes from Mattias for EditorOPtions
   Fixes to COmpiler that should allow people to compile if their path is set up.

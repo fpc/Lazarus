@@ -2,7 +2,7 @@
 {
  /***************************************************************************
                           main.pp  -  Toolbar
-                             -------------------
+                          -------------------
                    TMain is the application toolbar window.
 
 
@@ -20,7 +20,7 @@
  *                                                                         *
  ***************************************************************************/
 }
-unit main;
+unit Main;
 
 {$mode objfpc}
 {$H+}
@@ -30,9 +30,9 @@ interface
 uses
   Classes, LclLinux, Compiler, StdCtrls, Forms, Buttons, Menus, ComCtrls, Spin,
   Project, Sysutils,  Controls, Graphics, ExtCtrls, Dialogs, CompReg, CodeTools,
-  DlgMessage, NewProjectDlg, Process, IDEComp, AbstractFormEditor, FormEditor,
+  MsgView, NewProjectDlg, Process, IDEComp, AbstractFormEditor, FormEditor,
   CustomFormEditor, ObjectInspector, ControlSelection, PropEdits, UnitEditor,
-  CompilerOptions, EditorOptions, EnvironmentOpts;
+  CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros;
 
 const
   Version_String = '0.7';
@@ -174,11 +174,11 @@ type
        TheEnvironmentOptions: TEnvironmentOptions);
     procedure OnSaveEnvironmentSettings(Sender: TObject; 
        TheEnvironmentOptions: TEnvironmentOptions);
-
   private
     FCodeLastActivated : Boolean; //used for toggling between code and forms
     FSelectedComponent : TRegisteredComponent;
     fProject: TProject;
+    MacroList: TTransferMacroList;
 
     Function CreateSeperator : TMenuItem;
     Procedure SetDefaultsForForm(aForm : TCustomForm);
@@ -209,6 +209,7 @@ type
     function DoSaveProject(SaveAs:boolean):TModalResult;
     function DoCloseProject:TModalResult;
     function DoOpenProjectFile(AFileName:string):TModalResult;
+    function DoBuildProject: TModalResult;
     function SomethingOfProjectIsModified: boolean;
 
     // helpful methods
@@ -225,6 +226,10 @@ type
     procedure UpdateCaption;
     procedure UpdateMainUnitSrcEdit;
     procedure DoBringToFrontFormOrUnit;
+    procedure OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
+      var Handled, Abort: boolean);
+    procedure OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
+    function DoJumpToCompilerMessage(Index:integer): boolean;
 
     procedure LoadMainMenu;
     Procedure FormKill(Sender : TObject);
@@ -553,6 +558,9 @@ begin
 
   // create compiler interface
   Compiler1 := TCompiler.Create;
+  with Compiler1 do begin
+    OnCommandLineCreate:=@OnCmdLineCreate;
+  end;
 
   // create object inspector
   ObjectInspector1 := TObjectInspector.Create(Self);
@@ -589,6 +597,19 @@ begin
   itmSearchFindAgain.OnClick := @SourceNotebook.FindAgainClicked;
   itmSearchReplace.OnClick := @SourceNotebook.ReplaceClicked;
 
+  // macros
+  MacroList:=TTransferMacroList.Create;
+  MacroList.Add(TTransferMacro.Create('Col','',nil));
+  MacroList.Add(TTransferMacro.Create('Row','',nil));
+  MacroList.Add(TTransferMacro.Create('EdFile','',nil));
+  MacroList.Add(TTransferMacro.Create('CurToken','',nil));
+  MacroList.Add(TTransferMacro.Create('ProjFile','',nil));
+  MacroList.Add(TTransferMacro.Create('ProjPath','',nil));
+  MacroList.Add(TTransferMacro.Create('Save','',nil));
+  MacroList.Add(TTransferMacro.Create('SaveAll','',nil));
+  MacroList.Add(TTransferMacro.Create('Params','',nil));
+  MacroList.Add(TTransferMacro.Create('TargetFile','',nil));
+
   // load last project or create a new project
   if (not FileExists(EnvironmentOptions.LastSavedProjectFile))
   or (DoOpenProjectFile(EnvironmentOptions.LastSavedProjectFile)<>mrOk) then
@@ -601,6 +622,7 @@ begin
     Project.Free;
     Project:=nil;
   end;
+  MacroList.Free;
   EnvironmentOptions.Free;
   EnvironmentOptions:=nil;
   inherited Destroy;
@@ -1315,7 +1337,7 @@ end;
 
 Procedure TMainIDE.mnuViewMessagesClick(Sender : TObject);
 Begin
-  Messagedlg.Show;
+  MessagesView.Show;
 End;
 
 
@@ -1355,28 +1377,7 @@ end;
 
 Procedure TMainIDE.mnuBuildProjectClicked(Sender : TObject);
 Begin
-  DoSaveAll;
-  Assert(False, 'Trace:Build Project Clicked');
-  if SourceNotebook.Empty then Begin
-    Application.MessageBox('No units loaded.  Load a program first!','Error',mb_OK);
-    Exit;
-  end;
-
-  if not(MessageDlg.Visible) then
-   Begin  //display the dialog under the TSourceNotebook
-      MessageDlg.Show;
-      MessageDlg.Top := Screen.Height - 150;
-      MessageDlg.Height := 150;
-{      if (SourceNotebook.Top+SourceNotebook.Height) > MEssageDlg.Top then
-          SourceNotebook.Height := SourceNotebook.Height
-            - (ABS(MessageDlg.Top - (SourceNotebook.Top+SourceNotebook.Height)));
- }
-     MessageDlg.Left := SourceNotebook.Left;
-      MessageDlg.Width := SourceNotebook.Width;
-   end;
-  MessageDlg.Clear;
-  Compiler1.OutputString := @Messagedlg.Add;
-  Compiler1.Compile(SourceNotebook.ActiveUnitName);
+  DoBuildProject;
 end;
 
 Procedure TMainIDE.mnuRunProjectClicked(Sender : TObject);
@@ -2003,7 +2004,6 @@ writeln('TMainIDE.DoOpenMainUnit 3');
   NewSrcEdit.SyntaxHighlighterType:=MainUnitInfo.SyntaxHighlighter;
   NewSrcEdit.EditorComponent.CaretXY:=MainUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=MainUnitInfo.TopLine;
-
   Result:=mrOk;
 writeln('TMainIDE.DoOpenMainUnit end');
 end;
@@ -2268,6 +2268,7 @@ writeln('TMainIDE.DoSaveProject 8');
   end;
   UpdateMainUnitSrcEdit;
   UpdateCaption;
+writeln('TMainIDE.DoSaveProject End');
 end;
 
 function TMainIDE.DoCloseProject:TModalResult;
@@ -2354,6 +2355,36 @@ writeln('TMainIDE.DoOpenProjectFile 5');
 writeln('TMainIDE.DoOpenProjectFile end');
 end;
 
+function TMainIDE.DoBuildProject: TModalResult;
+begin
+  Result:=mrCancel;
+  if not (Project.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
+  then exit;
+  DoSaveAll;
+  Assert(False, 'Trace:Build Project Clicked');
+  if Project=nil then Begin
+    Application.MessageBox('Create a project first!','Error',mb_ok);
+    Exit;
+  end;
+
+  if not(MessagesView.Visible) then
+   Begin  //display the dialog under the TSourceNotebook
+      MessagesView.Show;
+      MessagesView.Top := Screen.Height - 150;
+      MessagesView.Height := 150;
+{      if (SourceNotebook.Top+SourceNotebook.Height) > MEssageDlg.Top then
+          SourceNotebook.Height := SourceNotebook.Height
+            - (ABS(MessageDlg.Top - (SourceNotebook.Top+SourceNotebook.Height)));
+ }
+     MessagesView.Left := SourceNotebook.Left;
+     MessagesView.Width := SourceNotebook.Width;
+   end;
+  MessagesView.Clear;
+  Compiler1.OnOutputString:=@MessagesView.Add;
+  Result:=Compiler1.Compile(Project);
+  DoJumpToCompilerMessage(-1);
+end;
+
 function TMainIDE.SomethingOfProjectIsModified: boolean;
 var i:integer;
 begin
@@ -2374,8 +2405,11 @@ writeln('TMainIDE.DoSaveAll');
   if Result=mrAbort then exit;
   if (SourceNoteBook.Notebook<>nil) then begin
     for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
-      Result:=DoSaveEditorUnit(i,false);
-      if Result=mrAbort then exit;
+      if (Project.MainUnit<0) 
+      or (Project.Units[Project.MainUnit].EditorIndex<>i) then begin
+        Result:=DoSaveEditorUnit(i,false);
+        if Result=mrAbort then exit;
+      end;
     end;
   end;
 end;
@@ -2548,6 +2582,107 @@ begin
   end;
 end;
 
+procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
+  var Handled, Abort: boolean);
+var MacroName:string;
+begin
+  MacroName:=lowercase(TheMacro.Name);
+  if MacroName='save' then begin
+    Handled:=true;
+    if SourceNoteBook.NoteBook<>nil then
+      Abort:=(DoSaveEditorUnit(SourceNoteBook.NoteBook.PageIndex,false)<>mrOk);
+    s:='';
+  end else if MacroName='saveall' then begin
+    Handled:=true;
+    Abort:=(DoSaveAll<>mrOk);
+    s:='';
+  end else if MacroName='edfile' then begin
+    Handled:=true;
+    if SourceNoteBook.NoteBook<>nil then
+      s:=Project.UnitWithEditorIndex(SourceNoteBook.NoteBook.PageIndex).Filename
+    else
+      s:='';
+  end else if MacroName='col' then begin
+    Handled:=true;
+    if SourceNoteBook.NoteBook<>nil then
+      s:=IntToStr(SourceNoteBook.GetActiveSE.EditorComponent.CaretX);
+  end else if MacroName='row' then begin
+    Handled:=true;
+    if SourceNoteBook.NoteBook<>nil then
+      s:=IntToStr(SourceNoteBook.GetActiveSE.EditorComponent.CaretY);
+  end else if MacroName='projfile' then begin
+    Handled:=true;
+    s:=Project.ProjectFile;
+  end else if MacroName='projpath' then begin
+    Handled:=true;
+    s:=ExtractFilePath(Project.ProjectFile);
+  end else if MacroName='curtoken' then begin
+    Handled:=true;
+    if SourceNoteBook.NoteBook<>nil then
+      s:=IntToStr(SourceNoteBook.GetActiveSE.EditorComponent.CaretY);
+  end;
+  // ToDo:
+  //MacroList.Add(TIDEMacro.Create('CurToken','',nil));
+  //MacroList.Add(TIDEMacro.Create('Params','',nil));
+  //MacroList.Add(TIDEMacro.Create('TargetFile','',nil));
+
+end;
+
+procedure TMainIDE.OnCmdLineCreate(var CmdLine: string; var Abort:boolean);
+// replace all transfer macros in command line
+begin
+  Abort:=not MacroList.SubstituteStr(CmdLine);
+writeln('[TMainIDE.OnCmdLineCreate] "',CmdLine,'"');
+end;
+
+function TMainIDE.DoJumpToCompilerMessage(Index:integer): boolean;
+
+  function FilenameIsAbsolute(TheFilename: string):boolean;
+  begin
+    DoDirSeparators(TheFilename);
+    {$IFDEF linux}
+    Result:=(TheFilename='') or (TheFilename[1]='/');
+    {$ELSE}
+    // windows
+    Result:=(length(TheFilename)<3) or (copy(TheFilename,1,2)='\\')
+        or ((upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\'));
+    {$ENDIF}
+  end;
+
+var MaxMessages: integer;
+  Filename: string;
+  CaretXY: TPoint;
+  MsgType: TErrorType;
+begin
+  Result:=false;
+  MaxMessages:=MessagesView.MessageView.Items.Count;
+  if Index>=MaxMessages then exit;
+  if (Index<0) then begin
+    // search relevant message (first error, first fatal)
+    Index:=0;
+    while (Index<MaxMessages) do begin
+      if (Compiler1.GetSourcePosition(MessagesView.MessageView.Items[Index],
+        Filename,CaretXY,MsgType)) then begin
+        if MsgType in [etError,etFatal] then break;
+      end;
+    end;
+    exit;
+  end;
+  if Compiler1.GetSourcePosition(MessagesView.MessageView.Items[Index],
+        Filename,CaretXY,MsgType) then begin
+    // search the file
+    if not FilenameIsAbsolute(Filename) then begin
+      Filename:=ExtractFilePath(Project.ProjectFile)+Filename;
+    end;
+    // open the file in the source editor
+    Result:=(DoOpenEditorFile(Filename,false)=mrOk);
+    if Result then begin
+      // set caret position
+      SourceNoteBook.GetActiveSE.EditorComponent.CaretXY:=CaretXY;
+    end;
+  end;
+end;
+
 initialization
   {$I images/laz_images.lrs}
 
@@ -2560,8 +2695,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.72  2001/03/09 11:38:20  lazarus
-  auto load last project
+  Revision 1.73  2001/03/12 09:34:52  lazarus
+  MG: added transfermacros, renamed dlgmessage.pp to msgview.pp
 
   Revision 1.68  2001/03/03 11:06:15  lazarus
   added project support, codetools

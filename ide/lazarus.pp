@@ -28,7 +28,7 @@ uses
   Forms,
   Splash,
   Main,
-  DlgMessage,
+  MsgView,
   FindReplaceDialog;
 
 var
@@ -47,11 +47,12 @@ begin
   end;
 
   Application.CreateForm(TMainIDE, MainIDE);
-  Application.CreateForm(TMessageDlg, MessageDlg);
+  Application.CreateForm(TMessagesView, MessagesView);
   Application.CreateForm(TLazFindReplaceDialog, FindReplaceDlg);
   SplashForm.StartTimer;
   Application.Run;
 
+writeln('LAZARUS END');
   // workaround till lcl closes clean
   Application.Free;
   Application:=nil;
@@ -60,8 +61,8 @@ end.
 
 {
   $Log$
-  Revision 1.16  2001/03/08 15:59:06  lazarus
-  IDE bugfixes and viewunit/forms functionality
+  Revision 1.17  2001/03/12 09:34:52  lazarus
+  MG: added transfermacros, renamed dlgmessage.pp to msgview.pp
 
   Revision 1.15  2001/02/22 17:04:57  lazarus
   added environment options + killed ide unit circles

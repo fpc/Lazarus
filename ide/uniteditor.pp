@@ -33,7 +33,7 @@ interface
 uses
   Classes, Controls, Forms, Buttons, ComCtrls, SysUtils, Dialogs, FormEditor,
   FindReplaceDialog, EditorOptions, CustomFormEditor, KeyMapping, StdCtrls,
-  Compiler, DlgMessage, WordCompletion,
+  Compiler, MsgView, WordCompletion,
 {$ifdef NEW_EDITOR_SYNEDIT}
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
   SynEditKeyCmds,SynCompletion, 
@@ -43,20 +43,25 @@ uses
   Graphics, Extctrls, Menus;
 
 type
-
 {$ifdef NEW_EDITOR_SYNEDIT}
   TmwCustomEdit = TSynEdit;
   TmwPasSyn = TSynPasSyn;
 {$endif}
+  // --------------------------------------------------------------------------
 
-  TNotifyFileEvent = procedure(Sender: Tobject; Filename : AnsiString) of Object;
+  TSrcEditMarkerType = (semActiveBreakPoint, semInactiveBreakPoint);
+  TSrcEditMarkerTypes = set of TSrcEditMarkerType;
+
+  // --------------------------------------------------------------------------
+
+  TNotifyFileEvent = procedure(Sender: TObject; Filename : AnsiString) of object;
+
+  TOnCreateDeleteBreakPoint = procedure(Sender: TObject; line:integer) of object;
 
 {---- TSource Editor ---
-  TSourceEditor is the class that controls access the the Editor and the source
+  TSourceEditor is the class that controls access for the Editor and the source
   code. It creates the PopupMenu that appears when you right-click on the
-  editor. It calls the editor functions for bookmarks, saves/opens files, adds
-  control code to the source, creates the initial code for a form, and holds the
-  unitname and filename properties.
+  editor. It calls the editor functions for bookmarks.
  ---- TSource Editor ---}
   TSourceEditor = class
   private
@@ -72,17 +77,13 @@ type
     //if this is a Form or Datamodule, this is used
     FControl: TComponent;
 
-    //Set during OPEN and Save
     FFileName : AnsiString;
+    FUnitName : String;
 
     FPopUpMenu : TPopupMenu;
-
-    //pulled out of the editor by getting it's TStrings
-    FSource : TStringList;
     FSyntaxHighlighterType: TLazSyntaxHighlighter;
-
-    //set on OPEN/SAVE
-    FUnitName : String;
+    FErrorLine: integer;
+    FExecutionLine: integer;
 
     FOnAfterClose : TNotifyEvent;
     FOnAfterOpen : TNotifyEvent;
@@ -91,6 +92,8 @@ type
     FOnBeforeOpen : TNotifyEvent;
     FOnBeforeSave : TNotifyEvent;
     FOnEditorChange: TNotifyEvent;
+    FOnCreateBreakPoint: TOnCreateDeleteBreakPoint;
+    FOnDeleteBreakPoint: TOnCreateDeleteBreakPoint;
     FVisible : Boolean;
 
     Function FindFile(Value : String) : String;
@@ -109,7 +112,8 @@ type
     Function TextUnderCursor : String;
     Function GotoMethod(Value : String) : Integer;
     Function GotoMethodDeclaration(Value : String) : Integer;
-    procedure SetCodeTemplates(NewCodeTemplates: SynEditAutoComplete.TSynAutoComplete);
+    procedure SetCodeTemplates(
+         NewCodeTemplates: SynEditAutoComplete.TSynAutoComplete);
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
 
     Function GotoLine(Value : Integer) : Integer;
@@ -132,11 +136,17 @@ type
     Procedure ccAddMessage(Texts : String);
     Function  ccParse(Texts : String) : TStrings;
 
-    Procedure FocusEditor;  // called by TSourceNotebook whne the Notebook page
+    Procedure FocusEditor;  // called by TSourceNotebook when the Notebook page
                             // changes so the editor is focused
     Procedure EditorStatusChanged(Sender: TObject; Changes: TSynStatusChanges);
+    procedure OnGutterClick(Sender: TObject; X, Y, Line: integer;
+         mark: TSynEditMark);
+    procedure OnEditorSpecialLineColor(Sender: TObject; Line: integer;
+         var Special: boolean; var FG, BG: TColor);
     Function RefreshEditorSettings : Boolean;
     procedure SetSyntaxHighlighterType(ASyntaxHighlighterType: TLazSyntaxHighlighter);
+    procedure SetErrorLine(NewLine: integer);
+    procedure SetExecutionLine(NewLine: integer);
 
     property Visible : Boolean read FVisible write FVisible default False;
   public
@@ -177,6 +187,8 @@ type
     property EditorComponent:TSynEdit read FEditor;
     property SyntaxHighlighterType: TLazSyntaxHighlighter 
        read fSyntaxHighlighterType write SetSyntaxHighlighterType;
+    property ErrorLine: integer read FErrorLine write SetErrorLine;
+    property ExecutionLine: integer read FExecutionLine write SetExecutionLine;
 
     property OnAfterClose : TNotifyEvent read FOnAfterClose write FOnAfterClose;
     property OnBeforeClose : TNotifyEvent read FOnBeforeClose write FOnBeforeClose;
@@ -185,10 +197,14 @@ type
     property OnAfterSave : TNotifyEvent read FOnAfterSave write FOnAfterSave;
     property OnBeforeSave : TNotifyEvent read FOnBeforeSave write FOnBeforeSave;
     property OnEditorChange: TNotifyEvent read FOnEditorChange write FOnEditorChange;
+    property OnCreateBreakPoint: TOnCreateDeleteBreakPoint
+       read FOnCreateBreakPoint write FOnCreateBreakPoint;
+    property OnDeleteBreakPoint: TOnCreateDeleteBreakPoint
+       read FOnDeleteBreakPoint write FOnDeleteBreakPoint;
   end;
 
 
-  TSourceNotebook = class(TFORM)
+  TSourceNotebook = class(TForm)
   private
     FMainIDE : TComponent;
     FFormEditor : TFormEditor;
@@ -225,7 +241,6 @@ type
     Function DisplayPage(SE : TSourceEditor) : Boolean;
     Function NewSE(Pagenum : Integer) : TSourceEditor;
     Procedure EditorChanged(sender : TObject);
-
     Procedure ccExecute(Sender : TObject);
     Procedure ccCancel(Sender : TObject);
     procedure ccComplete(var Value: ansistring; Shift: TShiftState);
@@ -236,7 +251,7 @@ type
     Procedure NextEditor;
     Procedure PrevEditor;
     procedure UpdateStatusBar;
-    Bookmarks : TImageList;
+    MarksImgList : TImageList;
     Procedure ProcessParentCommand(Sender: TObject; 
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     function FindBookmark(BookmarkID: integer): TSourceEditor;
@@ -322,7 +337,7 @@ type
      Procedure GotoDialogActivate(sender : TObject);
    private
    public
-     constructor Create(AOwner : TCOmponent); override;
+     constructor Create(AOwner : TComponent); override;
    end;
 
 implementation
@@ -333,6 +348,12 @@ uses
 type
   TCompletionType = (ctNone, ctWordCompletion, ctTemplateCompletion, ctCodeCompletion);
 
+const
+  TSrcEditMarkerImgIndex: array[TSrcEditMarkerType] of integer = (
+       10,  // active breakpoint
+       11   // inactive breakpoint
+    );
+
 var
   Editor_Num : Integer;
   aHighlighter: TSynPasSyn;
@@ -342,6 +363,8 @@ var
   GotoDialog : TfrmGoto;
   CodeCompletionTimer : TTimer;
   AWordCompletion : TWordCompletion;
+
+
 
 { TSourceEditor }
 
@@ -355,8 +378,9 @@ writeln('TSourceEditor.create 1');
   inherited Create;
   FAOwner := AOwner;
 
-  FSource := TStringList.Create;
   FSyntaxHighlighterType:=lshNone;
+  FErrorLine:=-1;
+  FExecutionLine:=-1;
 
   FControl := nil;
 writeln('TSourceEditor.create 2');
@@ -364,15 +388,15 @@ writeln('TSourceEditor.create 2');
 writeln('TSourceEditor.create end');
 end;
 
-destructor TSourceEditor.destroy;
+destructor TSourceEditor.Destroy;
 begin
+writeln('TSourceEditor.Destroy');
   FEditor.Free;
-  FSource.free;
   inherited;
 end;
 
 {------------------------------G O T O   L I N E  -----------------------------}
-Function TSOurceEditor.GotoLine(Value : Integer) : Integer;
+Function TSourceEditor.GotoLine(Value : Integer) : Integer;
 Var
   P : TPoint;
 Begin
@@ -788,6 +812,80 @@ Begin
      OnEditorChange(sender);
 end;
 
+procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;
+  mark: TSynEditMark);
+var i:integer;
+  AllMarks: TSynEditMarks;
+  BreakPtMark: TSynEditMark;
+begin
+  // create or delete breakpoint
+  // find breakpoint mark at line
+  fEditor.Marks.GetMarksForLine(Line, AllMarks);
+  BreakPtMark:=nil;
+  for i:=1 to maxMarks do begin
+    if (AllMarks[i]<>nil)
+    and (AllMarks[i].ImageIndex=TSrcEditMarkerImgIndex[semActiveBreakPoint]) then
+    begin
+      BreakPtMark:=AllMarks[i];
+      break;
+    end;
+  end;
+  if BreakPtMark<>nil then begin
+    // delete breakpoint
+    if Assigned(FOnDeleteBreakPoint) then FOnDeleteBreakPoint(Self,Line);
+    fEditor.Marks.Remove(BreakPtMark);
+    BreakPtMark.Free;
+    fEditor.Modified:=true;
+  end else begin
+    // create breakpoint
+    BreakPtMark:=TSynEditMark.Create(fEditor);
+    with BreakPtMark do begin
+      ImageIndex:=TSrcEditMarkerImgIndex[semActiveBreakPoint];
+      Visible:=true;
+    end;
+    BreakPtMark.Line:=Line;
+    fEditor.Marks.Place(BreakPtMark);
+    if Assigned(FOnCreateBreakPoint) then FOnCreateBreakPoint(Self,Line);
+    fEditor.Modified:=true;
+  end;
+end;
+
+procedure TSourceEditor.OnEditorSpecialLineColor(Sender: TObject; Line: integer;
+  var Special: boolean; var FG, BG: TColor);
+var i:integer;
+  AllMarks: TSynEditMarks;
+begin
+  if ErrorLine=Line then begin
+    FG:=EditorOpts.ErrorLineElement.Foreground;
+    BG:=EditorOpts.ErrorLineElement.Background;
+    Special:=true;
+  end else if ExecutionLine=Line then begin
+    FG:=EditorOpts.ExecutionPointElement.Foreground;
+    BG:=EditorOpts.ExecutionPointElement.Background;
+    Special:=true;
+  end else begin
+    fEditor.Marks.GetMarksForLine(Line, AllMarks);
+    for i:=1 to maxMarks do begin
+      if (AllMarks[i]<>nil) then begin
+        if (AllMarks[i].ImageIndex=TSrcEditMarkerImgIndex[semActiveBreakPoint])
+        then begin
+          FG:=EditorOpts.EnabledBreakPointElement.Foreground;
+          BG:=EditorOpts.EnabledBreakPointElement.Background;
+          Special:=true;
+          exit;
+        end else if 
+          (AllMarks[i].ImageIndex=TSrcEditMarkerImgIndex[semInactiveBreakPoint])
+        then begin
+          FG:=EditorOpts.DisabledBreakPointElement.Foreground;
+          BG:=EditorOpts.DisabledBreakPointElement.Background;
+          Special:=true;
+          exit;
+        end;
+      end;
+    end;
+  end;
+end;
+
 procedure TSourceEditor.SetSyntaxHighlighterType(
   ASyntaxHighlighterType: TLazSyntaxHighlighter);
 begin
@@ -803,6 +901,20 @@ begin
 
     fSyntaxHighlighterType:=ASyntaxHighlighterType;
   end;
+end;
+
+procedure TSourceEditor.SetErrorLine(NewLine: integer);
+begin
+  if fErrorLine=NewLine then exit;
+  fErrorLine:=NewLine;
+  EditorComponent.Invalidate;
+end;
+
+procedure TSourceEditor.SetExecutionLine(NewLine: integer);
+begin
+  if fExecutionLine=NewLine then exit;
+  fExecutionLine:=NewLine;
+  EditorComponent.Invalidate;
 end;
 
 Function TSourceEditor.RefreshEditorSettings : Boolean;
@@ -956,10 +1068,12 @@ End;
 
 
 Procedure TSourceEditor.CreateEditor(AOwner : TComponent; AParent: TWinControl);
+var OldSource: TStringList;
 Begin
+  OldSource:=TStringList.Create;
   if assigned(FEditor) then Begin
 writeln('TSourceEditor.CreateEditor  freeing old FEditor');
-    FSource.Assign(FEditor.Lines);
+    OldSource.Assign(FEditor.Lines);
     FEditor.Free;
     FEditor:=nil;
     dec(Editor_num);
@@ -974,13 +1088,16 @@ writeln('TSourceEditor.CreateEditor  freeing old FEditor');
     OnStatusChange := @EditorStatusChanged;
     OnProcessUserCommand := @ProcessUserCommand;
     OnReplaceText := @OnReplace;
+    OnGutterClick := @Self.OnGutterClick;
+    OnSpecialLineColors:=@OnEditorSpecialLineColor;
     Show;
   end;
   if FCodeTemplates<>nil then
     FCodeTemplates.AddEditor(FEditor);
   RefreshEditorSettings;
   aCompletion.AddEditor(FEditor);
-  FEditor.Lines.Assign(FSource);
+  FEditor.Lines.Assign(OldSource);
+  OldSource.Free;
 writeln('TSourceEditor.CreateEditor  focusing');
   FEditor.SetFocus;
 writeln('TSourceEditor.CreateEditor  end');
@@ -1407,18 +1524,29 @@ begin
   FOpenDialog := TOpenDialog.Create(Self);
   BuildPopupMenu;
 
-  Bookmarks := TImageList.Create(AOwner);
+  MarksImgList := TImageList.Create(AOwner);
 
-  //load 10 images
-  for I := 0 to 9 do
-  Begin
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-
+  //load 10 bookmark images
+  for I := 0 to 9 do Begin
+    Pixmap1:=TPixMap.Create;
+    Pixmap1.TransparentColor:=clBtnFace;
     if not LoadPixmapRes('bookmark'+inttostr(i),Pixmap1) then
            LoadPixmapRes('default',Pixmap1);
-    Bookmarks.Add(Pixmap1,nil);
+    MarksImgList.Add(Pixmap1,nil);
   end;
+  // load active breakpoint image
+  Pixmap1:=TPixMap.Create;
+  //Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadPixmapRes('ActiveBreakPoint',Pixmap1) then
+         LoadPixmapRes('default',Pixmap1);
+  MarksImgList.Add(Pixmap1,nil);
+  // load inactive breakpoint image
+  Pixmap1:=TPixMap.Create;
+  //Pixmap1.TransparentColor:=clBtnFace;
+  if not LoadPixmapRes('InactiveBreakPoint',Pixmap1) then
+         LoadPixmapRes('default',Pixmap1);
+  MarksImgList.Add(Pixmap1,nil);
+  
 
   aHighlighter:=TSynPasSyn.Create(AOwner);
     with aHighlighter do begin
@@ -1974,7 +2102,7 @@ writeln('TSourceNotebook.NewSe 4');
   Result.CodeTemplates:=CodeTemplateModul;
   Notebook.PageIndex := Pagenum;
   FSourceEditorList.Add(Result);
-  Result.EditorComponent.BookMarkOptions.BookmarkImages := Bookmarks;
+  Result.EditorComponent.BookMarkOptions.BookmarkImages := MarksImgList;
   Result.PopupMenu:=SrcPopupMenu;
   Result.OnEditorChange := @EditorChanged;
 writeln('TSourceNotebook.NewSe end');
@@ -2580,7 +2708,6 @@ begin
       Caption := '';
      end;
 
-
    btnOK := TBitbtn.Create(self);
    with btnOK do
      Begin
@@ -2623,77 +2750,5 @@ initialization
 
 end.
 
-{old ccexecute procedure
 
-Procedure TSourceEditor.ccExecute(Sender : TObject);
-var
-  Browserfile : TStrings;
-  UnitSource : Tstrings;
-  I          : Integer;
-  Texts      : String;
-  CompName   : String;
-  ccStrings : TStrings;
-Begin
-try
-  If FileExists(ExtractFilePath(Application.Exename)+'browser.log') then
-     DeleteFile(ExtractFilePath(Application.Exename)+'browser.log');
- FEditor.Cursor := crHourGlass;
-  UnitSource := TStringList.Create;
-  UnitSource.Assign(Source);
-
-  sCompl := TSynBaseCompletion(Sender);
-  CompName := sCompl.CurrentString;
-  Writeln('CompName = '+CompName);
-
-  Texts := UnitSource.Strings[CurrentCursorYLine-1];
-}
-(*  //delete the selected portion of the source and save it
-  I := CurrentCursorXPos;
-  While (I > 0) and (not Texts[I] in [';','}','(
-   for now just delete the line
-*)
-{  UnitSource.Strings[CurrentCursorYLine-1] := '';
-  if pos('.',UnitName) = 0 then
-  UnitSource.SavetoFile('./temp/'+unitname+'.pp')
-  else
-  UnitSource.SavetoFile('./temp/'+unitname);
-
-
-
-  ErrorMsgs := TStringList.Create;
-
-  Compiler1.OutputString := @ccAddMessage;
-
-  if pos('.',UnitName) = 0 then
-  Compiler1.Compile(' -bl ./temp/'+unitname+'.pp')
-  else
-  Compiler1.Compile(' -bl ./temp/'+unitname);
-
-
-  For I := 0 to ErrorMsgs.Count-1 do
-    Writeln(ErrorMsgs.Strings[i]);
-
-
-  If FileExists(ExtractFilePath(Application.Exename)+'browser.log') then
-     Begin
-       //parse the browser.log file
-       ccStrings := ccParse(CompName);
-       if Assigned(ccStrings) then
-       sCompl.ItemList := ccStrings;
-     end
-     else
-     begin
-       sCompl.Deactivate;
-       Messagedlg.Show;
-       MessageDlg.Clear;
-       For I := 0 to ErrorMsgs.Count-1 do
-         MessageDlg.Add(ErrorMsgs.Strings[i]);
-     end;
-  ErrorMsgs.Free;
-
-finally
- FEditor.Cursor := crDefault;
-end;
-End;
-}
 

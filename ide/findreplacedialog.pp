@@ -280,7 +280,7 @@ begin
 
     CancelButton:=TButton.Create(Self);
     with CancelButton do begin
-      Name:='CacnelButton';
+      Name:='CancelButton';
       Parent:=Self;
       Left:=209;
       Top:=245;
