@@ -1090,7 +1090,7 @@ type
   end;
 
 
-  // Moved to LCLType ot avoid unit circles
+  // Moved to LCLType to avoid unit circles
   // TCreateParams is part of the interface
   TCreateParams = LCLType.TCreateParams;
 
@@ -2289,6 +2289,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.206  2004/05/30 20:17:55  vincents
+  changed radiobutton style to BS_RADIOBUTTON to prevent test program from hanging.
+
   Revision 1.205  2004/05/30 14:02:30  mattias
   implemented OnChange for TRadioButton, TCheckBox, TToggleBox and some more docking stuff
 

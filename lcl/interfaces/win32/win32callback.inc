@@ -274,6 +274,21 @@ Var
       end;
     end;
   end;
+  
+  procedure ClearSiblingRadioButtons(RadioButton: TRadioButton);
+  var
+    Parent: TWinControl;
+    Sibling: TControl;
+    i: Integer;
+  begin
+    Parent := RadioButton.Parent;
+    for i:= 0 to Parent.ControlCount - 1 do begin
+      Sibling := Parent.Controls[i];
+      if (Sibling is TRadioButton) and (Sibling<>RadioButton) and
+         (TRadioButton(Sibling).HandleAllocated) then
+         Windows.SendMessage(TRadioButton(Sibling).Handle, BM_SETCHECK, Windows.WParam(BST_UNCHECKED), 0);
+    end;
+  end;
 
 Begin
   Assert(False, 'Trace:WindowProc - Start');
@@ -320,6 +335,12 @@ Begin
       if WParam <> 0 then
         if Window = TWin32WidgetSet(InterfaceObject).AppHandle then
           Windows.SetWindowPos(TWin32WidgetSet(InterfaceObject).AppHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_NOACTIVATE);
+    End;
+    BM_SETCHECK:
+    Begin
+      LMessage.Msg := LM_CHANGED;
+      if (WParam=BST_CHECKED) and (OwnerObject is TRadioButton) then
+        ClearSiblingRadioButtons(TRadioButton(OwnerObject));
     End;
     WM_CAPTURECHANGED:
     Begin
@@ -570,6 +591,9 @@ Begin
       // CheckListBox functionality
       if OwnerObject is TCheckListBox then
         CheckListBoxLButtonDown;
+      // RadioButton functionality
+      if OwnerObject is TRadioButton then
+        Windows.SendMessage(Window, BM_SETCHECK, BST_CHECKED, 0);
     End;
     WM_LBUTTONUP:
     Begin
@@ -1161,6 +1185,9 @@ end;
 
 {
   $Log$
+  Revision 1.109  2004/05/30 20:17:55  vincents
+  changed radiobutton style to BS_RADIOBUTTON to prevent test program from hanging.
+
   Revision 1.108  2004/05/29 11:45:19  micha
   cleanup lcl<->win32 bounds code, remove duplicate code
 

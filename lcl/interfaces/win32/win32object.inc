@@ -2132,7 +2132,9 @@ Begin
     Begin
       pClassName := 'BUTTON';
       WindowTitle := StrCaption;
-      Flags := Flags Or BS_AUTORADIOBUTTON;
+      // BS_AUTORADIOBUTTON may hang the application,
+      // if the radiobuttons are not consecutive controls.
+      Flags := Flags Or BS_RADIOBUTTON;
     End;
     csScrollBar:
     Begin
@@ -2615,20 +2617,6 @@ Var
   Handle: HWnd;
   ST: SystemTime;
   
-  procedure ClearSiblingRadioButtons(RadioButton: TRadioButton);
-  var
-    Parent: TWinControl;
-    Sibling: TControl;
-    i: Integer;
-  begin
-    Parent := RadioButton.Parent;
-    for i:= 0 to Parent.ControlCount - 1 do begin
-      Sibling := Parent.Controls[i];
-      if (Sibling is TRadioButton) and (Sibling<>RadioButton) then
-         Windows.SendMessage(TRadioButton(Sibling).Handle, BM_SETCHECK, Windows.WParam(BST_UNCHECKED), 0);
-    end;
-  end;
-
 Begin
   Result := 0;     // default if nobody sets it
 
@@ -2663,11 +2651,8 @@ Begin
     End;
     csRadioButton, csCheckbox:
     Begin
-      If TCheckBoxState(Data^) = cbChecked Then Begin
-        Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_CHECKED), 0);
-        If TControl(Sender).FCompStyle=csRadioButton Then
-          ClearSiblingRadioButtons(TRadioButton(Sender));
-      End
+      If TCheckBoxState(Data^) = cbChecked Then
+        Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_CHECKED), 0)
       Else If TCheckboxState(Data^) = cbUnchecked Then
         Windows.SendMessage(Handle, BM_SETCHECK, Windows.WParam(BST_UNCHECKED), 0)
       Else
@@ -3014,6 +2999,9 @@ End;
 
 {
   $Log$
+  Revision 1.200  2004/05/30 20:17:55  vincents
+  changed radiobutton style to BS_RADIOBUTTON to prevent test program from hanging.
+
   Revision 1.199  2004/05/27 15:04:53  vincents
   checking a radiobutton unchecks its siblibg radiobuttons
 
