@@ -211,10 +211,11 @@ type
     property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
-  TFindItemKind = (fkCommand, fkHandle, fkShortCut);
 
 
   { TMenu }
+
+  TFindItemKind = (fkCommand, fkHandle, fkShortCut);
 
   TMenu = class(TComponent)
   private
@@ -291,18 +292,6 @@ type
   end;
 
 
-  // will be removed
-  TMenuBar = class(TComponent)
-  private
-    //fMenu: TMenuItem;
-    //fOwner : TControl;
-  public
-    constructor Create(AOwner: TComponent); override;
-    procedure Show; {override;}
-    procedure AddMenu(Title: TCaption; Menu: TMenu);
-  end;
-
-
 
 function ShortCut(const Key: Word; const Shift : TShiftState) : TShortCut;
 procedure ShortCutToKey(const ShortCut : TShortCut; var Key: Word;
@@ -347,7 +336,6 @@ begin
   Result:=ShortCutTextToShortCut(ShortCutText);
 end;
 
-{$I menubar.inc}
 {$I menu.inc}
 {$I menuitem.inc}
 {$I mainmenu.inc}
@@ -386,6 +374,9 @@ end.
 
 {
   $Log$
+  Revision 1.44  2003/06/09 09:20:27  mattias
+  removed menubar.inc
+
   Revision 1.43  2003/05/12 13:40:50  mattias
   fixed clsing popupmenu on showmodal
 

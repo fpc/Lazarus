@@ -35,9 +35,9 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, LCLType, LCLLinux, Graphics, GraphType,
-  StdCtrls, ExtCtrls, Buttons, Dialogs, LResources, Laz_XMLCfg,
-  LazarusIDEStrConsts, ExtToolDialog, ExtToolEditDlg, TransferMacros, LazConf,
-  FileCtrl, IDEProcs;
+  StdCtrls, ExtCtrls, Buttons, FileCtrl, Dialogs, LResources, Laz_XMLCfg,
+  LazarusIDEStrConsts, TransferMacros, LazConf, IDEProcs, InputHistory,
+  ExtToolDialog, ExtToolEditDlg;
 
 type
   { TBuildLazarusItem }
@@ -147,9 +147,12 @@ type
     property ExtraOptions: string read fExtraOptions write fExtraOptions;
     property TargetOS: string read fTargetOS write fTargetOS;
     property LCLPlatform: TLCLPlatform read fLCLPlatform write fLCLPlatform;
-    property StaticAutoInstallPackages: TStringList read fStaticAutoInstallPackages;
-    property TargetDirectory: string read FTargetDirectory write SetTargetDirectory;
-    property WithStaticPackages: boolean read FWithStaticPackages write SetWithStaticPackages;
+    property StaticAutoInstallPackages: TStringList
+                                                read fStaticAutoInstallPackages;
+    property TargetDirectory: string read FTargetDirectory
+                                     write SetTargetDirectory;
+    property WithStaticPackages: boolean read FWithStaticPackages
+                                         write SetWithStaticPackages;
   end;
   
   
@@ -165,6 +168,9 @@ type
     LCLInterfaceRadioGroup: TRadioGroup;
     TargetOSLabel: TLabel;
     TargetOSEdit: TEdit;
+    TargetDirectoryLabel: TLabel;
+    TargetDirectoryComboBox: TComboBox;
+    TargetDirectoryButton: TButton;
     OkButton: TButton;
     CancelButton: TButton;
     ImageList: TImageList;
@@ -178,6 +184,7 @@ type
                                     Shift: TShiftState; X, Y: Integer);
     procedure OkButtonClick(Sender: TObject);
     procedure CancelButtonClick(Sender: TObject);
+    procedure TargetDirectoryButtonClick(Sender: TObject);
   private
     Options: TBuildLazarusOptions;
     ImageIndexNone: integer;
@@ -554,7 +561,20 @@ begin
     x:=OptionsLabel.Left;
     inc(y,Height+3);
   end;
-  
+  with TargetDirectoryLabel do begin
+    SetBounds(x,y+3,120,Height);
+    inc(x,Width+3);
+  end;
+  with TargetDirectoryComboBox do begin
+    SetBounds(x,y,Parent.ClientWidth-x-10-25,Height);
+    inc(x,Width+2);
+  end;
+  with TargetDirectoryButton do begin
+    SetBounds(x,y,Parent.ClientWidth-x-10,Height);
+    x:=TargetDirectoryLabel.Left;
+    inc(y,Height+3);
+  end;
+
   inc(x,w+10);
   y:=ItemsListBox.Top;
   w:=ClientWidth-10-x;
@@ -669,6 +689,24 @@ end;
 procedure TConfigureBuildLazarusDlg.CancelButtonClick(Sender: TObject);
 begin
   ModalResult:=mrCancel;
+end;
+
+procedure TConfigureBuildLazarusDlg.TargetDirectoryButtonClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: String;
+begin
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    OpenDialog.Title:='Choose output directory of the IDE executable (lazarus)';
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandDirectory(OpenDialog.Filename);
+      TargetDirectoryComboBox.AddHistoryItem(AFilename,10,true,true);
+    end;
+  finally
+    OpenDialog.Free;
+  end;
 end;
 
 procedure TConfigureBuildLazarusDlg.Load(SourceOptions: TBuildLazarusOptions);
@@ -811,6 +849,31 @@ begin
   with TargetOSEdit do begin
     Name:='TargetOSEdit';
     Parent:=Self;
+  end;
+  
+  TargetDirectoryLabel:=TLabel.Create(Self);
+  with TargetDirectoryLabel do begin
+    Name:='TargetDirectoryLabel';
+    Parent:=Self;
+    Caption:=lisLazBuildTargetDirectory;
+    Enabled:=false;
+  end;
+
+  TargetDirectoryComboBox:=TComboBox.Create(Self);
+  with TargetDirectoryComboBox do begin
+    Name:='TargetDirectoryComboBox';
+    Parent:=Self;
+    Enabled:=false;
+    Text:='';
+  end;
+
+  TargetDirectoryButton:=TButton.Create(Self);
+  with TargetDirectoryButton do begin
+    Name:='TargetDirectoryButton';
+    Parent:=Self;
+    Caption:='...';
+    OnClick:=@TargetDirectoryButtonClick;
+    Enabled:=false;
   end;
 
   LCLInterfaceRadioGroup:=TRadioGroup.Create(Self);

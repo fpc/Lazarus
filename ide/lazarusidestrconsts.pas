@@ -1240,6 +1240,7 @@ resourcestring
   lisLazBuildBuildExamples = 'Build Examples';
   lisLazBuildOptions = 'Options:';
   lisLazBuildTargetOS = 'Target OS:';
+  lisLazBuildTargetDirectory = 'Target Directory:';
   lisLazBuildLCLInterface = 'LCL interface';
   lisLazBuildBuildJITForm = 'Build JITForm';
   lisLazBuildWithStaticPackages = 'With Packages';
