@@ -195,6 +195,8 @@ type
     Procedure SelectOnlyThisComponent(AComponent:TComponent); override;
     function InvokeComponentEditor(AComponent: TComponent;
       MenuIndex: integer): boolean;
+    procedure DoProcessCommand(Sender: TObject; var Command: word;
+                               var Handled: boolean);
 
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
@@ -398,6 +400,27 @@ begin
         +'has created the error:'#13
         +'"'+E.Message+'"',
         mtError,[mbOk],0);
+    end;
+  end;
+end;
+
+procedure TDesigner.DoProcessCommand(Sender: TObject; var Command: word;
+  var Handled: boolean);
+begin
+  if Assigned(OnProcessCommand) and (Command<>ecNone) then begin
+    OnProcessCommand(Self,Command,Handled);
+    Handled:=Handled or (Command=ecNone);
+  end;
+
+  if not Handled then begin
+    Handled:=true;
+    case Command of
+
+    ecSelectParentComponent:
+      SelectParentOfSelection;
+
+    else
+      Handled:=false;
     end;
   end;
 end;
@@ -1056,8 +1079,8 @@ end;
 -----------------------------K E Y D O W N -------------------------------
 }
 {
- Handles the keydown messages.  DEL deletes the selected controls, CTRL-ARROR
- moves the selection up one, SHIFT-ARROW resizes, etc.
+  Handles the keydown messages.  DEL deletes the selected controls, CTRL-ARROR
+  moves the selection up one, SHIFT-ARROW resizes, etc.
 }
 Procedure TDesigner.KeyDown(Sender : TControl; var TheMessage:TLMKEY);
 var
@@ -1074,10 +1097,7 @@ Begin
   Handled:=false;
   Command:=FTheFormEditor.TranslateKeyToDesignerCommand(
                                                      TheMessage.CharCode,Shift);
-  if Assigned(OnProcessCommand) and (Command<>ecNone) then begin
-    OnProcessCommand(Self,Command,Handled);
-    Handled:=Handled or (Command=ecNone);
-  end;
+  DoProcessCommand(Self,Command,Handled);
 
   if not Handled then begin
     Handled:=true;
@@ -1109,9 +1129,6 @@ Begin
       else if (ssShift in Shift) then
         NudgeSize(-1,0);
         
-    VK_ESCAPE:
-      SelectParentOfSelection;
-      
     else
       Handled:=false;
     end;
