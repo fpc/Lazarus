@@ -1357,7 +1357,7 @@ begin
       Handled:=true;
       DoJumpToProcedureSection;
     end;
-   ecCodeCompletion:
+   ecCompleteCode:
     begin
       Handled:=true;
       DoCompleteCodeAtCursor;
@@ -3996,8 +3996,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.118  2001/10/12 17:34:23  lazarus
-  MG: added code completion
+  Revision 1.119  2001/10/12 23:23:17  lazarus
+  MG: added new key: complete code
 
   Revision 1.115  2001/10/09 09:46:49  lazarus
   MG: added codetools, fixed synedit unindent, fixed MCatureHandle

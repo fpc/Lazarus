@@ -34,7 +34,7 @@ const
   ecPeriod             = ecUserFirst + 9;
 
   ecWordCompletion     = ecUserFirst + 100;
-  ecCodeCompletion     = ecUserFirst + 101;
+  ecCompleteCode       = ecUserFirst + 101;
   ecIdentCompletion    = ecUserFirst + 102;
 
   ecSave               = ecUserFirst + 200;
@@ -296,7 +296,7 @@ begin
     ecPrevEditor: Result:= 'previous editor';
     ecPeriod: Result:= 'period';
     ecWordCompletion: Result:= 'word completion';
-    ecCodeCompletion: Result:= 'code completion';
+    ecCompleteCode: Result:= 'complete code';
     ecIdentCompletion: Result:= 'identifier completion';
     ecSave: Result:= 'save';
     ecOpen: Result:= 'open';
@@ -873,7 +873,7 @@ begin
 
   // user defined commands
   Add('Word completion',ecWordCompletion,VK_W,[ssCtrl],VK_UNKNOWN,[]);
-  Add('Code completion',ecCodeCompletion,VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
+  Add('Complete code',ecCompleteCode,VK_C,[ssCtrl,ssShift],VK_UNKNOWN,[]);
   Add('Identifier completion',ecIdentCompletion,VK_SPACE,[ssCtrl],VK_UNKNOWN,[]);
 
   Add('Find text',ecFind,VK_F,[SSCtrl],VK_UNKNOWN,[]);
