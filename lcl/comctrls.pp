@@ -1135,7 +1135,7 @@ type
     property ImageIndex: integer read FImageIndex write SetImageIndex;
     property Index: Integer read GetIndex;
     property IsVisible: Boolean read IsNodeVisible;
-    property Items[Index: Integer]: TTreeNode read GetItems write SetItems; default;
+    property Items[ItemIndex: Integer]: TTreeNode read GetItems write SetItems; default;
     //property ItemId: HTreeItem read FItemId;
     property Level: Integer read GetLevel;
     property MultiSelected: Boolean read GetMultiSelected write SetMultiSelected;
@@ -1699,6 +1699,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.52  2002/10/20 19:03:56  lazarus
+  AJ: minor fixes for FPC 1.1
+
   Revision 1.51  2002/10/14 14:29:50  lazarus
   AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
 
