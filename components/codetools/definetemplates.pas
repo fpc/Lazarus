@@ -250,8 +250,10 @@ type
   //---------------------------------------------------------------------------
   TDefinePool = class
   private
+    FEnglishErrorMsgFilename: string;
     FItems: TList; // list of TDefineTemplate;
     function GetItems(Index: integer): TDefineTemplate;
+    procedure SetEnglishErrorMsgFilename(const AValue: string);
   public
     property Items[Index: integer]: TDefineTemplate read GetItems; default;
     function Count: integer;
@@ -259,6 +261,8 @@ type
     procedure Insert(Index: integer; ADefineTemplate: TDefineTemplate);
     procedure Delete(Index: integer);
     procedure Move(SrcIndex, DestIndex: integer);
+    property EnglishErrorMsgFilename: string
+        read FEnglishErrorMsgFilename write SetEnglishErrorMsgFilename;
     function CreateFPCTemplate(const PPC386Path: string;
         var UnitSearchPath: string): TDefineTemplate;
     function CreateFPCSrcTemplate(const FPCSrcDir,
@@ -1712,6 +1716,12 @@ begin
   Result:=TDefineTemplate(FItems[Index]);
 end;
 
+procedure TDefinePool.SetEnglishErrorMsgFilename(const AValue: string);
+begin
+  if FEnglishErrorMsgFilename=AValue then exit;
+  FEnglishErrorMsgFilename:=AValue;
+end;
+
 procedure TDefinePool.Add(ADefineTemplate: TDefineTemplate);
 begin
   if ADefineTemplate<>nil then
@@ -1740,7 +1750,8 @@ begin
 end;
 
 function TDefinePool.CreateFPCTemplate(
-  const PPC386Path: string; var UnitSearchPath: string): TDefineTemplate;
+  const PPC386Path: string;
+  var UnitSearchPath: string): TDefineTemplate;
 // create makro definitions for the freepascal compiler
 // To get reliable values the compiler itself is asked for
 
@@ -1755,6 +1766,11 @@ function TDefinePool.CreateFPCTemplate(
       MacroName:=copy(UpLine,16,length(Line)-15);
       NewDefTempl:=TDefineTemplate.Create('Define '+MacroName,
            ctsDefaultppc386Macro,MacroName,'',da_DefineRecurse);
+    end else if copy(UpLine,1,15)='MACRO UNDEFINED: ' then begin
+      MacroName:=copy(UpLine,16,length(Line)-15);
+      
+      // ToDo: delete macro definition
+      
     end else if copy(UpLine,1,6)='MACRO ' then begin
       System.Delete(Line,1,6);
       System.Delete(UpLine,1,6);
@@ -1796,12 +1812,14 @@ begin
   SetLength(Buf,1024);
   try
     CmdLine:=PPC386Path+' -va ';
+    if FileExists(EnglishErrorMsgFilename) then
+      CmdLine:=CmdLine+'-Fr'+EnglishErrorMsgFilename+' ';
     // give compiler a not existing file, so that it will return quickly
     BogusFilename:='bogus';
     i:=1;
-    while FileExists(BogusFilename+IntToStr(i)) do inc(i);
-    CmdLine:=CmdLine+BogusFilename;
-    
+    while FileExists(BogusFilename+IntToStr(i)+'.pp') do inc(i);
+    CmdLine:=CmdLine+BogusFilename+'.pp';
+
     TheProcess := TProcess.Create(nil);
     TheProcess.CommandLine := CmdLine;
     TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];

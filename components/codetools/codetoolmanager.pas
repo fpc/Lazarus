@@ -59,7 +59,6 @@ type
   TOnCodeToolCheckAbort = function: boolean of object;
 
   TCodeToolManager = class
-    function OnScannerProgress(Sender: TLinkScanner): boolean;
   private
     FAbortable: boolean;
     FAddInheritedCodeToOverrideMethod: boolean;
@@ -119,6 +118,7 @@ type
     procedure OnToolGetWriteLockInfo(var WriteLockIsSet: boolean;
       var WriteLockStep: integer);
     function OnParserProgress(Tool: TCustomCodeTool): boolean;
+    function OnScannerProgress(Sender: TLinkScanner): boolean;
     function GetResourceTool: TResourceCodeTool;
   public
     DefinePool: TDefinePool; // definition templates (rules)
