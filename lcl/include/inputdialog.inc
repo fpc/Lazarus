@@ -90,8 +90,8 @@ begin
       TabOrder := 2;
     end;
 
-    // upon show, focus the edit control so people can start typing
-    ActiveControl := Edit;
+    // upon show, the edit control will be focused for editing, because it's
+    // the first in the tab order
     If ShowModal = mrOk then
     begin
       Value := Edit.Text;

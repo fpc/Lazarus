@@ -362,6 +362,29 @@ end;
   ShowWindow event handler.
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMShowWindow(var message: TLMShowWindow);
+
+  function FindFirstControl: TWinControl;
+  var
+    List: TList;
+    I: Integer;
+  begin
+    List := TList.Create;
+    Result := nil;
+    try
+      GetTabOrderList(List);
+      for I := 0 to List.Count - 1 do
+      begin
+        if TObject(List.Items[0]) is TWinControl then
+        begin
+          Result := TWinControl(List.Items[0]);
+          exit;
+        end;
+      end;
+    finally
+      List.Free;
+    end;
+  end;
+
 begin
   {$IFDEF VerboseFocus}
   DbgOut('TCustomForm.WMShowWindow A ',Name,':',ClassName,' fsShowing=',fsShowing in FFormState,' Msg.Show=',Message.Show);
@@ -376,6 +399,8 @@ begin
   Include(FFormState, fsShowing);
   try
     if Message.Show then begin
+      if FActiveControl = nil then
+        FActiveControl := FindFirstControl;
       if (FActiveControl<>nil) and FActiveControl.HandleAllocated
       and (FActiveControl.Visible) and (FActiveControl.Enabled) then begin
         {$IFDEF VerboseFocus}
@@ -1754,6 +1779,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.153  2004/08/25 17:59:06  micha
+  upon form show, if no activecontrol, then focus first control in tab order
+
   Revision 1.152  2004/08/18 20:49:02  mattias
   simple forms can now be child controls
 
