@@ -1958,6 +1958,7 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
   var
     RealizeHandler, Handler: PGTKHandler;
     RealizeID, SignalID: guint;
+    //OldReqSignalMask: PGdkEventMask;
   begin
     if ACallBackProc <> nil then
     begin
@@ -1989,11 +1990,13 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
           Handler := Next;
         end;
       // if we are here no handler was defined yet
+      // -> register handler
       Assert(False, Format('trace:  [TGTKObject.SetCallback] %s signal <%s>', [Sender.ClassName, ASignal]));
       gtk_signal_connect(AObject, ASignal, TGTKSignalFunc(ACallBackProc), Sender);
       
-      if ReqSignalMask <> 0 then
-      begin
+      // -> register realize handler
+      //OldReqSignalMask:=get_
+      if ReqSignalMask <> 0 then begin
         if RealizeHandler = nil then begin
           gtk_signal_connect(AObject, 'realize',
             TGTKSignalFunc(@GTKRealizeCB), Pointer(ReqSignalMask));
@@ -3127,10 +3130,21 @@ end;
 procedure TgtkObject.CreateComponent(Sender : TObject);
 const 
   FormStyleMap : array[TFormBorderStyle] of integer = (
-    GTK_WINDOW_DIALOG, GTK_WINDOW_TOPLEVEL, GTK_WINDOW_TOPLEVEL,
-    GTK_WINDOW_TOPLEVEL, GTK_WINDOW_POPUP, GTK_WINDOW_POPUP
+    GTK_WINDOW_DIALOG,  // bsNone
+    GTK_WINDOW_TOPLEVEL,// bsSingle
+    GTK_WINDOW_TOPLEVEL,// bsSizeable
+    GTK_WINDOW_TOPLEVEL,// bsDialog
+    GTK_WINDOW_POPUP,   // bsToolWindow
+    GTK_WINDOW_POPUP    // bsSizeToolWin
   );
-  FormSizeableMap : array[TFormBorderStyle] of gint = (0, 0, 1, 0, 0, 1);
+  FormSizeableMap : array[TFormBorderStyle] of gint = (
+    0, // bsNone
+    0, // bsSingle
+    1, // bsSizeable
+    0, // bsDialog
+    0, // bsToolWindow
+    1  // bsSizeToolWin
+    );
 //unused:  FormBorderWidth : array[TFormBorderStyle] of gint = (0, 1, 2, 1, 1, 2);  
 
 //unused:type
@@ -3360,7 +3374,7 @@ begin
 
       gtk_window_set_policy (GTK_WINDOW (p), 1, 1, 0);
       gtk_window_set_title(pGtkWindow(p), strTemp);
-      
+
       {$IFDEF ClientRectBugFix}
       {gtk_window_set_default_size(PgtkWindow(p),
                                   TForm(Sender).Width,TForm(Sender).Height);
@@ -4984,6 +4998,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.133  2002/06/05 12:33:57  lazarus
+  MG: fixed fonts in XLFD format and styles
+
   Revision 1.132  2002/06/04 15:17:23  lazarus
   MG: improved TFont for XLFD font names
 
