@@ -1,0 +1,77 @@
+{------------------------------------------------------------------------------}
+{   TStatusPanel Constructor                                                     }
+{------------------------------------------------------------------------------}
+constructor TStatusPanel.Create(aCollection: TCollection);
+begin
+  FWidth := 50;
+  FBevel := pbLowered;
+  FParentBiDiMode := True;
+  FAlignment := taLeftJustify;
+  inherited Create(aCollection);
+end;
+
+procedure TStatusPanel.Assign(Source: TPersistent);
+begin
+  if Source is TStatusPanel then
+  begin
+    Text := TStatusPanel(Source).Text;
+    Width := TStatusPanel(Source).Width;
+    Alignment := TStatusPanel(Source).Alignment;
+    Bevel := TStatusPanel(Source).Bevel;
+    Style := TStatusPanel(Source).Style;
+  end
+  else inherited Assign(Source);
+end;
+
+
+function TStatusPanel.GetDisplayName: string;
+begin
+  Result := Text;
+  if Result = '' then Result := inherited GetDisplayName;
+end;
+
+procedure TStatusPanel.SetAlignment(Value: TAlignment);
+begin
+  if FAlignment <> Value then
+  begin
+    FAlignment := Value;
+    Changed(False);
+  end;
+end;
+
+procedure TStatusPanel.SetBevel(Value: TStatusPanelBevel);
+begin
+  if FBevel <> Value then
+  begin
+    FBevel := Value;
+    Changed(False);
+  end;
+end;
+
+procedure TStatusPanel.SetStyle(Value: TStatusPanelStyle);
+begin
+  if FStyle <> Value then
+  begin
+    FStyle := Value;
+    Changed(False);
+  end;
+end;
+
+procedure TStatusPanel.SetText(const Value: string);
+begin
+  if FText <> Value then
+  begin
+    FText := Value;
+    Changed(False);
+  end;
+end;
+
+procedure TStatusPanel.SetWidth(Value: Integer);
+begin
+  if FWidth <> Value then
+  begin
+    FWidth := Value;
+    Changed(True);
+  end;
+end;
+
