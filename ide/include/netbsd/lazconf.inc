@@ -24,8 +24,21 @@
 
 {Should become unit Unix in the future. For both Linux and FreeBSD}
 uses
+  {$IFDEF VER1_1}
+  unix;
+  {$ELSE}
   linux;
-  
+  {$ENDIF}
+
+
+const
+  DefaultFPCSrcDirs: array[1..4] of string = (
+    '/usr/lib/fpc',
+    '/usr/local/lib/fpc',
+    '/vol/fpc',
+    '/vol/lib/fpc'
+    );
+
 var
   PrimaryConfigPath,
   SecondaryConfigPath: string;
@@ -120,13 +133,20 @@ begin
   end;
 end;
 
-initialization
+{---------------------------------------------------------------------------
+  procedure InternalInit;
+ ---------------------------------------------------------------------------}
+procedure InternalInit;
+begin
   PrimaryConfigPath:=FExpand('~/.lazarus');
   SecondaryConfigPath:='/etc/lazarus';
-
+end;
 
 {
   $Log$
+  Revision 1.5  2003/02/06 20:46:51  mattias
+  default fpc src dirs and clean ups
+
   Revision 1.4  2002/12/20 11:08:47  mattias
   method resolution clause, class ancestor find declaration, 1.1. makros
 

@@ -1,3 +1,5 @@
+// included by lazconf.pp
+
 {***************************************************************************
                                lazconf.inc
  ***************************************************************************
@@ -27,6 +29,14 @@ uses
   {$ELSE}
   linux;
   {$ENDIF}
+
+const
+  DefaultFPCSrcDirs: array[1..4] of string = (
+    '/usr/lib/fpc',
+    '/usr/local/lib/fpc',
+    '/vol/fpc',
+    '/vol/lib/fpc'
+    );
 
 var
   PrimaryConfigPath,
@@ -101,6 +111,9 @@ begin
   end;
 end;
 
+{---------------------------------------------------------------------------
+  function CreateCompilerTestPascalFilename: string;
+ ---------------------------------------------------------------------------}
 function CreateCompilerTestPascalFilename: string;
 var
   fs: TFileStream;
@@ -112,22 +125,38 @@ begin
   end;
 end;
 
+{---------------------------------------------------------------------------
+  function FindDefaultCompilerPath: string;
+ ---------------------------------------------------------------------------}
 function FindDefaultCompilerPath: string;
 begin
   Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':');
 end;
 
+{---------------------------------------------------------------------------
+  function FindDefaultMakePath: string;
+ ---------------------------------------------------------------------------}
 function FindDefaultMakePath: string;
 begin
   Result:=SearchFileInPath('make','',GetEnv('PATH'),':');
 end;
 
-initialization
+{---------------------------------------------------------------------------
+  procedure InternalInit;
+ ---------------------------------------------------------------------------}
+procedure InternalInit;
+begin
   PrimaryConfigPath:=FExpand('~/.lazarus');
   SecondaryConfigPath:='/etc/lazarus';
+end;
+
+// included by lazconf.pp
 
 {
   $Log$
+  Revision 1.10  2003/02/06 20:46:51  mattias
+  default fpc src dirs and clean ups
+
   Revision 1.9  2002/12/20 11:08:47  mattias
   method resolution clause, class ancestor find declaration, 1.1. makros
 

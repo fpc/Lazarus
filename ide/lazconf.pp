@@ -67,17 +67,51 @@ uses
   
   function FindDefaultCompilerPath: string;
   function FindDefaultMakePath: string;
-  
+  function FindDefaultFPCSrcDirectory: string;
+  function CheckFPCSourceDir(const ADirectory: string): boolean;
+
   function CreateCompilerTestPascalFilename: string;
 
 implementation
 
+
 {$I lazconf.inc}
+
+function CheckFPCSourceDir(const ADirectory: string): boolean;
+var
+  Dir: String;
+begin
+  Result:=false;
+  if DirectoryExists(ADirectory) then begin
+    Dir:=AppendPathDelim(ADirectory);
+    Result:=DirectoryExists(Dir+'fcl')
+        and DirectoryExists(Dir+'rtl')
+        and DirectoryExists(Dir+'packages');
+  end;
+end;
+
+function FindDefaultFPCSrcDirectory: string;
+var
+  i: integer;
+begin
+  for i:=Low(DefaultFPCSrcDirs) to High(DefaultFPCSrcDirs) do begin
+    Result:=DefaultFPCSrcDirs[i];
+writeln('FindDefaultFPCSrcDirectory A ',Result,' ',CheckFPCSourceDir(Result));
+    if CheckFPCSourceDir(Result) then exit;
+  end;
+  Result:='';
+end;
+
+initialization
+  InternalInit;
 
 end.
 
 {
   $Log$
+  Revision 1.11  2003/02/06 20:46:51  mattias
+  default fpc src dirs and clean ups
+
   Revision 1.10  2002/12/23 13:20:45  mattias
   fixed backuping symlinks
 

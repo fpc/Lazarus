@@ -21,6 +21,11 @@
  *                                                                         *
  ***************************************************************************
 }
+const
+  DefaultFPCSrcDirs: array[1..1] of string = (
+    'C:\pp'
+    );
+
 var
   PrimaryConfigPath,
   SecondaryConfigPath: string;
@@ -114,15 +119,22 @@ begin
   end;
 end;
 
-initialization
+{---------------------------------------------------------------------------
+  procedure InternalInit;
+ ---------------------------------------------------------------------------}
+procedure InternalInit;
+begin
   PrimaryConfigPath:=ExtractFilePath(Paramstr(0));
   { This need some work. Probably one can use the Windows API to
     get the system path. }
   SecondaryConfigPath:='\windows\system';
-
+end;
 
 {
   $Log$
+  Revision 1.8  2003/02/06 20:46:51  mattias
+  default fpc src dirs and clean ups
+
   Revision 1.7  2002/12/20 11:08:47  mattias
   method resolution clause, class ancestor find declaration, 1.1. makros
 

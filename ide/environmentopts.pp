@@ -223,6 +223,7 @@ type
     procedure Save(OnlyDesktop:boolean);
     property Filename: string read FFilename write SetFilename;
     procedure SetLazarusDefaultFilename;
+    procedure GetDefaultFPCSourceDirectory;
     property OnApplyWindowLayout: TOnApplyIDEWindowLayout
        read FOnApplyWindowLayout write SetOnApplyWindowLayout;
     
@@ -519,6 +520,7 @@ function FilenameIsPascalSource(const Filename: string): boolean;
 function FilenameIsFormText(const Filename: string): boolean;
 function AmbigiousFileActionNameToType(const Action: string): TAmbigiousFileAction;
 
+
 implementation
 
 
@@ -702,6 +704,11 @@ begin
     writeln('Note: environment config file not found - using defaults');
   end;
   Filename:=ConfFilename;
+end;
+
+procedure TEnvironmentOptions.GetDefaultFPCSourceDirectory;
+begin
+
 end;
 
 procedure TEnvironmentOptions.SetFileName(const NewFilename: string);
@@ -3528,7 +3535,7 @@ function TEnvironmentOptionsDialog.CheckValues: boolean;
     Result:=true;
   end;
   
-  function CheckFPCSourceDir: boolean;
+  function IsFPCSourceDir: boolean;
   var
     NewFPCSrcDir: string;
     StopChecking: boolean;
@@ -3539,11 +3546,7 @@ function TEnvironmentOptionsDialog.CheckValues: boolean;
     if (not Result) or StopChecking then exit;
 
     // FPC source directory specific tests
-    NewFPCSrcDir:=AppendPathDelim(NewFPCSrcDir);
-    if not DirectoryExists(NewFPCSrcDir+'fcl')
-    or not DirectoryExists(NewFPCSrcDir+'rtl')
-    or not DirectoryExists(NewFPCSrcDir+'packages')
-    then begin
+    if not CheckFPCSourceDir(NewFPCSrcDir) then begin
       Result:=(MessageDlg(Format(lisEnvOptDlgInvalidFPCSrcDir,[NewFPCSrcDir]),
                  mtWarning,[mbIgnore,mbCancel],0)=mrIgnore);
       exit;
@@ -3575,7 +3578,7 @@ begin
   // check lazarus directory
   if not CheckLazarusDir then exit;
   // check fpc source directory
-  if not CheckFPCSourceDir then exit;
+  if not IsFPCSourceDir then exit;
   // check test directory
   if not CheckTestDir then exit;
   
