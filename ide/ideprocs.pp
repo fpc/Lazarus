@@ -147,9 +147,10 @@ procedure RaiseException(const Msg: string);
 // miscellaneous
 procedure FreeThenNil(var Obj: TObject);
 function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
+function CompareBoolean(b1, b2: boolean): integer;
+function CompareStringPointerI(Data1, Data2: Pointer): integer;
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
-function CompareBoolean(b1, b2: boolean): integer;
 function AnsiSearchInStringList(List: TStrings; const s: string): integer;
 
 const
@@ -867,6 +868,11 @@ begin
     Result:=1
   else
     Result:=-1;
+end;
+
+function CompareStringPointerI(Data1, Data2: Pointer): integer;
+begin
+  Result:=AnsiStrIComp(Data1,Data2);
 end;
 
 {-------------------------------------------------------------------------------
