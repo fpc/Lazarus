@@ -56,6 +56,7 @@ uses
   IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg, InputHistory,
   DiskDiffsDialog, UnitDependencies, PublishProjectDlg, ClipBoardHistory,
   ProcessList, InitialSetupDlgs, NewDialog, MakeResStrDlg, DiffDialog,
+  ToDoList,
   // main ide
   BaseDebugManager, DebugManager, MainBar;
 
@@ -156,6 +157,7 @@ type
     procedure mnuAddToProjectClicked(Sender : TObject);
     procedure mnuRemoveFromProjectClicked(Sender : TObject);
     procedure mnuViewProjectSourceClicked(Sender : TObject);
+    procedure mnuViewProjectTodosClicked(Sender : TObject);
     procedure mnuProjectOptionsClicked(Sender : TObject);
     
     // run menu
@@ -283,6 +285,10 @@ type
     function UnitDependenciesViewGetProjectMainFilename(
       Sender: TObject): string;
     procedure UnitDependenciesViewOpenFile(Sender: TObject;
+      const Filename: string);
+
+    // view project ToDo list events
+    procedure ViewProjectTodosOpenFile(Sender: TObject;
       const Filename: string);
 
     // CodeToolBoss events
@@ -442,6 +448,7 @@ type
     function SomethingOfProjectIsModified: boolean;
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectToTestDirectory: TModalResult;
+    function DoShowToDoList: TModalResult;
     
     // edit menu
     procedure DoEditMenuCommand(EditorCommand: integer);
@@ -1458,6 +1465,7 @@ begin
   itmProjectAddTo.OnClick := @mnuAddToProjectClicked;
   itmProjectRemoveFrom.OnClick := @mnuRemoveFromProjectClicked;
   itmProjectViewSource.OnClick := @mnuViewProjectSourceClicked;
+  itmProjectViewToDos.OnClick := @mnuViewProjectTodosClicked;
   itmProjectOptions.OnClick := @mnuProjectOptionsClicked;
 end;
 
@@ -2180,6 +2188,11 @@ end;
 procedure TMainIDE.mnuViewProjectSourceClicked(Sender : TObject);
 begin
   DoOpenMainUnit(false);
+end;
+
+procedure TMainIDE.mnuViewProjectTodosClicked(Sender: TObject);
+begin
+  DoShowToDoList;
 end;
 
 procedure TMainIDE.mnuProjectOptionsClicked(Sender : TObject);
@@ -5179,6 +5192,20 @@ begin
   Result:=DoSaveProject([sfSaveToTestDir,sfCheckAmbigiousFiles]);
 end;
 
+function TMainIDE.DoShowToDoList: TModalResult;
+begin
+  if not Assigned(frmToDo) then begin
+    frmToDo:=TfrmToDo.Create(Self);
+    frmToDo.OnOpenFile:=@ViewProjectTodosOpenFile;
+  end;
+
+  frmToDo.FileName:=Project1.MainUnitInfo.Filename;
+
+  frmToDo.Show;
+  BringWindowToTop(frmToDo.Handle);
+  Result:=mrOk;
+end;
+
 function TMainIDE.DoBuildProject(BuildAll: boolean): TModalResult;
 var
   DefaultFilename: string;
@@ -6407,6 +6434,12 @@ begin
 end;
 
 procedure TMainIDE.UnitDependenciesViewOpenFile(Sender: TObject;
+  const Filename: string);
+begin
+  DoOpenEditorFile(Filename,-1,[]);
+end;
+
+procedure TMainIDE.ViewProjectTodosOpenFile(Sender: TObject;
   const Filename: string);
 begin
   DoOpenEditorFile(Filename,-1,[]);
@@ -8026,6 +8059,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.498  2003/03/26 10:56:30  mattias
+  added ToDo List from Olivier
+
   Revision 1.497  2003/03/26 00:21:24  mattias
   implemented build lazarus extra options -d
 
