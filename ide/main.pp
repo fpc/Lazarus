@@ -468,9 +468,7 @@ type
     function DoRevertMainUnit: TModalResult;
     function DoViewUnitsAndForms(OnlyForms: boolean): TModalResult;
     procedure DoViewUnitDependencies;
-    function DoSaveStringToFile(const Filename, Src,
-                               FileDescription: string): TModalResult; override;
-    
+
     // project(s)
     function DoNewProject(NewProjectType:TProjectType):TModalResult;
     function DoSaveProject(Flags: TSaveFlags):TModalResult;
@@ -519,15 +517,19 @@ type
     // useful file methods
     function FindUnitFile(const AFilename: string): string; override;
     function DoSaveStreamToFile(AStream:TStream; const Filename:string;
-      IsPartOfProject:boolean): TModalResult;
+                                IsPartOfProject:boolean): TModalResult;
+    function DoSaveStringToFile(const Filename, Src,
+                               FileDescription: string): TModalResult; override;
     function DoLoadMemoryStreamFromFile(MemStream: TMemoryStream;
-      const AFilename:string): TModalResult;
+                                        const AFilename:string): TModalResult;
     function DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;
-      const AFilename: string; IsPartOfProject:boolean): TModalResult;
+                                    const AFilename: string;
+                                    IsPartOfProject:boolean): TModalResult; override;
     function DoLoadCodeBuffer(var ACodeBuffer: TCodeBuffer;
-      const AFilename: string; Flags: TLoadBufferFlags): TModalResult;
+                              const AFilename: string;
+                              Flags: TLoadBufferFlags): TModalResult; override;
     function DoBackupFile(const Filename:string;
-      IsPartOfProject:boolean): TModalResult; override;
+                          IsPartOfProject:boolean): TModalResult; override;
     function DoDeleteAmbigiousFiles(const Filename:string): TModalResult; override;
     function DoCheckFilesOnDisk: TModalResult; override;
 
@@ -5955,13 +5957,17 @@ begin
     if (lbfCheckIfText in Flags)
     and FileExists(AFilename) and (not FileIsText(AFilename))
     then begin
-      ACaption:='File not text';
-      AText:='File "'+AFilename+'"'#13
-            +'does not look like a text file.'#13
-            +'Open it anyway?';
-      Result:=MessageDlg(ACaption, AText, mtConfirmation, 
-                         [mbOk, mbIgnore, mbAbort], 0);
-      if Result<>mrOk then exit;
+      if lbfQuiet in Flags then begin
+        Result:=mrCancel;
+      end else begin
+        ACaption:='File not text';
+        AText:='File "'+AFilename+'"'#13
+              +'does not look like a text file.'#13
+              +'Open it anyway?';
+        Result:=MessageDlg(ACaption, AText, mtConfirmation,
+                           [mbOk, mbIgnore, mbAbort], 0);
+      end;
+      if Result<>mrOk then break;
     end;
     ACodeBuffer:=CodeToolBoss.LoadFile(AFilename,lbfUpdateFromDisk in Flags,
                                        lbfRevert in Flags);
@@ -5971,12 +5977,19 @@ begin
       writeln('[TMainIDE.DoLoadCodeBuffer] ',ACodeBuffer.SourceLength,' ',ACodeBuffer.Filename);
       {$ENDIF}
     end else begin
-      ACaption:='Read Error';
-      AText:='Unable to read file "'+AFilename+'"!';
-      Result:=MessageDlg(ACaption,AText,mterror,[mbAbort, mbRetry, mbIgnore],0);
-      if Result=mrAbort then exit;
+      if lbfQuiet in Flags then
+        Result:=mrCancel
+      else begin
+        ACaption:='Read Error';
+        AText:='Unable to read file "'+AFilename+'"!';
+        Result:=MessageDlg(ACaption,AText,mtError,[mbAbort,mbRetry,mbIgnore],0);
+      end;
+      if Result=mrAbort then break;
     end;
   until Result<>mrRetry;
+  if (ACodeBuffer=nil) and (lbfCreateClearOnError in Flags) then begin
+    ACodeBuffer:=CodeToolBoss.CreateFile(AFilename);
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -8607,6 +8620,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.543  2003/04/28 20:46:54  mattias
+  implemented replacing installed packages
+
   Revision 1.542  2003/04/28 08:16:13  mattias
   implemented environment path browse buttons
 
