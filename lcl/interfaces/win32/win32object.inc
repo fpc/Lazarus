@@ -420,7 +420,7 @@ Begin
       if (Data <> nil)
       and (PChar(Data)^ <> #0)
       then begin
-        S := (Sender as TMemo).Text + PChar(Data);
+        S := (Sender as TCustomMemo).Text + PChar(Data);
         SetLabel(Sender, PChar(S));
       end;
     End;
@@ -2792,6 +2792,9 @@ End;
 
 {
   $Log$
+  Revision 1.110  2003/09/18 12:17:25  mattias
+  fixed is checks for TCustomXXX controls
+
   Revision 1.109  2003/09/18 12:15:01  mattias
   fixed is checks for TCustomXXX controls
 
