@@ -1,0 +1,55 @@
+object Form1: TForm1
+  CAPTION = 'Form1'
+  CLIENTHEIGHT = 300
+  CLIENTWIDTH = 483
+  ONCREATE = Form1CREATE
+  ONDESTROY = Form1DESTROY
+  HORZSCROLLBAR.PAGE = 484
+  VERTSCROLLBAR.PAGE = 301
+  LEFT = 446
+  HEIGHT = 300
+  TOP = 257
+  WIDTH = 483
+  object OIGroupbox: TGROUPBOX
+    CAPTION = 'Root Component'
+    CLIENTHEIGHT = 104
+    CLIENTWIDTH = 172
+    PARENTCTL3D = False
+    TABORDER = 0
+    LEFT = 16
+    HEIGHT = 121
+    TOP = 24
+    WIDTH = 176
+    object SetOIRootFormButton: TBUTTON
+      CAPTION = 'Set Form as Root'
+      TABSTOP = True
+      TABORDER = 0
+      ONCLICK = SetOIRootFormButtonCLICK
+      LEFT = 15
+      HEIGHT = 25
+      TOP = 16
+      WIDTH = 139
+    end
+    object SetCompAsOIRootButton: TBUTTON
+      CAPTION = 'Set Component'
+      TABSTOP = True
+      TABORDER = 1
+      ONCLICK = SetCompAsOIRootButtonCLICK
+      LEFT = 15
+      HEIGHT = 25
+      TOP = 54
+      WIDTH = 139
+    end
+  end
+  object PropGridGroupbox: TGROUPBOX
+    CAPTION = 'PropertyGrid'
+    CLIENTHEIGHT = 244
+    CLIENTWIDTH = 253
+    PARENTCTL3D = False
+    TABORDER = 1
+    LEFT = 207
+    HEIGHT = 261
+    TOP = 24
+    WIDTH = 257
+  end
+end

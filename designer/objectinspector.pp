@@ -39,7 +39,7 @@ interface
 
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
-  LCLLinux, LMessages, Controls, ComCtrls, ExtCtrls, TypInfo, Messages,
+  LCLLinux, LCLProc, LMessages, Controls, ComCtrls, ExtCtrls, TypInfo, Messages,
   LResources, PairSplitter, Laz_XMLCfg, Menus, Dialogs, ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView;
@@ -2451,6 +2451,7 @@ end;
 procedure TObjectInspector.ComponentTreeSelectionChanged(Sender: TObject);
 begin
   if (PropertyEditorHook=nil) or (PropertyEditorHook.LookupRoot=nil) then exit;
+  if FComponentList.IsEqual(ComponentTree.Selections) then exit;
   FComponentList.Assign(ComponentTree.Selections);
   RefreshSelections;
   if Assigned(FOnSelectComponentsInOI) then

@@ -100,8 +100,7 @@ begin
         AComponent:=TComponent(ANode.Data);
         if AComponent=nil then
           RaiseGDBException('TComponentTreeView.DoSelectionChanged ANode.Data=nil');
-        if ((AComponent.Owner=nil)
-        and (AComponent=PropertyEditorHook.LookupRoot))
+        if (AComponent=PropertyEditorHook.LookupRoot)
         or (AComponent.Owner=PropertyEditorHook.LookupRoot)
         then
           NewSelection.Add(AComponent);
@@ -110,10 +109,10 @@ begin
     end;
     if NewSelection.IsEqual(FComponentList.Selection) then exit;
     FComponentList.Selection.Assign(NewSelection);
+    inherited DoSelectionChanged;
   finally
     NewSelection.Free;
   end;
-  inherited DoSelectionChanged;
 end;
 
 procedure TComponentTreeView.SetPropertyEditorHook(
