@@ -516,7 +516,6 @@ type
     procedure InvalidateBracketHighlight(OnlyIfCaretMoved: boolean);
     {$ENDIF}
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
-    procedure KeyPress(var Key: char); override;
     {$IFDEF SYN_LAZARUS}
     procedure UTF8KeyPress(var Key: TUTF8Char); override;
     {$ELSE}
@@ -1838,24 +1837,6 @@ procedure TCustomSynEdit.Loaded;
 begin
   inherited Loaded;
   GutterChanged(Self);
-end;
-
-procedure TCustomSynEdit.KeyPress(var Key: char);
-begin
-{$IFDEF SYN_MBCSSUPPORT}
-  if (fImeCount > 0) then begin
-    Dec(fImeCount);
-    Exit;
-  end;
-{$ENDIF}
-  // don't fire the event if key is to be ignored
-  if not (sfIgnoreNextChar in fStateFlags) then begin
-    if Assigned(OnKeyPress) then
-      OnKeyPress(Self, Key);
-    CommandProcessor(ecChar, Key, nil);
-  end else
-    // don't ignore further keys
-    Exclude(fStateFlags, sfIgnoreNextChar);
 end;
 
 {$IFDEF SYN_LAZARUS}

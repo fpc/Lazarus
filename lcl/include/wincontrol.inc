@@ -3134,7 +3134,9 @@ procedure TWinControl.CNChar(var Message: TLMKeyUp);
 var
   c: TUTF8Char;
 begin
+  //debugln('TWinControl.CNChar A ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
   if not DoKeyPress(Message) then {inherited}; // there is nothing to inherit
+  //debugln('TWinControl.CNChar B ',DbgSName(Self),' ',dbgs(Message.CharCode),' ',dbgs(IntfSendsUTF8KeyPress));
   if not IntfSendsUTF8KeyPress then begin
     // current interface does not (yet) send UTF8 key press notifications
     // -> emulate
@@ -3245,7 +3247,7 @@ end;
   Returns:  nothing
 
   event handler.
-  WMChar is sent by the interface it has handled the keypress by itself.
+  WMChar is sent by the interface after it has handled the keypress by itself.
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMChar(var Message: TLMChar);
 begin
@@ -3915,6 +3917,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.271  2004/09/02 17:59:59  mattias
+  removed double KeyPress method in synedit
+
   Revision 1.270  2004/09/02 17:42:38  mattias
   fixed changing CNCHar.CharCode when key changed
 
