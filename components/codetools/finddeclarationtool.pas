@@ -31,11 +31,10 @@
        - @ operator
        - 'inherited'
        - variants
-       - array of const
-       - open arrays
        - interfaces
        - Get and Set property access parameter lists
        - ignore error after cursor position
+       - predefined funcs Pred, Succ, Val, Low, High
        - find declaration in dead code
        - operator overloading
        - ppu, ppw, dcu files
@@ -349,7 +348,8 @@ type
       Params: TFindDeclarationParams): boolean;
     function IsCompatible(TargetType, ExpressionType: TExpressionType;
       Params: TFindDeclarationParams): TTypeCompatibility;
-    function IsCompatible(Node: TCodeTreeNode; ExpressionType: TExpressionType;
+    function IsCompatible(TargetNode: TCodeTreeNode;
+      ExpressionType: TExpressionType;
       Params: TFindDeclarationParams): TTypeCompatibility;
     // expressions, operands, variables
     function FindEndOfVariable(StartPos: integer): integer;
@@ -3753,40 +3753,37 @@ begin
     Result:=ifrSuccess;
 end;
 
-function TFindDeclarationTool.IsCompatible(Node: TCodeTreeNode;
+function TFindDeclarationTool.IsCompatible(TargetNode: TCodeTreeNode;
   ExpressionType: TExpressionType;
   Params: TFindDeclarationParams): TTypeCompatibility;
-var FindContext: TFindContext;
+var TargetContext: TFindContext;
   OldInput: TFindDeclarationInput;
   NodeExprType: TExpressionType;
 begin
   {$IFDEF ShowExprEval}
-  writeln('[TFindDeclarationTool.IsCompatible] A Node=',Node.DescAsString,
+  writeln('[TFindDeclarationTool.IsCompatible] A Node=',TargetNode.DescAsString,
   ' ExpressionType=',ExpressionTypeDescNames[ExpressionType.Desc]);
   {$ENDIF}
   Result:=tcIncompatible;
   // find base type of node
   OldInput.Flags:=Params.Flags;
   Include(Params.Flags,fdfExceptionOnNotFound);
-  FindContext:=FindBaseTypeOfNode(Params,Node);
+  TargetContext:=FindBaseTypeOfNode(Params,TargetNode);
   Params.Flags:=OldInput.Flags;
-  if (FindContext.Node.Desc=ctnSetType) then begin
+  if (TargetContext.Node.Desc=ctnSetType) then begin
     {$IFDEF ShowExprEval}
-    writeln('[TFindDeclarationTool.IsCompatible] FindContext.Node.Desc=ctnSetType',
-    '"',copy(FindContext.Tool.Src,FindContext.Node.Parent.StartPos,20),'"');
+    writeln('[TFindDeclarationTool.IsCompatible] TargetContext.Node.Desc=ctnSetType',
+    ' "',copy(TargetContext.Tool.Src,TargetContext.Node.Parent.StartPos,20),'"');
     {$ENDIF}
     if (ExpressionType.Desc<>xtConstSet) then
       exit;
     // both are sets, compare type of sets
     if ExpressionType.SubDesc<>xtNone then begin
-      // -> read operand type of set type of node
+      // ToDo: check if enums of expression fits into enums of target
 
       // ToDo: ppu, ppw, dcu
 
-      FindContext.Tool.MoveCursorToNodeStart(FindContext.Node.FirstChild);
-      NodeExprType:=ReadOperandTypeAtCursor(Params);
-      ExpressionType.Desc:=ExpressionType.SubDesc;
-      Result:=IsCompatible(NodeExprType,ExpressionType,Params);
+      Result:=tcCompatible;
     end else
       // the empty set is compatible to all kinds of sets
       Result:=tcExact;
@@ -3794,16 +3791,16 @@ begin
   end;
   // compare node base type and ExpressionType
   if (ExpressionType.Context.Node<>nil)
-  and (ExpressionType.Context.Node=FindContext.Node) then begin
+  and (ExpressionType.Context.Node=TargetContext.Node) then begin
     // same base type
     Result:=tcExact;
   end else begin
-    NodeExprType:=ConvertNodeToExpressionType(Node,Params);
+    NodeExprType:=ConvertNodeToExpressionType(TargetNode,Params);
     Result:=IsCompatible(NodeExprType,ExpressionType,Params);
   end;
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.IsCompatible] END',
-  ' BaseNode=',FindContext.Node.DescAsString,
+  ' BaseNode=',TargetContext.Node.DescAsString,
   ' ExpressionType=',ExpressionTypeDescNames[ExpressionType.Desc],
   ' Result=',TypeCompatibilityNames[Result]
   );
@@ -3981,6 +3978,9 @@ begin
       begin
         TargetNode:=TargetType.Context.Node;
         ExprNode:=ExpressionType.Context.Node;
+        if TargetNode=ExprNode then
+          Result:=tcExact
+        else
         if ExprNode.Desc=TargetNode.Desc then begin
           // same context type
           case ExprNode.Desc of
@@ -3993,11 +3993,11 @@ begin
               Result:=tcCompatible;
               
           ctnArrayType:
-            // check if
+            // ToDo: check range and type of arrayfields
             begin
-            
+              Result:=tcCompatible;
             end;
-            
+
           end;
         end else begin
           // different context type
@@ -4022,13 +4022,23 @@ begin
     then
       Result:=tcCompatible
     else if (TargetType.Desc=xtContext) then begin
-      if (TargetType.Context.Node.Desc in [ctnClass,ctnProcedure])
-        and (ExpressionType.Desc=xtNil)
-      //or (TargetType.Context.Node.Desc=ctnA)
+      if ((TargetType.Context.Node.Desc in [ctnClass,ctnProcedure])
+        and (ExpressionType.Desc=xtNil))
+      or ((TargetType.Context.Node.Desc=ctnArrayType)
+        and (TargetType.Context.Node.FirstChild<>nil)
+        and (TargetType.Context.Node.FirstChild.Desc=ctnOfConstType)
+        and (ExpressionType.Desc=xtConstSet))
       then
         Result:=tcCompatible
     end;
   end;
+  {$IFDEF ShowExprEval}
+  writeln('[TFindDeclarationTool.IsCompatible] END ',
+  ' TargetType=',ExpressionTypeDescNames[TargetType.Desc],
+  ' ExpressionType=',ExpressionTypeDescNames[ExpressionType.Desc],
+  ' Result=',TypeCompatibilityNames[Result]
+  );
+  {$ENDIF}
 end;
 
 procedure TFindDeclarationTool.DoDeleteNodes;

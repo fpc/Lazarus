@@ -1074,7 +1074,7 @@ begin
       if UpAtomIs('CONST') then begin
         if (phpCreateNodes in Attr) then begin
           CreateChildNode;
-          CurNode.Desc:=ctnArrayType;
+          CurNode.Desc:=ctnOfConstType;
           CurNode.EndPos:=CurPos.EndPos;
           EndChildNode;
         end;
