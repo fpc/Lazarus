@@ -243,7 +243,7 @@ type
       FilterIndex: integer;
       MenuItem: PGtkWidget;
     end;
-
+    
   { Menu }
 
 type
