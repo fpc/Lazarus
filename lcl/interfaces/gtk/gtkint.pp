@@ -105,6 +105,9 @@ type
       Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
     procedure LoadFromXPMFile(Bitmap: TObject; Filename: PChar);
     procedure LoadFromPixbufFile(Bitmap: TObject; Filename: PChar);
+    procedure LoadFromPixbufData(Bitmap : hBitmap; Data : PByte);
+    function InternalGetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
+      BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
 
     procedure SetRCFilename(const AValue: string);
     procedure ParseRCFile;
@@ -163,6 +166,8 @@ type
   end;
 
 {$I gtklistslh.inc}
+
+  function GetDCOffset(DC: PDeviceContext): TPoint;
 
 implementation
 
@@ -483,6 +488,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.72  2002/09/10 06:49:20  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.71  2002/09/06 22:32:21  lazarus
   Enabled cursor property + property editor.
 
