@@ -98,6 +98,9 @@ idepkg:
 
 #-----------------------------------------------------------------------------
 starter:
+ifeq ($(OS_TARGET), win32)
+        $(MAKE) startlazarus.res
+endif
 ifeq ($(LAZARUS_OPT),)
         $(MAKE) --assume-new=startlazarus.lpr startlazarus$(EXEEXT)
 else
