@@ -1349,7 +1349,10 @@ function ComboBoxWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
 begin
   // darn MS: if combobox has edit control, and combobox receives focus, it
   // passes it on to the edit, so it will send a WM_KILLFOCUS; inhibit
-  if (Msg = WM_KILLFOCUS) and (Windows.GetTopWindow(Window) <> HWND(nil)) then
+  // also don't pass WM_SETFOCUS to the lcl,
+  // it will get one from the edit control
+  if ((Msg = WM_KILLFOCUS) or (Msg = WM_SETFOCUS)) and
+     (Windows.GetTopWindow(Window) <> HWND(nil)) then
   begin
     // continue normal processing, don't send to lcl
     Result := CallDefaultWindowProc(Window, Msg, WParam, LParam);
@@ -1473,6 +1476,9 @@ end;
 
 {
   $Log$
+  Revision 1.168  2004/11/26 11:23:38  vincents
+  fixed sending two lm_setfocus message for combobox.
+
   Revision 1.167  2004/11/21 21:09:29  vincents
   use message name instead of number in debug message.
   postponed removing properties until wm_ncdestroy.
