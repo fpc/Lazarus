@@ -18,6 +18,9 @@
  *****************************************************************************
 }
 
+const
+  sDuplicateMenus = 'TCustomForm.SetMenu Duplicate menus';
+
 { $DEFINE CHECK_POSITION}
 
 {------------------------------------------------------------------------------}
@@ -645,12 +648,29 @@ end;
 {       TCustomForm SetMenu                                                      }
 {------------------------------------------------------------------------------}
 Procedure TCustomForm.SetMenu(Value : TMainMenu);
-Begin
+var
+  I: Integer;
+begin
   //TODO: Finish SETMenu
   if FMenu=Value then exit;
+  if Value <> nil then
+    for I := 0 to Screen.FormCount - 1 do
+      if (Screen.Forms[I].Menu = Value) and (Screen.Forms[I] <> Self) then
+        raise EInvalidOperation.CreateFmt(sDuplicateMenus, [Value.Name]);
+
   if FMenu<>nil then FMenu.Parent:=nil;
+
+  if (csDestroying in ComponentState) or
+    ((Value <> nil) and (csDestroying in Value.ComponentState))
+  then
+    Value := nil;
+
   FMenu := Value;
-  if FMenu<>nil then FMenu.Parent:=Self;
+  if FMenu<>nil then begin
+    FMenu.Parent:=Self;
+    if HandleAllocated and (not (csLoading in ComponentState)) then
+      FMenu.HandleNeeded;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1003,6 +1023,12 @@ begin
 //writeln('TCustomForm.CreateWnd END ',ClassName);
 end;
 
+procedure TCustomForm.Loaded;
+begin
+  inherited Loaded;
+  if FMenu<>nil then FMenu.HandleNeeded;
+end;
+
 {------------------------------------------------------------------------------
   Method:  TCustomForm.UpdateShowing
   Params:  None
@@ -1137,6 +1163,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2002/10/22 18:54:56  lazarus
+  MG: fixed menu streaming
+
   Revision 1.62  2002/10/22 13:01:20  lazarus
   MG: fixed setting modalresult on hide
 

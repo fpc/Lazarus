@@ -86,15 +86,6 @@ begin
       if ShortCut <> 0 then ShortCutChanged(0, Shortcut);
     end;  
   end;
-  {
-  if (FItems <> nil) and ((Parent = nil) or Parent.HandleAllocated)
-  then begin
-    for n := 0 to FItems.Count - 1 do 
-    begin
-      InterfaceObject.IntSendMessage3(LM_ATTACHMENU, TObject(FItems[n]), nil);
-    end;
-  end;
-  }
   //writeln('TMenuItem.CreateHandle END ',Name,':',ClassName);
 end;
 
@@ -825,7 +816,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenuItem.SetVisible(AValue: Boolean);
 begin
-//  HandleNeeded;
+  // ToDo tell interface
   FVisible := AValue;
 end;
 
@@ -926,6 +917,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2002/10/22 18:54:56  lazarus
+  MG: fixed menu streaming
+
   Revision 1.27  2002/10/08 22:32:27  lazarus
   MG: fixed cool little bug (menu double attaching bug)
 
@@ -1035,6 +1029,9 @@ end;
 
 
   $Log$
+  Revision 1.28  2002/10/22 18:54:56  lazarus
+  MG: fixed menu streaming
+
   Revision 1.27  2002/10/08 22:32:27  lazarus
   MG: fixed cool little bug (menu double attaching bug)
 

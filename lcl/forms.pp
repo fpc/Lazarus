@@ -255,6 +255,7 @@ type
     function CloseQuery : boolean; virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
+    procedure Loaded; override;
     procedure Deactivate;dynamic;
     procedure DoClose(var Action: TCloseAction); dynamic;
     procedure DoHide; dynamic;
