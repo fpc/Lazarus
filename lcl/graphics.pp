@@ -41,6 +41,7 @@ uses
   SysUtils, Classes, Contnrs, FPCAdds,
   {$IFNDEF DisableFPImage}
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
+  FPReadJpeg,FPWriteJpeg,
   {$ENDIF}
   LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLIntf, LResources,
   GraphType, GraphMath;
@@ -367,6 +368,7 @@ type
   TPixmap = class;                  // xpm
   TIcon = class;                    // ico
   TPortableNetworkGraphic = class;  // png
+  TJpegImage = class;               // jpg
 
 
   { TGraphicsObject }
@@ -1107,6 +1109,18 @@ type
   end;
 
 
+  { TJpegImage }
+
+  TJpegImage = class(TFPImageBitmap)
+  public
+    class function GetFileExtensions: string; override;
+    {$IFNDEF DisableFPImage}
+    class function GetDefaultFPReader: TFPCustomImageReaderClass; override;
+    class function GetDefaultFPWriter: TFPCustomImageWriterClass; override;
+    {$ENDIF}
+  end;
+
+
   { TIcon }
   {
     TIcon reads and writes .ICO file format.
@@ -1482,6 +1496,7 @@ end;
 {$I canvas.inc}
 {$I pixmap.inc}
 {$I png.inc}
+{$I jpg.inc}
 
 
 { TFPImageBitmap }
@@ -1680,6 +1695,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.136  2004/05/06 16:25:22  mazen
+  + jpeg loading support
+
   Revision 1.135  2004/04/29 18:08:17  mattias
   fixed 1.0.10 compilation
 
