@@ -509,7 +509,6 @@ type
     procedure doTopleftChange(DimChg: Boolean);
     function  EditorCanProcessKey(var Key: Char): boolean;
     procedure EditorGetValue;
-    procedure EditorHide;
     procedure EditorPos;
     procedure EditorSelectAll;
     procedure EditorShowChar(Ch: Char);
@@ -617,6 +616,7 @@ type
     procedure EditordoSetValue; virtual;
     function  EditorCanAcceptKey(const ch: Char): boolean; virtual;
     function  EditorIsReadOnly: boolean; virtual;
+    procedure EditorHide; virtual;
     procedure EditorShow(const SelAll: boolean); virtual;
     procedure GetAutoFillColumnInfo(const Index: Integer; var aMin,aMax,aPriority: Integer); dynamic;
     function  GetFixedcolor: TColor; virtual;

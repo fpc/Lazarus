@@ -152,6 +152,7 @@ type
     procedure SelectEditor; override;
     procedure DoEditorControlKeyUp(Sender: TObject; var Key: Word;
       Shift: TShiftState); virtual;
+    procedure EditorHide; override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -172,6 +173,7 @@ type
     procedure MapCell(aCol, aRow: integer;
                       var ObjectIndex, PropertyIndex: integer;
                       var CellType: TTIGridCellType);
+    function GetCurrentGridProperty: TTIGridProperty;
   public
     property DefaultRowHeight default 20;
     property Filter: TTypeKinds read FFilter write SetFilter default AllTypeKinds;
@@ -523,6 +525,8 @@ procedure TTICustomGrid.DoEditorControlKeyUp(Sender: TObject; var Key: Word;
 
 var
   Relaxed: Boolean;
+  GridProp: TTIGridProperty;
+  CurLink: TCustomPropertyLink;
 begin
   if Sender=nil then ;
   if (Shift=[ssCtrl]) then begin
@@ -550,8 +554,31 @@ begin
           if Relaxed then MoveSel(False, ColCount-1, Row)
           else            MoveSel(False, Col, RowCount-1);
       end;
+    VK_F2:
+      begin
+        GridProp:=GetCurrentGridProperty;
+        if (GridProp<>nil) and (paDialog in GridProp.Editor.GetAttributes) then
+        begin
+          GridProp.Editor.Edit;
+          CurLink:=GetPropertyLinkOfComponent(Editor);
+          if CurLink<>nil then
+            CurLink.LoadFromProperty;
+        end;
+      end;
     end;
   end;
+end;
+
+procedure TTICustomGrid.EditorHide;
+var
+  PropLink: TCustomPropertyLink;
+begin
+  if Editor<>nil then begin
+    PropLink:=GetPropertyLinkOfComponent(Editor);
+    if PropLink<>nil then
+      PropLink.SetObjectAndProperty(nil,'');
+  end;
+  inherited EditorHide;
 end;
 
 constructor TTICustomGrid.Create(TheOwner: TComponent);
@@ -840,6 +867,18 @@ begin
     if PropertyIndexInHeader and ObjectIndexInHeader then
       CellType:=tgctCorner;
   end;
+end;
+
+function TTICustomGrid.GetCurrentGridProperty: TTIGridProperty;
+var
+  ObjectIndex: Integer;
+  PropertyIndex: Integer;
+  CellType: TTIGridCellType;
+begin
+  Result:=nil;
+  MapCell(Col,Row,ObjectIndex,PropertyIndex,CellType);
+  if CellType=tgctValue then
+    Result:=Properties[PropertyIndex];
 end;
 
 { TTIGridProperty }
