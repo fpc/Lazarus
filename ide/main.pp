@@ -147,7 +147,6 @@ type
     Procedure mnuViewFormsClicked(Sender : TObject);
 
     procedure mnuToggleFormUnitClicked(Sender : TObject);
-
     procedure mnuNewProjectClicked(Sender : TObject);
     procedure mnuOpenProjectClicked(Sender : TObject);
     procedure mnuSaveProjectClicked(Sender : TObject);
@@ -1730,6 +1729,11 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
   if ActiveSrcEdit.Modified then begin
     ActiveUnitInfo.Source.Source:=ActiveSrcEdit.Source.Text;
     ActiveUnitInfo.Modified:=true;
+  end;
+  if (not SaveToTestDir) and (not ActiveUnitInfo.Modified) and (not SaveAs) then
+  begin
+    Result:=mrOk;
+    exit;
   end;
 
   // load old resource file
@@ -3594,8 +3598,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.109  2001/07/08 22:33:56  lazarus
-  MG: added rapid testing project
+  Revision 1.110  2001/07/10 10:44:15  lazarus
+  MG: save unit only if modified
 
   Revision 1.105  2001/07/01 15:55:43  lazarus
   MG: JumpToCompilerMessage now centered in source editor
