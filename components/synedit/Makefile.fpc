@@ -24,6 +24,9 @@ packages=fcl regexpr
 [default]
 lcldir=../../lcl
 
+[clean]
+files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
 [prerules]
 # LCL Platform
 ifndef LCL_PLATFORM

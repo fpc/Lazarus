@@ -1243,10 +1243,10 @@ writeln('[TgtkObject.IntSendMessage3] LM_SETFOCUS ',TObject(Sender).ClassName);
       
       LM_SETSHORTCUT :
       begin
-	with TLMShortcut(data^) do begin
+        with TLMShortcut(data^) do begin
           Widget:= PGtkWidget(Handle);
-	end;
-	Accelerate(Widget, TLMShortcut(data^));
+        end;
+        Accelerate(Widget, TLMShortcut(data^));
       end;
 
       LM_SETGEOMETRY :
@@ -3841,6 +3841,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.114  2002/04/26 12:26:50  lazarus
+  MG: improved clean up
+
   Revision 1.113  2002/03/29 19:11:38  lazarus
   Added Triple Click
   Shane

@@ -30,7 +30,9 @@ includedir=include
 buildunit=allunits
 
 [clean]
-files=$(wildcard units/*$(OEXT)) $(wildcard units/*$(PPUEXT))
+files=$(wildcard units/*$(OEXT)) $(wildcard units/*$(PPUEXT)) $(wildcard units/*$(RSTEXT))\
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
 
 [default]
 lcldir=.

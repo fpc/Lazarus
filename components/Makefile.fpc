@@ -7,7 +7,7 @@
 dirs=synedit codetools
 
 [clean]
-files=$(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT))
+files=$(wildcard ./units/*$(OEXT)) $(wildcard ./units/*$(PPUEXT)) $(wildcard ./units/*$(RSTEXT))
 
 [rules]
 

@@ -19,7 +19,11 @@ unitdir=../../units .
 unittargetdir=../../units/gtk
 
 [clean]
-files=$(wildcard ../../units/gtk/*$(OEXT)) $(wildcard ../../units/gtk/*$(PPUEXT))
+files=$(wildcard ../../units/gtk/*$(OEXT)) \
+      $(wildcard ../../units/gtk/*$(PPUEXT)) \
+      $(wildcard ../../units/gtk/*$(RSTEXT)) \
+      $(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
 
 [rules]
 .PHONY: cleartarget all
