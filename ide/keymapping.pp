@@ -17,7 +17,7 @@ interface
 uses
   LCLLinux,
   Forms, Classes, SysUtils, Buttons, LResources, StdCtrls, Controls,
-  SynEdit, SynEditKeyCmds, XMLCfg;
+  SynEdit, SynEditKeyCmds, XMLCfg, Dialogs;
 
 const
   // editor commands constants. see syneditkeycmds.pp for more
@@ -682,7 +682,10 @@ begin
     ACaption:='No No No';
     AText:=' The key "'+KeyAndShiftStateToStr(NewKey1,NewShiftState1)+'"'
             +' is already connected to "'+DummyRelation.Name+'".';
-    Application.MessageBox(PChar(AText),PChar(ACaption),0);
+
+//    Application.MessageBox(PChar(AText),PChar(ACaption),0);
+    MessageDlg(ACaption,AText,mterror,[mbok],0);
+
     exit;
   end;
   NewKey2:=StrToVKCode(Key2KeyComboBox.Text);
@@ -699,7 +702,10 @@ begin
     ACaption:='No No No';
     AText:=' The key "'+KeyAndShiftStateToStr(NewKey2,NewShiftState2)+'"'
             +' is already connected to "'+DummyRelation.Name+'".';
-    Application.MessageBox(PChar(AText),PChar(ACaption),0);
+
+//    Application.MessageBox(PChar(AText),PChar(ACaption),0);
+    MessageDlg(ACaption,AText,mterror,[mbok],0);
+
     exit;
   end;
   if NewKey1=VK_UNKNOWN then begin

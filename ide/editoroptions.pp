@@ -1641,7 +1641,10 @@ begin
     end else begin
       ACaption:='Report';
       AText:='No errors in key mapping found.';
-      Application.MessageBox(PChar(AText),PChar(ACaption),mb_ok);
+
+//      Application.MessageBox(PChar(AText),PChar(ACaption),mb_ok);
+      MessageDlg(ACaption,AText,mtinformation,[mbok],0);
+
     end;
   finally
     Protocol.Free;

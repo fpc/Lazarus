@@ -32,7 +32,7 @@ uses
   CompReg, CodeTools, MsgView, NewProjectDlg, IDEComp, AbstractFormEditor,
   FormEditor, CustomFormEditor, ObjectInspector, PropEdits, ControlSelection,
   UnitEditor, CompilerOptions, EditorOptions, EnvironmentOpts, TransferMacros,
-  KeyMapping, ProjectOpts, IDEProcs, Process;
+  KeyMapping, ProjectOpts, IDEProcs, Process, UnitInfoDlg;
 
 const
   Version_String = '0.7 alpha';
@@ -180,6 +180,7 @@ type
     Procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
     Procedure OnSrcNotebookProcessCommand(Sender: TObject; Command: integer;
         var Handled: boolean);
+    procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
 
     // ObjectInspector events
     procedure OIOnAddAvailableComponent(AComponent:TComponent;
@@ -505,6 +506,7 @@ begin
   SourceNotebook.OnSaveAllClicked := @OnSrcNotebookSaveAll;
   SourceNotebook.OnToggleFormUnitClicked := @OnSrcNotebookToggleFormUnit;
   SourceNotebook.OnProcessUserCommand := @OnSrcNotebookProcessCommand;
+  SourceNotebook.OnShowUnitInfo := @OnSrcNoteBookShowUnitInfo;
 
   // find / replace dialog
   itmSearchFind.OnClick := @SourceNotebook.FindClicked;
@@ -618,13 +620,16 @@ procedure TMainIDE.FormCloseQuery(Sender : TObject; var CanClose: boolean);
 Begin
 writeln('[TMainIDE.FormCloseQuery]');
   CanClose:=true;
+
   if SomethingOfProjectIsModified then begin
-    if Application.MessageBox('Save changes to project?','Project changed',
-        MB_OKCANCEL)=mrOk then begin
+	
+    if (MessageDlg('Project changed', 'Save changes to project?', mtconfirmation, [mbOK, mbcancel], 0))=mrOK then begin
       CanClose:=DoSaveProject(false,false)<>mrAbort;
       if CanClose=false then exit;
     end;
+
   end;
+
   CanClose:=(DoCloseProject<>mrAbort);
 End;
 
@@ -1300,6 +1305,24 @@ begin
   end;
 end;
 
+procedure TMainIDE.OnSrcNoteBookShowUnitInfo(Sender: TObject);
+var ActiveSrcEdit:TSourceEditor;
+  ActiveUnitInfo:TUnitInfo;
+  ShortUnitName, AFilename: string;
+begin
+  GetCurrentUnit(ActiveSrcEdit,ActiveUnitInfo);
+  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) then exit;
+  ShortUnitName:=ExtractFileName(ActiveUnitInfo.Filename);
+  if ShortUnitName='' then
+    ShortUnitName:='(unsaved)';
+  AFilename:=ActiveUnitInfo.Filename;
+  if AFileName='' then
+    AFileName:='(unsaved)';
+  ShowUnitInfoDlg(ShortUnitName,
+    LazSyntaxHighlighterNames[ActiveUnitInfo.SyntaxHighlighter],
+    ActiveUnitInfo.IsPartOfProject, length(ActiveSrcEdit.Source.Text),
+    ActiveSrcEdit.Source.Count,AFilename);
+end;
 
 {------------------------------------------------------------------------------}
 
@@ -1755,8 +1778,10 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
         except
           ACaption:='File read error';
           AText:='Unable to read file "'+ResourceFilename+'".';
-          Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-            ,MB_ABORTRETRYIGNORE);
+
+//          Result:=Application.MessageBox(PChar(AText), PChar(ACaption), MB_ABORTRETRYIGNORE);
+          Result:=MessageDlg(ACaption, AText, mterror,[mbabort, mbretry, mbignore], 0);
+
           if Result=mrAbort then exit;
          if Result=mrIgnore then Result:=mrOk;
         end;
@@ -1780,8 +1805,10 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
           if FileExists(NewFilename) then begin
             ACaption:='Overwrite file?';
             AText:='A file "'+NewFilename+'" already exists. Replace it?';
-            Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-              ,MB_OKCANCEL);
+
+//            Result:=Application.MessageBox(PChar(AText),PChar(ACaption), MB_OKCANCEL);
+	    Result:=MessageDlg(ACaption, AText, mtconfirmation, [mbok, mbcancel], 0);
+
             if Result=mrCancel then exit;
           end;
           EnvironmentOptions.AddToRecentOpenFiles(NewFilename);
@@ -1877,8 +1904,10 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
             ACaption:='Streaming error';
             AText:='Unable to stream '
               +ActiveUnitInfo.FormName+':T'+ActiveUnitInfo.FormName+'.';
-            Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-              ,MB_ABORTRETRYIGNORE);
+
+//            Result:=Application.MessageBox(PChar(AText),PChar(ACaption), MB_ABORTRETRYIGNORE);
+	    Result:=MessageDlg(ACaption, AText, mterror, [mbabort, mbretry, mbignore], 0);
+
             if Result=mrAbort then exit;
             if Result=mrIgnore then Result:=mrOk;
           end;
@@ -1901,7 +1930,10 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
           AText:='Unable to add resource '
             +'T'+ActiveUnitInfo.FormName+':FORMDATA to internal file. '
             +'Please report this error.';
-          Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_OKCANCEL);
+
+//          Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_OKCANCEL);
+          Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
+
           if Result=mrCancel then Result:=mrAbort;
           exit;
         end;
@@ -1924,8 +1956,10 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
             ACaption:='Streaming error';
             AText:='Unable to transform binary component stream of '
                +ActiveUnitInfo.FormName+':T'+ActiveUnitInfo.FormName+' into text.';
-            Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-              ,MB_ABORTRETRYIGNORE);
+
+//            Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_ABORTRETRYIGNORE);
+            Result:=MessageDlg(ACaption, AText, mterror, [mbabort, mbretry, mbignore], 0);
+
             if Result=mrAbort then exit;
             if Result=mrIgnore then Result:=mrOk;
           end;
@@ -1949,8 +1983,10 @@ writeln('TMainIDE.DoSaveEditorUnit A PageIndex=',PageIndex);
         except
           ACaption:='File write error';
           AText:='Unable to write to file "'+ResourceFilename+'".';
-          Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-            ,MB_ABORTRETRYIGNORE);
+
+//          Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_ABORTRETRYIGNORE);
+          Result:=MessageDlg(ACaption, AText, mterror, [mbabort, mbretry, mbignore], 0);
+
           if Result=mrAbort then exit;
           if Result=mrIgnore then Result:=mrOk;
         end;
@@ -1993,7 +2029,9 @@ writeln('TMainIDE.DoCloseEditorUnit A PageIndex=',PageIndex);
         SourceNotebook.NoteBook.Pages[SourceNotebook.NoteBook.PageIndex]
         +'" has changed. Save?';
     ACaption:='Source mofified';
-    if Application.MessageBox(PChar(AText),PChar(ACaption),MB_YESNO)=mrYes then
+
+//    if Application.MessageBox(PChar(AText),PChar(ACaption),MB_YESNO)=mrYes then
+    if Messagedlg(ACaption, AText, mtconfirmation, [mbyes, mbno], 0)=mryes then
     begin
       Result:=DoSaveEditorUnit(PageIndex,false,false);
       if Result=mrAbort then exit;
@@ -2080,8 +2118,9 @@ begin
                  +' seems to be the program file of an existing lazarus project.'
                  +' Open project? Cancel will load the source.';
               ACaption:='Project info file detected';
-              if Application.MessageBox(PChar(AText),PChar(ACaption)
-                  ,MB_OKCANCEL)=mrOk then begin
+
+//              if Application.MessageBox(PChar(AText),PChar(ACaption),MB_OKCANCEL)=mrOk then begin
+              if Messagedlg(ACaption, AText, mtconfirmation, [mbok, mbcancel], 0)=mrOk then begin
                 Result:=DoOpenProjectFile(ChangeFileExt(AFilename,'.lpi'));
                 exit;
               end;
@@ -2091,8 +2130,8 @@ begin
                 +' and create a new lazarus project for this program?'
                 +'  Cancel will load the source.';
               ACaption:='Program detected';
-              if Application.MessageBox(PChar(AText),PChar(ACaption)
-                 ,MB_OKCANCEL)=mrOK then begin
+//              if Application.MessageBox(PChar(AText),PChar(ACaption),MB_OKCANCEL)=mrOK then begin
+              if Messagedlg(ACaption, AText, mtconfirmation, [mbok, mbcancel], 0)=mrOk then begin
                 Result:=DoCreateProjectForProgram(AFilename,NewSource);
                 exit;
               end;
@@ -2175,8 +2214,9 @@ begin
               ACaption:='Format error';
               AText:='Unable to convert text form data of file "'
                  +NewLFMFilename+'" into binary stream. ('+E.Message+')';
-              Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-                 ,MB_OKCANCEL);
+
+//              Result:=Application.MessageBox(PChar(AText),PChar(ACaption), MB_OKCANCEL);
+              Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
               if Result=mrCancel then begin
                 Result:=mrAbort;
                 exit;
@@ -2197,8 +2237,10 @@ begin
           ACaption:='Form load error';
           AText:='Unable to build form from file "'
              +NewLFMFilename+'".';
-          Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-             ,MB_OKCANCEL);
+
+//          Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_OKCANCEL);
+          Result:=MessageDlg(ACaption, AText, mterror, [mbok, mbcancel], 0);
+
           if Result=mrCancel then begin
             Result:=mrAbort;
             exit;
@@ -2371,8 +2413,9 @@ writeln('TMainIDE.DoNewProject 1');
 
   If Project<>nil then begin
     if SomethingOfProjectIsModified then begin
-      if Application.MessageBox('Save changes to project?','Project changed'
-          ,MB_YESNO)=mrYES then begin
+
+//      if Application.MessageBox('Save changes to project?','Project changed',MB_YESNO)=mrYES then begin
+        if messagedlg('Project changed', 'Save changes to project?', mtconfirmation, [mbyes, mbno], 0)=mryes then begin
         if DoSaveProject(false,false)=mrAbort then begin
           Result:=mrAbort;
           exit;
@@ -2507,8 +2550,10 @@ writeln('TMainIDE.DoSaveProject A');
             ACaption:='Choose a different name';
             AText:='The project info file is "'+NewFilename+'" equal '
                +'to the project source file!';
-            Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-              ,MB_ABORTRETRYIGNORE);
+
+//            Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_ABORTRETRYIGNORE);
+            Result:=MessageDlg(ACaption, AText, mtconfirmation, [mbabort, mbretry, mbignore], 0);
+
             if Result=mrAbort then exit;
             if Result=mrIgnore then Result:=mrRetry;
           end else
@@ -2523,16 +2568,20 @@ writeln('TMainIDE.DoSaveProject A');
       if FileExists(NewFilename) then begin
         ACaption:='Overwrite file?';
         AText:='A file "'+NewFilename+'" already exists. Replace it?';
-        Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-          ,MB_OKCANCEL);
+
+//        Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_OKCANCEL);
         //Result:=MessageDlg(AText,mtConfirmation,[mbOk,mbCancel],0);
+        Result:=MessageDlg(ACaption, AText, mtconfirmation, [mbok, mbcancel], 0);
+
         if Result=mrCancel then exit;
       end else if Project.ProjectType in [ptProgram, ptApplication] then begin
         if FileExists(NewProgramFilename) then begin
           ACaption:='Overwrite file?';
           AText:='A file "'+NewProgramFilename+'" already exists. Replace it?';
-          Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-            ,MB_OKCANCEL);
+
+//          Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_OKCANCEL);
+          Result:=MessageDlg(ACaption, AText, mtconfirmation, [mbok, mbcancel], 0);
+
           if Result=mrCancel then exit;
         end;
       end;
@@ -2594,7 +2643,7 @@ writeln('TMainIDE.DoSaveProject A');
   // save editor files
   if (SourceNoteBook.Notebook<>nil) then begin
     for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
-      if (Project.MainUnit<0) 
+      if (Project.MainUnit<0)
       or (Project.Units[Project.MainUnit].EditorIndex<>i) then begin
         Result:=DoSaveEditorUnit(i,false,SaveToTestDir);
         if Result=mrAbort then exit;
@@ -2639,16 +2688,19 @@ begin
     if not FileExists(AFilename) then begin
       ACaption:='File not found';
       AText:='File "'+AFilename+'" not found.';
-      Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-         ,MB_ABORTRETRYIGNORE);
+
+//      Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_ABORTRETRYIGNORE);
+        Result:=MessageDlg(ACaption, AText, mterror, [mbabort, mbretry, mbignore], 0);
+
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
     end;
   until Result<>mrRetry;
   // close the old project
   if SomethingOfProjectIsModified then begin
-    if Application.MessageBox('Save changes to project?','Project changed'
-      ,MB_OKCANCEL)=mrOK then begin
+
+//    if Application.MessageBox('Save changes to project?','Project changed',MB_OKCANCEL)=mrOK then begin
+    if MessageDlg('Project changed', 'Save changes to project?',mtconfirmation,[mbok, mbcancel],0)=mrOK then begin
       if DoSaveProject(false,false)=mrAbort then begin
         Result:=mrAbort;
         exit;
@@ -2727,8 +2779,9 @@ writeln('[TMainIDE.DoCreateProjectForProgram] 1');
   Result:=mrCancel;
 
   if SomethingOfProjectIsModified then begin
-    if Application.MessageBox('Save changes to project?','Project changed'
-        ,MB_OKCANCEL)=mrOK then begin
+
+//    if Application.MessageBox('Save changes to project?','Project changed',MB_OKCANCEL)=mrOK then begin
+    if MessageDlg('Project changed','Save changes to project?',mtconfirmation,[mbok, mbcancel],0)=mrOK then begin
       if DoSaveProject(false,false)=mrAbort then begin
         Result:=mrAbort;
         exit;
@@ -2895,10 +2948,11 @@ begin
       DefaultFilename:=''
     else
       DefaultFilename:=GetTestProjectFilename;
-    
+
     Assert(False, 'Trace:Build Project Clicked');
     if Project=nil then Begin
-      Application.MessageBox('Create a project first!','Error',mb_ok);
+//      Application.MessageBox('Create a project first!','Error',mb_ok);
+      MessageDlg('Create a project first!',mterror,[mbok],0);
       Exit;
     end;
     ActiveSrcEdit:=SourceNotebook.GetActiveSE;
@@ -2967,7 +3021,10 @@ writeln('[TMainIDE.DoRunProject] A');
 
   if not FileExists(ProgramFilename) then begin
     AText:='No program file "'+ProgramFilename+'" found!';
-    Application.MessageBox(PChar(AText),'File not found',MB_OK);
+
+//    Application.MessageBox(PChar(AText),'File not found',MB_OK);
+    MessageDlg('File not found',AText,mterror,[mbok],0);
+
     exit;
   end;
 
@@ -2978,7 +3035,10 @@ writeln('[TMainIDE.DoRunProject] A');
   except
     on e: Exception do begin
       AText:='Error running program "'+ProgramFilename+'": '+e.Message;
-      Application.MessageBox(PChar(AText),'Error',MB_OK);
+
+//      Application.MessageBox(PChar(AText),'Error',MB_OK);
+      MessageDlg(AText,mterror,[mbok], 0);
+
     end;
   end;
   Result:=mrOk;
@@ -3048,8 +3108,10 @@ begin
       on e:Exception do begin
         ACaption:='Write error';
         AText:=e.Message;
-        Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-          ,MB_ABORTRETRYIGNORE);
+
+//        Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_ABORTRETRYIGNORE);
+        Result:=MessageDlg(ACaption,AText,mterror, [mbabort, mbretry, mbignore],0);
+
         if Result=mrIgnore then Result:=mrOk;
         if Result=mrAbort then exit;
       end;
@@ -3076,8 +3138,10 @@ begin
     except
       ACaption:='Read Error';
       AText:='Unable to read file "'+AFilename+'"!';
-      Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-        ,MB_ABORTRETRYIGNORE);
+
+//      Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_ABORTRETRYIGNORE);
+      Result:=MessageDlg(ACaption, AText,mterror, [mbabort, mbretry, mbignore], 0);
+
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
     end;
@@ -3141,8 +3205,10 @@ begin
         if not DeleteFile(BackupFilename) then begin
           ACaption:='Delete file failed';
           AText:='Unable to remove old backup file "'+BackupFilename+'"!';
-          Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-            ,MB_ABORTRETRYIGNORE);
+
+//          Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_ABORTRETRYIGNORE);
+          Result:=MessageDlg(ACaption,AText,mterror,[mbabort,mbretry,mbignore],0);
+
           if Result=mrAbort then exit;
           if Result=mrIgnore then Result:=mrOk;
         end;
@@ -3173,8 +3239,10 @@ begin
             if not DeleteFile(CounterFilename) then begin
               ACaption:='Delete file failed';
               AText:='Unable to remove old backup file "'+CounterFilename+'"!';
-              Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-                ,MB_ABORTRETRYIGNORE);
+
+//              Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_ABORTRETRYIGNORE);
+              Result:=MessageDlg(ACaption,AText,mterror,[mbabort,mbretry,mbignore],0);
+
               if Result=mrAbort then exit;
               if Result=mrIgnore then Result:=mrOk;
             end;
@@ -3191,8 +3259,10 @@ begin
             ACaption:='Rename file failed';
             AText:='Unable to rename file "'+BackupFilename+IntToStr(i)
                   +'" to "'+BackupFilename+IntToStr(i+1)+'"!';
-            Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-              ,MB_ABORTRETRYIGNORE);
+
+//            Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_ABORTRETRYIGNORE);
+            Result:=MessageDlg(ACaption,AText,mterror,[mbabort,mbretry,mbignore],0);
+
             if Result=mrAbort then exit;
             if Result=mrIgnore then Result:=mrOk;
           end;
@@ -3207,8 +3277,10 @@ begin
     if not RenameFile(Filename,BackupFilename) then begin
       ACaption:='Rename file failed';
       AText:='Unable to rename file "'+Filename+'" to "'+BackupFilename+'"!';
-      Result:=Application.MessageBox(PChar(AText),PChar(ACaption)
-        ,MB_ABORTRETRYIGNORE);
+
+//      Result:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_ABORTRETRYIGNORE);
+      Result:=MessageDlg(ACaption,AText,mterror,[mbabort,mbretry,mbignore],0);
+
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
     end;
@@ -3541,8 +3613,10 @@ begin
       Component.Name, Component.ClassName) then begin
       SrcTxtChanged:=true;
     end else begin
-      Application.MessageBox('No insert point for the new component in source found.'
-           ,'Code tool failure',mb_ok);
+
+//      Application.MessageBox('No insert point for the new component in source found.','Code tool failure',mb_ok);
+      MessageDlg('Code tool failure','No insert point for the new component in source found.',mterror,[mbok],0);
+
     end;
   end else begin
     // the form is not mentioned in the source?
@@ -3647,6 +3721,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.112  2001/07/31 18:40:23  lazarus
+  MG: added unit info, arrow xpms, and many changes from jens arm
+
   Revision 1.111  2001/07/29 20:33:23  lazarus
   MG: bugfixed event propeditor, DoJumpToMethod with searchpath
 

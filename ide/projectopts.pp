@@ -273,6 +273,8 @@ begin
     Top:=FormsAutoCreatedListBox.Top+80;
     Width:=25;
     Height:=25;
+    Glyph:=TPixmap.Create;
+    Glyph.LoadFromLazarusResource('leftarrow');
     OnClick:=@FormsAddToAutoCreatedFormsBtnClick;
     Visible:=true;
   end;
@@ -286,6 +288,8 @@ begin
         +FormsAddToAutoCreatedFormsBtn.Height+10;
     Width:=25;
     Height:=25;
+    Glyph:=TPixmap.Create;
+    Glyph.LoadFromLazarusResource('rightarrow');
     OnClick:=@FormsRemoveFromAutoCreatedFormsBtnClick;
     Visible:=true;
   end;
@@ -298,6 +302,8 @@ begin
     Top:=FormsAutoCreatedListBox.Top+80;
     Width:=25;
     Height:=25;
+    Glyph:=TPixmap.Create;
+    Glyph.LoadFromLazarusResource('uparrow');
     OnClick:=@FormsMoveAutoCreatedFormUpBtnClick;
     Visible:=true;
   end;
@@ -311,6 +317,8 @@ begin
         +FormsMoveAutoCreatedFormUpBtn.Height+10;
     Width:=25;
     Height:=25;
+    Glyph:=TPixmap.Create;
+    Glyph.LoadFromLazarusResource('downarrow');
     OnClick:=@FormsMoveAutoCreatedFormDownBtnClick;
     Visible:=true;
   end;
@@ -601,5 +609,9 @@ begin
     OldList.Free;
   end;
 end;
+
+initialization
+
+{$I projectopts.lrs}
 
 end.

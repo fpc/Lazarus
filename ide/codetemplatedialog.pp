@@ -15,7 +15,7 @@ interface
 
 uses
   Classes, SysUtils, LCLLinux, LResources, Forms, Buttons, Controls,
-  SynEditAutoComplete, StdCtrls, SynEditKeyCmds;
+  SynEditAutoComplete, StdCtrls, SynEditKeyCmds, Dialogs;
 
 type
   TCodeTemplateEditForm = class(TForm)
@@ -181,7 +181,10 @@ begin
   else begin
     AText:=' A token '''+TokenEdit.Text+''' already exists! ';
     ACaption:='Error';
-    Application.MessageBox(PChar(AText),PChar(ACaption),0);
+
+//    Application.MessageBox(PChar(AText),PChar(ACaption),0);
+    MessageDlg(ACaption,AText,mterror,[mbok],0);
+
   end;
 end;
 

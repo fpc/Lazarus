@@ -40,8 +40,10 @@ uses classes, Forms, Controls, vclGlobals, lmessages;
 //                    mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp);
 //   TDialogButtonsSet = set of TDialogButtons;
 type
-   TMsgDlgType    = (mtWarning, mtError, mtInformation, mtConfirmation, mtCustom);
-   TMsgDlgBtn     = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp);
+   TMsgDlgType    = (mtWarning, mtError, mtInformation, mtConfirmation,
+                     mtCustom);
+   TMsgDlgBtn     = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore,
+                     mbAll, mbNoToAll, mbYesToAll, mbHelp);
    TMsgDlgButtons = set of TMsgDlgBtn;
 
    
@@ -114,10 +116,17 @@ type
       property FontName : String read FFontName write FFontName;
    end;
 
-   function CreateMessageDialog(const aMsg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons): TForm;
-   function MessageDlg(const aMsg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
-   function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer;
-   function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType; Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer; const HelpFileName: string): Integer;
+   function CreateMessageDialog(const aMsg: string; DlgType: TMsgDlgType;
+              Buttons: TMsgDlgButtons): TForm;
+   function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
+              Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+   function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+              Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+   function MessageDlgPos(const aMsg: string; DlgType: TMsgDlgType;
+              Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer): Integer;
+   function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
+              Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer;
+              const HelpFileName: string): Integer;
    procedure ShowMessage(const aMsg: string);
    procedure ShowMessageFmt(const aMsg: string; Params: array of const);
    procedure ShowMessagePos(const aMsg: string; X, Y: Integer);
@@ -154,7 +163,8 @@ const
          rsMbIgnore, rsMbAll, rsMbNoToAll, rsMbYesToAll, rsMbHelp);
    cMbResult : array [TMsgDlgbtn] of TModalResult = 
 //TODO: think of more modalresults!
-        (mrYes, mrNo, mrOK, mrCAncel, mrAbort, mrRetry, mrIgnore, mrAll, mrNoToAll, mrYesToAll, 0);
+        (mrYes, mrNo, mrOK, mrCAncel, mrAbort, mrRetry, mrIgnore, mrAll,
+         mrNoToAll, mrYesToAll, 0);
 
 type
    PCharArray32x32 = Array [0..35]  of PChar;
@@ -203,6 +213,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/07/31 18:40:24  lazarus
+  MG: added unit info, arrow xpms, and many changes from jens arm
+
   Revision 1.6  2001/06/06 12:30:41  lazarus
   MG: bugfixes
 

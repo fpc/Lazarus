@@ -13,15 +13,14 @@
    - the interface is almost like in delphi 5
      
   TODO:
-
+    - add a line for every newline character in message
     - calculate the size required for the dialog based on the 
       current font and the length of the text to be displayed
     - remove all those nasty constants (cBitmapWidth...)
     - use better strategy to set default button in function SetButtons 
-    - Help-button will not work
+    - Help-button    
 
   Bugs:
-
     - TBitmap seems to have a bug, the size of the bitmap is always 0
       in the Paint function.
 }
@@ -39,6 +38,7 @@ type
       FButtons : TMsgDlgButtons;
       FRelayoutNeeded: boolean;
       FUpdateCounter: integer;
+      FCaption: string;
       procedure SetText (const value : string); 
       procedure SetDialogType (const value : TMsgDlgType);
       procedure SetButtons (const value : TMsgDlgButtons);
@@ -314,12 +314,37 @@ begin
   Result := msgbox;
 end;
 
+function CreateMessageDialogWithCap(const aCaption, aMsg: string;
+  DlgType: TMsgDlgType;  Buttons: TMsgDlgButtons): TForm;
+var
+  msgbox : TMessageBox;
+begin
+  msgbox := TMessageBox.Create (Application);
+  msgbox.BeginUpdate;
+  msgbox.theMessage := aMsg;
+  msgBox.DialogType := DlgType;
+  msgBox.Buttons    := buttons;
+  msgBox.caption    := aCaption;
+  msgbox.EndUpdate;
+  Result := msgbox;
+end;
+
 function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
 var
   aDialog : TForm;
 begin
   aDialog := CreateMessageDialog (aMsg, DlgType, buttons);
+  Result := aDialog.ShowModal;
+  aDialog.Free;
+end;
+
+function MessageDlg(const aCaption, aMsg: string; DlgType: TMsgDlgType;
+  Buttons: TMsgDlgButtons; HelpCtx: Longint): Integer;
+var
+  aDialog : TForm;
+begin
+  aDialog := CreateMessageDialogWithCap (aCaption, aMsg, DlgType, buttons);
   Result := aDialog.ShowModal;
   aDialog.Free;
 end;
@@ -363,6 +388,9 @@ end;
 
 {
    $Log$
+   Revision 1.4  2001/07/31 18:40:24  lazarus
+   MG: added unit info, arrow xpms, and many changes from jens arm
+
    Revision 1.3  2001/06/14 14:57:58  lazarus
    MG: small bugfixes and less notes
 

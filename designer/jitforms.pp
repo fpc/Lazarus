@@ -22,7 +22,7 @@ unit jitforms;
 
 interface
 
-uses Classes, SysUtils, CompReg, Forms, Controls, LCLLinux;
+uses Classes, SysUtils, CompReg, Forms, Controls, LCLLinux, Dialogs;
 
 type
   //----------------------------------------------------------------------------
@@ -256,7 +256,10 @@ begin
   Result:=-1;
   NewClassName:=GetClassNameFromStream(BinStream);
   if NewClassName='' then begin
-    Application.MessageBox('No classname in form stream found.','',mb_OK);
+
+//    Application.MessageBox('No classname in form stream found.','',mb_OK);
+    MessageDlg('No classname in form stream found.',mterror,[mbOK],0);
+
     exit;
   end;
 writeln('[TJITForms.AddJITFormFromStream] 1');

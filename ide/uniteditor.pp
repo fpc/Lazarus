@@ -220,6 +220,7 @@ type
     FOnToggleFormUnitClicked : TNotifyEvent;
     FOnProcessUserCommand: TOnProcessUserCommand;
     FOnUserCommandProcessed: TOnProcessUserCommand;
+    FOnShowUnitInfo: TNotifyEvent;
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -227,6 +228,7 @@ type
     Procedure BookMarkClicked(Sender : TObject);
     Procedure BookMarkGotoClicked(Sender : TObject);
     Procedure ReadOnlyClicked(Sender : TObject);
+    Procedure ShowUnitInfo(Sender : TObject);
     Procedure ToggleBreakpointClicked(Sender : TObject);
     Procedure ToggleLineNumbersClicked(Sender : TObject);
     Procedure OpenAtCursorClicked(Sender : TObject);
@@ -328,6 +330,8 @@ type
        read FOnProcessUserCommand write FOnProcessUserCommand;
     property OnUserCommandProcessed: TOnUserCommandProcessed
        read FOnUserCommandProcessed write FOnUserCommandProcessed;
+    property OnShowUnitInfo: TNotifyEvent 
+       read FOnShowUnitInfo write FOnShowUnitInfo;
   end;
 
 {Goto dialog}
@@ -345,7 +349,7 @@ type
 implementation
 
 uses
-  LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts;
+  LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts, UnitInfoDlg;
 
 type
   TCompletionType = (ctNone, ctWordCompletion, ctTemplateCompletion,
@@ -650,7 +654,10 @@ begin
   and not (ssoReplaceAll in FindReplaceDlg.Options) then begin
     ACaption:='Message';
     AText:='Search string '''+FindReplaceDlg.FindText+''' not found!';
-    Application.MessageBox(PChar(AText),PChar(ACaption),MB_OK);
+
+//    Application.MessageBox(PChar(AText),PChar(ACaption),MB_OK);
+    MessageDlg(ACaption,AText,mtinformation,[mbok],0);
+
   end else begin
     TopLine := EditorComponent.CaretY - (EditorComponent.LinesInWindow div 2);
     if TopLine < 1 then TopLine:=1;
@@ -665,7 +672,10 @@ var a:integer;
 begin
   ACaption:='Prompt for replace';
   AText:='Replace this occurrence of '''+ASearch+''' with '''+AReplace+'''?';
-  a:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_YESNOCANCEL);
+
+//  a:=Application.MessageBox(PChar(AText),PChar(ACaption),MB_YESNOCANCEL);
+  a:=MessageDlg(ACaption,AText,mtconfirmation,[mbyes, mbno, mbcancel],0);
+
   case a of
     mrYes:Action:=raReplace;
     mrNo :Action:=raSkip;
@@ -1839,6 +1849,14 @@ Begin
   SrcPopupMenu.Items.Add(Seperator);
 
   MenuItem := TMenuItem.Create(Self);
+  MenuItem.Name:='ShowUnitInfo';
+  MenuItem.Caption := 'Unit Info';
+  MenuItem.OnClick:=@ShowUnitInfo;
+  SrcPopupMenu.Items.Add(MenuItem);
+
+  SrcPopupMenu.Items.Add(Seperator);
+
+  MenuItem := TMenuItem.Create(Self);
   MenuItem.Name:='DebugMenuItem';
   MenuItem.Caption := 'Debug';
   SrcPopupMenu.Items.Add(MenuItem);
@@ -2088,6 +2106,11 @@ begin
   ActEdit:=GetActiveSE;
   ActEdit.EditorComponent.ReadOnly := not(ActEdit.EditorComponent.ReadOnly);
   UpdateStatusBar;
+end;
+
+Procedure TSourceNotebook.ShowUnitInfo(Sender : TObject);
+begin
+  if Assigned(FOnShowUnitInfo) then FOnShowUnitInfo(Sender);
 end;
 
 Procedure TSourceNotebook.ToggleBreakpointClicked(Sender : TObject);

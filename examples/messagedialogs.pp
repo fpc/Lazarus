@@ -60,7 +60,7 @@ end;
 procedure TMainForm.Button1Click(Sender : TObject);
 begin
    ShowMessage ('First simple test!');
-   MessageDlg  ('Two buttons now...', mtError, [mbOK,mbCancel], 0);
+   MessageDlg  ('Caption', 'Two buttons now...', mtError, [mbOK,mbCancel], 0);
    MessageDlg  ('Warning, not fully implemented', mtWarning, [mbYes, mbNo, mbOK,mbCancel], 0);
    ShowMessageFmt ('The show will end now'+#13+'%s', [MainForm.Caption]);
    close;
@@ -74,6 +74,9 @@ begin
 end.
 {
    $Log$
+   Revision 1.2  2001/07/31 18:40:24  lazarus
+   MG: added unit info, arrow xpms, and many changes from jens arm
+
    Revision 1.1  2001/03/03 00:51:54  lazarus
    + new sample to show Message dialogs
    stoppok
