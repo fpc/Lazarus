@@ -26,6 +26,71 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+{------------------------------------------------------------------------------
+  function CreatePChar(const s: string): PChar;
+
+  Allocates a new PChar
+ ------------------------------------------------------------------------------}
+function CreatePChar(const s: string): PChar;
+begin
+  Result:=StrAlloc(length(s) + 1);
+  StrPCopy(Result, s);
+end;
+
+{------------------------------------------------------------------------------
+  function ComparePChar(P1, P2: PChar): boolean;
+
+  Checks if P1 and P2 have the same content.
+ ------------------------------------------------------------------------------}
+function ComparePChar(P1, P2: PChar): boolean;
+begin
+  if (P1<>P2) then begin
+    if (P1<>nil) and (P2<>nil) then begin
+      while (P1^=P2^) do begin
+        if P1^<>#0 then begin
+          inc(P1);
+          inc(P2);
+        end else begin
+          Result:=true;
+          exit;
+        end;
+      end;
+    end;
+    Result:=false;
+  end else begin
+    Result:=true;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  procedure SetComboBoxText(ComboWidget: PGtkCombo; const NewText: string);
+
+  Saves the old text. The gtk always sends a onchange event, even we just
+  set the Text of a combobox. To avoid sending no change events, the old text is
+  saved.
+ ------------------------------------------------------------------------------}
+procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
+var
+  SavedText: PChar;
+  NewTextLen: integer;
+begin
+  // check if something changed
+  SavedText:=gtk_object_get_data(PgtkObject(ComboWidget),'LCLOldText');
+  if ComparePChar(SavedText,NewText) then exit;
+  // create save text
+  if SavedText<>nil then
+    FreeMem(SavedText);
+  if Newtext<>nil then begin
+    NewTextLen:=StrLen(NewText)+1;
+    GetMem(SavedText, NewTextLen);
+    Move(NewText^,SavedText^,NewTextLen);
+  end else
+    SavedText:=nil;
+  gtk_object_set_data(PgtkObject(ComboWidget),'LCLOldText',SavedText);
+  // set new text
+  if NewText<>nil then
+    gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText);
+end;
 
 {------------------------------------------------------------------------------
   function GtkPaintMessageToPaintMessage(GtkPaintMsg: TLMGtkPaint): TLMPaint;
@@ -1166,7 +1231,7 @@ end;
 function DesignSignalNameToType(Name: PChar; After: boolean): TDesignSignalType;
 begin
   for Result:=Low(TDesignSignalType) to High(TDesignSignalType) do
-    if (AnsiStrComp(DesignSignalNames[Result],Name)=0)
+    if ComparePChar(DesignSignalNames[Result],Name)
     and (DesignSignalAfter[Result]=After) then exit;
   Result:=dstUnknown;
 end;
@@ -2557,6 +2622,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.79  2002/08/29 00:07:02  lazarus
+  MG: fixed TComboBox and InvalidateControl
+
   Revision 1.78  2002/08/28 09:40:50  lazarus
   MG: reduced paint messages and DC getting/releasing
 
