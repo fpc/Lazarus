@@ -36,9 +36,10 @@ echo "cleaning up (CVS, ppu, o) ..."
 cd $TmpDir
 make distclean
 
-for Ext in ppu ppw ppl o ow rst cvsignore; do
+for Ext in ppu ppw ppl o ow rst cvsignore bak; do
   find . -name "*.$Ext" -exec rm -f {} \;
 done
+find . -name "*.~*" -exec rm -f {} \;
 rm -f *.tar.gz
 if [ -d CVS ]; then
   # use xargs to remove directories (otherwise find returns strange things)
