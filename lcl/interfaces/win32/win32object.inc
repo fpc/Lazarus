@@ -2309,6 +2309,12 @@ Begin
     end;
     Window := CreateWindowEx(FlagsEx, pClassName, WindowTitle, Flags,
         Left, Top, Width, Height, Parent, MenuHandle, HInstance, Nil);
+    { after creating a child window the following happens:
+      1) the previously bottom window is thrown to the top
+      2) the created window is added at the bottom
+      undo this by throwing them both to the bottom again }
+    Windows.SetWindowPos(Windows.GetTopWindow(Parent), HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
+    Windows.SetWindowPos(Window, HWND_BOTTOM, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE);
   end;
   
   Result := Window;
@@ -2976,6 +2982,9 @@ End;
 
 {
   $Log$
+  Revision 1.189  2004/05/09 16:24:51  micha
+  fix tab order by fixing z-order at control creation
+
   Revision 1.188  2004/05/08 12:32:32  micha
   fix combobox height; whatever the lcl passes as height for combobox, always calculate our own
 
