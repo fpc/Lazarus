@@ -621,6 +621,9 @@ begin
   if not FileExists(AFilename) then begin
     raise Exception.Create('file "'+AFilename+'" does not exist');
   end;
+  if DirectoryExists(AFilename) then begin
+    raise Exception.Create('file "'+AFilename+'" is a directory and not an executable');
+  end;
   {$IFNDEF win32}
   if not{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
     AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK) then
@@ -891,6 +894,9 @@ end;
 
 {
   $Log$
+  Revision 1.24  2003/04/22 18:53:12  mattias
+  implemented compiling project dependencies and auto add dependency
+
   Revision 1.23  2003/04/15 17:58:28  mattias
   implemented inherited Compiler Options View
 

@@ -612,13 +612,16 @@ type
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
   end;
 
+type
+  TCompilerGraphStampIncreasedEvent = procedure of object;
 
 var
   frmCompilerOptions: TfrmCompilerOptions;
   CompilerParseStamp: integer;
   CompilerGraphStamp: integer;
   OnParseString: TParseStringEvent;
-  
+  CompilerGraphStampIncreased: TCompilerGraphStampIncreasedEvent;
+
 procedure IncreaseCompilerParseStamp;
 procedure IncreaseCompilerGraphStamp;
 function ParseString(Options: TParsedCompilerOptions;
@@ -653,6 +656,8 @@ begin
     inc(CompilerGraphStamp)
   else
     CompilerGraphStamp:=MinParseStamp;
+  if Assigned(CompilerGraphStampIncreased) then
+    CompilerGraphStampIncreased();
 end;
 
 function ParseString(Options: TParsedCompilerOptions;
@@ -4234,11 +4239,9 @@ var
   s: String;
 begin
   if ParsedStamp[Option]<>CompilerParseStamp then begin
+    s:=UnparsedValues[Option];
     // parse locally
-    if Assigned(OnLocalSubstitute) then
-      s:=OnLocalSubstitute(UnparsedValues[Option])
-    else
-      s:=UnparsedValues[Option];
+    if Assigned(OnLocalSubstitute) then s:=OnLocalSubstitute(s);
     // parse globally
     s:=ParseString(Self,s);
     // improve
@@ -4248,16 +4251,18 @@ begin
     else if Option in ParsedCompilerFilenames then begin
       // make filename absolute
       s:=TrimFilename(s);
-      BaseDirectory:=GetParsedValue(pcosBaseDir);
-      if (BaseDirectory<>'') and (not FilenameIsAbsolute(s)) then
-        s:=BaseDirectory+s;
+      if (s<>'') and (not FilenameIsAbsolute(s)) then begin
+        BaseDirectory:=GetParsedValue(pcosBaseDir);
+        if (BaseDirectory<>'') then s:=BaseDirectory+s;
+      end;
     end
     else if Option in ParsedCompilerDirectories then begin
       // make directory absolute
       s:=TrimFilename(s);
-      BaseDirectory:=GetParsedValue(pcosBaseDir);
-      if (BaseDirectory<>'') and (not FilenameIsAbsolute(s)) then
-        s:=BaseDirectory+s;
+      if (s='') or (not FilenameIsAbsolute(s)) then begin
+        BaseDirectory:=GetParsedValue(pcosBaseDir);
+        if (BaseDirectory<>'') then s:=BaseDirectory+s;
+      end;
       s:=AppendPathDelim(s);
     end
     else if Option in ParsedCompilerSearchPaths then begin
@@ -4322,6 +4327,7 @@ end;
 initialization
   CompilerParseStamp:=1;
   CompilerGraphStamp:=1;
+  CompilerGraphStampIncreased:=nil;
 
 end.
 

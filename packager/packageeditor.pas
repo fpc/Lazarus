@@ -138,6 +138,8 @@ type
     procedure UpdateStatusBar;
     function GetCurrentDependency(var Removed: boolean): TPkgDependency;
     function GetCurrentFile(var Removed: boolean): TPkgFile;
+    function StoreCurrentTreeSelection: TStringList;
+    procedure ApplyTreeSelection(ASelection: TStringList; FreeList: boolean);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -393,20 +395,30 @@ procedure TPackageEditorForm.MoveDependencyUpClick(Sender: TObject);
 var
   CurDependency: TPkgDependency;
   Removed: boolean;
+  OldSelection: TStringList;
 begin
   CurDependency:=GetCurrentDependency(Removed);
   if (CurDependency=nil) or Removed then exit;
+  FilesTreeView.BeginUpdate;
+  OldSelection:=StoreCurrentTreeSelection;
   PackageGraph.MoveRequiredDependencyUp(CurDependency);
+  ApplyTreeSelection(OldSelection,true);
+  FilesTreeView.EndUpdate;
 end;
 
 procedure TPackageEditorForm.MoveDependencyDownClick(Sender: TObject);
 var
   CurDependency: TPkgDependency;
   Removed: boolean;
+  OldSelection: TStringList;
 begin
   CurDependency:=GetCurrentDependency(Removed);
   if (CurDependency=nil) or Removed then exit;
+  FilesTreeView.BeginUpdate;
+  OldSelection:=StoreCurrentTreeSelection;
   PackageGraph.MoveRequiredDependencyDown(CurDependency);
+  ApplyTreeSelection(OldSelection,true);
+  FilesTreeView.EndUpdate;
 end;
 
 procedure TPackageEditorForm.OpenFileMenuItemClick(Sender: TObject);
@@ -1351,6 +1363,39 @@ begin
       Removed:=true;
     end;
   end;
+end;
+
+function TPackageEditorForm.StoreCurrentTreeSelection: TStringList;
+var
+  ANode: TTreeNode;
+begin
+  Result:=TStringList.Create;
+  ANode:=FilesTreeView.Selected;
+  while ANode<>nil do begin
+    Result.Insert(0,ANode.Text);
+    ANode:=ANode.Parent;
+  end;
+end;
+
+procedure TPackageEditorForm.ApplyTreeSelection(ASelection: TStringList;
+  FreeList: boolean);
+var
+  ANode: TTreeNode;
+  CurText: string;
+begin
+  ANode:=nil;
+  while ASelection.Count>0 do begin
+    CurText:=ASelection[0];
+    if ANode=nil then
+      ANode:=FilesTreeView.Items.GetFirstNode
+    else
+      ANode:=ANode.GetFirstChild;
+    while ANode.Text<>CurText do ANode:=ANode.GetNextSibling;
+    if ANode=nil then break;
+    ASelection.Delete(0);
+  end;
+  if ANode<>nil then FilesTreeView.Selected:=ANode;
+  if FreeList then ASelection.Free;
 end;
 
 procedure TPackageEditorForm.DoSave(SaveAs: boolean);

@@ -276,7 +276,7 @@ begin
     CmdLine:=Filename;
     if Params<>'' then 
       CmdLine:=CmdLine+' '+Params;
-writeln('[TExternalToolList.Run] ',CmdLine);
+    writeln('[TExternalToolList.Run] ',CmdLine);
     try
       CheckIfFileIsExecutable(Filename);
       TheProcess := TProcess.Create(nil);
@@ -332,9 +332,12 @@ writeln('[TExternalToolList.Run] ',CmdLine);
         Result:=mrOk;
       end;
     except
-      on e: Exception do
-        MessageDlg('Failed to run tool',
-          'Unable to run the tool "'+Title+'":'#13+e.Message,mtError,[mbOk],0);
+      on e: Exception do begin
+        Result:=MessageDlg('Failed to run tool',
+          'Unable to run the tool "'+Title+'":'#13+e.Message,
+          mtError,[mbCancel,mbAbort],0);
+        exit;
+      end;
     end;
   end;
 end;

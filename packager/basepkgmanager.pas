@@ -44,7 +44,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms, PackageDefs, Project;
+  Classes, SysUtils, Forms, PackageDefs, ComponentReg, Project;
 
 type
   TPkgSaveFlag = (
@@ -81,6 +81,8 @@ type
     function OpenProjectDependencies(AProject: TProject): TModalResult; virtual; abstract;
     procedure AddDefaultDependencies(AProject: TProject); virtual; abstract;
     procedure AddProjectDependency(AProject: TProject; APackage: TLazPackage); virtual; abstract;
+    procedure AddProjectRegCompDependency(AProject: TProject;
+                          ARegisteredComponent: TRegisteredComponent); virtual; abstract;
     procedure AddProjectLCLDependency(AProject: TProject); virtual; abstract;
 
     function ShowConfigureCustomComponents: TModalResult; virtual; abstract;
@@ -95,6 +97,8 @@ type
     function DoClosePackageEditor(APackage: TLazPackage): TModalResult; virtual; abstract;
     function DoCloseAllPackageEditors: TModalResult; virtual; abstract;
     procedure DoShowPackageGraphPathList(PathList: TList); virtual; abstract;
+    function DoCompileProjectDependencies(AProject: TProject;
+                      Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
     function DoCompilePackage(APackage: TLazPackage;
                       Flags: TPkgCompileFlags): TModalResult; virtual; abstract;
     function DoSavePackageMainSource(APackage: TLazPackage;

@@ -1481,7 +1481,7 @@ procedure TLazPackage.OnMacroListSubstitution(TheMacro: TTransferMacro;
 begin
   if AnsiCompareText(s,'PkgOutDir')=0 then begin
     Handled:=true;
-    s:=CompilerOptions.UnitOutputDirectory;
+    s:=CompilerOptions.ParsedOpts.GetParsedValue(pcosOutputDir);
   end
   else if AnsiCompareText(s,'PkgDir')=0 then begin
     Handled:=true;

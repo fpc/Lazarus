@@ -39,6 +39,7 @@ uses
   DefineTemplates, CompilerOptions, TransferMacros, LinkScanner;
 
 procedure CreateProjectDefineTemplate(CompOpts: TCompilerOptions);
+function CustomCompilerOptsToDefTempl(const Options: string): TDefineTemplate;
 procedure SetAdditionalGlobalSrcPathToCodeToolBoss(const SrcPath: string);
 function FindCurrentProjectDirTemplate: TDefineTemplate;
 function FindPackagesTemplate: TDefineTemplate;
@@ -248,6 +249,14 @@ begin
   // --------------------------------------------------------------------------
   // replace project defines in DefineTree
   CodeToolBoss.DefineTree.ReplaceRootSameName(ProjTempl);
+end;
+
+function CustomCompilerOptsToDefTempl(const Options: string): TDefineTemplate;
+begin
+
+  // ToDo
+  
+  Result:=nil;
 end;
 
 procedure SetAdditionalGlobalSrcPathToCodeToolBoss(const SrcPath: string);

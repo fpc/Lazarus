@@ -116,6 +116,8 @@ type
     procedure UpdateItems;
     function GetSelectedFile: TUnitInfo;
     function GetSelectedDependency: TPkgDependency;
+    function StoreCurrentTreeSelection: TStringList;
+    procedure ApplyTreeSelection(ASelection: TStringList; FreeList: boolean);
   public
     property LazProject: TProject read FLazProject write SetLazProject;
     property OnOpen: TNotifyEvent read FOnOpen write FOnOpen;
@@ -181,21 +183,31 @@ end;
 procedure TProjectInspectorForm.MoveDependencyUpClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
+  OldSelection: TStringList;
 begin
   Dependency:=GetSelectedDependency;
   if (Dependency=nil) or (Dependency.Removed)
   or (Dependency.PrevRequiresDependency=nil) then exit;
+  ItemsTreeView.BeginUpdate;
+  OldSelection:=StoreCurrentTreeSelection;
   LazProject.MoveRequiredDependencyUp(Dependency);
+  ApplyTreeSelection(OldSelection,true);
+  ItemsTreeView.EndUpdate;
 end;
 
 procedure TProjectInspectorForm.MoveDependencyDownClick(Sender: TObject);
 var
   Dependency: TPkgDependency;
+  OldSelection: TStringList;
 begin
   Dependency:=GetSelectedDependency;
   if (Dependency=nil) or (Dependency.Removed)
   or (Dependency.NextRequiresDependency=nil) then exit;
+  ItemsTreeView.BeginUpdate;
+  OldSelection:=StoreCurrentTreeSelection;
   LazProject.MoveRequiredDependencyDown(Dependency);
+  ApplyTreeSelection(OldSelection,true);
+  ItemsTreeView.EndUpdate;
 end;
 
 procedure TProjectInspectorForm.AddBitBtnClick(Sender: TObject);
@@ -625,6 +637,39 @@ begin
     Result:=GetDependencyWithIndex(LazProject.FirstRemovedDependency,
                                    pdlRequires,NodeIndex);
   end;
+end;
+
+function TProjectInspectorForm.StoreCurrentTreeSelection: TStringList;
+var
+  ANode: TTreeNode;
+begin
+  Result:=TStringList.Create;
+  ANode:=ItemsTreeView.Selected;
+  while ANode<>nil do begin
+    Result.Insert(0,ANode.Text);
+    ANode:=ANode.Parent;
+  end;
+end;
+
+procedure TProjectInspectorForm.ApplyTreeSelection(ASelection: TStringList;
+  FreeList: boolean);
+var
+  ANode: TTreeNode;
+  CurText: string;
+begin
+  ANode:=nil;
+  while ASelection.Count>0 do begin
+    CurText:=ASelection[0];
+    if ANode=nil then
+      ANode:=ItemsTreeView.Items.GetFirstNode
+    else
+      ANode:=ANode.GetFirstChild;
+    while ANode.Text<>CurText do ANode:=ANode.GetNextSibling;
+    if ANode=nil then break;
+    ASelection.Delete(0);
+  end;
+  if ANode<>nil then ItemsTreeView.Selected:=ANode;
+  if FreeList then ASelection.Free;
 end;
 
 constructor TProjectInspectorForm.Create(TheOwner: TComponent);

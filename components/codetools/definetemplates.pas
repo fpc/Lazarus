@@ -255,6 +255,7 @@ type
     function MacroFuncExtractFilePath(Data: Pointer): boolean;
     function MacroFuncExtractFileName(Data: Pointer): boolean;
     function MacroFuncExtractFileNameOnly(Data: Pointer): boolean;
+    procedure DoClearCache;
   public
     property RootTemplate: TDefineTemplate
                            read FFirstDefineTemplate write FFirstDefineTemplate;
@@ -1238,13 +1239,7 @@ end;
 procedure TDefineTree.ClearCache;
 begin
   if (FCache.Count=0) and (FVirtualDirCache=nil) then exit;
-  {$IFDEF VerboseDefineCache}
-  writeln('TDefineTree.ClearCache A +++++++++');
-  {$ENDIF}
-  FCache.FreeAndClear;
-  FVirtualDirCache.Free;
-  FVirtualDirCache:=nil;
-  IncreaseChangeStep;
+  DoClearCache;
 end;
 
 constructor TDefineTree.Create;
@@ -1322,6 +1317,19 @@ begin
   FuncData:=PReadFunctionData(Data);
   FuncData^.Result:=ExtractFileNameOnly(FuncData^.Param);
   Result:=true;
+end;
+
+procedure TDefineTree.DoClearCache;
+begin
+  {$IFDEF VerboseDefineCache}
+  writeln('TDefineTree.DoClearCache A +++++++++');
+  {$ENDIF}
+  if FCache<>nil then FCache.FreeAndClear;
+  if FVirtualDirCache<>nil then begin
+    FVirtualDirCache.Free;
+    FVirtualDirCache:=nil;
+  end;
+  IncreaseChangeStep;
 end;
 
 procedure TDefineTree.RemoveMarked;

@@ -89,14 +89,17 @@ type
   private
     // helper functions
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
-    function CompileRequiredPackages(APackage: TLazPackage): TModalResult;
-    function CheckPackageGraphForCompilation(APackage: TLazPackage): TModalResult;
+    function CompileRequiredPackages(APackage: TLazPackage;
+                                 FirstDependency: TPkgDependency): TModalResult;
+    function CheckPackageGraphForCompilation(APackage: TLazPackage;
+                                 FirstDependency: TPkgDependency): TModalResult;
     function DoPreparePackageOutputDirectory(APackage: TLazPackage): TModalResult;
     function DoSavePackageCompiledState(APackage: TLazPackage;
                   const CompilerFilename, CompilerParams: string): TModalResult;
     function DoLoadPackageCompiledState(APackage: TLazPackage;
                                         IgnoreErrors: boolean): TModalResult;
-    function CheckIfPackageNeedsCompilation(APackage: TLazPackage): TModalResult;
+    function CheckIfPackageNeedsCompilation(APackage: TLazPackage;
+              var NewCompilerFilename, NewCompilerParams: string): TModalResult;
     function MacroFunctionPkgSrcPath(Data: Pointer): boolean;
     function MacroFunctionPkgUnitPath(Data: Pointer): boolean;
     function MacroFunctionPkgIncPath(Data: Pointer): boolean;
@@ -119,6 +122,8 @@ type
     function OpenProjectDependencies(AProject: TProject): TModalResult; override;
     procedure AddDefaultDependencies(AProject: TProject); override;
     procedure AddProjectDependency(AProject: TProject; APackage: TLazPackage); override;
+    procedure AddProjectRegCompDependency(AProject: TProject;
+                          ARegisteredComponent: TRegisteredComponent); override;
     procedure AddProjectLCLDependency(AProject: TProject); override;
 
     function ShowConfigureCustomComponents: TModalResult; override;
@@ -134,12 +139,15 @@ type
     function DoClosePackageEditor(APackage: TLazPackage): TModalResult; override;
     function DoCloseAllPackageEditors: TModalResult; override;
     procedure DoShowPackageGraphPathList(PathList: TList); override;
+    function DoCompileProjectDependencies(AProject: TProject;
+                               Flags: TPkgCompileFlags): TModalResult; override;
     function DoCompilePackage(APackage: TLazPackage;
                               Flags: TPkgCompileFlags): TModalResult; override;
     function DoSavePackageMainSource(APackage: TLazPackage;
                               Flags: TPkgCompileFlags): TModalResult; override;
     function OnRenameFile(const OldFilename,
                           NewFilename: string): TModalResult; override;
+                          
 
     function OnProjectInspectorOpen(Sender: TObject): boolean; override;
   end;
@@ -564,13 +572,14 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.CompileRequiredPackages(APackage: TLazPackage
-  ): TModalResult;
+function TPkgManager.CompileRequiredPackages(APackage: TLazPackage;
+  FirstDependency: TPkgDependency): TModalResult;
 var
   AutoPackages: TList;
   i: Integer;
 begin
-  AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage);
+  writeln('TPkgManager.CompileRequiredPackages A ');
+  AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,FirstDependency);
   if AutoPackages<>nil then begin
     try
       i:=0;
@@ -585,16 +594,28 @@ begin
       AutoPackages.Free;
     end;
   end;
+  writeln('TPkgManager.CompileRequiredPackages END ');
   Result:=mrOk;
 end;
 
-function TPkgManager.CheckPackageGraphForCompilation(APackage: TLazPackage
-  ): TModalResult;
+function TPkgManager.CheckPackageGraphForCompilation(APackage: TLazPackage;
+  FirstDependency: TPkgDependency): TModalResult;
 var
   PathList: TList;
 begin
+  writeln('TPkgManager.CheckPackageGraphForCompilation A');
+  // check for unsaved packages
+  PathList:=PackageGraph.FindUnsavedDependencyPath(APackage,FirstDependency);
+  if PathList<>nil then begin
+    DoShowPackageGraphPathList(PathList);
+    Result:=MessageDlg('Unsaved package',
+      'There is an unsaved package in the required packages. See package graph.',
+      mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+
   // check for broken dependencies
-  PathList:=PackageGraph.FindBrokenDependencyPath(APackage);
+  PathList:=PackageGraph.FindBrokenDependencyPath(APackage,FirstDependency);
   if PathList<>nil then begin
     DoShowPackageGraphPathList(PathList);
     Result:=MessageDlg('Broken dependency',
@@ -604,7 +625,7 @@ begin
   end;
 
   // check for circle dependencies
-  PathList:=PackageGraph.FindCircleDependencyPath(APackage);
+  PathList:=PackageGraph.FindCircleDependencyPath(APackage,FirstDependency);
   if PathList<>nil then begin
     DoShowPackageGraphPathList(PathList);
     Result:=MessageDlg('Circle in package dependencies',
@@ -613,16 +634,7 @@ begin
     exit;
   end;
 
-  // check for unsaved packages
-  PathList:=PackageGraph.FindUnsavedDependencyPath(APackage);
-  if PathList<>nil then begin
-    DoShowPackageGraphPathList(PathList);
-    Result:=MessageDlg('Unsaved package',
-      'There is an unsaved package in the required packages. See package graph.',
-      mtError,[mbCancel,mbAbort],0);
-    exit;
-  end;
-
+  writeln('TPkgManager.CheckPackageGraphForCompilation END');
   Result:=mrOk;
 end;
 
@@ -671,6 +683,7 @@ var
 begin
   StateFile:=APackage.GetStateFilename;
   if not FileExists(StateFile) then begin
+    writeln('TPkgManager.DoLoadPackageCompiledState Statefile not found: ',StateFile);
     APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
     Result:=mrOk;
     exit;
@@ -743,13 +756,11 @@ begin
   Result:=mrOk;
 end;
 
-function TPkgManager.CheckIfPackageNeedsCompilation(APackage: TLazPackage
-  ): TModalResult;
+function TPkgManager.CheckIfPackageNeedsCompilation(APackage: TLazPackage;
+  var NewCompilerFilename, NewCompilerParams: string): TModalResult;
 var
   OutputDir: String;
   SrcFilename: String;
-  CompilerFilename: String;
-  CompilerParams: String;
   StateFilename: String;
   StateFileAge: Integer;
   i: Integer;
@@ -759,12 +770,13 @@ var
 begin
   Result:=mrYes;
 
-writeln('TPkgManager.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
+  writeln('TPkgManager.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
   // check state file
   StateFilename:=APackage.GetStateFilename;
   Result:=DoLoadPackageCompiledState(APackage,false);
   if Result<>mrOk then exit;
   if not (lpfStateFileLoaded in APackage.Flags) then begin
+    writeln('TPkgManager.CheckIfPackageNeedsCompilation  No state file for ',APackage.IDAsString);
     Result:=mrYes;
     exit;
   end;
@@ -780,8 +792,16 @@ writeln('TPkgManager.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
         Result:=DoLoadPackageCompiledState(RequiredPackage,false);
         if Result<>mrOk then exit;
         Result:=mrYes;
-        if not (lpfStateFileLoaded in RequiredPackage.Flags) then exit;
-        if StateFileAge<RequiredPackage.StateFileDate then exit;
+        if not (lpfStateFileLoaded in RequiredPackage.Flags) then begin
+          writeln('TPkgManager.CheckIfPackageNeedsCompilation  No state file for ',RequiredPackage.IDAsString);
+          exit;
+        end;
+        if StateFileAge<RequiredPackage.StateFileDate then begin
+          writeln('TPkgManager.CheckIfPackageNeedsCompilation  Required ',
+            RequiredPackage.IDAsString,' State file is newer than ',
+            ' State file ',APackage.IDAsString);
+          exit;
+        end;
       end;
     end;
     Dependency:=Dependency.NextRequiresDependency;
@@ -789,26 +809,46 @@ writeln('TPkgManager.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
   
   OutputDir:=APackage.GetOutputDirectory;
   SrcFilename:=OutputDir+APackage.GetCompileSourceFilename;
-  CompilerFilename:=APackage.GetCompilerFilename;
-  CompilerParams:=APackage.CompilerOptions.MakeOptionsString(
+  NewCompilerFilename:=APackage.GetCompilerFilename;
+  NewCompilerParams:=APackage.CompilerOptions.MakeOptionsString(
                                APackage.CompilerOptions.DefaultMakeOptionsFlags)
                  +' '+CreateRelativePath(SrcFilename,APackage.Directory);
 
   Result:=mrYes;
   
   // check compiler command
-  if CompilerFilename<>APackage.LastCompilerFilename then exit;
-  if CompilerParams<>APackage.LastCompilerParams then exit;
+  if NewCompilerFilename<>APackage.LastCompilerFilename then begin
+    writeln('TPkgManager.CheckIfPackageNeedsCompilation  Compiler filename changed for ',APackage.IDAsString);
+    writeln('  Old="',APackage.LastCompilerFilename,'"');
+    writeln('  Now="',NewCompilerFilename,'"');
+    exit;
+  end;
+  if NewCompilerParams<>APackage.LastCompilerParams then begin
+    writeln('TPkgManager.CheckIfPackageNeedsCompilation  Compiler params changed for ',APackage.IDAsString);
+    writeln('  Old="',APackage.LastCompilerParams,'"');
+    writeln('  Now="',NewCompilerParams,'"');
+    exit;
+  end;
   
   // check main source file
-  if not FileExists(SrcFilename) or (StateFileAge<FileAge(SrcFilename)) then exit;
+  if not FileExists(SrcFilename) or (StateFileAge<FileAge(SrcFilename)) then
+  begin
+    writeln('TPkgManager.CheckIfPackageNeedsCompilation  SrcFile outdated ',APackage.IDAsString);
+    exit;
+  end;
   
   // check package files
-  if StateFileAge<FileAge(APackage.Filename) then exit;
+  if StateFileAge<FileAge(APackage.Filename) then begin
+    writeln('TPkgManager.CheckIfPackageNeedsCompilation  StateFile older than lpk ',APackage.IDAsString);
+    exit;
+  end;
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
     if FileExists(CurFile.Filename)
-    and (StateFileAge<FileAge(CurFile.Filename)) then exit;
+    and (StateFileAge<FileAge(CurFile.Filename)) then begin
+      writeln('TPkgManager.CheckIfPackageNeedsCompilation  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
+      exit;
+    end;
   end;
 
 writeln('TPkgManager.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
@@ -1068,13 +1108,36 @@ end;
 
 procedure TPkgManager.AddProjectDependency(AProject: TProject;
   APackage: TLazPackage);
+var
+  NewDependency: TPkgDependency;
+  RequiredPackage: TLazPackage;
 begin
+  {$IFNDEF EnablePkgs}
+  exit;
+  {$ENDIF}
   // check if the dependency is already there
   if FindDependencyByNameInList(AProject.FirstRequiredDependency,pdlRequires,
     APackage.Name)<>nil
-  then exit;
+  then
+    exit;
   // add a dependency for the package to the project
-  AProject.AddRequiredDependency(APackage.CreateDependencyForThisPkg);
+  NewDependency:=APackage.CreateDependencyForThisPkg;
+  AProject.AddRequiredDependency(NewDependency);
+  PackageGraph.OpenDependency(NewDependency,RequiredPackage);
+end;
+
+procedure TPkgManager.AddProjectRegCompDependency(AProject: TProject;
+  ARegisteredComponent: TRegisteredComponent);
+var
+  PkgFile: TPkgFile;
+begin
+  {$IFNDEF EnablePkgs}
+  exit;
+  {$ENDIF}
+  if not (ARegisteredComponent is TPkgComponent) then exit;
+  PkgFile:=TPkgComponent(ARegisteredComponent).PkgFile;
+  if (PkgFile=nil) or (PkgFile.LazPackage=nil) then exit;
+  AddProjectDependency(AProject,PkgFile.LazPackage);
 end;
 
 procedure TPkgManager.AddProjectLCLDependency(AProject: TProject);
@@ -1333,24 +1396,13 @@ begin
   PackageGraphExplorer.ShowPath(PathList);
 end;
 
-function TPkgManager.DoCompilePackage(APackage: TLazPackage;
+function TPkgManager.DoCompileProjectDependencies(AProject: TProject;
   Flags: TPkgCompileFlags): TModalResult;
-var
-  PkgCompileTool: TExternalToolOptions;
-  OutputDir: String;
-  SrcFilename: String;
-  CompilerFilename: String;
-  CompilerParams: String;
 begin
-  Result:=mrCancel;
-  
-writeln('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
-  
-  if APackage.AutoCreated then exit;
-
   // check graph for circles and broken dependencies
   if not (pcfDoNotCompileDependencies in Flags) then begin
-    Result:=CheckPackageGraphForCompilation(APackage);
+    Result:=CheckPackageGraphForCompilation(nil,
+                                            AProject.FirstRequiredDependency);
     if Result<>mrOk then exit;
   end;
   
@@ -1364,13 +1416,53 @@ writeln('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompi
   try
     // automatically compile required packages
     if not (pcfDoNotCompileDependencies in Flags) then begin
-      Result:=CompileRequiredPackages(APackage);
+      Result:=CompileRequiredPackages(nil,AProject.FirstRequiredDependency);
+      if Result<>mrOk then exit;
+    end;
+  finally
+    PackageGraph.EndUpdate;
+  end;
+  
+  Result:=mrOk;
+end;
+
+function TPkgManager.DoCompilePackage(APackage: TLazPackage;
+  Flags: TPkgCompileFlags): TModalResult;
+var
+  PkgCompileTool: TExternalToolOptions;
+  CompilerFilename: String;
+  CompilerParams: String;
+begin
+  Result:=mrCancel;
+  
+writeln('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
+  
+  if APackage.AutoCreated then exit;
+
+  // check graph for circles and broken dependencies
+  if not (pcfDoNotCompileDependencies in Flags) then begin
+    Result:=CheckPackageGraphForCompilation(APackage,nil);
+    if Result<>mrOk then exit;
+  end;
+  
+  // save all open files
+  if not (pcfAutomatic in Flags) then begin
+    Result:=MainIDE.DoSaveForBuild;
+    if Result<>mrOk then exit;
+  end;
+
+  PackageGraph.BeginUpdate(false);
+  try
+    // automatically compile required packages
+    if not (pcfDoNotCompileDependencies in Flags) then begin
+      Result:=CompileRequiredPackages(APackage,nil);
       if Result<>mrOk then exit;
     end;
 
     // check if compilation is neccessary
     if ([pcfOnlyIfNeeded,pcfCleanCompile]*Flags<>[]) then begin
-      Result:=CheckIfPackageNeedsCompilation(APackage);
+      Result:=CheckIfPackageNeedsCompilation(APackage,
+                                             CompilerFilename,CompilerParams);
       if Result=mrNo then begin
         Result:=mrOk;
         exit;
@@ -1389,14 +1481,23 @@ writeln('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompi
     if Result<>mrOk then exit;
 
     // create external tool to run the compiler
-    OutputDir:=APackage.GetOutputDirectory;
-    SrcFilename:=CreateRelativePath(OutputDir+APackage.GetCompileSourceFilename,
-                                    APackage.Directory);
-    CompilerFilename:=APackage.GetCompilerFilename;
-    CompilerParams:=APackage.CompilerOptions.MakeOptionsString(
-                                 APackage.CompilerOptions.DefaultMakeOptionsFlags)
-                   +' '+SrcFilename;
+    writeln('TPkgManager.DoCompilePackage Compiler="',CompilerFilename,'"');
+    writeln('TPkgManager.DoCompilePackage Params="',CompilerParams,'"');
+    writeln('TPkgManager.DoCompilePackage WorkingDir="',APackage.Directory,'"');
 
+    // check compiler filename
+    try
+      CheckIfFileIsExecutable(CompilerFilename);
+    except
+      on e: Exception do begin
+        Result:=MessageDlg('invalid Compiler filename',
+          'The compiler file for package '+APackage.IDAsString+' is not a valid executable:'#13
+          +E.Message,
+          mtError,[mbCancel,mbAbort],0);
+        exit;
+      end;
+    end;
+    
     PkgCompileTool:=TExternalToolOptions.Create;
     try
       PkgCompileTool.Title:='Compiling package '+APackage.IDAsString;
@@ -1411,12 +1512,11 @@ writeln('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompi
 
       // compile package
       Result:=EnvironmentOptions.ExternalTools.Run(PkgCompileTool,MainIDE.MacroList);
-      if Result=mrOk then begin
-        // compilation succeded -> write state file
-        Result:=DoSavePackageCompiledState(APackage,
-                                           CompilerFilename,CompilerParams);
-        if Result<>mrOk then exit;
-      end;
+      if Result<>mrOk then exit;
+      // compilation succeded -> write state file
+      Result:=DoSavePackageCompiledState(APackage,
+                                         CompilerFilename,CompilerParams);
+      if Result<>mrOk then exit;
     finally
       // clean up
       PkgCompileTool.Free;
@@ -1448,6 +1548,7 @@ var
   HeaderSrc: String;
   OutputDir: String;
 begin
+  writeln('TPkgManager.DoSavePackageMainSource A');
   // check if package is ready for saving
   OutputDir:=APackage.GetOutputDirectory;
   if not DirectoryExists(OutputDir) then begin
@@ -1477,7 +1578,7 @@ begin
     // update unitname
     if FilenameIsPascalUnit(CurFile.Filename)
     and (CurFile.FileType=pftUnit) then begin
-      CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,true,false);
+      CodeBuffer:=CodeToolBoss.LoadFile(CurFile.Filename,false,false);
       if CodeBuffer<>nil then begin
         CurUnitName:=CodeToolBoss.GetCachedSourceName(CodeBuffer);
         if AnsiCompareText(CurUnitName,CurFile.UnitName)<>0 then begin

@@ -122,9 +122,12 @@ type
                               Flags: TFindPackageFlags): boolean;
     function FindAPackageWithName(const PkgName: string;
                                   IgnorePackage: TLazPackage): TLazPackage;
-    function FindBrokenDependencyPath(APackage: TLazPackage): TList;
-    function FindCircleDependencyPath(APackage: TLazPackage): TList;
-    function FindUnsavedDependencyPath(APackage: TLazPackage): TList;
+    function FindBrokenDependencyPath(APackage: TLazPackage;
+                                      FirstDependency: TPkgDependency): TList;
+    function FindCircleDependencyPath(APackage: TLazPackage;
+                                      FirstDependency: TPkgDependency): TList;
+    function FindUnsavedDependencyPath(APackage: TLazPackage;
+                                       FirstDependency: TPkgDependency): TList;
     function FindFileInAllPackages(const TheFilename: string;
                                 ResolveLinks, IgnoreDeleted: boolean): TPkgFile;
     function FindLowestPkgNodeByName(const PkgName: string): TAVLTreeNode;
@@ -140,7 +143,8 @@ type
                       WithRequiredPackages, IgnoreDeleted: boolean): TPkgFile;
     function FindUnitInAllPackages(const TheUnitName: string;
                                    IgnoreDeleted: boolean): TPkgFile;
-    function GetAutoCompilationOrder(APackage: TLazPackage): TList;
+    function GetAutoCompilationOrder(APackage: TLazPackage;
+                                     FirstDependency: TPkgDependency): TList;
     function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
                          const NewName: string; NewVersion: TPkgVersion): TList;
     function PackageCanBeReplaced(OldPackage, NewPackage: TLazPackage): boolean;
@@ -1047,33 +1051,30 @@ begin
   FreeMem(PkgStack);
 end;
 
-function TLazPackageGraph.FindBrokenDependencyPath(APackage: TLazPackage
-  ): TList;
+function TLazPackageGraph.FindBrokenDependencyPath(APackage: TLazPackage;
+  FirstDependency: TPkgDependency): TList;
   
-  procedure FindBroken(CurPackage: TLazPackage; var PathList: TList);
+  procedure FindBroken(Dependency: TPkgDependency; var PathList: TList);
   var
-    Dependency: TPkgDependency;
     RequiredPackage: TLazPackage;
   begin
-    CurPackage.Flags:=CurPackage.Flags+[lpfVisited];
-    Dependency:=CurPackage.FirstRequiredDependency;
     while Dependency<>nil do begin
       if Dependency.LoadPackageResult=lprSuccess then begin
         // dependency ok
         RequiredPackage:=Dependency.RequiredPackage;
         if not (lpfVisited in RequiredPackage.Flags) then begin
-          FindBroken(RequiredPackage,PathList);
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          FindBroken(RequiredPackage.FirstRequiredDependency,PathList);
           if PathList<>nil then begin
             // broken dependency found
             // -> add current package to list
-            PathList.Insert(0,CurPackage);
+            PathList.Insert(0,RequiredPackage);
             exit;
           end;
         end;
       end else begin
         // broken dependency found
         PathList:=TList.Create;
-        PathList.Add(CurPackage);
         PathList.Add(Dependency);
         exit;
       end;
@@ -1085,19 +1086,22 @@ begin
   Result:=nil;
   if (Count=0) or (APackage=nil) then exit;
   MarkAllPackagesAsNotVisited;
-  FindBroken(APackage,Result);
+  if APackage<>nil then begin
+    APackage.Flags:=APackage.Flags+[lpfVisited];
+    FirstDependency:=APackage.FirstRequiredDependency;
+  end;
+  FindBroken(FirstDependency,Result);
+  if (Result<>nil) and (APackage<>nil) then
+    Result.Insert(0,APackage);
 end;
 
-function TLazPackageGraph.FindCircleDependencyPath(APackage: TLazPackage
-  ): TList;
+function TLazPackageGraph.FindCircleDependencyPath(APackage: TLazPackage;
+  FirstDependency: TPkgDependency): TList;
 
-  procedure FindCircle(CurPackage: TLazPackage; var PathList: TList);
+  procedure FindCircle(Dependency: TPkgDependency; var PathList: TList);
   var
-    Dependency: TPkgDependency;
     RequiredPackage: TLazPackage;
   begin
-    CurPackage.Flags:=CurPackage.Flags+[lpfVisited,lpfCircle];
-    Dependency:=CurPackage.FirstRequiredDependency;
     while Dependency<>nil do begin
       if Dependency.LoadPackageResult=lprSuccess then begin
         // dependency ok
@@ -1105,23 +1109,23 @@ function TLazPackageGraph.FindCircleDependencyPath(APackage: TLazPackage
         if lpfCircle in RequiredPackage.Flags then begin
           // circle detected
           PathList:=TList.Create;
-          PathList.Add(CurPackage);
           PathList.Add(RequiredPackage);
           exit;
         end;
         if not (lpfVisited in RequiredPackage.Flags) then begin
-          FindCircle(RequiredPackage,PathList);
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited,lpfCircle];
+          FindCircle(RequiredPackage.FirstRequiredDependency,PathList);
           if PathList<>nil then begin
             // circle detected
             // -> add current package to list
-            PathList.Insert(0,CurPackage);
+            PathList.Insert(0,RequiredPackage);
             exit;
           end;
+          RequiredPackage.Flags:=RequiredPackage.Flags-[lpfCircle];
         end;
       end;
       Dependency:=Dependency.NextRequiresDependency;
     end;
-    CurPackage.Flags:=CurPackage.Flags-[lpfCircle];
   end;
 
 var
@@ -1135,19 +1139,22 @@ begin
     Pkg:=TLazPackage(FItems[i]);
     Pkg.Flags:=Pkg.Flags-[lpfVisited,lpfCircle];
   end;
-  FindCircle(APackage,Result);
+  if APackage<>nil then begin
+    APackage.Flags:=APackage.Flags+[lpfVisited];
+    FirstDependency:=APackage.FirstRequiredDependency;
+  end;
+  FindCircle(FirstDependency,Result);
+  if (Result<>nil) and (APackage<>nil) then
+    Result.Insert(0,APackage);
 end;
 
-function TLazPackageGraph.FindUnsavedDependencyPath(APackage: TLazPackage
-  ): TList;
+function TLazPackageGraph.FindUnsavedDependencyPath(APackage: TLazPackage;
+  FirstDependency: TPkgDependency): TList;
 
-  procedure FindUnsaved(CurPackage: TLazPackage; var PathList: TList);
+  procedure FindUnsaved(Dependency: TPkgDependency; var PathList: TList);
   var
-    Dependency: TPkgDependency;
     RequiredPackage: TLazPackage;
   begin
-    CurPackage.Flags:=CurPackage.Flags+[lpfVisited];
-    Dependency:=CurPackage.FirstRequiredDependency;
     while Dependency<>nil do begin
       if Dependency.LoadPackageResult=lprSuccess then begin
         // dependency ok
@@ -1155,23 +1162,22 @@ function TLazPackageGraph.FindUnsavedDependencyPath(APackage: TLazPackage
         if RequiredPackage.Modified then begin
           // unsaved package detected
           PathList:=TList.Create;
-          PathList.Add(CurPackage);
           PathList.Add(RequiredPackage);
           exit;
         end;
         if not (lpfVisited in RequiredPackage.Flags) then begin
-          FindUnsaved(RequiredPackage,PathList);
+          RequiredPackage.Flags:=RequiredPackage.Flags+[lpfVisited];
+          FindUnsaved(RequiredPackage.FirstRequiredDependency,PathList);
           if PathList<>nil then begin
             // unsaved package detected
             // -> add current package to list
-            PathList.Insert(0,CurPackage);
+            PathList.Insert(0,RequiredPackage);
             exit;
           end;
         end;
       end;
       Dependency:=Dependency.NextRequiresDependency;
     end;
-    CurPackage.Flags:=CurPackage.Flags-[lpfCircle];
   end;
 
 var
@@ -1185,18 +1191,22 @@ begin
     Pkg:=TLazPackage(FItems[i]);
     Pkg.Flags:=Pkg.Flags-[lpfVisited];
   end;
-  FindUnsaved(APackage,Result);
+  if APackage<>nil then begin
+    APackage.Flags:=APackage.Flags+[lpfVisited];
+    FirstDependency:=APackage.FirstRequiredDependency;
+  end;
+  FindUnsaved(FirstDependency,Result);
+  if (Result<>nil) and (APackage<>nil) then
+    Result.Insert(0,APackage);
 end;
 
-function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage
-  ): TList;
+function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage;
+  FirstDependency: TPkgDependency): TList;
   
-  procedure GetTopologicalOrder(const FirstDependency: TPkgDependency);
+  procedure GetTopologicalOrder(Dependency: TPkgDependency);
   var
-    Dependency: TPkgDependency;
     RequiredPackage: TLazPackage;
   begin
-    Dependency:=FirstDependency;
     while Dependency<>nil do begin
       if Dependency.LoadPackageResult=lprSuccess then begin
         RequiredPackage:=Dependency.RequiredPackage;
@@ -1218,8 +1228,11 @@ function TLazPackageGraph.GetAutoCompilationOrder(APackage: TLazPackage
 begin
   Result:=nil;
   MarkAllPackagesAsNotVisited;
-  APackage.Flags:=APackage.Flags+[lpfVisited];
-  GetTopologicalOrder(APackage.FirstRequiredDependency);
+  if APackage<>nil then begin
+    APackage.Flags:=APackage.Flags+[lpfVisited];
+    FirstDependency:=APackage.FirstRequiredDependency;
+  end;
+  GetTopologicalOrder(FirstDependency);
 end;
 
 procedure TLazPackageGraph.MarkAllPackagesAsNotVisited;

@@ -100,7 +100,8 @@ type
     function SubstituteStr(var s:string): boolean; virtual;
     property OnSubstitution: TOnSubstitution
        read fOnSubstitution write fOnSubstitution;
-    property MarkUnhandledMacros: boolean read FMarkUnhandledMacros write SetMarkUnhandledMacros;
+    property MarkUnhandledMacros: boolean read FMarkUnhandledMacros
+                                          write SetMarkUnhandledMacros;
   end;
 
 
@@ -281,17 +282,19 @@ begin
           Result:=false;
           exit;
         end;
-        MacroStr:=MacroParam;
         AMacro:=FindByName(MacroName);
-        if Assigned(fOnSubstitution) then
-          fOnSubstitution(AMacro,MacroStr,Handled,Abort);
-        if Abort then begin
-          Result:=false;
-          exit;
+        if Assigned(fOnSubstitution) then begin
+          fOnSubstitution(AMacro,MacroParam,Handled,Abort);
+          if Handled then
+            MacroStr:=MacroParam
+          else if Abort then begin
+            Result:=false;
+            exit;
+          end;
         end;
         if (not Handled) and (AMacro<>nil) and (Assigned(AMacro.MacroFunction)) then
         begin
-          MacroStr:=AMacro.MacroFunction(MacroStr,Abort);
+          MacroStr:=AMacro.MacroFunction(MacroParam,Abort);
           if Abort then begin
             Result:=false;
             exit;
@@ -300,13 +303,16 @@ begin
         end;  
       end else begin
         // Macro variable
-        MacroStr:=copy(s,MacroStart+2,OldMacroLen-3);
-        AMacro:=FindByName(MacroStr);
-        if Assigned(fOnSubstitution) then
-          fOnSubstitution(AMacro,MacroStr,Handled,Abort);
-        if Abort then begin
-          Result:=false;
-          exit;
+        MacroName:=copy(s,MacroStart+2,OldMacroLen-3);
+        AMacro:=FindByName(MacroName);
+        if Assigned(fOnSubstitution) then begin
+          fOnSubstitution(AMacro,MacroName,Handled,Abort);
+          if Handled then
+            MacroStr:=MacroName
+          else if Abort then begin
+            Result:=false;
+            exit;
+          end;
         end;
         if (not Handled) and (AMacro<>nil) then begin
           // standard macro
@@ -373,7 +379,6 @@ begin
   l:=0;
   r:=fItems.Count-1;
   m:=0;
-  Result:=nil;
   while l<=r do begin
     m:=(l+r) shr 1;
     Result:=Items[m];
@@ -383,9 +388,10 @@ begin
     else if cmp>0 then
       l:=m+1
     else begin
-      break;
+      exit;
     end;
   end;
+  Result:=nil;
 end;
 
 function TTransferMacroList.MF_Ext(const Filename:string;
