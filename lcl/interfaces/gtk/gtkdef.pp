@@ -201,6 +201,8 @@ type
 type
   TClipboardEventData = record
     TimeID: Cardinal;
+    Waiting: boolean;
+    Stopping: boolean;
     Data: TGtkSelectionData;
   end;
   PClipboardEventData = ^TClipboardEventData;
@@ -434,6 +436,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.32  2003/01/24 11:58:00  mattias
+  fixed clipboard waiting and kwrite targets
+
   Revision 1.31  2002/12/15 11:52:28  mattias
   started gtk2 interface
 
