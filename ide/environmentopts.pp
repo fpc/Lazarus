@@ -35,8 +35,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, FPCAdds, LCLProc, Forms, Controls, Buttons, GraphType, Graphics,
-  Laz_XMLCfg, ObjectInspector, ExtCtrls, StdCtrls, Spin, EditorOptions,
+  Classes, SysUtils, FPCAdds, LCLProc, Forms, Controls, Buttons, GraphType,
+  Graphics,ExtCtrls, StdCtrls, Spin, Laz_XMLCfg, ObjectInspector, EditorOptions,
   LResources, LazConf, Dialogs, ExtToolDialog, IDEProcs, IDEOptionDefs,
   InputHistory, LazarusIDEStrConsts, FileUtil;
 
@@ -164,9 +164,10 @@ type
   private
     FFilename: string;
     FFileAge: longint;
-    FXMLCfg: TXMLConfig;
     FFileHasChangedOnDisk: boolean;
-    
+    FXMLCfg: TXMLConfig;
+    FConfigStore: TXMLOptionsStorage;
+
     FOnApplyWindowLayout: TOnApplyIDEWindowLayout;
 
     // auto save
@@ -917,6 +918,7 @@ begin
     IDEOptionDefs.IDEDialogLayoutList:=nil;
   FIDEDialogLayoutList.Free;
   fIDEWindowLayoutList.Free;
+  FConfigStore.Free;
   FXMLCfg.Free;
   inherited Destroy;
 end;
@@ -1461,13 +1463,14 @@ end;
 function TEnvironmentOptions.GetXMLCfg(CleanConfig: boolean): TXMLConfig;
 begin
   if FileHasChangedOnDisk or (FXMLCfg=nil) then begin
+    FConfigStore.Free;
     FXMLCfg.Free;
     if CleanConfig then
       FXMLCfg:=TXMLConfig.CreateClean(Filename)
     else
       FXMLCfg:=TXMLConfig.Create(Filename);
-    ObjectInspectorOptions.Filename:=Filename;
-    ObjectInspectorOptions.CustomXMLCfg:=FXMLCfg;
+    FConfigStore:=TXMLOptionsStorage.Create(FXMLCfg);
+    ObjectInspectorOptions.ConfigStore:=FConfigStore;
   end;
   Result:=FXMLCfg;
 end;

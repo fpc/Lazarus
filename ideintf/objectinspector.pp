@@ -37,7 +37,7 @@ interface
 uses
   Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType,
   LCLIntf, LCLProc, Controls, ComCtrls, ExtCtrls, TypInfo, Messages,
-  LResources, PairSplitter, Laz_XMLCfg, Menus, Dialogs, ObjInspStrConsts,
+  LResources, PairSplitter, ConfigStorage, Menus, Dialogs, ObjInspStrConsts,
   PropEdits, GraphPropEdits, ListViewPropEdit, ImageListEditor,
   ComponentTreeView;
 
@@ -53,13 +53,9 @@ type
   TOIOptions = class
   private
     FComponentTreeHeight: integer;
-    FCustomXMLCfg: TXMLConfig;
+    FConfigStore: TConfigStorage;
     FDefaultItemHeight: integer;
-    FFilename:string;
-    FFileAge: longint;
     FShowComponentTree: boolean;
-    FXMLCfg: TXMLConfig;
-    FFileHasChangedOnDisk: boolean;
 
     FSaveBounds: boolean;
     FLeft: integer;
@@ -71,20 +67,14 @@ type
 
     FGridBackgroundColor: TColor;
     FShowHints: boolean;
-    procedure SetFilename(const NewFilename: string);
-    function FileHasChangedOnDisk: boolean;
-    function GetXMLCfg: TXMLConfig;
-    procedure FileUpdated;
   public
     constructor Create;
-    destructor Destroy;  override;
     function Load: boolean;
     function Save: boolean;
     procedure Assign(AnObjInspector: TObjectInspector);
     procedure AssignTo(AnObjInspector: TObjectInspector);
   public
-    property Filename:string read FFilename write SetFilename;
-    property CustomXMLCfg: TXMLConfig read FCustomXMLCfg write FCustomXMLCfg;
+    property ConfigStore: TConfigStorage read FConfigStore write FConfigStore;
 
     property SaveBounds:boolean read FSaveBounds write FSaveBounds;
     property Left:integer read FLeft write FLeft;
@@ -2155,46 +2145,9 @@ end;
 
 { TOIOptions }
 
-procedure TOIOptions.SetFilename(const NewFilename: string);
-begin
-  if FFilename=NewFilename then exit;
-  FFilename:=NewFilename;
-  FFileHasChangedOnDisk:=true;
-end;
-
-function TOIOptions.FileHasChangedOnDisk: boolean;
-begin
-  Result:=FFileHasChangedOnDisk
-      or ((FFilename<>'') and (FFileAge<>0) and (FileAge(FFilename)<>FFileAge));
-  FFileHasChangedOnDisk:=Result;
-end;
-
-function TOIOptions.GetXMLCfg: TXMLConfig;
-begin
-  if CustomXMLCfg<>nil then begin
-    Result:=CustomXMLCfg;
-  end else begin
-    if FileHasChangedOnDisk or (FXMLCfg=nil) then begin
-      FXMLCfg.Free;
-      FXMLCfg:=TXMLConfig.Create(FFilename);
-    end;
-    Result:=FXMLCfg;
-  end;
-end;
-
-procedure TOIOptions.FileUpdated;
-begin
-  FFileHasChangedOnDisk:=false;
-  if FFilename<>'' then
-    FFileAge:=FileAge(FFilename)
-  else
-    FFileAge:=0;
-end;
-
 constructor TOIOptions.Create;
 begin
   inherited Create;
-  FFilename:='';
 
   FSaveBounds:=false;
   FLeft:=0;
@@ -2210,45 +2163,36 @@ begin
   FGridBackgroundColor:=clBtnFace;
 end;
 
-destructor TOIOptions.Destroy;
-begin
-  FXMLCfg.Free;
-  inherited Destroy;
-end;
-
-function TOIOptions.Load:boolean;
-var XMLConfig: TXMLConfig;
+function TOIOptions.Load: boolean;
 begin
   Result:=false;
-  if not FileExists(FFilename) then exit;
+  if ConfigStore=nil then exit;
   try
-    XMLConfig:=GetXMLCfg;
-
-    FSaveBounds:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Valid'
-                     ,false);
+    FSaveBounds:=ConfigStore.GetValue('ObjectInspectorOptions/Bounds/Valid'
+                                      ,false);
     if FSaveBounds then begin
-      FLeft:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Left',0);
-      FTop:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Top',0);
-      FWidth:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Width',250);
-      FHeight:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Height',400);
+      FLeft:=ConfigStore.GetValue('ObjectInspectorOptions/Bounds/Left',0);
+      FTop:=ConfigStore.GetValue('ObjectInspectorOptions/Bounds/Top',0);
+      FWidth:=ConfigStore.GetValue('ObjectInspectorOptions/Bounds/Width',250);
+      FHeight:=ConfigStore.GetValue('ObjectInspectorOptions/Bounds/Height',400);
     end;
-    FPropertyGridSplitterX:=XMLConfig.GetValue(
+    FPropertyGridSplitterX:=ConfigStore.GetValue(
        'ObjectInspectorOptions/Bounds/PropertyGridSplitterX',110);
     if FPropertyGridSplitterX<10 then FPropertyGridSplitterX:=10;
-    FEventGridSplitterX:=XMLConfig.GetValue(
+    FEventGridSplitterX:=ConfigStore.GetValue(
        'ObjectInspectorOptions/Bounds/EventGridSplitterX',110);
     if FEventGridSplitterX<10 then FEventGridSplitterX:=10;
-    FDefaultItemHeight:=XMLConfig.GetValue(
+    FDefaultItemHeight:=ConfigStore.GetValue(
        'ObjectInspectorOptions/Bounds/DefaultItemHeight',20);
     if FDefaultItemHeight<0 then FDefaultItemHeight:=20;
-    FShowComponentTree:=XMLConfig.GetValue(
+    FShowComponentTree:=ConfigStore.GetValue(
        'ObjectInspectorOptions/ComponentTree/Show/Value',true);
-    FComponentTreeHeight:=XMLConfig.GetValue(
+    FComponentTreeHeight:=ConfigStore.GetValue(
        'ObjectInspectorOptions/ComponentTree/Height/Value',100);
 
-    FGridBackgroundColor:=XMLConfig.GetValue(
+    FGridBackgroundColor:=ConfigStore.GetValue(
          'ObjectInspectorOptions/GridBackgroundColor',clBtnFace);
-    FShowHints:=XMLConfig.GetValue(
+    FShowHints:=ConfigStore.GetValue(
          'ObjectInspectorOptions/ShowHints',false);
   except
     on E: Exception do begin
@@ -2259,40 +2203,36 @@ begin
   Result:=true;
 end;
 
-function TOIOptions.Save:boolean;
-var XMLConfig: TXMLConfig;
+function TOIOptions.Save: boolean;
 begin
   Result:=false;
+  if ConfigStore=nil then exit;
   try
-    XMLConfig:=GetXMLCfg;
-
-    XMLConfig.SetDeleteValue('ObjectInspectorOptions/Bounds/Valid',FSaveBounds,
+    ConfigStore.SetDeleteValue('ObjectInspectorOptions/Bounds/Valid',FSaveBounds,
                              false);
     if FSaveBounds then begin
-      XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Left',FLeft);
-      XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Top',FTop);
-      XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Width',FWidth);
-      XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Height',FHeight);
+      ConfigStore.SetValue('ObjectInspectorOptions/Bounds/Left',FLeft);
+      ConfigStore.SetValue('ObjectInspectorOptions/Bounds/Top',FTop);
+      ConfigStore.SetValue('ObjectInspectorOptions/Bounds/Width',FWidth);
+      ConfigStore.SetValue('ObjectInspectorOptions/Bounds/Height',FHeight);
     end;
-    XMLConfig.SetDeleteValue(
+    ConfigStore.SetDeleteValue(
       'ObjectInspectorOptions/Bounds/PropertyGridSplitterX',
       FPropertyGridSplitterX, 110);
-    XMLConfig.SetDeleteValue(
+    ConfigStore.SetDeleteValue(
       'ObjectInspectorOptions/Bounds/EventGridSplitterX',
       FEventGridSplitterX, 110);
-    XMLConfig.SetDeleteValue('ObjectInspectorOptions/Bounds/DefaultItemHeight',
+    ConfigStore.SetDeleteValue('ObjectInspectorOptions/Bounds/DefaultItemHeight',
                              FDefaultItemHeight,20);
-    XMLConfig.SetDeleteValue('ObjectInspectorOptions/ComponentTree/Show/Value',
+    ConfigStore.SetDeleteValue('ObjectInspectorOptions/ComponentTree/Show/Value',
                              FShowComponentTree,true);
-    XMLConfig.SetDeleteValue('ObjectInspectorOptions/ComponentTree/Height/Value',
+    ConfigStore.SetDeleteValue('ObjectInspectorOptions/ComponentTree/Height/Value',
                              FComponentTreeHeight,100);
 
-    XMLConfig.SetDeleteValue('ObjectInspectorOptions/GridBackgroundColor',
+    ConfigStore.SetDeleteValue('ObjectInspectorOptions/GridBackgroundColor',
                              FGridBackgroundColor,clBackground);
-    XMLConfig.SetDeleteValue('ObjectInspectorOptions/ShowHints',FShowHints,
+    ConfigStore.SetDeleteValue('ObjectInspectorOptions/ShowHints',FShowHints,
                              false);
-
-    if XMLConfig<>CustomXMLCfg then XMLConfig.Flush;
   except
     on E: Exception do begin
       DebugLn('ERROR: TOIOptions.Save: ',E.Message);
