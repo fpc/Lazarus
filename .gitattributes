@@ -238,6 +238,7 @@ ide/editoroptions.pp svneol=native#text/pascal
 ide/environmentopts.pp svneol=native#text/pascal
 ide/exttooldialog.pas svneol=native#text/pascal
 ide/exttooleditdlg.pas svneol=native#text/pascal
+ide/filereferencelist.pas svneol=native#text/pascal
 ide/findinfilesdlg.pas svneol=native#text/pascal
 ide/findreplacedialog.pp svneol=native#text/pascal
 ide/formeditor.pp svneol=native#text/pascal

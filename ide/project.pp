@@ -1998,9 +1998,13 @@ procedure TProject.GetVirtualDefines(DefTree: TDefineTree;
   DirDef: TDirectoryDefines);
   
   procedure ExtendPath(const AVariable, APath: string);
+  var
+    TempValue: string;
   begin
-    if APath<>'' then
-      DirDef.Values.Prepend(AVariable,DefTree.ReadValue(DirDef,APath+';',''));
+    if APath<>'' then begin
+      DefTree.ReadValue(DirDef,APath+';','',TempValue);
+      DirDef.Values.Prepend(AVariable,TempValue);
+    end;
   end;
   
 begin
@@ -2356,6 +2360,9 @@ end.
 
 {
   $Log$
+  Revision 1.108  2003/04/18 15:32:51  mattias
+  implemented file reference list
+
   Revision 1.107  2003/04/16 13:48:10  mattias
   implemented creating compiler option string for packages
 

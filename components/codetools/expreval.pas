@@ -58,8 +58,7 @@ type
     function CompareValues(const v1, v2: string): integer;
     function GetVariables(const Name: string): string;
     procedure SetVariables(const Name: string; const Value: string);
-    function IndexOfUpperName(const UpperVarName: string): integer;
-    function IndexOf(const VarName: string): integer;
+    function IndexOfName(const VarName: string): integer;
     procedure Expand;
   public
     property Variables[const Name:string]: string
@@ -366,16 +365,8 @@ begin
   FCapacity:=NewCapacity;
 end;
 
-function TExpressionEvaluator.IndexOf(const VarName: string): integer;
-begin
-  if IsUpperCaseStr(VarName) then
-    Result:=IndexOfUpperName(VarName)
-  else
-    Result:=IndexOfUpperName(UpperCaseStr(VarName));
-end;
-
-function TExpressionEvaluator.IndexOfUpperName(
-  const UpperVarName: string): integer;
+function TExpressionEvaluator.IndexOfName(
+  const VarName: string): integer;
 var l,r,m, cmp: integer;
 begin
   if FCount=0 then begin
@@ -387,7 +378,7 @@ begin
   m:=0;
   while l<=r do begin
     m:=(l+r) shr 1;
-    cmp:=AnsiCompareStr(UpperVarName,FNames[m]);
+    cmp:=AnsiCompareText(VarName,FNames[m]);
     if cmp>0 then
       l:=m+1
     else if cmp<0 then
@@ -395,42 +386,25 @@ begin
     else
       break;
   end;
-  if AnsiCompareStr(UpperVarName,FNames[m])>0 then inc(m);
+  if AnsiCompareText(VarName,FNames[m])>0 then inc(m);
   Result:=m;
 end;
 
 function TExpressionEvaluator.GetVariables(const Name: string): string;
 var i: integer;
-  s: string;
 begin
-  if IsUpperCaseStr(Name) then begin
-    i:=IndexOfUpperName(Name);
-    if (i>=0) and (i<FCount) and (FNames[i]=Name) then
-      Result:=FValues[i]
-    else 
-      Result:='';
-  end else begin
-    s:=UpperCaseStr(Name);
-    i:=IndexOfUpperName(s);
-    if (i>=0) and (i<FCount) and (FNames[i]=s) then
-      Result:=FValues[i]
-    else
-      Result:='';
-  end;
+  i:=IndexOfName(Name);
+  if (i>=0) and (i<FCount) and (AnsiCompareText(FNames[i],Name)=0) then
+    Result:=FValues[i]
+  else 
+    Result:='';
 end;
 
 function TExpressionEvaluator.IsDefined(const Name: string): boolean;
 var i: integer;
-  s: string;
 begin
-  if IsUpperCaseStr(Name) then begin
-    i:=IndexOfUpperName(Name);
-    Result:=(i>=0) and (i<FCount) and (FNames[i]=Name);
-  end else begin
-    s:=UpperCaseStr(Name);
-    i:=IndexOfUpperName(s);
-    Result:=(i>=0) and (i<FCount) and (FNames[i]=s);
-  end;
+  i:=IndexOfName(Name);
+  Result:=(i>=0) and (i<FCount) and (AnsiCompareText(FNames[i],Name)=0);
 end;
 
 function TExpressionEvaluator.ReadNextAtom: boolean;
@@ -524,73 +498,37 @@ end;
 procedure TExpressionEvaluator.SetVariables(const Name: string;
   const Value: string);
 var i, j: integer;
-  s: string;
 begin
-  if IsUpperCaseStr(Name) then begin
-    i:=IndexOfUpperName(Name);
-    if (i>=0) and (i<FCount) and (FNames[i]=Name) then
-      // variable already exists -> replace value
-      FValues[i]:=Value
-    else begin
-      // new variable
-      if FCount=FCapacity then Expand;
-      if i<0 then i:=0;
-      for j:=FCount downto i+1 do begin
-        FNames[j]:=FNames[j-1];
-        FValues[j]:=FValues[j-1];
-      end;
-      FNames[i]:=Name;
-      FValues[i]:=Value;
-      inc(FCount);
+  i:=IndexOfName(Name);
+  if (i>=0) and (i<FCount) and (AnsiCompareText(FNames[i],Name)=0) then
+    // variable already exists -> replace value
+    FValues[i]:=Value
+  else begin
+    // new variable
+    if FCount=FCapacity then Expand;
+    if i<0 then i:=0;
+    for j:=FCount downto i+1 do begin
+      FNames[j]:=FNames[j-1];
+      FValues[j]:=FValues[j-1];
     end;
-  end else begin
-    s:=UpperCaseStr(Name);
-    i:=IndexOfUpperName(s);
-    if (i>=0) and (i<FCount) and (FNames[i]=s) then
-      // variable already exists -> replace value
-      FValues[i]:=Value
-    else begin
-      // new variable
-      if FCount=FCapacity then Expand;
-      if i<0 then i:=0;
-      for j:=FCount downto i+1 do begin
-        FNames[j]:=FNames[j-1];
-        FValues[j]:=FValues[j-1];
-      end;
-      FNames[i]:=s;
-      FValues[i]:=Value;
-      inc(FCount);
-    end;
+    FNames[i]:=UpperCaseStr(Name);
+    FValues[i]:=Value;
+    inc(FCount);
   end;
 end;
 
 procedure TExpressionEvaluator.Undefine(const Name: string);
 var i, j: integer;
-  s: string;
 begin
-  if IsUpperCaseStr(Name) then begin
-    i:=IndexOfUpperName(Name);
-    if (i>=0) and (i<FCount) and (FNames[i]=Name) then begin
-      for j:=i to FCount-2 do begin
-        FNames[j]:=FNames[j+1];
-        FValues[j]:=FValues[j+1];
-      end;
-      dec(FCount);
-      FNames[FCount]:='';
-      FValues[FCount]:='';
+  i:=IndexOfName(Name);
+  if (i>=0) and (i<FCount) and (AnsiCompareText(FNames[i],Name)=0) then begin
+    for j:=i to FCount-2 do begin
+      FNames[j]:=FNames[j+1];
+      FValues[j]:=FValues[j+1];
     end;
-  end else begin
-    s:=UpperCaseStr(Name);
-    i:=IndexOfUpperName(s);
-    if (i>=0) and (i<FCount) and (FNames[i]=s) then begin
-      for j:=i to FCount-1 do begin
-        FNames[j]:=FNames[j+1];
-        FValues[j]:=FValues[j+1];
-      end;
-      dec(FCount);
-      FNames[FCount]:='';
-      FValues[FCount]:='';
-    end;
+    dec(FCount);
+    FNames[FCount]:='';
+    FValues[FCount]:='';
   end;
 end;
 

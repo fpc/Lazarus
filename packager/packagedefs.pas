@@ -46,7 +46,8 @@ interface
 
 uses
   Classes, SysUtils, LCLProc, LResources, Graphics, Laz_XMLCfg, AVL_Tree,
-  CompilerOptions, Forms, FileCtrl, IDEProcs, ComponentReg, TransferMacros;
+  DefineTemplates, CompilerOptions, Forms, FileCtrl, IDEProcs, ComponentReg,
+  TransferMacros, FileReferenceList;
 
 type
   TLazPackage = class;
@@ -123,6 +124,7 @@ type
   private
     FComponentPriority: TComponentPriority;
     FComponents: TList; // list of TPkgComponent
+    FDirectory: string;
     FRemoved: boolean;
     FFilename: string;
     FFileType: TPkgFileType;
@@ -155,6 +157,7 @@ type
     function HasRegisteredPlugins: boolean;
   public
     property Removed: boolean read FRemoved write SetRemoved;
+    property Directory: string read FDirectory;
     property Filename: string read FFilename write SetFilename;
     property FileType: TPkgFileType read FFileType write SetFileType;
     property Flags: TPkgFileFlags read FFlags write SetFlags;
@@ -316,7 +319,7 @@ type
     property Version: TPkgVersion read FVersion;
   end;
   
-  
+
   { TLazPackage }
   
   TLazPackageType = (
@@ -362,6 +365,7 @@ type
     FAutoInstall: TPackageInstallType;
     FCompilerOptions: TPkgCompilerOptions;
     FComponents: TList; // TList of TPkgComponent
+    FDefineTemplate: TDefineTemplate;
     FDescription: string;
     FDirectory: string;
     FEditorRect: TRect;
@@ -382,6 +386,7 @@ type
     FReadOnly: boolean;
     FRemovedFiles: TList; // TList of TPkgFile
     FRegistered: boolean;
+    FSourceDirectories: TFileReferenceList;
     FStateFileDate: longint;
     FUsageOptions: TPkgAdditionalCompilerOptions;
     function GetAutoIncrementVersionOnBuild: boolean;
@@ -414,6 +419,7 @@ type
       var Handled, Abort: boolean);
     function SubstitutePkgMacro(const s: string): string;
     procedure Clear;
+    procedure UpdateSourceDirectories;
   public
     constructor Create;
     destructor Destroy; override;
@@ -477,22 +483,27 @@ type
     property Author: string read FAuthor write SetAuthor;
     property AutoCreated: boolean read FAutoCreated write SetAutoCreated;
     property AutoIncrementVersionOnBuild: boolean
-      read GetAutoIncrementVersionOnBuild write SetAutoIncrementVersionOnBuild;
-    property AutoInstall: TPackageInstallType read FAutoInstall write SetAutoInstall;
+       read GetAutoIncrementVersionOnBuild write SetAutoIncrementVersionOnBuild;
+    property AutoInstall: TPackageInstallType read FAutoInstall
+                                              write SetAutoInstall;
     property AutoUpdate: boolean read GetAutoUpdate write SetAutoUpdate;
-    property CompilerOptions: TPkgCompilerOptions
-      read FCompilerOptions;
+    property CompilerOptions: TPkgCompilerOptions read FCompilerOptions;
     property ComponentCount: integer read GetComponentCount;
     property Components[Index: integer]: TPkgComponent read GetComponents;
+    property DefineTemplate: TDefineTemplate read FDefineTemplate
+                                             write FDefineTemplate;
     property Description: string read FDescription write SetDescription;
     property Directory: string read FDirectory; // the path of the .lpk file
-    property Editor: TBasePackageEditor read FPackageEditor write SetPackageEditor;
+    property Editor: TBasePackageEditor read FPackageEditor
+                                        write SetPackageEditor;
     property EditorRect: TRect read FEditorRect write SetEditorRect;
     property FileCount: integer read GetFileCount;
-    property Filename: string read FFilename write SetFilename; // the .lpk filename
+    property Filename: string read FFilename write SetFilename;//the .lpk filename
     property Files[Index: integer]: TPkgFile read GetFiles;
-    property FirstRemovedDependency: TPkgDependency read FFirstRemovedDependency;
-    property FirstRequiredDependency: TPkgDependency read FFirstRequiredDependency;
+    property FirstRemovedDependency: TPkgDependency
+                                                   read FFirstRemovedDependency;
+    property FirstRequiredDependency: TPkgDependency
+                                                  read FFirstRequiredDependency;
     property FirstUsedByDependency: TPkgDependency read FFirstUsedByDependency;
     property Flags: TLazPackageFlags read FFlags write SetFlags;
     property IconFile: string read FIconFile write SetIconFile;
@@ -503,11 +514,13 @@ type
                                         write FLastCompilerParams;
     property Macros: TTransferMacroList read FMacros;
     property Modified: boolean read GetModified write SetModified;
-    property PackageType: TLazPackageType read FPackageType write SetPackageType;
+    property PackageType: TLazPackageType read FPackageType
+                                          write SetPackageType;
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
     property Registered: boolean read FRegistered write SetRegistered;
     property RemovedFilesCount: integer read GetRemovedCount;
     property RemovedFiles[Index: integer]: TPkgFile read GetRemovedFiles;
+    property SourceDirectories: TFileReferenceList read FSourceDirectories;
     property StateFileDate: longint read FStateFileDate write FStateFileDate;
     property UsageOptions: TPkgAdditionalCompilerOptions
       read FUsageOptions;
@@ -769,12 +782,19 @@ end;
 procedure TPkgFile.SetFilename(const AValue: string);
 var
   NewFilename: String;
+  OldDirectory: String;
 begin
   NewFilename:=AValue;
   DoDirSeparators(NewFilename);
   LazPackage.LongenFilename(NewFilename);
   if FFilename=NewFilename then exit;
   FFilename:=NewFilename;
+  OldDirectory:=FDirectory;
+  FDirectory:=ExtractFilePath(fFilename);
+  if OldDirectory<>FDirectory then begin
+    LazPackage.SourceDirectories.RemoveFilename(OldDirectory);
+    LazPackage.SourceDirectories.AddFilename(FDirectory);
+  end;
   UpdateUnitName;
 end;
 
@@ -787,6 +807,10 @@ procedure TPkgFile.SetRemoved(const AValue: boolean);
 begin
   if FRemoved=AValue then exit;
   FRemoved:=AValue;
+  if FRemoved then
+    LazPackage.SourceDirectories.RemoveFilename(FDirectory)
+  else
+    LazPackage.SourceDirectories.AddFilename(FDirectory);
 end;
 
 function TPkgFile.GetComponents(Index: integer): TPkgComponent;
@@ -847,6 +871,7 @@ end;
 
 destructor TPkgFile.Destroy;
 begin
+  Clear;
   inherited Destroy;
 end;
 
@@ -856,7 +881,7 @@ begin
   FFilename:='';
   FFlags:=[];
   FFileType:=pftUnit;
-  FComponents.Free;
+  FreeThenNil(FComponents);
 end;
 
 procedure TPkgFile.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string;
@@ -1503,6 +1528,7 @@ constructor TLazPackage.Create;
 begin
   inherited Create;
   FComponents:=TList.Create;
+  FSourceDirectories:=TFileReferenceList.Create;
   FFiles:=TList.Create;
   FRemovedFiles:=TList.Create;
   FMacros:=TTransferMacroList.Create;
@@ -1527,6 +1553,7 @@ begin
   FreeAndNil(FCompilerOptions);
   FreeAndNil(FUsageOptions);
   FreeAndNil(FMacros);
+  FreeAndNil(FSourceDirectories);
   inherited Destroy;
 end;
 
@@ -1562,6 +1589,7 @@ begin
   FPackageType:=lptRunAndDesignTime;
   FRegistered:=false;
   FUsageOptions.Clear;
+  UpdateSourceDirectories;
   // set some nice start values
   if not (lpfDestroying in FFlags) then begin
     FFlags:=[lpfAutoIncrementVersionOnBuild,lpfAutoUpdate];
@@ -1570,6 +1598,17 @@ begin
   end else begin
     FFlags:=[lpfDestroying];
   end;
+end;
+
+procedure TLazPackage.UpdateSourceDirectories;
+var
+  Cnt: Integer;
+  i: Integer;
+begin
+  fSourceDirectories.Clear;
+  Cnt:=FFiles.Count;
+  for i:=0 to Cnt-1 do
+    fSourceDirectories.AddFilename(Files[i].Directory);
 end;
 
 procedure TLazPackage.LockModified;
@@ -1730,7 +1769,7 @@ end;
 
 function TLazPackage.IsVirtual: boolean;
 begin
-  Result:=not FilenameIsAbsolute(Filename);
+  Result:=(not FilenameIsAbsolute(Filename));
 end;
 
 function TLazPackage.HasDirectory: boolean;

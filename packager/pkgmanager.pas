@@ -50,7 +50,7 @@ uses
   InputHistory, IDEDefs, UComponentManMain, Project, ComponentReg,
   PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
-  ExtToolDialog, ExtToolEditDlg,
+  ExtToolDialog, ExtToolEditDlg, EditDefineTree, DefineTemplates,
   BasePkgManager, MainBar;
 
 type
@@ -88,8 +88,11 @@ type
     function CheckPackageGraphForCompilation(APackage: TLazPackage): TModalResult;
     function DoPreparePackageOutputDirectory(APackage: TLazPackage): TModalResult;
     function DoSavePackageCompiledState(APackage: TLazPackage;
-      const CompilerFilename, CompilerParams: string): TModalResult;
-    function CheckIfPackageNeedsCompilation(APackage: TLazPackage): boolean;
+                  const CompilerFilename, CompilerParams: string): TModalResult;
+    function DoLoadPackageCompiledState(APackage: TLazPackage;
+                                        IgnoreErrors: boolean): TModalResult;
+    function CheckIfPackageNeedsCompilation(APackage: TLazPackage): TModalResult;
+    procedure UpdateCodeToolsDefinesForPackage(APackage: TLazPackage);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -304,6 +307,7 @@ begin
   if FileExists(Pkg.FileName) then PkgLinks.AddUserLink(Pkg);
   if PackageGraphExplorer<>nil then
     PackageGraphExplorer.UpdatePackageAdded(Pkg);
+  UpdateCodeToolsDefinesForPackage(Pkg);
 end;
 
 procedure TPkgManager.PkgManagerEndUpdate(Sender: TObject; GraphChanged: boolean);
@@ -608,7 +612,8 @@ begin
     on E: Exception do begin
       Result:=MessageDlg('Error writing file',
         'Unable to write state file "'+StateFile+'"'#13
-        +'of package '+APackage.IDAsString+'.',
+        +'of package '+APackage.IDAsString+'.'#13
+        +'Error: '+E.Message,
         mtError,[mbAbort,mbCancel],0);
       exit;
     end;
@@ -616,6 +621,56 @@ begin
 
   Result:=MainIDE.DoDeleteAmbigiousFiles(StateFile);
   if Result<>mrOk then exit;
+end;
+
+function TPkgManager.DoLoadPackageCompiledState(APackage: TLazPackage;
+  IgnoreErrors: boolean): TModalResult;
+var
+  XMLConfig: TXMLConfig;
+  StateFile: String;
+  StateFileAge: Integer;
+begin
+  StateFile:=APackage.GetStateFilename;
+  if not FileExists(StateFile) then begin
+    APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
+    Result:=mrOk;
+    exit;
+  end;
+
+  // read the state file
+  StateFileAge:=FileAge(StateFile);
+  if (not (lpfStateFileLoaded in APackage.Flags))
+  or (APackage.StateFileDate<>StateFileAge) then begin
+    APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
+    try
+      XMLConfig:=TXMLConfig.Create(StateFile);
+      try
+        APackage.LastCompilerFilename:=
+          XMLConfig.GetValue('Compiler/Value','');
+        APackage.LastCompilerParams:=
+          XMLConfig.GetValue('Params/Value','');
+      finally
+        XMLConfig.Free;
+      end;
+      APackage.StateFileDate:=StateFileAge;
+    except
+      on E: Exception do begin
+        if IgnoreErrors then begin
+          Result:=mrOk;
+        end else begin
+          Result:=MessageDlg('Error reading file',
+            'Unable to read state file "'+StateFile+'"'#13
+            +'of package '+APackage.IDAsString+'.'#13
+            +'Error: '+E.Message,
+            mtError,[mbCancel,mbAbort],0);
+        end;
+        exit;
+      end;
+    end;
+    APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
+  end;
+  
+  Result:=mrOk;
 end;
 
 function TPkgManager.DoPreparePackageOutputDirectory(APackage: TLazPackage
@@ -650,7 +705,7 @@ begin
 end;
 
 function TPkgManager.CheckIfPackageNeedsCompilation(APackage: TLazPackage
-  ): boolean;
+  ): TModalResult;
 var
   OutputDir: String;
   SrcFilename: String;
@@ -659,42 +714,38 @@ var
   StateFilename: String;
   StateFileAge: Integer;
   i: Integer;
-  XMLConfig: TXMLConfig;
   CurFile: TPkgFile;
+  Dependency: TPkgDependency;
+  RequiredPackage: TLazPackage;
 begin
-  Result:=true;
+  Result:=mrYes;
 
 writeln('TPkgManager.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
   // check state file
   StateFilename:=APackage.GetStateFilename;
-  if not FileExists(StateFilename) then exit;
+  Result:=DoLoadPackageCompiledState(APackage,false);
+  if Result<>mrOk then exit;
+  if not (lpfStateFileLoaded in APackage.Flags) then begin
+    Result:=mrYes;
+    exit;
+  end;
 
   StateFileAge:=FileAge(StateFilename);
-  
-  // read the state file
-  if (not (lpfStateFileLoaded in APackage.Flags))
-  or (APackage.StateFileDate<>StateFileAge) then begin
-    try
-      XMLConfig:=TXMLConfig.Create(StateFilename);
-      try
-        APackage.LastCompilerFilename:=
-          XMLConfig.GetValue('Compiler/Value','');
-        APackage.LastCompilerParams:=
-          XMLConfig.GetValue('Params/Value','');
-      finally
-        XMLConfig.Free;
-      end;
-      APackage.StateFileDate:=StateFileAge;
-    except
-      on E: Exception do begin
-        MessageDlg('Error reading file',
-          'Unable to read state file "'+StateFilename+'"'#13
-          +'of package '+APackage.IDAsString+'.',
-          mtError,[mbCancel],0);
-        exit;
+
+  // check all required packages
+  Dependency:=APackage.FirstRequiredDependency;
+  while Dependency<>nil do begin
+    if (Dependency.LoadPackageResult=lprSuccess) then begin
+      RequiredPackage:=Dependency.RequiredPackage;
+      if not RequiredPackage.AutoCreated then begin
+        Result:=DoLoadPackageCompiledState(RequiredPackage,false);
+        if Result<>mrOk then exit;
+        Result:=mrYes;
+        if not (lpfStateFileLoaded in RequiredPackage.Flags) then exit;
+        if StateFileAge<RequiredPackage.StateFileDate then exit;
       end;
     end;
-    APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
+    Dependency:=Dependency.NextRequiresDependency;
   end;
   
   OutputDir:=APackage.GetOutputDirectory;
@@ -704,14 +755,17 @@ writeln('TPkgManager.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
                                APackage.CompilerOptions.DefaultMakeOptionsFlags)
                  +' '+CreateRelativePath(SrcFilename,APackage.Directory);
 
+  Result:=mrYes;
+  
   // check compiler command
   if CompilerFilename<>APackage.LastCompilerFilename then exit;
   if CompilerParams<>APackage.LastCompilerParams then exit;
   
   // check main source file
-  if StateFileAge<FileAge(SrcFilename) then exit;
+  if not FileExists(SrcFilename) or (StateFileAge<FileAge(SrcFilename)) then exit;
   
   // check package files
+  if StateFileAge<FileAge(APackage.Filename) then exit;
   for i:=0 to APackage.FileCount-1 do begin
     CurFile:=APackage.Files[i];
     if FileExists(CurFile.Filename)
@@ -719,7 +773,32 @@ writeln('TPkgManager.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
   end;
 
 writeln('TPkgManager.CheckIfPackageNeedsCompilation END ',APackage.IDAsString);
-  Result:=false;
+  Result:=mrNo;
+end;
+
+procedure TPkgManager.UpdateCodeToolsDefinesForPackage(APackage: TLazPackage);
+var
+  PkgDefTempl: TDefineTemplate;
+  OutPutDirDefTempl, CompiledSrcPathDefTempl: TDefineTemplate;
+begin
+  if APackage.IsVirtual or APackage.AutoCreated then exit;
+  if APackage.DefineTemplate=nil then begin
+    APackage.DefineTemplate:=CreatePackageTemplateWithID(APackage.IDAsString);
+  end;
+  PkgDefTempl:=APackage.DefineTemplate;
+  PkgDefTempl.Name:=APackage.IDAsString;
+  OutPutDirDefTempl:=PkgDefTempl.FindChildByName(PkgOutputDirDefTemplName);
+  if OutPutDirDefTempl=nil then begin
+    OutPutDirDefTempl:=TDefineTemplate.Create(PkgOutputDirDefTemplName,
+      'Output directory','',APackage.GetOutputDirectory,da_Directory);
+    CompiledSrcPathDefTempl:=TDefineTemplate.Create('CompiledSrcPath',
+      'CompiledSrcPath addition',CompiledSrcPathMacroName,
+      '$PkgUnitPath('+APackage.IDAsString+');$('+CompiledSrcPathMacroName+')',
+      da_Define);
+    OutPutDirDefTempl.AddChild(CompiledSrcPathDefTempl);
+  end else begin
+
+  end;
 end;
 
 constructor TPkgManager.Create(TheOwner: TComponent);
@@ -1125,65 +1204,75 @@ writeln('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompi
     if Result<>mrOk then exit;
   end;
 
-  // automatically compile required packages
-  if not (pcfDoNotCompileDependencies in Flags) then begin
-    Result:=CompileRequiredPackages(APackage);
-    if Result<>mrOk then exit;
-  end;
-
-  // check if compilation is neccessary
-  if ([pcfOnlyIfNeeded,pcfCleanCompile]*Flags<>[])
-  and (not CheckIfPackageNeedsCompilation(APackage)) then begin
-    Result:=mrOk;
-    exit;
-  end;
-
-  Result:=DoPreparePackageOutputDirectory(APackage);
-  if Result<>mrOk then exit;
-    
-  // create package main source file
-  Result:=DoSavePackageMainSource(APackage,Flags);
-  if Result<>mrOk then exit;
-
-  // create external tool to run the compiler
-  OutputDir:=APackage.GetOutputDirectory;
-  SrcFilename:=CreateRelativePath(OutputDir+APackage.GetCompileSourceFilename,
-                                  APackage.Directory);
-  CompilerFilename:=APackage.GetCompilerFilename;
-  CompilerParams:=APackage.CompilerOptions.MakeOptionsString(
-                               APackage.CompilerOptions.DefaultMakeOptionsFlags)
-                 +' '+SrcFilename;
-
-  PkgCompileTool:=TExternalToolOptions.Create;
+  PackageGraph.BeginUpdate(false);
   try
-    PkgCompileTool.Title:='Compiling package '+APackage.IDAsString;
-    PkgCompileTool.Filename:=CompilerFilename;
-    PkgCompileTool.ScanOutputForFPCMessages:=true;
-    PkgCompileTool.ScanOutputForMakeMessages:=true;
-    PkgCompileTool.WorkingDirectory:=APackage.Directory;
-    PkgCompileTool.CmdLineParams:=CompilerParams;
-
-    // clear old errors
-    SourceNotebook.ClearErrorLines;
-
-    // compile package
-    Result:=EnvironmentOptions.ExternalTools.Run(PkgCompileTool,MainIDE.MacroList);
-    if Result=mrOk then begin
-      // compilation succeded -> write state file
-      Result:=DoSavePackageCompiledState(APackage,
-                                         CompilerFilename,CompilerParams);
+    // automatically compile required packages
+    if not (pcfDoNotCompileDependencies in Flags) then begin
+      Result:=CompileRequiredPackages(APackage);
       if Result<>mrOk then exit;
     end;
-  finally
-    // clean up
-    PkgCompileTool.Free;
 
-    if not (pcfAutomatic in Flags) then begin
-      // check for changed files on disk
-      MainIDE.DoCheckFilesOnDisk;
+    // check if compilation is neccessary
+    if ([pcfOnlyIfNeeded,pcfCleanCompile]*Flags<>[]) then begin
+      Result:=CheckIfPackageNeedsCompilation(APackage);
+      if Result=mrNo then begin
+        Result:=mrOk;
+        exit;
+      end;
+      if Result<>mrYes then exit;
     end;
-  end;
+    
+    // auto increase version
+    // ToDo
 
+    Result:=DoPreparePackageOutputDirectory(APackage);
+    if Result<>mrOk then exit;
+
+    // create package main source file
+    Result:=DoSavePackageMainSource(APackage,Flags);
+    if Result<>mrOk then exit;
+
+    // create external tool to run the compiler
+    OutputDir:=APackage.GetOutputDirectory;
+    SrcFilename:=CreateRelativePath(OutputDir+APackage.GetCompileSourceFilename,
+                                    APackage.Directory);
+    CompilerFilename:=APackage.GetCompilerFilename;
+    CompilerParams:=APackage.CompilerOptions.MakeOptionsString(
+                                 APackage.CompilerOptions.DefaultMakeOptionsFlags)
+                   +' '+SrcFilename;
+
+    PkgCompileTool:=TExternalToolOptions.Create;
+    try
+      PkgCompileTool.Title:='Compiling package '+APackage.IDAsString;
+      PkgCompileTool.Filename:=CompilerFilename;
+      PkgCompileTool.ScanOutputForFPCMessages:=true;
+      PkgCompileTool.ScanOutputForMakeMessages:=true;
+      PkgCompileTool.WorkingDirectory:=APackage.Directory;
+      PkgCompileTool.CmdLineParams:=CompilerParams;
+
+      // clear old errors
+      SourceNotebook.ClearErrorLines;
+
+      // compile package
+      Result:=EnvironmentOptions.ExternalTools.Run(PkgCompileTool,MainIDE.MacroList);
+      if Result=mrOk then begin
+        // compilation succeded -> write state file
+        Result:=DoSavePackageCompiledState(APackage,
+                                           CompilerFilename,CompilerParams);
+        if Result<>mrOk then exit;
+      end;
+    finally
+      // clean up
+      PkgCompileTool.Free;
+
+      if not (pcfAutomatic in Flags) then begin
+        // check for changed files on disk
+        MainIDE.DoCheckFilesOnDisk;
+      end;
+    end;
+  finally
+    PackageGraph.EndUpdate;
+  end;
   Result:=mrOk;
 end;
 

@@ -216,6 +216,17 @@ var
     if Result<>mrOk then exit;
   end;
   
+  function DoBuildPackager: TModalResult;
+  begin
+    // build packager interface
+    Tool.Title:=lisBuildJITForm;
+    Tool.WorkingDirectory:='$(LazarusDir)/packager/registration';
+    SetMakeParams(Options.BuildJITForm,Options.ExtraOptions,
+                  Options.TargetOS);
+    Result:=ExternalTools.Run(Tool,Macros);
+    if Result<>mrOk then exit;
+  end;
+  
 begin
   Result:=mrCancel;
   Tool:=TExternalToolOptions.Create;
@@ -275,6 +286,8 @@ begin
     end;
     if Options.BuildJITForm<>mmNone then begin
       Result:=DoBuildJITForm;
+      if Result<>mrOk then exit;
+      Result:=DoBuildPackager;
       if Result<>mrOk then exit;
     end;
     if Options.BuildIDE<>mmNone then begin

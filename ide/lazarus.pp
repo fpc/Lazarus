@@ -40,7 +40,7 @@ program Lazarus;
   {$R *.res}
 {$ENDIF}
 
-{off $DEFINE IDE_MEM_CHECK}
+{ $DEFINE IDE_MEM_CHECK}
 
 uses
   //cmem,
@@ -90,6 +90,9 @@ end.
 
 {
   $Log$
+  Revision 1.41  2003/04/18 15:32:51  mattias
+  implemented file reference list
+
   Revision 1.40  2003/04/08 09:04:07  mattias
   fixed registration for fpc 1.0.x
 

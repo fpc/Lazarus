@@ -66,10 +66,14 @@ const
   StdDefTemplLCLProject = 'LCL Project';
 
   // Standard macros
-  DefinePathMacroName  = ExternalMacroStart+'DefinePath';
-  UnitPathMacroName    = ExternalMacroStart+'UnitPath';
-  IncludePathMacroName = ExternalMacroStart+'IncPath';
-  SrcPathMacroName     = ExternalMacroStart+'SrcPath';
+  DefinePathMacroName      = ExternalMacroStart+'DefinePath';
+  UnitPathMacroName        = ExternalMacroStart+'UnitPath';
+  IncludePathMacroName     = ExternalMacroStart+'IncPath';
+  SrcPathMacroName         = ExternalMacroStart+'SrcPath';
+  PPUSrcPathMacroName      = ExternalMacroStart+'PPUSrcPath';
+  PPWSrcPathMacroName      = ExternalMacroStart+'PPWSrcPath';
+  DCUSrcPathMacroName      = ExternalMacroStart+'DCUSrcPath';
+  CompiledSrcPathMacroName = ExternalMacroStart+'CompiledSrcPath';
 
   // virtual directory
   VirtualDirectory='VIRTUALDIRECTORY';
@@ -261,6 +265,7 @@ type
     procedure RemoveRootDefineTemplateByName(const AName: string);
     procedure ReplaceChild(ParentTemplate, NewDefineTemplate: TDefineTemplate;
         const ChildName: string);
+    procedure AddChild(ParentTemplate, NewDefineTemplate: TDefineTemplate);
     function  LoadFromXMLConfig(XMLConfig: TXMLConfig;
         const Path: string; Policy: TDefineTreeLoadPolicy;
         const NewNamePrefix: string): boolean;
@@ -282,8 +287,8 @@ type
     function  GetPPWSrcPathForDirectory(const Directory: string): string;
     function  GetDCUSrcPathForDirectory(const Directory: string): string;
     function  GetCompiledSrcPathForDirectory(const Directory: string): string;
-    function  ReadValue(const DirDef: TDirectoryDefines;
-        const PreValue, CurDefinePath: string): string;
+    procedure ReadValue(const DirDef: TDirectoryDefines;
+                   const PreValue, CurDefinePath: string; var NewValue: string);
     constructor Create;
     destructor Destroy; override;
     function  ConsistencyCheck: integer; // 0 = ok
@@ -1305,7 +1310,7 @@ var ExprEval: TExpressionEvaluator;
 begin
   ExprEval:=GetDefinesForDirectory(Directory,true);
   if ExprEval<>nil then begin
-    Result:=ExprEval.Variables[ExternalMacroStart+'PPUSrcPath'];
+    Result:=ExprEval.Variables[PPUSrcPathMacroName];
   end else begin
     Result:='';
   end;
@@ -1317,7 +1322,7 @@ var ExprEval: TExpressionEvaluator;
 begin
   ExprEval:=GetDefinesForDirectory(Directory,true);
   if ExprEval<>nil then begin
-    Result:=ExprEval.Variables[ExternalMacroStart+'PPWSrcPath'];
+    Result:=ExprEval.Variables[PPWSrcPathMacroName];
   end else begin
     Result:='';
   end;
@@ -1329,7 +1334,7 @@ var ExprEval: TExpressionEvaluator;
 begin
   ExprEval:=GetDefinesForDirectory(Directory,true);
   if ExprEval<>nil then begin
-    Result:=ExprEval.Variables[ExternalMacroStart+'DCUSrcPath'];
+    Result:=ExprEval.Variables[DCUSrcPathMacroName];
   end else begin
     Result:='';
   end;
@@ -1341,7 +1346,7 @@ var ExprEval: TExpressionEvaluator;
 begin
   ExprEval:=GetDefinesForDirectory(Directory,true);
   if ExprEval<>nil then begin
-    Result:=ExprEval.Variables[ExternalMacroStart+'CompiledSrcPath'];
+    Result:=ExprEval.Variables[CompiledSrcPathMacroName];
   end else begin
     Result:='';
   end;
@@ -1396,7 +1401,7 @@ begin
   end;
 end;
 
-function TDefineTree.ReadValue(const DirDef: TDirectoryDefines;
+(*function TDefineTree.ReadValue(const DirDef: TDirectoryDefines;
   const PreValue, CurDefinePath: string): string;
 // replace variables of the form $() and functions of the form $name()
 // replace SpecialChar
@@ -1454,10 +1459,10 @@ begin
     while (MacroEnd<=length(Result))
     and (Result[MacroEnd] in ['a'..'z','A'..'Z','0'..'9','_']) do
       inc(MacroEnd);
-    MacroFuncName:=copy(Result,MacroStart+1,MacroEnd-MacroStart-1);
     // read macro name / parameters
     if (MacroEnd<length(Result)) and (Result[MacroEnd] in ['(','{']) then
     begin
+      MacroFuncName:=copy(Result,MacroStart+1,MacroEnd-MacroStart-1);
       MacroEnd:=SearchBracketClose(Result,MacroEnd)+1;
       if MacroEnd>length(Result)+1 then break;
       MacroStr:=copy(Result,MacroStart,MacroEnd-MacroStart);
@@ -1495,12 +1500,193 @@ begin
   end;
   //writeln('    [ReadValue] END "',Result,'"');
 end;
+*)
+procedure TDefineTree.ReadValue(const DirDef: TDirectoryDefines;
+  const PreValue, CurDefinePath: string; var NewValue: string);
+var
+  Buffer: PChar;
+  BufferPos: integer;
+  BufferSize: integer;
+  ValuePos: integer;
+
+  function SearchBracketClose(const s: string; Position:integer): integer;
+  var BracketClose:char;
+    sLen: Integer;
+  begin
+    if s[Position]='(' then
+      BracketClose:=')'
+    else
+      BracketClose:='{';
+    inc(Position);
+    sLen:=length(s);
+    while (Position<=sLen) and (s[Position]<>BracketClose) do begin
+      if s[Position]=SpecialChar then
+        inc(Position)
+      else if (s[Position] in ['(','{']) then
+        Position:=SearchBracketClose(s,Position);
+      inc(Position);
+    end;
+    Result:=Position;
+  end;
+
+  function ExecuteMacroFunction(const FuncName, Params: string): string;
+  var UpFuncName, Ext: string;
+  begin
+    UpFuncName:=UpperCaseStr(FuncName);
+    if UpFuncName='EXT' then begin
+      Result:=ExtractFileExt(Params);
+    end else if UpFuncName='PATH' then begin
+      Result:=ExtractFilePath(Params);
+    end else if UpFuncName='NAME' then begin
+      Result:=ExtractFileName(Params);
+    end else if UpFuncName='NAMEONLY' then begin
+      Result:=ExtractFileName(Params);
+      Ext:=ExtractFileExt(Result);
+      Result:=copy(Result,1,length(Result)-length(Ext));
+    end else
+      Result:='<'+Format(ctsUnknownFunction,[FuncName])+'>';
+  end;
+
+  procedure GrowBuffer(MinSize: integer);
+  var
+    NewSize: Integer;
+  begin
+    if MinSize<=BufferSize then exit;
+    NewSize:=MinSize*2+100;
+    ReAllocMem(Buffer,NewSize);
+    BufferSize:=NewSize;
+  end;
+
+  procedure CopyStringToBuffer(const Src: string);
+  begin
+    if Src='' then exit;
+    Move(Src[1],Buffer[BufferPos],length(Src));
+    inc(BufferPos,length(Src));
+  end;
+
+  procedure CopyFromValueToBuffer(Len: integer);
+  begin
+    if Len=0 then exit;
+    Move(NewValue[ValuePos],Buffer[BufferPos],Len);
+    inc(BufferPos,Len);
+    inc(ValuePos,Len);
+  end;
+
+  function Substitute(var CurValue: string; ValueLen: integer;
+    MacroStart: integer; var MacroEnd: integer): boolean;
+  var
+    MacroNameEnd: Integer;
+    MacroFuncNameLen: Integer;
+    MacroLen: Integer;
+    MacroStr: String;
+    MacroFuncName: String;
+    NewMacroLen: Integer;
+    MacroParam: string;
+  begin
+    Result:=false;
+    MacroNameEnd:=MacroEnd;
+    MacroFuncNameLen:=MacroNameEnd-MacroStart-1;
+    MacroEnd:=SearchBracketClose(CurValue,MacroNameEnd)+1;
+    if MacroEnd>ValueLen+1 then exit;
+    MacroLen:=MacroEnd-MacroStart;
+    MacroStr:=copy(CurValue,MacroStart,MacroLen);
+    // Macro found
+    if MacroFuncNameLen>0 then begin
+      MacroFuncName:=copy(CurValue,MacroStart+1,MacroFuncNameLen);
+      // Macro function -> substitute macro parameter first
+      ReadValue(DirDef,copy(MacroStr,MacroFuncNameLen+2
+          ,MacroLen-MacroFuncNameLen-3),CurDefinePath,MacroParam);
+      // execute the macro function
+      MacroStr:=ExecuteMacroFunction(MacroFuncName,MacroParam);
+    end else begin
+      // Macro variable
+      MacroStr:=copy(NewValue,MacroStart+2,MacroEnd-MacroStart-3);
+      //writeln('**** MacroStr=',MacroStr);
+      //writeln('DirDef.Values=',DirDef.Values.AsString);
+      if MacroStr=DefinePathMacroName then begin
+        MacroStr:=CurDefinePath;
+      end else begin
+        if DirDef.Values.IsDefined(MacroStr) then
+          MacroStr:=DirDef.Values.Variables[MacroStr]
+        else if Assigned(FOnReadValue) then begin
+          MacroParam:=MacroStr;
+          MacroStr:='';
+          FOnReadValue(Self,MacroParam,MacroStr);
+        end else
+          MacroStr:='<'+MacroStr+' NOT FOUND>';
+      end;
+      //writeln('**** NewValue MacroStr=',MacroStr);
+    end;
+    NewMacroLen:=length(MacroStr);
+    GrowBuffer(BufferPos+NewMacroLen+ValueLen-MacroStart+1);
+    // copy text between this macro and last macro
+    CopyFromValueToBuffer(MacroStart-ValuePos);
+    // copy macro value to buffer
+    CopyStringToBuffer(MacroStr);
+    ValuePos:=MacroEnd;
+    Result:=true;
+  end;
+
+  procedure SetNewValue;
+  var
+    RestLen: Integer;
+  begin
+    if Buffer=nil then exit;
+    // write rest to buffer
+    RestLen:=length(NewValue)-ValuePos+1;
+    if RestLen>0 then begin
+      GrowBuffer(BufferPos+RestLen);
+      Move(NewValue[ValuePos],Buffer[BufferPos],RestLen);
+      inc(BufferPos,RestLen);
+    end;
+    // copy the buffer into NewValue
+    SetLength(NewValue,BufferPos);
+    Move(Buffer^,NewValue[1],BufferPos);
+    // clean up
+    FreeMem(Buffer);
+    Buffer:=nil;
+  end;
+
+var MacroStart,MacroEnd: integer;
+  ValueLen: Integer;
+begin
+  //  writeln('    [ReadValue] A   "',PreValue,'"');
+  NewValue:=PreValue;
+  if NewValue='' then exit;
+  MacroStart:=1;
+  ValueLen:=length(NewValue);
+  Buffer:=nil;
+  BufferSize:=0;
+  BufferPos:=0; // position in buffer
+  ValuePos:=1;  // same position in value
+  while MacroStart<=ValueLen do begin
+    // search for macro
+    while (MacroStart<=ValueLen) and (NewValue[MacroStart]<>'$') do begin
+      if (NewValue[MacroStart]=SpecialChar) then inc(MacroStart);
+      inc(MacroStart);
+    end;
+    if MacroStart>ValueLen then break;
+    // read macro function name
+    MacroEnd:=MacroStart+1;
+    while (MacroEnd<=ValueLen)
+    and (NewValue[MacroEnd] in ['0'..'9','A'..'Z','a'..'z','_']) do
+      inc(MacroEnd);
+    // read macro name / parameters
+    if (MacroEnd<ValueLen) and (NewValue[MacroEnd] in ['(','{']) then
+    begin
+      if not Substitute(NewValue,ValueLen,MacroStart,MacroEnd) then break;
+    end;
+    MacroStart:=MacroEnd;
+  end;
+  if Buffer<>nil then SetNewValue;
+  //  writeln('    [ReadValue] END "',NewValue,'"');
+end;
 
 function TDefineTree.Calculate(DirDef: TDirectoryDefines): boolean;
 // calculates the values for a single directory
 // returns false on error
 var
-  ExpandedDirectory, EvalResult: string;
+  ExpandedDirectory, EvalResult, TempValue: string;
 
   procedure CalculateTemplate(DefTempl: TDefineTemplate; const CurPath: string);
   
@@ -1517,7 +1703,7 @@ var
     end;
 
   // procedure CalculateTemplate(DefTempl: TDefineTemplate; const CurPath: string);
-  var SubPath: string;
+  var SubPath, TempValue: string;
   begin
     while DefTempl<>nil do begin
       //writeln('  [CalculateTemplate] CurPath="',CurPath,'" DefTempl.Name="',DefTempl.Name,'"');
@@ -1529,14 +1715,16 @@ var
       da_Define:
         // Define for a single Directory (not SubDirs)
         if FilenameIsMatching(CurPath,ExpandedDirectory,true) then begin
-          DirDef.Values.Variables[DefTempl.Variable]:=
-            ReadValue(DirDef,DefTempl.Value,CurPath);
+          ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
+          DirDef.Values.Variables[DefTempl.Variable]:=TempValue;
         end;
 
       da_DefineRecurse:
         // Define for current and sub directories
-        DirDef.Values.Variables[DefTempl.Variable]:=
-            ReadValue(DirDef,DefTempl.Value,CurPath);
+        begin
+          ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
+          DirDef.Values.Variables[DefTempl.Variable]:=TempValue;
+        end;
 
       da_Undefine:
         // Undefine for a single Directory (not SubDirs)
@@ -1555,11 +1743,11 @@ var
       da_If, da_ElseIf:
         begin
           // test expression in value
-          EvalResult:=DirDef.Values.Eval(
-                                      ReadValue(DirDef,DefTempl.Value,CurPath));
+          ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
+          EvalResult:=DirDef.Values.Eval(TempValue);
           if DirDef.Values.ErrorPosition>=0 then begin
-            FErrorDescription:=Format(ctsSyntaxErrorInExpr,
-                                  [ReadValue(DirDef,DefTempl.Value,CurPath)]);
+            ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
+            FErrorDescription:=Format(ctsSyntaxErrorInExpr,[TempValue]);
             FErrorTemplate:=DefTempl;
           end else if EvalResult='1' then
             CalculateIfChilds;
@@ -1581,12 +1769,13 @@ var
       da_Directory:
         begin
           // template for a sub directory
+          ReadValue(DirDef,DefTempl.Value,CurPath,TempValue);
           {$ifdef win32}
           if CurPath='' then
-            SubPath:=ReadValue(DirDef,DefTempl.Value,CurPath)
+            SubPath:=TempValue
           else
           {$endif}
-            SubPath:=CurPath+PathDelim+ReadValue(DirDef,DefTempl.Value,CurPath);
+            SubPath:=CurPath+PathDelim+TempValue;
           // test if ExpandedDirectory is part of SubPath
           if FilenameIsMatching(SubPath,ExpandedDirectory,false) then
             CalculateTemplate(DefTempl.FirstChild,SubPath);
@@ -1607,8 +1796,10 @@ begin
   if (ExpandedDirectory=VirtualDirectory)
   and Assigned(OnGetVirtualDirectoryAlias) then
     OnGetVirtualDirectoryAlias(Self,ExpandedDirectory);
-  if (ExpandedDirectory<>VirtualDirectory) then
-    ExpandedDirectory:=ReadValue(DirDef,ExpandedDirectory,'');
+  if (ExpandedDirectory<>VirtualDirectory) then begin
+    ReadValue(DirDef,ExpandedDirectory,'',TempValue);
+    ExpandedDirectory:=TempValue;
+  end;
   DirDef.Values.Clear;
   // compute the result of all matching DefineTemplates
   CalculateTemplate(FFirstDefineTemplate,'');
@@ -1784,6 +1975,13 @@ begin
     ClearCache;
     ParentTemplate.AddChild(NewDefineTemplate);
   end;
+end;
+
+procedure TDefineTree.AddChild(ParentTemplate,
+  NewDefineTemplate: TDefineTemplate);
+begin
+  ClearCache;
+  ParentTemplate.AddChild(NewDefineTemplate);
 end;
 
 procedure TDefineTree.ReplaceRootSameName(ADefineTemplate: TDefineTemplate);
@@ -2667,8 +2865,7 @@ begin
   SubDirTempl:=TDefineTemplate.Create('Units',Format(ctsNamedDirectory,['Units']),
     '','units',da_Directory);
   SubDirTempl.AddChild(TDefineTemplate.Create('CompiledSrcPath',
-     ctsSrcPathForCompiledUnits,
-     ExternalMacroStart+'CompiledSrcPath',
+     ctsSrcPathForCompiledUnits,CompiledSrcPathMacroName,
      '..',da_Define));
   DirTempl.AddChild(SubDirTempl);
   
