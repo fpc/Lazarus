@@ -60,6 +60,8 @@ type
     case GDIType: TGDIType of
       gdiBitmap: (
         GDIBitmapMaskObject: PGdkPixmap;
+        Visual : PGDKVisual;
+        Colormap : PGDKColormap;
         case GDIBitmapType: TGDIBitmapType of
           gbBitmap: (GDIBitmapObject: PGdkBitmap); // pixmap with depth 1
           gbPixmap: (GDIPixmapObject: PGdkPixmap); // normal pixmap
@@ -326,6 +328,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.17  2002/09/10 06:49:20  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.16  2002/09/06 16:38:25  lazarus
   MG: added GetDCOffset
 
