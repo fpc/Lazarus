@@ -142,14 +142,17 @@ const
 function NewPGDIObject: PGDIObject;
 procedure DisposePGDIObject(GDIObject: PGdiObject);
 
+function NewPDeviceContext: PDeviceContext;
+procedure DisposePDeviceContext(DeviceContext: PDeviceContext);
+
 
 implementation
 
 
 {$IFOpt R+}{$Define RangeChecksOn}{$Endif}
 
+// memory system for PGDIObject(s) ---------------------------------------------
 type
-  // memory system for PGDIObject(s)
   TGDIObjectMemManager = class(TLCLMemManager)
   protected
     procedure FreeFirstItem; override;
@@ -222,21 +225,101 @@ begin
 end;
 
 
+// memory system for PDeviceContext(s) ---------------------------------------------
+type
+  TDeviceContextMemManager = class(TLCLMemManager)
+  protected
+    procedure FreeFirstItem; override;
+  public
+    procedure DisposeDeviceContext(ADeviceContext: PDeviceContext);
+    function NewDeviceContext: PDeviceContext;
+  end;
+
+const
+  DeviceContextMemManager: TDeviceContextMemManager = nil;
+
+function NewPDeviceContext: PDeviceContext;
+begin
+  if DeviceContextMemManager=nil then begin
+    DeviceContextMemManager:=TDeviceContextMemManager.Create;
+    DeviceContextMemManager.MinimumFreeCount:=1000;
+  end;
+  Result:=DeviceContextMemManager.NewDeviceContext;
+end;
+
+procedure DisposePDeviceContext(DeviceContext: PDeviceContext);
+begin
+  DeviceContextMemManager.DisposeDeviceContext(DeviceContext);
+end;
+
+{ TDeviceContextMemManager }
+
+procedure TDeviceContextMemManager.FreeFirstItem;
+var ADeviceContext: PDeviceContext;
+begin
+  ADeviceContext:=PDeviceContext(FFirstFree);
+  PDeviceContext(FFirstFree):=ADeviceContext^.SavedContext;
+  Dispose(ADeviceContext);
+end;
+
+procedure TDeviceContextMemManager.DisposeDeviceContext(
+  ADeviceContext: PDeviceContext);
+begin
+  if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
+  begin
+    // add ADeviceContext to Free list
+    ADeviceContext^.SavedContext:=PDeviceContext(FFirstFree);
+    PDeviceContext(FFirstFree):=ADeviceContext;
+    inc(FFreeCount);
+  end else begin
+    // free list full -> free the ANode
+    Dispose(ADeviceContext);
+    {$R-}
+    inc(FFreedCount);
+    {$IfDef RangeChecksOn}{$R+}{$Endif}
+  end;
+  dec(FCount);
+end;
+
+function TDeviceContextMemManager.NewDeviceContext: PDeviceContext;
+begin
+  if FFirstFree<>nil then begin
+    // take from free list
+    Result:=PDeviceContext(FFirstFree);
+    PDeviceContext(FFirstFree):=Result^.SavedContext;
+    dec(FFreeCount);
+  end else begin
+    // free list empty -> create new node
+    New(Result);
+    {$R-}
+    inc(FAllocatedCount);
+    {$IfDef RangeChecksOn}{$R+}{$Endif}
+  end;
+  FillChar(Result^, SizeOf(TDeviceContext), 0);
+  inc(FCount);
+end;
+
+
 //------------------------------------------------------------------------------
 finalization
   GDIObjectMemManager.Free;
   GDIObjectMemManager:=nil;
+  DeviceContextMemManager.Free;
+  DeviceContextMemManager:=nil;
 
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/08/21 14:06:40  lazarus
+  MG: added TDeviceContextMemManager
+
   Revision 1.12  2002/08/21 10:46:37  lazarus
   MG: fixed unreleased gdiRegions
 
   Revision 1.11  2002/08/21 08:13:37  lazarus
-  MG: accelerated new/dispose of gdiobjects
+  MG: accelerated new/dispose of GdiObjects
 
   Revision 1.10  2002/08/15 15:46:49  lazarus
   MG: added changes from Andrew (Clipping)
