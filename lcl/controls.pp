@@ -1115,8 +1115,8 @@ type
     property IsResizing: Boolean read GetIsResizing;
     property OnDockDrop: TDockDropEvent read FOnDockDrop write FOnDockDrop;
     property OnDockOver: TDockOverEvent read FOnDockOver write FOnDockOver;
-    property OnEnter : TNotifyEvent read FOnEnter write FOnEnter;
-    property OnExit  : TNotifyEvent read FOnExit write FOnExit;
+    property OnEnter: TNotifyEvent read FOnEnter write FOnEnter;
+    property OnExit: TNotifyEvent read FOnExit write FOnExit;
     property OnKeyDown: TKeyEvent read FOnKeyDown write FOnKeyDown;
     property OnKeyPress: TKeyPressEvent read FOnKeyPress write FOnKeyPress;
     property OnKeyUp: TKeyEvent read FOnKeyUp write FOnKeyUp;
@@ -1845,6 +1845,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.152  2003/09/23 08:00:46  mattias
+  improved OnEnter for gtkcombo
+
   Revision 1.151  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

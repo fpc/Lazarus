@@ -2337,7 +2337,7 @@ end;
 
   SetFocus event handler
  ------------------------------------------------------------------------------}
-Procedure TWinControl.WMSetFocus(var Message : TLMSetFocus);
+Procedure TWinControl.WMSetFocus(var Message: TLMSetFocus);
 Begin
   Assert(False, Format('Trace:TODO: [TWinControl.LMSetFocus] %s', [ClassName]));
   DoEnter;
@@ -3096,6 +3096,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.172  2003/09/23 08:00:46  mattias
+  improved OnEnter for gtkcombo
+
   Revision 1.171  2003/09/20 13:27:49  mattias
   varois improvements for ParentColor from Micha
 

@@ -3914,6 +3914,14 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender: TObject);
     ConnectSignalAfter(AnObject,ASignal,ACallBackProc,TComponent(Sender),
                        ReqSignalMask);
   end;
+  
+  procedure ConnectFocusEvents(const AnObject: PGTKObject);
+  begin
+    ConnectSenderSignal(AnObject, 'focus-in-event', @gtkFocusCB);
+    ConnectSenderSignalAfter(AnObject, 'focus-in-event', @gtkFocusCBAfter);
+    ConnectSenderSignal(AnObject, 'focus-out-event', @gtkKillFocusCB);
+    ConnectSenderSignalAfter(AnObject, 'focus-out-event', @gtkKillFocusCBAfter);
+  end;
 
 var
   gObject, gFixed, gCore, Scroll: PGTKObject;
@@ -4008,20 +4016,11 @@ begin
 
     LM_FOCUS :
     begin
-      if (sender is TCustomComboBox) then begin
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
-                            'focus-in-event', @gtkFocusCB);
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
-                            'focus-out-event', @gtkKillFocusCBAfter);
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list),
-                            'focus-in-event', @gtkFocusCB);
-        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list),
-                            'focus-out-event', @gtkKillFocusCBAfter);
+      if (Sender is TCustomComboBox) then begin
+        ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.entry));
+        ConnectFocusEvents(PgtkObject(PgtkCombo(gObject)^.list));
       end else begin
-        ConnectSenderSignal(gCore, 'focus-in-event', @gtkFocusCB);
-        ConnectSenderSignalAfter(gCore, 'focus-in-event', @gtkFocusCBAfter);
-        ConnectSenderSignal(gCore, 'focus-out-event', @gtkKillFocusCB);
-        ConnectSenderSignalAfter(gCore, 'focus-out-event', @gtkKillFocusCBAfter);
+        ConnectFocusEvents(gCore);
       end;
     end;
     
@@ -8387,6 +8386,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.425  2003/09/23 08:00:46  mattias
+  improved OnEnter for gtkcombo
+
   Revision 1.424  2003/09/22 20:08:56  ajgenius
   break GTK2 object and winapi into includes like the GTK interface
 

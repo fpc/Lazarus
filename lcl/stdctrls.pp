@@ -302,9 +302,23 @@ type
     property Enabled;
     property Font;
     property ItemHeight;
-    property ItemWidth;
     property Items;
+    property ItemWidth;
     property MaxLength default -1;
+    property OnChange;
+    property OnChangeBounds;
+    property OnClick;
+    property OnCloseUp;
+    property OnDrawItem;
+    property OnDropDown;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
     property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
@@ -315,16 +329,6 @@ type
     property TabStop;
     property Text;
     property Visible;
-    property OnChange;
-    property OnClick;
-    property OnCloseUp;
-    property OnDrawItem;
-    property OnDropDown;
-    property OnEnter;
-    property OnExit;
-    property OnKeyPress;
-    Property OnKeyDown;
-    Property OnKeyUp;
   end;
     
 
@@ -1462,6 +1466,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.106  2003/09/23 08:00:46  mattias
+  improved OnEnter for gtkcombo
+
   Revision 1.105  2003/09/18 11:24:29  mattias
   started TDBMemo
 
