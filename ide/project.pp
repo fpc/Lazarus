@@ -72,16 +72,78 @@ type
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
   end;
 
+//-----------------------------------------------------------------------------
+type
+  TProjectWatchType = (pwtDefault, pwtChar, pwtString, pwtDecimal, pwtHex,
+    pwtFloat, pwtPointer, pwtRecord, pwtMemDump);
+const
+  ProjectWatchTypeNames : array[TProjectWatchType] of string = (
+    'Default', 'Character', 'String', 'Decimal', 'Hexadecimal',
+    'Float', 'Pointer', 'Record', 'MemDump');
 
-  //---------------------------------------------------------------------------
+type
+  TProjectWatch = class
+  private
+    fExpression: string;
+    fRepeatCount: integer;
+    fDigits: integer;
+    fEnabled: boolean;
+    fAllowFunctionCalls: boolean;
+    fTheType: TProjectWatchType;
+  public
+    constructor Create;
+    procedure Clear;
+    destructor Destroy; override; 
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    property Expression: string read fExpression write fExpression;
+    property RepeatCount: integer read fRepeatCount write fRepeatCount;
+    property Digits: integer read fDigits write fDigits;
+    property Enabled: boolean read fEnabled write fEnabled;
+    property AllowFunctionCalls: boolean 
+          read fAllowFunctionCalls write fAllowFunctionCalls;
+    property TheType: TProjectWatchType read fTheType write fTheType;
+  end;
+
+//---------------------------------------------------------------------------
+type
   TProjectBreakPoint = class
   private
+    fActivated: boolean;
+    fBreakExecution: boolean;
+    fCondition: string;
+    fEnableGroup: string;
+    fEvalExpression: string;
+    fDisableGroup: string;
+    fGroup: string;
+    fHandleSubsequentExceptions: boolean;
+    fIgnoreSubsequentExceptions: boolean;
     fLineNumber: integer;
-    // ToDo: conditions, active/non active ...
+    fLogMessage: string;
+    fLogExpressionResult: boolean;
+    fPassCount: integer;
   public
-    property LineNumber:integer read fLineNumber write fLineNumber;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    constructor Create;
+    procedure Clear;
+    destructor Destroy; override; 
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    property Activated: boolean read fActivated write fActivated;
+    property BreakExecution: boolean read fBreakExecution write fBreakExecution;
+    property Condition: string read fCondition write fCondition;
+    property EnableGroup: string read fEnableGroup write fEnableGroup;
+    property EvalExpression: string read fEvalExpression write fEvalExpression;
+    property DisableGroup: string read fDisableGroup write fDisableGroup;
+    property Group: string read fGroup write fGroup;
+    property HandleSubsequentExceptions: boolean
+          read fHandleSubsequentExceptions write fHandleSubsequentExceptions;
+    property IgnoreSubsequentExceptions: boolean
+          read fIgnoreSubsequentExceptions write fIgnoreSubsequentExceptions;
+    property LineNumber: integer read fLineNumber write fLineNumber;
+    property LogMessage: string read fLogMessage write fLogMessage;
+    property LogExpressionResult: boolean 
+          read fLogExpressionResult write fLogExpressionResult;
+    property PassCount: integer read fPassCount write fPassCount;
  end;
 
   TProjectBreakPointList = class
@@ -90,16 +152,16 @@ type
     function GetBreakPoints(Index:integer):TProjectBreakPoint;
     procedure SetBreakPoints(Index:integer;  ABreakPoint: TProjectBreakPoint);
   public
+    function Add(ABreakPoint: TProjectBreakPoint):integer;
     constructor Create;
-    destructor Destroy; override;
-    property Items[Index:integer]:TProjectBreakPoint 
-       read GetBreakPoints write SetBreakPoints; default;
+    procedure Clear;
     function Count:integer;
     procedure Delete(Index:integer);
-    procedure Clear;
-    function Add(ABreakPoint: TProjectBreakPoint):integer;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    destructor Destroy; override;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    property Items[Index:integer]:TProjectBreakPoint 
+       read GetBreakPoints write SetBreakPoints; default;
   end;
 
 
@@ -158,8 +220,8 @@ type
     procedure ReadUnitNameFromSource;
     function WriteUnitSource: TModalResult;
     function WriteUnitSourceToFile(const AFileName: string): TModalResult;
-    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     procedure Clear;
     procedure CreateStartCode(NewUnitType: TNewUnitType;
          const NewUnitName: string);
@@ -322,7 +384,7 @@ const
   DefaultTargetFileExt : string = {$IFDEF win32}'.exe'{$ELSE}''{$ENDIF};
 
 function ProjectTypeNameToType(const s:string): TProjectType;
-
+function ProjectWatchTypeNameToType(const s: string): TProjectWatchType;
 
 implementation
 
@@ -333,6 +395,14 @@ begin
     if (lowercase(ProjectTypeNames[Result])=lowercase(s)) then exit;
   Result:=ptCustomProgram;
 end;
+
+function ProjectWatchTypeNameToType(const s: string): TProjectWatchType;
+begin
+  for Result:=Low(TProjectWatchType) to High(TProjectWatchType) do
+    if lowercase(s)=lowercase(ProjectWatchTypeNames[Result]) then exit;
+  Result:=pwtDefault;
+end;
+
 
 { TProjectBookmark }
 
@@ -458,19 +528,124 @@ begin
   end;
 end;
 
+{ TProjectWatch }
+
+constructor TProjectWatch.Create;
+begin
+  inherited Create;
+  Clear;
+end;
+
+procedure TProjectWatch.Clear;
+begin
+  fExpression:='';
+  fRepeatCount:=0;
+  fDigits:=4;
+  fEnabled:=true;
+  fAllowFunctionCalls:=true;
+  fTheType:=pwtDefault;
+end;
+
+destructor TProjectWatch.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TProjectWatch.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  Clear;
+  fExpression:=XMLConfig.GetValue(Path+'Expression',fExpression);
+  fRepeatCount:=XMLConfig.GetValue(Path+'RepeatCount',fRepeatCount);
+  fDigits:=XMLConfig.GetValue(Path+'Digits',fDigits);
+  fEnabled:=XMLConfig.GetValue(Path+'Enabled',fEnabled);
+  fAllowFunctionCalls:=XMLConfig.GetValue(Path+'AllowFunctionCalls',
+    fAllowFunctionCalls);
+  fTheType:=ProjectWatchTypeNameToType(XMLConfig.GetValue(Path+'TheType',''));
+end;
+
+procedure TProjectWatch.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  XMLConfig.SetValue(Path+'Expression',fExpression);
+  XMLConfig.SetValue(Path+'RepeatCount',fRepeatCount);
+  XMLConfig.SetValue(Path+'Digits',fDigits);
+  XMLConfig.SetValue(Path+'Enabled',fEnabled);
+  XMLConfig.SetValue(Path+'AllowFunctionCalls',fAllowFunctionCalls);
+  XMLConfig.SetValue(Path+'TheType',ProjectWatchTypeNames[fTheType]);
+end;
+
 
 { TProjectBreakPoint }
+
+constructor TProjectBreakPoint.Create;
+begin
+  inherited Create;
+  Clear;
+end;
+
+destructor TProjectBreakPoint.Destroy;
+begin
+  inherited Destroy;
+end;
+
+procedure TProjectBreakPoint.Clear;
+begin
+  fActivated:=true;
+  fBreakExecution:=true;
+  fCondition:='';
+  fEnableGroup:='';
+  fEvalExpression:='';
+  fDisableGroup:='';
+  fGroup:='';
+  fHandleSubsequentExceptions:=false;
+  fIgnoreSubsequentExceptions:=false;
+  fLineNumber:=-1;
+  fLogMessage:='';
+  fLogExpressionResult:=true;
+  fPassCount:=0;
+end;
 
 procedure TProjectBreakPoint.SaveToXMLConfig(XMLConfig: TXMLConfig; 
   const Path: string);
 begin
   XMLConfig.SetValue(Path+'LineNumber',LineNumber);
+  XMLConfig.SetValue(Path+'Activated',Activated);
+  XMLConfig.SetValue(Path+'BreakExecution',BreakExecution);
+  XMLConfig.SetValue(Path+'Condition',Condition);
+  XMLConfig.SetValue(Path+'EnableGroup',EnableGroup);
+  XMLConfig.SetValue(Path+'EvalExpression',EvalExpression);
+  XMLConfig.SetValue(Path+'DisableGroup',DisableGroup);
+  XMLConfig.SetValue(Path+'Group',Group);
+  XMLConfig.SetValue(Path+'HandleSubsequentExceptions',HandleSubsequentExceptions);
+  XMLConfig.SetValue(Path+'IgnoreSubsequentExceptions',IgnoreSubsequentExceptions);
+  XMLConfig.SetValue(Path+'LineNumber',LineNumber);
+  XMLConfig.SetValue(Path+'LogMessage',LogMessage);
+  XMLConfig.SetValue(Path+'LogExpressionResult',LogExpressionResult);
+  XMLConfig.SetValue(Path+'PassCount',PassCount);
 end;
 
 procedure TProjectBreakPoint.LoadFromXMLConfig(XMLConfig: TXMLConfig; 
   const Path: string);
 begin
-  LineNumber:=XMLConfig.GetValue(Path+'LineNumber',-1);
+  Clear;
+  LineNumber:=XMLConfig.GetValue(Path+'LineNumber',LineNumber);
+  Activated:=XMLConfig.GetValue(Path+'Activated',Activated);
+  BreakExecution:=XMLConfig.GetValue(Path+'BreakExecution',BreakExecution);
+  Condition:=XMLConfig.GetValue(Path+'Condition',Condition);
+  EnableGroup:=XMLConfig.GetValue(Path+'EnableGroup',EnableGroup);
+  EvalExpression:=XMLConfig.GetValue(Path+'EvalExpression',EvalExpression);
+  DisableGroup:=XMLConfig.GetValue(Path+'DisableGroup',DisableGroup);
+  Group:=XMLConfig.GetValue(Path+'Group',Group);
+  HandleSubsequentExceptions:=XMLConfig.GetValue(
+            Path+'HandleSubsequentExceptions',HandleSubsequentExceptions);
+  IgnoreSubsequentExceptions:=XMLConfig.GetValue(
+            Path+'IgnoreSubsequentExceptions',IgnoreSubsequentExceptions);
+  LineNumber:=XMLConfig.GetValue(Path+'LineNumber',LineNumber);
+  LogMessage:=XMLConfig.GetValue(Path+'LogMessage',LogMessage);
+  LogExpressionResult:=XMLConfig.GetValue(Path+'LogExpressionResult',
+            LogExpressionResult);
+  PassCount:=XMLConfig.GetValue(Path+'PassCount',PassCount);
 end;
 
 
@@ -716,7 +891,7 @@ end;
 {------------------------------------------------------------------------------
   TUnitInfo LoadFromXMLConfig
  ------------------------------------------------------------------------------}
-procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig;const Path: string);
+procedure TUnitInfo.LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
 var AFilename: string;
 begin
   CursorPos.X:=XMLConfig.GetValue(Path+'CursorPos/X',-1);
@@ -1504,6 +1679,9 @@ end.
 
 {
   $Log$
+  Revision 1.39  2001/11/06 22:20:30  lazarus
+  MG: started breakpoint and watch frontend
+
   Revision 1.38  2001/11/06 16:42:23  lazarus
   MG: added facade for find in files
 
