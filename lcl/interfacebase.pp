@@ -49,8 +49,8 @@ type
   { TInterfaceBase }
   {
     @abstract(Short description of the class.)
-    Introduced by Marc Weustink <weus@quicknet.nl>
-    Currently maintained by Marc Weustink <weus@quicknet.nl>
+    Introduced by Marc Weustink <marc@dommelstein.net>
+    Currently maintained by Marc Weustink <marc@dommelstein.net>
   }
   TInterfaceBase = Class(TObject)
   protected
@@ -74,6 +74,13 @@ type
     {$I winapih.inc}
     {$UNDEF IF_BASE_MEMBER}
   end;
+  
+type
+  EInterfaceException = class(Exception);
+  EInterfaceError = class(EInterfaceException);
+  EInterfaceCritical = class(EInterfaceException);
+  EInterfaceWarning = class(EInterfaceException);
+
 
 {$I defaultbitbtnimages.inc}
 {$I messagedialogpixmaps.inc}
@@ -111,6 +118,9 @@ end.
 
 {
   $Log$
+  Revision 1.31  2003/08/12 23:51:51  marc
+  + Introduced interface exceptions
+
   Revision 1.30  2002/08/17 23:41:34  mattias
   many clipping fixes
 
