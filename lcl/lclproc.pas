@@ -29,7 +29,7 @@ unit LCLProc;
 interface
 
 uses
-  Classes, SysUtils, LCLType;
+  Classes, SysUtils, LCLStrConsts, LCLType;
   
 type
   TMethodList = class
@@ -365,9 +365,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure RaiseGDBException(const Msg: string);
 begin
-  writeln('ERROR in gtk-interface: ',Msg);
+  writeln(rsERRORInLCL, Msg);
   // creates an exception, that gdb catches:
-  writeln('Creating gdb catchable error:');
+  writeln(rsCreatingGdbCatchableError);
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
