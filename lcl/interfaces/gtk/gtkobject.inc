@@ -574,8 +574,14 @@ procedure TGtkObject.AppTerminate;
     DeleteObject(h);
     h:=0;
   end;
-  
+
+var
+  I : Integer;
 begin
+  For I := Styles.Count - 1 downto 0 do
+    ReleaseStyle(Styles[I]);
+  Styles.Free;
+  
   DestroyGdkCursor(Cursor_Watch);
   DestroyGdkCursor(Cursor_Arrow);
   DestroyGdkCursor(Cursor_Cross);
@@ -632,6 +638,9 @@ begin
   FRCFileParsed:=true;
   ParseRCFile;
 
+  // Initialize Stringlist for holding styles
+  Styles := TStringlist.Create;
+  
   // Create default cursor types
   Cursor_Watch := gdk_Cursor_New(gdk_Watch);
   Cursor_Arrow := gdk_Cursor_New(gdk_Arrow);
@@ -2073,6 +2082,7 @@ begin
     begin
       ConnectSenderSignal(gFixed, 'expose-event', @GTKExposeEvent);
       ConnectSenderSignal(gFixed, 'draw', @GTKDraw);
+      ConnectSenderSignal(gFixed,'style-set', @GTKStyleChanged);
     end;
 
     LM_FOCUS :
@@ -5311,6 +5321,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.173  2002/08/22 16:43:35  lazarus
+  MG: improved theme support from Andrew
+
   Revision 1.172  2002/08/22 07:30:15  lazarus
   MG: freeing more unused GCs
 
