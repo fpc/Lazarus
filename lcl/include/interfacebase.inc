@@ -674,7 +674,7 @@ var
 begin
   Clip := CreateRectRGN(0,0,0,0);
   If GetClipRGN(DC, Clip) < 0 then begin
-    GetWindowRect(DC, R);
+    GetClipBox(DC, @R);
     RRGN := CreateRectRgn(R.Left,R.Top,R.Right, R.Bottom);
     Result := SelectClipRGN(DC, RRGN);
     DeleteObject(RRGN);
@@ -916,6 +916,14 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.MoveWindowOrgEx(dc : hdc; dX,dY : Integer): boolean;
+var
+  P : TPoint;
+Begin
+  GetWindowOrgEx(dc, P);
+  Result:=SetWindowOrgEx(dc, P.x-dX, P.y-dY, P);
+end;
+
 function TInterfaceBase.PeekMessage(var lpMsg : TMsg; Handle : HWND;
   wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 Begin
@@ -1130,12 +1138,14 @@ begin
   Result := 0;
 end;
 
-function TInterfaceBase.SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; 
+function TInterfaceBase.SetSysColors(cElements: Integer; const lpaElements;
+  const lpaRgbValues): Boolean;
 begin
   Result := False;
 end;
 
-Function TInterfaceBase.SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer;
+Function TInterfaceBase.SetTextCharacterExtra(_hdc : hdc;
+  nCharExtra : Integer):Integer;
 begin
   // Your default here
   Result := 0;
@@ -1146,17 +1156,20 @@ begin
   Result := CLR_INVALID;
 end;
 
-function TInterfaceBase.SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer;
+function TInterfaceBase.SetTimer(hWnd: HWND; nIDEvent, uElapse: integer;
+  lpTimerFunc: TFNTimerProc) : integer;
 begin
   Result := 0; 
 end;
 
-function TInterfacebase.SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt;
+function TInterfacebase.SetWindowLong(Handle: HWND;
+  Idx: Integer; NewLong : Longint): LongInt;
 begin
   Result := -1;
 end;
 
-Function TInterfaceBase.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var Point: TPoint) : Boolean;
+Function TInterfaceBase.SetWindowOrgEx(dc : hdc; NewX, NewY : Integer;
+  var OldPoint: TPoint) : Boolean;
 Begin
   Result := False;
 end;
@@ -1219,6 +1232,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2002/08/30 12:32:20  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.43  2002/08/28 09:40:49  lazarus
   MG: reduced paint messages and DC getting/releasing
 

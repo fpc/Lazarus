@@ -745,15 +745,17 @@ begin
   DC := TheMessage.DC;
   if DC = 0 then DC := BeginPaint(Handle, PS);
   try
-    if FControls = nil then PaintWindow(DC) else
+    if FControls = nil then
+      PaintWindow(DC)
+    else
     begin
       SaveIndex := SaveDC(DC);
       Clip := SimpleRegion;
       for I := 0 to FControls.Count - 1 do
         with TControl(FControls[I]) do
-          if (Visible or (csDesigning in ComponentState) and
-            not (csNoDesignVisible in ControlStyle)) and
-            (csOpaque in ControlStyle) then
+          if (Visible or (csDesigning in ComponentState)
+          and not (csNoDesignVisible in ControlStyle))
+          and (csOpaque in ControlStyle) then
           begin
             Clip := ExcludeClipRect(DC, Left, Top, Left + Width, Top + Height);
             if Clip = NullRegion then Break;
@@ -776,6 +778,8 @@ var
   TempControl : TCOntrol;
 begin
 //writeln('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',HexStr(DC,8));
+  // Controls taht are not TWinControl, have no handle of their own, and so
+  // they are repainted as part of the parent:
   if FControls <> nil then
   begin
     I := 0;
@@ -789,9 +793,9 @@ begin
     begin
       TempControl := TControl(FControls.Items[I]);
       with (TempControl) do
-        if (Visible or (csDesigning in ComponentState) and
-          not (csNoDesignVisible in ControlStyle)) and
-          RectVisible(DC, Rect(Left, Top, Left + Width, Top + Height)) then
+        if (Visible or (csDesigning in ComponentState)
+        and not (csNoDesignVisible in ControlStyle))
+        and RectVisible(DC, Rect(Left, Top, Left + Width, Top + Height)) then
         begin
           if csPaintCopy in Self.ControlState then
             Include(FControlState, csPaintCopy);
@@ -805,12 +809,13 @@ begin
       Inc(I);
     end;
   end;
+  // draw specials for the wincontrols:
   if FWinControls <> nil then
     for I := 0 to FWinControls.Count - 1 do
       with TWinControl(FWinControls.Items[I]) do
-        if FCtl3D and (csFramed in ControlStyle) and
-          (Visible or (csDesigning in ComponentState) and
-          not (csNoDesignVisible in ControlStyle)) then
+        if FCtl3D and (csFramed in ControlStyle)
+        and (Visible or (csDesigning in ComponentState)
+        and not (csNoDesignVisible in ControlStyle)) then
         begin
          //TODO: CreateSolidBrush and FrameRect
          {FrameBrush := CreateSolidBrush(ColorToRGB(clBtnShadow));
@@ -939,14 +944,12 @@ var
 begin
   LControl := nil;
   // check wincontrols
-  if AllowWinControls and
-     (FWinControls <> nil) then
+  if AllowWinControls and (FWinControls <> nil) then
     for I := FWinControls.Count - 1 downto 0 do
       if GetControlAtPos(TControl(FWinControls[I])) then
         Break;
   // check controls
-  if (FControls <> nil) and
-     (LControl = nil) then
+  if (FControls <> nil) and (LControl = nil) then
     for I := FControls.Count - 1 downto 0 do
       if GetControlAtPos(TControl(FControls[I])) then
         Break;
@@ -1293,18 +1296,15 @@ begin
       raise EInvalidOperation.Create('A control can''t have itself as parent');
     end;
 
-//    Assert(False, Format('Trace:[TWinControl.Insert] %s(%s) --> Insert: %s(%s)', [ClassName, Name, AControl.ClassName, AControl.Name]));
     if AControl is TWinControl then
     begin
       ListAdd(FWinControls, AControl);
       ListAdd(FTabList, AControl);
-    end;
-//    else
+    end else
       ListAdd(FControls, AControl);
-//todo: MAKE COMPATIBLE --> a control is in wincontrols or in controls but not both
+      
     AControl.FParent := Self;
   end;
-
 End;
 
 {------------------------------------------------------------------------------}
@@ -1327,8 +1327,7 @@ begin
     begin
       ListRemove(FTabList, AControl);
       ListRemove(FWInControls, ACOntrol);
-    end;
-//    else
+    end else
       Listremove(FControls, AControl);
     AControl.FParent := Nil;
   end;
@@ -1479,8 +1478,17 @@ End;
 {  TWinControl GetControl                                                      }
 {------------------------------------------------------------------------------}
 function TWinControl.GetControl(const Index: Integer): TControl;
+var
+  N: Integer;
 begin
-  Result := TControl(FControls.Items[Index]);
+  if FControls <> nil then
+    N := FControls.Count
+  else
+    N := 0;
+  if Index < N then
+    Result := TControl(FControls[Index])
+  else
+    Result := TControl(FWinControls[Index - N]);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1488,9 +1496,9 @@ end;
 {------------------------------------------------------------------------------}
 function TWinControl.GetControlCount: Integer;
 begin
-  if FControls = nil 
-  then Result := 0
-  else Result := FControls.Count;
+  Result := 0;
+  if FControls <> nil then Inc(Result, FControls.Count);
+  if FWinControls <> nil then Inc(Result, FWinControls.Count);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1930,7 +1938,7 @@ var
   end;}
   
 begin
-  //writeln('[TWinControl.CreateWnd] START ',Classname);
+  //writeln('[TWinControl.CreateWnd] START ',Name,':',Classname);
   if (FCompstyle = csNone) then 
   begin
     WriteLn(Format('WARNING: [TWinControl.CreateWnd] %s --> FCompstyle = csNone', [ClassName]));
@@ -2029,11 +2037,11 @@ begin
   begin
     if Parent = Self 
     then begin
-      Assert(False, Format('Trace:[TWinControl.HandleNeeded] Sombody set Parent := Self in %s. DONT DO THAT !!', [Classname]));
+      Assert(False, Format('Trace:[TWinControl.HandleNeeded] Somebody set Parent := Self in %s. DONT DO THAT !!', [Classname]));
     end
     else begin
-      if (Parent <> nil)
-      then  Parent.HandleNeeded;
+      if (Parent <> nil) then
+        Parent.HandleNeeded;
     end;
     CreateHandle;
   end;
@@ -2288,7 +2296,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.81  2002/08/30 12:32:21  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.80  2002/08/30 06:46:03  lazarus
+
   Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
   Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
   Make Anchors work again and publish them for various controls.
