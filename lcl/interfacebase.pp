@@ -82,14 +82,20 @@ type
 type
   TInputDialogFunction = Function (const InputCaption, InputPrompt : String;
                              MaskInput : Boolean; var Value : String) : Boolean;
-
 var
   InputDialogFunction: TInputDialogFunction;
 
-implementation
+type
+  TPromptDialogFunction = Function(const DialogCaption, DialogMessage : String;
+    DialogType : longint; Buttons : PLongint;
+    ButtonCount, DefaultIndex, EscapeResult : Longint;
+    UseDefaultPos: boolean;
+    X, Y : Longint) : Longint;
+var
+  PromptDialogFunction: TPromptDialogFunction;
+  
 
-Uses
-  Forms, StdCtrls, Graphics, Buttons;
+implementation
 
 
 {$I interfacebase.inc}
@@ -105,6 +111,9 @@ end.
 
 {
   $Log$
+  Revision 1.22  2002/10/25 10:06:34  lazarus
+  MG: broke interfacebase uses circles
+
   Revision 1.21  2002/10/25 09:47:37  lazarus
   MG: added inputdialog.inc
 
