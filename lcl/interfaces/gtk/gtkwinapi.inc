@@ -7732,6 +7732,8 @@ begin
   Result := 0;
   if (Handle = 0) then exit;
 
+  //writeln('TgtkObject.SetScrollInfo A Widget=',GetWidgetClassName(PGtkWidget(Handle)));
+
   Adjustment := nil;
   Scroll := GTK_Object_Get_Data(PGTKObject(Handle), odnScrollArea);
   If not GtkWidgetIsA(PGtkWidget(Scroll),gtk_scrolled_window_get_type) then
@@ -7770,7 +7772,9 @@ begin
   if Adjustment = nil then exit;
 
   with ScrollInfo, Adjustment^ do begin
+    //writeln('SetScrollInfo Value=',Value);
     Result := Round(Value);
+    //writeln('SetScrollInfo Result=',Result);
     if (fMask and SIF_POS) <> 0
     then Value := nPos;
     if (fMask and SIF_RANGE) <> 0
@@ -9032,6 +9036,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.304  2003/11/29 15:23:23  mattias
+  ct parser now understands interconst:const
+
   Revision 1.303  2003/11/29 13:17:38  mattias
   made gtklayout using window theme at start
 

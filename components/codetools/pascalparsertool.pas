@@ -1187,6 +1187,7 @@ function TPascalParserTool.ReadTilProcedureHeadEnd(
    external <id or number> index <id>;
    [alias: <string constant>]
    [external name <string constant>]
+   [internconst:in_const_round, external name 'FPC_ROUND'];
    dispid <id>;
 }
 
@@ -1289,7 +1290,7 @@ begin
         end;
       end else if CurPos.Flag=cafEdgedBracketOpen then begin
         // read assembler alias   [public,alias: 'alternative name'],
-        // internproc, external
+        // internproc, internconst, external
         repeat
           ReadNextAtom;
           if not (CurPos.Flag in AllCommonAtomWords) then
@@ -1300,7 +1301,15 @@ begin
             RaiseKeyWordExampleExpected;
           if UpAtomIs('INTERNPROC') then
             HasForwardModifier:=true;
-          if UpAtomIs('EXTERNAL') then begin
+            
+          if UpAtomIs('INTERNCONST') then begin
+            ReadNextAtom;
+            if AtomIsChar(':') then begin
+              ReadNextAtom;
+              AtomIsIdentifier(true);
+              ReadNextAtom;
+            end;
+          end else if UpAtomIs('EXTERNAL') then begin
             HasForwardModifier:=true;
             ReadNextAtom;
             if not (CurPos.Flag in [cafComma,cafEdgedBracketClose]) then begin
