@@ -3161,12 +3161,14 @@ var
   SubTempl: TDefineTemplate;
   WidgetSet: TLazWidgetSet;
   TargetOS, SrcOS, SrcPath, WidgetStr: string;
+  CompiledSrcPath: String;
 begin
   Result:=nil;
   if (LazarusSrcDir='') or (WidgetType='') then exit;
   TargetOS:='$('+ExternalMacroStart+'TargetOS)';
   SrcOS:='$('+ExternalMacroStart+'SrcOS)';
   SrcPath:='$('+ExternalMacroStart+'SrcPath)';
+  CompiledSrcPath:='$('+ExternalMacroStart+'CompiledSrcPath)';
 
   // <LazarusSrcDir>
   MainDir:=TDefineTemplate.Create(
@@ -3177,6 +3179,19 @@ begin
     Format(ctsAddsDirToSourcePath,['lcl']),ExternalMacroStart+'SrcPath',
     'lcl;lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
     ,da_Define));
+  // clear src path
+  MainDir.AddChild(TDefineTemplate.Create('Clear SrcPath','Clear SrcPath',
+    ExternalMacroStart+'SrcPath','',da_DefineRecurse));
+  // if TargetOS<>win32
+  IfTemplate:=TDefineTemplate.Create('IF '+TargetOS+'<>''win32''',
+    ctsIfTargetOSIsNotWin32,'',TargetOS+'<>''win32''',da_If);
+    // then define #SrcPath := #SrcPath;lcl/nonwin32
+    IfTemplate.AddChild(TDefineTemplate.Create('win32api for non win32',
+      Format(ctsAddsDirToSourcePath,[LazarusSrcDir+ds+'lcl'+ds+'nonwin32']),
+      ExternalMacroStart+'SrcPath',
+      LazarusSrcDir+ds+'lcl'+ds+'nonwin32;'+SrcPath,da_DefineRecurse));
+  MainDir.AddChild(IfTemplate);
+  // set SrcPath for IDE
   MainDir.AddChild(TDefineTemplate.Create(
     'Component path addition',
     Format(ctsAddsDirToSourcePath,['designer, debugger, components']),
@@ -3192,6 +3207,7 @@ begin
       +'components'+ds+'mpaslex;'
       +SrcPath
     ,da_Define));
+  // include path addition
   MainDir.AddChild(TDefineTemplate.Create('includepath addition',
     Format(ctsSetsIncPathTo,['include, include/TargetOS, include/SrcOS']),
     ExternalMacroStart+'IncPath',
@@ -3239,7 +3255,7 @@ begin
   SubDirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
-      '..'+ds+'..'+ds+'lcl'
+        '..'+ds+'..'+ds+'lcl'
       +';..'+ds+'..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
       +';'+SrcPath
     ,da_Define));
@@ -3289,7 +3305,7 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
-      '..'+ds+'lcl'
+        '..'+ds+'lcl'
       +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
       +';'+SrcPath
     ,da_Define));
@@ -3337,7 +3353,8 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
-    '..'+ds+'lcl;..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
+      '..'+ds+'lcl'
+    +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
     ,da_Define));
   MainDir.AddChild(DirTempl);
   
@@ -3356,13 +3373,21 @@ begin
   SubDirTempl.AddChild(TDefineTemplate.Create('CompiledSrcPath',
      ctsSrcPathForCompiledUnits,CompiledSrcPathMacroName,
      '..',da_Define));
+    // if TargetOS<>win32
+    IfTemplate:=TDefineTemplate.Create('IF '+TargetOS+'<>''win32''',
+      ctsIfTargetOSIsNotWin32,'',TargetOS+'<>''win32''',da_If);
+      // then define #CompiledSrcPath := #CompiledSrcPath;../nonwin32
+      IfTemplate.AddChild(TDefineTemplate.Create('CompiledSrcPath',
+        ctsSrcPathForCompiledUnits,CompiledSrcPathMacroName,
+        '..'+ds+'nonwin32;'+CompiledSrcPath,da_Define));
+    SubDirTempl.AddChild(IfTemplate);
   DirTempl.AddChild(SubDirTempl);
   
   // lcl/units/{gtk,gtk2,gnome,win32}
   for WidgetSet:=Low(TLazWidgetSet) to High(TLazWidgetSet) do begin
     WidgetStr:=LazWidgetSets[WidgetSet];
     IntfDirTemplate:=TDefineTemplate.Create(WidgetStr+'IntfUnitsDirectory',
-      ctsGtkIntfDirectory,'',WidgetStr,da_Directory);
+      ctsIntfDirectory,'',WidgetStr,da_Directory);
     IntfDirTemplate.AddChild(TDefineTemplate.Create('CompiledSrcPath',
        ctsSrcPathForCompiledUnits,
        ExternalMacroStart+'CompiledSrcPath',
@@ -3381,7 +3406,7 @@ begin
   
   // lcl/interfaces/gtk
   IntfDirTemplate:=TDefineTemplate.Create('gtkIntfDirectory',
-    ctsGtkIntfDirectory,'','gtk',da_Directory);
+    ctsIntfDirectory,'','gtk',da_Directory);
     // if LCLWidgetType=gtk2
     IfTemplate:=TDefineTemplate.Create('IF '+WidgetType+'=''gtk2''',
       ctsIfLCLWidgetTypeEqualsGtk2,'',WidgetType+'=''gtk2''',da_If);

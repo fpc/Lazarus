@@ -180,8 +180,9 @@ ResourceString
   ctsSetsSrcPathTo = 'sets SrcPath to %s';
   ctsNamedDirectory = '%s Directory';
   ctsWidgetDirectory = 'Widget Directory';
-  ctsGtkIntfDirectory = 'gtk interface directory';
+  ctsIntfDirectory = 'interface directory';
   ctsIfLCLWidgetTypeEqualsGtk2 = 'If LCLWidgetType=gtk2 then';
+  ctsIfTargetOSIsNotWin32 = 'If TargetOS<>win32 then';
   ctsIfLCLWidgetTypeEqualsGnome2 = 'If LCLWidgetType=gnome2 then';
   ctsDefineMacroGTK2 = 'Define macro gtk2';
   ctsDefineMacroGnome2 = 'Define macro gnome2';
