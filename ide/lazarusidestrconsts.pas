@@ -246,6 +246,7 @@ resourcestring
   lisMenuAboutLazarus = 'About Lazarus';
   lisMenuOnlineHelp = 'Online Help';
   lisMenuConfigureHelp = 'Configure Help';
+  lisMenuContextHelp = 'Context sensitive Help';
 
   lisDsgCopyComponents = 'Copy selected components to clipboard';
   lisDsgCutComponents = 'Cut selected components to clipboard';

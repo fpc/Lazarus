@@ -229,6 +229,7 @@ const
   ecAboutLazarus         = ecUserFirst + 900;
   ecOnlineHelp           = ecUserFirst + 901;
   ecConfigureHelp        = ecUserFirst + 902;
+  ecContextHelp          = ecUserFirst + 903;
 
   // designer
   ecCopyComponents       = ecUserFirst + 1000;
@@ -678,6 +679,7 @@ begin
   ecAboutLazarus: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecOnlineHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
   ecConfigureHelp: SetResult(VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  ecContextHelp: SetResult(VK_F1,[],VK_UNKNOWN,[]);
 
   // designer
   ecCopyComponents: SetResult(VK_C,[ssCtrl],VK_Insert,[ssCtrl]);
@@ -1224,6 +1226,7 @@ begin
     ecAboutLazarus          : Result:= lisMenuAboutLazarus;
     ecOnlineHelp            : Result:= lisMenuOnlineHelp;
     ecConfigureHelp         : Result:= lisMenuConfigureHelp;
+    ecContextHelp           : Result:= lisMenuContextHelp;
 
     // desginer
     ecCopyComponents        : Result:= lisDsgCopyComponents;
@@ -2088,6 +2091,7 @@ begin
   AddDefault(C,'About Lazarus',ecAboutLazarus);
   AddDefault(C,'Online Help',ecOnlineHelp);
   AddDefault(C,'Configure Help',ecConfigureHelp);
+  AddDefault(C,'Context sensitive help',ecContextHelp);
 
   // designer
   C:=Categories[AddCategory('Designer',lisKeyCatDesigner,caDesign)];

@@ -704,7 +704,7 @@ type
     property PopupMenu;
     property ReadOnly;
     property ScrollBars;
-    property Tabstop;
+    property TabStop;
     property Visible;
     property WordWrap;
   end;
@@ -1172,6 +1172,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.162  2004/08/22 12:10:56  mattias
+  better theming for some dialogs
+
   Revision 1.161  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

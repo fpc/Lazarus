@@ -181,7 +181,7 @@ procedure TDiffDialog.DiffDialogResize(Sender: TObject);
 begin
   // text 1
   with Text1GroupBox do begin
-    SetBounds(3,3,(Parent.ClientWidth-3*3) div 2,65);
+    SetBounds(3,3,(Parent.ClientWidth-3*3) div 2,70);
   end;
 
   // text 2
@@ -193,13 +193,15 @@ begin
   // diff preview
   with DiffGroupbox do begin
     SetBounds(Text1GroupBox.Left,Text1GroupBox.Top+Text1GroupBox.Height+5,
-              Parent.ClientWidth-2*Text1GroupBox.Left,Max(1,Parent.ClientHeight-226));
+              Parent.ClientWidth-2*Text1GroupBox.Left,
+              Max(30,Parent.ClientHeight-Text1GroupBox.Height-Text1GroupBox.Top
+                          -170));
   end;
 
   // options
   with OptionsGroupBox do begin
     SetBounds(Text1GroupBox.Left,DiffGroupbox.Top+DiffGroupbox.Height+5,
-              DiffGroupbox.Width,106);
+              DiffGroupbox.Width,116);
   end;
 
   // buttons
@@ -485,16 +487,14 @@ end;
 constructor TDiffDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
-  if LazarusResources.Find(Classname)=nil then begin
-    Name:='DiffDialog';
-    Caption := lisMenuDiff;
-    Width:=600;
-    Height:=400;
-    Position:=poScreenCenter;
-    OnResize:=@DiffDialogResize;
-    SetupComponents;
-  end;
+  Name:='DiffDialog';
+  Caption := lisMenuDiff;
+  Width:=600;
+  Height:=400;
+  Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,600,400);
+  OnResize:=@DiffDialogResize;
+  SetupComponents;
   OnResize(nil);
 end;
 

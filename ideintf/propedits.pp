@@ -1543,7 +1543,7 @@ begin
       if PropInfo^.PropType^.Kind in Filter then begin
         // check if name already exists in list
         i:=FCount-1;
-        while (i>=0) and (BigList^[i]^.Name<>PropInfo^.Name) do
+        while (i>=0) and (CompareText(BigList^[i]^.Name,PropInfo^.Name)<>0) do
           dec(i);
         if (i<0) then begin
           // add property info to BigList

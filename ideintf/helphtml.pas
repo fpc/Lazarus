@@ -274,7 +274,7 @@ end;
 procedure THTMLBrowserHelpViewer.Load(Storage: TConfigStorage);
 begin
   BrowserPath:=Storage.GetValue('Browser/Path','');
-  BrowserParams:=Storage.GetValue('Browser/Params','');
+  BrowserParams:=Storage.GetValue('Browser/Params','%s');
 end;
 
 procedure THTMLBrowserHelpViewer.Save(Storage: TConfigStorage);

@@ -24,7 +24,7 @@ SpecFile=lazarus-$LazVersion-$LazRelease.spec
 
 # download lazarus cvs if necessary
 if [ ! -f $SrcTGZ ]; then
-  ./create_lazarus_export_tgz.sh $SrcTGZ
+  sh create_lazarus_export_tgz.sh $SrcTGZ
 fi
 
 # put src tgz into rpm build directory

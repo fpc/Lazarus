@@ -355,6 +355,7 @@ type
     property Visible;
   end;
   
+
   { TCustomPropertiesGrid }
 
   TCustomPropertiesGrid = class(TOICustomPropertyGrid)
