@@ -423,12 +423,12 @@ var
 begin
   //writeln('[TClipboard.FindPictureFormatID]');
   List:=nil;
-  if not FAllocated then
+  if not FAllocated then begin
     if not ClipboardGetFormats(ClipboardType,cnt,List) then begin
       Result:=0;
       exit;
     end;
-  else begin
+  end else begin
     cnt:=0;
   end;
   try
@@ -607,6 +607,9 @@ end;
 
 {
   $Log$
+  Revision 1.13  2003/09/10 16:33:51  mattias
+  added clipboard checks
+
   Revision 1.12  2003/09/10 16:29:13  mattias
   added Kylix 3 specials
 
