@@ -1,8 +1,22 @@
-(******************************************************************************
+{******************************************************************************
                                  win32listslh.inc
                  TWin32ListStringList and TWin32CListStringList
 
- ******************************************************************************)
+ ******************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 
 {$IFOPT H+} 
   {$DEFINE H_PLUS} 
@@ -60,6 +74,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.3  2002/05/10 07:43:48  lazarus
+  MG: updated licenses
+
   Revision 1.2  2002/02/04 10:54:33  lazarus
   Keith:
     * Fixes for Win32

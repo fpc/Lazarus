@@ -1,8 +1,22 @@
-(******************************************************************************
+{******************************************************************************
   All Windows API related stuff goes here.
 
   !! Keep this alphabetical !!
- ******************************************************************************)
+ ******************************************************************************
+
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 //##apiwiz##sps##   // Do not remove
 
 Function Arc(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer): Boolean; Override;
@@ -133,6 +147,9 @@ Function WindowFromPoint(Point: TPoint): HWND; Override;
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/05/10 07:43:49  lazarus
+  MG: updated licenses
+
   Revision 1.5  2002/02/07 08:35:13  lazarus
   Keith: Fixed persistent label captions and a few less noticable things
 
