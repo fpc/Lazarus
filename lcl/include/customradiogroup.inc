@@ -187,20 +187,23 @@ end;
 
   Select one of the radiobuttons
  ------------------------------------------------------------------------------}
-procedure TCustomRadioGroup.SetItemIndex (value : integer);
+procedure TCustomRadioGroup.SetItemIndex (Value : integer);
 begin
-   if (Value < -1) or (Value >= FItems.Count) 
+  if FReading then FItemIndex:=Value
+  else begin
+    if (Value < -1) or (Value >= FItems.Count) 
       then raise Exception.Create('TCustomRadioGroup: Out of bounds');
 
-   if (HandleAllocated) and (value <> FItemIndex) then
-   begin
+    if (HandleAllocated) and (value <> FItemIndex) then
+    begin
       if (FItemIndex <> -1)
          then TRadioButton (FButtonList [FItemIndex]).Checked := false;
       FItemIndex := value;
       if (value <> -1) 
          then TRadioButton (FButtonList [value]).Checked := true;
-   end
-   else FItemIndex := value;
+    end
+    else FItemIndex := value;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -218,7 +221,8 @@ begin
    if (HandleAllocated) then
    begin
       i := 0;
-      // This nasty little loop is neccessary because the group is not informed when a button is pressed	
+      // This nasty little loop is neccessary because the group is not informed
+      // when a button is pressed	
       while (i < FButtonList.Count) and (result = -1) do
       begin	// find the actice button
 	 if TRadioButton (FButtonList [i]).Checked 
@@ -243,8 +247,28 @@ begin
    result := true;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TCustomRadioGroup.ReadState
+  Params:  Reader: TReader
+
+  executed when component is read from stream
+ ------------------------------------------------------------------------------}
+procedure TCustomRadioGroup.ReadState(Reader: TReader);
+begin
+  FReading := True;
+  inherited ReadState(Reader);
+  FReading := False;
+  if HandleAllocated then RecreateWnd;
+end;
+
+
+
+
 {
   $Log$
+  Revision 1.5  2001/03/15 14:42:20  lazarus
+  MG: customradiogroup is now streamable
+
   Revision 1.4  2001/02/06 13:38:58  lazarus
   Fixes from Mattias for EditorOPtions
   Fixes to COmpiler that should allow people to compile if their path is set up.

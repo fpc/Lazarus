@@ -271,24 +271,26 @@ type
 
   TCustomRadioGroup = class(TCustomGroupBox)
   public
-     constructor Create (AOwner : TComponent); override;
-     destructor Destroy; override;
-     function CanModify : boolean; virtual;
-     procedure CreateWnd; override;
+    constructor Create (AOwner : TComponent); override;
+    destructor Destroy; override;
+    function CanModify : boolean; virtual;
+    procedure CreateWnd; override;
   private
-     FButtonList : TList;
-     FItems      : TStrings;
-     FItemIndex  : integer;
-     FColumns    : integer;
-     procedure ItemsChanged (Sender : TObject);
+    FButtonList : TList;
+    FItems      : TStrings;
+    FItemIndex  : integer;
+    FColumns    : integer;
+    FReading    : boolean;
+    procedure ItemsChanged (Sender : TObject);
   protected
-     procedure SetItem (value : TStrings);
-     procedure SetColumns (value : integer);
-     procedure SetItemIndex (value : integer);
-     function GetItemIndex : integer;
-     property ItemIndex : integer read GetItemIndex write SetItemIndex default -1;
-     property Items : TStrings read FItems write SetItem;
-     property Columns : integer read FColumns write SetColumns default 1;
+    procedure ReadState(Reader: TReader); override;
+    procedure SetItem (value : TStrings);
+    procedure SetColumns (value : integer);
+    procedure SetItemIndex (value : integer);
+    function GetItemIndex : integer;
+    property ItemIndex : integer read GetItemIndex write SetItemIndex default -1;
+    property Items : TStrings read FItems write SetItem;
+    property Columns : integer read FColumns write SetColumns default 1;
   end;
 
   TRadioGroup = class(TCustomRadioGroup)
@@ -326,6 +328,9 @@ end.
 
  {
   $Log$
+  Revision 1.8  2001/03/15 14:42:20  lazarus
+  MG: customradiogroup is now streamable
+
   Revision 1.7  2001/01/12 18:27:31  lazarus
   Streaming additions by MAttias
   Shane
