@@ -39,18 +39,21 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Buttons, StdCtrls, ExtCtrls,
-  LazarusIDEStrConsts, IDEOptionDefs, PackageDefs;
+  Dialogs, LazarusIDEStrConsts, IDEOptionDefs, PackageDefs;
   
 type
   TAddToPackageDlg = class(TForm)
+    // notebook
     NoteBook: TNoteBook;
     AddUnitPage: TPage;
     NewComponentPage: TPage;
+    // add unit page
     AddUnitFilenameLabel: TLabel;
     AddUnitFilenameEdit: TEdit;
     AddUnitFileBrowseButton: TButton;
     AddUnitButton: TButton;
-    CancelNewButton: TButton;
+    CancelAddUnitButton: TButton;
+    // new component page
     AncestorTypeLabel: TLabel;
     AncestorComboBox: TComboBox;
     ClassNameLabel: TLabel;
@@ -58,19 +61,162 @@ type
     PalettePageLabel: TLabel;
     PalettePageCombobox: TCombobox;
     ComponentUnitLabel: TLabel;
-    ComponentUnitCombobox: TCombobox;
+    ComponentUnitEdit: TEdit;
+    ComponentUnitButton: TButton;
     NewComponentButton: TButton;
     CancelNewComponentButton: TButton;
+    procedure AddToPackageDlgResize(Sender: TObject);
+    procedure AddUnitButtonClick(Sender: TObject);
+    procedure AddUnitPageResize(Sender: TObject);
+    procedure CancelAddUnitButtonClick(Sender: TObject);
+    procedure CancelNewComponentButtonClick(Sender: TObject);
+    procedure NewComponentButtonClick(Sender: TObject);
+    procedure NewComponentPageResize(Sender: TObject);
   private
+    FLazPackage: TLazPackage;
+    procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+  public
+    property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
+  
+function ShowAddToPackageDlg(Pkg: TLazPackage): TModalResult;
+
 
 implementation
 
+
+function ShowAddToPackageDlg(Pkg: TLazPackage): TModalResult;
+var
+  AddDlg: TAddToPackageDlg;
+begin
+  AddDlg:=TAddToPackageDlg.Create(Application);
+  AddDlg.LazPackage:=Pkg;
+  Result:=AddDlg.ShowModal;
+  AddDlg.Free;
+end;
+
 { TAddToPackageDlg }
+
+procedure TAddToPackageDlg.AddToPackageDlgResize(Sender: TObject);
+begin
+
+end;
+
+procedure TAddToPackageDlg.AddUnitButtonClick(Sender: TObject);
+begin
+  // ToDo
+  ShowMessage('Not implemented yet');
+end;
+
+procedure TAddToPackageDlg.AddUnitPageResize(Sender: TObject);
+var
+  x: Integer;
+  y: Integer;
+begin
+  x:=5;
+  y:=5;
+  with AddUnitFilenameLabel do
+    SetBounds(x,y+2,100,Height);
+  inc(x,AddUnitFilenameLabel.Width+5);
+
+  with AddUnitFilenameEdit do
+    SetBounds(x,y,Parent.ClientWidth-x-30,Height);
+  inc(x,AddUnitFilenameEdit.Width+2);
+
+  with AddUnitFileBrowseButton do
+    SetBounds(x,y,AddUnitFilenameEdit.Height,AddUnitFilenameEdit.Height);
+  x:=5;
+  y:=AddUnitFilenameEdit.Top+AddUnitFilenameEdit.Height+15;
+
+  with AddUnitButton do
+    SetBounds(x,y,80,Height);
+  inc(x,AddUnitButton.Width+10);
+
+  with CancelAddUnitButton do
+    SetBounds(x,y,80,Height);
+end;
+
+procedure TAddToPackageDlg.CancelAddUnitButtonClick(Sender: TObject);
+begin
+  ModalResult:=mrCancel;
+end;
+
+procedure TAddToPackageDlg.CancelNewComponentButtonClick(Sender: TObject);
+begin
+  ModalResult:=mrCancel;
+end;
+
+procedure TAddToPackageDlg.NewComponentButtonClick(Sender: TObject);
+begin
+  // ToDo
+  ShowMessage('Not implemented yet');
+end;
+
+procedure TAddToPackageDlg.NewComponentPageResize(Sender: TObject);
+var
+  x: Integer;
+  y: Integer;
+begin
+  x:=5;
+  y:=5;
+  
+  with AncestorTypeLabel do
+    SetBounds(x,y+2,100,Height);
+  inc(x,AncestorTypeLabel.Width+5);
+
+  with AncestorComboBox do
+    SetBounds(x,y,200,Height);
+  x:=5;
+  inc(y,AncestorComboBox.Height+5);
+
+  with ClassNameLabel do
+    SetBounds(x,y+2,100,Height);
+  inc(x,ClassNameLabel.Width+5);
+
+  with ClassNameEdit do
+    SetBounds(x,y,200,Height);
+  x:=5;
+  inc(y,ClassNameEdit.Height+5);
+
+  with PalettePageLabel do
+    SetBounds(x,y+2,100,Height);
+  inc(x,PalettePageLabel.Width+5);
+
+  with PalettePageCombobox do
+    SetBounds(x,y,200,Height);
+  x:=5;
+  inc(y,PalettePageCombobox.Height+5);
+
+  with ComponentUnitLabel do
+    SetBounds(x,y+2,100,Height);
+  inc(x,ComponentUnitLabel.Width+5);
+
+  with ComponentUnitEdit do
+    SetBounds(x,y,Parent.ClientWidth-x-Height-5,Height);
+  inc(x,ComponentUnitEdit.Width+2);
+
+  with ComponentUnitButton do
+    SetBounds(x,y,ComponentUnitEdit.Height,ComponentUnitEdit.Height);
+  x:=5;
+  inc(y,ComponentUnitEdit.Height+15);
+
+  with NewComponentButton do
+    SetBounds(x,y,80,Height);
+  inc(x,NewComponentButton.Width+10);
+
+  with CancelNewComponentButton do
+    SetBounds(x,y,80,Height);
+end;
+
+procedure TAddToPackageDlg.SetLazPackage(const AValue: TLazPackage);
+begin
+  if FLazPackage=AValue then exit;
+  FLazPackage:=AValue;
+end;
 
 procedure TAddToPackageDlg.SetupComponents;
 begin
@@ -82,8 +228,12 @@ begin
     AddUnitPage:=Page[0];
     Pages.Add('New Component');
     NewComponentPage:=Page[1];
+    PageIndex:=0;
     Align:=alClient;
   end;
+  
+  AddUnitPage.OnResize:=@AddUnitPageResize;
+  NewComponentPage.OnResize:=@NewComponentPageResize;
   
   AddUnitFilenameLabel:=TLabel.Create(Self);
   with AddUnitFilenameLabel do begin
@@ -96,13 +246,14 @@ begin
   with AddUnitFilenameEdit do begin
     Name:='AddUnitFilenameEdit';
     Parent:=AddUnitPage;
+    Text:='';
   end;
 
   AddUnitFileBrowseButton:=TButton.Create(Self);
   with AddUnitFileBrowseButton do begin
     Name:='AddUnitFileBrowseButton';
     Parent:=AddUnitPage;
-    Caption:='Browse';
+    Caption:='...';
   end;
 
   AddUnitButton:=TButton.Create(Self);
@@ -110,13 +261,15 @@ begin
     Name:='AddUnitButton';
     Parent:=AddUnitPage;
     Caption:='Ok';
+    OnClick:=@AddUnitButtonClick;
   end;
 
-  CancelNewButton:=TButton.Create(Self);
-  with CancelNewButton do begin
-    Name:='CancelNewButton';
-    Parent:=NewComponentPage;
-    Caption:='Caption';
+  CancelAddUnitButton:=TButton.Create(Self);
+  with CancelAddUnitButton do begin
+    Name:='CancelAddUnitButton';
+    Parent:=AddUnitPage;
+    Caption:='Cancel';
+    OnClick:=@CancelAddUnitButtonClick;
   end;
 
   AncestorTypeLabel:=TLabel.Create(Self);
@@ -165,10 +318,17 @@ begin
     Caption:='Unit File Name:';
   end;
 
-  ComponentUnitCombobox:=TCombobox.Create(Self);
-  with ComponentUnitCombobox do begin
-    Name:='ComponentUnitCombobox';
+  ComponentUnitEdit:=TEdit.Create(Self);
+  with ComponentUnitEdit do begin
+    Name:='ComponentUnitEdit';
     Parent:=NewComponentPage;
+  end;
+
+  ComponentUnitButton:=TButton.Create(Self);
+  with ComponentUnitButton do begin
+    Name:='ComponentUnitButton';
+    Parent:=NewComponentPage;
+    Caption:='...';
   end;
 
   NewComponentButton:=TButton.Create(Self);
@@ -176,6 +336,7 @@ begin
     Name:='NewComponentButton';
     Parent:=NewComponentPage;
     Caption:='Ok';
+    OnClick:=@NewComponentButtonClick;
   end;
 
   CancelNewComponentButton:=TButton.Create(Self);
@@ -183,13 +344,18 @@ begin
     Name:='CancelNewComponentButton';
     Parent:=NewComponentPage;
     Caption:='Cancel';
+    OnClick:=@CancelNewComponentButtonClick;
   end;
 end;
 
 constructor TAddToPackageDlg.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  Position:=poScreenCenter;
+  Width:=450;
+  Height:=300;
   SetupComponents;
+  OnResize:=@AddToPackageDlgResize;
 end;
 
 destructor TAddToPackageDlg.Destroy;

@@ -45,10 +45,8 @@ uses
   SynEditLazDsgn, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
    SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
    SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
-   SynHighlighterLFM, SynHighlighterMulti
-  {$IFDEF DATABASE}
-  ,db
-  {$ENDIF}
+   SynHighlighterLFM, SynHighlighterMulti,
+  db
   {$IFDEF INTERBASE}
   ,interbase
   {$ENDIF}
@@ -357,9 +355,7 @@ begin
   RegisterComponents('Samples','Spin',[TSpinEdit]);
 
   // Data Access
-  {$IFDEF DATABASE}
   RegisterComponents('Data Access','Db',[TDatasource,TDatabase]);
-  {$ENDIF}
 
   // Interbase Data Access
   {$IFDEF INTERBASE}

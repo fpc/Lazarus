@@ -56,6 +56,7 @@ type
     RegisteredPluginsGroupBox: TGroupBox;
     RegisteredListView: TListView;
     StatusBar: TStatusBar;
+    procedure AddBitBtnClick(Sender: TObject);
     procedure FilePropsGroupBoxResize(Sender: TObject);
     procedure PackageEditorFormResize(Sender: TObject);
   private
@@ -160,6 +161,11 @@ begin
   end;
 end;
 
+procedure TPackageEditorForm.AddBitBtnClick(Sender: TObject);
+begin
+  if ShowAddToPackageDlg(LazPackage)<>mrOk then exit;
+end;
+
 procedure TPackageEditorForm.SetLazPackage(const AValue: TLazPackage);
 var
   ARect: TRect;
@@ -191,6 +197,7 @@ begin
     Name:='AddBitBtn';
     Parent:=Self;
     Caption:='Add';
+    OnClick:=@AddBitBtnClick;
   end;
 
   RemoveBitBtn:=TBitBtn.Create(Self);
