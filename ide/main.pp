@@ -2483,7 +2483,7 @@ writeln('TMainIDE.DoOpenProjectFile 1');
     SrcStream:=TMemoryStream.Create;
     try
       Result:=DoLoadMemoryStreamFromFile(SrcStream
-           ,ChangeFileExt(AFilename,'.lpr'));
+           ,Project.Units[Project.MainUnit].Filename);
       if Result=mrAbort then exit;
       SetLength(NewSource,SrcStream.Size);
       SrcStream.Read(NewSource[1],length(NewSource));
@@ -3319,6 +3319,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.92  2001/04/21 14:50:21  lazarus
+  MG: bugfix for mainunits ext <> .lpr
+
   Revision 1.91  2001/04/13 17:56:16  lazarus
   MWE:
   * Moved menubar outside clientarea
