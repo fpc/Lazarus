@@ -174,7 +174,7 @@ implementation
 uses 
   Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
   KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
-  LResources;
+  LResources, Math;
 
 {$I gtklistsl.inc}
 
@@ -488,6 +488,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.73  2002/09/12 05:56:16  lazarus
+  MG: gradient fill, minor issues from Andrew
+
   Revision 1.72  2002/09/10 06:49:20  lazarus
   MG: scrollingwincontrol from Andrew
 
