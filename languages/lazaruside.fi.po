@@ -1464,7 +1464,7 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
-msgstr ""
+msgstr "Poista valittu"
 
 #: lazarusidestrconsts:dlgdeltemplate
 msgid "Delete template "
@@ -2076,7 +2076,7 @@ msgstr ""
 
 #: lazarusidestrconsts:srkmecfinddeclaration
 msgid "Find declaration"
-msgstr ""
+msgstr "Etsi määrittely"
 
 #: lazarusidestrconsts:lismenufinddeclarationatcursor
 msgid "Find Declaration at cursor"
@@ -4108,7 +4108,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprojectchanged
 msgid "Project changed"
-msgstr ""
+msgstr "Projekti on muuttunut"
 
 #: lazarusidestrconsts:lisprojectdirectory
 msgid "Project directory"
@@ -4556,7 +4556,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lissavechangestoproject
 msgid "Save changes to project %s?"
-msgstr ""
+msgstr "Tallennetaanko %s -projektiin tehdyt muutokset? "
 
 #: lazarusidestrconsts:lispckeditsavechanges
 msgid "Save Changes?"
@@ -6380,7 +6380,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
-msgstr ""
+msgstr "Näytä lomakkeet"
 
 #: lazarusidestrconsts:lismenuviewjumphistory
 msgid "View Jump-History"
@@ -6432,7 +6432,7 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintviewunits
 msgid "View Units"
-msgstr ""
+msgstr "Näytä Unitit"
 
 #: lazarusidestrconsts:srkmectogglewatches
 msgid "View watches"
