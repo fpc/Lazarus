@@ -169,7 +169,7 @@ type
     procedure SetWindowSizeAndPosition(Window: PGtkWindow;
       AWinControl: TWinControl);virtual;
 
-    Function GetCaption(Sender : TObject) : String; Virtual;
+    Function GetCaption(Sender : TObject) : String; virtual;
     function  GetText(Sender: TComponent; var Text: String): Boolean; virtual;
     procedure SetText(Child,Data : Pointer);virtual;
     procedure SetLabel(Sender : TObject; Data : Pointer); virtual;
@@ -197,13 +197,14 @@ type
 
     procedure RemoveCallbacks(Sender : TObject); virtual;
     function  RecreateWnd(Sender: TObject): Integer; virtual;
-//  public
+  public
     // for gtk specific components:
     procedure SetCallback(Msg : LongInt; Sender : TObject); virtual;
     procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
     procedure SendCachedGtkMessages;virtual;
-
+    procedure RealizeWidgetSize(Widget: PGtkWidget;
+      NewWidth, NewHeight: integer);
   public
     constructor Create; 
     destructor Destroy; override;
@@ -220,6 +221,7 @@ type
 
     {$I gtkwinapih.inc}
     
+  public
     property RCFilename: string read FRCFilename write SetRCFilename;
   end;
 
@@ -324,6 +326,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.119  2003/02/24 11:51:44  mattias
+  combobox height can now be set, added OI item height option
+
   Revision 1.118  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 
