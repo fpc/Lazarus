@@ -1206,6 +1206,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.40  2001/11/01 21:30:35  lazarus
+  Changes to Messagebox.
+  Added line to CodeTools to prevent duplicate USES entries.
+
   Revision 1.39  2001/10/31 16:29:22  lazarus
   Fixed the gtk mousemove bug where the control gets the coord's based on it's parent instead of itself.
   Shane

@@ -697,7 +697,7 @@ writeln('[TMainIDE.FormCloseQuery]');
   CanClose:=true;
 
   if SomethingOfProjectIsModified then begin
-    if (Application.MessageBox('Save changes to project?','Project changed', MB_IconQuestion+mb_YesNo))=mrYes then
+    if (Application.MessageBox('Save changes to project2?','Project changed', MB_IconQuestion+mb_YesNo))=mrYes then
     begin
       CanClose:=DoSaveProject(false,false)<>mrAbort;
       if CanClose=false then exit;
@@ -4367,6 +4367,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.132  2001/11/01 21:30:32  lazarus
+  Changes to Messagebox.
+  Added line to CodeTools to prevent duplicate USES entries.
+
   Revision 1.131  2001/11/01 18:48:48  lazarus
   Changed Application.Messagebox to use TMessageBox class.
   Added icon images for mtError and mtConfirmation
@@ -8987,6 +8991,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.132  2001/11/01 21:30:32  lazarus
+  Changes to Messagebox.
+  Added line to CodeTools to prevent duplicate USES entries.
+
   Revision 1.131  2001/11/01 18:48:48  lazarus
   Changed Application.Messagebox to use TMessageBox class.
   Added icon images for mtError and mtConfirmation

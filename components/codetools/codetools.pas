@@ -4558,6 +4558,7 @@ function TBasicCodeTool.AddUnitToMainUsesSection(const NewUnitName,
 var UsesNode, SectionNode: TCodeTreeNode;
   NewUnitTerm: string;
   InsertPos: integer;
+  Junk     : TAtomPosition;
 begin
   Result:=false;
   if (NewUnitName='') or (length(NewUnitName)>255) then exit;
@@ -4566,7 +4567,8 @@ begin
   UsesNode:=FindMainUsesSection;
   if UsesNode<>nil then begin
     // add unit to existing uses section
-    Result:=AddUnitToUsesSection(UsesNode,NewUnitName, NewUnitInFile,
+    if not(FindUnitInUsesSection(UsesNode,Uppercase(NewUnitName),Junk,Junk)) then
+       Result:=AddUnitToUsesSection(UsesNode,NewUnitName, NewUnitInFile,
                                  SourceChangeCache);
   end else begin
     // create a new uses section

@@ -56,38 +56,38 @@ var
   Buttons : TMsgDlgButtons;
 begin
 //This uses TMessageBox class in MessageDialogs.inc
-if (Flags and MB_OK) = MB_OK then
-   Buttons := [mbOK]
-   else
-if (Flags and MB_OKCANCEL) = MB_OKCANCEL then
-   Buttons := [mbOK,mbCancel]
+if (Flags and MB_RETRYCANCEL) = MB_RETRYCANCEL then
+   Buttons := [mbREtry, mbCancel]
+else
+if (Flags and MB_YESNO) = MB_YESNO then
+   Buttons := [mbYes, mbNo]
+else
+if (Flags and MB_YESNOCANCEL) = MB_YESNOCANCEL then
+   Buttons := [mbYes, mbNo, mbCancel]
    else
 if (Flags and MB_ABORTRETRYIGNORE) = MB_ABORTRETRYIGNORE then
    Buttons := [mbAbort, mbRetry, mbIgnore]
    else
-if (Flags and MB_YESNOCANCEL) = MB_YESNOCANCEL then
-   Buttons := [mbYes, mbNO, mbCAncel]
+if (Flags and MB_OKCANCEL) = MB_OKCANCEL then
+   Buttons := [mbOK,mbCancel]
    else
-if (Flags and MB_YESNO) = MB_YESNO then
-   Buttons := [mbYes, mbNo]
-   else
-if (Flags and MB_RETRYCANCEL) = MB_RETRYCANCEL then
-   Buttons := [mbREtry, mbCancel]
+if (Flags and MB_OK) = MB_OK then
+   Buttons := [mbOK]
    else
    Buttons := [mbOK];
 
    
-if (Flags and MB_ICONWARNING) = MB_ICONWARNING then
-    DlgTYpe := mtWarning
-    else
-if (Flags and MB_ICONERROR) = MB_ICONERROR then
-    DlgTYpe := mtError
+if (Flags and MB_ICONQUESTION) = MB_ICONQUESTION then
+    DlgTYpe := mtConfirmation
     else
 if (Flags and MB_ICONINFORMATION) = MB_ICONINFORMATION then
     DlgTYpe := mtInformation
     else
-if (Flags and MB_ICONQUESTION) = MB_ICONQUESTION then
-    DlgTYpe := mtConfirmation
+if (Flags and MB_ICONERROR) = MB_ICONERROR then
+    DlgTYpe := mtError
+    else
+if (Flags and MB_ICONWARNING) = MB_ICONWARNING then
+    DlgTYpe := mtWarning
     else
     DlgTYpe := mtCustom;
 
@@ -343,6 +343,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/11/01 21:30:35  lazarus
+  Changes to Messagebox.
+  Added line to CodeTools to prevent duplicate USES entries.
+
   Revision 1.11  2001/11/01 18:48:52  lazarus
   Changed Application.Messagebox to use TMessageBox class.
   Added icon images for mtError and mtConfirmation
