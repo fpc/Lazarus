@@ -6430,8 +6430,6 @@ begin
   
   with TDeviceContext(DC), CurrentBrush^ do
   begin
-    Assert(False, Format('Trace:  [SelectGDKBrushProps] Fill: %d | Color: 0x%x', [Integer(GDIBrushFill), GDIBrushColor.ColorRef]));
-
     EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
     EnsureGCColor(DC, dccGDIBrushColor, GDIBrushFill = GDK_Solid, False);//Brush Color
 
@@ -6460,7 +6458,6 @@ begin
   begin
     EnsureGCColor(DC, dccCurrentBackColor, True, True);//BKColor
     EnsureGCColor(DC, dccCurrentTextColor, False, False);//Font Color
-    Assert(False, Format('trace:  [SelectGDKTextProps] Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [CurrentTextColor.Color.Pixel, CurrentTextColor.Color.Red, CurrentTextColor.Color.Green, CurrentTextColor.Color.Blue]));
   end;
   TDeviceContext(DC).SelectedColors:=dcscFont;
 end;
@@ -6529,8 +6526,10 @@ begin
   Result:=GtkDef.NewDeviceContext;
   with Result do
   begin
-    gdk_color_black(gdk_colormap_get_system, @CurrentTextColor);
-    gdk_color_white(gdk_colormap_get_system, @CurrentBackColor);
+    gdk_color_black(gdk_colormap_get_system, @CurrentTextColor.Color);
+    BuildColorRefFromGDKColor(CurrentTextColor);
+    gdk_color_white(gdk_colormap_get_system, @CurrentBackColor.Color);
+    BuildColorRefFromGDKColor(CurrentBackColor);
   end;
   FDeviceContexts.Add(Result);
 //writeln('[TgtkObject.NewDC] ',HexStr(Cardinal(Result),8),'  ',FDeviceContexts.Count);
@@ -6673,10 +6672,7 @@ begin
   Result^.GDIBrushColor.ColorRef := 0;
   Result^.GDIBrushColor.Colormap := gdk_colormap_get_system;
   gdk_color_white(Result^.GDIBrushColor.Colormap, @Result^.GDIBrushColor.Color);
-  With Result^.GDIBrushColor.Color do
-    Result^.GDIBrushColor.ColorRef :=
-      RGB(GetGValue(Red), GetGValue(Green), GetGValue(Blue));
-  Include(Result^.GDIBrushColor.ColorFlags,cfColorAllocated);
+  BuildColorRefFromGDKColor(Result^.GDIBrushColor);
 end;
 
 {------------------------------------------------------------------------------
@@ -6707,10 +6703,7 @@ begin
   Result^.GDIPenColor.ColorRef := 0;
   Result^.GDIPenColor.Colormap := gdk_colormap_get_system;
   gdk_color_black(Result^.GDIPenColor.Colormap, @Result^.GDIPenColor.Color);
-  With Result^.GDIPenColor.Color do
-    Result^.GDIPenColor.ColorRef :=
-      RGB(GetGValue(Red), GetGValue(Green), GetGValue(Blue));
-  Include(Result^.GDIBrushColor.ColorFlags,cfColorAllocated);
+  BuildColorRefFromGDKColor(Result^.GDIPenColor);
 end;
 
 {------------------------------------------------------------------------------
@@ -7304,6 +7297,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.364  2003/05/19 08:16:33  mattias
+  fixed allocation of dc backcolor
+
   Revision 1.363  2003/05/18 10:42:58  mattias
   implemented deleting empty submenus
 
