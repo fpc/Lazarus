@@ -659,6 +659,7 @@ procedure TSourceLog.IncreaseChangeStep;
 begin
   if FChangeStep=$7fffffff then FChangeStep:=-$7fffffff
   else inc(FChangeStep);
+//writeln('[TSourceLog.IncreaseChangeStep] ',FChangeStep,',',HexStr(Cardinal(Self),8));
 end;
 
 function TSourceLog.SaveToFile(const Filename: string): boolean;

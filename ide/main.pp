@@ -2170,8 +2170,8 @@ CheckHeap(IntToStr(GetMem_Cnt));
 writeln('TMainIDE.DoSaveEditorUnit E ',CompResourceCode);
 {$ENDIF}
       // replace lazarus form resource code
-      if not CodeToolBoss.AddLazarusResource(ResourceCode,
-         'T'+ActiveUnitInfo.FormName,CompResourceCode) then
+      if (not CodeToolBoss.AddLazarusResource(ResourceCode,
+         'T'+ActiveUnitInfo.FormName,CompResourceCode)) then
       begin
         ACaption:='Resource error';
         AText:='Unable to add resource '
@@ -2194,7 +2194,9 @@ writeln('TMainIDE.DoSaveEditorUnit F ',ResourceCode.Modified);
         end;
       end else begin
         // ToDo: calculate a better resource filename
+{$IFDEF IDE_DEBUG}
 writeln('>>>>>>>>>>>>> ',TestFilename,' ',ChangeFileExt(TestFilename,ResourceFileExt));
+{$ENDIF}
         Result:=DoSaveCodeBufferToFile(ResourceCode,
                     ChangeFileExt(TestFilename,ResourceFileExt),false);
         if not Result=mrOk then exit;
@@ -2322,6 +2324,11 @@ writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'"');
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
   Result:=mrCancel;
+  if (Project.IsVirtual) and (Project.Units[Project.MainUnit].Filename=AFilename)
+  then begin
+    Result:=DoOpenMainUnit(ProjectLoading);
+    exit;
+  end;
   if (AFileName='') or (not FileExists(AFilename)) or (DirectoryExists(AFilename))
   then exit;
   Ext:=lowercase(ExtractFileExt(AFilename));
@@ -3854,6 +3861,12 @@ function TMainIDE.DoJumpToCompilerMessage(Index:integer;
       exit;
     end;
     // search file in project directory
+    if (Project.MainUnit>=0) and Project.Units[Project.MainUnit].IsVirtual then
+    begin
+      Result:=AFilename;
+      //ProjectDir:=EnvironmentOptions.TestBuildDirectory;
+      exit;
+    end;
     ProjectDir:=ExtractFilePath(Project.ProjectFile);
     Result:=ProjectDir+AFilename;
     if FileExists(Result) then exit;
@@ -3918,22 +3931,22 @@ begin
     if SearchedFilename<>'' then begin
       // open the file in the source editor
       Ext:=lowercase(ExtractFileExt(SearchedFilename));
-      if (Ext<>'.lfm') or (Ext='.lpi') then begin
+      if (Ext<>'.lfm') and (Ext<>'.lpi') then begin
         Result:=(DoOpenEditorFile(SearchedFilename,false)=mrOk);
         if Result then begin
           // set caret position
           SrcEdit:=SourceNoteBook.GetActiveSE;
           TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
           if TopLine<1 then TopLine:=1;
-          SrcEdit.EditorComponent.CaretXY:=CaretXY;
-          SrcEdit.EditorComponent.TopLine:=TopLine;
-          SrcEdit.ErrorLine:=CaretXY.Y;
           if FocusEditor then begin
 //writeln('[TMainIDE.DoJumpToCompilerMessage] A');
             SourceNotebook.BringToFront;
 //writeln('[TMainIDE.DoJumpToCompilerMessage] B');
             SrcEdit.EditorComponent.SetFocus;
           end;
+          SrcEdit.EditorComponent.CaretXY:=CaretXY;
+          SrcEdit.EditorComponent.TopLine:=TopLine;
+          SrcEdit.ErrorLine:=CaretXY.Y;
         end;
       end;
     end else begin
@@ -4058,8 +4071,10 @@ begin
             ComponentClass.UnitName,'');
   // add component definition to form source
   FormClassName:=ActiveForm.ClassName;
-  if CodeToolBoss.PublishedVariableExists(ActiveUnitInfo.Source,'*',
-    FormClassName) then begin
+  if not CodeToolBoss.PublishedVariableExists(ActiveUnitInfo.Source,
+    FormClassName,Component.Name) then begin
+    // ! AddPublishedVariable does not rebuild the CodeTree, so we need
+    // PublishedVariableExists before !
     CodeToolBoss.AddPublishedVariable(ActiveUnitInfo.Source,FormClassName,
       Component.Name, Component.ClassName);
   end;
@@ -4091,10 +4106,8 @@ begin
   ActiveUnitInfo:=Project.Units[i];
   // remove component definition to form source
   FormClassName:=ActiveForm.ClassName;
-  if CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,FormClassName,
-    Component.Name) then begin
-    ActiveUnitInfo.Modified:=true;
-  end;
+  CodeToolBoss.RemovePublishedVariable(ActiveUnitInfo.Source,FormClassName,
+    Component.Name);
 end;
 
 procedure TMainIDE.OnDesignerModified(Sender: TObject);
@@ -4367,6 +4380,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.133  2001/11/03 08:37:34  lazarus
+  MG: fixed errorline showing, resource adding and published var editing and added make cleanall
+
   Revision 1.132  2001/11/01 21:30:32  lazarus
   Changes to Messagebox.
   Added line to CodeTools to prevent duplicate USES entries.
@@ -8991,6 +9007,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.133  2001/11/03 08:37:34  lazarus
+  MG: fixed errorline showing, resource adding and published var editing and added make cleanall
+
   Revision 1.132  2001/11/01 21:30:32  lazarus
   Changes to Messagebox.
   Added line to CodeTools to prevent duplicate USES entries.

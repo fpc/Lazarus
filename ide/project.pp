@@ -256,6 +256,7 @@ type
     function GetResourceFile(AnUnitInfo: TUnitInfo; Index:integer):TCodeBuffer;
     function SearchFile(const Filename,SearchPaths,InitialDir:string):string;
     function GetMainResourceFilename(AnUnitInfo: TUnitInfo): string;
+    function IsVirtual: boolean;
 
     property ActiveEditorIndexAtStart: integer 
        read fActiveEditorIndexAtStart write fActiveEditorIndexAtStart;
@@ -1346,6 +1347,11 @@ begin
     Result:=CodeBuf.Filename;
 end;
 
+function TProject.IsVirtual: boolean;
+begin
+  Result:=(MainUnit>=0) and Units[MainUnit].IsVirtual;
+end;
+
 function TProject.IndexOf(AUnitInfo: TUnitInfo):integer;
 begin
   Result:=UnitCount-1;
@@ -1470,6 +1476,9 @@ end.
 
 {
   $Log$
+  Revision 1.33  2001/11/03 08:37:35  lazarus
+  MG: fixed errorline showing, resource adding and published var editing and added make cleanall
+
   Revision 1.32  2001/10/23 09:13:52  lazarus
   MG: fixed TestProject
 

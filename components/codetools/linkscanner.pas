@@ -725,6 +725,7 @@ var l,r,m: integer;
   NewSrcChangeStep: PSourceChangeStep;
   c: pointer;
 begin
+//writeln('[TLinkScanner.AddSourceChangeStep] ',HexStr(Cardinal(ACode),8));
   if ACode=nil then
     raise ELinkScannerError.Create('TLinkScanner.AddSourceChangeStep ACode=nil');
   l:=0;
@@ -734,15 +735,16 @@ begin
   while (l<=r) do begin
     m:=(l+r) shr 1;
     c:=PSourceChangeStep(FSourceChangeSteps[m])^.Code;
-    if c<Code then l:=m+1
-    else if c>Code then r:=m-1
+    if c<ACode then l:=m+1
+    else if c>ACode then r:=m-1
     else exit;
   end;
   New(NewSrcChangeStep);
   NewSrcChangeStep^.Code:=ACode;
   NewSrcChangeStep^.ChangeStep:=AChangeStep;
-  if (FSourceChangeSteps.Count>0) and (c<Code) then inc(m);
-  FSourceChangeSteps.Insert(m,NewSrcChangeStep)
+  if (FSourceChangeSteps.Count>0) and (c<ACode) then inc(m);
+  FSourceChangeSteps.Insert(m,NewSrcChangeStep);
+//writeln('   ADDING ',HexStr(Cardinal(ACode),8),',',FSourceChangeSteps.Count);  
 end;
 
 function TLinkScanner.TokenIs(const AToken: shortstring): boolean;
@@ -864,8 +866,8 @@ begin
       end;
     end;
     for i:=0 to FSourceChangeSteps.Count-1 do begin
-//writeln('TLinkScanner.UpdateNeeded D ',i,',',PSourceChangeStep(FSourceChangeSteps[i])^.Code<>nil);
       SrcLog:=FOnGetSource(Self,PSourceChangeStep(FSourceChangeSteps[i])^.Code);
+//writeln('TLinkScanner.UpdateNeeded D ',i,',',PSourceChangeStep(FSourceChangeSteps[i])^.Code<>nil,' ',PSourceChangeStep(FSourceChangeSteps[i])^.ChangeStep,'<>',SrcLog.ChangeStep,'  ',HexStr(Cardinal(SrcLog),8));
       if PSourceChangeStep(FSourceChangeSteps[i])^.ChangeStep<>SrcLog.ChangeStep
       then exit;
     end;

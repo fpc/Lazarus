@@ -1279,7 +1279,6 @@ begin
       #10,#13:
         begin
           // line end in code found
-          dec(Result);
           if (Result>1) and (Source[Result-1] in [#10,#13])
           and (Source[Result]<>Source[Result-1]) then dec(Result);
           // test if it is a comment line (a line without code and at least one
@@ -1294,7 +1293,9 @@ begin
             end else if Source[TestPos] in [#10,#13] then begin
               // no comment, the line end ist really there :)
               exit;
-            end else if OnlySpace and (Source[TestPos] in ['}',')']) then begin
+            end else if OnlySpace 
+            and ((Source[TestPos]='}') 
+              or ((Source[TestPos]=')') and (Source[TestPos-1]='*'))) then begin
               // this is a comment line end -> search further
               break;
             end else begin

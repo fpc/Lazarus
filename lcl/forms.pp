@@ -378,6 +378,7 @@ function InitResourceComponent(Instance: TComponent;
   var CompResource:TLResource;
     a:integer;
   begin
+//writeln('[InitComponent] ',ClassType.Classname,' ',Instance<>nil);
     Result:=false;
     if (ClassType=TComponent) or (ClassType=RootAncestor) then exit;
     if Assigned(ClassType.ClassParent) then
@@ -391,7 +392,7 @@ function InitResourceComponent(Instance: TComponent;
       try
         Write(CompResource.Value[1],length(CompResource.Value));
         Position:=0;
-        writeln('Signature=',copy(CompResource.Value,1,4));
+        writeln('Form Stream Signature=',copy(CompResource.Value,1,4));
         Instance:=ReadComponent(Instance);
         // MG: workaround til Visible=true is default
         if Instance is TControl then

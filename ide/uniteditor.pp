@@ -78,6 +78,7 @@ type
     FPopUpMenu : TPopupMenu;
     FSyntaxHighlighterType: TLazSyntaxHighlighter;
     FErrorLine: integer;
+    FErrorColumn: integer;
     FExecutionLine: integer;
     FModified: boolean;
 
@@ -399,6 +400,7 @@ Begin
 
   FSyntaxHighlighterType:=lshNone;
   FErrorLine:=-1;
+  FErrorColumn:=-1;
   FExecutionLine:=-1;
 
   FControl := nil;
@@ -949,8 +951,10 @@ end;
 
 procedure TSourceEditor.SetErrorLine(NewLine: integer);
 begin
+writeln('[TSourceEditor.SetErrorLine] ',NewLine,',',fErrorLine);
   if fErrorLine=NewLine then exit;
   fErrorLine:=NewLine;
+  fErrorColumn:=EditorComponent.CaretX;
   EditorComponent.Invalidate;
 end;
 
@@ -1521,7 +1525,7 @@ begin
   MarksImgList.Add(Pixmap1,nil);
   // load inactive breakpoint image
   Pixmap1:=TPixMap.Create;
-  //Pixmap1.TransparentColor:=clBtnFace;
+  Pixmap1.TransparentColor:=clBtnFace;
   if not LoadPixmapRes('InactiveBreakPoint',Pixmap1) then
          LoadPixmapRes('default',Pixmap1);
   MarksImgList.Add(Pixmap1,nil);
@@ -2678,7 +2682,9 @@ begin
    if not Visible then exit;
    TempEditor := GetActiveSE;
    if TempEditor = nil then Exit;
-   TempEditor.ErrorLine:=-1;
+   if (TempEditor.EditorComponent.CaretY<>TempEditor.ErrorLine)
+   or (TempEditor.EditorComponent.CaretX<>TempEditor.fErrorColumn) then
+     TempEditor.ErrorLine:=-1;
    Statusbar.Panels[3].Text := TempEditor.Filename;
 
    If TempEditor.Modified then

@@ -2309,7 +2309,7 @@ writeln('TPascalParserTool.BuildTree B');
   until (CurPos.StartPos>SrcLen);
   FForceUpdateNeeded:=false;
 {$IFDEF CTDEBUG}
-//writeln('[TPascalParserTool.BuildTree] END');
+writeln('[TPascalParserTool.BuildTree] END');
 {$ENDIF}
 {$IFDEF MEM_CHECK}
 CheckHeap('TBasicCodeTool.BuildTree END '+IntToStr(GetMem_Cnt));
@@ -4773,14 +4773,13 @@ begin
   Result:=false;
   if (ResourceCode=nil) or (ResourceName='') or (length(ResourceName)>255)
   or (ResourceData='') or (SourceChangeCache=nil) then exit;
+  BuildTree(false);
   SourceChangeCache.MainScanner:=Scanner;
   OldPosition:=FindLazarusResourceInBuffer(ResourceCode,ResourceName);
   if OldPosition.StartPos>0 then begin
     // replace old resource
-    FromPos:=FindLineEndOrCodeInFrontOfPosition(Src,OldPosition.StartPos,
-                Scanner.NestedComments);
-    ToPos:=FindFirstLineEndAfterInCode(Src,OldPosition.EndPos,
-                Scanner.NestedComments);
+    FromPos:=OldPosition.StartPos;
+    ToPos:=OldPosition.EndPos;
     if not SourceChangeCache.Replace(gtNewLine,gtNewLine,FromPos,ToPos,
       ResourceData) then exit;
   end else begin
@@ -4814,6 +4813,7 @@ begin
   Result:=false;
   if (ResourceCode=nil) or (ResourceName='') or (length(ResourceName)>255)
   or (SourceChangeCache=nil) then exit;
+  BuildTree(false);
   SourceChangeCache.MainScanner:=Scanner;
   OldPosition:=FindLazarusResourceInBuffer(ResourceCode,ResourceName);
   if OldPosition.StartPos>0 then begin

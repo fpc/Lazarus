@@ -28,6 +28,7 @@ DIST_DESTDIR=$(BASEDIR)/../../../dist
 
 clean:
         $(DEL) $(COMPILER_UNITTARGETDIR)/*$(PPUEXT)
+        $(DEL) $(COMPILER_UNITTARGETDIR)/*$(OEXT)
 
 all: 
         $(MAKE) --assume-new=interfaces.pp interfaces$(PPUEXT)
