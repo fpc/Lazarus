@@ -891,6 +891,15 @@ end;
 
 { TWin32WSCustomStaticText }
 
+const
+  AlignmentToStaticTextFlags: array[TAlignment] of dword = (SS_LEFT, SS_RIGHT, SS_CENTER);
+  LayoutToStaticTextFlags: array[TTextLayout] of dword = (0,0,0) {(SS_TOP, SS_VCENTER, SS_BOTTOM)};
+
+function CalcStaticTextFlags(const Alignment: TAlignment; const Layout: TTextLayout): dword;
+begin
+  Result := AlignmentToStaticTextFlags[Alignment] or LayoutToStaticTextFlags[Layout];
+end;
+
 function TWin32WSCustomStaticText.CreateHandle(const AWinControl: TWinControl;
   const AParams: TCreateParams): HWND;
 var
@@ -903,7 +912,8 @@ begin
   begin
     pClassName := 'STATIC';
     WindowTitle := StrCaption;
-    Flags := Flags or SS_LEFT;
+    Flags := Flags or CalcStaticTextFlags(
+      TCustomStaticText(AWinControl).Alignment, TCustomStaticText(AWinControl).Layout);
   end;
   // create window
   FinishCreateWindow(AWinControl, Params, false);
@@ -911,36 +921,16 @@ begin
 end;
 
 procedure TWin32WSCustomStaticText.SetAlignment(const ACustomStaticText: TCustomStaticText; const NewAlignment: TAlignment);
-var
-  Style: dword;
 begin
-  case NewAlignment of
-    taLeftJustify:
-      Style := SS_LEFT;
-    taCenter:
-      Style := SS_CENTER;
-    taRightJustify:
-      Style := SS_RIGHT;
-  else
-    Style := SS_LEFT; // default, shouldn't happen
-  end;
-  UpdateWindowStyle(ACustomStaticText.Handle, Style, SS_LEFT or SS_CENTER or SS_RIGHT or SS_LEFTNOWORDWRAP);
+  // can not apply on the fly: needs window recreate
+  TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomStaticText);
 end;
 
 procedure TWin32WSCustomStaticText.SetLayout(const ACustomStaticText: TCustomStaticText; const NewLayout: TTextLayout);
-var
-  Style: dword;
 begin
-  case NewLayout of
-    tlTop:
-      Style := BS_TOP;
-    tlCenter:
-      Style := BS_VCENTER;
-  else
-    {tlBottom:}
-    Style := BS_BOTTOM;
-  end;
-  UpdateWindowStyle(ACustomStaticText.Handle, Style, BS_TOP or BS_VCENTER or BS_BOTTOM);
+  // TODO
+  UpdateWindowStyle(ACustomStaticText.Handle, 
+    LayoutToStaticTextFlags[NewLayout], 0 {SS_TOP or SS_VCENTER or SS_BOTTOM});
 end;
 
 { TWin32WSCustomCheckBox }

@@ -407,7 +407,41 @@ Var
       End;
     end;
   end;
-  
+ 
+  procedure HandleSetCursor;
+  var
+    lControl: TControl;
+    BoundsOffset: TRect;
+  begin
+    if (lWinControl <> nil) and not (csDesigning in lWinControl.ComponentState) 
+      and (Lo(LParam) = HTCLIENT) then
+    begin
+      Windows.GetCursorPos(P);
+      Windows.ScreenToClient(Window, P);
+      if GetLCLClientBoundsOffset(lWinControl.Parent, BoundsOffset) then
+      begin
+        Dec(P.X, BoundsOffset.Left);
+        Dec(P.Y, BoundsOffset.Top);
+      end;
+      // statictext controls do not get WM_SETCURSOR messages...
+      lControl := lWinControl.ControlAtPos(P, false, true);
+      if lControl = nil then
+        lControl := lWinControl;
+      if lControl.Cursor <> crDefault then
+      begin
+        Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[lControl.Cursor]));
+        LMessage.Result := 1;
+      end;
+    end;
+    if LMessage.Result = 0 then
+    begin
+      LMessage.Msg := LM_SETCURSOR;
+      LMessage.WParam := WParam;
+      LMessage.LParam := LParam;
+    end;
+    WinProcess := false;
+  end;
+
 Begin
   Assert(False, 'Trace:WindowProc - Start');
 
@@ -1006,18 +1040,7 @@ Begin
     End;
     WM_SETCURSOR:
     begin
-      if (lWinControl <> nil) and (lWinControl.Cursor <> crDefault) and
-        not (csDesigning in lWinControl.ComponentState) and
-        (Lo(LParam) = HTCLIENT) then
-      begin
-        Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[lWinControl.Cursor]));
-        LMessage.Result := 1;
-      end else begin
-        LMessage.Msg := LM_SETCURSOR;
-        LMessage.WParam := WParam;
-        LMessage.LParam := LParam;
-      end;
-      WinProcess := false;
+      HandleSetCursor;
     end;
     WM_SETFOCUS:
     Begin
@@ -1493,6 +1516,9 @@ end;
 
 {
   $Log$
+  Revision 1.182  2005/01/08 22:19:51  micha
+  fix cursor handling, and statictext alignment
+
   Revision 1.181  2005/01/07 10:51:07  vincents
   send LM_CHANGE message for trackbar
 
