@@ -3165,12 +3165,6 @@ initialization
   // TPropertyLink
   RegisterPropertyEditor(ClassTypeInfo(TPropertyLink),
     nil, '', TPropertyLinkPropertyEditor);
-  // no property editor for TPropertyLink.Name
-  RegisterPropertyEditor(TypeInfo(string),
-    TPropertyLink,'Name',THiddenPropertyEditor);
-  // no property editor for TPropertyLink.Tag
-  RegisterPropertyEditor(TypeInfo(longint),
-    TPropertyLink,'Tag',THiddenPropertyEditor);
   // property editor for TCustomPropertyLink.TIPropertyName
   RegisterPropertyEditor(TypeInfo(string),
     TCustomPropertyLink, 'TIPropertyName', TPropertyNamePropertyEditor);
