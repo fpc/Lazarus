@@ -876,6 +876,34 @@ begin
     fSynEditClipboardFormat := ClipboardRegisterFormat(SYNEDIT_CLIPBOARD_FORMAT);
   Result:=fSynEditClipboardFormat;
 end;
+
+function CreateTabsAndSpaces(StartPos, SpaceLen, TabWidth: integer;
+  TabsToSpaces: boolean): string;
+var
+  TabCount: Integer;
+  EndPos: Integer;
+  PosPlusOneTab: Integer;
+begin
+  Result:='';
+  if TabsToSpaces then begin
+    Result:=StringOfChar(' ',SpaceLen);
+    exit;
+  end;
+  TabCount:=0;
+  EndPos:=StartPos+SpaceLen;
+  while StartPos<EndPos do begin
+    PosPlusOneTab:=StartPos+TabWidth-((StartPos-1) mod TabWidth);
+    if PosPlusOneTab<=EndPos then begin
+      inc(TabCount);
+      StartPos:=PosPlusOneTab;
+    end else begin
+      Result:=StringOfChar(' ',EndPos-StartPos);
+      break;
+    end;
+  end;
+  if TabCount>0 then
+    Result:=StringOfChar(#9,TabCount)+Result;
+end;
 {$ENDIF}
 
 function Roundoff(X: Extended): Longint;
@@ -3796,8 +3824,13 @@ var
       Result := 0;
       sLeftSide := Copy(LineText, 1, CaretX - 1);
       if CaretX - 1 > Length(sLeftSide) then begin
-        sLeftSide := sLeftSide + StringOfChar(' ',
-          CaretX - 1 - Length(sLeftSide));
+        {$IFDEF SYN_LAZARUS}
+        sLeftSide := sLeftSide + CreateTabsAndSpaces(CaretX,
+                             CaretX-1-Length(sLeftSide),TabWidth,
+                             eoTabsToSpaces in Options);
+        {$ELSE}
+        sLeftSide := sLeftSide + StringOfChar(' ', CaretX-1-Length(sLeftSide));
+        {$ENDIF}
       end;
       sRightSide := Copy(LineText, CaretX, Length(LineText) - (CaretX - 1));
       if eoTrimTrailingSpaces in Options then
@@ -7324,7 +7357,11 @@ begin
       repeat
 // NOTE mh: after throwing in real tabs we have to use:
 //      PrevLine := pConvert(Lines[iLine], TabWidth);
+        {$IFDEF SYN_LAZARUS}
+        PrevLine := TSynEditStringList(fLines).ExpandedStrings[iLine];
+        {$ELSE}
         PrevLine := Lines[iLine];
+        {$ENDIF}
         if (Length(PrevLine) >= MinLen) then begin
           p := @PrevLine[MinLen];
           // scan over non-whitespaces
@@ -7350,14 +7387,19 @@ begin
     i := TabWidth - (CaretX - 1) mod TabWidth;
     if i = 0 then i := TabWidth;
   end;
+  {$IFDEF SYN_LAZARUS}
+  // i now contains the needed spaces
+  Spaces:=CreateTabsAndSpaces(CaretX,i,TabWidth,eoTabsToSpaces in Options);
+  {$ELSE}
   Spaces := StringOfChar(' ', i);
+  {$ENDIF}
   if SelAvail then begin
     fUndoList.AddChange(crDelete, fBlockBegin, fBlockEnd, SelText,
       SelectionMode);
   end;
 {begin}                                                                         //mh 2000-10-01
   StartOfBlock := CaretXY;
-  NewCaretX := StartOfBlock.X + i;
+  NewCaretX := StartOfBlock.X + {$IFDEF SYN_LAZARUS}length(Spaces){$ELSE}i{$ENDIF};
   SetSelText(Spaces);
   ChangeScroll := not (eoScrollPastEol in fOptions);
   try

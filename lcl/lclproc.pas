@@ -54,7 +54,6 @@ type
     property Items[Index: integer]: TMethod read GetItems write SetItems; default;
   end;
 
-Function DeleteAmpersands(var Str : String) : Longint;
 
 function ShortCutToShortCutText(ShortCut: TShortCut): string;
 function ShortCutTextToShortCut(const ShortCutText: string): TShortCut;
@@ -85,6 +84,7 @@ procedure MakeMinMax(var i1, i2: integer);
 procedure CalculateLeftTopWidthHeight(X1,Y1,X2,Y2: integer;
   var Left,Top,Width,Height: integer);
 
+function DeleteAmpersands(var Str : String) : Longint;
 function BreakString(const s: string; MaxLineLength, Indent: integer): string;
 
 function ComparePointers(p1, p2: Pointer): integer;
