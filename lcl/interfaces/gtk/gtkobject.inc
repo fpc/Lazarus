@@ -1572,6 +1572,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TGtkWidgetSet.AppBringToFront
+  Params:  None
+  Returns: Nothing
+
+  Shows the application above all other non-topmost windows
+ ------------------------------------------------------------------------------}
+procedure TGtkWidgetSet.AppBringToFront;
+begin
+  // TODO: Implement me!
+end;
+
+{------------------------------------------------------------------------------
   Method: TGtkWidgetSet.RecreateWnd
   Params:  Sender: TObject - the lcl wincontrol, that is to recreated
   Returns: none
@@ -3151,22 +3163,6 @@ begin
     begin
       handle := hwnd(ObjectToGtkObject(Sender));
       Case LM_Message of
-
-      LM_BRINGTOFRONT:
-      begin
-  {       Assert(False, 'Trace:TODO:bringtofront');
-        //For now just hide and show again.
-        if (Sender is TControl) 
-        then begin
-          TControl(Sender).Parent.RemoveControl(TControl(Sender));
-          DebugLn('Removed control ', TControl(Sender).Name);
-          TControl(Sender).Parent.InsertControl(TControl(Sender));
-          DebugLn('Inserted control ', TControl(Sender).Name);
-        end;
-    }
-        if (Sender is TCustomForm) and (TCustomForm(Sender).Parent=nil) then
-          BringFormToFront(Sender);
-      end;
 
       LM_BTNDEFAULT_CHANGED :
       Begin
@@ -8655,6 +8651,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.551  2004/09/11 13:38:37  micha
+  convert LM_BRINGTOFRONT message to interface method
+  NOTE: was only used for tapplication, not from other controls
+
   Revision 1.550  2004/09/11 13:06:48  micha
   convert LM_ADDCHILD message to interface method
 

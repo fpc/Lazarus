@@ -301,6 +301,7 @@ type
     procedure AppTerminate; override;
     procedure AppInit; override;
     procedure AppMinimize; override;
+    procedure AppBringToFront; override;
 
     // helper routines needed by interface methods
     function ForceLineBreaks(DC : hDC; Src: PChar; MaxWidthInPixels : Longint;
@@ -457,6 +458,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.200  2004/09/11 13:38:37  micha
+  convert LM_BRINGTOFRONT message to interface method
+  NOTE: was only used for tapplication, not from other controls
+
   Revision 1.199  2004/09/11 13:06:48  micha
   convert LM_ADDCHILD message to interface method
 

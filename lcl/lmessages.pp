@@ -79,7 +79,6 @@ const
   LM_DRAGINFOCHANGED = LM_COMUSER+53;
 
   //LM_SETENABLED   = LM_COMUSER+54;
-  LM_BRINGTOFRONT   = LM_COMUSER+55;
   LM_POPUPSHOW      = LM_COMUSER+56;
 
 
@@ -879,7 +878,6 @@ begin
   LM_DRAGINFOCHANGED :Result:='LM_DRAGINFOCHANGED';
 
   //LM_SETENABLED   :Result:='LM_SETENABLED';
-  LM_BRINGTOFRONT   :Result:='LM_BRINGTOFRONT';
   LM_POPUPSHOW      :Result:='LM_POPUPSHOW';
 
 
@@ -1017,6 +1015,10 @@ end.
 
 {
   $Log$
+  Revision 1.85  2004/09/11 13:38:37  micha
+  convert LM_BRINGTOFRONT message to interface method
+  NOTE: was only used for tapplication, not from other controls
+
   Revision 1.84  2004/09/11 13:06:48  micha
   convert LM_ADDCHILD message to interface method
 

@@ -51,6 +51,7 @@ type
     procedure AppInit; virtual; abstract;
     procedure AppTerminate; virtual; abstract;
     procedure AppMinimize; virtual; abstract;
+    procedure AppBringToFront; virtual; abstract;
     function  InitHintFont(HintFont: TObject): Boolean; virtual;
     function  IntSendMessage3(LM_Message: Integer; Sender: TObject;
                               Data: pointer): integer; virtual; abstract;
@@ -115,6 +116,10 @@ end.
 
 {
   $Log$
+  Revision 1.50  2004/09/11 13:38:37  micha
+  convert LM_BRINGTOFRONT message to interface method
+  NOTE: was only used for tapplication, not from other controls
+
   Revision 1.49  2004/08/27 08:55:22  micha
   implement tapplication.minimize for win32, stub for gtk
 

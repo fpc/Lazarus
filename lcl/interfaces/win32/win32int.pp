@@ -176,6 +176,7 @@ Type
     { Initialize the API }
     Procedure AppInit; Override;
     procedure AppMinimize; override;
+    procedure AppBringToFront; override;
     Function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer) : Integer; Override;
     Procedure HandleEvents; Override;
     Procedure WaitMessage; Override;
@@ -279,6 +280,10 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.105  2004/09/11 13:38:37  micha
+  convert LM_BRINGTOFRONT message to interface method
+  NOTE: was only used for tapplication, not from other controls
+
   Revision 1.104  2004/09/11 13:06:49  micha
   convert LM_ADDCHILD message to interface method
 

@@ -200,6 +200,18 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TWin32WidgetSet.AppBringToFront
+  Params:  None
+  Returns: Nothing
+
+  Brings the entire application on top of all other non-topmost programs
+ ------------------------------------------------------------------------------}
+procedure TWin32WidgetSet.AppBringToFront;
+begin
+  SetWindowPos(FAppHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
+end;
+
+{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.GetOwnerHandle
   Params:  ADialog - dialog to get 'guiding parent' window handle for
   Returns: A window handle
@@ -296,11 +308,6 @@ Begin
       Exit;
     End;
     Case LM_Message of
-      LM_BRINGTOFRONT:
-      Begin
-        Assert(False, 'Trace:TODO: [TWin32WidgetSet.IntSendMessage3] - LM_BRINGTOFRONT');
-        BringWindowToTop(Handle);
-      End;
       LM_BTNDEFAULT_CHANGED:
       Begin
         WindowStyle := Windows.GetWindowLong(Handle, GWL_STYLE) and not (BS_DEFPUSHBUTTON or BS_PUSHBUTTON);
@@ -2568,6 +2575,10 @@ End;
 
 {
   $Log$
+  Revision 1.243  2004/09/11 13:38:37  micha
+  convert LM_BRINGTOFRONT message to interface method
+  NOTE: was only used for tapplication, not from other controls
+
   Revision 1.242  2004/09/11 13:06:49  micha
   convert LM_ADDCHILD message to interface method
 

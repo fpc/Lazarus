@@ -135,7 +135,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TApplication.BringToFront;
 begin
-  CNSendMessage(LM_BRINGTOFRONT,Self,nil);
+  InterfaceObject.AppBringToFront;
 end;
 
 
@@ -1339,6 +1339,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.90  2004/09/11 13:38:37  micha
+  convert LM_BRINGTOFRONT message to interface method
+  NOTE: was only used for tapplication, not from other controls
+
   Revision 1.89  2004/08/27 08:55:22  micha
   implement tapplication.minimize for win32, stub for gtk
 
