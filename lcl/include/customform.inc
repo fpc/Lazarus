@@ -229,13 +229,29 @@ end;
   Method: TCustomForm.SetFocus
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.SetFocus;
+
+  procedure RaiseCannotFocus;
+  var
+    s: String;
+  begin
+    s:='[TCustomForm.SetFocus] '+Name+':'+ClassName+' '+rsCanNotFocus;
+    {$IFDEF VerboseFocus}
+    RaiseGDBException(s);
+    {$ELSE}
+    raise EInvalidOperation.Create(s);
+    {$ENDIF}
+  end;
+
 Begin
   {$IFDEF VerboseFocus}
   writeln('TCustomForm.SetFocus ',Name,':',ClassName);
   {$ENDIF}
-  if not (Visible and Enabled and HandleAllocated) then Exit;
-  if HandleAllocated then
-    CNSendMessage(LM_SETFOCUS,Self,nil);
+  if not FActive then
+  begin
+    if not (Visible and Enabled) then
+      RaiseCannotFocus;
+    SetWindowFocus;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -338,13 +354,6 @@ begin
   if (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
     SetActive(Message.Active {<> WA_INACTIVE});
   FActive:=true;
-  if (FActiveControl<>nil) and FActiveControl.HandleAllocated
-  and (FActiveControl.Visible) and (FActiveControl.Enabled) then begin
-    {$IFDEF VerboseFocus}
-    writeln('TCustomForm.WMActivate B ',FActiveControl.Name,':',FActiveControl.ClassName);
-    {$ENDIF}
-    LCLLinux.SetFocus(FActiveControl.Handle);
-  end;
   Activate;
 end;
 
@@ -667,7 +676,7 @@ begin
     LM_ACTIVATE, LM_SETFOCUS, LM_KILLFOCUS:
       begin
         if not FocusMessages then Exit;
-        if (MSg = LM_SetFocus) and not (csDesigning in ComponentState) 
+        if (Msg = LM_SetFocus) and not (csDesigning in ComponentState)
         then begin
           FocusHandle := 0;
           if FormStyle = fsMDIFORM 
@@ -682,7 +691,9 @@ begin
           TheMessage.Result:=0;
           if FocusHandle <> 0
           then begin
-          //writeln('[TCustomForm.WndPRoc] A ',FActiveControl.ClassName);
+            {$IFDEF VerboseFocus}
+            writeln('[TCustomForm.WndProc] ',Name,':',ClassName);
+            {$ENDIF}
             LCLLinux.SetFocus(FocusHandle);
             Exit;
           end;
@@ -865,14 +876,18 @@ Begin
     then
       RaiseGDBException(SCannotFocus);
       // EInvalidOperation.Create(SCannotFocus);
-    FActiveControl := AWinControl;
     {$IFDEF VerboseFocus}
     write('TCustomForm.SetActiveControl ',Name,':',ClassName,' FActive=',FActive);
     if FActiveControl<>nil then
-      writeln(' FActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName)
+      writeln(' OldActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName)
     else
-      writeln(' FActiveControl=nil');
+      writeln(' OldActiveControl=nil');
+    if AWinControl<>nil then
+      writeln(' NewActiveControl=',AWinControl.Name,':',AWinControl.ClassName)
+    else
+      writeln(' NewActiveControl=nil');
     {$ENDIF}
+    FActiveControl := AWinControl;
     if not (csLoading in ComponentState) then
     begin
       if FActive then SetWindowFocus;
@@ -1114,6 +1129,8 @@ begin
   write(' Control=',Control.Name,':',Control.ClassName,' Control.HandleAllocated=',Control.HandleAllocated);
   writeln();
   {$ENDIF}
+  
+  Result:=true;
     
   {
   Inc(FocusCount);
@@ -1374,6 +1391,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.92  2003/03/25 10:45:40  mattias
+  reduced focus handling and improved focus setting
+
   Revision 1.91  2003/03/18 13:04:25  mattias
   improved focus debugging output
 

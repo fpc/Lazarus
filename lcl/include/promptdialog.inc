@@ -106,10 +106,8 @@ begin
           break;
         end;
       until false;
-      if NewFocusControl.HandleAllocated then begin
-        LCLLinux.SetFocus(NewFocusControl.Handle);
-        Key:=VK_UNKNOWN;
-      end;
+      ActiveControl:=NewFocusControl;
+      Key:=VK_UNKNOWN;
     end;
   end;
 end;
@@ -341,7 +339,7 @@ begin
 
   for i:=0 to ComponentCount-1 do begin
     if (Components[i] is TBitBtn) and (TBitBtn(Components[i]).Default) then begin
-      TBitBtn(Components[i]).SetFocus;
+      ActiveControl:=TBitBtn(Components[i]);
       break;
     end;
   end;
@@ -381,6 +379,9 @@ end;
 
 {
    $Log$
+   Revision 1.4  2003/03/25 10:45:41  mattias
+   reduced focus handling and improved focus setting
+
    Revision 1.3  2003/03/04 09:21:09  mattias
    added localization for env options from Olivier
 

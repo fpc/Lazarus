@@ -285,7 +285,7 @@ type
     function IsForm : Boolean;
     procedure IconChanged(Sender: TObject);
     function IsIconStored: Boolean;
-    { events }
+  private
     procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
     procedure WMDeactivate(var Message : TLMActivate); message LM_DEACTIVATE;
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
@@ -466,6 +466,7 @@ type
     FCursorCount: integer;
     FCursorList: PCursorRec;
     FCustomForms: TList;
+    FCustomFormsZOrdered: TList;
     FDefaultCursor: HCURSOR;
     FFocusedForm: TCustomForm;
     FFonts : TStrings;
@@ -483,6 +484,7 @@ type
     function GetCursors(Index: Integer): HCURSOR;
     function GetCustomFormCount: Integer;
     function GetCustomForms(Index: Integer): TCustomForm;
+    function GetCustomFormsZOrdered(Index: Integer): TCustomForm;
     function GetFonts : TStrings;
     function GetFormCount: Integer;
     function GetForms(IIndex: Integer): TForm;
@@ -498,6 +500,7 @@ type
     destructor Destroy; Override;
     function CustomFormIndex(AForm: TCustomForm): integer;
     function FormIndex(AForm: TForm): integer;
+    function CustomFormZIndex(AForm: TCustomForm): integer;
   public
     property ActiveControl: TWinControl read FActiveControl;
     property ActiveCustomForm: TCustomForm read FActiveCustomForm;
@@ -506,6 +509,7 @@ type
     property Cursors[Index: Integer]: HCURSOR read GetCursors write SetCursors;
     property CustomFormCount: Integer read GetCustomFormCount;
     property CustomForms[Index: Integer]: TCustomForm read GetCustomForms;
+    property CustomFormsZOrdered[Index: Integer]: TCustomForm read GetCustomFormsZOrdered;
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
     property Fonts : TStrings read GetFonts;

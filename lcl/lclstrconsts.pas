@@ -168,6 +168,7 @@ ResourceString
   rsUnsupportedBitmapFormat = 'Unsupported bitmap format.';
   rsNoInterfaceObject = 'No interface object. '
     +'Plz check if the unit "interfaces" was added to the programs uses clause.';
+  rsCanNotFocus = 'Can not focus';
 
 
    

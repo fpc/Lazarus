@@ -31,6 +31,7 @@ begin
   FFonts := TStringlist.Create;
   TStringlist(FFonts).Sorted := True;
   FCustomForms:=TList.Create;
+  FCustomFormsZOrdered:=TList.Create;
   FFormList := TList.Create;
   FPixelsPerInch:= ScreenInfo.PixelsPerInchX;
   FHintFont := TFont.Create;
@@ -54,6 +55,7 @@ begin
   FreeThenNil(FHintFont);
   FreeThenNil(FFormList);
   FreeThenNil(FCustomForms);
+  FreeThenNil(FCustomFormsZOrdered);
   FreeThenNil(FSaveFocusedList);
   FreeThenNil(FFonts);
   inherited Destroy;
@@ -75,6 +77,15 @@ function TScreen.FormIndex(AForm: TForm): integer;
 begin
   Result:=FFormList.Count-1;
   while (Result>=0) and (Forms[Result]<>AForm) do dec(Result);
+end;
+
+{------------------------------------------------------------------------------
+  function TScreen.CustomFormZIndex(AForm: TCustomForm): integer;
+ ------------------------------------------------------------------------------}
+function TScreen.CustomFormZIndex(AForm: TCustomForm): integer;
+begin
+  Result:=FCustomFormsZOrdered.Count-1;
+  while (Result>=0) and (CustomFormsZOrdered[Result]<>AForm) do dec(Result);
 end;
 
 {------------------------------------------------------------------------------
@@ -174,6 +185,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TScreen.GetCustomFormsZOrdered(Index: Integer): TCustomForm;
+ ------------------------------------------------------------------------------}
+function TScreen.GetCustomFormsZOrdered(Index: Integer): TCustomForm;
+begin
+  Result := TCustomForm(FCustomFormsZOrdered[Index]);
+end;
+
+{------------------------------------------------------------------------------
   Function: TScreen.AddForm
   Params:   FForm: The form to be added
   Returns:  Nothing
@@ -183,6 +202,7 @@ end;
 procedure TScreen.AddForm(AForm: TCustomForm);
 begin
   FCustomForms.Add(AForm);
+  FCustomFormsZOrdered.Add(AForm);
   if AForm is TForm then
   begin
     FFormList.Add(AForm);
@@ -249,6 +269,7 @@ end;
 procedure TScreen.RemoveForm(AForm: TCustomForm);
 begin
   FCustomForms.Remove(AForm);
+  FCustomFormsZOrdered.Remove(AForm);
   FFormList.Remove(AForm);
   Application.UpdateVisible;
   //if (FCustomForms.Count = 0) and (Application.FHintWindow <> nil) then
