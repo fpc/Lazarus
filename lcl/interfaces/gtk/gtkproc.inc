@@ -27,6 +27,39 @@
 {$ENDIF}
 
 {------------------------------------------------------------------------------
+  function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
+
+  Tets if Destruction Mark is set.
+ ------------------------------------------------------------------------------}
+function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
+begin
+  Result:=gtk_object_get_data(PGtkObject(Widget),'LCLDestroyingHandle')<>nil;
+end;
+
+{------------------------------------------------------------------------------
+  procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
+
+  Marks widget for destruction.
+ ------------------------------------------------------------------------------}
+procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
+begin
+  gtk_object_set_data(PGtkObject(Widget),'LCLDestroyingHandle',Widget);
+end;
+
+{------------------------------------------------------------------------------
+  function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
+
+  Tets if Destruction Mark is set.
+ ------------------------------------------------------------------------------}
+function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;
+begin
+  Result:=
+    (AWinControl<>nil) and (AWinControl is TWinControl)
+    and (AWinControl.HandleAllocated)
+    and WidgetIsDestroyingHandle(PGtkWidget(AWinControl.Handle));
+end;
+
+{------------------------------------------------------------------------------
   function CreatePChar(const s: string): PChar;
 
   Allocates a new PChar
@@ -74,6 +107,7 @@ var
   SavedText: PChar;
   NewTextLen: integer;
 begin
+  //writeln('SetComboBoxText A "',NewText,'"');
   // check if something changed
   SavedText:=gtk_object_get_data(PgtkObject(ComboWidget),'LCLOldText');
   if ComparePChar(SavedText,NewText) then exit;
@@ -88,11 +122,12 @@ begin
     SavedText:=nil;
   gtk_object_set_data(PgtkObject(ComboWidget),'LCLOldText',SavedText);
   // set new text
-  //writeln('SetComboBoxText: "',NewText,'"');
+  //writeln('SetComboBoxText B "',NewText,'"');
   if NewText<>nil then
     gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText)
   else
     gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), #0);
+  //writeln('SetComboBoxText END ');
 end;
 
 {------------------------------------------------------------------------------
@@ -2660,6 +2695,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.83  2002/08/31 11:37:11  lazarus
+  MG: fixed destroying combobox
+
   Revision 1.82  2002/08/31 10:55:16  lazarus
   MG: fixed range check error in ampersands2underscore
 
