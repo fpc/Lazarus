@@ -549,16 +549,6 @@ begin
     Add('NEAR'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('['       ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
-  IsKeyWordProcedureBracketSpecifier:=TKeyWordFunctionList.Create;
-  KeyWordLists.Add(IsKeyWordProcedureBracketSpecifier);
-  with IsKeyWordProcedureBracketSpecifier do begin
-    Add('ALIAS'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('PUBLIC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('INTERNPROC'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('INTERNCONST'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('SAVEREGISTERS',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('IOCHECK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
-  end;
   IsKeyWordProcedureTypeSpecifier:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordProcedureTypeSpecifier);
   with IsKeyWordProcedureTypeSpecifier do begin
@@ -569,6 +559,16 @@ begin
     Add('PASCAL'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('FAR'     ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('NEAR'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
+  end;
+  IsKeyWordProcedureBracketSpecifier:=TKeyWordFunctionList.Create;
+  KeyWordLists.Add(IsKeyWordProcedureBracketSpecifier);
+  with IsKeyWordProcedureBracketSpecifier do begin
+    Add('ALIAS'        ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('PUBLIC'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INTERNPROC'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('INTERNCONST'  ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('SAVEREGISTERS',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('IOCHECK'      ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   IsKeyWordSection:=TKeyWordFunctionList.Create;
   KeyWordLists.Add(IsKeyWordSection);

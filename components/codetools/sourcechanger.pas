@@ -60,10 +60,11 @@ type
   TBeautifyCodeOptions = class
   private
     CurLineLen: integer;
-    LastSplitPos: integer;
+    LastSplitPos: integer; // last position where splitting is allowed
+    LastSrcLineStart: integer;// last line start, not added by splitting
     CurAtomType, LastAtomType: TAtomType;
-    CurPos, AtomStart, AtomEnd, SrcLen: integer;
-    Src, UpperSrc, IndentStr: string;
+    CurPos, AtomStart, AtomEnd, SrcLen, CurIndent: integer;
+    Src, UpperSrc: string;
     procedure AddAtom(var s:string; NewAtom: string);
     procedure ReadNextAtom;
   public
@@ -714,7 +715,8 @@ begin
   and (LastSplitPos>1) then begin
 //writeln('[TBeautifyCodeOptions.AddAtom]  NEW LINE CurLineLen=',CurLineLen,' NewAtom=',NewAtom,' "',copy(s,LastSplitPos,5));
     RestLineLen:=length(s)-LastSplitPos+1;
-    s:=copy(s,1,LastSplitPos-1)+LineEnd+IndentStr
+    s:=copy(s,1,LastSplitPos-1)+LineEnd
+       +GetIndentStr(CurIndent+Indent+GetLineIndent(s,LastSrcLineStart))
        +copy(s,LastSplitPos,RestLineLen)+NewAtom;
     CurLineLen:=length(s)-LastSplitPos-length(LineEnd)+1;
     LastSplitPos:=-1;
@@ -722,8 +724,11 @@ begin
     s:=s+NewAtom;
     if LastLineEndInAtom<1 then begin
       inc(CurLineLen,length(NewAtom));
-    end else
+    end else begin
+      // there is a line end in the code
       CurLineLen:=length(NewAtom)-LastLineEndInAtom;
+      LastSrcLineStart:=length(s)+1-CurLineLen;
+    end;
   end;
 end;
 
@@ -862,12 +867,9 @@ function TBeautifyCodeOptions.BeautifyProc(const AProcCode: string;
 begin
   Result:=BeautifyStatement(AProcCode,IndentSize);
   if AddBeginEnd then begin
-    SetLength(IndentStr,IndentSize);
-    if IndentSize>0 then
-      FillChar(IndentStr[1],length(IndentStr),' ');
-    AddAtom(Result,LineEnd+IndentStr);
+    AddAtom(Result,LineEnd+GetIndentStr(IndentSize));
     AddAtom(Result,'begin');
-    AddAtom(Result,LineEnd+LineEnd+IndentStr);
+    AddAtom(Result,LineEnd+LineEnd+GetIndentStr(IndentSize));
     AddAtom(Result,'end;');
   end;
 {$IFDEF CTDEBUG}
@@ -885,14 +887,11 @@ begin
   UpperSrc:=UpperCaseStr(Src);
   SrcLen:=length(Src);
   if IndentSize>=LineLength-10 then IndentSize:=LineLength-10;
-  SetLength(Result,IndentSize);
-  if IndentSize>0 then
-    FillChar(Result[1],length(Result),' ');
-  SetLength(IndentStr,IndentSize+Indent);
-  if length(IndentStr)>0 then
-    FillChar(IndentStr[1],length(IndentStr),' ');
+  CurIndent:=IndentSize;
+  Result:=GetIndentStr(CurIndent);
   CurPos:=1;
   LastSplitPos:=-1;
+  LastSrcLineStart:=1;
   CurLineLen:=length(Result);
   LastAtomType:=atNone;
   while (CurPos<=SrcLen) do begin

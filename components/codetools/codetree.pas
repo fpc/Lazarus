@@ -141,6 +141,25 @@ const
   ctnsForwardDeclaration = 1;
   ctnsNeedJITParsing     = 2;
   ctnsHasDefaultValue    = 4;
+
+  
+type
+  // Procedure Specifiers
+  TProcedureSpecifier = (
+    psSTDCALL, psREGISTER, psPOPSTACK, psVIRTUAL, psABSTRACT, psDYNAMIC,
+    psOVERLOAD, psOVERRIDE, psREINTRODUCE, psCDECL, psINLINE, psMESSAGE,
+    psEXTERNAL, psFORWARD, psPASCAL, psASSEMBLER, psSAVEREGISTERS,
+    psFAR, psNEAR, psEdgedBracket);
+  TAllProcedureSpecifiers = set of TProcedureSpecifier;
+
+const
+  ProcedureSpecifierNames: array[TProcedureSpecifier] of shortstring = (
+      'STDCALL', 'REGISTER', 'POPSTACK', 'VIRTUAL', 'ABSTRACT', 'DYNAMIC',
+      'OVERLOAD', 'OVERRIDE', 'REINTRODUCE', 'CDECL', 'INLINE', 'MESSAGE',
+      'EXTERNAL', 'FORWARD', 'PASCAL', 'ASSEMBLER', 'SAVEREGISTERS',
+      'FAR', 'NEAR', '['
+    );
+
   
 type
   TCodeTreeNode = class
@@ -219,6 +238,7 @@ var
 function NodeDescriptionAsString(Desc: TCodeTreeNodeDesc): string;
 function CompareCodeTreeNodeExt(NodeData1, NodeData2: pointer): integer;
 function CompareCodeTreeNodeExtWithPos(NodeData1, NodeData2: pointer): integer;
+
 
 implementation
 

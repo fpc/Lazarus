@@ -1116,9 +1116,9 @@ var LineStart: integer;
 begin
   Result:=0;
   LineStart:=Position;
-  if (LineStart<0) then LineStart:=1;
-  if (LineStart>length(Source)) then LineStart:=length(Source);
   if LineStart=0 then exit;
+  if (LineStart<0) then LineStart:=1;
+  if (LineStart>length(Source)+1) then LineStart:=length(Source)+1;
   // search beginning of line
   repeat
     dec(LineStart);

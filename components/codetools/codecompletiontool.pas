@@ -53,6 +53,7 @@ type
   private
     ASourceChangeCache: TSourceChangeCache;
     ClassNode, StartNode: TCodeTreeNode;
+    FAddInheritedCodeToOverrideMethod: boolean;
     FCompleteProperties: boolean;
     FirstInsert: TCodeTreeNodeExtension;
     FSetPropertyVariablename: string;
@@ -66,6 +67,9 @@ type
     function CompleteProperty(PropNode: TCodeTreeNode): boolean;
     procedure InsertNewClassParts(PartType: NewClassPart);
     function InsertAllNewClassParts: boolean;
+    procedure AddNewPropertyAccessMethodsToClassProcs(ClassProcs: TAVLTree;
+        const TheClassName: string);
+    procedure CheckForOverrideAndAddInheritedCode(ClassProcs: TAVLTree);
     function CreateMissingProcBodies: boolean;
   public
     function CompleteCode(CursorPos: TCodeXYPosition;
@@ -76,6 +80,8 @@ type
       read FSetPropertyVariablename write FSetPropertyVariablename;
     property CompleteProperties: boolean
       read FCompleteProperties write FCompleteProperties;
+    property AddInheritedCodeToOverrideMethod: boolean
+      read FAddInheritedCodeToOverrideMethod write FAddInheritedCodeToOverrideMethod;
   end;
 
 
@@ -779,6 +785,70 @@ begin
   Result:=true;
 end;
 
+procedure TCodeCompletionCodeTool.AddNewPropertyAccessMethodsToClassProcs(
+  ClassProcs: TAVLTree;  const TheClassName: string);
+var ANodeExt: TCodeTreeNodeExtension;
+  NewNodeExt: TCodeTreeNodeExtension;
+begin
+  // add new property access methods to ClassProcs
+  ANodeExt:=FirstInsert;
+  while ANodeExt<>nil do begin
+    if not NodeExtIsVariable(ANodeExt) then begin
+      if FindNodeInTree(ClassProcs,ANodeExt.Txt)=nil then begin
+        NewNodeExt:=TCodeTreeNodeExtension.Create;
+        with NewNodeExt do begin
+          Txt:=UpperCaseStr(TheClassName)+'.'
+                +ANodeExt.Txt;       // Name+ParamTypeList
+          ExtTxt1:=ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
+             ANodeExt.ExtTxt1,TheClassName,''); // complete proc head code
+          ExtTxt3:=ANodeExt.ExtTxt3;
+          Position:=ANodeExt.Position;
+        end;
+        ClassProcs.Add(NewNodeExt);
+      end;
+    end;
+    ANodeExt:=ANodeExt.Next;
+  end;
+end;
+
+procedure TCodeCompletionCodeTool.CheckForOverrideAndAddInheritedCode(
+  ClassProcs: TAVLTree);
+// check for 'override' directive and add 'inherited' code to body
+var AnAVLNode: TAVLTreeNode;
+  ANodeExt: TCodeTreeNodeExtension;
+  ProcCode, ProcCall: string;
+  ProcNode: TCodeTreeNode;
+  i: integer;
+  BeautifyCodeOptions: TBeautifyCodeOptions;
+begin
+  if not AddInheritedCodeToOverrideMethod then exit;
+  BeautifyCodeOptions:=ASourceChangeCache.BeautifyCodeOptions;
+  AnAVLNode:=ClassProcs.FindLowest;
+  while AnAVLNode<>nil do begin
+    ANodeExt:=TCodeTreeNodeExtension(AnAVLNode.Data);
+    ProcNode:=ANodeExt.Node;
+    if (ProcNode<>nil) and (ANodeExt.ExtTxt3='')
+    and (ProcNodeHasSpecifier(ProcNode,psOVERRIDE)) then begin
+      ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpWithoutClassKeyword,
+                      phpAddClassname,phpWithVarModifiers,phpWithParameterNames,
+                      phpWithResultType]);
+      ProcCall:='inherited '+ExtractProcHead(ProcNode,[phpWithoutClassName,
+                                   phpWithParameterNames,phpWithoutParamTypes]);
+      for i:=1 to length(ProcCall)-1 do
+        if ProcCall[i]=';' then ProcCall[i]:=',';
+      if ProcCall[length(ProcCall)]<>';' then
+        ProcCall:=ProcCall+';';
+      ProcCode:=ProcCode+BeautifyCodeOptions.LineEnd
+                  +'begin'+BeautifyCodeOptions.LineEnd
+                  +GetIndentStr(BeautifyCodeOptions.Indent)
+                    +ProcCall+BeautifyCodeOptions.LineEnd
+                  +'end;';
+      ANodeExt.ExtTxt3:=ProcCode;
+    end;
+    AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
+  end;
+end;
+
 function TCodeCompletionCodeTool.CreateMissingProcBodies: boolean;
 var
   Indent, InsertPos: integer;
@@ -808,7 +878,7 @@ writeln('>>> InsertProcBody ',TheClassName,' "',ProcCode,'"');
 
 var
   ProcBodyNodes, ClassProcs: TAVLTree;
-  ANodeExt, ANodeExt2, NewNodeExt: TCodeTreeNodeExtension;
+  ANodeExt, ANodeExt2: TCodeTreeNodeExtension;
   ExistingNode, MissingNode, AnAVLNode, NextAVLNode,
   NearestAVLNode: TAVLTreeNode;
   cmp, MissingNodePosition: integer;
@@ -896,32 +966,22 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
     end;}
     
-    // add new property access methods to ClassProcs
-    ANodeExt:=FirstInsert;
-    while ANodeExt<>nil do begin
-      if not NodeExtIsVariable(ANodeExt) then begin
-        if FindNodeInTree(ClassProcs,ANodeExt.Txt)=nil then begin
-          NewNodeExt:=TCodeTreeNodeExtension.Create;
-          with NewNodeExt do begin
-            Txt:=UpperCaseStr(TheClassName)+'.'
-                  +ANodeExt.Txt;       // Name+ParamTypeList
-            ExtTxt1:=ASourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
-               ANodeExt.ExtTxt1,TheClassName,''); // complete proc head code
-            ExtTxt3:=ANodeExt.ExtTxt3;
-            Position:=ANodeExt.Position;
-          end;
-          ClassProcs.Add(NewNodeExt);
-        end;
-      end;
-      ANodeExt:=ANodeExt.Next;
-    end;
-    
+    AddNewPropertyAccessMethodsToClassProcs(ClassProcs,TheClassName);
+
     {AnAVLNode:=ClassProcs.FindLowest;
     while AnAVLNode<>nil do begin
       writeln(' BBB ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
       AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
     end;}
-    
+
+    CheckForOverrideAndAddInheritedCode(ClassProcs);
+
+    {AnAVLNode:=ClassProcs.FindLowest;
+    while AnAVLNode<>nil do begin
+      writeln(' BBB ',TCodeTreeNodeExtension(AnAVLNode.Data).Txt);
+      AnAVLNode:=ClassProcs.FindSuccessor(AnAVLNode);
+    end;}
+
     if MethodInsertPolicy=mipClassOrder then begin
       // insert in ClassOrder -> get a definition position for every method
       AnAVLNode:=ClassProcs.FindLowest;
@@ -1005,7 +1065,7 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
         end;
         if ProcCode<>'' then begin
           ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
-                     ProcCode,Indent,true);
+                     ProcCode,Indent,ANodeExt.ExtTxt3='');
           ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,
             InsertPos,ProcCode);
           if JumpToProcName='' then begin
@@ -1362,6 +1422,7 @@ begin
   inherited Create;
   FSetPropertyVariablename:='AValue';
   FCompleteProperties:=true;
+  FAddInheritedCodeToOverrideMethod:=true;
 end;
 
 

@@ -73,29 +73,38 @@ type
   end;
 
   TProcHeadAttribute = (
+      // extract attributes:
       phpWithStart,          // proc keyword e.g. 'function', 'class procedure'
       phpWithoutClassKeyword,// without 'class' proc keyword
+      phpWithoutName,        // skip function name
       phpAddClassname,       // extract/add 'ClassName.'
       phpWithoutClassName,   // skip classname
-      phpWithoutName,        // skip function name
-      phpWithVarModifiers,   // extract 'var', 'out', 'const'
       phpWithoutParamList,   // skip param list
+      phpWithVarModifiers,   // extract 'var', 'out', 'const'
       phpWithParameterNames, // extract parameter names
+      phpWithoutParamTypes,  // skip colon, param types and default values
       phpWithDefaultValues,  // extract default values
       phpWithResultType,     // extract colon + result type
       phpWithOfObject,       // extract 'of object'
       phpWithComments,       // extract comments
       phpInUpperCase,        // turn to uppercase
       phpCommentsToSpace,    // replace comments with a single space
+                             //   (normally unnecessary space is skipped)
       phpWithoutBrackets,    // skip start- and end-bracket of parameter list
+      // search attributes:
       phpIgnoreForwards,     // skip forward procs
       phpIgnoreProcsWithBody,// skip procs with begin..end
       phpIgnoreMethods,      // skip method bodies and definitions
       phpOnlyWithClassname,  // skip procs without the right classname
       phpFindCleanPosition,  // read til ExtractSearchPos
+      // parse attributes:
       phpCreateNodes         // create nodes during reading
     );
   TProcHeadAttributes = set of TProcHeadAttribute;
+  
+  TParseProcHeadAttribute = (pphIsMethod, pphIsFunction, pphIsType,
+     pphIsOperator, pphCreateNodes);
+  TParseProcHeadAttributes =  set of TParseProcHeadAttribute;
   
   TProcHeadExtractPos = (phepNone, phepStart, phepName, phepParamList,
     phepResultType);
@@ -158,8 +167,7 @@ type
     procedure BuildClassVarTypeKeyWordFunctions; virtual;
     function UnexpectedKeyWord: boolean;
     // read functions
-    function ReadTilProcedureHeadEnd(IsMethod, IsFunction, IsType, IsOperator,
-        CreateNodes: boolean;
+    function ReadTilProcedureHeadEnd(ParseAttr: TParseProcHeadAttributes;
         var HasForwardModifier: boolean): boolean;
     function ReadConstant(ExceptionOnError, Extract: boolean;
         Attr: TProcHeadAttributes): boolean;
@@ -230,6 +238,11 @@ type
         NodeDesc: TCodeTreeNodeDesc): boolean;
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function PropertyIsDefault(PropertyNode: TCodeTreeNode): boolean;
+    procedure MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
+    function MoveCursorToProcSpecifier(ProcNode: TCodeTreeNode;
+        ProcSpec: TProcedureSpecifier): boolean;
+    function ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
+        ProcSpec: TProcedureSpecifier): boolean;
 
     constructor Create;
     destructor Destroy; override;
@@ -790,12 +803,15 @@ function TPascalParserTool.KeyWordFuncClassVarTypeProc: boolean;
     procedure (a: char) of object;
 }
 var IsFunction, HasForwardModifier: boolean;
+  ParseAttr: TParseProcHeadAttributes;
 begin
 //writeln('[TPascalParserTool.KeyWordFuncClassVarTypeProc]');
   IsFunction:=UpAtomIs('FUNCTION');
   ReadNextAtom;
   HasForwardModifier:=false;
-  ReadTilProcedureHeadEnd(true,IsFunction,true,false,false,HasForwardModifier);
+  ParseAttr:=[pphIsMethod,pphIsType];
+  if IsFunction then Include(ParseAttr,pphIsFunction);
+  ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   Result:=true;
 end;
 
@@ -848,6 +864,7 @@ function TPascalParserTool.KeyWordFuncClassMethod: boolean;
    message <id or number>
 }
 var IsFunction, HasForwardModifier: boolean;
+  ParseAttr: TParseProcHeadAttributes;
 begin
   HasForwardModifier:=false;
   // create class method node
@@ -875,7 +892,9 @@ begin
   CurNode.SubDesc:=ctnsNeedJITParsing;
   // read rest
   ReadNextAtom;
-  ReadTilProcedureHeadEnd(true,IsFunction,false,false,false,HasForwardModifier);
+  ParseAttr:=[pphIsMethod];
+  if IsFunction then Include(ParseAttr,pphIsFunction);
+  ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   // close procedure header
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode;
@@ -946,7 +965,7 @@ begin
       if not Extract then
         ReadNextAtom
       else
-        ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
+        ExtractNextAtom([phpWithoutParamList,phpWithoutParamTypes]*Attr=[],Attr);
       if not ReadParamType(ExceptionOnError,Extract,Attr) then exit;
       if AtomIsChar('=') then begin
         // read default value
@@ -1016,7 +1035,9 @@ end;
 
 function TPascalParserTool.ReadParamType(ExceptionOnError, Extract: boolean;
   Attr: TProcHeadAttributes): boolean;
+var copying: boolean;
 begin
+  copying:=[phpWithoutParamList,phpWithoutParamTypes]*Attr=[];
   Result:=false;
   if AtomIsWord then begin
     if UpAtomIs('ARRAY') then begin
@@ -1024,12 +1045,12 @@ begin
         CreateChildNode;
         CurNode.Desc:=ctnArrayType;
       end;
-      if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+      if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
       if not UpAtomIs('OF') then
         if ExceptionOnError then
           RaiseException('''of'' expected, but '+GetAtom+' found')
         else exit;
-      ReadNextAtom;
+      if not Extract then ReadNextAtom else ExtractNextAtom(copying,Attr);
       if UpAtomIs('CONST') then begin
         if (phpCreateNodes in Attr) then begin
           CreateChildNode;
@@ -1040,7 +1061,7 @@ begin
         if not Extract then
           ReadNextAtom
         else
-          ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
+          ExtractNextAtom(copying,Attr);
         Result:=true;
         exit;
       end;
@@ -1055,7 +1076,7 @@ begin
     if not Extract then
       ReadNextAtom
     else
-      ExtractNextAtom(not (phpWithoutParamList in Attr),Attr);
+      ExtractNextAtom(copying,Attr);
   end else begin
     if ExceptionOnError then
       RaiseException(
@@ -1066,7 +1087,7 @@ begin
 end;
 
 function TPascalParserTool.ReadTilProcedureHeadEnd(
-  IsMethod, IsFunction, IsType, IsOperator, CreateNodes: boolean;
+  ParseAttr: TParseProcHeadAttributes;
   var HasForwardModifier: boolean): boolean;
 { parse parameter list, result type, of object, method specifiers
 
@@ -1103,14 +1124,14 @@ begin
   HasForwardModifier:=false;
   if AtomIsChar('(') then begin
     Attr:=[];
-    if CreateNodes then
+    if pphCreateNodes in ParseAttr then
       Include(Attr,phpCreateNodes);
     ReadParamList(true,false,Attr);
   end;
-  if IsOperator and (not AtomIsChar(':')) then begin
+  if (pphIsOperator in ParseAttr) and (not AtomIsChar(':')) then begin
     // read operator result identifier
     AtomIsIdentifier(true);
-    if CreateNodes then begin
+    if (pphCreateNodes in ParseAttr) then begin
       CreateChildNode;
       CurNode.Desc:=ctnVarDefinition;
       CurNode.EndPos:=CurPos.EndPos;
@@ -1118,12 +1139,12 @@ begin
     end;
     ReadNextAtom;
   end;
-  if IsFunction or IsOperator then begin
+  if ([pphIsFunction,pphIsOperator]*ParseAttr<>[]) then begin
     // read function result type
     if AtomIsChar(':') then begin
       ReadNextAtom;
       AtomIsIdentifier(true);
-      if CreateNodes then begin
+      if (pphCreateNodes in ParseAttr) then begin
         CreateChildNode;
         CurNode.Desc:=ctnIdentifier;
         CurNode.EndPos:=CurPos.EndPos;
@@ -1137,7 +1158,7 @@ begin
   end;
   if UpAtomIs('OF') then begin
     // read 'of object'
-    if not IsType then
+    if not (pphIsType in ParseAttr) then
       RaiseException(
         '; expected, but '+GetAtom+' found');
     ReadNextAtom;
@@ -1155,7 +1176,7 @@ begin
   if (CurPos.StartPos>SrcLen) then
     RaiseException('semicolon not found');
   repeat
-    if IsMethod then
+    if (pphIsMethod in ParseAttr) then
       IsSpecifier:=IsKeyWordMethodSpecifier.DoItUppercase(UpperSrc,
         CurPos.StartPos,CurPos.EndPos-CurPos.StartPos)
     else
@@ -1574,6 +1595,7 @@ function TPascalParserTool.KeyWordFuncProc: boolean;
 var ChildCreated: boolean;
   IsFunction, HasForwardModifier, IsClassProc, IsOperator: boolean;
   ProcNode: TCodeTreeNode;
+  ParseAttr: TParseProcHeadAttributes;
 begin
   if UpAtomIs('CLASS') then begin
     if CurSection<>ctnImplementation then
@@ -1617,8 +1639,10 @@ begin
   end;
   // read rest of procedure head
   HasForwardModifier:=false;
-  ReadTilProcedureHeadEnd(false,IsFunction,false,IsOperator,false,
-                          HasForwardModifier);
+  ParseAttr:=[];
+  if IsFunction then Include(ParseAttr,pphIsFunction);
+  if IsOperator then Include(ParseAttr,pphIsOperator);
+  ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   if ChildCreated then begin
     if HasForwardModifier then
       ProcNode.SubDesc:=ctnsForwardDeclaration;
@@ -3445,8 +3469,88 @@ begin
   Result:=UpAtomIs('DEFAULT');
 end;
 
+procedure TPascalParserTool.MoveCursorToFirstProcSpecifier(
+  ProcNode: TCodeTreeNode);
+// After the call,
+// CurPos will stand on the first proc specifier or on a semicolon
+begin
+  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure) then begin
+    RaiseException('Internal Error in'
+      +' TPascalParserTool.MoveCursorFirstProcSpecifier: '
+      +' (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)');
+  end;
+  MoveCursorToNodeStart(ProcNode.FirstChild);
+  ReadNextAtom;
+  if AtomIsIdentifier(false) then begin
+    // read name
+    ReadNextAtom;
+    if AtomIsChar('.') then begin
+      // read method name
+      ReadNextAtom;
+      ReadNextAtom;
+    end;
+  end;
+  if AtomIsChar('(') then begin
+    // read paramlist
+    ReadTilBracketClose(false);
+    ReadNextAtom;
+  end;
+  if AtomIsChar(':') then begin
+    // read function result type
+    ReadNextAtom;
+    ReadNextAtom;
+  end;
+  // CurPos now stands on the first proc specifier or on a semicolon
+end;
+
+function TPascalParserTool.MoveCursorToProcSpecifier(ProcNode: TCodeTreeNode;
+  ProcSpec: TProcedureSpecifier): boolean;
+begin
+  MoveCursorToFirstProcSpecifier(ProcNode);
+  while (CurPos.StartPos<=ProcNode.FirstChild.EndPos) do begin
+    if AtomIsChar(';') then begin
+      ReadNextAtom;
+    end else begin
+      if UpAtomIs(ProcedureSpecifierNames[ProcSpec]) then begin
+        Result:=true;
+        exit;
+      end;
+      if AtomIsChar('[') then begin
+        ReadTilBracketClose(false);
+        ReadNextAtom;
+      end else if UpAtomIs('MESSAGE') then begin
+        ReadNextAtom;
+        ReadConstant(true,false,[]);
+      end else if UpAtomIs('EXTERNAL') then begin
+        ReadNextAtom;
+        if not AtomIsChar(';') then begin
+          if not UpAtomIs('NAME') then
+            ReadConstant(true,false,[]);
+          if UpAtomIs('NAME') or UpAtomIs('INDEX') then begin
+            ReadNextAtom;
+            ReadConstant(true,false,[]);
+          end;
+        end;
+      end else begin
+        ReadNextAtom;
+      end;
+    end;
+  end;
+  Result:=false;
+end;
+
+function TPascalParserTool.ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;
+  ProcSpec: TProcedureSpecifier): boolean;
+begin
+
+  // ToDo: ppu, ppw, dcu
+
+  Result:=MoveCursorToProcSpecifier(ProcNode,ProcSpec);
+end;
+
 procedure TPascalParserTool.BuildSubTreeForProcHead(ProcNode: TCodeTreeNode);
-var HasForwardModifier, IsFunction, IsOperator: boolean;
+var HasForwardModifier, IsFunction, IsOperator, IsMethod: boolean;
+  ParseAttr: TParseProcHeadAttributes;
 begin
   if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
   if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure)
@@ -3454,6 +3558,7 @@ begin
     RaiseException('[TPascalParserTool.BuildSubTreeForProcHead] '
       +'internal error: invalid ProcNode');
   if (ProcNode.FirstChild.SubDesc and ctnsNeedJITParsing)=0 then exit;
+  IsMethod:=ProcNode.HasParentOfType(ctnClass);
   MoveCursorToNodeStart(ProcNode);
   ReadNextAtom;
   if UpAtomIs('CLASS') then
@@ -3473,8 +3578,11 @@ begin
   end;
   // read rest of procedure head and build nodes
   HasForwardModifier:=false;
-  ReadTilProcedureHeadEnd(false,IsFunction,false,IsOperator,true,
-                          HasForwardModifier);
+  ParseAttr:=[pphCreateNodes];
+  if IsMethod then Include(ParseAttr,pphIsMethod);
+  if IsFunction then Include(ParseAttr,pphIsFunction);
+  if IsOperator then Include(ParseAttr,pphIsOperator);
+  ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
   ProcNode.FirstChild.SubDesc:=ctnsNone;
 end;
 
