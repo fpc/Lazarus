@@ -57,13 +57,20 @@ samplecfg.vbs
 
 call build-lazarus.bat
 
+:: do not create installer, if the required executables are not there
+if not exist %BUILDDIR%\lazarus.exe goto END
+if not exist %BUILDDIR%\startlazarus.exe goto END
+
 :: create the installer
 %ISCC% lazarus.iss >> installer.log
 
 :: delete build dir
 rd /s /q %BUILDDIR% > NUL
 
+:END
+
 SET PATH=%OLDPATH%
 
 ECHO Finished at: >> %LOGFILE%
 %FPCBINDIR%\gdate >> %LOGFILE%
+
