@@ -282,6 +282,45 @@ begin
   if Showing then AdjustSize;
 end;
 
+Procedure TWinControl.DoAutoSize;
+var
+  I : Integer;
+  NewBounds : TRect;
+begin
+  If AutoSize and not AutoSizing then
+    If csAcceptsControls in ControlStyle then
+      If ControlCount > 0 then begin
+        AutoSizing := True;
+        NewBounds := Rect(High(Integer),High(Integer),0,0);
+        For I := 0 to ControlCount - 1 do
+          If Controls[I].Visible then
+            With NewBounds do begin
+              Left := Min(Controls[I].Left, Left);
+              Top := Min(Controls[I].Top, Top);
+              Right := Max(Controls[I].Left + Controls[I].Width, Right);
+              Bottom := Max(Controls[I].Top + Controls[I].Height, Bottom);
+            end;
+        For I := 0 to ControlCount - 1 do
+          If Controls[I] <> nil then begin
+            If Controls[I].Visible then begin
+              Controls[I].Left := Controls[I].Left - NewBounds.Left;
+              Controls[I].Top := Controls[I].Top - NewBounds.Top;
+            end;
+          end;
+        ClientWidth := NewBounds.Right - NewBounds.Left;
+        ClientHeight := NewBounds.Bottom - NewBounds.Top;
+        AutoSizing := False;
+      end;
+end;
+
+Procedure TWinControl.SetAutoSize(const Value : Boolean);
+begin
+  If AutoSize <> Value then begin
+    FAutoSize := Value;
+    DoAutoSize;
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 {  TWinControl BroadCast                                                       }
 {------------------------------------------------------------------------------}
@@ -2299,6 +2338,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.84  2002/09/03 08:07:20  lazarus
+  MG: image support, TScrollBox, and many other things from Andrew
+
   Revision 1.83  2002/09/01 16:11:22  lazarus
   MG: double, triple and quad clicks now works
 
