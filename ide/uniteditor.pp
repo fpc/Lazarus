@@ -47,7 +47,7 @@ uses
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion, GraphType, Graphics, Extctrls, Menus, Splash,
   FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs, InputHistory,
-  LazarusIDEStrConsts;
+  LazarusIDEStrConsts, BaseDebugManager, Debugger;
 
 type
   // --------------------------------------------------------------------------
@@ -89,6 +89,8 @@ type
 //    destructor Destroy; override;
   end;
 
+
+  TCharSet = set of Char;
 
 {---- TSource Editor ---
   TSourceEditor is the class that controls access for the Editor.
@@ -136,7 +138,8 @@ type
     Procedure EditorMouseUp(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
     Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    Function GetWordFromCaret(CaretPos : TPoint) : String;
+    function GetWordFromCaret(const ACaretPos: TPoint) : String;
+    function GetWordFromCaretEx(const ACaretPos: TPoint; const ALeftLimit, ARightLimit: TCharSet): String;
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     Function GetSource : TStrings;
     Procedure SetSource(Value : TStrings);
@@ -1725,51 +1728,39 @@ begin
   Result := GetWordFromCaret(CaretPos);
 end;
 
-Function TSourceEditor.GetWordFromCaret(CaretPos : TPoint) : String;
+function TSourceEditor.GetWordFromCaret(const ACaretPos : TPoint) : String;
+begin
+  Result := GetWordFromCaretEx(ACaretPos, ['A'..'Z', 'a'..'z', '0'..'9'], ['A'..'Z', 'a'..'z', '0'..'9']);
+end;
+
+function TSourceEditor.GetWordFromCaretEx(const ACaretPos: TPoint; const ALeftLimit, ARightLimit: TCharSet): String;
 var
   XLine,YLine : Integer;
-  EditorLine,Texts : String;
-begin
-  YLine := CaretPos.Y;
-  XLine := CaretPos.X;
+  EditorLine: String;
+begin 
+  Result := '';
+  
+  YLine := ACaretPos.Y;
+  XLine := ACaretPos.X;
   EditorLine := FEditor.Lines[YLine-1];
 
   if Length(trim(EditorLine)) = 0 then Exit;
   if XLine > Length(EditorLine) then Exit;
-
+  if not (EditorLine[XLine] in ALeftLimit) then Exit;
+                          
   //walk backwards to a space or non-standard character.
-  while (
-        (upcase(EditorLine[XLine]) in (['A'..'Z'])) or
-        (upcase(EditorLine[XLine]) in (['0'..'9']))
-        ) and
-        (XLine>1) do
-    dec(xLine);
+  while (XLine > 1) and (EditorLine[XLine - 1] in ALeftLimit) do Dec(XLine);
 
-  if ( (XLine > 1) and (XLine < Length(EditorLine))) then Inc(xLine);
+  //chop off the beginning
+  Result := Copy(EditorLine, XLine, Length(EditorLine));  
 
-  Texts := Copy(EditorLine,XLine,length(EditorLine));  //chop off the beginning
+  //start forward search
+  XLine := ACaretPos.X - XLine + 1;
 
-  XLine := 1;
-
-  while (
-        (upcase(Texts[XLine]) in (['A'..'Z'])) or
-        (upcase(Texts[XLine]) in (['0'..'9']))
-        ) and
-        (XLine< Length(Texts)) do
-
-    inc(xLine);
-
-  if (XLine < Length(Texts) ) and (XLine >1)  then dec(xLine);
-
-  if not(
-        (upcase(Texts[XLine]) in (['A'..'Z'])) or
-        (upcase(Texts[XLine]) in (['0'..'9']))
-        ) then
-    dec(xLine);
-
-  Texts := Copy(Texts,1,XLine);
-
-  Result := Texts;
+  while (XLine <= Length(Result)) and (Result[XLine] in ARightLimit) do Inc(Xline);
+  
+  // Strip remainder
+  SetLength(Result, XLine - 1);
 end;
 
 procedure TSourceEditor.LinesDeleted(sender : TObject; FirstLine,
@@ -3496,7 +3487,7 @@ end;
 Procedure TSourceNotebook.HintTimer(sender : TObject);
 var
   Rect : TRect;
-  AHint : String;
+  AHint, HintEval : String;
   cPosition : TPoint;
   TextPosition : TPoint;
   SE : TSourceEditor;
@@ -3523,17 +3514,33 @@ begin
   //Account for the gutter and tabs
   TextPosition.x := cPosition.X-EditorOPts.GutterWidth;
   TextPosition.Y := cPosition.Y - 28;
-  AHint := SE.GetWordAtPosition(TextPosition);
+  
+  if (dcEvaluate in DebugBoss.Commands)
+  and SE.EditorComponent.SelAvail
+  then AHint := SE.EditorComponent.SelText 
+  else AHint := '';
+  if AHint = ''
+  then AHint := SE.GetWordFromCaretEx(
+    SE.GetCaretPosFromCursorPos(TextPosition), 
+    [#33..#255]-['!', '%', '*', '+', '-', '/', '?', ',', ';', ':', '{', '}', '(', ')', '='],
+    [#33..#255]-['!', '%', '*', '+', '-', '/', '?', ',', ';', ':', '{', '}', '(', ')', '=', '.']
+  );
+  
+  SE.GetWordAtPosition(TextPosition);
+
+  //If no hint, then Exit
+  if AHint = '' then Exit;
 
   //defaults for now just to demonstrate
   if lowercase(AHint) = 'integer' then
     AHint := 'type System.integer: -2147483648..214748347 system.pas'
   else
   if lowercase(AHint) = 'real' then
-    AHint := 'type System.Real: Double -system.pas';
-
-  //If no hint, then Exit
-  if AHint = '' then Exit;
+    AHint := 'type System.Real: Double -system.pas'
+  else
+  if DebugBoss.Evaluate(AHint, HintEval) then
+    AHint := AHint + ' = ' + HintEval;
+    
 
   Caret := SE.GetCaretPosfromCursorPos(TextPosition);
   AHint := inttostr(Caret.Y)+','+Inttostr(Caret.X)+' : '+aHint;

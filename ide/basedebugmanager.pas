@@ -40,10 +40,13 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, Forms;
+  Classes, SysUtils, Forms, Debugger;
 
 type
   TBaseDebugManager = class(TComponent)
+  protected
+    function  GetState: TDBGState; virtual; abstract;
+    function  GetCommands: TDBGCommands; virtual; abstract;
   public
     procedure ConnectMainBarEvents; virtual; abstract;
     procedure ConnectSourceNotebookEvents; virtual; abstract;
@@ -58,6 +61,11 @@ type
     
     procedure RunDebugger; virtual; abstract;
     procedure EndDebugging; virtual; abstract;
+    function Evaluate(const AExpression: String; var AResult: String): Boolean; virtual; abstract; // Evaluates the given expression, returns true if valid
+    
+    property Commands: TDBGCommands read GetCommands;              // All current available commands of the debugger
+    property State: TDBGState read GetState;                       // The current state of the debugger
+    
   end;
 
 const
