@@ -217,7 +217,9 @@ uses
 
 { TSourceEditor }
 
-
+{The constructor for @link(TSourceEditor).  AOwner is the @link(TSOurceNotebook) and
+ the AParent is usually a page of a @link(TNotebook)
+}
 constructor TSourceEditor.create(AOwner : TComponent; AParent : TWinControl);
 Begin
   inherited Create;
