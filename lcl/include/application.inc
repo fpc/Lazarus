@@ -983,7 +983,7 @@ begin
       TForm(Instance).HandleNeeded;
       FMainForm := TForm(Instance);
     end else begin
-      if not assigned(FList) then
+      if not Assigned(FList) then
         FList := TList.Create;
       FList.Add(TForm(Instance));
     end;
@@ -1003,6 +1003,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.52  2003/04/29 19:00:43  mattias
+  added package gtkopengl
+
   Revision 1.51  2003/04/20 07:36:29  mattias
   fixed loading form name
 

@@ -52,10 +52,12 @@ type
   protected
     doc: TXMLDocument;
     FModified: Boolean;
+    fDoNotLoad: boolean;
     procedure Loaded; override;
     function FindNode(const APath: String; PathHasValue: boolean): TDomNode;
   public
     constructor Create(const AFilename: String); overload;
+    constructor CreateClean(const AFilename: String);
     destructor Destroy; override;
     procedure Clear;
     procedure Flush;    // Writes the XML file
@@ -87,6 +89,13 @@ constructor TXMLConfig.Create(const AFilename: String);
 begin
   //writeln('TXMLConfig.Create ',AFilename);
   inherited Create(nil);
+  SetFilename(AFilename);
+end;
+
+constructor TXMLConfig.CreateClean(const AFilename: String);
+begin
+  inherited Create(nil);
+  fDoNotLoad:=true;
   SetFilename(AFilename);
 end;
 
@@ -329,7 +338,7 @@ begin
   end;
 
   doc:=nil;
-  if FileExists(AFilename) then
+  if FileExists(AFilename) and (not fDoNotLoad) then
     ReadXMLFile(doc,AFilename);
 
   if not Assigned(doc) then
@@ -347,6 +356,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.9  2003/04/29 19:00:43  mattias
+  added package gtkopengl
+
   Revision 1.8  2002/12/28 11:29:47  mattias
   xmlcfg deletion, focus fixes
 

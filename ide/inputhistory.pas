@@ -362,8 +362,7 @@ var
   XMLConfig: TXMLConfig;
 begin
   try
-    ClearFile(FFilename,true);
-    XMLConfig:=TXMLConfig.Create(FFileName);
+    XMLConfig:=TXMLConfig.CreateClean(FFileName);
     XMLConfig.SetDeleteValue('InputHistory/Version/Value',
       InputHistoryVersion,0);
     SaveToXMLConfig(XMLConfig,'InputHistory/');

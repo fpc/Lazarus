@@ -388,11 +388,11 @@ begin
   if (Val >= FItems.Count) then
     raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Val,FItems.Count]);
   if Val<0 then Val:=-1;
-writeln('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
+//writeln('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
   FItemIndex:=Val;
   if HandleAllocated then
     CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
-writeln('[TCustomListBox.SetItemIndex] END ',FItems.ClassName);
+//writeln('[TCustomListBox.SetItemIndex] END ',FItems.ClassName);
 end;
 
 {------------------------------------------------------------------------------

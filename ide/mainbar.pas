@@ -44,6 +44,7 @@ uses
   Buttons, Menus, ComCtrls, Spin, SysUtils, FileCtrl,
   Controls, Graphics, ExtCtrls, Dialogs, CodeToolManager, CodeCache,
   SynEditKeyCmds, LazConf, LazarusIDEStrConsts, ProjectDefs, Project,
+  BuildLazDialog,
   {$IFDEF EnablePkgs}
   ComponentReg,
   {$ELSE}
@@ -145,13 +146,6 @@ type
     );
   TCodeToolsFlags = set of TCodeToolsFlag;
   
-  // build lazarus flags
-  TBuildLazarusFlag = (
-    blfWithStaticPackages
-    );
-  TBuildLazarusFlags = set of TBuildLazarusFlag;
-
-
   { TMainIDEBar }
 
   TMainIDEBar = class(TForm)

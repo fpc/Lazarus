@@ -537,6 +537,7 @@ type
                      CompPriorityCat: TComponentPriorityCategory): TPkgFile;
     procedure RemoveFile(PkgFile: TPkgFile);
     procedure UnremovePkgFile(PkgFile: TPkgFile);
+    function GetFileDialogInitialDir(const DefaultDirectory: string): string;
     // required dependencies (plus removed required dependencies)
     function FindDependencyByName(const PkgName: string): TPkgDependency;
     function RequiredDepByIndex(Index: integer): TPkgDependency;
@@ -1720,9 +1721,12 @@ begin
 end;
 
 procedure TLazPackage.SetOutputStateFile(const AValue: string);
+var
+  NewStateFile: String;
 begin
-  if FOutputStateFile=AValue then exit;
-  FOutputStateFile:=AValue;
+  NewStateFile:=TrimFilename(AValue);
+  if FOutputStateFile=NewStateFile then exit;
+  FOutputStateFile:=NewStateFile;
 end;
 
 procedure TLazPackage.SetRegistered(const AValue: boolean);
@@ -2205,6 +2209,7 @@ begin
     ComponentPriority.Category:=CompPriorityCat;
   end;
   FFiles.Add(Result);
+  Modified:=true;
 end;
 
 function TLazPackage.AddRemovedFile(const NewFilename, NewUnitName: string;
@@ -2240,6 +2245,15 @@ begin
   FFiles.Add(PkgFile);
   FRemovedFiles.Remove(PkgFile);
   PkgFile.Removed:=false;
+end;
+
+function TLazPackage.GetFileDialogInitialDir(const DefaultDirectory: string
+  ): string;
+begin
+  Result:=AppendPathDelim(TrimFilename(DefaultDirectory));
+  if (SourceDirectories.GetFileReference(Result)=nil)
+  and DirectoryExists(Directory) then
+    Result:=Directory;
 end;
 
 procedure TLazPackage.RemoveRemovedDependency(Dependency: TPkgDependency);

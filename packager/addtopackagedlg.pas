@@ -445,6 +445,8 @@ begin
   OpenDialog:=TOpenDialog.Create(Application);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.InitialDir:=
+      LazPackage.GetFileDialogInitialDir(OpenDialog.InitialDir);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist,ofPathMustExist];
     if OpenDialog.Execute then begin
@@ -465,14 +467,18 @@ procedure TAddToPackageDlg.AddFileButtonClick(Sender: TObject);
 var
   i: Integer;
   CurPFT: TPkgFileType;
+  Filename: String;
 begin
+  Filename:=AddFilenameEdit.Text;
+  LazPackage.LongenFilename(Filename);
+
   FillChar(Params,SizeOf(Params),0);
   Params.AddType:=d2ptUnit;
-  Params.UnitFilename:=AddFilenameEdit.Text;
+  Params.UnitFilename:=Filename;
   Params.FileType:=pftText;
   Params.UnitName:='';
   Params.PkgFileFlags:=[];
-  
+
   if not FileExists(Params.UnitFilename) then begin
     MessageDlg('File not found',
       'File "'+Params.UnitFilename+'" not found.',
@@ -506,6 +512,8 @@ begin
   OpenDialog:=TOpenDialog.Create(Application);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.InitialDir:=
+      LazPackage.GetFileDialogInitialDir(OpenDialog.InitialDir);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist,ofPathMustExist];
     if OpenDialog.Execute then begin
@@ -615,6 +623,8 @@ begin
   OpenDialog:=TOpenDialog.Create(Application);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.InitialDir:=
+      LazPackage.GetFileDialogInitialDir(OpenDialog.InitialDir);
     OpenDialog.Title:=lisOpenFile;
     OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
     if OpenDialog.Execute then begin
@@ -1310,9 +1320,12 @@ procedure TAddToPackageDlg.UpdateAddUnitInfo;
 var
   AnUnitName: string;
   HasRegisterProc: boolean;
+  Filename: String;
 begin
   if Assigned(OnGetUnitRegisterInfo) then begin
-    OnGetUnitRegisterInfo(Self,AddUnitFilenameEdit.Text,
+    Filename:=AddUnitFilenameEdit.Text;
+    LazPackage.LongenFilename(Filename);
+    OnGetUnitRegisterInfo(Self,Filename,
                           AnUnitName,HasRegisterProc);
     AddUnitSrcNameEdit.Text:=AnUnitName;
     AddUnitHasRegisterCheckBox.Checked:=HasRegisterProc;

@@ -3059,6 +3059,24 @@ begin
     ExternalMacroStart+'IncPath',
     '..'+ds+'include;..'+ds+'include'+ds+TargetOS,
     da_Define));
+  // designer/jitform
+  SubDirTempl:=TDefineTemplate.Create('JITForm',ctsJITFormDirectory,
+    '','jitform',da_Directory);
+  SubDirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
+    Format(ctsAddsDirToSourcePath,['lcl']),
+    ExternalMacroStart+'SrcPath',
+      '..'+ds+'..'+ds+'lcl'
+      +';..'+ds+'..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
+      +';'+SrcPath
+    ,da_Define));
+  DirTempl.AddChild(SubDirTempl);
+  // designer/units
+  SubDirTempl:=TDefineTemplate.Create('Designer Units',
+    ctsDesignerUnitsDirectory,'','units',da_Directory);
+  SubDirTempl.AddChild(TDefineTemplate.Create('CompiledSrcPath',
+    ctsCompiledSrcPath,CompiledSrcPathMacroName,'..'+ds+'jitform'+ds,
+    da_Define));
+  DirTempl.AddChild(SubDirTempl);
   MainDir.AddChild(DirTempl);
 
   // images
@@ -3104,6 +3122,17 @@ begin
     ExternalMacroStart+'IncPath',
     '..'+ds+'include;..'+ds+'include'+ds+TargetOS,
     da_Define));
+  // packager/registration
+  SubDirTempl:=TDefineTemplate.Create('Registration',
+    ctsPackagerRegistrationDirectory,'','registration',da_Directory);
+  DirTempl.AddChild(SubDirTempl);
+  // packager/units
+  SubDirTempl:=TDefineTemplate.Create('Packager Units',
+    ctsPackagerUnitsDirectory,'','units',da_Directory);
+  SubDirTempl.AddChild(TDefineTemplate.Create('CompiledSrcPath',
+    ctsCompiledSrcPath,CompiledSrcPathMacroName,'..'+ds+'registration'+ds,
+    da_Define));
+  DirTempl.AddChild(SubDirTempl);
   MainDir.AddChild(DirTempl);
 
   // examples

@@ -1744,8 +1744,7 @@ begin
   if fLayouts=nil then exit;
   Filename:=GetLayoutConfigFilename;
   try
-    ClearFile(Filename,true);
-    XMLConfig:=TXMLConfig.Create(Filename);
+    XMLConfig:=TXMLConfig.CreateClean(Filename);
   except
     on E: Exception do begin
       writeln('ERROR: unable to open miscellaneous options "',Filename,'": ',E.Message);

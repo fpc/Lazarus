@@ -51,13 +51,14 @@ uses
   UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks,
   PackageSystem, OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg,
   CompilerOptions, ExtToolDialog, ExtToolEditDlg, EditDefineTree,
-  DefineTemplates, LazConf, ProjectInspector, ComponentPalette, UnitEditor,
-  AddFileToAPackageDlg, LazarusPackageIntf,
+  BuildLazDialog, DefineTemplates, LazConf, ProjectInspector, ComponentPalette,
+  UnitEditor, AddFileToAPackageDlg, LazarusPackageIntf,
   BasePkgManager, MainBar;
 
 type
   TPkgManager = class(TBasePkgManager)
-    // events
+    // events - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+    // package editor
     function OnPackageEditorCompilePackage(Sender: TObject;
                           APackage: TLazPackage;
                           CompileClean, CompileRequired: boolean): TModalResult;
@@ -73,19 +74,13 @@ type
                                         ): TModalResult;
     function OnPackageEditorSavePackage(Sender: TObject; APackage: TLazPackage;
                                         SaveAs: boolean): TModalResult;
-    function PackageGraphExplorerOpenPackage(Sender: TObject;
-                                           APackage: TLazPackage): TModalResult;
-    procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
-    procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
-    procedure MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
-    procedure mnuConfigCustomCompsClicked(Sender: TObject);
-    procedure mnuOpenRecentPackageClicked(Sender: TObject);
-    procedure mnuPkgOpenPackageClicked(Sender: TObject);
-    procedure OnApplicationIdle(Sender: TObject);
     procedure OnPackageEditorFreeEditor(APackage: TLazPackage);
     procedure OnPackageEditorGetUnitRegisterInfo(Sender: TObject;
                               const AFilename: string; var TheUnitName: string;
                               var HasRegisterProc: boolean);
+    // package graph
+    function PackageGraphExplorerOpenPackage(Sender: TObject;
+                                           APackage: TLazPackage): TModalResult;
     procedure PackageGraphAddPackage(Pkg: TLazPackage);
     procedure PackageGraphBeginUpdate(Sender: TObject);
     procedure PackageGraphChangePackageName(APackage: TLazPackage;
@@ -93,9 +88,20 @@ type
     procedure PackageGraphDeletePackage(APackage: TLazPackage);
     procedure PackageGraphDependencyModified(ADependency: TPkgDependency);
     procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
+
+    // menu
+    procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
+    procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
+    procedure MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
+    procedure mnuConfigCustomCompsClicked(Sender: TObject);
+    procedure mnuOpenRecentPackageClicked(Sender: TObject);
+    procedure mnuPkgOpenPackageClicked(Sender: TObject);
     procedure IDEComponentPaletteEndUpdate(Sender: TObject;
       PaletteChanged: boolean);
     procedure IDEComponentPaletteOpenPackage(Sender: TObject);
+
+    // misc
+    procedure OnApplicationIdle(Sender: TObject);
     procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
                                                      var Description: string);
   private
@@ -121,7 +127,7 @@ type
     function DoGetUnitRegisterInfo(const AFilename: string;
                           var TheUnitName: string; var HasRegisterProc: boolean;
                           IgnoreErrors: boolean): TModalResult;
-    procedure SaveAutoInstallDependencies;
+    procedure SaveAutoInstallDependencies(SetWithStaticPcksFlagForIDE: boolean);
     procedure LoadStaticBasePackages;
     procedure LoadStaticCustomPackages;
     function LoadInstalledPackage(const PackageName: string): TLazPackage;
@@ -130,28 +136,35 @@ type
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
 
+    // initialization and menu
     procedure ConnectMainBarEvents; override;
     procedure ConnectSourceNotebookEvents; override;
     procedure SetupMainBarShortCuts; override;
     procedure SetRecentPackagesMenu; override;
     procedure AddFileToRecentPackages(const Filename: string);
     procedure SaveSettings; override;
-    
-    function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
-
-    procedure LoadInstalledPackages; override;
-    procedure UnloadInstalledPackages;
     procedure UpdateVisibleComponentPalette; override;
-    
+
+    // files
+    function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
+    function OnRenameFile(const OldFilename,
+                          NewFilename: string): TModalResult; override;
+
+    // package graph
     function AddPackageToGraph(APackage: TLazPackage; Replace: boolean): TModalResult;
+    function DoShowPackageGraph: TModalResult;
+    procedure DoShowPackageGraphPathList(PathList: TList); override;
+
+    // project
     function OpenProjectDependencies(AProject: TProject): TModalResult; override;
     procedure AddDefaultDependencies(AProject: TProject); override;
     procedure AddProjectDependency(AProject: TProject; APackage: TLazPackage); override;
     procedure AddProjectRegCompDependency(AProject: TProject;
                           ARegisteredComponent: TRegisteredComponent); override;
     procedure AddProjectLCLDependency(AProject: TProject); override;
+    function OnProjectInspectorOpen(Sender: TObject): boolean; override;
 
-    function ShowConfigureCustomComponents: TModalResult; override;
+    // package editors
     function DoNewPackage: TModalResult; override;
     function DoShowOpenInstalledPckDlg: TModalResult; override;
     function DoOpenPackage(APackage: TLazPackage): TModalResult; override;
@@ -160,27 +173,28 @@ type
     function DoSavePackage(APackage: TLazPackage;
                            Flags: TPkgSaveFlags): TModalResult; override;
     function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; override;
-    function DoShowPackageGraph: TModalResult;
     function DoClosePackageEditor(APackage: TLazPackage): TModalResult; override;
     function DoCloseAllPackageEditors: TModalResult; override;
-    procedure DoShowPackageGraphPathList(PathList: TList); override;
+    function DoAddActiveUnitToAPackage: TModalResult;
+
+    // package compilation
     function DoCompileProjectDependencies(AProject: TProject;
                                Flags: TPkgCompileFlags): TModalResult; override;
     function DoCompilePackage(APackage: TLazPackage;
                               Flags: TPkgCompileFlags): TModalResult; override;
     function DoSavePackageMainSource(APackage: TLazPackage;
                               Flags: TPkgCompileFlags): TModalResult; override;
-    function OnRenameFile(const OldFilename,
-                          NewFilename: string): TModalResult; override;
-    function DoAddActiveUnitToAPackage: TModalResult;
+
+    // package installation
+    procedure LoadInstalledPackages; override;
+    procedure UnloadInstalledPackages;
+    function ShowConfigureCustomComponents: TModalResult; override;
     function DoInstallPackage(APackage: TLazPackage): TModalResult;
     function DoUninstallPackage(APackage: TLazPackage): TModalResult;
     function DoCompileAutoInstallPackages(Flags: TPkgCompileFlags
                                           ): TModalResult; override;
     function DoSaveAutoInstallConfig: TModalResult; override;
     function DoGetIDEInstallPackageOptions: string; override;
-
-    function OnProjectInspectorOpen(Sender: TObject): boolean; override;
   end;
 
 implementation
@@ -738,8 +752,7 @@ begin
   StateFile:=APackage.GetStateFilename;
   try
     CompilerFileDate:=FileAge(CompilerFilename);
-    ClearFile(StateFile,true);
-    XMLConfig:=TXMLConfig.Create(StateFile);
+    XMLConfig:=TXMLConfig.CreateClean(StateFile);
     try
       XMLConfig.SetValue('Compiler/Value',CompilerFilename);
       XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
@@ -919,6 +932,7 @@ begin
           writeln('TPkgManager.CheckIfPackageNeedsCompilation  Required ',
             RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'"'
             ,' is newer than State file ',APackage.IDAsString);
+          Result:=mrYes;
           exit;
         end;
       end;
@@ -1067,11 +1081,17 @@ begin
   Result:=mrOk;
 end;
 
-procedure TPkgManager.SaveAutoInstallDependencies;
+procedure TPkgManager.SaveAutoInstallDependencies(
+  SetWithStaticPcksFlagForIDE: boolean);
 var
   Dependency: TPkgDependency;
   sl: TStringList;
 begin
+  if SetWithStaticPcksFlagForIDE then begin
+    MiscellaneousOptions.BuildLazOpts.WithStaticPackages:=true;
+    MiscellaneousOptions.Save;
+  end;
+
   sl:=TStringList.Create;
   Dependency:=FirstAutoInstallDependency;
   while Dependency<>nil do begin
@@ -1645,7 +1665,7 @@ begin
   end;
   
   // backup old file
-  Result:=MainIDE.DoBackupFile(APackage.Filename,false);
+  Result:=MainIDE.DoBackupFile(APackage.Filename,true);
   if Result=mrAbort then exit;
 
   // delete ambigious files
@@ -1654,8 +1674,7 @@ begin
 
   // save
   try
-    ClearFile(APackage.Filename,true);
-    XMLConfig:=TXMLConfig.Create(APackage.Filename);
+    XMLConfig:=TXMLConfig.CreateClean(APackage.Filename);
     try
       XMLConfig.Clear;
       APackage.SaveToXMLConfig(XMLConfig,'Package/');
@@ -2150,7 +2169,7 @@ begin
       end;
     end;
     if NeedSaving then
-      SaveAutoInstallDependencies;
+      SaveAutoInstallDependencies(true);
 
     // ask user to rebuilt Lazarus now
     Result:=MessageDlg('Rebuild Lazarus?',
@@ -2166,7 +2185,7 @@ begin
     end;
     
     // rebuild Lazarus
-    Result:=MainIDE.DoBuildLazarus([blfWithStaticPackages]);
+    Result:=MainIDE.DoBuildLazarus([blfWithStaticPackages,blfQuick,blfOnlyIDE]);
     if Result<>mrOk then exit;
 
   finally
@@ -2214,7 +2233,7 @@ begin
         Dependency.RemoveFromList(FirstAutoInstallDependency,pdlRequires);
         Dependency.Free;
       end;
-      SaveAutoInstallDependencies;
+      SaveAutoInstallDependencies(true);
     end;
 
     // ask user to rebuilt Lazarus now
@@ -2231,7 +2250,7 @@ begin
     end;
 
     // rebuild Lazarus
-    Result:=MainIDE.DoBuildLazarus([blfWithStaticPackages]);
+    Result:=MainIDE.DoBuildLazarus([blfWithStaticPackages,blfOnlyIDE,blfQuick]);
     if Result<>mrOk then exit;
 
   finally

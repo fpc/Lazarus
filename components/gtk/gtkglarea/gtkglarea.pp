@@ -10,58 +10,96 @@
  *                                                                           *
  *****************************************************************************
 
- Author: Mattias Gaertner
+  Author: Mattias Gaertner
 
 }
-unit gtkglarea;
+unit GTKGLArea;
 
 {$MODE objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, VCLGlobals, LCLLinux, LCLType, glib, gdk, gtk,
-  gtkglarea_int, gl, Controls, gtkint, gtkwinapiwindow, LMessages;
+  Classes, SysUtils, Controls, Graphics, LMessages, VCLGlobals, GTKGLArea_Int,
+  InterfaceBase, GTKInt, LResources, NVGLX;
   
 type
   TCustomGTKGLAreaControl = class(TWinControl)
+  private
+    FCanvas: TCanvas; // only valid at designtime
   protected
+    procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
     function GetWidget: PGtkGLArea;
-    procedure CreateWnd; override;
+    procedure CreateComponent(TheOwner: TComponent); override;
   public
     property Widget: PGtkGLArea read GetWidget;
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
   
   TGTKGLAreaControl = class(TCustomGTKGLAreaControl)
   published
   end;
+  
+procedure Register;
+
 
 implementation
 
-{ TCustomGTKGLArea }
 
 const
-   InitAttrList: array [1..11] of LongInt=
-                    ( GDK_GL_RGBA,
-                    GDK_GL_RED_SIZE, 1,
-                    GDK_GL_GREEN_SIZE, 1,
-                    GDK_GL_BLUE_SIZE, 1,
-                    GDK_GL_DEPTH_SIZE,1,
-                    GDK_GL_DOUBLEBUFFER,
-                    GDK_GL_None
-                    );  
+  InitAttrList: array [1..11] of LongInt = (
+    GDK_GL_RGBA,
+    GDK_GL_RED_SIZE, 1,
+    GDK_GL_GREEN_SIZE, 1,
+    GDK_GL_BLUE_SIZE, 1,
+    GDK_GL_DEPTH_SIZE,1,
+    GDK_GL_DOUBLEBUFFER,
+    GDK_GL_None
+    );
 
-constructor TCustomGTKGLAreaControl.Create(AOwner: TComponent);
+procedure Register;
 begin
-  inherited Create(AOwner);
-  SetBounds(1, 1, 75, 25);
+  RegisterComponents('OpenGL',[TGTKGLAreaControl]);
+end;
+
+{ TCustomGTKGLAreaControl }
+
+constructor TCustomGTKGLAreaControl.Create(TheOwner: TComponent);
+begin
+  inherited Create(TheOwner);
+  ControlStyle:=ControlStyle-[csSetCaption];
+  if (csDesigning in ComponentState) then begin
+    FCanvas := TControlCanvas.Create;
+    TControlCanvas(FCanvas).Control := Self;
+  end else
+    FCompStyle:=csNonLCL;
+  SetBounds(1, 1, 160, 90);
 end;
 
 destructor TCustomGTKGLAreaControl.Destroy;
 begin
+  FCanvas.Free;
+  FCanvas:=nil;
   inherited Destroy;
+end;
+
+procedure TCustomGTKGLAreaControl.WMPaint(var Message: TLMPaint);
+begin
+  Include(FControlState, csCustomPaint);
+  inherited WMPaint(Message);
+  if (csDesigning in ComponentState) and (FCanvas<>nil) then begin
+    with FCanvas do begin
+      Brush.Color:=clLtGray;
+      Pen.Color:=clRed;
+      Rectangle(0,0,Width-1,Height-1);
+      MoveTo(0,0);
+      LineTo(Width,Height);
+      MoveTo(0,Height);
+      LineTo(Width,0);
+    end;
+  end;
+  Exclude(FControlState, csCustomPaint);
 end;
 
 function TCustomGTKGLAreaControl.GetWidget: PGtkGLArea;
@@ -72,45 +110,20 @@ begin
     Result:=nil;
 end;
 
-procedure TCustomGTKGLAreaControl.CreateWnd;
+procedure TCustomGTKGLAreaControl.CreateComponent(TheOwner: TComponent);
 var
-  Params: TCreateParams;
+  NewWidget: Pointer;
 begin
-  CreateParams(Params);
-  with Params do begin
-    if (WndParent = 0) and (Style and WS_CHILD <> 0) then exit;
-  end;
-  
-  Handle := longint(gtk_gl_area_new(pgint(@InitAttrList)));
-  if Widget <> nil then begin
-    gtk_object_set_data(pgtkobject(Widget),'Sender',Self);
-    gtk_object_set_data(pgtkobject(Widget),'Class', Pointer(Self));
-    gtk_object_set_data(pgtkObject(Widget),'Style',0);
-    gtk_object_set_data(pgtkObject(Widget),'ExStyle',0);
-  end else begin
-    writeln('Creation of gtkglarea failed.');
-    Halt(1);
-  end;
-  if Parent <> nil then AddControl;
-  
-  InitializeWnd;
-end;
-
-//-----------------------------------------------------------------------------
-
-procedure InternalInit;
-begin
-  if not InitGl then begin
-    WriteLn('OpenGL is not supported on this system');
-    Halt(2);
+  if csDesigning in ComponentState then
+    inherited CreateComponent(TheOwner)
+  else begin
+    NewWidget:=gtk_gl_area_new(Plongint(@InitAttrList));
+    Handle := longint(NewWidget);
+    TGtkObject(InterfaceObject).FinishComponentCreate(Self,NewWidget,true);
   end;
 end;
-
 
 initialization
-  InternalInit;
-
-finalization
-
+  {$i gtkglarea.lrs}
 
 end.

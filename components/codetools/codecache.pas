@@ -527,8 +527,7 @@ begin
     then begin
       exit;
     end;
-    ClearFile(AFilename,true);
-    XMLConfig:=TXMLConfig.Create(AFilename);
+    XMLConfig:=TXMLConfig.CreateClean(AFilename);
     try
       Result:=SaveIncludeLinksToXML(XMLConfig,'');
       fLastIncludeLinkFile:=AFilename;

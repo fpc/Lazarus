@@ -160,8 +160,7 @@ var XMLConfig: TXMLConfig;
 begin
   XMLFilename:=GetFilename;
   try
-    ClearFile(XMLFilename,true);
-    XMLConfig:=TXMLConfig.Create(XMLFilename);
+    XMLConfig:=TXMLConfig.CreateClean(XMLFilename);
   except
     on E: Exception do begin
       writeln('ERROR: unable to open miscellaneous options "',XMLFilename,'":',E.Message);

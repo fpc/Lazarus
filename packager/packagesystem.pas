@@ -1003,8 +1003,7 @@ procedure TLazPackageGraph.ReplacePackage(OldPackage, NewPackage: TLazPackage);
       end;
       while OldPkgFile.ComponentCount>0 do begin
         PkgComponent:=OldPkgFile.Components[0];
-        OldPkgFile.RemovePkgComponent(PkgComponent);
-        NewPkgFile.AddPkgComponent(PkgComponent);
+        PkgComponent.PkgFile:=NewPkgFile;
       end;
     end;
   end;

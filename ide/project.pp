@@ -1298,8 +1298,7 @@ begin
   end;
   confPath:=SetDirSeparators(confPath);
   try
-    ClearFile(confPath,true);
-    xmlconfig := TXMLConfig.Create(confPath);
+    xmlconfig := TXMLConfig.CreateClean(confPath);
   except
     on E: Exception do begin
       writeln('ERROR: ',E.Message);
@@ -2654,6 +2653,9 @@ end.
 
 {
   $Log$
+  Revision 1.116  2003/04/29 19:00:41  mattias
+  added package gtkopengl
+
   Revision 1.115  2003/04/29 09:31:10  mattias
   changed macro name ProjectDir to ProjPath
 

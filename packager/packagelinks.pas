@@ -448,8 +448,7 @@ begin
 
   XMLConfig:=nil;
   try
-    ClearFile(ConfigFilename,true);
-    XMLConfig:=TXMLConfig.Create(ConfigFilename);
+    XMLConfig:=TXMLConfig.CreateClean(ConfigFilename);
 
     Path:='UserPkgLinks/';
     ANode:=FUserLinks.FindLowest;

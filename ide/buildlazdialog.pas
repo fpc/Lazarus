@@ -56,6 +56,14 @@ type
     );
   TLCLPlatforms = set of TLCLPlatform;
   
+  TBuildLazarusFlag = (
+    blfWithoutIDE,
+    blfOnlyIDE,
+    blfQuick,
+    blfWithStaticPackages
+    );
+  TBuildLazarusFlags = set of TBuildLazarusFlag;
+  
   TBuildLazarusItem = class
   private
     fCommands: array[TMakeMode] of string;
@@ -187,7 +195,7 @@ function ShowConfigureBuildLazarusDlg(
 
 function BuildLazarus(Options: TBuildLazarusOptions;
   ExternalTools: TExternalToolList; Macros: TTransferMacroList;
-  const PackageOptions: string): TModalResult;
+  const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
 
 
 implementation
@@ -249,12 +257,13 @@ end;
 
 function BuildLazarus(Options: TBuildLazarusOptions;
   ExternalTools: TExternalToolList; Macros: TTransferMacroList;
-  const PackageOptions: string): TModalResult;
+  const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
 var
   Tool: TExternalToolOptions;
   i: Integer;
   CurItem: TBuildLazarusItem;
   ExtraOptions: String;
+  CurMakeMode: TMakeMode;
   
   function RemoveProfilerOption(const ExtraOptions: string): string;
   var
@@ -287,7 +296,7 @@ begin
     end;
     Tool.ScanOutputForFPCMessages:=true;
     Tool.ScanOutputForMakeMessages:=true;
-    if Options.CleanAll then begin
+    if Options.CleanAll and (not (blfQuick in Flags)) then begin
       // clean lazarus source directories
       Tool.Title:=lisCleanLazarusSource;
       Tool.WorkingDirectory:='$(LazarusDir)';
@@ -298,29 +307,39 @@ begin
     for i:=0 to Options.Count-1 do begin
       // build item
       CurItem:=Options.Items[i];
-      if CurItem.MakeMode<>mmNone then begin
-        Tool.Title:=CurItem.Description;
-        Tool.WorkingDirectory:='$(LazarusDir)/'+CurItem.Directory;
-        Tool.CmdLineParams:=CurItem.Commands[CurItem.MakeMode];
-        // append extra options
-        ExtraOptions:=Options.ExtraOptions;
-        if CurItem=Options.ItemJITForm then begin
-          ExtraOptions:=RemoveProfilerOption(ExtraOptions);
-        end else if CurItem=Options.ItemIDE then begin
-          if PackageOptions<>'' then begin
-            if ExtraOptions<>'' then ExtraOptions:=ExtraOptions+' ';
-            ExtraOptions:=ExtraOptions+PackageOptions;
-          end;
+      // calculate make mode
+      CurMakeMode:=CurItem.MakeMode;
+      if (blfOnlyIDE in Flags) then
+        if (CurItem=Options.ItemIDE) then
+          CurMakeMode:=mmCleanBuild
+        else
+          CurMakeMode:=mmNone;
+      if (blfWithoutIDE in Flags) and (CurItem=Options.ItemIDE) then
+        CurMakeMode:=mmNone;
+      if (blfQuick in Flags) and (CurMakeMode=mmCleanBuild) then
+        CurMakeMode:=mmBuild;
+      if CurMakeMode=mmNone then continue;
+      Tool.Title:=CurItem.Description;
+      Tool.WorkingDirectory:='$(LazarusDir)/'+CurItem.Directory;
+      Tool.CmdLineParams:=CurItem.Commands[CurItem.MakeMode];
+      // append extra options
+      ExtraOptions:=Options.ExtraOptions;
+      if CurItem=Options.ItemJITForm then begin
+        ExtraOptions:=RemoveProfilerOption(ExtraOptions);
+      end else if CurItem=Options.ItemIDE then begin
+        if PackageOptions<>'' then begin
+          if ExtraOptions<>'' then ExtraOptions:=ExtraOptions+' ';
+          ExtraOptions:=ExtraOptions+PackageOptions;
         end;
-        if ExtraOptions<>'' then
-          Tool.CmdLineParams:=Tool.CmdLineParams+' OPT='''+ExtraOptions+'''';
-        // append target OS
-        if Options.TargetOS<>'' then
-          Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.TargetOS;
-        // run
-        Result:=ExternalTools.Run(Tool,Macros);
-        if Result<>mrOk then exit;
       end;
+      if ExtraOptions<>'' then
+        Tool.CmdLineParams:=Tool.CmdLineParams+' OPT='''+ExtraOptions+'''';
+      // append target OS
+      if Options.TargetOS<>'' then
+        Tool.CmdLineParams:=Tool.CmdLineParams+' OS_TARGET='+Options.TargetOS;
+      // run
+      Result:=ExternalTools.Run(Tool,Macros);
+      if Result<>mrOk then exit;
     end;
     Result:=mrOk;
   finally

@@ -449,8 +449,7 @@ var
   XMLConfig: TXMLConfig;
 begin
   try
-    ClearFile(FFileName,true);
-    XMLConfig:=TXMLConfig.Create(FFileName);
+    XMLConfig:=TXMLConfig.CreateClean(FFileName);
     XMLConfig.SetValue('CodeToolsOptions/Version/Value',
       CodeToolsOptionsVersion);
 
