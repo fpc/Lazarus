@@ -93,7 +93,7 @@ type
       );
       gdiFont: (
       {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
-        GDIFontObject: PPangoFont;
+        GDIFontObject: PPangoFontDescription;
       {$else}
         GDIFontObject: PGdkFont;
         LogFont: TLogFont;// for now font info is stored as well, later query font params
@@ -460,6 +460,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.44  2003/09/09 17:16:24  ajgenius
+  start implementing pango routines for GTK2
+
   Revision 1.43  2003/09/06 20:23:53  ajgenius
   fixes for gtk2
   added more wrappers for gtk1/gtk2 converstion and sanity

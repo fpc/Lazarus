@@ -1122,8 +1122,7 @@ begin
 
   if (IsValidDC(DC) and (TDeviceContext(DC).Drawable <> nil)) then begin
     DefGdkWindow := TDeviceContext(DC).Drawable;
-    gdk_window_get_geometry(TDeviceContext(DC).Drawable, nil, nil, nil,
-      nil, @Depth);
+    Depth := gdk_drawable_get_depth(TDeviceContext(DC).Drawable);
   end else
     DefGdkWindow:=nil;
   If Depth = -1 then
@@ -3831,13 +3830,13 @@ begin
     If Drawable = nil then
       Result := GetSystemMetrics(SM_CXSCREEN)
     else
-      gdk_window_get_geometry(Drawable, nil, nil, @Result, nil, nil);
+      gdk_drawable_get_size(Drawable, @Result, nil);
 
   VERTRES : { Vertical height in pixels }
     If Drawable = nil then
       Result := GetSystemMetrics(SM_CYSCREEN)
     else
-      gdk_window_get_geometry(Drawable, nil, nil, nil, @Result, nil);
+      gdk_drawable_get_size(Drawable, nil, @Result);
 
   BITSPIXEL : { Number of used bits per pixel = depth }
     If Drawable = nil then
@@ -4125,8 +4124,6 @@ begin
                   end;
                 gbPixmap:
                   If GDIPixmapObject <> nil then begin
-                    //gdk_window_get_geometry(GDIPixmapObject, nil, nil,
-                     // @biWidth, @biHeight, @biBitCount);
                      biBitCount := gdk_drawable_get_depth(GDIPixmapObject);
                      gdk_drawable_get_size(GDIPixmapObject,@biWidth, @biHeight);
                   end;
@@ -6310,8 +6307,26 @@ const
       Item := Item^.Next;
     end;
   {$Else}
+  var
+    Item: PGList;
+    parent : PGTKWidget;
   begin
-    result := nil;
+    Result := nil;
+    parent := gtk_widget_get_parent(Pointer(hndMenu));
+    if parent = nil then Exit;
+
+    Item := gtk_container_children(PGTKContainer(parent));
+    while Item <> nil do
+    begin
+      if (Item^.Data <> Pointer(hndMenu)) // exclude ourself
+      and gtk_is_radio_menu_item(Item^.Data)
+      and (GroupIndex = Integer(gtk_object_get_data(Item^.Data, GROUPIDX_DATANAME)))
+      then begin
+        Result := gtk_radio_menu_item_get_group (PGtkRadioMenuItem(Item^.Data));
+        Exit;
+      end;
+      Item := Item^.Next;
+    end;
   {$EndIf}
   end;
 
@@ -8716,6 +8731,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.277  2003/09/09 17:16:24  ajgenius
+  start implementing pango routines for GTK2
+
   Revision 1.276  2003/09/09 04:15:08  ajgenius
   more updates for GTK2, more GTK1 wrappers, removal of more ifdef's, partly fixed signals
 

@@ -53,6 +53,9 @@ type
   public
     function GetCursorPos(var lpPoint: TPoint ): Boolean; override;
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
+    {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+    function PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+    {$EndIf}
   end;
 
 
@@ -71,7 +74,110 @@ procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPix
 
 implementation
 
- {------------------------------------------------------------------------------
+{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+function TGTK2Object.PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+
+  Function Alignment : TPangoAlignment;
+  begin
+    If (Flags and DT_Right) = DT_Right then
+      Result := PANGO_ALIGN_RIGHT
+    else
+      If (Flags and DT_CENTER) = DT_CENTER then
+        Result := PANGO_ALIGN_CENTER
+    else
+      Result := PANGO_ALIGN_LEFT;
+  end;
+
+  Function TopOffset : Longint;
+  begin
+    If (Flags and DT_BOTTOM) = DT_BOTTOM then
+      Result := DT_BOTTOM
+    else
+      If (Flags and DT_VCENTER) = DT_VCENTER then
+        Result := DT_VCENTER
+    else
+      Result := DT_Top;
+  end;
+
+var
+  Layout : PPangoLayout;
+  UseDescr : PPangoFontDescription;
+  X, Y, Width, Height : Integer;
+begin
+  if (Str=nil) or (Str[0]=#0) then exit;
+  Assert(False, Format('trace:> [Tgtk2Object.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+
+  Result := Longint(IsValidDC(DC));
+  if Boolean(Result)
+  then with TDeviceContext(DC) do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [Tgtk2Object.DrawText] Uninitialized GC');
+      Result := 0;
+    end
+    else begin
+      if (Str<>nil) and (Count>0) then begin
+        if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
+          UseDescr := GetDefaultFontDescr(false);
+          UnRef := false;
+          UnderLine := false;
+        end else begin
+          UseDescr := CurrentFont^.GDIFontObject;
+          UnRef := False;
+          UnderLine := (CurrentFont^.LogFont.lfUnderline<>0);
+        end;
+
+        Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
+        pango_layout_set_font_description(Layout, UseDescr);
+        pango_layout_set_single_paragraph_mode(Layout, (Flags and DT_SingleLine) = DT_SingleLine);
+        pango_layout_set_wrap(Layout, PANGO_WRAP_WORD);
+
+        If ((Flags and DT_WordBreak) = DT_WordBreak)and not
+          Pango_layout_get_single_paragraph_mode(Layout)
+        then
+          pango_layout_set_width(Layout, Rect.Right - Rect.Left)
+        else
+          pango_layout_set_width(Layout, 0);
+
+        pango_layout_set_alignment(Layout, Alignment);
+  
+        pango_layout_set_text(Layout, Str, Count);
+        pango_layout_get_pixel_size(Layout, @Width, @Height);
+
+        Case TopOffset of
+          DT_Top : Y := Rect.Top;
+          DT_Bottom : Y := Rect.Bottom - Height;
+          DT_Center : Y := Rect.Top + (Rect.Bottom - Rect.Top)/2 - Height/2;
+        end;
+
+        Case Alignment of
+          PANGO_ALIGN_LEFT : X := Rect.Left;
+          PANGO_ALIGN_RIGHT : X := Rect.Right - Width;
+          PANGO_ALIGN_CENTER : X := Rect.Left + (Rect.Right - Rect.Left)/2 - Width/2;
+        end;
+
+        if ((Flags and DT_CalcRect) = DT_CalcRect) then begin
+          g_object_unref(Layout);
+          Rect.Left := X;
+          Rect.Top := Y;
+          Rect.Right := X + Width;
+          Rect.Bottom := Y + Height;
+          result := 0;
+          exit;
+        end;
+
+        gdk_draw_layout(drawable, gc, X, Y, Layout);
+        g_object_unref(Layout);
+        Result := 0;
+  end;
+  Assert(False, Format('trace:> [Tgtk2Object.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
+    [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+end;
+{$EndIf}
+
+{------------------------------------------------------------------------------
   Function: GetCursorPos
   Params:  lpPoint: The cursorposition
   Returns: True if succesful
@@ -179,6 +285,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2003/09/09 17:16:24  ajgenius
+  start implementing pango routines for GTK2
+
   Revision 1.6  2003/09/09 04:15:08  ajgenius
   more updates for GTK2, more GTK1 wrappers, removal of more ifdef's, partly fixed signals
 
