@@ -7053,8 +7053,37 @@ end;
     SW_SHOWNORMAL, SW_MINIMIZE, SW_SHOWMAXIMIZED
 ------------------------------------------------------------------------------}
 function TgtkObject.ShowWindow(hWnd: HWND; nCmdShow: Integer): Boolean;
+var
+  GtkWindow: PGtkWindow;
 begin
   Result:=false;
+  {$IFDEF Gtk1}
+  if nCmdShow<>SW_SHOWNORMAL then
+    writeln('TgtkObject.ShowWindow  not implemented yet');
+  exit;
+  {$ELSE}
+
+  GtkWindow:=PGtkWindow(hWnd);
+  if GtkWindow=nil then
+    RaiseException('TgtkObject.ShowWindow  hWnd is nil');
+  
+  case nCmdShow of
+  
+  SW_SHOWNORMAL:
+    begin
+      gtk_window_deiconify(GtkWindow);
+      gtk_window_unmaximize(GtkWindow);
+    end;
+    
+  SW_MINIMIZE:
+    gtk_window_iconify(GtkWindow);
+
+  SW_SHOWMAXIMIZED:
+    gtk_window_maximize(GtkWindow);
+
+  end;
+  Result:=true;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -7851,6 +7880,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.215  2003/03/11 08:14:22  mattias
+  implemented ShowWindow for gtk2
+
   Revision 1.214  2003/03/10 20:10:28  ajgenius
   initial changes to fix mask vs. region clipping
 

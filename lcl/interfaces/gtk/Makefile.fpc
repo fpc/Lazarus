@@ -15,7 +15,7 @@ units=interfaces
 implicitunits=gtkdef gtkint gtkwinapiwindow
 
 [compiler]
-options=-gl
+options=-gl -dgtk1
 unitdir=../../units .
 unittargetdir=../../units/gtk
 
