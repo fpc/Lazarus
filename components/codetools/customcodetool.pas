@@ -39,8 +39,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeTree, CodeAtom, SourceLog, KeywordFuncLists,
-  BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo, SourceChanger;
+  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, SourceLog,
+  KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree, TypInfo,
+  SourceChanger;
 
 type
   TCustomCodeTool = class(TObject)
@@ -56,6 +57,8 @@ type
     procedure BuildDefaultKeyWordFunctions; virtual;
     procedure SetScanner(NewScanner: TLinkScanner); virtual;
     procedure RaiseException(const AMessage: string); virtual;
+    procedure RaiseExceptionFmt(const AMessage: string;
+      const args : array of const); virtual;
     procedure DoDeleteNodes; virtual;
   public
     Tree: TCodeTree;
@@ -230,6 +233,12 @@ begin
   raise ECodeToolError.Create(Self,AMessage);
 end;
 
+procedure TCustomCodeTool.RaiseExceptionFmt(const AMessage: string;
+  const args: array of const);
+begin
+  RaiseException(Format(AMessage,args));
+end;
+
 procedure TCustomCodeTool.SetScanner(NewScanner: TLinkScanner);
 begin
   if NewScanner=FScanner then exit;
@@ -248,23 +257,23 @@ end;
 function TCustomCodeTool.NodeSubDescToStr(Desc, SubDesc: integer): string;
 begin
   if SubDesc<>0 then
-    Result:='(unknown subdescriptor '+IntToStr(SubDesc)+')'
+    Result:=Format(ctsUnknownSubDescriptor,[IntToStr(SubDesc)])
   else
     Result:='';
   case Desc of
   ctnProcedure:
     begin
-      if (SubDesc and ctnsForwardDeclaration)>0 then Result:='Forward';
+      if (SubDesc and ctnsForwardDeclaration)>0 then Result:=ctsForward;
     end;
   ctnProcedureHead, ctnBeginBlock:
     begin
-      if (SubDesc and ctnsNeedJITParsing)>0 then Result:='Unparsed';
+      if (SubDesc and ctnsNeedJITParsing)>0 then Result:=ctsUnparsed;
     end;
   ctnClass:
     begin
       Result:='';
-      if (SubDesc and ctnsForwardDeclaration)>0 then Result:='Forward';
-      if (SubDesc and ctnsNeedJITParsing)>0 then Result:=Result+'Unparsed';
+      if (SubDesc and ctnsForwardDeclaration)>0 then Result:=ctsForward;
+      if (SubDesc and ctnsNeedJITParsing)>0 then Result:=Result+ctsUnparsed;
     end;
   end;
 end;
@@ -405,21 +414,19 @@ begin
         Result:=true
       else begin
         if ExceptionOnNotFound then
-          RaiseException(
-            'identifier expected, but keyword '+GetAtom+' found')
+          RaiseExceptionFmt(ctsIdentExpectedButKeyWordFound,[GetAtom])
         else
           Result:=false;
       end;
     end else begin
       if ExceptionOnNotFound then
-        RaiseException(
-          'identifier expected, but '+GetAtom+' found')
+        RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom])
       else
         Result:=false;
     end;
   end else begin
     if ExceptionOnNotFound then
-      RaiseException('unexpected end of file (identifier expected)')
+      RaiseException(ctsIdentExpectedButEOFFound)
     else
       Result:=false;
   end;
@@ -1080,8 +1087,7 @@ begin
     AntiCloseBracket:=')';
   end else begin
     if ExceptionOnNotFound then
-      RaiseException(
-        'bracket open expected, but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsBracketOpenExpectedButAtomFound,[GetAtom]);
     exit;
   end;
   Start:=CurPos;
@@ -1092,8 +1098,7 @@ begin
     or UpAtomIs('END') then begin
       CurPos:=Start;
       if ExceptionOnNotFound then
-        RaiseException(
-          'bracket '+CloseBracket+' not found');
+        RaiseExceptionFmt(ctsBracketNotFound,[CloseBracket]);
       exit;
     end;
     if (AtomIsChar('(')) or (AtomIsChar('[')) then begin
@@ -1118,8 +1123,7 @@ begin
     AntiCloseBracket:='(';
   end else begin
     if ExceptionOnNotFound then
-      RaiseException(
-        'bracket close expected, but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsBracketCloseExpectedButAtomFound,[GetAtom]);
     exit;
   end;
   Start:=CurPos;
@@ -1130,8 +1134,7 @@ begin
     or UpAtomIs('END') or UpAtomIs('BEGIN') then begin
       CurPos:=Start;
       if ExceptionOnNotFound then
-        RaiseException(
-          'bracket '+CloseBracket+' not found');
+        RaiseExceptionFmt(ctsBracketNotFound,[CloseBracket]);
       exit;
     end;
     if (AtomIsChar(')')) or (AtomIsChar(']')) then begin
@@ -1315,7 +1318,7 @@ begin
     Result:=nil;
   if (Result=nil) and ExceptionOnNotFound then begin
     MoveCursorToCleanPos(P);
-    RaiseException('no node found at cursor');
+    RaiseException(ctsNoNodeFoundAtCursor);
   end;
 end;
 
@@ -1501,7 +1504,7 @@ begin
   if (Scanner<>nil) and (Scanner.MainCode<>nil) then
     Result:=TCodeBuffer(Scanner.MainCode).Filename
   else
-    Result:='(unknown mainfilename)';
+    Result:=ctsUnknownMainFilename;
 end;
 
 { ECodeToolError }

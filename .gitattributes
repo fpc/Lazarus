@@ -148,6 +148,7 @@ ide/include/ide.inc svneol=native#text/pascal
 ide/include/linux/lazconf.inc svneol=native#text/pascal
 ide/include/netbsd/lazconf.inc svneol=native#text/pascal
 ide/include/win32/lazconf.inc svneol=native#text/pascal
+ide/inputhistory.pas svneol=native#text/pascal
 ide/insertwatch.lrs svneol=native#text/pascal
 ide/keymapping.pp svneol=native#text/pascal
 ide/lazarus.pp svneol=native#text/pascal

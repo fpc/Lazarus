@@ -49,9 +49,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeTree, CodeAtom, PascalParserTool, MethodJumpTool,
-  SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner, CodeCache, AVL_Tree,
-  TypInfo, SourceChanger;
+  Classes, SysUtils, CodeToolsStrConsts, CodeTree, CodeAtom, PascalParserTool,
+  MethodJumpTool, SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner,
+  CodeCache, AVL_Tree, TypInfo, SourceChanger;
 
 type
   TNewClassPart = (ncpPrivateProcs, ncpPrivateVars,
@@ -305,12 +305,12 @@ var Parts: array[TPropPart] of TAtomPosition;
   function ReadSimpleSpec(SpecWord, SpecParam: TPropPart): boolean;
   begin
     if Parts[SpecWord].StartPos>=1 then
-      RaiseException('property specifier already defined: '+GetAtom);
+      RaiseExceptionFmt(ctsPropertySpecifierAlreadyDefined,[GetAtom]);
     Parts[SpecWord]:=CurPos;
     ReadNextAtom;
     Result:=AtomIsWord;
     if not Result then
-      RaiseException('expected identifier but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsIdentExpectedButAtomFound,[GetAtom]);
     if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos) then exit;
     Parts[SpecParam]:=CurPos;
@@ -342,7 +342,7 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] Checking Property ',GetAtom)
 {$IFDEF CTDEBUG}
 writeln('[TCodeCompletionCodeTool.CompleteProperty] error parsing param list');
 {$ENDIF}
-      RaiseException('error in paramlist');
+      RaiseException(ctsErrorInParamList);
     end;
     CleanParamList:=GetExtraction;
     Parts[ppParamList].EndPos:=CurPos.EndPos;
@@ -361,19 +361,19 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] no type : found -> ignore pr
   or UpAtomIs('END') or AtomIsChar(';') or (not AtomIsIdentifier(false))
   or AtomIsKeyWord then begin
     // no type name found -> ignore this property
-    RaiseException('property type expected, but '+GetAtom+' found');
+    RaiseExceptionFmt(ctsPropertTypeExpectedButAtomFound,[GetAtom]);
   end;
   Parts[ppType]:=CurPos;
   // parse specifiers
   ReadNextAtom;
   if UpAtomIs('INDEX') then begin
     if Parts[ppIndexWord].StartPos>=1 then 
-      RaiseException('index specifier redefined');
+      RaiseException(ctsIndexSpecifierRedefined);
     Parts[ppIndexWord]:=CurPos;
     ReadNextAtom;
     if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
       CurPos.EndPos-CurPos.StartPos) then 
-      RaiseException('index parameter expected, but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsIndexParameterExpectedButAtomFound,[GetAtom]);
     Parts[ppIndex].StartPos:=CurPos.StartPos;
     if not ReadConstant(true,false,[]) then exit;
     Parts[ppIndex].EndPos:=LastAtoms.GetValueAt(0).EndPos;
@@ -388,12 +388,12 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] no type : found -> ignore pr
         exit;
     end else if UpAtomIs('DEFAULT') then begin
       if Parts[ppDefaultWord].StartPos>=1 then 
-        RaiseException('default specifier redefined');
+        RaiseException(ctsDefaultSpecifierRedefined);
       Parts[ppDefaultWord]:=CurPos;
       ReadNextAtom;
       if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos) then 
-        RaiseException('default parameter expected, but '+GetAtom+' found');
+        RaiseExceptionFmt(ctsDefaultParameterExpectedButAtomFound,[GetAtom]);
       Parts[ppDefault].StartPos:=CurPos.StartPos;
       if not ReadConstant(true,false,[]) then exit;
       Parts[ppDefault].EndPos:=LastAtoms.GetValueAt(0).EndPos;
@@ -401,11 +401,11 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] no type : found -> ignore pr
       if not ReadSimpleSpec(ppImplementsWord,ppImplements) then exit;
     end else if UpAtomIs('NODEFAULT') then begin
       if Parts[ppNoDefaultWord].StartPos>=1 then 
-        RaiseException('nodefault specifier defined twice');
+        RaiseException(ctsNodefaultSpecifierDefinedTwice);
       Parts[ppNoDefaultWord]:=CurPos;
       ReadNextAtom;
     end else
-      RaiseException('; expected, but '+GetAtom+' found');
+      RaiseExceptionFmt(ctsCharExpectedButAtomFound,[';',GetAtom]);
   end;
   if (CurPos.StartPos>PropNode.EndPos) then
     RaiseException('Reparsing error (Complete Property)');

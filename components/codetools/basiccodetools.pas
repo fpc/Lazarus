@@ -33,7 +33,7 @@ unit BasicCodeTools;
 interface
 
 uses
-  Classes, SysUtils, SourceLog, KeywordFuncLists;
+  Classes, SysUtils, CodeToolsStrConsts, SourceLog, KeywordFuncLists;
 
 //-----------------------------------------------------------------------------
 // functions / procedures

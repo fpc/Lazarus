@@ -14,7 +14,7 @@ options=-gl
 
 [target]
 units=allcodetoolunits
-implicitunits=avl_tree basiccodetools codecache sourcelog \
+implicitunits=codetoolsstrconsts avl_tree basiccodetools codecache sourcelog \
    customcodetool pascalparsertool finddeclarationtool stdcodetools \
    methodjumptool eventcodetool codecompletiontool codeatom codetree \
    definetemplates expreval keywordfunclists linkscanner sourcechanger \

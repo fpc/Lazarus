@@ -19,7 +19,7 @@ uses
   StdCodeTools, MethodJumpTool, EventCodeTool, CodeCompletionTool, LinkScanner,
   FindDeclarationCache, BasicCodeTools, CodeTree, CodeAtom, SourceChanger,
   CodeToolMemManager, CodeCache, KeywordFuncLists, SourceLog, ExprEval,
-  DefineTemplates, FileProcs, AVL_Tree;
+  DefineTemplates, FileProcs, AVL_Tree, CodeToolsStrConsts;
 
 
 implementation
@@ -29,6 +29,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/03/28 20:31:01  lazarus
+  MG: added inputhistory
+
   Revision 1.8  2002/01/31 16:52:24  lazarus
   MG: added base class for mem managers and started node cache
 
