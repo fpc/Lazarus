@@ -34,6 +34,9 @@ The log was moved to end of file, search for: The_Log
 }
 
 {$Define UseClipRect}
+{$IFDEF WIN32}
+{$Define GoodClipping}
+{$ENDIF}
 unit Grids;
 
 {$mode objfpc}{$H+}
@@ -1827,8 +1830,7 @@ begin
   OldPenMode := Canvas.Pen.Mode;
   OldPenColor := Canvas.Pen.Color;
   Canvas.Pen.Color := clWhite;
-  Canvas.Pen.Color := clBlue;
-  Canvas.Pen.Mode := pmNOTXOR;
+  Canvas.Pen.Mode := pmXOR;
   Canvas.MoveTo(X,0);
   Canvas.LineTo(X,FGCache.MaxClientXY.Y);
   Canvas.Pen.Mode := OldPenMode;
@@ -2034,6 +2036,13 @@ begin
     FillChar(ScrollInfo, SizeOf(ScrollInfo), 0);
     ScrollInfo.cbSize := SizeOf(ScrollInfo);
     ScrollInfo.fMask := SIF_RANGE or SIF_PAGE or SIF_DISABLENOSCROLL;
+    {$ifdef Unix}
+    ScrollInfo.fMask := ScrollInfo.fMask or SIF_UPDATEPOLICY;
+    if goThumbTracking in Options then
+      ScrollInfo.ntrackPos := SB_POLICY_CONTINUOUS
+    else
+      ScrollInfo.ntrackPos := SB_POLICY_DISCONTINUOUS;
+    {$endif}
     ScrollInfo.nMin := 0;
     ScrollInfo.nMax := ARange;
     ScrollInfo.nPage := APage;
@@ -2760,7 +2769,6 @@ end;
 procedure TCustomGrid.WMEraseBkgnd(var message: TLMEraseBkgnd);
 begin
   message.Result:=1;
-  //DebugLn('TCustomGrid.WMEraseBkgnd');
 end;
 
 procedure TCustomGrid.WMGetDlgCode(var Msg: TLMNoParams);
@@ -2778,23 +2786,26 @@ begin
   DebugLn('HSCROLL: Code=',IntToStr(message.ScrollCode),' Position=', IntToStr(message.Pos));
   {$Endif}
 
+  if not FGCache.ValidGrid then
+    Exit;
+
   if FEditor<>nil then
     EditorGetValue;
 
-    TL:=  Integer(FGCache.AccumWidth[ FGCache.MaxTopLeft.X ]) - FGCAche.FixedWidth;
-    CTL:= Integer(FGCache.AccumWidth[ FtopLeft.X ]) - FGCache.FixedWidth;
+  TL:=  Integer(FGCache.AccumWidth[ FGCache.MaxTopLeft.X ]) - FGCAche.FixedWidth;
+  CTL:= Integer(FGCache.AccumWidth[ FtopLeft.X ]) - FGCache.FixedWidth;
 
-    case message.ScrollCode of
-        // Scrolls to start / end of the text
-      SB_TOP:        C := 0;
-      SB_BOTTOM:     C := TL;
-        // Scrolls one line up / down
-      SB_LINEDOWN:   C := CTL + GetColWidths( FTopLeft.X );
-      SB_LINEUP:     C := CTL - GetColWidths( FTopLeft.X - 1);
-        // Scrolls one page of lines up / down
-      SB_PAGEDOWN:   C := CTL + FGCache.ClientWidth;
-      SB_PAGEUP:     C := CTL - FGCache.ClientWidth;
-        // Scrolls to the current scroll bar position
+  case message.ScrollCode of
+      // Scrolls to start / end of the text
+    SB_TOP:        C := 0;
+    SB_BOTTOM:     C := TL;
+      // Scrolls one line up / down
+    SB_LINEDOWN:   C := CTL + GetColWidths( FTopLeft.X );
+    SB_LINEUP:     C := CTL - GetColWidths( FTopLeft.X - 1);
+      // Scrolls one page of lines up / down
+    SB_PAGEDOWN:   C := CTL + FGCache.ClientWidth;
+    SB_PAGEUP:     C := CTL - FGCache.ClientWidth;
+      // Scrolls to the current scroll bar position
     SB_THUMBPOSITION:
       C := Message.Pos;
     SB_THUMBTRACK:
@@ -2802,44 +2813,45 @@ begin
         C := message.Pos
       else
         Exit;
-        // Ends scrolling
-      SB_ENDSCROLL: Exit;
-    end;
-    
-    if C > TL then C := TL else
-    if C < 0 then C := 0;
-    
-
-    {$Ifdef dbgScroll}
-    DebugLn('---- Position=',IntToStr(C), ' FixedWidth=',IntToStr(FGCache.FixedWidth));
-    {$Endif}
-    ScrollBarPosition(SB_HORZ, C);
-    C:= C + FGCache.FixedWidth + Integer(BorderStyle);
-    {$Ifdef dbgScroll}
-    DebugLn('---- Position=',IntToStr(C), ' FixedWidth=',IntToStr(FGCache.FixedWidth));
-    {$Endif}
-    TL:=OffsetToColRow(True, False, C, FGCache.TLColOff);
-    {$Ifdef dbgScroll}
-    DebugLn('---- Offset=',IntToStr(C), ' TL=',IntToStr(TL),' TLColOFf=', IntToStr(FGCache.TLColOff));
-    {$Endif}
-    if not (goSmoothScroll in Options) then FGCache.TLColOff:=0;
-
-    if TL<>FTopLeft.X then begin
-      Inc(FUpdateScrollBarsCount);
-      TryScrollTo(Tl, FTopLeft.Y);
-      Dec(FUpdateScrollBarsCount);
-    end else
-    if goSmoothScroll in Options then begin
-      CacheVisibleGrid;
-      {$IFDEF GoodClipping}
-      R.Topleft:=Point(FGCache.FixedWidth, 0);
-      R.BottomRight:= FGCache.MaxClientXY;
-      InvalidateRect(Handle, @R, false);
-      {$ELSE}
-      Invalidate;
-      {$ENDIF}
-    end;
+      // Ends scrolling
+    SB_ENDSCROLL:
+      Exit;
   end;
+  
+  if C > TL then C := TL else
+  if C < 0 then C := 0;
+  
+
+  {$Ifdef dbgScroll}
+  DebugLn('---- Position=',IntToStr(C), ' FixedWidth=',IntToStr(FGCache.FixedWidth));
+  {$Endif}
+  ScrollBarPosition(SB_HORZ, C);
+  C:= C + FGCache.FixedWidth + Integer(BorderStyle);
+  {$Ifdef dbgScroll}
+  DebugLn('---- Position=',IntToStr(C), ' FixedWidth=',IntToStr(FGCache.FixedWidth));
+  {$Endif}
+  TL:=OffsetToColRow(True, False, C, FGCache.TLColOff);
+  {$Ifdef dbgScroll}
+  DebugLn('---- Offset=',IntToStr(C), ' TL=',IntToStr(TL),' TLColOFf=', IntToStr(FGCache.TLColOff));
+  {$Endif}
+  if not (goSmoothScroll in Options) then FGCache.TLColOff:=0;
+
+  if TL<>FTopLeft.X then begin
+    Inc(FUpdateScrollBarsCount);
+    TryScrollTo(Tl, FTopLeft.Y);
+    Dec(FUpdateScrollBarsCount);
+  end else
+  if goSmoothScroll in Options then begin
+    CacheVisibleGrid;
+    {$IFDEF GoodClipping}
+    R.Topleft:=Point(FGCache.FixedWidth, 0);
+    R.BottomRight:= FGCache.MaxClientXY;
+    InvalidateRect(Handle, @R, false);
+    {$ELSE}
+    Invalidate;
+    {$ENDIF}
+  end;
+end;
 
 procedure TCustomGrid.WMVScroll(var message: TLMVScroll);
 var
@@ -2857,64 +2869,64 @@ begin
 
   if FEditor<>nil then EditorGetValue;
 
-    TL:=  Integer(FGCache.AccumHeight[ FGCache.MaxTopLeft.Y ]) - FGCache.FixedHeight;
-    CTL:= Integer(FGCache.AccumHeight[ FtopLeft.Y ]) - FGCache.FixedHeight;
+  TL:=  Integer(FGCache.AccumHeight[ FGCache.MaxTopLeft.Y ]) - FGCache.FixedHeight;
+  CTL:= Integer(FGCache.AccumHeight[ FtopLeft.Y ]) - FGCache.FixedHeight;
 
-    case message.ScrollCode of
-        // Scrolls to start / end of the text
-      SB_TOP:        C := 0;
-      SB_BOTTOM:     C := TL;
-        // Scrolls one line up / down
-      SB_LINEDOWN:   C := CTL + GetRowHeights( FTopleft.Y );
-      SB_LINEUP:     C := CTL - GetRowHeights( FTopleft.Y - 1 );
-        // Scrolls one page of lines up / down
-      SB_PAGEDOWN:   C := CTL + FGCache.ClientHeight;
-      SB_PAGEUP:     C := CTL - FGCache.ClientHeight;
-        // Scrolls to the current scroll bar position
-    SB_THUMBPOSITION:
-      C := message.Pos;
-    SB_THUMBTRACK:
-      if goThumbTracking in Options then
-        C := message.Pos
-      else
-        Exit;
-        // Ends scrolling
-      SB_ENDSCROLL: Exit;
-    end;
-    
-    if C > Tl then C := TL else
-    if C < 0 then C := 0;
-
-    {$Ifdef dbgScroll}
-    DebugLn('---- Position=',IntToStr(C), ' FixedHeight=',IntToStr(FGCache.FixedHeight));
-    {$Endif}
-    ScrollBarPosition(SB_VERT, C);
-    C:= C + FGCache.FixedHeight + Integer(BorderStyle);
-    {$Ifdef dbgScroll}
-    DebugLn('---- NewPosition=',IntToStr(C));
-    {$Endif}
-    TL:=OffsetToColRow(False, False, C, FGCache.TLRowOff);
-    {$Ifdef dbgScroll}
-    DebugLn('---- Offset=',IntToStr(C), ' TL=',IntToStr(TL), ' TLRowOFf=', IntToStr(FGCache.TLRowOff));
-    {$Endif}
-    if not (goSmoothScroll in Options) then FGCache.TLRowOff:=0;
-
-    if TL<>FTopLeft.Y then begin
-      Inc(FUpdateScrollBarsCount);
-      TryScrollTo(FTopLeft.X, Tl);
-      Dec(FUpdateScrollBarsCount);
-    end else
-    if goSmoothScroll in Options then begin
-      CacheVisibleGrid;
-      {$IFDEF GoodClipping}
-      R.TopLeft:=Point(0, FGCache.FixedHeight);
-      R.BottomRight:=FGCache.MaxClientXY;
-      InvalidateRect(Handle, @R, false);
-      {$ELSE}
-      Invalidate;
-      {$ENDIF}
-    end;
+  case message.ScrollCode of
+      // Scrolls to start / end of the text
+    SB_TOP:        C := 0;
+    SB_BOTTOM:     C := TL;
+      // Scrolls one line up / down
+    SB_LINEDOWN:   C := CTL + GetRowHeights( FTopleft.Y );
+    SB_LINEUP:     C := CTL - GetRowHeights( FTopleft.Y - 1 );
+      // Scrolls one page of lines up / down
+    SB_PAGEDOWN:   C := CTL + FGCache.ClientHeight;
+    SB_PAGEUP:     C := CTL - FGCache.ClientHeight;
+      // Scrolls to the current scroll bar position
+  SB_THUMBPOSITION:
+    C := message.Pos;
+  SB_THUMBTRACK:
+    if goThumbTracking in Options then
+      C := message.Pos
+    else
+      Exit;
+      // Ends scrolling
+    SB_ENDSCROLL: Exit;
   end;
+  
+  if C > Tl then C := TL else
+  if C < 0 then C := 0;
+
+  {$Ifdef dbgScroll}
+  DebugLn('---- Position=',IntToStr(C), ' FixedHeight=',IntToStr(FGCache.FixedHeight));
+  {$Endif}
+  ScrollBarPosition(SB_VERT, C);
+  C:= C + FGCache.FixedHeight + Integer(BorderStyle);
+  {$Ifdef dbgScroll}
+  DebugLn('---- NewPosition=',IntToStr(C));
+  {$Endif}
+  TL:=OffsetToColRow(False, False, C, FGCache.TLRowOff);
+  {$Ifdef dbgScroll}
+  DebugLn('---- Offset=',IntToStr(C), ' TL=',IntToStr(TL), ' TLRowOFf=', IntToStr(FGCache.TLRowOff));
+  {$Endif}
+  if not (goSmoothScroll in Options) then FGCache.TLRowOff:=0;
+
+  if TL<>FTopLeft.Y then begin
+    Inc(FUpdateScrollBarsCount);
+    TryScrollTo(FTopLeft.X, Tl);
+    Dec(FUpdateScrollBarsCount);
+  end else
+  if goSmoothScroll in Options then begin
+    CacheVisibleGrid;
+    {$IFDEF GoodClipping}
+    R.TopLeft:=Point(0, FGCache.FixedHeight);
+    R.BottomRight:=FGCache.MaxClientXY;
+    InvalidateRect(Handle, @R, false);
+    {$ELSE}
+    Invalidate;
+    {$ENDIF}
+  end;
+end;
 
 procedure TCustomGrid.WMChar(var message: TLMChar);
 var
