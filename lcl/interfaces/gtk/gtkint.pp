@@ -95,6 +95,7 @@ type
     function CreateDefaultPen: PGdiObject;
     procedure LoadXPMFromLazResource(const ResourceName: string;
       Window: PGdkWindow; var PixmapImg, PixmapMask: PGdkPixmap);
+    procedure LoadFromXPMFile(Bitmap: TObject; Filename: PChar);
 
     procedure SetRCFilename(const AValue: string);
     procedure ParseRCFile;
@@ -310,6 +311,8 @@ const
   aGtkSelectionMode: Array[Boolean] of TGtkSelectionMode =
     (GTK_SELECTION_SINGLE,GTk_SELECTION_EXTENDED);
 
+  { file dialog }
+  
 type
   PFileSelHistoryEntry = ^TFileSelHistoryEntry;
   TFileSelHistoryEntry = record
@@ -324,6 +327,21 @@ type
       FilterIndex: integer;
       MenuItem: PGtkWidget;
     end;
+    
+  { Menu }
+  
+type
+  TCheckMenuItemDrawProc =
+    procedure (check_menu_item:PGtkCheckMenuItem; area:PGdkRectangle); cdecl;
+    
+  TMenuSizeRequestProc =
+    procedure (widget:PGtkWidget; requisition:PGtkRequisition); cdecl;
+
+const
+  OldCheckMenuItemDrawProc: TCheckMenuItemDrawProc = nil;
+  OldMenuSizeRequestProc: TMenuSizeRequestProc = nil;
+  OldCheckMenuItemToggleSize: integer = 0;
+
 
 // some callbacks
 function GTKHiddenRealizeAfterCB(Widget: PGtkWidget; Data: Pointer): GBoolean; forward; cdecl;
@@ -399,6 +417,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.57  2002/08/15 13:37:57  lazarus
+  MG: started menuitem icon, checked, radio and groupindex
+
   Revision 1.56  2002/08/13 07:08:24  lazarus
   MG: added gdkpixbuf.pp and changes from Andrew Johnson
 
