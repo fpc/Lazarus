@@ -229,7 +229,7 @@ type
     procedure InternOnApplyWindowLayout(ALayout: TIDEWindowLayout);
     procedure SetFileName(const NewFilename: string);
     function FileHasChangedOnDisk: boolean;
-    function GetXMLCfg: TXMLConfig;
+    function GetXMLCfg(CleanConfig: boolean): TXMLConfig;
     procedure FileUpdated;
     procedure SetTestBuildDirectory(const AValue: string);
   public
@@ -941,7 +941,7 @@ var XMLConfig: TXMLConfig;
 
 begin
   try
-    XMLConfig:=GetXMLCfg;
+    XMLConfig:=GetXMLCfg(false);
     FileVersion:=XMLConfig.GetValue('EnvironmentOptions/Version/Value',0);
     
     // language
@@ -1146,7 +1146,7 @@ var XMLConfig: TXMLConfig;
 
 begin
   try
-    XMLConfig:=GetXMLCfg;
+    XMLConfig:=GetXMLCfg(true);
     XMLConfig.SetValue('EnvironmentOptions/Version/Value',EnvOptsVersion);
 
     // language
@@ -1377,11 +1377,14 @@ begin
   FFileHasChangedOnDisk:=Result;
 end;
 
-function TEnvironmentOptions.GetXMLCfg: TXMLConfig;
+function TEnvironmentOptions.GetXMLCfg(CleanConfig: boolean): TXMLConfig;
 begin
   if FileHasChangedOnDisk or (FXMLCfg=nil) then begin
     FXMLCfg.Free;
-    FXMLCfg:=TXMLConfig.Create(Filename);
+    if CleanConfig then
+      FXMLCfg:=TXMLConfig.CreateClean(Filename)
+    else
+      FXMLCfg:=TXMLConfig.Create(Filename);
     ObjectInspectorOptions.Filename:=Filename;
     ObjectInspectorOptions.CustomXMLCfg:=FXMLCfg;
   end;
