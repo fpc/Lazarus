@@ -44,7 +44,7 @@ end;
 procedure TBitMap.Assign(Source: TPersistent);
 var
   SrcBitmap: TBitmap;
-  {$IFDEF UseFPImage}
+  {$IFNDEF DisableFPImage}
   SrcFPImage: TFPCustomImage;
   IntfImage: TLazIntfImage;
   ImgHandle,ImgMaskHandle: HBitmap;
@@ -68,7 +68,7 @@ begin
     FImage:=SrcBitmap.FImage;
     FImage.Reference;
     //writeln('TBitMap.Assign B ',Width,',',Height,' ',HandleAllocated,' RefCount=',FImage.RefCount);
-  {$IFDEF UseFPImage}
+  {$IFNDEF DisableFPImage}
   end else if Source is TFPCustomImage then begin
     SrcFPImage:=TFPCustomImage(Source);
     IntfImage:=TLazIntfImage.Create(0,0);
@@ -377,7 +377,7 @@ procedure TBitmap.ReadStream(Stream: TStream; Size: Longint);
       'TBitmap.ReadStream: Invalid windows bitmap (header)');
   end;
 
-{$IFDEF UseFPImage}
+{$IFNDEF DisableFPImage}
 var
   MemStream: TMemoryStream;
   StreamType: TBitmapNativeType;
@@ -409,7 +409,7 @@ begin
       MemStream.Free;
   end;
 end;
-{$ELSE if not UseFPImage}
+{$ELSE if DisableFPImage}
 var
   MemStream: TMemoryStream;
 
@@ -549,7 +549,7 @@ begin
     FImage.SaveStream:=MemStream;
   end;
 end;
-{$ENDIF  if not UseFPImage}
+{$ENDIF  if DisableFPImage}
 
 procedure TBitmap.LoadFromMimeStream(Stream: TStream; const MimeType: string);
 begin
@@ -578,7 +578,7 @@ begin
 end;
 
 procedure TBitmap.WriteStream(Stream: TStream; WriteSize: Boolean);
-{$IFNDEF UseFPImage}
+{$IFDEF DisableFPImage}
 Type
   TBITMAPHEADER = packed record
     FileHeader : tagBitmapFileHeader;
@@ -696,7 +696,7 @@ var
   Header: TBitmapHeader;
 {$ENDIF}
 begin
-  {$IFDEF UseFPImage}
+  {$IFNDEF DisableFPImage}
   WriteStreamWithFPImage(Stream,WriteSize,TFPWriterBMP);
   if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
     FImage.SaveStreamType:=bnWinBitmap;
@@ -747,7 +747,7 @@ begin
   FImage.SaveStream.Position:=0;
 end;
 
-{$IFDEF UseFPImage}
+{$IFNDEF DisableFPImage}
 procedure TBitmap.ReadStreamWithFPImage(Stream: TStream; Size: Longint;
   ReaderClass: TFPCustomImageReaderClass);
 var
@@ -917,7 +917,7 @@ begin
   Result := 0;
 end;
 
-{$IFDEF UseFPImage}
+{$IFNDEF DisableFPImage}
 function TBitmap.GetFPReaderForFileExt(const FileExtension: string
   ): TFPCustomImageReaderClass;
 begin
@@ -1011,6 +1011,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.57  2004/02/02 22:01:51  mattias
+  fpImage is now used as default, deactivate it with -dDisableFPImage
+
   Revision 1.56  2004/01/26 11:55:35  mattias
   fixed resizing synedit
 

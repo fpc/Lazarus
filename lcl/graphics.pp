@@ -33,7 +33,7 @@ interface
 
 uses
   SysUtils, Classes, FPCAdds,
-  {$IFDEF UseFPImage}
+  {$IFNDEF DisableFPImage}
   FPImage, FPReadPNG, FPWritePNG, FPReadBMP, FPWriteBMP, IntfGraphics,
   {$ENDIF}
   LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLIntf, LResources,
@@ -521,7 +521,7 @@ type
       FormatID: TClipboardFormat); virtual;
     procedure GetSupportedSourceMimeTypes(List: TStrings); virtual;
     function GetDefaultMimeType: string; virtual;
-    {$IFDEF UseFPImage}
+    {$IFNDEF DisableFPImage}
     class function GetFPReaderForFileExt(
       const FileExtension: string): TFPCustomImageReaderClass; virtual;
     class function GetFPWriterForFileExt(
@@ -868,7 +868,7 @@ type
     FTransparentColor: TColor;
     FTransparentMode: TTransparentMode;
     FInternalState: TBitmapInternalState;
-    {$IFNDEF UseFPImage}
+    {$IFDEF DisableFPImage}
     FWidth: integer;
     FHeight: integer;
     {$ENDIF}
@@ -907,7 +907,7 @@ type
     procedure SetWidth(NewWidth: Integer); override;
     procedure WriteData(Stream: TStream); override;
     procedure StoreOriginalStream(Stream: TStream; Size: integer); virtual;
-    {$IFDEF UseFPImage}
+    {$IFNDEF DisableFPImage}
     procedure ReadStreamWithFPImage(Stream: TStream; Size: Longint;
                                ReaderClass: TFPCustomImageReaderClass); virtual;
     procedure WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
@@ -938,7 +938,7 @@ type
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
     Function ReleaseHandle: HBITMAP;
     function ReleasePalette: HPALETTE;
-    {$IFDEF UseFPImage}
+    {$IFNDEF DisableFPImage}
     class function GetFPReaderForFileExt(
       const FileExtension: string): TFPCustomImageReaderClass; override;
     class function GetFPWriterForFileExt(
@@ -972,7 +972,7 @@ type
 
   TPortableNetworkGraphic = class(TBitmap)
   public
-    {$IFDEF UseFPImage}
+    {$IFNDEF DisableFPImage}
     class function GetFPReaderForFileExt(
       const FileExtension: string): TFPCustomImageReaderClass; override;
     class function GetFPWriterForFileExt(
@@ -997,7 +997,7 @@ function GraphicFilter(GraphicClass: TGraphicClass): string;
 function GraphicExtension(GraphicClass: TGraphicClass): string;
 function GraphicFileMask(GraphicClass: TGraphicClass): string;
 function GetGraphicClassForFileExtension(const FileExt: string): TGraphicClass;
-{$IFDEF UseFPImage}
+{$IFNDEF DisableFPImage}
 function GetFPImageReaderForFileExtension(const FileExt: string
   ): TFPCustomImageReaderClass;
 function GetFPImageWriterForFileExtension(const FileExt: string
@@ -1261,6 +1261,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.107  2004/02/02 22:01:51  mattias
+  fpImage is now used as default, deactivate it with -dDisableFPImage
+
   Revision 1.106  2004/02/02 19:13:31  mattias
   started reading TImageList in Delphi format
 

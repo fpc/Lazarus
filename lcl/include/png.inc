@@ -20,7 +20,7 @@
 
 { TPortableNetworkGraphic }
 
-{$IFDEF UseFPImage}
+{$IFNDEF DisableFPImage}
 function TPortableNetworkGraphic.GetFPReaderForFileExt(
   const FileExtension: string): TFPCustomImageReaderClass;
 begin
@@ -42,7 +42,7 @@ end;
 
 procedure TPortableNetworkGraphic.ReadStream(Stream: TStream; Size: Longint);
 begin
-{$IFDEF UseFPImage}
+{$IFNDEF DisableFPImage}
   ReadStreamWithFPImage(Stream,Size,TFPReaderPNG);
 {$ELSE}
   RaiseGDBException('TPortableNetworkGraphic.ReadStream needs FPImage');
@@ -52,7 +52,7 @@ end;
 procedure TPortableNetworkGraphic.WriteStream(Stream: TStream;
   WriteSize: Boolean);
 begin
-{$IFDEF UseFPImage}
+{$IFNDEF DisableFPImage}
   WriteStreamWithFPImage(Stream,WriteSize,TFPWriterPNG);
 {$ELSE}
   RaiseGDBException('TPortableNetworkGraphic.WriteStream needs FPImage');

@@ -269,7 +269,7 @@ begin
 end;
 
 procedure TPixmap.WriteStream(Stream: TStream; WriteSize: Boolean);
-{$IFDEF UseFPImage}
+{$IFNDEF DisableFPImage}
 begin
   WriteStreamWithFPImage(Stream,WriteSize,TFPWriterBMP);
   if (FImage.SaveStream<>nil) and (FImage.SaveStreamType=bnNone) then
@@ -286,6 +286,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/02/02 22:01:51  mattias
+  fpImage is now used as default, deactivate it with -dDisableFPImage
+
   Revision 1.23  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

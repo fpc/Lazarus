@@ -190,7 +190,7 @@ begin
     FModified := False;
 end;
 
-{$IFDEF UseFPImage}
+{$IFNDEF DisableFPImage}
 function TGraphic.GetFPReaderForFileExt(const FileExtension: string
   ): TFPCustomImageReaderClass;
 begin

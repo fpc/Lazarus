@@ -33,7 +33,7 @@ uses
   // base types and base functions
   LCLProc, LCLType, GraphMath, VCLGlobals, FileCtrl, LMessages,
   // the interface base
-  InterfaceBase, {$IFDEF UseFPImage}IntfGraphics,{$ENDIF}
+  InterfaceBase, {$IFNDEF DisableFPImage}IntfGraphics,{$ENDIF}
   // components and functions
   Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
@@ -48,6 +48,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2004/02/02 22:01:51  mattias
+  fpImage is now used as default, deactivate it with -dDisableFPImage
+
   Revision 1.7  2004/01/26 11:58:37  mattias
   excluded dirsel.pp from makefile
 

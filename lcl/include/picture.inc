@@ -47,7 +47,7 @@ begin
   inherited Create;
   Add('bmp', 'Bitmaps', TBitmap);
   Add('xpm', 'Pixmap', TPixmap);
-  {$IFDEF UseFPImage}
+  {$IFNDEF DisableFPImage}
   Add('png', 'Portable Network Graphic', TPortableNetworkGraphic);
   {$ENDIF}
   {$IFDEF HasIconGraphic}
@@ -316,7 +316,7 @@ begin
   Result:=GetPicFileFormats.FindExt(FileExt);
 end;
 
-{$IFDEF UseFPImage}
+{$IFNDEF DisableFPImage}
 function GetFPImageReaderForFileExtension(const FileExt: string
   ): TFPCustomImageReaderClass;
 var
@@ -539,7 +539,7 @@ begin
     SetGraphic(TPicture(Source).Graphic)
   else if Source is TGraphic then
     SetGraphic(TGraphic(Source))
-  {$IFDEF UseFPImage}
+  {$IFNDEF DisableFPImage}
   else if Source is TFPCustomImage then
     Bitmap.Assign(Source)
   {$ENDIF}
