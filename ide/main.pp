@@ -7893,6 +7893,7 @@ begin
         Project1.MainUnitInfo.Source,
         AComponent.ClassName,AComponent.Name,
         NewClassName,NewName,true);
+      Project1.MainUnitInfo.Modified:=true;
       ApplyCodeToolChanges;
       if not BossResult then begin
         DoJumpToCodeToolBossError;
@@ -8675,6 +8676,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.562  2003/05/09 14:21:25  mattias
+  added published properties for gtkglarea
+
   Revision 1.561  2003/05/09 13:24:32  mattias
   fixed renaming unit
 
