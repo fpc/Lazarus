@@ -273,6 +273,7 @@ procedure TWin32WSCustomForm.SetBorderIcons(const AForm: TCustomForm;
 begin
   UpdateWindowStyle(AForm.Handle, CalcBorderIconsFlags(AForm), 
     WS_SYSMENU or WS_MINIMIZEBOX or WS_MAXIMIZEBOX);
+  SetIcon(AForm, 0);
 end;
 
 procedure TWin32WSCustomForm.SetBounds(const AWinControl: TWinControl; 
@@ -299,8 +300,21 @@ begin
 end;
 
 procedure TWin32WSCustomForm.SetIcon(const AForm: TCustomForm; const AIcon: HICON);
+var
+  winHandle: HWND;
+  iconHandle: HICON;
 begin
-  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, Windows.LoadIcon(MainInstance, 'MAINICON'));
+  winHandle := AForm.Handle;
+  if AForm.BorderStyle = bsDialog then
+    iconHandle := 0
+{ TODO: fix icon handling
+  else
+  if AIcon <> 0 then
+    iconHandle := AIcon
+}
+  else
+    iconHandle := Windows.LoadIcon(MainInstance, 'MAINICON');
+  SendMessage(AForm.Handle, WM_SETICON, ICON_BIG, iconHandle);
 end;
 
 procedure TWin32WSCustomForm.ShowModal(const ACustomForm: TCustomForm);

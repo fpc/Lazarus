@@ -450,12 +450,14 @@ Begin
   Begin
     Style := CS_DBLCLKS{CS_HRedraw or CS_VRedraw};
     LPFnWndProc := @WindowProc;
-    CbClsExtra := 40;
-    CbWndExtra := 40;
-    HInstance := System.HInstance;
-    HIcon := LoadIcon(0, IDI_Application);
-    HCursor := LoadCursor(0, IDC_Arrow);
-    HBrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
+    CbClsExtra := 0;
+    CbWndExtra := 0;
+    hInstance := System.HInstance;
+    hIcon := Windows.LoadIcon(MainInstance, 'MAINICON');
+    if hIcon = 0 then
+      hIcon := Windows.LoadIcon(0, IDI_APPLICATION);
+    hCursor := LoadCursor(0, IDC_ARROW);
+    hbrBackground := 0; {GetSysColorBrush(Color_BtnFace);}
     LPSzMenuName := Nil;
     LPSzClassName := @ClsName;
   End;
@@ -717,6 +719,9 @@ end;
 
 {
   $Log$
+  Revision 1.306  2005/01/31 17:09:17  micha
+  use 0 icon handle for bsdialog forms
+
   Revision 1.305  2005/01/15 10:09:23  micha
   fix bug 558: title bar redraw (win32)
   USE_SYNCHRONIZE enabled per default for 1.9.x
