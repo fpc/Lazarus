@@ -612,7 +612,8 @@ Begin
           AMenu:=TMenuItem(Sender).GetParentMenu;
           if (AMenu<>nil) and (AMenu.Parent<>nil)
           and (AMenu.Parent is TCustomForm)
-          and TCustomForm(AMenu.Parent).HandleAllocated then
+          and TCustomForm(AMenu.Parent).HandleAllocated 
+	  and not (csDestroying in AMenu.Parent.ComponentState) then
             DrawMenuBar(TCustomForm(AMenu.Parent).Handle);
         End
         Else
@@ -3027,6 +3028,9 @@ End;
 
 {
   $Log$
+  Revision 1.185  2004/04/11 07:00:30  micha
+  speedup: don't redraw menubar if form is being destroyed
+
   Revision 1.184  2004/04/10 17:54:52  micha
   - added: [win32] mousewheel default handler sends scrollbar messages
   - fixed: lmsetcursor; partial todo
