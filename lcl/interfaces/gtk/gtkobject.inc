@@ -36,13 +36,31 @@ end;
   Destructor for the class.
  ------------------------------------------------------------------------------}
 destructor TgtkObject.Destroy;
+const
+  GDITYPENAME: array[TGDIType] of String = ('gdiBitmap', 'gdiBrush', 'gdiFont', 'gdiPen', 'gdiRegion');
 var
   n: Integer;
   p: PMsg;
+  GDITypeCount: array[TGDIType] of Integer;
+  GDIType: TGDIType;
 begin
-  if (FDeviceContexts.Count > 0) or (FGDIObjects.Count > 0)
+  if (FDeviceContexts.Count > 0) 
   then begin
-    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased DCs and %d unreleased GDIObjects' ,[FDeviceContexts.Count, FGDIObjects.Count]));
+    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased DCs' ,[FDeviceContexts.Count]));
+  end;
+  if (FGDIObjects.Count > 0)
+  then begin
+    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased GDIObjects, a detailed dump follows:' ,[FGDIObjects.Count]));
+
+    for GDIType := Low(GDIType) to High(GDIType) do 
+      GDITypeCount[GDIType] := 0;
+    for n := 0 to FGDIObjects.Count - 1 do
+      Inc(GDITypeCount[PGdiObject(FGDIObjects[n])^.GDIType]);
+    for GDIType := Low(GDIType) to High(GDIType) do 
+    begin
+      if GDITypeCount[GDIType] > 0 
+      then WriteLN(Format('[TgtkObject.Destroy]   %s: %d', [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
+    end
   end;
   if FMessageQueue.Count > 0 
   then begin
@@ -2698,6 +2716,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.33  2001/03/17 17:30:02  lazarus
+  MWE:
+    + Added some detailed info on unreleased GDIObjects
+
   Revision 1.32  2001/03/15 14:40:09  lazarus
   MG: added some mouse cursors
 
