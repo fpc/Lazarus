@@ -582,6 +582,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.7  2002/02/22 13:37:19  lazarus
+  MG: fixed saving undo limit
+
   Revision 1.6  2002/02/20 23:33:24  lazarus
   MWE:
     + Published OnClick for TMenuItem

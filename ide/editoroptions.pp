@@ -4251,6 +4251,7 @@ end;
 procedure TEditorOptionsForm.OkButtonClick(Sender:TObject);
 var res: TModalResult;
   SynOptions: TSynEditorOptions;
+  i: integer;
 begin
   SaveCurCodeTemplate;
   
@@ -4278,6 +4279,19 @@ begin
   EditorOpts.DoubleClickLine:=DoubleClickLineCheckBox.Checked;
   EditorOpts.FindTextAtCursor:=FindTextAtCursorCheckBox.Checked;
   EditorOpts.UseSyntaxHighlight:=UseSyntaxHighlightCheckBox.Checked;
+  i:=StrToIntDef(UndoLimitComboBox.Text,32767);
+  if i<1 then i:=1;
+  if i>32767 then i:=32767;
+  EditorOpts.UndoLimit:=i;
+  i:=StrToIntDef(TabWidthsComboBox.Text,2);
+  if i<1 then i:=1;
+  if i>20 then i:=20;
+  EditorOpts.TabWidths:=i;
+  i:=StrToIntDef(BlockIndentComboBox.Text,2);
+  if i<1 then i:=1;
+  if i>20 then i:=20;
+  EditorOpts.BlockIndent:=i;
+
   
   // color
   SaveAllFileExtensions;
