@@ -136,6 +136,7 @@ type
     itmViewCodeExplorer : TMenuItem;
     itmViewForms : TMenuItem;
     itmViewMessage : TMenuItem;
+    itmViewDebugWindows: TMenuItem;
 
     itmProjectNew: TMenuItem;
     itmProjectOpen: TMenuItem;
@@ -362,7 +363,6 @@ type
     procedure LoadMainMenu;
     procedure LoadMenuShortCuts;
     procedure LoadSpeedbuttons;
-
 
     // files/units
     function DoNewEditorUnit(NewUnitType:TNewUnitType;
@@ -1394,24 +1394,11 @@ begin
   itmViewMessage.Caption := 'Messages';
   itmViewMessage.OnClick := @mnuViewMessagesClick;
   mnuView.Add(itmViewMessage);
-
-  itmViewWatches := TMenuItem.Create(Self);
-  itmViewWatches.Name:='itmViewWatches';
-  itmViewWatches.Caption := 'Watches';
-  itmViewWatches.OnClick := @mnuViewWatchesClick;
-  mnuView.Add(itmViewWatches);
-
-  itmViewBreakPoints := TMenuItem.Create(Self);
-  itmViewBreakPoints.Name:='itmViewBreakPoints';
-  itmViewBreakPoints.Caption := 'BreakPoints';
-  itmViewBreakPoints.OnClick := @mnuViewBreakPointsClick;
-  mnuView.Add(itmViewBreakPoints);
-
-  itmViewDebugOutput := TMenuItem.Create(Self);
-  itmViewDebugOutput.Name:='itmViewDebugOutput';
-  itmViewDebugOutput.Caption := 'Debug output';
-  itmViewDebugOutput.OnClick := @mnuViewDebugOutputClick;
-  mnuView.Add(itmViewDebugOutput);
+              
+  itmViewDebugWindows := TMenuItem.Create(Self);
+  itmViewDebugWindows.Name := 'itmViewDebugWindows';
+  itmViewDebugWindows.Caption := 'Debug windows';
+  mnuView.Add(itmViewDebugWindows);
 
 //--------------
 // Project
@@ -4915,9 +4902,13 @@ begin
 end;
 
 function TMainIDE.GetRunCommandLine: string;
-begin
-  Result:=Project.RunParameterOptions.LaunchingApplicationPathPlusParams;
-  if Result='' then begin
+begin     
+  if Project.RunParameterOptions.UseLaunchingApplication
+  then Result := Project.RunParameterOptions.LaunchingApplicationPathPlusParams
+  else Result := '';
+  
+  if Result='' 
+  then begin
     Result:=Project.RunParameterOptions.CmdLineParams;
     if MacroList.SubstituteStr(Result) then begin
       if Result='' then
@@ -6026,9 +6017,6 @@ begin
     itmViewCodeExplorer.ShortCut:=CommandToShortCut(ecToggleCodeExpl);
     itmViewForms.ShortCut:=CommandToShortCut(ecViewForms);
     itmViewMessage.ShortCut:=CommandToShortCut(ecToggleMessages);
-    itmViewWatches.ShortCut:=CommandToShortCut(ecToggleWatches);
-    itmViewBreakpoints.ShortCut:=CommandToShortCut(ecToggleBreakPoints);
-    itmViewDebugOutput.ShortCut:=CommandToShortCut(ecToggleDebuggerOut);
 
     itmProjectNew.ShortCut:=CommandToShortCut(ecNewProject);
     itmProjectOpen.ShortCut:=CommandToShortCut(ecOpenProject);
@@ -6063,7 +6051,8 @@ begin
     itmEnvCodeToolsDefinesEditor.ShortCut:=CommandToShortCut(ecCodeToolsDefinesEd);
 
     itmHelpAboutLazarus.ShortCut:=CommandToShortCut(ecAboutLazarus);
-  end;
+  end;   
+  DebugCreateShortCuts;
 end;
 
 procedure TMainIDE.mnuSearchFindBlockOtherEnd(Sender: TObject);
@@ -6100,6 +6089,11 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.253  2002/03/23 16:40:29  lazarus
+  MWE:
+    + Added loval variables menu item
+    * Honoured the UseLaunchingApplication checkbox
+
   Revision 1.252  2002/03/23 15:54:28  lazarus
   MWE:
     + Added locals dialog

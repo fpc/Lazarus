@@ -5,8 +5,9 @@
 {------------------------------------------------------------------------------}
 
 {$IFDEF IDE_HEAD}
-    itmViewwatches : TMenuItem;
-    itmViewBreakpoints : TMenuItem;
+    itmViewwatches: TMenuItem;
+    itmViewBreakpoints: TMenuItem;
+    itmViewLocals: TMenuItem;
     itmViewDebugOutput: TMenuItem;
      
     // Menu events
@@ -37,6 +38,7 @@
     FDebugger: TDebugger;
 
     procedure DebugConstructor;
+    procedure DebugCreateShortCuts;
     procedure DebugLoadMenus;
     
     procedure DebugDialogDestroy(Sender: TObject);
@@ -71,8 +73,42 @@ begin
   FBreakPoints := TDBGBreakPoints.Create(nil, TDBGBreakPoint);
 end;
     
+procedure TMainIDE.DebugCreateShortCuts;
+begin          
+  with EditorOpts.KeyMap do 
+  begin
+    itmViewWatches.ShortCut := CommandToShortCut(ecToggleWatches);
+    itmViewBreakpoints.ShortCut := CommandToShortCut(ecToggleBreakPoints);
+    itmViewDebugOutput.ShortCut := CommandToShortCut(ecToggleDebuggerOut);  
+    itmViewLocals.ShortCut := CommandToShortCut(ecToggleLocals);
+  end;
+end;
+    
 procedure TMainIDE.DebugLoadMenus;
-begin
+begin               
+  itmViewWatches := TMenuItem.Create(Self);
+  itmViewWatches.Name:='itmViewWatches';
+  itmViewWatches.Caption := 'Watches';
+  itmViewWatches.OnClick := @mnuViewWatchesClick;
+  itmViewDebugWindows.Add(itmViewWatches);
+
+  itmViewBreakPoints := TMenuItem.Create(Self);
+  itmViewBreakPoints.Name:='itmViewBreakPoints';
+  itmViewBreakPoints.Caption := 'BreakPoints';
+  itmViewBreakPoints.OnClick := @mnuViewBreakPointsClick;
+  itmViewDebugWindows.Add(itmViewBreakPoints);
+
+  itmViewLocals := TMenuItem.Create(Self);
+  itmViewLocals.Name:='itmViewLocals';
+  itmViewLocals.Caption := 'Local Variables';
+  itmViewLocals.OnClick := @mnuViewLocalsClick;
+  itmViewDebugWindows.Add(itmViewLocals);
+
+  itmViewDebugOutput := TMenuItem.Create(Self);
+  itmViewDebugOutput.Name:='itmViewDebugOutput';
+  itmViewDebugOutput.Caption := 'Debug output';
+  itmViewDebugOutput.OnClick := @mnuViewDebugOutputClick;
+  itmViewDebugWindows.Add(itmViewDebugOutput);
 end;
     
 //-----------------------------------------------------------------------------
