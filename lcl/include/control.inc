@@ -217,7 +217,7 @@ begin
       if not TempPopupMenu.AutoPopup then Exit;
 //      SendCancelMode(nil);
       TempPopupMenu.PopupComponent := Control;
-      P2 := SmallPointtoPoint(P);
+      P2 := SmallPointToPoint(P);
       P2 := ClientToScreen(P2);
       TempPopupMenu.Popup(P2.X, P2.Y);
       Exit;
@@ -1769,6 +1769,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.60  2002/08/17 07:57:05  lazarus
+  MG: added TPopupMenu.OnPopup and SourceEditor PopupMenu checks
+
   Revision 1.59  2002/08/05 08:56:56  lazarus
   MG: TMenuItems can now be enabled and disabled
 
