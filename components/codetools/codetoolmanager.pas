@@ -202,7 +202,8 @@ type
     // method jumping
     function JumpToMethod(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
-          var NewX, NewY, NewTopLine: integer): boolean;
+          var NewX, NewY, NewTopLine: integer;
+          var RevertableJump: boolean): boolean;
 
     // find declaration
     function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
@@ -619,7 +620,8 @@ begin
 end;
 
 function TCodeToolManager.JumpToMethod(Code: TCodeBuffer; X,Y: integer;
-  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
+  var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer;
+  var RevertableJump: boolean): boolean;
 var
   CursorPos: TCodeXYPosition;
   NewPos: TCodeXYPosition;
@@ -636,7 +638,8 @@ begin
   writeln('TCodeToolManager.JumpToMethod B ',FCurCodeTool.Scanner<>nil);
   {$ENDIF}
   try
-    Result:=FCurCodeTool.FindJumpPoint(CursorPos,NewPos,NewTopLine);
+    Result:=FCurCodeTool.FindJumpPoint(CursorPos,NewPos,NewTopLine,
+                                       RevertableJump);
     if Result then begin
       NewX:=NewPos.X;
       NewY:=NewPos.Y;

@@ -56,7 +56,8 @@ type
         const UpperProcName: string): TCodeTreeNode;
   public
     function FindJumpPoint(CursorPos: TCodeXYPosition;
-        var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+        var NewPos: TCodeXYPosition; var NewTopLine: integer;
+        var RevertableJump: boolean): boolean;
     function FindJumpPointInProcNode(ProcNode: TCodeTreeNode;
         var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function GatherProcNodes(StartNode: TCodeTreeNode;
@@ -136,7 +137,8 @@ begin
 end;
 
 function TMethodJumpingCodeTool.FindJumpPoint(CursorPos: TCodeXYPosition;
-  var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+  var NewPos: TCodeXYPosition; var NewTopLine: integer;
+  var RevertableJump: boolean): boolean;
 
 const
   JumpToProcAttr = [phpInUpperCase,phpWithoutClassName,phpWithVarModifiers,
@@ -201,6 +203,7 @@ const
         Result:=JumpToCleanPos(ToProcNode.FirstChild.StartPos,
                                ToProcNode.StartPos,NewPos,NewTopLine,false);
       end;
+      RevertableJump:=true;
     end;
   end;
   
@@ -260,6 +263,7 @@ var CursorNode, ClassNode, ProcNode, StartNode, TypeSectionNode,
   BodyAVLNode, DefAVLNode: TAVLTreeNode;
 begin
   Result:=false;
+  RevertableJump:=false;
   NewPos:=CursorPos;
   // build code tree
   {$IFDEF CTDEBUG}
