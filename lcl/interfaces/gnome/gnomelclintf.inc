@@ -38,7 +38,7 @@
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.AlignmentCreateHandle(const AAlignment: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -50,7 +50,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ArrowCreateHandle(const AArrow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -62,7 +62,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.BitBtnCreateHandle(const ABitBtn: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -74,7 +74,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ButtonCreateHandle(const AButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -86,7 +86,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.CalendarCreateHandle(const ACalendar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -98,7 +98,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.CheckboxCreateHandle(const ACheckBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -110,7 +110,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.CheckListBoxCreateHandle(const ACheckListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -122,7 +122,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.CListBoxCreateHandle(const ACListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -133,7 +133,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
+function TGnomeWidgetSet.ColorDialogCreateHandle(const AColorDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -145,7 +145,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ComboBoxCreateHandle(const AComboBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -157,7 +157,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.EditCreateHandle(const AEdit: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -168,7 +168,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.FileDialogCreateHandle(const AFileDialog: TObject): THandle;
+function TGnomeWidgetSet.FileDialogCreateHandle(const AFileDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -179,7 +179,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.FontDialogCreateHandle(const AFontDialog: TObject): THandle;
+function TGnomeWidgetSet.FontDialogCreateHandle(const AFontDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -191,7 +191,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.FormCreateHandle(const AForm: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -203,7 +203,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.GroupBoxCreateHandle(const AGroupBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -215,7 +215,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.HintWindowCreateHandle(const AHintWindow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -227,7 +227,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ImageCreateHandle(const AImage: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -239,7 +239,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.LabelCreateHandle(const ALabel: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -251,7 +251,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ListBoxCreateHandle(const AListBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -263,7 +263,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ListViewCreateHandle(const AListView: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -274,7 +274,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.MainMenuCreateHandle(const AMainMenu: TObject): THandle;
+function TGnomeWidgetSet.MainMenuCreateHandle(const AMainMenu: TObject): THandle;
 begin
   // Your code here
 end;
@@ -286,7 +286,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.MemoCreateHandle(const AMemo: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -297,7 +297,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.MenuItemCreateHandle(const AMenuItem: TObject): THandle;
+function TGnomeWidgetSet.MenuItemCreateHandle(const AMenuItem: TObject): THandle;
 begin
   // Your code here
 end;
@@ -309,7 +309,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.NotebookCreateHandle(const ANotebook: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -320,7 +320,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
+function TGnomeWidgetSet.OpenFileDialogCreateHandle(const AOpenFileDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -332,7 +332,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.PageCreateHandle(const APage: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -344,7 +344,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.PairSplitterCreateHandle(const APairSplitter: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -356,7 +356,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.PairSplitterSideCreateHandle(const APairSplitterSide: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -368,7 +368,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.PanelCreateHandle(const APanel: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -379,7 +379,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
+function TGnomeWidgetSet.PopupMenuCreateHandle(const APopupMenu: TObject): THandle;
 begin
   // Your code here
 end;
@@ -390,7 +390,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
+function TGnomeWidgetSet.PreviewFileControlCreateHandle(const APreviewFileControl: TObject): THandle;
 begin
   // Your code here
 end;
@@ -401,7 +401,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
+function TGnomeWidgetSet.PreviewFileDialogCreateHandle(const APreviewFileDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -413,7 +413,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ProgressBarCreateHandle(const AProgressBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -425,7 +425,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.RadioButtonCreateHandle(const ARadioButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -436,7 +436,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
+function TGnomeWidgetSet.SaveFileDialogCreateHandle(const ASaveFileDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -448,7 +448,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ScrollBarCreateHandle(const AScrollBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -460,7 +460,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ScrollBoxCreateHandle(const AScrollBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -472,7 +472,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ScrolledWindowCreateHandle(const AScrolledWindow: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -483,7 +483,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
+function TGnomeWidgetSet.SelectDirectoryDialogCreateHandle(const ASelectDirectoryDialog: TObject): THandle;
 begin
   // Your code here
 end;
@@ -495,7 +495,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.SpeedButtonCreateHandle(const ASpeedButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -507,7 +507,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.SpineditCreateHandle(const ASpinEdit: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -519,7 +519,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.StatusBarCreateHandle(const AStatusBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -531,7 +531,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ToggleBoxCreateHandle(const AToggleBox: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -543,7 +543,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ToolbarCreateHandle(const AToolbar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -555,7 +555,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.ToolButtonCreateHandle(const AToolButton: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -567,7 +567,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.TrackBarCreateHandle(const ATrackBar: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;
@@ -579,7 +579,7 @@ end;
   Returns:
 
  ------------------------------------------------------------------------------}
-function TGNOMEObject.WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
+function TGnomeWidgetSet.WincontrolCreateHandle(const AFixed: TObject; const AParams: TCreateParams): THandle;
 begin
   // Your code here
 end;

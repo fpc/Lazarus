@@ -44,7 +44,7 @@ uses
   libgnome, libart, libgnomeui;
 
 type
-  TGnomeObject = class(TGtkWidgetSet)
+  TGnomeWidgetSet = class(TGtkWidgetSet)
   private
     procedure PassCmdLineOptions; override;
     Function PromptUserWidget(const DialogCaption, DialogMessage : String;
@@ -81,13 +81,13 @@ uses
   Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
   LResources, Math, gtkglobals, gtkproc, LCLStrConsts;
 
-procedure TGnomeObject.PassCmdLineOptions;
+procedure TGnomeWidgetSet.PassCmdLineOptions;
 begin
   // call init and pass cmd line args
   gnome_init(PChar(Application.Title), 'Lazarus', argc, argv);
 end;
 
-Procedure TGnomeObject.InitStockItems;
+Procedure TGnomeWidgetSet.InitStockItems;
 begin
   Inherited InitStockItems;
   New(LAZBTNAll);
@@ -151,7 +151,7 @@ begin
   gnome_stock_pixmap_register(LAZARUS_STOCK_BUTTON_IGNORE, GNOME_STOCK_PIXMAP_REGULAR,PGnomeStockPixmapEntry(LAZBTNIGNORE));
 end;
 
-Procedure TGnomeObject.FreeStockItems;
+Procedure TGnomeWidgetSet.FreeStockItems;
 begin
   Inherited FreeStockItems;
   Dispose(LAZBTNALL);
@@ -162,7 +162,7 @@ begin
   Dispose(LAZBTNIGNORE);
 end;
 
-procedure TGnomeObject.CreateComponent(Sender : TObject);
+procedure TGnomeWidgetSet.CreateComponent(Sender : TObject);
 var
   //Caption : AnsiString;
   StrTemp : PChar;               // same as "caption" but as PChar
@@ -245,6 +245,9 @@ end.
 
 {
   $Log$
+  Revision 1.22  2004/03/05 00:46:08  marc
+  * Renamed TGnomeObject to TGnomeWidgetSet
+
   Revision 1.21  2004/03/05 00:31:52  marc
   * Renamed TGtkObject to TGtkWidgetSet
 

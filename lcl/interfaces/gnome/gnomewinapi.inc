@@ -28,7 +28,7 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$EndIf}
 
-Function TGnomeObject.LoadStockPixmap(StockID: longint) : HBitmap;
+Function TGnomeWidgetSet.LoadStockPixmap(StockID: longint) : HBitmap;
 var
   Pixmap : PGDIObject;
   StockName : PChar;
@@ -56,7 +56,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGnomeObject.PromptUser
+  Method: TGnomeWidgetSet.PromptUser
   Params:
          DialogCaption - Dialog Caption to use if is a Custom Dialog
          DialogMessage - Message/Error/Question to display
@@ -70,7 +70,7 @@ end;
    such as OK/Cancel Yes/No etc.. It can be used to display errors, warnings,
    or other information, or to ask questions.
  ------------------------------------------------------------------------------}
-Function TGnomeObject.PromptUserWidget(const DialogCaption, DialogMessage : String;
+Function TGnomeWidgetSet.PromptUserWidget(const DialogCaption, DialogMessage : String;
   DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex : Longint) : Pointer;
 var
   BoxType : PChar;
@@ -148,7 +148,7 @@ begin
   ReallocMem(BTNArray, 0);
 end;
 
-Function TGnomeObject.PromptUser(const DialogCaption, DialogMessage : String;
+Function TGnomeWidgetSet.PromptUser(const DialogCaption, DialogMessage : String;
   DialogType : longint; Buttons : PLongint; ButtonCount,
   DefaultIndex, EscapeResult : Longint) : Longint;
 var
@@ -165,7 +165,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGnomeObject.PromptUserAtXY
+  Method: TGnomeWidgetSet.PromptUserAtXY
   Params:
          DialogCaption - Dialog Caption to use if is a Custom Dialog
          DialogMessage - Message/Error/Question to display
@@ -181,7 +181,7 @@ end;
    can be used to display errors, warnings, or other information, or to ask
    questions.
  ------------------------------------------------------------------------------}
-Function TGnomeObject.PromptUserAtXY(const DialogCaption, DialogMessage : String;
+Function TGnomeWidgetSet.PromptUserAtXY(const DialogCaption, DialogMessage : String;
    DialogType : longint; Buttons : PLongint; ButtonCount, DefaultIndex, EscapeResult : Longint;
    X, Y : Longint) : Longint;
 var
@@ -199,7 +199,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TGnomeObject.RequestInput
+  Method: TGnomeWidgetSet.RequestInput
   Params:
          InputCaption - Dialog Caption
          InputPrompt - caption of input label
@@ -239,7 +239,7 @@ begin
     end;
 end;
 
-Function TGnomeObject.RequestInput(const InputCaption, InputPrompt : String;
+Function TGnomeWidgetSet.RequestInput(const InputCaption, InputPrompt : String;
   MaskInput : Boolean; var Value : String) : Boolean;
 var
   MainWidget,
@@ -277,6 +277,9 @@ end;
 
 {
   $Log$
+  Revision 1.13  2004/03/05 00:46:08  marc
+  * Renamed TGnomeObject to TGnomeWidgetSet
+
   Revision 1.12  2002/10/23 21:01:28  lazarus
   AJ:removed FreeMem(NewMessage), caused dialog freezes
 
