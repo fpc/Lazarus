@@ -639,9 +639,9 @@ end;
 -------------------------------------------------------------------------------}
 procedure TWinControl.InvalidateClientRectCache;
 begin
-  {$IFDEF VerboseClientRectBugFix}
+  { $IFDEF VerboseClientRectBugFix}
   writeln('[TWinControl.InvalidateClientRectCache] ',Name,':',ClassName);
-  {$ENDIF}
+  { $ENDIF}
   Include(FFlags,wcfClientRectNeedsUpdate);
 end;
 
@@ -656,7 +656,7 @@ end;
   example just puts resize requests into a queue. The LCL resizes the childs
   just after this procedure due to the clientrect. On complex forms with lots
   of nested controls, this results in thousands of resizes.
-  Changing the clientrect in the LCL to the most probable size reduce
+  Changing the clientrect in the LCL to the most probable size reduces
   unneccessary resizes.
 -------------------------------------------------------------------------------}
 procedure TWinControl.DoSetBounds(ALeft, ATop, AWidth, AHeight : integer);
@@ -2880,6 +2880,8 @@ var
   NewBounds: TRect;
 begin
   NewBounds:=Bounds(Left, Top, Width, Height);
+  writeln('TWinControl.DoSendBoundsToInterface A ',Name,':',ClassName,' Old=',FBoundsRealized.Left,',',FBoundsRealized.Top,',',FBoundsRealized.Right,',',FBoundsRealized.Bottom,
+  ' New=',NewBounds.Left,',',NewBounds.Top,',',NewBounds.Right,',',NewBounds.Bottom);
   FBoundsRealized:=NewBounds;
   CNSendMessage(LM_SetSize, Self, @NewBounds);
 end;
@@ -2946,6 +2948,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.158  2003/08/12 16:04:22  mattias
+  added groupboxnested example
+
   Revision 1.157  2003/08/12 14:02:54  mattias
   fixed keypress/keyup, createcaret on synedit focus
 

@@ -212,8 +212,8 @@ LCL_PLATFORM=gtk
 endif
 export LCL_PLATFORM
 endif
-override TARGET_UNITS+=hello notebk comdialogs progressbar trackbar listboxtest bitbutton combobox checkbox scrollbar edittest memotest groupbox speedtest toolbar messagedialogs notebooktest listviewtest synedit1 testall
-override CLEAN_FILES+=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) trackbar toolbar testall speedtest scrollbar progressbar notebooktest notebk messagedialogs memotest listviewtest listboxtest hello groupbox edittest comdialogs combobox checkbox bitbutton synedit1
+override TARGET_UNITS+=hello notebk comdialogs progressbar trackbar listboxtest bitbutton combobox checkbox scrollbar edittest memotest groupbox speedtest toolbar messagedialogs notebooktest listviewtest synedit1 groupboxnested testall
+override CLEAN_FILES+=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) trackbar toolbar testall speedtest scrollbar progressbar notebooktest notebk messagedialogs memotest listviewtest listboxtest hello groupbox edittest comdialogs combobox checkbox bitbutton synedit1 groupboxnested
 override COMPILER_OPTIONS+=-gl
 override COMPILER_UNITDIR+=../lcl/units ../lcl/units/$(LCL_PLATFORM) ../components/units .. .
 ifdef REQUIRE_UNITSDIR

@@ -266,6 +266,7 @@ examples/comdialogs.pp svneol=native#text/pascal
 examples/dlgform.pp svneol=native#text/pascal
 examples/edittest.pp svneol=native#text/pascal
 examples/groupbox.pp svneol=native#text/pascal
+examples/groupboxnested.pas svneol=native#text/pascal
 examples/gtkglarea/data/particle.bmp -text svneol=unset#image/bmp
 examples/gtkglarea/data/texture1.bmp -text svneol=unset#image/bmp
 examples/gtkglarea/data/texture2.bmp -text svneol=unset#image/bmp

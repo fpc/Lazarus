@@ -10,7 +10,7 @@ version=0.9b
 units=hello notebk comdialogs progressbar trackbar listboxtest \
    bitbutton combobox checkbox scrollbar edittest memotest \
    groupbox speedtest toolbar messagedialogs notebooktest \
-   listviewtest synedit1 testall
+   listviewtest synedit1 groupboxnested testall
 
 [require]
 packages=fcl regexpr
@@ -19,7 +19,7 @@ packages=fcl regexpr
 files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) \
   trackbar toolbar testall speedtest scrollbar progressbar notebooktest \
   notebk messagedialogs memotest listviewtest listboxtest hello groupbox \
-  edittest comdialogs combobox checkbox bitbutton synedit1
+  edittest comdialogs combobox checkbox bitbutton synedit1 groupboxnested
 
 [default]
             
