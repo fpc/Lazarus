@@ -6529,6 +6529,9 @@ var
   bPrompt: boolean;
   bReplace, bReplaceAll: boolean;
   nAction: TSynReplaceAction;
+  {$IFDEF SYN_LAZARUS}
+  CurReplace: string;
+  {$ENDIF}
 
   function InValidSearchRange(First, Last: integer): boolean;
   begin
@@ -6585,7 +6588,9 @@ begin
   fTSearch.RegularExpressions := ssoRegExpr in AOptions;
   fTSearch.RegExprSingleLine := not (ssoRegExprMultiLine in AOptions);
   // search while the current search position is inside of the search range
-  {$IFNDEF SYN_LAZARUS}
+  {$IFDEF SYN_LAZARUS}
+  fTSearch.Replacement:=AReplace;
+  {$ELSE}
   nSearchLen := Length(ASearch);
   {$ENDIF}
   nReplaceLen := Length(AReplace);
@@ -6615,16 +6620,23 @@ begin
         if not bBackward then CaretXY := ptCurrent;
         // If it's a search only we can leave the procedure now.
         if not (bReplace or bReplaceAll) then exit;
+        {$IFDEF SYN_LAZARUS}
+        nSearchLen := fTSearch.ResultLengths[n];
+        CurReplace := fTSearch.GetReplace(n);
+        nReplaceLen := Length(CurReplace);
+        {$ENDIF}
         // Prompt and replace or replace all.  If user chooses to replace
         // all after prompting, turn off prompting.
         if bPrompt and Assigned(fOnReplaceText) then begin
-          nAction := DoOnReplaceText(ASearch, AReplace, ptCurrent.Y, nFound);
+          nAction := DoOnReplaceText(ASearch,
+            {$IFDEF SYN_LAZARUS}CurReplace{$ELSE}AReplace{$ENDIF},
+            ptCurrent.Y, nFound);
           if nAction = raCancel then exit;
         end else
           nAction := raReplace;
         if not (nAction = raSkip) then begin
-            // user has been prompted and has requested to silently replace all
-            // so turn off prompting
+          // user has been prompted and has requested to silently replace all
+          // so turn off prompting
           if nAction = raReplaceAll then begin
             if not bReplaceAll then begin
               bReplaceAll := TRUE;
@@ -6632,7 +6644,8 @@ begin
             end;
             bPrompt := False;
           end;
-          SetSelTextExternal(AReplace);
+          SetSelTextExternal(
+            {$IFDEF SYN_LAZARUS}CurReplace{$ELSE}AReplace{$ENDIF});
         end;
         // fix the caret position and the remaining results
         if not bBackward then begin
