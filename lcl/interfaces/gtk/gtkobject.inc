@@ -1011,6 +1011,7 @@ var
   BitImage  : TBitmap;
   Geometry  : TGdkGeometry;
   Accel     : integer;
+  decor,Func : Longint;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -1443,8 +1444,78 @@ begin
         end;
         UnsetResizeRequest(PGtkWidget(Handle));
 
-        gtk_window_set_modal(PGtkWindow(handle), true);
-        gtk_widget_show(PGtkWidget(handle));
+        //Try to make all Modal forms transient to the main form
+        If Sender is TCustomForm then begin
+          //If this is a Form, aka GTKWindow, try
+          //and keep decoration and Functions -
+          
+          //apart from none and sizeable, this will
+          //only work if WM supports motif flags
+          //properly, which very few actually do.
+          
+          Case TCustomForm(Sender).BorderStyle of
+            bsNone :
+              begin
+                Decor := 0;
+                Func := 0;
+              end;
+            bsSingle :
+              begin
+                Decor := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+                         GDK_DECOR_MENU or GDK_DECOR_MINIMIZE or
+                         GDK_DECOR_MAXIMIZE;
+                Func := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
+                        GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
+              end;
+            bsSizeable :
+              begin
+                Decor := GDK_DECOR_ALL;
+                Func := GDK_FUNC_ALL;
+              end;
+            bsDialog :
+              begin
+                Decor := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+                         GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
+
+                Func := GDK_FUNC_CLOSE or GDK_FUNC_MINIMIZE or
+                        GDK_FUNC_MOVE;
+              end;
+            bsToolWindow :
+              begin
+                Decor := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+                       GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
+                Func := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
+                        GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE;
+              end;
+            bsSizeToolWin :
+              begin
+                Decor := GDK_DECOR_BORDER or GDK_DECOR_TITLE or
+                       GDK_DECOR_MENU or GDK_DECOR_MINIMIZE;
+                Func := GDK_FUNC_RESIZE or GDK_FUNC_MOVE or
+                        GDK_FUNC_MINIMIZE or GDK_FUNC_CLOSE or
+                        GDK_FUNC_RESIZE;
+              end;
+          end;
+          If Sender <> Application.MainForm then begin
+            gtk_window_set_transient_for(PGtkWindow(handle),
+              PGtkWindow(Application.MainForm.handle));
+          end;
+          gtk_window_set_modal(PGtkWindow(handle), true);
+          gtk_widget_show(PGtkWidget(handle));
+          gdk_window_hide(PGtkWidget(handle)^.Window);
+          gdk_window_set_decorations(PGtkWidget(handle)^.window, decor);
+          gdk_window_set_functions(PGtkWidget(handle)^.window, func);
+          gdk_window_show(PGtkWidget(handle)^.Window);
+        end else begin
+          //If not a form, call to GDK to set flag,
+          //as GTK only works on GTKWindows.
+          gtk_window_set_modal(PGtkWindow(handle), true);
+          gtk_widget_show(PGtkWidget(handle));
+          gdk_window_hide(PGtkWidget(handle)^.Window);
+          gdk_window_set_transient_for(PGtkWidget(handle)^.window,
+            PGtkWidget(Application.MainForm.handle)^.Window);
+          gdk_window_show(PGtkWidget(handle)^.Window);
+        end;
       end;
 
       LM_TB_BUTTONCOUNT:
@@ -3550,16 +3621,16 @@ end;
 procedure TgtkObject.CreateComponent(Sender : TObject);
 const 
   FormStyleMap : array[TFormBorderStyle] of integer = (
-    GTK_WINDOW_DIALOG,  // bsNone
+    GTK_WINDOW_POPUP,  // bsNone
     GTK_WINDOW_TOPLEVEL,// bsSingle
     GTK_WINDOW_TOPLEVEL,// bsSizeable
     GTK_WINDOW_DIALOG,  // bsDialog
-    GTK_WINDOW_POPUP,   // bsToolWindow
-    GTK_WINDOW_POPUP    // bsSizeToolWin
+    GTK_WINDOW_DIALOG,   // bsToolWindow
+    GTK_WINDOW_DIALOG    // bsSizeToolWin
   );
   FormResizableMap : array[TFormBorderStyle] of gint = (
     0, // bsNone
-    0, // bsSingle
+    1, // bsSingle
     1, // bsSizeable
     0, // bsDialog
     0, // bsToolWindow
@@ -3845,7 +3916,7 @@ begin
 
   csHintWindow :
     Begin
-       p := gtk_window_new(FormStyleMap[bsToolWindow]{gtk_window_Popup});
+       p := gtk_window_new(FormStyleMap[bsNone]{gtk_window_Popup});
        gtk_window_set_policy (GTK_WINDOW (p), 0, 0, 0);
 
        // Create the form client area
@@ -3854,6 +3925,9 @@ begin
        gtk_widget_show(TempWidget);
        SetFixedWidget(p, TempWidget);
        SetMainWidget(p, TempWidget);
+      //Try to make all hint forms transient to the main form
+       If Application.MainForm <> nil then
+         gtk_window_set_transient_for(PGTKWindow(P), PGTKWindow(Application.MainForm.Handle));
        gtk_widget_show(p);
     end;
 
@@ -5852,6 +5926,69 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.221  2002/09/27 20:52:24  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+
+  Here is the run down of what it includes -
+
+   -Vasily Volchenko's Updated Russian Localizations
+
+   -improvements to GTK Styles/SysColors
+   -initial GTK Palette code - (untested, and for now useless)
+
+   -Hint Windows and Modal dialogs now try to stay transient to
+    the main program form, aka they stay on top of the main form
+    and usually minimize/maximize with it.
+
+   -fixes to Form BorderStyle code(tool windows needed a border)
+
+   -fixes DrawFrameControl DFCS_BUTTONPUSH to match Win32 better
+    when flat
+
+   -fixes DrawFrameControl DFCS_BUTTONCHECK to match Win32 better
+    and to match GTK theme better. It works most of the time now,
+    but some themes, noteably Default, don't work.
+
+   -fixes bug in Bitmap code which broke compiling in NoGDKPixbuf
+    mode.
+
+   -misc other cleanups/ fixes in gtk interface
+
+   -speedbutton's should now draw correctly when flat in Win32
+
+   -I have included an experimental new CheckBox(disabled by
+    default) which has initial support for cbGrayed(Tri-State),
+    and WordWrap, and misc other improvements. It is not done, it
+    is mostly a quick hack to test DrawFrameControl
+    DFCS_BUTTONCHECK, however it offers many improvements which
+    can be seen in cbsCheck/cbsCrissCross (aka non-themed) state.
+
+   -fixes Message Dialogs to more accurately determine
+    button Spacing/Size, and Label Spacing/Size based on current
+    System font.
+   -fixes MessageDlgPos, & ShowMessagePos in Dialogs
+   -adds InputQuery & InputBox to Dialogs
+
+   -re-arranges & somewhat re-designs Control Tabbing, it now
+    partially works - wrapping around doesn't work, and
+    subcontrols(Panels & Children, etc) don't work. TabOrder now
+    works to an extent. I am not sure what is wrong with my code,
+    based on my other tests at least wrapping and TabOrder SHOULD
+    work properly, but.. Anyone want to try and fix?
+
+   -SynEdit(Code Editor) now changes mouse cursor to match
+    position(aka over scrollbar/gutter vs over text edit)
+
+   -adds a TRegion property to Graphics.pp, and Canvas. Once I
+    figure out how to handle complex regions(aka polygons) data
+    properly I will add Region functions to the canvas itself
+    (SetClipRect, intersectClipRect etc.)
+
+   -BitBtn now has a Stored flag on Glyph so it doesn't store to
+    lfm/lrs if Glyph is Empty, or if Glyph is not bkCustom(aka
+    bkOk, bkCancel, etc.) This should fix most crashes with older
+    GDKPixbuf libs.
+
   Revision 1.220  2002/09/20 13:11:12  lazarus
   MG: fixed TPanel and Frame3D
 
