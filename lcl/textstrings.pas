@@ -338,7 +338,8 @@ begin
     TxtLen:=length(FText);
     SetLength(FText,TxtLen+MovingLineLen);
     // save moving line
-    Move(FText[FLineRanges[FromIndex].StartPos],FText[TxtLen+1],MovingLineLen);
+    System.Move(FText[FLineRanges[FromIndex].StartPos],FText[TxtLen+1],
+                MovingLineLen);
     if FromIndex<ToIndex then begin
 
     end else begin
