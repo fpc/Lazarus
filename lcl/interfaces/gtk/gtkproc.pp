@@ -1,3 +1,17 @@
+{
+ *****************************************************************************
+ *                                                                           *
+ *  This file is part of the Lazarus Component Library (LCL)                 *
+ *                                                                           *
+ *  See the file COPYING.LCL, included in this distribution,                 *
+ *  for details about the copyright.                                         *
+ *                                                                           *
+ *  This program is distributed in the hope that it will be useful,          *
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of           *
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
+ *                                                                           *
+ *****************************************************************************
+}
 unit gtkproc;
 
 {$mode objfpc}{$H+}
@@ -8,9 +22,9 @@ uses
   InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
   glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals,
   LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType,
-  GraphicsMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
-  KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs, FileCtrl,
-  LResources, Math, gtkglobals;
+  GraphicsMath, Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls,
+  CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl, ExtCtrls, Dialogs,
+  FileCtrl, LResources, Math, gtkglobals;
 
 
 (* GTKCallback.inc headers *)
@@ -292,6 +306,7 @@ const
 
 var
   DesignSignalMasks: array[TDesignSignalType] of TDesignSignalMask;
+  
 
 procedure InitDesignSignalMasks;
 function DesignSignalNameToType(Name: PChar; After: boolean): TDesignSignalType;
