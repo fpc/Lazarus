@@ -143,61 +143,9 @@ begin
 end;
 
 function TGtkListStringList.Add(const S: string): Integer;
-var li : PGtkWidget;
-  l, m, r, cmp: integer;
-  item_requisition: TGtkRequisition;
 begin
-  BeginUpdate;
-  try
-    if FSorted then begin
-      l:=0;
-      r:=Count-1;
-      m:=l;
-      while (l<=r) do begin
-        m:=(l+r) shr 1;
-        cmp:=AnsiCompareText(S,Strings[m]);
-
-        if cmp<0 then
-          r:=m-1
-        else if cmp>0 then
-          l:=m+1
-        else
-          break;
-      end;
-      if (m<Count) and (AnsiCompareText(S,Strings[m])>0) then
-        inc(m);
-      Result:=m;
-    end else
-      Result:=Count;
-      
-    if (Result < 0) or (Result > Count) then
-      RaiseException('TGtkListStringList.Add: Result='+IntToStr(Result)
-        +' out of bounds. Count='+IntToStr(Count));
-    if Owner = nil then RaiseException(
-      'TGtkListStringList.Insert Unspecified owner');
-
-    // ToDo:
-    //  - Icons
-    //  - measure item
-
-    li:=gtk_list_item_new_with_label(PChar(S));
-    ConnectItemCallbacks(PGtkListItem(li));
-    Include(FStates,glsItemCacheNeedsUpdate);
-    gtk_widget_show(li);
-    gtk_list_insert_items(FGtkList, g_list_append(nil, li), Result);
-    if (Owner is TListBox)
-    and (TListBox(Owner).ItemHeight>1) then begin
-      if li^.Allocation.Width>1 then
-        item_requisition.Width:=li^.Allocation.Width
-      else
-        gtk_widget_size_request(li,@item_requisition);
-      gtk_widget_set_usize(li,Max(li^.Allocation.Width,item_requisition.Width),
-                           TListBox(Owner).ItemHeight);
-    end;
-  finally
-    EndUpdate;
-  end;
-//writeln('[TGtkListStringList.Insert] END Index=',Index,' Count=',Count,' ',S,',',Count);
+  Result:=Count;
+  Insert(Count,S);
 end;
 
 {------------------------------------------------------------------------------
@@ -552,8 +500,10 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TGtkListStringList.Insert(Index : integer; const S : string);
-var li : PGtkWidget;
+var
+  li : PGtkWidget;
   l, m, r, cmp: integer;
+  item_requisition: TGtkRequisition;
 begin
   BeginUpdate;
   try
@@ -564,7 +514,6 @@ begin
       while (l<=r) do begin
         m:=(l+r) shr 1;
         cmp:=AnsiCompareText(S,Strings[m]);
-
         if cmp<0 then
           r:=m-1
         else if cmp>0 then
@@ -583,7 +532,6 @@ begin
       'TGtkListStringList.Insert Unspecified owner');
 
     // ToDo:
-    //  - CustomDraw needs expose/draw events
     //  - Icons
     //  - measure item
 
@@ -592,6 +540,15 @@ begin
     Include(FStates,glsItemCacheNeedsUpdate);
     gtk_widget_show(li);
     gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
+    if (Owner is TListBox)
+    and (TListBox(Owner).ItemHeight>1) then begin
+      if li^.Allocation.Width>1 then
+        item_requisition.Width:=li^.Allocation.Width
+      else
+        gtk_widget_size_request(li,@item_requisition);
+      gtk_widget_set_usize(li,Max(li^.Allocation.Width,item_requisition.Width),
+                           TListBox(Owner).ItemHeight);
+    end;
   finally
     EndUpdate;
   end;
@@ -780,6 +737,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2003/04/29 13:35:39  mattias
+  improved configure build lazarus dialog
+
   Revision 1.14  2003/04/11 12:48:07  mattias
   fixed gtk warning on setting item height
 
