@@ -222,6 +222,7 @@ type
     //used in
     //GetWordAtPosition
     Function GetCaretPosFromCursorPos(CursorPos : TPoint) : TPoint;
+    procedure CenterCursor;
     
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
     property CurrentCursorXLine : Integer
@@ -325,7 +326,7 @@ type
     Procedure ToggleLineNumbersClicked(Sender : TObject);
     Procedure OpenAtCursorClicked(Sender : TObject);
     Procedure FindDeclarationClicked(Sender : TObject);
-    Procedure BookmarkGoTo(Value: Integer);
+    Procedure BookmarkGoTo(Index: Integer);
     Procedure BookMarkSet(Value : Integer);
     Procedure BookMarkToggle(Value : Integer);
     procedure EditorPropertiesClicked(Sender: TObject);
@@ -1419,6 +1420,21 @@ begin
   
   Result.X := XLine;
   Result.Y := LineNum;
+end;
+
+{-------------------------------------------------------------------------------
+  method TSourceEditor.CenterCursor
+  Params: none
+  Result: none
+  
+  Center the current cursor line in editor.
+-------------------------------------------------------------------------------}
+procedure TSourceEditor.CenterCursor;
+var NewTopLine: integer;
+begin
+  NewTopLine:=EditorComponent.CaretY-((EditorComponent.LinesInWindow-1) div 2);
+  if NewTopLine<1 then NewTopLine:=1;
+  EditorComponent.TopLine:=NewTopLine;
 end;
 
 Function TSourceEditor.GetWordAtCurrentCaret: String;
@@ -2697,18 +2713,20 @@ Begin
   BookMarkSet(Value);
 End;
 
-Procedure TSourceNotebook.BookMarkGoto(Value : Integer);
-var AnEditor:TSourceEditor;
+Procedure TSourceNotebook.BookMarkGoto(Index : Integer);
+var
+  AnEditor:TSourceEditor;
 begin
   if Notebook=nil then exit;
-  AnEditor:=FindBookmark(Value);
+  AnEditor:=FindBookmark(Index);
   if AnEditor<>nil then begin
-    AnEditor.EditorComponent.GotoBookMark(Value);
+    AnEditor.EditorComponent.GotoBookMark(Index);
+    AnEditor.CenterCursor;
     Notebook.PageIndex:=FindPageWithEditor(AnEditor);
   end;
 end;
 
-{This is called from outside to Goto a bookmark}
+{This is called from outside to Go to a bookmark}
 Procedure TSourceNotebook.GoToBookmark(Value: Integer);
 begin
   BookMarkGoTo(Value);
