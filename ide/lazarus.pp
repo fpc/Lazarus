@@ -53,16 +53,15 @@ begin
   Application.Run;
   SplashForm.Free;
 
-writeln('LAZARUS close application...');
-  // workaround till lcl closes clean
-  Application.Free;
-  Application:=nil;
 writeln('LAZARUS END');
 end.
 
 
 {
   $Log$
+  Revision 1.19  2001/06/04 07:50:42  lazarus
+  MG: close application object in gtkint.pp
+
   Revision 1.18  2001/03/19 14:00:46  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

@@ -21,7 +21,7 @@
 
 unit interfaces;
  
-{$mode objfpc} 
+{$mode objfpc}{$H+} 
 
 interface
 
@@ -34,14 +34,23 @@ var
 implementation
 
 uses 
-   GTKInt;
+   GTKInt,
+   Forms;  // MG: GTKInt uses forms, so the application object is destroyed
+           //   in the forms finalization section AFTER this finalization
+           //   section. But the lcl objects need the gtk to close clean.
+           //   Therefore the application object is freed here.
+           //  P.S.: This is only a workaround till the interfaces are below
+           //    the lcl.
 
 initialization
 
-   InterfaceObject := TgtkObject.Create;
+  InterfaceObject := TgtkObject.Create;
 
 finalization
 
-   InterfaceObject.Free;
+  Application.Free;
+  Application:=nil;
+  
+  InterfaceObject.Free;
 
 end.

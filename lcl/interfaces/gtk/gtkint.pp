@@ -236,8 +236,6 @@ var
 
 
 initialization
-  
-
   gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
 
   Target_Table[0].Target := 'STRING';
@@ -258,6 +256,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2001/06/04 07:50:42  lazarus
+  MG: close application object in gtkint.pp
+
   Revision 1.13  2001/04/06 22:25:14  lazarus
   * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
 
