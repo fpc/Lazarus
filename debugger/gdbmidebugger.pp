@@ -1162,21 +1162,26 @@ var
 begin
   if Debugger = nil then Exit;
 
-  if FBreakID<>0 then ReleaseBreakPoint;
-  
-  TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert %s:%d', [
-     ExtractFileName(Source), Line], True, ResultState, S, False);
-  ResultList := CreateMIValueList(S);
-  BkptList := CreateMIValueList(ResultList.Values['bkpt']);
-  FBreakID := StrToIntDef(BkptList.Values['number'], 0);
-  SetHitCount(StrToIntDef(BkptList.Values['times'], 0));
-  if FBreakID<>0 then
-    SetValid(vsValid)
-  else
-    SetValid(vsInvalid);
-  DoEnableChange;
-  ResultList.Free;
-  BkptList.Free;
+  BeginUpdate;
+  try
+    if FBreakID<>0 then ReleaseBreakPoint;
+
+    TGDBMIDebugger(Debugger).ExecuteCommand('-break-insert %s:%d', [
+       ExtractFileName(Source), Line], True, ResultState, S, False);
+    ResultList := CreateMIValueList(S);
+    BkptList := CreateMIValueList(ResultList.Values['bkpt']);
+    FBreakID := StrToIntDef(BkptList.Values['number'], 0);
+    SetHitCount(StrToIntDef(BkptList.Values['times'], 0));
+    if FBreakID<>0 then
+      SetValid(vsValid)
+    else
+      SetValid(vsInvalid);
+    DoEnableChange;
+    ResultList.Free;
+    BkptList.Free;
+  finally
+    EndUpdate;
+  end;
 end;
 
 procedure TGDBMIBreakPoint.ReleaseBreakPoint;
@@ -1726,6 +1731,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.16  2003/05/28 17:40:55  mattias
+  recuced update notifications
+
   Revision 1.15  2003/05/28 08:46:24  mattias
   break;points dialog now gets the items without debugger
 
