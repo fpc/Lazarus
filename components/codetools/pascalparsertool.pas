@@ -79,6 +79,7 @@ type
       phpWithoutClassName,   // skip classname
       phpWithoutName,        // skip function name
       phpWithVarModifiers,   // extract 'var', 'out', 'const'
+      phpWithoutParamList,   // skip param list
       phpWithParameterNames, // extract parameter names
       phpWithDefaultValues,  // extract default values
       phpWithResultType,     // extract colon + result type
@@ -89,9 +90,9 @@ type
       phpWithoutBrackets,    // skip start- and end-bracket of parameter list
       phpIgnoreForwards,     // skip forward procs
       phpIgnoreProcsWithBody,// skip procs with begin..end
+      phpIgnoreMethods,      // skip method bodies and definitions
       phpOnlyWithClassname,  // skip procs without the right classname
       phpFindCleanPosition,  // read til ExtractSearchPos
-      phpWithoutParamList,   // skip param list
       phpCreateNodes         // create nodes during reading
     );
   TProcHeadAttributes = set of TProcHeadAttribute;

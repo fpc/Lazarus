@@ -807,14 +807,15 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
     TypeSectionNode:=TypeSectionNode.Parent;
   ClassProcs:=nil;
   ProcBodyNodes:=GatherProcNodes(TypeSectionNode,
-     [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
-     ExtractClassName(ClassNode,true));
+                       [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname],
+                       ExtractClassName(ClassNode,true));
   try
     ExistingNode:=ProcBodyNodes.FindLowest;
     if ExistingNode<>nil then 
       LastExistingProcBody:=TCodeTreeNodeExtension(ExistingNode.Data).Node
     else
       LastExistingProcBody:=nil;
+    // find topmost and bottommost proc body
     FirstExistingProcBody:=LastExistingProcBody;
     while ExistingNode<>nil do begin
       ANode:=TCodeTreeNodeExtension(ExistingNode.Data).Node;

@@ -634,7 +634,7 @@ begin
   if TheTree=nil then exit;
   ANode:=TheTree.FindLowest;
   while ANode<>nil do begin
-    TCodeTreeNodeExtension(ANode.Data).Free;
+    DisposeNode(TCodeTreeNodeExtension(ANode.Data));
     ANode:=TheTree.FindSuccessor(ANode);
   end;
   TheTree.Free;
