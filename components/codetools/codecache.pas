@@ -599,7 +599,7 @@ end;
 
 function TCodeBuffer.SaveToFile(const AFilename: string): boolean;
 begin
-  Result:=inherited SaveToFile(Filename);
+  Result:=inherited SaveToFile(AFilename);
 writeln('TCodeBuffer.SaveToFile ',Filename,' -> ',AFilename,' ',Result);
   if CompareFilenames(AFilename,Filename)=0 then begin
     if FIsDeleted then FIsDeleted:=not Result;

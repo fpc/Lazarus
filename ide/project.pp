@@ -880,7 +880,7 @@ begin
   case fProjectType of
    ptProgram, ptApplication, ptCustomProgram:
     begin
-      NewPrgBuf:=CodeToolBoss.CreateFile('program.pas');
+      NewPrgBuf:=CodeToolBoss.CreateFile('project1.pas');
       PrgUnitInfo:=TUnitInfo.Create(NewPrgBuf);
       PrgUnitInfo.IsPartOfProject:=true;
       PrgUnitInfo.SyntaxHighlighter:=
@@ -1470,6 +1470,9 @@ end.
 
 {
   $Log$
+  Revision 1.32  2001/10/23 09:13:52  lazarus
+  MG: fixed TestProject
+
   Revision 1.31  2001/10/18 13:01:31  lazarus
   MG: fixed speedbuttons numglyphs>1 and started IDE debugging
 

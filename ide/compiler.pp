@@ -154,8 +154,11 @@ begin
   Result:=mrCancel;
   if AProject.MainUnit<0 then exit;
   OldCurDir:=GetCurrentDir;
-  ProjectFilename:=AProject.Units[AProject.MainUnit].Filename;
-  if ProjectFilename='' then ProjectFilename:=DefaultFilename;
+  if AProject.Units[AProject.MainUnit].IsVirtual then
+    ProjectFilename:=DefaultFilename
+  else
+    ProjectFilename:=AProject.Units[AProject.MainUnit].Filename;
+  if ProjectFilename='' then exit;
   ProjectDir:=ExtractFilePath(ProjectFilename);
   if not SetCurrentDir(ProjectDir) then exit;
   try
@@ -322,6 +325,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2001/10/23 09:13:50  lazarus
+  MG: fixed TestProject
+
   Revision 1.14  2001/07/08 22:33:56  lazarus
   MG: added rapid testing project
 

@@ -1993,9 +1993,10 @@ CheckHeap(IntToStr(GetMem_Cnt));
   end;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
+  
   if (not SaveToTestDir) and (Project.MainUnit>=0)
   and (Project.Units[Project.MainUnit]=ActiveUnitInfo)
-  and (ActiveUnitInfo.Source.IsVirtual) then begin
+  and (ActiveUnitInfo.IsVirtual) then begin
     Result:=DoSaveProject(false,SaveToTestDir);
     exit;
   end;
@@ -2009,14 +2010,13 @@ CheckHeap(IntToStr(GetMem_Cnt));
     ActiveSrcEdit.UpdateCodeBuffer;
     ActiveUnitInfo.Modified:=true;
   end;
-  if (not SaveToTestDir) and (ActiveUnitInfo.Source.IsVirtual) then
-    SaveAs:=true;
   if (not SaveToTestDir) and (not ActiveUnitInfo.Modified) and (not SaveAs) then
   begin
     Result:=mrOk;
     exit;
   end;
-
+  if (not SaveToTestDir) and (ActiveUnitInfo.IsVirtual) then
+    SaveAs:=true;
   
   if ActiveUnitInfo.HasResources then begin
     LinkIndex:=-1;
@@ -2193,6 +2193,7 @@ writeln('TMainIDE.DoSaveEditorUnit F ',ResourceCode.Modified);
         end;
       end else begin
         // ToDo: calculate a better resource filename
+writeln('>>>>>>>>>>>>> ',TestFilename,' ',ChangeFileExt(TestFilename,ResourceFileExt));
         Result:=DoSaveCodeBufferToFile(ResourceCode,
                     ChangeFileExt(TestFilename,ResourceFileExt),false);
         if not Result=mrOk then exit;
@@ -2540,13 +2541,15 @@ writeln('[TMainIDE.DoOpenMainUnit] A');
     exit;
   end;
   // MainUnit not loaded -> create source editor
-  NewPageName:=ExtractFileName(MainUnitInfo.Filename);
-  Ext:=uppercase(ExtractFileExt(MainUnitInfo.Filename));
-  if (Ext='.PAS') or (Ext='.PP') then
-    NewPageName:=copy(NewPageName,1,length(NewPageName)-length(Ext));
+  if MainUnitInfo.Source.IsVirtual then
+    NewPageName:=CodeToolBoss.GetSourceName(MainUnitInfo.Source)
+  else begin
+    NewPageName:=ExtractFileName(MainUnitInfo.Filename);
+    Ext:=uppercase(ExtractFileExt(MainUnitInfo.Filename));
+    if (Ext='.PAS') or (Ext='.PP') then
+      NewPageName:=copy(NewPageName,1,length(NewPageName)-length(Ext));
+  end;
 //writeln('TMainIDE.DoOpenMainUnit B ',NewPageName,'  ',MainUnitInfo.Source.SourceLength);
-  if NewpageName='' then
-    NewPageName:=CodeToolBoss.GetSourceName(MainUnitInfo.Source);
   if NewPageName='' then
     NewPageName:='mainunit';
 //writeln('TMainIDE.DoOpenMainUnit C ',NewPageName);
@@ -2854,18 +2857,20 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',SaveAs,' SaveToTestDir=',SaveToTestDi
     Result:=Project.WriteProject;
     if Result=mrAbort then exit;
   end;
-  // save source
+  // save main source
   if MainUnitInfo<>nil then begin
     if MainUnitInfo.Loaded then begin
+      // shown in source editor
       Result:=DoSaveEditorUnit(MainUnitInfo.EditorIndex,false,SaveToTestDir);
       if Result=mrAbort then exit;
     end else begin
+      // not shown in source editor, but code internally loaded
       if not SaveToTestDir then begin
         Result:=DoSaveCodeBufferToFile(MainUnitInfo.Source,
                                        MainUnitInfo.Filename,true);
       end else begin
         Result:=DoSaveCodeBufferToFile(MainUnitInfo.Source,
-                                       GetTestProjectFilename,false);
+                                       GetTestUnitFilename(MainUnitInfo),false);
       end;
       if Result=mrAbort then exit;
     end;
@@ -2881,7 +2886,7 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',SaveAs,' SaveToTestDir=',SaveToTestDi
   end;
 
   // save editor files
-  if (SourceNoteBook.Notebook<>nil) then begin
+  if (SourceNoteBook.Notebook<>nil) and (not SaveToTestDir) then begin
     for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
       if (Project.MainUnit<0)
       or (Project.Units[Project.MainUnit].EditorIndex<>i) then begin
@@ -3186,6 +3191,10 @@ begin
     Result:=mrAbort;
     exit;
   end;
+  if Project=nil then Begin
+    MessageDlg('Create a project first!',mterror,[mbok],0);
+    Exit;
+  end;
   try
     if not (Project.ProjectType in [ptProgram, ptApplication, ptCustomProgram])
     then exit;
@@ -3197,13 +3206,8 @@ begin
     if Project.ProjectFile<>'' then
       DefaultFilename:=''
     else
-      DefaultFilename:=GetTestProjectFilename;
+      DefaultFilename:=GetTestUnitFilename(Project.Units[Project.MainUnit]);
 
-    Assert(False, 'Trace:Build Project Clicked');
-    if Project=nil then Begin
-      MessageDlg('Create a project first!',mterror,[mbok],0);
-      Exit;
-    end;
     ActiveSrcEdit:=SourceNotebook.GetActiveSE;
     if ActiveSrcEdit<>nil then ActiveSrcEdit.ErrorLine:=-1;
 
@@ -3262,8 +3266,10 @@ writeln('[TMainIDE.DoRunProject] A');
     exit;
 
   MainUnitInfo:=Project.Units[Project.MainUnit];
-  ProgramFilename:=ChangeFileExt(MainUnitInfo.Filename,Project.TargetFileExt);
-  if MainUnitInfo.IsVirtual then ProgramFilename:=GetTestProjectFilename;
+  if MainUnitInfo.IsVirtual then
+    ProgramFilename:=GetTestProjectFilename
+  else
+    ProgramFilename:=ChangeFileExt(MainUnitInfo.Filename,Project.TargetFileExt);
 
   if not FileExists(ProgramFilename) then begin
     AText:='No program file "'+ProgramFilename+'" found!';
@@ -3386,6 +3392,14 @@ begin
   case EnvironmentOptions.DebuggerType of
     dtGnuDebugger:
       begin
+        MessageDlg('Sorry, not implemented yet',
+           'The GNU debugger support is not yet implemented.'#13
+           +'The IDE can already handle the abstract debugger'#13
+           +'(see directory debugger), so that anyone can write a unit for their'#13
+           +'favourite debugger.'#13
+           +'Please set the debugger in the environment options to none to'#13
+           +'just start the program without debugging.',mtInformation,[mbOk],0);
+        exit;
       { ToDo: GnuDebugger
         if (TheDebugger<>nil) and (not (TheDebugger is TGnuDebugger)) then begin
           TheDebugger.Free;
@@ -3554,15 +3568,15 @@ function TMainIDE.DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;
 var
   ACaption,AText:string;
 begin
-  Result:=DoBackupFile(ABuffer.Filename,IsPartOfProject);
+  Result:=DoBackupFile(AFilename,IsPartOfProject);
   if Result<>mrOk then exit;
   repeat
-    if ABuffer.SaveToFile(ABuffer.Filename) then begin
+    if ABuffer.SaveToFile(AFilename) then begin
       Result:=mrOk;
     end else begin
       ACaption:='Write Error';
-      AText:='Unable to write to file "'+ABuffer.Filename+'"!';
-      Result:=MessageDlg(ACaption,AText,mterror,[mbabort, mbretry, mbignore],0);
+      AText:='Unable to write to file "'+AFilename+'"!';
+      Result:=MessageDlg(ACaption,AText,mtError,[mbAbort, mbRetry, mbIgnore],0);
       if Result=mrAbort then exit;
       if Result=mrIgnore then Result:=mrOk;
     end;
@@ -3948,7 +3962,8 @@ var TestDir: string;
 begin
   Result:='';
   if (Project.MainUnit<0) then exit;
-  Result:=ExtractFilename(Project.Units[Project.MainUnit].Source.Filename);
+  Result:=lowercase(
+               CodeToolBoss.GetSourceName(Project.Units[Project.MainUnit].Source));
   if (Result='') then exit;
   TestDir:=EnvironmentOptions.TestBuildDirectory;
   if (TestDir='') then exit;
@@ -4333,6 +4348,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.126  2001/10/23 09:13:51  lazarus
+  MG: fixed TestProject
+
   Revision 1.125  2001/10/18 13:34:03  lazarus
   MG: keys for debugging
 
