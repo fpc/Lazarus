@@ -1074,11 +1074,11 @@ const
 begin
   inherited CreateParams(Params);
   with Params do begin
-    {$R-}
-    WindowClass.Style := WindowClass.Style and not ClassStylesOff;
+    {$IFOPT R+}{$DEFINE RangeCheckOn}{$R-}{$ENDIF}
+    WindowClass.Style := WindowClass.Style and not Cardinal(ClassStylesOff);
     Style := Style or ScrollBar[FScrollBars] or BorderStyles[fBorderStyle]
       or WS_CLIPCHILDREN;
-    {$R+}
+    {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
     if NewStyleControls and Ctl3D and (fBorderStyle = bsSingle) then begin
       Style := Style and not Cardinal(WS_BORDER);
       ExStyle := ExStyle or WS_EX_CLIENTEDGE;

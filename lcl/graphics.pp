@@ -697,7 +697,7 @@ end;
 
 function ColorToRGB(Color: TColor): Longint;
 begin
-  if (Color and SYS_COLOR_BASE) <> 0
+  if (Cardinal(Color) and SYS_COLOR_BASE) <> 0
   then Result := GetSysColor(Color and $000000FF)
   else Result := Color;
   Result := Result and $FFFFFF;
@@ -743,6 +743,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.14  2001/10/24 00:35:55  lazarus
+  MG: fixes for fpc 1.1: range check errors
+
   Revision 1.13  2001/09/30 08:34:49  lazarus
   MG: fixed mem leaks and fixed range check errors
 

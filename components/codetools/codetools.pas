@@ -53,8 +53,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, SourceLog, KeywordFuncLists, BasicCodeTools, LinkScanner,
-  CodeCache, AVL_Tree, TypInfo, SourceChanger;
+  Classes, SysUtils, SourceChanger, CodeCache, BasicCodeTools, LinkScanner,
+  SourceLog, KeywordFuncLists, AVL_Tree, TypInfo;
 
 type
   TGetStringProc = procedure(const s: string) of object;

@@ -41,8 +41,8 @@ unit SourceChanger;
 interface
 
 uses
-  Classes, SysUtils, SourceLog, LinkScanner, AVL_Tree, CodeCache,
-  KeywordFuncLists, BasicCodeTools;
+  Classes, SysUtils, CodeCache, BasicCodeTools, SourceLog, LinkScanner, AVL_Tree, 
+  KeywordFuncLists;
   
 type
   // TBeautifyCodeOptions

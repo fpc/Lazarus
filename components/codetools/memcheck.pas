@@ -170,7 +170,7 @@ begin
      crc:=i;
      for n:=1 to 8 do
       if odd(crc) then
-       crc:=(crc shr 1) xor $edb88320
+       crc:=(crc shr 1) xor integer($edb88320)
       else
        crc:=crc shr 1;
      Crc32Tbl[i]:=crc;
@@ -203,7 +203,7 @@ var
    crc : longint;
    pl : plongint;
 begin
-   crc:=$ffffffff;
+   crc:=integer($ffffffff);
    crc:=UpdateCrc32(crc,p^.size,sizeof(longint));
    crc:=UpdateCrc32(crc,p^.calls,tracesize*sizeof(longint));
    if extra_info_size>0 then
@@ -223,7 +223,7 @@ var
    crc : longint;
    pl : plongint;
 begin
-   crc:=$ffffffff;
+   crc:=integer($ffffffff);
    crc:=UpdateCrc32(crc,p^.size,sizeof(longint));
    crc:=UpdateCrc32(crc,p^.calls,tracesize*sizeof(longint));
    if extra_info_size>0 then
@@ -337,9 +337,9 @@ begin
   i:=0;
   while pp<>nil do
    begin
-     if ((pp^.sig<>$DEADBEEF) or usecrc) and
+     if ((pp^.sig<>integer($DEADBEEF)) or usecrc) and
         ((pp^.sig<>calculate_sig(pp)) or not usecrc) and
-        (pp^.sig <> $AAAAAAAA) then
+        (pp^.sig <> integer($AAAAAAAA)) then
       begin
         writeln(ptext^,'error in linked list of heap_mem_info');
         RunError(204);
@@ -372,12 +372,12 @@ begin
     inc(bp,sizeof(longint));
   p:=SysGetMem(bp);
 { Create the info block }
-  pheap_mem_info(p)^.sig:=$DEADBEEF;
+  pheap_mem_info(p)^.sig:=integer($DEADBEEF);
   pheap_mem_info(p)^.size:=size;
   if add_tail then
     begin
       pl:=pointer(p)+bp-sizeof(longint);
-      pl^:=$DEADBEEF;
+      pl^:=integer($DEADBEEF);
     end;
   bp:=get_caller_frame(get_frame);
   for i:=1 to tracesize do
@@ -436,13 +436,13 @@ begin
   pp:=pheap_mem_info(p);
   if not quicktrace and not(is_in_getmem_list(pp)) then
     RunError(204);
-  if (pp^.sig=$AAAAAAAA) and not usecrc then
+  if (pp^.sig=integer($AAAAAAAA)) and not usecrc then
     begin
        error_in_heap:=true;
        dump_already_free(pp,ptext^);
        if haltonerror then halt(1);
     end
-  else if ((pp^.sig<>$DEADBEEF) or usecrc) and
+  else if ((pp^.sig<>integer($DEADBEEF)) or usecrc) and
         ((pp^.sig<>calculate_sig(pp)) or not usecrc) then
     begin
        error_in_heap:=true;
@@ -466,7 +466,7 @@ begin
        exit;
     end;
   { now it is released !! }
-  pp^.sig:=$AAAAAAAA;
+  pp^.sig:=integer($AAAAAAAA);
   if not keepreleased then
     begin
        if pp^.next<>nil then
@@ -591,7 +591,7 @@ begin
   dec(p,sizeof(theap_mem_info)+extra_info_size);
   pp:=pheap_mem_info(p);
   { test block }
-  if ((pp^.sig<>$DEADBEEF) or usecrc) and
+  if ((pp^.sig<>integer($DEADBEEF)) or usecrc) and
      ((pp^.sig<>calculate_sig(pp)) or not usecrc) then
    begin
      error_in_heap:=true;
@@ -632,12 +632,12 @@ begin
   inc(getmem_size,size);
   inc(getmem8_size,((size+7) div 8)*8);
 { Create the info block }
-  pp^.sig:=$DEADBEEF;
+  pp^.sig:=integer($DEADBEEF);
   pp^.size:=size;
   if add_tail then
     begin
       pl:=pointer(p)+bp-sizeof(longint);
-      pl^:=$DEADBEEF;
+      pl^:=integer($DEADBEEF);
     end;
   bp:=get_caller_frame(get_frame);
   for i:=1 to tracesize do
@@ -740,10 +740,10 @@ begin
                       +Cardinal(extra_info_size)+Cardinal(pp^.size)) then
        begin
           { check allocated block }
-          if ((pp^.sig=$DEADBEEF) and not usecrc) or
+          if ((pp^.sig=integer($DEADBEEF)) and not usecrc) or
              ((pp^.sig=calculate_sig(pp)) and usecrc) or
           { special case of the fill_extra_info call }
-             ((pp=heap_valid_last) and usecrc and (pp^.sig=$DEADBEEF)
+             ((pp=heap_valid_last) and usecrc and (pp^.sig=integer($DEADBEEF))
               and inside_trace_getmem) then exit
           else
             begin
@@ -770,7 +770,7 @@ begin
      if (cardinal(p)>=cardinal(pp)+sizeof(theap_mem_info)+cardinal(extra_info_size)) and
         (cardinal(p)<=cardinal(pp)+sizeof(theap_mem_info)+cardinal(extra_info_size)+cardinal(pp^.size)) then
         { allocated block }
-       if ((pp^.sig=$DEADBEEF) and not usecrc) or
+       if ((pp^.sig=integer($DEADBEEF)) and not usecrc) or
           ((pp^.sig=calculate_sig(pp)) and usecrc) then
          exit
        else
@@ -826,7 +826,7 @@ begin
           Writeln(ptext^,'More memory blocks than expected');
           exit;
        end;
-     if ((pp^.sig=$DEADBEEF) and not usecrc) or
+     if ((pp^.sig=integer($DEADBEEF)) and not usecrc) or
         ((pp^.sig=calculate_sig(pp)) and usecrc) then
        begin
           { this one was not released !! }
@@ -834,7 +834,7 @@ begin
             call_stack(pp,ptext^);
           dec(i);
        end
-     else if pp^.sig<>$AAAAAAAA then
+     else if pp^.sig<>integer($AAAAAAAA) then
        begin
           dump_error(pp,ptext^);
 {$ifdef EXTRA}
@@ -864,7 +864,7 @@ begin
   pp:=heap_mem_root;
   while pp<>nil do
    begin
-     pp^.sig:=$AAAAAAAA;
+     pp^.sig:=integer($AAAAAAAA);
      pp:=pp^.previous;
    end;
 end;

@@ -793,7 +793,7 @@ Assert(False, 'Trace:TODO: CREATERECTRGN in gtkwinapi.inc');
 Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
 Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
 
-result := -1;
+  Result := Cardinal(-1);
 
 end;
 
@@ -3604,6 +3604,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2001/10/24 00:35:55  lazarus
+  MG: fixes for fpc 1.1: range check errors
+
   Revision 1.44  2001/10/16 14:19:13  lazarus
   MG: added nvidia opengl support and a new opengl example from satan
 

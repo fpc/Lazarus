@@ -39,8 +39,8 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, CodeTools, DefineTemplates, CodeCache, ExprEval,
-  LinkScanner, KeywordFuncLists, TypInfo, SourceChanger;
+  Classes, SysUtils, CodeTools,  SourceChanger, DefineTemplates, CodeCache,
+  ExprEval, LinkScanner, KeywordFuncLists, TypInfo;
 
 type
   TCodeToolManager = class;

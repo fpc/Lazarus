@@ -1506,7 +1506,7 @@ begin
   with TBetterRegistry.Create do 
   begin
     try
-      RootKey := HKEY_LOCAL_MACHINE;
+      RootKey := integer(HKEY_LOCAL_MACHINE);
       {$IFNDEF SYN_LAZARUS}
       // ToDo Registry
       if OpenKeyReadOnly('\SOFTWARE\Borland\Delphi') then
@@ -1544,14 +1544,14 @@ function TSynPasSyn.UseUserSettings(settingIndex: integer): boolean;
       begin
         for i := 1 to Length(name) do
           if name[i] = ' ' then name[i] := '_';
-        Result := attri.LoadFromBorlandRegistry(HKEY_CURRENT_USER,
+        Result := attri.LoadFromBorlandRegistry(integer(HKEY_CURRENT_USER),
                 '\Software\Borland\Delphi\'+settingTag+'\Highlight',name,true);
       end; { ReadDelphi2Or3 }
 
       function ReadDelphi4OrMore(settingTag: string; 
         attri: TSynHighlighterAttributes; key: string): boolean;
       begin
-        Result := attri.LoadFromBorlandRegistry(HKEY_CURRENT_USER,
+        Result := attri.LoadFromBorlandRegistry(integer(HKEY_CURRENT_USER),
                '\Software\Borland\Delphi\'+settingTag+'\Editor\Highlight',
                key,false);
       end; { ReadDelphi4OrMore }

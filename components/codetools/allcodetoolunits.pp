@@ -15,8 +15,8 @@ interface
 
 uses
   MemCheck,
-  CodeToolManager, AVL_Tree, KeywordFuncLists, ExprEval, LinkScanner, SourceLog,
-  BasicCodeTools, CodeCache, SourceChanger, CodeTools, DefineTemplates;
+  CodeToolManager, CodeTools, LinkScanner, BasicCodeTools, SourceChanger,
+  CodeCache, KeywordFuncLists, SourceLog, ExprEval, AVL_Tree, DefineTemplates;
 
 
 implementation
@@ -26,6 +26,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/10/24 00:35:53  lazarus
+  MG: fixes for fpc 1.1: range check errors
+
   Revision 1.1  2001/10/09 10:04:43  lazarus
   MG: added allcodetoolunits.pp
 

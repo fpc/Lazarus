@@ -215,10 +215,12 @@ var
   ObjectClass: PGTKObjectClass;
   WidgetClass: PGTKWidgetClass;
   SignalID: Guint;
+  AdjustType: TGtkType;
 begin
   ObjectClass := PGTKObjectClass(theClass);
   WidgetClass := PGTKWidgetClass(theClass);
   
+  AdjustType := gtk_adjustment_get_type;
   SignalID := gtk_signal_new(
     'set_scroll_adjustments',
     GTK_RUN_FIRST,
@@ -227,7 +229,7 @@ begin
     @gtk_marshal_NONE__POINTER_POINTER,
     GTK_TYPE_NONE,
     2, 
-    [gtk_adjustment_get_type, gtk_adjustment_get_type]
+    [AdjustType, AdjustType]
   );
 
   with WidgetClass^ do
@@ -616,6 +618,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/10/24 00:35:55  lazarus
+  MG: fixes for fpc 1.1: range check errors
+
   Revision 1.12  2001/10/10 17:55:06  lazarus
   MG: fixed caret lost, gtk cleanup, bracket lvls, bookmark saving
 
