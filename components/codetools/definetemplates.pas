@@ -1663,13 +1663,13 @@ begin
   MarkNonAutoCreated;
   RemoveMarked;
   SrcNonAutoCreated:=SrcDefineTree.ExtractNonAutoCreated;
-DebugLn('TDefineTree.AssignNonAutoCreated A Front=',SrcNonAutoCreated.MergeNameInFront,' Behind=',SrcNonAutoCreated.MergeNameBehind);
   if SrcNonAutoCreated=nil then exit;
+  //DebugLn('TDefineTree.AssignNonAutoCreated A Front=',SrcNonAutoCreated.MergeNameInFront,' Behind=',SrcNonAutoCreated.MergeNameBehind);
   MergeTemplates(SrcNonAutoCreated,'');
   SrcNonAutoCreated.Clear(true);
   SrcNonAutoCreated.Free;
   FFirstDefineTemplate.CreateMergeInfo(true,false);
-DebugLn('TDefineTree.AssignNonAutoCreated B Front=',FFirstDefineTemplate.MergeNameInFront,' Behind=',FFirstDefineTemplate.MergeNameBehind);
+  //DebugLn('TDefineTree.AssignNonAutoCreated B Front=',FFirstDefineTemplate.MergeNameInFront,' Behind=',FFirstDefineTemplate.MergeNameBehind);
 end;
 
 procedure TDefineTree.ClearCache;
