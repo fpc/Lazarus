@@ -2064,7 +2064,7 @@ begin
       if UpAtomIs('EXTERNAL') then begin
         // read external name
         ReadNextAtom;
-        if AtomIsStringConstant then
+        if (not UpAtomIs('NAME')) and AtomIsIdentifier(false) then
           ReadConstant(true,false,[]);
       end else
         ReadNextAtom;

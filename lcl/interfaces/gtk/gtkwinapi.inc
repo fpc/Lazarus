@@ -4081,18 +4081,20 @@ begin
   then begin
     with PDeviceContext(DC)^, CurrentBackColor do
     begin
-      Result := ((Red and HI_MASK) shr 8) or (Green and HI_MASK) or ((Blue and HI_MASK) shl 8);
+      Result := ((Red and HI_MASK) shr 8)
+              or (Green and HI_MASK)
+              or ((Blue and HI_MASK) shl 8);
 
-      if Result <> Color
-      then begin
-
+      if Result <> Color then
+      begin
         gdk_colormap_free_colors(gdk_colormap_get_system, @CurrentBackColor, 1);
 
         Red :=   ((Color shl 8) and HI_MASK) or ((Color       ) and LO_MASK);
         Green := ((Color      ) and HI_MASK) or ((Color shr 8 ) and LO_MASK);
         Blue :=  ((Color shr 8) and HI_MASK) or ((Color shr 16) and LO_MASK);
 
-        gdk_colormap_alloc_color(gdk_colormap_get_system, @CurrentBackColor, False, True);
+        gdk_colormap_alloc_color(gdk_colormap_get_system, @CurrentBackColor,
+                                 False, True);
       end;
     end;
 
@@ -4810,6 +4812,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.81  2002/07/09 17:18:23  lazarus
+  MG: fixed parser for external vars
+
   Revision 1.80  2002/06/21 15:41:56  lazarus
   MG: moved RectVisible, ExcludeClipRect and IntersectClipRect to interface dependent functions
 
