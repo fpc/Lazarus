@@ -39,9 +39,9 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, EventCodeTool, CodeTree, CodeAtom, SourceChanger,
-  DefineTemplates, CodeCache, ExprEval, LinkScanner, KeywordFuncLists, TypInfo,
-  AVL_Tree, CustomCodeTool, FindDeclarationTool;
+  Classes, SysUtils, CodeToolsStrConsts, EventCodeTool, CodeTree, CodeAtom,
+  SourceChanger, DefineTemplates, CodeCache, ExprEval, LinkScanner,
+  KeywordFuncLists, TypInfo, AVL_Tree, CustomCodeTool, FindDeclarationTool;
 
 type
   TCodeToolManager = class;
@@ -502,8 +502,7 @@ begin
     exit;
   end;
   if MainCode.Scanner=nil then begin
-    FErrorMsg:='No scanner found for "'+MainCode.Filename+'".'
-          +' If this is an include file, please open the main source first.';
+    FErrorMsg:=Format(ctsNoScannerFound,[MainCode.Filename]);
     exit;
   end;
   FCurCodeTool:=TCodeTool(GetCodeToolForSource(MainCode,true));
@@ -514,14 +513,13 @@ writeln('[TCodeToolManager.InitCurCodeTool] ',Code.Filename,' ',Code.SourceLengt
   Result:=(FCurCodeTool.Scanner<>nil);
   if not Result then begin
     fErrorCode:=MainCode;
-    fErrorMsg:='No scanner available';
+    fErrorMsg:=ctsNoScannerAvailable;
   end;
 end;
 
 function TCodeToolManager.HandleException(AnException: Exception): boolean;
 var ErrorSrcTool: TCustomCodeTool;
 begin
-writeln(' BBB ');
   fErrorMsg:=AnException.Message;
   if not ((AnException is ELinkScannerError) or (AnException is ECodeToolError))
   then begin
@@ -1419,14 +1417,14 @@ begin
     MainCode:=GetMainCode(Code);   // create a scanner
     if (MainCode<>Code) then begin
       if ExceptionOnError then
-        raise Exception.Create('the source "'+Code.Filename+'"'
+        raise Exception.Create('[TCodeToolManager.GetCodeToolForSource]'
+          +' the source "'+Code.Filename+'"'
           +' is an include file of "'+MainCode.Filename+'"');
       exit;
     end;
     if Code.Scanner=nil then begin
       if ExceptionOnError then
-        raise Exception.Create('No scanner found for "'+Code.Filename+'".'
-          +' If this is an include file, please open the main source first.');
+        raise Exception.CreateFmt(ctsNoScannerFound,[Code.Filename]);
       exit;
     end;
     Result:=TCodeTool.Create;

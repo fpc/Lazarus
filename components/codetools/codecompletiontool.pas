@@ -469,7 +469,7 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] CleanAccessFunc ',CleanAcces
 {$IFDEF CTDEBUG}
 writeln('[TCodeCompletionCodeTool.CompleteProperty] Error reading param list');
 {$ENDIF}
-            RaiseException('error in parameter list');
+            RaiseException(ctsErrorInParamList);
           end;
           ParamList:=GetExtraction;
           if (Parts[ppIndexWord].StartPos<1) then begin
@@ -582,7 +582,7 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
                                phpWithoutBrackets,phpWithVarModifiers,
                                phpWithComments])
           then
-            RaiseException('error in param list');
+            RaiseException(ctsErrorInParamList);
           ParamList:=GetExtraction;
           if (Parts[ppIndexWord].StartPos<1) then begin
             // param list, no index
@@ -1149,7 +1149,7 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Starting class in imple
         // -> insert at the end of the implementation section
         ImplementationNode:=FindImplementationNode;
         if ImplementationNode=nil then 
-          RaiseException('implementation node not found');
+          RaiseException(ctsImplementationNodeNotFound);
         Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
         if (ImplementationNode.LastChild=nil)
         or (ImplementationNode.LastChild.Desc<>ctnBeginBlock) then
@@ -1163,11 +1163,11 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Starting class in imple
         // -> insert at the end of the type section
         ANode:=ClassNode.Parent; // type definition
         if ANode=nil then 
-          RaiseException('class node without parent node');
+          RaiseException(ctsClassNodeWithoutParentNode);
         if ANode.Parent.Desc=ctnTypeSection then
           ANode:=ANode.Parent; // type section
         if ANode=nil then
-          RaiseException('type section of class section not found');
+          RaiseException(ctsTypeSectionOfClassNotFound);
         Indent:=GetLineIndent(Src,ANode.StartPos);
         InsertPos:=ANode.EndPos;
       end;
@@ -1397,7 +1397,7 @@ writeln('TCodeCompletionCodeTool.CompleteCode Complete Properties ... ');
           if ANode.Desc=ctnProperty then begin
             // check if property is complete
             if not CompleteProperty(ANode) then 
-              RaiseException('unable to complete property');
+              RaiseException(ctsUnableToCompleteProperty);
           end;
           ANode:=ANode.NextBrother;
         end;
@@ -1409,21 +1409,21 @@ writeln('TCodeCompletionCodeTool.CompleteCode Insert new variables and methods .
 {$ENDIF}
       // insert all new variables and procs definitions
       if not InsertAllNewClassParts then 
-        RaiseException('error during inserting new class parts');
+        RaiseException(ctsErrorDuringInsertingNewClassParts);
 
 {$IFDEF CTDEBUG}
 writeln('TCodeCompletionCodeTool.CompleteCode Insert new method bodies ... ');
 {$ENDIF}
       // insert all missing proc bodies
       if not CreateMissingProcBodies then 
-        RaiseException('error during creation of new proc bodies');
+        RaiseException(ctsErrorDuringCreationOfNewProcBodies);
 
 {$IFDEF CTDEBUG}
 writeln('TCodeCompletionCodeTool.CompleteCode Apply ... ');
 {$ENDIF}
       // apply the changes and jump to first new proc body
       if not SourceChangeCache.Apply then 
-        RaiseException('unable to apply changes');
+        RaiseException(ctsUnableToApplyChanges);
 
       if JumpToProcName<>'' then begin
 {$IFDEF CTDEBUG}
@@ -1435,11 +1435,11 @@ writeln('TCodeCompletionCodeTool.CompleteCode Jump to new proc body ... ');
         // reparse code
         BuildTree(false);
         if not EndOfSourceFound then 
-          RaiseException('End of source not found');
+          RaiseException(ctsEndOfSourceNotFound);
         // find the CursorPos in cleaned source
         Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
         if (Dummy<>0) and (Dummy<>-1) then 
-          RaiseException('cursor pos outside of code');
+          RaiseException(ctsCursorPosOutsideOfCode);
         // find CodeTreeNode at cursor
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
 
@@ -1447,16 +1447,16 @@ writeln('TCodeCompletionCodeTool.CompleteCode Jump to new proc body ... ');
         while (ClassNode<>nil) and (ClassNode.Desc<>ctnClass) do
           ClassNode:=ClassNode.Parent;
         if ClassNode=nil then 
-          RaiseException('oops, I loosed your class');
+          RaiseException('oops, I loose your class');
         ANode:=ClassNode.Parent;
         if ANode=nil then 
-          RaiseException('class without parent node');
+          RaiseException(ctsClassNodeWithoutParentNode);
         if (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnTypeSection) then
           ANode:=ANode.Parent;
         ProcNode:=FindProcNode(ANode,JumpToProcName,
                    [phpInUpperCase,phpIgnoreForwards]);
         if ProcNode=nil then 
-          RaiseException('new proc body not found');
+          RaiseException(ctsNewProcBodyNotFound);
         Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
         exit;
       end else begin

@@ -50,7 +50,8 @@ unit DefineTemplates;
 interface
 
 uses
-  Classes, SysUtils, ExprEval{$ifdef FPC}, XMLCfg{$endif}, AVL_Tree, Process,
+  Classes, SysUtils, CodeToolsStrConsts, ExprEval
+  {$ifdef FPC}, XMLCfg{$endif}, AVL_Tree, Process,
   KeywordFuncLists, FileProcs;
 
 const
@@ -64,7 +65,7 @@ const
   {$define CaseInsensitiveFilenames}
   {$endif}
   
-  // Standard Template Names
+  // Standard Template Names (do not translate them)
   StdDefTemplFPC = 'Free Pascal Compiler';
   StdDefTemplFPCSrc = 'Free Pascal Sources';
   StdDefTemplLazarusSources = 'Lazarus Sources';
@@ -368,7 +369,7 @@ function FilenameIsMatching(const Mask, Filename: string;
 }
 var DirStartMask, DirEndMask, DirStartFile, DirEndFile, AsteriskPos: integer;
 begin
-//writeln('[FilenameIsMatching] Mask="',Mask,'" Filename="',Filename,'" MatchExactly=',MatchExactly);
+  //writeln('[FilenameIsMatching] Mask="',Mask,'" Filename="',Filename,'" MatchExactly=',MatchExactly);
   Result:=false;
   if (Filename='') then exit;
   if (Mask='') then begin
@@ -404,8 +405,8 @@ begin
       else
         inc(DirEndFile);
     end;
-// writeln('  Compare "',copy(Mask,DirStartMask,DirEndMask-DirStartMask),'"',
-//   ' "',copy(Filename,DirStartFile,DirEndFile-DirStartFile),'"');
+    // writeln('  Compare "',copy(Mask,DirStartMask,DirEndMask-DirStartMask),'"',
+    //   ' "',copy(Filename,DirStartFile,DirEndFile-DirStartFile),'"');
     // compare directories
     AsteriskPos:=0;
     while (DirStartMask<DirEndMask) and (DirStartFile<DirEndFile) do begin
@@ -456,7 +457,7 @@ begin
       inc(DirStartFile);
     Result:=(Result and (DirStartFile>length(Filename)));
   end;
-//writeln('  [FilenameIsMatching] Result=',Result,' ',DirStartMask,',',length(Mask),'  ',DirStartFile,',',length(Filename));
+  //writeln('  [FilenameIsMatching] Result=',Result,' ',DirStartMask,',',length(Mask),'  ',DirStartFile,',',length(Filename));
 end;
 
 
@@ -567,7 +568,6 @@ begin
   while ANode<>nil do begin
     NextNode:=ANode.Next;
     if ANode.FMarked then begin
-writeln(' REMOVING ',ANode.Name);
       ANode.Unbind;
       ANode.Free;
     end else begin
@@ -605,8 +605,9 @@ begin
   if FParent<>nil then begin
     ANode:=Self;
     while ANode<>nil do begin
-      if ANode=APrior then raise Exception.Create('internal error: '
-        +'TDefineTemplate.InsertBehind: APrior=ANode');
+      if ANode=APrior then
+        raise Exception.Create('internal error: '
+          +'TDefineTemplate.InsertBehind: APrior=ANode');
       dec(FParent.FChildCount);
       ANode.FParent:=nil;
       ANode:=ANode.Next;
@@ -638,8 +639,9 @@ begin
   if FParent<>nil then begin
     ANode:=Self;
     while ANode<>nil do begin
-      if ANode=ANext then raise Exception.Create('internal error: '
-        +'TDefineTemplate.InsertInFront: ANext=ANode');
+      if ANode=ANext then
+        raise Exception.Create('internal error: '
+          +'TDefineTemplate.InsertInFront: ANext=ANode');
       dec(FParent.FChildCount);
       ANode.FParent:=nil;
       ANode:=ANode.Next;
@@ -737,7 +739,6 @@ end;
 function TDefineTemplate.CreateCopy(OnlyMarked: boolean): TDefineTemplate;
 var LastNewNode, NewNode, ANode: TDefineTemplate;
 begin
-//writeln('TDefineTemplate.CreateCopy A ',ConsistencyCheck);
   Result:=nil;
   LastNewNode:=nil;
   ANode:=Self;
@@ -760,7 +761,6 @@ begin
     end;
     ANode:=ANode.Next;
   end;
-//writeln('TDefineTemplate.CreateCopy B ',ConsistencyCheck);
 end;
 
 function TDefineTemplate.FindRoot: TDefineTemplate;
@@ -1342,7 +1342,7 @@ function TDefineTree.GetDefinesForDirectory(
 var ExpPath: string;
   DirDef: TDirectoryDefines;
 begin
-//writeln('[TDefineTree.GetDefinesForDirectory] "',Path,'"');
+  //writeln('[TDefineTree.GetDefinesForDirectory] "',Path,'"');
   ExpPath:=Path;
   if (ExpPath<>'') and (ExpPath[length(ExpPath)]<>PathDelim) then
     ExpPath:=ExpPath+PathDelim;
@@ -1352,7 +1352,7 @@ begin
   end else begin
     DirDef:=TDirectoryDefines.Create;
     DirDef.Path:=ExpPath;
-//writeln('[TDefineTree.GetDefinesForDirectory] B ',ExpPath,' ');
+    //writeln('[TDefineTree.GetDefinesForDirectory] B ',ExpPath,' ');
     if Calculate(DirDef) then begin
       FCache.Add(DirDef);
       Result:=DirDef.Values;
@@ -1368,12 +1368,12 @@ begin
   if FVirtualDirCache<>nil then
     Result:=FVirtualDirCache.Values
   else begin
-//writeln('################ TDefineTree.GetDefinesForVirtualDirectory');
+    //writeln('################ TDefineTree.GetDefinesForVirtualDirectory');
     FVirtualDirCache:=TDirectoryDefines.Create;
     FVirtualDirCache.Path:=VirtualDirectory;
     if Calculate(FVirtualDirCache) then begin
       Result:=FVirtualDirCache.Values;
-//writeln(TDefineTree.GetDefinesForVirtualDirectory Result.AsString);
+      //writeln(TDefineTree.GetDefinesForVirtualDirectory Result.AsString);
     end else begin
       FVirtualDirCache.Free;
       FVirtualDirCache:=nil;
@@ -1423,14 +1423,14 @@ var
         Ext:=ExtractFileExt(Result);
         Result:=copy(Result,1,length(Result)-length(Ext));
       end else
-        Result:='<Unknown function '+FuncName+'>';
+        Result:='<'+Format(ctsUnknownFunction,[FuncName])+'>';
     end;
 
   // function ReadValue(const PreValue, CurDefinePath: string): string;
   var MacroStart,MacroEnd: integer;
     MacroFuncName, MacroStr, MacroParam: string;
   begin
-//  writeln('    [ReadValue] A   "',PreValue,'"');
+    //  writeln('    [ReadValue] A   "',PreValue,'"');
     Result:=PreValue;
     MacroStart:=1;
     while MacroStart<=length(Result) do begin
@@ -1462,8 +1462,8 @@ var
         end else begin
           // Macro variable
           MacroStr:=copy(Result,MacroStart+2,MacroEnd-MacroStart-3);
-//writeln('**** MacroStr=',MacroStr);
-//writeln('DirDef.Values=',DirDef.Values.AsString);
+          //writeln('**** MacroStr=',MacroStr);
+          //writeln('DirDef.Values=',DirDef.Values.AsString);
           if MacroStr=DefinePathMacroName then begin
             MacroStr:=CurDefinePath;
           end else begin
@@ -1476,7 +1476,7 @@ var
             end else
               MacroStr:='';
           end;
-//writeln('**** Result MacroStr=',MacroStr);
+          //writeln('**** Result MacroStr=',MacroStr);
         end;
         Result:=copy(Result,1,MacroStart-1)+MacroStr
                +copy(Result,MacroEnd,length(Result)-MacroEnd+1);
@@ -1484,7 +1484,7 @@ var
       end;
       MacroStart:=MacroEnd;
     end;
-  //writeln('    [ReadValue] END "',Result,'"');
+    //writeln('    [ReadValue] END "',Result,'"');
   end;
 
   procedure CalculateTemplate(DefTempl: TDefineTemplate; const CurPath: string);
@@ -1505,7 +1505,7 @@ var
   var SubPath: string;
   begin
     while DefTempl<>nil do begin
-  //writeln('  [CalculateTemplate] CurPath="',CurPath,'" DefTempl.Name="',DefTempl.Name,'"');
+      //writeln('  [CalculateTemplate] CurPath="',CurPath,'" DefTempl.Name="',DefTempl.Name,'"');
       case DefTempl.Action of
       da_Block:
         // calculate children
@@ -1546,8 +1546,8 @@ var
           if EvalResult='1' then
             CalculateIfChilds
           else if EvalResult='0' then begin
-            FErrorDescription:='Syntax Error in expression '
-                               +'"'+ReadValue(DefTempl.Value,CurPath)+'"';
+            FErrorDescription:=Format(ctsSyntaxErrorInExpr,
+                                  [ReadValue(DefTempl.Value,CurPath)]);
             FErrorTemplate:=DefTempl;
             exit;
           end;
@@ -1589,7 +1589,7 @@ var
 
 // function TDefineTree.Calculate(DirDef: TDirectoryDefines): boolean;
 begin
-//writeln('[TDefineTree.Calculate] "',DirDef.Path,'"');
+  //writeln('[TDefineTree.Calculate] "',DirDef.Path,'"');
   Result:=true;
   FErrorTemplate:=nil;
   if DirDef.Path<>VirtualDirectory then
@@ -1848,7 +1848,7 @@ function TDefinePool.CreateFPCTemplate(
     if copy(UpLine,1,15)='MACRO DEFINED: ' then begin
       MacroName:=copy(UpLine,16,length(Line)-15);
       NewDefTempl:=TDefineTemplate.Create('Define '+MacroName,
-           'Default ppc386 macro',MacroName,'',da_DefineRecurse);
+           ctsDefaultppc386Macro,MacroName,'',da_DefineRecurse);
     end else if copy(UpLine,1,6)='MACRO ' then begin
       System.Delete(Line,1,6);
       System.Delete(UpLine,1,6);
@@ -1861,7 +1861,7 @@ function TDefinePool.CreateFPCTemplate(
       if copy(UpLine,1,7)='SET TO ' then begin
         MacroValue:=copy(Line,8,length(Line)-7);
         NewDefTempl:=TDefineTemplate.Create('Define '+MacroName,
-             'Default ppc386 macro',MacroName,MacroValue,da_DefineRecurse);
+             ctsDefaultppc386Macro,MacroName,MacroValue,da_DefineRecurse);
       end;
     end else if copy(UpLine,1,17)='USING UNIT PATH: ' then begin
       UnitSearchPath:=UnitSearchPath+copy(Line,18,length(Line)-17)+#13;
@@ -1947,7 +1947,7 @@ begin
         if Buf[i] in [#10,#13] then begin
           TargetOS:=copy(Buf,1,i-1);
           NewDefTempl:=TDefineTemplate.Create('Define TargetOS',
-            'Default ppc386 target Operating System',
+            ctsDefaultppc386TargetOperatingSystem,
             ExternalMacroStart+'TargetOS',TargetOS,da_DefineRecurse);
           if DefTempl<>nil then
             NewDefTempl.InsertBehind(DefTempl);
@@ -1957,7 +1957,7 @@ begin
           else
             SrcOS:=TargetOS;
           NewDefTempl:=TDefineTemplate.Create('Define SrcOS',
-            'Default ppc386 source Operating System',
+            ctsDefaultppc386SourceOperatingSystem,
             ExternalMacroStart+'SrcOS',SrcOS,da_DefineRecurse);
           if DefTempl<>nil then
             NewDefTempl.InsertBehind(DefTempl);
@@ -1987,8 +1987,9 @@ begin
         if Buf[i] in [#10,#13] then begin
           TargetProcessor:=copy(Buf,1,i-1);
           NewDefTempl:=TDefineTemplate.Create('Define TargetProcessor',
-            'Default ppc386 target Operating System',
-            ExternalMacroStart+'TargetProcessor',TargetProcessor,da_DefineRecurse);
+            ctsDefaultppc386TargetProcessor,
+            ExternalMacroStart+'TargetProcessor',TargetProcessor,
+            da_DefineRecurse);
           if DefTempl<>nil then
             NewDefTempl.InsertBehind(DefTempl);
           DefTempl:=NewDefTempl;
@@ -2005,7 +2006,7 @@ begin
     if (DefTempl<>nil) then begin
       while (DefTempl.Prior<>nil) do DefTempl:=DefTempl.Prior;
       Result:=TDefineTemplate.Create('Free Pascal Compiler',
-        'Free Pascal Compiler initial makros','','',da_Block);
+        ctsFreePascalCompilerInitialMacros,'','',da_Block);
       Result.AddChild(DefTempl);
       Result.Flags:=[dtfAutoGenerated];
     end;
@@ -2135,7 +2136,7 @@ var
       SrcOSMakroUsed: boolean;
       i: integer;
     begin
-//  writeln('%%%Browse ',ADirPath);
+      //  writeln('%%%Browse ',ADirPath);
       if ADirPath='' then exit;
       if not (ADirPath[length(ADirPath)]=PathDelim) then
         ADirPath:=ADirPath+PathDelim;
@@ -2219,7 +2220,7 @@ var
     // search
     if AnUnitName='' then exit;
     UnitLink:=FindUnitLink(AnUnitName);
-//writeln('AddFPCSourceLinkForUnit ',AnUnitName,' ',UnitLink<>nil);
+    //writeln('AddFPCSourceLinkForUnit ',AnUnitName,' ',UnitLink<>nil);
     if UnitLink=nil then exit;
     s:=AnUnitName+' '+UnitLink.Filename+EndOfLine;
     UnitLinkList:=UnitLinkList+s;
@@ -2244,13 +2245,13 @@ var
         inc(PathEnd);
       if PathEnd>PathStart then begin
         ADirPath:=copy(UnitSearchPath,PathStart,PathEnd-PathStart);
-//writeln('&&& FindStandardPPUSources ',ADirPath);
+        //writeln('&&& FindStandardPPUSources ',ADirPath);
         // search all ppu files in this directory
         if FindFirst(ADirPath+'*.ppu',faAnyFile,FileInfo)=0 then begin
           repeat
             UnitName:=ExtractFileName(FileInfo.Name);
             UnitName:=copy(UnitName,1,length(UnitName)-4);
-//writeln('&&& FindStandardPPUSources B ',UnitName);
+            //writeln('&&& FindStandardPPUSources B ',UnitName);
             AddFPCSourceLinkForUnit(UnitName);
           until FindNext(FileInfo)<>0;
         end;
@@ -2279,34 +2280,33 @@ begin
   UnitTree:=nil;
 
   Result:=TDefineTemplate.Create(StdDefTemplFPCSrc,
-     'Free Pascal Sources, RTL, FCL, Packages, Compiler','','',da_Block);
+     Format(ctsFreePascalSourcesPlusDesc,['RTL, FCL, Packages, Compiler']),
+     '','',da_Block);
   Result.Flags:=[dtfAutoGenerated];
 
   // try to find for every reachable ppu file the unit file in the FPC sources
   FindStandardPPUSources;
   DefTempl:=TDefineTemplate.Create('FPC Unit Links',
-    'Source filenames for the standard fpc units',
+    ctsSourceFilenamesForStandardFPCUnits,
     UnitLinks,UnitLinkList,da_DefineRecurse);
   Result.AddChild(DefTempl);
 
   // The free pascal sources build a world of their own,
   // reset source search path
   MainDir:=TDefineTemplate.Create('Free Pascal Source Directory',
-    'Free Pascal Source Directory',
-    '',FPCSrcDir,da_Directory);
+    ctsFreePascalSourceDir,'',FPCSrcDir,da_Directory);
   Result.AddChild(MainDir);
   DefTempl:=TDefineTemplate.Create('Reset SrcPath',
-    'SrcPath Init',
-    ExternalMacroStart+'SrcPath','',da_DefineRecurse);
+    ctsSrcPathInitialization,ExternalMacroStart+'SrcPath','',da_DefineRecurse);
   MainDir.AddChild(DefTempl);
 
   // compiler
-  CompilerDir:=TDefineTemplate.Create('Compiler','Compiler','','compiler',
+  CompilerDir:=TDefineTemplate.Create('Compiler',ctsCompiler,'','compiler',
      da_Directory);
   MainDir.AddChild(CompilerDir);
 
   // rtl
-  RTLDir:=TDefineTemplate.Create('RTL','Runtime library','','rtl',da_Directory);
+  RTLDir:=TDefineTemplate.Create('RTL',ctsRuntimeLibrary,'','rtl',da_Directory);
   MainDir.AddChild(RTLDir);
   s:=IncPathMacro
     +';'+Dir+'rtl'+DS+'objpas'+DS
@@ -2316,22 +2316,23 @@ begin
   if (TargetOS<>'') and (TargetOS<>SrcOS) then
     s:=s+';'+Dir+'rtl'+DS+TargetOS+DS;
   RTLDir.AddChild(TDefineTemplate.Create('Include Path',
-    'include directory objpas, inc, processor specific',
+    Format(ctsIncludeDirectoriesPlusDirs,
+    ['objpas, inc,'+TargetProcessor+','+SrcOS]),
     ExternalMacroStart+'IncPath',s,da_DefineRecurse));
 
   // fcl
-  FCLDir:=TDefineTemplate.Create('FCL','Free Pascal Component Library','','fcl',
+  FCLDir:=TDefineTemplate.Create('FCL',ctsFreePascalComponentLibrary,'','fcl',
       da_Directory);
   MainDir.AddChild(FCLDir);
   FCLDir.AddChild(TDefineTemplate.Create('Include Path',
-    'include directory inc',
+    Format(ctsIncludeDirectoriesPlusDirs,['inc']),
     ExternalMacroStart+'IncPath',
     IncPathMacro
     +';'+Dir+'fcl/inc/'
     ,da_DefineRecurse));
 
   // packages
-  PackagesDir:=TDefineTemplate.Create('Packages','Package directories','',
+  PackagesDir:=TDefineTemplate.Create('Packages',ctsPackageDirectories,'',
      'packages',da_Directory);
   MainDir.AddChild(PackagesDir);
   
@@ -2354,58 +2355,65 @@ begin
   SrcPath:='$('+ExternalMacroStart+'SrcPath)';
 
   // <LazarusSrcDir>
-  MainDir:=TDefineTemplate.Create('Lazarus Source Directory',
-    'Definitions for the Lazarus Sources','',LazarusSrcDir,da_Directory);
-  MainDir.AddChild(TDefineTemplate.Create('LCL path addition',
-    'adds lcl to SrcPath',ExternalMacroStart+'SrcPath',
+  MainDir:=TDefineTemplate.Create(
+    'Lazarus Source Directory',
+    ctsDefsForLazarusSources,'',LazarusSrcDir,da_Directory);
+  MainDir.AddChild(TDefineTemplate.Create(
+    'LCL path addition',
+    Format(ctsAddsDirToSourcePath,['lcl']),ExternalMacroStart+'SrcPath',
     'lcl;lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
     ,da_Define));
-  MainDir.AddChild(TDefineTemplate.Create('Component path addition',
-    'adds designer, debugger, synedit and codetools to SrcPath',
+  MainDir.AddChild(TDefineTemplate.Create(
+    'Component path addition',
+    Format(ctsAddsDirToSourcePath,['designer, debugger, synedit,codetools']),
     ExternalMacroStart+'SrcPath',
     'components'+ds+'synedit;components'+ds+'codetools;designer;debugger;'
       +SrcPath
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create('includepath addition',
-    'adds include to IncPath',ExternalMacroStart+'IncPath',
+    Format(ctsLazMainDirIncludePath,['include, include/TargetOS']),
+    ExternalMacroStart+'IncPath',
     'include;include'+ds+TargetOS,
     da_Define));
     
   // examples
-  DirTempl:=TDefineTemplate.Create('Examples','Examples Directory',
+  DirTempl:=TDefineTemplate.Create('Examples',
+    Format(ctsNamedDirectory,['Examples']),
     '','examples',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
-    'adds lcl to SrcPath',
+    Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
     '..'+ds+'lcl;..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
     ,da_Define));
   MainDir.AddChild(DirTempl);
   
   // lcl
-  DirTempl:=TDefineTemplate.Create('LCL','LCL Directory',
+  DirTempl:=TDefineTemplate.Create('LCL',Format(ctsNamedDirectory,['LCL']),
     '','lcl',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('WidgetPath',
-     'adds abstract widget path to SrcPath'
-    ,ExternalMacroStart+'SrcPath',
-    'interfaces'+ds+'abstract'+ds+';'+SrcPath
-    ,da_Define));
+    Format(ctsAddsDirToSourcePath,[ctsAbstractWidgetPath]),
+    ExternalMacroStart+'SrcPath',
+    'interfaces'+ds+'abstract'+ds+';'+SrcPath,
+    da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('IncludePath',
-     'adds include to IncPaty',ExternalMacroStart+'IncPath',
-    +'include',da_Define));
+     Format(ctsIncludeDirectoriesPlusDirs,['include']),
+     ExternalMacroStart+'IncPath',
+     'include',da_Define));
   MainDir.AddChild(DirTempl);
 
   // lcl/interfaces
-  SubDirTempl:=TDefineTemplate.Create('Widget Directory','Widget Directory',
-    '','interfaces',da_Directory);
+  SubDirTempl:=TDefineTemplate.Create('Widget Directory',
+    ctsWidgetDirectory,'','interfaces',da_Directory);
   SubDirTempl.AddChild(TDefineTemplate.Create('LCL Path',
-    'adds lcl to SrcPath',ExternalMacroStart+'SrcPath',
+    Format(ctsAddsDirToSourcePath,['lcl']),ExternalMacroStart+'SrcPath',
     LazarusSrcDir+ds+'lcl;'+SrcPath,da_DefineRecurse));
   DirTempl.AddChild(SubDirTempl);
   
   // components
-  DirTempl:=TDefineTemplate.Create('Components','Components Directory',
+  DirTempl:=TDefineTemplate.Create('Components',ctsComponentsDirectory,
     '','components',da_Directory);
-  DirTempl.AddChild(TDefineTemplate.Create('LCL Path','adds lcl to SrcPath',
+  DirTempl.AddChild(TDefineTemplate.Create('LCL Path',
+    Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
     LazarusSrcDir+ds+'lcl'
     +';'+LazarusSrcDir+ds+'lcl'+ds+'interfaces'+ds+WidgetType
@@ -2414,10 +2422,11 @@ begin
   MainDir.AddChild(DirTempl);
 
   // tools
-  DirTempl:=TDefineTemplate.Create('Tools','Tools Directory',
+  DirTempl:=TDefineTemplate.Create('Tools',
+    ctsToolsDirectory,
     '','tools',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
-    'adds lcl to SrcPath',
+    Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
     '..'+ds+'lcl;..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
     ,da_Define));
@@ -2426,28 +2435,29 @@ begin
   // include
   
   // designer
-  DirTempl:=TDefineTemplate.Create('Designer','Designer Directory',
+  DirTempl:=TDefineTemplate.Create('Designer',ctsDesignerDirectory,
     '','designer',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
-    'adds lcl to SrcPath',
+    Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
       '..'+ds+'lcl'
       +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
       +';'+SrcPath
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('main path addition',
-    'adds lazarus source directory to SrcPath',
+    Format(ctsAddsDirToSourcePath,[ctsLazarusMainDirectory]),
     ExternalMacroStart+'SrcPath',
     '..;'+SrcPath
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('components path addition',
-    'adds synedit directory to SrcPath',
+    Format(ctsAddsDirToSourcePath,['synedit']),
     ExternalMacroStart+'SrcPath',
     '..'+ds+'components'+ds+'synedit;'+'..'+ds+'components'+ds+'codetools;'
       +SrcPath
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
-    'adds include to IncPath',ExternalMacroStart+'IncPath',
+    Format(ctsIncludeDirectoriesPlusDirs,['include']),
+    ExternalMacroStart+'IncPath',
     '..'+ds+'include;..'+ds+'include'+ds+TargetOS,
     da_Define));
   MainDir.AddChild(DirTempl);
@@ -2455,10 +2465,10 @@ begin
   // images
   
   // debugger
-  DirTempl:=TDefineTemplate.Create('Debugger','Debugger Directory',
+  DirTempl:=TDefineTemplate.Create('Debugger',ctsDebuggerDirectory,
     '','debugger',da_Directory);
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
-    'adds lcl to SrcPath',
+    Format(ctsAddsDirToSourcePath,['lcl']),
     ExternalMacroStart+'SrcPath',
       '..'+ds+'lcl'
       +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
