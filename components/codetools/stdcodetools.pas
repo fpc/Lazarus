@@ -117,7 +117,7 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
     function CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree;
                   const OnGetDefineProperties: TOnGetDefineProperties;
-                  RootMustBeClassInIntf: boolean): boolean;
+                  RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
 
     // Application.Createform statements
     function FindCreateFormStatement(StartPos: integer;
@@ -894,7 +894,7 @@ end;
 
 function TStandardCodeTool.CheckLFM(LFMBuf: TCodeBuffer; var LFMTree: TLFMTree;
   const OnGetDefineProperties: TOnGetDefineProperties;
-  RootMustBeClassInIntf: boolean): boolean;
+  RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
 var
   RootContext: TFindContext;
 
@@ -932,7 +932,7 @@ var
   function FindLFMIdentifier(LFMNode: TLFMTreeNode;
     DefaultErrorPosition: integer;
     const IdentName: string; const ClassContext: TFindContext;
-    SearchAlsoInDefineProperties: boolean;
+    SearchAlsoInDefineProperties, ErrorOnNotFound: boolean;
     var IdentContext: TFindContext): boolean;
   var
     Params: TFindDeclarationParams;
@@ -971,6 +971,14 @@ var
     
     if IdentContext.Node<>nil then begin
       Result:=true;
+      if (IdentContext.Node.Parent<>nil)
+      and (IdentContext.Node.Parent.Desc<>ctnClassPublished)
+      then begin
+        LFMTree.AddError(lfmeIdentifierNotPublished,LFMNode,
+                         'identifier '+IdentName+' is not published',
+                         DefaultErrorPosition);
+        exit;
+      end;
     end else begin
       // no node found
       if SearchAlsoInDefineProperties then begin
@@ -981,7 +989,7 @@ var
         end;
       end;
     end;
-    if not Result then begin
+    if (not Result) and ErrorOnNotFound then begin
       LFMTree.AddError(lfmeIdentifierNotFound,LFMNode,
                        'identifier '+IdentName+' not found',
                        DefaultErrorPosition);
@@ -1039,8 +1047,45 @@ var
       Result:=Result+'('+IntToStr(Caret.Y)+','+IntToStr(Caret.X)+')';
   end;
   
+  function FindClassContext(const ClassName: string): TFindContext;
+  var
+    Params: TFindDeclarationParams;
+    Identifier: PChar;
+    OldInput: TFindDeclarationInput;
+    StartTool: TStandardCodeTool;
+  begin
+    Result:=CleanFindContext;
+    Params:=TFindDeclarationParams.Create;
+    StartTool:=Self;
+    Identifier:=PChar(ClassName);
+    try
+      Params.Flags:=[fdfExceptionOnNotFound,
+        fdfSearchInParentNodes,
+        fdfExceptionOnPredefinedIdent,fdfIgnoreMissingParams,
+        fdfIgnoreOverloadedProcs];
+      Params.ContextNode:=FindInterfaceNode;
+      if Params.ContextNode=nil then
+        Params.ContextNode:=FindMainUsesSection;
+      Params.SetIdentifier(StartTool,Identifier,nil);
+      try
+        Params.Save(OldInput);
+        if FindIdentifierInContext(Params) then begin
+          Params.Load(OldInput);
+          Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
+          if (Result.Node=nil) or (Result.Node.Desc<>ctnClass) then
+            Result:=CleanFindContext;
+        end;
+      except
+        // ignore search/parse errors
+        on E: ECodeToolError do ;
+      end;
+    finally
+      Params.Free;
+    end;
+  end;
+
   procedure CheckLFMChildObject(LFMObject: TLFMObjectNode;
-    const ParentContext: TFindContext);
+    const ParentContext: TFindContext; SearchAlsoInDefineProperties: boolean);
   var
     LFMObjectName: String;
     ChildContext: TFindContext;
@@ -1058,60 +1103,80 @@ var
                        LFMObject.StartPos);
       exit;
     end;
+    
     if not FindLFMIdentifier(LFMObject,LFMObject.NamePosition,
-      LFMObjectName,RootContext,false,ChildContext) then exit;
-    if ChildContext.Node=nil then begin
-      // this is an extra entry, created via DefineProperties.
-      // There is no generic way to test such things
-      exit;
+      LFMObjectName,RootContext,SearchAlsoInDefineProperties,ObjectsMustExists,
+      ChildContext)
+    then begin
+      // object name not found
+      if ObjectsMustExists then
+        exit;
     end;
 
-    // check if identifier is variable
-    if not ChildContext.Node.Desc=ctnVarDefinition then begin
-      LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
-                       LFMObjectName+' is not a variable'
-                       +CreateFootNote(ChildContext),
-                       LFMObject.NamePosition);
-      exit;
-    end;
-    DefinitionNode:=ChildContext.Tool.FindTypeNodeOfDefinition(
-                                                             ChildContext.Node);
-    if DefinitionNode=nil then begin
-      ChildContext.Node:=DefinitionNode;
-      LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
-                       LFMObjectName+' is not a variable.'
-                       +CreateFootNote(ChildContext),
-                       LFMObject.NamePosition);
-      exit;
-    end;
+    if ObjectsMustExists or (ChildContext.Node<>nil) then begin
+      if ChildContext.Node=nil then begin
+        // this is an extra entry, created via DefineProperties.
+        // There is no generic way to test such things
+        exit;
+      end;
 
-    // check if variable has a compatible type
-    if LFMObject.TypeName<>'' then begin
-      VariableTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(
-                                                             ChildContext.Node);
-      if (VariableTypeName='')
-      or (AnsiCompareText(VariableTypeName,LFMObject.TypeName)<>0) then begin
+      // check if identifier is variable
+      if (not ChildContext.Node.Desc=ctnVarDefinition) then begin
+        LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
+                         LFMObjectName+' is not a variable'
+                         +CreateFootNote(ChildContext),
+                         LFMObject.NamePosition);
+        exit;
+      end;
+      DefinitionNode:=ChildContext.Tool.FindTypeNodeOfDefinition(
+                                                               ChildContext.Node);
+      if DefinitionNode=nil then begin
         ChildContext.Node:=DefinitionNode;
         LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
-                       VariableTypeName+' expected, but '+LFMObject.TypeName+' found.'
-                       +CreateFootNote(ChildContext),
-                       LFMObject.NamePosition);
+                         LFMObjectName+' is not a variable.'
+                         +CreateFootNote(ChildContext),
+                         LFMObject.NamePosition);
+        exit;
+      end;
+
+      // check if variable has a compatible type
+      if LFMObject.TypeName<>'' then begin
+        VariableTypeName:=ChildContext.Tool.ExtractDefinitionNodeType(
+                                                               ChildContext.Node);
+        if (VariableTypeName='')
+        or (AnsiCompareText(VariableTypeName,LFMObject.TypeName)<>0) then begin
+          ChildContext.Node:=DefinitionNode;
+          LFMTree.AddError(lfmeObjectIncompatible,LFMObject,
+                         VariableTypeName+' expected, but '+LFMObject.TypeName+' found.'
+                         +CreateFootNote(ChildContext),
+                         LFMObject.NamePosition);
+          exit;
+        end;
+      end;
+
+      // check if variable is published
+      if (ChildContext.Node.Parent=nil)
+      or (ChildContext.Node.Parent.Desc<>ctnClassPublished) then begin
+        LFMTree.AddError(lfmeIdentifierNotPublished,LFMObject,
+                         LFMObjectName+' is not published',
+                         LFMObject.NamePosition);
+        exit;
+      end;
+
+      // find class node
+      ClassContext:=FindClassNodeForLFMObject(LFMObject,LFMObject.TypeNamePosition,
+                                              ChildContext.Tool,DefinitionNode);
+    end else begin
+      // try the object type
+      ClassContext:=FindClassContext(LFMObject.TypeName);
+      if ClassContext.Node=nil then begin
+        // object type not found
+        LFMTree.AddError(lfmeIdentifierNotFound,LFMObject,
+                         'type '+LFMObject.TypeName+' not found',
+                         LFMObject.TypeNamePosition);
         exit;
       end;
     end;
-
-    // check if variable is published
-    if (ChildContext.Node.Parent=nil)
-    or (ChildContext.Node.Parent.Desc<>ctnClassPublished) then begin
-      LFMTree.AddError(lfmeIdentifierNotPublished,LFMObject,
-                       LFMObjectName+' is not published',
-                       LFMObject.NamePosition);
-      exit;
-    end;
-    
-    // find class node
-    ClassContext:=FindClassNodeForLFMObject(LFMObject,LFMObject.TypeNamePosition,
-                                            ChildContext.Tool,DefinitionNode);
     if ClassContext.Node=nil then exit;
 
     // check child LFM nodes
@@ -1185,7 +1250,8 @@ var
       CurName:=LFMProperty.NameParts.Names[i];
       if not FindLFMIdentifier(LFMProperty,
                                LFMProperty.NameParts.NamePositions[i],
-                               CurName,SearchContext,true,CurPropertyContext)
+                               CurName,SearchContext,true,true,
+                               CurPropertyContext)
       then
         break;
       if CurPropertyContext.Node=nil then begin
@@ -1211,7 +1277,7 @@ var
       case CurLFMNode.TheType of
       
       lfmnObject:
-        CheckLFMChildObject(TLFMObjectNode(CurLFMNode),ClassContext);
+        CheckLFMChildObject(TLFMObjectNode(CurLFMNode),ClassContext,false);
 
       lfmnProperty:
         CheckLFMProperty(TLFMPropertyNode(CurLFMNode),ClassContext);
@@ -1222,43 +1288,6 @@ var
     Result:=true;
   end;
   
-  function FindClassContext(const ClassName: string): TFindContext;
-  var
-    Params: TFindDeclarationParams;
-    Identifier: PChar;
-    OldInput: TFindDeclarationInput;
-    StartTool: TStandardCodeTool;
-  begin
-    Result:=CleanFindContext;
-    Params:=TFindDeclarationParams.Create;
-    StartTool:=Self;
-    Identifier:=PChar(ClassName);
-    try
-      Params.Flags:=[fdfExceptionOnNotFound,
-        fdfSearchInParentNodes,
-        fdfExceptionOnPredefinedIdent,fdfIgnoreMissingParams,
-        fdfIgnoreOverloadedProcs];
-      Params.ContextNode:=FindInterfaceNode;
-      if Params.ContextNode=nil then
-        Params.ContextNode:=FindMainUsesSection;
-      Params.SetIdentifier(StartTool,Identifier,nil);
-      try
-        Params.Save(OldInput);
-        if FindIdentifierInContext(Params) then begin
-          Params.Load(OldInput);
-          Result:=Params.NewCodeTool.FindBaseTypeOfNode(Params,Params.NewNode);
-          if (Result.Node=nil) or (Result.Node.Desc<>ctnClass) then
-            Result:=CleanFindContext;
-        end;
-      except
-        // ignore search/parse errors
-        on E: ECodeToolError do ;
-      end;
-    finally
-      Params.Free;
-    end;
-  end;
-
   function CheckLFMRoot(RootLFMNode: TLFMTreeNode): boolean;
   var
     LookupRootLFMNode: TLFMObjectNode;

@@ -167,7 +167,8 @@ var
     end;
     ComponentStream.Position:=0;
     LFMBuffer.LoadFromStream(ComponentStream);
-    if not CodeToolBoss.CheckLFM(UnitCode,LFMBuffer,LFMTree,false) then begin
+    if not CodeToolBoss.CheckLFM(UnitCode,LFMBuffer,LFMTree,false,false) then
+    begin
       debugln('ChangePersistentClass-Before--------------------------------------------');
       debugln(LFMBuffer.Source);
       debugln('ChangePersistentClass-Before--------------------------------------------');
@@ -210,7 +211,7 @@ var
 
   function CheckProperties: boolean;
   begin
-    Result:=CheckLFMBuffer(UnitCode,LFMBuffer,nil,false);
+    Result:=CheckLFMBuffer(UnitCode,LFMBuffer,nil,false,false);
     if not Result and (CodeToolBoss.ErrorMessage<>'') then
       MainIDEInterface.DoJumpToCodeToolBossError;
   end;

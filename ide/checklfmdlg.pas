@@ -33,8 +33,8 @@ interface
 
 uses
   // FCL+LCL
-  Classes, SysUtils, Math, LResources, Forms, Controls, Graphics, Dialogs,
-  Buttons, StdCtrls,
+  Classes, SysUtils, Math, LCLProc, LResources, Forms, Controls, Graphics,
+  Dialogs, Buttons, StdCtrls,
   // components
   SynHighlighterLFM, SynEdit, BasicCodeTools, CodeCache, CodeToolManager,
   LFMTrees,
@@ -78,9 +78,11 @@ type
   end;
   
 function CheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
-  const OnOutput: TOnOutputString; RootMustBeClassInIntf: boolean): boolean;
+  const OnOutput: TOnOutputString;
+  RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
 function CheckLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
-  const OnOutput: TOnOutputString; RootMustBeClassInIntf: boolean): boolean;
+  const OnOutput: TOnOutputString;
+  RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
 function ShowRepairLFMWizard(LFMBuffer: TCodeBuffer;
   LFMTree: TLFMTree): boolean;
 
@@ -95,7 +97,8 @@ type
   end;
 
 function CheckLFMBuffer(PascalBuffer, LFMBuffer: TCodeBuffer;
-  const OnOutput: TOnOutputString; RootMustBeClassInIntf: boolean): boolean;
+  const OnOutput: TOnOutputString;
+  RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
 var
   LFMTree: TLFMTree;
   
@@ -125,7 +128,7 @@ begin
   LFMTree:=nil;
   try
     Result:=CodeToolBoss.CheckLFM(PascalBuffer,LFMBuffer,LFMTree,
-                                  RootMustBeClassInIntf);
+                                  RootMustBeClassInIntf,ObjectsMustExists);
     if Result then exit;
     WriteLFMErrors;
     Result:=ShowRepairLFMWizard(LFMBuffer,LFMTree);
@@ -135,7 +138,8 @@ begin
 end;
 
 function CheckLFMText(PascalBuffer: TCodeBuffer; var LFMText: string;
-  const OnOutput: TOnOutputString; RootMustBeClassInIntf: boolean): boolean;
+  const OnOutput: TOnOutputString;
+  RootMustBeClassInIntf, ObjectsMustExists: boolean): boolean;
 var
   LFMBuf: TCodeBuffer;
 begin
@@ -143,7 +147,8 @@ begin
   LFMBuf:=CodeToolBoss.CreateTempFile('temp.lfm');
   try
     LFMBuf.Source:=LFMText;
-    Result:=CheckLFMBuffer(PascalBuffer,LFMBuf,OnOutput,RootMustBeClassInIntf);
+    Result:=CheckLFMBuffer(PascalBuffer,LFMBuf,OnOutput,RootMustBeClassInIntf,
+                           ObjectsMustExists);
     LFMText:=LFMBuf.Source;
   finally
     CodeToolBoss.ReleaseTempFile(LFMBuf);
@@ -293,6 +298,7 @@ begin
       // New and Entry intersects
       if (Entry.NewText='') and (NewText='') then begin
         // both are deletes => combine
+        debugln('TCheckLFMDialog.AddReplacement Combine Deletion: Old=',dbgs(Entry.StartPos),'-',dbgs(Entry.EndPos),' New=',dbgs(StartPos),'-',dbgs(EndPos));
         StartPos:=Min(StartPos,Entry.StartPos);
         EndPos:=Max(EndPos,Entry.EndPos);
       end else begin
@@ -304,20 +310,14 @@ begin
 
   // combine deletions
   if NewText='' then begin
-    for i:=0 to LFMChangeList.Count-1 do begin
+    for i:=LFMChangeList.Count-1 downto 0 do begin
       Entry:=TLFMChangeEntry(LFMChangeList[i]);
       if ((Entry.StartPos<EndPos) and (Entry.EndPos>StartPos)) then begin
         // New and Entry intersects
-        Entry.StartPos:=Min(StartPos,Entry.StartPos);
-        Entry.EndPos:=Max(EndPos,Entry.EndPos);
-        if (i<LFMChangeList.Count-1) then begin
-          NextEntry:=TLFMChangeEntry(LFMChangeList[i+1]);
-          if NextEntry.StartPos<EndPos then begin
-            // next entry can be merged
-            LFMChangeList.Delete(i+1);
-            NextEntry.Free;
-          end;
-        end;
+        // -> remove Entry
+        debugln('TCheckLFMDialog.AddReplacement Intersecting Deletion: Old=',dbgs(Entry.StartPos),'-',dbgs(Entry.EndPos),' New=',dbgs(StartPos),'-',dbgs(EndPos));
+        LFMChangeList.Delete(i);
+        Entry.Free;
       end;
     end;
   end;
@@ -332,18 +332,14 @@ begin
   end else begin
     for i:=0 to LFMChangeList.Count-1 do begin
       Entry:=TLFMChangeEntry(LFMChangeList[i]);
-      if Entry.StartPos>EndPos then begin
+      if EndPos<=Entry.StartPos then begin
+        // insert in front
         LFMChangeList.Insert(i,NewEntry);
         break;
-      end else begin
-        if (i<LFMChangeList.Count-1) then
-          NextEntry:=TLFMChangeEntry(LFMChangeList[i+1])
-        else
-          NextEntry:=nil;
-        if NextEntry.StartPos>EndPos then begin
-          LFMChangeList.Insert(i+1,NewEntry);
-          break;
-        end;
+      end else if i=LFMChangeList.Count-1 then begin
+        // insert behind
+        LFMChangeList.Add(NewEntry);
+        break;
       end;
     end;
   end;

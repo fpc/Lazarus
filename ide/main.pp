@@ -6550,7 +6550,8 @@ begin
   DoArrangeSourceEditorAndMessageView(false);
 
   // parse the LFM file and the pascal unit
-  if not CheckLFMBuffer(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg,true)
+  if not CheckLFMBuffer(PascalBuf,LFMUnitInfo.Source,@MessagesView.AddMsg,
+                        true,true)
   then begin
     DoJumpToCompilerMessage(-1,true);
   end;
@@ -6637,8 +6638,8 @@ begin
     if HasDFMFile and (LFMCode=nil) then
       writeln('WARNING: TMainIDE.DoConvertDelphiUnit unable to load LFMCode');
     if (LFMCode<>nil)
-    and (not CheckLFMBuffer(UnitCode,LFMCode,@MessagesView.AddMsg,true)) then
-    begin
+    and (not CheckLFMBuffer(UnitCode,LFMCode,@MessagesView.AddMsg,true,true))
+    then begin
       DoJumpToCompilerMessage(-1,true);
       exit;
     end;
@@ -10532,6 +10533,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.748  2004/08/08 21:52:01  mattias
+  change component class dlg now works with child controls
+
   Revision 1.747  2004/08/08 20:51:15  mattias
   replaced TDBEdit.WMKillFocus by EditingDone, Change Class basically working
 
