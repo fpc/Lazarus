@@ -791,7 +791,7 @@ end;
 
 function TCodeBuffer.FileOnDiskHasChanged: boolean;
 begin
-  if LoadDateValid then
+  if LoadDateValid and FileExists(Filename) then
     Result:=(FileDateOnDisk<>LoadDate)
   else
     Result:=false;
