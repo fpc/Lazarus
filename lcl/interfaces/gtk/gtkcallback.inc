@@ -176,44 +176,6 @@ begin
   msg.Unused := 0; 
    
   Result := DeliverPostMessage(Data, MSG);
-
-//  Result := DeliverMessage(Data, msg) = 0;
-   
-(*    
-   
-//----------------- Is this still used ??? ---------------   
-   Mess.msg := LM_EXPOSEEVENT;
-//   Mess.msg := LM_PAINT;
-   Widget2 := gtk_Object_get_data(pgtkObject(widget),'Owner');
-   If Widget2 = nil then
-      PixMap := gtk_object_get_data(PgtkObject(widget),'Pixmap')
-   else
-      PixMap := gtk_object_get_data(PgtkObject(widget2),'Pixmap');
-
-   If PixMap = nil then begin
-     Assert(False, 'Trace:Could not find PixMap!!!!!!!!!!!!');
-     Exit;
-   end;
-
-   fWindow := pGtkWidget(widget)^.window;
-
-
-   gdk_draw_pixmap(fwindow,GetPen(pixmap,TColortoTgdkColor(clGray)),
-                   pixmap,
-                   Event^.Area.x,Event^.Area.y,
-                   Event^.Area.x,Event^.Area.y,
-                   Event^.Area.Width, Event^.Area.Height);
-
-{Assert(False, 'Trace:X,Y,Width,Height = '+Inttostr(Event^.Area.x)+','+
-                                Inttostr(Event^.Area.y)+','+
-                                Inttostr(Event^.Area.Width)+','+
-                                Inttostr(Event^.Area.Height));
-}
-
-  Result := DeliverMessage(Data, Mess);
-//-----------------------------------------
-
-*)
 end;
 
 function GTKKeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey;
@@ -1578,6 +1540,8 @@ writeln('[ClipboardSelectionLostOwnershipHandler] ',ClipboardTypeName[ClipboardT
 end;
 
 
+{$I gtkDragCallback.inc}
+{$I gtkListViewCallback.inc}
 
 
 {$IFDEF ASSERT_IS_ON}
@@ -1585,13 +1549,16 @@ end;
   {$C-}
 {$ENDIF}
 
-{$I gtkDragCallback.inc}
-
-
 
 { =============================================================================
 
   $Log$
+  Revision 1.65  2002/03/27 00:33:54  lazarus
+  MWE:
+    * Cleanup in lmessages
+    * Added Listview selection and notification events
+    + introduced commctrl
+
   Revision 1.64  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane

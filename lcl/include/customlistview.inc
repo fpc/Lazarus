@@ -17,6 +17,7 @@ begin
   FSortColumn := 0;
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageChanged;
+  FSelected := nil;
   Setbounds(2,2,300,300);
 end;
 
@@ -32,10 +33,106 @@ Begin
   //notify the interface....
   RecreateWnd;
   CNSendMessage(LM_SETPROPERTIES,self,nil);
-End;
+end;                 
+            
+{------------------------------------------------------------------------------}
+{   TCustomListView Change                                                     }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.Change(AItem: TListItem; AChange: Integer);
+var
+  ItemChange: TItemChange;
+begin
+  case AChange of
+    LVIF_TEXT: ItemChange := ctText;
+    LVIF_IMAGE: ItemChange := ctImage;
+    LVIF_STATE: ItemChange := ctState;
+  else
+    Exit;
+  end;
+  if Assigned(FOnChange) 
+  then FOnChange(Self, AItem, ItemChange);
+end;
+            
+{------------------------------------------------------------------------------}
+{   TCustomListView ColClick                                                   }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.ColClick(AColumn: TListColumn); 
+begin                                                       
+  if Assigned(FOnColumnClick) then FOnColumnClick(Self, AColumn)
+end;
 
 {------------------------------------------------------------------------------}
-{   TCustomListView ItemChanged                                             }
+{   TCustomListView CNNotify                                                   }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.CNNotify(var AMessage: TLMNotify);
+var
+  n: Integer;
+  nm: PNMListView;
+  Item: TListItem;
+begin
+  nm := PNMListView(AMessage.NMHdr);
+  
+  case AMessage.NMHdr^.code of
+//    HDN_TRACK:
+//    NM_CUSTOMDRAW:
+//    LVN_BEGINDRAG: 
+    LVN_DELETEITEM: begin
+      //don'tcall delete yet, there is no sulution available when we have deleted the item first
+    end;
+    LVN_DELETEALLITEMS: begin
+    end;
+//    LVN_GETDISPINFO:
+//    LVN_ODCACHEHINT:
+//    LVN_ODFINDITEM:
+//    LVN_ODSTATECHANGED:
+//    LVN_BEGINLABELEDIT:
+//    LVN_ENDLABELEDIT:
+    LVN_COLUMNCLICK: begin
+      ColClick(Columns[nm^.iSubItem]);
+    end;
+    LVN_INSERTITEM: begin
+      // see delete comment
+    end;
+    LVN_ITEMCHANGING: begin
+      //Check
+    end;
+    LVN_ITEMCHANGED: begin
+      Item := Items[nm^.iItem];
+      Change(Item, nm^.uChanged);
+      if (nm^.uChanged = LVIF_STATE) 
+      then begin
+        if (nm^.uOldState and LVIS_SELECTED) <> (nm^.uNewState and LVIS_SELECTED)
+        then begin
+          // select state changed
+          if (nm^.uNewState and LVIS_SELECTED) = 0
+          then begin
+            if FSelected = Item
+            then FSelected := nil;
+            DoSelectItem(Item, False);
+          end
+          else begin
+            FSelected := Item;
+            DoSelectItem(Item, True);
+          end;
+        end;
+      end;
+    end;
+//    LVN_GETINFOTIP:
+//    NM_CLICK: 
+//    NM_RCLICK: 
+  end;
+end;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView DoSelectItem                                               }
+{------------------------------------------------------------------------------}
+procedure TCustomListView.DoSelectItem(AItem: TListItem; ASelected: Boolean); 
+begin                                   
+  if Assigned(FOnSelectItem) then FOnSelectItem(Self, AItem, ASelected);
+end;
+
+{------------------------------------------------------------------------------}
+{   TCustomListView ItemChanged                                                }
 {------------------------------------------------------------------------------}
 Procedure TCustomListView.ItemChanged(Index : Integer);  //called by TListItems
 Begin
@@ -45,15 +142,13 @@ Begin
 End;
 
 {------------------------------------------------------------------------------}
-{   TCustomListView ItemChanged                                             }
+{   TCustomListView ItemChanged                                                }
 {------------------------------------------------------------------------------}
 Procedure TCustomListView.ItemDeleted(Index : Integer);  //called by TListItems
 Begin
   //notify the interface....
   CNSendMessage(LM_LV_DELETEITEM,self,@Index);
 End;
-
-
 
 {------------------------------------------------------------------------------}
 {   TCustomListView ItemAdded                                             }
@@ -140,7 +235,7 @@ end;
 {------------------------------------------------------------------------------}
 function TCustomListView.GetSelection: TListItem;
 begin
-  Result := nil;
+  Result := FSelected;
 end;
 
 {------------------------------------------------------------------------------}
@@ -333,6 +428,12 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/03/27 00:33:54  lazarus
+  MWE:
+    * Cleanup in lmessages
+    * Added Listview selection and notification events
+    + introduced commctrl
+
   Revision 1.15  2002/03/23 15:49:22  lazarus
   MWE: Fixed more compatebility issues (Sort, SelectedItem)
 

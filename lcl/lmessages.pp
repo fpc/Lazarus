@@ -29,8 +29,12 @@ uses Classes, vclGlobals, LCLType;
 
 const
 
-// Commands sent to the interface units
+//-------------
+// Commands SENT TO the interface units
 // add also a description to a message at the end of this unit
+// here are no defines of messages send to the interface
+// These are declared in a later section
+//-------------
 LM_ComUser       = $1000;
 LM_Create        = LM_ComUser+1;
 LM_SetLabel      = LM_ComUser+2;
@@ -95,10 +99,46 @@ LM_SETSHORTCUT = LM_COMUSER+61;
 
 LM_SETGEOMETRY = LM_COMUSER+62;
 
+LM_GETITEMS      = LM_COMUSER+63;
+LM_GETITEMINDEX  = LM_COMUSER+64;
+LM_SETITEMINDEX  = LM_COMUSER+65;
+LM_GETSELTEXT    = LM_COMUSER+66;
+LM_SETSELTEXT    = LM_COMUSER+67;
+LM_GETSELSTART   = LM_COMUSER+68;
+LM_SETSELSTART   = LM_COMUSER+69;
+LM_GETSELLEN     = LM_COMUSER+70;
+LM_SETSELLEN     = LM_COMUSER+71;
+LM_GETLIMITTEXT  = LM_COMUSER+72;
+LM_SETLIMITTEXT  = LM_COMUSER+73;
+LM_SORT          = LM_COMUSER+74;
+LM_GETSELCOUNT   = LM_COMUSER+75;
+LM_GETSEL        = LM_COMUSER+76;
+LM_SETSEL        = LM_COMUSER+77;
+LM_SETSELMODE    = LM_COMUSER+78;
+LM_SETBORDER     = LM_COMUSER+79;
+
+// TListView
+LM_LV_FIRST      = LM_COMUSER+80;
+LM_LV_ADDITEM    = LM_LV_FIRST+1;
+LM_LV_CHANGEITEM = LM_LV_FIRST+2;
+LM_LV_DELETEITEM = LM_LV_FIRST+3;
+LM_LV_LAST       = LM_LV_FIRST+9; // LM_COMUSER+89
+
+// TComboBox
+LM_CB_FIRST      = LM_LV_LAST+1;  // LM_COMUSER+90
+LM_CB_GETCOUNT   = LM_CB_FIRST+1;
+LM_CB_GETTEXT    = LM_CB_FIRST+2;
+LM_CB_ADDTEXT    = LM_CB_FIRST+3;
+LM_CB_LAST       = LM_CB_FIRST+9; // LM_COMUSER+99
+
+//-------------
 //end of messages that are sent to the interface
+//-------------
 
 
-{Windows Compatability}
+//-------------
+// Windows Compatability}
+//-------------
  { System Menu Commands }
   SC_SIZE = 61440;
   SC_MOVE = 61456;
@@ -120,6 +160,7 @@ LM_SETGEOMETRY = LM_COMUSER+62;
   SC_MONITORPOWER = 61808;
   SC_CONTEXTHELP = 61824;
   SC_SEPARATOR = 61455;
+  
 
 //-------------
 // Messages
@@ -178,6 +219,7 @@ LM_SYSCHAR = $0106;
 LM_KEYLAST = $0108;
 
 LM_COMMAND = $0111;
+LM_SYSCOMMAND = $0112;
 
 LM_HSCROLL = $0114;
 LM_VSCROLL = $0115;
@@ -208,12 +250,18 @@ LM_DROPFILES = $0233;
 
 LM_PARENTNOTIFY  = $0210;
 
-//Calendar
+//-------------
+// End of Windows Compatability and messages
+//-------------
 
 
-
+//-------------
 // lcl messages
-
+//
+// This should be a list of LCL specific messages 
+// RECEIVED from the interface, here are no defines
+// of messages send to the interface
+//-------------
 LM_USER = $400; // MWE: changed from $100 to $400 since they were in the windows range
 WM_USER = LM_USER;
 LM_DESTROY = LM_User+2;
@@ -257,23 +305,6 @@ LM_CANCEL_CLICKED = LM_USER+37;
 LM_TIMER  = LM_USER+40;
 //LM_MOUSEBTNPRESS  = LM_USER+41;
 //LM_MOUSEBTNRELEASE  = LM_USER+42;
-LM_GETITEMS = LM_USER+43;
-LM_GETITEMINDEX = LM_USER+44;
-LM_SETITEMINDEX = LM_USER+45;
-LM_GETSELTEXT = LM_USER+46;
-LM_SETSELTEXT = LM_USER+47;
-LM_GETSELSTART = LM_USER+48;
-LM_SETSELSTART = LM_USER+49;
-LM_GETSELLEN = LM_USER+50;
-LM_SETSELLEN = LM_USER+51;
-LM_GETLIMITTEXT = LM_USER+52;
-LM_SETLIMITTEXT = LM_USER+53;
-LM_SORT = LM_USER+54;
-LM_GETSELCOUNT = LM_USER+55;
-LM_GETSEL = LM_USER+56;
-LM_SETSEL = LM_USER+57;
-LM_SETSELMODE = LM_USER+58;
-LM_SETBORDER = LM_USER+59;
 LM_EXIT	   = LM_USER+60;	
 LM_SCREENINIT = LM_USER+61;
 LM_CLOSEQUERY = LM_USER+62;
@@ -284,23 +315,9 @@ LM_MONTHCHANGED = LM_USER+65;
 LM_YEARCHANGED = LM_USER+66;
 LM_DAYCHANGED = LM_USER+67;
 
-//TListView
-LM_LV_ADDITEM = LM_USER+68;
-LM_LV_CHANGEITEM = LM_USER + 69;
-LM_LV_DELETEITEM = LM_USER + 70;
-
-LM_CB_FIRST = LM_USER+100;
-LM_CB_GETCOUNT = LM_CB_FIRST+1;
-LM_CB_GETTEXT = LM_CB_FIRST+2;
-LM_CB_ADDTEXT = LM_CB_FIRST+3;
-
-LM_CB_LAST = LM_CB_FIRST+10;  //LM_USER+110
-
-
 
 LM_UNKNOWN = LM_User+99;
 
-LM_SYSCOMMAND = $0112;
 
 type
 
@@ -731,7 +748,8 @@ TLMShortCut = packed record
   NewModifier : TShiftState;
 end;
 
-
+        
+        
 function GetMessageName(const AMessage: Integer):  String;
 
 
@@ -800,6 +818,12 @@ end.
 
 {
   $Log$
+  Revision 1.23  2002/03/27 00:33:54  lazarus
+  MWE:
+    * Cleanup in lmessages
+    * Added Listview selection and notification events
+    + introduced commctrl
+
   Revision 1.22  2002/03/16 21:40:54  lazarus
   MG: reduced size+move messages between lcl and interface
 

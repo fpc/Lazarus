@@ -34,265 +34,7 @@ interface
 
 uses
   SysUtils, Classes, Controls, LclLinux, LCLType, StdCtrls, ExtCtrls,
-  vclGlobals, lMessages, Menus, ImgList, GraphType, Graphics, ToolWin;
-
-
-  const
-  TBSTATE_CHECKED         = $01;
-  TBSTATE_PRESSED         = $02;
-  TBSTATE_ENABLED         = $04;
-  TBSTATE_HIDDEN          = $08;
-  TBSTATE_INDETERMINATE   = $10;
-  TBSTATE_WRAP            = $20;
-  TBSTATE_ELLIPSES        = $40;
-  TBSTATE_MARKED          = $80;
-
-  TBSTYLE_BUTTON          = $00;
-  TBSTYLE_SEP             = $01;
-  TBSTYLE_CHECK           = $02;
-  TBSTYLE_GROUP           = $04;
-  TBSTYLE_CHECKGROUP      = TBSTYLE_GROUP or TBSTYLE_CHECK;
-  TBSTYLE_DROPDOWN        = $08;
-  TBSTYLE_AUTOSIZE        = $0010;
-  TBSTYLE_NOPREFIX        = $0020;
-
-  TBSTYLE_TOOLTIPS        = $0100;
-  TBSTYLE_WRAPABLE        = $0200;
-  TBSTYLE_ALTDRAG         = $0400;
-  TBSTYLE_FLAT            = $0800;
-  TBSTYLE_LIST            = $1000;
-  TBSTYLE_CUSTOMERASE     = $2000;
-  TBSTYLE_REGISTERDROP    = $4000;
-  TBSTYLE_TRANSPARENT     = $8000;
-  TBSTYLE_EX_DRAWDDARROWS = $00000001;
-
-
-  ToolBarClassName = 'ToolbarWindow32';
-
- // Toolbar custom draw result flags
-{Not used yet, but soon}
-  TBCDRF_NOEDGES              = $00010000;  // Don't draw the button edges
-  TBCDRF_HILITEHOTTRACK       = $00020000;  // Use color of the button bk when hottracked
-  TBCDRF_NOOFFSET             = $00040000;  // Don't offset the button if pressed
-  TBCDRF_NOMARK               = $00080000;  // Don't draw the default highlight of the image/text for TBSTATE_MARKED
-  TBCDRF_NOETCHEDEFFECT       = $00100000;  // Don't draw the etched effect for disabled items
-
-  TB_ENABLEBUTTON         = WM_USER + 1;
-  TB_CHECKBUTTON          = WM_USER + 2;
-  TB_PRESSBUTTON          = WM_USER + 3;
-  TB_HIDEBUTTON           = WM_USER + 4;
-  TB_INDETERMINATE        = WM_USER + 5;
-  TB_MARKBUTTON           = WM_USER + 6;
-  TB_ISBUTTONENABLED      = WM_USER + 9;
-  TB_ISBUTTONCHECKED      = WM_USER + 10;
-  TB_ISBUTTONPRESSED      = WM_USER + 11;
-  TB_ISBUTTONHIDDEN       = WM_USER + 12;
-  TB_ISBUTTONINDETERMINATE= WM_USER + 13;
-  TB_ISBUTTONHIGHLIGHTED  = WM_USER + 14;
-  TB_SETSTATE             = WM_USER + 17;
-  TB_GETSTATE             = WM_USER + 18;
-  TB_ADDBITMAP            = WM_USER + 19;
-  TB_INSERTBUTTONA        = WM_USER + 21;
-  TB_DELETEBUTTON         = WM_USER + 22;
-  TB_GETBUTTON            = WM_USER + 23;
-  TB_BUTTONCOUNT          = WM_USER + 24;
-
-  TB_CUSTOMIZE            = WM_USER + 27;
-  TB_ADDSTRINGA           = WM_USER + 28;
-  TB_GETITEMRECT          = WM_USER + 29;
-  TB_BUTTONSTRUCTSIZE     = WM_USER + 30;
-  TB_SETBUTTONSIZE        = WM_USER + 31;
-  TB_SETBITMAPSIZE        = WM_USER + 32;
-  TB_AUTOSIZE             = WM_USER + 33;
-  TB_GETTOOLTIPS          = WM_USER + 35;
-  TB_SETTOOLTIPS          = WM_USER + 36;
-  TB_SETPARENT            = WM_USER + 37;
-  TB_SETROWS              = WM_USER + 39;
-  TB_GETROWS              = WM_USER + 40;
-  TB_SETCMDID             = WM_USER + 42;
-  TB_CHANGEBITMAP         = WM_USER + 43;
-  TB_GETBITMAP            = WM_USER + 44;
-  TB_REPLACEBITMAP        = WM_USER + 46;
-  TB_SETINDENT            = WM_USER + 47;
-  TB_SETIMAGELIST         = WM_USER + 48;
-  TB_GETIMAGELIST         = WM_USER + 49;
-  TB_LOADIMAGES           = WM_USER + 50;
-  TB_GETRECT              = WM_USER + 51;
-  TB_SETHOTIMAGELIST      = WM_USER + 52;
-  TB_GETHOTIMAGELIST      = WM_USER + 53;
-  TB_SETDISABLEDIMAGELIST = WM_USER + 54;
-  TB_GETDISABLEDIMAGELIST = WM_USER + 55;
-  TB_SETSTYLE             = WM_USER + 56;
-  TB_GETSTYLE             = WM_USER + 57;
-  TB_GETBUTTONSIZE        = WM_USER + 58;
-  TB_SETBUTTONWIDTH       = WM_USER + 59;
-  TB_SETMAXTEXTROWS       = WM_USER + 60;
-  TB_GETTEXTROWS          = WM_USER + 61;
-  TB_GETBUTTONINFOW       = WM_USER + 63;
-  TB_SETBUTTONINFOW       = WM_USER + 64;
-  TB_GETBUTTONINFOA       = WM_USER + 65;
-  TB_SETBUTTONINFOA       = WM_USER + 66;
-
-  TB_GETHOTITEM           = WM_USER + 71;
-  TB_SETHOTITEM           = WM_USER + 72;
-
-  TB_ADDSTRINGW           = WM_USER = 77;
-
-
-  TB_INSERTBUTTON = TB_INSERTBUTTONA;
-  TB_ADDSTRING = TB_ADDSTRINGA;
-  TB_GETBUTTONINFO = TB_GETBUTTONINFOA;
-  TB_SETBUTTONINFO = TB_SETBUTTONINFOA;
-
-const
-  TBN_First = 0-700;
-  TBN_Last = 0-720;
-
-  TBN_BEGINDRAG           = TBN_FIRST-1;
-  TBN_ENDDRAG             = TBN_FIRST-2;
-  TBN_BEGINADJUST         = TBN_FIRST-3;
-  TBN_ENDADJUST           = TBN_FIRST-4;
-  TBN_RESET               = TBN_FIRST-5;
-  TBN_QUERYINSERT         = TBN_FIRST-6;
-  TBN_QUERYDELETE         = TBN_FIRST-7;
-  TBN_TOOLBARCHANGE       = TBN_FIRST-8;
-  TBN_CUSTHELP            = TBN_FIRST-9;
-  TBN_DROPDOWN            = TBN_FIRST-10;
-  TBN_CLOSEUP             = TBN_FIRST-11;
-  TBN_GETOBJECT           = TBN_FIRST-12;
-
-  TBIF_IMAGE              = $00000001;
-  TBIF_TEXT               = $00000002;
-  TBIF_STATE              = $00000004;
-  TBIF_STYLE              = $00000008;
-  TBIF_LPARAM             = $00000010;
-  TBIF_COMMAND            = $00000020;
-  TBIF_SIZE               = $00000040;
-
-
-type
-   PTBButton = ^TTBButton;
-  _TBBUTTON = packed record
-    iBitmap: Integer;
-    idCommand: Integer;
-    fsState: Byte;
-    fsStyle: Byte;
-    bReserved: array[1..2] of Byte;
-    dwData: Longint;
-    iString: Integer;
-  end;
-  TTBButton = _TBBUTTON;
-
-  TBBUTTONINFOA = packed record
-    cbSize: UINT;
-    dwMask: DWORD;
-    idCommand: Integer;
-    iImage: Integer;
-    fsState: Byte;
-    fsStyle: Byte;
-    cx: Word;
-    lParam: DWORD;
-    pszText: PAnsiChar;
-    cchText: Integer;
-  end;
-
-  TBBUTTONINFOW = packed record
-    cbSize: UINT;
-    dwMask: DWORD;
-    idCommand: Integer;
-    iImage: Integer;
-    fsState: Byte;
-    fsStyle: Byte;
-    cx: Word;
-    lParam: DWORD;
-    pszText: PWideChar;
-    cchText: Integer;
-  end;
-  TBBUTTONINFO = TBBUTTONINFOA;
-
-  PTBButtonInfoA = ^TTBButtonInfoA;
-  PTBButtonInfoW = ^TTBButtonInfoW;
-
-  PTBButtonInfo = PTBButtonInfoA;
-
-  TTBButtonInfoA = TBBUTTONINFOA;
-  TTBButtonInfoW = TBBUTTONINFOW;
-  TTBButtonInfo = TTBButtonInfoA;
-
-type
-  PTBAddBitmap = ^TTBAddBitmap;
-  tagTBADDBITMAP = packed record
-    hInst: THandle;
-    nID: UINT;
-  end;
-  TTBAddBitmap = tagTBADDBITMAP;
-
-  TBADDBITMAP = tagTBADDBITMAP;
-
-type
-  TBREPLACEBITMAP = packed record
-    hInstOld: THandle;
-    nIDOld: Cardinal;
-    hInstNew: THandle;
-    nIDNew: Cardinal;
-    nButtons: Integer;
-  end;
-  PTBReplaceBitmap = ^TTBReplaceBitmap;
-  TTBReplaceBitmap = TBREPLACEBITMAP;
-
-  tagNMTOOLBARA = packed record
-    hdr: TNMHdr;
-    iItem: Integer;
-    tbButton: TTBButton;
-    cchText: Integer;
-    pszText: PAnsiChar;
-  end;
-
-  tagNMTOOLBARW = packed record
-    hdr: TNMHdr;
-    iItem: Integer;
-    tbButton: TTBButton;
-    cchText: Integer;
-    pszText: PWideChar;
-  end;
-
-  tagNMTOOLBAR = tagNMTOOLBARA;
-  PNMToolBarA = ^TNMToolBarA;
-  PNMToolBarW = ^TNMToolBarW;
-  PNMToolBar = PNMToolBarA;
-  TNMToolBarA = tagNMTOOLBARA;
-  TNMToolBarW = tagNMTOOLBARW;
-  TNMToolBar = TNMToolBarA;
-
-const
-
-  CCS_TOP                 = $00000001;
-  CCS_NOMOVEY             = $00000002;
-  CCS_BOTTOM              = $00000003;
-  CCS_NORESIZE            = $00000004;
-  CCS_NOPARENTALIGN       = $00000008;
-  CCS_ADJUSTABLE          = $00000020;
-  CCS_NODIVIDER           = $00000040;
-  CCS_VERT                = $00000080;
-  CCS_LEFT                = (CCS_VERT or CCS_TOP);
-  CCS_RIGHT               = (CCS_VERT or CCS_BOTTOM);
-  CCS_NOMOVEX             = (CCS_VERT or CCS_NOMOVEY);
-
-  ICC_LISTVIEW_CLASSES   = $00000001;
-  ICC_TREEVIEW_CLASSES   = $00000002;
-  ICC_BAR_CLASSES        = $00000004;
-  ICC_TAB_CLASSES        = $00000008;
-  ICC_UPDOWN_CLASS       = $00000010;
-  ICC_PROGRESS_CLASS     = $00000020;
-  ICC_HOTKEY_CLASS       = $00000040;
-  ICC_ANIMATE_CLASS      = $00000080;
-  ICC_WIN95_CLASSES      = $000000FF;
-  ICC_DATE_CLASSES       = $00000100;
-  ICC_USEREX_CLASSES     = $00000200;
-  ICC_COOL_CLASSES       = $00000400;
-  ICC_INTERNET_CLASSES   = $00000800;
-  ICC_PAGESCROLLER_CLASS = $00001000;
-  ICC_NATIVEFNTCTL_CLASS = $00002000;
+  vclGlobals, lMessages, Menus, ImgList, GraphType, Graphics, ToolWin, CommCtrl;
 
 type
 { TAlignment = Class(TWinControl)
@@ -381,7 +123,7 @@ type
     cdsFocused, cdsDefault, cdsHot, cdsMarked, cdsIndeterminate);
 
 
-
+{TListView}
   TListItems = class;  //forward declaration!
   TCustomListView = class;  //forward declaration!
   TSortType = (stNone, stData, stText, stBoth);
@@ -395,12 +137,14 @@ type
     FData: Pointer;
     FImageIndex: Integer;
     FDestroying: Boolean;
+    function GetState(const AIndex: Integer): Boolean;
+    procedure SetState(const AIndex: Integer; const AState: Boolean);
 
     procedure SetData(const AValue: Pointer);
     procedure SetImageIndex(const AValue: Integer);
     procedure SetCaption(const AValue : String);
 //    Procedure SetSubItems(Value : TStrings);
-    Function GetIndex : Integer;
+    function GetIndex : Integer;
   protected
     Procedure ItemChanged(sender : TObject);  //called by the onchange of the tstringlist in TListItem
 
@@ -409,9 +153,13 @@ type
     destructor Destroy; override;
     procedure Delete;
     property Caption : String read FCaption write SetCaption;
+    property Cut: Boolean index 0 read GetState write SetState;
     property Data: Pointer read FData write SetData;
+    property DropTarget: Boolean index 1 read GetState write SetState;
+    property Focused: Boolean index 2 read GetState write SetState;
     property Index : Integer read GetIndex;
     property Owner : TListItems read FOwner;
+    property Selected: Boolean index 3 read GetState write SetState;
     property SubItems : TStrings read FSubItems write FSubItems;//SetSubItems;
     property ImageIndex : Integer read FImageIndex write SetImageIndex default -1;
   end;
@@ -491,8 +239,13 @@ type
     property Items[const AIndex: Integer]: TListColumn read GetItem write SetItem; default;
   end;
 
-
+  TItemChange = (ctText, ctImage, ctState);
   TViewStyle = (vsList,vsReport);
+
+  TLVChangeEvent = procedure(Sender: TObject; Item: TListItem; Change: TItemChange) of object;
+  TLVColumnClickEvent = procedure(Sender: TObject; Column: TListColumn) of object;
+  TLVColumnRClickEvent = procedure(Sender: TObject; Column: TListColumn; Point: TPoint) of object;
+  TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem; Selected: Boolean) of object;
 
   TCustomListView = class(TWinControl)
   private
@@ -510,8 +263,12 @@ type
     FScrollBars: TScrollStyle;
     FScrolledLeft: integer; // horizontal scrolled pixels (hidden pixels at top)
     FScrolledTop: integer;  // vertical scrolled pixels (hidden pixels at top)
+    FSelected: TListItem; // temp copy of the selected item
     FLastHorzScrollInfo: TScrollInfo;
     FLastVertScrollInfo: TScrollInfo;
+    FOnChange: TLVChangeEvent;
+    FOnColumnClick: TLVColumnClickEvent;
+    FOnSelectItem: TLVSelectItemEvent;
     function GetSelection: TListItem;
     procedure SetColumns(const AValue: TListColumns);
     procedure SetDefaultItemHeight(AValue: integer);
@@ -526,9 +283,13 @@ type
     procedure SetSortType(const AValue: TSortType);
     procedure SetViewStyle (const Avalue: TViewStyle);
     procedure UpdateScrollbars;
+    procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
   protected
     ParentWindow : TScrolledWindow;
+    procedure Change(AItem: TListItem; AChange: Integer); dynamic;
+    procedure ColClick(AColumn: TListColumn); dynamic;
     procedure Delete(Item : TListItem);
+    procedure DoSelectItem(AItem: TListItem; ASelected: Boolean); dynamic;
     procedure InsertItem(Item : TListItem);
     function GetMaxScrolledLeft : Integer;
     function GetMaxScrolledTop : Integer;
@@ -555,6 +316,9 @@ type
     property SortType: TSortType read FSortType write SetSortType;
     property SortColumn: Integer read FSortColumn write SetSortColumn;
     property ViewStyle: TViewStyle read FViewStyle write SetViewStyle;
+    property OnChange: TLVChangeEvent read FOnChange write FOnChange;
+    property OnColumnClick: TLVColumnClickEvent read FOnColumnClick write FOnColumnClick;
+    property OnSelectItem: TLVSelectItemEvent read FOnSelectItem write FOnSelectItem;
   public
     constructor Create(Aowner: TComponent); override;
     destructor Destroy; override;
@@ -585,13 +349,16 @@ type
     property Visible;
     property ViewStyle;
     property OnMOuseMOve;
+    property OnChange;
     property OnClick;
+    property OnColumnClick;
     property OnDblClick;
     property OnMouseDown;
     property OnMOuseUp;
     property OnKeyPress;
     property OnKeyUp;
     property OnKeyDown;
+    property OnSelectItem;
   end;
 
   TProgressBarOrientation = (pbHorizontal, pbVertical, pbRightToLeft, pbTopDown);
@@ -1781,6 +1548,12 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/03/27 00:33:54  lazarus
+  MWE:
+    * Cleanup in lmessages
+    * Added Listview selection and notification events
+    + introduced commctrl
+
   Revision 1.30  2002/03/25 17:59:19  lazarus
   GTK Cleanup
   Shane

@@ -87,9 +87,30 @@ begin
     end;
 end;
 
+{------------------------------------------------------------------------------}
+{   TListItem GetState                                                         }
+{------------------------------------------------------------------------------}
+function TListItem.GetState(const AIndex: Integer): Boolean;
+begin
+  Result := False;
+end;
+
+{------------------------------------------------------------------------------}
+{   TListItem SetState                                                         }
+{------------------------------------------------------------------------------}
+procedure TListItem.SetState(const AIndex: Integer; const AState: Boolean);
+begin
+end;
+
 { =============================================================================
 
   $Log$
+  Revision 1.9  2002/03/27 00:33:54  lazarus
+  MWE:
+    * Cleanup in lmessages
+    * Added Listview selection and notification events
+    + introduced commctrl
+
   Revision 1.8  2002/03/24 16:38:01  lazarus
   MWE:
     * Fixed bug on ListItems.Delete
