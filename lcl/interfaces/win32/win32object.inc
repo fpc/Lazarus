@@ -1570,6 +1570,47 @@ Begin
   Assert(False, 'Trace:TWin32Object.CreateCommonDialog - Exit');
 End;
 
+{------------------------------------------------------------------------------
+  Method: TWin32Object.CreateSelectDirectoryDialog
+  Params: Sender - The sending object: a TSelectDirectoryDialog objecy
+  Returns: Nothing
+
+  Creates a common dialog
+ ------------------------------------------------------------------------------}
+Procedure TWin32Object.CreateSelectDirectoryDialog(Sender: TSelectDirectoryDialog);
+var
+  bi : TBrowseInfo;
+  Buffer : PChar;
+  iidl : PItemIDList;
+Begin
+  Buffer := CoTaskMemAlloc(MAX_PATH);
+
+  With bi do
+  Begin
+    hwndOwner := 0;                  // should be owner handle
+    pidlRoot := nil;
+    pszDisplayName := Buffer;
+    lpszTitle := PChar(Sender.Title);
+    ulFlags := BIF_RETURNONLYFSDIRS;
+    lpfn := @BrowseForFolderCallback;
+    lParam := LongInt(PChar(Sender.InitialDir));  // this value will be passed to
+                                     // callback proc as lpData
+  End;
+
+  iidl := SHBrowseForFolder(@bi);
+
+  If Assigned(iidl) Then
+  Begin
+    SHGetPathFromIDList(iidl, Buffer);
+    CoTaskMemFree(iidl);
+    Sender.FileName := Buffer;
+    Sender.UserChoice := mrOK;
+  End
+  Else Sender.UserChoice := mrCancel;
+
+  CoTaskMemFree(Buffer);
+End;
+
 const
 
   IDC_ARROW     = MakeIntResource(32512);
@@ -1892,11 +1933,13 @@ Begin
       Window := CreateWindowEx(WS_EX_CLIENTEDGE, 'EDIT', StrTemp, Flags Or ES_AUTOHSCROLL, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       SetProp(Window, 'Lazarus', Sender);
     End;
-    csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
+    csFileDialog, csOpenFileDialog, csSaveFileDialog,
     csColorDialog, csFontDialog:
     Begin
       CreateCommonDialog(TCommonDialog(Sender));
     End;
+    csSelectDirectoryDialog:
+      CreateSelectDirectoryDialog(TSelectDirectoryDialog(Sender));
     csFixed:
     Begin
       Assert(False, 'Trace:TODO: Figure out what component style csFixed is and code the component.  No component created.');
@@ -2754,6 +2797,9 @@ End;
 
 {
   $Log$
+  Revision 1.89  2003/08/17 12:51:35  mattias
+  added directory selection dialog from Vincent
+
   Revision 1.88  2003/08/17 12:26:00  mattias
   fixed parts of the win32 intf size system
 

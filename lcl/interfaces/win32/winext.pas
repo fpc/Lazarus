@@ -31,11 +31,6 @@ Interface
 
 Uses Classes, Windows;
 
-{ Types not included in system.pp }
-Type
-  { Pointer to TObject }
-  PObject = ^TObject;
-
 { Win32 API records not included in windows.pp }
 Type
   { Record for the @link(GetComboBoxInfo) function }
@@ -84,11 +79,26 @@ Const
   TCS_VERTICAL = $0080;
   TCS_MULTILINE = $0200;
 
+  { BrowseForFolder dialog}
+  BIF_RETURNONLYFSDIRS = 1;
+
+  BFFM_INITIALIZED = 1;
+  BFFM_SELCHANGED = 2;
+
+  BFFM_SETSELECTION = WM_USER + 102;
+
+
 { Win32 API functions not included in windows.pp }
 { Get the ancestor at level Flag of window HWnd }
 Function GetAncestor(Const HWnd: HWND; Const Flag: UINT): HWND; StdCall; External 'user32';
 { Get information about combo box hwndCombo and place in pcbi }
 Function GetComboBoxInfo(Const hwndCombo: HWND; pcbi: PCOMBOBOXINFO): BOOL; StdCall; External 'user32';
+
+{ Functions allocate and dealocate memory used in ole32 functions
+  i.e. BrowseForFolder dialog functions}
+function CoTaskMemAlloc(cb : ULONG) : PVOID; external 'ole32.dll' name 'CoTaskMemAlloc';
+procedure CoTaskMemFree(pv : PVOID); external 'ole32.dll' name 'CoTaskMemFree';
+
 
 { Miscellaneous functions }
 { Convert string Str to a PChar }

@@ -106,6 +106,7 @@ Type
     Procedure NormalizeIconName(Var IconName: String);
     Procedure NormalizeIconName(Var IconName: PChar);
     Procedure CreateCommonDialog(Sender: TCommonDialog);
+    Procedure CreateSelectDirectoryDialog(Sender: TSelectDirectoryDialog);
 
   Public
     { Creates a callback of Lazarus message Msg for Sender }
@@ -188,6 +189,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.32  2003/08/17 12:51:35  mattias
+  added directory selection dialog from Vincent
+
   Revision 1.31  2003/08/17 12:47:53  mattias
   fixed mem leak
 

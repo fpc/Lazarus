@@ -1485,7 +1485,6 @@ Function TWin32Object.GetWindowSize(Handle : hwnd;
 var
   R: TRect;
   OwnerObject: TObject;
-  TheForm: TCustomForm;
 begin
   Result := Windows.GetWindowRect(Handle,@R);
   If (Windows.GetParent(Handle) = 0) then begin
@@ -1493,7 +1492,6 @@ begin
     if OwnerObject is TCustomForm then begin
       // the LCL defines the size of a form without the borders.
       // That means for the win32: The client area + menu
-      TheForm:=TCustomForm(OwnerObject);
       Result:=GetClientRect(Handle,R);
       // add menu
       // ToDo
@@ -2448,6 +2446,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.52  2003/08/17 12:51:35  mattias
+  added directory selection dialog from Vincent
+
   Revision 1.51  2003/08/17 12:26:00  mattias
   fixed parts of the win32 intf size system
 

@@ -620,8 +620,8 @@ Begin
           }
           if (TheWinControl.Width=Width)
           and (TheWinControl.Height=Height)
-          and (TheWinControl.ClientWidth=R.Right)
-          and (TheWinControl.ClientHeight=R.Bottom) then
+          and (TheWinControl.ClientWidth=NewClientWidth)
+          and (TheWinControl.ClientHeight=NewClientHeight) then
             exit;
           TheWinControl.InvalidateClientRectCache;
         end;
@@ -683,6 +683,31 @@ begin
   Result := DefWindowProc(window_hwnd, Msg, WParam, LParam);
 end;
 
+{------------------------------------------------------------------------------
+ Function: BrowseForFolderCallback
+ Params: Window_hwnd - The window that receives a message for the window
+         Msg         - The message received
+         LParam      - Long-integer parameter
+         lpData      - Data parameter, contains initial path.
+  Returns: non-zero long-integer
+
+  Handles the messages sent to the toolbar button by Windows
+ ------------------------------------------------------------------------------}
+Function BrowseForFolderCallback(hwnd : Handle; uMsg : UINT;
+  lParam, lpData : LPARAM) : Integer; stdcall;
+begin
+  case uMsg of
+    BFFM_INITIALIZED:
+        // Setting root dir
+        SendMessage(hwnd, BFFM_SETSELECTION, ULONG(True), lpData);
+    //BFFM_SELCHANGED
+    //  : begin
+    //    if Assigned(FOnSelectionChange) then .....
+    //    end;
+  end;
+  Result := 0;
+end;
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -690,6 +715,9 @@ end;
 
 {
   $Log$
+  Revision 1.53  2003/08/17 12:51:35  mattias
+  added directory selection dialog from Vincent
+
   Revision 1.52  2003/08/17 12:26:00  mattias
   fixed parts of the win32 intf size system
 
