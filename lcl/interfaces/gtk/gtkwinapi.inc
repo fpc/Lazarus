@@ -1325,6 +1325,7 @@ var
   PointSize, ResolutionX, ResolutionY, Spacing, AverageWidth,
   CharSetRegistry, CharSetCoding: string;
   n: Integer;
+  sn, cs: Float;
   CachedFont: TGdkFontCacheDescriptor;
 
   function LoadFont: boolean;
@@ -1547,7 +1548,7 @@ begin
       end;
 
       // SetWidthName := '*';
-
+      {$IFDEF OLD_ROTATION}
       if AddStyleName='*' then begin
         // calculate Style name extentions (=rotation)
         //        API                 XLFD
@@ -1562,11 +1563,25 @@ begin
           else AddStyleName := Format('+%d', [n]);
         end;
       end;
+      {$ENDIF}
 
       if (PixelSize='*') and (PointSize='*') then begin
         // TODO: make more accurate (implement the meaning of
         //       positive and negative height values.
         PixelSize := IntToStr(Abs(lfHeight));
+        {$IFNDEF OLD_ROTATION}
+        if lfOrientation <> 0 then begin
+          SinCos(lfOrientation/1800.*Pi, sn, cs);
+          cs := cs*Abs(lfHeight);
+          sn := sn*Abs(lfHeight);
+          PixelSize := Format('[%.3f %.3f %.3f %.3f]', [cs, sn, -sn, cs]);
+          repeat
+            n := Pos('-', PixelSize);
+            if n > 0 then
+              PixelSize[n] := '~';
+          until n <= 0;
+        end;
+        {$ENDIF}
 
         // Since we use pixelsize, it isn't allowed to give a value here
         PointSize := '*';
@@ -8937,6 +8952,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.405  2005/03/05 14:44:01  mattias
+  fixed gtk1 font rotating  from C Western
+
   Revision 1.404  2005/03/04 13:50:09  mattias
   fixed Arc and changed x,y to Left,Top to make meaning more clear
 

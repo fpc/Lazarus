@@ -4411,6 +4411,13 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.InitializeFontDialog(FontDialog: TFontDialog;
   var SelWidget: PGtkWidget; Title: PChar);
+{$IFDEF GTK1}
+var
+  SpacingFilter: PPgchar;
+  FontType: TGtkFontType;
+const
+  FixedFilter: array [0..2] of PChar = ( 'c', 'm', nil );
+{$ENDIF}
 begin
   SelWidget := gtk_font_selection_dialog_new(Title);
 
@@ -4433,10 +4440,24 @@ begin
       PGtkFontSelectionDialog(SelWidget),PChar(FontDialog.PreviewText));
 
   // set font name in XLFD format
-  if IsFontNameXLogicalFontDesc(FontDialog.Name) then
+  if IsFontNameXLogicalFontDesc(FontDialog.Font.Name) then
     gtk_font_selection_dialog_set_font_name(PGtkFontSelectionDialog(SelWidget),
-      PChar(FontDialog.Name));
+      PChar(FontDialog.Font.Name));
 
+  {$IFDEF GTK1}
+  { This functionality does not seem to be available in GTK2 }
+  // Honor selected TFontDialogOption flags
+  SpacingFilter := nil;
+  if fdFixedPitchOnly in FontDialog.Options then
+    SpacingFilter := @FixedFilter[0];
+  FontType := GTK_FONT_ALL;
+  if fdScalableOnly in FontDialog.Options then
+    FontType := GTK_FONT_SCALABLE;
+  gtk_font_selection_dialog_set_filter (PGtkFontSelectionDialog(SelWidget),
+                                        GTK_FONT_FILTER_BASE, FontType,
+                                        nil, nil, nil, nil, SpacingFilter, nil);
+  {$ENDIF}
+           
   InitializeCommonDialog(TCommonDialog(FontDialog),SelWidget);
 end;
 
@@ -6998,6 +7019,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.637  2005/03/05 14:44:00  mattias
+  fixed gtk1 font rotating  from C Western
+
   Revision 1.636  2005/03/04 12:28:11  mattias
   fixed gtk2 intf scrollbar handling  from Danny Milosavljevic
 

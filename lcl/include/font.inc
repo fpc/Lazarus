@@ -328,7 +328,7 @@ var
     Result:=FW_DONTCARE;
   end;
 
-var l, FaceNameMax, PixelSize, PointSize, Resolution: integer;
+var l, FaceNameMax, PixelSize, PointSize, Resolution, AverageWidth: integer;
 begin
   FillChar(Result,SizeOf(TLogFont),0);
   ItemEnd:=0;
@@ -387,15 +387,6 @@ begin
   Resolution:=StrToIntDef(Item,0);
   if Resolution<=0 then Resolution:=72;
 
-  if PixelSize=0 then begin
-    if PointSize<=0 then
-      Result.lfWidth:=(12*Resolution) div 72
-    else
-      Result.lfWidth:=(PointSize*Resolution) div 72;
-  end else begin
-    Result.lfWidth:=PixelSize;
-  end;
-
   GetNextItem; // read Spacing
   {M       Monospaced (fixed pitch)
    P       Proportional spaced (variable pitch)
@@ -410,7 +401,8 @@ begin
     Result.lfPitchAndFamily:=VARIABLE_PITCH;
 
   GetNextItem; // read AverageWidth
-  // ToDo
+  AverageWidth := StrToIntDef(Item,0);
+  Result.lfWidth := AverageWidth div 10;
 
   GetNextItem; // read CharSetRegistry
   // ToDo
@@ -608,6 +600,12 @@ begin
         if lfUnderline <> 0 then Include(AStyle, fsUnderline);
         if lfStrikeOut <> 0 then Include(AStyle, fsStrikeOut);
       end;
+      if (FIXED_PITCH and lfPitchAndFamily) <> 0 then
+        Pitch := fpFixed
+      else if (VARIABLE_PITCH and lfPitchAndFamily) <> 0 then
+        Pitch := fpVariable
+      else
+        Pitch := fpDefault;
       Style := AStyle;
       Name := ALogFont.lfFaceName;
     end;
@@ -1100,6 +1098,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.29  2005/03/05 14:44:00  mattias
+  fixed gtk1 font rotating  from C Western
+
   Revision 1.28  2005/01/10 18:44:44  mattias
   implemented the fpCanvas support for the LCL - Compile with -dUseFPCanvas
 
