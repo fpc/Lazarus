@@ -867,7 +867,7 @@ Begin
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
     WM_NCHITTEST:
     begin
-      if lWinControl.FCompStyle = csHintWindow then
+      if (lWinControl <> nil) and (lWinControl.FCompStyle = csHintWindow) then
       begin
         LMessage.Result := HTTRANSPARENT;
         WinProcess := false;
@@ -1115,20 +1115,23 @@ Begin
         GetWindowSize(Window, NewWidth, NewHeight);
         Width := NewWidth;
         Height := NewHeight;
-        {$IFDEF VerboseSizeMsg}
-        GetClientRect(Window,R);
-        writeln('Win32Callback: WM_SIZE ',lWinControl.Name,':',lWinControl.ClassName,
-          ' NewSize=',Width,',',Height,
-          ' HasVScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
-          ' HasHScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
-          ' OldClientSize=',lWinControl.CachedClientWidth,',',lWinControl.CachedClientHeight,
-          ' NewClientSize=',R.Right,',',R.Bottom);
-        {$ENDIF}
-        if (lWinControl.Width=Width)
-        and (lWinControl.Height=Height)
-        and (not lWinControl.ClientRectNeedsInterfaceUpdate) then
-          exit;
-        lWinControl.InvalidateClientRectCache(true);
+        if lWinControl <> nil then
+        begin
+          {$IFDEF VerboseSizeMsg}
+          GetClientRect(Window,R);
+          writeln('Win32Callback: WM_SIZE ',lWinControl.Name,':',lWinControl.ClassName,
+            ' NewSize=',Width,',',Height,
+            ' HasVScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
+            ' HasHScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
+            ' OldClientSize=',lWinControl.CachedClientWidth,',',lWinControl.CachedClientHeight,
+            ' NewClientSize=',R.Right,',',R.Bottom);
+          {$ENDIF}
+          if (lWinControl.Width=Width)
+          and (lWinControl.Height=Height)
+          and (not lWinControl.ClientRectNeedsInterfaceUpdate) then
+            exit;
+          lWinControl.InvalidateClientRectCache(true);
+        end;
         OverlayWindow := GetWindowInfo(Window)^.Overlay;
         if OverlayWindow <> 0 then
           Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
@@ -1434,6 +1437,9 @@ end;
 
 {
   $Log$
+  Revision 1.156  2004/11/05 15:23:23  micha
+  correct silly mistake: "as" operator also checks for nil
+
   Revision 1.155  2004/11/04 17:02:10  micha
   cleanup: remove redundant typecasts and checks
 
