@@ -1384,7 +1384,7 @@ begin
     SpeedButton := TSpeedButton(Sender);
     // find the IDEComponent that belongs to this speedbutton
     IDEComp := IDECompList.FindCompBySpeedButton(SpeedButton);
-    if IDECOmp <> nil then begin
+    if IDEComp <> nil then begin
       SelectedComponent := IDEComp.RegisteredComponent;
     end else begin
       SelectedComponent := nil;
@@ -1392,9 +1392,10 @@ begin
   end
   else
   begin
+    // select the selection tool
     SelectedComponent := nil;
     for i:= 0 to ComponentNotebook.PageCount - 1 do begin
-      (ComponentNotebook.Page[i].Controls[0] as TSpeedButton).Down:= true;
+      TSpeedButton(ComponentNotebook.Page[i].Controls[0]).Down:= true;
     end;
   end;
 end;
@@ -6675,6 +6676,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.350  2002/08/24 13:41:27  lazarus
+  MG: fixed TSpeedButton.SetDown and Invalidate
+
   Revision 1.349  2002/08/23 19:00:12  lazarus
   MG: implemented Ctrl+Mouse links in source editor
 
