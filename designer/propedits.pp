@@ -2909,11 +2909,11 @@ var
 begin
   CurValue:=GetValue;
   if CurValue=NewValue then exit;
-writeln('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
+  writeln('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
   NewMethodExists:=IsValidIdent(NewValue)
                and PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
                    NewMethodIsCompatible,NewMethodIsPublished,NewIdentIsMethod);
-writeln('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
+  //writeln('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,' NewMethodIsCompatible=',NewMethodIsCompatible,' ',NewMethodIsPublished,' ',NewIdentIsMethod);
   if NewMethodExists then begin
     if not NewIdentIsMethod then begin
       if MessageDlg('Incompatible Identifier',
@@ -2940,7 +2940,7 @@ writeln('### TMethodPropertyEditor.SetValue B NewMethodExists=',NewMethodExists,
         exit;
     end;
   end;
-writeln('### TMethodPropertyEditor.SetValue C');
+  //writeln('### TMethodPropertyEditor.SetValue C');
   if IsValidIdent(CurValue) and IsValidIdent(NewValue)
   and (not NewMethodExists)
   and (not PropertyHook.MethodFromAncestor(GetMethodValue)) then begin
@@ -2949,20 +2949,20 @@ writeln('### TMethodPropertyEditor.SetValue C');
     //   All other not selected properties that use this method, contains just
     //   the TMethod record. So, changing the name in the jitform will change
     //   all other event names in all other components automatically.
-writeln('### TMethodPropertyEditor.SetValue D');
+    //writeln('### TMethodPropertyEditor.SetValue D');
     PropertyHook.RenameMethod(CurValue, NewValue)
   end else
   begin
-writeln('### TMethodPropertyEditor.SetValue E');
+    //writeln('### TMethodPropertyEditor.SetValue E');
     CreateNewMethod := IsValidIdent(NewValue) and not NewMethodExists;
     //OldMethod := GetMethodValue;
     SetMethodValue(PropertyHook.CreateMethod(NewValue,GetPropType));
-writeln('### TMethodPropertyEditor.SetValue F NewValue=',GetValue);
+    //writeln('### TMethodPropertyEditor.SetValue F NewValue=',GetValue);
     if CreateNewMethod then begin
       {if (PropCount = 1) and (OldMethod.Data <> nil) and (OldMethod.Code <> nil)
       then
         CheckChainCall(NewValue, OldMethod);}
-writeln('### TMethodPropertyEditor.SetValue G');
+      //writeln('### TMethodPropertyEditor.SetValue G');
       PropertyHook.ShowMethod(NewValue);
     end;
   end;
