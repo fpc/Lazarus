@@ -562,32 +562,45 @@ end;
   *Note: Tells GTK Engine to halt and destroy
  ------------------------------------------------------------------------------}
 procedure TGtkObject.AppTerminate;
-begin
-   gdk_Cursor_Destroy(Cursor_Watch);
-   gdk_Cursor_Destroy(Cursor_Arrow);
-   gdk_Cursor_Destroy(Cursor_Cross);
-   gdk_Cursor_Destroy(Cursor_Hand1);
-   gdk_Cursor_Destroy(Cursor_XTerm);
-   gdk_Cursor_Destroy(Cursor_StdArrow);
-   gdk_Cursor_Destroy(Cursor_HSplit);
-   gdk_Cursor_Destroy(Cursor_VSplit);
-   gdk_Cursor_Destroy(Cursor_SizeNWSE);
-   gdk_Cursor_Destroy(Cursor_SizeNS);
-   gdk_Cursor_Destroy(Cursor_SizeNESW);
-   gdk_Cursor_Destroy(Cursor_SizeWE);
 
-   gtk_object_unref(PGTKObject(FGTKToolTips));
-   FGTKToolTips := nil; 
+  procedure DestroyGdkCursor(var Cursor: pGDKCursor);
+  begin
+    gdk_Cursor_Destroy(Cursor);
+    Cursor:=nil;
+  end;
+  
+  procedure DeleteAndNilBrush(var h: HBRUSH);
+  begin
+    DeleteObject(h);
+    h:=0;
+  end;
+  
+begin
+  DestroyGdkCursor(Cursor_Watch);
+  DestroyGdkCursor(Cursor_Arrow);
+  DestroyGdkCursor(Cursor_Cross);
+  DestroyGdkCursor(Cursor_Hand1);
+  DestroyGdkCursor(Cursor_XTerm);
+  DestroyGdkCursor(Cursor_StdArrow);
+  DestroyGdkCursor(Cursor_HSplit);
+  DestroyGdkCursor(Cursor_VSplit);
+  DestroyGdkCursor(Cursor_SizeNWSE);
+  DestroyGdkCursor(Cursor_SizeNS);
+  DestroyGdkCursor(Cursor_SizeNESW);
+  DestroyGdkCursor(Cursor_SizeWE);
+
+  gtk_object_unref(PGTKObject(FGTKToolTips));
+  FGTKToolTips := nil;
    
-   DeleteObject(FStockNullBrush);
-   DeleteObject(FStockBlackBrush);
-   DeleteObject(FStockLtGrayBrush);
-   DeleteObject(FStockGrayBrush);
-   DeleteObject(FStockDkGrayBrush);
-   DeleteObject(FStockWhiteBrush);
+  DeleteAndNilBrush(FStockNullBrush);
+  DeleteAndNilBrush(FStockBlackBrush);
+  DeleteAndNilBrush(FStockLtGrayBrush);
+  DeleteAndNilBrush(FStockGrayBrush);
+  DeleteAndNilBrush(FStockDkGrayBrush);
+  DeleteAndNilBrush(FStockWhiteBrush);
    
-   // MG: using gtk_main_quit is not a clean way to close
-   //gtk_main_quit;
+  // MG: using gtk_main_quit is not a clean way to close
+  //gtk_main_quit;
 end;
 
 {------------------------------------------------------------------------------
@@ -3645,8 +3658,8 @@ begin
     begin
       p := gtk_fixed_new();
       gtk_widget_show (p);
-      SetFixedWidget(p, p);
-      SetMainWidget(p, p);
+      SetFixedWidget(p, nil);
+      SetMainWidget(nil, p);
     end;
 
     csPopupMenu :
@@ -5266,6 +5279,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.152  2002/08/05 07:43:29  lazarus
+  MG: fixed BadCursor bug and Circle Reference of FixedWidget of csPanel
+
   Revision 1.151  2002/08/04 07:09:28  lazarus
   MG: fixed client events
 
