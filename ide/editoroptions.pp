@@ -4374,7 +4374,6 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Visible:=true;
   end;
   
   LanguageLabel:=TLabel.Create(Self);
@@ -4387,7 +4386,6 @@ begin
     Width:=LanguageComboBox.Left-Left;
     Height:=16;
     Caption:=dlgLang;
-    Visible:=true;
   end;
 
   ColorSchemeComboBox:=TComboBox.Create(Self);
@@ -4411,7 +4409,6 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Visible:=true;
   end;
 
   ColorSchemeLabel:=TLabel.Create(Self);
@@ -4423,7 +4420,6 @@ begin
     Width:=ColorSchemeComboBox.Left-Left;
     Height:=16;
     Caption:=dlgClrScheme;
-    Visible:=true;
   end;
 
   FileExtensionsComboBox:=TComboBox.Create(Self);
@@ -4445,7 +4441,6 @@ begin
     OnChange:=@ComboBoxOnChange;
     OnKeyDown:=@ComboBoxOnKeyDown;
     OnExit:=@ComboBoxOnExit;
-    Visible:=true;
   end;
 
   FileExtensionsLabel:=TLabel.Create(Self);
@@ -4456,7 +4451,6 @@ begin
     Left:=5;
     Width:=FileExtensionsComboBox.Left-Left-2;
     Caption:=dlgFileExts;
-    Visible:=true;
   end;
 
   ColorElementLabel:=TLabel.Create(Self);
@@ -4468,7 +4462,6 @@ begin
     Width:=180;
     Height:=16;
     Caption:=dlgEdElement;
-    Visible:=true;
   end;
 
   ColorElementListBox:=TListBox.Create(Self);
@@ -4482,7 +4475,6 @@ begin
     Height:=170;
     MultiSelect:=false;
     OnMouseUp:=@ColorElementListBoxMouseUp;
-    Visible:=true;
   end;
 
   SetAttributeToDefaultButton:=TButton.Create(Self);
@@ -4496,7 +4488,6 @@ begin
     Height:=23;
     Caption:=dlgSetElementDefault;
     OnClick:=@SetAttributeToDefaultButtonClick;
-    Visible:=true;
   end;
   
   SetAllAttributesToDefaultButton:=TButton.Create(Self);
@@ -4510,7 +4501,6 @@ begin
     Height:=SetAttributeToDefaultButton.Height;
     Caption:=dlgSetAllElementDefault;
     OnClick:=@SetAllAttributesToDefaultButtonClick;
-    Visible:=true;
   end;
 
   ForeGroundGroupBox:=TGroupBox.Create(Self);
@@ -4524,7 +4514,6 @@ begin
     Width:=MaxX-5-Left;
     Height:=43;
     Caption:=dlgForecolor;
-    Visible:=true;
   end;
 
   ForeGroundColorButton:=TColorButton.Create(Self);
@@ -4539,7 +4528,6 @@ begin
     Height:=20;
     Color:=clRed;
     OnColorChanged:=@ColorButtonColorChanged;
-    Visible:=true;
   end;
 
   ForeGroundUseDefaultCheckBox:=TCheckBox.Create(Self);
@@ -4553,7 +4541,6 @@ begin
     Height:=16;
     Caption:=dlgEdUseDefColor;
     OnClick:=@GeneralCheckBoxOnClick;
-    Visible:=true;
   end;
 
   BackGroundGroupBox:=TGroupBox.Create(Self);
@@ -4566,7 +4553,6 @@ begin
     Width:=ForeGroundGroupBox.Width;
     Height:=ForeGroundGroupBox.Height;
     Caption:=dlgBackColor;
-    Visible:=true;
   end;
 
   BackGroundColorButton:=TColorButton.Create(Self);
@@ -4581,7 +4567,6 @@ begin
     Height:=20;
     Color:=clBlue;
     OnColorChanged:=@ColorButtonColorChanged;
-    Visible:=true;
   end;
 
   BackGroundUseDefaultCheckBox:=TCheckBox.Create(Self);
@@ -4595,7 +4580,6 @@ begin
     Height:=16;
     Caption:=dlgEdUseDefColor;
     OnClick:=@GeneralCheckBoxOnClick;
-    Visible:=true;
   end;
 
   TextAttributesGroupBox:=TGroupBox.Create(Self);
@@ -4608,7 +4592,6 @@ begin
     Width:=ForeGroundGroupBox.Width;
     Height:=43;
     Caption:=dlgTextAttributes;
-    Visible:=true;
   end;
 
   TextBoldCheckBox:=TCheckBox.Create(Self);
@@ -4622,7 +4605,6 @@ begin
     Height:=16;
     Caption:=dlgEdBold;
     OnClick:=@GeneralCheckBoxOnClick;
-    Visible:=true;
   end;
 
   TextItalicCheckBox:=TCheckBox.Create(Self);
@@ -4636,7 +4618,6 @@ begin
     Height:=TextBoldCheckBox.Height;
     Caption:=dlgEdItal;
     OnClick:=@GeneralCheckBoxOnClick;
-    Visible:=true;
   end;
 
   TextUnderlineCheckBox:=TCheckBox.Create(Self);
@@ -4650,7 +4631,6 @@ begin
     Height:=TextItalicCheckBox.Height;
     Caption:=dlgEdUnder;
     OnClick:=@GeneralCheckBoxOnClick;
-    Visible:=true;
   end;
 
   ColorPreview:=TPreviewEditor.Create(Self);
@@ -4665,12 +4645,12 @@ begin
     OnSpecialLineColors:=@Self.OnSpecialLineColors;
     OnMouseDown:=@ColorPreviewMouseUp;
     ReadOnly:=true;
-    Visible:=true;
-  end; 
+  end;
 end;
 
 procedure TEditorOptionsForm.ResizeColorPage;
 var MaxX,MaxY:integer;
+  w: Integer;
 begin
   MaxX:=Width-5;
   MaxY:=ClientHeight-76;
@@ -4794,24 +4774,25 @@ begin
     Height:=43;
   end;
 
+  w:=(TextBoldCheckBox.Parent.ClientWidth-20) div 3;
   with TextBoldCheckBox do begin
     Top:=5;
     Left:=5;
-    Width:=50;
+    Width:=w;
     Height:=16;
   end;
 
   with TextItalicCheckBox do begin
     Top:=TextBoldCheckBox.Top;
     Left:=TextBoldCheckBox.Left+TextBoldCheckBox.Width+5;
-    Width:=50;
+    Width:=w;
     Height:=TextBoldCheckBox.Height;
   end;
 
   with TextUnderlineCheckBox do begin
     Top:=TextBoldCheckBox.Top;
     Left:=TextItalicCheckBox.Left+TextItalicCheckBox.Width+5;
-    Width:=75;
+    Width:=w;
     Height:=TextItalicCheckBox.Height;
   end;
 
