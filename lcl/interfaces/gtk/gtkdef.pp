@@ -69,6 +69,7 @@ type
     Color : TGDKColor;       //Actual GDK Color(If any) for use with GC's
     Colormap : PGDKColormap; //Colormap GDKColor was allocated with
   end;
+  PGDIColor = ^TGDIColor;
 
   PGDIObject = ^TGDIObject;
   TGDIObject = record
@@ -435,6 +436,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.36  2003/05/19 08:16:33  mattias
+  fixed allocation of dc backcolor
+
   Revision 1.35  2003/03/26 19:25:27  mattias
   added transient deactivation option and updated localization
 
