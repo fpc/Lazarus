@@ -402,7 +402,11 @@ begin
     DDC.SetDC(Form,TheMessage.DC);
     {$IFDEF VerboseDesignerDraw}
     writeln('TDesigner.PaintControl D ',Sender.Name,':',Sender.ClassName,
-      ' DC=',HexStr(DDC.DC,8),' FormOrigin=',DDC.FormOrigin.X,',',DDC.FormOrigin.Y);
+      ' DC=',HexStr(DDC.DC,8),
+      ' FormOrigin=',DDC.FormOrigin.X,',',DDC.FormOrigin.Y,
+      ' DCOrigin=',DDC.DCOrigin.X,',',DDC.DCOrigin.Y,
+      ' FormClientOrigin=',DDC.FormClientOrigin.X,',',DDC.FormClientOrigin.Y
+      );
     {$ENDIF}
     if (Sender is TWinControl)
     and (csAcceptsControls in Sender.ControlStyle) then begin
