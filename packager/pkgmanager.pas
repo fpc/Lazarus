@@ -1710,6 +1710,7 @@ begin
     AddFileToRecentPackages(APackage.Filename);
   end;
 
+  if APackage.Editor<>nil then APackage.Editor.UpdateAll;
   Result:=mrOk;
 end;
 
