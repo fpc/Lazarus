@@ -139,7 +139,7 @@ const
      [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];
   AllUsableSourceTypes =
      [ctnUnit];
-  AllFindContextDescs = AllIdentifierDefinitions +
+  AllFindContextDescs = AllIdentifierDefinitions + AllCodeSections +
      [ctnClass,ctnClassInterface,ctnProcedure];
 
 

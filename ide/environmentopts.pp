@@ -475,16 +475,16 @@ type
     FOldFPCSourceDir: string;
     FOldDebuggerFilename: string;
     FOldTestDir: string;
+    procedure SetupFilesPage(Page: integer);
     procedure SetupDesktopPage(Page: integer);
     procedure SetupFormEditorPage(Page: integer);
     procedure SetupObjectInspectorPage(Page: integer);
-    procedure SetupFilesPage(Page: integer);
     procedure SetupBackupPage(Page: integer);
     procedure SetupNamingPage(Page: integer);
+    procedure ResizeFilesPage;
     procedure ResizeDesktopPage;
     procedure ResizeFormEditorPage;
     procedure ResizeObjectInspectorPage;
-    procedure ResizeFilesPage;
     procedure ResizeBackupPage;
     procedure ResizeNamingPage;
     procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
@@ -1217,21 +1217,21 @@ begin
       Parent:=Self;
       SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
       if PageCount>0 then
-        Pages[0]:=dlgDesktop
+        Pages[0]:=dlgEnvFiles
       else
-        Pages.Add(dlgDesktop);
+        Pages.Add(dlgEnvFiles);
+      Pages.Add(dlgDesktop);
       Pages.Add(dlgFrmEditor);
       Pages.Add(dlgObjInsp);
-      Pages.Add(dlgEnvFiles);
       Pages.Add(dlgEnvBckup);
       Pages.Add(dlgNaming);
       PageIndex:=0;
     end;
 
-    SetupDesktopPage(0);
-    SetupFormEditorPage(1);
-    SetupObjectInspectorPage(2);
-    SetupFilesPage(3);
+    SetupFilesPage(0);
+    SetupDesktopPage(1);
+    SetupFormEditorPage(2);
+    SetupObjectInspectorPage(3);
     SetupBackupPage(4);
     SetupNamingPage(5);
     
