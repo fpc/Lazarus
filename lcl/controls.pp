@@ -232,7 +232,9 @@ type
                           csFramed,
                           csSetCaption,
                           csOpaque,
-                          csDoubleClicks,
+                          csDoubleClicks,// control understands mouse double clicks
+                          csTripleClicks,// control understands mouse triple clicks
+                          csQuadClicks,  // control understands mouse quad clicks
                           csFixedWidth,
                           csFixedHeight,
                           csNoDesignVisible,
@@ -429,6 +431,8 @@ type
     FOnClick: TNotifyEvent;
     FOnConstrainedResize : TConstrainedResizeEvent;
     FOnDblClick : TNotifyEvent;
+    FOnTripleClick : TNotifyEvent;
+    FOnQuadClick : TNotifyEvent;
     FOnDragDrop : TDragDropEvent;
     FOnDragOver : TDragOverEvent;
     FOnEndDrag : TEndDragEvent;
@@ -485,6 +489,12 @@ type
     procedure WMLButtonDBLCLK(Var Message: TLMLButtonDblClk); message LM_LBUTTONDBLCLK;
     procedure WMRButtonDBLCLK(Var Message: TLMRButtonDblClk); message LM_RBUTTONDBLCLK;
     procedure WMMButtonDBLCLK(Var Message: TLMMButtonDblClk); message LM_MBUTTONDBLCLK;
+    procedure WMLButtonTripleCLK(Var Message: TLMLButtonTripleClk); message LM_LBUTTONTRIPLECLK;
+    procedure WMRButtonTripleCLK(Var Message: TLMRButtonTripleClk); message LM_RBUTTONTRIPLECLK;
+    procedure WMMButtonTripleCLK(Var Message: TLMMButtonTripleClk); message LM_MBUTTONTRIPLECLK;
+    procedure WMLButtonQuadCLK(Var Message: TLMLButtonQuadClk); message LM_LBUTTONQUADCLK;
+    procedure WMRButtonQuadCLK(Var Message: TLMRButtonQuadClk); message LM_RBUTTONQUADCLK;
+    procedure WMMButtonQuadCLK(Var Message: TLMMButtonQuadClk); message LM_MBUTTONQUADCLK;
     procedure WMMouseMove(Var Message: TLMMouseMove); message LM_MOUSEMOVE;
     procedure WMLButtonUp(var Message: TLMLButtonUp); message LM_LBUTTONUP;
     procedure WMRButtonUp(var Message: TLMRButtonUp); message LM_RBUTTONUP;
@@ -507,6 +517,8 @@ type
     procedure ChangeScale(M,D : Integer); dynamic;
     procedure Click; dynamic;
     procedure DblClick; dynamic;
+    procedure TripleClick; dynamic;
+    procedure QuadClick; dynamic;
     procedure DoStartDrag(var DragObject: TDragObject); dynamic;
     procedure DragOver(Source: TObject; X,Y : Integer; State : TDragState; var Accept:Boolean); dynamic;
     procedure DragCanceled; dynamic;
@@ -549,6 +561,8 @@ type
     property Text: TCaption read GetText write SetText;
     property OnConstrainedResize : TConstrainedResizeEvent read FOnConstrainedResize write FOnConstrainedResize;
     property OnDblClick: TNotifyEvent read FOnDblClick write FOnDblClick;
+    property OnTripleClick: TNotifyEvent read FOnTripleClick write FOnTripleClick;
+    property OnQuadClick: TNotifyEvent read FOnQuadClick write FOnQuadClick;
     property OnDragDrop: TDragDropEvent read FOnDragDrop write FOnDragDrop;
     property OnDragOver: TDragOverEvent read FOnDragOver write FOnDragOver;
     property OnEndDrag: TEndDragEvent read FOnEndDrag write FOnEndDrag;
@@ -1202,6 +1216,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.36  2002/03/29 17:12:52  lazarus
+  MG: added Triple and Quad mouse clicks to lcl and synedit
+
   Revision 1.35  2002/03/25 17:59:19  lazarus
   GTK Cleanup
   Shane
