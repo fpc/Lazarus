@@ -164,6 +164,8 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+    function TabIndexAtClientPos(ClientPos: TPoint): integer;
+  public
     property ActivePage: String read GetActivePage write SetActivePage stored IsStoredActivePage;
     //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
     property Page[Index: Integer]: TPage read GetPage;
@@ -555,6 +557,9 @@ end.
 
  {
   $Log$
+  Revision 1.45  2002/11/09 15:02:06  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.44  2002/11/05 20:03:41  lazarus
   MG: implemented hints
 
