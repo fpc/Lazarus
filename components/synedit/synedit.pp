@@ -4817,12 +4817,18 @@ begin
           MoveCaretAndSelection(CaretXY, Point(1, CaretY),
             Command = ecSelLineStart);
           fLastCaretX := fCaretX;
+          {$IFDEF SYN_LAZARUS}
+          if eoBracketHighlight in fOptions then Update;
+          {$ENDIF}
         end;
       ecLineEnd, ecSelLineEnd:
         begin
           MoveCaretAndSelection(CaretXY, Point(1 + Length(LineText), CaretY),
             Command = ecSelLineEnd);
           fLastCaretX := fCaretX;
+          {$IFDEF SYN_LAZARUS}
+          if eoBracketHighlight in fOptions then Update;
+          {$ENDIF}
         end;
 {end}                                                                           //mh 2000-10-19
 // vertical caret movement or selection
