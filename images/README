@@ -2,9 +2,9 @@ This directory contains all images needed by the IDE.
 Images are stored in lazarus resource files (.lrs). Each icon is stored
 in xpm format.
 
-There 2 resource files:
 mainicon.lrs - This is the IDE program icon.
 laz_images.lrs - The icons for the speedbuttons (Open, Save, Run,...)
+
 
 How to update the image resources:
 
@@ -24,5 +24,4 @@ cd <lazarusdir>/images/
 
 cd <lazarusdir>/images/
 ../tools/lazres laz_images.lrs btn_*.xpm
-pause, stepover, stepinto
 
