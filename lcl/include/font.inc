@@ -112,7 +112,7 @@ begin
   Result.LogFont:=LogFont;
   FDescriptors.Add(Result);
   if FindFontDesc(LogFont,LongFontName)=nil then begin
-    debugln('TFontHandleCache.Add Added: ',HexStr(Cardinal(Result),8),' LongFontName=',Result.LongFontName);
+    DebugLn('TFontHandleCache.Add Added: %p LongFontName=%s',[Pointer(Result), Result.LongFontName]);
     RaiseGDBException('');
   end;
 end;
@@ -964,6 +964,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2004/12/19 21:38:21  marc
+  * x86_64 fix: Debugln of TFontHandleCache.Add
+
   Revision 1.20  2004/11/10 18:23:56  mattias
   impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
 
