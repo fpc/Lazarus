@@ -1,3 +1,5 @@
+// included by gtkproc.pp
+
 {******************************************************************************
                         Misc Support Functs  
  ******************************************************************************
@@ -940,9 +942,11 @@ begin
     GDK_KP_0..GDK_KP_9
     {$EndIf}:      
       begin
-        VirtualKey := VK_NUMPAD0 + (Event^.KeyVal - {$ifdef GTK2}GDK_KEY_KP_0{$else}GDK_KP_0{$EndIf});
+        VirtualKey := VK_NUMPAD0 + (Event^.KeyVal -
+                              {$ifdef GTK2}GDK_KEY_KP_0{$else}GDK_KP_0{$EndIf});
         if not (ssCtrl in ShiftState) then
-          KeyCode := Ord('0') + (Event^.KeyVal - {$ifdef GTK2}GDK_KEY_KP_0{$else}GDK_KP_0{$EndIf});
+          KeyCode := Ord('0') + (Event^.KeyVal -
+                              {$ifdef GTK2}GDK_KEY_KP_0{$else}GDK_KP_0{$EndIf});
       end;
 
     {$ifdef GTK2}GDK_KEY_BackSpace{$else}GDK_BackSpace{$EndIf}:      
@@ -1053,7 +1057,8 @@ begin
     {$else}
       GDK_F1..GDK_F24
     {$EndIf}:      
-      VirtualKey := VK_F1 + (Event^.KeyVal - {$ifdef GTK2}GDK_Key_F1{$else}GDK_F1{$EndIf});
+      VirtualKey := VK_F1 + (Event^.KeyVal -
+                                  {$ifdef GTK2}GDK_Key_F1{$else}GDK_F1{$EndIf});
 
     //By VVI - fixing cyrillic keys
     //GDK_* is like a koi8-r, it is KOI8-R code +$600.
@@ -4077,9 +4082,14 @@ end;
   {$C-}
 {$ENDIF}
 
- { =============================================================================
+// included by gtkproc.pp
+
+{ =============================================================================
 
   $Log$
+  Revision 1.175  2003/05/26 21:42:35  mattias
+  fixed typos
+
   Revision 1.174  2003/05/26 21:28:22  mattias
   fixed absolute file
 
