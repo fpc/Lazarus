@@ -4570,6 +4570,10 @@ msgstr ""
 msgid "Finnish"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagefinnishwin
+msgid "Finnish for MS Windows"
+msgstr ""
+
 #: lazarusidestrconsts:rslanguagehebrew
 msgid "Hebrew"
 msgstr ""
@@ -6492,6 +6496,18 @@ msgstr ""
 
 #: lazarusidestrconsts:lispkgmangunabletowritepackagetofileerror
 msgid "Unable to write package %s%s%s%sto file %s%s%s.%sError: %s"
+msgstr ""
+
+#: lazarusidestrconsts:listhefollowingpackagesfailedtoload
+msgid "The following package(s) failed to load:%s%s"
+msgstr ""
+
+#: lazarusidestrconsts:lisseeprojectprojectinspector
+msgid "%sSee Project -> Project Inspector"
+msgstr ""
+
+#: lazarusidestrconsts:lismissingpackages
+msgid "Missing Packages"
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmanginvalidcompilerfilename

@@ -1,0 +1,328 @@
+#: objinspstrconsts:sccsilcmbimglist
+msgid " Images "
+msgstr ""
+
+#: objinspstrconsts:sccslvedtgrprcaption
+msgid " Item property "
+msgstr ""
+
+#: objinspstrconsts:sccslvedtgrplcaption
+msgid " Items "
+msgstr ""
+
+#: objinspstrconsts:sccsilcmbimgsel
+msgid " Selected image "
+msgstr ""
+
+#: objinspstrconsts:oishelpalreadyregistered
+msgid "%s: Already registered"
+msgstr ""
+
+#: objinspstrconsts:oishelpnotregistered
+msgid "%s: Not registered"
+msgstr ""
+
+#: objinspstrconsts:oisitemsselected
+msgid "%u items selected"
+msgstr ""
+
+#: objinspstrconsts:oiscadd
+msgid "&Add"
+msgstr "&Lisää"
+
+#: objinspstrconsts:oiscancel
+msgid "&Cancel"
+msgstr "Peru"
+
+#: objinspstrconsts:oiscdelete
+msgid "&Delete"
+msgstr "&Poista"
+
+#: objinspstrconsts:oisload
+msgid "&Load"
+msgstr ""
+
+#: objinspstrconsts:oisok
+msgid "&OK"
+msgstr ""
+
+#: objinspstrconsts:oissave
+msgid "&Save"
+msgstr "&Tallenna"
+
+#: objinspstrconsts:cactionlisteditorallcategory
+msgid "(All)"
+msgstr ""
+
+#: objinspstrconsts:cactionlisteditorunknowncategory
+msgid "(Unknown)"
+msgstr ""
+
+#: objinspstrconsts:oisaction
+msgid "Action"
+msgstr ""
+
+#: objinspstrconsts:oisactionlisteditor
+msgid "Action List Editor"
+msgstr ""
+
+#: objinspstrconsts:oisadd
+msgid "Add"
+msgstr ""
+
+#: objinspstrconsts:sccsilbtnadd
+msgid "Add ..."
+msgstr ""
+
+#: objinspstrconsts:oisall
+msgid "All"
+msgstr ""
+
+#: objinspstrconsts:oisallfiles
+msgid "All files (*.*)|*.*"
+msgstr "Kaikki tiedostot (*.*)|*.*"
+
+#: objinspstrconsts:oisarray
+msgid "Array"
+msgstr "Taulukko"
+
+#: objinspstrconsts:oisboolean
+msgid "Boolean"
+msgstr ""
+
+#: objinspstrconsts:oishelpbrowsernotexecutable
+msgid "Browser %s%s%s not executable."
+msgstr ""
+
+#: objinspstrconsts:oishelpbrowsernotfound
+msgid "Browser %s%s%s not found."
+msgstr ""
+
+#: objinspstrconsts:oisclear
+msgid "C&lear"
+msgstr ""
+
+#: objinspstrconsts:oiscategory
+msgid "Category"
+msgstr ""
+
+#: objinspstrconsts:oischar
+msgid "Char"
+msgstr ""
+
+#: objinspstrconsts:oisclass
+msgid "Class"
+msgstr "Luokka"
+
+#: objinspstrconsts:sccsilbtnclear
+msgid "Clear"
+msgstr ""
+
+#: objinspstrconsts:oisconfirmdelete
+msgid "Confirm delete"
+msgstr ""
+
+#: objinspstrconsts:sccsilconfirme
+msgid "Confirme clear all images ?"
+msgstr ""
+
+#: objinspstrconsts:oiscreatedefaultevent
+msgid "Create default event"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtbtndel
+msgid "Delete"
+msgstr ""
+
+#: objinspstrconsts:oisdeleteitem
+msgid "Delete item %s%s%s?"
+msgstr ""
+
+#: objinspstrconsts:oiseditactionlist
+msgid "Edit action list..."
+msgstr ""
+
+#: objinspstrconsts:oisenumeration
+msgid "Enumeration"
+msgstr "Lueteltu tyyppi"
+
+#: objinspstrconsts:oiserror
+msgid "Error"
+msgstr ""
+
+#: objinspstrconsts:oiserrorloadingimage
+msgid "Error loading image"
+msgstr ""
+
+#: objinspstrconsts:oiserrorloadingimage2
+msgid "Error loading image %s%s%s:%s%s"
+msgstr ""
+
+#: objinspstrconsts:oishelperrorwhileexecuting
+msgid "Error while executing %s%s%s:%s%s"
+msgstr ""
+
+#: objinspstrconsts:oisevents
+msgid "Events"
+msgstr "Tapahtumat"
+
+#: objinspstrconsts:oisfloat
+msgid "Float"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
+msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpdatabasenotfound
+msgid "Help Database %s%s%s not found"
+msgstr ""
+
+#: objinspstrconsts:oishelphelpcontextnotfoundindatabase
+msgid "Help context %s not found in Database %s%s%s."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpcontextnotfound
+msgid "Help context %s not found."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
+msgid "Help keyword %s%s%s not found in Database %s%s%s."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpkeywordnotfound
+msgid "Help keyword %s%s%s not found."
+msgstr ""
+
+#: objinspstrconsts:oishelphelpnodehasnohelpdatabase
+msgid "Help node %s%s%s has no Help Database"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtimgindexcaption
+msgid "Image index"
+msgstr ""
+
+#: objinspstrconsts:sccsiledtcaption
+msgid "Image list editor"
+msgstr ""
+
+#: objinspstrconsts:oisint64
+msgid "Int64"
+msgstr ""
+
+#: objinspstrconsts:oisinteger
+msgid "Integer"
+msgstr ""
+
+#: objinspstrconsts:oisinterface
+msgid "Interface"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtlabcaption
+msgid "Label"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtcaption
+msgid "ListView editor"
+msgstr ""
+
+#: objinspstrconsts:oisloadimagedialog
+msgid "Load Image Dialog"
+msgstr "Tuo kuva"
+
+#: objinspstrconsts:oismethod
+msgid "Method"
+msgstr "Metodi"
+
+#: objinspstrconsts:sccslvedtbtnadd
+msgid "New"
+msgstr ""
+
+#: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
+msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
+msgstr ""
+
+#: objinspstrconsts:oishelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr ""
+
+#: objinspstrconsts:oisobject
+msgid "Object"
+msgstr ""
+
+#: objinspstrconsts:oisobjectinspector
+msgid "Object Inspector"
+msgstr "Komponenttimuokkain"
+
+#: objinspstrconsts:oisproperties
+msgid "Properties"
+msgstr "Ominaisuudet"
+
+#: objinspstrconsts:oisrecord
+msgid "Record"
+msgstr "Tietue"
+
+#: objinspstrconsts:oisselectafile
+msgid "Select a file"
+msgstr "Valitse tiedosto"
+
+#: objinspstrconsts:oisset
+msgid "Set"
+msgstr ""
+
+#: objinspstrconsts:oissettodefaultvalue
+msgid "Set to default value"
+msgstr ""
+
+#: objinspstrconsts:oissettodefault
+msgid "Set to default: %s"
+msgstr ""
+
+#: objinspstrconsts:oissort
+msgid "Sort"
+msgstr "Lajittele"
+
+#: objinspstrconsts:oisstring
+msgid "String"
+msgstr ""
+
+#: objinspstrconsts:cesstringgrideditor2
+msgid "StringGrid Editor"
+msgstr ""
+
+#: objinspstrconsts:cesstringgrideditor
+msgid "StringGrid Editor ..."
+msgstr ""
+
+#: objinspstrconsts:oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr ""
+
+#: objinspstrconsts:sccslvedtbtnaddsub
+msgid "Sub item"
+msgstr ""
+
+#: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
+msgid "The help database %s%s%s was unable to find file %s%s%s."
+msgstr ""
+
+#: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
+msgid "The macro %s in BrowserParams will be replaced by the URL."
+msgstr ""
+
+#: objinspstrconsts:oisunknown
+msgid "Unknown"
+msgstr ""
+
+#: objinspstrconsts:oisvalue
+msgid "Value:"
+msgstr "Arvo:"
+
+#: objinspstrconsts:oisvariant
+msgid "Variant"
+msgstr ""
+
+#: objinspstrconsts:oisword
+msgid "Word"
+msgstr ""
+

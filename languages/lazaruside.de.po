@@ -148,6 +148,10 @@ msgstr "%sSpeichern als%s speichert Pascal Dateien immer kleingeschrieben"
 msgid "%sSave As%s asks to save pascal files lowercase"
 msgstr "%sSpeichern als%s fragt, ob Pascal Dateinamen kleingeschrieben werden sollen"
 
+#: lazarusidestrconsts:lisseeprojectprojectinspector
+msgid "%sSee Project -> Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:lispckexplstate
 msgid "%sState: "
 msgstr "%sStatus: "
@@ -2444,6 +2448,10 @@ msgstr ""
 msgid "Finnish"
 msgstr ""
 
+#: lazarusidestrconsts:rslanguagefinnishwin
+msgid "Finnish for MS Windows"
+msgstr ""
+
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
 msgstr ""
@@ -3790,6 +3798,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgenvmisc
 msgid "Miscellaneous"
+msgstr ""
+
+#: lazarusidestrconsts:lismissingpackages
+msgid "Missing Packages"
 msgstr ""
 
 #: lazarusidestrconsts:dlgmixmethodsandproperties
@@ -6270,6 +6282,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2pthefilenameisambigiouspleasespecifiyafilename
 msgid "The filename %s%s%s is ambigious.%sPlease specifiy a filename with full path."
+msgstr ""
+
+#: lazarusidestrconsts:listhefollowingpackagesfailedtoload
+msgid "The following package(s) failed to load:%s%s"
 msgstr ""
 
 #: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren

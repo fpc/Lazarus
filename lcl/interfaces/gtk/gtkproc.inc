@@ -8014,10 +8014,10 @@ var
 type
    TXineramaScreenInfo = record
         screen_number : cint;
-        x_org 	      : cshort;
-        y_org 	      : cshort;
-        width 	      : cshort;
-        height 	      : cshort;
+        x_org         : cshort;
+        y_org         : cshort;
+        width         : cshort;
+        height        : cshort;
      end;
    PXineramaScreenInfo = ^TXineramaScreenInfo;
 
@@ -8075,6 +8075,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.341  2005/02/20 11:03:36  mattias
+  added finnish translation for windows codepage  from Seppo
+
   Revision 1.340  2005/02/20 10:43:04  mattias
   added dyn xinerama use patch  from C Western
 

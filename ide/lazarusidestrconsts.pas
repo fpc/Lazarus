@@ -1451,6 +1451,7 @@ resourcestring
   rsLanguageItalianISO  = 'Italian(ISO 8859-1)';
   rsLanguageCatalan     = 'Catalan';
   rsLanguageFinnish     = 'Finnish';
+  rsLanguageFinnishWin  = 'Finnish for MS Windows';
   rsLanguageHebrew      = 'Hebrew';
   rsLanguageArabic      = 'Arabic';
 

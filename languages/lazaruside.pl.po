@@ -149,6 +149,10 @@ msgstr "%sZapisz jako%s zapisuje pliki pascala małymi literami"
 msgid "%sSave As%s asks to save pascal files lowercase"
 msgstr "%sZapisz jako%s pyta czy zapisać małymi literami"
 
+#: lazarusidestrconsts:lisseeprojectprojectinspector
+msgid "%sSee Project -> Project Inspector"
+msgstr ""
+
 #: lazarusidestrconsts:lispckexplstate
 msgid "%sState: "
 msgstr "%sStan: "
@@ -2445,6 +2449,10 @@ msgstr "Wyszukaj tekst przy kursorze"
 msgid "Finnish"
 msgstr "Finnish"
 
+#: lazarusidestrconsts:rslanguagefinnishwin
+msgid "Finnish for MS Windows"
+msgstr ""
+
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
 msgstr ""
@@ -3792,6 +3800,10 @@ msgstr "Pionowe odbicie lustrzane"
 #: lazarusidestrconsts:dlgenvmisc
 msgid "Miscellaneous"
 msgstr "Pozostałe"
+
+#: lazarusidestrconsts:lismissingpackages
+msgid "Missing Packages"
+msgstr ""
 
 #: lazarusidestrconsts:dlgmixmethodsandproperties
 msgid "Mix methods and properties"
@@ -6272,6 +6284,10 @@ msgstr "Nazwa pliku %s%s%s nie odpowiada nazwie pakietu %s%s%s w tym pliku.%sChc
 #: lazarusidestrconsts:lisa2pthefilenameisambigiouspleasespecifiyafilename
 msgid "The filename %s%s%s is ambigious.%sPlease specifiy a filename with full path."
 msgstr "Nazwa pliku %s%s%s jest niejednoznaczna.%sOkreśl nazwę pliku z pełną ścieżką."
+
+#: lazarusidestrconsts:listhefollowingpackagesfailedtoload
+msgid "The following package(s) failed to load:%s%s"
+msgstr ""
 
 #: lazarusidestrconsts:listhefollowingunitswerenotfound1eithertheseunitsaren
 msgid "The following units were not found:%s%s%s%s1) Either these units are not in the unit path, then you can abort now, fix the unit path and try again.%s2) Or the units came from a case insensitive file system (windows/Delphi) and are now on a case sensitive filesystem (linux, bsd, macosx). In this case you should abort now, rename the units all lowercase and try again.%s3) Or you can ignore the missing units and continue.%s%sShould the missing units be commented out?"

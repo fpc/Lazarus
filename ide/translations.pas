@@ -115,6 +115,8 @@ begin
     Result:=rsLanguageSpanishUTF
   else if AnsiCompareText(ID,'fi')=0 then
     Result:=rsLanguageFinnish
+  else if AnsiCompareText(ID,'fiwin')=0 then
+    Result:=rsLanguageFinnishWin
   else if AnsiCompareText(ID,'he')=0 then
     Result:=rsLanguageHebrew
   else if AnsiCompareText(ID,'ar')=0 then

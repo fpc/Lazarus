@@ -24,7 +24,7 @@ fi
 IDE_RST=`find . -name lazarusidestrconsts.rst | xargs ls -1t | head -1`;
 rstconv -i $IDE_RST -o languages/lazaruside.po
 ./tools/updatepofiles languages/lazaruside.po
-for lang in ca de es esutf fi fr he it itiso pl pliso plwin ru ruwin ruutf ; do
+for lang in ca de es esutf fi fiwin fr he it itiso pl pliso plwin ru ruwin ruutf ; do
   msgfmt languages/lazaruside.$lang.po -o languages/lazaruside.$lang.mo
 done
 
@@ -32,7 +32,7 @@ done
 ObjInsp_RST=`find . -name objinspstrconsts.rst | xargs ls -1t | head -1`;
 rstconv -i $ObjInsp_RST -o languages/objinspstrconsts.po
 tools/updatepofiles languages/objinspstrconsts.po
-for lang in ca de es fi fr it itiso pl pliso plwin ru ruwin ruutf ; do
+for lang in ca de es fi fiwin fr it itiso pl pliso plwin ru ruwin ruutf ; do
   msgfmt languages/objinspstrconsts.$lang.po \
     -o languages/objinspstrconsts.$lang.mo
 done
@@ -52,7 +52,7 @@ SynEdit_RST=`find components/units -name syneditstrconst.rst | xargs ls -1t | he
 rstconv -i $SynEdit_RST \
   -o components/synedit/languages/synedit.po
 ./tools/updatepofiles components/synedit/languages/synedit.po
-for lang in ca de fi fr it itiso pl pliso plwin ru ruwin ruutf; do
+for lang in ca de fi fiwin fr it itiso pl pliso plwin ru ruwin ruutf; do
   msgfmt components/synedit/languages/synedit.$lang.po \
     -o components/synedit/languages/synedit.$lang.mo
 done
@@ -71,7 +71,7 @@ done
 LCL_RST=`find lcl/units -name lclstrconsts.rst | xargs ls -1t | head -1`;
 rstconv -i $LCL_RST -o lcl/languages/lcl.po
 ./tools/updatepofiles lcl/languages/lcl.po
-for lang in ca de es fi fr it itiso pl pliso plwin ru ruwin ruutf ; do
+for lang in ca de es fi fiwin fr it itiso pl pliso plwin ru ruwin ruutf ; do
   msgfmt lcl/languages/lcl.$lang.po -o lcl/languages/lcl.$lang.mo || true
 done
 

@@ -2448,6 +2448,10 @@ msgstr "Cherche le texte sous le curseur"
 msgid "Finnish"
 msgstr "Terminé"
 
+#: lazarusidestrconsts:rslanguagefinnishwin
+msgid "Finnish for MS Windows"
+msgstr ""
+
 #: lazarusidestrconsts:lisfixlfmfile
 msgid "Fix LFM file"
 msgstr "Corriger fichier LFM"
