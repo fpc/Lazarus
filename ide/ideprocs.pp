@@ -76,6 +76,8 @@ const
 // files
 function BackupFile(const Filename, BackupFilename: string): boolean;
 function CompareFilenames(const Filename1, Filename2: string): integer;
+function CompareFilenames(const Filename1, Filename2: string;
+  ResolveLinks: boolean): integer;
 function FilenameIsMatching(const Mask, Filename: string;
   MatchExactly: boolean): boolean;
 procedure SplitCmdLine(const CmdLine: string;
@@ -263,7 +265,7 @@ end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
 begin
-  Result:=FileProcs.CompareFilenames(FileName1,FileName2);
+  Result:=FileCtrl.CompareFilenames(FileName1,FileName2);
 end;
 
 function FileIsExecutable(const AFilename: string): boolean;
@@ -359,6 +361,12 @@ end;
 function ChompPathDelim(const Path: string): string;
 begin
   Result:=FileProcs.ChompPathDelim(Path);
+end;
+
+function CompareFilenames(const Filename1, Filename2: string;
+  ResolveLinks: boolean): integer;
+begin
+  Result:=FileCtrl.CompareFilenames(FileName1,FileName2,ResolveLinks);
 end;
 
 function FilenameIsMatching(const Mask, Filename: string;
