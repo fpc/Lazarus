@@ -2921,7 +2921,7 @@ begin
     GridSizeX:=StrToIntDef(GridSizeXComboBox.Text,GridSizeX);
     GridSizeY:=StrToIntDef(GridSizeYComboBox.Text,GridSizeY);
     ShowGuideLines:=ShowGuideLinesCheckBox.Checked;
-    SnapToGuideLines:=SnapToGridCheckBox.Checked;
+    SnapToGuideLines:=SnapToGuideLinesCheckBox.Checked;
     GuideLineColorLeftTop:=GuideLineColorLeftTopButton.ButtonColor;
     GuideLineColorRightBottom:=GuideLineColorRightBottomButton.ButtonColor;
     ShowComponentCaptions:=ShowComponentCaptionsCheckBox.Checked;
