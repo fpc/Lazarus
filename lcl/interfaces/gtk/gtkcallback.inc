@@ -2339,7 +2339,13 @@ begin
     dec(i);
   end;
   {$IFDEF DEBUG_CLIPBOARD}
-  writeln('[ClipboardSelectionReceivedHandler] TimeID=',TimeID,' ',i>=0);
+  writeln('[ClipboardSelectionReceivedHandler] A TimeID=',TimeID,' RequestIndex=',i,
+    ' selection=',SelectionData^.selection,
+    ' target=',SelectionData^.Target,
+    ' theType=',SelectionData^.theType,
+    ' format=',SelectionData^.format,
+    ' len=',SelectionData^.length
+    );
   {$ENDIF}
   if i<0 then exit;
   // free old data
@@ -2348,13 +2354,16 @@ begin
   c^.Data:=SelectionData^;
   // copy the raw data to an internal buffer (the gtk buffer will be destroyed
   // right after this event)
-  if (c^.Data.Data<>nil) 
+  {$IFDEF DEBUG_CLIPBOARD}
+  writeln('[ClipboardSelectionReceivedHandler] B DataLen=',c^.Data.Length);
+  {$ENDIF}
+  if (c^.Data.Data<>nil)
   and (c^.Data.Length>0) then begin
     GetMem(TempBuf,c^.Data.Length);
     Move(c^.Data.Data^,TempBuf^,c^.Data.Length);
     c^.Data.Data:=TempBuf;
     {$IFDEF DEBUG_CLIPBOARD}
-    writeln('[ClipboardSelectionReceivedHandler] ',ord(PChar(c^.Data.Data)[0]));
+    writeln('[ClipboardSelectionReceivedHandler] C FirstCharacter=',ord(PChar(c^.Data.Data)[0]));
     {$ENDIF}
   end else
     c^.Data.Data:=nil;
@@ -2363,9 +2372,9 @@ end;
 {------------------------------------------------------------------------------
   ClipboardSelectionRequestHandler
 
-  This signal is emitted if someone requests the clipboard data
+  This signal is emitted if someone requests the clipboard data.
   Since the lcl clipboard caches all requests this will typically be another
-  application
+  application.
  ------------------------------------------------------------------------------}
 procedure ClipboardSelectionRequestHandler(TargetWidget: PGtkWidget;
   SelectionData: PGtkSelectionData; Info: cardinal; TimeID: cardinal;
@@ -2530,6 +2539,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.163  2003/01/24 11:58:00  mattias
+  fixed clipboard waiting and kwrite targets
+
   Revision 1.162  2003/01/06 10:51:41  mattias
   freeing stopped external tools
 
