@@ -502,6 +502,7 @@ var
   ShiftState: TShiftState;
   EventStopped: Boolean;
   TopLevel: PGtkWidget;
+  Status : GBoolean;
   
   procedure StopKeyEvent(const EventName: PChar);
   begin
@@ -535,7 +536,8 @@ var
   end;
   
 begin
-  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
+  Status := true;
+  
   EventStopped:=false;
   
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
@@ -572,7 +574,7 @@ begin
       Msg.Result:=0;
       Code := Msg.CharCode;
       NotifyApplicationUserInput(Msg.Msg);
-      {$Ifdef GTk1}result:={$EndIf}DeliverMessage(Data, Msg){$Ifdef GTk1}=0{$EndIf};
+      Status := DeliverMessage(Data, Msg)=0;
 
       If Msg.CharCode <> Code then begin
         // key was handled by LCL
@@ -607,7 +609,7 @@ begin
       // send the message directly to the LCL
       NotifyApplicationUserInput(Msg.Msg);
       //writeln('GTKKeyUpDown Key Send to ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Code=VK_TAB);
-      {$Ifdef GTk1}result:={$EndIf}DeliverMessage(Data, Msg){$Ifdef GTk1}=0{$EndIf};
+      status := DeliverMessage(Data, Msg)=0;
 
       If Msg.CharCode <> Code then begin
         // key was changed by LCL
@@ -627,7 +629,7 @@ begin
         Msg.CharCode := KeyCode;
         Msg.Result:=0;
         // send the message directly (not queued) to the LCL
-        {$Ifdef GTk1}result:={$EndIf}DeliverMessage(Data, Msg){$Ifdef GTk1}=0{$EndIf};
+        status:=DeliverMessage(Data, Msg)=0;
         If Msg.CharCode <> KeyCode then begin
           // key was handled by lcl
           //writeln('GTKKeyUpDown Key CHANGED 2 ',TControl(Data).Name,':',TControl(Data).ClassName);
@@ -643,8 +645,8 @@ begin
           and (PGtkWindow(TopLevel)^.focus_widget=Widget) then begin
             StopKeyEvent('key_press_event');
             //writeln('GTKKeyUpDown ',TControl(Data).Name,':',TControl(Data).ClassName);
-            {$Ifdef GTk1}Result:={$EndIf}TControl(Data).PerformTab(not (ssShift in ShiftState));
-            If Result then begin
+            Status:=TControl(Data).PerformTab(not (ssShift in ShiftState));
+            If Status then begin
               {$IfNDef Win32}
               {$ifdef GTK2}
               Event^._String[0] := #0;
@@ -659,6 +661,12 @@ begin
     end;
   end;
 //writeln('AAA1 [GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' Result=',Result);
+
+  {$ifdef GTK2}
+  Status := False;
+  {$endif}
+
+  Result := Status;
 end;
 
 function GTKFocusCB( widget: PGtkWidget; event:PGdkEventFocus;
@@ -984,8 +992,9 @@ function gtkMotionNotify(Widget:PGTKWidget; Event: PGDKEventMotion;
   Data: gPointer): GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
+  Status : gboolean;
 begin
-  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
+  Status := True;
   
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseMotion);
@@ -1009,6 +1018,12 @@ begin
   end;
 
   DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
+
+  {$ifdef GTK2}
+  Status := False;
+  {$endif}
+
+  Result := Status;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1020,8 +1035,11 @@ end;
 -------------------------------------------------------------------------------}
 function GTKMotionNotifyAfter(widget:PGTKWidget; event: PGDKEventMotion;
   data: gPointer): GBoolean; cdecl;
+var
+  Status : gboolean;
 begin
-  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
+  Status := True;
+
   {$IFDEF VerboseMouseBugfix}
   writeln('[GTKMotionNotifyAfter] ',
     TControl(Data).Name,':',TControl(Data).ClassName);
@@ -1036,6 +1054,12 @@ begin
   if ControlGetsMouseMoveBefore(TControl(Data)) then exit;
 
   DeliverMouseMoveMessage(Widget,Event,TWinControl(Data));
+
+  {$ifdef GTK2}
+  Status := False;
+  {$endif}
+
+  Result := Status;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1120,7 +1144,12 @@ var
 
     IsMultiClick:=TestIfMultiClick;
 
-    case Event^.{$ifdef GTK2}_Type{$ELSE}theType{$ENDIF} of
+   {$ifdef GTK2}
+    case Event^._Type of
+   {$ELSE}
+    case Event^.theType of
+   {$ENDIF}
+   
     gdk_2button_press:
       // the gtk itself has detected a double click
       if (LastMouse.ClickCount>=2)
@@ -1261,9 +1290,10 @@ function gtkMouseBtnPress(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
+  Status : gboolean;
 begin
-  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
-  
+  Status := True;
+
   {$IFDEF VerboseMouseBugfix}
   writeln('');
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMousePress);
@@ -1301,6 +1331,12 @@ begin
   end;
   
   DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
+
+  {$ifdef GTK2}
+  Status := False;
+  {$endif}
+
+  Result := Status;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1313,8 +1349,11 @@ end;
 -------------------------------------------------------------------------------}
 function gtkMouseBtnPressAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
+var  
+  Status : gboolean;
 begin
-  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
+  Status := True;
+
   {$IFDEF VerboseMouseBugfix}
   {writeln('[gtkMouseBtnPressAfter] ',
     TControl(Data).Name,':',TObject(Data).ClassName,
@@ -1331,6 +1370,12 @@ begin
   if ControlGetsMouseDownBefore(TControl(Data)) then exit;
 
   DeliverMouseDownMessage(Widget,Event,TWinControl(Data));
+
+  {$ifdef GTK2}
+  Status := False;
+  {$endif}
+
+  Result := Status;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1428,8 +1473,9 @@ function gtkMouseBtnRelease(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
 var
   DesignOnlySignal: boolean;
+  Status : gboolean;
 begin
-  result:={$Ifdef GTk1}true{$Else}false{$EndIf};
+  Status := True;
 
   {$IFDEF VerboseMouseBugfix}
   DesignOnlySignal:=GetDesignOnlySignalFlag(Widget,dstMouseRelease);
@@ -1460,6 +1506,12 @@ begin
   end;
   
   DeliverMouseUpMessage(Widget,Event,TWinControl(Data));
+
+  {$ifdef GTK2}
+  Status := False;
+  {$endif}
+
+  Result := Status;
 end;
 
 {-------------------------------------------------------------------------------
@@ -1472,8 +1524,11 @@ end;
 -------------------------------------------------------------------------------}
 function gtkMouseBtnReleaseAfter(widget: PGtkWidget; event : pgdkEventButton;
   data: gPointer) : GBoolean; cdecl;
+var
+  Status : gboolean;
 begin
-  Result:={$Ifdef GTk1}true{$Else}false{$EndIf};
+  Status := True;
+
   {$IFDEF VerboseMouseBugfix}
   {writeln('[gtkMouseBtnReleaseAfter] ',
     TControl(Data).Name,':',TObject(Data).ClassName,' ',
@@ -1489,6 +1544,12 @@ begin
   if ControlGetsMouseUpBefore(TControl(Data)) then exit;
 
   DeliverMouseUpMessage(Widget,Event,TWinControl(Data));
+
+  {$ifdef GTK2}
+  Status := False;
+  {$endif}
+
+  Result := Status;
 end;
 
 function gtkclickedCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -2853,6 +2914,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.196  2003/09/26 00:24:22  ajgenius
+  partly cleanup gtk2 $ifdef's
+
   Revision 1.195  2003/09/25 16:02:16  ajgenius
   try to catch GDK/X drawable errors and raise an AV to stop killing App
 
