@@ -7,7 +7,7 @@ set -e
 #------------------------------------------------------------------------------
 # parse parameters
 #------------------------------------------------------------------------------
-Usage="Usage: $0 [nodocs] [notemp] <FPCSrcDir> <release>"
+Usage="Usage: $0 [nodocs] [notemp] [deb] <FPCSrcDir> <release>"
 
 WithDOCS=yes
 if [ "x$1" = "xnodocs" ]; then
@@ -18,6 +18,12 @@ fi
 WithTempDir=yes
 if [ "x$1" = "xnotemp" ]; then
   WithTempDir=no
+  shift
+fi
+
+PkgType=rpm
+if [ "x$1" = "xdeb" ]; then
+  PkgType=deb
   shift
 fi
 
@@ -60,49 +66,95 @@ if [ "$CompilerPatch" != "0" ]; then
 fi
 
 
-SpecFile=$TmpDir/install/fpc.spec
-SrcPatch=fpcsrc-patch
+if [ "$PkgType" = "deb" ]; then
+  # build fpc debs
 
-# patch sources
-patch -p2 -d $TmpDir/ < $SrcPatch
+  # change debian files
+  DebianRulezDir=$TmpDir/fpc/install/debian/
+  Date=13/07/2003
 
-# change spec file
-cat $SpecFile | \
-  sed -e 's/^Version: .*/Version: '"$LazVersion/" \
-      -e 's/^Release: .*/Release: '"$LazRelease/" \
-  > $SpecFile.New
-#      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
-mv $SpecFile.New $SpecFile
-if [ "$WithDOCS" = "no" ]; then
-  cat $SpecFile | \
-    sed -e 's/^\(.*\bmake\b.*\bdocs\b\)/#\1/g' \
-        -e 's/^\(%doc.*\*\.pdf\)/#\1/g' \
-  > $SpecFile.New
-  mv $SpecFile.New $SpecFile
-fi
+  # prepend changelog information, needed for version
+  cd $DebianRulezDir
+  File=changelog
+  OldFile=changelog.old.fpc
+  cp $File $OldFile
+  echo "fpc ($LazVersion-$LazRelease) unstable; urgency=low" > $File
+  echo '  * Unofficial snapshot build for lazarus' >> $File
+  echo ' -- Mattias Gaertner <mattias@freepascal.org>  $Date' >> $File
+  echo "" >> $File
+  cat $OldFile >> $File
+  rm $OldFile
+  cd -
 
-# change Makefile for new rpmbuild, if not already done
-cd $TmpDir
-if [ -n `grep rpmbuild Makefile` ]; then
-  cat Makefile | \
-    sed -e 's/rpm\( --nodeps -ba .*\)$/rpm\1 || rpmbuild\1/g' \
-    > New.Makefile
-  mv New.Makefile Makefile
-fi
-cd -
+  # fix debian/rules
+  # - copy the complete examples directory
+  # - do not install non existing files Changes.fcl Changes.utils
+  cd $DebianRulezDir
+  cat rules | \
+    sed -e 's/^\(.*mv .*\)uncgi\( .*examples.*\)$/\1???*\2/' \
+        -e 's/^.*logs\/Changes\.fcl.*$//' \
+        -e 's/^.*logs\/Changes\.utils.*$//' \
+    > rules.laz
+  cp rules.laz rules # use cp to preserve file attribs
+  rm rules.laz
+  cd -
 
-#------------------------------------------------------------------------------
-# compile
-#------------------------------------------------------------------------------
-cd $TmpDir
-#make rtl
-#make compiler
-if [ "$WithDOCS" = "no" ]; then
-  make rpm NODOCS=1
+
+  # compile
+  cd $TmpDir/fpc
+  make debcopy
+  cd -
+  cd /usr/src/fpc-$LazVersion
+  ./debian/rules binary-arch
+  cd -
+
 else
-  make rpm
+  # build fpc rpm
+
+  SpecFile=$TmpDir/install/fpc.spec
+  SrcPatch=fpcsrc-patch
+
+  # patch sources
+  patch -p2 -d $TmpDir/ < $SrcPatch
+
+  # change spec file
+  cat $SpecFile | \
+    sed -e 's/^Version: .*/Version: '"$LazVersion/" \
+        -e 's/^Release: .*/Release: '"$LazRelease/" \
+    > $SpecFile.New
+  #      -e 's/^\%{fpcdir}\/samplecfg .*/%{fpcdir}\/samplecfg %{_libdir}\/fpc\/\\\$version/' \
+  mv $SpecFile.New $SpecFile
+  if [ "$WithDOCS" = "no" ]; then
+    cat $SpecFile | \
+      sed -e 's/^\(.*\bmake\b.*\bdocs\b\)/#\1/g' \
+          -e 's/^\(%doc.*\*\.pdf\)/#\1/g' \
+    > $SpecFile.New
+    mv $SpecFile.New $SpecFile
+  fi
+
+  # change Makefile for new rpmbuild, if not already done
+  cd $TmpDir
+  if [ -n `grep rpmbuild Makefile` ]; then
+    cat Makefile | \
+      sed -e 's/rpm\( --nodeps -ba .*\)$/rpm\1 || rpmbuild\1/g' \
+      > New.Makefile
+    mv New.Makefile Makefile
+  fi
+  cd -
+
+  #------------------------------------------------------------------------------
+  # compile
+  #------------------------------------------------------------------------------
+  cd $TmpDir
+  #make rtl
+  #make compiler
+  if [ "$WithDOCS" = "no" ]; then
+    make rpm NODOCS=1
+  else
+    make rpm
+  fi
+  cd -
 fi
-cd -
 
 # end.
 

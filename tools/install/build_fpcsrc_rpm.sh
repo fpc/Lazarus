@@ -50,23 +50,6 @@ CurDir=`pwd`
 ./create_fpc_tgz_from_local_dir.sh $FPCSourceDir $FPCTGZ
 
 if [ "$PkgType" = "deb" ]; then
-  # build fpcsrc rpm
-
-  echo building fpcsrc rpm ...
-
-  # copy src tgz into rpm building directory
-  cp $FPCTGZ /usr/src/redhat/SOURCES/
-
-  # create spec file
-  SpecFile=fpcsrc-$LazVersion-$LazRelease.spec
-  cat fpcsrc.spec | \
-    sed -e "s/LAZVERSION/$LazVersion/g" -e "s/LAZRELEASE/$LazRelease/" \
-    > $SpecFile
-
-  # build rpm
-  rpmbuild -ba $SpecFile || rpm -ba $SpecFile
-  
-else
   # build fpcsrc deb
 
   echo building fpcsrc deb ...
@@ -87,7 +70,7 @@ else
   echo "unpacking $SrcTGZ ..."
   mkdir -p $FPCSrcBuildDir/usr/share/
   cd $FPCSrcBuildDir/usr/share/
-  tar xzf $CurDir/$SrcTGZ
+  tar xzf $CurDir/$FPCTGZ
   mv fpc fpcsrc
   cd -
 
@@ -119,6 +102,23 @@ else
   mv $FPCSrcBuildDir.deb $FPCSrcDeb
   echo "`pwd`/$FPCSrcDeb created."
   cd -
+
+else
+  # build fpcsrc rpm
+
+  echo building fpcsrc rpm ...
+
+  # copy src tgz into rpm building directory
+  cp $FPCTGZ /usr/src/redhat/SOURCES/
+
+  # create spec file
+  SpecFile=fpcsrc-$LazVersion-$LazRelease.spec
+  cat fpcsrc.spec | \
+    sed -e "s/LAZVERSION/$LazVersion/g" -e "s/LAZRELEASE/$LazRelease/" \
+    > $SpecFile
+
+  # build rpm
+  rpmbuild -ba $SpecFile || rpm -ba $SpecFile
 
 fi
 

@@ -61,7 +61,7 @@ File=changelog
 OldFile=changelog.old.fpc
 cp $File $OldFile
 echo "fpc ($LazVersion-$LazRelease) unstable; urgency=low" > $File
-echo '  * Unoffical snapshot build for lazarus' >> $File
+echo '  * Unofficial snapshot build for lazarus' >> $File
 echo ' -- Mattias Gaertner <mattias@freepascal.org>  Mon,  31 Mar 2003 11:01:50 +0100' >> $File
 echo "" >> $File
 cat $OldFile >> $File 
