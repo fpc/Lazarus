@@ -32,8 +32,6 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-{$DEFINE ClientRectBugFix}
-
 {$IFOPT C-}
 // Uncomment for local trace
 //  {$C+}
@@ -531,9 +529,7 @@ type
     procedure RequestAlign; dynamic;
     procedure BeginAutoDrag; dynamic;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
-    {$IFDEF ClientRectBugFix}
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
-    {$ENDIF}
     procedure ChangeScale(M,D : Integer); dynamic;
     procedure Click; dynamic;
     procedure DblClick; dynamic;
@@ -544,10 +540,6 @@ type
     procedure DragCanceled; dynamic;
     procedure CreateComponent(AOwner : TComponent);
     procedure DestroyComponent;
-    {$IFDEF ClientRectBugFix}
-    {$ELSE}
-    procedure DoEvents; // use HandleEvents instead
-    {$ENDIF}
     procedure DoEndDrag(Target: TObject; X,Y : Integer); dynamic;
     procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
     procedure SendDockNotification(Msg: Cardinal; WParam, LParam : Integer);
@@ -685,11 +677,9 @@ type
     FControls : TList;
     FDefWndProc : Pointer;
     //FDockSite : Boolean;
-    {$IFDEF ClientRectBugFix}
     FClientWidth : Integer;
     FClientHeight : Integer;
     FFlags: TWinControlFlags;
-    {$ENDIF}
     FLastResize : TPoint;
     //FUseDockManager : Boolean;
     FOnKeyDown : TKeyEvent;
@@ -730,9 +720,7 @@ type
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
     procedure DoConstraintsChange(Sender : TObject); override;
-    {$IFDEF ClientRectBugFix}
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); override;
-    {$ENDIF}
     procedure GetChildren(Proc : TGetChildProc; Root : TComponent); override;
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var TheMessage: TLMPaint);
@@ -815,9 +803,7 @@ type
     Function ControlAtPos(const Pos : TPoint;
       AllowDisabled, AllowWinControls, OnlyClientAreas: Boolean): TControl;
     procedure DoAdjustClientRectChange;
-    {$IFDEF ClientRectBugFix}
     procedure InvalidateClientRectCache;
-    {$ENDIF}
     Function Focused : Boolean; dynamic;
     Procedure BroadCast(var Message);
     Procedure DisableAlign;
@@ -1312,6 +1298,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.57  2002/08/17 15:45:32  lazarus
+  MG: removed ClientRectBugfix defines
+
   Revision 1.56  2002/08/07 09:55:29  lazarus
   MG: codecompletion now checks for filebreaks, savefile now checks for filedate
 
