@@ -19,7 +19,7 @@ unit PropertyStorage;
 
 interface
 
-{$IFDEF VER1_9_5}
+{$IFNDEF VER1_0}
   {$DEFINE EnableSessionProps}
 {$ENDIF}
 
