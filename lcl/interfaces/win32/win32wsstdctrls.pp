@@ -460,8 +460,7 @@ end;
 
 function  TWin32WSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
 begin
-  // TODO: implement me!
-  Result := 0;
+  Result:=Windows.SendMessage(ACustomListBox.Handle, LB_GETTOPINDEX, 0, 0);
 end;
 
 procedure TWin32WSCustomListBox.SelectItem(const ACustomListBox: TCustomListBox; AIndex: integer; ASelected: boolean);
@@ -523,7 +522,7 @@ end;
 
 procedure TWin32WSCustomListBox.SetTopIndex(const ACustomListBox: TCustomListBox; const NewTopIndex: integer);
 begin
-  // TODO: implement me!
+  Windows.SendMessage(ACustomListBox.Handle, LB_SETTOPINDEX, NewTopIndex, 0);
 end;
 
 { TWin32WSCustomComboBox }
