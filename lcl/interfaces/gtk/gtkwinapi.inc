@@ -145,12 +145,12 @@ end;
 
  ------------------------------------------------------------------------------}
 Function TGTKObject.BringWindowToTop(hWnd : HWND): Boolean;
-{$IFDEF VerboseFocus}
 var
+  {$IFDEF VerboseFocus}
   LCLObject: TControl;
-{$ENDIF}
+  {$ENDIF}
+  GdkWindow: PGdkWindow;
 begin
-  //hwnd should be a PgtkWidget.
   {$IFDEF VerboseFocus}
   write('TGTKObject.BringWindowToTop hWnd=',HexStr(Cardinal(hWnd),8));
   LCLObject:=TControl(GetLCLObject(Pointer(hWnd)));
@@ -159,9 +159,12 @@ begin
   else
     writeln(' LCLObject=nil');
   {$ENDIF}
-  Result := (hWnd<>0);
-  if Result then
-    gdk_window_raise(GetControlWindow(PgtkWidget(hwnd)));
+  Result := GtkWidgetIsA(PGtkWidget(hWnd),GTK_WINDOW_TYPE);
+  if Result then begin
+    GdkWindow:=GetControlWindow(PgtkWidget(hwnd));
+    gdk_window_raise(GdkWindow);
+    // how to the keyboard focus to the raised window?
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -6199,8 +6202,8 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.SetFocus(hWnd: HWND): HWND;
 var
-  TopLevel: PGTKWidget;
-  Widget, ImplWidget: PGtkWidget;
+  Widget, TopLevel, ImplWidget, NewFocusWidget: PGtkWidget;
+  WinWidgetInfo: PWinWidgetInfo;
   {$IfDef VerboseFocus}
   LCLObject, AWinControl: TWinControl;
   {$EndIf}
@@ -6216,95 +6219,99 @@ begin
   else
     writeln(' LCLObject=nil');
   {$EndIf}
-  if hwnd = 0 then
-    Result := 0
-  else begin
-    // return the old focus handle
-    Result := GetFocus;
-    TopLevel := gtk_widget_get_toplevel(Widget);
+  if hwnd = 0 then begin
+    Result:=0;
+    exit;
+  end;
+  
+  // return the old focus handle
+  Result := GetFocus;
+  NewFocusWidget:=nil;
+  
+  TopLevel := gtk_widget_get_toplevel(Widget);
+  {$IfDef VerboseFocus}
+  write('[TgtkObject.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8));
+  write(' TopLevel=',HexStr(Cardinal(TopLevel),8));
+  write(' OldFocus=',HexStr(Cardinal(Result),8));
+  AWinControl:=TWinControl(GetParentLCLObject(PGtkWidget(Result)));
+  if AWinControl<>nil then
+    write(' OldLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
+  else
+    write(' OldLCLParent=nil');
+  writeln('');
+  {$EndIf}
+
+  if GtkWidgetIsA(TopLevel, gtk_window_get_type)
+  then begin
+    // TopLevel is a gtkwindow
     {$IfDef VerboseFocus}
-    write('[TgtkObject.SetFocus] B hWnd=',HexStr(Cardinal(hWnd),8));
-    write(' TopLevel=',HexStr(Cardinal(TopLevel),8));
-    write(' OldFocus=',HexStr(Cardinal(Result),8));
-    AWinControl:=TWinControl(GetParentLCLObject(PGtkWidget(Result)));
+    AWinControl:=TWinControl(GetParentLCLObject(PGtkWindow(TopLevel)^.focus_widget));
+    write('  C  TopLevel is a gtkwindow ');
+    write(' focus_widget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.focus_widget),8));
     if AWinControl<>nil then
-      write(' OldLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
+      write(' LCLParent=',AWinControl.Name,':',AWinControl.ClassName)
     else
-      write(' OldLCLParent=nil');
+      write(' LCLParent=nil');
     writeln('');
     {$EndIf}
-    if PGtkWidget(GetFocus)=Widget then exit;
+    {
     
-    if GtkWidgetIsA(TopLevel, gtk_window_get_type)
-    then begin
-      {$IfDef VerboseFocus}
-      AWinControl:=TwinControl(GetParentLCLObject(PGtkWindow(TopLevel)^.focus_widget));
-      write('[TgtkObject.SetFocus] C  TopLevel is a gtkwindow ');
-      write(' focus_widget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.focus_widget),8));
-      if AWinControl<>nil then
-        write(' LCLParent=',AWinControl.Name,':',AWinControl.ClassName)
-      else
-        write(' LCLParent=nil');
-      writeln('');
-      {$EndIf}
-      // TopLevel is a gtkwindow
-      if GTK_WIDGET_CAN_FOCUS(TopLevel) then begin
-        // TopLevel window can focus
-        {$IfDef VerboseFocus}
-        writeln('[TgtkObject.SetFocus] D  TopLevel window can focus');
-        {$EndIf}
-        gtk_window_set_focus(PGTKWindow(TopLevel), Widget)
-      end
-      else begin
-        // TopLevel window can not focus
-        {$IfDef VerboseFocus}
-        writeln('[TgtkObject.SetFocus] E  TopLevel window can NOT focus');
-        writeln('[TgtkObject.SetFocus] F ',
-        ' Widget can focus=',GTK_WIDGET_CAN_FOCUS(Widget),
-        ', is realized=',GTK_WIDGET_REALIZED(Widget),
-        ', is mapped=',GTK_WIDGET_MAPPED(Widget)
-        );
-        {$EndIf}
-        if GtkWidgetIsA(Widget, gtk_combo_get_type)
-        then begin
-          // handle is a gtk combo
-          gtk_widget_grab_focus(PgtkWidget(PGtkCombo(Widget)^.entry));
-          {$IfDef VerboseFocus}
-          writeln('[TgtkObject.SetFocus] H Entry=',HexStr(Cardinal(PGtkCombo(Widget)^.entry),8),
-          ' has focus=',gtk_widget_has_focus(PgtkWidget(PGtkCombo(Widget)^.entry)));
-          {$EndIf}
-        end
-        else begin
-          ImplWidget:= GetWidgetInfo(Widget, true)^.ImplementationWidget;
-          if ImplWidget <> nil then begin
-            {$IfDef VerboseFocus}
-            writeln('[TgtkObject.SetFocus] I CoreChild=',HexStr(Cardinal(ImplWidget),8),
-              ' Widget can focus=',GTK_WIDGET_CAN_FOCUS(ImplWidget),
-              ', is realized=',GTK_WIDGET_REALIZED(ImplWidget),
-              ', is mapped=',GTK_WIDGET_MAPPED(ImplWidget)
-              );
-            {$EndIf}
-            gtk_widget_grab_focus(ImplWidget)
-          end else begin
-            gtk_widget_grab_focus(Widget);
-            {$IfDef VerboseFocus}
-            writeln('[TgtkObject.SetFocus] J has focus=',gtk_widget_has_focus(Widget));
-            {$EndIf}
-          end;  
-        end;
-      end;
+    if GTK_WIDGET_CAN_FOCUS(TopLevel) then begin
+      // TopLevel window can focus
+      gtk_window_set_focus(PGTKWindow(TopLevel), Widget)
     end
     else begin
-      if GTK_WIDGET_CAN_FOCUS(Widget) then begin
-        gtk_widget_grab_focus(Widget);
+      // TopLevel window can not focus
+    }
+    if (NewFocusWidget=nil)
+    and GtkWidgetIsA(Widget, gtk_combo_get_type) then begin
+      // handle is a gtk combo
+      {$IfDef VerboseFocus}
+      writeln('  D taking gtkcombo entry');
+      {$EndIf}
+      NewFocusWidget:=PgtkWidget(PGtkCombo(Widget)^.entry);
+    end;
+    if NewFocusWidget=nil then begin
+      // check if widget has a WinWidgetInfo record
+      WinWidgetInfo:=GetWidgetInfo(Widget, false);
+      if (WinWidgetInfo<>nil) then begin
+        ImplWidget:= WinWidgetInfo^.ImplementationWidget;
+        if ImplWidget <> nil then begin
+          // handle has a ImplementationWidget
+          {$IfDef VerboseFocus}
+          writeln('  E taking ImplementationWidget');
+          {$EndIf}
+          NewFocusWidget:=ImplWidget;
+        end;
       end;
+    end;
+    if (NewFocusWidget=nil) then begin
+      {$IfDef VerboseFocus}
+      writeln('  F taking default');
+      {$EndIf}
+      NewFocusWidget:=Widget;
+    end;
+    if (NewFocusWidget<>nil)
+    and (PGtkWindow(TopLevel)^.Focus_Widget<>NewFocusWidget) then begin
+      {$IfDef VerboseFocus}
+      writeln('  G NewFocusWidget=',HexStr(Cardinal(NewFocusWidget),8));
+      {$EndIf}
+      gtk_window_set_focus(PGtkWindow(TopLevel),NewFocusWidget);
+      {$IfDef VerboseFocus}
+      writeln('  H NewTopLevel FocusWidget=',HexStr(Cardinal(PGtkWindow(TopLevel)^.Focus_Widget),8));
+      {$EndIf}
+    end;
+  end
+  else begin
+    if GTK_WIDGET_CAN_FOCUS(Widget) then begin
+      gtk_widget_grab_focus(Widget);
     end;
   end;
   {$IfDef VerboseFocus}
   write('[TgtkObject.SetFocus] END hWnd=',HexStr(Cardinal(hWnd),8));
-  ImplWidget:=PGtkWidget(GetFocus);
-  write(' NewFocus=',HexStr(Cardinal(ImplWidget),8));
-  AWinControl:=TWinControl(GetParentLCLObject(ImplWidget));
+  NewFocusWidget:=PGtkWidget(GetFocus);
+  write(' NewFocus=',HexStr(Cardinal(NewFocusWidget),8));
+  AWinControl:=TWinControl(GetParentLCLObject(NewFocusWidget));
   if AWinControl<>nil then
     write(' NewLCLParent=',AWinControl.Name,':',AWinControl.ClassName)
   else
@@ -7471,6 +7478,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.172  2002/10/28 18:17:04  lazarus
+  MG: impoved focussing, unfocussing on destroy and fixed unit search
+
   Revision 1.171  2002/10/26 12:32:29  lazarus
   AJ:Minor fixes for Win32 GTK compiling
 
