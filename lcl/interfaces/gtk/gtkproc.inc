@@ -210,7 +210,7 @@ begin
   Color^.green := gushort(TruncToCardinal(colorArray[1] * $FFFF));
   Color^.blue := gushort(TruncToCardinal(colorArray[2] * $FFFF));
   {$IFDEF VerboseColorDialog}
-  writeln('gtk_color_selection_get_current_color ',
+  DebugLn('gtk_color_selection_get_current_color ',
     ' Red=',HexStr(Cardinal(Color^.Red),8),
     ' Green=',HexStr(Cardinal(Color^.Green),8),
     ' Blue=',HexStr(Cardinal(Color^.Blue),8),
@@ -224,7 +224,7 @@ var
   SelectionColor: PGDouble;
 begin
   {$IFDEF VerboseColorDialog}
-  writeln('gtk_color_selection_set_current_color ',
+  DebugLn('gtk_color_selection_set_current_color ',
     ' Red=',HexStr(Cardinal(Color^.Red),8),
     ' Green=',HexStr(Cardinal(Color^.Green),8),
     ' Blue=',HexStr(Cardinal(Color^.Blue),8),
@@ -509,9 +509,9 @@ end;
  ------------------------------------------------------------------------------}
 procedure RaiseException(const Msg: string);
 begin
-  writeln('ERROR in gtk-interface: ',Msg);
+  DebugLn('ERROR in gtk-interface: ',Msg);
   // creates an exception, that gdb catches:
-  writeln('Creating gdb catchable error:');
+  DebugLn('Creating gdb catchable error:');
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
@@ -680,7 +680,7 @@ begin
   end;
   Result:=Result+' Type='+TypeAsStr;
   
-  writeln(Result);
+  DebugLn(Result);
   // user data
   if WindowType in [GDK_WINDOW_ROOT,GDK_WINDOW_TOPLEVEL,GDK_WINDOW_CHILD,
     GDK_WINDOW_DIALOG]
@@ -792,7 +792,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
 begin
-  //writeln('SetComboBoxText ',HexStr(Cardinal(ComboWidget),8),' "',NewText,'"');
+  //DebugLn('SetComboBoxText ',HexStr(Cardinal(ComboWidget),8),' "',NewText,'"');
   // lock combobox, so that no OnChange event is fired
   LockOnChange(PGtkObject(ComboWidget^.entry),+1);
   // set text
@@ -934,7 +934,7 @@ begin
       GDK_GC_Set_Function(TheGC, GDK_INVERT);
     else begin
       gdk_gc_set_function(TheGC, GDK_COPY);
-      WriteLn('WARNING: [SetRasterOperation] Got unknown/unsupported CopyMode!!');
+      DebugLn('WARNING: [SetRasterOperation] Got unknown/unsupported CopyMode!!');
     end;
   end;
 end;
@@ -954,7 +954,7 @@ var
   //ClipMergeMaskWidth, ClipMergeMaskHeight: integer;
 begin
   {$IFDEF VerboseStretchCopyArea}
-  writeln('MergeClipping START DestinationDC=',HexStr(Cardinal(DestinationDC),8),
+  DebugLn('MergeClipping START DestinationDC=',HexStr(Cardinal(DestinationDC),8),
     ' DestinationGC=',HexStr(Cardinal(DestinationGC),8),
     ' X=',X,' Y=',Y,' Width=',Width,' Height=',Height,
     ' ClipMergeMask=',HexStr(Cardinal(ClipMergeMask),8),
@@ -988,7 +988,7 @@ begin
       If (RGNType <> ERROR) and (RGNType <> NULLREGION) then begin
         // destination has a clipping mask
         {$IFDEF VerboseStretchCopyArea}
-        writeln('MergeClipping Destination has clipping mask -> apply to temp GC');
+        DebugLn('MergeClipping Destination has clipping mask -> apply to temp GC');
         {$ENDIF}
         // -> copy the destination clipping mask to the temporary mask
         //    The X,Y coordinate in the destination relates to
@@ -1007,7 +1007,7 @@ begin
 
   // merge the source clipping mask into the temporary mask
   //gdk_window_get_size(ClipMergeMask,@ClipMergeMaskWidth,@ClipMergeMaskHeight);
-  //writeln('MergeClipping A MergeMask Size=',ClipMergeMaskWidth,',',ClipMergeMaskHeight);
+  //DebugLn('MergeClipping A MergeMask Size=',ClipMergeMaskWidth,',',ClipMergeMaskHeight);
   gdk_draw_pixmap(NewClipMask, temp_gc,
                   ClipMergeMask, ClipMergeMaskX, ClipMergeMaskY,
                   0, 0, Width, Height);
@@ -1051,7 +1051,7 @@ var
   {$ENDIF}
 begin
   {$IFDEF VerboseStretchCopyArea}
-  writeln('ScalePixmap ScaleGC=',HexStr(Cardinal(ScaleGC),8),
+  DebugLn('ScalePixmap ScaleGC=',HexStr(Cardinal(ScaleGC),8),
     ' SrcPixmap=[',GetWindowDebugReport(SrcPixmap),']',
     ' SrcX=',SrcX,' SrcY=',SrcY,' SrcWidth=',SrcWidth,' SrcHeight=',SrcHeight,
     ' NewPixmap=[',GetWindowDebugReport(NewPixmap),']',
@@ -1059,11 +1059,11 @@ begin
   {$ENDIF}
   Result := False;
   if SrcPixmap=nil then begin
-    writeln('WARNING: ScalePixmap SrcPixmap=nil');
+    DebugLn('WARNING: ScalePixmap SrcPixmap=nil');
     exit;
   end;
   if NewPixmap<>nil then begin
-    writeln('WARNING: ScalePixmap NewPixmap<>nil');
+    DebugLn('WARNING: ScalePixmap NewPixmap<>nil');
     exit;
   end;
 
@@ -1072,10 +1072,10 @@ begin
 
   gdk_window_get_size(PGDKWindow(SrcPixmap),@SrcWholeWidth,@SrcWholeHeight);
   if SrcX+SrcWidth>SrcWholeWidth then begin
-    writeln('WARNING: ScalePixmap SrcX+SrcWidth>SrcWholeWidth');
+    DebugLn('WARNING: ScalePixmap SrcX+SrcWidth>SrcWholeWidth');
   end;
   if SrcY+SrcHeight>SrcWholeHeight then begin
-    writeln('WARNING: ScalePixmap SrcY+SrcHeight>SrcWholeHeight');
+    DebugLn('WARNING: ScalePixmap SrcY+SrcHeight>SrcWholeHeight');
   end;
 
   // calculate ScaleMethod
@@ -1096,18 +1096,18 @@ begin
 
   // Creating PixBuf from pixmap
   {$IFDEF VerboseStretchCopyArea}
-  writeln('ScalePixmap Creating PixBuf from pixmap SrcWhole=',SrcWholeWidth,',',SrcWholeHeight);
+  DebugLn('ScalePixmap Creating PixBuf from pixmap SrcWhole=',SrcWholeWidth,',',SrcWholeHeight);
   {$ENDIF}
   ScaleSRC := gdk_pixbuf_get_from_drawable(nil,SrcPixmap,
     SrcColorMap,0,0,SrcX,SrcY,SrcWidth,SrcHeight);
   If ScaleSRC = nil then begin
-    writeln('WARNING: ScalePixmap ScaleSRC=nil');
+    DebugLn('WARNING: ScalePixmap ScaleSRC=nil');
     exit;
   end;
 
   // Scaling PixBuf
   {$IFDEF VerboseStretchCopyArea}
-  writeln('ScalePixmap Scaling PixBuf ',
+  DebugLn('ScalePixmap Scaling PixBuf ',
     ' Width=',gdk_pixbuf_get_width(ScaleSrc),
     ' Height=',gdk_pixbuf_get_height(ScaleSrc),
     ' HasAlpha=',gdk_pixbuf_get_has_alpha(ScaleSrc),
@@ -1117,14 +1117,14 @@ begin
   ScaleDest := gdk_pixbuf_scale_simple(ScaleSRC,NewWidth,NewHeight,ScaleMethod);
   GDK_Pixbuf_Unref(ScaleSRC);
   If ScaleDest = nil then begin
-    writeln('WARNING: ScalePixmap ScaleDest=nil');
+    DebugLn('WARNING: ScalePixmap ScaleDest=nil');
     exit;
   end;
   BeginGDKErrorTrap;
 
   // Creating pixmap from scaled pixbuf
   {$IFDEF VerboseStretchCopyArea}
-  writeln('ScalePixmap Creating pixmap from scaled pixbuf',
+  DebugLn('ScalePixmap Creating pixmap from scaled pixbuf',
     ' Width=',gdk_pixbuf_get_width(ScaleDest),
     ' Height=',gdk_pixbuf_get_height(ScaleDest),
     ' HasAlpha=',gdk_pixbuf_get_has_alpha(ScaleDest),
@@ -1137,7 +1137,7 @@ begin
   // clean up
   {$IFDEF VerboseStretchCopyArea}
   gdk_window_get_size(PGDKWindow(NewPixmap),@NewWholeWidth,@NewWholeHeight);
-  writeln('ScalePixmap RESULT NewPixmap=',HexStr(Cardinal(NewPixmap),8),
+  DebugLn('ScalePixmap RESULT NewPixmap=',HexStr(Cardinal(NewPixmap),8),
     ' DummyMask=',HexStr(Cardinal(DummyMask),8),
     ' NewWidth=',NewWholeWidth,' NewHeight=',NewWholeHeight,
     '');
@@ -1148,7 +1148,7 @@ begin
   Result := True;
 {$Else not NoGdkPixbufLib}
 begin
-  WriteLn('ScalePixmap GDKPixbuf support has been disabled, no stretching is available!');
+  DebugLn('ScalePixmap GDKPixbuf support has been disabled, no stretching is available!');
   Result := True;
 {$EndIf}
 end;
@@ -1165,7 +1165,7 @@ var
   DestLeft, DestTop: integer;
   DestDC: HDC;
 begin
-  //writeln('DrawImageListIconOnWidget A ',ImgList.Name,':',ImgList.ClassName,
+  //DebugLn('DrawImageListIconOnWidget A ',ImgList.Name,':',ImgList.ClassName,
   //  ' Index=',Index,
   //  ' DestWindow=[',GetWidgetDebugReport(DestWidget),']');
   if ImgList=nil then exit;
@@ -1182,7 +1182,7 @@ begin
   DestTop:=DestWidget^.allocation.y+((WindowHeight-ImageHeight) div 2);
   DestDC:=GetDC(HDC(DestWidget));
 
-  //writeln('DrawImageListIconOnWidget B DestXY=',DestLeft,',',DestTop,
+  //DebugLn('DrawImageListIconOnWidget B DestXY=',DestLeft,',',DestTop,
   //  ' DestWindowSize=',WindowWidth,',',WindowWidth,
   //  ' SrcRect=',ImageRect.Left,',',ImageRect.Top,',',ImageWidth,'x',ImageHeight);
   StretchBlt(DestDC, DestLeft,DestTop, ImageWidth, ImageHeight,
@@ -1218,7 +1218,7 @@ begin
   IntersectRect(SourceRect,SrcRect,MaxRect);
   SrcWidth:=SourceRect.Right-SourceRect.Left;
   SrcHeight:=SourceRect.Bottom-SourceRect.Top;
-  writeln('ExtractGdkBitmap ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom);
+  DebugLn('ExtractGdkBitmap SourceRect=',dbgs(SourceRect));
   if (SrcWidth<1) or (SrcHeight<1) then exit;
   Result:=CreateGdkBitmap(nil,SrcWidth,SrcHeight);
   GC := GDK_GC_New(Result);
@@ -1466,7 +1466,7 @@ var
         if not gdk_colormap_alloc_color(GDK_Colormap_get_system,@Foreground,
                                         True,True)
         then begin
-          writeln('NOTE: EnsureGCColor.EnsureAsGCValues gdk_colormap_alloc_color failed ',
+          DebugLn('NOTE: EnsureGCColor.EnsureAsGCValues gdk_colormap_alloc_color failed ',
             ' Foreground=',
             HexStr(Cardinal(Foreground.red),4),',',
             HexStr(Cardinal(Foreground.green),4),',',
@@ -1499,7 +1499,7 @@ var
   Procedure EnsureAsColor;
   begin
     AllocGDIColor(DC, GDIColor);
-    //writeln('EnsureAsColor ',HexStr(Cardinal(GDIColor^.ColorRef),8),' AsBackground=',AsBackground);
+    //DebugLn('EnsureAsColor ',HexStr(Cardinal(GDIColor^.ColorRef),8),' AsBackground=',AsBackground);
     {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     If AsBackground then
       gdk_gc_set_background(GC, @(GDIColor^.Color))
@@ -2268,7 +2268,7 @@ procedure InitKeyboardTables;
       $E4: AFreeVK := $E6;
       $E6: AFreeVK := $E9;
       $F5: begin
-        WriteLN('[WARNING] Out of OEM specific VK codes, changing to unassigned');
+        DebugLn('[WARNING] Out of OEM specific VK codes, changing to unassigned');
         AFreeVK := $88;
       end;
       $8F: AFreeVK := $97;
@@ -2276,7 +2276,7 @@ procedure InitKeyboardTables;
       $DA: AFreeVK := $E5;
       $E5: AFreeVK := $E8;
       $E8: begin
-        WriteLN('[WARNING] Out of unassigned VK codes, assigning $FF');
+        DebugLn('[WARNING] Out of unassigned VK codes, assigning $FF');
         AFreeVK := $FF;
       end;
       $FF: AFreeVK := $FF; // stay there
@@ -2415,14 +2415,14 @@ begin
         if not WarningShown
         then begin
           WarningShown := True;
-          WriteLN('[WARNING] *******************************************************');
-          WriteLN('[WARNING] **                                                   **');
-          WriteLN('[WARNING] ** Multibyte character encodings (like UTF8) are not **');
-          WriteLN('[WARNING] ** supported at the moment.                          **');
-          WriteLN('[WARNING] ** For full keyboard event support, make sure that   **');
-          WriteLN('[WARNING] ** the LANG environment var has no UTF8              **');
-          WriteLN('[WARNING] **                                                   **');
-          WriteLN('[WARNING] *******************************************************');
+          DebugLn('[WARNING] *******************************************************');
+          DebugLn('[WARNING] **                                                   **');
+          DebugLn('[WARNING] ** Multibyte character encodings (like UTF8) are not **');
+          DebugLn('[WARNING] ** supported at the moment.                          **');
+          DebugLn('[WARNING] ** For full keyboard event support, make sure that   **');
+          DebugLn('[WARNING] ** the LANG environment var has no UTF8              **');
+          DebugLn('[WARNING] **                                                   **');
+          DebugLn('[WARNING] *******************************************************');
         end;
         Continue;
       end;
@@ -2462,7 +2462,7 @@ end;
 {$IFNDEF InitKeyboardTables}
 procedure InitKeyboardTables;
 begin
-  WriteLN('[WARNING] Keyboardtables not initialized (platform not supported)');
+  DebugLn('[WARNING] Keyboardtables not initialized (platform not supported)');
 end;
 {$ENDIF}
 
@@ -2614,7 +2614,7 @@ begin
   if (ADialog=nil) or (not ADialog.HandleAllocated) then exit;
   DlgWindow:=PGtkWidget(ADialog.Handle);
   {$IFDEF VerboseTransient}
-  writeln('DestroyCommonDialogAddOns ',ADialog.Name,':',ADialog.ClassName);
+  DebugLn('DestroyCommonDialogAddOns ',ADialog.Name,':',ADialog.ClassName);
   {$ENDIF}
   gtk_window_set_transient_for(PGtkWindow(DlgWindow),nil);
   if ADialog is TOpenDialog then begin
@@ -2678,9 +2678,9 @@ end;
  ------------------------------------------------------------------------------}
 function DeliverMessage(const Target: Pointer; var AMessage): Integer;
 begin
-  if Target=nil then writeln('[DeliverMessage] Target = nil');
+  if Target=nil then DebugLn('[DeliverMessage] Target = nil');
   {$IFDEF VerboseDeliverMessage}
-  writeln('DeliverMessage ',HexStr(Cardinal(Target),8),
+  DebugLn('DeliverMessage ',HexStr(Cardinal(Target),8),
     ' ',TComponent(Target).Name,':',TObject(Target).ClassName,
     ' Message=',GetMessageName(TLMessage(AMessage).Msg));
   {$ENDIF}
@@ -2904,7 +2904,7 @@ begin
     gtk_fixed_move(PGtkFixed(Parent), Child, gint16(Left), gint16(Top))
   end else
     // parent is invalid
-    WriteLn('[FixedMoveControl] WARNING: Invalid Fixed Widget');
+    DebugLn('[FixedMoveControl] WARNING: Invalid Fixed Widget');
 end;
 
 {------------------------------------------------------------------------------
@@ -2917,14 +2917,14 @@ Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
   procedure RaiseInvalidFixedWidget;
   begin
     // this is in a separate procedure for optimisation
-    WriteLn('[FixedPutControl] WARNING: Invalid Fixed Widget.',
+    DebugLn('[FixedPutControl] WARNING: Invalid Fixed Widget.',
       ' Parent=',HexStr(Cardinal(Parent),8),
       ' Child=',HexStr(Cardinal(Child),8)
       );
   end;
 
 begin
-  //writeln('FixedPutControl Parent=[',GetWidgetDebugReport(Parent),']',
+  //DebugLn('FixedPutControl Parent=[',GetWidgetDebugReport(Parent),']',
   //  ' Child=[',GetWidgetDebugReport(Child),']');
   If GTKWidgetIsA(Parent, GTK_Fixed_Get_Type) then
     gtk_fixed_put(PGtkFixed(Parent), Child, gint16(Left), gint16(Top))
@@ -3219,7 +3219,7 @@ begin
       write(' LCLObject=',TControl(LCLObject).Name,':',TControl(LCLObject).ClassName)
     else
       write(' LCLObject=',TControl(LCLObject).ClassName);
-    writeln('');
+    DebugLn('');
     RaiseException('GetWidgetOrigin Window=nil');
     {$ENDIF}
     Result.X:=0;
@@ -3282,7 +3282,7 @@ begin
     {$IFDEF RaiseExceptionOnNilPointers}
     RaiseException('TranslateGdkPointToClientArea Window=nil');
     {$ENDIF}
-    writeln('WARNING: TranslateGdkPointToClientArea SourceWindow=nil');
+    DebugLn('WARNING: TranslateGdkPointToClientArea SourceWindow=nil');
   end;
   gdk_window_get_origin(SourceWindow,@SrcWindowOrigin.X,@SrcWindowOrigin.Y);
 
@@ -3312,7 +3312,7 @@ begin
     // the mouse grab changed
     // -> this means the gtk itself has changed the mouse grab
     {$IFDEF VerboseMouseCapture}
-    writeln('UpdateMouseCaptureControl Capture changed from ',
+    DebugLn('UpdateMouseCaptureControl Capture changed from ',
       '[',GetWidgetDebugReport(OldMouseCaptureWidget),']',
       ' to [',GetWidgetDebugReport(CurMouseCaptureWidget),']');
     {$ENDIF}
@@ -3342,7 +3342,7 @@ var
   NowIndex: Cardinal;
 begin
   {$IFDEF VerboseMouseCapture}
-  writeln('CaptureMouseForWidget START ',GetWidgetDebugReport(Widget));
+  DebugLn('CaptureMouseForWidget START ',GetWidgetDebugReport(Widget));
   {$ENDIF}
   if not (Owner in [mctGTKIntf,mctLCL]) then exit;
   // not every widget can capture the mouse
@@ -3361,7 +3361,7 @@ begin
   end;
 
   {$IFDEF VerboseMouseCapture}
-  writeln('CaptureMouseForWidget Start Capturing for ',GetWidgetDebugReport(CaptureWidget));
+  DebugLn('CaptureMouseForWidget Start Capturing for ',GetWidgetDebugReport(CaptureWidget));
   {$ENDIF}
   IncreaseMouseCaptureIndex;
   NowIndex:=MouseCaptureIndex;
@@ -3369,7 +3369,7 @@ begin
     gtk_widget_grab_focus(CaptureWidget);
   if NowIndex=MouseCaptureIndex then begin
     {$IFDEF VerboseMouseCapture}
-    writeln('CaptureMouseForWidget Commit Capturing for ',GetWidgetDebugReport(CaptureWidget));
+    DebugLn('CaptureMouseForWidget Commit Capturing for ',GetWidgetDebugReport(CaptureWidget));
     {$ENDIF}
     MouseCaptureWidget:=CaptureWidget;
     MouseCaptureType:=Owner;
@@ -3415,7 +3415,7 @@ var
   OldMouseCaptureWidget: PGtkWidget;
 begin
   {$IFDEF VerboseMouseCapture}
-  writeln('ReleaseMouseCapture ',ord(MouseCaptureType),' MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
+  DebugLn('ReleaseMouseCapture ',ord(MouseCaptureType),' MouseCaptureWidget=[',GetWidgetDebugReport(MouseCaptureWidget),']');
   {$ENDIF}
   if MouseCaptureType=mctGTK then exit;
   OldMouseCaptureWidget:=MouseCaptureWidget;
@@ -3631,7 +3631,7 @@ begin
 
   // if we are here, then no handler was defined yet
   // -> register handler
-  //if (Msg=LM_LBUTTONUP) then writeln('CONNECT ',ReqSignalMask,' Widget=',HexStr(Cardinal(AnObject),8));
+  //if (Msg=LM_LBUTTONUP) then DebugLn('CONNECT ',ReqSignalMask,' Widget=',HexStr(Cardinal(AnObject),8));
   if csfAfter in ASFlags then
     g_signal_connect_after(AnObject, ASignal,
                            TGTKSignalFunc(ACallBackProc), ALCLObject)
@@ -3652,7 +3652,7 @@ begin
   if (csfConnectRealize in ASFlags)
   and (RealizeHandler = nil) and (RealizeID<>0)
   then begin
-    //writeln('REALIZE CONNECT Widget=',HexStr(Cardinal(AnObject),8));
+    //DebugLn('REALIZE CONNECT Widget=',HexStr(Cardinal(AnObject),8));
     g_signal_connect(AnObject, 'realize',
       TGTKSignalFunc(@GTKRealizeCB), ALCLObject);
     g_signal_connect_after(AnObject, 'realize',
@@ -3736,9 +3736,9 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     {$ENDIF}
     ChildWidget: PGtkWidget;
   begin
-    //if AWinControl is TListView then writeln('ConnectChilds A ',HexStr(Cardinal(TheWidget),8));
+    //if AWinControl is TListView then DebugLn('ConnectChilds A ',HexStr(Cardinal(TheWidget),8));
     if GtkWidgetIsA(TheWidget,GTK_TYPE_CONTAINER) then begin
-      //if AWinControl is TListView then writeln('ConnectChilds B ');
+      //if AWinControl is TListView then DebugLn('ConnectChilds B ');
       // this is a container widget -> connect all childs
       {$IFDEF Gtk2}
       ChildEntry2:=gtk_container_get_children(PGtkContainer(TheWidget));
@@ -3757,18 +3757,18 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
       {$endif}
     end;
     if GtkWidgetIsA(TheWidget,GTK_TYPE_BIN) then begin
-      //if AWinControl is TListView then writeln('ConnectChilds C ');
+      //if AWinControl is TListView then DebugLn('ConnectChilds C ');
       BinWidget:=PGtkBin(TheWidget);
       ConnectSignals(BinWidget^.child);
     end;
     if GtkWidgetIsA(TheWidget,GTK_TYPE_SCROLLED_WINDOW) then begin
-      //if AWinControl is TListView then writeln('ConnectChilds D ');
+      //if AWinControl is TListView then DebugLn('ConnectChilds D ');
       ScrolledWindow:=PGtkScrolledWindow(TheWidget);
       ConnectSignals(ScrolledWindow^.hscrollbar);
       ConnectSignals(ScrolledWindow^.vscrollbar);
     end;
     if GtkWidgetIsA(TheWidget,GTK_TYPE_COMBO) then begin
-      //if AWinControl is TListView then writeln('ConnectChilds E ');
+      //if AWinControl is TListView then DebugLn('ConnectChilds E ');
       ConnectSignals(PGtkCombo(TheWidget)^.entry);
       ConnectSignals(PGtkCombo(TheWidget)^.button);
     end;
@@ -3780,7 +3780,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     DesignSignalType: TDesignSignalType;
     DesignFlags: TConnectSignalFlags;
   begin
-    //if AWinControl is TListView then writeln('ConnectSignals A ',HexStr(Cardinal(TheWidget),8));
+    //if AWinControl is TListView then DebugLn('ConnectSignals A ',HexStr(Cardinal(TheWidget),8));
     if TheWidget=nil then exit;
     
     // check if TheWidget belongs to another LCL object
@@ -3793,7 +3793,7 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
       exit;
     end;
 
-    //if AWinControl is TListView then writeln('ConnectSignals B ',HexStr(Cardinal(TheWidget),8));
+    //if AWinControl is TListView then DebugLn('ConnectSignals B ',HexStr(Cardinal(TheWidget),8));
     // connect signals needed for design mode:
     for DesignSignalType:=Low(TDesignSignalType) to High(TDesignSignalType) do
     begin
@@ -3833,7 +3833,7 @@ begin
   Result := PGTKAccelGroup(gtk_object_get_data(PGtkObject(Widget),'AccelGroup'));
   if (Result=nil) and CreateIfNotExists then begin
     {$IFDEF VerboseAccelerator}
-    writeln('GetAccelGroup CREATING  Widget=',HexStr(Cardinal(Widget),8),' CreateIfNotExists=',CreateIfNotExists);
+    DebugLn('GetAccelGroup CREATING  Widget=',HexStr(Cardinal(Widget),8),' CreateIfNotExists=',CreateIfNotExists);
     {$ENDIF}
     Result:=gtk_accel_group_new;
     SetAccelGroup(Widget,Result);
@@ -3850,14 +3850,14 @@ begin
   if AnAccelGroup<>nil then begin
     // attach group to widget
     {$IFDEF VerboseAccelerator}
-    writeln('SetAccelGroup AnAccelGroup=',HexStr(Cardinal(AnAccelGroup),8),' IsMenu=',GtkWidgetIsA(Widget,GTK_MENU_TYPE));
+    DebugLn('SetAccelGroup AnAccelGroup=',HexStr(Cardinal(AnAccelGroup),8),' IsMenu=',GtkWidgetIsA(Widget,GTK_MENU_TYPE));
     {$ENDIF}
     if GtkWidgetIsA(Widget,GTK_TYPE_MENU) then
       gtk_menu_set_accel_group(PGtkMenu(Widget), AnAccelGroup)
     else begin
       {$IfDef GTK2}
        // Gtk2ToDo
-       writeln('ToDo: gtkproc.inc SetAccelGroup');
+       DebugLn('ToDo: gtkproc.inc SetAccelGroup');
       {$else}
       gtk_accel_group_attach(AnAccelGroup, PGtkObject(Widget));
       {$endif}
@@ -3872,7 +3872,7 @@ begin
   AccelGroup:=GetAccelGroup(Widget,false);
   if AccelGroup<>nil then begin
     {$IFDEF VerboseAccelerator}
-    writeln('FreeAccelGroup  AccelGroup=',HexStr(Cardinal(AccelGroup),8));
+    DebugLn('FreeAccelGroup  AccelGroup=',HexStr(Cardinal(AccelGroup),8));
     {$ENDIF}
     gtk_accel_group_unref(AccelGroup);
     SetAccelGroup(Widget,nil);
@@ -3937,7 +3937,7 @@ begin
     CurWindow:=PGtkWidget(CurForm.Handle);
     CurAccelGroup:=GetAccelGroup(CurWindow,false);
     {$IFDEF VerboseAccelerator}
-    writeln('ShareWindowAccelGroups ',TheForm.Name,':',TheForm.ClassName,
+    DebugLn('ShareWindowAccelGroups ',TheForm.Name,':',TheForm.ClassName,
             ' <-> ',CurForm.Name,':',CurForm.ClassName);
     {$ENDIF}
 
@@ -3990,7 +3990,7 @@ begin
     CurWindow:=PGtkWidget(CurForm.Handle);
     CurAccelGroup:=GetAccelGroup(CurWindow,false);
     {$IFDEF VerboseAccelerator}
-    writeln('UnshareWindowAccelGroups ',TheForm.Name,':',TheForm.ClassName,
+    DebugLn('UnshareWindowAccelGroups ',TheForm.Name,':',TheForm.ClassName,
             ' <-> ',CurForm.Name,':',CurForm.ClassName);
     {$ENDIF}
 
@@ -4016,7 +4016,7 @@ begin
     Menu:=MenuItem.GetParentMenu;
     if (Menu=nil) or (Menu.Parent=nil) then exit;
     {$IFDEF VerboseAccelerator}
-    writeln('GetAccelGroupForComponent A ',Component.Name,':',Component.ClassName);
+    DebugLn('GetAccelGroupForComponent A ',Component.Name,':',Component.ClassName);
     {$ENDIF}
     Result:=GetAccelGroupForComponent(Menu.Parent,CreateIfNotExists);
   end else if Component is TControl then begin
@@ -4027,13 +4027,13 @@ begin
       if Form.HandleAllocated then begin
         Result:=GetAccelGroup(PGtkWidget(Form.Handle),CreateIfNotExists);
         {$IFDEF VerboseAccelerator}
-        writeln('GetAccelGroupForComponent C ',Component.Name,':',Component.ClassName);
+        DebugLn('GetAccelGroupForComponent C ',Component.Name,':',Component.ClassName);
         {$ENDIF}
       end;
     end;
   end;
   {$IFDEF VerboseAccelerator}
-  writeln('GetAccelGroupForComponent END ',Component.Name,':',Component.ClassName,' Result=',HexStr(Cardinal(Result),8));
+  DebugLn('GetAccelGroupForComponent END ',Component.Name,':',Component.ClassName,' Result=',HexStr(Cardinal(Result),8));
   {$ENDIF}
 end;
 
@@ -4065,7 +4065,7 @@ begin
     Result^.Realized:=false;
   end;
   {$IFDEF VerboseAccelerator}
-  writeln('SetAccelKey Widget=',HexStr(Cardinal(Widget),8),
+  DebugLn('SetAccelKey Widget=',HexStr(Cardinal(Widget),8),
     ' Key=',Key,' Mods=',HexStr(Cardinal(Mods),8),
     ' Signal="',Signal,'" Result=',HexStr(Cardinal(Result),8));
   {$ENDIF}
@@ -4093,7 +4093,7 @@ begin
     AccelGroup:=GetAccelGroupForComponent(Component,true);
     if AccelGroup<>nil then begin
       {$IFDEF VerboseAccelerator}
-      writeln('RealizeAccelerator Add Accelerator ',
+      DebugLn('RealizeAccelerator Add Accelerator ',
         Component.Name,':',Component.ClassName,
         ' Widget=',HexStr(Cardinal(Widget),8),
         ' Signal=',AccelKey^.Signal,
@@ -4123,14 +4123,14 @@ begin
 
   if AccelKey^.Signal<>'' then begin
     {$IFDEF VerboseAccelerator}
-    writeln('UnrealizeAccelerator  ',
+    DebugLn('UnrealizeAccelerator  ',
       ' Widget=',HexStr(Cardinal(Widget),8),
       ' Signal=',AccelKey^.Signal,
       ' Key=',AccelKey^.Key,' Mods=',AccelKey^.Mods,
       '');
     {$ENDIF}
     {$Ifdef GTK2}
-       writeln('ToDo: gtkproc.inc UnrealizeAccelerator');
+       DebugLn('ToDo: gtkproc.inc UnrealizeAccelerator');
     {$else}
     gtk_widget_remove_accelerators(Widget, PChar(AccelKey^.Signal), false);
     {$EndIf}
@@ -4152,7 +4152,7 @@ begin
   if (Component=nil) or (Widget=nil) or (Signal='') then
     RaiseException('Accelerate: invalid input');
   {$IFDEF VerboseAccelerator}
-  writeln('Accelerate ',Component.Name,':',Component.ClassName,' Key=',Key,' Mods=',HexStr(Cardinal(Mods),8),' Signal=',Signal);
+  DebugLn('Accelerate ',Component.Name,':',Component.ClassName,' Key=',Key,' Mods=',HexStr(Cardinal(Mods),8),' Signal=',Signal);
   {$ENDIF}
   
   // delete old accelerator key
@@ -4667,11 +4667,11 @@ begin
   LCLControl:=TWinControl(GetLCLObject(Widget));
   if (LCLControl<>nil) then begin
     if LCLControl is TWinControl then
-      writeln(' ',LCLControl.Name,':',LCLControl.ClassName)
+      DebugLn(' ',LCLControl.Name,':',LCLControl.ClassName)
     else
-      writeln(' ERROR: ',LCLControl.ClassName);
+      DebugLn(' ERROR: ',LCLControl.ClassName);
   end else begin
-    writeln(' ERROR: LCLControl=nil');
+    DebugLn(' ERROR: LCLControl=nil');
   end;
   {$ENDIF}
   if not FWidgetsResized.Contains(Widget) then
@@ -4705,7 +4705,7 @@ begin
   LCLControl:=TWinControl(GetLCLObject(MainWidget));
   if (LCLControl<>nil) then begin
     if LCLControl is TWinControl then begin
-      //writeln('SaveClientSizeNotification ',LCLControl.Name,':',LCLControl.ClassName,
+      //DebugLn('SaveClientSizeNotification ',LCLControl.Name,':',LCLControl.ClassName,
       //  ' FixWidget=',HexStr(Cardinal(FixWidget),8),
       //  ' MainWidget=',HexStr(Cardinal(MainWidget),8));
     end else begin
@@ -4758,7 +4758,7 @@ var
   LCLControl: TControl;
   LevelCounts: PInteger;
 begin
-  //writeln(' KKK0');
+  //DebugLn(' KKK0');
   Result:=TList.Create;
   if HashArray.Count=0 then exit;
   
@@ -4767,10 +4767,10 @@ begin
   HashItem:=HashArray.FirstHashItem;
   i:=0;
   MaxLevel:=0;
-  //writeln(' KKK1 HashArray.Count=',HashArray.Count);
+  //DebugLn(' KKK1 HashArray.Count=',HashArray.Count);
   while HashItem<>nil do begin
     TopologicalList[i].Widget:=HashItem^.Item;
-    //writeln(' KKK21 i=',i,' Widget=',HexStr(Cardinal(TopologicalList[i].Widget),8));
+    //DebugLn(' KKK21 i=',i,' Widget=',HexStr(Cardinal(TopologicalList[i].Widget),8));
     LCLControl:=TControl(GetLCLObject(TopologicalList[i].Widget));
     if (LCLControl=nil) or (not (LCLControl is TControl)) then
       RaiseException('CreateTopologicalSortedWidgets: '
@@ -4779,7 +4779,7 @@ begin
     TopologicalList[i].ParentLevel:=Lvl;
     if MaxLevel<Lvl then
       MaxLevel:=Lvl;
-    //writeln(' KKK2 i=',i,' Lvl=',Lvl,' MaxLvl=',MaxLevel,' LCLControl=',LCLControl.Name,':',LCLControl.ClassName);
+    //DebugLn(' KKK2 i=',i,' Lvl=',Lvl,' MaxLvl=',MaxLevel,' LCLControl=',LCLControl.Name,':',LCLControl.ClassName);
     inc(i);
     HashItem:=HashItem^.Next;
   end;
@@ -4804,7 +4804,7 @@ begin
   for i:=0 to HashArray.Count-1 do begin
     Lvl:=TopologicalList[i].ParentLevel;
     dec(LevelCounts[Lvl]);
-    //writeln(' KKK5 i=',i,' Lvl=',Lvl,' LevelCounts[Lvl]=',LevelCounts[Lvl],
+    //DebugLn(' KKK5 i=',i,' Lvl=',Lvl,' LevelCounts[Lvl]=',LevelCounts[Lvl],
     //  ' Widget=',HexStr(Cardinal(TopologicalList[i].Widget),8));
     Result[LevelCounts[Lvl]]:=TopologicalList[i].Widget;
   end;
@@ -4817,17 +4817,17 @@ end;
 
 Procedure ReportNotObsolete(const Texts : String);
 Begin
-  Writeln('*********************************************');
-  Writeln('*********************************************');
-  Writeln('*************Non-Obsolete report*************');
-  Writeln('*********************************************');
-  Writeln('*************'+Texts+'*is being used yet.****');
-  Writeln('*******Please remove this function from******');
-  Writeln('*******the obsolete section in gtkproc.inc***');
-  Writeln('*********************************************');
-  Writeln('*********************************************');
-  Writeln('*********************************************');
-  Writeln('*********************************************');
+  DebugLn('*********************************************');
+  DebugLn('*********************************************');
+  DebugLn('*************Non-Obsolete report*************');
+  DebugLn('*********************************************');
+  DebugLn('*************'+Texts+'*is being used yet.****');
+  DebugLn('*******Please remove this function from******');
+  DebugLn('*******the obsolete section in gtkproc.inc***');
+  DebugLn('*********************************************');
+  DebugLn('*********************************************');
+  DebugLn('*********************************************');
+  DebugLn('*********************************************');
 end;
 
 function TGDKColorToTColor(const value : TGDKColor) : TColor;
@@ -4888,73 +4888,73 @@ begin
     {$IFDEF VerboseUpdateSysColorMap}
     if rc_style<>nil then begin
       with rc_style^ do begin
-        writeln('rc_style:');
-        writeln(' FG GTK_STATE_NORMAL ',GdkColorAsString(fg[GTK_STATE_NORMAL]));
-        writeln(' FG GTK_STATE_ACTIVE ',GdkColorAsString(fg[GTK_STATE_ACTIVE]));
-        writeln(' FG GTK_STATE_PRELIGHT ',GdkColorAsString(fg[GTK_STATE_PRELIGHT]));
-        writeln(' FG GTK_STATE_SELECTED ',GdkColorAsString(fg[GTK_STATE_SELECTED]));
-        writeln(' FG GTK_STATE_INSENSITIVE ',GdkColorAsString(fg[GTK_STATE_INSENSITIVE]));
-        writeln('');
-        writeln(' BG GTK_STATE_NORMAL ',GdkColorAsString(bg[GTK_STATE_NORMAL]));
-        writeln(' BG GTK_STATE_ACTIVE ',GdkColorAsString(bg[GTK_STATE_ACTIVE]));
-        writeln(' BG GTK_STATE_PRELIGHT ',GdkColorAsString(bg[GTK_STATE_PRELIGHT]));
-        writeln(' BG GTK_STATE_SELECTED ',GdkColorAsString(bg[GTK_STATE_SELECTED]));
-        writeln(' BG GTK_STATE_INSENSITIVE ',GdkColorAsString(bg[GTK_STATE_INSENSITIVE]));
-        writeln('');
-        writeln(' TEXT GTK_STATE_NORMAL ',GdkColorAsString(text[GTK_STATE_NORMAL]));
-        writeln(' TEXT GTK_STATE_ACTIVE ',GdkColorAsString(text[GTK_STATE_ACTIVE]));
-        writeln(' TEXT GTK_STATE_PRELIGHT ',GdkColorAsString(text[GTK_STATE_PRELIGHT]));
-        writeln(' TEXT GTK_STATE_SELECTED ',GdkColorAsString(text[GTK_STATE_SELECTED]));
-        writeln(' TEXT GTK_STATE_INSENSITIVE ',GdkColorAsString(text[GTK_STATE_INSENSITIVE]));
-        writeln('');
+        DebugLn('rc_style:');
+        DebugLn(' FG GTK_STATE_NORMAL ',GdkColorAsString(fg[GTK_STATE_NORMAL]));
+        DebugLn(' FG GTK_STATE_ACTIVE ',GdkColorAsString(fg[GTK_STATE_ACTIVE]));
+        DebugLn(' FG GTK_STATE_PRELIGHT ',GdkColorAsString(fg[GTK_STATE_PRELIGHT]));
+        DebugLn(' FG GTK_STATE_SELECTED ',GdkColorAsString(fg[GTK_STATE_SELECTED]));
+        DebugLn(' FG GTK_STATE_INSENSITIVE ',GdkColorAsString(fg[GTK_STATE_INSENSITIVE]));
+        DebugLn('');
+        DebugLn(' BG GTK_STATE_NORMAL ',GdkColorAsString(bg[GTK_STATE_NORMAL]));
+        DebugLn(' BG GTK_STATE_ACTIVE ',GdkColorAsString(bg[GTK_STATE_ACTIVE]));
+        DebugLn(' BG GTK_STATE_PRELIGHT ',GdkColorAsString(bg[GTK_STATE_PRELIGHT]));
+        DebugLn(' BG GTK_STATE_SELECTED ',GdkColorAsString(bg[GTK_STATE_SELECTED]));
+        DebugLn(' BG GTK_STATE_INSENSITIVE ',GdkColorAsString(bg[GTK_STATE_INSENSITIVE]));
+        DebugLn('');
+        DebugLn(' TEXT GTK_STATE_NORMAL ',GdkColorAsString(text[GTK_STATE_NORMAL]));
+        DebugLn(' TEXT GTK_STATE_ACTIVE ',GdkColorAsString(text[GTK_STATE_ACTIVE]));
+        DebugLn(' TEXT GTK_STATE_PRELIGHT ',GdkColorAsString(text[GTK_STATE_PRELIGHT]));
+        DebugLn(' TEXT GTK_STATE_SELECTED ',GdkColorAsString(text[GTK_STATE_SELECTED]));
+        DebugLn(' TEXT GTK_STATE_INSENSITIVE ',GdkColorAsString(text[GTK_STATE_INSENSITIVE]));
+        DebugLn('');
       end;
     end;
 
-    writeln('MainStyle:');
-    writeln(' FG GTK_STATE_NORMAL ',GdkColorAsString(fg[GTK_STATE_NORMAL]));
-    writeln(' FG GTK_STATE_ACTIVE ',GdkColorAsString(fg[GTK_STATE_ACTIVE]));
-    writeln(' FG GTK_STATE_PRELIGHT ',GdkColorAsString(fg[GTK_STATE_PRELIGHT]));
-    writeln(' FG GTK_STATE_SELECTED ',GdkColorAsString(fg[GTK_STATE_SELECTED]));
-    writeln(' FG GTK_STATE_INSENSITIVE ',GdkColorAsString(fg[GTK_STATE_INSENSITIVE]));
-    writeln('');
-    writeln(' BG GTK_STATE_NORMAL ',GdkColorAsString(bg[GTK_STATE_NORMAL]));
-    writeln(' BG GTK_STATE_ACTIVE ',GdkColorAsString(bg[GTK_STATE_ACTIVE]));
-    writeln(' BG GTK_STATE_PRELIGHT ',GdkColorAsString(bg[GTK_STATE_PRELIGHT]));
-    writeln(' BG GTK_STATE_SELECTED ',GdkColorAsString(bg[GTK_STATE_SELECTED]));
-    writeln(' BG GTK_STATE_INSENSITIVE ',GdkColorAsString(bg[GTK_STATE_INSENSITIVE]));
-    writeln('');
-    writeln(' TEXT GTK_STATE_NORMAL ',GdkColorAsString(text[GTK_STATE_NORMAL]));
-    writeln(' TEXT GTK_STATE_ACTIVE ',GdkColorAsString(text[GTK_STATE_ACTIVE]));
-    writeln(' TEXT GTK_STATE_PRELIGHT ',GdkColorAsString(text[GTK_STATE_PRELIGHT]));
-    writeln(' TEXT GTK_STATE_SELECTED ',GdkColorAsString(text[GTK_STATE_SELECTED]));
-    writeln(' TEXT GTK_STATE_INSENSITIVE ',GdkColorAsString(text[GTK_STATE_INSENSITIVE]));
-    writeln('');
-    writeln(' LIGHT GTK_STATE_NORMAL ',GdkColorAsString(light[GTK_STATE_NORMAL]));
-    writeln(' LIGHT GTK_STATE_ACTIVE ',GdkColorAsString(light[GTK_STATE_ACTIVE]));
-    writeln(' LIGHT GTK_STATE_PRELIGHT ',GdkColorAsString(light[GTK_STATE_PRELIGHT]));
-    writeln(' LIGHT GTK_STATE_SELECTED ',GdkColorAsString(light[GTK_STATE_SELECTED]));
-    writeln(' LIGHT GTK_STATE_INSENSITIVE ',GdkColorAsString(light[GTK_STATE_INSENSITIVE]));
-    writeln('');
-    writeln(' DARK GTK_STATE_NORMAL ',GdkColorAsString(dark[GTK_STATE_NORMAL]));
-    writeln(' DARK GTK_STATE_ACTIVE ',GdkColorAsString(dark[GTK_STATE_ACTIVE]));
-    writeln(' DARK GTK_STATE_PRELIGHT ',GdkColorAsString(dark[GTK_STATE_PRELIGHT]));
-    writeln(' DARK GTK_STATE_SELECTED ',GdkColorAsString(dark[GTK_STATE_SELECTED]));
-    writeln(' DARK GTK_STATE_INSENSITIVE ',GdkColorAsString(dark[GTK_STATE_INSENSITIVE]));
-    writeln('');
-    writeln(' MID GTK_STATE_NORMAL ',GdkColorAsString(mid[GTK_STATE_NORMAL]));
-    writeln(' MID GTK_STATE_ACTIVE ',GdkColorAsString(mid[GTK_STATE_ACTIVE]));
-    writeln(' MID GTK_STATE_PRELIGHT ',GdkColorAsString(mid[GTK_STATE_PRELIGHT]));
-    writeln(' MID GTK_STATE_SELECTED ',GdkColorAsString(mid[GTK_STATE_SELECTED]));
-    writeln(' MID GTK_STATE_INSENSITIVE ',GdkColorAsString(mid[GTK_STATE_INSENSITIVE]));
-    writeln('');
-    writeln(' BASE GTK_STATE_NORMAL ',GdkColorAsString(base[GTK_STATE_NORMAL]));
-    writeln(' BASE GTK_STATE_ACTIVE ',GdkColorAsString(base[GTK_STATE_ACTIVE]));
-    writeln(' BASE GTK_STATE_PRELIGHT ',GdkColorAsString(base[GTK_STATE_PRELIGHT]));
-    writeln(' BASE GTK_STATE_SELECTED ',GdkColorAsString(base[GTK_STATE_SELECTED]));
-    writeln(' BASE GTK_STATE_INSENSITIVE ',GdkColorAsString(base[GTK_STATE_INSENSITIVE]));
-    writeln('');
-    writeln(' BLACK ',GdkColorAsString(black));
-    writeln(' WHITE ',GdkColorAsString(white));
+    DebugLn('MainStyle:');
+    DebugLn(' FG GTK_STATE_NORMAL ',GdkColorAsString(fg[GTK_STATE_NORMAL]));
+    DebugLn(' FG GTK_STATE_ACTIVE ',GdkColorAsString(fg[GTK_STATE_ACTIVE]));
+    DebugLn(' FG GTK_STATE_PRELIGHT ',GdkColorAsString(fg[GTK_STATE_PRELIGHT]));
+    DebugLn(' FG GTK_STATE_SELECTED ',GdkColorAsString(fg[GTK_STATE_SELECTED]));
+    DebugLn(' FG GTK_STATE_INSENSITIVE ',GdkColorAsString(fg[GTK_STATE_INSENSITIVE]));
+    DebugLn('');
+    DebugLn(' BG GTK_STATE_NORMAL ',GdkColorAsString(bg[GTK_STATE_NORMAL]));
+    DebugLn(' BG GTK_STATE_ACTIVE ',GdkColorAsString(bg[GTK_STATE_ACTIVE]));
+    DebugLn(' BG GTK_STATE_PRELIGHT ',GdkColorAsString(bg[GTK_STATE_PRELIGHT]));
+    DebugLn(' BG GTK_STATE_SELECTED ',GdkColorAsString(bg[GTK_STATE_SELECTED]));
+    DebugLn(' BG GTK_STATE_INSENSITIVE ',GdkColorAsString(bg[GTK_STATE_INSENSITIVE]));
+    DebugLn('');
+    DebugLn(' TEXT GTK_STATE_NORMAL ',GdkColorAsString(text[GTK_STATE_NORMAL]));
+    DebugLn(' TEXT GTK_STATE_ACTIVE ',GdkColorAsString(text[GTK_STATE_ACTIVE]));
+    DebugLn(' TEXT GTK_STATE_PRELIGHT ',GdkColorAsString(text[GTK_STATE_PRELIGHT]));
+    DebugLn(' TEXT GTK_STATE_SELECTED ',GdkColorAsString(text[GTK_STATE_SELECTED]));
+    DebugLn(' TEXT GTK_STATE_INSENSITIVE ',GdkColorAsString(text[GTK_STATE_INSENSITIVE]));
+    DebugLn('');
+    DebugLn(' LIGHT GTK_STATE_NORMAL ',GdkColorAsString(light[GTK_STATE_NORMAL]));
+    DebugLn(' LIGHT GTK_STATE_ACTIVE ',GdkColorAsString(light[GTK_STATE_ACTIVE]));
+    DebugLn(' LIGHT GTK_STATE_PRELIGHT ',GdkColorAsString(light[GTK_STATE_PRELIGHT]));
+    DebugLn(' LIGHT GTK_STATE_SELECTED ',GdkColorAsString(light[GTK_STATE_SELECTED]));
+    DebugLn(' LIGHT GTK_STATE_INSENSITIVE ',GdkColorAsString(light[GTK_STATE_INSENSITIVE]));
+    DebugLn('');
+    DebugLn(' DARK GTK_STATE_NORMAL ',GdkColorAsString(dark[GTK_STATE_NORMAL]));
+    DebugLn(' DARK GTK_STATE_ACTIVE ',GdkColorAsString(dark[GTK_STATE_ACTIVE]));
+    DebugLn(' DARK GTK_STATE_PRELIGHT ',GdkColorAsString(dark[GTK_STATE_PRELIGHT]));
+    DebugLn(' DARK GTK_STATE_SELECTED ',GdkColorAsString(dark[GTK_STATE_SELECTED]));
+    DebugLn(' DARK GTK_STATE_INSENSITIVE ',GdkColorAsString(dark[GTK_STATE_INSENSITIVE]));
+    DebugLn('');
+    DebugLn(' MID GTK_STATE_NORMAL ',GdkColorAsString(mid[GTK_STATE_NORMAL]));
+    DebugLn(' MID GTK_STATE_ACTIVE ',GdkColorAsString(mid[GTK_STATE_ACTIVE]));
+    DebugLn(' MID GTK_STATE_PRELIGHT ',GdkColorAsString(mid[GTK_STATE_PRELIGHT]));
+    DebugLn(' MID GTK_STATE_SELECTED ',GdkColorAsString(mid[GTK_STATE_SELECTED]));
+    DebugLn(' MID GTK_STATE_INSENSITIVE ',GdkColorAsString(mid[GTK_STATE_INSENSITIVE]));
+    DebugLn('');
+    DebugLn(' BASE GTK_STATE_NORMAL ',GdkColorAsString(base[GTK_STATE_NORMAL]));
+    DebugLn(' BASE GTK_STATE_ACTIVE ',GdkColorAsString(base[GTK_STATE_ACTIVE]));
+    DebugLn(' BASE GTK_STATE_PRELIGHT ',GdkColorAsString(base[GTK_STATE_PRELIGHT]));
+    DebugLn(' BASE GTK_STATE_SELECTED ',GdkColorAsString(base[GTK_STATE_SELECTED]));
+    DebugLn(' BASE GTK_STATE_INSENSITIVE ',GdkColorAsString(base[GTK_STATE_INSENSITIVE]));
+    DebugLn('');
+    DebugLn(' BLACK ',GdkColorAsString(black));
+    DebugLn(' WHITE ',GdkColorAsString(white));
     {$ENDIF}
     
     {$IFDEF NewSysColors}
@@ -5056,36 +5056,36 @@ var
 begin
   Result:=false;
   {$IFDEF DEBUG_CLIPBOARD}
-  writeln('[WaitForClipboardAnswer] A');
+  DebugLn('[WaitForClipboardAnswer] A');
   {$ENDIF}
   if (ValidDateSelection) or (c^.Waiting) or (c^.Stopping) then begin
-    //writeln('[WaitForClipboardAnswer] B');
+    //DebugLn('[WaitForClipboardAnswer] B');
     Result:=(ValidDateSelection);
     exit;
   end;
   c^.Waiting:=true;
   DateTimeToSystemTime(Time,StartTime);
-  //writeln('[WaitForClipboardAnswer] C');
+  //DebugLn('[WaitForClipboardAnswer] C');
   Application.ProcessMessages;
-  //writeln('[WaitForClipboardAnswer] D');
+  //DebugLn('[WaitForClipboardAnswer] D');
   if (ValidDateSelection) or (c^.Stopping) then begin
-    //writeln('[WaitForClipboardAnswer] E  Yeah, Response received');
+    //DebugLn('[WaitForClipboardAnswer] E  Yeah, Response received');
     Result:=(ValidDateSelection);
     exit;
   end;
-  //writeln('[WaitForClipboardAnswer] F');
+  //DebugLn('[WaitForClipboardAnswer] F');
   // start a timer to make sure not waiting forever
   Timer := gtk_timeout_add(500, @WaitForClipbrdAnswerDummyTimer, nil);
   try
     repeat
       // just wait ...
       {$IFDEF DEBUG_CLIPBOARD}
-      writeln('[WaitForClipboardAnswer] G');
+      DebugLn('[WaitForClipboardAnswer] G');
       {$ENDIF}
       Application.HandleMessage;
       if (ValidDateSelection) or (c^.Stopping) then begin
         {$IFDEF DEBUG_CLIPBOARD}
-        writeln('[WaitForClipboardAnswer] E  Yeah, Response received');
+        DebugLn('[WaitForClipboardAnswer] E  Yeah, Response received');
         {$ENDIF}
         Result:=(ValidDateSelection);
         exit;
@@ -5096,14 +5096,14 @@ begin
            >1000);
   finally
     {$IFDEF DEBUG_CLIPBOARD}
-    writeln('[WaitForClipboardAnswer] H');
+    DebugLn('[WaitForClipboardAnswer] H');
     {$ENDIF}
     // stop the timer
     gtk_timeout_remove(Timer);
-//writeln('[WaitForClipboardAnswer] END');
+//DebugLn('[WaitForClipboardAnswer] END');
   end;
   { $IFDEF DEBUG_CLIPBOARD}
-  writeln('[WaitForClipboardAnswer] WARNING: no answer received in time');
+  DebugLn('[WaitForClipboardAnswer] WARNING: no answer received in time');
   { $ENDIF}
 end;
 
@@ -5127,7 +5127,7 @@ var
   c: PClipboardEventData;
 begin
   {$IFDEF DEBUG_CLIPBOARD}
-  writeln('[RequestSelectionData] FormatID=',FormatID);
+  DebugLn('[RequestSelectionData] FormatID=',FormatID);
   {$ENDIF}
   FillChar(Result,SizeOf(TGtkSelectionData),0);
   if (ClipboardWidget=nil) or (FormatID=0) 
@@ -5148,7 +5148,7 @@ begin
     FillChar(c^.Data,SizeOf(TGtkSelectionData),0);
     ClipboardSelectionData.Add(c);
     {$IFDEF DEBUG_CLIPBOARD}
-    writeln('[RequestSelectionData] TimeID=',TimeID);
+    DebugLn('[RequestSelectionData] TimeID=',TimeID);
     {$ENDIF}
     if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
                              FormatID, TimeID)<>GdkFalse
@@ -5343,7 +5343,7 @@ begin
         s := PStyleObject(Styles.Objects[l]);
         FreeStyleObject(S);
       Except
-        Writeln('[ReleaseStyle] : Unable To Unreference Style');
+        DebugLn('[ReleaseStyle] : Unable To Unreference Style');
       end;
     Styles.Delete(l);
   end;
@@ -5394,7 +5394,7 @@ begin
   
   If (WName='') then exit;
   l:=IndexOfStyleWithName(WName);
-  //writeln('GetStyleWithName START ',WName,' ',l);
+  //DebugLn('GetStyleWithName START ',WName,' ',l);
 
   If l >= 0 then begin
     StyleObject:=PStyleObject(Styles.Objects[l]);
@@ -5536,7 +5536,7 @@ begin
       // for example: why the following occurs:
       If AnsiCompareText(WName,'button')=0 then begin
         if StyleObject^.Style^.light_gc[GTK_STATE_NORMAL]=nil then begin
-          //writeln('GetStyleWithName ',WName);
+          //DebugLn('GetStyleWithName ',WName);
           if not GtkWidgetIsA(StyleObject^.Widget,GTK_WINDOW_GET_TYPE) then begin
             gtk_widget_realize(StyleObject^.Widget);
           end;
@@ -5565,7 +5565,7 @@ begin
     else begin
       // no success, clean up
       FreeStyleObject(StyleObject);
-      writeln('WARNING: GetStyleWithName ',WName,' failed');
+      DebugLn('WARNING: GetStyleWithName ',WName,' failed');
     end;
     
     // clean up
@@ -6192,7 +6192,7 @@ begin
       RCStyle^.color_flags[GTK_STATE_NORMAL]:=
         RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_BG;
 
-      //writeln('UpdateWidgetStyleOfControl Color=',HexStr(Cardinal(AWinControl.Color),8));
+      //DebugLn('UpdateWidgetStyleOfControl Color=',HexStr(Cardinal(AWinControl.Color),8));
 
     end;
     
@@ -6208,12 +6208,12 @@ begin
       RCStyle^.color_flags[GTK_STATE_NORMAL]:=
         RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_TEXT;
 
-      //writeln('UpdateWidgetStyleOfControl Font=',AWinControl.Font.Name,' ',AWinControl.Font.Size,' ',HexStr(Cardinal(AWinControl.Font.Color),8));
+      //DebugLn('UpdateWidgetStyleOfControl Font=',AWinControl.Font.Name,' ',AWinControl.Font.Size,' ',HexStr(Cardinal(AWinControl.Font.Color),8));
     end;
     
   finally
     if RCStyle<>nil then begin
-      //writeln('UpdateWidgetStyleOfControl Apply Modifications ',AWinControl.Name,' ',GetWidgetClassName(Widget));
+      //DebugLn('UpdateWidgetStyleOfControl Apply Modifications ',AWinControl.Name,' ',GetWidgetClassName(Widget));
       gtk_widget_modify_style(Widget,RCStyle);
       gtk_rc_style_unref(RCStyle);
     end;
@@ -6761,6 +6761,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.278  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.277  2004/05/11 09:49:47  mattias
   started sending CN_KEYUP
 

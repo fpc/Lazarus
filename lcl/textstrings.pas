@@ -111,7 +111,6 @@ var
   l: Integer;
   ArraySize: Integer;
 begin
-  //writeln('[TTextStrings.BuildLineRanges] A Self=',HexStr(Cardinal(Self),8),',LineCount=',FLineCount,' Len=',SourceLength);
   if FArraysValid then exit;
   ClearArrays;
   FArraysValid:=true;
@@ -159,7 +158,6 @@ begin
       end;
     end;
   end;
-  //writeln('[TTextStrings.BuildLineRanges] END ',FLineCount);
 end;
 
 function TTextStrings.GetCount: Integer;

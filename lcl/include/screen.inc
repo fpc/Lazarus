@@ -190,7 +190,7 @@ begin
     P := P^.Next;
   end;
   if P <> nil then begin
-    writeln('ToDo: TScreen.DeleteCursor');
+    DebugLn('ToDo: TScreen.DeleteCursor');
     //DestroyCursor(P^.Handle);
     if Q = nil then
       FCursorList := P^.Next
@@ -210,7 +210,7 @@ var
 begin
   P := FCursorList;
   while P <> nil do begin
-    writeln('ToDo: TScreen.DeleteCursor');
+    DebugLn('ToDo: TScreen.DeleteCursor');
     //DestroyCursor(P^.Handle);
     Next := P^.Next;
     Dispose(P);

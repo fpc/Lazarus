@@ -500,7 +500,7 @@ procedure TCustomListView.UpdateScrollbars;
 var
   ScrollInfo: TScrollInfo;
 begin
-  writeln('TODO: TCustomListView.UpdateScrollbars');
+  DebugLn('TODO: TCustomListView.UpdateScrollbars');
   exit;
 
   if not HandleAllocated then exit
@@ -614,6 +614,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.33  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

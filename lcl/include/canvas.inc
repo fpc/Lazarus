@@ -84,7 +84,7 @@ Begin
   Changing;
   RequiredState([csHandleValid]);
 
-  //writeln('TCanvas.CopyRect ',ClassName,' SrcCanvas=',SrcCanvas.ClassName,' ',
+  //DebugLn('TCanvas.CopyRect ',ClassName,' SrcCanvas=',SrcCanvas.ClassName,' ',
   //  ' Src=',Source.Left,',',Source.Top,',',SW,',',SH,
   //  ' Dest=',Dest.Left,',',Dest.Top,',',DW,',',DH);
   StretchBlt(FHandle, Dest.Left, Dest.Top, DW, DH,
@@ -131,7 +131,7 @@ end;
 procedure TCanvas.CreateBrush;
 var OldHandle: HBRUSH;
 begin
-//writeln('[TCanvas.CreateBrush] ',Classname,'  Self=',HexStr(Cardinal(Pointer(Self)),8)
+//DebugLn('[TCanvas.CreateBrush] ',Classname,'  Self=',HexStr(Cardinal(Pointer(Self)),8)
 // ,'  Brush=',HexStr(Cardinal(Pointer(Brush)),8));
   OldHandle:=SelectObject(FHandle, Brush.Handle);
   if (OldHandle<>Brush.Handle) and (FSavedBrushHandle=0) then
@@ -150,7 +150,7 @@ end;
 procedure TCanvas.CreatePen;
 var OldHandle: HPEN;
 begin
-//writeln('[TCanvas.CreatePen] ',Classname,'  Self=',HexStr(Cardinal(Pointer(Self)),8)
+//DebugLn('[TCanvas.CreatePen] ',Classname,'  Self=',HexStr(Cardinal(Pointer(Self)),8)
 // ,'  Pen=',HexStr(Cardinal(Pointer(Pen)),8));
   OldHandle:=SelectObject(FHandle, Pen.Handle);
   if (OldHandle<>Pen.Handle) and (FSavedPenHandle=0) then
@@ -1048,7 +1048,7 @@ end;
  ------------------------------------------------------------------------------}
 destructor TCanvas.Destroy;
 begin
-//writeln('[TCanvas.Destroy] ',ClassName,'  Self=',HexStr(Cardinal(Pointer(Self)),8));
+//DebugLn('[TCanvas.Destroy] ',ClassName,'  Self=',HexStr(Cardinal(Pointer(Self)),8));
   Handle := 0;
   FreeThenNil(FFont);
   FreeThenNil(FPen);
@@ -1068,7 +1068,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCanvas.GetHandle : HDC;
 begin
-//writeln('[TCanvas.GetHandle] ',ClassName);
+//DebugLn('[TCanvas.GetHandle] ',ClassName);
   RequiredState(csAllValid);
   Result := FHandle;
 end;
@@ -1083,7 +1083,7 @@ end;
 procedure TCanvas.SetHandle(NewHandle: HDC);
 begin
   if FHandle<>NewHandle then begin
-    //writeln('[TCanvas.SetHandle] Old=',HexStr(FHandle,8),' New=',HexStr(NewHandle,8));
+    //DebugLn('[TCanvas.SetHandle] Old=',HexStr(FHandle,8),' New=',HexStr(NewHandle,8));
     if FHandle <> 0 then
     begin
       DeselectHandles;
@@ -1096,7 +1096,7 @@ begin
       Include(FState, csHandleValid);
       FHandle := NewHandle;
     end;
-    //writeln('[TCanvas.SetHandle] END Handle=',HexStr(FHandle,8));
+    //DebugLn('[TCanvas.SetHandle] END Handle=',HexStr(FHandle,8));
   end;
 end;
 
@@ -1152,10 +1152,10 @@ var
   Needed: TCanvasState;
 begin
   Needed := ReqState - FState;
-  //writeln('[TCanvas.RequiredState] ',ClassName,' ',csHandleValid in ReqState,' ',csHandleValid in FState,' Needed=',Needed<>[]);
+  //DebugLn('[TCanvas.RequiredState] ',ClassName,' ',csHandleValid in ReqState,' ',csHandleValid in FState,' Needed=',Needed<>[]);
   if Needed <> [] then
   begin
-    //writeln('[TCanvas.RequiredState] B ',ClassName,' ',csHandleValid in Needed,',',csFontValid in Needed,',',csPenValid in Needed,',',csBrushValid in Needed);
+    //DebugLn('[TCanvas.RequiredState] B ',ClassName,' ',csHandleValid in Needed,',',csFontValid in Needed,',',csPenValid in Needed,',',csBrushValid in Needed);
     if csHandleValid in Needed then
     begin
       CreateHandle;
@@ -1259,6 +1259,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.75  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.74  2004/04/10 17:58:56  mattias
   implemented mainunit hints for include files
 

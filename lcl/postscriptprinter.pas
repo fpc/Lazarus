@@ -31,7 +31,7 @@ unit PostScriptPrinter;
 interface
 
 uses
-  Classes, SysUtils, GraphType, Graphics, GraphMath, LCLIntf, Forms;
+  Classes, SysUtils, LCLProc, GraphType, Graphics, GraphMath, LCLIntf, Forms;
   
   // uses lcllinux or winapi for RGB conversions and FORMS for application object
   
@@ -760,7 +760,7 @@ end;
 function TPostScript.DelPattern(AName: String): Boolean;
 begin
   if AName<>'' then
-    writeln('[TPostScript.DelPattern] ToDo ');
+    DebugLn('[TPostScript.DelPattern] ToDo ');
 
   // can't do that yet...
   Result:=false;

@@ -143,7 +143,7 @@ end;
 function TWidgetSet.CreateEllipticRgn(p1, p2, p3, p4: Integer): HRGN;
 begin
   Result:=ERROR;
-  writeln('WARNING: CreateEllipticRgn not yet implemented.');
+  DebugLn('WARNING: CreateEllipticRgn not yet implemented.');
 end;
 
 function TWidgetSet.CreateFontIndirect(const LogFont: TLogFont): HFONT;
@@ -183,7 +183,7 @@ end;
 
 procedure TWidgetSet.DeleteCriticalSection(var CritSection: TCriticalSection);
 begin
-  writeln('TWidgetSet.DeleteCriticalSection Not implemented yet');
+  DebugLn('TWidgetSet.DeleteCriticalSection Not implemented yet');
 end;
 
 function TWidgetSet.DeleteDC(hDC: HDC): Boolean;
@@ -644,7 +644,7 @@ end;
 
 procedure TWidgetSet.EnterCriticalSection(var CritSection: TCriticalSection);
 begin
-  writeln('TWidgetSet.EnterCriticalSection Not implemented yet');
+  DebugLn('TWidgetSet.EnterCriticalSection Not implemented yet');
 end;
 
 function TWidgetSet.Ellipse(DC: HDC; x1, y1, x2, y2: Integer): Boolean;
@@ -680,11 +680,11 @@ var
   RRGN : hRGN;
 begin
   If DCClipRegionValid(DC) then begin
-    //writeln('TWidgetSet.ExcludeClipRect A DC=',HexStr(Cardinal(DC),8),' Rect=',Left,',',Top,',',Right,',',Bottom);
+    //DebugLn('TWidgetSet.ExcludeClipRect A DC=',HexStr(Cardinal(DC),8),' Rect=',Left,',',Top,',',Right,',',Bottom);
     // create the rectangle region, that should be excluded
     RRGN := CreateRectRgn(Left,Top,Right,Bottom);
     Result := ExtSelectClipRGN(DC, RRGN, RGN_DIFF);
-    //writeln('TWidgetSet.ExcludeClipRect B Result=',Result);
+    //DebugLn('TWidgetSet.ExcludeClipRect B Result=',Result);
     DeleteObject(RRGN);
   end else
     Result:=ERROR;
@@ -703,10 +703,10 @@ begin
   OldC := CreateEmptyRegion;
   GetClipRGN(DC, OldC);
   Clip := CreateEmptyRegion;
-  //writeln('TWidgetSet.ExtSelectClipRGN A OldC=',HexStr(Cardinal(OldC),8),
+  //DebugLn('TWidgetSet.ExtSelectClipRGN A OldC=',HexStr(Cardinal(OldC),8),
   //  ' Clip=',HexStr(Cardinal(Clip),8),' RGn=',HexStr(Cardinal(RGN),8),' Mode=',Mode);
   Result := CombineRGN(Clip, OldC, RGN, Mode);
-  //writeln('TWidgetSet.ExtSelectClipRGN B Result=',Result);
+  //DebugLn('TWidgetSet.ExtSelectClipRGN B Result=',Result);
   If Result <> ERROR then
     Result := SelectClipRGN(DC, Clip);
   DeleteObject(Clip);
@@ -887,7 +887,7 @@ function TWidgetSet.GetTextExtentExPoint(DC: HDC; Str: PChar;
 begin
   if MaxCount<>nil then MaxCount^:=Count;
   if PartialWidths<>nil then
-    writeln('Warning: TWidgetSet.GetTextExtentExPoint PartialWidths not implemented yet');
+    DebugLn('Warning: TWidgetSet.GetTextExtentExPoint PartialWidths not implemented yet');
   Result := GetTextExtentPoint(DC,Str,Count,Size);
 end;
 
@@ -948,7 +948,7 @@ end;
 
 procedure TWidgetSet.InitializeCriticalSection(var CritSection: TCriticalSection);
 begin
-  writeln('TWidgetSet.InitializeCriticalSection Not implemented yet');
+  DebugLn('TWidgetSet.InitializeCriticalSection Not implemented yet');
 end;
 
 function TWidgetSet.IntersectClipRect(dc: hdc;
@@ -957,7 +957,7 @@ var
   RRGN : hRGN;
 begin
   RRGN := CreateRectRgn(Left, Top, Right, Bottom);
-  //writeln('TWidgetSet.IntersectClipRect A RGN=',HexStr(Cardinal(RRGN),8),' ',Left,',',Top,',',Right,',',Bottom);
+  //DebugLn('TWidgetSet.IntersectClipRect A RGN=',HexStr(Cardinal(RRGN),8),' ',Left,',',Top,',',Right,',',Bottom);
   If not DCClipRegionValid(DC) then
     Result := ExtSelectClipRGN(DC, RRGN, RGN_COPY)
   else
@@ -983,7 +983,7 @@ end;
 
 procedure TWidgetSet.LeaveCriticalSection(var CritSection: TCriticalSection);
 begin
-  writeln('TWidgetSet.LeaveCriticalSection Not implemented yet');
+  DebugLn('TWidgetSet.LeaveCriticalSection Not implemented yet');
 end;
 
 function TWidgetSet.LineTo(DC: HDC; X, Y: Integer): Boolean;
@@ -1404,6 +1404,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.11  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

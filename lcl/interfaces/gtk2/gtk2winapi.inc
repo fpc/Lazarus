@@ -227,7 +227,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtk2WidgetSet.DrawText] Uninitialized GC');
+      DebugLn('WARNING: [TGtk2WidgetSet.DrawText] Uninitialized GC');
       Result := 0;
     end
     else begin
@@ -433,12 +433,12 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Uninitialized GC');
+      DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Uninitialized GC');
       Result := False;
     end
     else if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
     and (Rect=nil) then begin
-      WriteLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Rect=nil');
+      DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Rect=nil');
       Result := False;
     end else begin
       // TODO: implement other parameters.
@@ -460,7 +460,7 @@ begin
       
       GetStyle(lgsdefault);
       If (UseFontDesc = nil) or (GetStyleWidget(lgsdefault)=nil) then
-        WriteLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Font')
+        DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Font')
       else begin
         // to reduce flickering calculate first and then paint
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
@@ -468,7 +468,7 @@ begin
         Layout := gtk_widget_create_pango_layout (GetStyleWidget(lgsdefault), nil);
 
         If (Layout = nil) then
-          WriteLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Pango Layout')
+          DebugLn('WARNING: [TGtk2WidgetSet.ExtTextOut] Missing Pango Layout')
         else begin
           pango_layout_set_font_description(Layout, UseFontDesc);
 
@@ -603,7 +603,7 @@ begin
    then g_list_free(TopList);
    {$Else}
       // Win32 Todo
-      writeln('ToDo(Win32): TGtk2WidgetSet.GetCursorPos');
+      DebugLn('ToDo(Win32): TGtk2WidgetSet.GetCursorPos');
   {$EndIf}
 {$EndIf}
 end;
@@ -644,7 +644,7 @@ begin
       end;
 
       If UseFontDesc = nil then
-        WriteLn('WARNING: [TGtk2WidgetSet.GetTextExtentPoint] Missing Font')
+        DebugLn('WARNING: [TGtk2WidgetSet.GetTextExtentPoint] Missing Font')
       else begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         GetStyle(lgsdefault);
@@ -732,7 +732,7 @@ begin
   begin
     if GC = nil
     then begin
-      WriteLn('WARNING: [TGtk2WidgetSet.TextOut] Uninitialized GC');
+      DebugLn('WARNING: [TGtk2WidgetSet.TextOut] Uninitialized GC');
     end
     else begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
@@ -750,7 +750,7 @@ begin
       end;
 
       If UseFontDesc = nil then
-        WriteLn('WARNING: [TGtk2WidgetSet.TextOut] Missing Font')
+        DebugLn('WARNING: [TGtk2WidgetSet.TextOut] Missing Font')
       else begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         GetStyle(lgsdefault);
@@ -826,6 +826,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/05/11 12:16:48  mattias
+  replaced writeln by debugln
+
   Revision 1.8  2004/03/09 15:30:15  peter
     * fixed gtk2 compilation
 

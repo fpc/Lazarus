@@ -39,7 +39,7 @@ end;
 procedure TControlCanvas.CreateFont;
 begin
   inherited CreateFont;
-  //writeln('TControlCanvas.CreateFont A ',ClassName,' Control=',Control.Name,':',Control.ClassName,' ',Font.Name,' ',Font.Height);
+  //DebugLn('TControlCanvas.CreateFont A ',ClassName,' Control=',Control.Name,':',Control.ClassName,' ',Font.Name,' ',Font.Height);
   //if Control.ClassName='TSpeedButton' then RaiseGDBException('ARRGH');
 end;
 
@@ -80,7 +80,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControlCanvas.CreateHandle;
 begin
-//writeln('[TControlCanvas.CreateHandle] ',FControl<>nil,' DC=',HexStr(FDeviceContext,8),' WinHandle=',HexStr(FWindowHandle,8));
+//DebugLn('[TControlCanvas.CreateHandle] ',FControl<>nil,' DC=',HexStr(FDeviceContext,8),' WinHandle=',HexStr(FWindowHandle,8));
   if FControl = nil
   then inherited CreateHandle
   else begin
@@ -114,6 +114,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.6  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

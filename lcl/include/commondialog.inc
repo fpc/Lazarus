@@ -39,7 +39,6 @@ end;
 
 procedure TCommonDialog.Close;
 begin
-  //writeln('TCommonDialog.Close-------------------------------------------------------',Name);
   DoClose;
   CNSendMessage(LM_DESTROY, Self, nil);
   FHandle := 0;
@@ -98,6 +97,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.14  2004/04/10 17:58:56  mattias
   implemented mainunit hints for include files
 

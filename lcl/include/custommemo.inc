@@ -148,7 +148,7 @@ end;
 procedure TCustomMemo.SetWordWrap(const Value : boolean);
 begin
   if Value <> FWordWrap then begin
-    writeln('TCustomMemo.SetWordWrap ',Name,' Old=',FWordWrap,' New=',Value);
+    //DebugLn('TCustomMemo.SetWordWrap ',Name,' Old=',FWordWrap,' New=',Value);
     FWordWrap := Value;
     if HandleAllocated and (not (csLoading in ComponentState)) then
       CNSendMessage(LM_SETPROPERTIES, Self, nil);
@@ -160,6 +160,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.23  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

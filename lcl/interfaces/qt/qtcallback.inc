@@ -74,9 +74,9 @@ procedure QTMousePressedEvent(qwid,button,x,y,state: integer);cdecl;
 begin
 
 
-writeln('fired press event widget' + IntToStr(qwid));
-writeln('mouse button=' + IntToStr(button));
-writeln('mouse x=' + IntToStr(x));
-writeln('mouse y=' + IntToStr(y));
-writeln('mouse state=' + IntToStr(state));
+DebugLn('fired press event widget' + IntToStr(qwid));
+DebugLn('mouse button=' + IntToStr(button));
+DebugLn('mouse x=' + IntToStr(x));
+DebugLn('mouse y=' + IntToStr(y));
+DebugLn('mouse state=' + IntToStr(state));
 end; *}

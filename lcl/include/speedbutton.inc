@@ -371,7 +371,7 @@ begin
     BrushStyle:= bsSolid;}
 
   FLastDrawFlags:=GetDrawFlags;
-  //writeln('TSpeedbutton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
+  //DebugLn('TSpeedbutton.Paint ',Name,':',ClassName,' Parent.Name=',Parent.Name);
   DrawFrameControl(Canvas.GetUpdatedHandle([csBrushValid,csPenValid]),
     PaintRect, DFC_BUTTON, FLastDrawFlags);
 
@@ -484,7 +484,7 @@ begin
     end
     else
       Canvas.Font.Color := clBtnText;
-    //writeln('TSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom);
+    //DebugLn('TSpeedButton.Paint PaintRect=',PaintRect.Left,',',PaintRect.TOp,',',PaintRect.Right,',',PaintRect.Bottom);
     Canvas.TextRect(PaintRect, 0, 0, Caption, TXTStyle);
   end;
 
@@ -773,6 +773,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.53  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.52  2004/04/18 23:55:39  marc
   * Applied patch from Ladislav Michl
   * Changed the way TControl.Text is resolved

@@ -264,12 +264,5 @@ Begin
   End; {Case}
 End;
 
-
-initialization
-//writeln('vclglobals.pp - initialization');
-
-finalization
-//writeln('vclglobals.pp - finalization');
-
 end.
 

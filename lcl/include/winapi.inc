@@ -698,9 +698,9 @@ end;
 
 function SetFocus(hWnd: HWND): HWND;
 begin
-//writeln('[winapi.inc SetFocus] A');
+//DebugLn('[winapi.inc SetFocus] A');
   Result := InterfaceObject.SetFocus(hWnd);
-//writeln('[winapi.inc SetFocus] END');
+//DebugLn('[winapi.inc SetFocus] END');
 end;
 
 function SetMapMode(DC: HDC; MapMode: Integer): Integer;
@@ -843,7 +843,7 @@ function CharLowerBuff(pStr : PChar; Len : Integer): Integer;
 begin
   // your code here
   //TODO:WINAPI call CHARLOWERBUFF
-  Writeln('TODO: WINAPI call CHARLOWERBUFF');
+  DebugLn('TODO: WINAPI call CHARLOWERBUFF');
   Result := -1;
 end;
 
@@ -889,7 +889,7 @@ function CreateFont(Height, Width, Escapement, Orientation, Weight: Integer;
 var
   LogFont: TLogFont;
 begin
-writeln('CreateFont Name="',FaceName,'"');
+  DebugLn('CreateFont Name="',FaceName,'"');
   with LogFont do
   begin
     lfHeight := Height;
@@ -1299,6 +1299,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.113  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.112  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

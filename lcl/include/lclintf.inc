@@ -518,7 +518,6 @@ end;
 
 procedure RaiseLastOSError;
 begin
-  writeln('ToDo: RaiseLastOSError');
   RaiseGDBException('ToDo: RaiseLastOSError');
 end;
 
@@ -527,6 +526,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.24  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

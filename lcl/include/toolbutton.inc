@@ -64,7 +64,7 @@ end;
 procedure TToolButton.MouseDown(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  //writeln('TToolButton.MouseDown ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
+  //DebugLn('TToolButton.MouseDown ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
   if (Button=mbLeft) and (not (tbfPressed in FToolButtonFlags)) then begin
     Include(FToolButtonFlags,tbfPressed);
     Invalidate;
@@ -83,14 +83,14 @@ end;
 
 procedure TToolButton.MouseMove(Shift: TShiftState; X, Y: Integer);
 begin
-  //writeln('TToolButton.MouseMove ',Name,':',ClassName,' ',X,',',Y);
+  //DebugLn('TToolButton.MouseMove ',Name,':',ClassName,' ',X,',',Y);
   inherited MouseMove(Shift, X, Y);
 end;
 
 procedure TToolButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
 begin
-  //writeln('TToolButton.MouseUp ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
+  //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',ord(Button),' ',X,',',Y);
   if (Button=mbLeft) and (tbfPressed in FToolButtonFlags) then begin
     Exclude(FToolButtonFlags,tbfPressed);
     Invalidate;
@@ -99,7 +99,7 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
   
   if (Button=mbLeft) then begin
-    //writeln('TToolButton.MouseUp ',Name,':',ClassName,' ',Style=tbsCheck);
+    //DebugLn('TToolButton.MouseUp ',Name,':',ClassName,' ',Style=tbsCheck);
     if (Style=tbsButton) then Down:=false;
     if (Style=tbsDropDown) then begin
       if (FToolBar<>nil) and FMouseInControl
@@ -162,7 +162,7 @@ var
   ImgList: TCustomImageList;
   ImgIndex: integer;
 begin
-  //writeln('TToolButton.Paint A ',Name,' FToolBar=',HexStr(Cardinal(FToolBar),8),' ',ClientWidth,',',ClientHeight,' ',ord(Style));
+  //DebugLn('TToolButton.Paint A ',Name,' FToolBar=',HexStr(Cardinal(FToolBar),8),' ',ClientWidth,',',ClientHeight,' ',ord(Style));
   if (FToolBar<>nil) and (ClientWidth>0) and (ClientHeight>0) then begin
     PaintRect:=ClientRect; // the whole paint area
 
@@ -311,14 +311,14 @@ end;
 
 procedure TToolButton.MouseEnter;
 begin
-  //writeln('TToolButton.MouseEnter ',Name);
+  //DebugLn('TToolButton.MouseEnter ',Name);
   inherited MouseEnter;
   SetMouseInControl(true);
 end;
 
 procedure TToolButton.MouseLeave;
 begin
-  //writeln('TToolButton.MouseLeave ',Name);
+  //DebugLn('TToolButton.MouseLeave ',Name);
   inherited MouseLeave;
   SetMouseInControl(false);
   if (not MouseCapture) and (tbfPressed in FToolButtonFlags) then begin
@@ -339,14 +339,14 @@ begin
     exit;
   end;
   
-  //writeln('TToolButton.SetDown ',Style=tbsCheck,',',FDown,',',GroupAllUpAllowed);
+  //DebugLn('TToolButton.SetDown ',Style=tbsCheck,',',FDown,',',GroupAllUpAllowed);
   if (Style=tbsCheck) and FDown and (not GroupAllUpAllowed) then
     exit;
 
   FDown := Value;
   
   if (Style=tbsCheck) and FDown and Grouped then begin
-    writeln('TToolButton.SetDown B ');
+    DebugLn('TToolButton.SetDown B ');
     // uncheck all other in the group
     GetGroupBounds(StartIndex,EndIndex);
     if StartIndex>=0 then begin
@@ -471,12 +471,12 @@ end;
 
 procedure TToolButton.SetMouseInControl(NewMouseInControl: Boolean);
 begin
-  //writeln('TToolButton.SetMouseInControl A ',Name,' Old=',FMouseInControl,' New=',NewMouseInControl);
+  //DebugLn('TToolButton.SetMouseInControl A ',Name,' Old=',FMouseInControl,' New=',NewMouseInControl);
   if FMouseInControl=NewMouseInControl then exit;
   FMouseInControl:=NewMouseInControl;
   if (Style in [tbsDropDown,tbsButton]) and (not FMouseInControl) then
     Down:=false;
-  //writeln('TToolButton.SetMouseInControl B ',Name,' Now=',FMouseInControl,' Down=',Down);
+  //DebugLn('TToolButton.SetMouseInControl B ',Name,' Now=',FMouseInControl,' Down=',Down);
   Invalidate;
 end;
 
@@ -650,12 +650,12 @@ begin
       FToolBar.AddButton(Self);
     UpdateVisibleToolbar;
   end;
-  //writeln('TToolButton.SetParent A ',Name,' NewIndex=',Index);
+  //DebugLn('TToolButton.SetParent A ',Name,' NewIndex=',Index);
 end;
 
 procedure TToolButton.UpdateVisibleToolbar;
 begin
-  //writeln('TToolButton.UpdateVisibleToolbar ',Parent is TToolBar);
+  //DebugLn('TToolButton.UpdateVisibleToolbar ',Parent is TToolBar);
   if Parent is TToolBar then
     TToolBar(Parent).UpdateVisibleBar;
 end;
@@ -702,7 +702,7 @@ begin
     else
       NewButtonWidth:=FToolBar.ButtonWidth;
     NewButtonHeight:=AHeight;
-    //writeln('TToolButton.DoSetBounds NewButtonSize=',NewButtonWidth,',',NewButtonHeight);
+    //DebugLn('TToolButton.DoSetBounds NewButtonSize=',NewButtonWidth,',',NewButtonHeight);
     OldLeft:=Left;
     OldTop:=Top;
     OldWidth:=Width;
@@ -1192,6 +1192,9 @@ end;
 
 {
   $Log$
+  Revision 1.18  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.17  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

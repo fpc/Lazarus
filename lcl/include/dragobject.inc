@@ -100,7 +100,7 @@ end;
 destructor TDragObject.Destroy;
 begin
   {$IFDEF VerboseDrag}
-  writeln('TDragObject.Destroy ',ClassName,' Self=',HexStr(Cardinal(Self),8));
+  DebugLn('TDragObject.Destroy ',ClassName,' Self=',HexStr(Cardinal(Self),8));
   {$ENDIF}
   inherited Destroy;
 end;

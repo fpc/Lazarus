@@ -111,7 +111,7 @@ var
   ok: boolean;
 begin
   {$IFDEF VerboseDrag}
-  writeln('DragInitControl ',Control.Name,':',Control.ClassName,' Immediate=',Immediate);
+  DebugLn('DragInitControl ',Control.Name,':',Control.ClassName,' Immediate=',Immediate);
   {$ENDIF}
   ClearDragObject;
   DragControl := Control;
@@ -213,7 +213,7 @@ var
   TargetControl: TControl;
 Begin
   {$IFDEF VerboseDrag}
-  writeln('DragTo P=',Position.X,',',Position.Y);
+  DebugLn('DragTo P=',Position.X,',',Position.Y);
   {$ENDIF}
   if (ActiveDrag = dopNone)
   and (Abs(DragStartPos.X - Position.X) < DragThreshold)
@@ -269,7 +269,7 @@ var
   TargetPos: TPoint;
 Begin
   {$IFDEF VerboseDrag}
-  writeln('DragDone Drop=',Drop);
+  DebugLn('DragDone Drop=',Drop);
   {$ENDIF}
   Accepted:=false;
   if (DragObject = nil) or DragObject.Cancelling then Exit;
@@ -336,6 +336,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.4  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.3  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

@@ -33,7 +33,7 @@ unit LResources;
 interface
 
 uses
-  Classes, SysUtils, FPCAdds, LCLStrConsts;
+  Classes, SysUtils, FPCAdds, LCLProc, LCLStrConsts;
 
 type
   TLResource = class
@@ -357,7 +357,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('LFMtoLRSfile ',E.Message);
+      DebugLn('LFMtoLRSfile ',E.Message);
       Result:=false;
     end;
   end;
@@ -382,7 +382,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('LFMtoLRSstream ',E.Message);
+      DebugLn('LFMtoLRSstream ',E.Message);
       Result:=false;
     end;
   end;
@@ -1443,24 +1443,24 @@ function InitLazResourceComponent(Instance: TComponent;
     CompResource: TLResource;
     MemStream: TMemoryStream;
   begin
-    //writeln('[InitComponent] ',ClassType.Classname,' ',Instance<>nil);
+    //DebugLn('[InitComponent] ',ClassType.Classname,' ',Instance<>nil);
     Result:=false;
     if (ClassType=TComponent) or (ClassType=RootAncestor) then exit;
     if Assigned(ClassType.ClassParent) then
       Result:=InitComponent(ClassType.ClassParent);
     CompResource:=LazarusResources.Find(ClassType.ClassName);
     if (CompResource=nil) or (CompResource.Value='') then exit;
-    //writeln('[InitComponent] CompResource found for ',ClassType.Classname);
+    //DebugLn('[InitComponent] CompResource found for ',ClassType.Classname);
     MemStream:=TMemoryStream.Create;
     try
       MemStream.Write(CompResource.Value[1],length(CompResource.Value));
       MemStream.Position:=0;
-      //writeln('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
+      //DebugLn('Form Stream "',ClassType.ClassName,'" Signature=',copy(CompResource.Value,1,4));
       //try
         Instance:=MemStream.ReadComponent(Instance);
       //except
       //  on E: Exception do begin
-      //    writeln(Format(rsFormStreamingError,[ClassType.ClassName,E.Message]));
+      //    DebugLn(Format(rsFormStreamingError,[ClassType.ClassName,E.Message]));
       //    exit;
       //  end;
       //end;

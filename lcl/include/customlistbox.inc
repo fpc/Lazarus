@@ -53,9 +53,9 @@ var
   i, cnt: integer;
   OldItems: TExtendedStringList;
 begin
-  //writeln('[TCustomListBox.CreateHandle] A ',FItems.ClassName);
+  //DebugLn('[TCustomListBox.CreateHandle] A ',FItems.ClassName);
   inherited CreateHandle;
-  //writeln('[TCustomListBox.CreateHandle] B ',FItems.ClassName);
+  //DebugLn('[TCustomListBox.CreateHandle] B ',FItems.ClassName);
   // create
   CNSendMessage(LM_SETBORDER, Self, nil);
 
@@ -79,7 +79,7 @@ begin
   // free old items
   OldItems.Free;
 
-  //writeln('[TCustomListBox.CreateHandle] END ',FItems.ClassName);
+  //DebugLn('[TCustomListBox.CreateHandle] END ',FItems.ClassName);
 end;
 
 {------------------------------------------------------------------------------}
@@ -90,7 +90,7 @@ var
   NewStrings : TExtendedStringList;
   i, Cnt: integer;
 begin
-  //writeln('[TCustomListBox.DestroyHandle] A ',FItems.ClassName);
+  //DebugLn('[TCustomListBox.DestroyHandle] A ',FItems.ClassName);
   // create internal item list
   NewStrings:= TExtendedStringList.Create(GetCachedDataSize);
 
@@ -106,9 +106,9 @@ begin
   // new item list is the internal item list
   FItems:= NewStrings;
   FCacheValid := True;
-  //writeln('[TCustomListBox.DestroyHandle] B ',FItems.ClassName);
+  //DebugLn('[TCustomListBox.DestroyHandle] B ',FItems.ClassName);
   inherited DestroyHandle;
-  //writeln('[TCustomListBox.DestroyHandle] END ',FItems.ClassName);
+  //DebugLn('[TCustomListBox.DestroyHandle] END ',FItems.ClassName);
 end;
 
 {------------------------------------------------------------------------------}
@@ -370,7 +370,7 @@ end;
 procedure TCustomListBox.SetItems(Value : TStrings);
 begin
   if (Value <> FItems) then begin
-//writeln('[TCustomListBox.SetItems] A FItems=',FItems.ClassName,' Value=',Value.ClassName);
+//DebugLn('[TCustomListBox.SetItems] A FItems=',FItems.ClassName,' Value=',Value.ClassName);
     FItems.Assign(Value);
   end;
 end;
@@ -407,13 +407,13 @@ end;
 
 function TCustomListBox.GetItemIndex : integer;
 begin
-//writeln('[TCustomListBox.GetItemIndex] A ',FItems.ClassName);
+//DebugLn('[TCustomListBox.GetItemIndex] A ',FItems.ClassName);
   if HandleAllocated then begin
     Result:= CNSendMessage(LM_GETITEMINDEX, Self, nil);
     FItemIndex:=Result;
   end else
     Result:=FItemIndex;
-//writeln('[TCustomListBox.GetItemIndex] END ');
+//DebugLn('[TCustomListBox.GetItemIndex] END ');
 end;
 
 procedure TCustomListBox.SetItemIndex(Val : integer);
@@ -421,11 +421,11 @@ begin
   if (Val >= FItems.Count) then
     raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Val,FItems.Count]);
   if Val<0 then Val:=-1;
-//writeln('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
+//DebugLn('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
   FItemIndex:=Val;
   if HandleAllocated then
     CNSendMessage(LM_SETITEMINDEX, Self, Pointer(Val));
-//writeln('[TCustomListBox.SetItemIndex] END ',FItems.ClassName);
+//DebugLn('[TCustomListBox.SetItemIndex] END ',FItems.ClassName);
 end;
 
 {------------------------------------------------------------------------------

@@ -1079,15 +1079,15 @@ end;
 //------------------------------------------------------------------------------
 procedure ExceptionOccurred(Sender: TObject; Addr,Frame: Pointer);
 Begin
-  Writeln('[FORMS.PP] ExceptionOccurred ');
+  DebugLn('[FORMS.PP] ExceptionOccurred ');
   if HaltingProgram or HandlingException then Halt;
   HandlingException:=true;
   if Sender<>nil then begin
-    writeln('  Sender=',Sender.ClassName);
+    DebugLn('  Sender=',Sender.ClassName);
     if Sender is Exception then
-      writeln('  Exception=',Exception(Sender).Message);
+      DebugLn('  Exception=',Exception(Sender).Message);
   end else
-    writeln('  Sender=nil');
+    DebugLn('  Sender=nil');
   if Application<>nil then
     Application.HandleException(Sender);
   HandlingException:=false;
@@ -1672,7 +1672,7 @@ initialization
   // keep this comment, there is parser a bug in fpc 1.0.x
 
 finalization
-  //writeln('forms.pp - finalization section');
+  //DebugLn('forms.pp - finalization section');
   LCLProc.OwnerFormDesignerModifiedProc:=nil;
   HintWindowClass:=THintWindow;
   FreeThenNil(Application);

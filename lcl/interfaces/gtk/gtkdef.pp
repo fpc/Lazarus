@@ -403,7 +403,7 @@ begin
   AGDIObject:=PGDIObject(FFirstFree);
   PGDIObject(FFirstFree):=AGDIObject^.Next;
   Dispose(AGDIObject);
-  //writeln('TGDIObjectMemManager.DisposeGDIObject A FFreedCount=',FFreedCount);
+  //DebugLn('TGDIObjectMemManager.DisposeGDIObject A FFreedCount=',FFreedCount);
   {$R-}
   inc(FFreedCount);
   {$IfDef RangeChecksOn}{$R+}{$Endif}
@@ -411,7 +411,7 @@ end;
 
 procedure TGDIObjectMemManager.DisposeGDIObject(AGDIObject: PGDIObject);
 begin
-  //writeln('TGDIObjectMemManager.DisposeGDIObject ',HexStr(Cardinal(AGDIObject),8));
+  //DebugLn('TGDIObjectMemManager.DisposeGDIObject ',HexStr(Cardinal(AGDIObject),8));
   if AGDIObject^.RefCount>0 then
     RaiseGDBException('');
   if (FFreeCount<FMinFree) or (FFreeCount<((FCount shr 3)*FMaxFreeRatio)) then
@@ -423,7 +423,7 @@ begin
   end else begin
     // free list full -> free the ANode
     Dispose(AGDIObject);
-    //writeln('TGDIObjectMemManager.DisposeGDIObject B FFreedCount=',FFreedCount);
+    //DebugLn('TGDIObjectMemManager.DisposeGDIObject B FFreedCount=',FFreedCount);
     {$R-}
     inc(FFreedCount);
     {$IfDef RangeChecksOn}{$R+}{$Endif}
@@ -441,14 +441,14 @@ begin
   end else begin
     // free list empty -> create new node
     New(Result);
-    // writeln('TGDIObjectMemManager.NewGDIObject FAllocatedCount=',FAllocatedCount);
+    // DebugLn('TGDIObjectMemManager.NewGDIObject FAllocatedCount=',FAllocatedCount);
     {$R-}
     inc(FAllocatedCount);
     {$IfDef RangeChecksOn}{$R+}{$Endif}
   end;
   FillChar(Result^, SizeOf(TGDIObject), 0);
   inc(FCount);
-  //writeln('TGDIObjectMemManager.NewGDIObject ',HexStr(Cardinal(Result),8));
+  //DebugLn('TGDIObjectMemManager.NewGDIObject ',HexStr(Cardinal(Result),8));
 end;
 
 
@@ -486,7 +486,7 @@ var ADeviceContext: TDeviceContext;
 begin
   ADeviceContext:=TDeviceContext(FFirstFree);
   TDeviceContext(FFirstFree):=ADeviceContext.SavedContext;
-  //writeln('TDeviceContextMemManager.FreeFirstItem FFreedCount=',FFreedCount);
+  //DebugLn('TDeviceContextMemManager.FreeFirstItem FFreedCount=',FFreedCount);
   ADeviceContext.Free;
   {$R-}
   inc(FFreedCount);
@@ -504,7 +504,7 @@ begin
     inc(FFreeCount);
   end else begin
     // free list full -> free the ANode
-    //writeln('TDeviceContextMemManager.DisposeDeviceContext FFreedCount=',FFreedCount);
+    //DebugLn('TDeviceContextMemManager.DisposeDeviceContext FFreedCount=',FFreedCount);
     ADeviceContext.Free;
     {$R-}
     inc(FFreedCount);
@@ -523,7 +523,7 @@ begin
   end else begin
     // free list empty -> create new node
     Result:=TDeviceContext.Create;
-    //writeln('TDeviceContextMemManager.NewDeviceContext FAllocatedCount=',FAllocatedCount);
+    //DebugLn('TDeviceContextMemManager.NewDeviceContext FAllocatedCount=',FAllocatedCount);
     {$R-}
     inc(FAllocatedCount);
     {$IfDef RangeChecksOn}{$R+}{$Endif}
@@ -574,6 +574,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.60  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.59  2004/04/19 09:30:04  marc
   * Fixed compilation for gtk2
 

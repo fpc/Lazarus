@@ -129,7 +129,7 @@ begin
     Message.Result:=0 // no hit
   else
     inherited CMHitTest(Message);
-  {writeln('TCustomPage.CMHitTest A ',Name,' ',(Parent<>nil),' ',
+  {DebugLn('TCustomPage.CMHitTest A ',Name,' ',(Parent<>nil),' ',
     (Parent is TCustomNotebook),' ',
     (TCustomNotebook(Parent).ActivePageComponent<>Self),
     ' Message.Result=',Message.Result);}
@@ -164,7 +164,7 @@ end;
 procedure TCustomPage.SetPageIndex(AValue: Integer);
 begin
   // ToDo
-  writeln('TCustomPage.SetPageIndex Old=',PageIndex,' New=',AValue);
+  DebugLn('TCustomPage.SetPageIndex Old=',dbgs(PageIndex),' New=',dbgs(AValue));
 end;
 
 {------------------------------------------------------------------------------

@@ -67,7 +67,7 @@ var
 begin
   Result:=true;
   
-  //writeln('gtkListItemDrawCB ');
+  //DebugLn('gtkListItemDrawCB ');
 
   // get context
   GtkList:=PGtkList(gtk_object_get_data(PGtkObject(Data),GtkListItemGtkListTag));
@@ -105,9 +105,9 @@ begin
       DC:=GetDC(HWnd(Widget));
       ItemState:=State;
     end;
-    //writeln('gtkListItemDrawCB A LCLList=',HexStr(Cardinal(LCLList),8),' Widget=',HexStr(Cardinal(Widget),8),' ',HexStr(Cardinal(Data),8));
-    //writeln('gtkListItemDrawCB B ',LCLList.ClassName,' ',HexStr(Cardinal(LCLList.Owner),8));
-    //writeln('gtkListItemDrawCB C ',LCLList.Owner.ClassName);
+    //DebugLn('gtkListItemDrawCB A LCLList=',HexStr(Cardinal(LCLList),8),' Widget=',HexStr(Cardinal(Widget),8),' ',HexStr(Cardinal(Data),8));
+    //DebugLn('gtkListItemDrawCB B ',LCLList.ClassName,' ',HexStr(Cardinal(LCLList.Owner),8));
+    //DebugLn('gtkListItemDrawCB C ',LCLList.Owner.ClassName);
     Result := DeliverMessage(LCLList.Owner, Msg)=0;
     ReleaseDC(HWnd(Widget),Msg.DrawListItemStruct^.DC);
   finally
@@ -147,7 +147,7 @@ begin
     'TGtkListStringList.Create Unspecified owner');
   FOwner:=TheOwner;
   FWithCheckBox := AWithCheckBox;
-  //writeln('TGtkListStringList.Create Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(List),8),' Owner=',HexStr(Cardinal(Owner),8));
+  //DebugLn('TGtkListStringList.Create Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(List),8),' Owner=',HexStr(Cardinal(Owner),8));
   Include(FStates,glsItemCacheNeedsUpdate);
   ConnectAllCallbacks;
 end;
@@ -157,7 +157,7 @@ begin
   // don't destroy the widgets
   RemoveAllCallbacks;
   ReAllocMem(FCachedItems,0);
-  //writeln('TGtkListStringList.Destroy Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(FGtkList),8),' Owner=',HexStr(Cardinal(Owner),8));
+  //DebugLn('TGtkListStringList.Destroy Self=',HexStr(Cardinal(Self),8),' List=',HexStr(Cardinal(FGtkList),8),' Owner=',HexStr(Cardinal(Owner),8));
   inherited Destroy;
 end;
 
@@ -202,7 +202,7 @@ procedure TGtkListStringList.ConnectItemCallbacks(Li: PGtkListItem);
 begin
   gtk_object_set_data(PGtkObject(li),GtkListItemLCLListTag,Self);
   gtk_object_set_data(PGtkObject(li),GtkListItemGtkListTag,FGtkList);
-  //writeln('TGtkListStringList.ConnectItemCallbacks Self=',HexStr(Cardinal(Self),8),
+  //DebugLn('TGtkListStringList.ConnectItemCallbacks Self=',HexStr(Cardinal(Self),8),
   //' GtkList=',HexStr(Cardinal(FGtkList),8),
   //' Owner=',HexStr(Cardinal(Owner),8),'=',Owner.ClassName,
   //' LI=',HexStr(Cardinal(LI),8),
@@ -292,7 +292,7 @@ procedure TGtkListStringList.PutObject(Index: Integer; AnObject: TObject);
 var
   ListItem : PGtkListItem;
 begin
-//writeln('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
+//DebugLn('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
   if (Index < 0) or (Index >= Count) then
     RaiseException('TGtkListStringList.PutObject Out of bounds.')
   else if FGtkList<>nil then begin
@@ -383,7 +383,7 @@ begin
   then
     RaiseException('TGtkListStringList.Assign: There 2 lists with the same FGtkList');
   BeginUpdate;
-//writeln('[TGtkListStringList.Assign] A ',Source.Classname,' Self=',HexStr(Cardinal(Self),8),' Source=',HexStr(Cardinal(Source),8));
+//DebugLn('[TGtkListStringList.Assign] A ',Source.Classname,' Self=',HexStr(Cardinal(Self),8),' Source=',HexStr(Cardinal(Source),8));
   try
     if Source is TStrings then begin
       // clearing and resetting can change other properties of the widget,
@@ -402,7 +402,7 @@ begin
   finally
     EndUpdate;
   end;
-//writeln('[TGtkListStringList.Assign] END ',Source.Classname);
+//DebugLn('[TGtkListStringList.Assign] END ',Source.Classname);
 end;
 
 {------------------------------------------------------------------------------
@@ -417,7 +417,7 @@ var
   ALabel : PGtkLabel;
   ListItem : PGtkListItem;
 begin
-//writeln('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
+//DebugLn('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
   if (Index < 0) or (Index >= Count) then
     RaiseException('TGtkListStringList.Get Out of bounds.')
   else begin
@@ -442,7 +442,7 @@ function TGtkListStringList.GetObject(Index: Integer): TObject;
 var
   ListItem : PGtkListItem;
 begin
-//writeln('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
+//DebugLn('[TGtkListStringList.Get] Index=',Index,' Count=',Count);
   Result:=nil;
   if (Index < 0) or (Index >= Count) then
     RaiseException('TGtkListStringList.GetObject Out of bounds.')
@@ -596,7 +596,7 @@ begin
   finally
     EndUpdate;
   end;
-//writeln('[TGtkListStringList.Insert] END Index=',Index,' Count=',Count,' ',S,',',Count);
+//DebugLn('[TGtkListStringList.Insert] END Index=',Index,' Count=',Count,' ',S,',',Count);
 end;
 
 
@@ -781,6 +781,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.22  2004/04/24 20:57:18  mattias
   fixed gtk2 for drawing list item  from Ladislav
 

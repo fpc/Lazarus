@@ -80,7 +80,7 @@ end;
  ------------------------------------------------------------------------------}
 constructor TMenuItem.Create(TheOwner: TComponent);
 begin
-  //writeln('TMenuItem.Create START TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
+  //DebugLn('TMenuItem.Create START TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
   if not assigned (TheOwner) then writeln ('**SH: Warn: creating MenuItem with Owner = nil');
 
   Inherited Create(TheOwner);
@@ -98,7 +98,7 @@ begin
 
   FImageChangeLink := TChangeLink.Create;
   FImageChangeLink.OnChange := @ImageListChange;
-  //writeln('TMenuItem.Create END TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
+  //DebugLn('TMenuItem.Create END TheOwner=',TheOwner.Name,':',TheOwner.ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -111,7 +111,7 @@ end;
 procedure TMenuItem.CreateHandle;
 var i: Integer;
 begin
-  //writeln('TMenuItem.CreateHandle START ',Name,':',ClassName);
+  //DebugLn('TMenuItem.CreateHandle START ',Name,':',ClassName);
   SendMsgToInterface(LM_CREATE, Self, nil);
   if FItems<>nil then begin
     for i := 0 to Count - 1 do begin
@@ -130,7 +130,7 @@ begin
       if ShortCut <> 0 then ShortCutChanged(0, Shortcut);
     end;
   end;
-  //writeln('TMenuItem.CreateHandle END ',Name,':',ClassName);
+  //DebugLn('TMenuItem.CreateHandle END ',Name,':',ClassName);
 end;
 
 {------------------------------------------------------------------------------
@@ -1142,6 +1142,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.54  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 
@@ -1332,6 +1335,9 @@ end;
 
 
   $Log$
+  Revision 1.55  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.54  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 

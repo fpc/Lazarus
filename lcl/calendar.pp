@@ -153,7 +153,7 @@ begin
   if FDateAsString=AValue then exit;
   try
     {$IFDEF VerboseCalenderSetDate}
-    writeln('TCalendar.SetDate A AValue=',AValue,' FDateAsString=',FDateAsString,' FDate=',FDate,' ShortDateFormat=',ShortDateFormat);
+    DebugLn('TCalendar.SetDate A AValue=',AValue,' FDateAsString=',FDateAsString,' FDate=',FDate,' ShortDateFormat=',ShortDateFormat);
     {$ENDIF}
     NewDate:=StrToDate(AValue);  //test to see if date valid ....
     // no exception => set valid date
@@ -204,7 +204,7 @@ begin
   FDate:=AValue;
   FDateAsString:=FormatDateTime(ShortDateFormat,FDate);
   {$IFDEF VerboseCalenderSetDate}
-  writeln('TCalendar.SetDateTime FDate=',FDate,' FDateAsString=',FDateAsString,' ShortDateFormat=',ShortDateFormat);
+  DebugLn('TCalendar.SetDateTime FDate=',FDate,' FDateAsString=',FDateAsString,' ShortDateFormat=',ShortDateFormat);
   {$ENDIF}
   if OldDate=FDate then exit;
   SetProps;
@@ -220,7 +220,7 @@ begin
     FDate := Temp.Date;
     FDateAsString := FormatDateTime(ShortDateFormat,FDate);
     {$IFDEF VerboseCalenderSetDate}
-    writeln('TCalendar.GetProps A ',FDate,' ',FDateAsString);
+    DebugLn('TCalendar.GetProps A ',FDate,' ',FDateAsString);
     {$ENDIF}
   end;
 end;
@@ -236,7 +236,7 @@ begin
     Temp.DisplaySettings := FDisplaySettings;
     Temp.ReadOnly := fReadOnly;
     {$IFDEF VerboseCalenderSetDate}
-    writeln('TCalendar.SetProps A ',FDate,' ',FDateAsString);
+    DebugLn('TCalendar.SetProps A ',FDate,' ',FDateAsString);
     {$ENDIF}
     CNSendMessage(LM_SETVALUE, Self, @temp);	// Get the info
   End else begin

@@ -48,7 +48,7 @@ unit DynHashArray;
 
 interface
 
-uses Classes, SysUtils;
+uses Classes, SysUtils, LCLProc;
 
 type
   TDynHashArray = class;
@@ -288,8 +288,8 @@ procedure TDynHashArray.WriteDebugReport;
 var i, RealHashIndex: integer;
   HashItem: PDynHashArrayItem;
 begin
-  writeln('TDynHashArray.WriteDebugReport: Consistency=',ConsistencyCheck);
-  writeln('  Count=',FCount,'  Capacity=',FCapacity);
+  DebugLn('TDynHashArray.WriteDebugReport: Consistency=',dbgs(ConsistencyCheck));
+  DebugLn('  Count=',dbgs(FCount),'  Capacity=',dbgs(FCapacity));
   for i:=0 to FCapacity-1 do begin
     HashItem:=FItems[i];
     if HashItem<>nil then begin
@@ -306,7 +306,7 @@ begin
   end;
   HashItem:=FFirstItem;
   while HashItem<>nil do begin
-    writeln('  ',HexStr(Cardinal(HashItem^.Prior),8),'<-'
+    DebugLn('  ',HexStr(Cardinal(HashItem^.Prior),8),'<-'
                 ,HexStr(Cardinal(HashItem),8)
                 ,'(',HexStr(Cardinal(HashItem^.Item),8),')'
                 ,'->',HexStr(Cardinal(HashItem^.Next),8));
@@ -446,7 +446,7 @@ begin
       Result:=FCustomHashFunction(Self,Key);
     {if (Key=FHashCacheItem) and (FHashCacheIndex>=0)
     and (Result<>FHashCacheIndex) then begin
-      writeln(' DAMN: ',HexStr(Cardinal(Key),8),' ',FHashCacheIndex,'<>',Result);
+      DebugLn(' DAMN: ',HexStr(Cardinal(Key),8),' ',FHashCacheIndex,'<>',Result);
       raise Exception.Create('GROSSER MIST');
     end;}
     // Check if the owner or custon function has returned something valid
@@ -906,8 +906,8 @@ end;
 
 procedure TDynHashArrayItemMemManager.WriteDebugReport;
 begin
-  writeln('TDynHashArrayItemMemManager.WriteDebugReport:'
-    ,' Consistency=',ConsistencyCheck,', FreeCount=',FFreeCount);
+  DebugLn('TDynHashArrayItemMemManager.WriteDebugReport:'
+    ,' Consistency=',dbgs(ConsistencyCheck),', FreeCount=',dbgs(FFreeCount));
 end;
 
 //==============================================================================

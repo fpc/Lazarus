@@ -93,7 +93,7 @@ begin
   or ((PanelIndex>0) and SimplePanel) then exit;
 
   if (csLoading in ComponentState) or (FUpdateLock>0) then begin
-    //writeln('TStatusBar.UpdateHandleObject Caching FHandleObjectNeedsUpdate=',FHandleObjectNeedsUpdate,' FHandleUpdatePanelIndex=',FHandleUpdatePanelIndex,' ',PanelIndex);
+    //DebugLn('TStatusBar.UpdateHandleObject Caching FHandleObjectNeedsUpdate=',FHandleObjectNeedsUpdate,' FHandleUpdatePanelIndex=',FHandleUpdatePanelIndex,' ',PanelIndex);
     if FHandleObjectNeedsUpdate then begin
       // combine multiple updates
       if (FHandleUpdatePanelIndex>=0)
@@ -110,7 +110,7 @@ begin
     exit;
   end;
 
-  //writeln('TStatusBar.UpdateHandleObject A FHandlePanelCount=',FHandlePanelCount,' PanelIndex=',PanelIndex,' Panels.Count=',Panels.Count,' ',SimplePanel);
+  //DebugLn('TStatusBar.UpdateHandleObject A FHandlePanelCount=',FHandlePanelCount,' PanelIndex=',PanelIndex,' Panels.Count=',Panels.Count,' ',SimplePanel);
   if (FHandlePanelCount>PanelIndex) and (PanelIndex>=0) then begin
     // update one panel
     StatusBarPanelUpdate(Self,PanelIndex);

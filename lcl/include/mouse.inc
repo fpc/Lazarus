@@ -38,7 +38,7 @@ End;
 Procedure TMouse.SetCapture(const Value : HWND);
 Begin
   {$IFDEF VerboseMouseCapture}
-  writeln('TMouse.SetCapture ');
+  DebugLn('TMouse.SetCapture ');
   {$ENDIF}
   FCapture := Value;
   if Value = 0 then ReleaseCapture else LCLIntf.SetCapture(Value);

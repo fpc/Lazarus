@@ -479,7 +479,7 @@ var
         and (CurBounds.Left<NewBounds.Right)
         and (CurBounds.Bottom>NewBounds.Top)
         and (CurBounds.Top<NewBounds.Bottom) then begin
-          //writeln('CalculatePosition Move ',NewBounds.Left,'->',CurBounds.Right);
+          //DebugLn('CalculatePosition Move ',NewBounds.Left,'->',CurBounds.Right);
           NewBounds.Left:=CurBounds.Right;
           NewBounds.Right:=NewBounds.Left+NewControlWidth;
         end;
@@ -496,12 +496,12 @@ var
       NewBounds.Right:=NewBounds.Left+NewControlWidth;
       inc(NewBounds.Top,ButtonHeight);
       inc(NewBounds.Bottom,ButtonHeight);
-      //writeln('CalculatePosition Next Row ',NewBounds.Left,',',NewBounds.Top);
+      //DebugLn('CalculatePosition Next Row ',NewBounds.Left,',',NewBounds.Top);
     until false;
   end;
 
 begin
-  //writeln('WrapButtons ');
+  //DebugLn('WrapButtons ');
   Result:=true;
   BeginUpdate;
   NewWidth:=0;
@@ -532,7 +532,7 @@ begin
       CurControl:=TControl(OrderedControls[i]);
       if CurControl.Align=alNone then begin
         CalculatePosition;
-        //writeln('WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,',',CurControl.Height);
+        //DebugLn('WrapButtons ',CurControl.Name,':',CurControl.ClassName,' ',x,',',y,',',CurControl.Width,',',CurControl.Height);
         CurControl.SetBounds(x,y,NewControlWidth,ButtonHeight);
         inc(x,CurControl.Width);
         
@@ -2094,6 +2094,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.26  2004/05/10 07:01:51  micha
   fix mainunit typo
 

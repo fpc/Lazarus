@@ -54,12 +54,12 @@ var
   
   procedure OutOfBounds;
   begin
-    writeln('TCustomImage.DoAutoSize NewWidth=',NewWidth,
-      ' NewHeight=',NewHeight,
-      ' ModifyWidth=',ModifyWidth,
-      ' Picture.Width=',Picture.Width,
-      ' ModifyHeight=',ModifyHeight,
-      ' Picture.Height=',Picture.Height,
+    DebugLn('TCustomImage.DoAutoSize NewWidth=',dbgs(NewWidth),
+      ' NewHeight=',dbgs(NewHeight),
+      ' ModifyWidth='+dbgs(ModifyWidth),
+      ' Picture.Width='+dbgs(Picture.Width),
+      ' ModifyHeight='+dbgs(ModifyHeight),
+      ' Picture.Height='+dbgs(Picture.Height)+
       '');
     RaiseGDBException('');
   end;

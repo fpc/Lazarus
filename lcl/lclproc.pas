@@ -110,6 +110,8 @@ procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7: string);
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8: string);
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9: string);
 procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11: string);
+procedure DebugLn(const s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12: string);
 
 procedure DbgOut(const s: string);
 procedure DbgOut(const s1,s2: string);
@@ -669,6 +671,17 @@ end;
 procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10: string);
 begin
   DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11: string);
+begin
+  DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11);
+end;
+
+procedure DebugLn(const s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11,
+  s12: string);
+begin
+  DebugLn(s1+s2+s3+s4+s5+s6+s7+s8+s9+s10+s11+s12);
 end;
 
 procedure DBGOut(const s: string);

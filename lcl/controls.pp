@@ -1823,7 +1823,7 @@ begin
   Result:=(R1^.Left=R2^.Left) and (R1^.Top=R2^.Top) and
           (R1^.Bottom=R2^.Bottom) and (R1^.Right=R2^.Right);
   {if not Result then begin
-    writeln(' DIFFER: ',R1^.Left,',',R1^.Top,',',R1^.Right,',',R1^.Bottom
+    DebugLn(' DIFFER: ',R1^.Left,',',R1^.Top,',',R1^.Right,',',R1^.Bottom
       ,' <> ',R2^.Left,',',R2^.Top,',',R2^.Right,',',R2^.Bottom);
   end;}
 end;
@@ -2247,7 +2247,7 @@ end;
 
 initialization
 
-  //writeln('controls.pp - initialization');
+  //DebugLn('controls.pp - initialization');
   Mouse := TMouse.create;
   DragControl := nil;
   CaptureControl := nil;
@@ -2262,6 +2262,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.200  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.199  2004/05/11 09:49:46  mattias
   started sending CN_KEYUP
 

@@ -120,7 +120,7 @@ begin
         Widget:=GetStyleWidget(lgsVerticalScrollbar);
         MinWidth:=Widget^.requisition.Width;
       end;
-      //writeln('TGtkWidgetSet.GetControlConstraints A ',MinWidth,',',MinHeight,' ',TScrollBar(SizeConstraints.Control).Kind=sbHorizontal,' ',TScrollBar(SizeConstraints.Control).Name);
+      //DebugLn('TGtkWidgetSet.GetControlConstraints A ',MinWidth,',',MinHeight,' ',TScrollBar(SizeConstraints.Control).Kind=sbHorizontal,' ',TScrollBar(SizeConstraints.Control).Name);
       SizeConstraints.SetInterfaceConstraints(MinWidth,MinHeight,
                                               MinWidth,MinHeight);
     end;
@@ -365,7 +365,7 @@ var
 begin
   Result:=IsValidGDIObject(Image) and
           ((NewMask=0) or IsValidGDIObject(NewMask));
-  writeln('TGtkWidgetSet.ReplaceBitmapMask A ',Result);
+  DebugLn('TGtkWidgetSet.ReplaceBitmapMask A ',dbgs(Result));
   if not Result then exit;
   
   // free 'Mask'
@@ -379,7 +379,7 @@ begin
   if ImageGDIObject^.GDIBitmapMaskObject<>nil then begin
     gdk_pixmap_unref(ImageGDIObject^.GDIBitmapMaskObject);
     ImageGDIObject^.GDIBitmapMaskObject:=nil;
-    writeln('TGtkWidgetSet.ReplaceBitmapMask B old Mask deleted');
+    DebugLn('TGtkWidgetSet.ReplaceBitmapMask B old Mask deleted');
   end;
 
   // move image data from 'NewMask' to mask data of 'Image'
@@ -396,7 +396,7 @@ begin
     end;
     ImageGDIObject^.GDIBitmapMaskObject:=NewMaskGDIObject^.GDIBitmapObject;
     NewMaskGDIObject^.GDIBitmapObject:=nil;
-    writeln('TGtkWidgetSet.ReplaceBitmapMask C Mask replaced');
+    DebugLn('TGtkWidgetSet.ReplaceBitmapMask C Mask replaced');
   end;
 
   // delete GDIObject 'NewMask'
@@ -417,7 +417,7 @@ var
   StatusPanelWidget: PGtkWidget;
   BoxChild: PGtkBoxChild;
 begin
-  //writeln('TGtkWidgetSet.StatusBarPanelUpdate ',HexStr(Cardinal(StatusBar),8),' Index=',Index);
+  //DebugLn('TGtkWidgetSet.StatusBarPanelUpdate ',HexStr(Cardinal(StatusBar),8),' Index=',Index);
   AStatusBar:=StatusBar as TStatusBar;
   if Index>=0 then begin
     // update one
@@ -454,7 +454,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.StatusBarUpdate(StatusBar: TObject);
 begin
-  //writeln('TGtkWidgetSet.StatusBarUpdate ',HexStr(Cardinal(StatusBar),8));
+  //DebugLn('TGtkWidgetSet.StatusBarUpdate ',HexStr(Cardinal(StatusBar),8));
   UpdateStatusBarPanels(StatusBar,PGtkWidget((StatusBar as TStatusBar).Handle));
 end;
 
@@ -463,6 +463,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.27  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.26  2004/04/02 20:20:21  mattias
   implemented by guessing the 16bit bmp reader part
 

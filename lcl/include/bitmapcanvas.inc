@@ -63,7 +63,7 @@ begin
   end;
 
   Handle := DC;
-  //writeln('TBitmapCanvas.CreateHandle END Self=',HexStr(Cardinal(Self),8),' DC=',HexStr(Cardinal(DC),8),
+  //DebugLn('TBitmapCanvas.CreateHandle END Self=',HexStr(Cardinal(Self),8),' DC=',HexStr(Cardinal(DC),8),
   //  ' Handle=',HexStr(Cardinal(GetUpdatedHandle([csHandleValid])),8));
 end;
 
@@ -92,7 +92,7 @@ var
   OldHandle: HBITMAP;
 begin
   if not HandleAllocated then exit;
-  //writeln('TBitmapCanvas.FreeDC START Self=',HexStr(Cardinal(Self),8),' FBitmap=',HexStr(Cardinal(FBitmap),8));
+  //DebugLn('TBitmapCanvas.FreeDC START Self=',HexStr(Cardinal(Self),8),' FBitmap=',HexStr(Cardinal(FBitmap),8));
   if FBitmap<>nil then begin
     if FOldBitmapValid then begin
       SelectObject(FHandle, FOldBitmap);
@@ -117,6 +117,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2004/05/11 12:16:47  mattias
+  replaced writeln by debugln
+
   Revision 1.11  2004/04/10 17:58:56  mattias
   implemented mainunit hints for include files
 
