@@ -1332,19 +1332,21 @@ begin
       end;
 
       LM_AddPage :
-      begin
-        if Sender is TControl then begin
-          Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> Add NB page: %s', [Sender.ClassName, TLMNotebookEvent(Data^).Child.ClassName]));
-          AddNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child, 
+        if Sender is TCustomNoteBook then begin
+          AddNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child,
             TLMNotebookEvent(Data^).Page);
         end;
-      end;
 
       LM_RemovePage :
-      begin
-        if Sender is TControl then
+        if Sender is TCustomNoteBook then begin
           RemoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Page);
-      end;
+        end;
+
+      LM_MovePage :
+        if Sender is TCustomNoteBook then begin
+          MoveNBPage(TControl(Sender), TLMNotebookEvent(Data^).Child,
+            TLMNotebookEvent(Data^).Page);
+        end;
 
       LM_ShowTabs :
       begin
@@ -2747,7 +2749,14 @@ begin
   then
     DestroyCaret(Handle);
     
-  if Sender is TCommonDialog then begin
+  if Sender is TControl then begin
+    case TControl(Sender).fCompStyle of
+    csComboBox:
+      SetComboBoxText(PGtkCombo(Handle),nil);
+      
+    end;
+  end
+  else if Sender is TCommonDialog then begin
     DestroyCommonDialogAddOns(TCommonDialog(Sender));
   end;
 
@@ -4539,6 +4548,20 @@ begin
   UpdateNoteBookClientWidget(ANoteBook);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TgtkObject.MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);
+  
+  Move a notebook page.
+------------------------------------------------------------------------------}
+procedure TgtkObject.MoveNBPage(ANoteBook, APage: TObject; NewIndex: Integer);
+var
+  NoteBookWidget: PGtkNotebook;
+begin
+  NoteBookWidget:=PGtkNotebook(TWinControl(ANoteBook).Handle);
+  gtk_notebook_reorder_child(NoteBookWidget,
+                             PGtkWidget(TWinControl(APage).Handle),NewIndex);
+  UpdateNoteBookClientWidget(ANoteBook);
+end;
 
 {------------------------------------------------------------------------------}
 {       TGtkObject ReDraw                                                      }
@@ -4546,20 +4569,21 @@ end;
 {------------------------------------------------------------------------------}
 procedure TgtkObject.ReDraw(Child : Pointer);
 var
-   fWindow :pGdkWindow;
-   widget : PgtkWIdget;
-   PixMap : pgdkPixMap;
-   //gc : PGDKGc;
+  fWindow :pGdkWindow;
+  widget : PgtkWIdget;
+  PixMap : pgdkPixMap;
+  //gc : PGDKGc;
 begin
-   Assert(False, 'Trace:In AutoRedraw in GTKObject');
+  Assert(False, 'Trace:In AutoRedraw in GTKObject');
 
-   Widget := GetFixedWidget(Child);
-   pixmap := gtk_Object_get_data(pgtkobject(Child),'Pixmap');
-   if PixMap = nil then Exit;
-   fWindow := pGtkWidget(widget)^.window;
-   //gc := gdk_gc_new(PgdkWindow(fWindow));
+  Widget := GetFixedWidget(Child);
+  pixmap := gtk_Object_get_data(pgtkobject(Child),'Pixmap');
+  if PixMap = nil then Exit;
+  fWindow := pGtkWidget(widget)^.window;
+  //gc := gdk_gc_new(PgdkWindow(fWindow));
 
-   gdk_draw_pixmap(fwindow,PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (widget)], 
+  gdk_draw_pixmap(fwindow,
+    PGtkStyle(widget^.TheStyle)^.fg_gc[GTK_WIDGET_STATE (widget)],
     pixmap,
     0,0,
     0,0,
@@ -5700,7 +5724,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.199  2002/09/05 12:11:44  lazarus
+  MG: TNotebook is now streamable
+
   Revision 1.198  2002/09/05 10:12:07  lazarus
+
   New dialog for multiline caption of TCustomLabel.
   Prettified TStrings property editor.
   Memo now has automatic scrollbars (not fully working), WordWrap and Scrollbars property
