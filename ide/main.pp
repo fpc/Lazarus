@@ -5042,7 +5042,7 @@ begin
     if SearchedFilename<>'' then begin
       // open the file in the source editor
       Ext:=lowercase(ExtractFileExt(SearchedFilename));
-      if (Ext<>'.lfm') and (Ext<>'.lpi') then begin
+      if (not FilenameIsFormText(SearchedFilename)) and (Ext<>'.lpi') then begin
         Result:=(DoOpenEditorFile(SearchedFilename,[ofOnlyIfExists])=mrOk);
         if Result then begin
           // set caret position
@@ -5556,6 +5556,7 @@ end;
 procedure TMainIDE.DoJumpToCodeToolBossError;
 var
   ActiveSrcEdit:TSourceEditor;
+  ErrorCaret: TPoint;
 begin
   if CodeToolBoss.ErrorMessage='' then exit;
   // syntax error -> show error and jump
@@ -5575,19 +5576,20 @@ begin
   // jump to error in source editor
   if CodeToolBoss.ErrorCode<>nil then begin
     SourceNotebook.AddJumpPointClicked(Self);
+    ErrorCaret:=Point(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine);
     if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,[ofOnlyIfExists])=mrOk
     then begin
       ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
       with ActiveSrcEdit.EditorComponent do begin
         SetFocus;
-        CaretXY:=Point(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine);
+        CaretXY:=ErrorCaret;
         BlockBegin:=CaretXY;
         BlockEnd:=CaretXY;
         if CodeToolBoss.ErrorTopLine>0 then
           TopLine:=CodeToolBoss.ErrorTopLine;
       end;
       SourceNotebook.ClearErrorLines;
-      ActiveSrcEdit.ErrorLine:=CodeToolBoss.ErrorLine;
+      ActiveSrcEdit.ErrorLine:=ErrorCaret.Y;
       BringWindowToTop(SourceNoteBook.Handle);
     end;
   end;
@@ -6370,6 +6372,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.297  2002/05/16 14:35:19  lazarus
+  MG: fixed codetools error jumping
+
   Revision 1.296  2002/05/16 14:01:45  lazarus
   MG: backuping files now save file attributes/permissions
 
