@@ -176,7 +176,7 @@ type
     //used to get the word at the mouse cursor
     Function GetWordAtPosition(Position : TPoint) : String;
     
-    //used to get teh x,y of the caret if the caret was where the mouse is
+    //used to get the x,y of the caret if the caret was where the mouse is
     //used in
     //GetWordAtPosition
     Function GetCaretPosFromCursorPos(CursorPos : TPoint) : TPoint;
@@ -1439,7 +1439,7 @@ var
 begin
   Result := '';
   Caretpos := GetCaretPosfromCursorPos(Position);
-  LineNum := CaretPos.Y;
+  LineNum := CaretPos.Y-1;
   XLine := CaretPos.X;
   EditorLine := FEditor.Lines[LineNum];
 //  Writeln('XLine and LineNum = ',XLine,',',LineNum);
@@ -1512,7 +1512,7 @@ begin
      LineNum := CursorPos.Y div LineHeight
      else
      LineNum := 1;
-  LineNum := LineNUm + (TopLine-1);
+  LineNum := LineNUm + (TopLine);
   XLine := CursorPos.X div FEditor.CharWidth;
   if XLine = 0 then inc(XLine);
   
@@ -3041,6 +3041,7 @@ var
   TextPosition : TPoint;
   SE : TSourceEditor;
   WIndow : TWInControl;
+  Caret : TPoint;
 begin
   FHintTimer.Enabled := False;
 
@@ -3079,7 +3080,9 @@ begin
 
   //If no hint, then Exit
   if AHint = '' then Exit;
-  
+
+  Caret := SE.GetCaretPosfromCursorPos(TextPosition);
+  AHint := inttostr(Caret.Y)+','+Inttostr(Caret.X)+' : '+aHint;
 //  Writeln('cPosition ius ',cPosition.x,',',cPosition.y);
   Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
 //  Position := ClientToScreen(FLastMouseMovePos);
