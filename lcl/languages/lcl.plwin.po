@@ -326,8 +326,12 @@ msgid "Insert"
 msgstr ""
 
 #: lclstrconsts:rsinvaliddate
-msgid "Invalid Date :%s"
-msgstr "B³êdna data :%s"
+msgid "Invalid Date : %s"
+msgstr ""
+
+#: lclstrconsts:rsinvaliddaterangehint
+msgid "Invalid Date: %s. Must be between %s and %s"
+msgstr ""
 
 #: lclstrconsts:sinvalidindex
 msgid "Invalid ImageList Index"

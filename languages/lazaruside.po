@@ -3,7 +3,7 @@ msgid "Enter translation language"
 msgstr ""
 
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.5 beta"
+msgid "0.9.7 beta"
 msgstr ""
 
 #: lazarusidestrconsts:lisleaveemptyfo
@@ -828,10 +828,6 @@ msgstr ""
 
 #: lazarusidestrconsts:lisprogramsourcemusthaveapascalextensionlikepaspporlp
 msgid "Program source must have a pascal extension like .pas, .pp or .lpr"
-msgstr ""
-
-#: lazarusidestrconsts:lislazarusprojectinfolpilpiallfiles
-msgid "Lazarus Project Info (*.lpi)|*.lpi|All Files|*.*"
 msgstr ""
 
 #: lazarusidestrconsts:liscompileroptionsforproject
@@ -5212,6 +5208,10 @@ msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsinvalidparent
 msgid "Invalid parent"
+msgstr ""
+
+#: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
+msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsautocreatednodesreadonly

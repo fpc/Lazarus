@@ -243,7 +243,7 @@ msgid "(unknown macro: %s)"
 msgstr "(неизвестный макрос: %s)"
 
 #: lazarusidestrconsts:lislazarusversionstring
-msgid "0.9.5 beta"
+msgid "0.9.7 beta"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pchooseanexistingfile
@@ -253,6 +253,10 @@ msgstr "<выберите существующий файл>"
 #: lazarusidestrconsts:lisctdefnovariableselected
 msgid "<no variable selected>"
 msgstr "<Не выбрано переменных>"
+
+#: lazarusidestrconsts:lisacannotholdtcontrolsyoucanonlyputnonvisualcomponen
+msgid "A %s can not hold TControls.%sYou can only put non visual components on it."
+msgstr ""
 
 #: lazarusidestrconsts:lisafilealreadyexistsreplaceit
 msgid "A file %s%s%s already exists.%sReplace it?"
@@ -3509,10 +3513,6 @@ msgstr "Каталог Lazarus"
 #: lazarusidestrconsts:lislazaruseditorv
 msgid "Lazarus Editor v%s"
 msgstr "Редактор Lazarus v%s"
-
-#: lazarusidestrconsts:lislazarusprojectinfolpilpiallfiles
-msgid "Lazarus Project Info (*.lpi)|*.lpi|All Files|*.*"
-msgstr "Сведения о проекте Lazarus (*.lpi)|*.lpi|All Files|*.*"
 
 #: lazarusidestrconsts:locwndsrceditor
 msgid "Lazarus Source Editor"

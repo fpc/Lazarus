@@ -4,7 +4,7 @@ msgstr "%d - %d"
 
 #: syneditstrconst:syns_filterasm68hc11
 msgid "68HC11 Assembler Files (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
-msgstr "Fitxers d'ensamblador 68HC11 (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
+msgstr "Fitxers d'assemblador 68HC11 (*.hc11,*.asm,*.asc)|*.HC11;*.ASM;*.ASC"
 
 #: syneditstrconst:syns_shortcutnone
 msgid "<none>"
@@ -44,7 +44,7 @@ msgstr "Fitxers de memòria cau (*.mac,*.inc,*.int)|*.mac;*.inc;*.int"
 
 #: syneditstrconst:syns_filtercss
 msgid "Cascading Stylesheets (*.css)|*.css"
-msgstr "Cascading Stylesheets (*.css)|*.css"
+msgstr "Fulls d'estil en cascada (*.css)|*.css"
 
 #: syneditstrconst:syns_filteradsp21xx
 msgid "DSP Files (*.dsp,*.inc)|*.DSP;*.INC"
@@ -72,7 +72,7 @@ msgstr "Fitxers Galaxy (*.gtv,*.galrep,*.txt)|*.gtv;*.galrep;*.txt"
 
 #: syneditstrconst:syns_filterhp
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
-msgstr ""
+msgstr "Fitxers HP48 (*.s,*.sou,*.a,*.hp)|*.S;*.SOU;*.A;*.HP"
 
 #: syneditstrconst:syns_filterhp48
 msgid "HP48 Files (*.s,*.sou,*.a,*.hp)|*.s;*.sou;*.a;*.hp"
@@ -84,7 +84,7 @@ msgstr "HTML"
 
 #: syneditstrconst:syns_filterhtml
 msgid "HTML Document (*.htm,*.html)|*.htm;*.html"
-msgstr "Documents HTML (*.htm,*.html)|*.htm;*.html"
+msgstr "Document HTML (*.htm,*.html)|*.htm;*.html"
 
 #: syneditstrconst:syns_filterini
 msgid "INI Files (*.ini)|*.ini"
@@ -112,7 +112,7 @@ msgstr "Fitxers de formes Lazarus (*.lfm)|*.lfm"
 
 #: syneditstrconst:syns_filterbatch
 msgid "MS-DOS Batch Files (*.bat;*.cmd)|*.bat;*.cmd"
-msgstr "Fitxers de lots MS-DOS (*.bat;*.cmd)|*.bat;*.cmd"
+msgstr "Fitxers de lot MS-DOS (*.bat;*.cmd)|*.bat;*.cmd"
 
 #: syneditstrconst:syns_filtermodelica
 msgid "Modelica Files (*.mo)|*.mo"
@@ -172,7 +172,7 @@ msgstr "Ja existeix la drecera"
 
 #: syneditstrconst:syns_filtersml
 msgid "Standard ML Files (*.sml)|*.sml"
-msgstr "Fitxers estàndard ML (*.sml)|*.sml"
+msgstr "Fitxers normalitzats ML (*.sml)|*.sml"
 
 #: syneditstrconst:syns_filtertcltk
 msgid "Tcl/Tk Files (*.tcl)|*.tcl"
@@ -180,11 +180,11 @@ msgstr "Fitxers Tcl/Tk (*.tcl)|*.tcl"
 
 #: syneditstrconst:syns_filtertex
 msgid "TeX Files (*.tex)|*.tex"
-msgstr ""
+msgstr "Fitxers TeX (*.tex)|*.tex"
 
 #: syneditstrconst:syns_duplicateshortcutmsg
 msgid "The keystroke \"%s\" is already assigned to another editor command. (%s)"
-msgstr "La seqüència \"%s\" ja està assignat a un altre comandament d'editor. (%s)"
+msgstr "La seqüència \"%s\" ja està assignada a un altre ordre d'editor. (%s)"
 
 #: syneditstrconst:syns_scrollinfofmttop
 msgid "Top Line: %d"
@@ -192,7 +192,7 @@ msgstr "Primera línia: %d"
 
 #: syneditstrconst:syns_filterunixshellscript
 msgid "UNIX Shell Scripts (*.sh)|*.sh"
-msgstr ""
+msgstr "Seqüències de l'intèrpret d'ordres UNIX (*.sh)|*.sh"
 
 #: syneditstrconst:syns_filtervbscript
 msgid "VBScript Files (*.vbs)|*.vbs"
@@ -208,5 +208,5 @@ msgstr "Document XML (*.xml,*.xsd,*.xsl,*.xslt,*.dtd)|*.xml;*.xsd;*.xsl;*.xslt;*
 
 #: syneditstrconst:syns_filterx86asm
 msgid "x86 Assembly Files (*.asm)|*.ASM"
-msgstr "Fitxers d'ensamblador x86 (*.asm)|*.ASM"
+msgstr "Fitxers d'assemblador x86 (*.asm)|*.ASM"
 
