@@ -357,6 +357,7 @@ type
     procedure SetTIObject(const AValue: TPersistent);
   public
     constructor Create(TheOwner: TComponent); override;
+    destructor Destroy; override;
     property TIObject: TPersistent read GetTIObject write SetTIObject;
     property AutoFreeHook: boolean read FAutoFreeHook write SetAutoFreeHook;
     property SaveOnChangeTIObject: boolean read FSaveOnChangeTIObject
@@ -3044,6 +3045,13 @@ begin
   FSaveOnChangeTIObject:=true;
   FAutoFreeHook:=true;
   CreateWithParams(TheOwner,Hook,AllTypeKinds,25);
+end;
+
+destructor TCustomPropertiesGrid.Destroy;
+begin
+  if FAutoFreeHook then
+    FPropertyEditorHook.Free;
+  inherited Destroy;
 end;
 
 end.
