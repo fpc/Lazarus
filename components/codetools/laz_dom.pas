@@ -920,16 +920,25 @@ begin
 end;
 
 function TDOMNode_WithChildren.FindNode(const ANodeName: DOMString): TDOMNode;
-var AVLNode: TAVLTreeNode;
+var
+  AVLNode: TAVLTreeNode;
 begin
   Result:=nil;
   if FChildNodeTree<>nil then begin
+    // use tree for fast search
     //if FChildNodeTree.ConsistencyCheck<>0 then
     //  raise exception.Create('TDOMNode_WithChildren.FindNode');
     AVLNode:=FChildNodeTree.FindKey(DOMPChar(ANodeName),
                                     @CompareDOMStringWithDOMNode);
     if AVLNode<>nil then
       Result:=TDOMNode(AVLNode.Data);
+  end else begin
+    // search in list
+    Result := FirstChild;
+    while Assigned(Result) do begin
+      if CompareDOMStringWithDOMNode(DOMPChar(ANodeName),Result)=0 then exit;
+      Result := Result.NextSibling;
+    end;
   end;
 end;
 
@@ -947,10 +956,32 @@ begin
 end;
 
 procedure TDOMNode_WithChildren.AddToChildNodeTree(NewNode: TDOMNode);
+var
+  ChildCount: Integer;
+  ANode: TDOMNode;
 begin
-  if FChildNodeTree=nil then
-    FChildNodeTree:=TAVLTree.Create(@CompareDOMNodeWithDOMNode);
-  if FChildNodeTree.Find(NewNode)=nil then
+  if (FChildNodeTree=nil) then begin
+    // there is no childnodetree yet
+    // Most xml trees contains nodes with only a few child nodes. It would be
+    // overhead to create a tree for only a few childs.
+    ChildCount := 0;
+    ANode := FirstChild;
+    while Assigned(ANode) do begin
+      inc(ChildCount);
+      ANode := ANode.NextSibling;
+    end;
+    if ChildCount>5 then begin
+      FChildNodeTree:=TAVLTree.Create(@CompareDOMNodeWithDOMNode);
+      // add all existing childs
+      ANode := FirstChild;
+      while Assigned(ANode) do begin
+        if (FChildNodeTree.Find(ANode)=nil) then
+          FChildNodeTree.Add(ANode);
+        ANode := ANode.NextSibling;
+      end;
+    end;
+  end;
+  if Assigned(FChildNodeTree) and (FChildNodeTree.Find(NewNode)=nil) then
     FChildNodeTree.Add(NewNode);
   //if FChildNodeTree.ConsistencyCheck<>0 then
   //  raise exception.Create('TDOMNode_WithChildren.FindNode');
@@ -1643,6 +1674,9 @@ end.
 
 {
   $Log$
+  Revision 1.11  2005/01/29 17:37:56  mattias
+  reduced mem need for xml stuff
+
   Revision 1.10  2005/01/29 14:36:04  mattias
   reactivated fast xml units without widestrings
 

@@ -41,6 +41,7 @@ type
 
   TXMLOptionsStorage = class(TConfigStorage)
   private
+    FFreeXMLConfig: boolean;
     FXMLConfig: TXMLConfig;
   protected
     function  GetFullPathValue(const APath, ADefault: String): String; override;
@@ -55,9 +56,13 @@ type
     procedure DeleteFullPath(const APath: string); override;
     procedure DeleteFullPathValue(const APath: string); override;
   public
+    constructor Create(const Filename: string; LoadFromDisk: Boolean); override;
     constructor Create(TheXMLConfig: TXMLConfig);
     constructor Create(TheXMLConfig: TXMLConfig; const StartPath: string);
+    destructor Destroy; override;
     property XMLConfig: TXMLConfig read FXMLConfig;
+    property FreeXMLConfig: boolean read FFreeXMLConfig write FFreeXMLConfig;
+    procedure WriteToDisk; override;
   end;
 
 
@@ -1324,6 +1329,16 @@ begin
   XMLConfig.DeleteValue(APath);
 end;
 
+constructor TXMLOptionsStorage.Create(const Filename: string;
+  LoadFromDisk: Boolean);
+begin
+  if LoadFromDisk then
+    FXMLConfig:=TXMLConfig.Create(Filename)
+  else
+    FXMLConfig:=TXMLConfig.CreateClean(Filename);
+  FFreeXMLConfig:=true;
+end;
+
 constructor TXMLOptionsStorage.Create(TheXMLConfig: TXMLConfig);
 begin
   FXMLConfig:=TheXMLConfig;
@@ -1338,8 +1353,20 @@ begin
   AppendBasePath(StartPath);
 end;
 
+destructor TXMLOptionsStorage.Destroy;
+begin
+  if FreeXMLConfig then FreeAndNil(FXMLConfig);
+  inherited Destroy;
+end;
+
+procedure TXMLOptionsStorage.WriteToDisk;
+begin
+  FXMLConfig.Flush;
+end;
+
 initialization
   IDEDialogLayoutList:=nil;
+  DefaultConfigClass:=TXMLOptionsStorage;
 
 end.
 

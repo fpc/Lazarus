@@ -44,6 +44,7 @@ type
     procedure DeleteFullPath(const APath: string); virtual; abstract;
     procedure DeleteFullPathValue(const APath: string); virtual; abstract;
   public
+    constructor Create(const Filename: string; LoadFromDisk: Boolean); virtual; abstract;
     destructor Destroy; override;
     function  GetValue(const APath, ADefault: String): String;
     function  GetValue(const APath: String; ADefault: Integer): Integer;
@@ -60,8 +61,14 @@ type
     function ExtendPath(const APath: string): string;
     procedure AppendBasePath(const Path: string);
     procedure UndoAppendBasePath;
+    procedure WriteToDisk; virtual; abstract;
   end;
-
+  
+  TConfigStorageClass = class of TConfigStorage;
+  
+var
+  DefaultConfigClass: TConfigStorageClass;
+  
 implementation
 
 { TConfigStorage }
@@ -153,6 +160,9 @@ begin
   FCurrentBasePath:=FPathStack[FPathStack.Count-1];
   FPathStack.Delete(FPathStack.Count-1);
 end;
+
+initialization
+  DefaultConfigClass:=nil;
 
 end.
 
