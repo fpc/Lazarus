@@ -1882,14 +1882,16 @@ begin
     If Cursor <> crDefault then
       Cursor := crDefault;
 
-  if MouseCapture and (sfWaitForDragging in fStateFlags) then begin
+  if {$IFNDEF SYN_LAZARUS}MouseCapture and{$ENDIF}
+    (sfWaitForDragging in fStateFlags) then begin
     if (Abs(fMouseDownX - X) >= GetSystemMetrics(SM_CXDRAG))
       or (Abs(fMouseDownY - Y) >= GetSystemMetrics(SM_CYDRAG))
     then begin
       Exclude(fStateFlags, sfWaitForDragging);
       BeginDrag(false);
     end;
-  end else if (ssLeft in Shift) and MouseCapture then begin
+  end else if (ssLeft in Shift) {$IFNDEF SYN_LAZARUS}and MouseCapture{$ENDIF}
+  then begin
 //writeln(' TCustomSynEdit.MouseMove CAPTURE Mouse=',X,',',Y,' Caret=',CaretX,',',CaretY,', BlockBegin=',BlockBegin.X,',',BlockBegin.Y,' BlockEnd=',BlockEnd.X,',',BlockEnd.Y,' Client=',ClientWidth-ScrollBarWidth,',',ClientHeight-ScrollBarWidth);
     if (X >= fGutterWidth)
       and (X < ClientWidth{$IFDEF SYN_LAZARUS}-ScrollBarWidth{$ENDIF})
@@ -2013,9 +2015,9 @@ begin
   inherited MouseUp(Button, Shift, X, Y);
   fScrollTimer.Enabled := False;
   {$IFDEF SYN_LAZARUS}
+  MouseCapture := False;
   if (X>=ClientWidth-ScrollBarWidth) or (Y>=ClientHeight-ScrollBarWidth) then
   begin
-    MouseCapture := False;
     exit;
   end;
   LastMouseCaret:=PixelsToRowColumn(Point(X,Y));
