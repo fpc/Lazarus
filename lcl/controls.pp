@@ -815,7 +815,7 @@ type
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
-    procedure CreateComponent(AOwner: TComponent);
+    procedure CreateComponent(TheOwner: TComponent); virtual;
     procedure DestroyComponent;
     procedure DoConstraintsChange(Sender : TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight : integer); override;
@@ -1448,6 +1448,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.112  2003/04/04 09:19:22  mattias
+  activated TDataSource
+
   Revision 1.111  2003/04/02 13:23:23  mattias
   fixed default font
 
