@@ -322,6 +322,7 @@ begin
              // Disadvantages: - worst case on sorted list
              //                - not keeping order
              // ToDo: replace by mergesort and add customsort
+             //       remember selected items
   Assign(sl);
   sl.Free;
   EndUpdate;
@@ -357,14 +358,12 @@ end;
 
 procedure TGtkListStringList.BeginUpdate;
 begin
-  if FUpdateCount=0 then Include(FStates,glsItemCacheNeedsUpdate);
   inc(FUpdateCount);
 end;
 
 procedure TGtkListStringList.EndUpdate;
 begin
   dec(FUpdateCount);
-  if FUpdateCount=0 then Include(FStates,glsItemCacheNeedsUpdate);
 end;
 
 {------------------------------------------------------------------------------
@@ -537,12 +536,14 @@ var
   li, cb, box: PGtkWidget;
   l, m, r, cmp: integer;
   item_requisition: TGtkRequisition;
+  OldCount: LongInt;
 begin
+  OldCount:=Count;
   BeginUpdate;
   try
     if FSorted then begin
       l:=0;
-      r:=Count-1;
+      r:=OldCount-1;
       m:=l;
       while (l<=r) do begin
         m:=(l+r) shr 1;
@@ -554,13 +555,13 @@ begin
         else
           break;
       end;
-      if (m<Count) and (AnsiCompareText(S,Strings[m])>0) then
+      if (m<OldCount) and (AnsiCompareText(S,Strings[m])>0) then
         inc(m);
       Index:=m;
     end;
-    if (Index < 0) or (Index > Count) then
+    if (Index < 0) or (Index > OldCount) then
       RaiseException('TGtkListStringList.Insert: Index '+IntToStr(Index)
-        +' out of bounds. Count='+IntToStr(Count));
+        +' out of bounds. Count='+IntToStr(OldCount));
     if Owner = nil then RaiseException(
       'TGtkListStringList.Insert Unspecified owner');
 
@@ -581,7 +582,11 @@ begin
       li:=gtk_list_item_new_with_label(PChar(S));
     end;
     ConnectItemCallbacks(PGtkListItem(li));
-    Include(FStates,glsItemCacheNeedsUpdate);
+    ReAllocMem(FCachedItems,SizeOf(PGtkListItem)*(OldCount+1));
+    if Index<OldCount then
+      System.Move(FCachedItems[Index],FCachedItems[Index+1],
+                  SizeOf(PGtkListItem)*(OldCount-Index));
+    FCachedItems[Index]:=PGtkListItem(li);
     gtk_widget_show_all(li);
     gtk_list_insert_items(FGtkList, g_list_append(nil, li), Index);
     if (Owner is TCustomListBox)
@@ -781,6 +786,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/06/27 09:34:24  mattias
+  fixed TStringGrid goEditing   from Jesus
+
   Revision 1.23  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 

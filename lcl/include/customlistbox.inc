@@ -26,20 +26,21 @@ type
   end;
   PCustomListBoxItemRecord = ^TCustomListBoxItemRecord;
 
-{------------------------------------------------------------------------------}
-{ procedure TCustomListBox.AssignCacheToItemData                               }
-{------------------------------------------------------------------------------}
-procedure TCustomListBox.AssignCacheToItemData(const AIndex: Integer; const AData: Pointer);
+{------------------------------------------------------------------------------
+ procedure TCustomListBox.AssignCacheToItemData
+------------------------------------------------------------------------------}
+procedure TCustomListBox.AssignCacheToItemData(const AIndex: Integer;
+  const AData: Pointer);
 begin
-  if PCustomListBoxItemRecord(AData)^.Selected
-  or (FItemIndex = AIndex)
-  then SendItemSelected(AIndex, True);
+  if PCustomListBoxItemRecord(AData)^.Selected or (FItemIndex = AIndex) then
+    SendItemSelected(AIndex, True);
 end;
 
-{------------------------------------------------------------------------------}
-{ procedure TCustomListBox.AssignItemDataToCache                               }
-{------------------------------------------------------------------------------}
-procedure TCustomListBox.AssignItemDataToCache(const AIndex: Integer; const AData: Pointer);
+{------------------------------------------------------------------------------
+ procedure TCustomListBox.AssignItemDataToCache
+------------------------------------------------------------------------------}
+procedure TCustomListBox.AssignItemDataToCache(const AIndex: Integer;
+  const AData: Pointer);
 begin
   PCustomListBoxItemRecord(AData)^.Selected := Selected[AIndex];
 end;
@@ -369,9 +370,9 @@ end;
 {------------------------------------------------------------------------------}
 {  function TCustomListBox.Create                                      }
 {------------------------------------------------------------------------------}
-constructor TCustomListBox.Create(AOwner : TComponent);
+constructor TCustomListBox.Create(TheOwner : TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   fCompStyle := csListBox;
   BorderStyle:= bsSingle;
   FItems := TExtendedStringList.Create(GetCachedDataSize);

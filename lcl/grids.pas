@@ -3484,7 +3484,9 @@ begin
     EditorSelectAll;
     //DebugLn('Posting editor LM_CHAR, ch=',ch, ' ', InttoStr(Ord(ch)));
     
-    //PostMessage(FEditor.Handle, LM_CHAR, Word(Ch), 0);
+    {$ifdef WIN32}
+    PostMessage(FEditor.Handle, LM_CHAR, Word(Ch), 0);
+    {$else}
     ///
     // Note. this is a workaround because the call above doesn't work
     ///
@@ -3495,6 +3497,8 @@ begin
     if Ch=^H then Msg.Value:=''
     else          Msg.Value:=ch;
     FEditor.Dispatch(Msg);
+    {$endif}
+
   end;
 end;
 

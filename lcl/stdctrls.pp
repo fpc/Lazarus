@@ -345,7 +345,8 @@ type
   TCustomListBox = class(TWinControl)
   private
     FCanvas: TCanvas;
-    FExtendedSelect, FMultiSelect : boolean;
+    FExtendedSelect: boolean;
+    FMultiSelect: boolean;
     FIntegralHeight: boolean;
     FItems: TStrings;
     FItemHeight: Integer;
@@ -388,7 +389,7 @@ type
     property OnMeasureItem: TMeasureItemEvent
       read FOnMeasureItem write FOnMeasureItem;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function GetIndexAtY(Y: integer): integer;
     function ItemAtPos(const Pos: TPoint; Existing: Boolean): Integer;
@@ -1558,6 +1559,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.149  2004/06/27 09:34:23  mattias
+  fixed TStringGrid goEditing   from Jesus
+
   Revision 1.148  2004/06/14 12:54:02  micha
   fix designer cursor to not set Form.Cursor directly
 
