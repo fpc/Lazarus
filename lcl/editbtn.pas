@@ -564,6 +564,7 @@ end;
 
 procedure TCustomEditButton.CMEnabledChanged(var Msg: TLMessage);
 begin
+  inherited CMEnabledChanged(Msg);
   if FButton<>nil then
     FButton.Enabled:=Enabled;
 end;
