@@ -305,7 +305,6 @@ begin
   MSG.Unused1 := 0;
   MSG.Unused2 := 0;
   
-
   Result := DeliverPostMessage(Data, MSG);
 end;
 
@@ -691,6 +690,11 @@ var
       Result:=csDoubleClicks in TControl(Data).ControlStyle;
     end;
 
+    function ComponentUnderstandsTripleClicks: boolean;
+    begin
+      Result:=csTripleClicks in TControl(Data).ControlStyle;
+    end;
+
     function LastClickInSameGdkWindow: boolean;
     begin
       Result:=(LastMouse.Window<>nil) and (LastMouse.Window=Event^.Window);
@@ -743,7 +747,10 @@ var
       {$ENDIF}
     end else
     if event^.thetype = gdk_2button_press then begin
-      MessI.Msg := MsgDouble;
+      if ComponentUnderstandsDblClicks then
+        MessI.Msg := MsgDouble
+      else
+        MessI.Msg := MsgNormal;
       LastMouse.Window := nil;
       {$IFDEF VerboseMouseBugfix}
       writeln('  DoubleClick');
@@ -751,7 +758,10 @@ var
     end
     else
     if event^.thetype = gdk_3button_press then begin
-      MessI.Msg := MsgTriple;
+      if ComponentUnderstandsTripleClicks then
+        MessI.Msg := MsgTriple
+      else
+        MessI.Msg := MsgNormal;
       LastMouse.Window := nil;
       {$IFDEF VerboseMouseBugfix}
       writeln('  TripleClick');
@@ -2268,6 +2278,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.116  2002/08/30 12:32:22  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.115  2002/08/29 00:07:02  lazarus
   MG: fixed TComboBox and InvalidateControl
 

@@ -33,6 +33,7 @@ unit Designer;
 interface
 
 {$DEFINE VerboseDesigner}
+{$DEFINE VerboseDesignerDraw}
 
 uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
@@ -89,7 +90,7 @@ type
     //hint stuff
     FHintTimer : TTimer;
     FHintWIndow : THintWindow;
-    
+    function GetGridColor: TColor;
     function GetShowGrid: boolean;
     function GetGridSizeX: integer;
     function GetGridSizeY: integer;
@@ -97,6 +98,7 @@ type
     function GetSnapToGrid: boolean;
     Procedure HintTimer(sender : TObject);
     procedure InvalidateWithParent(AComponent: TComponent);
+    procedure SetGridColor(const AValue: TColor);
     procedure SetShowGrid(const AValue: boolean);
     procedure SetGridSizeX(const AValue: integer);
     procedure SetGridSizeY(const AValue: integer);
@@ -135,31 +137,36 @@ type
     Procedure OnFormActivated;
   public
     ControlSelection : TControlSelection;
-    DC: TDesignerDeviceContext;
+    DDC: TDesignerDeviceContext;
     
     constructor Create(Customform : TCustomform;
        AControlSelection: TControlSelection);
     destructor Destroy; override;
 
-    function IsDesignMsg(Sender: TControl;
-       var TheMessage: TLMessage): Boolean; override;
     procedure Modified; override;
-    procedure Notification(AComponent: TComponent;
-       Operation: TOperation); override;
-    procedure PaintGrid; override;
-    procedure ValidateRename(AComponent: TComponent;
-       const CurName, NewName: string); override;
     Procedure SelectOnlyThisComponent(AComponent:TComponent);
     function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
-    procedure DrawNonVisualComponents(DDC: TDesignerDeviceContext);
     function GetDesignedComponent(AComponent: TComponent): TComponent;
+
+    function IsDesignMsg(Sender: TControl;
+       var TheMessage: TLMessage): Boolean; override;
+    procedure Notification(AComponent: TComponent;
+       Operation: TOperation); override;
+    procedure ValidateRename(AComponent: TComponent;
+       const CurName, NewName: string); override;
+
+    procedure PaintGrid; override;
+    procedure PaintClientGrid(AWinControl: TWinControl;
+       aDDC: TDesignerDeviceContext);
+    procedure DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 
     property ShowGrid: boolean read GetShowGrid write SetShowGrid;
     property Form: TCustomForm read FCustomForm write FCustomForm;
     property FormEditor: TFormEditor read FFormEditor write FFormEditor;
     property GridSizeX: integer read GetGridSizeX write SetGridSizeX;
     property GridSizeY: integer read GetGridSizeY write SetGridSizeY;
+    property GridColor: TColor read GetGridColor write SetGridColor;
     property IsControl: Boolean read GetIsControl write SetIsControl;
     property OnActivated: TNotifyEvent
        read FOnActivated write FOnActivated;
@@ -224,7 +231,7 @@ begin
   FHintWindow.HideInterval := 4000;
   FHintWindow.AutoHide := True;
   
-  DC:=TDesignerDeviceContext.Create;
+  DDC:=TDesignerDeviceContext.Create;
 end;
 
 destructor TDesigner.Destroy;
@@ -234,13 +241,14 @@ Begin
     
   FHintWIndow.Free;
   FHintTimer.Free;
-  DC.Free;
+  DDC.Free;
   Inherited Destroy;
 end;
 
 Procedure TDesigner.RemoveControl(AComponent :TComponent);
 var
   i: integer;
+  AWinControl: TWinControl;
   ChildControl: TControl;
 Begin
   {$IFDEF VerboseDesigner}
@@ -248,15 +256,16 @@ Begin
   {$ENDIF}
   // remove all child controls owned by the form
   if (AComponent is TWinControl) then begin
-    i:=Form.ComponentCount-1;
-    while (i>=0) do begin
-      if (Form.Components[i] is TControl) then begin
-        ChildControl:=TControl(Form.Components[i]);
-        if ChildControl.Parent=AComponent then begin
+    AWinControl:=TWinControl(AComponent);
+    if (csAcceptsControls in AWinControl.ControlStyle) then begin
+      i:=AWinControl.ControlCount-1;
+      while (i>=0) do begin
+        ChildControl:=AWinControl.Controls[i];
+        if ChildControl.Owner=Form then begin
           RemoveControl(ChildControl);
           // the component list of the form has changed
           // -> restart the search
-          i:=Form.ComponentCount-1;
+          i:=AWinControl.ControlCount-1;
           continue;
         end;
       end;
@@ -324,6 +333,13 @@ begin
   end;
 end;
 
+procedure TDesigner.SetGridColor(const AValue: TColor);
+begin
+  if GridColor=AValue then exit;
+  EnvironmentOptions.GridColor:=AValue;
+  Form.Invalidate;
+end;
+
 function TDesigner.PaintControl(Sender: TControl; TheMessage: TLMPaint):boolean;
 var OldDuringPaintControl: boolean;
 begin
@@ -338,26 +354,31 @@ begin
   // send the Paint message to the control, so that it paints itself
 //writeln('TDesigner.PaintControl B ',Sender.Name);
   Sender.Dispatch(TheMessage);
-  {$IFDEF VerboseDesignerDraw}
-  writeln('TDesigner.PaintControl C ',Sender.Name,' DC=',HexStr(Cardinal(TheMessage.DC),8));
-  {$ENDIF}
+  //writeln('TDesigner.PaintControl C ',Sender.Name,' DC=',HexStr(Cardinal(TheMessage.DC),8));
 
   // paint the Designer stuff
   if TheMessage.DC<>0 then begin
-    DC.SetDC(Form,TheMessage.DC);
-    //writeln('***  LM_PAINT B ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
+    DDC.SetDC(Form,TheMessage.DC);
+    {$IFDEF VerboseDesignerDraw}
+    writeln('TDesigner.PaintControl D ',Sender.Name,':',Sender.ClassName,
+      ' DC=',HexStr(DDC.DC,8),' FormOrigin=',DDC.FormOrigin.X,',',DDC.FormOrigin.Y);
+    {$ENDIF}
+    if (Sender is TWinControl)
+    and (csAcceptsControls in Sender.ControlStyle) then begin
+      PaintClientGrid(TWinControl(Sender),DDC);
+    end;
     if (ControlSelection.IsSelected(Sender)) then begin
       // writeln('***  LM_PAINT ',Sender.Name,':',Sender.ClassName,' DC=',HexStr(Message.DC,8));
-      ControlSelection.DrawMarker(Sender,DC);
+      ControlSelection.DrawMarker(Sender,DDC);
     end;
-    DrawNonVisualComponents(DC);
-    ControlSelection.DrawGrabbers(DC);
-    ControlSelection.DrawGuideLines(DC);
+    DrawNonVisualComponents(DDC);
+    ControlSelection.DrawGuideLines(DDC);
+    ControlSelection.DrawGrabbers(DDC);
     if ControlSelection.RubberBandActive then
-      ControlSelection.DrawRubberBand(DC);
-    DC.Clear;
+      ControlSelection.DrawRubberBand(DDC);
+    DDC.Clear;
   end;
-//writeln('TDesigner.PaintControl D ',Sender.Name);
+//writeln('TDesigner.PaintControl END ',Sender.Name);
 
   FDuringPaintControl:=OldDuringPaintControl;
 end;
@@ -852,25 +873,74 @@ Begin
 end;
 
 procedure TDesigner.PaintGrid;
-var
-  x,y, StepX, StepY : integer;
 begin
-  if not ShowGrid then exit;
-  StepX:=GridSizeX;
-  StepY:=GridSizeY;
-  with FCustomForm.Canvas do begin
-    Pen.Color := FGridColor;
-    x := StepX-1;
-    while x <= FCustomForm.Width do begin
-      y := StepY-1;
-      while y <= FCustomForm.Height do begin
-         MoveTo(x,y);
-         LineTo(x+1,y);
-//         Pixels[X,Y]:=FGridColor;
-         Inc(y, StepY);
+  // This is done in PaintControls
+end;
+
+procedure TDesigner.PaintClientGrid(AWinControl: TWinControl;
+  aDDC: TDesignerDeviceContext);
+var
+  Clip: integer;
+  Count: integer;
+  x,y, StepX, StepY, MaxX, MaxY: integer;
+  i: integer;
+  SavedDC: hDC;
+  LogPen: TLogPen;
+  Pen, OldPen: HPen;
+  OldPoint: TPoint;
+begin
+  if (AWinControl=nil)
+  or (not (csAcceptsControls in AWinControl.ControlStyle))
+  or (not ShowGrid) then exit;
+  
+  SavedDC:=SaveDC(aDDC.DC);
+  try
+    // exclude all child control areas
+    Count:=AWinControl.ControlCount;
+    for I := 0 to Count - 1 do begin
+      with AWinControl.Controls[I] do begin
+        if (Visible or (csDesigning in ComponentState)
+        and not (csNoDesignVisible in ControlStyle))
+        and (csOpaque in ControlStyle) then
+        begin
+          Clip := ExcludeClipRect(aDDC.DC, Left, Top, Left + Width, Top + Height);
+          if Clip = NullRegion then exit;
+        end;
+      end;
+    end;
+
+    // select color
+    with LogPen do
+    begin
+      lopnStyle := PS_SOLID;
+      lopnWidth.X := 1;
+      lopnColor := ColorToRGB(GridColor);
+    end;
+    Pen := CreatePenIndirect(LogPen);
+    OldPen:=SelectObject(aDDC.DC, Pen);
+
+    // paint points
+    StepX:=GridSizeX;
+    StepY:=GridSizeY;
+    MaxX:=AWinControl.ClientWidth;
+    MaxY:=AWinControl.ClientHeight;
+    x := 0;
+    while x <= MaxX do begin
+      y := 0;
+      while y <= MaxY do begin
+        MoveToEx(aDDC.DC,x,y,@OldPoint);
+        LineTo(aDDC.DC,x+1,y);
+        Inc(y, StepY);
       end;
       Inc(x, StepX);
     end;
+    
+    // restore pen
+    SelectObject(aDDC.DC,OldPen);
+    DeleteObject(Pen);
+
+  finally
+    RestoreDC(aDDC.DC,SavedDC);
   end;
 end;
 
@@ -888,6 +958,11 @@ Begin
     writeln('WARNING: TDesigner.ValidateRename: OldComponentName="',CurName,'"');
   if Assigned(OnRenameComponent) then
     OnRenameComponent(Self,AComponent,NewName);
+end;
+
+function TDesigner.GetGridColor: TColor;
+begin
+  Result:=EnvironmentOptions.GridColor;
 end;
 
 function TDesigner.GetShowGrid: boolean;
@@ -941,7 +1016,7 @@ Begin
 
 end;
 
-procedure TDesigner.DrawNonVisualComponents(DDC: TDesignerDeviceContext);
+procedure TDesigner.DrawNonVisualComponents(aDDC: TDesignerDeviceContext);
 var
   i, j, ItemLeft, ItemTop, ItemRight, ItemBottom,
   IconWidth, IconHeight: integer;
@@ -949,18 +1024,18 @@ var
   IconRect: TRect;
   IconCanvas: TCanvas;
 begin
-  Diff:=DC.FormOrigin;
-  DDC.Save;
-  FCustomForm.Canvas.Handle:=DDC.DC;
+  FCustomForm.Canvas.Handle:=aDDC.DC;
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     if not (FCustomForm.Components[i] is TControl) then begin
+      Diff:=aDDC.FormOrigin;
+      aDDC.Save;
       // non-visual component
       ItemLeftTop:=NonVisualComponentLeftTop(FCustomForm.Components[i]);
       ItemLeft:=ItemLeftTop.X+Diff.X;
       ItemTop:=ItemLeftTop.Y+Diff.Y;
       ItemRight:=ItemLeft+NonVisualCompWidth;
       ItemBottom:=ItemTop+NonVisualCompWidth;
-      with FCustomForm.Canvas do begin
+      with aDDC.Canvas do begin
         Brush.Color:=clWhite;
         for j:=0 to NonVisualCompBorder-1 do begin
           MoveTo(ItemLeft+j,ItemBottom-j);
@@ -987,17 +1062,16 @@ begin
         if IconCanvas<>nil then begin
           inc(IconRect.Left,((IconRect.Right-IconRect.Left)-IconWidth) div 2);
           inc(IconRect.Top,((IconRect.Bottom-IconRect.Top)-IconHeight) div 2);
-          FCustomForm.Canvas.CopyRect(IconRect, IconCanvas,
+          aDDC.Canvas.CopyRect(IconRect, IconCanvas,
              Rect(0,0,IconWidth,IconHeight));
         end;
       end;
       if (ControlSelection.Count>1)
       and (ControlSelection.IsSelected(FCustomForm.Components[i])) then
-        ControlSelection.DrawMarkerAt(FCustomForm.Canvas,
+        ControlSelection.DrawMarkerAt(aDDC.Canvas,
           ItemLeft,ItemTop,NonVisualCompWidth,NonVisualCompWidth);
     end;
   end;
-  FCustomForm.Canvas.Handle:=0;
 end;
 
 function TDesigner.GetDesignedComponent(AComponent: TComponent): TComponent;
