@@ -72,7 +72,7 @@ var
 
 function SendApplicationMessage(Msg: Cardinal; WParam, LParam: Longint):Longint;
 procedure OwnerFormDesignerModified(AComponent: TComponent);
-function OffSetRect(var ARect: TRect; dx,dy: Integer): Boolean;
+function OffsetRect(var ARect: TRect; dx,dy: Integer): Boolean;
 procedure FreeThenNil(var AnObject: TObject);
 
 
