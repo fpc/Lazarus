@@ -41,7 +41,7 @@ uses
   InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
   glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals,
   LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType,
-  GraphicsMath, gtkInt, {$Ifndef NoGdkImlib}gdk_imlib,{$EndIf}
+  GraphMath, gtkInt, {$Ifndef NoGdkImlib}gdk_imlib,{$EndIf}
   libgnome, libart, libgnomeui;
 
 type
@@ -278,6 +278,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2002/10/26 15:15:50  lazarus
+  MG: broke LCL<->interface circles
+
   Revision 1.11  2002/10/25 15:27:02  lazarus
   AJ: Moved form contents creation to gtkproc for code
       reuse between GNOME and GTK, and to make GNOME MDI
