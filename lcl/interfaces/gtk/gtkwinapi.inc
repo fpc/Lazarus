@@ -986,7 +986,7 @@ var
   rowstride, PixelPos : Longint;
   Pixels : PByte;
   {$Else}
-  Source : PImage;//The MONDO slow way...
+  Source : PGDKImage;//The MONDO slow way...
   {$EndIf}
   FDIB : TDIBSection;
   X, Y : Longint;
@@ -1008,7 +1008,6 @@ var
            gdk_error_trap_push; //try to prevent GDK from killing us...
            Source := gdk_image_get(Bitmap^.GDIBitmapObject, 0, StartScan, Width,
              StartScan + NumScans);
-           gdk_error_trap_pop;
          {$EndIf}
         end;
       gbPixmap:
@@ -1022,7 +1021,6 @@ var
            gdk_error_trap_push; //try to prevent GDK from killing us...
            Source := gdk_image_get(Bitmap^.GDIPixmapObject, StartScan, 0, Width,
              StartScan + NumScans);
-           gdk_error_trap_pop;
          {$EndIf}
         end;
       gbImage :
@@ -1054,9 +1052,7 @@ var
 
     gdk_error_trap_push;//try to prevent GDK from killing us...
 
-    Result := gdk_image_get_pixel(Source, X, Y);
-
-    gdk_error_trap_pop;
+    Pixel := gdk_image_get_pixel(Source, X, Y);
 
     Result := GDKPixel2GDIRGB(Pixel, Bitmap^.Visual, Bitmap^.Colormap);
   {$EndIf}
@@ -1069,7 +1065,6 @@ var
   {$else}
     gdk_error_trap_push; //try to prevent GDK from killing us...
     gdk_image_destroy(Source);
-    gdk_error_trap_pop;
   {$EndIf}
   end;
 
@@ -1144,6 +1139,7 @@ begin
   end
   else
     writeln('WARNING: [TgtkObject.InternalGetDIBits] invalid Bitmap!');
+  gdk_error_trap_pop;
 end;
 
 function Tgtkobject.GetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
@@ -1542,6 +1538,47 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: CreatePalette
+  Params:  LogPalette
+  Returns: a handle to the Palette created
+
+
+ ------------------------------------------------------------------------------}
+function TgtkObject.CreatePalette(const LogPalette: TLogPalette): HPALETTE;
+var
+  GObject: PGdiObject;
+begin
+  Assert(False, 'trace:[TgtkObject.CreatePalette]');
+  GObject := NewGDIObject(gdiPalette);
+
+  with LogPalette, GObject^ do
+  begin
+    SystemPalette := False;
+
+    PaletteRealized := False;
+
+    VisualType := GDK_VISUAL_PSEUDO_COLOR;
+
+    PaletteVisual := nil;
+
+    PaletteVisual := gdk_visual_get_best_with_type(VisualType);
+    If PaletteVisual = nil then begin
+      PaletteVisual := GDK_Visual_Get_System;
+      GDK_Visual_Ref(PaletteVisual);
+    end;
+    PaletteColormap := GDK_Colormap_new(PaletteVisual, 1);
+    RGBTable := TDynHashArray.Create(-1);
+    RGBTable.OnGetKeyForHashItem:=@GetRGBAsKey;
+    IndexTable := TDynHashArray.Create(-1);
+    IndexTable.OnGetKeyForHashItem:=@GetIndexAsKey;
+    InitializePalette(GObject, LogPalette.palPalEntry,
+      MemSize(Pointer(LogPalette.palPalEntry)) div SizeOf(tagRGBQuad));
+  end;
+
+  Result := HPALETTE(GObject);
+end;
+
+{------------------------------------------------------------------------------
   Function: CreatePenIndirect
   Params:  none
   Returns: Nothing
@@ -1891,8 +1928,7 @@ begin
             if (GDIBrushPixmap <> nil)
             then gdk_bitmap_unref(GDIBrushPixmap);
             
-            If (GDIBrushColor.Color.Pixel <> -1) and (GDIBrushColor.Colormap <> nil) then
-              gdk_colormap_free_colors(GDIBrushColor.Colormap,@GDIBrushColor.Color, 1);
+            FreeGDIColor(GDIBrushColor);
           end;
         gdiBitmap:
           begin
@@ -1905,13 +1941,21 @@ begin
           end;
         gdiPen:
           begin
-            If (GDIPenColor.Color.Pixel <> -1) and (GDIPenColor.Colormap <> nil) then
-              gdk_colormap_free_colors(GDIPenColor.Colormap,@GDIPenColor.Color, 1);
+            FreeGDIColor(GDIPenColor);
           end;
         gdiRegion:
           begin
             if (GDIRegionObject <> nil) then
               gdk_region_destroy(GDIRegionObject);
+          end;
+        gdiPalette:
+          begin
+            If PaletteVisual <> nil then
+              gdk_visual_unref(PaletteVisual);
+            If PaletteColormap <> nil then
+              gdk_colormap_unref(PaletteColormap);
+            RGBTable.Free;
+            IndexTable.Free;
           end;
         else begin
           Result:= false;
@@ -1978,7 +2022,7 @@ var
     pDC: PDeviceContext;
     DCOrigin: TPoint;
   begin
-    if Widget<>nil then begin
+    //if Widget<>nil then begin
 
       // use the gtk paint functions to draw a widget style dependent button
       
@@ -2031,183 +2075,73 @@ var
       pDC:=PDeviceContext(DC);
       DCOrigin:=GetDCOffset(pDC);
 
-      Case Shadow of
-        GTK_SHADOW_NONE:
-          gtk_paint_flat_box(aStyle,GetControlWindow(Widget),
-             State,
-             Shadow,
-             nil,
-             Widget,
-             'button',
-             Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-             Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
-        else
-          gtk_paint_box(aStyle,GetControlWindow(Widget),
-             State,
-             Shadow,
-             nil,
-             Widget,
-             'button',
-             Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-             Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
-      end;
-
-      {gtk_draw_box(Widget^.TheStyle,Widget^.Window,
-             State,
-             Shadow,
-             Rect.Left,Rect.Top,
-             Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);}
-             
-    end else begin
-      // draw without widget style
-      Result := DrawEdge(DC, Rect,
-                         PUSH_EDGE_FLAG[(uState and DFCS_PUSHED) <> 0],
-                         BF_RECT or ADJUST_FLAG[
-                                    (uState and DFCS_ADJUSTRECT) <> 0]
-                         );
-    end;
+      If (DFCS_FLAT and uState)<>0 then
+        gtk_paint_flat_box(aStyle,pDC^.Drawable,
+           State,
+           Shadow,
+           nil,
+           Widget,
+           'button',
+           Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
+           Rect.Right-Rect.Left,Rect.Bottom-Rect.Top)
+      else
+        gtk_paint_box(aStyle,pDC^.Drawable,
+           State,
+           Shadow,
+           nil,
+           Widget,
+           'button',
+           Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
+           Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
+    Result := True;
   end;
   
-  procedure DrawButtonCheck;
-  var
-    State: TGtkStateType;
-    Shadow: TGtkShadowType;
-    aStyle : PGTKStyle;
-    pDC: PDeviceContext;
-    DCOrigin: TPoint;
-  begin
-    // use the gtk paint functions to draw a widget style dependent checkbox
-
-    // set State (the interior filling style)
-    if (DFCS_INACTIVE and uState)<>0 then begin
-      // button disabled
-      State:=GTK_STATE_INSENSITIVE;
-    end else begin
-      if (DFCS_PUSHED and uState)<>0 then begin
-        // button enabled, down
-        if (DFCS_CHECKED and uState)<>0 then begin
-          // button enabled, down, special (e.g. mouse over)
-          State:=GTK_STATE_ACTIVE;
-        end else begin
-          // button enabled, down, normal
-          State:=GTK_STATE_SELECTED;
-        end;
-      end else begin
-        // button enabled, up
-        if (DFCS_CHECKED and uState)<>0 then begin
-          // button enabled, up, special (e.g. mouse over)
-          State:=GTK_STATE_PRELIGHT;
-        end else begin
-          // button enabled, up, normal
-          State:=GTK_STATE_NORMAL;
-        end;
-      end;
-    end;
-    // set Shadow (the border style)
-    if (DFCS_PUSHED and uState)<>0 then begin
-      // button down
-      Shadow:=GTK_SHADOW_IN;
-    end else begin
-      if (((DFCS_FLAT+DFCS_CHECKED) and uState)=DFCS_FLAT) then begin
-       // button up, flat, no special
-        Shadow:=GTK_SHADOW_NONE;
-      end else begin
-        // button up
-        Shadow:=GTK_SHADOW_OUT;
-      end;
-    end;
-
-    aStyle := GetStyle('checkbox');
-    If aStyle = nil then
-      aStyle := Widget^.theStyle
-    else
-      If State = GTK_STATE_SELECTED then
-        State := GTK_STATE_ACTIVE;
-
-    pDC:=PDeviceContext(DC);
-    DCOrigin:=GetDCOffset(pDC);
-
-    Case Shadow of
-      GTK_SHADOW_NONE:
-        gtk_paint_flat_box(aStyle,GetControlWindow(Widget),
-          State, Shadow, nil, Widget, 'checkbutton',
-          Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-          Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
-      else
-        gtk_paint_box(aStyle,GetControlWindow(Widget),
-          State, Shadow, nil, Widget, 'checkbutton',
-          Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-          Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
-    end;
-  end;
-
   procedure DrawCheck;
   var
     State: TGtkStateType;
     Shadow: TGtkShadowType;
-    aStyle : PGTKStyle;
     pDC: PDeviceContext;
     DCOrigin: TPoint;
+    Style : PGTKStyle;
+    Widget : PGTKWidget;
   begin
-    // use the gtk paint functions to draw a widget style dependent check
+    // use the gtk paint functions to draw a widget style dependent check(box)
 
-    // set State (the interior filling style)
-    if (DFCS_INACTIVE and uState)<>0 then begin
-      // button disabled
-      State:=GTK_STATE_INSENSITIVE;
-    end else begin
-      if (DFCS_PUSHED and uState)<>0 then begin
-        // button enabled, down
+    if (DFCS_PUSHED and uState)<>0 then begin
+      STATE := GTK_STATE_ACTIVE;//button checked(GTK ignores disabled)
+      Shadow := GTK_SHADOW_IN;//checked style
+    end
+    else begin
+      Shadow := GTK_SHADOW_OUT; //unchecked style
+      if (DFCS_INACTIVE and uState)<>0 then begin
+        State:=GTK_STATE_INSENSITIVE;//button disabled
+      end else
         if (DFCS_CHECKED and uState)<>0 then begin
-          // button enabled, down, special (e.g. mouse over)
-          State:=GTK_STATE_ACTIVE;
-        end else begin
-          // button enabled, down, normal
-          State:=GTK_STATE_SELECTED;
-        end;
-      end else begin
-        // button enabled, up
-        if (DFCS_CHECKED and uState)<>0 then begin
-          // button enabled, up, special (e.g. mouse over)
+          // button enabled, special (e.g. mouse over)
           State:=GTK_STATE_PRELIGHT;
         end else begin
-          // button enabled, up, normal
+          // button enabled, normal
           State:=GTK_STATE_NORMAL;
         end;
-      end;
     end;
-    // set Shadow (the border style)
-    if (DFCS_PUSHED and uState)<>0 then begin
-      // button down
-      Shadow:=GTK_SHADOW_IN;
-    end else begin
-      if (((DFCS_FLAT+DFCS_CHECKED) and uState)=DFCS_FLAT) then begin
-       // button up, flat, no special
-        Shadow:=GTK_SHADOW_NONE;
-      end else begin
-        // button up
-        Shadow:=GTK_SHADOW_OUT;
-      end;
-    end;
-
-    aStyle := GetStyle('checkbox');
-    If aStyle = nil then
-      aStyle := Widget^.theStyle
-    else
-      If State = GTK_STATE_SELECTED then
-        State := GTK_STATE_ACTIVE;
 
     pDC:=PDeviceContext(DC);
     DCOrigin:=GetDCOffset(pDC);
 
-    gtk_paint_check(aStyle,GetControlWindow(Widget),
-      State, Shadow, nil, Widget, 'checkbutton',
+    Style := gtk_style_attach(GetStyle('checkbox'),pDC^.Drawable);
+    Widget := GetStyleWidget('checkbox');
+    GTK_WIDGET_SET_FLAGS (widget, GTK_REALIZED);
+    Widget^.Window := pDC^.Drawable;
+    gtk_paint_check(Style,pDC^.Drawable, State,
+      Shadow, nil, Widget, 'checkbutton',
       Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
-      Rect.Right-Rect.Left,Rect.Bottom-Rect.Top);
+      Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
+    Result := True;
   end;
 
 var ClientWidget: PGtkWidget;
 begin
+  Result := False;
   if IsValidDC(DC) then begin
     Widget:=PGtkWidget(PDeviceContext(DC)^.hWnd);
     ClientWidget:=GetFixedWidget(Widget);
@@ -2256,9 +2190,7 @@ begin
           DFCS_BUTTONCHECK:
             begin
               Assert(False, 'Trace:State ButtonCheck');
-              DrawButtonCheck;
-              if (uState and DFCS_CHECKED) <> 0 then
-                DrawCheck;
+              DrawCheck;
             end;
         else  
           WriteLn(Format('ERROR: [TgtkObject.DrawFrameControl] Unknown State 0x%x', [uState]));
@@ -3033,6 +2965,45 @@ begin
       end;  
     end;
   end;  
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetRGNBox
+  Params: rgn, lprect
+  Returns: Integer
+
+  Returns the smallest rectangle which includes the entire passed
+  Region, if lprect is null then just returns RegionType.
+
+  The result can be one of the following constants
+      Error
+      NullRegion
+      SimpleRegion
+      ComplexRegion
+
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint;
+var
+  CRect : TGDKRectangle;
+begin
+  If lpRect <> nil then
+    lpRect^ := Rect(0,0,0,0);
+  If Not IsValidGDIObject(RGN) then
+    Result := ERROR
+  else begin
+    Result := RegionType(PGDIObject(RGN)^.GDIRegionObject);
+    If lpRect <> nil then begin
+      gdk_region_get_clipbox(PGDIObject(RGN)^.GDIRegionObject,
+        @CRect);
+      With lpRect^,CRect do begin
+        Left   := X;
+        Top    := Y;
+        Right  := X + Width;
+        Bottom := X + Height;
+      end;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -5198,9 +5169,13 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.RealizePalette(DC: HDC): Cardinal;
 begin
-  Assert(False, 'Trace:TODO: [TgtkObject.RealizePalette]');
-  //TODO: Implement this;
+  Assert(False, 'Trace:FINISH: [TgtkObject.RealizePalette]');
   Result := 0;
+  if IsValidDC(DC)
+  then with PDeviceContext(DC)^ do
+  begin
+  
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -5344,6 +5319,8 @@ begin
         then pDC^.CurrentPen := nil;     
         if pSavedDC^.CurrentBrush = pDC^.CurrentBrush 
         then pDC^.CurrentBrush := nil;   
+        {if pSavedDC^.CurrentPalette = pDC^.CurrentPalette
+        then pDC^.CurrentPalette := nil;}
         if pSavedDC^.ClipRegion = pDC^.ClipRegion
         then pSavedDC^.ClipRegion := 0;
         ReleaseDC(0,HDC(pSavedDC));
@@ -5354,7 +5331,11 @@ begin
       DeleteObject(HGDIObj(pDC^.CurrentPen));
       DeleteObject(HGDIObj(pDC^.CurrentFont));
       DeleteObject(HGDIObj(pDC^.CurrentBitmap));
+      //DeleteObject(HGDIObj(pDC^.CurrentPalette));
       DeleteObject(HGDIObj(pDC^.ClipRegion));
+      {FreeGDIColor(pDC^.CurrentTextColor);
+      FreeGDIColor(pDC^.CurrentBackColor);}
+      
       try
         { On root window, we don't allocate a graphics context and so we dont free}
         if pDC^.GC <> nil then begin
@@ -5432,6 +5413,8 @@ begin
     then pSavedDC^.CurrentBrush := nil;   
     if pSavedDC^.CurrentBrush = pDC^.CurrentBrush
     then pSavedDC^.CurrentBrush := nil;
+    {if pSavedDC^.CurrentPalette = pDC^.CurrentPalette
+    then pSavedDC^.CurrentPalette := nil;}
     if pSavedDC^.ClipRegion = pDC^.ClipRegion
     then pSavedDC^.ClipRegion := 0;
 
@@ -7182,6 +7165,69 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.138  2002/09/27 20:52:25  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+
+  Here is the run down of what it includes -
+
+   -Vasily Volchenko's Updated Russian Localizations
+
+   -improvements to GTK Styles/SysColors
+   -initial GTK Palette code - (untested, and for now useless)
+
+   -Hint Windows and Modal dialogs now try to stay transient to
+    the main program form, aka they stay on top of the main form
+    and usually minimize/maximize with it.
+
+   -fixes to Form BorderStyle code(tool windows needed a border)
+
+   -fixes DrawFrameControl DFCS_BUTTONPUSH to match Win32 better
+    when flat
+
+   -fixes DrawFrameControl DFCS_BUTTONCHECK to match Win32 better
+    and to match GTK theme better. It works most of the time now,
+    but some themes, noteably Default, don't work.
+
+   -fixes bug in Bitmap code which broke compiling in NoGDKPixbuf
+    mode.
+
+   -misc other cleanups/ fixes in gtk interface
+
+   -speedbutton's should now draw correctly when flat in Win32
+
+   -I have included an experimental new CheckBox(disabled by
+    default) which has initial support for cbGrayed(Tri-State),
+    and WordWrap, and misc other improvements. It is not done, it
+    is mostly a quick hack to test DrawFrameControl
+    DFCS_BUTTONCHECK, however it offers many improvements which
+    can be seen in cbsCheck/cbsCrissCross (aka non-themed) state.
+
+   -fixes Message Dialogs to more accurately determine
+    button Spacing/Size, and Label Spacing/Size based on current
+    System font.
+   -fixes MessageDlgPos, & ShowMessagePos in Dialogs
+   -adds InputQuery & InputBox to Dialogs
+
+   -re-arranges & somewhat re-designs Control Tabbing, it now
+    partially works - wrapping around doesn't work, and
+    subcontrols(Panels & Children, etc) don't work. TabOrder now
+    works to an extent. I am not sure what is wrong with my code,
+    based on my other tests at least wrapping and TabOrder SHOULD
+    work properly, but.. Anyone want to try and fix?
+
+   -SynEdit(Code Editor) now changes mouse cursor to match
+    position(aka over scrollbar/gutter vs over text edit)
+
+   -adds a TRegion property to Graphics.pp, and Canvas. Once I
+    figure out how to handle complex regions(aka polygons) data
+    properly I will add Region functions to the canvas itself
+    (SetClipRect, intersectClipRect etc.)
+
+   -BitBtn now has a Stored flag on Glyph so it doesn't store to
+    lfm/lrs if Glyph is Empty, or if Glyph is not bkCustom(aka
+    bkOk, bkCancel, etc.) This should fix most crashes with older
+    GDKPixbuf libs.
+
   Revision 1.137  2002/09/20 13:11:13  lazarus
   MG: fixed TPanel and Frame3D
 
