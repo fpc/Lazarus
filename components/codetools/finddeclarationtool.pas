@@ -335,8 +335,8 @@ type
   public
     Count: integer;
     Items: ^TExpressionType;
-    procedure Add(ExprType: TExpressionType);
-    procedure AddFirst(ExprType: TExpressionType);
+    procedure Add(const ExprType: TExpressionType);
+    procedure AddFirst(const ExprType: TExpressionType);
     property Capacity: integer read FCapacity write SetCapacity;
     destructor Destroy; override;
     function AsString: string;
@@ -366,7 +366,7 @@ const
 
 type
   TOnIdentifierFound = function(Params: TFindDeclarationParams;
-    FoundContext: TFindContext): TIdentifierFoundResult of object;
+    const FoundContext: TFindContext): TIdentifierFoundResult of object;
   TOnFindUsedUnit = function(SrcTool: TFindDeclarationTool;
     const TheUnitName, TheUnitInFilename: string): TCodeBuffer of object;
 
@@ -401,7 +401,7 @@ type
     procedure Clear;
     procedure Save(var Input: TFindDeclarationInput);
     procedure Load(var Input: TFindDeclarationInput);
-    procedure SetResult(AFindContext: TFindContext);
+    procedure SetResult(const AFindContext: TFindContext);
     procedure SetResult(ANewCodeTool: TFindDeclarationTool;
       ANewNode: TCodeTreeNode);
     procedure SetResult(ANewCodeTool: TFindDeclarationTool;
@@ -409,8 +409,8 @@ type
     procedure SetResult(NodeCacheEntry: PCodeTreeNodeCacheEntry);
     procedure SetIdentifier(NewIdentifierTool: TFindDeclarationTool;
       NewIdentifier: PChar; NewOnIdentifierFound: TOnIdentifierFound);
-    procedure SetFirstFoundProc(ProcContext: TFindContext);
-    procedure ChangeFoundProc(ProcContext: TFindContext;
+    procedure SetFirstFoundProc(const ProcContext: TFindContext);
+    procedure ChangeFoundProc(const ProcContext: TFindContext;
       ProcCompatibility: TTypeCompatibility;
       ParamCompatibilityList: TTypeCompatibilityList);
     procedure ConvertResultCleanPosToCaretPos;
@@ -468,7 +468,7 @@ type
     function DoOnIdentifierFound(Params: TFindDeclarationParams;
       FoundNode: TCodeTreeNode): TIdentifierFoundResult;
     function CheckSrcIdentifier(Params: TFindDeclarationParams;
-      FoundContext: TFindContext): TIdentifierFoundResult;
+      const FoundContext: TFindContext): TIdentifierFoundResult;
     function FindIdentifierInProcContext(ProcContextNode: TCodeTreeNode;
       Params: TFindDeclarationParams): TIdentifierFoundResult;
     function FindIdentifierInClassOfMethod(ProcContextNode: TCodeTreeNode;
@@ -498,7 +498,7 @@ type
     function CreateNewNodeCache(Node: TCodeTreeNode): TCodeTreeNodeCache;
     function CreateNewBaseTypeCache(Node: TCodeTreeNode): TBaseTypeCache;
     procedure CreateBaseTypeCaches(NodeStack: PCodeTreeNodeStack;
-      Result: TFindContext);
+      const Result: TFindContext);
     function GetNodeCache(Node: TCodeTreeNode;
       CreateIfNotExists: boolean): TCodeTreeNodeCache;
     procedure AddResultToNodeCaches(
@@ -566,14 +566,15 @@ type
       CompatibilityList: TTypeCompatibilityList): TTypeCompatibility;
     function CreateParamExprList(StartPos: integer;
       Params: TFindDeclarationParams): TExprTypeList;
-    function ContextIsDescendOf(DescendContext, AncestorContext: TFindContext;
+    function ContextIsDescendOf(
+      const DescendContext, AncestorContext: TFindContext;
       Params: TFindDeclarationParams): boolean;
     function IsCompatible(TargetNode: TCodeTreeNode;
-      ExpressionType: TExpressionType;
+      const ExpressionType: TExpressionType;
       Params: TFindDeclarationParams): TTypeCompatibility;
     function IsCompatible(TargetType, ExpressionType: TExpressionType;
       Params: TFindDeclarationParams): TTypeCompatibility;
-    function IsBaseCompatible(TargetType, ExpressionType: TExpressionType;
+    function IsBaseCompatible(const TargetType, ExpressionType: TExpressionType;
       Params: TFindDeclarationParams): TTypeCompatibility;
   public
     procedure BuildTree(OnlyInterfaceNeeded: boolean); override;
@@ -611,20 +612,22 @@ const
   fdfDefaultForExpressions = [fdfSearchInParentNodes, fdfSearchInAncestors,
                               fdfExceptionOnNotFound]+fdfAllClassVisibilities;
 
-function ExprTypeToString(ExprType: TExpressionType): string;
+function ExprTypeToString(const ExprType: TExpressionType): string;
 function CreateFindContext(NewTool: TFindDeclarationTool;
   NewNode: TCodeTreeNode): TFindContext;
 function CreateFindContext(Params: TFindDeclarationParams): TFindContext;
 function CreateFindContext(BaseTypeCache: TBaseTypeCache): TFindContext;
-function FindContextAreEqual(Context1, Context2: TFindContext): boolean;
+function FindContextAreEqual(const Context1, Context2: TFindContext): boolean;
 function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
-function FindDeclarationFlagsAsString(Flags: TFindDeclarationFlags): string;
+function FindDeclarationFlagsAsString(
+  const Flags: TFindDeclarationFlags): string;
 
 
 implementation
 
 
-function FindDeclarationFlagsAsString(Flags: TFindDeclarationFlags): string;
+function FindDeclarationFlagsAsString(
+  const Flags: TFindDeclarationFlags): string;
 var Flag: TFindDeclarationFlag;
 begin
   Result:='';
@@ -709,7 +712,7 @@ begin
     Result:=xtNone;
 end;
 
-function ExprTypeToString(ExprType: TExpressionType): string;
+function ExprTypeToString(const ExprType: TExpressionType): string;
 begin
   Result:='Desc='+ExpressionTypeDescNames[ExprType.Desc]
          +' SubDesc='+ExpressionTypeDescNames[ExprType.SubDesc];
@@ -741,7 +744,7 @@ begin
   Result.Tool:=TFindDeclarationTool(BaseTypeCache.NewTool);
 end;
 
-function FindContextAreEqual(Context1, Context2: TFindContext): boolean;
+function FindContextAreEqual(const Context1, Context2: TFindContext): boolean;
 begin
   Result:=(Context1.Tool=Context2.Tool) and (Context1.Node=Context2.Node);
 end;
@@ -1890,7 +1893,7 @@ begin
     {$ENDIF}
   {$ENDIF}
 
-  try
+  //try
     // search in the Tree of this tool
     repeat
       {$IFDEF ShowTriedIdentifiers}
@@ -1998,16 +2001,7 @@ begin
       end;
     until ContextNode=nil;
     
-  except
-    {on E: ECodeToolError do begin
-      CacheResult(Result);
-      exit;
-    end;
-    on E: ELinkScannerError do begin
-      CacheResult(Result);
-      exit;
-    end;}
-
+  {except
     // unexpected exception
     on E: Exception do begin
       writeln('*** Unexpected Exception during find declaration: ',
@@ -2015,7 +2009,7 @@ begin
       writeln('  MainFilename=',MainFilename);
       raise;
     end;
-  end;
+  end;}
   // if we are here, the identifier was not found
   if FirstSearchedNode<>nil then begin
     // add result to cache
@@ -2656,8 +2650,7 @@ end;
 
 function TFindDeclarationTool.FindIdentifierInWithVarContext(
   WithVarNode: TCodeTreeNode; Params: TFindDeclarationParams): boolean;
-{ this function is internally used by FindIdentifierInContext
-}
+{ this function is internally used by FindIdentifierInContext }
 var
   WithVarExpr: TExpressionType;
   OldInput: TFindDeclarationInput;
@@ -2670,31 +2663,25 @@ begin
   Result:=false;
   // find the base type of the with variable
   // move cursor to start of with-variable
-  MoveCursorToCleanPos(WithVarNode.StartPos);
   Params.Save(OldInput);
-  try
-    Params.ContextNode:=WithVarNode;
-    Params.Flags:=Params.Flags+[fdfExceptionOnNotFound,fdfFunctionResult];
-    WithVarExpr:=FindExpressionTypeOfVariable(WithVarNode.StartPos,-1,Params);
-    if (WithVarExpr.Desc<>xtContext)
-    or (WithVarExpr.Context.Node=nil)
-    or (WithVarExpr.Context.Node=OldInput.ContextNode)
-    or (not (WithVarExpr.Context.Node.Desc in [ctnClass,ctnRecordType])) then
-    begin
-      MoveCursorToCleanPos(WithVarNode.StartPos);
-      RaiseException(ctsExprTypeMustBeClassOrRecord);
-    end;
-    // search identifier in with context
-    Params.Load(OldInput);
-    Exclude(Params.Flags,fdfExceptionOnNotFound);
-    Params.ContextNode:=WithVarExpr.Context.Node;
-    if WithVarExpr.Context.Tool.FindIdentifierInContext(Params) then begin
-      // identifier found in with context
-      Result:=true;
-    end;
-  finally
-    Params.Load(OldInput);
+  Params.ContextNode:=WithVarNode;
+  Params.Flags:=Params.Flags*fdfGlobals
+                +[fdfExceptionOnNotFound,fdfFunctionResult];
+  WithVarExpr:=FindExpressionTypeOfVariable(WithVarNode.StartPos,-1,Params);
+  if (WithVarExpr.Desc<>xtContext)
+  or (WithVarExpr.Context.Node=nil)
+  or (WithVarExpr.Context.Node=OldInput.ContextNode)
+  or (not (WithVarExpr.Context.Node.Desc in [ctnClass,ctnRecordType])) then
+  begin
+    MoveCursorToCleanPos(WithVarNode.StartPos);
+    RaiseException(ctsExprTypeMustBeClassOrRecord);
   end;
+  // search identifier in with context
+  Params.Load(OldInput);
+  Exclude(Params.Flags,fdfExceptionOnNotFound);
+  Params.ContextNode:=WithVarExpr.Context.Node;
+  Result:=WithVarExpr.Context.Tool.FindIdentifierInContext(Params);
+  Params.Load(OldInput);
 end;
 
 function TFindDeclarationTool.FindIdentifierInAncestors(
@@ -4003,6 +3990,7 @@ begin
   StartContext.Node:=Params.ContextNode;
   StartContext.Tool:=Self;
   ExprType.Desc:=xtContext;
+  ExprType.SubDesc:=xtNone;
   ExprType.Context:=StartContext;
   {$IFDEF ShowExprEval}
   writeln('[TFindDeclarationTool.FindExpressionTypeOfVariable]',
@@ -4536,7 +4524,7 @@ end;
 
 function TFindDeclarationTool.CheckSrcIdentifier(
   Params: TFindDeclarationParams;
-  FoundContext: TFindContext): TIdentifierFoundResult;
+  const FoundContext: TFindContext): TIdentifierFoundResult;
 // this is a TOnIdentifierFound function
 //   if identifier found is a proc then it searches for the best overloaded proc
 var FirstParameterNode: TCodeTreeNode;
@@ -4738,7 +4726,7 @@ begin
 end;
 
 function TFindDeclarationTool.IsCompatible(TargetNode: TCodeTreeNode;
-  ExpressionType: TExpressionType;
+  const ExpressionType: TExpressionType;
   Params: TFindDeclarationParams): TTypeCompatibility;
 var TargetContext: TFindContext;
   OldInput: TFindDeclarationInput;
@@ -4920,7 +4908,7 @@ begin
   {$ENDIF}
 end;
 
-function TFindDeclarationTool.ContextIsDescendOf(DescendContext,
+function TFindDeclarationTool.ContextIsDescendOf(const DescendContext,
   AncestorContext: TFindContext; Params: TFindDeclarationParams): boolean;
   
   procedure RaiseInternalError;
@@ -4956,7 +4944,7 @@ begin
   Result:=false;
 end;
 
-function TFindDeclarationTool.IsBaseCompatible(TargetType,
+function TFindDeclarationTool.IsBaseCompatible(const TargetType,
   ExpressionType: TExpressionType; Params: TFindDeclarationParams
   ): TTypeCompatibility;
 // can ExpressionType be assigned to TargetType
@@ -5425,7 +5413,7 @@ begin
 end;
 
 procedure TFindDeclarationTool.CreateBaseTypeCaches(
-  NodeStack: PCodeTreeNodeStack; Result: TFindContext);
+  NodeStack: PCodeTreeNodeStack; const Result: TFindContext);
 var i: integer;
   Node: TCodeTreeNodeStackEntry;
   BaseTypeCache: TBaseTypeCache;
@@ -5640,7 +5628,7 @@ begin
   NewFlags:=[];
 end;
 
-procedure TFindDeclarationParams.SetResult(AFindContext: TFindContext);
+procedure TFindDeclarationParams.SetResult(const AFindContext: TFindContext);
 begin
   ClearResult;
   NewCodeTool:=AFindContext.Tool;
@@ -5711,14 +5699,16 @@ begin
   FoundProc:=nil;
 end;
 
-procedure TFindDeclarationParams.SetFirstFoundProc(ProcContext: TFindContext);
+procedure TFindDeclarationParams.SetFirstFoundProc(
+  const ProcContext: TFindContext);
 begin
   New(FoundProc);
   FillChar(FoundProc^,SizeOf(TFoundProc),0);
   FoundProc^.Context:=ProcContext;
 end;
 
-procedure TFindDeclarationParams.ChangeFoundProc(ProcContext: TFindContext;
+procedure TFindDeclarationParams.ChangeFoundProc(
+  const ProcContext: TFindContext;
   ProcCompatibility: TTypeCompatibility;
   ParamCompatibilityList: TTypeCompatibilityList);
 begin
@@ -5774,14 +5764,14 @@ begin
   Capacity:=Capacity+5;
 end;
 
-procedure TExprTypeList.Add(ExprType: TExpressionType);
+procedure TExprTypeList.Add(const ExprType: TExpressionType);
 begin
   inc(Count);
   if Count>Capacity then Grow;
   Items[Count-1]:=ExprType;
 end;
 
-procedure TExprTypeList.AddFirst(ExprType: TExpressionType);
+procedure TExprTypeList.AddFirst(const ExprType: TExpressionType);
 begin
   inc(Count);
   if Count>Capacity then Grow;

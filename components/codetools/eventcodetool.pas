@@ -57,7 +57,7 @@ type
       Identifier: PChar): TCodeTreeNode;
   protected
     function CollectPublishedMethods(Params: TFindDeclarationParams;
-      FoundContext: TFindContext): TIdentifierFoundResult;
+      const FoundContext: TFindContext): TIdentifierFoundResult;
   public
     function GetCompatiblePublishedMethods(const UpperClassName: string;
         TypeData: PTypeData; Proc: TGetStringProc): boolean;
@@ -666,7 +666,7 @@ begin
 end;
 
 function TEventsCodeTool.CollectPublishedMethods(
-  Params: TFindDeclarationParams; FoundContext: TFindContext
+  Params: TFindDeclarationParams; const FoundContext: TFindContext
   ): TIdentifierFoundResult;
 var
   ParamCompatibility: TTypeCompatibility;
