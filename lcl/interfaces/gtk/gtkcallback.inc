@@ -1693,7 +1693,7 @@ begin
   TCommonDialog(data).Close;
 end;
 
-function gtkpressedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkPressedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
@@ -1703,7 +1703,7 @@ begin
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkenterCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkEnterCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMessage;
 begin
@@ -1715,11 +1715,12 @@ begin
     gtk_signal_emit_stop_by_name(PGTKObject(Widget),'enter');
   end;
 
-  Mess.msg := LM_ENTER;
+  Mess.msg := CM_MOUSEENTER;
+writeln('gtkEnterCB');
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkleaveCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkLeaveCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
@@ -1731,11 +1732,12 @@ begin
     gtk_signal_emit_stop_by_name(PGTKObject(Widget),'leave');
   end;
 
-  Mess.msg := LM_LEAVE;
+  Mess.msg := CM_MOUSELEAVE;
+writeln('gtkLeaveCB');
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtkmovecursorCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
+function gtkMoveCursorCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
@@ -2545,6 +2547,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.159  2002/11/21 18:49:53  mattias
+  started OnMouseEnter and OnMouseLeave
+
   Revision 1.158  2002/11/16 11:22:57  mbukovjan
   Fixes to MaxLength. TCustomMemo now has MaxLength, too.
 
