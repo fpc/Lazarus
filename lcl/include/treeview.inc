@@ -5093,6 +5093,34 @@ begin
   Result:=Items.FFirstMultiSelected;
 end;
 
+function TCustomTreeView.SelectionVisible: boolean;
+var
+  ANode: TTreeNode;
+begin
+  ANode:=GetFirstMultiSelected;
+  while (ANode<>nil) do begin
+    if ANode.IsVisible then begin
+      Result:=true;
+      exit;
+    end;
+    ANode:=ANode.GetNextMultiSelected;
+  end;
+  ANode:=Selected;
+  Result:=(ANode<>nil) and (ANode.IsVisible);
+end;
+
+procedure TCustomTreeView.MakeSelectionVisible;
+var
+  ANode: TTreeNode;
+begin
+  if SelectionVisible then exit;
+  ANode:=GetFirstMultiSelected;
+  if (ANode=nil) then
+    ANode:=Selected;
+  if ANode=nil then exit;
+  ANode.MakeVisible;
+end;
+
 procedure TCustomTreeView.SetSeparatorColor(const AValue: TColor);
 begin
   if fSeparatorColor=AValue then exit;

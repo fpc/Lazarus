@@ -1731,6 +1731,8 @@ type
     procedure LockSelectionChangeEvent;
     procedure UnlockSelectionChangeEvent;
     function GetFirstMultiSelected: TTreeNode;
+    function SelectionVisible: boolean;
+    procedure MakeSelectionVisible;
   public
     property BackgroundColor: TColor
       read FBackgroundColor write SetBackgroundColor;
@@ -1935,6 +1937,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.91  2003/11/07 15:57:45  mattias
+  implemented auto selection visible for component tree
+
   Revision 1.90  2003/10/22 17:50:16  mattias
   updated rpm scripts
 

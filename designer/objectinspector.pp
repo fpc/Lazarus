@@ -2392,6 +2392,7 @@ begin
   PropertyGrid.Selections:=FComponentList;
   EventGrid.Selections:=FComponentList;
   ComponentTree.Selections:=FComponentList;
+  ComponentTree.MakeSelectionVisible;
   if (not Visible) and (FComponentList.Count>0) then
     Visible:=true;
 end;
