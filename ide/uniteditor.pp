@@ -2340,7 +2340,7 @@ begin
   
   ctWordCompletion:
     begin
-      aWordCompletion.CompletePrefix(OldPrefix,NewPrefix,false);
+      aWordCompletion.CompletePrefix(OldPrefix,NewPrefix);
     end;
   
   end;

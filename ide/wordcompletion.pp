@@ -47,8 +47,7 @@ type
        read GetWordBufferCapacity write SetWordBufferCapacity;
     procedure GetWordList(AWordList:TStrings; const Prefix:String;
        CaseSensitive:boolean; MaxResults:integer);
-    procedure CompletePrefix(const Prefix: string; var CompletedPrefix: string;
-       CaseSensitive:boolean);
+    procedure CompletePrefix(const Prefix: string; var CompletedPrefix: string);
   public
     property OnGetSource:TWordCompletionGetSource
        read FOnGetSource write FOnGetSource;
@@ -198,7 +197,7 @@ begin
 end;
 
 procedure TWordCompletion.CompletePrefix(const Prefix: string;
-  var CompletedPrefix: string; CaseSensitive: boolean);
+  var CompletedPrefix: string);
 var
   WordList: TStringList;
   s: string;
@@ -210,7 +209,7 @@ begin
   WordList:=TStringList.Create;
   try
     // fetch all words with Prefix
-    GetWordList(WordList,Prefix,CaseSensitive,10000);
+    GetWordList(WordList,Prefix,true,10000);
     if WordList.Count=0 then exit;
     // find the biggest prefix of all available words
     CompletedPrefix:=WordList[0];
@@ -224,13 +223,8 @@ begin
       MaxPos:=length(s);
       if MaxPos>length(CompletedPrefix) then MaxPos:=length(CompletedPrefix);
       while (SamePos<MaxPos) do begin
-        if CaseSensitive then begin
-          if s[SamePos+1]<>CompletedPrefix[SamePos+1] then
-            break;
-        end else begin
-          if upcase(s[SamePos+1])<>upcase(CompletedPrefix[SamePos+1]) then
-            break;
-        end;
+        if s[SamePos+1]<>CompletedPrefix[SamePos+1] then
+          break;
         inc(SamePos);
       end;
       if SamePos<length(Prefix) then continue;
