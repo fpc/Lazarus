@@ -187,6 +187,12 @@ type
     Procedure OnProcessIDECommand(Sender: TObject; Command: word;
       var Handled: boolean);
 
+    // Environment options dialog events
+    procedure OnLoadEnvironmentSettings(Sender: TObject;
+       TheEnvironmentOptions: TEnvironmentOptions);
+    procedure OnSaveEnvironmentSettings(Sender: TObject;
+       TheEnvironmentOptions: TEnvironmentOptions);
+
     // SourceNotebook events
     Procedure OnSrcNoteBookActivated(Sender : TObject);
     Procedure OnSrcNoteBookAddJumpPoint(ACaretXY: TPoint; ATopLine: integer; 
@@ -245,13 +251,10 @@ type
       AComponent: TComponent; const NewName: string);
 
     procedure OnControlSelectionChanged(Sender: TObject);
+    
+    // unit dependencies events
+    procedure UnitDependenciesViewAccessingSources(Sender: TObject);
 
-    // Environment options dialog events
-    procedure OnLoadEnvironmentSettings(Sender: TObject; 
-       TheEnvironmentOptions: TEnvironmentOptions);
-    procedure OnSaveEnvironmentSettings(Sender: TObject; 
-       TheEnvironmentOptions: TEnvironmentOptions);
-       
     // CodeToolBoss events
     procedure OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
                                     var Abort: boolean);
@@ -3978,6 +3981,7 @@ var
 begin
   if UnitDependenciesView=nil then begin
     UnitDependenciesView:=TUnitDependenciesView.Create(Self);
+    UnitDependenciesView.OnAccessingSources:=@UnitDependenciesViewAccessingSources;
     WasVisible:=false;
   end else
     WasVisible:=UnitDependenciesView.Visible;
@@ -5818,6 +5822,13 @@ end;
 
 // -----------------------------------------------------------------------------
 
+procedure TMainIDE.UnitDependenciesViewAccessingSources(Sender: TObject);
+begin
+  SaveSourceEditorChangesToCodeCache(-1);
+end;
+
+// -----------------------------------------------------------------------------
+
 procedure TMainIDE.InitCodeToolBoss;
 // initialize the CodeToolBoss, which is the frontend for the codetools.
 //  - sets a basic set of compiler macros
@@ -7098,6 +7109,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.380  2002/09/14 16:00:27  lazarus
+  MG: added Refresh to Unit Dependencies
+
   Revision 1.379  2002/09/14 07:05:12  lazarus
   MG: added uni dependencies
 
