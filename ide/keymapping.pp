@@ -621,6 +621,7 @@ begin
   VK_COMMA      :Result:=Result+',';
   VK_POINT      :Result:=Result+'.';
   VK_SLASH      :Result:=Result+'/';
+  VK_AT         :Result:=Result+'@';
   else
     Result:=Result+'Word('''+IntToStr(Key)+''')';
   end;

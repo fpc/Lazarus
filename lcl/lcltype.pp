@@ -341,6 +341,7 @@ PM_Remove = 1;
   VK_COMMA      = 188;
   VK_POINT      = 190;
   VK_SLASH      = 191;
+  VK_AT         = 192;
  
 
   // VK_L & VK_R - left and right Alt, Ctrl and Shift virtual keys.
@@ -352,6 +353,7 @@ PM_Remove = 1;
   VK_RCONTROL   = 163;
   VK_LMENU      = 164;
   VK_RMENU      = 165;
+  
   VK_PROCESSKEY = 229;
   VK_ATTN       = 246;
   VK_CRSEL      = 247;
@@ -363,7 +365,7 @@ PM_Remove = 1;
   VK_PA1        = 253;
   VK_OEM_CLEAR  = 254;
   
-  // all other keys with no virtial key code are mapped to
+  // all other keys with no virtual key code are mapped to
   // VK_IRREGULAR + KeyCode
   VK_IRREGULAR  = 1000;
 
@@ -1399,6 +1401,9 @@ end.
 
 {
   $Log$
+  Revision 1.3  2002/03/31 22:01:37  lazarus
+  MG: fixed unreleased/unpressed Ctrl/Alt/Shift
+
   Revision 1.2  2002/03/16 21:40:54  lazarus
   MG: reduced size+move messages between lcl and interface
 

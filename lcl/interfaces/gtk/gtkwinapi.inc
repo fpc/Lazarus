@@ -2075,8 +2075,9 @@ begin
   end;
   
   // add toggle
-  if Result <> 0 
-  then Result := Result or TOGGLESTATE[FKeyStateList.IndexOf(Pointer(nVirtKey or KEYMAP_TOGGLE)) <> -1];
+  if Result <> 0 then
+    Result := Result or TOGGLESTATE[FKeyStateList.IndexOf(Pointer(
+                                             nVirtKey or KEYMAP_TOGGLE)) <> -1];
 
   //Assert(False, Format('Trace:[TgtkObject.GetKeyState] %d -> 0x%x', [nVirtKey, Result]));
 end;
@@ -4382,6 +4383,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2002/03/31 22:01:38  lazarus
+  MG: fixed unreleased/unpressed Ctrl/Alt/Shift
+
   Revision 1.62  2002/03/14 20:28:49  lazarus
   Bug fix for Mattias.
   Fixed spinedit so you can now get the value and set the value.
