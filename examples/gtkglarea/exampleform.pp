@@ -28,8 +28,8 @@ unit ExampleForm;
 interface
 
 uses
-  Classes, SysUtils, GTKGlArea, gtkglarea_int, Forms, LResources, Buttons, StdCtrls,
-  gtk, glib, NVGL, linux;
+  Classes, SysUtils, GTKGlArea, gtkglarea_int, Forms, LResources, Buttons,
+  StdCtrls, gtk, glib, NVGL, Linux;
 
 type
   TglTexture = class
@@ -62,7 +62,7 @@ type
     procedure GTKGLAreaControl1Paint(Sender: TObject);
     procedure GTKGLAreaControl1Resize(Sender: TObject);
   public
-    constructor Create(AOwner: TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   private
     AreaInitialized: boolean;
@@ -106,7 +106,7 @@ var direction: boolean;
 implementation
 
 
-{function LoadFileToMemStream(const Filename: string): TMemoryStream;
+function LoadFileToMemStream(const Filename: string): TMemoryStream;
 var FileStream: TFileStream;
 begin
   Result:=TMemoryStream.Create;
@@ -121,158 +121,12 @@ begin
   except
     Result.Free;
     Result:=nil;
-  end;  
+    raise Exception.Create('File not found: '+Filename);
+  end;
 end;
 
-function LoadglTexImage2DFromBitmapFile(const Filename:string; 
+function LoadglTexImage2DFromBitmapFile(Filename:string;
   var Image:TglTexture): boolean;
-type
-  TBITMAPFILEHEADER = packed record
-    bfType: Word;
-    bfSize: DWORD;
-    bfReserved1: Word;
-    bfReserved2: Word;
-    bfOffBits: DWORD;
-  end;
-
-  BITMAPINFOHEADER = packed record
-          biSize : DWORD;
-          biWidth : Longint;
-          biHeight : Longint;
-          biPlanes : WORD;
-          biBitCount : WORD;
-          biCompression : DWORD;
-          biSizeImage : DWORD;
-          biXPelsPerMeter : Longint;
-          biYPelsPerMeter : Longint;
-          biClrUsed : DWORD;
-          biClrImportant : DWORD;
-       end;
-
-  RGBQUAD = packed record
-          rgbBlue : BYTE;
-          rgbGreen : BYTE;
-          rgbRed : BYTE;
-       //   rgbReserved : BYTE;
-       end;
-
-  BITMAPINFO = packed record
-          bmiHeader : BITMAPINFOHEADER;
-          bmiColors : array[0..0] of RGBQUAD;
-       end;
-
-  PBITMAPINFO = ^BITMAPINFO;
-
-  //TBitsObj = array[1..1] of byte;
-  //PBitsObj = ^TBitsObj;
-
-  TRawImage = packed record
-     p:array[0..0] of byte;
-   end;
-  PRawImage = ^TRawImage;
-
-const
-  BI_RGB = 0;
-
-var
-  MemStream: TMemoryStream;
-  BmpHead: TBitmapFileHeader;
-  BmpInfo:PBitmapInfo;
-  ImgSize:longint;
-  InfoSize, PixelCount, i:integer;
-  BitsPerPixel:integer;
-  AnRGBQuad: RGBQUAD;
-begin
-  Result:=false;
-  MemStream:=LoadFileToMemStream(Filename);
-  if MemStream=nil then begin
-    writeln('Unable to load "',Filename,'"');
-    exit;
-  end;
-  try
-    if (MemStream.Read(BmpHead, sizeof(BmpHead))<sizeof(BmpHead))
-    or (BmpHead.bfType <> $4D42) then begin
-      writeln('Invalid windows bitmap (header)');
-      exit;
-    end;
-    InfoSize:=BmpHead.bfOffBits-SizeOf(BmpHead);
-    GetMem(BmpInfo,InfoSize);
-    try
-      if MemStream.Read(BmpInfo^,InfoSize)<>InfoSize then begin
-        writeln('Invalid windows bitmap (info)');
-        exit;
-      end;
-      if BmpInfo^.bmiHeader.biSize<>sizeof(BitmapInfoHeader) then begin
-        writeln('OS2 bitmaps are not supported yet');
-        exit;
-      end;
-      if BmpInfo^.bmiHeader.biCompression<>bi_RGB then begin
-        writeln('RLE compression is not supported yet');
-        exit;
-      end;
-      BitsPerPixel:=BmpInfo^.bmiHeader.biBitCount;
-      if BitsPerPixel<>24 then begin
-        writeln('Only truecolor bitmaps supported yet');
-        exit;
-      end;
-      ImgSize:=BmpInfo^.bmiHeader.biSizeImage;
-      if MemStream.Size-MemStream.Position<ImgSize then begin
-        writeln('Invalid windows bitmap (bits)');
-        exit;
-      end;
-      Image.Width:=BmpInfo^.bmiHeader.biWidth;
-      Image.Height:=BmpInfo^.bmiHeader.biHeight;
-      PixelCount:=Image.Width*Image.Height;
-      GetMem(Image.Data,PixelCount * 3);
-      try
-        try
-          for i:=0 to PixelCount-1 do begin
-            MemStream.Read(AnRGBQuad,sizeOf(RGBQuad));}
-            {$IFOPT R+}{$DEFINE RangeCheckOn}{$R-}{$ENDIF}
-            {with PRawImage(Image.Data)^ do begin
-              p[i*3+0]:=AnRGBQuad.rgbRed;
-              p[i*3+1]:=AnRGBQuad.rgbGreen;
-              p[i*3+2]:=AnRGBQuad.rgbBlue;
-            end;}
-            {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
-          {end;
-        except
-          writeln('Error converting bitmap');
-          exit;
-        end;
-      finally
-        FreeMem(Image.Data);
-        Image.Data:=nil;
-      end;
-    finally
-      FreeMem(BmpInfo);
-    end;
-    Result:=true;
-  finally
-    MemStream.Free;
-  end;
-  Result:=true;
-end;
-}
-function LoadFileToMemStream(Filename: string): TMemoryStream;
-var FileStream: TFileStream;
-begin
-  Result:=TMemoryStream.Create;
-  try
-    FileStream:=TFileStream.Create(Filename, fmOpenRead);
-    try
-      Result.CopyFrom(FileStream,FileStream.Size);
-      Result.Position:=0;
-    finally
-      FileStream.Free;
-    end;
-  except
-    Result.Free;
-    Result:=nil;
-  end;
-end;
-
-function LoadglTexImage2DFromBitmapFile(Filename:string; var Image:TglTexture): boolean;
 type
   TBITMAPFILEHEADER = packed record
     bfType: Word;
@@ -392,9 +246,9 @@ end;
 
 
 
-constructor TExampleForm.Create(AOwner: TComponent);
+constructor TExampleForm.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     SetBounds((Screen.Width-800) div 2,(Screen.Height-600) div 2,800,600);
     Caption:='LCL Example for the gtkglarea component';
@@ -490,7 +344,7 @@ begin
     
     // resize the components first, since the gtkglarea needs some time to setup
     FormResize(Self);
-    AreaInitialized:=false;
+
     GTKGLAreaControl1:=TGTKGLAreaControl.Create(Self);
     with GTKGLAreaControl1 do begin
       Name:='GTKGLAreaControl1';
@@ -501,7 +355,6 @@ begin
       Visible:=true;
     end;
 
-    
   end;
   // now resize
   FormResize(Self);
@@ -552,7 +405,10 @@ procedure TParticleEngine.RespawnParticle(i: integer);
 begin
   if (xspawn>2) and (direction=true) then direction:=false;
   if (xspawn<-2) and (direction=false) then direction:=true;
-  if direction then xspawn:=xspawn+0.0002*(timer/10) else xspawn:=xspawn-0.0002*(timer/10);
+  if direction then
+    xspawn:=xspawn+0.0002*(timer/10)
+  else
+    xspawn:=xspawn-0.0002*(timer/10);
   Particle[i].x:=xspawn;
   Particle[i].y:=-0.5;
   Particle[i].z:=0;
@@ -894,10 +750,11 @@ begin
       glLoadIdentity ();               { define the projection }
       glFrustum (-1.0, 1.0, -1.0, 1.0, 1.5, 20.0); { transformation } 
       glMatrixMode (GL_MODELVIEW);  { back to modelview matrix }
-      glViewport (0, 0, GTKGLAreaControl1.Width, GTKGLAreaControl1.Height);      { define the viewport }
+      glViewport (0, 0, GTKGLAreaControl1.Width, GTKGLAreaControl1.Height);
+                                    { define the viewport }
       AreaInitialized:=true;
     end;
-    
+
     GetTime(hour, minutes, secs, msecs, usecs);
     timer:=msecs-mmsecs;
     if timer<0 then timer:=1000+timer;
@@ -966,10 +823,9 @@ end;
 
 procedure TExampleForm.GTKGLAreaControl1Resize(Sender: TObject);
 begin
-  if (AreaInitialized) and (gint(True) = gtk_gl_area_make_current(GTKGLAreaControl1.widget)) then
-    {glViewport(0, 0, PGtkWidget(GTKGLAreaControl1.Widget)^.allocation.width,
-      PGtkWidget(GTKGLAreaControl1.Widget)^.allocation.height);}
-    glViewport (0, 0, GTKGLAreaControl1.Width, GTKGLAreaControl1.Height);  
+  if (AreaInitialized)
+  and (gint(True) = gtk_gl_area_make_current(GTKGLAreaControl1.widget)) then
+    glViewport (0, 0, GTKGLAreaControl1.Width, GTKGLAreaControl1.Height);
 end;
 
 

@@ -19,7 +19,7 @@
  ***************************************************************************
 
 }
-program gtkglarea_demo;
+program GTKGLArea_Demo;
 
 {$MODE objfpc}{$H+}
 

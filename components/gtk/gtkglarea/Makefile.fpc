@@ -4,15 +4,16 @@
 #
 
 [package]
-#name=lazarus-gtkglarea
-name=lazarus
+name=lazarus-gtkglarea
 version=0.8a
 
 [target]
-units=gtkglarea_int nvgl gtkglarea exampleform gtkglarea_demo
-   
+units=gtkglarea
+implicitunits=gtkglarea_int nvgl gtkglarea
+
 
 [default]
+
             
 [compiler]
 options=-gl -k-lGL
@@ -22,7 +23,6 @@ unitdir=. ../../../lcl/units ../../../lcl/units/gtk
 packages=rtl fcl gtk opengl
 
 [clean]
-files=gtkglarea_demo
 
 [install]
 
@@ -32,14 +32,6 @@ zipname=lazarus.gtkglarea.$(ZIPSUFFIX)
 [rules]
 .PHONY: cleartarget all makefile makefiles
 
-cleartarget:
-        -$(DEL) gtkglarea_demo
-
-all: cleartarget gtkglarea_demo$(PPUEXT)
-
-makefile: Makefile.fpc
-        -$(FPCMAKE) -w
-       
-makefiles: makefile
+all: cleartarget
 
 # end.
