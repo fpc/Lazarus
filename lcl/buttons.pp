@@ -63,12 +63,16 @@ type
     constructor Create(AOwner: TComponent); override;
   published
     property Default : Boolean read FDefault write SetDefault default false;
-    property ModalResult : TModalResult read FModalResult write FModalResult default 0;
+    property Enabled;
+    property ModalResult : TModalResult read FModalResult write FModalResult default mrNone;
     property Cancel : Boolean read FCancel write FCancel default False;
     property Caption;
     property Font;
-
+    property TabStop default true;
+    property PopupMenu;
+    property ShowHint;
     property Visible;
+    property OnClick;
     property OnEnter;
     property OnExit;
     property OnKeyDown;
@@ -213,6 +217,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2000/12/01 18:12:40  lazarus
+  Modified Gloabal so TDesignForm isn't included anymore.
+  Shane
+
   Revision 1.4  2000/12/01 15:50:39  lazarus
   changed the TCOmponentInterface SetPropByName.  It works for a few properties, but not all.
   Shane
