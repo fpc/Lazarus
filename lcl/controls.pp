@@ -596,6 +596,7 @@ type
     procedure BringToFront;
     constructor Create(AOwner: TComponent);override;
     destructor Destroy; override;
+    function HasParent : Boolean; override;
     procedure Refresh;
     procedure Repaint; virtual;
     Procedure Invalidate; virtual;
@@ -1234,6 +1235,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.50  2002/05/30 21:19:26  lazarus
+  + implemented HasParent for TControl & changed TCustomForm.GetChildren
+    accordingly (sorry, control.inc & customform.inc got wrong comment:-( )
+    stoppok
+
   Revision 1.49  2002/05/24 07:16:31  lazarus
   MG: started mouse bugfix and completed Makefile.fpc
 
