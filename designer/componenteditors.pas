@@ -27,7 +27,7 @@ unit ComponentEditors;
 interface
 
 uses
-  Classes, SysUtils, TypInfo, Forms, Controls, PropEdits, Menus;
+  Classes, SysUtils, TypInfo, Forms, Controls, PropEdits, Menus, ExtCtrls;
 
 
 { TComponentEditorDesigner }
@@ -127,7 +127,7 @@ type
     procedure ExecuteVerb(Index: Integer); virtual; abstract;
     function GetVerb(Index: Integer): string; virtual; abstract;
     function GetVerbCount: Integer; virtual; abstract;
-    procedure PrepareItem(Index: Integer; const AItem: TMenuItem); virtual; abstract;
+    procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); virtual; abstract;
     procedure Copy; virtual; abstract;
     function IsInInlined: Boolean; virtual; abstract;
     function GetComponent: TComponent; virtual; abstract;
@@ -158,7 +158,7 @@ type
     function GetVerbCount: Integer; override;
     function IsInInlined: Boolean; override;
     procedure Copy; virtual; override;
-    procedure PrepareItem(Index: Integer; const AItem: TMenuItem); override;
+    procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
     property Component: TComponent read FComponent;
     property Designer: TComponentEditorDesigner read GetDesigner;
   end;
@@ -180,6 +180,24 @@ type
   public
     procedure Edit; override;
   end;
+  
+{ TNotebookComponentEditor
+  The default component editor for TNotebook. It adds the following menu items
+  to the popupmenu of the designer:
+  ToDo:
+  'Insert page', 'Delete page', 'Move page left', 'Move page right',
+  'Select all pages'}
+  TNotebookComponentEditor = class(TDefaultComponentEditor)
+  protected
+    procedure DoInsertPage; virtual;
+  public
+    procedure ExecuteVerb(Index: Integer); override;
+    function GetVerb(Index: Integer): string; override;
+    function GetVerbCount: Integer; override;
+    procedure PrepareItem(Index: Integer; const AnItem: TMenuItem); override;
+    function Notebook: TNotebook;
+  end;
+  
 
 
 { Register a component editor to be created when a component derived from
@@ -436,7 +454,7 @@ begin
 end;
 
 procedure TComponentEditor.PrepareItem(Index: Integer;
-  const AItem: TMenuItem);
+  const AnItem: TMenuItem);
 begin
   // Intended for descendents to implement
 end;
@@ -505,10 +523,67 @@ begin
 end;
 
 
+{ TNotebookComponentEditor }
+
+const
+  nbvInsertPage    = 0;
+  nbvDeletePage    = 1;
+  nbvMovePageLeft  = 2;
+  nbvMovePageRight = 3;
+
+procedure TNotebookComponentEditor.DoInsertPage;
+begin
+
+end;
+
+procedure TNotebookComponentEditor.ExecuteVerb(Index: Integer);
+begin
+  case Index of
+    nbvInsertPage:    DoInsertPage;
+    nbvDeletePage:    ;
+    nbvMovePageLeft:  ;
+    nbvMovePageRight: ;
+  end;
+end;
+
+function TNotebookComponentEditor.GetVerb(Index: Integer): string;
+begin
+  case Index of
+    nbvInsertPage:    Result:='Insert page';
+    nbvDeletePage:    Result:='Delete page';
+    nbvMovePageLeft:  Result:='Move page left';
+    nbvMovePageRight: Result:='Move page right';
+  else
+    Result:='';
+  end;
+end;
+
+function TNotebookComponentEditor.GetVerbCount: Integer;
+begin
+  Result:=4;
+end;
+
+procedure TNotebookComponentEditor.PrepareItem(Index: Integer;
+  const AnItem: TMenuItem);
+begin
+  inherited PrepareItem(Index, AnItem);
+  case Index of
+    nbvInsertPage:    ;
+    nbvDeletePage:    AnItem.Enabled:=Notebook.PageIndex>=0;
+    nbvMovePageLeft:  AnItem.Enabled:=Notebook.PageIndex>0;
+    nbvMovePageRight: AnItem.Enabled:=Notebook.PageIndex<Notebook.PageCount-1;
+  end;
+end;
+
+function TNotebookComponentEditor.Notebook: TNotebook;
+begin
+  Result:=TNotebook(GetComponent);
+end;
+
 //------------------------------------------------------------------------------
 initialization
   RegisterComponentEditorProc:=@DefaultRegisterComponentEditorProc;
-
+  RegisterComponentEditor(TNotebook,TNotebookComponentEditor);
 
 end.
 
