@@ -3529,6 +3529,50 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TGtkObject.GetNotebookTabIndexAtPos(Handle: HWND;
+    const ClientPos: TPoint): integer;
+
+
+ ------------------------------------------------------------------------------}
+function TGtkObject.GetNotebookTabIndexAtPos(Handle: HWND;
+  const ClientPos: TPoint): integer;
+var
+  NoteBookWidget: PGtkNotebook;
+  i: integer;
+  TabWidget: PGtkWidget;
+  PageWidget: PGtkWidget;
+  NotebookPos: TPoint;
+  PageListItem: PGList;
+begin
+  Result:=-1;
+  if (Handle=0) then exit;
+  NoteBookWidget:=PGtkNotebook(Handle);
+  NotebookPos:=ClientPos;
+  // go through all tabs
+  i:=0;
+  PageListItem:=NoteBookWidget^.Children;
+  while PageListItem<>nil do begin
+    PageWidget:=PGtkWidget(PageListItem^.Data);
+    if PageWidget<>nil then begin
+      TabWidget:=PGtkNotebookPage(PageWidget)^.Tab_Label;
+      if TabWidget<>nil then begin
+        // test if position is in tabwidget
+        if (TabWidget^.Allocation.X<=NoteBookPos.X)
+        and (TabWidget^.Allocation.Y<=NoteBookPos.Y)
+        and (TabWidget^.Allocation.X+TabWidget^.Allocation.Width>NoteBookPos.X)
+        and (TabWidget^.Allocation.Y+TabWidget^.Allocation.Height>NoteBookPos.Y)
+        then begin
+          Result:=i;
+          exit;
+        end;
+      end;
+    end;
+    PageListItem:=PageListItem^.Next;
+    inc(i);
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetObject
   Params:  none
   Returns: Nothing
@@ -7366,7 +7410,6 @@ var
   Window : PgdkWindow;
   Widget : PgtkWidget;
 begin
-  // Check the state of the widget.  IF it's hidden or disabled, don't return it's handle!
   Result := 0;
 
   Window := gdk_window_at_pointer(@Point.x,@Point.Y);
@@ -7374,7 +7417,8 @@ begin
   Begin
     ev.any.window := Window;
     Widget := gtk_get_event_widget(@ev);
-    if widget <> nil then Result := Longint(widget);
+    if (Widget <> nil) then
+      Result := Longint(widget);
     Assert(False, format('Trace:Result = [%d]',[Result]));
   end
   else
@@ -7535,6 +7579,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.187  2002/11/09 15:02:08  lazarus
+  MG: fixed LM_LVChangedItem, OnShowHint, small bugs
+
   Revision 1.186  2002/11/03 22:14:44  lazarus
   MG: fixed Polygon and not winding
 
