@@ -314,9 +314,6 @@ end;
 
  ------------------------------------------------------------------------------}
 procedure TSpeedbutton.Paint;
-const
-  DownStyles: array[Boolean] of Integer = (BDR_RAISEDINNER, BDR_SUNKENINNER);
-  FillStyles: array[Boolean] of Integer = (BF_MIDDLE, 0);
 var
   PaintRect: TRect;
   GlyphWidth, GlyphHeight: Integer;
@@ -701,6 +698,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.40  2002/08/17 23:41:34  mattias
   many clipping fixes
 

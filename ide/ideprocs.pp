@@ -654,61 +654,6 @@ begin
   Result:=FileCtrl.CompareFilenames(FileName1,FileName2);
 end;
 
-function FileIsExecutable(const AFilename: string): boolean;
-begin
-  try
-    CheckIfFileIsExecutable(AFilename);
-    Result:=true;
-  except
-    Result:=false;
-  end;
-end;
-
-procedure CheckIfFileIsExecutable(const AFilename: string);
-{$IFNDEF win32}
-var AText: string;
-{$ENDIF}
-begin
-  // TProcess does not report, if a program can not be executed
-  // to get good error messages consider the OS
-  if not FileExists(AFilename) then begin
-    raise Exception.Create('file "'+AFilename+'" does not exist');
-  end;
-  {$IFNDEF win32}
-  if not{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
-    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK) then
-  begin
-    AText:='"'+AFilename+'"';
-    case LinuxError of
-    {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
-      AText:='read access denied for '+AText;
-    {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
-      AText:='a directory component in '+AText
-                          +' does not exist or is a dangling symlink';
-    {$IFDEF Ver1_0}sys_enotdir{$ELSE}ESysENotDir{$ENDIF}:
-      AText:='a directory component in '+Atext+' is not a directory';
-    {$IFDEF Ver1_0}sys_enomem{$ELSE}ESysENoMem{$ENDIF}:
-      AText:='insufficient memory';
-    {$IFDEF Ver1_0}sys_eloop{$ELSE}ESysELoop{$ENDIF}:
-      AText:=AText+' has a circular symbolic link';
-    else
-      AText:=AText+' is not executable';
-    end;
-    raise Exception.Create(AText);
-  end;
-  {$ENDIF}
-  
-  // ToDo: windows and xxxbsd
-end;
-
-function ExtractFileNameOnly(const AFilename: string): string;
-var ExtLen: integer;
-begin
-  Result:=ExtractFilename(AFilename);
-  ExtLen:=length(ExtractFileExt(Result));
-  Result:=copy(Result,1,length(Result)-ExtLen);
-end;
-
 function FilenameIsAbsolute(Filename: string):boolean;
 begin
   Result:=FileProcs.FilenameIsAbsolute(Filename);
@@ -724,29 +669,9 @@ begin
   Result:=FileProcs.ForceDirectory(DirectoryName);
 end;
 
-function FileIsReadable(const AFilename: string): boolean;
-begin
-  Result:=FileProcs.FileIsReadable(AFilename);
-end;
-
-function FileIsWritable(const AFilename: string): boolean;
-begin
-  Result:=FileProcs.FileIsWritable(AFilename);
-end;
-
-function FileIsText(const AFilename: string): boolean;
-begin
-  Result:=FileProcs.FileIsText(AFilename);
-end;
-
 function AppendPathDelim(const Path: string): string;
 begin
   Result:=FileProcs.AppendPathDelim(Path);
-end;
-
-function ChompPathDelim(const Path: string): string;
-begin
-  Result:=FileProcs.ChompPathDelim(Path);
 end;
 
 function CompareFilenames(const Filename1, Filename2: string;

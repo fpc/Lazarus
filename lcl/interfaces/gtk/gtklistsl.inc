@@ -30,24 +30,24 @@ const
   GtkListItemLCLListTag = 'LCLList';
 
 {*************************************************************}
-{                      Default compare function               }
+{                      Default compare functions              }
 {*************************************************************}
 
-function DefaultCompareFunc(a, b : gpointer) : gint; cdecl;
+{function DefaultCompareFunc(a, b : gpointer) : gint; cdecl;
 var AStr, BStr : PChar;
 begin
   gtk_label_get(PGtkLabel(PGtkBin(a)^.child), @AStr);
   gtk_label_get(PGtkLabel(PGtkBin(b)^.child), @BStr);
   Result:= strcomp(AStr, BStr);
-end;
+end;}
 
-function DefaultCheckCompareFunc(a, b : gpointer) : gint; cdecl;
+{function DefaultCheckCompareFunc(a, b : gpointer) : gint; cdecl;
 var AStr, BStr : PChar;
 begin
   gtk_label_get(PPointer(PGTKBox(PGtkBin(a)^.child)^.Children^.Next^.Data)^, @AStr);
   gtk_label_get(PPointer(PGTKBox(PGtkBin(b)^.child)^.Children^.Next^.Data)^, @BStr);
   Result:= strcomp(AStr, BStr);
-end;
+end;}
 
 {------------------------------------------------------------------------------
   function gtkListItemDrawCB(Widget: PGtkWidget; area: PGDKRectangle;
@@ -760,6 +760,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.19  2002/08/18 08:54:36  marc
   * Fixed chrash on saving checklistboxitems
 

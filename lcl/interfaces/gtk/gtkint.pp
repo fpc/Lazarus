@@ -249,9 +249,9 @@ type
 implementation
 
 uses
-  Graphics, Buttons, Menus, GTKWinApiWindow, StdCtrls, ComCtrls, CListBox,
-  KeyMap, Calendar, Arrow, Spin, PairSplitter, CommCtrl, ExtCtrls, Dialogs,
-  FileCtrl, LResources, Math, gtkglobals, gtkproc;
+  Graphics, Buttons, Menus, StdCtrls, PairSplitter, Dialogs, Math,
+  GTKWinApiWindow, ComCtrls, CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl,
+  ExtCtrls, FileCtrl, LResources, gtkglobals, gtkproc;
 
 {$I gtklistsl.inc}
 
@@ -345,6 +345,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.132  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.131  2002/08/19 15:15:24  mattias
   implemented TPairSplitter
 

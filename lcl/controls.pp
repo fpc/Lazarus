@@ -650,7 +650,7 @@ type
     procedure DoEndDrag(Target: TObject; X,Y : Integer); dynamic;
     procedure InvalidateControl(IsVisible, IsOpaque : Boolean);
     procedure InvalidateControl(IsVisible, IsOpaque, IgnoreWinControls: Boolean);
-    procedure SendDockNotification(Msg: Cardinal; WParam, LParam : Integer);
+    procedure SendDockNotification(Msg: Cardinal; WParam, LParam : Integer); virtual;
     procedure SetColor(Value : TColor); virtual;
     procedure SetDragMode (Value: TDragMode); virtual;
     procedure SetEnabled(Value: Boolean); virtual;
@@ -1536,6 +1536,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.132  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.131  2002/08/19 15:15:23  mattias
   implemented TPairSplitter
 

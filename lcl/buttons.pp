@@ -271,10 +271,10 @@ implementation
 
 
 const
-  BitbtnCaption : array[TBitBtnKind] of String = (
+  {BitbtnCaption : array[TBitBtnKind] of String = (
     '', rsmbOK, rsmbCancel, rsmbHelp, rsmbYes, rsmbNo,
     rsmbClose, rsmbAbort, rsmbRetry, rsmbIgnore, rsmbAll,
-    rsmbNoToAll, rsmbYesToAll);
+    rsmbNoToAll, rsmbYesToAll);}
 
   BitBtnModalResults : array[TBitBtnKind] of TModalResult = (
     0, mrOK, mrCancel, 0, mrYes, mrNo,
@@ -307,6 +307,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.48  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.47  2002/08/18 00:03:45  mattias
   fixed bitbtn image for NoToAll
 

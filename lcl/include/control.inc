@@ -1117,7 +1117,7 @@ end;
 ------------------------------------------------------------------------------}
 Procedure SendDockNotification(Msg: Cardinal; WParam, LParam : Integer);
 Begin
-//TODO: SendDockNotification
+  //TODO: SendDockNotification
 end;
 
 {------------------------------------------------------------------------------
@@ -1864,11 +1864,6 @@ begin
   SetBounds(FLeft, FTop, Value, FHeight);
 end;
 
-procedure SetFont(Value: TFont);
-begin
-
-end;
-
 {------------------------------------------------------------------------------
   TControl SetHeight
 ------------------------------------------------------------------------------}
@@ -2424,6 +2419,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.137  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.136  2002/08/17 23:41:34  mattias
   many clipping fixes
 

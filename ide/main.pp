@@ -647,6 +647,8 @@ type
 const
   CodeToolsIncludeLinkFile = 'includelinks.xml';
 
+var
+  ShowSplashScreen: boolean;
 
 implementation
 
@@ -698,6 +700,7 @@ procedure TMainIDE.ParseCmdLineOptions;
 const
   PrimaryConfPathOpt='--primary-config-path=';
   SecondaryConfPathOpt='--secondary-config-path=';
+  NoSplashScreenOpt='--no-splash-screen';
 var i: integer;
 begin
   if (ParamCount>0)
@@ -713,12 +716,14 @@ begin
     writeln('');
     writeln('--help or -?             ', listhisHelpMessage);
     writeln('');
-    writeln('--primary-config-path <path>');
+    writeln(PrimaryConfPathOpt,' <path>');
     writeln(BreakString(lisprimaryConfigDirectoryWhereLazarusStoresItsConfig,
                         75, 22), GetPrimaryConfigPath);
-    writeln('--secondary-config-path <path>');
+    writeln(SecondaryConfPathOpt,' <path>');
     writeln(BreakString(lissecondaryConfigDirectoryWhereLazarusSearchesFor,
                         75, 22), GetSecondaryConfigPath);
+    writeln(NoSplashScreenOpt,'    ',lisDoNotShowSplashScreen);
+    writeln('');
     writeln('');
     writeln(lisCmdLineLCLInterfaceSpecificOptions);
     writeln('');
@@ -739,6 +744,8 @@ begin
       SetSecondaryConfigPath(copy(ParamStr(i),length(SecondaryConfPathOpt)+1,
                length(ParamStr(i))));
     end;
+    if AnsiCompareText(ParamStr(i),NoSplashScreenOpt)=0 then
+      ShowSplashScreen:=false;
   end;
 end;
 
@@ -748,7 +755,7 @@ var
   InteractiveSetup: boolean;
 begin
   InteractiveSetup:=true;
-
+  
   EnvironmentOptions:=TEnvironmentOptions.Create;
   with EnvironmentOptions do begin
     SetLazarusDefaultFilename;
@@ -9287,13 +9294,16 @@ initialization
   { $I mainide.lrs}
   {$I images/laz_images.lrs}
   {$I images/mainicon.lrs}
-
+  ShowSplashScreen:=true;
 
 end.
 
 
 { =============================================================================
   $Log$
+  Revision 1.615  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.614  2002/08/18 08:57:49  marc
   * Improved hint evaluation
 

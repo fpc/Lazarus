@@ -4131,14 +4131,16 @@ begin
               If GetSystemMetrics(SM_CXSCREEN) >= biWidth then
                 biXPelsPerMeter := GetDeviceCaps(0, LOGPIXELSX)
               else
-                biXPelsPerMeter := Round((biWidth / GetSystemMetrics(SM_CXSCREEN)) *
-                                          GetDeviceCaps(0, LOGPIXELSX));
+                biXPelsPerMeter :=
+                  Round((single(biWidth) / GetSystemMetrics(SM_CXSCREEN)) *
+                        GetDeviceCaps(0, LOGPIXELSX));
 
               If GetSystemMetrics(SM_CYSCREEN) >= biHeight then
                 biYPelsPerMeter := GetDeviceCaps(0, LOGPIXELSY)
               else
-                biYPelsPerMeter := Round((biHeight / GetSystemMetrics(SM_CYSCREEN)) *
-                                          GetDeviceCaps(0, LOGPIXELSY));
+                biYPelsPerMeter :=
+                  Round((Single(biHeight) / GetSystemMetrics(SM_CYSCREEN)) *
+                        GetDeviceCaps(0, LOGPIXELSY));
 
               bmWidth := biWidth;
               bmHeight := biHeight;
@@ -8481,6 +8483,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.251  2003/06/23 09:42:09  mattias
+  fixes for debugging lazarus
+
   Revision 1.250  2002/08/19 15:15:24  mattias
   implemented TPairSplitter
 
