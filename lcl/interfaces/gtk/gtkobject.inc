@@ -578,10 +578,15 @@ procedure TGtkObject.AppTerminate;
 var
   I : Integer;
 begin
-  For I := Styles.Count - 1 downto 0 do
-    ReleaseStyle(Styles[I]);
-  Styles.Free;
-  
+  If Assigned(Styles) then
+    Try
+      For I := Styles.Count - 1 downto 0 do
+        ReleaseStyle(Styles[I]);
+      Styles.Free;
+    Except
+    End;
+  Styles := Nil;
+
   DestroyGdkCursor(Cursor_Watch);
   DestroyGdkCursor(Cursor_Arrow);
   DestroyGdkCursor(Cursor_Cross);
@@ -909,8 +914,10 @@ begin
               BitImage := TBitmap.Create;
               TListview(sender).SmallImages.GetBitmap(
                 TListItem(TListview(sender).Items[Num]).ImageIndex,BitImage);
+              {$IfNDef Win32}
               gtk_clist_set_pixtext(Pgtkclist(Widget),Num,0,pStr,3,
                 pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),nil);
+              {$EndIF}
             end;
           end;
           StrDispose(pStr);
@@ -1925,6 +1932,7 @@ var
   RCStyle : PGtkRCStyle;
   Widget, FixWidget : PGTKWidget;
 begin
+  {$IfNdef Win32}
   if Sender is TWinControl
   then with TWinControl(Sender) do
   begin
@@ -1947,7 +1955,10 @@ begin
       //SetBKColor(Handle, ColorToRGB(Color));
     end;
   end;
-  
+  {$Else}
+    Writeln('WARNING: [TgtkObject.SetColor] NOT Support under Win32 GTK')
+  {$EndIf}
+
 
   // OBSOLETE
   
@@ -4691,9 +4702,11 @@ begin
                   gtk_clist_set_pixmap(Pgtkclist(Widget),I,0,
                     pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
                     nil);
+                  {$IfNDef Win32}
                   gtk_clist_set_pixtext(Pgtkclist(Widget),I,0,pRowText,3,
                     pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
                     nil);
+                  {$EndIF}
 //                      bitimage.Free;
                 end;
               end;
@@ -5321,6 +5334,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.174  2002/08/24 06:51:22  lazarus
+  MG: from Andrew: style list fixes, autosize for radio/checkbtns
+
   Revision 1.173  2002/08/22 16:43:35  lazarus
   MG: improved theme support from Andrew
 
