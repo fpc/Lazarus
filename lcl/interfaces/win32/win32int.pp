@@ -92,6 +92,7 @@ Type
     Procedure AttachMenu(Sender: TObject);
 
     Procedure AllocAndCopy(const BitmapInfo: Windows.TBitmap; const SrcRect: TRect; var Data: PByte; var Size: Cardinal);
+    procedure FillRawImageDescriptionColors(Desc: PRawImageDescription);
     procedure FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
         Desc: PRawImageDescription);
 
@@ -185,6 +186,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.51  2003/11/14 20:23:31  micha
+  fpimage fixes
+
   Revision 1.50  2003/11/10 16:15:32  micha
   cleanups; win32 fpimage support
 

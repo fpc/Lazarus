@@ -1324,31 +1324,80 @@ begin
   Result := Windows.GetBitmapBits(Bitmap, Count, Bits);
 end;
 
+procedure TWin32Object.FillRawImageDescriptionColors(Desc: PRawImageDescription);
+begin
+  case Desc^.BitsPerPixel of
+    1:
+      begin
+        Desc^.Format := ricfGray;
+        Desc^.RedPrec := 1;
+        Desc^.GreenPrec := 0;
+        Desc^.BluePrec := 0;
+        Desc^.RedShift := 0;
+        Desc^.GreenShift := 0;
+        Desc^.BlueShift := 0;
+      end;
+    4,8:
+      begin
+        // palette mode, no offsets
+        Desc^.RedPrec := 0;
+        Desc^.GreenPrec := 0;
+        Desc^.BluePrec := 0;
+        Desc^.RedShift := 0;
+        Desc^.GreenShift := 0;
+        Desc^.BlueShift := 0;
+      end;
+    16:
+      begin
+        // 5-6-5 mode
+        Desc^.RedPrec := 5;
+        Desc^.GreenPrec := 6;
+        Desc^.BluePrec := 5;
+        Desc^.RedShift := 11;
+        Desc^.GreenShift := 5;
+        Desc^.BlueShift := 0;
+      end;
+    24:
+      begin
+        // 8-8-8 mode
+        Desc^.RedPrec := 8;
+        Desc^.GreenPrec := 8;
+        Desc^.BluePrec := 8;
+        Desc^.RedShift := 16;
+        Desc^.GreenShift := 8;
+        Desc^.BlueShift := 0;
+      end;
+  else    //  32:
+    // 0-8-8-8 mode, high byte is not used
+    Desc^.RedPrec := 8;
+    Desc^.GreenPrec := 8;
+    Desc^.BluePrec := 8;
+    Desc^.RedShift := 16;
+    Desc^.GreenShift := 8;
+    Desc^.BlueShift := 0;
+  end;
+end;
+
 procedure TWin32Object.FillRawImageDescription(const BitmapInfo: Windows.TBitmap;
     Desc: PRawImageDescription);
 begin
   Desc^.Format := ricfRGBA;
   Desc^.HasPalette := BitmapInfo.bmBitsPixel <= 8;   // if true, each pixel is an index in the palette
-  Desc^.Depth := BitmapInfo.bmBitsPixel;   // used bits per pixel
+  Desc^.Depth := BitmapInfo.bmBitsPixel;          // used bits per pixel
   Desc^.Width := BitmapInfo.bmWidth;
   Desc^.Height := BitmapInfo.bmHeight;
   Desc^.PaletteColorCount := 0;             // TODO, also `ColorCount'
   Desc^.ByteOrder := riboLSBFirst;
   Desc^.LineOrder := riloTopToBottom;
   Desc^.ColorCount := 0;                // entries in color palette. Ignore when no palette.
-  Desc^.BitsPerPixel := Desc^.Depth;    // bits per pixel. can be greater than Depth.
+  Desc^.BitsPerPixel := BitmapInfo.bmBitsPixel;    // bits per pixel. can be greater than Depth.
   Desc^.LineEnd := rileWordBoundary;
-  Desc^.RedPrec := 8;                  // red precision. bits for red
-  Desc^.GreenPrec := 8;
-  Desc^.BluePrec := 8;
-  Desc^.AlphaPrec := 8;
-  Desc^.RedShift := 24;
-  Desc^.GreenShift := 16; // bitshift. Direction: from least to most signifikant
-  Desc^.BlueShift := 8;
+  FillRawImageDescriptionColors(Desc);
   Desc^.AlphaShift := 0;
   Desc^.AlphaSeparate := false; // the alpha is stored as separate Mask
   // The next values are only valid, if there is a separate alpha mask
-  Desc^.AlphaBitsPerPixel := 8; // bits per alpha mask pixel.
+  Desc^.AlphaBitsPerPixel := Desc^.BitsPerPixel; // bits per alpha mask pixel.
+  Desc^.AlphaPrec := Desc^.AlphaBitsPerPixel;
   Desc^.AlphaLineEnd := rileWordBoundary;
 end;
 
@@ -1369,7 +1418,7 @@ begin
   FillChar(Desc^, SizeOf(Desc^), 0);
   Desc^.Format := ricfRGBA;
   Desc^.HasPalette := (Windows.GetDeviceCaps(DC, RASTERCAPS) and RC_PALETTE) <> 0;
-  Desc^.Depth := Windows.GetDeviceCaps(DC, BITSPIXEL);
+  Desc^.Depth := Windows.GetDeviceCaps(DC, BITSPIXEL) * Windows.GetDeviceCaps(DC, PLANES);
   // Width and Height not relevant
   Desc^.PaletteColorCount := Windows.GetDeviceCaps(DC, SIZEPALETTE);
   Desc^.ByteOrder := riboLSBFirst;
@@ -1379,18 +1428,13 @@ begin
     Desc^.BitsPerPixel := Windows.GetDeviceCaps(DC, COLORRES)
   else
     Desc^.BitsPerPixel := Desc^.Depth;
-  Desc^.LineEnd := rileWordBoundary;
-  Desc^.RedPrec := 8;                  // red precision. bits for red
-  Desc^.GreenPrec := 8;
-  Desc^.BluePrec := 8;
-  Desc^.AlphaPrec := 8;
-  Desc^.RedShift := 24;
-  Desc^.GreenShift := 16; // bitshift. Direction: from least to most signifikant
-  Desc^.BlueShift := 8;
+  Desc^.LineEnd := rileDWordBoundary;
+  FillRawImageDescriptionColors(Desc);
   Desc^.AlphaShift := 0;
-  Desc^.AlphaSeparate := false; // the alpha is stored as separate Mask
+  Desc^.AlphaSeparate := true; // the alpha is stored as separate Mask
   // The next values are only valid, if there is a separate alpha mask
-  Desc^.AlphaBitsPerPixel := 8; // bits per alpha mask pixel.
+  Desc^.AlphaBitsPerPixel := 1; // bits per alpha mask pixel.
+  Desc^.AlphaPrec := 1;
   Desc^.AlphaLineEnd := rileWordBoundary;
 end;
 
@@ -1487,22 +1531,32 @@ begin
 end;
 
 function TWin32Object.CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap): boolean;
+var
+  BitmapInfo: TBitmapInfo;
+  hScreenDC: HDC;
 begin
-  Bitmap := Windows.CreateBitmap(
-    RawImage.Description.Width, RawImage.Description.Height,
-    1, RawImage.Description.Depth,
-    RawImage.Data);
-  Result := Bitmap <> 0;
-  if not Result then exit;
+  FillChar(BitmapInfo, SizeOf(BitmapInfo), 0);
+  BitmapInfo.bmiHeader.biSize := SizeOf(BitmapInfo);
+  BitmapInfo.bmiHeader.biWidth := RawImage.Description.Width;
+  BitmapInfo.bmiHeader.biHeight := -RawImage.Description.Height;
+  BitmapInfo.bmiHeader.biPlanes := 1;
+  BitmapInfo.bmiHeader.biBitCount := RawImage.Description.BitsPerPixel;
+  BitmapInfo.bmiHeader.biCompression := BI_RGB;
+  {BitmapInfo.bmiHeader.biSizeImage := 0;}
 
-  if RawImage.Description.AlphaSeparate then
+  hScreenDC := Windows.GetDC(0);
+  Bitmap := Windows.CreateDIBitmap(hScreenDC, Windows.TBitmapInfoHeader(BitmapInfo.bmiHeader), CBM_INIT, RawImage.Data,
+    Windows.TBitmapInfo(BitmapInfo), DIB_RGB_COLORS);
+  Result := Bitmap <> 0;
+  if Result then
   begin
-    MaskBitmap := Windows.CreateBitmap(
-      RawImage.Description.Width, RawImage.Description.Height,
-      1, RawImage.Description.AlphaBitsPerPixel,
-      RawImage.Mask);
-    Result := Result and (MaskBitmap <> 0);
+    if RawImage.Description.AlphaSeparate then
+    begin
+      MaskBitmap := Windows.CreateBitmap(RawImage.Description.Width, RawImage.Description.Height, 1, 1, RawImage.Mask);
+      Result := Result and (MaskBitmap <> 0);
+    end;
   end;
+  Windows.ReleaseDC(0, hScreenDC);
 end;
 
 function TWin32Object.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
@@ -2714,6 +2768,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.72  2003/11/14 20:23:31  micha
+  fpimage fixes
+
   Revision 1.71  2003/11/10 16:15:32  micha
   cleanups; win32 fpimage support
 
