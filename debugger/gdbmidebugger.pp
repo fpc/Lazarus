@@ -780,6 +780,20 @@ begin
 end;
 
 procedure TGDBMIDebugger.Init;
+  procedure ResolveGDBVersion;
+  var
+    S: String;
+  begin
+    FVersion := '';
+    if not ExecuteCommand('-gdb-version', [], S, [cfNoMiCommand]) // No MI since the output is no MI
+    then Exit;
+    
+    FVersion := GetPart(['('], [')'], S, False, False);
+    if FVersion <> '' then Exit;
+    
+    FVersion := GetPart(['gdb '], [#10, #13], S, True, False);
+    if FVersion <> '' then Exit;
+  end;
 var
   Line, S: String;
 begin
@@ -802,9 +816,7 @@ begin
     ExecuteCommand('-gdb-set confirm off', []);
     
     // try to find the debugger version
-    if ExecuteCommand('-gdb-version', [], S, [cfNoMiCommand]) // No MI since the output is no MI
-    then FVersion := GetPart('(', ')', S)
-    else FVersion := '';
+    ResolveGDBVersion;
     if FVersion < '5.3'
     then begin
       WriteLN('[WARNING] Debugger: Running an old (< 5.3) GDB version: ', FVersion);
@@ -1986,6 +1998,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.32  2003/06/24 23:56:33  marc
+  * Fixed version detection of gdb
+
   Revision 1.31  2002/08/18 08:57:49  marc
   * Improved hint evaluation
 
