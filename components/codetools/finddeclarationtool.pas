@@ -46,6 +46,7 @@ uses
 type
   TFindDeclarationTool = class(TPascalParserTool)
   public
+    //function FindDeclaration(CursorPos: TCodeXYPosition; var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 
   end;
 

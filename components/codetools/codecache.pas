@@ -60,13 +60,15 @@ type
     procedure SetFilename(const Value: string);
     procedure SetScanner(const Value: TLinkScanner);
     procedure SetIsDeleted(const NewValue: boolean);
+    procedure MakeFileDateValid;
   public
     property Scanner: TLinkScanner read FScanner write SetScanner;
     property LastIncludedByFile: string
           read FLastIncludedByFile write FLastIncludedByFile;
     property Filename: string read FFilename write SetFilename;
     function LoadFromFile(const AFilename: string): boolean; override;
-    function Reload: boolean;
+    function Reload: boolean; // = LoadFromFile(Filename)
+    function Revert: boolean; // ignore changes and reload source
     function SaveToFile(const AFilename: string): boolean; override;
     function Save: boolean;
     property FileDateValid: boolean read FFileDateValid;
@@ -74,6 +76,7 @@ type
     function FileDateOnDisk: longint;
     function FileNeedsUpdate: boolean;
     function FileOnDiskNeedsUpdate: boolean;
+    function FileOnDiskHasChanged: boolean;
     property OnSetScanner: TNotifyEvent read FOnSetScanner write FOnSetScanner;
     property OnSetFilename: TNotifyEvent read FOnSetFilename write FOnSetFilename;
     property IsVirtual: boolean read FIsVirtual;
@@ -225,10 +228,10 @@ end;
 
 function TCodeCache.LoadFile(const AFilename: string): TCodeBuffer;
 // search file in cache
-// WARING: this will not check, if file on disk is newer
 begin
   Result:=FindFile(AFilename);
   if Result=nil then begin
+    // load new buffer
     Result:=TCodeBuffer.Create;
     Result.Filename:=AFilename;
     if (not FileExists(AFilename)) or (not Result.LoadFromFile(AFilename)) then
@@ -243,6 +246,7 @@ begin
       LastIncludedByFile:=Self.LastIncludedByFile(AFilename);
     end;
   end else if Result.IsDeleted then begin
+    // file in cache, but marked as deleted -> load from disk
     if (not FileExists(AFilename)) or (not Result.LoadFromFile(AFilename)) then
     begin
       Result:=nil;
@@ -382,12 +386,8 @@ begin
 end;
 
 function TCodeCache.OnScannerCheckFileOnDisk(Code: pointer): boolean;
-var Buf: TCodeBuffer;
 begin
-  Buf:=TCodeBuffer(Code);
-  Result:=(not Buf.FileNeedsUpdate) and Buf.FileOnDiskNeedsUpdate;
-  if Result then
-    Result:=Buf.LoadFromFile(Buf.Filename);
+  Result:=TCodeBuffer(Code).Reload;
 end;
 
 procedure TCodeCache.OnScannerIncludeCode(ParentCode, IncludeCode: pointer);
@@ -589,20 +589,16 @@ begin
   end;
   if not IsVirtual then begin
     if CompareFilenames(AFilename,Filename)=0 then begin
-//writeln('****** [TCodeBuffer.LoadFromFile] ',Filename,' ',FFileDateValid,' ',FFileDate,',',FileAge(Filename),',',FFileChangeStep,',',ChangeStep);
-      if (not FFileDateValid) or (FFileChangeStep<>ChangeStep)
-      or (FFileDate<>FileAge(Filename)) then begin
-        Result:=inherited LoadFromFile(AFilename)
+//writeln('****** [TCodeBuffer.LoadFromFile] ',Filename,' FileDateValid=',FileDateValid,' ',FFileDate,',',FileAge(Filename),',',FFileChangeStep,',',ChangeStep,', NeedsUpdate=',FileNeedsUpdate);
+      if FileNeedsUpdate then begin
+        Result:=inherited LoadFromFile(AFilename);
+        if Result then MakeFileDateValid;
       end else
         Result:=true;
       if FIsDeleted then FIsDeleted:=not Result;
-      if Result then begin
-        FFileChangeStep:=ChangeStep;
-        FFileDateValid:=true;
-        FFileDate:=FileAge(Filename);
-      end;
     end else begin
-      Result:=inherited LoadFromFile(AFilename)
+      Result:=inherited LoadFromFile(AFilename);
+      if Result then MakeFileDateValid;
     end;
   end else
     Result:=false;
@@ -614,17 +610,23 @@ begin
 //writeln('TCodeBuffer.SaveToFile ',Filename,' -> ',AFilename,' ',Result);
   if CompareFilenames(AFilename,Filename)=0 then begin
     if FIsDeleted then FIsDeleted:=not Result;
-    if Result then begin
-      FFileChangeStep:=ChangeStep;
-      FFileDateValid:=true;
-      FFileDate:=FileAge(Filename);
-    end;
+    if Result then MakeFileDateValid;
   end;
 end;
 
 function TCodeBuffer.Reload: boolean;
 begin
   Result:=LoadFromFile(Filename);
+end;
+
+function TCodeBuffer.Revert: boolean;
+// ignore changes and reload source
+begin
+  if not IsVirtual then begin
+    Result:=inherited LoadFromFile(Filename);
+    if Result then MakeFileDateValid;
+  end else
+    Result:=false;
 end;
 
 function TCodeBuffer.Save: boolean;
@@ -671,23 +673,41 @@ begin
   end;
 end;
 
+procedure TCodeBuffer.MakeFileDateValid;
+begin
+  FFileChangeStep:=ChangeStep;
+  FFileDateValid:=true;
+  FFileDate:=FileAge(Filename);
+end;
+
 function TCodeBuffer.FileDateOnDisk: longint;
 begin
   Result:=FileAge(Filename);
 end;
 
 function TCodeBuffer.FileNeedsUpdate: boolean;
+// file needs update, if file is not modified and file on disk is changed
 begin
   if FileDateValid then
-    Result:=(FileDateOnDisk>FileDate)
+    Result:=(not Modified) and (FFileChangeStep=ChangeStep) 
+             and (FileDateOnDisk>FileDate)
   else
     Result:=true;
 end;
 
 function TCodeBuffer.FileOnDiskNeedsUpdate: boolean;
+// file on disk needs update, if file is modified
 begin
   if FileDateValid then
-    Result:=(FFileChangeStep<>ChangeStep) or (FFileDate<>FileDateOnDisk)
+    Result:=Modified or (FFileChangeStep<>ChangeStep) 
+  else
+    Result:=false;
+end;
+
+function TCodeBuffer.FileOnDiskHasChanged: boolean;
+begin
+  if FileDateValid then
+    Result:=(FileDateOnDisk<>FileDate)
   else
     Result:=false;
 end;

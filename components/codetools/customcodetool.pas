@@ -877,11 +877,14 @@ end;
 function TCustomCodeTool.CaretToCleanPos(Caret: TCodeXYPosition;
   var CleanPos: integer): integer;
 begin
+//writeln('TCustomCodeTool.CaretToCleanPos A ',Caret.Code.Filename,' ',Caret.Code.SourceLength);
   Caret.Code.LineColToPosition(Caret.Y,Caret.X,CleanPos);
+//writeln('TCustomCodeTool.CaretToCleanPos B ',CleanPos,',',Caret.Y,',',Caret.X);
   if (CleanPos>=1) then
     Result:=Scanner.CursorToCleanPos(CleanPos,Caret.Code,CleanPos)
   else
     Result:=-2; // x,y beyond source
+//writeln('TCustomCodeTool.CaretToCleanPos C CleanPos=',CleanPos,' Result=',Result);
 end;
 
 function TCustomCodeTool.CleanPosToCaret(CleanPos: integer;

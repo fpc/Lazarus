@@ -97,7 +97,8 @@ type
     property SourceExtensions: string
           read FSourceExtensions write FSourceExtensions;
     function FindFile(const ExpandedFilename: string): TCodeBuffer;
-    function LoadFile(const ExpandedFilename: string): TCodeBuffer;
+    function LoadFile(const ExpandedFilename: string;
+          UpdateFromDisk, Revert: boolean): TCodeBuffer;
     function CreateFile(const AFilename: string): TCodeBuffer;
     function SaveBufferAs(OldBuffer: TCodeBuffer;const ExpandedFilename: string; 
           var NewBuffer: TCodeBuffer): boolean;
@@ -299,9 +300,19 @@ begin
   Result:=SourceCache.FindFile(ExpandedFilename);
 end;
 
-function TCodeToolManager.LoadFile(const ExpandedFilename: string): TCodeBuffer;
+function TCodeToolManager.LoadFile(const ExpandedFilename: string;
+  UpdateFromDisk, Revert: boolean): TCodeBuffer;
 begin
+{$IFDEF CTDEBUG}
+writeln('>>>>>>>>>>>>>>> [TCodeToolManager.LoadFile] ',ExpandedFilename,' Update=',UpdateFromDisk,' Revert=',Revert);
+{$ENDIF}
   Result:=SourceCache.LoadFile(ExpandedFilename);
+  if Result<>nil then begin
+    if Revert then
+      Result.Revert
+    else if UpdateFromDisk then
+      Result.Reload;
+  end;
 end;
 
 function TCodeToolManager.CreateFile(const AFilename: string): TCodeBuffer;

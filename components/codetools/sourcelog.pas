@@ -359,7 +359,7 @@ end;
 
 procedure TSourceLog.SetSource(const NewSrc: string);
 begin
-//writeln('TSourceLog.SetSource ',length(NewSrc));
+//writeln('TSourceLog.SetSource A ',length(NewSrc),' LineCount=',fLineCount,' SrcLen=',fSrcLen);
   if NewSrc<>FSource then begin
     Clear;
     FSource:=NewSrc;
@@ -382,11 +382,11 @@ begin
           +Txt
           +copy(FSource,Pos,length(FSource)-Pos+1);
   FSrcLen:=length(FSource);
+  FLineCount:=-1;
   for i:=0 to FMarkers.Count-1 do begin
     if (not Markers[i].Deleted) then
       NewSrcLogEntry.AdjustPosition(Markers[i].NewPosition);
   end;
-  FLineCount:=-1;
   FModified:=true;
   IncreaseChangeStep;
 end;
@@ -402,6 +402,7 @@ begin
   NotifyHooks(NewSrcLogEntry);
   System.Delete(FSource,Pos,Len);
   FSrcLen:=length(FSource);
+  FLineCount:=-1;
   for i:=0 to FMarkers.Count-1 do begin
     if (Markers[i].Deleted=false) then begin
       if (Markers[i].NewPosition<=Pos) and (Markers[i].NewPosition<Pos+Len) then
@@ -411,7 +412,6 @@ begin
       end;
     end;
   end;
-  FLineCount:=-1;
   FModified:=true;
   IncreaseChangeStep;
 end;
@@ -438,6 +438,7 @@ begin
           +Txt
           +copy(FSource,Pos+Len,length(FSource)-Pos-Len+1);
   FSrcLen:=length(FSource);
+  FLineCount:=-1;
   for i:=0 to FMarkers.Count-1 do begin
     if (Markers[i].Deleted=false) then begin
       if (Markers[i].NewPosition<=Pos) and (Markers[i].NewPosition<Pos+Len) then
@@ -448,7 +449,6 @@ begin
       end;
     end;
   end;
-  FLineCount:=-1;
   FModified:=true;
   IncreaseChangeStep;
 end;
@@ -474,11 +474,11 @@ begin
             +copy(FSource,MoveTo,length(FSource)-MoveTo+1);
   end;
   FSrcLen:=length(FSource);
+  FLineCount:=-1;
   for i:=0 to FMarkers.Count-1 do begin
     if (Markers[i].Deleted=false) then
       NewSrcLogEntry.AdjustPosition(Markers[i].NewPosition);
   end;
-  FLineCount:=-1;
   FModified:=true;
   IncreaseChangeStep;
 end;
@@ -527,6 +527,7 @@ end;
 procedure TSourceLog.BuildLineRanges;
 var p,line:integer;
 begin
+//writeln('[TSourceLog.BuildLineRanges] A Self=',HexStr(Cardinal(Self),8),',LineCount=',FLineCount,' Len=',SourceLength);
   if FLineCount>=0 then exit;
   if FLineRanges<>nil then begin
     FreeMem(FLineRanges);
@@ -572,6 +573,7 @@ begin
       end;
     end;
   end;
+//writeln('[TSourceLog.BuildLineRanges] END ',FLineCount);
 end;
 
 procedure TSourceLog.LineColToPosition(Line, Column: integer;
@@ -666,6 +668,7 @@ function TSourceLog.SaveToFile(const Filename: string): boolean;
 var 
   fs: TFileStream;
 begin
+//writeln('TSourceLog.SaveToFile Self=',HexStr(Cardinal(Self),8));
   Result:=true;
   try
     fs:=TFileStream.Create(Filename, fmCreate);
@@ -721,6 +724,7 @@ begin
   for y:=0 to sl.Count-1 do inc(fSrcLen,length(sl[y]));
   fSource:='';
   SetLength(fSource,fSrcLen);
+  fLineCount:=-1;
   p:=1;
   for y:=0 to sl.Count-1 do begin
     s:=sl[y];
@@ -768,6 +772,7 @@ begin
     SetLength(fSource,fSrcLen);
     s.Read(fSource[1],fSrcLen);
   end;
+  fLineCount:=-1;
   DecreaseHookLock;
 end;
 

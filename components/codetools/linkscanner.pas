@@ -1446,31 +1446,32 @@ var i, j: integer;
 begin
   i:=0;
   while i<LinkCount do begin
+//writeln('[TLinkScanner.CursorToCleanPos] A ACursorPos=',ACursorPos,', Code=',Links[i].Code=ACode,', Links[i].SrcPos=',Links[i].SrcPos,', Links[i].CleanedPos=',Links[i].CleanedPos);
     if (Links[i].Code=ACode) and (Links[i].SrcPos<=ACursorPos) then begin
       ACleanPos:=ACursorPos-Links[i].SrcPos+Links[i].CleanedPos;
-      j:=i+1;
-      while (j<LinkCount) and (Links[j].Code<>ACode) do inc(j);
-      if (j<LinkCount) then begin
-        // there is a link after in the same code
-        if ACleanPos<Links[j].CleanedPos then begin
-          Result:=0; exit;  // valid position
-        end else begin
-          // search next ...
+//writeln('[TLinkScanner.CursorToCleanPos] B ACleanPos=',ACleanPos);
+      if i+1<LinkCount then begin
+//writeln('[TLinkScanner.CursorToCleanPos] C Links[i+1].CleanedPos=',Links[i+1].CleanedPos);
+        if ACleanPos<Links[i+1].CleanedPos then begin
+          Result:=0;  // valid position
+          exit;
         end;
+        j:=i+1;
+        while (j<LinkCount) and (Links[j].Code<>ACode) do inc(j);
+//writeln('[TLinkScanner.CursorToCleanPos] D j=',j);
+        if (j<LinkCount) and (Links[j].SrcPos>ACursorPos) then begin
+          Result:=-1; // CursorPos was skipped, CleanPos is between two links
+          exit;
+        end;
+        // search next
+        i:=j-1;
       end else begin
-        // last link in Cursor Code
-        if i+1<LinkCount then begin
-          if ACleanPos<Links[i+1].CleanedPos then
-            Result:=0  // valid position
-          else
-            Result:=1; // cursor beyond scanned code
-        end else begin
-          // in last link
-          if ACleanPos<=length(FCleanedSrc) then
-            Result:=0  // valid position
-          else
-            Result:=1; // cursor beyond scanned code
-        end;
+        // in last link
+//writeln('[TLinkScanner.CursorToCleanPos] E length(FCleanedSrc)=',length(FCleanedSrc));
+        if ACleanPos<=length(FCleanedSrc) then
+          Result:=0  // valid position
+        else
+          Result:=1; // cursor beyond scanned code
         exit;
       end;
     end;

@@ -364,7 +364,7 @@ var
   NewSource: TCodeBuffer;
 begin
   repeat
-    NewSource:=CodeToolBoss.LoadFile(fFilename);
+    NewSource:=CodeToolBoss.LoadFile(fFilename,true,false);
     if NewSource=nil then begin
       ACaption:='Read error';
       AText:='Unable to read file "'+fFilename+'"!';
@@ -1269,6 +1269,9 @@ end.
 
 {
   $Log$
+  Revision 1.45  2001/12/13 23:09:58  lazarus
+  MG: enhanced code caching, fixed CursorToCleanPos and beautify statement
+
   Revision 1.44  2001/12/02 11:03:36  lazarus
   MG: added default pascal file extension option
 

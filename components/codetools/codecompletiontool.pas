@@ -218,13 +218,13 @@ var Parts: array[TPropPart] of TAtomPosition;
   
   function ReadSimpleSpec(SpecWord, SpecParam: TPropPart): boolean;
   begin
-    if Parts[SpecWord].StartPos>=1 then begin
-      Result:=false;
-      exit;
-    end;
+    if Parts[SpecWord].StartPos>=1 then
+      RaiseException('property specifier already defined: '+GetAtom);
     Parts[SpecWord]:=CurPos;
     ReadNextAtom;
     Result:=AtomIsWord;
+    if not Result then
+      RaiseException('expected identifier but '+GetAtom+' found');
     if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
         CurPos.EndPos-CurPos.StartPos) then exit;
     Parts[SpecParam]:=CurPos;
@@ -250,12 +250,12 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] Checking Property ',GetAtom)
     // read parameter list '[ ... ]'
     Parts[ppParamList].StartPos:=CurPos.StartPos;
     InitExtraction;
-    if not ReadParamList(false,true,[phpInUpperCase,phpWithoutBrackets])
+    if not ReadParamList(true,true,[phpInUpperCase,phpWithoutBrackets])
     then begin
 {$IFDEF CTDEBUG}
 writeln('[TCodeCompletionCodeTool.CompleteProperty] error parsing param list');
 {$ENDIF}
-      exit;
+      RaiseException('error in paramlist');
     end;
     CleanParamList:=GetExtraction;
     Parts[ppParamList].EndPos:=CurPos.EndPos;
@@ -273,22 +273,26 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] no type : found -> ignore pr
   if (CurPos.StartPos>PropNode.EndPos)
   or UpAtomIs('END') or AtomIsChar(';') or (not AtomIsIdentifier(false))
   or AtomIsKeyWord then begin
+    // no type name found -> ignore this property
 {$IFDEF CTDEBUG}
 writeln('[TCodeCompletionCodeTool.CompleteProperty] error: no type name found');
 {$ENDIF}
+    Result:=true;
     exit;
   end;
   Parts[ppType]:=CurPos;
   // read specifiers
   ReadNextAtom;
   if UpAtomIs('INDEX') then begin
-    if Parts[ppIndexWord].StartPos>=1 then exit;
+    if Parts[ppIndexWord].StartPos>=1 then 
+      RaiseException('index specifier redefined');
     Parts[ppIndexWord]:=CurPos;
     ReadNextAtom;
     if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
-        CurPos.EndPos-CurPos.StartPos) then exit;
+      CurPos.EndPos-CurPos.StartPos) then 
+      RaiseException('index parameter expected, but '+GetAtom+' found');
     Parts[ppIndex].StartPos:=CurPos.StartPos;
-    if not ReadConstant(false,false,[]) then exit;
+    if not ReadConstant(true,false,[]) then exit;
     Parts[ppIndex].EndPos:=LastAtoms.GetValueAt(0).EndPos;
   end;
   if UpAtomIs('READ') and not ReadSimpleSpec(ppReadWord,ppRead) then exit;
@@ -300,24 +304,28 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] error: no type name found');
       if not ReadSimpleSpec(ppStoredWord,ppStored) then
         exit;
     end else if UpAtomIs('DEFAULT') then begin
-      if Parts[ppDefaultWord].StartPos>=1 then exit;
+      if Parts[ppDefaultWord].StartPos>=1 then 
+        RaiseException('default specifier redefined');
       Parts[ppDefaultWord]:=CurPos;
       ReadNextAtom;
       if WordIsPropertySpecifier.DoItUpperCase(UpperSrc,CurPos.StartPos,
-          CurPos.EndPos-CurPos.StartPos) then exit;
+        CurPos.EndPos-CurPos.StartPos) then 
+        RaiseException('default parameter expected, but '+GetAtom+' found');
       Parts[ppDefault].StartPos:=CurPos.StartPos;
-      if not ReadConstant(false,false,[]) then exit;
+      if not ReadConstant(true,false,[]) then exit;
       Parts[ppDefault].EndPos:=LastAtoms.GetValueAt(0).EndPos;
     end else if UpAtomIs('IMPLEMENTS') then begin
       if not ReadSimpleSpec(ppImplementsWord,ppImplements) then exit;
     end else if UpAtomIs('NODEFAULT') then begin
-      if Parts[ppNoDefaultWord].StartPos>=1 then exit;
+      if Parts[ppNoDefaultWord].StartPos>=1 then 
+        RaiseException('nodefault specifier defined twice');
       Parts[ppNoDefaultWord]:=CurPos;
       ReadNextAtom;
     end else
-      exit;
+      RaiseException('; expected, but '+GetAtom+' found');
   end;
-  if (CurPos.StartPos>PropNode.EndPos) then exit;
+  if (CurPos.StartPos>PropNode.EndPos) then
+    RaiseException('Reparsing error (Complete Property)');
   PropType:=copy(Src,Parts[ppType].StartPos,
                Parts[ppType].EndPos-Parts[ppType].StartPos);
   // check read specifier
@@ -370,14 +378,14 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] CleanAccessFunc ',CleanAcces
           MoveCursorToCleanPos(Parts[ppParamList].StartPos);
           ReadNextAtom;
           InitExtraction;
-          if not ReadParamList(false,true,[phpWithParameterNames,
+          if not ReadParamList(true,true,[phpWithParameterNames,
                                phpWithoutBrackets,phpWithVarModifiers,
                                phpWithComments])
           then begin
 {$IFDEF CTDEBUG}
 writeln('[TCodeCompletionCodeTool.CompleteProperty] Error reading param list');
 {$ENDIF}
-            exit;
+            RaiseException('error in parameter list');
           end;
           ParamList:=GetExtraction;
           if (Parts[ppIndexWord].StartPos<1) then begin
@@ -483,11 +491,11 @@ writeln('[TCodeCompletionCodeTool.CompleteProperty] write specifier needed');
           MoveCursorToCleanPos(Parts[ppParamList].StartPos);
           ReadNextAtom;
           InitExtraction;
-          if not ReadParamList(false,true,[phpWithParameterNames,
+          if not ReadParamList(true,true,[phpWithParameterNames,
                                phpWithoutBrackets,phpWithVarModifiers,
                                phpWithComments])
           then
-            exit;
+            RaiseException('error in param list');
           ParamList:=GetExtraction;
           if (Parts[ppIndexWord].StartPos<1) then begin
             // param list, no index
@@ -706,7 +714,9 @@ var
     ProcCode:=ANodeExt.ExtTxt1;
     ProcCode:=ASourceChangeCache.BeautifyCodeOptions.AddClassNameToProc(
                  ProcCode,TheClassName);
+{$IFDEF CTDEBUG}
 writeln('>>> InsertProcBody ',TheClassName,' "',ProcCode,'"');
+{$ENDIF}
     ProcCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyProc(
                  ProcCode,Indent,true);
     ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
@@ -729,6 +739,7 @@ begin
 {$IFDEF CTDEBUG}
 writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method bodies ... ');
 {$ENDIF}
+  Result:=false;
   // gather existing class proc bodies
   TypeSectionNode:=ClassNode.Parent;
   if (TypeSectionNode<>nil) and (TypeSectionNode.Parent<>nil)
@@ -791,17 +802,20 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
         // class is in interface section
         // -> insert at the end of the implementation section
         ImplementationNode:=FindImplementationNode;
-        if ImplementationNode=nil then exit;
+        if ImplementationNode=nil then 
+          RaiseException('implementation node not found');
         Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
         InsertPos:=ImplementationNode.EndPos;
       end else begin
         // class is not in interface section
         // -> insert at the end of the type section
         ANode:=ClassNode.Parent; // type definition
-        if ANode=nil then exit;
+        if ANode=nil then 
+          RaiseException('class node without parent node');
         if ANode.Parent.Desc=ctnTypeSection then
           ANode:=ANode.Parent; // type section
-        if ANode=nil then exit;
+        if ANode=nil then
+          RaiseException('type section of class section not found');
         Indent:=GetLineIndent(Src,ANode.StartPos);
         InsertPos:=ANode.EndPos;
       end;
@@ -919,21 +933,24 @@ var CleanCursorPos, Dummy, Indent, insertPos: integer;
   ANodeExt: TCodeTreeNodeExtension;
 begin
   Result:=false;
-  if (SourceChangeCache=nil) then exit;
+  if (SourceChangeCache=nil) then 
+    RaiseException('need a SourceChangeCache');
   // in a class or in a forward proc?
   BuildTree(false);
-  if not EndOfSourceFound then exit;
+  if not EndOfSourceFound then 
+    RaiseException('End of Source not found');
   ASourceChangeCache:=SourceChangeCache;
   SourceChangeCache.MainScanner:=Scanner;
   // find the CursorPos in cleaned source
   Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
-  if (Dummy<>0) and (Dummy<>-1) then exit;
+  if (Dummy<>0) and (Dummy<>-1) then 
+    RaiseException('cursor pos outside of code');
   // find CodeTreeNode at cursor
   CursorNode:=FindDeepestNodeAtPos(CleanCursorPos);
   if CursorNode=nil then
-    exit;
+    RaiseException('no valid node found at cursor');
 {$IFDEF CTDEBUG}
-writeln('TCodeCompletionCodeTool.CompleteCode A ',NodeDescriptionAsString(CursorNode.Desc));
+writeln('TCodeCompletionCodeTool.CompleteCode A CleanCursorPos=',CleanCursorPos,' NodeDesc=',NodeDescriptionAsString(CursorNode.Desc));
 {$ENDIF}
   ImplementationNode:=FindImplementationNode;
   if ImplementationNode=nil then ImplementationNode:=Tree.Root;
@@ -957,7 +974,8 @@ writeln('TCodeCompletionCodeTool.CompleteCode C ',CleanCursorPos,', |',copy(Src,
     StartNode:=ClassNode.FirstChild;
     while (StartNode<>nil) and (StartNode.FirstChild=nil) do
       StartNode:=StartNode.NextBrother;
-    if StartNode=nil then exit;
+    if StartNode=nil then 
+      RaiseException('error parsing class');
     StartNode:=StartNode.FirstChild;
     JumpToProc:='';
     try
@@ -973,7 +991,8 @@ writeln('TCodeCompletionCodeTool.CompleteCode Complete Properties ... ');
         while ANode<>nil do begin
           if ANode.Desc=ctnProperty then begin
             // check if property is complete
-            if not CompleteProperty(ANode) then exit;
+            if not CompleteProperty(ANode) then 
+              RaiseException('unable to complete property');
           end;
           ANode:=ANode.NextBrother;
         end;
@@ -984,19 +1003,22 @@ writeln('TCodeCompletionCodeTool.CompleteCode Complete Properties ... ');
 writeln('TCodeCompletionCodeTool.CompleteCode Insert new variables and methods ... ');
 {$ENDIF}
       // insert all new variables and procs definitions
-      if not InsertAllNewClassParts then exit;
+      if not InsertAllNewClassParts then 
+        RaiseException('error during inserting new class parts');
 
 {$IFDEF CTDEBUG}
 writeln('TCodeCompletionCodeTool.CompleteCode Insert new method bodies ... ');
 {$ENDIF}
       // insert all missing proc bodies
-      if not CreateMissingProcBodies then exit;
+      if not CreateMissingProcBodies then 
+        RaiseException('error during creation of new proc bodies');
 
 {$IFDEF CTDEBUG}
 writeln('TCodeCompletionCodeTool.CompleteCode Apply ... ');
 {$ENDIF}
       // apply the changes and jump to first new proc body
-      if not SourceChangeCache.Apply then exit;
+      if not SourceChangeCache.Apply then 
+        RaiseException('unable to apply changes');
 
       if JumpToProc<>'' then begin
         // there was a new proc body
@@ -1004,25 +1026,31 @@ writeln('TCodeCompletionCodeTool.CompleteCode Apply ... ');
 
         // reparse code
         BuildTree(false);
-        if not EndOfSourceFound then exit;
+        if not EndOfSourceFound then 
+          RaiseException('End of source not found');
         // find the CursorPos in cleaned source
         Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
-        if (Dummy<>0) and (Dummy<>-1) then exit;
+        if (Dummy<>0) and (Dummy<>-1) then 
+          RaiseException('cursor pos outside of code');
         // find CodeTreeNode at cursor
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos);
-        if CursorNode=nil then exit;
+        if CursorNode=nil then 
+          RaiseException('no valid node found at cursor');
 
         ClassNode:=CursorNode;
         while (ClassNode<>nil) and (ClassNode.Desc<>ctnClass) do
           ClassNode:=ClassNode.Parent;
-        if ClassNode=nil then exit;
+        if ClassNode=nil then 
+          RaiseException('oops, I loosed your class');
         ANode:=ClassNode.Parent;
-        if ANode=nil then exit;
+        if ANode=nil then 
+          RaiseException('class without parent node');
         if (ANode.Parent<>nil) and (ANode.Parent.Desc=ctnTypeSection) then
           ANode:=ANode.Parent;
         ProcNode:=FindProcNode(ANode,JumpToProc,
                    [phpInUpperCase,phpIgnoreForwards]);
-        if ProcNode=nil then exit;
+        if ProcNode=nil then 
+          RaiseException('new proc body not found');
         Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
         exit;
       end else begin
@@ -1046,12 +1074,18 @@ writeln('TCodeCompletionCodeTool.CompleteCode Apply ... ');
     end;
     
   end else begin
+{$IFDEF CTDEBUG}
+writeln('TCodeCompletionCodeTool.CompleteCode not in-a-class ... ');
+{$ENDIF}
     // then test if forward proc
     ProcNode:=CursorNode;
     if ProcNode.Desc=ctnProcedureHead then ProcNode:=ProcNode.Parent;
     if (ProcNode.Desc=ctnProcedure)
     and (ProcNode.SubDesc=ctnsForwardDeclaration) then begin
       // Node is forward Proc
+{$IFDEF CTDEBUG}
+writeln('TCodeCompletionCodeTool.CompleteCode in a forward procedure ... ');
+{$ENDIF}
         
       // check if proc already exists
       ProcCode:=ExtractProcHead(ProcNode,[phpInUpperCase]);
@@ -1059,6 +1093,9 @@ writeln('TCodeCompletionCodeTool.CompleteCode Apply ... ');
              [phpInUpperCase])<>nil
       then exit;
         
+{$IFDEF CTDEBUG}
+writeln('TCodeCompletionCodeTool.CompleteCode Body not found -> create it ... ');
+{$ENDIF}
       // -> create proc body at end of implementation
 
       Indent:=GetLineIndent(Src,ImplementationNode.StartPos);
@@ -1068,7 +1105,8 @@ writeln('TCodeCompletionCodeTool.CompleteCode Apply ... ');
       else begin
         // insert in front of main program begin..end.
         StartNode:=ImplementationNode.LastChild;
-        if (StartNode=nil) or (StartNode.Desc<>ctnBeginBlock) then exit;
+        if (StartNode=nil) or (StartNode.Desc<>ctnBeginBlock) then 
+          RaiseException('main Begin..End block not found');
         InsertPos:=FindLineEndOrCodeInFrontOfPosition(Src,StartNode.StartPos,
            Scanner.NestedComments);
       end;
@@ -1076,16 +1114,23 @@ writeln('TCodeCompletionCodeTool.CompleteCode Apply ... ');
       // build nice proc
       ProcCode:=ExtractProcHead(ProcNode,[phpWithStart,phpWithVarModifiers,
                   phpWithParameterNames,phpWithResultType,phpWithComments]);
-      if ProcCode='' then exit;
+      if ProcCode='' then 
+        RaiseException('unable to reparse proc node');
       ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(ProcCode,
                          Indent,true);
       if not SourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,
-        InsertPos,InsertPos,ProcCode) then exit;
-      if not SourceChangeCache.Apply then exit;
+        InsertPos,InsertPos,ProcCode) then 
+          RaiseException('unable to insert new proc body');
+      if not SourceChangeCache.Apply then 
+        RaiseException('unable to apply changes');
         
       // reparse code and find jump point into new proc
       Result:=FindJumpPoint(CursorPos,NewPos,NewTopLine);
       exit;
+    end else begin
+{$IFDEF CTDEBUG}
+writeln('TCodeCompletionCodeTool.CompleteCode  nothing to complete ... ');
+{$ENDIF}
     end;
   end;
 end;

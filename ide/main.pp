@@ -344,7 +344,7 @@ type
     function DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;
       const AFilename: string; IsPartOfProject:boolean): TModalResult;
     function DoLoadCodeBuffer(var ACodeBuffer: TCodeBuffer; 
-      const AFilename: string): TModalResult;
+      const AFilename: string; UpdateFromDisk, Revert: boolean): TModalResult;
     function DoBackupFile(const Filename:string; 
       IsPartOfProject:boolean): TModalResult;
     procedure UpdateCaption;
@@ -2357,11 +2357,13 @@ CodeToolBoss.SourceCache.WriteAllFileNames;
 {$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
 {$ENDIF}
-    if ResourceCode<>nil then
-      LFMCode:=
-        CodeToolBoss.LoadFile(ChangeFileExt(ResourceCode.Filename,'.lfm'))
-    else
-      LFMCode:=nil;
+    LFMCode:=nil;
+    if ResourceCode<>nil then begin
+      Result:=DoLoadCodeBuffer(LFMCode,
+          ChangeFileExt(ResourceCode.Filename,'.lfm'),false,false);
+      if Result<>mrOk then exit;
+      Result:=mrCancel;
+    end;
   end else
     ResourceCode:=nil;
     
@@ -2720,7 +2722,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
       Result:=mrOk;
       exit;
     end;
-    Result:=DoLoadCodeBuffer(NewBuf,AFileName);
+    Result:=DoLoadCodeBuffer(NewBuf,AFileName,true,true);
     if Result<>mrOk then exit;
     NewUnitInfo.Source:=NewBuf;
     if (Ext='.pp') or (Ext='.pas') then
@@ -2732,7 +2734,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
       Result:=DoOpenProjectFile(AFilename);
       exit;
     end;
-    Result:=DoLoadCodeBuffer(PreReadBuf,AFileName);
+    Result:=DoLoadCodeBuffer(PreReadBuf,AFileName,true,true);
     if Result<>mrOk then exit;
     Result:=mrCancel;
     // check if unit is a program
@@ -2818,17 +2820,21 @@ writeln('[TMainIDE.DoOpenEditorFile] C');
     // this is a unit -> try to find the lfm file
     LFMFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lfm');
     NewBuf:=nil;
-    if FileExists(LFMFilename) then
-      NewBuf:=CodeToolBoss.LoadFile(LFMFilename)
-    else begin
+    if FileExists(LFMFilename) then begin
+      Result:=DoLoadCodeBuffer(NewBuf,LFMFilename,true,false);
+      if Result<>mrOk then exit;
+      Result:=mrCancel;
+    end else begin
       i:=-1;
       NewBuf:=CodeToolBoss.FindNextResourceFile(NewUnitInfo.Source,i);
       if NewBuf<>nil then begin
         LFMFilename:=ChangeFileExt(NewBuf.Filename,'.lfm');
-        if FileExists(LFMFilename) then
-          NewBuf:=CodeToolBoss.LoadFile(LFMFilename)
-        else
-          NewBuf:=nil;
+        NewBuf:=nil;
+        if FileExists(LFMFilename) then begin
+          Result:=DoLoadCodeBuffer(NewBuf,LFMFilename,true,false);
+          if Result<>mrOk then exit;
+          Result:=mrCancel;
+        end;
       end;
     end;
     
@@ -3472,7 +3478,8 @@ CheckHeap(IntToStr(GetMem_Cnt));
 writeln('TMainIDE.DoOpenProjectFile B2');
   if Project.MainUnit>=0 then begin
     // read MainUnit Source
-    Result:=DoLoadCodeBuffer(NewBuf,Project.Units[Project.MainUnit].Filename);
+    Result:=DoLoadCodeBuffer(NewBuf,Project.Units[Project.MainUnit].Filename,
+                             true,true);
 writeln('TMainIDE.DoOpenProjectFile B3');
     if Result=mrIgnore then Result:=mrAbort;
     if Result=mrAbort then exit;
@@ -4164,13 +4171,13 @@ begin
 end;
 
 function TMainIDE.DoLoadCodeBuffer(var ACodeBuffer: TCodeBuffer; 
-  const AFilename: string): TModalResult;
+  const AFilename: string; UpdateFromDisk, Revert: boolean): TModalResult;
 var
   ACaption,AText:string;
 begin
   repeat
 writeln('[TMainIDE.DoLoadCodeBuffer] A ',AFilename);
-    ACodeBuffer:=CodeToolBoss.LoadFile(AFilename);
+    ACodeBuffer:=CodeToolBoss.LoadFile(AFilename,UpdateFromDisk,Revert);
     if ACodeBuffer<>nil then begin
       ACodeBuffer.Reload;
       Result:=mrOk;
@@ -5270,6 +5277,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.179  2001/12/13 23:09:57  lazarus
+  MG: enhanced code caching, fixed CursorToCleanPos and beautify statement
+
   Revision 1.178  2001/12/12 16:49:14  lazarus
   Added code to disable save button when the active unit is not "modified".
   Shane

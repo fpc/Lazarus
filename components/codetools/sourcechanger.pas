@@ -601,7 +601,7 @@ begin
   KeyWordPolicy:=wpLowerCase;
   IdentifierPolicy:=wpNone;
   DoNotSplitLineBefore:=[atColon,atComma,atSemicolon,atPoint];
-  DoNotSplitLineAfter:=[atColon,atAt,atPoint];
+  DoNotSplitLineAfter:=[atColon,atAt,atPoint,atKeyWord];
   DoInsertSpaceBefore:=[];
   DoInsertSpaceAfter:=[atColon,atComma,atSemicolon];
   PropertyReadIdentPrefix:='Get';
@@ -766,7 +766,8 @@ begin
           end;
         end;
     end;
-  end;
+  end else
+    CurAtomType:=atNone;
   AtomEnd:=CurPos;
 end;
 
@@ -808,17 +809,25 @@ begin
   CurLineLen:=length(Result);
   LastAtomType:=atNone;
   while (CurPos<=SrcLen) do begin
-    ReadNextAtom;
-    CurAtom:=copy(Src,AtomStart,AtomEnd-AtomStart);
-    if ((CurAtomType in DoInsertSpaceBefore) and (not (LastAtomType=atSpace)))
-    or ((CurAtomType<>atSpace) and (LastAtomType in DoInsertSpaceAfter)) then
+    repeat
+      ReadNextAtom;
+      CurAtom:=copy(Src,AtomStart,AtomEnd-AtomStart);
+      if CurAtom=' ' then
+        AddAtom(Result,' ')
+      else
+        break;
+    until false;
+    if ((Result='') or (Result[length(Result)]<>' '))
+    and ((CurAtomType in DoInsertSpaceBefore)
+    or (LastAtomType in DoInsertSpaceAfter)) then
       AddAtom(Result,' ');
     if (not (CurAtomType in DoNotSplitLineBefore))
     and (not (LastAtomType in DoNotSplitLineAfter)) then
       LastSplitPos:=length(Result)+1;
-//writeln('  CurPos=',CurPos,' CurAtom="',CurAtom,
-//'" CurAtomType=',AtomTypeNames[CurAtomType],' LastAtomType=',AtomTypeNames[LastAtomType],
-//'  ',LastAtomType in DoInsertSpaceAfter);
+{writeln('SPLIT LINE  CurPos=',CurPos,' CurAtom="',CurAtom,
+'" CurAtomType=',AtomTypeNames[CurAtomType],' LastAtomType=',AtomTypeNames[LastAtomType],
+'  ',LastAtomType in DoInsertSpaceAfter,' LastSplitPos=',LastSplitPos,
+' ..."',copy(Result,length(Result)-10,10),'"'); }
     AddAtom(Result,CurAtom);
     LastAtomType:=CurAtomType;
   end;
