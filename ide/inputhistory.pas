@@ -23,6 +23,10 @@
  *   Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.        *
  *                                                                         *
  ***************************************************************************
+
+  Author: Mattias Gaertner
+  
+
 }
 unit InputHistory;
 
@@ -41,6 +45,41 @@ type
     HistoryList: TStringList;
     MaxHistory: integer;
   end;
+  
+  THistoryList = class(TStringList)
+  private
+    FMaxCount: integer;
+    FName: string;
+    procedure SetMaxCount(const AValue: integer);
+    procedure SetName(const AValue: string);
+  public
+    constructor Create;
+    destructor Destroy;  override;
+    function Add(const Entry: string): integer; override;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    property Name: string read FName write SetName;
+    property MaxCount: integer read FMaxCount write SetMaxCount;
+  end;
+  
+  THistoryLists = class
+  private
+    FItems: TList;
+    function GetItems(Index: integer): THistoryList;
+    function GetXMLListPath(const Path: string; i: integer): string;
+  public
+    constructor Create;
+    destructor Destroy;  override;
+    procedure Clear;
+    function Count: integer;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
+    function IndexOfName(const Name: string): integer;
+    function GetList(const Name: string;
+      CreateIfNotExists: boolean): THistoryList;
+    procedure Add(const ListName, Entry: string);
+    property Items[Index: integer]: THistoryList read GetItems;
+  end;
 
   TInputHistories = class
   private
@@ -54,13 +93,16 @@ type
     
     // Unit dependencies
     FUnitDependenciesHistory: TStringList;
-    FMaxUnitDependeciesHistory: integer;
+    FMaxUnitDependenciesHistory: integer;
     
     // FPC unitlinks
     FLastFPCUnitLinks: string;
     FLastFPCPath: string;
     FLastFPCSearchPath: string;
     FLastFPCAge: longint;
+    
+    // various history lists
+    FHistoryLists: THistoryLists;
     
     procedure SetFilename(const AValue: string);
     procedure SetLastFPCPath(const AValue: string);
@@ -97,8 +139,8 @@ type
 
     // Unit dependencies
     property UnitDependenciesHistory: TStringList read FUnitDependenciesHistory;
-    property MaxUnitDependeciesHistory: integer
-      read FMaxUnitDependeciesHistory write FMaxUnitDependeciesHistory;
+    property MaxUnitDependenciesHistory: integer
+      read FMaxUnitDependenciesHistory write FMaxUnitDependenciesHistory;
 
     // FPC unitlinks
     property LastFPCUnitLinks: string read FLastFPCUnitLinks;
@@ -109,6 +151,9 @@ type
     // filedialogs
     property FileDialogSettings: TFileDialogSettings
       read FFileDialogSettings write FFileDialogSettings;
+      
+    // various history lists
+    property HistoryLists: THistoryLists read FHistoryLists;
   end;
 
 const
@@ -145,11 +190,16 @@ begin
   FReplaceHistory:=TStringList.Create;
   FMaxFindHistory:=20;
   
+  // unit dependencies
   FUnitDependenciesHistory:=TStringList.Create;
-  FMaxUnitDependeciesHistory:=20;
+  FMaxUnitDependenciesHistory:=20;
   
+  // file dialog
   FFileDialogSettings.HistoryList:=TStringList.Create;
   FFileDialogSettings.MaxHistory:=20;
+  
+  // various history lists
+  FHistoryLists:=THistoryLists.Create;
   
   FFilename:='';
   Clear;
@@ -157,6 +207,7 @@ end;
 
 destructor TInputHistories.Destroy;
 begin
+  FHistoryLists.Free;
   FFileDialogSettings.HistoryList.Free;
   FUnitDependenciesHistory.Free;
   FFindHistory.Free;
@@ -166,6 +217,7 @@ end;
 
 procedure TInputHistories.Clear;
 begin
+  FHistoryLists.Clear;
   FFindHistory.Clear;
   FReplaceHistory.Clear;
   with FFileDialogSettings do begin
@@ -196,6 +248,7 @@ begin
     MaxHistory:=XMLConfig.GetValue(Path+'FileDialog/MaxHistory',20);
     LoadRecentList(XMLConfig,HistoryList,Path+'FileDialog/HistoryList/');
   end;
+  FHistoryLists.LoadFromXMLConfig(XMLConfig,Path+'HistoryLists/');
 end;
 
 procedure TInputHistories.SaveToXMLConfig(XMLConfig: TXMLConfig;
@@ -217,6 +270,7 @@ begin
     XMLConfig.SetValue(Path+'FileDialog/MaxHistory',MaxHistory);
     SaveRecentList(XMLConfig,HistoryList,Path+'FileDialog/HistoryList/');
   end;
+  FHistoryLists.SaveToXMLConfig(XMLConfig,Path+'HistoryLists/');
 end;
 
 procedure TInputHistories.SetLazarusDefaultFilename;
@@ -276,7 +330,7 @@ function TInputHistories.AddToUnitDependenciesHistory(
   const ARootFilename: String): boolean;
 begin
   Result:=AddToRecentList(ARootFilename,FUnitDependenciesHistory,
-                  FMaxUnitDependeciesHistory);
+                  FMaxUnitDependenciesHistory);
 end;
 
 function TInputHistories.LastFPCUnitLinksValid: boolean;
@@ -320,6 +374,149 @@ begin
   if s<>'' then
     AddToRecentList(s,FFileDialogSettings.HistoryList,
                     FFileDialogSettings.MaxHistory);
+end;
+
+{ THistoryList }
+
+procedure THistoryList.SetMaxCount(const AValue: integer);
+begin
+  if FMaxCount=AValue then exit;
+  FMaxCount:=AValue;
+end;
+
+procedure THistoryList.SetName(const AValue: string);
+begin
+  if FName=AValue then exit;
+  FName:=AValue;
+end;
+
+constructor THistoryList.Create;
+begin
+  FMaxCount:=20;
+end;
+
+destructor THistoryList.Destroy;
+begin
+  inherited Destroy;
+end;
+
+function THistoryList.Add(const Entry: string): integer;
+begin
+  AddToRecentList(Entry,Self,MaxCount);
+  Result:=-1;
+end;
+
+procedure THistoryList.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+begin
+  if FName='' then
+    FName:=XMLConfig.GetValue(Path+'Name','');
+  FMaxCount:=XMLConfig.GetValue(Path+'MaxCount',MaxCount);
+  LoadRecentList(XMLConfig,Self,Path);
+end;
+
+procedure THistoryList.SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string
+  );
+begin
+  XMLConfig.SetValue(Path+'Name',Name);
+  XMLConfig.SetValue(Path+'MaxCount',MaxCount);
+  SaveRecentList(XMLConfig,Self,Path);
+end;
+
+{ THistoryLists }
+
+function THistoryLists.GetItems(Index: integer): THistoryList;
+begin
+  Result:=THistoryList(FItems[Index]);
+end;
+
+function THistoryLists.GetXMLListPath(const Path: string; i: integer): string;
+begin
+  Result:=Path+'List'+IntToStr(i)+'/';
+end;
+
+constructor THistoryLists.Create;
+begin
+  FItems:=TList.Create;
+end;
+
+destructor THistoryLists.Destroy;
+begin
+  Clear;
+  FItems.Free;
+  inherited Destroy;
+end;
+
+procedure THistoryLists.Clear;
+var i: integer;
+begin
+  for i:=0 to Count-1 do
+    Items[i].Free;
+  FItems.Clear;
+end;
+
+function THistoryLists.Count: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+procedure THistoryLists.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  MergeCount, i: integer;
+  CurList: THistoryList;
+  ListName, ListPath: string;
+begin
+  MergeCount:=XMLConfig.GetValue(Path+'Count',0);
+  for i:=0 to MergeCount-1 do begin
+    ListPath:=GetXMLListPath(Path,i);
+    ListName:=XMLConfig.GetValue(ListPath+'Name','');
+    if ListName='' then continue;
+    CurList:=GetList(ListName,true);
+    CurList.LoadFromXMLConfig(XMLConfig,ListPath);
+  end;
+end;
+
+procedure THistoryLists.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const Path: string);
+var
+  i, CurID: integer;
+begin
+  XMLConfig.SetValue(Path+'Count',Count);
+  CurID:=0;
+  for i:=0 to Count-1 do begin
+    if Items[i].Count>0 then begin
+      Items[i].SaveToXMLConfig(XMLConfig,GetXMLListPath(Path,CurID));
+      inc(CurID);
+    end;
+  end;
+end;
+
+function THistoryLists.IndexOfName(const Name: string): integer;
+begin
+  Result:=Count-1;
+  while (Result>=0) and (AnsiCompareText(Items[Result].Name,Name)<>0) do
+    dec(Result);
+end;
+
+function THistoryLists.GetList(const Name: string;
+  CreateIfNotExists: boolean): THistoryList;
+var
+  i: integer;
+begin
+  i:=IndexOfName(Name);
+  if i>=0 then
+    Result:=Items[i]
+  else begin
+    Result:=THistoryList.Create;
+    Result.Name:=Name;
+    FItems.Add(Result);
+  end;
+end;
+
+procedure THistoryLists.Add(const ListName, Entry: string);
+begin
+  GetList(ListName,true).Add(Entry);
 end;
 
 end.

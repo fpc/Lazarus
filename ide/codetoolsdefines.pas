@@ -1932,9 +1932,10 @@ end;
 constructor TCodeToolsDefinesEditor.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  Position:=poScreenCenter;
+  IDEDialogLayoutList.ApplyLayout(Self,500, 460);
+
   if LazarusResources.Find(ClassName)=nil then begin
-    Position:=poScreenCenter;
-    IDEDialogLayoutList.ApplyLayout(Self,500, 460);
     Caption:='CodeTools Defines Editor';
     OnResize:=@FormResize;
     

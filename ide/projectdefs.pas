@@ -236,6 +236,63 @@ type
         read fOnLoadSaveFilename write fOnLoadSaveFilename;
   end;
 
+  //---------------------------------------------------------------------------
+
+  { TPublishProjectOptions }
+  
+  TPublishProjectOptions = class
+  private
+    FCommandAfter: string;
+    FDestinationDirectory: string;
+    FExcludeFileFilter: string;
+    FIncludeFileFilter: string;
+    FSaveClosedEditorFilesInfo: boolean;
+    FSaveEditorInfoOfNonProjectFiles: boolean;
+    FUseExcludeFileFilter: boolean;
+    FUseIncludeFileFilter: boolean;
+    procedure SetCommandAfter(const AValue: string);
+    procedure SetDestinationDirectory(const AValue: string);
+    procedure SetExcludeFileFilter(const AValue: string);
+    procedure SetIncludeFileFilter(const AValue: string);
+    procedure SetSaveClosedEditorFilesInfo(const AValue: boolean);
+    procedure SetSaveEditorInfoOfNonProjectFiles(const AValue: boolean);
+    procedure SetUseExcludeFileFilter(const AValue: boolean);
+    procedure SetUseIncludeFileFilter(const AValue: boolean);
+  public
+    constructor Create;
+    destructor Destroy;
+    procedure Clear;
+    procedure LoadDefaults;
+    procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const APath: string);
+    procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const APath: string);
+
+    // destination
+    property DestinationDirectory: string
+                read FDestinationDirectory write SetDestinationDirectory;
+    property CommandAfter: string read FCommandAfter write SetCommandAfter;
+
+    // file filter
+    property UseIncludeFileFilter: boolean
+                read FUseIncludeFileFilter write SetUseIncludeFileFilter;
+    property IncludeFileFilter: string
+                read FIncludeFileFilter write SetIncludeFileFilter;
+    property UseExcludeFileFilter: boolean
+                read FUseExcludeFileFilter write SetUseExcludeFileFilter;
+    property ExcludeFileFilter: string
+                read FExcludeFileFilter write SetExcludeFileFilter;
+                
+    // project info
+    property SaveEditorInfoOfNonProjectFiles: boolean
+                read FSaveEditorInfoOfNonProjectFiles
+                write SetSaveEditorInfoOfNonProjectFiles;
+    property SaveClosedEditorFilesInfo: boolean
+                read FSaveClosedEditorFilesInfo
+                write SetSaveClosedEditorFilesInfo;
+  end;
+
+
+  //---------------------------------------------------------------------------
+
 function ProjectWatchTypeNameToType(const s: string): TProjectWatchType;
 
 
@@ -865,6 +922,125 @@ begin
     writeln('  ',i,': Line=',Items[i].CaretXY.Y,' Col=',Items[i].CaretXY.X,
       ' "',Items[i].Filename,'"');
   end;
+end;
+
+{ TPublishProjectOptions }
+
+procedure TPublishProjectOptions.SetCommandAfter(const AValue: string);
+begin
+  if FCommandAfter=AValue then exit;
+  FCommandAfter:=AValue;
+end;
+
+procedure TPublishProjectOptions.SetDestinationDirectory(const AValue: string);
+begin
+  if FDestinationDirectory=AValue then exit;
+  FDestinationDirectory:=AValue;
+end;
+
+procedure TPublishProjectOptions.SetExcludeFileFilter(const AValue: string);
+begin
+  if FExcludeFileFilter=AValue then exit;
+  FExcludeFileFilter:=AValue;
+end;
+
+procedure TPublishProjectOptions.SetIncludeFileFilter(const AValue: string);
+begin
+  if FIncludeFileFilter=AValue then exit;
+  FIncludeFileFilter:=AValue;
+end;
+
+procedure TPublishProjectOptions.SetSaveClosedEditorFilesInfo(
+  const AValue: boolean);
+begin
+  if FSaveClosedEditorFilesInfo=AValue then exit;
+  FSaveClosedEditorFilesInfo:=AValue;
+end;
+
+procedure TPublishProjectOptions.SetSaveEditorInfoOfNonProjectFiles(
+  const AValue: boolean);
+begin
+  if FSaveEditorInfoOfNonProjectFiles=AValue then exit;
+  FSaveEditorInfoOfNonProjectFiles:=AValue;
+end;
+
+procedure TPublishProjectOptions.SetUseExcludeFileFilter(const AValue: boolean
+  );
+begin
+  if FUseExcludeFileFilter=AValue then exit;
+  FUseExcludeFileFilter:=AValue;
+end;
+
+procedure TPublishProjectOptions.SetUseIncludeFileFilter(const AValue: boolean
+  );
+begin
+  if FUseIncludeFileFilter=AValue then exit;
+  FUseIncludeFileFilter:=AValue;
+end;
+
+constructor TPublishProjectOptions.Create;
+begin
+  LoadDefaults;
+end;
+
+destructor TPublishProjectOptions.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TPublishProjectOptions.Clear;
+begin
+  LoadDefaults;
+end;
+
+procedure TPublishProjectOptions.LoadDefaults;
+begin
+  FDestinationDirectory:='$(TempDir)/publishedproject/';
+  FCommandAfter:='';
+  FUseIncludeFileFilter:=true;
+  FIncludeFileFilter:='*.{pas,pp,inc,lfm,lpr,lrs,lpi,lpk,fpc,sh,xml}';
+  FUseExcludeFileFilter:=false;
+  FExcludeFileFilter:='*.{bak,ppu,ppw,o,so};*~;backup';
+  FSaveClosedEditorFilesInfo:=false;
+  FSaveEditorInfoOfNonProjectFiles:=false;
+end;
+
+procedure TPublishProjectOptions.LoadFromXMLConfig(XMLConfig: TXMLConfig;
+  const APath: string);
+begin
+  LoadDefaults;
+  FDestinationDirectory:=XMLConfig.GetValue(APath+'DestinationDirectory/Value',
+                                            DestinationDirectory);
+  FCommandAfter:=XMLConfig.GetValue(APath+'CommandAfter/Value',CommandAfter);
+  FUseIncludeFileFilter:=XMLConfig.GetValue(APath+'UseIncludeFileFilter/Value',
+                                            UseIncludeFileFilter);
+  FIncludeFileFilter:=XMLConfig.GetValue(APath+'IncludeFileFilter/Value',
+                                         IncludeFileFilter);
+  FUseExcludeFileFilter:=XMLConfig.GetValue(APath+'UseExcludeFileFilter/Value',
+                                            UseExcludeFileFilter);
+  FExcludeFileFilter:=XMLConfig.GetValue(APath+'ExcludeFileFilter/Value',
+                                         ExcludeFileFilter);
+  FSaveClosedEditorFilesInfo:=XMLConfig.GetValue(
+             APath+'SaveClosedEditorFilesInfo/Value',SaveClosedEditorFilesInfo);
+  FSaveEditorInfoOfNonProjectFiles:=XMLConfig.GetValue(
+             APath+'SaveEditorInfoOfNonProjectFiles/Value',
+             SaveEditorInfoOfNonProjectFiles);
+end;
+
+procedure TPublishProjectOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
+  const APath: string);
+begin
+  XMLConfig.SetValue(APath+'DestinationDirectory/Value',DestinationDirectory);
+  XMLConfig.SetValue(APath+'CommandAfter/Value',CommandAfter);
+  XMLConfig.SetValue(APath+'UseIncludeFileFilter/Value',UseIncludeFileFilter);
+  XMLConfig.SetValue(APath+'IncludeFileFilter/Value',IncludeFileFilter);
+  XMLConfig.SetValue(APath+'UseExcludeFileFilter/Value',UseExcludeFileFilter);
+  XMLConfig.SetValue(APath+'ExcludeFileFilter/Value',ExcludeFileFilter);
+  XMLConfig.SetValue(APath+'SaveClosedEditorFilesInfo/Value',
+                     SaveClosedEditorFilesInfo);
+  XMLConfig.SetValue(APath+'SaveEditorInfoOfNonProjectFiles/Value',
+                     SaveEditorInfoOfNonProjectFiles);
 end;
 
 end.

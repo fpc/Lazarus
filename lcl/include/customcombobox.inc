@@ -464,13 +464,59 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomComboBox.AddItem(const Item: String; AObject: TObject);
+  procedure TCustomComboBox.AddItem(const Item: String; AnObject: TObject);
 
   Adds an Item with an associated object to Items
  ------------------------------------------------------------------------------}
-procedure TCustomComboBox.AddItem(const Item: String; AObject: TObject);
+procedure TCustomComboBox.AddItem(const Item: String; AnObject: TObject);
 begin
-  Items.AddObject(Item,AObject);
+  Items.AddObject(Item,AnObject);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.AddHistoryItem(const Item: string;
+    MaxHistoryCount: integer; SetAsText, CaseSensitive: boolean);
+
+  Adds an Item as first item. Removes the Item from old positions and removes
+  last item if history is full.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.AddHistoryItem(const Item: string;
+  MaxHistoryCount: integer; SetAsText, CaseSensitive: boolean);
+begin
+  AddHistoryItem(Item,nil,MaxHistoryCount,SetAsText,CaseSensitive);
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomComboBox.AddHistoryItem(const Item: string;
+    AnObject: TObject; MaxHistoryCount: integer;
+    SetAsText, CaseSensitive: boolean);
+
+  Adds an Item as first item. Removes the Item from old positions and removes
+  last item if history is full.
+ ------------------------------------------------------------------------------}
+procedure TCustomComboBox.AddHistoryItem(const Item: string; AnObject: TObject;
+  MaxHistoryCount: integer; SetAsText, CaseSensitive: boolean);
+var i: integer;
+begin
+  // insert as first
+  if (Items.Count=0)
+  or (CaseSensitive and (AnsiCompareText(Items[0],Item)<>0))
+  or (not CaseSensitive and (Items[0]<>Item)) then
+  begin
+    Items.InsertObject(0,Item,AnObject);
+  end;
+  // delete old
+  for i:=Items.Count-1 downto 1 do begin
+    if (CaseSensitive and (AnsiCompareText(Items[i],Item)=0))
+    or (not CaseSensitive and (Items[i]=Item)) then
+      Items.Delete(i);
+  end;
+  // delete overflow items
+  while Items.Count>MaxHistoryCount do
+    Items.Delete(Items.Count-1);
+  // set as text
+  if SetAsText then
+    Text:=Item;
 end;
 
 {------------------------------------------------------------------------------
@@ -549,6 +595,9 @@ end;
 
 {
   $Log$
+  Revision 1.15  2002/10/02 14:23:23  lazarus
+  MG: added various history lists
+
   Revision 1.14  2002/09/16 16:06:21  lazarus
   MG: replaced halt with raiseexception
 

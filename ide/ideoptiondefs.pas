@@ -36,6 +36,7 @@ uses
   Classes, SysUtils, Laz_XMLCfg, Forms, Controls, StdCtrls, Buttons;
 
 const
+  // form names for non modal IDE windows:
   DefaultMainIDEName = 'MainIDE';
   DefaultSourceNoteBookName = 'SourceNotebook';
   DefaultMessagesViewName = 'MessagesView';

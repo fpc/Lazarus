@@ -1,41 +1,42 @@
 object PublishProjectDialog: TPublishProjectDialog
-  CAPTION = 'Publish Project Dialog'
+  CAPTION = 'Publish Project'
   COLOR = -2147483633
-  CLIENTHEIGHT = 345
-  CLIENTWIDTH = 483
+  CLIENTHEIGHT = 377
+  CLIENTWIDTH = 470
   POSITION = poscreencenter
+  ONRESIZE = PublishProjectDialogRESIZE
   LEFT = 343
-  HEIGHT = 345
+  HEIGHT = 377
   TOP = 289
-  WIDTH = 483
-  object Button1: TBUTTON
+  WIDTH = 470
+  object OkButton: TBUTTON
     ANCHORS = [aktop, akleft]
     MODALRESULT = 1
     CAPTION = 'Ok'
     TABSTOP = True
-    LEFT = 56
+    LEFT = 80
     HEIGHT = 25
-    TOP = 264
+    TOP = 336
     WIDTH = 75
   end
-  object Button2: TBUTTON
+  object CancelButton: TBUTTON
     ANCHORS = [aktop, akleft]
     MODALRESULT = 2
     CAPTION = 'Cancel'
     TABSTOP = True
     TABORDER = 1
-    LEFT = 226
+    LEFT = 377
     HEIGHT = 25
-    TOP = 264
+    TOP = 336
     WIDTH = 75
   end
   object DestDirGroupBox: TGROUPBOX
     ANCHORS = [aktop, akleft]
     CAPTION = 'Destination directory'
     LEFT = 8
-    HEIGHT = 53
+    HEIGHT = 91
     TOP = 8
-    WIDTH = 420
+    WIDTH = 450
     object DestDirComboBox: TCOMBOBOX
       ANCHORS = [aktop, akleft]
       PARENTCTL3D = False
@@ -44,7 +45,7 @@ object PublishProjectDialog: TPublishProjectDialog
       LEFT = 6
       HEIGHT = 25
       TOP = 1
-      WIDTH = 294
+      WIDTH = 350
     end
     object BrowseDestDirBitBtn: TBITBTN
       GLYPH.Data = {
@@ -56,10 +57,124 @@ object PublishProjectDialog: TPublishProjectDialog
       CAPTION = 'Browse'
       TABSTOP = True
       TABORDER = 1
-      LEFT = 336
+      LEFT = 366
       HEIGHT = 25
       TOP = 1
       WIDTH = 72
     end
+    object CommandAfterCombobox: TCOMBOBOX
+      ANCHORS = [aktop, akleft]
+      PARENTCTL3D = False
+      TABORDER = 2
+      TABSTOP = True
+      TEXT = 'CommandAfterCombobox'
+      LEFT = 6
+      HEIGHT = 25
+      TOP = 39
+      WIDTH = 430
+    end
+  end
+  object FilesGroupbox: TGROUPBOX
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Files'
+    LEFT = 8
+    HEIGHT = 139
+    TOP = 104
+    WIDTH = 450
+    object UseIncludeFilterCheckbox: TCHECKBOX
+      AUTOSIZE = True
+      ALLOWGRAYED = True
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Use include filter'
+      DRAGCURSOR = 0
+      TABSTOP = True
+      TABSTOP = True
+      LEFT = 4
+      HEIGHT = 20
+      WIDTH = 171
+    end
+    object IncludeFileFilterCombobox: TCOMBOBOX
+      ANCHORS = [aktop, akleft]
+      PARENTCTL3D = False
+      TABORDER = 1
+      TABSTOP = True
+      TEXT = 'IncludeFileFilterCombobox'
+      LEFT = 4
+      HEIGHT = 25
+      TOP = 24
+      WIDTH = 432
+    end
+    object UseExcludeFilterCheckbox: TCHECKBOX
+      AUTOSIZE = True
+      ALLOWGRAYED = True
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Use exclude filter'
+      DRAGCURSOR = 0
+      TABORDER = 2
+      TABSTOP = True
+      TABORDER = 2
+      TABSTOP = True
+      LEFT = 4
+      HEIGHT = 20
+      TOP = 64
+      WIDTH = 175
+    end
+    object ExcludeFileFilterCombobox: TCOMBOBOX
+      ANCHORS = [aktop, akleft]
+      PARENTCTL3D = False
+      TABORDER = 3
+      TABSTOP = True
+      TEXT = 'ExcludeFileFilterCombobox'
+      LEFT = 4
+      HEIGHT = 25
+      TOP = 88
+      WIDTH = 432
+    end
+  end
+  object ProjectInfoGroupbox: TGROUPBOX
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Project Information'
+    LEFT = 8
+    HEIGHT = 69
+    TOP = 248
+    WIDTH = 450
+    object SaveClosedEditorFilesInfoCheckbox: TCHECKBOX
+      AUTOSIZE = True
+      ALLOWGRAYED = True
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Save editor info of closed files'
+      DRAGCURSOR = 0
+      TABSTOP = True
+      TABSTOP = True
+      LEFT = 4
+      HEIGHT = 20
+      TOP = 1
+      WIDTH = 432
+    end
+    object SaveEditorInfoOfNonProjectFilesCheckbox: TCHECKBOX
+      AUTOSIZE = True
+      ALLOWGRAYED = True
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Save editor info of non project files'
+      DRAGCURSOR = 0
+      TABORDER = 1
+      TABSTOP = True
+      TABORDER = 1
+      TABSTOP = True
+      LEFT = 4
+      HEIGHT = 20
+      TOP = 26
+      WIDTH = 432
+    end
+  end
+  object SaveSettingsButton: TBUTTON
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Save settings'
+    TABSTOP = True
+    TABORDER = 5
+    LEFT = 206
+    HEIGHT = 25
+    TOP = 336
+    WIDTH = 120
   end
 end

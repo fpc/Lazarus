@@ -224,7 +224,11 @@ type
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
-    procedure AddItem(const Item: String; AObject: TObject); //override;
+    procedure AddItem(const Item: String; AnObject: TObject); //override;
+    procedure AddHistoryItem(const Item: string; MaxHistoryCount: integer;
+      SetAsText, CaseSensitive: boolean);
+    procedure AddHistoryItem(const Item: string; AnObject: TObject;
+      MaxHistoryCount: integer; SetAsText, CaseSensitive: boolean);
     procedure Clear; //override;
     procedure ClearSelection; //override;
     procedure MeasureItem(Index: Integer; var TheHeight: Integer); virtual;
@@ -1268,6 +1272,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.48  2002/10/02 14:23:22  lazarus
+  MG: added various history lists
+
   Revision 1.47  2002/10/01 18:00:03  lazarus
   AJ: Initial TUpDown, minor property additions to improve reading Delphi created forms.
 
