@@ -27,6 +27,11 @@ begin
   FMessageQueue := TLazQueue.Create;
   FPaintMessages := TDynHashArray.Create(-1);
   FPaintMessages.OwnerHashFunction := @HashPaintMessage;
+  {$IFDEF ClientRectBugFix}
+  FWidgetsWithResizeRequest := TDynHashArray.Create(-1);
+  FWidgetsResized := TDynHashArray.Create(-1);
+  FFixWidgetsResized := TDynHashArray.Create(-1);
+  {$ENDIF}
   FAccelGroup := gtk_accel_group_new();
   FTimerData  := TList.Create;
   FDefaultFont:= nil;
@@ -140,6 +145,11 @@ begin
     end;
   end;
 
+  {$IFDEF ClientRectBugFix}
+  FreeAndNil(FWidgetsWithResizeRequest);
+  FreeAndNil(FWidgetsResized);
+  FreeAndNil(FFixWidgetsResized.Free);
+  {$ENDIF}
   FMessageQueue.Free;
   FPaintMessages.Free;
   FDeviceContexts.Free;
@@ -152,17 +162,95 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TGtkObject.SendCachedLCLMessages
+  Params:  None
+  Returns: Nothing
+
+
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.SendCachedLCLMessages;
+
+{$IFDEF ClientRectBugFix}
+  procedure SendCachedLCLResizeRequests;
+  var
+    HashItem: PDynHashArrayItem;
+    Widget, ParentFixed, ParentWidget: PGtkWidget;
+    LCLControl: TControl;
+    IsTopLevelWidget: boolean;
+  begin
+    writeln('GGG SendCachedLCLResizeRequests SizeMsgCount=',FWidgetsWithResizeRequest.Count);
+    HashItem:=FWidgetsWithResizeRequest.FirstHashItem;
+    while HashItem<>nil do begin
+      Widget:=HashItem^.Item;
+      // resize widget
+      LCLControl:=TControl(GetLCLObject(Widget));
+      if (LCLControl=nil) or (not (LCLControl is TControl)) then begin
+        writeln('ERROR: TgtkObject.SendCachedLCLMessages Widget ',
+          HexStr(Cardinal(Widget),8),' without LCL control');
+        Halt;
+      end;
+      writeln('SendCachedLCLMessages ',LCLControl.Name,':',LCLControl.ClassName,
+        ' ',LCLControl.Left,',',LCLControl.Top,',',LCLControl.Width,',',LCLControl.Height);
+      
+      IsTopLevelWidget:= (LCLControl is TCustomForm)
+                         and (LCLControl.Parent = nil);
+
+      if not IsTopLevelWidget then begin
+        // resize widget
+        gtk_widget_set_usize(Widget, LCLControl.Width, LCLControl.Height);
+        // move widget on the fixed widget of parent control
+        ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
+        ParentFixed := GetFixedWidget(ParentWidget);
+        if ParentFixed <> nil then begin
+          gtk_fixed_move(PGtkFixed(ParentFixed), Widget,
+                         LCLControl.Left, LCLControl.Top);
+        end else begin
+          if not (LCLControl.Parent is TNoteBook) then begin
+            writeln('WARNING: TgtkObject.SendCachedLCLMessages - no Fixed Widget found');
+            writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName);
+          end;
+          Assert(False, 'WARNING: TgtkObject.SendCachedLCLMessages - no Fixed Widget found');
+        end;
+      end
+      else begin
+        // resize form
+        gtk_window_set_default_size(PgtkWindow(Widget),
+                                    LCLControl.Width,LCLControl.Height);
+        if Widget^.window<>nil then begin
+          gdk_window_move_resize(Widget^.window,LCLControl.Left,LCLControl.Top,
+                                 LCLControl.Width, LCLControl.Height);
+        end else begin
+          gtk_widget_set_usize(Widget, -1,-1);
+          gtk_widget_set_usize(Widget, LCLControl.Width, LCLControl.Height);
+        end;
+        gtk_widget_set_uposition(Widget, LCLControl.Left, LCLControl.Top);
+      end;
+
+      HashItem:=HashItem^.Next;
+    end;
+    FWidgetsWithResizeRequest.Clear;
+  end;
+{$ENDIF}
+
+begin
+  {$IFDEF ClientRectBugFix}
+  SendCachedLCLResizeRequests;
+  {$ENDIF}
+end;
+
+{------------------------------------------------------------------------------
   Method: TGtkObject.HandleEvents
   Params:  None
   Returns: Nothing
 
-  *Note: Handle all pending messages of the GTK engine
+  Handle all pending messages of the GTK engine and of this interface
  ------------------------------------------------------------------------------}
 procedure TgtkObject.HandleEvents;
 var
   Msg: TMsg; 
   p: pMsg;
 begin
+  SendCachedLCLMessages;
   //gtk_main;
   // first let gtk handle all its messages
   while gtk_events_pending<>0 do
@@ -192,13 +280,16 @@ end;
   Params:  None
   Returns: Nothing
 
-  *Note: Passes execution control to the GTK engine
+  Passes execution control to the GTK engine till something happens
  ------------------------------------------------------------------------------}
 procedure TgtkObject.WaitMessage;
 begin
+  SendCachedLCLMessages;
   gtk_main_iteration_do(True);
 end;
 
+{$IFDEF ClientRectBugFix}
+{$ELSE}
 {------------------------------------------------------------------------------
   Method: TGtkObject.DoEvents
   Params:  None
@@ -212,6 +303,7 @@ begin
   //gtk_main_iteration_do(False);
   gtk_main_iteration;
 end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   Method: TGtkObject.AppTerminate
@@ -326,12 +418,8 @@ Begin
   //could we just call IntSendMessage??
 
   //destroy old widget
-  if TWinControl(Sender).HandleAllocated then
-  begin
-    if MCaptureHandle=TWinControl(Sender).Handle then
-      MCaptureHandle:=0;
-    RemoveCallbacks(sender);
-    gtk_widget_destroy(PgtkWidget(TWinControl(Sender).Handle));
+  if TWinControl(Sender).HandleAllocated then begin
+    DestroyLCLControl(Sender);
   end;
 
   aParent := TWinControl(Sender).Parent;
@@ -379,8 +467,6 @@ var
   AddItemListItem : TListItem;
   Rect      : TRect;
   FormIconGdiObject: PGdiObject;     // currently only used by LM_SETFORMICON
-  QueueItem, OldQueueItem: PLazQueueItem; // currently only used by LM_DESTROY
-  MsgPtr    : PMsg;                  // currently only used by LM_DESTROY
   Count     : Integer;               //Used in TListView LM_LV_CHANGEITEM
   Titles    : Array [0..255] of PChar;
   BitImage : TBitmap;
@@ -439,9 +525,10 @@ begin
     LM_RECREATEWND : Result := RecreateWnd(sender);
     
     LM_ATTACHMENU: AttachMenu(Sender);
+    
   else begin
     handle := hwnd(ObjectToGtkObject(Sender));
-//???   if handle = nil then assert (false, Format ('Trace:  [TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName])); 
+    //???   if handle = nil then assert (false, Format ('Trace:  [TgtkObject.IntSendMessage3] %s --> got handle=nil',[Sender.ClassName]));
     Case LM_Message of
 
       LM_SetText  : SetText(PgtkWidget(Handle), Data); 
@@ -451,8 +538,8 @@ begin
          Assert(False, 'Trace:Adding a child to Parent');
          If (TWinControl(Sender).Parent is TToolbar) then
          Begin
-//          Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> %s   ---calling INSERTBUTTON from Add Child', [AParent.ClassName, Sender.ClassNAme]));
-            exit;
+           //  Assert(False, Format('Trace:  [TgtkObject.IntSendMessage3] %s --> %s   ---calling INSERTBUTTON from Add Child', [AParent.ClassName, Sender.ClassNAme]));
+           exit;
          end
          else Begin
             AParent := (Sender as TWinControl).Parent;
@@ -468,6 +555,7 @@ begin
                end;
          end;
       end;
+      
       {Used by:
         TListView
 
@@ -481,6 +569,7 @@ begin
           gtk_clist_remove(PgtkCList(Widget),Num);
         end;
       end;
+      
       LM_LV_CHANGEITEM :
       begin
         if (Sender is TListView) then
@@ -536,8 +625,8 @@ begin
              gtk_clist_set_text(PgtkCList(Widget),num,0,@AddItemListItem.Caption);
             end;
         end;
-        
       end;
+      
       LM_BRINGTOFRONT:
       begin
 {         Assert(False, 'Trace:TODO:bringtofront');
@@ -549,13 +638,11 @@ begin
 	   writeln('Inserted control ', TControl(Sender).Name);
     end;
     }
-    
-    if (Sender is TCustomForm) then
-       Begin
-         Widget := PgtkWidget(TCustomForm(Sender).Handle);
-         gdk_window_raise(Widget^.Window);
-       end;
-       
+        if (Sender is TCustomForm) then
+        Begin
+          Widget := PgtkWidget(TCustomForm(Sender).Handle);
+          gdk_window_raise(Widget^.Window);
+        end;
       end;
 
       LM_BTNDEFAULT_CHANGED :
@@ -567,51 +654,7 @@ begin
 
       LM_DESTROY :
       begin
-        RemoveCallbacks(sender);
-        if (Sender is TWinControl) or (Sender is TCommonDialog) then
-        begin
-//writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
-          if Handle<>0 then
-          begin
-            if MCaptureHandle=Handle then MCaptureHandle:=0;
-            if ClipboardWidget=PGtkWidget(Handle) then
-            begin
-              // clipboard widget destroyed
-              if (Application<>nil) and (Application.MainForm<>nil) and (Application.MainForm.HandleAllocated)
-                                    and (Application.MainForm.Handle<>Handle) then
-                // there is still the main form left -> use it for clipboard
-                SetClipboardWidget(PGtkWidget(Application.MainForm.Handle))
-              else
-                // program closed -> close clipboard
-                SetClipboardWidget(nil);
-            end;
-          if gtk_type_is_a(gtk_object_type(PGtkObject(Handle)),
-              GTKAPIWidget_GetType)
-            then
-              DestroyCaret(Handle);
-            gtk_widget_destroy(PGtkWidget(Handle));
-//writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
-          end;
-          // remove all remaining messages to this component
-          QueueItem:=FMessageQueue.First;
-          while (QueueItem<>nil) do begin
-            MsgPtr := PMsg(QueueItem^.Data);
-            if MsgPtr^.HWnd=Handle then begin
-              // remove message
-              if MsgPtr^.Message=LM_PAINT then begin
-                FPaintMessages.Remove(QueueItem);
-                ReleaseDC(0,MsgPtr^.WParam);
-              end;
-              Dispose(MsgPtr);
-              OldQueueItem:=QueueItem;
-              QueueItem:=QueueItem^.Next;
-              FMessageQueue.Delete(OldQueueItem);
-            end else
-              QueueItem:=QueueItem^.Next;
-          end;
-        end
-        else
-          Assert (False, Format ('Trace:Dont know how to destroy component %s', [sender.classname]));
+        DestroyLCLControl(Sender);
       end;
 
       LM_DRAGINFOCHANGED :
@@ -1327,52 +1370,55 @@ end;
 procedure TgtkObject.ResizeChild(Sender : TObject;
   Left, Top, Width, Height : Integer);
 var
-  pFixed: PGTKFixed;
-  pWidget: PGTKWidget;
-  Parent: TWinControl;
-  IsTopLevelWidget: boolean;
+  Widget: PGtkWidget;
+  {$IFDEF ClientRectBugFix}
+  {$ELSE}
   {$IFDEF VerboseResizeChild}
   DummyWidget: PGtkWidget;
   Dummy: TPoint;
-  {$ENDIF}
-  {$IFDEF ClientRectBugFix}
   OldFixWidgetWidth, OldFixWidgetHeight, OldWidgetWidth, OldWidgetHeight,
   NewFixWidgetWidth, NewFixWidgetHeight: integer;
   pClientWidget: PGTKWidget;
+  {$ENDIF}
+  ParentFixed: PGTKFixed;
+  ParentWidget: PGTKWidget;
+  Parent: TWinControl;
+  IsTopLevelWidget: boolean;
   {$ENDIF}
 begin
   //writeln('[TgtkObject.ResizeChild] START ',TControl(Sender).Name,':',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
   Assert(false, (Format('trace:  [TgtkObject.ResizeChild] %s --> Resize', [Sender.ClassNAme])));
 
-  Parent:= TControl(Sender).Parent;
-
   if Sender is TWinControl then begin
     if TWinControl(Sender).HandleAllocated then begin
-      pWidget := pgtkWidget(TWinControl(Sender).Handle);
-    
+      Widget := pgtkWidget(TWinControl(Sender).Handle);
+      {$IFDEF ClientRectBugFix}
+      SetResizeRequest(Widget);
+      {$ELSE}
+      Parent:= TControl(Sender).Parent;
+
       IsTopLevelWidget:= (Sender is TCustomForm) and (Parent = nil);
 
       if IsTopLevelWidget then begin
-        gtk_window_set_default_size(PgtkWindow(pWidget),Width,Height);
+        gtk_window_set_default_size(PgtkWindow(Widget),Width,Height);
       end;
 
       {$IFDEF VerboseResizeChild}
       if pWidget^.Window<>nil then begin
-        gdk_window_get_size(pWidget^.Window, @Dummy.X, @Dummy.Y);
+        gdk_window_get_size(Widget^.Window, @Dummy.X, @Dummy.Y);
         writeln('ResizeChild: ',TControl(Sender).Name,':',Sender.Classname,
-          ' Widget=',HexStr(Cardinal(pWidget),8),
+          ' Widget=',HexStr(Cardinal(Widget),8),
           ' OldWidSize=',Dummy.X,',',Dummy.Y,
           ' NewSize=',Width,',',Height,
-          ' Allocation=',pWidget^.Allocation.Width,',',pWidget^.Allocation.Height,
-          ' Requisiton=',pWidget^.Requisition.Width,',',pWidget^.Requisition.Height
+          ' Allocation=',Widget^.Allocation.Width,',',Widget^.Allocation.Height
           );
-        DummyWidget := GetFixedWidget(pWidget);
+        DummyWidget := GetFixedWidget(Widget);
         if (DummyWidget <> nil) then begin
           if (DummyWidget^.Window<>nil) then begin
             gdk_window_get_size(DummyWidget^.Window, @Dummy.X, @Dummy.Y);
             writeln('    OldFixWidSize=',Dummy.X,',',Dummy.Y,
-              ' Allocation=',DummyWidget^.Allocation.Width,',',DummyWidget^.Allocation.Height,
-              ' Requisiton=',DummyWidget^.Requisition.Width,',',DummyWidget^.Requisition.Height);
+              ' Allocation=',DummyWidget^.Allocation.Width,',',DummyWidget^.Allocation.Height
+              );
           end else
             writeln('  FixWid^.Window=nil');
         end else begin
@@ -1386,47 +1432,13 @@ begin
       {$ENDIF}
 
       if not IsTopLevelWidget then begin
-        { The LCL expects, that if a widget is resized, its client area is
-          resized immediately.
-          The client area under gtk is the fixed widget, which will be resized
-          automatically by the gtk via a resize request. So, the gtk does not
-          resize the client area immediately.
-          So, this function will return to the LCL, the LCL will resize the
-          child components with an uninitialized or old client area.
-          
-          ToDo:
-            - add a flag: uninitialzed fixed widget size
-               - will be set to true at creation time
-               - will be set to false on gtksize_allocate_client
-            - change LCL, so that clients are only aligned, if
-        
-        }
-        // resize fixed widget (= client area)
-        {$IFDEF ClientRectBugFix}
-        pClientWidget := GetFixedWidget(pWidget);
-        if (pClientWidget<>nil) then begin
-          OldWidgetWidth:=pWidget^.Allocation.Width;
-          OldWidgetHeight:=pWidget^.Allocation.Height;
-          OldFixWidgetWidth:=pClientWidget^.Allocation.Width;
-          OldFixWidgetHeight:=pClientWidget^.Allocation.Height;
-          NewFixWidgetWidth:=Width-OldWidgetWidth+OldFixWidgetWidth;
-          if NewFixWidgetWidth<1 then NewFixWidgetWidth:=1;
-          NewFixWidgetHeight:=Height-OldWidgetHeight+OldFixWidgetHeight;
-          if NewFixWidgetHeight<1 then NewFixWidgetHeight:=1;
-          {$IFDEF VerboseResizeChild}
-          //writeln('  RESIZING fixed widget: ',NewFixWidgetWidth,',',NewFixWidgetHeight);
-          {$ENDIF}
-          //gtk_widget_set_usize(pClientWidget,
-          //                     NewFixWidgetWidth, NewFixWidgetHeight);
-        end;
-        {$ENDIF}
         // resize widget
-        gtk_widget_set_usize(pWidget, Width, Height);
+        gtk_widget_set_usize(Widget, Width, Height);
         // move widget on the fixed widget of parent control
-        //gtk_widget_set_usize(pWidget, -1, -1);
-        pFixed := GetFixedWidget(PGtkWidget(Parent.Handle));
-        if pFixed <> nil then begin
-          gtk_fixed_move(pFixed, pWidget, Left, Top);
+        ParentWidget:=pgtkWidget(TWinControl(Sender).Parent.Handle);
+        ParentFixed := GetFixedWidget(ParentWidget);
+        if ParentFixed <> nil then begin
+          gtk_fixed_move(ParentFixed, Widget, Left, Top);
         end else begin
           if not (Parent is TNoteBook) then begin
             writeln('WARNING: TgtkObject.ResizeChild - no Fixed Widget found');
@@ -1439,14 +1451,15 @@ begin
       end
       else begin
         // resize form
-        if pWidget^.window<>nil then begin
-          gdk_window_move_resize(pWidget^.window, Left, Top, Width, Height);
+        if Widget^.window<>nil then begin
+          gdk_window_move_resize(Widget^.window, Left, Top, Width, Height);
         end else begin
-          gtk_widget_set_usize(pWidget, -1,-1);
-          gtk_widget_set_usize(pWidget, Width, Height);
+          gtk_widget_set_usize(Widget, -1,-1);
+          gtk_widget_set_usize(Widget, Width, Height);
         end;
-        gtk_widget_set_uposition(pWidget, Left, Top);
+        gtk_widget_set_uposition(Widget, Left, Top);
       end;
+      {$ENDIF}
     end;
   end;
   //writeln('[TgtkObject.ResizeChild] END ',Sender.Classname,' Left=',Left,' Top=',Top,' Width=',Width,' Height=',Height);
@@ -2148,6 +2161,89 @@ begin
   gtk_signal_handlers_destroy(gObject);
 end;
 
+{-------------------------------------------------------------------------------
+  TgtkObject.HookSignals
+  Params: Sender: TObject
+
+  Destroy the widget and all associated data
+-------------------------------------------------------------------------------}
+procedure TGTKObject.DestroyLCLControl(Sender : TObject);
+var
+  handle: hwnd; // handle of sender
+  QueueItem, OldQueueItem: PLazQueueItem;
+  MsgPtr: PMsg;
+  Widget: PGtkWidget;
+  {$IFDEF ClientRectBugFix}
+  FixWidget: PGtkWidget;
+  {$ENDIF}
+begin
+  RemoveCallbacks(Sender);
+  Handle := hwnd(ObjectToGtkObject(Sender));
+  if Handle=0 then exit;
+  
+  Widget:=PGtkWidget(Handle);
+  {$IFDEF ClientRectBugFix}
+  FixWidget:=GetFixedWidget(Widget);
+  {$ENDIF}
+
+  {$IFDEF ClientRectBugFix}
+  // remove pending size messages
+  FWidgetsWithResizeRequest.Remove(Widget);
+  FWidgetsResized.Remove(Widget);
+  FFixWidgetsResized.Remove(FixWidget);
+  {$ENDIF}
+
+  if (Sender is TWinControl) or (Sender is TCommonDialog) then
+  begin
+    //writeln('>>> LM_DESTROY ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
+    if MCaptureHandle=Handle then MCaptureHandle:=0;
+    if ClipboardWidget=Widget then
+    begin
+      // clipboard widget destroyed
+      if (Application<>nil) and (Application.MainForm<>nil)
+      and (Application.MainForm.HandleAllocated)
+      and (Application.MainForm.Handle<>Handle) then
+        // there is still the main form left -> use it for clipboard
+        SetClipboardWidget(PGtkWidget(Application.MainForm.Handle))
+      else
+        // program closed -> close clipboard
+        SetClipboardWidget(nil);
+    end;
+    if gtk_type_is_a(gtk_object_type(PGtkObject(Handle)),GTKAPIWidget_GetType)
+    then
+      DestroyCaret(Handle);
+    gtk_widget_destroy(Widget);
+    //writeln('>>> LM_DESTROY END ',Sender.Classname,' Sender=',HexStr(Cardinal(Sender),8),' Handle=',HexStr(Cardinal(Handle),8));
+  end
+  else
+    Assert (False, Format ('Trace:Dont know how to destroy component %s', [sender.classname]));
+
+  // remove all remaining messages to this component
+  QueueItem:=FMessageQueue.First;
+  while (QueueItem<>nil) do begin
+    MsgPtr := PMsg(QueueItem^.Data);
+    if MsgPtr^.HWnd=Handle then begin
+      // remove message
+      if MsgPtr^.Message=LM_PAINT then begin
+        FPaintMessages.Remove(QueueItem);
+        ReleaseDC(0,MsgPtr^.WParam);
+      end;
+      Dispose(MsgPtr);
+      OldQueueItem:=QueueItem;
+      QueueItem:=QueueItem^.Next;
+      FMessageQueue.Delete(OldQueueItem);
+    end else begin
+      QueueItem:=QueueItem^.Next;
+    end;
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  TgtkObject.HookSignals
+  Params: Sender: TObject
+  
+  Set default Callbacks
+-------------------------------------------------------------------------------}
 procedure TgtkObject.HookSignals(Sender: TObject);
 begin
   if (sender is TWinControl) then
@@ -2254,7 +2350,7 @@ const
 //unused:   Tpixdata = Array[1..20] of String;
 
 var
-   caption : ansistring;          // the caption of "Sender"
+   Caption : ansistring;          // the caption of "Sender"
    StrTemp : PChar;               // same as "caption" but as PChar
    TempWidget : PGTKWidget;       // pointer to gtk-widget (local use when neccessary)
    TempWidget2: PgtkWidget;       //used by TListView
@@ -2280,13 +2376,13 @@ begin
   Caption   := Sender.ClassName;
   if (Sender is TControl) then
   begin
-    caption := TControl(Sender).caption;
+    Caption := TControl(Sender).Caption;
     CompStyle := TControl(Sender).FCompStyle
   end
   else
   if (Sender is TMenuItem) then
   begin
-    caption := TMenuItem(Sender).caption;
+    Caption := TMenuItem(Sender).Caption;
     CompStyle := TMenuItem(Sender).FCompStyle;
   end
   else
@@ -2298,21 +2394,21 @@ begin
   then
     CompStyle := TCommonDialog(Sender).FCompStyle;
 
-  if caption = '' then caption := 'Blank';
+  if Caption = '' then Caption := 'Blank';
 
-  strTemp := StrAlloc(length(caption) + 1);
-  StrPCopy(strTemp, caption);
+  strTemp := StrAlloc(length(Caption) + 1);
+  StrPCopy(strTemp, Caption);
 
   case CompStyle of
     csAlignment :
     begin
-       p := gtk_alignment_new(0.5,0.5,0,0);
-       gtk_widget_show(p);
+      p := gtk_alignment_new(0.5,0.5,0,0);
+      gtk_widget_show(p);
     end;
 
     csArrow :
     begin
-       p := gtk_arrow_new(gtk_arrow_left,gtk_shadow_etched_in);
+      p := gtk_arrow_new(gtk_arrow_left,gtk_shadow_etched_in);
     end;
 
     csBitBtn :
@@ -2346,42 +2442,41 @@ begin
 
     csCalendar :
     begin
-       p := gtk_calendar_new();
+      p := gtk_calendar_new();
     end;
 
     csCheckbox :
     begin
-       p := gtk_check_button_new_with_label(strTemp);
+      p := gtk_check_button_new_with_label(strTemp);
     end;
 
-    csCListBox :
+    csClistBox :
     begin
-       p:= gtk_scrolled_window_new(nil, nil);
-       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar,
-                              GTK_CAN_FOCUS);
-       GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar,
-                              GTK_CAN_FOCUS);
-       gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
-                                      GTK_POLICY_AUTOMATIC,
-                                      GTK_POLICY_AUTOMATIC);
-       gtk_widget_show(p);
+      p:= gtk_scrolled_window_new(nil, nil);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.hscrollbar,
+                             GTK_CAN_FOCUS);
+      GTK_WIDGET_UNSET_FLAGS(PGtkScrolledWindow(p)^.vscrollbar,
+                             GTK_CAN_FOCUS);
+      gtk_scrolled_window_set_policy(PGtkScrolledWindow(p),
+                                     GTK_POLICY_AUTOMATIC,
+                                     GTK_POLICY_AUTOMATIC);
+      gtk_widget_show(p);
 
-       with Sender as TCListBox
-       do begin
-         TempWidget:= gtk_clist_new(ListColumns);
-         gtk_container_add(PGtkContainer(p), TempWidget);
+      with TCListBox(Sender)
+      do begin
+        TempWidget:= gtk_clist_new(ListColumns);
+        gtk_container_add(PGtkContainer(p), TempWidget);
+        for TempInt := 0 to ListColumns - 1 do
+          gtk_clist_set_column_width(PGtkCList(TempWidget), TempInt, (Width-50) div ListColumns);
+      end;
+      gtk_widget_show(TempWidget);
 
-         for TempInt := 0 to ListColumns - 1 do
-           gtk_clist_set_column_width(PGtkCList(TempWidget), TempInt, (Width-50) div ListColumns);
-       end;
-       gtk_widget_show(TempWidget);
-
-       //--------------------------
-       // MWE: will be obsoleted
-       SetCoreChildWidget(p, TempWidget);
-       //--------------------------
-       GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
-       SetMainWidget(p, TempWidget);
+      //--------------------------
+      // MWE: will be obsoleted
+      SetCoreChildWidget(p, TempWidget);
+      //--------------------------
+      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
+      SetMainWidget(p, TempWidget);
     end;
 
     csColorDialog :
@@ -2467,40 +2562,47 @@ begin
 
     csForm :
     begin
-       Assert(Sender is TForm);
-       p := gtk_window_new(FormStyleMap[TForm(Sender).BorderStyle]);
+      Assert(Sender is TForm);
+      p := gtk_window_new(FormStyleMap[TForm(Sender).BorderStyle]);
 
-       gtk_window_set_policy (GTK_WINDOW (p), 1, 1, 0);
-       gtk_window_set_title(pGtkWindow(p), strTemp);
+      gtk_window_set_policy (GTK_WINDOW (p), 1, 1, 0);
+      gtk_window_set_title(pGtkWindow(p), strTemp);
 
-       // the clipboard needs a widget
-       if ClipboardWidget=nil then
-         SetClipboardWidget(p);
+      {$IFDEF ClientRectBugFix}
+      gtk_window_set_default_size(PgtkWindow(p),
+                                  TForm(Sender).Width,TForm(Sender).Height);
+      gtk_widget_set_uposition(PgtkWidget(p),
+                               TForm(Sender).Left, TForm(Sender).Top);
+      {$ENDIF}
 
-       // Create the VBox, we need that to place controls outside
-       // the client area (like menu)
-       Box := gtk_vbox_new(False, 0);
-       gtk_container_add(p, Box);
-       gtk_widget_show(Box);
+      // the clipboard needs a widget
+      if ClipboardWidget=nil then
+        SetClipboardWidget(p);
 
-       // Create the form client area
-       TempWidget := gtk_fixed_new();
-       gtk_box_pack_end(Box, TempWidget, True, True, 0);
-       gtk_widget_show(TempWidget);
-       SetFixedWidget(p, TempWidget);
-       SetMainWidget(p, TempWidget);
+      // Create the VBox, we need that to place controls outside
+      // the client area (like menu)
+      Box := gtk_vbox_new(False, 0);
+      gtk_container_add(p, Box);
+      gtk_widget_show(Box);
 
-       //drag icons
-       if Drag_Icon = nil then
-         Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
+      // Create the form client area
+      TempWidget := gtk_fixed_new();
+      gtk_box_pack_end(Box, TempWidget, True, True, 0);
+      gtk_widget_show(TempWidget);
+      SetFixedWidget(p, TempWidget);
+      SetMainWidget(p, TempWidget);
+
+      //drag icons
+      if Drag_Icon = nil then
+        Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
                              gtk_widget_get_colormap (p), @Drag_Mask,
                              nil, @IMGDrag_Icon);
     end;
 
     csFrame :
     begin
-       P := gtk_frame_new(' ');
-       gtk_frame_set_shadow_type(pGtkFrame(P),GTK_SHADOW_NONE);
+      P := gtk_frame_new(' ');
+      gtk_frame_set_shadow_type(pGtkFrame(P),GTK_SHADOW_NONE);
     end;
 
     csGroupBox:
@@ -2594,12 +2696,12 @@ begin
 
     csMainMenu:
     begin
-       p := gtk_menu_bar_new();
-       // get the VBox, the form has one child, a VBox
-       Box := PGTKBin(TWinControl(TMenu(Sender).Owner).Handle)^.Child;
-       gtk_box_pack_start(Box, p, False, False, 0);
-       SetAccelGroup(p, gtk_accel_group_get_default);
-       gtk_widget_show(p);
+      p := gtk_menu_bar_new();
+      // get the VBox, the form has one child, a VBox
+      Box := PGTKBin(TWinControl(TMenu(Sender).Owner).Handle)^.Child;
+      gtk_box_pack_start(Box, p, False, False, 0);
+      SetAccelGroup(p, gtk_accel_group_get_default);
+      gtk_widget_show(p);
     end;
 
     csMemo :
@@ -2699,7 +2801,7 @@ begin
     end;
 
     csRadioButton :
-    with sender as TRadioButton do
+    with TRadioButton(Sender) do
     begin
        if group = 0 then
        begin
@@ -2789,8 +2891,12 @@ begin
   if (Sender is TWinControl) then
   begin
     TWinControl(Sender).Handle := THandle(p);
-    if p <> nil then
+    if p <> nil then begin
       gtk_object_set_data(pgtkobject(p),'Sender',Sender);
+      {$IFDEF ClientRectBugFix}
+      SetResizeRequest(p);
+      {$ENDIF}
+    end;
   end
   else
   if (Sender is TMenuItem) then
@@ -2802,19 +2908,16 @@ begin
   if (Sender is TCommonDialog) then
     TCommonDialog(Sender).Handle:= THandle(p);
 
-// MWE: next will be obsoleted by WinWidgetInfo
-//Set these for functions like GetWindowLong  Added 01/07/2000
-{}
+  // MWE: next will be obsoleted by WinWidgetInfo
+  //Set these for functions like GetWindowLong  Added 01/07/2000
+  {}
   SetLCLObject(p, Sender);
   if p <> nil then
   Begin
     gtk_object_set_data(pgtkObject(p),'Style',0);
     gtk_object_set_data(pgtkObject(p),'ExStyle',0);
   end;
-
-
-{}
-//--------------------------
+  //--------------------------
 
   StrDispose(StrTemp);
   if P <> nil then HookSignals(Sender);
@@ -3470,8 +3573,10 @@ begin
         
       csSpinEdit:
          Begin
-          gtk_spin_button_set_digits(PgtkSpinButton(Widget),TSpinEdit(Sender).Decimal_Places);
-          gtk_spin_button_set_value(PgtkSpinButton(Widget),TSpinEdit(Sender).Value);
+          gtk_spin_button_set_digits(PgtkSpinButton(Widget),
+                                     TSpinEdit(Sender).Decimal_Places);
+          gtk_spin_button_set_value(PgtkSpinButton(Widget),
+                                    TSpinEdit(Sender).Value);
 
          End;
 
@@ -3553,7 +3658,8 @@ begin
     AccelGroup := GetAccelGroup(MenuParent);
     AccelKey := GetAccelKey(MenuItem);
     if (AccelGroup <> nil) and (AccelKey <> 0)
-       then gtk_accel_group_add(AccelGroup, AccelKey, GDK_MOD1_MASK, GTK_ACCEL_LOCKED, MenuItem, 'activate_item'); 
+      then gtk_accel_group_add(AccelGroup, AccelKey, GDK_MOD1_MASK,
+                               GTK_ACCEL_LOCKED, MenuItem, 'activate_item');
   end;
 end;
 
@@ -3615,9 +3721,11 @@ end;
 
   Checks if the given GDIObject is valid and the GDItype is the requested type
  ------------------------------------------------------------------------------}
-function TgtkObject.IsValidGDIObjectType(const GDIObject: HGDIOBJ; const GDIType: TGDIType): Boolean;
+function TgtkObject.IsValidGDIObjectType(
+  const GDIObject: HGDIOBJ; const GDIType: TGDIType): Boolean;
 begin
-  Result := IsValidGDIObject(GDIObject) and (PGdiObject(GDIObject)^.GDIType = GDIType);
+  Result := IsValidGDIObject(GDIObject)
+            and (PGdiObject(GDIObject)^.GDIType = GDIType);
 end;
 
 {------------------------------------------------------------------------------
@@ -3650,43 +3758,7 @@ begin
 //writeln('[TgtkObject.NewDC] ',HexStr(Cardinal(Result),8),'  ',FDeviceContexts.Count);
 //  Assert(False, Format('Trace:< [TgtkObject.NewDC] FDeviceContexts[%d] --> 0x%p', [n, Result]));
 end;
-(*
-{------------------------------------------------------------------------------
-  Function: FreeDC
-  Params:  ADC: A DC to Free
-  Returns: nothing
 
-  Frees an initial DC
-  It does not free the GDI objects. See ReleaseDC for a smarter function.
- ------------------------------------------------------------------------------}
-function TgtkObject.FreeDC(ADC: PDeviceContext);
-var
-  n: Integer;
-begin
-//writeln('[TgtkObject.FreeDC] ',HexStr(Cardinal(ADC),8));
-  Assert(False, Format('Trace:> [TgtkObject.FreeDC] DC:0x%p', [ADC]));
-  if ADC <> nil
-  then begin
-    if ADC^.SavedContext <> nil 
-    then begin
-      writeln('[TgtkObject.FreeDC] WARNING: there is an unused saved context left!');
-      FreeDC(ADC^.SavedContext);
-    end;
-
-    Assert(ADC^.CurrentBitmap = nil, 'trace:  [TgtkObject.FreeDC] CurrentBitmap <> nil');
-    Assert(ADC^.CurrentFont = nil, 'trace:  [TgtkObject.FreeDC] CurrentFont <> nil'); 
-    Assert(ADC^.CurrentPen = nil, 'trace:  [TgtkObject.FreeDC] CurrentPen <> nil');
-    Assert(ADC^.CurrentBrush = nil, 'trace:  [TgtkObject.FreeDC] CurrentBrush <> nil');
-
-    if ADC^.GC <> nil 
-    then gdk_gc_unref(ADC^.GC);
-    n := FDeviceContexts.Remove(ADC);
-    Dispose(ADC);
-  end;
-  
-  Assert(False, Format('Trace:< [TgtkObject.FreeDC] FDeviceContexts[%d]', [n]));
-end;
-*)
 {------------------------------------------------------------------------------
   Function: NewGDIObject
   Params:  none
@@ -3802,6 +3874,70 @@ begin
   Result:=nil;
 end;
 
+{$IFDEF ClientRectBugFix}
+{------------------------------------------------------------------------------
+  TgtkObject SetResizeRequest
+  Params: Widget: PGtkWidget
+
+  When the LCL resizes a control the new bounds will not be set directly, but
+  cached. This is needed, because it is common behaviour to set the bounds step
+  by step. For example: Left:=10; Top:=10; Width:=100; Height:=50; results in
+  SetBounds(10,0,0,0);
+  SetBounds(10,10,0,0);
+  SetBounds(10,10,100,0);
+  SetBounds(10,10,100,50);
+  Because the gtk puts all size requests into a queue, it will process the
+  requests not immediately, but _after_ all requests. This results in changing
+  the widget size four times and everytime the LCL gets a message. If the
+  control has childs, this will result resizing the childs four times.
+  Therefore LCL size requests for a widget is cached and only the last one is
+  sent.
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.SetResizeRequest(Widget: PGtkWidget);
+begin
+  writeln('TgtkObject.SetResizeRequest Widget=',HexStr(Cardinal(Widget),8));
+  if not FWidgetsWithResizeRequest.Contains(Widget) then
+    FWidgetsWithResizeRequest.Add(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  TgtkObject SetSizeNotification
+  Params: Widget: PGtkWidget  A widget that is the handle of a lcl control.
+
+  When the gtk sends a size signal, it is not send directly to the LCL. All gtk
+  size/move messages are collected and only the last one for each widget is sent
+  to the LCL.
+  This is neccessary, because the gtk sends size messages several times and
+  it replays resizes. Since the LCL reacts to every size notification and
+  resizes child controls, this results in a perpetuum mobile.
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.SaveSizeNotification(Widget: PGtkWidget);
+begin
+  writeln('TgtkObject.SaveSizeNotification Widget=',HexStr(Cardinal(Widget),8));
+  if not FWidgetsResized.Contains(Widget) then
+    FWidgetsResized.Add(Widget);
+end;
+
+{------------------------------------------------------------------------------
+  TgtkObject SaveClientSizeNotification
+  Params: FixWidget: PGtkWidget  A widget that is the fixed widget
+                                 of a lcl control.
+
+  When the gtk sends a size signal, it is not send directly to the LCL. All gtk
+  size/move messages are collected and only the last one for each widget is sent
+  to the LCL.
+  This is neccessary, because the gtk sends size messages several times and
+  it replays resizes. Since the LCL reacts to every size notification and
+  resizes child controls, this results in a perpetuum mobile.
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.SaveClientSizeNotification(FixWidget: PGtkWidget);
+begin
+  writeln('TgtkObject.SaveClientSizeNotification FixWidget=',HexStr(Cardinal(FixWidget),8));
+  if not FFixWidgetsResized.Contains(Widget) then
+    FFixWidgetsResized.Add(Widget);
+end;
+{$ENDIF}
+
 {------------------------------------------------------------------------------
   Function: SetClipboardWidget
   Params: TargetWidget: PGtkWidget - This widget will be connected to all
@@ -3850,7 +3986,7 @@ const
     TmpList: PGList;
     Pair: PGtkTargetPair;
   begin
-writeln('  WriteTargetLists WWW START');
+    writeln('  WriteTargetLists WWW START');
     for c:=Low(TClipboardType) to High(TClipboardType) do begin
       TargetList:=gtk_selection_target_list_get(Widget,c);
       writeln('  WriteTargetLists WWW ',ClipboardTypeName[c],' ',TargetList<>nil);
@@ -3863,7 +3999,7 @@ writeln('  WriteTargetLists WWW START');
         end;
       end;
     end;
-writeln('  WriteTargetLists WWW END');
+    writeln('  WriteTargetLists WWW END');
   end;
   {$ENDIF}
   
@@ -3898,9 +4034,9 @@ writeln('  WriteTargetLists WWW END');
 var c: TClipboardType;
 begin
   if ClipboardWidget=TargetWidget then exit;
-{$IFDEF DEBUG_CLIPBOARD}
-writeln('[TgtkObject.SetClipboardWidget] ',ClipboardWidget<>nil,' -> ',TargetWidget<>nil);
-{$ENDIF}
+  {$IFDEF DEBUG_CLIPBOARD}
+  writeln('[TgtkObject.SetClipboardWidget] ',ClipboardWidget<>nil,' -> ',TargetWidget<>nil);
+  {$ENDIF}
   if ClipboardWidget<>nil then begin
     {$IFDEF DEBUG_CLIPBOARD}
     WriteTargetLists(ClipboardWidget);
@@ -3942,6 +4078,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.119  2002/05/09 12:41:29  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.118  2002/05/06 08:50:36  lazarus
   MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
 
