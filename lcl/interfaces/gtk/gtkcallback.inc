@@ -501,7 +501,6 @@ begin
 //TObject(data).Dispatch(Mess);
 end;
 
-
 function gtkMonthChanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   MSG: TLMessage;
@@ -2257,6 +2256,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.123  2002/09/06 15:57:34  lazarus
+  MG: fixed notebook client area, send messages and minor bugs
+
   Revision 1.122  2002/09/05 12:11:43  lazarus
   MG: TNotebook is now streamable
 
