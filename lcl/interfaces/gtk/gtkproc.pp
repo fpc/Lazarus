@@ -19,6 +19,9 @@ unit GTKProc;
 interface
 
 uses
+  {$Ifndef Win32}
+  X,XLib,//Font retrieval
+  {$EndIf}
   InterfaceBase, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf} gtk, gdk,
   glib, SysUtils, LMessages, Classes, Controls, Forms, VclGlobals,
   LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType,
@@ -384,6 +387,11 @@ Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual;
 Function GetWindowDecorations(AForm : TCustomForm) : Longint;
 Function GetWindowFunction(AForm : TCustomForm) : Longint;
 
+Procedure FillScreenFonts(ScreenFonts : TStrings);
+
+var
+  X11Display : Pointer;
+  
 implementation
 
   procedure Set_RC_Name(Sender : TObject; AWidget: PGtkWidget);
@@ -418,6 +426,16 @@ implementation
 
 {$I gtkproc.inc}
 {$I gtkcallback.inc}
+
+initialization
+  X11Display := nil;
+  
+Finalization
+  {$IfNdef Win32}
+  If X11Display <> nil then
+    XCloseDisplay(X11Display);
+  {$EndIf}
+  X11Display := nil;
 
 end.
 
