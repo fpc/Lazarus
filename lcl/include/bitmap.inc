@@ -39,6 +39,7 @@ begin
   OldPosition:=AStream.Position;
   ReadSize:=AStream.Read(Signature, SizeOf(Signature));
   Result:=(ReadSize=2) and (Signature[0]='B') and (Signature[1]='M');
+  //debugln('TestStreamIsBMP ',DbgStr(Signature[0]),' ',DbgStr(Signature[1]));
   AStream.Position:=OldPosition;
 end;
 
@@ -509,14 +510,17 @@ procedure TBitmap.ReadStream(Stream: TStream; UseSize: boolean; Size: Longint);
 
   procedure RaiseInvalidBitmapHeader;
   begin
-    debugln('TBitmap.ReadStream.RaiseInvalidBitmapHeader');
+    debugln('TBitmap.ReadStream.RaiseInvalidBitmapHeader ',
+      '"',dbgMemStream(TCustomMemoryStream(Stream),30),'"');
     raise EInOutError.Create(
       'TBitmap.ReadStream: Invalid bitmap format (bmp,xpm,ico)');
   end;
   
   procedure RaiseInvalidSize;
   begin
-    debugln('TBitmap.ReadStream.RaiseInvalidSize');
+    debugln('TBitmap.ReadStream.RaiseInvalidSize ',
+     ' Size=',dbgs(Size),' Stream.Position=',dbgs(Stream.Position),
+     ' Stream.Size=',dbgs(Stream.Size));
     raise EInOutError.Create(
       'TBitmap.ReadStream: Invalid size of bitmap stream (bmp,xpm,ico)');
   end;
@@ -527,6 +531,8 @@ var
   StreamType: TBitmapNativeType;
   ReaderClass: TFPCustomImageReaderClass;
   MemStream: TCustomMemoryStream;
+  GetSize: Int64;
+  OldPosition: Int64;
 begin
   //debugln('TBitmap.ReadStream Stream=',DbgSName(Stream),' Stream.Size=',dbgs(Stream.Size),' Stream.Position=',dbgs(Stream.Position),' UseSize=',dbgs(UseSize),' Size=',dbgs(Size));
   CacheStream:=nil;
@@ -546,7 +552,11 @@ begin
     // get image type
     if CacheStream is TCustomMemoryStream then begin
       MemStream:=TCustomMemoryStream(CacheStream);
-      if UseSize and (Size>MemStream.Size-MemStream.Position) then
+      OldPosition:=MemStream.Position;
+      GetSize:=MemStream.Size;
+      // workaround for TMemoryStream bug, reading Size sets Position to 0
+      MemStream.Position:=OldPosition;
+      if UseSize and (Size>GetSize-OldPosition) then
         RaiseInvalidSize;
       StreamType:=TestStreamBitmapNativeType(MemStream);
     end else
@@ -1268,6 +1278,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.95  2005/01/18 22:26:10  mattias
+  added workaround for bug 3574
+
   Revision 1.94  2005/01/18 19:46:41  mattias
   added stream size check for TBitmap
 

@@ -1704,6 +1704,8 @@ var
             BinDataSize:=integer(stream.Size);
             WriteLRSInteger(Output,BinDataSize);
             Output.Write(Stream.Memory^, BinDataSize);
+            Stream.Position:=0;
+            //debugln('LRSObjectTextToBinary binary data "',dbgMemStream(Stream,30),'"');
           finally
             stream.Free;
           end;

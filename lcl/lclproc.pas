@@ -151,6 +151,9 @@ function DbgS(const e: extended): string;
 function DbgS(const b: boolean): string;
 function DbgSName(const p: TObject): string;
 function DbgStr(const StringWithSpecialChars: string): string;
+function dbgMemRange(P: PByte; Count: integer): string;
+function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string;
+function dbgObjMem(AnObject: TObject): string;
 
 function DbgS(const i1,i2,i3,i4: integer): string;
 
@@ -1062,6 +1065,42 @@ begin
   end;
 end;
 
+function dbgMemRange(P: PByte; Count: integer): string;
+const
+  HexChars: array[0..15] of char = '0123456789ABCDEF';
+var
+  i: Integer;
+begin
+  Result:='';
+  if (p=nil) or (Count<=0) then exit;
+  SetLength(Result,Count*2);
+  for i:=0 to Count-1 do begin
+    Result[i*2+1]:=HexChars[PByte(P)[i] shr 4];
+    Result[i*2+2]:=HexChars[PByte(P)[i] and $f];
+  end;
+end;
+
+function dbgMemStream(MemStream: TCustomMemoryStream; Count: integer): string;
+var
+  s: string;
+begin
+  Result:='';
+  if (MemStream=nil) or (not (MemStream is TCustomMemoryStream)) or (Count<=0)
+  then exit;
+  Count:=Min(Count,MemStream.Size);
+  if Count<=0 then exit;
+  SetLength(s,Count);
+  Count:=MemStream.Read(s[1],Count);
+  Result:=dbgMemRange(PByte(s),Count);
+end;
+
+function dbgObjMem(AnObject: TObject): string;
+begin
+  Result:='';
+  if AnObject=nil then exit;
+  Result:=dbgMemRange(PByte(AnObject),AnObject.InstanceSize);
+end;
+
 function DbgS(const i1, i2, i3, i4: integer): string;
 begin
   Result:=dbgs(i1)+','+dbgs(i2)+','+dbgs(i3)+','+dbgs(i4);
@@ -1071,7 +1110,7 @@ function UTF8CharacterLength(p: PChar): integer;
 begin
   if p<>nil then begin
     if ord(p^)<%11000000 then begin
-      // regular single byte character (#0 is single byte, this is pascal ;)
+      // regular single byte character (#0 is a character, this is pascal ;)
       Result:=1;
     end
     else if ((ord(p^) and %11100000) = %11000000) then begin
