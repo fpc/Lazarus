@@ -88,7 +88,9 @@ type
     procedure ExpectWhitespace;
     procedure ExpectString(s: String);
     function  CheckFor(s: PChar): Boolean;
+    procedure SkipString(ValidChars: TSetOfChar);
     function  GetString(ValidChars: TSetOfChar): String;
+    function  GetString(BufPos: PChar; Len: integer): String;
 
     function  GetName(var s: String): Boolean;
     function  ExpectName: String;                                       // [5]
@@ -200,12 +202,37 @@ begin
     Result := False;
 end;
 
-function TXMLReader.GetString(ValidChars: TSetOfChar): String;
+procedure TXMLReader.SkipString(ValidChars: TSetOfChar);
 begin
-  SetLength(Result, 0);
   while buf[0] in ValidChars do begin
-    Result := Result + buf[0];
     Inc(buf);
+  end;
+end;
+
+function TXMLReader.GetString(ValidChars: TSetOfChar): String;
+var
+  OldBuf: PChar;
+  i, len: integer;
+begin
+  OldBuf:=Buf;
+  while buf[0] in ValidChars do begin
+    Inc(buf);
+  end;
+  len:=buf-OldBuf;
+  SetLength(Result, Len);
+  for i:=1 to len do begin
+    Result[i]:=OldBuf[0];
+    inc(OldBuf);
+  end;
+end;
+
+function TXMLReader.GetString(BufPos: PChar; Len: integer): string;
+var i: integer;
+begin
+  SetLength(Result,Len);
+  for i:=1 to Len do begin
+    Result[i]:=BufPos[0];
+    inc(BufPos);
   end;
 end;
 
@@ -237,6 +264,7 @@ end;
 
 
 function TXMLReader.GetName(var s: String): Boolean;    // [5]
+var OldBuf: PChar;
 begin
   SetLength(s, 0);
   if not (buf[0] in (Letter + ['_', ':'])) then begin
@@ -244,28 +272,36 @@ begin
     exit;
   end;
 
-  s := buf[0];
+  OldBuf := buf;
   Inc(buf);
-  s := s + GetString(Letter + ['0'..'9', '.', '-', '_', ':']);
+  SkipString(Letter + ['0'..'9', '.', '-', '_', ':']);
+  s := GetString(OldBuf,buf-OldBuf);
   Result := True;
 end;
 
 function TXMLReader.ExpectName: String;    // [5]
+var OldBuf: PChar;
 begin
   if not (buf[0] in (Letter + ['_', ':'])) then
     RaiseExc('Expected letter, "_" or ":" for name, found "' + buf[0] + '"');
 
-  Result := buf[0];
+  OldBuf := buf;
   Inc(buf);
-  Result := Result + GetString(Letter + ['0'..'9', '.', '-', '_', ':']);
+  SkipString(Letter + ['0'..'9', '.', '-', '_', ':']);
+  Result:=GetString(OldBuf,buf-OldBuf);
 end;
 
 procedure TXMLReader.ExpectAttValue(attr: TDOMAttr);    // [10]
 var
   s: String;
+  OldBuf: PChar;
 
   procedure FlushStringBuffer;
   begin
+    if OldBuf<>buf then begin
+      s := s + GetString(OldBuf,buf-OldBuf);
+      OldBuf := buf;
+    end;
     if Length(s) > 0 then
     begin
       attr.AppendChild(doc.CreateTextNode(s));
@@ -282,6 +318,7 @@ begin
   StrDel[1] := #0;
   Inc(buf);
   SetLength(s, 0);
+  OldBuf := buf;
   while not CheckFor(StrDel) do
     if buf[0] = '&' then
     begin
@@ -289,10 +326,11 @@ begin
       ParseReference(attr);
     end else
     begin
-      s := s + buf[0];
       Inc(buf);
     end;
+  dec(buf);
   FlushStringBuffer;
+  inc(buf);
   ResolveEntities(Attr);
 end;
 
@@ -300,10 +338,10 @@ function TXMLReader.ExpectPubidLiteral: String;
 begin
   SetLength(Result, 0);
   if CheckFor('''') then begin
-    GetString(PubidChars - ['''']);
+    SkipString(PubidChars - ['''']);
     ExpectString('''');
   end else if CheckFor('"') then begin
-    GetString(PubidChars - ['"']);
+    SkipString(PubidChars - ['"']);
     ExpectString('"');
   end else
     RaiseExc('Expected quotation marks');
@@ -312,14 +350,16 @@ end;
 function TXMLReader.ParseComment(AOwner: TDOMNode): Boolean;    // [15]
 var
   comment: String;
+  OldBuf: PChar;
 begin
   if CheckFor('<!--') then begin
     SetLength(comment, 0);
+    OldBuf := buf;
     while (buf[0] <> #0) and (buf[1] <> #0) and
       ((buf[0] <> '-') or (buf[1] <> '-')) do begin
-      comment := comment + buf[0];
       Inc(buf);
     end;
+    comment:=GetString(OldBuf,buf-OldBuf);
     AOwner.AppendChild(doc.CreateComment(comment));
     ExpectString('-->');
     Result := True;
@@ -435,7 +475,7 @@ begin
       if CheckFor('[') then
       begin
         ParseDoctypeDecls;
-	SkipWhitespace;
+        SkipWhitespace;
       end;
       ExpectString('>');
     end;
@@ -589,12 +629,12 @@ function TXMLReader.ParseMarkupDecl: Boolean;    // [29]
           end;
         end else if CheckFor('(') then begin    // [59]
           SkipWhitespace;
-          GetString(Nmtoken);
+          SkipString(Nmtoken);
           SkipWhitespace;
           while not CheckFor(')') do begin
             ExpectString('|');
             SkipWhitespace;
-            GetString(Nmtoken);
+            SkipString(Nmtoken);
             SkipWhitespace;
           end;
         end else
@@ -728,13 +768,15 @@ var
   var
     s: String;
     i: Integer;
+    OldBuf: PChar;
   begin
     SetLength(s, 0);
+    OldBuf := buf;
     while not (buf[0] in [#0, '<', '&']) do
     begin
-      s := s + buf[0];
       Inc(buf);
     end;
+    s:=GetString(OldBuf,buf-OldBuf);
     if Length(s) > 0 then
     begin
       // Check if s has non-whitespace content
@@ -742,7 +784,7 @@ var
       while (i > 0) and (s[i] in WhitespaceChars) do
         Dec(i);
       if i > 0 then
-	NewElem.AppendChild(doc.CreateTextNode(s));
+        NewElem.AppendChild(doc.CreateTextNode(s));
       Result := True;
     end else
       Result := False;
@@ -751,15 +793,17 @@ var
   function ParseCDSect: Boolean;    // [18]
   var
     cdata: String;
+    OldBuf: PChar;
   begin
     if CheckFor('<![CDATA[') then
     begin
       SetLength(cdata, 0);
+      OldBuf := buf;
       while not CheckFor(']]>') do
       begin
-        cdata := cdata + buf[0];
         Inc(buf);
       end;
+      cdata := GetString(OldBuf,buf-OldBuf);
       NewElem.AppendChild(doc.CreateCDATASection(cdata));
       Result := True;
     end else
@@ -879,21 +923,25 @@ end;
 function TXMLReader.ParseExternalID: Boolean;    // [75]
 
   function GetSystemLiteral: String;
+  var
+    OldBuf: PChar;
   begin
     SetLength(Result, 0);
     if buf[0] = '''' then begin
       Inc(buf);
+      OldBuf := buf;
       while (buf[0] <> '''') and (buf[0] <> #0) do begin
-        Result := Result + buf[0];
         Inc(buf);
       end;
+      Result := GetString(OldBuf,buf-OldBuf);
       ExpectString('''');
     end else if buf[0] = '"' then begin
       Inc(buf);
+      OldBuf := buf;
       while (buf[0] <> '"') and (buf[0] <> #0) do begin
-        Result := Result + buf[0];
         Inc(buf);
       end;
+      Result := GetString(OldBuf,buf-OldBuf);
       ExpectString('"');
     end;
   end;
@@ -922,12 +970,14 @@ end;
 function TXMLReader.ParseEncodingDecl: String;    // [80]
 
   function ParseEncName: String;
+  var OldBuf: PChar;
   begin
     if not (buf[0] in ['A'..'Z', 'a'..'z']) then
       RaiseExc('Expected character (A-Z, a-z)');
-    Result := buf[0];
+    OldBuf := buf;
     Inc(buf);
-    Result := Result + GetString(['A'..'Z', 'a'..'z', '0'..'9', '.', '_', '-']);
+    SkipString(['A'..'Z', 'a'..'z', '0'..'9', '.', '_', '-']);
+    Result := GetString(OldBuf,buf-OldBuf);
   end;
 
 begin
@@ -966,14 +1016,14 @@ procedure TXMLReader.ResolveEntities(RootNode: TDOMNode);
       if Assigned(NextSibling) and (NextSibling.NodeType = TEXT_NODE) then
       begin
         TDOMCharacterData(PrevSibling).AppendData(
-	  TDOMCharacterData(NextSibling).Data);
-	RootNode.RemoveChild(NextSibling);
+        TDOMCharacterData(NextSibling).Data);
+        RootNode.RemoveChild(NextSibling);
       end
     end else
       if Assigned(NextSibling) and (NextSibling.NodeType = TEXT_NODE) then
       begin
         TDOMCharacterData(NextSibling).InsertData(0, Replacement);
-	RootNode.RemoveChild(EntityNode);
+        RootNode.RemoveChild(EntityNode);
       end else
         RootNode.ReplaceChild(Doc.CreateTextNode(Replacement), EntityNode);
   end;
@@ -987,15 +1037,15 @@ begin
     NextSibling := Node.NextSibling;
     if Node.NodeType = ENTITY_REFERENCE_NODE then
       if Node.NodeName = 'amp' then
-	ReplaceEntityRef(Node, '&')
+        ReplaceEntityRef(Node, '&')
       else if Node.NodeName = 'apos' then
-	ReplaceEntityRef(Node, '''')
+        ReplaceEntityRef(Node, '''')
       else if Node.NodeName = 'gt' then
-	ReplaceEntityRef(Node, '>')
+        ReplaceEntityRef(Node, '>')
       else if Node.NodeName = 'lt' then
         ReplaceEntityRef(Node, '<')
       else if Node.NodeName = 'quot' then
-	ReplaceEntityRef(Node, '"');
+        ReplaceEntityRef(Node, '"');
     Node := NextSibling;
   end;
 end;
@@ -1123,6 +1173,9 @@ end.
 
 {
   $Log$
+  Revision 1.2  2002/07/30 14:36:28  lazarus
+  MG: accelerated xmlread and xmlwrite
+
   Revision 1.1  2002/07/30 06:24:06  lazarus
   MG: added a faster version of TXMLConfig
 

@@ -89,18 +89,10 @@ begin
 end;
 
 procedure TXMLConfig.Flush;
-var
-  f: Text;
 begin
   if Modified then
   begin
-    AssignFile(f, Filename);
-    Rewrite(f);
-    try
-      WriteXMLFile(doc, f);
-    finally
-      CloseFile(f);
-    end;
+    WriteXMLFile(doc, Filename);
     FModified := False;
   end;
 end;
@@ -111,14 +103,14 @@ var
   i: Integer;
   NodePath: String;
 begin
-  Node := doc.DocumentElement; // MAT: check this
+  Node := doc.DocumentElement;
   NodePath := APath;
   while True do
   begin
     i := Pos('/', NodePath);
     if i = 0 then
       break;
-    Child := Node.FindNode(Copy(NodePath, 1, i - 1)); // MAT: check this
+    Child := Node.FindNode(Copy(NodePath, 1, i - 1));
     NodePath := Copy(NodePath, i + 1, Length(NodePath));
     if not Assigned(Child) then
     begin
@@ -127,7 +119,7 @@ begin
     end;
     Node := Child;
   end;
-  Attr := Node.Attributes.GetNamedItem(NodePath); // MAT: check this
+  Attr := Node.Attributes.GetNamedItem(NodePath);
   if Assigned(Attr) then
     Result := Attr.NodeValue
   else
@@ -251,6 +243,9 @@ end;
 end.
 {
   $Log$
+  Revision 1.2  2002/07/30 14:36:28  lazarus
+  MG: accelerated xmlread and xmlwrite
+
   Revision 1.1  2002/07/30 06:24:06  lazarus
   MG: added a faster version of TXMLConfig
 

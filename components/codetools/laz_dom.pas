@@ -72,8 +72,10 @@ type
 
 {$IFDEF ver1_0}
   DOMString = String;
+  DOMPChar = PChar;
 {$ELSE}
   DOMString = WideString;
+  DOMPChar = PWideChar;
 {$ENDIF}
 
 
@@ -749,16 +751,33 @@ end;
 
 //------------------------------------------------------------------------------
 
+function CompareDOMStrings(const s1, s2: DOMPChar; l1, l2: integer): integer;
+var i: integer;
+begin
+  Result:=l1-l2;
+  i:=1;
+  while (i<=l1) and (Result=0) do begin
+    Result:=ord(s1[i])-ord(s2[i]);
+    inc(i);
+  end;
+end;
+
 function CompareDOMNodeWithDOMNode(Data1, Data2: Pointer): integer;
 begin
-  Result:=AnsiCompareStr(TDOMNode(Data1).NodeName,
-                         TDOMNode(Data2).NodeName);
+  Result:=CompareDOMStrings(DOMPChar(TDOMNode(Data1).NodeName),
+                            DOMPChar(TDOMNode(Data2).NodeName),
+                            length(TDOMNode(Data1).NodeName),
+                            length(TDOMNode(Data2).NodeName)
+                            );
 end;
 
 function CompareDOMStringWithDOMNode(Data1, Data2: Pointer): integer;
 begin
-  Result:=AnsiCompareStr(DOMString(Data1),
-                         TDOMNode(Data2).NodeName);
+  Result:=CompareDOMStrings(DOMPChar(Data1),
+                            DOMPChar(TDOMNode(Data2).NodeName),
+                            length(DOMString(Data1)),
+                            length(TDOMNode(Data2).NodeName)
+                            );
 end;
 
 
@@ -1596,6 +1615,9 @@ end.
 
 {
   $Log$
+  Revision 1.2  2002/07/30 14:36:27  lazarus
+  MG: accelerated xmlread and xmlwrite
+
   Revision 1.1  2002/07/30 06:24:05  lazarus
   MG: added a faster version of TXMLConfig
 
