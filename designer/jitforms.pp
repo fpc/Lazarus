@@ -615,7 +615,7 @@ type
 
   TMethodNameTable = packed record
     Count : DWord;
-    Entries : packed array[0..MaxInt div 8] of TMethodNameRec;
+    Entries : packed array[0..0] of TMethodNameRec;
   end;
 
   PMethodNameTable =  ^TMethodNameTable;
