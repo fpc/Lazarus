@@ -57,6 +57,11 @@ type
     riboMSBFirst  // most significant byte first
     );
     
+  TRawImageBitOrder = (
+    riboBitsInOrder, // Bit 0 is pixel 0
+    riboReversedBits // Bit 0 is pixel 7 (Bit 1 is pixel 6, ...)
+    );
+
   TRawImageLineEnd = (
     rileTight,         // no gap at end of lines
     rileByteBoundary,  // each line starts at byte boundary. For example:
@@ -79,6 +84,7 @@ type
     Width: cardinal;
     Height: cardinal;
     PaletteColorCount: integer;
+    BitOrder: TRawImageBitOrder;
     ByteOrder: TRawImageByteOrder;
     LineOrder: TRawImageLineOrder;
     ColorCount: cardinal; // entries in color palette. Ignore when no palette.
@@ -96,6 +102,8 @@ type
     // The next values are only valid, if there is a separate alpha mask
     AlphaBitsPerPixel: cardinal; // bits per alpha mask pixel.
     AlphaLineEnd: TRawImageLineEnd;
+    AlphaBitOrder: TRawImageBitOrder;
+    AlphaByteOrder: TRawImageByteOrder;
     // ToDo: add attributes for palette
   end;
   PRawImageDescription = ^TRawImageDescription;
@@ -119,6 +127,36 @@ type
   end;
   PRawImagePosition = ^TRawImagePosition;
 
+const
+  RawImageColorFormatNames: array[TRawImageColorFormat] of string = (
+    'ricfRGBA',
+    'ricfGray'
+    );
+
+  RawImageByteOrderNames: array[TRawImageByteOrder] of string = (
+    'riboLSBFirst',
+    'riboMSBFirst'
+    );
+
+  RawImageBitOrderNames: array[TRawImageBitOrder] of string = (
+    'riboBitsInOrder',
+    'riboReversedBits'
+    );
+
+  RawImageLineEndNames: array[TRawImageLineEnd] of string = (
+    'rileTight',
+    'rileByteBoundary',
+    'rileWordBoundary',
+    'rileDWordBoundary',
+    'rileQWordBoundary'
+    );
+
+  RawImageLineOrderNames: array[TRawImageLineOrder] of string = (
+    'riloTopToBottom',
+    'riloBottomToTop'
+    );
+
+
 function RawImageDescriptionAsString(Desc: PRawImageDescription): string;
 
 implementation
@@ -136,17 +174,19 @@ function RawImageDescriptionAsString(Desc: PRawImageDescription): string;
 begin
   Result:='';
   with Desc^ do begin
-    Result:=' Format='+IntToStr(ord(Format))
+    Result:=
+       ' Format='+RawImageColorFormatNames[Format]
       +' HasPalette='+BoolStr(HasPalette)
       +' Depth='+IntToStr(Depth)
       +' Width='+IntToStr(Width)
       +' Height='+IntToStr(Height)
-      +' PaletteEntries='+IntToStr(PaletteColorCount)
-      +' ByteOrder='+IntToStr(ord(ByteOrder))
-      +' LineOrder='+IntToStr(ord(LineOrder))
+      +' PaletteColorCount='+IntToStr(PaletteColorCount)
+      +' BitOrder='+RawImageBitOrderNames[BitOrder]
+      +' ByteOrder='+RawImageByteOrderNames[ByteOrder]
+      +' LineOrder='+RawImageLineOrderNames[LineOrder]
       +' ColorCount='+IntToStr(ColorCount)
       +' BitsPerPixel='+IntToStr(BitsPerPixel)
-      +' LineEnd='+IntToStr(ord(LineEnd))
+      +' LineEnd='+RawImageLineEndNames[LineEnd]
       +' RedPrec='+IntToStr(RedPrec)
       +' RedShift='+IntToStr(RedShift)
       +' GreenPrec='+IntToStr(GreenPrec)
@@ -157,7 +197,10 @@ begin
       +' AlphaPrec='+IntToStr(AlphaPrec)
       +' AlphaShift='+IntToStr(AlphaShift)
       +' AlphaBitsPerPixel='+IntToStr(AlphaBitsPerPixel)
-      +' AlphaLineEnd='+IntToStr(ord(AlphaLineEnd));
+      +' AlphaLineEnd='+RawImageLineEndNames[AlphaLineEnd]
+      +' AlphaBitOrder='+RawImageBitOrderNames[AlphaBitOrder]
+      +' AlphaByteOrder='+RawImageByteOrderNames[AlphaByteOrder]
+      +'';
   end;
 end;
 
@@ -166,6 +209,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.22  2003/11/28 11:25:49  mattias
+  added BitOrder for RawImages
+
   Revision 1.21  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 

@@ -1443,6 +1443,7 @@ begin
   Desc^.Width := BitmapInfo.bmWidth;
   Desc^.Height := BitmapInfo.bmHeight;
   Desc^.PaletteColorCount := 0;             // TODO, also `ColorCount'
+  Desc^.BitOrder := riboReversedBits;
   Desc^.ByteOrder := riboLSBFirst;
   Desc^.LineOrder := riloTopToBottom;
   Desc^.ColorCount := 0;                // entries in color palette. Ignore when no palette.
@@ -1455,6 +1456,8 @@ begin
   Desc^.AlphaBitsPerPixel := Desc^.BitsPerPixel; // bits per alpha mask pixel.
   Desc^.AlphaPrec := Desc^.AlphaBitsPerPixel;
   Desc^.AlphaLineEnd := rileWordBoundary;
+  Desc^.AlphaBitOrder := riboReversedBits;
+  Desc^.AlphaByteOrder := riboLSBFirst;
 end;
 
 function TWin32Object.GetBitmapRawImageDescription(Bitmap: HBITMAP;
@@ -2844,6 +2847,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.78  2003/11/28 11:25:49  mattias
+  added BitOrder for RawImages
+
   Revision 1.77  2003/11/26 00:23:47  marc
   * implemented new LCL(check|enable)Menuitem functions
   * introduced the lclintf inc files to win32

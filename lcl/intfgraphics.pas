@@ -269,9 +269,11 @@ function ReadCompleteStreamToString(Str: TStream; StartSize: integer): string;
 procedure ReadCompleteStreamToStream(SrcStream, DestStream: TStream;
                                      StartSize: integer);
 procedure ReadRawImageBits(TheData: PByte; const Position: TRawImagePosition;
-                       BitsPerPixel, Prec, Shift: cardinal; var Bits: word);
+                       BitsPerPixel, Prec, Shift: cardinal;
+                       BitOrder: TRawImageBitOrder; var Bits: word);
 procedure WriteRawImageBits(TheData: PByte; const Position: TRawImagePosition;
-                       BitsPerPixel, Prec, Shift: cardinal; Bits: word);
+                       BitsPerPixel, Prec, Shift: cardinal;
+                       BitOrder: TRawImageBitOrder; Bits: word);
 
 implementation
 
@@ -403,7 +405,8 @@ end;
 
 procedure ReadRawImageBits(TheData: PByte;
   const Position: TRawImagePosition;
-  BitsPerPixel, Prec, Shift: cardinal; var Bits: word);
+  BitsPerPixel, Prec, Shift: cardinal; BitOrder: TRawImageBitOrder;
+  var Bits: word);
 var
   P: PByte;
   PrecMask: Cardinal;
@@ -417,11 +420,10 @@ begin
   1,2,4:
       begin
         OneByte:=P^;
-{$ifdef WIN32}
-        Bits:=Word(cardinal(OneByte shr (Shift+7-Position.Bit)) and PrecMask);
-{$else}
-        Bits:=Word(cardinal(OneByte shr (Shift+Position.Bit)) and PrecMask);
-{$endif}
+        if BitOrder=riboBitsInOrder then
+          Bits:=Word(cardinal(OneByte shr (Shift+Position.Bit)) and PrecMask)
+        else
+          Bits:=Word(cardinal(OneByte shr (Shift+7-Position.Bit)) and PrecMask);
       end;
   8:  begin
         OneByte:=P^;
@@ -447,7 +449,7 @@ end;
 
 procedure WriteRawImageBits(TheData: PByte;
   const Position: TRawImagePosition;
-  BitsPerPixel, Prec, Shift: cardinal; Bits: word);
+  BitsPerPixel, Prec, Shift: cardinal; BitOrder: TRawImageBitOrder; Bits: word);
 var
   P: PByte;
   PrecMask: Cardinal;
@@ -468,11 +470,10 @@ begin
   1,2,4:
       begin
         OneByte:=P^;
-{$ifdef WIN32}
-        ShiftLeft:=Shift+7-Position.Bit;
-{$else}
-        ShiftLeft:=Shift+Position.Bit;
-{$endif}
+        if BitOrder=riboBitsInOrder then
+          ShiftLeft:=Shift+Position.Bit
+        else
+          ShiftLeft:=Shift+7-Position.Bit;
         PrecMask:=not (PrecMask shl ShiftLeft);
         OneByte:=OneByte and PrecMask; // clear old
         OneByte:=OneByte or (Bits shl ShiftLeft); // set new
@@ -548,13 +549,13 @@ begin
       begin
         WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
                       FDataDescription.RedPrec,FDataDescription.RedShift,
-                      Value.Red);
+                      FDataDescription.BitOrder,Value.Red);
         WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
                       FDataDescription.GreenPrec,FDataDescription.GreenShift,
-                      Value.Green);
+                      FDataDescription.BitOrder,Value.Green);
         WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
                       FDataDescription.BluePrec,FDataDescription.BlueShift,
-                      Value.Blue);
+                      FDataDescription.BitOrder,Value.Blue);
         if FDataDescription.AlphaPrec>0 then begin
           if FDataDescription.AlphaSeparate then begin
             if (FMaskData<>nil) then begin
@@ -563,7 +564,7 @@ begin
                             FDataDescription.AlphaBitsPerPixel,
                             FDataDescription.AlphaPrec,
                             FDataDescription.AlphaShift,
-                            Value.Alpha);
+                            FDataDescription.AlphaBitOrder,Value.Alpha);
             end else begin
               // no alpha mask
             end;
@@ -571,7 +572,7 @@ begin
             WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
                           FDataDescription.AlphaPrec,
                           FDataDescription.AlphaShift,
-                          Value.Alpha)
+                          FDataDescription.AlphaBitOrder,Value.Alpha)
         end else begin
           // no alpha
         end;
@@ -581,7 +582,7 @@ begin
       begin
         WriteRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
                       FDataDescription.RedPrec,FDataDescription.RedShift,
-                      Value.Red);
+                      FDataDescription.BitOrder,Value.Red);
       end;
 
     else
@@ -603,13 +604,13 @@ begin
       begin
         ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
                      FDataDescription.RedPrec,FDataDescription.RedShift,
-                     Result.Red);
+                     FDataDescription.BitOrder,Result.Red);
         ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
                      FDataDescription.GreenPrec,FDataDescription.GreenShift,
-                     Result.Green);
+                     FDataDescription.BitOrder,Result.Green);
         ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
                      FDataDescription.BluePrec,FDataDescription.BlueShift,
-                     Result.Blue);
+                     FDataDescription.BitOrder,Result.Blue);
         if FDataDescription.AlphaPrec>0 then begin
           if FDataDescription.AlphaSeparate then begin
             if (FMaskData<>nil) then begin
@@ -618,7 +619,7 @@ begin
                            FDataDescription.AlphaBitsPerPixel,
                            FDataDescription.AlphaPrec,
                            FDataDescription.AlphaShift,
-                           Result.Alpha);
+                           FDataDescription.AlphaBitOrder,Result.Alpha);
             end else begin
               // no alpha mask -> set opaque
               Result.Alpha:=high(Result.Alpha);
@@ -626,7 +627,7 @@ begin
           end else
             ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
                          FDataDescription.AlphaPrec,FDataDescription.AlphaShift,
-                         Result.Alpha)
+                         FDataDescription.AlphaBitOrder,Result.Alpha)
         end else begin
           // no alpha -> set opaque
           Result.Alpha:=high(Result.Alpha);
@@ -637,7 +638,7 @@ begin
       begin
         ReadRawImageBits(FPixelData,Position,FDataDescription.BitsPerPixel,
                      FDataDescription.RedPrec,FDataDescription.RedShift,
-                     Result.Red);
+                     FDataDescription.BitOrder,Result.Red);
         Result.Green:=Result.Red;
         Result.Blue:=Result.Blue;
       end;

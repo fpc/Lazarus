@@ -2051,6 +2051,8 @@ begin
     Desc^.PaletteColorCount:=0;
   end else
     Desc^.PaletteColorCount:=0;
+  // BitOrder
+  Desc^.BitOrder:=riboBitsInOrder;
   // ByteOrder
   if Visual^.byte_order=GDK_MSB_FIRST then
     Desc^.ByteOrder:=riboMSBFirst
@@ -2086,6 +2088,8 @@ begin
   // AlphaBitsPerPixel and AlphaLineEnd
   Desc^.AlphaBitsPerPixel:=Desc^.AlphaPrec;
   Desc^.AlphaLineEnd:=rileByteBoundary;
+  Desc^.AlphaBitOrder:=riboBitsInOrder;
+  Desc^.AlphaByteOrder:=riboLSBFirst;
 
   {$IFDEF VerboseRawImage}
   writeln('TgtkObject.GetDeviceRawImageDescription A ',RawImageDescriptionAsString(Desc));
@@ -8461,6 +8465,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.438  2003/11/28 11:25:49  mattias
+  added BitOrder for RawImages
+
   Revision 1.437  2003/11/26 21:30:19  mattias
   reduced unit circles, fixed fpImage streaming
 
