@@ -24,10 +24,16 @@ interface
 uses
   Classes, SysUtils, TypInfo, Forms, Controls, ComponentEditors;
   
+const
+  ComponentPaletteBtnWidth  = 25;
+  ComponentPaletteBtnHeight = 25;
+
 type
   { TIComponentInterface }
 
   TIComponentInterface = class
+  protected
+    FComponent : TComponent;
   public
     Function GetComponentType    : ShortString; virtual; abstract;
     Function GetComponentHandle  : LongInt; virtual; abstract;
@@ -41,7 +47,6 @@ type
     // Function GetPropTypebyName(Name : ShortString) : TPropertyType; virtual; abstract;
     Function GetPropTypeName(Index : Integer) : ShortString; virtual; abstract;
 
-
     Function GetPropValue(Index : Integer; var Value) : Boolean; virtual; abstract;
     Function GetPropValuebyName(Name: Shortstring; var Value) : Boolean; virtual; abstract;
     Function SetProp(Index : Integer; const Value) : Boolean; virtual; abstract;
@@ -53,13 +58,15 @@ type
     Function GetComponentCount: Integer; virtual; abstract;
     Function GetComponent(Index : Integer): TIComponentInterface; virtual; abstract;
 
-    Function Select : Boolean; virtual; abstract;
-    Function Focus : Boolean; virtual; abstract;
-    Function Delete : Boolean; virtual; abstract;
+    Function Select: Boolean; virtual; abstract;
+    Function Focus: Boolean; virtual; abstract;
+    Function Delete: Boolean; virtual; abstract;
+
+    property Component: TComponent read FComponent;
   end;
 
 
-  { TIFormInterface - currently not used }
+  { TIFormInterface }
 
   TIFormInterface = class
   public
@@ -76,6 +83,7 @@ type
                              X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
   end;
 
+
   { TAbstractFormEditor }
   
   TAbstractFormEditor = class
@@ -87,9 +95,14 @@ type
                                  ): TIComponentInterface; virtual; abstract;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; virtual; abstract;
 
-    Function CreateComponent(CI : TIComponentInterface;
-                             TypeClass : TComponentClass;
-                             X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
+    Function GetDefaultComponentParent(TypeClass: TComponentClass
+                                       ): TIComponentInterface; virtual; abstract;
+    Function GetDefaultComponentPosition(TypeClass: TComponentClass;
+                                         ParentCI: TIComponentInterface;
+                                         var X,Y: integer): boolean; virtual; abstract;
+    Function CreateComponent(ParentCI: TIComponentInterface;
+                             TypeClass: TComponentClass;
+                             X,Y,W,H: Integer): TIComponentInterface; virtual; abstract;
     Function CreateComponentFromStream(BinStream: TStream;
                              AncestorType: TComponentClass;
                              const NewUnitName: ShortString;

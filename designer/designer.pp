@@ -2056,8 +2056,7 @@ var
 begin
   for i:=0 to FLookupRoot.ComponentCount-1 do begin
     AComponent:=FLookupRoot.Components[i];
-    if (not (AComponent is TControl))
-    and (not ComponentIsInvisible(AComponent)) then begin
+    if ComponentIsNonVisual(AComponent) then begin
       Diff:=aDDC.FormOrigin;
       // non-visual component
       ItemLeftTop:=NonVisualComponentLeftTop(AComponent);

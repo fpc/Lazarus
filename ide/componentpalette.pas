@@ -38,18 +38,16 @@ unit ComponentPalette;
 interface
 
 uses
-  Classes, SysUtils, Controls, Dialogs, Graphics, ExtCtrls, Buttons, Menus,
-  LResources, OldAvLTree,
+  Classes, SysUtils, LCLProc, Controls, Dialogs, Graphics, ExtCtrls, Buttons,
+  Menus, LResources, OldAvLTree, FormEditingIntf,
   {$IFDEF CustomIDEComps}
   CustomIDEComps,
   {$ENDIF}
   LazarusIDEStrConsts, ComponentReg, DesignerProcs, IDEProcs, PackageDefs;
 
-const
-  ComponentPaletteBtnWidth  = 25;
-  ComponentPaletteBtnHeight = 25;
-
 type
+  { TComponentPalette }
+
   TComponentPalette = class(TBaseComponentPalette)
     PopupMenu: TPopupMenu;
     OpenPackageMenuItem: TMenuItem;
@@ -71,6 +69,7 @@ type
     procedure SetNoteBook(const AValue: TNotebook);
     procedure SelectionToolClick(Sender: TObject);
     procedure ComponentBtnClick(Sender: TObject);
+    procedure ComponentBtnDblClick(Sender: TObject);
     procedure SetSelected(const AValue: TRegisteredComponent);
     procedure CreatePopupMenu;
   protected
@@ -87,7 +86,7 @@ type
     function GetUnregisteredIcon: TBitmap;
     function GetSelectButtonIcon: TBitmap;
     procedure ClearButtons; override;
-    procedure SelectButton(Button: TComponent);
+    function SelectButton(Button: TComponent): boolean;
     procedure UpdateNoteBookButtons;
     procedure OnGetNonVisualCompIconCanvas(Sender: TObject;
         AComponent: TComponent; var IconCanvas: TCanvas;
@@ -198,6 +197,26 @@ end;
 procedure TComponentPalette.ComponentBtnClick(Sender: TObject);
 begin
   SelectButton(TComponent(Sender));
+end;
+
+procedure TComponentPalette.ComponentBtnDblClick(Sender: TObject);
+var
+  TypeClass: TComponentClass;
+  ParentCI: TIComponentInterface;
+  X, Y: integer;
+begin
+  //debugln('TComponentPalette.ComponentBtnDblClick ',TComponent(Sender).Name);
+  if SelectButton(TComponent(Sender)) and (FSelected<>nil) then begin
+    if FormEditingHook<>nil then begin
+      TypeClass:=FSelected.ComponentClass;
+      ParentCI:=FormEditingHook.GetDefaultComponentParent(TypeClass);
+      if ParentCI=nil then exit;
+      if not FormEditingHook.GetDefaultComponentPosition(TypeClass,ParentCI,X,Y)
+      then exit;
+      //debugln('TComponentPalette.ComponentBtnDblClick ',dbgsName(Sender),' ',dbgs(X),',',dbgs(Y));
+      FormEditingHook.CreateComponent(ParentCI,TypeClass,X,Y,0,0);
+    end;
+  end;
 end;
 
 procedure TComponentPalette.SetSelected(const AValue: TRegisteredComponent);
@@ -362,9 +381,13 @@ begin
   inherited ClearButtons;
 end;
 
-procedure TComponentPalette.SelectButton(Button: TComponent);
+function TComponentPalette.SelectButton(Button: TComponent): boolean;
+var
+  NewComponent: TRegisteredComponent;
 begin
-  Selected:=FindButton(Button);
+  NewComponent:=FindButton(Button);
+  Selected:=NewComponent;
+  Result:=(Selected=NewComponent);
 end;
 
 procedure TComponentPalette.UpdateNoteBookButtons;
@@ -458,6 +481,8 @@ begin
             GroupIndex := 1;
             Flat := true;
             OnClick := @ComponentBtnClick;
+            OnDblClick := @ComponentBtnDblClick;
+            ControlStyle:=ControlStyle+[csDoubleClicks];
             Hint := CurComponent.ComponentClass.ClassName;
             CurBtn.PopupMenu:=Self.PopupMenu;
             Visible:=true;

@@ -89,6 +89,7 @@ var
 function GetParentLevel(AControl: TControl): integer;
 function ControlIsInDesignerVisible(AControl: TControl): boolean;
 function ComponentIsInvisible(AComponent: TComponent): boolean;
+function ComponentIsNonVisual(AComponent: TComponent): boolean;
 function ComponentBoundsDesignable(AComponent: TComponent): boolean;
 
 function GetParentFormRelativeTopLeft(Component: TComponent): TPoint;
@@ -292,6 +293,13 @@ begin
     OnComponentIsInvisible(AComponent,Result)
   else
     Result:=false;
+end;
+
+function ComponentIsNonVisual(AComponent: TComponent): boolean;
+begin
+  Result:=(AComponent<>nil)
+          and (not (AComponent is TControl))
+          and (not ComponentIsInvisible(AComponent));
 end;
 
 function ComponentBoundsDesignable(AComponent: TComponent): boolean;

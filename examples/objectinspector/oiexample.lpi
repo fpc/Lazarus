@@ -24,10 +24,10 @@
         <Loaded Value="True"/>
         <TopLine Value="1"/>
         <UnitName Value="OIExample"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="29"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="39" Y="25"/>
+        <CursorPos X="6" Y="21"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainunit.pas"/>
         <ComponentName Value="Form1"/>
@@ -36,7 +36,7 @@
         <ResourceFilename Value="mainunit.lrs"/>
         <TopLine Value="1"/>
         <UnitName Value="MainUnit"/>
-        <UsageCount Value="21"/>
+        <UsageCount Value="29"/>
       </Unit1>
     </Units>
     <PublishOptions>
@@ -60,7 +60,7 @@
   <CompilerOptions>
     <Version Value="3"/>
     <SearchPaths>
-      <OtherUnitFiles Value="$(LazarusDir)/;$(LazarusDir)/components/units/"/>
+      <OtherUnitFiles Value="$(LazarusDir)/components/units/"/>
       <LCLWidgetType Value="gtk"/>
       <SrcPath Value="$(LazarusDir)/designer/"/>
     </SearchPaths>

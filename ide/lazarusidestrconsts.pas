@@ -2606,6 +2606,8 @@ resourcestring
   lisA2PFilename2 = 'Filename';
   lisFRIFindOrRenameIdentifier = 'Find or Rename Identifier';
   lisSelectAHelpItem = 'Select a help item:';
+  lisErrorMovingComponent = 'Error moving component';
+  lisErrorMovingComponent2 = 'Error moving component %s:%s';
 
 implementation
 end.

@@ -1080,6 +1080,7 @@ var
     LastMouse.Down := True;
     LastMouse.Component:=AWinControl;
 
+    //DebugLn('DeliverMouseDownMessage ',AWinControl.Name,':',AWinControl.ClassName,' Mapped=',dbgs(MappedXY.X),',',dbgs(MappedXY.Y),' Event=',dbgs(EventXY.X),',',dbgs(EventXY.Y),' ',dbgs(LastMouse.ClickCount));
     case LastMouse.ClickCount of
     1: MessI.Msg := MsgNormal;
     2: MessI.Msg := MsgDouble;
@@ -2882,6 +2883,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.252  2004/12/10 19:22:28  mattias
+  implemented auto add on double click on component palette
+
   Revision 1.251  2004/11/10 18:23:56  mattias
   impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
 

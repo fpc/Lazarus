@@ -45,8 +45,8 @@ uses
   // components
   OldAvLTree, PropEdits, ObjectInspector, IDECommands,
   // IDE
-  JITForms, NonControlForms, FormEditingIntf, ComponentReg, IDEProcs,
-  ComponentEditors, KeyMapping, EditorOptions, DesignerProcs;
+  LazarusIDEStrConsts, JITForms, NonControlForms, FormEditingIntf, ComponentReg,
+  IDEProcs, ComponentEditors, KeyMapping, EditorOptions, DesignerProcs;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 
@@ -61,7 +61,6 @@ each control that's dropped onto the form
 
   TComponentInterface = class(TIComponentInterface)
   private
-    FComponent : TComponent;
     FComponentEditor: TBaseComponentEditor;
     FDesigner: TComponentEditorDesigner;
     FFormEditor : TCustomFormEditor;  //used to call it's functions
@@ -106,8 +105,6 @@ each control that's dropped onto the form
     
     function GetComponentEditor: TBaseComponentEditor;
     property Designer: TComponentEditorDesigner read GetDesigner write FDesigner;
-    
-    property Component: TComponent read FComponent;
   end;
 
 
@@ -194,6 +191,11 @@ each control that's dropped onto the form
                                        OwnerComponent: TComponent): string;
     Function CreateComponentInterface(AComponent: TComponent): TIComponentInterface;
     procedure CreateChildComponentInterfaces(AComponent: TComponent);
+    Function GetDefaultComponentParent(TypeClass: TComponentClass
+                                       ): TIComponentInterface; override;
+    Function GetDefaultComponentPosition(TypeClass: TComponentClass;
+                                         ParentCI: TIComponentInterface;
+                                         var X,Y: integer): boolean; override;
     Function CreateComponent(ParentCI : TIComponentInterface;
                              TypeClass: TComponentClass;
                              X,Y,W,H : Integer): TIComponentInterface; override;
@@ -1203,6 +1205,7 @@ Var
   JITList: TJITComponentList;
   AControl: TControl;
   NewComponentName: String;
+  DesignForm: TCustomForm;
 Begin
   Result:=nil;
   Temp:=nil;
@@ -1337,12 +1340,16 @@ Begin
           Lo:=word(Min(32000,CompLeft));
           Hi:=word(Min(32000,CompTop));
         end;
+        if (ParentComponent<>nil) then begin
+          DesignForm:=GetDesignerForm(ParentComponent);
+          if DesignForm<>nil then DesignForm.Invalidate;
+        end;
       end;
     except
       on e: Exception do begin
-        MessageDlg('Error moving component',
-          'Error moving component '
-          +Temp.Component.Name+':'+Temp.Component.ClassName,
+        MessageDlg(lisErrorMovingComponent,
+          Format(lisErrorMovingComponent2, [Temp.Component.Name,
+            Temp.Component.ClassName]),
           mtError,[mbCancel],0);
         exit;
       end;
@@ -1749,6 +1756,128 @@ begin
   // create a component interface for each component owned by the new component
   for i:=0 to AComponent.ComponentCount-1 do
     CreateComponentInterface(AComponent.Components[i]);
+end;
+
+function TCustomFormEditor.GetDefaultComponentParent(TypeClass: TComponentClass
+  ): TIComponentInterface;
+var
+  NewParent: TComponent;
+  Root: TPersistent;
+begin
+  Result:=nil;
+  // find selected component
+  if (FSelection = nil) or (FSelection.Count <= 0) then Exit;
+  NewParent:=TComponent(FSelection[0]);
+  if not (NewParent is TComponent) then exit;
+  if TypeClass<>nil then begin
+    if TypeClass.InheritsFrom(TControl) then begin
+      // New TypeClass is a TControl => use only a TWinControl as parent
+      while (NewParent<>nil) do begin
+        if (NewParent is TWinControl)
+        and (csAcceptsControls in TWinControl(NewParent).ControlStyle) then
+          break;
+      end;
+    end else begin
+      // New TypeClass is not a TControl => Root component as parent
+      Root:=GetLookupRootForComponent(NewParent);
+      if Root is TComponent then
+        NewParent:=TComponent(Root);
+    end;
+  end;
+  Result:=FindComponent(NewParent);
+end;
+
+function TCustomFormEditor.GetDefaultComponentPosition(
+  TypeClass: TComponentClass; ParentCI: TIComponentInterface; var X, Y: integer
+  ): boolean;
+var
+  ParentComponent: TComponent;
+  i: Integer;
+  CurComponent: TComponent;
+  P: TPoint;
+  AForm: TNonFormDesignerForm;
+  MinX: Integer;
+  MinY: Integer;
+  MaxX: Integer;
+  MaxY: Integer;
+begin
+  Result:=true;
+  X:=10;
+  Y:=10;
+  if ParentCI=nil then
+    ParentCI:=GetDefaultComponentParent(TypeClass);
+  if (ParentCI=nil) or (ParentCI.Component=nil) then exit;
+  if TypeClass<>nil then begin
+    if not (TypeClass.InheritsFrom(TControl)) then begin
+      // a non visual component
+      // put it somewhere right or below the other non visual components
+      ParentComponent:=ParentCI.Component;
+      MinX:=-1;
+      MinY:=-1;
+      if ParentComponent is TWinControl then begin
+        MaxX:=TWinControl(ParentComponent).ClientWidth-ComponentPaletteBtnWidth;
+        MaxY:=TWinControl(ParentComponent).ClientHeight-ComponentPaletteBtnHeight;
+      end else begin
+        AForm:=FindNonControlForm(ParentComponent);
+        if AForm<>nil then begin
+          MaxX:=AForm.ClientWidth-ComponentPaletteBtnWidth;
+          MaxY:=AForm.ClientHeight-ComponentPaletteBtnHeight;
+        end else begin
+          MaxX:=300;
+          MaxY:=0;
+        end;
+      end;
+      // find top left most non visual component
+      for i:=0 to ParentComponent.ComponentCount-1 do begin
+        CurComponent:=ParentComponent.Components[i];
+        if ComponentIsNonVisual(CurComponent) then begin
+          P:=GetParentFormRelativeTopLeft(CurComponent);
+          if (P.X>=0) and (P.Y>=0) then begin
+            if (MinX<0) or (P.Y<MinY) or ((P.Y=MinY) and (P.X<MinX)) then begin
+              MinX:=P.X;
+              MinY:=P.Y;
+            end;
+          end;
+        end;
+      end;
+      if MinX<0 then begin
+        MinX:=10;
+        MinY:=10;
+      end;
+      // find a position without intersection
+      X:=MinX;
+      Y:=MinY;
+      //debugln('TCustomFormEditor.GetDefaultComponentPosition Min=',dbgs(MinX),',',dbgs(MinY));
+      i:=0;
+      while i<ParentComponent.ComponentCount do begin
+        CurComponent:=ParentComponent.Components[i];
+        inc(i);
+        if ComponentIsNonVisual(CurComponent) then begin
+          P:=GetParentFormRelativeTopLeft(CurComponent);
+          //debugln('TCustomFormEditor.GetDefaultComponentPosition ',dbgsName(CurComponent),' P=',dbgs(P));
+          if (P.X>=0) and (P.Y>=0) then begin
+            if (X+ComponentPaletteBtnWidth>=P.X)
+            and (X<=P.X+ComponentPaletteBtnWidth)
+            and (Y+ComponentPaletteBtnHeight>=P.Y)
+            and (Y<=P.Y+ComponentPaletteBtnHeight) then begin
+              // intersection found
+              // move position
+              inc(X,ComponentPaletteBtnWidth+2);
+              if X>MaxX then begin
+                inc(Y,ComponentPaletteBtnHeight+2);
+                X:=MinX;
+              end;
+              // restart intersection test
+              i:=0;
+            end;
+          end;
+        end;
+      end;
+      // keep it visible
+      if X>MaxX then X:=MaxX;
+      if Y>MaxY then Y:=MaxY;
+    end;
+  end;
 end;
 
 procedure TCustomFormEditor.OnObjectInspectorModified(Sender: TObject);
