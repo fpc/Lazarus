@@ -2,6 +2,7 @@ object BreakpointsDlg: TBreakpointsDlg
   CAPTION = 'Breakpoint list'
   CLIENTHEIGHT = 205
   CLIENTWIDTH = 629
+  ONCREATE = BreakpointsDlgCREATE
   VISIBLE = True
   HORZSCROLLBAR.PAGE = 630
   VERTSCROLLBAR.PAGE = 206
@@ -11,7 +12,6 @@ object BreakpointsDlg: TBreakpointsDlg
   WIDTH = 629
   HELPTYPE = htkeyword
   object lvBreakPoints: TLISTVIEW
-    ALIGN = alclient
     ANCHORS = [aktop, akleft]
     COLUMNS = <    
       item
@@ -55,14 +55,16 @@ object BreakpointsDlg: TBreakpointsDlg
     ONCLICK = lvBreakPointsClick
     ONDBLCLICK = lvBreakPointsDBLCLICK
     ONSELECTITEM = lvBreakPointsSelectItem
+    LEFT = 72
     HEIGHT = 205
-    WIDTH = 629
+    TOP = 2
+    WIDTH = 557
     HELPTYPE = htkeyword
   end
   object mnuPopup: TPOPUPMENU
     ONPOPUP = mnuPopupPopup
-    left = 100
-    top = 96
+    left = 24
+    top = 8
     object popAdd: TMENUITEM
       CAPTION = 'Add...'
       object popAddSourceBP: TMENUITEM
@@ -101,6 +103,21 @@ object BreakpointsDlg: TBreakpointsDlg
     object popDeleteAll: TMENUITEM
       CAPTION = '&Delete All'
       ONCLICK = popDeleteAllClick
+    end
+    object N3: TMENUITEM
+      CAPTION = '-'
+    end
+    object popDisableAllSameSource: TMENUITEM
+      CAPTION = 'Disable All in same source'
+      ONCLICK = popDisableAllSameSourceCLICK
+    end
+    object popEnableAllSameSource: TMENUITEM
+      CAPTION = 'Enable All in same source'
+      ONCLICK = popEnableAllSameSourceCLICK
+    end
+    object popDeleteAllSameSource: TMENUITEM
+      CAPTION = 'Delete All in same source'
+      ONCLICK = popDeleteAllSameSourceCLICK
     end
   end
 end

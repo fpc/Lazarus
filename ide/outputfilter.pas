@@ -144,7 +144,7 @@ end;
 
 function TOutputFilter.Execute(TheProcess: TProcess): boolean;
 const
-  BufSize = 100;
+  BufSize = 1000;
 var
   i, Count, LineStart : longint;
   OutputLine, Buf : String;

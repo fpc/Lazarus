@@ -60,12 +60,20 @@ type
     popDisableAll: TMenuItem;
     popEnableAll: TMenuItem;
     popDeleteAll: TMenuItem;
+    N3: TMenuItem; //--------------
+    popDisableAllSameSource: TMenuItem;
+    popEnableAllSameSource: TMenuItem;
+    popDeleteAllSameSource: TMenuItem;
+    procedure BreakpointsDlgCREATE(Sender: TObject);
     procedure lvBreakPointsClick(Sender: TObject);
     procedure lvBreakPointsDBLCLICK(Sender: TObject);
     procedure lvBreakPointsSelectItem(Sender: TObject; AItem: TListItem;
       Selected: Boolean);
     procedure mnuPopupPopup(Sender: TObject);
     procedure popAddSourceBPClick(Sender: TObject);
+    procedure popDeleteAllSameSourceCLICK(Sender: TObject);
+    procedure popDisableAllSameSourceCLICK(Sender: TObject);
+    procedure popEnableAllSameSourceCLICK(Sender: TObject);
     procedure popPropertiesClick(Sender: TObject);
     procedure popEnabledClick(Sender: TObject);
     procedure popDeleteClick(Sender: TObject);
@@ -212,6 +220,11 @@ procedure TBreakPointsDlg.lvBreakPointsClick(Sender: TObject);
 begin
 end;
 
+procedure TBreakPointsDlg.BreakpointsDlgCREATE(Sender: TObject);
+begin
+  lvBreakPoints.Align:=alClient;
+end;
+
 procedure TBreakPointsDlg.lvBreakPointsDBLCLICK(Sender: TObject);
 begin
   DoJumpToCurrentBreakPoint;
@@ -240,6 +253,12 @@ begin
     popEnabled.Checked := false;
   popDelete.Enabled := Enable;
   
+  // 'All in same source' menuitems
+  popDisableAllSameSource.Enabled := Enable;
+  popDeleteAllSameSource.Enabled := Enable;
+  popEnableAllSameSource.Enabled := Enable;
+
+  // 'All' menuitems
   Enable := lvBreakPoints.Items.Count>0;
   popDisableAll.Enabled := Enable;
   popDeleteAll.Enabled := Enable;
@@ -250,10 +269,78 @@ procedure TBreakPointsDlg.popAddSourceBPClick(Sender: TObject);
 begin
 end;
 
+procedure TBreakPointsDlg.popDeleteAllSameSourceCLICK(Sender: TObject);
+var
+  n: Integer;
+  Item: TListItem;
+  CurItem: TListItem;
+  CurBreakPoint: TIDEBreakPoint;
+  Filename: String;
+begin
+  CurItem:=lvBreakPoints.Selected;
+  if (CurItem=nil) then exit;
+  Filename:=TIDEBreakpoint(CurItem.Data).Source;
+  if MessageDlg('Delete all breakpoints?',
+    'Delete all breakpoints in file "'+Filename+'"?',
+    mtConfirmation,[mbYes,mbCancel],0)<>mrYes
+  then exit;
+  for n := lvBreakPoints.Items.Count - 1 downto 0 do
+  begin
+    Item := lvBreakPoints.Items[n];
+    CurBreakPoint:=TIDEBreakPoint(Item.Data);
+    if CompareFilenames(CurBreakPoint.Source,Filename)=0
+    then CurBreakPoint.Free;
+  end;
+end;
+
+procedure TBreakPointsDlg.popDisableAllSameSourceCLICK(Sender: TObject);
+var
+  n: Integer;
+  Item: TListItem;
+  CurItem: TListItem;
+  CurBreakPoint: TIDEBreakPoint;
+  Filename: String;
+begin
+  CurItem:=lvBreakPoints.Selected;
+  if (CurItem=nil) then exit;
+  Filename:=TIDEBreakpoint(CurItem.Data).Source;
+  for n := 0 to lvBreakPoints.Items.Count - 1 do
+  begin
+    Item := lvBreakPoints.Items[n];
+    CurBreakPoint:=TIDEBreakPoint(Item.Data);
+    if CompareFilenames(CurBreakPoint.Source,Filename)=0
+    then CurBreakPoint.Enabled := False;
+  end;
+end;
+
+procedure TBreakPointsDlg.popEnableAllSameSourceCLICK(Sender: TObject);
+var
+  n: Integer;
+  Item: TListItem;
+  CurItem: TListItem;
+  CurBreakPoint: TIDEBreakPoint;
+  Filename: String;
+begin
+  CurItem:=lvBreakPoints.Selected;
+  if (CurItem=nil) then exit;
+  Filename:=TIDEBreakpoint(CurItem.Data).Source;
+  for n := 0 to lvBreakPoints.Items.Count - 1 do
+  begin
+    Item := lvBreakPoints.Items[n];
+    CurBreakPoint:=TIDEBreakPoint(Item.Data);
+    if CompareFilenames(CurBreakPoint.Source,Filename)=0
+    then CurBreakPoint.Enabled := True;
+  end;
+end;
+
 procedure TBreakPointsDlg.popDeleteAllClick(Sender: TObject);
 var
   n: Integer;
 begin                                    
+  if MessageDlg('Delete all breakpoints?',
+    'Delete all breakpoints?',
+    mtConfirmation,[mbYes,mbCancel],0)<>mrYes
+  then exit;
   for n := lvBreakPoints.Items.Count - 1 downto 0 do
     TIDEBreakPoint(lvBreakPoints.Items[n].Data).Free;
 end;
@@ -327,9 +414,9 @@ const
     
   //                 enabled  valid
   DEBUG_STATE: array[Boolean, TValidState] of String = (
-             {vsUnknown, vsValid, vsInvalid}
-    {Disabled} ('?',    'Disabled','Invalid'),
-    {Endabled} ('?',    'Enabled', 'Invalid'));
+                {vsUnknown,     vsValid,   vsInvalid}
+    {Disabled} ('? (Off)','Disabled','Invalid (Off)'),
+    {Endabled} ('? (On)', 'Enabled', 'Invalid (On)'));
 var
   Action: TIDEBreakPointAction;
   S: String;
@@ -402,6 +489,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.19  2003/06/03 11:20:12  mattias
+  implemented enable/disable/delete breakpoints in same source
+
   Revision 1.18  2003/06/03 08:02:33  mattias
   implemented showing source lines in breakpoints dialog
 
