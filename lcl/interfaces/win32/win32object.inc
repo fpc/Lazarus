@@ -245,6 +245,11 @@ begin
   end;
 end;
 
+procedure TWin32WidgetSet.SetDesigning(AComponent: TComponent);
+begin
+  //if Data<>nil then EnableWindow((AComponent As TWinControl).Handle, boolean(Data^));
+end;
+
 {------------------------------------------------------------------------------
   Method: TWin32WidgetSet.IntSendMessage3
   Params:  LM_Message - message to be processed
@@ -265,8 +270,6 @@ Begin
   Case LM_Message Of
     LM_CREATE:
       CreateComponent(Sender);
-    LM_SETDESIGNING:
-      if Data<>nil then EnableWindow((Sender As TWinControl).Handle, boolean(Data^));
   End; // end of 1st case
 End;
 
@@ -1693,6 +1696,9 @@ End;
 
 {
   $Log$
+  Revision 1.286  2004/09/24 14:50:58  micha
+  convert LM_SETDESIGNING message to TWidgetSet method
+
   Revision 1.285  2004/09/24 07:52:35  micha
   convert LM_SETPROPERTIES message to interface method for TCustomTrackBar
   remove message LM_SETPROPERTIES, conversion done

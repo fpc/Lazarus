@@ -55,6 +55,7 @@ type
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; virtual; abstract;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); virtual; abstract;
     procedure DCRedraw(CanvasHandle: HDC); virtual; abstract;
+    procedure SetDesigning(AComponent: TComponent); virtual; abstract;
     function  InitHintFont(HintFont: TObject): Boolean; virtual;
     function  IntSendMessage3(LM_Message: Integer; Sender: TObject;
                               Data: pointer): integer; virtual; abstract;
@@ -119,6 +120,9 @@ end.
 
 {
   $Log$
+  Revision 1.54  2004/09/24 14:50:57  micha
+  convert LM_SETDESIGNING message to TWidgetSet method
+
   Revision 1.53  2004/09/18 10:52:48  micha
   convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
 

@@ -47,8 +47,6 @@ const
   LM_ComUser        = $1000;
   LM_Create         = LM_ComUser+1;
   
-  LM_SETDESIGNING   = LM_COMUSER+60;
-
   LM_SETGEOMETRY    = LM_COMUSER+62;
 
   // TNoteBook
@@ -743,8 +741,6 @@ begin
   LM_ComUser        :Result:='LM_ComUser';
   LM_Create         :Result:='LM_Create';
 
-  LM_SETDESIGNING   :Result:='LM_SETDESIGNING';
-
   LM_SETGEOMETRY    :Result:='LM_SETGEOMETRY';
 
   // TNoteBook
@@ -847,6 +843,9 @@ end.
 
 {
   $Log$
+  Revision 1.119  2004/09/24 14:50:57  micha
+  convert LM_SETDESIGNING message to TWidgetSet method
+
   Revision 1.118  2004/09/24 10:49:56  micha
   remove obsolete messages
 

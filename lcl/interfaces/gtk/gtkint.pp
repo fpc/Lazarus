@@ -286,7 +286,8 @@ type
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     procedure DCRedraw(CanvasHandle: HDC); override;
-        
+    procedure SetDesigning(AComponent: TComponent); override;
+    
     // helper routines needed by interface methods
     procedure UnsetResizeRequest(Widget: PGtkWidget);virtual;
     procedure SetResizeRequest(Widget: PGtkWidget);virtual;
@@ -452,6 +453,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.212  2004/09/24 14:50:57  micha
+  convert LM_SETDESIGNING message to TWidgetSet method
+
   Revision 1.211  2004/09/24 07:52:35  micha
   convert LM_SETPROPERTIES message to interface method for TCustomTrackBar
   remove message LM_SETPROPERTIES, conversion done

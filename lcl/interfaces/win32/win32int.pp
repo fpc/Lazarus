@@ -158,6 +158,7 @@ Type
     procedure DCSetPixel(CanvasHandle: HDC; X, Y: integer; AColor: TGraphicsColor); override;
     function  DCGetPixel(CanvasHandle: HDC; X, Y: integer): TGraphicsColor; override;
     procedure DCRedraw(CanvasHandle: HDC); override;
+    procedure SetDesigning(AComponent: TComponent); override;
     Function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer) : Integer; Override;
     Procedure HandleEvents; Override;
     Procedure WaitMessage; Override;
@@ -264,6 +265,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.118  2004/09/24 14:50:57  micha
+  convert LM_SETDESIGNING message to TWidgetSet method
+
   Revision 1.117  2004/09/24 07:52:35  micha
   convert LM_SETPROPERTIES message to interface method for TCustomTrackBar
   remove message LM_SETPROPERTIES, conversion done

@@ -3051,6 +3051,13 @@ begin
   end;
 end;
 
+procedure TGtkWidgetSet.SetDesigning(AComponent: TComponent);
+begin
+  // change cursor
+  if AComponent is TWinControl then
+    gtkproc.SetCursor(TWinControl(AComponent), TCursor(cardinal(nil)));
+end;
+
 {------------------------------------------------------------------------------
   Method: TGtkWidgetSet.IntSendMessage3
   Params:  LM_Message - message to be processed by GTK
@@ -3082,15 +3089,6 @@ begin
   // retrieve the handle
   case LM_Message of
   LM_Create   : CreateComponent(Sender);
-
-  LM_SETDESIGNING :
-    // Used by the form editor to set anything specifically needed
-    // when setting controls to Designing.
-    begin
-      // change cursor
-      if Sender is TWinControl then
-        gtkproc.SetCursor(TWinControl(Sender), TCursor(cardinal(Data)));
-    end;
 
   LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TCustomPage(Sender));
 
@@ -7360,6 +7358,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.598  2004/09/24 14:50:57  micha
+  convert LM_SETDESIGNING message to TWidgetSet method
+
   Revision 1.597  2004/09/24 07:52:35  micha
   convert LM_SETPROPERTIES message to interface method for TCustomTrackBar
   remove message LM_SETPROPERTIES, conversion done
