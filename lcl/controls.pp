@@ -32,7 +32,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-{ $DEFINE ClientRectBugFix}
+{$DEFINE ClientRectBugFix}
 
 {$IFOPT C-}
 // Uncomment for local trace
@@ -1230,6 +1230,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.48  2002/05/20 14:19:03  lazarus
+  MG: activated the clientrect bugfixes
+
   Revision 1.47  2002/05/10 06:05:49  lazarus
   MG: changed license to LGPL
 
