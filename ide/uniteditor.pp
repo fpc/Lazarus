@@ -36,7 +36,7 @@ uses
   Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion, Graphics, Extctrls, Menus, Splash,
-  FindInFilesDlg, LMessages;
+  FindInFilesDlg, LMessages, IDEProcs;
 
 type
   // --------------------------------------------------------------------------
@@ -111,6 +111,7 @@ type
     procedure SetModified(NewValue:boolean);
     Function GetInsertMode : Boolean;
     Function GetReadonly : Boolean;
+    procedure SetReadOnly(NewValue: boolean);
     procedure SetCodeTemplates(
          NewCodeTemplates: TSynEditAutoComplete);
     procedure SetPopupMenu(NewPopupMenu: TPopupMenu);
@@ -187,7 +188,7 @@ type
     property ShortName : String read FShortName write fShortName;
     property FileName : AnsiString read GetFileName;
     property Modified : Boolean read GetModified write SetModified;
-    property ReadOnly : Boolean read GetReadOnly;
+    property ReadOnly : Boolean read GetReadOnly write SetReadOnly;
     property InsertMode : Boolean read GetInsertmode;
     property CodeTemplates: TSynEditAutoComplete
        read FCodeTemplates write SetCodeTemplates;
@@ -623,11 +624,15 @@ Begin
   FEditor.SetFocus;
 end;
 
-
 Function TSourceEditor.GetReadOnly : Boolean;
 Begin
   Result :=  FEditor.ReadOnly;
 End;
+
+procedure TSourceEditor.SetReadOnly(NewValue: boolean);
+begin
+  FEditor.ReadOnly:=NewValue;
+end;
 
 Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: char; Data: pointer);
@@ -2457,6 +2462,14 @@ Procedure TSourceNotebook.ReadOnlyClicked(Sender : TObject);
 var ActEdit:TSourceEditor;
 begin
   ActEdit:=GetActiveSE;
+  if ActEdit.ReadOnly and (ActEdit.CodeBuffer<>nil) 
+  and (not ActEdit.CodeBuffer.IsVirtual) 
+  and (not FileIsWritable(ActEdit.CodeBuffer.Filename)) then begin
+    MessageDlg('File is readonly',
+      'The file "'+ActEdit.CodeBuffer.Filename+'" is not writable.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
   ActEdit.EditorComponent.ReadOnly := not(ActEdit.EditorComponent.ReadOnly);
   UpdateStatusBar;
 end;

@@ -352,7 +352,8 @@ type
     function DoSaveCodeBufferToFile(ABuffer: TCodeBuffer;
       const AFilename: string; IsPartOfProject:boolean): TModalResult;
     function DoLoadCodeBuffer(var ACodeBuffer: TCodeBuffer; 
-      const AFilename: string; UpdateFromDisk, Revert: boolean): TModalResult;
+      const AFilename: string; UpdateFromDisk, Revert, 
+      CheckIfText: boolean): TModalResult;
     function DoBackupFile(const Filename:string; 
       IsPartOfProject:boolean): TModalResult;
     procedure UpdateCaption;
@@ -2396,7 +2397,7 @@ writeln('TMainIDE.DoSaveEditorUnit B2 ',ResourceCode<>nil);
     LFMCode:=nil;
     if ResourceCode<>nil then begin
       Result:=DoLoadCodeBuffer(LFMCode,
-          ChangeFileExt(ResourceCode.Filename,'.lfm'),false,false);
+          ChangeFileExt(ResourceCode.Filename,'.lfm'),false,false,true);
       if Result<>mrOk then exit;
       Result:=mrCancel;
     end;
@@ -2737,8 +2738,8 @@ CheckHeap(IntToStr(GetMem_Cnt));
       Result:=MessageDlg('File not found',
         'The file "'+AFilename+'"'#13
         +'was not found.'#13
-        +'Ignore will go on loading the project,'#13
-        +'Abort will cancel the loading.',
+        +'Ignore  will go on loading the project,'#13
+        +'Abort  will cancel the loading.',
         mtError, [mbIgnore, mbAbort], 0);
       exit;
     end;
@@ -2762,7 +2763,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
   Ext:=lowercase(ExtractFileExt(AFilename));
   if ReOpen then begin
     NewUnitInfo:=Project.Units[i];
-    Result:=DoLoadCodeBuffer(NewBuf,AFileName,true,true);
+    Result:=DoLoadCodeBuffer(NewBuf,AFileName,true,true,true);
     if Result<>mrOk then exit;
     NewUnitInfo.Source:=NewBuf;
     if (Ext='.pp') or (Ext='.pas') then
@@ -2774,7 +2775,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
       Result:=DoOpenProjectFile(AFilename);
       exit;
     end;
-    Result:=DoLoadCodeBuffer(PreReadBuf,AFileName,true,true);
+    Result:=DoLoadCodeBuffer(PreReadBuf,AFileName,true,true,true);
     if Result<>mrOk then exit;
     Result:=mrCancel;
     // check if unit is a program
@@ -2815,6 +2816,8 @@ CheckHeap(IntToStr(GetMem_Cnt));
       NewUnitInfo.ReadUnitNameFromSource;
     Project.AddUnit(NewUnitInfo,false);
   end;
+  NewUnitInfo.ReadOnly:=NewUnitInfo.ReadOnly 
+                        or (not FileIsWritable(NewUnitInfo.Filename));
 {$IFDEF IDE_DEBUG}
 writeln('[TMainIDE.DoOpenEditorFile] B');
 {$ENDIF}
@@ -2850,6 +2853,7 @@ writeln('[TMainIDE.DoOpenEditorFile] B');
   NewSrcEdit.EditorComponent.CaretXY:=NewUnitInfo.CursorPos;
   NewSrcEdit.EditorComponent.TopLine:=NewUnitInfo.TopLine;
   NewSrcEdit.EditorComponent.LeftChar:=1;
+  NewSrcEdit.ReadOnly:=NewUnitInfo.ReadOnly;
   
 {$IFDEF IDE_DEBUG}
 writeln('[TMainIDE.DoOpenEditorFile] C');
@@ -2861,7 +2865,7 @@ writeln('[TMainIDE.DoOpenEditorFile] C');
     LFMFilename:=ChangeFileExt(NewUnitInfo.Filename,'.lfm');
     NewBuf:=nil;
     if FileExists(LFMFilename) then begin
-      Result:=DoLoadCodeBuffer(NewBuf,LFMFilename,true,false);
+      Result:=DoLoadCodeBuffer(NewBuf,LFMFilename,true,false,true);
       if Result<>mrOk then exit;
       Result:=mrCancel;
     end else begin
@@ -2871,7 +2875,7 @@ writeln('[TMainIDE.DoOpenEditorFile] C');
         LFMFilename:=ChangeFileExt(NewBuf.Filename,'.lfm');
         NewBuf:=nil;
         if FileExists(LFMFilename) then begin
-          Result:=DoLoadCodeBuffer(NewBuf,LFMFilename,true,false);
+          Result:=DoLoadCodeBuffer(NewBuf,LFMFilename,true,false,true);
           if Result<>mrOk then exit;
           Result:=mrCancel;
         end;
@@ -3480,6 +3484,15 @@ CheckHeap(IntToStr(GetMem_Cnt));
   if ExtractFileNameOnly(AFileName)='' then exit;
   AFilename:=ExpandFileName(AFilename);
   Ext:=lowercase(ExtractFileExt(AFilename));
+  repeat
+    if not FileExists(AFilename) then begin
+      ACaption:='File not found';
+      AText:='File "'+AFilename+'" not found.';
+      Result:=MessageDlg(ACaption, AText, mtError, [mbAbort, mbRetry], 0);
+      if Result=mrAbort then exit;
+    end;
+  until Result<>mrRetry;
+  Result:=mrCancel;
   if (FileExists(ChangeFileExt(AFileName,'.lpi'))) then begin
     // load instead of lazarus program file the project info file
     AFileName:=ChangeFileExt(AFileName,'.lpi');
@@ -3489,14 +3502,14 @@ CheckHeap(IntToStr(GetMem_Cnt));
     Result:=DoOpenEditorFile(AFilename,false);
     exit;
   end;
-  repeat
-    if not FileExists(AFilename) then begin
-      ACaption:='File not found';
-      AText:='File "'+AFilename+'" not found.';
-      Result:=MessageDlg(ACaption, AText, mtError, [mbAbort, mbRetry], 0);
-      if Result=mrAbort then exit;
-    end;
-  until Result<>mrRetry;
+  if not FileIsText(AFilename) then begin
+    ACaption:='File not text';
+    AText:='File "'+AFilename+'"'#13
+          +'does not look like a text file.'#13
+          +'Open it anyway?';
+    Result:=MessageDlg(ACaption, AText, mtConfirmation, [mbYes, mbAbort], 0);
+    if Result=mrAbort then exit;
+  end;
   // close the old project
   if SomethingOfProjectIsModified then begin
     if MessageDlg('Project changed', 'Save changes to project?',
@@ -3521,17 +3534,17 @@ CheckHeap(IntToStr(GetMem_Cnt));
   CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'ProjectDir']:=
     ExtractFilePath(Project.ProjectFile);
   CodeToolBoss.DefineTree.ClearCache;
-writeln('TMainIDE.DoOpenProjectFile B2');
   if Project.MainUnit>=0 then begin
     // read MainUnit Source
     Result:=DoLoadCodeBuffer(NewBuf,Project.Units[Project.MainUnit].Filename,
-                             true,true);
-writeln('TMainIDE.DoOpenProjectFile B3');
+                             true,true,true);
     if Result=mrIgnore then Result:=mrAbort;
     if Result=mrAbort then exit;
     Project.Units[Project.MainUnit].Source:=NewBuf;
   end;
+{$IFDEF IDE_DEBUG}
 writeln('TMainIDE.DoOpenProjectFile C');
+{$ENDIF}
 {$IFDEF IDE_MEM_CHECK}
 CheckHeap(IntToStr(GetMem_Cnt));
 {$ENDIF}
@@ -3556,9 +3569,9 @@ CheckHeap(IntToStr(GetMem_Cnt));
     end;
     if LowestEditorIndex>=0 then begin
       // reopen file
-writeln('TMainIDE.DoOpenProjectFile C2 ',Project.Units[LowestUnitIndex].Filename);
+//writeln('TMainIDE.DoOpenProjectFile C2 ',Project.Units[LowestUnitIndex].Filename);
       Result:=DoOpenEditorFile(Project.Units[LowestUnitIndex].Filename,true);
-writeln('TMainIDE.DoOpenProjectFile C3 ',Result=mrOk);
+//writeln('TMainIDE.DoOpenProjectFile C3 ',Result=mrOk);
       if Result=mrAbort then exit;
       if Result=mrOk then begin
         // open successful
@@ -3575,7 +3588,7 @@ writeln('TMainIDE.DoOpenProjectFile C3 ',Result=mrOk);
     end;
   until LowestEditorIndex<0;
   Result:=mrCancel;
-writeln('TMainIDE.DoOpenProjectFile D');
+//writeln('TMainIDE.DoOpenProjectFile D');
   // set active editor source editor
   if (SourceNoteBook.NoteBook<>nil) and (Project.ActiveEditorIndexAtStart>=0)
   and (Project.ActiveEditorIndexAtStart<SourceNoteBook.NoteBook.Pages.Count)
@@ -4214,21 +4227,30 @@ begin
 end;
 
 function TMainIDE.DoLoadCodeBuffer(var ACodeBuffer: TCodeBuffer; 
-  const AFilename: string; UpdateFromDisk, Revert: boolean): TModalResult;
+  const AFilename: string; UpdateFromDisk, Revert, 
+  CheckIfText: boolean): TModalResult;
 var
   ACaption,AText:string;
 begin
   repeat
 writeln('[TMainIDE.DoLoadCodeBuffer] A ',AFilename);
+    if CheckIfText and (not FileIsText(AFilename)) then begin
+      ACaption:='File not text';
+      AText:='File "'+AFilename+'"'#13
+            +'does not look like a text file.'#13
+            +'Open it anyway?';
+      Result:=MessageDlg(ACaption, AText, mtConfirmation, 
+                         [mbOk, mbIgnore, mbAbort], 0);
+      if Result<>mrOk then exit;
+    end;
     ACodeBuffer:=CodeToolBoss.LoadFile(AFilename,UpdateFromDisk,Revert);
     if ACodeBuffer<>nil then begin
-      ACodeBuffer.Reload;
       Result:=mrOk;
 writeln('[TMainIDE.DoLoadCodeBuffer] ',ACodeBuffer.SourceLength,' ',ACodeBuffer.Filename);
     end else begin
       ACaption:='Read Error';
       AText:='Unable to read file "'+AFilename+'"!';
-      Result:=MessageDlg(ACaption,AText,mterror,[mbabort, mbretry, mbignore],0);
+      Result:=MessageDlg(ACaption,AText,mterror,[mbAbort, mbRetry, mbIgnore],0);
       if Result=mrAbort then exit;
     end;
   until Result<>mrRetry;
@@ -5379,8 +5401,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.187  2001/12/17 16:46:59  lazarus
-  MG: new file procs, find declaration now supports relative search paths
+  Revision 1.188  2001/12/17 19:41:05  lazarus
+  MG: added binary file recognition and readonly recognition
 
   Revision 1.186  2001/12/17 11:16:08  lazarus
   MG: fixed open file key in source editor

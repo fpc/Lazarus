@@ -39,7 +39,7 @@ uses
   {$IFDEF MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, SourceLog, LinkScanner, AVL_Tree, XMLCfg;
+  Classes, SysUtils, SourceLog, LinkScanner, AVL_Tree, XMLCfg, FileProcs;
 
 type
   TCodeCache = class;
@@ -143,15 +143,6 @@ type
 implementation
 
 
-function CompareFilenames(const FileName1, Filename2: string): integer;
-begin
-  {$ifdef win32}
-  Result:=AnsiCompareText(FileName1,Filename2);
-  {$else}
-  Result:=AnsiCompareStr(FileName1,Filename2);
-  {$endif}
-end;
-
 function CompareCodeBuffers(NodeData1, NodeData2: pointer): integer;
 var CodeBuf1, CodeBuf2: TCodeBuffer;
 begin
@@ -244,6 +235,7 @@ begin
     with Result do begin
       FCodeCache:=Self;
       LastIncludedByFile:=Self.LastIncludedByFile(AFilename);
+      ReadOnly:=not FileIsWritable(Filename);
     end;
   end else if Result.IsDeleted then begin
     // file in cache, but marked as deleted -> load from disk
