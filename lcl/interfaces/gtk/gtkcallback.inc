@@ -1011,7 +1011,6 @@ var
   begin
     Result:=false;
 
-
     if (LastMouse.Down) and
       (not (gdk_event_get_type(Event) in [gdk_2button_press,gdk_3button_press]))
     then begin
@@ -2883,6 +2882,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.253  2004/12/11 02:21:00  mattias
+  fixed showing all keymappings and missing text selection keys
+
   Revision 1.252  2004/12/10 19:22:28  mattias
   implemented auto add on double click on component palette
 

@@ -3203,7 +3203,7 @@ begin
         NewKeyNode.ImageIndex:=1;
         NewKeyNode.SelectedIndex:=NewKeyNode.ImageIndex;
       end;
-      while NewCategoryNode.Count>EditingKeyMap.CategoryCount do
+      while NewCategoryNode.Count>CurCategory.Count do
         NewCategoryNode[NewCategoryNode.Count-1].Delete;
     end;
     while Items.TopLvlCount>EditingKeyMap.CategoryCount do

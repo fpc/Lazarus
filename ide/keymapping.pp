@@ -1108,12 +1108,12 @@ begin
     ecSelectionUpperCase    : Result:= lismenuuppercaseselection;
     ecSelectionLowerCase    : Result:= lismenulowercaseselection;
     ecSelectionTabs2Spaces  : Result:= srkmecSelectionTabs2Spaces;
-    ecSelectionEnclose      : Result:= lismenucommentselection;
+    ecSelectionEnclose      : Result:= lisMenuEncloseSelection;
     ecSelectionComment      : Result:= lismenucommentselection;
     ecSelectionUncomment    : Result:= lismenuuncommentselection;
     ecSelectionConditional  : Result:= lisMenuConditionalSelection;
     ecSelectionSort         : Result:= lismenusortselection;
-    ecSelectionBreakLines   : Result:= lismenusortselection;
+    ecSelectionBreakLines   : Result:= lisMenuBeakLinesInSelection;
     ecSelectToBrace         : Result:= lismenuselecttobrace;
     ecSelectCodeBlock       : Result:= lismenuselectcodeblock;
     ecSelectLine            : Result:= lismenuselectline;
@@ -1884,6 +1884,15 @@ begin
   AddDefault(C,'Normal selection mode',ecNormalSelect);
   AddDefault(C,'Column selection mode',ecColumnSelect);
   AddDefault(C,'Line selection mode',ecLineSelect);
+  AddDefault(C,'Uppercase selection',ecSelectionUpperCase);
+  AddDefault(C,'Lowercase selection',ecSelectionLowerCase);
+  AddDefault(C,'Convert tabs to spaces in selection',ecSelectionTabs2Spaces);
+  AddDefault(C,'Enclose selection',ecSelectionEnclose);
+  AddDefault(C,'Comment selection',ecSelectionComment);
+  AddDefault(C,'Uncomment selection',ecSelectionUncomment);
+  AddDefault(C,'Insert $IFDEF',ecSelectionConditional);
+  AddDefault(C,'Sort selection',ecSelectionSort);
+  AddDefault(C,'Break Lines in selection',ecSelectionBreakLines);
   AddDefault(C,'Select word left',ecSelWordLeft);
   AddDefault(C,'Select word right',ecSelWordRight);
   AddDefault(C,'Select line start',ecSelLineStart);
@@ -1897,15 +1906,6 @@ begin
   AddDefault(C,'Select code block',ecSelectCodeBlock);
   AddDefault(C,'Select line',ecSelectLine);
   AddDefault(C,'Select paragraph',ecSelectParagraph);
-  AddDefault(C,'Uppercase selection',ecSelectionUpperCase);
-  AddDefault(C,'Lowercase selection',ecSelectionLowerCase);
-  AddDefault(C,'Convert tabs to spaces in selection',ecSelectionTabs2Spaces);
-  AddDefault(C,'Enclose selection',ecSelectionEnclose);
-  AddDefault(C,'Comment selection',ecSelectionComment);
-  AddDefault(C,'Uncomment selection',ecSelectionUncomment);
-  AddDefault(C,'Insert $IFDEF',ecSelectionConditional);
-  AddDefault(C,'Sort selection',ecSelectionSort);
-  AddDefault(C,'Break Lines in selection',ecSelectionBreakLines);
 
   // editing
   C:=Categories[AddCategory('editing commands',srkmCatEditing,caSrcEdit)];
