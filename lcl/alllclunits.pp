@@ -38,7 +38,7 @@ uses
   Buttons, Extctrls, Calendar, Clipbrd, Forms, LCLIntf, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
-  Printers, PostScriptPrinter, CheckLst, PairSplitter, DirSel, ExtDlgs,
+  Printers, PostScriptPrinter, CheckLst, PairSplitter, ExtDlgs,
   DBCtrls, DBGrids, EditBtn;
 
 implementation
@@ -48,6 +48,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/01/26 11:58:37  mattias
+  excluded dirsel.pp from makefile
+
   Revision 1.6  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

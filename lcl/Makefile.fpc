@@ -25,7 +25,6 @@ implicitunits= \
   dbctrls \
   dbgrids \
   dialogs \
-  dirsel \
   dynamicarray \
   dynhasharray \
   editbtn \
