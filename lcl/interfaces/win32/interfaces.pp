@@ -2,12 +2,12 @@
  /*************************************************************************** 
                          Interfaces.pp  -  determines what interface to use
                              ------------------- 
- 
+
                    Initial Revision  : Thu July 1st CST 1999 
- 
- 
+
+
  ***************************************************************************/ 
- 
+
 /*************************************************************************** 
  *                                                                         * 
  *   This program is free software; you can redistribute it and/or modify  * 
@@ -16,32 +16,35 @@
  *   (at your option) any later version.                                   * 
  *                                                                         * 
  ***************************************************************************/ 
- } 
+ }
 
+Unit interfaces;
 
-unit interfaces;
- 
-{$mode objfpc} 
+{$MODE OBJFPC}
+{$LONGSTRINGS ON}
 
-interface
+Interface 
 
-uses 
-   InterfaceBase;
+Uses
+  InterfaceBase;
 
-var
-   InterfaceObject : TInterfaceBase;
+Var
+  InterfaceObject: TInterfaceBase;
 
-implementation
+Implementation 
 
-uses 
-   Win32Int;
+Uses
+  Win32Int, Forms;
 
-initialization
+Initialization
 
-   InterfaceObject := TWin32Object.Create;
+InterfaceObject := TWin32Object.Create;
 
-finalization
+Finalization
 
-   InterfaceObject.Free;
+Application.Free;
+Application := Nil;
 
-end.
+InterfaceObject.Free;
+
+End.

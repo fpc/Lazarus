@@ -17,184 +17,223 @@
  ***************************************************************************/ 
 } 
  
-unit Win32Int;
+Unit Win32Int;
 
-{$I checkcompiler.inc}
+{ $I checkcompiler.inc}
 
-{$mode objfpc} 
+{$MODE OBJFPC} 
 {$LONGSTRINGS ON}
 
-interface
+Interface
 
-{$ifdef Trace}
+{$IFDEF Trace}
 {$ASSERTIONS ON}
-{$endif}
+{$ENDIF}
  
-uses
-  Windows, InterfaceBase, SysUtils, LMessages, Classes, Controls, ExtCtrls,
-  Forms, Dialogs, VclGlobals, StdCtrls, ComCtrls, LclLinux, Win32Def,
-  DynHashArray;
- 
-Var AppName : PChar;
-    FormClassName : PChar;
+{ 
+  When editing this unit list, be sure to keep Windows listed first to ensure
+  successful compilation.
+}
+Uses
+  Windows, Classes, ComCtrls, Controls, Dialogs, DynHashArray, ExtCtrls, Forms,
+  InterfaceBase, LCLLinux, LMessages, StdCtrls, SysUtils, VCLGlobals, Win32Def;
+
+Var
+  AppName: PChar;
+  FormClassName: PChar;
 
 Const
   ClsName = 'MainWinClass';
 
 Type
-   TAlignment = Record // New record to create a virtual alignment control
-     Parent: HWnd;     // Parent Control
-     Self: HWnd;       // Virtual control handle of alignment
-     XAlign: Integer;  // Horizontal alignment
-     YAlign: Integer;  // Vertical alignment
-     XScale: Real;     // Horizontal scaling
-     YScale: Real;     // Vertical scaling
-   End;
+  { Virtual alignment-control record }
+  TAlignment = Record
+    Parent: HWnd;     // Parent Control
+    Self: HWnd;       // Virtual control handle of alignment
+    XAlign: Integer;  // Horizontal alignment
+    YAlign: Integer;  // Vertical alignment
+    XScale: Real;     // Horizontal scaling
+    YScale: Real;     // Vertical scaling
+  End;
 
-   TWin32Object = Class(TInterfaceBase)
-   private
-      FKeyStateList: TList; // Keeps track of which keys are pressed
-      FDeviceContexts: TDynHashArray;
-      FGDIObjects: TDynHashArray;
-      FMessageQueue: TList;
-      FToolTipWindow: HWND;
-      FAccelGroup: HACCEL;
-      FTimerData : TList;       // keeps track of timer evenet structures
+  { Win32 interface-object class }
+  TWin32Object = Class(TInterfaceBase)
+  Private
+    FKeyStateList: TList; // Keeps track of which keys are pressed
+    FDeviceContexts: TDynHashArray;
+    FGDIObjects: TDynHashArray;
+    FMessageQueue: TList;
+    FToolTipWindow: HWND;
+    FAccelGroup: HACCEL;
+    FTimerData : TList;       // Keeps track of timer event structures
 
-      { New fields for the Win32 target }
-      FMenu: HMENU; // Main menu/menu bar
-      FSubMenu: HMENU; // current sub menu
-      FControlIndex: Cardinal; // Win32-API control index.
-      FParentWindow: HWND; // The parent window
-      FSender: TObject; // The sender
-      FMessage: MSG; // The Windows message
-      FHkProc: HHOOK; // Hooking procedure
-      FAlignment: TAlignment; // Tracks alignment
-      { End of new fields }
+    FAlignment: TAlignment; // Tracks alignment
+    FControlIndex: Cardinal; // Win32-API control index
+    FHkProc: HHOOK; // Hooking procedure
+    FMainForm: TForm;
+    FMenu: HMENU; // Main menu/menu bar
+    FMessage: TMSG; // The Windows message
+    FParentWindow: HWND; // The parent window
+    FSender: TObject; // The sender
+    FSubMenu: HMENU; // current sub menu
+    //FWndList: TList; // Collection of windows with properties
+    FWndProc: WNDPROC;
 
-      FStockNullBrush: HBRUSH;
-      FStockBlackBrush: HBRUSH;
-      FStockLtGrayBrush: HBRUSH;
-      FStockGrayBrush: HBRUSH;
-      FStockDkGrayBrush: HBRUSH;
-      FStockWhiteBrush: HBRUSH;
-      
-      procedure CreateComponent(Sender : TObject);
-      procedure AddChild(Parent,Child : Pointer; Left,Top: Integer);
-      procedure ResizeChild(Sender : TObject; Left,Top,Width,Height : Integer);
-      function GetLabel(CompStyle: Integer; P : Pointer) : String;
-      procedure AssignSelf(Child ,Data : Pointer);
-      procedure ReDraw(Child : Pointer);
-      Procedure SetCursor(Sender : TObject);
-      
-      function IsValidDC(const DC: HDC): Boolean;
-      function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
-      function IsValidGDIObjectType(const GDIObject: HGDIOBJ; const GDIType: TGDIType): Boolean;
-      function NewGDIObject(const GDIType: TGDIType): PGdiObject;
-      function NewDC: PDeviceContext;
-      function CreateDefaultBrush: PGdiObject;
-      function CreateDefaultFont: PGdiObject;
-      function CreateDefaultPen: PGdiObject;
+    FStockNullBrush: HBRUSH;
+    FStockBlackBrush: HBRUSH;
+    FStockLtGrayBrush: HBRUSH;
+    FStockGrayBrush: HBRUSH;
+    FStockDkGrayBrush: HBRUSH;
+    FStockWhiteBrush: HBRUSH;
 
-      procedure ShowHide(Sender : TObject);
-      procedure AddNBPage(Parent,Child: TObject; Index: Integer);
-      procedure RemoveNBPage(Parent: TObject; Index: Integer);
-      procedure SetText(Child,Data : Pointer);
-      procedure SetColor(Sender : TObject);
-      Procedure SetPixel(Sender : TObject; Data : Pointer);
-      Procedure GetPixel(Sender : TObject; Data : Pointer);
-      function GetValue (Sender : TObject; Data : pointer) : integer;
-      function SetValue (Sender : TObject; Data : pointer) : integer;
-      function SetProperties (Sender: TObject) : integer;
-      procedure AttachMenu(Sender: TObject);
+    Procedure CreateComponent(Sender: TObject);
+    Procedure AddChild(Parent, Child: HWND; Left, Top: Integer);
+    Procedure ResizeChild(Sender: TObject; Left, Top, Width, Height: Integer);
+    Function GetLabel(CompStyle: Integer; Window: HWnd): String;
+    Procedure AssignSelf(Window: HWnd; Data: Pointer);
+    Procedure ReDraw(Child: TObject);
+    Procedure SetCursor(Sender: TObject);
+    Procedure SetLimitText(Window: HWND; Limit: Word);
+ 
+    Function IsValidDC(const DC: HDC): Boolean;
+    Function IsValidGDIObject(const GDIObject: HGDIOBJ): Boolean;
+    Function IsValidGDIObjectType(const GDIObject: HGDIOBJ; const GDIType: TGDIType): Boolean;
+    Function NewGDIObject(const GDIType: TGDIType): PGdiObject;
+    Function NewDC: PDeviceContext;
+    Function CreateDefaultBrush: PGdiObject;
+    Function CreateDefaultFont: PGdiObject;
+    Function CreateDefaultPen: PGdiObject;
 
-      Function WinRegister: Boolean;
-      procedure SetName(Child ,Data : Pointer);
-      procedure ShowHide(CompStyle : Integer; P : Pointer ; visible : boolean);
-      procedure AddNBPage(Parent,Child: Pointer; Index: Integer);
-      procedure RemoveNBPage(Parent,Child: Pointer; Index: Integer);
-      procedure GetFontinfo(Sender : TObject; Data : Pointer);
-      procedure DrawFillRect(Child,Data : Pointer);
-      procedure DrawRect(Child,Data : Pointer);
-      procedure DrawLine(Child,Data : Pointer);
-      procedure DrawText(Child,Data : Pointer);
-   public
-      constructor Create;
-      destructor Destroy; override;
-      Function  GetText(Sender: TControl; Var Data: String): Boolean; Override;
-      procedure SetLabel(Sender : TObject; Data : Pointer);
-      procedure IntSendMessage(LM_Message : Integer; CompStyle : Integer; Var P : Pointer; Val1 : Integer; Var Str1 : String);
-      function  IntSendMessage2( LM_Message : Integer; Parent,Child, Data : Pointer) : Integer;
-      function  IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
-      procedure SetCallback(Msg : LongInt; Sender : TObject); override;
-      procedure RemoveCallbacks(Sender : TObject); override;
-      procedure HandleEvents; override;
-      procedure DoEvents; override;
-      Procedure WaitMessage; Override;
-      procedure AppTerminate; override;
-      procedure Init; override;
-      function  UpdateHint(Sender: TObject): Integer; override;
-      function  RecreateWnd(Sender: TObject): Integer; override;
-      Procedure MessageBox(Message, Title: String; Flags: Cardinal);
-      {$I win32winapih.inc}
-   end;
+    Procedure ShowHide(Sender: TObject);
+    Procedure AddNBPage(Parent, Child: TObject; Index: Integer);
+    Procedure RemoveNBPage(Parent: TObject; Index: Integer);
+    Procedure SetText(Window: HWND; Data: Pointer);
+    Procedure SetColor(Sender : TObject);
+    Procedure SetPixel(Sender: TObject; Data: Pointer);
+    Procedure GetPixel(Sender: TObject; Data: Pointer);
+    Function GetValue (Sender: TObject; Data: pointer): Integer;
+    Function SetValue (Sender: TObject; Data: pointer): Integer;
+    Function SetProperties (Sender: TObject): Integer;
+    Procedure AttachMenu(Sender: TObject);
+
+    Function WinRegister: Boolean;
+    Procedure SetName(Window: HWND; Value: PChar);
+    Procedure SetOwner(Window: HWND; Owner: TObject);
+    Procedure ShowHide(CompStyle: Integer; P: Pointer; Visible: Boolean);
+    Procedure AddNBPage(Parent, Child: Pointer; Index: Integer);
+    Procedure RemoveNBPage(Parent, Child: Pointer; Index: Integer);
+    Procedure GetFontInfo(Sender: TObject; Data: Pointer);
+    Procedure DrawFillRect(Child: TObject; Data: Pointer);
+    Procedure DrawRect(Child: TObject; Data: PRect);
+    Procedure DrawLine(Child: TObject; Data: Pointer);
+    Procedure DrawText(Child: TObject; Data: Pointer);
+    Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
+    Procedure NormalizeIconName(Var IconName: String);
+    Procedure CreateCommonDialog(Sender: TObject);
+  Public
+    { Constructor of the class }
+    Constructor Create;
+    { Destructor of the class }
+    Destructor Destroy; Override;
+    { Initialize the API }
+    Procedure Init; Override;
+    { Get the text from control Sender and store it in variable Data }
+    Function GetText(Sender: TControl; Var Data: String): Boolean; Override;
+    { Set Label of control Sender to Data }
+    Procedure SetLabel(Sender: TObject; Data: Pointer);
+    { Process Lazarus message LM_Message }
+    Procedure IntSendMessage(LM_Message: Integer; CompStyle: Integer; Var P: Pointer; Val1: Integer; Var Str1: String);
+    { Process Lazarus message LM_Message, version 2 }
+    Function IntSendMessage2(LM_Message: Integer; Parent, Child, Data: Pointer): Integer;
+    { Process Lazarus message LM_Message and return an integer result }
+    Function IntSendMessage3(LM_Message: Integer; Sender: TObject; Data: Pointer) : Integer; Override;
+    { Creates a callback of Lazarus message Msg for Sender }
+    Procedure SetCallback(Msg: LongInt; Sender: TObject); Override;
+    { Removes all callbacks for Sender }
+    Procedure RemoveCallbacks(Sender: TObject); Override;
+    { Processes all events (Window messages) in the queue }
+    Procedure DoEvents; Override;
+    { Handle all events (Window messages) }
+    Procedure HandleEvents; Override;
+    { Halt until a message is received }
+    Procedure WaitMessage; Override;
+    { Abruptly halt execution of the program }
+    Procedure AppTerminate; Override;
+    { Update a hint (tool tip) }
+    Function UpdateHint(Sender: TObject): Integer; Override;
+    { Create a window again }
+    Function RecreateWnd(Sender: TObject): Integer; Override;
+
+    {$I win32winapih.inc}
+  End;
    
-   {$I win32listslh.inc}
+  {$I win32listslh.inc}
 
-       wPointer = Pointer;
-       PWin32Control = ^TWin32Control;
-       PPWin32Control = ^PWin32Control;
-       TWin32Control = record
-            theobject :TWin32Object;
-            private_flags :Word;
-            state : Byte;
-            saved_state : Byte;
-            name : Pchar;
-            thestyle : pointer;
-            window : HWnd;
-            parent : PWin32Control;
-         end;
+  WPointer = Pointer;
+  PWin32Control = ^TWin32Control;
+  PPWin32Control = ^PWin32Control;
+  { Properies of the Windows control }
+  TWin32Control = Record
+    TheObject: TWin32Object;
+    Private_Flags: Word;
+    State: Byte;
+    Saved_State: Byte;
+    Name: PChar;
+    TheStyle: Pointer;
+    Window: HWnd;
+    Parent: PWin32Control;
+  End;
 
-   PTabInfo = ^TTabInfo;
-   TTabInfo = Record
-     Caption: PChar;
-     Index: Cardinal;
-   End;
+  PTabInfo = ^TTabInfo;
+  { Tab information }
+  TTabInfo = Record
+    Caption: PChar;
+    Index: Cardinal;
+  End;
 
-   TWin32KeyType = (WIN32_KEY_PRESS, WIN32_KEY_RELEASE);
-   PWin32KeyEvent = ^TWin32KeyEvent;
-   TWin32KeyEvent = Record
-     KeyVal: Word;
-     Length: Integer;
-     Send_Event: Integer;
-     State: Integer;
-     TheString: String;
-     TheType: TWin32KeyType;
-     Window: HWND;
-   End;
-   
-   TEventProc = record
-      Name : String[25];
-      CallBack : Procedure(Data : TObject);
-      Data : Pointer;
-   End;
+  { Enumerated type of key states }
+  TWin32KeyType = (WIN32_KEY_PRESS, WIN32_KEY_RELEASE);
+  PWin32KeyEvent = ^TWin32KeyEvent;
+  { Key event record }
+  TWin32KeyEvent = Record
+    KeyVal: Word;
+    Length: Integer;
+    Send_Event: Integer;
+    State: Integer;
+    TheString: String;
+    TheType: TWin32KeyType;
+    Window: HWND;
+  End;
 
-   CallbackProcedure = Function: Boolean;
-   TCbFunc = Function(Win32Control: PWin32Control; Event: Pointer; Data: Pointer): Boolean;
-   PCbFunc = ^TCbFunc;
+  { Record of key data for events }
+  TEventProc = record
+    Name : String[25];
+    CallBack : Procedure(Data : TObject);
+    Data : Pointer;
+  End;
 
-   pTRect = ^TRect;
+  { Procedural type for casting as a callback procedure }
+  CallbackProcedure = Function: Boolean;
+  { Procedural type for casting as a callback function }
+  TCbFunc = Function(Win32Control: HWND; Event: Pointer; Data: Pointer): Boolean;
+  PCbFunc = ^TCbFunc;
 
-
-  procedure EventTrace(message : string; data : pointer);
+  pTRect = ^TRect;
+  
+  { Asserts a trace for event named Message in the object Data }
+  Procedure EventTrace(Message: String; Data: TObject);
 
 Implementation
 
-uses WinExt, Graphics, buttons, Menus, CListBox;
+Uses
+  Arrow, Buttons, Calendar, CListBox, Graphics, Menus, Process, Spin, WinExt;
 
 {$I win32listsl.inc}
 
 Type
+  PList = ^TList;
+  PLMNotebookEvent = ^TLMNotebookEvent;
+
   { Lazarus Message structure for call backs }
   TLazMsg = Record
     Window: HWND;
@@ -210,56 +249,97 @@ Type
     Reserved: Pointer;
   End;
 
+  { Linked list of objects for events }
+  PLazObject = ^TLazObject;
+  TLazObject = Record
+    Parent: TObject;
+    Messages: TList;
+    Next: PLazObject;
+  End;
+
+  {$IFDEF VER1_1}
+    TMsgArray = Array Of Integer;
+  {$ELSE}
+    TMsgArray = Array[0..1] Of Integer;
+  {$ENDIF}
+
+  TPrivateControl = Class(TControl)
+  Public
+    Procedure WndProc(Var LMsg: TLMessage); Override;
+  End;
+
+  Procedure TPrivateControl.WndProc(Var LMsg: TLMessage);
+  Begin
+    Inherited WndProc(LMsg);
+  End;
+
 Const
   IcoExt: String = '.ico';
+  BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
 
 Var
   FromCBProc: Boolean;
-  LMessage: Integer;
-  signalFunc: Pointer;
   LazMsg: TLazMsg;
-  
-const
+  LazObject: PLazObject;
+  LMessage: Integer;
+  OldClipboardViewer: HWND;
+  OrigWndProc: WNDPROC;
+  SignalFunc: Pointer;
+  WndList: TList;
+
+Const
 
   KEYMAP_VKUNKNOWN = $10000;
   KEYMAP_TOGGLE    = $20000;
   KEYMAP_EXTENDED  = $40000;
 
-type
-  { lazarus GtkInterface definition for additional timer data, not in gtk }
+Type
+  { record of data for timers }
   PWin32ITimerInfo = ^TWin32ITimerinfo;
-  TWin32ITimerInfo = record
-    Handle   : hWND;
+  TWin32ITimerInfo = Record
+    Handle   : HWND;
     IDEvent  : Integer;
     TimerFunc: TFNTimerProc;
-  end;
+  End;
 
 {$I win32proc.inc}
 {$I win32callback.inc}
 {$I win32object.inc}
 {$I win32winapi.inc}
 
+Var
+  N: Integer;
 
+Initialization
 
-var
-  n: Integer;
+Assert(False, 'Trace:win32int.pp - Initialization');
+WndList := TList.Create;
 
+Finalization
 
-initialization
-  
+Assert(False, 'Trace:win32int.pp - Finalization');
+WndList.Free;
+WndList := Nil;
 
-  {gtk_handler_quark := g_quark_from_static_string('gtk-signal-handlers');
+End.
 
-  Target_Table[0].Target := 'STRING';
-  Target_Table[0].Flags := 0;
-  Target_Table[0].Info := TARGET_STRING;
-  Target_Table[1].Target := 'text/plain';
-  Target_Table[1].Flags := 0;
-  Target_Table[1].Info := TARGET_STRING;
-  Target_Table[2].Target := 'application/x-rootwin-drop';
-  Target_Table[2].Flags := 0;
-  Target_Table[2].Info := TARGET_ROOTWIN;
+{ =============================================================================
 
-  MCaptureHandle := 0;}
+  $Log$
+  Revision 1.5  2002/01/05 13:16:09  lazarus
+  MG: win32 interface update from Keith Bowes
 
-end.
+  Revision 1.4  2001/11/01 22:40:13  lazarus
+  MG: applied Keith Bowes win32 interface updates
+
+  Revision 1.3  2001/08/02 12:58:35  lazarus
+  MG: win32 interface patch from Keith Bowes
+
+  Revision 1.2  2000/12/12 14:16:43  lazarus
+  Updated OI from Mattias
+  Shane
+
+  Revision 1.1  2000/07/13 10:28:29  michael
+  + Initial import
+
+}

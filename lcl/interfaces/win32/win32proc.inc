@@ -2,10 +2,11 @@
                         Misc Support Functs  
  ******************************************************************************
    used by:
-     GTKObject
-     GTKWinAPI
-     GTKCallback
+     win32object.inc
+     //GTKWinAPI
+     //GTKCallback
  ******************************************************************************)
+
 
 {$IFOPT C-}
 // Uncomment for local trace
@@ -14,49 +15,480 @@
 {$ENDIF}
 
 {------------------------------------------------------------------------------
+  Function: CS_To_String
+  Params: CompStyle - Component Style
+  Returns: The component style name
+
+  Converts a component style identIfier into the correct component style name
+ ------------------------------------------------------------------------------}
+Function CS_To_String(CompStyle: Integer): String;
+Begin
+  Case CompStyle of
+    csNone:
+      Result := 'csNone';
+    csAlignment:
+      Result := 'csAlignment';
+    csBox:
+      Result := 'csBox';
+    csButton:
+      Result := 'csButton';
+    csComboBox:
+      Result := 'csComboBox';
+    csCheckbox:
+      Result := 'csCheckbox';
+    csEdit:
+      Result := 'csEdit';
+    csForm:
+      Result := 'csForm';
+    csLabel:
+      Result := 'csLabel';
+    csGTKTable:
+      Result := 'csGTKTable';
+    csScrollBar:
+      Result := 'csScrollBar';
+    csListView:
+      Result := 'csListView';
+    csMainForm:
+      Result := 'csMainForm';
+    csMemo:
+      Result := 'csMemo';
+    csMainMenu:
+      Result := 'csMainMenu';
+    csMenuBar:
+      Result := 'csMenuBar';
+    csMenuItem:
+      Result := 'csMenuItem';
+    csNotebook:
+      Result := 'csNotebook';
+    csFileDialog:
+      Result := 'csFileDialog';
+    csRadioButton:
+      Result := 'csRadioButton';
+    csScrolledWinDow:
+      Result := 'csScrolledWinDow';
+    csSpinEdit:
+      Result := 'csSpinEdit';
+    csStatusBar:
+      Result := 'csStatusBar';
+    csTable:
+      Result := 'csTable';
+    csToggleBox:
+      Result := 'csToggleBox';
+    25: //csVScrollBar
+      Result := 'csVScrollBar';
+    csFrame:
+      Result := 'csFrame';
+    csButtonBox:
+      Result := 'csButtonBox';
+    csCanvas:
+      Result := 'csCanvas';
+    csGroupBox:
+      Result := 'csGroupBox';
+    csFont:
+      Result := 'csFont';
+    csPen:
+      Result := 'csPen';
+    csBrush:
+      Result := 'csBrush';
+    33: //csTimer
+      Result := 'csTimer';
+    csPage:
+      Result := 'csPage';
+    csColorDialog:
+      Result := 'csColorDialog';
+    csListBox:
+      Result := 'csListBox';
+    csFontDialog:
+      Result := 'csFontDialog';
+    csProgressBar:
+      Result := 'csProgressBar';
+    csTrackBar:
+      Result := 'csTrackBar';
+    csFixed:
+      Result := 'csFixed';
+    csImage:
+      Result := 'csImage';
+    csToolbar:
+      Result := 'csToolbar';
+    csToolButton:
+      Result := 'csToolButton';
+    csBitBtn:
+      Result := 'csBitBtn';
+    csCListBox:
+      Result := 'csCListBox';
+    csSpeedButton:
+      Result := 'csSpeedButton';
+    csPopupMenu:
+      Result := 'csPopupMenu';
+    csHintWinDow:
+      Result := 'csHintWinDow';
+    csCalEndar:
+      Result := 'csCalEndar';
+    csArrow:
+      Result := 'csArrow';
+    Else
+      Result := Format('Unknown component style %D', [CompStyle]);
+  End; {Case}
+End;
+
+{------------------------------------------------------------------------------
+  Function: LM_To_String
+  Params: LM_Message - Input lazarus message
+  Returns: Lazarus message name
+
+  Converts a lazarus message identIfier to the appropriate name
+
+  NOTE: This Function has been superseded by and simply calls
+        LMessages.GetMessageName
+ ------------------------------------------------------------------------------}
+Function LM_To_String(LM_Message: Integer): String;
+Begin
+  Result := GetMessageName(LM_Message);
+End;
+
+{------------------------------------------------------------------------------
+  Function: WM_To_String
+  Params: WM_Message - a WinDows message
+  Returns: A WinDows-message name
+
+  Converts a winDows message identIfier to a string
+ ------------------------------------------------------------------------------}
+Function WM_To_String(WM_Message: Integer): String;
+Begin
+ Case WM_Message of
+  $0000: Result := 'WM_NULL';
+  $0001: Result := 'WM_CREATE';
+  $0002: Result := 'WM_DESTROY';
+  $0003: Result := 'WM_MOVE';
+  $0005: Result := 'WM_SIZE';
+  $0006: Result := 'WM_ACTIVATE';
+  $0007: Result := 'WM_SETFOCUS';
+  $0008: Result := 'WM_KILLFOCUS';
+  $000A: Result := 'WM_ENABLE';
+  $000B: Result := 'WM_SETREDRAW';
+  $000C: Result := 'WM_SETTEXT';
+  $000D: Result := 'WM_GETTEXT';
+  $000E: Result := 'WM_GETTEXTLENGTH';
+  $000F: Result := 'WM_PAINT';
+  $0010: Result := 'WM_CLOSE';
+  $0011: Result := 'WM_QUERYEndSESSION';
+  $0012: Result := 'WM_QUIT';
+  $0013: Result := 'WM_QUERYOPEN';
+  $0014: Result := 'WM_ERASEBKGND';
+  $0015: Result := 'WM_SYSCOLORCHANGE';
+  $0016: Result := 'WM_EndSESSION';
+  $0017: Result := 'WM_SYSTEMERROR';
+  $0018: Result := 'WM_SHOWWINDoW';
+  $0019: Result := 'WM_CTLCOLOR';
+  $001A: Result := 'WM_WININICHANGE or WM_SETTINGCHANGE';
+  $001B: Result := 'WM_DEVMODECHANGE';
+  $001C: Result := 'WM_ACTIVATEAPP';
+  $001D: Result := 'WM_FONTCHANGE';
+  $001E: Result := 'WM_TIMECHANGE';
+  $001F: Result := 'WM_CANCELMODE';
+  $0020: Result := 'WM_SETCURSOR';
+  $0021: Result := 'WM_MOUSEACTIVATE';
+  $0022: Result := 'WM_CHILDACTIVATE';
+  $0023: Result := 'WM_QUEUESYNC';
+  $0024: Result := 'WM_GETMINMAXINFO';
+  $0026: Result := 'WM_PAINTICON';
+  $0027: Result := 'WM_ICONERASEBKGND';
+  $0028: Result := 'WM_NEXTDLGCTL';
+  $002A: Result := 'WM_SPOOLERSTATUS';
+  $002B: Result := 'WM_DRAWITEM';
+  $002C: Result := 'WM_MEASUREITEM';
+  $002D: Result := 'WM_DELETEITEM';
+  $002E: Result := 'WM_VKEYTOITEM';
+  $002F: Result := 'WM_CHARTOITEM';
+  $0030: Result := 'WM_SETFONT';
+  $0031: Result := 'WM_GETFONT';
+  $0032: Result := 'WM_SETHOTKEY';
+  $0033: Result := 'WM_GETHOTKEY';
+  $0037: Result := 'WM_QUERYDRAGICON';
+  $0039: Result := 'WM_COMPAREITEM';
+  $003D: Result := 'WM_GETOBJECT';
+  $0041: Result := 'WM_COMPACTING';
+  $0044: Result := 'WM_COMMNOTIfY { obsolete in Win32}';
+  $0046: Result := 'WM_WINDoWPOSCHANGING';
+  $0047: Result := 'WM_WINDoWPOSCHANGED';
+  $0048: Result := 'WM_POWER';
+  $004A: Result := 'WM_COPYDATA';
+  $004B: Result := 'WM_CANCELJOURNAL';
+  $004E: Result := 'WM_NOTIfY';
+  $0050: Result := 'WM_INPUTLANGCHANGEREQUEST';
+  $0051: Result := 'WM_INPUTLANGCHANGE';
+  $0052: Result := 'WM_TCARD';
+  $0053: Result := 'WM_HELP';
+  $0054: Result := 'WM_USERCHANGED';
+  $0055: Result := 'WM_NOTIfYFORMAT';
+  $007B: Result := 'WM_CONTEXTMENU';
+  $007C: Result := 'WM_STYLECHANGING';
+  $007D: Result := 'WM_STYLECHANGED';
+  $007E: Result := 'WM_DISPLAYCHANGE';
+  $007F: Result := 'WM_GETICON';
+  $0080: Result := 'WM_SETICON';
+  $0081: Result := 'WM_NCCREATE';
+  $0082: Result := 'WM_NCDESTROY';
+  $0083: Result := 'WM_NCCALCSIZE';
+  $0084: Result := 'WM_NCHITTEST';
+  $0085: Result := 'WM_NCPAINT';
+  $0086: Result := 'WM_NCACTIVATE';
+  $0087: Result := 'WM_GETDLGCODE';
+  $00A0: Result := 'WM_NCMOUSEMOVE';
+  $00A1: Result := 'WM_NCLBUTTONDoWN';
+  $00A2: Result := 'WM_NCLBUTTONUP';
+  $00A3: Result := 'WM_NCLBUTTONDBLCLK';
+  $00A4: Result := 'WM_NCRBUTTONDoWN';
+  $00A5: Result := 'WM_NCRBUTTONUP';
+  $00A6: Result := 'WM_NCRBUTTONDBLCLK';
+  $00A7: Result := 'WM_NCMBUTTONDoWN';
+  $00A8: Result := 'WM_NCMBUTTONUP';
+  $00A9: Result := 'WM_NCMBUTTONDBLCLK';
+  $0100: Result := 'WM_KEYFIRST or WM_KEYDoWN';
+  $0101: Result := 'WM_KEYUP';
+  $0102: Result := 'WM_CHAR';
+  $0103: Result := 'WM_DEADCHAR';
+  $0104: Result := 'WM_SYSKEYDoWN';
+  $0105: Result := 'WM_SYSKEYUP';
+  $0106: Result := 'WM_SYSCHAR';
+  $0107: Result := 'WM_SYSDEADCHAR';
+  $0108: Result := 'WM_KEYLAST';
+  $010D: Result := 'WM_IME_STARTCOMPOSITION';
+  $010E: Result := 'WM_IME_EndCOMPOSITION';
+  $010F: Result := 'WM_IME_COMPOSITION or WM_IME_KEYLAST';
+  $0110: Result := 'WM_INITDIALOG';
+  $0111: Result := 'WM_COMMAND';
+  $0112: Result := 'WM_SYSCOMMAND';
+  $0113: Result := 'WM_TIMER';
+  $0114: Result := 'WM_HSCROLL';
+  $0115: Result := 'WM_VSCROLL';
+  $0116: Result := 'WM_INITMENU';
+  $0117: Result := 'WM_INITMENUPOPUP';
+  $011F: Result := 'WM_MENUSELECT';
+  $0120: Result := 'WM_MENUCHAR';
+  $0121: Result := 'WM_ENTERIDLE';
+  $0122: Result := 'WM_MENURBUTTONUP';
+  $0123: Result := 'WM_MENUDRAG';
+  $0124: Result := 'WM_MENUGETOBJECT';
+  $0125: Result := 'WM_UNINITMENUPOPUP';
+  $0126: Result := 'WM_MENUCOMMAND';
+  $0132: Result := 'WM_CTLCOLORMSGBOX';
+  $0133: Result := 'WM_CTLCOLOREDIT';
+  $0134: Result := 'WM_CTLCOLORLISTBOX';
+  $0135: Result := 'WM_CTLCOLORBTN';
+  $0136: Result := 'WM_CTLCOLORDLG';
+  $0137: Result := 'WM_CTLCOLORSCROLLBAR';
+  $0138: Result := 'WM_CTLCOLORSTATIC';
+  $0200: Result := 'WM_MOUSEFIRST or WM_MOUSEMOVE';
+  $0201: Result := 'WM_LBUTTONDoWN';
+  $0202: Result := 'WM_LBUTTONUP';
+  $0203: Result := 'WM_LBUTTONDBLCLK';
+  $0204: Result := 'WM_RBUTTONDoWN';
+  $0205: Result := 'WM_RBUTTONUP';
+  $0206: Result := 'WM_RBUTTONDBLCLK';
+  $0207: Result := 'WM_MBUTTONDoWN';
+  $0208: Result := 'WM_MBUTTONUP';
+  $0209: Result := 'WM_MBUTTONDBLCLK';
+  $020A: Result := 'WM_MOUSEWHEEL or WM_MOUSELAST';
+  $0210: Result := 'WM_PARENTNOTIfY';
+  $0211: Result := 'WM_ENTERMENULOOP';
+  $0212: Result := 'WM_EXITMENULOOP';
+  $0213: Result := 'WM_NEXTMENU';
+  $0214: Result := 'WM_SIZING';
+  $0215: Result := 'WM_CAPTURECHANGED';
+  $0216: Result := 'WM_MOVING';
+  $0218: Result := 'WM_POWERBROADCAST';
+  $0219: Result := 'WM_DEVICECHANGE';
+  $0220: Result := 'WM_MDICREATE';
+  $0221: Result := 'WM_MDIDESTROY';
+  $0222: Result := 'WM_MDIACTIVATE';
+  $0223: Result := 'WM_MDIRESTORE';
+  $0224: Result := 'WM_MDINEXT';
+  $0225: Result := 'WM_MDIMAXIMIZE';
+  $0226: Result := 'WM_MDITILE';
+  $0227: Result := 'WM_MDICASCADE';
+  $0228: Result := 'WM_MDIICONARRANGE';
+  $0229: Result := 'WM_MDIGETACTIVE';
+  $0230: Result := 'WM_MDISETMENU';
+  $0231: Result := 'WM_ENTERSIZEMOVE';
+  $0232: Result := 'WM_EXITSIZEMOVE';
+  $0233: Result := 'WM_DROPFILES';
+  $0234: Result := 'WM_MDIREFRESHMENU';
+  $0281: Result := 'WM_IME_SETCONTEXT';
+  $0282: Result := 'WM_IME_NOTIfY';
+  $0283: Result := 'WM_IME_CONTROL';
+  $0284: Result := 'WM_IME_COMPOSITIONFULL';
+  $0285: Result := 'WM_IME_SELECT';
+  $0286: Result := 'WM_IME_CHAR';
+  $0288: Result := 'WM_IME_REQUEST';
+  $0290: Result := 'WM_IME_KEYDoWN';
+  $0291: Result := 'WM_IME_KEYUP';
+  $02A1: Result := 'WM_MOUSEHOVER';
+  $02A3: Result := 'WM_MOUSELEAVE';
+  $0300: Result := 'WM_CUT';
+  $0301: Result := 'WM_COPY';
+  $0302: Result := 'WM_PASTE';
+  $0303: Result := 'WM_CLEAR';
+  $0304: Result := 'WM_UNDo';
+  $0305: Result := 'WM_REndERFORMAT';
+  $0306: Result := 'WM_REndERALLFORMATS';
+  $0307: Result := 'WM_DESTROYCLIPBOARD';
+  $0308: Result := 'WM_DRAWCLIPBOARD';
+  $0309: Result := 'WM_PAINTCLIPBOARD';
+  $030A: Result := 'WM_VSCROLLCLIPBOARD';
+  $030B: Result := 'WM_SIZECLIPBOARD';
+  $030C: Result := 'WM_ASKCBFORMATNAME';
+  $030D: Result := 'WM_CHANGECBCHAIN';
+  $030E: Result := 'WM_HSCROLLCLIPBOARD';
+  $030F: Result := 'WM_QUERYNEWPALETTE';
+  $0310: Result := 'WM_PALETTEISCHANGING';
+  $0311: Result := 'WM_PALETTECHANGED';
+  $0312: Result := 'WM_HOTKEY';
+  $0317: Result := 'WM_PRINT';
+  $0318: Result := 'WM_PRINTCLIENT';
+  $0358: Result := 'WM_HANDHELDFIRST';
+  $035F: Result := 'WM_HANDHELDLAST';
+  $0380: Result := 'WM_PENWINFIRST';
+  $038F: Result := 'WM_PENWINLAST';
+  $0390: Result := 'WM_COALESCE_FIRST';
+  $039F: Result := 'WM_COALESCE_LAST';
+  $03E0: Result := 'WM_DDE_FIRST or WM_DDE_INITIATE';
+  $03E1: Result := 'WM_DDE_TERMINATE';
+  $03E2: Result := 'WM_DDE_ADVISE';
+  $03E3: Result := 'WM_DDE_UNADVISE';
+  $03E4: Result := 'WM_DDE_ACK';
+  $03E5: Result := 'WM_DDE_DATA';
+  $03E6: Result := 'WM_DDE_REQUEST';
+  $03E7: Result := 'WM_DDE_POKE';
+  $03E8: Result := 'WM_DDE_EXECUTE or WM_DDE_LAST';
+  $0400: Result := 'WM_USER';
+  $8000: Result := 'WM_APP';
+  Else
+    Result := 'Unknown WM_Message = $' + IntToHex(WM_Message, 4);
+  End; {Case}
+End;
+
+{------------------------------------------------------------------------------
+  Procedure: EventTrace
+  Params: Message - Event name
+          Data    - Object which fired this event
+  Returns: Nothing
+  
+  Displays a trace about an event
+ ------------------------------------------------------------------------------}
+Procedure EventTrace(Message: String; Data: TObject);
+Begin
+  If Data = Nil Then
+    Assert(False, Format('Trace:Event [%S] fired', [Message]))
+  Else
+    Assert(False, Format('Trace:Event [%S] fired for %S',[Message, Data.Classname]));
+End;
+
+{------------------------------------------------------------------------------
+  Function: AssertEx
+  Params: Message  - Message sent
+          PassErr  - Pass error to a catching Procedure (default: False)
+          Severity - How severe is the error on a scale from 0 to 3
+                     (default: 0)
+  Returns: Nothing
+
+  An expanded, better version of Assert
+ ------------------------------------------------------------------------------}
+Procedure AssertEx(Const Message: String; Const PassErr: Boolean; Const Severity: Byte);
+Begin
+  Case Severity Of
+    0:
+    Begin
+      Assert(PassErr, Message);
+    End;
+    1:
+    Begin
+      Assert(PassErr, Format('Trace:%S', [Message]));
+    End;
+    2:
+    Begin
+      Case IsConsole Of
+        True:
+        Begin
+          WriteLn('Warning:', Message);
+        End;
+        False:
+        Begin
+          MessageBox(0, PChar(Message), 'Warning', MB_OK);
+        End;
+      End;
+    End;
+    3:
+    Begin
+      Case IsConsole Of
+        True:
+        Begin
+          WriteLn('Error:', Message);
+        End;
+        False:
+        Begin
+          MessageBox(0, PChar(Message), Nil, MB_OK);
+        End;
+      End;
+    End;
+  End;
+End;
+
+Procedure AssertEx(Const PassErr: Boolean; Const Message: String);
+Begin
+  AssertEx(Message, PassErr, 0);
+End;
+
+Procedure AssertEx(Const Message: String);
+Begin
+  AssertEx(Message, False, 0);
+End;
+
+
+{------------------------------------------------------------------------------
   Function: NewGDIRawImage
-  Params:  Width, Height: Size of the image
-           Depth:         Depth of the image
+  Params:  Width, Height - Size of the image
+           Depth         - Depth of the image
   Returns: a GDIRawImage
 
   Creates a RawImage
  ------------------------------------------------------------------------------}
-function NewGDIRawImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDIRawImage;
-begin
+Function NewGDIRawImage(Const AWidth, AHeight: Integer; Const ADepth: Byte): PGDIRawImage;
+Begin
   Result := AllocMem(SizeOf(TGDIRawImage) + ((AWidth * AHeight) - 1) * SizeOf(TGDIRGB));
-  with Result^ do
-  begin
+  With Result^ Do
+  Begin
     Height := AHeight;
     Width := AWidth;
     Depth := ADepth;
-  end;
-end;
+  End;
+End;
 
 
 {------------------------------------------------------------------------------
   Function: CopyDCData
-  Params:  DestinationDC:  a dc to copy data to
-           SourceDC: a dc to copy data from
-  Returns: True if succesfu
+  Params:  DestinationDC - a dc to copy data to
+           SourceDC      - a dc to copy data from
+  Returns: True If succesfu
 
   Creates a copy DC from the given DC
  ------------------------------------------------------------------------------}
-function CopyDCData(const DestinationDC, SourceDC: PDeviceContext): Boolean;
-begin
+Function CopyDCData(Const DestinationDC, SourceDC: PDeviceContext): Boolean;
+Begin
   Assert(False, Format('Trace:> [CopyDCData] DestDC:0x%x, SourceDC:0x%x', [Integer(DestinationDC), Integer(SourceDC)]));
   Result := (DestinationDC <> nil) and (SourceDC <> nil);
-  if Result
-  then begin
-    with DestinationDC^ do
-    begin
+  If Result
+  Then Begin
+    With DestinationDC^ Do
+    Begin
       hWnd := SourceDC^.hWnd;
       Drawable := SourceDC^.Drawable;
-      if (SourceDC^.GC = HDC(Nil)) or (Drawable = Nil) then
+      If (SourceDC^.GC = HDC(Nil)) or (Drawable = Nil) Then
         GC := HDC(Nil)
-      else
-      begin
+      Else
+      Begin
         
-      end;
+      End;
       PenPos := SourceDC^.PenPos;
       CurrentBitmap := SourceDC^.CurrentBitmap;
       CurrentFont := SourceDC^.CurrentFont;
@@ -65,300 +497,399 @@ begin
       CurrentTextColor := SourceDC^.CurrentTextColor;
       CurrentBackColor := SourceDC^.CurrentBackColor;
       SavedContext := nil;
-    end;
-  end;
+    End;
+  End;
   Assert(False, Format('Trace:< [CopyDCData] DestDC:0x%x, SourceDC:0x%x --> %d', [Integer(DestinationDC), Integer(SourceDC), Integer(Result)]));
-end;
+End;
 
 {------------------------------------------------------------------------------
   Procedure: SelectGDKBrushProps
-  Params:  DC: a (LCL)devicecontext
+  Params:  DC - a (LCL) device context
   Returns: Nothing
 
   Sets the forecolor and fill according to the brush
  ------------------------------------------------------------------------------}
-procedure SelectWin32BrushProps(const DC: HDC);
+Procedure SelectWin32BrushProps(Const DC: HDC);
 var
   LB: LogBrush;
-begin
-  with LB, PDeviceContext(DC)^, CurrentBrush^ do
-  begin
+Begin
+  With LB, PDeviceContext(DC)^, CurrentBrush^ Do
+  Begin
     Assert(False, 'TODO: Code SelectWin32BrushProps');
-    //Assert(False, Format('Trace:  [SelectGDKBrushProps] Fill: %d | Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [Integer(GDIBrushFill), GDIBrushColor.Pixel, GDIBrushColor.Red, GDIBrushColor.Green, GDIBrushColor.Blue]));
+    //Assert(False, Format('Trace:[SelectGDKBrushProps] Fill: %d | Color --> pixel: %d, red: 0x%x, green: 0x%x, blue: 0x%x', [Integer(GDIBrushFill), GDIBrushColor.Pixel, GDIBrushColor.Red, GDIBrushColor.Green, GDIBrushColor.Blue]));
     LBStyle := GDIBrushFill;
     LBColor := GDIBrushColor;
     SelectObject(GC, CreateBrushIndirect(TagLogBrush(LB)));
     SetBkColor(GC, CurrentBackCOlor);
     //TODO: Brush pixmap
-  end;
-end;
+  End;
+End;
 
 {------------------------------------------------------------------------------
-  Procedure: SelectGDKPenProps
-  Params:  DC: a (LCL)devicecontext
+  Procedure: SelectWin32PenProps
+  Params:  DC - a (LCL) device context
   Returns: Nothing
 
   Sets the forecolor and fill according to the pen
  ------------------------------------------------------------------------------}
-procedure SelectWin32PenProps(const DC: HDC);
-begin
-  Assert(False, 'TODO: Code SelectWin32PenProps');
-end;
+Procedure SelectWin32PenProps(Const DC: HDC);
+Var
+  Pen: HPEN;
+Begin
+  Assert(False, 'Trace:TODO: Code SelectWin32PenProps');
+  With PDeviceContext(DC)^, CurrentPen^ Do
+  Begin
+    Pen := CreatePen(GDIPenStyle, GDIPenWidth, GDIPenColor);
+    SetBkColor(GC, CurrentBackColor);
+    SelectObject(GC, Pen);
+  End;
+End;
 
 {------------------------------------------------------------------------------
-  Procedure: SelectGDKTextProps
-  Params:  DC: a (LCL)devicecontext
+  Procedure: SelectWin32TextProps
+  Params:  DC - a (LCL)devicecontext
   Returns: Nothing
 
   Sets the forecolor and fill according to the Textcolor
  ------------------------------------------------------------------------------}
-procedure SelectWin32TextProps(const DC: HDC);
-begin
+Procedure SelectWin32TextProps(Const DC: HDC);
+Begin
   Assert(False, 'TODO: Code SelectWin32TextProps');
-end;
+  With PDeviceContext(DC)^ Do
+  Begin
+    SetBkColor(GC, CurrentBackColor);
+    SetTextColor(GC, CurrentTextColor);
+  End;
+End;
 
 {------------------------------------------------------------------------------
-  Procedure: GTKEventState2ShiftState
-  Params:    KeyState: The gtk keystate
+  Function: GetShiftState
+  Params: None
+  Returns: A shift state
+
+  Creates a TShiftState set based on the status when the function was called.
+ ------------------------------------------------------------------------------}
+Function GetShiftState: TShiftState;
+Begin
+  Result := [];
+  If Hi(GetKeyState(VK_SHIFT)) = 1 Then
+    Result := Result + [ssShift];
+  If Hi(GetKeyState(VK_CAPITAL)) = 1 Then
+    Result := Result + [ssCaps];
+  If Hi(GetKeyState(VK_CONTROL)) = 1 Then
+    Result := Result + [ssCtrl];
+  If Hi(GetKeyState(VK_MENU)) = 1 Then
+    Result := Result + [ssAlt];
+  If Hi(GetKeyState(VK_SHIFT)) = 1 Then
+    Result := Result + [ssShift];
+  If Hi(GetKeyState(VK_CAPITAL)) = 1 Then
+    Result := Result + [ssCaps];
+  If Hi(GetKeyState(VK_CONTROL)) = 1 Then
+    Result := Result + [ssCtrl];
+  If Hi(GetKeyState(VK_NUMLOCK)) = 1 Then
+    Result := Result + [ssNum];
+  //TODO: ssSuper
+  If Hi(GetKeyState(VK_SCROLL)) = 1 Then
+    Result := Result + [ssScroll];
+  If ((Hi(GetKeyState(VK_LBUTTON)) = 1) And (GetSystemMetrics(SM_SWAPBUTTON) = 0)) Or ((Hi(GetKeyState(VK_RBUTTON)) = 1) And (GetSystemMetrics(SM_SWAPBUTTON) <> 0)) Then
+    Result := Result + [ssLeft];
+  If Hi(GetKeyState(VK_MBUTTON)) = 1 Then
+    Result := Result + [ssMiddle];
+  If ((Hi(GetKeyState(VK_RBUTTON)) = 1) And (GetSystemMetrics(SM_SWAPBUTTON) = 0)) Or ((Hi(GetKeyState(VK_LBUTTON)) = 1) And (GetSystemMetrics(SM_SWAPBUTTON) <> 0)) Then
+    Result := Result + [ssRight];
+  //TODO: ssAltGr
+End;
+
+{------------------------------------------------------------------------------
+  Function: Win32KeyState2ShiftState
+  Params:    KeyState - The Windows key state
   Returns:   the TShiftState for the given KeyState
 
-  GTKEventState2ShiftState converts a GTK event state to a LCL/Delphi TShiftState
+  Win32KeyState2ShiftState converts a Windows key state to a LCL/Delphi TShiftState
  ------------------------------------------------------------------------------}
-function GTKEventState2ShiftState(KeyState: Word): TShiftState;
-begin
-  Assert(False, 'TRACE: Using function GTKEventState2ShiftState which isn''t implemented yet');
-end;
+Function Win32KeyState2ShiftState(KeyState: Word): TShiftState;
+Begin
+  Assert(False, 'TRACE:Using Function Win32KeyState2ShiftState which isn''t implemented yet');
+  GetShiftState;
+End;
 
 
 {------------------------------------------------------------------------------
-  Procedure: GetGTKKeyInfo
-  Params:  Event:      Requested info  
-           KeyCode:    the ASCII key code of the eventkey
-           VirtualKey: the virtual key code of the eventkey
-           SysKey:     True if the key is a syskey
-           Extended:   True if the key is an extended key
-           Toggle:     True if the key is a toggle key and its value is on
+  Procedure: GetWin32KeyInfo
+  Params:  Event      - Requested info  
+           KeyCode    - the ASCII key code of the eventkey
+           VirtualKey - the virtual key code of the eventkey
+           SysKey     - True If the key is a syskey
+           ExtEnded   - True If the key is an extended key
+           Toggle     - True If the key is a toggle key and its value is on
   Returns: Nothing
   
-  GetGTKKeyInfo returns information about the given key event
+  GetWin32KeyInfo returns information about the given key event
  ------------------------------------------------------------------------------}
-procedure GetWin32KeyInfo(const Event: PWin32KeyEvent; var KeyCode, VirtualKey: Word; var SysKey, Extended, Toggle: Boolean);
-var
+Procedure GetWin32KeyInfo(Const Event: Integer; Var KeyCode, VirtualKey: Word; Var SysKey, Extended, Toggle: Boolean);
+Var
   TempKeyCode: Word;
   CtrlDown: Boolean;
-begin
-  Assert(False, 'TRACE: Using function GetWin32KeyInfo which isn''t implemented yet');
-  KeyCode := Word(Ord(Integer(Event)));
-  VirtualKey := MapVirtualKey(KeyCode, 1);
+Const
+  MVK_UNIFY_SIDES = 1;
+Begin
+  Assert(False, 'TRACE:Using function GetWin32KeyInfo which isn''t implemented yet');
+  KeyCode := Word(Event);
+  VirtualKey := MapVirtualKey(KeyCode, MVK_UNIFY_SIDES);
   TempKeyCode := KeyCode;
-  SysKey := SysKey;
+  SysKey := (VirtualKey = VK_SHIFT) Or (VirtualKey = VK_CONTROL) Or (VirtualKey = VK_MENU);
   CtrlDown := GetAsyncKeyState(VK_CONTROL) <> 0;
-  Extended := (VirtualKey = VK_LSHIFT) Or (VirtualKey = VK_RSHIFT) Or (VirtualKey = VK_LCONTROL) Or (VirtualKey = VK_RCONTROL) Or (VirtualKey = VK_LMENU) Or (VirtualKey = VK_RMENU);
-  Toggle := False;
-  
-  Assert(False, Format('Trace:[GetGTKKeyInfo] Event^.KeyVal %d, Event^.State %d, KeyCode %d, VirtualKey %d, SysKey %d, Extended %d, CtrlDown %d', [Integer(Event^.KeyVal), Integer(Event^.State), Integer(KeyCode), Integer(VirtualKey), Integer(SysKey), Integer(Extended), Integer(CtrlDown)]));
-end;
+  ExtEnded := (SysKey) Or (VirtualKey = VK_INSERT) Or (VirtualKey = VK_HOME) Or (VirtualKey = VK_LEFT) Or (VirtualKey = VK_UP) Or (VirtualKey = VK_RIGHT) Or (VirtualKey = VK_DOWN) Or (VirtualKey = VK_PRIOR) Or (VirtualKey = VK_NEXT) Or (VirtualKey = VK_END) Or (VirtualKey = VK_DIVIDE);
+  Toggle := Lo(GetKeyState(VirtualKey)) = 1;
+End;
 
 {------------------------------------------------------------------------------
-  Procedure: DeliverMessage
-  Params:    Message: the message to process
-  Returns:   True if handled
+  Function: DeliverMessage
+  Params:    Message - The message to process
+  Returns:   True If handled
 
-  Generic function whih calls the WindowProc if defined, otherwise the 
+  Generic function which calls the WindowProc if defined, otherwise the 
   dispatcher
  ------------------------------------------------------------------------------}
-function DeliverMessage(const Target: Pointer; var Message): Integer;
-begin
-if Target=nil then writeln('[DeliverMessage] nil');
-  if TObject(Target) is TControl 
-  then begin
-    TControl(Target).WindowProc(TLMessage(Message));
-  end else begin
+Function DeliverMessage(Const Target: Pointer; Var Message): Integer;
+Begin
+  If Target = Nil Then
+    WriteLn('[DeliverMessage] Nil');
+  If TObject(Target) Is TControl Then
+  Begin
+    TControl(Target).WinDowProc(TLMessage(Message));
+  End
+  Else
+  Begin
     TObject(Target).Dispatch(TLMessage(Message));
-  end;
-  
+  End;
+
   Result := TLMessage(Message).Result;
-end;
+End;
 
 {------------------------------------------------------------------------------
-  Function: ObjectToGTKObject
-  Params: AObject: A LCL Object
-  Returns:  The GTKObject of the given object
+  Function: DeliverMessage
+  Params: Target  - The target object
+          Message - The message to process
+  Returns: Message result
 
-  Returns the GTKObject of the given object, nil if no object available
+  Generic function which calls the WindowProc if defined, otherwise the
+  dispatcher
  ------------------------------------------------------------------------------}
-function ObjectToHWND(const AObject: TObject): HWND;
-var
-   handle : HWND;
-begin
-   if not assigned (AObject) then
-   begin
-      assert (false, 'TRACE:  [ObjectToGtkObject] Object not assigned');
-      handle := 0
-   end
-   else if (AObject is TWinControl) then
-   begin
-      if TWinControl (AObject).HandleAllocated then handle := TWinControl(AObject).Handle
-   end
-   else if (AObject is TMenuItem) then
-   begin 
-      if TMenuItem(AObject).HandleAllocated then handle := TMenuItem(AObject).Handle 
-   end
-   else if (AObject is TMenu) then
-   begin 
-      if TMenu(AObject).HandleAllocated then handle := TMenu(AObject).Items.Handle 
-   end
-   else if (AObject is TCommonDialog) then
-   begin
-      {if TCommonDialog(AObject).HandleAllocated then } handle := TCommonDialog(AObject).Handle
-   end
-   else begin
-      Assert(False, Format('Trace:  [ObjectToGtkObject] Message received with unhandled class-type <%s>', [AObject.ClassName])); 
-      handle := 0;
-   end;
-   result := handle;
-   if handle = 0 then Assert (false, 'Trace:  [ObjectToGtkObject]****** Warning: handle = 0 *******');
-end;
+Function DeliverMessage(Const Target: TObject; Var Message: TLMessage): Integer;
+Begin
+  If Target = Nil Then
+    Assert(False, 'Trace:DeliverMessage --> got nil object');
+  If Target Is TControl Then
+    TControl(Target).WindowProc(Message)
+  Else
+    Target.Dispatch(Message);
+  Result := Message.Result;
+End;
+
+{------------------------------------------------------------------------------
+  Function: ObjectToHWND
+  Params: AObject - An LCL Object
+  Returns: The Window handle of the given object
+
+  Returns the Window handle of the given object, 0 if no object available
+ ------------------------------------------------------------------------------}
+Function ObjectToHWND(Const AObject: TObject): HWND;
+Var
+  Handle: HWND;
+Begin
+  If Integer(AObject) = 0 Then
+  Begin
+    Assert (False, 'TRACE:[ObjectToHWND] Object not assigned');
+    Handle := 0
+  End
+  Else If (AObject Is TWinControl) Then
+  Begin
+    If TWinControl(AObject).HandleAllocated Then
+      Handle := TWinControl(AObject).Handle
+  End
+  Else If (AObject Is TMenuItem) Then
+  Begin 
+    If TMenuItem(AObject).HandleAllocated Then
+      Handle := TMenuItem(AObject).Handle 
+  End
+  Else If (AObject Is TMenu) Then
+  Begin 
+    If TMenu(AObject).HandleAllocated Then
+      Handle := TMenu(AObject).Items.Handle 
+  End
+  Else If (AObject Is TCommonDialog) Then
+  Begin
+    {If TCommonDialog(AObject).HandleAllocated Then }
+    Handle := TCommonDialog(AObject).Handle
+  End
+  Else
+  Begin
+    Assert(False, Format('Trace:[ObjectToHWND] Message received With unhandled class-type <%s>', [AObject.ClassName])); 
+    Handle := 0;
+  End;
+  Result := Handle;
+  If handle = 0 Then
+    Assert (False, 'Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
+End;
 
 
 (***********************************************************************
-  Widget member functions
+  Widget member Functions
 ************************************************************************)
 
 // ----------------------------------------------------------------------
-// Creates a WinWidget info structure for the given widget
-// Info needed by the API of a HWND (=Widget) 
+// Creates a WinControlInfo record for the given window
+// Info needed by the API of a HWND 
 //
 // This structure obsoletes:
 //   "core-child", "fixed", "class"
 // ----------------------------------------------------------------------
-function CreateControlInfo(const Win32Control: PWin32Control): PWinControlInfo;
-begin
-  Assert(False, 'TRACE: Using function CreateControlInfo which isn''t implemented yet');
-  if Win32Control = nil then
-  begin
-    Result := nil;
-  end
-  else
-  begin
+Function CreateControlInfo(Const Control: HWND): PWinControlInfo;
+Var
+  R: TRect;
+Begin
+  Assert(False, 'TRACE:Using function CreateControlInfo which isn''t implemented yet');
+  If Control = HWND(Nil) Then
+  Begin
+    Result := Nil;
+  End
+  Else
+  Begin
     New(Result);
     FillChar(Result^, SizeOf(Result^), 0);
-    SetProp(Win32Control^.Window, 'Control_Info', Result);
-  end;
-end;
+    With Result^ Do
+    Begin
+      GetUpdateRect(Control, @R, False);
+      ImplementationControl := Control;
+      UpdateRect := R;
+      WndProc := GetWindowLong(Control, GWL_WNDPROC);
+      Style := GetWindowLong(Control, GWL_STYLE);
+      ExStyle := GetWindowLong(Control, GWL_EXSTYLE);
+      UserData := GetWindowLong(Control, GWL_USERDATA);
+    End;
+    SetProp(Control, 'Control_Info', Result);
+  End;
+End;
 
-function GetControlInfo(const Control: PWin32Control; const Create: Boolean): PWinControlInfo;
-begin
-  Assert(False, 'TRACE: Using function GetControlInfo which isn''t implemented yet');
-  if Control = nil
-  then begin
-    Result := nil;
-  end
-  else begin
-    Result := PWinControlInfo(GetProp(Control^.Window, 'Control_Info'));
-    if (Result = nil) and (Create) 
-    then Result := CreateControlInfo(Control);
-  end;
-end;
+Function GetControlInfo(Const Control: HWND; Const Create: Boolean): PWinControlInfo;
+Begin
+  Assert(False, 'TRACE: Using Function GetControlInfo which isn''t implemented yet');
+  If Control = HWND(Nil) Then
+  Begin
+    Result := Nil;
+  End
+  Else
+  Begin
+    Result := PWinControlInfo(GetProp(Control, 'Control_Info'));
+    If (Result = Nil) and (Create) Then
+      Result := CreateControlInfo(Control);
+  End;
+End;
 
 // ----------------------------------------------------------------------
 // the core_child widget points to the actual widget which implements the 
-// functionality we needed. It is mainly used in composed controls like
+// Functionality we needed. It is mainly used in composed controls like
 // a listbox. In that case the core_child is the listbox, where a scrolling
 // widget is main.
 // ----------------------------------------------------------------------
-function GetCoreChildControl(const Control: TObject): TObject;
-begin
-  Assert(False, 'TRACE: Using function GetCoreChildControl which isn''t implemented yet');
-  Result := TObject(GetProp((Control As TWinControl).Handle, 'Core_Child'));
-  if Result = TObject(nil) then Result := Control;
-end;
+Function GetCoreChildControl(Const Control: HWND): HWND;
+Begin
+  Assert(False, 'TRACE:Using function GetCoreChildControl which isn''t implemented yet');
+  Result := HWND(GetProp(Control, 'Core_Child'));
+  If Result = HWND(Nil) Then
+    Result := Control;
+End;
 
-procedure SetCoreChildControl(const ParentControl, ChildControl: TObject);
-begin
-  Assert(False, 'TRACE: Using function SetCoreChildControl which isn''t implemented yet');
-  if (ParentControl <> TObject(nil)) and (ChildControl <> TObject(nil)) then
-  SetProp((ParentControl As TWinControl).Handle, 'Core_Child', @ChildControl);
-end;
+Procedure SetCoreChildControl(Const ParentControl, ChildControl: HWND);
+Begin
+  Assert(False, 'TRACE:Using Function SetCoreChildControl which isn''t implemented yet');
+  If (ParentControl <> HWND(Nil)) And (ChildControl <> HWND(Nil)) Then
+    SetProp(ParentControl, 'Core_Child', Pointer(ChildControl));
+End;
 
 // ----------------------------------------------------------------------
 // the main widget is the widget passed as handle to the winAPI
 // main data is stored in the fixed form to get a reference to its parent
 // ----------------------------------------------------------------------
-function GetMainControl(const Control: HWnd): Handle;
-begin
-  Assert(False, 'TRACE: Using function GetMainControl which isn''t implemented yet');
-  Result := Handle(GetProp(Control, 'Main'));
-  if Result = Handle(nil) then Result := Handle(Control);
-end;
+Function GetMainControl(Const Control: HWND): HWND;
+Begin
+  Assert(False, 'TRACE:Using function GetMainControl which isn''t implemented yet');
+  Result := HWND(GetProp(Control, 'Main'));
+  If Result = HWND(Nil) Then
+    Result := Control;
+End;
 
-procedure SetMainControl(const ParentControl, ChildControl: HWnd);
-begin
-  Assert(False, 'TRACE: Using function SetMainControl which isn''t implemented yet');
-  if (ParentControl <> HWND(nil)) and (ChildControl <> HWND(nil)) then
-  SetProp(ChildControl, 'Main', Pointer(ParentControl));
-end;
-
-// ----------------------------------------------------------------------
-// the fixed widget is the container for controls. By default a widget
-// scales/places a control. whith the use of a fixed we can place them.
-// ----------------------------------------------------------------------
-function GetFixedControl(const Control: HWnd): Handle;
-begin
-  Assert(False, 'TRACE: Using function GetFixedControl which isn''t implemented yet');
-  Result := Integer(GetProp(Control, 'Fixed'));
-end;
-
-procedure SetFixedControl(const ParentControl, FixedControl: HWnd);
-begin
-  Assert(False, 'TRACE: Using function SetFixedControl which isn''t implemented yet');
-  if (ParentControl <> HWND(nil)) and (FixedControl <> HWND(nil)) then
-  SetProp(ParentControl, 'Fixed', Pointer(FixedControl));
-end;
+Procedure SetMainControl(Const ParentControl, ChildControl: HWND);
+Begin
+  Assert(False, 'TRACE: Using Function SetMainControl which isn''t implemented yet');
+  If (ParentControl <> HWND(Nil)) and (ChildControl <> HWND(Nil)) Then
+    SetProp(ChildControl, 'Main', Pointer(ParentControl));
+End;
 
 // ----------------------------------------------------------------------
-// Some need the LCLobject which created this widget.
+// the fixed control is the container for controls. By default a control
+// scales/places a control. with the use of a fixed we can place them.
+// NOTE: This should only be true for GTK.
+// ----------------------------------------------------------------------
+Function GetFixedControl(Const Control: HWND): HWND;
+Begin
+  Assert(False, 'TRACE: Using Function GetFixedControl which isn''t implemented yet');
+  Result := HWND(GetProp(Control, 'Fixed'));
+End;
+
+Procedure SetFixedControl(Const ParentControl, FixedControl: HWND);
+Begin
+  Assert(False, 'TRACE: Using Function SetFixedControl which isn''t implemented yet');
+  If (ParentControl <> HWND(Nil)) and (FixedControl <> HWND(Nil)) Then
+    SetProp(ParentControl, 'Fixed', Pointer(FixedControl));
+End;
+
+// ----------------------------------------------------------------------
+// Some need the LCLobject which created this control.
 // 
 // MWE: IMO this shouldn't be needed
 // ----------------------------------------------------------------------
-procedure SetLCLObject(const Control: HWnd; const AnObject: TObject);
-begin
-  Assert(False, 'TRACE: Using function SetLCLObject which isn''t implemented yet');
-  if (Control <> HWnd(Nil)) then
-  SetProp(Control, 'Class', @AnObject);
-end;
+Procedure SetLCLObject(Const Control: HWND; Const AnObject: TObject);
+Begin
+  Assert(False, 'TRACE:Using function SetLCLObject which isn''t implemented yet');
+  If (Control <> HWND(Nil)) Then
+    SetProp(Control, 'Class', Pointer(AnObject));
+End;
 
-function GetLCLObject(const Control: HWnd): TObject;
-begin
-  Assert(False, 'TRACE: Using function GetLCLObject which isn''t implemented yet');
+Function GetLCLObject(Const Control: HWND): TObject;
+Begin
+  Assert(False, 'TRACE:Using function GetLCLObject which isn''t implemented yet');
   Result := TObject(GetProp(Control, 'Class'));
-end;
+End;
 
 // ----------------------------------------------------------------------
 // The Accelgroup and AccelKey is needed by menus
 // ----------------------------------------------------------------------
-procedure SetAccelGroup(const Control: HWnd; const AnAccelGroup: Pointer);
-begin
-  Assert(False, 'TRACE: Using function SetAccelGroup which isn''t implemented yet');
-end;
+Procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
+Begin
+  Assert(False, 'Trace:TODO: Code SetAccelGroup');
+  SetProp(Control, 'AccelGroup', Pointer(AnAccelGroup));
+End;
 
-function GetAccelGroup(const Control: Hwnd): HACCEL;
-begin
-  Assert(False, 'TRACE: Using function GetAccelGroup which isn''t implemented yet');
-end;
+Function GetAccelGroup(Const Control: HWND): HACCEL;
+Begin
+  Assert(False, 'Trace:TODO: Code GetAccelGroup');
+  Result := HACCEL(GetProp(Control, 'AccelGroup'));
+End;
 
-procedure SetAccelKey(const Control: HWnd; const AKey: Integer);
-begin
-  Assert(False, 'TRACE: Using function SetAccelKey which isn''t implemented yet');
-  if (Control <> Hwnd(Nil)) then
-  SetProp(Control, 'AccelKey', Pointer(AKey));
-end;
+Procedure SetAccelKey(Const Control: HWND; Const AKey: LPACCEL);
+Begin
+  Assert(False, 'Trace:TODO: Code SetAccelKey');
+  If (Control <> HWND(Nil)) Then
+    SetProp(Control, 'AccelKey', AKey);
+End;
 
-function GetAccelKey(const Control: HWnd): Integer;
-begin
-  Assert(False, 'TRACE: Using function GetAccelKey which isn''t implemented yet');
-  Result := Integer(GetProp(Control, 'AccelKey'));
-end;
+Function GetAccelKey(Const Control: HWND): LPACCEL;
+Begin
+  Assert(False, 'Trace:TODO: Code GetAccelKey');
+  Result := GetProp(Control, 'AccelKey');
+End;
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -368,165 +899,13 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.3  2002/01/05 13:16:10  lazarus
+  MG: win32 interface update from Keith Bowes
+
   Revision 1.2  2001/11/01 22:40:14  lazarus
   MG: applied Keith Bowes win32 interface updates
 
   Revision 1.1  2001/08/02 12:58:35  lazarus
   MG: win32 interface patch from Keith Bowes
 
-  Revision 1.14  2001/03/21 23:48:29  lazarus
-  MG: fixed window positions
-
-  Revision 1.12  2001/03/19 14:44:22  lazarus
-  MG: fixed many unreleased DC and GDIObj bugs
-
-  Revision 1.10  2001/01/25 21:38:57  lazarus
-  MWE:
-    * fixed lil bug I commetted yesterday (listbox crash)
-
-  Revision 1.9  2001/01/24 23:26:40  lazarus
-  MWE:
-    = moved some types to gtkdef
-    + added WinWidgetInfo
-    + added some initialization to Application.Create
-
-  Revision 1.8  2001/01/23 23:33:55  lazarus
-  MWE:
-    - Removed old LM_InvalidateRect
-    - did some cleanup in old  code
-    + added some comments  on gtkobject data (gtkproc)
-
-  Revision 1.7  2001/01/08 21:59:36  lazarus
-  MWE:
-    ~ applieed patch from Peter Vreman to reflect compiler fix
-
-  Revision 1.6  2000/12/19 18:43:13  lazarus
-  Removed IDEEDITOR.  This causes the PROJECT class to not function.
-  Saving projects no longer works.
-
-  I added TSourceNotebook and TSourceEditor.  They do all the work for saving/closing/opening units.  Somethings work but they are in early development.
-  Shane
-
-  Revision 1.5  2000/10/09 22:50:32  lazarus
-  MWE:
-    * fixed some selection code
-    + Added selection sample
-
-  Revision 1.4  2000/09/10 23:08:31  lazarus
-  MWE:
-    + Added CreateCompatibeleBitamp function
-    + Updated TWinControl.WMPaint
-    + Added some checks to avoid gtk/gdk errors
-    - Removed no fixed warning from GetDC
-    - Removed some output
-
-  Revision 1.3  2000/08/10 10:55:45  lazarus
-  Changed TCustomDialog to TCommonDialog
-  Shane
-
-  Revision 1.2  2000/07/30 21:48:34  lazarus
-  MWE:
-    = Moved ObjectToGTKObject to GTKProc unit
-    * Fixed array checking in LoadPixmap
-    = Moved LM_SETENABLED to API func EnableWindow and EnableMenuItem
-    ~ Some cleanup
-
-  Revision 1.1  2000/07/13 10:28:29  michael
-  + Initial import
-
-  Revision 1.8  2000/06/29 18:08:56  lazarus
-  Shane
-    Looking for the editor problem I made a few changes.  I changed everything back to the original though.
-
-  Revision 1.7  2000/06/19 18:21:22  lazarus
-  Spinedit was never getting created
-  Shane
-
-  Revision 1.6  2000/06/14 21:51:27  lazarus
-  MWE:
-    + Added menu accelerators. Not finished
-
-  Revision 1.5  2000/05/11 22:04:16  lazarus
-  MWE:
-    + Added messagequeue
-    * Recoded SendMessage and Peekmessage
-    + Added postmessage
-    + added DeliverPostMessage
-
-  Revision 1.4  2000/05/10 22:52:58  lazarus
-  MWE:
-    = Moved some global api stuf to gtkobject
-
-  Revision 1.3  2000/05/10 01:45:12  lazarus
-  Replaced writelns with Asserts.
-  Put ERROR and WARNING messages back to writelns.            CAW
-
-  Revision 1.2  2000/05/08 15:56:59  lazarus
-  MWE:
-    + Added support for mwedit92 in Makefiles
-    * Fixed bug # and #5 (Fillrect)
-    * Fixed labelsize in ApiWizz
-    + Added a call to the resize event in WMWindowPosChanged
-
-  Revision 1.1  2000/03/30 22:51:42  lazarus
-  MWE:
-    Moved from ../../lcl
-
-  Revision 1.11  2000/03/30 21:57:44  lazarus
-  MWE:
-    + Added some general functions to Get/Set the Main/Fixed/CoreChild
-      widget
-    + Started with graphic scalig/depth stuff. This is way from finished
-
-  Hans-Joachim Ott <hjott@compuserve.com>:
-    + Added some improvements for TMEMO
-
-  Revision 1.10  2000/03/19 23:01:43  lazarus
-  MWE:
-    = Changed splashscreen loading/colordepth
-    = Chenged Save/RestoreDC to platform  dependent, since they are
-      relative to a DC
-
-  Revision 1.9  2000/03/16 23:58:46  lazarus
-  MWE:
-    Added TPixmap for XPM support
-
-  Revision 1.8  2000/03/08 23:57:38  lazarus
-  MWE:
-    Added SetSysColors
-    Fixed TEdit text bug (thanks to hans-joachim ott <hjott@compuserve.com>)
-    Finished GetKeyState
-    Added changes from Peter Dyson <peter@skel.demon.co.uk>
-   - a new GetSysColor
-    - some improvements on ExTextOut
-
-  Revision 1.7  2000/03/03 22:58:26  lazarus
-  MWE:
-    Fixed focussing problem.
-      LM-FOCUS was bound to the wrong signal
-    Added GetKeyState api func.
-      Now LCL knows if shift/trl/alt is pressed (might be handy for keyboard
-      selections ;-)
-
-  Revision 1.6  2000/01/22 20:07:47  lazarus
-  Some cleanups. It needs much more cleanup than this.
-  Worked around a compiler bug (?) in mwCustomEdit.
-  Reverted some changes to font generation and increased font size.
-
-  Revision 1.5  1999/09/17 14:58:54  lazarus
-  Changes made to editor.pp
-  Can now press END and some other similiar keys work.  Typing works,
-  but doesn't paint correctly yet.
-
-  Revision 1.4  1999/07/31 06:39:30  lazarus
-
-       Modified the IntSendMessage3 to include a data variable. It isn't used
-       yet but will help in merging the Message2 and Message3 features.
-
-       Adjusted TColor routines to match Delphi color format
-
-       Added a TGdkColorToTColor routine in gtkproc.inc
-
-       Finished the TColorDialog added to comDialog example.        MAH
-
- }
+  }
