@@ -204,7 +204,6 @@ begin
 
 
   Msg.KeyData := $00000000; //TODO: OEM char
-  Msg.KeyData := Msg.KeyData or (Flags shl 16);
   
   case Event^.theType of
 
@@ -215,7 +214,7 @@ begin
         then Msg.msg := LM_SYSKEYUP
         else Msg.msg := LM_KEYUP;
 
-        Flags := KF_UP or KF_REPEAT;
+        Flags := Flags or KF_UP or KF_REPEAT;
 
         Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {allways};
         Result := DeliverPostMessage(data, msg);
@@ -228,7 +227,10 @@ begin
         then Msg.msg := LM_SYSKEYDOWN
         else Msg.msg := LM_KEYDOWN;
 
-        Msg.KeyData := Msg.KeyData or 0{TODO: previous keystate} or $0001 {TODO:  repeatcount};
+        // todo  repeat
+        // Flags := Flags or KF_REPEAT;
+
+        Msg.KeyData := Msg.KeyData or (Flags shl 16) or $0001 {TODO:  repeatcount};
         Result := DeliverPostMessage(data, msg);
 
         if KeyCode <> $FFFF
@@ -366,6 +368,11 @@ begin
   end;
   Result := DeliverPostMessage(Data, Msg);
 
+  if ssLeft in ShiftState then WriteLN(Format('[GTKMotionNotify] widget: 0x%p', [widget]));
+  
+  if (Pointer(MCaptureHandle) <> widget) 
+  and (MCaptureHandle <> 0)
+  then  WriteLN(Format('[GTKMotionNotify] Capture differs -->  cap:0x%x gtk:0x%p', [MCaptureHandle, gtk_grab_get_current]));
 end;
 
 function gtkMouseBtnPress( widget: PGtkWidget; event : pgdkEventButton; data: gPointer) : GBoolean; cdecl;
@@ -1100,6 +1107,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/01/10 23:53:30  lazarus
+  MWE:
+    ~ minor change
+
   Revision 1.12  2001/01/10 20:12:29  lazarus
   Added the Nudge feature to the IDE.
   Shane
