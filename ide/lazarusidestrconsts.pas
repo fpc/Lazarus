@@ -235,15 +235,15 @@ resourcestring
   lisAboutLazarusMsg =
        'License: GPL/LGPL'
       +LineEnding+LineEnding
-      +'Lazarus are the class libraries for Free Pascal that'
-      +'emulate Delphi. Free Pascal is a (L)GPL''ed compiler that'
-      +'runs on Linux, Win32, OS/2, 68K and more. Free Pascal'
-      +'is designed to be able to understand and compile Delphi'
+      +'Lazarus are the class libraries for Free Pascal that '
+      +'emulate Delphi. Free Pascal is a (L)GPL''ed compiler that '
+      +'runs on Linux, Win32, OS/2, 68K and more. Free Pascal '
+      +'is designed to be able to understand and compile Delphi '
       +'syntax, which is of course OOP.'
       +LineEnding+LineEnding
-      +'Lazarus is the missing part of the puzzle that will allow'
-      +'you to develop Delphi like programs in all of the above'
-      +'platforms. The IDE will eventually become a RAD tool like'
+      +'Lazarus is the missing part of the puzzle that will allow '
+      +'you to develop Delphi like programs in all of the above '
+      +'platforms. The IDE will eventually become a RAD tool like '
       +'Delphi.'
       +LineEnding+LineEnding
       +'As Lazarus is growing we need more developers.';

@@ -126,6 +126,10 @@ msgstr ""
 msgid "E&nvironment"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuwindows
+msgid "&Windows"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuhelp
 msgid "&Help"
 msgstr ""
@@ -222,6 +226,10 @@ msgstr ""
 msgid "Uncomment selection"
 msgstr ""
 
+#: lazarusidestrconsts:lismenusortselection
+msgid "Sort selection"
+msgstr ""
+
 #: lazarusidestrconsts:lismenuselect
 msgid "Select"
 msgstr ""
@@ -296,6 +304,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenureplace
 msgid "Replace"
+msgstr ""
+
+#: lazarusidestrconsts:lismenuincrementalfind
+msgid "Incremental Find"
 msgstr ""
 
 #: lazarusidestrconsts:lismenugotoline
@@ -570,8 +582,12 @@ msgstr ""
 msgid "Please check the compiler name"
 msgstr ""
 
+#: lazarusidestrconsts:lisaboutlazarus
+msgid "About Lazarus"
+msgstr ""
+
 #: lazarusidestrconsts:lisaboutlazarusmsg
-msgid "License: GPL/LGPL\nLazarus are the class libraries for Free Pascal that emulate Delphi.\nFree Pascal is a (L)GPL'ed compiler that runs on Linux,\nWin32, OS/2, 68K and more. Free Pascal is designed to be able to\nunderstand and compile Delphi syntax, which is of course OOP.\nLazarus is the missing part of the puzzle that will allow you to\ndevelop Delphi like programs in all of the above platforms.\nThe IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers."
+msgid "License: GPL/LGPL\n\nLazarus are the class libraries for Free Pascal that emulate Delphi. Free Pascal is a (L)GPL'ed compiler that runs on Linux, Win32, OS/2, 68K and more. Free Pascal is designed to be able to understand and compile Delphi syntax, which is of course OOP.\n\nLazarus is the missing part of the puzzle that will allow you to develop Delphi like programs in all of the above platforms. The IDE will eventually become a RAD tool like Delphi.\n\nAs Lazarus is growing we need more developers."
 msgstr ""
 
 #: lazarusidestrconsts:lisunitnamealreadyexistscap
@@ -594,8 +610,24 @@ msgstr ""
 msgid "Copy Error"
 msgstr ""
 
+#: lazarusidestrconsts:lishintnewunit
+msgid "New Unit"
+msgstr ""
+
+#: lazarusidestrconsts:lishintopen
+msgid "Open"
+msgstr ""
+
+#: lazarusidestrconsts:lishintsave
+msgid "Save"
+msgstr ""
+
 #: lazarusidestrconsts:lishintsaveall
 msgid "Save all"
+msgstr ""
+
+#: lazarusidestrconsts:lishintnewform
+msgid "New Form"
 msgstr ""
 
 #: lazarusidestrconsts:lishinttoggleformunit
@@ -608,6 +640,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lishintviewforms
 msgid "View Forms"
+msgstr ""
+
+#: lazarusidestrconsts:lishintrun
+msgid "Run"
+msgstr ""
+
+#: lazarusidestrconsts:lishintpause
+msgid "Pause"
 msgstr ""
 
 #: lazarusidestrconsts:lishintstepinto
@@ -660,6 +700,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgfrmeditor
 msgid "Form Editor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgobjinsp
+msgid "Object Inspector"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvfiles
@@ -728,6 +772,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgsrcedit
 msgid "Source Editor"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmsgs
+msgid "Messages"
 msgstr ""
 
 #: lazarusidestrconsts:dlgprojfiles
@@ -858,6 +906,14 @@ msgstr ""
 msgid "Auto create forms"
 msgstr ""
 
+#: lazarusidestrconsts:dlggrabbercolor
+msgid "Grabber color"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmarkercolor
+msgid "Marker color"
+msgstr ""
+
 #: lazarusidestrconsts:dlgenvgrid
 msgid "Grid"
 msgstr ""
@@ -868,6 +924,18 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgenvmisc
 msgid "Miscellaneous"
+msgstr ""
+
+#: lazarusidestrconsts:dlgruberbandselectioncolor
+msgid "Selection"
+msgstr ""
+
+#: lazarusidestrconsts:dlgruberbandcreationcolor
+msgid "Creation"
+msgstr ""
+
+#: lazarusidestrconsts:dlgrubberbandselectsgrandchilds
+msgid "Select grand childs"
 msgstr ""
 
 #: lazarusidestrconsts:dlgpasext
@@ -1199,7 +1267,7 @@ msgid "Underline"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedidcomlet
-msgid "Identfier completion"
+msgid "Identifier completion"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedcodeparams
@@ -1428,6 +1496,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgcolinking
 msgid "Linking"
+msgstr ""
+
+#: lazarusidestrconsts:dlgcomessages
+msgid "Messages"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcoother
@@ -1738,12 +1810,20 @@ msgstr ""
 msgid "Unit output directory:"
 msgstr ""
 
+#: lazarusidestrconsts:dlglclwidgettype
+msgid "LCL Widget Type"
+msgstr ""
+
 #: lazarusidestrconsts:dlgbutapply
 msgid "Apply"
 msgstr ""
 
 #: lazarusidestrconsts:dlgcoshowoptions
 msgid "Show Options"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmainviewforms
+msgid "View project forms"
 msgstr ""
 
 #: lazarusidestrconsts:dlgmainviewunits
@@ -1898,6 +1978,10 @@ msgstr ""
 msgid "Regular Expressions"
 msgstr ""
 
+#: lazarusidestrconsts:dlgmultiline
+msgid "Multi Line"
+msgstr ""
+
 #: lazarusidestrconsts:dlgpromptonreplace
 msgid "Prompt On Replace"
 msgstr ""
@@ -1940,6 +2024,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgreplaceall
 msgid "Replace All"
+msgstr ""
+
+#: lazarusidestrconsts:liscodeexplorer
+msgid "Code Explorer"
 msgstr ""
 
 #: lazarusidestrconsts:uemfinddeclaration
@@ -2080,13 +2168,5 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
-msgstr ""
-
-#: lazarusidestrconsts:lisoiproperties
-msgid "Properties"
-msgstr ""
-
-#: lazarusidestrconsts:lisoievents
-msgid "Events"
 msgstr ""
 

@@ -17,6 +17,7 @@ in the procedure TranslateResourceStrings.
 german:           lazaruside.de.po
 russian (KOI8-R): lazaruside.ru.po
 spanish:          lazaruside.es.po
+french:           lazaruside.fr.po
 
 
 After the translation, the lazaruside.xx.po file is converted to an .mo file

@@ -34,6 +34,10 @@ msgstr ""
 msgid "Include circle detected"
 msgstr ""
 
+#: codetoolsstrconsts:ctscommentendnotfound
+msgid "Comment end not found"
+msgstr ""
+
 #: codetoolsstrconsts:ctsidentexpectedbutatomfound
 msgid "identifier expected, but %s found"
 msgstr ""
@@ -63,7 +67,7 @@ msgid "bracket %s not found"
 msgstr ""
 
 #: codetoolsstrconsts:ctsnonodefoundatcursor
-msgid "no node found at cursor"
+msgid "no pascal node found at cursor (i.e. in unparsed code)"
 msgstr ""
 
 #: codetoolsstrconsts:ctsunknownmainfilename
@@ -222,6 +226,10 @@ msgstr ""
 msgid "default class ancestor TObject not found"
 msgstr ""
 
+#: codetoolsstrconsts:ctsdefaultinterfaceancestoriinterfacenotfound
+msgid "default interface ancestor IInterface not found"
+msgstr ""
+
 #: codetoolsstrconsts:ctsexprtypemustbeclassorrecord
 msgid "expression type must be class or record type"
 msgstr ""
@@ -268,6 +276,10 @@ msgstr ""
 
 #: codetoolsstrconsts:ctsincompatibletypesgotexpected
 msgid "incompatibles types: expected \"%s\" but got \"%s\""
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefaultpropertynotfound
+msgid "default property not found"
 msgstr ""
 
 #: codetoolsstrconsts:ctspropertyspecifieralreadydefined
@@ -342,6 +354,14 @@ msgstr ""
 msgid "new proc body not found"
 msgstr ""
 
+#: codetoolsstrconsts:ctsidentifieralreadydefined
+msgid "Identifier %s already defined"
+msgstr ""
+
+#: codetoolsstrconsts:ctstermnotsimple
+msgid "Term has no simple type"
+msgstr ""
+
 #: codetoolsstrconsts:ctsnoscannerfound
 msgid "No scanner found for \"%s\". If this is an include file, please open the main source first."
 msgstr ""
@@ -358,8 +378,8 @@ msgstr ""
 msgid "Syntax Error in expression \"%s\""
 msgstr ""
 
-#: codetoolsstrconsts:ctsdefaultppc386macro
-msgid "Default ppc386 macro"
+#: codetoolsstrconsts:ctsdefaultppc386symbol
+msgid "Default ppc386 symbol"
 msgstr ""
 
 #: codetoolsstrconsts:ctsdefaultppc386targetoperatingsystem
@@ -394,6 +414,10 @@ msgstr ""
 msgid "SrcPath Initialization"
 msgstr ""
 
+#: codetoolsstrconsts:ctsnestedcommentson
+msgid "Nested Comments On"
+msgstr ""
+
 #: codetoolsstrconsts:ctscompiler
 msgid "Compiler"
 msgstr ""
@@ -418,6 +442,10 @@ msgstr ""
 msgid "Package directories"
 msgstr ""
 
+#: codetoolsstrconsts:ctsutilsdirectories
+msgid "Utils directories"
+msgstr ""
+
 #: codetoolsstrconsts:ctsdefsforlazarussources
 msgid "Definitions for the Lazarus Sources"
 msgstr ""
@@ -438,16 +466,36 @@ msgstr ""
 msgid "%s Directory"
 msgstr ""
 
-#: codetoolsstrconsts:ctsabstractwidgetpath
-msgid "abstract widget path"
-msgstr ""
-
 #: codetoolsstrconsts:ctswidgetdirectory
 msgid "Widget Directory"
 msgstr ""
 
+#: codetoolsstrconsts:ctsgtkintfdirectory
+msgid "gtk interface directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctsiflclwidgettypeequalsgtk2
+msgid "If LCLWidgetType=gtk2 then"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefinemacrogtk2
+msgid "Define macro gtk2"
+msgstr ""
+
+#: codetoolsstrconsts:ctsgtk2intfdirectory
+msgid "gtk2 interface directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctsgnomeintfdirectory
+msgid "gnome interface directory"
+msgstr ""
+
 #: codetoolsstrconsts:ctscomponentsdirectory
 msgid "Components Directory"
+msgstr ""
+
+#: codetoolsstrconsts:ctscustomcomponentsdirectory
+msgid "Custom Components Directory"
 msgstr ""
 
 #: codetoolsstrconsts:ctstoolsdirectory
@@ -480,6 +528,10 @@ msgstr ""
 
 #: codetoolsstrconsts:ctsresetalldefines
 msgid "Reset all defines"
+msgstr ""
+
+#: codetoolsstrconsts:ctsdefinemacroname
+msgid "Define Macro %s"
 msgstr ""
 
 #: codetoolsstrconsts:ctsnamedproject
