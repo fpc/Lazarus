@@ -111,6 +111,11 @@ type
     FExpirationTimeInDays: integer;
     FGlobalWriteLockIsSet: boolean;
     FGlobalWriteLockStep: integer;
+    fLastIncludeLinkFile: string;
+    fLastIncludeLinkFileAge: integer;
+    fLastIncludeLinkFileValid: boolean;
+    fLastIncludeLinkFileChangeStep: integer;
+    fChangeStep: integer;
     function FindIncludeLink(const IncludeFilename: string): string;
     function FindIncludeLinkNode(const IncludeFilename: string): TIncludedByLink;
     function OnScannerCheckFileOnDisk(Code: pointer): boolean;
@@ -124,6 +129,7 @@ type
                  var ReadOnly: boolean);
     procedure OnScannerIncludeCode(ParentCode, IncludeCode: pointer);
     procedure UpdateIncludeLinks;
+    procedure IncreaseChangeStep;
   public
     constructor Create;
     destructor Destroy;  override;
@@ -135,12 +141,13 @@ type
     function LoadFile(const AFilename: string): TCodeBuffer;
     function LoadIncludeLinksFromFile(const AFilename: string): boolean;
     function LoadIncludeLinksFromXML(XMLConfig: TXMLConfig;
-          const XMLPath: string): boolean;
+                                     const XMLPath: string): boolean;
     function SaveBufferAs(OldBuffer: TCodeBuffer; const AFilename: string;
-          var NewBuffer: TCodeBuffer): boolean;
-    function SaveIncludeLinksToFile(const AFilename: string): boolean;
+                          var NewBuffer: TCodeBuffer): boolean;
+    function SaveIncludeLinksToFile(const AFilename: string;
+                                    OnlyIfChanged: boolean): boolean;
     function SaveIncludeLinksToXML(XMLConfig: TXMLConfig;
-          const XMLPath: string): boolean;
+                                   const XMLPath: string): boolean;
     procedure Clear;
     procedure ClearAllSourceLogEntries;
     procedure OnBufferSetFileName(Sender: TCodeBuffer;
@@ -414,10 +421,16 @@ begin
 end;
 
 procedure TCodeCache.OnScannerIncludeCode(ParentCode, IncludeCode: pointer);
+var
+  CodeBuffer: TCodeBuffer;
 begin
   if (ParentCode<>nil) and (IncludeCode<>nil) and (ParentCode<>IncludeCode) then
-    TCodeBuffer(IncludeCode).LastIncludedByFile:=
-      TCodeBuffer(ParentCode).Filename;
+  begin
+    CodeBuffer:=TCodeBuffer(IncludeCode);
+    if CodeBuffer.LastIncludedByFile=TCodeBuffer(ParentCode).Filename then exit;
+    CodeBuffer.LastIncludedByFile:=TCodeBuffer(ParentCode).Filename;
+    IncreaseChangeStep;
+  end;
 end;
 
 procedure TCodeCache.OnScannerGetSourceStatus(Sender: TObject; Code:Pointer;
@@ -487,17 +500,37 @@ begin
   end;
 end;
 
-function TCodeCache.SaveIncludeLinksToFile(const AFilename: string): boolean;
+procedure TCodeCache.IncreaseChangeStep;
+begin
+  inc(fChangeStep);
+  if fChangeStep=$7fffffff then fChangeStep:=-$7fffffff;
+end;
+
+function TCodeCache.SaveIncludeLinksToFile(const AFilename: string;
+  OnlyIfChanged: boolean): boolean;
 var XMLConfig: TXMLConfig;
 begin
   try
+    if OnlyIfChanged and fLastIncludeLinkFileValid
+    and (fLastIncludeLinkFileChangeStep=fChangeStep)
+    and (fLastIncludeLinkFile=AFilename)
+    and FileExists(AFilename) and (FileAge(AFilename)=fLastIncludeLinkFileAge)
+    then begin
+      exit;
+    end;
+    ClearFile(AFilename,true);
     XMLConfig:=TXMLConfig.Create(AFilename);
     try
       Result:=SaveIncludeLinksToXML(XMLConfig,'');
+      fLastIncludeLinkFile:=AFilename;
+      fLastIncludeLinkFileAge:=FileAge(AFilename);
+      fLastIncludeLinkFileChangeStep:=fChangeStep;
+      fLastIncludeLinkFileValid:=true;
     finally
       XMLConfig.Free;
     end;
   except
+    fLastIncludeLinkFileValid:=false;
     Result:=false;
   end;
 end;
@@ -509,10 +542,15 @@ begin
     XMLConfig:=TXMLConfig.Create(AFilename);
     try
       Result:=LoadIncludeLinksFromXML(XMLConfig,'');
+      fLastIncludeLinkFile:=AFilename;
+      fLastIncludeLinkFileAge:=FileAge(AFilename);
+      fLastIncludeLinkFileChangeStep:=fChangeStep;
+      fLastIncludeLinkFileValid:=true;
     finally
       XMLConfig.Free;
     end;
   except
+    fLastIncludeLinkFileValid:=false;
     Result:=false;
   end;
 end;

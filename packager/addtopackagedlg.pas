@@ -47,7 +47,8 @@ type
   TAddToPkgType = (
     d2ptUnit,
     d2ptNewComponent,
-    d2ptRequiredPkg
+    d2ptRequiredPkg,
+    d2ptFile
     );
     
   TAddToPkgResult = record
@@ -70,6 +71,7 @@ type
     // notebook
     NoteBook: TNoteBook;
     AddUnitPage: TPage;
+    AddFilePage: TPage;
     NewComponentPage: TPage;
     NewDependPage: TPage;
     // add unit page
@@ -106,6 +108,16 @@ type
     DependMaxVersionEdit: TEdit;
     NewDependButton: TButton;
     CancelDependButton: TButton;
+    // add file page
+    AddFilenameLabel: TLabel;
+    AddFilenameEdit: TEdit;
+    AddFileBrowseButton: TButton;
+    AddFileTypeRadioGroup: TRadioGroup;
+    AddFileButton: TButton;
+    CancelAddFileButton: TButton;
+    procedure AddFileBrowseButtonClick(Sender: TObject);
+    procedure AddFileButtonClick(Sender: TObject);
+    procedure AddFilePageResize(Sender: TObject);
     procedure AddToPackageDlgClose(Sender: TObject; var Action: TCloseAction);
     procedure AddUnitButtonClick(Sender: TObject);
     procedure AddUnitFileBrowseButtonClick(Sender: TObject);
@@ -113,6 +125,7 @@ type
     procedure AddUnitUpdateButtonClick(Sender: TObject);
     procedure AncestorComboBoxCloseUp(Sender: TObject);
     procedure AncestorShowAllCheckBoxClick(Sender: TObject);
+    procedure CancelAddFileButtonClick(Sender: TObject);
     procedure CancelAddUnitButtonClick(Sender: TObject);
     procedure CancelNewComponentButtonClick(Sender: TObject);
     procedure ClassNameEditChange(Sender: TObject);
@@ -136,6 +149,7 @@ type
     procedure AutoCompleteNewComponent;
     procedure AutoCompleteNewComponentUnitName;
     procedure UpdateAddUnitInfo;
+    procedure UpdateAddFileInfo;
   public
     Params: TAddToPkgResult;
     constructor Create(TheOwner: TComponent); override;
@@ -378,6 +392,99 @@ begin
   IDEDialogLayoutList.SaveLayout(Self);
 end;
 
+procedure TAddToPackageDlg.AddFilePageResize(Sender: TObject);
+var
+  x: Integer;
+  y: Integer;
+begin
+  x:=5;
+  y:=5;
+  with AddFilenameLabel do
+    SetBounds(x,y+2,100,Height);
+  inc(x,AddFilenameLabel.Width+5);
+
+  with AddFilenameEdit do
+    SetBounds(x,y,Parent.ClientWidth-x-30,Height);
+  inc(x,AddFilenameEdit.Width+2);
+
+  with AddFileBrowseButton do
+    SetBounds(x,y,AddFilenameEdit.Height,AddFilenameEdit.Height);
+  x:=5;
+  y:=AddFilenameEdit.Top+AddFilenameEdit.Height+5;
+
+  with AddFileTypeRadioGroup do begin
+    SetBounds(x,y,Parent.ClientWidth-2*x,140);
+    inc(y,Height+20);
+  end;
+
+  with AddFileButton do
+    SetBounds(x,y,80,Height);
+  inc(x,AddFileButton.Width+10);
+
+  with CancelAddFileButton do
+    SetBounds(x,y,80,Height);
+end;
+
+procedure TAddToPackageDlg.AddFileBrowseButtonClick(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
+begin
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Title:=lisOpenFile;
+    OpenDialog.Options:=OpenDialog.Options+[ofFileMustExist,ofPathMustExist];
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      if FileExists(AFilename) then begin
+        LazPackage.ShortenFilename(AFilename);
+        AddFilenameEdit.Text:=AFilename;
+        UpdateAddFileInfo;
+      end;
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
+end;
+
+procedure TAddToPackageDlg.AddFileButtonClick(Sender: TObject);
+var
+  i: Integer;
+  CurPFT: TPkgFileType;
+begin
+  Params.AddType:=d2ptUnit;
+  Params.UnitFilename:=AddFilenameEdit.Text;
+  Params.FileType:=pftText;
+  Params.UnitName:='';
+  Params.PkgFileFlags:=[];
+  
+  if not FileExists(Params.UnitFilename) then begin
+    MessageDlg('File not found',
+      'File "'+Params.UnitFilename+'" not found.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+  if LazPackage.FindPkgFile(Params.UnitFilename,true,true)<>nil then begin
+    MessageDlg('File already in package',
+      'The file "'+Params.UnitFilename+'" is already in the package.',
+      mtError,[mbCancel],0);
+    exit;
+  end;
+  
+  i:=0;
+  for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
+    if CurPFT=pftUnit then continue;
+    if i=AddFileTypeRadioGroup.ItemIndex then begin
+      Params.FileType:=CurPFT;
+    end;
+    inc(i);
+  end;
+
+  ModalResult:=mrOk;
+end;
+
 procedure TAddToPackageDlg.AddUnitFileBrowseButtonClick(Sender: TObject);
 var
   OpenDialog: TOpenDialog;
@@ -461,6 +568,11 @@ end;
 procedure TAddToPackageDlg.AncestorShowAllCheckBoxClick(Sender: TObject);
 begin
   UpdateAvailableAncestorTypes;
+end;
+
+procedure TAddToPackageDlg.CancelAddFileButtonClick(Sender: TObject);
+begin
+  ModalResult:=mrCancel;
 end;
 
 procedure TAddToPackageDlg.CancelAddUnitButtonClick(Sender: TObject);
@@ -781,6 +893,8 @@ begin
 end;
 
 procedure TAddToPackageDlg.SetupComponents;
+var
+  pft: TPkgFileType;
 begin
   NoteBook:=TNoteBook.Create(Self);
   with NoteBook do begin
@@ -792,6 +906,8 @@ begin
     NewComponentPage:=Page[1];
     Pages.Add('New Requirement');
     NewDependPage:=Page[2];
+    Pages.Add('Add File');
+    AddFilePage:=Page[3];
     PageIndex:=0;
     Align:=alClient;
   end;
@@ -801,6 +917,7 @@ begin
   AddUnitPage.OnResize:=@AddUnitPageResize;
   NewComponentPage.OnResize:=@NewComponentPageResize;
   NewDependPage.OnResize:=@NewDependPageResize;
+  AddFilePage.OnResize:=@AddFilePageResize;
 
   AddUnitFilenameLabel:=TLabel.Create(Self);
   with AddUnitFilenameLabel do begin
@@ -1037,6 +1154,62 @@ begin
     Caption:='Cancel';
     ModalResult:=mrCancel;
   end;
+
+
+  // add file
+  AddFilenameLabel:=TLabel.Create(Self);
+  with AddFilenameLabel do begin
+    Name:='AddFilenameLabel';
+    Parent:=AddFilePage;
+    Caption:='File name:';
+  end;
+
+  AddFilenameEdit:=TEdit.Create(Self);
+  with AddFilenameEdit do begin
+    Name:='AddFilenameEdit';
+    Parent:=AddFilePage;
+    Text:='<choose an existing file>';
+  end;
+
+  AddFileBrowseButton:=TButton.Create(Self);
+  with AddFileBrowseButton do begin
+    Name:='AddFileBrowseButton';
+    Parent:=AddFilePage;
+    Caption:='...';
+    OnClick:=@AddFileBrowseButtonClick;
+  end;
+
+  AddFileTypeRadioGroup:=TRadioGroup.Create(Self);
+  with AddFileTypeRadioGroup do begin
+    Name:='AddFileTypeRadioGroup';
+    Parent:=AddFilePage;
+    Caption:='File Type';
+    with Items do begin
+      BeginUpdate;
+      for pft:=Low(TPkgFileType) to High(TPkgFileType) do begin
+        if pft=pftUnit then continue;
+        Add(GetPkgFileTypeLocalizedName(pft));
+      end;
+      EndUpdate;
+    end;
+    OnClick:=@AddUnitUpdateButtonClick;
+  end;
+
+  AddFileButton:=TButton.Create(Self);
+  with AddFileButton do begin
+    Name:='AddFileButton';
+    Parent:=AddFilePage;
+    Caption:='Ok';
+    OnClick:=@AddFileButtonClick;
+  end;
+
+  CancelAddFileButton:=TButton.Create(Self);
+  with CancelAddFileButton do begin
+    Name:='CancelAddFileButton';
+    Parent:=AddFilePage;
+    Caption:='Cancel';
+    OnClick:=@CancelAddFileButtonClick;
+  end;
 end;
 
 procedure TAddToPackageDlg.OnIterateComponentClasses(PkgComponent: TPkgComponent
@@ -1117,6 +1290,33 @@ begin
     AddUnitSrcNameEdit.Text:=AnUnitName;
     AddUnitHasRegisterCheckBox.Checked:=HasRegisterProc;
   end;
+end;
+
+procedure TAddToPackageDlg.UpdateAddFileInfo;
+var
+  CurFilename: String;
+  NewPFT: TPkgFileType;
+  CurPFT: TPkgFileType;
+  i: Integer;
+begin
+  CurFilename:=AddFilenameEdit.Text;
+  if CompareFileExt(CurFilename,'.lfm',true)=0 then
+    NewPFT:=pftLFM
+  else if CompareFileExt(CurFilename,'.lrs',true)=0 then
+    NewPFT:=pftLRS
+  else if CompareFileExt(CurFilename,'.inc',true)=0 then
+    NewPFT:=pftInclude
+  else if FileIsText(CurFilename) then
+    NewPFT:=pftText
+  else
+    NewPFT:=pftBinary;
+  i:=0;
+  for CurPFT:=Low(TPkgFileType) to High(TPkgFileType) do begin
+    if CurPFT=pftUnit then continue;
+    if CurPFT=NewPFT then break;
+    inc(i);
+  end;
+  AddFileTypeRadioGroup.ItemIndex:=i;
 end;
 
 constructor TAddToPackageDlg.Create(TheOwner: TComponent);

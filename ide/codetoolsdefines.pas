@@ -133,7 +133,6 @@ type
     // selected item
     SelectedItemGroupBox: TGroupBox;
     TypeLabel: TLabel;
-    ProjectSpecificCheckBox: TCheckBox;
     NameLabel: TLabel;
     NameEdit: TEdit;
     DescriptionLabel: TLabel;
@@ -157,7 +156,6 @@ type
     procedure ValueNoteBookResize(Sender: TObject);
     procedure DefineTreeViewMouseUp(Sender: TObject; Button: TMouseButton;
                                     Shift: TShiftState;  X,Y: integer);
-    procedure ProjectSpecificCheckBoxClick(Sender: TObject);
     procedure RefreshPreview;
 
     // exit menu
@@ -226,12 +224,6 @@ type
 
 function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
   Options: TCodeToolsOptions; Macros: TTransferMacroList): TModalResult;
-function SaveGlobalCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
-  Options: TCodeToolsOptions): TModalResult;
-function SaveProjectSpecificCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
-  const ProjectInfoFile: string): TModalResult;
-function LoadCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
-  Options: TCodeToolsOptions; const ProjectInfoFile: string): TModalResult;
 
 
 implementation
@@ -242,119 +234,6 @@ uses
 
 type
   TWinControlClass = class of TWinControl;
-
-function SaveGlobalCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
-  Options: TCodeToolsOptions): TModalResult;
-var
-  XMLConfig: TXMLConfig;
-begin
-  Result:=mrCancel;
-  try
-    XMLConfig:=TXMLConfig.Create(Options.Filename);
-    try
-      ACodeToolBoss.DefineTree.SaveToXMLConfig(XMLConfig,
-        'CodeToolsGlobalDefines/',dtspGlobals);
-      XMLConfig.Flush;
-    finally
-      XMLConfig.Free;
-    end;
-    Result:=mrOk;
-  except
-    on e: Exception do
-      Result:=MessageDlg(lisCodeToolsDefsWriteError, Format(
-        lisCodeToolsDefsErrorWhileWriting, ['"', Options.Filename, '"', #13,
-        e.Message]), mtError, [mbIgnore, mbAbort], 0);
-  end;
-end;
-
-function SaveProjectSpecificCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
-  const ProjectInfoFile: string): TModalResult;
-var
-  XMLConfig: TXMLConfig;
-begin
-  Result:=mrCancel;
-  try
-    XMLConfig:=TXMLConfig.Create(ProjectInfoFile);
-    try
-      ACodeToolBoss.DefineTree.SaveToXMLConfig(XMLConfig,
-        'ProjectSpecificCodeToolsDefines/',dtspProjectSpecific);
-      XMLConfig.Flush;
-    finally
-      XMLConfig.Free;
-    end;
-    Result:=mrOk;
-  except
-    on e: Exception do
-      Result:=MessageDlg(lisCodeToolsDefsWriteError,
-           Format(lisCodeToolsDefsErrorWhileWritingProjectInfoFile, ['"',
-             ProjectInfoFile, '"', #13, e.Message]), mtError, [mbIgnore, mbAbort
-             ], 0);
-  end;
-end;
-
-function LoadCodeToolsDefines(ACodeToolBoss: TCodeToolManager;
-  Options: TCodeToolsOptions; const ProjectInfoFile: string): TModalResult;
-// replaces globals and project defines if changed
-var
-  NewDefineTree: TDefineTree;
-  XMLConfig: TXMLConfig;
-begin
-  Result:=mrCancel;
-  NewDefineTree:=TDefineTree.Create;
-  try
-    // create a temporary copy of current defines
-    NewDefineTree.Assign(ACodeToolBoss.DefineTree);
-    // remove non auto generated = all globals and project specific defines
-    NewDefineTree.RemoveNonAutoCreated;
-    if (Options<>nil) and (Options.Filename<>'') then begin
-      // load global defines
-      try
-        XMLConfig:=TXMLConfig.Create(Options.Filename);
-        try
-          NewDefineTree.LoadFromXMLConfig(XMLConfig,
-            'CodeToolsGlobalDefines/',dtlpGlobals,'Global');
-        finally
-          XMLConfig.Free;
-        end;
-        Result:=mrOk;
-      except
-        on e: Exception do
-          Result:=MessageDlg(lisCodeToolsDefsReadError, Format(
-            lisCodeToolsDefsErrorReading, ['"', Options.Filename, '"', #13,
-            e.Message]), mtError, [mbIgnore, mbAbort], 0);
-      end;
-      if Result<>mrOk then exit;
-    end;
-    if ProjectInfoFile<>'' then begin
-      // load project specific defines
-      try
-        XMLConfig:=TXMLConfig.Create(ProjectInfoFile);
-        try
-          NewDefineTree.LoadFromXMLConfig(XMLConfig,
-            'ProjectSpecificCodeToolsDefines/',dtlpProjectSpecific,
-            'ProjectSpecific');
-        finally
-          XMLConfig.Free;
-        end;
-        Result:=mrOk;
-      except
-        on e: Exception do
-          Result:=MessageDlg(lisCodeToolsDefsReadError,
-               Format(lisCodeToolsDefsErrorReadingProjectInfoFile, ['"',
-                 ProjectInfoFile, '"', #13, e.Message]), mtError, [mbIgnore,
-                 mbAbort], 0);
-      end;
-      if Result<>mrOk then exit;
-    end;
-    // check if something changed (so the caches are only cleared if neccesary)
-    if not NewDefineTree.IsEqual(ACodeToolBoss.DefineTree) then begin
-      ACodeToolBoss.DefineTree.Assign(NewDefineTree);
-    end;
-    Result:=mrOk;
-  finally
-    NewDefineTree.Free;
-  end;
-end;
 
 function ShowCodeToolsDefinesEditor(ACodeToolBoss: TCodeToolManager;
   Options: TCodeToolsOptions; Macros: TTransferMacroList): TModalResult;
@@ -367,8 +246,10 @@ begin
   if Result=mrOk then begin
     if not CodeToolsDefinesEditor.DefineTree.IsEqual(ACodeToolBoss.DefineTree)
     then begin
-      ACodeToolBoss.DefineTree.Assign(CodeToolsDefinesEditor.DefineTree);
-      Result:=SaveGlobalCodeToolsDefines(ACodeToolBoss,Options);
+      ACodeToolBoss.DefineTree.AssignNonAutoCreated(
+        CodeToolsDefinesEditor.DefineTree);
+      Options.ReadGlobalDefinesTemplatesFromTree(ACodeToolBoss.DefineTree);
+      Options.Save;
     end;
   end;
   CodeToolsDefinesEditor.Free;
@@ -400,14 +281,9 @@ begin
     Top:=3;
     Width:=SelItemMaxX-2*Left;
   end;
-  with ProjectSpecificCheckBox do begin
-    Left:=TypeLabel.Left;
-    Top:=TypeLabel.Top+TypeLabel.Height+5;
-    Width:=SelItemMaxX-2*Left;
-  end;
   with NameLabel do begin
-    Left:=ProjectSpecificCheckBox.Left;
-    Top:=ProjectSpecificCheckBox.Top+ProjectSpecificCheckBox.Height+7;
+    Left:=TypeLabel.Left;
+    Top:=TypeLabel.Top+TypeLabel.Height+7;
     Width:=70;
   end;
   with NameEdit do begin
@@ -761,7 +637,8 @@ begin
     writeln('  CompilerPath="',CompilerPath,'"');
     if (CompilerPath<>'') and (CompilerPath<>DefaultCompiler) then
       FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,
-                                CreateCompilerTestPascalFilename,UnitSearchPath)
+                                CreateCompilerTestPascalFilename,UnitSearchPath,
+                                CodeToolsOpts)
     else
       FPCTemplate:=nil;
 
@@ -772,7 +649,8 @@ begin
     if (FPCSrcDir<>'') and (FPCSrcDir<>DefaultFPCSrcDir)
     and (UnitSearchPath<>'') then
       FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
-                                            UnitSearchPath, false, UnitLinkList)
+                                            UnitSearchPath, false, UnitLinkList,
+                                            CodeToolsOpts)
     else
       FPCSrcTemplate:=nil;
 
@@ -799,6 +677,7 @@ begin
       FPCSrcTemplate.Free;
     end;
 
+    DirTemplate.SetDefineOwner(CodeToolsOpts,true);
     InsertTemplate(DirTemplate);
   end;
 end;
@@ -833,7 +712,8 @@ begin
     writeln('  CompilerPath="',CompilerPath,'"');
     
     FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,
-                                           CreateCompilerTestPascalFilename,s);
+                                           CreateCompilerTestPascalFilename,s,
+                                           CodeToolsOpts);
     if FPCTemplate=nil then exit;
     FPCTemplate.Name:='Free Pascal Compiler ('+CompilerPath+')';
     InsertTemplate(FPCTemplate);
@@ -877,7 +757,8 @@ begin
     writeln('  CompilerPath="',CompilerPath,'"');
 
     FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,
-                               CreateCompilerTestPascalFilename,UnitSearchPath);
+                               CreateCompilerTestPascalFilename,UnitSearchPath,
+                               CodeToolsOpts);
     if FPCTemplate=nil then begin
       writeln('ERROR: unable to get FPC Compiler Macros from "',CompilerPath,'"');
       exit;
@@ -889,7 +770,8 @@ begin
     writeln('  FPCSrcDir="',FPCSrcDir,'"');
     UnitSearchPath:='';
     FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
-                                           UnitSearchPath, false, UnitLinks);
+                                           UnitSearchPath, false, UnitLinks,
+                                           CodeToolsOpts);
     if FPCSrcTemplate=nil then begin
       writeln('ERROR: unable to create FPC CVS Src defines for "',FPCSrcDir,'"');
       FPCTemplate.Free;
@@ -906,6 +788,7 @@ begin
     ResetAllTemplate.InsertInFront(FPCSrcDirTemplate.FirstChild);
     FPCTemplate.InsertBehind(ResetAllTemplate);
 
+    FPCSrcDirTemplate.SetDefineOwner(CodeToolsOpts,true);
     InsertTemplate(FPCSrcDirTemplate);
   end;
 end;
@@ -931,7 +814,8 @@ begin
     EndUpdate;
     if ShowModal=mrCancel then exit;
     LazTemplate:=Boss.DefinePool.CreateLazarusSrcTemplate(FileNames[0],
-                               '$('+ExternalMacroStart+'LCLWidgetType)','');
+                               '$('+ExternalMacroStart+'LCLWidgetType)','',
+                               CodeToolsOpts);
     if LazTemplate=nil then exit;
     LazTemplate.Name:='Lazarus Directory ('+FileNames[0]+')';
     InsertTemplate(LazTemplate);
@@ -947,7 +831,7 @@ begin
   else
     DelphiVersion:=5;
   InsertTemplate(Boss.DefinePool.CreateDelphiCompilerDefinesTemplate(
-                                                                DelphiVersion));
+                                                  DelphiVersion,CodeToolsOpts));
 end;
 
 procedure TCodeToolsDefinesEditor.InsertDelphiDirectoryTemplateMenuItemClick(
@@ -980,7 +864,7 @@ begin
     EndUpdate;
     if ShowModal=mrCancel then exit;
     DirTemplate:=Boss.DefinePool.CreateDelphiDirectoryTemplate(FileNames[0],
-                                                               DelphiVersion);
+                                                   DelphiVersion,CodeToolsOpts);
     if DirTemplate=nil then exit;
     DirTemplate.Name:=DelphiName+' ('+FileNames[0]+')';
     InsertTemplate(DirTemplate);
@@ -1027,7 +911,7 @@ begin
     EndUpdate;
     if ShowModal=mrCancel then exit;
     ProjTemplate:=Boss.DefinePool.CreateDelphiProjectTemplate(FileNames[0],
-                                                    FileNames[1],DelphiVersion);
+                                      FileNames[1],DelphiVersion,CodeToolsOpts);
     if ProjTemplate=nil then exit;
     ProjTemplate.Name:=DelphiName+' Project ('+FileNames[0]+')';
     InsertTemplate(ProjTemplate);
@@ -1073,30 +957,6 @@ begin
     Top:=DeleteFilePathBitBtn.Top+DeleteFilePathBitBtn.Height+5;
     Width:=MoveFilePathUpBitBtn.Width;
   end;
-end;
-
-procedure TCodeToolsDefinesEditor.ProjectSpecificCheckBoxClick(Sender: TObject);
-var
-  SelTreeNode: TTreeNode;
-  SelDefNode: TDefineTemplate;
-begin
-  SelTreeNode:=DefineTreeView.Selected;
-  if SelTreeNode=nil then exit;
-  SelDefNode:=TDefineTemplate(SelTreeNode.Data);
-  if ProjectSpecificCheckBox.Checked=(dtfProjectSpecific in SelDefNode.Flags)
-  then exit;
-  if SelDefNode.IsAutoGenerated then begin
-    MessageDlg(lisCodeToolsDefsNodeIsReadonly,
-      lisCodeToolsDefsAutoGeneratedNodesCanNotBeEdited,
-      mtInformation,[mbCancel],0);
-    exit;
-  end;
-  if ProjectSpecificCheckBox.Checked then
-    Include(SelDefNode.Flags,dtfProjectSpecific)
-  else
-    Exclude(SelDefNode.Flags,dtfProjectSpecific);
-  SetNodeImages(SelTreeNode,true);
-  SetTypeLabel;
 end;
 
 procedure TCodeToolsDefinesEditor.RefreshPreview;
@@ -1471,12 +1331,6 @@ begin
   
   CreateWinControl(TypeLabel,TLabel,'TypeLabel',SelectedItemGroupBox);
   
-  CreateWinControl(ProjectSpecificCheckBox,TCheckBox,'ProjectSpecificCheckBox',
-                   SelectedItemGroupBox);
-  ProjectSpecificCheckBox.Caption:=
-    lisCodeToolsDefsNodeAndItsChildrenAreOnly;
-  ProjectSpecificCheckBox.OnClick:=@ProjectSpecificCheckBoxClick;
-  
   CreateWinControl(NameLabel,TLabel,'NameLabel',SelectedItemGroupBox);
   NameLabel.Caption:=lisCodeToolsDefsName;
   
@@ -1598,15 +1452,9 @@ begin
   end;
   ANode.SelectedIndex:=ANode.ImageIndex;
   if ADefineTemplate.IsAutoGenerated then begin
-    if ADefineTemplate.IsProjectSpecific then
-      ANode.StateIndex:=15
-    else
-      ANode.StateIndex:=13;
+    ANode.StateIndex:=13;
   end else begin
-    if ADefineTemplate.IsProjectSpecific then
-      ANode.StateIndex:=14
-    else
-      ANode.StateIndex:=12;
+    ANode.StateIndex:=12;
   end;
   if WithSubNodes then begin
     ANode:=ANode.GetFirstChild;
@@ -1663,8 +1511,6 @@ begin
   if (ATreeNode<>nil) then begin
     ADefNode:=TDefineTemplate(ATreeNode.Data);
     if (not ADefNode.IsAutoGenerated) then begin
-      if ProjectSpecificCheckBox.Checked then
-        Include(ADefNode.Flags,dtfProjectSpecific);
       ADefNode.Name:=NameEdit.Text;
       ATreeNode.Text:=ADefNode.Name;
       ADefNode.Variable:=VariableEdit.Text;
@@ -1698,7 +1544,6 @@ begin
   if SelTreeNode<>nil then begin
     SelDefNode:=TDefineTemplate(SelTreeNode.Data);
     SetValuesEditable(not SelDefNode.IsAutoGenerated);
-    ProjectSpecificCheckBox.Checked:=dtfProjectSpecific in SelDefNode.Flags;
     NameEdit.Text:=SelDefNode.Name;
     DescriptionEdit.Text:=SelDefNode.Description;
     VariableEdit.Text:=SelDefNode.Variable;
@@ -1737,8 +1582,6 @@ begin
     s:=Format(lisCodeToolsDefsAction, [DefineActionNames[SelDefNode.Action]]);
     if SelDefNode.IsAutoGenerated then
       s:=Format(lisCodeToolsDefsautoGenerated, [s]);
-    if SelDefNode.IsProjectSpecific then
-      s:=Format(lisCodeToolsDefsprojectSpecific, [s]);
   end else begin
     s:=lisCodeToolsDefsnoneSelected;
   end;
@@ -1805,6 +1648,7 @@ begin
   NewValue:='';
   NewDefNode:=TDefineTemplate.Create(NewName,NewDescription,NewVariable,
                                      NewValue,Action);
+  NewDefNode.Owner:=CodeToolsOpts;
   // add node to treeview
   if (NodeInFront<>nil) then
     // insert in front
@@ -1955,7 +1799,6 @@ procedure TCodeToolsDefinesEditor.SetValuesEditable(AValue: boolean);
 begin
   SelectedItemGroupBox.Enabled:=true;
   TypeLabel.Enabled:=true;
-  ProjectSpecificCheckBox.Enabled:=AValue;
   NameLabel.Enabled:=AValue;
   NameEdit.Enabled:=AValue;
   DescriptionLabel.Enabled:=AValue;
@@ -1984,7 +1827,7 @@ constructor TCodeToolsDefinesEditor.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   Position:=poScreenCenter;
-  IDEDialogLayoutList.ApplyLayout(Self,500, 460);
+  IDEDialogLayoutList.ApplyLayout(Self,500,460);
 
   if LazarusResources.Find(ClassName)=nil then begin
     Caption:=lisCodeToolsDefsCodeToolsDefinesEditor;

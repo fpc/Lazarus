@@ -75,6 +75,7 @@ function SearchFileInPath(const Filename, BasePath, SearchPath,
                           Delimiter: string; SearchLoUpCase: boolean): string;
 function FilenameIsMatching(const Mask, Filename: string;
   MatchExactly: boolean): boolean;
+function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 
 implementation
 
@@ -86,6 +87,29 @@ uses
 
 var
   UpChars: array[char] of char;
+
+{-------------------------------------------------------------------------------
+  function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
+-------------------------------------------------------------------------------}
+function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
+var
+  fs: TFileStream;
+begin
+  if FileExists(Filename) then begin
+    try
+      fs:=TFileStream.Create(Filename,fmOpenWrite);
+      fs.Size:=0;
+      fs.Free;
+    except
+      on E: Exception do begin
+        Result:=false;
+        if RaiseOnError then raise;
+        exit;
+      end;
+    end;
+  end;
+  Result:=true;
+end;
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
 begin

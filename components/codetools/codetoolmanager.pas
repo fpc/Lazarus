@@ -91,7 +91,7 @@ type
     function OnScannerGetInitValues(Code: Pointer;
       var AChangeStep: integer): TExpressionEvaluator;
     procedure OnDefineTreeReadValue(Sender: TObject; const VariableName: string;
-                                    var Value: string);
+                                    var Value: string; var Handled: boolean);
     procedure OnGlobalValuesChanged;
     function DoOnFindUsedUnit(SrcTool: TFindDeclarationTool; const TheUnitName,
           TheUnitInFilename: string): TCodeBuffer;
@@ -1983,9 +1983,11 @@ begin
 end;
 
 procedure TCodeToolManager.OnDefineTreeReadValue(Sender: TObject;
-  const VariableName: string; var Value: string);
+  const VariableName: string; var Value: string; var Handled: boolean);
 begin
-  Value:=GlobalValues[VariableName];
+  Handled:=GlobalValues.IsDefined(VariableName);
+  if Handled then
+    Value:=GlobalValues[VariableName];
   //writeln('[TCodeToolManager.OnDefineTreeReadValue] Name="',VariableName,'" = "',Value,'"');
 end;
 

@@ -209,11 +209,12 @@ resourcestring
   lisMenuCompilerOptions = 'Compiler Options...';
   lisMenuRunParameters = 'Run Parameters ...';
   
-  lisMenuConfigCustomComps = 'Configure custom components';
   lisMenuOpenPackage = 'Open package';
   lisMenuOpenRecentPkg = 'Open recent package';
   lisMenuOpenPackageFile = 'Open package file';
+  lisMenuAddCurUnitToPkg = 'Add active unit to a package';
   lisMenuPackageGraph = 'Package Graph';
+  lisMenuConfigCustomComps = 'Configure custom components';
 
   lisMenuSettings = 'Configure custom tools ...';
   lisMenuQuickSyntaxCheck = 'Quick syntax check';
@@ -1230,6 +1231,14 @@ resourcestring
   dlgTodoListGotoLine='Goto selected source line';
   dlgTodoListPrintList='Print todo items';
   dlgToDoListOptions='ToDo options...';
+  
+  // packages
+  lisPkgFileTypeUnit = 'Unit';
+  lisPkgFileTypeLFM = 'LFM - Lazarus form text';
+  lisPkgFileTypeLRS = 'LRS - Lazarus resource';
+  lisPkgFileTypeInclude = 'Include file';
+  lisPkgFileTypeText = 'Text';
+  lisPkgFileTypeBinary = 'Binary';
 
 implementation
 end.

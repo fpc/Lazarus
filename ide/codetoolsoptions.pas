@@ -50,6 +50,9 @@ type
     FAdjustTopLineDueToComment: boolean;
     FJumpCentered: boolean;
     FCursorBeyondEOL: boolean;
+    
+    // Define Templates
+    FGlobalDefineTemplates: TDefineTemplate;
 
     // CodeCreation
     FAddInheritedCodeToOverrideMethod: boolean;
@@ -77,14 +80,17 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
+    procedure ClearGlobalDefineTemplates;
     procedure Load;
     procedure Save;
     procedure AssignTo(Boss: TCodeToolManager);
+    procedure AssignGlobalDefineTemplatesToTree(Tree: TDefineTree);
     property Filename: string read FFilename write SetFilename;
     procedure SetLazarusDefaultFilename;
     procedure Assign(CodeToolsOpts: TCodeToolsOptions);
     function IsEqual(CodeToolsOpts: TCodeToolsOptions): boolean;
     function CreateCopy: TCodeToolsOptions;
+    procedure ReadGlobalDefinesTemplatesFromTree(Tree: TDefineTree);
     
     // General
     property SrcPath: string read FSrcPath write FSrcPath;
@@ -93,6 +99,9 @@ type
     property JumpCentered: boolean read FJumpCentered write FJumpCentered;
     property CursorBeyondEOL: boolean
       read FCursorBeyondEOL write FCursorBeyondEOL;
+
+    // Define Templates
+    property GlobalDefineTemplates: TDefineTemplate read FGlobalDefineTemplates;
     
     // CodeCreation
     property CompleteProperties: boolean
@@ -299,12 +308,13 @@ begin
 end;
 
 procedure WriteAtomTypesToXML(XMLConfig: TXMLConfig; const Path: string;
-  NewValues: TAtomTypes);
+  NewValues, DefaultValues: TAtomTypes);
 var a: TAtomType;
 begin
   for a:=Low(TAtomType) to High(TAtomType) do begin
     if (a<>atNone) then
-      XMLConfig.SetValue(Path+AtomTypeNames[a]+'/Value',a in NewValues);
+      XMLConfig.SetDeleteValue(Path+AtomTypeNames[a]+'/Value',
+                               a in NewValues,a in DefaultValues);
   end;
 end;
 
@@ -340,7 +350,7 @@ end;
 
 destructor TCodeToolsOptions.Destroy;
 begin
-
+  ClearGlobalDefineTemplates;
   inherited Destroy;
 end;
 
@@ -363,7 +373,23 @@ begin
       true);
     FCursorBeyondEOL:=XMLConfig.GetValue(
       'CodeToolsOptions/CursorBeyondEOL/Value',true);
-    
+      
+    // Define templates
+    // delete old one
+    ClearGlobalDefineTemplates;
+    // create empty one
+    FGlobalDefineTemplates:=TDefineTemplate.Create;
+    FGlobalDefineTemplates.Name:='';
+    // load
+    FGlobalDefineTemplates.LoadFromXMLConfig(XMLConfig,'CodeToolsGlobalDefines/',
+      true,true);
+    // delete if still empty
+    if FGlobalDefineTemplates.Name='' then begin
+      ClearGlobalDefineTemplates;
+    end else begin
+      FGlobalDefineTemplates.SetDefineOwner(Self,true);
+    end;
+
     // CodeCreation
     FAddInheritedCodeToOverrideMethod:=XMLConfig.GetValue(
       'CodeToolsOptions/AddInheritedCodeToOverrideMethod/Value',true);
@@ -375,7 +401,7 @@ begin
       'CodeToolsOptions/ClassPartInsertPolicy/Value',
       ClassPartInsertPolicyNames[cpipAlphabetically]));
     FMixMethodsAndPorperties:=XMLConfig.GetValue(
-      'CodeToolsOptions/MixMethodsAndPorperties/Value',false);
+      'CodeToolsOptions/MixMethodsAndProperties/Value',false);
     FForwardProcInsertPolicy:=ForwardProcInsertPolicyNameToPolicy(
       XMLConfig.GetValue('CodeToolsOptions/ForwardProcInsertPolicy/Value',
         ForwardProcInsertPolicyNames[fpipInFrontOfMethods]));
@@ -411,10 +437,10 @@ begin
       'CodeToolsOptions/SetPropertyVariablename/Value',''),'AValue');
 
     XMLConfig.Free;
-
   except
-    // ToDo
-    writeln('[TCodeToolsOptions.Load]  error reading "',FFilename,'"');
+    on E: Exception do begin
+      writeln('[TCodeToolsOptions.Load]  error reading "',FFilename,'": ',E.Message);
+    end;
   end;
 end;
 
@@ -423,63 +449,77 @@ var
   XMLConfig: TXMLConfig;
 begin
   try
+    ClearFile(FFileName,true);
     XMLConfig:=TXMLConfig.Create(FFileName);
     XMLConfig.SetValue('CodeToolsOptions/Version/Value',
       CodeToolsOptionsVersion);
 
     // General
-    XMLConfig.SetValue('CodeToolsOptions/SrcPath/Value',FSrcPath);
-    XMLConfig.SetValue('CodeToolsOptions/AdjustTopLineDueToComment/Value',
-      FAdjustTopLineDueToComment);
-    XMLConfig.SetValue('CodeToolsOptions/JumpCentered/Value',FJumpCentered);
-    XMLConfig.SetValue('CodeToolsOptions/CursorBeyondEOL/Value',
-      FCursorBeyondEOL);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/SrcPath/Value',FSrcPath,'');
+    XMLConfig.SetDeleteValue('CodeToolsOptions/AdjustTopLineDueToComment/Value',
+                             FAdjustTopLineDueToComment,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/JumpCentered/Value',
+                             FJumpCentered,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/CursorBeyondEOL/Value',
+                             FCursorBeyondEOL,true);
+
+    // Define templates
+    FGlobalDefineTemplates.SaveToXMLConfig(XMLConfig,'CodeToolsGlobalDefines/',
+      true,false,true,false);
 
     // CodeCreation
-    XMLConfig.SetValue(
+    XMLConfig.SetDeleteValue(
       'CodeToolsOptions/AddInheritedCodeToOverrideMethod/Value',
-      AddInheritedCodeToOverrideMethod);
-    XMLConfig.SetValue(
-      'CodeToolsOptions/CompleteProperties/Value',CompleteProperties);
-    XMLConfig.SetValue(
-      'CodeToolsOptions/LineLengthXMLConfig/Value',FLineLength);
-    XMLConfig.SetValue('CodeToolsOptions/ClassPartInsertPolicy/Value',
-      ClassPartInsertPolicyNames[FClassPartInsertPolicy]);
-    XMLConfig.SetValue(
-      'CodeToolsOptions/MixMethodsAndPorperties/Value',FMixMethodsAndPorperties);
-    XMLConfig.SetValue('CodeToolsOptions/ForwardProcInsertPolicy/Value',
-      ForwardProcInsertPolicyNames[FForwardProcInsertPolicy]);
-    XMLConfig.SetValue(
-      'CodeToolsOptions/KeepForwardProcOrder/Value',FKeepForwardProcOrder);
-    XMLConfig.SetValue('CodeToolsOptions/MethodInsertPolicy/Value',
-      MethodInsertPolicyNames[FMethodInsertPolicy]);
-    XMLConfig.SetValue('CodeToolsOptions/KeyWordPolicy/Value',
-      WordPolicyNames[FKeyWordPolicy]);
-    XMLConfig.SetValue('CodeToolsOptions/IdentifierPolicy/Value',
-      WordPolicyNames[FIdentifierPolicy]);
+      AddInheritedCodeToOverrideMethod,true);
+    XMLConfig.SetDeleteValue(
+      'CodeToolsOptions/CompleteProperties/Value',CompleteProperties,true);
+    XMLConfig.SetDeleteValue(
+      'CodeToolsOptions/LineLengthXMLConfig/Value',FLineLength,80);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/ClassPartInsertPolicy/Value',
+      ClassPartInsertPolicyNames[FClassPartInsertPolicy],
+      ClassPartInsertPolicyNames[cpipAlphabetically]);
+    XMLConfig.SetDeleteValue(
+      'CodeToolsOptions/MixMethodsAndProperties/Value',FMixMethodsAndPorperties,
+      false);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/ForwardProcInsertPolicy/Value',
+      ForwardProcInsertPolicyNames[FForwardProcInsertPolicy],
+      ForwardProcInsertPolicyNames[fpipInFrontOfMethods]);
+    XMLConfig.SetDeleteValue(
+      'CodeToolsOptions/KeepForwardProcOrder/Value',FKeepForwardProcOrder,true);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/MethodInsertPolicy/Value',
+      MethodInsertPolicyNames[FMethodInsertPolicy],
+      MethodInsertPolicyNames[mipClassOrder]);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/KeyWordPolicy/Value',
+      WordPolicyNames[FKeyWordPolicy],
+      WordPolicyNames[wpLowerCase]);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/IdentifierPolicy/Value',
+      WordPolicyNames[FIdentifierPolicy],
+      WordPolicyNames[wpNone]);
     WriteAtomTypesToXML(XMLConfig,'CodeToolsOptions/DoNotSplitLineInFront/',
-      FDoNotSplitLineInFront);
+      FDoNotSplitLineInFront,DefaultDoNotSplitLineInFront);
     WriteAtomTypesToXML(XMLConfig,'CodeToolsOptions/DoNotSplitLineAfter/',
-      FDoNotSplitLineAfter);
+      FDoNotSplitLineAfter,DefaultDoNotSplitLineAfter);
     WriteAtomTypesToXML(XMLConfig,'CodeToolsOptions/DoInsertSpaceInFront/',
-      FDoInsertSpaceInFront);
+      FDoInsertSpaceInFront,DefaultDoInsertSpaceInFront);
     WriteAtomTypesToXML(XMLConfig,'CodeToolsOptions/DoInsertSpaceAfter/',
-      FDoInsertSpaceAfter);
-    XMLConfig.SetValue('CodeToolsOptions/PropertyReadIdentPrefix/Value',
-      FPropertyReadIdentPrefix);
-    XMLConfig.SetValue('CodeToolsOptions/PropertyWriteIdentPrefix/Value',
-      FPropertyWriteIdentPrefix);
-    XMLConfig.SetValue('CodeToolsOptions/PropertyStoredIdentPostfix/Value',
-      FPropertyStoredIdentPostfix);
-    XMLConfig.SetValue('CodeToolsOptions/PrivatVariablePrefix/Value',
-      FPrivatVariablePrefix);
-    XMLConfig.SetValue('CodeToolsOptions/SetPropertyVariablename/Value',
-      FSetPropertyVariablename);
+      FDoInsertSpaceAfter,DefaultDoInsertSpaceAfter);
+    XMLConfig.SetDeleteValue('CodeToolsOptions/PropertyReadIdentPrefix/Value',
+      FPropertyReadIdentPrefix,'Get');
+    XMLConfig.SetDeleteValue('CodeToolsOptions/PropertyWriteIdentPrefix/Value',
+      FPropertyWriteIdentPrefix,'Set');
+    XMLConfig.SetDeleteValue('CodeToolsOptions/PropertyStoredIdentPostfix/Value',
+      FPropertyStoredIdentPostfix,'IsStored');
+    XMLConfig.SetDeleteValue('CodeToolsOptions/PrivatVariablePrefix/Value',
+      FPrivatVariablePrefix,'F');
+    XMLConfig.SetDeleteValue('CodeToolsOptions/SetPropertyVariablename/Value',
+      FSetPropertyVariablename,'AValue');
 
     XMLConfig.Flush;
     XMLConfig.Free;
   except
-    writeln('ERROR: error while writing codetools options "',FFilename,'"');
+    on E: Exception do begin
+      writeln('[TCodeToolsOptions.Load]  error writing "',FFilename,'": ',E.Message);
+    end;
   end;
 end;
 
@@ -512,6 +552,13 @@ begin
     FAddInheritedCodeToOverrideMethod:=CodeToolsOpts.AddInheritedCodeToOverrideMethod;
     FCompleteProperties:=CodeToolsOpts.CompleteProperties;
 
+    // define templates
+    ClearGlobalDefineTemplates;
+    FGlobalDefineTemplates:=
+      CodeToolsOpts.FGlobalDefineTemplates.CreateCopy(false,true,true);
+    if FGlobalDefineTemplates<>nil then
+      FGlobalDefineTemplates.SetDefineOwner(Self,true);
+
     // CodeCreation
     FLineLength:=CodeToolsOpts.FLineLength;
     FClassPartInsertPolicy:=CodeToolsOpts.FClassPartInsertPolicy;
@@ -543,6 +590,9 @@ begin
   FAdjustTopLineDueToComment:=true;
   FJumpCentered:=true;
   FCursorBeyondEOL:=true;
+  
+  // define templates
+  ClearGlobalDefineTemplates;
 
   // CodeCreation
   FAddInheritedCodeToOverrideMethod:=true;
@@ -566,6 +616,15 @@ begin
   FSetPropertyVariablename:='AValue';
 end;
 
+procedure TCodeToolsOptions.ClearGlobalDefineTemplates;
+begin
+  if FGlobalDefineTemplates<>nil then begin
+    FGlobalDefineTemplates.Clear(true);
+    FGlobalDefineTemplates.Free;
+    FGlobalDefineTemplates:=nil;
+  end;
+end;
+
 function TCodeToolsOptions.IsEqual(CodeToolsOpts: TCodeToolsOptions): boolean;
 begin
   Result:=
@@ -576,6 +635,10 @@ begin
     and (FCursorBeyondEOL=CodeToolsOpts.FCursorBeyondEOL)
     and (AddInheritedCodeToOverrideMethod=CodeToolsOpts.AddInheritedCodeToOverrideMethod)
     and (CompleteProperties=CodeToolsOpts.CompleteProperties)
+    
+    // define templates
+    and (FGlobalDefineTemplates.IsEqual(
+                                CodeToolsOpts.FGlobalDefineTemplates,true,true))
 
     // CodeCreation
     and (FLineLength=CodeToolsOpts.FLineLength)
@@ -605,6 +668,17 @@ begin
   Result.Filename:=Filename;
 end;
 
+procedure TCodeToolsOptions.ReadGlobalDefinesTemplatesFromTree(Tree: TDefineTree
+  );
+begin
+  ClearGlobalDefineTemplates;
+  FGlobalDefineTemplates:=
+    Tree.ExtractTemplatesOwnedBy(Self,[],[dtfAutoGenerated]);
+  if FGlobalDefineTemplates<>nil then begin
+    FGlobalDefineTemplates.SetDefineOwner(Self,true);
+  end;
+end;
+
 procedure TCodeToolsOptions.AssignTo(Boss: TCodeToolManager);
 begin
   // General - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -614,7 +688,7 @@ begin
   Boss.CursorBeyondEOL:=CursorBeyondEOL;
   Boss.AddInheritedCodeToOverrideMethod:=AddInheritedCodeToOverrideMethod;
   Boss.CompleteProperties:=CompleteProperties;
-
+  
   // CreateCode - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
   with Boss.SourceChangeCache do begin
     BeautifyCodeOptions.LineLength:=LineLength;
@@ -635,6 +709,17 @@ begin
     BeautifyCodeOptions.PrivatVariablePrefix:=PrivatVariablePrefix;
   end;
   Boss.SetPropertyVariablename:=SetPropertyVariablename;
+end;
+
+procedure TCodeToolsOptions.AssignGlobalDefineTemplatesToTree(Tree: TDefineTree
+  );
+begin
+  // Define templates - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+  // remove old custom define templates
+  Tree.RemoveTemplatesOwnedBy(Self,[],[dtfAutoGenerated]);
+  // merge current custom define templates
+  if FGlobalDefineTemplates<>nil then
+    Tree.MergeDefineTemplates(FGlobalDefineTemplates,'');
 end;
 
 { TCodeToolsOptsDlg }

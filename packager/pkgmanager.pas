@@ -51,13 +51,11 @@ uses
   PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
   OpenInstalledPkgDlg, PkgGraphExplorer, BrokenDependenciesDlg, CompilerOptions,
   ExtToolDialog, ExtToolEditDlg, EditDefineTree, DefineTemplates,
-  ProjectInspector, ComponentPalette,
+  ProjectInspector, ComponentPalette, UnitEditor, AddFileToAPackageDlg,
   BasePkgManager, MainBar;
 
 type
   TPkgManager = class(TBasePkgManager)
-    procedure IDEComponentPaletteEndUpdate(Sender: TObject;
-      PaletteChanged: boolean);
     // events
     function OnPackageEditorCompilePackage(Sender: TObject;
       APackage: TLazPackage; CompileAll: boolean): TModalResult;
@@ -71,6 +69,7 @@ type
                                            APackage: TLazPackage): TModalResult;
     procedure MainIDEitmPkgOpenPackageFileClick(Sender: TObject);
     procedure MainIDEitmPkgPkgGraphClick(Sender: TObject);
+    procedure MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
     procedure mnuOpenRecentPackageClicked(Sender: TObject);
     procedure mnuPkgOpenPackageClicked(Sender: TObject);
@@ -86,6 +85,8 @@ type
     procedure PackageGraphDeletePackage(APackage: TLazPackage);
     procedure PackageGraphDependencyModified(ADependency: TPkgDependency);
     procedure PackageGraphEndUpdate(Sender: TObject; GraphChanged: boolean);
+    procedure IDEComponentPaletteEndUpdate(Sender: TObject;
+      PaletteChanged: boolean);
   private
     // helper functions
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
@@ -112,6 +113,7 @@ type
     procedure SetupMainBarShortCuts; override;
     procedure SetRecentPackagesMenu; override;
     procedure AddFileToRecentPackages(const Filename: string);
+    procedure SaveSettings; override;
     
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; override;
 
@@ -147,6 +149,7 @@ type
                               Flags: TPkgCompileFlags): TModalResult; override;
     function OnRenameFile(const OldFilename,
                           NewFilename: string): TModalResult; override;
+    function DoAddActiveUnitToAPackage: TModalResult;
                           
 
     function OnProjectInspectorOpen(Sender: TObject): boolean; override;
@@ -193,6 +196,11 @@ procedure TPkgManager.IDEComponentPaletteEndUpdate(Sender: TObject;
   PaletteChanged: boolean);
 begin
   UpdateVisibleComponentPalette;
+end;
+
+procedure TPkgManager.MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
+begin
+  DoAddActiveUnitToAPackage;
 end;
 
 function TPkgManager.OnPackageEditorCompilePackage(Sender: TObject;
@@ -643,19 +651,23 @@ function TPkgManager.DoSavePackageCompiledState(APackage: TLazPackage;
 var
   XMLConfig: TXMLConfig;
   StateFile: String;
+  CompilerFileDate: Integer;
 begin
   StateFile:=APackage.GetStateFilename;
   try
+    CompilerFileDate:=FileAge(CompilerFilename);
     ClearFile(StateFile,true);
     XMLConfig:=TXMLConfig.Create(StateFile);
     try
       XMLConfig.SetValue('Compiler/Value',CompilerFilename);
+      XMLConfig.SetValue('Compiler/Date',CompilerFileDate);
       XMLConfig.SetValue('Params/Value',CompilerParams);
       XMLConfig.Flush;
     finally
       XMLConfig.Free;
     end;
     APackage.LastCompilerFilename:=CompilerFilename;
+    APackage.LastCompilerFileDate:=CompilerFileDate;
     APackage.LastCompilerParams:=CompilerParams;
     APackage.StateFileDate:=FileAge(StateFile);
     APackage.Flags:=APackage.Flags+[lpfStateFileLoaded];
@@ -699,6 +711,8 @@ begin
       try
         APackage.LastCompilerFilename:=
           XMLConfig.GetValue('Compiler/Value','');
+        APackage.LastCompilerFileDate:=
+          XMLConfig.GetValue('Compiler/Date',0);
         APackage.LastCompilerParams:=
           XMLConfig.GetValue('Params/Value','');
       finally
@@ -769,8 +783,16 @@ var
   RequiredPackage: TLazPackage;
 begin
   Result:=mrYes;
-
   writeln('TPkgManager.CheckIfPackageNeedsCompilation A ',APackage.IDAsString);
+
+  // calculate compiler filename and parameters
+  OutputDir:=APackage.GetOutputDirectory;
+  SrcFilename:=OutputDir+APackage.GetCompileSourceFilename;
+  NewCompilerFilename:=APackage.GetCompilerFilename;
+  NewCompilerParams:=APackage.CompilerOptions.MakeOptionsString(
+                               APackage.CompilerOptions.DefaultMakeOptionsFlags)
+                 +' '+CreateRelativePath(SrcFilename,APackage.Directory);
+
   // check state file
   StateFilename:=APackage.GetStateFilename;
   Result:=DoLoadPackageCompiledState(APackage,false);
@@ -799,7 +821,7 @@ begin
         if StateFileAge<RequiredPackage.StateFileDate then begin
           writeln('TPkgManager.CheckIfPackageNeedsCompilation  Required ',
             RequiredPackage.IDAsString,' State file is newer than ',
-            ' State file ',APackage.IDAsString);
+            'State file ',APackage.IDAsString);
           exit;
         end;
       end;
@@ -807,33 +829,36 @@ begin
     Dependency:=Dependency.NextRequiresDependency;
   end;
   
-  OutputDir:=APackage.GetOutputDirectory;
-  SrcFilename:=OutputDir+APackage.GetCompileSourceFilename;
-  NewCompilerFilename:=APackage.GetCompilerFilename;
-  NewCompilerParams:=APackage.CompilerOptions.MakeOptionsString(
-                               APackage.CompilerOptions.DefaultMakeOptionsFlags)
-                 +' '+CreateRelativePath(SrcFilename,APackage.Directory);
-
   Result:=mrYes;
-  
-  // check compiler command
+
+  // check main source file
+  if not FileExists(SrcFilename) or (StateFileAge<FileAge(SrcFilename)) then
+  begin
+    writeln('TPkgManager.CheckIfPackageNeedsCompilation  SrcFile outdated ',APackage.IDAsString);
+    exit;
+  end;
+
+  // check compiler and params
   if NewCompilerFilename<>APackage.LastCompilerFilename then begin
     writeln('TPkgManager.CheckIfPackageNeedsCompilation  Compiler filename changed for ',APackage.IDAsString);
     writeln('  Old="',APackage.LastCompilerFilename,'"');
     writeln('  Now="',NewCompilerFilename,'"');
     exit;
   end;
+  if not FileExists(NewCompilerFilename) then begin
+    writeln('TPkgManager.CheckIfPackageNeedsCompilation  Compiler filename not found for ',APackage.IDAsString);
+    writeln('  File="',NewCompilerFilename,'"');
+    exit;
+  end;
+  if FileAge(NewCompilerFilename)<>APackage.LastCompilerFileDate then begin
+    writeln('TPkgManager.CheckIfPackageNeedsCompilation  Compiler file changed for ',APackage.IDAsString);
+    writeln('  File="',NewCompilerFilename,'"');
+    exit;
+  end;
   if NewCompilerParams<>APackage.LastCompilerParams then begin
     writeln('TPkgManager.CheckIfPackageNeedsCompilation  Compiler params changed for ',APackage.IDAsString);
     writeln('  Old="',APackage.LastCompilerParams,'"');
     writeln('  Now="',NewCompilerParams,'"');
-    exit;
-  end;
-  
-  // check main source file
-  if not FileExists(SrcFilename) or (StateFileAge<FileAge(SrcFilename)) then
-  begin
-    writeln('TPkgManager.CheckIfPackageNeedsCompilation  SrcFile outdated ',APackage.IDAsString);
     exit;
   end;
   
@@ -963,10 +988,11 @@ end;
 procedure TPkgManager.ConnectMainBarEvents;
 begin
   with MainIDE do begin
-    itmCompsConfigCustomComps.OnClick :=@mnuConfigCustomCompsClicked;
     itmPkgOpenPackage.OnClick :=@mnuPkgOpenPackageClicked;
     itmPkgOpenPackageFile.OnClick:=@MainIDEitmPkgOpenPackageFileClick;
+    itmPkgAddCurUnitToPkg.OnClick:=@MainIDEitmPkgAddCurUnitToPkgClick;
     itmPkgPkgGraph.OnClick:=@MainIDEitmPkgPkgGraphClick;
+    itmCompsConfigCustomComps.OnClick :=@mnuConfigCustomCompsClicked;
   end;
   
   SetRecentPackagesMenu;
@@ -994,6 +1020,11 @@ begin
                   EnvironmentOptions.MaxRecentPackageFiles);
   SetRecentPackagesMenu;
   MainIDE.SaveEnvironment;
+end;
+
+procedure TPkgManager.SaveSettings;
+begin
+  PackageEditors.SaveLayouts;
 end;
 
 function TPkgManager.GetDefaultSaveDirectoryForFile(const Filename: string
@@ -1432,6 +1463,7 @@ var
   PkgCompileTool: TExternalToolOptions;
   CompilerFilename: String;
   CompilerParams: String;
+  EffektiveCompilerParams: String;
 begin
   Result:=mrCancel;
   
@@ -1498,14 +1530,23 @@ writeln('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompi
       end;
     end;
     
+    // change compiler parameters for compiling clean
+    EffektiveCompilerParams:=CompilerParams;
+    if pcfCleanCompile in Flags then begin
+      if EffektiveCompilerParams<>'' then
+        EffektiveCompilerParams:='-B '+EffektiveCompilerParams
+      else
+        EffektiveCompilerParams:='-B';
+    end;
+
     PkgCompileTool:=TExternalToolOptions.Create;
     try
       PkgCompileTool.Title:='Compiling package '+APackage.IDAsString;
-      PkgCompileTool.Filename:=CompilerFilename;
       PkgCompileTool.ScanOutputForFPCMessages:=true;
       PkgCompileTool.ScanOutputForMakeMessages:=true;
       PkgCompileTool.WorkingDirectory:=APackage.Directory;
-      PkgCompileTool.CmdLineParams:=CompilerParams;
+      PkgCompileTool.Filename:=CompilerFilename;
+      PkgCompileTool.CmdLineParams:=EffektiveCompilerParams;
 
       // clear old errors
       SourceNotebook.ClearErrorLines;
@@ -1686,6 +1727,48 @@ begin
   Result:=mrOk;
 end;
 
+function TPkgManager.DoAddActiveUnitToAPackage: TModalResult;
+var
+  ActiveSourceEditor: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  PkgFile: TPkgFile;
+  Filename: String;
+begin
+  MainIDE.GetCurrentUnit(ActiveSourceEditor,ActiveUnitInfo);
+  if ActiveSourceEditor=nil then exit;
+  
+  Filename:=ActiveUnitInfo.Filename;
+  
+  // check if filename is absolute
+  if ActiveUnitInfo.IsVirtual or (not FileExists(Filename)) then begin
+    Result:=MessageDlg('File not saved',
+      'Please save the file before adding it to a package.',
+      mtWarning,[mbCancel],0);
+    exit;
+  end;
+  
+  // check if file is part of project
+  if ActiveUnitInfo.IsPartOfProject then begin
+    Result:=MessageDlg('File is in Project',
+      'Warning: The file "'+Filename+'"'#13
+      +'belongs to the current project.'
+      ,mtWarning,[mbIgnore,mbCancel,mbAbort],0);
+    if Result<>mrIgnore then exit;
+  end;
+  
+  // check if file is already in a package
+  PkgFile:=PackageGraph.FindFileInAllPackages(Filename,false,true);
+  if PkgFile<>nil then begin
+    Result:=MessageDlg('File is already in package',
+      'The file "'+Filename+'"'#13
+      +'is already in the package '+PkgFile.LazPackage.IDAsString+'.'#13,
+      mtWarning,[mbIgnore,mbCancel,mbAbort],0);
+    if Result<>mrIgnore then exit;
+  end;
+  
+  Result:=ShowAddFileToAPackageDlg(Filename);
+end;
+
 function TPkgManager.OnProjectInspectorOpen(Sender: TObject): boolean;
 var
   Dependency: TPkgDependency;
@@ -1725,8 +1808,10 @@ begin
         if CurPackage.Modified and (not CurPackage.ReadOnly)
         and (not (lpfSkipSaving in CurPackage.Flags)) then begin
           Result:=DoSavePackage(CurPackage,Flags);
-          if Result=mrIgnore then
+          if Result=mrIgnore then begin
             CurPackage.Flags:=CurPackage.Flags+[lpfSkipSaving];
+            Result:=mrOk;
+          end;
           if Result<>mrOk then exit;
           AllSaved:=false;
         end;

@@ -72,6 +72,7 @@ type
     procedure ConnectSourceNotebookEvents; virtual; abstract;
     procedure SetupMainBarShortCuts; virtual; abstract;
     procedure SetRecentPackagesMenu; virtual; abstract;
+    procedure SaveSettings; virtual; abstract;
 
     function GetDefaultSaveDirectoryForFile(const Filename: string): string; virtual; abstract;
 

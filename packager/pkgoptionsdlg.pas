@@ -51,6 +51,8 @@ type
     DescriptionMemo: TMemo;
     AuthorGroupBox: TGroupBox;
     AuthorEdit: TEdit;
+    LicenseGroupBox: TGroupBox;
+    LicenseMemo: TMemo;
     VersionGroupBox: TGroupBox;
     VersionMajorLabel: TLabel;
     VersionMajorSpinEdit: TSpinEdit;
@@ -282,6 +284,11 @@ begin
     inc(y,Height+5);
   end;
     
+  with LicenseGroupBox do begin
+    SetBounds(x,y+3,w,70);
+    inc(y,Height+5);
+  end;
+
   with VersionGroupBox do
     SetBounds(x,y,w,90);
 end;
@@ -369,6 +376,7 @@ begin
   // Description page
   LazPackage.Description:=DescriptionMemo.Text;
   LazPackage.Author:=AuthorEdit.Text;
+  LazPackage.License:=LicenseMemo.Text;
   LazPackage.AutoIncrementVersionOnBuild:=AutoIncrementOnBuildCheckBox.Checked;
 
   // Usage page
@@ -527,6 +535,22 @@ begin
     Name:='AuthorEdit';
     Parent:=AuthorGroupBox;
     Align:=alTop;
+    Text:='';
+  end;
+
+  LicenseGroupBox:=TGroupBox.Create(Self);
+  with LicenseGroupBox do begin
+    Name:='LicenseGroupBox';
+    Parent:=DescriptionPage;
+    Caption:='License:';
+  end;
+
+  LicenseMemo:=TMemo.Create(Self);
+  with LicenseMemo do begin
+    Name:='LicenseMemo';
+    Parent:=LicenseGroupBox;
+    Align:=alClient;
+    ScrollBars:=ssAutoVertical;
     Text:='';
   end;
 
@@ -800,7 +824,8 @@ begin
   // Description page
   DescriptionMemo.Text:=LazPackage.Description;
   AuthorEdit.Text:=LazPackage.Author;
-  
+  LicenseMemo.Text:=LazPackage.License;
+
   VersionMajorSpinEdit.Value:=LazPackage.Version.Major;
   VersionMinorSpinEdit.Value:=LazPackage.Version.Minor;
   VersionReleaseSpinEdit.Value:=LazPackage.Version.Release;

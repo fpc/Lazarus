@@ -56,7 +56,9 @@ type
 
   TMacroFunction = function(const s:string; var Abort: boolean):string of object;
   
-  TTransferMacroFlag = (tmfInteractive);
+  TTransferMacroFlag = (
+    tmfInteractive
+    );
   TTransferMacroFlags = set of TTransferMacroFlag;
 
   TTransferMacro = class

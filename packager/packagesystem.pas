@@ -808,6 +808,7 @@ begin
     Filename:='$(FPCSrcDir)/fcl/';
     Version.SetValues(1,0,1,1);
     Author:='FPC team';
+    License:='LGPL-2';
     AutoInstall:=pitStatic;
     AutoUpdate:=false;
     Description:='The FCL - FreePascal Component Library '
@@ -838,6 +839,7 @@ begin
     Filename:='$(LazarusDir)/lcl/';
     Version.SetValues(1,0,1,1);
     Author:='Lazarus';
+    License:='LGPL-2';
     AutoInstall:=pitStatic;
     AutoUpdate:=false;
     Description:='The LCL - Lazarus Component Library '
@@ -885,6 +887,7 @@ begin
     Filename:='$(LazarusDir)/components/synedit/';
     Version.SetValues(1,0,1,1);
     Author:='SynEdit - http://sourceforge.net/projects/synedit/';
+    License:='LGPL-2';
     AutoInstall:=pitStatic;
     AutoUpdate:=false;
     Description:='SynEdit - the editor component used by Lazarus. '

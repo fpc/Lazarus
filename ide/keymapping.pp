@@ -166,10 +166,6 @@ const
   ecBuildAll             = ecUserFirst + 407;
   ecBuildLazarus         = ecUserFirst + 408;
 
-  // tools menu
-  ecExtToolFirst         = ecUserFirst + 500;
-  ecExtToolLast          = ecUserFirst + 599;
-
   // project menu
   ecNewProject           = ecUserFirst + 700;
   ecNewProjectFromFile   = ecUserFirst + 701;
@@ -184,6 +180,17 @@ const
   ecViewProjectTodos     = ecUserFirst + 710;
   ecProjectOptions       = ecUserFirst + 711;
 
+  // components menu
+  ecOpenPackage          = ecUserFirst + 900;
+  ecOpenPackageFile      = ecUserFirst + 901;
+  ecAddCurUnitToPkg      = ecUserFirst + 902;
+  ecPackageGraph         = ecUserFirst + 903;
+  ecConfigCustomComps    = ecUserFirst + 904;
+
+  // tools menu
+  ecExtToolFirst         = ecUserFirst + 500;
+  ecExtToolLast          = ecUserFirst + 599;
+
   // option commmands
   ecRunParameters        = ecUserFirst + 800;
   ecCompilerOptions      = ecUserFirst + 801;
@@ -194,12 +201,6 @@ const
   ecCodeToolsOptions     = ecUserFirst + 806;
   ecCodeToolsDefinesEd   = ecUserFirst + 807;
   
-  // components menu
-  ecConfigCustomComps    = ecUserFirst + 900;
-  ecOpenPackage          = ecUserFirst + 901;
-  ecOpenPackageFile      = ecUserFirst + 902;
-  ecPackageGraph         = ecUserFirst + 903;
-
   // help menu
   ecAboutLazarus         = ecUserFirst + 1000;
   
@@ -630,10 +631,11 @@ begin
     ecCompilerOptions       : Result:= srkmecCompilerOptions;
     
     // components menu
-    ecConfigCustomComps     : Result:= lisMenuConfigCustomComps;
     ecOpenPackage           : Result:= lisMenuOpenPackage;
     ecOpenPackageFile       : Result:= lisMenuOpenPackageFile;
+    ecAddCurUnitToPkg       : Result:= lisMenuAddCurUnitToPkg;
     ecPackageGraph          : Result:= lisMenuPackageGraph;
+    ecConfigCustomComps     : Result:= lisMenuConfigCustomComps;
 
     // tools menu
     ecExtToolSettings       : Result:= srkmecExtToolSettings;
@@ -1469,10 +1471,11 @@ begin
 
   // components menu
   C:=Categories[AddCategory('Components',srkmCatComponentsMenu,caAll)];
-  Add(C,'Configure custom components',ecConfigCustomComps,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Open package',ecOpenPackage,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Open package file',ecOpenPackageFile,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Add active unit to a package',ecAddCurUnitToPkg,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Package graph',ecPackageGraph,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Configure custom components',ecConfigCustomComps,VK_UNKNOWN,[],VK_UNKNOWN,[]);
 
   // tools menu
   C:=Categories[AddCategory(KeyCategoryToolMenuName,srkmCatToolMenu,caAll)];

@@ -216,11 +216,44 @@ type
   end;
   
   
+  { TProjectDefineTemplates }
+
+  TProjectDefineTemplatesFlag = (
+    ptfFlagsChanged
+    );
+  TProjectDefineTemplatesFlags = set of TProjectDefineTemplatesFlag;
+
+  TProjectDefineTemplates = class
+  private
+    FFlags: TProjectDefineTemplatesFlags;
+    FMain: TDefineTemplate;
+    FProjectDir: TDefineTemplate;
+    FProject: TProject;
+    FUpdateLock: integer;
+    procedure UpdateMain;
+  public
+    constructor Create(OwnerProject: TProject);
+    destructor Destroy; override;
+    procedure Clear;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    procedure CompilerFlagsChanged;
+    procedure AllChanged;
+  public
+    property Owner: TProject read FProject;
+    property Main: TDefineTemplate read FMain;
+  end;
+
+
   { TProject }
   
   TProjectType =   // for a description see ProjectTypeDescriptions below
-     (ptApplication, ptProgram, ptCustomProgram); 
-  TProjectFlag = (pfSaveClosedUnits, pfSaveOnlyProjectUnits);
+    (ptApplication, ptProgram, ptCustomProgram);
+     
+  TProjectFlag = (
+    pfSaveClosedUnits,     // save info about closed files (not part of project)
+    pfSaveOnlyProjectUnits // save no info about foreign files
+    );
   TProjectFlags = set of TProjectFlag;
   
   TProjectFileSearchFlag = (
@@ -239,6 +272,7 @@ type
     fBookmarks: TProjectBookmarkList;
     fChanged: boolean;
     fCompilerOptions: TProjectCompilerOptions;
+    FDefineTemplates: TProjectDefineTemplates;
     fFirstAutoRevertLockedUnit: TUnitInfo; // units with IsAutoRevertLocked=true
     fFirstLoadedUnit: TUnitInfo;           // units with Loaded=true
     fFirstPartOfProject: TUnitInfo;        // units with IsPartOfProject=true
@@ -251,7 +285,7 @@ type
     fJumpHistory: TProjectJumpHistory;
     fLastReadLPIFileDate: TDateTime;
     fLastReadLPIFilename: string;
-    fMainUnitID: Integer;  // only for ptApplication
+    fMainUnitID: Integer;  // only for ptApplication, ptProgram
     fModified: boolean;
     FOnBeginUpdate: TNotifyEvent;
     FOnEndUpdate: TEndUpdateProjectEvent;
@@ -263,7 +297,7 @@ type
     fRunParameterOptions: TRunParamsOptions;
     fTargetFileExt: String;
     fTitle: String;
-    fUnitList: TList;                      // list of _all_ units (TUnitInfo)
+    fUnitList: TList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
     xmlconfig: TXMLConfig;
     function GetMainFilename: String;
@@ -394,6 +428,7 @@ type
     property Bookmarks: TProjectBookmarkList read fBookmarks write fBookmarks;
     property CompilerOptions: TProjectCompilerOptions
                                    read fCompilerOptions write fCompilerOptions;
+    property DefineTemplates: TProjectDefineTemplates read FDefineTemplates;
     property FirstAutoRevertLockedUnit: TUnitInfo read fFirstAutoRevertLockedUnit;
     property FirstLoadedUnit: TUnitInfo read fFirstLoadedUnit;
     property FirstPartOfProject: TUnitInfo read fFirstPartOfProject;
@@ -1095,6 +1130,7 @@ begin
   FAutoCreateForms := true;
   fBookmarks := TProjectBookmarkList.Create;
   fCompilerOptions := TProjectCompilerOptions.Create(Self);
+  FDefineTemplates:=TProjectDefineTemplates.Create(Self);
   FFlags:=DefaultProjectFlags;
   fIconPath := '';
   fJumpHistory:=TProjectJumpHistory.Create;
@@ -1164,13 +1200,14 @@ end;
 destructor TProject.Destroy;
 begin
   Clear;
-  fBookmarks.Free;
-  if (xmlconfig <> nil) then xmlconfig.Free;
-  fUnitList.Free;
-  fJumpHistory.Free;
-  fPublishOptions.Free;
-  fRunParameterOptions.Free;
-  fCompilerOptions.Free;
+  FreeThenNil(fBookmarks);
+  FreeThenNil(xmlconfig);
+  FreeThenNil(fUnitList);
+  FreeThenNil(fJumpHistory);
+  FreeThenNil(fPublishOptions);
+  FreeThenNil(fRunParameterOptions);
+  FreeThenNil(fCompilerOptions);
+  FreeThenNil(FDefineTemplates);
 
   inherited Destroy;
 end;
@@ -1516,8 +1553,7 @@ var i:integer;
 begin
   BeginUpdate(true);
 
-  if xmlconfig<>nil then xmlconfig.Free;
-  xmlconfig:=nil;
+  FreeThenNil(xmlconfig);
 
   // break and free removed dependencies
   while FFirstRemovedDependency<>nil do
@@ -1535,6 +1571,7 @@ begin
   fActiveEditorIndexAtStart := -1;
   fBookmarks.Clear;
   fCompilerOptions.Clear;
+  FDefineTemplates.Clear;
   fIconPath := '';
   fJumpHistory.Clear;
   fMainUnitID := -1;
@@ -1550,6 +1587,7 @@ end;
 procedure TProject.BeginUpdate(Change: boolean);
 begin
   inc(FUpdateLock);
+  FDefineTemplates.BeginUpdate;
   if FUpdateLock=1 then begin
     fChanged:=Change;
     if Assigned(OnBeginUpdate) then OnBeginUpdate(Self);
@@ -1561,6 +1599,7 @@ procedure TProject.EndUpdate;
 begin
   if FUpdateLock<=0 then RaiseException('TProject.EndUpdate');
   dec(FUpdateLock);
+  FDefineTemplates.EndUpdate;
   if FUpdateLock=0 then begin
     if Assigned(OnEndUpdate) then OnEndUpdate(Self,fChanged);
   end;
@@ -2540,12 +2579,84 @@ begin
   PkgList.Free;
 end;
 
+{ TProjectDefineTemplates }
+
+constructor TProjectDefineTemplates.Create(OwnerProject: TProject);
+begin
+  inherited Create;
+  FProject:=OwnerProject;
+end;
+
+destructor TProjectDefineTemplates.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TProjectDefineTemplates.Clear;
+begin
+  if FMain<>nil then begin
+    CodeToolBoss.DefineTree.RemoveDefineTemplate(FMain);
+    FMain:=nil;
+    FProjectDir:=nil;
+    FFlags:=FFlags+[ptfFlagsChanged];
+  end;
+end;
+
+procedure TProjectDefineTemplates.BeginUpdate;
+begin
+  inc(FUpdateLock);
+end;
+
+procedure TProjectDefineTemplates.EndUpdate;
+begin
+  if FUpdateLock=0 then RaiseException('TProjectDefineTemplates.EndUpdate');
+  dec(FUpdateLock);
+  if FUpdateLock=0 then begin
+    if ptfFlagsChanged in FFlags then CompilerFlagsChanged;
+  end;
+end;
+
+procedure TProjectDefineTemplates.UpdateMain;
+begin
+  // update the package block define template (the container for all other
+  // define templates of the package)
+  if FMain=nil then begin
+    // create the main project template
+    FMain:=CreateProjectTemplate(FProjectDir);
+    FMain.SetDefineOwner(Owner,false);
+    FMain.SetFlags([dtfAutoGenerated],[],false);
+  end;
+  // ClearCache is here unnessary, because it is only a block
+end;
+
+procedure TProjectDefineTemplates.CompilerFlagsChanged;
+begin
+  if FUpdateLock>0 then begin
+    Include(FFlags,ptfFlagsChanged);
+    exit;
+  end;
+  Exclude(FFlags,ptfFlagsChanged);
+  if FMain=nil then UpdateMain;
+
+  UpdateCompilerOptionsTemplates(FProjectDir,Owner.CompilerOptions,true,true);
+end;
+
+procedure TProjectDefineTemplates.AllChanged;
+begin
+  CompilerFlagsChanged;
+  CodeToolBoss.DefineTree.ClearCache;
+end;
+
 end.
 
 
 
 {
   $Log$
+  Revision 1.114  2003/04/24 16:44:28  mattias
+  implemented define templates for projects with packages
+
   Revision 1.113  2003/04/21 16:21:28  mattias
   implemented default package for custom IDE components
 

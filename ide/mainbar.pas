@@ -289,11 +289,12 @@ type
     itmProjectRunParameters: TMenuItem;
     
     // components menu
-    itmCompsConfigCustomComps: TMenuItem;
     itmPkgOpenPackage: TMenuItem;
     itmPkgOpenPackageFile: TMenuItem;
     itmPkgOpenRecent: TMenuItem;
+    itmPkgAddCurUnitToPkg: TMenuItem;
     itmPkgPkgGraph: TMenuItem;
+    itmCompsConfigCustomComps: TMenuItem;
 
     // tools menu
     itmToolConfigure: TMenuItem;
@@ -1128,6 +1129,18 @@ begin
   mnuComponents.Add(CreateMenuSeparator);
   {$ENDIF}
 
+  itmPkgAddCurUnitToPkg := TMenuItem.Create(Self);
+  itmPkgAddCurUnitToPkg.Name:='itmPkgAddCurUnitToPkg';
+  itmPkgAddCurUnitToPkg.Caption := lisMenuAddCurUnitToPkg;
+  itmPkgAddCurUnitToPkg.Graphic:=LoadPixmap('pkg_addunittopackage');
+  {$IFDEF EnablePkgs}
+  mnuComponents.Add(itmPkgAddCurUnitToPkg);
+  {$ENDIF}
+
+  {$IFDEF EnablePkgs}
+  mnuComponents.Add(CreateMenuSeparator);
+  {$ENDIF}
+
   itmPkgPkgGraph := TMenuItem.Create(Self);
   itmPkgPkgGraph.Name:='itmPkgPkgGraph';
   itmPkgPkgGraph.Caption := lisMenuPackageGraph;
@@ -1347,10 +1360,11 @@ begin
     itmProjectRunParameters.ShortCut:=CommandToShortCut(ecRunParameters);
 
     // components menu
-    itmCompsConfigCustomComps.ShortCut:=CommandToShortCut(ecConfigCustomComps);
     itmPkgOpenPackage.ShortCut:=CommandToShortCut(ecOpenPackage);
     itmPkgOpenPackageFile.ShortCut:=CommandToShortCut(ecOpenPackageFile);
+    itmPkgAddCurUnitToPkg.ShortCut:=CommandToShortCut(ecAddCurUnitToPkg);
     itmPkgPkgGraph.ShortCut:=CommandToShortCut(ecPackageGraph);
+    itmCompsConfigCustomComps.ShortCut:=CommandToShortCut(ecConfigCustomComps);
 
     // tools menu
     itmToolConfigure.ShortCut:=CommandToShortCut(ecExtToolSettings);

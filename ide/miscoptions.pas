@@ -147,19 +147,26 @@ begin
       XMLConfig.Free;
     end;
   except
-    writeln('ERROR: unable read miscellaneous options from "',GetFilename,'"');
+    on E: Exception do begin
+      writeln('ERROR: unable read miscellaneous options from "',GetFilename,'": ',E.Message);
+    end;
   end;
 end;
 
 procedure TMiscellaneousOptions.Save;
 var XMLConfig: TXMLConfig;
   Path: String;
+  XMLFilename: String;
 begin
+  XMLFilename:=GetFilename;
   try
-    XMLConfig:=TXMLConfig.Create(GetFilename);
+    ClearFile(XMLFilename,true);
+    XMLConfig:=TXMLConfig.Create(XMLFilename);
   except
-    writeln('ERROR: unable to open miscellaneous options "',GetFilename,'"');
-    exit;
+    on E: Exception do begin
+      writeln('ERROR: unable to open miscellaneous options "',XMLFilename,'":',E.Message);
+      exit;
+    end;
   end;
   try
     try
@@ -178,7 +185,9 @@ begin
       XMLConfig.Free;
     end;
   except
-    writeln('ERROR: unable read miscellaneous options from "',GetFilename,'"');
+    on E: Exception do begin
+      writeln('ERROR: unable read miscellaneous options from "',XMLFilename,'": ',E.Message);
+    end;
   end;
 end;
 
