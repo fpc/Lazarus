@@ -60,24 +60,13 @@ end;
 
 procedure TCustomButton.ControlKeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if (Key=VK_RETURN) and (Shift=[]) then begin
-    // some interfaces will handle it with an animation
-    // => let it handle itself
-    // if it does not handle it, we will do it ourselves afterwards
-  end else
-    inherited ControlKeyDown(Key, Shift);
+  inherited ControlKeyDown(Key, Shift);
 end;
 
 procedure TCustomButton.ControlKeyUp(var Key: Word; Shift: TShiftState
   );
 begin
-  if (Key=VK_RETURN) and (Shift=[]) then begin
-    // the interface didn't handle it.
-    //debugln('TCustomButton.ControlKeyUp User pressed Return on ',DbgSName(Self),' and interface did not handle it');
-    Key:=VK_UNKNOWN;
-    Click;
-  end else
-    inherited ControlKeyUp(Key, Shift);
+  inherited ControlKeyUp(Key, Shift);
 end;
 
 {------------------------------------------------------------------------------
@@ -236,6 +225,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2005/02/21 13:54:26  mattias
+  added navigation key check for up/down already handled
+
   Revision 1.40  2005/02/19 22:48:23  mattias
   fixed navigation key handling for TButton
 

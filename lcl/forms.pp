@@ -881,6 +881,9 @@ type
     FIcon: TIcon;
     FIdleLockCount: Integer;
     FFormList: TList;
+    FLastKeyDownSender: TWinControl;
+    FLastKeyDownKey: Word;
+    FLastKeyDownShift: TShiftState;
     FMainForm : TForm;
     FMouseControl: TControl;
     FNavigation: TApplicationNavigationOptions;

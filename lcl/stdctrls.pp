@@ -891,6 +891,8 @@ type
     property OnEnter;
     property OnExit;
     property OnMouseDown;
+    property OnMouseEnter;
+    property OnMouseLeave;
     property OnMouseMove;
     property OnMouseUp;
     property OnResize;
@@ -1218,6 +1220,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.194  2005/02/21 13:54:26  mattias
+  added navigation key check for up/down already handled
+
   Revision 1.193  2005/02/19 18:23:27  mattias
   made TListBox.Clear virtual
 

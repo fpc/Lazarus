@@ -1152,7 +1152,11 @@ begin
     AControl:=TWinControl(Sender);
     if AControl=nil then ;
     //debugln('TApplication.ControlKeyDown A ',DbgSName(AControl));
-  end;
+    FLastKeyDownSender:=AControl;
+  end else
+    FLastKeyDownSender:=nil;
+  FLastKeyDownKey:=Key;
+  FLastKeyDownShift:=Shift;
 end;
 
 procedure TApplication.ControlKeyUp(Sender: TObject; var Key: Word;
@@ -1161,9 +1165,22 @@ var
   AControl: TWinControl;
   Form: TCustomForm;
 begin
+  if Key=VK_UNKNOWN then exit;
+  
   if Sender is TWinControl then begin
     AControl:=TWinControl(Sender);
-    //debugln('TApplication.ControlKeyUp A ',DbgSName(AControl));
+    //debugln('TApplication.ControlKeyUp A ',DbgSName(AControl),' Key=',dbgs(Key),' Shift=',dbgs(Shift));
+    if FLastKeyDownKey=VK_UNKNOWN then begin
+      // key was already handled in key down
+      //debugln('TApplication.ControlKeyUp key was handled in key down');
+      exit;
+    end;
+    if (Key<>FLastKeyDownKey) or (Shift<>FLastKeyDownShift)
+    or (AControl<>FLastKeyDownSender) then begin
+      // a key up, without key down
+      //debugln('TApplication.ControlKeyUp key was handled in key down or in key up');
+      exit;
+    end;
 
     // handle tab keys
     if (Key=VK_Tab) and ((Shift-[ssShift])=[])
@@ -1390,6 +1407,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.102  2005/02/21 13:54:26  mattias
+  added navigation key check for up/down already handled
+
   Revision 1.101  2005/02/19 22:48:23  mattias
   fixed navigation key handling for TButton
 

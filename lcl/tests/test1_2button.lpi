@@ -16,7 +16,7 @@
     </General>
     <Units Count="1">
       <Unit0>
-        <CursorPos X="13" Y="18"/>
+        <CursorPos X="13" Y="21"/>
         <EditorIndex Value="0"/>
         <Filename Value="test1_2button.lpr"/>
         <IsPartOfProject Value="True"/>

@@ -130,40 +130,42 @@ begin
   TextToFindComboBox:=TComboBox.Create(Self);
   with TextToFindComboBox do begin
     Name:='TextToFindComboBox';
-    Parent:=Self;
-    SetBounds(ComboX,y,Parent.ClientWidth-ComboX-x,Height);
+    SetBounds(ComboX,y,Self.ClientWidth-ComboX-x,Height);
     Anchors:= [akLeft, akTop, akRight];
     Text:='';
     OnKeyDown:=@TextToFindComboBoxKeyDown;
+    Parent:=Self;
+    TabOrder:=0;
   end;
 
   TextToFindLabel:=TLabel.Create(Self);
   with TextToFindLabel do begin
     Name:='TextToFindLabel';
-    Parent:=Self;
     SetBounds(x,y+3,ComboX-x,Height);
     Caption:=dlgTextToFing;
     FocusControl:= TextToFindComboBox;
+    Parent:=Self;
   end;
   inc(y,TextToFindComboBox.Height+1);
   
   ReplaceTextComboBox:=TComboBox.Create(Self);
   with ReplaceTextComboBox do begin
     Name:='ReplaceTextComboBox';
-    Parent:=Self;
-    SetBounds(ComboX,y,Parent.ClientWidth-ComboX-x,Height);
+    SetBounds(ComboX,y,Self.ClientWidth-ComboX-x,Height);
     Anchors:= [akLeft, akTop, akRight];
     Text:='';
     OnKeyDown:=@TextToFindComboBoxKeyDown;
+    Parent:=Self;
+    TabOrder:=1;
   end;
   
   ReplaceWithLabel:=TLabel.Create(Self);
   with ReplaceWithLabel do begin
     Name:='ReplaceWithLabel';
-    Parent:=Self;
     SetBounds(x,y+3,ComboX-x,Height);
     Caption:=dlgReplaceWith;
     FocusControl:= ReplaceTextComboBox;
+    Parent:=Self;
   end;
   inc(y,ReplaceTextComboBox.Height+1);
 
@@ -172,10 +174,10 @@ begin
   OptionsGroupBox:=TGroupBox.Create(Self);
   with OptionsGroupBox do begin
     Name:='OptionsGroupBox';
-    Parent:=Self;
     SetBounds(x,y,OptionsGrpW,160);
     Caption:=dlgFROpts;
     OnResize:=@OptionsGroupBoxResize;
+    Parent:=Self;
   end;
 
   OptionH:=OptionsGroupBox.ClientHeight div 5;
@@ -340,18 +342,12 @@ procedure TLazFindReplaceDialog.TextToFindComboBoxKeyDown(
   Sender: TObject; var Key:Word; Shift:TShiftState);
 var Component: TFindDlgComponent;
 begin
-  //writeln('TLazFindReplaceDialog.TextToFindComboBoxKeyDown Key=',Key,' RETURN=',VK_RETURN,' TAB=',VK_TAB,' DOWN=',VK_DOWN,' UP=',VK_UP);
+  //debugln('TLazFindReplaceDialog.TextToFindComboBoxKeyDown Key=',Key,' RETURN=',VK_RETURN,' TAB=',VK_TAB,' DOWN=',VK_DOWN,' UP=',VK_UP);
   if (Key=VK_RETURN) then begin
     OkButtonClick(Sender);
     Key:=VK_UNKNOWN;
   end else if (Key=VK_ESCAPE) then begin
     CancelButtonClick(Sender);
-    Key:=VK_UNKNOWN;
-  end else if Key=VK_TAB then begin
-    if (Sender=TextToFindComboBox) and (ReplaceTextComboBox.Enabled) then
-      ReplaceTextComboBox.SetFocus;
-    if Sender=ReplaceTextComboBox then
-      TextToFindComboBox.SetFocus;
     Key:=VK_UNKNOWN;
   end else if Assigned(OnKey) then begin
     if Sender=TextToFindComboBox then

@@ -1401,10 +1401,7 @@ begin
 
   if OldFocus<>nil then
     NewFocus := TopLevel.FindNextControl(OldFocus,ForwardTab,True,False);
-  //if NewFocus<>nil then
-  //  DebugLn('TControl.PerformTab A ',Name,':',ClassName,' NewFocus=',NewFocus.Name,':',NewFocus.ClassName)
-  //else
-  //  DebugLn('TControl.PerformTab B ',Name,':',ClassName,' NewFocus=nil');
+  //DebugLn('TControl.PerformTab A ',DbgSName(Self),' NewFocus=',DbgSName(NewFocus),' OldFocus=',DbgSName(OldFocus));
 
   If (NewFocus = nil) then NewFocus:=FirstFocus;
   If NewFocus = OldFocus then begin
@@ -1506,11 +1503,14 @@ begin
     Result := nil;
     List := TList.Create;
     GetTabOrderList(List);
+    //for i:=0 to List.Count-1 do begin
+    //  debugln('TWinControl.FindNextControl TabOrderList ',dbgs(i),' ',DbgSName(TObject(List[i])));
+    //end;
     If List.Count > 0 then begin
       J := List.IndexOf(CurrentControl);
       if J<0 then exit;
-      ///DebugLn('TWinControl.FindNextControl A ',CurrentControl.Name,' ',dbgs(J),
-      //  ' '+dbgs(GoForward)+','+dbgs(CheckTabStop)+','+dbgs(CheckParent)+','+dbgs(OnlyWinControls));
+      //DebugLn('TWinControl.FindNextControl A ',DbgSName(CurrentControl),' ',dbgs(J),
+      //  ' GoForward='+dbgs(GoForward)+' CheckTabStop='+dbgs(CheckTabStop)+' CheckParent='+dbgs(CheckParent));
       I := J;
       Repeat
         If GoForward then begin
@@ -1525,21 +1525,20 @@ begin
         if I=J then exit;
 
         Next := TWinControl(List[I]);
-        {DebugLn('TWinControl.FindNextControl B ',Next.Name,' ',dbgs(I),
-          +' ChckTabStop='+dbgs(CheckTabStop)+' TabStop='+dbgs(Next.TabStop)
-          +' ChckParent='+dbgs(CheckParent)+' Parent=Self='+dbgs(Next.Parent = Self)
-          +' Enabled='+dbgs(Next.Enabled)+' OnlyWinC='+dbgs(OnlyWinControls)
-          +' TestTab='+dbgs(((Not CheckTabStop) or Next.TabStop))
-          +' TestPar='+dbgs(((not CheckParent) or (Next.Parent = Self)))
-          +' TestEnVi='+dbgs(Next.Enabled and Next.IsVisible)
-          +' TestWinC='+dbgs((not OnlyWinControls) or (Next is TWinControl))
-          );}
+        //DebugLn('TWinControl.FindNextControl B ',Next.Name,' ',dbgs(I),
+        //  +' ChckTabStop='+dbgs(CheckTabStop)+' TabStop='+dbgs(Next.TabStop)
+        //  +' ChckParent='+dbgs(CheckParent)+' Parent=Self='+dbgs(Next.Parent = Self)
+        //  +' Enabled='+dbgs(Next.Enabled)
+        //  +' TestTab='+dbgs(((Not CheckTabStop) or Next.TabStop))
+        //  +' TestPar='+dbgs(((not CheckParent) or (Next.Parent = Self)))
+        //  +' TestEnVi='+dbgs(Next.Enabled and Next.IsVisible)
+        //  );
         If (((not CheckTabStop) or Next.TabStop)
         and ((not CheckParent) or (Next.Parent = Self)))
         and (Next.Enabled and Next.IsVisible) then
           Result := Next;
       until (Result <> nil);
-      //DebugLn('TWinControl.FindNextControl END ',Result.Name,':',Result.ClassName,' ',dbgs(I));
+      //DebugLn('TWinControl.FindNextControl END ',DbgSName(Result),' I=',dbgs(I));
     end;
   finally
     List.Free;
@@ -3682,7 +3681,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMSysKeyUp(var Message: TLMKeyUp);
 begin
-  debugln('TWinControl.WMSysKeyUp ',DbgSName(Self));
+  //debugln('TWinControl.WMSysKeyUp ',DbgSName(Self));
   DoRemainingKeyUp(Message);
 end;
 
@@ -4493,6 +4492,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.315  2005/02/21 13:54:26  mattias
+  added navigation key check for up/down already handled
+
   Revision 1.314  2005/02/19 22:48:23  mattias
   fixed navigation key handling for TButton
 
