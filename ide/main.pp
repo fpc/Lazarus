@@ -284,6 +284,8 @@ type
     function OnCodeToolBossCheckAbort: boolean;
     procedure CodeToolBossGetVirtualDirectoryAlias(Sender: TObject;
           var RealDir: string);
+    procedure CodeToolBossGetVirtualDirectoryDefines(DefTree: TDefineTree;
+          DirDef: TDirectoryDefines);
 
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender : TObject);
@@ -6228,7 +6230,9 @@ begin
   
   CodeToolBoss.DefineTree.OnGetVirtualDirectoryAlias:=
     @CodeToolBossGetVirtualDirectoryAlias;
-  
+  CodeToolBoss.DefineTree.OnGetVirtualDirectoryDefines:=
+    @CodeToolBossGetVirtualDirectoryDefines;
+
   CodeToolsOpts.AssignTo(CodeToolBoss);
   if (not FileExists(EnvironmentOptions.CompilerFilename)) then begin
     writeln('');
@@ -6387,8 +6391,15 @@ end;
 procedure TMainIDE.CodeToolBossGetVirtualDirectoryAlias(Sender: TObject;
   var RealDir: string);
 begin
-  if Project1<>nil then
+  if (Project1<>nil) and (Project1.ProjectDirectory<>'') then
     RealDir:=Project1.ProjectDirectory;
+end;
+
+procedure TMainIDE.CodeToolBossGetVirtualDirectoryDefines(DefTree: TDefineTree;
+  DirDef: TDirectoryDefines);
+begin
+  if (Project1<>nil) and Project1.IsVirtual then
+    Project1.GetVirtualDefines(DefTree,DirDef);
 end;
 
 procedure TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer);
@@ -7617,6 +7628,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.454  2003/01/15 09:08:08  mattias
+  fixed search paths for virtual projects
+
   Revision 1.453  2003/01/14 17:07:22  mattias
   improved source error message
 
