@@ -2770,10 +2770,12 @@ Begin
     wID:=TMenuItem(Sender).Command; {value may only be 16 bit wide!}
     hSubmenu:=MenuHandle;
     dwItemData:=integer(Sender);
-    if assigned(TmenuItem(Sender).Graphic) then {adds the menuitem icon}
+    if TmenuItem(Sender).HasIcon then {adds the menuitem icon}
     begin
       fMask:=fMask or MIIM_CHECKMARKS;
-      hbmpUnchecked:=(TMenuItem(Sender).Graphic as TBitmap).Handle;
+      hbmpUnchecked:=TMenuItem(Sender).Bitmap.Handle;
+      {TODO: add support for getting icon from SubmenuImages as it will be
+       implemented in LCL}
     end;
   end;
   InsertMenuItem(ParentMenuHandle, High(UINT), true, @MenuInfo);
@@ -2808,6 +2810,9 @@ End;
 
 {
   $Log$
+  Revision 1.129  2003/11/16 17:13:20  marc
+  * Applied patch from Martin Smat
+
   Revision 1.128  2003/11/16 16:59:02  marc
   * Fixed DrawOwnerButton
 
