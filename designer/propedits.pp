@@ -1076,7 +1076,7 @@ type
 
 implementation
 
-uses Dialogs, ColumnDlg, LazarusIdeStrConsts, ControlSelection;
+uses Dialogs, ColumnDlg, DesignerStr;
 
 const
   ListPropertyEditors: TList = nil;
