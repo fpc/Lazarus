@@ -647,58 +647,6 @@ end;
 ************************************************************************)
 
 // ----------------------------------------------------------------------
-// Creates a WinWidget info structure for the given widget
-// Info needed by the API of a HWND (=Widget) 
-//
-// This structure obsoletes:
-//   "core-child", "fixed", "class"
-// ----------------------------------------------------------------------
-function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
-begin
-  if Widget = nil
-  then begin
-    Result := nil;
-  end
-  else begin
-    New(Result);
-    FillChar(Result^, SizeOf(Result^), 0);
-    gtk_object_set_data(Widget, 'widgetinfo', Result);
-  end;
-end;
-
-function GetWidgetInfo(const Widget: Pointer;
-  const Create: Boolean): PWinWidgetInfo;
-begin
-  if Widget = nil
-  then begin
-    Result := nil;
-  end
-  else begin
-    Result := gtk_object_get_data(Widget, 'widgetinfo');
-    if (Result = nil) and Create then
-      Result := CreateWidgetInfo(Widget);
-  end;
-end;
-
-// ----------------------------------------------------------------------
-// the core_child widget points to the actual widget which implements the 
-// functionality we needed. It is mainly used in composed controls like
-// a listbox. In that case the core_child is the listbox, where a scrolling
-// widget is main.
-// ----------------------------------------------------------------------
-function GetCoreChildWidget(const Widget: Pointer): Pointer;
-begin
-  Result:= gtk_object_get_data(Widget, 'core_child');
-  if Result = nil then Result := Widget;
-end;
-
-procedure SetCoreChildWidget(const ParentWidget, ChildWidget: Pointer);
-begin
-  if (ParentWidget <> nil) and (ChildWidget <> nil) then
-  gtk_object_set_data(ParentWidget, 'core_child', ChildWidget);
-end;
-
-// ----------------------------------------------------------------------
 // the main widget is the widget passed as handle to the winAPI
 // main data is stored in the fixed form to get a reference to its parent
 // ----------------------------------------------------------------------
@@ -735,6 +683,60 @@ begin
 //' Fixed=',HexStr(Cardinal(FixedWidget),8));
   if (ParentWidget <> nil) and (FixedWidget <> nil) then
     gtk_object_set_data(ParentWidget, 'Fixed', FixedWidget);
+end;
+
+// ----------------------------------------------------------------------
+// Creates a WinWidget info structure for the given widget
+// Info needed by the API of a HWND (=Widget) 
+//
+// This structure obsoletes:
+//   "core-child", "fixed", "class"
+// ----------------------------------------------------------------------
+function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
+begin
+  if Widget = nil
+  then begin
+    Result := nil;
+  end
+  else begin
+    New(Result);
+    FillChar(Result^, SizeOf(Result^), 0);
+    gtk_object_set_data(Widget, 'widgetinfo', Result);
+  end;
+end;
+
+function GetWidgetInfo(const Widget: Pointer;
+  const Create: Boolean): PWinWidgetInfo;
+var MainWidget: PGtkObject;
+begin
+  if Widget = nil then begin
+    Result := nil;
+  end
+  else begin
+    MainWidget:=GetMainWidget(Widget);
+    if MainWidget=nil then MainWidget:=Widget;
+    Result := gtk_object_get_data(MainWidget, 'widgetinfo');
+    if (Result = nil) and Create then
+      Result := CreateWidgetInfo(MainWidget);
+  end;
+end;
+
+// ----------------------------------------------------------------------
+// the core_child widget points to the actual widget which implements the 
+// functionality we needed. It is mainly used in composed controls like
+// a listbox. In that case the core_child is the listbox, where a scrolling
+// widget is main.
+// ----------------------------------------------------------------------
+function GetCoreChildWidget(const Widget: Pointer): Pointer;
+begin
+  Result:= gtk_object_get_data(Widget, 'core_child');
+  if Result = nil then Result := Widget;
+end;
+
+procedure SetCoreChildWidget(const ParentWidget, ChildWidget: Pointer);
+begin
+  if (ParentWidget <> nil) and (ChildWidget <> nil) then
+  gtk_object_set_data(ParentWidget, 'core_child', ChildWidget);
 end;
 
 {------------------------------------------------------------------------------
@@ -1666,6 +1668,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.55  2002/08/04 07:09:29  lazarus
+  MG: fixed client events
+
   Revision 1.54  2002/07/23 07:40:52  lazarus
   MG: fixed get widget position for inherited gdkwindows
 
