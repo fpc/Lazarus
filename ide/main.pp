@@ -5024,7 +5024,8 @@ begin
   
   // close the old project
   if SomethingOfProjectIsModified then begin
-    if MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject, [Project1.Title]),
+    if MessageDlg(lisProjectChanged,
+      Format(lisSaveChangesToProject, [Project1.Title]),
       mtconfirmation,[mbYes, mbNo, mbCancel],0) = mrYes then
     begin
       if DoSaveProject([])=mrAbort then begin
@@ -8658,6 +8659,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.552  2003/05/03 08:13:27  mattias
+  fixed clean all
+
   Revision 1.551  2003/05/02 22:22:14  mattias
   localization, added context policy to make resource string dialog
 
