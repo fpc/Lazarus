@@ -120,7 +120,6 @@ Type
     IsAppThemed: function: LongBool; stdcall;
     InitCommonControlsEx: function(ICC: PInitCommonControlsEx): LongBool; stdcall;
 
-    Function  GetOwnerHandle(ADialog : TCommonDialog): HWND;
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
 
     Procedure SetText(Window: HWND; Data: Pointer);
@@ -135,8 +134,6 @@ Type
     Procedure PaintPixmap(Surface: TObject; PixmapData: Pointer);
     Procedure NormalizeIconName(Var IconName: String);
     Procedure NormalizeIconName(Var IconName: PChar);
-    Procedure CreateCommonDialog(Sender: TCommonDialog; CompStyle: Integer);
-    Procedure CreateSelectDirectoryDialog(Sender: TSelectDirectoryDialog);
     
     procedure UpdateStatusBarPanel(StatusPanel: TStatusPanel);
     procedure UpdateStatusBarPanelWidths(StatusBar: TStatusBar);
@@ -264,6 +261,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.120  2004/10/06 10:52:46  micha
+  split up common dialogs code
+
   Revision 1.119  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods

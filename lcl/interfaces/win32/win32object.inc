@@ -221,30 +221,6 @@ begin
   SetWindowPos(FAppHandle, HWND_TOP, 0, 0, 0, 0, SWP_NOMOVE or SWP_NOSIZE or SWP_SHOWWINDOW);
 end;
 
-{------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.GetOwnerHandle
-  Params:  ADialog - dialog to get 'guiding parent' window handle for
-  Returns: A window handle
-
-  Returns window handle to be used as 'owner handle', ie. so that the user must
-  finish the dialog before continuing
- ------------------------------------------------------------------------------}
-function TWin32WidgetSet.GetOwnerHandle(ADialog : TCommonDialog): HWND;
-begin
-  with ADialog do
-  begin
-    if Owner Is TWinControl then
-      Result := TWinControl(Owner).Handle
-{
-    // TODO: fix Application.Handle to be the same as FAppHandle
-    else if Owner Is TApplication then
-      Result := TApplication(Owner).Handle
-}
-    else
-      Result := FAppHandle;
-  end;
-end;
-
 procedure TWin32WidgetSet.SetDesigning(AComponent: TComponent);
 begin
   //if Data<>nil then EnableWindow((AComponent As TWinControl).Handle, boolean(Data^));
@@ -565,293 +541,6 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.CreateCommonDialog
-  Params: Sender - The sending object
-  Returns: Nothing
-
-  Creates a common dialog
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.CreateCommonDialog(Sender: TCommonDialog; CompStyle: Integer);
-Const
-  { 16 basic RGB colors; names listed in comments for debugging }
-  CustomColors: Array[1..16] Of DWord = (
-  0, //Black
-  $C0C0C0, //Silver
-  $808080, //Gray
-  $FFFFFF, //White
-  $000080, //Maroon
-  $0000FF, //Red
-  $800080, //Purple
-  $FF00FF, //Fuchsia
-  $008000, //Green
-  $00FF00, //Lime
-  $008080, //Olive
-  $00FFFF, //Yellow
-  $800000, //Navy
-  $FF0000, //Blue
-  $808000, //Teal
-  $FFFF00 //Aqua
-  );
-Var
-  CC: TChooseColor;
-  CF: TChooseFont;
-  LF: LogFont;
-  OpenFile: OpenFileName;
-  Ret: WinBool;
-  FName: PChar;
-  FFilter: string;
-  SizeStr:Integer;
-
-  Function GetFlagsFromOptions(Options: TOpenOptions): DWord;
-  Begin
-    Result := 0;
-    If ofAllowMultiSelect In Options Then Result := Result Or OFN_ALLOWMULTISELECT;
-    If ofCreatePrompt In Options Then Result := Result Or OFN_CREATEPROMPT;
-    If Not (ofOldStyleDialog In Options) Then Result := Result Or OFN_EXPLORER;
-    If ofExtensionDifferent In Options Then Result := Result Or OFN_EXTENSIONDIFFERENT;
-    If ofFileMustExist In Options Then Result := Result Or OFN_FILEMUSTEXIST;
-    If ofHideReadOnly In Options Then Result := Result Or OFN_HIDEREADONLY;
-    If ofNoChangeDir In Options Then Result := Result Or OFN_NOCHANGEDIR;
-    If ofNoDereferenceLinks In Options Then Result := Result Or OFN_NODEREFERENCELINKS;
-    If ofNoLongNames In Options Then  Result := Result Or OFN_NOLONGNAMES;
-    If ofNoNetworkButton In Options Then Result := Result Or OFN_NONETWORKBUTTON;
-    If ofNoReadOnlyReturn In  Options Then Result := Result Or OFN_NOREADONLYRETURN;
-    If ofNoTestFileCreate In Options Then Result := Result Or OFN_NOTESTFILECREATE;
-    If ofNoValidate In Options Then Result := Result Or OFN_NOVALIDATE;
-    If ofOverwritePrompt In Options Then Result := Result Or OFN_OVERWRITEPROMPT;
-    If ofPathMustExist In Options Then Result := Result Or OFN_PATHMUSTEXIST;
-    If ofReadOnly In Options Then Result := Result Or OFN_READONLY;
-    If ofShareAware In Options Then Result := Result Or OFN_SHAREAWARE;
-    If ofShowHelp In Options Then Result := Result Or OFN_SHOWHELP;
-  End;
-
-  Function GetFlagsFromOptions(Options : TFontDialogOptions): DWord;
-  Begin
-    Result := 0;
-    If fdAnsiOnly In Options Then Result := Result Or CF_ANSIONLY;
-    If fdTrueTypeOnly In Options Then Result := Result Or CF_TTONLY;
-    If fdEffects In Options Then Result := Result Or CF_EFFECTS;
-    If fdFixedPitchOnly In Options then Result := Result Or CF_FIXEDPITCHONLY;
-    If fdForceFontExist In Options then Result := Result Or CF_FORCEFONTEXIST;
-    If fdNoFaceSel In Options then Result := Result Or CF_NOFACESEL;
-    If fdNoOEMFonts In Options then Result := Result Or CF_NOOEMFONTS;
-    If fdNoSimulations In Options then Result := Result Or CF_NOSIMULATIONS;
-    If fdNoSizeSel In Options then Result := Result Or CF_NOSIZESEL;
-    If fdNoStyleSel In Options then Result := Result Or CF_NOSTYLESEL;
-    If fdNoVectorFonts In Options then Result := Result Or CF_NOVECTORFONTS;
-    If fdShowHelp In Options then Result := Result Or CF_SHOWHELP;
-    If fdWysiwyg In Options then Result := Result Or CF_WYSIWYG;
-    If fdLimitSize In Options then Result := Result Or CF_LIMITSIZE;
-    If fdScalableOnly In Options then Result := Result Or CF_SCALABLEONLY;
-    If fdApplyButton In Options then Result := Result Or CF_APPLY;
-  End;
-
-  procedure ReplacePipe(var AFilter:string);
-  var i:integer;
-  begin
-    for i:=1 to length(AFilter) do
-      if AFilter[i]='|' then AFilter[i]:=#0;
-    AFilter:=AFilter + #0#0;
-  end;
-
-  Procedure SetFilesProperty(AFiles:TStrings);
-  Var I:Integer;
-  begin
-    I:=Length(FName);
-    If I < OpenFile.nFileOffset then begin
-      Inc(FName,Succ(I));
-      I:=Length(FName);
-      While I > 0 do
-      begin
-        AFiles.Add(ExpandFileName(StrPas(FName)));
-        Inc(FName,Succ(I));
-        I:=Length(FName);
-      end;
-    end
-    Else
-      AFiles.Add(StrPas(FName));
-  end;
-
-  Procedure SetFilesPropertyForOldStyle(AFiles:TStrings);
-  Var
-    SelectedStr:String;
-    I,Start:Integer;
-  begin
-  SelectedStr:=StrPas(FName);
-  I:=Pos(' ',SelectedStr);
-  If I = 0 then
-    AFiles.Add(SelectedStr)
-  Else begin
-    Delete(SelectedStr,1,I);
-    SelectedStr:=SelectedStr+' ';
-    Start:=1;
-    For I:= 1 to Length(SelectedStr)  do
-      If SelectedStr[I] =  ' ' then begin
-        AFiles.Add(ExpandFileName(Copy(SelectedStr,Start,I - Start)));
-        Start:=Succ(I);
-      End;
-    End;
-  end;
-
-Begin
-  Assert(False, 'Trace:TWin32WidgetSet.CreateCommonDialog - Start');
-  Assert(False, Format('Trace:TWin32WidgetSet.CreateCommonDialog - class name --> ', [Sender.ClassName]));
-  case CompStyle of
-  csColorDialog:
-  Begin
-    //CC := LPChooseColor(@Sender)^;
-    ZeroMemory(@CC, SizeOf(TChooseColor));
-    With CC Do
-    Begin
-      LStructSize := SizeOf(TChooseColor);
-      HWndOwner := GetOwnerHandle(Sender);
-      RGBResult := ColorToRGB(TColorDialog(Sender).Color);
-      LPCustColors := @CustomColors;
-      Flags := CC_FullOpen Or CC_RGBInit;
-    End;
-    Ret := ChooseColor(@CC)
-  End;
-  csOpenFileDialog, csSaveFileDialog:
-  With TOpenDialog(Sender) do
-  Begin
-    //TODO: HistoryList
-    If ofAllowMultiSelect in Options Then
-      SizeStr:=15*MAX_PATH  // Tested with 210 selected files
-    Else
-      SizeStr:=MAX_PATH;
-    GetMem(FName,SizeStr+2);
-    FillChar(FName^, SizeStr+2, 0);
-    StrLCopy(FName,PChar(Filename),SizeStr);
-    If Filter <> '' Then Begin
-      FFilter := Filter;
-      ReplacePipe(FFilter);
-    End
-    Else
-      FFilter:='All File Types(*.*)'+#0+'*.*'+#0#0; // Default -> avoid empty combobox
-    ZeroMemory(@OpenFile, SizeOf(OpenFileName));
-    With OpenFile Do
-    Begin
-      LStructSize := SizeOf(OpenFileName);
-      HWndOwner := GetOwnerHandle(Sender);
-      LPStrFilter := PChar(FFilter);
-      LPStrFile := FName;
-      LPStrTitle := PChar(Title);
-      LPStrInitialDir := PChar(InitialDir);
-      NMaxFile := SizeStr;
-      Flags := GetFlagsFromOptions(Options);
-    End;
-    If CompStyle = csSaveFileDialog Then
-      Ret := GetSaveFileName(@OpenFile)
-    Else
-      Ret := GetOpenFileName(@OpenFile);
-
-    Files.Clear;
-    If Ret Then Begin
-      If Not (ofOldStyleDialog In Options) Then // Win32 returns diferent types of strings
-        SetFilesProperty(Files)
-      Else
-        SetFilesPropertyForOldStyle(Files);
-      FileName := Files[0];
-    End
-    Else
-      FileName := '';
-
-    FreeMem(OpenFile.LPStrFile,SizeStr+2); // FName Address is changed, so free the initial @
-  End;
-  csFontDialog:
-  With TFontDialog(Sender) do
-  Begin
-    ZeroMemory(@CF, SizeOf(TChooseFont));
-    ZeroMemory(@LF, SizeOf(LogFont));
-    With LF Do
-    Begin
-      LFHeight := Font.Height;
-      LFFaceName := TFontDataName(Font.Name);
-      If (fsBold In Font.Style) then LFWeight:= FW_BOLD;
-      LFItalic := Byte(fsItalic In Font.Style);
-      LFStrikeOut := Byte(fsStrikeOut In Font.Style);
-      LFUnderline := Byte(fsUnderline In Font.Style);
-      LFCharSet := Font.CharSet;
-    End;
-    With CF Do
-    Begin
-      LStructSize := SizeOf(TChooseFont);
-      HWndOwner := GetOwnerHandle(Sender);
-      LPLogFont := @LF;
-      Flags := GetFlagsFromOptions(Options);
-      Flags := Flags Or CF_INITTOLOGFONTSTRUCT Or CF_BOTH;
-      RGBColors := Font.Color;
-    End;
-    Ret := ChooseFont(@CF);
-  End;
-  End;//case
-
-  If Ret Then  Begin
-    If CompStyle = csFontDialog then  Begin
-      TFontDialog(Sender).Font.Assign(LF);
-      TFontDialog(Sender).Font.Color := CF.RGBColors;
-    End
-    Else If CompStyle = csColorDialog then
-      TColorDialog(Sender).Color := CC.RGBResult;
-    Sender.UserChoice := mrOK;
-  End
-  Else
-    Sender.UserChoice := mrCancel;
-
-  Assert(False, 'Trace:TWin32WidgetSet.CreateCommonDialog - Exit');
-End;
-
-{------------------------------------------------------------------------------
-  Method: TWin32WidgetSet.CreateSelectDirectoryDialog
-  Params: Sender - The sending object: a TSelectDirectoryDialog object
-  Returns: Nothing
-
-  Creates a common dialog
- ------------------------------------------------------------------------------}
-Procedure TWin32WidgetSet.CreateSelectDirectoryDialog(Sender: TSelectDirectoryDialog);
-var
-  bi : TBrowseInfo;
-  Buffer : PChar;
-  iidl : PItemIDList;
-  InitialDir: string;
-Begin
-  Buffer := CoTaskMemAlloc(MAX_PATH);
-  InitialDir := Sender.InitialDir;
-  if length(InitialDir)>0 then begin
-    // remove the \ at the end.
-    if Copy(InitialDir,length(InitialDir),1)=PathDelim then
-      InitialDir := copy(InitialDir,1, length(InitialDir)-1);
-    // if it is a rootdirectory, then the InitialDir must have a \ at the end.
-    if Copy(InitialDir,length(InitialDir),1)=DriveDelim then
-      InitialDir := InitialDir + PathDelim;
-  end;
-  With bi do
-  Begin
-    hwndOwner := GetOwnerHandle(Sender);
-    pidlRoot := nil;
-    pszDisplayName := Buffer;
-    lpszTitle := PChar(Sender.Title);
-    ulFlags := BIF_RETURNONLYFSDIRS;
-    lpfn := @BrowseForFolderCallback;
-    // this value will be passed to callback proc as lpData
-    lParam := LclType.LParam(PChar(InitialDir));
-  End;
-
-  iidl := SHBrowseForFolder(@bi);
-
-  If Assigned(iidl) Then
-  Begin
-    SHGetPathFromIDList(iidl, Buffer);
-    CoTaskMemFree(iidl);
-    Sender.FileName := Buffer;
-    Sender.UserChoice := mrOK;
-  End
-  Else Sender.UserChoice := mrCancel;
-
-  CoTaskMemFree(Buffer);
-End;
-
-{------------------------------------------------------------------------------
   Method: TWin32WidgetSet.UpdateStatusBarPanel
   Params: StatusPanel - StatusPanel which needs to be update
   Returns: Nothing
@@ -1081,9 +770,7 @@ Begin
     {$IFDEF VerboseSizeMsg}
     writeln('TWin32WidgetSet.CreateComponent A ',TControl(Sender).Name,':',TControl(Sender).ClassName,' ',Left,',',Top,',',Width,',',Height);
     {$ENDIF}
-  End
-  Else If (Sender Is TCommonDialog) Then
-    CompStyle := TCommonDialog(Sender).FCompStyle;
+  End;
 
   Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Creating component %S with the caption of %S', [Sender.ClassName, Caption]));
   Assert(False, Format('Trace:TWin32WidgetSet.CreateComponent - Left: %D, Top: %D, Width: %D, Height: %D, Parent handle: 0x%X, instance handle: 0x%X', [Left, Top, Width, Height, Parent, HInstance]));
@@ -1394,13 +1081,6 @@ Begin
         MoveWindow(Handle, R.Right - Left, R.Bottom - Top, (R.Right - R.Left) - (Left Div 2), (R.Bottom - R.Top) - (Top Div 2), True);
         Window := Handle;
       End;
-      csFileDialog, csOpenFileDialog, csSaveFileDialog,
-      csColorDialog, csFontDialog:
-      Begin
-        CreateCommonDialog(TCommonDialog(Sender),CompStyle);
-      End;
-      csSelectDirectoryDialog:
-        CreateSelectDirectoryDialog(TSelectDirectoryDialog(Sender));
 (*
       csFont:
       Begin
@@ -1454,7 +1134,7 @@ Begin
   Result := Window;      
   
 
-  If (Sender Is TWinControl) Or (CompStyle = csImage) Then
+  If (Sender Is TWinControl) Then
   Begin
     TWinControl(Sender).Handle := Window;
     If Window <> HWND(Nil) Then
@@ -1496,8 +1176,6 @@ Begin
       Windows.SendMessage(Buddy, WM_SETFONT, WParam(FMessageFont), 0);
     end;
   End
-  Else If (Sender Is TCommonDialog) Then
-    TCommonDialog(Sender).Handle := Window
   Else
   Begin
     If (Sender Is TControl) Then
@@ -1651,6 +1329,9 @@ End;
 
 {
   $Log$
+  Revision 1.288  2004/10/06 10:52:46  micha
+  split up common dialogs code
+
   Revision 1.287  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods

@@ -1269,31 +1269,6 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------
- Function: BrowseForFolderCallback
- Params: Window_hwnd - The window that receives a message for the window
-         Msg         - The message received
-         LParam      - Long-integer parameter
-         lpData      - Data parameter, contains initial path.
-  Returns: non-zero long-integer
-
-  Handles the messages sent to the toolbar button by Windows
- ------------------------------------------------------------------------------}
-Function BrowseForFolderCallback(hwnd : Handle; uMsg : UINT;
-  lParam, lpData : LPARAM) : Integer; stdcall;
-begin
-  case uMsg of
-    BFFM_INITIALIZED:
-        // Setting root dir
-        SendMessage(hwnd, BFFM_SETSELECTION, ULONG(True), lpData);
-    //BFFM_SELCHANGED
-    //  : begin
-    //    if Assigned(FOnSelectionChange) then .....
-    //    end;
-  end;
-  Result := 0;
-end;
-
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -1301,6 +1276,9 @@ end;
 
 {
   $Log$
+  Revision 1.142  2004/10/06 10:52:46  micha
+  split up common dialogs code
+
   Revision 1.141  2004/10/05 20:14:19  micha
   fix update edit text for generic edit controls
 
