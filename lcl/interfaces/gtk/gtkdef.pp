@@ -124,7 +124,15 @@ type
     dcfPenInvalid   // pen is not a valid GDIObject
     );
   TDeviceContextsFlags = set of TDeviceContextsFlag;
-
+  
+  TDevContextsColorType = (
+    dccNone,
+    dccCurrentBackColor,
+    dccCurrentTextColor,
+    dccGDIBrushColor,
+    dccGDIPenColor
+    );
+    
   TDeviceContext = class
   public
     hWnd: HWND; 
@@ -392,6 +400,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/10/08 13:42:23  lazarus
+  MG: added TDevContextColorType
+
   Revision 1.22  2002/10/08 10:08:46  lazarus
   MG: accelerated GDIColor allocating
 
