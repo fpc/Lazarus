@@ -6062,40 +6062,42 @@ begin
     //gdk_pointer_ungrab(0);
     gtk_grab_remove(pgtkwidget(MCaptureHandle));
   
-  //
+  // return old capture handle
   Result := MCaptureHandle;
-  MCaptureHandle := Value;
+  
+  if (Value<>0) and (GetLCLObject(Pointer(Value))<>nil) then begin
+    MCaptureHandle := Value;
 
-  if MCaptureHandle <> 0 then begin
-    //WriteLN(Format('[TgtkObject.SetCapture] Current widget 0x%p', [gtk_grab_get_current]));
-    gtk_grab_add(Pointer(MCaptureHandle));
-    {$IfDef VerboseMouseCapture}
-    CurMouseCaptureHandle:=gtk_grab_get_current;
-    if CurMouseCaptureHandle<>PgtkWidget(MCaptureHandle) then
-      writeln('  WARNING: SetCapture failed: Tried to set to: ',
-        HexStr(Cardinal(MCaptureHandle),8),
-        ', but it is: ',HexStr(Cardinal(CurMouseCaptureHandle),8));
-    {$EndIf}
-    //WriteLN(Format('[TgtkObject.SetCapture] handle: 0x%p gtk: 0x%p', [Pointer(MCaptureHandle), gtk_grab_get_current]));
+    if MCaptureHandle <> 0 then begin
+      gtk_grab_add(Pointer(MCaptureHandle));
+      {$IfDef VerboseMouseCapture}
+      CurMouseCaptureHandle:=gtk_grab_get_current;
+      if CurMouseCaptureHandle<>PgtkWidget(MCaptureHandle) then
+        writeln('  WARNING: SetCapture failed: Tried to set to: ',
+          HexStr(Cardinal(MCaptureHandle),8),
+          ', but it is: ',HexStr(Cardinal(CurMouseCaptureHandle),8));
+      {$EndIf}
 
 
-//    gtk_grab_add(pGTKWidget(FCaptureHandle));
-{
-    if gdk_pointer_grab(PGTKWidget(Value)^.Window, gtk_False, 
-      GDK_POINTER_MOTION_MASK or GDK_POINTER_MOTION_HINT_MASK or
-      GDK_BUTTON_MOTION_MASK or GDK_BUTTON1_MOTION_MASK or
-      GDK_BUTTON2_MOTION_MASK or GDK_BUTTON3_MOTION_MASK or
-      GDK_BUTTON_PRESS_MASK or GDK_BUTTON_RELEASE_MASK,
-      PGTKWidget(Value)^.Window, nil, 0) <> 0
-    then begin
-      FCaptureHandle := 0;
-      Result := 0;
-      assert(False, Format('trace:[TgtkObject.SetCapture] 0x%x failed', [Value]));
-    end;
-}
-// Writeln('SetCapture result is '+inttostr(result));
-    if MCaptureHandle <>  0 then
+  //    gtk_grab_add(pGTKWidget(FCaptureHandle));
+  {
+      if gdk_pointer_grab(PGTKWidget(Value)^.Window, gtk_False,
+        GDK_POINTER_MOTION_MASK or GDK_POINTER_MOTION_HINT_MASK or
+        GDK_BUTTON_MOTION_MASK or GDK_BUTTON1_MOTION_MASK or
+        GDK_BUTTON2_MOTION_MASK or GDK_BUTTON3_MOTION_MASK or
+        GDK_BUTTON_PRESS_MASK or GDK_BUTTON_RELEASE_MASK,
+        PGTKWidget(Value)^.Window, nil, 0) <> 0
+      then begin
+        FCaptureHandle := 0;
+        Result := 0;
+        assert(False, Format('trace:[TgtkObject.SetCapture] 0x%x failed', [Value]));
+      end;
+  }
+  // Writeln('SetCapture result is '+inttostr(result));
       SendMessage(MCaptureHandle, LM_CAPTURECHANGED, 0, Result);
+    end;
+  end else begin
+    MCaptureHandle:=0;
   end;
      
   Assert(False, Format('Trace:< [TgtkObject.SetCapture] 0x%x --> 0x%x', [Value, Result]));
@@ -7374,6 +7376,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.160  2002/10/17 15:09:33  lazarus
+  MG: made mouse capturing more strict
+
   Revision 1.159  2002/10/15 22:28:06  lazarus
   AJ: added forcelinebreaks
 
