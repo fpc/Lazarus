@@ -317,9 +317,7 @@ begin
       exit(FHashCacheIndex);
     if not Assigned(FCustomHashFunction) then begin
       if not Assigned(FOwnerHashFunction) then begin
-        Result:=integer((Cardinal(Key) mod Cardinal(PrimeNumber))
-                +(Cardinal(Key) mod 17)
-                 ) mod FCapacity;
+        Result:=integer(Cardinal(Key)+(Cardinal(Key) mod 17)) mod FCapacity;
       end else
         Result:=FOwnerHashFunction(Key);
     end else
@@ -475,18 +473,21 @@ var Index: integer;
 begin
   if (Item<>nil) and (FItems<>nil) then begin
     Index:=IndexOf(Item);
-    Result:=FItems[Index];
-    if (Result<>nil) then begin
-      while (Result^.Item<>Item) do begin
-        Result:=Result^.Next;
-        if Result=nil then exit;
-        if Result^.IsOverflow=false then begin
-          Result:=nil;
-          exit;
+    if Index>=0 then begin
+      Result:=FItems[Index];
+      if (Result<>nil) then begin
+        while (Result^.Item<>Item) do begin
+          Result:=Result^.Next;
+          if Result=nil then exit;
+          if Result^.IsOverflow=false then begin
+            Result:=nil;
+            exit;
+          end;
         end;
+        SaveCacheItem(Item,Index);
       end;
-      SaveCacheItem(Item,Index);
-    end;
+    end else
+      Result:=nil;
   end else
     Result:=nil;
 end;
@@ -496,23 +497,26 @@ var Index: integer;
 begin
   if FItems<>nil then begin
     Index:=IndexOfKey(Key);
-    Result:=FItems[Index];
-    if (Result<>nil) then begin
-      if Assigned(OnGetKeyForHashItem) then begin
-        if OnGetKeyForHashItem(Result^.Item)=Key then exit;
-        // search in overflow hash items
-        Result:=Result^.Next;
-        while (Result<>nil) and (Result^.IsOverflow) do begin
-          if OnGetKeyForHashItem(Result^.Item)=Key then begin
-            FHashCacheIndex:=Index;
-            FHashCacheItem:=Key;
-            exit;
-          end;
+    if Index>=0 then begin
+      Result:=FItems[Index];
+      if (Result<>nil) then begin
+        if Assigned(OnGetKeyForHashItem) then begin
+          if OnGetKeyForHashItem(Result^.Item)=Key then exit;
+          // search in overflow hash items
           Result:=Result^.Next;
+          while (Result<>nil) and (Result^.IsOverflow) do begin
+            if OnGetKeyForHashItem(Result^.Item)=Key then begin
+              FHashCacheIndex:=Index;
+              FHashCacheItem:=Key;
+              exit;
+            end;
+            Result:=Result^.Next;
+          end;
+          Result:=nil;
         end;
-        Result:=nil;
       end;
-    end;
+    end else
+      Result:=nil;
   end else
     Result:=nil;
 end;

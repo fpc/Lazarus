@@ -1642,27 +1642,33 @@ begin
     else
       MaxKeyCnt:=2;
     KeyCnt:=1;
-    b:=0;
-    while b<ASynEditKeyStrokes.Count do begin
-      if ASynEditKeyStrokes[b].Command=CurRelation.Command then begin
+    b:=ASynEditKeyStrokes.Count-1;
+    // replace keys
+    while b>=0 do begin
+      Key:=ASynEditKeyStrokes[b];
+      if Key.Command=CurRelation.Command then begin
         if KeyCnt>MaxKeyCnt then begin
-          ASynEditKeyStrokes[b].Free;
+          // All keys with this command are already defined
+          // -> delete this one
+          Key.Free;
         end else if KeyCnt=1 then begin
-          ASynEditKeyStrokes[b].Key:=CurRelation.Key1;
-          ASynEditKeyStrokes[b].Shift:=CurRelation.Shift1;
-          ASynEditKeyStrokes[b].Key2:=VK_UNKNOWN;
-          ASynEditKeyStrokes[b].Shift2:=[];
-          inc(b);
+          // Define key1 for this command
+          Key.Key:=CurRelation.Key1;
+          Key.Shift:=CurRelation.Shift1;
+          Key.Key2:=VK_UNKNOWN;
+          Key.Shift2:=[];
         end else if KeyCnt=2 then begin
-          ASynEditKeyStrokes[b].Key:=CurRelation.Key2;
-          ASynEditKeyStrokes[b].Shift:=CurRelation.Shift2;
-          ASynEditKeyStrokes[b].Key2:=VK_UNKNOWN;
-          ASynEditKeyStrokes[b].Shift2:=[];
-          inc(b);
+          // Define key2 for this command
+          Key.Key:=CurRelation.Key2;
+          Key.Shift:=CurRelation.Shift2;
+          Key.Key2:=VK_UNKNOWN;
+          Key.Shift2:=[];
         end;
         inc(KeyCnt);
-      end else inc(b);
+      end;
+      dec(b);
     end;
+    // add missing keys
     while KeyCnt<=MaxKeyCnt do begin
       Key:=ASynEditKeyStrokes.Add;
       Key.Command:=CurRelation.Command;
