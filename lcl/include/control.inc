@@ -2047,12 +2047,20 @@ end;
 {------------------------------------------------------------------------------
   TControl Notification
 ------------------------------------------------------------------------------}
-procedure TControl.Notification( AComponent : TComponent; Operation : TOperation);
+procedure TControl.Notification(AComponent: TComponent; Operation: TOperation);
+var
+  Kind: TAnchorKind;
 begin
   inherited Notification(AComponent, Operation);
-  if Operation = opRemove then
+  if Operation = opRemove then begin
     if AComponent = PopupMenu then PopupMenu := nil
     else if AComponent = Action then Action := nil;
+    for Kind:=Low(TAnchorKind) to High(TAnchorKind) do begin
+      if (FAnchorSides[Kind]<>nil) and (FAnchorSides[Kind].Control=AComponent)
+      then
+        FAnchorSides[Kind].FControl:=nil;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2361,7 +2369,7 @@ end;
 ------------------------------------------------------------------------------}
 procedure TControl.RequestAlign;
 begin
-  if (Parent = nil) then exit;
+  if (Parent = nil) or (csDestroying in ComponentState) then exit;
   if (csLoading in ComponentState) or (not Parent.HandleAllocated) then begin
     Include(FControlFlags,cfRequestAlignNeeded);
     exit;
@@ -3459,6 +3467,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.244  2005/02/05 15:57:45  mattias
+  fixed dereferencing anchorsides
+
   Revision 1.243  2005/02/03 15:10:23  micha
   implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
 
