@@ -928,11 +928,11 @@ begin
   ConnectMainBarEvents;
 
   // initialize the other IDE managers
-  DebugBoss:=TDebugManager.Create(Self);
+  DebugBoss:=TDebugManager.Create(nil);
   DebugBoss.ConnectMainBarEvents;
-  PkgBoss:=TPkgManager.Create(Self);
+  PkgBoss:=TPkgManager.Create(nil);
   PkgBoss.ConnectMainBarEvents;
-  HelpBoss:=THelpManager.Create(Self);
+  HelpBoss:=THelpManager.Create(nil);
   HelpBoss.ConnectMainBarEvents;
   // setup the IDE components
   LoadMenuShortCuts;
@@ -994,9 +994,11 @@ begin
 
   // free IDE parts
   FreeFormEditor;
+  FreeThenNil(ObjectInspector1);
+  FreeThenNil(GlobalDesignHook);
   FreeThenNil(PkgBoss);
   FreeThenNil(HelpBoss);
-  FreeThenNil(GlobalDesignHook);
+  FreeThenNil(DebugBoss);
   FreeThenNil(TheCompiler);
   FreeThenNil(HiddenWindowsOnRun);
   FreeThenNil(TheOutputFilter);
@@ -1010,6 +1012,7 @@ begin
 
   writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy B ');{$ENDIF}
+  FreeThenNil(SourceNotebook);
   inherited Destroy;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy C ');{$ENDIF}
   writeln('[TMainIDE.Destroy] END');
@@ -1137,7 +1140,7 @@ procedure TMainIDE.SetupSpeedButtons;
     var ALeft, ATop: Integer; const AMoveFlags: TMoveFlags;
     const AOnClick: TNotifyEvent; const AHint : String): TSpeedButton;
   begin
-    Result := TSpeedButton.Create(Self);
+    Result := TSpeedButton.Create(OwningComponent);
     with Result do
     begin
       Name := AName;
@@ -1159,7 +1162,7 @@ procedure TMainIDE.SetupSpeedButtons;
 var
   ButtonTop, ButtonLeft, n: Integer;
 begin
-  MainIDEBar.pnlSpeedButtons := TPanel.Create(Self);
+  MainIDEBar.pnlSpeedButtons := TPanel.Create(OwningComponent);
   with MainIDEBar.pnlSpeedButtons do begin
     Name := 'pnlSpeedButtons';
     Parent:= MainIDEBar;
@@ -1205,7 +1208,7 @@ begin
 
 
   // create the popupmenu for the OpenFileArrowSpeedBtn
-  MainIDEBar.OpenFilePopUpMenu := TPopupMenu.Create(self);
+  MainIDEBar.OpenFilePopUpMenu := TPopupMenu.Create(OwningComponent);
   MainIDEBar.OpenFilePopupMenu.Name:='OpenFilePopupMenu';
   MainIDEBar.OpenFilePopupMenu.AutoPopup := False;
 end;
@@ -1213,7 +1216,7 @@ end;
 procedure TMainIDE.SetupComponentNoteBook;
 begin
   // Component Notebook
-  MainIDEBar.ComponentNotebook := TNotebook.Create(Self);
+  MainIDEBar.ComponentNotebook := TNotebook.Create(OwningComponent);
   with MainIDEBar.ComponentNotebook do begin
     Parent := MainIDEBar;
     Name := 'ComponentNotebook';
@@ -1256,7 +1259,7 @@ end;
 
 procedure TMainIDE.SetupObjectInspector;
 begin
-  ObjectInspector1 := TObjectInspector.Create(Self);
+  ObjectInspector1 := TObjectInspector.Create(OwningComponent);
   ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
   ObjectInspector1.OnRemainingKeyUp:=@OIRemainingKeyUp;
@@ -1297,7 +1300,7 @@ end;
 
 procedure TMainIDE.SetupSourceNotebook;
 begin
-  SourceNotebook := TSourceNotebook.Create(Self);
+  SourceNotebook := TSourceNotebook.Create(OwningComponent);
   SourceNotebook.OnActivate := @OnSrcNoteBookActivated;
   SourceNotebook.OnAddJumpPoint := @OnSrcNoteBookAddJumpPoint;
   SourceNotebook.OnCloseClicked := @OnSrcNotebookFileClose;
@@ -2135,7 +2138,7 @@ var
     if MainIDEBar.OpenFilePopupMenu.Items.Count>CurIndex then
       AMenuItem:=MainIDEBar.OpenFilePopupMenu.Items[CurIndex]
     else begin
-      AMenuItem:=TMenuItem.Create(Self);
+      AMenuItem:=TMenuItem.Create(OwningComponent);
       AMenuItem.Name:=MainIDEBar.OpenFilePopupMenu.Name+'Recent'+IntToStr(CurIndex);
       AMenuItem.OnClick:=@mnuOpenFilePopupClick;
       MainIDEBar.OpenFilePopupMenu.Items.Add(AMenuItem);
@@ -4946,7 +4949,7 @@ var
   ALayout: TIDEWindowLayout;
 begin
   if UnitDependenciesView=nil then begin
-    UnitDependenciesView:=TUnitDependenciesView.Create(Self);
+    UnitDependenciesView:=TUnitDependenciesView.Create(OwningComponent);
     UnitDependenciesView.OnAccessingSources:=
       @UnitDependenciesViewAccessingSources;
     UnitDependenciesView.OnGetProjectMainFilename:=
@@ -4975,7 +4978,7 @@ end;
 procedure TMainIDE.DoShowCodeExplorer;
 begin
   if CodeExplorerView=nil then begin
-    CodeExplorerView:=TCodeExplorerView.Create(Self);
+    CodeExplorerView:=TCodeExplorerView.Create(OwningComponent);
     CodeExplorerView.OnGetCodeTree:=@OnCodeExplorerGetCodeTree;
     CodeExplorerView.OnJumpToCode:=@OnCodeExplorerJumpToCode;
   end;
@@ -5621,7 +5624,7 @@ end;
 function TMainIDE.DoShowProjectInspector: TModalResult;
 begin
   if ProjInspector=nil then begin
-    ProjInspector:=TProjectInspectorForm.Create(Self);
+    ProjInspector:=TProjectInspectorForm.Create(OwningComponent);
     ProjInspector.OnOpen:=@ProjInspectorOpen;
     ProjInspector.OnShowOptions:=@mnuProjectOptionsClicked;
     ProjInspector.OnAddUnitToProject:=@ProjInspectorAddUnitToProject;
@@ -5866,7 +5869,7 @@ end;
 function TMainIDE.DoShowToDoList: TModalResult;
 begin
   if not Assigned(frmToDo) then begin
-    frmToDo:=TfrmToDo.Create(Self);
+    frmToDo:=TfrmToDo.Create(OwningComponent);
     frmToDo.OnOpenFile:=@ViewProjectTodosOpenFile;
   end;
 
@@ -6445,7 +6448,7 @@ begin
     Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
     if Result<>mrOk then exit;
 
-    BuildFileDialog:=TBuildFileDialog.Create(Self);
+    BuildFileDialog:=TBuildFileDialog.Create(nil);
     try
       BuildFileDialog.DirectiveList:=DirectiveList;
       BuildFileDialog.BuildFileIfActive:=ActiveUnitInfo.BuildFileIfActive;
@@ -6517,7 +6520,7 @@ var
   AFilename: string;
 begin
   Result:=mrOk;
-  OpenDialog:=TOpenDialog.Create(Self);
+  OpenDialog:=TOpenDialog.Create(nil);
   try
     InputHistories.ApplyFileDialogSettings(OpenDialog);
     OpenDialog.Title:=lisSelectDFMFiles;
@@ -6724,7 +6727,7 @@ var
       inc(LastIndex);
     ExistingCount:=LastIndex-FirstIndex;
     while ExistingCount<ToolCount do begin
-      CurMenuItem := TMenuItem.Create(Self);
+      CurMenuItem := TMenuItem.Create(OwningComponent);
       CurMenuItem.Name:='itmToolCustomExt'+IntToStr(ExistingCount);
       CurMenuItem.Caption:=CurMenuItem.Name;
       MainIDEBar.mnuTools.Insert(LastIndex,CurMenuItem);
@@ -10582,6 +10585,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.755  2004/08/19 18:50:53  mattias
+  splitted IDE component owner hierachy to reduce notification time
+
   Revision 1.754  2004/08/15 17:53:32  mattias
   implemented endian independent object Text <-> Binary converter
 

@@ -1244,18 +1244,18 @@ var
     if Context.WindowList=nil then
       Context.WindowList:=TList.Create;
     Context.WindowList.Add(PaintWindow);
-    BeginGDKErrorTrap;
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
     if (not gdk_window_is_visible(PaintWindow))
       or (not gdk_window_is_viewable(PaintWindow))
     then begin
-      EndGDKErrorTrap;
+      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
       exit;
     end;
 
     // check if window belongs to another LCL control
     gdk_window_get_user_data(PaintWindow,@UserData);
-    EndGDKErrorTrap;
+    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
     if (UserData<>nil)
     and (GtkWidgetIsA(PGtkWidget(UserData), GTK_TYPE_WIDGET))
@@ -1669,7 +1669,7 @@ begin
     p:=nil; // automatically create transparency mask
   Window:=nil; // use the X root window for colormap
 
-  BeginGDKErrorTrap;
+  {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
   if Window<>nil then
     ColorMap:=gdk_window_get_colormap(Window)
@@ -1695,7 +1695,7 @@ begin
     gdk_visual_ref(GdiObject^.Visual);
 
   GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
-  EndGDKErrorTrap;
+  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
   TheBitmap.Handle := HBITMAP(GdiObject);
   If GdiObject^.GDIBitmapMaskObject <> nil then
@@ -1732,7 +1732,7 @@ var
       PGDIObject(TMP)^.GDIBitmapMaskObject,
       0);
 
-    BeginGDKErrorTrap;
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     Depth := gdk_drawable_get_depth(PGDIObject(TMP)^.GDIPixmapObject);
 
     If PGDIObject(TMP)^.Visual <> nil then
@@ -1750,7 +1750,7 @@ var
     PGDIObject(TMP)^.Colormap :=
                              gdk_colormap_new(PGDIObject(TMP)^.Visual, GdkTrue);
 
-    EndGDKErrorTrap;
+    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
     TheBitmap.Handle := TMP;
     GDK_Pixbuf_Unref(Src);
     Result := True;
@@ -1832,7 +1832,7 @@ Type
       exit;
 
     With PGDIObject(Bitmap)^ do begin
-      BeginGDKErrorTrap;
+      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
       gdk_pixbuf_render_pixmap_and_mask(Src,
         GDIPixmapObject,
         GDIBitmapMaskObject,
@@ -1855,7 +1855,7 @@ Type
 
       Colormap := gdk_colormap_new(Visual, GdkTrue);
 
-      EndGDKErrorTrap;
+      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 
       GDK_Pixbuf_Unref(Src);
     end;
@@ -1912,7 +1912,7 @@ var
            rowstride := gdk_pixbuf_get_rowstride(Source);
            Pixels := PByte(gdk_pixbuf_get_pixels(Source));
          {$else}
-           BeginGDKErrorTrap;
+           {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
            Source := gdk_image_get(Bitmap^.GDIBitmapObject, 0, StartScan, Width,
              StartScan + NumScans);
          {$EndIf}
@@ -1925,7 +1925,7 @@ var
            rowstride := gdk_pixbuf_get_rowstride(Source);
            Pixels := PByte(gdk_pixbuf_get_pixels(Source));
          {$else}
-           BeginGDKErrorTrap;
+           {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
            Source := gdk_image_get(Bitmap^.GDIPixmapObject, StartScan, 0, Width,
              StartScan + NumScans);
          {$EndIf}
@@ -1956,7 +1956,7 @@ var
   begin
     Pixel := 0;
 
-    BeginGDKErrorTrap;
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
     Pixel := gdk_image_get_pixel(Source, X, Y);
 
@@ -1969,7 +1969,7 @@ var
   {$IfNDef NoGDKPixbuflib}
     GDK_Pixbuf_Unref(Source);
   {$else}
-    BeginGDKErrorTrap;
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     gdk_image_destroy(Source);
   {$EndIf}
   end;
@@ -2078,7 +2078,7 @@ begin
   end
   else
     DebugLn('WARNING: [TGtkWidgetSet.InternalGetDIBits] invalid Bitmap!');
-  EndGDKErrorTrap;
+  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 end;
 
 function TGtkWidgetSet.GetWindowRawImageDescription(GDKWindow: PGdkWindow;
@@ -2642,10 +2642,10 @@ var
                   NewClipMask);
 
     // draw image
-    BeginGDKErrorTrap;
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     gdk_window_copy_area(DestDevContext.Drawable, DestDevContext.GC, X, Y,
       SrcPixmap, XSrc, YSrc, SrcWidth, SrcHeight);
-    EndGDKErrorTrap;
+    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
     // unset clipping mask for transparency
     ResetClipping(DestDevContext.GC);
 
@@ -5961,15 +5961,11 @@ begin
 
     //drag icons
     if Drag_Icon = nil then begin
-      {$IFDEF DebugGDKTraps}
-      BeginGDKErrorTrap;
-      {$ENDIF}
+      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
       Drag_Icon := gdk_pixmap_colormap_create_from_xpm_d (nil,
                            gtk_widget_get_colormap (Result), Drag_Mask,
                            nil, @IMGDrag_Icon);
-      {$IFDEF DebugGDKTraps}
-      EndGDKErrorTrap;
-      {$ENDIF}
+      {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
     end;
   end else begin
     // create a form as child control
@@ -6496,12 +6492,12 @@ begin
        TCustomForm(Sender).BorderStyle := bsNone;
        gtk_widget_realize(p);
        AWindow:=GetControlWindow(P);
-       BeginGDKErrorTrap;
+        {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
        gdk_window_set_decorations(AWindow,
          GetWindowDecorations(TCustomForm(Sender)));
        gdk_window_set_functions(AWindow,
          GetWindowFunction(TCustomForm(Sender)));
-       EndGDKErrorTrap;
+       {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
        gtk_widget_show_all(p);
     end;
 
@@ -7002,9 +6998,9 @@ begin
     on e: Exception do
       DebugLn('WARNING: TGtkWidgetSet.LoadXPMFromLazResource: '+e.Message);
   end;
-  BeginGDKErrorTrap;
+  {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
   PixmapImg:=gdk_pixmap_create_from_xpm_d(Window,PixmapMask,nil,ImgData);
-  EndGDKErrorTrap;
+  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   FreeMem(ImgData);
 end;
 
@@ -7029,9 +7025,9 @@ begin
     on e: Exception do
       DebugLn('WARNING: TGtkWidgetSet.LoadXPMFromLazResource: '+e.Message);
   end;
-  BeginGDKErrorTrap;
+  {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
   pixbuf:=gdk_pixbuf_new_from_xpm_data(ImgData);
-  EndGDKErrorTrap;
+  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   FreeMem(ImgData);
 end;
 {$EndIF}
@@ -7428,7 +7424,7 @@ begin
   //gc := gdk_gc_new(PgdkWindow(fWindow));
 
   if fWindow<>nil then begin
-    BeginGDKErrorTrap;
+    {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
     gdk_draw_pixmap(fwindow,
       gtk_widget_get_style(widget)^.fg_gc[GTK_WIDGET_STATE (widget)],
       pixmap,
@@ -7436,7 +7432,7 @@ begin
       0,0,
       pgtkwidget(widget)^.allocation.width,
       pgtkwidget(widget)^.allocation.height);
-    EndGDKErrorTrap;
+    {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
   end;
 end;
 
@@ -7468,9 +7464,9 @@ begin
   aDC.SelectedColors := dcscCustom;
   GDKColor:=AllocGDKColor(TLMSetGetPixel(data^).PixColor);
   gdk_gc_set_foreground(aDC.GC, @GDKColor);
-  BeginGDKErrorTrap;
+  {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
   gdk_draw_point(aDC.Drawable, aDC.GC, X,Y);
-  EndGDKErrorTrap;
+  {$IFDEF DebugGDK}EndGDKErrorTrap;{$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -9272,6 +9268,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.530  2004/08/19 18:50:53  mattias
+  splitted IDE component owner hierachy to reduce notification time
+
   Revision 1.529  2004/08/18 20:49:02  mattias
   simple forms can now be child controls
 

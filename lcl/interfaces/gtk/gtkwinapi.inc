@@ -72,14 +72,10 @@ begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
         inc(X,DCOrigin.X);
         inc(Y,DCOrigin.Y);
-        {$IFDEF DebugGDKTraps}
-        BeginGDKErrorTrap;
-        {$ENDIF}
+        {$IFDEF DebugGDKTraps}BeginGDKErrorTrap;{$ENDIF}
         gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height,
                      Angle1 shl 2, Angle2 shl 2);
-        {$IFDEF DebugGDKTraps}
-        EndGDKErrorTrap;
-        {$ENDIF}
+        {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
       end else
         Result:=false;
     end;
@@ -2060,9 +2056,13 @@ begin
       gtk_widget_set_usize(ComboWidget^.popwin,width ,height);
       gtk_widget_realize(ComboWidget^.popwin);
 
+      {$IFDEF DebugGDKTraps}
       BeginGDKErrorTrap;
+      {$ENDIF}
       gdk_window_resize(ComboWidget^.popwin^.window,width,height);
+      {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
+      {$ENDIF}
 
       gtk_widget_show (ComboWidget^.popwin);
       gtk_widget_grab_focus(ComboWidget^.popwin);
@@ -2957,7 +2957,9 @@ begin
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
 
+      {$IFDEF DebugGDKTraps}
       BeginGDKErrorTrap;
+      {$ENDIF}
 
       If not CurrentBrush^.IsNullBrush then
         gdk_draw_arc(Drawable, GC, 1, x+DCOrigin.X, y+DCOrigin.Y, Width, Height,
@@ -2974,7 +2976,9 @@ begin
       end else
         Result := False;
 
+      {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
+      {$ENDIF}
     end;
   end;
 end;
@@ -3076,9 +3080,13 @@ begin
           RGN_AND,
           RGN_DIFF:
             begin
+              {$IFDEF DebugGDKTraps}
               BeginGDKErrorTrap;
+              {$ENDIF}
               GDK_Window_Get_Size(Drawable, @X, @Y);
+              {$IFDEF DebugGDKTraps}
               EndGDKErrorTrap;
+              {$ENDIF}
               Clip := CreateRectRGN(0,0,X,Y);
               Tmp := CreateEmptyRegion;
               Result := CombineRGN(Tmp, Clip, RGN, mode);
@@ -3700,11 +3708,13 @@ begin
   else DebugLn('[TGtkWidgetSet.GetCaretPos] got focusObject nil');
  }
 
-Assert(False, 'Trace:GetCaretPos');
+  {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
+  {$ENDIF}
   gdk_window_get_pointer(nil,@lpPoint.X,@lpPoint.y,@modmask);
+  {$IFDEF DebugGDKTraps}
   EndGDKErrorTrap;
-Assert(False, 'Trace:GetCaretPos');
+  {$ENDIF}
   Result := True;
 end;
 
@@ -3897,9 +3907,13 @@ begin
   begin
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
     If Not IsValidGDIObject(ClipRegion) then begin
+      {$IFDEF DebugGDKTraps}
       BeginGDKErrorTrap;
+      {$ENDIF}
       gdk_window_get_size(Drawable, @X, @Y);
+      {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
+      {$ENDIF}
       lpRect^ := Rect(-DCOrigin.X, -DCOrigin.Y, X-DCOrigin.X, Y-DCOrigin.Y);
       Result := SIMPLEREGION;
     end
@@ -4080,7 +4094,9 @@ var
 begin
   Result := False;
 
+  {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
+  {$ENDIF}
   try
     TopList := gdk_window_get_toplevels;
     List := TopList;
@@ -4103,7 +4119,7 @@ begin
     then g_list_free(TopList);
 
   finally
-    EndGDKErrorTrap;
+    {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
   end;
 end;
 {$ELSE}
@@ -4346,7 +4362,9 @@ begin
   // Default to 0
   Result := 0;
 
+  {$IFDEF DebugGDKTraps}
   BeginGDKErrorTrap;
+  {$ENDIF}
 
   TopList := gdk_window_get_toplevels;
   List := TopList;
@@ -4372,7 +4390,7 @@ begin
   if TopList <> nil
   then g_list_free(TopList);
 
-  EndGDKErrorTrap;
+  {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -4533,7 +4551,9 @@ begin
               {dsBitfields: array[0..2] of DWORD;
               dshSection: THandle;
               dsOffset: DWORD;}
+              {$IFDEF DebugGDKTraps}
               BeginGDKErrorTrap;
+              {$ENDIF}
               case GDIBitmapType of
                 gbBitmap:
                   If GDIBitmapObject <> nil then begin
@@ -4566,7 +4586,7 @@ begin
               end else
                 biBitCount := Visual^.Depth;
 
-              EndGDKErrorTrap;
+              {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
               If biBitCount < 16 then
                 NumColors := Colormap^.Size;
 
@@ -6261,7 +6281,7 @@ begin
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
 
-      BeginGDKErrorTrap;
+      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
 
       If not CurrentBrush^.IsNullBrush then
         if Winding then begin
@@ -6293,7 +6313,7 @@ begin
       end else
         Result:=false;
 
-      EndGDKErrorTrap;
+      {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
 
       FreeMem(PointArray);
 
@@ -6331,9 +6351,9 @@ begin
       If (dcfPenSelected in DCFlags) then begin
         Result := True;
         if (not CurrentPen^.IsNullPen) then begin
-          BeginGDKErrorTrap;
+          {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
           gdk_draw_lines(Drawable, GC, PointArray, NumPts);
-          EndGDKErrorTrap;
+          {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
         end;
       end else
         Result:=false;
@@ -6593,7 +6613,7 @@ begin
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
-      BeginGDKErrorTrap;
+      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
       If not CurrentBrush^.IsNullBrush then
         if (CurrentBrush^.GDIBrushFill = GDK_SOLID)
         and (IsBackgroundColor(TColor(CurrentBrush^.GDIBrushColor.ColorRef))) then
@@ -6613,7 +6633,7 @@ begin
       end else
         Result:=false;
 
-      EndGDKErrorTrap;
+      {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
     end;
   end;
   Assert(False, Format('trace:< [TGtkWidgetSet.Rectangle] DC:0x%x, X1:%d, Y1:%d, X2:%d, Y2:%d', [DC, X1, Y1, X2, Y2]));
@@ -7105,14 +7125,14 @@ Begin
     end
     else begin
       Window:=GetControlWindow(Widget);
-      BeginGDKErrorTrap;
+      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
       if Window<>nil then
         gdk_window_get_origin(Window, @X, @Y)
       else begin
         X:=0;
         Y:=0;
       end;
-      EndGDKErrorTrap;
+      {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
     end;
   end;
 
@@ -8331,9 +8351,9 @@ begin
 
   SW_SHOWNORMAL:
     begin
-      BeginGDKErrorTrap;
+      {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
       gdk_window_show(PgtkWidget(GtkWindow)^.Window);
-      EndGDKErrorTrap;
+      {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
     end;
 
   SW_MINIMIZE, SW_SHOWMAXIMIZED:
@@ -8473,10 +8493,10 @@ begin
           TxtPt.Y := Y + DCTextMetric.TextMetric.tmAscent;
         {$EndIf}
         SelectGDKTextProps(DC);
-        BeginGDKErrorTrap;
+        {$IFDEF DebugGDK}BeginGDKErrorTrap;{$ENDIF}
         gdk_draw_text(Drawable, UseFont,
           GC, TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
-        EndGDKErrorTrap;
+        {$IFDEF DebugGDKTraps}EndGDKErrorTrap;{$ENDIF}
         If Underline or StrikeOut then begin
           {Create & select pen of font color}
           LogP.lopnStyle := PS_SOLID;
@@ -8709,6 +8729,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.362  2004/08/19 18:50:53  mattias
+  splitted IDE component owner hierachy to reduce notification time
+
   Revision 1.361  2004/08/18 20:49:03  mattias
   simple forms can now be child controls
 

@@ -80,6 +80,7 @@ type
     CurrentParsedCompilerOption: TParsedCompilerOptions;
     TheCompiler: TCompiler;
     TheOutputFilter: TOutputFilter;
+    OwningComponent: TComponent;
 
     function CreateMenuSeparator : TMenuItem;
     procedure CreateMenuItem(MenuItemParent, MenuItem: TMenuItem;
@@ -282,11 +283,15 @@ end;
 constructor TMainIDEBase.Create(TheOwner: TComponent);
 begin
   MainIDE:=Self;
+  // Do not own everything in one big component hierachy. Otherwise the
+  // notifications slow down everything
+  OwningComponent:=TComponent.Create(nil);
   inherited Create(TheOwner);
 end;
 
 destructor TMainIDEBase.Destroy;
 begin
+  FreeThenNil(OwningComponent);
   inherited Destroy;
   MainIDE:=nil;
 end;
