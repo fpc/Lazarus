@@ -18,6 +18,8 @@
  *                                                                         *
  ***************************************************************************
 
+written 2001 by Satan
+
 }
 unit ExampleForm;
 
@@ -27,7 +29,7 @@ interface
 
 uses
   Classes, SysUtils, GTKGlArea, Forms, LResources, Buttons, StdCtrls,
-  gtkglarea_int, gtk, glib, NVGL;
+  gtkglarea_int, gtk, glib, NVGL, linux;
 
 type
   TglTexture = class
@@ -72,7 +74,7 @@ type
   TParticleEngine = class
     //x, y, z: GLfloat;
     xspawn: GLfloat;
-    Particle: array [1..501] of TParticle;
+    Particle: array [1..2001] of TParticle;
     procedure MoveParticles;
     procedure DrawParticles;
     //procedure Init;
@@ -97,12 +99,13 @@ var AnExampleForm: TExampleForm;
     ParticleList, CubeList, BackList: GLuint;
 
 var direction: boolean;
-
+    hour, minutes, secs, msecs, usecs, mmsecs: word;
+    timer: single;
 
 implementation
 
 
-function LoadFileToMemStream(Filename: string): TMemoryStream;
+function LoadFileToMemStream(const Filename: string): TMemoryStream;
 var FileStream: TFileStream;
 begin
   Result:=TMemoryStream.Create;
@@ -120,7 +123,7 @@ begin
   end;  
 end;
 
-function LoadglTexImage2DFromBitmapFile(Filename:string; 
+function LoadglTexImage2DFromBitmapFile(const Filename:string; 
   var Image:TglTexture): boolean;
 type
   TBITMAPFILEHEADER = packed record
@@ -223,14 +226,13 @@ begin
       try
         for i:=0 to PixelCount-1 do begin
           MemStream.Read(AnRGBQuad,sizeOf(RGBQuad));
-          {$IFOPT R+}{$DEFINE RangeCheckOn}{$ENDIF}
-          {$R-}
+          {$IFOPT R+}{$DEFINE RangeCheckOn}{$R-}{$ENDIF}
           with PRawImage(Image.Data)^ do begin
             p[i*3+0]:=AnRGBQuad.rgbRed;
             p[i*3+1]:=AnRGBQuad.rgbGreen;
             p[i*3+2]:=AnRGBQuad.rgbBlue;
           end;
-          {$IFDEF RangeCheckOn}{$R+}{$ELSE}{$R-}{$ENDIF}
+          {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
         end;
       except
         writeln('Error converting bitmap');
@@ -368,7 +370,7 @@ end;
 constructor TParticleEngine.Create;
 var i: integer; 
 begin
-  for i:=1 to 501 do Particle[i]:=TParticle.Create;
+  for i:=1 to 2001 do Particle[i]:=TParticle.Create;
   xspawn:=0;
 end;
 
@@ -377,7 +379,8 @@ var i: integer;
 begin
   //if blended then glEnable(GL_DEPTH_TEST) else glEnable(GL_BLEND);
   glBindTexture(GL_TEXTURE_2D, textures[0]);
-  for i:=1 to 501 do begin
+  for i:=1 to 2001 do begin
+    glPushMatrix;
     glTranslatef(Particle[i].x, Particle[i].y, Particle[i].z);
     glCallList(ParticleList);
     {glBegin(GL_TRIANGLE_STRIP);
@@ -387,21 +390,22 @@ begin
       glTexCoord2f( 1.0, 0.0);     glVertex3f(Particle[i].x+0.03, Particle[i].y-0.03, Particle[i].z);
       glTexCoord2f( 0.0, 0.0);     glVertex3f(Particle[i].x-0.03, Particle[i].y-0.03, Particle[i].z);
     glEnd;}
-    glTranslatef(-Particle[i].x, -Particle[i].y, -Particle[i].z);
+    glPopMatrix;
+    //glTranslatef(-Particle[i].x, -Particle[i].y, -Particle[i].z);
   end;
   //if blended then glDisable(GL_DEPTH_TEST) else glDisable(GL_BLEND);
 end;
 
 procedure TParticleEngine.RespawnParticle(i: integer);
 begin
-  {if (xspawn>2) and (direction=true) then direction:=false;
+  if (xspawn>2) and (direction=true) then direction:=false;
   if (xspawn<-2) and (direction=false) then direction:=true;
-  if direction then xspawn:=xspawn+0.005 else xspawn:=xspawn-0.005;}
+  if direction then xspawn:=xspawn+0.0002*(timer/10) else xspawn:=xspawn-0.0002*(timer/10);
   Particle[i].x:=xspawn;
   Particle[i].y:=-0.5;
   Particle[i].z:=0;
   Particle[i].vx:=-0.005+random(2000)/200000;
-  Particle[i].vy:=0.03+random(750)/100000;
+  Particle[i].vy:=0.035+random(750)/100000;
   Particle[i].vz:=-0.005+random(2000)/200000;
   Particle[i].life:=random(1250)/1000+1;
 end;
@@ -409,15 +413,15 @@ end;
 procedure TParticleEngine.MoveParticles;
 var i: integer;
 begin
-  for i:=1 to 501 do begin
+  for i:=1 to 2001 do begin
     if Particle[i].life>0 then begin
-      Particle[i].life:=Particle[i].life-0.01;
-      Particle[i].x:=Particle[i].x+Particle[i].vx;
+      Particle[i].life:=Particle[i].life-0.01*(timer/10);
+      Particle[i].x:=Particle[i].x+Particle[i].vx*(timer/10);
       
-      Particle[i].vy:=Particle[i].vy-0.00035; // gravity
-      Particle[i].y:=Particle[i].y+Particle[i].vy;
+      Particle[i].vy:=Particle[i].vy-0.00035*(timer/10); // gravity
+      Particle[i].y:=Particle[i].y+Particle[i].vy*(timer/10);
       
-      Particle[i].z:=Particle[i].z+Particle[i].vz;
+      Particle[i].z:=Particle[i].z+Particle[i].vz*(timer/10);
     end else begin
       RespawnParticle(i);
     end;
@@ -427,7 +431,7 @@ end;
 procedure TParticleEngine.Start;
 var i: integer;
 begin
-  for i:=1 to 501 do begin
+  for i:=1 to 2001 do begin
     RespawnParticle(i);
   end;
 end;
@@ -763,11 +767,16 @@ begin
       AreaInitialized:=true;
     end;
     
+    GetTime(hour, minutes, secs, msecs, usecs);
+    timer:=msecs-mmsecs;
+    if timer<0 then timer:=1000+timer;
+    mmsecs:=msecs;
+    
     ParticleEngine.MoveParticles;
     
     glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
     glLoadIdentity;             { clear the matrix }
-    glTranslatef (0.0, 0.0,-2.5);  // -2.5); { viewing transformation }
+    glTranslatef (0.0, 0.0,-3.0);  // -2.5); { viewing transformation }
     glScalef (1.0, 1.0, 1.0);      { modeling transformation }
     {rotate}
 
@@ -777,9 +786,9 @@ begin
     glPushMatrix;
 
     if MoveBackground then begin
-      rrx:=rrx-0.6;
-      rry:=rry-0.5;
-      rrz:=rrz-0.3;
+      rrx:=rrx-0.6*(timer/10);
+      rry:=rry-0.5*(timer/10);
+      rrz:=rrz-0.3*(timer/10);
     end;
     
     glRotatef(rrx,1.0,0.0,0.0);
@@ -802,9 +811,9 @@ begin
     glPushMatrix;
 
     if MoveCube then begin
-      rx:=rx+0.5;
-      ry:=ry+0.25;
-      rz:=rz+0.8;
+      rx:=rx+0.5*(timer/10);
+      ry:=ry+0.25*(timer/10);
+      rz:=rz+0.8*(timer/10);
     end;
     
     glRotatef(rx,1.0,0.0,0.0);
