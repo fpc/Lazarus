@@ -1295,11 +1295,11 @@ function IntersectRect(var DestRect: TRect;
 begin
   Result := False;
 
-   // test if rectangles intersects
-  Result:=(SrcRect2.Left >= SrcRect1.Right)
-       or (SrcRect2.Right <= SrcRect1.Left)
-       or (SrcRect2.Top >= SrcRect1.Bottom)
-       or (SrcRect2.Bottom <= SrcRect1.Top);
+  // test if rectangles intersects
+  Result:=(SrcRect2.Left < SrcRect1.Right)
+      and (SrcRect2.Right > SrcRect1.Left)
+      and (SrcRect2.Top < SrcRect1.Bottom)
+      and (SrcRect2.Bottom > SrcRect1.Top);
        
   if Result then begin
     DestRect.Left:=Max(SrcRect1.Left,SrcRect2.Left);
@@ -1580,6 +1580,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.80  2003/03/29 23:52:25  mattias
+  IpHtmlPanel can show simple HTML pages, but there are mem bugs
+
   Revision 1.79  2003/03/29 17:20:05  mattias
   added TMemoScrollBar
 
