@@ -562,11 +562,32 @@ Begin
 end;
 
 Function TComponentInterface.Delete: Boolean;
+var
+  OldName, OldClassName: string;
 Begin
   {$IFDEF VerboseFormEditor}
   writeln('TComponentInterface.Delete A ',Component.Name,':',Component.ClassName);
   {$ENDIF}
-  Component.Free;
+  {$IFNDEF NoCompCatch}
+  try
+  {$ENDIF}
+    OldName:=Component.Name;
+    OldClassName:=Component.ClassName;
+    Component.Free;
+  {$IFNDEF NoCompCatch}
+  except
+    on E: Exception do begin
+      writeln('TComponentInterface.Delete ERROR:',
+        ' "'+OldName+':'+OldClassName+'" ',E.Message);
+      MessageDlg('Error',
+        'An exception occured during deletion of'#13
+        +'"'+OldName+':'+OldClassName+'"'#13
+        +E.Message,
+        mtError,[mbOk],0);
+    end;
+  end;
+  {$ENDIF}
+  FComponent:=nil;
   {$IFDEF VerboseFormEditor}
   writeln('TComponentInterface.Delete B ');
   {$ENDIF}
