@@ -274,7 +274,7 @@ begin
   writeln(NewAction.ClassName);
   writeln(FDesigner.CreateUniqueComponentName(NewAction.ClassName));}
   NewAction.Name:=FDesigner.CreateUniqueComponentName(NewAction.ClassName);
-  writeln(NewAction.Name);
+  DebugLn(NewAction.Name);
   
   if lstCategory.ItemIndex>1 then // ignore first two items (virtual categories)
     NewAction.Category:=lstCategory.Items[lstCategory.ItemIndex]
@@ -299,7 +299,7 @@ begin
   iNameIndex:=lstActionName.ItemIndex;
   if iNameIndex<0 then Exit;
   OldName:=lstActionName.Items[iNameIndex];
-  writeln('',OldName);
+  DebugLn('',OldName);
   lstActionName.Items.Delete(iNameIndex);
   
   OldAction:=FActionList.ActionByName(OldName);
@@ -594,7 +594,7 @@ end;
 
 procedure TActionListComponentEditor.Edit;
 begin
-  writeln('TActionListComponentEditor.Edit ',GetComponent.Name);
+  DebugLn('TActionListComponentEditor.Edit ',GetComponent.Name);
   ShowActionListEditor(GetComponent as TActionList, FDesigner);
 end;
 

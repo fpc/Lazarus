@@ -35,7 +35,7 @@ unit DBGUtils;
 interface 
 
 uses
-  Classes;
+  Classes, LCLProc;
 
 type
   TDelayedUdateItem = class(TCollectionItem)
@@ -90,8 +90,8 @@ begin
       while (i>0) and ((i and 1)=0) do begin
         i:=i shr 1;
         if i=1 then begin
-          writeln('Last message repeated ',LastSmartWritelnCount,' times:',
-                  ' "',LastSmartWritelnStr,'"');
+          DebugLn('Last message repeated %d times: "%s"',
+            [LastSmartWritelnCount, LastSmartWritelnStr]);
           break;
         end;
       end;
@@ -101,7 +101,7 @@ begin
   LastSmartWritelnTime:=Now;
   LastSmartWritelnStr:=s;
   LastSmartWritelnCount:=1;
-  writeln(LastSmartWritelnStr);
+  DebugLn(LastSmartWritelnStr);
 end;
 
 function GetLine(var ABuffer: String): String;
@@ -321,6 +321,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.11  2004/09/14 21:30:36  vincents
+  replaced writeln by DebugLn
+
   Revision 1.10  2003/12/08 14:27:16  mattias
   fixed WaitForHandles
 

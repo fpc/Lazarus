@@ -37,7 +37,7 @@ unit GDBMIDebugger;
 interface
 
 uses
-  Classes, Process, SysUtils, Dialogs, LazConf, DBGUtils, Debugger,
+  Classes, Process, SysUtils, LCLProc, Dialogs, LazConf, DBGUtils, Debugger,
   CmdLineDebugger, GDBTypeInfo, BaseDebugManager;
 
 type
@@ -549,7 +549,7 @@ begin
   if FCommandQueue.Count > 1
   then begin
     if cfExternal in AFlags
-    then Writeln('[WARNING] Debugger: Execution of external command "', ACommand, '" while queue exists');
+    then DebugLn('[WARNING] Debugger: Execution of external command "', ACommand, '" while queue exists');
     Exit;
   end;
   // If we are here we can process the command directly
@@ -567,7 +567,7 @@ begin
       R := ProcessResult(ResultState, ResultValues, cfNoMICommand in CmdInfo^.Flags);
       if not R
       then begin
-        Writeln('[WARNING] TGDBMIDebugger:  ExecuteCommand "',Cmd,'" failed.');
+        DebugLn('[WARNING] TGDBMIDebugger:  ExecuteCommand "',Cmd,'" failed.');
         SetState(dsError);
         Break;
       end;
@@ -743,7 +743,7 @@ begin
       Result := ExecuteCommand('-exec-continue', [cfExternal]);
     end;
     dsIdle: begin
-      WriteLN('[WARNING] Debugger: Unable to run in idle state');
+      DebugLn('[WARNING] Debugger: Unable to run in idle state');
     end;
   end;
 end;
@@ -937,11 +937,11 @@ begin
     ResolveGDBVersion;
     if FVersion < '5.3'
     then begin
-      WriteLN('[WARNING] Debugger: Running an old (< 5.3) GDB version: ', FVersion);
-      WriteLN('                    Not all functionality will be supported.');
+      DebugLn('[WARNING] Debugger: Running an old (< 5.3) GDB version: ', FVersion);
+      DebugLn('                    Not all functionality will be supported.');
     end
     else begin
-      WriteLN('[Debugger] Running GDB version: ', FVersion);
+      DebugLn('[Debugger] Running GDB version: ', FVersion);
       Include(FDebuggerFlags, dfImplicidTypes);
     end;
 
@@ -1009,7 +1009,7 @@ begin
           else if S = 'error'
           then begin
             Result := True;
-            writeln('TGDBMIDebugger.ProcessResult Error: ',S);
+            DebugLn('TGDBMIDebugger.ProcessResult Error: ',S);
             // todo implement with values
             if  (pos('msg=', AResultValues) > 0)
             and (pos('not being run', AResultValues) > 0)
@@ -1021,14 +1021,14 @@ begin
             Result := True;
             ANewState := dsIdle;
           end
-          else WriteLN('[WARNING] Debugger: Unknown result class: ', S);
+          else DebugLn('[WARNING] Debugger: Unknown result class: ', S);
         end;
         '~': begin // console-stream-output
           // check for symbol info
           if Pos('no debugging symbols', S) > 0
           then begin
             Exclude(FTargetFlags, tfHasSymbols);
-            WriteLN('[WARNING] Debugger: File ''',FileName, ''' has no debug symbols');
+            DebugLn('[WARNING] Debugger: File ''',FileName, ''' has no debug symbols');
           end
           else if ANoMICommand 
           then begin
@@ -1042,24 +1042,24 @@ begin
             AResultValues := AResultValues + S;
           end
           else begin
-            WriteLN('[Debugger] Console output: ', S);
+            DebugLn('[Debugger] Console output: ', S);
           end;
         end;
         '@': begin // target-stream-output
-          WriteLN('[Debugger] Target output: ', S);
+          DebugLn('[Debugger] Target output: ', S);
         end;
         '&': begin // log-stream-output
-          WriteLN('[Debugger] Log output: ', S);
+          DebugLn('[Debugger] Log output: ', S);
           if S='&"kill\n"' then
             ANewState:=dsStop
           else if LeftStr(S,8)='&"Error ' then
             ANewState:=dsError;
         end;
         '*', '+', '=': begin
-          WriteLN('[WARNING] Debugger: Unexpected async-record: ', S);
+          DebugLn('[WARNING] Debugger: Unexpected async-record: ', S);
         end;
       else
-        WriteLN('[WARNING] Debugger: Unknown record: ', S);
+        DebugLn('[WARNING] Debugger: Unknown record: ', S);
       end;
     end;
     S := StripLN(ReadLine);
@@ -1079,16 +1079,16 @@ begin
     then begin
       case S[1] of
         '^': begin
-          WriteLN('[WARNING] Debugger: unexpected result-record: ', S);
+          DebugLn('[WARNING] Debugger: unexpected result-record: ', S);
         end;
         '~': begin // console-stream-output
-          WriteLN('[Debugger] Console output: ', S);
+          DebugLn('[Debugger] Console output: ', S);
         end;
         '@': begin // target-stream-output
-          WriteLN('[Debugger] Target output: ', S);
+          DebugLn('[Debugger] Target output: ', S);
         end;
         '&': begin // log-stream-output
-          WriteLN('[Debugger] Log output: ', S);
+          DebugLn('[Debugger] Log output: ', S);
         end;
         '*': begin // exec-async-output
           AsyncClass := GetPart('*', ',', S);
@@ -1105,16 +1105,16 @@ begin
           end
           else begin
             // Assume targetoutput, strip char and continue
-            WriteLN('[DBGTGT] *');
+            DebugLn('[DBGTGT] *');
             S := AsyncClass + S;
             Continue;
           end;
         end;
         '+': begin // status-async-output
-          WriteLN('[Debugger] Status output: ', S);
+          DebugLn('[Debugger] Status output: ', S);
         end;
         '=': begin // notify-async-output
-          WriteLN('[Debugger] Notify output: ', S);
+          DebugLn('[Debugger] Notify output: ', S);
         end;
       else
         // since target output isn't prefixed (yet?)
@@ -1122,13 +1122,13 @@ begin
         idx := Pos('*stopped', S);
         if idx  > 0
         then begin
-          WriteLN('[DBGTGT] ', Copy(S, 1, idx - 1));
+          DebugLn('[DBGTGT] ', Copy(S, 1, idx - 1));
           Delete(S, 1, idx - 1);
           Continue;
         end
         else begin
           // normal target output
-          WriteLN('[DBGTGT] ', S);
+          DebugLn('[DBGTGT] ', S);
         end;
       end;
     end;
@@ -1405,7 +1405,7 @@ begin
     end;
     
     Result := False;
-    WriteLN('[WARNING] Debugger: Unknown stopped reason: ', Reason);
+    DebugLn('[WARNING] Debugger: Unknown stopped reason: ', Reason);
   finally
     List.Free;
   end; 
@@ -1531,7 +1531,7 @@ begin
     TempInstalled := ResultState <> dsError;
   end
   else begin
-    Writeln('TGDBMIDebugger.StartDebugging Note: Target has no symbols');
+    DebugLn('TGDBMIDebugger.StartDebugging Note: Target has no symbols');
     TempInstalled := False;
   end;
   
@@ -1550,8 +1550,8 @@ begin
   then begin
      FileType := GetPart('file type ', '.', S);
      EntryPoint := GetPart('Entry point: ', '\n', S);
-     WriteLN('[Debugger] File type: ', FileType);
-     WriteLN('[Debugger] Entry point: ', EntryPoint);
+     DebugLn('[Debugger] File type: ', FileType);
+     DebugLn('[Debugger] Entry point: ', EntryPoint);
   end;
   
   // TODO: use filetype to determine register types
@@ -1575,7 +1575,7 @@ begin
      TargetPIDPart := GetPart(['child process ', 'child thread ', 'lwp '], 
                               [' ', '.', ')'], S, True);
      FTargetPID := StrToIntDef(TargetPIDPart, 0);
-     WriteLN('[Debugger] Target PID: ', FTargetPID);
+     DebugLn('[Debugger] Target PID: ', IntToStr(FTargetPID));
   end
   else begin
     FTargetPID := 0;
@@ -2252,10 +2252,10 @@ begin
         AResult := AResult + FOperator;
       end
       else begin
-        WriteLN('PType result: ', ResultValues);
+        DebugLn('PType result: ', ResultValues);
         List := CreateValueList(ResultValues);
         S := List.Values['type'];
-        WriteLN('PType type: ', S);
+        DebugLn('PType type: ', S);
         List.Free;
         if (S <> '') and (S[1] = '^') and (Pos('class', S) <> 0)
         then begin
@@ -2283,6 +2283,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.50  2004/09/14 21:30:36  vincents
+  replaced writeln by DebugLn
+
   Revision 1.49  2004/09/04 21:54:08  marc
   + Added option to skip compiler step on compile, build or run
   * Fixed adding of runtime watches

@@ -830,21 +830,21 @@ var
   CompEditor: TBaseComponentEditor;
 begin
   Result:=false;
-  writeln('TDesigner.InvokeComponentEditor A ',AComponent.Name,':',AComponent.ClassName);
+  DebugLn('TDesigner.InvokeComponentEditor A ',AComponent.Name,':',AComponent.ClassName);
   CompEditor:=TheFormEditor.GetComponentEditor(AComponent);
   if CompEditor=nil then begin
-    writeln('TDesigner.InvokeComponentEditor',
+    DebugLn('TDesigner.InvokeComponentEditor',
       ' WARNING: no component editor found for ',
         AComponent.Name,':',AComponent.ClassName);
     exit;
   end;
-  writeln('TDesigner.InvokeComponentEditor B ',CompEditor.ClassName);
+  DebugLn('TDesigner.InvokeComponentEditor B ',CompEditor.ClassName);
   try
     CompEditor.Edit;
     Result:=true;
   except
     on E: Exception do begin
-      writeln('TDesigner.InvokeComponentEditor ERROR: ',E.Message);
+      DebugLn('TDesigner.InvokeComponentEditor ERROR: ',E.Message);
       MessageDlg(Format(lisErrorIn, [CompEditor.ClassName]),
         Format(lisTheComponentEditorOfClassHasCreatedTheError, ['"',
           CompEditor.ClassName, '"', #13, '"', E.Message, '"']),
@@ -1228,7 +1228,7 @@ var
     if not PropertyEditorHook.BeforeAddPersistent(Self,
                                      SelectedCompClass.ComponentClass,NewParent)
     then begin
-      writeln('TDesigner.AddComponent ',
+      DebugLn('TDesigner.AddComponent ',
               SelectedCompClass.ComponentClass.ClassName,' not possible');
       exit;
     end;
@@ -1885,7 +1885,7 @@ Begin
   if AComponent=nil then AComponent:=FLookupRoot;
   // consistency check
   if CurName<>AComponent.Name then
-    writeln('WARNING: TDesigner.ValidateRename: OldComponentName="',CurName,'"');
+    DebugLn('WARNING: TDesigner.ValidateRename: OldComponentName="',CurName,'"');
   if Assigned(OnRenameComponent) then
     OnRenameComponent(Self,AComponent,NewName);
 end;
@@ -1915,7 +1915,7 @@ begin
     PopupMenuComponentEditor.ExecuteVerb(Verb);
   except
     on E: Exception do begin
-      writeln('TDesigner.OnComponentEditorVerbMenuItemClick ERROR: ',E.Message);
+      DebugLn('TDesigner.OnComponentEditorVerbMenuItemClick ERROR: ',E.Message);
       MessageDlg(Format(lisErrorIn, [PopupMenuComponentEditor.ClassName]),
         Format(lisTheComponentEditorOfClassInvokedWithVerbHasCreated, ['"',
           PopupMenuComponentEditor.ClassName, '"', #13, IntToStr(Verb), '"',

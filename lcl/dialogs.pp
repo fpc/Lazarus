@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, LCLIntf, InterfaceBase, FileCtrl, LCLStrConsts, LCLType,
-  LMessages, Forms, Controls, GraphType, Graphics, Buttons, StdCtrls,
+  LMessages, LCLProc, Forms, Controls, GraphType, Graphics, Buttons, StdCtrls,
   LCLClasses;
 
 
@@ -420,6 +420,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.53  2004/09/14 21:30:37  vincents
+  replaced writeln by DebugLn
+
   Revision 1.52  2004/09/13 13:13:46  micha
   convert LM_SHOWMODAL to interface methods
 

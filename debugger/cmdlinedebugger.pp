@@ -39,7 +39,7 @@ unit CmdLineDebugger;
 interface
 
 uses
-  Classes, Process, Debugger, Forms, LazConf, DBGUtils;
+  Classes, Process, Debugger, LCLProc, Forms, LazConf, DBGUtils;
 
 type
   TCmdLineDebugger = class(TDebugger)
@@ -137,7 +137,7 @@ begin
   end;
   if Max=0 then begin
     // no valid handle, so no change possible
-    writeln('WaitForHandles: Error: no handles');
+    DebugLn('WaitForHandles: Error: no handles');
     exit;
   end;
 
@@ -188,7 +188,7 @@ begin
       R := Windows.PeekNamedPipe(PipeHandle, nil, 0, nil, @TotalBytesAvailable, nil);
       if not R then begin
         // PeekNamedPipe failed
-        Writeln('PeekNamedPipe failed, GetLastError is ', GetLastError);
+        DebugLn('PeekNamedPipe failed, GetLastError is ', IntToStr(GetLastError));
         Exit;
       end;
       if R then begin
@@ -207,7 +207,7 @@ begin
   end;
 {$ELSE win32}
 begin
-  writeln('ToDo: implement WaitForHandles for this OS');
+  DebugLn('ToDo: implement WaitForHandles for this OS');
   Result := 0;
 {$ENDIF win32}
 {$ENDIF linux}
@@ -241,7 +241,7 @@ begin
   if not FDbgProcess.Running 
   then begin
     FDbgProcess.Execute;
-    WriteLn('[TCmdLineDebugger] Debug PID: ', FDbgProcess.Handle);
+    DebugLn('[TCmdLineDebugger] Debug PID: ', IntToStr(FDbgProcess.Handle));
   end;
   Result := FDbgProcess.Running;
 end;
@@ -268,7 +268,7 @@ begin
     FDbgProcess.Free;
     FDbgProcess:=nil;
   except
-    on E: Exception do WriteLN('Exeption while freeing debugger: ', E.Message);
+    on E: Exception do DebugLn('Exeption while freeing debugger: ', E.Message);
   end;
   FreeAndNil(FLineEnds);
 end;
@@ -416,7 +416,7 @@ begin
 {$endif}
   end
   else begin
-    WriteLN('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
+    DebugLn('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
     SetState(dsError);
   end;
 end;
@@ -435,6 +435,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.35  2004/09/14 21:30:36  vincents
+  replaced writeln by DebugLn
+
   Revision 1.34  2004/09/04 21:54:08  marc
   + Added option to skip compiler step on compile, build or run
   * Fixed adding of runtime watches

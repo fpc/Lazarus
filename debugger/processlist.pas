@@ -25,7 +25,7 @@ unit ProcessList;
 interface
 
 uses
-  Classes, SysUtils, Process;
+  Classes, SysUtils, Process, LCLProc;
   
 type
   { The TProcessList is used by the IDE to store all running programs and
@@ -116,7 +116,7 @@ begin
       end;
     except
       on E: Exception do begin
-        writeln('Error freeing stopped process: ',E.Message);
+        DebugLn('Error freeing stopped process: ',E.Message);
       end;
     end;
   end;

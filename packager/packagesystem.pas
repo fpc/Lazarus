@@ -45,8 +45,8 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileCtrl, Forms, Controls, Dialogs,
-  LazarusIDEStrConsts, IDEProcs, LazConf, CompilerOptions, PackageLinks,
+  Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileCtrl, LCLProc, Forms, Controls,
+  Dialogs, LazarusIDEStrConsts, IDEProcs, LazConf, CompilerOptions, PackageLinks,
   PackageDefs, LazarusPackageIntf, ComponentReg, RegisterFCL, RegisterLCL,
   RegisterSynEdit, RegisterIDEIntf;
   
@@ -349,7 +349,7 @@ begin
       XMLConfig.Free;
     except
       on E: Exception do begin
-        writeln('unable to read file "'+AFilename+'" ',E.Message);
+        DebugLn('unable to read file "'+AFilename+'" ',E.Message);
         exit;
       end;
     end;

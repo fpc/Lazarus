@@ -846,7 +846,7 @@ begin
     {$IFNDEF DoNotCatchOIExceptions}
     try
     {$ENDIF}
-      writeln('#################### TOICustomPropertyGrid.DoCallEdit for ',CurRow.Editor.ClassName);
+      DebugLn('#################### TOICustomPropertyGrid.DoCallEdit for ',CurRow.Editor.ClassName);
       CurRow.Editor.Edit;
     {$IFNDEF DoNotCatchOIExceptions}
     except
@@ -2244,7 +2244,7 @@ begin
          'ObjectInspectorOptions/ShowHints',false);
   except
     on E: Exception do begin
-      writeln('ERROR: TOIOptions.Load: ',E.Message);
+      DebugLn('ERROR: TOIOptions.Load: ',E.Message);
       exit;
     end;
   end;
@@ -2287,7 +2287,7 @@ begin
     if XMLConfig<>CustomXMLCfg then XMLConfig.Flush;
   except
     on E: Exception do begin
-      writeln('ERROR: TOIOptions.Save: ',E.Message);
+      DebugLn('ERROR: TOIOptions.Save: ',E.Message);
       exit;
     end;
   end;
@@ -2613,7 +2613,7 @@ procedure TObjectInspector.EndUpdate;
 begin
   dec(FUpdateLock);
   if FUpdateLock<0 then begin
-    writeln('ERROR TObjectInspector.EndUpdate');
+    DebugLn('ERROR TObjectInspector.EndUpdate');
   end;
   if FUpdateLock=0 then begin
     if oifRebuildPropListsNeeded in FFLags then

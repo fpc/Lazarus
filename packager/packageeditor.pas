@@ -39,7 +39,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ComCtrls, Buttons, LResources,
-  Graphics, LCLType, Menus, Dialogs, FileCtrl, Laz_XMLCfg, AVL_Tree,
+  Graphics, LCLType, LCLProc, Menus, Dialogs, FileCtrl, Laz_XMLCfg, AVL_Tree,
   IDEProcs, LazConf, LazarusIDEStrConsts, IDEOptionDefs, IDEDefs,
   CompilerOptions, CompilerOptionsDlg, ComponentReg, PackageDefs, PkgOptionsDlg,
   AddToPackageDlg, PackageSystem;
@@ -1921,7 +1921,7 @@ begin
   try
     XMLConfig:=TXMLConfig.Create(Filename);
   except
-    writeln('ERROR: unable to open package editor layouts "',Filename,'"');
+    DebugLn('ERROR: unable to open package editor layouts "',Filename,'"');
     exit;
   end;
   try
@@ -1941,7 +1941,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('ERROR: unable read miscellaneous options from "',Filename,'": ',E.Message);
+      DebugLn('ERROR: unable read miscellaneous options from "',Filename,'": ',E.Message);
     end;
   end;
 end;
@@ -1992,7 +1992,7 @@ begin
     XMLConfig:=TXMLConfig.CreateClean(Filename);
   except
     on E: Exception do begin
-      writeln('ERROR: unable to open miscellaneous options "',Filename,'": ',E.Message);
+      DebugLn('ERROR: unable to open miscellaneous options "',Filename,'": ',E.Message);
       exit;
     end;
   end;
@@ -2014,7 +2014,7 @@ begin
       XMLConfig.Free;
     end;
   except
-    writeln('ERROR: unable read miscellaneous options from "',Filename,'"');
+    DebugLn('ERROR: unable read miscellaneous options from "',Filename,'"');
   end;
 end;
 

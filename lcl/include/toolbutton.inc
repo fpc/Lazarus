@@ -44,7 +44,10 @@ end;
 
 procedure TToolButtonActionLink.SetImageIndex(Value: Integer);
 begin
-  writeln('TToolButtonActionLink.SetImageIndex A ',ClassName,' Client=',TToolButton(FClient).Name,' IsImageIndexLinked=',IsImageIndexLinked,' Old=',TToolButton(FClient).ImageIndex,' New=',Value);
+  DebugLn('TToolButtonActionLink.SetImageIndex A ',ClassName,' Client=',
+    TToolButton(FClient).Name,' IsImageIndexLinked=',
+    BoolToStr(IsImageIndexLinked),' Old=',
+    IntToStr(TToolButton(FClient).ImageIndex),' New=',IntToStr(Value));
   if IsImageIndexLinked then TToolButton(FClient).ImageIndex := Value;
 end;
 
@@ -1206,6 +1209,9 @@ end;
 
 {
   $Log$
+  Revision 1.22  2004/09/14 21:30:37  vincents
+  replaced writeln by DebugLn
+
   Revision 1.21  2004/07/23 16:44:27  mattias
   activated new TToolbar, old can be activated with -dOldToolBar
 

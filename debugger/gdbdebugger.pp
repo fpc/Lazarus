@@ -38,7 +38,7 @@ unit GDBDebugger;
 interface
 
 uses
-  Classes, Process, Debugger, CmdLineDebugger;
+  Classes, Process, LCLProc, Debugger, CmdLineDebugger;
 
 
 type                       
@@ -464,7 +464,7 @@ begin
       SendCmdLn('file %s', [AValue], True);
       FHasSymbols := Pos('no debugging symbols', OutputLines.Text) = 0;
       if not FHasSymbols
-      then WriteLN('WARNING: File ''',AValue, ''' has no debug symbols');
+      then DebugLn('WARNING: File ''',AValue, ''' has no debug symbols');
     end;
     inherited; 
   end;
@@ -598,6 +598,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.12  2004/09/14 21:30:36  vincents
+  replaced writeln by DebugLn
+
   Revision 1.11  2003/05/27 20:58:12  mattias
   implemented enable and deleting breakpoint in breakpoint dlg
 

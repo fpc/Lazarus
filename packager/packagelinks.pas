@@ -38,8 +38,8 @@ unit PackageLinks;
 interface
 
 uses
-  Classes, SysUtils, AVL_Tree, Laz_XMLCfg, FileCtrl, IDEProcs, EnvironmentOpts,
-  PackageDefs, LazConf;
+  Classes, SysUtils, AVL_Tree, Laz_XMLCfg, LCLProc, FileCtrl, IDEProcs,
+  EnvironmentOpts, PackageDefs, LazConf;
   
 type
 
@@ -341,20 +341,20 @@ begin
       if ((FileInfo.Attr and faDirectory)<>0)
       or (not ParseFilename(FileInfo.Name,NewPkgName,PkgVersion))
       then begin
-        writeln('WARNING: suspicious pkg link file found (name): ',CurFilename);
+        DebugLn('WARNING: suspicious pkg link file found (name): ',CurFilename);
         continue;
       end;
       sl:=TStringList.Create;
       try
         sl.LoadFromFile(CurFilename);
         if sl.Count<0 then begin
-          writeln('WARNING: suspicious pkg link file found (content): ',CurFilename);
+          DebugLn('WARNING: suspicious pkg link file found (content): ',CurFilename);
           continue;
         end;
         NewFilename:=sl[0];
       except
         on E: Exception do begin
-          writeln('ERROR: unable to read pkg link file: ',CurFilename,' : ',E.Message);
+          DebugLn('ERROR: unable to read pkg link file: ',CurFilename,' : ',E.Message);
         end;
       end;
       sl.Free;
@@ -435,7 +435,7 @@ begin
     UserLinkLoadTimeValid:=true;
   except
     on E: Exception do begin
-      writeln('NOTE: unable to read ',ConfigFilename,' ',E.Message);
+      DebugLn('NOTE: unable to read ',ConfigFilename,' ',E.Message);
       exit;
     end;
   end;
@@ -512,7 +512,7 @@ begin
     UserLinkLoadTimeValid:=true;
   except
     on E: Exception do begin
-      writeln('NOTE: unable to read ',ConfigFilename,' ',E.Message);
+      DebugLn('NOTE: unable to read ',ConfigFilename,' ',E.Message);
       exit;
     end;
   end;

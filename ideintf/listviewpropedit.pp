@@ -647,7 +647,8 @@ end;
 procedure TListViewItemsPropertyEditorDlg.OnDlgShow(Sender: TObject);
 Var TN : TTReeNode;
 begin
-writeln('TListViewItemsPropertyEditorDlg.OnDlgShow ',Panel1.Top,' ',Panel1.Align=alBottom);
+  DebugLn('TListViewItemsPropertyEditorDlg.OnDlgShow ',
+    IntToStr(Panel1.Top),' ',BoolToStr(Panel1.Align=alBottom));
   TN:=TV.TopItem;
   If Assigned(TN) then
   begin

@@ -78,7 +78,7 @@ Begin
   n := FTimerData.Count;
   if (n > 0) then
   begin
-    Writeln(Format('[TWin32WidgetSet.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
+    DebugLn(Format('[TWin32WidgetSet.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
     while (n > 0) do
     begin
       dec(n);
@@ -134,7 +134,7 @@ Begin
   If Not WinRegister then
   Begin
     Assert(False, 'Trace:Win32Object.Init - Register Failed');
-    writeln('Trace:Win32Object.Init - Register Failed');
+    DebugLn('Trace:Win32Object.Init - Register Failed');
     Exit;
   End;
 
@@ -459,7 +459,7 @@ Begin
           begin
             SetAccelKey(TWinControl(TMenuItem(Sender).Owner).Handle, TMenuItem(Sender).Command, TLMShortCut(Data^).NewKey, TLMShortCut(Data^).NewModifier);
           end else begin
-            WriteLn('LM_SETSHORTCUT: unable to set shortcut, menu has no window handle');
+            DebugLn('LM_SETSHORTCUT: unable to set shortcut, menu has no window handle');
           end;
         End;
       End;
@@ -2239,6 +2239,9 @@ End;
 
 {
   $Log$
+  Revision 1.260  2004/09/14 21:30:37  vincents
+  replaced writeln by DebugLn
+
   Revision 1.259  2004/09/14 15:48:28  micha
   convert LM_INVALIDATE message to interface method
 

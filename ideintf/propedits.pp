@@ -3194,7 +3194,8 @@ procedure TListPropertyEditor.EndSaveElement;
 begin
   dec(FSaveElementLock);
   if FSaveElementLock<0 then
-    writeln('TListPropertyEditor.EndSaveElement ERROR: FSaveElementLock=',FSaveElementLock);
+    DebugLn('TListPropertyEditor.EndSaveElement ERROR: FSaveElementLock=',
+      IntToStr(FSaveElementLock));
 end;
 
 procedure TListPropertyEditor.DoSaveElements;
@@ -3701,12 +3702,12 @@ var
   FormMethodName: shortstring;
 begin
   FormMethodName := GetValue;
-  writeln('### TMethodPropertyEditor.Edit A OldValue=',FormMethodName);
+  DebugLn('### TMethodPropertyEditor.Edit A OldValue=',FormMethodName);
   if (not IsValidIdent(FormMethodName))
   or PropertyHook.MethodFromAncestor(GetMethodValue) then begin
     if not IsValidIdent(FormMethodName) then
       FormMethodName := GetFormMethodName;
-    writeln('### TMethodPropertyEditor.Edit B FormMethodName=',FormMethodName);
+    DebugLn('### TMethodPropertyEditor.Edit B FormMethodName=',FormMethodName);
     if not IsValidIdent(FormMethodName) then begin
       raise EPropertyError.Create('Method name must be an identifier'{@SCannotCreateName});
       exit;
@@ -3770,7 +3771,7 @@ end;
 
 procedure TMethodPropertyEditor.GetValues(Proc: TGetStringProc);
 begin
-writeln('### TMethodPropertyEditor.GetValues');
+DebugLn('### TMethodPropertyEditor.GetValues');
   Proc('(None)');
   PropertyHook.GetMethods(GetTypeData(GetPropType), Proc);
 end;
@@ -3810,7 +3811,7 @@ var
 begin
   CurValue:=GetValue;
   if CurValue=NewValue then exit;
-  writeln('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
+  DebugLn('### TMethodPropertyEditor.SetValue A OldValue="',CurValue,'" NewValue=',NewValue);
   NewMethodExists:=IsValidIdent(NewValue)
                and PropertyHook.MethodExists(NewValue,GetTypeData(GetPropType),
                    NewMethodIsCompatible,NewMethodIsPublished,NewIdentIsMethod);
@@ -3867,7 +3868,7 @@ begin
       PropertyHook.ShowMethod(NewValue);
     end;
   end;
-writeln('### TMethodPropertyEditor.SetValue END  NewValue=',GetValue);
+DebugLn('### TMethodPropertyEditor.SetValue END  NewValue=',GetValue);
 end;
 
 { TPersistentPropertyEditor }

@@ -30,7 +30,8 @@ unit ScaleCompsDlg;
 interface
 
 uses
-  Classes, LCLIntf, Forms, Controls, Buttons, StdCtrls, ExtCtrls, LResources;
+  Classes, LCLIntf, LCLProc, Forms, Controls, Buttons, StdCtrls, ExtCtrls,
+  LResources;
 
 type
   TScaleComponentsDialog = class(TForm)
@@ -54,10 +55,11 @@ implementation
 
 function ShowScaleComponentsDialog: TModalResult;
 begin
-writeln('[ShowScaleComponentsDialog] A');
+  DebugLn('[ShowScaleComponentsDialog] A');
   if ScaleComponentsDialog=nil then
     ScaleComponentsDialog:=TScaleComponentsDialog.Create(Application);
-writeln('[ShowScaleComponentsDialog] B');
+
+  DebugLn('[ShowScaleComponentsDialog] B');
   with ScaleComponentsDialog do begin
     SetBounds((Screen.Width-270) div 2,(Screen.Height-110) div 2,260,100);
     PercentEdit.Text:='100';
@@ -147,7 +149,7 @@ begin
       Visible:=true;
     end;
   end;
-writeln('[TScaleComponentsDialog.Create] END');
+  DebugLn('[TScaleComponentsDialog.Create] END');
 end;
 
 procedure TScaleComponentsDialog.OkButtonClick(Sender: TObject);

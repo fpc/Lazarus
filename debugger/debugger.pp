@@ -37,7 +37,7 @@ unit Debugger;
 interface
 
 uses
-  Classes, SysUtils, Laz_XMLCfg, IDEProcs, DBGUtils;
+  Classes, SysUtils, LCLProc, Laz_XMLCfg, IDEProcs, DBGUtils;
 
 type
   TDBGLocationRec = record
@@ -1425,11 +1425,11 @@ begin
       InitTargetStart;
     Result := RequestCommand(ACommand, AParams);
     if not Result then begin
-      writeln('TDebugger.ReqCmd failed: ',DBGCommandNames[ACommand]);
+      DebugLn('TDebugger.ReqCmd failed: ',DBGCommandNames[ACommand]);
     end;
   end
   else begin
-    writeln('TDebugger.ReqCmd Command not supported: ',
+    DebugLn('TDebugger.ReqCmd Command not supported: ',
             DBGCommandNames[ACommand],' ClassName=',ClassName);
     Result := False;
   end;
@@ -1464,7 +1464,7 @@ procedure TDebugger.SetFileName(const AValue: String);
 begin
   if FFileName <> AValue
   then begin
-    WriteLN('[TDebugger.SetFileName] ', AValue);
+    DebugLn('[TDebugger.SetFileName] ', AValue);
     if FState in [dsRun, dsPause]
     then begin
       Stop;
@@ -1523,19 +1523,19 @@ end;
 procedure TDebugger.StepInto;
 begin
   if ReqCmd(dcStepInto, []) then exit;
-  writeln('TDebugger.StepInto Class=',ClassName,' failed.');
+  DebugLn('TDebugger.StepInto Class=',ClassName,' failed.');
 end;
 
 procedure TDebugger.StepOver;
 begin
   if ReqCmd(dcStepOver, []) then exit;
-  writeln('TDebugger.StepOver Class=',ClassName,' failed.');
+  DebugLn('TDebugger.StepOver Class=',ClassName,' failed.');
 end;
 
 procedure TDebugger.Stop;
 begin
   if ReqCmd(dcStop,[]) then exit;
-  writeln('TDebugger.Stop Class=',ClassName,' failed.');
+  DebugLn('TDebugger.Stop Class=',ClassName,' failed.');
 end;
 
 (******************************************************************************)
@@ -3572,6 +3572,9 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.61  2004/09/14 21:30:36  vincents
+  replaced writeln by DebugLn
+
   Revision 1.60  2004/08/26 23:50:05  marc
   * Restructured debugger view classes
   * Fixed help

@@ -800,7 +800,8 @@ begin
   AutoPackages:=PackageGraph.GetAutoCompilationOrder(APackage,FirstDependency,
                                                      Policies);
   if AutoPackages<>nil then begin
-    writeln('TPkgManager.CompileRequiredPackages B Count=',AutoPackages.Count);
+    DebugLn('TPkgManager.CompileRequiredPackages B Count=',
+      IntToStr(AutoPackages.Count));
     try
       i:=0;
       while i<AutoPackages.Count do begin
@@ -975,7 +976,7 @@ var
 begin
   StateFile:=APackage.GetStateFilename;
   if not FileExists(StateFile) then begin
-    writeln('TPkgManager.DoLoadPackageCompiledState Statefile not found: ',StateFile);
+    DebugLn('TPkgManager.DoLoadPackageCompiledState Statefile not found: ',StateFile);
     APackage.Flags:=APackage.Flags-[lpfStateFileLoaded];
     Result:=mrOk;
     exit;
@@ -1081,7 +1082,7 @@ begin
   Result:=DoLoadPackageCompiledState(APackage,false);
   if Result<>mrOk then exit;
   if not (lpfStateFileLoaded in APackage.Flags) then begin
-    writeln('TPkgManager.CheckIfPackageNeedsCompilation  No state file for ',APackage.IDAsString);
+    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  No state file for ',APackage.IDAsString);
     Result:=mrYes;
     exit;
   end;
@@ -1099,11 +1100,11 @@ begin
         if Result<>mrOk then exit;
         Result:=mrYes;
         if not (lpfStateFileLoaded in RequiredPackage.Flags) then begin
-          writeln('TPkgManager.CheckIfPackageNeedsCompilation  No state file for ',RequiredPackage.IDAsString);
+          DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  No state file for ',RequiredPackage.IDAsString);
           exit;
         end;
         if StateFileAge<RequiredPackage.StateFileDate then begin
-          writeln('TPkgManager.CheckIfPackageNeedsCompilation  Required ',
+          DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Required ',
             RequiredPackage.IDAsString,' State file is newer than ',
             'State file ',APackage.IDAsString);
           exit;
@@ -1115,7 +1116,7 @@ begin
         MainIDE.MacroList.SubstituteStr(OtherStateFile);
         if FileExists(OtherStateFile)
         and (FileAge(OtherStateFile)>StateFileAge) then begin
-          writeln('TPkgManager.CheckIfPackageNeedsCompilation  Required ',
+          DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Required ',
             RequiredPackage.IDAsString,' OtherState file "',OtherStateFile,'"'
             ,' is newer than State file ',APackage.IDAsString);
           Result:=mrYes;
@@ -1131,37 +1132,37 @@ begin
   // check main source file
   if FileExists(SrcFilename) and (StateFileAge<FileAge(SrcFilename)) then
   begin
-    writeln('TPkgManager.CheckIfPackageNeedsCompilation  SrcFile outdated ',APackage.IDAsString);
+    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  SrcFile outdated ',APackage.IDAsString);
     exit;
   end;
 
   // check compiler and params
   if CompilerFilename<>APackage.LastCompilerFilename then begin
-    writeln('TPkgManager.CheckIfPackageNeedsCompilation  Compiler filename changed for ',APackage.IDAsString);
-    writeln('  Old="',APackage.LastCompilerFilename,'"');
-    writeln('  Now="',CompilerFilename,'"');
+    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Compiler filename changed for ',APackage.IDAsString);
+    DebugLn('  Old="',APackage.LastCompilerFilename,'"');
+    DebugLn('  Now="',CompilerFilename,'"');
     exit;
   end;
   if not FileExists(CompilerFilename) then begin
-    writeln('TPkgManager.CheckIfPackageNeedsCompilation  Compiler filename not found for ',APackage.IDAsString);
-    writeln('  File="',CompilerFilename,'"');
+    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Compiler filename not found for ',APackage.IDAsString);
+    DebugLn('  File="',CompilerFilename,'"');
     exit;
   end;
   if FileAge(CompilerFilename)<>APackage.LastCompilerFileDate then begin
-    writeln('TPkgManager.CheckIfPackageNeedsCompilation  Compiler file changed for ',APackage.IDAsString);
-    writeln('  File="',CompilerFilename,'"');
+    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Compiler file changed for ',APackage.IDAsString);
+    DebugLn('  File="',CompilerFilename,'"');
     exit;
   end;
   if CompilerParams<>APackage.LastCompilerParams then begin
-    writeln('TPkgManager.CheckIfPackageNeedsCompilation  Compiler params changed for ',APackage.IDAsString);
-    writeln('  Old="',APackage.LastCompilerParams,'"');
-    writeln('  Now="',CompilerParams,'"');
+    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Compiler params changed for ',APackage.IDAsString);
+    DebugLn('  Old="',APackage.LastCompilerParams,'"');
+    DebugLn('  Now="',CompilerParams,'"');
     exit;
   end;
   
   // check package files
   if StateFileAge<FileAge(APackage.Filename) then begin
-    writeln('TPkgManager.CheckIfPackageNeedsCompilation  StateFile older than lpk ',APackage.IDAsString);
+    DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  StateFile older than lpk ',APackage.IDAsString);
     exit;
   end;
   for i:=0 to APackage.FileCount-1 do begin
@@ -1169,7 +1170,7 @@ begin
     //writeln('TPkgManager.CheckIfPackageNeedsCompilation  CurFile.Filename="',CurFile.Filename,'" ',FileExists(CurFile.Filename),' ',StateFileAge<FileAge(CurFile.Filename));
     if FileExists(CurFile.Filename)
     and (StateFileAge<FileAge(CurFile.Filename)) then begin
-      writeln('TPkgManager.CheckIfPackageNeedsCompilation  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
+      DebugLn('TPkgManager.CheckIfPackageNeedsCompilation  Src has changed ',APackage.IDAsString,' ',CurFile.Filename);
       exit;
     end;
   end;
@@ -1275,10 +1276,10 @@ begin
       FuncData^.Result:=APackage.SourceDirectories.CreateSearchPathFromAllFiles;
       Result:=true;
     end else begin
-      writeln('WARNING: TPkgManager.MacroFunctionPkgSrcPath unknown package id: ',FuncData^.Param);
+      DebugLn('WARNING: TPkgManager.MacroFunctionPkgSrcPath unknown package id: ',FuncData^.Param);
     end;
   end else begin
-    writeln('WARNING: TPkgManager.MacroFunctionPkgSrcPath invalid package id: ',FuncData^.Param);
+    DebugLn('WARNING: TPkgManager.MacroFunctionPkgSrcPath invalid package id: ',FuncData^.Param);
   end;
   PkgID.Free;
 end;
@@ -1298,10 +1299,10 @@ begin
       FuncData^.Result:=APackage.GetUnitPath(false);
       Result:=true;
     end else begin
-      writeln('WARNING: TPkgManager.MacroFunctionPkgUnitPath unknown package id: ',FuncData^.Param);
+      DebugLn('WARNING: TPkgManager.MacroFunctionPkgUnitPath unknown package id: ',FuncData^.Param);
     end;
   end else begin
-    writeln('WARNING: TPkgManager.MacroFunctionPkgUnitPath invalid package id: ',FuncData^.Param);
+    DebugLn('WARNING: TPkgManager.MacroFunctionPkgUnitPath invalid package id: ',FuncData^.Param);
   end;
   PkgID.Free;
 end;
@@ -1375,7 +1376,7 @@ begin
     and (not Dependency.RequiredPackage.AutoCreated) then begin
       if sl.IndexOf(Dependency.PackageName)<0 then begin
         sl.Add(Dependency.PackageName);
-        writeln('TPkgManager.SaveAutoInstallDependencies A ',Dependency.PackageName);
+        DebugLn('TPkgManager.SaveAutoInstallDependencies A ',Dependency.PackageName);
       end;
     end;
     Dependency:=Dependency.NextRequiresDependency;
@@ -1421,14 +1422,14 @@ begin
     // check package name
     if (StaticPackage^.Name='') or (not IsValidIdent(StaticPackage^.Name))
     then begin
-      writeln('TPkgManager.LoadStaticCustomPackages Invalid Package Name: "',
+      DebugLn('TPkgManager.LoadStaticCustomPackages Invalid Package Name: "',
         BinaryStrToText(StaticPackage^.Name),'"');
       continue;
     end;
     
     // check register procedure
     if (StaticPackage^.RegisterProc=nil) then begin
-      writeln('TPkgManager.LoadStaticCustomPackages',
+      DebugLn('TPkgManager.LoadStaticCustomPackages',
         ' Package "',StaticPackage^.Name,'" has no register procedure.');
       continue;
     end;
@@ -1447,7 +1448,7 @@ function TPkgManager.LoadInstalledPackage(const PackageName: string
 var
   NewDependency: TPkgDependency;
 begin
-  writeln('TPkgManager.LoadInstalledPackage PackageName="',PackageName,'"');
+  DebugLn('TPkgManager.LoadInstalledPackage PackageName="',PackageName,'"');
   NewDependency:=TPkgDependency.Create;
   NewDependency.Owner:=Self;
   NewDependency.PackageName:=PackageName;
@@ -2159,7 +2160,7 @@ var
 begin
   Result:=mrCancel;
   
-  writeln('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
+  DebugLn('TPkgManager.DoCompilePackage A ',APackage.IDAsString,' Flags=',PkgCompileFlagsToString(Flags));
   
   if APackage.AutoCreated then exit;
 
@@ -2214,21 +2215,21 @@ begin
     try
       Result:=DoPreparePackageOutputDirectory(APackage);
       if Result<>mrOk then begin
-        writeln('TPkgManager.DoCompilePackage DoPreparePackageOutputDirectory failed');
+        DebugLn('TPkgManager.DoCompilePackage DoPreparePackageOutputDirectory failed');
         exit;
       end;
 
       // create package main source file
       Result:=DoSavePackageMainSource(APackage,Flags);
       if Result<>mrOk then begin
-        writeln('TPkgManager.DoCompilePackage DoSavePackageMainSource failed');
+        DebugLn('TPkgManager.DoCompilePackage DoSavePackageMainSource failed');
         exit;
       end;
 
       // check ambigious units
       Result:=CheckAmbigiousPackageUnits(APackage);
       if Result<>mrOk then begin
-        writeln('TPkgManager.DoCompilePackage CheckAmbigiousPackageUnits failed');
+        DebugLn('TPkgManager.DoCompilePackage CheckAmbigiousPackageUnits failed');
         exit;
       end;
 
@@ -2239,9 +2240,9 @@ begin
       if Result<>mrOk then exit;
 
       // create external tool to run the compiler
-      writeln('TPkgManager.DoCompilePackage Compiler="',CompilerFilename,'"');
-      writeln('TPkgManager.DoCompilePackage Params="',CompilerParams,'"');
-      writeln('TPkgManager.DoCompilePackage WorkingDir="',APackage.Directory,'"');
+      DebugLn('TPkgManager.DoCompilePackage Compiler="',CompilerFilename,'"');
+      DebugLn('TPkgManager.DoCompilePackage Params="',CompilerParams,'"');
+      DebugLn('TPkgManager.DoCompilePackage WorkingDir="',APackage.Directory,'"');
 
       if not APackage.CompilerOptions.SkipCompiler then begin
         // check compiler filename
@@ -2347,7 +2348,7 @@ begin
   // delete ambigious files
   Result:=MainIDE.DoDeleteAmbigiousFiles(SrcFilename);
   if Result=mrAbort then begin
-    writeln('TPkgManager.DoSavePackageMainSource DoDeleteAmbigiousFiles failed');
+    DebugLn('TPkgManager.DoSavePackageMainSource DoDeleteAmbigiousFiles failed');
     exit;
   end;
 
@@ -2433,7 +2434,7 @@ begin
   Result:=LoadCodeBuffer(CodeBuffer,SrcFilename,[lbfQuiet,lbfCheckIfText,
                                       lbfUpdateFromDisk,lbfCreateClearOnError]);
   if Result<>mrOk then begin
-    writeln('TPkgManager.DoSavePackageMainSource LoadCodeBuffer ',SrcFilename,' failed');
+    DebugLn('TPkgManager.DoSavePackageMainSource LoadCodeBuffer ',SrcFilename,' failed');
     exit;
   end;
   OldSrc:=CodeToolBoss.ExtractCodeWithoutComments(CodeBuffer);
@@ -2446,7 +2447,7 @@ begin
   Result:=MainIDE.DoSaveStringToFile(SrcFilename, Src,
     lisPkgMangpackageMainSourceFile);
   if Result<>mrOk then begin
-    writeln('TPkgManager.DoSavePackageMainSource DoSaveStringToFile ',SrcFilename,' failed');
+    DebugLn('TPkgManager.DoSavePackageMainSource DoSaveStringToFile ',SrcFilename,' failed');
     exit;
   end;
 
@@ -2608,7 +2609,7 @@ var
       if UsesAdditions<>'' then UsesAdditions:=UsesAdditions+', ';
       UsesAdditions:=UsesAdditions+UnitNames[i];
     end;
-    writeln('TPkgManager.AddUnitDependenciesForComponentClasses UsesAdditions=',UsesAdditions);
+    DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses UsesAdditions=',UsesAdditions);
     PackageAdditions:='';
     if MissingDependencies<>nil then begin
       for i:=0 to MissingDependencies.Count-1 do begin
@@ -2625,7 +2626,7 @@ var
         end;
       end;
     end;
-    writeln('TPkgManager.AddUnitDependenciesForComponentClasses PackageAdditions=',PackageAdditions);
+    DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses PackageAdditions=',PackageAdditions);
     Msg:='';
     if UsesAdditions<>'' then begin
       Msg:=Format(lisPkgMangTheFollowingUnitsWillBeAddedToTheUsesSectionOf, [
@@ -2653,10 +2654,10 @@ var
         UnitOwner:=TObject(MissingDependencies[i]);
         RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
         if UnitOwner is TProject then begin
-          writeln('TPkgManager.AddUnitDependenciesForComponentClasses Adding Project Dependency ',TProject(UnitOwner).Title,' -> ',RequiredPackage.Name);
+          DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses Adding Project Dependency ',TProject(UnitOwner).Title,' -> ',RequiredPackage.Name);
           AddProjectDependency(TProject(UnitOwner),RequiredPackage);
         end else if UnitOwner is TLazPackage then begin
-          writeln('TPkgManager.AddUnitDependenciesForComponentClasses Adding Package Dependency ',TLazPackage(UnitOwner).Name,' -> ',RequiredPackage.Name);
+          DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses Adding Package Dependency ',TLazPackage(UnitOwner).Name,' -> ',RequiredPackage.Name);
           PackageGraph.AddDependencyToPackage(TLazPackage(UnitOwner),
                                               RequiredPackage);
         end;
@@ -2672,7 +2673,7 @@ var
     Result:=LoadAndParseUnitBuf;
     if Result<>mrOk then exit;
     for i:=0 to UnitNames.Count-1 do begin
-      writeln('TPkgManager.AddUnitDependenciesForComponentClasses Extending Uses ',UnitBuf.Filename,' ',UnitNames[i]);
+      DebugLn('TPkgManager.AddUnitDependenciesForComponentClasses Extending Uses ',UnitBuf.Filename,' ',UnitNames[i]);
       if not CodeToolBoss.AddUnitToMainUsesSection(UnitBuf,UnitNames[i],'') then
         MainIDE.DoJumpToCodeToolBossError;
     end;

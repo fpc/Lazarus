@@ -184,7 +184,7 @@ function MessageDlgPosHelp(const aMsg: string; DlgType: TMsgDlgType;
   Buttons: TMsgDlgButtons; HelpCtx: Longint; X, Y: Integer;
   const HelpFileName: string): Integer;
 begin
-  writeln ('MessageDlgPosHelp ****** NOT YET FULLY IMPLEMENTED ********');
+  DebugLn ('MessageDlgPosHelp ****** NOT YET FULLY IMPLEMENTED ********');
 //TODO: set helpcontext and helpfile
   result := MessageDlgPos(aMsg, DlgType, buttons, helpctx, X, Y);
 end;
@@ -257,6 +257,9 @@ end;
 
 {
    $Log$
+   Revision 1.26  2004/09/14 21:30:37  vincents
+   replaced writeln by DebugLn
+
    Revision 1.25  2004/04/10 17:58:57  mattias
    implemented mainunit hints for include files
 

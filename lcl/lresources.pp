@@ -1167,7 +1167,7 @@ procedure LRSObjectBinaryToText(Input, Output: TStream);
       vaInt8: Result := ShortInt(Input.ReadByte);
       vaInt16: begin
           w:=ReadLRSWord(Input);
-          writeln('ReadInt vaInt16 w=',w);
+          DebugLn('ReadInt vaInt16 w=',IntToStr(w));
           Result := SmallInt(ReadLRSWord(Input));
         end;
       vaInt32: Result := ReadLRSInteger(Input);

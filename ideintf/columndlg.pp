@@ -25,8 +25,8 @@ unit ColumnDlg;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, LResources, ComCtrls,
-  StdCtrls, Buttons, ExtCtrls;
+  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
+  ComCtrls, StdCtrls, Buttons, ExtCtrls;
 
 type
   // TODO create more generic collection editor.
@@ -405,7 +405,7 @@ begin
   //clear the listbox and display the items if any...
   ColumnsListBox.Items.Clear;
   for I := 0 to FColumns.Count-1 do begin
-    writeln('TColumnDlg.FormOnShow ',i,' "',FColumns[i].Caption,'"');
+    DebugLn('TColumnDlg.FormOnShow ',IntToStr(i),' "',FColumns[i].Caption,'"');
     ColumnsListBox.Items.Add(FColumns[i].Caption);
   end;
 
@@ -432,12 +432,12 @@ procedure TColumnDlg.WriteDebugReport;
 var
   I: Integer;
 begin
-  writeln('TColumnDlg.WriteDebugReport: ');
+  DebugLn('TColumnDlg.WriteDebugReport: ');
   for I := 0 to ColumnsListBox.Items.Count-1 do begin
-    writeln('ListBox: ',i,' "',ColumnsListBox.Items[I],'"');
+    DebugLn('ListBox: ',IntToStr(i),' "',ColumnsListBox.Items[I],'"');
   end;
   for I := 0 to FColumns.Count-1 do begin
-    writeln('Columns: ',i,' "',FColumns[i].Caption,'" ');
+    DebugLn('Columns: ',IntToStr(i),' "',FColumns[i].Caption,'" ');
   end;
 end;
 

@@ -260,7 +260,7 @@ begin
           Candidate:=TComponentCandidate.Create;
           Candidate.APersistent:=AComponent;
           if Candidates.Find(Candidate)<>nil then begin
-            writeln('WARNING: TComponentTreeView.RebuildComponentNodes doppelganger found ',AComponent.Name);
+            DebugLn('WARNING: TComponentTreeView.RebuildComponentNodes doppelganger found ',AComponent.Name);
             Candidate.Free;
           end else
             Candidates.Add(Candidate);

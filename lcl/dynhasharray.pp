@@ -294,15 +294,15 @@ begin
   for i:=0 to FCapacity-1 do begin
     HashItem:=FItems[i];
     if HashItem<>nil then begin
-      write('  Index=',i);
+      DbgOut('  Index=',IntToStr(i));
       while HashItem<>nil do begin
-        write(' ',HexStr(Cardinal(HashItem^.Item),8));
+        DbgOut(' ',HexStr(Cardinal(HashItem^.Item),8));
         RealHashIndex:=IndexOf(HashItem^.Item);
         if RealHashIndex<>i then DbgOut('(H='+dbgs(RealHashIndex)+')');
         HashItem:=HashItem^.Next;
         if (HashItem<>nil) and (HashItem^.IsOverflow=false) then break;
       end;
-      writeln;
+      DebugLn;
     end;
   end;
   HashItem:=FFirstItem;

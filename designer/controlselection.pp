@@ -37,8 +37,8 @@ interface
 { $DEFINE VerboseDesigner}
 
 uses
-  Classes, SysUtils, Math, LCLIntf, LCLType, Controls, Forms, GraphType,
-  Graphics, Menus, EnvironmentOpts, PropEdits, DesignerProcs;
+  Classes, SysUtils, Math, LCLIntf, LCLType, LCLProc, Controls, Forms,
+  GraphType, Graphics, Menus, EnvironmentOpts, PropEdits, DesignerProcs;
 
 type
   TControlSelection = class;
@@ -797,7 +797,7 @@ end;
 procedure TControlSelection.EndUpdate;
 begin
   if FUpdateLock<=0 then begin
-    writeln('WARNING: TControlSelection.EndUpdate FUpdateLock=',FUpdateLock);
+    DebugLn('WARNING: TControlSelection.EndUpdate FUpdateLock=',IntToStr(FUpdateLock));
     exit;
   end;
   dec(FUpdateLock);
@@ -817,7 +817,7 @@ end;
 procedure TControlSelection.EndResizing(ApplyUserBounds: boolean);
 begin
   if FResizeLockCount<=0 then begin
-    writeln('WARNING: TControlSelection.EndResizing FResizeLockCount=',FResizeLockCount);
+    DebugLn('WARNING: TControlSelection.EndResizing FResizeLockCount=',IntToStr(FResizeLockCount));
     exit;
   end;
   if FResizeLockCount=1 then
@@ -1936,9 +1936,9 @@ procedure TControlSelection.MoveSelection(dx, dy: integer);
 begin
   if (Count=0) or (IsResizing) then exit;
   if (dx=0) and (dy=0) then exit;
-  writeln('[TControlSelection.MoveSelection] A  ',dx,',',dy);
+  DebugLn('[TControlSelection.MoveSelection] A  %d,%d',[dx,dy]);
   BeginResizing;
-  writeln('[TControlSelection.MoveSelection] B  ',FResizeLockCount);
+  DebugLn('[TControlSelection.MoveSelection] B  %d',[FResizeLockCount]);
   inc(FLeft,dx);
   inc(FTop,dy);
   EndResizing(true);

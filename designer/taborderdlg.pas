@@ -5,8 +5,8 @@ unit TabOrderDlg;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
-  ComCtrls, StdCtrls;
+  Classes, SysUtils, LResources, LCLProc, Forms, Controls, Graphics, Dialogs,
+  Buttons, ComCtrls, StdCtrls;
 
 type
   TTabOrderDialog = class(TForm)
@@ -129,7 +129,8 @@ begin
       if AControl.TabOrder<>CurTabOrder then
         TabChanged:=true;
       AControl.TabOrder:=TTabOrder(CurTabOrder);
-      writeln('TTabOrderDialog.CommitNodes A ',AControl.Name,' ',AControl.TabOrder,' ',CurTabOrder);
+      DebugLn('TTabOrderDialog.CommitNodes A ',AControl.Name,' ',
+        IntToStr(AControl.TabOrder),' ',IntToStr(CurTabOrder));
       inc(CurTabOrder);
     end;
     CommitNodes(ANode.GetFirstChild,TabChanged);

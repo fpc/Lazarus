@@ -36,9 +36,9 @@ unit DesignerMenu;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Menus, Graphics, GraphType, Buttons,
-  StdCtrls, ExtCtrls, ComponentEditors, LazConf, Laz_XMLCfg, ComCtrls, Arrow,
-  LazarusIDEStrConsts, PropEdits;
+  Classes, SysUtils, LCLProc, Forms, Controls, Menus, Graphics, GraphType,
+  Buttons, StdCtrls, ExtCtrls, ComponentEditors, LazConf, Laz_XMLCfg, ComCtrls,
+  Arrow, LazarusIDEStrConsts, PropEdits;
 
 type
 
@@ -1243,9 +1243,9 @@ var
   i: Integer;
   str_i: string;
 begin
-  writeln('Old Item: ',old_Item);
-  writeln('New Item: ',new_Item);
-  writeln('Tak se na to mrknem: ', XMLConfig.GetValue(old_Item + '/Name/Value',''));
+  DebugLn('Old Item: ',old_Item);
+  DebugLn('New Item: ',new_Item);
+  DebugLn('Tak se na to mrknem: ', XMLConfig.GetValue(old_Item + '/Name/Value',''));
   XMLConfig.SetValue(new_Item + '/Name/Value', XMLConfig.GetValue(old_Item + '/Name/Value',''));
   if (XMLConfig.GetValue(old_Item + '/Description/Value', 'does_not_exists') <> 'does_not_exists') then
     XMLConfig.SetValue(new_Item + '/Description/Value', XMLConfig.GetValue(old_Item + '/Description/Value',''));

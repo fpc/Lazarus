@@ -47,8 +47,8 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, TypInfo, LResources, Forms, Controls, LCLIntf, Dialogs,
-  JITForm, ComponentReg, IDEProcs;
+  Classes, SysUtils, TypInfo, LCLProc, LResources, Forms, Controls, LCLIntf,
+  Dialogs, JITForm, ComponentReg, IDEProcs;
 
 type
   //----------------------------------------------------------------------------
@@ -387,7 +387,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
+      DebugLn('[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
          +' of Class ''',NewClassName,''' Error: ',E.Message);
       Result:=-1;
     end;
@@ -459,7 +459,7 @@ begin
   finally
     if not ok then begin
       TComponent(FCurReadJITComponent):=nil;
-      writeln('[TJITForms.DoCreateJITComponent] Error while creating instance');
+      DebugLn('[TJITForms.DoCreateJITComponent] Error while creating instance');
     end;
   end;
   Result:=FJITComponents.Add(FCurReadJITComponent);
@@ -567,7 +567,7 @@ begin
       finally
         Reader.EndReferences;
       end;
-      writeln('[TJITComponentList.AddJITChildComponentFromStream] C6 ');
+      DebugLn('[TJITComponentList.AddJITChildComponentFromStream] C6 ');
 
       {$IFDEF VerboseJITForms}
       writeln('[TJITComponentList.AddJITChildComponentFromStream] D');
@@ -580,7 +580,7 @@ begin
     end;
   except
     on E: Exception do begin
-      writeln('[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
+      DebugLn('[TJITComponentList.AddJITChildComponentFromStream] ERROR reading form stream'
          +' of Class ''',ComponentClass.ClassName,''' Error: ',E.Message);
     end;
   end;
@@ -866,7 +866,7 @@ procedure TJITComponentList.ReaderPropertyNotFound(Reader: TReader;
 begin
   // FCL in VER1_9_4 and below creates this event for DefineProperties too
   {$IFNDEF VER1_9_4}
-  writeln('TJITComponentList.ReaderPropertyNotFound ',Instance.ClassName,'.',PropName);
+  DebugLn('TJITComponentList.ReaderPropertyNotFound ',Instance.ClassName,'.',PropName);
   if Assigned(OnPropertyNotFound) then
     OnPropertyNotFound(Self,Reader,Instance,PropName,IsPath,Handled,Skip);
   {$ENDIF}
@@ -937,9 +937,9 @@ begin
     OnReaderError(Self,ErrorType,Action);
   Handled:=Action in [mrIgnore];
   FCurUnknownProperty:='';
-  writeln('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-  writeln('[TJITComponentList.ReaderError] "'+ErrorMsg+'" ignoring=',Handled);
-  writeln('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+  DebugLn('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
+  DebugLn('[TJITComponentList.ReaderError] "'+ErrorMsg+'" ignoring=',BoolToStr(Handled));
+  DebugLn('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
 end;
 
 procedure TJITComponentList.ReaderFindComponentClass(Reader: TReader;
@@ -961,7 +961,7 @@ begin
       //   +''' is registered');
       ComponentClass:=RegComp.ComponentClass;
     end else begin
-      writeln('[TJITComponentList.ReaderFindComponentClass] '''+FindClassName
+      DebugLn('[TJITComponentList.ReaderFindComponentClass] '''+FindClassName
          +''' is unregistered');
       // The reader will create a ReaderError automatically
     end;
@@ -979,7 +979,7 @@ end;
 
 procedure TJITComponentList.ReaderReadComponent(Component: TComponent);
 begin
-  writeln('TJITComponentList.ReaderReadComponent A ',Component.Name,':',Component.ClassName);
+  DebugLn('TJITComponentList.ReaderReadComponent A ',Component.Name,':',Component.ClassName);
 end;
 
 //==============================================================================

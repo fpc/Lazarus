@@ -27,7 +27,7 @@ unit win32proc;
 interface
 
 uses
-  Windows, Classes, LMessages, LCLType, Controls;
+  Windows, Classes, LMessages, LCLType, LCLProc, Controls;
 
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
@@ -479,7 +479,7 @@ Function DeliverMessage(Const Target: Pointer; Var Message): Integer;
 Begin
   If Target = Nil Then
   begin
-    WriteLn('[DeliverMessage Target: Pointer] Nil');
+    DebugLn('[DeliverMessage Target: Pointer] Nil');
     Exit;
   end;
   If TObject(Target) Is TControl Then
@@ -507,7 +507,7 @@ Function DeliverMessage(Const Target: TObject; Var Message: TLMessage): Integer;
 Begin
   If Target = Nil Then
   begin
-    WriteLn('[DeliverMessage (Target: TObject)] Nil');
+    DebugLn('[DeliverMessage (Target: TObject)] Nil');
     Exit;
   end;
   If Target Is TControl Then

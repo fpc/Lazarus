@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, SysUtils, TypInfo,
-  Forms, Controls, Menus, ExtCtrls, Grids, Buttons, ComCtrls,
+  LCLProc, Forms, Controls, Menus, ExtCtrls, Grids, Buttons, ComCtrls,
   PropEdits, ObjInspStrConsts;
 
 
@@ -413,7 +413,7 @@ end;
 procedure TComponentEditor.ExecuteVerb(Index: Integer);
 begin
   // Intended for descendents to implement
-  writeln(Classname+'.ExecuteVerb: ',Index);
+  DebugLn(Classname+'.ExecuteVerb: ',IntToStr(Index));
 end;
 
 procedure TComponentEditor.Copy;

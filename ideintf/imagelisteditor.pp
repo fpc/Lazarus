@@ -565,9 +565,11 @@ begin
       begin
       
         //Apply the modifications
-        writeln('TImageListComponentEditor.DoShowEditor A ',aImg.Count,' ',aImg.Width,',',aImg.Height);
+        DebugLn('TImageListComponentEditor.DoShowEditor A %d %d,%d',
+          [aImg.Count,aImg.Width,aImg.Height]);
         aImg.Assign(Dlg.fImgL);
-        writeln('TImageListComponentEditor.DoShowEditor B ',aImg.Count,' ',aImg.Width,',',aImg.Height);
+        DebugLn('TImageListComponentEditor.DoShowEditor B %d %d,%d',
+          [aImg.Count,aImg.Width,aImg.Height]);
 
         //not work :o( aImg.AddImages(Dlg.fImgL);
         if Assigned(Hook) then
@@ -577,7 +579,7 @@ begin
   finally
     Dlg.Free;
   end;
-  writeln('TImageListComponentEditor.DoShowEditor END ');
+  DebugLn('TImageListComponentEditor.DoShowEditor END ');
 end;
 
 procedure TImageListComponentEditor.ExecuteVerb(Index: Integer);
