@@ -2446,14 +2446,21 @@ begin
       Result := False;
     end
     else begin
-      x:=(x1+x2) shr 1;
-      y:=(y1+y2) shr 1;
-      width:=(x2-x1);
-      if width<0 then width:=-width;
-      width:=width shr 1;
-      height:=(y2-y1);
-      if height<0 then height:=-height;
-      height:=height shr 1;
+      if x1<x2 then begin
+        x:=x1;
+        width:=x2-x1;
+      end else begin
+        x:=x2;
+        width:=x1-x2;
+      end;
+      if y1<y2 then begin
+        y:=y1;
+        height:=y2-y1;
+      end else begin
+        y:=y2;
+        height:=y1-y2;
+      end;
+      
       // first draw interior in brush color
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
@@ -7231,6 +7238,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.150  2002/10/08 21:51:12  lazarus
+  MG: fixed Ellipse
+
   Revision 1.149  2002/10/08 14:28:14  lazarus
   MG: accelerated FillRect
 
