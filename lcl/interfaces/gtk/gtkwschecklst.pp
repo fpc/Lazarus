@@ -59,9 +59,6 @@ var
   ChildWidget : PGtkWidget;            // generic pointer to a child gtk-widget (local use when neccessary)
   ListItem    : PGtkListItem;
 begin
-  {$IFdef GTK2}
-  DebugLn('TODO: TGtkWSCustomCheckListBox.GetChecked');
-  {$Else}
   Result := false;
   { Get the child in question of that index }
   Widget := GetWidgetInfo(Pointer(ACheckListBox.Handle),True)^.CoreWidget;
@@ -73,7 +70,6 @@ begin
       and gtk_toggle_button_get_active(PGTKToggleButton(ChildWidget))
     then Result := true;
   end;
-  {$EndIf}
 end;
 
 procedure TGtkWSCustomCheckListBox.SetChecked(const ACheckListBox: TCustomCheckListBox;
@@ -82,9 +78,6 @@ var
   Widget, ChildWidget: PGtkWidget;
   ListItem: PGtkListItem;
 begin
-  {$IFdef GTK2}
-  DebugLn('TODO: TGtkWSCustomCheckList.SetChecked');
-  {$Else}
   Widget := GetWidgetInfo(Pointer(ACheckListBox.Handle), True)^.CoreWidget;
   ListItem := g_list_nth_data(PGtkList(Widget)^.children, AIndex);
   if ListItem <> nil then 
@@ -93,7 +86,6 @@ begin
     if (ChildWidget <> nil)
     then gtk_toggle_button_set_active(PGTKToggleButton(ChildWidget), AChecked);
   end;
-  {$EndIf}
 end;
 
 initialization
