@@ -7,19 +7,28 @@
 name=synedit
 version=0.8
 
+[compiler]
+unitdir=../../lcl/units/$(LCLPLATFORM) ../../lcl/units .
+unittargetdir=../units
+options=-gl
+
+
 [target]
-units=synedit syncompletion syneditautocomplete \
-  synhighlighterpas synhighlighterhtml synhighlightercpp \
-  synhighlighterxml synhighlighterlfm synhighlighterperl
+units=allunits
 implicitunits=syntextdrawer syneditkeycmds synedittypes syneditstrconst \
   syneditsearch syneditmiscprocs syneditmiscclasses synedittextbuffer \
   synedit synedithighlighter
 
 [require]
-packages=lcl regexpr
+packages=fcl regexpr
 
 [default]
 lcldir=../../lcl
 
-[compiler]
-options=-gl
+[rules]
+.PHONY: cleartarget all
+
+cleartarget:
+        -$(DEL) $(COMPILER_UNITTARGETDIR)/allunits$(PPUEXT)
+
+all: cleartarget allunits$(PPUEXT)
