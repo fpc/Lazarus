@@ -211,7 +211,10 @@ Var
     // note: ignores the received DC
     // do not use default deliver message
     if lWinControl = nil then
+    begin
       lWinControl := GetWindowInfo(Window)^.PWinControl;
+      if lWinControl = nil then exit;
+    end;
     
     // create a paint message
     GetClassName(Window, winClassName, 20);
@@ -529,10 +532,38 @@ Begin
 }
     WM_CTLCOLORMSGBOX..WM_CTLCOLORSTATIC:
     begin
+      // Groupbox (which is a button) doesn't erase it's background properly
+      // it's needed for winxp themes where controls send the WM_ERASEBKGND
+      // message to their parent to clear their background and then draw
+      // transparently
       // only static and button controls have transparent parts
       // others need to erased with their window color
-      if ((Msg <> WM_CTLCOLORSTATIC) and (Msg <> WM_CTLCOLORBTN))
-          or not GetWindowInfo(LParam)^.hasTabParent then
+      if ((Msg = WM_CTLCOLORSTATIC) or (Msg = WM_CTLCOLORBTN)) then
+      begin
+        if WindowInfo^.isGroupBox then
+        begin
+          lWinControl.EraseBackground(WParam);
+        end else
+        if GetWindowInfo(LParam)^.hasTabParent then
+        begin
+          // comboboxes send WM_CTLCOLORSTATIC to their parent, but:
+          // 1) they are opaque, so don't need transparent background
+          // 2) we will overwrite combobox control, erasing the image!
+          GetClassName(LParam, winClassName, 10);
+          if not CompareMem(@winClassName, @ComboboxClsName, High(ComboBoxClsName)+1) then
+          begin
+            // need to draw transparently, draw background
+            GetWin32ControlPos(LParam, Window, P.X, P.Y);
+            MoveWindowOrgEx(WParam, -P.X, -P.Y);
+            SendMessage(Window, WM_PAINT, WParam, 0);
+            MoveWindowOrgEx(WParam, P.X, P.Y);
+          end;
+          LMessage.Result := GetStockObject(HOLLOW_BRUSH);
+          SetBkMode(WParam, TRANSPARENT);
+          WinProcess := false;
+        end;
+      end;
+      if WinProcess then
       begin
         ChildWinControl := GetWindowInfo(LParam)^.WinControl;
         if ChildWinControl = nil then
@@ -545,22 +576,6 @@ Begin
           // Override default handling
           WinProcess := false;
         end;
-      end else begin
-        // comboboxes send WM_CTLCOLORSTATIC to their parent, but:
-        // 1) they are opaque, so don't need transparent background
-        // 2) we will overwrite combobox control, erasing the image!
-        GetClassName(LParam, winClassName, 10);
-        if not CompareMem(@winClassName, @ComboboxClsName, High(ComboBoxClsName)+1) then
-        begin
-          // need to draw transparently, draw background
-          GetWin32ControlPos(LParam, Window, P.X, P.Y);
-          MoveWindowOrgEx(WParam, -P.X, -P.Y);
-          SendMessage(Window, WM_PAINT, WParam, 0);
-          MoveWindowOrgEx(WParam, P.X, P.Y);
-        end;
-        LMessage.Result := GetStockObject(HOLLOW_BRUSH);
-        SetBkMode(WParam, TRANSPARENT);
-        WinProcess := false;
       end;
     end;
     WM_COPY:
@@ -1414,6 +1429,10 @@ end;
 
 {
   $Log$
+  Revision 1.148  2004/10/29 09:52:08  micha
+  fix crash on showing tabpage
+  fix painting of radiobutton in groupbox (non-tabpage-parent)
+
   Revision 1.147  2004/10/28 21:00:56  micha
   convert GetProp and SetProp usage to one Atom pointing to a record of fields
 

@@ -217,10 +217,10 @@ begin
     begin
       // some controls (combobox) immediately send a message upon setting font
       WindowInfo := AllocWindowInfo(Window);
-      AWinControl.Handle := Window;
       if GetWindowInfo(Parent)^.hasTabParent then
         WindowInfo^.hasTabParent := true;
       WindowInfo^.WinControl := AWinControl;
+      AWinControl.Handle := Window;
       if SubClassWndProc <> nil then
         WindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLong(
           Window, GWL_WNDPROC, LongInt(SubClassWndProc)));

@@ -298,12 +298,7 @@ begin
   // customization of Params
   with Params do
   begin
-    if TWin32WidgetSet(InterfaceObject).ThemesActive then
-    begin
-      pClassName := @ClsNameSave;
-    end else begin
-      pClassName := @ClsName;
-    end;
+    pClassName := @ClsName;
     Flags := Flags and not WS_VISIBLE;
     SubClassWndProc := nil;
     CustomPageCalcBounds(AWinControl, Left, Top, Width, Height);

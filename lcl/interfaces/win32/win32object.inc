@@ -455,14 +455,6 @@ Begin
     LPSzClassName := @ClsName;
   End;
   Result := Windows.RegisterClass(@WindowClass) <> 0;
-  
-  // register the window class that saves it's contents
-  with WindowClass do
-  begin
-    Style := WindowClass.Style or CS_SAVEBITS;
-    lpSzClassName := @ClsNameSave;
-  end;
-  Result := Result and (Windows.RegisterClass(@WindowClass) <> 0);
   Assert(False, 'Trace:WinRegister - Exit');
 End;
 
@@ -741,6 +733,10 @@ end;
 
 {
   $Log$
+  Revision 1.295  2004/10/29 09:52:08  micha
+  fix crash on showing tabpage
+  fix painting of radiobutton in groupbox (non-tabpage-parent)
+
   Revision 1.294  2004/10/28 21:00:56  micha
   convert GetProp and SetProp usage to one Atom pointing to a record of fields
 

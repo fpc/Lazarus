@@ -365,12 +365,9 @@ begin
       // about wincontrol (hack)
       // allocate windowinfo record ourselves, we do not call WindowInitBuddy
       BuddyWindowInfo := AllocWindowInfo(Buddy);
-      with BuddyWindowInfo^ do
-      begin
-        PWinControl := AWinControl;
-        if GetWindowInfo(Parent)^.hasTabParent then
-          hasTabParent := true;
-      end;
+      BuddyWindowInfo^.PWinControl := AWinControl;
+      if GetWindowInfo(Parent)^.hasTabParent then
+        BuddyWindowInfo^.hasTabParent := true;
       Parent := Buddy;
     end;
     pClassName := 'BUTTON';
@@ -389,6 +386,11 @@ begin
       Buddy := 0;
     end;
   end;
+  // if themed but does not have tabpage as parent
+  // remember we are a groupbox in need of erasebackground hack
+  if TWin32WidgetSet(InterfaceObject).ThemesActive 
+      and not Params.WindowInfo^.hasTabParent then
+    Params.WindowInfo^.isGroupBox := true;
   AWinControl.InvalidateClientRectCache(true);
   Result := Params.Window;
 end;

@@ -36,17 +36,18 @@ Type
   TWindowInfo = record
     AccelGroup: HACCEL;
     Accel: HACCEL;
-    Overlay: HWND;             // overlay, transparent window on top, used by designer
+    Overlay: HWND;            // overlay, transparent window on top, used by designer
     PopupMenu: HMENU;
     DefWndProc: WNDPROC;
-    ParentPanel: HWND;         // if non-zero, winxp groupbox parent window hack
+    ParentPanel: HWND;        // if non-zero, winxp groupbox parent window hack
     WinControl: TWinControl;
-    PWinControl: TWinControl;  // control to paint for
-    AWinControl: TWinControl;  // control associated with (for buddy controls)
+    PWinControl: TWinControl; // control to paint for
+    AWinControl: TWinControl; // control associated with (for buddy controls)
     List: TStrings;
-    hasTabParent: boolean;
-    isTabPage: boolean;
-    isComboEdit: boolean;
+    hasTabParent: boolean;    // has a tabpage as parent, and is winxp themed
+    isTabPage: boolean;       // is window of tabpage
+    isComboEdit: boolean;     // is buddy of combobox, the edit control
+    isGroupBox: boolean;      // is groupbox, and does not have themed tabpage as parent
     MaxLength: dword;
   end;
 

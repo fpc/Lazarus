@@ -186,7 +186,6 @@ Type
 const
   BOOL_RESULT: Array[Boolean] Of String = ('False', 'True');
   ClsName: array[0..6] of char = 'Window'#0;
-  ClsNameSave: array[0..10] of char = 'WindowSave'#0;
   ButtonClsName: array[0..6] of char = 'Button'#0;
   ComboboxClsName: array[0..8] of char = 'ComboBox'#0;
   TabControlClsName: array[0..15] of char = 'SysTabControl32'#0;
@@ -275,6 +274,10 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.127  2004/10/29 09:52:08  micha
+  fix crash on showing tabpage
+  fix painting of radiobutton in groupbox (non-tabpage-parent)
+
   Revision 1.126  2004/10/28 21:00:56  micha
   convert GetProp and SetProp usage to one Atom pointing to a record of fields
 
