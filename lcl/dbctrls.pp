@@ -60,6 +60,7 @@ Type
     FOnUpdateData: TNotifyEvent;
     FOnActiveChange: TNotifyEvent;
     FOnFocusRequest: TNotifyEvent;
+    FOnLayoutChange: TNotifyEvent;
 
     function FieldCanModify: Boolean;
     function GetCanModify: Boolean;
@@ -107,6 +108,7 @@ Type
     property OnUpdateData: TNotifyEvent read FOnUpdateData write FOnUpdateData;
     property OnActiveChange: TNotifyEvent read FOnActiveChange write FOnActiveChange;
     property OnFocusRequest: TNotifyEvent read FOnFocusRequest write FOnFocusRequest;
+    property OnLayoutChange: TNotifyevent read FOnLayoutChange write FOnLayoutChange;
   end;
 
 
@@ -121,6 +123,7 @@ Type
     procedure UpdateData(Sender: TObject);
     procedure FocusRequest(Sender: TObject);
     procedure ActiveChange(Sender: TObject);
+    procedure LayoutChange(Sender: TObject);
     
     function GetDataField: string;
     function GetDataSource: TDataSource;
@@ -1053,6 +1056,9 @@ begin
   if not Active then
     FField := nil;
     
+  if not Active then
+    FField := nil;
+    
   if Assigned(FOnActiveChange) then
     FOnActiveChange(Self);
 end;
@@ -1119,6 +1125,8 @@ end;
 procedure TFieldDataLink.LayoutChanged;
 begin
   ValidateField;
+  if Assigned(FOnLayoutChange) then
+    FOnLayoutChange(Self);
 end;
 
 { Delphi Help ->
@@ -1291,6 +1299,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.27  2005/04/03 10:13:34  mattias
+  dbgrids: Stops propagating ENTER key when modifying a field  from Jesus
+
   Revision 1.26  2005/04/01 21:13:09  micha
   delete reference to field if closing (from jesus) (fixes bug 694)
 

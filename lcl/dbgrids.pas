@@ -67,7 +67,7 @@ type
     dgMultiselect
   );
   TDbGridOptions = set of TDbGridOption;
-  TDbGridStatusItem = (gsVisibleMove,gsUpdatedData);
+  TDbGridStatusItem = (gsVisibleMove);
   TDbGridStatus = set of TDbGridStatusItem;
 
 type
@@ -124,26 +124,46 @@ type
     Property VisualControl;
   end;
 
+  { TColumn }
+
+  TColumnTitle = class(TGridColumnTitle)
+  protected
+    function  GetDefaultCaption: string; override;
+  end;
+
+  { TColumn }
+
   TColumn = class(TGridColumn)
   private
+    FDisplayFormat: String;
+    FDisplayFormatChanged: boolean;
     FFieldName: String;
     FField: TField;
-    function GetField: TField;
+    procedure ApplyDisplayFormat;
+    function  GetDisplayFormat: string;
+    function  GetField: TField;
+    function  IsDisplayFormatStored: boolean;
+    procedure SetDisplayFormat(const AValue: string);
     procedure SetField(const AValue: TField);
     procedure SetFieldName(const AValue: String);
-    function GetDataSet: TDataSet;
+    function  GetDataSet: TDataSet;
   protected
     procedure LinkField;
+    function  GetDefaultDisplayFormat: string;
     function  GetDisplayName: string; override;
     // FPC 1.0 has TAlignment in the DB unit too
-    function InternalAlignment(var aValue: {$IFDEF VER1_0}Classes.{$ENDIF}TAlignment): boolean; override;
-    function InternalDefaultReadOnly: boolean; override;
-    function InternalVisible(var Avalue: Boolean): boolean; override;
-    function InternalDefaultWidth: Integer; override;
+    function  GetDefaultAlignment: {$IFDEF VER1_0}Classes.{$ENDIF}TAlignment; override;
+    function  InternalDefaultReadOnly: boolean; override;
+    function  GetDefaultVisible: boolean; override;
+    function  InternalDefaultWidth: Integer; override;
+    function  CreateTitle: TGridColumnTitle; override;
   public
+    function  IsDefault: boolean; override;
     property Field: TField read GetField write SetField;
   published
     property FieldName: String read FFieldName write SetFieldName;
+    property DisplayFormat: string read GetDisplayFormat write SetDisplayFormat
+      stored IsDisplayFormatStored;
   end;
 
   TDbGridColumns = class(TGridColumns)
@@ -422,7 +442,10 @@ end;
 function CalcCanvasCharWidth(Canvas:TCanvas): integer;
 begin
   //result := Canvas.TextWidth('W l') div 3;
-  result := Canvas.TextWidth('MX') div 2;
+  if Canvas.HandleAllocated then
+    result := Canvas.TextWidth('MX') div 2
+  else
+    Result := 8;
 end;
 
 { TCustomdbGrid }
@@ -518,7 +541,6 @@ begin
   DebugLn('Inserting=',BoolToStr(dsInsert = aDataSet.State));
   {$endif}
   FDataLink.Modified := False;
-  Exclude(FGridStatus, gsUpdatedData);
   UpdateActive;
 end;
 
@@ -650,7 +672,6 @@ begin
     else
       Exclude(OldOptions, goediting);
 
-
     if dgTabs in FOptions then
       Include(OldOptions, goTabs)
     else
@@ -703,7 +724,6 @@ begin
     {$ifdef dbgdbgrid}
     DebugLn('UpdateData: Chk: Field:=',edField.ASString,' END');
     {$endif}
-    Include(FGridStatus, gsUpdatedData);
     EditingColumn(FEditingColumn, False);
     end;
   end;
@@ -823,11 +843,14 @@ end;
 
 function TCustomDbGrid.DefaultFieldColWidth(F: TField): Integer;
 begin
-  if not Canvas.HandleAllocated or (F=nil) then
+  if not HandleAllocated or (F=nil) then
     result:=DefaultColWidth
   else begin
     if F.DisplayWidth = 0 then
-      result := Canvas.TextWidth( F.DisplayName ) + 4
+      if Canvas.HandleAllocated then
+        result := Canvas.TextWidth( F.DisplayName ) + 4
+      else
+        Result := DefaultColWidth
     else
       result := F.DisplayWidth * CalcCanvasCharWidth(Canvas);
   end;
@@ -1181,7 +1204,7 @@ begin
     end else
     if (aRow=0)and(ACol>=FixedCols) then begin
       FixRectangle;
-      Canvas.TextRect(ARect,ARect.Left,ARect.Top,GetColumnTitle(aCol));
+      Canvas.TextRect(ARect,ARect.Left,ARect.Top,GeTGridColumnTitle(aCol));
     end;
   end else begin
     F := GetFieldFromGridColumn(aCol);
@@ -1487,12 +1510,14 @@ end;
 
 procedure TCustomDbGrid.EditingColumn(aCol: Integer; Ok: Boolean);
 begin
+  {$ifdef dbgdbgrid} DebugLn('Dbgrid.EditingColumn INIT aCol=', InttoStr(aCol), ' Ok=', BoolToStr(ok)); {$endif}
   if Ok then begin
     FEditingColumn := aCol;
     FDatalink.Modified := True;
   end
   else
     FEditingColumn := -1;
+  {$ifdef dbgdbgrid} DebugLn('Dbgrid.EditingColumn END'); {$endif}
 end;
 
 procedure TCustomDbGrid.EditorCancelEditing;
@@ -1895,7 +1920,7 @@ begin
     else
     if (DataCol>=FixedCols) then begin
       R := FixRectangle();
-      Canvas.TextRect(R,R.Left,R.Top,GetColumnTitle(DataCol));
+      Canvas.TextRect(R,R.Left,R.Top,GeTGridColumnTitle(DataCol));
     end;
   end else begin
     F := GetFieldFromGridColumn(DataCol);
@@ -2126,6 +2151,38 @@ begin
   result := FField;
 end;
 
+procedure TColumn.ApplyDisplayFormat;
+begin
+  if (FField <> nil) and FDisplayFormatChanged then begin
+    if (FField is TNumericField) then
+      TNumericField(FField).DisplayFormat := DisplayFormat
+    else if (FField is TDateTimeField) then
+      TDateTimeField(FField).DisplayFormat := DisplayFormat;
+  end;
+end;
+
+function TColumn.GetDisplayFormat: string;
+begin
+  if not FDisplayFormatChanged then
+    Result := GetDefaultDisplayFormat
+  else
+    result := FDisplayFormat;
+end;
+
+function TColumn.IsDisplayFormatStored: boolean;
+begin
+  Result := FDisplayFormatChanged;
+end;
+
+procedure TColumn.SetDisplayFormat(const AValue: string);
+begin
+  if (not FDisplayFormatChanged)or(CompareText(AValue, FDisplayFormat)<>0) then begin
+    FDisplayFormat := AValue;
+    FDisplayFormatChanged:=True;
+    ColumnChanged;
+  end;
+end;
+
 procedure TColumn.SetField(const AValue: TField);
 begin
   if FField <> AValue then begin
@@ -2160,10 +2217,20 @@ var
   TheGrid: TCustomDbGrid;
 begin
   TheGrid := TCustomDBGrid(Grid);
-  if (theGrid<>nil)and(TheGrid.Canvas.HandleAllocated)And(FField<>nil) then
+  if (theGrid<>nil)and(TheGrid.HandleAllocated)and(FField<>nil) then
     result := FField.DisplayWidth * CalcCanvasCharWidth(TheGrid.Canvas)
   else
     result := 64;
+end;
+
+function TColumn.CreateTitle: TGridColumnTitle;
+begin
+  Result := TColumnTitle.Create(Self);
+end;
+
+function TColumn.IsDefault: boolean;
+begin
+  result := not FDisplayFormatChanged and (inherited IsDefault());
 end;
 
 procedure TColumn.LinkField;
@@ -2171,19 +2238,22 @@ var
   TheGrid: TCustomDbGrid;
 begin
   TheGrid:= TCustomDBGrid(Grid);
-  if (TheGrid<>nil) and TheGrid.FDatalink.Active then
-    Field := TheGrid.FDataLink.DataSet.FindField(FFieldName)
-  else
+  if (TheGrid<>nil) and TheGrid.FDatalink.Active then begin
+    Field := TheGrid.FDataLink.DataSet.FindField(FFieldName);
+    ApplyDisplayFormat;
+  end else
     Field := nil;
 end;
 
-function TColumn.InternalAlignment(var aValue: {$ifdef ver1_0}Classes.{$ENDIF}TAlignment): boolean;
+function TColumn.GetDefaultDisplayFormat: string;
 begin
+  Result := '';
   if FField<>nil then begin
-    Alignment := {$IFNDEF VER1_0}FField.Alignment{$ELSE}Classes.TAlignment(FField.Alignment){$ENDIF};
-    Result := True;
-  end else
-    Result := False;
+    if FField is TNumericField then
+      Result := TNumericField(FField).DisplayFormat
+    else if FField is TDateTimeField then
+      Result := TDateTimeField(FField).DisplayFormat
+  end;
 end;
 
 function TColumn.InternalDefaultReadOnly: boolean;
@@ -2194,27 +2264,52 @@ begin
   Result := ((TheGrid<>nil)and(TheGrid.ReadOnly)) or ((FField<>nil)and(FField.ReadOnly))
 end;
 
-function TColumn.InternalVisible(var Avalue: Boolean): boolean;
+function TColumn.GetDefaultVisible: boolean;
 begin
-  result := false;
-  if FField<>nil then begin
-    result := FField.Visible;
-    result := true;
-  end;
+  if FField<>nil then
+    result := FField.Visible
+  else
+    result := True;
 end;
 
 function TColumn.GetDisplayName: string;
 begin
   if FFieldName='' then
-    Result := 'Column'
+    result := 'column'
   else
     Result:=FFieldName;
+end;
+
+function TColumn.GetDefaultAlignment: {$IFDEF VER1_0}Classes.{$ENDIF}TAlignment;
+begin
+  if FField<>nil then
+    result := {$IFNDEF VER1_0}FField.Alignment{$ELSE}Classes.TAlignment(FField.Alignment){$ENDIF}
+  else
+    Result := {$IFDEF VER1_0}Classes.{$ENDIF}taLeftJustify;
+end;
+
+{ TColumnTitle }
+
+function TColumnTitle.GetDefaultCaption: string;
+begin
+  with (Column as TColumn) do begin
+    if FieldName<>'' then begin
+      if FField<>nil then
+        Result := Field.DisplayName
+      else
+        Result := Fieldname;
+    end else
+      Result := inherited GetDefaultCaption;
+  end;
 end;
 
 end.
 
 {
   $Log$
+  Revision 1.39  2005/04/03 10:13:34  mattias
+  dbgrids: Stops propagating ENTER key when modifying a field  from Jesus
+
   Revision 1.38  2005/03/29 21:56:02  marc
   * patch from Jesus Reyes
 

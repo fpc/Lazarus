@@ -56,6 +56,11 @@ begin
     end;
 end;
 
+procedure TDBEdit.LayoutChange(Sender: TObject);
+begin
+  DataChange(Sender);
+end;
+
 
 procedure TDBEdit.EditingChange(Sender: TObject);
 begin
@@ -221,6 +226,7 @@ begin
   FDataLink.OnEditingChange := @EditingChange;
   FDataLink.OnUpdateData := @UpdateData;
   FDataLInk.OnActiveChange := @ActiveChange;
+  FDatalink.OnLayoutChange := @LayoutChange;
 
   inherited ReadOnly := True;//start read only
 end;
@@ -235,6 +241,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2005/04/03 10:13:34  mattias
+  dbgrids: Stops propagating ENTER key when modifying a field  from Jesus
+
   Revision 1.11  2005/01/06 13:22:24  micha
   fix access violation with dbedit (from loesje)
 
