@@ -300,6 +300,10 @@ msgstr "La voce menu è nulla"
 msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr "Nessun oggetto interfaccia. Controllare se l'unità \"interfaces\" è stata aggiunta alla direttiva uses del programma."
 
+#: lclstrconsts:snomdiform
+msgid "No MDI form present."
+msgstr ""
+
 #: lclstrconsts:snotimers
 msgid "No timers available"
 msgstr "Nessun timer disponibile"

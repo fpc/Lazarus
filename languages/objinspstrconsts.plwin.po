@@ -189,6 +189,10 @@ msgstr "Ustaw domyœln¹ wartoœæ"
 msgid "Set to default: %s"
 msgstr "Ustaw domyœln¹ wartoœæ: %s"
 
+#: objinspstrconsts:oissort
+msgid "Sort"
+msgstr ""
+
 #: objinspstrconsts:oisstring
 msgid "String"
 msgstr ""
@@ -200,6 +204,10 @@ msgstr "Edytor StringGrid"
 #: objinspstrconsts:cesstringgrideditor
 msgid "StringGrid Editor ..."
 msgstr "Edytor StringGrid ..."
+
+#: objinspstrconsts:oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"

@@ -474,7 +474,7 @@ msgstr ""
 msgid "Compiler"
 msgstr ""
 
-#: codetoolsstrconsts:ctsdefineprozessortype
+#: codetoolsstrconsts:ctsdefineprocessortype
 msgid "Define processor type"
 msgstr ""
 

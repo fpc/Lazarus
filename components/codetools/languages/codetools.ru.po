@@ -222,7 +222,7 @@ msgstr "Определить макрос gtk1"
 msgid "Define macro gtk2"
 msgstr "Определить макрос gtk2"
 
-#: codetoolsstrconsts:ctsdefineprozessortype
+#: codetoolsstrconsts:ctsdefineprocessortype
 msgid "Define processor type"
 msgstr "Определить тип процессора"
 

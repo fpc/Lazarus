@@ -290,6 +290,10 @@ msgstr "El MenuItem és nul"
 msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr "No hi ha objecte d'interfície. Si us plau, comprova si la unitat \"interfaces\" ha estat afegida a la clàusula Uses"
 
+#: lclstrconsts:snomdiform
+msgid "No MDI form present."
+msgstr ""
+
 #: lclstrconsts:snotimers
 msgid "No timers available"
 msgstr "No hi ha temporitzadors disponibles"

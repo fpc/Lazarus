@@ -188,6 +188,10 @@ msgstr "Establecer valor por defecto"
 msgid "Set to default: %s"
 msgstr "Establecer por defecto: %s"
 
+#: objinspstrconsts:oissort
+msgid "Sort"
+msgstr ""
+
 #: objinspstrconsts:oisstring
 msgid "String"
 msgstr ""
@@ -199,6 +203,10 @@ msgstr "Editor de StringGrid"
 #: objinspstrconsts:cesstringgrideditor
 msgid "StringGrid Editor ..."
 msgstr "Editor de StringGrid ..."
+
+#: objinspstrconsts:oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr ""
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"

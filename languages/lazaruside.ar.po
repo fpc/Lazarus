@@ -21,6 +21,10 @@ msgstr "لازاروس يحفظ جذاذاته"
 msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "لازاروس يبحث عن جذاذاته"
 
+#: lazarusidestrconsts:lisskiploadinglastproject
+msgid "                      Skip loading last project"
+msgstr ""
+
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
 msgstr "الأمر1\""
@@ -785,6 +789,10 @@ msgstr ""
 msgid "Change"
 msgstr ""
 
+#: lazarusidestrconsts:lischangeclass
+msgid "Change Class"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiskdiffchangedfiles
 msgid "Changed files:"
 msgstr ""
@@ -847,6 +855,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
+msgstr ""
+
+#: lazarusidestrconsts:lischoosemakepath
+msgid "Choose make path"
 msgstr ""
 
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
@@ -2893,6 +2905,10 @@ msgstr ""
 msgid "Invalid Include filter"
 msgstr ""
 
+#: lazarusidestrconsts:lisenvoptdlginvalidmakefilename
+msgid "Invalid make filename"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
 msgstr ""
@@ -3291,6 +3307,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
+msgstr ""
+
+#: lazarusidestrconsts:dlgmakepath
+msgid "Make path"
 msgstr ""
 
 #: lazarusidestrconsts:lismenumakeresourcestring
@@ -5615,6 +5635,10 @@ msgstr ""
 
 #: lazarusidestrconsts:listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlginvalidmakefilenamemsg
+msgid "The make file \"%s\" is not an executable."
 msgstr ""
 
 #: lazarusidestrconsts:lisprojaddthemaximumversionisinvalid

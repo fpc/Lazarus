@@ -232,7 +232,7 @@ msgstr ""
 msgid "Define macro gtk2"
 msgstr "Macro gtk2 définie"
 
-#: codetoolsstrconsts:ctsdefineprozessortype
+#: codetoolsstrconsts:ctsdefineprocessortype
 msgid "Define processor type"
 msgstr "Type de micro processeur"
 

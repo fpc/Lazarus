@@ -26,6 +26,10 @@ msgstr ""
 msgid "                      Do not show splash screen"
 msgstr ""
 
+#: lazarusidestrconsts:lisskiploadinglastproject
+msgid "                      Skip loading last project"
+msgstr ""
+
 #: lazarusidestrconsts:lissecondaryconfigdirectorywherelazarussearchesfor
 msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr ""
@@ -1310,6 +1314,10 @@ msgstr ""
 msgid "Choose FPC source directory"
 msgstr ""
 
+#: lazarusidestrconsts:lischoosemakepath
+msgid "Choose make path"
+msgstr ""
+
 #: lazarusidestrconsts:lischoosedebuggerpath
 msgid "Choose debugger filename"
 msgstr ""
@@ -1670,6 +1678,10 @@ msgstr ""
 msgid "FPC source directory"
 msgstr ""
 
+#: lazarusidestrconsts:dlgmakepath
+msgid "Make path"
+msgstr ""
+
 #: lazarusidestrconsts:dlgdebugtype
 msgid "Debugger type and path"
 msgstr ""
@@ -1836,6 +1848,14 @@ msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvalidcompilerfilenamemsg
 msgid "The compiler file \"%s\" is not an executable."
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlginvalidmakefilename
+msgid "Invalid make filename"
+msgstr ""
+
+#: lazarusidestrconsts:lisenvoptdlginvalidmakefilenamemsg
+msgid "The make file \"%s\" is not an executable."
 msgstr ""
 
 #: lazarusidestrconsts:lisenvoptdlginvaliddebuggerfilename
@@ -3188,6 +3208,10 @@ msgstr ""
 
 #: lazarusidestrconsts:fdmdeleteselection
 msgid "Delete selection"
+msgstr ""
+
+#: lazarusidestrconsts:lischangeclass
+msgid "Change Class"
 msgstr ""
 
 #: lazarusidestrconsts:fdmsnaptogridoption

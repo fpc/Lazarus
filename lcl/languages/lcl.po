@@ -1,3 +1,7 @@
+#: lclstrconsts:snomdiform
+msgid "No MDI form present."
+msgstr ""
+
 #: lclstrconsts:rsmbyes
 msgid "&Yes"
 msgstr ""

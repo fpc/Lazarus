@@ -301,6 +301,10 @@ msgstr "Element menu ma warto¶æ nil"
 msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr "Brak obiektu interfejsu. Sprawd¼ czy modu³ \"interfaces\" by³ dodany do programu przez \"uses\"."
 
+#: lclstrconsts:snomdiform
+msgid "No MDI form present."
+msgstr ""
+
 #: lclstrconsts:snotimers
 msgid "No timers available"
 msgstr "Brak dostêpnych timerów"

@@ -290,6 +290,10 @@ msgstr ""
 msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr ""
 
+#: lclstrconsts:snomdiform
+msgid "No MDI form present."
+msgstr ""
+
 #: lclstrconsts:snotimers
 msgid "No timers available"
 msgstr ""

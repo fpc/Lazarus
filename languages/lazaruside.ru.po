@@ -10,6 +10,10 @@ msgstr "                     главный каталог настроек, где Lazarus хранит свои ф
 msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "                     вторичный каталог настроек, где Lazarus ищет свои шаблоны настроек. По умолчанию "
 
+#: lazarusidestrconsts:lisskiploadinglastproject
+msgid "                      Skip loading last project"
+msgstr ""
+
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
 msgstr "   команда1 \""
@@ -774,6 +778,10 @@ msgstr "Курсор в центре"
 msgid "Change"
 msgstr "Изменить"
 
+#: lazarusidestrconsts:lischangeclass
+msgid "Change Class"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiskdiffchangedfiles
 msgid "Changed files:"
 msgstr "Изменённые файлы:"
@@ -837,6 +845,10 @@ msgstr "Выберите каталог исходников FPC"
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
 msgstr "Выберите каталог Lazarus"
+
+#: lazarusidestrconsts:lischoosemakepath
+msgid "Choose make path"
+msgstr ""
 
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
@@ -2882,6 +2894,10 @@ msgstr "Неправильное имя файла"
 msgid "Invalid Include filter"
 msgstr "Неправильный фильтр включений"
 
+#: lazarusidestrconsts:lisenvoptdlginvalidmakefilename
+msgid "Invalid make filename"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
 msgstr "Неправильная максимальная версия"
@@ -3281,6 +3297,10 @@ msgstr "Главная"
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
 msgstr "Создать исполняемый"
+
+#: lazarusidestrconsts:dlgmakepath
+msgid "Make path"
+msgstr ""
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String"
@@ -5605,6 +5625,10 @@ msgstr "LCL - Библиотека компонентов Lazarus - содержит все основные компоненты 
 #: lazarusidestrconsts:listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
 msgstr "LFM-файл (файл формы Lazarus) содержит некорректные свойства. Это значит, например, что он содержит некоторые свойства/классы, которых нет в текущей версии LCL. Обычно следует убрать эти свойства из lfm и (если надо) исправить код паскаля вручную."
+
+#: lazarusidestrconsts:lisenvoptdlginvalidmakefilenamemsg
+msgid "The make file \"%s\" is not an executable."
+msgstr ""
 
 #: lazarusidestrconsts:lisprojaddthemaximumversionisinvalid
 msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"

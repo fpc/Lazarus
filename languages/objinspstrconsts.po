@@ -210,3 +210,11 @@ msgstr ""
 msgid "All files (*.*)|*.*"
 msgstr ""
 
+#: objinspstrconsts:oissort
+msgid "Sort"
+msgstr ""
+
+#: objinspstrconsts:oisstringseditordialog
+msgid "Strings Editor Dialog"
+msgstr ""
+

@@ -300,6 +300,10 @@ msgstr "MenuItem est non assigné (nil)"
 msgid "No interface object. Plz check if the unit \"interfaces\" was added to the programs uses clause."
 msgstr "Pas d'objet d'interface. Vérifiez si l'unité \"iterfaces\" est présente dans la clause Uses du programme."
 
+#: lclstrconsts:snomdiform
+msgid "No MDI form present."
+msgstr ""
+
 #: lclstrconsts:snotimers
 msgid "No timers available"
 msgstr "Aucuns temporisateurs disponibles"

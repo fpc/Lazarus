@@ -21,6 +21,10 @@ msgstr " główny katalog konfiguracji, gdzie Lazarus przechowuje pliki konfigur
 msgid "                      secondary config directory, where Lazarus searches for config template files. Default is "
 msgstr "dodatkowy katalog konfiguracji, w którym Lazarus szuka szablonów konfiguracji. Domyślnie jest to "
 
+#: lazarusidestrconsts:lisskiploadinglastproject
+msgid "                      Skip loading last project"
+msgstr ""
+
 #: lazarusidestrconsts:srkmcommand1
 msgid "    command1 \""
 msgstr "    command1 \""
@@ -785,6 +789,10 @@ msgstr "Wyśrodkuj aktualny wiersz"
 msgid "Change"
 msgstr "Zmień"
 
+#: lazarusidestrconsts:lischangeclass
+msgid "Change Class"
+msgstr ""
+
 #: lazarusidestrconsts:lisdiskdiffchangedfiles
 msgid "Changed files:"
 msgstr "Zmienione pliki:"
@@ -848,6 +856,10 @@ msgstr "Wybierz katalog źródeł FPC"
 #: lazarusidestrconsts:lischooselazarussourcedirectory
 msgid "Choose Lazarus Directory"
 msgstr "Wybierz katalog lazarusa"
+
+#: lazarusidestrconsts:lischoosemakepath
+msgid "Choose make path"
+msgstr ""
 
 #: lazarusidestrconsts:lischooseprogramsourcepppaslpr
 msgid "Choose program source (*.pp,*.pas,*.lpr)"
@@ -2893,6 +2905,10 @@ msgstr "Błędna nazwa pliku"
 msgid "Invalid Include filter"
 msgstr "Błędny filtr Include"
 
+#: lazarusidestrconsts:lisenvoptdlginvalidmakefilename
+msgid "Invalid make filename"
+msgstr ""
+
 #: lazarusidestrconsts:lispckeditinvalidmaximumversion
 msgid "Invalid maximum version"
 msgstr "Błędny maksymalny numer wersji"
@@ -3292,6 +3308,10 @@ msgstr "Major"
 #: lazarusidestrconsts:lismakeexe
 msgid "Make Executable"
 msgstr "Utwórz plik wykonywalny"
+
+#: lazarusidestrconsts:dlgmakepath
+msgid "Make path"
+msgstr ""
 
 #: lazarusidestrconsts:lismenumakeresourcestring
 msgid "Make Resource String"
@@ -5616,6 +5636,10 @@ msgstr "LCL (Biblioteka Komponentów Lazarusa) zawiera wszystkie bazowe komponen
 #: lazarusidestrconsts:listhelfmlazarusformfilecontainsinvalidpropertiesthis
 msgid "The LFM (Lazarus form) file contains invalid properties. This means for example it contains some properties/classes, which do not exist in the current LCL. The normal fix is to remove these properties from the lfm and fix the pascal code manually."
 msgstr "Plik LFM (formularz Lazarusa) zawiera nieprawidłowe włąściwości, np. może zawierać pewne właściwości lub klasy, których nie ma obecnie w LCL. Zwyczajowo naprawia się to przezusunięcie tych właściwości z LFM i ręczne poprawienie kodu w pascalu."
+
+#: lazarusidestrconsts:lisenvoptdlginvalidmakefilenamemsg
+msgid "The make file \"%s\" is not an executable."
+msgstr ""
 
 #: lazarusidestrconsts:lisprojaddthemaximumversionisinvalid
 msgid "The Maximum Version %s%s%s is invalid.%sPlease use the format major.minor.release.build%sFor exmaple: 1.0.20.10"
