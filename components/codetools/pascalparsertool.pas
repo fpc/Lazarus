@@ -3623,10 +3623,12 @@ end;
 function TPascalParserTool.NodeIsConstructor(ProcNode: TCodeTreeNode): boolean;
 begin
   Result:=false;
-  if (ProcNode=nil) or (ProcNode.Desc<>ctnProcedure) then exit;
+  if (ProcNode=nil) then exit;
+  if ProcNode.Desc=ctnProcedureHead then
+    ProcNode:=ProcNode.Parent;
+  if ProcNode.Desc<>ctnProcedure then exit;
   MoveCursorToNodeStart(ProcNode);
   ReadNextAtom;
-  if UpAtomIs('CLASS') then ReadNextAtom;
   Result:=UpAtomIs('CONSTRUCTOR');
 end;
 

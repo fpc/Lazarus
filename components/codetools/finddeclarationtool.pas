@@ -3615,6 +3615,7 @@ var
     IdentFound: boolean;
   begin
     // for example  'AnObject[3]'
+    
     // check special identifiers 'Result' and 'Self'
     IdentFound:=false;
     if (ExprType.Context.Node<>nil)
@@ -3684,8 +3685,12 @@ var
       // search ...
       Params.SetIdentifier(Self,@Src[CurAtom.StartPos],@CheckSrcIdentifier);
       if ExprType.Context.Tool.FindIdentifierInContext(Params) then begin
-        ExprType.Desc:=xtContext;
-        ExprType.Context:=CreateFindContext(Params);
+        if not Params.NewCodeTool.NodeIsConstructor(Params.NewNode) then begin
+          ExprType.Desc:=xtContext;
+          ExprType.Context:=CreateFindContext(Params);
+        end else begin
+          // it's a constructor -> keep the class
+        end;
       end else begin
         // predefined identifier
         ExprType:=FindExpressionTypeOfPredefinedIdentifier(CurAtom.StartPos,
@@ -4018,8 +4023,8 @@ begin
   
   Result:=ExprType;
   if (Result.Desc=xtContext) and (not (fdfFindVariable in StartFlags)) then
-    Result:=Result.Context.Tool.ConvertNodeToExpressionType(Result.Context.Node,
-                                                            Params);
+    Result:=Result.Context.Tool.ConvertNodeToExpressionType(
+                 Result.Context.Node,Params);
   {$IFDEF ShowExprEval}
   writeln('  FindExpressionTypeOfVariable Result=',ExprTypeToString(Result));
   {$ENDIF}
@@ -5492,7 +5497,6 @@ begin
 
     xtContext:
       begin
-writeln('BBB1 ',ExprType.Context.Node.DescAsString);
         Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
                        fdfTopLvlResolving,fdfFunctionResult]
                       +fdfAllClassVisibilities;
