@@ -37,8 +37,9 @@ uses
   CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
   HelpIntf, HelpHTML, HelpFPDoc,
-  TransferMacros, DialogProcs, IDEOptionDefs, EnvironmentOpts, AboutFrm,
-  MsgView, Project, PackageDefs, MainBar, HelpOptions, MainIntf;
+  LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
+  EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
+  HelpOptions, MainIntf;
 
 type
   { TBaseHelpManager }
@@ -84,6 +85,7 @@ type
     procedure mnuHelpOnlineHelpClicked(Sender: TObject);
   private
     FMainHelpDB: THelpDatabase;
+    FRTLHelpDB: THelpDatabase;
     FFCLHelpDB: THelpDatabase;
     FLCLHelpDB: THelpDatabase;
     procedure RegisterIDEHelpDatabases;
@@ -112,6 +114,7 @@ type
   { Help Contexts for IDE help }
 const
   lihcStartPage = 'StartPage';
+  lihcRTLUnits = 'RTLUnits';
   lihcFCLUnits = 'FCLUnits';
   lihcLCLUnits = 'LCLUnits';
 
@@ -204,7 +207,7 @@ begin
     Width:=Self.ClientWidth-10;
     Height:=Self.ClientWidth-40;
     Anchors:=[akLeft,akTop,akRight,akBottom];
-    Caption:='Select a help item:';
+    Caption:=lisSelectAHelpItem;
   end;
   
   NodesListBox:=TListBox.Create(Self);
@@ -222,7 +225,7 @@ begin
     Top:=Self.ClientHeight-35;
     Width:=80;
     Anchors:=[akLeft,akBottom];
-    Caption:='Ok';
+    Caption:=lisLazBuildOk;
     ModalResult:=mrOk;
   end;
   
@@ -234,7 +237,7 @@ begin
     Top:=Self.ClientHeight-35;
     Width:=80;
     Anchors:=[akLeft,akBottom];
-    Caption:='Cancel';
+    Caption:=dlgCancel;
     ModalResult:=mrCancel;
   end;
 end;
@@ -270,15 +273,15 @@ var
   ErrorCaption: String;
 begin
   case ShowResult of
-  shrNone: ErrorCaption:='Error';
+  shrNone: ErrorCaption:=lisCodeTemplError;
   shrSuccess: exit;
-  shrDatabaseNotFound: ErrorCaption:='Help Database not found';
-  shrContextNotFound: ErrorCaption:='Help Context not found';
-  shrViewerNotFound: ErrorCaption:='Help Viewer not found';
-  shrHelpNotFound: ErrorCaption:='Help not found';
-  shrViewerError: ErrorCaption:='Help Viewer Error';
-  shrSelectorError: ErrorCaption:='Help Selector Error';
-  else ErrorCaption:='Unknown Error, please report this bug';
+  shrDatabaseNotFound: ErrorCaption:=lisHelpDatabaseNotFound;
+  shrContextNotFound: ErrorCaption:=lisHelpContextNotFound;
+  shrViewerNotFound: ErrorCaption:=lisHelpViewerNotFound;
+  shrHelpNotFound: ErrorCaption:=lisHelpNotFound;
+  shrViewerError: ErrorCaption:=lisHelpViewerError;
+  shrSelectorError: ErrorCaption:=lisHelpSelectorError;
+  else ErrorCaption:=lisUnknownErrorPleaseReportThisBug;
   end;
   MessageDlg(ErrorCaption,ErrMsg,mtError,[mbCancel],0);
 end;
@@ -340,7 +343,7 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     StartNode: THelpNode;
     HTMLHelp: THTMLHelpDatabase;
   begin
-    FMainHelpDB:=HelpDatabases.CreateHelpDatabase('Lazarus IDE',
+    FMainHelpDB:=HelpDatabases.CreateHelpDatabase(lihcStartPage,
                                                   THTMLHelpDatabase,true);
     HTMLHelp:=FMainHelpDB as THTMLHelpDatabase;
     HTMLHelp.BasePathObject:=Self;
@@ -351,14 +354,34 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     HTMLHelp.RegisterItemWithNode(StartNode);
   end;
   
+  procedure CreateRTLHelpDB;
+  var
+    HTMLHelp: TFPDocHTMLHelpDatabase;
+    FPDocNode: THelpNode;
+    DirItem: THelpDBISourceDirectory;
+  begin
+    FRTLHelpDB:=HelpDatabases.CreateHelpDatabase(lihcRTLUnits,
+                                                 TFPDocHTMLHelpDatabase,true);
+    HTMLHelp:=FRTLHelpDB as TFPDocHTMLHelpDatabase;
+
+    // FPDoc: units in the RTL
+    FPDocNode:=THelpNode.CreateURL(HTMLHelp,
+                   'RTL - Free Pascal Run Time Library Units',
+                   'http://www.freepascal.org/docs-html/rtl/index.html');
+    HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);
+    DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/rtl',
+                   '*.pp;*.pas',true);
+    HTMLHelp.RegisterItem(DirItem);
+  end;
+
   procedure CreateFCLHelpDB;
   var
     HTMLHelp: TFPDocHTMLHelpDatabase;
     FPDocNode: THelpNode;
     DirItem: THelpDBISourceDirectory;
   begin
-    FFCLHelpDB:=HelpDatabases.CreateHelpDatabase('FCL',TFPDocHTMLHelpDatabase,
-                                                 true);
+    FFCLHelpDB:=HelpDatabases.CreateHelpDatabase(lihcFCLUnits,
+                                                 TFPDocHTMLHelpDatabase,true);
     HTMLHelp:=FFCLHelpDB as TFPDocHTMLHelpDatabase;
 
     // FPDoc: units in the FCL
@@ -369,12 +392,6 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(FPCSrcDir)/fcl',
                    '*.pp;*.pas',true);
     HTMLHelp.RegisterItem(DirItem);
-
-    // FPDoc: some RTL units are documented in the FCL
-    DirItem:=THelpDBISourceDirectory.Create(
-                   THelpNode.Create(HTMLHelp,FPDocNode),
-                   '$(FPCSrcDir)/rtl','classes.pp;',true);
-    HTMLHelp.RegisterItem(DirItem);
   end;
 
   procedure CreateLCLHelpDB;
@@ -383,15 +400,16 @@ procedure THelpManager.RegisterIDEHelpDatabases;
     FPDocNode: THelpNode;
     DirItem: THelpDBISourceDirectory;
   begin
-    FLCLHelpDB:=HelpDatabases.CreateHelpDatabase('LCL',TFPDocHTMLHelpDatabase,
-                                                 true);
+    FLCLHelpDB:=HelpDatabases.CreateHelpDatabase(lihcLCLUnits,
+                                                 TFPDocHTMLHelpDatabase,true);
     HTMLHelp:=FLCLHelpDB as TFPDocHTMLHelpDatabase;
     HTMLHelp.BasePathObject:=Self;
 
     // FPDoc: units in the LCL
     FPDocNode:=THelpNode.CreateURL(HTMLHelp,
                    'LCL - Lazarus Component Library Units',
-                   'file://$(LazarusDir)/docs/html/index.html');
+                   'http://www.freepascal.org/docs-html/lcl/index.html');
+    //               'file://$(LazarusDir)/docs/html/index.html');
     HTMLHelp.TOCNode:=THelpNode.Create(HTMLHelp,FPDocNode);
     DirItem:=THelpDBISourceDirectory.Create(FPDocNode,'$(LazarusDir)/lcl',
                    '*.pp;*.pas',false);
@@ -400,6 +418,7 @@ procedure THelpManager.RegisterIDEHelpDatabases;
 
 begin
   CreateMainIDEHelpDB;
+  CreateRTLHelpDB;
   CreateFCLHelpDB;
   CreateLCLHelpDB;
 end;
