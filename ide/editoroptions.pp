@@ -3304,6 +3304,7 @@ begin
     Left:=5;
     Width:=ChkBoxW;
     Caption:='Visible right margin';
+    Height:=23;
     Checked:=EditorOpts.VisibleRightMargin;
     OnClick:=@GeneralCheckBoxOnClick;
     Enabled:=false;
@@ -3314,7 +3315,7 @@ begin
   with VisibleGutterCheckBox do begin
     Name:='VisibleGutterCheckBox';
     Parent:=MarginAndGutterGroupBox;
-    Top:=VisibleRightMarginCheckBox.Top+VisibleRightMarginCheckBox.Height+20;
+    Top:=VisibleRightMarginCheckBox.Top+VisibleRightMarginCheckBox.Height+7;
     Left:=VisibleRightMarginCheckBox.Left;
     Width:=ChkBoxW;
     Height:=VisibleRightMarginCheckBox.Height;
@@ -3328,7 +3329,7 @@ begin
   with ShowLineNumbersCheckBox do begin
     Name:='ShowLineNumbersCheckBox';
     Parent:=MarginAndGutterGroupBox;
-    Top:=VisibleGutterCheckBox.Top+VisibleGutterCheckBox.Height+20;
+    Top:=VisibleGutterCheckBox.Top+VisibleGutterCheckBox.Height+7;
     Left:=VisibleGutterCheckBox.Left;
     Width:=ChkBoxW;
     Height:=VisibleRightMarginCheckBox.Height;
