@@ -61,15 +61,19 @@ type
     Introduced and (currently) maintained by Curtis White
   }
 
+  TPageFlag = (pfAdded);
+  TPageFlags = set of TPageFlag;
 
   TPage = class(TWinControl)
   private
+    FFlags: TPageFlags;
     FImageIndex: integer;
     procedure SetImageIndex(const AValue: integer);
   protected
     //procedure Paint; override;
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
     procedure SetParent(AParent : TWinControl); override;
+    property Flags: TPageFlags read FFlags write FFlags;
   public
     procedure AddControl; override;
     constructor Create(AOwner: TComponent); override;
@@ -505,6 +509,9 @@ end.
 
  {
   $Log$
+  Revision 1.38  2002/10/24 08:56:30  lazarus
+  MG: fixed TnoteBook AddPage and double creation of MeinMenu
+
   Revision 1.37  2002/10/20 22:31:08  lazarus
   AJ:switched TImage.Autosize to use DoAutoSize
 
