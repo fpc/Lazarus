@@ -362,6 +362,8 @@ begin
 inherited create;
 FImage := 'images/popup.xpm';
 FClassName := 'TPopup';
+FClassType := TPopupMenu;
+
 end;
 
 function TIDEPopup.CreateMethod(AOwner : TComponent): TControl;
@@ -396,6 +398,8 @@ begin
 inherited create;
 FImage := 'images/editbox.xpm';
 FClassName := 'TEdit';
+FClassType := TEdit;
+
 end;
 
 function TIDEEdit.CreateMethod(AOwner : TComponent): TControl;
@@ -448,6 +452,7 @@ begin
 inherited create;
 FImage := 'images/label.xpm';
 FClassName := 'TLabel';
+FClassType := TLabel;
 end;
 
 function TIDELabel.CreateMethod(AOwner : TComponent): TControl;
@@ -500,6 +505,7 @@ begin
 inherited create;
 FImage := 'images/button.xpm';
 FClassName := 'TButton';
+FClassType := TButton;
 end;
 
 function TIDEButton.CreateMethod(AOwner : TComponent): TControl;
@@ -552,6 +558,8 @@ begin
 inherited create;
 FImage := 'images/memo.xpm';
 FClassName := 'TMemo';
+FClassType := TMemo;
+
 end;
 
 function TIDEMemo.CreateMethod(AOwner : TComponent): TControl;
@@ -602,6 +610,8 @@ begin
 inherited create;
 FImage := 'images/checkbox.xpm';
 FClassName := 'TCheckbox';
+FClassType := TCheckBox;
+
 end;
 
 function TIDECheckbox.CreateMethod(AOwner : TComponent): TControl;
@@ -654,6 +664,8 @@ begin
 inherited create;
 FImage := 'images/radiobutton.xpm';
 FClassName := 'TRadioButton';
+FClassType := TRadioButton;
+
 end;
 
 function TIDERadioButton.CreateMethod(AOwner : TComponent): TControl;
@@ -706,6 +718,8 @@ begin
 inherited create;
 FImage := 'images/listbox.xpm';
 FClassName := 'TListbox';
+FClassType := TListbox;
+
 end;
 
 function TIDEListbox.CreateMethod(AOwner : TComponent): TControl;
@@ -758,6 +772,7 @@ begin
 inherited create;
 FImage := 'images/combobox.xpm';
 FClassName := 'TCombobox';
+FClassType := TComboBox;
 end;
 
 function TIDEComboBox.CreateMethod(AOwner : TComponent): TControl;
@@ -811,6 +826,7 @@ begin
 inherited create;
 FImage := 'images/bitbtn.xpm';
 FClassName := 'TBitbtn';
+FClassType := TBitBtn;
 end;
 
 function TIDEBitBtn.CreateMethod(AOwner : TComponent): TControl;
@@ -864,6 +880,7 @@ begin
 inherited create;
 FImage := 'images/speedbutton.xpm';
 FClassName := 'TSpeedbutton';
+FClassType := TSpeedButton;
 end;
 
 function TIDESpeedbutton.CreateMethod(AOwner : TComponent): TControl;
@@ -935,6 +952,7 @@ begin
 inherited create;
 FImage := 'images/spinedit.xpm';
 FClassName := 'TSpinEdit';
+FClassType := TSpinEdit;
 end;
 
 function TIDESpinedit.CreateMethod(AOwner : TComponent): TControl;
@@ -990,6 +1008,7 @@ begin
 inherited create;
 FImage := 'images/notebook.xpm';
 FClassName := 'TNotebook';
+FClassType := TNotebook;
 end;
 
 function TIDENotebook.CreateMethod(AOwner : TComponent): TControl;

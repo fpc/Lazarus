@@ -488,12 +488,14 @@ Var
 Temp : TComponentInterface;
 TempInterface : TComponentInterface;
 TempClass    : TPersistentClass;
+TempName    : String;
+Found : Boolean;
+I, Num : Integer;
 Begin
 Temp := TComponentInterface.Create;
 Writeln('2');
 //TempClass := GetClass(Typename);
 Writeln('3');
-
 if SelectedComponents.Count = 0 then
 Temp.FControl := TypeClass.Create(nil)
 else
@@ -502,8 +504,7 @@ Writeln('Selected Components > 0');
 if (SelectedComponents.Items[0] is TWinControl) and (csAcceptsControls in TWinControl(SelectedComponents.Items[0]).ControlStyle) then
     Begin
        Writeln('The Control is a TWinControl and it accepts controls');
-       Writeln('SelectedComponents.Count = '+Inttostr(SelectedComponents.Count));
-       Temp.FControl := TypeClass.Create(TComponent(SelectedComponents.Items[0]));
+       Temp.FControl := TypeClass.Create(SelectedComponents.Items[0]);
     end
     else
     Begin
@@ -540,6 +541,31 @@ Writeln('4');
         end
      end;
 Writeln('5');
+
+
+TempName := Temp.FControl.ClassName;
+delete(TempName,1,1);
+writeln('TempName is ....'+TempName);
+Found := True;
+Num := 0;
+While Found do
+   Begin
+   Found := False;
+   inc(num);
+   Writeln('NUm = '+inttostr(num));
+   for I := 0 to FComponentInterfaceList.Count-1 do
+       begin
+       if TComponent(TComponentInterface(FComponentInterfaceList.Items[i]).FControl).Name = TempName+inttostr(Num) then
+          begin
+             Found := True;
+             break;
+          end;
+       end;
+   end;
+Temp.FControl.Name := TempName+Inttostr(num);
+Writeln('TempName + num = '+TempName+Inttostr(num));
+
+
 if (Temp.FControl is TControl) then
 Begin
 if (X <> -1) and (Y <> -1) and (W <> -1) and (H <> -1) then
