@@ -3053,10 +3053,10 @@ begin
         Style := GetStyle('default');
         If Style = nil then
           exit;
-        GC := Style^.base_gc[GTK_STATE_ACTIVE];
+        GC := Style^.base_gc[GTK_STATE_NORMAL];
         If GC = nil then begin
           Result.Fill := GDK_Solid;
-          Result.foreground := Style^.base[GTK_STATE_ACTIVE];
+          Result.foreground := Style^.base[GTK_STATE_NORMAL];
         end
         else
           GDK_GC_Get_Values(GC, @Result);
@@ -3246,6 +3246,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.103  2002/09/26 21:29:30  lazarus
+  MWE: Fixed window color
+
   Revision 1.102  2002/09/20 13:11:13  lazarus
   MG: fixed TPanel and Frame3D
 
