@@ -6046,7 +6046,7 @@ var
 begin
   ProjectDir:=Project1.ProjectDirectory;
   SearchPath:=CodeToolBoss.DefineTree.GetSrcPathForDirectory(ProjectDir);
-  Result:=SearchFileInPath(AFilename,ProjectDir,SearchPath,';');
+  Result:=SearchFileInPath(AFilename,ProjectDir,SearchPath,';',[]);
 end;
 
 //------------------------------------------------------------------------------
@@ -7720,6 +7720,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.461  2003/02/07 19:13:57  mattias
+  fixed searching lazarus in current dir
+
   Revision 1.460  2003/02/07 17:49:21  mattias
   added ReadAllLinks
 
