@@ -67,22 +67,25 @@ type
     FImageIndex: integer;
     procedure SetImageIndex(const AValue: integer);
   protected
-    procedure ReadState(Reader: TAbstractReader); override;
     //procedure Paint; override;
     procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
+    procedure SetParent(AParent : TWinControl); override;
   public
     procedure AddControl; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure AdjustClientRect(var ARect: TRect); override;
+    function PageIndex: integer;
   published
     property Caption;
     property ImageIndex: integer read FImageIndex write SetImageIndex default -1;
     // property TabOrder; This property needs to be created in TWinControl
+    property Left stored False;
+    property Top stored False;
+    property Width stored False;
     property Height stored False;
     property TabOrder stored False;
     property Visible stored False;
-    property Width stored False;
   end;
 
   TCustomNotebook = class;
@@ -101,6 +104,7 @@ type
     function GetCount: Integer; override;
     function GetObject(Index: Integer): TObject; override;
     procedure Put(Index: Integer; const S: String); override;
+    procedure RemovePage(Index: integer);
   public
     constructor Create(thePageList: TList; theNotebook: TCustomNotebook);
     procedure Clear; override;
@@ -131,6 +135,7 @@ type
     fOnPageChanged: TNotifyEvent;
     fShowTabs: Boolean;
     fTabPosition: TTabPosition;
+    fAddingPages: boolean;
 
     Procedure CNNotify(var Message : TLMNotify); message CN_NOTIFY;
     procedure DoSendPageIndex;
@@ -140,6 +145,7 @@ type
     function GetPage(aIndex: Integer): TPage;
     function GetPageCount : integer;
     function GetPageIndex: Integer;
+    function IsStoredActivePage: boolean;
     //function InternalSetMultiLine(Value: boolean): boolean;
     procedure SetActivePage(const Value: String);
     procedure SetImages(const AValue: TImageList);
@@ -152,17 +158,16 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams);override;
     procedure CreateWnd; override;
+    procedure DoCreateWnd;
     procedure Change; virtual;
-    function GetChildOwner: TComponent; override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    procedure Loaded; override;
     procedure ReadState(Reader: TAbstractReader); override;
     procedure ShowControl(APage: TControl); override;
     procedure UpdateTabProperties; virtual;
-
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    property ActivePage: String read GetActivePage write SetActivePage;
+    property ActivePage: String read GetActivePage write SetActivePage stored IsStoredActivePage;
     //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
     property Page[Index: Integer]: TPage read GetPage;
     property PageCount : integer read GetPageCount;
@@ -170,7 +175,7 @@ type
     property PageList: TList read fPageList;
     property Pages: TStrings read fAccess write SetPages;
     property OnPageChanged: TNotifyEvent read fOnPageChanged write fOnPageChanged;
-    property ShowTabs: Boolean read fShowTabs write SetShowTabs;
+    property ShowTabs: Boolean read fShowTabs write SetShowTabs default True;
     property TabPosition: TTabPosition read fTabPosition write SetTabPosition;
     procedure DoCloseTabClicked(APage: TPage); virtual;
     property Images: TImageList read FImages write SetImages;
@@ -505,7 +510,11 @@ end.
 
  {
   $Log$
+  Revision 1.31  2002/09/05 12:11:42  lazarus
+  MG: TNotebook is now streamable
+
   Revision 1.30  2002/09/05 10:12:06  lazarus
+
   New dialog for multiline caption of TCustomLabel.
   Prettified TStrings property editor.
   Memo now has automatic scrollbars (not fully working), WordWrap and Scrollbars property
