@@ -3677,7 +3677,10 @@ Begin
       if SelAvail and (BlockBegin.Y = BlockEnd.Y) 
       then FindText := SelText
       else FindText := GetWordAtRowCol(LogicalCaretXY);
-    end 
+    end else begin
+      if InputHistories.FindHistory.Count>0 then
+        FindText:=InputHistories.FindHistory[0];
+    end;
   end;
   
   FindInFiles(AProject, FindText);
@@ -3686,8 +3689,8 @@ End;
 procedure TSourceNotebook.FindInFiles(AProject: TProject;
   const FindText: string);
 begin
-  if FindInFilesDialog = nil
-  then FindInFilesDialog := CreateFindInFilesDialog;
+  if FindInFilesDialog = nil then
+    FindInFilesDialog := CreateFindInFilesDialog;
 
   FindInFilesDialog.FindText:= FindText;
   IDEDialogLayoutList.ApplyLayout(FindInFilesDialog,320,430);
