@@ -67,6 +67,7 @@ const
 type
   TPkgAddedEvent = procedure(APackage: TLazPackage) of object;
   TPkgDeleteEvent = procedure(APackage: TLazPackage) of object;
+  TDependencyModifiedEvent = procedure(ADependency: TPkgDependency) of object;
 
   TLazPackageGraph = class
   private
@@ -79,6 +80,7 @@ type
     FOnBeginUpdate: TNotifyEvent;
     FOnChangePackageName: TPkgChangeNameEvent;
     FOnDeletePackage: TPkgDeleteEvent;
+    FOnDependencyModified: TDependencyModifiedEvent;
     FOnEndUpdate: TNotifyEvent;
     FRegistrationFile: TPkgFile;
     FRegistrationPackage: TLazPackage;
@@ -134,6 +136,11 @@ type
     procedure ClosePackage(APackage: TLazPackage);
     procedure MarkNeededPackages;
     procedure CloseUnneededPackages;
+    procedure ChangePackageID(APackage: TLazPackage;
+                              const NewName: string; NewVersion: TPkgVersion;
+                              RenameDependencies: boolean);
+    function GetBrokenDependenciesWhenChangingPkgID(APackage: TLazPackage;
+                         const NewName: string; NewVersion: TPkgVersion): TList;
     function CheckIfPackageCanBeClosed(APackage: TLazPackage): boolean;
     function PackageIsNeeded(APackage: TLazPackage): boolean;
     procedure RegisterStaticPackages;
@@ -157,7 +164,10 @@ type
     property OnBeginUpdate: TNotifyEvent read FOnBeginUpdate write FOnBeginUpdate;
     property OnChangePackageName: TPkgChangeNameEvent read FOnChangePackageName
                                                      write FOnChangePackageName;
-    property OnDeletePackage: TPkgDeleteEvent read FOnDeletePackage write FOnDeletePackage;
+    property OnDependencyModified: TDependencyModifiedEvent
+                         read FOnDependencyModified write FOnDependencyModified;
+    property OnDeletePackage: TPkgDeleteEvent read FOnDeletePackage
+                                              write FOnDeletePackage;
     property OnEndUpdate: TNotifyEvent read FOnEndUpdate write FOnEndUpdate;
     property Packages[Index: integer]: TLazPackage read GetPackages; default;
     property RegistrationFile: TPkgFile read FRegistrationFile;
@@ -724,8 +734,7 @@ begin
   BeginUpdate;
   FTree.Add(APackage);
   FItems.Add(APackage);
-  APackage.OnChangeName:=@PackageChangedName;
-  
+
   // open all dependencies
   Dependency:=APackage.FirstRequiredDependency;
   while Dependency<>nil do begin
@@ -827,6 +836,83 @@ begin
   for i:=FItems.Count-1 downto 0 do
     if not (lpfNeeded in Packages[i].Flags) then Delete(i);
   EndUpdate;
+end;
+
+procedure TLazPackageGraph.ChangePackageID(APackage: TLazPackage;
+  const NewName: string; NewVersion: TPkgVersion; RenameDependencies: boolean);
+var
+  Dependency, FirstUpdateDependency: TPkgDependency;
+  RequiredPackage: TLazPackage;
+  ANode: TAVLTreeNode;
+  NextDependency: TPkgDependency;
+  OldPkgName: String;
+begin
+  OldPkgName:=APackage.Name;
+  if (AnsiCompareText(OldPkgName,NewName)=0)
+  and (APackage.Version.Compare(NewVersion)=0) then begin
+    // ID does not change
+    // -> just rename
+    APackage.Name:=NewName;
+    exit;
+  end;
+
+  // ID changed
+  
+  // break or change all dependencies, that became incompatible
+  Dependency:=APackage.FirstUsedByDependency;
+  FirstUpdateDependency:=nil;
+  while Dependency<>nil do begin
+    NextDependency:=Dependency.NextUsedByDependency;
+    if not Dependency.IsCompatible(NewName,NewVersion) then begin
+      if RenameDependencies then begin
+        Dependency.MakeCompatible(NewName,NewVersion);
+        if Assigned(OnDependencyModified) then OnDependencyModified(Dependency);
+      end else begin
+        Dependency.RequiredPackage:=nil;
+        Dependency.AddToList(FirstUpdateDependency,pdlUsedBy);
+      end;
+    end;
+    Dependency:=NextDependency;
+  end;
+  
+  // change ID
+  FTree.Remove(APackage);
+  APackage.ChangeID(NewName,NewVersion);
+  FTree.Add(APackage);
+
+  // update new broken dependencies
+  while FirstUpdateDependency<>nil do begin
+    Dependency.RemoveFromList(FirstUpdateDependency,pdlUsedBy);
+    OpenDependency(Dependency,RequiredPackage);
+  end;
+  // update old broken dependencies
+  ANode:=FindLowestPkgDependencyNodeWithName(NewName);
+  while ANode<>nil do begin
+    Dependency:=TPkgDependency(ANode.Data);
+    if (Dependency.LoadPackageResult<>lprSuccess)
+    and Dependency.IsCompatible(APackage) then
+      OpenDependency(Dependency,RequiredPackage);
+    ANode:=FindNextPkgDependecyNodeWithSameName(ANode);
+  end;
+  
+  if Assigned(OnChangePackageName) then
+    OnChangePackageName(APackage,OldPkgName);
+end;
+
+function TLazPackageGraph.GetBrokenDependenciesWhenChangingPkgID(
+  APackage: TLazPackage; const NewName: string; NewVersion: TPkgVersion
+    ): TList;
+var
+  Dependency: TPkgDependency;
+begin
+  Result:=TList.Create;
+  // find all dependencies, that will become incompatible
+  Dependency:=APackage.FirstUsedByDependency;
+  while Dependency<>nil do begin
+    if not Dependency.IsCompatible(NewName,NewVersion) then
+      Result.Add(Dependency);
+    Dependency:=Dependency.NextUsedByDependency;
+  end;
 end;
 
 function TLazPackageGraph.CheckIfPackageCanBeClosed(APackage: TLazPackage

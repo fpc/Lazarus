@@ -215,6 +215,9 @@ type
     property Item[const AIndex: Integer]: TListItem read GetItem write SetItem; default;
     property Owner : TCustomListView read FOwner;
   end;
+  
+  
+  { TListColumn }
 
   TWidth = 0..MaxInt;
 
@@ -254,6 +257,9 @@ type
     property Visible : Boolean read FVisible write SetVisible;
     property Width: TWidth read GetWidth write SetWidth;
   end;
+  
+  
+  { TListColumns }
 
   TListColumns = class(TCollection)
   private
@@ -270,6 +276,9 @@ type
       read GetItem write SetItem; default;
     procedure Assign(Source: TPersistent); override;
   end;
+  
+  
+  { TCustomListView }
 
   TItemChange = (ctText, ctImage, ctState);
   TViewStyle = (vsList,vsReport);
@@ -374,8 +383,11 @@ type
     procedure EndUpdate;
     property Selected: TListItem read GetSelection write SetSelection;
   end;
+  
+  
+  { TListView }
 
- TListView = class(TCustomListView)
+  TListView = class(TCustomListView)
   published
     property Align;
     property Anchors;
@@ -1742,6 +1754,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.71  2003/04/13 13:45:04  mattias
+  implemented broken dependencies dialog
+
   Revision 1.70  2003/04/08 16:56:55  mattias
   implemented saving package
 

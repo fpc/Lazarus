@@ -47,9 +47,9 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, FileCtrl,
   Dialogs, Menus, CodeToolManager, CodeCache, Laz_XMLCfg, AVL_Tree,
   LazarusIDEStrConsts, KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs,
-  InputHistory, IDEDefs, UComponentManMain, PackageEditor, AddToPackageDlg,
-  PackageDefs, PackageLinks, PackageSystem, ComponentReg, OpenInstalledPkgDlg,
-  PkgGraphExporer,
+  InputHistory, IDEDefs, UComponentManMain, Project, ComponentReg,
+  PackageEditor, AddToPackageDlg, PackageDefs, PackageLinks, PackageSystem,
+  OpenInstalledPkgDlg, PkgGraphExporer, BrokenDependenciesDlg,
   BasePkgManager, MainBar;
 
 type
@@ -64,11 +64,12 @@ type
                               var HasRegisterProc: boolean);
     function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
                                         ): TModalResult;
-    function OnPackageEditorSavePackage(Sender: TObject;
-                                           APackage: TLazPackage): TModalResult;
+    function OnPackageEditorSavePackage(Sender: TObject; APackage: TLazPackage;
+                                        SaveAs: boolean): TModalResult;
     procedure PackageGraphChangePackageName(APackage: TLazPackage;
                                             const OldName: string);
     procedure PackageGraphDeletePackage(APackage: TLazPackage);
+    procedure PackageGraphDependencyModified(ADependency: TPkgDependency);
     function PackageGraphExplorerOpenPackage(Sender: TObject;
                                            APackage: TLazPackage): TModalResult;
     procedure PkgManagerAddPackage(Pkg: TLazPackage);
@@ -99,7 +100,10 @@ type
                          Flags: TPkgOpenFlags): TModalResult; override;
     function DoSavePackage(APackage: TLazPackage;
                            Flags: TPkgSaveFlags): TModalResult; override;
+    function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; override;
     function DoShowPackageGraph: TModalResult;
+    function DoClosePackageEditor(APackage: TLazPackage): TModalResult; override;
+    function DoCloseAllPackageEditors: TModalResult; override;
   end;
 
 implementation
@@ -223,9 +227,12 @@ begin
 end;
 
 function TPkgManager.OnPackageEditorSavePackage(Sender: TObject;
-  APackage: TLazPackage): TModalResult;
+  APackage: TLazPackage; SaveAs: boolean): TModalResult;
 begin
-  Result:=DoSavePackage(APackage,[]);
+  if SaveAs then
+    Result:=DoSavePackage(APackage,[psfSaveAs])
+  else
+    Result:=DoSavePackage(APackage,[]);
 end;
 
 procedure TPkgManager.PackageGraphChangePackageName(APackage: TLazPackage;
@@ -241,6 +248,18 @@ begin
     APackage.Editor.Hide;
     APackage.Editor.Free;
   end;
+end;
+
+procedure TPkgManager.PackageGraphDependencyModified(ADependency: TPkgDependency
+  );
+var
+  DepOwner: TObject;
+begin
+  DepOwner:=ADependency.Owner;
+  if DepOwner is TLazPackage then
+    TLazPackage(DepOwner).Modified:=true
+  else if DepOwner is TProject then
+    TProject(DepOwner).Modified:=true;
 end;
 
 function TPkgManager.PackageGraphExplorerOpenPackage(Sender: TObject;
@@ -304,6 +323,8 @@ var
   ConflictPkg: TLazPackage;
   PkgFile: TPkgFile;
   LowerFilename: String;
+  BrokenDependencies: TList;
+  RenameDependencies: Boolean;
 begin
   OldPkgFilename:=APackage.Filename;
 
@@ -402,6 +423,22 @@ begin
         continue; // try again
       end;
       
+      // check for broken dependencies
+      BrokenDependencies:=PackageGraph.GetBrokenDependenciesWhenChangingPkgID(
+        APackage,NewPkgName,APackage.Version);
+      RenameDependencies:=false;
+      try
+        if BrokenDependencies.Count>0 then begin
+          Result:=ShowBrokenDependencies(BrokenDependencies,
+                                         DefaultBrokenDepButtons);
+          if Result=mrAbort then exit;
+          if Result=mrRetry then continue;
+          if Result=mrYes then RenameDependencies:=true;
+        end;
+      finally
+        BrokenDependencies.Free;
+      end;
+      
       // check existing file
       if (CompareFilenames(NewFileName,OldPkgFilename)<>0)
       and FileExists(NewFileName) then begin
@@ -411,6 +448,10 @@ begin
         if Result<>mrOk then exit;
       end;
       
+      // check if new file is read/writable
+      Result:=MainIDE.DoCheckCreatingFile(NewFileName,true);
+      if Result=mrAbort then exit;
+
     until Result<>mrRetry;
   finally
     InputHistories.StoreFileDialogSettings(SaveDialog);
@@ -421,17 +462,9 @@ begin
   APackage.Filename:=NewFilename;
   
   // rename package
-  if NewPkgName<>APackage.Name then begin
-    if AnsiCompareText(NewPkgName,APackage.Name)=0 then begin
-      // just change the case
-      APackage.Name:=NewPkgName;
-    end else begin
-      // name change -> update package graph
-      APackage.Name:=NewPkgName;
-      // ToDo: update package graph
-    end;
-  end;
-  
+  PackageGraph.ChangePackageID(APackage,NewPkgName,APackage.Version,
+                               RenameDependencies);
+
   // clean up old package file to reduce ambigiousities
   if FileExists(OldPkgFilename)
   and (CompareFilenames(OldPkgFilename,NewFilename)<>0) then begin
@@ -444,8 +477,7 @@ begin
                              EnvironmentOptions.RecentPackageFiles);
       end else begin
         MessageDlg('Delete failed',
-          'Deleting of file "'+OldPkgFilename+'"'
-             +' failed.',mtError,[mbOk],0);
+          'Unable to delete file "'+OldPkgFilename+'".',mtError,[mbOk],0);
       end;
     end;
   end;
@@ -465,6 +497,7 @@ begin
   PackageGraph.OnChangePackageName:=@PackageGraphChangePackageName;
   PackageGraph.OnAddPackage:=@PkgManagerAddPackage;
   PackageGraph.OnDeletePackage:=@PackageGraphDeletePackage;
+  PackageGraph.OnDependencyModified:=@PackageGraphDependencyModified;
   
   PackageEditors:=TPackageEditors.Create;
   PackageEditors.OnOpenFile:=@MainIDE.DoOpenMacroFile;
@@ -579,6 +612,7 @@ begin
   NewPackage:=PackageGraph.NewPackage('NewPackage');
   NewPackage.AddRequiredDependency(
     PackageGraph.FCLPackage.CreateDependencyForThisPkg);
+  NewPackage.Modified:=false;
 
   // open a package editor
   CurEditor:=PackageEditors.OpenEditor(NewPackage);
@@ -670,17 +704,28 @@ begin
     Result:=mrAbort;
     exit;
   end;
-  MainIDE.SaveSourceEditorChangesToCodeCache(-1);
-
+  
   if APackage.IsVirtual then Include(Flags,psfSaveAs);
 
   // check if package needs saving
-  if (not (psfSaveAs in Flags)) and (not APackage.ReadOnly)
-  and (not APackage.Modified)
+  if (not (psfSaveAs in Flags))
+  and (not APackage.ReadOnly) and (not APackage.Modified)
   and FileExists(APackage.Filename) then begin
     Result:=mrOk;
     exit;
   end;
+
+  // ask user if package should be saved
+  if pfAskBeforeSaving in Flags then begin
+    Result:=MessageDlg('Save package?',
+               'Package "'+APackage.IDAsString+'" changed. Save?',
+               mtConfirmation,[mbYes,mbNo,mbAbort],0);
+    if (Result=mrNo) then Result:=mrIgnore;
+    if Result<>mrOk then exit;
+  end;
+
+  // save editor files to codetools
+  MainIDE.SaveSourceEditorChangesToCodeCache(-1);
 
   // save package
   if (psfSaveAs in Flags) then begin
@@ -697,6 +742,7 @@ begin
 
   // save
   try
+    ClearFile(APackage.Filename,true);
     XMLConfig:=TXMLConfig.Create(APackage.Filename);
     try
       XMLConfig.Clear;
@@ -709,12 +755,13 @@ begin
     on E: Exception do begin
       Result:=MessageDlg('Error Writing Package',
         'Unable to write package "'+APackage.IDAsString+'"'#13
-        +'to file "'+APackage.Filename+'".',
+        +'to file "'+APackage.Filename+'".'#13
+        +'Error: '+E.Message,
         mtError,[mbAbort,mbCancel],0);
       exit;
     end;
   end;
-  
+
   // success
   APackage.Modified:=false;
   // add to recent
@@ -732,6 +779,59 @@ begin
     PackageGraphExplorer.OnOpenPackage:=@PackageGraphExplorerOpenPackage;
   end;
   PackageGraphExplorer.ShowOnTop;
+  Result:=mrOk;
+end;
+
+function TPkgManager.DoCloseAllPackageEditors: TModalResult;
+var
+  APackage: TLazPackage;
+begin
+  while PackageEditors.Count>0 do begin
+    APackage:=PackageEditors.Editors[PackageEditors.Count-1].LazPackage;
+    Result:=DoClosePackageEditor(APackage);
+    if Result<>mrOk then exit;
+  end;
+  Result:=mrOk;
+end;
+
+function TPkgManager.DoClosePackageEditor(APackage: TLazPackage): TModalResult;
+begin
+  if APackage.Editor<>nil then begin
+    APackage.Editor.Free;
+  end;
+  Result:=mrOk;
+end;
+
+function TPkgManager.DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult;
+var
+  AllSaved: Boolean;
+  i: Integer;
+  CurPackage: TLazPackage;
+begin
+  try
+    repeat
+      AllSaved:=true;
+      i:=0;
+      while i<PackageGraph.Count do begin
+        CurPackage:=PackageGraph[i];
+        if CurPackage.Modified and (not CurPackage.ReadOnly)
+        and (not (lpfSkipSaving in CurPackage.Flags)) then begin
+          Result:=DoSavePackage(CurPackage,Flags);
+          if Result=mrIgnore then
+            CurPackage.Flags:=CurPackage.Flags+[lpfSkipSaving];
+          if Result<>mrOk then exit;
+          AllSaved:=false;
+        end;
+        inc(i);
+      end;
+    until AllSaved;
+  finally
+    // clear all lpfSkipSaving flags
+    for i:=0 to PackageGraph.Count-1 do begin
+      CurPackage:=PackageGraph[i];
+      CurPackage.Flags:=CurPackage.Flags-[lpfSkipSaving];
+    end;
+  end;
   Result:=mrOk;
 end;
 

@@ -1207,7 +1207,21 @@ begin
     if Result=mrAbort then exit;
   end;
   confPath:=SetDirSeparators(confPath);
-  xmlconfig := TXMLConfig.Create(confPath);
+  try
+    ClearFile(confPath,true);
+    xmlconfig := TXMLConfig.Create(confPath);
+  except
+    on E: Exception do begin
+      writeln('ERROR: ',E.Message);
+      MessageDlg('Write error',
+        'Unable to write the project info file'#13
+        +'"'+ProjectInfoFile+'".'#13
+        +'Error: '+E.Message
+        ,mtError,[mbOk],0);
+      Result:=mrCancel;
+      exit;
+    end;
+  end;
   UpdateUsageCounts;
 
   repeat
@@ -2282,6 +2296,9 @@ end.
 
 {
   $Log$
+  Revision 1.103  2003/04/13 13:45:04  mattias
+  implemented broken dependencies dialog
+
   Revision 1.102  2003/04/07 23:49:03  mattias
   implemented adding units to packages
 

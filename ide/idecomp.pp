@@ -35,6 +35,10 @@ unit IDEComp;
 
 { $DEFINE INTERBASE}
 
+{$IFDEF INTERBASE}
+  {$linklib crypt}
+{$ENDIF}
+
 interface
 
 uses

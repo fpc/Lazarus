@@ -102,7 +102,8 @@ const
 
   ButtonIds : Array[TMsgDlgbtn] of Longint = (idButtonYes, idButtonNo,
     idButtonOK, idButtonCancel, idButtonAbort, idButtonRetry, idButtonIgnore,
-    idButtonAll, idButtonNoToAll, idButtonYesToAll, idButtonHelp);
+    idButtonAll, idButtonNoToAll, idButtonYesToAll, idButtonHelp,
+    idButtonClose);
 
   DialogResults : Array[idButtonOK..idButtonNoToAll] of TModalResult = (
     mrOk, mrCancel, mrOk{CLOSE!!}, mrYes, mrNo, -1{HELP!!}, mrAbort, mrRetry,
@@ -232,6 +233,9 @@ end;
 
 {
    $Log$
+   Revision 1.22  2003/04/13 13:45:04  mattias
+   implemented broken dependencies dialog
+
    Revision 1.21  2002/10/25 14:59:11  lazarus
    AJ: MessageDlgs -> PromptUser, better Cancel/Default order
 

@@ -216,6 +216,7 @@ type
     procedure Assign(Source: TPkgDependency);
     procedure ConsistencyCheck;
     function IsCompatible(Pkg: TLazPackageID): boolean;
+    procedure MakeCompatible(const PkgName: string; const Version: TPkgVersion);
     function AsString: string;
     function NextUsedByDependency: TPkgDependency;
     function PrevUsedByDependency: TPkgDependency;
@@ -290,7 +291,8 @@ type
                        //   (for example because it is Installed or an Installed
                        //    package requires this package)
     lpfVisited,        // Used by the PackageGraph to avoid double checking
-    lpfDestroying      // set during destruction
+    lpfDestroying,     // set during destruction
+    lpfSkipSaving
     );
   TLazPackageFlags = set of TLazPackageFlag;
   
@@ -326,7 +328,6 @@ type
     FIconFile: string;
     FInstalled: TPackageInstallType;
     FModifiedLock: integer;
-    FOnChangeName: TPkgChangeNameEvent;
     FPackageEditor: TBasePackageEditor;
     FPackageType: TLazPackageType;
     FReadOnly: boolean;
@@ -402,6 +403,7 @@ type
     function Requires(APackage: TLazPackage): boolean;
     procedure AddUsedByDependency(Dependency: TPkgDependency);
     procedure RemoveUsedByDependency(Dependency: TPkgDependency);
+    procedure ChangeID(const NewName: string; NewVersion: TPkgVersion);
   public
     property AddDependCompilerOptions: TAdditionalCompilerOptions
                                                  read FAddDependCompilerOptions;
@@ -430,7 +432,6 @@ type
     property Installed: TPackageInstallType read FInstalled write SetInstalled;
     property Registered: boolean read FRegistered write SetRegistered;
     property Modified: boolean read GetModified write SetModified;
-    property OnChangeName: TPkgChangeNameEvent read FOnChangeName write FOnChangeName;
     property PackageType: TLazPackageType
       read FPackageType write SetPackageType;
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
@@ -467,7 +468,7 @@ const
     'RunTime', 'DesignTime', 'RunAndDesignTime');
   LazPackageFlagNames: array[TLazPackageFlag] of string = (
     'lpfAutoIncrementVersionOnBuild', 'lpfModified', 'lpfAutoUpdate',
-    'lpfNeeded', 'lpfVisited', 'lpfDestroying');
+    'lpfNeeded', 'lpfVisited', 'lpfDestroying', 'lpfSkipSaving');
     
 var
   // All TPkgDependency are added to this AVL tree (sorted for names, not version!)
@@ -1002,6 +1003,14 @@ begin
   Result:=IsCompatible(Pkg.Name,Pkg.Version);
 end;
 
+procedure TPkgDependency.MakeCompatible(const PkgName: string;
+  const Version: TPkgVersion);
+begin
+  PackageName:=PkgName;
+  if MinVersion.Compare(Version)>0 then MinVersion.Assign(Version);
+  if MaxVersion.Compare(Version)<0 then MaxVersion.Assign(Version);
+end;
+
 function TPkgDependency.AsString: string;
 begin
   Result:=FPackageName;
@@ -1309,16 +1318,13 @@ begin
     Include(FFlags,lpfModified)
   else
     Exclude(FFlags,lpfModified);
+  Exclude(FFlags,lpfSkipSaving);
 end;
 
 procedure TLazPackage.SetName(const AValue: string);
-var
-  OldName: String;
 begin
   if FName=AValue then exit;
-  OldName:=FName;
   FName:=AValue;
-  if Assigned(OnChangeName) then OnChangeName(Self,OldName);
   Modified:=true;
 end;
 
@@ -1834,6 +1840,12 @@ end;
 procedure TLazPackage.RemoveUsedByDependency(Dependency: TPkgDependency);
 begin
   Dependency.RemoveFromList(FFirstUsedByDependency,pdlUsedBy);
+end;
+
+procedure TLazPackage.ChangeID(const NewName: string; NewVersion: TPkgVersion);
+begin
+  Version.Assign(NewVersion);
+  Name:=NewName;
 end;
 
 { TPkgComponent }

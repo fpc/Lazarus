@@ -48,7 +48,8 @@ uses
 
 type
   TPkgSaveFlag = (
-    psfSaveAs
+    psfSaveAs,
+    pfAskBeforeSaving
     );
   TPkgSaveFlags = set of TPkgSaveFlag;
   
@@ -74,6 +75,9 @@ type
                          Flags: TPkgOpenFlags): TModalResult; virtual; abstract;
     function DoSavePackage(APackage: TLazPackage;
                           Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
+    function DoSaveAllPackages(Flags: TPkgSaveFlags): TModalResult; virtual; abstract;
+    function DoClosePackageEditor(APackage: TLazPackage): TModalResult; virtual; abstract;
+    function DoCloseAllPackageEditors: TModalResult; virtual; abstract;
   end;
 
 var

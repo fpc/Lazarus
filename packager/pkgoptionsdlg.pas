@@ -39,8 +39,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Buttons, LResources, ExtCtrls, StdCtrls,
-  Spin, Dialogs, PathEditorDlg, IDEProcs, IDEOptionDefs,
-  PackageDefs, PackageSystem;
+  Spin, Dialogs, PathEditorDlg, IDEProcs, IDEOptionDefs, LazarusIDEStrConsts,
+  BrokenDependenciesDlg, PackageDefs, PackageSystem;
   
 type
   TPackageOptionsDialog = class(TForm)
@@ -89,6 +89,9 @@ type
     procedure AddOptionsGroupBoxResize(Sender: TObject);
     procedure AddPathsGroupBoxResize(Sender: TObject);
     procedure DescriptionPageResize(Sender: TObject);
+    procedure OkButtonClick(Sender: TObject);
+    procedure PackageOptionsDialogClose(Sender: TObject;
+      var Action: TCloseAction);
     procedure PackageOptionsDialogResize(Sender: TObject);
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
@@ -104,6 +107,7 @@ type
     procedure ReadOptionsFromPackage;
     procedure ReadPkgTypeFromPackage;
     function GetEditForPathButton(AButton: TPathEditorButton): TEdit;
+    procedure ShowMsgPackageTypeMustBeDesign;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -196,12 +200,7 @@ begin
   then begin
     // user sets to runtime only
     if (LazPackage.AutoInstall<>pitNope) then begin
-      MessageDlg('Invalid package type',
-        'The package "'+LazPackage.IDAsString+'" has the auto install flag.'#13
-        +'This means it will be installed in the IDE. Installation packages'#13
-        +'must be designtime Packages.',
-        mtError,[mbCancel],0);
-      ReadPkgTypeFromPackage;
+      ShowMsgPackageTypeMustBeDesign;
     end;
   end;
 end;
@@ -296,6 +295,89 @@ begin
     SetBounds(x,y,w,90);
 end;
 
+procedure TPackageOptionsDialog.OkButtonClick(Sender: TObject);
+var
+  NewPackageType: TLazPackageType;
+  NewVersion: TPkgVersion;
+  BrokenDependencies: TList;
+  RenameDependencies: Boolean;
+  MsgResult: TModalResult;
+begin
+  if LazPackage.ReadOnly then exit;
+  
+  // check changes
+  
+  // package type
+  case PkgTypeRadioGroup.ItemIndex of
+  0:   NewPackageType:=lptDesignTime;
+  1:   NewPackageType:=lptRunTime;
+  else NewPackageType:=lptRunAndDesignTime;
+  end;
+  if NewPackageType<>LazPackage.PackageType then begin
+    if (NewPackageType=lptRunTime) and (LazPackage.AutoInstall<>pitNope) then
+    begin
+      ShowMsgPackageTypeMustBeDesign;
+      exit;
+    end;
+  end;
+
+  // version
+  NewVersion:=TPkgVersion.Create;
+  try
+    NewVersion.Major:=round(VersionMajorSpinEdit.Value);
+    NewVersion.Minor:=round(VersionMinorSpinEdit.Value);
+    NewVersion.Release:=round(VersionReleaseSpinEdit.Value);
+    NewVersion.Build:=round(VersionBuildSpinEdit.Value);
+
+    // check for broken dependencies
+    BrokenDependencies:=PackageGraph.GetBrokenDependenciesWhenChangingPkgID(
+      LazPackage,LazPackage.Name,NewVersion);
+    RenameDependencies:=false;
+    try
+      if BrokenDependencies.Count>0 then begin
+        MsgResult:=ShowBrokenDependencies(BrokenDependencies,
+                                       DefaultBrokenDepButtons);
+        if MsgResult=mrYes then
+          RenameDependencies:=true
+        else if MsgResult=mrNo then
+          RenameDependencies:=false
+        else
+          exit;
+      end;
+    finally
+      BrokenDependencies.Free;
+    end;
+
+    PackageGraph.ChangePackageID(LazPackage,LazPackage.Name,NewVersion,
+                                  RenameDependencies);
+  finally
+    NewVersion.Free;
+  end;
+
+  // Description page
+  LazPackage.Description:=DescriptionMemo.Text;
+  LazPackage.Author:=AuthorEdit.Text;
+  LazPackage.AutoIncrementVersionOnBuild:=AutoIncrementOnBuildCheckBox.Checked;
+
+  // Usage page
+  LazPackage.PackageType:=NewPackageType;
+  LazPackage.AutoUpdate:=(UpdateRadioGroup.ItemIndex=0);
+  with LazPackage.AddDependCompilerOptions do begin
+    UnitPath:=UnitPathEdit.Text;
+    IncludePath:=IncludePathEdit.Text;
+    ObjectPath:=ObjectPathEdit.Text;
+    LibraryPath:=LibraryPathEdit.Text;
+    LinkerOptions:=LinkerOptionsMemo.Text;
+    CustomOptions:=CustomOptionsMemo.Text;
+  end;
+end;
+
+procedure TPackageOptionsDialog.PackageOptionsDialogClose(Sender: TObject;
+  var Action: TCloseAction);
+begin
+  IDEDialogLayoutList.SaveLayout(Self);
+end;
+
 procedure TPackageOptionsDialog.AddPathsGroupBoxResize(Sender: TObject);
 var
   LabelLeft: Integer;
@@ -385,6 +467,7 @@ begin
     Name:='OkButton';
     Caption:='Ok';
     Parent:=Self;
+    OnClick:=@OkButtonClick;
   end;
   
   CancelButton:=TButton.Create(Self);
@@ -688,6 +771,8 @@ end;
 procedure TPackageOptionsDialog.ReadOptionsFromPackage;
 begin
   if LazPackage=nil then exit;
+  
+  OkButton.Enabled:=not LazPackage.ReadOnly;
 
   // Description page
   DescriptionMemo.Text:=LazPackage.Description;
@@ -739,6 +824,16 @@ begin
     Result:=nil;
 end;
 
+procedure TPackageOptionsDialog.ShowMsgPackageTypeMustBeDesign;
+begin
+  MessageDlg('Invalid package type',
+    'The package "'+LazPackage.IDAsString+'" has the auto install flag.'#13
+    +'This means it will be installed in the IDE. Installation packages'#13
+    +'must be designtime Packages.',
+    mtError,[mbCancel],0);
+  ReadPkgTypeFromPackage;
+end;
+
 constructor TPackageOptionsDialog.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -749,6 +844,7 @@ begin
   Position:=poScreenCenter;
   IDEDialogLayoutList.ApplyLayout(Self,450,400);
   OnResize(Self);
+  OnClose:=@PackageOptionsDialogClose;
 end;
 
 destructor TPackageOptionsDialog.Destroy;

@@ -41,7 +41,7 @@ uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
   StdCtrls, ExtCtrls, Menus, Dialogs, Graphics, FileCtrl, AVL_Tree,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
-  Project, PackageDefs, PackageSystem, PackageEditor;
+  Project, BrokenDependenciesDlg, PackageDefs, PackageSystem, PackageEditor;
   
 type
   TPkgGraphExplorer = class(TForm)
@@ -488,7 +488,6 @@ var
   Dependency: TPkgDependency;
   UsedByDep: TPkgDependency;
   sl: TStringList;
-  DepOwner: TObject;
   NewItem: String;
 begin
   GetDependency(PkgTreeView.Selected,Pkg,Dependency);
@@ -498,19 +497,7 @@ begin
     UsedByDep:=Pkg.FirstUsedByDependency;
     sl:=TStringList.Create;
     while UsedByDep<>nil do begin
-      DepOwner:=UsedByDep.Owner;
-      if (DepOwner<>nil) then begin
-        if DepOwner is TLazPackage then begin
-          NewItem:='Package: '+TLazPackage(DepOwner).IDAsString;
-        end else if DepOwner is TProject then begin
-          NewItem:='Project: '
-                       +ExtractFileNameOnly(TProject(DepOwner).ProjectInfoFile);
-        end else begin
-          NewItem:=DepOwner.ClassName
-        end;
-      end else begin
-        NewItem:='Dependency without Owner: '+UsedByDep.AsString;
-      end;
+      NewItem:=GetDependencyOwnerAsString(UsedByDep);
       sl.Add(NewItem);
       UsedByDep:=UsedByDep.NextUsedByDependency;
     end;

@@ -354,6 +354,8 @@ type
     function DoInitProjectRun: TModalResult; virtual; abstract;
     function DoOpenMacroFile(Sender: TObject;
         const AFilename: string): TModalResult; virtual;
+    function DoCheckCreatingFile(const AFilename: string;
+        CheckReadable: boolean): TModalResult; virtual;
     
     function DoCheckFilesOnDisk: TModalResult; virtual; abstract;
     function DoCheckAmbigiousSources(const AFilename: string;
@@ -1349,6 +1351,61 @@ function TMainIDEBar.DoOpenMacroFile(Sender: TObject; const AFilename: string
 begin
   Result:=DoOpenEditorFile(AFilename,-1,
                   [ofOnlyIfExists,ofAddToRecent,ofRegularFile,ofConvertMacros]);
+end;
+
+{-------------------------------------------------------------------------------
+  function TMainIDEBar.DoCheckCreatingFile(const AFilename: string;
+    CheckReadable: boolean): TModalResult;
+-------------------------------------------------------------------------------}
+function TMainIDEBar.DoCheckCreatingFile(const AFilename: string;
+  CheckReadable: boolean): TModalResult;
+var
+  fs: TFileStream;
+  c: char;
+begin
+  // create if not yet done
+  if not FileExists(AFilename) then begin
+    try
+      fs:=TFileStream.Create(AFilename,fmCreate);
+      fs.Free;
+    except
+      Result:=MessageDlg('Unable to create file',
+        'Unable to create file "'+AFilename+'".',mtError,[mbCancel,mbAbort],0);
+      exit;
+    end;
+  end;
+  // check writable
+  try
+    if CheckReadable then
+      fs:=TFileStream.Create(AFilename,fmOpenWrite)
+    else
+      fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
+    try
+      fs.Seek(0,soEnd);
+      fs.Write(' ',1);
+    finally
+      fs.Free;
+    end;
+  except
+    Result:=MessageDlg('Unable to write file',
+      'Unable to write file "'+AFilename+'".',mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+  // check readable
+  try
+    fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
+    try
+      fs.Seek(-1,soEnd);
+      fs.Read(c,1);
+    finally
+      fs.Free;
+    end;
+  except
+    Result:=MessageDlg('Unable to read file',
+      'Unable to read file "'+AFilename+'".',mtError,[mbCancel,mbAbort],0);
+    exit;
+  end;
+  Result:=mrOk;
 end;
 
 {-------------------------------------------------------------------------------

@@ -41,22 +41,28 @@ uses
   LMessages, Forms, Controls, GraphType, Graphics, Buttons, StdCtrls;
 
 
-//type
-//   TDialogButtons = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry,
-//                    mbIgnore, mbAll, mbNoToAll, mbYesToAll, mbHelp);
-//   TDialogButtonsSet = set of TDialogButtons;
 type
-   TMsgDlgType    = (mtWarning, mtError, mtInformation, mtConfirmation,
-                     mtCustom);
-   TMsgDlgBtn     = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore,
-                     mbAll, mbNoToAll, mbYesToAll, mbHelp);
-   TMsgDlgButtons = set of TMsgDlgBtn;
+  TMsgDlgType    = (mtWarning, mtError, mtInformation, mtConfirmation,
+                    mtCustom);
+  TMsgDlgBtn     = (mbYes, mbNo, mbOK, mbCancel, mbAbort, mbRetry, mbIgnore,
+                    mbAll, mbNoToAll, mbYesToAll, mbHelp, mbClose);
+  TMsgDlgButtons = set of TMsgDlgBtn;
 
    
 const
-   mbYesNoCancel = [mbYes, mbNo, mbCancel];
-   mbOKCancel = [mbOK, mbCancel];
-   mbAbortRetryIgnore = [mbAbort, mbRetry, mbIgnore];
+  mbYesNoCancel = [mbYes, mbNo, mbCancel];
+  mbOKCancel = [mbOK, mbCancel];
+  mbAbortRetryIgnore = [mbAbort, mbRetry, mbIgnore];
+  
+  MsgDlgBtnToBitBtnKind: array[TMsgDlgBtn] of TBitBtnKind = (
+    bkYes, bkNo, bkOK, bkCancel, bkAbort, bkRetry, bkIgnore,
+    bkAll, bkNoToAll, bkYesToAll, bkHelp, bkClose
+    );
+
+  BitBtnKindToMsgDlgBtn: array[TBitBtnKind] of TMsgDlgBtn = (
+    mbOk, mbOK, mbCancel, mbHelp, mbYes, mbNo,
+    mbClose, mbAbort, mbRetry, mbIgnore, mbAll, mbNoToALl, mbYesToAll
+    );
 
 type
 
@@ -340,6 +346,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.30  2003/04/13 13:45:04  mattias
+  implemented broken dependencies dialog
+
   Revision 1.29  2003/04/08 09:04:07  mattias
   fixed registration for fpc 1.0.x
 

@@ -49,7 +49,8 @@ type
   TOnOpenPackage =
     function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
   TOnSavePackage =
-    function(Sender: TObject; APackage: TLazPackage): TModalResult of object;
+    function(Sender: TObject; APackage: TLazPackage;
+             SaveAs: boolean): TModalResult of object;
   TOnCreateNewPkgFile =
     function(Sender: TObject;
              const Params: TAddToPkgResult): TModalResult  of object;
@@ -109,6 +110,7 @@ type
       ARect: TRect; State: TOwnerDrawState);
     procedure RemoveBitBtnClick(Sender: TObject);
     procedure SaveBitBtnClick(Sender: TObject);
+    procedure SaveAsClick(Sender: TObject);
     procedure UseMaxVersionCheckBoxClick(Sender: TObject);
     procedure UseMinVersionCheckBoxClick(Sender: TObject);
   private
@@ -133,7 +135,7 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure DoSave;
+    procedure DoSave(SaveAs: boolean);
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -167,7 +169,7 @@ type
     procedure DoFreeEditor(Pkg: TLazPackage);
     function CreateNewFile(Sender: TObject;
                            const Params: TAddToPkgResult): TModalResult;
-    function SavePackage(APackage: TLazPackage): TModalResult;
+    function SavePackage(APackage: TLazPackage; SaveAs: boolean): TModalResult;
   public
     property Editors[Index: integer]: TPackageEditorForm read GetEditors;
     property OnCreateNewFile: TOnCreateNewPkgFile read FOnCreateNewFile
@@ -321,6 +323,7 @@ begin
     AddPopupMenuItem('-',nil,true);
 
   AddPopupMenuItem('Save',@SaveBitBtnClick,SaveBitBtn.Enabled);
+  AddPopupMenuItem('Save As',@SaveAsClick,not LazPackage.AutoCreated);
   AddPopupMenuItem('Compile',@CompileBitBtnClick,CompileBitBtn.Enabled);
   AddPopupMenuItem('Add',@AddBitBtnClick,AddBitBtn.Enabled);
   AddPopupMenuItem('Remove',@RemoveBitBtnClick,RemoveBitBtn.Enabled);
@@ -410,7 +413,7 @@ begin
     +'Save package?',
     mtConfirmation,[mbYes,mbNo,mbAbort],0);
   if MsgResult=mrYes then begin
-    MsgResult:=PackageEditors.SavePackage(LazPackage);
+    MsgResult:=PackageEditors.SavePackage(LazPackage,false);
   end;
   if MsgResult=mrAbort then CanClose:=false;
 end;
@@ -505,7 +508,12 @@ end;
 
 procedure TPackageEditorForm.SaveBitBtnClick(Sender: TObject);
 begin
-  DoSave;
+  DoSave(false);
+end;
+
+procedure TPackageEditorForm.SaveAsClick(Sender: TObject);
+begin
+  DoSave(true);
 end;
 
 procedure TPackageEditorForm.UseMaxVersionCheckBoxClick(Sender: TObject);
@@ -830,7 +838,7 @@ begin
   with CompilerOptionsBitBtn do begin
     Name:='CompilerOptionsBitBtn';
     Parent:=Self;
-    Caption:='Compiler Options';
+    Caption:='Comp. Opts.';
     OnClick:=@CompilerOptionsBitBtnClick;
     Hint:='Edit Options to compile package';
     ShowHint:=true;
@@ -1283,9 +1291,9 @@ begin
   end;
 end;
 
-procedure TPackageEditorForm.DoSave;
+procedure TPackageEditorForm.DoSave(SaveAs: boolean);
 begin
-  PackageEditors.SavePackage(LazPackage);
+  PackageEditors.SavePackage(LazPackage,SaveAs);
   UpdateButtons;
   UpdateTitle;
   UpdateStatusBar;
@@ -1404,9 +1412,10 @@ begin
     Result:=OnCreateNewFile(Sender,Params);
 end;
 
-function TPackageEditors.SavePackage(APackage: TLazPackage): TModalResult;
+function TPackageEditors.SavePackage(APackage: TLazPackage;
+  SaveAs: boolean): TModalResult;
 begin
-  if Assigned(OnSavePackage) then Result:=OnSavePackage(Self,APackage);
+  if Assigned(OnSavePackage) then Result:=OnSavePackage(Self,APackage,SaveAs);
 end;
 
 initialization
