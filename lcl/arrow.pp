@@ -90,11 +90,10 @@ end;
 constructor TArrow.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  {create the control}
   fCompStyle := csArrow;
-  setbounds(0,0,10,10);
   fArrowType := atLeft;
   fShadowType := stEtchedIn;
+  SetInitialBounds(0,0,10,10);
 end;
 
 destructor TArrow.Destroy;

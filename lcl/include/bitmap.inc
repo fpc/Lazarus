@@ -99,9 +99,9 @@ begin
       UseMaskHandle:=MaskHandle
     else
       UseMaskHandle:=0;
-    MaskBlt(ACanvas.Handle,
+    StretchMaskBlt(ACanvas.Handle,
             ARect.Left,ARect.Top, ARect.Right-ARect.Left,ARect.Bottom-ARect.Top,
-            Canvas.Handle,0,0, UseMaskHandle,0,0);
+            Canvas.Handle,0,0,Width,Height, UseMaskHandle,0,0,SRCCOPY);
   end;
 end;
 
@@ -1059,6 +1059,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.67  2004/02/19 03:20:58  mattias
+  fixed scaling TBitmap.Draw
+
   Revision 1.66  2004/02/17 22:17:40  mattias
   accelerated conversion from data to lrs
 
