@@ -98,10 +98,12 @@ end;
 procedure TSpeedButton.SetDown(Value : Boolean);
 var
   OldState: TButtonState;
+  OldDown: Boolean;
 begin
   if FGroupIndex = 0 then Value:= false;
   if FDown <> Value then begin
     if FDown and not FAllowAllUp then Exit;
+    OldDown:=FDown;
     FDown := Value;
     OldState := fState;
     if FDown then begin
@@ -109,8 +111,7 @@ begin
     end else begin
       FState := bsUp;
     end;
-    if OldState<>FState then
-      Invalidate;
+    if (OldDown<>FDown) or (OldState<>FState) then Invalidate;
     if Value then UpdateExclusive;
   end;
 end;
@@ -506,26 +507,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TSpeedButton.UpdateTracking
-  Params: none
-  Returns:  nothing
-
- ------------------------------------------------------------------------------}
-procedure TSpeedButton.UpdateTracking;
-var
-  P : TPoint;
-begin
-  if FFlat and Enabled
-  then begin
-    GetCursorPos(p);
-    FMouseInControl := (FindControlAtPosition(P, True) <> Self);
-    if FMouseInControl
-    then Perform(CM_MOUSELEAVE,0,0)
-    else Perform(CM_MOUSEENTER,0,0);
-  end;
-end;
-
-{------------------------------------------------------------------------------
   Method: TSpeedButton.MouseDown
   Params: Button:
           Shift:
@@ -588,11 +569,6 @@ begin
       FState := NewState;
       Invalidate;
     end;
-  end
-  else begin
-    if not FMouseInControl then begin
-      UpdateTracking;
-    end;
   end;
 end;
 
@@ -606,23 +582,22 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSpeedButton.MouseUp(Button: TMouseButton; Shift: TShiftState;
   X, Y: Integer);
+var
+  OldState: TButtonState;
 begin
   if not (csDesigning in ComponentState) and FDragging
   then begin
     FDragging := False;
+    OldState:=FState;
 
     if FGroupIndex = 0
     then begin
       FState := bsUp;
-//      FMouseInControl := False;
-      if not (FState in [bsExclusive, bsDown]) then
-        Invalidate;
+      if OldState<>FState then Invalidate;
     end
     else begin
       SetDown(not FDown);
-      if FDown then Invalidate;
     end;
-    //UpdateTracking;
   end;
   inherited MouseUp(Button, Shift, X, Y);
 end;
@@ -651,8 +626,10 @@ procedure TSpeedButton.SetTransparent(const Value : boolean);
 begin
   if Value <> FTransparent then begin
     FTransparent:= Value;
-    if Value then ControlStyle:= ControlStyle + [csOpaque]
-    else ControlStyle:= ControlStyle - [csOpaque];
+    if Value then
+      ControlStyle:= ControlStyle + [csOpaque]
+    else
+      ControlStyle:= ControlStyle - [csOpaque];
     Invalidate;
   end;
 end;
@@ -693,8 +670,6 @@ end;
 procedure TSpeedButton.CMEnabledChanged(var Message: TLMEssage);
 Begin
   //Should create a new glyph based on the new state
-
-  //UpdateTracking;
   Invalidate;
 end;
 
@@ -786,6 +761,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.58  2004/07/13 17:47:15  mattias
+  fixed mouse enter/leave for TSpeedButton
+
   Revision 1.57  2004/06/28 20:03:33  mattias
   fixed TGtkWidgetSet.DrawFrameControl
 

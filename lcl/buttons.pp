@@ -238,7 +238,6 @@ type
     FTransparent : Boolean;
     function GetGlyph : TBitmap;
     procedure UpdateExclusive;
-    procedure UpdateTracking;
     procedure SetAllowAllUp(Value: Boolean);
     procedure SetGlyph(Value: TBitmap);
     procedure SetLayout(const Value: TButtonLayout);
@@ -344,6 +343,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.73  2004/07/13 17:47:14  mattias
+  fixed mouse enter/leave for TSpeedButton
+
   Revision 1.72  2004/07/13 10:34:15  mattias
   fixed lcl package unit file name checklist.pas
 
