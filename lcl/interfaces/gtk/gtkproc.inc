@@ -883,7 +883,6 @@ begin
     AWindow:=AWidget^.Window;
   if AWindow=nil then exit;
 
-if AWinControl is TEdit then writeln('AAA1 SetCursor ',AWinControl.Name,' ',csDesigning in AWinControl.ComponentState);
   if csDesigning in AWinControl.ComponentState then begin
     SetDesigningCursor(AWindow);
   end else begin
@@ -1495,6 +1494,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.50  2002/06/21 18:27:28  lazarus
+  MG: non visual component icons are now centered
+
   Revision 1.49  2002/06/21 17:54:24  lazarus
   MG: in design mode the mouse cursor is now also set for hidden gdkwindows
 
