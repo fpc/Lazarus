@@ -1118,6 +1118,9 @@ Begin
   //TODO: Finish SETFORMSTYLE
   FFormStyle := Value;
   Include(FFormState,fsFormStyleChanged);
+  if FFormStyle=fsSplash then begin
+    BorderStyle:=bsNone;
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1723,6 +1726,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.148  2004/08/09 21:12:43  mattias
+  implemented FormStyle fsSplash for splash screens
+
   Revision 1.147  2004/08/08 20:51:15  mattias
   replaced TDBEdit.WMKillFocus by EditingDone, Change Class basically working
 

@@ -83,7 +83,7 @@ begin
   FHintShortPause := DefHintShortPause;
   FHintHidePause := DefHintHidePause;
   FShowHint := true;
-  FList := nil;
+  FFormList := nil;
   FOnIdle := nil;
   FIcon := nil;
   ApplicationActionComponent:=Self;
@@ -106,7 +106,7 @@ begin
   // destroying
   ApplicationActionComponent:=nil;
   FreeThenNil(FIcon);
-  FreeThenNil(FList);
+  FreeThenNil(FFormList);
   
   for HandlerType:=Low(TApplicationHandlerType) to High(TApplicationHandlerType)
   do
@@ -652,15 +652,26 @@ begin
 
 end;
 
+{------------------------------------------------------------------------------
+  procedure TApplication.DoIdleActions;
+ ------------------------------------------------------------------------------}
 procedure TApplication.DoIdleActions;
 var
   i: Integer;
   CurForm: TCustomForm;
+  AForm: TForm;
 begin
   for i := 0 to Screen.CustomFormCount - 1 do begin
     CurForm:=Screen.CustomForms[I];
     if CurForm.HandleAllocated and CurForm.Visible and CurForm.Enabled then
       CurForm.UpdateActions;
+  end;
+  if FFormList<>nil then begin
+    for i:=0 to FFormList.Count-1 do begin
+      AForm:=TForm(FFormList[i]);
+      if AForm.FormStyle=fsSplash then
+        AForm.Hide;
+    end;
   end;
 end;
 
@@ -812,7 +823,7 @@ begin
   if (Screen=nil) then exit;
   for i:=0 to Screen.CustomFormCount-1 do begin
     AForm:=Screen.CustomForms[i];
-    if AForm.FormStyle=fsStayOnTop then begin
+    if AForm.FormStyle in fsAllStayOnTop then begin
       DebugLn('TApplication.HideAllFormsWithStayOnTop ',AForm.Name,':',AForm.ClassName);
       AForm.Hide;
     end;
@@ -1123,6 +1134,7 @@ var
   Instance: TComponent;
   ok: boolean;
   OldFindGlobalComponent: TFindGlobalComponent;
+  AForm: TForm;
 begin
   // Allocate the instance, without calling the constructor
   Instance := TComponent(InstanceClass.NewInstance);
@@ -1143,13 +1155,20 @@ begin
   end;
 
   if (Instance is TForm) then begin
-    if (FMainForm = nil) then begin
-      TForm(Instance).HandleNeeded;
-      FMainForm := TForm(Instance);
+    AForm:=TForm(Instance);
+    if (FMainForm = nil) and (AForm.FormStyle=fsNormal) then begin
+      AForm.HandleNeeded;
+      FMainForm := AForm;
     end else begin
-      if not Assigned(FList) then
-        FList := TList.Create;
-      FList.Add(TForm(Instance));
+      if not Assigned(FFormList) then
+        FFormList := TList.Create;
+      FFormList.Add(AForm);
+    end;
+    if AForm.FormStyle=fsSplash then begin
+      // show the splash form and handle the paint message
+      AForm.Show;
+      AForm.Paint;
+      ProcessMessages;
     end;
   end;
   {$IFNDEF AfterConstructionDataModuleNotWorking}
@@ -1186,6 +1205,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.84  2004/08/09 21:12:43  mattias
+  implemented FormStyle fsSplash for splash screens
+
   Revision 1.83  2004/08/04 10:35:38  mattias
   added workaround for not working TDataModule.AfterConstruction
 

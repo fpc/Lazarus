@@ -2310,7 +2310,7 @@ Begin
       Assert(False, 'Trace:CreateComponent - Creating a Form Window');
       Flags := BorderStyleToWin32Flags(TCustomForm(Sender).BorderStyle);
       FlagsEx := BorderStyleToWin32FlagsEx(TCustomForm(Sender).BorderStyle);
-      if (TCustomForm(Sender).FormStyle = fsStayOnTop)
+      if (TCustomForm(Sender).FormStyle in fsAllStayOnTop)
       and (not (csDesigning in TCustomForm(Sender).ComponentState)) then
         FlagsEx := FlagsEx or WS_EX_TOPMOST;
       pClassName := @ClsName;
@@ -3383,6 +3383,9 @@ End;
 
 {
   $Log$
+  Revision 1.225  2004/08/09 21:12:43  mattias
+  implemented FormStyle fsSplash for splash screens
+
   Revision 1.224  2004/07/27 00:07:48  marc
   * Fixed disabled state of bitbtns
 

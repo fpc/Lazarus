@@ -5910,7 +5910,7 @@ begin
   else
     ABorderStyle:=ACustomForm.BorderStyle;
   WindowType:=FormStyleMap[ABorderStyle];
-  if (ABorderStyle=bsNone) and (ACustomForm.FormStyle=fsStayOnTop)
+  if (ABorderStyle=bsNone) and (ACustomForm.FormStyle in fsAllStayOnTop)
   and (not (csDesigning in ACustomForm.ComponentState)) then begin
     WindowType:=GTK_WINDOW_POPUP;
   end;
@@ -6883,7 +6883,7 @@ begin
 
     if (ACustomForm<>nil) then begin
       If (ACustomForm.BorderStyle <> bsSizeable) or
-        ((ACustomForm.FormStyle = fsStayOnTop)
+        ((ACustomForm.FormStyle in fsAllStayOnTop)
          and (not (csDesigning in ACustomForm.ComponentState)))
       then begin
         Decor := GetWindowDecorations(ACustomForm);
@@ -9215,6 +9215,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.520  2004/08/09 21:12:43  mattias
+  implemented FormStyle fsSplash for splash screens
+
   Revision 1.519  2004/08/09 18:22:08  mattias
   fixed type of Low(open array) and type of PathDelim
 

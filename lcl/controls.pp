@@ -200,7 +200,7 @@ type
   TCaption = String;
   TCursor = -32768..32767;
 
-  TFormStyle = (fsNormal, fsMDIChild, fsMDIFORM, fsStayOnTop);
+  TFormStyle = (fsNormal, fsMDIChild, fsMDIFORM, fsStayOnTop, fsSplash);
   TFormBorderStyle = (bsNone, bsSingle, bsSizeable, bsDialog, bsToolWindow,
                       bsSizeToolWin);
   TBorderStyle = bsNone..bsSingle;
@@ -217,6 +217,8 @@ type
   TMouseButton = (mbLeft, mbRight, mbMiddle);
 
 const
+  fsAllStayOnTop = [fsStayOnTop, fsSplash];
+
   // Cursor constants
   crHigh        = TCursor(0);
 
@@ -2388,6 +2390,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.233  2004/08/09 21:12:42  mattias
+  implemented FormStyle fsSplash for splash screens
+
   Revision 1.232  2004/08/05 21:20:47  mattias
   moved designer/abstractformeditor.pp to ideintf/formeditingintf.pas
 

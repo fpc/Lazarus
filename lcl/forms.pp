@@ -791,7 +791,7 @@ type
     FHintTimerType: TAppHintTimerType;
     FHintWindow: THintWindow;
     FIcon: TIcon;
-    FList: TList;
+    FFormList: TList;
     FMainForm : TForm;
     FMouseControl: TControl;
     FOldExceptProc: TExceptProc;
