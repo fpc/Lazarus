@@ -3409,7 +3409,8 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('components path addition',
     Format(ctsAddsDirToSourcePath,['synedit']),
     ExternalMacroStart+'SrcPath',
-      d('../components/synedit;'
+      d('../ideintf'
+       +'../components/synedit;'
        +'../components/codetools;'
        +'../components/custom;'
        +'jitform;')
@@ -3449,6 +3450,7 @@ begin
     Format(ctsAddsDirToSourcePath,['lcl, components']),
     ExternalMacroStart+'SrcPath',
       d('..'
+       +';../ideintf'
        +';../components/codetools'
        +';../lcl'
        +';../lcl/interfaces/'+WidgetType)
@@ -3463,6 +3465,7 @@ begin
     Format(ctsAddsDirToSourcePath,['lcl, components']),
     SrcPathMacroName,
       d('..'
+       +';../ideintf'
        +';../components/codetools'
        +';../lcl'
        +';../lcl/interfaces/'+WidgetType)
@@ -3489,6 +3492,7 @@ begin
     Format(ctsAddsDirToSourcePath,['synedit']),
     SrcPathMacroName,
       d('registration;'
+      +'../ideintf;'
       +'../components/synedit;'
       +'../components/codetools;'
       +'../components/custom;')

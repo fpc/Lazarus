@@ -22,7 +22,7 @@ unitdir=lcl/units/$(CPU_TARGET)/$(OS_TARGET) \
         components/units/$(CPU_TARGET)/$(OS_TARGET) \
         components/custom components/mpaslex \
         designer designer/units debugger \
-        ideintf ideintf/units \
+        ideintf/units \
         packager packager/units/$(CPU_TARGET)/$(OS_TARGET) .
 includedir=include include/$(OS_TARGET)
 targetdir=.

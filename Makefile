@@ -232,7 +232,7 @@ override INSTALL_BASEDIR=share/lazarus
 override DIST_DESTDIR=$(BASEDIR)/dist
 override COMPILER_OPTIONS+=-gl
 override COMPILER_INCLUDEDIR+=include include/$(OS_TARGET)
-override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)/$(OS_TARGET) lcl/units/$(CPU_TARGET)/$(OS_TARGET)/$(LCL_PLATFORM) components/units/$(CPU_TARGET)/$(OS_TARGET) components/custom components/mpaslex designer designer/units debugger ideintf ideintf/units packager packager/units/$(CPU_TARGET)/$(OS_TARGET) .
+override COMPILER_UNITDIR+=lcl/units/$(CPU_TARGET)/$(OS_TARGET) lcl/units/$(CPU_TARGET)/$(OS_TARGET)/$(LCL_PLATFORM) components/units/$(CPU_TARGET)/$(OS_TARGET) components/custom components/mpaslex designer designer/units debugger ideintf/units packager packager/units/$(CPU_TARGET)/$(OS_TARGET) .
 override COMPILER_TARGETDIR+=.
 ifdef REQUIRE_UNITSDIR
 override UNITSDIR+=$(REQUIRE_UNITSDIR)
