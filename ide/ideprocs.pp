@@ -1127,7 +1127,7 @@ begin
   FileSetAttr(FileName,OldAttr);
   {$ELSE}
   {$IFDEF Ver1_0}Chmod{$ELSE}FpChmod{$ENDIF}(Filename,
-         OldInfo.Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
+     {$IFDEF VER1_0}OldInfo.Mode{$ELSE} OldInfo.st_Mode{$endif} and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
                            +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
   {$ENDIF}
 
@@ -1906,7 +1906,7 @@ begin
   FileSetAttr(DestFileName,OldAttr);
   {$ELSE}
   {$IFDEF Ver1_0}Chmod{$ELSE}FpChmod{$ENDIF}(DestFilename,
-         OldInfo.Mode and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
+     {$IFDEF VER1_0}OldInfo.Mode{$ELSE} OldInfo.st_Mode{$endif} and (STAT_IRWXO+STAT_IRWXG+STAT_IRWXU
                            +STAT_ISUID+STAT_ISGID+STAT_ISVTX));
   {$ENDIF}
 
