@@ -3416,8 +3416,8 @@ End;
 //FindInFiles
 function TSourceNotebook.CreateFindInFilesDialog: TLazFindInFilesDialog;
 begin
-    Result:=TLazFindInFilesDialog.Create(Application);
-    LoadFindInFilesHistory(Result);
+  Result := TLazFindInFilesDialog.Create(Application);
+  LoadFindInFilesHistory(Result);
 end;//CreateFindInFilesDialog
 
 procedure TSourceNotebook.LoadFindInFilesHistory(ADialog: TLazFindInFilesDialog);
@@ -3560,9 +3560,27 @@ begin
 end;//FIFCreateSearchForm
 
 Procedure TSourceNotebook.FindInFiles(AProject: TProject);
+var 
+  TempEditor: TSourceEditor;
 Begin
-  if FindInFilesDialog=nil then
-    FindInFilesDialog:=CreateFindInFilesDialog;
+  if FindInFilesDialog = nil 
+  then FindInFilesDialog := CreateFindInFilesDialog;
+  
+  TempEditor := GetActiveSE;
+  if TempEditor <> nil 
+  then with TempEditor, EditorComponent do 
+  begin
+    if EditorOpts.FindTextAtCursor 
+    then begin
+      if SelAvail and (BlockBegin.Y = BlockEnd.Y) 
+      then FindInFilesDialog.FindText := SelText
+      else FindInFilesDialog.FindText := GetWordAtRowCol(CaretXY);
+    end 
+    else begin
+      FindInFilesDialog.FindText:='';
+    end;
+  end;
+  
   if FindInFilesDialog.ShowModal=mrOk then
   begin
     SaveFindInFilesHistory(FindInFilesDialog);
