@@ -512,9 +512,9 @@ begin
   Result := InterfaceObject.Polyline(DC,Points,NumPts);
 end;
 
-function PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean;
+function PostMessage(Handle: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean;
 begin
-  Result := InterfaceObject.PostMessage(hWnd, Msg, wParam, lParam);
+  Result := InterfaceObject.PostMessage(Handle, Msg, wParam, lParam);
 end;
 
 function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean;
@@ -1219,6 +1219,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.44  2002/08/28 09:40:49  lazarus
+  MG: reduced paint messages and DC getting/releasing
+
   Revision 1.43  2002/08/19 20:34:47  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 
