@@ -3703,7 +3703,7 @@ begin
     Left:=5;
     Width:=MaxX-Left-Left;
     Height:=16;
-    Caption:='Hint: right click on the command you want to edit';
+    Caption:='Hint: click on the command you want to edit';
     Visible:=true;
   end;
 

@@ -43,7 +43,7 @@ interface
 { $DEFINE ShowSearchPaths}
 { $DEFINE ShowTriedFiles}
 { $DEFINE ShowTriedContexts}
-{$DEFINE ShowExprEval}
+{ $DEFINE ShowExprEval}
 { $DEFINE ShowFoundIdentifier}
 { $DEFINE ShowCachedIdentifiers}
 { $DEFINE ShowNodeCache}
