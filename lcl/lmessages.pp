@@ -60,8 +60,6 @@ const
   LM_SETVALUE       = LM_ComUser+40;         // set actual value of object to visual object
   LM_GETVALUE       = LM_ComUser+41;         // get actual value from visual object
 
-  LM_RECREATEWND    = LM_COMUSER+57;
-
   LM_MINIMIZE       = LM_COMUSER+59;
 
   LM_SETDESIGNING   = LM_COMUSER+60;
@@ -783,8 +781,6 @@ begin
   LM_SETVALUE       :Result:='LM_SETVALUE';
   LM_GETVALUE       :Result:='LM_GETVALUE';
 
-  LM_RECREATEWND    :Result:='LM_RECREATEWND';
-
   LM_MINIMIZE       :Result:='LM_MINIMIZE';
 
   LM_SETDESIGNING   :Result:='LM_SETDESIGNING';
@@ -901,6 +897,9 @@ end.
 
 {
   $Log$
+  Revision 1.112  2004/09/18 11:06:47  micha
+  remove LM_RECREATEWND message, as it is not used by LCL
+
   Revision 1.111  2004/09/18 10:52:48  micha
   convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
 

@@ -280,9 +280,6 @@ Begin
       Result := SetProperties(Sender);
     LM_SETDESIGNING:
       if Data<>nil then EnableWindow((Sender As TWinControl).Handle, boolean(Data^));
-    LM_RECREATEWND:
-      Result := RecreateWnd(TWinControl(Sender));
-        //SH: think of TBitmap.handle!!!!
   Else
   Begin
     Handle := ObjectToHWND(Sender);
@@ -2069,6 +2066,9 @@ End;
 
 {
   $Log$
+  Revision 1.273  2004/09/18 11:06:47  micha
+  remove LM_RECREATEWND message, as it is not used by LCL
+
   Revision 1.272  2004/09/18 10:52:48  micha
   convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
 

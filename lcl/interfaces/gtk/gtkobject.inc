@@ -3098,8 +3098,6 @@ begin
         gtkproc.SetCursor(TWinControl(Sender), TCursor(cardinal(Data)));
     end;
 
-  LM_RECREATEWND : Result := RecreateWnd(sender);
-
   LM_NB_UpdateTab: UpdateNotebookPageTab(nil,TCustomPage(Sender));
 
   LM_LB_GETTOPINDEX: Result:=GetTopIndex(Sender);
@@ -7892,6 +7890,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.582  2004/09/18 11:06:47  micha
+  remove LM_RECREATEWND message, as it is not used by LCL
+
   Revision 1.581  2004/09/18 10:52:48  micha
   convert LM_SCREENINIT message to interface method (integrated with TWidgetSet.AppInit(var ScreenInfo)
 

@@ -138,7 +138,7 @@ Procedure TWin32ListStringList.Sort;
 Begin
   // The win api doesn't allow to change the sort on the fly,
   // so is needed to recreate the window
-  CNSendMessage(LM_RECREATEWND,FSender,Nil);
+  TWin32WidgetSet(InterfaceObject).RecreateWnd(FSender);
 End;
 
 {------------------------------------------------------------------------------
@@ -426,7 +426,7 @@ Procedure TWin32CListStringList.Sort;
 Begin
   // The win api doesn't allow to change the sort on the fly,
   // so is needed to recreate the window
-  CNSendMessage(LM_RECREATEWND,FSender,Nil);
+  TWin32WidgetSet(InterfaceObject).RecreateWnd(FSender);
 End;
 
 {------------------------------------------------------------------------------
@@ -549,6 +549,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2004/09/18 11:06:47  micha
+  remove LM_RECREATEWND message, as it is not used by LCL
+
   Revision 1.33  2004/09/11 12:15:45  micha
   fix forget text after assigning items, need to give exact right class
 
