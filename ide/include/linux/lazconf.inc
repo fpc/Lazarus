@@ -1,4 +1,4 @@
-// included by lazconf.pp
+{%MainUnit ../../lazconf.pp}
 
 {***************************************************************************
                                lazconf.inc
@@ -56,6 +56,9 @@ end;
 
 {
   $Log$
+  Revision 1.21  2005/03/17 00:06:43  marc
+  + Added include reference
+
   Revision 1.20  2004/12/09 19:29:42  mattias
   fixed compilation for lazconf  linux, bsd, macosx
 

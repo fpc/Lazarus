@@ -1,4 +1,6 @@
+{%MainUnit ../linux/lazconf.inc}
 // included by linux/lazconf.inc, freebsd/lazconf.inc, netbsd/lazconf.inc
+// todo: use $target here ?
 
 {
  ***************************************************************************

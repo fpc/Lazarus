@@ -1,4 +1,4 @@
-// included by gtkcallback.inc
+{%MainUnit gtkcallback.inc}
 
 {
  *****************************************************************************
