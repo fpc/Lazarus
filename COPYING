@@ -1,0 +1,22 @@
+This is the file COPYING, it gives an overview of the licenses used in the
+lazarus sources.
+
+The Lazarus sources consists of several parts and each part has its own
+license. Three licenses are used. The GPL 2, the LGPL and the MPL. In general,
+each file contains a header, describing the license for the file.
+
+The license directory tree:
+
+<lazarus>/         (mostly GPL2, but with a few files under LGPL)
+ |
+ +- components/
+    |
+    +- synedit
+    |
+    +- codetools
+    |
+    +- gtk
+       |
+       +- gtkglarea
+       |
+       +-

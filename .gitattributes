@@ -1,4 +1,5 @@
 * text=auto !eol
+/COPYING.modifiedLGPL -text svneol=unset#application/octet-stream
 components/codetools/allcodetoolunits.pp svneol=native#text/pascal
 components/codetools/avl_tree.pas svneol=native#text/pascal
 components/codetools/basiccodetools.pas svneol=native#text/pascal

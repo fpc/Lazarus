@@ -1,0 +1,18 @@
+This is the file COPYING.modifiedLGPL, it applies to several units in the
+Lazarus IDE distributed by members of the Lazarus Development Team.
+
+The source code of objectinspector.pp, propedits.pp, transfermacros.pp,
+wordcompletion.pp, patheditordlg.pas, outputfilter.pas, inputfiledialog.pas,
+findreplacedialog.pp, findinfiles.pas
+distributed under the Library GNU General Public License
+(see the file COPYING.LPGL) with the following modification:
+
+- object files and libraries linked into an application may be
+  distributed without source code.
+
+If you didn't receive a copy of the file COPYING.LGPL, contact:
+      Free Software Foundation, Inc.,
+      59 Temple Place - Suite 330
+      Boston, MA 02111
+      USA
+
