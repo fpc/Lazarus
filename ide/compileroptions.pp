@@ -641,6 +641,7 @@ type
     procedure FileBrowseBtnClick(Sender: TObject);
     procedure InhTreeViewSelectionChanged(Sender: TObject);
     procedure InheritedPageResize(Sender: TObject);
+    procedure LCLWidgetTypeRadioGroupClick(Sender: TObject);
     procedure chkAdditionalConfigFileClick(Sender: TObject);
     procedure PathEditBtnClick(Sender: TObject);
     procedure PathEditBtnExecuted(Sender: TObject);
@@ -2655,6 +2656,11 @@ begin
                         InheritedPage.ClientWidth,InheritedPage.ClientHeight-y);
 end;
 
+procedure TfrmCompilerOptions.LCLWidgetTypeRadioGroupClick(Sender: TObject);
+begin
+
+end;
+
 {------------------------------------------------------------------------------
   TfrmCompilerOptions GetCompilerOptions
 ------------------------------------------------------------------------------}
@@ -2686,9 +2692,9 @@ begin
 
   // parsing
   case CompilerOpts.Style of
-      1: radStyleIntel.Checked := true;
-      2: radStyleATT.Checked := true;
-      3: radStyleATT.Checked := true;
+    1: radStyleIntel.Checked := true;
+    2: radStyleATT.Checked := true;
+    3: radStyleATT.Checked := true;
   end;
 
   chkSymD2Ext.Checked := CompilerOpts.D2Extensions;
@@ -4471,6 +4477,7 @@ begin
     end;
     Columns:=Items.Count;
     ItemIndex:=1;
+    OnClick:=@LCLWidgetTypeRadioGroupClick;
   end;
 end;
 

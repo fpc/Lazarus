@@ -7587,14 +7587,19 @@ begin
   {writeln('TMainIDE.RescanCompilerDefines A ',CurOptions,
     ' OnlyIfCompilerChanged=',OnlyIfCompilerChanged,
     ' Valid=',InputHistories.FPCConfigCache.Valid(true),
-    ' ID=',InputHistories.FPCConfigCache.FindItem(CurOptions)
-    );}
+    ' ID=',InputHistories.FPCConfigCache.FindItem(CurOptions),
+    ' CurDefinesCompilerFilename=',CurDefinesCompilerFilename,
+    ' EnvCompilerFilename=',EnvironmentOptions.CompilerFilename,
+    ' CurDefinesCompilerOptions="',CurDefinesCompilerOptions,'"',
+    ' CurOptions="',CurOptions,'"',
+    '');}
   // rescan compiler defines
   // ask the compiler for its settings
   if OnlyIfCompilerChanged
   and (CurDefinesCompilerFilename=EnvironmentOptions.CompilerFilename)
   and (CurDefinesCompilerOptions=CurOptions) then
     exit;
+  //writeln('TMainIDE.RescanCompilerDefines B rebuilding FPC templates');
   CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
                     EnvironmentOptions.CompilerFilename,CurOptions,
                     CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
@@ -7608,26 +7613,28 @@ begin
       and InputHistories.FPCConfigCache.Valid(true)
       and (InputHistories.FPCConfigCache.FindItem(CurOptions)>=0);
     //writeln('TMainIDE.RescanCompilerDefines B rescanning FPC sources  UnitLinksValid=',UnitLinksValid);
+    
     // create compiler macros to simulate the Makefiles of the FPC sources
-    if not UnitLinksValid then begin
-      FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
-        CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-        CompilerUnitSearchPath,
-        CodeToolBoss.GetCompiledSrcExtForDirectory(''),
-        UnitLinksValid, CompilerUnitLinks, CodeToolsOpts);
-      if FPCSrcTemplate<>nil then begin
-        CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
-                                                           FPCSrcTemplate.Name);
-        FPCSrcTemplate.InsertBehind(CompilerTemplate);
-        // save unitlinks
-        InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
-                           CurOptions,CompilerUnitSearchPath,CompilerUnitLinks);
-        InputHistories.Save;
-      end else begin
-        MessageDlg(lisFPCSourceDirectoryError,
-          lisPlzCheckTheFPCSourceDirectory,
-          mtError,[mbOk],0);
-      end;
+    CompilerUnitLinks:='';
+    if UnitLinksValid then
+      CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks(CurOptions);
+    FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
+      CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
+      CompilerUnitSearchPath,
+      CodeToolBoss.GetCompiledSrcExtForDirectory(''),
+      UnitLinksValid, CompilerUnitLinks, CodeToolsOpts);
+    if FPCSrcTemplate<>nil then begin
+      CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
+                                                         FPCSrcTemplate.Name);
+      FPCSrcTemplate.InsertBehind(CompilerTemplate);
+      // save unitlinks
+      InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
+                         CurOptions,CompilerUnitSearchPath,CompilerUnitLinks);
+      InputHistories.Save;
+    end else begin
+      MessageDlg(lisFPCSourceDirectoryError,
+        lisPlzCheckTheFPCSourceDirectory,
+        mtError,[mbOk],0);
     end;
   end else begin
     MessageDlg(lisCompilerError,lisPlzCheckTheCompilerName,
@@ -9331,6 +9338,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.619  2003/07/07 18:06:05  mattias
+  fixed switching TARGET_OS
+
   Revision 1.618  2003/07/04 22:06:49  mattias
   implemented interface graphics
 
