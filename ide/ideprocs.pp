@@ -394,8 +394,8 @@ end;
 
 function ShortenSearchPath(const SearchPath, BaseDirectory,
   ChompDirectory: string): string;
-// every search path that is a subdirectory of ChompDirectory will be shortened
-// before the test relative paths are expanded by BaseDirectory
+// Every search path that is a subdirectory of ChompDirectory will be shortened.
+// Before the test relative paths are expanded by BaseDirectory.
 var
   BaseEqualsChompDir: boolean;
 
@@ -403,7 +403,6 @@ var
   begin
     if FilenameIsAbsolute(ADirectory) then begin
       Result:=true;
-      ADirectory:=ADirectory;
     end else begin
       if BaseEqualsChompDir then
         Result:=false
@@ -432,7 +431,7 @@ begin
   BaseEqualsChompDir:=CompareFilenames(BaseDirectory,ChompDirectory)=0;
   while EndPos<=PathLen do begin
     StartPos:=EndPos;
-    while (Result[StartPos]=';') do begin
+    while (Result[StartPos] in [';',#0..#32]) do begin
       inc(StartPos);
       if StartPos>PathLen then exit;
     end;
