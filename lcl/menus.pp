@@ -119,10 +119,12 @@ type
     FShowAlwaysCheckable: boolean;
     FSubMenuImages: TCustomImageList;
     FVisible: Boolean;
+    function GetBitmap: TBitmap;
     function GetCount: Integer;
     function GetItem(Index: Integer): TMenuItem;
     function GetMenuIndex: Integer;
     function GetParent: TMenuItem;
+    function IsBitmapStored: boolean;
     function IsCaptionStored: boolean;
     function IsCheckedStored: boolean;
     function IsEnabledStored: boolean;
@@ -198,6 +200,7 @@ type
     procedure Remove(Item: TMenuItem);
     function IsInMenuBar: boolean; virtual;
     procedure Clear;
+    function HasBitmap: boolean;
   public
     property Count: Integer read GetCount;
     property Handle: HMenu read GetHandle write FHandle;
@@ -215,7 +218,7 @@ type
     property Default: Boolean read FDefault write SetDefault default False;
     property Enabled: Boolean read FEnabled write SetEnabled
                               stored IsEnabledStored default True;
-    property Bitmap: TBitmap read FBitmap write SetBitmap;
+    property Bitmap: TBitmap read GetBitmap write SetBitmap stored IsBitmapStored;
     property GroupIndex: Byte read FGroupIndex write SetGroupIndex default 0;
     property HelpContext: THelpContext read FHelpContext write FHelpContext
                                            stored IsHelpContextStored default 0;
@@ -404,6 +407,9 @@ end.
 
 {
   $Log$
+  Revision 1.63  2004/02/08 11:31:32  mattias
+  TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
+
   Revision 1.62  2004/02/05 09:45:33  mattias
   implemented Actions for TSpeedButton, TMenuItem, TCheckBox
 

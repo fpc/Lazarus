@@ -720,6 +720,7 @@ var
 var
   Bits: PByte;
   Header: TBitmapHeader;
+  StreamSize: longint;
 {$ENDIF}
 begin
   {$IFNDEF DisableFPImage}
@@ -739,7 +740,6 @@ begin
   try
     Bits:=nil;
     FillBitmapInfo(Handle, Bits, Header);
-    DoWriteSize(Header);
     WriteBitmapHeader(Header);
     WriteColorMap(Header);
     WritePixels(Bits, Header);
@@ -750,6 +750,10 @@ begin
     MemStream:=nil;
     FImage.SaveStreamType:=bnWinBitmap;
     // copy savestream to destination stream
+    if WriteSize then begin
+      StreamSize:=FImage.SaveStream.Size;
+      DestStream.WriteBuffer(StreamSize, SizeOf(StreamSize));
+    end;
     Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
   finally
     ReallocMem(Bits, 0);
@@ -1038,6 +1042,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.61  2004/02/08 11:31:32  mattias
+  TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
+
   Revision 1.60  2004/02/07 20:25:37  mattias
   fixed saving custom TBitBtn kind
 

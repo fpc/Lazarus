@@ -165,7 +165,7 @@ ResourceString
   rsAControlCanNotHaveItselfAsParent = 'A control can''t have itself as parent';
   lisLCLResourceSNotFound = 'Resource %s not found';
   rsErrorCreatingDeviceContext = 'Error creating device context for %s.%s';
-  rssIndexOutOfBounds = '%s Index %d out of bounds 0-%d';
+  rsIndexOutOfBounds = '%s Index %d out of bounds 0-%d';
   rsUnknownPictureExtension = 'Unknown picture extension';
   rsUnsupportedClipboardFormat = 'Unsupported clipboard format: %s';
   rsGroupIndexCannotBeLessThanPrevious = 'GroupIndex cannot be less than a '

@@ -419,7 +419,7 @@ end;
 procedure TCustomListBox.SetItemIndex(Val : integer);
 begin
   if (Val >= FItems.Count) then
-    raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Val,FItems.Count]);
+    raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Val,FItems.Count]);
   if Val<0 then Val:=-1;
 //writeln('[TCustomListBox.SetItemIndex] A ',FItems.ClassName,' ',Val);
   FItemIndex:=Val;
@@ -435,7 +435,7 @@ procedure TCustomListBox.CheckIndex(const AIndex: Integer);
 begin
   if (AIndex < 0)
   or (AIndex >= Items.Count)
-  then raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName, AIndex, Items.Count]);
+  then raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName, AIndex, Items.Count]);
 end;
 
 {------------------------------------------------------------------------------

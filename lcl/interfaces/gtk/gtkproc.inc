@@ -3907,7 +3907,7 @@ begin
   Width:=0;
   Height:=0;
   if LCLMenuItem=nil then exit;
-  if LCLMenuItem.Bitmap<>nil then
+  if LCLMenuItem.HasBitmap then
     GetGdkPixmapFromGraphic(LCLMenuItem.Bitmap,IconImg,IconMask,Width,Height);
 end;
 
@@ -6307,6 +6307,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.258  2004/02/08 11:31:32  mattias
+  TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
+
   Revision 1.257  2004/02/07 18:04:14  mattias
   fixed grids OnDrawCells
 

@@ -234,7 +234,7 @@ begin
     FItemIndex:=Value
   else begin
     if (Value < -1) or (Value >= FItems.Count) then
-      raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Value,FItems.Count]);
+      raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Value,FItems.Count]);
 
     if (HandleAllocated) then
     begin
@@ -395,6 +395,9 @@ end;
 
 {
   $Log$
+  Revision 1.26  2004/02/08 11:31:32  mattias
+  TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
+
   Revision 1.25  2003/12/21 16:01:58  mattias
   workaround for inherited bug in fpc 1.9
 

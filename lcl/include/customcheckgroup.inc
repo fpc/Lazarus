@@ -74,7 +74,7 @@ end;
 function TCustomCheckGroup.GetCheckEnabled(Index: integer): boolean;
 begin
   if (Index < -1) or (Index >= FItems.Count) then
-    raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Index,FItems.Count]);
+    raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,FItems.Count]);
   Result:=TCheckBox(FButtonList[Index]).Enabled;
 end;
 
@@ -82,14 +82,14 @@ procedure TCustomCheckGroup.SetCheckEnabled(Index: integer;
   const AValue: boolean);
 begin
   if (Index < -1) or (Index >= FItems.Count) then
-    raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Index,FItems.Count]);
+    raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,FItems.Count]);
   TCheckBox(FButtonList[Index]).Enabled:=AValue;
 end;
 
 function TCustomCheckGroup.GetChecked(Index: integer): boolean;
 begin
   if (Index < -1) or (Index >= FItems.Count) then
-    raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Index,FItems.Count]);
+    raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,FItems.Count]);
   Result:=TCheckBox(FButtonList[Index]).Checked;
 end;
 
@@ -132,7 +132,7 @@ end;
 procedure TCustomCheckGroup.SetChecked(Index: integer; const AValue: boolean);
 begin
   if (Index < -1) or (Index >= FItems.Count) then
-    raise Exception.CreateFmt(rsIndexOutOfRange,[ClassName,Index,FItems.Count]);
+    raise Exception.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,FItems.Count]);
   TCheckBox(FButtonList[Index]).Checked:=AValue;
 end;
 
@@ -256,6 +256,9 @@ end;
 
 {
   $Log$
+  Revision 1.4  2004/02/08 11:31:32  mattias
+  TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
+
   Revision 1.3  2003/12/21 16:01:58  mattias
   workaround for inherited bug in fpc 1.9
 

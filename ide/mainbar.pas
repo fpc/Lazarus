@@ -575,19 +575,19 @@ begin
   itmFileNewUnit := TMenuItem.Create(Self);
   itmFileNewUnit.Name:='itmFileNewUnit';
   itmFileNewUnit.Caption := lisMenuNewUnit;
-  itmFileNewUnit.Bitmap:=LoadPixmap('menu_new');
+  itmFileNewUnit.Bitmap.LoadFromLazarusResource('menu_new');
   mnuFile.Add(itmFileNewUnit);
 
   itmFileNewForm := TMenuItem.Create(Self);
   itmFileNewForm.Name:='itmFileNewForm';
   itmFileNewForm.Caption := lisMenuNewForm;
-  itmFileNewForm.Bitmap:=LoadPixmap('menu_new');
+  itmFileNewForm.Bitmap.LoadFromLazarusResource('menu_new');
   mnuFile.Add(itmFileNewForm);
 
   itmFileNewOther := TMenuItem.Create(Self);
   itmFileNewOther.Name:='itmFileNewOther';
   itmFileNewOther.Caption := lisMenuNewOther;
-  itmFileNewOther.Bitmap:=LoadPixmap('menu_new');
+  itmFileNewOther.Bitmap.LoadFromLazarusResource('menu_new');
   mnuFile.Add(itmFileNewOther);
 
   mnuFile.Add(CreateMenuSeparator);
@@ -595,13 +595,13 @@ begin
   itmFileOpen := TMenuItem.Create(Self);
   itmFileOpen.Name:='itmFileOpen';
   itmFileOpen.Caption := lisMenuOpen;
-  itmFileOpen.Bitmap:=LoadPixmap('menu_open');
+  itmFileOpen.Bitmap.LoadFromLazarusResource('menu_open');
   mnuFile.Add(itmFileOpen);
 
   itmFileRevert := TMenuItem.Create(Self);
   itmFileRevert.Name:='itmFileRevert';
   itmFileRevert.Caption := lisMenuRevert;
-  itmFileRevert.Bitmap:=LoadPixmap('menu_undo');
+  itmFileRevert.Bitmap.LoadFromLazarusResource('menu_undo');
   mnuFile.Add(itmFileRevert);
 
   itmFileRecentOpen := TMenuItem.Create(Self);
@@ -612,19 +612,19 @@ begin
   itmFileSave := TMenuItem.Create(Self);
   itmFileSave.Name:='itmFileSave';
   itmFileSave.Caption := lisMenuSave;
-  itmFileSave.Bitmap:=LoadPixmap('menu_save');
+  itmFileSave.Bitmap.LoadFromLazarusResource('menu_save');
   mnuFile.Add(itmFileSave);
 
   itmFileSaveAs := TMenuItem.Create(Self);
   itmFileSaveAs.Name:='itmFileSaveAs';
   itmFileSaveAs.Caption := lisMenuSaveAs;
-  itmFileSaveAs.Bitmap:=LoadPixmap('menu_save');
+  itmFileSaveAs.Bitmap.LoadFromLazarusResource('menu_save');
   mnuFile.Add(itmFileSaveAs);
 
   itmFileSaveAll := TMenuItem.Create(Self);
   itmFileSaveAll.Name:='itmFileSaveAll';
   itmFileSaveAll.Caption := lisMenuSaveAll;
-  itmFileSaveAll.Bitmap:=LoadPixmap('menu_save');
+  itmFileSaveAll.Bitmap.LoadFromLazarusResource('menu_save');
   mnuFile.Add(itmFileSaveAll);
 
   itmFileClose := TMenuItem.Create(Self);
@@ -659,13 +659,13 @@ begin
   itmEditUndo := TMenuItem.Create(Self);
   itmEditUndo.Name:='itmEditUndo';
   itmEditUndo.Caption := lisMenuUndo;
-  itmEditUndo.Bitmap:=LoadPixmap('menu_undo');
+  itmEditUndo.Bitmap.LoadFromLazarusResource('menu_undo');
   mnuEdit.Add(itmEditUndo);
 
   itmEditRedo := TMenuItem.Create(Self);
   itmEditRedo.Name:='itmEditRedo';
   itmEditRedo.Caption := lisMenuRedo;
-  itmEditRedo.Bitmap:=LoadPixmap('menu_redo');
+  itmEditRedo.Bitmap.LoadFromLazarusResource('menu_redo');
   mnuEdit.Add(itmEditRedo);
 
   mnuEdit.Add(CreateMenuSeparator);
@@ -673,19 +673,19 @@ begin
   itmEditCut  := TMenuItem.Create(Self);
   itmEditCut.Name:='itmEditCut';
   itmEditCut.Caption := lisMenuCut;
-  itmEditCut.Bitmap:=LoadPixmap('menu_cut');
+  itmEditCut.Bitmap.LoadFromLazarusResource('menu_cut');
   mnuEdit.Add(itmEditCut);
 
   itmEditCopy := TMenuItem.Create(Self);
   itmEditCopy.Name:='itmEditCopy';
   itmEditCopy.Caption := lisMenuCopy;
-  itmEditCopy.Bitmap:=LoadPixmap('menu_copy');
+  itmEditCopy.Bitmap.LoadFromLazarusResource('menu_copy');
   mnuEdit.Add(itmEditCopy);
 
   itmEditPaste := TMenuItem.Create(Self);
   itmEditPaste.Name:='itmEditPaste';
   itmEditPaste.Caption := lisMenuPaste;
-  itmEditPaste.Bitmap:=LoadPixmap('menu_paste');
+  itmEditPaste.Bitmap.LoadFromLazarusResource('menu_paste');
   mnuEdit.Add(itmEditPaste);
 
   mnuEdit.Add(CreateMenuSeparator);
@@ -693,13 +693,13 @@ begin
   itmEditIndentBlock := TMenuItem.Create(Self);
   itmEditIndentBlock.Name:='itmEditIndentBlock';
   itmEditIndentBlock.Caption := lisMenuIndentSelection;
-  itmEditIndentBlock.Bitmap:=LoadPixmap('menu_indent');
+  itmEditIndentBlock.Bitmap.LoadFromLazarusResource('menu_indent');
   mnuEdit.Add(itmEditIndentBlock);
 
   itmEditUnindentBlock := TMenuItem.Create(Self);
   itmEditUnindentBlock.Name:='itmEditUnindentBlock';
   itmEditUnindentBlock.Caption := lisMenuUnindentSelection;
-  itmEditUnindentBlock.Bitmap:=LoadPixmap('menu_unindent');
+  itmEditUnindentBlock.Bitmap.LoadFromLazarusResource('menu_unindent');
   mnuEdit.Add(itmEditUnindentBlock);
 
   itmEditEncloseBlock := TMenuItem.Create(Self);
@@ -1038,19 +1038,19 @@ begin
   itmViewDebugWindows := TMenuItem.Create(Self);
   itmViewDebugWindows.Name := 'itmViewDebugWindows';
   itmViewDebugWindows.Caption := lisMenuDebugWindows;
-  itmViewDebugWindows.Bitmap:=LoadPixmap('menu_debugger');
+  itmViewDebugWindows.Bitmap.LoadFromLazarusResource('menu_debugger');
   mnuView.Add(itmViewDebugWindows);
 
   itmViewWatches := TMenuItem.Create(Self);
   itmViewWatches.Name:='itmViewWatches';
   itmViewWatches.Caption := lisMenuViewWatches;
-  itmViewWatches.Bitmap:=LoadPixmap('menu_watches');
+  itmViewWatches.Bitmap.LoadFromLazarusResource('menu_watches');
   itmViewDebugWindows.Add(itmViewWatches);
 
   itmViewBreakPoints := TMenuItem.Create(Self);
   itmViewBreakPoints.Name:='itmViewBreakPoints';
   itmViewBreakPoints.Caption := lisMenuViewBreakPoints;
-  itmViewBreakPoints.Bitmap:=LoadPixmap('menu_breakpoints');
+  itmViewBreakPoints.Bitmap.LoadFromLazarusResource('menu_breakpoints');
   itmViewDebugWindows.Add(itmViewBreakPoints);
 
   itmViewLocals := TMenuItem.Create(Self);
@@ -1061,13 +1061,13 @@ begin
   itmViewCallStack := TMenuItem.Create(Self);
   itmViewCallStack.Name:='itmViewCallStack';
   itmViewCallStack.Caption := lisMenuViewCallStack;
-  itmViewCallStack.Bitmap:=LoadPixmap('menu_callstack');
+  itmViewCallStack.Bitmap.LoadFromLazarusResource('menu_callstack');
   itmViewDebugWindows.Add(itmViewCallStack);
 
   itmViewDebugOutput := TMenuItem.Create(Self);
   itmViewDebugOutput.Name:='itmViewDebugOutput';
   itmViewDebugOutput.Caption := lisMenuViewDebugOutput;
-  itmViewDebugOutput.Bitmap:=LoadPixmap('menu_debugoutput');
+  itmViewDebugOutput.Bitmap.LoadFromLazarusResource('menu_debugoutput');
   itmViewDebugWindows.Add(itmViewDebugOutput);
 end;
 
@@ -1088,7 +1088,7 @@ begin
   itmProjectOpen := TMenuItem.Create(Self);
   itmProjectOpen.Name:='itmProjectOpen';
   itmProjectOpen.Caption := lisMenuOpenProject;
-  itmProjectOpen.Bitmap:=LoadPixmap('menu_openproject');
+  itmProjectOpen.Bitmap.LoadFromLazarusResource('menu_openproject');
   mnuProject.Add(itmProjectOpen);
 
   itmProjectRecentOpen := TMenuItem.Create(Self);
@@ -1118,7 +1118,7 @@ begin
   itmProjectInspector := TMenuItem.Create(Self);
   itmProjectInspector.Name:='itmProjectInspector';
   itmProjectInspector.Caption := lisMenuProjectInspector;
-  itmProjectInspector.Bitmap:=LoadPixmap('menu_projectinspector');
+  itmProjectInspector.Bitmap.LoadFromLazarusResource('menu_projectinspector');
   {$IFNDEF DisablePkgs}
   mnuProject.Add(itmProjectInspector);
   {$ENDIF}
@@ -1150,7 +1150,7 @@ begin
   itmProjectOptions := TMenuItem.Create(Self);
   itmProjectOptions.Name:='itmProjectOptions';
   itmProjectOptions.Caption := lisMenuProjectOptions;
-  itmProjectOptions.Bitmap:=LoadPixmap('menu_projectoptions');
+  itmProjectOptions.Bitmap.LoadFromLazarusResource('menu_projectoptions');
   mnuProject.Add(itmProjectOptions);
 end;
 
@@ -1159,13 +1159,13 @@ begin
   itmRunMenuBuild := TMenuItem.Create(Self);
   itmRunMenuBuild.Name:='itmRunMenuBuild';
   itmRunMenuBuild.Caption := lisMenuBuild;
-  itmRunMenuBuild.Bitmap:=LoadPixmap('menu_build');
+  itmRunMenuBuild.Bitmap.LoadFromLazarusResource('menu_build');
   mnuRun.Add(itmRunMenuBuild);
 
   itmRunMenuBuildAll := TMenuItem.Create(Self);
   itmRunMenuBuildAll.Name:='itmRunMenuBuildAll';
   itmRunMenuBuildAll.Caption := lisMenuBuildAll;
-  itmRunMenuBuildAll.Bitmap:=LoadPixmap('menu_buildall');
+  itmRunMenuBuildAll.Bitmap.LoadFromLazarusResource('menu_buildall');
   mnuRun.Add(itmRunMenuBuildAll);
 
   itmRunMenuAbortBuild := TMenuItem.Create(Self);
@@ -1183,26 +1183,26 @@ begin
   itmRunMenuRun := TMenuItem.Create(Self);
   itmRunMenuRun.Name:='itmRunMenuRun';
   itmRunMenuRun.Caption := lisMenuProjectRun;
-  itmRunMenuRun.Bitmap:=LoadPixmap('menu_run');
+  itmRunMenuRun.Bitmap.LoadFromLazarusResource('menu_run');
   mnuRun.Add(itmRunMenuRun);
 
   itmRunMenuPause := TMenuItem.Create(Self);
   itmRunMenuPause.Name:='itmRunMenuPause';
   itmRunMenuPause.Caption := lisMenuPause;
   itmRunMenuPause.Enabled := false;
-  itmRunMenuPause.Bitmap:=LoadPixmap('menu_pause');
+  itmRunMenuPause.Bitmap.LoadFromLazarusResource('menu_pause');
   mnuRun.Add(itmRunMenuPause);
 
   itmRunMenuStepInto := TMenuItem.Create(Self);
   itmRunMenuStepInto.Name:='itmRunMenuStepInto';
   itmRunMenuStepInto.Caption := lisMenuStepInto;
-  itmRunMenuStepInto.Bitmap:=LoadPixmap('menu_stepinto');
+  itmRunMenuStepInto.Bitmap.LoadFromLazarusResource('menu_stepinto');
   mnuRun.Add(itmRunMenuStepInto);
 
   itmRunMenuStepOver := TMenuItem.Create(Self);
   itmRunMenuStepOver.Name:='itmRunMenuStepOver';
   itmRunMenuStepOver.Caption := lisMenuStepOver;
-  itmRunMenuStepOver.Bitmap:=LoadPixmap('menu_stepover');
+  itmRunMenuStepOver.Bitmap.LoadFromLazarusResource('menu_stepover');
   mnuRun.Add(itmRunMenuStepOver);
 
   itmRunMenuRunToCursor := TMenuItem.Create(Self);
@@ -1250,7 +1250,7 @@ begin
   itmPkgOpenPackage := TMenuItem.Create(Self);
   itmPkgOpenPackage.Name:='itmPkgOpenPackage';
   itmPkgOpenPackage.Caption := lisMenuOpenPackage;
-  itmPkgOpenPackage.Bitmap:=LoadPixmap('pkg_package');
+  itmPkgOpenPackage.Bitmap.LoadFromLazarusResource('pkg_package');
   {$IFNDEF DisablePkgs}
   mnuComponents.Add(itmPkgOpenPackage);
   {$ENDIF}
@@ -1258,7 +1258,7 @@ begin
   itmPkgOpenPackageFile := TMenuItem.Create(Self);
   itmPkgOpenPackageFile.Name:='itmPkgOpenPackageFile';
   itmPkgOpenPackageFile.Caption := lisMenuOpenPackageFile;
-  itmPkgOpenPackageFile.Bitmap:=LoadPixmap('pkg_package');
+  itmPkgOpenPackageFile.Bitmap.LoadFromLazarusResource('pkg_package');
   {$IFNDEF DisablePkgs}
   mnuComponents.Add(itmPkgOpenPackageFile);
   {$ENDIF}
@@ -1266,7 +1266,7 @@ begin
   itmPkgOpenRecent := TMenuItem.Create(Self);
   itmPkgOpenRecent.Name:='itmPkgOpenRecent';
   itmPkgOpenRecent.Caption := lisMenuOpenRecentPkg;
-  itmPkgOpenRecent.Bitmap:=LoadPixmap('pkg_package');
+  itmPkgOpenRecent.Bitmap.LoadFromLazarusResource('pkg_package');
   {$IFNDEF DisablePkgs}
   mnuComponents.Add(itmPkgOpenRecent);
   {$ENDIF}
@@ -1278,7 +1278,7 @@ begin
   itmPkgAddCurUnitToPkg := TMenuItem.Create(Self);
   itmPkgAddCurUnitToPkg.Name:='itmPkgAddCurUnitToPkg';
   itmPkgAddCurUnitToPkg.Caption := lisMenuAddCurUnitToPkg;
-  itmPkgAddCurUnitToPkg.Bitmap:=LoadPixmap('pkg_addunittopackage');
+  itmPkgAddCurUnitToPkg.Bitmap.LoadFromLazarusResource('pkg_addunittopackage');
   {$IFNDEF DisablePkgs}
   mnuComponents.Add(itmPkgAddCurUnitToPkg);
   {$ENDIF}
@@ -1290,7 +1290,7 @@ begin
   itmPkgPkgGraph := TMenuItem.Create(Self);
   itmPkgPkgGraph.Name:='itmPkgPkgGraph';
   itmPkgPkgGraph.Caption := lisMenuPackageGraph;
-  itmPkgPkgGraph.Bitmap:=LoadPixmap('pkg_packagegraph');
+  itmPkgPkgGraph.Bitmap.LoadFromLazarusResource('pkg_packagegraph');
   {$IFNDEF DisablePkgs}
   mnuComponents.Add(itmPkgPkgGraph);
   {$ENDIF}
@@ -1361,7 +1361,7 @@ begin
   itmToolBuildLazarus := TMenuItem.Create(Self);
   itmToolBuildLazarus.Name:='itmToolBuildLazarus';
   itmToolBuildLazarus.Caption := lisMenuBuildLazarus;
-  itmToolBuildLazarus.Bitmap:=LoadPixmap('menu_buildlazarus');
+  itmToolBuildLazarus.Bitmap.LoadFromLazarusResource('menu_buildlazarus');
   mnuTools.Add(itmToolBuildLazarus);
 
   itmToolConfigureBuildLazarus := TMenuItem.Create(Self);
@@ -1375,31 +1375,31 @@ begin
   itmEnvGeneralOptions := TMenuItem.Create(Self);
   itmEnvGeneralOptions.Name:='itmEnvGeneralOptions';
   itmEnvGeneralOptions.Caption := lisMenuGeneralOptions;
-  itmEnvGeneralOptions.Bitmap:=LoadPixmap('menu_environmentoptions');
+  itmEnvGeneralOptions.Bitmap.LoadFromLazarusResource('menu_environmentoptions');
   mnuEnvironment.Add(itmEnvGeneralOptions);
 
   itmEnvEditorOptions := TMenuItem.Create(Self);
   itmEnvEditorOptions.Name:='itmEnvEditorOptions';
   itmEnvEditorOptions.Caption := lisMenuEditorOptions;
-  itmEnvEditorOptions.Bitmap:=LoadPixmap('menu_editoroptions');
+  itmEnvEditorOptions.Bitmap.LoadFromLazarusResource('menu_editoroptions');
   mnuEnvironment.Add(itmEnvEditorOptions);
 
   itmEnvDebuggerOptions := TMenuItem.Create(Self);
   itmEnvDebuggerOptions.Name:='itmEnvDebuggerOptions';
   itmEnvDebuggerOptions.Caption := lisMenDebuggerOptions;
-//  itmEnvDebuggerOptions.Bitmap:=LoadPixmap('menu_editoroptions');
+//  itmEnvDebuggerOptions.Bitmap.LoadFromLazarusResource('menu_editoroptions');
   mnuEnvironment.Add(itmEnvDebuggerOptions);
 
   itmEnvCodeToolsOptions := TMenuItem.Create(Self);
   itmEnvCodeToolsOptions.Name:='itmEnvCodeToolsOptions';
   itmEnvCodeToolsOptions.Caption := lisMenuCodeToolsOptions;
-  itmEnvCodeToolsOptions.Bitmap:=LoadPixmap('menu_codetoolsoptions');
+  itmEnvCodeToolsOptions.Bitmap.LoadFromLazarusResource('menu_codetoolsoptions');
   mnuEnvironment.Add(itmEnvCodeToolsOptions);
 
   itmEnvCodeToolsDefinesEditor := TMenuItem.Create(Self);
   itmEnvCodeToolsDefinesEditor.Name:='itmEnvCodeToolsDefinesEditor';
   itmEnvCodeToolsDefinesEditor.Caption := lisMenuCodeToolsDefinesEditor;
-  itmEnvCodeToolsDefinesEditor.Bitmap:=LoadPixmap('menu_codetoolsdefineseditor');
+  itmEnvCodeToolsDefinesEditor.Bitmap.LoadFromLazarusResource('menu_codetoolsdefineseditor');
   mnuEnvironment.Add(itmEnvCodeToolsDefinesEditor);
 
   mnuEnvironment.Add(CreateMenuSeparator);

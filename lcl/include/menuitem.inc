@@ -335,6 +335,14 @@ begin
     Result := FItems.Count;
 end;
 
+function TMenuItem.GetBitmap: TBitmap;
+begin
+  if FBitmap=nil then
+    FBitmap:=TBitmap.Create;
+  FBitmap.Transparent:=True;
+  Result:=FBitmap;
+end;
+
 {------------------------------------------------------------------------------
   Function: TMenuItem.GetHandle
   Params:   none
@@ -358,7 +366,7 @@ end;
 function TMenuItem.GetItem(Index: Integer): TMenuItem;
 begin
   if FItems = nil then
-    raise EMenuError.CreateFmt(rsIndexOutOfRange,[ClassName,Index,0]);
+    raise EMenuError.CreateFmt(rsIndexOutOfBounds,[ClassName,Index,0]);
   Result := TMenuItem(FItems[Index]);
 end;
 
@@ -383,6 +391,12 @@ end;
 function TMenuItem.GetParent: TMenuItem;
 begin
   Result := FParent;
+end;
+
+function TMenuItem.IsBitmapStored: boolean;
+begin
+  Result:=(FBitmap<>nil) and (not FBitmap.Empty)
+          and (FBitmap.Width>0) and (FBitmap.Height>0);
 end;
 
 {------------------------------------------------------------------------------
@@ -718,6 +732,11 @@ begin
     Items[I].Free;
 end;
 
+function TMenuItem.HasBitmap: boolean;
+begin
+  Result:=FBitmap<>nil;
+end;
+
 {------------------------------------------------------------------------------
   function TMenuItem.IsCheckItem: boolean;
 
@@ -805,7 +824,12 @@ end;
 procedure TMenuItem.SetBitmap(const AValue: TBitmap);
 begin
   if FBitmap=AValue then exit;
-  FBitmap:=AValue;
+  if AValue<>nil then begin
+    Bitmap.Assign(AValue);
+  end else begin
+    FBitmap.Free;
+    FBitmap:=nil;
+  end;
   if HandleAllocated then RecreateHandle;
   MenuChanged(False);
 end;
@@ -1118,6 +1142,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2004/02/08 11:31:32  mattias
+  TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
+
   Revision 1.50  2004/02/05 09:45:33  mattias
   implemented Actions for TSpeedButton, TMenuItem, TCheckBox
 
@@ -1299,6 +1326,9 @@ end;
 
 
   $Log$
+  Revision 1.51  2004/02/08 11:31:32  mattias
+  TMenuItem.Bitmap is now auto created on read. Added TMenuItem.HasBitmap
+
   Revision 1.50  2004/02/05 09:45:33  mattias
   implemented Actions for TSpeedButton, TMenuItem, TCheckBox
 

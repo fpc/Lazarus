@@ -924,7 +924,7 @@ end;
 function TTreeNode.GetItems(AnIndex: Integer): TTreeNode;
 begin
   if (AnIndex<0) or (AnIndex>=Count) then
-    TreeNodeErrorFmt(rssIndexOutOfBounds,[ClassName, AnIndex, Count]);
+    TreeNodeErrorFmt(rsIndexOutOfBounds,[ClassName, AnIndex, Count]);
   Result:=FItems[AnIndex];
   {Result := GetFirstChild;
   while (Result <> nil) and (Index > 0) do
@@ -938,7 +938,7 @@ end;
 procedure TTreeNode.SetItems(AnIndex: Integer; AValue: TTreeNode);
 begin
   if (AnIndex<0) or (AnIndex>=Count) then
-    TreeNodeErrorFmt(rssIndexOutOfBounds, [ClassName, AnIndex, Count]);
+    TreeNodeErrorFmt(rsIndexOutOfBounds, [ClassName, AnIndex, Count]);
   Items[AnIndex].Assign(AValue);
 end;
 
