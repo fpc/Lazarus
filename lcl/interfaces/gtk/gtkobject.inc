@@ -789,19 +789,17 @@ begin
    
     LM_SETPROPERTIES: Result := SetProperties(Sender);
     
-    {
-    LM_SETDESIGNING
-    Used in Main.pp. Used to set anything specifically needed when setting controls to Designing.
-    }
-    LM_SETDESIGNING : Begin  //Result := SetDesigning(sender);
-                        //trying to prevent some key actions....
-                        //this didn't work....
-                        //if not (csAcceptsControls in TControl(Sender).ControlStyle) then gtk_widget_set_sensitive(PgtkWidget(TWinControl(sender).Handle),False);
-                        if (Sender is TCustomComboBox) then
-                              begin
-                              gtk_combo_disable_activate(PGTKCombo(TWinControl(sender).handle));
-                              end;
-                      end;
+    LM_SETDESIGNING :
+      // Used by the form editor to set anything specifically needed
+      // when setting controls to Designing.
+      Begin
+        // prevent a combobox from showing its subwindow
+        if (Sender is TCustomComboBox) then
+          gtk_combo_disable_activate(PGTKCombo(TWinControl(sender).handle));
+        // change cursor
+        if Sender is TWinControl then
+          SetCursor(TWinControl(Sender));
+      end;
 
     LM_RECREATEWND : Result := RecreateWnd(sender);
     
@@ -1995,6 +1993,8 @@ procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
       if (RealizeHandler = nil) and (RealizeID<>0) then begin
         gtk_signal_connect(AnObject, 'realize',
           TGTKSignalFunc(@GTKRealizeCB), Sender);
+        gtk_signal_connect_after(AnObject, 'realize',
+          TGTKSignalFunc(@GTKRealizeAfterCB), Sender);
       end;
     end;
   end;
@@ -5294,6 +5294,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.144  2002/06/21 17:54:23  lazarus
+  MG: in design mode the mouse cursor is now also set for hidden gdkwindows
+
   Revision 1.143  2002/06/21 16:59:15  lazarus
   MG: TControl.Cursor is now set, reduced auto reaction of widgets in design mode
 
