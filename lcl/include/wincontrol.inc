@@ -235,6 +235,7 @@ begin
   if AlignWork then
   begin
     AdjustClientRect(Rect);
+    FAdjustClientRectRealized:=Rect;
     //writeln('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',Rect.Left,',',Rect.Top,',',Rect.Right,',',Rect.Bottom);
     AlignList := TList.Create;
     try
@@ -306,19 +307,19 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.CMDrag(var MEssage: TCMDrag);
 Begin
- with Message, DragRec^ do
-   Begin
-   case DragMessage of
-         dmDragEnter, dmDragLEave,dmDragMOve, dmDragDrop :
-           if target <> nil then TControl(target).DoDragMsg(Message);
-         dmFindTarget:
-           begin
-             Writeln('dmFindTarget');
-             Result := longint(ControlatPos(ScreentoClient(pos),False));
-             if Result = 0 then Result := longint(Self);
-           end;
-         end;//case
-   end;
+  with Message, DragRec^ do
+  Begin
+  case DragMessage of
+    dmDragEnter, dmDragLEave,dmDragMOve, dmDragDrop :
+      if target <> nil then TControl(target).DoDragMsg(Message);
+    dmFindTarget:
+      begin
+        Writeln('dmFindTarget');
+        Result := longint(ControlatPos(ScreentoClient(pos),False));
+        if Result = 0 then Result := longint(Self);
+      end;
+    end;//case
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -359,12 +360,29 @@ begin
 End;
 
 {------------------------------------------------------------------------------}
+{  TWinControl DoAdjustClientRectChange                                      }
+{------------------------------------------------------------------------------}
+procedure TWinControl.DoAdjustClientRectChange;
+var r: TRect;
+begin
+  r:=GetClientRect;
+  AdjustClientRect(r);
+//writeln(' TWinControl.DoAdjustClientRectChange ',Name,':',ClassName,' ',r.Right,',',r.Bottom);
+  if (r.Left<>FAdjustClientRectRealized.Left)
+  or (r.Top<>FAdjustClientRectRealized.Top)
+  or (r.Right<>FAdjustClientRectRealized.Right)
+  or (r.Bottom<>FAdjustClientRectRealized.Bottom)
+  then begin
+    AlignControl(nil);
+  end;
+end;
+
+{------------------------------------------------------------------------------}
 {  TWinControl DoConstraintsChange                                             }
 {------------------------------------------------------------------------------}
 procedure TWinControl.DoConstraintsChange(Sender : TObject);
 begin
-  
-inherited DoConstraintsChange(Sender);
+  inherited DoConstraintsChange(Sender);
   InterfaceObject.IntSendMessage3(LM_SETGEOMETRY, Self, nil);
 End;
 
@@ -377,8 +395,8 @@ begin
   Dec(FAlignLevel);
   if FAlignLevel = 0 then begin
     if csAlignmentNeeded in ControlState then ReAlign;
-     FLastResize.X := 0;
-     FLastresize.Y := 0;
+    FLastResize.X := 0;
+    FLastresize.Y := 0;
   end;
 end;
 
@@ -387,14 +405,14 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.GetChildren(Proc: TGetChildProc; Root : TComponent);
 var
-I : Integer;
-Control : TControl;
+  I : Integer;
+  Control : TControl;
 Begin
   for I := 0 to ControlCount-1 do
-      Begin
-        Control := Controls[i];
-        if Control.Owner = Root then Proc(Control);
-      end;
+  Begin
+    Control := Controls[i];
+    if Control.Owner = Root then Proc(Control);
+  end;
 End;
 
 {------------------------------------------------------------------------------}
@@ -1661,6 +1679,15 @@ procedure TWinControl.CreateWnd;
 var
   Params: TCreateParams;
   n: Integer;
+  
+{  procedure WriteClientRect(const Prefix: string);
+  var r: TRect;
+  begin
+    if (ClassName<>'TGROUPBOX') or (not HandleAllocated) then exit;
+    LCLLinux.GetClientRect(Handle,r);
+    writeln('WriteClientRect ',Prefix,' ',Name,':',ClassName,' r=',r.Right,',',r.Bottom);
+  end;}
+  
 begin
   //writeln('[TWinControl.CreateWnd] START ',Classname);
   if (FCompstyle = csNone) then 
@@ -1679,11 +1706,14 @@ begin
   end;
   
   CreateComponent(nil);
+  //WriteClientRect('A');
   if Parent <> nil then AddControl;
   
+  //WriteClientRect('B');
   InitializeWnd;
 
   //writeln('[TWinControl.CreateWnd] ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+  //WriteClientRect('C');
   RequestAlign;
   
   if FWinControls <> nil then begin
@@ -1692,6 +1722,7 @@ begin
         if Visible then HandleNeeded;
   end;
   //writeln('[TWinControl.CreateWnd] END ',Classname);
+  //WriteClientRect('D');
 end;
 
 {------------------------------------------------------------------------------
@@ -1830,13 +1861,13 @@ var
 
 begin
 {$IFDEF CHECK_POSITION}
-{writeln('[TWinControl.SetBounds] START ',Name,':',ClassName,
+writeln('[TWinControl.SetBounds] START ',Name,':',ClassName,
 ' Old=',Left,',',Top,',',Width,',',Height,
 ' -> New=',ALeft,',',ATop,',',AWidth,',',AHeight,
 ' BLC=',BoundsLockCount,
 ' Realized=',FBoundsRealized.Left,',',FBoundsRealized.Top,
 ',',FBoundsRealized.Right-FBoundsRealized.Left,',',FBoundsRealized.Bottom-FBoundsRealized.Top
-);}
+);
 {$ENDIF}
   OldBounds:=BoundsRect;
   NewBounds:=Bounds(ALeft, ATop, AWidth, AHeight);
@@ -2018,6 +2049,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.59  2002/04/22 13:07:45  lazarus
+  MG: fixed AdjustClientRect of TGroupBox
+
   Revision 1.58  2002/04/18 08:13:36  lazarus
   MG: added include comments
 
