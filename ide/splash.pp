@@ -367,7 +367,8 @@ end;
 
 procedure TSplashForm.StartTimer;
 begin
-  FTimer.Enabled := True;
+  if FTimer<>nil then
+    FTimer.Enabled := True;
 end;
 
 end.
@@ -375,6 +376,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.7  2001/11/19 21:48:53  lazarus
+  MG: fixed splash timer AV, incomplete project loading, application save as
+
   Revision 1.6  2001/11/19 12:14:24  lazarus
   MG: changed splashform borderstyle
 

@@ -2198,6 +2198,7 @@ CheckHeap(IntToStr(GetMem_Cnt));
     ActiveSrcEdit.UpdateCodeBuffer;
     ActiveUnitInfo.Modified:=true;
   end;
+writeln('TMainIDE.DoSaveEditorUnit A4 ');
   if (not SaveToTestDir) and (not ActiveUnitInfo.Modified) and (not SaveAs) then
   begin
     Result:=mrOk;
@@ -2526,6 +2527,15 @@ CheckHeap(IntToStr(GetMem_Cnt));
     exit;
   end;
   if (not FileExists(AFilename)) then begin
+    if ProjectLoading then begin
+      Result:=MessageDlg('File not found',
+        'The file "'+AFilename+'"'#13
+        +'was not found.'#13
+        +'Ignore will go on loading the project,'#13
+        +'Abort will cancel the loading.',
+        mtError, [mbIgnore, mbAbort], 0);
+      exit;
+    end;
     if MessageDlg('File not found',
       'File "'+AFilename+'" not found.'#13
       +'Do you want to create it?'#13
@@ -2614,7 +2624,6 @@ writeln('[TMainIDE.DoOpenEditorFile] B');
 {$ENDIF}
   // create a new source editor
   NewUnitInfo.SyntaxHighlighter:=ExtensionToLazSyntaxHighlighter(Ext);
-writeln('[TMainIDE.DoOpenEditorFile] B2');
   NewPageName:=NewUnitInfo.UnitName;
   if NewPageName='' then begin
     NewPageName:=ExtractFileName(AFilename);
@@ -2622,9 +2631,7 @@ writeln('[TMainIDE.DoOpenEditorFile] B2');
       NewPageName:=copy(NewPageName,1,length(NewPageName)-length(Ext));
     if NewpageName='' then NewPageName:='file';
   end;
-writeln('[TMainIDE.DoOpenEditorFile] B3');
   SourceNotebook.NewFile(NewPageName,NewUnitInfo.Source);
-writeln('*** TMainIDE.DoOpenEditorFile C');
   NewSrcEdit:=SourceNotebook.GetActiveSE;
   if not ProjectLoading then
     Project.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex)
@@ -2978,7 +2985,9 @@ writeln('TMainIDE.DoSaveProject A SaveAs=',SaveAs,' SaveToTestDir=',SaveToTestDi
   for i:=0 to Project.UnitCount-1 do begin
     AnUnitInfo:=Project.Units[i];
     if AnUnitInfo.Loaded then begin
+{$IFDEF IDE_DEBUG}
 writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
+{$ENDIF}
       ASrcEdit:=SourceNoteBook.FindSourceEditorWithPageIndex(
          AnUnitInfo.EditorIndex);
       AnUnitInfo.TopLine:=ASrcEdit.EditorComponent.TopLine;
@@ -3082,10 +3091,12 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
         Ext:=ExtractFileExt(NewPagename);
         if (Ext='.pp') or (Ext='.pas') then
           NewPageName:=copy(NewpageName,1,length(NewPageName)-length(Ext));
-        NewPageName:=SourceNoteBook.FindUniquePageName(
-          NewPageName,MainUnitInfo.EditorIndex);
-        SourceNoteBook.NoteBook.Pages[MainUnitInfo.EditorIndex]:=
-          NewPageName;
+        if MainUnitInfo.EditorIndex>=0 then begin
+          NewPageName:=SourceNoteBook.FindUniquePageName(
+            NewPageName,MainUnitInfo.EditorIndex);
+          SourceNoteBook.NoteBook.Pages[MainUnitInfo.EditorIndex]:=
+            NewPageName;
+        end;
       end;
     finally
       SaveDialog.Free;
@@ -3128,7 +3139,7 @@ writeln('AnUnitInfo.Filename=',AnUnitInfo.Filename);
     for i:=0 to SourceNoteBook.Notebook.Pages.Count-1 do begin
       if (Project.MainUnit<0)
       or (Project.Units[Project.MainUnit].EditorIndex<>i) then begin
-        Result:=DoSaveEditorUnit(i,false,SaveToTestDir);
+        Result:=DoSaveEditorUnit(i,SaveAs,SaveToTestDir);
         if Result=mrAbort then exit;
       end;
     end;
@@ -3212,7 +3223,8 @@ writeln('TMainIDE.DoOpenProjectFile B2');
     // read MainUnit Source
     Result:=DoLoadCodeBuffer(NewBuf,Project.Units[Project.MainUnit].Filename);
 writeln('TMainIDE.DoOpenProjectFile B3');
-    if Result in [mrAbort,mrIgnore] then exit;
+    if Result=mrIgnore then Result:=mrAbort;
+    if Result=mrAbort then exit;
     Project.Units[Project.MainUnit].Source:=NewBuf;
   end;
 writeln('TMainIDE.DoOpenProjectFile C');
@@ -3240,7 +3252,9 @@ CheckHeap(IntToStr(GetMem_Cnt));
     end;
     if LowestEditorIndex>=0 then begin
       // reopen file
+writeln('TMainIDE.DoOpenProjectFile C2 ',Project.Units[LowestUnitIndex].Filename);
       Result:=DoOpenEditorFile(Project.Units[LowestUnitIndex].Filename,true);
+writeln('TMainIDE.DoOpenProjectFile C3 ',Result=mrOk);
       if Result=mrAbort then exit;
       if Result=mrOk then begin
         // open successful
@@ -4740,6 +4754,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.149  2001/11/19 21:48:51  lazarus
+  MG: fixed splash timer AV, incomplete project loading, application save as
+
   Revision 1.148  2001/11/19 15:23:17  lazarus
   MG: added quick syntax check via codetools
 

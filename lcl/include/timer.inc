@@ -130,7 +130,7 @@ end;
 procedure TTimer.SetEnabled (value : boolean);
 begin
   Assert(False, 'Trace:In TTimer.SetEnabled');
-  if (value <> FEnabled) then
+  if (Value <> FEnabled) then
   begin
      FEnabled := value;
      UpdateTimer;
@@ -156,6 +156,9 @@ end;
 
  {
   $Log$
+  Revision 1.4  2001/11/19 21:48:54  lazarus
+  MG: fixed splash timer AV, incomplete project loading, application save as
+
   Revision 1.3  2001/09/30 08:34:50  lazarus
   MG: fixed mem leaks and fixed range check errors
 
