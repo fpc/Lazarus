@@ -115,6 +115,12 @@ type
     FEditor: TPropertyEditor;
     procedure GetLvl;
   public
+    constructor Create(PropertyTree:TOIPropertyGrid;  PropEditor:TPropertyEditor;
+       ParentNode:TOIPropertyGridRow);
+    destructor Destroy; override;
+    function ConsistencyCheck: integer;
+    function HasChild(Row: TOIPropertyGridRow): boolean;
+  public
     Index:integer;
     LastPaintedValue:string;
     property Editor:TPropertyEditor read FEditor;
@@ -131,9 +137,6 @@ type
     property LastChild:TOIPropertyGridRow read FFirstChild;
     property NextBrother:TOIPropertyGridRow read FNextBrother;
     property PriorBrother:TOIPropertyGridRow read FPriorBrother;
-    constructor Create(PropertyTree:TOIPropertyGrid;  PropEditor:TPropertyEditor;
-       ParentNode:TOIPropertyGridRow);
-    destructor Destroy; override;
   end;
 
   //----------------------------------------------------------------------------
@@ -261,7 +264,7 @@ type
     property ExpandedProperties:TStringList 
        read FExpandedProperties write FExpandedProperties;
     function PropertyPath(Index:integer):string;
-    function GetRowByPath(PropPath:string):TOIPropertyGridRow;
+    function GetRowByPath(const PropPath:string):TOIPropertyGridRow;
 
     function MouseToIndex(y:integer;MustExist:boolean):integer;
 
@@ -272,6 +275,7 @@ type
     constructor CreateWithParams(AnOwner:TComponent;
        APropertyEditorHook:TPropertyEditorHook;  TypeFilter:TTypeKinds);
     destructor Destroy;  override;
+    function ConsistencyCheck: integer;
   end;
 
   //============================================================================
@@ -524,6 +528,28 @@ begin
   inherited Destroy;
 end;
 
+function TOIPropertyGrid.ConsistencyCheck: integer;
+var
+  i: integer;
+begin
+  for i:=0 to FRows.Count-1 do begin
+    if Rows[i]=nil then begin
+      Result:=-1;
+      exit;
+    end;
+    if Rows[i].Index<>i then begin
+      Result:=-2;
+      exit;
+    end;
+    Result:=Rows[i].ConsistencyCheck;
+    if Result<>0 then begin
+      dec(Result,100);
+      exit;
+    end;
+  end;
+  Result:=0;
+end;
+
 procedure TOIPropertyGrid.SetSelections(
   const NewSelections:TComponentSelectionList);
 var a:integer;
@@ -566,7 +592,7 @@ begin
   end else Result:='';
 end;
 
-function TOIPropertyGrid.GetRowByPath(PropPath:string):TOIPropertyGridRow;
+function TOIPropertyGrid.GetRowByPath(const PropPath:string):TOIPropertyGridRow;
 // searches PropPath. Expands automatically parent rows
 var CurName:string;
   s,e:integer;
@@ -838,25 +864,43 @@ var a:integer;
   OldSelectedRowPath:string;
 begin
   OldSelectedRowPath:=PropertyPath(ItemIndex);
+  // unselect
   ItemIndex:=-1;
+  // clear
   for a:=0 to FRows.Count-1 do Rows[a].Free;
   FRows.Clear;
+  // get properties
   GetComponentProperties(FComponentList,FFilter,FPropertyEditorHook,
     @AddPropertyEditor,nil);
-
+  // sort
   FRows.Sort(@SortGridRows);
+  for a:=0 to FRows.Count-1 do begin
+    if a>0 then
+      Rows[a].FPriorBrother:=Rows[a-1]
+    else
+      Rows[a].FPriorBrother:=nil;
+    if a<FRows.Count-1 then
+      Rows[a].FNextBrother:=Rows[a+1]
+    else
+      Rows[a].FNextBrother:=nil;
+  end;
+  // set indices and tops
   SetItemsTops;
+  // restore expands
   for a:=FExpandedProperties.Count-1 downto 0 do begin
     CurRow:=GetRowByPath(FExpandedProperties[a]);
     if CurRow<>nil then
       ExpandRow(CurRow.Index);
   end;
+  // reselect
   CurRow:=GetRowByPath(OldSelectedRowPath);
   if CurRow<>nil then begin
     ItemIndex:=CurRow.Index;
   end;
+  // update scrollbar
   FTopY:=0;
   UpdateScrollBar;
+  // paint
   Invalidate;
 end;
 
@@ -924,19 +968,20 @@ var CurRow, ARow:TOIPropertyGridRow;
 begin
   CurRow:=Rows[Index];
   if (not CurRow.Expanded) then exit;
-  EndIndex:=CurRow.Index+1;
-  StartIndex:=FRows.Count-1;
+  // calculate all childs (between StartIndex..EndIndex)
+  StartIndex:=CurRow.Index+1;
+  EndIndex:=FRows.Count-1;
   ARow:=CurRow;
   while ARow<>nil do begin
     if ARow.NextBrother<>nil then begin
-      StartIndex:=ARow.NextBrother.Index-1;
+      EndIndex:=ARow.NextBrother.Index-1;
       break;
     end;
     ARow:=ARow.Parent;
   end;
   if (FItemIndex>=StartIndex) and (FItemIndex<=EndIndex) then
     ItemIndex:=0;
-  for a:=StartIndex downto EndIndex do begin
+  for a:=EndIndex downto StartIndex do begin
     Rows[a].Free;
     FRows.Delete(a);
   end;
@@ -967,7 +1012,8 @@ begin
     FExpandingRow.FFirstChild:=NewRow;
   NewRow.FPriorBrother:=FExpandingRow.FLastChild;
   FExpandingRow.FLastChild:=NewRow;
-  if NewRow.FPriorBrother<>nil then NewRow.FPriorBrother.FNextBrother:=NewRow;
+  if NewRow.FPriorBrother<>nil then
+    NewRow.FPriorBrother.FNextBrother:=NewRow;
   inc(FExpandingRow.FChildCount);
 end;
 
@@ -1678,6 +1724,105 @@ begin
   end;
   if FEditor<>nil then FEditor.Free;
   inherited Destroy;
+end;
+
+function TOIPropertyGridRow.ConsistencyCheck: integer;
+var
+  OldLvl, RealChildCount: integer;
+  AChild: TOIPropertyGridRow;
+begin
+  if Top<0 then begin
+    Result:=-1;
+    exit;
+  end;
+  if Height<0 then begin
+    Result:=-2;
+    exit;
+  end;
+  if Lvl<0 then begin
+    Result:=-3;
+    exit;
+  end;
+  OldLvl:=Lvl;
+  GetLvl;
+  if Lvl<>OldLvl then begin
+    Result:=-4;
+    exit;
+  end;
+  if Name='' then begin
+    Result:=-5;
+    exit;
+  end;
+  if NextBrother<>nil then begin
+    if NextBrother.PriorBrother<>Self then begin
+      Result:=-6;
+      exit;
+    end;
+    if NextBrother.Index<Index+1 then begin
+      Result:=-7;
+      exit;
+    end;
+  end;
+  if PriorBrother<>nil then begin
+    if PriorBrother.NextBrother<>Self then begin
+      Result:=-8;
+      exit;
+    end;
+    if PriorBrother.Index>Index-1 then begin
+      Result:=-9
+    end;
+  end;
+  if (Parent<>nil) then begin
+    // has parent
+    if (not Parent.HasChild(Self)) then begin
+      Result:=-10;
+      exit;
+    end;
+  end else begin
+    // no parent
+  end;
+  if FirstChild<>nil then begin
+    if Expanded then begin
+      if (FirstChild.Index<>Index+1) then begin
+        Result:=-11;
+        exit;
+      end;
+    end;
+  end else begin
+    if LastChild<>nil then begin
+      Result:=-12;
+      exit;
+    end;
+  end;
+  RealChildCount:=0;
+  AChild:=FirstChild;
+  while AChild<>nil do begin
+    if AChild.Parent<>Self then begin
+      Result:=-13;
+      exit;
+    end;
+    inc(RealChildCount);
+    AChild:=AChild.NextBrother;
+  end;
+  if RealChildCount<>ChildCount then begin
+    Result:=-14;
+    exit;
+  end;
+  Result:=0;
+end;
+
+function TOIPropertyGridRow.HasChild(Row: TOIPropertyGridRow): boolean;
+var
+  ChildRow: TOIPropertyGridRow;
+begin
+  ChildRow:=FirstChild;
+  while ChildRow<>nil do begin
+    if ChildRow=Row then begin
+      Result:=true;
+      exit;
+    end;
+  end;
+  Result:=false;
 end;
 
 procedure TOIPropertyGridRow.GetLvl;
