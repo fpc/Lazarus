@@ -29,24 +29,11 @@
   Constructor for the class.
  ------------------------------------------------------------------------------}
 Constructor TWin32Object.Create;
-Var
-  R1,R2:TRect;
 Begin
   Inherited Create;
   FAccelGroup := 0;
   FTimerData  := TList.Create;
-  // Retrieves the height of a win32 menu
-  With R1 do
-  begin
-    left:=0;
-    right:=0;
-    right:=100;
-    bottom:=100;
-  end;
-  R2:=R1;
-  Windows.AdjustwindowRect(@R1,WS_OVERLAPPEDWINDOW,true);
-  Windows.AdjustwindowRect(@R2,WS_OVERLAPPEDWINDOW,false);
-  FWin32MenuHeight:= R2.Top - R1.Top;
+  FWin32MenuHeight:= GetSystemMetrics(SM_CYMENU);
   FNextControlId := 0;
 End;
 
@@ -143,8 +130,8 @@ Begin
   InitCommonControls;
 
   // Create parent of all windows, `button on taskbar'
-  FAppHandle := CreateWindow(@ClsName, 'AppTitle', WS_POPUP or WS_CLIPSIBLINGS or
-    WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX or WS_VISIBLE,
+   FAppHandle := CreateWindow(@ClsName, PChar(Application.Title), WS_POPUP or
+    WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX or WS_VISIBLE,
     0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
     0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
     0, 0, HWND(nil), HMENU(nil), HInstance, nil);
@@ -1463,19 +1450,6 @@ Var
     If fdApplyButton In Options then Result := Result Or CF_APPLY;
   End;
 
-  function GetOwnerHandle: HWND;
-  begin
-    with Sender do
-    begin
-      if Owner Is TWinControl then
-        Result := TWinControl(Owner).Handle
-      else if Owner Is TApplication then
-        Result := TApplication(Owner).Handle
-      else
-        Result := FAppHandle;
-    end;
-  end;
-
   procedure ReplacePipe(var AFilter:string);
   var i:integer;
   begin
@@ -1534,7 +1508,7 @@ Begin
     With CC Do
     Begin
       LStructSize := SizeOf(TChooseColor);
-      HWndOwner := GetOwnerHandle;
+      HWndOwner := GetOwnerHandle(Sender);
       RGBResult := TColorDialog(Sender).Color;
       LPCustColors := @CustomColors;
       Flags := CC_FullOpen Or CC_RGBInit;
@@ -1561,7 +1535,7 @@ Begin
     With OpenFile Do
     Begin
       LStructSize := SizeOf(OpenFileName);
-      HWndOwner := GetOwnerHandle;
+      HWndOwner := GetOwnerHandle(Sender);
       LPStrFilter := PChar(FFilter);
       LPStrFile := FName;
       LPStrTitle := PChar(Title);
@@ -1605,7 +1579,7 @@ Begin
     With CF Do
     Begin
       LStructSize := SizeOf(TChooseFont);
-      HWndOwner := GetOwnerHandle;
+      HWndOwner := GetOwnerHandle(Sender);
       LPLogFont := @LF;
       Flags := GetFlagsFromOptions(Options);
       Flags := Flags Or CF_INITTOLOGFONTSTRUCT Or CF_BOTH;
@@ -1647,7 +1621,7 @@ Begin
 
   With bi do
   Begin
-    hwndOwner := 0;                  // should be owner handle
+    hwndOwner := GetOwnerHandle(Sender);
     pidlRoot := nil;
     pszDisplayName := Buffer;
     lpszTitle := PChar(Sender.Title);
@@ -2896,6 +2870,9 @@ End;
 
 {
   $Log$
+  Revision 1.133  2003/11/22 23:56:33  mattias
+  fixed win32 intf menu height from Wojciech
+
   Revision 1.132  2003/11/21 20:32:01  micha
   cleanups; wm_hscroll/wm_vscroll fix
 

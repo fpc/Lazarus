@@ -25,7 +25,7 @@ unit DlgForm;
 
 interface
 
-uses Classes, Forms, Buttons, Dialogs, Graphics;
+uses Classes, Forms, Buttons, Dialogs, Graphics, StdCtrls;
 
 type
   TSampleDialogs = class(TForm)
@@ -37,6 +37,9 @@ type
     saveButton : TButton;
     colorButton : TButton;
     fontButton : TButton;
+    dirButton : TButton;
+    dirLabel : TLabel;
+    fileLabel : TLabel;
     constructor Create(AOwner: TComponent); override;
     procedure buttonClick(Sender : TObject);
     procedure FormDestroy(Sender : TObject);
@@ -51,10 +54,28 @@ constructor TSampleDialogs.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Caption := 'Common Dialogs';
-  SetBounds(200, 200, 200, 200);
+  SetBounds(200, 200, 400, 230);
   Color := clTeal;
 
   OnDestroy := @FormDestroy;
+
+  dirLabel := TLabel.Create(Self);
+  with dirLabel do
+  begin
+    Parent := Self;
+    SetBounds(110, 40, 280, 35);
+    Caption := 'Directory';
+    Show;
+  end;
+
+  fileLabel := TLabel.Create(Self);
+  with fileLabel do
+  begin
+    Parent := Self;
+    SetBounds(110, 80, 280, 35);
+    Caption := 'File';
+    Show;
+  end;
 
   closeButton := TButton.Create(Self);
   with closeButton do
@@ -110,6 +131,17 @@ begin
     Tag := 5;
     Show;
   end;
+
+  dirButton := TButton.Create(Self);
+  with dirButton do
+  begin
+    Parent := Self;
+    OnClick := @buttonClick;
+    SetBounds(10, 178, 75, 32);
+    caption := 'Directory';
+    Tag := 6;
+    Show;
+  end;
 end;
 
 procedure TSampleDialogs.FormDestroy(Sender : TObject);
@@ -125,25 +157,30 @@ begin
     2 : with TOpenDialog.Create(Self) do
         begin
           Filter := '*.pp';
-          Execute;
+          if Execute then fileLabel.Caption := FileName;
           Free;
         end;
     3 : with TSaveDialog.Create(Self) do
         begin
           Filename := 'untitled.pp';
-          Execute;
+          if Execute then fileLabel.Caption := FileName;
           Free;
         end;
     4 : with TFontDialog.Create(Self) do
         begin
-          Font.Assign(Self.Font);
-          if Execute then Self.Font.Assign(Font);
+          Font.Assign(fontButton.Font);
+          if Execute then fontButton.Font.Assign(Font);
           Free;
         end;
     5 : with TColorDialog.Create(Self) do
         begin
           Color := Self.Color;
           if Execute then Self.Color := Color;
+          Free;
+        end;
+    6 : with TSelectDirectoryDialog.Create(Self) do
+        begin
+          if Execute then dirLabel.Caption := FileName;
           Free;
         end;
   end;

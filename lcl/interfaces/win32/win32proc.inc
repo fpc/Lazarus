@@ -508,6 +508,18 @@ Begin
     Assert (False, 'Trace:[ObjectToHWND]****** Warning: handle = 0 *******');
 End;
 
+function GetOwnerHandle(ADialog : TCommonDialog): HWND;
+begin
+  with ADialog do
+  begin
+    if Owner Is TWinControl then
+      Result := TWinControl(Owner).Handle
+    else if Owner Is TApplication then
+      Result := TApplication(Owner).Handle
+    else
+      Result := TWin32Object(InterfaceObject).FAppHandle;
+  end;
+end;
 
 (***********************************************************************
   Widget member Functions
@@ -704,6 +716,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.30  2003/11/22 23:56:33  mattias
+  fixed win32 intf menu height from Wojciech
+
   Revision 1.29  2003/11/18 07:20:40  micha
   added "included by" notice at top of file
 

@@ -1262,6 +1262,8 @@ begin
         Add('program Project1;');
         Add('');
         Add('{$mode objfpc}{$H+}');
+        if fProjectType in [ptApplication] then
+          Add('{$AppType Gui} // for win32 applications');
         Add('');
         Add('uses');
         case fProjectType of
@@ -2736,6 +2738,9 @@ end.
 
 {
   $Log$
+  Revision 1.140  2003/11/22 23:56:33  mattias
+  fixed win32 intf menu height from Wojciech
+
   Revision 1.139  2003/10/15 18:01:10  mattias
   implemented extract proc, check lfm and convert delphi unit
 
