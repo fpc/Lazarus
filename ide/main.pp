@@ -5922,6 +5922,8 @@ begin
   and ((SourceNotebook.Top+SourceNotebook.Height) > MessagesView.Top) then
     SourceNotebook.Height := Max(50,Min(SourceNotebook.Height,
        MessagesView.Top-SourceNotebook.Top));
+  MessagesView.BringToFront;
+  SourceNotebook.BringToFront;
 end;
 
 function TMainIDE.GetTestBuildDir: string;
@@ -7615,6 +7617,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.452  2003/01/14 17:02:49  mattias
+  updated translations and raised message window on error
+
   Revision 1.451  2003/01/10 17:22:38  mattias
   fixed virtual directory
 
