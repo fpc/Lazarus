@@ -130,7 +130,12 @@ var
   TheWindow: PGdkWindow;
   TheForm: TCustomForm;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   EventTrace('realize', nil);
 
   if (Data<>nil) then begin
@@ -206,7 +211,12 @@ var
   ClientWidget: PGtkWidget;
   MainWidget: PGtkWidget;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   if Data=nil then ;
   EventTrace('realizeafter', nil);
 
@@ -265,33 +275,58 @@ end;
 function gtkshowCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMShowWindow;
+   Status : GBoolean;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   EventTrace('show', data);
   if Widget=nil then ;
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
   Mess.Show := True;
 
-  Result := DeliverMessage(Data, Mess) = 0;
+  Status := DeliverMessage(Data, Mess) = 0;
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 function gtkHideCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMShowWindow;
+  Status : GBoolean;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   EventTrace('hide', data);
   if Widget=nil then ;
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
   Mess.Show := False;
-  Result := DeliverMessage(Data, Mess) = 0;
+  Status := DeliverMessage(Data, Mess) = 0;
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 function gtkactivateCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  Status : GBoolean;
 begin
   Result:= True;
   EventTrace('activate', data);
@@ -300,8 +335,14 @@ begin
 
   Mess.Msg := LM_ACTIVATE;
   Mess.Result := 0;
-  Result := DeliverMessage(Data, Mess) = 0;
+  Status := DeliverMessage(Data, Mess) = 0;
 //writeln('gtkactivateCB ',Result);
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem; AData: gPointer): GBoolean; cdecl;
@@ -309,7 +350,12 @@ function GTKCheckMenuToggeledCB(AMenuItem: PGTKCheckMenuItem; AData: gPointer): 
 var
   LCLMenuItem: TMenuItem;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   EventTrace('toggled', AData);
   
   LCLMenuItem := TMenuItem(AData);
@@ -331,36 +377,67 @@ end;
 function gtkchangedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  Status : GBoolean;
 begin
   if ComponentIsDestroyingHandle(TWinControl(Data))
   or (LockOnChange(PgtkObject(Widget),0)>0) then exit;
   EventTrace('changed', data);
 
   Mess.Msg := LM_CHANGED;
-  Result := DeliverMessage(Data, Mess) = 0;
+  Status := DeliverMessage(Data, Mess) = 0;
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  Status : GBoolean;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   if LockOnChange(PgtkObject(Widget),0)>0 then exit;
   EventTrace('changed_editbox', data);
 
   Mess.Msg := CM_TEXTCHANGED;
-  Result := DeliverMessage(Data, Mess) = 0;
+  Status := DeliverMessage(Data, Mess) = 0;
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   MSG: TLMessage;
+  Status : GBoolean;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   if LockOnChange(PgtkObject(Widget),0)>0 then exit;
   EventTrace('day changed', data);
   MSG.Msg := LM_DAYCHANGED;
-  Result := DeliverPostMessage(Data, MSG);
+  Status := DeliverPostMessage(Data, MSG);
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 
@@ -395,7 +472,11 @@ function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
 var
   DesignOnlySignal: boolean;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
   EventTrace('ExposeAfter', data);
   if (Event^.Count > 0) then exit;
 
@@ -421,6 +502,7 @@ function gtkfrmactivateAfter(widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMActivate;
+  Status : GBoolean;
 {$IFDEF VerboseFocus}
   LCLObject: TObject;
   CurFocusWidget: PGtkWidget;
@@ -458,13 +540,20 @@ begin
   writeln('');
   {$ENDIF}
   Mess.Msg := LM_ACTIVATE;
-  Result := DeliverPostMessage(Data, Mess);
+  Status := DeliverPostMessage(Data, Mess);
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 function gtkfrmdeactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMActivate;
+  Status : GBoolean;
 {$IFDEF VerboseFocus}
   LCLObject: TControl;
 {$ENDIF}
@@ -481,12 +570,22 @@ begin
     writeln(' LCLObject=nil');
   {$ENDIF}
   Mess.Msg := LM_DEACTIVATE;
-  Result := DeliverPostMessage(Data, Mess);
+  Status := DeliverPostMessage(Data, Mess);
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
   if (Widget=nil) then ;
   EventTrace('map', data);
 end;
@@ -875,13 +974,25 @@ end;
 function gtkdestroyCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess: TLMessage;
+   Status : GBoolean;
    Info: PWinWidgetInfo;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   EventTrace('destroy', data);
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_DESTROY;
-  Result := DeliverMessage(Data, Mess) = 0;
+  Status := DeliverMessage(Data, Mess) = 0;
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 
   // NOTE: if the destroy message is posted
   // we should post an info destroy message as well
@@ -904,7 +1015,11 @@ function gtkresizeCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 //var
 //   Mess : TLMessage;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
   if (Widget=nil) then ;
   EventTrace('resize', data);
 //   Mess.msg := LM_RESIZE;
@@ -916,13 +1031,24 @@ end;
 function gtkMonthChanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess: TLMessage;
+  Status : GBoolean;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
   if (Widget=nil) then ;
   EventTrace('month changed', data);
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_MONTHCHANGED;
-  Result := DeliverPostMessage(Data, Mess);
+  Status := DeliverPostMessage(Data, Mess);
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 {-------------------------------------------------------------------------------
@@ -2017,19 +2143,37 @@ end;
 function gtkPressedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  Status : GBoolean;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   if (Widget=nil) then ;
   EventTrace('pressed', data);
   Mess.msg := LM_PRESSED;
-  Result := DeliverMessage(Data, Mess) = 0;
+  Status := DeliverMessage(Data, Mess) = 0;
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 function gtkEnterCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
    Mess : TLMessage;
+   Status : GBoolean;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   EventTrace('enter', data);
 
   if csDesigning in TControl(Data).ComponentState then begin
@@ -2039,14 +2183,26 @@ begin
 
   Mess.msg := CM_MOUSEENTER;
 writeln('gtkEnterCB');
-  Result := DeliverMessage(Data, Mess) = 0;
+  Status := DeliverMessage(Data, Mess) = 0;
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 function gtkLeaveCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  Status : GBoolean;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   EventTrace('leave', data);
 
   if csDesigning in TControl(Data).ComponentState then begin
@@ -2056,14 +2212,25 @@ begin
 
   Mess.msg := CM_MOUSELEAVE;
 writeln('gtkLeaveCB');
-  Result := DeliverMessage(Data, Mess) = 0;
+  Status := DeliverMessage(Data, Mess) = 0;
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 function gtkMoveCursorCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   if (Widget=nil) then ;
   EventTrace('move-cursor', data);
   Mess.msg := LM_MOVECURSOR;
@@ -2105,7 +2272,12 @@ begin
     writeln('VFP gtksize_allocateCB: ',TControl(Data).ClassName,' ',Size^.X,',',Size^.Y);
   {$ENDIF}
   SaveSizeNotification(Widget);
-  Result:=true;
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := True;
+  {$endif}
 end;
 
 function gtksize_allocate_client(widget: PGtkWidget; size: pGtkAllocation;
@@ -2139,7 +2311,11 @@ begin
     exit;
   end;
   
-  Result:=true;
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := True;
+  {$endif}
 end;
 
 function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer;
@@ -2147,8 +2323,14 @@ function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum: integer;
 var
   Mess : TLMNotify;
   T : tagNMHDR;
+  Status : GBoolean;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   if (Widget=nil) or (Page=nil) then ;
   EventTrace('switch-page', data);
   UpdateNoteBookClientWidget(TObject(Data));
@@ -2157,7 +2339,13 @@ begin
   T.hwndfrom := longint(widget);
   T.idfrom := pagenum;  //use this to set pageindex to the correct page.
   Mess.NMHdr := @T;
-  Result := DeliverMessage(Data, Mess) = 0;
+  Status := DeliverMessage(Data, Mess) = 0;
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 
@@ -2189,12 +2377,24 @@ end;
 function gtkreleasedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMEssage;
+  Status : GBoolean;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   if (Widget=nil) then ;
   EventTrace('released', data);
   Mess.msg := LM_RELEASED;
-  Result := DeliverMessage(Data, Mess) = 0;
+  Status := DeliverMessage(Data, Mess) = 0;
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 function gtkInsertText( widget: PGtkWidget; char : pChar; NewTextLength : Integer; Position : pgint; data: gPointer) : GBoolean; cdecl;
@@ -2202,7 +2402,11 @@ var
   Memo: TCustomMemo;
   CurrLength, CutLength: integer;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
 
   { GTK does not provide its own max. length for memos
     we have to do our own. }
@@ -2347,11 +2551,18 @@ end;
 function gtkValueChanged(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  Status : GBoolean;
 begin
   EventTrace('Value changed', data);
   if (Widget=nil) then ;
   Mess.msg := LM_CHANGED;
-  Result := DeliverMessage(Data, Mess) = 0;
+  Status := DeliverMessage(Data, Mess) = 0;
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -2482,6 +2693,7 @@ var
   Scroll: PGTKHScrollBar;  
   X, Y: GInt;
   Mask: TGdkModifierType;
+  Status : GBoolean;
 begin
   Assert(False, Format('Trace:[GTKHScrollCB] Value: %d', [Round(Adjustment^.Value)]));
 
@@ -2529,7 +2741,13 @@ begin
     Pos := V;
     ScrollBar := HWND(Scroll);
   end;
-  Result := DeliverMessage(Data, Msg) = 0;
+  Status := DeliverMessage(Data, Msg) = 0;
+
+  {$Ifdef GTK2}
+   Status := False;
+  {$Endif}
+
+  Result := Status
 end;
 
 function GTKVScrollCB(Adjustment: PGTKAdjustment;
@@ -2542,6 +2760,7 @@ var
   Scroll: PGTKHScrollBar;  
   X, Y: GInt;
   Mask: TGdkModifierType;
+  Status : GBoolean;
 begin
   Assert(False, Format('Trace:[GTKVScrollCB] Value: %d', [Round(Adjustment^.Value)]));
 
@@ -2590,7 +2809,13 @@ begin
     Pos := V;
     ScrollBar := HWND(Scroll);
   end;
-  Result := DeliverMessage(Data, Msg) = 0;
+  Status := DeliverMessage(Data, Msg) = 0;
+
+  {$Ifdef GTK2}
+   Status := False;
+  {$Endif}
+
+  Result := Status
 end;
 
 {------------------------------------------------------------------------------
@@ -2692,12 +2917,24 @@ end;
 function gtkYearChanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   MSG: TLMessage;
+  Status : GBoolean;
 begin
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
   Result := True;
+  {$endif}
+
   if (Widget=nil) then ;
   EventTrace('year changed', data);
   MSG.Msg := LM_YEARCHANGED;
-  Result := DeliverPostMessage(Data, MSG);
+  Status := DeliverPostMessage(Data, MSG);
+
+  {$ifdef GTK2}
+  Result := False;
+  {$Else}
+  Result := Status;
+  {$endif}
 end;
 
 {------------------------------------------------------------------------------
@@ -2926,6 +3163,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.199  2003/10/02 01:18:38  ajgenius
+  more callbacks fixes for gtk2, partly fix gtk2 CheckListBox
+
   Revision 1.198  2003/10/01 20:51:09  ajgenius
   partly fix focus callbacks for GTK2
 

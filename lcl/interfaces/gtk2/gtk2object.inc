@@ -22,23 +22,45 @@
 //  {$DEFINE ASSERT_IS_ON}
 {$ENDIF}
 
+Procedure gtk_clb_toggle(cellrenderertoggle : PGtkCellRendererToggle; arg1 : PGChar;
+                         treeview : PGtkTreeView); cdecl;
+var
+  aTreeModel : PGtkTreeModel;
+  aTreeIter : TGtkTreeIter;
+  value : pgValue;
+begin
+  aTreeModel := gtk_tree_view_get_model (treeview);
+  if (gtk_tree_model_get_iter_from_string (aTreeModel, @aTreeIter, arg1)) then begin
+    aTreeIter.stamp := GTK_LIST_STORE (aTreeModel)^.stamp; //strange hack
+    value := g_new0(SizeOf(TgValue), 1);
+    gtk_tree_model_get_value(aTreeModel, @aTreeIter, 0, value);
+
+    g_value_set_boolean(value, not g_value_get_boolean(value));
+
+    gtk_list_store_set_value (GTK_LIST_STORE (aTreeModel), @aTreeIter, 0, value);
+    g_value_unset(value);
+    g_free(value);
+  end;
+end;
+
 Procedure gtk_clb_toggle_row_activated(treeview : PGtkTreeView; arg1 : PGtkTreePath;
                                   arg2 : PGtkTreeViewColumn; data : gpointer); cdecl;
 var
   aTreeModel : PGtkTreeModel;
   aTreeIter : TGtkTreeIter;
-  value : boolean;
+  value : PGValue;
 begin
   aTreeModel := gtk_tree_view_get_model (treeview);
   if (gtk_tree_model_get_iter (aTreeModel, @aTreeIter, arg1)) then begin
-    gtk_tree_model_get (aTreeModel, @aTreeIter, [0, @value, -1]);
+    aTreeIter.stamp := GTK_LIST_STORE (aTreeModel)^.stamp; //strange hack
+    value := g_new0(SizeOf(TgValue), 1);
+    gtk_tree_model_get_value(aTreeModel, @aTreeIter, 0, value);
 
-    If value then
-      value := False
-    else
-      value := True;
-      
-    gtk_list_store_set (GTK_LIST_STORE (aTreeModel), @aTreeIter, [0, value, -1]);
+    g_value_set_boolean(value, not g_value_get_boolean(value));
+
+    gtk_list_store_set_value (GTK_LIST_STORE (aTreeModel), @aTreeIter, 0, value);
+    g_value_unset(value);
+    g_free(value);
   end;
 end;
 
@@ -130,9 +152,13 @@ begin
       TempInt := 0;
       if (CompStyle = csCheckListBox) then begin
         renderer := gtk_cell_renderer_toggle_new();
-        column := gtk_tree_view_column_new_with_attributes('', renderer, ['active', 0, nil]);
+        column := gtk_tree_view_column_new_with_attributes('', renderer, ['active', 0,  nil]);
+         gtk_cell_renderer_toggle_set_active(GTK_CELL_RENDERER_TOGGLE(renderer), True);
         gtk_tree_view_append_column (GTK_TREE_VIEW (TempWidget), column);
         gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
+        g_signal_connect (renderer, 'toggled',
+					  G_CALLBACK (@gtk_clb_toggle),
+					  TempWidget);
         g_signal_connect (GTK_TREE_VIEW (TempWidget), 'row_activated',
 					  G_CALLBACK (@gtk_clb_toggle_row_activated),
 					  nil);
@@ -978,6 +1004,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.3  2003/10/02 01:18:38  ajgenius
+  more callbacks fixes for gtk2, partly fix gtk2 CheckListBox
+
   Revision 1.2  2003/09/24 17:23:54  ajgenius
   more work toward GTK2 - partly fix CheckListBox, & MenuItems
 

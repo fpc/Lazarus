@@ -4707,6 +4707,7 @@ begin
           SetCallback(LM_GRABFOCUS,Sender);
         end;
 
+        {$IfDef GTK1}
         csListview:
         begin
           SetCallback(LM_HSCROLL,Sender);
@@ -4717,6 +4718,7 @@ begin
           SetCallback(LVN_DELETEITEM,Sender);
           SetCallback(LVN_INSERTITEM,Sender);
         end;
+        {$EndIf}
 
         csScrollBox :
         Begin
@@ -8443,6 +8445,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.430  2003/10/02 01:18:38  ajgenius
+  more callbacks fixes for gtk2, partly fix gtk2 CheckListBox
+
   Revision 1.429  2003/09/25 20:44:42  ajgenius
   minor changes for gtk2
 
