@@ -141,7 +141,7 @@ begin
   Result := '';
   if ABreakpoint is TIDEBreakPoint then begin
     CurBreakPoint:=TIDEBreakPoint(ABreakpoint);
-    for Action := Low(Action) to High(Action) do
+    for Action := Low(TIDEBreakPointAction) to High(TIDEBreakPointAction) do
       if Action in CurBreakpoint.Actions
       then begin
         if Result <> '' then Result := Result + ', ';
@@ -520,6 +520,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.23  2005/02/18 16:59:39  mattias
+  fixed note about jpeg bug
+
   Revision 1.22  2004/08/26 23:50:05  marc
   * Restructured debugger view classes
   * Fixed help

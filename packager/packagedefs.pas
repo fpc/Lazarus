@@ -1766,7 +1766,7 @@ var
 begin
   Result:=false;
   CurPos:=1;
-  for i:=Low(ints) to High(ints) do begin
+  for i:=1 to 4 do begin
     ints[i]:=0;
     if CurPos<length(s) then begin
       if i>Low(ints) then begin

@@ -1027,7 +1027,7 @@ var
 begin
   if (cssGuideLinesPainted in FStates) then begin
     if (FForm<>nil) and CacheGuideLines then
-      for g:=Low(g) to High(g) do begin
+      for g:=Low(TGuideLineType) to High(TGuideLineType) do begin
         if FGuideLinesCache[g].PaintedLineValid then
         begin
           LineRect:=FGuideLinesCache[g].PaintedLine;
@@ -2915,7 +2915,7 @@ begin
   if LineExists[glLeft] then
     DrawLine(Line[glLeft],EnvironmentOptions.GuideLineColorLeftTop);
 
-  for g:=Low(g) to High(g) do begin
+  for g:=Low(TGuideLineType) to High(TGuideLineType) do begin
     FGuideLinesCache[g].PaintedLineValid:=LineExists[g];
     FGuideLinesCache[g].PaintedLine:=Line[g];
   end;
