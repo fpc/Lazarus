@@ -200,15 +200,15 @@ begin
   Opendlg := TOPENDIALOG.Create(Self);
   With Opendlg do begin
     OPTIONS := [ofextensiondifferent, ofpathmustexist, offilemustexist, ofenablesizing];
-    DEFAULTEXT := '.xpm';
-    FILTER := '*.xpm';
+    DEFAULTEXT := 'xpm';
+    FILTER := 'All Image formats (*.bmp;*.xpm)|*.bmp;*.xpm|Bitmaps (*.bmp)|*.bmp|XPM images (*.xpm)|*.xpm';
   end;
 
   Savedlg := TSAVEDIALOG.Create(Self);
   With Savedlg do begin
     OPTIONS := [ofextensiondifferent, ofpathmustexist, offilemustexist, ofenablesizing];
-    DEFAULTEXT := '.xpm';
-    FILTER := '*.xpm';
+    DEFAULTEXT := 'xpm';
+    FILTER := Opendlg.Filter;
   end;
 
   OKBTN := TBITBTN.Create(Self);
