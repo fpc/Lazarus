@@ -1627,7 +1627,7 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function TWinControl.IntfUTF8KeyPress(var UTF8Key: string;
+  function TWinControl.IntfUTF8KeyPress(var UTF8Key: TUTF8Char;
     RepeatCount: integer): boolean;
 
   Called by the interface after the navigation and specials keys are handled
@@ -3141,6 +3141,13 @@ begin
     if Message.CharCode < %11000000 then begin
       c:=chr(Message.CharCode);
       IntfUTF8KeyPress(c,1);
+      if (length(c)<>1) or (c[1]<>chr(Message.CharCode)) then begin
+        // character changed
+        if length(c)=1 then
+          Message.CharCode:=ord(c[1])
+        else
+          Message.CharCode:=0;
+      end;
     end;
   end;
 end;
@@ -3908,6 +3915,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.270  2004/09/02 17:42:38  mattias
+  fixed changing CNCHar.CharCode when key changed
+
   Revision 1.269  2004/09/02 09:16:59  mattias
   improved double byte char fonts for gtk1, started synedit UTF8 support
 

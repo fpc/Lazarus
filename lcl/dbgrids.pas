@@ -848,7 +848,6 @@ end;
 function TCustomDbGrid.GetColumnLayout(Column: Integer; ForTitle: boolean
   ): TTextLayout;
 var
-  F: Tfield;
   C: TColumn;
 begin
   C := ColumnFromGridColumn(Column);
@@ -2527,6 +2526,9 @@ end.
 
 {
   $Log$
+  Revision 1.15  2004/09/02 17:42:38  mattias
+  fixed changing CNCHar.CharCode when key changed
+
   Revision 1.14  2004/09/01 20:18:03  micha
   from jesus reyes:
   grids:
