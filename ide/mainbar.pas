@@ -1381,7 +1381,7 @@ begin
     else
       fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
     try
-      fs.Seek(0,soEnd);
+      fs.Position:=fs.Size;
       fs.Write(' ',1);
     finally
       fs.Free;
@@ -1395,7 +1395,7 @@ begin
   try
     fs:=TFileStream.Create(AFilename,fmOpenReadWrite);
     try
-      fs.Seek(-1,soEnd);
+      fs.Position:=fs.Size-1;
       fs.Read(c,1);
     finally
       fs.Free;

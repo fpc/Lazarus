@@ -46,6 +46,17 @@ uses
   LazarusIDEStrConsts;
 
 type
+  TInheritedCompilerOption = (
+    icoUnitPath,
+    icoIncludePath,
+    icoObjectPath,
+    icoLibraryPath,
+    icoLinkerOptions,
+    icoCustomOptions
+    );
+  TInheritedCompilerOptions = set of TInheritedCompilerOption;
+
+
   { TBaseCompilerOptions }
 
   TBaseCompilerOptions = class(TObject)
@@ -160,6 +171,9 @@ type
     function ParseOptions(const Delim, Switch, OptionStr: string): string;
     function GetXMLConfigPath: String; virtual;
     function CreateTargetFilename(const MainSourceFileName: string): string; virtual;
+    function GetInheritedOption(Option: TInheritedCompilerOption): string;
+    procedure GetInheritedCompilerOptions(
+                            var DirectOptions, IndirectOptions: TList); virtual;
   public
     { Properties }
     property Modified: boolean read FModified write SetModified;
@@ -445,8 +459,10 @@ type
     procedure SetupOtherTab(Page: integer);
     procedure SetupButtonBar;
   private
+    FReadOnly: boolean;
     function GetOtherSourcePath: string;
     procedure SetOtherSourcePath(const AValue: string);
+    procedure SetReadOnly(const AValue: boolean);
   public
     CompilerOpts: TBaseCompilerOptions;
 
@@ -463,6 +479,7 @@ type
     
     property OtherSourcePath: string
       read GetOtherSourcePath write SetOtherSourcePath;
+    property ReadOnly: boolean read FReadOnly write SetReadOnly;
   end;
 
 var
@@ -778,9 +795,9 @@ begin
     OnModified(Self);
 end;
 
-{------------------------------------------------------------------------------}
-{  TBaseCompilerOptions CreateTargetFilename                                       }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TBaseCompilerOptions CreateTargetFilename
+------------------------------------------------------------------------------}
 function TBaseCompilerOptions.CreateTargetFilename(
   const MainSourceFileName: string): string;
 begin
@@ -798,9 +815,28 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TBaseCompilerOptions MakeOptionsString                                          }
-{------------------------------------------------------------------------------}
+function TBaseCompilerOptions.GetInheritedOption(
+  Option: TInheritedCompilerOption): string;
+var
+  DirectOptions: TList;
+  IndirectOptions: TList;
+begin
+  Result:='';
+  GetInheritedCompilerOptions(DirectOptions,IndirectOptions);
+  if DirectOptions=nil then exit;
+  
+end;
+
+procedure TBaseCompilerOptions.GetInheritedCompilerOptions(var DirectOptions,
+  IndirectOptions: TList);
+begin
+  DirectOptions:=nil;
+  IndirectOptions:=nil;
+end;
+
+{------------------------------------------------------------------------------
+  TBaseCompilerOptions MakeOptionsString
+------------------------------------------------------------------------------}
 function TBaseCompilerOptions.MakeOptionsString: String;
 begin
   Result:=MakeOptionsString('')
@@ -817,7 +853,7 @@ begin
   
   { options of ppc386 1.1 :
 
-put + after a boolean switch option to enable it, - to disable it
+  put + after a boolean switch option to enable it, - to disable it
   -a     the compiler doesn't delete the generated assembler file
       -al        list sourcecode lines in assembler file
       -ar        list register allocation/release info in assembler file
@@ -1908,6 +1944,7 @@ var
   OldCompOpts: TBaseCompilerOptions;
 begin
   { Put the compiler options into the TCompilerOptions class to be saved }
+  if ReadOnly then exit;
   
   OldCompOpts:=TBaseCompilerOptions.Create;
   OldCompOpts.Assign(CompilerOpts);
@@ -3440,6 +3477,14 @@ end;
 procedure TfrmCompilerOptions.SetOtherSourcePath(const AValue: string);
 begin
   edtOtherSources.Text:=AValue;
+end;
+
+procedure TfrmCompilerOptions.SetReadOnly(const AValue: boolean);
+begin
+  if FReadOnly=AValue then exit;
+  FReadOnly:=AValue;
+  btnOk.Enabled:=not FReadOnly;
+  btnApply.Enabled:=not FReadOnly;
 end;
 
   

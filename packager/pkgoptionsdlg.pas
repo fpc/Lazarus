@@ -63,8 +63,6 @@ type
     AutoIncrementOnBuildCheckBox: TCheckBox;
     // Usage page
     UsagePage: TPage;
-    PkgTypeRadioGroup: TRadioGroup;
-    UpdateRadioGroup: TRadioGroup;
     AddPathsGroupBox: TGroupBox;
     UnitPathLabel: TLabel;
     UnitPathEdit: TEdit;
@@ -83,12 +81,17 @@ type
     LinkerOptionsMemo: TMemo;
     CustomOptionsLabel: TLabel;
     CustomOptionsMemo: TMemo;
+    // IDE integration page
+    IDEPage: TPage;
+    PkgTypeRadioGroup: TRadioGroup;
+    UpdateRadioGroup: TRadioGroup;
     // buttons
     OkButton: TButton;
     CancelButton: TButton;
     procedure AddOptionsGroupBoxResize(Sender: TObject);
     procedure AddPathsGroupBoxResize(Sender: TObject);
     procedure DescriptionPageResize(Sender: TObject);
+    procedure IDEPageResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
     procedure PackageOptionsDialogClose(Sender: TObject;
       var Action: TCloseAction);
@@ -102,8 +105,9 @@ type
     FLazPackage: TLazPackage;
     procedure SetLazPackage(const AValue: TLazPackage);
     procedure SetupComponents;
-    procedure SetupDescriptionPage(PageIndex: integer);
     procedure SetupUsagePage(PageIndex: integer);
+    procedure SetupDescriptionPage(PageIndex: integer);
+    procedure SetupIDEPage(PageIndex: integer);
     procedure ReadOptionsFromPackage;
     procedure ReadPkgTypeFromPackage;
     function GetEditForPathButton(AButton: TPathEditorButton): TEdit;
@@ -214,15 +218,6 @@ var
 begin
   x:=3;
   y:=3;
-  w:=(UsagePage.ClientWidth-3*x) div 2;
-  h:=75;
-  with PkgTypeRadioGroup do
-    SetBounds(x,y,w,h);
-
-  with UpdateRadioGroup do
-    SetBounds(x+w+x,y,w,h);
-    
-  inc(y,h+5);
   w:=UsagePage.ClientWidth-2*x;
   h:=130;
   with AddPathsGroupBox do
@@ -293,6 +288,27 @@ begin
     
   with VersionGroupBox do
     SetBounds(x,y,w,90);
+end;
+
+procedure TPackageOptionsDialog.IDEPageResize(Sender: TObject);
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+  h: Integer;
+begin
+  x:=3;
+  y:=3;
+  w:=(IDEPage.ClientWidth-2*x);
+  h:=85;
+  with PkgTypeRadioGroup do begin
+    SetBounds(x,y,w,h);
+    inc(y,h+5);
+  end;
+
+  h:=75;
+  with UpdateRadioGroup do
+    SetBounds(x,y,w,h);
 end;
 
 procedure TPackageOptionsDialog.OkButtonClick(Sender: TObject);
@@ -454,13 +470,15 @@ begin
   with Notebook do begin
     Name:='Notebook';
     Parent:=Self;
-    Pages.Add('Description');
     Pages.Add('Usage');
+    Pages.Add('Description');
+    Pages.Add('IDE Integration');
     PageIndex:=0;
   end;
   
-  SetupDescriptionPage(0);
-  SetupUsagePage(1);
+  SetupUsagePage(0);
+  SetupDescriptionPage(1);
+  SetupIDEPage(2);
 
   OkButton:=TButton.Create(Self);
   with OkButton do begin
@@ -595,16 +613,16 @@ begin
   end;
 end;
 
-procedure TPackageOptionsDialog.SetupUsagePage(PageIndex: integer);
+procedure TPackageOptionsDialog.SetupIDEPage(PageIndex: integer);
 begin
   // Usage page
-  UsagePage:=Notebook.Page[PageIndex];
-  UsagePage.OnResize:=@UsagePageResize;
-  
+  IDEPage:=Notebook.Page[PageIndex];
+  IDEPage.OnResize:=@IDEPageResize;
+
   PkgTypeRadioGroup:=TRadioGroup.Create(Self);
   with PkgTypeRadioGroup do begin
     Name:='UsageRadioGroup';
-    Parent:=UsagePage;
+    Parent:=IDEPage;
     Caption:='PackageType';
     with Items do begin
       BeginUpdate;
@@ -620,16 +638,23 @@ begin
   UpdateRadioGroup:=TRadioGroup.Create(Self);
   with UpdateRadioGroup do begin
     Name:='UpdateRadioGroup';
-    Parent:=UsagePage;
+    Parent:=IDEPage;
     Caption:='Update/Rebuild';
     with Items do begin
       BeginUpdate;
-      Add('Automatically re-compile');
+      Add('Automatically re-compile as needed');
       Add('Manual compilation');
       EndUpdate;
     end;
     ItemIndex:=0;
   end;
+end;
+
+procedure TPackageOptionsDialog.SetupUsagePage(PageIndex: integer);
+begin
+  // Usage page
+  UsagePage:=Notebook.Page[PageIndex];
+  UsagePage.OnResize:=@UsagePageResize;
 
   AddPathsGroupBox:=TGroupBox.Create(Self);
   with AddPathsGroupBox do begin

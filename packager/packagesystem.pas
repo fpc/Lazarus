@@ -789,6 +789,10 @@ begin
     AddFile('arrow.pp','Arrow',pftUnit,[pffHasRegisterProc],cpLCL);
     AddFile('calendar.pp','Calendar',pftUnit,[pffHasRegisterProc],cpLCL);
     
+    // add unit paths
+    AddDependCompilerOptions.UnitPath:=
+      '$(LazarusDir)/lcl/units;$(LazarusDir)/lcl/units/$(LCLWidgetType)';
+    
     // add requirements
     AddRequiredDependency(FCLPackage.CreateDependencyForThisPkg);
     

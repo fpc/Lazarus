@@ -705,6 +705,7 @@ begin
   with CompilerOptsDlg do begin
     GetCompilerOptions;
     Caption:='Compiler Options for Package '+LazPackage.IDAsString;
+    ReadOnly:=true;
     ShowModal;
     Free;
   end;
