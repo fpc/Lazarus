@@ -60,9 +60,9 @@ all: lcl components ide
 
 clean: cleanall
         $(DEL) $(wildcard ./designer/*$(OEXT))
-        $(wildcard ./designer/*$(PPUEXT))
-        $(wildcard ./debugger/*$(OEXT))
-        $(wildcard ./debugger/*$(PPUEXT))
+        $(DEL) $(wildcard ./designer/*$(PPUEXT))
+        $(DEL) $(wildcard ./debugger/*$(OEXT))
+        $(DEL) $(wildcard ./debugger/*$(PPUEXT))
 ifeq ($(LCL_PLATFORM), win32)
         $(DEL) $(wildcard *.res)
         $(DEL) lazarus.owr
