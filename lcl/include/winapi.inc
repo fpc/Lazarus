@@ -895,6 +895,11 @@ Begin
   Result := InterfaceObject.SetProp(Handle,Str,Data);
 end;
 
+function SetRadioButtonGroupMode(Handle: hWnd; AutoGroup: boolean): Boolean;
+begin
+  Result := InterfaceObject.SetRadioButtonGroupMode(Handle,AutoGroup);
+end;
+
 Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint;
 begin
   Result := InterfaceObject.SelectClipRGN(DC, RGN);
@@ -1573,6 +1578,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.77  2003/03/17 20:50:30  mattias
+  fixed TRadioGroup.ItemIndex=-1
+
   Revision 1.76  2003/03/17 08:51:09  mattias
   added IsWindowVisible
 
