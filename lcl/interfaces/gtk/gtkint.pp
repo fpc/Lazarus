@@ -53,8 +53,9 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  SysUtils, LMessages, Classes, Controls, Forms, VclGlobals, LCLProc,
-  LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType, GraphMath;
+  SysUtils, LMessages, Classes, Controls, Forms, LCLStrConsts, VclGlobals,
+  LCLProc, LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue,
+  GraphType, GraphMath;
 
 
 type
@@ -326,6 +327,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.120  2003/03/09 21:13:32  mattias
+  localized gtk interface
+
   Revision 1.119  2003/02/24 11:51:44  mattias
   combobox height can now be set, added OI item height option
 
