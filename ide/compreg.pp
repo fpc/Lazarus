@@ -32,7 +32,7 @@ unit CompReg;
 
 {$MODE OBJFPC}{$H+}
 
-{$IFDEF EnablePkgs}
+{$IFNDEF DisablePkgs}
 This unit will be deleted in future
 {$ENDIF}
 

@@ -40,10 +40,10 @@ uses
 {$ENDIF}
   Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector,
   Forms, Menus, JITForms,
-  {$IFDEF EnablePkgs}
-  ComponentReg,
-  {$ELSE}
+  {$IFDEF DisablePkgs}
   CompReg, IDEComp,
+  {$ELSE}
+  ComponentReg,
   {$ENDIF}
   ComponentEditors, KeyMapping, EditorOptions, Dialogs;
 
@@ -623,7 +623,7 @@ begin
   FComponentInterfaceList := TList.Create;
   FSelectedComponents := TComponentSelectionList.Create;
   JITFormList := TJITForms.Create;
-  {$IFNDEF EnablePkgs}
+  {$IFDEF DisablePkgs}
   JITFormList.RegCompList := RegCompList;
   {$ENDIF}
   JITFormList.OnReaderError:=@JITFormListReaderError;

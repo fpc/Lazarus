@@ -46,10 +46,10 @@ uses
   MemCheck,
   {$ENDIF}
   Classes, SysUtils, Forms, Controls, LCLLinux, Dialogs, JITForm,
-  {$IFDEF EnablePkgs}
-  ComponentReg;
-  {$ELSE}
+  {$IFDEF DisablePkgs}
   CompReg;
+  {$ELSE}
+  ComponentReg;
   {$ENDIF}
 
 type
@@ -77,7 +77,7 @@ type
     FCurReadComponentClass: TComponentClass;
     FForms: TList; // list of TJITForm
     FOnReaderError: TJITReaderErrorEvent;
-    {$IFNDEF EnablePkgs}
+    {$IFDEF DisablePkgs}
     FRegCompList:TRegisteredComponentList;
     {$ENDIF}
     // jit procedures
@@ -114,7 +114,7 @@ type
     destructor Destroy; override;
     property Items[Index:integer]:TForm read GetItem; default;
     function Count:integer;
-    {$IFNDEF EnablePkgs}
+    {$IFDEF DisablePkgs}
     property RegCompList:TRegisteredComponentList read FRegCompList write FRegCompList;
     {$ENDIF}
     function AddNewJITForm:integer;
@@ -760,10 +760,10 @@ begin
   fCurReadComponent:=nil;
   fCurReadComponentClass:=ComponentClass;
   if ComponentClass=nil then begin
-    {$IFDEF EnablePkgs}
-    RegComp:=IDEComponentPalette.FindComponent(FindClassName);
-    {$ELSE}
+    {$IFDEF DisablePkgs}
     RegComp:=FRegCompList.FindComponentClassByName(FindClassName);
+    {$ELSE}
+    RegComp:=IDEComponentPalette.FindComponent(FindClassName);
     {$ENDIF}
     if RegComp<>nil then begin
       //writeln('[TJITForms.ReaderFindComponentClass] '''+FindClassName

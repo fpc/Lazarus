@@ -44,10 +44,10 @@ uses
   Controls, Graphics, ExtCtrls, Dialogs, FileCtrl, Forms, CodeToolManager,
   CodeCache, AVL_Tree, SynEditKeyCmds, LazConf, LazarusIDEStrConsts,
   ProjectDefs, Project, PublishModule, BuildLazDialog, Compiler,
-  {$IFDEF EnablePkgs}
-  ComponentReg,
-  {$ELSE}
+  {$IFDEF DisablePkgs}
   CompReg, IDEComp,
+  {$ELSE}
+  ComponentReg,
   {$ENDIF}
   Splash, TransferMacros, ObjectInspector, PropEdits,
   OutputFilter, IDEDefs, MsgView, EnvironmentOpts, EditorOptions,
@@ -1022,7 +1022,7 @@ begin
   itmProjectInspector.Name:='itmProjectInspector';
   itmProjectInspector.Caption := lisMenuProjectInspector;
   itmProjectInspector.Graphic:=LoadPixmap('menu_projectinspector');
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   mnuProject.Add(itmProjectInspector);
   {$ENDIF}
 
@@ -1127,7 +1127,7 @@ begin
   itmPkgOpenPackage.Name:='itmPkgOpenPackage';
   itmPkgOpenPackage.Caption := lisMenuOpenPackage;
   itmPkgOpenPackage.Graphic:=LoadPixmap('pkg_package');
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   mnuComponents.Add(itmPkgOpenPackage);
   {$ENDIF}
 
@@ -1135,7 +1135,7 @@ begin
   itmPkgOpenPackageFile.Name:='itmPkgOpenPackageFile';
   itmPkgOpenPackageFile.Caption := lisMenuOpenPackageFile;
   itmPkgOpenPackageFile.Graphic:=LoadPixmap('pkg_package');
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   mnuComponents.Add(itmPkgOpenPackageFile);
   {$ENDIF}
 
@@ -1143,11 +1143,11 @@ begin
   itmPkgOpenRecent.Name:='itmPkgOpenRecent';
   itmPkgOpenRecent.Caption := lisMenuOpenRecentPkg;
   itmPkgOpenRecent.Graphic:=LoadPixmap('pkg_package');
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   mnuComponents.Add(itmPkgOpenRecent);
   {$ENDIF}
 
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   mnuComponents.Add(CreateMenuSeparator);
   {$ENDIF}
 
@@ -1155,11 +1155,11 @@ begin
   itmPkgAddCurUnitToPkg.Name:='itmPkgAddCurUnitToPkg';
   itmPkgAddCurUnitToPkg.Caption := lisMenuAddCurUnitToPkg;
   itmPkgAddCurUnitToPkg.Graphic:=LoadPixmap('pkg_addunittopackage');
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   mnuComponents.Add(itmPkgAddCurUnitToPkg);
   {$ENDIF}
 
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   mnuComponents.Add(CreateMenuSeparator);
   {$ENDIF}
 
@@ -1167,11 +1167,11 @@ begin
   itmPkgPkgGraph.Name:='itmPkgPkgGraph';
   itmPkgPkgGraph.Caption := lisMenuPackageGraph;
   itmPkgPkgGraph.Graphic:=LoadPixmap('pkg_packagegraph');
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   mnuComponents.Add(itmPkgPkgGraph);
   {$ENDIF}
 
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   mnuComponents.Add(CreateMenuSeparator);
   {$ENDIF}
 

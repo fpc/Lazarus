@@ -1393,7 +1393,7 @@ end;
 
 procedure TPkgManager.UpdateVisibleComponentPalette;
 begin
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   TComponentPalette(IDEComponentPalette).NoteBook:=MainIDE.ComponentNotebook;
   TComponentPalette(IDEComponentPalette).UpdateNoteBookButtons;
   {$ENDIF}
@@ -1471,14 +1471,14 @@ begin
         '$(LazarusDir)'+ds+'lcl'
        +';'+
         '$(LazarusDir)'+ds+'lcl'+ds+'interfaces'+ds+'$(LCLWidgetType)';
-      {$IFDEF EnablePkgs}
-      AddProjectLCLDependency(AProject);
-      {$ELSE}
+      {$IFDEF DisablePkgs}
       // add lcl ppu dirs to unit search path
       Project1.CompilerOptions.OtherUnitFiles:=
         '$(LazarusDir)'+ds+'lcl'+ds+'units'
        +';'+
         '$(LazarusDir)'+ds+'lcl'+ds+'units'+ds+'$(LCLWidgetType)';
+      {$ELSE}
+      AddProjectLCLDependency(AProject);
       {$ENDIF}
     end;
 
@@ -1491,7 +1491,7 @@ procedure TPkgManager.AddProjectDependency(AProject: TProject;
 var
   NewDependency: TPkgDependency;
 begin
-  {$IFNDEF EnablePkgs}
+  {$IFDEF DisablePkgs}
   exit;
   {$ENDIF}
   // check if the dependency is already there
@@ -1510,7 +1510,7 @@ procedure TPkgManager.AddProjectRegCompDependency(AProject: TProject;
 var
   PkgFile: TPkgFile;
 begin
-  {$IFNDEF EnablePkgs}
+  {$IFDEF DisablePkgs}
   exit;
   {$ENDIF}
   if not (ARegisteredComponent is TPkgComponent) then exit;

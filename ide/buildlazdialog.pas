@@ -828,7 +828,7 @@ begin
     Name:='WithStaticPackagesCheckBox';
     Parent:=Self;
     Caption:=lisLazBuildWithStaticPackages;
-    {$IFNDEF EnablePkgs}
+    {$IFDEF DisablePkgs}
     Visible:=false;
     {$ENDIF}
   end;

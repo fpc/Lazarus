@@ -39,7 +39,7 @@ unit IDEComp;
   {$linklib crypt}
 {$ENDIF}
 
-{$IFDEF EnablePkgs}
+{$IFNDEF DisablePkgs}
 {$error This unit will be deleted in future}
 {$ENDIF}
 

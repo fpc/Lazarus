@@ -558,7 +558,7 @@ begin
   NewCategory.Add(
     TNewIDEItemTemplate.Create(niiCustomProject,'Custom Project',niifCopy,[]));
 
-  {$IFDEF EnablePkgs}
+  {$IFNDEF DisablePkgs}
   // category package
   NewCategory:=TNewIDEItemCategory.Create('Package');
   Add(NewCategory);
