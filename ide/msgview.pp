@@ -41,7 +41,6 @@ uses
   IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts;
 
 type
-
   TMessagesView = class(TForm)
     MessageView : TListBox;
     procedure MessageViewDblClicked(Sender: TObject);
@@ -54,6 +53,7 @@ type
     Function GetMessage: String;
     procedure SetLastLineIsProgress(const AValue: boolean);
   protected
+    fBlockCount: integer;
     Function GetSelectedLineIndex: Integer;
     procedure SetSelectedLineIndex(const AValue: Integer);
     procedure SetMsgDirectory(Index: integer; const CurDir: string);
@@ -69,6 +69,8 @@ type
     function MsgCount: integer;
     procedure Clear;
     procedure GetMessageAt(Index: integer; var Msg, MsgDirectory: string);
+    procedure BeginBlock;
+    procedure EndBlock;
   public
     property LastLineIsProgress: boolean read FLastLineIsProgress
                                          write SetLastLineIsProgress;
@@ -160,10 +162,9 @@ begin
     while (LastSeparator>=0) and (Items[LastSeparator]<>SeparatorLine) do
       dec(LastSeparator);
     if LastSeparator>=0 then begin
-      while (Items.Count>LastSeparator) do begin
+      while (Items.Count>LastSeparator) do
         Items.Delete(Items.Count-1);
-        FLastLineIsProgress:=false;
-      end;
+      FLastLineIsProgress:=false;
     end;
   end;
 end;
@@ -184,6 +185,7 @@ end;
 ------------------------------------------------------------------------------}
 Procedure  TMessagesView.Clear;
 Begin
+  if fBlockCount>0 then exit;
   MessageView.Clear;
   FLastLineIsProgress:=false;
   if not Assigned(MessagesView.MessageView.OnClick) then
@@ -206,6 +208,17 @@ begin
     RaiseException('TMessagesView.GetMessageAt');
   Msg:=MessageView.Items[Index];
   MsgDirectory:=FDirectories[Index];
+end;
+
+procedure TMessagesView.BeginBlock;
+begin
+  inc(fBlockCount);
+end;
+
+procedure TMessagesView.EndBlock;
+begin
+  if fBlockCount<=0 then RaiseException('TMessagesView.EndBlock Internal Error');
+  dec(fBlockCount);
 end;
 
 {------------------------------------------------------------------------------

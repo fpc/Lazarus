@@ -1238,6 +1238,7 @@ resourcestring
    
   // Build lazarus dialog
   lisCleanLazarusSource = 'Clean Lazarus Source';
+  lisCompileIDEWithoutLinking = 'Compile IDE (without linking)';
   lisBuildLCL = 'Build LCL';
   lisBuildComponent = 'Build Component';
   lisBuildCodeTools = 'Build CodeTools';

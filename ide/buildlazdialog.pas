@@ -329,6 +329,8 @@ begin
         CurMakeMode:=mmBuild;
       if CurMakeMode=mmNone then continue;
       Tool.Title:=CurItem.Description;
+      if (CurItem=Options.ItemIDE) and (blfWithoutLinkingIDE in Flags) then
+        Tool.Title:=lisCompileIDEWithoutLinking;
       Tool.WorkingDirectory:='$(LazarusDir)/'+CurItem.Directory;
       Tool.CmdLineParams:=CurItem.Commands[CurItem.MakeMode];
       // append extra options

@@ -5563,49 +5563,54 @@ begin
 
   // show messages
   MessagesView.Clear;
-  DoArrangeSourceEditorAndMessageView(false);
+  MessagesView.BeginBlock;
+  try
+    DoArrangeSourceEditorAndMessageView(false);
 
-  // warn ambigious files
-  DoWarnAmbigiousFiles;
+    // warn ambigious files
+    DoWarnAmbigiousFiles;
 
-  // execute compilation tool 'Before'
-  Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteBefore,
-                                   Project1.ProjectDirectory,
-                                   'Executing command before');
-
-  if (Result=mrOk)
-  and (not Project1.CompilerOptions.SkipCompiler) then begin
-    try
-      // change tool status
-      ToolStatus:=itBuilder;
-
-      TheOutputFilter.OnOutputString:=@MessagesView.AddMsg;
-      TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
-
-      // compile
-      Result:=TheCompiler.Compile(Project1,BuildAll,DefaultFilename);
-      if Result<>mrOk then
-        DoJumpToCompilerMessage(-1,true);
-    finally
-      ToolStatus:=itNone;
-    end;
-  end;
-  
-  // execute compilation tool 'After'
-  if Result=mrOk then begin
-    Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteAfter,
+    // execute compilation tool 'Before'
+    Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteBefore,
                                      Project1.ProjectDirectory,
-                                     'Executing command after');
-  end;
-  
-  // add success message
-  if Result=mrOk then begin
-    MessagesView.AddMsg(
-      Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']),'');
-  end;
+                                     'Executing command before');
 
-  // check sources
-  DoCheckFilesOnDisk;
+    if (Result=mrOk)
+    and (not Project1.CompilerOptions.SkipCompiler) then begin
+      try
+        // change tool status
+        ToolStatus:=itBuilder;
+
+        TheOutputFilter.OnOutputString:=@MessagesView.AddMsg;
+        TheOutputFilter.OnReadLine:=@MessagesView.AddProgress;
+
+        // compile
+        Result:=TheCompiler.Compile(Project1,BuildAll,DefaultFilename);
+        if Result<>mrOk then
+          DoJumpToCompilerMessage(-1,true);
+      finally
+        ToolStatus:=itNone;
+      end;
+    end;
+
+    // execute compilation tool 'After'
+    if Result=mrOk then begin
+      Result:=DoExecuteCompilationTool(Project1.CompilerOptions.ExecuteAfter,
+                                       Project1.ProjectDirectory,
+                                       'Executing command after');
+    end;
+
+    // add success message
+    if Result=mrOk then begin
+      MessagesView.AddMsg(
+        Format(lisProjectSuccessfullyBuilt, ['"', Project1.Title, '"']),'');
+    end;
+
+    // check sources
+    DoCheckFilesOnDisk;
+  finally
+    MessagesView.EndBlock;
+  end;
 end;
 
 function TMainIDE.DoAbortBuild: TModalResult;
@@ -5763,6 +5768,7 @@ begin
     Result:=mrCancel;
     exit;
   end;
+  MessagesView.BeginBlock;
   try
     // first compile all lazarus components (LCL, SynEdit, CodeTools, ...)
     SourceNotebook.ClearErrorLines;
@@ -5805,6 +5811,7 @@ begin
     if Result<>mrOk then exit;
   finally
     DoCheckFilesOnDisk;
+    MessagesView.EndBlock;
   end;
 end;
 
@@ -9406,6 +9413,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.636  2003/08/15 16:10:12  mattias
+  implemented message blocks
+
   Revision 1.635  2003/08/14 12:25:21  mattias
   changed default visible of forms to false
 
