@@ -49,6 +49,7 @@ type
   TGTKAPIWidget = record
     // ! the ScrolledWindow must be the first attribute of this record !
     ScrolledWindow: TGTKScrolledWindow;
+    Frame: PGtkFrame;
     Client: PGtkWidget;
   end;
   
@@ -1014,7 +1015,7 @@ const
 begin
 {$IFDEF gtk2}
   // MWE: IMO the arguments can't work since we supply the adjustments as nil
-  //      for gtk2 newv doesn't exist so the desision is easy
+  //      for gtk2 newv doesn't exist so the decision is easy
   //      TODO: check if we still need to pass the args in gtk1
   Result := gtk_widget_new(GTKAPIWidget_GetType, nil);
 {$ELSE}
@@ -1024,14 +1025,15 @@ begin
   Result := gtk_widget_newv(GTKAPIWidget_GetType, 2, @ARGS[0]);
 {$ENDIF}
 
-  // create client widget
   APIWidget := PGTKAPIWidget(Result);
+  gtk_container_set_border_width(PGTKContainer(APIWidget),0);
+
+  // create client widget
   APIWidget^.Client := GTKAPIWidgetClient_New;
   gtk_object_set_data(PGTKObject(Result), 'Fixed', APIWidget^.Client);
   gtk_object_set_data(PGTKObject(APIWidget^.Client), 'Main', Result);
   gtk_widget_show(APIWidget^.Client);
-  
-  gtk_container_add(PGTKContainer(Result), APIWidget^.Client);
+  gtk_container_add(PGTKContainer(APIWidget), APIWidget^.Client);
 end;
 
 procedure GTKAPIWidget_CreateCaret(APIWidget: PGTKAPIWidget;
@@ -1141,6 +1143,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.58  2004/05/22 11:06:27  mattias
+  fixed grids SetBorderStyle
+
   Revision 1.57  2004/05/11 12:16:48  mattias
   replaced writeln by debugln
 

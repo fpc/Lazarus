@@ -55,7 +55,8 @@ type
   TGetIDEFileStateEvent = procedure(Sender: TObject; const Filename: string;
     NeededFlags: TIDEFileStateFlags; var ResultFlags: TIDEFileStateFlags)
     of object;
-  
+    
+
 implementation
 
 end.

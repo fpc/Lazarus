@@ -66,6 +66,7 @@ type
     // Internal public
     class procedure SetCallbacks(const AGTKObject: PGTKObject; const AComponent: TComponent);
   public
+    class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); override;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); override;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); override;
@@ -100,7 +101,7 @@ type
 implementation
 
 uses
-  GtkProc, GtkDef, GtkInt;
+  GtkProc, GtkDef, GtkInt, GTKWinapiWindow;
 
 { TGtkWSWinControl }
   
@@ -136,6 +137,25 @@ begin
   GtkWidgetSet.SetCallback(LM_MBUTTONDOWN, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_MBUTTONUP, AGTKObject, AComponent);
   GtkWidgetSet.SetCallback(LM_MOUSEWHEEL, AGTKObject, AComponent);
+end;
+
+procedure TGtkWSWinControl.SetBorderStyle(const AWinControl: TWinControl;
+  const ABorderStyle: TBorderStyle);
+var
+  Widget: PGtkWidget;
+  APIWidget: PGTKAPIWidget;
+begin
+  Widget := PGtkWidget(AWinControl.Handle);
+  if GtkWidgetIsA(Widget,GTKAPIWidget_GetType) then begin
+    //writeln('TGtkWSWinControl.SetBorderStyle ',AWinControl.Name,':',AWinControl.ClassName,' ',ord(ABorderStyle));
+    APIWidget := PGTKAPIWidget(Widget);
+    if (APIWidget^.Frame<>nil) then begin
+      case ABorderStyle of
+      bsNone: gtk_frame_set_shadow_type(APIWidget^.Frame,GTK_SHADOW_NONE);
+      bsSingle: gtk_frame_set_shadow_type(APIWidget^.Frame,GTK_SHADOW_ETCHED_IN);
+      end;
+    end;
+  end;
 end;
 
 procedure TGtkWSWinControl.SetCursor(const AControl: TControl; const ACursor: TCursor);

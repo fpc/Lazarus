@@ -1179,6 +1179,8 @@ var
   HsbVisible, VsbVisible: boolean;
   HsbRange, VsbRange: Integer;
 begin
+  if FCols=nil then exit; // not yet initialized or already destroyed
+
   // Calculate New Cached Values
   FGCache.GridWidth:=0;
   FGCache.FixedWidth:=0;
@@ -2304,10 +2306,12 @@ begin
   if BorderStyle<>NewStyle then 
   begin
     inherited;
-    
-    VisualChange;
-    if CheckTopLeft(Col, Row, True, True) then
+    if HandleAllocated and ([csDestroying,csLoading]*ComponentState=[]) then
+    begin
       VisualChange;
+      if CheckTopLeft(Col, Row, True, True) then
+        VisualChange;
+    end;
   end;
 end;
 
@@ -2320,7 +2324,8 @@ begin
     VisibleGrid:=GetVisibleGrid;
     with VisibleGrid do
       ValidGrid:=(Left>=0)and(Top>=0)and(Right>=Left)and(Bottom>=Top);
-    if not ValidGrid then MaxClientXY:=Point(0,0)
+    if not ValidGrid then
+      MaxClientXY:=Point(0,0)
     else begin
       R:=CellRect(VisibleGrid.Right, VisibleGrid.Bottom);
       MaxClientXY:=R.BottomRight;
@@ -2524,7 +2529,8 @@ end;
 // ex: IsCol=true, Index:=100, TopLeft.x:=98, FixedCols:=1, all ColWidths:=20
 // Fisical = Relative => Ini := WidthfixedCols+WidthCol98+WidthCol99
 // Not Fisical = Absolute => Ini := WidthCols(0..99)
-function TCustomGrid.ColRowToOffset(IsCol,Fisical:Boolean; index:Integer; var Ini,Fin:Integer): Boolean;
+function TCustomGrid.ColRowToOffset(IsCol,Fisical:Boolean; index:Integer;
+  var Ini,Fin:Integer): Boolean;
 var
   Dim: Integer;
 begin

@@ -983,7 +983,8 @@ begin
   // ToDo: implement it.
   // We can not use inherited SetBorderStyle(NewStyle),
   // because TBorderSTyle <> TFormBorderSTyle;
-  TWSCustomFormClass(WidgetSetClass).SetFormBorderStyle(Self, NewStyle);
+  if HandleAllocated then
+    TWSCustomFormClass(WidgetSetClass).SetFormBorderStyle(Self, NewStyle);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1606,6 +1607,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.140  2004/05/22 11:06:27  mattias
+  fixed grids SetBorderStyle
+
   Revision 1.139  2004/05/21 18:34:44  mattias
   readded protected TWinControl.BorderStyle
 
