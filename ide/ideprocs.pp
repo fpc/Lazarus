@@ -84,14 +84,20 @@ procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 
 // miscellaneous
 procedure FreeThenNil(var Obj: TObject);
+
 function TabsToSpaces(const s: string; TabWidth: integer): string;
 function CommentLines(const s: string): string;
 function CommentText(const s: string; CommentType: TCommentType): string;
 function UncommentLines(const s: string): string;
+
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
+
 function NameToValidIdentifier(const s: string): string;
+function BinaryStrToText(const s: string): string;
+
 function GetCurrentUserName: string;
 function GetCurrentMailAddress: string;
+
 procedure RaiseException(const Msg: string);
 
 
@@ -732,6 +738,57 @@ begin
       end;
     end;
   end;
+end;
+
+{-------------------------------------------------------------------------------
+  function BinaryStrToText(const s: string): string;
+
+  Replaces special chars (<#32) into pascal char constants #xxx.
+-------------------------------------------------------------------------------}
+function BinaryStrToText(const s: string): string;
+var
+  i, OldLen, NewLen, OldPos, NewPos: integer;
+begin
+  OldLen:=length(s);
+  NewLen:=OldLen;
+  for i:=1 to OldLen do begin
+    if s[i]<' ' then begin
+      inc(NewLen); // one additional char for #
+      if ord(s[i])>9 then inc(NewLen);
+      if ord(s[i])>99 then inc(NewLen);
+    end;
+  end;
+  if OldLen=NewLen then begin
+    Result:=s;
+    exit;
+  end;
+  SetLength(Result,NewLen);
+  OldPos:=1;
+  NewPos:=1;
+  while OldPos<=OldLen do begin
+    if s[OldPos]>=' ' then begin
+      Result[NewPos]:=s[OldPos];
+    end else begin
+      Result[NewPos]:='#';
+      inc(NewPos);
+      i:=ord(s[OldPos]);
+      if i>99 then begin
+        Result[NewPos]:=chr((i div 100)+ord('0'));
+        inc(NewPos);
+        i:=i mod 100;
+      end;
+      if i>9 then begin
+        Result[NewPos]:=chr((i div 10)+ord('0'));
+        inc(NewPos);
+        i:=i mod 10;
+      end;
+      Result[NewPos]:=chr(i+ord('0'));
+    end;
+    inc(NewPos);
+    inc(OldPos);
+  end;
+  if NewPos-1<>NewLen then
+    RaiseException('ERROR: BinaryStrToText: '+IntToStr(NewLen)+'<>'+IntToStr(NewPos-1));
 end;
 
 {-------------------------------------------------------------------------------
