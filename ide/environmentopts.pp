@@ -490,6 +490,14 @@ implementation
 
 const MaxComboBoxCount: integer = 20;
 
+function Max(i, j: integer): integer;
+begin
+  if i<=j then
+    Result:=j
+  else
+    Result:=i;
+end;
+
 function FilenameIsPascalSource(const Filename: string): boolean;
 var Ext: string;
 begin
@@ -2266,11 +2274,11 @@ begin
 
   // language
   with LanguageGroupBox do begin
-    SetBounds(8,2,(MaxX div 2) - 15,50);
+    SetBounds(8,2,Max(20,(MaxX div 2)) - 15,50);
   end;
 
   with LanguageComboBox do begin
-    SetBounds(5,3,LanguageGroupBox.ClientWidth-2*Left,Height);
+    SetBounds(5,3,Max(10,LanguageGroupBox.ClientWidth-2*Left),Height);
   end;
 
   // auto save
@@ -2320,7 +2328,7 @@ begin
   with SaveDesktopSettingsToFileButton do begin
     Left:=5;
     Top:=5;
-    Width:=DesktopFilesGroupBox.ClientWidth-15;
+    Width:=Max(10,DesktopFilesGroupBox.ClientWidth-15);
     Height:=25;
   end;
 
@@ -2335,7 +2343,7 @@ begin
   with ShowHintsForComponentPaletteCheckBox do begin
     Left:=DesktopFilesGroupBox.Left;
     Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+100;
-    Width:=Parent.ClientWidth-Left;
+    Width:=Max(10,Parent.ClientWidth-Left);
     Height:=20;
   end;
 
@@ -2343,13 +2351,13 @@ begin
     Left:=ShowHintsForComponentPaletteCheckBox.Left;
     Top:=ShowHintsForComponentPaletteCheckBox.Top
          +ShowHintsForComponentPaletteCheckBox.Height+5;
-    Width:=Parent.ClientWidth-Left;
+    Width:=Max(10,Parent.ClientWidth-Left);
     Height:=20;
   end;
 
   // Window Positions
   with WindowPositionsGroupBox do begin
-    SetBounds(MaxX div 2,LanguageGroupBox.Top,(MaxX div 2)-5,330);
+    SetBounds(MaxX div 2,LanguageGroupBox.Top,Max(10,(MaxX div 2)-5),330);
   end;
 end;
 
@@ -2471,7 +2479,7 @@ begin
   SetupGuideLinesGroupBox;
   with FormEditMiscGroupBox do begin
     SetBounds(5,GridGroupBox.Top+GridGroupBox.Height+5,
-              Parent.ClientWidth-2*Left,100);
+              Max(Parent.ClientWidth-2*Left,10),100);
   end;
   SetupMiscGroupBox;
 end;
@@ -2496,7 +2504,7 @@ begin
   with OIBackgroundColorLabel do begin
     Left:=OIBackgroundColorButton.Left+OIBackgroundColorButton.Width+5;
     Top:=OIBackgroundColorButton.Top;
-    Width:=ObjectInspectorGroupBox.ClientWidth-Left-5;
+    Width:=Max(ObjectInspectorGroupBox.ClientWidth-Left-5,10);
     Height:=23;
   end;
 end;
@@ -2649,7 +2657,7 @@ begin
   with BakProjAddExtLabel do begin
     Left:=5;
     Top:=BakProjTypeRadioGroup.Top+BakProjTypeRadioGroup.Height+5;
-    Width:=BakProjTypeRadioGroup.Width-62;
+    Width:=Max(10,BakProjTypeRadioGroup.Width-62);
     Height:=23;
   end;
 
@@ -2663,7 +2671,7 @@ begin
   with BakProjMaxCounterLabel do begin
     Left:=5;
     Top:=BakProjAddExtLabel.Top+BakProjAddExtLabel.Height+5;
-    Width:=BakProjTypeRadioGroup.Width-102;
+    Width:=Max(10,BakProjTypeRadioGroup.Width-102);
     Height:=23;
   end;
 
@@ -2691,7 +2699,7 @@ begin
   with BackupOtherGroupBox do begin
     Left:=BackupProjectGroupBox.Left+BackupProjectGroupBox.Width+10;
     Top:=BackupHelpLabel.Top+BackupHelpLabel.Height+4;
-    Width:=(MaxX div 2) - 11;
+    Width:=Max(10,(MaxX div 2) - 11);
     Height:=260;
   end;
 
@@ -2705,7 +2713,7 @@ begin
   with BakOtherAddExtLabel do begin
     Left:=5;
     Top:=BakOtherTypeRadioGroup.Top+BakOtherTypeRadioGroup.Height+5;
-    Width:=BakOtherTypeRadioGroup.Width-62;
+    Width:=Max(10,BakOtherTypeRadioGroup.Width-62);
     Height:=23;
   end;
 
@@ -2719,7 +2727,7 @@ begin
   with BakOtherMaxCounterLabel do begin
     Left:=5;
     Top:=BakOtherAddExtLabel.Top+BakOtherAddExtLabel.Height+5;
-    Width:=BakOtherTypeRadioGroup.Width-102;
+    Width:=Max(10,BakOtherTypeRadioGroup.Width-102);
     Height:=23;
   end;
 
@@ -2733,7 +2741,7 @@ begin
   with BakOtherSubDirLabel do begin
     Left:=5;
     Top:=BakOtherMaxCounterLabel.Top+BakOtherMaxCounterLabel.Height+5;
-    Width:=BakOtherTypeRadioGroup.Width-102;
+    Width:=Max(10,BakOtherTypeRadioGroup.Width-102);
     Height:=23;
   end;
 
@@ -2772,7 +2780,7 @@ procedure TEnvironmentOptionsDialog.EnvironmentOptionsDialogResize(
   Sender: TObject);
 begin
   with NoteBook do begin
-    SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
+    SetBounds(0,0,Max(100,Self.ClientWidth),Max(100,Self.ClientHeight-50));
   end;
 
   ResizeDesktopPage;
@@ -2785,14 +2793,14 @@ begin
   with CancelButton do begin
     Width:=70;
     Height:=23;
-    Left:=Self.ClientWidth-Width-15;
-    Top:=Self.ClientHeight-Height-15;
+    Left:=Max(0,Self.ClientWidth-Width-15);
+    Top:=Max(0,Self.ClientHeight-Height-15);
   end;
 
   with OkButton do begin
     Width:=CancelButton.Width;
     Height:=CancelButton.Height;
-    Left:=CancelButton.Left-15-Width;
+    Left:=Max(0,CancelButton.Left-15-Width);
     Top:=CancelButton.Top;
   end;
 end;
@@ -2801,7 +2809,7 @@ procedure TEnvironmentOptionsDialog.WindowPositionsGroupBoxResize(
   Sender: TObject);
 begin
   with WindowPositionsListBox do begin
-    SetBounds(2,2,Parent.ClientWidth-2*2,Parent.Height div 4);
+    SetBounds(2,2,Max(Parent.ClientWidth-2*2,100),Max(100,Parent.Height div 4));
   end;
 
   with WindowPositionsBox do begin
