@@ -96,7 +96,7 @@ begin
   if HandleAllocated and (not (FControl is TScrollingWinControl)) then begin
     ScrollInfo.fMask:=SIF_Range+SIF_Page;
     GetScrollInfo(ControlHandle,IntfBarKind[Kind],ScrollInfo);
-    FRange:=ScrollInfo.nMax-ScrollInfo.nMin-ScrollInfo.nPage;
+    FRange:=ScrollInfo.nMax-ScrollInfo.nMin-integer(ScrollInfo.nPage);
   end;
   Result:=FRange;
 end;

@@ -313,7 +313,7 @@ Type
       if biSizeImage = 0 then  begin
         biSizeImage := ((bmWidth * biBitCount) + 31) and not 31;
         biSizeImage := biSizeImage div 8;
-        biSizeImage := biSizeImage * Abs(bmHeight);
+        biSizeImage := Abs(biSizeImage) * Abs(bmHeight);
       end;
     end;
     Bits := AllocMem(Longint(Dib.dsBmih.biSizeImage)*SizeOf(Byte));
@@ -529,6 +529,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2003/06/07 17:14:11  mattias
+  small changes for fpc 1.1
+
   Revision 1.29  2003/04/03 17:42:13  mattias
   added exception handling for createpixmapindirect
 

@@ -3365,7 +3365,7 @@ begin
         ScrollInfo.nTrackPos := 0;
         ScrollInfo.nMin := 0;
         ScrollInfo.nPage := Max(1,(ClientWidth-ScrollBarWidth)-2*BorderWidth);
-        ScrollInfo.nMax := Max(1,GetMaxScrollLeft+ScrollInfo.nPage);
+        ScrollInfo.nMax := Max(1,GetMaxScrollLeft+integer(ScrollInfo.nPage));
         ScrollInfo.nPos := Max(FScrolledLeft,0);
         if not CompareMem(@ScrollInfo,@FLastHorzScrollInfo,SizeOf(TScrollInfo))
         then begin
@@ -3391,7 +3391,7 @@ begin
         ScrollInfo.nTrackPos := 0;
         ScrollInfo.nMin := 0;
         ScrollInfo.nPage := Max(1,(ClientHeight-ScrollBarWidth)-FDefItemHeight);
-        ScrollInfo.nMax := Max(1,GetMaxScrollTop+ScrollInfo.nPage);
+        ScrollInfo.nMax := Max(1,GetMaxScrollTop+integer(ScrollInfo.nPage));
         ScrollInfo.nTrackPos := 0;
         ScrollInfo.nPos := Max(0,FScrolledTop);
         if not CompareMem(@ScrollInfo,@FLastVertScrollInfo,SizeOf(TScrollInfo))
@@ -3870,14 +3870,18 @@ begin
 end;
 
 procedure TCustomTreeView.CMDrag(var AMessage: TCMDrag);
+var
+  P: TPoint;
 begin
   inherited CMDrag(AMessage);
   writeln('TCustomTreeView.CMDrag ',ord(AMessage.DragMessage));
   with AMessage, DragRec^ do
     case DragMessage of
       dmDragMove:
-        with ScreenToClient(Pos) do
-          DoDragOver(Source, X, Y, AMessage.Result <> 0);
+        begin
+          P:=ScreenToClient(Pos);
+          DoDragOver(Source, P.X, P.Y, AMessage.Result <> 0);
+        end;
       dmDragLeave:
         begin
           TDragObject(Source).HideDragImage;
@@ -4528,6 +4532,7 @@ procedure TCustomTreeView.WMLButtonDown(var AMessage: TLMLButtonDown);
 var
   Node: TTreeNode;
   MousePos: TPoint;
+  P: TSmallPoint;
 begin
   Exclude(FStates,tvsDragged);
   FDragNode := nil;
@@ -4538,8 +4543,8 @@ begin
       SetFocus;
       if not (tvsDragged in FStates) then begin
         GetCursorPos(MousePos);
-        with PointToSmallPoint(ScreenToClient(MousePos)) do
-          Perform(LM_LBUTTONUP, 0, MakeLong(X, Y));
+        P:=PointToSmallPoint(ScreenToClient(MousePos));
+        Perform(LM_LBUTTONUP, 0, MakeLong(P.X, P.Y));
       end
       else begin
         Node := GetNodeAt(AMessage.XPos, AMessage.YPos);

@@ -23,7 +23,7 @@ uses sysutils;
 
 type
   TAssertErrorProc = procedure(Const Msg,FN :ShortString;
-        LineNo: LongInt; TheAddr: {$IFDEF New1_1}Pointer{$ELSE}Longint{$ENDIF});
+        LineNo: LongInt; TheAddr: {$IFDEF NEW1_1}Pointer{$ELSE}Longint{$ENDIF});
 
 var
   TraceFileName : string;
@@ -33,7 +33,7 @@ var
 implementation
 
 procedure TraceAssertHandler(Const Msg,FN : ShortString;
-  LineNo: LongInt; TheAddr: {$IFDEF New1_1}Pointer{$ELSE}Longint{$ENDIF});
+  LineNo: LongInt; TheAddr: {$IFDEF NEW1_1}Pointer{$ELSE}Longint{$ENDIF});
 var
    fileH  : Text;
 begin

@@ -210,8 +210,8 @@ Type
 
       
   Type
-    TGridCoord = {$IFNDEF New1_1}Type{$ENDIF} TPoint;
-    TGridRect  = {$IFNDEF New1_1}Type{$ENDIF} TRect;
+    TGridCoord = {$IFNDEF NEW1_1}Type{$ENDIF} TPoint;
+    TGridRect  = {$IFNDEF NEW1_1}Type{$ENDIF} TRect;
 
     TGridDataCache=Record
       FixedWidth: Integer;    // Sum( Fixed ColsWidths[i] )
