@@ -3309,8 +3309,8 @@ end;
 {-------------------------------------------------------------------------------
   Function Ampersands2Underscore(Src: PChar) : PChar;
 
-  Creates a new PChar. Replaces the first ampersand with an underscore
-  and deletes all other ampersands.
+  Creates a new PChar. Deletes escaping ampersands and replaces the first
+  single ampersand with an underscore.
 -------------------------------------------------------------------------------}
 function Ampersands2Underscore(Src: PChar) : PChar;
 var
@@ -3324,18 +3324,23 @@ begin
 
   { Look for amperands. If found, check if it is an escaped ampersand.
     If it is, don't count it in. }
-
-  for i:= 0 to SrcLength - 1 do begin
+  i:=0;
+  while i<SrcLength do begin
     if Src[i] = '&' then begin
 
-      if (i < SrcLength - 1) and (Src[i+1] = '&') then Continue;
-      
-      Inc(ShortenChars);
-      if (FirstAmpersand < 0) and not ((i > 0) and (Src[i-1] = '&')) then begin
-        FirstAmpersand:= i;
-	Dec(ShortenChars);
+      if (i < SrcLength - 1) and (Src[i+1] = '&') then begin
+        // escaping ampersand found
+        inc(ShortenChars);
+        inc(i,2);
+        Continue;
+      end else begin
+        // single ampersand found
+        if (FirstAmpersand < 0) then begin
+          FirstAmpersand:= i;
+        end;
       end;	
     end;
+    inc(i);
   end;
   // create new PChar
   NewLength:= SrcLength - ShortenChars;
@@ -3350,17 +3355,20 @@ begin
       // copy normal char
       Result[j]:= Src[i];
     end else begin
-      if i = FirstAmpersand then begin
-        // replace  first ampersand with underscore
-        Result[j]:='_';
+      // ampersand
+      if (i < (SrcLength - 1)) and (Src[i+1] = '&') then begin
+        // escaping ampersand found
+        inc(i);
+        Result[j]:='&';
       end else begin
-        if (i < (SrcLength - 1)) and (Src[i+1] = '&') then begin
-	  Result[j]:= '&';
-	end else begin
-          // skip ampersand
-          inc(i);
-	  continue;
-	end;  
+        // single ampersand found
+        if i = FirstAmpersand then begin
+          // replace first single ampersand with underscore
+          Result[j]:='_';
+        end else begin
+          // copy ampersand
+          Result[j]:='&';
+        end;
       end;
     end;
     Inc(i);
@@ -3468,6 +3476,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.109  2002/10/03 06:55:45  lazarus
+  MG: fixed Ampersands2Underscore
+
   Revision 1.108  2002/10/01 10:05:50  lazarus
   MG: changed PDeviceContext into class TDeviceContext
 
