@@ -2,7 +2,7 @@
 Implementation for cupsprinter
 ***************************************************************}
 
-uses udlgSelectPrinter,udlgpropertiesprinter;
+uses udlgSelectPrinter,udlgpropertiesprinter, FileUtil;
 
 
 function TCUPSPrinter.PrintDialog: Boolean;
@@ -401,10 +401,32 @@ end;
 //Override this methode for assign an
 //file name at Canvas
 procedure TCUPSPrinter.DoBeginDoc;
+var
+  NewPath: String;
+
+  function TryTemporaryPath(const Path: string): Boolean;
+  var
+    CurPath: String;
+  begin
+    CurPath:=CleanAndExpandDirectory(Path);
+    Result:=DirPathExists(NewPath);
+    if Result then NewPath:=CurPath;
+  end;
+
+var
+  NewOutputFileName: String;
 begin
   inherited DoBeginDoc;
+
+  if (not TryTemporaryPath('~/tmp/'))
+  and (not TryTemporaryPath('/tmp/'))
+  and (not TryTemporaryPath('/var/tmp/')) then
+    NewPath:='';
+
+  NewOutputFileName:=AppendPathDelim(NewPath)
+                   +'OutPrinter_'+FormatDateTime('yyyymmmddd-hhnnss',Now)+'.ps';
   
-  TPostscriptPrinterCanvas(Canvas).OutPutFileName:=Format('~/tmp/OutPrinter_%s.ps',[FormatDateTime('yyyymmmddd-hhnnss',Now)]);
+  TPostscriptPrinterCanvas(Canvas).OutputFileName:=NewOutputFileName;
 end;
 
 //If not aborded, send PostScript file to printer.
