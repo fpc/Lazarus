@@ -37,8 +37,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Menus, Graphics, GraphType, Buttons,
-  StdCtrls, ExtCtrls, ComponentEditors, LazConf, Laz_XMLCfg, ComCtrls, Arrow,
-  LazarusIDEStrConsts;
+  StdCtrls, ExtCtrls, ComponentEditors, LazConf, Laz_XMLCfg, ComCtrls;
 
 type
 
@@ -61,7 +60,7 @@ type
     procedure CancelButtonCLick(Sender: TObject);
     function GetSelectedMenuTemplate: Integer;
     function GetDescription: string;
-    procedure TemplateView(templatemenuitem: string; default_template: Integer);
+    procedure TemplateView(templatemenuitem: string);
     procedure OnSelectMenuTemplateClick(Sender: TObject);
   end;
 
@@ -69,8 +68,6 @@ type
   TDesignerMenuItem = record
     SelfPanel: TPanel;
     SubMenuPanel: TPanel;
-    SubMenuArrow: TArrow;
-    CaptionLabel: TLabel;
     ParentMenu: PDesignerMenuItem;
     SubMenu: PDesignerMenuItem;
     PrevItem: PDesignerMenuItem;
@@ -94,7 +91,6 @@ type
     fParentCanvas: TCanvas;
     fSelectedDesignerMenuItem: string;
     fEditor: TComponentEditor;
-    fDefaultComponentEditor: TDefaultComponentEditor;
     DesignerPopupMenu: TPopupMenu;
     
     fMenu:TMenu;
@@ -102,7 +98,8 @@ type
     TemplateMenuForm: TTemplateMenuForm;
     
   public
-    constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor);
+    constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu;
+                               aEditor: TComponentEditor);
     destructor Destroy; override;
     
     property Root: PDesignerMenuItem read FRoot write FRoot;
@@ -114,20 +111,20 @@ type
     property ParentCanvas: TCanvas read FParentCanvas write FParentCanvas;
                            
     procedure LoadMainMenu;
+    function SaveMainMenu: TMainMenu;
     
     procedure Init(MenuItem: PDesignerMenuItem);
     procedure Link(MenuItem: TMenuItem; ParentM: PDesignerMenuItem);
     procedure Draw(MenuItem: PDesignerMenuItem; FormPanel,SubMenuPanel: TPanel);
     procedure SetCoordinates(Coord_Left,Coord_Top,Coord_Right: Integer;MenuItem: PDesignerMenuItem);
     function GetSubMenuHeight(MenuItem: PDesignerMenuItem; LeftPos,TopPos: Integer; Ident: string): TRect;
-    
-    // Event handling
     procedure MenuItemMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-
+    procedure SetMenu(aMenu: TMenu);
+    procedure Clear(DesignerMenuItem: PDesignerMenuItem);
+    
     procedure AddNewItemBeforeClick(Sender: TObject);
     procedure AddNewItemAfterClick(Sender: TObject);
     procedure AddSubMenuClick(Sender: TObject);
-    procedure HandleOnClickEventClick(Sender: TObject);
     procedure MoveUpClick(Sender: TObject);
     procedure MoveDownClick(Sender: TObject);
     procedure DeleteItemClick(Sender: TObject);
@@ -150,15 +147,11 @@ type
     function CreateIndexSequence(MenuItem: PDesignerMenuItem; Ident: string; Ind: Integer): Boolean;
     procedure VypisIndexSequence;
     
-    procedure HideDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem);
-    
-    function UpdateMenu(MenuItem: TMenuItem; DesignerMenuItem: PDesignerMenuItem; Ind,Action: Integer): TMenuItem;
+    procedure UpdateMenu(MenuItem: TMenuItem; DesignerMenuItem: PDesignerMenuItem; Ind,Action: Integer);
     
     function ChangeMenuItem(MenuItem: PDesignerMenuItem; Action: Integer; Ident: string): Boolean;
     
     function GetDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem; Ident: string): PDesignerMenuItem;
-    
-    function GetMaxCoordinates(DesignerMenuItem: PDesignerMenuItem; Max_Width, Max_Height: Integer): TRect;
     
   end;
   
@@ -167,22 +160,23 @@ implementation
 
 const
   DESIGNER_MENU_ITEM_HEIGHT=20;
-  DESIGNER_MENU_ITEM_SPACE=30;
+  DESIGNER_MENU_ITEM_SPACE=10;
   MIN_DESIGNER_MENU_ITEM_WIDTH=100;
   DESIGNER_MENU_ITEM_PANEL_HEIGHT=22;
   MIN_SUB_MENU_PANEL_WIDTH=100;
   POSITION_LEFT=10;
   POSITION_TOP=10;
-  NUMBER_OF_DEFAULT_TEMPLATES = 3;
 
   // Length of a field for storing index positions of DesignerMenuItem, we use it to find the right MenuItem
-  INDEX_SEQUENCE_LENGTH=100;
+  INDEX_SEQUENCE_LENGTH=10;
+  
   // Name of the file where menu templates are stored
   MenuTemplatesFile='menutemplates.xml';
 
 var 
   temp_level: Integer;
   temp_newitemcounter: Integer;
+  
   temp_panel: TPanel;
   
   index_sequence: Array[1..INDEX_SEQUENCE_LENGTH] of Integer;
@@ -196,24 +190,21 @@ var
 begin
   inherited Create(aOwner);
   
-  XMLConfig:=TXMLConfig.Create(SetDirSeparators(GetPrimaryConfigPath + '/' + MenuTemplatesFile));
-  
   // creates PopupMenu for and its items the menu editor
-
-
   DesignerPopupMenu:=TPopupMenu.Create(aOwner);
+  
   PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorInsertNewItemAfter;
+  PopupMenuItem.Caption:='Insert New Item (after)';
   PopupMenuItem.OnClick:=@AddNewItemAfterClick;
   DesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorInsertNewItemBefore;
+  PopupMenuItem.Caption:='Insert New Item (before)';
   PopupMenuItem.OnClick:=@AddNewItemBeforeClick;
   DesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorDeleteItem;
+  PopupMenuItem.Caption:='Delete Item';
   PopupMenuItem.OnClick:=@DeleteItemClick;
   DesignerPopupMenu.Items.Add(PopupMenuItem);
   
@@ -222,30 +213,21 @@ begin
   DesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorCreateSubMenu;
+  PopupMenuItem.Caption:='Create Submenu';
   PopupMenuItem.OnClick:=@AddSubMenuClick;
   DesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
   PopupMenuItem.Caption:='-';
   DesignerPopupMenu.Items.Add(PopupMenuItem);
-  
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorHandleOnClickEvent;
-  PopupMenuItem.OnClick:=@HandleOnCLickEventClick;
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:='-';
-  DesignerPopupMenu.Items.Add(PopupMenuItem);
-
-  PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorMoveUp;
+  PopupMenuItem.Caption:='Move Up(left)';
   PopupMenuItem.OnClick:=@MoveUpClick;
   DesignerPopupMenu.Items.Add(PopupMenuItem);
   
   PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorMoveDown;
+  PopupMenuItem.Caption:='Move Down(right)';
   PopupMenuItem.OnClick:=@MoveDownClick;
   DesignerPopupMenu.Items.Add(PopupMenuItem);
   
@@ -254,17 +236,17 @@ begin
   DesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorInsertFromTemplate;
+  PopupMenuItem.Caption:='Insert From Template...';
   PopupMenuItem.OnClick:=@InsertFromTemplateClick;
   DesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorSaveAsTemplate;
+  PopupMenuItem.Caption:='Save As Template...';
   PopupMenuItem.OnClick:=@SaveAsTemplateClick;
   DesignerPopupMenu.Items.Add(PopupMenuItem);
 
   PopupMenuItem:=TMenuItem.Create(aOwner);
-  PopupMenuItem.Caption:=lisMenuEditorDeleteFromTemplate;
+  PopupMenuItem.Caption:='Delete From Template...';
   PopupMenuItem.OnClick:=@DeleteFromTemplateClick;
   DesignerPopupMenu.Items.Add(PopupMenuItem);
 
@@ -273,10 +255,8 @@ begin
   new(Root);
   fMenu:=aMenu;
   Editor:=aEditor;
-
-
+  DesignerMenuItemIdent:=1;
   temp_level:=1;
-  temp_newitemcounter:=1;
   
   temp_panel:=TPanel.Create(self);
   temp_panel.Visible:=false;
@@ -296,7 +276,7 @@ var temp: Integer;
 begin
 
   temp:=DesignerMenuItemIdent;
-  Str(temp, MenuItem^.ID);
+  Str(temp,MenuItem^.ID);
   
   MenuItem^.Selected:=false;
   MenuItem^.Active:=false;
@@ -309,34 +289,14 @@ begin
   MenuItem^.SelfPanelCreated:=false;
   MenuItem^.SubMenuPanelCreated:=false;
   
-  MenuItem^.SubMenuPanel:=TPanel.Create(self);
-  
   MenuItem^.SelfPanel:=TPanel.Create(self);
   MenuItem^.SelfPanel.Name:=MenuItem^.ID;
-  MenuItem^.SelfPanel.Caption:='';
   MenuItem^.SelfPanel.Height:=DESIGNER_MENU_ITEM_HEIGHT;
+  MenuItem^.SelfPanel.Alignment:=taleftjustify;
   Menuitem^.SelfPanel.OnMouseDown:=@MenuItemMouseDown;
-  
-  MenuItem^.CaptionLabel:=TLabel.Create(self);
-  MenuItem^.CaptionLabel.Name:='CaptionLabel_' + MenuItem^.ID;
-  MenuItem^.CaptionLabel.Parent:=MenuItem^.SelfPanel;
-  MenuItem^.CaptionLabel.Left:=MenuItem^.SelfPanel.Left + 5;
-  MenuItem^.CaptionLabel.Top:=2;
-  MenuItem^.CaptionLabel.Height:=DESIGNER_MENU_ITEM_HEIGHT - 4;
-  MenuItem^.CaptionLabel.OnMouseDown:=@MenuItemMouseDown;
-  
-  MenuItem^.SubMenuArrow:=TArrow.Create(self);
-  MenuItem^.SubMenuArrow.Name:='SubMenuArrow_' + MenuItem^.ID;
-  MenuItem^.SubMenuArrow.Parent:=MenuItem^.SelfPanel;
-  MenuItem^.SubMenuArrow.ArrowType:=atright;
-  MenuItem^.SubMenuArrow.Width:=20;
-  MenuItem^.SubMenuArrow.Height:=10;
-  MenuItem^.SubMenuArrow.ShadowType:=stout;
-  MenuItem^.SubMenuArrow.Visible:=false;
-  MenuItem^.SubMenuArrow.OnMouseDown:=@MenuItemMouseDown;
+  MenuItem^.SubMenuPanel:=TPanel.Create(self);
   
   DesignerMenuItemIdent:=DesignerMenuItemIdent + 1;
-  inc(temp_newitemcounter);
 end;
 
 // --------------------------------------------------------------------------
@@ -349,23 +309,24 @@ var
   firstmenuitem: TMenuItem;
 begin
 
-
-
   if (fMenu.Items.Count = 0) then
   begin
     firstmenuitem:=TMenuItem.Create(fMenu.Owner);
-    firstmenuitem.Caption:='New Item1';
+    firstmenuitem.Caption:='New Item 1';
+    // code from Mattias (one of mail he sent me)
     firstmenuitem.Name:=fEditor.GetDesigner.CreateUniqueComponentName(firstmenuitem.ClassName);
     fMenu.Items.Insert(0, firstmenuitem);
     fEditor.GetDesigner.PropertyEditorHook.ComponentAdded(firstmenuitem, true);
     fEditor.GetDesigner.Modified;
+    
+    inc(temp_newitemcounter);
   end;
   
   prevtemp:=nil;
   for i:= 0 to fMenu.Items.Count-1 do
   begin
     new(temp);
-    temp^.Caption:=fMenu.Items[i].Caption;
+    temp^.Caption:=' ' + fMenu.Items[i].Caption;
     temp^.Level:=temp_level;
     temp^.NextItem:=nil;
     temp^.SubMenu:=nil;
@@ -423,9 +384,9 @@ begin
   dec(temp_level);
 end;
 
-//------------------------------------------------------------------------------------------//
-// Draw the the whole DesignerMenu with active MenuItems and SubMenus ----------------------//
-//------------------------------------------------------------------------------------------//
+// ------------------------------------------------------------------
+// Draw the the whole DesignerMenu with active MenuItems and SubMenus
+// ------------------------------------------------------------------
 procedure TDesignerMainMenu.Draw(MenuItem: PDesignerMenuItem; FormPanel,SubMenuPanel: TPanel);
 var
   SubMenuDimensions: TRect;
@@ -450,7 +411,6 @@ begin
       Parent:=temp_panel;
     end else
       Parent:=FormPanel;
-      
     Visible:=true;
     if (MenuItem^.Level > 1) and (fMenu is TMainMenu) then
     begin
@@ -469,20 +429,35 @@ begin
       end else
       begin
         Left:=MenuItem^.coord.Left;
-        Width:=ParentCanvas.TextWidth(MenuItem^.Caption) + DESIGNER_MENU_ITEM_SPACE;
+        Width:=ParentCanvas.TextWidth(MenuItem^.Caption) + 10;
       end;
     end;
-    if (MenuItem^.Selected) or (MenuItem^.Active) or ((MenuItem^.Level = 1) and (fMenu is TMainMenu)) then
+    if (MenuItem^.Selected) then
     begin
-      Bevelouter:=bvraised;
+      if (MenuItem^.Level > 1) then
+      begin
+        //Color:=clWhite;
+        Bevelouter:=bvraised;
+        Bevelwidth:=1;
+      end else
+      begin
+        Color:=clSilver;
+        Bevelouter:=bvraised;
+        Bevelwidth:=1;
+      end;
+    end else
+    if (MenuItem^.Active) then
+    begin
+      Color:=clSilver;
+      Bevelouter:=bvlowered;
+      Bevelwidth:=1;
     end else
     begin
+      Color:=clSilver;
       Bevelouter:=bvnone;
     end;
+    Caption:=MenuItem^.Caption;
   end;
-  
-  MenuItem^.CaptionLabel.Text:=MenuItem^.Caption;
-  
   if (MenuItem^.NextItem <> nil) then Draw(MenuItem^.NextItem, FormPanel, SubMenuPanel);
   with MenuItem^.SelfPanel do
   begin
@@ -510,35 +485,40 @@ begin
       end;
     end;
   end;
-  
-  if (MenuItem^.SubMenu <> nil) then
-  begin
-    if (MenuItem^.Level = 1) and (fMenu is TMainMenu) then
-    begin
-      MenuItem^.SubMenuArrow.ArrowType:=atdown;
-    end else
-    begin
-      MenuItem^.SubMenuArrow.ArrowType:=atright;
-    end;
-    MenuItem^.SubMenuArrow.Left:=MenuItem^.SelfPanel.Width - MenuItem^.SubMenuArrow.Width;
-    MenuItem^.SubMenuArrow.Top:=(MenuItem^.SelfPanel.Height - MenuItem^.SubMenuArrow.Height) div 2;
-    MenuItem^.SubMenuArrow.Visible:=true;
-  end else
-  begin
-    MenuItem^.SubMenuArrow.Left:=MenuItem^.SelfPanel.Width - MenuItem^.SubMenuArrow.Width;
-    MenuItem^.SubMenuArrow.Top:=(MenuItem^.SelfPanel.Height - MenuItem^.SubMenuArrow.Height) div 2;
-    MenuItem^.SubMenuArrow.Visible:=false;
-  end;
-
-  MenuItem^.CaptionLabel.Width:=MenuItem^.SelfPanel.Width - 10;
-
   if ((MenuItem^.SubMenu <> nil) and ((MenuItem^.Selected) or (MenuItem^.Active))) then Draw(MenuItem^.SubMenu, MenuItem^.SubMenuPanel,SubMenuPanel);
 end;
 
+// ----------------------------------------------------------
+// Saves DesignerMainMenu to Menu placed on the Designer Form
+// ----------------------------------------------------------
+function TDesignerMainMenu.SaveMainMenu: TMainMenu;
+begin
+  Result:=nil;
+end;
 
-// --------------------------------------------------------------------------------------------------------------//
-// Set the coordinates (position) of each DesignerMenuItem ------------------------------------------------------//
-// --------------------------------------------------------------------------------------------------------------//
+procedure TDesignerMainMenu.SetMenu(aMenu: TMenu);
+begin
+  fMenu:=aMenu;
+end;
+
+procedure TDesignerMainMenu.Clear(DesignerMenuItem: PDesignerMenuItem);
+begin
+  if (DesignerMenuItem^.SubMenu <> nil) then
+  begin
+    Clear(DesignerMenuItem^.SubMenu);
+    DesignerMenuItem^.SubMenuPanel.Visible:=false;
+  end;
+  if (DesignerMenuItem^.NextItem <> nil) then
+    Clear(DesignerMenuItem^.NextItem);
+  if (DesignerMenuItem^.Level = 1) and (fMenu is TPopupMenu) then
+    DesignerMenuItem^.SelfPanel.Parent.Visible:=false;
+  DesignerMenuItem^.SelfPanel.Visible:=false;
+  
+end;
+
+// -------------------------------------------------------
+// Set the coordinates (position) of each DesignerMenuItem
+// -------------------------------------------------------
 procedure TDesignerMainMenu.SetCoordinates(Coord_Left,Coord_Top,Coord_Right: Integer; MenuItem: PDesignerMenuItem);
 var
   temp_menuitem: PDesignerMenuItem;
@@ -552,14 +532,13 @@ begin
   
   if (MenuItem^.Level = 1) and (fMenu is TMainMenu) then
   begin
-    MenuItem^.coord.Right:=MenuItem^.coord.Left + Canvas.TextWidth(MenuItem^.Caption) + DESIGNER_MENU_ITEM_SPACE;
+    MenuItem^.coord.Right:=MenuItem^.coord.Left + Canvas.TextWidth(MenuItem^.Caption) + 10;
   end else
   begin
     // is this DesignerMenuItem wider than its predecessors?
     if (Canvas.TextWidth(MenuItem^.Caption) + DESIGNER_MENU_ITEM_SPACE > Coord_Right) then
     begin
-      MenuItem^.coord.right:=MenuItem^.coord.Left + Canvas.TextWidth(MenuItem^.Caption) + DESIGNER_MENU_ITEM_SPACE;
-      Coord_Right:=MenuItem^.coord.Right - MenuItem^.coord.Left;
+      MenuItem^.coord.right:=Canvas.TextWidth(MenuItem^.Caption) + DESIGNER_MENU_ITEM_SPACE;
       // we have to set the width of all predecessors of this DesignerMenuItem to its size
       temp_menuitem:=MenuItem;
       while (temp_menuitem^.PrevItem <> nil) do
@@ -569,11 +548,10 @@ begin
       end;
     // if not wider then keep size of the predecessor
     end else
-    begin
       MenuItem^.coord.right:=MenuItem^.coord.Left + Coord_Right;
-      Coord_Right:=MenuItem^.coord.Right - MenuItem^.coord.Left;
-    end;
   end;
+  
+  //writeln(MenuItem^.coord.left,' , ',MenuItem^.coord.top,' , ',MenuItem^.coord.right,' , ',MenuItem^.coord.bottom);
   
   if (MenuItem^.SubMenu <> nil) then
   begin
@@ -601,7 +579,7 @@ var
   number_of_submenu_items: Integer;
 begin
 
-  coords.right:=MenuItem^.coord.Right - MenuItem^.coord.Left + 4;
+  coords.right:=MenuItem^.coord.Right - MenuItem^.coord.Left;
   // sets the bottom coordinate of submenupanel depending on number of submenuitems
   number_of_submenu_items:=1;
   while(MenuItem^.NextItem <> nil) do
@@ -612,36 +590,6 @@ begin
   coords.bottom:=number_of_submenu_items * DESIGNER_MENU_ITEM_HEIGHT + 5;
   // return coordinates
   GetSubMenuHeight:=coords;
-end;
-
-// -------------------------------------------------------------------------------------------------------------------//
-// Determines a position of the SubMenuPanel of some DesignerMenuItem ------------------------------------------------//
-//--------------------------------------------------------------------------------------------------------------------//
-
-function TDesignerMainMenu.GetMaxCoordinates(DesignerMenuItem: PDesignerMenuItem; Max_Width, Max_Height: Integer): TRect;
-var
-  temp_coord: TRect;
-begin
-  if (DesignerMenuItem^.coord.Right > Max_Width) then
-    Max_Width:=DesignerMenuItem^.coord.Right;
-  if (DesignerMenuItem^.coord.Bottom > Max_Height) then
-    Max_Height:=DesignerMenuItem^.coord.Bottom;
-  if (DesignerMenuItem^.SubMenu = nil) and (DesignerMEnuItem^.NextItem = nil) then
-  begin
-    Result.Right:=Max_Width;
-    Result.Bottom:=Max_Height;
-    exit;
-  end;
-  if DesignerMenuItem^.SubMenu <> nil then
-  begin
-    temp_coord:=GetMaxCoordinates(DesignerMenuItem^.SubMenu, Max_Width, Max_Height);
-    Max_Width:=temp_coord.Right;
-    Max_Height:=temp_coord.Bottom;
-  end;
-  if (DesignerMenuItem^.NextItem <> nil) then
-    temp_coord:=GetMaxCoordinates(DesignerMenuItem^.NextItem, Max_Width, Max_Height);
-    
-  Result:=temp_coord;
 end;
 
 // --------------------------------------------------------
@@ -680,51 +628,41 @@ begin
   2: begin
        if (((MenuItem^.Selected) and (MenuItem^.SubMenu <> nil)) or (MenuItem^.Active)) then
        begin
+         writeln('>>>>>><<<<<<>>>>>>> ',MenuItem^.Caption);
          if (MenuItem^.SubMenu <> nil) and (MenuItem^.Active) then
            ChangeMenuItem(MenuItem^.SubMenu,Action,MenuItem^.SubMenu^.ID)
          else
            MenuItem^.Selected:=true;
+         //FreeAndNil(MenuItem^.SubMenuPanel);
          MenuItem^.SubMenuPanel.visible:=false;
        end;
        if (MenuItem^.NextItem <> nil) then
          ChangeMenuItem(MenuItem^.NextItem,Action,MenuItem^.NextItem^.ID);
          MenuItem^.SelfPanel.visible:=false;
+       //FreeAndNil(MenuItem^.SelfPanel);
+       //MenuItem^.SelfPanel.Free;
        ChangeMenuItem:=true;
      end;
  end;
  if (completed) then ChangeMenuItem:=true;
 end;
 
-// -------------------------------------------------------------------------------------------------------------------//
-// We have clicked on some DesignerMenuItem --------------------------------------------------------------------------//
-// -------------------------------------------------------------------------------------------------------------------//
+// ----------------------------------------------------------------------------//
+// We have clicked on some DesignerMenuItem -----------------------------------//
+// ----------------------------------------------------------------------------//
 procedure TDesignerMainMenu.MenuItemMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  writeln ('<<-- CLICK -->>');
-
-  ChangeMenuItem(Root,2,Root^.ID);
+  writeln ('<<-- MOUSE DOWN -->>');
+  SelectedDesignerMenuItem:=TPanel(Sender).Name;
+  
   InitIndexSequence;
-  if (Sender is TPanel) then
-  begin
-    SelectedDesignerMenuItem:=TPanel(Sender).Name;
-    ChangeMenuItem(Root, 1, TPanel(Sender).Name);
-    CreateIndexSequence(Root, TPanel(Sender).Name, 1);
-  end;
-  if (Sender is TLabel) then
-  begin
-    SelectedDesignerMenuItem:=TLabel(Sender).Parent.Name;
-    ChangeMenuItem(Root, 1, TLabel(Sender).Parent.Name);
-    CreateIndexSequence(Root, TLabel(Sender).Parent.Name, 1);
-  end;
-  if (Sender is TArrow) then
-  begin
-    SelectedDesignerMenuItem:=TArrow(Sender).Parent.Name;
-    ChangeMenuItem(Root, 1, TArrow(Sender).Parent.Name);
-    CreateIndexSequence(Root, TArrow(Sender).Parent.Name, 1);
-  end;
-
-  Parent.Invalidate;
+  CreateIndexSequence(Root,TPanel(Sender).Name,1);
   UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 9);
+  
+  ChangeMenuItem(Root,2,Root^.ID);
+  ChangeMenuItem(Root,1,TPanel(Sender).Name);
+  
+  Parent.Invalidate;
   
   if (Button = mbRight) then
     Parent.PopupMenu:=DesignerPopupMenu;
@@ -735,12 +673,15 @@ end;
 // -------------------------------------------------------------//
 procedure TDesignerMainMenu.AddNewItemBeforeClick(Sender: TObject);
 begin
+  inc(temp_newitemcounter);
   AddNewItemBefore(Root, SelectedDesignerMenuItem);
-  SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
+  SetCoordinates(POSITION_LEFT,POSITION_TOP,0,Root);
   Parent.Invalidate;
   
   InitIndexSequence;
   CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
+  //VypisIndexSequence;
+  
   UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.PrevItem, 1, 2);
 end;
 
@@ -749,12 +690,14 @@ end;
 // ------------------------------------------------------------//
 procedure TDesignerMainMenu.AddNewItemAfterClick(Sender: TObject);
 begin
+  inc(temp_newitemcounter);
   AddNewItemAfter(Root, SelectedDesignerMenuItem);
   SetCoordinates(POSITION_LEFT,POSITION_TOP,0,Root);
   Parent.Invalidate;
   
   InitIndexSequence;
   CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
+  //VypisIndexSequence;
   
   UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.NextItem, 1, 1);
 end;
@@ -764,8 +707,9 @@ end;
 // ------------------------------------------------------------//
 procedure TDesignerMainMenu.AddSubMenuClick(Sender: TObject);
 begin
-  AddSubMenu(Root, SelectedDesignerMenuItem);
-  SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
+  inc(temp_newitemcounter);
+  AddSubMenu(Root,SelectedDesignerMenuItem);
+    SetCoordinates(POSITION_LEFT,POSITION_TOP,0,Root);
   Parent.Invalidate;
   
   InitIndexSequence;
@@ -774,27 +718,14 @@ begin
   UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.SubMenu, 1, 3);
 end;
 
-// -----------------------------------------------------------------------//
-// "Handle OnClick Event" has been selected from context menu ------------//
-// -----------------------------------------------------------------------//
-procedure TDesignerMainMenu.HandleOnClickEventClick(Sender: TObject);
-var
-  temp_menuitem: TMenuItem;
-begin
-  temp_menuitem:=UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 10);
-  fDefaultComponentEditor:=TDefaultComponentEditor.Create(temp_menuitem, fEditor.GetDesigner);
-  fDefaultComponentEditor.Edit;
-  fDefaultComponentEditor.Free;
-end;
-
 // ----------------------------------------------------//
 // Move Up has been selected from context menu --------//
 // ----------------------------------------------------//
 procedure TDesignerMainMenu.MoveUpClick(Sender: TObject);
 begin
-  if (MoveUp(Root, SelectedDesignerMenuItem) > 0) then
+  if (MoveUp(Root,SelectedDesignerMenuItem) > 0) then
   begin
-    SetCoordinates(POSITION_LEFT, POSITION_TOP, 0, Root);
+    SetCoordinates(POSITION_LEFT,POSITION_TOP,0,Root);
     Parent.Invalidate;
     
     InitIndexSequence;
@@ -808,20 +739,15 @@ end;
 // Delete Item has been selected from context menu --------//
 // --------------------------------------------------------//
 procedure TDesignerMainMenu.DeleteItemClick(Sender: TObject);
-var
-  temp_returnvalue: Integer;
 begin
-  //SelectedDesignerMenuItem:=GetSelectedDesignerMenuItem(Root);
   CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
-  temp_returnvalue:=DeleteItem(GetDesignerMenuItem(Root, SelectedDesignerMenuItem));
-  if (temp_returnvalue > 0) then
+  if (DeleteItem(GetDesignerMenuItem(Root, SelectedDesignerMenuItem)) > 0) then
   begin
-    SetCoordinates(POSITION_LEFT, POSITION_TOP,0,Root);
+    SetCoordinates(POSITION_LEFT,POSITION_TOP,0,Root);
     Parent.Invalidate;
-    if (temp_returnvalue = 1) then
-      UpdateMenu(fMenu.Items, nil, 1, 7);
-    if (temp_returnvalue = 2) then
-      UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1 , 8);
+    //InitIndexSequence;
+    //CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
+    UpdateMenu(fMenu.Items, nil, 1, 7);
   end;
 end;
 
@@ -831,207 +757,28 @@ end;
 procedure TDesignerMainMenu.InsertFromTemplateClick(Sender: TObject);
 var
   templatemenuitem: string;
-  temp_designermenuitem: PDesignerMenuItem;
 begin
   TemplateMenuForm:=TTemplateMenuForm.Create(self, 1);
-  if (TemplateMenuForm.ShowModal = mrOK) then
+  if (TemplateMenuForm.ShowModal = mrOK) and (TemplateMenuForm.GetSelectedMenuTemplate > 0) then
   begin
-  
+    Str(TemplateMenuForm.GetSelectedMenuTemplate, templatemenuitem);
+    templatemenuitem:='menu_' + templatemenuitem;
+
+    InitIndexSequence;
+    CreateIndexSequence(Root, SelectedDesignerMenuItem,1);
+    ChangeCaption(GetDesignerMenuItem(Root, SelectedDesignerMenuItem), XMLConfig.Getvalue(templatemenuitem + '/Name/Value',''));
+    UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 6);
+    
     if (GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.SubMenu <> nil) then
     begin
-      HideDesignerMenuItem(GetDesignerMenuItem(Root, SelectedDesignerMenuItem));
-      GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.SubMenu:=nil;
       GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.SubMenuPanel.Visible:=false;
+      GetDesignerMenuItem(Root, SelectedDesignerMenuItem)^.SubMenu:=nil;
       InitIndexSequence;
-      CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
+      CreateIndexSequence(Root, SelectedDesignerMenuItem,1);
+      VypisIndexSequence;
       UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 8);
     end;
-    
-    if (TemplateMenuForm.GetSelectedMenuTemplate > NUMBER_OF_DEFAULT_TEMPLATES) then
-    begin
-      Str(TemplateMenuForm.GetSelectedMenuTemplate - NUMBER_OF_DEFAULT_TEMPLATES, templatemenuitem);
-      templatemenuitem:='menu_' + templatemenuitem;
-      InitIndexSequence;
-      CreateIndexSequence(Root, SelectedDesignerMenuItem, 1);
-      ChangeCaption(GetDesignerMenuItem(Root, SelectedDesignerMenuItem), XMLConfig.Getvalue(templatemenuitem + '/Name/Value', ''));
-      UpdateMenu(fMenu.Items, GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 6);
-      InsertFromTemplate(templatemenuitem, SelectedDesignerMenuItem);
-    end else
-    // Some of default templates has been selected
-    begin
-      temp_designermenuitem:=GetDesignerMenuItem(Root, SelectedDesignerMenuItem);
-      case TemplateMenuForm.GetSelectedMenuTemplate of
-      1: Begin
-           // Change a caption of selected designermenuitem fo "File"
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateFile);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-           
-           // Add an submenu with first item and set it's caption to "New"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddSubMenuClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.SubMenu;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateNew);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-           
-           // Add new separator
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, '-');
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new item and set it's caption to "Open"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateOpen);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-           
-           // Add new item and set it's caption to "Open Recent"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateOpenRecent);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-           
-           // Add new item and set it's caption to "Save"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateSave);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-           
-           // Add new item and set it's caption to "Save As"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateSaveAs);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-           
-           // Add new item and set it's caption to "Close"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateClose);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new separator
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, '-');
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new item and set it's caption to "Exit"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateExit);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-         end;
-      2: begin
-           // Change a caption of selected designermenuitem fo "Edit"
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateEdit);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add an submenu with first item and set it's caption to "Undo"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddSubMenuClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.SubMenu;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateUndo);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new item and set it's caption to "Redo"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateRedo);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new separator
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, '-');
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new item and set it's caption to "Cut"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateCut);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new item and set it's caption to "Copy"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateCopy);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new item and set it's caption to "Paste"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplatePaste);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new separator
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, '-');
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new item and set it's caption to "Find"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateFind);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new item and set it's caption to "Find Next"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateFindNext);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-         end;
-      3: begin
-           // Change a caption of selected designermenuitem fo "Help"
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateHelp);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add an submenu with first item and set it's caption to "Contents"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddSubMenuClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.SubMenu;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateContents);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new item and set it's caption to "Tutorial"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateTutorial);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new separator
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, '-');
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6);
-
-           // Add new item and set it's caption to "About"
-           SelectedDesignerMenuItem:=temp_designermenuitem^.ID;
-           AddNewItemAfterClick(self);
-           temp_designermenuitem:=temp_designermenuitem^.NextItem;
-           ChangeCaption (temp_designermenuitem, lisMenuTemplateAbout);
-           UpdateMenu(fMenu.Items, temp_designermenuitem, 1, 6 );
-         end;
-      end;
-    end;
+    InsertFromTemplate(templatemenuitem, SelectedDesignerMenuItem);
   end;
 end;
 
@@ -1054,6 +801,7 @@ begin
     begin
       if (i=1) then
       begin
+        inc(temp_newitemcounter);
         tempdesignermenuitem:=AddSubMenu(Root, GetDesignerMenuItem(Root, Ident)^.ID);
         SetCoordinates(POSITION_LEFT,POSITION_TOP,0,Root);
         ChangeCaption(tempdesignermenuitem, XMLConfig.GetValue(templatesubmenuitem + '/Name/Value',''));
@@ -1062,6 +810,7 @@ begin
         UpdateMenu(fMenu.Items, tempdesignermenuitem, 1, 3);
       end else
       begin
+        inc(temp_newitemcounter);
         tempdesignermenuitem:=AddNewItemAfter(Root, tempdesignermenuitem^.ID);
         SetCoordinates(POSITION_LEFT,POSITION_TOP,0,Root);
         ChangeCaption(tempdesignermenuitem,XMLConfig.GetValue(templatesubmenuitem + '/Name/Value',''));
@@ -1140,9 +889,6 @@ var
   i,j: Integer;
   str_i,str_j, old_templatemenuitem, new_templatemenuitem: string;
 begin
-  //SelectedDesignerMenuItem:=GetSelectedDesignerMenuItem(Root);
-  i:=1;
-  j:=1;
   TemplateMenuForm:=TTemplateMenuForm.Create(self, 3);
   if (TemplateMenuForm.ShowModal = mrOK) and (TemplateMenuForm.GetSelectedMenuTemplate > 0) then
   begin
@@ -1176,6 +922,7 @@ begin
       begin
         // This deletes all subitems in menuitem, which will be replaced
         str_j:='1';
+        j:=1;
         while (XMLConfig.GetValue(new_templatemenuitem + '/subitem_' + str_j + '/Name/Value', 'does_not_exists') <> 'does_not_exists') do
         begin
           XMLConfig.DeletePath(new_templatemenuitem + '/subitem_' + str_j);
@@ -1237,7 +984,7 @@ end;
 // ------------------------------------------------------//
 procedure TDesignerMainMenu.MoveDownClick(Sender: TObject);
 begin
-  if (MoveDown(Root, SelectedDesignerMenuItem) > 0) then
+  if (MoveDown(Root,SelectedDesignerMenuItem) > 0) then
   begin
     SetCoordinates(POSITION_LEFT,POSITION_TOP,0,Root);
     Parent.Invalidate;
@@ -1260,8 +1007,8 @@ begin
   if (MenuItem^.ID = Ident) then
   begin
     new(new_menuitem);
-    Str(temp_newitemcounter, temp_newitemcounterstring);
-    new_menuitem^.Caption:='New Item' + temp_newitemcounterstring;
+    Str(temp_newitemcounter,temp_newitemcounterstring);
+    new_menuitem^.Caption:=' ' + 'New Item' + temp_newitemcounterstring;
     new_menuitem^.Level:=MenuItem^.Level;
     new_menuitem^.NextItem:=MenuItem;
     new_menuitem^.SubMenu:=nil;
@@ -1324,7 +1071,7 @@ begin
   begin
     new(new_menuitem);
     Str(temp_newitemcounter,temp_newitemcounterstring);
-    new_menuitem^.Caption:='New Item' + temp_newitemcounterstring;
+    new_menuitem^.Caption:=' ' + 'New Item' + temp_newitemcounterstring;
     new_menuitem^.Level:=MenuItem^.Level;
     new_menuitem^.PrevItem:=MenuItem;
     new_menuitem^.ParentMenu:=nil;
@@ -1369,7 +1116,7 @@ begin
   begin
     new(new_menuitem);
     Str(temp_newitemcounter,temp_newitemcounterstring);
-    new_menuitem^.Caption:='New Item' + temp_newitemcounterstring;
+    new_menuitem^.Caption:=' ' + 'New Item' + temp_newitemcounterstring;
     new_menuitem^.Level:=MenuItem^.Level + 1;
     new_menuitem^.PrevItem:=nil;
     new_menuitem^.ParentMenu:=MenuItem;
@@ -1477,6 +1224,7 @@ var
   i: Integer;
 begin
   Result:=0;
+  //temp_submenudesignermenuitem:=DesignerMenuItem^.SubMenu;
   temp_parentmenudesignermenuitem:=DesignerMenuItem^.ParentMenu;
   temp_previousdesignermenuitem:=DesignerMenuItem^.PrevItem;
   temp_nextdesignermenuitem:=DesignerMenuItem^.NextItem;
@@ -1487,17 +1235,10 @@ begin
     if (DesignerMenuItem^.SubMenu <> nil) then
     begin
       DesignerMenuItem^.SubMenuPanel.Visible:=false;
-      temp_designermenuitem:=DesignerMenuItem^.SubMenu;
-      while (temp_designermenuitem <> nil) do
-      begin
-        temp_designermenuitem^.SelfPanel.Visible:=false;
-        temp_designermenuitem:=temp_designermenuitem^.NextItem;
-      end;
       Dispose(DesignerMenuItem^.SubMenu);
     end;
     DesignerMenuItem^.SubMenu:=nil;
     DesignerMenuItem^.NextItem:=nil;
-    Result:=2;
   end else
   begin
     if (temp_previousdesignermenuitem <> nil) then
@@ -1507,6 +1248,7 @@ begin
       temp_nextdesignermenuitem^.PrevItem:=temp_previousdesignermenuitem;
       temp_designermenuitem:=temp_nextdesignermenuitem;
       i:=DesignerMenuItem^.Index;
+      writeln('temporary test: ',i);
       while (temp_designermenuitem <> nil) do
       begin
         temp_designermenuitem^.Index:=i;
@@ -1528,16 +1270,13 @@ begin
       end else
       begin
         temp_parentmenudesignermenuitem^.SubMenu:=nil;
-        temp_parentmenudesignermenuitem^.SubMenuPanel.Visible:=false;
-        temp_parentmenudesignermenuitem^.Active:=false;
-        temp_parentmenudesignermenuitem^.Selected:=true;
       end;
     end;
     DesignerMenuItem^.SelfPanel.Visible:=false;
     DesignerMenuItem^.SubMenuPanel.Visible:=false;
     Dispose(DesignerMenuItem);
-    Result:=1;
   end;
+  Result:=1;
 end;
 
 // ------------------------------------------------------------------------------//
@@ -1545,26 +1284,8 @@ end;
 function TDesignerMainMenu.ChangeCaption(DesignerMenuItem: PDesignerMenuItem; newcaption: string): Integer;
 begin
   Result:=0;
-  InitIndexSequence;
-  CreateIndexSequence(Root, DesignerMenuItem^.ID, 1);
-  DesignerMenuItem^.Caption:=newcaption;
+  DesignerMenuItem^.Caption:=' ' + newcaption;
   Result:=1;
-end;
-
-procedure TDesignerMainMenu.HideDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem);
-begin
-  if (DesignerMenuItem^.SubMenu <> nil) then
-  begin
-    HideDesignerMenuItem(DesignerMenuItem^.SubMenu);
-    DesignerMenuItem^.SubMenuPanel.Visible:=false;
-    DesignerMenuItem^.SubMenu:=nil;
-  end;
-  if (DesignerMenuItem^.NextItem <> nil) then
-  begin
-    HideDesignerMenuItem(DesignerMenuItem^.NextItem);
-    DesignerMenuItem^.NextItem:=nil;
-  end;
-  DesignerMenuItem^.SelfPanel.Visible:=false;
 end;
 
 // -------------------------------------------------------------------------------------------------------------------
@@ -1632,7 +1353,7 @@ end;
 // ------------------------------------------------------------------
 // UPDATE Menu (type of update is specified via the Action parameter)
 // ------------------------------------------------------------------
-function TDesignerMainMenu.UpdateMenu(MenuItem: TMenuItem; DesignerMenuItem: PDesignerMenuItem; Ind, Action: Integer): TMenuItem;
+procedure TDesignerMainMenu.UpdateMenu(MenuItem: TMenuItem; DesignerMenuItem: PDesignerMenuItem; Ind, Action: Integer);
 var
   i: Integer;
   temp_menuitem: TMenuItem;
@@ -1712,7 +1433,7 @@ begin
     6: begin
          if (index_sequence[Ind + 1] = -1) then
          begin
-           //writeln(MenuItem[index_sequence[Ind]].Caption);
+           writeln(MenuItem[index_sequence[Ind]].Caption);
            MenuItem[index_sequence[Ind]].Caption:=DesignerMenuItem^.Caption;
          end else
            UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action)
@@ -1721,8 +1442,7 @@ begin
     7: begin
          if (index_sequence[Ind + 1] = -1) then
          begin
-           //MenuItem.Remove(MenuItem[index_sequence[Ind]]);
-           MenuItem[index_sequence[Ind]].Free
+           MenuItem.Remove(MenuItem[index_sequence[Ind]]);
          end else
            UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action)
        end;
@@ -1732,23 +1452,17 @@ begin
          begin
            for i:=0 to (MenuItem[index_sequence[Ind]].Count - 1) do
              MenuItem[index_sequence[Ind]].Delete(0);
-             //MenuItem[index_sequence[Ind]].Items.Free
          end else
            UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action);
        end;
     // Selectes a MenuItem in the OI
     9: begin
          if (index_sequence[Ind + 1] = -1) then
-           fEditor.GetDesigner.SelectOnlyThisComponent(MenuItem[index_sequence[Ind]])
-         else
+         begin
+           fEditor.GetDesigner.SelectOnlyThisComponent(MenuItem[index_sequence[Ind]]);
+           ChangeCaption(DesignerMenuItem, MenuItem[index_sequence[Ind]].Caption);
+         end else
            UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action);
-       end;
-   // Return an MenuItem
-   10: begin
-         if (index_sequence[Ind + 1] = -1) then
-           Result:=MenuItem[index_sequence[Ind]]
-         else
-           Result:=UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action);
        end;
   // Sonething else
   end;
@@ -1761,7 +1475,7 @@ end;
 constructor TTemplateMenuForm.Create(AOwner: TComponent; aAction: Integer);
 var
   i: Integer;
-  templatemenuitem, str_i: string;
+  templatemenuitem,str_i: string;
 begin
   inherited Create(AOwner);
 
@@ -1769,16 +1483,13 @@ begin
   
   case fAction of
   1: begin
-      // content of "Caption" is generated from LazarusIDEStrConsts
-      Caption:=lisMenuEditorInsertFromTemplate;
+      Caption:='Insert From Template';
      end;
   2: begin
-      // content of "Caption" is generated from LazarusIDEStrConsts
-      Caption:=lisMenuEditorSaveAsTemplate;
+      Caption:='Save As Template';
      end;
   3: begin
-      // content of "Caption" is generated from LazarusIDEStrConsts
-      Caption:=lisMenuEditorDeleteFromTemplate;
+      Caption:='Delete From Template';
      end;
   end;
   Width:=520;
@@ -1795,8 +1506,7 @@ begin
     Top:=10;
     Width:=240;
     Height:=20;
-    // content of "Text" is generated from LazarusIDEStrConsts
-    Text:=lisMenuEditorSelectTemplate;
+    Text:='Template Description';
   end;
   
   Label_template_view:=TLabel.Create(self);
@@ -1807,8 +1517,7 @@ begin
     Top:=10;
     Width:=240;
     Height:=20;
-    // content of "Text" is generated from LazarusIDEStrConsts
-    Text:=lisMenuEditorTemplatePreview;
+    Text:='Template Structure';
   end;
   
   ListBox:=TListBox.Create(self);
@@ -1841,36 +1550,22 @@ begin
       Left:=10;
       Top:=200;
       Width:=240;
-      // content of "Text" is generated from LazarusIDEStrConsts
-      Text:=lisMenuEditorNewTemplateDescription;
+      Text:='New template description...';
     end;
   end;
   
-  // Default templates
-  if (fAction = 1) then
-  begin
-    ListBox.Items.Add(lisMenuTemplateDescriptionStandardFileMenu);
-    ListBox.Items.Add(lisMenuTemplateDescriptionStandardEditMenu);
-    ListBox.Items.Add(lisMenuTemplateDescriptionStandardHelpMenu);
-  end;
-  
-  // Templates from menutemplates.xml
   i:=1;
   Str(i,str_i);
   templatemenuitem:='menu_';
   while (XMLConfig.GetValue(templatemenuitem + str_i + '/Name/Value','does_not_exists') <> 'does_not_exists') do
   begin
+    if (i = 1) then
+      TemplateView('menu_1/subitem_');
     ListBox.Items.Add(XMLConfig.GetValue(templatemenuitem + str_i + '/Description/Value','does_not_exists'));
     Inc(i);
     Str(i,str_i);
+    //ListBox.Selected[0]:=true;
   end;
-  
-  // Select the first menu on list and show it in "Template Preview"
-  ListBox.Selected[0]:=true;
-  if (fAction = 1) then
-    TemplateView('', 1)
-  else
-    TemplateView('menu_1/subitem_', 0);
   
   OkButton:=TButton.Create(self);
   with OkButton do
@@ -1888,8 +1583,7 @@ begin
   with CancelButton do
   begin
     Parent:=self;
-    // content of "Caption" is generated from LazarusIDEStrConsts
-    Caption:=lisMenuEditorCancel;
+    Caption:='Cancel';
     Left:=440;
     Top:=200;
     Width:=70;
@@ -1911,8 +1605,9 @@ begin
   end else
   begin
     if (fAction = 2) then
-      // content of "Description" is generated from LazarusIDEStrConsts
-      Description:=lisMenuEditorNewTemplateDescription;
+    begin
+      Description:='New Template Description';
+    end;
   end;
   ModalResult:=mrOK;
 end;
@@ -1933,71 +1628,33 @@ begin
    Result:=Description;
 end;
 
-procedure TTemplateMenuForm.TemplateView(templatemenuitem: string; default_template: Integer);
+procedure TTemplateMenuForm.TemplateView(templatemenuitem: string);
 var
   i,j: Integer;
   item, subitem_level_space, str_i, temp_string: string;
 begin
-  if (default_template > 0) then
+  if (subitem_level = 1) then
   begin
-    case default_template of
-    1: begin
-         ListBoxView.Items.Add(lisMenuTemplateFile);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateNew);
-         ListBoxView.Items.Add(' -');
-         ListBoxView.Items.Add(' ' + lisMenuTemplateOpen);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateOpenRecent);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateSave);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateSaveAs);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateClose);
-         ListBoxView.Items.Add(' -');
-         ListBoxView.Items.Add(' ' + lisMenuTemplateExit);
-       end;
-    2: begin
-         ListBoxView.Items.Add(lisMenuTemplateEdit);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateUndo);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateRedo);
-         ListBoxView.Items.Add(' -');
-         ListBoxView.Items.Add(' ' + lisMenuTemplateCut);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateCopy);
-         ListBoxView.Items.Add(' ' + lisMenuTemplatePaste);
-         ListBoxView.Items.Add(' -');
-         ListBoxView.Items.Add(' ' + lisMenuTemplateFind);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateFindNext);
-       end;
-    3: begin
-         ListBoxView.Items.Add(lisMenuTemplateHelp);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateContents);
-         ListBoxView.Items.Add(' ' + lisMenuTemplateTutorial);
-         ListBoxView.Items.Add(' -');
-         ListBoxView.Items.Add(' ' + lisMenuTemplateAbout);
-       end;
-    end;
-  end else
-  begin
-    if (subitem_level = 1) then
-    begin
-      temp_string:=templatemenuitem;
-      Delete(temp_string,7,9);
-      ListBoxView.Items.Add(XMLConfig.GetValue(temp_string + '/Name/Value',''));
-    end;
-    Inc(subitem_level);
-    i:=1;
-    Str(i, str_i);
-    while (XMLConfig.GetValue(templatemenuitem + str_i + '/Name/Value','does_not_exists') <> 'does_not_exists') do
-    begin
-      subitem_level_space:='';
-      for j:=1 to subitem_level do
-        subitem_level_space:=subitem_level_space + ' ';
-      item:=subitem_level_space + XMLConfig.GetValue(templatemenuitem + str_i + '/Name/Value','does_not_exists');
-      ListBoxView.Items.Add(item);
-      if (XMLConfig.GetValue(templatemenuitem + str_i + '/SubItems/Value', '') = 'true') then
-        TemplateView(templatemenuitem + str_i + '/subitem_', 0);
-      Inc(i);
-      Str(i, str_i);
-    end;
-    Dec(subitem_level);
+    temp_string:=templatemenuitem;
+    Delete(temp_string,7,9);
+    ListBoxView.Items.Add(XMLConfig.GetValue(temp_string + '/Name/Value',''));
   end;
+  Inc(subitem_level);
+  i:=1;
+  Str(i, str_i);
+  while (XMLConfig.GetValue(templatemenuitem + str_i + '/Name/Value','does_not_exists') <> 'does_not_exists') do
+  begin
+    subitem_level_space:='';
+    for j:=1 to subitem_level do
+      subitem_level_space:=subitem_level_space + ' ';
+    item:=subitem_level_space + XMLConfig.GetValue(templatemenuitem + str_i + '/Name/Value','does_not_exists');
+    ListBoxView.Items.Add(item);
+    if (XMLConfig.GetValue(templatemenuitem + str_i + '/SubItems/Value', '') = 'true') then
+      TemplateView(templatemenuitem + str_i + '/subitem_');
+    Inc(i);
+    Str(i, str_i);
+  end;
+  Dec(subitem_level);
 end;
 
 procedure TTemplateMenuForm.OnSelectMenuTemplateClick(Sender: TObject);
@@ -2008,23 +1665,13 @@ begin
   ListBoxView.Clear;
   for i:=0 to ListBox.Items.Count-1 do
     if ListBox.Selected[i] then SelectedMenuTemplate:=i + 1;
-
-  if (fAction <> 1) then
-  begin
-   Str(SelectedMenuTemplate, str_i);
-   TemplateView('menu_' + str_i + '/subitem_', 0);
-  end else
-  begin
-    if (SelectedMenuTemplate > NUMBER_OF_DEFAULT_TEMPLATES) then
-    begin
-      Str(SelectedMenuTemplate - NUMBER_OF_DEFAULT_TEMPLATES, str_i);
-      TemplateView('menu_' + str_i + '/subitem_', 0);
-    end else
-      TemplateView('', SelectedMenuTemplate);
-  end;
+  Str(SelectedMenuTemplate, str_i);
+  TemplateView('menu_' + str_i + '/subitem_');
   ListBoxView.Selected[0]:=false;
 end;
 
 initialization
+
+XMLConfig:=TXMLConfig.Create(SetDirSeparators(GetPrimaryConfigPath + '/menutemplates.xml'));
 
 end.
