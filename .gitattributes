@@ -609,6 +609,7 @@ lcl/languages/lcl.po svneol=native#text/plain
 lcl/lazqueue.pp svneol=native#text/pascal
 lcl/lcllinux.pp svneol=native#text/pascal
 lcl/lclmemmanager.pas svneol=native#text/pascal
+lcl/lclproc.pas svneol=native#text/pascal
 lcl/lclstrconsts.pas svneol=native#text/pascal
 lcl/lcltype.pp svneol=native#text/pascal
 lcl/lmessages.pp svneol=native#text/pascal
