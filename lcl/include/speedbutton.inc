@@ -653,7 +653,6 @@ procedure TSpeedButton.CMButtonPressed(var Message : TLMessage);
 var
   Sender : TSpeedButton;
 begin
-  if csDesigning in ComponentState then exit;
   if Message.WParam = WParam(FGroupIndex)
   then begin
     Sender := TSpeedButton(Message.LParam);
@@ -773,6 +772,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.54  2004/06/19 15:36:29  micha
+  fix speedbutton group in design mode
+
   Revision 1.53  2004/05/11 12:16:47  mattias
   replaced writeln by debugln
 
