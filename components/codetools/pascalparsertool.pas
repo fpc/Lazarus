@@ -946,23 +946,26 @@ begin
     ReadNextAtom;
     if (not UpAtomIs('PROCEDURE')) and (not UpAtomIs('FUNCTION')) then begin
       SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,
-                        [ctsProcedureOrFunction,GetAtom]);
+                            [ctsProcedureOrFunction,GetAtom]);
     end;
   end;
   IsFunction:=UpAtomIs('FUNCTION');
   // read procedure head
   // read name
   ReadNextAtom;
-  if (CurPos.StartPos>SrcLen)
-  or (not (IsIdentStartChar[Src[CurPos.StartPos]]))
-  then
-    SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsMethodName,GetAtom]);
+  AtomIsIdentifier(true);
   // create node for procedure head
   CreateChildNode;
   CurNode.Desc:=ctnProcedureHead;
   CurNode.SubDesc:=ctnsNeedJITParsing;
-  // read rest
   ReadNextAtom;
+  if (CurPos.Flag=cafPoint) then begin
+    // first identifier was interface name
+    ReadNextAtom;
+    AtomIsIdentifier(true);
+    ReadNextAtom;
+  end;
+  // read rest
   ParseAttr:=[pphIsMethod];
   if IsFunction then Include(ParseAttr,pphIsFunction);
   ReadTilProcedureHeadEnd(ParseAttr,HasForwardModifier);
@@ -1220,7 +1223,16 @@ begin
       ReadNextAtom;
     end else begin
       if (Scanner.CompilerMode<>cmDelphi) then
-        SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[':',GetAtom]);
+        SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[':',GetAtom])
+      else begin
+        // Delphi Mode
+        if CurPos.Flag=cafEqual then begin
+          // read interface alias
+          ReadNextAtom;
+          AtomIsIdentifier(true);
+          ReadNextAtom;
+        end;
+      end;
     end;
   end;
   if UpAtomIs('OF') then begin
@@ -1406,14 +1418,15 @@ begin
         '[':
           begin
             // open bracket + ? + close bracket
+            if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
             repeat
-              if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+              if (CurPos.Flag=cafEdgedBracketClose) then break;
+              // read
               if not ReadConstant(ExceptionOnError,Extract,Attr) then exit;
               if (CurPos.Flag=cafComma) or AtomIs('..') then begin
                 // continue
-              end else if (CurPos.Flag=cafEdgedBracketClose) then begin
-                break;
-              end else begin
+                if not Extract then ReadNextAtom else ExtractNextAtom(true,Attr);
+              end else if (CurPos.Flag<>cafEdgedBracketClose) then begin
                 if ExceptionOnError then
                   SaveRaiseExceptionFmt(ctsStrExpectedButAtomFound,[']',GetAtom])
                 else exit;
@@ -2517,7 +2530,7 @@ begin
   end;
   if CurPos.Flag=cafEND then begin
     ReadNextAtom;
-    if UpAtomIs('DEPRECATED') then ReadNextAtom;
+    if UpAtomIs('DEPRECATED') or UpAtomIs('PLATFORM') then ReadNextAtom;
   end;
   Result:=true;
 end;
@@ -2772,6 +2785,7 @@ begin
         SaveRaiseException(ctsInvalidSubrange);
       CurNode.EndPos:=CurPos.StartPos;
     end;
+    if UpAtomIs('PLATFORM') or UpAtomIs('DEPRECATED') then ReadNextAtom;
   end else begin
     // enum or subrange
     ReadTillTypeEnd;
@@ -2876,6 +2890,7 @@ begin
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode; // close record
   ReadNextAtom;
+  if UpAtomIs('PLATFORM') then ReadNextAtom;
   Result:=true;
 end;
 

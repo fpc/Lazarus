@@ -20,6 +20,9 @@ implicitunits=codetoolsstrconsts avl_tree basiccodetools codecache sourcelog \
    definetemplates expreval keywordfunclists linkscanner sourcechanger \
    fileprocs
 
+[clean]
+files=$(wildcard *$(OEXT)) $(wildcard *$(PPUEXT)) $(wildcard *$(RSTEXT))
+
 [require]
 packages=fcl
 

@@ -123,7 +123,7 @@ type
     function CreateFile(const AFilename: string): TCodeBuffer;
     function SaveBufferAs(OldBuffer: TCodeBuffer;const ExpandedFilename: string; 
           var NewBuffer: TCodeBuffer): boolean;
-    function FilenameHasSourceExt(const ExpandedFilename: string): boolean;
+    function FilenameHasSourceExt(const AFilename: string): boolean;
     
     // exception handling
     property CatchExceptions: boolean
@@ -414,18 +414,18 @@ begin
 end;
 
 function TCodeToolManager.FilenameHasSourceExt(
-  const ExpandedFilename: string): boolean;
+  const AFilename: string): boolean;
 var i, CurExtStart, CurExtEnd, ExtStart, ExtLen: integer;
 begin
-  ExtStart:=length(ExpandedFilename);
-  while (ExtStart>0) and (ExpandedFilename[ExtStart]<>'.')
-  and (ExpandedFilename[ExtStart]<>PathDelim) do
+  ExtStart:=length(AFilename);
+  while (ExtStart>0) and (AFilename[ExtStart]<>'.')
+  and (AFilename[ExtStart]<>PathDelim) do
     dec(ExtStart);
-  if (ExtStart<1) or (ExpandedFilename[ExtStart]<>'.') then begin
+  if (ExtStart<1) or (AFilename[ExtStart]<>'.') then begin
     Result:=false;
     exit;
   end;
-  ExtLen:=length(ExpandedFilename)-ExtStart+1;
+  ExtLen:=length(AFilename)-ExtStart+1;
   CurExtStart:=1;
   CurExtEnd:=CurExtStart;
   while CurExtEnd<=length(FSourceExtensions)+1 do begin
@@ -435,7 +435,7 @@ begin
       if ExtLen=CurExtEnd-CurExtStart then begin
         i:=0;
         while (i<ExtLen) 
-        and (UpChars[ExpandedFilename[i+ExtStart]]
+        and (UpChars[AFilename[i+ExtStart]]
             =UpChars[FSourceExtensions[CurExtStart+i]]) do
           inc(i);
         if i=ExtLen then begin
@@ -505,9 +505,9 @@ begin
   end;
   FCurCodeTool:=TCodeTool(GetCodeToolForSource(MainCode,true));
   FCurCodeTool.ErrorPosition.Code:=nil;
-{$IFDEF CTDEBUG}
-writeln('[TCodeToolManager.InitCurCodeTool] ',Code.Filename,' ',Code.SourceLength);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('[TCodeToolManager.InitCurCodeTool] ',Code.Filename,' ',Code.SourceLength);
+  {$ENDIF}
   Result:=(FCurCodeTool.Scanner<>nil);
   if not Result then begin
     fErrorCode:=MainCode;

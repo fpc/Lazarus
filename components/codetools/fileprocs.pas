@@ -44,6 +44,7 @@ const
   // ToDo: find the constant in the fpc units.
   EndOfLine:shortstring={$IFDEF win32}#13+{$ENDIF}#10;
 
+
 // files
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function DirectoryExists(DirectoryName: string): boolean;
@@ -56,6 +57,9 @@ function FileIsReadable(const AFilename: string): boolean;
 function FileIsWritable(const AFilename: string): boolean;
 function FileIsText(const AFilename: string): boolean;
 function TrimFilename(const AFilename: string): string;
+function AppendPathDelim(const Path: string): string;
+function SearchFileInPath(const Filename, BasePath, SearchPath,
+                          Delimiter: string; SearchLoUpCase: boolean): string;
 
 implementation
 
@@ -335,6 +339,69 @@ begin
   if DestPos<=length(AFilename) then
     SetLength(Result,DestPos-1);
 end;
+
+function AppendPathDelim(const Path: string): string;
+begin
+  if (Path<>'') and (Path[length(Path)]<>PathDelim) then
+    Result:=Path+PathDelim
+  else
+    Result:=Path;
+end;
+
+function SearchFileInPath(const Filename, BasePath, SearchPath,
+  Delimiter: string; SearchLoUpCase: boolean): string;
+  
+  function FileDoesExists(const AFilename: string): boolean;
+  begin
+    Result:=FileExists(AFilename);
+    if Result then begin
+      SearchFileInPath:=ExpandFilename(AFilename);
+      exit;
+    end;
+    {$IFNDEF Win32}
+    if SearchLoUpCase then begin
+
+    end;
+    {$ENDIF}
+  end;
+  
+var
+  p, StartPos, l: integer;
+  CurPath, Base: string;
+begin
+//writeln('[SearchFileInPath] Filename="',Filename,'" BasePath="',BasePath,'" SearchPath="',SearchPath,'" Delimiter="',Delimiter,'"');
+  if (Filename='') then begin
+    Result:=Filename;
+    exit;
+  end;
+  // check if filename absolute
+  if FilenameIsAbsolute(Filename) then begin
+    if FileDoesExists(Filename) then exit;
+    Result:='';
+    exit;
+  end;
+  Base:=ExpandFilename(AppendPathDelim(BasePath));
+  // search in current directory
+  if FileDoesExists(Base+Filename) then exit;
+  // search in search path
+  StartPos:=1;
+  l:=length(SearchPath);
+  while StartPos<=l do begin
+    p:=StartPos;
+    while (p<=l) and (pos(SearchPath[p],Delimiter)<1) do inc(p);
+    CurPath:=Trim(copy(SearchPath,StartPos,p-StartPos));
+    if CurPath<>'' then begin
+      if not FilenameIsAbsolute(CurPath) then
+        CurPath:=Base+CurPath;
+      Result:=ExpandFilename(AppendPathDelim(CurPath)+Filename);
+      if FileDoesExists(Result) then exit;
+    end;
+    StartPos:=p+1;
+  end;
+  Result:='';
+end;
+
+
 
 end.
 
