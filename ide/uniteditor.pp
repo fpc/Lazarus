@@ -2068,28 +2068,33 @@ end;
 
 procedure TSourceNotebook.OnSynCompletionSearchPosition(var APosition:integer);
 // word changed
-var i,x:integer;
+var
+  i,x:integer;
   CurStr,s:Ansistring;
   SL:TStringList;
+  ItemCnt: Integer;
 begin
   if CurCompletionControl=nil then exit;
   case CurrentCompletionType of
 
-    ctWordCompletion:
+    ctIdentCompletion:
       begin
         // rebuild completion list
         APosition:=0;
         CurStr:=CurCompletionControl.CurrentString;
+        CodeToolBoss.IdentifierList.Prefix:=CurStr;
+        ItemCnt:=CodeToolBoss.IdentifierList.GetFilteredCount;
         SL:=TStringList.Create;
         try
-          aWordCompletion.GetWordList(SL, CurStr, false, 30);
+          for i:=0 to ItemCnt-1 do
+            SL.Add('Dummy');
           CurCompletionControl.ItemList:=SL;
         finally
           SL.Free;
         end;
       end;
-
-    ctIdentCompletion,ctTemplateCompletion:
+    
+    ctTemplateCompletion:
       begin
         // search CurrentString in bold words (words after #3'B')
         CurStr:=CurCompletionControl.CurrentString;
@@ -2106,6 +2111,20 @@ begin
             end;
           end;
           inc(i);
+        end;
+      end;
+
+    ctWordCompletion:
+      begin
+        // rebuild completion list
+        APosition:=0;
+        CurStr:=CurCompletionControl.CurrentString;
+        SL:=TStringList.Create;
+        try
+          aWordCompletion.GetWordList(SL, CurStr, false, 30);
+          CurCompletionControl.ItemList:=SL;
+        finally
+          SL.Free;
         end;
       end;
 
@@ -2154,7 +2173,9 @@ begin
       // add one entry per item
       CodeToolBoss.IdentifierList.Prefix:=Prefix;
       ItemCnt:=CodeToolBoss.IdentifierList.GetFilteredCount;
-writeln('CurCompletionControl.CurrentString=',CurCompletionControl.CurrentString);
+writeln('CurCompletionControl.CurrentString=',CurCompletionControl.CurrentString,' ItemCnt=',ItemCnt);
+      CurCompletionControl.CurrentString:='';
+      CurCompletionControl.Position:=0;
       for i:=0 to ItemCnt-1 do
         s.Add('Dummy');
       exit;
@@ -2274,11 +2295,38 @@ procedure TSourceNotebook.ccComplete(var Value: ansistring; Shift: TShiftState);
 // completion selected -> deactivate completion form
 // Called when user has selected a completion item
 var
-  p1,p2:integer;
+  p1, p2: integer;
+  ValueType: TIdentComplValue;
+  SrcEdit: TSourceEditor;
+  NewValue: string;
+  CaretXY: TPoint;
 Begin
   if CurCompletionControl=nil then exit;
   case CurrentCompletionType of
-    ctTemplateCompletion, ctIdentCompletion:
+    ctIdentCompletion:
+      begin
+        NewValue:=GetIdentCompletionValue(aCompletion,ValueType);
+        case ValueType of
+        icvProcWithParams:
+          NewValue:=NewValue+'()';
+        icvIndexedProp:
+          NewValue:=NewValue+'[]';
+        end;
+        SrcEdit:=GetActiveSE;
+        SrcEdit.EditorComponent.SelText:=NewValue;
+        if ValueType in [icvProcWithParams,icvIndexedProp] then begin
+          CaretXY:=SrcEdit.EditorComponent.BlockEnd;
+          dec(CaretXY.X);
+          SrcEdit.EditorComponent.CaretXY:=CaretXY;
+        end;
+        ccSelection := '';
+        Value:='';
+
+        // ToDo: add to history
+
+      end;
+
+    ctTemplateCompletion:
       begin
         // the completion is the bold text between #3'B' and #3'b'
         p1:=Pos(#3,Value);
@@ -2292,27 +2340,21 @@ Begin
           if p1>=1 then
             Value:=copy(ccSelection,1,p1)+Value;
         end;
-      end;
-    ctWordCompletion:
-      // the completion is already in Value
-      ;
-  end;
-
-  ccSelection := '';
-  case CurrentCompletionType of
-    ctTemplateCompletion:
-      begin
+        ccSelection := '';
         if Value<>'' then
           FCodeTemplateModul.ExecuteCompletion(Value,
                                                GetActiveSE.EditorComponent);
         Value:='';
       end;
+      
     ctWordCompletion:
+      // the completion is already in Value
       begin
+        ccSelection := '';
         if Value<>'' then AWordCompletion.AddWord(Value);
       end;
   end;
-  
+
   DeactivateCompletionForm;
 End;
 
