@@ -354,12 +354,6 @@ data :  user supplied data to be passed to func.
 button :        the button which was pressed to initiate the event.
 activate_time : the time at which the activation event occurred.
 }
-      LM_POPUPSHOW:
-      Begin
-        SetProp(FAppHandle, 'PopupMenu', Pointer(TPopupMenu(Sender).Handle));
-        TrackPopupMenuEx(TPopupMenu(Sender).Handle, TPM_LEFTALIGN or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
-          TPoint(Data^).x, TPoint(Data^).y, FAppHandle, Nil);
-      End;
       LM_SETFOCUS:
       Begin
         If Handle <> 0 Then
@@ -2542,6 +2536,9 @@ End;
 
 {
   $Log$
+  Revision 1.246  2004/09/11 17:29:10  micha
+  convert LM_POPUPSHOW message to interface method
+
   Revision 1.245  2004/09/11 15:01:22  micha
   remove obsolete LM_SETFILTER and LM_SETFILENAME messages
 

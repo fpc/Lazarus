@@ -58,7 +58,7 @@ begin
   Items.InitiateActions;
   HandleNeeded;
   if Assigned(OnMenuPopupHandler) then OnMenuPopupHandler(Self);
-  SendMsgToInterface(LM_POPUPSHOW, Self, @FPopupPoint);
+  TWSPopupMenuClass(WidgetSetClass).Popup(Self, X, Y);
 end;
 
 procedure TPopupMenu.Close;
@@ -78,6 +78,9 @@ end;
 
 {
   $Log$
+  Revision 1.13  2004/09/11 17:29:10  micha
+  convert LM_POPUPSHOW message to interface method
+
   Revision 1.12  2004/08/13 10:20:19  mattias
   fixed codetools ConstSet, implemented notifying TApplication whenmenu popups
 

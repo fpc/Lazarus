@@ -71,10 +71,15 @@ type
   { TWSPopupMenu }
 
   TWSPopupMenu = class(TWSMenu)
+  public
+    class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); virtual;
   end;
+  TWSPopupMenuClass = class of TWSPopupMenu;
 
 
 implementation
+
+{ TWSMenuItem }
 
 procedure TWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 begin
@@ -84,13 +89,19 @@ procedure TWSMenuItem.SetCaption(const AMenuItem: TMenuItem; const ACaption: str
 begin
 end;
 
+{ TWSPopupMenu }
+
+procedure TWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
+begin
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
 // To improve speed, register only classes
 // which actually implement something
 ////////////////////////////////////////////////////
-  RegisterWSComponent(TMenuItem, TWSMenuItem);
+//  RegisterWSComponent(TMenuItem, TWSMenuItem);
 //  RegisterWSComponent(TMenu, TWSMenu);
 //  RegisterWSComponent(TMainMenu, TWSMainMenu);
 //  RegisterWSComponent(TPopupMenu, TWSPopupMenu);

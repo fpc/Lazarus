@@ -76,10 +76,6 @@ const
 
   LM_DRAGINFOCHANGED = LM_COMUSER+53;
 
-  //LM_SETENABLED   = LM_COMUSER+54;
-  LM_POPUPSHOW      = LM_COMUSER+56;
-
-
   LM_RECREATEWND    = LM_COMUSER+57;
   LM_SETFORMICON    = LM_COMUSER+58;
 
@@ -871,10 +867,6 @@ begin
 
   LM_DRAGINFOCHANGED :Result:='LM_DRAGINFOCHANGED';
 
-  //LM_SETENABLED   :Result:='LM_SETENABLED';
-  LM_POPUPSHOW      :Result:='LM_POPUPSHOW';
-
-
   LM_RECREATEWND    :Result:='LM_RECREATEWND';
   LM_SETFORMICON    :Result:='LM_SETFORMICON';
 
@@ -1007,6 +999,9 @@ end.
 
 {
   $Log$
+  Revision 1.88  2004/09/11 17:29:10  micha
+  convert LM_POPUPSHOW message to interface method
+
   Revision 1.87  2004/09/11 15:01:22  micha
   remove obsolete LM_SETFILTER and LM_SETFILENAME messages
 

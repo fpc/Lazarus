@@ -74,10 +74,13 @@ type
   private
   protected
   public
+    class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
 
 implementation
+
+{ TWin32WSMenuItem }
 
 procedure TWin32WSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 var 
@@ -248,6 +251,19 @@ begin
     DrawMenuBar(TWinControl(AMenuItem.Owner).Handle);
 end;
   
+{ TWin32WSPopupMenu }
+
+procedure TWin32WSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
+var
+  MenuHandle, AppHandle: HWND;
+begin
+  MenuHandle := APopupMenu.Handle;
+  AppHandle := TWin32WidgetSet(InterfaceObject).AppHandle;
+  SetProp(AppHandle, 'PopupMenu', MenuHandle);
+  TrackPopupMenuEx(MenuHandle, TPM_LEFTALIGN or TPM_LEFTBUTTON or TPM_RIGHTBUTTON,
+    X, Y, AppHandle, Nil);
+end;
+  
 initialization
 
 ////////////////////////////////////////////////////
@@ -259,6 +275,6 @@ initialization
   RegisterWSComponent(TMenuItem, TWin32WSMenuItem);
 //  RegisterWSComponent(TMenu, TWin32WSMenu);
 //  RegisterWSComponent(TMainMenu, TWin32WSMainMenu);
-//  RegisterWSComponent(TPopupMenu, TWin32WSPopupMenu);
+  RegisterWSComponent(TPopupMenu, TWin32WSPopupMenu);
 ////////////////////////////////////////////////////
 end.

@@ -69,10 +69,13 @@ type
   private
   protected
   public
+    class procedure Popup(const APopupMenu: TPopupMenu; const X, Y: integer); override;
   end;
 
 
 implementation
+
+{ TGtkWSMenuItem }
 
 procedure TGtkWSMenuItem.AttachMenu(const AMenuItem: TMenuItem);
 var
@@ -147,6 +150,35 @@ begin
   UpdateInnerMenuItem(AMenuItem,MenuItemWidget);
 end;
 
+{ TGtkWSPopupMenu }
+
+procedure TGtkWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
+begin
+  ReleaseMouseCapture;
+  gtk_menu_popup(PgtkMenu(APopupMenu.Handle),
+                 nil,
+                 nil,
+                 nil,
+                 nil,
+                 0,
+                 0);
+  {Displays a menu and makes it available for selection. Applications
+  can use this function to display context-sensitive menus, and will
+  typically supply NULL for the parent_menu_shell, parent_menu_item,
+  func and data parameters.
+  The default menu positioning function will position the menu at the
+  current pointer position.
+  menu :  a GtkMenu.
+  parent_menu_shell: the menu shell containing the triggering menu item.
+  parent_menu_item: the menu item whose activation triggered the popup.
+  func :  a user supplied function used to position the menu.
+  data :  user supplied data to be passed to func.
+  button :  the button which was pressed to initiate the event.
+  activate_time : the time at which the activation event occurred.
+  }
+
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -158,6 +190,6 @@ initialization
   RegisterWSComponent(TMenuItem, TGtkWSMenuItem);
 //  RegisterWSComponent(TMenu, TGtkWSMenu);
 //  RegisterWSComponent(TMainMenu, TGtkWSMainMenu);
-//  RegisterWSComponent(TPopupMenu, TGtkWSPopupMenu);
+  RegisterWSComponent(TPopupMenu, TGtkWSPopupMenu);
 ////////////////////////////////////////////////////
 end.
