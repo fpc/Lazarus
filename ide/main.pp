@@ -5033,6 +5033,7 @@ begin
     MessagesView.Clear;
     DoArrangeSourceEditorAndMessageView;
     TheOutputFilter.OnOutputString:=@MessagesView.Add;
+    TheOutputFilter.OnReadLine:=@MessagesView.ShowProgress;
 
     // warn ambigious files
     DoWarnAmbigiousFiles;
@@ -5040,7 +5041,7 @@ begin
     // compile
     Result:=TheCompiler.Compile(Project1,BuildAll,DefaultFilename);
     if Result=mrOk then begin
-      MessagesView.MessageView.Items.Add(
+      MessagesView.Add(
         'Project "'+Project1.Title+'" successfully built. :)');
     end else begin
       DoJumpToCompilerMessage(-1,true);
@@ -7272,6 +7273,7 @@ begin
   DoArrangeSourceEditorAndMessageView;
 
   TheOutputFilter.OnOutputString:=@MessagesView.Add;
+  TheOutputFilter.OnReadLine:=@MessagesView.ShowProgress;
 end;
 
 procedure TMainIDE.OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
@@ -7736,6 +7738,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.466  2003/02/21 22:43:54  mattias
+  skipped messages are now shown to see progress
+
   Revision 1.465  2003/02/21 10:42:57  mattias
   fixed updating OI when moving components
 
