@@ -22,7 +22,7 @@
 {
  Property editor for TListView objects
 
- Author: Olivier guilbaud  (golivier@free.fr)
+ Author: Olivier Guilbaud  (golivier@free.fr)
  
  History
    01/28/2003 OG - Create
@@ -51,13 +51,27 @@ Type
   {TMenuItemsPropertyEditorDlg}
   
   TListViewItemsPropertyEditorDlg = Class(TForm)
+    procedure LeftGroupBoxResize(Sender: TObject);
+    procedure ListViewItemsPropertyEditorDlgResize(Sender: TObject);
+    procedure Panel1Resize(Sender: TObject);
+    procedure RightGroupBoxResize(Sender: TObject);
   private
     edtLabel : TEdit;
     edtIndex : TEdit;
     TV       : TTreeView;
     btnSub   : TButton;
     fBuild   : Boolean;
-    
+    Panel1: TPanel;
+    OkButton: TBitBtn;
+    CancelButton: TBitBtn;
+    LeftGroupBox: TGroupBox;
+    NewButton: TButton;
+    AddButton: TButton;
+    DeleteButton: TButton;
+    RightGroupBox: TGroupBox;
+    CaptionLabel: TLabel;
+    ImgIndexLabel: TLabel;
+
     Procedure btnAddOnClick(Sender : TObject);
     Procedure btnDelOnClick(Sender : TObject);
     procedure btnAddSubOnClick(Sender : TObject);
@@ -69,13 +83,12 @@ Type
     procedure RefreshEdts;
 
   public
-    constructor Create(aOwner : TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
   end;
 
   TListViewComponentEditor = class(TDefaultComponentEditor)
   protected
     procedure DoShowEditor;
-
   public
     procedure ExecuteVerb(Index: Integer); override;
     function GetVerb(Index: Integer): string; override;
@@ -232,64 +245,68 @@ begin
 end;
 
 { TListViewItemsPropertyEditorDlg }
-constructor TListViewItemsPropertyEditorDlg.Create(aOwner: TComponent);
-Var Cmp : TWinControl;
+constructor TListViewItemsPropertyEditorDlg.Create(TheOwner: TComponent);
 begin
-  inherited Create(aOwner);
+  inherited Create(TheOwner);
   OnShow:=@OnDlgShow;
   
   fBuild:=False;
   
-  //Sise of window
+  //Size of window
   Height:=261;
   Width :=640;
-  BorderStyle:=bsSingle;
-  Position :=poScreenCenter;
-  Caption  :=sccsLvEdtCaption;
+  Position := poScreenCenter;
+  Caption  := sccsLvEdtCaption;
   
-  Cmp:=TPanel.Create(self);
-  With TPanel(Cmp) do
-  begin
+  Panel1:=TPanel.Create(Self);
+  With Panel1 do begin
+    Name:='Panel1';
+    Caption:='';
     Parent:=Self;
     Height:=41;
     Align :=alBottom;
+    OnResize:=@Panel1Resize;
   end;
 
-  //Bnt cancel
-  With TBitBtn.Create(self) do
-  begin
-    Left  :=533;
-    Width :=91;
+  //Btn Ok
+  OkButton:=TBitBtn.Create(Self);
+  With OkButton do begin
+    Name:='OkButton';
+    Parent:=Panel1;
+    Left  :=Parent.ClientWidth-200;
     Top   :=8;
-    Kind  :=bkCancel;
-    Parent:=Cmp;
-  end;
-
-  //Bnt Ok
-  With TBitBtn.Create(self) do
-  begin
-    Left  :=437;
-    Width :=91;
-    Top   :=8;
+    Width :=90;
     Kind  :=bkOk;
-    Parent:=Cmp;
+  end;
+
+  //Button cancel
+  CancelButton:=TBitBtn.Create(Self);
+  With CancelButton do begin
+    Name:='CancelButton';
+    Parent:=Panel1;
+    Left  :=Parent.ClientWidth-100;
+    Top   :=8;
+    Width :=90;
+    Kind  :=bkCancel;
   end;
 
   //Left group box
-  Cmp:=TGroupBox.Create(self);
-  With TgroupBox(Cmp) do
-  begin
-    Width  :=329;
-    Top    :=0;
-    Left   :=3;
-    Height :=217;
+  LeftGroupBox:=TGroupBox.Create(self);
+  With LeftGroupBox do begin
+    Name:='LeftGroupBox';
     Parent :=Self;
-    Caption:=sccsLvEdtGrpLCaption
+    Width  :=329;
+    Top    :=3;
+    Left   :=3;
+    Height :=Parent.ClientHeight-40;
+    Caption:=sccsLvEdtGrpLCaption;
+    OnResize:=@LeftGroupBoxResize;
   end;
-  
-  With TButton.Create(self) do
-  begin
-    Parent :=Cmp;
+
+  NewButton:=TButton.Create(Self);
+  with NewButton do begin
+    Name:='NewButton';
+    Parent :=LeftGroupBox;
     Left   :=192;
     Width  :=121;
     Top    :=22;
@@ -297,24 +314,26 @@ begin
     OnClick:=@btnAddOnClick;
   end;
 
-  btnSub:=TButton.Create(self);
-  With btnSub do
-  begin
-    Parent :=Cmp;
+  AddButton:=TButton.Create(self);
+  With AddButton do begin
+    Name:='AddButton';
+    Parent :=LeftGroupBox;
     Enabled:=False;
-    Left   :=192;
-    Width  :=121;
-    Top    :=52;
+    Left   :=NewButton.Left;
+    Width  :=NewButton.Width;
+    Top    :=NewButton.Top+NewButton.Height+30;
     Caption:=sccsLvEdtBtnAddSub;
     OnClick:=@btnAddSubOnClick;
   end;
 
-  With TButton.Create(self) do
+  DeleteButton:=TButton.Create(self);
+  With DeleteButton do
   begin
-    Parent :=Cmp;
-    Left   :=192;
-    Width  :=121;
-    Top    :=82;
+    Name:='DeleteButton';
+    Parent :=LeftGroupBox;
+    Left   :=NewButton.Left;
+    Width  :=NewButton.Width;
+    Top    :=AddButton.Top+AddButton.Height+30;
     Caption:=sccsLvEdtBtnDel;
     OnClick:=@btnDelOnClick;
   end;
@@ -322,11 +341,12 @@ begin
   TV:=TTreeView.Create(self);
   With TV do
   begin
-    Parent  :=Cmp;
+    Name:='Tv';
+    Parent  :=LeftGroupBox;
     Top     :=3;
-    Width   :=164;
-    Left    :=5;
-    Height  :=190;
+    Left    :=3;
+    Width   :=NewButton.Left-Left-Left;
+    Height  :=Parent.ClientHeight-Top-Top;
     
     //Options of TV
     RightClickSelect:=True;
@@ -339,28 +359,34 @@ begin
   end;
 
   //Right group box
-  Cmp:=TGroupBox.Create(self);
-  With TgroupBox(Cmp) do
+  RightGroupBox:=TGroupBox.Create(self);
+  With RightGroupBox do
   begin
+    Name:='RightGroupBox';
+    Parent :=Self;
     Width  :=297;
     Top    :=0;
     Left   :=339;
     Height :=217;
-    Parent :=Self;
-    Caption:=sccsLvEdtGrpRCaption
+    Caption:=sccsLvEdtGrpRCaption;
+    OnResize:=@RightGroupBoxResize;
   end;
 
-  With TLabel.Create(self) do
+  CaptionLabel:=TLabel.Create(self);
+  With CaptionLabel do
   begin
-    Parent :=cmp;
+    Name:='CaptionLabel';
+    Parent :=RightGroupBox;
     Left   :=16;
     Top    :=32;
     Caption:=sccsLvEdtlabCaption;
   end;
 
-  With TLabel.Create(self) do
+  ImgIndexLabel:=TLabel.Create(self);
+  With ImgIndexLabel do
   begin
-    Parent :=cmp;
+    Name:='ImgIndexLabel';
+    Parent :=RightGroupBox;
     Left   :=16;
     Top    :=72;
     Width  :=90;
@@ -370,7 +396,7 @@ begin
   EdtLabel:= TEdit.Create(self);
   With EdtLabel do
   begin
-    Parent:=Cmp;
+    Parent:=RightGroupBox;
     Left  :=134;
     Text  :='';
     Width :=155;
@@ -382,7 +408,7 @@ begin
   EdtIndex:= TEdit.Create(self);
   With EdtIndex do
   begin
-    Parent:=Cmp;
+    Parent:=RightGroupBox;
     Left  :=134;
     Text  :='';
     Width :=43;
@@ -390,6 +416,9 @@ begin
     
     OnChange:=@EdtIndexOnChange;
   end;
+  
+  OnResize:=@ListViewItemsPropertyEditorDlgResize;
+  ListViewItemsPropertyEditorDlgResize(nil);
 end;
 
 //Initialze the TEdit with selected node
@@ -417,6 +446,106 @@ begin
     end;
   finally
     fbuild:=false;
+  end;
+end;
+
+procedure TListViewItemsPropertyEditorDlg.LeftGroupBoxResize(Sender: TObject);
+begin
+  NewButton:=TButton.Create(Self);
+  with NewButton do begin
+    Left   :=192;
+    Width  :=121;
+    Top    :=22;
+  end;
+
+  With AddButton do begin
+    Left   :=NewButton.Left;
+    Width  :=NewButton.Width;
+    Top    :=NewButton.Top+NewButton.Height+30;
+  end;
+
+  With DeleteButton do begin
+    Left   :=NewButton.Left;
+    Width  :=NewButton.Width;
+    Top    :=AddButton.Top+AddButton.Height+30;
+  end;
+
+  With TV do
+  begin
+    Top     :=3;
+    Left    :=3;
+    Width   :=NewButton.Left-Left-Left;
+    Height  :=Parent.ClientHeight-Top-Top;
+  end;
+end;
+
+procedure TListViewItemsPropertyEditorDlg.ListViewItemsPropertyEditorDlgResize(
+  Sender: TObject);
+begin
+  With Panel1 do begin
+    Top:=Parent.ClientHeight-41;
+  end;
+
+  With LeftGroupBox do begin
+    Width  :=329;
+    Top    :=0;
+    Left   :=0;
+    Height :=Panel1.Top-Top;
+  end;
+
+  With RightGroupBox do
+  begin
+    Width  :=297;
+    Top    :=0;
+    Left   :=339;
+    Height :=Panel1.Top-Top;
+  end;
+end;
+
+procedure TListViewItemsPropertyEditorDlg.Panel1Resize(Sender: TObject);
+begin
+  With OkButton do begin
+    Left  :=Parent.ClientWidth-200;
+    Top   :=8;
+    Width :=90;
+  end;
+
+  With CancelButton do begin
+    Left  :=Parent.ClientWidth-100;
+    Top   :=8;
+    Width :=90;
+  end;
+end;
+
+procedure TListViewItemsPropertyEditorDlg.RightGroupBoxResize(Sender: TObject);
+begin
+  With CaptionLabel do
+  begin
+    Left   :=16;
+    Top    :=32;
+  end;
+
+  With ImgIndexLabel do
+  begin
+    Left   :=16;
+    Top    :=72;
+    Width  :=90;
+  end;
+
+  With EdtLabel do
+  begin
+    Left  :=134;
+    Text  :='';
+    Width :=155;
+    Top   :=24;
+  end;
+
+  With EdtIndex do
+  begin
+    Left  :=134;
+    Text  :='';
+    Width :=43;
+    Top   :=64;
   end;
 end;
 
@@ -519,6 +648,7 @@ end;
 procedure TListViewItemsPropertyEditorDlg.OnDlgShow(Sender: TObject);
 Var TN : TTReeNode;
 begin
+writeln('TListViewItemsPropertyEditorDlg.OnDlgShow ',Panel1.Top,' ',Panel1.Align=alBottom);
   TN:=TV.TopItem;
   If Assigned(TN) then
   begin

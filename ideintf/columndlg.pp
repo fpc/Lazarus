@@ -63,10 +63,10 @@ type
     Procedure cbAutoSizeOnClick(Sender : TObject);
     Procedure FormOnShow(Sender : TObject);
     procedure EnableComponents;
-    procedure WriteDebugReport;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure WriteDebugReport;
     property Columns: TListColumns read FColumns write SetColumns;
   end;
 
@@ -75,9 +75,9 @@ implementation
 
 { TColumnDlg }
 
-constructor TColumnDlg.Create(AOwner : TComponent);
+constructor TColumnDlg.Create(TheOwner: TComponent);
 Begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   Caption := 'Column Editor';
   Width := 400;
   Height := 340;
@@ -88,10 +88,10 @@ Begin
   with ColumnsListBox do
    Begin
      Parent := Self;
-     left := 1;
+     Left := 1;
      Width := 170;
      Top := 1;
-     Height := 270;
+     Height := Self.ClientHeight-Top-40;
      OnClick := @ColumnsListBoxOnClick;
    end;
    
@@ -100,7 +100,7 @@ Begin
    Begin
       Parent := self;
       Caption := 'Caption';
-      Left := self.width div 2;
+      Left := ColumnsListBox.Left+ColumnsListBox.Width+10;
       Top := 15;
    end;
 
@@ -109,7 +109,7 @@ Begin
    Begin
      Parent := Self;
      Text := '';
-     Left := self.Width div 2;
+     Left := CaptionLabel.Left;
      Height := 25;
      Top := CaptionLabel.Top+CaptionLabel.Height+5;
      OnChange := @CaptionEditOnChange;
@@ -118,10 +118,10 @@ Begin
   WidthLabel := TLabel.Create(self);
   with WidthLabel do
    Begin
-      Parent := self;
-      Caption := 'Width';
-      Left := self.width div 2;
-      Top := CaptionEdit.Top+CaptionEdit.Height+5;
+     Parent := self;
+     Caption := 'Width';
+     Left := CaptionLabel.Left;
+     Top := CaptionEdit.Top+CaptionEdit.Height+5;
    end;
 
   WidthEdit := TEdit.Create(self);
@@ -129,7 +129,7 @@ Begin
    Begin
      Parent := Self;
      Text := '';
-     Left := self.Width div 2;
+     Left := WidthLabel.Left;
      Height := 25;
      Top := WidthLabel.Top+WidthLabel.Height+5;
      OnChange := @WidthEditOnChange;
@@ -140,7 +140,7 @@ Begin
    Begin
      Parent := Self;
      Caption := 'Alignment';
-     Left := self.Width div 2;
+     Left := CaptionLabel.Left;
      Top := WidthEdit.Top+WidthEdit.Height+5;
      Columns := 3;
      Height := 50;
@@ -157,7 +157,7 @@ Begin
    begin
      Parent := Self;
      Caption := 'Visible';
-     Left := self.width div 2;
+     Left := CaptionLabel.Left;
      Top :=  AlignmentRadioGroup.Top+AlignmentRadioGroup.Height+5;
      Height := 25;
      Checked := True;
@@ -169,7 +169,7 @@ Begin
    begin
      Parent := Self;
      Caption := 'Auto Size';
-     Left := self.width div 2;
+     Left := CaptionLabel.Left;
      Top :=  cbVisible.Top + cbVisible.Height + 5;
      Height := 25;
      Checked := True;
@@ -179,61 +179,60 @@ Begin
   AddButton := TButton.Create(self);
   with AddButton do
    Begin
-      Parent := self;
-      Caption := 'Add';
-      Left := self.width div 2;
-      Top := cbAutoSize.Top+cbAutoSize.Height+5;
-      OnClick := @AddButtonOnClick;
+     Parent := self;
+     Caption := 'Add';
+     Left := CaptionLabel.Left;
+     Top := cbAutoSize.Top+cbAutoSize.Height+5;
+     OnClick := @AddButtonOnClick;
    end;
 
   DeleteButton := TButton.Create(self);
   with DeleteButton do
    Begin
-      Parent := self;
-      Caption := 'Delete';
-      Left := AddButton.Left+AddButton.Width+5;
-      Top := AddButton.Top;
-      OnClick := @DeleteButtonOnClick;
+     Parent := self;
+     Caption := 'Delete';
+     Left := AddButton.Left+AddButton.Width+5;
+     Top := AddButton.Top;
+     OnClick := @DeleteButtonOnClick;
    end;
 
   MoveUpButton := TButton.Create(self);
   with MoveUpButton do
    Begin
-      Parent := self;
-      Caption := 'Move up';
-      Left := 5;
-      Top := ColumnsListBox.Top+ColumnsListBox.Height+5;
-      OnClick := @MoveUpButtonOnClick;
+     Parent := self;
+     Caption := 'Move up';
+     Left := 5;
+     Top := ColumnsListBox.Top+ColumnsListBox.Height+5;
+     OnClick := @MoveUpButtonOnClick;
    end;
 
   MoveDownButton := TButton.Create(self);
   with MoveDownButton do
    Begin
-      Parent := self;
-      Caption := 'Move down';
-      Left := MoveUpButton.Left+MoveUpButton.Width+5;
-      Top := MoveUpButton.Top;
-      OnClick := @MoveDownButtonOnClick;
+     Parent := self;
+     Caption := 'Move down';
+     Left := MoveUpButton.Left+MoveUpButton.Width+5;
+     Top := MoveUpButton.Top;
+     OnClick := @MoveDownButtonOnClick;
    end;
 
   btnOK := TBitbtn.Create(self);
   with btnOK do
    Begin
-      Parent := self;
-      Caption := 'OK';
-      Left := self.Width div 2+5;
-      Top := MoveUpButton.Top;
-      kind := bkOK;
+     Parent := self;
+     Caption := 'OK';
+     Left := CaptionLabel.Left;
+     Top := MoveUpButton.Top;      kind := bkOK;
    end;
 
   btnCancel := TBitbtn.Create(self);
   with btnCancel do
    Begin
-      Parent := self;
-      Caption := 'Cancel';
-      Left := btnOK.left + btnOK.Width + 5;
-      Top :=btnOK.top;
-      Kind := bkCancel;
+     Parent := self;
+     Caption := 'Cancel';
+     Left := btnOK.Left + btnOK.Width + 5;
+     Top := btnOK.Top;
+     Kind := bkCancel;
    end;
    
   FColumns := TListColumns.Create(nil);
@@ -257,6 +256,7 @@ Begin
   ColumnsListBox.Items.Add(Column.Caption);
   ColumnsListBox.Selected[FSelectedIndex] := True;
   DisplayColumn(FSelectedIndex);
+  //WriteDebugReport;
 end;
 
 procedure TColumnDlg.ColumnsListBoxOnClick(sender : TObject);
@@ -271,7 +271,6 @@ begin
   While not ColumnsListBox.Selected[i] do
     inc(i);
   DisplayColumn(I);
-  
 end;
 
 Procedure TColumnDlg.CaptionEditOnChange(Sender : TObject);
@@ -293,12 +292,12 @@ begin
   ListColumn := FColumns[FSelectedIndex];
   if WidthEdit.Caption = '' then
     ListColumn.Width := 0
-    else
+  else
     try
-      ListColumn.Width := StrtoInt(WidthEdit.Caption);
+      ListColumn.Width := StrToInt(WidthEdit.Caption);
     except
-        raise Exception.Create('Invalid numeric Value');
-        WidthEdit.Caption := '0';
+      raise Exception.Create('Invalid numeric Value');
+      WidthEdit.Caption := '0';
     end;
 end;
 

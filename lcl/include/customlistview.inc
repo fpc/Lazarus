@@ -32,9 +32,8 @@ begin
   FImageChangeLink.OnChange := @ImageChanged;
   FSelected := nil;
   TabStop := true;
-  Setbounds(2,2,100,90);
+  SetInitialBounds(0,0,100,90);
 end;
-
 
 {------------------------------------------------------------------------------}
 {   TCustomListView ColumnsChanged                                             }
@@ -146,9 +145,21 @@ begin
   //TODO: Optimize implementation by invoking individual updates instead of
   //      recreating window
   //notify the interface....
-  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
+    exit;
   Exclude(FStates,lvUpdateNeeded);
   RecreateWnd;
+end;
+
+procedure TCustomListView.UpdateProperties;
+begin
+  if (not HandleAllocated) or ([csLoading,csDestroying]*ComponentState<>[]) then
+  begin
+    Include(FStates,lvPropertiesNeedsUpdate);
+    exit;
+  end;
+  Exclude(FStates,lvPropertiesNeedsUpdate);
+  CNSendMessage(LM_SETPROPERTIES,self,nil);
 end;
 
 procedure TCustomListView.InitializeWnd;
@@ -256,7 +267,9 @@ end;
 procedure TCustomListView.SetColumns(const AValue: TListColumns);
 begin
   if AValue=FColumns then exit;
+  BeginUpdate;
   FColumns.Assign(AValue);
+  EndUpdate;
   if ([csDesigning,csLoading,csReading]*ComponentState=[csDesigning]) then
     OwnerFormDesignerModified(Self);
 end;
@@ -268,8 +281,7 @@ procedure TCustomListView.SetViewStyle(const AValue: TViewStyle);
 begin
   if FViewStyle = AValue then Exit;
   FViewStyle := AValue;
-  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  CNSendMessage(LM_SETPROPERTIES,self,nil);
+  UpdateProperties;
 end;
 
 
@@ -280,8 +292,7 @@ procedure TCustomListView.SetSortType(const AValue: TSortType);
 begin
   if FSortType = AValue then Exit;
   FSortType := AValue;
-  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  CNSendMessage(LM_SETPROPERTIES,self,nil);
+  UpdateProperties;
 end;
 
 {------------------------------------------------------------------------------}
@@ -291,8 +302,7 @@ procedure TCustomListView.SetSortColumn(const AValue : Integer);
 begin
   if FSortColumn = AValue then Exit;
   FSortColumn := AValue;
-  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-  CNSendMessage(LM_SETPROPERTIES,self,nil);
+  UpdateProperties;
 end;
 
 {------------------------------------------------------------------------------}
@@ -367,28 +377,26 @@ begin
     Include(FStates,lvUpdateNeeded)
   else begin
     //notify the interface...
-    if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    CNSendMessage(LM_SETPROPERTIES,Self,nil);
+    UpdateProperties;
   end;
 end;
 
 procedure TCustomListView.SetSmallImages(const AValue: TCustomImageList);
 begin
-    if AValue <> FSmallImages then
-     Begin
-        if FSmallImages <> nil then
-           FSmallImages.UnregisterChanges(FImageChangeLink);
+  if AValue <> FSmallImages then
+  Begin
+    if FSmallImages <> nil then
+      FSmallImages.UnregisterChanges(FImageChangeLink);
 
-           FSmallImages := AValue;
+      FSmallImages := AValue;
 
-        if FSmallImages <> nil then
-           Begin
-             FSmallImages.RegisterChanges(FImageChangeLink);
-             FSmallImages.FreeNotification(self);
-           end;
-        if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-        CNSendMessage(LM_SETPROPERTIES,self,nil);
-     end;
+    if FSmallImages <> nil then
+      Begin
+        FSmallImages.RegisterChanges(FImageChangeLink);
+        FSmallImages.FreeNotification(self);
+      end;
+    UpdateProperties;
+  end;
 end;
 
 Procedure TCustomListView.ImageChanged(Sender : TObject);
@@ -398,8 +406,7 @@ begin
     Include(FStates,lvUpdateNeeded)
   else begin
     //image changed so redraw it all....
-    if (not HandleAllocated) or (csLoading in ComponentState) then exit;
-    CNSendMessage(LM_SETPROPERTIES,self,nil);
+    UpdateProperties;
   end;
 end;
 
@@ -558,6 +565,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2004/03/06 18:44:06  mattias
+  workaround for fpc bug 2859
+
   Revision 1.29  2004/02/23 08:19:04  micha
   revert intf split
 

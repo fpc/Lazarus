@@ -437,12 +437,11 @@ type
   TLVSelectItemEvent = procedure(Sender: TObject; Item: TListItem;
                                  Selected: Boolean) of object;
 
-  TListViewState = (lvMultiSelect, lvUpdateNeeded);
+  TListViewState = (lvMultiSelect, lvUpdateNeeded, lvPropertiesNeedsUpdate);
   TListViewStates = set of TListViewState;
 
   TCustomListView = class(TWinControl)
   private
-    //FReadOnly : Boolean;
     FBorderStyle: TBorderStyle;
     FDefItemHeight: integer;
     FSmallImages : TCustomImageList;
@@ -481,6 +480,7 @@ type
     procedure UpdateScrollbars;
     procedure CNNotify(var AMessage: TLMNotify); message CN_NOTIFY;
     procedure DoUpdate;
+    procedure UpdateProperties;
   protected
     procedure InitializeWnd; override;
     procedure Loaded; override;
@@ -2241,6 +2241,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.119  2004/03/06 18:44:06  mattias
+  workaround for fpc bug 2859
+
   Revision 1.118  2004/02/28 10:16:02  mattias
   fixed 1.0.x compilation
 

@@ -1,3 +1,5 @@
+// included by comctrls.pp
+
 { $Id$
 
  *****************************************************************************
@@ -40,10 +42,25 @@ begin
 end;
 
 procedure TListColumns.Assign(Source: TPersistent);
+var
+  I: Integer;
+  NewColumn: TListColumn;
 begin
   if (Source=nil) or (Source=Self) then exit;
   BeginUpdate;
-  inherited Assign(Source);
+  //inherited Assign(Source);
+
+  If Source is TCollection then begin
+    Clear;
+    // workaround for compiler bug: Add.Assign calls 2 times Add
+    For I:=0 To TCollection(Source).Count-1 do begin
+      NewColumn:=Add;
+      NewColumn.Assign(TCollection(Source).Items[I]);
+    end;
+  end
+  else
+    Inherited Assign(Source);
+
   EndUpdate;
   if (Owner<>nil)
   and ([csDesigning,csLoading,csReading]*Owner.ComponentState=[csDesigning])
@@ -93,9 +110,14 @@ begin
     FOwner.ColumnsChanged;
 end;
 
+// included by comctrls.pp
+
 { =============================================================================
 
   $Log$
+  Revision 1.7  2004/03/06 18:44:06  mattias
+  workaround for fpc bug 2859
+
   Revision 1.6  2003/12/26 15:23:30  mattias
   started message editor and fixed some range checks
 
