@@ -514,6 +514,10 @@ msgstr ""
 msgid "Configure custom components"
 msgstr ""
 
+#: lazarusidestrconsts:lismenuopeninstalledpkg
+msgid "Open installed package"
+msgstr ""
+
 #: lazarusidestrconsts:lismenusettings
 msgid "Configure custom tools ..."
 msgstr ""

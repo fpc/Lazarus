@@ -58,7 +58,7 @@ done
 rstconv -i components/units/synmacrorecorder.rst \
   -o components/synedit/languages/synmacrorecorder.po
 ./tools/updatepofiles components/synedit/languages/synmacrorecorder.po
-for lang in de fr; do
+for lang in de fr ru; do
   msgfmt components/synedit/languages/synmacrorecorder.$lang.po \
     -o components/synedit/languages/synmacrorecorder.$lang.mo
 done
@@ -66,7 +66,7 @@ done
 # LCL
 rstconv -i lcl/units/lclstrconsts.rst -o lcl/languages/lcl.po
 ./tools/updatepofiles lcl/languages/lcl.po
-for lang in de es fr; do
+for lang in de es fr ru; do
   msgfmt lcl/languages/lcl.$lang.po -o lcl/languages/lcl.$lang.mo
 done
 

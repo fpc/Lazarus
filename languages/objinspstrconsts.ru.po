@@ -10,15 +10,15 @@ msgstr ""
 
 #: objinspstrconsts:sccsilcmbimglist
 msgid " Images "
-msgstr ""
+msgstr " Рисунки "
 
 #: objinspstrconsts:sccslvedtgrprcaption
 msgid " Item property "
-msgstr ""
+msgstr " Свойство элемента "
 
 #: objinspstrconsts:sccslvedtgrplcaption
 msgid " Items "
-msgstr ""
+msgstr " Элементы "
 
 #: objinspstrconsts:oisitemsselected
 msgid " items selected"
@@ -26,7 +26,7 @@ msgstr " элементов выбрано"
 
 #: objinspstrconsts:sccsilcmbimgsel
 msgid " Selected image "
-msgstr ""
+msgstr " Выбранный рисунок "
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"
@@ -38,19 +38,19 @@ msgstr "&Удалить"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
-msgstr ""
+msgstr "Добавить..."
 
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
-msgstr ""
+msgstr "Очистить"
 
 #: objinspstrconsts:sccsilconfirme
 msgid "Confirme clear all images ?"
-msgstr ""
+msgstr "Подтверждаете очистку всех изображений ?"
 
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
-msgstr ""
+msgstr "Удалить"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -58,23 +58,23 @@ msgstr "События"
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
-msgstr ""
+msgstr "Индекс рисунка"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
-msgstr ""
+msgstr "Редактор списка рисунков"
 
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
-msgstr ""
+msgstr "Метка"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
-msgstr ""
+msgstr "Редактор ListView"
 
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
-msgstr ""
+msgstr "Создать"
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
@@ -86,5 +86,5 @@ msgstr "Свойства"
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
-msgstr ""
+msgstr "Подэлемент"
 

@@ -2250,6 +2250,10 @@ msgstr ""
 msgid "Open filename at cursor"
 msgstr "Abrir nombre de archivo a cursor"
 
+#: lazarusidestrconsts:lismenuopeninstalledpkg
+msgid "Open installed package"
+msgstr ""
+
 #: lazarusidestrconsts:dlgqopenlastprj
 msgid "Open last project at start"
 msgstr "Abrir último proyecto al iniciar"

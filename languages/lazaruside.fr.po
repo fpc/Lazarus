@@ -2259,6 +2259,10 @@ msgstr "Ouvrir le fichier sous le curseur"
 msgid "Open filename at cursor"
 msgstr "Ouvrir le fichier sous le curseur"
 
+#: lazarusidestrconsts:lismenuopeninstalledpkg
+msgid "Open installed package"
+msgstr ""
+
 #: lazarusidestrconsts:dlgqopenlastprj
 msgid "Open last project at start"
 msgstr "Ouvrir le dernier projet au démarrage"
