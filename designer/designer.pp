@@ -2558,7 +2558,7 @@ begin
     // then search a control at the position
     ClientPos := AWinControl.ScreenToClient(Position);
 
-    AComponent := AWinControl.ControlAtPos(ClientPos,True);
+    AComponent := AWinControl.ControlAtPos(ClientPos,true,true);
     if not Assigned(AComponent) then
       AComponent := AWinControl;
   end;
@@ -2567,7 +2567,7 @@ begin
 
   // component name and classname
   if (dfShowComponentCaptionHints in FFlags) then
-    AHint := AComponent.Name+' : '+AComponent.ClassName
+    AHint := AComponent.Name+': '+AComponent.ClassName
   else
     AHint:='';
   // component position
@@ -2575,13 +2575,13 @@ begin
     if AHint<>'' then AHint:=AHint+#10;
     if AComponent is TControl then begin
       AControl:=TControl(AComponent);
-      AHint := AHint + 'Left : '+IntToStr(AControl.Left)
-                     + '  Top : '+IntToStr(AControl.Top)
-                + #10+ 'Width : '+IntToStr(AControl.Width)
-                     + '  Height : '+IntToStr(AControl.Height);
+      AHint := AHint + 'Left: '+IntToStr(AControl.Left)
+                     + '  Top: '+IntToStr(AControl.Top)
+                + #10+ 'Width: '+IntToStr(AControl.Width)
+                     + '  Height: '+IntToStr(AControl.Height);
     end else begin
-      AHint := AHint + 'Left : '+IntToStr(GetComponentLeft(AComponent))
-                     + '  Top : '+IntToStr(GetComponentTop(AComponent));
+      AHint := AHint + 'Left: '+IntToStr(GetComponentLeft(AComponent))
+                     + '  Top: '+IntToStr(GetComponentTop(AComponent));
     end;
   end;
 
