@@ -1907,7 +1907,9 @@ end;
 function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
   OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod;
   Data: TObject): boolean;
-  
+var
+  SrcDir, DestDir: string;
+
   function HandleError(ErrorNumber: TCopyErrorType;
     const Param1, Param2: string): boolean;
   var
@@ -1932,6 +1934,15 @@ function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
     DoCopy: boolean;
   begin
     Result:=false;
+    if (CompareFilenames(CurSrcDir,DestDir)=0)
+    or (CompareFilenames(CurDestDir,SrcDir)=0) then begin
+      // copying into subdirectory. For example: /home/ to /home/user/
+      // or copying from subdirectory. For example: /home/user/ to /home/
+      // -> skip
+      Result:=true;
+      exit;
+    end;
+    
     if not ForceDirectory(CurDestDir)
     and not HandleError(ceCreatingDirectory,CurDestDir,'') then exit;
     
@@ -1970,12 +1981,10 @@ function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
     Result:=true;
   end;
   
-var
-  SrcDir, DestDir: string;
 begin
   Result:=true;
-  SrcDir:=AppendPathDelim(TrimFilename(SrcDirectory));
-  DestDir:=AppendPathDelim(TrimFilename(DestDirectory));
+  SrcDir:=AppendPathDelim(CleanAndExpandDirectory(SrcDirectory));
+  DestDir:=AppendPathDelim(CleanAndExpandDirectory(DestDirectory));
   if CompareFilenames(SrcDir,DestDir)=0 then exit;
 
   if (not DirPathExists(SrcDir))

@@ -5973,7 +5973,7 @@ begin
   IncreaseCompilerParseStamp;
   Result:=mrOk;
   {$IFDEF IDE_VERBOSE}
-  writeln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',CodeToolBoss.ConsistencyCheck);
+  debugln('TMainIDE.DoOpenProjectFile end  CodeToolBoss.ConsistencyCheck=',CodeToolBoss.ConsistencyCheck);
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile end');{$ENDIF}
 end;
@@ -5989,11 +5989,13 @@ begin
     IncreaseCompilerParseStamp;
   end;
 
+  //debugln('TMainIDE.DoPublishProject A');
   // save project
   Result:=DoSaveProject(Flags);
   if Result<>mrOk then exit;
 
   // publish project
+  //debugln('TMainIDE.DoPublishProject B');
   Result:=DoPublishModule(Project1.PublishOptions,Project1.ProjectDirectory,
                           GetProjPublishDir);
 end;
@@ -7836,6 +7838,35 @@ var
   end;
 
 begin
+  //DebugLn('TMainIDE.DoPublishModule A');
+  Result:=mrCancel;
+
+  // to not delete project files
+  DestDir:=TrimFilename(AppendPathDelim(DestDirectory));
+  SrcDir:=TrimFilename(AppendPathDelim(SrcDirectory));
+  if (DestDir='') then begin
+    MessageDlg('Invalid publishing Directory',
+      'Destination directory for publishing is empty.',mtError,
+      [mbCancel],0);
+    Result:=mrCancel;
+    exit;
+  end;
+  //DebugLn('TMainIDE.DoPublishModule A SrcDir="',SrcDir,'" DestDir="',DestDir,'"');
+  if CompareFilenames(CleanAndExpandDirectory(SrcDir),
+                      CleanAndExpandDirectory(DestDir))=0
+  then begin
+    MessageDlg('Invalid publishing Directory',
+      'Source directory "'+SrcDir+'"'#13
+      +'and destination directory "'+DestDir+'"'#13
+      +'are the same.'#13
+      +#13
+      +'Maybe you misunderstand this feature.'#13
+      +'It will clean/recreate the destination directory'#13
+      +'and copies the package/project into it.',mtError,[mbCancel],0);
+    Result:=mrCancel;
+    exit;
+  end;
+  
   // check command after
   CommandAfter:=Options.CommandAfter;
   if not MacroList.SubstituteStr(CommandAfter) then begin
@@ -7844,6 +7875,7 @@ begin
   end;
   SplitCmdLine(CommandAfter,CmdAfterExe,CmdAfterParams);
   if (CmdAfterExe<>'') then begin
+    DebugLn('TMainIDE.DoPublishModule A CmdAfterExe="',CmdAfterExe,'"');
     CmdAfterExe:=FindDefaultExecutablePath(CmdAfterExe);
     if not FileIsExecutableCached(CmdAfterExe) then begin
       MessageDlg(lisCommandAfterInvalid,
@@ -7855,24 +7887,18 @@ begin
   end;
 
   // clear destination directory
-  DestDir:=TrimFilename(DestDirectory);
-  if (DestDir='') then begin
-    ShowErrorForCommandAfter;
-    Result:=mrCancel;
-    exit;
-  end;
-  if DirPathExists(DestDir) and (not DeleteDirectory(DestDir,true)) then
-  begin
-    MessageDlg(lisUnableToCleanUpDestinationDirectory,
-      Format(lisUnableToCleanUpPleaseCheckPermissions, ['"', DestDir, '"', #13]
-        ),
-      mtError,[mbOk],0);
-    Result:=mrCancel;
-    exit;
+  if DirPathExists(DestDir) then begin
+    if (not DeleteDirectory(ChompPathDelim(DestDir),true)) then begin
+      MessageDlg(lisUnableToCleanUpDestinationDirectory,
+        Format(lisUnableToCleanUpPleaseCheckPermissions, ['"', DestDir, '"', #13]
+          ),
+        mtError,[mbOk],0);
+      Result:=mrCancel;
+      exit;
+    end;
   end;
 
   // copy the directory
-  SrcDir:=TrimFilename(AppendPathDelim(SrcDirectory));
   if not CopyDirectoryWithMethods(SrcDir,DestDir,
     @OnCopyFile,@OnCopyError,Options) then
   begin
@@ -11457,6 +11483,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.854  2005/03/07 17:33:54  mattias
+  added check for overwriting source directory on ublish module
+
   Revision 1.853  2005/03/05 22:31:34  mattias
   fixed unselecting TCollection
 
