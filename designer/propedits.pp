@@ -615,7 +615,7 @@ type
   PropertyEditor editor for the Caption property when the Caption can be multiline.
   Brings up the dialog for entering text. }
 
-  TCaptionMultilinePropertyEditor = class(TClassPropertyEditor)
+  TCaptionMultilinePropertyEditor = class(TCaptionPropertyEditor)
   public
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
@@ -899,7 +899,7 @@ type
     FComponentName:TComponentName;
     FShortCut: TShortCut;
     FTabOrder:integer;
-    FCaption:TCaption;
+    FCaption: TCaption;
     FLines:TStrings;
     FColumns: TListColumns;
     FModalResult:TModalResult;
@@ -910,17 +910,17 @@ type
     destructor Destroy;  override;
   published
     property PropCount:integer read FCount;
-    property DummyComponent:TComponent read FComponent write FComponent;
-    property DummyName:TComponentName read FComponentName write FComponentName;
+    property DummyComponent:TComponent read FComponent;
+    property DummyName:TComponentName read FComponentName;
     property TabOrder:integer read FTabOrder;
     property Caption:TCaption read FCaption;
     property Lines:TStrings read FLines;
-    property Columns:TListColumns read FColumns write FColumns;
-    property ModalResult:TModalResult read FModalResult write FModalResult;
-    property ShortCut: TShortCut read FShortCut write FShortCut;
-    property Date: TDateProperty read FDate write FDate;
-    property Time: TTimePropertyEditor read FTime write FTime;
-    property DateTime: TDateTimePropertyEditor read FDateTime write FDateTime;
+    property Columns:TListColumns read FColumns;
+    property ModalResult:TModalResult read FModalResult;
+    property ShortCut: TShortCut read FShortCut;
+    property Date: TDateProperty read FDate;
+    property Time: TTimePropertyEditor read FTime;
+    property DateTime: TDateTimePropertyEditor read FDateTime;
   end;
 
 //==============================================================================
@@ -3387,7 +3387,6 @@ begin
   
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('AnsiString'),
     TCustomLabel, 'Caption', TCaptionMultilinePropertyEditor);
-  
 end;
 
 procedure FinalPropEdits;
