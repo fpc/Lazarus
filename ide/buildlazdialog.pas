@@ -39,6 +39,7 @@ uses
 
 type
   TMakeMode = (mmNone, mmBuild, mmCleanBuild);
+  TLCLPlatform = (lpGtk, lpGnome, lpWin32);
 
   TBuildLazarusOptions = class
   private
@@ -52,6 +53,7 @@ type
     fMakeFilename: string;
     fExtraOptions: string;
     fTargetOS: string;
+    fLCLPlatform: TLCLPlatform;
   public
     constructor Create;
     procedure Load(XMLConfig: TXMLConfig; const Path: string);
@@ -67,6 +69,7 @@ type
     property MakeFilename: string read fMakeFilename write fMakeFilename;
     property ExtraOptions: string read fExtraOptions write fExtraOptions;
     property TargetOS: string read fTargetOS write fTargetOS;
+    property LCLPlatform: TLCLPlatform read fLCLPlatform write fLCLPlatform;
   end;
 
   TConfigureBuildLazarusDlg = class(TForm)
@@ -80,6 +83,7 @@ type
     BuildExamplesRadioGroup: TRadioGroup;
     OptionsLabel: TLabel;
     OptionsEdit: TEdit;
+    LCLInterfaceRadioGroup: TRadioGroup;
     TargetOSLabel: TLabel;
     TargetOSEdit: TEdit;
     OkButton: TButton;
@@ -115,6 +119,9 @@ const
   MakeModeNames: array[TMakeMode] of string = (
       'None', 'Build', 'Clean+Build'
     );
+  LCLPlatformNames: array[TLCLPlatform] of string = (
+      'gtk', 'gnome', 'win32'
+    );
 
 
 function StrToMakeMode(const s: string): TMakeMode;
@@ -122,6 +129,13 @@ begin
   for Result:=Succ(mmNone) to High(TMakeMode) do
     if AnsiCompareText(s,MakeModeNames[Result])=0 then exit;
   Result:=mmNone;
+end;
+
+function StrToLCLPlatform(const s: string): TLCLPlatform;
+begin
+  for Result:=Low(TLCLPlatform) to High(TLCLPlatform) do
+    if AnsiCompareText(s,LCLPlatformNames[Result])=0 then exit;
+  Result:=lpGtk;
 end;
 
 function ShowConfigureBuildLazarusDlg(
@@ -164,6 +178,8 @@ begin
   Tool:=TExternalToolOptions.Create;
   try
     Tool.Filename:=Options.MakeFilename;
+    Tool.EnvironmentOverrides.Values['LCL_PLATFORM']:=
+      LCLPlatformNames[Options.LCLPlatform];
     if not FileExists(Tool.Filename) then begin
       Tool.Filename:=FindDefaultMakePath;
       if not FileExists(Tool.Filename) then exit;
@@ -251,11 +267,13 @@ end;
 { TConfigureBuildLazarusDlg }
 
 constructor TConfigureBuildLazarusDlg.Create(AnOwner: TComponent);
-var MakeMode: TMakeMode;
+var
+  MakeMode: TMakeMode;
+  LCLInterface: TLCLPlatform;
 begin
   inherited Create(AnOwner);
   if LazarusResources.Find(Classname)=nil then begin
-    Width:=350;
+    Width:=480;
     Height:=435;
     Position:=poScreenCenter;
     Caption:='Configure "Build Lazarus"';
@@ -266,7 +284,7 @@ begin
     with CleanAllCheckBox do begin
       Parent:=Self;
       Name:='CleanAllCheckBox';
-      SetBounds(10,10,Self.ClientWidth-20,20);
+      SetBounds(10,10,Self.ClientWidth-150,20);
       Caption:='Clean all';
       Visible:=true;
     end;
@@ -389,8 +407,7 @@ begin
     with TargetOSLabel do begin
       Name:='TargetOSLabel';
       Parent:=Self;
-      SetBounds(10,
-                OptionsLabel.Top+OptionsLabel.Height+12,
+      SetBounds(10,OptionsLabel.Top+OptionsLabel.Height+12,
                 80,Height);
       Caption:='Target OS:';
       Visible:=true;
@@ -404,6 +421,21 @@ begin
                 TargetOSLabel.Top,
                 OptionsEdit.Width,
                 Height);
+      Visible:=true;
+    end;
+
+    LCLInterfaceRadioGroup:=TRadioGroup.Create(Self);
+    with LCLInterfaceRadioGroup do begin
+      Name:='LCLInterfaceRadioGroup';
+      Parent:=Self;
+      Left:=BuildLCLRadioGroup.Left+BuildLCLRadioGroup.Width+10;
+      Top:=BuildLCLRadioGroup.Top;
+      Width:=Parent.ClientHeight-Left-BuildLCLRadioGroup.Left;
+      Height:=100;
+      Caption:='LCL interface';
+      for LCLInterface:=Low(TLCLPlatform) to High(TLCLPlatform) do begin
+        Items.Add(LCLPlatformNames[LCLInterface]);
+      end;
       Visible:=true;
     end;
 
@@ -453,7 +485,7 @@ end;
 procedure TConfigureBuildLazarusDlg.ConfigureBuildLazarusDlgResize(
   Sender: TObject);
 begin
-  CleanAllCheckBox.SetBounds(10,10,Self.ClientWidth-24,20);
+  CleanAllCheckBox.SetBounds(10,10,Self.ClientWidth-150,20);
   BuildAllButton.SetBounds(CleanAllCheckBox.Left,
                            CleanAllCheckBox.Top+CleanAllCheckBox.Height+5,
                            200,BuildAllButton.Height);
@@ -489,6 +521,11 @@ begin
                 TargetOSLabel.Top,
                 OptionsEdit.Width,
                 TargetOSEdit.Height);
+  with LCLInterfaceRadioGroup do begin
+    Left:=BuildLCLRadioGroup.Left+BuildLCLRadioGroup.Width+10;
+    Top:=BuildLCLRadioGroup.Top;
+    Width:=Parent.ClientWidth-Left-10;
+  end;
   OkButton.SetBounds(Self.ClientWidth-180,Self.ClientHeight-38,80,25);
   CancelButton.SetBounds(Self.ClientWidth-90,OkButton.Top,
               OkButton.Width,OkButton.Height);
@@ -514,6 +551,7 @@ begin
   BuildIDERadioGroup.ItemIndex:=MakeModeToInt(Options.BuildIDE);
   BuildExamplesRadioGroup.ItemIndex:=MakeModeToInt(Options.BuildExamples);
   OptionsEdit.Text:=Options.ExtraOptions;
+  LCLInterfaceRadioGroup.ItemIndex:=ord(Options.LCLPlatform);
   TargetOSEdit.Text:=Options.TargetOS;
 end;
 
@@ -528,6 +566,7 @@ begin
   Options.BuildIDE:=IntToMakeMode(BuildIDERadioGroup.ItemIndex);
   Options.BuildExamples:=IntToMakeMode(BuildExamplesRadioGroup.ItemIndex);
   Options.ExtraOptions:=OptionsEdit.Text;
+  Options.LCLPlatform:=TLCLPlatform(LCLInterfaceRadioGroup.ItemIndex);
   Options.TargetOS:=TargetOSEdit.Text;
 end;
 
@@ -563,6 +602,7 @@ begin
   XMLConfig.SetValue(Path+'ExtraOptions/Value',fExtraOptions);
   XMLConfig.SetValue(Path+'TargetOS/Value',fTargetOS);
   XMLConfig.SetValue(Path+'MakeFilename/Value',fMakeFilename);
+  XMLConfig.SetValue(Path+'LCLPlatform/Value',LCLPlatformNames[fLCLPlatform]);
 end;
 
 procedure TBuildLazarusOptions.Load(XMLConfig: TXMLConfig; const Path: string);
@@ -583,12 +623,15 @@ begin
   fExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value',fExtraOptions);
   fTargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
   fMakeFilename:=XMLConfig.GetValue(Path+'MakeFilename/Value',fMakeFilename);
+  fLCLPlatform:=StrToLCLPlatform(XMLConfig.GetValue(Path+'LCLPlatform/Value',
+                                 LCLPlatformNames[fLCLPlatform]));
 end;
 
 constructor TBuildLazarusOptions.Create;
 begin
   inherited Create;
   fMakeFilename:='';
+  fLCLPlatform:=lpGtk;
 end;
 
 
