@@ -1,0 +1,65 @@
+object PublishProjectDialog: TPublishProjectDialog
+  CAPTION = 'Publish Project Dialog'
+  COLOR = -2147483633
+  CLIENTHEIGHT = 345
+  CLIENTWIDTH = 483
+  POSITION = poscreencenter
+  LEFT = 343
+  HEIGHT = 345
+  TOP = 289
+  WIDTH = 483
+  object Button1: TBUTTON
+    ANCHORS = [aktop, akleft]
+    MODALRESULT = 1
+    CAPTION = 'Ok'
+    TABSTOP = True
+    LEFT = 56
+    HEIGHT = 25
+    TOP = 264
+    WIDTH = 75
+  end
+  object Button2: TBUTTON
+    ANCHORS = [aktop, akleft]
+    MODALRESULT = 2
+    CAPTION = 'Cancel'
+    TABSTOP = True
+    TABORDER = 1
+    LEFT = 226
+    HEIGHT = 25
+    TOP = 264
+    WIDTH = 75
+  end
+  object DestDirGroupBox: TGROUPBOX
+    ANCHORS = [aktop, akleft]
+    CAPTION = 'Destination directory'
+    LEFT = 8
+    HEIGHT = 53
+    TOP = 8
+    WIDTH = 420
+    object DestDirComboBox: TCOMBOBOX
+      ANCHORS = [aktop, akleft]
+      PARENTCTL3D = False
+      TABSTOP = True
+      TEXT = 'DestDirComboBox'
+      LEFT = 6
+      HEIGHT = 25
+      TOP = 1
+      WIDTH = 294
+    end
+    object BrowseDestDirBitBtn: TBITBTN
+      GLYPH.Data = {
+        3A000000424D3A00000000000000360000002800000001000000010000000100
+        100000000000040000005A00000060000000400000004000000000000000
+      }
+      SPACING = 3
+      ANCHORS = [aktop, akleft]
+      CAPTION = 'Browse'
+      TABSTOP = True
+      TABORDER = 1
+      LEFT = 336
+      HEIGHT = 25
+      TOP = 1
+      WIDTH = 72
+    end
+  end
+end
