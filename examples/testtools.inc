@@ -1705,6 +1705,7 @@ begin
     6: lbEvents.Items.Add('MessageBoxClick.<Yes>');
     7: lbEvents.Items.Add('MessageBoxClick.<No>');
   End;
+  FFocusControl:=nil;
   EventWatch;
 end;
 //++++++++++++++++++++++++++++++++++ TBitBtn ++++++++++++++++++++++++++++++++++++++++
@@ -2488,8 +2489,8 @@ end;
 //+++++++++++++++++++++ Virtual MouseEnter/Leave ++++++++++++++++++++++++++++++++++++
 procedure TForm1.ApplicationIdle(Sender: TObject; var Done: Boolean); 
 var 
-CurControl: TControl;  
-P: TPoint; 
+  CurControl: TControl;
+  P: TPoint;
 begin 
   GetCursorPos(P);  
   CurControl := FindDragTarget(P, True);  
@@ -2506,7 +2507,7 @@ procedure TForm1.VirOnEnter(Sender: TObject);
 begin 
   lbEvents.Items.Add(Sender.ClassName+'.MouseEnter');
   EventWatch;
-   Assert(False, 'Trace:'+Sender.ClassName+'.EventOnEnter');
+  Assert(False, 'Trace:'+Sender.ClassName+'.EventOnEnter');
 end; 
 procedure TForm1.VirOnLeave(Sender: TObject); 
 begin 
@@ -2866,6 +2867,13 @@ begin
   AboutForm.Close;
 end;
 
+procedure TForm1.Notification(AComponent: TComponent; Operation: TOperation);
+begin
+  inherited Notification(AComponent, Operation);
+  if (AComponent=FFocusControl) and (Operation=opRemove) then
+    FFocusControl:=nil;
+end;
+
 procedure TForm1.QuitClick(Sender : TObject);
 begin
   Close;
@@ -2877,6 +2885,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.12  2003/11/25 09:15:55  mattias
+  fixed testall
+
   Revision 1.11  2003/01/01 11:11:50  mattias
   fixed testall example
 

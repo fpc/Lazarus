@@ -289,9 +289,10 @@ type
       gbAbout : TGroupBox;
       btnBigOk : TBitBtn;
       procedure CloseAbout(Sender : TObject);
+      procedure Notification(AComponent: TComponent; Operation : TOperation);override;
    public
       procedure EventWatch;
-      lbEvents          : TListBox;
+      lbEvents: TListBox;
       FLeft : Integer;
       Constructor Create(AOwner: TComponent); override;
       Destructor Destroy; override;
@@ -2584,6 +2585,9 @@ END.
 
 {
   $Log$
+  Revision 1.14  2003/11/25 09:15:55  mattias
+  fixed testall
+
   Revision 1.13  2003/09/18 09:21:03  mattias
   renamed LCLLinux to LCLIntf
 
