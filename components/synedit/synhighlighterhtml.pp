@@ -420,7 +420,7 @@ type
     procedure SetLine(const NewValue: string; LineNumber:Integer); override;
     function GetToken: string; override;
     {$IFDEF SYN_LAZARUS}
-    procedure GetTokenEx(var StartPos, EndPos: integer); override;
+    procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override;
     {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
@@ -2222,10 +2222,11 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynHTMLSyn.GetTokenEx(var StartPos, EndPos: integer);
+procedure TSynHTMLSyn.GetTokenEx(var TokenStart: PChar;
+  var TokenLength: integer);
 begin
-  StartPos:=integer(fTokenPos)-integer(FLine);
-  EndPos:=integer(Run)-integer(FLine);
+  TokenLength:=fTokenPos-Run;
+  TokenStart:=FLine + fTokenPos;
 end;
 {$ENDIF}
 

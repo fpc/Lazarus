@@ -221,7 +221,7 @@ type
     procedure SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer); override;
     function GetToken: String; override;
     {$IFDEF SYN_LAZARUS}
-    procedure GetTokenEx(var StartPos, EndPos: integer); override;
+    procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override;
     {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
@@ -1424,10 +1424,11 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynCppSyn.GetTokenEx(var StartPos, EndPos: integer);
+procedure TSynCppSyn.GetTokenEx(var TokenStart: PChar;
+  var TokenLength: integer);
 begin
-  StartPos:=integer(fTokenPos)-integer(FLine);
-  EndPos:=integer(Run)-integer(FLine);
+  TokenLength:=fTokenPos-Run;
+  TokenStart:=FLine + fTokenPos;
 end;
 {$ENDIF}
 

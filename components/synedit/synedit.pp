@@ -2402,7 +2402,12 @@ var
     end;
   end;
 
-  procedure AddHighlightToken(const Token: AnsiString;
+  procedure AddHighlightToken(
+    {$IFDEF SYN_LAZARUS}
+    Token: PChar;
+    {$ELSE}
+    const Token: AnsiString;
+    {$ENDIF}
     CharsBefore, TokenLen: integer;
     Foreground, Background: TColor;
     Style: TFontStyles);
@@ -2456,8 +2461,9 @@ var
         TokenAccu.MaxLen := TokenAccu.Len + TokenLen + 32;
         SetLength(TokenAccu.s, TokenAccu.MaxLen);
       end;
-      for i := 1 to TokenLen do
-        TokenAccu.s[TokenAccu.Len + i] := Token[i];
+      for i := 1 to TokenLen do begin
+        TokenAccu.s[TokenAccu.Len + i] := Token[i{$IFDEF SYN_LAZARUS}-1{$ENDIF}];
+      end;
       Inc(TokenAccu.Len, TokenLen);
     end else begin
       TokenAccu.Len := TokenLen;
@@ -2465,8 +2471,9 @@ var
         TokenAccu.MaxLen := TokenAccu.Len + 32;
         SetLength(TokenAccu.s, TokenAccu.MaxLen);
       end;
-      for i := 1 to TokenLen do
-        TokenAccu.s[i] := Token[i];
+      for i := 1 to TokenLen do begin
+        TokenAccu.s[i] := Token[i{$IFDEF SYN_LAZARUS}-1{$ENDIF}];
+      end;
       TokenAccu.CharsBefore := CharsBefore;
       TokenAccu.FG := Foreground;
       TokenAccu.BG := Background;
@@ -2479,13 +2486,17 @@ var
     nLine: integer; // line index for the loop
     sLine: string; // the current line (expanded)
 //    pConvert: TConvertTabsProc;                                               //mh 2000-10-19
+    {$IFDEF SYN_LAZARUS}
+    sToken: PChar;  // highlighter token info
+    {$ELSE}
     sToken: string; // highlighter token info
+    {$ENDIF}
     nTokenPos, nTokenLen: integer;
     attr: TSynHighlighterAttributes;
     {$IFDEF SYN_LAZARUS}
-    BracketChar: char;
     BracketFGCol, BracketBGCol: TColor;
     BracketStyle: TFontStyles;
+    nTokenStart, nTokenEnd: integer;
     {$ENDIF}
   begin
     // Initialize rcLine for drawing. Note that Top and Bottom are updated
@@ -2601,8 +2612,12 @@ var
         while not fHighlighter.GetEol do begin
           // Test first whether anything of this token is visible.
           nTokenPos := fHighlighter.GetTokenPos; // zero-based
+          {$IFDEF SYN_LAZARUS}
+          fHighlighter.GetTokenEx(sToken,nTokenLen);
+          {$ELSE}
           sToken := fHighlighter.GetToken;
           nTokenLen := Length(sToken);
+          {$ENDIF}
           if (nTokenPos + nTokenLen >= FirstCol) then begin
             // It's at least partially visible. Get the token attributes now.
             attr := fHighlighter.GetTokenAttribute;
@@ -2636,9 +2651,9 @@ var
               begin
                 // bracket at start
                 // draw the bracket bold
-                AddHighlightToken(sToken[1], nTokenPos, 1,
+                AddHighlightToken(sToken, nTokenPos, 1,
                   BracketFGCol, BracketBGCol, BracketStyle+[fsBold]);
-                System.Delete(sToken,1,1);
+                inc(sToken);
                 dec(nTokenLen);
                 inc(nTokenPos);
               end;
@@ -2649,13 +2664,11 @@ var
                      and (nLine=nAntiBracketY)) then
                 begin
                   // bracket at end
-                  BracketChar:=sToken[nTokenLen];
-                  System.Delete(sToken,nTokenLen,1);
                   dec(nTokenLen);
                   AddHighlightToken(sToken, nTokenPos, nTokenLen,
                     BracketFGCol, BracketBGCol, BracketStyle);
                   inc(nTokenPos,nTokenLen);
-                  AddHighlightToken(BracketChar, nTokenPos, 1,
+                  AddHighlightToken(@sToken[nTokenLen-1], nTokenPos, 1,
                     BracketFGCol, BracketBGCol, BracketStyle+[fsBold]);
                 end else begin
                   // draw rest
