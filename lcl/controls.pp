@@ -2286,6 +2286,14 @@ begin
 end;
 
 procedure TControlBorderSpacing.GetSpaceAround(var SpaceAround: TRect);
+{$IFDEF VER1_0}
+//fpc 1.0.x can't determine which overloaded function to call,
+//because the parameter type doesn't match exactly.
+  function Max(Int1, Int2: TSpacingSize): TSpacingSize;
+  begin
+    Result:=Max(Integer(Int1),Integer(Int2));
+  end;
+{$ENDIF}
 begin
   SpaceAround.Left:=Max(Left,Around);
   SpaceAround.Top:=Max(Top,Around);
@@ -2476,6 +2484,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.253  2004/10/29 06:57:22  vincents
+  fixed fpc 1.0.x compilation
+
   Revision 1.252  2004/10/28 17:56:10  mattias
   implemented Borderspacing
 

@@ -836,7 +836,7 @@ End;
 
 procedure GetWin32ControlPos(Window, Parent: HWND; var Left, Top: integer);
 var
-  parRect, winRect: TRect;
+  parRect, winRect: Windows.TRect;
 begin
   Windows.GetWindowRect(Window, winRect);
   Windows.GetWindowRect(Parent, parRect);
