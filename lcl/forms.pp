@@ -284,7 +284,6 @@ type
     procedure WMSize(var message: TLMSize); message LM_Size;
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
-    procedure WMDestroy(var message: TLMDestroy); message LM_DESTROY;
   protected
     procedure Activate; dynamic;
     function CloseQuery : boolean; virtual;

@@ -245,21 +245,6 @@ Begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomForm.WMDestroy
-  Params:   Msg: The destroy message
-  Returns:  nothing
-
-  Destroy event handler.
- ------------------------------------------------------------------------------}
-procedure TCustomForm.WMDestroy(var Message: TLMDestroy);
-begin
-  Assert(False, Format('Trace: [TCustomForm.LMDestroy] %s', [ClassName]));
-  
-  // First set FHandle to 0, the window doesn't exist anymore.
-  inherited WMDestroy(Message);
-end;
-
-{------------------------------------------------------------------------------
   Method: TCustomForm.WMShowWindow
   Params:   Msg: The showwindow message
   Returns:  nothing
@@ -1197,6 +1182,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.74  2002/11/30 11:24:05  mattias
+  removed unused TCustomForm.WMDestroy
+
   Revision 1.73  2002/11/30 08:35:42  mattias
   TCustomForm.WMDestroy does not Free anymore
 
