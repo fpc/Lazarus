@@ -456,7 +456,7 @@ begin
     DoDbgOutput('<' + ACommand + '>');
     if ACommand <> ''
     then FDbgProcess.Input.Write(ACommand[1], Length(ACommand));
-    FDbgProcess.Input.Write(LineEnding, 1);
+    FDbgProcess.Input.Write(LineEnding, Length(LineEnding));
   end
   else begin
     WriteLN('[TCmdLineDebugger.SendCmdLn] Unable to send <', ACommand, '>. No process running.');
@@ -478,6 +478,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.30  2004/03/08 09:55:41  marc
+  * Fixed length on writing LineEnding
+
   Revision 1.29  2004/03/07 21:05:29  vincents
   WaitForHandles rewritten using PeekNamedPipe
 
