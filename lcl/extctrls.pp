@@ -677,6 +677,8 @@ type
     property BorderWidth;
     property BorderStyle;
     property Caption;
+    property ClientHeight;
+    property ClientWidth;
     property Color default clBackground;
     property DragMode;
     property Enabled;
@@ -744,6 +746,9 @@ end.
 
  {
   $Log$
+  Revision 1.62  2003/06/13 14:38:01  mattias
+  fixed using streamed clientwith/height for child anchors
+
   Revision 1.61  2003/06/13 10:09:04  mattias
   fixed Set/GetPixel
 
