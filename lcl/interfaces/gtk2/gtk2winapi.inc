@@ -402,6 +402,7 @@ var
     LinePos: PChar;
   begin
     with TDeviceContext(DC) do begin
+{$IFDEF GTK1}
       if (Dx=nil) then begin
         // no dist array -> write as one block
         //fix me... do we even need to do it this way with pango?
@@ -422,6 +423,9 @@ var
           inc(CurDistX);
         end;
       end;
+{$ELSE GTK1}
+      DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
+{$ENDIF GTK1}
     end;
   end;
 
@@ -826,6 +830,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2004/08/04 15:48:44  mazen
+  * fix UTF8 text display in source note book
+
   Revision 1.9  2004/05/11 12:16:48  mattias
   replaced writeln by debugln
 
