@@ -374,6 +374,7 @@ end;
   Returns the client rectangle of a control. Left and Top are always 0.
   The client rectangle is the size of the inner area of a control, where the
   child controls are visible.
+  A child control with Align=alClient will completely fill the clientrect.
  ------------------------------------------------------------------------------}
 Function GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
 begin
@@ -1659,6 +1660,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.92  2003/07/07 13:19:08  mattias
+  added raw image examples
+
   Revision 1.91  2003/07/07 07:59:34  mattias
   made Size_SourceIsInterface a flag
 

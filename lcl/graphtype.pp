@@ -177,11 +177,13 @@ type
 //------------------------------------------------------------------------------
 // raw image data
 type
+  { Colorformat: Higher values means higher intensity.
+    For example: Red=0 means no red, Alpha=0 means transparent }
   TRawImageColorFormat = (
     ricfRGBA,   // one pixel contains red, green, blue and alpha
                 // If AlphaPrec=0 then there is no alpha.
                 // Same for RedPrec, GreenPrec and BluePrec.
-    ricfGray    // R=G=B. The Red stores the Gray.
+    ricfGray    // R=G=B. The Red stores the Gray. AlphaPec can be >0.
     );
 
   TRawImageByteOrder = (
@@ -258,6 +260,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2003/07/07 13:19:08  mattias
+  added raw image examples
+
   Revision 1.17  2003/07/04 22:06:49  mattias
   implemented interface graphics
 

@@ -37,7 +37,64 @@ uses
 type
   { TLazIntfImage }
   { This descendent of TFPCustomImage stores its image data as raw images and
-    is therefore able to directly interchange images with the LCL interfaces. }
+    is therefore able to directly interchange images with the LCL interfaces.
+
+    Usage examples:
+    
+    1. Loading a .xpm file into a TBitmap:
+    
+      var
+        BmpHnd,MaskHnd: HBitmap;
+        Bitmap1: TBitmap;
+        IntfImg1: TLazIntfImage;
+        Reader: TLazReaderXPM;
+      begin
+        // create a bitmap (or use an existing one)
+        Bitmap1:=TBitmap.Create;
+        // create the raw image
+        IntfImg1:=TLazIntfImage.Create(0,0);
+        // get the description for the current screen (bitsperpixel, depth, ...)
+        IntfImg1.GetDescriptionFromDevice(0);
+        // create the XPM reader
+        Reader:=TLazReaderXPM.Create;
+        // load the image
+        IntfImg1.LoadFromFile('filename.xpm',Reader);
+        // create the bitmap handles
+        IntfImg1.CreateBitmap(BmpHnd,MaskHnd);
+        // apply handles to the Bitmap1
+        Bitmap1.Handle:=BmpHnd;
+        Bitmap1.MaskHandle:=MaskHnd;
+        // clean up
+        Reader.Free;
+        IntfImg1.Free;
+        // do something with the Bitmap1
+        ...
+      end;
+      
+
+    2. Saving a TBitmap to a .xpm file:
+
+      var
+        BmpHnd,MaskHnd: HBitmap;
+        Bitmap1: TBitmap;
+        IntfImg1: TLazIntfImage;
+        Writer: TLazWriterXPM;
+      begin
+        ...
+        // create the raw image
+        IntfImg1:=TLazIntfImage.Create(0,0);
+        // load the raw image from the bitmap handles
+        IntfImg1.LoadFromBitmap(Bitmap1.Handle,Bitmap1.MaskHandle);
+        // create the XPM writer
+        Writer:=TLazWriterXPM.Create;
+        // save image to file
+        IntfImg1.SaveToFile('filename.xpm',Writer);
+        // clean up
+        Writer.Free;
+        IntfImg1.Free;
+        ...
+      end;
+    }
 
   TLazIntfImage = class(TFPCustomImage)
   private
