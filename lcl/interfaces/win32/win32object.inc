@@ -1386,7 +1386,7 @@ Begin
   Assert(False, Format('Trace:TWin32Object.SetCursor - Sender --> %S', [Sender.ClassName]));
   Assert(False, 'Trace:TWin32Object.SetCursor - Getting the window');
   Assert(False, 'Trace:TWin32Object.SetCursor - Getting the cursor');
-  Cursor := MakeIntResource(Word(Integer(((Sender As TControl).Cursor))));
+  Cursor := MakeIntResource(Integer(TControl(Self).Cursor));
   Assert(False, 'Trace:TWin32Object.SetCursor - Loading the cursor');
   Res := LoadCursor(0, Cursor);
   Assert(False, Format('Trace:Cursor handle --> 0x%X', [Res]));
@@ -2575,6 +2575,9 @@ End;
 
 {
   $Log$
+  Revision 1.31  2002/12/13 10:10:44  mattias
+  fixed illegal type cast
+
   Revision 1.30  2002/12/04 20:39:16  mattias
   patch from Vincent: clean ups and fixed crash on destroying window
 
