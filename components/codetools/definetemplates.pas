@@ -2874,7 +2874,7 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('main path addition',
     Format(ctsAddsDirToSourcePath,[ctsLazarusMainDirectory]),
     ExternalMacroStart+'SrcPath',
-    '..;'+SrcPath
+    '..;..'+ds+'packager;'+SrcPath
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('components path addition',
     Format(ctsAddsDirToSourcePath,['synedit']),

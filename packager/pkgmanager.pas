@@ -986,7 +986,10 @@ end;
 
 procedure TPkgManager.UpdateVisibleComponentPalette;
 begin
-
+  {$IFDEF EnablePkgs}
+  TComponentPalette(IDEComponentPalette).NoteBook:=MainIDE.ComponentNotebook;
+  TComponentPalette(IDEComponentPalette).UpdateNoteBookButtons;
+  {$ENDIF}
 end;
 
 function TPkgManager.AddPackageToGraph(APackage: TLazPackage

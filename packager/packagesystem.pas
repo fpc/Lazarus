@@ -824,6 +824,8 @@ begin
 end;
 
 function TLazPackageGraph.CreateLCLPackage: TLazPackage;
+var
+  i: Integer;
 begin
   Result:=TLazPackage.Create;
   with Result do begin
@@ -841,19 +843,23 @@ begin
     CompilerOptions.UnitOutputDirectory:='';
 
     // add registering units
-    AddFile('menus.pp','Menus',pftUnit,[pffHasRegisterProc],cpLCL);
-    AddFile('buttons.pp','Buttons',pftUnit,[pffHasRegisterProc],cpLCL);
-    AddFile('stdctrls.pp','StdCtrls',pftUnit,[pffHasRegisterProc],cpLCL);
-    AddFile('extctrls.pp','ExtCtrls',pftUnit,[pffHasRegisterProc],cpLCL);
-    AddFile('comctrls.pp','ComCtrls',pftUnit,[pffHasRegisterProc],cpLCL);
-    AddFile('maskedit.pp','MaskEdit',pftUnit,[pffHasRegisterProc],cpLCL);
-    AddFile('forms.pp','Forms',pftUnit,[pffHasRegisterProc],cpLCL);
-    AddFile('grids.pas','Grids',pftUnit,[pffHasRegisterProc],cpLCL);
-    AddFile('controls.pp','Controls',pftUnit,[pffHasRegisterProc],cpLCL);
-    AddFile('dialogs.pp','Dialogs',pftUnit,[pffHasRegisterProc],cpLCL);
-    AddFile('spin.pp','Spin',pftUnit,[pffHasRegisterProc],cpLCL);
-    AddFile('arrow.pp','Arrow',pftUnit,[pffHasRegisterProc],cpLCL);
-    AddFile('calendar.pp','Calendar',pftUnit,[pffHasRegisterProc],cpLCL);
+    AddFile('menus.pp','Menus',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('buttons.pp','Buttons',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('stdctrls.pp','StdCtrls',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('extctrls.pp','ExtCtrls',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('comctrls.pp','ComCtrls',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('maskedit.pp','MaskEdit',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('forms.pp','Forms',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('grids.pas','Grids',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('controls.pp','Controls',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('dialogs.pp','Dialogs',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('spin.pp','Spin',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('arrow.pp','Arrow',pftUnit,[pffHasRegisterProc],cpBase);
+    AddFile('calendar.pp','Calendar',pftUnit,[pffHasRegisterProc],cpBase);
+    // increase priority by one, so that the LCL components are inserted to the
+    // left in the palette
+    for i:=0 to FileCount-1 do
+      inc(Files[i].ComponentPriority.Level);
 
     // add unit paths
     UsageOptions.UnitPath:=

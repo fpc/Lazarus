@@ -40,7 +40,7 @@ unit IDEComp;
 {$ENDIF}
 
 {$IFDEF EnablePkgs}
-This unit will be deleted in future
+{$error This unit will be deleted in future}
 {$ENDIF}
 
 interface

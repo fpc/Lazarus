@@ -46,7 +46,6 @@ uses
 
 type
   TComponentPriorityCategory = (
-    cpLCL,
     cpBase,
     cpRecommended,
     cpNormal,
@@ -86,7 +85,7 @@ type
     function GetUnitName: string; virtual; abstract;
     function GetPriority: TComponentPriority; virtual;
     procedure AddToPalette; virtual;
-    function Createable: boolean; virtual;
+    function CanBeCreatedInDesigner: boolean; virtual;
   public
     property ComponentClass: TComponentClass read FComponentClass;
     property PageName: string read FPageName;
@@ -110,6 +109,7 @@ type
   protected
     FVisible: boolean;
     procedure SetVisible(const AValue: boolean); virtual;
+    procedure OnComponentVisibleChanged(AComponent: TRegisteredComponent); virtual;
   public
     constructor Create(const ThePageName: string);
     destructor Destroy; override;
@@ -120,6 +120,7 @@ type
     procedure Add(NewComponent: TRegisteredComponent);
     procedure Remove(AComponent: TRegisteredComponent);
     function FindComponent(const CompClassName: string): TRegisteredComponent;
+    function FindButton(Button: TComponent): TRegisteredComponent;
   public
     property Items[Index: integer]: TRegisteredComponent read GetItems; default;
     property PageName: string read FPageName;
@@ -145,12 +146,17 @@ type
     fChanged: boolean;
     function GetItems(Index: integer): TBaseComponentPage;
   protected
+    procedure DoChange; virtual;
     procedure DoEndUpdate(Changed: boolean); virtual;
+    procedure OnPageAddedComponent(Component: TRegisteredComponent); virtual;
+    procedure OnPageRemovedComponent(Page: TBaseComponentPage;
+                                Component: TRegisteredComponent); virtual;
+    procedure OnComponentVisibleChanged(AComponent: TRegisteredComponent); virtual;
   public
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure ClearButtons;
+    procedure ClearButtons; virtual;
     procedure BeginUpdate(Change: boolean);
     procedure EndUpdate;
     function IsUpdating: boolean;
@@ -162,7 +168,8 @@ type
     procedure AddComponent(NewComponent: TRegisteredComponent);
     function CreateNewPage(const NewPageName: string;
       const Priority: TComponentPriority): TBaseComponentPage;
-    function FindComponent(const CompClassName: string): TRegisteredComponent;
+    function FindComponent(const CompClassName: string): TRegisteredComponent; virtual;
+    function FindButton(Button: TComponent): TRegisteredComponent;
     function CreateNewClassName(const Prefix: string): string;
     function IndexOfPageComponent(AComponent: TComponent): integer;
   public
@@ -220,6 +227,7 @@ procedure TRegisteredComponent.SetVisible(const AValue: boolean);
 begin
   if FVisible=AValue then exit;
   FVisible:=AValue;
+  if (FPage<>nil) then FPage.OnComponentVisibleChanged(Self);
 end;
 
 constructor TRegisteredComponent.Create(TheComponentClass: TComponentClass;
@@ -255,7 +263,7 @@ begin
   IDEComponentPalette.AddComponent(Self);
 end;
 
-function TRegisteredComponent.Createable: boolean;
+function TRegisteredComponent.CanBeCreatedInDesigner: boolean;
 begin
   Result:=true;
 end;
@@ -271,6 +279,12 @@ procedure TBaseComponentPage.SetVisible(const AValue: boolean);
 begin
   if FVisible=AValue then exit;
   FVisible:=AValue;
+end;
+
+procedure TBaseComponentPage.OnComponentVisibleChanged(
+  AComponent: TRegisteredComponent);
+begin
+  if FPalette<>nil then FPalette.OnComponentVisibleChanged(AComponent);
 end;
 
 constructor TBaseComponentPage.Create(const ThePageName: string);
@@ -326,16 +340,18 @@ begin
   NewPriority:=NewComponent.GetPriority;
   InsertIndex:=0;
   while (InsertIndex<Count)
-  and (ComparePriority(Items[InsertIndex].GetPriority,NewPriority)>0) do
+  and (ComparePriority(NewPriority,Items[InsertIndex].GetPriority)<=0) do
     inc(InsertIndex);
   FItems.Insert(InsertIndex,NewComponent);
   NewComponent.Page:=Self;
+  if FPalette<>nil then FPalette.OnPageAddedComponent(NewComponent);
 end;
 
 procedure TBaseComponentPage.Remove(AComponent: TRegisteredComponent);
 begin
   FItems.Remove(AComponent);
   AComponent.Page:=nil;
+  if FPalette<>nil then FPalette.OnPageRemovedComponent(Self,AComponent);
 end;
 
 function TBaseComponentPage.FindComponent(const CompClassName: string
@@ -351,6 +367,18 @@ begin
   Result:=nil;
 end;
 
+function TBaseComponentPage.FindButton(Button: TComponent
+  ): TRegisteredComponent;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    Result:=Items[i];
+    if Result.Button=Button then exit;
+  end;
+  Result:=nil;
+end;
+
 { TBaseComponentPalette }
 
 function TBaseComponentPalette.GetItems(Index: integer): TBaseComponentPage;
@@ -358,9 +386,32 @@ begin
   Result:=TBaseComponentPage(FItems[Index]);
 end;
 
+procedure TBaseComponentPalette.DoChange;
+begin
+  if FUpdateLock>0 then fChanged:=true;
+end;
+
 procedure TBaseComponentPalette.DoEndUpdate(Changed: boolean);
 begin
   if Assigned(OnEndUpdate) then OnEndUpdate(Self,Changed);
+end;
+
+procedure TBaseComponentPalette.OnPageAddedComponent(
+  Component: TRegisteredComponent);
+begin
+  DoChange;
+end;
+
+procedure TBaseComponentPalette.OnPageRemovedComponent(
+  Page: TBaseComponentPage; Component: TRegisteredComponent);
+begin
+  DoChange;
+end;
+
+procedure TBaseComponentPalette.OnComponentVisibleChanged(
+  AComponent: TRegisteredComponent);
+begin
+  DoChange;
 end;
 
 constructor TBaseComponentPalette.Create;
@@ -434,9 +485,12 @@ begin
   if i>=0 then begin
     Result:=Pages[i];
   end else begin
-    Result:=TBaseComponentPage.Create(APageName);
-    Result.FPalette:=Self;
-    FItems.Add(Result);
+    if CreateIfNotExists then begin
+      Result:=TBaseComponentPage.Create(APageName);
+      Result.FPalette:=Self;
+      FItems.Add(Result);
+    end else
+      Result:=nil;
   end;
 end;
 
@@ -465,9 +519,10 @@ var
   InsertIndex: Integer;
 begin
   Result:=TBaseComponentPage.Create(NewPageName);
+  Result.Priority:=Priority;
   InsertIndex:=0;
   while (InsertIndex<Count)
-  and (ComparePriority(Pages[InsertIndex].Priority,Priority)>0) do
+  and (ComparePriority(Priority,Pages[InsertIndex].Priority)<=0) do
     inc(InsertIndex);
   FItems.Insert(InsertIndex,Result);
   Result.FPalette:=Self;
@@ -480,6 +535,18 @@ var
 begin
   for i:=0 to Count-1 do begin
     Result:=Pages[i].FindComponent(CompClassName);
+    if Result<>nil then exit;
+  end;
+  Result:=nil;
+end;
+
+function TBaseComponentPalette.FindButton(Button: TComponent
+  ): TRegisteredComponent;
+var
+  i: Integer;
+begin
+  for i:=0 to Count-1 do begin
+    Result:=Pages[i].FindButton(Button);
     if Result<>nil then exit;
   end;
   Result:=nil;
@@ -513,6 +580,6 @@ end;
 
 initialization
   IDEComponentPalette:=nil;
-
+  
 end.
 

@@ -423,6 +423,20 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TCustomNotebook.GetActivePageComponent: TPage;
+ ------------------------------------------------------------------------------}
+function TCustomNotebook.GetActivePageComponent: TPage;
+var
+  i: Integer;
+begin
+  i:=PageIndex;
+  if (i>=0) and (i<PageCount) then
+    Result:=Page[i]
+  else
+    Result:=nil;
+end;
+
+{------------------------------------------------------------------------------
   TCustomNotebook SetActivePage
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.SetActivePage(const Value: String);
@@ -437,6 +451,11 @@ begin
       Break;
     end;
   end;
+end;
+
+procedure TCustomNotebook.SetActivePageComponent(const AValue: TPage);
+begin
+  PageIndex:=fPageList.IndexOf(AValue);
 end;
 
 procedure TCustomNotebook.SetImages(const AValue: TImageList);
@@ -732,6 +751,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.30  2003/04/22 13:27:10  mattias
+  implemented installing components in component palette
+
   Revision 1.29  2002/12/16 09:17:20  mattias
   notebook pageindex can be set to -1, if interface supports it
 

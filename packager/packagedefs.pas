@@ -72,15 +72,15 @@ type
     procedure SetPkgFile(const AValue: TPkgFile);
   public
     constructor Create(ThePkgFile: TPkgFile; TheComponentClass: TComponentClass;
-      const ThePageName: string);
+                       const ThePageName: string);
     destructor Destroy; override;
     function GetUnitName: string; override;
     function GetPriority: TComponentPriority; override;
     procedure ConsistencyCheck; override;
     function Icon: TBitmap;
-    function GetIconCopy: TBitMap;
+    function GetIconCopy: TBitmap;
     function HasIcon: boolean;
-    function Createable: boolean; override;
+    function CanBeCreatedInDesigner: boolean; override;
   public
     property PkgFile: TPkgFile read FPkgFile write SetPkgFile;
   end;
@@ -2371,9 +2371,9 @@ begin
   Result:=Page.PageName<>'';
 end;
 
-function TPkgComponent.Createable: boolean;
+function TPkgComponent.CanBeCreatedInDesigner: boolean;
 begin
-  Result:=not PkgFile.Removed;
+  Result:=(not PkgFile.Removed);
 end;
 
 { TLazPackageID }
