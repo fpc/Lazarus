@@ -2973,7 +2973,9 @@ Procedure TWinControl.WMSetFocus(var Message: TLMSetFocus);
 Begin
   //DebugLn('TWinControl.WMSetFocus A ',Name,':',ClassName);
   Assert(False, Format('Trace: %s', [ClassName]));
-  DoEnter;
+  if [csLoading,csDestroying,csDesigning]*ComponentState=[] then begin
+    DoEnter;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2987,9 +2989,10 @@ procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
 begin
   //DebugLn('TWinControl.WMKillFocus A ',Name,':',ClassName);
   Assert(False, Format('Trace: %s', [ClassName]));
-  if [csLoading,csDestroying,csDesigning]*ComponentState=[] then
+  if [csLoading,csDestroying,csDesigning]*ComponentState=[] then begin
     EditingDone;
-  DoExit;
+    DoExit;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -4125,6 +4128,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.290  2004/11/28 01:03:26  mattias
+  do not send OnExit/OnEnter during destroy, design or loading
+
   Revision 1.289  2004/11/10 18:23:56  mattias
   impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
 
