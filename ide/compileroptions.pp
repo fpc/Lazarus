@@ -233,6 +233,7 @@ type
     fGenDebugDBX: Boolean;
     fUseLineInfoUnit: Boolean;
     fUseHeaptrc: Boolean;
+    fUseValgrind: Boolean;
     fGenGProfCode: Boolean;
     fStripSymbols: Boolean;
     fLinkStyle: Integer;
@@ -395,6 +396,7 @@ type
     property GenerateDebugDBX: Boolean read fGenDebugDBX write fGenDebugDBX;
     property UseLineInfoUnit: Boolean read fUseLineInfoUnit write fUseLineInfoUnit;
     property UseHeaptrc: Boolean read fUseHeaptrc write fUseHeaptrc;
+    property UseValgrind: Boolean read fUseValgrind write fUseValgrind;
     property GenGProfCode: Boolean read fGenGProfCode write fGenGProfCode;
     property StripSymbols: Boolean read fStripSymbols write fStripSymbols;
     property LinkStyle: Integer read fLinkStyle write fLinkStyle;
@@ -591,6 +593,7 @@ type
     chkDebugDBX: TCheckBox;
     chkUseLineInfoUnit: TCheckBox;
     chkUseHeaptrc: TCheckBox;
+    chkUseValgrind: TCheckBox;
     chkGenGProfCode: TCheckBox;
     chkSymbolsStrip: TCheckBox;
 
@@ -1279,6 +1282,7 @@ begin
   GenerateDebugDBX := XMLConfigFile.GetValue(p+'Debugging/GenerateDebugDBX/Value', false);
   UseLineInfoUnit := XMLConfigFile.GetValue(p+'Debugging/UseLineInfoUnit/Value', true);
   UseHeaptrc := XMLConfigFile.GetValue(p+'Debugging/UseHeaptrc/Value', false);
+  UseValgrind := XMLConfigFile.GetValue(p+'Debugging/UseValgrind/Value', false);
   GenGProfCode := XMLConfigFile.GetValue(p+'Debugging/GenGProfCode/Value', false);
   StripSymbols := XMLConfigFile.GetValue(p+'Debugging/StripSymbols/Value', false);
   LinkStyle := XMLConfigFile.GetValue(p+'LinkStyle/Value', 1);
@@ -1416,6 +1420,7 @@ begin
   XMLConfigFile.SetDeleteValue(p+'Debugging/GenerateDebugDBX/Value', GenerateDebugDBX,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/UseLineInfoUnit/Value', UseLineInfoUnit,true);
   XMLConfigFile.SetDeleteValue(p+'Debugging/UseHeaptrc/Value', UseHeaptrc,false);
+  XMLConfigFile.SetDeleteValue(p+'Debugging/UseValgrind/Value', UseValgrind,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/GenGProfCode/Value', GenGProfCode,false);
   XMLConfigFile.SetDeleteValue(p+'Debugging/StripSymbols/Value', StripSymbols,false);
   XMLConfigFile.SetDeleteValue(p+'Options/PassLinkerOptions/Value', PassLinkerOptions,false);
@@ -2016,6 +2021,10 @@ Processor specific options:
   if (UseHeaptrc) and (not (ccloNoLinkerOpts in Flags)) then
     switches := switches + ' -gh';
 
+  { Generate code for Valgrind }
+  if (UseValgrind) and (not (ccloNoLinkerOpts in Flags)) then
+    switches := switches + ' -gv';
+
   { Generate code gprof }
   if (GenGProfCode) then
     switches := switches + ' -pg';
@@ -2292,6 +2301,7 @@ begin
   fGenDebugDBX := false;
   fUseLineInfoUnit := true;
   fUseHeaptrc := false;
+  fUseValgrind := false;
   fGenGProfCode := false;
   fStripSymbols := false;
   fLinkStyle := 1;
@@ -2387,6 +2397,7 @@ begin
   fGenDebugDBX := CompOpts.fGenDebugDBX;
   fUseLineInfoUnit := CompOpts.fUseLineInfoUnit;
   fUseHeaptrc := CompOpts.fUseHeaptrc;
+  fUseValgrind := CompOpts.fUseValgrind;
   fGenGProfCode := CompOpts.fGenGProfCode;
   fStripSymbols := CompOpts.fStripSymbols;
   fLinkStyle := CompOpts.fLinkStyle;
@@ -2478,6 +2489,7 @@ begin
     and (fGenDebugDBX = CompOpts.fGenDebugDBX)
     and (fUseLineInfoUnit = CompOpts.fUseLineInfoUnit)
     and (fUseHeaptrc = CompOpts.fUseHeaptrc)
+    and (fUseValgrind = CompOpts.fUseValgrind)
     and (fGenGProfCode = CompOpts.fGenGProfCode)
     and (fStripSymbols = CompOpts.fStripSymbols)
     and (fLinkStyle = CompOpts.fLinkStyle)
@@ -2914,6 +2926,7 @@ begin
   chkDebugDBX.Checked := Options.GenerateDebugDBX;
   chkUseLineInfoUnit.Checked := Options.UseLineInfoUnit;
   chkUseHeaptrc.Checked := Options.UseHeaptrc;
+  chkUseValgrind.Checked := Options.UseValgrind;
   chkGenGProfCode.Checked := Options.GenGProfCode;
   chkSymbolsStrip.Checked := Options.StripSymbols;
   chkSymbolsStrip.Enabled:=EnabledLinkerOpts;
@@ -3085,6 +3098,7 @@ begin
   Options.GenerateDebugDBX := chkDebugDBX.Checked;
   Options.UseLineInfoUnit := chkUseLineInfoUnit.Checked;
   Options.UseHeaptrc := chkUseHeaptrc.Checked;
+  Options.UseValgrind := chkUseValgrind.Checked;
   Options.GenGProfCode := chkGenGProfCode.Checked;
   Options.StripSymbols := chkSymbolsStrip.Checked;
 
@@ -3810,7 +3824,7 @@ begin
     Parent := LinkingPage;
     Top := 10;
     Left := 10;
-    Height := 151;
+    Height := 172;
     Width := Self.ClientWidth-28;
     Caption := dlgCODebugging ;
   end;
@@ -3859,12 +3873,23 @@ begin
     Width := 360;
   end;
 
+  chkUseValgrind := TCheckBox.Create(Self);
+  with chkUseValgrind do
+  begin
+    Parent := grpDebugging;
+    Caption := dlgCOValgrind ;
+    Top := 90;
+    Left := 8;
+    Height := 16;
+    Width := 360;
+  end;
+
   chkGenGProfCode := TCheckBox.Create(Self);
   with chkGenGProfCode do
   begin
     Parent := grpDebugging;
     Caption := dlgGPROF ;
-    Top := 90;
+    Top := 111;
     Left := 8;
     Height := 16;
     Width := 360;
@@ -3875,7 +3900,7 @@ begin
   begin
     Parent := grpDebugging;
     Caption := dlgCOStrip;
-    Top := 111;
+    Top := 132;
     Left := 8;
     Height := 16;
     Width := 360;

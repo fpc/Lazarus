@@ -1307,22 +1307,23 @@ begin
 end;
 
 procedure TControl.ActionChange(Sender: TObject; CheckDefaults: Boolean);
+var
+  NewAction: TCustomAction;
 begin
-  if Sender is TCustomAction then
-    with TCustomAction(Sender) do
-    begin
-      if (not CheckDefaults)
-      or (Self.Caption = '') or (Self.Caption = Self.Name) then
-        Self.Caption := Caption;
-      if not CheckDefaults or (Self.Enabled = True) then
-        Self.Enabled := Enabled;
-      if not CheckDefaults or (Self.Hint = '') then
-        Self.Hint := Hint;
-      if not CheckDefaults or (Self.Visible = True) then
-        Self.Visible := Visible;
-      if not CheckDefaults or not Assigned(Self.OnClick) then
-        Self.OnClick := OnExecute;
-    end;
+  if Sender is TCustomAction then begin
+    NewAction:=TCustomAction(Sender);
+    if (not CheckDefaults)
+    or (Caption = '') or (Caption = Name) then
+      Caption := NewAction.Caption;
+    if not CheckDefaults or Enabled then
+      Enabled := NewAction.Enabled;
+    if not CheckDefaults or (Hint = '') then
+      Hint := NewAction.Hint;
+    if not CheckDefaults or Visible then
+      Visible := NewAction.Visible;
+    if not CheckDefaults or not Assigned(OnClick) then
+      OnClick := NewAction.OnExecute;
+  end;
 end;
 
 procedure TControl.DoActionChange(Sender: TObject);
@@ -3195,8 +3196,8 @@ end;
 
 { =============================================================================
   $Log$
-  Revision 1.197  2004/06/28 08:54:19  mattias
-  fixed ord ptr conversion hints
+  Revision 1.198  2004/06/28 09:48:46  mattias
+  added valgrind flag to compiler options
 
   Revision 1.196  2004/06/24 17:59:18  mattias
   fixed compilation for fpc 1.0.10

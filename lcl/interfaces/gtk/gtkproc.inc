@@ -813,10 +813,9 @@ begin
   // lock combobox, so that no OnChange event is fired
   LockOnChange(PGtkObject(ComboWidget^.entry),+1);
   // set text
-  if NewText <> nil then
-    gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText)
-  else
-    gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), #0);
+  if NewText = nil then NewText:=#0; // gtk expects at least a #0
+  //writeln('SetComboBoxText A ',HexStr(Cardinal(NewText),8));
+  gtk_entry_set_text(PGtkEntry(ComboWidget^.entry), NewText);
   // unlock combobox
   LockOnChange(PGtkObject(ComboWidget^.entry),-1);
 end;
@@ -6806,6 +6805,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.285  2004/06/28 09:48:46  mattias
+  added valgrind flag to compiler options
+
   Revision 1.284  2004/06/24 17:45:33  mattias
   fixed TMenuItem.GetIconSize
 
