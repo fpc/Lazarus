@@ -2425,7 +2425,58 @@ begin
   end;
 end;
 
+function IndexOfStyle(const WName : String): integer;
+begin
+  if Styles<>nil then begin
+    for Result:=0 to Styles.Count-1 do
+      if AnsiCompareText(WName,Styles[Result])=0 then exit;
+  end;
+  Result:=-1;
+end;
 
+Procedure ReleaseStyle(const WName : String);
+var
+  l : Longint;
+  s : PGTKStyle;
+begin
+  l := IndexOfStyle(WName);
+  If l >= 0 then begin
+    If Styles.Objects[l] <> nil then
+      Try
+        s := PGTKStyle(Styles.Objects[l]);
+        If S^.Ref_Count > 0 then
+          GTK_Style_Unref(S);
+      Except
+      end;
+    Styles.Delete(l);
+  end;
+end;
+
+function GetStyle(const WName : String) : PGTKStyle;
+var
+  Wd : PGTKWidget;
+  l : Longint;
+  Style: PGtkStyle;
+begin
+  Result := nil;
+  l:=IndexOfStyle(WName);
+  If l < 0 then begin
+    If AnsiCompareText(WName,'button')=0 then
+      Wd := GTK_BUTTON_NEW
+    else
+      exit;
+    gtk_widget_ensure_style(Wd);
+    Style:=GTK_RC_GET_STYLE(Wd);
+    If Style <> nil then
+      Style:=GTK_Style_Ref(Style);
+    if Style <> nil then begin
+      Styles.AddObject(WName, TObject(Style));
+      Result:=Style;
+    end;
+    GTK_Widget_Destroy(Wd);
+  end else
+    Result := PGTKStyle(Styles.Objects[l]);
+end;
 
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
@@ -2435,6 +2486,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.71  2002/08/22 16:43:36  lazarus
+  MG: improved theme support from Andrew
+
   Revision 1.70  2002/08/22 16:22:39  lazarus
   MG: started debugging of mouse capturing
 
