@@ -173,7 +173,7 @@ Begin
 
   // Create parent of all windows, `button on taskbar'
   FAppHandle := CreateWindow(@ClsName, PChar(Application.Title), WS_POPUP or
-    WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX or WS_VISIBLE,
+    WS_CLIPSIBLINGS or WS_CAPTION or WS_SYSMENU or WS_MINIMIZEBOX,
     0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
     0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
     0, 0, HWND(nil), HMENU(nil), HInstance, nil);
@@ -3383,6 +3383,9 @@ End;
 
 {
   $Log$
+  Revision 1.226  2004/08/23 21:29:40  vincents
+  Don't show taskbar button, until MainForm is shown.
+
   Revision 1.225  2004/08/09 21:12:43  mattias
   implemented FormStyle fsSplash for splash screens
 
