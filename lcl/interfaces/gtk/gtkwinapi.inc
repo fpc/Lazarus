@@ -2503,74 +2503,76 @@ begin
       WriteLn('WARNING: [TgtkObject.ExtTextOut] Uninitialized GC');
       Result := False;
     end
-    else begin
-      If UseFont = nil then begin
-        WriteLn('WARNING: [TgtkObject.ExtTextOut] Missing Font');
-        Result := False;
-      end
-      else begin
-        // TODO: implement other parameters.
-        //ADC := SaveDC(DC);
-        DCOrigin:=GetDCOffset(PDeviceContext(DC));
-        if (Options and ETO_OPAQUE) <> 0 then
-        begin
-          Width := Rect^.Right - Rect^.Left;
-          Height := Rect^.Bottom - Rect^.Top;
-          gdk_gc_set_fill(GC, GDK_SOLID);
-          gdk_gc_set_foreground(GC, @CurrentBackColor);
-          gdk_draw_rectangle(Drawable, GC, 1,
-                             Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
-                             Width, Height);
-        end;
-        if (Options and ETO_CLIPPED) <> 0 then
-        begin
-          X := Rect^.Left;
-          Y := Rect^.Top;
-          IntersectClipRect(DC, Rect^.Left, Rect^.Top, Rect^.Right,
-            Rect^.Bottom);
-        end;
-        Num := FindChar(#10,Str,Count);
-        AY := Y;
-        GetTextMetrics(DC, TM);
-        TxtPt.X := X;
-        {$IfDef Win32}
-        TxtPt.Y := AY + TM.tmHeight div 2;
-        {$Else}
-        TxtPt.Y := AY + TM.tmAscent;
-        {$EndIf}
-        SelectGDKTextProps(DC);
-        if Num < 0 then begin
-          if Count> 0 then
-            gdk_draw_text(Drawable, UseFont, GC,
-                          TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
-        end else
-        Begin  //write multiple lines
-          LineStart:=Str;
-          StrEnd:=Str+Count;
-          while LineStart < StrEnd do begin
-            LineEnd:=LineStart+Num;
-            if Num>0 then
-              gdk_draw_text(Drawable, UseFont, GC,
-                            TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, LineStart, Num);
-            AY := TxtPt.Y;
-            {$IfDef Win32}
-              TxtPt.Y := AY + TM.tmHeight div 2;
-            {$Else}
-              TxtPt.Y := AY + TM.tmAscent;
-            {$EndIf}
-            LineStart:=LineEnd+1; // skip #10
-            if (LineStart<StrEnd) and (LineStart^=#13) then
-              inc(LineStart); // skip #10
-            Count:=StrEnd-LineStart;
-            Num:=FindChar(#10,LineStart,Count);
-            if Num<0 then
-              Num:=Count;
-          end;
-        end;
-        //RestoreDC(DC, ADC);
-        If UnRef then
-          GDK_Font_UnRef(UseFont);
+    else if UseFont = nil then begin
+      WriteLn('WARNING: [TgtkObject.ExtTextOut] Missing Font');
+      Result := False;
+    end
+    else if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
+    and (Rect=nil) then begin
+      WriteLn('WARNING: [TgtkObject.ExtTextOut] Rect=nil');
+      Result := False;
+    end else begin
+      // TODO: implement other parameters.
+      //ADC := SaveDC(DC);
+      DCOrigin:=GetDCOffset(PDeviceContext(DC));
+      if ((Options and ETO_OPAQUE) <> 0) then
+      begin
+        Width := Rect^.Right - Rect^.Left;
+        Height := Rect^.Bottom - Rect^.Top;
+        gdk_gc_set_fill(GC, GDK_SOLID);
+        gdk_gc_set_foreground(GC, @CurrentBackColor);
+        gdk_draw_rectangle(Drawable, GC, 1,
+                           Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
+                           Width, Height);
       end;
+      if (Options and ETO_CLIPPED) <> 0 then
+      begin
+        X := Rect^.Left;
+        Y := Rect^.Top;
+        IntersectClipRect(DC, Rect^.Left, Rect^.Top,
+                          Rect^.Right, Rect^.Bottom);
+      end;
+      Num := FindChar(#10,Str,Count);
+      AY := Y;
+      GetTextMetrics(DC, TM);
+      TxtPt.X := X;
+      {$IfDef Win32}
+      TxtPt.Y := AY + TM.tmHeight div 2;
+      {$Else}
+      TxtPt.Y := AY + TM.tmAscent;
+      {$EndIf}
+      SelectGDKTextProps(DC);
+      if Num < 0 then begin
+        if Count> 0 then
+          gdk_draw_text(Drawable, UseFont, GC,
+                        TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, Str, Count);
+      end else
+      Begin  //write multiple lines
+        LineStart:=Str;
+        StrEnd:=Str+Count;
+        while LineStart < StrEnd do begin
+          LineEnd:=LineStart+Num;
+          if Num>0 then
+            gdk_draw_text(Drawable, UseFont, GC,
+                          TxtPt.X+DCOrigin.X, TxtPt.Y+DCOrigin.Y, LineStart, Num);
+          AY := TxtPt.Y;
+          {$IfDef Win32}
+            TxtPt.Y := AY + TM.tmHeight div 2;
+          {$Else}
+            TxtPt.Y := AY + TM.tmAscent;
+          {$EndIf}
+          LineStart:=LineEnd+1; // skip #10
+          if (LineStart<StrEnd) and (LineStart^=#13) then
+            inc(LineStart); // skip #10
+          Count:=StrEnd-LineStart;
+          Num:=FindChar(#10,LineStart,Count);
+          if Num<0 then
+            Num:=Count;
+        end;
+      end;
+      //RestoreDC(DC, ADC);
+      If UnRef then
+        GDK_Font_UnRef(UseFont);
     end;
   end;
   Assert(False, Format('trace:< [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
@@ -5926,13 +5928,14 @@ begin
         Page_Increment := nPage;
       end;
       
-{writeln('[TgtkObject.SetScrollInfo] Result=',Result,
-' Lower=',round(Lower),
-' Upper=',round(Upper),
-' Page_Size=',round(Page_Size),
-' Page_Increment=',round(Page_Increment),
-' bRedraw=',bRedraw,
-' Handle=',HexStr(Cardinal(Handle),8));}
+      {writeln('');
+      writeln('[TgtkObject.SetScrollInfo] Result=',Result,
+      ' Lower=',round(Lower),
+      ' Upper=',round(Upper),
+      ' Page_Size=',round(Page_Size),
+      ' Page_Increment=',round(Page_Increment),
+      ' bRedraw=',bRedraw,
+      ' Handle=',HexStr(Cardinal(Handle),8));}
 
       // do we have to set this allways ?
       if bRedraw then
@@ -5961,14 +5964,15 @@ begin
               gtk_widget_hide(PGTKWidget(Scroll))
           end;
         end;
-{  writeln('TgtkObject.SetScrollInfo: ',
-  ' lower=',lower,'/',nMin,
-  ' upper=',upper,'/',nMax,
-  ' value=',value,'/',nPos,
-  ' step_increment=',step_increment,'/',1,
-  ' page_increment=',page_increment,'/',nPage,
-  ' page_size=',page_size,'/',nPage,
-  '');}
+        {writeln('');
+        writeln('TgtkObject.SetScrollInfo: ',
+        ' lower=',round(lower),'/',nMin,
+        ' upper=',round(upper),'/',nMax,
+        ' value=',round(value),'/',nPos,
+        ' step_increment=',round(step_increment),'/',1,
+        ' page_increment=',round(page_increment),'/',nPage,
+        ' page_size=',round(page_size),'/',nPage,
+        '');}
 
         gtk_adjustment_changed(Adjustment);
       end;
@@ -6955,6 +6959,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.131  2002/09/12 15:35:57  lazarus
+  MG: small bugfixes
+
   Revision 1.130  2002/09/12 05:56:17  lazarus
   MG: gradient fill, minor issues from Andrew
 
