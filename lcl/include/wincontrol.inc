@@ -857,34 +857,51 @@ begin
 end;
 
 procedure TWinControl.PaintHandler(var TheMessage: TLMPaint);
+
+  function ControlMustBeClipped(AControl: TControl): boolean;
+  begin
+    with AControl do
+      Result:=(Visible or (csDesigning in ComponentState)
+              and not (csNoDesignVisible in ControlStyle))
+              and (csOpaque in ControlStyle);
+  end;
+
 var
   I, Clip, SaveIndex: Integer;
   DC: HDC;
   PS: TPaintStruct; //defined in LCLLinux.pp
+  ControlsNeedsClipping: boolean;
 begin
 //writeln('[TWinControl.PaintHandler] ',Name,':',ClassName,'  DC=',HexStr(Message.DC,8));
   Assert(False, Format('Trace:> [TWinControl.PaintHandler] %s --> Msg.DC: 0x%x', [ClassName, TheMessage.DC]));
   DC := TheMessage.DC;
   if DC = 0 then DC := BeginPaint(Handle, PS);
   try
-    if FControls = nil then
+    // check if controls needs clipping
+    ControlsNeedsClipping:=false;
+    if FControls<>nil then
+      for I := 0 to FControls.Count - 1 do
+        if ControlMustBeClipped(TControl(FControls[I])) then begin
+          ControlsNeedsClipping:=true;
+          break;
+        end;
+    // exclude controls and send new paint message
+    if not ControlsNeedsClipping then
       PaintWindow(DC)
     else
     begin
       SaveIndex := SaveDC(DC);
       Clip := SimpleRegion;
       for I := 0 to FControls.Count - 1 do
-        with TControl(FControls[I]) do
-          if (Visible or (csDesigning in ComponentState)
-          and not (csNoDesignVisible in ControlStyle))
-          and (csOpaque in ControlStyle) then
-          begin
+        if ControlMustBeClipped(TControl(FControls[I])) then
+          with TControl(FControls[I]) do begin
             Clip := ExcludeClipRect(DC, Left, Top, Left + Width, Top + Height);
             if Clip = NullRegion then Break;
           end;
       if Clip <> NullRegion then PaintWindow(DC);
       RestoreDC(DC, SaveIndex);
     end;
+    // paint controls
     PaintControls(DC, nil);
   finally
     if TheMessage.DC = 0 then EndPaint(Handle, PS);
@@ -2460,6 +2477,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.96  2002/10/31 22:14:16  lazarus
+  MG: fixed GetClipBox when clipping region invalid
+
   Revision 1.95  2002/10/31 21:29:47  lazarus
   MG: implemented TControlScrollBar.Size
 
