@@ -1961,104 +1961,33 @@ end;
 
   Applies a Message to the sender
  ------------------------------------------------------------------------------}
-procedure TGTKObject.SetCallback(Msg : LongInt; Sender : TObject);
+procedure TGTKObject.SetCallback(Msg : LongInt; Sender: TObject);
 
-  procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
-    const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask;
-    ConnectBefore: boolean);
-  var
-    RealizeHandler, Handler: PGTKHandler;
-    RealizeID, SignalID: guint;
-    WinWidgetInfo: PWinWidgetInfo;
-    MainWidget: PGtkWidget;
-  begin
-    if ACallBackProc <> nil then
-    begin
-      // first loop through the handlers to:
-      // - check if a handler already exists
-      // - Find the realize handler to change data
-      Handler := gtk_object_get_data_by_id (AnObject, gtk_handler_quark);
-      SignalID := gtk_signal_lookup(ASignal, GTK_OBJECT_TYPE(AnObject));
-      RealizeID := gtk_signal_lookup('realize', GTK_OBJECT_TYPE(AnObject));
-      RealizeHandler := nil;
-
-      while (Handler <> nil) do begin
-        with Handler^ do
-        begin
-          // check if signal is already connected
-          if  (Id > 0)
-          and (Signal_ID = SignalID)
-          and (Func = TGTKSignalFunc(ACallBackProc))
-          and (func_data = Pointer(Sender))
-          and (((flags and $00200000)=0)=ConnectBefore)
-          then begin
-            Assert(False, Format('Trace:WARNING: [TGTKObject.SetCallback] %s signal <%s> set twice', [Sender.ClassName, ASignal]));
-            Exit;
-          end;
-          
-          // look for realize handler
-          if  (Id > 0)
-          and (Signal_ID = RealizeID)
-          and (Func = TGTKSignalFunc(@GTKRealizeCB))
-          and (func_data = Pointer(Sender))
-          and ((flags and $00200000)=0) // test if after = false
-          then RealizeHandler := Handler;
-
-          Handler := Next;
-        end;
-      end;
-      
-      // if we are here no handler was defined yet
-      // -> register handler
-      //if (Msg=LM_LBUTTONUP) then writeln('CONNECT ',ReqSignalMask,' Widget=',HexStr(Cardinal(AnObject),8));
-      if ConnectBefore then
-        gtk_signal_connect      (AnObject, ASignal,
-                                 TGTKSignalFunc(ACallBackProc),Sender)
-      else
-        gtk_signal_connect_after(AnObject, ASignal,
-                                 TGTKSignalFunc(ACallBackProc),Sender);
-      
-      // update signal mask which will be set in the realize handler
-      if ReqSignalMask <> 0 then begin
-        MainWidget:=GetMainWidget(PGtkWidget(AnObject));
-        if MainWidget=nil then
-          MainWidget:=PGtkWidget(AnObject);
-        WinWidgetInfo:=GetWidgetInfo(MainWidget,true);
-        WinWidgetInfo^.EventMask:=WinWidgetInfo^.EventMask or ReqSignalMask;
-      end;
-      // -> register realize handler
-      if (RealizeHandler = nil) and (RealizeID<>0) then begin
-        //writeln('REALIZE CONNECT Widget=',HexStr(Cardinal(AnObject),8));
-        gtk_signal_connect(AnObject, 'realize',
-          TGTKSignalFunc(@GTKRealizeCB), Sender);
-        gtk_signal_connect_after(AnObject, 'realize',
-          TGTKSignalFunc(@GTKRealizeAfterCB), Sender);
-      end;
-    end;
-  end;
-
-  procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
-    const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
-  begin
-    ConnectSignal(AnObject,ASignal,ACallBackProc,ReqSignalMask,true);
-  end;
-    
-  procedure ConnectSignalAfter(const AnObject:gtk_Object; const ASignal: PChar;
-    const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
-  begin
-    ConnectSignal(AnObject,ASignal,ACallBackProc,ReqSignalMask,false);
-  end;
-  
-  procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
+  procedure ConnectSenderSignal(const AnObject:gtk_Object; const ASignal: PChar;
     const ACallBackProc: Pointer);
   begin
-    ConnectSignal(AnObject,ASignal,ACallBackProc,0);
+    ConnectSignal(AnObject,ASignal,ACallBackProc,TComponent(Sender));
   end;
-  
-  procedure ConnectSignalAfter(const AnObject:gtk_Object; const ASignal: PChar;
-    const ACallBackProc: Pointer);
+
+  procedure ConnectSenderSignalAfter(const AnObject:gtk_Object;
+    const ASignal: PChar; const ACallBackProc: Pointer);
   begin
-    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,0);
+    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,TComponent(Sender));
+  end;
+
+  procedure ConnectSenderSignal(const AnObject:gtk_Object; const ASignal: PChar;
+    const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask);
+  begin
+    ConnectSignal(AnObject,ASignal,ACallBackProc,TComponent(Sender),
+                  ReqSignalMask);
+  end;
+
+  procedure ConnectSenderSignalAfter(const AnObject:gtk_Object;
+    const ASignal: PChar; const ACallBackProc: Pointer;
+    const ReqSignalMask: TGdkEventMask);
+  begin
+    ConnectSignalAfter(AnObject,ASignal,ACallBackProc,TComponent(Sender),
+                       ReqSignalMask);
   end;
 
 var
@@ -2077,88 +2006,88 @@ begin
   case Msg of
     LM_SHOWWINDOW :
     begin
-      ConnectSignal(gObject, 'show', @gtkshowCB);
-      ConnectSignal(gObject, 'hide', @gtkhideCB);
+      ConnectSenderSignal(gObject, 'show', @gtkshowCB);
+      ConnectSenderSignal(gObject, 'hide', @gtkhideCB);
     end;
 
     LM_DESTROY :
     begin
-      ConnectSignal(gObject, 'destroy', @gtkdestroyCB);
+      ConnectSenderSignal(gObject, 'destroy', @gtkdestroyCB);
     end;
     
     LM_CLOSEQUERY :
     begin
-      ConnectSignal(gObject, 'delete-event', @gtkdeleteCB);
+      ConnectSenderSignal(gObject, 'delete-event', @gtkdeleteCB);
     end;
 
     LM_ACTIVATE :
     begin
       if (Sender is TCustomForm) then
          Begin
-         ConnectSignal(gObject, 'focus-in-event', @gtkfrmactivate);
-         ConnectSignal(gObject, 'focus-out-event', @gtkfrmdeactivate);
+         ConnectSenderSignal(gObject, 'focus-in-event', @gtkfrmactivate);
+         ConnectSenderSignal(gObject, 'focus-out-event', @gtkfrmdeactivate);
          end
       else
-         ConnectSignal(gObject, 'activate', @gtkactivateCB);
+         ConnectSenderSignal(gObject, 'activate', @gtkactivateCB);
     end;
 
     LM_ACTIVATEITEM :
     begin
-      ConnectSignal(gObject, 'activate-item', @gtkactivateCB);
+      ConnectSenderSignal(gObject, 'activate-item', @gtkactivateCB);
     end;
 
     LM_CHANGED :
        if sender is TTrackBar then
        begin
-         ConnectSignal(gtk_Object(gtk_range_get_adjustment(GTK_RANGE(gObject))) , 'value_changed', @gtkvaluechanged);
+         ConnectSenderSignal(gtk_Object(gtk_range_get_adjustment(GTK_RANGE(gObject))) , 'value_changed', @gtkvaluechanged);
        end
        else
        if sender is TNotebook then
-         ConnectSignal(gObject, 'switch-page', @gtkswitchpage)
+         ConnectSenderSignal(gObject, 'switch-page', @gtkswitchpage)
        else
        if sender is TCustomCombobox then
-         ConnectSignal (PGtkObject(PGtkCombo(gobject)^.entry), 'changed', @gtkchangedCB)
+         ConnectSenderSignal (PGtkObject(PGtkCombo(gobject)^.entry), 'changed', @gtkchangedCB)
        else 
        if Sender is TCustomMemo then
-         ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))),'changed', @gtkchanged_editbox)
+         ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))),'changed', @gtkchanged_editbox)
        else
-         ConnectSignal(gObject, 'changed', @gtkchanged_editbox);
+         ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
 
     LM_CLICKED :
     begin
-      ConnectSignal(gObject, 'clicked', @gtkclickedCB);
+      ConnectSenderSignal(gObject, 'clicked', @gtkclickedCB);
     end;
 
     LM_CONFIGUREEVENT :
     begin
-      ConnectSignal(gObject, 'configure-event', @gtkconfigureevent);
+      ConnectSenderSignal(gObject, 'configure-event', @gtkconfigureevent);
     end;
     
     LM_DAYCHANGED :  //calendar
     Begin
-      ConnectSignal(gObject, 'day-selected', @gtkdaychanged);
-      ConnectSignal(gObject, 'day-selected-double-click', @gtkdaychanged);
+      ConnectSenderSignal(gObject, 'day-selected', @gtkdaychanged);
+      ConnectSenderSignal(gObject, 'day-selected-double-click', @gtkdaychanged);
     end;
 
     LM_PAINT :
     begin
-      ConnectSignal(gFixed, 'expose-event', @GTKExposeEvent);
-      ConnectSignal(gFixed, 'draw', @GTKDraw);
+      ConnectSenderSignal(gFixed, 'expose-event', @GTKExposeEvent);
+      ConnectSenderSignal(gFixed, 'draw', @GTKDraw);
     end;
 
     LM_FOCUS :
     begin
       if (sender is TCustomComboBox) then
          Begin
-          ConnectSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.entry), 'focus-in-event', @gtkFocusCB);
-          ConnectSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.entry), 'focus-out-event', @gtkKillFocusCB);
-          ConnectSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.list), 'focus-in-event', @gtkFocusCB);
-          ConnectSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.list), 'focus-out-event', @gtkKillFocusCB);
+          ConnectSenderSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.entry), 'focus-in-event', @gtkFocusCB);
+          ConnectSenderSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.entry), 'focus-out-event', @gtkKillFocusCB);
+          ConnectSenderSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.list), 'focus-in-event', @gtkFocusCB);
+          ConnectSenderSignal(PgtkObject(PgtkCombo(TCustomComboBox(sender).handle)^.list), 'focus-out-event', @gtkKillFocusCB);
          end
          else
          Begin
-          ConnectSignal(gObject, 'focus-in-event', @gtkFocusCB);
-          ConnectSignal(gObject, 'focus-out-event', @gtkKillFocusCB);
+          ConnectSenderSignal(gObject, 'focus-in-event', @gtkFocusCB);
+          ConnectSenderSignal(gObject, 'focus-out-event', @gtkKillFocusCB);
          end;
     end;
 
@@ -2170,16 +2099,16 @@ begin
     LM_SYSKEYUP:
     begin
       if (Sender is TComboBox) then Begin
-        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
+        ConnectSenderSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
           'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
+        ConnectSenderSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
           'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
       end
       else
       if (Sender is TCustomForm) then Begin
-        ConnectSignal(PgtkObject(TCustomForm(sender).handle),
+        ConnectSenderSignal(PgtkObject(TCustomForm(sender).handle),
           'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-        ConnectSignal(PgtkObject(TCustomForm(sender).handle),
+        ConnectSenderSignal(PgtkObject(TCustomForm(sender).handle),
           'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
       end
       else
@@ -2187,62 +2116,62 @@ begin
       
         //TODO:listbox is STILL not sendig keypress events even with these lines.
         
-        ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(
+        ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(
            TCustomListBox(Sender).Handle))), 'key-press-event', @GTKKeyUpDown,
            GDK_KEY_PRESS_MASK);
-        ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(
+        ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(
            TCustomListBox(Sender).Handle))), 'key-release-event', @GTKKeyUpDown,
            GDK_KEY_RELEASE_MASK);
       end;
-      ConnectSignal(gFixed, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-      ConnectSignal(gFixed, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+      ConnectSenderSignal(gFixed, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
+      ConnectSenderSignal(gFixed, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
     end;
     
     LM_MONTHCHANGED :  //calendar
     Begin
-      ConnectSignal(gObject, 'month-changed', @gtkmonthchanged);
-      ConnectSignal(gObject, 'prev-month', @gtkmonthchanged);
-      ConnectSignal(gObject, 'next-month', @gtkmonthchanged);
+      ConnectSenderSignal(gObject, 'month-changed', @gtkmonthchanged);
+      ConnectSenderSignal(gObject, 'prev-month', @gtkmonthchanged);
+      ConnectSenderSignal(gObject, 'next-month', @gtkmonthchanged);
     end;
 
     LM_PRESSED :
     begin
       Assert(False, 'Trace:OBSOLETE: [TGTKObject.SetCallback] LM_PRESSED');
-      ConnectSignal(gObject, 'pressed', @gtkpressedCB);
+      ConnectSenderSignal(gObject, 'pressed', @gtkpressedCB);
     end;
 
     LM_RELEASED :
     begin
       Assert(False, 'Trace:OBSOLETE: [TGTKObject.SetCallback] LM_RELEASED');
-      ConnectSignal(gObject, 'released', @gtkreleasedCB);
+      ConnectSenderSignal(gObject, 'released', @gtkreleasedCB);
     end;
 
     LM_MOVECURSOR :
     begin
-      ConnectSignal(gFixed, 'move-cursor', @gtkmovecursorCB);
+      ConnectSenderSignal(gFixed, 'move-cursor', @gtkmovecursorCB);
     end;
 
     LM_MOUSEMOVE:
     begin
       if (sender is TComboBox) then
       Begin
-        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
+        ConnectSenderSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
               'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
-        ConnectSignalAfter(
+        ConnectSenderSignalAfter(
               PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
               'motion-notify-event', @GTKMotionNotifyAfter,
               GDK_POINTER_MOTION_MASK);
-        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.button),
+        ConnectSenderSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.button),
               'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
-        ConnectSignalAfter(
+        ConnectSenderSignalAfter(
               PgtkObject(PgtkCombo(TComboBox(sender).handle)^.button),
               'motion-notify-event', @GTKMotionNotifyAfter,
               GDK_POINTER_MOTION_MASK);
       end
       else begin
-        ConnectSignal(gFixed, 'motion-notify-event', @GTKMotionNotify,
+        ConnectSenderSignal(gFixed, 'motion-notify-event', @GTKMotionNotify,
                       GDK_POINTER_MOTION_MASK);
-        ConnectSignalAfter(gFixed, 'motion-notify-event', @GTKMotionNotifyAfter,
+        ConnectSenderSignalAfter(gFixed, 'motion-notify-event', @GTKMotionNotifyAfter,
                       GDK_POINTER_MOTION_MASK);
       end;
     end;
@@ -2254,25 +2183,25 @@ begin
     begin
       if (sender is TCustomComboBox) then
       Begin
-        ConnectSignal(PgtkObject(PgtkCombo(gObject)^.entry),
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
               'button-press-event',  @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
-        ConnectSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry),
+        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry),
               'button-press-event',  @gtkMouseBtnPressAfter,
               GDK_BUTTON_PRESS_MASK);
-        ConnectSignal(PgtkObject(PgtkCombo(gObject)^.button) ,
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.button) ,
               'button-press-event', @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
-        ConnectSignalAfter(PgtkObject(PgtkCombo(gObject)^.button) ,
+        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.button) ,
               'button-press-event', @gtkMouseBtnPressAfter,
               GDK_BUTTON_PRESS_MASK);
         // Connecting the list seems to cause errors. Maybe we are returning the
         // wrong boolean in the callback func
-        // ConnectSignal(PgtkObject(PgtkCOmbo(gObject)^.list),
+        // ConnectSenderSignal(PgtkObject(PgtkCOmbo(gObject)^.list),
         //    'button-press-event',  @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
       end
       else begin
-        ConnectSignal(gFixed,'button-press-event', @gtkMouseBtnPress,
+        ConnectSenderSignal(gFixed,'button-press-event', @gtkMouseBtnPress,
                       GDK_BUTTON_PRESS_MASK);
-        ConnectSignalAfter(gFixed,'button-press-event', @gtkMouseBtnPressAfter,
+        ConnectSenderSignalAfter(gFixed,'button-press-event', @gtkMouseBtnPressAfter,
                       GDK_BUTTON_PRESS_MASK);
       end;
     end;
@@ -2283,27 +2212,27 @@ begin
     begin
       if (sender is TCustomComboBox) then
       Begin
-        ConnectSignal(PgtkObject(PgtkCombo(gObject)^.entry),
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'button-release-event',  @gtkMouseBtnRelease, GDK_BUTTON_RELEASE_MASK);
-        ConnectSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry),
+        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry),
           'button-release-event',  @gtkMouseBtnReleaseAfter,
           GDK_BUTTON_RELEASE_MASK);
-        ConnectSignal(PgtkObject(PgtkCombo(gObject)^.button) ,
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.button) ,
           'button-release-event', @gtkMouseBtnRelease, GDK_BUTTON_RELEASE_MASK);
-        ConnectSignalAfter(PgtkObject(PgtkCombo(gObject)^.button) ,
+        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.button) ,
           'button-release-event', @gtkMouseBtnReleaseAfter,
           GDK_BUTTON_RELEASE_MASK);
         // Connecting the list seems to cause errors. Maybe we are returning the
         // wrong boolean in the callback func
-        //  ConnectSignal(PgtkObject(PgtkCombo(gObject)^.list),
+        //  ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list),
         //                'button-release-event',  @gtkMouseBtnRelease,
         //                GDK_BUTTON_RELEASE_MASK);
       end
       else begin
         //writeln('AAA1 ',TControl(Sender).Name,':',Sender.ClassName,' Widget=',HexStr(Cardinal(gFixed),8));
-        ConnectSignal(gFixed, 'button-release-event', @gtkMouseBtnRelease,
+        ConnectSenderSignal(gFixed, 'button-release-event', @gtkMouseBtnRelease,
                       GDK_BUTTON_RELEASE_MASK);
-        ConnectSignalAfter(gFixed, 'button-release-event',
+        ConnectSenderSignalAfter(gFixed, 'button-release-event',
                            @gtkMouseBtnReleaseAfter,GDK_BUTTON_RELEASE_MASK);
       end;
     end;
@@ -2311,119 +2240,119 @@ begin
     LM_ENTER :
     begin
       if sender is TButton then
-         ConnectSignal(gObject, 'enter', @gtkenterCB)
+         ConnectSenderSignal(gObject, 'enter', @gtkenterCB)
       else
-         ConnectSignal(gObject, 'focus-in-event', @gtkFocusInNotifyCB); //TODO: check this focus in is mapped to focus
+         ConnectSenderSignal(gObject, 'focus-in-event', @gtkFocusInNotifyCB); //TODO: check this focus in is mapped to focus
     end;
 
     LM_EXIT :
     begin
       if sender is TButton then
-         ConnectSignal(gObject, 'leave', @gtkleaveCB)
+         ConnectSenderSignal(gObject, 'leave', @gtkleaveCB)
       else
-         ConnectSignal(gObject, 'focus-out-event', @gtkFocusOutNotifyCB);
+         ConnectSenderSignal(gObject, 'focus-out-event', @gtkFocusOutNotifyCB);
     end;
 
     LM_LEAVE :
     begin
-      ConnectSignal(gObject, 'leave', @gtkleaveCB);
+      ConnectSenderSignal(gObject, 'leave', @gtkleaveCB);
     end;
 
     LM_WINDOWPOSCHANGED: //LM_SIZEALLOCATE, LM_RESIZE :
     begin
-      ConnectSignal(gObject, 'size-allocate', @gtksize_allocateCB);
+      ConnectSenderSignal(gObject, 'size-allocate', @gtksize_allocateCB);
       if gObject<>gFixed then begin
-        ConnectSignal(gFixed, 'size-allocate', @gtksize_allocate_client);
+        ConnectSenderSignal(gFixed, 'size-allocate', @gtksize_allocate_client);
       end;
     end;
 
     LM_CHECKRESIZE :
     begin
-      ConnectSignal(gObject, 'check-resize', @gtkresizeCB);
+      ConnectSenderSignal(gObject, 'check-resize', @gtkresizeCB);
     end;
 
     LM_INSERTTEXT :
     begin
-      ConnectSignal(gObject, 'insert-text', @gtkinserttext);
+      ConnectSenderSignal(gObject, 'insert-text', @gtkinserttext);
     end;
 
     LM_DELETETEXT :
     begin
-      ConnectSignal(gObject, 'delete-text', @gtkdeletetext);
+      ConnectSenderSignal(gObject, 'delete-text', @gtkdeletetext);
     end;
 
     LM_SETEDITABLE :
     begin
-      ConnectSignal(gObject, 'set-editable', @gtkseteditable);
+      ConnectSenderSignal(gObject, 'set-editable', @gtkseteditable);
     end;
 
     LM_MOVEWORD :
     begin
-      ConnectSignal(gObject, 'move-word', @gtkmoveword);
+      ConnectSenderSignal(gObject, 'move-word', @gtkmoveword);
     end;
 
     LM_MOVEPAGE :
     begin
-      ConnectSignal(gObject, 'move-page', @gtkmovepage);
+      ConnectSenderSignal(gObject, 'move-page', @gtkmovepage);
     end;
 
     LM_MOVETOROW :
     begin
-      ConnectSignal(gObject, 'move-to-row', @gtkmovetorow);
+      ConnectSenderSignal(gObject, 'move-to-row', @gtkmovetorow);
     end;
 
     LM_MOVETOCOLUMN :
     begin
-      ConnectSignal(gObject, 'move-to-column', @gtkmovetocolumn);
+      ConnectSenderSignal(gObject, 'move-to-column', @gtkmovetocolumn);
     end;
 
     LM_KILLCHAR :
     begin
-      ConnectSignal(gObject, 'kill-char', @gtkkillchar);
+      ConnectSenderSignal(gObject, 'kill-char', @gtkkillchar);
     end;
 
     LM_KILLWORD :
     begin
-      ConnectSignal(gObject, 'kill-word', @gtkkillword);
+      ConnectSenderSignal(gObject, 'kill-word', @gtkkillword);
     end;
 
     LM_KILLLINE :
     begin
-      ConnectSignal(gObject, 'kill-line', @gtkkillline);
+      ConnectSenderSignal(gObject, 'kill-line', @gtkkillline);
     end;
 
     LM_CUTTOCLIP :
     begin
       if (sender is TCustomMemo) then
-      ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))), 'cut-clipboard', @gtkcuttoclip)
+      ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))), 'cut-clipboard', @gtkcuttoclip)
       else
-      ConnectSignal(gObject, 'cut-clipboard', @gtkcuttoclip);
+      ConnectSenderSignal(gObject, 'cut-clipboard', @gtkcuttoclip);
     end;
 
     LM_COPYTOCLIP :
     begin
       if (sender is TCustomMemo) then
-      ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))), 'copy-clipboard', @gtkcopytoclip)
+      ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))), 'copy-clipboard', @gtkcopytoclip)
       else
-      ConnectSignal(gObject, 'copy-clipboard', @gtkcopytoclip);
+      ConnectSenderSignal(gObject, 'copy-clipboard', @gtkcopytoclip);
     end;
 
     LM_PASTEFROMCLIP :
     begin
       if (sender is TCustomMemo) then
-      ConnectSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))), 'paste-clipboard', @gtkpastefromclip)
+      ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(TCustomMemo(sender).handle))), 'paste-clipboard', @gtkpastefromclip)
       else
-      ConnectSignal(gObject, 'paste-clipboard', @gtkpastefromclip);
+      ConnectSenderSignal(gObject, 'paste-clipboard', @gtkpastefromclip);
     end;
 
     LM_HSCROLL:
     begin
       //if Sender is TCustomListView
       //then begin
-      //  ConnectSignal(gObject, 'scroll-horizontal', @gtkLVHScroll);
+      //  ConnectSenderSignal(gObject, 'scroll-horizontal', @gtkLVHScroll);
       //end
       //else begin
-        ConnectSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
+        ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
                         PGTKScrolledWindow(gObject))),
                       'value-changed', @GTKHScrollCB);
       //end;
@@ -2433,10 +2362,10 @@ begin
     begin
       //if Sender is TCustomListView
       //then begin
-      //  ConnectSignal(gObject, 'scroll-vertical', @gtkLVVScroll);
+      //  ConnectSenderSignal(gObject, 'scroll-vertical', @gtkLVVScroll);
       //end
       //else begin
-        ConnectSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(
+        ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(
                         PGTKScrolledWindow(gObject))),
                       'value-changed', @GTKVScrollCB);
       //end;
@@ -2444,8 +2373,8 @@ begin
     
     LM_YEARCHANGED :  //calendar
     Begin
-      ConnectSignal(gObject, 'prev-year', @gtkyearchanged);
-      ConnectSignal(gObject, 'next-year', @gtkyearchanged);
+      ConnectSenderSignal(gObject, 'prev-year', @gtkyearchanged);
+      ConnectSenderSignal(gObject, 'next-year', @gtkyearchanged);
     end;    
     
     // Listview & Header control
@@ -2456,46 +2385,46 @@ begin
     HDN_ENDTRACK, 
     HDN_TRACK:
     begin
-      ConnectSignal(gObject, 'resize-column', @gtkLVResizeColumn);
-      ConnectSignal(gObject, 'abort-column-resize', @gtkLVAbortColumnResize);
+      ConnectSenderSignal(gObject, 'resize-column', @gtkLVResizeColumn);
+      ConnectSenderSignal(gObject, 'abort-column-resize', @gtkLVAbortColumnResize);
     end;
      
     HDN_ITEMCHANGED,
     HDN_ITEMCHANGING: 
     begin
-      ConnectSignal(gObject, 'resize-column', @gtkLVResizeColumn);
+      ConnectSenderSignal(gObject, 'resize-column', @gtkLVResizeColumn);
     end;
 
 //    HDN_ITEMDBLCLICK 
     HDN_ITEMCLICK,
     LVN_COLUMNCLICK: 
     begin
-      ConnectSignal(gCore, 'click-column', @gtkLVClickColumn);
+      ConnectSenderSignal(gCore, 'click-column', @gtkLVClickColumn);
     end;
 
 //    LVN_DELETEALLITEMS,
     LVN_DELETEITEM, 
     LVN_INSERTITEM:
     begin
-      ConnectSignal(gCore, 'row-move', @gtkLVRowMove);
+      ConnectSenderSignal(gCore, 'row-move', @gtkLVRowMove);
     end;
 
     LVN_ITEMCHANGED,
     LVN_ITEMCHANGING: 
     begin
-      ConnectSignal(gCore, 'select-row', @gtkLVSelectRow);
-      ConnectSignal(gCore, 'unselect-row', @gtkLVUnSelectRow);
-      ConnectSignal(gCore, 'toggle-focus-row', @gtkLVToggleFocusRow);
-      ConnectSignal(gCore, 'select-all', @gtkLVSelectAll);
-      ConnectSignal(gCore, 'unselect-all', @gtkLVUnSelectAll);
-      ConnectSignal(gCore, 'end-selection', @gtkLVEndSelection);
+      ConnectSenderSignal(gCore, 'select-row', @gtkLVSelectRow);
+      ConnectSenderSignal(gCore, 'unselect-row', @gtkLVUnSelectRow);
+      ConnectSenderSignal(gCore, 'toggle-focus-row', @gtkLVToggleFocusRow);
+      ConnectSenderSignal(gCore, 'select-all', @gtkLVSelectAll);
+      ConnectSenderSignal(gCore, 'unselect-all', @gtkLVUnSelectAll);
+      ConnectSenderSignal(gCore, 'end-selection', @gtkLVEndSelection);
     end;
     
 (*
     LM_WINDOWPOSCHANGED:
     begin
-      ConnectSignal(gObject, 'size-allocate', @gtkSizeAllocateCB);
-//      ConnectSignal(gObject, 'move_resize', @gtkmoveresize);
+      ConnectSenderSignal(gObject, 'size-allocate', @gtkSizeAllocateCB);
+//      ConnectSenderSignal(gObject, 'move_resize', @gtkmoveresize);
     end; 
 *)
   else
@@ -5350,6 +5279,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.166  2002/08/19 18:00:02  lazarus
+  MG: design signals for gtk internal widgets
+
   Revision 1.165  2002/08/17 15:45:34  lazarus
   MG: removed ClientRectBugfix defines
 
