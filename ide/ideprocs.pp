@@ -1215,7 +1215,7 @@ end;
   Params: const Option: string
   Result: string
 
-  If there is a space in the option add " "
+  If there is a space in the option add " " around the whole option
 -------------------------------------------------------------------------------}
 function PrepareCmdLineOption(const Option: string): string;
 var i: integer;
