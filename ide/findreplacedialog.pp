@@ -23,8 +23,8 @@ unit findreplacedialog;
 interface
 
 uses
-  Classes, SysUtils, Controls, StdCtrls, Forms, Buttons, ExtCtrls, LResources,
-  LCLLinux, XMLCfg, SynEdit;
+  Classes, SysUtils, LCLLinux, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
+  LResources, SynEdit;
 
 type
   TLazFindReplaceDialog = class(TFORM)

@@ -338,9 +338,7 @@ type
      Edit1 : TEdit;
      btnOK : TBitbtn;
      btnCancel : TBitBtn;
-    procedure Edit1KeyDown(Sender: TObject; var Key:Word;
-       Shift:TShiftState);
-   private
+     procedure Edit1KeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
    public
      constructor Create(AOwner : TComponent); override;
    end;
@@ -351,7 +349,8 @@ uses
   LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts;
 
 type
-  TCompletionType = (ctNone, ctWordCompletion, ctTemplateCompletion, ctCodeCompletion);
+  TCompletionType = (ctNone, ctWordCompletion, ctTemplateCompletion,
+                     ctCodeCompletion);
 
 const
   TSrcEditMarkerImgIndex: array[TSrcEditMarkerType] of integer = (
@@ -379,7 +378,6 @@ var
 
 constructor TSourceEditor.Create(AOwner : TComponent; AParent : TWinControl);
 Begin
-writeln('TSourceEditor.create 1');
   inherited Create;
   FAOwner := AOwner;
 
@@ -388,16 +386,14 @@ writeln('TSourceEditor.create 1');
   FExecutionLine:=-1;
 
   FControl := nil;
-writeln('TSourceEditor.create 2');
   CreateEditor(AOwner,AParent);
-writeln('TSourceEditor.create end');
 end;
 
 destructor TSourceEditor.Destroy;
 begin
 writeln('TSourceEditor.Destroy');
   FEditor.Free;
-  inherited;
+  inherited Destroy;
 end;
 
 {------------------------------G O T O   L I N E  -----------------------------}
@@ -779,14 +775,16 @@ Writeln('[ProcessUserCommand]  --------------');
      end;
 
   ecGotoLineNumber :
-    if (GotoDialog.ShowModal = mrOK) then
-     Begin
-       try
-         GotoLine(StrToInt(GotoDialog.Edit1.Text));
-       except
-         GotoLine(0);
-       end;
-     end;
+    begin 
+      GotoDialog.Edit1.Text:='';
+      if (GotoDialog.ShowModal = mrOK) then begin
+        try
+          GotoLine(StrToInt(GotoDialog.Edit1.Text));
+        except
+          GotoLine(0);
+        end;
+      end;
+    end;
 
   ecPeriod :
     Begin
