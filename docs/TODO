@@ -253,14 +253,6 @@ Contents:
   Doublebuffering
     State: not implemented in gtk1. This is a feature for the gtk2 interface
     
-  Paint Messages with clipping area
-    State: At the moment paint messages are collected and only sent after all
-           other messages. This reduces flickering in general. But the paint
-           messages dont reduce the clipping area and so all TControls without
-           handle redraws everytime.
-    Skills: deep knowledge of LCL, gtk-interface and gtk
-    Difficulty: high
-
 
 -------------------------------------------------------------------------------
 1.4 gtk2 interface
