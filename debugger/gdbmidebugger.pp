@@ -48,7 +48,12 @@ type
     SignalText: String;  // Signal text if we hit one
   end;
 
-  TGDBMICmdFlags = set of (cfNoMiCommand, cfIgnoreState, cfIgnoreError, cfExternal);
+  TGDBMICmdFlags = set of (
+    cfNoMiCommand, // the command is not a MI command
+    cfIgnoreState, // ignore the result state of the command
+    cfIgnoreError, // ignore errors
+    cfExternal     // the command is a result from a user action
+  );
   TGDBMICallback = procedure(var AResultState: TDBGState; var AResultValues: String; const ATag: Integer) of object;
   TGDBMIPauseWaitState = (pwsNone, pwsInternal, pwsExternal);
 
@@ -65,6 +70,7 @@ type
     FPauseWaitState: TGDBMIPauseWaitState;
     FInExecuteCount: Integer;
     // Implementation of external functions
+    function  GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
     function  GDBEvaluate(const AExpression: String; var AResult: String): Boolean;
     function  GDBRun: Boolean;
     function  GDBPause(const AInternal: Boolean): Boolean;
@@ -565,6 +571,22 @@ begin
   Result := nil;
 end;
 
+function TGDBMIDebugger.GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
+var
+  S: String;
+begin
+  Result := True;
+
+  if State = dsRun
+  then GDBPause(True);
+  if ASet
+  then ExecuteCommand('-gdb-set env %s', [AVariable], [cfIgnoreState, cfExternal])
+  else begin
+    S := AVariable;
+    ExecuteCommand('unset env %s', [GetPart([], ['='], S, False, False)], [cfNoMiCommand, cfIgnoreState, cfExternal]);
+  end;
+end;
+
 function TGDBMIDebugger.GDBEvaluate(const AExpression: String;
   var AResult: String): Boolean;
 var
@@ -789,7 +811,7 @@ end;
 function TGDBMIDebugger.GetSupportedCommands: TDBGCommands;
 begin
   Result := [dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto,
-             dcBreak{, dcWatch}, dcLocal, dcEvaluate, dcModify]
+             dcBreak{, dcWatch}, dcLocal, dcEvaluate, dcModify, dcEnvironment]
 end;
 
 procedure TGDBMIDebugger.Init;
@@ -1256,6 +1278,7 @@ begin
     dcRunTo:    Result := GDBRunTo(String(APArams[0].VAnsiString), APArams[1].VInteger);
     dcJumpto:   Result := GDBJumpTo(String(APArams[0].VAnsiString), APArams[1].VInteger);
     dcEvaluate: Result := GDBEvaluate(String(APArams[0].VAnsiString), String(APArams[1].VPointer^));
+    dcEnvironment: Result := GDBEnvironment(String(APArams[0].VAnsiString), AParams[1].VBoolean);
   end;
 end;
 
@@ -2025,6 +2048,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.35  2003/08/02 00:20:20  marc
+  * fixed environment handling to debuggee
+
   Revision 1.34  2003/07/30 23:15:39  marc
   * Added RegisterDebugger
 

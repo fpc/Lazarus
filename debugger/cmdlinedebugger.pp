@@ -153,6 +153,15 @@ begin
   Result := 0;
 {$ENDIF}
 end;
+
+procedure SetPGid(APID, APGID: Integer);
+var
+  sr: SyscallRegs;
+begin
+  sr.reg2 := APID;
+  sr.reg3 := APGID;
+  SysCall(Syscall_nr_setpgid, sr);
+end;
   
 //////////////////////////////////////////////////
 
@@ -175,9 +184,9 @@ begin
   then begin
     FDbgProcess := TProcess.Create(nil);
     FDbgProcess.CommandLine := ExternalDebugger + ' ' + AOptions;
-    FDbgProcess.Options:= [poUsePipes, {poNoConsole,} poStdErrToOutPut];
+    FDbgProcess.Options:= [poUsePipes, {poNoConsole,} poStdErrToOutPut, poNewProcessGroup];
     FDbgProcess.ShowWindow := swoNone;
-    FDbgProcess.Environment:=Environment;
+    FDbgProcess.Environment := DebuggerEnvironment;
   end;
   if not FDbgProcess.Running 
   then begin
@@ -366,9 +375,15 @@ begin
   SendCmdLn(ACommand);
 end;
 
+initialization
+//  setpgid(0, 0);
+
 end.
 { =============================================================================
   $Log$
+  Revision 1.18  2003/08/02 00:20:20  marc
+  * fixed environment handling to debuggee
+
   Revision 1.17  2003/07/24 08:47:37  marc
   + Added SSHGDB debugger
 

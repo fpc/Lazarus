@@ -59,7 +59,8 @@ type
     dcWatch,
     dcLocal,
     dcEvaluate,
-    dcModify
+    dcModify,
+    dcEnvironment
     );
   TDBGCommands = set of TDBGCommand;
   
@@ -796,6 +797,8 @@ type
   private
     FArguments: String;
     FBreakPoints: TDBGBreakPoints;
+    FDebuggerEnvironment: TStrings;
+    FCurEnvironment: TStrings;
     FEnvironment: TStrings;
     FExceptions: TDBGExceptions;
     FExitCode: Integer;
@@ -813,9 +816,12 @@ type
     FOnDbgOutput: TDBGOutputEvent;
     FOnState: TDebuggerStateChangedEvent;
     FWorkingDir: String;
+    procedure DebuggerEnvironmentChanged(Sender: TObject);
+    procedure EnvironmentChanged(Sender: TObject);
     function  GetState: TDBGState;
     function  ReqCmd(const ACommand: TDBGCommand;
                      const AParams: array of const): Boolean;
+    procedure SetDebuggerEnvironment (const AValue: TStrings );
     procedure SetEnvironment(const AValue: TStrings);
     procedure SetFileName(const AValue: String);
   protected
@@ -857,8 +863,8 @@ type
     procedure Stop;                                  // quit debugging
     procedure StepOver;
     procedure StepInto;
-    procedure RunTo(const ASource: String; const ALine: Integer); virtual;       // Executes til a certain point
-    procedure JumpTo(const ASource: String; const ALine: Integer); virtual;      // No execute, only set exec point
+    procedure RunTo(const ASource: String; const ALine: Integer);                // Executes til a certain point
+    procedure JumpTo(const ASource: String; const ALine: Integer);               // No execute, only set exec point
 
     function  Evaluate(const AExpression: String; var AResult: String): Boolean; // Evaluates the given expression, returns true if valid
     function  Modify(const AExpression, AValue: String): Boolean;                // Modifies the given expression, returns true if valid
@@ -869,10 +875,12 @@ type
     property BreakPoints: TDBGBreakPoints read FBreakPoints;                     // list of all breakpoints
     property CallStack: TDBGCallStack read FCallStack;
     property Commands: TDBGCommands read GetCommands;                            // All current available commands of the debugger
-    property Environment: TStrings read FEnvironment write SetEnvironment;
+    property DebuggerEnvironment: TStrings read FDebuggerEnvironment
+                                           write SetDebuggerEnvironment;         // The environment passed to the debugger process
+    property Environment: TStrings read FEnvironment write SetEnvironment;       // The environment passed to the debuggee
     property Exceptions: TDBGExceptions read FExceptions;                        // A list of exceptions we should ignore
     property ExitCode: Integer read FExitCode;
-    property ExternalDebugger: String read FExternalDebugger;
+    property ExternalDebugger: String read FExternalDebugger;                    // The name of the debugger executable
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
     property Locals: TDBGLocals read FLocals;
     property Signals: TDBGSignals read FSignals;                                 // A list of actions for signals we know
@@ -902,7 +910,8 @@ const
     'Watch',
     'Local',
     'Evaluate',
-    'Modify'
+    'Modify',
+    'Environment'
     );
     
   DBGStateNames: array[TDBGState] of string = (
@@ -934,12 +943,12 @@ implementation
 const
   COMMANDMAP: array[TDBGState] of TDBGCommands = (
   {dsNone } [],
-  {dsIdle } [],
+  {dsIdle } [dcEnvironment],
   {dsStop } [dcRun, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch,
-             dcEvaluate],
+             dcEvaluate, dcEnvironment],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak,
-             dcWatch, dcLocal, dcEvaluate, dcModify],
-  {dsRun  } [dcPause, dcStop, dcBreak, dcWatch],
+             dcWatch, dcLocal, dcEvaluate, dcModify, dcEnvironment],
+  {dsRun  } [dcPause, dcStop, dcBreak, dcWatch, dcEnvironment],
   {dsError} [dcStop]
   );
 
@@ -1016,6 +1025,8 @@ begin
 end;
 
 constructor TDebugger.Create(const AExternalDebugger: String);
+var
+  list: TStringList;
 begin
   inherited Create;
   FOnState := nil;
@@ -1026,7 +1037,20 @@ begin
   FArguments := '';
   FFilename := '';
   FExternalDebugger := AExternalDebugger;
-  FEnvironment := TStringList.Create;
+
+  list := TStringList.Create;
+  list.Sorted := True;
+  list.Duplicates := dupIgnore;
+  list.OnChange := @DebuggerEnvironmentChanged;
+  FDebuggerEnvironment := list;
+
+  list := TStringList.Create;
+  list.Sorted := True;
+  list.Duplicates := dupIgnore;
+  list.OnChange := @EnvironmentChanged;
+  FEnvironment := list;
+  FCurEnvironment := TStringList.Create;
+
   FBreakPoints := CreateBreakPoints;
   FLocals := CreateLocals;
   FCallStack := CreateCallStack;
@@ -1066,6 +1090,10 @@ begin
   Result := TDBGWatches.Create(Self, TDBGWatch);
 end;
 
+procedure TDebugger.DebuggerEnvironmentChanged (Sender: TObject );
+begin
+end;
+
 destructor TDebugger.Destroy;
 begin
   // don't call events
@@ -1086,13 +1114,17 @@ begin
   FreeAndNil(FLocals);
   FreeAndNil(FCallStack);
   FreeAndNil(FWatches);
+  FreeAndNil(FDebuggerEnvironment);
   FreeAndNil(FEnvironment);
+  FreeAndNil(FCurEnvironment);
   FreeAndNil(FSignals);
   inherited;
 end;
 
 procedure TDebugger.Done;
 begin
+  FEnvironment.Clear;
+  FCurEnvironment.Clear;
   SetState(dsNone);
 end;
 
@@ -1122,6 +1154,41 @@ end;
 procedure TDebugger.DoState(const OldState: TDBGState);
 begin
   if Assigned(FOnState) then FOnState(Self,OldState);
+end;
+
+procedure TDebugger.EnvironmentChanged(Sender: TObject);
+var
+  n, idx: integer;
+  S: String;
+  Env: TStringList;
+begin
+  // Createe local copy
+  Env := TStringList.Create;
+  try
+    Env.Assign(Environment);
+
+    // Check for nonexisting and unchanged vars
+    for n := 0 to FCurEnvironment.Count - 1 do
+    begin
+      S := FCurEnvironment[n];
+      idx := Env.IndexOfName(GetPart([], ['='], S, False, False));
+      if idx = -1
+      then ReqCmd(dcEnvironment, [S, False])
+      else begin
+        if Env[idx] = S
+        then Env.Delete(idx);
+      end;
+    end;
+    
+    // Set the remaining
+    for n := 0 to Env.Count - 1 do
+    begin
+      ReqCmd(dcEnvironment, [Env[n], True]);
+    end;
+  finally
+    Env.Free;
+  end;
+  FCurEnvironment.Assign(FEnvironment);
 end;
 
 function TDebugger.Evaluate(const AExpression: String;
@@ -1188,11 +1255,6 @@ begin
   else Result := False;
 end;
 
-procedure TDebugger.SetEnvironment(const AValue: TStrings);
-begin
-  FEnvironment.Assign(AValue);
-end;
-
 procedure TDebugger.Run;
 begin
   ReqCmd(dcRun, []);
@@ -1201,6 +1263,16 @@ end;
 procedure TDebugger.RunTo(const ASource: String; const ALine: Integer);
 begin
   ReqCmd(dcRunTo, [ASource, ALine]);
+end;
+
+procedure TDebugger.SetDebuggerEnvironment (const AValue: TStrings );
+begin
+  FDebuggerEnvironment.Assign(AValue);
+end;
+
+procedure TDebugger.SetEnvironment(const AValue: TStrings);
+begin
+  FEnvironment.Assign(AValue);
 end;
 
 procedure TDebugger.SetExitCode(const AValue: Integer);
@@ -3027,6 +3099,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.49  2003/08/02 00:20:20  marc
+  * fixed environment handling to debuggee
+
   Revision 1.48  2003/07/30 23:15:39  marc
   * Added RegisterDebugger
 
