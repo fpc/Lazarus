@@ -545,6 +545,7 @@ type
     property OnPaint;
     property OnResize;
     property Picture;
+    property PopupMenu;
     property Proportional;
     property Stretch;
     property Transparent;
@@ -992,6 +993,9 @@ end.
 
  {
   $Log$
+  Revision 1.133  2005/03/07 00:52:51  mattias
+  various Delphi compatibilities  from C Western
+
   Revision 1.132  2005/01/29 14:36:04  mattias
   reactivated fast xml units without widestrings
 

@@ -266,6 +266,7 @@ type
     procedure MenuChanged(Sender: TObject; Source: TMenuItem;
                           Rebuild: Boolean); virtual;
     property OnChange: TMenuChangeEvent read FOnChange write FOnChange;
+    procedure SetChildOrder(Child: TComponent; Order: Integer); override;
     procedure UpdateItems;
   public
     FCompStyle: LongInt;
@@ -405,6 +406,9 @@ end.
 
 {
   $Log$
+  Revision 1.78  2005/03/07 00:52:51  mattias
+  various Delphi compatibilities  from C Western
+
   Revision 1.77  2005/02/03 15:10:23  micha
   implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
 

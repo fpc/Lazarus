@@ -172,11 +172,13 @@ type
     FMargin: integer;
     FSpacing: Integer;
     Function GetGlyph: TBitmap;
+    function GetNumGlyphs: Integer;
     Function IsGlyphStored: Boolean;
     Procedure SetGlyph(AValue: TBitmap);
     Procedure SetKind(AValue: TBitBtnKind);
     Procedure SetLayout(AValue: TButtonLayout);
     procedure SetMargin(const AValue: integer);
+    procedure SetNumGlyphs(AValue: Integer);
     Procedure SetSpacing(AValue: Integer);
     procedure RealizeKind;
 
@@ -192,6 +194,7 @@ type
     destructor Destroy; Override;
   public
     property Glyph: TBitmap read GetGlyph write SetGlyph stored IsGlyphStored;
+    property NumGlyphs: Integer read GetNumGlyphs write SetNumGlyphs default 1;
     property Kind: TBitBtnKind read FKind write SetKind default bkCustom;
     property Layout: TButtonLayout read FLayout write SetLayout default blGlyphLeft;
     property Margin: integer read FMargin write SetMargin default -1;
@@ -351,6 +354,7 @@ type
     property OnResize;
     property OnChangeBounds;
     property ShowHint;
+    property ParentFont;
     property ParentShowHint;
     property PopupMenu;
   end;
@@ -393,6 +397,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.91  2005/03/07 00:52:51  mattias
+  various Delphi compatibilities  from C Western
+
   Revision 1.90  2005/02/19 21:54:08  mattias
   moved LCL navigation key handling to key up, so that interface has the chance to handle keys
 

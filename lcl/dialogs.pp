@@ -52,6 +52,7 @@ type
    
 const
   mbYesNoCancel = [mbYes, mbNo, mbCancel];
+  mbYesNo = [mbYes, mbNo];
   mbOKCancel = [mbOK, mbCancel];
   mbAbortRetryIgnore = [mbAbort, mbRetry, mbIgnore];
   
@@ -89,7 +90,6 @@ type
     constructor Create(TheOwner: TComponent); override;
     function Execute: boolean; virtual;
     property Handle: THandle read FHandle write SetHandle;
-    property Title: string read FTitle write FTitle;
     property UserChoice: integer read FUserChoice write FUserChoice;
     procedure Close; virtual;
     procedure DoShow; virtual;
@@ -102,6 +102,7 @@ type
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property Width: integer read FWidth write SetWidth;
     property Height: integer read FHeight write SetHeight;
+    property Title: string read FTitle write FTitle;
   end;
 
 
@@ -304,6 +305,13 @@ type
   end;
   
   
+{ TFindDialog }
+  
+  TFindOption = (frDown, frFindNext, frHideMatchCase, frHideWholeWord,
+                 frHideUpDown, frMatchCase, frDisableMatchCase, frDisableUpDown,
+                 frDisableWholeWord, frReplace, frReplaceAll, frWholeWord, frShowHelp);
+  TFindOptions = set of TFindOption;
+
 { MessageDlg }
 
 function MessageDlg(const aMsg: string; DlgType: TMsgDlgType;
@@ -423,6 +431,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.60  2005/03/07 00:52:51  mattias
+  various Delphi compatibilities  from C Western
+
   Revision 1.59  2005/02/05 16:09:52  marc
   * first 64bit changes
 

@@ -119,6 +119,7 @@ type
     FPanels : TStatusPanels;
     FSimpleText : String;
     FSimplePanel : Boolean;
+    FOnHint: TNotifyEvent;
     procedure SetPanels(Value: TStatusPanels);
     procedure SetSimpleText(const Value : String);
     procedure SetSimplePanel(Value : Boolean);
@@ -142,6 +143,9 @@ type
     property SimplePanel: Boolean read FSimplePanel write SetSimplePanel default True;
     property Visible default true;
     property Color default clBtnFace;
+    property OnDblClick;
+    property OnHint: TNotifyEvent read FOnHint write FOnHint;
+    property OnMouseDown;
   end;
 
 
@@ -2404,6 +2408,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.170  2005/03/07 00:52:51  mattias
+  various Delphi compatibilities  from C Western
+
   Revision 1.169  2005/03/05 23:00:16  mattias
   adding panels to statusbar during designing now sets SimplePanel:=false
 

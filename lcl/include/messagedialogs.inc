@@ -32,14 +32,14 @@
 }
 Function ModalEscapeValue(Buttons : TMsgDlgButtons) : TModalResult;
 begin
-  If mbNo in Buttons then
-    Result := mrNo
+  If mbCancel in Buttons then
+    Result := mrCancel
+  else
+    If mbNo in Buttons then
+      Result := mrNo
   else
     If mbAbort in Buttons then
       Result := mrAbort
-  else
-    If mbCancel in Buttons then
-      Result := mrCancel
   else
     If mbIgnore in Buttons then
       Result := mrIgnore
@@ -257,6 +257,9 @@ end;
 
 {
    $Log$
+   Revision 1.27  2005/03/07 00:52:51  mattias
+   various Delphi compatibilities  from C Western
+
    Revision 1.26  2004/09/14 21:30:37  vincents
    replaced writeln by DebugLn
 

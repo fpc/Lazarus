@@ -61,6 +61,11 @@ Begin
   Result := FButtonGlyph.Glyph;
 end;
 
+function TCustomBitBtn.GetNumGlyphs: Integer;
+begin
+  Result := FButtonGlyph.FNumGlyphs;
+end;
+
 Function TCustomBitBtn.IsGlyphStored: Boolean;
 begin
   Result := (Kind = bkCustom) and (FButtonGlyph.Glyph <> nil)
@@ -130,6 +135,19 @@ begin
   FMargin := AValue;
   if HandleAllocated 
   then TWSBitBtnClass(WidgetSetClass).SetMargin(Self, FMargin);
+end;
+
+procedure TCustomBitBtn.SetNumGlyphs(AValue: Integer);
+begin
+  if AValue < 0 then AValue := 1;
+  if AValue > 4 then AValue := 4;
+
+  if AValue <> FButtonGlyph.NumGlyphs then
+  Begin
+    FButtonGlyph.NumGlyphs :=  TNumGlyphs(AValue);
+    Invalidate;
+  end;
+
 end;
 
 Procedure TCustomBitBtn.SetSpacing(AValue: Integer);

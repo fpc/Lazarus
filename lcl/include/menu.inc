@@ -194,6 +194,11 @@ begin
     DoChange(Source, Rebuild);
 end;
 
+procedure TMenu.SetChildOrder(Child: TComponent; Order: Integer);
+begin
+  (Child as TMenuItem).MenuIndex := Order;
+end;
+
 procedure TMenu.UpdateItems;
 {
   function UpdateItem(MenuItem: TMenuItem): Boolean;
@@ -262,6 +267,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2005/03/07 00:52:51  mattias
+  various Delphi compatibilities  from C Western
+
   Revision 1.30  2005/02/03 15:10:23  micha
   implement shortcut handling, tcustomlabel accelerator focuscontrol functionality
 
