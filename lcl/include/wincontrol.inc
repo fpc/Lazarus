@@ -96,6 +96,9 @@ var
     MaxWidth: Integer;
     MinHeight: Integer;
     MaxHeight: Integer;
+    CurRemainingClientRect: TRect;
+    CurRemainingBorderSpace: TRect;
+    ChildAroundSpace: TRect;
 
     function ConstraintWidth(NewWidth: integer): integer;
     begin
@@ -271,6 +274,14 @@ var
       }
       NewRight:=NewLeft+NewWidth;
       NewBottom:=NewTop+NewHeight;
+
+      // calculate current RemainingClientRect for the current Control
+      CurRemainingClientRect:=RemainingClientRect;
+      CurRemainingBorderSpace:=RemainingBorderSpace;
+      Control.BorderSpacing.GetSpaceAround(ChildAroundSpace);
+      AdjustBorderSpace(CurRemainingClientRect,CurRemainingBorderSpace,
+                        ChildAroundSpace);
+
       {$IFDEF CHECK_POSITION}
       if AnsiCompareText(Control.ClassName,'TScrollBar')=0 then
         DebugLn(' Before aligning  akRight in AnchorAlign[AAlign]=',akRight in AnchorAlign[AAlign],
@@ -281,32 +292,32 @@ var
       if akLeft in AnchorAlign[AAlign] then begin
         if (akRight in (Control.Anchors+AnchorAlign[AAlign])) then begin
           // left align and keep right border
-          NewLeft:=RemainingClientRect.Left;
+          NewLeft:=CurRemainingClientRect.Left;
           NewRight:=NewLeft+ConstraintWidth(NewRight-NewLeft);
         end else begin
           // left align and right border free to move (-> keep width)
           dec(NewRight,NewLeft-RemainingClientRect.Left);
-          NewLeft:=RemainingClientRect.Left;
+          NewLeft:=CurRemainingClientRect.Left;
         end;
       end;
       if akTop in AnchorAlign[AAlign] then begin
         if (akBottom in (Control.Anchors+AnchorAlign[AAlign])) then begin
           // top align and keep bottom border
-          NewTop:=RemainingClientRect.Top;
+          NewTop:=CurRemainingClientRect.Top;
           NewBottom:=NewTop+ConstraintHeight(NewBottom-NewTop);
         end else begin
           // top align and bottom border is free to move (-> keep height)
           dec(NewBottom,NewTop-RemainingClientRect.Top);
-          NewTop:=RemainingClientRect.Top;
+          NewTop:=CurRemainingClientRect.Top;
         end;
       end;
       if akRight in AnchorAlign[AAlign] then begin
         if (akLeft in (Control.Anchors+AnchorAlign[AAlign])) then begin
           // right align and keep left border
-          NewWidth:=ConstraintWidth(RemainingClientRect.Right-NewLeft);
+          NewWidth:=ConstraintWidth(CurRemainingClientRect.Right-NewLeft);
           if AAlign=alRight then begin
             // align to right (this overrides the keeping of left border)
-            NewRight:=RemainingClientRect.Right;
+            NewRight:=CurRemainingClientRect.Right;
             NewLeft:=NewRight-NewWidth;
           end else begin
             // keep left border overrides keeping right border
@@ -314,17 +325,17 @@ var
           end;
         end else begin
           // right align and left border free to move (-> keep width)
-          inc(NewLeft,RemainingClientRect.Right-NewRight);
-          NewRight:=RemainingClientRect.Right;
+          inc(NewLeft,CurRemainingClientRect.Right-NewRight);
+          NewRight:=CurRemainingClientRect.Right;
         end;
       end;
       if akBottom in AnchorAlign[AAlign] then begin
         if (akTop in (Control.Anchors+AnchorAlign[AAlign])) then begin
           // bottom align and keep top border
-          NewHeight:=ConstraintHeight(RemainingClientRect.Bottom-NewTop);
+          NewHeight:=ConstraintHeight(CurRemainingClientRect.Bottom-NewTop);
           if AAlign=alBottom then begin
             // align to bottom (this overrides the keeping of top border)
-            NewBottom:=RemainingClientRect.Bottom;
+            NewBottom:=CurRemainingClientRect.Bottom;
             NewTop:=NewBottom-NewHeight;
           end else begin
             // keeping top border overrides keeping bottom border
@@ -332,8 +343,8 @@ var
           end;
         end else begin
           // bottom align and top border free to move (-> keep height)
-          inc(NewTop,RemainingClientRect.Bottom-NewBottom);
-          NewBottom:=RemainingClientRect.Bottom;
+          inc(NewTop,CurRemainingClientRect.Bottom-NewBottom);
+          NewBottom:=CurRemainingClientRect.Bottom;
         end;
       end;
       NewWidth:=Max(0,NewRight-NewLeft);
@@ -384,25 +395,44 @@ var
     end;
 
     // adjust the remaining client area
-    with RemainingClientRect do begin
-      case AAlign of
-        alTop:
-          Inc(Top, NewHeight);
-        alBottom:
-          begin
-            Dec(Bottom, NewHeight);
-            NewTop := Bottom;
-          end;
-        alLeft:
-          Inc(Left, NewWidth);
-        alRight:
-          begin
-            Dec(Right, NewWidth);
-            NewLeft := Right;
-          end;
-        alClient:
-          ; // VCL is tricking here. Have to discuss this on the list ...
-      end;
+    case AAlign of
+      alTop:
+        begin
+          RemainingClientRect.Top:=NewTop+NewHeight;
+          RemainingBorderSpace.Top:=0;
+          AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
+            0,Max(ChildSizing.VerticalSpacing,ChildAroundSpace.Bottom),0,0);
+        end;
+      alBottom:
+        begin
+          RemainingClientRect.Bottom:=NewTop;
+          RemainingBorderSpace.Bottom:=0;
+          AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
+            0,0,0,Max(ChildSizing.VerticalSpacing,ChildAroundSpace.Top));
+        end;
+      alLeft:
+        begin
+          RemainingClientRect.Left:=NewLeft+NewWidth;
+          RemainingBorderSpace.Left:=0;
+          AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
+            Max(ChildSizing.HorizontalSpacing,ChildAroundSpace.Right),0,0,0);
+        end;
+      alRight:
+        begin
+          RemainingClientRect.Right:=NewLeft;
+          RemainingBorderSpace.Right:=0;
+          AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
+            0,0,Max(ChildSizing.HorizontalSpacing,ChildAroundSpace.Left),0);
+        end;
+      alClient:
+        begin
+          // VCL is tricking here.
+          // For alClients with Constraints do the same as for alLeft
+          RemainingClientRect.Left:=NewLeft+NewWidth;
+          RemainingBorderSpace.Left:=0;
+          AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
+            Max(ChildSizing.HorizontalSpacing,ChildAroundSpace.Right),0,0,0);
+        end;
     end;
 
     {$IFDEF CHECK_POSITION}
@@ -3921,6 +3951,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.284  2004/10/28 17:56:11  mattias
+  implemented Borderspacing
+
   Revision 1.283  2004/10/28 09:30:49  mattias
   implemented borderspacing TWinControl.ChildSizing.Left/Top
 

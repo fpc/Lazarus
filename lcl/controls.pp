@@ -621,6 +621,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
     function IsEqual(Spacing: TControlBorderSpacing): boolean;
+    procedure GetSpaceAround(var SpaceAround: TRect);
   public
     property Control: TControl read FControl;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
@@ -1826,7 +1827,9 @@ function GetKeyShiftState: TShiftState;
 
 procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
   Left, Top, Right, Bottom: integer);
-  
+procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
+  const Space: TRect);
+
 
 // register (called by the package initialization in design mode)
 procedure Register;
@@ -1902,6 +1905,13 @@ begin
     RemainingClientRect.Top:=NewTop;
     RemainingClientRect.Bottom:=RemainingClientRect.Top;
   end;
+end;
+
+procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
+  const Space: TRect);
+begin
+  AdjustBorderSpace(RemainingClientRect,CurBorderSpace,Space.Left,Space.Top,
+                    Space.Right,Space.Bottom);
 end;
 
 procedure Register;
@@ -2275,6 +2285,14 @@ begin
       and (FTop=Spacing.Top);
 end;
 
+procedure TControlBorderSpacing.GetSpaceAround(var SpaceAround: TRect);
+begin
+  SpaceAround.Left:=Max(Left,Around);
+  SpaceAround.Top:=Max(Top,Around);
+  SpaceAround.Right:=Max(Right,Around);
+  SpaceAround.Bottom:=Max(Bottom,Around);
+end;
+
 procedure TControlBorderSpacing.Change;
 begin
   if Assigned(FOnChange) then FOnChange(Self);
@@ -2458,6 +2476,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.252  2004/10/28 17:56:10  mattias
+  implemented Borderspacing
+
   Revision 1.251  2004/10/28 09:30:49  mattias
   implemented borderspacing TWinControl.ChildSizing.Left/Top
 
