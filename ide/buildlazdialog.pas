@@ -146,7 +146,8 @@ function BuildLazarus(Options: TBuildLazarusOptions;
 var
   Tool: TExternalToolOptions;
   
-  procedure SetMakeParams(MakeMode: TMakeMode; ExtraOpts: string; TargetOS: string);
+  procedure SetMakeParams(MakeMode: TMakeMode;
+    const ExtraOpts, TargetOS: string);
   begin
     if MakeMode=mmBuild then
       Tool.CmdLineParams:='all'
@@ -174,8 +175,6 @@ begin
       Tool.Title:='Clean Lazarus Source';
       Tool.WorkingDirectory:='$(LazarusDir)';
       Tool.CmdLineParams:='cleanall';
-//      if Options.TargetOS<>'' then
-//        Tool.CmdLineParams:= 'OS_TARGET='+ Options.TargetOS+' '+Tool.CmdLineParams;
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;
@@ -183,7 +182,8 @@ begin
       // build lcl
       Tool.Title:='Build LCL';
       Tool.WorkingDirectory:='$(LazarusDir)/lcl';
-      SetMakeParams(Options.BuildComponents,Options.ExtraOptions,Options.TargetOS);
+      SetMakeParams(Options.BuildComponents,Options.ExtraOptions,
+                    Options.TargetOS);
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;
@@ -191,7 +191,8 @@ begin
       // build components
       Tool.Title:='Build Component';
       Tool.WorkingDirectory:='$(LazarusDir)/components';
-      SetMakeParams(Options.BuildComponents,Options.ExtraOptions,Options.TargetOS);
+      SetMakeParams(Options.BuildComponents,Options.ExtraOptions,
+                    Options.TargetOS);
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end else begin
@@ -199,7 +200,8 @@ begin
         // build SynEdit
         Tool.Title:='Build SynEdit';
         Tool.WorkingDirectory:='$(LazarusDir)/components/synedit';
-        SetMakeParams(Options.BuildComponents,Options.ExtraOptions,Options.TargetOS);
+        SetMakeParams(Options.BuildComponents,Options.ExtraOptions,
+                      Options.TargetOS);
         Result:=ExternalTools.Run(Tool,Macros);
         if Result<>mrOk then exit;
       end;
@@ -207,7 +209,8 @@ begin
         // build CodeTools
         Tool.Title:='Build CodeTools';
         Tool.WorkingDirectory:='$(LazarusDir)/components/codetools';
-        SetMakeParams(Options.BuildComponents,Options.ExtraOptions,Options.TargetOS);
+        SetMakeParams(Options.BuildComponents,Options.ExtraOptions,
+                      Options.TargetOS);
         Result:=ExternalTools.Run(Tool,Macros);
         if Result<>mrOk then exit;
       end;
@@ -221,7 +224,8 @@ begin
       else
         Tool.CmdLineParams:='';
       if Options.TargetOS<>'' then
-        Tool.CmdLineParams:= 'OS_TARGET='+ Options.TargetOS+' '+Tool.CmdLineParams;
+        Tool.CmdLineParams:= 'OS_TARGET='+Options.TargetOS+' '
+                             +Tool.CmdLineParams;
       if Options.BuildIDE=mmBuild then
         Tool.CmdLineParams:=Tool.CmdLineParams+'ide'
       else
@@ -233,7 +237,8 @@ begin
       // build Examples
       Tool.Title:='Build Examples';
       Tool.WorkingDirectory:='$(LazarusDir)/examples';
-      SetMakeParams(Options.BuildComponents,Options.ExtraOptions,Options.TargetOS);
+      SetMakeParams(Options.BuildComponents,Options.ExtraOptions,
+                    Options.TargetOS);
       Result:=ExternalTools.Run(Tool,Macros);
       if Result<>mrOk then exit;
     end;
@@ -576,7 +581,7 @@ begin
                                                 MakeModeNames[fBuildExamples]));
   fCleanAll:=XMLConfig.GetValue(Path+'CleanAll/Value',fCleanAll);
   fExtraOptions:=XMLConfig.GetValue(Path+'ExtraOptions/Value',fExtraOptions);
-  fTargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value',fTargetOS);
+  fTargetOS:=XMLConfig.GetValue(Path+'TargetOS/Value','');
   fMakeFilename:=XMLConfig.GetValue(Path+'MakeFilename/Value',fMakeFilename);
 end;
 

@@ -78,6 +78,14 @@ begin
 end;
 
 
+procedure RaiseException(const Msg: string);
+begin
+  writeln('ERROR in XMLWrite: ',Msg);
+  // creates an exception, that gdb catches:
+  writeln('Creating gdb catchable error:');
+  if (length(Msg) div (length(Msg) div 10000))=0 then ;
+end;
+
 // -------------------------------------------------------------------
 //   Text file and TStream support
 // -------------------------------------------------------------------
@@ -113,15 +121,17 @@ end;
 
 procedure Stream_Write(const Buffer; Count: Longint);
 begin
-  if Count > 0 then
+  if Count > 0 then begin
     stream.Write(Buffer, Count);
+  end;
 end;
 
 procedure Stream_WriteLn(const Buffer; Count: Longint);
 begin
-  if Count > 0 then
+  if Count > 0 then begin
     stream.Write(Buffer, Count);
-  stream.WriteByte(10);
+    stream.WriteByte(10);
+  end;
 end;
 
 procedure wrtStr(const s: string);
@@ -141,6 +151,10 @@ begin
   wrt(c,1);
 end;
 
+procedure wrtLineEnd;
+begin
+  wrt(#10,1);
+end;
 
 // -------------------------------------------------------------------
 //   Indent handling
@@ -148,17 +162,23 @@ end;
 
 var
   Indent: String;
+  IndentCount: integer;
 
+procedure wrtIndent;
+var i: integer;
+begin
+  for i:=1 to IndentCount do
+    wrtStr(Indent);
+end;
 
 procedure IncIndent;
 begin
-  Indent := Indent + '  ';
+  inc(IndentCount);
 end;
 
 procedure DecIndent;
 begin
-  if Length(Indent) >= 2 then
-    SetLength(Indent, Length(Indent) - 2);
+  if IndentCount>0 then dec(IndentCount);
 end;
 
 
@@ -192,7 +212,7 @@ begin
     end;
     Inc(EndPos);
   end;
-  if EndPos > StartPos then
+  if StartPos <= length(s) then
     wrt(s[StartPos], EndPos - StartPos);
 end;
 
@@ -238,7 +258,7 @@ var
   s: String;
 begin
   if not InsideTextNode then
-    wrtStr(Indent);
+    wrtIndent;
   wrtChr('<');
   wrtStr(node.NodeName);
   for i := 0 to node.Attributes.Length - 1 do
@@ -255,18 +275,15 @@ begin
   end;
   Child := node.FirstChild;
   if Child = nil then begin
-    if InsideTextNode then begin
-      wrtChr('/'); wrtChr('>');
-    end else begin
-      wrtChr('/'); wrtln('>',1);
-    end;
+    wrtChr('/');
+    wrtChr('>');
+    if not InsideTextNode then wrtLineEnd;
   end else
   begin
     SavedInsideTextNode := InsideTextNode;
-    if InsideTextNode or Child.InheritsFrom(TDOMText) then
-      wrtChr('>')
-    else
-      wrtln('>',1);
+    wrtChr('>');
+    if not (InsideTextNode or Child.InheritsFrom(TDOMText)) then
+      wrtLineEnd;
     IncIndent;
     repeat
       if Child.InheritsFrom(TDOMText) then
@@ -276,15 +293,14 @@ begin
     until child = nil;
     DecIndent;
     if not InsideTextNode then
-      wrtStr(Indent);
+      wrtIndent;
     InsideTextNode := SavedInsideTextNode;
     wrtChr('<');
     wrtChr('/');
     wrtStr(node.NodeName);
-    if InsideTextNode then
-      wrtChr('>')
-    else
-      wrtln('>',1);
+    wrtChr('>');
+    if not InsideTextNode then
+      wrtLineEnd;
   end;
 end;
 
@@ -302,10 +318,12 @@ end;
 
 procedure WriteCDATA(node: TDOMNode);
 begin
-  if InsideTextNode then
+  if not InsideTextNode then
     wrtStr('<![CDATA[' + node.NodeValue + ']]>')
-  else
-    wrtStrln(Indent + '<![CDATA[' + node.NodeValue + ']]>')
+  else begin
+    wrtIndent;
+    wrtStrln('<![CDATA[' + node.NodeValue + ']]>')
+  end;
 end;
 
 procedure WriteEntityRef(node: TDOMNode);
@@ -323,22 +341,22 @@ end;
 
 procedure WritePI(node: TDOMNode);
 begin
+  if not InsideTextNode then wrtIndent;
   wrtChr('<'); wrtChr('!');
   wrtStr(TDOMProcessingInstruction(node).Target);
   wrtChr(' ');
   wrtStr(TDOMProcessingInstruction(node).Data);
   wrtChr('>');
-  if not InsideTextNode then
-    wrtStrln('');
+  if not InsideTextNode then wrtLineEnd;
 end;
 
 procedure WriteComment(node: TDOMNode);
 begin
+  if not InsideTextNode then wrtIndent;
   wrtStr('<!--');
   wrtStr(node.NodeValue);
   wrtStr('-->');
-  if not InsideTextNode then
-    wrtStrln('');
+  if not InsideTextNode then wrtLineEnd;
 end;
 
 procedure WriteDocument(node: TDOMNode);
@@ -391,7 +409,8 @@ begin
     wrtStrln(Format('<?xml-stylesheet type="%s" href="%s"?>',
       [doc.StylesheetType, doc.StylesheetHRef]));
 
-  indent := '';
+  Indent := '  ';
+  IndentCount := 0;
 
   child := doc.FirstChild;
   while Assigned(Child) do
@@ -479,6 +498,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2002/09/30 11:01:43  lazarus
+  MG: accelerated xmlwriter
+
   Revision 1.4  2002/09/20 09:27:47  lazarus
   MG: accelerated xml
 

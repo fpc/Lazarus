@@ -424,6 +424,7 @@ destructor TUnitInfo.Destroy;
 begin
   Source:=nil;
   fBreakPoints.Free;
+  fBreakPoints:=nil;
   Project:=nil;
   inherited Destroy;
 end;
@@ -1981,6 +1982,9 @@ end.
 
 {
   $Log$
+  Revision 1.78  2002/09/30 11:01:43  lazarus
+  MG: accelerated xmlwriter
+
   Revision 1.77  2002/09/20 13:11:11  lazarus
   MG: fixed TPanel and Frame3D
 
