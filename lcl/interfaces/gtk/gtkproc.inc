@@ -1230,24 +1230,46 @@ end;
 
   Sets the cursor for a widget.
  ------------------------------------------------------------------------------}
-procedure SetCursor(AWinControl : TWinControl);
+procedure SetCursor(AWinControl : TWinControl; Data: Pointer);
+
+  function Cursor2GTKCursor(ACursor : TCursor) : PGdkCursor;
+  begin
+    case ACursor of
+      crAppStart : Result:= Cursor_Watch;
+      crArrow    : Result:= Cursor_Arrow;
+      crCross    : Result:= Cursor_Cross;
+      crHandPoint: Result:= Cursor_hand1;
+      crHelp     : Result:= Cursor_Help;
+      crIBeam    : Result:= Cursor_XTerm;
+      crHourGlass: Result:= Cursor_Watch;
+      crDefault  : Result:= Cursor_StdArrow;
+      crHSplit   : Result:= Cursor_HSplit;
+      crVSplit   : Result:= Cursor_VSplit;
+      crSizeNWSE : Result:= Cursor_SizeNWSE;
+      crSizeNS   : Result:= Cursor_SizeNS;
+      crSizeNESW : Result:= Cursor_SizeNESW;
+      crSizeWE   : Result:= Cursor_SizeWE;
+      crSizeAll  : Result:= Cursor_SizeAll;
+      else Result:= nil;
+    end;
+  end;
 
   procedure DoSetCursor(AWindow: PGdkWindow; Cursor: pGDKCursor);
   begin
-    if Cursor<>nil then
+    if Cursor <> nil then
       gdk_window_set_cursor(AWindow, Cursor);
   end;
 
-  procedure SetDesigningCursor(AWindow: PGdkWindow);
+  procedure SetDesigningCursor(AWindow: PGdkWindow; Cursor: PGdkCursor);
   var
     ChildWindows, ListEntry: PGList;
   begin
-    DoSetCursor(AWindow, Cursor_StdArrow);
+    DoSetCursor(AWindow, Cursor);
     
     ChildWindows:=gdk_window_get_children(AWindow);
     ListEntry:=ChildWindows;
     while ListEntry<>nil do begin
-      SetDesigningCursor(PGdkWindow(ListEntry^.Data));
+      SetDesigningCursor(PGdkWindow(ListEntry^.Data), Cursor);
       ListEntry:=ListEntry^.Next;
     end;
     g_list_free(ChildWindows);
@@ -1256,6 +1278,7 @@ procedure SetCursor(AWinControl : TWinControl);
 var
   AWidget, FixWidget: PGtkWidget;
   AWindow: PGdkWindow;
+  NewCursor: PGdkCursor;
 begin
 
   if not ((AWinControl is TWinControl) and AWinControl.HandleAllocated)
@@ -1264,37 +1287,25 @@ begin
   AWidget:= PGtkWidget(AWinControl.Handle);
 
   if csDesigning in AWinControl.ComponentState then begin
+
     AWindow:=GetControlWindow(AWidget);
-    if AWindow=nil then exit;
-    SetDesigningCursor(AWindow);
+    if AWindow = nil then exit;
+    if Data = nil then
+      SetDesigningCursor(AWindow, Cursor_StdArrow)
+    else begin
+      NewCursor:= Cursor2GTKCursor(Integer(Data));
+      if NewCursor <> nil then SetDesigningCursor(AWindow, NewCursor);
+    end;  
+    
   end else begin
-//    FixWidget:=GetFixedWidget(AWidget);
-//    if FixWidget<>nil then
-//      AWindow:=FixWidget^.Window
-//    else
-//      AWindow:=AWidget^.Window;
-//    FixWidget:= GetWidgetInfo(AWidget, true)^.ImplementationWidget;
+
     FixWidget:= GetMainWidget(AWidget);
     AWindow:= GetControlWindow(FixWidget);
+    if AWindow = nil then exit;
     
-    if AWindow=nil then exit;
+    NewCursor:= Cursor2GTKCursor(AWinControl.Cursor);
+    if NewCursor <> nil then DoSetCursor(AWindow, NewCursor);
 
-    case AWinControl.Cursor of
-    crAppStart : DoSetCursor (AWindow, Cursor_Watch);
-    crArrow    : DoSetCursor (AWindow, Cursor_Arrow);
-    crCross    : DoSetCursor (AWindow, Cursor_Cross);
-    crHandPoint: DoSetCursor (AWindow, Cursor_hand1);
-    crHelp     : DoSetCursor (AWindow, Cursor_Help);
-    crIBeam    : DoSetCursor (AWindow, Cursor_XTerm);
-    crHourGlass: DoSetCursor (AWindow, Cursor_Watch);
-    crDefault  : DoSetCursor (AWindow, Cursor_StdArrow);
-    crHSplit   : DoSetCursor (AWindow, Cursor_HSplit);
-    crVSplit   : DoSetCursor (AWindow, Cursor_VSplit);
-    crSizeNWSE : DoSetCursor (AWindow, Cursor_SizeNWSE);
-    crSizeNS   : DoSetCursor (AWindow, Cursor_SizeNS);
-    crSizeNESW : DoSetCursor (AWindow, Cursor_SizeNESW);
-    crSizeWE   : DoSetCursor (AWindow, Cursor_SizeWE);
-    end;
   end;
 end;
 
@@ -2850,6 +2861,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.99  2002/09/16 15:56:02  lazarus
+  Resize cursors in designer.
+
   Revision 1.98  2002/09/12 16:49:05  lazarus
   MG: fixed SelectClipRegion
 
