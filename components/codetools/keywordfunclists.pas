@@ -459,7 +459,7 @@ begin
     Add('CONST',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONSTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('CONTINUE',{$ifdef FPC}@{$endif}AllwaysTrue);
-    Add('DESTRCUTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('DESTRUCTOR',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DIV',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DO',{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('DOWNTO',{$ifdef FPC}@{$endif}AllwaysTrue);
