@@ -199,6 +199,7 @@ ResourceString
   ctsPackagerUnitsDirectory = 'Packager Units Directory';
   ctsLazarusMainDirectory = 'lazarus main directory';
   ctsDebuggerDirectory = 'Debugger Directory';
+  ctsDocEditorDirectory = 'Doc Editor Directory';
   ctsLazarusSources = 'Lazarus Sources';
   ctsAnLCLProject = 'an LCL project';
   ctsOtherCompilerDefines = '%s Compiler Defines';

@@ -38,8 +38,7 @@ uses
 
 type
   TNonModalIDEWindow = (
-    // empty/none/undefined
-    nmiwNone,
+    nmiwNone, // empty/none/undefined
     nmiwMainIDEName,
     nmiwSourceNoteBookName,
     nmiwMessagesViewName,
@@ -48,6 +47,7 @@ type
     nmiwClipbrdHistoryName,
     nmiwPkgGraphExplorer,
     nmiwProjectInspector,
+    nmiwDocEditor,
     // debugger
     nmiwDbgOutput,
     nmiwBreakPoints,
@@ -68,6 +68,8 @@ const
     'ClipBrdHistory',
     'PkgGraphExplorer',
     'ProjectInspector',
+    'DocumentEditor',
+    // debugger
     'DbgOutput',
     'BreakPoints',
     'Watches',

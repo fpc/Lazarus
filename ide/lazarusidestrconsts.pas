@@ -1249,6 +1249,9 @@ resourcestring
   dlgUnitDepCaption     = 'Unit dependencies';
   dlgUnitDepBrowse      = 'Browse...';
   dlgUnitDepRefresh     = 'Refresh';
+  
+  // Doc Editor
+  lisDocumentationEditor = 'Documentation Editor';
    
   // Build lazarus dialog
   lisCleanLazarusSource = 'Clean Lazarus Source';

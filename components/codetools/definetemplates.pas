@@ -3222,6 +3222,20 @@ begin
     ,da_DefineRecurse));
   MainDir.AddChild(DirTempl);
 
+  // doceditor
+  DirTempl:=TDefineTemplate.Create('Doc Editor',ctsDocEditorDirectory,
+    '','doceditor',da_Directory);
+  DirTempl.AddChild(TDefineTemplate.Create('Unit path addition',
+    Format(ctsAddsDirToSourcePath,['lcl, components']),
+    ExternalMacroStart+'SrcPath',
+      '..'
+      +';..'+ds+'components'+ds+'codetools'
+      +';..'+ds+'lcl'
+      +';..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType
+      +';'+SrcPath
+    ,da_DefineRecurse));
+  MainDir.AddChild(DirTempl);
+
   // packager
   DirTempl:=TDefineTemplate.Create('Packager',ctsDesignerDirectory,
     '','packager',da_Directory);
