@@ -7,7 +7,7 @@ Lazarus provides two main parts:
 
 What is required for lazarus:
 - FreePascal - the FreePascal Compiler plus packages plus sources.
-- gtk - Most distributions already install them. See www.gtk.org.
+- gtk libaries - Most distributions already install them. See www.gtk.org.
 
 
 The FAQ - Frequently Asked Question is available at www.lazarus.freepascal.org
@@ -38,8 +38,11 @@ properly:
 
   The fpc sources via cvs:
   Create a directory, where you would like to put the sources. You don't need
-  to be root to do this. Any normal user can do:
-  
+  to be root to do this. Any normal user can do this.
+  First create a directory for fpc (e.g. /home/username/freepascal) then do
+  the following:
+
+  []$ bash
   []$ export CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
   []$ cvs login
 
@@ -49,12 +52,20 @@ properly:
   
   This will create a directory fpc, which can be later used in the IDE.
 
+  Hint:
+  To download the latest changes you can simply do
+
+  []$ cd /home/username/freepascal/fpc
+  []$ cvs -z3 update -dP
+
+
 
 1.2 Installing FreePascal under Windows:
 
     ToDo: Write me.
     
     See www.freepascal.org.
+
 
 
 2. Installing Lazarus
@@ -79,6 +90,7 @@ properly:
   
   connect to the cvs server (note: lazarus and freepascal use the same server)
   
+  []$ bash
   []$ export CVSROOT=:pserver:cvs@cvs.freepascal.org:/FPC/CVS
   []$ cvs login
 
@@ -108,11 +120,19 @@ properly:
       Environment -> Environment Options -> Files
 
     The 'FPC Source directory' should point to your fpc source directory. This
-    directory normally ends with /fpc/ or /fpcsrc/ (e.g. /usr/src/fpcsrc,
+    directory normally ends with /fpc/ or /fpcsrc/ (e.g. /usr/src/fpcsrc or
     /home/username/freepascal/fpc) and
     contains directories like 'compiler', 'docs', 'fcl', 'rtl' and 'packages'.
 
     ToDo: explain the other paths
+
+
+  Hint:
+  To download the latest changes you can use
+
+  []$ cd /home/username/freepascal/lazarus
+  []$ cvs -z3 update -dP
+
 
 
 2.1 Installing Lazarus under Windows:
