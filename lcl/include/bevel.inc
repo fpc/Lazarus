@@ -1,3 +1,5 @@
+// included by extctrls.pp
+
 Constructor TBevel.Create(AOwner:TComponent);
 Begin
   Inherited Create(AOwner);
@@ -15,7 +17,7 @@ End;
 
 Procedure TBevel.Invalidate;
 Begin
-  Paint;
+  if Canvas.HandleAllocated then Paint;
 End;
 
 Function TBevel.GetStyle:TBevelStyle;
@@ -136,6 +138,7 @@ Begin
   End;
 End;
 
+// included by extctrls.pp
 
 {
 Procedure TBevel.Paint;
@@ -228,6 +231,9 @@ End;
 
 {
   $Log$
+  Revision 1.4  2002/03/14 23:25:51  lazarus
+  MG: fixed TBevel.Create and TListView.Destroy
+
   Revision 1.3  2001/04/02 14:45:26  lazarus
   MG: bugfixes for TBevel
 

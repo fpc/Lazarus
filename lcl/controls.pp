@@ -18,7 +18,7 @@
  *                                                                         *
  ***************************************************************************/
 }
-unit controls;
+unit Controls;
      
 {$mode objfpc}{$H+}
 
@@ -386,7 +386,8 @@ TCMDialogKey = TLMKEY;
     property MinWidth: TConstraintSize read FMinWidth write SetMinWidth default 0;
   end;
 									      
-  TConstrainedResizeEvent = procedure(Sender : TObject; var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize) of object;
+  TConstrainedResizeEvent = procedure(Sender : TObject;
+      var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize) of object;
 
   TControl = class(TComponent)
   private
@@ -1195,6 +1196,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.33  2002/03/14 23:25:51  lazarus
+  MG: fixed TBevel.Create and TListView.Destroy
+
   Revision 1.32  2002/03/13 22:48:16  lazarus
   Constraints implementation (first cut) and sizig - moving system rework to
   better match Delphi/Kylix way of doing things (the existing implementation

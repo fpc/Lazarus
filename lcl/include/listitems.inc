@@ -52,7 +52,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TListItems.Delete(Index : Integer);
 begin
-  Writeln('--------');
+//  Writeln('--------');
   if (FItems.Items[index] <> nil) then
   Item[Index].Delete;
   FItems.Delete(index);
@@ -60,7 +60,7 @@ begin
 //  TListItem(FItems.Items[Index]).Delete;
   Writeln('--------');
   FOwner.ItemDeleted(Index);
-  Writeln('--Item Deleted Called------');
+//  Writeln('--Item Deleted Called------');
 end;
 
 {------------------------------------------------------------------------------}
@@ -88,9 +88,9 @@ Procedure TListItems.ItemChanged(Sender : TObject);  //called by the onchange of
 var
   Index : Integer;
 begin
-  Writeln('ITEM CHANGED');
+//  Writeln('ITEM CHANGED');
   Index := FItems.IndexOf(TListItem(sender));
-  Writeln('Calling Item Changed with Index ',Index);
+//  Writeln('Calling Item Changed with Index ',Index);
   if Index > -1 then
   FOwner.ItemChanged(Index);
 end;
