@@ -473,6 +473,7 @@ type
     
     // methods for codetools
     procedure InitCodeToolBoss;
+    procedure UpdateEnglishErrorMsgFilename;
     procedure ActivateCodeToolAbortableMode;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
       var ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
@@ -2415,6 +2416,7 @@ Begin
       EnvironmentOptionsDialog.WriteSettings(EnvironmentOptions);
       UpdateDefaultPascalFileExtensions;
       // set global variables
+      UpdateEnglishErrorMsgFilename;
       MacroValueChanged:=false;
       FPCSrcDirChanged:=false;
       FPCCompilerChanged:=
@@ -6191,6 +6193,7 @@ begin
   end;
   
   // build DefinePool and Define Tree
+  UpdateEnglishErrorMsgFilename;
   with CodeToolBoss.DefinePool do begin
     // start the compiler and ask for his settings
     ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,
@@ -6246,6 +6249,14 @@ begin
   if c<>0 then begin
     RaiseException('CodeToolBoss.ConsistencyCheck='+IntToStr(c));
   end;
+end;
+
+procedure TMainIDE.UpdateEnglishErrorMsgFilename;
+begin
+  if EnvironmentOptions.LazarusDirectory<>'' then
+    CodeToolBoss.DefinePool.EnglishErrorMsgFilename:=
+      AppendPathDelim(EnvironmentOptions.LazarusDirectory)+
+      'components'+PathDelim+'codetools'+PathDelim+'fpc.errore.msg';
 end;
 
 procedure TMainIDE.ActivateCodeToolAbortableMode;
@@ -7493,6 +7504,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.431  2002/11/13 13:40:12  lazarus
+  MG: codetools can now work with localized fpc output
+
   Revision 1.430  2002/11/12 14:55:33  lazarus
   Show Object Inspector when not visible if toggling OI/form/code view.
 
