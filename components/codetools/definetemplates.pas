@@ -1661,6 +1661,7 @@ var
 //   const FPCSrcDir: string): TDefineTemplate;
 var
   DefTempl, MainDir, FCLDir, RTLDir, PackagesDir, CompilerDir: TDefineTemplate;
+  s: string;
 begin
   Result:=nil;
   if (FPCSrcDir='') or (not DirectoryExists(FPCSrcDir)) then exit;
@@ -1704,15 +1705,16 @@ begin
   // rtl
   RTLDir:=TDefineTemplate.Create('RTL','Runtime library','','rtl',da_Directory);
   MainDir.AddChild(RTLDir);
+  s:=IncPathMacro
+    +';'+Dir+'rtl'+DS+'objpas'+DS
+    +';'+Dir+'rtl'+DS+'inc'+DS
+    +';'+Dir+'rtl'+DS+TargetProcessor+DS
+    +';'+Dir+'rtl'+DS+SrcOS+DS;
+  if (TargetOS<>'') and (TargetOS<>SrcOS) then
+    s:=s+';'+Dir+'rtl'+DS+TargetOS+DS;
   RTLDir.AddChild(TDefineTemplate.Create('Include Path',
     'include directory objpas, inc, processor specific',
-    ExternalMacroStart+'IncPath',
-    IncPathMacro
-    +';'+Dir+'rtl/objpas/'
-    +';'+Dir+'rtl/inc/'
-    +';'+Dir+'rtl/'+TargetProcessor+'/'
-    +';'+Dir+'rtl/'+SrcOS+'/'
-    ,da_DefineAll));
+    ExternalMacroStart+'IncPath',s,da_DefineAll));
 
   // fcl
   FCLDir:=TDefineTemplate.Create('FCL','Free Pascal Component Library','','fcl',

@@ -2025,7 +2025,13 @@ begin
       UndoReadNextAtom
     else begin
       // for example 'var a: char; public;'
-      ReadNextAtom;
+      if UpAtomIs('EXTERNAL') then begin
+        // read external name
+        ReadNextAtom;
+        AtomIsIdentifier(true);
+        ReadNextAtom;
+      end else
+        ReadNextAtom;
       if UpAtomIs('NAME') then begin
         // for example 'var a: char; public name 'b' ;'
         ReadNextAtom;
