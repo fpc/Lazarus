@@ -267,8 +267,8 @@ type
     // methods for 'open unit' and 'open main unit'
     function DoOpenNotExistingFile(const AFileName:string;
         Flags: TOpenFlags): TModalResult;
-    function DoOpenUnknownFile(const AFileName:string;
-        Flags: TOpenFlags; var NewUnitInfo: TUnitInfo): TModalResult;
+    function DoOpenUnknownFile(const AFileName:string; Flags: TOpenFlags;
+        var NewUnitInfo: TUnitInfo; var Handled: boolean): TModalResult;
     procedure DoRestoreBookMarks(AnUnitInfo: TUnitInfo; ASrcEdit:TSourceEditor);
     function DoOpenFileInSourceNotebook(AnUnitInfo: TUnitInfo;
         Flags: TOpenFlags): TModalResult;
@@ -2769,11 +2769,12 @@ begin
 end;
 
 function TMainIDE.DoOpenUnknownFile(const AFileName: string; Flags: TOpenFlags;
-  var NewUnitInfo: TUnitInfo): TModalResult;
+  var NewUnitInfo: TUnitInfo; var Handled: boolean): TModalResult;
 var
   Ext, NewProgramName, LPIFilename, ACaption, AText: string;
   PreReadBuf: TCodeBuffer;
 begin
+  Handled:=false;
   Ext:=lowercase(ExtractFilename(AFilename));
 
   if (not (ofProjectLoading in Flags)) and (ToolStatus=itNone)
@@ -2787,10 +2788,11 @@ begin
   Result:=DoLoadCodeBuffer(PreReadBuf,AFileName,
                            [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert]);
   if Result<>mrOk then exit;
+  NewUnitInfo:=nil;
 
   // check if unit is a program
   if (not (ofProjectLoading in Flags))
-  and (FilenameIsPascalUnit(AFilename) or (Ext='.dpr'))
+  and FilenameIsPascalSource(AFilename)
   and (CodeToolBoss.GetSourceType(PreReadBuf)='PROGRAM') then begin
     NewProgramName:=CodeToolBoss.GetSourceName(PreReadBuf);
     if NewProgramName<>'' then begin
@@ -2808,6 +2810,7 @@ begin
              [mbok, mbcancel], 0)=mrOk then
         begin
           Result:=DoOpenProjectFile(LPIFilename);
+          Handled:=true;
           exit;
         end;
       end else begin
@@ -2820,13 +2823,14 @@ begin
             [mbOk, mbCancel], 0)=mrOk then
         begin
           Result:=DoCreateProjectForProgram(PreReadBuf);
+          Handled:=true;
           exit;
         end;
       end;
     end;
   end;
   NewUnitInfo:=TUnitInfo.Create(PreReadBuf);
-  if FilenameIsPascalUnit(NewUnitInfo.Filename) then
+  if FilenameIsPascalSource(NewUnitInfo.Filename) then
     NewUnitInfo.ReadUnitNameFromSource;
   Project1.AddUnit(NewUnitInfo,false);
   Result:=mrOk;
@@ -3468,7 +3472,7 @@ function TMainIDE.DoOpenEditorFile(const AFileName:string;
   Flags: TOpenFlags):TModalResult;
 var
   i: integer;
-  ReOpen:boolean;
+  ReOpen, Handled:boolean;
   NewUnitInfo:TUnitInfo;
   NewBuf: TCodeBuffer;
 begin
@@ -3520,8 +3524,10 @@ writeln('*** TMainIDE.DoOpenEditorFile START "',AFilename,'"');
       NewUnitInfo.ReadUnitNameFromSource;
   end else begin
     // open unknown file
-    Result:=DoOpenUnknownFile(AFilename,Flags,NewUnitInfo);
+    Handled:=false;
+    Result:=DoOpenUnknownFile(AFilename,Flags,NewUnitInfo,Handled);
     if Result<>mrOk then exit;
+    if Handled then exit;
   end;
 
   // check readonly
@@ -6194,6 +6200,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.269  2002/04/03 10:34:05  lazarus
+  MG: fixed crash on open project
+
   Revision 1.268  2002/04/02 17:18:24  lazarus
   MG: fixed save project as, renaming source name
 

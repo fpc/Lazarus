@@ -29,6 +29,10 @@
     - many things, search for 'ToDo'
     - Examples:
        - @ operator
+           + Func -> FuncResult Type
+              OR in Delphi  -> Func type
+           + @Func -> Func type
+           + @Data -> Pointer
        - 'inherited'
        - variants
        - interfaces
@@ -1491,11 +1495,12 @@ type
   TAtomType = (atNone, atSpace, atIdentifier, atPreDefIdentifier, atPoint, atAS,
                atINHERITED, atUp, atRoundBracketOpen, atRoundBracketClose,
                atEdgedBracketOpen, atEdgedBracketClose,
-               atRead, atWrite);
+               atRead, atWrite, atAddrOp);
 const
   AtomTypeNames: array[TAtomType] of string =
-    ('<None>','Space','Ident','PreDefIdent','Point','AS','INHERITED','Up^',
-     'Bracket(','Bracket)','Bracket[','Bracket]','READ','WRITE');
+    ('<None>','Space','Ident','PreDefIdent','Point','AS','INHERITED','Up^ ',
+     'Bracket(','Bracket)','Bracket[','Bracket]','READ','WRITE',
+     'AddrOperator@ ');
 
   function GetCurrentAtomType: TAtomType;
   begin
@@ -1526,6 +1531,8 @@ const
       Result:=atINHERITED
     else if UpAtomIs('AS') then
       Result:=atAS
+    else if AtomIsChar('@') then
+      Result:=atAddrOp
     else
       Result:=atNone;
   end;
@@ -1557,13 +1564,14 @@ begin
     Result:=CreateFindContext(Self,Params.ContextNode);
     exit;
   end;
-  if not (CurAtomType in [atIdentifier,atPreDefIdentifier,atPoint,atUp,atAs,
-    atEdgedBracketClose,atRoundBracketClose,atRead,atWrite,atINHERITED])
+  if (not (CurAtomType in [atIdentifier,atPreDefIdentifier,atPoint,atUp,
+    atEdgedBracketClose,atRoundBracketClose]))
+  or ((CurAtomType in [atIdentifier,atPreDefIdentifier,atNone])
+      and (NextAtomType in [atIdentifier,atPreDefIdentifier]))
   then begin
-    // no special context found -> the context node is the deepest node at
-    // cursor, and this should already be in Params.ContextNode
+    // the next atom is the start of the variable
     if (not (NextAtomType in [atSpace,atIdentifier,atPreDefIdentifier,
-      atRoundBracketOpen,atEdgedBracketOpen])) then
+      atRoundBracketOpen,atEdgedBracketOpen,atAddrOp])) then
     begin
       MoveCursorToCleanPos(NextAtom.StartPos);
       ReadNextAtom;
@@ -1579,16 +1587,6 @@ begin
     CurAtom.StartPos:=CurPos.StartPos;
   end;
   
-  // check if current atom belongs to the expression, or if next atom is
-  // the start of the variable
-  if (CurAtomType in [atAS,atRead,atWrite,atINHERITED,atNone])
-  or ((CurAtomType in [atIdentifier,atPreDefIdentifier,atNone])
-      and (NextAtomType in [atIdentifier,atPreDefIdentifier]))
-  then begin
-    // this is the start of the variable
-    Result:=CreateFindContext(Self,Params.ContextNode);
-    exit;
-  end;
   // find prior context
   Result:=FindContextNodeAtCursor(Params);
   if (Result.Node=nil) then exit;

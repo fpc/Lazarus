@@ -336,9 +336,11 @@ type
     Procedure NextEditor;
     Procedure PrevEditor;
     Procedure ProcessParentCommand(Sender: TObject;
-       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+       var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+       var Handled: boolean);
     Procedure ParentCommandProcessed(Sender: TObject; 
-       var Command: TSynEditorCommand; var AChar: char; Data: pointer);
+       var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+       var Handled: boolean);
     function FindBookmark(BookmarkID: integer): TSourceEditor;
     function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
     function GetEditors(Index:integer):TSourceEditor;
@@ -800,7 +802,9 @@ Begin
   else
     begin
       Handled:=false;
-      TSourceNotebook(FaOwner).ProcessParentCommand(self,Command,aChar,Data);
+      if FaOwner<>nil then
+        TSourceNotebook(FaOwner).ProcessParentCommand(self,Command,aChar,Data,
+                        Handled);
     end;
   end;  //case
   if Handled then Command:=ecNone;
@@ -818,7 +822,9 @@ begin
   else
     begin
       Handled:=false;
-      TSourceNotebook(FaOwner).ParentCommandProcessed(self,Command,aChar,Data);
+      if FaOwner<>nil then
+        TSourceNotebook(FaOwner).ParentCommandProcessed(self,Command,aChar,Data,
+                        Handled);
     end;
   end;
   if Handled then Command:=ecNone;
@@ -3014,8 +3020,8 @@ Begin
 end;
 
 Procedure TSourceNotebook.ProcessParentCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
-var Handled: boolean;
+  var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+  var Handled: boolean);
 begin
   FProcessingCommand:=true;
   if Assigned(FOnProcessUserCommand) then begin
@@ -3080,8 +3086,8 @@ begin
 end;
 
 Procedure TSourceNotebook.ParentCommandProcessed(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: char; Data: pointer);
-var Handled: boolean;
+  var Command: TSynEditorCommand; var AChar: char; Data: pointer;
+  var Handled: boolean);
 begin
   if Assigned(FOnUserCommandProcessed) then begin
     Handled:=false;
