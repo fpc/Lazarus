@@ -703,9 +703,9 @@ Begin
         end;
     else
       begin
-        writeln('');
-        writeln('TCustomNotebook.CNNotify: unhandled NMHdr code:', NMHdr^.code);
-        writeln('');
+        {$IFDEF NOTEBOOK_DEBUG}
+        writeln('[TCustomNotebook.CNNotify] unhandled NMHdr code:', NMHdr^.code);
+        {$ENDIF}
       end;
     end;
 end;
@@ -792,6 +792,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.46  2004/04/11 11:30:39  vincents
+  Reduced output, fixes bug 220
+
   Revision 1.45  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 
