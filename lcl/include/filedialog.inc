@@ -120,13 +120,7 @@ begin
   and (not FileExists(AFilename)) then begin
     AFilename:=AFilename+DefaultExt;
   end;
-  if (ofOverwritePrompt in Options) and FileExists(AFilename) then
-  begin
-    Result:=MessageDlg(rsfdOverwriteFile,
-                       Format(rsfdFileAlreadyExists,[AFileName]),
-                       mtConfirmation,[mbOk,mbCancel],0)=mrOk;
-    if not Result then exit;
-  end;
+  //ofOverwritePrompt -> is done in the interface
   if (ofPathMustExist in Options)
   and (not DirPathExists(ExtractFileDir(AFilename))) then begin
     Result:=false;
@@ -278,6 +272,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.22  2005/01/05 14:46:35  mattias
+  started anchor editor and moved OverWritePromp from lcl to gtk intf
+
   Revision 1.21  2004/12/27 17:52:42  mattias
   implemented URL directory property editor
 

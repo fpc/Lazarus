@@ -1,0 +1,291 @@
+object AnchorDesigner: TAnchorDesigner
+  Caption = 'AnchorDesigner'
+  ClientHeight = 322
+  ClientWidth = 535
+  OnCreate = AnchorDesignerCreate
+  PixelsPerInch = 90
+  HorzScrollBar.Page = 536
+  VertScrollBar.Page = 323
+  Left = 290
+  Height = 322
+  Top = 163
+  Width = 535
+  object BorderSpaceGroupBox: TGroupBox
+    Caption = 'BorderSpaceGroupBox'
+    ClientHeight = 88
+    ClientWidth = 208
+    ParentColor = True
+    TabOrder = 0
+    Left = 160
+    Height = 105
+    Top = 104
+    Width = 212
+    object IncAllBorderSpaceSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 71
+      Height = 22
+      Top = 30
+      Width = 23
+    end
+    object DecAllBorderSpaceSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 100
+      Height = 22
+      Top = 30
+      Width = 23
+    end
+    object LeftBorderSpaceSpinEdit: TSpinEdit
+      MaxValue = 100
+      TabStop = True
+      TabOrder = 0
+      MaxValue = 100
+      Height = 20
+      Top = 30
+      Width = 50
+    end
+    object RightBorderSpaceSpinEdit: TSpinEdit
+      MaxValue = 100
+      TabStop = True
+      TabOrder = 1
+      MaxValue = 100
+      Left = 152
+      Height = 20
+      Top = 30
+      Width = 50
+    end
+    object TopBorderSpaceSpinEdit: TSpinEdit
+      MaxValue = 100
+      TabStop = True
+      TabOrder = 2
+      MaxValue = 100
+      Left = 78
+      Height = 20
+      Width = 50
+    end
+    object BottomBorderSpaceSpinEdit: TSpinEdit
+      MaxValue = 100
+      TabStop = True
+      TabOrder = 3
+      MaxValue = 100
+      Left = 78
+      Height = 20
+      Top = 63
+      Width = 50
+    end
+  end
+  object TopGroupBox: TGroupBox
+    Caption = 'TopGroupBox'
+    ClientHeight = 88
+    ClientWidth = 208
+    ParentColor = True
+    TabOrder = 1
+    Left = 160
+    Height = 105
+    Width = 212
+    object TopRefTopSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 6
+      Height = 30
+      Top = 57
+      Width = 30
+    end
+    object TopRefBottomSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 48
+      Height = 30
+      Top = 57
+      Width = 30
+    end
+    object TopRefCenterSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 86
+      Height = 30
+      Top = 57
+      Width = 30
+    end
+    object TopAnchoredCheckBox: TCheckBox
+      Caption = 'TopAnchoredCheckBox'
+      TabOrder = 0
+      Height = 24
+      Width = 157
+    end
+    object TopSiblingComboBox: TComboBox
+      MaxLength = 0
+      TabOrder = 1
+      Text = 'TopSiblingComboBox'
+      Left = 78
+      Height = 25
+      Top = 29
+      Width = 128
+    end
+    object TopSiblingLabel: TLabel
+      Caption = 'TopSiblingLabel'
+      Left = 3
+      Height = 17
+      Top = 33
+      Width = 65
+    end
+  end
+  object BottomGroupBox: TGroupBox
+    Caption = 'BottomGroupBox'
+    ClientHeight = 88
+    ClientWidth = 208
+    ParentColor = True
+    TabOrder = 2
+    Left = 160
+    Height = 105
+    Top = 208
+    Width = 212
+    object BottomRefTopSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 6
+      Height = 30
+      Top = 54
+      Width = 30
+    end
+    object BottomRefBottomSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 48
+      Height = 30
+      Top = 54
+      Width = 30
+    end
+    object BottomRefCenterSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 86
+      Height = 30
+      Top = 54
+      Width = 30
+    end
+    object BottomAnchoredCheckBox: TCheckBox
+      Caption = 'BottomAnchoredCheckBox'
+      TabOrder = 0
+      Height = 24
+      Width = 173
+    end
+    object BottomSiblingComboBox: TComboBox
+      MaxLength = 0
+      TabOrder = 1
+      Text = 'BottomSiblingComboBox'
+      Left = 78
+      Height = 25
+      Top = 25
+      Width = 128
+    end
+    object BottomSiblingLabel: TLabel
+      Caption = 'BottomSiblingLabel'
+      Left = 3
+      Height = 17
+      Top = 33
+      Width = 65
+    end
+  end
+  object RightGroupBox: TGroupBox
+    Caption = 'RightGroupBox'
+    ClientHeight = 168
+    ClientWidth = 146
+    ParentColor = True
+    TabOrder = 3
+    Left = 376
+    Height = 185
+    Top = 64
+    Width = 150
+    object RightRefLeftSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 7
+      Height = 30
+      Top = 101
+      Width = 30
+    end
+    object RightRefRightSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 46
+      Height = 30
+      Top = 101
+      Width = 30
+    end
+    object RightRefCenterSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 86
+      Height = 30
+      Top = 101
+      Width = 30
+    end
+    object RightAnchoredCheckBox: TCheckBox
+      Caption = 'RightAnchoredCheckBox'
+      TabOrder = 0
+      Height = 24
+      Width = 164
+    end
+    object RightSiblingLabel: TLabel
+      Caption = 'RightSiblingLabel'
+      Left = 12
+      Height = 17
+      Top = 34
+      Width = 65
+    end
+    object RightSiblingComboBox: TComboBox
+      MaxLength = 0
+      TabOrder = 2
+      Text = 'RightSiblingComboBox'
+      Left = 7
+      Height = 25
+      Top = 56
+      Width = 135
+    end
+  end
+  object LeftGroupBox: TGroupBox
+    Caption = 'LeftGroupBox'
+    ClientHeight = 168
+    ClientWidth = 146
+    ParentColor = True
+    TabOrder = 4
+    Left = 4
+    Height = 185
+    Top = 64
+    Width = 150
+    object LeftRefLeftSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 6
+      Height = 30
+      Top = 101
+      Width = 30
+    end
+    object LeftRefRightSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 48
+      Height = 30
+      Top = 101
+      Width = 30
+    end
+    object LeftRefCenterSpeedButton: TSpeedButton
+      NumGlyphs = 0
+      Left = 90
+      Height = 30
+      Top = 101
+      Width = 30
+    end
+    object LeftAnchoredCheckBox: TCheckBox
+      Caption = 'LeftAnchoredCheckBox'
+      TabOrder = 0
+      Height = 24
+      Width = 156
+    end
+    object LeftSiblingLabel: TLabel
+      Caption = 'LeftSiblingLabel'
+      Left = 6
+      Height = 17
+      Top = 34
+      Width = 65
+    end
+    object LeftSiblingComboBox: TComboBox
+      MaxLength = 0
+      TabOrder = 2
+      Text = 'LeftSiblingComboBox'
+      Left = 4
+      Height = 25
+      Top = 56
+      Width = 134
+    end
+  end
+end

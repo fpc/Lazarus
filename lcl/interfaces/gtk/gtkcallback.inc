@@ -1467,26 +1467,41 @@ end;
 function gtkDialogOKclickedCB( widget: PGtkWidget;
   data: gPointer) : GBoolean; cdecl;
 var
-   theDialog : TCommonDialog;
-   Fpointer : Pointer;
-   // colordialog
-   colorsel : PGtkColorSelection;
-   newColor : TGdkColor;
-   // fontdialog
-   FontName : String;
-   ALogFont  : TLogFont;
-   // filedialog
-   rowNum   : gint;
-   fileInfo : PGChar;
-   {$IfDef GTK2}
-   fileList : PPgchar;
-   {$else}
-   cListRow : PGList;
-   fileList : PGTKCList;
-   {$EndIf}
-   DirName  : string;
-   FileName : string;
-   Files: TStringList;
+  theDialog : TCommonDialog;
+  Fpointer : Pointer;
+  // colordialog
+  colorsel : PGtkColorSelection;
+  newColor : TGdkColor;
+  // fontdialog
+  FontName : String;
+  ALogFont  : TLogFont;
+  // filedialog
+  rowNum   : gint;
+  fileInfo : PGChar;
+  {$IfDef GTK2}
+  fileList : PPgchar;
+  {$else}
+  cListRow : PGList;
+  fileList : PGTKCList;
+  {$EndIf}
+  DirName  : string;
+  FileName : string;
+  Files: TStringList;
+  CurFilename: string;
+
+  function CheckOpenedFilename(const AFilename: string): boolean;
+  begin
+    Result:=true;
+    if (ofOverwritePrompt in TOpenDialog(theDialog).Options)
+    and FileExists(AFilename) then
+    begin
+      Result:=MessageDlg(rsfdOverwriteFile,
+                         Format(rsfdFileAlreadyExists,[AFileName]),
+                         mtConfirmation,[mbOk,mbCancel],0)=mrOk;
+      if not Result then exit;
+    end;
+  end;
+
 begin
   Result := True;
   if (Widget=nil) then ;
@@ -1506,16 +1521,23 @@ begin
         TFileDialog(data).FileName := '';
         Files:=TStringList(TFileDialog(theDialog).Files);
         Files.Clear;
-        if not FileExists(FileName) then
+        if (Filename<>'') then begin
+          Result:=CheckOpenedFilename(Filename);
+          if not Result then exit;
           Files.Add(FileName);
+        end;
         {$IfDef GTK2}
         fileList := gtk_file_selection_get_selections(PGtkFileSelection(FPointer));
         rowNum := 0;
         While FileList^ <> nil do
         begin
           fileInfo := FileList^;
-          if (AnsiString(fileInfo)<>'') and (Files.IndexOf(AnsiString(fileInfo))<0) then
-            Files.Add(AnsiString(fileInfo));
+          CurFilename:=AnsiString(fileInfo);
+          if (CurFilename<>'') and (Files.IndexOf(CurFilename)<0) then begin
+            Result:=CheckOpenedFilename(CurFilename);
+            if not Result then exit;
+            Files.Add(CurFilename);
+          end;
           inc(FileList);
           inc(rowNum);
         end;
@@ -1528,11 +1550,14 @@ begin
         while cListRow <> nil do
         begin
           if PGtkCListRow(cListRow^.data)^.state = GTK_STATE_SELECTED then
-         begin
+          begin
             if gtk_clist_get_cell_type(fileList, rowNum, 0) = GTK_CELL_TEXT
             then begin
-             gtk_clist_get_text(fileList, rowNum, 0, @fileInfo);
-                 Files.Add(DirName+fileInfo);
+              gtk_clist_get_text(fileList, rowNum, 0, @fileInfo);
+              CurFilename:=DirName+fileInfo;
+              Result:=CheckOpenedFilename(CurFilename);
+              if not Result then exit;
+              Files.Add(DirName+fileInfo);
             end;
           end;
           // get next row from list
@@ -1540,11 +1565,12 @@ begin
           cListRow := g_list_next(cListRow);
         end;
         {$EndIf}
-        if (Filename<>'') and (Files.IndexOf(Filename)<0) then
-          Files.Add(Filename);
       end else begin
-        TFileDialog(data).FileName :=
-          gtk_file_selection_get_filename(PGtkFileSelection(FPointer));
+        CurFilename:=
+                   gtk_file_selection_get_filename(PGtkFileSelection(FPointer));
+        Result:=CheckOpenedFilename(CurFilename);
+        if not Result then exit;
+        TFileDialog(data).FileName := CurFilename;
       end;
     end
     else
@@ -2931,6 +2957,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.256  2005/01/05 14:46:35  mattias
+  started anchor editor and moved OverWritePromp from lcl to gtk intf
+
   Revision 1.255  2005/01/01 18:56:47  mattias
   implemented TTIProgressBar
 
