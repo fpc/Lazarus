@@ -7942,6 +7942,7 @@ end;
 procedure TMainIDE.UpdateCaption;
 var NewCaption: string;
 begin
+  if MainIDEBar=nil then exit;
   NewCaption := Format(lisLazarusEditorV, [lisLazarusVersionString]);
   if Project1<>nil then begin
     if Project1.Title<>'' then
@@ -11492,6 +11493,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.859  2005/03/16 12:03:40  mattias
+  added check for UpdateCaption if MainIDEBar is already destroyed
+
   Revision 1.858  2005/03/16 11:41:33  mattias
   fixed view OI menu item to always show OI, instead of showing next
 
