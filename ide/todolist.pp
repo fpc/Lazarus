@@ -242,7 +242,7 @@ begin
   Caption := lisTodoListCaption;
   KeyPreview := True;
   Position := poScreenCenter;
-  OnKeyDown  :={$IFDEF FPC}@{$ENDIF}FormKeyDown;
+  OnKeyDown  :=@FormKeyDown;
 
   StatusBar:=TStatusBar.Create(Self);
   with StatusBar do
@@ -283,7 +283,7 @@ begin
   Btn.Glyph:=Bmp;
   Btn.ShowHint:=True;
   Btn.Hint  := lisTodolistRefresh;
-  Btn.OnClick:={$IFDEF FPC}@{$ENDIF}actFileRefresh;
+  Btn.OnClick:=@actFileRefresh;
 
   //button Goto
   Btn:=TSpeedButton.Create(Bar);
@@ -298,7 +298,7 @@ begin
   Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoGotoLine[0], GetSysColor(COLOR_BTNFACE));
   Btn.Glyph:=Bmp;
   Btn.Hint  := listodoListGotoLine;
-  Btn.OnClick:={$IFDEF FPC}@{$ENDIF}actEditGoto;
+  Btn.OnClick:=@actEditGoto;
 
   //button Print
   Btn:=TSpeedButton.Create(Bar);
@@ -313,7 +313,7 @@ begin
   Bmp:=TBitMap.Create;
   Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoPrint[0], GetSysColor(COLOR_BTNFACE));
   Btn.Glyph:=Bmp;
-  Btn.OnClick:={$IFDEF FPC}@{$ENDIF}actFilePrint;
+  Btn.OnClick:=@actFilePrint;
 
   //button Options
   Btn:=TSpeedButton.Create(Bar);
@@ -328,7 +328,7 @@ begin
   Bmp.Handle:=CreatePixmapIndirect(@cImg_ToDoOptions[0], GetSysColor(COLOR_BTNFACE));
   Btn.Glyph:=Bmp;
   Btn.Hint  :=  lisToDoListOptions;
-  Btn.OnClick:={$IFDEF FPC}@{$ENDIF}actOptionsCfg;
+  Btn.OnClick:=@actOptionsCfg;
 
 
   lvTodo:=TListView.Create(Self);
@@ -341,7 +341,7 @@ begin
     Height := 237;
     Align := alClient;
     ViewStyle:=vsReport;
-    lvToDo.OnDblClick:={$IFDEF FPC}@{$ENDIF}actEditGoto;
+    lvToDo.OnDblClick:=@actEditGoto;
     //priority column
     C:=Columns.Add;
     C.Caption := ' !';
@@ -370,7 +370,7 @@ begin
   inherited Destroy;
 end;
 
-//Load project and scan all files for find the syntax todo
+//Load project main file and scan all files for find the syntax todo
 procedure TfrmToDo.actFileRefresh(Sender: TObject);
 var
   UsedInterfaceFilenames,
@@ -512,7 +512,7 @@ begin
   N:=Pos('{$I ',UpperCase(aDirective));
   if N<>0 then
   begin
-    //we found a token that look a include directive. now extract
+    //we found a token that looks like an include directive. now extract
     //the file name
     ParsingString:=Trim(Copy(aDirective,N+Length('{$I '),MaxInt));
     ParsingString:=Trim(Copy(ParsingString,1,Pos('}',ParsingString)-1));
