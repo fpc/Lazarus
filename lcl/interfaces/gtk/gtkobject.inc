@@ -2668,9 +2668,9 @@ begin
         ConnectSenderSignal(gCore, 'key-release-event', @GTKKeyUpDown,
                             GDK_KEY_RELEASE_MASK);
       end;
-      ConnectSenderSignal(gFixed, 'key-press-event', @GTKKeyUpDown,
+      ConnectSenderSignal(gCore, 'key-press-event', @GTKKeyUpDown,
                           GDK_KEY_PRESS_MASK);
-      ConnectSenderSignal(gFixed, 'key-release-event', @GTKKeyUpDown,
+      ConnectSenderSignal(gCore, 'key-release-event', @GTKKeyUpDown,
                           GDK_KEY_RELEASE_MASK);
     end;
     
@@ -6614,6 +6614,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.287  2002/11/15 23:52:06  mbukovjan
+  Fix keydown & keypress for TMemo and hopefully not break others.
+
   Revision 1.286  2002/11/13 23:03:05  lazarus
   MG: improved warning
 
