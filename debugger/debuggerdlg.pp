@@ -45,11 +45,17 @@ type
   TDebuggerDlg = class(TForm)
   private
     FDebugger: TDebugger;
+    FUpdateCount: integer;
   protected                                              
     procedure SetDebugger(const ADebugger: TDebugger); virtual;
     procedure DoClose(var Action: TCloseAction); override;
+    procedure DoBeginUpdate; virtual;
+    procedure DoEndUpdate; virtual;
   public
     destructor Destroy; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function UpdateCount: integer;
     property Debugger: TDebugger read FDebugger write SetDebugger;
   end;
 
@@ -63,6 +69,26 @@ begin
   inherited;
 end;
 
+procedure TDebuggerDlg.BeginUpdate;
+begin
+  inc(FUpdateCount);
+  writeln('TDebuggerDlg.BeginUpdate ',ClassName,' ',FUpdateCount);
+end;
+
+procedure TDebuggerDlg.EndUpdate;
+begin
+  if FUpdateCount<1 then RaiseException('TDebuggerDlg.EndUpdate');
+  dec(FUpdateCount);
+  
+  writeln('TDebuggerDlg.EndUpdate ',ClassName,' ',FUpdateCount);
+  if FUpdateCount=0 then DoEndUpdate;
+end;
+
+function TDebuggerDlg.UpdateCount: integer;
+begin
+  Result:=FUpdateCount;
+end;
+
 procedure TDebuggerDlg.SetDebugger(const ADebugger: TDebugger);
 begin
   FDebugger := ADebugger; 
@@ -74,8 +100,21 @@ begin
   EnvironmentOptions.IDEWindowLayoutList.ItemByForm(Self).GetCurrentPosition;
 end;
 
+procedure TDebuggerDlg.DoBeginUpdate;
+begin
+
+end;
+
+procedure TDebuggerDlg.DoEndUpdate;
+begin
+
+end;
+
 { =============================================================================
   $Log$
+  Revision 1.4  2003/05/27 20:58:12  mattias
+  implemented enable and deleting breakpoint in breakpoint dlg
+
   Revision 1.3  2003/05/18 10:42:58  mattias
   implemented deleting empty submenus
 

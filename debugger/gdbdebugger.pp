@@ -500,24 +500,27 @@ end;
 
 procedure TGDBBreakPoint.DoActionChange;     
 begin
+  Changed(False);
 end;
 
-procedure TGDBBreakPoint.DoEnableChange; 
+procedure TGDBBreakPoint.DoEnableChange;
 const
   CMD: array[Boolean] of String = ('disable', 'enable');
 begin
   if FBreakID = 0 then Exit;
   
   TGDBDebugger(Debugger).SendCommand('%s %d', [CMD[Enabled], FBreakID]);
+  Changed(false);
 end;
 
 procedure TGDBBreakPoint.DoExpressionChange; 
 begin
+  Changed(False);
 end;
 
 procedure TGDBBreakPoint.DoStateChange; 
 begin   
-  inherited;
+  inherited DoStateChange;
   if  (Debugger.State = dsStop)
   and (FBreakID = 0)
   then SetBreakpoint;
@@ -595,6 +598,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.11  2003/05/27 20:58:12  mattias
+  implemented enable and deleting breakpoint in breakpoint dlg
+
   Revision 1.10  2003/05/23 14:12:51  mattias
   implemented restoring breakpoints
 

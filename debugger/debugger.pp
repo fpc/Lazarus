@@ -1036,6 +1036,7 @@ begin
       end;
     end;
   end;
+  Changed(false);
 end;
 
 procedure TDBGBreakPoint.EnableGroups;
@@ -2168,6 +2169,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.29  2003/05/27 20:58:12  mattias
+  implemented enable and deleting breakpoint in breakpoint dlg
+
   Revision 1.28  2003/05/27 08:01:31  marc
   MWE: + Added exception break
        * Reworked adding/removing breakpoints

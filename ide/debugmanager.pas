@@ -103,6 +103,8 @@ type
     procedure LoadProjectSpecificInfo(XMLConfig: TXMLConfig); override;
     procedure SaveProjectSpecificInfo(XMLConfig: TXMLConfig); override;
     procedure DoRestoreDebuggerMarks(AnUnitInfo: TUnitInfo); override;
+    procedure BeginUpdateDialogs;
+    procedure EndUpdateDialogs;
 
     function DoInitDebugger: TModalResult; override;
     function DoPauseProject: TModalResult; override;
@@ -589,6 +591,28 @@ begin
   end;
 end;
 
+procedure TDebugManager.BeginUpdateDialogs;
+var
+  DialogType: TDebugDialogType;
+  CurDialog: TDebuggerDlg;
+begin
+  for DialogType:=Low(FDialogs) to High(FDialogs) do begin
+    CurDialog:=FDialogs[DialogType];
+    if CurDialog<>nil then CurDialog.BeginUpdate;
+  end;
+end;
+
+procedure TDebugManager.EndUpdateDialogs;
+var
+  DialogType: TDebugDialogType;
+  CurDialog: TDebuggerDlg;
+begin
+  for DialogType:=Low(FDialogs) to High(FDialogs) do begin
+    CurDialog:=FDialogs[DialogType];
+    if CurDialog<>nil then CurDialog.EndUpdate;
+  end;
+end;
+
 //-----------------------------------------------------------------------------
 // Debugger routines
 //-----------------------------------------------------------------------------
@@ -673,56 +697,61 @@ begin
   OldBreakPointGroups := nil;
   OldWatches := nil;
 
+  BeginUpdateDialogs;
   try
-    case EnvironmentOptions.DebuggerType of
-      dtGnuDebugger: begin
-        // check if debugger already created with the right type
-        if (FDebugger <> nil)
-        and ( not(FDebugger is TGDBMIDebugger)
-              or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
-            )
-        then begin
-          // the current debugger is the wrong type -> free it
+    try
+      case EnvironmentOptions.DebuggerType of
+        dtGnuDebugger: begin
+          // check if debugger already created with the right type
+          if (FDebugger <> nil)
+          and ( not(FDebugger is TGDBMIDebugger)
+                or (FDebugger.ExternalDebugger <> EnvironmentOptions.DebuggerFilename)
+              )
+          then begin
+            // the current debugger is the wrong type -> free it
+            FreeDebugger;
+          end;
+          // create debugger object
+          if FDebugger = nil
+          then begin
+            SaveDebuggerItems;
+            FDebugger := TGDBMIDebugger.Create(EnvironmentOptions.DebuggerFilename);
+            FBreakPointGroups := FDebugger.BreakPointGroups;
+            FBreakPoints := FDebugger.BreakPoints;
+            FWatches := FDebugger.Watches;
+            ResetDialogs;
+          end;
+          // restore debugger items
+          RestoreDebuggerItems;
+        end;
+      else
+        if FDebugger=nil then
           FreeDebugger;
-        end;
-        // create debugger object
-        if FDebugger = nil
-        then begin
-          SaveDebuggerItems;
-          FDebugger := TGDBMIDebugger.Create(EnvironmentOptions.DebuggerFilename);
-          FBreakPointGroups := FDebugger.BreakPointGroups;
-          FBreakPoints := FDebugger.BreakPoints;
-          FWatches := FDebugger.Watches;
-          ResetDialogs;
-        end;
-        // restore debugger items
-        RestoreDebuggerItems;
+        exit;
       end;
-    else
-      if FDebugger=nil then
-        FreeDebugger;
-      exit;
+    finally
+      OldBreakpoints.Free;
+      OldBreakPointGroups.Free;
+      OldWatches.Free;
     end;
+    FDebugger.OnState     := @OnDebuggerChangeState;
+    FDebugger.OnCurrent   := @OnDebuggerCurrentLine;
+    FDebugger.OnDbgOutput := @OnDebuggerOutput;
+    FDebugger.OnException := @OnDebuggerException;
+    if FDebugger.State = dsNone
+    then FDebugger.Init;
+
+    FDebugger.FileName := LaunchingApplication;
+    FDebugger.Arguments := LaunchingParams;
+    Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
+
+    if FDialogs[ddtOutput] <> nil
+    then TDbgOutputForm(FDialogs[ddtOutput]).Clear;
+
+    //TODO: Show/hide debug menuitems based on FDebugger.SupportedCommands
   finally
-    OldBreakpoints.Free;
-    OldBreakPointGroups.Free;
-    OldWatches.Free;
+    EndUpdateDialogs;
   end;
-  FDebugger.OnState     := @OnDebuggerChangeState;
-  FDebugger.OnCurrent   := @OnDebuggerCurrentLine;
-  FDebugger.OnDbgOutput := @OnDebuggerOutput;
-  FDebugger.OnException := @OnDebuggerException;
-  if FDebugger.State = dsNone
-  then FDebugger.Init;
-
-  FDebugger.FileName := LaunchingApplication;
-  FDebugger.Arguments := LaunchingParams;
-  Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
-
-  if FDialogs[ddtOutput] <> nil
-  then TDbgOutputForm(FDialogs[ddtOutput]).Clear;
-
-  //TODO: Show/hide debug menuitems based on FDebugger.SupportedCommands
 
   Result := mrOk;
   WriteLN('[TDebugManager.DoInitDebugger] END');
@@ -938,6 +967,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.30  2003/05/27 20:58:12  mattias
+  implemented enable and deleting breakpoint in breakpoint dlg
+
   Revision 1.29  2003/05/27 15:04:00  mattias
   small fixes for debugger without file
 

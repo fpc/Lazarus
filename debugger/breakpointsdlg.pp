@@ -42,6 +42,11 @@ uses
   Buttons, Extctrls, Menus, ComCtrls, IDEProcs, Debugger, DebuggerDlg;
 
 type
+  TBreakPointsDlgState = (
+    bpdsItemsNeedUpdate
+    );
+  TBreakPointsDlgStates = set of TBreakPointsDlgState;
+
   TBreakPointsDlg = class(TDebuggerDlg)
     lvBreakPoints: TListView;
     mnuPopup: TPopupMenu;
@@ -58,6 +63,7 @@ type
     procedure lvBreakPointsClick(Sender: TObject);
     procedure lvBreakPointsSelectItem(Sender: TObject; AItem: TListItem;
       Selected: Boolean);
+    procedure mnuPopupPopup(Sender: TObject);
     procedure popAddSourceBPClick(Sender: TObject);
     procedure popPropertiesClick(Sender: TObject);
     procedure popEnabledClick(Sender: TObject);
@@ -68,6 +74,7 @@ type
   private
     FBaseDirectory: string;
     FBreakpointsNotification: TDBGBreakPointsNotification;
+    FStates: TBreakPointsDlgStates;
     procedure BreakPointAdd(const ASender: TDBGBreakPoints;
                             const ABreakpoint: TDBGBreakPoint);
     procedure BreakPointUpdate(const ASender: TDBGBreakPoints;
@@ -81,9 +88,11 @@ type
     procedure UpdateAll;
   protected
     procedure SetDebugger(const ADebugger: TDebugger); override;
+    procedure DoEndUpdate; override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
+  public
     property BaseDirectory: string read FBaseDirectory write SetBaseDirectory;
   end;
 
@@ -118,7 +127,13 @@ begin
   Item := lvBreakPoints.Items.FindData(ABreakpoint);
   if Item = nil
   then BreakPointAdd(ASender, ABreakPoint)
-  else UpdateItem(Item, ABreakPoint);
+  else begin
+    if UpdateCount>0 then begin
+      Include(FStates,bpdsItemsNeedUpdate);
+      exit;
+    end;
+    UpdateItem(Item, ABreakPoint);
+  end;
 end;
 
 procedure TBreakPointsDlg.BreakPointRemove(const ASender: TDBGBreakPoints;
@@ -161,13 +176,31 @@ end;
 
 procedure TBreakPointsDlg.lvBreakPointsSelectItem(Sender: TObject;
   AItem: TListItem; Selected: Boolean);
+begin
+end;
+
+procedure TBreakPointsDlg.mnuPopupPopup(Sender: TObject);
 var
   Enable: Boolean;
+  CurBreakPoint: TDBGBreakPoint;
 begin
   Enable := lvBreakPoints.Selected <> nil;
+  if Enable then
+    CurBreakPoint:=TDBGBreakPoint(lvBreakPoints.Selected.Data)
+  else
+    CurBreakPoint:=nil;
   popProperties.Enabled := Enable;
   popEnabled.Enabled := Enable;
+  if CurBreakPoint<>nil then
+    popEnabled.Checked := CurBreakPoint.Enabled
+  else
+    popEnabled.Checked := false;
   popDelete.Enabled := Enable;
+  
+  Enable := lvBreakPoints.Items.Count>0;
+  popDisableAll.Enabled := Enable;
+  popDeleteAll.Enabled := Enable;
+  popEnableAll.Enabled := Enable;
 end;
 
 procedure TBreakPointsDlg.popAddSourceBPClick(Sender: TObject);
@@ -183,7 +216,19 @@ begin
 end;
 
 procedure TBreakPointsDlg.popDeleteClick(Sender: TObject);
+var
+  CurItem: TListItem;
+  CurBreakPoint: TDBGBreakPoint;
 begin
+  CurItem:=lvBreakPoints.Selected;
+  if CurItem=nil then exit;
+  CurBreakPoint:=TDBGBreakPoint(CurItem.Data);
+  if MessageDlg('Delete breakpoint?',
+    'Delete breakpoint at'#13
+    +'"'+CurBreakPoint.Source+'" line '+IntToStr(CurBreakPoint.Line)+'?',
+    mtConfirmation,[mbYes,mbCancel],0)<>mrYes
+  then exit;
+  CurBreakPoint.Free;
 end;
 
 procedure TBreakPointsDlg.popDisableAllClick(Sender: TObject);
@@ -213,7 +258,12 @@ begin
 end;
 
 procedure TBreakPointsDlg.popEnabledClick(Sender: TObject);
+var
+  CurItem: TListItem;
 begin
+  CurItem:=lvBreakPoints.Selected;
+  if (CurItem=nil) then exit;
+  TDBGBreakPoint(CurItem.Data).Enabled:=not TDBGBreakPoint(CurItem.Data).Enabled;
 end;
 
 procedure TBreakPointsDlg.popPropertiesClick(Sender: TObject);
@@ -237,6 +287,12 @@ begin
   else inherited;
 end;
 
+procedure TBreakPointsDlg.DoEndUpdate;
+begin
+  inherited DoEndUpdate;
+  if bpdsItemsNeedUpdate in FStates then UpdateAll;
+end;
+
 procedure TBreakPointsDlg.UpdateItem(const AItem: TListItem;
   const ABreakpoint: TDBGBreakPoint);
 const
@@ -246,8 +302,8 @@ const
   //                 enabled  valid
   DEBUG_STATE: array[Boolean, TValidState] of String = (
              {vsUnknown, vsValid, vsInvalid}
-    {Enabled} ('',       '?',     ''),
-    {Disabled}('*',      '!',     '*'));
+    {Disabled} ('?',    'Disabled','Invalid'),
+    {Endabled} ('?',    'Enabled', 'Invalid'));
 var
   Action: TDBGBreakPointAction;
   S: String;
@@ -297,8 +353,19 @@ begin
 end;
 
 procedure TBreakPointsDlg.UpdateAll;
+var
+  i: Integer;
+  CurItem: TListItem;
 begin
-
+  if UpdateCount>0 then begin
+    Include(FStates,bpdsItemsNeedUpdate);
+    exit;
+  end;
+  Exclude(FStates,bpdsItemsNeedUpdate);
+  for i:=0 to lvBreakPoints.Items.Count-1 do begin
+    CurItem:=lvBreakPoints.Items[i];
+    UpdateItem(CurItem,TDBGBreakPoint(CurItem.Data));
+  end;
 end;
 
 
@@ -309,6 +376,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.13  2003/05/27 20:58:12  mattias
+  implemented enable and deleting breakpoint in breakpoint dlg
+
   Revision 1.12  2003/05/27 15:04:00  mattias
   small fixes for debugger without file
 

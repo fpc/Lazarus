@@ -59,13 +59,14 @@ type
     function  ReadLine(const APeek: Boolean): String; overload;
     procedure SendCmdLn(const ACommand: String); overload;
     procedure SendCmdLn(const ACommand: String; Values: array of const); overload;
-    property  DebugProcess: TProcess read FDbgProcess;         
-    property  DebugProcessRunning: Boolean read GetDebugProcessRunning;         
-    property  LineEnds: TStringList read FLineEnds;
   public
     constructor Create(const AExternalDebugger: String); {override; }
     destructor Destroy; override;
     procedure TestCmd(const ACommand: String); virtual;// For internal debugging purposes
+  public
+    property DebugProcess: TProcess read FDbgProcess;
+    property DebugProcessRunning: Boolean read GetDebugProcessRunning;
+    property LineEnds: TStringList read FLineEnds;
   end;
 
 procedure SendBreak(const AHandle: Integer);
@@ -203,6 +204,7 @@ begin
   inherited;
   try
     FDbgProcess.Free;
+    FDbgProcess:=nil;
   except
     on E: Exception do WriteLN('Exeption while freeing debugger: ', E.Message);
   end;
@@ -242,6 +244,7 @@ begin
 end;
 
 function TCmdLineDebugger.ReadLine(const APeek: Boolean): String;
+
   function ReadData(const AStream: TStream; var ABuffer: String): Integer;
   var
     S: String;
@@ -363,6 +366,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.15  2003/05/27 20:58:12  mattias
+  implemented enable and deleting breakpoint in breakpoint dlg
+
   Revision 1.14  2003/05/23 14:12:51  mattias
   implemented restoring breakpoints
 
