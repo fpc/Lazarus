@@ -541,27 +541,28 @@ type
 
   TEdit = class(TCustomEdit)
   published
-    property AutoSize;
     property Align;
     property Anchors;
+    property AutoSize;
     property CharCase;
     property DragMode;
     property EchoMode;
     property MaxLength;
+    property OnChange;
+    property OnClick;
+    property OnEnter;
+    property OnExit;
+    Property OnKeyDown;
+    property OnKeyPress;
+    Property OnKeyUp;
     property ParentShowHint;
+    property PasswordChar;
     property PopupMenu;
     property ReadOnly;
     property ShowHint;
     property Text;
     property Visible;
-    property OnChange;
-    property OnClick;
-    property OnEnter;
-    property OnExit;
-    property OnKeyPress;
-    Property OnKeyDown;
-    Property OnKeyUp;
-    property PasswordChar;
+
   end;
   
   
@@ -577,18 +578,19 @@ type
     property Font;
     property Lines;
     property MaxLength;
+    property OnChange;
+    property OnEnter;
+    property OnExit;
+    property OnKeyDown;
+    property OnKeyPress;
+    property OnKeyUp;
     property PopupMenu;
     property ReadOnly;
     property ScrollBars;
     property Tabstop;
     property Visible;
     property WordWrap stored WordWrapIsStored;
-    property OnChange;
-    property OnEnter;
-    property OnExit;
-    property OnKeyPress;
-    property OnKeyDown;
-    property OnKeyUp;
+
   end;
 
 
@@ -1461,6 +1463,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.98  2003/06/16 22:47:19  mattias
+  fixed keeping TForm.Visible=false
+
   Revision 1.97  2003/06/13 14:38:01  mattias
   fixed using streamed clientwith/height for child anchors
 

@@ -853,7 +853,7 @@ procedure TJITForms.DoFinishReading;
     i: integer;
     AControl: TControl;
   begin
-    // The LCL has as default Visible=false. But for Delphi compatbility
+    // The LCL has as default Visible=false. But for Delphi compatibility
     // loading control defaults to true.
     for i:=0 to FCurReadJITComponent.ComponentCount-1 do begin
       AControl:=TControl(FCurReadJITComponent.Components[i]);
@@ -870,7 +870,6 @@ procedure TJITForms.DoFinishReading;
 begin
   inherited DoFinishReading;
   ApplyVisible;
-  TJITForm(FCurReadJITComponent).Show;
 end;
 
 

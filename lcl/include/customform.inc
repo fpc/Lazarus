@@ -279,7 +279,7 @@ Begin
   begin
     inherited Visible:=Value;
   end;
-  //writeln('[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating);
+  //writeln('[TCustomForm.SetVisible] END ',Name,':',ClassName,' ',Value,' ',(fsCreating in FFormState),' ',FormUpdating,' ',Visible);
 end;
 
 {------------------------------------------------------------------------------
@@ -804,6 +804,11 @@ riteln('[TCustomForm.WndPRoc] 1');
       end;
     end;
   inherited WndProc(TheMessage);
+end;
+
+function TCustomForm.VisibleIsStored: boolean;
+begin
+  Result:=Visible;
 end;
 
 
@@ -1427,6 +1432,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.104  2003/06/16 22:47:19  mattias
+  fixed keeping TForm.Visible=false
+
   Revision 1.103  2003/06/13 14:38:01  mattias
   fixed using streamed clientwith/height for child anchors
 

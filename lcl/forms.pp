@@ -338,6 +338,7 @@ type
                              const CurName, NewName: string); override;
     procedure VisibleChanging; override;
     procedure WndProc(var TheMessage : TLMessage); override;
+    function VisibleIsStored: boolean;
   public
     // properties
   public
@@ -390,7 +391,7 @@ type
     property Position: TPosition read FPosition write SetPosition default poDesigned;
     property TextHeight: Longint read FDummyTextHeight write FDummyTextHeight
                                  stored False;
-    property Visible write SetVisible default False;
+    property Visible write SetVisible stored VisibleIsStored default false;
     property WindowState: TWindowState read FWindowState write SetWindowState
                                        default wsNormal;
   end;
@@ -988,7 +989,7 @@ function InitResourceComponent(Instance: TComponent;
       i: integer;
       AControl: TControl;
     begin
-      // The LCL has as default Visible=false. But for Delphi compatbility
+      // The LCL has as default Visible=false. But for Delphi compatibility
       // loading control defaults to true.
       if Instance is TControl then
         for i:=0 to Instance.ComponentCount-1 do begin
