@@ -410,7 +410,6 @@ type
     procedure Notification(AComponent: TComponent; Operation : TOperation);override;
     procedure PaintWindow(dc : Hdc); override;
     procedure RequestAlign; override;
-    procedure SetBorderStyle(NewStyle: TBorderStyle); override;
     procedure SetZOrder(Topmost: Boolean); override;
     procedure UpdateShowing; override;
     procedure UpdateWindowState;

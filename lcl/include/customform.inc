@@ -972,14 +972,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
-{       TCustomForm SetBorderStyle                                             }
-{------------------------------------------------------------------------------}
-procedure TCustomForm.SetBorderStyle(NewStyle: TBorderStyle);
-begin
-  SetFormBorderStyle(NewStyle);
-end;
-
-{------------------------------------------------------------------------------}
 {       TCustomForm SetFormBorderStyle                                         }
 {------------------------------------------------------------------------------}
 procedure TCustomForm.SetFormBorderStyle(Value: TFormBorderStyle);
@@ -1613,6 +1605,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.138  2004/05/21 18:20:11  mattias
+  quick fixed crashing property overloading BorderStyle
+
   Revision 1.137  2004/05/21 18:12:17  mattias
   quick fixed crashing property overloading BorderStyle
 
