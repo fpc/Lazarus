@@ -1698,6 +1698,9 @@ begin
   TranslateCoord(X,Y);
   UpdateFont;
 
+  //The Y origine for ps text it's Left bottom corner
+  Dec(Y,Abs(Round(Font.Size)));
+  
   if fsUnderline in Font.Style then
   begin
     PenUnder:=0.5;
@@ -1727,7 +1730,7 @@ begin
   Result.cY := 0;
   if Text='' then Exit;
   RequiredState([csHandleValid, csFontValid]);
-  Result.cX:=Font.Size*72;
+  Result.cY:=Font.Size;
 
   FontName:=MappedFontName;
   IndexFont:=0; //By default, use CourierISO metrics

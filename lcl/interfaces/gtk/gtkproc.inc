@@ -7289,22 +7289,23 @@ begin
       //debugln('UpdateWidgetStyleOfControl New Font Color=',dbgs(NewColor.Pixel),' ',dbgs(NewColor.Red),' ',dbgs(NewColor.Green),' ',dbgs(NewColor.Blue));
       CreateRCStyle;
 
-      RCStyle^.text[GTK_STATE_NORMAL]:=NewColor;
-      for i:=0 to 4 do begin
+      {for i:=0 to 4 do begin
         RCStyle^.text[i]:=NewColor;
         RCStyle^.fg[i]:=NewColor;
         RCStyle^.bg[i]:=NewColor;
         RCStyle^.base[i]:=NewColor;
         RCStyle^.color_flags[i]:=
           RCStyle^.color_flags[i] or 15;
-      end;
+      end;}
+
+      RCStyle^.text[GTK_STATE_NORMAL]:=NewColor;
 
       // Indicate which colors the GtkRcStyle will affect;
       // unflagged colors will follow the theme
       RCStyle^.color_flags[GTK_STATE_NORMAL]:=
         RCStyle^.color_flags[GTK_STATE_NORMAL] or GTK_RC_TEXT;
 
-      DebugLn('UpdateWidgetStyleOfControl Font Color ',DbgSName(AWinControl),' Color=',HexStr(Cardinal(AWinControl.Font.Color),8));
+      //DebugLn('UpdateWidgetStyleOfControl Font Color ',DbgSName(AWinControl),' Color=',HexStr(Cardinal(AWinControl.Font.Color),8));
     end;
 
     // set font (currently only TCustomLabel)
@@ -7878,6 +7879,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.320  2004/11/17 07:46:32  mattias
+  fixed postcript printer TextOut/TextEntend  from Olivier
+
   Revision 1.319  2004/11/10 18:23:56  mattias
   impementing changing a TLabel.Font properties Size, Height, Name, Style - set only at Handle creation time
 
