@@ -124,11 +124,11 @@ end;
   Params:  None
   Returns: Nothing
  ------------------------------------------------------------------------------}
-Procedure TCustomForm.FocusControl(Control : TWinControl);
+Procedure TCustomForm.FocusControl(WinControl : TWinControl);
 Begin
-  FActiveControl := Control;
+  FActiveControl := WinControl;
   if HandleAllocated and Visible then
-    LCLLinux.SetFocus(Control.Handle);
+    LCLLinux.SetFocus(WinControl.Handle);
 End;
 
 
@@ -1025,6 +1025,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.51  2002/08/24 12:54:59  lazarus
+  MG: fixed mouse capturing, OI edit focus
+
   Revision 1.50  2002/08/17 15:45:32  lazarus
   MG: removed ClientRectBugfix defines
 

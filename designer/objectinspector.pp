@@ -22,10 +22,8 @@
 
   ToDo:
    - TCustomComboBox has a bug: it can not store objects
-   - MouseDown is always fired twice -> workaround
    - clipping (almost everywhere)
    - TCustomComboBox don't know custom draw yet
-   - improve TextHeight function
    - combobox can't sort (exception)
    - backgroundcolor=clNone
    - DoubleClick on Property
@@ -150,7 +148,6 @@ type
     FCurrentEdit:TWinControl;  // nil or ValueEdit or ValueComboBox
     FCurrentButton:TWinControl; // nil or ValueButton
     FDragging:boolean;
-    FOldMouseDownY:integer;  // XXX workaround
     FOnModified: TNotifyEvent;
     FExpandedProperties:TStringList;
     FBorderStyle:TBorderStyle;
@@ -211,6 +208,9 @@ type
   protected
     procedure CreateParams(var Params: TCreateParams); override;
 
+    procedure MouseDown(Button:TMouseButton; Shift:TShiftState; X,Y:integer);  override;
+    procedure MouseMove(Shift:TShiftState; X,Y:integer);  override;
+    procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X,Y:integer);  override;
   public
     ValueEdit:TEdit;
     ValueComboBox:TComboBox;
@@ -244,9 +244,6 @@ type
     function PropertyPath(Index:integer):string;
     function GetRowByPath(PropPath:string):TOIPropertyGridRow;
 
-    procedure MouseDown(Button:TMouseButton; Shift:TShiftState; X,Y:integer);  override;
-    procedure MouseMove(Shift:TShiftState; X,Y:integer);  override;
-    procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X,Y:integer);  override;
     function MouseToIndex(y:integer;MustExist:boolean):integer;
 
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
@@ -687,6 +684,7 @@ begin
   if (FItemIndex<>NewIndex) then begin
     if (FItemIndex>=0) and (FItemIndex<FRows.Count) then
       Rows[FItemIndex].Editor.Deactivate;
+    SetCaptureControl(nil);
     FItemIndex:=NewIndex;
     if FCurrentEdit<>nil then begin
       FCurrentEdit.Visible:=false;
@@ -729,8 +727,9 @@ begin
       AlignEditComponents;
       if FCurrentEdit<>nil then begin
         FCurrentEdit.Enabled:=true;
-        if (FDragging=false) and (FCurrentEdit.Showing) then
+        if (FDragging=false) and (FCurrentEdit.Showing) then begin
           FCurrentEdit.SetFocus;
+        end;
       end;
       if FCurrentButton<>nil then
         FCurrentButton.Enabled:=true;
@@ -903,28 +902,54 @@ end;
 
 procedure TOIPropertyGrid.MouseDown(Button:TMouseButton;  Shift:TShiftState;
   X,Y:integer);
-var
-  IconX,Index:integer;
-  PointedRow:TOIpropertyGridRow;
 begin
   //ShowMessageDialog('X'+IntToStr(X)+',Y'+IntToStr(Y));
-  //inherited MouseDown(Button,Shift,X,Y);
-  // XXX
-  // the MouseDown event is fired two times
-  // this is a workaround
-  
+  inherited MouseDown(Button,Shift,X,Y);
+
   //hide the hint
   if FHintWindow.Visible then FHintWindow.Visible := False;
   
-  if FOldMouseDownY=Y then begin
-    FOldMouseDownY:=-1;
-    exit;
-  end else FOldMouseDownY:=Y;
-
   if Button=mbLeft then begin
     if Cursor=crHSplit then begin
       FDragging:=true;
+    end;
+  end;
+end;
+
+procedure TOIPropertyGrid.MouseMove(Shift:TShiftState;  X,Y:integer);
+var SplitDistance:integer;
+begin
+  inherited MouseMove(Shift,X,Y);
+  
+  SplitDistance:=X-SplitterX;
+  if FDragging then begin
+    if ssLeft in Shift then begin
+      SplitterX:=SplitterX+SplitDistance;
     end else begin
+      EndDragSplitter;
+    end;
+  end else begin
+    if (abs(SplitDistance)<=2) then begin
+      Cursor:=crHSplit;
+    end else begin
+      Cursor:=crDefault;
+    end;
+  end;
+end;
+
+procedure TOIPropertyGrid.MouseUp(Button:TMouseButton;  Shift:TShiftState;
+  X,Y:integer);
+var
+  IconX,Index:integer;
+  PointedRow:TOIpropertyGridRow;
+  WasDragging: boolean;
+begin
+  WasDragging:=FDragging;
+  if FDragging then EndDragSplitter;
+  inherited MouseUp(Button,Shift,X,Y);
+
+  if Button=mbLeft then begin
+    if not WasDragging then begin
       Index:=MouseToIndex(Y,false);
       ItemIndex:=Index;
       if (Index>=0) and (Index<FRows.Count) then begin
@@ -943,40 +968,16 @@ begin
   end;
 end;
 
-procedure TOIPropertyGrid.MouseMove(Shift:TShiftState;  X,Y:integer);
-var SplitDistance:integer;
-begin
-  //inherited MouseMove(Shift,X,Y);
-  SplitDistance:=X-SplitterX;
-  if FDragging then begin
-    if ssLeft in Shift then begin
-      SplitterX:=SplitterX+SplitDistance;
-    end else begin
-      EndDragSplitter;
-    end;
-  end else begin
-    if (abs(SplitDistance)<=2) then begin
-      Cursor:=crHSplit;
-    end else begin
-      Cursor:=crDefault;
-    end;
-  end;
-end;
-
-procedure TOIPropertyGrid.MouseUp(Button:TMouseButton;  Shift:TShiftState;
-X,Y:integer);
-begin
-  if FDragging then EndDragSplitter;
-  inherited MouseUp(Button,Shift,X,Y);
-end;
-
 procedure TOIPropertyGrid.EndDragSplitter;
 begin
   if FDragging then begin
     Cursor:=crDefault;
     FDragging:=false;
     FPreferredSplitterX:=FSplitterX;
-    if FCurrentEdit<>nil then FCurrentEdit.SetFocus;
+    if FCurrentEdit<>nil then begin
+      SetCaptureControl(nil);
+      FCurrentEdit.SetFocus;
+    end;
   end;
 end;
 

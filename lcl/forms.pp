@@ -164,7 +164,7 @@ type
     function WantChildKey(Child : TControl; var MEssage : TLMessage): Boolean; virtual;
     Procedure SetFocus; override;
     function SetFocusedControl(Control : TWinControl): Boolean ; Virtual;
-    Procedure FocusControl(Control : TWinControl);
+    Procedure FocusControl(WinControl : TWinControl);
     Function ShowModal : Integer;
     property Active : Boolean read FActive;
     property BorderStyle : TFormBorderStyle
