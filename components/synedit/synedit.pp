@@ -128,7 +128,8 @@ const
 
 type
   TSynSearchOption = (ssoMatchCase, ssoWholeWord, ssoBackwards,
-    ssoEntireScope, ssoSelectedOnly, ssoReplace, ssoReplaceAll, ssoPrompt);
+    ssoEntireScope, ssoSelectedOnly, ssoReplace, ssoReplaceAll, ssoPrompt
+    {$IFDEF SYN_LAZARUS}, ssoRegExpr, ssoRegExprMultiLine{$ENDIF});
   TSynSearchOptions = set of TSynSearchOption;
 
   TSynReplaceAction = (raCancel, raSkip, raReplace, raReplaceAll);
@@ -5777,8 +5778,12 @@ begin
   fTSearch.Sensitive := ssoMatchCase in AOptions;
   fTSearch.Whole := ssoWholeWord in AOptions;
   fTSearch.Pattern := ASearch;
+  fTSearch.RegularExpressions := ssoRegExpr in AOptions;
+  fTSearch.RegExprSingleLine := not (ssoRegExprMultiLine in AOptions);
   // search while the current search position is inside of the search range
+  {$IFNDEF SYN_LAZARUS}
   nSearchLen := Length(ASearch);
+  {$ENDIF}
   nReplaceLen := Length(AReplace);
   if bReplaceAll then IncPaintLock;
   try
@@ -5788,6 +5793,9 @@ begin
       // Operate on all results in this line.
       while nInLine > 0 do begin
         nFound := fTSearch.Results[n];
+        {$IFDEF SYN_LAZARUS}
+        nSearchLen := fTSearch.ResultLengths[n];
+        {$ENDIF}
         if bBackward then Dec(n) else Inc(n);
         Dec(nInLine);
         // Is the search result entirely in the search range?

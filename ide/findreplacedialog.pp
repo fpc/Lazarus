@@ -175,7 +175,6 @@ begin
       Width:=135;
       Height:=17;
       Caption:='Regular Expressions';
-      Enabled:=false;
       Show;
     end;
 
@@ -323,6 +322,7 @@ procedure TLazFindReplaceDialog.SetOptions(NewOptions:TSynSearchOptions);
 begin
   CaseSensitiveCheckBox.Checked:=ssoMatchCase in NewOptions;
   WholeWordsOnlyCheckBox.Checked:=ssoWholeWord in NewOptions;
+  RegularExpressionsCheckBox.Checked:=ssoRegExpr in NewOptions;
   PromptOnReplaceCheckBox.Checked:=ssoPrompt in NewOptions;
   if ssoEntireScope in NewOptions
     then OriginRadioGroup.ItemIndex:=1
@@ -351,6 +351,7 @@ begin
   Result:=[];
   if CaseSensitiveCheckBox.Checked then Include(Result,ssoMatchCase);
   if WholeWordsOnlyCheckBox.Checked then Include(Result,ssoWholeWord);
+  if RegularExpressionsCheckBox.Checked then Include(Result,ssoRegExpr);
   if PromptOnReplaceCheckBox.Checked then Include(Result,ssoPrompt);
   if OriginRadioGroup.ItemIndex=1 then Include(Result,ssoEntireScope);
   if ScopeRadioGroup.ItemIndex=1 then include(Result,ssoSelectedOnly);
