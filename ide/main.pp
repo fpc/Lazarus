@@ -2135,12 +2135,15 @@ end;
 
 procedure TMainIDE.mnuEnvGeneralOptionsClicked(Sender : TObject);
 var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
-  MacroValueChanged: boolean;
+  MacroValueChanged, FPCSrcDirChanged, FPCCompilerChanged: boolean;
+  OldCompilerFilename, CompilerUnitSearchPath: string;
+  CompilerTemplate, FPCSrcTemplate: TDefineTemplate;
   
   procedure ChangeMacroValue(const MacroName, NewValue: string);
   begin
     with CodeToolBoss.GlobalValues do begin
       if Variables[ExternalMacroStart+MacroName]=NewValue then exit;
+      FPCSrcDirChanged:=FPCSrcDirChanged or (Macroname='FPCSrcDir');
       Variables[ExternalMacroStart+MacroName]:=NewValue;
     end;
     MacroValueChanged:=true;
@@ -2156,21 +2159,49 @@ Begin
       OnSaveEnvironmentSettings:=@Self.OnSaveEnvironmentSettings;
       // load settings from EnvironmentOptions to EnvironmentOptionsDialog
       ReadSettings(EnvironmentOptions);
-      if ShowModal=mrOk then begin
-        // load settings from EnvironmentOptionsDialog to EnvironmentOptions
-        WriteSettings(EnvironmentOptions);
-        UpdateDefaultPascalFileExtensions;
-        // set global variables
-        ChangeMacroValue('LazarusSrcDir',EnvironmentOptions.LazarusDirectory);
-        ChangeMacroValue('FPCSrcDir',EnvironmentOptions.FPCSourceDirectory);
-        if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
-        // ToDo:
-        //  - rescan compiler
-        //  - rescan fpc source directory
-        
-        // save to disk
-        EnvironmentOptions.Save(false);
+    end;
+    if EnvironmentOptionsDialog.ShowModal=mrOk then begin
+      // load settings from EnvironmentOptionsDialog to EnvironmentOptions
+      OldCompilerFilename:=EnvironmentOptions.CompilerFilename;
+      EnvironmentOptionsDialog.WriteSettings(EnvironmentOptions);
+      UpdateDefaultPascalFileExtensions;
+      // set global variables
+      MacroValueChanged:=false;
+      FPCSrcDirChanged:=false;
+      FPCCompilerChanged:=
+        OldCompilerFilename<>EnvironmentOptions.CompilerFilename;
+      ChangeMacroValue('LazarusSrcDir',EnvironmentOptions.LazarusDirectory);
+      ChangeMacroValue('FPCSrcDir',EnvironmentOptions.FPCSourceDirectory);
+      
+      if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
+      if FPCCompilerChanged or FPCSrcDirChanged then begin
+        // rescan compiler defines
+        // ask the compiler for his settings
+        CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
+                    EnvironmentOptions.CompilerFilename,CompilerUnitSearchPath);
+        if CompilerTemplate<>nil then begin
+          CodeToolBoss.DefineTree.ReplaceSameNameAddFirst(CompilerTemplate);
+          // create compiler macros to simulate the Makefiles of the FPC sources
+          FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
+            CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
+            CompilerUnitSearchPath);
+          if FPCSrcTemplate<>nil then begin
+            CodeToolBoss.DefineTree.RemoveDefineTemplateByName(
+                                                           FPCSrcTemplate.Name);
+            FPCSrcTemplate.InsertAfter(CompilerTemplate);
+          end else begin
+            MessageDlg('FPC Source Directory error',
+              'Please check the freepascal source directory',
+              mtError,[mbOk],0);
+          end;
+        end else begin
+          MessageDlg('Compiler error','Please check the compiler name',
+            mtError,[mbOk],0);
+        end;
       end;
+        
+      // save to disk
+      EnvironmentOptions.Save(false);
     end;
   finally
     EnvironmentOptionsDialog.Free;
@@ -4829,6 +4860,20 @@ procedure TMainIDE.InitCodeToolBoss;
 // initialize the CodeToolBoss, which is the frontend for the codetools.
 // - sets a basic set of compiler macros
 // ToDo: build a frontend for the codetools and save the settings
+
+  procedure AddTemplate(ADefTempl: TDefineTemplate; AddToPool: boolean; 
+    const ErrorMsg: string);
+  begin
+    if ADefTempl=nil then begin
+      writeln('');
+      writeln(ErrorMsg);
+    end else begin;
+      CodeToolBoss.DefineTree.Add(ADefTempl);
+      if AddToPool then
+        CodeToolBoss.DefinePool.Add(ADefTempl.CreateCopy);
+    end;
+  end;
+
 var CompilerUnitSearchPath: string;
   ADefTempl: TDefineTemplate;
   c: integer;
@@ -4865,38 +4910,22 @@ begin
     // start the compiler and ask for his settings
     ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,
                           CompilerUnitSearchPath);
-    if ADefTempl=nil then begin
-      writeln('');
-      writeln(
-        'Warning: Could not create Define Template for Free Pascal Compiler');
-    end else begin;
-      Add(ADefTempl);
-      CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
-    end;
+    AddTemplate(ADefTempl,false,
+      'Warning: Could not create Define Template for Free Pascal Compiler');
+      
     // create compiler macros to simulate the Makefiles of the FPC sources
     ADefTempl:=CreateFPCSrcTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
             CompilerUnitSearchPath);
-    if ADefTempl=nil then begin
-      writeln('');
-      writeln(
+    AddTemplate(ADefTempl,false,
         'Warning: Could not create Define Template for Free Pascal Sources');
-    end else begin;
-      Add(ADefTempl);
-      CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
-    end;
+        
     // create compiler macros for the lazarus sources 
     ADefTempl:=CreateLazarusSrcTemplate(
       '$('+ExternalMacroStart+'LazarusSrcDir)',
       '$('+ExternalMacroStart+'LCLWidgetType)');
-    if ADefTempl=nil then begin
-      writeln('');
-      writeln(
+    AddTemplate(ADefTempl,true,
         'Warning: Could not create Define Template for Lazarus Sources');
-    end else begin;
-      Add(ADefTempl);
-      CodeToolBoss.DefineTree.Add(ADefTempl.CreateCopy);
-    end;
   end;  
   // build define tree
   with CodeToolBoss do begin
@@ -5401,6 +5430,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.189  2001/12/18 21:00:59  lazarus
+  MG: compiler, fpc source and lazarus src can now be changed without restart
+
   Revision 1.188  2001/12/17 19:41:05  lazarus
   MG: added binary file recognition and readonly recognition
 

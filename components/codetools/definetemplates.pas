@@ -119,6 +119,7 @@ type
         const Path: string): boolean;
     procedure SaveToXMLConfig(XMLConfig: TXMLConfig; const Path: string);
     function CreateCopy: TDefineTemplate;
+    procedure Unbind;
     procedure Clear;
     constructor Create;
     constructor Create(const AName, ADescription, AVariable, AValue: string;
@@ -158,7 +159,12 @@ type
     function GetDefinesForVirtualDirectory: TExpressionEvaluator;
     property RootTemplate: TDefineTemplate
         read FFirstDefineTemplate write FFirstDefineTemplate;
+    procedure AddFirst(ADefineTemplate: TDefineTemplate);
     procedure Add(ADefineTemplate: TDefineTemplate);
+    function FindDefineTemplateByName(const AName: string): TDefineTemplate;
+    procedure ReplaceSameName(ADefineTemplate: TDefineTemplate);
+    procedure ReplaceSameNameAddFirst(ADefineTemplate: TDefineTemplate);
+    procedure RemoveDefineTemplateByName(const AName: string);
     property OnReadValue: TOnReadValue read FOnReadValue write FOnReadValue;
     property ErrorTemplate: TDefineTemplate read FErrorTemplate;
     property ErrorDescription: string read FErrorDescription;
@@ -399,6 +405,20 @@ begin
   Action:=ADefineTemplate.Action;
 end;
 
+procedure TDefineTemplate.Unbind;
+begin
+  if FPrior<>nil then FPrior.FNext:=FNext;
+  if FNext<>nil then FNext.FPrior:=FPrior;
+  if FParent<>nil then begin
+    if FParent.FFirstChild=Self then FParent.FFirstChild:=FNext;
+    if FParent.FLastChild=Self then FParent.FLastChild:=FPrior;
+    dec(FParent.FChildCount);
+  end;
+  FNext:=nil;
+  FPrior:=nil;
+  FParent:=nil;
+end;
+
 procedure TDefineTemplate.Clear;
 begin
   while FFirstChild<>nil do FFirstChild.Free;
@@ -434,15 +454,7 @@ end;
 destructor TDefineTemplate.Destroy;
 begin
   Clear;
-  if FPrior<>nil then FPrior.FNext:=FNext;
-  if FNext<>nil then FNext.FPrior:=FPrior;
-  if FParent<>nil then begin
-    if FParent.FFirstChild=Self then FParent.FFirstChild:=FNext;
-    if FParent.FLastChild=Self then FParent.FLastChild:=FPrior;
-    dec(FParent.FChildCount);
-  end;
-  FNext:=nil;
-  FPrior:=nil;
+  Unbind;
   inherited Destroy;
 end;
 
@@ -724,12 +736,12 @@ begin
   if FVirtualDirCache<>nil then
     Result:=FVirtualDirCache.Values
   else begin
-writeln('################');
+//writeln('################ TDefineTree.GetDefinesForVirtualDirectory');
     FVirtualDirCache:=TDirectoryDefines.Create;
     FVirtualDirCache.Path:=VirtualDirectory;
     if Calculate(FVirtualDirCache) then begin
       Result:=FVirtualDirCache.Values;
-writeln(Result.AsString);
+//writeln(TDefineTree.GetDefinesForVirtualDirectory Result.AsString);
     end else begin
       FVirtualDirCache.Free;
       FVirtualDirCache:=nil;
@@ -987,6 +999,70 @@ begin
   end;
 end;
 
+procedure TDefineTree.AddFirst(ADefineTemplate: TDefineTemplate);
+// add as first
+begin
+  if ADefineTemplate=nil then exit;
+  if RootTemplate=nil then
+    RootTemplate:=ADefineTemplate
+  else begin
+    RootTemplate.InsertAfter(ADefineTemplate);
+    RootTemplate:=ADefineTemplate;
+  end;
+end;
+
+function TDefineTree.FindDefineTemplateByName(
+  const AName: string): TDefineTemplate;
+begin
+  Result:=RootTemplate;
+  while (Result<>nil) and (AnsiCompareText(Result.Name,AName)<>0) do
+    Result:=Result.Next;
+end;
+
+procedure TDefineTree.RemoveDefineTemplateByName(const AName: string);
+var ADefTempl: TDefineTemplate;
+begin
+  ADefTempl:=FindDefineTemplateByName(AName);
+  if ADefTempl<>nil then begin
+    if ADefTempl=FFirstDefineTemplate then
+      FFirstDefineTemplate:=FFirstDefineTemplate.Next;
+    ADefTempl.Unbind;
+    ADefTempl.Free;
+  end;
+end;
+
+procedure TDefineTree.ReplaceSameName(ADefineTemplate: TDefineTemplate);
+// if there is a DefineTemplate with the same name then replace it
+// else add as last
+var OldDefineTemplate: TDefineTemplate;
+begin
+  if ADefineTemplate=nil then exit;
+  OldDefineTemplate:=FindDefineTemplateByName(ADefineTemplate.Name);
+  if OldDefineTemplate<>nil then begin
+    ADefineTemplate.InsertAfter(OldDefineTemplate);
+    if OldDefineTemplate=FFirstDefineTemplate then
+      FFirstDefineTemplate:=FFirstDefineTemplate.Next;
+    OldDefineTemplate.Unbind;
+    OldDefineTemplate.Free;
+  end else
+    Add(ADefineTemplate);
+end;
+
+procedure TDefineTree.ReplaceSameNameAddFirst(ADefineTemplate: TDefineTemplate);
+var OldDefineTemplate: TDefineTemplate;
+begin
+  if ADefineTemplate=nil then exit;
+  OldDefineTemplate:=FindDefineTemplateByName(ADefineTemplate.Name);
+  if OldDefineTemplate<>nil then begin
+    ADefineTemplate.InsertAfter(OldDefineTemplate);
+    if OldDefineTemplate=FFirstDefineTemplate then
+      FFirstDefineTemplate:=FFirstDefineTemplate.Next;
+    OldDefineTemplate.Unbind;
+    OldDefineTemplate.Free;
+  end else
+    AddFirst(ADefineTemplate);
+end;
+
 function TDefineTree.ConsistencyCheck: integer;
 begin
   if FFirstDefineTemplate<>nil then begin
@@ -1006,7 +1082,9 @@ procedure TDefineTree.WriteDebugReport;
 begin
   writeln('TDefineTree.WriteDebugReport  Consistency=',ConsistencyCheck);
   if FFirstDefineTemplate<>nil then
-    FFirstDefineTemplate.WriteDebugReport;
+    FFirstDefineTemplate.WriteDebugReport
+  else
+    writeln('  No templates defined');
   writeln(FCache.ReportAsString);
   writeln('');
 end;
@@ -1114,7 +1192,7 @@ var CmdLine, BogusFilename: string;
 begin
   Result:=nil;
   UnitSearchPath:='';
-  if PPC386Path='' then exit;
+  if (PPC386Path='') or (not FileIsExecutable(PPC386Path)) then exit;
   DefTempl:=nil;
   // find all initial compiler macros and all unit paths
   // -> ask compiler with the -va switch
@@ -1492,7 +1570,7 @@ var DefTempl, MainDir,
 //   const FPCSrcDir: string): TDefineTemplate;
 begin
   Result:=nil;
-  if FPCSrcDir='' then exit;
+  if (FPCSrcDir='') or (not DirectoryExists(FPCSrcDir)) then exit;
   DS:=PathDelim;
   Dir:=FPCSrcDir;
   if Dir[length(Dir)]<>DS then Dir:=Dir+DS;

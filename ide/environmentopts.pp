@@ -61,7 +61,6 @@ const
   PascalExtension: array[TPascalExtType] of string = ('', '.pas', '.pp');
   
 type
-
   { class for storing environment options }
   TEnvironmentOptions = class
   private
@@ -99,11 +98,16 @@ type
     
     // compiler + debugger + lazarus files
     FLazarusDirectory: string;
+    FLazarusDirsHistory: TStringList;
     FCompilerFilename: string;
+    FCompilerFileHistory: TStringList;
     FFPCSourceDirectory: string;
+    FFPCSourceDirHistory: TStringList;
     FDebuggerFilename: string;
+    FDebuggerFileHistory: TStringList;
     FDebuggerType: TDebuggerType;
     FTestBuildDirectory: string;
+    FTestBuildDirHistory: TStringList;
 
     // recent files and directories
     FRecentOpenFiles: TStringList;
@@ -177,16 +181,26 @@ type
     // files
     property LazarusDirectory: string
        read FLazarusDirectory write FLazarusDirectory;
+    property LazarusDirHistory: TStringList
+       read FLazarusDirsHistory write FLazarusDirsHistory;
     property CompilerFilename: string
        read FCompilerFilename write FCompilerFilename;
+    property CompilerFileHistory: TStringList
+       read FCompilerFileHistory write FCompilerFileHistory;
     property FPCSourceDirectory: string
        read FFPCSourceDirectory write FFPCSourceDirectory;
+    property FPCSourceDirHistory: TStringList
+       read FFPCSourceDirHistory write FFPCSourceDirHistory;
     property DebuggerFilename: string
        read FDebuggerFilename write FDebuggerFilename;
+    property DebuggerFileHistory: TStringList
+       read FDebuggerFileHistory write FDebuggerFileHistory;
     property DebuggerType: TDebuggerType
        read FDebuggerType write FDebuggerType;
     property TestBuildDirectory: string
        read FTestBuildDirectory write FTestBuildDirectory;
+    property TestBuildDirHistory: TStringList
+       read FTestBuildDirHistory write FTestBuildDirHistory;
 
     // recent files and directories
     property RecentOpenFiles: TStringList
@@ -237,6 +251,8 @@ type
     procedure SetupFilesPage;
     procedure SetupNamingPage;
     procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
+    procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString; 
+      MaxCount: integer);
 
   published
     NoteBook: TNoteBook;
@@ -346,7 +362,11 @@ var
 function DebuggerNameToType(const s: string): TDebuggerType;
 function PascalExtToType(const Ext: string): TPascalExtType;
 
+
 implementation
+
+
+const MaxComboBoxCount: integer = 20;
 
 function DebuggerNameToType(const s: string): TDebuggerType;
 begin
@@ -408,11 +428,16 @@ begin
 
   // files
   FLazarusDirectory:=ExtractFilePath(ParamStr(0));
+  FLazarusDirsHistory:=TStringList.Create;
   FCompilerFilename:='';
+  FCompilerFileHistory:=TStringList.Create;
   FFPCSourceDirectory:='';
+  FFPCSourceDirHistory:=TStringList.Create;
   FDebuggerFilename:='';
+  FDebuggerFileHistory:=TStringList.Create;
   FDebuggerType:=dtNone;
   FTestBuildDirectory:={$ifdef win32}'c:/temp'{$else}'/tmp'{$endif};
+  FTestBuildDirHistory:=TStringList.Create;
 
   // recent files and directories
   FRecentOpenFiles:=TStringList.Create;
@@ -573,15 +598,54 @@ begin
       // files
       FLazarusDirectory:=XMLConfig.GetValue(
          'EnvironmentOptions/LazarusDirectory/Value',FLazarusDirectory);
+      LoadRecentList(XMLConfig,FLazarusDirsHistory,
+         'EnvironmentOptions/LazarusDirectory/History/');
+      if FLazarusDirsHistory.Count=0 then begin
+writeln('******************************** ',ExtractFilePath(ParamStr(0)));
+        FLazarusDirsHistory.Add(ExtractFilePath(ExpandFilename(ParamStr(0))));
+      end;
       FCompilerFilename:=XMLConfig.GetValue(
          'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename);
+      LoadRecentList(XMLConfig,FCompilerFileHistory,
+         'EnvironmentOptions/CompilerFilename/History/');
+      if FCompilerFileHistory.Count=0 then begin
+        {$IFDEF win32}
+        FCompilerFileHistory.Add('c:/pp/bin/ppc386');
+        {$ELSE}
+        FCompilerFileHistory.Add('/usr/bin/ppc386');
+        FCompilerFileHistory.Add('/opt/fpc/ppc386');
+        {$ENDIF}
+      end;
       FFPCSourceDirectory:=XMLConfig.GetValue(
          'EnvironmentOptions/FPCSourceDirectory/Value',FFPCSourceDirectory);
+      LoadRecentList(XMLConfig,FFPCSourceDirHistory,
+         'EnvironmentOptions/FPCSourceDirectory/History/');
+      if FFPCSourceDirHistory.Count=0 then begin
+      
+      end;
       FDebuggerFilename:=XMLConfig.GetValue(
          'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
+      LoadRecentList(XMLConfig,FDebuggerFileHistory,
+         'EnvironmentOptions/DebuggerFilename/History/');
+      if FDebuggerFileHistory.Count=0 then begin
+        FDebuggerFileHistory.Add(DebuggerName[dtNone]);
+        FDebuggerFileHistory.Add('/usr/bin/gdb');
+        FDebuggerFileHistory.Add('/opt/fpc/gdb');
+      end;
       LoadDebuggerType(FDebuggerType,'EnvironmentOptions/');
       FTestBuildDirectory:=XMLConfig.GetValue(
          'EnvironmentOptions/TestBuildDirectory/Value',FTestBuildDirectory);
+      LoadRecentList(XMLConfig,FTestBuildDirHistory,
+         'EnvironmentOptions/TestBuildDirectory/History/');
+      if FTestBuildDirHistory.Count=0 then begin
+        {$IFDEF win32}
+        FTestBuildDirHistory.Add('c:/tmp');
+        FTestBuildDirHistory.Add('c:/windows/temp');
+        {$ELSE}
+        FTestBuildDirHistory.Add('/tmp');
+        FTestBuildDirHistory.Add('/var/tmp');
+        {$ENDIF}
+      end;
 
       // backup
       LoadBackupInfo(FBackupInfoProjectFiles
@@ -711,15 +775,25 @@ begin
       // files
       XMLConfig.SetValue(
          'EnvironmentOptions/LazarusDirectory/Value',FLazarusDirectory);
+      SaveRecentList(XMLConfig,FLazarusDirsHistory,
+         'EnvironmentOptions/LazarusDirectory/History/');
       XMLConfig.SetValue(
          'EnvironmentOptions/CompilerFilename/Value',FCompilerFilename);
+      SaveRecentList(XMLConfig,FCompilerFileHistory,
+         'EnvironmentOptions/CompilerFilename/History/');
       XMLConfig.SetValue(
          'EnvironmentOptions/FPCSourceDirectory/Value',FFPCSourceDirectory);
+      SaveRecentList(XMLConfig,FFPCSourceDirHistory,
+         'EnvironmentOptions/FPCSourceDirectory/History/');
       XMLConfig.SetValue(
          'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
+      SaveRecentList(XMLConfig,FDebuggerFileHistory,
+         'EnvironmentOptions/DebuggerFilename/History/');
       SaveDebuggerType(DebuggerType,'EnvironmentOptions/');
       XMLConfig.SetValue(
          'EnvironmentOptions/TestBuildDirectory/Value',FTestBuildDirectory);
+      SaveRecentList(XMLConfig,FTestBuildDirHistory,
+         'EnvironmentOptions/TestBuildDirectory/History/');
 
       // backup
       SaveBackupInfo(FBackupInfoProjectFiles
@@ -1674,7 +1748,6 @@ begin
     Height:=25;
     with Items do begin
       BeginUpdate;
-      
       Add(DebuggerName[dtNone]);
       Add('/opt/fpc/gdb');
       EndUpdate;
@@ -1866,12 +1939,17 @@ begin
     SetComboBoxText(GridSizeYComboBox,IntToStr(GridSizeY));
 
     // files
-    SetComboBoxText(LazarusDirComboBox,LazarusDirectory);
-    SetComboBoxText(CompilerPathComboBox,CompilerFilename);
-    SetComboBoxText(FPCSourceDirComboBox,FPCSourceDirectory);
-    SetComboBoxText(DebuggerPathComboBox,DebuggerFilename);
+    LazarusDirComboBox.Items.Assign(LazarusDirHistory);
+    SetComboBoxText(LazarusDirComboBox,LazarusDirectory,MaxComboBoxCount);
+    CompilerPathComboBox.Items.Assign(CompilerFileHistory);
+    SetComboBoxText(CompilerPathComboBox,CompilerFilename,MaxComboBoxCount);
+    FPCSourceDirComboBox.Items.Assign(FPCSourceDirHistory);
+    SetComboBoxText(FPCSourceDirComboBox,FPCSourceDirectory,MaxComboBoxCount);
+    DebuggerPathComboBox.Items.Assign(DebuggerFileHistory);
+    SetComboBoxText(DebuggerPathComboBox,DebuggerFilename,MaxComboBoxCount);
     SetComboBoxText(DebuggerTypeComboBox,DebuggerName[DebuggerType]);
-    SetComboBoxText(TestBuildDirComboBox,TestBuildDirectory);
+    TestBuildDirComboBox.Items.Assign(TestBuildDirHistory);
+    SetComboBoxText(TestBuildDirComboBox,TestBuildDirectory,MaxComboBoxCount);
 
     // recent files and directories
     SetComboBoxText(MaxRecentOpenFilesComboBox,IntToStr(MaxRecentOpenFiles));
@@ -1959,10 +2037,15 @@ begin
 
     // files
     LazarusDirectory:=LazarusDirComboBox.Text;
+    LazarusDirHistory.Assign(LazarusDirComboBox.Items);
     CompilerFilename:=CompilerPathComboBox.Text;
+    CompilerFileHistory.Assign(CompilerPathComboBox.Items);
     FPCSourceDirectory:=FPCSourceDirComboBox.Text;
+    FPCSourceDirHistory.Assign(FPCSourceDirComboBox.Items);
     DebuggerFilename:=DebuggerPathComboBox.Text;
+    DebuggerFileHistory.Assign(DebuggerPathComboBox.Items);
     DebuggerType:=DebuggerNameToType(DebuggerTypeComboBox.Text);
+    TestBuildDirHistory.Assign(TestBuildDirComboBox.Items);
     TestBuildDirectory:=TestBuildDirComboBox.Text;
 
     // recent files and directories
@@ -2031,6 +2114,22 @@ begin
   else begin
     AComboBox.Items.Add(AText);
     AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.SetComboBoxText(
+  AComboBox:TComboBox; const AText:AnsiString; MaxCount: integer);
+var a:integer;
+begin
+  a:=AComboBox.Items.IndexOf(AText);
+  if a>=0 then
+    AComboBox.ItemIndex:=a
+  else begin
+    AComboBox.Items.Insert(0,AText);
+    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
+    if MaxCount<2 then MaxCount:=2;
+    while AComboBox.Items.Count>MaxCount do
+      AComboBox.Items.Delete(AComboBox.Items.Count-1);
   end;
 end;
 
