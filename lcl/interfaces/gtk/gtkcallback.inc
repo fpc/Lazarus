@@ -2097,7 +2097,7 @@ begin
 
   OldValue := Integer(gtk_object_get_data(PGTKObject(Adjustment), 'OldValue'));
   gtk_object_set_data(PGTKObject(Adjustment), 'OldValue',
-                      Pointer(Round(Adjustment^.Value)));
+                      Pointer(Longint(Round(Adjustment^.Value))));
   Scroll := gtk_object_get_data(PGTKObject(Adjustment), 'ScrollBar');
 
   // Get rounded values
@@ -2153,7 +2153,7 @@ begin
 
   OldValue := Integer(gtk_object_get_data(PGTKObject(Adjustment), 'OldValue'));
   gtk_object_set_data(PGTKObject(Adjustment), 'OldValue',
-                      Pointer(Round(Adjustment^.Value)));
+                      Pointer(Longint(Round(Adjustment^.Value))));
   Scroll := gtk_object_get_data(PGTKObject(Adjustment), 'ScrollBar');
 
   // Get rounded values
@@ -2500,6 +2500,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.151  2002/10/20 19:03:56  lazarus
+  AJ: minor fixes for FPC 1.1
+
   Revision 1.150  2002/10/17 21:00:17  lazarus
   MG: fixed uncapturing of mouse
 
