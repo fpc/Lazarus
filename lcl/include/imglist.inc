@@ -44,7 +44,10 @@ begin
     Insert(Result, Image, Mask);
     Change;
   except
-    on Exception do Result := -1; // Ignore exceptions, just return -1
+    on E: Exception do begin
+      writeln('TCustomImageList.Add ',E.Message);
+      Result := -1; // Ignore exceptions, just return -1
+    end;
   end;
 end;
 
@@ -125,7 +128,10 @@ begin
     InsertMasked(Result, Image, MaskColor);
     Change;
   except
-    on Exception do Result := -1; // Ignore exceptions, just return -1
+    on E: Exception do begin
+      writeln('TCustomImageList.AddMasked ',E.Message);
+      Result := -1; // Ignore exceptions, just return -1
+    end;
   end;
 end;
 
@@ -817,6 +823,9 @@ end;
 {
 
   $Log$
+  Revision 1.9  2002/04/04 12:25:01  lazarus
+  MG: changed except statements to more verbosity
+
   Revision 1.8  2002/01/07 13:58:15  lazarus
   Changes to TListView to display images and fixes to TCustomImageList to notify it's owners of changes.
 

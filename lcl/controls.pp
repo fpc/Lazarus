@@ -992,14 +992,16 @@ end;
 
 {Draginitcontrol}
 Procedure DragInitControl(Control : TControl; Immediate : Boolean; Threshold : Integer);
- var
+var
   DragObject : TDragObject;
+  ok: boolean;
 begin
   Assert(False, 'Trace:***********************');
   Assert(False, 'Trace:***DragInitControl*****');
   Assert(False, 'Trace:***********************');
 
   DragControl := Control;
+  ok:=false;
   try
    DragObject := nil;
    DragFreeObject := False;
@@ -1014,9 +1016,10 @@ begin
          End;
       end;
      DragInit(DragObject,Immediate,Threshold);
-   except
-     DragControl := nil;
-     raise;
+     ok:=true;
+   finally
+     if not ok then
+       DragControl := nil;
    end;
 end;
 
@@ -1216,6 +1219,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.38  2002/04/04 12:25:01  lazarus
+  MG: changed except statements to more verbosity
+
   Revision 1.37  2002/03/31 23:20:37  lazarus
   MG: fixed initial size of TPage
 
