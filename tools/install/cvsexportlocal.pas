@@ -114,6 +114,11 @@ end;
 
 procedure Init;
 begin
+  if ParamCount<2 then begin
+    writeln('Usage:');
+    writeln('  cvsexportlocal <sourcedirectory> <destinationdirectory>');
+    Halt;
+  end;
   InputDir := ExpandFileName(ParamStr(1));
   OutputDir := ExpandFileName(ParamStr(2));
 end;

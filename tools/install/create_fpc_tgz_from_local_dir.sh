@@ -35,11 +35,12 @@ fi
 TmpBaseDir=/tmp
 TmpDir=$TmpBaseDir/fpc
 
-echo "copy $FPCSrcDir to /tmp/fpc ..."
+ppc386 -Fu../../lcl/units/i386/linux cvsexportlocal.pas
+echo "extracting FPC from local cvs ..."
 cd $TmpBaseDir
 rm -rf $TmpDir
 cd -
-sh create_clean_fpcsrc_directory.sh $FPCSrcDir $TmpDir
+./cvsexportlocal $FPCSrcDir $TmpDir
 
 if [ $RenameSmart = "yes" ]; then
   for Ext in pm pl; do
