@@ -79,6 +79,9 @@ var
   BTNArray : PPgChar;
   StockName : PgChar;
   I : Longint;
+  TXTList : PGList;
+  TXTLayout : PGnomeIconTextInfo;
+  NewMessage : AnsiString;
 begin
   MsgTitle := nil;
   If (Application.MainForm <> nil) and
@@ -124,7 +127,24 @@ begin
   end;
   BTNArray[High(Buttons) - Low(Buttons) + 1] := nil;
 
-  Result := gnome_message_box_newv(PgChar(DialogMessage), BoxType, BTNArray);
+  TXTLayout := gnome_icon_layout_text(PGDIObject(GetStockObject(SYSTEM_FONT))^.GDIFontObject,
+    PgChar(DialogMessage), ' ', Screen.Width div 3, True);
+
+  TXTList := TXTLayout^.Rows;
+  While TXTList <> nil do begin
+    If TXTList^.Data <> nil then
+      NewMessage := NewMessage + AnsiString(PGnomeIconTextInfoRow(TXTList^.Data)^.thetext);
+    TXTList := TXTList^.Next;
+    If TXTList <> nil then
+      If NewMessage[Length(NewMessage)] <> #10 then
+        NewMessage := NewMessage + #10;
+  end;
+  
+  NewMessage := Copy(NewMessage, 1, Length(NewMessage));
+
+  gnome_icon_text_info_free(TXTLayout);
+
+  Result := gnome_message_box_newv(PgChar(NewMessage), BoxType, BTNArray);
 
   If MsgTitle <> nil then
     gtk_window_set_title(Result, PgChar(MsgTitle));
@@ -306,6 +326,9 @@ end;
 
 {
   $Log$
+  Revision 1.5  2002/10/13 16:06:49  lazarus
+  AJ: fixed  GNOME Prompt/Notify dialogs to wrap long messages.
+
   Revision 1.4  2002/10/12 16:36:40  lazarus
   AJ: added new QueryUser/NotifyUser
 
