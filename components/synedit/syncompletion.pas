@@ -52,7 +52,8 @@ uses
 
 type
   TSynBaseCompletionPaintItem = function(AKey: string; ACanvas: TCanvas;
-    X, Y: integer): boolean of object;
+    X, Y: integer
+    {$IFDEF SYN_LAZARUS}; Selected: boolean{$ENDIF}): boolean of object;
   TCodeCompletionEvent = procedure(var Value: string; Shift: TShiftState)
     of object;
   TValidateEvent = procedure(Sender: TObject; Shift: TShiftState) of object;
@@ -75,6 +76,8 @@ type
     FAnsi: boolean;
     {$IFDEF SYN_LAZARUS}
     FOnSearchPosition:TSynBaseCompletionSearchPosition;
+    FTextColor: TColor;
+    FTextSelectedColor: TColor;
     {$ENDIF}
     procedure SetCurrentString(const Value: string);
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
@@ -119,6 +122,9 @@ type
     property FontHeight:integer read FFontHeight write SetFontHeight;
     property OnSearchPosition:TSynBaseCompletionSearchPosition
       read FOnSearchPosition write FOnSearchPosition;
+    property TextColor: TColor read FTextColor write FTextColor;
+    property TextSelectedColor: TColor
+      read FTextSelectedColor write FTextSelectedColor;
     {$ENDIF}
   end;
 
@@ -163,6 +169,7 @@ type
     procedure Deactivate;
     {$IFDEF SYN_LAZARUS}
     function IsActive: boolean;
+    function TheForm: TSynBaseCompletionForm;
     {$ENDIF}
     property OnKeyPress: TKeyPressEvent read GetOnKeyPress write SetOnKeyPress;
     property OnKeyDelete: TNotifyEvent read GetOnKeyDelete write SetOnKeyDelete;
@@ -294,6 +301,8 @@ begin
   Scroll.Width := 10;
   {$IFDEF SYN_LAZARUS}
   Scroll.Visible := True;
+  FTextColor:=clBlack;
+  FTextSelectedColor:=clWhite;
   {$ENDIF}
   Visible := false;
   FFontHeight := Canvas.TextHeight('Cyrille de Brebisson');
@@ -421,24 +430,38 @@ begin
     canvas.Rectangle(0, 0, Width, Height);
     for i := 0 to min(NbLinesInWindow - 1, ItemList.Count - 1) do begin
       if i + Scroll.Position = Position then begin
-        Canvas.Brush.Color := ClSelect;
+        Canvas.Brush.Color := clSelect;
         Canvas.Pen.Color := clSelect;
         Canvas.Rectangle(0, FFontHeight * i, width, FFontHeight * (i + 1));
         Canvas.Pen.Color := clBlack;
+        {$IFDEF SYN_LAZARUS}
+        Canvas.Font.Color := TextSelectedColor;
+        {$ELSE}
         Canvas.Font.Color := clWhite;
+        {$ENDIF}
         Hint := ItemList[Position];
       end
       else
         Begin
           Canvas.Brush.Color := Color;
+          {$IFDEF SYN_LAZARUS}
+          Canvas.Font.Color := TextColor;
+          {$ELSE}
           Canvas.Font.Color := clBlack;
+          {$ENDIF}
         end;
         
       if not Assigned(OnPaintItem)
-        or not OnPaintItem(ItemList[Scroll.Position + i], Canvas, 0, FFontHeight * i)
+      or not OnPaintItem(ItemList[Scroll.Position + i], Canvas,
+          {$IFDEF SYN_LAZARUS}
+          1, FFontHeight * i +1, i + Scroll.Position = Position
+          {$ELSE}
+          0, FFontHeight * i
+          {$ENDIF}
+          )
       then
         Begin
-           Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
+          Canvas.TextOut(2, FFontHeight * i, ItemList[Scroll.Position + i]);
         end;
     end;
   {$IFNDEF SYN_LAZARUS}
@@ -748,6 +771,11 @@ end;
 function TSynBaseCompletion.IsActive: boolean;
 begin
   Result:=(Form<>nil) and (Form.Visible);
+end;
+
+function TSynBaseCompletion.TheForm: TSynBaseCompletionForm;
+begin
+  Result:=Form;
 end;
 {$ENDIF}
 

@@ -303,6 +303,15 @@ type
     FOnCreateBreakPoint: TOnCreateDeleteBreakPoint;
     FOnDeleteBreakPoint: TOnCreateDeleteBreakPoint;
 
+    // colors for the completion form (popup form, e.g. word completion)
+    FActiveEditDefaultFGColor: TColor;
+    FActiveEditDefaultBGColor: TColor;
+    FActiveEditSelectedFGColor: TColor;
+    FActiveEditSelectedBGColor: TColor;
+    FActiveEditKeyFGColor: TColor;
+    FActiveEditKeyBGColor: TColor;
+    FActiveEditSymbolFGColor: TColor;
+    FActiveEditSymbolBGColor: TColor;
 
     // PopupMenu
     Procedure BuildPopupMenu;
@@ -323,12 +332,13 @@ type
 
     Procedure BreakPointCreated(Sender : TObject; Line : Integer);
     Procedure BreakPointDeleted(Sender : TObject; Line : Integer);
+    
+    procedure UpdateActiveEditColors;
   protected
     ccSelection : String;
     MarksImgList : TImageList;
      
     Function CreateNotebook : Boolean;
-    //Function DisplayPage(SE : TSourceEditor) : Boolean;
     Function NewSE(Pagenum : Integer) : TSourceEditor;
     Procedure EditorChanged(sender : TObject);
     
@@ -336,7 +346,7 @@ type
     Procedure ccCancel(Sender : TObject);
     procedure ccComplete(var Value: ansistring; Shift: TShiftState);
     function OnSynCompletionPaintItem(AKey: string; ACanvas: TCanvas;
-       X, Y: integer): boolean;
+       X, Y: integer; ItemSelected: boolean): boolean;
     procedure OnSynCompletionSearchPosition(var APosition:integer);
     procedure DeactivateCompletionForm;
 
@@ -364,7 +374,6 @@ type
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
 
   public
-    //SearchPaths: string;
     FindReplaceDlgHistoryIndex: array[TFindDlgComponent] of integer;
     FindReplaceDlgUserText: array[TFindDlgComponent] of string;
 
@@ -387,8 +396,6 @@ type
     Procedure ClearUnUsedEditorComponents(Force: boolean);
     procedure ClearErrorLines;
     procedure ClearExecutionLines;
-
-    //Procedure DisplayCodefromUnitName(const UnitName : String);
 
     Procedure NewClicked(Sender: TObject);
     procedure OpenClicked(Sender : TObject);
@@ -1012,6 +1019,7 @@ begin
     fSyntaxHighlighterType:=ASyntaxHighlighterType;
   end;
   EditorOpts.GetSynEditSelectedColor(FEditor);
+  TSourceNoteBook(FAOwner).UpdateActiveEditColors;
 end;
 
 procedure TSourceEditor.SetErrorLine(NewLine: integer);
@@ -1033,12 +1041,8 @@ end;
 Function TSourceEditor.RefreshEditorSettings : Boolean;
 Begin
   Result:=true;
-  try
-    SetSyntaxHighlighterType(fSyntaxHighlighterType);
-    EditorOpts.GetSynEditSettings(FEditor);
-  except
-    Result:=false;
-  end;
+  SetSyntaxHighlighterType(fSyntaxHighlighterType);
+  EditorOpts.GetSynEditSettings(FEditor);
 end;
 
 Procedure TSourceEditor.ccAddMessage(Texts : String);
@@ -1056,9 +1060,9 @@ var
   NewName: string;
   i: integer;
 Begin
-{$IFDEF IDE_DEBUG}
-writeln('TSourceEditor.CreateEditor  A ');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TSourceEditor.CreateEditor  A ');
+  {$ENDIF}
   if not assigned(FEditor) then Begin
     i:=0;
     repeat
@@ -1217,13 +1221,13 @@ procedure TSourceEditor.UpdateCodeBuffer;
 // copy the source from EditorComponent
 begin
   if not FEditor.Modified then exit;
-{$IFDEF IDE_DEBUG}
-if FCodeBuffer=nil then begin
-  writeln('');
-  writeln('*********** Oh, no: UpdateCodeBuffer ************');
-  writeln('');
-end;
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  if FCodeBuffer=nil then begin
+    writeln('');
+    writeln('*********** Oh, no: UpdateCodeBuffer ************');
+    writeln('');
+  end;
+  {$ENDIF}
   if FCodeBuffer=nil then exit;
   IncreaseIgnoreCodeBufferLock;
   FModified:=FModified or FEditor.Modified;
@@ -1689,7 +1693,7 @@ begin
 end;
 
 function TSourceNotebook.OnSynCompletionPaintItem(AKey: string; 
-  ACanvas: TCanvas;  X, Y: integer): boolean;
+  ACanvas: TCanvas;  X, Y: integer; ItemSelected: boolean): boolean;
 var i: integer;
 begin
   with ACanvas do begin
@@ -1700,7 +1704,11 @@ begin
       Font.Size:=EditorOpts.EditorFontHeight;
     end;
     Font.Style:=[];
-    //Font.Name:='courier';
+    if not ItemSelected then
+      Font.Color:=FActiveEditDefaultFGColor
+    else
+      Font.Color:=FActiveEditSelectedFGColor;
+
     i := 1;
     while i <= Length(AKey) do
       case AKey[i] of
@@ -1724,7 +1732,7 @@ begin
             inc(i, 2);
           end;
       else
-        TextOut(x, y, AKey[i]);
+        TextOut(x+1, y, AKey[i]);
         x := x + TextWidth(AKey[i]);
         inc(i);
       end;
@@ -1894,17 +1902,19 @@ var
   NewStr,ParamStr,PropName : String;
   Count,Offset,Len : Integer;
   MethodRec : TMethodRec;
+  ActiveEditor: TSynEdit;
 
 Begin
   CompInt := nil;
   CurCompletionControl := TSynBaseCompletion(Sender);
   S := TStringList.Create;
   Prefix := CurCompletionControl.CurrentString;
+  ActiveEditor:=GetActiveSE.EditorComponent;
   case CurrentCompletionType of
    ctIdentCompletion:
     begin
       ccSelection := Prefix;
-      with GetActiveSE.EditorComponent do begin
+      with ActiveEditor do begin
         CurLine:=LineText;
         X1:=CaretX-1;
       end;
@@ -2034,44 +2044,53 @@ Begin
 
   CurCompletionControl.ItemList := S;
   CurCompletionControl.CurrentString:=Prefix;
+  // set colors
+  if (ActiveEditor<>nil) and (CurCompletionControl.TheForm<>nil) then begin
+    with CurCompletionControl.TheForm do begin
+      Color:=FActiveEditDefaultBGColor;
+      clSelect:=FActiveEditSelectedBGColor;
+      TextColor:=FActiveEditDefaultFGColor;
+      TextSelectedColor:=FActiveEditSelectedFGColor;
+    end;
+  end;
 End;
 
 Function TSourceNotebook.CreateNotebook : Boolean;
 Begin
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.CreateNotebook] START');
-{$ENDIF}
-{$IFDEF IDE_MEM_CHECK}
-CheckHeap('[TSourceNotebook.CreateNotebook] A '+IntToStr(GetMem_Cnt));
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TSourceNotebook.CreateNotebook] START');
+  {$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}
+  CheckHeap('[TSourceNotebook.CreateNotebook] A '+IntToStr(GetMem_Cnt));
+  {$ENDIF}
   ClearUnUsedEditorComponents(false);
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.CreateNotebook] A');
-{$ENDIF}
-{$IFDEF IDE_MEM_CHECK}
-CheckHeap('[TSourceNotebook.CreateNotebook] B '+IntToStr(GetMem_Cnt));
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TSourceNotebook.CreateNotebook] A');
+  {$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}
+  CheckHeap('[TSourceNotebook.CreateNotebook] B '+IntToStr(GetMem_Cnt));
+  {$ENDIF}
   Result := False;
   if not assigned(Notebook) then
     Begin
       Result := True;
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.CreateNotebook] B');
-{$ENDIF}
+      {$IFDEF IDE_DEBUG}
+      writeln('[TSourceNotebook.CreateNotebook] B');
+      {$ENDIF}
       Notebook := TNotebook.Create(self);
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.CreateNotebook] C');
-{$ENDIF}
-{$IFDEF IDE_MEM_CHECK}
-CheckHeap('[TSourceNotebook.CreateNotebook] C '+IntToStr(GetMem_Cnt));
-{$ENDIF}
+      {$IFDEF IDE_DEBUG}
+      writeln('[TSourceNotebook.CreateNotebook] C');
+      {$ENDIF}
+      {$IFDEF IDE_MEM_CHECK}
+      CheckHeap('[TSourceNotebook.CreateNotebook] C '+IntToStr(GetMem_Cnt));
+      {$ENDIF}
       with Notebook do
         Begin
           Name:='SrcEditNotebook';
           Parent := Self;
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.CreateNotebook] D');
-{$ENDIF}
+          {$IFDEF IDE_DEBUG}
+          writeln('[TSourceNotebook.CreateNotebook] D');
+          {$ENDIF}
           Align := alClient;
           Left := 0;
           Top :=2;
@@ -2080,25 +2099,25 @@ writeln('[TSourceNotebook.CreateNotebook] D');
           Pages.Strings[0] := 'unit1';
           PageIndex := 0;   // Set it to the first page
           OnPageChanged := @NotebookPageChanged;
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.CreateNotebook] E');
-{$ENDIF}
+          {$IFDEF IDE_DEBUG}
+          writeln('[TSourceNotebook.CreateNotebook] E');
+          {$ENDIF}
           Visible := true;
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.CreateNotebook] F');
-{$ENDIF}
-{$IFDEF IDE_MEM_CHECK}
-CheckHeap('[TSourceNotebook.CreateNotebook] F '+IntToStr(GetMem_Cnt));
-{$ENDIF}
+          {$IFDEF IDE_DEBUG}
+          writeln('[TSourceNotebook.CreateNotebook] F');
+          {$ENDIF}
+          {$IFDEF IDE_MEM_CHECK}
+          CheckHeap('[TSourceNotebook.CreateNotebook] F '+IntToStr(GetMem_Cnt));
+          {$ENDIF}
         end; //with
       Show;  //used to display the code form
     end;
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.CreateNotebook] END');
-{$ENDIF}
-{$IFDEF IDE_MEM_CHECK}
-CheckHeap('[TSourceNotebook.CreateNotebook] END '+IntToStr(GetMem_Cnt));
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TSourceNotebook.CreateNotebook] END');
+  {$ENDIF}
+  {$IFDEF IDE_MEM_CHECK}
+  CheckHeap('[TSourceNotebook.CreateNotebook] END '+IntToStr(GetMem_Cnt));
+  {$ENDIF}
 End;
 
 Procedure TSourceNotebook.ClearUnUsedEditorComponents(Force: boolean);
@@ -2239,6 +2258,13 @@ Begin
 
 end;
 
+{-------------------------------------------------------------------------------
+  Procedure TSourceNotebook.EditorChanged
+  Params: Sender : TObject
+  Result: none
+  
+  Called whenever an editor status changes.
+-------------------------------------------------------------------------------}
 Procedure TSourceNotebook.EditorChanged(Sender : TObject);
 var SenderDeleted: boolean;
 Begin
@@ -2251,25 +2277,25 @@ End;
 
 Function TSourceNotebook.NewSE(PageNum : Integer) : TSourceEditor;
 Begin
-{$IFDEF IDE_DEBUG}
-writeln('TSourceNotebook.NewSE A ');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TSourceNotebook.NewSE A ');
+  {$ENDIF}
   if CreateNotebook then Pagenum := 0;
-{$IFDEF IDE_DEBUG}
-writeln('TSourceNotebook.NewSE A2 ');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TSourceNotebook.NewSE A2 ');
+  {$ENDIF}
   if Pagenum < 0 then begin
     // add a new page right to the current
     Pagenum := Notebook.PageIndex+1;
     Notebook.Pages.Insert(PageNum,FindUniquePageName('',-1));
   end;
-{$IFDEF IDE_DEBUG}
-writeln('TSourceNotebook.NewSE B  ',Notebook.PageIndex,',',NoteBook.Pages.Count);
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TSourceNotebook.NewSE B  ',Notebook.PageIndex,',',NoteBook.Pages.Count);
+  {$ENDIF}
   Result := TSourceEditor.Create(Self,Notebook.Page[PageNum]);
-{$IFDEF IDE_DEBUG}
-writeln('TSourceNotebook.NewSE C ');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TSourceNotebook.NewSE C ');
+  {$ENDIF}
   FSourceEditorList.Add(Result);
   Result.FShortName:=Notebook.Pages[PageNum];
   Result.CodeTemplates:=CodeTemplateModul;
@@ -2281,63 +2307,10 @@ writeln('TSourceNotebook.NewSE C ');
   Result.OnMouseDown := @EditorMouseDown;
   Result.OnCreateBreakPoint := @BreakPointCreated;
   Result.OnDeleteBreakPoint := @BreakPointDeleted;
-{$IFDEF IDE_DEBUG}
-writeln('TSourceNotebook.NewSE end ');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TSourceNotebook.NewSE end ');
+  {$ENDIF}
 end;
-
-{Procedure TSourceNotebook.DisplayCodefromUnitName(const UnitName : String);
-Var
-   I,X : Integer;
-Begin
-   X := FSourceEditorList.Count;
-   if X = 0 then Exit;
-   I := 0;
-   while  (I < X)
-   and (Uppercase(TSourceEditor(FSourceEditorList.Items[I]).Shortname)
-     <> Uppercase(Unitname)) do
-   Begin
-     inc(i);
-   end;
-   if I < X then
-     DisplayPage(TSourceEditor(FSOurceEditorList.Items[I]));
-end;
-
-
-Function TSourceNotebook.DisplayPage(SE : TSourceEditor) : Boolean;
-Var
-   I,X : Integer;
-   TempEditor : TControl;
-Begin
-   Result := False;
-
-    for X := 0 to Notebook.Pages.Count-1 do
-        Begin
-          With Notebook.Page[X] do
-          for I := 0 to ControlCount-1 do
-               if Controls[I] is TSynEdit then
-                  Begin
-                     TempEditor := Controls[I];
-                     Break;
-                  end;
-          if SE.EditorComponent = TempEditor then Begin
-              Writeln('The editor was found on page '+inttostr(x));
-              Break;
-              end;
-        End;
-
-
-  if SE.EditorComponent = TempEditor then
-  Begin
-    Notebook.PageIndex := X;
-    BringWindowToTop(SourceNoteBook.Handle);
-  end
-  else
-  Begin  //the SE isn't on a page so we need to create a page for it.
-    Notebook.PageIndex := Notebook.Pages.Add(SE.ShortName);
-    SE.ReParent(Notebook.Page[Notebook.PageIndex]);
-  end;
-end;}
 
 function TSourceNotebook.FindSourceEditorWithPageIndex(
   PageIndex:integer):TSourceEditor;
@@ -2744,61 +2717,56 @@ Var
   TempEditor : TSourceEditor;
 Begin
   //create a new page
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.NewFile] A ');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TSourceNotebook.NewFile] A ');
+  {$ENDIF}
   TempEditor := NewSE(-1);
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.NewFile] B ');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TSourceNotebook.NewFile] B ');
+  {$ENDIF}
   TempEditor.ShortName := NewShortName;
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.NewFile] C ');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TSourceNotebook.NewFile] C ');
+  {$ENDIF}
   TempEditor.CodeBuffer:=ASource;
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.NewFile] D ');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TSourceNotebook.NewFile] D ');
+  {$ENDIF}
   Notebook.Pages[Notebook.PageIndex] :=
     FindUniquePageName(NewShortName,Notebook.PageIndex);
-{  if (SplashForm.Visible) and (Notebook.Pages.Count=1) then begin
-    SplashForm.Hide;
-    SplashForm.Show;
-    Application.ProcessMessages;
-  end;}
-{$IFDEF IDE_DEBUG}
-writeln('[TSourceNotebook.NewFile] end');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('[TSourceNotebook.NewFile] end');
+  {$ENDIF}
 end;
 
 Procedure TSourceNotebook.CloseFile(PageIndex:integer);
 var TempEditor: TSourceEditor;
 Begin
-{$IFDEF IDE_DEBUG}
-writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TSourceNotebook.CloseFile A  PageIndex=',PageIndex);
+  {$ENDIF}
   TempEditor:=FindSourceEditorWithPageIndex(PageIndex);
   if TempEditor=nil then exit;
   TempEditor.Close;
   TempEditor.Free;
   if Notebook.Pages.Count>1 then begin
-//writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex);
+    //writeln('TSourceNotebook.CloseFile B  PageIndex=',PageIndex);
     Notebook.Pages.Delete(PageIndex);
     // switch to left PageIndex
     if PageIndex>0 then
       Notebook.PageIndex:=PageIndex-1;
-//writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex);
+    //writeln('TSourceNotebook.CloseFile C  PageIndex=',PageIndex);
     UpdateStatusBar;
   end else begin
-//writeln('TSourceNotebook.CloseFile D  PageIndex=',PageIndex);
+    //writeln('TSourceNotebook.CloseFile D  PageIndex=',PageIndex);
     Notebook.Free;
-//writeln('TSourceNotebook.CloseFile E  PageIndex=',PageIndex);
+    //writeln('TSourceNotebook.CloseFile E  PageIndex=',PageIndex);
     Notebook:=nil;
     Hide;
   end;
-{$IFDEF IDE_DEBUG}
-writeln('TSourceNotebook.CloseFile END');
-{$ENDIF}
+  {$IFDEF IDE_DEBUG}
+  writeln('TSourceNotebook.CloseFile END');
+  {$ENDIF}
 end;
 
 Procedure TSourceNotebook.NewClicked(Sender: TObject);
@@ -2975,6 +2943,7 @@ Begin
   begin
     TempEditor.FocusEditor;
     UpdateStatusBar;
+    UpdateActiveEditColors;
     if Assigned(FOnEditorVisibleChanged) then
        FOnEditorVisibleChanged(sender);
   end;
@@ -3200,6 +3169,46 @@ Procedure TSourceNotebook.BreakPointDeleted(Sender : TObject; Line : Integer);
 begin
   if Assigned(OnDeleteBreakPoint) then
       OnDeleteBreakPoint(self,Line);
+end;
+
+procedure TSourceNotebook.UpdateActiveEditColors;
+var ASynEdit: TSynEdit;
+  SrcEDit: TSourceEditor;
+begin
+  SrcEdit:=GetActiveSe;
+  if SrcEdit=nil then exit;
+  ASynEdit:=SrcEdit.EditorComponent;
+  if ASynEdit=nil then exit;
+  FActiveEditDefaultFGColor:=ASynEdit.Font.Color;
+  FActiveEditDefaultBGColor:=ASynEdit.Color;
+  FActiveEditSelectedFGColor:=ASynEdit.SelectedColor.ForeGround;
+  FActiveEditSelectedBGColor:=ASynEdit.SelectedColor.Background;
+  FActiveEditKeyFGColor:=FActiveEditDefaultFGColor;
+  FActiveEditKeyBGColor:=FActiveEditDefaultBGColor;
+  FActiveEditSymbolFGColor:=FActiveEditDefaultFGColor;
+  FActiveEditSymbolBGColor:=FActiveEditDefaultBGColor;
+  if ASynEdit.Highlighter<>nil then begin
+    with ASynEdit.Highlighter do begin
+      if IdentifierAttribute<>nil then begin
+        if IdentifierAttribute.ForeGround<>clNone then
+          FActiveEditDefaultFGColor:=IdentifierAttribute.ForeGround;
+        if IdentifierAttribute.BackGround<>clNone then
+          FActiveEditDefaultBGColor:=IdentifierAttribute.BackGround;
+      end;
+      if KeywordAttribute<>nil then begin
+        if KeywordAttribute.ForeGround<>clNone then
+          FActiveEditKeyFGColor:=KeywordAttribute.ForeGround;
+        if KeywordAttribute.BackGround<>clNone then
+          FActiveEditKeyBGColor:=KeywordAttribute.BackGround;
+      end;
+      if SymbolAttribute<>nil then begin
+        if SymbolAttribute.ForeGround<>clNone then
+          FActiveEditSymbolFGColor:=SymbolAttribute.ForeGround;
+        if SymbolAttribute.BackGround<>clNone then
+          FActiveEditSymbolBGColor:=SymbolAttribute.BackGround;
+      end;
+    end;
+  end;
 end;
 
 Procedure TSourceNotebook.GetSynEditPreviewSettings(APreviewEditor: TObject);

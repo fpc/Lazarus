@@ -722,8 +722,10 @@ type
     // inherited events
     property OnClick;
     property OnDblClick;
+    {$IFDEF SYN_LAZARUS}
     property OnTripleClick;
     property OnQuadClick;
+    {$ENDIF}
     property OnDragDrop;
     property OnDragOver;
 {$IFDEF SYN_COMPILER_4_UP}
