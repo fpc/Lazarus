@@ -158,7 +158,8 @@ const
   ecAddCurUnitToProj     = ecUserFirst + 706;
   ecRemoveFromProj       = ecUserFirst + 707;
   ecViewProjectSource    = ecUserFirst + 708;
-  ecProjectOptions       = ecUserFirst + 709;
+  ecViewProjectTodos     = ecUserFirst + 709;
+  ecProjectOptions       = ecUserFirst + 710;
 
   ecRunParameters        = ecUserFirst + 800;
   ecCompilerOptions      = ecUserFirst + 801;
@@ -592,6 +593,7 @@ begin
     ecAddCurUnitToProj      : Result:= lisMenuAddUnitToProject;
     ecRemoveFromProj        : Result:= lisMenuRemoveUnitFromProject;
     ecViewProjectSource     : Result:= lisMenuViewSource;
+    ecViewProjectTodos      : Result:= lisMenuViewProjectTodos;
     ecProjectOptions        : Result:= lisMenuProjectOptions;
 
     // run menu (menu string resource)
@@ -1421,6 +1423,7 @@ begin
   Add(C,'Add active unit to project',ecAddCurUnitToProj,VK_F11,[ssShift],VK_UNKNOWN,[]);
   Add(C,'Remove active unit from project',ecRemoveFromProj,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'View project source',ecViewProjectSource,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'View project ToDo list',ecViewProjectTodos,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'View project options',ecProjectOptions,VK_F11,[ssShift,ssCtrl],VK_UNKNOWN,[]);
 
   // run menu

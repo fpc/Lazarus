@@ -2524,6 +2524,7 @@ begin
       +'components'+ds+'synedit;'
       +'components'+ds+'codetools;'
       +'components'+ds+'custom;'
+      +'components'+ds+'mpaslex;'
       +SrcPath
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create('includepath addition',

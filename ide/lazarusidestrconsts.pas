@@ -190,6 +190,7 @@ resourcestring
   lisMenuAddUnitToProject = 'Add active unit to Project';
   lisMenuRemoveUnitFromProject = 'Remove from Project';
   lisMenuViewSource = 'View Source';
+  lisMenuViewProjectTodos = 'View ToDo List';
   lisMenuProjectOptions = 'Project Options...';
   
   lisMenuBuild = 'Build';
@@ -1207,6 +1208,13 @@ resourcestring
   lisDiffDlgIgnoreIfSpaceCharsWereAdd = 'Ignore amount of space chars';
   lisDiffDlgIgnoreSpaces = 'Ignore spaces (newline chars not included)';
   lisDiffDlgOpenDiffInEditor = 'Open Diff in editor';
+
+  //todolist
+  dlgTodoListCaption='ToDo List';
+  dlgTodolistRefresh='Refresh todo items';
+  dlgTodoListGotoLine='Goto selected source line';
+  dlgTodoListPrintList='Print todo items';
+  dlgToDoListOptions='ToDo options...';
 
 implementation
 end.

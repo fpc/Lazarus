@@ -240,6 +240,7 @@ type
     itmProjectAddTo: TMenuItem;
     itmProjectRemoveFrom: TMenuItem;
     itmProjectViewSource: TMenuItem;
+    itmProjectViewToDos: TMenuItem;
     itmProjectOptions: TMenuItem;
 
     itmProjectBuild: TMenuItem;
@@ -941,6 +942,11 @@ begin
   itmProjectViewSource.Name:='itmProjectViewSource';
   itmProjectViewSource.Caption := lisMenuViewSource;
   mnuProject.Add(itmProjectViewSource);
+
+  itmProjectViewToDos := TMenuItem.Create(Self);
+  itmProjectViewToDos.Name:='itmProjectViewToDos';
+  itmProjectViewToDos.Caption := lisMenuViewProjectTodos;
+  mnuProject.Add(itmProjectViewToDos);
 
   mnuProject.Add(CreateMenuSeparator);
 
