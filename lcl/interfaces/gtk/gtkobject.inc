@@ -1402,6 +1402,7 @@ begin
         if pWidget^.window<>nil then begin
           gdk_window_move_resize(pWidget^.window, Left, Top, Width, Height);
         end else begin
+          gtk_widget_set_usize(pWidget, -1,-1);
           gtk_widget_set_usize(pWidget, Width, Height);
         end;
         gtk_widget_set_uposition(pWidget, Left, Top);
@@ -3884,6 +3885,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.116  2002/04/30 09:57:21  lazarus
+  MG: fixed find declaration of default properties
+
   Revision 1.115  2002/04/27 15:35:51  lazarus
   MG: fixed window shrinking
 
