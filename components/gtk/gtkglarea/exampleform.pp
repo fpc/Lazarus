@@ -347,7 +347,8 @@ begin
       Visible:=true;
     end;
     
-    Resize;
+    // resize the components first, since the gtkglarea needs some time to setup
+    FormResize(Self);
     
     AreaInitialized:=false;
     GTKGLAreaControl1:=TGTKGLAreaControl.Create(Self);
@@ -361,6 +362,8 @@ begin
     end;
     
   end;
+  // now resize
+  FormResize(Self);
 end;
 
 // --------------------------------------------------------------------------

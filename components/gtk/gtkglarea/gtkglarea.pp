@@ -34,7 +34,6 @@ type
   protected
     function GetWidget: PGtkGLArea;
     procedure CreateWnd; override;
-    procedure AttachSignals; override;
   public
     property Widget: PGtkGLArea read GetWidget;
     constructor Create(AOwner: TComponent); override;
@@ -91,7 +90,7 @@ begin
   Handle := longint(gtk_gl_area_new(pgint(@InitAttrList)));
   if Widget <> nil then begin
     gtk_object_set_data(pgtkobject(Widget),'Sender',Self);
-    gtk_object_set_data(pgtkobject(Widget), 'Class', Pointer(Self));
+    gtk_object_set_data(pgtkobject(Widget),'Class', Pointer(Self));
     gtk_object_set_data(pgtkObject(Widget),'Style',0);
     gtk_object_set_data(pgtkObject(Widget),'ExStyle',0);
   end else begin
@@ -100,30 +99,7 @@ begin
   end;
   if Parent <> nil then AddControl;
   
-  AttachSignals;
   InitializeWnd;
-end;
-
-procedure TCustomGTKGLAreaControl.AttachSignals;
-begin
-  // Attach callbacks
-  SetCallback(LM_DESTROY);
-  SetCallback(LM_SHOWWINDOW);
-  SetCallback(LM_FOCUS);
-  SetCallback(LM_WINDOWPOSCHANGED);
-  SetCallback(LM_PAINT);
-  SetCallback(LM_EXPOSEEVENT);
-  SetCallback(LM_KEYDOWN);
-  SetCallback(LM_KEYUP);
-  SetCallback(LM_CHAR);
-  SetCallback(LM_MOUSEMOVE);
-  SetCallback(LM_LBUTTONDOWN); 
-  SetCallback(LM_LBUTTONUP); 
-  SetCallback(LM_RBUTTONDOWN);
-  SetCallback(LM_RBUTTONUP);
-  SetCallback(LM_MBUTTONDOWN);
-  SetCallback(LM_MBUTTONUP); 
-  SetCallback(LM_MOUSEWHEEL);
 end;
 
 //-----------------------------------------------------------------------------
