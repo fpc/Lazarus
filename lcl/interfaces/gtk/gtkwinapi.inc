@@ -4343,6 +4343,11 @@ begin
       pDC^.ClipRegion := 0;
     end;
       
+    if pDC^.GC<>nil then begin
+      gdk_gc_unref(pDC^.GC);
+      pDC^.GC:=nil;
+    end;
+    
     Result := CopyDCData(pDC, pSavedDC);
     pDC^.SavedContext := pSavedDC^.SavedContext;
     pSavedDC^.SavedContext := nil;
@@ -5989,6 +5994,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.104  2002/08/21 15:46:08  lazarus
+  MG: fixed a mem leak in RestoreDC
+
   Revision 1.103  2002/08/21 14:44:18  lazarus
   MG: accelerated synedit
 
