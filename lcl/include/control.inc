@@ -638,11 +638,11 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonDown(var Message: TLMLButtonDown);
 begin
-  Writeln('TCONTROL WMLBUTTONDOWN 1');
+//  Writeln('TCONTROL WMLBUTTONDOWN 1');
   if csCaptureMouse in ControlStyle then MouseCapture := True;
   if csClickEvents in ControlStyle then Include(FControlState, csClicked);
   DoMouseDown(Message, mbLeft, []);
-  Writeln('TCONTROL WMLBUTTONDOWN 2');
+//  Writeln('TCONTROL WMLBUTTONDOWN 2');
 end;
 
 {------------------------------------------------------------------------------
@@ -678,10 +678,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonDblClk(var Message: TLMLButtonDblClk);
 begin
-//TODO: SendCancelMode(self);
-if csCaptureMouse in ControlStyle then MouseCapture := True;
-if csClickEvents in ControlStyle then DblClick;
-DoMouseDown(Message, mbleft ,[ssDouble]);
+  //TODO: SendCancelMode(self);
+  if csCaptureMouse in ControlStyle then MouseCapture := True;
+  if csClickEvents in ControlStyle then DblClick;
+  DoMouseDown(Message, mbleft ,[ssDouble]);
 end;
 
 {------------------------------------------------------------------------------
@@ -718,7 +718,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TControl.WMLButtonUp(var Message: TLMLButtonUp);
 begin
-  Writeln('TCONTROL WMLBUTTONUP 1');
+//  Writeln('TCONTROL WMLBUTTONUP 1');
   if csCaptureMouse in ControlStyle then
      MouseCapture := False;
 
@@ -731,8 +731,7 @@ begin
     end;
   end;
   DoMouseUp(Message, mbLeft);
-  Writeln('TCONTROL WMLBUTTONUP 2');
-
+//  Writeln('TCONTROL WMLBUTTONUP 2');
 end;
 
 {------------------------------------------------------------------------------
@@ -747,7 +746,6 @@ begin
 //  inherited;
   DoMouseUp(Message, mbRight);
   if Message.Result = 0 then CheckMenuPopup(Message.pos);
-
 end;
 
 {------------------------------------------------------------------------------
@@ -767,7 +765,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.Click;
 Begin
-   if Assigned (FOnClick) then FOnClick(Self);
+  if Assigned (FOnClick) then FOnClick(Self);
 end;
 
 {------------------------------------------------------------------------------}
@@ -775,7 +773,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.AddControl;
 begin
-   CNSendMessage(LM_AddChild, Self, nil);
+  CNSendMessage(LM_AddChild, Self, nil);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1506,6 +1504,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.40  2002/03/27 08:57:16  lazarus
+  MG: reduced compiler warnings
+
   Revision 1.39  2002/03/25 17:59:20  lazarus
   GTK Cleanup
   Shane

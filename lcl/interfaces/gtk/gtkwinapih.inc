@@ -34,7 +34,7 @@ function CreateCompatibleDC(DC: HDC): HDC; override;
 function CreateFontIndirect(const LogFont: TLogFont): HFONT; override;
 function CreatePenIndirect(const LogPen: TLogPen): HPEN; override;
 function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP; override;
-function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN;
+function CreateRectRgn(X1,Y1,X2,Y2 : Integer): HRGN; override;
 
 function DeleteDC(hDC: HDC): Boolean; override;
 function DeleteObject(GDIObject: HGDIOBJ): Boolean;  override;
@@ -84,7 +84,7 @@ function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YS
 function MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType: Cardinal): integer; override;
 function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
-function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
+function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean; override;
 function Pie(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;
 function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
@@ -115,7 +115,7 @@ function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues)
 Function SetTextCharacterExtra(_hdc : hdc; nCharExtra : Integer):Integer; override;
 function SetTextColor(DC: HDC; Color: TColorRef): TColorRef; override;
 function SetTimer(hWnd: HWND; nIDEvent, uElapse: integer; lpTimerFunc: TFNTimerProc) : integer; override;
-function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt;
+function SetWindowLong(Handle: HWND; Idx: Integer; NewLong : Longint): LongInt; override;
 function SetWindowOrgEx(dc : hdc; NewX, NewY : Integer; var Point: TPoint) : Boolean; override;
 function SetWindowPos(hWnd: HWND; hWndInsertAfter: HWND;
       X, Y, cx, cy: Integer; uFlags: UINT): Boolean;  override;
@@ -133,6 +133,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/03/27 08:57:17  lazarus
+  MG: reduced compiler warnings
+
   Revision 1.24  2002/02/03 00:24:02  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can
