@@ -688,10 +688,12 @@ begin
           ControlSelection.SaveBounds;
           FHasSized:=true;
         end;
-        ControlSelection.MoveSelectionWithSnapping(
-          LastMouseMovePos.X-MouseDownPos.X,LastMouseMovePos.Y-MouseDownPos.Y);
-        if Assigned(OnModified) then OnModified(Self);
-        FCustomForm.Invalidate;
+        if ControlSelection.MoveSelectionWithSnapping(
+          LastMouseMovePos.X-MouseDownPos.X,LastMouseMovePos.Y-MouseDownPos.Y)
+        then begin
+          if Assigned(OnModified) then OnModified(Self);
+          FCustomForm.Invalidate;
+        end;
       end
       else
       begin
