@@ -292,8 +292,7 @@ Begin
   {$IFDEF VerboseDesigner}
   Writeln('[TDesigner.RemoveControl] C ',AComponent.Name,':',AComponent.ClassName);
   {$ENDIF}
-  if not (AComponent is TControl) then
-    Form.Invalidate;
+  Form.Invalidate;
   // this sends a message to notification and removes it from the controlselection
   TheFormEditor.DeleteControl(AComponent);
 end;
