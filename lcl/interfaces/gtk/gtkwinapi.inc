@@ -4931,6 +4931,10 @@ begin
           ParentControl:=ParentControl.Parent;
         end;
       end;}
+      {if (Target is TPage) or (Target is TNoteBook) then begin
+        writeln('TGTKObject.SendMessage ',TControl(Target).Name,':',Target.ClassName,
+        ' Handle=',HexStr(Cardinal(HandleWnd),8));
+      end;}
       if Msg=LM_GtkPAINT then begin
         // convert LM_GtkPAINT to LM_PAINT
         AMessage.Msg := LM_PAINT;
@@ -6323,6 +6327,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.120  2002/09/06 11:33:36  lazarus
+  MG: added jitform error messagedlg
+
   Revision 1.119  2002/09/03 08:07:22  lazarus
   MG: image support, TScrollBox, and many other things from Andrew
 
