@@ -147,7 +147,8 @@ end;
 
 procedure TCustomMemo.ControlKeyDown(var Key: Word; Shift: TShiftState);
 begin
-  if (Key=VK_RETURN) or (Key=VK_TAB) then exit;
+  if (Key=VK_RETURN) and (Shift=[]) then exit;
+  if (Key=VK_TAB) and (Shift-[ssShift]=[]) then exit;
   inherited ControlKeyDown(Key, Shift);
 end;
 
@@ -172,6 +173,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.28  2004/08/26 19:09:34  mattias
+  moved navigation key handling to TApplication and added options for custom navigation
+
   Revision 1.27  2004/07/03 11:11:08  mattias
   TGTKListStringList now keeps selection on Put and Move
 

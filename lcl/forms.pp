@@ -799,10 +799,18 @@ type
     );
   TApplicationFlags = set of TApplicationFlag;
   
+  TApplicationNavigationOption = (
+    anoTabToSelectNext,
+    anoReturnForDefaultControl,
+    anoEscapeForCancelControl
+    );
+  TApplicationNavigationOptions = set of TApplicationNavigationOption;
+  
   TApplicationHandlerType = (
     ahtIdle,
     ahtIdleEnd,
-    ahtKeyDown,
+    ahtKeyDownBefore, // before interface and LCL
+    ahtKeyDownAfter,  // after interface and LCL
     ahtUserInput
     );
 
@@ -826,6 +834,7 @@ type
     FFormList: TList;
     FMainForm : TForm;
     FMouseControl: TControl;
+    FNavigation: TApplicationNavigationOptions;
     FOldExceptProc: TExceptProc;
     FOnActionExecute: TActionEvent;
     FOnActionUpdate: TActionEvent;
@@ -846,6 +855,7 @@ type
     procedure Idle;
     function InvokeHelp(Command: Word; Data: Longint): Boolean;
     function GetControlAtMouse: TControl;
+    procedure SetNavigation(const AValue: TApplicationNavigationOptions);
     procedure UpdateMouseControl(NewMouseControl: TControl);
     procedure MouseIdle(const CurrentControl: TControl);
     procedure SetCaptureExceptions(const AValue: boolean);
@@ -905,8 +915,11 @@ type
     procedure ShowException(E: Exception); override;
     procedure Terminate; override;
     procedure NotifyUserInputHandler(Msg: Cardinal);
+    procedure NotifyKeyDownBeforeHandler(Sender: TObject;
+                                         var Key: Word; Shift: TShiftState);
     procedure NotifyKeyDownHandler(Sender: TObject;
-                                   var Key : Word; Shift : TShiftState);
+                                   var Key: Word; Shift: TShiftState);
+    procedure ControlKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure AddOnIdleHandler(Handler: TNotifyEvent;
                          AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
     procedure RemoveOnIdleHandler(Handler: TNotifyEvent);
@@ -916,6 +929,9 @@ type
     procedure AddOnUserInputHandler(Handler: TOnUserInputEvent;
                          AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
     procedure RemoveOnUserInputHandler(Handler: TOnUserInputEvent);
+    procedure AddOnKeyDownBeforeHandler(Handler: TKeyEvent;
+                         AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
+    procedure RemoveOnKeyDownBeforeHandler(Handler: TKeyEvent);
     procedure AddOnKeyDownHandler(Handler: TKeyEvent;
                          AsLast: Boolean{$IFDEF HasDefaultValues}=true{$ENDIF});
     procedure RemoveOnKeyDownHandler(Handler: TKeyEvent);
@@ -932,6 +948,7 @@ type
     property HintPause: Integer read FHintPause write FHintPause;
     property HintShortCuts: Boolean read FHintShortCuts write FHintShortCuts;
     property HintShortPause: Integer read FHintShortPause write FHintShortPause;
+    property Navigation: TApplicationNavigationOptions read FNavigation write SetNavigation;
     property MainForm: TForm read FMainForm;
     property OnActionExecute: TActionEvent read FOnActionExecute write FOnActionExecute;
     property OnActionUpdate: TActionEvent read FOnActionUpdate write FOnActionUpdate;

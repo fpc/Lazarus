@@ -989,7 +989,7 @@ end;
 
 Function TControl.PerformTab(ForwardTab: boolean): Boolean;
 
-  Function TopLevelAncestor(TopControl : TControl) : TWinControl;
+  Function GetHighestParent(TopControl : TControl) : TWinControl;
   begin
     Result := nil;
     If TopControl = nil then exit;
@@ -997,7 +997,7 @@ Function TControl.PerformTab(ForwardTab: boolean): Boolean;
       if TopControl is TWinControl then
         Result := TWinControl(TopControl)
     end else
-      Result := TopLevelAncestor(TopControl.Parent);
+      Result := GetHighestParent(TopControl.Parent);
   end;
 
 var
@@ -1008,7 +1008,7 @@ var
 begin
   NewFocus := nil;
   OldFocus := nil;
-  TopLevel := TopLevelAncestor(Self);
+  TopLevel := GetHighestParent(Self);
   If TopLevel = nil then
     exit;
   try
@@ -3275,6 +3275,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.212  2004/08/26 19:09:34  mattias
+  moved navigation key handling to TApplication and added options for custom navigation
+
   Revision 1.211  2004/08/18 22:56:11  mattias
   implemented basic manual docking
 

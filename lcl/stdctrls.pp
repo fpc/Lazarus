@@ -621,7 +621,7 @@ type
     procedure InitializeWnd; override;
     procedure Loaded; override;
     function WordWrapIsStored: boolean; virtual;
-    procedure ControlKeyDown(var Key: Word; Shift : TShiftState); override;
+    procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -1172,6 +1172,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.163  2004/08/26 19:09:33  mattias
+  moved navigation key handling to TApplication and added options for custom navigation
+
   Revision 1.162  2004/08/22 12:10:56  mattias
   better theming for some dialogs
 

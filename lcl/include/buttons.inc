@@ -64,16 +64,13 @@ begin
     CNSendMessage(LM_BTNDEFAULT_CHANGED,Self,nil);
 end;
 
-{------------------------------------------------------------------------------
-  procedure TCustomButton.ControlKeyDown
- ------------------------------------------------------------------------------}
 procedure TCustomButton.ControlKeyDown(var Key: Word; Shift: TShiftState);
 begin
-  inherited ControlKeyDown(Key, Shift);
   if (Key=VK_RETURN) and (Shift=[]) then begin
     Key:=VK_UNKNOWN;
     Click;
-  end;
+  end else
+    inherited ControlKeyDown(Key, Shift);
 end;
 
 {------------------------------------------------------------------------------
@@ -227,6 +224,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2004/08/26 19:09:34  mattias
+  moved navigation key handling to TApplication and added options for custom navigation
+
   Revision 1.33  2004/07/15 10:43:38  mattias
   added TCustomButton, TCustomBitBtn, TCustomSpeedButton
 

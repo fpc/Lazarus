@@ -66,9 +66,9 @@ begin
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{       TApplication Constructor                                               }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TApplication Constructor
+------------------------------------------------------------------------------}
 constructor TApplication.Create(AOwner: TComponent);
 begin
   Focusmessages := True;
@@ -86,6 +86,8 @@ begin
   FFormList := nil;
   FOnIdle := nil;
   FIcon := nil;
+  FNavigation := [anoTabToSelectNext,anoReturnForDefaultControl,
+                  anoEscapeForCancelControl];
   ApplicationActionComponent:=Self;
   OnMenuPopupHandler:=@MenuPopupHandler;
 
@@ -94,9 +96,9 @@ begin
   CaptureExceptions:=true;
 end;
 
-{------------------------------------------------------------------------------}
-{       TApplication Destructor                                                }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+       TApplication Destructor
+------------------------------------------------------------------------------}
 destructor TApplication.Destroy;
 var
   HandlerType: TApplicationHandlerType;
@@ -360,6 +362,13 @@ begin
   Result := FindControlAtPosition(P, True);
   if (Result <> nil) and (csDesigning in Result.ComponentState) then
     Result := nil;
+end;
+
+procedure TApplication.SetNavigation(const AValue: TApplicationNavigationOptions
+  );
+begin
+  if FNavigation=AValue then exit;
+  FNavigation:=AValue;
 end;
 
 {------------------------------------------------------------------------------
@@ -1080,14 +1089,70 @@ begin
     TOnUserInputEvent(FApplicationHandlers[ahtUserInput][i])(Self,Msg);
 end;
 
+procedure TApplication.NotifyKeyDownBeforeHandler(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+var
+  i: Integer;
+begin
+  i:=FApplicationHandlers[ahtKeyDownBefore].Count;
+  while FApplicationHandlers[ahtKeyDownBefore].NextDownIndex(i) do
+    TKeyEvent(FApplicationHandlers[ahtKeyDownBefore][i])(Self,Key,Shift);
+end;
+
 procedure TApplication.NotifyKeyDownHandler(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 var
   i: Integer;
 begin
-  i:=FApplicationHandlers[ahtKeyDown].Count;
-  while FApplicationHandlers[ahtKeyDown].NextDownIndex(i) do
-    TKeyEvent(FApplicationHandlers[ahtKeyDown][i])(Self,Key,Shift);
+  i:=FApplicationHandlers[ahtKeyDownAfter].Count;
+  while FApplicationHandlers[ahtKeyDownAfter].NextDownIndex(i) do
+    TKeyEvent(FApplicationHandlers[ahtKeyDownAfter][i])(Self,Key,Shift);
+end;
+
+procedure TApplication.ControlKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+var
+  AControl: TWinControl;
+  Form: TCustomForm;
+begin
+  if Sender is TWinControl then begin
+    AControl:=TWinControl(Sender);
+
+    // handle tab keys
+    if (Key=VK_Tab) and ((Shift-[ssShift])=[])
+    and (anoTabToSelectNext in Navigation)
+    and AControl.Focused then
+    begin
+      Key:=VK_UNKNOWN;
+      AControl.PerformTab(not (ssShift in Shift));
+    end;
+    
+    // check for special actions handled ourselves
+    if (Shift = []) and ((Key = VK_RETURN) or (Key = VK_ESCAPE)) then
+    begin
+      Form := GetParentForm(AControl);
+      if Form<>nil then begin
+        case Key of
+          VK_RETURN:
+            if (anoReturnForDefaultControl in Navigation)
+            and (Form.DefaultControl <> nil) then
+            begin
+              Form.DefaultControl.ExecuteDefaultAction;
+              Key := VK_UNKNOWN;
+            end;
+
+          VK_ESCAPE:
+            if (anoEscapeForCancelControl in Navigation)
+            and (Form.CancelControl <> nil) then
+            begin
+              Form.CancelControl.ExecuteCancelAction;
+              Key := VK_UNKNOWN;
+            end;
+            
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TApplication.AddOnIdleHandler(Handler: TNotifyEvent;
@@ -1123,14 +1188,25 @@ begin
   RemoveHandler(ahtUserInput,TMethod(Handler));
 end;
 
+procedure TApplication.AddOnKeyDownBeforeHandler(Handler: TKeyEvent;
+  AsLast: Boolean);
+begin
+  AddHandler(ahtKeyDownBefore,TMethod(Handler),AsLast);
+end;
+
+procedure TApplication.RemoveOnKeyDownBeforeHandler(Handler: TKeyEvent);
+begin
+  RemoveHandler(ahtKeyDownBefore,TMethod(Handler));
+end;
+
 procedure TApplication.AddOnKeyDownHandler(Handler: TKeyEvent; AsLast: Boolean);
 begin
-  AddHandler(ahtKeyDown,TMethod(Handler),AsLast);
+  AddHandler(ahtKeyDownAfter,TMethod(Handler),AsLast);
 end;
 
 procedure TApplication.RemoveOnKeyDownHandler(Handler: TKeyEvent);
 begin
-  RemoveHandler(ahtKeyDown,TMethod(Handler));
+  RemoveHandler(ahtKeyDownAfter,TMethod(Handler));
 end;
 
 procedure TApplication.RemoveAllHandlersOfObject(AnObject: TObject);
@@ -1247,6 +1323,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.87  2004/08/26 19:09:34  mattias
+  moved navigation key handling to TApplication and added options for custom navigation
+
   Revision 1.86  2004/08/18 14:24:55  mattias
   implemented TCustomForm.Release
 

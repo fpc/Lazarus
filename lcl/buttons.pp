@@ -71,8 +71,7 @@ type
     procedure Click; override;
     procedure CreateWnd; override;
     procedure DoSendBtnDefault; virtual;
-    procedure ControlKeyDown(var Key: Word; Shift : TShiftState); override;
-
+    procedure ControlKeyDown(var Key: Word; Shift: TShiftState); override;
     procedure SetParent(AParent: TWinControl); override;
     procedure RealSetText(const Value: TCaption); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
@@ -381,6 +380,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.77  2004/08/26 19:09:33  mattias
+  moved navigation key handling to TApplication and added options for custom navigation
+
   Revision 1.76  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

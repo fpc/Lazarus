@@ -4,7 +4,7 @@
                                Controls.pp
                              -------------------
                              Component Library Controls
-                   Initial Revision  : Sat Apr 10 22:49:32 CST 1999
+                   Initial Revision : Sat Apr 10 22:49:32 CST 1999
 
 
  ***************************************************************************/
@@ -174,25 +174,25 @@ type
   // ToDo: move this to a message definition unit
   TCMMouseWheel = record
     MSg: Cardinal;
-    ShiftState : TShiftState;
-    Unused : Byte;
-    WheelData : SmallInt;
+    ShiftState: TShiftState;
+    Unused: Byte;
+    WheelData: SmallInt;
     case Integer of
-    0 : (
-      XPos : SmallInt;
-      YPos : SmallInt);
-    1 : (
-      Pos : TSmallPoint;
-      Result : LongInt);
+    0: (
+      XPos: SmallInt;
+      YPos: SmallInt);
+    1: (
+      Pos: TSmallPoint;
+      Result: LongInt);
   end;
 
   TCMHitTest = TLMNCHitTest;
 
   TCMControlChange = record
-    Msg : Cardinal;
-    Control : TControl;
-    Inserting : Boolean;
-    Result : Longint;
+    Msg: Cardinal;
+    Control: TControl;
+    Inserting: Boolean;
+    Result: Longint;
   End;
 
   TCMDialogChar = TLMKEY;
@@ -254,7 +254,7 @@ const
   crLow         = TCursor(-22);
 
 type
-  TWndMethod = procedure(var TheMessage : TLMessage) of Object;
+  TWndMethod = procedure(var TheMessage: TLMessage) of Object;
 
   TControlStyleType = (
     csAcceptsControls, // can have childs in the designer
@@ -337,8 +337,8 @@ type
   TKeyEvent = procedure(Sender: TObject; var Key: Word; Shift:TShiftState) of Object;
   TKeyPressEvent = procedure(Sender: TObject; var Key: TCharacter) of Object;
 
-  TMouseEvent = Procedure(Sender : TOBject; Button: TMouseButton;
-                          Shift : TShiftState; X, Y: Integer) of object;
+  TMouseEvent = Procedure(Sender: TOBject; Button: TMouseButton;
+                          Shift: TShiftState; X, Y: Integer) of object;
   TMouseMoveEvent = Procedure(Sender: TObject; Shift: TShiftState;
                               X, Y: Integer) of object;
   TMouseWheelEvent = Procedure(Sender: TObject; Shift: TShiftState;
@@ -363,7 +363,7 @@ type
   TDragMessage = (dmDragEnter, dmDragLeave, dmDragMove, dmDragDrop,
                   dmDragCancel,dmFindTarget);
   TDragOverEvent = Procedure(Sender, Source: TObject;
-               X,Y : Integer; State: TDragState; Var Accept: Boolean) of Object;
+               X,Y: Integer; State: TDragState; Var Accept: Boolean) of Object;
   TDragDropEvent = Procedure(Sender, Source: TObject; X,Y: Integer) of Object;
   TStartDragEvent = Procedure(Sender: TObject; DragObject: TDragObject) of Object;
   TEndDragEvent = Procedure(Sender, Target: TObject; X,Y: Integer) of Object;
@@ -575,8 +575,8 @@ type
     property MinWidth: TConstraintSize read FMinWidth write SetMinWidth default 0;
   end;
 
-  TConstrainedResizeEvent = procedure(Sender : TObject;
-      var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize) of object;
+  TConstrainedResizeEvent = procedure(Sender: TObject;
+      var MinWidth, MinHeight, MaxWidth, MaxHeight: TConstraintSize) of object;
 
 
   { TControlBorderSpacing }
@@ -726,8 +726,8 @@ type
     FHelpKeyword: String;
     FHelpType: THelpType;
     FHint: String;
-    FHostDockSite : TWinControl;
-    FIsControl : Boolean;
+    FHostDockSite: TWinControl;
+    FIsControl: Boolean;
     fLastAlignedBounds: TRect;
     FLastChangebounds: TRect;
     FLastDoChangeBounds: TRect;
@@ -741,7 +741,7 @@ type
     FMouseEntered: boolean;
     FOnChangeBounds: TNotifyEvent;
     FOnClick: TNotifyEvent;
-    FOnConstrainedResize : TConstrainedResizeEvent;
+    FOnConstrainedResize: TConstrainedResizeEvent;
     FOnContextPopup: TContextPopupEvent;
     FOnDblClick: TNotifyEvent;
     FOnDragDrop: TDragDropEvent;
@@ -763,7 +763,7 @@ type
     FParent: TWinControl;
     FParentColor: Boolean;
     FParentFont: Boolean;
-    FParentShowHint : Boolean;
+    FParentShowHint: Boolean;
     FPopupMenu: TPopupMenu;
     FSessionProperties: string;
     FShowHint: Boolean;
@@ -778,17 +778,17 @@ type
     FWidth: Integer;
     FWindowProc: TWndMethod;
     procedure DoActionChange(Sender: TObject);
-    function GetBoundsRect : TRect;
+    function GetBoundsRect: TRect;
     function GetClientHeight: Integer;
     function GetClientWidth: Integer;
     function GetLRDockWidth: Integer;
-    function GetMouseCapture : Boolean;
+    function GetMouseCapture: Boolean;
     function GetTBDockHeight: Integer;
     function GetTabOrder: TTabOrder;
     function GetText: TCaption; 
     function GetUndockHeight: Integer;
     function GetUndockWidth: Integer;
-    function IsCaptionStored : Boolean;
+    function IsCaptionStored: Boolean;
     function IsColorStored: Boolean;
     function IsEnabledStored: Boolean;
     function IsFontStored: Boolean;
@@ -798,20 +798,20 @@ type
     function IsOnClickStored: Boolean;
     function IsShowHintStored: Boolean;
     function IsVisibleStored: Boolean;
-    procedure CheckMenuPopup(const P : TSmallPoint);
+    procedure CheckMenuPopup(const P: TSmallPoint);
     procedure DoBeforeMouseMessage;
-    procedure DoConstrainedResize(var NewWidth, NewHeight : integer);
+    procedure DoConstrainedResize(var NewWidth, NewHeight: integer);
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton;
                           Shift:TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
     procedure SetBorderSpacing(const AValue: TControlBorderSpacing);
-    procedure SetBoundsRect(const ARect : TRect);
+    procedure SetBoundsRect(const ARect: TRect);
     procedure SetBoundsRectForNewParent(const AValue: TRect);
     procedure SetClientHeight(Value: Integer);
     procedure SetClientSize(Value: TPoint);
     procedure SetClientWidth(Value: Integer);
-    procedure SetConstraints(const Value : TSizeConstraints);
-    procedure SetCursor(Value : TCursor);
+    procedure SetConstraints(const Value: TSizeConstraints);
+    procedure SetCursor(Value: TCursor);
     procedure SetDragCursor(const AValue: TCursor);
     procedure SetFont(Value: TFont);
     procedure SetHeight(Value: Integer);
@@ -819,18 +819,18 @@ type
     procedure SetHelpKeyword(const AValue: String);
     procedure SetHostDockSite(const AValue: TWinControl);
     procedure SetLeft(Value: Integer);
-    procedure SetMouseCapture(Value : Boolean);
-    procedure SetParentShowHint(Value : Boolean);
-    procedure SetParentColor(Value : Boolean);
-    procedure SetPopupMenu(Value : TPopupMenu);
-    procedure SetShowHint(Value : Boolean);
-    Procedure SetTabOrder(Value : TTabOrder);
-    procedure SetTabStop(Value : Boolean);
+    procedure SetMouseCapture(Value: Boolean);
+    procedure SetParentShowHint(Value: Boolean);
+    procedure SetParentColor(Value: Boolean);
+    procedure SetPopupMenu(Value: TPopupMenu);
+    procedure SetShowHint(Value: Boolean);
+    Procedure SetTabOrder(Value: TTabOrder);
+    procedure SetTabStop(Value: Boolean);
     procedure SetText(const Value: TCaption); 
     procedure SetTop(Value: Integer);
     procedure SetVisible(Value: Boolean);
     procedure SetWidth(Value: Integer);
-    Procedure UpdateTabOrder(value : TTabOrder);
+    Procedure UpdateTabOrder(value: TTabOrder);
   protected
     FControlState: TControlState;
   protected
@@ -858,10 +858,10 @@ type
     procedure UpdateAnchorRules;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
-    procedure ChangeScale(M,D : Integer); dynamic;
-    Function CanAutoSize(var NewWidth, NewHeight : Integer): Boolean; virtual;
+    procedure ChangeScale(M,D: Integer); dynamic;
+    Function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
     procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
-    Function GetClientOrigin : TPoint; virtual;
+    Function GetClientOrigin: TPoint; virtual;
     Function GetClientRect: TRect; virtual;
     Function GetScrolledClientRect: TRect; virtual;
     function GetChildsRect(Scrolled: boolean): TRect; virtual;
@@ -895,9 +895,9 @@ type
     procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
     procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
     procedure CMHintShow(var Message: TLMessage); message CM_HINTSHOW;
-    procedure CMParentColorChanged(var Message : TLMessage); message CM_PARENTCOLORCHANGED;
-    procedure CMParentShowHintChanged(var Message : TLMessage); message CM_PARENTSHOWHINTCHANGED;
-    procedure CMVisibleChanged(var Message : TLMessage); message CM_VISIBLECHANGED;
+    procedure CMParentColorChanged(var Message: TLMessage); message CM_PARENTCOLORCHANGED;
+    procedure CMParentShowHintChanged(var Message: TLMessage); message CM_PARENTSHOWHINTCHANGED;
+    procedure CMVisibleChanged(var Message: TLMessage); message CM_VISIBLECHANGED;
   protected
     // drag and drop
     procedure CalculateDockSizes;
@@ -911,7 +911,7 @@ type
     procedure DoDock(NewDockSite: TWinControl; var ARect: TRect); dynamic;
     procedure DoDragMsg(var DragMsg: TCMDrag); virtual;
     procedure DoEndDock(Target: TObject; X, Y: Integer); dynamic;
-    procedure DoEndDrag(Target: TObject; X,Y : Integer); dynamic;
+    procedure DoEndDrag(Target: TObject; X,Y: Integer); dynamic;
     procedure DoStartDock(var DragObject: TDragObject); dynamic;
     procedure DoStartDrag(var DragObject: TDragObject); dynamic;
     procedure DragCanceled; dynamic;
@@ -939,14 +939,14 @@ type
     function ChildClassAllowed(ChildClass: TClass): boolean; virtual;
     procedure Loaded; override;
     procedure AssignTo(Dest: TPersistent); override;
-    procedure InvalidateControl(CtrlIsVisible, CtrlIsOpaque : Boolean);
+    procedure InvalidateControl(CtrlIsVisible, CtrlIsOpaque: Boolean);
     procedure InvalidateControl(CtrlIsVisible, CtrlIsOpaque, IgnoreWinControls: Boolean);
     procedure FontChanged(Sender: TObject); virtual;
     function GetAction: TBasicAction; virtual;
     function RealGetText: TCaption; virtual;
     procedure RealSetText(const Value: TCaption); virtual;
     procedure SetAction(Value: TBasicAction); virtual;
-    procedure SetColor(Value : TColor); virtual;
+    procedure SetColor(Value: TColor); virtual;
     procedure SetEnabled(Value: Boolean); virtual;
     procedure SetHint(const Value: String); virtual;
     procedure SetName(const Value: TComponentName); override;
@@ -1020,7 +1020,7 @@ type
   public
     constructor Create(TheOwner: TComponent);override;
     destructor Destroy; override;
-    Function PerformTab(ForwardTab: boolean): Boolean; Virtual;
+    function PerformTab(ForwardTab: boolean): Boolean; Virtual;
     procedure EditingDone; virtual;
     procedure ExecuteDefaultAction; virtual;
     procedure ExecuteCancelAction; virtual;
@@ -1047,13 +1047,13 @@ type
                                 Lock: boolean); virtual;
     function  GetTextBuf(Buffer: PChar; BufSize: Integer): Integer; virtual;
     function  GetTextLen: Integer; virtual;
-    Procedure SetTextBuf(Buffer : PChar); virtual;
+    Procedure SetTextBuf(Buffer: PChar); virtual;
     Function  Perform(Msg:Cardinal; WParam: WParam; LParam: LParam): LongInt;
     Function  ScreenToClient(const APoint: TPoint): TPoint;
     Function  ClientToScreen(const APoint: TPoint): TPoint;
     Function  ScreenToControl(const APoint: TPoint): TPoint;
     Function  ControlToScreen(const APoint: TPoint): TPoint;
-    Function  Dragging : Boolean;
+    Function  Dragging: Boolean;
     procedure Show;
     procedure Update; virtual;
     procedure SetZOrderPosition(NewPosition: Integer); virtual;
@@ -1335,21 +1335,21 @@ type
     FWinControls: TList;
     FCreatingHandle: Boolean; // Set when constructing the handle
                               // Only used for checking
-    procedure AlignControl(AControl : TControl);
+    procedure AlignControl(AControl: TControl);
     function GetBrush: TBrush;
     function GetControl(const Index: Integer): TControl;
     function GetControlCount: Integer;
     function GetDockClientCount: Integer;
     function GetDockClients(Index: Integer): TControl;
-    function GetHandle : HWND;
+    function GetHandle: HWND;
     function GetIsResizing: boolean;
     function GetTabOrder: TTabOrder;
     function GetVisibleDockClientCount: Integer;
     procedure SetChildSizing(const AValue: TControlChildSizing);
     procedure SetDockSite(const NewDockSite: Boolean);
     procedure SetHandle(NewHandle: HWND);
-    procedure SetBorderWidth(Value : TBorderWidth);
-    procedure SetParentCtl3D(Value : Boolean);
+    procedure SetBorderWidth(Value: TBorderWidth);
+    procedure SetParentCtl3D(Value: Boolean);
     procedure SetUseDockManager(const AValue: Boolean);
     procedure UpdateTabOrder(NewTabValue: TTabOrder);
     function  WantsKeyBeforeInterface(Key: word; Shift: TShiftState): boolean;
@@ -1365,7 +1365,7 @@ type
     procedure DoChildSizingChange(Sender: TObject); virtual;
     Function CanTab: Boolean; override;
     procedure DoDragMsg(var DragMsg: TCMDrag); override;
-    Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
+    Procedure CMDrag(var Message: TCMDrag); message CM_DRAG;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     function  ContainsControl(Control: TControl): Boolean;
@@ -1375,10 +1375,10 @@ type
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
 //    procedure CreateComponent(TheOwner: TComponent); virtual;
     procedure DestroyComponent; virtual;
-    procedure DoConstraintsChange(Sender : TObject); override;
+    procedure DoConstraintsChange(Sender: TObject); override;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); override;
     procedure DoAutoSize; Override;
-    procedure GetChildren(Proc : TGetChildProc; Root : TComponent); override;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     procedure PaintControls(DC: HDC; First: TControl);
     procedure PaintHandler(var TheMessage: TLMPaint);
@@ -1388,7 +1388,7 @@ type
     // messages
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
     procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
-    procedure WMEraseBkgnd(var Message : TLMEraseBkgnd); message LM_ERASEBKGND;
+    procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMNotify(var Message: TLMNotify); message LM_NOTIFY;
     procedure WMSetFocus(var Message: TLMSetFocus); message LM_SETFOCUS;
     procedure WMKillFocus(var Message: TLMKillFocus); message LM_KILLFOCUS;
@@ -1431,7 +1431,7 @@ type
     function  DoKeyDown(var Message: TLMKey): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoKeyUp(var Message: TLMKey): Boolean;
-    procedure ControlKeyDown(var Key: Word; Shift : TShiftState); dynamic;
+    procedure ControlKeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDown(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownBeforeInterface(var Key: Word; Shift: TShiftState); dynamic;
     procedure KeyDownAfterInterface(var Key: Word; Shift: TShiftState); dynamic;
@@ -1440,9 +1440,9 @@ type
   protected
     Function  FindNextControl(CurrentControl: TControl; GoForward,
                               CheckTabStop, CheckParent, OnlyWinControls
-                              : Boolean) : TControl;
+                             : Boolean): TControl;
     Function  FindNextControl(CurrentControl: TWinControl; GoForward,
-                              CheckTabStop, CheckParent: Boolean) : TWinControl;
+                              CheckTabStop, CheckParent: Boolean): TWinControl;
     function  RealGetText: TCaption; override;
     function  GetBorderStyle: TBorderStyle;
     function  GetChildsRect(Scrolled: boolean): TRect; override;
@@ -1450,7 +1450,7 @@ type
     function  GetClientRect: TRect; override;
     function  GetControlOrigin: TPoint; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
-    function  IsControlMouseMsg(var TheMessage : TLMMouse): Boolean;
+    function  IsControlMouseMsg(var TheMessage: TLMMouse): Boolean;
     function  ParentHandlesAllocated: boolean; override;
     procedure CreateHandle; virtual;
     procedure CreateParams(var Params: TCreateParams); virtual;
@@ -1462,21 +1462,21 @@ type
     procedure FontChanged(Sender: TObject); override;
     procedure InitializeWnd; virtual; //gets called after the window is created
     procedure Loaded; override;
-    procedure MainWndProc(var Message : TLMessage);
+    procedure MainWndProc(var Message: TLMessage);
     procedure ParentFormInitializeWnd; virtual; //gets called by InitializeWnd of parent form
     procedure ReAlign; // realign all childs
     procedure RealSetText(const Value: TCaption); override;
     procedure RemoveFocus(Removing: Boolean);
     procedure SendMoveSizeMessages(SizeChanged, PosChanged: boolean); override;
     procedure SetBorderStyle(NewStyle: TBorderStyle); virtual;
-    procedure SetColor(Value : TColor); override;
+    procedure SetColor(Value: TColor); override;
     procedure SetZOrder(Topmost: Boolean); override;
     procedure SetZOrderPosition(NewPosition: Integer); override;
     procedure ShowControl(AControl: TControl); virtual;
     procedure Update; override;
     procedure UpdateControlState;
     procedure UpdateShowing; virtual;
-    procedure WndProc(var Message : TLMessage); override;
+    procedure WndProc(var Message: TLMessage); override;
   protected
     // properties which are not supported by all descendents
     property BorderStyle: TBorderStyle read GetBorderStyle write SetBorderStyle default bsNone;
@@ -1522,21 +1522,23 @@ type
     procedure LockRealizeBounds;
     procedure UnlockRealizeBounds;
     procedure DockDrop(DockObject: TDragDockObject; X, Y: Integer); dynamic;
-    Function CanFocus : Boolean;
-    Function ControlAtPos(const Pos : TPoint; AllowDisabled : Boolean): TControl;
-    Function ControlAtPos(const Pos : TPoint;
+    Function CanFocus: Boolean;
+    Function ControlAtPos(const Pos: TPoint; AllowDisabled: Boolean): TControl;
+    Function ControlAtPos(const Pos: TPoint;
       AllowDisabled, AllowWinControls: Boolean): TControl;
-    Function ControlAtPos(const Pos : TPoint;
+    Function ControlAtPos(const Pos: TPoint;
       AllowDisabled, AllowWinControls, OnlyClientAreas: Boolean): TControl; virtual;
     function GetControlIndex(AControl: TControl): integer;
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     procedure DoAdjustClientRectChange;
     procedure InvalidateClientRectCache(WithChildControls: boolean);
     function ClientRectNeedsInterfaceUpdate: boolean;
-    Function Focused : Boolean; override;
-    Procedure BroadCast(var Message);
+    Function Focused: Boolean; override;
+    procedure SelectNext(CurControl: TWinControl;
+                         GoForward, CheckTabStop: Boolean);
+    Procedure BroadCast(var ToAllMessage);
     procedure NotifyControls(Msg: Word);
-    procedure DefaultHandler(var Message); override;
+    procedure DefaultHandler(var AMessage); override;
     Procedure DisableAlign;
     Procedure EnableAlign;
     function  GetTextLen: Integer; override;
@@ -1554,7 +1556,7 @@ type
     Procedure SetFocus; override;
     Function FindChildControl(const ControlName: String): TControl;
     procedure FlipChildren(AllLevels: Boolean); dynamic;
-    Procedure GetTabOrderList(List : TList);
+    Procedure GetTabOrderList(List: TList);
     function HandleAllocated: Boolean;
     procedure HandleNeeded;
     function BrushCreated: Boolean;
@@ -1624,7 +1626,7 @@ type
 
   TControlPropertyStorage = class(TCustomPropertyStorage)
   protected
-    procedure GetPropertyList(List : TStrings); override;
+    procedure GetPropertyList(List: TStrings); override;
   end;
   {$ENDIF not VER1_0}
 
@@ -1744,21 +1746,21 @@ type
   { TMouse }
 
   TMouse = class
-    FCapture : HWND;
-    FDragImmediate : Boolean;
-    FDragThreshold : Integer;
-    Procedure SetCapture(const Value : HWND);
-    Function GetCapture : HWND;
-    Procedure SetCursorPos(value : TPoint);
-    Function GetCursorPos : TPoint;
+    FCapture: HWND;
+    FDragImmediate: Boolean;
+    FDragThreshold: Integer;
+    Procedure SetCapture(const Value: HWND);
+    Function GetCapture: HWND;
+    Procedure SetCursorPos(value: TPoint);
+    Function GetCursorPos: TPoint;
     function GetIsDragging: Boolean;
   public
     constructor Create;
     destructor Destroy; override;
-    property Capture : HWND read GetCapture write SetCapture;
-    property CursorPos : TPoint read GetCursorPos write SetCursorPos;
-    property DragImmediate : Boolean read FDragImmediate write FDragImmediate default True;
-    property DragThreshold : Integer read FDragThreshold write FDragThreshold default 5;
+    property Capture: HWND read GetCapture write SetCapture;
+    property CursorPos: TPoint read GetCursorPos write SetCursorPos;
+    property DragImmediate: Boolean read FDragImmediate write FDragImmediate default True;
+    property DragThreshold: Integer read FDragThreshold write FDragThreshold default 5;
     property IsDragging: Boolean read GetIsDragging;
   end;
 
@@ -1784,30 +1786,30 @@ const
     'alNone', 'alTop', 'alBottom', 'alLeft', 'alRight', 'alClient', 'alCustom');
 
 
-function CNSendMessage(LM_Message: integer; Sender: TObject; data: pointer) : integer;
+function CNSendMessage(LM_Message: integer; Sender: TObject; data: pointer): integer;
 function FindDragTarget(const Position: TPoint; AllowDisabled: Boolean): TControl;
 Function FindControlAtPosition(const Position: TPoint; AllowDisabled: Boolean): TControl;
-Function FindLCLWindow(const ScreenPos : TPoint) : TWinControl;
+Function FindLCLWindow(const ScreenPos: TPoint): TWinControl;
 Function FindControl(Handle: hwnd): TWinControl;
 Function FindOwnerControl(Handle: hwnd): TWinControl;
-function FindLCLControl(const ScreenPos: TPoint) : TControl;
+function FindLCLControl(const ScreenPos: TPoint): TControl;
 
 function SendAppMessage(Msg: Cardinal; WParam: WParam; LParam: LParam): Longint;
-Procedure MoveWindowOrg(dc : hdc; X,Y : Integer);
+Procedure MoveWindowOrg(dc: hdc; X,Y: Integer);
 
 // drag and drop
 
 var
   DefaultDockTreeClass: TDockTreeClass;
 
-procedure SetCaptureControl(Control : TControl);
-function GetCaptureControl : TControl;
+procedure SetCaptureControl(Control: TControl);
+function GetCaptureControl: TControl;
 procedure CancelDrag;
 procedure DragDone(Drop: Boolean);
 
 var
-  NewStyleControls : Boolean;
-  Mouse : TMouse;
+  NewStyleControls: Boolean;
+  Mouse: TMouse;
 
 function CursorToString(Cursor: TCursor): string;
 function StringToCursor(const S: string): TCursor;
@@ -1854,7 +1856,7 @@ begin
   Result:=LCLProc.SendApplicationMessage(Msg,WParam,LParam);
 end;
 
-procedure MoveWindowOrg(dc : hdc; X, Y : Integer);
+procedure MoveWindowOrg(dc: hdc; X, Y: Integer);
 begin
   MoveWindowOrgEx(DC,X,Y);
 end;
@@ -1921,7 +1923,7 @@ end;
   Returns the TControl that it at the moment at the visible screen position.
   This is not reliable during resizing.
 ------------------------------------------------------------------------------}
-function FindLCLControl(const ScreenPos: TPoint) : TControl;
+function FindLCLControl(const ScreenPos: TPoint): TControl;
 var
   AWinControl: TWinControl;
   ClientPos: TPoint;
@@ -1937,11 +1939,11 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  function DoControlMsg(Handle: hwnd; var Message) : Boolean;
+  function DoControlMsg(Handle: hwnd; var Message): Boolean;
   
   Find the owner wincontrol and Perform the Message.
 -------------------------------------------------------------------------------}
-function DoControlMsg(Handle: hwnd; var Message) : Boolean;
+function DoControlMsg(Handle: hwnd; var Message): Boolean;
 var
   AWinControl: TWinControl;
 begin
@@ -1962,7 +1964,7 @@ end;
  ------------------------------------------------------------------------------}
 function FindLCLWindow(const ScreenPos: TPoint): TWinControl;
 var
-  Handle : HWND;
+  Handle: HWND;
 begin
   Handle := WindowFromPoint(ScreenPos);
   Result := FindOwnerControl(Handle);
@@ -2014,7 +2016,7 @@ begin
   then Result := CaptureControl;
 end;
 
-procedure SetCaptureControl(Control : TControl);
+procedure SetCaptureControl(Control: TControl);
 var
   OldCaptureWinControl: TWinControl;
   NewCaptureWinControl: TWinControl;
@@ -2408,6 +2410,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.240  2004/08/26 19:09:33  mattias
+  moved navigation key handling to TApplication and added options for custom navigation
+
   Revision 1.239  2004/08/21 23:16:11  mattias
   implemented simple HTML help viewer
 

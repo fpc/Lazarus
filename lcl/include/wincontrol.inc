@@ -574,31 +574,31 @@ end;
 {------------------------------------------------------------------------------}
 {  TWinControl BroadCast                                                       }
 {------------------------------------------------------------------------------}
-Procedure TWinControl.BroadCast(var Message);
+Procedure TWinControl.BroadCast(var ToAllMessage);
 var
   I: Integer;
 begin
   for I := 0 to ControlCount - 1 do
   begin
-    Controls[I].WindowProc(TLMessage(Message));
-    if TLMessage(Message).Result <> 0 then Exit;
+    Controls[I].WindowProc(TLMessage(ToAllMessage));
+    if TLMessage(ToAllMessage).Result <> 0 then Exit;
   end;
 end;
 
 procedure TWinControl.NotifyControls(Msg: Word);
 var
-  Message: TLMessage;
+  ToAllMessage: TLMessage;
 begin
-  Message.Msg := Msg;
-  Message.WParam := 0;
-  Message.LParam := 0;
-  Message.Result := 0;
-  Broadcast(Message);
+  ToAllMessage.Msg := Msg;
+  ToAllMessage.WParam := 0;
+  ToAllMessage.LParam := 0;
+  ToAllMessage.Result := 0;
+  Broadcast(ToAllMessage);
 end;
 
-procedure TWinControl.DefaultHandler(var Message);
+procedure TWinControl.DefaultHandler(var AMessage);
 begin
-  CallDefaultWndHandler(Self,Message);
+  CallDefaultWndHandler(Self,AMessage);
 end;
 
 
@@ -1187,9 +1187,23 @@ Begin
   Result := CanTab and (HandleAllocated and (FindOwnerControl(GetFocus)=Self));
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl FindChildControl                                                }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl FindChildControl
+  
+  Find next control (Tab control or Child control).
+  Like VCL the CurControl parameter is ignored.
+------------------------------------------------------------------------------}
+procedure TWinControl.SelectNext(CurControl: TWinControl; GoForward,
+  CheckTabStop: Boolean);
+begin
+  CurControl := FindNextControl(CurControl, GoForward,
+                                CheckTabStop, not CheckTabStop);
+  if CurControl <> nil then CurControl.SetFocus;
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl FindChildControl
+------------------------------------------------------------------------------}
 function TWinControl.FindChildControl(const ControlName: string): TControl;
 var
   I: Integer;
@@ -2099,46 +2113,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  TWinControl ControlKeyUp
-------------------------------------------------------------------------------}
-procedure TWinControl.ControlKeyDown(var Key: Word; Shift: TShiftState);
-var
-  Form: TCustomForm;
-begin
-  // handle tab keys
-  if (Key=VK_Tab) and ((Shift+[ssShift])=[ssShift]) and Focused then begin
-    Key:=VK_UNKNOWN;
-    PerformTab(not (ssShift in Shift));
-  end;
-  // check for special actions handled ourselves  
-  if (Shift = []) and ((Key = VK_RETURN) or (Key = VK_ESCAPE)) then
-  begin
-    Form := GetParentForm(Self);
-    if Form<>nil then begin
-      case Key of
-        VK_RETURN:
-        begin
-          if Form.DefaultControl <> nil then
-          begin
-            Form.DefaultControl.ExecuteDefaultAction;
-            Key := VK_UNKNOWN;
-          end;
-        end;
-
-        VK_ESCAPE:
-        begin
-          if Form.CancelControl <> nil then
-          begin
-            Form.CancelControl.ExecuteCancelAction;
-            Key := VK_UNKNOWN;
-          end;
-        end;
-      end;
-    end;
-  end;
-end;
-
-{------------------------------------------------------------------------------
   TWinControl KeyPress
 ------------------------------------------------------------------------------}
 Procedure TWinControl.KeyPress(var Key: TCharacter);
@@ -2186,25 +2160,41 @@ begin
   Result := (lWantKeys<>0);
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl DoKeyDown                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl DoKeyDown
+  
+  returns true if handled
+------------------------------------------------------------------------------}
 function TWinControl.DoKeyDown(Var Message: TLMKey): Boolean;
 var
   F: TCustomForm;
   ShiftState: TShiftState;
+  AParent: TWinControl;
 begin
   //debugln('TWinControl.DoKeyDown ',Name,':',ClassName,' ');
-
-  Result := True;
-  F := GetParentForm(Self);
-  if  (F <> nil)
-  and (F <> Self)
-  and (F.KeyPreview)
-  and (TWinControl(F).DoKeyDown(Message)) then Exit;
+  Result:=true;
 
   with Message do
   begin
+    if CharCode = VK_UNKNOWN then Exit;
+    ShiftState := KeyDataToShiftState(KeyData);
+    
+    // let application handle the key
+    if Application<>nil then
+      Application.NotifyKeyDownBeforeHandler(Self, CharCode, ShiftState);
+    if CharCode = VK_UNKNOWN then Exit;
+
+    // let each parent form with keypreview handle the key
+    AParent:=Parent;
+    while (AParent<>nil) do begin
+      if (AParent is TCustomForm) then begin
+        F := TCustomForm(AParent);
+        if  (F.KeyPreview)
+        and (F.DoKeyDown(Message)) then Exit;
+      end;
+      AParent:=AParent.Parent;
+    end;
+
     if CharCode = VK_UNKNOWN then Exit;
     ShiftState := KeyDataToShiftState(KeyData);
 
@@ -2222,10 +2212,6 @@ begin
       if CharCode = VK_UNKNOWN then Exit;
     end;
 
-    // let application handle the key
-    if Application<>nil then
-      Application.NotifyKeyDownHandler(Self, CharCode, ShiftState);
-    if CharCode = VK_UNKNOWN then Exit;
   end;
 
   Result := False;
@@ -2292,9 +2278,17 @@ begin
   Result := False;
 end;
 
-{------------------------------------------------------------------------------}
-{  TWinControl CreateParams                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl ControlKeyDown
+------------------------------------------------------------------------------}
+procedure TWinControl.ControlKeyDown(var Key: Word; Shift: TShiftState);
+begin
+  Application.ControlKeyDown(Self,Key,Shift);
+end;
+
+{------------------------------------------------------------------------------
+  TWinControl CreateParams
+------------------------------------------------------------------------------}
 procedure TWinControl.CreateParams(var Params : TCreateParams);
 begin
   FillChar(Params, SizeOf(Params),0);
@@ -3184,15 +3178,21 @@ begin
   ShiftState := KeyDataToShiftState(Message.KeyData);
 
   // handle LCL special keys
-  ControlKeyDown(Message.CharCode, ShiftState);
+  ControlKeyDown(Message.CharCode,ShiftState);
   if Message.CharCode=VK_UNKNOWN then exit;
 
   //DebugLn('TWinControl.WMKeyDown ',Name,':',ClassName);
   if not (csNoStdEvents in ControlStyle) then
   begin
     KeyDownAfterInterface(Message.CharCode, ShiftState);
+    if Message.CharCode=VK_UNKNOWN then exit;
     // Note: Message.CharCode can now be different or even 0
   end;
+
+  // let application handle the remaining key
+  if Application<>nil then
+    Application.NotifyKeyDownHandler(Self, Message.CharCode, ShiftState);
+  if Message.CharCode = VK_UNKNOWN then Exit;
 end;
 
 {------------------------------------------------------------------------------
@@ -3827,6 +3827,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.266  2004/08/26 19:09:34  mattias
+  moved navigation key handling to TApplication and added options for custom navigation
+
   Revision 1.265  2004/08/25 22:22:39  mattias
   added unit info to View menu
 
