@@ -53,7 +53,7 @@ uses
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
-  SysUtils, LMessages, Classes, Controls, Forms, VclGlobals,
+  SysUtils, LMessages, Classes, Controls, Forms, VclGlobals, LCLProc,
   LCLLinux, LCLType, gtkDef, DynHashArray, LazQueue, GraphType, GraphMath;
 
 
@@ -324,6 +324,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.118  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.117  2003/01/06 12:00:16  mattias
   implemented fsStayOnTop+bsNone for forms under gtk (useful for splash)
 

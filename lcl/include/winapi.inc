@@ -284,9 +284,20 @@ begin
   Result := InterfaceObject.FloodFill(DC,X,Y,Color,FillStyle,Brush);
 end;
 
-function Frame3d(DC : HDC; var Rect : TRect; const FrameWidth : integer; const Style : TBevelCut) : boolean;
+function Frame(DC: HDC; const ARect: TRect): Integer;
 begin
-  Result:= InterfaceObject.Frame3d(DC, Rect, FrameWidth, Style);
+  Result:= InterfaceObject.Frame(DC, ARect);
+end;
+
+function Frame3d(DC : HDC; var ARect : TRect; const FrameWidth : integer;
+  const Style : TBevelCut) : boolean;
+begin
+  Result:= InterfaceObject.Frame3d(DC, ARect, FrameWidth, Style);
+end;
+
+function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer;
+begin
+  Result:= InterfaceObject.FrameRect(DC, ARect, hBr);
 end;
 
 Function GetActiveWindow : HWND;
@@ -1521,6 +1532,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.69  2002/12/30 17:24:08  mattias
   added history to identifier completion
 

@@ -183,13 +183,14 @@ type
     FFlat : Boolean;
     FGlyph:   TButtonGlyph;
     FGroupIndex : Integer;
+    FLastDrawFlags: integer;
     FLayout: TButtonLayout;
     FMargin : integer;
     FMouseInControl : Boolean;
+    FShortcut : Longint;
     FSpacing : integer;
     FState : TButtonState;
     FTransparent : Boolean;
-    FShortcut : Longint;
     function GetGlyph : TBitmap;
     procedure UpdateExclusive;
     procedure UpdateTracking;
@@ -201,7 +202,7 @@ type
     procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
     procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
     procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
-   protected
+  protected
     function GetNumGlyphs : Integer;
     procedure GlyphChanged(Sender : TObject);
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
@@ -216,6 +217,9 @@ type
     procedure SetMargin(const Value : integer);
     procedure SetNumGlyphs(Value : integer);
     procedure SetSpacing(const Value : integer);
+    procedure SetText(const Value: TCaption); override;
+    procedure UpdateState(InvalidateOnChange: boolean); virtual;
+    function GetDrawFlags: integer; virtual;
     property MouseInControl : Boolean read FMouseInControl;
   public
     constructor Create(AOwner : TComponent); override;
@@ -236,6 +240,10 @@ type
     property Transparent: Boolean read FTransparent write SetTransparent default false;
     property Visible;
     property OnClick;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
     property ShowHint;
     property ParentShowHint;
   end;
@@ -273,6 +281,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.34  2003/01/27 13:49:16  mattias
+  reduced speedbutton invalidates, added TCanvas.Frame
+
   Revision 1.33  2002/12/25 11:53:47  mattias
   Button.Default now sets focus
 
