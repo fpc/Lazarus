@@ -360,12 +360,10 @@ Function RGB(R, G, B : Byte) : TColorRef;
 
 //##apiwiz##epi##    // Do not remove
 
-{$IFDEF VER1_0}
 Procedure InitializeCriticalSection(var CritSection: TRTLCriticalSection);
 Procedure EnterCriticalSection(var CritSection: TRTLCriticalSection);
 Procedure LeaveCriticalSection(var CritSection: TRTLCriticalSection);
 Procedure DeleteCriticalSection(var CritSection: TRTLCriticalSection);
-{$ENDIF}
 
 // should go to sysutils.pp
 procedure RaiseLastOSError;
@@ -375,6 +373,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.69  2003/03/16 13:47:45  mattias
+  improved rpm building and added support for 1.0.7
+
   Revision 1.68  2003/03/15 13:26:07  mattias
   fixes for fpc 1.1
 

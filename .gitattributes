@@ -666,6 +666,7 @@ packager/lazaruspackageintf.pas svneol=native#text/pascal
 packager/pkggraphexporer.pas svneol=native#text/pascal
 tools/apiwizz/apiwizard.pp svneol=native#text/pascal
 tools/apiwizz/apiwizz.pp svneol=native#text/pascal
+tools/install/create_fpc_export_tgz.sh -text svneol=native#application/x-sh
 tools/install/create_fpcsrc-1.1_rpm.sh -text svneol=native#application/x-sh
 tools/lazarusmake.ini svneol=native#text/plain
 tools/lazres.pp svneol=native#text/pascal

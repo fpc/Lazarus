@@ -1535,7 +1535,6 @@ begin
   Result := R or (G shl 8) or (B Shl 16);
 end;
 
-{$IFDEF VER1_0}
 Procedure InitializeCriticalSection(var CritSection: TRTLCriticalSection);
 begin
   writeln('InitializeCriticalSection(TRTLCriticalSection) Not implemented yet');
@@ -1555,7 +1554,6 @@ Procedure DeleteCriticalSection(var CritSection: TRTLCriticalSection);
 begin
   writeln('DeleteCriticalSection(TRTLCriticalSection) Not implemented yet');
 end;
-{$ENDIF}
 
 procedure RaiseLastOSError;
 begin
@@ -1570,6 +1568,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.75  2003/03/16 13:47:45  mattias
+  improved rpm building and added support for 1.0.7
+
   Revision 1.74  2003/03/15 13:26:07  mattias
   fixes for fpc 1.1
 
