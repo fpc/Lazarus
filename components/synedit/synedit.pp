@@ -335,8 +335,8 @@ type
     fBookMarkOpt: TSynBookMarkOpt;
 {$ifndef SYN_LAZARUS}
     fBorderStyle: TBorderStyle;
-    fMouseWheelAccumulator: integer;
 {$endif}
+    fMouseWheelAccumulator: integer;
     fHideSelection: boolean;
     fOverwriteCaret: TSynEditCaretType;
     fInsertCaret: TSynEditCaretType;
@@ -6797,7 +6797,7 @@ var
 const
   LinesToScroll = 6;
   WHEEL_DELTA = 120;
-  WHEEL_PAGESCROLL = MAXDWORD;
+  WHEEL_PAGESCROLL = high(DWORD);
 begin
   if csDesigning in ComponentState then
     exit;
