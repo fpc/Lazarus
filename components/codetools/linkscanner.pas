@@ -1554,7 +1554,8 @@ begin
     AddLink(CleanedLen+1,SrcPos,Code);
   end else begin
     if MissingIncludeFile<>nil then begin
-      if FMissingIncludeFiles=nil then FMissingIncludeFiles.Create;
+      if FMissingIncludeFiles=nil then
+        FMissingIncludeFiles:=TMissingIncludeFiles.Create;
       FMissingIncludeFiles.Add(MissingIncludeFile);
     end;
     if (not IgnoreMissingIncludeFiles) then begin

@@ -2459,7 +2459,7 @@ begin
   end;
 
   EnvironmentOptions.LastOpenDialogDir:=ExtractFilePath(NewFilename);
-  
+
   // check unitname
   NewUnitName:=ExtractFileNameOnly(NewFilename);
   if NewUnitName='' then exit;
@@ -2532,9 +2532,9 @@ begin
     exit;
   end;
 
-         
+
   // rename Resource file
-  if ResourceCode<>nil then begin
+  if (ResourceCode<>nil) then begin
     // the resource include line in the code will be changed later after
     // changing the unitname
     NewResFilePath:=ExtractFilePath(ResourceCode.Filename);
@@ -2556,16 +2556,18 @@ begin
     NewResFilename:=NewResFilePath
                     +ExtractFileNameOnly(NewFilename)+ResourceFileExt;
     CodeToolBoss.SaveBufferAs(ResourceCode,NewResFilename,ResourceCode);
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.ShowSaveFileAsDialog D ',ResourceCode<>nil);
-writeln('   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewresFilename,'"');
-if ResourceCode<>nil then writeln('*** ResourceFileName ',ResourceCode.Filename);
-{$ENDIF}
-  end else
+
+    {$IFDEF IDE_DEBUG}
+    writeln('TMainIDE.ShowSaveFileAsDialog D ',ResourceCode<>nil);
+    writeln('   NewResFilePath="',NewResFilePath,'" NewResFilename="',NewresFilename,'"');
+    if ResourceCode<>nil then writeln('*** ResourceFileName ',ResourceCode.Filename);
+    {$ENDIF}
+  end else begin
     NewResFilename:='';
-{$IFDEF IDE_DEBUG}
-writeln('TMainIDE.ShowSaveFileAsDialog C ',ResourceCode<>nil);
-{$ENDIF}
+  end;
+  {$IFDEF IDE_DEBUG}
+  writeln('TMainIDE.ShowSaveFileAsDialog C ',ResourceCode<>nil);
+  {$ENDIF}
 
   // set new codebuffer in unitinfo and sourceeditor
   AnUnitInfo.Source:=NewSource;
@@ -2641,9 +2643,13 @@ begin
       until Result<>mrRetry;
       // create lazarus form resource code
       if FormSavingOk then begin
-        if (sfSaveToTestDir in Flags) then begin
-          ResTestFilename:=ChangeFileExt(GetTestUnitFilename(AnUnitInfo),
-                                         ResourceFileExt);
+        if ResourceCode=nil then begin
+          if (sfSaveToTestDir in Flags) then
+            ResTestFilename:=ChangeFileExt(GetTestUnitFilename(AnUnitInfo),
+                                           ResourceFileExt)
+          else
+            ResTestFilename:=ChangeFileExt(AnUnitInfo.Filename,
+                                           ResourceFileExt);
           ResourceCode:=CodeToolBoss.CreateFile(ResTestFilename);
           FormSavingOk:=(ResourceCode<>nil);
         end;
@@ -6237,6 +6243,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.283  2002/04/22 07:16:34  lazarus
+  MG: fixed missing include directives
+
   Revision 1.282  2002/04/21 14:30:36  lazarus
   MG: fixed inputhistory load/save
 

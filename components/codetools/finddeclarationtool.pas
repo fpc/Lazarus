@@ -3167,6 +3167,7 @@ var
           CurContext:=CreateFindContext(Params);
         end else begin
           // predefined identifier not redefined
+          CurExprDesc:=PredefinedIdentToExprTypeDesc(@Src[CurAtom.StartPos]);
           CurContext:=CreateFindContext(Self,nil);
         end;
 
@@ -3470,6 +3471,10 @@ function TFindDeclarationTool.ConvertNodeToExpressionType(Node: TCodeTreeNode;
   Params: TFindDeclarationParams): TExpressionType;
 var BaseContext: TFindContext;
 begin
+  {$IFDEF ShowExprEval}
+  writeln('[TFindDeclarationTool.ConvertNodeToExpressionType] A',
+  ' Node=',Node.DescAsString);
+  {$ENDIF}
   BaseContext:=FindBaseTypeOfNode(Params,Node);
   Node:=BaseContext.Node;
   if BaseContext.Tool<>Self then begin

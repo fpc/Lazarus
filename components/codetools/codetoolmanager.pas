@@ -35,6 +35,8 @@ interface
 
 {$I codetools.inc}
 
+{ $DEFINE CTDEBUG}
+
 uses
   {$IFDEF MEM_CHECK}
   MemCheck,
@@ -248,6 +250,8 @@ type
           const ResourceName: string): boolean;
     function RenameMainInclude(Code: TCodeBuffer; const NewFilename: string;
           KeepPath: boolean): boolean;
+    function RenameIncludeDirective(Code: TCodeBuffer; LinkIndex: integer;
+          const NewFilename: string; KeepPath: boolean): boolean;
 
     // Application.Createform(ClassName,VarName) statements in program source
     function FindCreateFormStatement(Code: TCodeBuffer; StartPos: integer;
@@ -1145,18 +1149,36 @@ var
   OldIgnoreMissingIncludeFiles: boolean;
 begin
   Result:=false;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.RenameMainInclude A ',Code.Filename,' NewFilename=',NewFilename,' KeepPath=',KeepPath);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.RenameMainInclude A ',Code.Filename,' NewFilename=',NewFilename,' KeepPath=',KeepPath);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
-    OldIgnoreMissingIncludeFiles:=FCurCodeTool.Scanner.IgnoreMissingIncludeFiles;
+    OldIgnoreMissingIncludeFiles:=
+      FCurCodeTool.Scanner.IgnoreMissingIncludeFiles;
     FCurCodeTool.Scanner.IgnoreMissingIncludeFiles:=true;
     LinkIndex:=-1;
     if FCurCodeTool.FindNextIncludeInInitialization(LinkIndex)=nil then exit;
     Result:=FCurCodeTool.RenameInclude(LinkIndex,NewFilename,KeepPath,
                        SourceChangeCache);
-    FCurCodeTool.Scanner.IgnoreMissingIncludeFiles:=OldIgnoreMissingIncludeFiles;
+    FCurCodeTool.Scanner.IgnoreMissingIncludeFiles:=
+      OldIgnoreMissingIncludeFiles;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.RenameIncludeDirective(Code: TCodeBuffer;
+  LinkIndex: integer; const NewFilename: string; KeepPath: boolean): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.RenameIncludeDirective A ',Code.Filename,' NewFilename=',NewFilename,' KeepPath=',KeepPath);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.RenameInclude(LinkIndex,NewFilename,KeepPath,
+                                       SourceChangeCache);
   except
     on e: Exception do Result:=HandleException(e);
   end;
@@ -1170,9 +1192,9 @@ function TCodeToolManager.FindCreateFormStatement(Code: TCodeBuffer;
 var PosAtom: TAtomPosition;
 begin
   Result:=-1;
-{$IFDEF CTDEBUG}
-writeln('TCodeToolManager.FindCreateFormStatement A ',Code.Filename,' StartPos=',StartPos,' ',AClassName,':',AVarName);
-{$ENDIF}
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.FindCreateFormStatement A ',Code.Filename,' StartPos=',StartPos,' ',AClassName,':',AVarName);
+  {$ENDIF}
   if not InitCurCodeTool(Code) then exit;
   try
     Result:=FCurCodeTool.FindCreateFormStatement(StartPos,UpperCaseStr(AClassName),
