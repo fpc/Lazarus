@@ -150,6 +150,8 @@ var
 
   MCaptureHandle: HWND;
   
+
+
 const
 
   KEYMAP_VKUNKNOWN = $10000;
@@ -325,6 +327,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.35  2002/03/31 22:01:38  lazarus
+  MG: fixed unreleased/unpressed Ctrl/Alt/Shift
+
   Revision 1.34  2002/03/29 19:11:38  lazarus
   Added Triple Click
   Shane
