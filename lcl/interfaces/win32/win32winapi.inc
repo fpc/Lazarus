@@ -353,7 +353,7 @@ End;
  ------------------------------------------------------------------------------}
 Function TWin32Object.CreateCaret(Handle: HWND; Bitmap: HBITMAP; Width, Height: Integer): Boolean;
 Begin
-  Result := CreateCaret(Handle, Bitmap, Width, Height);
+  Result := Windows.CreateCaret(Handle, Bitmap, Width, Height);
   Assert(False, 'Trace:TODO: [TWin32Object.CreateCaret] Finish');
 End;
 
@@ -2275,6 +2275,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/11/26 20:51:05  mattias
+  applied clipbrd patch from Vincent
+
   Revision 1.23  2002/11/26 17:48:18  mattias
   patch from Martin Smat for uninitialised DCs
 

@@ -111,13 +111,6 @@ Begin
         UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
       End;
     End;
-    WM_CHANGECBCHAIN:
-    Begin
-      If OldClipboardViewer <> WParam Then
-        SendMessage(OldClipboardViewer, Msg, WParam, LParam)
-      Else
-        OldClipboardViewer := LParam;
-    End;
     WM_CLOSE:
     Begin
       LMessage.Msg := LM_CLOSEQUERY;
@@ -161,15 +154,10 @@ Begin
     WM_DESTROY:
     Begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
-      ChangeClipboardChain(Window, OldClipboardViewer);
       For C := 0 To WndList.Count - 1 Do
         EnumProps(HWND(WndList[C]), @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
-    End;
-    WM_DRAWCLIPBOARD:
-    Begin
-      SendMessage(OldClipboardViewer, Msg, 0, 0);
     End;
     WM_ENABLE:
     Begin
@@ -487,6 +475,9 @@ end;
 
 {
   $Log$
+  Revision 1.18  2002/11/26 20:51:05  mattias
+  applied clipbrd patch from Vincent
+
   Revision 1.17  2002/11/23 13:48:48  mattias
   added Timer patch from Vincent Snijders
 
