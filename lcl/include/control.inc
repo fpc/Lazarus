@@ -2232,7 +2232,6 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TControl.SetTextBuf(Buffer : PChar);
 Begin
-  CNSendMessage(LM_SetLabel, Self, Buffer);
   Perform(CM_TEXTCHANGED,0,0);
 end;
 
@@ -2463,6 +2462,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.144  2003/07/31 19:56:50  mattias
+  fixed double messages SETLabel
+
   Revision 1.143  2003/07/24 06:54:32  mattias
   fixed anti circle mechnism for aligned controls
 

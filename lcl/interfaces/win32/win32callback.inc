@@ -158,8 +158,6 @@ Begin
       Begin
         Msg := LM_INSERTTEXT;
         Position := WParam;
-        // need to init to nil because typecasting LMessage struct
-        Integer(NewText) := 0;
         NewText := PChar(LParam);
         Length := System.Length(NewText);
 //        UserData := Pointer(GetWindowLong(Window, GWL_USERDATA));
@@ -611,6 +609,9 @@ end;
 
 {
   $Log$
+  Revision 1.45  2003/07/31 19:56:50  mattias
+  fixed double messages SETLabel
+
   Revision 1.44  2003/07/26 13:48:45  mattias
   fixed other messages bigger than TLMessage
 

@@ -1346,8 +1346,6 @@ begin
       NewWorkingDir:=Project1.ProjectDirectory;
     FDebugger.WorkingDir:=NewWorkingDir;
     
-//    Project1.RunParameterOptions.AssignEnvironmentTo(FDebugger.Environment);
-
     if FDialogs[ddtOutput] <> nil
     then TDbgOutputForm(FDialogs[ddtOutput]).Clear;
 
@@ -1547,6 +1545,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.58  2003/07/31 19:56:49  mattias
+  fixed double messages SETLabel
+
   Revision 1.57  2003/07/30 23:15:38  marc
   * Added RegisterDebugger
 

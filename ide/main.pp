@@ -5630,7 +5630,6 @@ begin
   then begin
     if (DebugBoss.DoInitDebugger <> mrOk)
     then Exit;
-    // ToDo: set working directory
   end
   else begin
     // Temp solution, in future it will be run by dummy debugger
@@ -9367,6 +9366,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.628  2003/07/31 19:56:49  mattias
+  fixed double messages SETLabel
+
   Revision 1.627  2003/07/30 23:15:38  marc
   * Added RegisterDebugger
 
