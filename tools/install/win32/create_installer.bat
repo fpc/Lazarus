@@ -1,5 +1,5 @@
 :: These settings need to change for every build
-SET LAZVERSION=0.9.2.2a
+SET LAZVERSION=0.9.2.2
 
 :: These setting are dependent on the configuration of the build machine
 :: Path to the Inno Setup Compiler
@@ -24,7 +24,7 @@ SET FPCBINDIR=c:\lazarus\source\fpcbindir
 SET BUILDDIR=c:\temp\lazbuild
 
 :: Path to the tool to create an export using a local cvs directory
-SET EXPORTCVS=%LAZCVSDIR%\tools\install\copycvsdir\copycvsdir.exe
+SET EXPORTCVS=%LAZCVSDIR%\tools\install\cvsexportlocal.exe
 
 
 ::=====================================================================
@@ -34,6 +34,7 @@ SET EXPORTCVS=%LAZCVSDIR%\tools\install\copycvsdir\copycvsdir.exe
 SET MAKEEXE=%FPCBINDIR%\mingw32-make.exe
 SET LOGFILE=%CD%\installer.log
 SET DATESTAMP=%date:~-4,4%%date:~-7,2%%date:~-10,2%
+SET BUILDDRIVE=%BUILDDIR:~,2%
 
 ECHO Starting at: > %LOGFILE%
 %FPCBINDIR%\gdate >> %LOGFILE%
@@ -60,7 +61,7 @@ call build-lazarus.bat
 %ISCC% lazarus.iss >> installer.log
 
 :: delete build dir
-del /s /q %BUILDDIR% > NUL
+rd /s /q %BUILDDIR% > NUL
 
 SET PATH=%OLDPATH%
 

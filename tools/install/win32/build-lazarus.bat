@@ -1,7 +1,9 @@
+SET OLDCURDRIVE=%CD:~,2%
 SET OLDCURDIR=%CD%
 
 SET COMPILER=%BUILDDIR%\pp\bin\win32\ppc386.exe
 
+%BUILDDRIVE%
 cd %BUILDDIR%
 %MAKEEXE% clean PP=%COMPILER% >> %LOGFILE%
 %MAKEEXE% all OPT="-gl -Xs" PP=%COMPILER% >> %LOGFILE%
@@ -9,4 +11,5 @@ cd %BUILDDIR%
 
 %FPCBINDIR%\strip.exe startlazarus.exe
 
+%OLDCURDRIVE%
 cd %OLDCURDIR%
