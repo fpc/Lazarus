@@ -62,6 +62,7 @@ function DirectoryExists(const FileName: String): Boolean;
 function ForceDirectory(DirectoryName: string): boolean;
 function DeleteDirectory(const DirectoryName: string;
   OnlyChilds: boolean): boolean;
+function ProgramDirectory: string;
 
 // filename parts
 function ExtractFileNameOnly(const AFilename: string): string;
@@ -75,8 +76,15 @@ function CleanAndExpandDirectory(const Filename: string): string;
 function FileIsInPath(const Filename, Path: string): boolean;
 
 // file search
+type
+  TSearchFileInPathFlag = (
+    sffDontSearchInBasePath,
+    sffSearchLoUpCase
+    );
+  TSearchFileInPathFlags = set of TSearchFileInPathFlag;
+
 function SearchFileInPath(const Filename, BasePath, SearchPath,
-                          Delimiter: string; SearchLoUpCase: boolean): string;
+  Delimiter: string; Flags: TSearchFileInPathFlags): string;
 
 // file actions
 function ReadFileToString(const Filename: string): string;
@@ -114,6 +122,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2003/03/26 11:39:08  mattias
+  fixed rtl include path
+
   Revision 1.13  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 

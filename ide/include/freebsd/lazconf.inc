@@ -119,12 +119,14 @@ end;
 
 function FindDefaultCompilerPath: string;
 begin
-  Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':');
+  Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':',
+                           [sffDontSearchInBasePath]);
 end;
 
 function FindDefaultMakePath: string;
 begin
-  Result:=SearchFileInPath('make','',GetEnv('PATH'),':');
+  Result:=SearchFileInPath('make','',GetEnv('PATH'),':',
+                           [sffDontSearchInBasePath]);
 end;
 
 function CreateCompilerTestPascalFilename: string;
@@ -149,6 +151,9 @@ end;
 
 {
   $Log$
+  Revision 1.10  2003/03/26 11:39:08  mattias
+  fixed rtl include path
+
   Revision 1.9  2003/02/07 17:49:21  mattias
   added ReadAllLinks
 

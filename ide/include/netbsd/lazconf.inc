@@ -117,16 +117,6 @@ begin
   end;
 end;
 
-function FindDefaultCompilerPath: string;
-begin
-  Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':');
-end;
-
-function FindDefaultMakePath: string;
-begin
-  Result:=SearchFileInPath('make','',GetEnv('PATH'),':');
-end;
-
 function CreateCompilerTestPascalFilename: string;
 var
   fs: TFileStream;
@@ -136,6 +126,24 @@ begin
     fs:=TFileStream.Create(Result,fmCreate);
     fs.Free;
   end;
+end;
+
+{---------------------------------------------------------------------------
+  function FindDefaultCompilerPath: string;
+ ---------------------------------------------------------------------------}
+function FindDefaultCompilerPath: string;
+begin
+  Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':',
+                           [sffDontSearchInBasePath]);
+end;
+
+{---------------------------------------------------------------------------
+  function FindDefaultMakePath: string;
+ ---------------------------------------------------------------------------}
+function FindDefaultMakePath: string;
+begin
+  Result:=SearchFileInPath('make','',GetEnv('PATH'),':',
+                           [sffDontSearchInBasePath]);
 end;
 
 {---------------------------------------------------------------------------
@@ -149,6 +157,9 @@ end;
 
 {
   $Log$
+  Revision 1.7  2003/03/26 11:39:08  mattias
+  fixed rtl include path
+
   Revision 1.6  2003/02/07 17:49:21  mattias
   added ReadAllLinks
 

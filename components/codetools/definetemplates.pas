@@ -2365,7 +2365,7 @@ var
 //      UnitSearchPath: string;
 //      UnitLinkListValid: boolean; var UnitLinkList: string): TDefineTemplate;
 var
-  DefTempl, MainDir, FCLDir, RTLDir, PackagesDir, CompilerDir,
+  DefTempl, MainDir, FCLDir, RTLDir, RTLOSDir, PackagesDir, CompilerDir,
   UtilsDir, DebugSvrDir: TDefineTemplate;
   s: string;
 begin
@@ -2422,15 +2422,24 @@ begin
     +';'+Dir+'rtl'+DS+'objpas'+DS
     +';'+Dir+'rtl'+DS+'inc'+DS
     +';'+Dir+'rtl'+DS+TargetProcessor+DS
-    +';'+Dir+'rtl'+DS+SrcOS+DS
-    +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS
-    +';'+Dir+'rtl'+DS+SrcOS+DS+TargetProcessor+DS;
+    +';'+Dir+'rtl'+DS+SrcOS+DS;
   if (TargetOS<>'') and (TargetOS<>SrcOS) then
     s:=s+';'+Dir+'rtl'+DS+TargetOS+DS;
   RTLDir.AddChild(TDefineTemplate.Create('Include Path',
     Format(ctsIncludeDirectoriesPlusDirs,
     ['objpas, inc,'+TargetProcessor+','+SrcOS]),
     ExternalMacroStart+'IncPath',s,da_DefineRecurse));
+  if TargetOS<>'' then begin
+    RTLOSDir:=TDefineTemplate.Create('TargetOS','Target OS','',
+                                     TargetOS,da_Directory);
+    s:=IncPathMacro
+      +';'+Dir+'rtl'+DS+TargetOS+DS+TargetProcessor+DS;
+    RTLOSDir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,[TargetProcessor]),
+      ExternalMacroStart+'IncPath',s,da_DefineRecurse));
+    RTLDir.AddChild(RTLOSDir);
+  end;
+
   // define 'i386'   ToDo: other types like m68k
   DefTempl:=TDefineTemplate.Create('Define i386',
     ctsDefineProzessorType,'i386','',da_DefineRecurse);

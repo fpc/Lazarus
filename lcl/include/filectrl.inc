@@ -645,6 +645,23 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function ProgramDirectory: string;
+ ------------------------------------------------------------------------------}
+function ProgramDirectory: string;
+begin
+  Result:=ParamStr(0);
+  if ExtractFilePath(Result)='' then begin
+    // program was started via PATH
+    Result:=SearchFileInPath(Result,'',GetEnv('PATH'),':',
+                             [sffDontSearchInBasePath]);
+  end;
+  // resolve links
+  Result:=ReadAllLinks(Result,false);
+  // extract file path and expand to full name
+  Result:=ExpandFilename(ExtractFilePath(Result));
+end;
+
+{------------------------------------------------------------------------------
   function CleanAndExpandFilename(const Filename: string): string;
  ------------------------------------------------------------------------------}
 function CleanAndExpandFilename(const Filename: string): string;
@@ -724,10 +741,10 @@ end;
 
 {------------------------------------------------------------------------------
   function SearchFileInPath(const Filename, BasePath, SearchPath,
-    Delimiter: string; SearchLoUpCase: boolean): string;
+    Delimiter: string; Flags: TSearchFileInPathFlags): string;
  ------------------------------------------------------------------------------}
 function SearchFileInPath(const Filename, BasePath, SearchPath,
-  Delimiter: string; SearchLoUpCase: boolean): string;
+  Delimiter: string; Flags: TSearchFileInPathFlags): string;
 
   function FileDoesExists(const AFilename: string): boolean;
   var s: string;
@@ -739,7 +756,7 @@ function SearchFileInPath(const Filename, BasePath, SearchPath,
       exit;
     end;
     {$IFNDEF Win32}
-    if SearchLoUpCase then begin
+    if sffSearchLoUpCase in Flags then begin
 
     end;
     {$ENDIF}
@@ -766,7 +783,8 @@ begin
   end;
   Base:=ExpandFilename(AppendPathDelim(BasePath));
   // search in current directory
-  if FileExists(Base+Filename) then begin
+  if (not (sffDontSearchInBasePath in Flags))
+  and FileExists(Base+Filename) then begin
     Result:=Base+Filename;
     exit;
   end;
@@ -813,6 +831,9 @@ end;
 
 {
   $Log$
+  Revision 1.17  2003/03/26 11:39:08  mattias
+  fixed rtl include path
+
   Revision 1.16  2003/03/11 07:46:43  mattias
   more localization for gtk- and win32-interface and lcl
 

@@ -542,8 +542,7 @@ begin
       if Assigned(OnGetIncludePath) then begin
         // search with include path of directory
         IncludePath:=OnGetIncludePath(FullDir);
-        Result:=IDEProcs.SearchFileInPath(ShortIncFilename,FullDir,IncludePath,
-                        ';',[]);
+        Result:=SearchFileInPath(ShortIncFilename,FullDir,IncludePath,';',[]);
         if Result<>'' then begin
           if LeftStr(Result,length(fCurrentDirectory))=fCurrentDirectory then
             Result:=RightStr(Result,length(Result)-length(fCurrentDirectory));
