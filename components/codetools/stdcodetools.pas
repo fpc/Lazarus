@@ -57,10 +57,6 @@ type
     function ReadForwardTilAnyBracketClose: boolean;
     function ReadBackwardTilAnyBracketClose: boolean;
   public
-    // search & replace
-    function ReplaceIdentifiers(IdentList: TStrings;
-          SourceChangeCache: TSourceChangeCache): boolean;
-
     // source name  e.g. 'unit UnitName;'
     function GetSourceNamePos(var NamePos: TAtomPosition): boolean;
     function GetSourceName: string;
@@ -155,6 +151,14 @@ type
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function FindEnclosingIncludeDirective(CursorPos: TCodeXYPosition;
       var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
+      
+    // search & replace
+    function ReplaceIdentifiers(IdentList: TStrings;
+          SourceChangeCache: TSourceChangeCache): boolean;
+
+    // expressions
+    function GetExpressionBounds(CursorPos: TCodeXYPosition;
+          var StartPos, EndPos: TCodeXYPosition): boolean;
   end;
 
 
@@ -1178,6 +1182,20 @@ begin
   end;
   if not SourceChangeCache.Apply then exit;
   Result:=true;
+end;
+
+function TStandardCodeTool.GetExpressionBounds(CursorPos: TCodeXYPosition;
+  var StartPos, EndPos: TCodeXYPosition): boolean;
+var
+  CleanCursorPos: integer;
+  CursorNode: TCodeTreeNode;
+begin
+  Result:=false;
+  BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
+  CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  MoveCursorToNodeStart(CursorNode);
+  ReadNextAtom;
+  
 end;
 
 function TStandardCodeTool.FindPublishedVariable(const UpperClassName,

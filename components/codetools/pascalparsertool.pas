@@ -196,6 +196,7 @@ type
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode); virtual;
     procedure BuildSubTreeForProcHead(ProcNode: TCodeTreeNode;
         var FunctionResult: TCodeTreeNode);
+    procedure BuildSubTree(CleanCursorPos: integer); virtual;
 
     function DoAtom: boolean; override;
 
@@ -3927,16 +3928,21 @@ begin
       RaiseLastError;
     // check if cursor is in interface
     Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
-    if (Dummy=0) or (Dummy=-1) then
+    if (Dummy=0) or (Dummy=-1) then begin
+      BuildSubTree(CleanCursorPos);
       exit;
+    end;
   end;
   BuildTree(TreeRange=trInterface);
   if (not IgnoreErrorAfterValid) and (not EndOfSourceFound) then
     SaveRaiseException(ctsEndOfSourceNotFound);
   // find the CursorPos in cleaned source
   Dummy:=CaretToCleanPos(CursorPos, CleanCursorPos);
-  if (Dummy<>0) and (Dummy<>-1) then
-    RaiseException(ctsCursorPosOutsideOfCode);
+  if (Dummy=0) or (Dummy=-1) then begin
+    BuildSubTree(CleanCursorPos);
+    exit;
+  end;
+  RaiseException(ctsCursorPosOutsideOfCode);
 end;
 
 function TPascalParserTool.FindTypeNodeOfDefinition(
@@ -4274,6 +4280,21 @@ begin
   FunctionResult:=ProcNode.FirstChild.FirstChild;
   if (FunctionResult<>nil) and (FunctionResult.Desc=ctnParameterList) then
     FunctionResult:=FunctionResult.NextBrother;
+end;
+
+procedure TPascalParserTool.BuildSubTree(CleanCursorPos: integer);
+var
+  ANode: TCodeTreeNode;
+begin
+  ANode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+  case ANode.Desc of
+  ctnClass,ctnClassInterface:
+    BuildSubTreeForClass(ANode);
+  ctnProcedure,ctnProcedureHead:
+    BuildSubTreeForProcHead(ANode);
+  ctnBeginBlock:
+    BuildSubTreeForBeginBlock(ANode);
+  end;
 end;
 
 

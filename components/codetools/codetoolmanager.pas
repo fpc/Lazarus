@@ -235,6 +235,11 @@ type
     
     // gather identifiers
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
+    
+    // expressions
+    function GetExpressionBounds(Code: TCodeBuffer; X,Y: integer;
+          var StartCode: TCodeBuffer; var StartX, StartY: integer;
+          var EndCode: TCodeBuffer; var EndX, EndY: integer): boolean;
 
     // functions for events in the object inspector
     function GetCompatiblePublishedMethods(Code: TCodeBuffer;
@@ -254,7 +259,8 @@ type
     function CreatePublishedMethod(Code: TCodeBuffer; const AClassName,
           NewMethodName: string; ATypeInfo: PTypeInfo): boolean;
           
-    // code completion = auto class completion, auto forward proc completion
+    // code completion = auto class completion, auto forward proc completion,
+    //             local var assignment completion, event assignment completion
     function CompleteCode(Code: TCodeBuffer; X,Y,TopLine: integer;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
@@ -790,6 +796,35 @@ begin
   {$IFDEF CTDEBUG}
   writeln('TCodeToolManager.GatherIdentifiers END ');
   {$ENDIF}
+end;
+
+function TCodeToolManager.GetExpressionBounds(Code: TCodeBuffer; X, Y: integer;
+  var StartCode: TCodeBuffer; var StartX, StartY: integer;
+  var EndCode: TCodeBuffer; var EndX, EndY: integer): boolean;
+var
+  CursorPos, StartPos, EndPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.GetExpressionBounds A ',Code.Filename,' x=',x,' y=',y);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  try
+    Result:=FCurCodeTool.GetExpressionBounds(CursorPos,StartPos,EndPos);
+    if Result then begin
+      StartCode:=StartPos.Code;
+      StartX:=StartPos.X;
+      StartY:=StartPos.Y;
+      EndCode:=EndPos.Code;
+      EndX:=EndPos.X;
+      EndY:=EndPos.Y;
+    end;
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
 end;
 
 function TCodeToolManager.GuessMisplacedIfdefEndif(Code: TCodeBuffer; X,Y: integer;

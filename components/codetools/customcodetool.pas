@@ -68,7 +68,6 @@ type
   EParserAbort = class(ECodeToolError)
   end;
   
-  
   { TCustomCodeTool }
 
   TCustomCodeTool = class(TObject)
@@ -149,6 +148,8 @@ type
         var Caret:TCodeXYPosition): boolean; // true=ok, false=invalid CleanPos
     function CleanPosToCaretAndTopLine(CleanPos: integer;
         var Caret:TCodeXYPosition; var NewTopLine: integer): boolean; // true=ok, false=invalid CleanPos
+    procedure GetCleanPosInfo(CodePosInFront, CleanPos: integer;
+        ResolveComments: boolean; var SameArea: TAtomPosition);
     procedure GetLineInfo(ACleanPos: integer;
         var ALineStart, ALineEnd, AFirstAtomStart, ALastAtomEnd: integer);
     function FindLineEndOrCodeAfterPosition(StartPos: integer): integer;
@@ -171,6 +172,7 @@ type
     function IsPCharInSrc(ACleanPos: PChar): boolean;
     function ReadTilBracketClose(ExceptionOnNotFound: boolean): boolean;
     function ReadBackTilBracketOpen(ExceptionOnNotFound: boolean): boolean;
+    procedure ReadTillCommentEnd;
     function DoAtom: boolean; virtual;
     procedure ReadNextAtom;
     procedure UndoReadNextAtom;
@@ -665,251 +667,257 @@ begin
   {$R-}
   if (CurPos.StartPos<CurPos.EndPos) then
     LastAtoms.Add(CurPos);
-  if NextPos.StartPos>=1 then begin
-    CurPos:=NextPos;
-    NextPos.StartPos:=-1;
-    exit;
-  end;
-  CurPos.StartPos:=CurPos.EndPos;
-  CurPos.Flag:=cafNone;
-  if CurPos.StartPos>SrcLen then
-    exit;
-  // Skip all spaces and comments
-  CommentLvl:=0;
-  while true do begin
-    case Src[CurPos.StartPos] of
-    #0:
-      if CurPos.StartPos>SrcLen then
-        break
-      else
-        inc(CurPos.StartPos);
-    #1..#32:
-      inc(CurPos.StartPos);
-    '{': // pascal comment
-      begin
-        CommentLvl:=1;
-        inc(CurPos.StartPos);
-        while (CurPos.StartPos<=SrcLen) and (CommentLvl>0) do begin
-          case Src[CurPos.StartPos] of
-          '{': if Scanner.NestedComments then inc(CommentLvl);
-          '}': dec(CommentLvl);
-          end;
-          inc(CurPos.StartPos);
-        end;
-      end;
-    '/':  // Delphi comment
-      if (Src[CurPos.StartPos+1]<>'/') then begin
-        break;
-      end else begin
-        inc(CurPos.StartPos,2);
-        while (CurPos.StartPos<=SrcLen)
-        and (not (Src[CurPos.StartPos] in [#10,#13])) do
-          inc(CurPos.StartPos);
-        inc(CurPos.StartPos);
-        if (CurPos.StartPos<=SrcLen) and (Src[CurPos.StartPos] in [#10,#13])
-        and (Src[CurPos.StartPos-1]<>Src[CurPos.StartPos]) then
-          inc(CurPos.StartPos);
-      end;
-    '(': // old turbo pascal comment
-      if (Src[CurPos.StartPos+1]<>'*') then begin
-        break;
-      end else begin
-        inc(CurPos.StartPos,3);
-        while (CurPos.StartPos<=SrcLen)
-        and ((Src[CurPos.StartPos-1]<>'*') or (Src[CurPos.StartPos]<>')')) do
-          inc(CurPos.StartPos);
-        inc(CurPos.StartPos);
-      end;
-    else
-      break;
-    end;
-  end;
-  CurPos.EndPos:=CurPos.StartPos;
-  if CurPos.StartPos>SrcLen then
-    exit;
-  // read atom
-  c1:=UpperSrc[CurPos.EndPos];
-  case c1 of
-  '_','A'..'Z':
-    begin
-      inc(CurPos.EndPos);
-      while (IsIdentChar[UpperSrc[CurPos.EndPos]]) do
-        inc(CurPos.EndPos);
-      CurPos.Flag:=cafWord;
-      case c1 of
-      'B':
-        if (CurPos.EndPos-CurPos.StartPos=5)
-        and UpAtomIs('BEGIN')
-        then
-          CurPos.Flag:=cafBegin;
-      'E':
-        if (CurPos.EndPos-CurPos.StartPos=3)
-        and (UpperSrc[CurPos.StartPos+1]='N')
-        and (UpperSrc[CurPos.StartPos+2]='D')
-        then
-          CurPos.Flag:=cafEnd;
-      'R':
-        if (CurPos.EndPos-CurPos.StartPos=7)
-        and UpAtomIs('RECORD')
-        then
-          CurPos.Flag:=cafRecord;
-      end;
-    end;
-  '''','#':
-    begin
-      while (CurPos.EndPos<=SrcLen) do begin
-        case (Src[CurPos.EndPos]) of
-        '#':
-          begin
-            inc(CurPos.EndPos);
-            if (CurPos.EndPos<=SrcLen) then begin
-              if (IsNumberChar[Src[CurPos.EndPos]]) then begin
-                // decimal
-                repeat
-                  inc(CurPos.EndPos);
-                until (CurPos.EndPos>SrcLen)
-                      or (not IsNumberChar[Src[CurPos.EndPos]]);
-              end else if Src[CurPos.EndPos]='$' then begin
-                // hexadecimal
-                repeat
-                  inc(CurPos.EndPos);
-                until (CurPos.EndPos>SrcLen)
-                      or (not IsHexNumberChar[Src[CurPos.EndPos]]);
-              end;
-            end;
-          end;
-        '''':
-          begin
-            inc(CurPos.EndPos);
-            while (CurPos.EndPos<=SrcLen) do begin
-              case Src[CurPos.EndPos] of
-
-              '''':
-                begin
-                  inc(CurPos.EndPos);
-                  break;
-                end;
-
-              #10,#13:
-                break;
-
-              else
-                inc(CurPos.EndPos);
-              end;
-            end;
-          end;
+  if NextPos.StartPos<1 then begin
+    CurPos.StartPos:=CurPos.EndPos;
+    CurPos.Flag:=cafNone;
+    if CurPos.StartPos>SrcLen then
+      exit;
+    // Skip all spaces and comments
+    CommentLvl:=0;
+    while true do begin
+      case Src[CurPos.StartPos] of
+      #0:
+        if CurPos.StartPos>SrcLen then
+          break
         else
-          break;
+          inc(CurPos.StartPos);
+      #1..#32:
+        inc(CurPos.StartPos);
+      '{': // pascal comment
+        begin
+          CommentLvl:=1;
+          inc(CurPos.StartPos);
+          while true do begin
+            case Src[CurPos.StartPos] of
+            #0:  if CurPos.StartPos>SrcLen then break;
+            '{': if Scanner.NestedComments then inc(CommentLvl);
+            '}':
+              begin
+                dec(CommentLvl);
+                if CommentLvl=0 then break;
+              end;
+            end;
+            inc(CurPos.StartPos);
+          end;
+          inc(CurPos.StartPos);
         end;
+      '/':  // Delphi comment
+        if (Src[CurPos.StartPos+1]<>'/') then begin
+          break;
+        end else begin
+          inc(CurPos.StartPos,2);
+          while (not (Src[CurPos.StartPos] in [#10,#13,#0])) do
+            inc(CurPos.StartPos);
+          inc(CurPos.StartPos);
+          if (CurPos.StartPos<=SrcLen) and (Src[CurPos.StartPos] in [#10,#13])
+          and (Src[CurPos.StartPos-1]<>Src[CurPos.StartPos]) then
+            inc(CurPos.StartPos);
+        end;
+      '(': // old turbo pascal comment
+        if (Src[CurPos.StartPos+1]<>'*') then begin
+          break;
+        end else begin
+          inc(CurPos.StartPos,3);
+          while (CurPos.StartPos<=SrcLen)
+          and ((Src[CurPos.StartPos-1]<>'*') or (Src[CurPos.StartPos]<>')')) do
+            inc(CurPos.StartPos);
+          inc(CurPos.StartPos);
+        end;
+      else
+        break;
       end;
     end;
-  '0'..'9':
-    begin
-      inc(CurPos.EndPos);
-      while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]]) do
+    CurPos.EndPos:=CurPos.StartPos;
+    // read atom
+    c1:=UpperSrc[CurPos.EndPos];
+    case c1 of
+    #0: ;
+    '_','A'..'Z':
+      begin
         inc(CurPos.EndPos);
-      if (CurPos.EndPos<SrcLen)
-      and (Src[CurPos.EndPos]='.') and (Src[CurPos.EndPos+1]<>'.') then begin
-        // real type number
+        while (IsIdentChar[UpperSrc[CurPos.EndPos]]) do
+          inc(CurPos.EndPos);
+        CurPos.Flag:=cafWord;
+        case c1 of
+        'B':
+          if (CurPos.EndPos-CurPos.StartPos=5)
+          and UpAtomIs('BEGIN')
+          then
+            CurPos.Flag:=cafBegin;
+        'E':
+          if (CurPos.EndPos-CurPos.StartPos=3)
+          and (UpperSrc[CurPos.StartPos+1]='N')
+          and (UpperSrc[CurPos.StartPos+2]='D')
+          then
+            CurPos.Flag:=cafEnd;
+        'R':
+          if (CurPos.EndPos-CurPos.StartPos=7)
+          and UpAtomIs('RECORD')
+          then
+            CurPos.Flag:=cafRecord;
+        end;
+      end;
+    '''','#':
+      begin
+        while (CurPos.EndPos<=SrcLen) do begin
+          case (Src[CurPos.EndPos]) of
+          '#':
+            begin
+              inc(CurPos.EndPos);
+              if (CurPos.EndPos<=SrcLen) then begin
+                if (IsNumberChar[Src[CurPos.EndPos]]) then begin
+                  // decimal
+                  repeat
+                    inc(CurPos.EndPos);
+                  until (CurPos.EndPos>SrcLen)
+                        or (not IsNumberChar[Src[CurPos.EndPos]]);
+                end else if Src[CurPos.EndPos]='$' then begin
+                  // hexadecimal
+                  repeat
+                    inc(CurPos.EndPos);
+                  until (CurPos.EndPos>SrcLen)
+                        or (not IsHexNumberChar[Src[CurPos.EndPos]]);
+                end;
+              end;
+            end;
+          '''':
+            begin
+              inc(CurPos.EndPos);
+              while (CurPos.EndPos<=SrcLen) do begin
+                case Src[CurPos.EndPos] of
+
+                '''':
+                  begin
+                    inc(CurPos.EndPos);
+                    break;
+                  end;
+
+                #10,#13:
+                  break;
+
+                else
+                  inc(CurPos.EndPos);
+                end;
+              end;
+            end;
+          else
+            break;
+          end;
+        end;
+      end;
+    '0'..'9':
+      begin
         inc(CurPos.EndPos);
-        while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]])
-        do
+        while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]]) do
           inc(CurPos.EndPos);
-        if (CurPos.EndPos<=SrcLen) and (UpperSrc[CurPos.EndPos]='E') then
-        begin
-          // read exponent
+        if (CurPos.EndPos<SrcLen)
+        and (Src[CurPos.EndPos]='.') and (Src[CurPos.EndPos+1]<>'.') then begin
+          // real type number
           inc(CurPos.EndPos);
-          if (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos] in ['-','+'])
-          then inc(CurPos.EndPos);
           while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]])
           do
             inc(CurPos.EndPos);
+          if (CurPos.EndPos<=SrcLen) and (UpperSrc[CurPos.EndPos]='E') then
+          begin
+            // read exponent
+            inc(CurPos.EndPos);
+            if (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos] in ['-','+'])
+            then inc(CurPos.EndPos);
+            while (CurPos.EndPos<=SrcLen) and (IsNumberChar[Src[CurPos.EndPos]])
+            do
+              inc(CurPos.EndPos);
+          end;
         end;
       end;
-    end;
-  '%':
-    begin
-      inc(CurPos.EndPos);
-      while (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos] in ['0'..'1']) do
+    '%':
+      begin
         inc(CurPos.EndPos);
-    end;
-  '$':
-    begin
-      inc(CurPos.EndPos);
-      while (CurPos.EndPos<=SrcLen)
-      and (IsHexNumberChar[UpperSrc[CurPos.EndPos]]) do
+        while (CurPos.EndPos<=SrcLen) and (Src[CurPos.EndPos] in ['0'..'1']) do
+          inc(CurPos.EndPos);
+      end;
+    '$':
+      begin
         inc(CurPos.EndPos);
-    end;
-  ';':
-    begin
-      inc(CurPos.EndPos);
-      CurPos.Flag:=cafSemicolon;
-    end;
-  ',':
-    begin
-      inc(CurPos.EndPos);
-      CurPos.Flag:=cafComma;
-    end;
-  '=':
-    begin
-      inc(CurPos.EndPos);
-      CurPos.Flag:=cafEqual;
-    end;
-  '(':
-    begin
-      inc(CurPos.EndPos);
-      CurPos.Flag:=cafRoundBracketOpen;
-    end;
-  ')':
-    begin
-      inc(CurPos.EndPos);
-      CurPos.Flag:=cafRoundBracketClose;
-    end;
-  '[':
-    begin
-      inc(CurPos.EndPos);
-      CurPos.Flag:=cafEdgedBracketOpen;
-    end;
-  ']':
-    begin
-      inc(CurPos.EndPos);
-      CurPos.Flag:=cafEdgedBracketClose;
-    end;
-  ':':
-    begin
-      inc(CurPos.EndPos);
-      if (Src[CurPos.EndPos]<>'=') then begin
-        CurPos.Flag:=cafColon;
-      end else begin
-        // :=
+        while (CurPos.EndPos<=SrcLen)
+        and (IsHexNumberChar[UpperSrc[CurPos.EndPos]]) do
+          inc(CurPos.EndPos);
+      end;
+    ';':
+      begin
         inc(CurPos.EndPos);
+        CurPos.Flag:=cafSemicolon;
+      end;
+    ',':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafComma;
+      end;
+    '=':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafEqual;
+      end;
+    '(':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafRoundBracketOpen;
+      end;
+    ')':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafRoundBracketClose;
+      end;
+    '[':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafEdgedBracketOpen;
+      end;
+    ']':
+      begin
+        inc(CurPos.EndPos);
+        CurPos.Flag:=cafEdgedBracketClose;
+      end;
+    ':':
+      begin
+        inc(CurPos.EndPos);
+        if (Src[CurPos.EndPos]<>'=') then begin
+          CurPos.Flag:=cafColon;
+        end else begin
+          // :=
+          inc(CurPos.EndPos);
+        end;
+      end;
+    '.':
+      begin
+        inc(CurPos.EndPos);
+        if (Src[CurPos.EndPos]<>'.') then begin
+          CurPos.Flag:=cafPoint;
+        end else begin
+          // ..
+          inc(CurPos.EndPos);
+        end;
+      end;
+    else
+      inc(CurPos.EndPos);
+      c2:=Src[CurPos.EndPos];
+      // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
+      if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
+      or ((c1='<') and (c2='>')) // not equal
+      or ((c1='>') and (c2='<'))
+      or ((c1='.') and (c2='.')) // subrange
+      or ((c1='*') and (c2='*'))
+      then inc(CurPos.EndPos);
+      if ((c1='@') and (c2='@')) then begin
+        // @@ label
+        repeat
+          inc(CurPos.EndPos);
+        until (CurPos.EndPos>SrcLen) or (not IsIdentChar[Src[CurPos.EndPos]]);
       end;
     end;
-  '.':
-    begin
-      inc(CurPos.EndPos);
-      if (Src[CurPos.EndPos]<>'.') then begin
-        CurPos.Flag:=cafPoint;
-      end else begin
-        // ..
-        inc(CurPos.EndPos);
-      end;
-    end;
-  else
-    inc(CurPos.EndPos);
-    c2:=Src[CurPos.EndPos];
-    // test for double char operators :=, +=, -=, /=, *=, <>, <=, >=, **, ><
-    if ((c2='=') and  (IsEqualOperatorStartChar[c1]))
-    or ((c1='<') and (c2='>')) // not equal
-    or ((c1='>') and (c2='<'))
-    or ((c1='.') and (c2='.')) // subrange
-    or ((c1='*') and (c2='*'))
-    then inc(CurPos.EndPos);
-    if ((c1='@') and (c2='@')) then begin
-      repeat
-        inc(CurPos.EndPos);
-      until (CurPos.EndPos>SrcLen) or (not IsIdentChar[Src[CurPos.EndPos]]);
-    end;
+  end else begin
+    CurPos:=NextPos;
+    NextPos.StartPos:=-1;
+    exit;
   end;
   {$IFDEF RangeChecking}{$R+}{$ENDIF}
 end;
@@ -1389,6 +1397,53 @@ begin
   Result:=true;
 end;
 
+procedure TCustomCodeTool.ReadTillCommentEnd;
+var
+  CommentLvl: Integer;
+begin
+  {$IFOPT R+}{$DEFINE RangeChecking}{$ENDIF}
+  {$R-}
+  case Src[CurPos.StartPos] of
+  '{': // pascal comment
+    begin
+      CommentLvl:=1;
+      inc(CurPos.StartPos);
+      while true do begin
+        case Src[CurPos.StartPos] of
+        #0:  if CurPos.StartPos>SrcLen then break;
+        '{': if Scanner.NestedComments then inc(CommentLvl);
+        '}':
+          begin
+            dec(CommentLvl);
+            if CommentLvl=0 then break;
+          end;
+        end;
+        inc(CurPos.StartPos);
+      end;
+      inc(CurPos.StartPos);
+    end;
+  '/':  // Delphi comment
+    if (Src[CurPos.StartPos+1]='/') then begin
+      inc(CurPos.StartPos,2);
+      while (not (Src[CurPos.StartPos] in [#10,#13,#0])) do
+        inc(CurPos.StartPos);
+      inc(CurPos.StartPos);
+      if (CurPos.StartPos<=SrcLen) and (Src[CurPos.StartPos] in [#10,#13])
+      and (Src[CurPos.StartPos-1]<>Src[CurPos.StartPos]) then
+        inc(CurPos.StartPos);
+    end;
+  '(': // old turbo pascal comment
+    if (Src[CurPos.StartPos+1]='*') then begin
+      inc(CurPos.StartPos,3);
+      while (CurPos.StartPos<=SrcLen)
+      and ((Src[CurPos.StartPos-1]<>'*') or (Src[CurPos.StartPos]<>')')) do
+        inc(CurPos.StartPos);
+      inc(CurPos.StartPos);
+    end;
+  end;
+  {$IFDEF RangeChecking}{$R+}{$ENDIF}
+end;
+
 procedure TCustomCodeTool.BeginParsing(DeleteNodes,
   OnlyInterfaceNeeded: boolean);
 begin
@@ -1804,6 +1859,71 @@ begin
     end else
       NewTopLine:=Caret.Y;
   end;
+end;
+
+procedure TCustomCodeTool.GetCleanPosInfo(CodePosInFront, CleanPos: integer;
+  ResolveComments: boolean; var SameArea: TAtomPosition);
+var
+  ANode: TCodeTreeNode;
+begin
+  if CodePosInFront<1 then begin
+    ANode:=FindDeepestNodeAtPos(CleanPos,True);
+    CodePosInFront:=ANode.StartPos;
+  end;
+  MoveCursorToCleanPos(CodePosInFront);
+  repeat
+    ReadNextAtom;
+    if (CleanPos>=CurPos.StartPos) and (CleanPos<CurPos.EndPos) then begin
+      // clean pos on token
+      SameArea:=CurPos;
+      exit;
+    end;
+    if CleanPos<CurPos.StartPos then begin
+      // clean pos between tokens
+      SameArea.Flag:=cafNone;
+      // get range of space behind last atom
+      if LastAtoms.Count>0 then begin
+        SameArea.StartPos:=LastAtoms.GetValueAt(0).EndPos;
+      end else begin
+        SameArea.StartPos:=CodePosInFront;
+      end;
+      SameArea.EndPos:=SameArea.StartPos;
+      repeat
+        while (SameArea.EndPos<=SrcLen)
+        and (IsSpaceChar[Src[SameArea.EndPos]]) do
+          inc(SameArea.EndPos);
+        if (SameArea.EndPos>CleanPos) or (SameArea.EndPos>SrcLen) then begin
+          // cursor is in normal space (i.e. not comment)
+          exit;
+        end;
+        // still between the two tokens, but end of space
+        // -> here starts a comment
+        SameArea.StartPos:=SameArea.EndPos;
+        MoveCursorToCleanPos(SameArea.StartPos);
+        ReadTillCommentEnd;
+        SameArea.EndPos:=CurPos.EndPos;
+        if (SameArea.StartPos=SameArea.EndPos) then
+          RaiseException('TCustomCodeTool.GetCleanPosInfo Internal Error A');
+        if CleanPos<SameArea.EndPos then begin
+          // cursor is in comment
+          if ResolveComments then begin
+            // take comment as normal code and search again
+            CodePosInFront:=SameArea.StartPos;
+            case Src[CodePosInFront] of
+            '{': inc(CodePosInFront);
+            '(','/': inc(CodePosInFront,2);
+            else
+              RaiseException('TCustomCodeTool.GetCleanPosInfo Internal Error B');
+            end;
+            GetCleanPosInfo(CodePosInFront,CleanPos,true,SameArea);
+          end;
+          exit;
+        end;
+        SameArea.StartPos:=SameArea.EndPos;
+      until false;
+    end;
+  until (CurPos.Flag=cafNone) or (CurPos.EndPos>CleanPos);
+  SameArea:=CurPos;
 end;
 
 procedure TCustomCodeTool.GetLineInfo(ACleanPos: integer;
