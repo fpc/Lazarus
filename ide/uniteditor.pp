@@ -1645,32 +1645,6 @@ end;
                       { TSourceNotebook }
 
 constructor TSourceNotebook.Create(AOwner: TComponent);
-
-
-  function LoadPixmapRes(ResourceName:string; PixMap:TPixMap):boolean;
-  var
-    ms:TMemoryStream;
-    res:TLResource;
-  begin
-    Result:=false;
-    res:=LazarusResources.Find(ResourceName);
-    if (res = nil) or (res.Value<>'') then begin
-      if res.ValueType='XPM' then begin
-        ms:=TMemoryStream.Create;
-        try
-          ms.Write(res.Value[1],length(res.Value));
-          ms.Position:=0;
-          PixMap.LoadFromStream(ms);
-          Result:=true;
-        finally
-          ms.Free;
-        end;
-      end;
-    end;
-  end;
-
-
-// TSourceNotebook.Create
 var
   Pixmap1 : TPixmap;
   I : Integer;
@@ -1720,27 +1694,22 @@ begin
     Pixmap1:=TPixMap.Create;
     Pixmap1.TransparentColor:=clBtnFace;
     Pixmap1.LoadFromLazarusResource('bookmark'+inttostr(i));
-    //if not LoadPixmapRes('bookmark'+inttostr(i),Pixmap1) then
-    //       LoadPixmapRes('default',Pixmap1);
     MarksImgList.Add(Pixmap1,nil);
   end;
   // load active breakpoint image
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('ActiveBreakPoint',Pixmap1) then
-         LoadPixmapRes('default',Pixmap1);
+  Pixmap1.LoadFromLazarusResource('ActiveBreakPoint');
   MarksImgList.Add(Pixmap1,nil);
   // load inactive breakpoint image
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('InactiveBreakPoint',Pixmap1) then
-         LoadPixmapRes('default',Pixmap1);
+  Pixmap1.LoadFromLazarusResource('InactiveBreakPoint');
   MarksImgList.Add(Pixmap1,nil);
   // load invalid breakpoint image
   Pixmap1:=TPixMap.Create;
   Pixmap1.TransparentColor:=clBtnFace;
-  if not LoadPixmapRes('InvalidBreakPoint',Pixmap1) then
-         LoadPixmapRes('default',Pixmap1);
+  Pixmap1.LoadFromLazarusResource('InvalidBreakPoint');
   MarksImgList.Add(Pixmap1,nil);
 
   FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
@@ -2340,7 +2309,6 @@ Begin
       SubMenuItem.Name:='SubSetBookmarkMenuItem'+IntToStr(I);
       SubMenuItem.Caption := 'Bookmark '+inttostr(i);
       SubMenuItem.OnClick := @BookmarkClicked;
-      SubMenuItem.Tag := I;
       SetBookmarkMenuItem.Add(SubMenuItem);
     end;
 
@@ -2355,7 +2323,6 @@ Begin
       SubmenuItem.Name:='GotoBookmark'+IntToStr(I)+'MenuItem';
       SubMenuItem.Caption := 'Bookmark '+inttostr(i);
       SubMenuItem.OnClick := @BookmarkGotoClicked;
-      SubMenuItem.Tag := I;
       MenuItem.Add(SubMenuItem);
     end;
 
@@ -2735,7 +2702,7 @@ var
   MenuItem : TMenuItem;
 Begin
   MenuItem := TMenuItem(sender);
-  BookMarkSet(MenuItem.Tag);
+  BookMarkSet(MenuItem.MenuIndex);
 end;
 
 Procedure TSourceNotebook.BookMarkGotoClicked(Sender : TObject);
@@ -2744,13 +2711,12 @@ var
   MenuItem : TMenuItem;
 Begin
   MenuItem := TMenuItem(sender);
-  GotoBookMark(MenuItem.Tag);
+  GotoBookMark(MenuItem.MenuIndex);
 end;
 
 Procedure TSourceNotebook.ReadOnlyClicked(Sender : TObject);
 var ActEdit:TSourceEditor;
 begin
-writeln('DDD1');
   ActEdit:=GetActiveSE;
   if ActEdit.ReadOnly and (ActEdit.CodeBuffer<>nil) 
   and (not ActEdit.CodeBuffer.IsVirtual) 
