@@ -10,7 +10,7 @@ cvs login
 cvs -z3 export -r FIXES_1_0_0 fpc
 tar cvzf fpc_src.tgz fpc
 cd -
-mv /tmp/fpc_src.tgz fpcsrc-1.0.7.tgz
+mv /tmp/fpc_src.tgz fpcsrc-1.0.7-1.tgz
 rm -rf /tmp/fpc
 
 echo ""

@@ -10,7 +10,7 @@ TGZ
 Creating the fpcsrc tgz:
 
   The script create_fpc_snapshot_tgz.sh makes a cvs export of the
-  fpc FIXES_1_0_0 branch and compress it to fpcsrc-1.0.7.tgz.
+  fpc FIXES_1_0_0 branch and compress it to fpcsrc-1.0.7-1.tgz.
 
 
 Creating the lazarus tgz:
@@ -24,20 +24,29 @@ RPM:
 
 Creating the fpc rpm:
 
+  As a user of your choice:
   Install the latest fpc package you can get. You will need it to compile the
   compiler itself. Then download the fpc cvs of the FIXES_1_0_0 branch and
   compile the RTL and the compiler with 'make rtl' and 'make compiler'.
-  The RPMs (fpc and fpcdoc) can be created with 'make rpm'. If you just want to
-  create the fpc rpm, then use 'make rpm NODOCS=1'. The lazarus rpm uses a
-  special release tag by changing the release line in install/fpc.spec.
+  Before you create the rpm, you should define a release tag. Open
+  <fpc>/install/fpc.spec and change the Release tag to laz.20030220. The number
+  is simple the date, when this README was written. Use the current date.
+
+  As root:
+  The fpc and fpcdoc RPMs can be created with 'make rpm'. If you want to only
+  create the fpc RPM, then use 'make rpm NODOCS=1'.
+  The RPMs are normally created under /usr/src/redhat/RPMS/i386/
 
 
 Creating the fpcsrc rpm:
 
+  As a user of your choice:
+  Create the fpcsrc-1.0.7-1.tgz of 'Creating the fpcsrc tgz' and put it into
+  /usr/src/redhat/SOURCES/.
+
   As root:
-  Create the fpcsrc-1.0.7.tgz of 'Creating the fpcsrc tgz' and put it into
-  /usr/src/redhat/SOURCES/. Then run 'rpm -ba fpcsrc-1.0.7-1.spec'. This will
-  create the src rpm and the rpm for the current system (e.g. redhat 7.3).
+  Run 'rpm -ba fpcsrc-1.0.7-1.spec'. This will create the src rpm and the rpm
+  for the current system (e.g. redhat 7.3).
   The src rpm can be used to create rpms for any system by building it on the
   destination system.
   The fpcsrc rpm will simply copy the files into /usr/share/fpcsrc. It does
@@ -48,9 +57,17 @@ Creating the fpcsrc rpm:
   
 Creating the lazarus rpm:
 
-  As root:
+  Important:
+  If you have created a new fpc RPM, then you should install it before you
+  build the lazarus RPM. Otherwise the compiled lazarus RPM is not compatible
+  to the fpc RPM.
+
+  As a user of your choice:
   Create the lazarus-0.8.5.tgz of 'Creating the lazarus tgz' and put it into
-  /usr/src/redhat/SOURCES/. Then run 'rpm -ba lazarus-0.8.5-1.spec'. This will
+  /usr/src/redhat/SOURCES/.
+
+  As root:
+  Run 'rpm -ba lazarus-0.8.5-1.spec'. This will
   create the src rpm and the rpm for the current system (e.g. redhat 7.3).
   The src rpm can be used to create rpms for any system by building it on the
   destination system (see 5.).
