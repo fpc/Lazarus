@@ -357,6 +357,7 @@ begin
       if UpdatePosSizeChanged then exit;
       //if csDesigning in ComponentState then
       //  DebugLn('TControl.ChangeBounds ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+      
       // autosize this control and its brothers
       RequestAlign;
       if UpdatePosSizeChanged then exit;
@@ -429,11 +430,12 @@ begin
   FHeight:= AHeight;
 end;
 
-{------------------------------------------------------------------------------}
-{       TControl.ChangeScale
-}
-{------------------------------------------------------------------------------}
-Procedure TControl.ChangeScale(M,D : Integer);
+{------------------------------------------------------------------------------
+       TControl.ChangeScale
+
+  Scale contorl by factor Multiplier/Divider
+------------------------------------------------------------------------------}
+Procedure TControl.ChangeScale(Multiplier, Divider: Integer);
 Begin
   // TODO: TCONTROL.CHANGESCALE
   //Assert(False, 'Trace:TODO: [TControl.ChangeScale]');
@@ -3286,6 +3288,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.219  2004/10/28 09:30:49  mattias
+  implemented borderspacing TWinControl.ChildSizing.Left/Top
+
   Revision 1.218  2004/10/13 09:59:24  vincents
   change parameter type in implementation to TTranslateString too
 

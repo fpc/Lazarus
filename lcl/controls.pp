@@ -858,7 +858,7 @@ type
     procedure UpdateAnchorRules;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
     procedure DoSetBounds(ALeft, ATop, AWidth, AHeight: integer); virtual;
-    procedure ChangeScale(M,D: Integer); dynamic;
+    procedure ChangeScale(Multiplier, Divider: Integer); dynamic;
     Function CanAutoSize(var NewWidth, NewHeight: Integer): Boolean; virtual;
     procedure SetAlignedBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     Function GetClientOrigin: TPoint; virtual;
@@ -1357,7 +1357,8 @@ type
     function GetActionLinkClass: TControlActionLinkClass; override;
     procedure AdjustSize; override;
     procedure AdjustClientRect(var ARect: TRect); virtual;
-    procedure AlignControls(AControl: TControl; var ARect: TRect); virtual;
+    procedure AlignControls(AControl: TControl;
+                            var RemainingClientRect: TRect); virtual;
     function DoAlignChildControls(TheAlign: TAlign; AControl: TControl;
                         AControlList: TList; var ARect: TRect): Boolean; virtual;
     procedure DoChildSizingChange(Sender: TObject); virtual;
@@ -1813,14 +1814,21 @@ var
   NewStyleControls: Boolean;
   Mouse: TMouse;
 
+// cursor
 function CursorToString(Cursor: TCursor): string;
 function StringToCursor(const S: string): TCursor;
 procedure GetCursorValues(Proc: TGetStrProc);
 function CursorToIdent(Cursor: Longint; var Ident: string): Boolean;
 function IdentToCursor(const Ident: string; var Cursor: Longint): Boolean;
 
+// shiftstate
 function GetKeyShiftState: TShiftState;
 
+procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
+  Left, Top, Right, Bottom: integer);
+  
+
+// register (called by the package initialization in design mode)
 procedure Register;
 
 
@@ -1836,6 +1844,65 @@ var
   // what child control of this TWinControl has actually the capture.
   CaptureControl: TControl;
   DockSiteHash: TDynHashArray;
+
+procedure AdjustBorderSpace(var RemainingClientRect, CurBorderSpace: TRect;
+  Left, Top, Right, Bottom: integer);
+// RemainingClientRect: remaining clientrect without CurBorderSpace
+// CurBorderSpace: current borderspace around RemainingClientRect
+// Left, Top, Right, Bottom: apply these borderspaces to CurBorderSpace
+//
+// CurBorderSpace will be set to the maximum of CurBorderSpace and Left, Top,
+// Right, Bottom. RemainingClientRect will shrink.
+// RemainingClientRect will not shrink to negative size.
+var
+  NewWidth: Integer;
+  NewHeight: Integer;
+  NewLeft: Integer;
+  NewTop: Integer;
+begin
+  // set CurBorderSpace to maximum border spacing and adjust RemainingClientRect
+  if CurBorderSpace.Left<Left then begin
+    inc(RemainingClientRect.Left,Left-CurBorderSpace.Left);
+    CurBorderSpace.Left:=Left;
+  end;
+  if CurBorderSpace.Right<Right then begin
+    dec(RemainingClientRect.Right,Right-CurBorderSpace.Right);
+    CurBorderSpace.Right:=Right;
+  end;
+  if CurBorderSpace.Top<Top then begin
+    inc(RemainingClientRect.Top,Top-CurBorderSpace.Top);
+    CurBorderSpace.Top:=Top;
+  end;
+  if CurBorderSpace.Bottom<Bottom then begin
+    dec(RemainingClientRect.Bottom,Bottom-CurBorderSpace.Bottom);
+    CurBorderSpace.Bottom:=Bottom;
+  end;
+
+  // make sure RemainingClientRect has no negative Size
+  NewWidth:=RemainingClientRect.Right-RemainingClientRect.Left;
+  if NewWidth<0 then begin
+    // Width is negative
+    // set Width to 0 and adjust borderspace. Set Left/Right to center.
+    // Example: RemainingClientRect.Left=20, RemainingClientRect.Right=10,
+    //          CurBorderSpace.Left:=17, CurBorderSpace.Right:=18
+    // Result: RemainingClientRect.Left=RemainingClientRect.Right=15;
+    //         CurBorderSpace.Left:=17, CurBorderSpace.Right:=18
+    NewLeft:=(RemainingClientRect.Left+RemainingClientRect.Right) div 2;
+    dec(CurBorderSpace.Left,RemainingClientRect.Left-NewLeft);
+    dec(CurBorderSpace.Right,NewLeft-RemainingClientRect.Right);
+    RemainingClientRect.Left:=NewLeft;
+    RemainingClientRect.Right:=RemainingClientRect.Left;
+  end;
+  NewHeight:=RemainingClientRect.Bottom-RemainingClientRect.Top;
+  if NewHeight<0 then begin
+    // Height is negative
+    NewTop:=(RemainingClientRect.Top+RemainingClientRect.Bottom) div 2;
+    dec(CurBorderSpace.Top,RemainingClientRect.Top-NewTop);
+    dec(CurBorderSpace.Bottom,NewTop-RemainingClientRect.Bottom);
+    RemainingClientRect.Top:=NewTop;
+    RemainingClientRect.Bottom:=RemainingClientRect.Top;
+  end;
+end;
 
 procedure Register;
 begin
@@ -2391,6 +2458,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.251  2004/10/28 09:30:49  mattias
+  implemented borderspacing TWinControl.ChildSizing.Left/Top
+
   Revision 1.250  2004/10/12 08:23:20  mattias
   fixed compiler options interface double variables
 

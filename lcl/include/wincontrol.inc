@@ -50,9 +50,11 @@ end;
   Align child controls
 
 ------------------------------------------------------------------------------}
-procedure TWinControl.AlignControls(AControl : TControl; var ARect : TRect);
+procedure TWinControl.AlignControls(AControl: TControl;
+  var RemainingClientRect: TRect);
 var
   AlignList: TList;
+  RemainingBorderSpace: TRect; // borderspace around RemainingClientRect
 
   function AlignWork: Boolean;
   var
@@ -254,7 +256,7 @@ var
     // set min size to stop circling (this should not be needed. But if someone
     // plays/fixes the above code, new bugs can enter and there are far too many
     // combinations to test, and so the LCL can loop for some applications.
-    // Prevent this, so the users can at least report a bug.)
+    // Prevent this, so users can at least report a bug.)
     if NewWidth<0 then NewWidth:=0;
     if NewHeight<0 then NewHeight:=0;
 
@@ -279,32 +281,32 @@ var
       if akLeft in AnchorAlign[AAlign] then begin
         if (akRight in (Control.Anchors+AnchorAlign[AAlign])) then begin
           // left align and keep right border
-          NewLeft:=ARect.Left;
+          NewLeft:=RemainingClientRect.Left;
           NewRight:=NewLeft+ConstraintWidth(NewRight-NewLeft);
         end else begin
           // left align and right border free to move (-> keep width)
-          dec(NewRight,NewLeft-ARect.Left);
-          NewLeft:=ARect.Left;
+          dec(NewRight,NewLeft-RemainingClientRect.Left);
+          NewLeft:=RemainingClientRect.Left;
         end;
       end;
       if akTop in AnchorAlign[AAlign] then begin
         if (akBottom in (Control.Anchors+AnchorAlign[AAlign])) then begin
           // top align and keep bottom border
-          NewTop:=ARect.Top;
+          NewTop:=RemainingClientRect.Top;
           NewBottom:=NewTop+ConstraintHeight(NewBottom-NewTop);
         end else begin
           // top align and bottom border is free to move (-> keep height)
-          dec(NewBottom,NewTop-ARect.Top);
-          NewTop:=ARect.Top;
+          dec(NewBottom,NewTop-RemainingClientRect.Top);
+          NewTop:=RemainingClientRect.Top;
         end;
       end;
       if akRight in AnchorAlign[AAlign] then begin
         if (akLeft in (Control.Anchors+AnchorAlign[AAlign])) then begin
           // right align and keep left border
-          NewWidth:=ConstraintWidth(ARect.Right-NewLeft);
+          NewWidth:=ConstraintWidth(RemainingClientRect.Right-NewLeft);
           if AAlign=alRight then begin
             // align to right (this overrides the keeping of left border)
-            NewRight:=ARect.Right;
+            NewRight:=RemainingClientRect.Right;
             NewLeft:=NewRight-NewWidth;
           end else begin
             // keep left border overrides keeping right border
@@ -312,17 +314,17 @@ var
           end;
         end else begin
           // right align and left border free to move (-> keep width)
-          inc(NewLeft,ARect.Right-NewRight);
-          NewRight:=ARect.Right;
+          inc(NewLeft,RemainingClientRect.Right-NewRight);
+          NewRight:=RemainingClientRect.Right;
         end;
       end;
       if akBottom in AnchorAlign[AAlign] then begin
         if (akTop in (Control.Anchors+AnchorAlign[AAlign])) then begin
           // bottom align and keep top border
-          NewHeight:=ConstraintHeight(ARect.Bottom-NewTop);
+          NewHeight:=ConstraintHeight(RemainingClientRect.Bottom-NewTop);
           if AAlign=alBottom then begin
             // align to bottom (this overrides the keeping of top border)
-            NewBottom:=ARect.Bottom;
+            NewBottom:=RemainingClientRect.Bottom;
             NewTop:=NewBottom-NewHeight;
           end else begin
             // keeping top border overrides keeping bottom border
@@ -330,8 +332,8 @@ var
           end;
         end else begin
           // bottom align and top border free to move (-> keep height)
-          inc(NewTop,ARect.Bottom-NewBottom);
-          NewBottom:=ARect.Bottom;
+          inc(NewTop,RemainingClientRect.Bottom-NewBottom);
+          NewBottom:=RemainingClientRect.Bottom;
         end;
       end;
       NewWidth:=Max(0,NewRight-NewLeft);
@@ -382,7 +384,7 @@ var
     end;
 
     // adjust the remaining client area
-    with ARect do begin
+    with RemainingClientRect do begin
       case AAlign of
         alTop:
           Inc(Top, NewHeight);
@@ -469,7 +471,7 @@ var
       end;
     end;
     
-    if not DoAlignChildControls(AAlign,AControl,AlignList,ARect) then
+    if not DoAlignChildControls(AAlign,AControl,AlignList,RemainingClientRect) then
       for I := 0 to AlignList.Count - 1 do
         DoPosition(TControl(AlignList[I]), AAlign);
   end;
@@ -495,8 +497,13 @@ begin
     //end;
     if AlignWork then
     begin
-      AdjustClientRect(ARect);
-      //DebugLn('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom);
+      AdjustClientRect(RemainingClientRect);
+      RemainingBorderSpace:=Rect(0,0,0,0);
+      // adjust RemainingClientRect by ChildSizing properties
+      AdjustBorderSpace(RemainingClientRect,RemainingBorderSpace,
+        ChildSizing.LeftRightSpacing,ChildSizing.TopBottomSpacing,
+        ChildSizing.LeftRightSpacing,ChildSizing.TopBottomSpacing);
+      //DebugLn('[TWinControl.AlignControls] ',Name,':',Classname,' ',Left,',',Top,',',Width,',',Height,' ClientRect=',RemainingClientRect.Left,',',RemainingClientRect.Top,',',RemainingClientRect.Right,',',RemainingClientRect.Bottom);
       AlignList := TList.Create;
       try
         DoAlign(alTop);
@@ -3914,6 +3921,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.283  2004/10/28 09:30:49  mattias
+  implemented borderspacing TWinControl.ChildSizing.Left/Top
+
   Revision 1.282  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods
