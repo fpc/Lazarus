@@ -636,6 +636,8 @@ begin
   if (fOwnedPrinter.Printers.Count>0) and
      ((fSupportedPapers.Count=0) or (fLastPrinterIndex<>fOwnedPrinter.PrinterIndex)) then
   begin
+    fOwnedPrinter.SelectCurrentPrinterOrDefault;
+    
     fSupportedPapers.Clear;
     fOwnedPrinter.DoEnumPapers(fSupportedPapers);
     fLastPrinterIndex:=fOwnedPrinter.PrinterIndex;
