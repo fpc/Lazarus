@@ -1161,6 +1161,10 @@ begin
   ListViewWidget:= PGtkCList(GetWidgetInfo(
                          Pointer(ListView.Handle), True)^.ImplementationWidget);
   Count:=ListViewWidget^.columns;
+  if Count=0 then begin
+    writeln('WARNING: ListViewWidget^.columns=0');
+    exit;
+  end;
   GetMem(Titles,SizeOf(PGChar)*Count);
   Titles[0]:=#0;
   for i:=1 to Count-1 do Titles[i]:=nil;
@@ -4187,8 +4191,8 @@ begin
         gtk_clist_column_titles_passive (GTK_CLIST (TempWidget));
 
         // add items (the item properties are set via LM_SETPROPERTIES)
-        GetMem(Titles,SizeOf(PChar)*GTK_CLIST (TempWidget)^.columns);
-        for TempInt:=0 to GTK_CLIST (TempWidget)^.columns do
+        GetMem(Titles,SizeOf(PGChar)*GTK_CLIST (TempWidget)^.columns);
+        for TempInt:=0 to GTK_CLIST (TempWidget)^.columns-1 do
           Titles[TempInt]:=nil;
         for TempInt:=0 to Items.Count-1 do begin
           if Items[TempInt].Caption<>'' then
@@ -4806,16 +4810,12 @@ var
   procedure UpdateTabLabel;
   var TheCaption: PChar;
   begin
-    TheCaption := StrAlloc(Length(ThePage.Caption) + 1);
-    try
-      StrPCopy(TheCaption, ThePage.Caption);
-      
-      gtk_label_set_text(PGtkLabel(TabLabelWidget),TheCaption);
-      if MenuLabelWidget<>nil then
-        gtk_label_set_text(PGtkLabel(MenuLabelWidget),TheCaption);
-    finally
-      StrDispose(TheCaption);
-    end;
+    TheCaption:=PChar(ThePage.Caption);
+    if TheCaption=nil then
+      TheCaption:=#0;
+    gtk_label_set_text(PGtkLabel(TabLabelWidget),TheCaption);
+    if MenuLabelWidget<>nil then
+      gtk_label_set_text(PGtkLabel(MenuLabelWidget),TheCaption);
   end;
   
   procedure UpdateTabCloseBtn;
@@ -6631,6 +6631,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.289  2002/11/18 13:38:44  mattias
+  fixed buffer overrun and added several checks
+
   Revision 1.288  2002/11/16 11:22:57  mbukovjan
   Fixes to MaxLength. TCustomMemo now has MaxLength, too.
 
