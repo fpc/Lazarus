@@ -1446,9 +1446,15 @@ begin
               
           csNotebook:
             begin
+//  write('LM_SETITEMINDEX:',
+//  ' Old=',gtk_notebook_get_current_page(PGtkNoteBook(Handle)),
+//  ' New=',TLMNotebookEvent(Data^).Page);
               gtk_notebook_set_page(PGtkNotebook(Handle),
                                     TLMNotebookEvent(Data^).Page);
               UpdateNoteBookClientWidget(Sender);
+//  writeln(
+//  ' Now=',gtk_notebook_get_current_page(PGtkNoteBook(Handle))
+//  );
             end;
           end;
         end;
@@ -5334,6 +5340,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.175  2002/08/24 07:09:04  lazarus
+  MG: fixed bracket hilighting
+
   Revision 1.174  2002/08/24 06:51:22  lazarus
   MG: from Andrew: style list fixes, autosize for radio/checkbtns
 
