@@ -115,6 +115,33 @@ begin
   result := gtk.gtk_toolbar_new(GTK_ORIENTATION_HORIZONTAL,GTK_TOOLBAR_BOTH);
 end;
 
+Procedure gtk_color_selection_get_current_color(colorsel : PGTKColorSelection; Color : PGDKColor);
+var
+  colorArray : array[0..2] of double;
+begin
+  gtk_color_selection_get_color(colorsel, @colorArray[0]);
+  Color^.pixel := 0;
+  Color^.red := Trunc(colorArray[0] * $FFFF);
+  Color^.green := Trunc(colorArray[1] * $FFFF);
+  Color^.blue := Trunc(colorArray[2] * $FFFF);
+end;
+
+Procedure gtk_color_selection_set_current_color(colorsel : PGTKColorSelection; Color : PGDKColor);
+var
+  SelectionColor: PGDouble;
+begin
+  GetMem(SelectionColor,4*SizeOf(GDouble));
+  try
+    SelectionColor[0]:=Color^.Red/65535;
+    SelectionColor[1]:=Color^.Green/65535;
+    SelectionColor[2]:=Color^.Blue/65535;
+    SelectionColor[3]:=0.0;
+    gtk_color_selection_set_color(colorSel,SelectionColor);
+  finally
+    FreeMem(SelectionColor);
+  end;
+end;
+
 procedure gdk_image_unref(Image : PGdkImage);
 begin
   gdk_window_unref(PGdkWindow(Image));
@@ -4623,6 +4650,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.202  2003/09/10 02:33:41  ajgenius
+  fixed TColotDialog for GTK2
+
   Revision 1.201  2003/09/09 20:46:38  ajgenius
   more implementation toward pango for gtk2
 

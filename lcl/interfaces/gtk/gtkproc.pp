@@ -529,6 +529,8 @@ function gtk_widget_get_ythickness(Style : PGTKWidget) : gint; overload;
   Procedure gtk_menu_item_set_right_justified(menu_item : PGtkMenuItem; right_justified : gboolean);
   Function gtk_image_new : PGTKWidget;
   Function gtk_toolbar_new : PGTKWidget;
+  Procedure gtk_color_selection_get_current_color(colorsel : PGTKColorSelection; Color : PGDKColor);
+  Procedure gtk_color_selection_set_current_color(colorsel : PGTKColorSelection; Color : PGDKColor);
 
   //routines to mimic similar GDK2 routines/behaviour-->
   procedure gdk_image_unref(Image : PGdkImage);

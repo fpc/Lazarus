@@ -1559,7 +1559,6 @@ var
    theDialog : TCommonDialog;
    Fpointer : Pointer;
    // colordialog
-   colorArray : array[0..2] of double;
    colorsel : PGtkColorSelection;
    newColor : TGdkColor;
    // fontdialog
@@ -1627,11 +1626,7 @@ begin
   else if theDialog is TColorDialog then
   begin
     colorSel := PGtkColorSelection(PGtkColorSelectionDialog(FPointer)^.colorsel);
-    gtk_color_selection_get_color(colorsel, @colorArray[0]);
-    newColor.pixel := 0;
-    newColor.red := Trunc(colorArray[0] * $FFFF);
-    newColor.green := Trunc(colorArray[1] * $FFFF);
-    newColor.blue := Trunc(colorArray[2] * $FFFF);
+    gtk_color_selection_get_current_color(colorsel, @newColor);
     TColorDialog(theDialog).Color := TGDKColorToTColor(newcolor);
   end
   else if theDialog is TFontDialog then
@@ -2849,6 +2844,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.188  2003/09/10 02:33:41  ajgenius
+  fixed TColotDialog for GTK2
+
   Revision 1.187  2003/09/09 04:15:08  ajgenius
   more updates for GTK2, more GTK1 wrappers, removal of more ifdef's, partly fixed signals
 

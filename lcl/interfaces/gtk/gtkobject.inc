@@ -6586,22 +6586,16 @@ end;
 procedure TgtkObject.SetColorDialogColor(ColorSelection: PGtkColorSelection;
   Color: TColor);
 var
-  SelectionColor: PGDouble;       // currently only used by TColorDialog
+  SelectionColor: TGDKColor;       // currently only used by TColorDialog
   colorSel : PGTKCOLORSELECTION;
 begin
-  GetMem(SelectionColor,4*SizeOf(GDouble));
-  try
-    Color:=ColorToRGB(Color);
-    SelectionColor[0]:=GDouble(Color and $ff)/255;
-    SelectionColor[1]:=GDouble((Color shr 8) and $ff)/255;
-    SelectionColor[2]:=GDouble((Color shr 16) and $ff)/255;
-    SelectionColor[3]:=0.0;
-    colorSel := PGTKCOLORSELECTION(
-      (PGTKCOLORSELECTIONDIALOG(ColorSelection))^.colorsel);
-    gtk_color_selection_set_color(colorSel,SelectionColor);
-  finally
-    FreeMem(SelectionColor);
-  end; 
+  Color:=ColorToRGB(Color);
+  SelectionColor.Pixel := 0;
+  SelectionColor.Red :=  Red(Color) shl 8;
+  SelectionColor.Green:= Green(Color) shl 8;
+  SelectionColor.Blue:= Blue(Color) shl 8;
+  colorSel := PGTKCOLORSELECTION((PGTKCOLORSELECTIONDIALOG(ColorSelection))^.colorsel);
+  gtk_color_selection_set_current_color(colorSel,@SelectionColor);
 end;
 
 {------------------------------------------------------------------------------
@@ -8178,6 +8172,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.412  2003/09/10 02:33:41  ajgenius
+  fixed TColotDialog for GTK2
+
   Revision 1.411  2003/09/09 20:46:38  ajgenius
   more implementation toward pango for gtk2
 
