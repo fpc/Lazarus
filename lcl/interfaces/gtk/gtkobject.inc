@@ -5113,19 +5113,9 @@ function TgtkObject.NewDC: PDeviceContext;
 begin
   Assert(False, Format('Trace:> [TgtkObject.NewDC]', []));
   Result:=GtkDef.NewPDeviceContext;
+  FillChar(Result^,SizeOf(TDeviceContext),0);
   with Result^ do
   begin
-    hWnd := 0;
-    GC := nil;
-    Drawable := nil;
-    PenPos.X := 0;
-    PenPos.Y := 0;
-    CurrentBitmap := nil;
-    CurrentFont := nil;
-    CurrentPen := nil;
-    CurrentBrush := nil;
-    ClipRegion := 0;
-    SavedContext := nil;
     gdk_color_black(gdk_colormap_get_system, @CurrentTextColor);
     gdk_color_white(gdk_colormap_get_system, @CurrentBackColor);
   end;
@@ -5158,6 +5148,7 @@ function TgtkObject.NewGDIObject(const GDIType: TGDIType): PGdiObject;
 begin
   Assert(False, Format('Trace:> [TgtkObject.NewGDIObject]', []));
   Result:=GtkDef.NewPGDIObject;
+  FillChar(Result^,SizeOf(TGDIObject),0);
   Result^.GDIType := GDIType;
   FGDIObjects.Add(Result);
 //writeln('[TgtkObject.NewGDIObject] ',HexStr(Cardinal(Result),8),'  ',FGDIObjects.Count);
@@ -5503,6 +5494,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.187  2002/08/30 12:32:22  lazarus
+  MG: MoveWindowOrgEx, Splitted FWinControls/FControls, TControl drawing, Better DesignerDrawing, ...
+
   Revision 1.186  2002/08/30 10:06:07  lazarus
   Fixed alignment of multiline TLabel.
   Simplified and prettified MessageBoxen.
