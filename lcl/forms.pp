@@ -425,14 +425,21 @@ function InitResourceComponent(Instance: TComponent;
       try
         Write(CompResource.Value[1],length(CompResource.Value));
         Position:=0;
-        writeln('Form Stream Signature=',copy(CompResource.Value,1,4));
-        Instance:=ReadComponent(Instance);
-        // MG: workaround til Visible=true is default
-        if Instance is TControl then
-          for a:=0 to Instance.ComponentCount-1 do
-            if Instance.Components[a] is TControl then
-              TControl(Instance.Components[a]).Visible:=true;
-        // MG end of workaround
+        writeln('F orm Stream Signature=',copy(CompResource.Value,1,4));
+        try
+          Instance:=ReadComponent(Instance);
+          // MG: workaround til Visible=true is default
+          if Instance is TControl then
+            for a:=0 to Instance.ComponentCount-1 do
+              if Instance.Components[a] is TControl then
+                TControl(Instance.Components[a]).Visible:=true;
+          // MG end of workaround
+        except
+          on E: Exception do begin
+            writeln('Form streaming: ',E.Message);
+            exit;
+          end;
+        end;
       finally
         Free;
       end;
