@@ -2024,7 +2024,7 @@ end;
 
    Sets the hint text of a control
  ------------------------------------------------------------------------------}
-procedure TControl.SetHint(const Value: String);
+procedure TControl.SetHint(const Value: TTranslateString);
 begin
   if FHint <> Value then FHint := Value;
 end;
@@ -3286,6 +3286,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.218  2004/10/13 09:59:24  vincents
+  change parameter type in implementation to TTranslateString too
+
   Revision 1.217  2004/09/14 10:23:44  mattias
   implemented finding DefineProperties in registered TPersistent, implemented auto commenting of missing units for Delphi unit conversion
 
