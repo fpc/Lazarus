@@ -2523,7 +2523,7 @@ begin
   if (Sender is TWinControl) and (TWinControl(Sender).HandleAllocated) then
   begin
     Widget:=Pointer(TWinControl(Sender).Handle);
-    if Gtk_Is_Object(Widget) then
+    if GtkWidgetIsA(Widget,gtk_object_get_type) then
     Begin
       Info := GetWidgetInfo(Widget, False);
       if Info <> nil then Dispose(Info);
@@ -4847,7 +4847,7 @@ var
   procedure SetContainerMenuToggleSize;
   var MenuClass: PGtkWidgetClass;
   begin
-    if GTK_IS_MENU(ContainerMenu) then begin
+    if GtkWidgetIsA(ContainerMenu,GTK_MENU_TYPE) then begin
       MenuClass:=GTK_WIDGET_CLASS(PGtkObject(ContainerMenu)^.klass);
       if OldMenuSizeRequestProc=nil then begin
         OldMenuSizeRequestProc:=MenuClass^.size_request;
@@ -4863,7 +4863,7 @@ begin
     MenuItem := PGtkWidget(Handle);
     ParentMenuWidget := PGtkWidget(Parent.Handle);
 
-    if GTK_IS_MENU_BAR(ParentMenuWidget) then begin
+    if GtkWidgetIsA(ParentMenuWidget,GTK_MENU_BAR_TYPE) then begin
       // mainmenu
       ContainerMenu:=ParentMenuWidget;
       gtk_menu_bar_insert(PGtkMenuBar(ParentMenuWidget),MenuItem,
@@ -4895,7 +4895,7 @@ begin
     
     SetContainerMenuToggleSize;
     
-    if GTK_IS_RADIO_MENU_ITEM(MenuItem) then
+    if GtkWidgetIsA(MenuItem,GTK_RADIO_MENU_ITEM_TYPE) then
       RegroupMenuItem(HMENU(MenuItem),GroupIndex);
 
     // Add accelerators
@@ -5347,6 +5347,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.164  2002/08/16 17:47:38  lazarus
+  MG: added some IDE menuicons, fixed submenu indicator bug
+
   Revision 1.163  2002/08/15 15:46:49  lazarus
   MG: added changes from Andrew (Clipping)
 
