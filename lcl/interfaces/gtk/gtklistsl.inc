@@ -604,7 +604,7 @@ end;
 constructor TGtkCListStringList.Create(List : PGtkCList);
 begin
   inherited Create;
-  if List = nil then raise Exception.Create('Unspecified list widget');
+  if List = nil then RaiseException('TGtkCListStringList.Create: Unspecified list widget');
   FGtkCList:= List;
 end;
 
@@ -687,7 +687,7 @@ var
   Item : PChar;
 begin
   if (Index < 0) or (Index >= Count) 
-  then raise Exception.Create('Out of bounds.')
+  then RaiseException('TGtkCListStringList.Get  Out of bounds.')
   else begin
     Item := nil;
     gtk_clist_get_text(FGtkCList, Index, 0, @Item);
@@ -771,6 +771,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2003/03/09 21:13:32  mattias
+  localized gtk interface
+
   Revision 1.11  2002/11/17 11:10:04  mattias
   TComboBox and TListBox accelerated and now supports objects
 
