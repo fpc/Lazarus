@@ -75,6 +75,10 @@ type
   TIdentifierCompatibilities = set of TIdentifierCompatibility;
   
   TIdentifierListItem = class
+  private
+    FParamList: string;
+    FParamListValid: boolean;
+    function GetParamList: string;
   public
     Compatibility: TIdentifierCompatibility;
     HasChilds: boolean;   // identifier can contain childs (class, record)
@@ -84,6 +88,7 @@ type
     Node: TCodeTreeNode;
     Tool: TFindDeclarationTool;
     function AsString: string;
+    property ParamList: string read GetParamList;
   end;
   
   TIdentifierListFlag = (ilfFilteredListNeedsUpdate);
@@ -94,7 +99,8 @@ type
     FFilteredList: TList;
     FFlags: TIdentifierListFlags;
     FHistory: TIdentifierHistoryList;
-    FItems: TAVLTree; // tree of TIdentifierListItem
+    FItems: TAVLTree; // tree of TIdentifierListItem (completely sorted)
+    FIdentView: TAVLTree; // tree of TIdentHistListItem sorted for identifiers
     FPrefix: string;
     procedure SetHistory(const AValue: TIdentifierHistoryList);
     procedure UpdateFilteredList;
@@ -205,7 +211,27 @@ begin
   end;
 
   // then sort alpabetically (lower is better)
-  Result:=CompareIdentifiers(Item1.Identifier,Item2.Identifier);
+  Result:=CompareIdentifiers(Item2.Identifier,Item1.Identifier);
+  if Result<>0 then exit;
+  
+  // then sort for ParamList (lower is better)
+  Result:=AnsiCompareText(Item2.ParamList,Item1.ParamList);
+end;
+
+function CompareIdentListItemsForIdents(Data1, Data2: Pointer): integer;
+var
+  Item1: TIdentifierListItem;
+  Item2: TIdentifierListItem;
+begin
+  Item1:=TIdentifierListItem(Data1);
+  Item2:=TIdentifierListItem(Data2);
+
+  // sort alpabetically (lower is better)
+  Result:=CompareIdentifiers(Item2.Identifier,Item1.Identifier);
+  if Result<>0 then exit;
+
+  // then sort for ParamList (lower is better)
+  Result:=AnsiCompareText(Item2.ParamList,Item1.ParamList);
 end;
 
 function CompareIdentHistListItem(Data1, Data2: Pointer): integer;
@@ -216,37 +242,24 @@ begin
   Item1:=TIdentHistListItem(Data1);
   Item2:=TIdentHistListItem(Data2);
 
-  Result:=CompareIdentifiers(PChar(Item1.Identifier),PChar(Item2.Identifier));
+  Result:=CompareIdentifiers(PChar(Item2.Identifier),PChar(Item1.Identifier));
   if Result<>0 then exit;
 
-  Result:=CompareIdentifiers(PChar(Item1.ParamList),PChar(Item2.ParamList));
-end;
-
-function GetParamList(IdentItem: TIdentifierListItem): string;
-begin
-  Result:='';
-  case IdentItem.Node.Desc of
-  ctnProcedure:
-    Result:=IdentItem.Tool.ExtractProcHead(IdentItem.Node,
-      [phpWithoutClassKeyword,phpWithoutClassName,phpWithoutName,phpInUpperCase]);
-  end;
+  Result:=CompareIdentifiers(PChar(Item2.ParamList),PChar(Item1.ParamList));
 end;
 
 function CompareIdentItemWithHistListItem(Data1, Data2: Pointer): integer;
 var
   IdentItem: TIdentifierListItem;
   HistItem: TIdentHistListItem;
-  ParamList: String;
 begin
   IdentItem:=TIdentifierListItem(Data1);
   HistItem:=TIdentHistListItem(Data2);
 
-  Result:=CompareIdentifiers(IdentItem.Identifier,PChar(HistItem.Identifier));
+  Result:=CompareIdentifiers(PChar(HistItem.Identifier),IdentItem.Identifier);
   if Result<>0 then exit;
 
-  ParamList:=GetParamList(IdentItem);
-  if (ParamList<>'') then
-    Result:=AnsiCompareText(ParamList,HistItem.ParamList);
+  Result:=AnsiCompareText(HistItem.ParamList,IdentItem.ParamList);
 end;
 
 { TIdentifierList }
@@ -303,12 +316,14 @@ constructor TIdentifierList.Create;
 begin
   FFlags:=[ilfFilteredListNeedsUpdate];
   FItems:=TAVLTree.Create(@CompareIdentListItems);
+  FIdentView:=TAVLTree.Create(@CompareIdentListItemsForIdents);
 end;
 
 destructor TIdentifierList.Destroy;
 begin
   Clear;
   FItems.Free;
+  FIdentView.Free;
   FFilteredList.Free;
   inherited Destroy;
 end;
@@ -316,15 +331,25 @@ end;
 procedure TIdentifierList.Clear;
 begin
   FItems.FreeAndClear;
+  FIdentView.Clear;
   Include(FFlags,ilfFilteredListNeedsUpdate);
 end;
 
 procedure TIdentifierList.Add(NewItem: TIdentifierListItem);
+var
+  AnAVLNode: TAVLTreeNode;
 begin
-  if History<>nil then
-    NewItem.HistoryIndex:=History.GetHistoryIndex(NewItem);
-  FItems.Add(NewItem);
-  Include(FFlags,ilfFilteredListNeedsUpdate);
+  AnAVLNode:=FIdentView.FindKey(NewItem,@CompareIdentListItemsForIdents);
+  if AnAVLNode=nil then begin
+    if History<>nil then
+      NewItem.HistoryIndex:=History.GetHistoryIndex(NewItem);
+    FItems.Add(NewItem);
+    FIdentView.Add(NewItem);
+    Include(FFlags,ilfFilteredListNeedsUpdate);
+  end else begin
+    // redefined identifier -> ignore
+    NewItem.Free;
+  end;
 end;
 
 function TIdentifierList.Count: integer;
@@ -346,6 +371,7 @@ function TIdentCompletionTool.CollectAllIdentifiers(
 var
   NewItem: TIdentifierListItem;
   Ident: PChar;
+  CurContextParent: TCodeTreeNode;
 begin
   // proceed searching ...
   Result:=ifrProceedSearch;
@@ -355,10 +381,11 @@ begin
     ' "',StringToPascalConst(copy(FoundContext.Tool.Src,FoundContext.Node.StartPos,50)),'"'
     ,' ',fdfIgnoreUsedUnits in Params.Flags);
   {$ENDIF}
-    
-  if LastGatheredIdentParent<>FoundContext.Node.Parent then begin
+
+  CurContextParent:=FoundContext.Node.GetFindContextParent;
+  if LastGatheredIdentParent<>CurContextParent then begin
     // new context level
-    LastGatheredIdentParent:=FoundContext.Node.Parent;
+    LastGatheredIdentParent:=CurContextParent;
     inc(LastGatheredIdentLevel);
   end;
 
@@ -506,6 +533,18 @@ end;
 
 { TIdentifierListItem }
 
+function TIdentifierListItem.GetParamList: string;
+begin
+  if not FParamListValid then begin
+    if Node.Desc=ctnProcedure then
+      FParamList:=Tool.ExtractProcHead(Node,
+         [phpWithoutClassKeyword,phpWithoutClassName,
+          phpWithoutName,phpInUpperCase]);
+    FParamListValid:=true;
+  end;
+  Result:=FParamList;
+end;
+
 function TIdentifierListItem.AsString: string;
 begin
   Result:=IdentifierCompatibilityNames[Compatibility];
@@ -585,7 +624,7 @@ begin
     NewHistItem:=TIdentHistListItem.Create;
     NewHistItem.Identifier:=GetIdentifier(NewItem.Identifier);
     NewHistItem.NodeDesc:=NewItem.Node.Desc;
-    NewHistItem.ParamList:=GetParamList(NewItem);
+    NewHistItem.ParamList:=NewItem.ParamList;
     AdjustIndex:=0;
   end;
   NewHistItem.HistoryIndex:=0;

@@ -139,6 +139,8 @@ const
      [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];
   AllUsableSourceTypes =
      [ctnUnit];
+  AllFindContextDescs = AllIdentifierDefinitions +
+     [ctnClass,ctnClassInterface,ctnProcedure];
 
 
   // CodeTreeNodeSubDescriptors
@@ -180,6 +182,7 @@ type
     function HasAsChild(Node: TCodeTreeNode): boolean;
     function HasParentOfType(ParentDesc: TCodeTreeNodeDesc): boolean;
     function GetNodeOfType(ADesc: TCodeTreeNodeDesc): TCodeTreeNode;
+    function GetFindContextParent: TCodeTreeNode;
     function GetLevel: integer;
     function DescAsString: string;
     function GetRoot: TCodeTreeNode;
@@ -478,6 +481,13 @@ function TCodeTreeNode.GetNodeOfType(ADesc: TCodeTreeNodeDesc
 begin
   Result:=Self;
   while (Result<>nil) and (Result.Desc<>ADesc) do
+    Result:=Result.Parent;
+end;
+
+function TCodeTreeNode.GetFindContextParent: TCodeTreeNode;
+begin
+  Result:=Parent;
+  while (Result<>nil) and (not (Result.Desc in AllFindContextDescs)) do
     Result:=Result.Parent;
 end;
 

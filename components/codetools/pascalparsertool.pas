@@ -205,6 +205,8 @@ type
         InUpperCase: boolean): string;
     function ExtractPropType(PropNode: TCodeTreeNode;
         InUpperCase, EmptyIfIndexed: boolean): string;
+    function ExtractProperty(PropNode: TCodeTreeNode;
+        Attr: TProcHeadAttributes): string;
     function ExtractProcName(ProcNode: TCodeTreeNode;
         Attr: TProcHeadAttributes): string;
     function ExtractProcHead(ProcNode: TCodeTreeNode;
@@ -3202,6 +3204,39 @@ begin
     Result:=GetAtom;
 end;
 
+function TPascalParserTool.ExtractProperty(PropNode: TCodeTreeNode;
+  Attr: TProcHeadAttributes): string;
+begin
+  Result:='';
+  ExtractProcHeadPos:=phepNone;
+  if (PropNode=nil) or (PropNode.StartPos<1) or (PropNode.Desc<>ctnProperty)
+  then exit;
+  // start extraction
+  InitExtraction;
+  MoveCursorToNodeStart(PropNode);
+  ExtractNextAtom(false,Attr);
+  // parse 'property'
+  ExtractNextAtom(phpWithStart in Attr,Attr);
+  ExtractProcHeadPos:=phepStart;
+  // parse name
+  ExtractNextAtom(not (phpWithoutName in Attr),Attr);
+  ExtractProcHeadPos:=phepName;
+  // read parameter list
+  if (CurPos.Flag=cafEdgedBracketOpen) then
+    ReadParamList(false,true,Attr);
+  ExtractProcHeadPos:=phepParamList;
+  // read result type
+  if (CurPos.Flag=cafColon) then begin
+    ExtractNextAtom(phpWithResultType in Attr,Attr);
+    if not AtomIsIdentifier(false) then exit;
+    ExtractNextAtom(phpWithResultType in Attr,Attr);
+    ExtractProcHeadPos:=phepResultType;
+  end;
+
+  // copy memorystream to Result string
+  Result:=GetExtraction;
+end;
+
 function TPascalParserTool.ExtractProcName(ProcNode: TCodeTreeNode;
   Attr: TProcHeadAttributes): string;
 var
@@ -3428,6 +3463,7 @@ begin
     ExtractNextAtom(phpWithResultType in Attr,Attr);
     ExtractProcHeadPos:=phepResultType;
   end;
+  // read 'of object'
   if UpAtomIs('OF') then begin
     if IsProcType then begin
       ExtractNextAtom(phpWithOfObject in Attr,Attr);
@@ -3981,9 +4017,10 @@ begin
   ReadNextAtom; // read 'property'
   ReadNextAtom; // read name
   ReadNextAtom;
-  if CurPos.Flag=cafEdgedBracketOpen then
+  if CurPos.Flag=cafEdgedBracketOpen then begin
     ReadTilBracketClose(true);
-  ReadNextAtom;
+    ReadNextAtom;
+  end;
   Result:=(CurPos.Flag<>cafColon);
 end;
 

@@ -152,6 +152,13 @@ begin
              phpWithOfObject]);
         end;
         
+      ctnProperty:
+        begin
+          s:=IdentItem.Tool.ExtractProperty(IdentItem.Node,
+            [phpWithoutName,phpWithVarModifiers,
+             phpWithParameterNames,phpWithDefaultValues,phpWithResultType]);
+        end;
+        
       ctnVarDefinition:
         begin
           ANode:=IdentItem.Tool.FindTypeNodeOfDefinition(IdentItem.Node);
