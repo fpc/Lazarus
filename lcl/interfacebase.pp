@@ -43,7 +43,8 @@ interface
 {$endif}
 
 uses
-  LCLLinux, LCLType, VCLGlobals, Classes, Controls, LMessages, GraphType;
+  SysUtils, LCLLinux, LCLType, VCLGlobals, Classes, Controls, LMessages,
+  GraphType, GraphicsMath;
 
 type
 
@@ -80,6 +81,8 @@ type
 
 implementation
 
+Uses StdCtrls;
+
 {$I interfacebase.inc}
 
 
@@ -91,6 +94,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2002/08/19 20:34:47  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.11  2002/05/20 14:19:03  lazarus
   MG: activated the clientrect bugfixes
 
