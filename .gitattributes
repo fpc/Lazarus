@@ -582,6 +582,7 @@ examples/scrollbar.pp svneol=native#text/pascal
 examples/selection.pp svneol=native#text/pascal
 examples/selectionform.pp svneol=native#text/pascal
 examples/speedtest.pp svneol=native#text/pascal
+examples/synchronize.pp svneol=native#text/pascal
 examples/synedit1.pas svneol=native#text/pascal
 examples/testall.pp svneol=native#text/pascal
 examples/testallform.pp svneol=native#text/pascal
