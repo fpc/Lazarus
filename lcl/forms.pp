@@ -23,8 +23,6 @@
  ***************************************************************************/
 }
 
-
-
 unit Forms;
 
 
@@ -257,8 +255,6 @@ type
       procedure Idle;
       procedure MouseIdle(const CurrentControl: TControl);
       procedure SetIcon(AValue: TIcon);
-      
-      procedure ExceptionOccurred(Sender : TObject; Addr,Frame : Pointer);
    public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
@@ -317,10 +313,23 @@ implementation
 
 
 uses 
-  buttons,stdctrls,interfaces,lresources {,designer};
+  Buttons, StdCtrls, Interfaces, LResources {,designer};
 
+const
+  FocusMessages : Boolean = true;
+
+
+procedure ExceptionOccurred(Sender : TObject; Addr,Frame : Pointer);
 var
-  FocusMessages : Boolean; //Should set it to TRUE by defualt but fpc does not handle that yet.
+  Mess : String;
+Begin
+  Mess := 'Error occurred at '#13#10'Address '+HexStr(Cardinal(Addr),8);
+  if Application<>nil then
+    Application.MessageBox('Exception',PChar(Mess),mb_IconError+mb_Ok)
+  else
+    writeln(Mess);
+end;
+
 
 function KeysToShiftState(Keys:Word): TShiftState;
 begin
