@@ -3777,7 +3777,7 @@ function TFindDeclarationTool.FindExpressionResultType(
     - nil is compatible to pointers and classes
     
 
-- operator overloading
+- operator overloading?
 - internal types. e.g. string[], ansistring[], shortstring[], pchar[] to char
 - the type of a subrange is the type of the first constant/enum/number/char
 - predefined types:
@@ -3822,17 +3822,35 @@ var
   ExprStack: TExprStack;
   StackPtr: integer;
   
-  procedure ExecuteStack;
-  var NewOperand: TExpressionType;
-    LastPos: integer;
+  procedure ExecuteStack(Complete: boolean);
+  { Executes the oerand+operator stack
+    Examples:
+      Position Operand Operator
+         0      AWord     *
+         1      AByte     +
+      Because * has higher predence than + the stack is executed:
+      AWord*AByte gives an integer. New stack
+      Position Operand Operator
+         0      Integer   +
+  }
+  var
+    NewOperand: TExpressionType;
+    LastPos: TAtomPosition;
   begin
     if StackPtr<=0 then begin
       // only one element -> nothing to do
       exit;
     end;
-    LastPos:=CurPos.StartPos;
+    LastPos:=CurPos;
+    {$IFDEF ShowExprEval}
+    DebugLn('[TFindDeclarationTool.FindExpressionResultType.ExecuteStack] ',
+      ' StackPtr=',dbgs(StackPtr),
+      ' Lvl=',dbgs(ExprStack[StackPtr].OperatorLvl),
+      ' Complete=',dbgs(Complete));
+    {$ENDIF}
     while (StackPtr>0)
-    and (ExprStack[StackPtr].OperatorLvl>=ExprStack[StackPtr-1].OperatorLvl) do
+    and (Complete
+     or (ExprStack[StackPtr-1].OperatorLvl>=ExprStack[StackPtr].OperatorLvl)) do
     begin
       // next operand has a lower or equal priority/precedence
       // -> calculate last two operands
@@ -3844,7 +3862,7 @@ var
       dec(StackPtr);
       ExprStack[StackPtr].Operand:=NewOperand;
     end;
-    MoveCursorToCleanPos(LastPos);
+    MoveCursorToAtomPos(LastPos);
   end;
   
   procedure RaiseBinaryOperatorNotFound;
@@ -3898,10 +3916,10 @@ begin
     DebugLn('[TFindDeclarationTool.FindExpressionResultType] Operator: ',
       GetAtom,' CurPos.EndPos=',dbgs(CurPos.EndPos),' EndPos=',dbgs(EndPos));
     {$ENDIF}
-    // check if expression completely parsed
+    // check if expression is completely parsed
     if (CurPos.EndPos>EndPos) or (CurExprType.Desc=xtNone) then begin
-      // -> execute stack
-      ExecuteStack;
+      // -> execute complete stack
+      ExecuteStack(true);
       Result:=ExprStack[StackPtr].Operand;
       Params.Flags:=OldFlags;
       exit;
@@ -3932,7 +3950,7 @@ begin
     else
       RaiseInternalError;
     // execute stack if possible
-    ExecuteStack;
+    ExecuteStack(false);
     // move cursor to next atom (= next operand start)
     ReadNextAtom;
   until false;
