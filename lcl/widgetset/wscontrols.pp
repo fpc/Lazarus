@@ -70,7 +70,6 @@ type
 
     class procedure SetBorderStyle(const AWinControl: TWinControl; const ABorderStyle: TBorderStyle); virtual;
     class procedure SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); virtual;
-    class procedure SetCursor(const AControl: TControl; const ACursor: TCursor); override;
     class procedure SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); virtual;
     class procedure SetSize(const AWinControl: TWinControl; const AWidth, AHeight: Integer); virtual;
     class procedure SetText(const AWinControl: TWinControl; const AText: String); virtual;
@@ -126,11 +125,6 @@ end;
   
 procedure TWSWinControl.SetBounds(const AWinControl: TWinControl; const ALeft, ATop, AWidth, AHeight: Integer); 
 begin
-end;
-
-procedure TWSWinControl.SetCursor(const AControl: TControl; const ACursor: TCursor);
-begin
-  //TODO: add default
 end;
 
 procedure TWSWinControl.SetPos(const AWinControl: TWinControl; const ALeft, ATop: Integer); 
