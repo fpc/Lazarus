@@ -136,8 +136,10 @@ procedure TCustomMemo.Loaded;
 begin
   inherited Loaded;
 
-  TWSCustomMemoClass(WidgetSetClass).SetScrollbars(Self, FScrollbars);
-  TWSCustomMemoClass(WidgetSetClass).SetWordWrap(Self, FWordWrap);
+  if HandleAllocated then begin
+    TWSCustomMemoClass(WidgetSetClass).SetScrollbars(Self, FScrollbars);
+    TWSCustomMemoClass(WidgetSetClass).SetWordWrap(Self, FWordWrap);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -176,6 +178,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2004/11/15 12:37:52  mattias
+  added check handleallocated on loading memo
+
   Revision 1.30  2004/09/22 16:13:01  micha
   convert LM_SETPROPERTIES message to interface methods for TCustomMemo
 
