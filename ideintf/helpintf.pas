@@ -68,6 +68,7 @@ type
   TPascalHelpContextList = class
   private
     FCount: integer;
+    // TODO: convert to dynamic array, when fpc 1.0 support is removed.
     fItems: TPascalHelpContextPtr;
     function GetItems(Index: integer): TPascalHelpContext;
   public
@@ -1903,6 +1904,8 @@ procedure TPascalHelpContextList.Add(const Context: TPascalHelpContext);
 begin
   inc(FCount);
   ReAllocMem(fItems,SizeOf(TPascalHelpContext)*FCount);
+  // to prevent freeing uninitialized strings, initialize the new strings to nil
+  FillChar(fItems[FCount-1], SizeOf(TPascalHelpContext), 0);
   fItems[FCount-1]:=Context;
 end;
 
@@ -1914,11 +1917,18 @@ begin
   if Index<FCount-1 then
     System.Move(fItems[Index],fItems[Index+1],
                 SizeOf(TPascalHelpContext)*(FCount-Index-1));
+  // to prevent freeing uninitialized strings, initialize the new strings to nil
+  FillChar(fItems[Index], SizeOf(TPascalHelpContext), 0);
   fItems[Index]:=Context;
 end;
 
 procedure TPascalHelpContextList.Clear;
+var
+  Index: Integer;
 begin
+  // Set all item strings to '', so fpc will finalize them.
+  for Index := 0 to FCount-1 do
+    fItems[Index].Context := '';
   ReAllocMem(fItems,0);
 end;
 
