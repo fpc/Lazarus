@@ -3156,8 +3156,8 @@ begin
           end;
         end
         else begin
-          ListViewAddItem(Sender,Integer(data^));
-          ListViewChangeItem(Sender,Integer(data^));
+          ListViewAddItem(Sender,-1);
+          ListViewChangeItem(Sender,TListView(Sender).Items.Count-1);
         end;
       end;
 
@@ -9291,6 +9291,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.486  2004/04/02 20:44:08  mattias
+  fixed LM_LV_AddItem message in gtk intf from  Andrew H.
+
   Revision 1.485  2004/03/28 12:49:22  mattias
   implemented mask merge and extraction for raw images
 

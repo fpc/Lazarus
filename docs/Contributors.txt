@@ -1,13 +1,14 @@
 The following people contributed to Lazarus:
 
-Andrew Johnson
 Andreas Hausladen
+Andrew Haines
+Andrew Johnson
 Bob Wingard
 Cliff Baeseman
 Colin Western
 Curtis White
 Darek Mazur
-GongYu     
+GongYu
 Hans-Joachim Ott
 Jason King
 Jeffrey A. Wormsley
@@ -18,16 +19,16 @@ Keith Bowes
 Luis R. Hilario B.
 Marc Weustink
 Martin Patik
-Martin Smat  
+Martin Smat
 Martyn Ranyard
 Mattias Gaertner
 Michael A. Hess
 Micha Nelissen
 Michal Bukovjan
 Olivier Guilbaud
+Peter Dyson
 Radek Cervinka
 Raul Moratalla
-Peter Dyson
 Reimar Grabowski
 Samuel Liddicott
 Seppo Suutarla
