@@ -811,9 +811,60 @@ type
     property OnStartDrag;
   end;
 
+  {TStaticText}
+  TStaticBorderStyle = (sbsNone, sbsSingle, sbsSunken);
+
+  TCustomStaticText = class(TCustomControl)
+  Private
+    FAlignment: TAlignment;
+    FBorderStyle: TStaticBorderStyle;
+    FShowAccelChar: Boolean;
+  protected
+    Procedure DoAutoSize; Override;
+    Procedure CMTextChanged(var Message: TLMSetText); message CM_TEXTCHANGED;
+
+    Procedure SetAlignment(Value : TAlignment);
+    Function GetAlignment : TAlignment;
+    Procedure SetBorderStyle(Value : TStaticBorderStyle);
+    Function GetBorderStyle : TStaticBorderStyle;
+    Procedure SetShowAccelChar(Value : Boolean);
+    Function GetShowAccelChar : Boolean;
+
+    property Alignment: TAlignment read GetAlignment write SetAlignment;
+    property BorderStyle: TStaticBorderStyle read GetBorderStyle write SetBorderStyle;
+    property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar;
+  public
+    constructor Create(AOwner: TComponent); override;
+    Procedure Paint; override;
+  end;
+
+  TStaticText = class(TCustomStaticText)
+  published
+    property Align;
+    property Alignment;
+    property Anchors;
+    property AutoSize;
+    property BorderStyle;
+    property Caption;
+    property Color;
+    property Constraints;
+    property Enabled;
+    property Font;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowAccelChar;
+    property ShowHint;
+    property Visible;
+    property OnClick;
+    property OnDblClick;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+  end;
 
 Function DeleteAmpersands(var Str : String) : Longint;
-
 
 implementation
 
@@ -1335,11 +1386,136 @@ end;
 {$I radiobutton.inc}
 {$I togglebox.inc}
 
+{ TCustomStaticText }
+Procedure TCustomStaticText.DoAutoSize;
+var
+  R : TRect;
+  DC : hDC;
+begin
+  If AutoSizing or not AutoSize then
+    Exit;
+  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
+  AutoSizing := True;
+  DC := GetDC(Handle);
+  Try
+    R := Rect(0,0, Width, Height);
+    If BorderStyle <> sbsNone then
+      InflateRect(R, -2, -2);
+    SelectObject(DC, Font.Handle);
+    DrawText(DC, PChar(Caption), Length(Caption), R,
+      DT_CalcRect or DT_NoPrefix or DT_WordBreak);
+    If BorderStyle <> sbsNone then
+      InflateRect(R, 2, 2);
+
+    Width := R.Right - R.Left;
+    Height := R.Bottom - R.Top;
+  Finally
+    ReleaseDC(Handle, DC);
+    AutoSizing := False;
+  end;
+end;
+
+Procedure TCustomStaticText.SetAlignment(Value : TAlignment);
+begin
+  If FAlignment <> Value then begin
+    FAlignment := Value;
+    Invalidate;
+  end;
+end;
+
+Function TCustomStaticText.GetAlignment : TAlignment;
+begin
+  Result := FAlignment;
+end;
+
+Procedure TCustomStaticText.SetBorderStyle(Value : TStaticBorderStyle);
+begin
+  If FBorderStyle <> Value then begin
+    FBorderStyle := Value;
+    Invalidate;
+  end;
+end;
+
+Function TCustomStaticText.GetBorderStyle : TStaticBorderStyle;
+begin
+  Result := FBorderStyle;
+end;
+
+Procedure TCustomStaticText.SetShowAccelChar(Value : Boolean);
+begin
+  If FShowAccelChar <> Value then begin
+    FShowAccelChar := Value;
+    Invalidate;
+  end;
+end;
+
+procedure TCustomStaticText.CMTextChanged(var Message: TLMSetText);
+begin
+  Invalidate;
+end;
+
+Function TCustomStaticText.GetShowAccelChar : Boolean;
+begin
+  Result := FShowAccelChar;
+end;
+
+constructor TCustomStaticText.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  ControlStyle := [csSetCaption, csOpaque, csClickEvents, csDoubleClicks, csReplicatable];
+  Width := 65;
+  Height := 17;
+end;
+
+Procedure TCustomStaticText.Paint;
+var
+  TR : TTextStyle;
+  R : TRect;
+begin
+  R := Rect(0,0,Width,Height);
+  Canvas.Color := Self.Color;
+  Canvas.Font := Self.Font;
+  With Canvas do begin
+    FillRect(R);
+    If BorderStyle <> sbsNone then begin
+      InflateRect(R,-2,-2);
+      Pen.Style := psSolid;
+      If BorderStyle = sbsSunken then
+        Pen.Color := clBtnShadow
+      else
+        Pen.Color := clBtnHighlight;
+      MoveTo(0, 0);
+      LineTo(Width - 1,0);
+      MoveTo(0, 0);
+      LineTo(0,Height - 1);
+      If BorderStyle = sbsSunken then
+        Pen.Color := clBtnHighlight
+      else
+        Pen.Color := clBtnShadow;
+      MoveTo(0,Height - 1);
+      LineTo(Width - 1,Height - 1);
+      MoveTo(Width - 1, 0);
+      LineTo(Width - 1,Height);
+    end;
+    FillChar(TR,SizeOf(TR),0);
+    With TR do begin
+      Alignment := Self.Alignment;
+      WordBreak := True;
+      Clipping := True;
+      ShowPrefix := ShowAccelChar;
+    end;
+    TextRect(R, 0, 0, Caption, TR);
+  end;
+end;
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.54  2002/10/14 14:29:50  lazarus
+  AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
+
   Revision 1.53  2002/10/04 14:24:14  lazarus
   MG: added DrawItem to TComboBox/TListBox
 

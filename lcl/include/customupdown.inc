@@ -14,10 +14,158 @@
  *****************************************************************************
 
 Problems -
-  - Trying to remove component in form editor freezes Lazarus
-  - Doesn't draw Arrows
+  - Doesn't draw Themed Arrows/doesn't match system colors
   - Associate Key down and Tabbing(VK_Up, VK_Down)
 }
+Type
+  TUpDownButton = Class(TSpeedButton)
+  Private
+    FUpDown : TCustomUpDown;
+    FButtonType : TUDBtnType;
+  Protected
+    Procedure Click; Override;
+    Procedure ButtonMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    Procedure ButtonMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+  Public
+    constructor Create(UpDown : TCustomUpDown; ButtonType : TUDBtnType);
+
+    Procedure Paint; Override;
+  end;
+
+Procedure TUpDownButton.ButtonMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  With FUpDown do begin
+    BTimerProc := @Self.Click;
+    BTimerBounds := Bounds(Self.ClientOrigin.X, Self.ClientOrigin.Y,
+      Self.Width,Self.Height);
+    If Not Assigned(BTimer) then
+      BTimer := TTimer.Create(FUpDown);
+    With BTimer do begin
+      Enabled := False;
+      Interval := 100;
+      OnTimer := @BTimerExec;
+      Enabled := True;
+    end;
+  end;
+end;
+
+Procedure TUpDownButton.ButtonMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  With FUpDown do
+    If Assigned(BTimer) then begin
+      BTimer.Free;
+      BTimer := nil;
+      BTimerBounds := Rect(0,0,0,0);
+      BTimerProc := nil;
+    end;
+end;
+
+Procedure TUpDownButton.Click;
+begin
+  With FUpDown do begin
+    If not CanChange then
+      exit;
+    Case FButtonType of
+      btPrev :
+        begin
+          If Position - Increment >= Min then
+            Position := Position - Increment
+          else
+            If Wrap then
+              Position := Max + (Position - Increment - Min) + 1
+          else
+            Position := Min;
+        end;
+      btNext :
+        begin
+          If Position + Increment <= Max then
+            Position := Position + Increment
+          else
+            If Wrap then
+              Position := Min + (Position + Increment - Max) - 1
+          else
+            Position := Max;
+        end;
+        
+    end;
+    FUpDown.Click(FButtonType);
+  end;
+end;
+
+constructor TUpDownButton.Create(UpDown : TCustomUpDown; ButtonType : TUDBtnType);
+begin
+  Inherited Create(UpDown);
+  FUpDown := UpDown;
+  FButtonType := ButtonType;
+
+  Parent := FUpDown;
+  TabStop := False;
+  ControlStyle := ControlStyle + [csNoFocus];
+  OnMouseDown := @ButtonMouseDown;
+  OnMouseUp := @ButtonMouseUp;
+  Show;
+end;
+
+Procedure TUpDownButton.Paint;
+var
+  Points : Array[0..3] of TPoint;
+begin
+  Inherited Paint;
+  If (((Width <= 5) or (Height <= 10)) and
+    (FUpDown.Orientation = udVertical)) or
+    (((Height <= 5) or (Width <= 10)) and
+    (FUpDown.Orientation = udHorizontal))
+  then
+    exit;
+  Case FButtonType of
+    btPrev :
+      begin
+        If FUpDown.Orientation = udVertical then begin
+          Points[0].X := 2;
+          Points[0].Y := 2;
+          Points[1].X := Width - 2;
+          Points[1].Y := 2;
+          Points[2].X := Width div 2;
+          Points[2].Y := Height - 2;
+        end
+        else begin
+          Points[0].X := 2;
+          Points[0].Y := Height div 2;
+          Points[1].X := Width - 2;
+          Points[1].Y := 2;
+          Points[2].X := Width - 2;
+          Points[2].Y := Height - 2;
+        end;
+      end;
+    btNext :
+      begin
+        If FUpDown.Orientation = udVertical then begin
+          Points[0].X := Width div 2;
+          Points[0].Y := 2;
+          Points[1].X := Width - 2;
+          Points[1].Y := Height - 2;
+          Points[2].X := 2;
+          Points[2].Y := Height - 2;
+        end
+        else begin
+          Points[0].X := 2;
+          Points[0].Y := 2;
+          Points[1].X := Width - 2;
+          Points[1].Y := Height div 2;
+          Points[2].X := 2;
+          Points[2].Y := Height - 2;
+        end;
+     end
+  end;
+  Canvas.Color := clBtnText;//Not perfect, but it works
+  Canvas.Pen.Color := clBtnText;
+  Points[3] := Points[0];
+  Canvas.Polygon(@Points[0], 4, False);
+end;
 
 constructor TCustomUpDown.Create(AOwner: TComponent);
 begin
@@ -25,24 +173,8 @@ begin
   fCompStyle := csPanel;
   ControlStyle := ControlStyle  - [csDoubleClicks] +
     [csClickEvents, csOpaque,  csReplicatable, csNoFocus];
-  MinBtn := TSpeedButton.Create(Self);
-  With TSpeedButton(MinBtn) do begin
-    Parent := Self;
-    TabStop := False;
-    ControlStyle := MinBtn.ControlStyle + [csNoFocus];
-    OnMouseDown := @MinBtnMouseDown;
-    OnMouseUp := @BtnMouseUp;
-    Show;
-  end;
-  MaxBtn := TSpeedButton.Create(Self);
-  With TSpeedButton(MaxBtn) do begin
-    Parent := Self;
-    TabStop := False;
-    ControlStyle := MaxBtn.ControlStyle + [csNoFocus];
-    OnMouseDown := @MaxBtnMouseDown;
-    OnMouseUp := @BtnMouseUp;
-    Show;
-  end;
+  MinBtn := TUpDownButton.Create(Self, btPrev);
+  MaxBtn := TUpDownButton.Create(Self, btNext);
   InheritedChangeBounds := True;
   SetBounds(0,0,17,31);
   InheritedChangeBounds := False;
@@ -63,11 +195,18 @@ begin
   inherited destroy;
 end;
 
+Procedure TCustomUpDown.BTimerExec(Sender : TObject);
+begin
+  If Assigned(BTimerProc) then
+    If PtInRect(BTimerBounds,Mouse.CursorPos) then
+      BTimerProc;
+end;
+
 procedure TCustomUpDown.ChangeBounds(ALeft, ATop, AWidth, AHeight: Integer);
 var
   ARect : TRect;
 begin
-  If InheritedChangeBounds then
+  If InheritedChangeBounds or (csLoading in ComponentState) then
     Inherited ChangeBounds(ALeft, ATop, AWidth, AHeight)
   else begin
     InheritedChangeBounds := True;
@@ -79,86 +218,6 @@ begin
     InheritedChangeBounds := False;
     Inherited ChangeBounds(ALeft, ATop, AWidth, AHeight);
   end;
-end;
-
-Procedure TCustomUpDown.MinBtnClick;
-begin
-  If not CanChange then
-    exit;
-  If Position - Increment >= Min then
-    Position := Position - Increment
-  else
-    If Wrap then
-      Position := Max + (Position - Increment - Min) + 1
-    else
-      Position := Min;
-  Click(btPrev);
-end;
-
-Procedure TCustomUpDown.BTimerExec(Sender : TObject);
-begin
-  If Assigned(BTimerProc) then
-    If PtInRect(BTimerBounds,Mouse.CursorPos) then
-      BTimerProc;
-end;
-
-Procedure TCustomUpDown.MinBtnMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  BTimerProc := @MinBtnClick;
-  BTimerProc;
-  BTimerBounds := Bounds(MinBtn.ClientOrigin.X,
-    MinBtn.ClientOrigin.Y, MinBtn.Width,MinBtn.Height);
-  If Not Assigned(BTimer) then
-    BTimer := TTimer.Create(Self);;
-  With BTimer do begin
-    Enabled := False;
-    Interval := 100;
-    OnTimer := @BTimerExec;
-    Enabled := True;
-  end;
-end;
-
-Procedure TCustomUpDown.MaxBtnMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  BTimerProc := @MaxBtnClick;
-  BTimerProc;
-  BTimerBounds := Bounds(MaxBtn.ClientOrigin.X,
-    MaxBtn.ClientOrigin.Y, MaxBtn.Width,MaxBtn.Height);
-  If Not Assigned(BTimer) then
-    BTimer := TTimer.Create(Self);
-  With BTimer do begin
-    Enabled := False;
-    Interval := 100;
-    OnTimer := @BTimerExec;
-    Enabled := True;
-  end;
-end;
-
-Procedure TCustomUpDown.BtnMouseUp(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  If Assigned(BTimer) then begin
-    BTimer.Free;
-    BTimer := nil;
-    BTimerBounds := Rect(0,0,0,0);
-    BTimerProc := nil;
-  end;
-end;
-
-Procedure TCustomUpDown.MaxBtnClick;
-begin
-  If not CanChange then
-    exit;
-  If Position + Increment <= Max then
-    Position := Position + Increment
-  else
-    If Wrap then
-      Position := Min + (Position + Increment - Max) - 1
-    else
-      Position := Max;
-  Click(btNext);
 end;
 
 Function TCustomUpDown.CanChange: Boolean;
@@ -228,10 +287,10 @@ begin
       Case Key of
         VK_Up,
         VK_Right:
-          MaxBtnClick;
+          TSpeedButton(MaxBtn).Click;
         VK_Down,
         VK_Left:
-          MinBtnClick;
+          TSpeedButton(MinBtn).Click;
       end;
 end;
 

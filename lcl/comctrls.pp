@@ -500,14 +500,6 @@ type
     procedure SetArrowKeys(Value: Boolean);
     procedure SetThousands(Value: Boolean);
     procedure SetWrap(Value: Boolean);
-    Procedure MinBtnClick;
-    Procedure MaxBtnClick;
-    Procedure MinBtnMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    Procedure MaxBtnMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    Procedure BtnMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     Procedure BTimerExec(Sender : TObject);
   protected
     OldKeyDown : TKeyEvent;
@@ -1707,6 +1699,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.51  2002/10/14 14:29:50  lazarus
+  AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
+
   Revision 1.50  2002/10/09 11:46:04  lazarus
   MG: fixed loading TListView from stream
 

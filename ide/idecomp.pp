@@ -319,7 +319,8 @@ begin
   RegisterComponents('Standard','Menus',[TMainMenu,TPopupMenu]);
   RegisterComponents('Standard','Buttons',[TButton]);
   RegisterComponents('Standard','StdCtrls',[TEdit,TLabel,TMemo,TCheckBox,
-          TListBox,TRadioButton,TComboBox,TScrollBar,TGroupBox,TToggleBox]);
+          TListBox,TRadioButton,TComboBox,TScrollBar,TGroupBox,TToggleBox,
+          TStaticText]);
   RegisterComponents('Standard', 'ExtCtrls',[TRadioGroup,TPanel]);
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
   RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox,

@@ -17,6 +17,9 @@
  *                                                                           *
  *****************************************************************************
 }
+
+function DrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer; override;
+
 Procedure NotifyUser(const DialogCaption, DialogMessage : String; DialogType : longint); override;
 Procedure NotifyUserAtXY(const DialogCaption, DialogMessage : String; DialogType : longint; X, Y : Longint); override;
 
@@ -29,6 +32,9 @@ Function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Bool
 
 {
   $Log$
+  Revision 1.5  2002/10/14 14:29:50  lazarus
+  AJ: Improvements to TUpDown; Added TStaticText & GNOME DrawText
+
   Revision 1.4  2002/10/12 16:36:40  lazarus
   AJ: added new QueryUser/NotifyUser
 
