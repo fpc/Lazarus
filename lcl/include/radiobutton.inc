@@ -67,7 +67,7 @@ procedure TRadioButton.SetText(const Value: TCaption);
 begin
   if Text=Value then exit;
   Inherited SetText(Value);
-  if not (csLoading in ComponentState) then begin
+  if (not (csLoading in ComponentState)) and HandleAllocated then begin
     RecreateWnd;
     DoAutoSize;
   end;
@@ -108,6 +108,9 @@ end;
 
 {
   $Log$
+  Revision 1.14  2004/01/06 17:58:06  mattias
+  fixed setting TRadioButton.Caption for gtk
+
   Revision 1.13  2003/03/17 20:53:16  mattias
   removed SetRadioButtonGroupMode
 

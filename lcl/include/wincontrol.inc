@@ -3059,9 +3059,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.SetText(const Value: TCaption);
 begin
-  if HandleAllocated
-  then inherited SetText(Value)
-  else FCaption := Value;
+  if FCaption = Value then exit;
+  FCaption := Value;
+  if HandleAllocated then
+    SetTextBuf(PChar(FCaption));
 end;
 
 {------------------------------------------------------------------------------
@@ -3178,6 +3179,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.187  2004/01/06 17:58:06  mattias
+  fixed setting TRadioButton.Caption for gtk
+
   Revision 1.186  2004/01/03 23:14:59  mattias
   default font can now change height and fixed gtk crash
 

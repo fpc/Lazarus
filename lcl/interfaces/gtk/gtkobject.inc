@@ -3752,7 +3752,8 @@ begin
     end;
 
   csCheckBox,
-  csToggleBox:
+  csToggleBox,
+  csRadioButton:
     begin
       aLabel := Ampersands2Underscore(PLabel);
       Try
@@ -3765,7 +3766,7 @@ begin
         StrDispose(aLabel);
       end;
     end;
-
+    
   csGroupBox    : gtk_frame_set_label(pgtkFrame(P),pLabel);
 
   {$IfDef GTK1}
@@ -8417,6 +8418,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.446  2004/01/06 17:58:06  mattias
+  fixed setting TRadioButton.Caption for gtk
+
   Revision 1.445  2004/01/06 15:20:19  mattias
   fixed instant termination of gtk message handling
 

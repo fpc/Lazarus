@@ -888,7 +888,7 @@ type
     procedure DoAutoSize; override;
     procedure SetText(const Value: TCaption); override;
   public
-    constructor Create (AnOwner: TComponent); override;
+    constructor Create(AnOwner: TComponent); override;
   published
     property Anchors;
     property AutoSize;
@@ -1466,6 +1466,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.114  2004/01/06 17:58:06  mattias
+  fixed setting TRadioButton.Caption for gtk
+
   Revision 1.113  2004/01/03 20:36:29  mattias
   published TEdit.Enabled
 

@@ -2404,9 +2404,6 @@ begin
   //  Need to set FCaption otherwise those components that simply
   //  check FCaption will always be wrong.
   FCaption := Value;
-
-  if Self is TWinControl then
-    SetTextBuf(PChar(FCaption));
 end;
 
 {------------------------------------------------------------------------------
@@ -2616,6 +2613,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.163  2004/01/06 17:58:06  mattias
+  fixed setting TRadioButton.Caption for gtk
+
   Revision 1.162  2004/01/03 18:16:25  mattias
   set DragCursor props to default
 
