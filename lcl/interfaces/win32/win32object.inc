@@ -104,7 +104,7 @@ End;
   Retrieves the text from a Windows control. This is a replacement for
   the LM_GetText message.
  ------------------------------------------------------------------------------}
-Function TWin32Object.GetText(Sender: TControl; Var Data: String): Boolean;
+Function TWin32Object.GetText(Sender: TComponent; Var Data: String): Boolean;
 Var
   CapLen: Cardinal;
   Caption: PChar;
@@ -114,7 +114,7 @@ Begin
   Assert(False, Format('Trace:TWin32Object.GetText - Start --> %S', [Sender.ClassName]));
   Data := '';
   Result := True;
-  Case Sender.FCompStyle Of
+  Case (Sender as TControl).FCompStyle Of
     csComboBox:
     Begin
       CapLen := SendMessage((Sender As TWinControl).Handle, CB_GETLBTEXTLEN, CNSendMessage(LM_GETITEMINDEX, Self, Nil), 0);
@@ -484,9 +484,26 @@ activate_time :	the time at which the activation event occurred.
         LM_SETSIZE:
         Begin
           If Sender Is TWinControl Then
-            With (Sender As TWinControl), PRect(Data)^ Do
-              If HandleAllocated Then
-                  ResizeChild(Sender, Left, Top, Right, Bottom);
+          begin
+            With PRect(Data)^ do
+            begin
+              R.Left:=Left;
+              R.Top:=Top;
+              R.Bottom:=Bottom;
+              R.Right:=Right;
+            {Get the width and height for the form}  
+            If TControl(Sender).FCompStyle = csForm Then
+              begin
+                 R.Right:=Left + Right;
+                 R.Bottom:=Top + Bottom;
+                 Windows.AdjustWindowRect(@R,WS_OVERLAPPEDWINDOW,false);
+                 R.Right:=R.Right - R.Left;
+                 R.Bottom:=R.Bottom - R.Top; 
+              end;
+            If TWinControl(Sender).HandleAllocated Then
+                  ResizeChild(Sender, Left, Top, R.Right , R.Bottom);
+            end;
+          end;
         End;
         LM_SHOWMODAL:
         Begin
@@ -1639,15 +1656,19 @@ Begin
     csForm:
     Begin
       Assert(False, 'Trace:CreateComponent - Creating a Form Window');
-      If Left = 0 Then
-        Left := CW_USEDEFAULT;
-      If Top = 0 Then
-        Top := CW_USEDEFAULT;
-      If Width = 0 Then
-        Width := CW_USEDEFAULT;
-      If Height = 0 Then
-        Width := CW_USEDEFAULT;
-      Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+//  Not needed since the size is set later
+//      If Left = 0 Then
+//        Left := CW_USEDEFAULT;
+//      If Top = 0 Then
+//        Top := CW_USEDEFAULT;
+//      If Width = 0 Then
+//        Width := CW_USEDEFAULT;
+//      If Height = 0 Then
+//        Width := CW_USEDEFAULT;
+//      Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
+
+      Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);           
+
       If Sender Is TForm Then
         OldClipboardViewer := SetClipboardViewer(Window);
       If (FMainForm = Nil) And (Application.MainForm = Nil) Then
@@ -2505,6 +2526,9 @@ End;
 
 {
   $Log$
+  Revision 1.26  2002/11/15 23:43:54  mattias
+  applied patch from Karl Brandt
+
   Revision 1.25  2002/09/10 06:49:24  lazarus
   MG: scrollingwincontrol from Andrew
 
