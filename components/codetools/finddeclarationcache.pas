@@ -105,20 +105,32 @@ type
     FItems: TAVLTree; // tree of PCodeTreeNodeCacheEntry
   public
     Next: TCodeTreeNodeCache;
+    Owner: TCodeTreeNode;
     function FindLeftMostAVLNode(Identifier: PChar): TAVLTreeNode;
     function FindRightMostAVLNode(Identifier: PChar): TAVLTreeNode;
     function FindAVLNode(Identifier: PChar; CleanPos: integer): TAVLTreeNode;
     function FindAVLNodeInRange(Identifier: PChar;
       CleanStartPos, CleanEndPos: integer): TAVLTreeNode;
+    function FindNearestAVLNode(Identifier: PChar;
+      CleanStartPos, CleanEndPos: integer; InFront: boolean): TAVLTreeNode;
     function Find(Identifier: PChar): PCodeTreeNodeCacheEntry;
     procedure Add(Identifier: PChar; CleanStartPos, CleanEndPos: integer;
       NewNode: TCodeTreeNode; NewTool: TPascalParserTool; NewCleanPos: integer);
     procedure Clear;
-    constructor Create;
+    procedure BindToOwner(NewOwner: TCodeTreeNode);
+    procedure UnbindFromOwner;
+    constructor Create(AnOwner: TCodeTreeNode);
     destructor Destroy; override;
+    procedure WriteDebugReport(const Prefix: string);
+    function ConsistencyCheck: integer;
   end;
 
+const
+  // all node types which can create a cache
+  AllNodeCacheDescs = [ctnClass, ctnInterface, ctnInitialization, ctnProgram];
+  
   //----------------------------------------------------------------------------
+type
   TGlobalIdentifierTree = class
   private
     FItems: TAVLTree; // tree of PChar;
@@ -157,13 +169,14 @@ type
     procedure FreeFirstItem; override;
   public
     procedure DisposeNode(Node: TCodeTreeNodeCache);
-    function NewNode: TCodeTreeNodeCache;
+    function NewNode(AnOwner: TCodeTreeNode): TCodeTreeNodeCache;
   end;
 
 var
   GlobalIdentifierTree: TGlobalIdentifierTree;
   InterfaceIdentCacheEntryMemManager: TInterfaceIdentCacheEntryMemManager;
   NodeCacheEntryMemManager: TNodeCacheEntryMemManager;
+  NodeCacheMemManager: TNodeCacheMemManager;
 
 
 implementation
@@ -428,15 +441,16 @@ begin
   end;
 end;
 
-constructor TCodeTreeNodeCache.Create;
+constructor TCodeTreeNodeCache.Create(AnOwner: TCodeTreeNode);
 begin
   inherited Create;
-
+  Owner:=AnOwner;
 end;
 
 destructor TCodeTreeNodeCache.Destroy;
 begin
   Clear;
+  UnbindFromOwner;
   inherited Destroy;
 end;
 
@@ -607,8 +621,28 @@ function TCodeTreeNodeCache.FindAVLNodeInRange(Identifier: PChar;
   CleanStartPos, CleanEndPos: integer): TAVLTreeNode;
 var
   Entry: PCodeTreeNodeCacheEntry;
-  comp: integer;
 begin
+  Result:=FindNearestAVLNode(Identifier,CleanStartPos,CleanEndPos,true);
+  Entry:=PCodeTreeNodeCacheEntry(Result.Data);
+  if (CleanStartPos>=Entry^.CleanEndPos)
+  or (CleanEndPos<Entry^.CleanStartPos) then begin
+    // node is not in range
+    Result:=nil;
+  end;
+end;
+
+function TCodeTreeNodeCache.FindNearestAVLNode(Identifier: PChar;
+  CleanStartPos, CleanEndPos: integer; InFront: boolean): TAVLTreeNode;
+var
+  Entry: PCodeTreeNodeCacheEntry;
+  comp: integer;
+  DirectionSucc: boolean;
+  NextNode: TAVLTreeNode;
+begin
+  if CleanStartPos>CleanEndPos then begin
+    raise Exception.Create('[TCodeTreeNodeCache.FindNearestAVLNode]'
+      +' internal error: CleanStartPos>CleanEndPos');
+  end;
   if FItems<>nil then begin
     Result:=FItems.Root;
     while Result<>nil do begin
@@ -619,19 +653,98 @@ begin
       else if comp>0 then
         Result:=Result.Right
       else begin
-        repeat
-          if CleanStartPos>=Entry^.CleanEndPos then
-            Result:=FItems.FindSuccessor(Result)
-          else if CleanEndPos<Entry^.CleanStartPos then
-            Result:=FItems.FindPrecessor(Result)
-          else
+        // cached result with identifier found
+        // -> check range
+        NextNode:=Result;
+        if CleanStartPos>=Entry^.CleanEndPos then begin
+          NextNode:=FItems.FindSuccessor(Result);
+          DirectionSucc:=true;
+        end else if CleanEndPos<Entry^.CleanStartPos then begin
+          NextNode:=FItems.FindPrecessor(Result);
+          DirectionSucc:=false;
+        end else begin
+          // cached result in range found
+          exit;
+        end;
+        while (NextNode<>nil) do begin
+          Entry:=PCodeTreeNodeCacheEntry(NextNode.Data);
+          if CompareIdentifiers(Identifier,Entry^.Identifier)<>0 then begin
+            Result:=nil;
             exit;
-        until Result=nil;
+          end;
+          Result:=NextNode;
+          if (CleanStartPos<Entry^.CleanEndPos)
+          and (CleanEndPos>=Entry^.CleanStartPos) then begin
+            // cached result in range found
+            exit;
+          end;
+          if DirectionSucc then
+            NextNode:=FItems.FindSuccessor(Result)
+          else
+            NextNode:=FItems.FindPrecessor(Result);
+        end;
       end;
     end;
   end else begin
     Result:=nil;
   end;
+end;
+
+function TCodeTreeNodeCache.ConsistencyCheck: integer;
+begin
+  if (FItems<>nil) then begin
+    Result:=FItems.ConsistencyCheck;
+    if Result<>0 then begin
+      dec(Result,100);
+      exit;
+    end;
+  end;
+  if Owner<>nil then begin
+    if Owner.Cache<>Self then begin
+      Result:=-1;
+      exit;
+    end;
+  end;
+  Result:=0;
+end;
+
+procedure TCodeTreeNodeCache.WriteDebugReport(const Prefix: string);
+var Node: TAVLTreeNode;
+  Entry: PCodeTreeNodeCacheEntry;
+begin
+  writeln(Prefix,'[TCodeTreeNodeCache.WriteDebugReport] Self=',
+    HexStr(Cardinal(Self),8),' Consistency=',ConsistencyCheck);
+  if FItems<>nil then begin
+    Node:=FItems.FindLowest;
+    while Node<>nil do begin
+      Entry:=PCodeTreeNodeCacheEntry(Node.Data);
+      write(Prefix,' Ident="',GetIdentifier(Entry^.Identifier),'"');
+      writeln('');
+      Node:=FItems.FindSuccessor(Node);
+    end;
+  end;
+end;
+
+procedure TCodeTreeNodeCache.UnbindFromOwner;
+begin
+  if Owner<>nil then begin
+    if Owner.Cache<>Self then
+      raise Exception.Create('[TCodeTreeNodeCache.UnbindFromOwner] '
+        +' internal error: Owner.Cache<>Self');
+    Owner.Cache:=nil;
+    Owner:=nil;
+  end;
+end;
+
+procedure TCodeTreeNodeCache.BindToOwner(NewOwner: TCodeTreeNode);
+begin
+  if NewOwner<>nil then begin
+    if NewOwner.Cache<>nil then
+      raise Exception.Create('[TCodeTreeNodeCache.BindToOwner] internal error:'
+        +' NewOwner.Cache<>nil');
+    NewOwner.Cache:=Self;
+  end;
+  Owner:=NewOwner;
 end;
 
 { TNodeCacheMemManager }
@@ -643,6 +756,7 @@ begin
     // add Entry to Free list
     Node.Next:=TCodeTreeNodeCache(FFirstFree);
     TCodeTreeNodeCache(FFirstFree):=Node;
+    Node.UnbindFromOwner;
     inc(FFreeCount);
   end else begin
     // free list full -> free the Node
@@ -660,17 +774,19 @@ begin
   Node.Free;
 end;
 
-function TNodeCacheMemManager.NewNode: TCodeTreeNodeCache;
+function TNodeCacheMemManager.NewNode(
+  AnOwner: TCodeTreeNode): TCodeTreeNodeCache;
 begin
   if FFirstFree<>nil then begin
     // take from free list
     Result:=TCodeTreeNodeCache(FFirstFree);
     TCodeTreeNodeCache(FFirstFree):=Result.Next;
     Result.Clear;
+    Result.Owner:=AnOwner;
     dec(FFreeCount);
   end else begin
     // free list empty -> create new Entry
-    Result:=TCodeTreeNodeCache.Create;
+    Result:=TCodeTreeNodeCache.Create(AnOwner);
     inc(FAllocatedCount);
   end;
   inc(FCount);
@@ -682,6 +798,8 @@ procedure InternalInit;
 begin
   GlobalIdentifierTree:=TGlobalIdentifierTree.Create;
   InterfaceIdentCacheEntryMemManager:=TInterfaceIdentCacheEntryMemManager.Create;
+  NodeCacheEntryMemManager:=TNodeCacheEntryMemManager.Create;
+  NodeCacheMemManager:=TNodeCacheMemManager.Create;
 end;
 
 procedure InternalFinal;
@@ -690,6 +808,10 @@ begin
   GlobalIdentifierTree:=nil;
   InterfaceIdentCacheEntryMemManager.Free;
   InterfaceIdentCacheEntryMemManager:=nil;
+  NodeCacheEntryMemManager.Free;
+  NodeCacheEntryMemManager:=nil;
+  NodeCacheMemManager.Free;
+  NodeCacheMemManager:=nil;
 end;
 
 initialization

@@ -48,6 +48,8 @@ type
     //FIgnoreMissingIncludeFiles: boolean;
     FLastScannerChangeStep: integer;
     FScanner: TLinkScanner;
+    FOnGetGlobalWriteLockInfo: TOnGetWriteLockInfo;
+    FOnSetGlobalWriteLock: TOnSetWriteLock;
   protected
     KeyWordFuncList: TKeyWordFunctionList;
     FForceUpdateNeeded: boolean;
@@ -93,6 +95,7 @@ type
 
     function UpdateNeeded(OnlyInterfaceNeeded: boolean): boolean;
     procedure BeginParsing(DeleteNodes, OnlyInterfaceNeeded: boolean); virtual;
+    
     procedure MoveCursorToNodeStart(ANode: TCodeTreeNode);
     procedure MoveCursorToCleanPos(ACleanPos: integer);
     procedure MoveCursorToCleanPos(ACleanPos: PChar);
@@ -133,17 +136,23 @@ type
     function CompareSrcIdentifiers(Identifier1, Identifier2: PChar): boolean;
     function CompareSrcIdentifiers(CleanStartPos: integer;
       AnIdentifier: PChar): boolean;
-    function GetIdentifier(Identifier: PChar): string;
-    function GetIdentifier(CleanStartPos: integer): string;
+    function ExtractIdentifier(CleanStartPos: integer): string;
     procedure ReadPriorAtom;
 
     procedure CreateChildNode;
     procedure EndChildNode;
     
+    procedure ActivateGlobalWriteLock; virtual;
+    procedure DeactivateGlobalWriteLock; virtual;
+    property OnGetGlobalWriteLockInfo: TOnGetWriteLockInfo
+      read FOnGetGlobalWriteLockInfo write FOnGetGlobalWriteLockInfo;
+    property OnSetGlobalWriteLock: TOnSetWriteLock
+      read FOnSetGlobalWriteLock write FOnSetGlobalWriteLock;
+
     procedure Clear; virtual;
     function NodeDescToStr(Desc: integer): string;
     function NodeSubDescToStr(Desc, SubDesc: integer): string;
-    function ConsistencyCheck: integer; // 0 = ok
+    function ConsistencyCheck: integer; virtual; // 0 = ok
     procedure WriteDebugTreeReport;
     constructor Create;
     destructor Destroy; override;
@@ -1442,20 +1451,7 @@ begin
   Result:=(CleanStartPos>SrcLen) or (not IsIdentChar[Src[CleanStartPos]]);
 end;
 
-function TCustomCodeTool.GetIdentifier(Identifier: PChar): string;
-var len: integer;
-begin
-  if Identifier<>nil then begin
-    len:=0;
-    while (IsIdentChar[Identifier[len]]) do inc(len);
-    SetLength(Result,len);
-    if len>0 then
-      Move(Identifier[0],Result[1],len);
-  end else
-    Result:='';
-end;
-
-function TCustomCodeTool.GetIdentifier(CleanStartPos: integer): string;
+function TCustomCodeTool.ExtractIdentifier(CleanStartPos: integer): string;
 var len: integer;
 begin
   if (CleanStartPos>=1) then begin
@@ -1473,6 +1469,16 @@ end;
 procedure TCustomCodeTool.DoDeleteNodes;
 begin
   Tree.Clear;
+end;
+
+procedure TCustomCodeTool.ActivateGlobalWriteLock;
+begin
+  if Assigned(OnSetGlobalWriteLock) then OnSetGlobalWriteLock(true);
+end;
+
+procedure TCustomCodeTool.DeactivateGlobalWriteLock;
+begin
+  if Assigned(OnSetGlobalWriteLock) then OnSetGlobalWriteLock(false);
 end;
 
 { ECodeToolError }

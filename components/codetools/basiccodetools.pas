@@ -144,9 +144,9 @@ function CompareSubStrings(const Find, Txt: string;
 function CleanCodeFromComments(const DirtyCode: string;
     NestedComments: boolean): string;
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
+function GetIdentifier(Identifier: PChar): string;
 
 function GetIndentStr(Indent: integer): string;
-
 
 //-----------------------------------------------------------------------------
 const
@@ -1684,6 +1684,19 @@ begin
       Result:=0; // for example  nil nil
     end;
   end;
+end;
+
+function GetIdentifier(Identifier: PChar): string;
+var len: integer;
+begin
+  if Identifier<>nil then begin
+    len:=0;
+    while (IsIdChar[Identifier[len]]) do inc(len);
+    SetLength(Result,len);
+    if len>0 then
+      Move(Identifier[0],Result[1],len);
+  end else
+    Result:='';
 end;
 
 function GetIndentStr(Indent: integer): string;

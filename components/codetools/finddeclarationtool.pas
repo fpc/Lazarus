@@ -158,7 +158,7 @@ type
 const
   TypeCompatibilityNames: array[TTypeCompatibility] of string = (
       'Exact', 'Compatible', 'Incompatible'
-    );
+     );
 
 type
   // TExprTypeList is used for compatibility checks of whole parameter lists
@@ -220,6 +220,8 @@ type
     FInterfaceIdentifierCache: TInterfaceIdentifierCache;
     FOnGetCodeToolForBuffer: TOnGetCodeToolForBuffer;
     FOnGetUnitSourceSearchPath: TOnGetSearchPath;
+    FFirstNodeCache: TCodeTreeNodeCache;
+    FLastNodeCachesGlobalWriteLockStep: integer;
     {$IFDEF CTDEBUG}
     DebugPrefix: string;
     procedure IncPrefix;
@@ -265,6 +267,7 @@ type
     function PredefinedIdentToTypeDesc(Identifier: PChar): TExpressionTypeDesc;
   protected
     procedure DoDeleteNodes; override;
+    procedure ClearNodeCaches(Force: boolean);
     function FindDeclarationOfIdentifier(
       Params: TFindDeclarationParams): boolean;
     function FindContextNodeAtCursor(
@@ -314,6 +317,8 @@ type
       read FOnGetCodeToolForBuffer write FOnGetCodeToolForBuffer;
     property OnGetUnitSourceSearchPath: TOnGetSearchPath
       read FOnGetUnitSourceSearchPath write FOnGetUnitSourceSearchPath;
+    procedure ActivateGlobalWriteLock; override;
+    function ConsistencyCheck: integer; override;
   end;
 
 
@@ -360,7 +365,7 @@ var CleanCursorPos: integer;
   Params: TFindDeclarationParams;
 begin
   Result:=false;
-  Scanner.ActivateGlobalWriteLock;
+  ActivateGlobalWriteLock;
   try
     // build code tree
 {$IFDEF CTDEBUG}
@@ -436,7 +441,7 @@ writeln('TFindDeclarationTool.FindDeclaration D CursorNode=',NodeDescriptionAsSt
       end;
     end;
   finally
-    Scanner.DeactivateGlobalWriteLock;
+    DeactivateGlobalWriteLock;
   end;
 end;
 
@@ -771,6 +776,10 @@ begin
   end;
   
   if ContextNode<>nil then begin
+    if (ContextNode.Parent<>nil) and (ContextNode.Parent.Cache<>nil) then begin
+
+    end;
+  
     repeat
 {$IFDEF ShowTriedContexts}
 writeln('[TFindDeclarationTool.FindIdentifierInContext] A Ident=',
@@ -1291,7 +1300,7 @@ writeln('');
         ReadNextAtom;
         RaiseException('identifier expected, but '+GetAtom+' found');
       end;
-      if (Result.Node.Desc in AllUsableSoureTypes) then begin
+      if (Result.Node.Desc in AllUsableSourceTypes) then begin
         // identifier in front of the point is a unit name
         if Result.Tool<>Self then begin
           Result.Node:=Result.Tool.GetInterfaceNode;
@@ -2345,9 +2354,6 @@ writeln(DebugPrefix,'TFindDeclarationTool.FindIdentifierInInterface',
   // ToDo: build codetree for ppu, ppw, dcu files
   
   // build tree for pascal source
-  
-  // ToDo: only check the first time during a big search
-  
   BuildTree(true);
   
   // search identifier in cache
@@ -2438,7 +2444,7 @@ begin
     CurPos.StartPos:=-1;
     RaiseException('[TFindDeclarationTool.GetInterfaceNode] no code tree found');
   end;
-  if not (Tree.Root.Desc in AllUsableSoureTypes) then begin
+  if not (Tree.Root.Desc in AllUsableSourceTypes) then begin
     CurPos.StartPos:=-1;
     RaiseException('used unit is not an pascal unit');
   end;
@@ -3433,6 +3439,7 @@ end;
 
 procedure TFindDeclarationTool.DoDeleteNodes;
 begin
+  ClearNodeCaches(true);
   if FInterfaceIdentifierCache<>nil then
     FInterfaceIdentifierCache.Clear;
   inherited DoDeleteNodes;
@@ -3443,6 +3450,60 @@ begin
   FInterfaceIdentifierCache.Free;
   FInterfaceIdentifierCache:=nil;
   inherited Destroy;
+end;
+
+procedure TFindDeclarationTool.ClearNodeCaches(Force: boolean);
+var
+  NodeCache: TCodeTreeNodeCache;
+  GlobalWriteLockIsSet: boolean;
+  GlobalWriteLockStep: integer;
+begin
+  if not Force then begin
+    // check if node cache must be cleared
+    if Assigned(OnGetGlobalWriteLockInfo) then begin
+      OnGetGlobalWriteLockInfo(GlobalWriteLockIsSet,GlobalWriteLockStep);
+      if GlobalWriteLockIsSet then begin
+        // The global write lock is set. That means, input variables and code
+        // are frozen
+        if (FLastNodeCachesGlobalWriteLockStep=GlobalWriteLockStep) then begin
+          // source and values did not change since last UpdateNeeded check
+          exit;
+        end else begin
+          // this is the first check in this GlobalWriteLockStep
+          FLastNodecachesGlobalWriteLockStep:=GlobalWriteLockStep;
+          // proceed normally ...
+        end;
+      end;
+    end;
+  end;
+  while FFirstNodeCache<>nil do begin
+    NodeCache:=FFirstNodeCache;
+    FFirstNodeCache:=NodeCache.Next;
+    NodeCacheMemManager.DisposeNode(NodeCache);
+  end;
+end;
+
+function TFindDeclarationTool.ConsistencyCheck: integer;
+var ANodeCache: TCodeTreeNodeCache;
+begin
+  if FInterfaceIdentifierCache<>nil then begin
+
+  end;
+  ANodeCache:=FFirstNodeCache;
+  while ANodeCache<>nil do begin
+    Result:=ANodeCache.ConsistencyCheck;
+    if Result<>0 then begin
+      dec(Result,100);
+      exit;
+    end;
+    ANodeCache:=ANodeCache.Next;
+  end;
+end;
+
+procedure TFindDeclarationTool.ActivateGlobalWriteLock;
+begin
+  inherited;
+  ClearNodeCaches(false);
 end;
 
 
@@ -3565,7 +3626,5 @@ begin
 end;
 
 
-
 end.
-
 

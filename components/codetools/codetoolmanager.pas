@@ -469,6 +469,8 @@ begin
   end;
   FCurCodeTool:=TCodeCompletionCodeTool(GetCodeToolForSource(MainCode,true));
   FCurCodeTool.ErrorPosition.Code:=nil;
+  FCurCodeTool.OnSetGlobalWriteLock:=@OnToolSetWriteLock;
+  FCurCodeTool.OnGetGlobalWriteLockInfo:=@OnToolGetWriteLockInfo;
 {$IFDEF CTDEBUG}
 writeln('[TCodeToolManager.InitCurCodeTool] ',Code.Filename,' ',Code.SourceLength);
 {$ENDIF}

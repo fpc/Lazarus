@@ -128,7 +128,7 @@ const
       ctnClassOfType];
   AllSourceTypes =
      [ctnProgram,ctnPackage,ctnLibrary,ctnUnit];
-  AllUsableSoureTypes =
+  AllUsableSourceTypes =
      [ctnUnit];
 
 
