@@ -3005,6 +3005,7 @@ end;
 function TIpHtmlPoolManager.NewItm : Pointer;
 begin
   Result:=NewItem;
+  FillChar(Result^,ItemSize,0);
 end;
 
 {$ELSE IP_LAZARUS}
@@ -8837,7 +8838,8 @@ writeln('TIpHtmlNodeBlock.RenderQueue B Font.Name="',Owner.Target.Font.Name,'" S
     end;
 
 writeln('TIpHtmlNodeBlock.RenderQueue C CurWord.WordRect2=',CurWord.WordRect2.Left,',',CurWord.WordRect2.Top,',',CurWord.WordRect2.Right,',',CurWord.WordRect2.Bottom,
-' Owner.PageViewRect=',Owner.PageViewRect.Left,',',Owner.PageViewRect.Top,',',Owner.PageViewRect.Right,',',Owner.PageViewRect.Bottom);
+' Owner.PageViewRect=',Owner.PageViewRect.Left,',',Owner.PageViewRect.Top,',',Owner.PageViewRect.Right,',',Owner.PageViewRect.Bottom,
+' Intersect=',IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect));
     if IntersectRect(R, CurWord.WordRect2, Owner.PageViewRect) then
       case CurWord.ElementType of
       etWord :
@@ -9569,9 +9571,15 @@ var
     if (WordInfo = nil) or (NewLength > WordInfoSize) then begin
       NewWordInfoSize := ((NewLength div 256) + 1) * 256;
       NewWordInfo := AllocMem(NewWordInfoSize * sizeof(TWordInfo));
-      move(WordInfo^, NewWordInfo^, WordInfoSize);
+      {$IFDEF IP_LAZARUS Buggy}
+      if WordInfo<>nil then
+      {$ENDIF}
+        move(WordInfo^, NewWordInfo^, WordInfoSize);
       WordInfoSize := NewWordInfoSize;
-      Freemem(WordInfo);
+      {$IFDEF IP_LAZARUS Buggy}
+      if WordInfo<>nil then
+      {$ENDIF}
+        Freemem(WordInfo);
       WordInfo := NewWordInfo;
     end;
   end;
@@ -17348,23 +17356,51 @@ end;
 {End !!.14}
 
 {$IFDEF IP_LAZARUS}
-  FlatSB_GetScrollInfo: function(hWnd: HWND; BarFlag: Integer;
-    var ScrollInfo: TScrollInfo): BOOL; stdcall;
-  FlatSB_GetScrollPos: function(hWnd: HWND; nBar: Integer): Integer; stdcall;
-  FlatSB_SetScrollPos: function(hWnd: HWND; nBar, nPos: Integer;
-    bRedraw: BOOL): Integer; stdcall;
-  FlatSB_SetScrollProp: function(p1: HWND; index: Integer; newValue: Integer;
-    p4: Bool): Bool; stdcall;
-  FlatSB_SetScrollInfo: function(hWnd: HWND; BarFlag: Integer;
-    const ScrollInfo: TScrollInfo; Redraw: BOOL): Integer; stdcall;
+function LazFlatSB_GetScrollInfo(hWnd: HWND; BarFlag: Integer;
+  var ScrollInfo: TScrollInfo): BOOL; stdcall;
+begin
+  Result:=LCLLinux.GetScrollInfo(HWnd,BarFlag,ScrollInfo);
+end;
+  
+function LazFlatSB_GetScrollPos(hWnd: HWND; nBar: Integer): Integer; stdcall;
+begin
+  Result:=LCLLinux.GetScrollPos(HWnd,nBar);
+end;
+
+function LazFlatSB_SetScrollPos(hWnd: HWND; nBar, nPos: Integer;
+  bRedraw: BOOL): Integer; stdcall;
+begin
+  Result:=LCLLinux.SetScrollPos(HWnd,nBar,nPos,bRedraw);
+end;
+
+function LazFlatSB_SetScrollProp(p1: HWND; index: Integer; newValue: Integer;
+  p4: Bool): Bool; stdcall;
+begin
+  Result:=true;
+  writeln('LazFlatSB_SetScrollProp');
+end;
+
+function LazFlatSB_SetScrollInfo(hWnd: HWND; BarFlag: Integer;
+  const ScrollInfo: TScrollInfo; Redraw: BOOL): Integer; stdcall;
+begin
+  Result:=LCLLinux.SetScrollInfo(HWnd,BarFlag,ScrollInfo,Redraw);
+end;
 {$ENDIF}
 
 
 procedure InitScrollProcs;
+{$IFNDEF IP_LAZARUS}
 var
   ComCtl32: THandle;
+{$ENDIF}
 begin
-  {$IFNDEF IP_LAZARUS}
+  {$IFDEF IP_LAZARUS}
+  @FlatSB_GetScrollInfo := @LazFlatSB_GetScrollInfo;
+  @FlatSB_GetScrollPos :=  @LazFlatSB_GetScrollPos;
+  @FlatSB_SetScrollPos :=  @LazFlatSB_SetScrollPos;
+  @FlatSB_SetScrollProp := @LazFlatSB_SetScrollProp;
+  @FlatSB_SetScrollInfo := @LazFlatSB_SetScrollInfo;
+  {$ELSE}
   ComCtl32 := GetModuleHandle('comctl32.dll');
   @FlatSB_GetScrollInfo := GetProcAddress(ComCtl32, 'FlatSB_GetScrollInfo');
   @FlatSB_GetScrollPos := GetProcAddress(ComCtl32, 'FlatSB_GetScrollPos');
@@ -17404,10 +17440,16 @@ begin
         inc(NewSize, TINTARRGROWFACTOR);
       until Index < NewSize;
       Tmp := AllocMem(NewSize * sizeof(Integer));
-      move(InternalIntArr^, Tmp^, IntArrSize * sizeof(Integer));
+      {$IFDEF IP_LAZARUS Buggy}
+      if (InternalIntArr<>nil) then
+      {$ENDIF}
+        move(InternalIntArr^, Tmp^, IntArrSize * sizeof(Integer));
       IntArrSize := NewSize;                                           {!!.12}
       {inc(IntArrSize, NewSize);}                                      {Deleted !!.12}
-      Freemem(InternalIntArr);
+      {$IFDEF IP_LAZARUS Buggy}
+      if (InternalIntArr<>nil) then
+      {$ENDIF}
+        Freemem(InternalIntArr);
       InternalIntArr := Tmp;
     end;
     InternalIntArr^[Index] := Value;
@@ -17458,9 +17500,15 @@ begin
         inc(NewSize, TINTARRGROWFACTOR);
       until Index < NewSize;
       Tmp := AllocMem(NewSize * sizeof(Integer));
-      move(InternalRectArr^, Tmp^, IntArrSize * sizeof(Integer));
+      {$IFDEF IP_LAZARUS buggy}
+      if InternalRectArr<>nil then
+      {$ENDIF}
+        move(InternalRectArr^, Tmp^, IntArrSize * sizeof(Integer));
       inc(IntArrSize, NewSize);
-      Freemem(InternalRectArr);
+      {$IFDEF IP_LAZARUS buggy}
+      if InternalRectArr<>nil then
+      {$ENDIF}
+        Freemem(InternalRectArr);
       InternalRectArr := Tmp;
     end;
     InternalRectArr^[Index] := Value;
@@ -17504,9 +17552,15 @@ begin
         inc(NewSize, TINTARRGROWFACTOR);
       until Index < NewSize;
       Tmp := AllocMem(NewSize * sizeof(Integer));
-      move(InternalRectRectArr^, Tmp^, IntArrSize * sizeof(Integer));
+      {$IFDEF IP_LAZARUS buggy}
+      if InternalRectRectArr<>nil then
+      {$ENDIF}
+        move(InternalRectRectArr^, Tmp^, IntArrSize * sizeof(Integer));
       inc(IntArrSize, NewSize);
-      Freemem(InternalRectRectArr);
+      {$IFDEF IP_LAZARUS buggy}
+      if InternalRectRectArr<>nil then
+      {$ENDIF}
+        Freemem(InternalRectRectArr);
       InternalRectRectArr := Tmp;
     end;
     Result := InternalRectRectArr^[Index];
@@ -17538,6 +17592,9 @@ initialization
   InitScrollProcs;
 {
   $Log$
+  Revision 1.4  2003/03/29 23:52:25  mattias
+  IpHtmlPanel can show simple HTML pages, but there are mem bugs
+
   Revision 1.3  2003/03/29 21:41:19  mattias
   fixed path delimiters for environment directories
 

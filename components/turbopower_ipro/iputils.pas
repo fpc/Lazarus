@@ -2656,7 +2656,7 @@ begin
   Reg := nil;
   try
     Reg := TRegistry.Create;
-    Reg.RootKey := HKEY_CLASSES_ROOT;
+    Reg.RootKey := integer(HKEY_CLASSES_ROOT);
     if Reg.OpenKey(Ext, True) then
       Result := Reg.ReadString('Content Type');
   finally
