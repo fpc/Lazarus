@@ -17,6 +17,8 @@
 }
 
 type
+  { TPicFileFormatsList }
+
   PPicFileFormat = ^TPicFileFormat;
   TPicFileFormat = record
     GraphicClass: TGraphicClass;
@@ -31,12 +33,13 @@ type
     procedure Clear; override;
     procedure Delete(Index: Integer);
     procedure Add(const Ext, Desc: String; AClass: TGraphicClass);
-    function GetFormat(Index: integer): PPicFileFormat;
+    function GetFormats(Index: integer): PPicFileFormat;
     function FindExt(const Ext: string): TGraphicClass;
     function FindClassName(const AClassname: string): TGraphicClass;
     procedure Remove(AClass: TGraphicClass);
     procedure BuildFilterStrings(GraphicClass: TGraphicClass;
-      var Descriptions, Filters: string);
+                                 var Descriptions, Filters: string);
+    property Formats[Index: integer]: PPicFileFormat read GetFormats; default;
   end;
 
 constructor TPicFileFormatsList.Create;
@@ -57,7 +60,7 @@ var i: integer;
   P: PPicFileFormat;
 begin
   for i:=0 to Count-1 do begin
-    P:=GetFormat(i);
+    P:=GetFormats(i);
     Dispose(P);
   end;
   inherited Clear;
@@ -66,7 +69,7 @@ end;
 procedure TPicFileFormatsList.Delete(Index: Integer);
 var P: PPicFileFormat;
 begin
-  P:=GetFormat(Index);
+  P:=GetFormats(Index);
   Dispose(P);
   inherited Delete(Index);
 end;
@@ -85,7 +88,7 @@ begin
   inherited Add(NewFormat);
 end;
 
-function TPicFileFormatsList.GetFormat(Index: integer): PPicFileFormat;
+function TPicFileFormatsList.GetFormats(Index: integer): PPicFileFormat;
 begin
   Result:=PPicFileFormat(Items[Index]);
 end;
@@ -111,7 +114,7 @@ var
 begin
   // search backwards so that new formats will be found first
   for I := Count-1 downto 0 do begin
-    Result := GetFormat(I)^.GraphicClass;
+    Result := GetFormats(I)^.GraphicClass;
     if AnsiCompareText(Result.ClassName,AClassname)=0 then
       Exit;
   end;
@@ -125,7 +128,7 @@ var
   P: PPicFileFormat;
 begin
   for I := Count-1 downto 0 do begin
-    P := GetFormat(I);
+    P := GetFormats(I);
     if P^.GraphicClass.InheritsFrom(AClass) then
       Delete(I);
   end;
@@ -141,7 +144,7 @@ begin
   Filters := '';
   C := 0;
   for I := Count-1 downto 0 do begin
-    P := GetFormat(I);
+    P := GetFormats(I);
     if P^.GraphicClass.InheritsFrom(GraphicClass) and (P^.Extension <> '') then
       with P^ do begin
         if C <> 0 then begin
@@ -156,7 +159,7 @@ begin
   end;
   if C > 1 then
     FmtStr(Descriptions, '%s (%s)|%1:s|%s',
-     ['All files', Filters, Descriptions]);
+     ['Graphic', Filters, Descriptions]);
 end;
 
 //------------------------------------------------------------------------------
@@ -169,16 +172,23 @@ type
   end;
 
   TPicClipboardFormats = class(TList)
-    // list of TPicClipboarFormat
+    // list of TPicClipboardFormat
+  private
+    function GetFormats(Index: integer): PPicClipboardFormat;
   public
     constructor Create;
     procedure Clear; override;
     procedure Delete(Index: Integer);
-    function GetFormat(Index: integer): PPicClipboardFormat;
     procedure Add(AFormatID: TClipboardFormat; AClass: TGraphicClass);
     function FindFormat(FormatID: TClipboardFormat): TGraphicClass;
     procedure Remove(AClass: TGraphicClass);
+    property Formats[Index: integer]: PPicClipboardFormat read GetFormats; default;
   end;
+
+function TPicClipboardFormats.GetFormats(Index: integer): PPicClipboardFormat;
+begin
+  Result:=PPicClipboardFormat(Items[Index]);
+end;
 
 constructor TPicClipboardFormats.Create;
 begin
@@ -193,7 +203,7 @@ var i: integer;
   P: PPicClipboardFormat;
 begin
   for i:=0 to Count-1 do begin
-    P:=GetFormat(i);
+    P:=GetFormats(i);
     Dispose(P);
   end;
   inherited Clear;
@@ -202,14 +212,9 @@ end;
 procedure TPicClipboardFormats.Delete(Index: Integer);
 var P: PPicClipboardFormat;
 begin
-  P:=GetFormat(Index);
+  P:=GetFormats(Index);
   Dispose(P);
   inherited Delete(Index);
-end;
-
-function TPicClipboardFormats.GetFormat(Index: integer): PPicClipboardFormat;
-begin
-  Result:=PPicClipboardFormat(Items[Index]);
 end;
 
 procedure TPicClipboardFormats.Add(AFormatID: TClipboardFormat;
@@ -231,7 +236,7 @@ var
   P: PPicClipboardFormat;
 begin
   for I := Count-1 downto 0 do begin
-    P:=GetFormat(i);
+    P:=GetFormats(i);
     if P^.FormatID=FormatID then begin
       Result := P^.GraphicClass;
       Exit;
@@ -245,15 +250,15 @@ var
   I: Integer;
 begin
   for I := Count-1 downto 0 do
-    if GetFormat(i)^.GraphicClass.InheritsFrom(AClass) then
+    if GetFormats(i)^.GraphicClass.InheritsFrom(AClass) then
       Delete(i);
 end;
 
 //------------------------------------------------------------------------------
 
-const
-  PicClipboardFormats: TPicClipboardFormats = nil;
-  PicFileFormats: TPicFileFormatsList = nil;
+var
+  PicClipboardFormats: TPicClipboardFormats;
+  PicFileFormats: TPicFileFormatsList;
 
 function GetPicFileFormats: TPicFileFormatsList;
 begin
@@ -269,6 +274,33 @@ begin
   Result := PicClipboardFormats;
 end;
 
+function GraphicFilter(GraphicClass: TGraphicClass): string;
+var
+  Filters: string;
+begin
+  GetPicFileFormats.BuildFilterStrings(GraphicClass,Result,Filters);
+end;
+
+function GraphicExtension(GraphicClass: TGraphicClass): string;
+var
+  I: Integer;
+  PicFormats: TPicFileFormatsList;
+begin
+  PicFormats := GetPicFileFormats;
+  for I := PicFormats.Count-1 downto 0 do
+    if PicFormats[I]^.GraphicClass.ClassName = GraphicClass.ClassName then begin
+      Result := PicFormats[I]^.Extension;
+      Exit;
+    end;
+  Result := '';
+end;
+
+function GraphicFileMask(GraphicClass: TGraphicClass): string;
+var
+  Descriptions: string;
+begin
+  GetPicFileFormats.BuildFilterStrings(GraphicClass,Descriptions,Result);
+end;
 
 //--TPicture--------------------------------------------------------------------
 
@@ -356,7 +388,7 @@ var
   NewGraphic: TGraphic;
   ok: boolean;
 begin
-  if (Value=FGraphic) or (Value=nil) then exit;
+  if (Value=FGraphic) then exit;
   NewGraphic := nil;
   ok:=false;
   try
@@ -483,6 +515,11 @@ class procedure TPicture.UnRegisterGraphicClass(AClass: TGraphicClass);
 begin
   if PicFileFormats <> nil then PicFileFormats.Remove(AClass);
   if PicClipboardFormats <> nil then PicClipboardFormats.Remove(AClass);
+end;
+
+procedure TPicture.Clear;
+begin
+  SetGraphic(nil);
 end;
 
 procedure TPicture.Changed(Sender: TObject);

@@ -35,8 +35,7 @@ uses
   SysUtils, Classes,
   LCLStrConsts, vclGlobals, LMessages, LCLType, LCLProc, LCLLinux, LResources,
   GraphType, GraphMath
-  {$IFDEF UseFPImage}, FPReadPNG, IntfGraphics{$ENDIF}
-  {$IFDEF HasPNGWriter}, FPWritePNG{$ENDIF}
+  {$IFDEF UseFPImage}, FPImage, FPReadPNG, FPWritePNG, IntfGraphics{$ENDIF}
   ;
 
 type
@@ -606,6 +605,8 @@ type
     class procedure RegisterClipboardFormat(FormatID: TClipboardFormat;
       AGraphicClass: TGraphicClass);
     class procedure UnregisterGraphicClass(AClass: TGraphicClass);
+    procedure Clear; virtual;
+  public
     property Bitmap: TBitmap read GetBitmap write SetBitmap;
     property Pixmap: TPixmap read GetPixmap write SetPixmap;
     property PNG: TPortableNetworkGraphic read GetPNG write SetPNG;
@@ -880,12 +881,19 @@ type
     procedure WriteData(Stream: TStream); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); virtual;
     procedure StoreOriginalStream(Stream: TStream); virtual;
+    {$IFDEF UseFPImage}
+    procedure ReadStreamWithFPImage(Stream: TStream; Size: Longint;
+                               ReaderClass: TFPCustomImageReaderClass); virtual;
+    procedure WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
+                               WriterClass: TFPCustomImageWriterClass); virtual;
+    {$ENDIF}
   public
     constructor VirtualCreate; override;
     destructor Destroy; override;
     procedure Assign(Source: TPersistent); override;
     procedure FreeImage;
     function HandleAllocated: boolean;
+    function LazarusResourceTypeValid(const ResourceType: string): boolean; virtual;
     procedure LoadFromStream(Stream: TStream); override;
     procedure LoadFromLazarusResource(const ResName: String); override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String); virtual;
@@ -915,7 +923,7 @@ type
   
   TPixmap = class(TBitmap)
   public
-    procedure LoadFromLazarusResource(const ResName: String); override;
+    function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
   end;
   
@@ -923,7 +931,7 @@ type
   
   TPortableNetworkGraphic = class(TBitmap)
   public
-    procedure LoadFromLazarusResource(const ResName: String); override;
+    function LazarusResourceTypeValid(const ResourceType: string): boolean; override;
     procedure ReadStream(Stream: TStream; Size: Longint); override;
     procedure WriteStream(Stream: TStream; WriteSize: Boolean); override;
   end;
@@ -946,6 +954,10 @@ type
   // Color / Identifier mapping
   TGetColorStringProc = procedure(const s:ansistring) of object;
   
+function GraphicFilter(GraphicClass: TGraphicClass): string;
+function GraphicExtension(GraphicClass: TGraphicClass): string;
+function GraphicFileMask(GraphicClass: TGraphicClass): string;
+
 function ColorToIdent(Color: Longint; var Ident: String): Boolean;
 function IdentToColor(const Ident: string; var Color: Longint): Boolean;
 function ColorToRGB(Color: TColor): Longint;
@@ -1166,6 +1178,8 @@ end;
 
 
 initialization
+  PicClipboardFormats:=nil;
+  PicFileFormats:=nil;
   RegisterIntegerConsts(TypeInfo(TColor), @IdentToColor, @ColorToIdent);
   RegisterIntegerConsts(TypeInfo(TFontCharset), @IdentToCharset, @CharsetToIdent);
 
@@ -1180,6 +1194,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.86  2003/09/02 21:32:56  mattias
+  implemented TOpenPictureDialog
+
   Revision 1.85  2003/09/02 16:08:19  mattias
   implemented TPortableNetworkGraphic reading
 

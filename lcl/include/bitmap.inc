@@ -134,6 +134,11 @@ begin
   Result:=(FImage<>nil) and (FImage.FHandle<>0);
 end;
 
+function TBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
+begin
+  Result:=true;
+end;
+
 procedure TBitMap.Mask(ATransparentColor: TColor);
 begin
 
@@ -250,15 +255,15 @@ var
   res:TLResource;
 begin
   res:=LazarusResources.Find(ResName);
-  if (res<>nil) and (res.Value<>'') then begin
-    ms:=TMemoryStream.Create;
-    try
-      ms.Write(res.Value[1],length(res.Value));
-      ms.Position:=0;
-      LoadFromStream(ms);
-    finally
-      ms.Free;
-    end;
+  if (res=nil) or (res.Value='') or not LazarusResourceTypeValid(res.ValueType)
+  then exit;
+  ms:=TMemoryStream.Create;
+  try
+    ms.Write(res.Value[1],length(res.Value));
+    ms.Position:=0;
+    LoadFromStream(ms);
+  finally
+    ms.Free;
   end;
 end;
 
@@ -639,6 +644,91 @@ begin
   MemStream.Position:=0;
 end;
 
+{$IFDEF UseFPImage}
+procedure TBitmap.ReadStreamWithFPImage(Stream: TStream; Size: Longint;
+  ReaderClass: TFPCustomImageReaderClass);
+var
+  IntfImg: TLazIntfImage;
+  ImgReader: TFPCustomImageReader;
+  ImgHandle, ImgMaskHandle: HBitmap;
+begin
+  UnshareImage;
+  if Size = 0 then begin
+    Width:=0;
+    Height:=0;
+    exit;
+  end;
+  StoreOriginalStream(Stream);
+
+  IntfImg:=nil;
+  ImgReader:=nil;
+  try
+    IntfImg:=TLazIntfImage.Create(0,0);
+    IntfImg.GetDescriptionFromDevice(0);
+    ImgReader:=ReaderClass.Create;
+    FImage.SaveStream.Position:=0;
+    IntfImg.LoadFromStream(FImage.SaveStream,ImgReader);
+    IntfImg.CreateBitmap(ImgHandle,ImgMaskHandle);
+    Handle:=ImgHandle;
+    MaskHandle:=ImgMaskHandle;
+  finally
+    IntfImg.Free;
+    ImgReader.Free;
+  end;
+end;
+
+procedure TBitmap.WriteStreamWithFPImage(Stream: TStream; WriteSize: boolean;
+  WriterClass: TFPCustomImageWriterClass);
+
+  Procedure DoWriteStreamSize(DestStream: TStream; Size: longint);
+  begin
+    if WriteSize then
+      DestStream.WriteBuffer(Size, SizeOf(Size));
+  end;
+
+  procedure DoWriteOriginal;
+  begin
+    DoWriteStreamSize(Stream,FImage.SaveStream.Size);
+    FImage.SaveStream.Position:=0;
+    Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
+  end;
+
+var
+  MemStream: TMemoryStream;
+  IntfImg: TLazIntfImage;
+  ImgWriter: TFPCustomImageWriter;
+begin
+  if (FImage.SaveStream<>nil) and (FImage.SaveStream.Size>0) then begin
+    DoWriteOriginal;
+    exit;
+  end;
+
+  // write image to temporary stream
+  MemStream:=TMemoryStream.Create;
+  IntfImg:=nil;
+  ImgWriter:=nil;
+  try
+    IntfImg:=TLazIntfImage.Create(0,0);
+    IntfImg.LoadFromBitmap(Handle,0);
+    ImgWriter:=WriterClass.Create;
+    IntfImg.SaveToStream(MemStream,ImgWriter);
+    FreeAndNil(ImgWriter);
+    FreeAndNil(IntfImg);
+    // save stream, so that further saves will be fast
+    MemStream.Position:=0;
+    FreeAndNil(FImage.FSaveStream);
+    FImage.SaveStream:=MemStream;
+    MemStream:=nil;
+    // copy savestream to destination stream
+    Stream.CopyFrom(FImage.SaveStream,FImage.SaveStream.Size);
+  finally
+    MemStream.Free;
+    IntfImg.Free;
+    ImgWriter.Free;
+  end;
+end;
+{$ENDIF}
+
 procedure TBitMap.SaveToStream(Stream: TStream);
 begin
   WriteStream(Stream, False);
@@ -751,6 +841,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.42  2003/09/02 21:32:56  mattias
+  implemented TOpenPictureDialog
+
   Revision 1.41  2003/09/02 15:12:21  mattias
   TBitmap.Assign now shares image data
 

@@ -263,22 +263,9 @@ end;
 
 { TPixmap }
 
-procedure TPixmap.LoadFromLazarusResource(const ResName: String);
-var
-  ms:TMemoryStream;
-  res:TLResource;
+function TPixmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
 begin
-  res:=LazarusResources.Find(ResName);
-  if (res<>nil) and (res.Value<>'') and (res.ValueType='XPM') then begin
-    ms:=TMemoryStream.Create;
-    try
-      ms.Write(res.Value[1],length(res.Value));
-      ms.Position:=0;
-      LoadFromStream(ms);
-    finally
-      ms.Free;
-    end;
-  end;
+  Result:=(ResourceType='XPM');
 end;
 
 procedure TPixmap.WriteStream(Stream: TStream; WriteSize: Boolean);
@@ -344,6 +331,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.21  2003/09/02 21:32:56  mattias
+  implemented TOpenPictureDialog
+
   Revision 1.20  2003/08/20 17:03:48  mattias
   implemented TPixmap and TPortableNetworkGraphic with fpImage
 

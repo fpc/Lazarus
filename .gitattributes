@@ -736,6 +736,7 @@ lcl/dirsel.pas svneol=native#text/pascal
 lcl/dynamicarray.pas svneol=native#text/pascal
 lcl/dynhasharray.pp svneol=native#text/pascal
 lcl/extctrls.pp svneol=native#text/pascal
+lcl/extdlgs.pas svneol=native#text/pascal
 lcl/extendedstrings.pas svneol=native#text/pascal
 lcl/filectrl.pp svneol=native#text/pascal
 lcl/forms.pp svneol=native#text/pascal

@@ -21,9 +21,9 @@
 {------------------------------------------------------------------------------}
 {  TFileDialog Create                                                          }
 {------------------------------------------------------------------------------}
-constructor TFileDialog.Create(AOwner: TComponent);
+constructor TFileDialog.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   fCompStyle := csFileDialog;
   FFiles := TStringList.Create;
   FHistoryList:=TStringList.Create;
@@ -83,7 +83,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TFileDialog SetFilter                                                       }
 {------------------------------------------------------------------------------}
-procedure TFileDialog.SetFilter(value : string);
+procedure TFileDialog.SetFilter(const value : string);
 begin
   FFilter := value;  // make sure this is defined first before the CNSendMessage
 end;
@@ -91,14 +91,92 @@ end;
 {------------------------------------------------------------------------------}
 {  TFileDialog SetFileName                                                     }
 {------------------------------------------------------------------------------}
-procedure TFileDialog.SetFileName(value : string);
+procedure TFileDialog.SetFileName(const value : string);
 begin
-  FFileName := value;  // make sure this is defined first before the CNSendMessage
+  FFileName := Value;  // make sure this is defined first before the CNSendMessage
 end;
 
 {******************************************************************************
                                   TOpenDialog
  ******************************************************************************}
+
+procedure TOpenDialog.DereferenceLinks;
+var i: integer;
+begin
+  if Filename<>'' then
+    Filename:=ExpandFilename(Filename);
+  if Files<>nil then begin
+    for i:=0 to Files.Count-1 do begin
+      if Files[i]<>'' then
+        Files[i]:=ExpandFilename(Files[i]);
+    end;
+  end;
+end;
+
+function TOpenDialog.CheckFile(var AFilename: string): boolean;
+begin
+  Result:=true;
+  if (DefaultExt<>'') and (ExtractFileExt(AFilename)='')
+  and (not FileExists(AFilename)) then begin
+    AFilename:=AFilename+DefaultExt;
+  end;
+  if (ofOverwritePrompt in Options) and FileExists(AFilename) then
+  begin
+    Result:=MessageDlg(rsfdOverwriteFile,
+                       Format(rsfdFileAlreadyExists,[AFileName]),
+                       mtConfirmation,[mbOk,mbCancel],0)=mrOk;
+    if not Result then exit;
+  end;
+  if (ofPathMustExist in Options)
+  and (not FileExists(ExtractFileDir(AFilename))) then begin
+    Result:=false;
+    MessageDlg(rsfdPathMustExist,
+               Format(rsfdPathNoExist,[ExtractFileDir(AFilename)]),
+               mtError,[mbCancel],0);
+    exit;
+  end;
+  if (ofFileMustExist in Options)
+  and (not FileExists(AFilename)) then begin
+    Result:=false;
+    MessageDlg(rsfdFileMustExist,
+               Format(rsfdFileNotExist,[AFileName]),mtError,
+               [mbCancel],0);
+    exit;
+  end;
+  if (ofNoReadOnlyReturn in Options)
+  and (not FileIsWritable(AFilename)) then begin
+    Result:=false;
+    MessageDlg(rsfdFileReadOnlyTitle,
+               Format(rsfdFileReadOnly,[AFileName]),
+               mtError,[mbCancel],0);
+    exit;
+  end;
+end;
+
+function TOpenDialog.CheckAllFiles: boolean;
+var
+  AFilename: String;
+  i: Integer;
+begin
+  Result:=true;
+
+  AFilename:=Filename;
+  if (AFilename<>'')
+  or (not (ofAllowMultiSelect in Options)) then begin
+    Result:=CheckFile(AFilename);
+    Filename:=AFilename;
+    if not Result then exit;
+  end;
+
+  if ofAllowMultiSelect in Options then begin
+    for i:=0 to Files.Count-1 do begin
+      AFilename:=Files[i];
+      Result:=CheckFile(AFilename);
+      Files[i]:=AFilename;
+      if not Result then exit;
+    end;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method: TOpenDialog.DoExecute
@@ -108,85 +186,6 @@ end;
   Starts dialogs and lets user choose a filename.
  ------------------------------------------------------------------------------}
 function TOpenDialog.DoExecute: boolean;
-
-  procedure DereferenceLinks;
-  var i: integer;
-  begin
-    if Filename<>'' then
-      Filename:=ExpandFilename(Filename);
-    if Files<>nil then begin
-      for i:=0 to Files.Count-1 do begin
-        if Files[i]<>'' then
-          Files[i]:=ExpandFilename(Files[i]);
-      end;
-    end;
-  end;
-  
-  function CheckFile(var AFilename: string): boolean;
-  begin
-    Result:=true;
-    if (DefaultExt<>'') and (ExtractFileExt(AFilename)='')
-    and (not FileExists(AFilename)) then begin
-      AFilename:=AFilename+DefaultExt;
-    end;
-    if (ofOverwritePrompt in Options) and FileExists(AFilename) then
-    begin
-      Result:=MessageDlg(rsfdOverwriteFile,
-                         Format(rsfdFileAlreadyExists,[AFileName]),
-                         mtConfirmation,[mbOk,mbCancel],0)=mrOk;
-      if not Result then exit;
-    end;
-    if (ofPathMustExist in Options)
-    and (not FileExists(ExtractFileDir(AFilename))) then begin
-      Result:=false;
-      MessageDlg(rsfdPathMustExist,
-                 Format(rsfdPathNoExist,[ExtractFileDir(AFilename)]),
-                 mtError,[mbCancel],0);
-      exit;
-    end;
-    if (ofFileMustExist in Options)
-    and (not FileExists(AFilename)) then begin
-      Result:=false;
-      MessageDlg(rsfdFileMustExist,
-                 Format(rsfdFileNotExist,[AFileName]),mtError,
-                 [mbCancel],0);
-      exit;
-    end;
-    if (ofNoReadOnlyReturn in Options)
-    and (not FileIsWritable(AFilename)) then begin
-      Result:=false;
-      MessageDlg(rsfdFileReadOnlyTitle,
-                 Format(rsfdFileReadOnly,[AFileName]),
-                 mtError,[mbCancel],0);
-      exit;
-    end;
-  end;
-  
-  function CheckAllFiles: boolean;
-  var
-    AFilename: String;
-    i: Integer;
-  begin
-    Result:=true;
-    
-    AFilename:=Filename;
-    if (AFilename<>'')
-    or (not (ofAllowMultiSelect in Options)) then begin
-      Result:=CheckFile(AFilename);
-      Filename:=AFilename;
-      if not Result then exit;
-    end;
-    
-    if ofAllowMultiSelect in Options then begin
-      for i:=0 to Files.Count-1 do begin
-        AFilename:=Files[i];
-        Result:=CheckFile(AFilename);
-        Files[i]:=AFilename;
-        if not Result then exit;
-      end;
-    end;
-  end;
-
 begin
   Result:=inherited DoExecute;
   if (not (ofNoDereferenceLinks in Options)) then begin
@@ -215,6 +214,21 @@ begin
   fCompStyle:=csOpenFileDialog;
   FTitle:= rsfdOpenFile;
   FOptions := [ofEnableSizing, ofViewDetail];
+end;
+
+procedure TOpenDialog.DoFolderChange;
+begin
+  if Assigned(OnFolderChange) then OnFolderChange(Self);
+end;
+
+procedure TOpenDialog.DoSelectionChange;
+var
+  CurFilename: String;
+begin
+  CurFilename:=Filename;
+  if FLastSelectionChangeFilename=CurFilename then exit;
+  FLastSelectionChangeFilename:=CurFilename;
+  if Assigned(OnSelectionChange) then OnSelectionChange(Self);
 end;
 
 {******************************************************************************
@@ -251,6 +265,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2003/09/02 21:32:56  mattias
+  implemented TOpenPictureDialog
+
   Revision 1.10  2003/08/14 10:36:55  mattias
   added TSelectDirectoryDialog
 

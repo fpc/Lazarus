@@ -90,11 +90,13 @@ type
     property Title : string read FTitle write FTitle;
     property UserChoice : integer read FUserChoice write FUserChoice;
     procedure Close;
+    procedure DoShow; virtual;
+    procedure DoClose; virtual;
     function HandleAllocated: boolean;
   published
-    property OnClose : TNotifyEvent read FOnClose write FOnClose;
+    property OnClose: TNotifyEvent read FOnClose write FOnClose;
     property OnCanClose: TCloseQueryEvent read FOnCanClose write FOnCanClose;
-    property OnShow : TNotifyEvent read FOnShow write FOnShow;
+    property OnShow: TNotifyEvent read FOnShow write FOnShow;
     property HelpContext: THelpContext read FHelpContext write FHelpContext default 0;
     property Width: integer read FWidth write FWidth;
     property Height: integer read FHeight write FHeight;
@@ -117,11 +119,11 @@ type
     procedure SetDefaultExt(const AValue: string);
   protected
     function DoExecute: boolean; override;
-    procedure SetFileName(Value: String); virtual;
-    procedure SetFilter(Value: String); virtual;
+    procedure SetFileName(const Value: String); virtual;
+    procedure SetFilter(const Value: String); virtual;
     procedure SetHistoryList(const AValue: TStrings); virtual;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
     function Execute: boolean; override;
     property Files: TStrings read FFiles;
@@ -140,10 +142,9 @@ type
   
   TOpenOption = (
     ofReadOnly,
-    ofOverwritePrompt, // tests if selected file exists and if so shows a
-                       // message, to inform the user, that file will be
-                       // overwritten
-    ofHideReadOnly,
+    ofOverwritePrompt, // if selected file exists shows a message, that file
+                       // will be overwritten
+    ofHideReadOnly,    // hide read only file
     ofNoChangeDir,     // do not change current directory
     ofShowHelp,        // show a help button
     ofNoValidate,
@@ -162,7 +163,7 @@ type
     ofEnableIncludeNotify,
     ofEnableSizing,    // dialog can be resized, e.g. via the mouse
     ofDontAddToRecent, // do not add the path to the history list
-    ofForceShowHidden, // includes in display files marked as hidden
+    ofForceShowHidden, // show hidden files
     ofViewDetail       // details are OS and interface dependent
     );
   TOpenOptions = set of TOpenOption;
@@ -172,10 +173,16 @@ type
     FOnFolderChange: TNotifyEvent;
     FOnSelectionChange: TNotifyEvent;
     FOptions: TOpenOptions;
+    FLastSelectionChangeFilename: string;
   protected
+    procedure DereferenceLinks; virtual;
+    function CheckFile(var AFilename: string): boolean; virtual;
+    function CheckAllFiles: boolean; virtual;
     function DoExecute: boolean; override;
   public
     constructor Create(AOwner: TComponent); override;
+    procedure DoFolderChange; virtual;
+    procedure DoSelectionChange; virtual;
   published
     property Options: TOpenOptions read FOptions write FOptions
       default [ofEnableSizing, ofViewDetail];
@@ -412,6 +419,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.35  2003/09/02 21:32:56  mattias
+  implemented TOpenPictureDialog
+
   Revision 1.34  2003/08/14 10:36:55  mattias
   added TSelectDirectoryDialog
 

@@ -40,8 +40,19 @@ end;
 procedure TCommonDialog.Close;
 begin
   //writeln('TCommonDialog.Close-------------------------------------------------------',Name);
+  DoClose;
   CNSendMessage(LM_DESTROY, Self, nil);
   FHandle := 0;
+end;
+
+procedure TCommonDialog.DoShow;
+begin
+  if Assigned(FOnShow) then FOnShow(Self);
+end;
+
+procedure TCommonDialog.DoClose;
+begin
+  if Assigned(FOnClose) then FOnClose(Self);
 end;
 
 function TCommonDialog.HandleAllocated: boolean;
@@ -76,6 +87,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.9  2003/09/02 21:32:56  mattias
+  implemented TOpenPictureDialog
+
   Revision 1.8  2003/03/29 19:15:30  mattias
   fixed untransienting
 

@@ -54,7 +54,7 @@ uses
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
   xlib,
-  SysUtils, LMessages, Classes, Controls, Forms, LCLStrConsts,
+  SysUtils, Classes, ExtDlgs, Dialogs, Controls, Forms, LCLStrConsts, LMessages,
   VclGlobals, LCLProc, LCLLinux, LCLType, gtkDef, DynHashArray, gtkMsgQueue,
   GraphType, GraphMath, Graphics;
 
@@ -191,6 +191,17 @@ type
     procedure ShowModal(Sender: TObject); virtual;
     procedure UpdateTransientWindows; virtual;
     procedure UntransientWindow(GtkWindow: PGtkWindow);
+    procedure InitializeCommonDialog(ADialog: TObject; AWindow: PGtkWidget);
+    procedure CreateOpenDialogFilter(OpenDialog: TOpenDialog;
+      SelWidget: PGtkWidget);
+    procedure CreatePreviewDialogControl(PreviewDialog: TPreviewFileDialog;
+      SelWidget: PGtkWidget);
+    procedure InitializeOpenDialog(OpenDialog: TOpenDialog;
+      SelWidget: PGtkWidget);
+    procedure InitializeFileDialog(FileDialog: TFileDialog;
+      var SelWidget: PGtkWidget; Title: PChar);
+    procedure InitializeFontDialog(FontDialog: TFontDialog;
+      var SelWidget: PGtkWidget; Title: PChar);
 
     // misc
     Function GetCaption(Sender : TObject) : String; virtual;
@@ -254,7 +265,7 @@ type
 implementation
 
 uses
-  Buttons, Menus, StdCtrls, PairSplitter, Dialogs, Math,
+  Buttons, Menus, StdCtrls, PairSplitter, Math,
   GTKWinApiWindow, ComCtrls, CListBox, KeyMap, Calendar, Arrow, Spin, CommCtrl,
   ExtCtrls, FileCtrl, LResources, gtkglobals, gtkproc;
 
@@ -349,6 +360,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.141  2003/09/02 21:32:56  mattias
+  implemented TOpenPictureDialog
+
   Revision 1.140  2003/08/28 09:10:00  mattias
   listbox and comboboxes now set sort and selection at handle creation
 

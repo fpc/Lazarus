@@ -102,9 +102,10 @@ const
   csOpenFileDialog = 56;
   csSaveFileDialog = 57;
   csSelectDirectoryDialog = 58;
+  csPreviewFileControl = 59;
+  csPreviewFileDialog = 60;
 
-
-  csNonLCL = 59; // for non LCL controls, that create their own handles
+  csNonLCL = 61; // for non LCL controls, that create their own handles
 
 
 const

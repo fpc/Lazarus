@@ -38,7 +38,7 @@ uses
   Buttons, Extctrls, Registry, Calendar, Clipbrd, Forms, LCLLinux, Spin,
   Comctrls, Graphics, StdCtrls, Arrow, Controls, ImgList, Menus, Toolwin,
   Dialogs, Messages, Clistbox, ActnList, Grids, MaskEdit,
-  Printers, PostScriptPrinter, CheckLst, PairSplitter, DirSel;
+  Printers, PostScriptPrinter, CheckLst, PairSplitter, DirSel, ExtDlgs;
 
 implementation
 
@@ -47,6 +47,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.28  2003/09/02 21:32:56  mattias
+  implemented TOpenPictureDialog
+
   Revision 1.27  2003/08/18 13:21:23  mattias
   renamed lazqueue to lazlinkedlist, patch from Jeroen
 

@@ -759,17 +759,20 @@ procedure TgtkObject.SendCachedLCLMessages;
         RealizeWidgetSize(Widget,LCLWidth, LCLHeight);
 
         // move widget on the fixed widget of parent control
-        ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
-        ParentFixed := GetFixedWidget(ParentWidget);
-        if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE)
-        or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
-          FixedMoveControl(ParentFixed, Widget,
-                         LCLControl.Left, LCLControl.Top);
-        end else begin
-          WinWidgetInfo:=GetWidgetInfo(Widget,false);
-          if (WinWidgetInfo=nil)
-          or (not (wwiNotOnParentsClientArea in WinWidgetInfo^.Flags)) then
-            WriteWarningParentWidgetNotFound;
+        if (LCLControl.Parent<>nil) and (LCLControl.Parent.HandleAllocated) then
+        begin
+          ParentWidget:=pgtkWidget(LCLControl.Parent.Handle);
+          ParentFixed := GetFixedWidget(ParentWidget);
+          if GtkWidgetIsA(ParentFixed,GTK_FIXED_GET_TYPE)
+          or GtkWidgetIsA(ParentFixed,GTK_LAYOUT_GET_TYPE) then begin
+            FixedMoveControl(ParentFixed, Widget,
+                           LCLControl.Left, LCLControl.Top);
+          end else begin
+            WinWidgetInfo:=GetWidgetInfo(Widget,false);
+            if (WinWidgetInfo=nil)
+            or (not (wwiNotOnParentsClientArea in WinWidgetInfo^.Flags)) then
+              WriteWarningParentWidgetNotFound;
+          end;
         end;
       end
       else begin
@@ -3667,6 +3670,7 @@ begin
 
   csForm, 
   csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
+  csPreviewFileDialog,
   csColorDialog,
   csFontDialog  : gtk_window_set_title(pGtkWindow(p),PLabel);
 
@@ -4593,13 +4597,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure InitializeCommonDialog
+  procedure TGTKObject.InitializeCommonDialog
   Params: ADialog: TCommonDialog; AWindow: PGtkWidget
   Result: none
 
   Initializes a TCommonDialog window.
 ------------------------------------------------------------------------------}
-procedure InitializeCommonDialog(ADialog: TObject;
+procedure TGTKObject.InitializeCommonDialog(ADialog: TObject;
   AWindow: PGtkWidget);
 var NewWidth, NewHeight: integer;
 begin
@@ -4838,13 +4842,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: CreateOpenDialogFilter
+  Function: TGTKObject.CreateOpenDialogFilter
   Params: OpenDialog: TOpenDialog; SelWidget: PGtkWidget
   Returns: -
 
   Adds a Filter pulldown to a gtk file selection dialog.
  ------------------------------------------------------------------------------}
-procedure CreateOpenDialogFilter(OpenDialog: TOpenDialog;
+procedure TGTKObject.CreateOpenDialogFilter(OpenDialog: TOpenDialog;
   SelWidget: PGtkWidget);
 var
   FilterList: TList;
@@ -4919,7 +4923,48 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: InitializeOpenDialog
+  Function: TGTKObject.CreatePreviewDialogControl
+  Params: PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget
+  Returns: -
+
+  Adds a preview control to a gtk file selection dialog.
+ ------------------------------------------------------------------------------}
+procedure TGTKObject.CreatePreviewDialogControl(
+  PreviewDialog: TPreviewFileDialog; SelWidget: PGtkWidget);
+var
+  PreviewWidget: PGtkWidget;
+  list_hbox: PGtkWidget;
+  DirListWidget: PGtkWidget;
+  ScrolledWin: PGtkWidget;
+  AControl: TPreviewFileControl;
+begin
+  AControl:=PreviewDialog.PreviewFileControl;
+  if AControl=nil then exit;
+  // find the hbox widget of the file and directory dialog
+  DirListWidget:=PGtkFileSelection(SelWidget)^.dir_list;
+  ScrolledWin:=DirListWidget^.parent;
+  if not GtkWidgetIsA(ScrolledWin,GTK_SCROLLED_WINDOW_TYPE) then begin
+    writeln('NOTE: CreatePreviewDialogControl ',
+      'parent widget of dir_list widget is not a scrolled window');
+    exit;
+  end;
+  list_hbox:=ScrolledWin^.parent;
+  if not GtkWidgetIsA(list_hbox,GTK_HBOX_TYPE) then begin
+    writeln('NOTE: CreatePreviewDialogControl ',
+      'parent widget of scrolled window is not a hbox');
+    exit;
+  end;
+  // create the preview widget
+  PreviewWidget:=PGtkWidget(AControl.Handle);
+  gtk_object_set_data(PGtkObject(PreviewWidget),'LCLPreviewFixed',
+                      PreviewWidget);
+  gtk_box_pack_start(GTK_BOX(list_hbox),PreviewWidget,true,true,0);
+
+  gtk_widget_show(PreviewWidget);
+end;
+
+{------------------------------------------------------------------------------
+  Function: TGTKObject.InitializeOpenDialog
   Params: OpenDialog: TOpenDialog; SelWidget: PGtkWidget
   Returns: -
 
@@ -4930,11 +4975,12 @@ end;
   - file information
   - history pulldown
   - filter pulldown
+  - preview control
  ------------------------------------------------------------------------------}
-procedure InitializeOpenDialog(OpenDialog: TOpenDialog;
+procedure TGTKObject.InitializeOpenDialog(OpenDialog: TOpenDialog;
   SelWidget: PGtkWidget);
 var
-  FileDetailLabel, HBox, Frame: PGtkWidget;
+  FileDetailLabel, HBox, FrameWidget: PGtkWidget;
 begin
   // Multiselection
   if ofAllowMultiSelect in OpenDialog.Options then
@@ -4992,13 +5038,13 @@ begin
   // Details - a frame with a label
   if (ofViewDetail in OpenDialog.Options) then begin
     // create the frame around the information
-    Frame:=gtk_frame_new(PChar(rsFileInformation));
+    FrameWidget:=gtk_frame_new(PChar(rsFileInformation));
     gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(SelWidget)^.main_vbox),
-                       Frame,false,false,0);
-    gtk_widget_show(Frame);
+                       FrameWidget,false,false,0);
+    gtk_widget_show(FrameWidget);
     // create a HBox, so that the information is left justified
     HBox:=gtk_hbox_new(false,0);
-    gtk_container_add(GTK_CONTAINER(Frame), HBox);
+    gtk_container_add(GTK_CONTAINER(FrameWidget), HBox);
     // create the label for the file information
     FileDetailLabel:=gtk_label_new(PChar(rsDefaultFileInfoValue));
     gtk_box_pack_start(GTK_BOX(HBox),FileDetailLabel,false,false,5);
@@ -5007,6 +5053,10 @@ begin
     FileDetailLabel:=nil;
   gtk_object_set_data(PGtkObject(SelWidget), 'FileDetailLabel',
                       FileDetailLabel);
+                      
+  // preview
+  if (OpenDialog is TPreviewFileDialog) then
+    CreatePreviewDialogControl(TPreviewFileDialog(OpenDialog),SelWidget);
 
   // set initial filename
   if OpenDialog.Filename<>'' then
@@ -5015,13 +5065,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: InitializeFileDialog
+  Function: TGTKObject.InitializeFileDialog
   Params: FileDialog: TFileDialog; var SelWidget: PGtkWidget
   Returns: -
 
   Creates a new TFile/Open/SaveDialog
  ------------------------------------------------------------------------------}
-procedure InitializeFileDialog(FileDialog: TFileDialog;
+procedure TGTKObject.InitializeFileDialog(FileDialog: TFileDialog;
   var SelWidget: PGtkWidget; Title: PChar);
 begin
   SelWidget := gtk_file_selection_new(Title);
@@ -5048,13 +5098,13 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: InitializeFontDialog
+  Function: TGTKObject.InitializeFontDialog
   Params: FontDialog: TFontialog; var SelWidget: PGtkWidget
   Returns: -
 
   Creates a new TFontDialog
  ------------------------------------------------------------------------------}
-procedure InitializeFontDialog(FontDialog: TFontDialog;
+procedure TGTKObject.InitializeFontDialog(FontDialog: TFontDialog;
   var SelWidget: PGtkWidget; Title: PChar);
 begin
   SelWidget := gtk_font_selection_dialog_new(Title);
@@ -5536,7 +5586,8 @@ begin
   csEdit :
     p :=  gtk_entry_new();
 
-  csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog:
+  csFileDialog, csOpenFileDialog, csSaveFileDialog, csSelectDirectoryDialog,
+  csPreviewFileDialog:
     InitializeFileDialog(TFileDialog(Sender),p,StrTemp);
 
   csFontDialog :
@@ -5728,6 +5779,9 @@ begin
   csPopupMenu :
     with (TPopupMenu(Sender)) do
       P := gtk_menu_new();
+
+  csPreviewFileControl:
+    P:=CreateSimpleClientAreaWidget(Sender);
 
   csProgressBar:
     with (TProgressBar (Sender)) do
@@ -8068,6 +8122,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.403  2003/09/02 21:32:56  mattias
+  implemented TOpenPictureDialog
+
   Revision 1.402  2003/08/30 18:53:07  mattias
   using default colors, when theme does not define them
 

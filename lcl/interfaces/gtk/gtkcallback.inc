@@ -1781,11 +1781,10 @@ begin
   if Filename=OldFilename then exit;
   OpenDialog.Filename:=Filename;
   // tell application, that selection has changed
-  if OpenDialog.OnSelectionChange<>nil then
-    OpenDialog.OnSelectionChange(OpenDialog);
+  OpenDialog.DoSelectionChange;
   if (OpenDialog.OnFolderChange<>nil)
   and (ExtractFilePath(Filename)<>ExtractFilePath(OldFilename)) then
-    OpenDialog.OnFolderChange(OpenDialog);
+    OpenDialog.DoFolderChange;
   // show some information
   FileDetailLabel:=gtk_object_get_data(PGtkObject(OpenDialog.Handle),
                                        'FileDetailLabel');
@@ -1841,11 +1840,16 @@ end;
   This function is called, whenever a commondialog window is realized
 -------------------------------------------------------------------------------}
 function GTKDialogRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
+var
+  LCLComponent: TObject;
 begin
   if (Data=nil) then ;
   gdk_window_set_events(GetControlWindow(Widget),
     gdk_window_get_events(GetControlWindow(Widget))
       or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
+  LCLComponent:=GetLCLObject(Widget);
+  if LCLComponent is TCommonDialog then
+    TCommonDialog(LCLComponent).DoShow;
   Result:=true;
 end;
 
@@ -2845,6 +2849,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.186  2003/09/02 21:32:56  mattias
+  implemented TOpenPictureDialog
+
   Revision 1.185  2003/08/30 18:53:07  mattias
   using default colors, when theme does not define them
 

@@ -87,6 +87,7 @@ type
 
 function SearchFileInPath(const Filename, BasePath, SearchPath,
   Delimiter: string; Flags: TSearchFileInPathFlags): string;
+function GetAllFilesMask: string;
 
 // file actions
 function ReadFileToString(const Filename: string): string;
@@ -126,6 +127,9 @@ end.
 
 {
   $Log$
+  Revision 1.18  2003/09/02 21:32:56  mattias
+  implemented TOpenPictureDialog
+
   Revision 1.17  2003/08/13 16:18:58  mattias
   started check compiler options
 

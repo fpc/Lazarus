@@ -852,6 +852,15 @@ begin
   Result:='';
 end;
 
+function GetAllFilesMask: string;
+begin
+  {$IFDEF win32}
+  Result:='*.*';
+  {$ELSE}
+  Result:='*';
+  {$ENDIF}
+end;
+
 {------------------------------------------------------------------------------
   function ReadFileToString(const Filename: string): string;
  ------------------------------------------------------------------------------}
@@ -877,6 +886,9 @@ end;
 
 {
   $Log$
+  Revision 1.28  2003/09/02 21:32:56  mattias
+  implemented TOpenPictureDialog
+
   Revision 1.27  2003/08/07 07:12:29  mattias
   fixed file description permission order
 
