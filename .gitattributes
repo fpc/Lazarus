@@ -28,6 +28,7 @@ examples/trackbar.pp svneol=native#text/pascal
 ide/compiler.pp svneol=native#text/pascal
 ide/compileroptions.pp svneol=native#text/pascal
 ide/dlgmessage.pp svneol=native#text/pascal
+ide/find_dlg.pp svneol=native#text/pascal
 ide/global.inc svneol=native#text/pascal
 ide/global.pp svneol=native#text/pascal
 ide/idecomp.pp svneol=native#text/pascal

@@ -133,6 +133,8 @@ type
     procedure mnuRunProjectClicked(Sender : TObject);
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
+    procedure mnuSearchFindClicked(Sender : TObject);
+
     procedure ControlClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
     procedure DesignFormMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer); 
@@ -181,7 +183,7 @@ Form1 : TForm1;
 Taginc : Integer;
 implementation
 uses
-  TestForm, IDEEditor,mwCustomEdit,gtk,ViewUnit_dlg,ViewForm_dlg;
+  TestForm, IDEEditor,mwCustomEdit,gtk,ViewUnit_dlg,ViewForm_dlg,Find_dlg;
 
 constructor TForm1.Create(AOwner: TComponent);  
 var
@@ -783,6 +785,7 @@ itmFileNew := TMenuItem.Create(Self);
 //--------------
   itmSearchFind := TMenuItem.Create(nil);
   itmSearchFind.caption := 'Find';
+  itmSearchFind.OnClick := @mnuSearchFindClicked;
   mnuSearch.add(itmSearchFind);
 
 //--------------
@@ -1775,6 +1778,11 @@ Begin
   Messagedlg.Show;
 End;
 
+Procedure TForm1.mnuSearchFindClicked(Sender : TObject);
+Begin
+  dlgFind1.Show;
+End;
+
 
 Procedure TForm1.mnuNewProjectClicked(Sender : TObject);
 var
@@ -2180,6 +2188,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2000/08/08 18:52:14  lazarus
+  Started a FIND dialog box.
+  Shane
+
   Revision 1.2  2000/08/07 19:15:05  lazarus
   Added the Search menu to the IDE.
   Shane
