@@ -138,13 +138,15 @@ var
         and (CurBaseBounds.Bottom=CurBaseBounds.Top) then
           CurBaseBounds:=BoundsRect;
           
-        {if csDesigning in ComponentState then
+        {$IFDEF CHECK_POSITION}
+        //if csDesigning in ComponentState then
         writeln('[TWinControl.AlignControls.DoPosition] Before Anchoring ',
           ' ',Name,':',ClassName,
           ' CurBaseBounds=',CurBaseBounds.Left,',',CurBaseBounds.Top,',',CurBaseBounds.Right-CurBaseBounds.Left,',',CurBaseBounds.Bottom-CurBaseBounds.Top,
           ' ParBaseClient=',ParentBaseClientSize.X,',',ParentBaseClientSize.Y,
           ' ParClient=',Parent.ClientWidth,',',Parent.ClientHeight,
-          '');}
+          '');
+        {$ENDIF}
 
         if akLeft in Anchors then begin
           // keep distance to left side of parent
@@ -209,7 +211,8 @@ var
         end;
 
       end;
-      {if csDesigning in ComponentState then
+      {$IFDEF CHECK_POSITION}
+      //if csDesigning in ComponentState then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] After Anchoring',
           ' ',Name,':',ClassName,
@@ -217,7 +220,8 @@ var
           ' Control=',Name,':',ClassName,
           ' Old=',Left,',',Top,',',Width,',',Height,
           ' New=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,
-          '');}
+          '');
+      {$ENDIF}
     end;
     
     // set min size
@@ -257,13 +261,25 @@ var
       end;
       NewWidth:=Max(0,NewRight-NewLeft);
       NewHeight:=Max(0,NewBottom-NewTop);
+      {$IFDEF CHECK_POSITION}
+      //if csDesigning in Control.ComponentState then
+      with Control do
+        writeln('[TWinControl.AlignControls.DoPosition] After Aligning',
+          ' ',Name,':',ClassName,
+          ' Align=',AlignNames[AAlign],
+          ' Control=',Name,':',ClassName,
+          ' Old=',Left,',',Top,',',Width,',',Height,
+          ' New=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,
+          ' ARect=',ARect.Left,',',ARect.Top,',',ARect.Right-ARect.Left,',',ARect.Bottom-ARect.Top,
+          '');
+      {$ENDIF}
     end;
         
     // set the new bounds
     if (Control.Left <> NewLeft) or (Control.Top <> NewTop)
     or (Control.Width <> NewWidth) or (Control.Height <> NewHeight) then begin
       {$IFDEF CHECK_POSITION}
-      if csDesigning in Control.ComponentState then
+      //if csDesigning in Control.ComponentState then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] NEW BOUNDS Control=',Name,':',ClassName,' NewBounds=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight,' Align=',AlignNames[AAlign]);
       {$ENDIF}
@@ -280,7 +296,7 @@ var
         NewHeight:=Height;
       end;
       {$IFDEF CHECK_POSITION}
-      if csDesigning in Control.ComponentState then
+      //if csDesigning in Control.ComponentState then
       with Control do
         writeln('[TWinControl.AlignControls.DoPosition] AFTER SETBOUND Control=',Name,':',ClassName,' Bounds=',Left,',',Top,',',Width,',',Height);
       {$ENDIF}
@@ -2800,6 +2816,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.140  2003/06/19 22:38:21  mattias
+  fixed update on changing package usage options
+
   Revision 1.139  2003/06/19 16:36:35  mattias
   started codeexplorer
 
