@@ -1161,6 +1161,7 @@ begin
     Add('CONTINUE'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
     // only fpc 1.1
     Add('LONGWORD'   ,{$ifdef FPC}@{$endif}AllwaysTrue);
+    Add('LONGINT'    ,{$ifdef FPC}@{$endif}AllwaysTrue);
     Add('COPY'       ,{$ifdef FPC}@{$endif}AllwaysTrue);
   end;
   
