@@ -451,7 +451,7 @@ begin
   EventTrace('destroy', data);
   Mess.msg := LM_DESTROY;
   Result := DeliverMessage(Data, Mess) = 0;
-  if longint(widget)=MCaptureHandle then MCaptureHandle:=0;
+  if longint(widget)=MCaptureHandle then Uncapturehandle;
    
   // NOTE: if the destroy message is posted
   // we should post an info destroy message as well
@@ -465,7 +465,7 @@ begin
   Mess.Msg:= LM_CLOSEQUERY;
   { Message results : True - do nothing, False - destroy or hide window }
   Result:= DeliverMessage(Data, Mess) = 0;
-  if longint(widget)=MCaptureHandle then MCaptureHandle:=0;
+  if longint(widget)=MCaptureHandle then Uncapturehandle;
   
 end;
 
@@ -711,6 +711,7 @@ begin
   writeln('[gtkMouseBtnPress] ',
     TControl(Data).Name,':',TObject(Data).ClassName,
     ' Widget=',HexStr(Cardinal(Widget),8),
+    ' ControlWidget=',HexStr(Cardinal(TWinControl(Data).Handle),8),
     ' DSO=',DesignOnlySignal,
     ' ',Trunc(Event^.X),',',Trunc(Event^.Y),
     ' Type=',Event^.theType);
@@ -2205,6 +2206,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.113  2002/08/27 18:45:13  lazarus
+  MG: propedits text improvements from Andrew, uncapturing, improved comobobox
+
   Revision 1.112  2002/08/25 13:45:58  lazarus
   MG: ignoring double clicks for components that dont want them
 
