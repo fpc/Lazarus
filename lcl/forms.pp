@@ -123,6 +123,7 @@ type
   Protected
     procedure AlignControls(AControl: TControl; var ARect: TRect); override;
     procedure CreateWnd; override;
+    function  GetChildsRect(Scrolled: boolean): TRect; override;
     Procedure WMEraseBkgnd(var Message: TLMEraseBkgnd); message LM_ERASEBKGND;
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
     procedure WMSize(var Message: TLMSize); message LM_Size;
@@ -142,8 +143,10 @@ type
     property Canvas: TControlCanvas read FCanvas;
   published
     property AutoScroll: Boolean read FAutoScroll write SetAutoScroll;
-    property HorzScrollBar: TControlScrollBar read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
-    property VertScrollBar: TControlScrollBar read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
+    property HorzScrollBar: TControlScrollBar
+      read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
+    property VertScrollBar: TControlScrollBar
+      read FVertScrollBar write SetVertScrollBar stored StoreScrollBars;
   end;
 
   TScrollBox = class(TScrollingWinControl)
@@ -155,7 +158,8 @@ type
     property AutoSize default True;
     //property AutoScroll;
     //property BiDiMode;
-    //property BorderStyle: TBorderStyle read FBorderStyle write SetBorderStyle default bsSingle;
+    //property BorderStyle: TBorderStyle
+    //  read FBorderStyle write SetBorderStyle default bsSingle;
     property Constraints;
     //property DockSite;
     property DragCursor;

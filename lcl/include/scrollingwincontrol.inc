@@ -335,6 +335,21 @@ begin
   UpdateScrollBars;
 end;
 
+function TScrollingWinControl.GetChildsRect(Scrolled: boolean): TRect;
+var
+  ScrolledX, ScrolledY: integer;
+begin
+  Result:=inherited GetChildsRect(Scrolled);
+  if Scrolled then begin
+    ScrolledX:=HorzScrollBar.Position;
+    ScrolledY:=VertScrollBar.Position;
+    dec(Result.Left,ScrolledX);
+    dec(Result.Top,ScrolledY);
+    dec(Result.Right,ScrolledX);
+    dec(Result.Bottom,ScrolledY);
+  end;
+end;
+
 procedure TScrollingWinControl.AlignControls(AControl: TControl; var ARect: TRect);
 begin
   HorzScrollBar.AutoCalcRange;
