@@ -113,6 +113,9 @@ type
       CleanStartPos, CleanEndPos: integer): TAVLTreeNode;
     function FindNearestAVLNode(Identifier: PChar;
       CleanStartPos, CleanEndPos: integer; InFront: boolean): TAVLTreeNode;
+    function FindNearest(Identifier: PChar;
+      CleanStartPos, CleanEndPos: integer;
+      InFront: boolean): PCodeTreeNodeCacheEntry;
     function Find(Identifier: PChar): PCodeTreeNodeCacheEntry;
     procedure Add(Identifier: PChar; CleanStartPos, CleanEndPos: integer;
       NewNode: TCodeTreeNode; NewTool: TPascalParserTool; NewCleanPos: integer);
@@ -126,7 +129,7 @@ type
   end;
 
 const
-  // all node types which can create a cache
+  // all node types which can hold a cache
   AllNodeCacheDescs = [ctnClass, ctnInterface, ctnInitialization, ctnProgram];
   
   //----------------------------------------------------------------------------
@@ -171,6 +174,27 @@ type
     procedure DisposeNode(Node: TCodeTreeNodeCache);
     function NewNode(AnOwner: TCodeTreeNode): TCodeTreeNodeCache;
   end;
+
+
+  //----------------------------------------------------------------------------
+  // stacks for circle checking
+type
+  TCodeTreeNodeStackEntry = TCodeTreeNode;
+  PCodeTreeNodeStackEntry = ^TCodeTreeNodeStackEntry;
+  
+  TCodeTreeNodeStack = record
+    Fixedtems: array[0..9] of TCodeTreeNodeStackEntry;
+    DynItems: TList; // list of PCodeTreeNodeStackEntry
+    StackPtr: integer;
+  end;
+  PCodeTreeNodeStack = ^TCodeTreeNodeStack;
+
+  procedure InitializeNodeStack(NodeStack: PCodeTreeNodeStack);
+  procedure AddNodeToStack(NodeStack: PCodeTreeNodeStack;
+    NewNode: TCodeTreeNode);
+  function NodeExistsInStack(NodeStack: PCodeTreeNodeStack;
+    Node: TCodeTreeNode): boolean;
+  procedure FinalizeNodeStack(NodeStack: PCodeTreeNodeStack);
 
 var
   GlobalIdentifierTree: TGlobalIdentifierTree;
@@ -624,7 +648,7 @@ var
 begin
   Result:=FindNearestAVLNode(Identifier,CleanStartPos,CleanEndPos,true);
   Entry:=PCodeTreeNodeCacheEntry(Result.Data);
-  if (CleanStartPos>=Entry^.CleanEndPos)
+  if (CleanStartPos>Entry^.CleanEndPos)
   or (CleanEndPos<Entry^.CleanStartPos) then begin
     // node is not in range
     Result:=nil;
@@ -659,7 +683,7 @@ begin
         if CleanStartPos>=Entry^.CleanEndPos then begin
           NextNode:=FItems.FindSuccessor(Result);
           DirectionSucc:=true;
-        end else if CleanEndPos<Entry^.CleanStartPos then begin
+        end else if CleanEndPos<=Entry^.CleanStartPos then begin
           NextNode:=FItems.FindPrecessor(Result);
           DirectionSucc:=false;
         end else begin
@@ -674,7 +698,7 @@ begin
           end;
           Result:=NextNode;
           if (CleanStartPos<Entry^.CleanEndPos)
-          and (CleanEndPos>=Entry^.CleanStartPos) then begin
+          and (CleanEndPos>Entry^.CleanStartPos) then begin
             // cached result in range found
             exit;
           end;
@@ -747,6 +771,17 @@ begin
   Owner:=NewOwner;
 end;
 
+function TCodeTreeNodeCache.FindNearest(Identifier: PChar; CleanStartPos,
+  CleanEndPos: integer; InFront: boolean): PCodeTreeNodeCacheEntry;
+var Node: TAVLTreeNode;
+begin
+  Node:=FindNearestAVLNode(Identifier,CleanStartPos,CleanEndPos,InFront);
+  if Node<>nil then
+    Result:=PCodeTreeNodeCacheEntry(Node.Data)
+  else
+    Result:=nil;
+end;
+
 { TNodeCacheMemManager }
 
 procedure TNodeCacheMemManager.DisposeNode(Node: TCodeTreeNodeCache);
@@ -790,6 +825,51 @@ begin
     inc(FAllocatedCount);
   end;
   inc(FCount);
+end;
+
+//------------------------------------------------------------------------------
+
+procedure InitializeNodeStack(NodeStack: PCodeTreeNodeStack);
+begin
+  NodeStack^.StackPtr:=0;
+  NodeStack^.DynItems:=nil;
+end;
+
+procedure AddNodeToStack(NodeStack: PCodeTreeNodeStack;
+  NewNode: TCodeTreeNode);
+begin
+  if (NodeStack^.StackPtr<=High(NodeStack^.Fixedtems)) then begin
+    NodeStack^.Fixedtems[NodeStack^.StackPtr]:=NewNode;
+  end else begin
+    if NodeStack^.DynItems=nil then begin
+      NodeStack^.DynItems:=TList.Create;
+    end;
+    NodeStack^.DynItems.Add(NewNode);
+  end;
+  inc(NodeStack^.StackPtr);
+end;
+
+function NodeExistsInStack(NodeStack: PCodeTreeNodeStack;
+  Node: TCodeTreeNode): boolean;
+var i: integer;
+begin
+  Result:=true;
+  i:=0;
+  while i<NodeStack^.StackPtr do begin
+    if i<=High(NodeStack^.Fixedtems) then begin
+      if NodeStack^.Fixedtems[i]=Node then exit;
+    end else begin
+      if NodeStack^.DynItems[i-High(NodeStack^.Fixedtems)-1]=Pointer(Node) then
+        exit;
+    end;
+    inc(i);
+  end;
+  Result:=false;
+end;
+
+procedure FinalizeNodeStack(NodeStack: PCodeTreeNodeStack);
+begin
+  NodeStack^.DynItems.Free;
 end;
 
 //------------------------------------------------------------------------------
