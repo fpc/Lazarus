@@ -45,6 +45,8 @@ type
     Procedure Paint; virtual;
     procedure DoOnResize; override;
     procedure DoOnPaint; virtual;
+    procedure SwapBuffers; virtual;
+    procedure MakeCurrent; virtual;
   public
     property Widget: PGtkGLArea read GetWidget;
     property OnPaint: TNotifyEvent read FOnPaint write FOnPaint;
@@ -147,6 +149,16 @@ end;
 procedure TCustomGTKGLAreaControl.DoOnPaint;
 begin
   if Assigned(OnPaint) then OnPaint(Self);
+end;
+
+procedure TCustomGTKGLAreaControl.SwapBuffers;
+begin
+  gtk_gl_area_swap_buffers(Widget);
+end;
+
+procedure TCustomGTKGLAreaControl.MakeCurrent;
+begin
+  gtk_gl_area_make_current(Widget);
 end;
 
 procedure TCustomGTKGLAreaControl.WMPaint(var Message: TLMPaint);
