@@ -747,7 +747,6 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.KeyPress(var Key: Char);
 begin
-  Writeln('[KeyPress]  KeyPress');
   if Assigned(FOnKeyPress) then FOnKeyPress(Self, Key);
 end;
 
@@ -1268,7 +1267,6 @@ end;
 Procedure TWinControl.WMSetFocus(var Message : TLMSetFocus);
 Begin
   Assert(False, Format('Trace:TODO: [TWinControl.LMSetFocus] %s', [ClassName]));
-  Writeln('Getting focus...');
   DoEnter;
 end;
 
@@ -1379,6 +1377,7 @@ end;
 procedure TWInControl.WMNotify(var Message: TLMNotify);
 Begin
 if not DoControlMsg(Message.NMHdr^.hwndfrom,Message) then exit;
+
 //Inherited ;
 end;
 
@@ -1392,7 +1391,6 @@ end;
 procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
 begin            
   Assert(False, Format('Trace: TODO: [TWinControl.LMKillFocus] %s', [ClassName]));
-  Writeln('Losing focus...');
   DoExit;
 
 end;                          
@@ -1891,6 +1889,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2001/01/30 18:15:02  lazarus
+  Added code for TStatusBar
+  I'm now capturing WMPainT and doing the drawing myself.
+  Shane
+
   Revision 1.12  2001/01/28 21:06:07  lazarus
   Changes for TComboBox events KeyPress Focus.
   Shane

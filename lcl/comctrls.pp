@@ -294,25 +294,81 @@ const
   ICC_NATIVEFNTCTL_CLASS = $00002000;
 
 type
- TAlignment = Class(TWinControl)
+{ TAlignment = Class(TWinControl)
   public
-   constructor Create(AOwner : TComponent);
-   destructor Destroy;
+   constructor Create(AOwner : TComponent); override;
+   destructor Destroy; override;
+  end;
+ }
+  TStatusPanelStyle = (psText, psOwnerDraw);
+  TStatusPanelBevel = (pbNone, pbLowered, pbRaised);
+
+  TStatusBar = class;  //forward declaration
+
+  TStatusPanel = class(TCollectionItem)
+  private
+    FText: string;
+    FWidth: Integer;
+    FAlignment: TAlignment;
+    FBevel: TStatusPanelBevel;
+    FParentBiDiMode: Boolean;
+    FStyle: TStatusPanelStyle;
+    FUpdateNeeded: Boolean;
+    procedure SetAlignment(Value: TAlignment);
+    procedure SetBevel(Value: TStatusPanelBevel);
+    procedure SetStyle(Value: TStatusPanelStyle);
+    procedure SetText(const Value: string);
+    procedure SetWidth(Value: Integer);
+  protected
+    function GetDisplayName: string; override;
+  public
+    constructor Create(aCollection: TCollection); override;
+    procedure Assign(Source: TPersistent); override;
+  published
+    property Alignment: TAlignment read FAlignment write SetAlignment;
+    property Bevel: TStatusPanelBevel read FBevel write SetBevel default pbLowered;
+    property Style: TStatusPanelStyle read FStyle write SetStyle default psText;
+    property Text: string read FText write SetText;
+    property Width: Integer read FWidth write SetWidth;
   end;
 
+  TStatusPanels = class(TCollection)
+  private
+    FStatusBar: TStatusBar;
+    function GetItem(Index: Integer): TStatusPanel;
+    procedure SetItem(Index: Integer; Value: TStatusPanel);
+  protected
+    function GetOwner: TPersistent; override;
+    procedure Update(Item: TCollectionItem); override;
+  public
+    constructor Create(StatusBar: TStatusBar);
+    function Add: TStatusPanel;
+    property Items[Index: Integer]: TStatusPanel read GetItem write SetItem; default;
+  end;
 
  TStatusBar = Class(TWinControl)
   private
+    FCanvas : TCanvas;
+    FPanels : TStatusPanels;
     FSimpleText : String;
+    FSimplePanel : Boolean;
     FContext : Integer;
     FMessage : Integer;
     FAlignmentWidget : TAlignment;
+    procedure SetPanels(Value: TStatusPanels);
     procedure SetSimpleText(Value : String);
+    procedure SetSimplePanel(Value : Boolean);
+    Procedure WMPaint(var Msg: TLMPaint); message LM_PAINT;
+    Procedure DrawDivider(X : Integer);
+    Procedure DrawBevel(xLeft, PanelNum : Integer );
   public
     constructor Create(AOwner : TComponent); override;
     destructor Destroy; override;
+    property Canvas : TCanvas read FCanvas;
   published
+    property Panels: TStatusPanels read FPanels write SetPanels;
     property SimpleText : String read FSimpleText write SetSimpleText;
+    property SimplePanel : Boolean read FSimplePanel write SetSimplePanel;
     property Visible;
  end;
 
@@ -862,7 +918,9 @@ begin
 end;
 
 {$I statusbar.inc}
-{$I alignment.inc}
+{$I statuspanel.inc}
+{$I statuspanels.inc}
+{ $I alignment.inc}
 {$I listitem.inc}
 {$I listitems.inc}
 {$I customlistview.inc}
@@ -876,6 +934,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/01/30 18:15:02  lazarus
+  Added code for TStatusBar
+  I'm now capturing WMPainT and doing the drawing myself.
+  Shane
+
   Revision 1.2  2000/12/29 18:33:54  lazarus
   TStatusBar's create and destroy were not set to override TWinControls so they were never called.
   Shane
