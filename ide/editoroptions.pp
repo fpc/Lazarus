@@ -157,11 +157,6 @@ type
     fAutoDelayInMSec:integer;
     fCodeTemplateFileName:Ansistring;
     fCTemplIndentToTokenStart: boolean;
-    
-    // Find- and replace-history
-    FFindHistory: TStringList;
-    FReplaceHistory: TStringList;
-    FMaxFindHistory: Integer;
   public
     constructor Create;
     destructor Destroy;  override;
@@ -188,10 +183,6 @@ type
     procedure WriteHighlighterSettings(Syn: TCustomSyn; SynColorScheme: string);
     procedure GetSpecialLineColors(Syn: TCustomSyn; 
       AddHilightAttr: TAdditionalHilightAttribute; var FG, BG: TColor);
-      
-    procedure AddToFindHistory(const AFindStr: string);
-    procedure AddToReplaceHistory(const AReplaceStr: String);
-    
   published
     // general options
     property SynEditOptions:TSynEditorOptions
@@ -248,11 +239,6 @@ type
        read fCodeTemplateFileName write fCodeTemplateFileName;
     property CodeTemplateIndentToTokenStart: boolean
        read fCTemplIndentToTokenStart write fCTemplIndentToTokenStart;
-
-    // Find- and replace-history
-    property FindHistory: TStringList read FFindHistory write FFindHistory;
-    property ReplaceHistory: TStringList read FReplaceHistory write FReplaceHistory;
-    property MaxFindHistory: Integer read FMaxFindHistory write FMaxFindHistory;
   end;
 
   { color button }
@@ -993,16 +979,10 @@ begin
     end;
   end;
   
-  // Find- and replace-history
-  FFindHistory:=TStringList.Create;
-  FReplaceHistory:=TStringList.Create;
-  FMaxFindHistory:=20;
 end;
 
 destructor TEditorOptions.Destroy;
 begin
-  FFindHistory.Free;
-  FReplaceHistory.Free;
   fHighlighterList.Free;
   fKeyMap.Free;
   XMLConfig.Free;
@@ -1117,13 +1097,6 @@ begin
     fCTemplIndentToTokenStart:=
       XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value'
         ,false);
-        
-    // Find- and replace-history
-    fMaxFindHistory:=XMLConfig.GetValue(
-        'EditorOptions/Find/History/Max',FMaxFindHistory);
-    LoadRecentList(XMLConfig,FFindHistory,'EditorOptions/Find/History/Find/');
-    LoadRecentList(XMLConfig,FReplaceHistory,
-        'EditorOptions/Find/History/Replace/');
 
   except
     on E: Exception do
@@ -1226,13 +1199,7 @@ begin
     XMLConfig.GetValue('EditorOptions/CodeTools/CodeTemplateIndentToTokenStart/Value'
         ,fCTemplIndentToTokenStart);
 
-    // Find- and replace-history
-    XMLConfig.SetValue('EditorOptions/Find/History/Max',FMaxFindHistory);
-    SaveRecentList(XMLConfig,FFindHistory,'EditorOptions/Find/History/Find/');
-    SaveRecentList(XMLConfig,FReplaceHistory,
-        'EditorOptions/Find/History/Replace/');
 
-        
     XMLConfig.Flush;
   except
     on E: Exception do
@@ -1730,16 +1697,6 @@ begin
     if not HasSpecialAttribute[a] then begin
       Syn.AddSpecialAttribute(AdditionalHighlightAttributes[a]);
     end;    
-end;
-
-procedure TEditorOptions.AddToFindHistory(const AFindStr: string);
-begin
-  AddToRecentList(AFindStr,FFindHistory,FMaxFindHistory);
-end;
-
-procedure TEditorOptions.AddToReplaceHistory(const AReplaceStr: String);
-begin
-  AddToRecentList(AReplaceStr,FReplaceHistory,FMaxFindHistory);
 end;
 
 Procedure TEditorOptions.GetSynEditPreviewSettings(APreviewEditor: TObject);

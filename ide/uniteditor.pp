@@ -36,12 +36,13 @@ uses
   Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
   SynEditKeyCmds, SynCompletion, GraphType, Graphics, Extctrls, Menus, Splash,
-  FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs;
+  FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs, InputHistory;
 
 type
   // --------------------------------------------------------------------------
 
-  TSrcEditMarkerType = (semActiveBreakPoint, semInactiveBreakPoint, semInvalidBreakPoint);
+  TSrcEditMarkerType = (semActiveBreakPoint, semInactiveBreakPoint,
+                        semInvalidBreakPoint);
   TSrcEditMarkerTypes = set of TSrcEditMarkerType;
 
   // --------------------------------------------------------------------------
@@ -68,8 +69,10 @@ type
     procedure LinesInserted(FirstLine, Count: integer); override;
     procedure LinesDeleted(FirstLine, Count: integer); override;
   public
-    property OnLinesInserted : TOnLinesInsertedDeleted read FOnLinesinserted write FOnLinesInserted;
-    property OnLinesDeleted : TOnLinesInsertedDeleted read FOnLinesDeleted write FOnLinesDeleted;
+    property OnLinesInserted : TOnLinesInsertedDeleted
+      read FOnLinesinserted write FOnLinesInserted;
+    property OnLinesDeleted : TOnLinesInsertedDeleted
+      read FOnLinesDeleted write FOnLinesDeleted;
 
     constructor Create(AOwner: TCustomSynEdit);
 //    destructor Destroy; override;
@@ -83,8 +86,9 @@ type
  ---- TSource Editor ---}
   TSourceEditor = class
   private
+    FEditPlugin : TSynEditPlugin1;  // used to get the LinesInserted and
+                                    //   LinesDeleted messages
     //FAOwner is normally a TSourceNotebook.  This is set in the Create constructor.
-    FEditPlugin : TSynEditPlugin1;  //used to get the LinesInserted and LinesDeleted messages
     FAOwner : TComponent;
     FEditor : TSynEdit;
     FCodeTemplates: TSynEditAutoComplete;
@@ -118,7 +122,7 @@ type
     Procedure EditorMouseDown(Sender: TObject; Button: TMouseButton;
           Shift: TShiftState; X,Y: Integer);
     Procedure EditorKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    Function FindFile(const Value: String) : String;
+    //Function FindFile(const Value: String) : String;
     Function GetWordFromCaret(CaretPos : TPoint) : String;
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
     Function GetSource : TStrings;
@@ -155,7 +159,7 @@ type
        var Command: TSynEditorCommand; var AChar: char; Data: pointer);
     Procedure ccOnTimer(sender : TObject);
     Procedure ccAddMessage(Texts : String);
-    Function  ccParse(Texts : String) : TStrings;
+    //Function  ccParse(Texts : String) : TStrings;
 
     Procedure FocusEditor;// called by TSourceNotebook when the Notebook page
                           // changes so the editor is focused
@@ -245,6 +249,8 @@ type
     property OnMouseDown : TMouseEvent read FOnMouseDown write FOnMouseDown;
     property OnKeyDown : TKeyEvent read FOnKeyDown write FOnKeyDown;
   end;
+  
+  //============================================================================
 
   TJumpHistoryAction = (jhaBack, jhaForward);
  
@@ -309,7 +315,7 @@ type
     MarksImgList : TImageList;
      
     Function CreateNotebook : Boolean;
-    Function DisplayPage(SE : TSourceEditor) : Boolean;
+    //Function DisplayPage(SE : TSourceEditor) : Boolean;
     Function NewSE(Pagenum : Integer) : TSourceEditor;
     Procedure EditorChanged(sender : TObject);
     Procedure ccExecute(Sender : TObject);
@@ -337,11 +343,12 @@ type
     function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
     function GetEditors(Index:integer):TSourceEditor;
     
-
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
 
   public
-    SearchPaths: string;
+    //SearchPaths: string;
+    FindReplaceDlgHistoryIndex: array[TFindDlgComponent] of integer;
+    FindReplaceDlgUserText: array[TFindDlgComponent] of string;
 
     Procedure NotebookPageChanged(Sender : TObject);
     
@@ -362,7 +369,7 @@ type
     Procedure ClearUnUsedEditorComponents(Force: boolean);
     procedure ClearErrorLines;
 
-    Procedure DisplayCodefromUnitName(const UnitName : String);
+    //Procedure DisplayCodefromUnitName(const UnitName : String);
 
     Procedure NewClicked(Sender: TObject);
     procedure OpenClicked(Sender : TObject);
@@ -372,6 +379,7 @@ type
     procedure CloseClicked(Sender : TObject);
     procedure ToggleFormUnitClicked(Sender: TObject);
 
+    procedure InitFindDialog;
     procedure FindClicked(Sender : TObject);
     procedure FindNextClicked(Sender : TObject);
     procedure FindPreviousClicked(Sender : TObject);
@@ -403,6 +411,9 @@ type
     function Empty: boolean;
     property FormEditor : TFormEditor read FFormEditor write FFormEditor;
     property MainIDE : TComponent read FMainIDE;
+    
+    procedure FindReplaceDlgKey(Sender: TObject; var Key: Word;
+                  Shift:TShiftState; FindDlgComponent: TFindDlgComponent);
   published
     Notebook : TNotebook;
     SrcPopUpMenu : TPopupMenu;
@@ -447,19 +458,21 @@ type
     property OnDeleteBreakPoint: TOnCreateDeleteBreakPoint
        read FOnDeleteBreakPoint write FOnDeleteBreakPoint;
 
- end;
+  end;
+ 
+  //=============================================================================
 
 {Goto dialog}
 
-   TfrmGoto = class(TForm)
-     Label1 : TLabel;
-     Edit1 : TEdit;
-     btnOK : TBitbtn;
-     btnCancel : TBitBtn;
-     procedure Edit1KeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
-   public
-     constructor Create(AOwner : TComponent); override;
-   end;
+  TfrmGoto = class(TForm)
+    Label1 : TLabel;
+    Edit1 : TEdit;
+    btnOK : TBitbtn;
+    btnCancel : TBitBtn;
+    procedure Edit1KeyDown(Sender: TObject; var Key:Word; Shift:TShiftState);
+  public
+    constructor Create(AOwner : TComponent); override;
+  end;
 
 
 implementation
@@ -574,6 +587,8 @@ end;
 procedure TSourceEditor.StartFindAndReplace(Replace:boolean);
 var ALeft,ATop:integer;
 Begin
+  if Owner is TSourceNotebook then
+    TSourceNotebook(Owner).InitFindDialog;
   if Replace then
     FindReplaceDlg.Options :=
       FindReplaceDlg.Options + [ssoReplace, ssoReplaceAll, ssoPrompt]
@@ -595,8 +610,14 @@ Begin
   GetDialogPosition(FindReplaceDlg.Width,FindReplaceDlg.Height,ALeft,ATop);
   FindReplaceDlg.Left:=ALeft;
   FindReplaceDlg.Top:=ATop;
-  if (FindReplaceDlg.ShowModal <> mrCancel) then
+  if (FindReplaceDlg.ShowModal <> mrCancel) then begin
+    if Replace then
+      InputHistories.AddToReplaceHistory(FindReplaceDlg.ReplaceText)
+    else
+      InputHistories.AddToFindHistory(FindReplaceDlg.FindText);
+    InputHistories.Save;
     DoFindAndReplace;
+  end;
 End;
 
 {------------------------------F I N D  A G A I N ----------------------------}
@@ -628,7 +649,8 @@ var OldCaretXY:TPoint;
   AText,ACaption:AnsiString;
   TopLine: integer;
 begin
-  TSourceNotebook(Owner).AddJumpPointClicked(Self);
+  if Owner is TSourceNotebook then
+    TSourceNotebook(Owner).AddJumpPointClicked(Self);
   OldCaretXY:=EditorComponent.CaretXY;
   if EditorComponent.SelAvail then begin
     if ssoBackwards in FindReplaceDlg.Options then
@@ -808,7 +830,8 @@ Begin
     OnEditorChange(Sender);
 end;
 
-function TSourceEditor.IsBreakPointMark(const ABreakPointMark: TSynEditMark): Boolean;
+function TSourceEditor.IsBreakPointMark(
+  const ABreakPointMark: TSynEditMark): Boolean;
 begin
   Result := (ABreakPointMark <> nil)
         and (ABreakPointMark.ImageIndex in [
@@ -834,7 +857,8 @@ begin
   Result := nil;
 end;
 
-procedure TSourceEditor.SetBreakPoint(const ALine: Integer; const AType: TSrcEditMarkerType);
+procedure TSourceEditor.SetBreakPoint(const ALine: Integer;
+  const AType: TSrcEditMarkerType);
 var
   BreakPtMark: TSynEditMark;
 begin
@@ -856,10 +880,11 @@ begin
   RemoveBreakPoint(GetBreakPointMark(ALine));
 end;
 
-procedure TSourceEditor.RemoveBreakPoint(const ABreakPointMark: TSynEditMark); overload;
+procedure TSourceEditor.RemoveBreakPoint(const ABreakPointMark: TSynEditMark);
 begin
   if not IsBreakPointMark(ABreakPointMark) then Exit;
-  if Assigned(FOnDeleteBreakPoint) then FOnDeleteBreakPoint(Self, ABreakPointMark.Line);
+  if Assigned(FOnDeleteBreakPoint) then
+    FOnDeleteBreakPoint(Self, ABreakPointMark.Line);
   FEditor.Marks.Remove(ABreakPointMark);
   ABreakPointMark.Free;
   FModified:=true;
@@ -965,7 +990,7 @@ Begin
   end;
 end;
 
-Function TSourceEditor.FindFile(const Value : String) : String;
+{Function TSourceEditor.FindFile(const Value : String) : String;
 var
   Found : Boolean;
   DirDelimiter : String;
@@ -995,7 +1020,6 @@ Begin
   end; //while
 
 End;
-
 
 Function TSourceEditor.ccParse(Texts : String) : TStrings;
 const
@@ -1088,7 +1112,7 @@ begin
   S.Add('testing');
   Result := S;
 end;
-
+}
 Procedure TSourceEditor.ccAddMessage(Texts : String);
 Begin
   ErrorMsgs.Add(Texts);
@@ -1313,14 +1337,14 @@ end;
 
 Procedure TSourceEditor.SelectText(LineNum,CharStart,LineNum2,CharEnd : Integer);
 var
-   P : TPoint;
+  P : TPoint;
 Begin
-   P.X := CharStart;
-   P.Y := LineNum;
-   FEditor.BlockBegin := P;
-   P.X := CharEnd;
-   P.Y := LineNum2;
-   FEditor.BlockEnd := P;
+  P.X := CharStart;
+  P.Y := LineNum;
+  FEditor.BlockBegin := P;
+  P.X := CharEnd;
+  P.Y := LineNum2;
+  FEditor.BlockEnd := P;
 end;
 
 Function TSourceEditor.GetModified : Boolean;
@@ -2321,7 +2345,7 @@ writeln('TSourceNotebook.NewSE end ');
 {$ENDIF}
 end;
 
-Procedure TSourceNotebook.DisplayCodefromUnitName(const UnitName : String);
+{Procedure TSourceNotebook.DisplayCodefromUnitName(const UnitName : String);
 Var
    I,X : Integer;
 Begin
@@ -2365,19 +2389,14 @@ Begin
   if SE.EditorComponent = TempEditor then
   Begin
     Notebook.PageIndex := X;
-    //Bringtofront does not work yet.
-    //Notebook.BringToFront;
-    //so I hide it and unhide it.
-    Visible := False;
-    Visible := True;
-
+    BringWindowToTop(SourceNoteBook.Handle);
   end
   else
   Begin  //the SE isn't on a page so we need to create a page for it.
     Notebook.PageIndex := Notebook.Pages.Add(SE.ShortName);
     SE.ReParent(Notebook.Page[Notebook.PageIndex]);
   end;
-end;
+end;}
 
 function TSourceNotebook.FindSourceEditorWithPageIndex(
   PageIndex:integer):TSourceEditor;
@@ -2430,7 +2449,7 @@ begin
 end;
 
 procedure TSourceNotebook.UnlockAllEditorsInSourceChangeCache;
-// lock all sourceeditors that are to be modified by the CodeToolBoss
+// unlock all sourceeditors that were modified by the CodeToolBoss
 var i: integer;
 begin
   for i:=0 to EditorCount-1 do begin
@@ -2449,6 +2468,64 @@ Begin
   Result := (not assigned(Notebook)) or (Notebook.Pages.Count = 0);
 end;
 
+procedure TSourceNotebook.FindReplaceDlgKey(Sender: TObject; var Key: Word;
+  Shift: TShiftState; FindDlgComponent: TFindDlgComponent);
+var
+  HistoryList: TStringList;
+  CurText: string;
+  CurIndex: integer;
+
+  procedure SetHistoryText;
+  var s: string;
+  begin
+    if FindReplaceDlgHistoryIndex[FindDlgComponent]>=0 then
+      s:=HistoryList[FindReplaceDlgHistoryIndex[FindDlgComponent]]
+    else
+      s:=FindReplaceDlgUserText[FindDlgComponent];
+    FindReplaceDlg.ComponentText[FindDlgComponent]:=s
+  end;
+  
+  procedure FetchFocus;
+  begin
+    if Sender is TWinControl then
+      TWinControl(Sender).SetFocus;
+  end;
+  
+begin
+  if FindDlgComponent=fdcText then
+    HistoryList:=InputHistories.FindHistory
+  else
+    HistoryList:=InputHistories.ReplaceHistory;
+  CurIndex:=FindReplaceDlgHistoryIndex[FindDlgComponent];
+  CurText:=FindReplaceDlg.ComponentText[FindDlgComponent];
+  if Key=VK_Down then begin
+    // go forward in history
+    if CurIndex>=0 then begin
+      if (HistoryList[CurIndex]<>CurText) then begin
+        // save user text
+        FindReplaceDlgUserText[FindDlgComponent]:=CurText;
+      end;
+      dec(FindReplaceDlgHistoryIndex[FindDlgComponent]);
+      SetHistoryText;
+    end;
+    FetchFocus;
+  end else if Key=VK_UP then begin
+    if (CurIndex<0)
+    or (HistoryList[CurIndex]<>CurText) then
+    begin
+      // save user text
+      FindReplaceDlgUserText[FindDlgComponent]:=CurText;
+    end;
+    // go back in history
+    if CurIndex<HistoryList.Count-1 then
+    begin
+      inc(FindReplaceDlgHistoryIndex[FindDlgComponent]);
+      SetHistoryText;
+    end;
+    FetchFocus;
+  end;
+end;
+
 function TSourceNotebook.SomethingModified: boolean;
 var i: integer;
 begin
@@ -2463,7 +2540,6 @@ Begin
   else
     NoteBook.PageIndex := 0;
 End;
-
 
 Procedure TSourceNotebook.PrevEditor;
 Begin
@@ -2800,9 +2876,9 @@ end;
 Function TSourceNotebook.FindUniquePageName(FileName:string; 
   IgnorePageIndex:integer):string;
 var I:integer;
-  ShortName,Ext:string;
+  ShortName:string;
 
-  function PageNameExists(AName:string):boolean;
+  function PageNameExists(const AName:string):boolean;
   var a:integer;
   begin
     Result:=false;
@@ -2824,10 +2900,10 @@ begin
       exit;
     end;
   end;
-  ShortName:=ExtractFileName(FileName);
-  Ext:=ExtractFileExt(ShortName);
-  if (Ext='.pp') or (Ext='.pas') then
-    ShortName:=copy(ShortName,1,length(ShortName)-length(Ext));
+  if FilenameIsPascalUnit(FileName) then
+    ShortName:=ExtractFileNameOnly(Filename)
+  else
+    ShortName:=ExtractFileName(FileName);
   Result:=ShortName;
   if PageNameExists(Result) then begin
     i:=1;
@@ -2851,6 +2927,14 @@ end;
 procedure TSourceNotebook.ToggleFormUnitClicked(Sender: TObject);
 begin
   if Assigned(FOnToggleFormUnitClicked) then FOnToggleFormUnitClicked(Sender);
+end;
+
+procedure TSourceNotebook.InitFindDialog;
+var c: TFindDlgComponent;
+begin
+  FindReplaceDlg.OnKey:=@FindReplaceDlgKey;
+  for c:=Low(TFindDlgComponent) to High(TFindDlgComponent) do
+    FindReplaceDlgHistoryIndex[c]:=-1;
 end;
 
 Procedure TSourceNotebook.UpdateStatusBar;
@@ -3085,7 +3169,7 @@ begin
 
   //get the parent until parent is nil
   While Window.Parent <> nil do
-  Window := Window.Parent;
+    Window := Window.Parent;
 
   if (window <> Self) then Exit;
 
@@ -3102,11 +3186,10 @@ begin
 
   //defaults for now just to demonstrate
   if lowercase(AHint) = 'integer' then
-     AHint := 'type System.integer: -2147483648..214748347 system.pas'
-     else
+    AHint := 'type System.integer: -2147483648..214748347 system.pas'
+  else
   if lowercase(AHint) = 'real' then
-     AHint := 'type System.Real: Double -system.pas';
-
+    AHint := 'type System.Real: Double -system.pas';
 
   //If no hint, then Exit
   if AHint = '' then Exit;
@@ -3167,7 +3250,7 @@ begin
 end;
 
 
-{  GOTO DIALOG}
+{ GOTO DIALOG }
 
 Constructor TfrmGoto.Create(AOWner : TComponent);
 begin
@@ -3239,7 +3322,6 @@ Begin
   inherited;
 end;
 
-
 procedure TSynEditPlugin1.AfterPaint(ACanvas: TCanvas; AClip: TRect; FirstLine,
   LastLine: integer);
 begin
@@ -3275,12 +3357,9 @@ end;
 procedure InternalFinal;
 var h: TLazSyntaxHighlighter;
 begin
-  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do begin
-    Highlighters[h].Free;
-    Highlighters[h]:=nil;
-  end;
-  aWordCompletion.Free;
-  aWordCompletion:=nil;
+  for h:=Low(TLazSyntaxHighlighter) to High(TLazSyntaxHighlighter) do
+    FreeThenNil(Highlighters[h]);
+  FreeThenNil(aWordCompletion);
 end;
 
 

@@ -29,9 +29,17 @@ uses
   LResources, SynEdit, IDEProcs;
 
 type
-  TLazFindReplaceDialog = class(TFORM)
+  TFindDlgComponent = (fdcText, fdcReplace);
+  TOnFindDlgKey = procedure(Sender: TObject; var Key: Word; Shift:TShiftState;
+                           FindDlgComponent: TFindDlgComponent) of Object;
+
+  TLazFindReplaceDialog = class(TForm)
   private
+    FOnKey: TOnFindDlgKey;
     fReplaceAllClickedLast:boolean;
+    function GetComponentText(c: TFindDlgComponent): string;
+    procedure SetComponentText(c: TFindDlgComponent; const AValue: string);
+    procedure SetOnKey(const AValue: TOnFindDlgKey);
     procedure SetOptions(NewOptions:TSynSearchOptions);
     function GetOptions:TSynSearchOptions;
     function GetFindText:AnsiString;
@@ -68,8 +76,11 @@ type
     property Options:TSynSearchOptions read GetOptions write SetOptions;
     property FindText:AnsiString read GetFindText write SetFindText;
     property ReplaceText:AnsiString read GetReplaceText write SetReplaceText;
+    property OnKey: TOnFindDlgKey read FOnKey write SetOnKey;
   public
-    constructor Create(AOwner:TComponent); override;
+    property ComponentText[c: TFindDlgComponent]: string
+      read GetComponentText write SetComponentText;
+    constructor Create(TheOwner:TComponent); override;
   end;
 
 var FindReplaceDlg:TLazFindReplaceDialog;
@@ -80,9 +91,9 @@ implementation
 
 { TLazFindReplaceDialog }
 
-constructor TLazFindReplaceDialog.Create(AOwner:TComponent);
+constructor TLazFindReplaceDialog.Create(TheOwner:TComponent);
 begin
-  inherited Create(AOwner);
+  inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then begin
     Caption:='';
     Width:=317;
@@ -312,14 +323,23 @@ end;
 
 procedure TLazFindReplaceDialog.TextToFindComboBoxKeyDown(
   Sender: TObject; var Key:Word; Shift:TShiftState);
+var Component: TFindDlgComponent;
 begin
-  if (Key=VK_RETURN) then OkButtonClick(Sender);
-  if (Key=VK_ESCAPE) then CancelButtonClick(Sender);
-  if Key=VK_TAB then begin
+  if (Key=VK_RETURN) then
+    OkButtonClick(Sender)
+  else if (Key=VK_ESCAPE) then
+    CancelButtonClick(Sender)
+  else if Key=VK_TAB then begin
     if (Sender=TextToFindComboBox) and (ReplaceTextComboBox.Enabled) then
       ReplaceTextComboBox.SetFocus;
     if Sender=ReplaceTextComboBox then
       TextToFindComboBox.SetFocus;
+  end else if Assigned(OnKey) then begin
+    if Sender=TextToFindComboBox then
+      Component:=fdcText
+    else
+      Component:=fdcReplace;
+    OnKey(Sender, Key, Shift, Component);
   end;
 end;
 
@@ -341,6 +361,30 @@ procedure TLazFindReplaceDialog.CancelButtonClick(Sender:TObject);
 begin
   TextToFindComboBox.SetFocus;
   ModalResult:=mrCancel;
+end;
+
+function TLazFindReplaceDialog.GetComponentText(c: TFindDlgComponent): string;
+begin
+  case c of
+  fdcText: Result:=FindText;
+  else
+    Result:=Replacetext;
+  end;
+end;
+
+procedure TLazFindReplaceDialog.SetComponentText(c: TFindDlgComponent;
+  const AValue: string);
+begin
+  case c of
+  fdcText: FindText:=AValue;
+  else
+    Replacetext:=AValue;
+  end;
+end;
+
+procedure TLazFindReplaceDialog.SetOnKey(const AValue: TOnFindDlgKey);
+begin
+  FOnKey:=AValue;
 end;
 
 procedure TLazFindReplaceDialog.SetOptions(NewOptions:TSynSearchOptions);

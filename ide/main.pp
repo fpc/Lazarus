@@ -43,6 +43,7 @@ uses
   MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg,
   OutputFilter, BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions,
   TypInfo, IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg,
+  InputHistory,
   BaseDebugManager, DebugManager, MainBar;
 
 type
@@ -550,6 +551,12 @@ begin
 
   CodeToolsOpts:=TCodeToolsOptions.Create;
   with CodeToolsOpts do begin
+    SetLazarusDefaultFilename;
+    Load;
+  end;
+  
+  InputHistories:=TInputHistories.Create;
+  with InputHistories do begin
     SetLazarusDefaultFilename;
     Load;
   end;
@@ -6212,6 +6219,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.264  2002/03/28 16:39:04  lazarus
+  MG: added find replace history
+
   Revision 1.263  2002/03/28 11:49:48  lazarus
   MG: added search function: Goto Include Directive
 
