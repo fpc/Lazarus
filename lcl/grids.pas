@@ -4242,7 +4242,8 @@ end;
 
 procedure TCustomGrid.EditorHide;
 begin
-  if not FEditorHiding and (Editor<>nil) and Editor.HandleAllocated and Editor.Visible then
+  if not FEditorHiding and (Editor<>nil) and Editor.HandleAllocated
+  and Editor.Visible then
   begin
     FEditorMode:=False;
     {$IfDef dbgFocus} DebugLn('EditorHide INIT FCol=',FCol,' FRow=',FRow);{$Endif}

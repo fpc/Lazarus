@@ -16,6 +16,14 @@
    Provides LCL controls that access lists of properties of TPersistent objects
    via RTTI
    - the FreePascal Run Time Type Information.
+   
+  ToDo:
+   - better keyboard navigation
+   - add option: showing buttons for paDialog properties
+   - property editor for 'ListObject'
+   - persistent selected cell after rebuild
+   - moving objects
+   - adding, deleting objects
 }
 unit RTTIGrids;
 
@@ -72,25 +80,6 @@ type
   end;
   
 
-  TTIListDirection = (tldObjectsAsRows, tldObjectsAsColumns);
-  TTIGridState = (
-    tgsRebuildTIListNeeded,
-    tgsDefaultDrawing // set during default drawing
-    );
-  TTIGridStates = set of TTIGridState;
-  TTIGridCellType = (
-    tgctNone,       // out or undefined
-    tgctValue,      // a normal property cell
-    tgctPropName,   // header cell for property name
-    tgctPropNameAlt,// header cell for alternative prop name (e.g. FixedRows>1)
-    tgctObjectName, // header cell for object name
-    tgctObjectNameAlt,// header cell for alternative obj name (e.g. FixedCols>1)
-    tgctCorner      // corner cell left, top of grid
-    );
-  TTIGridOption = (
-    tgoStartIndexAtOne // start shown object index at 1
-    );
-  TTIGridOptions = set of TTIGridOption;
   TTICustomGrid =  class;
 
   { TTIGridProperty }
@@ -108,8 +97,10 @@ type
   public
     constructor Create(TheGrid: TTICustomGrid; TheEditor: TPropertyEditor;
                        TheIndex: integer);
+    destructor Destroy; override;
     function PropInfo: PPropInfo;
     function GetEditorControl: TWinControl;
+    function PropName: string;
   public
     property Editor: TPropertyEditor read FEditor;
     property Grid: TTICustomGrid read FGrid;
@@ -117,29 +108,79 @@ type
     property Title: string read FTitle write SetTitle;
   end;
   
+  
+  TTIListDirection = (tldObjectsAsRows, tldObjectsAsColumns);
+  TTIGridState = (
+    tgsRebuildTIListNeeded,
+    tgsRebuildingTIList,
+    tgsDefaultDrawing // set during default drawing
+    );
+  TTIGridStates = set of TTIGridState;
+
+  TTIGridCellType = (
+    tgctNone,       // out or undefined
+    tgctValue,      // a normal property cell
+    tgctPropName,   // header cell for property name
+    tgctPropNameAlt,// header cell for alternative prop name (e.g. FixedRows>1)
+    tgctObjectName, // header cell for object name
+    tgctObjectNameAlt,// header cell for alternative obj name (e.g. FixedCols>1)
+    tgctCorner      // corner cell left, top of grid
+    );
+  TTIGridCellTypes = set of TTIGridCellType;
+
+  TTIGridOption = (
+    tgoStartIndexAtOne, // start shown object index at 1
+    tgoShowOnlyProperties // show only properties in ShowOnlyProperties
+    );
+  TTIGridOptions = set of TTIGridOption;
+
+  TTIGridGetObject = procedure(Sender: TTICustomGrid; Index: integer;
+                               var TIObject: TPersistent) of object;
+  TTIGridGetObjectCount = procedure(Sender: TTICustomGrid;
+                                    ListObject: TObject;
+                                    var ObjCount: integer) of object;
+  TTIGridGetObjectName = procedure(TIObject: TPersistent;
+                                   var ObjName: string) of object;
+  TTIGridCreateCellEditor = procedure(GridProp: TTIGridProperty;
+                                      var NewEditorControl: TControl) of object;
+  TTIGridInitCellEditor = procedure(GridProp: TTIGridProperty;
+                                    TheEditorControl: TControl) of object;
+
   { TTICustomGrid }
   
   TTICustomGrid =  class(TCustomGrid)
   private
+    FAliasPropertyNames: TAliasStrings;
     FFilter: TTypeKinds;
+    FHideProperties: TStrings;
     FListDirection: TTIListDirection;
     FListObject: TObject;
+    FOnCreateCellEditor: TTIGridCreateCellEditor;
+    FOnGetObject: TTIGridGetObject;
+    FOnGetObjectCount: TTIGridGetObjectCount;
+    FOnGetObjectName: TTIGridGetObjectName;
     FOnHeaderClick: THdrEvent;
     FOnHeaderSized: THdrEvent;
     FHeaderPropHook: TPropertyEditorHook;
+    FOnInitCellEditor: TTIGridInitCellEditor;
+    FOnPropertiesCreated: TNotifyEvent;
+    FPropertyOrder: TStrings;
+    FShowOnlyProperties: TStrings;
     FTIOptions: TTIGridOptions;
     FTIStates: TTIGridStates;
     FTIObjectCount: integer;
     FProperties: TList;
     function GetProperties(Index: integer): TTIGridProperty;
     function GetPropertyCount: integer;
+    procedure SetAliasPropertyNames(const AValue: TAliasStrings);
     procedure SetFilter(const AValue: TTypeKinds);
+    procedure SetHideProperties(const AValue: TStrings);
     procedure SetListDirection(const AValue: TTIListDirection);
     procedure SetListObject(const AValue: TObject);
+    procedure SetPropertyOrder(const AValue: TStrings);
+    procedure SetShowOnlyProperties(const AValue: TStrings);
     procedure SetTIOptions(const NewOptions: TTIGridOptions);
   protected
-    procedure LoadCollection;
-    procedure LoadTList;
     procedure RebuildGridLayout; virtual;
     procedure AddHeaderPropertyEditor(Prop: TPropertyEditor);
     procedure DrawCell(aCol, aRow: Integer; aRect: TRect;
@@ -151,8 +192,9 @@ type
                                     var aMin,aMax,aPriority: Integer); override;
     procedure SelectEditor; override;
     procedure DoEditorControlKeyUp(Sender: TObject; var Key: Word;
-      Shift: TShiftState); virtual;
+                                   Shift: TShiftState); virtual;
     procedure EditorHide; override;
+    procedure WriteCellText(aRect: TRect; const aText: string);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -161,7 +203,7 @@ type
     procedure ClearProperties;
     procedure DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
                               aState: TGridDrawState); virtual;
-    procedure DrawObjectName(Index: integer; aRect: TRect;
+    procedure DrawObjectName(Index: integer; const aRect: TRect;
                              aState: TGridDrawState);
     procedure GetCellEditor(aCol, aRow: integer;
                             var PropEditor: TPropertyEditor;
@@ -174,16 +216,37 @@ type
                       var ObjectIndex, PropertyIndex: integer;
                       var CellType: TTIGridCellType);
     function GetCurrentGridProperty: TTIGridProperty;
+    function IndexOfGridProperty(const PropName: string): integer;
+    function FindGridProperty(const PropName: string): TTIGridProperty;
+    procedure MoveProperty(FromID, ToID: integer);
   public
+    property AliasPropertyNames: TAliasStrings read FAliasPropertyNames
+                                               write SetAliasPropertyNames;
     property DefaultRowHeight default 20;
     property Filter: TTypeKinds read FFilter write SetFilter default AllTypeKinds;
+    property HideProperties: TStrings read FHideProperties
+                                      write SetHideProperties;
     property ListDirection: TTIListDirection read FListDirection
-                    write SetListDirection default tldObjectsAsRows;
+                                write SetListDirection default tldObjectsAsRows;
     property ListObject: TObject read FListObject write SetListObject;
+    property OnCreateCellEditor: TTIGridCreateCellEditor
+                             read FOnCreateCellEditor write FOnCreateCellEditor;
+    property OnGetObject: TTIGridGetObject read FOnGetObject write FOnGetObject;
+    property OnGetObjectCount: TTIGridGetObjectCount read FOnGetObjectCount
+                                                     write FOnGetObjectCount;
+    property OnGetObjectName: TTIGridGetObjectName read FOnGetObjectName
+                                                    write FOnGetObjectName;
     property OnHeaderClick: THdrEvent read FOnHeaderClick write FOnHeaderClick;
     property OnHeaderSized: THdrEvent read FOnHeaderSized write FOnHeaderSized;
+    property OnInitCellEditor: TTIGridInitCellEditor read FOnInitCellEditor
+                                                     write FOnInitCellEditor;
+    property OnPropertiesCreated: TNotifyEvent read FOnPropertiesCreated
+                                               write FOnPropertiesCreated;
     property Properties[Index: integer]: TTIGridProperty read GetProperties;
     property PropertyCount: integer read GetPropertyCount;
+    property PropertyOrder: TStrings read FPropertyOrder write SetPropertyOrder;
+    property ShowOnlyProperties: TStrings read FShowOnlyProperties
+                                          write SetShowOnlyProperties;
     property TIObjectCount: integer read FTIObjectCount;
     property TIOptions: TTIGridOptions read FTIOptions write SetTIOptions;
   end;
@@ -193,6 +256,7 @@ type
   
   TTIGrid = class(TTICustomGrid)
   published
+    property AliasPropertyNames;
     property Align;
     property Anchors;
     property AutoAdvance;
@@ -210,13 +274,19 @@ type
     property FixedRows;
     property Flat;
     property Font;
+    property HideProperties;
     property ListDirection;
+    property OnCreateCellEditor;
     property OnDblClick;
     property OnEditButtonClick;
     property OnEnter;
     property OnExit;
+    property OnGetObject;
+    property OnGetObjectCount;
+    property OnGetObjectName;
     property OnHeaderClick;
     property OnHeaderSized;
+    property OnInitCellEditor;
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
@@ -224,11 +294,14 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnPrepareCanvas;
+    property OnPropertiesCreated;
     property Options;
     property ParentColor;
     property ParentFont;
     property PopupMenu;
+    property PropertyOrder;
     property ShowHint;
+    property ShowOnlyProperties;
     property TabOrder;
     property TabStop;
     property TIOptions;
@@ -247,7 +320,7 @@ type
     property PropEditorClass: TPropertyEditorClass read FPropEditorClass
                                                    write FPropEditorClass;
     property WinControlClass: TWinControlClass read FWinControlClass
-                                               write FWinControlClass;
+                                            write FWinControlClass;
   end;
 
 
@@ -335,6 +408,14 @@ begin
   Result:=FProperties.Count;
 end;
 
+procedure TTICustomGrid.SetAliasPropertyNames(const AValue: TAliasStrings);
+begin
+  if FAliasPropertyNames=AValue then exit;
+  if FAliasPropertyNames.Equals(AValue) then exit;
+  FAliasPropertyNames.Assign(AValue);
+  Invalidate;
+end;
+
 function TTICustomGrid.GetProperties(Index: integer): TTIGridProperty;
 begin
   Result:=TTIGridProperty(FProperties[Index]);
@@ -347,11 +428,36 @@ begin
   ReloadTIList;
 end;
 
+procedure TTICustomGrid.SetHideProperties(const AValue: TStrings);
+begin
+  if FHideProperties=AValue then exit;
+  if FHideProperties.Equals(AValue) then exit;
+  FHideProperties.Assign(AValue);
+  ReloadTIList;
+end;
+
 procedure TTICustomGrid.SetListObject(const AValue: TObject);
 begin
   if FListObject=AValue then exit;
   FListObject:=AValue;
   ReloadTIList;
+end;
+
+procedure TTICustomGrid.SetPropertyOrder(const AValue: TStrings);
+begin
+  if FPropertyOrder=AValue then exit;
+  if FPropertyOrder.Equals(AValue) then exit;
+  FPropertyOrder.Assign(AValue);
+  ReloadTIList;
+end;
+
+procedure TTICustomGrid.SetShowOnlyProperties(const AValue: TStrings);
+begin
+  if FShowOnlyProperties=AValue then exit;
+  if FShowOnlyProperties.Equals(AValue) then exit;
+  FShowOnlyProperties.Assign(AValue);
+  if tgoShowOnlyProperties in FTIOptions then
+    ReloadTIList;
 end;
 
 procedure TTICustomGrid.SetTIOptions(const NewOptions: TTIGridOptions);
@@ -362,40 +468,35 @@ begin
   ChangedOptions:=(FTIOptions-NewOptions)+(NewOptions-FTIOptions);
   FTIOptions:=NewOptions;
   if tgoStartIndexAtOne in ChangedOptions then Invalidate;
+  if tgoShowOnlyProperties in ChangedOptions then ReloadTIList;
 end;
 
 procedure TTICustomGrid.ReloadTIList;
 begin
+  if tgsRebuildingTIList in FTIStates then exit;
   if ([csLoading,csDestroying]*ComponentState)<>[] then begin
     Include(FTIStates,tgsRebuildTIListNeeded);
     exit;
   end;
   Exclude(FTIStates,tgsRebuildTIListNeeded);
-  if FListObject is TCollection then begin
-    LoadCollection;
-  end else if FListObject is TList then begin
-    LoadTList;
-  end else begin
-    // ListObject is not valid
+  Include(FTIStates,tgsRebuildingTIList);
+  try
+    EditorHide;
+    ClearProperties;
+    FTIObjectCount:=0;
+    if Assigned(OnGetObjectCount) then
+      OnGetObjectCount(Self,ListObject,FTIObjectCount)
+    else if FListObject is TCollection then
+      FTIObjectCount:=TCollection(FListObject).Count
+    else if FListObject is TList then
+      FTIObjectCount:=TList(FListObject).Count
+    else begin
+      // ListObject is not valid
+    end;
+    RebuildGridLayout;
+  finally
+    Exclude(FTIStates,tgsRebuildingTIList);
   end;
-end;
-
-procedure TTICustomGrid.LoadCollection;
-var
-  TheCollection: TCollection;
-begin
-  TheCollection:=FListObject as TCollection;
-  FTIObjectCount:=TheCollection.Count;
-  RebuildGridLayout;
-end;
-
-procedure TTICustomGrid.LoadTList;
-var
-  TheList: TList;
-begin
-  TheList:=FListObject as TList;
-  FTIObjectCount:=TheList.Count;
-  RebuildGridLayout;
 end;
 
 procedure TTICustomGrid.RebuildGridLayout;
@@ -403,7 +504,12 @@ var
   CurItem: TPersistent;
   HeaderLines: LongInt;
   PropCount: LongInt;
+  i: Integer;
+  ToID: Integer;
+  FromID: integer;
 begin
+  ClearProperties;
+  // set column/row count for objects
   if ListDirection=tldObjectsAsRows then begin
     HeaderLines:=FixedRows;
     RowCount:=HeaderLines+FTIObjectCount
@@ -423,18 +529,38 @@ begin
   ClearProperties;
   GetPersistentProperties(CurItem, FFilter, FHeaderPropHook,
     @AddHeaderPropertyEditor,nil);
+  // reorder
+  ToID:=0;
+  for i:=0 to FPropertyOrder.Count-1 do begin
+    FromID:=IndexOfGridProperty(FPropertyOrder[i]);
+    if FromID>=0 then begin
+      MoveProperty(FromID,ToID);
+      inc(ToID);
+    end;
+  end;
+  
+  // set column/row count for properties
   PropCount:=PropertyCount;
   if ListDirection=tldObjectsAsRows then begin
     ColCount:=FixedCols+PropCount;
   end else begin
     RowCount:=FixedRows+PropCount;
   end;
+  if Assigned(OnPropertiesCreated) then OnPropertiesCreated(Self);
 end;
 
 procedure TTICustomGrid.AddHeaderPropertyEditor(Prop: TPropertyEditor);
 var
   NewProperty: TTIGridProperty;
 begin
+  if (FHideProperties.IndexOf(Prop.GetPropInfo^.Name)>=0)
+  or ((tgoShowOnlyProperties in FTIOptions)
+      and (FShowOnlyProperties.IndexOf(Prop.GetPropInfo^.Name)<0))
+  then begin
+    // skip property
+    Prop.Free;
+    exit;
+  end;
   NewProperty:=TTIGridProperty.Create(Self,Prop,FProperties.Count);
   FProperties.Add(NewProperty);
 end;
@@ -504,10 +630,10 @@ begin
     PropLink:=GetPropertyLinkOfComponent(NewEditor);
     if PropLink<>nil then begin
       CurObject:=GetTIObject(ObjectIndex);
-      PropName:=CurProp.Editor.GetPropInfo^.Name;
+      PropName:=CurProp.PropName;
       PropLink.SetObjectAndProperty(CurObject,PropName);
     end;
-    if (goEditing in Options) and Assigned(OnSelectEditor) then
+    if Assigned(OnSelectEditor) then
       OnSelectEditor(Self,Col,Row,NewEditor);
   end;
   Editor:=NewEditor;
@@ -581,6 +707,17 @@ begin
   inherited EditorHide;
 end;
 
+procedure TTICustomGrid.WriteCellText(aRect: TRect; const aText: string);
+begin
+  if aText='' then exit;
+  case Canvas.TextStyle.Alignment of
+    Classes.taLeftJustify: Inc(aRect.Left, 3);
+    Classes.taRightJustify: Dec(aRect.Right, 3);
+  end;
+  Inc(aRect.Top, 2);
+  Canvas.TextRect(aRect,ARect.Left,ARect.Top,aText);
+end;
+
 constructor TTICustomGrid.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
@@ -592,6 +729,10 @@ begin
             tkQWord{,tkDynArray,tkInterfaceRaw}];
   FProperties:=TList.Create;
   FListDirection:=tldObjectsAsRows;
+  FHideProperties:=TStringList.Create;
+  FPropertyOrder:=TStringList.Create;
+  FShowOnlyProperties:=TStringList.Create;
+  FAliasPropertyNames:=TAliasStrings.Create;
 end;
 
 destructor TTICustomGrid.Destroy;
@@ -599,13 +740,18 @@ begin
   ClearProperties;
   FreeThenNil(FProperties);
   FreeThenNil(FHeaderPropHook);
+  FreeThenNil(FHideProperties);
+  FreeThenNil(FPropertyOrder);
+  FreeThenNil(FShowOnlyProperties);
+  FreeThenNil(FAliasPropertyNames);
   inherited Destroy;
 end;
 
 procedure TTICustomGrid.Loaded;
 begin
   inherited Loaded;
-  ReloadTIList;
+  if tgsRebuildTIListNeeded in FTIStates then
+    ReloadTIList;
 end;
 
 procedure TTICustomGrid.ClearProperties;
@@ -613,7 +759,11 @@ var
   i: Integer;
 begin
   if FProperties=nil then exit;
-  for i:=0 to FProperties.Count-1 do TObject(FProperties[i]).Free;
+  for i:=0 to FProperties.Count-1 do begin
+    TObject(FProperties[i]).Free;
+    FProperties[i]:=nil;
+  end;
+  FProperties.Clear;
 end;
 
 procedure TTICustomGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
@@ -625,6 +775,8 @@ var
   ObjectIndex: integer;
   PropertyIndex: integer;
   CellType: TTIGridCellType;
+  AliasPropName: String;
+  PropName: String;
 begin
   OldDefaultDrawing:=tgsDefaultDrawing in FTIStates;
   Include(FTIStates,tgsDefaultDrawing);
@@ -647,9 +799,16 @@ begin
     if PropEditor<>nil then begin
       //debugln('TTICustomGrid.DefaultDrawCell B ',dbgsName(PropEditor),' ',PropEditor.GetName,' ',PropEditor.GetValue);
       try
-        if gdFixed in aState then
-          PropEditor.PropDrawName(Canvas,aRect,GridStateToPropEditState(aState))
-        else
+        if gdFixed in aState then begin
+          PropName:=PropEditor.GetName;
+          AliasPropName:=AliasPropertyNames.ValueToAlias(PropName);
+          if AliasPropName=PropName then begin
+            PropEditor.PropDrawName(Canvas,aRect,
+                                    GridStateToPropEditState(aState));
+          end else begin
+            WriteCellText(aRect,AliasPropName);
+          end;
+        end else
           PropEditor.PropDrawValue(Canvas,aRect,GridStateToPropEditState(aState));
       finally
         if IndependentEditor then PropEditor.Free;
@@ -660,7 +819,7 @@ begin
   end;
 end;
 
-procedure TTICustomGrid.DrawObjectName(Index: integer; aRect: TRect;
+procedure TTICustomGrid.DrawObjectName(Index: integer; const aRect: TRect;
   aState: TGridDrawState);
 
   function GetTIObjectName(ObjIndex: integer): string;
@@ -670,6 +829,10 @@ procedure TTICustomGrid.DrawObjectName(Index: integer; aRect: TRect;
   begin
     Result:='';
     AnObject:=GetTIObject(ObjIndex);
+    if Assigned(OnGetObjectName) then begin
+      OnGetObjectName(AnObject,Result);
+      exit;
+    end;
     if AnObject is TComponent then
       Result:=TComponent(AnObject).Name
     else if AnObject is TCollectionItem then begin
@@ -686,25 +849,13 @@ procedure TTICustomGrid.DrawObjectName(Index: integer; aRect: TRect;
     end;
   end;
 
-  procedure FixRectangle;
-  begin
-    case Canvas.TextStyle.Alignment of
-      Classes.taLeftJustify: Inc(aRect.Left, 3);
-      Classes.taRightJustify: Dec(aRect.Right, 3);
-    end;
-    Inc(aRect.Top, 2);
-  end;
-
 var
   ObjectName: String;
 begin
   if aState=[] then ;
   if (Index<0) or (Index>=TIObjectCount) then exit;
   ObjectName:=GetTIObjectName(Index);
-  if ObjectName<>'' then begin
-    FixRectangle;
-    Canvas.TextRect(aRect,ARect.Left,ARect.Top,ObjectName);
-  end;
+  WriteCellText(aRect,ObjectName);
 end;
 
 procedure TTICustomGrid.GetCellEditor(aCol, aRow: integer;
@@ -790,6 +941,15 @@ var
 begin
   Result:=nil;
   if (Index<0) or (Index>=TIObjectCount) then exit;
+  
+  // use event
+  if Assigned(OnGetObject) then begin
+    Result:=nil;
+    OnGetObject(Self,Index,Result);
+    exit;
+  end;
+
+  // try standard lists: TCollection and TList
   if ListObject is TCollection then begin
     ACollection:=TCollection(ListObject);
     if csDesigning in ComponentState then begin
@@ -881,6 +1041,36 @@ begin
     Result:=Properties[PropertyIndex];
 end;
 
+function TTICustomGrid.IndexOfGridProperty(const PropName: string
+  ): integer;
+begin
+  Result:=FProperties.Count-1;
+  while (Result>=0) and (CompareText(Properties[Result].PropName,PropName)<>0)
+  do dec(Result);
+end;
+
+function TTICustomGrid.FindGridProperty(const PropName: string
+  ): TTIGridProperty;
+var
+  i: integer;
+begin
+  i:=IndexOfGridProperty(PropName);
+  if i>=0 then
+    Result:=Properties[i]
+  else
+    Result:=nil;
+end;
+
+procedure TTICustomGrid.MoveProperty(FromID, ToID: integer);
+begin
+  if FromID=ToID then exit;
+  EditorHide;
+  FProperties.Move(FromID,ToID);
+  Properties[FromID].FIndex:=FromID;
+  Properties[ToID].FIndex:=ToID;
+  Invalidate;
+end;
+
 { TTIGridProperty }
 
 procedure TTIGridProperty.EditorControlKeyUp(Sender: TObject; var Key: Word;
@@ -904,6 +1094,13 @@ begin
   FTitle:=TheEditor.GetName;
 end;
 
+destructor TTIGridProperty.Destroy;
+begin
+  FreeThenNil(FEditorControl);
+  FreeThenNil(FEditor);
+  inherited Destroy;
+end;
+
 function TTIGridProperty.PropInfo: PPropInfo;
 begin
   Result:=Editor.GetPropInfo;
@@ -915,21 +1112,32 @@ var
   Attr: TPropertyAttributes;
 begin
   if FEditorControl=nil then begin
-    EditorClass:=FindTIGridControl(TPropertyEditorClass(Editor.ClassType));
-    if EditorClass=nil then begin
-      Attr:=Editor.GetAttributes;
-      if paValueList in Attr then
-        EditorClass:=TTIComboBox
-      else if (paDialog in Attr) and (paReadOnly in Attr) then
-        EditorClass:=TTIButton
-      else
-        EditorClass:=TTIEdit;
+    if Assigned(Grid.OnCreateCellEditor) then
+      Grid.OnCreateCellEditor(Self,FEditorControl);
+    if FEditorControl=nil then begin
+      EditorClass:=FindTIGridControl(TPropertyEditorClass(Editor.ClassType));
+      if EditorClass=nil then begin
+        Attr:=Editor.GetAttributes;
+        if (paDialog in Attr) and (paReadOnly in Attr) then
+          EditorClass:=TTIButton
+        else if (paValueList in Attr) then
+          EditorClass:=TTIComboBox
+        else
+          EditorClass:=TTIEdit;
+      end;
+      FEditorControl:=EditorClass.Create(FGrid);
     end;
-    FEditorControl:=EditorClass.Create(FGrid);
     FEditorControl.OnKeyUp:=@EditorControlKeyUp;
     FEditorControl.AutoSize:=false;
+    if Assigned(Grid.OnInitCellEditor) then
+      Grid.OnInitCellEditor(Self,FEditorControl);
   end;
   Result:=FEditorControl;
+end;
+
+function TTIGridProperty.PropName: string;
+begin
+  Result:=PropInfo^.Name;
 end;
 
 initialization
