@@ -117,7 +117,7 @@ begin
   if Value <> FScrollbars then begin
     FScrollbars:= Value;
     if HandleAllocated and (not (csLoading in ComponentState)) then
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      TWSCustomMemoClass(WidgetSetClass).SetScrollbars(Self, Value);
   end;
 end;
 
@@ -135,7 +135,9 @@ end;
 procedure TCustomMemo.Loaded;
 begin
   inherited Loaded;
-  CNSendMessage(LM_SETPROPERTIES, Self, nil);
+
+  TWSCustomMemoClass(WidgetSetClass).SetScrollbars(Self, FScrollbars);
+  TWSCustomMemoClass(WidgetSetClass).SetWordWrap(Self, FWordWrap);
 end;
 
 {------------------------------------------------------------------------------
@@ -165,7 +167,7 @@ begin
     //DebugLn('TCustomMemo.SetWordWrap ',Name,' Old=',FWordWrap,' New=',Value);
     FWordWrap := Value;
     if HandleAllocated and (not (csLoading in ComponentState)) then
-      CNSendMessage(LM_SETPROPERTIES, Self, nil);
+      TWSCustomMemoClass(WidgetSetClass).SetWordWrap(Self, Value);
   end;    
 end;
 
@@ -174,6 +176,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.30  2004/09/22 16:13:01  micha
+  convert LM_SETPROPERTIES message to interface methods for TCustomMemo
+
   Revision 1.29  2004/09/10 18:58:21  micha
   convert LM_ATTACHMENU to interface method
 

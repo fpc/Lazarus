@@ -145,6 +145,14 @@ type
   protected
   public
     class procedure AppendText(const ACustomMemo: TCustomMemo; AText: string); override;
+{$ifdef GTK1}    
+    class procedure SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode); override;
+    class procedure SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer); override;
+    class procedure SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char); override;
+    class procedure SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean); override;
+    class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
+    class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
+{$endif}
   end;
 
   { TGtkWSEdit }
@@ -733,6 +741,89 @@ begin
   gtk_editable_insert_text(PGtkOldEditable(Widget), PChar(AText), Length(AText), @CurMemoLen);
   gtk_text_thaw(PGtkText(Widget));
 end;
+
+{$ifdef GTK1}
+
+procedure TGtkWSCustomMemo.SetEchoMode(const ACustomEdit: TCustomEdit; NewMode: TEchoMode);
+begin
+  // no password char in memo
+end;
+
+procedure TGtkWSCustomMemo.SetMaxLength(const ACustomEdit: TCustomEdit; NewLength: integer);
+var
+  ImplWidget   : PGtkWidget;
+  i: integer;
+begin
+  if (ACustomEdit.MaxLength >= 0) then begin
+    ImplWidget:= GetWidgetInfo(PGtkWidget(ACustomEdit.Handle), true)^.CoreWidget;
+    i:= gtk_text_get_length(GTK_TEXT(ImplWidget));
+    if i > ACustomEdit.MaxLength then begin
+       gtk_editable_delete_text(PGtkOldEditable(ImplWidget),
+                                ACustomEdit.MaxLength, i);
+    end;
+  end;
+end;
+
+procedure TGtkWSCustomMemo.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);
+begin
+  // no password char in memo
+end;
+
+procedure TGtkWSCustomMemo.SetReadOnly(const ACustomEdit: TCustomEdit; NewReadOnly: boolean);
+var
+  ImplWidget   : PGtkWidget;
+begin
+  ImplWidget:= GetWidgetInfo(PGtkWidget(ACustomEdit.Handle), true)^.CoreWidget;
+  gtk_text_set_editable (GTK_TEXT(ImplWidget), not ACustomEdit.ReadOnly);
+end;
+
+procedure TGtkWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
+var
+  wHandle: HWND;
+begin
+  wHandle := ACustomMemo.Handle;
+  case ACustomMemo.Scrollbars of
+    ssHorizontal:     gtk_scrolled_window_set_policy(
+                        GTK_SCROLLED_WINDOW(wHandle),
+                        GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
+    ssVertical:       gtk_scrolled_window_set_policy(
+                        GTK_SCROLLED_WINDOW(wHandle),
+                        GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+    ssBoth:           gtk_scrolled_window_set_policy(
+                        GTK_SCROLLED_WINDOW(wHandle),
+                        GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+    ssAutoHorizontal: gtk_scrolled_window_set_policy(
+                        GTK_SCROLLED_WINDOW(wHandle),
+                        GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+    ssAutoVertical:   gtk_scrolled_window_set_policy(
+                        GTK_SCROLLED_WINDOW(wHandle),
+                        GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+    ssAutoBoth:       gtk_scrolled_window_set_policy(
+                        GTK_SCROLLED_WINDOW(wHandle),
+                        GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+  else
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wHandle),
+                                   GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+  end;
+end;
+
+procedure TGtkWSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
+var
+  ImplWidget   : PGtkWidget;
+begin
+  ImplWidget:= GetWidgetInfo(PGtkWidget(ACustomMemo.Handle), true)^.CoreWidget;
+  gtk_text_freeze(PGtkText(ImplWidget));
+  if ACustomMemo.WordWrap then
+    gtk_text_set_line_wrap(GTK_TEXT(ImplWidget), GdkTrue)
+  else
+    gtk_text_set_line_wrap(GTK_TEXT(ImplWidget), GdkFalse);
+  gtk_text_set_word_wrap(GTK_TEXT(ImplWidget), GdkTrue);
+  gtk_text_thaw(PGtkText(ImplWidget));
+end;
+
+{$endif}
+
+{ TGtkWSCustomCheckBox }
 
 procedure TGtkWSCustomCheckBox.SetState(const ACustomCheckBox: TCustomCheckBox; const NewState: TCheckBoxState);
 var

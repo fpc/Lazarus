@@ -147,6 +147,8 @@ type
   protected
   public
     class procedure AppendText(const ACustomMemo: TCustomMemo; AText: string); override;
+    class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
+    class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); override;
   end;
 
   { TWin32WSEdit }
@@ -550,6 +552,18 @@ begin
     S := S + AText;
     SetText(ACustomMemo, S);
   end;
+end;
+
+procedure TWin32WSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);
+begin
+  // TODO: check if can be done without recreation
+  TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomMemo);
+end;
+
+procedure TWin32WSCustomMemo.SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean);
+begin
+  // TODO: check if can be done without recreation
+  TWin32WidgetSet(InterfaceObject).RecreateWnd(ACustomMemo);
 end;
 
 { TWin32WSCustomLabel }

@@ -6242,60 +6242,11 @@ const
   cLabelAlign : array[TAlignment] of TGtkJustification = (GTK_JUSTIFY_LEFT, GTK_JUSTIFY_RIGHT, GTK_JUSTIFY_CENTER);
 var
   wHandle    : Pointer;
-  Widget, ImplWidget   : PGtkWidget;
+  Widget   : PGtkWidget;
   I,X         : Integer;
   pRowText : PChar;
   BitImage : TBitMap;
   AnAdjustment: PGtkAdjustment;
-
-  {$IfDef GTK1}
-  procedure SetMemoProperties;
-  begin
-    ImplWidget:= GetWidgetInfo(wHandle, true)^.CoreWidget;
-
-    gtk_text_freeze(PGtkText(ImplWidget));
-    gtk_text_set_editable (GTK_TEXT(ImplWidget), not (Sender as TCustomMemo).ReadOnly);
-    if TCustomMemo(Sender).WordWrap then
-      gtk_text_set_line_wrap(GTK_TEXT(ImplWidget), GdkTrue)
-    else
-      gtk_text_set_line_wrap(GTK_TEXT(ImplWidget), GdkFalse);
-    gtk_text_set_word_wrap(GTK_TEXT(ImplWidget), GdkTrue);
-
-    case (Sender as TCustomMemo).Scrollbars of
-      ssHorizontal:     gtk_scrolled_window_set_policy(
-                          GTK_SCROLLED_WINDOW(wHandle),
-                          GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
-      ssVertical:       gtk_scrolled_window_set_policy(
-                          GTK_SCROLLED_WINDOW(wHandle),
-                          GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-      ssBoth:           gtk_scrolled_window_set_policy(
-                          GTK_SCROLLED_WINDOW(wHandle),
-                          GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-      ssAutoHorizontal: gtk_scrolled_window_set_policy(
-                          GTK_SCROLLED_WINDOW(wHandle),
-                          GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
-      ssAutoVertical:   gtk_scrolled_window_set_policy(
-                          GTK_SCROLLED_WINDOW(wHandle),
-                          GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-      ssAutoBoth:       gtk_scrolled_window_set_policy(
-                          GTK_SCROLLED_WINDOW(wHandle),
-                          GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-    else
-      gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(wHandle),
-                                     GTK_POLICY_NEVER, GTK_POLICY_NEVER);
-    end;
-
-    if (TCustomMemo(Sender).MaxLength >= 0) then begin
-      i:= gtk_text_get_length(GTK_TEXT(ImplWidget));
-      if i > TCustomMemo(Sender).MaxLength then begin
-         gtk_editable_delete_text(PGtkOldEditable(ImplWidget),
-                                  TCustomMemo(Sender).MaxLength, i);
-      end;
-    end;
-
-    gtk_text_thaw(PGtkText(ImplWidget));
-  end;
-  {$ENDIF}
 
 begin
   Result := 0;     // default if nobody sets it
@@ -6490,11 +6441,6 @@ begin
     end;
   {$EndIf}
   
-  {$IfDef GTK1}
-  csMemo:
-    SetMemoProperties;
-  {$EndIf}
-
   csSpinEdit:
     Begin
       AnAdjustment:=gtk_spin_button_get_adjustment(GTK_SPIN_BUTTON(wHandle));
@@ -7651,6 +7597,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.592  2004/09/22 16:13:01  micha
+  convert LM_SETPROPERTIES message to interface methods for TCustomMemo
+
   Revision 1.591  2004/09/22 14:50:18  micha
   convert LM_SETPROPERTIES message for tcustomlabel to interface methods
 
