@@ -405,6 +405,7 @@ begin
     ScrollInfo.nTrackPos := 0;
     ScrollInfo.nMax := TopMax+ClientWidth;
     ScrollInfo.nPage := ClientWidth;
+    if ScrollInfo.nPage<=0 then ScrollInfo.nPage:=1;
     ScrollInfo.nPos := TopY;
     SetScrollInfo(Handle, SB_VERT, ScrollInfo, True);
     ShowScrollBar(Handle,SB_VERT,True);

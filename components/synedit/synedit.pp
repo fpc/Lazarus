@@ -3147,8 +3147,13 @@ begin
     fGutterWidth := Value;
     fTextOffset := fGutterWidth + 2 - (LeftChar - 1) * fCharWidth;
     if HandleAllocated then begin
-      fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2
-            {$IFDEF SYN_LAZARUS} - ScrollBarWidth{$ENDIF}) div fCharWidth);
+      {$IFDEF SYN_LAZARUS}
+      fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
+                              div fCharWidth);
+      {$ELSE}
+      fCharsInWindow := Max(1,Max(0,(ClientWidth - fGutterWidth - 2
+                                     - ScrollBarWidth) div Max(1,fCharWidth)));
+      {$ENDIF}
       UpdateScrollBars;
       Invalidate;
     end;
@@ -6337,11 +6342,15 @@ end;
 procedure TCustomSynEdit.SizeOrFontChanged(bFont: boolean);
 begin
   if HandleAllocated then begin
-    fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2
-        {$IFDEF SYN_LAZARUS} - ScrollBarWidth{$ENDIF})
+    {$IFDEF SYN_LAZARUS}
+    fCharsInWindow := Max(1,(ClientWidth - fGutterWidth - 2 - ScrollBarWidth)
                             div fCharWidth);
-    fLinesInWindow := (ClientHeight {$IFDEF SYN_LAZARUS}-13{$ENDIF})
-                        div fTextHeight;
+    fLinesInWindow := Max(0,ClientHeight -13) div Max(1,fTextHeight);
+    {$ELSE}
+    fCharsInWindow := Max(1,Max(0,(ClientWidth - fGutterWidth - 2
+                                   - ScrollBarWidth) div Max(1,fCharWidth)));
+    fLinesInWindow := ClientHeight div fTextHeight;
+    {$ENDIF}
     if bFont then begin
       if Gutter.ShowLineNumbers then
         GutterChanged(Self)
