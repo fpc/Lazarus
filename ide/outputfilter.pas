@@ -130,6 +130,7 @@ const
 var
   i, Count, LineStart : longint;
   OutputLine, Buf : String;
+  ErrorExists: boolean;
 begin
   TheProcess.Execute;
   fCurrentDirectory:=TheProcess.CurrentDirectory;
@@ -144,6 +145,7 @@ begin
 
   fFilteredOutput.Clear;
   OutputLine:='';
+  ErrorExists:=false;
   repeat
     if TheProcess.Output<>nil then
       Count:=TheProcess.Output.Read(Buf[1],length(Buf))
@@ -155,6 +157,8 @@ begin
       if Buf[i] in [#10,#13] then begin
         OutputLine:=OutputLine+copy(Buf,LineStart,i-LineStart);
         ReadLine(OutputLine,false);
+        if fLastErrorType in [etFatal, etPanic, etError] then
+          ErrorExists:=true;
         OutputLine:='';
         if (i<Count) and (Buf[i+1] in [#10,#13]) and (Buf[i]<>Buf[i+1])
         then
@@ -166,6 +170,8 @@ begin
     OutputLine:=copy(Buf,LineStart,Count-LineStart+1);
   until Count=0;
   TheProcess.WaitOnExit;
+  if ErrorExists and (ofoExceptionOnError in Options) then
+    raise EOutputFilterError.Create('there was an error');
 end;
 
 procedure TOutputFilter.ReadLine(const s: string; DontFilterLine: boolean);
@@ -266,6 +272,8 @@ begin
       // this is a freepascal compiler message
       // -> filter message
       fLastErrorType:=MsgType;
+      fLastMessageType:=omtFPC;
+      
       SkipMessage:=true;
       if Project<>nil then begin
         case MsgType of
@@ -336,17 +344,22 @@ begin
         end;
       end;
       
+      // make filenames absolute if wanted
       if (ofoMakeFilenamesAbsolute in Options) then begin
         Filename:=copy(Msg,1,FilenameEndPos);
         if not FilenameIsAbsolute(Filename) then begin
           Msg:=fCurrentDirectory+Msg;
         end;
       end;
+      
+      // add line
       if not SkipMessage then
         DoAddFilteredLine(Msg);
+        
       if (ofoExceptionOnError in Options) and (MsgType in [etPanic, etFatal])
       then
         raise EOutputFilterError.Create(Msg);
+        
       Result:=true;
       exit;
     end;

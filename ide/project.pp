@@ -1275,7 +1275,7 @@ begin
     end else
       Result:=false;
   end else
-    Result:=IsVirtual;
+    Result:=true;
 end;
 
 procedure TProject.OnUnitNameChange(AnUnitInfo: TUnitInfo; 
@@ -1353,6 +1353,9 @@ end.
 
 {
   $Log$
+  Revision 1.59  2002/04/04 17:21:18  lazarus
+  MG: fixed outputfilter for linker errors
+
   Revision 1.58  2002/04/02 17:18:25  lazarus
   MG: fixed save project as, renaming source name
 

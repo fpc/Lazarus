@@ -343,6 +343,8 @@ type
       IsPartOfProject:boolean): TModalResult;
     procedure UpdateCaption;
     procedure UpdateDefaultPascalFileExtensions;
+    function CreateSrcEditPageName(const AnUnitName, AFilename: string;
+      IgnorePageIndex: integer): string;
     
     // methods for codetools
     procedure InitCodeToolBoss;
@@ -2160,6 +2162,19 @@ begin
     then ProjectDefaultExt[npt]:=DefPasExt;
 end;
 
+function TMainIDE.CreateSrcEditPageName(const AnUnitName, AFilename: string;
+  IgnorePageIndex: integer): string;
+begin
+  Result:=AnUnitName;
+  if Result='' then
+    Result:=AFilename;
+  if FilenameIsPascalUnit(Result) then
+    Result:=ExtractFileNameOnly(Result)
+  else
+    Result:=ExtractFileName(Result);
+  Result:=SourceNoteBook.FindUniquePageName(Result,IgnorePageIndex);
+end;
+
 procedure TMainIDE.OnLoadEnvironmentSettings(Sender: TObject; 
   TheEnvironmentOptions: TEnvironmentOptions);
 begin
@@ -2396,8 +2411,7 @@ function TMainIDE.DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
 var
   SaveDialog: TSaveDialog;
   SaveAsFilename, SaveAsFileExt, NewFilename, NewUnitName, NewFilePath,
-  NewResFilename, NewResFilePath, OldFilePath, NewPageName,
-  NewLFMFilename: string;
+  NewResFilename, NewResFilePath, OldFilePath, NewLFMFilename: string;
   ACaption, AText: string;
   SrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
@@ -2567,15 +2581,9 @@ writeln('TMainIDE.ShowSaveFileAsDialog C ',ResourceCode<>nil);
   ResourceCode:=CodeToolBoss.FindNextResourceFile(NewSource,LinkIndex);
 
   // change unitname on SourceNotebook
-  if FilenameIsPascalUnit(NewFilename) then
-    NewPageName:=NewUnitName
-  else
-    NewPageName:=ExtractFileName(NewFilename);
-  NewPageName:=SourceNoteBook.FindUniquePageName(
-      NewPageName,SourceNoteBook.NoteBook.PageIndex);
   SourceNoteBook.NoteBook.Pages[SourceNoteBook.NoteBook.PageIndex]:=
-      NewPageName;
-  SrcEdit.ShortName:=NewPageName;
+      CreateSrcEditPageName(NewUnitName,NewFilename,
+                            SourceNoteBook.NoteBook.PageIndex);
 
   Result:=mrOk;
 end;
@@ -2733,7 +2741,6 @@ end;
 
 function TMainIDE.DoOpenNotExistingFile(const AFileName: string;
   Flags: TOpenFlags): TModalResult;
-var Ext: string;
 begin
   if ofProjectLoading in Flags then begin
     // this is a file, that was loaded last time, but was removed from disk
@@ -2753,8 +2760,7 @@ begin
     ,mtInformation,[mbYes,mbNo],0)=mrYes) then
   begin
     // create new file
-    Ext:=lowercase(ExtractFileExt(AFilename));
-    if FilenameIsPascalUnit(AFilename) or (Ext='.dpr') then
+    if FilenameIsPascalSource(AFilename) then
       Result:=DoNewEditorUnit(nuUnit,AFilename)
     else
       Result:=DoNewEditorUnit(nuEmpty,AFilename);
@@ -2942,7 +2948,7 @@ begin
         end;
       end;
 {$IFDEF IDE_DEBUG}
-writeln('[TMainIDE.DoOpenEditorFile] LFM end');
+writeln('[TMainIDE.DoLoadLFM] LFM end');
 {$ENDIF}
     finally
       BinLFMStream.Free;
@@ -3002,7 +3008,7 @@ var
   MainUnitSrcEdit: TSourceEditor;
   MainUnitInfo: TUnitInfo;
   SaveDialog: TSaveDialog;
-  NewFilename, NewProgramFilename, NewPageName, NewProgramName, AText, ACaption,
+  NewFilename, NewProgramFilename, NewProgramName, AText, ACaption,
   Ext: string;
   NewBuf: TCodeBuffer;
   OldProjectPath: string;
@@ -3167,15 +3173,10 @@ begin
 
     // update source editor of main unit
     MainUnitInfo.Modified:=true;
-    if FilenameIsPascalUnit(MainUnitInfo.Filename) then
-      NewPageName:=NewProgramName
-    else
-      NewPageName:=ExtractFileName(MainUnitInfo.Filename);
     if MainUnitInfo.EditorIndex>=0 then begin
-      NewPageName:=SourceNoteBook.FindUniquePageName(
-        NewPageName,MainUnitInfo.EditorIndex);
       SourceNoteBook.NoteBook.Pages[MainUnitInfo.EditorIndex]:=
-        NewPageName;
+        CreateSrcEditPageName(NewProgramName,MainUnitInfo.Filename,
+                              MainUnitInfo.EditorIndex);
     end;
   end;
   Result:=mrOk;
@@ -3193,22 +3194,15 @@ end;
 function TMainIDE.DoOpenFileInSourceNotebook(AnUnitInfo: TUnitInfo;
   Flags: TOpenFlags): TModalResult;
 var NewSrcEdit: TSourceEditor;
-  NewPageName, AFilename: string;
+  AFilename: string;
 begin
   AFilename:=AnUnitInfo.Filename;
 
   // create a new source editor
   AnUnitInfo.SyntaxHighlighter:=
     ExtensionToLazSyntaxHighlighter(ExtractFileExt(AFilename));
-  NewPageName:=AnUnitInfo.UnitName;
-  if NewPageName='' then begin
-    if FilenameIsPascalUnit(AFilename) then
-      NewPageName:=ExtractFileNameOnly(AFilename)
-    else
-      NewPageName:=ExtractFileName(AFilename);
-    if NewpageName='' then NewPageName:='file';
-  end;
-  SourceNotebook.NewFile(NewPageName,AnUnitInfo.Source);
+  SourceNotebook.NewFile(CreateSrcEditPageName(AnUnitInfo.UnitName,
+    AFilename,-1),AnUnitInfo.Source);
   NewSrcEdit:=SourceNotebook.GetActiveSE;
 
   if ofProjectLoading in Flags then begin
@@ -3275,7 +3269,9 @@ writeln('TMainIDE.DoNewEditorUnit A NewFilename=',NewFilename);
   end;
 
   // create a new sourceeditor
-  SourceNotebook.NewFile(NewUnitInfo.UnitName,NewUnitInfo.Source);
+  SourceNotebook.NewFile(CreateSrcEditPageName(NewUnitInfo.UnitName,
+                           NewUnitInfo.Filename,-1),
+                         NewUnitInfo.Source);
   NewSrcEdit:=SourceNotebook.GetActiveSE;
   NewSrcEdit.SyntaxHighlighterType:=NewUnitInfo.SyntaxHighlighter;
   Project1.InsertEditorIndex(SourceNotebook.NoteBook.PageIndex);
@@ -6205,6 +6201,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.271  2002/04/04 17:21:17  lazarus
+  MG: fixed outputfilter for linker errors
+
   Revision 1.270  2002/04/03 18:20:49  lazarus
   MG: fixed mem leaks
 
