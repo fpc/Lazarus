@@ -72,40 +72,26 @@ type
 
 implementation 
 
-uses       
-  // TODO: remove when TWSBitBtn is implemented for win32 
-  Controls, LMessages;
+// TODO: Can't be virtual abstract ?
 
-
-  { TWSBitBtn }
-  
 procedure TWSBitBtn.SetGlyph(const ABitBtn: TCustomBitBtn;
   const AValue: TBitmap);
 begin
-  //TODO: remove when implemented for win32
-  CNSendMessage(LM_IMAGECHANGED, ABitBtn, nil);
-  ABitBtn.Invalidate;
 end;
 
 procedure TWSBitBtn.SetLayout(const ABitBtn: TCustomBitBtn;
   const AValue: TButtonLayout);
 begin
-  //TODO: remove when implemented for win32
-  CNSendMessage(LM_LAYOUTCHANGED, ABitBtn, nil);
 end;
 
 procedure TWSBitBtn.SetMargin(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
 begin
-  //TODO: remove when implemented for win32
-  CNSendMessage(LM_LAYOUTCHANGED, ABitBtn, nil);
 end;
 
 procedure TWSBitBtn.SetSpacing(const ABitBtn: TCustomBitBtn;
   const AValue: Integer);
-begin   
-  //TODO: remove when implemented for win32
-  CNSendMessage(LM_LAYOUTCHANGED, ABitBtn, nil);
+begin
 end;
 
 
@@ -116,7 +102,7 @@ initialization
 // which actually implement something
 ////////////////////////////////////////////////////
 //  RegisterWSComponent(CustomTButton, TWSButton);
-  RegisterWSComponent(TCustomBitBtn, TWSBitBtn);
+//  RegisterWSComponent(TCustomBitBtn, TWSBitBtn);
 //  RegisterWSComponent(TCustomSpeedButton, TWSSpeedButton);
 ////////////////////////////////////////////////////
 end.

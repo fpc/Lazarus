@@ -523,8 +523,8 @@ Begin
       // When no theming active, the internal image needs to be 
       // recreated when the enabled state is changed
       if not TWin32WidgetSet(InterfaceObject).ThemesActive
-      and (OwnerObject is TBitBtn)
-      then TWin32WidgetSet(InterfaceObject).DrawBitBtnImage(TBitBtn(OwnerObject), PChar(TBitBtn(OwnerObject).Caption));
+      and (OwnerObject is TCustomBitBtn)
+      then DrawBitBtnImage(TCustomBitBtn(OwnerObject), PChar(TCustomBitBtn(OwnerObject).Caption));
     End;
     WM_HSCROLL:
     Begin
@@ -1307,6 +1307,9 @@ end;
 
 {
   $Log$
+  Revision 1.134  2004/08/25 15:04:44  micha
+  use new lcl interface methods instead of messages (for win32; twsbitbtn)
+
   Revision 1.133  2004/08/24 15:51:49  micha
   remove obsolete code which has not been enabled the last year
 

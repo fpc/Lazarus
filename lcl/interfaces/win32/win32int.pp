@@ -137,7 +137,6 @@ Type
     Procedure ResizeChild(Sender: TWinControl; Left, Top, Width, Height: Integer);
     Procedure AssignSelf(Window: HWnd; Data: Pointer);
     Procedure ReDraw(Child: TObject);
-    procedure DrawBitBtnImage(BitBtn: TCustomBitBtn; ButtonCaption: PChar);
     Procedure SetLimitText(Window: HWND; Limit: Word);
 
     Procedure ShowHide(Sender: TObject);
@@ -218,7 +217,7 @@ Uses
 ////////////////////////////////////////////////////
 // Win32WSActnList,
 // Win32WSArrow,
-// Win32WSButtons,
+ Win32WSButtons,
 // Win32WSCalendar,
 // Win32WSCheckLst,
 // Win32WSCListBox,
@@ -285,6 +284,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.93  2004/08/25 15:04:44  micha
+  use new lcl interface methods instead of messages (for win32; twsbitbtn)
+
   Revision 1.92  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 

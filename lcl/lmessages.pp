@@ -82,8 +82,6 @@ const
   LM_INSERTTOOLBUTTON = LM_ComUser+46;
   LM_DELETETOOLBUTTON = LM_ComUser+47;
 
-  LM_IMAGECHANGED   = LM_ComUser+49;
-  LM_LAYOUTCHANGED  = LM_ComUser+50;
   LM_BTNDEFAULT_CHANGED = LM_ComUser+51;
 
   LM_DRAGINFOCHANGED = LM_COMUSER+53;
@@ -916,8 +914,6 @@ begin
   LM_INSERTTOOLBUTTON :Result:='LM_INSERTTOOLBUTTON';
   LM_DELETETOOLBUTTON :Result:='LM_DELETETOOLBUTTON';
 
-  LM_IMAGECHANGED   :Result:='LM_IMAGECHANGED';
-  LM_LAYOUTCHANGED  :Result:='LM_LAYOUTCHANGED';
   LM_BTNDEFAULT_CHANGED :Result:='LM_BTNDEFAULT_CHANGED';
 
   LM_DRAGINFOCHANGED :Result:='LM_DRAGINFOCHANGED';
@@ -1080,6 +1076,9 @@ end.
 
 {
   $Log$
+  Revision 1.70  2004/08/25 15:04:44  micha
+  use new lcl interface methods instead of messages (for win32; twsbitbtn)
+
   Revision 1.69  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 
