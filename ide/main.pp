@@ -2565,7 +2565,8 @@ function TMainIDE.DoShowSaveFileAsDialog(AnUnitInfo: TUnitInfo;
 var
   SaveDialog: TSaveDialog;
   SaveAsFilename, SaveAsFileExt, NewFilename, NewUnitName, NewFilePath,
-  NewResFilename, NewResFilePath, OldFilePath, NewLFMFilename: string;
+  NewResFilename, NewResFilePath, OldFilePath, NewLFMFilename,
+  AlternativeUnitName: string;
   ACaption, AText: string;
   SrcEdit: TSourceEditor;
   NewSource: TCodeBuffer;
@@ -2617,10 +2618,12 @@ begin
       exit;
     end;
     if not IsValidIdent(NewUnitName) then begin
+      AlternativeUnitName:=NameToValidIdentifier(NewUnitName);
       Result:=MessageDlg(lsiInvalidPascalIdentifierCap,
-        Format(lsiInvalidPascalIdentifierText,[NewUnitName]),
+        Format(lsiInvalidPascalIdentifierText,[NewUnitName,AlternativeUnitName]),
         mtWarning,[mbIgnore,mbCancel],0);
       if Result=mrCancel then exit;
+      NewUnitName:=AlternativeUnitName;
       Result:=mrCancel;
     end;
     if Project1.IndexOfUnitWithName(NewUnitName,true,AnUnitInfo)>=0 then
@@ -3246,9 +3249,9 @@ begin
       NewProgramName:=ExtractFileNameOnly(NewFilename);
 
       // check filename
-      if NewProgramName='' then begin
+      if (NewProgramName='') or (not IsValidIdent(NewProgramName)) then begin
         Result:=MessageDlg('Invalid project filename',
-          '"'+SaveDialog.Filename+'" is an invalid filename.'#13
+          '"'+SaveDialog.Filename+'" is an invalid project name.'#13
           +'Please choose another (e.g. project1.lpi)',
           mtInformation,[mbRetry,mbAbort],0);
         if Result=mrAbort then exit;
@@ -6562,6 +6565,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.322  2002/07/05 10:32:44  lazarus
+  MG: added  handling of invalid programnamnes on save project
+
   Revision 1.321  2002/07/05 09:36:45  lazarus
   MG: fixed unreleased gdiobjects on printing cmd line help
 

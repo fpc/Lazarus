@@ -215,7 +215,8 @@ ResourceString
        +'Cancel will cancel the saving of this source and'#13
        +'Abort will abort the whole saving.';
   lsiInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
-  lsiInvalidPascalIdentifierText = 'The name "%s" is not a valid pascal identifier.';
+  lsiInvalidPascalIdentifierText =
+    'The name "%s" is not a valid pascal identifier.';
 
   // hints
   lsiHintNewUnit = 'New Unit';
