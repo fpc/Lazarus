@@ -287,6 +287,7 @@ end;
 { TDesignerDeviceContext }
 
 function TDesignerDeviceContext.GetDCOrigin: TPoint;
+// returns the DC origin in screen coordinates
 begin
   if not (ddcDCOriginValid in FFlags) then begin
     GetWindowOrgEx(FDC,@FDCOrigin);
@@ -296,6 +297,7 @@ begin
 end;
 
 function TDesignerDeviceContext.GetDCSize: TPoint;
+// returns the DC size
 begin
   if not (ddcSizeValid in FFlags) then begin
     GetDeviceSize(FDC,FDCSize);

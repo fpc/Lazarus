@@ -1645,6 +1645,7 @@ type
     procedure GetSelectedIndex(Node: TTreeNode); virtual;
     procedure InitializeWnd; override;
     procedure Invalidate; override;
+    procedure EraseBackground(DC: HDC); override;
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
     procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
@@ -1944,6 +1945,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.100  2004/01/10 17:09:20  mattias
+  deactivated EraseBackGound for TOIPropertyGrid and TTreeView
+
   Revision 1.99  2004/01/03 23:14:59  mattias
   default font can now change height and fixed gtk crash
 

@@ -2711,6 +2711,11 @@ begin
   inherited Invalidate;
 end;
 
+procedure TCustomTreeView.EraseBackground(DC: HDC);
+begin
+  // everything is painted, so erasing the background is not needed
+end;
+
 procedure TCustomTreeView.DestroyWnd;
 //var Node: TTreeNode;
 begin

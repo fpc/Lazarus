@@ -258,8 +258,9 @@ type
     procedure MouseUp(Button:TMouseButton; Shift:TShiftState; X,Y:integer); override;
     
     procedure KeyDown(var Key : Word; Shift : TShiftState); override;
-    
     procedure HandleStandardKeys(var Key : Word; Shift : TShiftState);
+    
+    procedure EraseBackground(DC: HDC); override;
   public
     ValueEdit:TEdit;
     ValueComboBox:TComboBox;
@@ -1296,6 +1297,11 @@ begin
     Handled:=false;
   end;
   if Handled then Key:=VK_UNKNOWN;
+end;
+
+procedure TOIPropertyGrid.EraseBackground(DC: HDC);
+begin
+  // everything is painted, so erasing the background is not needed
 end;
 
 procedure TOIPropertyGrid.OnUserInput(Sender: TObject; Msg: Cardinal);
