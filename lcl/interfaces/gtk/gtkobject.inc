@@ -2043,9 +2043,9 @@ begin
       csBitBtn :
       begin
         Assert(False, 'Trace:CSBITBTN CREATE*************************');
+	writeln('Creating a new bit button');
         p := gtk_button_new;
-        if (TBitBtn(Sender).Layout = blGlyphLeft)
-        or (TBitBtn(Sender).Layout = blGlyphRight) then begin
+        if ((Sender as TBitBtn).Layout in [blGlyphLeft, blGlyphRight]) then begin
           Assert(False, 'Trace:GLYPHLEFT or GLYPHRIGHT');
           Box := gtk_hbox_new(False,0);
         end
@@ -2513,6 +2513,8 @@ begin
 
       csSpeedButton:
       Begin
+       p := gtk_button_new_with_label(StrTemp);
+
        {p := gtk_drawing_area_new();
             gtk_drawing_area_size(pGTKDrawingArea(p),22,22);}
        //nothing done here.  We are only worried about the canvas
@@ -2609,7 +2611,15 @@ begin
            then P := gtk_hscale_new (PGTKADJUSTMENT (TempWidget))
            else P := gtk_vscale_new (PGTKADJUSTMENT (TempWidget));
          gtk_scale_set_digits (PGTKSCALE (P), 0);
-      end;   
+      end;
+      
+      csPanel:
+      with (TPanel(Sender)) do begin
+        p := gtk_fixed_new();
+        gtk_widget_show (p);
+	SetFixedWidget(p, p);
+        SetMainWidget(p, p);
+      end;
       
    end; //case
 
@@ -3750,6 +3760,14 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.103  2002/02/03 00:24:01  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.102  2002/01/24 15:40:59  lazarus
   MG: deactivated clipboard setting target list for win32
 

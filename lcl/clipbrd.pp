@@ -124,7 +124,7 @@ interface
 {$endif}
 
 uses
-  Classes, SysUtils, LCLLinux, Graphics;
+  Classes, SysUtils, LCLType, LCLLinux, GraphType, Graphics;
 
 type  
   TClipboardData = record
@@ -405,6 +405,14 @@ end.
 
 {
   $Log$
+  Revision 1.6  2002/02/03 00:24:00  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.5  2001/11/12 19:30:00  lazarus
   MG: added try excepts for clipboard
 

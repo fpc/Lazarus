@@ -301,6 +301,7 @@ begin
   RegisterComponents('Standard','Buttons',[TButton]);
   RegisterComponents('Standard','StdCtrls',[TEdit,TLabel,TMemo,TCheckBox
           ,TListBox,TRadioButton,TComboBox,TScrollBar,TGroupBox,TToggleBox]);
+  RegisterComponents('Standard', 'ExtCtrls',[TPanel]);
   RegisterComponents('Additional','Buttons',[TBitBtn,TSpeedButton]);
   RegisterComponents('Additional','ExtCtrls',[TNoteBook,TPaintBox
           ,TBevel,TRadioGroup,TImage]);

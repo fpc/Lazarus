@@ -28,7 +28,7 @@ unit objectinspector;
 interface
 
 uses
-  Forms, SysUtils, Buttons, Classes, Graphics, StdCtrls, LCLLinux, Controls,
+  Forms, SysUtils, Buttons, Classes, Graphics, GraphType, StdCtrls, LCLType, LCLLinux, Controls,
   ComCtrls, ExtCtrls, PropEdits, TypInfo, Messages, LResources, XMLCfg, Menus,
   Dialogs;
 

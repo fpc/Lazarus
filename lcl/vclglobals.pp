@@ -89,6 +89,8 @@ csHintWindow = 48;
 csCalendar = 49;
 
 csArrow = 50;
+csPanel = 51;
+
 type
 
 //TODO: check this against lcllinux

@@ -35,7 +35,7 @@ uses
   FindReplaceDialog, EditorOptions, CustomFormEditor, KeyMapping, StdCtrls,
   Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
-  SynEditKeyCmds, SynCompletion, Graphics, Extctrls, Menus, Splash,
+  SynEditKeyCmds, SynCompletion, GraphType, Graphics, Extctrls, Menus, Splash,
   FindInFilesDlg, LMessages, IDEProcs;
 
 type
@@ -458,7 +458,7 @@ type
 implementation
 
 uses
-  LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts, UnitInfoDlg;
+  LCLType, LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts, UnitInfoDlg;
 
 type
   TCompletionType = (ctNone, ctWordCompletion, ctTemplateCompletion,

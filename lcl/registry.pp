@@ -41,7 +41,7 @@ interface
 {$endif}
 
 uses
-  Classes, Controls, SysUtils, vclGlobals, lMessages, LCLLinux;
+  Classes, Controls, SysUtils, vclGlobals, lMessages, LCLType;
 
 type
   ERegistryException = class(Exception);
@@ -184,6 +184,14 @@ end.
 
 {
   $Log$
+  Revision 1.4  2002/02/03 00:24:01  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.3  2001/06/15 10:31:06  lazarus
   MG: set longstrings as default
 

@@ -32,7 +32,7 @@ uses
 {$IFDEF IDE_MEM_CHECK}
   MemCheck,
 {$ENDIF}
-  Classes, LclLinux, Compiler, StdCtrls, Forms, Buttons, Menus, ComCtrls, Spin,
+  Classes, LCLType, LclLinux, Compiler, StdCtrls, Forms, Buttons, Menus, ComCtrls, Spin,
   Project, SysUtils, FileCtrl, Controls, Graphics, ExtCtrls, Dialogs, LazConf,
   CompReg, CodeToolManager, CodeCache, DefineTemplates, MsgView, NewProjectDlg,
   IDEComp, AbstractFormEditor, FormEditor, CustomFormEditor, ObjectInspector,
@@ -57,6 +57,8 @@ type
   TIDEToolStatus = (itNone, itBuilder, itDebugger, itCustom);
 
   TMainIDE = class(TForm)
+    pnlSpeedButtons : TPanel;
+
     ViewUnitsSpeedBtn   : TSpeedButton;
     ViewFormsSpeedBtn   : TSpeedButton;
     NewUnitSpeedBtn     : TSpeedButton;
@@ -917,8 +919,8 @@ procedure TMainIDE.LoadSpeedbuttons;
     with Result do
     begin
       Name := AName;
-//      Parent := pnlSpeedButtons;
-      Parent := Self;
+      Parent := pnlSpeedButtons;
+//      Parent := Self;
       Enabled := True;
       Top := ATop;
       Left := ALeft;
@@ -939,21 +941,26 @@ var
   ButtonTop, ButtonLeft, n: Integer;
 
 begin
-(*
+
   pnlSpeedButtons := TPanel.Create(Self);
-  with pnlSpeedButtons do
-  begin
-    Parent := Self;
+  pnlSpeedButtons.Parent:= Self;
+  with pnlSpeedButtons do begin
     Visible := True;
     Name := 'pnlSpeedButtons';
     Top := 0;
-    Caption := '';
+    Left:= 0;
+//    Width:= 160;
+//    Height:= 60;
+    Caption:= '';
   end;
-*)
+
 
   ButtonTop := 1;
   ButtonLeft := 1;
+  Writeln('XXX Creating NewUnit Button');
   NewUnitSpeedBtn       := CreateButton('NewUnitSpeedBtn'      , 'btn_newunit'   , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuNewUnitClicked, 'New Unit');
+
+  Writeln('XXX Creating OpenFile Button');
   OpenFileSpeedBtn      := CreateButton('OpenFileSpeedBtn'     , 'btn_openfile'  , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuOpenClicked, 'Open');
 
   // store left
@@ -978,8 +985,8 @@ begin
   StepIntoSpeedButton  := CreateButton('StepIntoSpeedButton'   , 'btn_stepinto'       , 1, ButtonLeft, ButtonTop, [mfLeft], @mnuStepIntoProjectClicked, 'Step Into');
   StepOverSpeedButton  := CreateButton('StepOverpeedButton'   , 'btn_stepover'       , 1, ButtonLeft, ButtonTop, [mfLeft, mfTop], @mnuStepOverProjectClicked, 'Step Over');
   
-//  pnlSpeedButtons.Width := ButtonLeft;
-//  pnlSpeedButtons.Height := ButtonTop;
+  pnlSpeedButtons.Width := ButtonLeft;
+  pnlSpeedButtons.Height := ButtonTop;
   
 
   // create the popupmenu for the OpenFileArrowSpeedBtn
@@ -5707,6 +5714,14 @@ end.
 =======
 
   $Log$
+  Revision 1.208  2002/02/03 00:23:54  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.207  2002/01/27 19:08:43  lazarus
   MWE: Removed ^M
 
@@ -5762,6 +5777,14 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.208  2002/02/03 00:23:54  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.207  2002/01/27 19:08:43  lazarus
   MWE: Removed ^M
 

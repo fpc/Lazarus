@@ -71,7 +71,7 @@ interface
 
 uses
   {$IFDEF SYN_LAZARUS}
-  LCLLinux,
+  LCLLinux, LCLType, GraphType,
   {$ELSE}
   Windows,
   {$ENDIF}

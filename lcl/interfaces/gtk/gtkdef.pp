@@ -29,7 +29,7 @@ unit gtkdef;
 interface
 
 uses
-  gtk, gdk, LCLLinux, VclGlobals, Classes;
+  gtk, gdk, LCLLinux, LCLType, VclGlobals, Classes;
 
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion);
@@ -136,6 +136,14 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/02/03 00:24:01  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.4  2001/11/12 16:56:08  lazarus
   MG: CLIPBOARD
 

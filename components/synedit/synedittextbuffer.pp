@@ -45,6 +45,7 @@ uses
   Classes, SysUtils,
   {$IFDEF SYN_LAZARUS}
   LCLLinux,
+ LCLType,
   {$ELSE}
   Windows,
   {$ENDIF}

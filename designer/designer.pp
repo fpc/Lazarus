@@ -25,7 +25,7 @@ unit designer;
 interface
 
 uses
-  Classes, LCLLinux, Forms, Controls, LMessages, Graphics, ControlSelection,
+  Classes, LCLType, LCLLinux, Forms, Controls, LMessages, Graphics, ControlSelection,
   CustomFormEditor, FormEditor, UnitEditor, CompReg, Menus, AlignCompsDlg,
   SizeCompsDlg, ScaleCompsDlg, ExtCtrls;
 

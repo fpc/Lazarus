@@ -31,7 +31,7 @@ unit Project;
 interface
 
 uses
-  Classes, SysUtils, LCLLinux, XMLCfg, LazConf, CompilerOptions, FileCtrl,
+  Classes, SysUtils, LCLLinux, LCLType, XMLCfg, LazConf, CompilerOptions, FileCtrl,
   CodeToolManager, CodeCache, Forms, Controls, EditorOptions, Dialogs, IDEProcs,
   RunParamsOpts, ProjectDefs;
 
@@ -1287,6 +1287,14 @@ end.
 
 {
   $Log$
+  Revision 1.48  2002/02/03 00:23:55  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.47  2001/12/19 22:09:14  lazarus
   MG: added GUID and alias parsing, added DoJumpToCodeToolBossError
 

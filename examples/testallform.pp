@@ -31,7 +31,7 @@ interface
 
 
 uses classes, forms, buttons, StdCtrls, controls, menus, ExtCtrls, CListBox,
-     ComCtrls, SysUtils, Graphics, Dialogs, Inifiles, Spin, clipbrd, lclLinux,
+     ComCtrls, SysUtils, GraphType, Graphics, Dialogs, Inifiles, Spin, clipbrd, lclLinux,
      registry, lresources;
 
 type
@@ -2540,6 +2540,14 @@ END.
 
 {
   $Log$
+  Revision 1.6  2002/02/03 00:24:00  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.5  2001/12/10 07:47:00  lazarus
   MG: minor fixes
 

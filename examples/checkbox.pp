@@ -25,13 +25,15 @@ program checkbox;
 {$mode objfpc}
 
 uses
-  classes, stdctrls,forms,buttons,menus,comctrls,sysutils, extctrls;
+  classes, stdctrls, forms, buttons, menus, comctrls, sysutils,
+  extctrls, graphtype, controls;
 
 type
   TForm1 = class(TFORM)
   public
     Button2: TButton;
     Button3: TButton;
+    Panel1: TPanel;
     mnuMain: TMainMenu;
     itmFileQuit: TMenuItem;
     itmFile: TMenuItem;
@@ -79,6 +81,7 @@ Begin
    begin
       CheckBox1.Checked := not CheckBox1.Checked; 
    end;
+   Panel1.Caption:= 'Changed';
 End;
 
 procedure TForm1.Button3Click(Sender : TObject);
@@ -183,13 +186,31 @@ begin
    label1.Show;
    label1.Caption := 'unchecked';
 
+
+   { Sample panel here }
+   Panel1:= TPanel.Create(Self);
+   with Panel1 do begin
+     Parent := Self;
+     Left := 320;
+     Top := 60;
+     Width := 280;
+     Height := 81;
+     Alignment:= taRightJustify;
+     BevelInner:= bvLowered;
+     BevelOuter:= bvRaised;
+     BorderWidth:= 4;
+     BevelWidth:= 4;
+     Show;
+     Caption:= 'Hello world';
+   end;     
+
    { Create a button which toggles the checkbox }
-   Button2 := TButton.Create(Self);
-   Button2.Parent := Self;
-   Button2.Left := 320;
-   Button2.Top := 30;
+   Button2 := TBitBtn.Create(Self);
+   Button2.Parent := Panel1;
+   Button2.Left := 5;
+   Button2.Top := 45;
    Button2.Width := 180;
-   Button2.Height := 30;
+   Button2.Height := 20;
    Button2.Show;
    Button2.Caption := 'Toggle checkbox';
    Button2.OnClick := @Button2Click;
@@ -344,6 +365,14 @@ end.
 
 {
   $Log$
+  Revision 1.2  2002/02/03 00:24:00  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.1  2000/07/13 10:28:20  michael
   + Initial import
 

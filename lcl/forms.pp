@@ -34,7 +34,8 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-uses classes, controls, vclglobals, sysutils,graphics,Menus, LCLLinux,LMessages;
+uses classes, controls, vclglobals, sysutils, GraphType, Graphics, Menus,
+  LCLLinux, LCLType, LMessages;
 
 type
   TPosition = (poDesigned, poDefault, poDefaultPosOnly, poDefaultSizeOnly, poScreenCenter, poDesktopCenter, poMainFormCenter, poOwnerFormCenter);

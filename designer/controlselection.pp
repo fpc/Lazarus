@@ -25,7 +25,7 @@ unit ControlSelection;
 interface
 
 uses
-  Classes, LCLLinux, Controls, Forms, Graphics,SysUtils;
+  Classes, LCLLinux, LCLType, Controls, Forms, GraphType, Graphics, SysUtils;
 
 type
 

@@ -33,7 +33,7 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-uses stdctrls, vclglobals, classes, LCLLinux,graphics,sysutils, controls, lMessages,Forms, messages;
+uses stdctrls, vclglobals, classes, LCLType, LCLLinux,graphics,sysutils, controls, lMessages,Forms, messages;
 
 type
   TButtonLayout = (blGlyphLeft, blGlyphRight, blGlyphTop, blGlyphBottom);
@@ -149,33 +149,29 @@ type
   TSpeedButton = class(TGraphicControl)
      private
       FAllowAllUp : Boolean;
+      FDown : Boolean;
       FDragging : Boolean;
-      FDown   : Boolean;
-      FFlat   : Boolean;
+      FFlat : Boolean;
       FGlyph:   TButtonGlyph;
       FGroupIndex : Integer;
       FLayout: TButtonLayout;
       FMargin : Integer;
       FMouseInControl : Boolean;
       FSpacing : Integer;
+      FState : TButtonState;
       FTransparent : Boolean;
       Function GetGlyph : TBitmap;
-      Function GetNumGlyphs : Integer;
       Procedure UpdateExclusive;
       Procedure UpdateTracking;
       Procedure SetAllowAllUp(Value : Boolean);
-      Procedure SetDown(Value : Boolean);
-      Procedure SetFlat(Value : Boolean);
       Procedure SetGlyph(value : TBitmap);
-      Procedure SetGroupIndex(value : Integer);
-      Procedure SetNumGlyphs(value : Integer);
       //there should be a procedure called settransparent but it's not used at this point
       Procedure CMButtonPressed(var MEssage : TLMessage); message CM_BUTTONPRESSED;
       Procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
       Procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
       Procedure CMEnabledChanged(var Message: TLMessage); message CM_ENABLEDCHANGED;
      protected
-      FState : TButtonState;
+      function GetNumGlyphs : Integer;
       Procedure GlyphChanged(Sender : TObject);
       procedure MouseDown(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
@@ -183,19 +179,23 @@ type
       procedure MouseUp(Button: TMouseButton; Shift: TShiftState;
       X, Y: Integer); override;
       Procedure Paint; override;
+      procedure SetDown(Value : Boolean);
+      procedure SetGroupIndex(Value : Integer);
+      procedure SetFlat(Value : Boolean);
+      procedure SetNumGlyphs(Value : Integer);
       property MouseInControl : Boolean read FMOuseInControl;
      public
-      constructor Create(AOwner : TCOmponent) ; override;
+      constructor Create(AOwner : TComponent); override;
       destructor Destroy; override;
       procedure Click; override;
+      property Down : Boolean read FDown write SetDown default false;
+      property GroupIndex : Integer read FGroupIndex write SetGroupIndex default 0;
+      property Flat : Boolean read FFlat write SetFlat default false;
+      property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs default 1;
     published
       property AllowAllUp : Boolean read FAllowAllUp write SetAllowAllUp default false;
-      property Down : Boolean read FDown write SetDown default False;
       property Enabled;
-      property Flat : Boolean read FFlat write SetFlat default False;
       property Glyph : TBitmap read GetGlyph write SetGlyph;
-      property GroupIndex : Integer read FGroupIndex write SetGroupIndex default 0;
-      property NumGlyphs : Integer read GetNumGlyphs write SetNumGlyphs default 1;
       property Transparent : Boolean read FTransparent write FTransparent default false;
       property Visible;
       property OnClick;
@@ -237,6 +237,14 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/02/03 00:24:00  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.10  2001/10/16 10:51:09  lazarus
   MG: added clicked event to TButton, MessageDialog reacts to return key
 

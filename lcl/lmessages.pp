@@ -25,7 +25,7 @@ unit lMessages;
 
 interface
 
-uses Classes,vclGlobals,LCLLinux;
+uses Classes, vclGlobals, LCLType;
 
 const
 
@@ -788,6 +788,14 @@ end.
 
 {
   $Log$
+  Revision 1.19  2002/02/03 00:24:00  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.18  2002/01/25 19:42:56  lazarus
   Keith: Improved events and common dialogs on Win32
 

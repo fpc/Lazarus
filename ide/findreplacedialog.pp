@@ -25,7 +25,7 @@ unit FindReplaceDialog;
 interface
 
 uses
-  Classes, SysUtils, LCLLinux, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
+  Classes, SysUtils, LCLType, Controls, StdCtrls, Forms, Buttons, ExtCtrls,
   LResources, SynEdit, IDEProcs;
 
 type

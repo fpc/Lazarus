@@ -36,7 +36,7 @@ interface
 {$endif}
 
 uses
-  LCLLinux, VCLGlobals, Classes, Controls, LMessages;
+  LCLLinux, LCLType, VCLGlobals, Classes, Controls, LMessages, GraphType;
 
 type
 
@@ -82,6 +82,14 @@ end.
 
 {
   $Log$
+  Revision 1.5  2002/02/03 00:24:00  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.4  2001/07/01 23:33:13  lazarus
   MG: added WaitMessage and HandleEvents is now non blocking
 

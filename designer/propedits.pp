@@ -28,7 +28,7 @@ unit propedits;
 interface
 
 uses 
-  Classes, TypInfo, SysUtils, Forms, Controls, Graphics, StdCtrls, Buttons,
+  Classes, TypInfo, SysUtils, Forms, Controls, GraphType, Graphics, StdCtrls, Buttons,
   ComCtrls;
 
 const

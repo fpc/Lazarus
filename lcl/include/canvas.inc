@@ -375,6 +375,19 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   TCanvas.Frame3d
+  Params:   Rect
+, AWidth, AHeight
+  Returns:  Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCanvas.Frame3d(var Rect : TRect; const FrameWidth : integer; const Style : TBevelCut);
+begin
+  RequiredState([csHandleValid]);
+  LCLLinux.Frame3d(FHandle, Rect, FrameWidth, Style);
+end;
+
+{------------------------------------------------------------------------------
   Method:   TCanvas.Rectangle
   Params:   X1,Y1,X2,Y2
   Returns:  Nothing
@@ -409,6 +422,42 @@ begin
   ExtTextOut(FHandle, X, Y, 0 { <-- TODO: FTextFlags}, @Rect, pChar(Text), Length(Text), nil);
   MoveTo(X + TextWidth(Text), Y);
 end;
+
+{------------------------------------------------------------------------------
+  Method:   TCanvas.TextRect
+  Params:   Rect, X, Y, Text
+, Style
+  Returns:  Nothing
+
+ ------------------------------------------------------------------------------}
+procedure TCanvas.TextRect(Rect: TRect; X, Y : Integer; const Text : String; const Style : TTextStyle);
+var X1, Y1 : integer;
+    TS : TSize;
+    Options : Longint;
+begin
+  RequiredState([csHandleValid, csFontValid, csBrushValid]);
+  TS:= TextExtent(Text);
+
+  { Compute the rectangle for text }
+  case Style.Alignment of
+    taRightJustify : X1:= Rect.Right - TS.cx;
+    taCenter : X1:= Rect.Left + ((Rect.Right - Rect.Left - TS.cx) div 2);
+    else X1:= Rect.Left + X;
+  end;
+  case Style.Layout of
+    tlCenter : Y1:= Rect.Top + ((Rect.Bottom - Rect.Top - TS.cy) div 2);
+    tlBottom : Y1:= Rect.Bottom - TS.cy;
+    else Y1:= Rect.Top + Y;
+  end;
+  
+  if Style.Opaque then Options:= ETO_OPAQUE
+  else Options:= 0;
+  if Style.Clipping then Options:= Options or ETO_CLIPPED;
+  
+  ExtTextOut(FHandle, X1, Y1, Options, @Rect, pChar(Text), Length(Text), nil);
+  MoveTo(X1 + TS.cx, Y1);
+end;
+
 
 {------------------------------------------------------------------------------
   Method:   TCanvas.TextOut
@@ -761,6 +810,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/02/03 00:24:01  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.14  2002/01/02 15:24:58  lazarus
   MG: added TCanvas.Polygon and TCanvas.Polyline
 

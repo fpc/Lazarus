@@ -52,7 +52,7 @@ interface
 uses
   SysUtils,
   {$IFDEF SYN_LAZARUS}
-  LCLLinux,
+  LCLLinux, LCLType, GraphType,
   {$ELSE}
   Windows,
   {$ENDIF}

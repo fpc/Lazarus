@@ -25,8 +25,9 @@ interface
 
 uses
   LCLLinux,
+ LCLType,
   Forms, Classes, SysUtils, ComCtrls, Buttons, StdCtrls, ExtCtrls, LazConf,
-  FileCtrl, Graphics, Controls, Dialogs, LResources, IDEProcs,
+  FileCtrl, GraphType, Graphics, Controls, Dialogs, LResources, IDEProcs,
 {$ifdef NEW_EDITOR_SYNEDIT}
   SynEdit, SynEditHighlighter, SynEditAutoComplete, SynEditKeyCmds,
   SynHighlighterPas, SynHighlighterHTML, SynHighlighterCPP, SynHighlighterXML,

@@ -10,7 +10,7 @@ unit UnitInfoDlg;
 interface
 
 uses
-  Classes, SysUtils, LCLLinux, Controls, StdCtrls, Forms, Buttons, ExtCtrls{,
+  Classes, SysUtils, Controls, StdCtrls, Forms, Buttons, ExtCtrls{,
   LResources, SynEdit};
 
 type

@@ -57,6 +57,7 @@ uses
   {$ELSE}
   {$IFDEF SYN_LAZARUS}
   LCLLinux,
+ LCLType, GraphType,
   {$ELSE}
   Windows,
   {$ENDIF}

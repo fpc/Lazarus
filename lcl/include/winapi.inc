@@ -180,6 +180,11 @@ begin
   Result := InterfaceObject.FillRect(DC, Rect, Brush);
 end;
 
+function Frame3d(DC : HDC; var Rect : TRect; const FrameWidth : integer; const Style : TBevelCut) : boolean;
+begin
+  Result:= InterfaceObject.Frame3d(DC, Rect, FrameWidth, Style);
+end;
+
 Function GetActiveWindow : HWND;
 begin
   Result := InterfaceObject.GetActiveWindow;
@@ -1053,6 +1058,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/02/03 00:24:01  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.23  2002/01/02 15:24:58  lazarus
   MG: added TCanvas.Polygon and TCanvas.Polyline
 

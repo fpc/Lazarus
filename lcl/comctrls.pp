@@ -32,8 +32,8 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Classes, Controls, LclLinux, StdCtrls, ExtCtrls, vclGlobals,
-  lMessages, Menus, ImgList, Graphics, ToolWin;
+  SysUtils, Classes, Controls, LclLinux, LCLType, StdCtrls, ExtCtrls, vclGlobals,
+  lMessages, Menus, ImgList, GraphType, Graphics, ToolWin;
 
 
   const
@@ -1747,6 +1747,14 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.18  2002/02/03 00:24:00  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.17  2002/01/08 16:02:43  lazarus
   Minor changes to TListView.
   Added TImageList to the IDE

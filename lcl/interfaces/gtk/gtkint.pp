@@ -31,8 +31,9 @@ interface
  
 uses 
   InterfaceBase, gtk, gdk, glib, SysUtils, LMessages, Classes, Controls,
-  ExtCtrls, Forms, Dialogs, VclGlobals, StdCtrls, ComCtrls, LCLLinux, gtkdef,
-  DynHashArray, LazQueue,Calendar,Arrow;
+  ExtCtrls, Forms, Dialogs, VclGlobals, StdCtrls, ComCtrls, LCLLinux, LCLType,
+  gtkdef,
+ DynHashArray, LazQueue, Calendar, Arrow, GraphType;
 
 type
    TgtkObject = class(TInterfaceBase)
@@ -324,6 +325,14 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/02/03 00:24:01  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.25  2001/12/06 13:39:36  lazarus
   Added TArrow component
   Shane

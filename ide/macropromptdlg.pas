@@ -27,7 +27,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, LCLLinux, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
+  Classes, SysUtils, LCLType, Controls, Forms, Buttons, StdCtrls, ComCtrls, 
   Dialogs, LResources;
 
 

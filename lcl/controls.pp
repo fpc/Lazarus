@@ -36,7 +36,7 @@ interface
 
 uses
   Classes, SysUtils, vclglobals, Graphics, LMessages, LCLLinux, ImgList, UTrace,
-  Menus;
+  Menus, LCLType;
 
 
 // Cursor constants
@@ -218,6 +218,7 @@ TCMDialogKey = TLMKEY;
   TFormStyle = (fsNormal, fsMDIChild, fsMDIFORM, fsStayOnTop);
   TFormBorderStyle = (bsNone, bsSingle, bsSizeable, bsDialog, bsToolWindow, bsSizeToolWin);
   TBorderStyle = bsNone..bsSingle;
+  TControlBorderStyle = TBorderStyle;
 
   TMouseButton = (mbLeft, mbRight, mbMiddle);
 
@@ -239,7 +240,8 @@ TCMDialogKey = TLMKEY;
                           csDisplayDragImage,
                           csReflector,
                           csActionClient,
-                          csMenuEvents);
+                          csMenuEvents,
+			  csNoFocus);
 
   TControlState = set of (csLButtonDown,
                           csClicked,
@@ -728,7 +730,7 @@ TCMDialogKey = TLMKEY;
     property ControlCount: Integer read GetControlCount;
     property Handle : HWND read GetHandle write SetHandle;
     property Showing : Boolean read FShowing;
-    property TabStop : Boolean read FTabStop write FTabStop;
+    property TabStop : Boolean read FTabStop write FTabStop default false;
     property TabOrder : TTabOrder read GetTabOrder write SetTaborder default -1;
   end;
 
@@ -1151,6 +1153,14 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.31  2002/02/03 00:24:00  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.30  2002/01/04 21:07:49  lazarus
   MG: added TTreeView
 

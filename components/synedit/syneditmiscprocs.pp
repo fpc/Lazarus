@@ -44,6 +44,7 @@ interface
 uses
   {$IFDEF SYN_LAZARUS}
   LCLLinux,
+ LCLType,
   {$ELSE}
   Windows,
   {$ENDIF}

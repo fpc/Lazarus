@@ -28,14 +28,12 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, vclGlobals, LMessages, LCLLinux, LResources;
+  GraphType, SysUtils, Classes, vclGlobals, LMessages, LCLType, LCLLinux, LResources;
 
 
-type
-  TColor = longint;  //Also defined in LMessages.pp
-  
 const
   // The follow colors match the predefined Delphi Colors
+  // TODO : kick these out into platform specific units!
   clBlack =   TColor($000000);
   clMaroon =  TColor($000080);
   clGreen =   TColor($008000);
@@ -111,58 +109,19 @@ const
   cmSrcPaint = SRCPAINT;
   cmWhiteness = WHITENESS;
 
+
 type
-  TFontPitch = (fpDefault, fpVariable, fpFixed);
-  TFontName = shortstring;
-  TFontStyle = (fsBold, fsItalic, fsStrikeOut, fsUnderline);
-  TFontCharSet = 0..255;
-  TFontDataName = string[LF_FACESIZE -1];
-  TFontStyles = set of TFontStyle;
-  TFOntStylesbase = set of TFontStyle;
-
-  TFontData = record
-    Handle : HFont;
-    Height : Integer;
-    Pitch : TFontPitch;
-    Style : TFontStylesBase;
-    CharSet : TFontCharSet;
-    Name : TFontDataName;
-  end;
-
-  TPenStyle = (psSolid, psDash, psDot, psDashDot, psDashDotDot, psClear, psInsideframe);
-  TPenMode = (pmBlack, pmWhite, pmNop, pmNot, pmCopy, pmNotCopy, pmMergePenNot,
-              pmMaskPenNot, pmMergeNotPen, pmMaskNotPen, pmMerge,pmNotMerge, pmMask,
-              pmNotMask, pmXor, pmNotXor
-             );
-
-  TPenData = record
-    Handle : HPen;
-    Color : TColor;
-    Width : Integer;
-    Style : TPenStyle;
-  end;
 
   TBitmap = class; //forward declaration
-
-  TBrushStyle = (bsSolid, bsClear, bsHorizontal, bsVertical, bsFDiagonal, bsBDiagonal, bsCross, bsDiagCross);
-
-  TBrushData = record
-    Handle : HBrush;
-    Color : TColor;
-    Bitmap : TBitmap;
-    Style : TBrushStyle;
-  end;
 
   TGraphicsObject = class(TPersistent)
   private
     FOnChange: TNotifyEvent;
     Procedure DoChange(var msg); message LM_CHANGED;
-
   protected
     procedure Changed; dynamic;
     Procedure Lock;
     Procedure UnLock;
-
   public
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
@@ -240,6 +199,14 @@ type
     property Width: Integer read FPenData.Width write SetWidth;
   end;
 
+
+  TBrushData = record
+    Handle : HBrush;
+    Color : TColor;
+    Bitmap : TBitmap;
+    Style : TBrushStyle;
+  end;
+
   TBrush = class(TgraphicsObject)
   private
     FBrushData : TBrushData;
@@ -263,20 +230,6 @@ type
     property Style: TBrushStyle read FBrushData.Style write SetStyle;
   end;
 
-  TFillStyle = (fsSurface, fsBorder);
-  TFillMode = (fmAlternate, fmWinding);
-
-  TCopymode = longint;
-
-  TCanvasStates = (csHandleValid, csFontValid, csPenvalid, csBrushValid);
-  TCanvasState = set of TCanvasStates;
-  TCanvasOrientation = (csLefttoRight, coRighttoLeft);
-
-  TProgressStage = (psStarting, psRunning, psEnding);
-  TProgressEvent = procedure (Sender: TObject; Stage: TProgressStage;
-    PercentDone: Byte; RedrawNow: Boolean; const R: TRect;
-    const Msg: string) of object;
-  
   TCanvas = class;
 
   TGraphic = class(TPersistent)
@@ -455,13 +408,16 @@ type
       NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
     procedure Polyline(Points: PPoint; NumPts: Integer);
     Procedure FillRect(const Rect : TRect);
+    procedure Frame3d(var Rect : TRect; const FrameWidth : integer; const Style : TBevelCut);
     Procedure Rectangle(X1,Y1,X2,Y2 : Integer); 
     Procedure Rectangle(const Rect: TRect); 
     Procedure Line(X1,Y1,X2,Y2 : Integer);
     Procedure MoveTo(X1,Y1 : Integer);
     Procedure LineTo(X1,Y1 : Integer);
-    Procedure TextOut(X,Y: Integer; const Text: String);
-    Procedure TextRect(Rect: TRect; X,Y : Integer; const Text : String);
+    procedure TextOut(X,Y: Integer; const Text: String);
+    procedure TextRect(Rect: TRect; X, Y: integer; const Text : string);
+ overload;
+    procedure TextRect(Rect: TRect; X, Y: integer; const Text : string; const Style : TTextStyle); overload;
     function TextExtent(const Text: string): TSize;
     function TextHeight(const Text: string): Integer;
     function TextWidth(const Text: string): Integer;
@@ -509,10 +465,6 @@ type
   public
     destructor Destroy; override;
   end;
-
-  TPixelFormat = (pfDevice, pf1bit, pf4bit, pf8bit, pf15bit, pf16bit, pf24bit,
-                  pf32bit, pfCustom);
-
 
   TBitmap = class(TGraphic)
   private
@@ -597,14 +549,8 @@ type
   TIcon = class(TPixmap)
   end;
 
-  
-var 
-  { Stores information about the current screen }
-  ScreenInfo : TLMScreenInit;
 
-
-// Color / Identifier mapping
-type
+  // Color / Identifier mapping
   TGetColorStringProc = procedure(const s:ansistring) of object;
   
 function ColorToIdent(Color: Longint; var Ident: AnsiString): Boolean;
@@ -613,7 +559,11 @@ function ColorToRGB(Color: TColor): Longint;
 function ColorToString(Color: TColor): AnsiString;
 function StringToColor(const S: shortstring): TColor;
 procedure GetColorValues(Proc: TGetColorStringProc);
+
   
+var 
+  { Stores information about the current screen }
+  ScreenInfo : TLMScreenInit;
 
 (***************************************************************************
  ***************************************************************************)
@@ -702,7 +652,6 @@ begin
   then Result := GetSysColor(Color and $000000FF)
   else Result := Color;
   Result := Result and $FFFFFF;
-  //WriteLN(Format('[ColorToRGB] Color %8x --> RGB %8x', [Color, Result]));
 end;
 
 function ColorToString(Color: TColor): AnsiString;
@@ -725,6 +674,7 @@ begin
 end;
 
 
+
 {$I graphicsobject.inc}
 {$I graphic.inc}
 {$I picture.inc}
@@ -744,6 +694,14 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.22  2002/02/03 00:24:00  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.21  2002/01/02 15:24:58  lazarus
   MG: added TCanvas.Polygon and TCanvas.Polyline
 

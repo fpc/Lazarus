@@ -41,7 +41,7 @@ interface
 {$endif}
 
 uses
-  SysUtils, Classes, Controls, stdCtrls, vclGlobals, lMessages,Graphics;
+  SysUtils, Classes, Controls, stdCtrls, vclGlobals, lMessages, GraphType, Graphics, LCLLinux;
 
 type
   { workaround problem with fcl }
@@ -332,6 +332,82 @@ type
      property OnClick;
   end;
 
+  TPanelBevel = TBevelCut;
+  TBevelWidth = 1..Maxint;
+  TBorderWidth = 0..Maxint;
+
+  TCustomPanel = class(TCustomControl)
+  private
+    FBevelInner, FBevelOuter : TPanelBevel;
+    FBevelWidth : TBevelWidth;
+    FBorderWidth : TBorderWidth;
+    FBorderStyle : TControlBorderStyle;
+    FAlignment : TAlignment;
+    FCaption : TCaption;
+    procedure SetAlignment(const Value : TAlignment);
+    procedure SetBevelInner(const Value: TPanelBevel);
+    procedure SetBevelOuter(const Value: TPanelBevel);
+    procedure SetBevelWidth(const Value: TBevelWidth);
+    procedure SetBorderWidth(const Value: TBorderWidth);
+    procedure SetBorderStyle(const Value: TControlBorderStyle);
+  protected
+    procedure AdjustClientRect(var Rect: TRect); override;
+    function GetText: TCaption; override;
+    procedure SetText(const Value: TCaption); override;
+    procedure Paint; override;
+    property Alignment: TAlignment read FAlignment write SetAlignment default taCenter;
+    property BevelInner: TPanelBevel read FBevelInner write SetBevelInner default bvNone;
+    property BevelOuter: TPanelBevel read FBevelOuter write SetBevelOuter default bvRaised;
+    property BevelWidth: TBevelWidth read FBevelWidth write SetBevelWidth default 1;
+    property BorderWidth: TBorderWidth read FBorderWidth write SetBorderWidth default 0;
+    property BorderStyle: TControlBorderStyle read FBorderStyle write SetBorderStyle default bsNone;
+    property Color default clBtnFace;
+    property Caption read GetText write SetText;
+    property ParentColor default True;
+  public
+    constructor Create(AOwner: TComponent); override;
+    procedure Invalidate; override;
+  end;
+
+  TPanel = class(TCustomPanel)
+  published
+    property Align default alNone;
+    property Alignment;
+    property Anchors;
+    property BevelInner;
+    property BevelOuter;
+    property BevelWidth;
+    property BorderWidth;
+    property BorderStyle;
+    property Caption;
+    property Color default clBackground;
+    property DragMode;
+    property Enabled;
+    property Font;
+    property ParentColor;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ShowHint;
+    property TabOrder;
+    property TabStop default False;
+    property Visible;
+    property OnClick;
+    property OnDblClick;
+    property OnDragDrop;
+    property OnDragOver;
+    property OnEndDrag;
+    property OnEnter;
+    property OnExit;
+    property OnMouseDown;
+    property OnMouseMove;
+    property OnMouseUp;
+    property OnResize;
+    property OnStartDrag;
+  end;
+    
+    
+
 const
 TCN_First = 0-550;
 TCN_SELCHANGE = TCN_FIRST - 1;
@@ -346,6 +422,7 @@ implementation
 {$I timer.inc}
 {$I paintbox.inc}
 {$I customradiogroup.inc}
+{$I custompanel.inc}
 {$I radiogroup.inc}
 {$I bevel.inc}
 {$I image.inc}
@@ -355,6 +432,14 @@ end.
 
  {
   $Log$
+  Revision 1.17  2002/02/03 00:24:00  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.16  2002/01/01 15:50:13  lazarus
   MG: fixed initial component aligning
 

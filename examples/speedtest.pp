@@ -3,8 +3,7 @@ program SpeedTest;
 {$mode Delphi}
 
 uses 
-  forms, sysutils, Buttons, Classes, Graphics, 
-  StdCtrls, LCLLinux;
+  forms, sysutils, Buttons, Classes, StdCtrls, LCLType, LCLLinux, Graphics;
 
 type
   TForm1 = class(TForm)

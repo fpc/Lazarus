@@ -1713,10 +1713,10 @@ begin
           gdk_draw_rectangle(Drawable, GC, 1, Rect^.Left, Rect^.Top, Width, Height);
         end;
         if (Options and ETO_CLIPPED) <> 0 then
-        begin
+	begin
           X := Rect^.Left;
           Y := Rect^.Top;
-        end;
+	end;
         SelectGDKTextProps(DC);
         Line := 1;
         OldText := StrPas(pStr);
@@ -1748,7 +1748,7 @@ end;
 
 {------------------------------------------------------------------------------
   Function: FillRect
-  Params:  none
+  Params: none
   Returns: Nothing
 
   The FillRect function fills a rectangle by using the specified brush.
@@ -1786,6 +1786,37 @@ begin
     end;
   end;
   Assert(False, Format('trace:< [TgtkObject.FillRect] DC:0x%x; Rect: ((%d,%d)(%d,%d)); brush: %x', [Integer(DC), Rect.left, rect.top, rect.right, rect.bottom, brush]));
+end;
+
+{------------------------------------------------------------------------------
+  Function: Frame3d
+  Params: -
+  Returns: Nothing
+
+  Draws a 3d border in GTK native style.
+ ------------------------------------------------------------------------------}
+function TGtkObject.Frame3d(DC : HDC; var Rect : TRect; const FrameWidth : integer; const Style : TBevelCut) : boolean;
+const GTKShadowType: array[TBevelCut] of integer = (GTK_SHADOW_NONE, GTK_SHADOW_IN, GTK_SHADOW_OUT);
+var Widget : TGtkWidget;
+    i : integer;
+begin
+  Result := IsValidDC(DC);
+  if Result
+ then with PDeviceContext(DC)^ do
+ begin
+    if GC = nil
+ then begin
+      Result:= False;
+    end
+ else begin
+      Widget:= PGtkFixed(GetFixedWidget(PGtkWidget(PDeviceContext(DC)^.hWnd)))^.Container.Widget;
+      for i:= 1 to FrameWidth do begin
+        gtk_paint_shadow(Widget.thestyle, Widget.window, GTK_STATE_NORMAL, GtkShadowType[Style], nil, @Widget, nil, 
+          Rect.left, Rect.top, Rect.Right - Rect.Left, Rect.Bottom - Rect.Top);
+	InflateRect(Rect, -1, -1);
+      end;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -4337,6 +4368,14 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.60  2002/02/03 00:24:01  lazarus
+  TPanel implemented.
+  Basic graphic primitives split into GraphType package, so that we can
+  reference it from interface (GTK, Win32) units.
+  New Frame3d canvas method that uses native (themed) drawing (GTK only).
+  New overloaded Canvas.TextRect method.
+  LCLLinux and Graphics was split, so a bunch of files had to be modified.
+
   Revision 1.59  2002/01/24 15:40:59  lazarus
   MG: deactivated clipboard setting target list for win32
 
