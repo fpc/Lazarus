@@ -209,6 +209,11 @@ begin
 end;
 
 procedure TBitmap.LoadFromDevice(DC: HDC);
+{$IFDEF DisableFPImage}
+begin
+  debugln('TBitmap.LoadFromDevice needs FPImage');
+end;
+{$ELSE}
 var
   IntfImg: TLazIntfImage;
   ImgHandle, ImgMaskHandle: HBitmap;
@@ -234,6 +239,7 @@ begin
     if ImgMaskHandle<>0 then DeleteObject(ImgMaskHandle);
   end;
 end;
+{$ENDIF}
 
 function TBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
 begin
@@ -1234,6 +1240,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.90  2004/09/24 10:23:49  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.89  2004/09/11 10:19:07  mattias
   implemented TBitmap.LoadFromDevice
 

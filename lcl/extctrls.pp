@@ -22,17 +22,6 @@
  *****************************************************************************
 }
 
-{
-@abstract(Just a try to provide the same objects as the Delphi extctrls unit)
-@author(TCustomNotebook, TNotebook - Curtis White <cwhite@aracnet.com>)
-@author(TTimer - Stefan Hille (stoppok@osibisa.ms.sub.org))
-@created(26 Jul 1999)
-@lastmod(28 Jul 1999)
-
-Extctrls contains only few class defintions at the moment and is very
-incomplete.
-}
-
 unit ExtCtrls;
 
 {$mode objfpc}
@@ -979,6 +968,9 @@ end.
 
  {
   $Log$
+  Revision 1.121  2004/09/24 10:23:49  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.120  2004/09/23 14:54:54  vincents
   moved widgetset related code from TNBPages to TCustomNotebook
 

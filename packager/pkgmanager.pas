@@ -2855,7 +2855,8 @@ var
   OldOwnerList: TList;
 begin
   OldOwnerList:=TList.Create;
-  OldOwnerList.Assign(OwnerList);
+  for i:=0 to OwnerList.Count-1 do
+    OldOwnerList.Add(OwnerList[i]);
   OwnerList.Clear;
   AddedNonPackages:=TList.Create;
   PackageGraph.MarkAllPackagesAsNotVisited;
