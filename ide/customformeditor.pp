@@ -516,7 +516,7 @@ Begin
   {$ENDIF}
   Component.Free;
   {$IFDEF VerboseFormEditor}
-  writeln('TComponentInterface.Delete B ',Component.Name,':',Component.ClassName);
+  writeln('TComponentInterface.Delete B ');
   {$ENDIF}
   Destroy;
   Result := True;

@@ -376,10 +376,11 @@ type
   TButtonControl = class(TWinControl)
   private
     FClicksDisabled: Boolean;
+    function IsCheckedStored: boolean;
   protected
     function GetChecked: Boolean; virtual;
     procedure SetChecked(Value: Boolean); virtual;
-    property Checked: Boolean read GetChecked write SetChecked;// stored IsCheckedStored default False;
+    property Checked: Boolean read GetChecked write SetChecked stored IsCheckedStored default False;
     property ClicksDisabled: Boolean read FClicksDisabled write FClicksDisabled;
   public
     constructor Create(AOwner: TComponent); override;
@@ -631,6 +632,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.36  2002/08/27 14:33:37  lazarus
+  MG: fixed designer component deletion
+
   Revision 1.35  2002/08/25 13:31:35  lazarus
   MG: replaced C-style operators
 

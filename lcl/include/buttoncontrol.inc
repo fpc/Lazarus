@@ -14,6 +14,13 @@
  *****************************************************************************
 }
 
+function TButtonControl.IsCheckedStored: boolean;
+begin
+  Result := true;
+  //Result := (ActionLink = nil)
+  //  or not TButtonActionLink(ActionLink).IsCheckedLinked;
+end;
+
 function TButtonControl.GetChecked: Boolean;
 begin
   GetChecked := False;
@@ -21,14 +28,12 @@ end;
 
 procedure TButtonControl.SetChecked(Value: Boolean);
 begin
-
+  // this is done in the overriden methods
 end;
-
 
 constructor TButtonControl.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-
 end;
 
 // included by stdctrls.pp

@@ -111,7 +111,7 @@ end;
  ------------------------------------------------------------------------------}
 function TCustomCheckBox.GetChecked : Boolean;
 begin
-   GetChecked := (GetState = cbChecked);
+  GetChecked := (GetState = cbChecked);
 end;
 
 {------------------------------------------------------------------------------
@@ -123,19 +123,18 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.SetChecked(Value : Boolean);
 var
-   OldState : TCheckBoxState;
+  OldState : TCheckBoxState;
 begin
-   OldState := FState;
-   If Value  then
-      FState := cbChecked
-   else
-      FState := cbUnChecked;
-   if FState <> OldState then
-   begin
-      ApplyChanges;
-      if assigned (OnClick)
-      	then OnClick (self);
-   end;
+  OldState := FState;
+  If Value then
+    FState := cbChecked
+  else
+    FState := cbUnChecked;
+  if FState <> OldState then
+  begin
+    ApplyChanges;
+    if Assigned(OnClick) then OnClick(Self);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -147,10 +146,10 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.Toggle;
 begin
-   if GetChecked then
-      SetChecked(False)
-   else
-      SetChecked(True);
+  if GetChecked then
+    SetChecked(False)
+  else
+    SetChecked(True);
 end;
 
 {------------------------------------------------------------------------------
@@ -162,12 +161,15 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomCheckBox.ApplyChanges;
 begin
-   if HandleAllocated
-      then CNSendMessage (LM_SetValue, Self, @fState);
+  if HandleAllocated then
+    CNSendMessage(LM_SetValue,Self,@fState);
 end;
 
 {
   $Log$
+  Revision 1.6  2002/08/27 14:33:37  lazarus
+  MG: fixed designer component deletion
+
   Revision 1.5  2002/07/23 07:40:51  lazarus
   MG: fixed get widget position for inherited gdkwindows
 
