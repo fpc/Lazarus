@@ -424,16 +424,13 @@ begin
   Result:=true;
   
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
+  NotifyApplicationUserInput;
 
   FillChar(Msg,SizeOf(Msg),0);
   GetGTKKeyInfo(Event, KeyCode, Msg.CharCode, SysKey, Extended, Toggle);
-  // Assert(False, Format('Trace:[GTKKeyUpDown] Type: %3:d, GTK: 0x%0:x(%0:d) LCL: 0x%1:x(%1:d) VK: 0x%2:x(%2:d)', [Event^.keyval, KeyCode, Msg.CharCode, Event^.theType]));
-
   Flags := 0;
-
   if Extended then Flags := KF_EXTENDED;
   if SysKey then Flags := Flags or KF_ALTDOWN;
-
   Msg.KeyData := $00000000; //TODO: OEM char
 
   //writeln('[GTKKeyUpDown] ',TControl(Data).Name,':',TControl(Data).ClassName,' ',Event^.theType);
@@ -716,6 +713,7 @@ begin
   // send the message directly to the LCL
   // (Posting the message via queue
   //  has the risk of getting out of sync with the gtk)
+  NotifyApplicationUserInput;
   DeliverMessage(AWinControl, Msg);
 end;
 
@@ -960,6 +958,7 @@ begin
     MessE.Button := 0;
 
     // send the message directly to the LCL
+    NotifyApplicationUserInput;
     DeliverMessage(AWinControl, MessE);
   end
   else begin
@@ -1000,6 +999,7 @@ begin
 
     MessI.Result:=0;
     // send the message directly to the LCL
+    NotifyApplicationUserInput;
     DeliverMessage(AWinControl, MessI);
   end;
 end;
@@ -1164,6 +1164,7 @@ begin
     // (Posting the message via queue
     //  has the risk of getting out of sync with the gtk)
     MessI.Result := 0;
+    NotifyApplicationUserInput;
     DeliverMessage(AWinControl, MessI);
   end;
 end;
@@ -2538,6 +2539,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.156  2002/11/02 22:25:36  lazarus
+  MG: implemented TMethodList and Application Idle handlers
+
   Revision 1.155  2002/10/23 15:59:25  lazarus
   MG: fixed radiobutton mousedown after
 
