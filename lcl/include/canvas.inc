@@ -249,6 +249,93 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method:   TCanvas.Polygon
+  Params:   Points: array of TPoint; Winding: Boolean = False;
+            StartIndex: Integer = 0; NumPts: Integer = -1
+  Returns:  Nothing
+  
+  Use Polygon to draw a closed, many-sided shape on the canvas, using the value 
+  of Pen. After drawing the complete shape, Polygon fills the shape using the 
+  value of Brush.
+  The Points parameter is an array of points that give the vertices of the
+  polygon.
+  Winding determines how the polygon is filled. When Winding is True, Polygon 
+  fills the shape using the Winding fill algorithm. When Winding is False, 
+  Polygon uses the even-odd (alternative) fill algorithm.
+  StartIndex gives the index of the first point in the array to use. All points 
+  before this are ignored.
+  NumPts indicates the number of points to use, starting at StartIndex. 
+  If NumPts is -1 (the default), Polygon uses all points from StartIndex to the 
+  end of the array.
+  The first point is always connected to the last point. 
+  To draw a polygon on the canvas, without filling it, use the Polyline method, 
+  specifying the first point a second time at the end.
+}
+procedure TCanvas.Polygon(const Points: array of TPoint; Winding: Boolean;
+  StartIndex: Integer; NumPts: Integer);
+var NPoints, i: integer;
+  PointArray: ^TPoint;
+begin
+  if NumPts<0 then
+    NPoints:=High(Points)-StartIndex+1
+  else
+    NPoints:=NumPts;
+  if NPoints<=0 then exit;
+  GetMem(PointArray,SizeOf(TPoint)*NPoints);
+  for i:=0 to NPoints-1 do
+    PointArray[i]:=Points[i+StartIndex];
+  Polygon(PointArray,NPoints,Winding);
+  FreeMem(PointArray);
+end;
+
+procedure TCanvas.Polygon(Points: PPoint; NumPts: Integer;
+  Winding: boolean{$IFDEF VER1_1} = False{$ENDIF});
+begin
+  RequiredState([csHandleValid, csBrushValid, csPenValid]);
+  LCLLinux.Polygon(FHandle,Points,NumPts,Winding);
+end;
+
+{------------------------------------------------------------------------------
+  Method:   TCanvas.Polyline
+  Params:   Points: array of TPoint; 
+            StartIndex: Integer = 0; NumPts: Integer = -1
+  Returns:  Nothing
+  
+  Use Polyline to connect a set of points on the canvas. If you specify only two 
+  points, Polyline draws a single line. 
+  The Points parameter is an array of points to be connected.
+  StartIndex identifies the first point in the array to use.
+  NumPts indicates the number of points to use. If NumPts is -1 (the default), 
+  PolyLine uses all the points from StartIndex to the end of the array.
+  Calling the MoveTo function with the value of the first point, and then 
+  repeatedly calling LineTo with all subsequent points will draw the same image 
+  on the canvas. However, unlike LineTo, Polyline does not change the value of 
+  PenPos.
+}
+procedure TCanvas.Polyline(const Points: array of TPoint; StartIndex: Integer;
+  NumPts: Integer);
+var NPoints, i: integer;
+  PointArray: ^TPoint;
+begin
+  if NumPts<0 then
+    NPoints:=High(Points)-StartIndex+1
+  else
+    NPoints:=NumPts;
+  if NPoints<=0 then exit;
+  GetMem(PointArray,SizeOf(TPoint)*NPoints);
+  for i:=0 to NPoints-1 do
+    PointArray[i]:=Points[i+StartIndex];
+  Polyline(PointArray,NPoints);
+  FreeMem(PointArray);
+end;
+
+procedure TCanvas.Polyline(Points: PPoint; NumPts: Integer);
+begin
+  RequiredState([csHandleValid, csPenValid]);
+  LCLLinux.Polyline(FHandle,Points,NumPts);
+end;
+
+{------------------------------------------------------------------------------
   Method:   TCanvas.Ellipse
   Params:   X1, Y1, X2, Y2
   Returns:  Nothing
@@ -674,6 +761,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.14  2002/01/02 15:24:58  lazarus
+  MG: added TCanvas.Polygon and TCanvas.Polyline
+
   Revision 1.13  2001/12/28 11:41:51  lazarus
   MG: added TCanvas.Ellipse, TCanvas.Pie
 

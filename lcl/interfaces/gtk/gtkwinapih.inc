@@ -85,6 +85,8 @@ function MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean; override;
 
 function PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 function Pie(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
+function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: boolean): boolean; override;
+function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; override;
 function PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean; override;
 
 function RealizePalette(DC: HDC): Cardinal; override;
@@ -130,6 +132,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/01/02 15:24:59  lazarus
+  MG: added TCanvas.Polygon and TCanvas.Polyline
+
   Revision 1.22  2001/12/28 11:41:51  lazarus
   MG: added TCanvas.Ellipse, TCanvas.Pie
 

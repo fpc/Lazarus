@@ -35,6 +35,7 @@ unit LCLLinux;
 {$mode objfpc}{$H+}
 
 interface
+
 uses VCLGlobals,Classes;
 
 {$ifdef Trace}
@@ -69,6 +70,7 @@ type
   Bool = LongBool;
   pByte = ^byte;
   HGLOBAL = THAndle;
+  
 var
   hInstance :HINST;
 
@@ -1400,6 +1402,9 @@ end.
 
 {
   $Log$
+  Revision 1.14  2002/01/02 15:24:58  lazarus
+  MG: added TCanvas.Polygon and TCanvas.Polyline
+
   Revision 1.13  2001/11/12 16:56:07  lazarus
   MG: CLIPBOARD
 

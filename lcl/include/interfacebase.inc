@@ -307,22 +307,27 @@ begin
   Result := False;
 end;
 
-function TInterfaceBase.MessageBox(hWnd: HWND; lpText, lpCaption: PChar; uType : Cardinal): integer;
+function TInterfaceBase.MessageBox(hWnd: HWND; lpText, lpCaption: PChar;
+  uType : Cardinal): integer;
 begin
   Result:= 0;
 end;
 
-function TInterfaceBase.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; 
+function TInterfaceBase.MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; 
+  SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; 
+  Rop: DWORD): Boolean; 
 begin
   Result := False;
 end;
 
-function TInterfaceBase.MoveToEx(DC: HDC; X, Y: Integer; OldPoint: PPoint): Boolean;
+function TInterfaceBase.MoveToEx(DC: HDC; X, Y: Integer; 
+  OldPoint: PPoint): Boolean;
 begin
   Result := False;
 end;
 
-function TInterfaceBase.PeekMessage(var lpMsg : TMsg; Handle : HWND; wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
+function TInterfaceBase.PeekMessage(var lpMsg : TMsg; Handle : HWND;
+  wMsgFilterMin, wMsgFilterMax,wRemoveMsg : UINT): Boolean;
 Begin
   Result := False;
 End;
@@ -333,7 +338,20 @@ begin
   Result := false;
 end;
 
-function TInterfaceBase.PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean;
+function TInterfaceBase.Polygon(DC: HDC; Points: PPoint; NumPts: Integer; 
+  Winding: boolean): boolean; 
+begin
+  Result := false;
+end;
+
+function TInterfaceBase.Polyline(DC: HDC; Points: PPoint; 
+  NumPts: Integer): boolean; 
+begin
+  Result := false;
+end;
+
+function TInterfaceBase.PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; 
+  lParam: LongInt): Boolean;
 begin
   Result := False;
 end;
@@ -514,6 +532,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2002/01/02 15:24:58  lazarus
+  MG: added TCanvas.Polygon and TCanvas.Polyline
+
   Revision 1.23  2001/12/28 11:41:51  lazarus
   MG: added TCanvas.Ellipse, TCanvas.Pie
 

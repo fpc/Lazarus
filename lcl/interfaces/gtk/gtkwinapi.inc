@@ -3027,7 +3027,7 @@ end;
 
 {------------------------------------------------------------------------------
   Method:   Pie
-  Params:   x,y,width,height,angle1,angle2
+  Params:   DC,x,y,width,height,angle1,angle2
   Returns:  Nothing
 
   Use Pie to draw a filled pie-shaped wedge on the canvas.
@@ -3058,6 +3058,96 @@ begin
       SelectGDKPenProps(DC);
       gdk_draw_arc(Drawable, GC, 0, X, Y, Width, Height, 
                    Angle1 shl 2, Angle2 shl 2);
+      Result := True;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method:   TCanvas.Polygon
+  Params:   DC: HDC; Points: ^TPoint; NumPts: integer; Winding: Boolean;
+  Returns:  Nothing
+  
+  Use Polygon to draw a closed, many-sided shape on the canvas, using the value 
+  of Pen. After drawing the complete shape, Polygon fills the shape using the 
+  value of Brush.
+  The Points parameter is an array of points that give the vertices of the
+  polygon.
+  Winding determines how the polygon is filled. When Winding is True, Polygon 
+  fills the shape using the Winding fill algorithm. When Winding is False, 
+  Polygon uses the even-odd (alternative) fill algorithm.
+  NumPts indicates the number of points to use.
+  The first point is always connected to the last point. 
+  To draw a polygon on the canvas, without filling it, use the Polyline method, 
+  specifying the first point a second time at the end.
+}
+function TgtkObject.Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
+  Winding: Boolean): boolean; 
+var i: integer;
+  PointArray: PGDKPoint;
+begin
+  Result := IsValidDC(DC);
+  if Result
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.Polygon] Uninitialized GC');
+      Result := False;
+    end
+    else begin
+      if NumPts<=0 then exit;
+      GetMem(PointArray,SizeOf(TGdkPoint)*NumPts);
+      for i:=0 to NumPts-1 do begin
+        PointArray[i].x:=Points[i].x;
+        PointArray[i].y:=Points[i].y;
+      end;
+
+      // dummy statement to prevent compiler hint that winding is not used
+      if Winding xor Winding then 
+        writeln('Polygon: winding not available under gtk');
+    
+      // first draw interior in brush color
+      SelectGDKBrushProps(DC);
+      gdk_draw_polygon(Drawable, GC, 1, PointArray, NumPts);
+      // draw outline
+      SelectGDKPenProps(DC);
+      gdk_draw_polygon(Drawable, GC, 0, PointArray, NumPts);
+      
+      FreeMem(PointArray);
+      
+      Result := True;
+    end;
+  end;
+end;
+
+function TgtkObject.Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
+var i: integer;
+  PointArray: PGDKPoint;
+begin
+  Result := IsValidDC(DC);
+  if Result
+  then with PDeviceContext(DC)^ do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [TgtkObject.Polygon] Uninitialized GC');
+      Result := False;
+    end
+    else begin
+      if NumPts<=0 then exit;
+      GetMem(PointArray,SizeOf(TGdkPoint)*NumPts);
+      for i:=0 to NumPts-1 do begin
+        PointArray[i].x:=Points[i].x;
+        PointArray[i].y:=Points[i].y;
+      end;
+
+      // draw outline
+      SelectGDKPenProps(DC);
+      gdk_draw_polygon(Drawable, GC, 0, PointArray, NumPts);
+      
+      FreeMem(PointArray);
+      
       Result := True;
     end;
   end;
@@ -4210,6 +4300,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.55  2002/01/02 15:24:58  lazarus
+  MG: added TCanvas.Polygon and TCanvas.Polyline
+
   Revision 1.54  2001/12/28 11:41:51  lazarus
   MG: added TCanvas.Ellipse, TCanvas.Pie
 

@@ -330,6 +330,17 @@ begin
   Result := InterfaceObject.Pie(DC,x,y,width,height,angle1,angle2);
 end;
 
+function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; 
+  Winding: boolean): boolean; 
+begin
+  Result := InterfaceObject.Polygon(DC,Points,NumPts,Winding);
+end;
+
+function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; 
+begin
+  Result := InterfaceObject.Polyline(DC,Points,NumPts);
+end;
+
 function PostMessage(hWnd: HWND; Msg: Cardinal; wParam: LongInt; lParam: LongInt): Boolean;
 begin
   Result := InterfaceObject.PostMessage(hWnd, Msg, wParam, lParam);
@@ -1042,6 +1053,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2002/01/02 15:24:58  lazarus
+  MG: added TCanvas.Polygon and TCanvas.Polyline
+
   Revision 1.22  2001/12/28 11:41:51  lazarus
   MG: added TCanvas.Ellipse, TCanvas.Pie
 

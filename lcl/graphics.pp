@@ -444,6 +444,16 @@ type
     procedure Ellipse(x1, y1, x2, y2: Integer); 
     procedure Ellipse(const Rect: TRect); 
     procedure Pie(x,y,width,height,angle1,angle2 : Integer);
+    procedure Polygon(const Points: array of TPoint; 
+      Winding: Boolean{$IFDEF VER1_1} = False{$ENDIF};
+      StartIndex: Integer{$IFDEF VER1_1} = 0{$ENDIF};
+      NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
+    procedure Polygon(Points: PPoint; NumPts: Integer; 
+      Winding: boolean{$IFDEF VER1_1} = False{$ENDIF});
+    procedure Polyline(const Points: array of TPoint;
+      StartIndex: Integer {$IFDEF VER1_1} = 0{$ENDIF};
+      NumPts: Integer {$IFDEF VER1_1} = -1{$ENDIF});
+    procedure Polyline(Points: PPoint; NumPts: Integer);
     Procedure FillRect(const Rect : TRect);
     Procedure Rectangle(X1,Y1,X2,Y2 : Integer); 
     Procedure Rectangle(const Rect: TRect); 
@@ -734,6 +744,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.21  2002/01/02 15:24:58  lazarus
+  MG: added TCanvas.Polygon and TCanvas.Polyline
+
   Revision 1.20  2002/01/02 12:10:01  lazarus
   MG: fixed typo
 

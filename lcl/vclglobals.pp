@@ -91,32 +91,26 @@ csCalendar = 49;
 csArrow = 50;
 type
 
-  //TODO: check this against lcllinux
+//TODO: check this against lcllinux
 
-TgComponentStyle = LongInt;
-AnsiChar = Char;  //Should be moved
-WideChar = Char;
-Short = SmallInt;
-HFont = LongWord;
-THAndle = Integer;
-hwnd    = THandle;
-TCaption = string;
-//TMessage = Pointer;
-HMENU = type LongWord;
-HPEN = type LongWord;
-HBitmap = type LongWord;
-HPalette = type LongWord;
+  TgComponentStyle = LongInt;
+  AnsiChar = Char;  //Should be moved
+  WideChar = Char;
+  Short = SmallInt;
+  HFont = LongWord;
+  THAndle = Integer;
+  hwnd    = THandle;
+  TCaption = string;
+  //TMessage = Pointer;
+  HMENU = type LongWord;
+  HPEN = type LongWord;
+  HBitmap = type LongWord;
+  HPalette = type LongWord;
 
-HDC = type LongWord;
-HBRUSH = type LongWord;
-
-
-
-
+  HDC = type LongWord;
+  HBRUSH = type LongWord;
 
 const
-
-
   {Mouse message key states}
    MK_LBUTTON  = 1;
    MK_RBUTTON = 2;
