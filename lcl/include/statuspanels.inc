@@ -1,3 +1,5 @@
+// included by comctrls.pp
+
 { TStatusPanels
 
  *****************************************************************************
@@ -45,4 +47,6 @@ procedure TStatusPanels.Update(Item: TCollectionItem);
 begin
   FStatusBar.Invalidate;
 end;
+
+// included by comctrls.pp
 

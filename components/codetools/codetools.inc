@@ -25,8 +25,8 @@
 
 }
 
-{ $DEFINE MEM_CHECK}
+{off $DEFINE MEM_CHECK}
 
-{ $DEFINE CTDEBUG}
+{off $DEFINE CTDEBUG}
 
 // end.

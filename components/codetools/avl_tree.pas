@@ -31,7 +31,11 @@ unit AVL_Tree;
 
 interface
 
-uses Classes, SysUtils;
+{off $DEFINE MEM_CHECK}
+
+uses
+  {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
+  Classes, SysUtils;
 
 type
   TAVLTreeNode = class

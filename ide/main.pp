@@ -4374,8 +4374,12 @@ begin
   Project1:=TProject.Create(ptProgram);
   Project1.OnFileBackup:=@DoBackupFile;
   // read project info file
+
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B3');{$ENDIF}
   Project1.ReadProject(AFilename);
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B4');{$ENDIF}
   Result:=DoCompleteLoadingProjectInfo;
+  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B5');{$ENDIF}
   if Result<>mrOk then exit;
 
   if Project1.MainUnit>=0 then begin
@@ -7056,6 +7060,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.378  2002/09/13 16:58:23  lazarus
+  MG: removed the 1x1 bitmap from TBitBtn
+
   Revision 1.377  2002/09/13 07:01:17  lazarus
   MG: fixed memcheck
 

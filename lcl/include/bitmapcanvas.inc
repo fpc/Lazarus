@@ -1,3 +1,5 @@
+// included by graphics.pp
+
 {******************************************************************************
                                   TBITMAPCANVAS
  ******************************************************************************
@@ -105,9 +107,14 @@ begin
   end;
 end;
 
+// included by graphics.pp
+
 { =============================================================================
 
   $Log$
+  Revision 1.6  2002/09/13 16:58:27  lazarus
+  MG: removed the 1x1 bitmap from TBitBtn
+
   Revision 1.5  2002/06/01 08:41:28  lazarus
   MG: DrawFramControl now uses gtk style, transparent STrechBlt
 

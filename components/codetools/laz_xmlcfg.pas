@@ -32,7 +32,11 @@ unit Laz_XMLCfg;
 
 interface
 
-uses Classes, Laz_DOM, Laz_XMLRead, Laz_XMLWrite;
+{off $DEFINE MEM_CHECK}
+
+uses
+  {$IFDEF MEM_CHECK}MemCheck,{$ENDIF}
+  Classes, Laz_DOM, Laz_XMLRead, Laz_XMLWrite;
 
 type
 
@@ -74,6 +78,7 @@ uses SysUtils;
 
 constructor TXMLConfig.Create(const AFilename: String);
 begin
+  //writeln('TXMLConfig.Create ',AFilename);
   inherited Create(nil);
   SetFilename(AFilename);
 end;
@@ -207,6 +212,8 @@ var
   f: File;
   cfg: TDOMElement;
 begin
+  {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLConfig.SetFilename A '+AFilename);{$ENDIF}
+  if FFilename = AFilename then exit;
   FFilename := AFilename;
 
   if csLoading in ComponentState then
@@ -224,7 +231,9 @@ begin
   {$I+}
   if IOResult = 0 then
     try
+      {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLConfig.SetFilename B');{$ENDIF}
       ReadXMLFile(doc, f);
+      {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLConfig.SetFilename C');{$ENDIF}
     finally
       CloseFile(f);
     end;
@@ -237,12 +246,16 @@ begin
     cfg := doc.CreateElement('CONFIG');
     doc.AppendChild(cfg);
   end;
+  {$IFDEF MEM_CHECK}CheckHeapWrtMemCnt('TXMLConfig.SetFilename END');{$ENDIF}
 end;
 
 
 end.
 {
   $Log$
+  Revision 1.3  2002/09/13 16:58:27  lazarus
+  MG: removed the 1x1 bitmap from TBitBtn
+
   Revision 1.2  2002/07/30 14:36:28  lazarus
   MG: accelerated xmlread and xmlwrite
 
