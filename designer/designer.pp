@@ -990,6 +990,7 @@ function TDesigner.GetDesignedComponent(AComponent: TComponent): TComponent;
 begin
   Result:=AComponent;
   while (Result<>nil)
+  and (Result<>Form)
   and (Result.Owner<>Form)
   and (Result is TControl) do
     Result:=TControl(Result).Parent;
