@@ -126,6 +126,7 @@ type
     fFonts       : TStrings;     //Accepted font by printer
     fPageNumber  : Integer;      //Current page number
     fPrinters    : TStrings;     //Printers names list
+    fPrintersValid: Boolean;
     fPrinterIndex: Integer;      //selected printer index
     fTitle       : string;       //Title of current document
     fPrinting    : Boolean;      //Printing
@@ -430,8 +431,10 @@ begin
   Result:=fPrinters;
   
   //Only 1 initialization
-  if fPrinters.Count=0 then
+  if not fPrintersValid then begin
+    fPrintersValid:=true;
     DoEnumPrinters(fPrinters);
+  end;
 end;
 
 //Return XDPI
@@ -453,7 +456,7 @@ begin
   CheckPrinting(False);
   if aValue<1 then aValue:=1;
   if Printers.Count>0 then
-     DoSetCopies(aValue)
+    DoSetCopies(aValue)
   else raise EPrinter.Create('zero printer definied !');
 end;
 
@@ -468,6 +471,7 @@ end;
 procedure TPrinter.SetPrinterIndex(AValue: integer);
 Var aName : String;
 begin
+  if fPrinterIndex=AValue then exit;
   CheckPrinting(False);
   if Printers.Count>0 then
   begin

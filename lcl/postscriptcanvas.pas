@@ -74,14 +74,14 @@ Type
     FirstUpdatefont: Boolean;
     
     procedure WriteHeader(St : String);
-    procedure Write(St : String; Lst : TstringList{$IFNDEF VER1_0}=nil{$ENDIF}); overload;
+    procedure Write(const St : String; Lst : TstringList{$IFNDEF VER1_0}=nil{$ENDIF}); overload;
     {$IFDEF VER1_0} //added because fpc 1.0 doesn't have default parameters
-    procedure Write(St : String); overload;
+    procedure Write(const St : String); overload;
     {$ENDIF}
-    procedure WriteB(St : string);
+    procedure WriteB(const St : string);
     procedure ClearBuffer;
     procedure Write(Lst : TStringList); overload;
-    procedure WriteComment(St : string);
+    procedure WriteComment(const St : string);
     
     Procedure TranslateCoord(Var X,Y : Integer);
     procedure SetPosition(X,Y : Integer);
@@ -528,7 +528,7 @@ begin
 end;
 
 //Write an instruction in the document
-procedure TPostscriptPrinterCanvas.Write(St: String; Lst : TStringList{$IFNDEF VER1_0}=Nil{$ENDIF});
+procedure TPostscriptPrinterCanvas.Write(const St: String; Lst : TStringList{$IFNDEF VER1_0}=Nil{$ENDIF});
 begin
   If not Assigned(Lst) then
     Lst:=fDocument;
@@ -537,14 +537,14 @@ begin
 end;
 
 {$IFDEF VER1_0}
-procedure TPostscriptPrinterCanvas.Write(St: String);
+procedure TPostscriptPrinterCanvas.Write(const St: String);
 begin
   Write(St, nil);
 end;
 {$ENDIF}
 
 //Write data in fBuffer
-procedure TPostscriptPrinterCanvas.WriteB(St: string);
+procedure TPostscriptPrinterCanvas.WriteB(const St: string);
 begin
   Write(St,fBuffer);
 end;
@@ -562,7 +562,7 @@ begin
 end;
 
 //Write an comment in the document
-procedure TPostscriptPrinterCanvas.WriteComment(St: string);
+procedure TPostscriptPrinterCanvas.WriteComment(const St: string);
 begin
   fDocument.Add('%'+St);
 end;

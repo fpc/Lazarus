@@ -43,7 +43,7 @@ uses
     {$IFDEF GTK1}
       // MWE:
       // TODO: check if the new keyboard routines require X on GTK2
-      X, XLib, XUtil, //Font retrieval and Keyboard handling
+      X, XLib, XUtil, XAtom, //Font retrieval and Keyboard handling
     {$ENDIF not Gtk1}
   {$ENDIF}
   InterfaceBase,
@@ -64,6 +64,12 @@ uses
 {$IFDEF gtk2}
 const
   gdkdll = gdklib;
+{$ENDIF}
+
+{$IFDEF GTK1}
+  function GDK_GET_CURRENT_DESKTOP(): gint;
+  function GDK_GET_DESKTOP_OF_WINDOW(Window: PGdkWindowPrivate): gint;
+  function GDK_SET_DESKTOP_OF_WINDOW(Window: PGdkWindowPrivate; Desktop: gint): gint;
 {$ENDIF}
   
 
@@ -1058,6 +1064,93 @@ begin
   SynchronizeMethodProc := nil;
 {$endif}
 end;
+
+{$IFDEF GTK1}
+function GDK_GET_CURRENT_DESKTOP(): gint;
+var
+  XDisplay: PDisplay;
+  XScreen: PScreen;
+  XWindow: TWindow;
+  AtomType: TAtom;
+  Format: gint;
+  nitems: gulong;
+  bytes_after: gulong;
+  current_desktop: pguint;
+begin
+  Result := -1;
+  xdisplay := XOpenDisplay(nil);
+  xscreen := XDefaultScreenOfDisplay(xdisplay);
+  xwindow := XRootWindowOfScreen(xscreen);
+
+  XGetWindowProperty (xdisplay, xwindow,
+             XInternAtom(xdisplay, '_NET_CURRENT_DESKTOP', false),
+             0, MaxInt, False, XA_CARDINAL, @atomtype, @format, @nitems,
+             @bytes_after, gpointer(@current_desktop));
+
+  if (atomtype = XA_CARDINAL) and (format = 32) and  (nitems > 0) then
+  begin
+    Result := current_desktop[0];
+    XFree (current_desktop);
+  end;
+  XCloseDisplay(xdisplay);
+end;
+
+
+function GDK_GET_DESKTOP_OF_WINDOW(Window: PGdkWindowPrivate): gint;
+var
+  xdisplay: PDisplay;
+  xwindow: TWindow;
+
+ atomtype: TAtom;
+ format: gint;
+ nitems: gulong;
+ bytes_after: gulong;
+ current_desktop: pguint;
+begin
+
+  Result := -1;
+  XWindow := GDK_WINDOW_XWINDOW (Window);
+  XDisplay := GDK_WINDOW_XDISPLAY (Window);
+  XGetWindowProperty (xdisplay, xwindow,
+             XInternAtom(xdisplay, '_NET_WM_DESKTOP', false),
+             0, MaxInt, False, XA_CARDINAL, @atomtype, @format, @nitems,
+             @bytes_after, gpointer(@current_desktop));
+
+  if (atomtype = XA_CARDINAL) and (format = 32) and  (nitems > 0) then
+  begin
+    Result := current_desktop[0];
+    XFree (current_desktop);
+  end;
+end;
+
+function GDK_SET_DESKTOP_OF_WINDOW(Window: PGdkWindowPrivate; Desktop: gint): gint;
+var
+  XDisplay: PDisplay;
+  XScreen: PScreen;
+  XRootWindow,
+  XWindow: TWindow;
+  XEvent: TXClientMessageEvent;
+  _NET_WM_DESKTOP: Integer;
+begin
+
+  Result := -1;
+
+  XDisplay := GDK_WINDOW_XDISPLAY (Window);
+  XScreen := XDefaultScreenOfDisplay(xdisplay);
+  XRootWindow := XRootWindowOfScreen(xscreen);
+  XWindow := GDK_WINDOW_XWINDOW (Window);
+
+  _NET_WM_DESKTOP := XInternAtom(xdisplay, '_NET_WM_DESKTOP', false);
+
+  XEvent._type := ClientMessage;
+  XEvent.window := XWindow;
+  XEvent.message_type := _NET_WM_DESKTOP;
+  XEvent.format := 32;
+  XEvent.data.l[0] := Desktop;
+
+  XSendEvent(XDisplay, XRootWindow, False, SubstructureNotifyMask, @XEvent);
+end;
+{$ENDIF}
 
 initialization
   InitGTKProc;

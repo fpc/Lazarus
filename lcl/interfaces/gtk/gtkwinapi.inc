@@ -235,6 +235,7 @@ begin
       {$IFDEF DebugGDKTraps}
       BeginGDKErrorTrap;
       {$ENDIF}
+      gdk_window_show(GdkWindow);
       gdk_window_raise(GdkWindow);
       {$IFDEF DebugGDKTraps}
       EndGDKErrorTrap;
@@ -246,6 +247,8 @@ begin
       if FormWindow<>nil then begin
         XWindow := GDK_WINDOW_XWINDOW (FormWindow);
         XDisplay := GDK_WINDOW_XDISPLAY (FormWindow);
+        if GDK_GET_CURRENT_DESKTOP <> GDK_GET_DESKTOP_OF_WINDOW(FormWindow) then
+          GDK_SET_DESKTOP_OF_WINDOW(FormWindow, GDK_GET_CURRENT_DESKTOP);
         XMapWindow(XDisplay, XWindow);
         // a horrible horrible hack to give "something" time to unminimize the window
         gtk_timeout_add(50, TGtkFunction(@InternalGtkShowWindow), AForm);
@@ -9002,6 +9005,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.412  2005/03/17 10:10:51  mattias
+  added gtk1 check for current desktop on focussing windows  from Andrew Haines
+
   Revision 1.411  2005/03/16 17:45:28  mattias
   published TStringGrid.OnResize/OnChangeBounds and fixed gtk1 intf check in focussing
 
