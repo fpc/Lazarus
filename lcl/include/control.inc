@@ -220,7 +220,6 @@ Begin
   Assert(False, 'Trace:TODO: [TControl.ChangeScale]');
 end;
 
-
 {------------------------------------------------------------------------------}
 {       TControl.CheckMenuPopup
 }
@@ -1535,27 +1534,27 @@ end;
 {       TControl.SetZOrderPosition
 }
 {------------------------------------------------------------------------------}
-Procedure TControl.SetZOrderPosition(Position : Integer);
+Procedure TControl.SetZOrderPosition(Position: Integer);
 Var
   I : Integer;
   Count : Integer;
 begin
-if FParent <> nil then
-   Begin
+  if FParent <> nil then
+  Begin
     I := FParent.FControls.Indexof(self);
     if I >= 0 then
-       begin
-         Count := FParent.FControls.Count;
-         if Position < 0 then Position := 0;
-         if Position >= Count then Position := Count-1;
-         if Position <> I then
-            begin
-            FParent.FControls.Delete(i);
-            FParent.FControls.Insert(Position,Self);
-            InvalidateControl(Visible,True);
-            end;
-        end;
-   end;
+    begin
+      Count := FParent.FControls.Count;
+      if Position < 0 then Position := 0;
+      if Position >= Count then Position := Count-1;
+      if Position <> I then
+      begin
+        FParent.FControls.Delete(i);
+        FParent.FControls.Insert(Position,Self);
+        InvalidateControl(Visible,True);
+      end;
+    end;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -1799,6 +1798,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.77  2002/09/05 12:11:43  lazarus
+  MG: TNotebook is now streamable
+
   Revision 1.76  2002/09/03 20:02:01  lazarus
   Intermediate UI patch to show a bug.
 
