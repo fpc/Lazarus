@@ -1298,7 +1298,7 @@ begin
     if not (csNoStdEvents in ControlStyle) 
     then begin
       KeyDown(CharCode, ShiftState);
-      if CharCode = 0 then Exit;
+      if CharCode = VK_UNKNOWN then Exit;
     end;
   end;
   Result := False;
@@ -2037,7 +2037,9 @@ end;
 Procedure TWinControl.WMKeyDown(Var Message : TLMKeyDown);
 begin
   Assert(False, Format('Trace:[TWinControl.WMKeyDown] %s', [ClassName]));
-  if not DoKeyDown(Message) then {inherited} ;  // there is nothing to inherit
+  if not DoKeyDown(Message) then begin
+    {inherited} ;  // there is nothing to inherit
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -2457,6 +2459,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.91  2002/10/04 20:46:51  lazarus
+  MG: improved TComboBox.SetItemIndex
+
   Revision 1.90  2002/10/04 14:24:15  lazarus
   MG: added DrawItem to TComboBox/TListBox
 
