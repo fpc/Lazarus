@@ -472,7 +472,7 @@ const
 
 implementation
 
-uses Interfaces, Math;
+uses Math;
 
 {$I page.inc}
 {$I customnotebook.inc}
@@ -490,6 +490,9 @@ end.
 
  {
   $Log$
+  Revision 1.40  2002/10/26 11:20:30  lazarus
+  MG: broke some interfaces.pp circles
+
   Revision 1.39  2002/10/24 10:27:52  lazarus
   MG: broke extctrls.pp <-> forms.pp circle
 
