@@ -2591,7 +2591,7 @@ begin
   FExpandSignSize:=9;
   FTreeNodes := TTreeNodes.Create(Self);
   FBorderStyle := bsSingle;
-  BorderWidth := 2;
+  BorderWidth := 0;
   FOptions := DefaultTreeViewOptions;
   Items.KeepCollapsedNodes:=KeepCollapsedNodes;
   FScrollBars:=ssBoth;

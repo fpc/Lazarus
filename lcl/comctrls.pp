@@ -2060,7 +2060,7 @@ type
   public
     property BackgroundColor: TColor
       read FBackgroundColor write SetBackgroundColor default clWhite;
-    property BorderWidth default 2;
+    property BorderWidth default 0;
     property BottomItem: TTreeNode read GetBottomItem write SetBottomItem;
     property DefaultItemHeight: integer
       read FDefItemHeight write SetDefaultItemHeight default 20;
@@ -2255,6 +2255,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.124  2004/05/19 18:41:19  micha
+  disable custom drawn border by default for treeview (already has borderstyle=bsSingle
+
   Revision 1.123  2004/05/18 23:10:41  marc
   * Started to move TListview to the WS interface
 
