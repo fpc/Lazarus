@@ -19,6 +19,11 @@ begin
   Result := 0;
 end;
 
+Function TInterfaceBase.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam : WPARAM; lParam : LPARAM) : Integer;
+begin
+   Result := 0;
+end;
+
 Function TInterfaceBase.ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
 Begin
   Result := False;
@@ -124,6 +129,12 @@ begin
   Result := False;
 end;
 
+Function TInterfaceBase.GetActiveWindow : HWND;
+begin
+  // Your default here
+  // Result := 
+end;
+
 function TInterfaceBase.GetCapture : HWND;
 begin
   Result := 0;
@@ -132,6 +143,12 @@ end;
 function TInterfaceBase.GetCaretPos(var lpPoint: TPoint): Boolean;
 begin
   Result := False;
+end;
+
+Function TInterfaceBase.GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
+begin
+  // Your default here
+   Result := False;
 end;
 
 function TInterfaceBase.GetCursorPos(var lpPoint: TPoint): Boolean;
@@ -214,7 +231,7 @@ Begin
    Result := 0;
 end;
 
-function TInterfaceBase.GetWindowRect(Handle : hwnd; Rect : pRect): Integer;
+function TInterfaceBase.GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
 begin
   Result := 0;
 end;
@@ -288,6 +305,12 @@ end;
 function TInterfaceBase.SaveDC(DC: HDC) : Integer; 
 begin
   Result := 0;  
+end;
+
+Function TInterfaceBase.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
+begin
+  // Your default here
+  // Result := 
 end;
 
 function TInterfaceBase.ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
@@ -408,6 +431,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/02/16 19:13:30  lazarus
+  Added some functions
+  Shane
+
   Revision 1.10  2001/01/23 19:13:57  lazarus
   Fixxed the errors I commited with Unionrect
   Shane

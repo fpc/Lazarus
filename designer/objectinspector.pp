@@ -234,6 +234,7 @@ begin
     SetBounds(1,1,200,300);
     ControlStyle:=ControlStyle+[csAcceptsControls,csOpaque];
     BorderWidth:=1;
+//    Align := alClient;
   end;
     
   FComponentList:=TComponentSelectionList.Create;
@@ -1190,6 +1191,7 @@ begin
     Style:=csDropDown;
     Text:='';
     OnChange:=@AvailComboBoxChange;
+//    Align := alTop;
     //Sorted:=true;
     Show;
   end;
@@ -1201,6 +1203,7 @@ begin
     Parent:=Self;
     Pages.Strings[0]:='Properties';
     Pages.Add('Events');
+//    Align := alClient;
     Show;
   end;
 
@@ -1217,7 +1220,7 @@ begin
     ValueComboBox.Parent:=Parent;
     ValueButton.Parent:=Parent;
     Selections:=Self.FComponentList;
-    Align:=alClient;
+    Align := alClient;
     Show;
   end;
 

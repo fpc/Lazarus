@@ -606,7 +606,8 @@ Begin
   Temp := TComponentInterface.Create;
   if Assigned(ParentCI) then
   begin
-    if Assigned(TComponentInterface(ParentCI).FControl.Owner) then
+    if (not(TComponentInterface(ParentCI).FControl is TCustomForm)) and
+       Assigned(TComponentInterface(ParentCI).FControl.Owner) then
       Temp.FControl := TypeClass.Create(TComponentInterface(ParentCI).FControl.Owner)
     else
       Temp.FControl := TypeClass.Create(TComponentInterface(ParentCI).FControl)
@@ -676,9 +677,6 @@ Begin
     if CompTop<0 then
       CompTop:=(TControl(Temp.FControl).Parent.Height+ CompHeight) div 2;
     TControl(Temp.FControl).SetBounds(CompLeft,CompTop,CompWidth,CompHeight);
-
-   TControl(temp.FControl).Hint := TControl(Temp.FControl).Name;
-
   end;
 
   FComponentInterfaceList.Add(Temp);

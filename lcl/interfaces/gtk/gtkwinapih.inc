@@ -8,6 +8,7 @@
 function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; override;
 
 function CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer; override;
+Function CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer; override;
 Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
@@ -33,9 +34,11 @@ function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: 
 
 function FillRect(DC: HDC; const Rect: TRect; Brush: HBRUSH): Boolean; override;
 
+Function GetActiveWindow : HWND; override;
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean; override;
+Function GetClientRect(handle : HWND; var Rect : TRect) : Boolean; override;
 function GetDC(hWnd: HWND): HDC;  override;
 function GetFocus: HWND; override;
 function GetKeyState(nVirtKey: Integer): Smallint; override;
@@ -50,7 +53,7 @@ function GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer; var Size: TSize
 function GetTextMetrics(DC: HDC; var TM: TTextMetric): Boolean;  override;
 Function GetWindowLong(Handle : hwnd; int : Integer): Longint; override;
 Function GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
-Function GetWindowRect(Handle : hwnd; Rect : PRect): Integer; override;
+Function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer; override;
 
 function HideCaret(hWnd: HWND): Boolean; override;
 
@@ -72,6 +75,7 @@ function ReleaseDC(hWnd: HWND; hDC: HDC): Integer; override;
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; override;
 
 function SaveDC(DC: HDC): Integer; override;
+Function ScreenToClient(Handle : HWND; var P : TPoint) : Integer; override;
 function ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean; override;
 function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;  override;
 function SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE; override;
@@ -102,6 +106,10 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/02/16 19:13:31  lazarus
+  Added some functions
+  Shane
+
   Revision 1.10  2001/01/23 23:33:55  lazarus
   MWE:
     - Removed old LM_InvalidateRect

@@ -114,7 +114,7 @@ Assert(False, 'Trace:********************');
  DC := GetDC(Handle);
   try
 //    GetClientRect(Handle, RC);
-    GetWindowRect(Handle, @RW);
+    GetWindowRect(Handle, RW);
 //    MapWindowPoints(0, Handle, RW, 2);
 //    OffsetRect(RC, -RW.Left, -RW.Top);
 //    ExcludeClipRect(DC, RC.Left, RC.Top, RC.Right, RC.Bottom);

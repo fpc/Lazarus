@@ -202,9 +202,7 @@ pixmap1 := LoadImageintoPixmap;
    Begin
     Parent := nParent;
     Flat := True;
-    Left := (FRegisteredComponent.IndexInPage+1)*26;
-    Width := 25;
-    Height := 25;
+    SetBounds((FRegisteredComponent.IndexInPage+1)*26,Top,Width,Height);
     Enabled := True;
     Glyph := Pixmap1;
     Visible := True;
@@ -263,8 +261,6 @@ procedure RegisterStandardComponents(
 
 begin
 
-// RegisterStandardComponents
-
   RegisterComponentsProc:=@RegisterComponents;
   RegisterComponents('Standard','Menus',[TMenu,TPopupMenu]);
   RegisterComponents('Standard','Buttons',[TButton]);
@@ -278,7 +274,6 @@ begin
 
   RegisterComponents('Samples','Spin',[TSpinEdit]);
   RegisterComponents('System','ExtCtrls',[TTimer]);
-//  RegisterComponents('','ComCtrls',[TToolbutton]);
   RegisterComponents('','ExtCtrls',[TPage]);
 
   RegisterComponentsProc:=nil;

@@ -176,6 +176,38 @@ Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!');
 end;
 
 {------------------------------------------------------------------------------
+  Function: CallWindowProc
+  Params: lpPrevWndFunc:
+          Handle:
+          Msg:
+          wParam:
+          lParam:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.CallWindowProc(lpPrevWndFunc : TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer;
+var
+  Proc : TWndMethod;
+  Mess : TLMessage;
+  P : Pointer;
+begin
+  Result := -1;
+  if Handle = 0 then Exit;
+        Result := -1;
+        P := nil;
+        P := gtk_object_get_data(pgtkobject(Handle),'WNDPROC');
+        if P <> nil then Proc := TWndMethod(P^)
+           else
+            Exit;
+        Mess.msg := msg;
+        Mess.LParam := LParam;
+        Mess.WParam := WParam;
+        Proc(Mess);
+        Result := Mess.Result;
+
+end;
+
+{------------------------------------------------------------------------------
   Function: ClientToScreen
   Params:  none
   Returns: Nothing
@@ -185,7 +217,7 @@ var
   X, Y: Integer;
   Widget: PGTKWidget;
 Begin
-  if Handle = 0 
+  if Handle = 0
   then begin
     X := 0;
     Y := 0;
@@ -576,6 +608,24 @@ begin
   end;
 
   LoadFont;
+  if GdiObject^.GDIFontObject = nil
+  then begin
+    if (WeightName='normal') then begin
+      WeightName:='medium';
+      LoadFont;
+    end else if (WeightName='bold') then begin
+      WeightName:='black';
+      LoadFont;
+    end;
+  end;
+
+  if GdiObject^.GDIFontObject = nil
+  then begin
+    // try all weights
+    WeightName := '*';
+    LoadFont;
+  end;
+
   if GdiObject^.GDIFontObject = nil
   then begin
     // try all weights
@@ -1130,6 +1180,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: GetActiveWindow
+  Params: none
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.GetActiveWindow : HWND;
+begin
+//  Result := gdk_Window_Get_Toplevel;
+end;
+
+{------------------------------------------------------------------------------
   Function: GetCapture
   Params:  none
   Returns: Nothing
@@ -1191,6 +1252,33 @@ end;
 function TgtkObject.GetCharABCWidths(DC: HDC; p2, p3: UINT; const ABCStructs): Boolean;
 begin
   Result := False;
+end;
+
+{------------------------------------------------------------------------------
+  Function: GetClientRect
+  Params: handle:
+          Result:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
+var
+  requisition : TgtkRequisition;
+begin
+  result := False;
+  if Handle = 0 then Exit;
+  Result := False;
+  Try
+   Rect.Left := 0;
+   Rect.Top := 0;
+   gtk_Widget_size_request(PgtkWidget(handle),@requisition);
+   Rect.Right := requisition.width;
+   Rect.Bottom := requisition.Height;
+//   Writeln('Width / Height = '+Inttostr(REct.Right)+'/'+Inttostr(Rect.Bottom));
+  except
+   Result := False;
+  end;
+
 end;
 
 {------------------------------------------------------------------------------
@@ -1875,6 +1963,7 @@ end;
 Function TgtkObject.GetWindowLong(Handle : hwnd; int : Integer): Longint;
 var
   Data : Tobject;
+  P : Pointer;
 begin
   //TODO:Started but not finished
   Assert(False, Format('Trace:> [TgtkObject.GETWINDOWLONG] HWND: 0x%x, int: 0x%x (%d)', [Handle, int, int]));
@@ -1882,23 +1971,34 @@ begin
   case int of
     GWL_WNDPROC :
       begin
+        Result := Longint(gtk_object_get_data(pgtkobject(Handle),'WNDPROC'));
+      end;
+    GWL_HINSTANCE :
+      begin
+        Result := Longint(gtk_object_get_data(pgtkobject(Handle),'HINSTANCE'));
+      end;
+    GWL_HWNDPARENT :
+      begin
+        P := gtk_object_get_data(pgtkobject(Handle),'HWNDPARENT');
+        if P = nil then Result := 0 else Result := LongInt(p);
+      end;
+
+{    GWL_WNDPROC :
+      begin
         Data := GetLCLObject(Pointer(Handle));
         if Data is TControl
         then Result := Longint(@(TControl(Data).WindowProc));
         // TODO fix this, a method pointer (2 pointers) cant be casted to a longint
       end;
-    GWL_HINSTANCE :
-      begin
-        //Not sure if this is correct
-        //  Result := Application.Handle;
-      end;
-    GWL_HWNDPARENT :
+}
+{    GWL_HWNDPARENT :
       begin
         Data := GetLCLObject(Pointer(Handle));
         if (Data is TWinControl)
         then Result := Longint(TWincontrol(Data).Handle)
         else Result := 0;
       end;
+ }
     GWL_STYLE :
       begin
         Result := Longint(gtk_object_get_data(pgtkobject(Handle),'Style'));
@@ -1913,7 +2013,7 @@ begin
       end;
     GWL_ID :
       begin
-        Result := 0;
+        Result := Longint(gtk_object_get_data(pgtkobject(Handle),'ID'));
       end;
     else Result := 0;
   end; //case
@@ -1928,6 +2028,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetWindowOrgEx(dc : hdc; var P : TPoint): Integer;
 begin
+
   Assert(False, 'Trace:**********************************');
   gdk_window_get_deskrelative_origin(pgtkwidget(PdeviceContext(dc)^.hwnd)^.window, @P.X, @P.Y);
   Assert(False, format('Trace:DeskRelative Origin is: %d,%d',[P.x,P.y]));
@@ -1945,21 +2046,57 @@ end;
   Params:  none
   Returns: Nothing
  ------------------------------------------------------------------------------}
-function TgtkObject.GetWindowRect(Handle: hwnd; Rect: PRect): Integer;
+function TgtkObject.GetWindowRect(Handle: hwnd; var Rect: TRect): Integer;
 var
   X, Y, W, H: Integer;
   Widget: PGTKWidget;
+  Sender : TObject;
 begin
+Writeln('GetWindowRect');
   result := 0; //default
   if Handle <> 0 then
   begin
     Widget := GetFixedWidget(pgtkwidget(Handle));
-    if Widget = nil then Widget := pgtkwidget(Handle); 
-    gdk_window_get_origin(Widget^.Window, @X, @Y);
-    gdk_window_get_size(Widget^.Window, @W, @H);
-    SetRect(Rect^, X, Y, X + W, Y + H);
-    result := -1;
+    if (Widget = nil) then Widget := pgtkwidget(Handle);
+    if Widget <> nil then
+       begin
+        try
+         if Widget^.Window <> nil then
+         Begin
+           gdk_window_get_origin(Widget^.Window, @X, @Y);
+           gdk_window_get_size(Widget^.Window, @W, @H);
+         end
+         else
+         Begin
+          sender := TObject(Gtk_Object_Get_Data(pGTKObject(widget),'Sender'));
+          if (sender is TControl) then
+               begin
+                 writeln('****************SENDCER IS TCONTROL********************');
+                 X := TControl(sender).Left;
+                 Y := TControl(sender).Top;
+                 W := TControl(sender).Width;
+                 Y := TControl(sender).Height;
+               end
+               else
+                Begin
+                 X := 0;
+                 Y := 0;
+                 W := 100;
+                 Y := 200;
+                end;
+         end;
+
+Writeln('SetRect');
+         SetRect(Rect, X, Y, X + W, Y + H);
+Writeln('SetRect Done');
+         result := -1;
+        except
+        end;
+       end
+       else
+        Result := 0;
   end;
+Writeln('GetWindowRect DONE');
 end;
 
 
@@ -2008,7 +2145,7 @@ var
   gdkRect : TGDKRectangle;
 begin
   // Todo: Erase  before invalidating if bErase is true
-  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
+//  Writeln(format('Rect = %d,%d,%d,%d',[rect^.left,rect^.top,rect^.Right,rect^.Bottom]));
   Result := True;
   try
     gdkRect.X := Rect^.Left;
@@ -2466,6 +2603,43 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Function: ScreenToClient
+  Params: Handle:
+          P:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function TGTKObject.ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
+var
+  X, Y: Integer;
+  Widget: PGTKWidget;
+Begin
+
+  if Handle = 0
+  then begin
+    X := 0;
+    Y := 0;
+  end
+  else
+   begin
+    Widget := GetFixedWidget(pgtkwidget(Handle));
+    if Widget = nil then
+       Widget := pgtkwidget(Handle);
+    if Widget = nil then
+      begin
+        X := 0;
+        Y := 0;
+      end
+      else
+        gdk_window_get_origin(Widget^.Window, @X, @Y);
+   end;
+
+  dec(P.X, X);
+  dec(P.Y, Y);
+  Result := -1;
+end;
+
+{------------------------------------------------------------------------------
   Function: ScrollWindowEx
   Params:  hWnd:       handle of window to scroll
            dx:         horizontal amount to scroll
@@ -2681,7 +2855,7 @@ begin
   if MCaptureHandle <> 0
   then begin
     WriteLN(Format('[TgtkObject.SetCapture] Current widget 0x%p', [gtk_grab_get_current]));
-    gtk_grab_add(Pointer(MCaptureHandle));
+//shane    gtk_grab_add(Pointer(MCaptureHandle));
     WriteLN(Format('[TgtkObject.SetCapture] handle: 0x%p gtk: 0x%p', [Pointer(MCaptureHandle), gtk_grab_get_current]));
 
 
@@ -2771,6 +2945,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.SetScrollInfo(Handle : HWND; SBStyle : Integer; ScrollInfo: TScrollInfo; bRedraw : Boolean): Integer;
+const
+  POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 var
   Adjustment: PGtkAdjustment;
 begin
@@ -2816,7 +2992,30 @@ begin
       end;
 
       // do we have to set this allways ?
-      if bRedraw then gtk_adjustment_changed(Adjustment);
+      if bRedraw then
+         begin
+{}
+         if  (Handle <> 0) then
+            begin
+            if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_scrolled_window_get_type) then
+             begin
+               if SBStyle in [SB_BOTH, SB_HORZ]
+                 then gtk_object_set(PGTKObject(Handle), 'hscrollbar_policy', [POLICY[bRedraw], nil]);
+               if SBStyle in [SB_BOTH, SB_VERT]
+                 then gtk_object_set(PGTKObject(Handle), 'vscrollbar_policy', [POLICY[bRedraw], nil]);
+             end
+            else
+            begin
+             if (SBSTYLE = SB_CTL) and gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_widget_get_type) then
+                 gtk_widget_show(PGTKWidget(Handle))
+                 else
+                 gtk_widget_hide(PGTKWidget(Handle))
+            end;
+            end;
+{}
+
+         gtk_adjustment_changed(Adjustment);
+         end;
     end;
   end;
   with ScrollInfo do Assert(False, Format('Trace:> [TgtkObject.SetScrollInfo] --> %d', [Result]));
@@ -2922,12 +3121,15 @@ begin
   case idx of
     GWL_WNDPROC :
       begin
+        gtk_object_set_data(pgtkobject(Handle),'WNDPROC',pointer(NewLong));
       end;
     GWL_HINSTANCE :
       begin
+        gtk_object_set_data(pgtkobject(Handle),'HINSTANCE',pointer(NewLong));
       end;
     GWL_HWNDPARENT :
       begin
+        gtk_object_set_data(pgtkobject(Handle),'HWNDPARENT',pointer(NewLong));
       end;
     GWL_STYLE :
       begin
@@ -3009,7 +3211,7 @@ const
   POLICY: array[BOOLEAN] of TGTKPolicyType = (GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
 begin
   Assert(False, 'trace:[TgtkObject.ShowScrollBar]');
-  Result := (Handle <> 0);
+{  Result := (Handle <> 0);
   if Result
   then begin
     if gtk_type_is_a(gtk_object_type(PGTKObject(Handle)), gtk_scrolled_window_get_type)
@@ -3028,6 +3230,7 @@ begin
       end;
     end;
   end;
+}
 end;
 
 {------------------------------------------------------------------------------
@@ -3152,6 +3355,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2001/02/16 19:13:31  lazarus
+  Added some functions
+  Shane
+
   Revision 1.19  2001/02/06 18:19:38  lazarus
   Shane
 

@@ -28,7 +28,7 @@ Clipboard unit.  For Copying and Pasting.  You know what it's for!  Why am I exp
 }
 
 unit Clipbrd;
-
+{$H+}
 {$MODE Objfpc}
 
 interface
@@ -124,6 +124,10 @@ end.
 
 {
   $Log$
+  Revision 1.2  2001/02/16 19:13:30  lazarus
+  Added some functions
+  Shane
+
   Revision 1.1  2000/07/13 10:28:23  michael
   + Initial import
 

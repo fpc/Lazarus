@@ -26,6 +26,11 @@ begin
   Result := InterfaceObject.CallNExtHookEx(hhk,ncode,wparam,lParam);
 end;
 
+Function CallWindowProc(lpPrevWndFunc :TFarProc; Handle : HWND; Msg : UINT; wParam ,lParam : LongInt) : Integer;
+begin
+  Result := InterfaceObject.CallWindowProc(lpPrevWndFunc, Handle, Msg, wParam, lParam);
+end;
+
 Function ClienttoScreen(Handle : HWND; var P : TPoint) : Boolean;
 Begin
   Result := InterfaceObject.ClientToScreen(Handle, P);
@@ -131,6 +136,11 @@ begin
   Result := InterfaceObject.FillRect(DC, Rect, Brush);
 end;
 
+Function GetActiveWindow : HWND;
+begin
+  Result := InterfaceObject.GetActiveWindow;
+end;
+
 Function GetCapture: HWND;
 Begin
   Result := InterfaceObject.GetCapture;
@@ -139,6 +149,11 @@ end;
 function GetCaretPos(var lpPoint: TPoint): Boolean;
 begin
   Result := InterfaceObject.GetCaretPos(lpPoint);
+end;
+
+Function GetClientRect(handle : HWND; var Rect : TRect) : Boolean;
+begin
+  Result := InterfaceObject.GetClientRect(handle, Rect);
 end;
 
 Function GetCursorPos(var lpPoint:TPoint): Boolean;
@@ -216,7 +231,7 @@ begin
   Result := InterfaceObject.GetWindowLong(Handle, int);
 end;
 
-Function GetWindowRect(Handle : hwnd; Rect : PRect): Integer;
+Function GetWindowRect(Handle : hwnd; var Rect : TRect): Integer;
 begin
   Result := InterfaceObject.GetWindowRect(Handle, Rect);
 end;
@@ -294,6 +309,11 @@ end;
 function SaveDC(DC: HDC) : Integer; 
 begin
   Result := InterfaceObject.SaveDC(DC)  
+end;
+
+Function ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
+begin
+  Result := InterfaceObject.ScreenToClient(Handle, P);
 end;
 
 function ScrollWindowEx(hWnd: HWND; dx, dy: Integer; prcScroll, prcClip: PRect; hrgnUpdate: HRGN; prcUpdate: PRect; flags: UINT): Boolean;
@@ -945,6 +965,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2001/02/16 19:13:30  lazarus
+  Added some functions
+  Shane
+
   Revision 1.10  2001/02/04 18:24:42  lazarus
   Code cleanup
   Shane

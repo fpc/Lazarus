@@ -94,6 +94,7 @@ function GTKAPIWidgetClient_Timer(Client: Pointer): gint; cdecl;
 begin
   with PGTKAPIWidgetClient(Client)^.Caret do BlinkHide := not BlinkHide;
   GTKAPIWidgetClient_DrawCaret(Client);
+  Result := 1;   { returning 0 would stop the timer, 1 will restart it }
 end;
 
 procedure GTKAPIWidgetClient_Realize(Widget: PGTKWidget); cdecl;
@@ -545,6 +546,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/02/16 19:13:31  lazarus
+  Added some functions
+  Shane
+
   Revision 1.2  2001/02/06 18:19:38  lazarus
   Shane
 

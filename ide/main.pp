@@ -20,11 +20,11 @@
  *                                                                         *
  ***************************************************************************/
 }
-{$H+}
 unit main;
 
 {$mode objfpc}
 { $mode delphi}
+{$H+}
 
 interface
 
@@ -1527,7 +1527,13 @@ end;
 Procedure TMainIDE.mnuOpenProjectClicked(Sender : TObject);
 Begin
   Assert(False, 'Trace:Open Project Clicked');
-
+Writeln('[OPEN PROJECT CLICKED]');
+Writeln('Object Inspector rect');
+Writeln(Format('%d,%d,%d,%d',[ObjectInspector1.Left,ObjectInspector1.Top,ObjectInspector1.Width,ObjectInspector1.Height]));
+Writeln('Object Inspector.Notebook1 rect');
+Writeln(Format('%d,%d,%d,%d',[ObjectInspector1.Notebook.Left,ObjectInspector1.Notebook.Top,ObjectInspector1.Notebook.Width,ObjectInspector1.Notebook.Height]));
+Writeln('Object Inspector.PropertyGrid rect');
+Writeln(Format('%d,%d,%d,%d',[ObjectInspector1.PropertyGrid.Left,ObjectInspector1.PropertyGrid.Top,ObjectInspector1.PropertyGrid.Width,ObjectInspector1.PropertyGrid.Height]));
   {TODO:
      Display File Open dialog with .lpr as the filter
      Put the selected file into a TProject
@@ -1679,6 +1685,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.59  2001/02/16 19:13:29  lazarus
+  Added some functions
+  Shane
+
   Revision 1.58  2001/02/08 06:09:25  lazarus
   Partially implemented Save Project As menu selection.               CAW
 
