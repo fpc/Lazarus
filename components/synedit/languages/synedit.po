@@ -206,3 +206,7 @@ msgstr ""
 msgid "Msg files (*.msg)|*.msg"
 msgstr ""
 
+#: syneditstrconst:syns_filterunixshellscript
+msgid "UNIX Shell Scripts (*.sh)|*.sh"
+msgstr ""
+

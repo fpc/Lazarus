@@ -186,6 +186,10 @@ msgstr "La séquence \"%s\" est déjà affectée à une autre commande de l'éditeur.\
 msgid "Top Line: %d"
 msgstr "Haut de ligne: %d"
 
+#: syneditstrconst:syns_filterunixshellscript
+msgid "UNIX Shell Scripts (*.sh)|*.sh"
+msgstr ""
+
 #: syneditstrconst:syns_filtervbscript
 msgid "VBScript Files (*.vbs)|*.vbs"
 msgstr "Fichiers VBScript (*.vbs)|*.vbs"

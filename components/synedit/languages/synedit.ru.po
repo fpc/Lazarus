@@ -186,6 +186,10 @@ msgstr "Комбинация \"%s\" уже присвоена другой команде редактора. (%s). \015\nСв
 msgid "Top Line: %d"
 msgstr "Верхняя строка: %d"
 
+#: syneditstrconst:syns_filterunixshellscript
+msgid "UNIX Shell Scripts (*.sh)|*.sh"
+msgstr ""
+
 #: syneditstrconst:syns_filtervbscript
 msgid "VBScript Files (*.vbs)|*.vbs"
 msgstr "Файлы VBScript (*.vbs)|*.vbs"

@@ -1,0 +1,16 @@
+#: synmacrorecorder:scannotpause
+msgid "Can only pause when recording"
+msgstr "Mo¿na tylko chwilowo wstrzymaæ nagrywanie"
+
+#: synmacrorecorder:scannotresume
+msgid "Can only resume when paused"
+msgstr "Nagrywanie mo¿na wznowiæ tylko wtedy gdy jest wstrzymane"
+
+#: synmacrorecorder:scannotplay
+msgid "Cannot playback macro when recording"
+msgstr "Nie mo¿na odtwarzaæ makra podczas nagrywania"
+
+#: synmacrorecorder:scannotrecord
+msgid "Cannot record macro when recording"
+msgstr "Nie mo¿na nagrywaæ makra gdy nagrywa siê ju¿ inne"
+
