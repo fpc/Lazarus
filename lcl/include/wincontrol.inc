@@ -1768,7 +1768,7 @@ Begin
       Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> LM_SETFOCUS', [ClassName]));
       Form := GetParentForm(Self);
       {$IFDEF VerboseFocus}
-      writeln('TWinControl.WndProc A ',Name,':',ClassName);
+      writeln('TWinControl.WndProc LM_SetFocus ',Name,':',ClassName);
       {$ENDIF}
       if (Form <> nil) and not Form.SetFocusedControl(Self) then Exit;
       Message.Result:=0;
@@ -1777,7 +1777,12 @@ Begin
   LM_KILLFOCUS:
     begin
       Assert(False, Format('Trace:[TWinControl.WndPRoc] %s --> _KILLFOCUS', [ClassName]));
-      if csFocusing in ControlState then Exit;
+      if csFocusing in ControlState then begin
+        {$IFDEF VerboseFocus}
+        writeln('TWinControl.WndProc LM_KillFocus during focusing ',Name,':',ClassName);
+        {$ENDIF}
+        Exit;
+      end;
       Message.Result:=0;
     end;
 
@@ -2603,6 +2608,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMSetFocus(var Message: TLMSetFocus);
 Begin
+  //writeln('TWinControl.WMSetFocus A ',Name,':',ClassName);
   Assert(False, Format('Trace: %s', [ClassName]));
   DoEnter;
 end;
@@ -2616,6 +2622,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMKillFocus(var Message: TLMKillFocus);
 begin
+  //writeln('TWinControl.WMKillFocus A ',Name,':',ClassName);
   Assert(False, Format('Trace: %s', [ClassName]));
   DoExit;
 end;
@@ -3471,6 +3478,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.221  2004/04/23 11:18:28  mattias
+  fixed unsetting csFocusing
+
   Revision 1.220  2004/04/20 23:39:01  marc
   * Fixed setting of TWincontrol.Text during load
 

@@ -863,7 +863,6 @@ begin
   //TODO: fill in old focus
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_SETFOCUS;
-  Assert(False, Format('Trace:TODO: [gtkfocusCB] %s  finish', [TObject(Data).ClassName]));
   DeliverMessage(Data,  Mess);
 
   Result:=true;
@@ -957,7 +956,6 @@ begin
 
   FillChar(Mess,SizeOf(Mess),0);
   Mess.msg := LM_KILLFOCUS;
-
   //TODO: fill in new focus
   Assert(False, Format('Trace:TODO: [gtkkillfocusCB] %s  finish', [TObject(Data).ClassName]));
   DeliverMessage(Data,  Mess);
@@ -1995,11 +1993,9 @@ var
   LCLComponent: TObject;
 begin
   if (Data=nil) then ;
-  BeginGDKErrorTrap;
   gdk_window_set_events(GetControlWindow(Widget),
     gdk_window_get_events(GetControlWindow(Widget))
       or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
-  EndGDKErrorTrap;
   LCLComponent:=GetLCLObject(Widget);
   if LCLComponent is TCommonDialog then
     TCommonDialog(LCLComponent).DoShow;
@@ -3070,6 +3066,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.228  2004/04/23 11:18:28  mattias
+  fixed unsetting csFocusing
+
   Revision 1.227  2004/04/19 10:06:56  mattias
   fixed illegal ancestor search
 

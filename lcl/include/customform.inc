@@ -1302,12 +1302,13 @@ begin
   Result:=true;
 
   if not (csFocusing in Control.ControlState) then begin
+    // prevent looping
     Control.ControlState := Control.ControlState + [csFocusing];
     try
       // change focus
       
     finally
-      Control.ControlState := Control.ControlState + [csFocusing];
+      Control.ControlState := Control.ControlState - [csFocusing];
     end;
   end;
   
@@ -1601,6 +1602,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.134  2004/04/23 11:18:28  mattias
+  fixed unsetting csFocusing
+
   Revision 1.133  2004/04/10 17:58:57  mattias
   implemented mainunit hints for include files
 
