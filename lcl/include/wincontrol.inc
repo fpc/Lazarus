@@ -1590,8 +1590,8 @@ begin
 
     AControl.FParent := Self;
 
-    If (csDesigning in ComponentState) and not
-       (csLoading in ComponentState)
+    If (csDesigning in ComponentState)
+    and not (csLoading in ComponentState)
     then
       If AControl.CanTab then
         AControl.TabStop := True;
@@ -2596,6 +2596,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.129  2003/04/20 20:32:40  mattias
+  implemented removing, re-adding, updating project dependencies
+
   Revision 1.128  2003/04/11 10:31:57  mattias
   added Sender to Application OnKeyDownHandler
 
