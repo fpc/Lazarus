@@ -44,7 +44,7 @@ uses
   Classes, Controls, Forms, Buttons, ComCtrls, SysUtils, Dialogs, FormEditor,
   FindReplaceDialog, EditorOptions, CustomFormEditor, KeyMapping, StdCtrls,
   Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
-  SynEditTypes, SynEdit, SynEditHighlighter, SynHighlighterPas,
+  SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, SynHighlighterPas,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion, GraphType, Graphics,
   Extctrls, Menus, FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs,
   InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger, FileCtrl,
@@ -787,8 +787,16 @@ begin
     else
       EditorComponent.CaretXY:=EditorComponent.BlockEnd
   end;
-  EditorComponent.SearchReplace(
-    FindReplaceDlg.FindText,FindReplaceDlg.ReplaceText,FindReplaceDlg.Options);
+  try
+    EditorComponent.SearchReplace(
+      FindReplaceDlg.FindText,FindReplaceDlg.ReplaceText,FindReplaceDlg.Options);
+  except
+    on E: ERegExpr do begin
+      MessageDlg('Error in regular expression',
+        E.Message,mtError,[mbCancel],0);
+      exit;
+    end;
+  end;
   if (OldCaretXY.X=EditorComponent.CaretX)
   and (OldCaretXY.Y=EditorComponent.CaretY)
   and not (ssoReplaceAll in FindReplaceDlg.Options) then begin
