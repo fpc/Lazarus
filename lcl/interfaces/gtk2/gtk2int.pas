@@ -138,7 +138,7 @@ begin
           UseFontDesc := GetDefaultFontDesc(false)
         else
           UseFontDesc := CurrentFont^.GDIFontObject;
-
+        GetStyle('default');
         Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
         pango_layout_set_font_description(Layout, UseFontDesc);
         AttrList := pango_layout_get_attributes(Layout);
@@ -156,6 +156,9 @@ begin
 
         Attr := pango_attr_strikethrough_new(CurrentFont^.StrikeOut);
         pango_attr_list_change(AttrList,Attr);
+
+        SelectedColors := dcscCustom;
+        EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
         Case TColor(CurrentTextColor.ColorRef) of
           clScrollbar..clEndColors:
@@ -242,6 +245,11 @@ var
   TopY, LineLen, LineHeight : Integer;
   TxtPt : TPoint;
   DCOrigin: TPoint;
+
+  UnRef,
+  Underline,
+  StrikeOut : Boolean;
+
   RGBColor : Longint;
 
   Layout : PPangoLayout;
@@ -249,6 +257,28 @@ var
   AttrList : PPangoAttrList;
   Attr : PPangoAttribute;
 
+  procedure DoTextOut(X,Y : Integer; Str : Pchar; Count: Integer);
+  var
+    aRect : TRect;
+  begin
+    with TDeviceContext(DC) do begin
+      //fix me... and what about UTF-8 conversion?
+      //this could be a massive problem since we
+      //will need to know before hand what the current
+      //locale is, and if we stored UTF-8 string this would break
+      //cross-compatibility with GTK1.2 and win32 interfaces.....
+
+      pango_layout_set_text(Layout, Str, Count);
+
+      aRect := Classes.Rect(0,0,0,0);
+      pango_layout_get_pixel_size(Layout, @arect.Right, @arect.Bottom);
+
+      OffsetRect(aRect, X+DCOrigin.X,Y+DCOrigin.Y);
+
+      gdk_draw_layout(drawable, gc, aRect.Left, aRect.Top, Layout);
+    end;
+  end;
+  
   procedure DrawTextLine;
   var
     UnderLineLen, Y: integer;
@@ -260,7 +290,7 @@ var
       if (Dx=nil) then begin
         // no dist array -> write as one block
         //fix me... do we even need to do it this way with pango?
-        TextOut(DC,TxtPt.X, TxtPt.Y, LineStart, LineLen);
+        DoTextOut(TxtPt.X, TxtPt.Y, LineStart, LineLen);
       end else begin
         // dist array -> write each char separately
         CharsWritten:=integer(LineStart-Str);
@@ -271,7 +301,7 @@ var
         LinePos:=LineStart;
         for i:=1 to LineLen do begin
           //fix me... do we even need to do it this way with pango?
-          TextOut(DC,CurX, TxtPt.Y, LinePos, 1);
+          DoTextOut(CurX, TxtPt.Y, LinePos, 1);
           inc(LinePos);
           inc(CurX,CurDistX^);
           inc(CurDistX);
@@ -298,16 +328,28 @@ begin
     end else begin
       // TODO: implement other parameters.
 
-      // to reduce flickering calculate first and then paint
-      DCOrigin:=GetDCOffset(TDeviceContext(DC));
+      UseFontDesc:=nil;
+      if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
+      then begin
+        UseFontDesc := GetDefaultFontDesc(true);
+        UnRef := True;
+        Underline := False;
+        StrikeOut := False;
+      end
+      else begin
+        UseFontDesc := CurrentFont^.GDIFontObject;
+        UnRef := False;
+        Underline := CurrentFont^.Underline;
+        StrikeOut := CurrentFont^.StrikeOut;
+      end;
 
-     { UseFontDesc:=nil;
-      if (Str<>nil) and (Count>0) then begin
-        if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then
-          UseFontDesc := GetDefaultFontDesc(false)
-        else
-          UseFontDesc := CurrentFont^.GDIFontObject;
+      If UseFontDesc = nil then
+        WriteLn('WARNING: [Tgtk2Object.ExtTextOut] Missing Font')
+      else begin
+        // to reduce flickering calculate first and then paint
+        DCOrigin:=GetDCOffset(TDeviceContext(DC));
 
+        GetStyle('default');
         Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
 
         pango_layout_set_font_description(Layout, UseFontDesc);
@@ -327,73 +369,74 @@ begin
         Attr := pango_attr_strikethrough_new(CurrentFont^.StrikeOut);
         pango_attr_list_change(AttrList,Attr);
 
-        if UseFontDesc <> nil then begin           }
-          if (Options and ETO_CLIPPED) <> 0 then
-          begin
-            X := Rect^.Left;
-            Y := Rect^.Top;
-            IntersectClipRect(DC, Rect^.Left, Rect^.Top,
-                              Rect^.Right, Rect^.Bottom);
+        if (Options and ETO_CLIPPED) <> 0 then
+        begin
+          X := Rect^.Left;
+          Y := Rect^.Top;
+          IntersectClipRect(DC, Rect^.Left, Rect^.Top,
+                            Rect^.Right, Rect^.Bottom);
+        end;
+
+        LineLen := FindChar(#10,Str,Count);
+        TopY := Y;
+        UpdateDCTextMetric(TDeviceContext(DC));
+        TxtPt.X := X + DCOrigin.X;
+        LineHeight := DCTextMetric.TextMetric.tmAscent;
+        TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
+
+        SelectedColors := dcscCustom;
+
+        if ((Options and ETO_OPAQUE) <> 0) then
+        begin
+          Width := Rect^.Right - Rect^.Left;
+          Height := Rect^.Bottom - Rect^.Top;
+          EnsureGCColor(DC, dccCurrentBackColor, True, False);
+          gdk_draw_rectangle(Drawable, GC, 1,
+                             Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
+                             Width, Height);
+        end;
+
+        EnsureGCColor(DC, dccCurrentTextColor, True, False);
+        Case TColor(CurrentTextColor.ColorRef) of
+          clScrollbar..clEndColors:
+            RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
+          else
+            RGBColor := CurrentTextColor.ColorRef and $FFFFFF;
+        end;
+
+        Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
+                                          gushort(GetGValue(RGBColor)) shl 8,
+                                          gushort(GetBValue(RGBColor)) shl 8);
+
+        pango_attr_list_change(AttrList,Attr);
+
+        pango_layout_set_attributes(Layout, AttrList);
+
+        LineStart:=Str;
+        if LineLen < 0 then begin
+          LineLen:=Count;
+          if Count> 0 then DrawTextLine;
+        end else
+        Begin  //write multiple lines
+          StrEnd:=Str+Count;
+          while LineStart < StrEnd do begin
+            LineEnd:=LineStart+LineLen;
+            if LineLen>0 then DrawTextLine;
+            inc(TxtPt.Y,LineHeight);
+            LineStart:=LineEnd+1; // skip #10
+            if (LineStart<StrEnd) and (LineStart^=#13) then
+              inc(LineStart); // skip #10
+            Count:=StrEnd-LineStart;
+            LineLen:=FindChar(#10,LineStart,Count);
+            if LineLen<0 then
+              LineLen:=Count;
           end;
-          LineLen := FindChar(#10,Str,Count);
-          TopY := Y;
-          UpdateDCTextMetric(TDeviceContext(DC));
-          TxtPt.X := X + DCOrigin.X;
-          LineHeight := DCTextMetric.TextMetric.tmAscent;
-          TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
-        {end else begin
-          WriteLn('WARNING: [Tgtk2Object.ExtTextOut] Missing Font');
-          Result := False;
         end;
-      end;  }
 
-      if ((Options and ETO_OPAQUE) <> 0) then
-      begin
-        Width := Rect^.Right - Rect^.Left;
-        Height := Rect^.Bottom - Rect^.Top;
-        SelectedColors := dcscCustom;
-        EnsureGCColor(DC, dccCurrentBackColor, True, False);
-        
-      end;
-
-      if ((Options and ETO_OPAQUE) <> 0) then
-      begin
-        Width := Rect^.Right - Rect^.Left;
-        Height := Rect^.Bottom - Rect^.Top;
-        SelectedColors := dcscCustom;
-        EnsureGCColor(DC, dccCurrentBackColor, True, False);
-        gdk_draw_rectangle(Drawable, GC, 1,
-                           Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
-                           Width, Height);
-      end;
-
-      {Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
-                                        gushort(GetGValue(RGBColor)) shl 8,
-                                        gushort(GetBValue(RGBColor)) shl 8);
-
-      pango_attr_list_change(AttrList,Attr);
-
-      pango_layout_set_attributes(Layout, AttrList);
-       }
-      LineStart:=Str;
-      if LineLen < 0 then begin
-        LineLen:=Count;
-        if Count> 0 then DrawTextLine;
-      end else
-      Begin  //write multiple lines
-        StrEnd:=Str+Count;
-        while LineStart < StrEnd do begin
-          LineEnd:=LineStart+LineLen;
-          if LineLen>0 then DrawTextLine;
-          inc(TxtPt.Y,LineHeight);
-          LineStart:=LineEnd+1; // skip #10
-          if (LineStart<StrEnd) and (LineStart^=#13) then
-            inc(LineStart); // skip #10
-          Count:=StrEnd-LineStart;
-          LineLen:=FindChar(#10,LineStart,Count);
-          if LineLen<0 then
-            LineLen:=Count;
-        end;
+        g_object_unref(Layout);
+        Result := True;
+        If UnRef then
+          pango_font_description_free(UseFontDesc);
       end;
     end;
   end;
@@ -454,7 +497,7 @@ begin
         WriteLn('WARNING: [Tgtk2Object.TextOut] Missing Font')
       else begin
         DCOrigin:=GetDCOffset(TDeviceContext(DC));
-
+        GetStyle('default');
         Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
         pango_layout_set_font_description(Layout, UseFontDesc);
         AttrList := pango_layout_get_attributes(Layout);
@@ -472,6 +515,10 @@ begin
 
         Attr := pango_attr_strikethrough_new(StrikeOut);
         pango_attr_list_change(AttrList,Attr);
+
+        SelectedColors := dcscCustom;
+        EnsureGCColor(DC, dccCurrentBackColor, True, False);
+        EnsureGCColor(DC, dccCurrentTextColor, True, False);
 
         Case TColor(CurrentTextColor.ColorRef) of
           clScrollbar..clEndColors:
@@ -954,6 +1001,9 @@ end.
 
 {
   $Log$
+  Revision 1.12  2003/09/15 16:42:02  ajgenius
+  mostly fixed ExtTextOut
+
   Revision 1.11  2003/09/15 03:10:46  ajgenius
   PANGO support for GTK2 now works.. sorta. TextOut/ExtTextOut broken?
 
