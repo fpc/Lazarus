@@ -171,7 +171,8 @@ var
   BmpInfo:PBitmapInfo;
   ImgSize:longint;
   Bits:PBitsObj;
-  InfoSize,BmpWidth,BmpHeight:integer;
+  InfoSize: integer;
+  BmpWidth,BmpHeight:integer;
   BitsPerPixel,ColorsUsed:integer;
 begin
   FreeContext;
@@ -318,6 +319,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.7  2001/06/04 09:32:17  lazarus
   MG: fixed bugs and cleaned up messages
 

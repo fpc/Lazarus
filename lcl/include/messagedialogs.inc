@@ -233,7 +233,6 @@ var
   LabelLeft   : integer;         // left position of label
   reqBtnWidth : integer;         // width neccessary to display buttons
   reqWidth    : integer;         // width neccessary to display all
-  reqHeight   : integer;         // height neccessary to display all
   i: integer;
 begin
   if FUpdateCounter>0 then exit;
@@ -249,6 +248,7 @@ begin
     if curBtn in FButtons then inc(reqBtnWidth, cBtnDist);
     
   // patch positions to center label and buttons
+  reqWidth:=reqBtnWidth;
   if reqWidth < FLabel.Width then reqWidth:=FLabel.Width;
   LabelLeft := ((reqWidth - FLabel.Width) div 2) + cMinLeft;
   ButtonLeft := ((reqWidth - reqBtnWidth) div 2) + cMinLeft;
@@ -363,8 +363,8 @@ end;
 
 {
    $Log$
-   Revision 1.2  2001/06/06 12:30:41  lazarus
-   MG: bugfixes
+   Revision 1.3  2001/06/14 14:57:58  lazarus
+   MG: small bugfixes and less notes
 
    Revision 1.1  2001/03/03 00:50:34  lazarus
    + added support for message dialogs (messagedialogs.inc)

@@ -130,14 +130,14 @@ var
   target_table : array[0..TARGET_ENTRYS - 1] of TgtkTargetEntry;
 
   //drag icons
-  TrashCan_Open : PgdkPixmap;
-  TrashCan_Open_Mask : PGdkPixmap;
-  Trashcan_closed : PGdkPixmap;
-  Trashcan_closed_mask : PGdkPixmap;
+  //TrashCan_Open : PgdkPixmap;
+  //TrashCan_Open_Mask : PGdkPixmap;
+  //TrashCan_Closed : PGdkPixmap;
+  //TrashCan_Closed_Mask : PGdkPixmap;
   Drag_Icon : PgdkPixmap;
   Drag_Mask : PgdkPixmap;
 
-  Dragging : Boolean;
+  //Dragging : Boolean;
 
   MCaptureHandle: HWND;
   
@@ -213,7 +213,7 @@ type
   end;
   
 var
-  Event : TGDKEVENTCONFIGURE;
+  //Event : TGDKEVENTCONFIGURE;
   gtk_handler_quark: TGQuark;
 
 
@@ -229,10 +229,6 @@ const
 {$I gtkobject.inc}
 {$I gtkwinapi.inc}
 
-
-
-var
-  n: Integer;
 
 
 initialization
@@ -256,6 +252,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2001/06/14 14:57:59  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.14  2001/06/04 07:50:42  lazarus
   MG: close application object in gtkint.pp
 

@@ -52,7 +52,7 @@ begin
     Msg.Child := TPage(fPageList[Index]);
     Msg.fCompStyle := fNotebook.fCompStyle;
     Msg.Str := S;
-    //CNSendMessage(LM_SETTEXT, fNotebook, @Msg);
+    CNSendMessage(LM_SETTEXT, fNotebook, @Msg);
   end;
 end;
 
@@ -111,7 +111,6 @@ end;
 procedure TNBPages.Insert(Index: Integer; const S: String);
 var
   tmpPage: TPage;
-  Msg: TLMNotebookEvent;
 begin
   tmpPage := TPage.Create(fNotebook);
   with tmpPage do
@@ -282,8 +281,8 @@ end;
   TCustomNotebook GetPageIndex
  ------------------------------------------------------------------------------}
 function TCustomNotebook.GetPageIndex: Integer;
-var
-  Msg: TLMNotebookEvent;
+//var
+//  Msg: TLMNotebookEvent;
 begin
 //we don't have to query the contol.  FPageindex should track this along with the pagechanged handler.
 {  if HandleAllocated
@@ -435,8 +434,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.6  2001/06/12 18:31:01  lazarus
-  MG: small bugfixes
+  Revision 1.7  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
 
   Revision 1.5  2001/06/04 09:32:17  lazarus
   MG: fixed bugs and cleaned up messages

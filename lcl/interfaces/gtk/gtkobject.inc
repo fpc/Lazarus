@@ -230,8 +230,8 @@ end;
 procedure TGtkObject.Init;
 var
    LogBrush: TLogBrush;
-   Attributes: TGdkWindowAttr;
-   AttributesMask: gint;
+   //Attributes: TGdkWindowAttr;
+   //AttributesMask: gint;
 begin
    { initialize app level gtk engine }
    gtk_set_locale ();
@@ -1131,7 +1131,7 @@ end;
   WARNING: Sender will be casted to TControl, CLEANUP!
  ------------------------------------------------------------------------------}
 procedure TgtkObject.SetCursor(Sender : TObject);
-var CursorType : Integer;
+//var CursorType : Integer;
 begin
   Assert(False, 'Trace:IN SETCURSOR');
   If not(Sender is TWinControl) or(TWinControl(Sender).Handle = 0) then EXIT;
@@ -1170,9 +1170,14 @@ var
    P : Pointer;
    pLabel: pchar;
 begin
-   if Sender is TWinControl
-      then Assert(False, Format('Trace:  [TgtkObject.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
-      else Assert(False, Format('Trace:WARNING: [TgtkObject.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
+  if Sender is TWinControl
+    then Assert(False, Format('Trace:  [TgtkObject.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
+    else begin
+      Assert(False, Format('Trace:WARNING: [TgtkObject.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
+      writeln('[TgtkObject.SetLabel] ERROR: Sender (',Sender.Classname,')'
+          ,'is not TWinControl ');
+      Halt;
+    end;
 
    P := Pointer(TWinControl(Sender).Handle);
    Assert(p = nil, 'Trace:WARNING: [TgtkObject.SetLabel] --> got nil pointer');
@@ -1229,7 +1234,6 @@ begin
    else
       Assert(True, Format ('WARNING: [TgtkObject.SetLabel] --> not handled for class %s ', [Sender.ClassName]));
    end;
-
    Assert(False, Format('trace:  [TgtkObject.SetLabel] %s --> END', [Sender.ClassName]));
 end;
 
@@ -1647,13 +1651,13 @@ var
    Adjustment: PGTKAdjustment;    // currently only used for csFixed
    // - for csBitBtn
    Box       : Pointer;           // currently only used for TBitBtn and TForm
-   pixmap    : pGdkPixMap;        // TBitBtn - the default pixmap
+   //pixmap    : pGdkPixMap;        // TBitBtn - the default pixmap
    pixmapwid : pGtkWidget;        // currently only used for TBitBtn
-   mask      : pGDKBitmap;        // currently only used for TBitBtn
+   //mask      : pGDKBitmap;        // currently only used for TBitBtn
    style     : pgtkStyle;         // currently only used for TBitBtn
    label1    : pgtkwidget;        // currently only used for TBitBtn
-   TempStr   : String;            // currently only used for TBitBtn to load default pixmap
-   pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
+   //TempStr   : String;            // currently only used for TBitBtn to load default pixmap
+   //pStr      : PChar;             // currently only used for TBitBtn to load default pixmap
 
 begin
    Assert(False, 'Trace:In CreateComponet');
@@ -2869,8 +2873,8 @@ end;
  { =============================================================================
 
   $Log$
-  Revision 1.48  2001/06/12 18:31:01  lazarus
-  MG: small bugfixes
+  Revision 1.49  2001/06/14 14:57:59  lazarus
+  MG: small bugfixes and less notes
 
   Revision 1.47  2001/06/05 10:32:05  lazarus
   MG: small bugfixes for bitbtn, handles

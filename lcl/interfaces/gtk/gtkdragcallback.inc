@@ -10,7 +10,6 @@ Function edit_drag_data_received(widget : pgtkWidget;
                                   data : pointer) : GBoolean; cdecl;
 Var
   Texts : String;
-  strTemp : PChar;
 Begin
   Result:=false;
   Assert(False, 'Trace:***********Drag Data Received*******************');

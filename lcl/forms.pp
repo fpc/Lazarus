@@ -27,7 +27,7 @@
 
 unit Forms;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -56,9 +56,9 @@ type
 
   TScrollingWinControl = class(TWinControl)
   private
-    FHorzScrollBar : TControlScrollBar;
-    FVertScrollBar : TControlScrollBar;
-    FAutoScroll    : Boolean;
+    //FHorzScrollBar : TControlScrollBar;
+    //FVertScrollBar : TControlScrollBar;
+    //FAutoScroll    : Boolean;
   end;
 
   TIDesigner = class;
@@ -129,7 +129,7 @@ type
     Procedure RequestAlign; Override;
     procedure UpdateShowing; override;
     procedure UpdateWindowState;
-    procedure ValidateRename(AComponent: TComponent; const CurName, NewName: string);
+    procedure ValidateRename(AComponent: TComponent; const CurName, NewName: shortstring);
     procedure WndProc(var Message : TLMessage); override;
     property ActiveControl : TWinControl read FActiveControl write SetActiveControl;
     property FormStyle : TFormStyle read FFormStyle write SetFormStyle default fsNormal;
@@ -272,7 +272,7 @@ type
       Operation: TOperation); virtual; abstract;
     procedure PaintGrid; virtual; abstract;
     procedure ValidateRename(AComponent: TComponent;
-      const CurName, NewName: string); virtual; abstract;
+      const CurName, NewName: shortstring); virtual; abstract;
     end;
 
 
@@ -285,7 +285,7 @@ type
 function KeysToShiftState(Keys:Word): TShiftState;
 function KeyDataToShiftState(KeyData: Longint): TShiftState;
 function GetParentForm(Control:TControl): TCustomForm;
-function IsAccel(VK : Word; const Str : String): Boolean;
+function IsAccel(VK : Word; const Str : ShortString): Boolean;
 function InitResourceComponent(Instance: TComponent; RootAncestor: TClass):Boolean;
 
 
@@ -333,7 +333,7 @@ begin
   else Result := nil;
 end;
 
-function IsAccel(VK : Word; const Str : String): Boolean;
+function IsAccel(VK : Word; const Str : ShortString): Boolean;
 begin
   Result := true;
 end;

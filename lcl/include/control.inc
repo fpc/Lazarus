@@ -772,8 +772,6 @@ end;
 {  TControl GetText                                                            }
 {------------------------------------------------------------------------------}
 function TControl.GetText: TCaption;
-var
-  Str : PChar;
 begin
   Assert(False, 'Trace:[TControl.GetText]');
 
@@ -808,8 +806,8 @@ end;
 {  TControl InvalidateControl                                                            }
 {------------------------------------------------------------------------------}
 procedure TControl.InvalidateControl(IsVisible, IsOpaque : Boolean);
-var
-  Rect : TRect;
+//var
+//  Rect : TRect;
 begin
 //Writeln('[INVALIDATECONTROL]');
   if (IsVisible or (csDesigning in ComponentState) and not (csNoDesignVisible in ControlStyle)) and
@@ -1128,9 +1126,8 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.SetZOrderPosition(Position : Integer);
 Var
-I : Integer;
-Count : Integer;
-ParentForm : TCustomForm;
+  I : Integer;
+  Count : Integer;
 begin
 if FParent <> nil then
    Begin
@@ -1178,7 +1175,7 @@ end;
 
   Contructor for the class.
  ------------------------------------------------------------------------------}
-Procedure TControl.SetTextBuf(BUffer : PChar);
+Procedure TControl.SetTextBuf(Buffer : PChar);
 Begin
   CNSendMessage(LM_SetLabel, Self, Buffer);
   Perform(CM_TEXTCHANGED,0,0);
@@ -1196,8 +1193,8 @@ end;
 {  TControl SetText                                                            }
 {------------------------------------------------------------------------------}
 procedure TControl.SetText(const Value: TCaption);
-var
-  pStr : PChar;
+//var
+//  pStr : PChar;
 begin
   if GetText <> value
   then begin
@@ -1205,21 +1202,23 @@ begin
     //  check FCaption will always be wrong.
     FCaption := Value;
 
-  {$IFOPT H+}
-    SetTextBuf(PChar(FCaption));
-  {$ELSE}
-    //We shouldn't NEED to create our own PCHAR.  We should be able
-    //to typecast VALUE as a PCHAR but it doesn't work.
-    //
-    // MWE: that's because strings were short strings
-    pStr := StrAlloc(length(Value) + 1);
-    try
-      StrPCopy(pStr, value);
-      SetTextBuf(pStr);
-    finally
-      strDispose(pStr);
+    if Self is TWinControl then begin
+      //{$IFOPT H+}
+      SetTextBuf(PChar(FCaption));
+      //{$ELSE}
+      //We shouldn't NEED to create our own PCHAR.  We should be able
+      //to typecast VALUE as a PCHAR but it doesn't work.
+      //
+      // MWE: that's because strings were short strings
+      {pStr := StrAlloc(length(Value) + 1);
+      try
+        StrPCopy(pStr, value);
+        SetTextBuf(pStr);
+      finally
+        strDispose(pStr);
+      end;}
+      //{$ENDIF}
     end;
-  {$ENDIF}
   end;
 end;
 
@@ -1345,6 +1344,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.21  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.20  2001/05/13 22:07:08  lazarus
   Implemented BringToFront / SendToBack.
 

@@ -145,14 +145,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSpeedButton.SetNumGlyphs(Value : Integer);
 Begin
-if Value < 0 then Value := 1;
-if Value > 4 then Value := 4;
+  if Value < 0 then Value := 1;
+  if Value > 4 then Value := 4;
 
-if Value <> TButtonGlyph(fGlyph).NumGlyphs then
-   Begin
+  if Value <> TButtonGlyph(fGlyph).NumGlyphs then
+  Begin
     TButtonGlyph(fGlyph).NumGlyphs := Value;
     Invalidate;
-   end;
+  end;
 end;
 
 
@@ -166,7 +166,6 @@ procedure TSpeedButton.UpdateExclusive;
 var
   msg : TLMessage;
 begin
-
   if (FGroupIndex <> 0) and (Parent <> nil) 
   then begin
     Assert(False,'Trace:UpdateExclusive-FGroupIndex <> 0 and Parent <> nil');
@@ -226,7 +225,7 @@ const
 var
   PaintRect: TRect;
   DrawFlags: Integer;
-  R : TRect;
+  //R : TRect;
   Offset: TPoint;
 begin
   if not Enabled
@@ -523,6 +522,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.7  2001/03/19 14:40:49  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

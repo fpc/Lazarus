@@ -49,12 +49,12 @@ type
     FCancel : Boolean;
     FDefault : Boolean;
     FModalResult : TModalResult;
-    fOwner: TControl;
-    FOnPressed: TNotifyEvent;
-    FOnReleased: TNotifyEvent;
+    //fOwner: TControl;
+    //FOnPressed: TNotifyEvent;
+    //FOnReleased: TNotifyEvent;
     FOnLeave: TNotifyEvent;
     FOnEnter: TNotifyEvent;
-    FOnResize: TNotifyEvent;
+    //FOnResize: TNotifyEvent;
     Procedure SetDefault(Value : Boolean);
     procedure CMMouseEnter(var Message: TMessage); message CM_MOUSEENTER; 
     procedure CMMouseLeave(var Message: TMessage); message CM_MOUSELEAVE;
@@ -235,8 +235,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.8  2001/06/06 12:30:41  lazarus
-  MG: bugfixes
+  Revision 1.9  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
 
   Revision 1.7  2001/01/09 21:06:06  lazarus
   Started taking KeyDown messages in TDesigner

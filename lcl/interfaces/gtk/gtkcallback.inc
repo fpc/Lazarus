@@ -126,8 +126,6 @@ begin
 end;
 
 function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
-var
-   Mess : TLMessage;
 begin
    Result := True;
    EventTrace('map', data);
@@ -299,8 +297,8 @@ begin
 end;
 
 function gtkresizeCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-var
-   Mess : TLMessage;
+//var
+//   Mess : TLMessage;
 begin
    Result := True;
    EventTrace('resize', data);
@@ -449,8 +447,8 @@ begin
 end;
 
 function gtkclickedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-var
-   Mess : TLMessage;
+//var
+//   Mess : TLMessage;
 begin
 (*
    Result := True;
@@ -528,7 +526,7 @@ begin
       TFileDialog(data).FileName := '';
    end;
 }
- theDialog.UserChoice := -1;
+  theDialog.UserChoice := -1;
 end;
 
 function gtkpressedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
@@ -1084,7 +1082,7 @@ function GTKKeySnooper(Widget: PGtkWidget; Event: PGdkEventKey; FuncData: gPoint
 type
   PList = ^TList;
 var
-  Msg: TLMKey;
+  //Msg: TLMKey;
   KeyCode, VirtKeyCode: Word;
   ListCode: Integer;
   Toggle, Extended, SysKey: Boolean;
@@ -1140,6 +1138,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.31  2001/06/14 14:57:59  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.30  2001/04/06 22:25:14  lazarus
   * TTimer uses winapi-interface now instead of sendmessage-interface, stoppok
 

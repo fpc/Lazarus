@@ -97,7 +97,6 @@ end;
 procedure TMemoStrings.Insert(index : Integer; const S: String);
 var
   TempStrings: TStringList;
-  St: string;
 begin
   If Assigned(FMemo) and (Index >= 0)
   then begin
@@ -115,6 +114,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.2  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.1  2000/07/13 10:28:26  michael
   + Initial import
 

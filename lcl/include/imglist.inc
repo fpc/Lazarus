@@ -416,10 +416,10 @@ end;
   at the index'th position.  If Mask is nil, the image has no transparent parts.
  ------------------------------------------------------------------------------}
 procedure TCustomImageList.Insert(Index: Integer; Image, Mask: TBitmap);
-var
-  n, nCount: Integer;
-  I, M: TBitmap;
-  DR, SR: TRect;
+//var
+//  n, nCount: Integer;
+//  I, M: TBitmap;
+//  DR, SR: TRect;
 begin
   if (Index > Count)
   then raise EInvalidOperation.Create(SInvalidIndex);
@@ -810,6 +810,9 @@ end;
 {
 
   $Log$
+  Revision 1.6  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.5  2001/03/19 14:40:49  lazarus
   MG: fixed many unreleased DC and GDIObj bugs
 

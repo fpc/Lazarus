@@ -32,7 +32,7 @@ Detailed description of the Unit.
 }
 unit Menus;
 
-{$mode objfpc}
+{$mode objfpc}{$H+}
 
 interface
 
@@ -52,7 +52,7 @@ type
   // fix for compiler problem
   TMenuItem = class;
 
-  TMenuItem = class(TComponent)//TWinControl) //TComponent
+  TMenuItem = class(TComponent)//TWinControl)
   private
     FCaption: string;
     FChecked: Boolean;
@@ -154,8 +154,8 @@ type
   // will be removed
   TMenuBar = class(TComponent) //TWinControl)
   private
-    fMenu: TMenuItem;
-//    fOwner : TControl;
+    //fMenu: TMenuItem;
+    //fOwner : TControl;
   public
     constructor Create(AOwner: TComponent); override;
     procedure Show; {override;}
@@ -202,6 +202,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.4  2000/12/29 17:50:53  lazarus
   Added a dropdown image to the resource and a downarrow button by the OPEN button.
   Shane

@@ -32,8 +32,8 @@ unit ComCtrls;
 interface
 
 uses
-  SysUtils, Classes, Controls,LclLinux, stdCtrls, vclGlobals, lMessages, Menus, ImgList, Graphics
-   ,Toolwin;
+  SysUtils, Classes, Controls,LclLinux, stdCtrls, vclGlobals, lMessages,
+  Menus, ImgList, Graphics, Toolwin;
 
 
   const
@@ -313,7 +313,7 @@ type
     FBevel: TStatusPanelBevel;
     FParentBiDiMode: Boolean;
     FStyle: TStatusPanelStyle;
-    FUpdateNeeded: Boolean;
+    //FUpdateNeeded: Boolean;
     procedure SetAlignment(Value: TAlignment);
     procedure SetBevel(Value: TStatusPanelBevel);
     procedure SetStyle(Value: TStatusPanelStyle);
@@ -352,9 +352,9 @@ type
     FPanels : TStatusPanels;
     FSimpleText : String;
     FSimplePanel : Boolean;
-    FContext : Integer;
-    FMessage : Integer;
-    FAlignmentWidget : TAlignment;
+    //FContext : Integer;
+    //FMessage : Integer;
+    //FAlignmentWidget : TAlignment;
     procedure SetPanels(Value: TStatusPanels);
     procedure SetSimpleText(Value : String);
     procedure SetSimplePanel(Value : Boolean);
@@ -380,7 +380,7 @@ type
   private
     FOwner : TListItems;
     FSubItems: TStrings;
-    FIndex   : Integer;
+    //FIndex   : Integer;
     FCaption : String;
     Procedure SetCaption(const Value : String);
     Procedure SetSubItems(Value : TStrings);
@@ -417,7 +417,7 @@ type
 
  TCustomListView = class(TWinControl)
   private
-    FReadOnly : Boolean;
+    //FReadOnly : Boolean;
     FListItems : TListItems;
     procedure SetItems(Value : TListItems);
   protected
@@ -897,13 +897,13 @@ const
 { Toolbar menu support }
 
 var
-  ToolMenuKeyHook: HHOOK;
-  ToolMenuHook: HHOOK;
-  InitDone: Boolean;
+  //ToolMenuKeyHook: HHOOK;
+  //ToolMenuHook: HHOOK;
+  //InitDone: Boolean;
   MenuToolBar, MenuToolBar2: TToolBar;
   MenuButtonIndex: Integer;
-  LastMenuItem: TMenuItem;
-  LastMousePos: TPoint;
+  //LastMenuItem: TMenuItem;
+  //LastMousePos: TPoint;
   StillModal: Boolean;
 
 
@@ -934,6 +934,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.3  2001/01/30 18:15:02  lazarus
   Added code for TStatusBar
   I'm now capturing WMPainT and doing the drawing myself.

@@ -34,10 +34,7 @@ begin
     Canvas.Brush.Color := clBtnFace;
     Canvas.FillRect(Rect(0,0,1,1));
   end;
-
 end;
-
-
 
 destructor TToolBar.Destroy;
 var
@@ -656,7 +653,7 @@ var
 
   function GetImageBitmap(ImageList: TCustomImageList): HBITMAP;
   var
-    I: Integer;
+    //I: Integer;
     Bitmap: TBitmap;
     R: TRect;
   begin
@@ -824,7 +821,7 @@ procedure TToolBar.WMKeyDown(var Message: TLMKeyDown);
 var
   Item: Integer;
   Button: TToolButton;
-  P: TPoint;
+  //P: TPoint;
 begin
   if FInMenuLoop then
   begin
@@ -835,7 +832,7 @@ begin
           if (Item > -1) and (Item < FButtons.Count) then
           begin
             Button := TToolButton(FButtons[Item]);
-            P := Button.ClientToScreen(Point(1, 1));
+            Button.ClientToScreen(Point(1, 1));
             ClickButton(Button);
           end;
           { Prevent default processing }
@@ -1304,10 +1301,10 @@ end;
 function TToolBar.CheckMenuDropdown(Button: TToolButton): Boolean;
 var
   Hook: Boolean;
-  Menu: TMenu;
+  //Menu: TMenu;
   Item: TMenuItem;
   I: Integer;
-  ParentMenu: TMenu;
+  //ParentMenu: TMenu;
   APoint: TPoint;
 begin
   Result := False;
@@ -1322,9 +1319,9 @@ begin
 //      Button.MenuItem.Click;
       ClearTempMenu;
       FTempMenu := TPopupMenu.Create(Self);
-      ParentMenu := Button.MenuItem.GetParentMenu;
 //TODO: FINISH Menu BiDiMode and HelpContext and Images  12/21/99
 {
+      ParentMenu := Button.MenuItem.GetParentMenu;
       if ParentMenu <> nil then
         FTempMenu.BiDiMode := ParentMenu.BiDiMode;
 
@@ -1398,11 +1395,11 @@ begin
 end;
 
 procedure TToolBar.ClickButton(Button: TToolButton);
-var
-  P: TPoint;
+//var
+//  P: TPoint;
 begin
   FCaptureChangeCancels := False;
-  P := Button.ClientToScreen(Point(0, 0));
+  {P := }Button.ClientToScreen(Point(0, 0));
 //TODO: Add POSTMESSAGE
 //  PostMessage(Handle, LM_LBUTTONDOWN, MK_LBUTTON,
 //    Longint(PointToSmallPoint(ScreenToClient(P))));
@@ -1468,6 +1465,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.3  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.2  2001/03/12 12:17:01  lazarus
   MG: fixed random function results
 

@@ -269,7 +269,7 @@ function TgtkObject.CreateBitmap(Width, Height: Integer;
   Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 var
   GdiObject: PGdiObject;
-  RawImage: PGDIRawImage;
+  //RawImage: PGDIRawImage;
 begin
   Assert(False, Format('Trace:> [TgtkObject.CreateBitmap] Width: %d, Height: %d, Planes: %d, BitCount: %d, BitmapBits: 0x%x', [Width, Height, Planes, BitCount, Longint(BitmapBits)]));
 
@@ -1272,7 +1272,7 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetCaretPos(var lpPoint: TPoint): Boolean;
 var
-  FocusObject: PGTKObject;
+  //FocusObject: PGTKObject;
   modmask : TGDKModifierType;
 begin
 {  Assert(False, 'Trace:TODO: [TgtkObject.GetCaretPos] finish');
@@ -1355,8 +1355,8 @@ var
   pFixed: PGTKFixed;
   GdiObject: PGdiObject;
   Values: TGdkGCValues;
-  Color: TGdkColor;
-  nIndex: Integer;
+  //Color: TGdkColor;
+  //nIndex: Integer;
 begin
   Assert(False, Format('trace:> [TgtkObject.GetDC] hWND: 0x%x', [hWnd]));
   p := nil;
@@ -2023,7 +2023,7 @@ end;
  ------------------------------------------------------------------------------}
 Function TgtkObject.GetWindowLong(Handle : hwnd; int : Integer): Longint;
 var
-  Data : Tobject;
+  //Data : Tobject;
   P : Pointer;
 begin
   //TODO:Started but not finished
@@ -2755,8 +2755,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ;
-var
-  Color: TGdkColor;
+//var
+//  Color: TGdkColor;
 begin
   //TODO: Finish this;
   Assert(False, Format('trace:> [TgtkObject.SelectObject] DC: 0x%x', [DC]));
@@ -2930,8 +2930,8 @@ end;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.SetCapture(Value: Longint): Longint;
-var
-  Sender : TObject;
+//var
+//  Sender : TObject;
 begin
   Assert(False, Format('Trace:> [TgtkObject.SetCapture] 0x%x', [Value]));
   
@@ -3313,9 +3313,9 @@ begin
 {  Widget := GetFixedWidget(pgtkwidget(hWnd));
   if Widget = nil then Widget := pgtkwidget(hWnd); 
   case hWndInsertAfter of
-    HWND_BOTTOM: ;  {gdk_window_lower(Widget^.Window);}
+    HWND_BOTTOM: ;  //gdk_window_lower(Widget^.Window);
     HWND_TOP:    gtk_window_set_position(PGtkWindow(hWnd),GTK_WIN_POS_CENTER);
-                {gdk_window_raise(Widget^.Window);}
+                //gdk_window_raise(Widget^.Window);
   end;
 }
 
@@ -3409,9 +3409,9 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.StretchBlt(DestDC: HDC; X, Y, Width, Height: Integer;
   SrcDC: HDC; XSrc, YSrc, SrcWidth, SrcHeight: Integer; Rop: Cardinal): Boolean;
-var
-  pixmap : PgdkPixmap;
-  pixmapwid : pgtkWidget;
+//var
+  //pixmap : PgdkPixmap;
+  //pixmapwid : pgtkWidget;
 begin
   Assert(True, Format('trace:> [TgtkObject.StretchBlt] DestDC:0x%x; X:%d, Y:%d, Width:%d, Height:%d; SrcDC:0x%x; XSrc:%d, YSrc:%d, SrcWidth:%d, SrcHeight:%d; Rop:0x%x', [DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, SrcWidth, SrcHeight, Rop]));
   Result := IsValidDC(DestDC) and IsValidDC(SrcDC);
@@ -3520,8 +3520,8 @@ end;
 { =============================================================================
 
   $Log$
-  Revision 1.35  2001/06/12 18:31:01  lazarus
-  MG: small bugfixes
+  Revision 1.36  2001/06/14 14:57:59  lazarus
+  MG: small bugfixes and less notes
 
   Revision 1.33  2001/04/13 13:22:23  lazarus
 

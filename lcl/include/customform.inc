@@ -405,7 +405,7 @@ end;
 {       TCustomForm ValidateRename                                          }
 {------------------------------------------------------------------------------}
 procedure TCustomForm.ValidateRename(AComponent: TComponent;
-  const CurName, NewName: string);
+  const CurName, NewName: ShortString);
 begin
   inherited ValidateRename(AComponent, CurName, NewName);
   if FDesigner <> nil then
@@ -418,10 +418,10 @@ end;
 procedure TCustomForm.WndPRoc(Var Message : TLMessage);
 var
   FocusHandle : HWND;
-  SaveIndex : Integer;
+//  SaveIndex : Integer;
   MenuItem : TMenuItem;
-  Canvas2 : TCanvas;
-  DC: HDC;
+//  Canvas2 : TCanvas;
+//  DC: HDC;
 
 begin
 // Assert(False, 'Trace:-----------------IN TCUSTOMFORM WNDPROC-------------------');
@@ -732,7 +732,7 @@ end;
 {       TCustomForm Method CloseQuery                                               }
 {------------------------------------------------------------------------------}
 function TCustomForm.CloseQuery : boolean;
-var i : integer;
+//var i : integer;
 begin
   { Query children forms whether we can close }
   if FormStyle = fsMDIForm then begin
@@ -870,8 +870,6 @@ end;
 {  TCustomForm ShowModal                                                       }
 {------------------------------------------------------------------------------}
 Function TCustomForm.ShowModal : Integer;
-Var
-I : Integer;
 begin
   { TODO : This has to be changed by WM_VISIBLECHANGED. Implement appropriate callback !!! }
   //Kill capture when opening another dialog
@@ -898,6 +896,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.20  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.19  2001/05/31 13:57:28  lazarus
   MG: added environment option OpenLastProjectAtStart
 

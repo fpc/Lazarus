@@ -361,7 +361,7 @@ TCMDialogKey = TLMKEY;
     FControlStyle: TControlStyle;
     FCtl3D : Boolean;
     FCursor : TCursor;
-    FDesktopFont: Boolean;
+    //FDesktopFont: Boolean;
     FDragCursor : TCursor;
     FDragKind : TDragKind;
     FDragMode : TDragMode;
@@ -581,11 +581,11 @@ TCMDialogKey = TLMKEY;
     FBorderWidth : TBorderWidth;
     FControls : TList;
     FDefWndProc : Pointer;
-    FDockSite : Boolean;
-    FLastClientWidth : Integer;
-    FLastClientHeight : Integer;
+    //FDockSite : Boolean;
+    //FLastClientWidth : Integer;
+    //FLastClientHeight : Integer;
     FLastResize : TPoint;
-    FUseDockManager : Boolean;
+    //FUseDockManager : Boolean;
     FOnKeyDown : TKeyEvent;
     FOnKeyPress: TKeyPressEvent;
     FOnKeyUp : TKeyEvent;
@@ -608,6 +608,7 @@ TCMDialogKey = TLMKEY;
     function GetControl(const Index: Integer): TControl;
     function GetControlCount: Integer;
     function GetHandle : HWND;
+    procedure SetHandle(NewHandle: HWND);
     Function GetTabOrder: TTabOrder;
     Procedure SetBorderWidth(Value : TBorderWidth);
     Procedure SetParentCtl3D(value : Boolean);
@@ -717,7 +718,7 @@ TCMDialogKey = TLMKEY;
     property Brush: TBrush read FBrush;
     property Controls[Index: Integer]: TControl read GetControl;
     property ControlCount: Integer read GetControlCount;
-    property Handle : HWND read GetHandle write FHandle;
+    property Handle : HWND read GetHandle write SetHandle;
     property Showing : Boolean read FShowing;
     property TabStop : Boolean read FTabStop write FTabStop;
     property TabOrder : TTabOrder read GetTabOrder write SetTaborder default -1;
@@ -732,7 +733,7 @@ TCMDialogKey = TLMKEY;
   TGraphicControl = class(TControl)
   private
     FCanvas: TCanvas;
-    FOnPaint: TNotifyEvent;
+    //FOnPaint: TNotifyEvent;
     procedure WMPaint(var Message: TLMPaint); message LM_PAINT;
   protected
     procedure Paint; virtual;
@@ -821,6 +822,11 @@ implementation
 //Needs dialogs for the SetVisible procedure.
 Uses Forms, Dialogs, Interfaces;
 
+procedure Twincontrol.SetHandle(NewHandle: HWND);
+begin
+  FHandle:=NewHandle;
+end;
+
 
 var
   CaptureControl: TControl;
@@ -829,7 +835,7 @@ var
   DragControl : TControl;
   DragFreeObject : Boolean;
   DragObject : TDragObject;
-  DragSaveCursor : HCURSOR;
+  //DragSaveCursor : HCURSOR;
   DragStartPos : TPoint;
   DragThreshold : Integer;
   
@@ -914,13 +920,12 @@ end;
 Procedure DragInitControl(Control : TControl; Immediate : Boolean; Threshold : Integer);
  var
   DragObject : TDragObject;
-  StartPos : TPoint;
 begin
-Assert(False, 'Trace:***********************');
-Assert(False, 'Trace:***DragInitControl*****');
-Assert(False, 'Trace:***********************');
+  Assert(False, 'Trace:***********************');
+  Assert(False, 'Trace:***DragInitControl*****');
+  Assert(False, 'Trace:***********************');
 
-DragControl := Control;
+  DragControl := Control;
   try
    DragObject := nil;
    DragFreeObject := False;
@@ -1132,6 +1137,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.20  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.19  2001/05/13 22:07:08  lazarus
   Implemented BringToFront / SendToBack.
 

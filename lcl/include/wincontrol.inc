@@ -364,7 +364,7 @@ end;
 Procedure TWinControl.SetZOrder(Topmost: Boolean);
 const
   WindowPos: array[Boolean] of Word = (HWND_BOTTOM, HWND_TOP);
-var i: integer;
+//var i: integer;
 begin
   if FParent <> nil then
   begin
@@ -410,7 +410,6 @@ begin
         TWinControl(FWinControls[n]).UpdateShowing;
     end;
   end;
-
 
   if FHandle <> 0 
   then begin
@@ -542,7 +541,7 @@ end;
 procedure TWinControl.PaintControls(DC: HDC; First: TControl);
 var
   I, Count, SaveIndex: Integer;
-  FrameBrush: HBRUSH;
+//  FrameBrush: HBRUSH;
   TempControl : TCOntrol;
 begin
 //writeln('[TWinControl.PaintControls] ',Name,':',ClassName,'  DC=',HexStr(DC,8));
@@ -677,9 +676,9 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TWinControl.WndPRoc(Var Message : TLMessage);
 Var
- Form: TCustomForm;
- KeyState: TKeyboardState;
- WHeelMsg : TCMMouseWheel;
+  Form: TCustomForm;
+//  KeyState: TKeyboardState;
+//  WheelMsg : TCMMouseWheel;
 Begin
 //  Assert(False, Format('Trace:[TWinControl.WndPRoc] %s(%s) --> Message = %d', [ClassName, Name, Message.Msg]));
   case Message.Msg of
@@ -1113,7 +1112,7 @@ End;
 {------------------------------------------------------------------------------}
 procedure TWinControl.AlignControl(AControl : TControl);
 var
-  Num : Integer;
+//  Num : Integer;
   Rect: TRect;
 begin
   if not HandleAllocated or (csDestroying in ComponentState) then Exit;
@@ -1139,7 +1138,7 @@ Assert(False,'Trace:Alignment is alClient') ;
                         AControl.Height := TControl(Owner).Height-1;
                 end;
         alNone : Begin
-                  {put nothing in here}
+                  //put nothing in here
 
                 End;
         alBottom : Begin
@@ -1351,7 +1350,6 @@ var
   dc,Memdc : hdc;
   MemBitmap, OldBitmap : HBITMAP;
   PS : TPaintStruct;
-  I : Integer;
 begin
 //writeln('[TWinControl.WMPaint] ',Name,':',ClassName,'  ',HexStr(Msg.DC,8));
   Assert(False, Format('Trace:> [TWinControl.WMPaint] %s Msg.DC: 0x%x', [ClassName, Msg.DC]));
@@ -1526,7 +1524,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TWinControl.WMMouseWheel(var Message: TLMMouseEvent);
 Var
-  Button : TMouseButton;
   MousePos : TPoint;
   Shift : TShiftState;
 begin            
@@ -1964,6 +1961,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2001/06/14 14:57:59  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.31  2001/06/05 10:32:05  lazarus
   MG: small bugfixes for bitbtn, handles
 

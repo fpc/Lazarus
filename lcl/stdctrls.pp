@@ -539,9 +539,6 @@ type
     procedure Insert(Index: Integer; const S: string); override;
   end;
     }
-var
-   aColors : Array[1..10] of TColor;
-   ColorNum : Integer;
 
 const
 
@@ -570,6 +567,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2001/06/14 14:57:58  lazarus
+  MG: small bugfixes and less notes
+
   Revision 1.14  2001/03/27 21:12:53  lazarus
   MWE:
     + Turned on longstrings
