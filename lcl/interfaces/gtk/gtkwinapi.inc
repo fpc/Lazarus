@@ -3035,7 +3035,7 @@ end;
 {$Else}
 var
   LineStart, LineEnd, StrEnd: PChar;
-  Width, Height: Integer;
+  Left, Top, Width, Height: Integer;
   TopY, LineLen, LineHeight : Integer;
   TxtPt : TPoint;
   UseFont : PGDKFont;
@@ -3053,13 +3053,14 @@ var
     CharsWritten, CurX, i: integer;
     LinePos: PChar;
   begin
+    {$IFNDEF DisableDoubleBuf}
+    BeginGDKErrorTrap;
+    {$ENDIF}
     with TDeviceContext(DC) do begin
       if (Dx=nil) then begin
         // no dist array -> write as one block
-        BeginGDKErrorTrap;
         gdk_draw_text(Buffer, UseFont, GC, TxtPt.X, TxtPt.Y,
                       LineStart, LineLen);
-        EndGDKErrorTrap;
       end else begin
         // dist array -> write each char separately
         CharsWritten:=integer(LineStart-Str);
@@ -3069,9 +3070,7 @@ var
         CurX:=TxtPt.X;
         LinePos:=LineStart;
         for i:=1 to LineLen do begin
-          BeginGDKErrorTrap;
           gdk_draw_text(Buffer, UseFont, GC, CurX, TxtPt.Y, LinePos, 1);
-          EndGDKErrorTrap;
           inc(LinePos);
           inc(CurX,CurDistX^);
           inc(CurDistX);
@@ -3083,11 +3082,12 @@ var
         else
           UnderLineLen := gdk_text_width(UseFont,LineStart, LineLen);
         Y := TxtPt.Y + 1;
-        BeginGDKErrorTrap;
         gdk_draw_line(Buffer, GC, TxtPt.X, Y, TxtPt.X+UnderLineLen, Y);
-        EndGDKErrorTrap;
       end;
     end;
+    {$IFNDEF DisableDoubleBuf}
+    EndGDKErrorTrap;
+    {$ENDIF}
   end;
 
 begin
@@ -3112,6 +3112,8 @@ begin
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       buffered := false;
       UseFont:=nil;
+      buffer := Drawable;
+      
       if (Str<>nil) and (Count>0) then begin
         if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
           UseFont := GetDefaultFont(false);
@@ -3152,16 +3154,30 @@ begin
         Height := Rect^.Bottom - Rect^.Top;
         SelectedColors := dcscCustom;
         EnsureGCColor(DC, dccCurrentBackColor, True, False);
-        BeginGDKErrorTrap;
-        buffer := gdk_pixmap_new(Drawable, Width, Height, -1);
-        if IsBackgroundColor(TColor(CurrentBackColor.ColorRef)) then
-          StyleFillRectangle(buffer, GC, CurrentBackColor.ColorRef, 0, 0, Width, Height)
-        else
-          gdk_draw_rectangle(buffer, GC, 1, 0, 0, Width, Height);
-        EndGDKErrorTrap;
+        {$IFNDEF DisableDoubleBuf}
         buffered := True;
-      end else
-        buffer := Drawable;
+        buffer := gdk_pixmap_new(Drawable, Width, Height, -1);
+        BeginGDKErrorTrap;
+        {$ENDIF}
+        if buffered then begin
+          Left:=0;
+          Top:=0;
+        end else begin
+          Left:=Rect^.Left+DCOrigin.X;
+          Top:=Rect^.Top+DCOrigin.Y;
+        end;
+        {$IFNDEF DisableDoubleBuf}
+        BeginGDKErrorTrap;
+        {$ENDIF}
+        if IsBackgroundColor(TColor(CurrentBackColor.ColorRef)) then
+          StyleFillRectangle(buffer, GC, CurrentBackColor.ColorRef,
+                             Left, Top, Width, Height)
+        else
+          gdk_draw_rectangle(buffer, GC, 1, Left, Top, Width, Height);
+        {$IFNDEF DisableDoubleBuf}
+        EndGDKErrorTrap;
+        {$ENDIF}
+      end;
 
       if UseFont<>nil then begin
         LineLen := FindChar(#10,Str,Count);
@@ -3201,10 +3217,15 @@ begin
               LineLen:=Count;
           end;
         end;
-        BeginGDKErrorTrap;
-        If UnRef then
+        If UnRef then begin
+          {$IFNDEF DisableDoubleBuf}
+          BeginGDKErrorTrap;
+          {$ENDIF}
           GDK_Font_UnRef(UseFont);
-        EndGDKErrorTrap;
+          {$IFNDEF DisableDoubleBuf}
+          EndGDKErrorTrap;
+          {$ENDIF}
+        end;
       end;
       if buffered then begin
         BeginGDKErrorTrap;
@@ -9004,6 +9025,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.295  2003/10/31 14:54:10  mattias
+  added the possibility to disbale double buffering
+
   Revision 1.294  2003/10/30 21:26:23  mattias
   removed some hints
 
