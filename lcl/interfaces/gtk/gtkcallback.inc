@@ -263,7 +263,7 @@ begin
   
   if GTK_IS_CHECK_MENU_ITEM(widget) then begin
     LCLMenuItem:=TMenuItem(GetLCLObject(Widget));
-    if LCLMenuItem<>nil then begin
+    if (LCLMenuItem<>nil) and LCLMenuItem.IsCheckItem then begin
       if ((PGtkCheckMenuItem(Widget)^.flag0 and bm_checkmenuitem_active)<>0)
         <>LCLMenuItem.Checked
       then begin
@@ -280,6 +280,7 @@ begin
       end;
     end;
   end;
+
   Mess.Msg := LM_ACTIVATE;
   Mess.Result := 0;
   Result := DeliverMessage(Data, Mess) = 0;
@@ -2541,6 +2542,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.165  2003/02/03 22:28:08  mattias
+  small bugfixes and fixed non checked menu items activate
+
   Revision 1.164  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 
