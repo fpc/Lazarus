@@ -6230,7 +6230,7 @@ begin
     // open in editor
     if (ifsOpenInEditor in NeededFlags) and (AnUnitInfo.EditorIndex>=0) then
       Include(ResultFlags,ifsOpenInEditor);
-  end else begin
+  end else if FileExists(AFilename) then begin
     // readonly
     if (ifsReadOnly in NeededFlags) and (not FileIsWritable(AFilename)) then
       Include(ResultFlags,ifsReadOnly);
@@ -8250,6 +8250,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.515  2003/04/09 23:36:33  mattias
+  implemented removing and readding package items
+
   Revision 1.514  2003/04/08 22:02:15  mattias
   implemented open package file
 
