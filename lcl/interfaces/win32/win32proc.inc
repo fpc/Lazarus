@@ -728,6 +728,31 @@ Begin
   dec(Top,TopOffset);
 End;
 
+function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
+begin
+  Result := WS_OVERLAPPEDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+  case Style of
+  //bsSizeable:; -> Default
+  bsSingle:
+    Result := Result and DWORD(not WS_THICKFRAME);
+  bsDialog:
+    Result := Result and DWORD(not (WS_THICKFRAME or WS_MINIMIZEBOX or WS_MAXIMIZEBOX));
+  bsNone:
+    Result := WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
+  bsToolWindow:
+    Result := Result and DWORD(not WS_THICKFRAME);
+  end;
+end;
+  
+function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
+begin
+  Result := 0;
+  case Style of
+  bsToolWindow, bsSizeToolWin:
+    Result := WS_EX_TOOLWINDOW;
+  end;
+end;
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
@@ -736,6 +761,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.40  2004/05/12 15:11:46  micha
+  fix sizing/non-sizing border sizes
+
   Revision 1.39  2004/02/23 08:19:05  micha
   revert intf split
 

@@ -690,13 +690,8 @@ activate_time :	the time at which the activation event occurred.
             begin
               // the LCL defines the size of a form without border, win32 with.
               // -> adjust size according to BorderStyle
-              case TCustomForm(Sender).BorderStyle of
-                bsSizeable,bsSingle,bsDialog:
-                  Windows.AdjustWindowRect(@SizeRect,WS_OVERLAPPEDWINDOW,false);
-                bsToolWindow,bsSizeToolWin:
-                  Windows.AdjustWindowRectEx(@SizeRect,WS_OVERLAPPEDWINDOW,false,WS_EX_TOOLWINDOW);
-                //bsNone: -> Do Nothing
-              end;
+              Windows.AdjustWindowRectEx(@SizeRect, BorderStyleToWin32Flags(TCustomForm(Sender).BorderStyle), false,
+		  BorderStyleToWin32FlagsEx(TCustomForm(Sender).BorderStyle));
             end;
           end;
           ResizeChild(TheWinControl, Left, Top,
@@ -2036,26 +2031,10 @@ Begin
     csForm:
     Begin
       Assert(False, 'Trace:CreateComponent - Creating a Form Window');
-      Flags:= WS_OVERLAPPEDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
-      Case TCustomForm(Sender).BorderStyle of
-      //bsSizeable:; -> Default
-      bsSingle:
-        Flags:= Flags and DWORD(not WS_THICKFRAME);
-      bsDialog:
-        Flags:= Flags and DWORD(not (WS_THICKFRAME or WS_MINIMIZEBOX or WS_MAXIMIZEBOX));
-      bsNone:
-        Flags:= WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN;
-      bsToolWindow:
-      Begin
-        FlagsEx:=WS_EX_TOOLWINDOW;
-        Flags:= Flags and DWORD(not WS_THICKFRAME);
-      End;
-      bsSizeToolWin:
-        FlagsEx:=WS_EX_TOOLWINDOW;
-      End;//case
-
-      If TCustomForm(Sender).FormStyle = fsStayOnTop Then
-        FlagsEx:= FlagsEx or WS_EX_TOPMOST;
+      Flags := BorderStyleToWin32Flags(TCustomForm(Sender).BorderStyle);
+      FlagsEx := BorderStyleToWin32FlagsEx(TCustomForm(Sender).BorderStyle);
+      if TCustomForm(Sender).FormStyle = fsStayOnTop then
+        FlagsEx := FlagsEx or WS_EX_TOPMOST;
       pClassName := @ClsName;
       WindowTitle := StrCaption;
       Left := LongInt(CW_USEDEFAULT);
@@ -2974,6 +2953,9 @@ End;
 
 {
   $Log$
+  Revision 1.192  2004/05/12 15:11:46  micha
+  fix sizing/non-sizing border sizes
+
   Revision 1.191  2004/05/12 09:46:25  micha
   fix toolbar buttons by handling them as customcontrols
   remove handledialogmessage, now handled in lcl

@@ -1995,14 +1995,21 @@ begin
     Height := Bottom - Top;
   end;
 
+  // convert top level lcl window coordinaties to win32 coord
   Style := Windows.GetWindowLong(Handle, GWL_STYLE);
   ExStyle := Windows.GetWindowLong(Handle, GWL_EXSTYLE);
-  if (Style and WS_BORDER) <> 0 then
+  if (Style and WS_THICKFRAME) <> 0 then
   begin
-    // convert top level lcl window coordinaties to win32 coord
+    // thick, sizing border
     // add twice, top+bottom border
     Dec(Width, 2*Windows.GetSystemMetrics(SM_CXSIZEFRAME));
     Dec(Height, 2*Windows.GetSystemMetrics(SM_CYSIZEFRAME));
+  end else
+  if (Style and WS_BORDER) <> 0 then
+  begin
+    // thin, non-sizing border
+    Dec(Width, 2*Windows.GetSystemMetrics(SM_CXFIXEDFRAME));
+    Dec(Height, 2*Windows.GetSystemMetrics(SM_CYFIXEDFRAME));
   end;
   if (Style and WS_CAPTION) <> 0 then
     if (ExStyle and WS_EX_TOOLWINDOW) <> 0 then
@@ -2975,6 +2982,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.108  2004/05/12 15:11:46  micha
+  fix sizing/non-sizing border sizes
+
   Revision 1.107  2004/04/11 10:19:28  micha
   cursor management updated:
   - lcl notifies interface via WSControl.SetCursor of changes
