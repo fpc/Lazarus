@@ -29,6 +29,9 @@ unit GTKDef;
 {$mode objfpc} 
 {$LONGSTRINGS ON}
 
+{$IFDEF gtk2}
+{off $DEFINE USE_PANGO}
+{$EndIf}
 
 interface
 
@@ -94,6 +97,8 @@ type
       gdiFont: (
       {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
         GDIFontObject: PPangoFontDescription;
+        StrikeOut : gboolean;//Description can't set these so we use these
+        Underline : gboolean;//instead of an additional AttributeList
       {$else}
         GDIFontObject: PGdkFont;
         LogFont: TLogFont;// for now font info is stored as well, later query font params
@@ -460,6 +465,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.45  2003/09/09 20:46:38  ajgenius
+  more implementation toward pango for gtk2
+
   Revision 1.44  2003/09/09 17:16:24  ajgenius
   start implementing pango routines for GTK2
 

@@ -144,8 +144,11 @@ begin
   FDeviceContexts.Options:=FDeviceContexts.Options+[dhaoCacheContains];
   FGDIObjects := TDynHashArray.Create(-1);
   FGDIObjects.Options:=FGDIObjects.Options+[dhaoCacheContains];
+  {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+  FDefaultFontDesc:= nil;
+  {$Else}
   FDefaultFont:= nil;
-
+  {$EndIf}
   // messages
   FMessageQueue := TGtkMessageQueue.Create;
   WaitingForMessages := false;
@@ -7413,6 +7416,8 @@ begin
   aDC := NewDC;
   aDC.Wnd := HWND(TheWidget);
 
+  GdiObject := nil;
+
   if TheWidget = nil
   then begin
     FillChar(Values, SizeOf(Values), #0);
@@ -7439,10 +7444,23 @@ begin
     gdk_gc_set_function(aDC.GC, GDK_COPY);
 
     gdk_gc_get_values(aDC.GC, @Values);
+
+    {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+      if (gtk_widget_get_style(ClientWidget)<>nil) and
+        (gtk_widget_get_style(ClientWidget)^.font_desc <> nil)
+      then begin
+         GdiObject:=NewGDIObject(gdiFont);
+         GdiObject^.GDIFontObject := gtk_widget_get_style(ClientWidget)^.font_desc;
+         GdiObject^.StrikeOut := False;
+         GdiObject^.Underline := False;
+         gdk_font_ref(Values.Font);
+      end else GdiObject := CreateDefaultFont;
+    {$EndIf}
   end;
 
   if aDC <> nil
   then begin
+    {$IfNdef USE_PANGO}
     if Values.Font <> nil
     then begin
       GdiObject:=NewGDIObject(gdiFont);
@@ -7450,7 +7468,11 @@ begin
       gdk_font_ref(Values.Font);
     end
     else GdiObject := CreateDefaultFont;
-
+    {$EndIf}
+     
+    If GdiObject = nil then
+      GdiObject := CreateDefaultFont;
+  
     aDC.CurrentFont := GdiObject;
     aDC.CurrentBrush := CreateDefaultBrush;
     aDC.CurrentPen := CreateDefaultPen;
@@ -7520,7 +7542,11 @@ end;
 function TgtkObject.CreateDefaultFont: PGdiObject;
 begin
   Result := NewGDIObject(gdiFont);
+{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+  Result^.GDIFontObject:= GetDefaultFontDesc(true);
+{$Else}
   Result^.GDIFontObject:= GetDefaultFont(true);
+{$EndIf}
 end;
 
 {------------------------------------------------------------------------------
@@ -7547,6 +7573,10 @@ end;
   Sets the gtk resource file and parses it.
  ------------------------------------------------------------------------------}
 procedure TgtkObject.UpdateDCTextMetric(DC: TDeviceContext);
+{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+begin
+end;
+{$Else}
 const
   TestString = '{Am|g_}';
 var
@@ -7607,10 +7637,23 @@ begin
     end;
   end;
 end;
-
+{$EndIf}
 {------------------------------------------------------------------------------
   function TgtkObject.GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
  ------------------------------------------------------------------------------}
+{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+function TgtkObject.GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
+begin
+  if FDefaultFontDesc = nil then begin
+    FDefaultFontDesc:=LoadDefaultFontDesc;
+    if FDefaultFontDesc = nil then
+      raise EOutOfResources.Create(rsUnableToLoadDefaultFont);
+  end;
+  Result:=FDefaultFontDesc;
+  if IncreaseReferenceCount then
+    g_object_ref(Result);
+end;
+{$Else}
 function TgtkObject.GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
 begin
   if FDefaultFont = nil then begin
@@ -7626,6 +7669,7 @@ begin
   if IncreaseReferenceCount then
     gdk_font_ref(Result);
 end;
+{$EndIF}
 
 function TgtkObject.CreateRegionCopy(SrcRGN: hRGN): hRGN;
 var
@@ -7900,15 +7944,24 @@ end;
 procedure TGtkObject.WordWrap(DC: HDC; AText: PChar; MaxWidthInPixel: integer;
   var Lines: PPChar; var LineCount: integer);
 var
+  {$IfDef USE_PANGO}
+  UseFontDesc : PPangoFontDescription;
+  {$Else}
   UseFont : PGDKFont;
+  {$EndIf}
   UnRef : Boolean;
 
   function GetLineWidthInPixel(LineStart, LineLen: integer): integer;
   var
     lbearing, rbearing, width, ascent, descent: LongInt;
   begin
+    {$IfDef USE_PANGO}
+    GetTextExtentIgnoringAmpersands(UseFontDesc, @AText[LineStart], LineLen,
+                     @lbearing, @rBearing, @width, @ascent, @descent);
+    {$Else}
     GetTextExtentIgnoringAmpersands(UseFont, @AText[LineStart], LineLen,
                      @lbearing, @rBearing, @width, @ascent, @descent);
+    {$EndIf}
     Result:=Width;
   end;
 
@@ -7973,11 +8026,19 @@ var
     with TDeviceContext(DC) do begin
       if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil)
       then begin
+        {$IfDef USE_PANGO}
+        UseFontDesc := GetDefaultFontDesc(true);
+        {$Else}
         UseFont := GetDefaultFont(true);
+        {$EndIf}
         UnRef := True;
       end
       else begin
+        {$IfDef USE_PANGO}
+        UseFontDesc := CurrentFont^.GDIFontObject;
+        {$Else}
         UseFont := CurrentFont^.GDIFontObject;
+        {$EndIf}
         UnRef := False;
       end;
     end;
@@ -7986,7 +8047,11 @@ var
   procedure CleanUpFont;
   begin
     If UnRef then
-      GDK_Font_UnRef(UseFont);
+        {$IfDef USE_PANGO}
+        G_Object_UnRef(UseFontDesc);
+        {$Else}
+        GDK_Font_UnRef(UseFont);
+        {$EndIf}
   end;
 
 var
@@ -8113,6 +8178,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.411  2003/09/09 20:46:38  ajgenius
+  more implementation toward pango for gtk2
+
   Revision 1.410  2003/09/09 04:15:08  ajgenius
   more updates for GTK2, more GTK1 wrappers, removal of more ifdef's, partly fixed signals
 

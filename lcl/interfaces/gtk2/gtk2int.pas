@@ -30,6 +30,8 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
+{off $DEFINE USE_PANGO}
+
 uses
   Classes, SysUtils,
   {$IfNDef GTK2_2}
@@ -38,7 +40,7 @@ uses
     {$EndIf}
   {$EndIf}
 
-  gdk2pixbuf, gtk2, gdk2, glib2,
+  gdk2pixbuf, gtk2, gdk2, glib2, Pango,
 
    LMessages, Controls, Forms, VclGlobals, LCLProc,
   LCLStrConsts, LCLLinux, LCLType, DynHashArray, LazLinkedList,
@@ -55,6 +57,7 @@ type
     function LoadStockPixmap(StockID: longint) : HBitmap; override;
     {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
     function PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
+    function ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint; Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean; overload;
     {$EndIf}
   end;
 
@@ -75,6 +78,16 @@ procedure gdk_draw_pixbuf(drawable : PGdkDrawable; gc : PGdkGC; pixbuf : PGdkPix
 implementation
 
 {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+{------------------------------------------------------------------------------
+  Method:  (Pango)DrawText
+  Params:  DC, Str, Count, Rect, Flags
+  Returns: If the string was drawn, or CalcRect run
+
+  Currently we don't use this... since the gtk1 interface does its own calculations
+  and then calls TextOut we can test that things work first with the basic Text
+  routines, then worry about making sure this one works before we make is override
+  by default.
+ ------------------------------------------------------------------------------}
 function TGTK2Object.PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect: TRect; Flags: Cardinal): Integer;
 
   Function Alignment : TPangoAlignment;
@@ -101,7 +114,10 @@ function TGTK2Object.PangoDrawText(DC: HDC; Str: PChar; Count: Integer; var Rect
 
 var
   Layout : PPangoLayout;
-  UseDescr : PPangoFontDescription;
+  UseFontDesc : PPangoFontDescription;
+  AttrList : PPangoAttrList;
+  Attr : PPangoAttribute;
+  RGBColor : TColor;
   X, Y, Width, Height : Integer;
 begin
   if (Str=nil) or (Str[0]=#0) then exit;
@@ -119,18 +135,44 @@ begin
     end
     else begin
       if (Str<>nil) and (Count>0) then begin
-        if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then begin
-          UseDescr := GetDefaultFontDescr(false);
-          UnRef := false;
-          UnderLine := false;
-        end else begin
-          UseDescr := CurrentFont^.GDIFontObject;
-          UnRef := False;
-          UnderLine := (CurrentFont^.LogFont.lfUnderline<>0);
-        end;
+        if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then
+          UseFontDesc := GetDefaultFontDesc(false)
+        else
+          UseFontDesc := CurrentFont^.GDIFontObject;
 
         Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
-        pango_layout_set_font_description(Layout, UseDescr);
+        pango_layout_set_font_description(Layout, UseFontDesc);
+        AttrList := pango_layout_get_attributes(Layout);
+
+        //fix me... what about &&, can we strip and do do markup substitution?
+        If CurrentFont^.Underline then
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
+        else
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+
+        pango_attr_list_change(AttrList,Attr);
+
+        Attr := pango_attr_strikethrough_new(CurrentFont^.StrikeOut);
+        pango_attr_list_change(AttrList,Attr);
+
+        Case TColor(CurrentTextColor.ColorRef) of
+          clScrollbar..clEndColors:
+            RGBColor := GetSysColor(CurrentTextColor.ColorRef and $FF);
+          else
+            RGBColor := CurrentTextColor.ColorRef and $FFFFFF;
+        end;
+
+        Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
+                                        gushort(GetGValue(RGBColor)) shl 8,
+                                        gushort(GetBValue(RGBColor)) shl 8);
+
+        pango_attr_list_change(AttrList,Attr);
+        //fix me... then generate markup for all this?
+        //the same routine could then be used for both
+        //DrawText and ExtTextOut
+        
+        pango_layout_set_attributes(Layout, AttrList);
+
         pango_layout_set_single_paragraph_mode(Layout, (Flags and DT_SingleLine) = DT_SingleLine);
         pango_layout_set_wrap(Layout, PANGO_WRAP_WORD);
 
@@ -143,19 +185,25 @@ begin
 
         pango_layout_set_alignment(Layout, Alignment);
   
+        //fix me... and what about UTF-8 conversion?
+        //this could be a massive problem since we
+        //will need to know before hand what the current
+        //locale is, and if we stored UTF-8 string this would break
+        //cross-compatibility with GTK1.2 and win32 interfaces.....
+        
         pango_layout_set_text(Layout, Str, Count);
         pango_layout_get_pixel_size(Layout, @Width, @Height);
 
         Case TopOffset of
           DT_Top : Y := Rect.Top;
           DT_Bottom : Y := Rect.Bottom - Height;
-          DT_Center : Y := Rect.Top + (Rect.Bottom - Rect.Top)/2 - Height/2;
+          DT_Center : Y := Rect.Top + (Rect.Bottom - Rect.Top) div 2 - Height div 2;
         end;
 
         Case Alignment of
           PANGO_ALIGN_LEFT : X := Rect.Left;
           PANGO_ALIGN_RIGHT : X := Rect.Right - Width;
-          PANGO_ALIGN_CENTER : X := Rect.Left + (Rect.Right - Rect.Left)/2 - Width/2;
+          PANGO_ALIGN_CENTER : X := Rect.Left + (Rect.Right - Rect.Left) div 2 - Width div 2;
         end;
 
         if ((Flags and DT_CalcRect) = DT_CalcRect) then begin
@@ -171,9 +219,179 @@ begin
         gdk_draw_layout(drawable, gc, X, Y, Layout);
         g_object_unref(Layout);
         Result := 0;
+      end;
+    end;
   end;
   Assert(False, Format('trace:> [Tgtk2Object.DrawText] DC:0x%x, Str:''%s'', Count: %d, Rect = %d,%d,%d,%d, Flags:%d',
     [DC, Str, Count, Rect.Left, Rect.Top, Rect.Right, Rect.Bottom, Flags]));
+end;
+
+{------------------------------------------------------------------------------
+  Function: ExtTextOut
+  Params:  none
+  Returns: Nothing
+
+
+ ------------------------------------------------------------------------------}
+function Tgtk2Object.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
+  Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+var
+  LineStart, LineEnd, StrEnd: PChar;
+  Width, Height: Integer;
+  TopY, LineLen, LineHeight : Integer;
+  TxtPt : TPoint;
+  DCOrigin: TPoint;
+  RGBColor : Longint;
+
+  Layout : PPangoLayout;
+  UseFontDesc : PPangoFontDescription;
+  AttrList : PPangoAttrList;
+  Attr : PPangoAttribute;
+
+  procedure DrawTextLine;
+  var
+    UnderLineLen, Y: integer;
+    CurDistX: PInteger;
+    CharsWritten, CurX, i: integer;
+    LinePos: PChar;
+  begin
+    with TDeviceContext(DC) do begin
+      if (Dx=nil) then begin
+        // no dist array -> write as one block
+        //fix me... do we even need to do it this way with pango?
+      end else begin
+        // dist array -> write each char separately
+        CharsWritten:=integer(LineStart-Str);
+        if DCTextMetric.IsDoubleByteChar then
+          CharsWritten:=CharsWritten div 2;
+        CurDistX:=Dx+CharsWritten*SizeOf(Integer);
+        CurX:=TxtPt.X;
+        LinePos:=LineStart;
+        for i:=1 to LineLen do begin
+          //fix me... do we even need to do it this way with pango?
+          inc(LinePos);
+          inc(CurX,CurDistX^);
+          inc(CurDistX);
+        end;
+      end;
+    end;
+  end;
+
+begin
+  Assert(False, Format('trace:> [Tgtk2Object.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
+  Result := IsValidDC(DC);
+  if Result
+  then with TDeviceContext(DC) do
+  begin
+    if GC = nil
+    then begin
+      WriteLn('WARNING: [Tgtk2Object.ExtTextOut] Uninitialized GC');
+      Result := False;
+    end
+    else if ((Options and (ETO_OPAQUE+ETO_CLIPPED)) <> 0)
+    and (Rect=nil) then begin
+      WriteLn('WARNING: [Tgtk2Object.ExtTextOut] Rect=nil');
+      Result := False;
+    end else begin
+      // TODO: implement other parameters.
+
+      // to reduce flickering calculate first and then paint
+      DCOrigin:=GetDCOffset(TDeviceContext(DC));
+
+      UseFontDesc:=nil;
+      if (Str<>nil) and (Count>0) then begin
+        if (CurrentFont = nil) or (CurrentFont^.GDIFontObject = nil) then
+          UseFontDesc := GetDefaultFontDesc(false)
+        else
+          UseFontDesc := CurrentFont^.GDIFontObject;
+
+        Layout := gtk_widget_create_pango_layout (GetStyleWidget('default'), nil);
+
+        pango_layout_set_font_description(Layout, UseFontDesc);
+
+        AttrList := pango_layout_get_attributes(Layout);
+
+        If CurrentFont^.Underline then
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_SINGLE)
+        else
+          Attr := pango_attr_underline_new(PANGO_UNDERLINE_NONE);
+
+        pango_attr_list_change(AttrList,Attr);
+
+        Attr := pango_attr_strikethrough_new(CurrentFont^.StrikeOut);
+        pango_attr_list_change(AttrList,Attr);
+
+        if UseFontDesc <> nil then begin
+          if (Options and ETO_CLIPPED) <> 0 then
+          begin
+            X := Rect^.Left;
+            Y := Rect^.Top;
+            IntersectClipRect(DC, Rect^.Left, Rect^.Top,
+                              Rect^.Right, Rect^.Bottom);
+          end;
+          LineLen := FindChar(#10,Str,Count);
+          TopY := Y;
+          UpdateDCTextMetric(TDeviceContext(DC));
+          TxtPt.X := X + DCOrigin.X;
+          LineHeight := DCTextMetric.TextMetric.tmAscent;
+          TxtPt.Y := TopY + LineHeight + DCOrigin.Y;
+        end else begin
+          WriteLn('WARNING: [Tgtk2Object.ExtTextOut] Missing Font');
+          Result := False;
+        end;
+      end;
+
+      if ((Options and ETO_OPAQUE) <> 0) then
+      begin
+        Width := Rect^.Right - Rect^.Left;
+        Height := Rect^.Bottom - Rect^.Top;
+        SelectedColors := dcscCustom;
+        EnsureGCColor(DC, dccCurrentBackColor, True, False);
+        
+      end;
+
+      if ((Options and ETO_OPAQUE) <> 0) then
+      begin
+        Width := Rect^.Right - Rect^.Left;
+        Height := Rect^.Bottom - Rect^.Top;
+        SelectedColors := dcscCustom;
+        EnsureGCColor(DC, dccCurrentBackColor, True, False);
+        gdk_draw_rectangle(Drawable, GC, 1,
+                           Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
+                           Width, Height);
+      end;
+
+      Attr := pango_attr_foreground_new(gushort(GetRValue(RGBColor)) shl 8,
+                                        gushort(GetGValue(RGBColor)) shl 8,
+                                        gushort(GetBValue(RGBColor)) shl 8);
+
+      pango_attr_list_change(AttrList,Attr);
+
+      pango_layout_set_attributes(Layout, AttrList);
+
+      LineStart:=Str;
+      if LineLen < 0 then begin
+        LineLen:=Count;
+        if Count> 0 then DrawTextLine;
+      end else
+      Begin  //write multiple lines
+        StrEnd:=Str+Count;
+        while LineStart < StrEnd do begin
+          LineEnd:=LineStart+LineLen;
+          if LineLen>0 then DrawTextLine;
+          inc(TxtPt.Y,LineHeight);
+          LineStart:=LineEnd+1; // skip #10
+          if (LineStart<StrEnd) and (LineStart^=#13) then
+            inc(LineStart); // skip #10
+          Count:=StrEnd-LineStart;
+          LineLen:=FindChar(#10,LineStart,Count);
+          if LineLen<0 then
+            LineLen:=Count;
+        end;
+      end;
+    end;
+  end;
+  Assert(False, Format('trace:< [Tgtk2Object.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
 {$EndIf}
 
@@ -285,6 +503,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2003/09/09 20:46:38  ajgenius
+  more implementation toward pango for gtk2
+
   Revision 1.7  2003/09/09 17:16:24  ajgenius
   start implementing pango routines for GTK2
 

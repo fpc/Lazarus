@@ -24,6 +24,9 @@ interface
 {off $DEFINE NoGdkPixbufLib}
 {$ENDIF}
 
+{$IFDEF gtk2}
+{off $DEFINE USE_PANGO}
+{$EndIf}
 uses
   SysUtils, Classes,
   {$Ifndef Win32}
@@ -31,7 +34,7 @@ uses
   {$EndIf}
   InterfaceBase,
   {$IFDEF gtk2}
-  glib2, gdk2pixbuf, gdk2, gtk2,
+  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
@@ -414,8 +417,15 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
 Function DeleteAmpersands(var Str : String) : Longint;
 function Ampersands2Underscore(Src: PChar) : PChar;
 function RemoveAmpersands(Src: PChar; LineLength : Longint) : PChar;
+
+{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription; Str : PChar;
+  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+{$Else}
 Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+{$EndIf}
+
 function GetAccelGroup(const Widget: PGtkWidget;
   CreateIfNotExists: boolean): PGTKAccelGroup;
 procedure SetAccelGroup(const Widget: PGtkWidget;
@@ -465,10 +475,18 @@ function IndexOfStyle(const WName : String): integer;
 Procedure ReleaseStyle(const WName : String);
 function GetStyle(const WName : String) : PGTKStyle;
 Function GetStyleWidget(const WName : String) : PGTKWidget;
+
+{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+function LoadDefaultFontDesc: PPangoFontDescription;
+{$Else}
 function LoadDefaultFont: PGDKFont;
+{$EndIf}
+
 Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
 
+{$IfNdef USE_PANGO} // we should implement pango for gtk2 soon
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
+{$EndIf}
 
 Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual;
   Colormap : PGDKColormap) : TGDIRGB;

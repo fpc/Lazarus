@@ -46,10 +46,14 @@ interface
 
 {off $Define Disable_GC_SysColors}
 
+{$IFDEF gtk2}
+{off $DEFINE USE_PANGO}
+{$EndIf}
+
 uses
   InterfaceBase,
   {$IFDEF gtk2}
-  glib2, gdk2pixbuf, gdk2, gtk2,
+  glib2, gdk2pixbuf, gdk2, gtk2, Pango,
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
@@ -87,7 +91,11 @@ type
     FStockBlackPen: HPEN;
     FStockWhitePen: HPEN;
     
+    {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+    FDefaultFontDesc : PPangoFontDescription;
+    {$Else}
     FDefaultFont : PGdkFont;
+    {$EndIf}
     FStockSystemFont : HFONT;
 
     Function CreateSystemFont : hFont;
@@ -140,7 +148,11 @@ type
     function CreateDefaultFont: PGdiObject;virtual;
     function CreateDefaultPen: PGdiObject;virtual;
     procedure UpdateDCTextMetric(DC: TDeviceContext);
+    {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+    function GetDefaultFontDesc(IncreaseReferenceCount: boolean): PPangoFontDescription;
+    {$Else}
     function GetDefaultFont(IncreaseReferenceCount: boolean): PGDKFont;
+    {$EndIf}
     function CreateRegionCopy(SrcRGN: hRGN): hRGN; override;
     function DCClipRegionValid(DC: HDC): boolean; override;
     function CreateEmptyRegion: hRGN; override;
@@ -360,6 +372,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.144  2003/09/09 20:46:38  ajgenius
+  more implementation toward pango for gtk2
+
   Revision 1.143  2003/09/05 19:29:38  mattias
   Success: The first gtk2 application ran without error
 

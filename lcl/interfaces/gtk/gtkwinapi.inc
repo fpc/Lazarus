@@ -1292,6 +1292,10 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateFontIndirectEx(const LogFont: TLogFont;
   const LongFontName: string): HFONT;
+{$IfDef USE_PANGO}
+begin
+end;
+{$Else}
 var
   GdiObject: PGdiObject;
   S: String;
@@ -1590,7 +1594,7 @@ begin
     else Assert(False, Format('Trace:  [TgtkObject.CreateFontIndirectEx] found XLFD: <%s>', [S]));
   end;
 end;
-
+{$EndIf}
 {------------------------------------------------------------------------------
   Function: CreatePalette
   Params:  LogPalette
@@ -2108,7 +2112,12 @@ begin
       case GDIType of
         gdiFont:
           begin
-            if GDIFontObject<>nil then gdk_font_unref(GDIFontObject);
+            if GDIFontObject<>nil then
+            {$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+            g_object_unref(GDIFontObject);
+            {$Else}
+            gdk_font_unref(GDIFontObject);
+            {$EndIf}
           end;
         gdiBrush:
           begin
@@ -2937,6 +2946,10 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.ExtTextOut(DC: HDC; X, Y: Integer; Options: Longint;
   Rect: PRect; Str: PChar; Count: Longint; Dx: PInteger): Boolean;
+{$Ifdef USE_PANGO}
+begin
+end;
+{$Else}
 var
   LineStart, LineEnd, StrEnd: PChar;
   Width, Height: Integer;
@@ -3083,7 +3096,7 @@ begin
   end;
   Assert(False, Format('trace:< [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
 end;
-
+{$EndIf}
 {------------------------------------------------------------------------------
   Function: FillRect
   Params: none
@@ -4195,6 +4208,9 @@ begin
         end;
       gdiFont:
         begin
+          {$IfDef USE_PANGO}
+          Assert(False, 'Trace:TODO: [TgtkObject.GetObject] gdiFont(PANGO)');
+          {$Else}
           if Buf = nil then
             Result := SizeOf(PGDIObject(GDIObj)^.LogFont)
           else begin
@@ -4207,6 +4223,7 @@ begin
               Result:=BufSize;
             end;
           end;
+          {$EndIf}
         end;
       gdiPen:
         begin
@@ -4525,7 +4542,11 @@ var
   GDIObj : PGDIObject;
 begin
   GDIObj := NewGDIObject(gdiFont);
+  {$IfDef USE_PANGO}
+  GDIObj^.GDIFontObject:= GetDefaultFontDesc(true);
+  {$Else}
   GDIObj^.GDIFontObject:= GetDefaultFont(true);
+  {$EndIf}
   Result := hFont(GDIObj);
 end;
 
@@ -4951,6 +4972,10 @@ end;
  ------------------------------------------------------------------------------}
 function TgtkObject.GetTextExtentPoint(DC: HDC; Str: PChar; Count: Integer;
   var Size: TSize): Boolean;
+{$IfDef USE_PANGO}
+begin
+end;
+{$Else}
 var
   lbearing, rbearing, width, ascent,descent: LongInt;
   UseFont : PGDKFont;
@@ -4984,6 +5009,7 @@ begin
   end;
   Assert(False, 'trace:< [TgtkObject.GetTextExtentPoint]');
 end;
+{$EndIf}
 
 {------------------------------------------------------------------------------
   Function: GetTextMetrics
@@ -6901,10 +6927,12 @@ begin
           Assert(False, Format('trace:  [TgtkObject.SelectObject] DC: 0x%x, Type: Font', [DC]));
           Result := HFONT(CurrentFont);
           CurrentFont := PGDIObject(GDIObj);
+          {$IfNDef USE_PANGO}
           if GC <> nil
           then begin
             gdk_gc_set_font(GC, PGdiObject(GDIObj)^.GDIFontObject);
           end;
+          {$ENDIF}
           Exclude(DCFlags,dcfTextMetricsValid);
           SelectedColors := dcscCustom;
         end;
@@ -8458,6 +8486,10 @@ end;
  ------------------------------------------------------------------------------}
 Function TGTKObject.TextOut(DC: HDC; X,Y : Integer; Str : Pchar;
   Count: Integer) : Boolean;
+{$IfDef USE_PANGO}
+begin
+end;
+{$ELSE}
 var
   aRect : TRect;
   txtpt : TPoint;
@@ -8546,7 +8578,7 @@ begin
     end;
   end;
 end;
-
+{$EndIf}
 {------------------------------------------------------------------------------
   Function: WindowFromPoint
   Params: Point: Specifies the x and y Coords
@@ -8731,6 +8763,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.278  2003/09/09 20:46:38  ajgenius
+  more implementation toward pango for gtk2
+
   Revision 1.277  2003/09/09 17:16:24  ajgenius
   start implementing pango routines for GTK2
 

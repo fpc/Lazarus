@@ -3934,9 +3934,9 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: LoadDefaultFont
+  Function: LoadDefaultFont(Desc)
   Params: none
-  Returns: Returns the default Font
+  Returns: Returns the default Font(or Pango Font Description if using PANGO)
 
   For Text/Font Routines: if the Font is invalid, this can be used instead, or
   if the DT_internal flag is used(aka use system font) this is used. This is
@@ -3947,6 +3947,29 @@ end;
   a generic fixed font, if THAT fails, it gets whatever font is available.
   If the result is not nil it MUST be GDK_FONT_UNREF'd when done.
  ------------------------------------------------------------------------------}
+{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+function LoadDefaultFontDesc: PPangoFontDescription;
+var
+  Style : PGTKStyle;
+begin
+  Result := nil;
+  Style := GetStyle('default');
+  if Style = nil then
+    Style := GetStyle('gtk_default');
+
+  If Style <> nil then
+      Result := Style^.font_desc;
+
+  If Result = nil then
+    Result := pango_font_description_from_string('sans 12');
+    
+  if Result = nil then
+    Result := pango_font_description_from_string('12');
+
+  If Result <> nil then
+    Result := g_object_ref(Result);
+end;
+{$Else}
 function LoadDefaultFont: PGDKFont;
 var
   Style : PGTKStyle;
@@ -3981,6 +4004,7 @@ begin
   If Result <> nil then
     Result := gdk_font_ref(Result);
 end;
+{$EndIf}
 
 Function GetSysGCValues(Color : TColorRef) : TGDKGCValues;
 var
@@ -4400,6 +4424,12 @@ end;
 
   Gets text extent of a string, ignoring escaped Ampersands.
 -------------------------------------------------------------------------------}
+{$Ifdef USE_PANGO} // we should implement pango for gtk2 soon
+Procedure GetTextExtentIgnoringAmpersands(FontDesc : PPangoFontDescription; Str : PChar;
+  LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
+begin
+end;
+{$Else}
 Procedure GetTextExtentIgnoringAmpersands(Font : PGDKFont; Str : PChar;
   LineLength : Longint; lbearing, rbearing, width, ascent, descent : Pgint);
 var
@@ -4421,12 +4451,14 @@ begin
   if NewStr<>Str then
     StrDispose(NewStr);
 end;
+{$EndIf}
 
 {------------------------------------------------------------------------------
   function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
   
   This is only a heuristic
  ------------------------------------------------------------------------------}
+{$IfNdef USE_PANGO} // we should implement pango for gtk2 soon
 function FontIsDoubleByteCharsFont(TheFont: PGdkFont): boolean;
 var
   SingleCharLen, DoubleCharLen: integer;
@@ -4435,6 +4467,7 @@ begin
   DoubleCharLen:=gdk_text_width(TheFont, 'AA', 2);
   Result:=(SingleCharLen=0) and (DoubleCharLen>0);
 end;
+{$EndIf}
 
 {------------------------------------------------------------------------------
   Method:   GDKPixel2GDIRGB
@@ -4590,6 +4623,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.201  2003/09/09 20:46:38  ajgenius
+  more implementation toward pango for gtk2
+
   Revision 1.200  2003/09/09 04:15:08  ajgenius
   more updates for GTK2, more GTK1 wrappers, removal of more ifdef's, partly fixed signals
 
