@@ -918,7 +918,7 @@ function TFindDeclarationTool.FindIdentifierInContext(
 var
   LastContextNode, StartContextNode, FirstSearchedNode, LastSearchedNode,
   ContextNode, ANode: TCodeTreeNode;
-  IsForward: boolean;
+  IsForward, OldFlag: boolean;
   IdentifierFoundResult: TIdentifierFoundResult;
   LastNodeCache: TCodeTreeNodeCache;
   LastCacheEntry: PCodeTreeNodeCacheEntry;
@@ -1211,8 +1211,10 @@ writeln('[TFindDeclarationTool.FindIdentifierInContext] no prior node accessible
             if (fdfSearchInAncestors in Params.Flags) then begin
           
               // ToDo: check for circles in ancestors
-
+              OldFlag:=fdfExceptionOnNotFound in Params.Flags;
+              Exclude(Params.Flags,fdfExceptionOnNotFound);
               Result:=FindIdentifierInAncestors(ContextNode,Params);
+              if OldFlag then Include(Params.Flags,fdfExceptionOnNotFound);
               if Result then exit;
             end;
           end;
