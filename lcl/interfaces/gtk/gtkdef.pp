@@ -34,7 +34,7 @@ interface
 
 uses
   {$IFDEF gtk2}
-  glib2, gdk2pixbuf, gdk2, gtk2,
+  glib2, gdk2pixbuf, pango, gdk2, gtk2,
   {$ELSE}
   glib, gdk, gtk, {$Ifndef NoGdkPixbufLib}gdkpixbuf,{$EndIf}
   {$ENDIF}
@@ -44,7 +44,7 @@ uses
 type
   TGDIType = (gdiBitmap, gdiBrush, gdiFont, gdiPen, gdiRegion, gdiPalette);
   TGDIBitmapType = (gbBitmap, gbPixmap, gbImage);
-  
+
   PGDIRGB = ^TGDIRGB;
   TGDIRGB = record
     Red,
@@ -235,6 +235,13 @@ const
       'TIMESTAMP', 'USER'
     );
   
+const
+  GdkTrue = {$IFDEF Gtk2}true{$ELSE}1{$ENDIF};
+  GdkFalse = {$IFDEF Gtk2}false{$ELSE}0{$ENDIF};
+
+type
+  TGdkPixBufBuffer = {$IFDEF Gtk2}Pguchar{$ELSE}PChar{$ENDIF};
+
 function NewPGDIObject: PGDIObject;
 procedure DisposePGDIObject(GDIObject: PGdiObject);
 
@@ -449,6 +456,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.42  2003/08/29 21:21:07  mattias
+  fixes for gtk2
+
   Revision 1.41  2003/07/02 10:02:51  mattias
   fixed TPaintStruct
 

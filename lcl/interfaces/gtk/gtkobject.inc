@@ -30,7 +30,8 @@
   Here are Fatals, Criticals and Errors translated to Exceptions
   Comment Ex to skip exception, comment Level to skip logging
  ------------------------------------------------------------------------------}
-procedure GLogFunc(ALogDomain: Pgchar; ALogLevel: TGLogLevelFlags; AMessage: Pgchar; AData: gpointer);cdecl;
+procedure GLogFunc(ALogDomain: Pgchar; ALogLevel: TGLogLevelFlags;
+  AMessage: Pgchar; AData: gpointer);cdecl;
 var
   Flag, Level, Domain: String;
   Ex: ExceptClass;
@@ -46,6 +47,7 @@ begin
     G_LOG_LEVEL_DEBUG = 1 shl 7;
     G_LOG_LEVEL_MASK = (1 shl 8) - 2;
 *)
+  if (AData=nil) then ;
 
   Ex := nil;
   Level := '';
@@ -188,7 +190,7 @@ begin
   // clipboard
   ClipboardTypeAtoms[ctPrimarySelection]:=GDK_SELECTION_PRIMARY;
   ClipboardTypeAtoms[ctSecondarySelection]:=GDK_SELECTION_SECONDARY;
-  ClipboardTypeAtoms[ctClipboard]:=gdk_atom_intern('CLIPBOARD',0);
+  ClipboardTypeAtoms[ctClipboard]:=gdk_atom_intern('CLIPBOARD',GdkFalse);
 end;
 
 {------------------------------------------------------------------------------
@@ -505,7 +507,8 @@ begin
       if (List^.Data <> nil)
       then begin
         gdk_window_get_user_data(PGDKWindow(List^.Data), @Window);
-        if GtkWidgetIsA(PGtkWidget(Window),GTK_WINDOW_TYPE)
+        if GtkWidgetIsA(PGtkWidget(Window),
+          {$IFDEF Gtk2}GTK_TYPE_WINDOW{$ELSE}GTK_WINDOW_TYPE{$ENDIF})
         then begin
           // visible window found -> add to list
           New(ATransientWindow);
@@ -1057,10 +1060,14 @@ begin
   end;
   {$ENDIF}
   
-  if GtkWidgetIsA(Widget,GTK_SCROLLBAR_TYPE) then begin
+  if GtkWidgetIsA(Widget,
+    {$IFDEF Gtk2}GTK_TYPE_SCROLLBAR{$ELSE}GTK_SCROLLBAR_TYPE{$ENDIF}) then
+  begin
     // the width of a scrollbar is fixed and depends only on the theme
     gtk_widget_size_request (widget, @Requisition);
-    if GtkWidgetIsA(Widget,GTK_HSCROLLBAR_TYPE) then begin
+    if GtkWidgetIsA(Widget,
+      {$IFDEF Gtk2}GTK_TYPE_HSCROLLBAR{$ELSE}GTK_HSCROLLBAR_TYPE{$ENDIF}) then
+    begin
       NewHeight:=Requisition.height;
     end else begin
       NewWidth:=Requisition.width;
@@ -1070,7 +1077,9 @@ begin
   
   gtk_widget_set_usize(Widget, NewWidth, NewHeight);
   
-  if GtkWidgetIsA(Widget,GTK_COMBO_TYPE) then begin
+  if GtkWidgetIsA(Widget,
+    {$IFDEF Gtk2}GTK_TYPE_COMBO{$ELSE}GTK_COMBO_TYPE{$ENDIF}) then
+  begin
     // the combobox has an entry, which height is not resized
     // automatically. Do it manually.
     gtk_widget_set_usize(PGtkCombo(Widget)^.entry,
@@ -1127,7 +1136,9 @@ var
 
     // check if window belongs to another LCL control
     gdk_window_get_user_data(PaintWindow,@UserData);
-    if (UserData<>nil) and (GtkWidgetIsA(PGtkWidget(UserData),GTK_WIDGET_TYPE))
+    if (UserData<>nil)
+    and (GtkWidgetIsA(PGtkWidget(UserData),
+      {$IFDEF Gtk2}GTK_TYPE_WIDGET{$ELSE}GTK_WIDGET_TYPE{$ENDIF}))
     then begin
       LCLObject:=GetLCLObject(UserData);
       if (LCLObject<>nil) and (LCLObject<>AWinControl) then exit;
@@ -1168,7 +1179,11 @@ var
   procedure ForAllChilds(PaintWidget: PgtkWidget);
   var
     LCLObject: TObject;
+    {$IFDEF Gtk2}
+    ChildEntry2: PGList;
+    {$ELSE}
     ChildEntry: PGSList;
+    {$ENDIF}
   begin
     if PaintWidget=nil then exit;
     LCLObject:=GetLCLObject(PaintWidget);
@@ -1177,36 +1192,63 @@ var
     SendPaintMessageForGDkWindow(GetControlWindow(PaintWidget));
 
     // search all child widgets
-    if GtkWidgetIsA(PaintWidget,GTK_CONTAINER_TYPE) then begin
+    if GtkWidgetIsA(PaintWidget,
+      {$IFDEF Gtk2}GTK_TYPE_CONTAINER{$ELSE}GTK_CONTAINER_TYPE{$ENDIF}) then
+    begin
       // this is a container widget -> go through all childs
+      {$IFDEF Gtk2}
+      ChildEntry2:=gtk_container_get_children(PGtkContainer(PaintWidget));
+      while ChildEntry2<>nil do begin
+        if PGtkWidget(ChildEntry2^.Data)<>PaintWidget then
+          ForAllChilds(PGtkWidget(ChildEntry2^.Data));
+        ChildEntry2:=ChildEntry2^.Next;
+      end;
+      {$ELSE}
       ChildEntry:=PGtkContainer(PaintWidget)^.resize_widgets;
       while ChildEntry<>nil do begin
         if PGtkWidget(ChildEntry^.Data)<>PaintWidget then
           ForAllChilds(PGtkWidget(ChildEntry^.Data));
         ChildEntry:=ChildEntry^.Next;
       end;
+      {$ENDIF}
     end;
-    if GtkWidgetIsA(PaintWidget,GTK_SCROLLED_WINDOW_TYPE) then begin
+    if GtkWidgetIsA(PaintWidget,
+      {$IFDEF Gtk2}GTK_TYPE_SCROLLED_WINDOW{$ELSE}GTK_SCROLLED_WINDOW_TYPE{$ENDIF})
+    then begin
       ForAllChilds(PGtkScrolledWindow(PaintWidget)^.hscrollbar);
       ForAllChilds(PGtkScrolledWindow(PaintWidget)^.vscrollbar);
     end;
-    if GtkWidgetIsA(PaintWidget,GTK_BIN_TYPE) then begin
+    if GtkWidgetIsA(PaintWidget,
+      {$IFDEF Gtk2}GTK_TYPE_BIN{$ELSE}GTK_BIN_TYPE{$ENDIF}) then
+    begin
       ForAllChilds(PGtkBin(PaintWidget)^.child);
     end;
-    if GtkWidgetIsA(PaintWidget,GTK_COMBO_TYPE) then begin
+    if GtkWidgetIsA(PaintWidget,
+      {$IFDEF Gtk2}GTK_TYPE_COMBO{$ELSE}GTK_COMBO_TYPE{$ENDIF}) then begin
       ForAllChilds(PGtkCombo(PaintWidget)^.entry);
       ForAllChilds(PGtkCombo(PaintWidget)^.button);
     end;
-    if GtkWidgetIsA(PaintWidget,GTK_RANGE_TYPE) then begin
+    if GtkWidgetIsA(PaintWidget,
+      {$IFDEF Gtk2}GTK_TYPE_RANGE{$ELSE}GTK_RANGE_TYPE{$ENDIF})
+    then begin
+      {$IFDEF Gtk2}
+      // Gtk2ToDo
+      writeln('ToDo: SendPaintMessagesForInternalWidgets GTK_TYPE_RANGE');
+      {$ELSE}
       SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.slider);
       SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.trough);
       SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.step_forw);
       SendPaintMessageForGDkWindow(PGtkRange(PaintWidget)^.step_back);
+      {$ENDIF}
     end;
-    if GtkWidgetIsA(PaintWidget,GTK_TEXT_TYPE) then begin
+    if GtkWidgetIsA(PaintWidget,
+      {$IFDEF Gtk2}GTK_TYPE_TEXT{$ELSE}GTK_TEXT_TYPE{$ENDIF}) then
+    begin
       SendPaintMessageForGDkWindow(PGtkText(PaintWidget)^.text_area);
     end;
-    if GtkWidgetIsA(PaintWidget,GTK_ENTRY_TYPE) then begin
+    if GtkWidgetIsA(PaintWidget,
+      {$IFDEF Gtk2}GTK_TYPE_ENTRY{$ELSE}GTK_ENTRY_TYPE{$ENDIF}) then
+    begin
       SendPaintMessageForGDkWindow(PGtkEntry(PaintWidget)^.text_area);
     end;
   end;
@@ -1526,7 +1568,12 @@ begin
     ColorMap:=gdk_colormap_get_system;
   GdiObject^.GDIPixmapObject :=
     gdk_pixmap_colormap_create_from_xpm(Window,Colormap,
-           @(GdiObject^.GDIBitmapMaskObject), p, Filename);
+           {$IFDEF Gtk2}
+           GdiObject^.GDIBitmapMaskObject,
+           {$ELSE}
+           @(GdiObject^.GDIBitmapMaskObject),
+           {$ENDIF}
+           p, Filename);
   GdiObject^.GDIBitmapType:=gbPixmap;
   gdk_window_get_geometry(GdiObject^.GDIPixmapObject,
     nil, nil, @Width, @Height, @Depth);
@@ -1543,7 +1590,7 @@ begin
   else
     gdk_visual_ref(GdiObject^.Visual);
 
-  GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
+  GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, GdkTrue);
 
   TheBitmap.Handle := HBITMAP(GdiObject);
   If GdiObject^.GDIBitmapMaskObject <> nil then
@@ -1566,15 +1613,22 @@ var
   begin
     Result := False;
     SRC := nil;
-    SRC := gdk_pixbuf_new_from_file(FileName);
+    SRC := gdk_pixbuf_new_from_file(FileName{$IFDEF Gtk2},nil{$ENDIF});
     If SRC = nil then
       exit;
     Width := gdk_pixbuf_get_width(Src);
     Height := gdk_pixbuf_get_height(Src);
 
     TMP := CreateCompatibleBitmap(0, Width, Height);
-    gdk_pixbuf_render_pixmap_and_mask(Src,@PGDIObject(TMP)^.GDIPixmapObject,
-      PPGDKBitmap(@PGDIObject(TMP)^.GDIBitmapMaskObject), 0);
+    gdk_pixbuf_render_pixmap_and_mask(Src,
+      {$IFDEF Gtk2}
+      PGDIObject(TMP)^.GDIPixmapObject,
+      PGDIObject(TMP)^.GDIBitmapMaskObject,
+      {$ELSE}
+      @PGDIObject(TMP)^.GDIPixmapObject,
+      PPGDKBitmap(@PGDIObject(TMP)^.GDIBitmapMaskObject),
+      {$ENDIF}
+      0);
 
     gdk_window_get_geometry(PGDIObject(TMP)^.GDIPixmapObject,
       nil, nil, nil, nil, @Depth);
@@ -1591,7 +1645,8 @@ var
     If PGDIObject(TMP)^.Colormap <> nil then
       GDK_Colormap_UnRef(PGDIObject(TMP)^.Colormap);
 
-    PGDIObject(TMP)^.Colormap := gdk_colormap_new(PGDIObject(TMP)^.Visual, 1);
+    PGDIObject(TMP)^.Colormap :=
+                             gdk_colormap_new(PGDIObject(TMP)^.Visual, GdkTrue);
 
     TheBitmap.Handle := TMP;
     GDK_Pixbuf_Unref(Src);
@@ -1654,11 +1709,11 @@ Type
 
     SRC := nil;
 
-    If gdk_pixbuf_loader_write(Loader, PChar(@BMPInfo),
-                               SizeOf(BMPInfo) div SizeOf(Char))
+    If gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(@BMPInfo),
+                      SizeOf(BMPInfo) div SizeOf(Char){$IFDEF Gtk2},nil{$ENDIF})
     then begin
-      If gdk_pixbuf_loader_write(Loader, PChar(Data),
-        BMPInfo.InfoHeader.biSizeImage) then
+      If gdk_pixbuf_loader_write(Loader, TGdkPixBufBuffer(Data),
+        BMPInfo.InfoHeader.biSizeImage{$IFDEF Gtk2},nil{$ENDIF}) then
       begin
         SRC := gdk_pixbuf_loader_get_pixbuf(loader);
         if Src=nil then
@@ -1669,14 +1724,21 @@ Type
     end
     else
       WriteLn('WARNING: [TgtkObject.LoadFromPixbufData] Error occured loading Bitmap Header!');
-    gdk_pixbuf_loader_close(Loader);
+    gdk_pixbuf_loader_close(Loader{$IFDEF Gtk2},nil{$ENDIF});
 
     If SRC = nil then
       exit;
 
     With PGDIObject(Bitmap)^ do begin
-      gdk_pixbuf_render_pixmap_and_mask(Src,@GDIPixmapObject,
-        PPGDKBitmap(@GDIBitmapMaskObject), 0);
+      gdk_pixbuf_render_pixmap_and_mask(Src,
+        {$IFDEF Gtk2}
+        GDIPixmapObject,
+        GDIBitmapMaskObject,
+        {$ELSE}
+        @GDIPixmapObject,
+        PPGDKBitmap(@GDIBitmapMaskObject),
+        {$ENDIF}
+        0);
 
       gdk_window_get_geometry(GDIPixmapObject,
         nil, nil, nil, nil, @Depth);
@@ -1693,7 +1755,7 @@ Type
       If Colormap <> nil then
         GDK_Colormap_UnRef(Colormap);
 
-      Colormap := gdk_colormap_new(Visual, 1);
+      Colormap := gdk_colormap_new(Visual, GdkTrue);
 
       GDK_Pixbuf_Unref(Src);
     end;
@@ -1847,6 +1909,7 @@ var
 begin
   Assert(False, 'trace:[TgtkObject.InternalGetDIBits]');
   Result := 0;
+  if (DC=0) or (Usage=0) then ;
   TrapIsSet:=false;
   if IsValidGDIObject(Bitmap)
   then begin
@@ -1970,7 +2033,8 @@ begin
   GDK_VISUAL_TRUE_COLOR:   Desc^.Format:=ricfRGBA;
   GDK_VISUAL_DIRECT_COLOR: Desc^.Format:=ricfRGBA;
   else
-    writeln('TgtkObject.GetDeviceRawImageDescription unknown Visual type ',Visual^.thetype);
+    writeln('TgtkObject.GetDeviceRawImageDescription unknown Visual type ',
+            integer(Visual^.thetype));
     exit;
   end;
 
@@ -8000,6 +8064,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.401  2003/08/29 21:21:07  mattias
+  fixes for gtk2
+
   Revision 1.400  2003/08/28 09:10:00  mattias
   listbox and comboboxes now set sort and selection at handle creation
 

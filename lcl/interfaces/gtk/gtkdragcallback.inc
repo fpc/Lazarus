@@ -17,21 +17,21 @@
 //DRAG CALLBACK FUNCTIONS
 
 Function edit_drag_data_received(widget : pgtkWidget;
-			          Context : pGdkDragContext;
-			          X : Integer;
-			          Y : Integer;
-			          seldata : pGtkSelectionData;
-			          info : Integer;
-			          time : Integer;
-                                  data : pointer) : GBoolean; cdecl;
+  Context : pGdkDragContext;
+  X, Y : Integer;
+  SelData : pGtkSelectionData;
+  info : Integer;
+  time : Integer;
+  data : pointer) : GBoolean; cdecl;
 Var
   Texts : String;
 Begin
   Result:=false;
+  if (Widget=nil) or (X=0) or (Y=0) or (Info=0) then exit;
   Assert(False, 'Trace:***********Drag Data Received*******************');
   if Seldata^.Length > 0 then
   Begin
-    Texts := strpas(Seldata^.data);
+    Texts := StrPas(PChar(SelData^.data));
     Assert(False, 'Trace:' + Texts);
     Assert(False, 'Trace:0');
     TEdit(Data).Caption := Texts;
@@ -41,16 +41,17 @@ Begin
 end;
 
 Function edit_source_drag_data_get(widget : pgtkWidget;
-			          Context : pGdkDragContext;
-			          Selection_data : pGtkSelectionData;
-			          info : Integer;
-			          time : Integer;
-                                  data : pointer) : GBoolean; cdecl;
+  Context : pGdkDragContext;
+  Selection_data : pGtkSelectionData;
+  info : Integer;
+  time : Integer;
+  data : pointer) : GBoolean; cdecl;
 var
   strTemp : PChar;
   Texts : String;
 Begin
   Result:=false;
+  if (Time=0) or (Context=nil) or (Widget=nil) then ;
   if (info = TARGET_ROOTWIN) then
     Assert(False, 'Trace:I WAS DROPPED ON THE ROOTWIN')
   else
@@ -64,7 +65,7 @@ Begin
       Assert(False, 'Trace:1');
       gtk_selection_data_set(selection_data,selection_data^.target,
                     8,
-                    strtemp,
+                    {$IFDEF Gtk2}PGUChar(StrTemp){$ELSE}StrTemp{$ENDIF},
                     length(Texts)+1);
       Assert(False, 'Trace:2');
     finally
@@ -75,10 +76,10 @@ Begin
 end;
 
 
-Function Edit_source_drag_data_delete (widget : pGtkWidget;
-			                context : pGdkDragContext;
-			                data : gpointer): gBoolean ; cdecl;
+Function Edit_source_drag_data_delete (Widget: pGtkWidget;
+  Context: pGdkDragContext; Data: gpointer): gBoolean ; cdecl;
 begin
+  if (Widget=nil) or (Context=nil) or (Data=nil) then ;
   Assert(False, 'Trace:***************');
   Assert(False, 'Trace:DELETE THE DATA');
   Result:=false;

@@ -512,7 +512,7 @@ begin
 end;
 
 Procedure EnsureGCColor(DC: hDC; ColorType: TDevContextsColorType;
-  IsSolidBrush: Boolean; AsBackground: Boolean);
+  IsSolidBrush, AsBackground: Boolean);
 var
   GC: PGDKGC;
   GDIColor: PGDIColor;
@@ -520,9 +520,11 @@ var
   Procedure EnsureAsGCValues;
   var
     AllocFG : Boolean;
+    SyGCValues: TGdkGCValues;
   begin
     FreeGDIColor(GDIColor);
-    With GetSysGCValues(GDIColor^.ColorRef) do begin
+    SyGCValues:=GetSysGCValues(GDIColor^.ColorRef);
+    With SyGCValues do begin
       gdk_gc_set_fill(GC, fill);
       AllocFG := Foreground.Pixel = 0;
       If AllocFG then
@@ -558,9 +560,10 @@ var
       gdk_gc_set_foreground(GC, @(GDIColor^.Color));
     end;
   end;
-  
+
 begin
   GC:=TDeviceContext(DC).GC;
+  GDIColor:=nil;
   with TDeviceContext(DC) do
   begin
     case ColorType of
@@ -568,35 +571,51 @@ begin
     dccCurrentTextColor: GDIColor:=@CurrentTextColor;
     dccGDIBrushColor   : GDIColor:=@(CurrentBrush^.GDIBrushColor);
     dccGDIPenColor     : GDIColor:=@(CurrentPen^.GDIPenColor);
-    else
-      exit;
-    end;
-    Case TColor(GDIColor^.ColorRef) of
-      clScrollbar,
-      clInfoBk,
-      clMenu,
-      clHighlight,
-      clHighlightText,
-      clBtnFace:  //often have a BK Pixmap
-        If IsSolidBrush then
-          EnsureAsGCValues
-        else
-          EnsureAsColor;//GC's with Pixmaps can't work w/Hatch's (yet)
-      clBtnShadow,
-      clBtnHighlight,
-      clBtnText,
-      clInfoText,
-      clWindow,
-      clWindowText,
-      clMenuText,
-      clGrayText://should never have a BK Pixmap
-        EnsureAsGCValues;
-      else
-        EnsureAsColor;
     end;
   end;
+  if GDIColor=nil then exit;
+  
+  // FPC bug workaround:
+  // clScrollbar = $80000000 can't be used in case statements
+  if TColor(GDIColor^.ColorRef)=clScrollbar then begin
+    //often have a BK Pixmap
+    If IsSolidBrush then
+      EnsureAsGCValues
+    else
+      EnsureAsColor;//GC's with Pixmaps can't work w/Hatch's (yet)
+    exit;
+  end;
+  
+  Case TColor(GDIColor^.ColorRef) of
+    //clScrollbar,
+    clInfoBk,
+    clMenu,
+    clHighlight,
+    clHighlightText,
+    clBtnFace:
+      //often have a BK Pixmap
+      If IsSolidBrush then
+        EnsureAsGCValues
+      else
+        EnsureAsColor;//GC's with Pixmaps can't work w/Hatch's (yet)
+
+    clBtnShadow,
+    clBtnHighlight,
+    clBtnText,
+    clInfoText,
+    clWindow,
+    clWindowText,
+    clMenuText,
+    clGrayText:
+      //should never have a BK Pixmap
+      EnsureAsGCValues;
+    else
+      EnsureAsColor;
+  end;
+  {$DEFINE Bla1}
 end;
 
+{$DEFINE Bla2}
 procedure CopyGDIColor(var SourceGDIColor, DestGDIColor: TGDIColor);
 begin
   SetGDIColorRef(DestGDIColor,SourceGDIColor.ColorRef);
@@ -1038,7 +1057,7 @@ begin
       VirtualKey := VK_SCROLL;
     {$ifdef GTK2}GDK_KEY_Sys_Req{$else}GDK_Sys_Req{$EndIf}:      
       VirtualKey := VK_SNAPSHOT;
-    {$ifdef GTK2}GDK_KEY_Escape{$else}GDK_Escape{$EndIf}:      
+    {$ifdef GTK2}GDK_KEY_Escape{$else}GDK_Escape{$EndIf}:
       VirtualKey := VK_ESCAPE;
     {$ifdef GTK2}GDK_KEY_Delete{$else}GDK_Delete_Key{$EndIf}:      
       VirtualKey := VK_DELETE;
@@ -2044,7 +2063,6 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
 
   procedure ConnectChilds(TheWidget: PGtkWidget);
   var
-    ContainerWidget: PGtkContainer;
     ScrolledWindow: PGtkScrolledWindow;
     BinWidget: PGtkBin;
     ChildEntry: PGSList;
@@ -2054,11 +2072,10 @@ procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
     if GtkWidgetIsA(TheWidget,GTK_TYPE_CONTAINER) then begin
       //if AWinControl is TListView then writeln('ConnectChilds B ');
       // this is a container widget -> connect all childs
-      ContainerWidget:=PGtkContainer(TheWidget);
       {$IfDef GTK2}
       ChildEntry:=nil;
       {$else}
-      ChildEntry:=ContainerWidget^.resize_widgets;
+      ChildEntry:=PGtkContainer(TheWidget)^.resize_widgets;
       {$endif}
       while ChildEntry<>nil do begin
         ChildWidget:=PGtkWidget(ChildEntry^.Data);
@@ -2188,6 +2205,9 @@ procedure ShareWindowAccelGroups(AWindow: PGtkWidget);
   procedure AttachUnique(TheWindow: PGtkWidget; TheAccelGroup: PGTKAccelGroup);
   begin
     {$IfDef GTK2}
+    // Gtk2ToDo
+    writeln('ToDo: gtkproc.inc AttachUnique');
+    if (TheWindow=nil) or (TheAccelGroup=nil) then exit;
     {$else}
     if (TheAccelGroup=nil)
     or ((TheAccelGroup^.attach_objects<>nil)
@@ -2251,6 +2271,9 @@ procedure UnshareWindowAccelGroups(AWindow: PGtkWidget);
   procedure Detach(TheWindow: PGtkWidget; TheAccelGroup: PGTKAccelGroup);
   begin
     {$IfDef GTK2}
+    // Gtk2ToDo
+    writeln('ToDo: gtkproc.inc Detach');
+    if (TheWindow=nil) or (TheAccelGroup=nil) then exit;
     {$else}
     if (TheAccelGroup=nil)
     or (TheAccelGroup^.attach_objects=nil)
@@ -2564,6 +2587,15 @@ begin
   {$endif}
 end;
 
+function MenuItemChecked(MenuWidget: PGtkCheckMenuItem): boolean;
+begin
+  {$IFDEF Gtk2}
+  Result:=gtk_check_menu_item_get_active(MenuWidget);
+  {$ELSE}
+  Result:=(MenuWidget^.flag0 and bm_checkmenuitem_active <> 0)
+  {$ENDIF}
+end;
+
 {------------------------------------------------------------------------------
   function GetRadioMenuItemGroup(LCLMenuItem: TMenuItem): PGSList;
 
@@ -2627,16 +2659,6 @@ end;
   Set 'checked' for all menuitems in the group
  ------------------------------------------------------------------------------}
 procedure UpdateRadioGroupChecks(RadioGroup: PGSList);
-
-  function GtkMenuItemChecked(AnMenuItem: PGtkCheckMenuItem): boolean;
-  begin
-    {$IFDEF Gtk2}
-    Result;=gtk_check_menu_item_get_active(AnMenuItem);
-    {$ELSE}
-    Result:=((AnMenuItem^.flag0 and bm_checkmenuitem_active) = 0);
-    {$ENDIF}
-  end;
-
 var
   CurListItem: PGSList;
   MenuItem: PGtkCheckMenuItem;
@@ -2658,7 +2680,7 @@ begin
       then begin
         LCLMenuItem := TMenuItem(GetLCLObject(MenuItem));
         if  (LCLMenuItem <> nil)
-        and (GtkMenuItemChecked(MenuItem) = LCLMenuItem.Checked)
+        and (MenuItemChecked(MenuItem) <> LCLMenuItem.Checked)
         then gtk_check_menu_item_set_active(MenuItem, LCLMenuItem.Checked);
       end;
       CurListItem := CurListItem^.Next;
@@ -2727,7 +2749,8 @@ var
   CurToggleSize, MaxToggleSize: integer;
   MenuShell: PGtkMenuShell;
   ListItem: PGList;
-  MenuItem, CheckMenuItem: PGtkMenuItem;
+  MenuItem: PGtkMenuItem;
+  CheckMenuItem: PGtkMenuItem;
   LCLMenuItem: TMenuItem;
   IconImg, IconMask: PGdkPixmap;
   Width, Height: integer;
@@ -2754,11 +2777,13 @@ begin
     end;
     ListItem:=ListItem^.Next;
   end;
-  {$Ifdef GTK2}
-  {$else}
+  {$IFDEF Gtk2}
+  // Gtk2ToDo
+  writeln('ToDo: MenuSizeRequest ');
+  {$ELSE}
   if CheckMenuItem<>nil then
     MENU_ITEM_CLASS(PGtkWidget(CheckMenuItem))^.toggle_size:=MaxToggleSize;
-  {$EndIf}
+  {$ENDIF}
   OldMenuSizeRequestProc(Widget,requisition);
 end;
 
@@ -3319,10 +3344,19 @@ end;
   
   this is a helper function for WaitForClipboardAnswer
  ------------------------------------------------------------------------------}
+{$IFDEF Gtk2}
+function WaitForClipbrdAnswerDummyTimer(Client: Pointer): gboolean; cdecl;
+begin
+  if CLient=nil then ;
+  Result:=true; // go on, make sure getting a message at least every second
+end;
+{$ELSE}
 function WaitForClipbrdAnswerDummyTimer(Client: Pointer): gint; cdecl;
 begin
+  if CLient=nil then ;
   Result:=1; // go on, make sure getting a message at least every second
 end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------
   Function: WaitForClipboardAnswer
@@ -3339,11 +3373,7 @@ var
 
   function ValidDateSelection : boolean;
   begin
-    {$ifdef GTK2}
-    result := c^.Data.Selection<>NIL;
-    {$else}
     result := c^.Data.Selection<>0;
-    {$endif}
   end;
   
 begin
@@ -3444,7 +3474,7 @@ begin
     writeln('[RequestSelectionData] TimeID=',TimeID);
     {$ENDIF}
     if gtk_selection_convert(ClipboardWidget, ClipboardTypeAtoms[ClipboardType],
-                             FormatID, TimeID)<>0
+                             FormatID, TimeID){$IFDEF Gtk2}=false{$ELSE}<>0{$ENDIF}
     then
       break;
     ClipboardSelectionData.Remove(c);
@@ -3552,7 +3582,8 @@ begin
     If StyleObject^.Widget <> nil then
       GTK_Widget_Destroy(StyleObject^.Widget);
     If StyleObject^.Style <> nil then
-      If StyleObject^.Style^.Ref_Count > 0 then
+      If StyleObject^.Style^.{$IFDEF Gtk2}attach_count{$ELSE}Ref_Count{$ENDIF}>0
+      then
         GTK_Style_Unref(StyleObject^.Style);
     Dispose(StyleObject);
     StyleObject := nil;
@@ -3595,6 +3626,7 @@ var
   Tp : Pointer;
   l : Longint;
   StyleObject : PStyleObject;
+  NoName: PGChar;
 begin
   Result := nil;
   If Not Assigned(Styles) then
@@ -3606,8 +3638,13 @@ begin
     If AnsiCompareText(WName,'button')=0 then
       StyleObject^.Widget := GTK_BUTTON_NEW
     else
-      If AnsiCompareText(WName,'default')=0 then
-        StyleObject^.Widget := GTK_WIDGET_NEW(GTK_WIDGET_TYPE,nil,[])
+      If AnsiCompareText(WName,'default')=0 then begin
+        NoName:=nil;
+        StyleObject^.Widget :=
+          GTK_WIDGET_NEW(
+            {$IFDEF Gtk2}GTK_TYPE_WIDGET{$ELSE}GTK_WIDGET_TYPE{$ENDIF},
+            NoName,[]);
+      end
     else
       If AnsiCompareText(WName,'window')=0 then
         StyleObject^.Widget := GTK_WINDOW_NEW(0)
@@ -3702,12 +3739,18 @@ begin
     Style := GetStyle('gtk_default');
 
   If Style <> nil then begin
-    If Style^.Font <> nil then
-       Result := Style^.Font
-    else
-      If (Style^.RC_Style <> nil) and (Style^.RC_Style^.font_name <> nil)
-      then
-        Result := gdk_font_load(Style^.RC_Style^.font_name);
+    {$IFDEF Gtk2}
+    // Gtk2ToDo
+    if Style^.font_desc<>nil then
+      Result:=gdk_font_from_description(Style^.font_desc);
+    {$ELSE}
+    Result := Style^.Font;
+    If Result = nil then
+      If (Style^.RC_Style <> nil) then begin
+        if (Style^.RC_Style^.font_name <> nil) then
+          Result := gdk_font_load(Style^.RC_Style^.font_name);
+      end;
+    {$ENDIF}
   end;
 
   If Result = nil then
@@ -4164,11 +4207,14 @@ end;
   retrieved from gdk_image_get_pixel, and uses the passed Visual and Colormap
   to try and look up actual RGB values.
  ------------------------------------------------------------------------------}
-Function GDKPixel2GDIRGB(Pixel : Longint; Visual : PGDKVisual;
-  Colormap : PGDKColormap) : TGDIRGB;
+Function GDKPixel2GDIRGB(Pixel: Longint; Visual: PGDKVisual;
+  Colormap: PGDKColormap) : TGDIRGB;
+{$IFDEF Gtk2}
+{$ELSE}
 var
-  Color : TGDKColor;
-  GdkColorContext : PGdkColorContext;
+  Color: TGDKColor;
+  GdkColorContext: PGdkColorContext;
+{$ENDIF}
 begin
   FillChar(Result, SizeOf(TGDIRGB),0);
 
@@ -4176,7 +4222,13 @@ begin
     Visual := GDK_Visual_Get_System;
     Colormap := GDK_Colormap_Get_System;
   end;
-    
+  
+  {$IFDEF Gtk2}
+  // Gtk2ToDo
+  writeln('ToDo: GDKPixel2GDIRGB');
+  if Pixel=0 then ;
+  FillChar(Result,SizeOf(Result),0);
+  {$ELSE}
   gdk_error_trap_push;
 
   Color.Pixel := Pixel;
@@ -4189,6 +4241,7 @@ begin
   Result.Blue := Color.Blue shr 8;
 
   gdk_error_trap_pop;
+  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -4310,6 +4363,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.191  2003/08/29 21:21:07  mattias
+  fixes for gtk2
+
   Revision 1.190  2003/08/28 09:10:00  mattias
   listbox and comboboxes now set sort and selection at handle creation
 

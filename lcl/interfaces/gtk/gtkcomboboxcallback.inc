@@ -22,6 +22,7 @@ begin
   Result := True;
   EventTrace('ComboBoxShow', data);
   
+  if (Widget=nil) then ;
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := CN_Command;
   Mess.NotifyCode := CBN_DROPDOWN;
@@ -34,6 +35,7 @@ var
   Mess : TLMCommand;
 begin
   Result := True;
+  if (Widget=nil) then ;
   EventTrace('ComboBoxHide', data);
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := CN_Command;

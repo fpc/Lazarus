@@ -109,6 +109,7 @@ function gtkNoteBookCloseBtnClicked(Widget: PGtkWidget;
 var APage: TPage;
 begin
   Result:=true; // handled = true
+  if Widget=nil then ;
   if ComponentIsDestroyingHandle(TWinControl(Data)) then exit;
   APage:=TPage(Data);
   TCustomNoteBook(APage.Parent).DoCloseTabClicked(APage);
@@ -200,6 +201,7 @@ var
   MainWidget: PGtkWidget;
 begin
   Result := True;
+  if Data=nil then ;
   EventTrace('realizeafter', nil);
 
   HiddenLCLObject:=GetHiddenLCLObject(Widget);
@@ -258,6 +260,7 @@ var
 begin
   Result := True;
   EventTrace('show', data);
+  if Widget=nil then ;
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
   Mess.Show := True;
@@ -271,6 +274,7 @@ var
 begin
   Result := True;
   EventTrace('hide', data);
+  if Widget=nil then ;
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_SHOWWINDOW;
   Mess.Show := False;
@@ -307,7 +311,7 @@ begin
   
   // the gtk always toggles the check flag
   // -> restore 'checked' flag if needed
-  if (AMenuItem^.flag0 and bm_checkmenuitem_active <> 0) = LCLMenuItem.Checked then Exit;
+  if MenuItemChecked(AMenuItem) = LCLMenuItem.Checked then Exit;
   if LCLMenuItem.AutoCheck then Exit;
 
   // restore it
@@ -412,6 +416,7 @@ var
 {$ENDIF}
 begin
   EventTrace('activate after', data);
+  if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
   write('gtkfrmactivateAfter Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
@@ -454,6 +459,7 @@ var
 {$ENDIF}
 begin
   EventTrace('deactivate after', data);
+  if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
   write('gtkfrmdeactivate Widget=',HexStr(Cardinal(Widget),8),' ',Event^.theIn,
         ' GetFocus=',HexStr(Cardinal(Widget),8));
@@ -470,6 +476,7 @@ end;
 function GTKMap(Widget: PGTKWidget; Data: gPointer): GBoolean; cdecl;
 begin
   Result := True;
+  if (Widget=nil) then ;
   EventTrace('map', data);
 end;
 
@@ -652,6 +659,7 @@ var
 {$ENDIF}
 begin
   EventTrace('focus', data);
+  if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
   write('GTKFocusCB Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
@@ -695,6 +703,7 @@ var
 {$ENDIF}
 begin
   EventTrace('focus', data);
+  if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
   write('GTKFocusCBAfter Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
@@ -742,6 +751,7 @@ var
 {$ENDIF}
 begin
   EventTrace('killfocus', data);
+  if (Widget=nil) or (Event=nil) then ;
   {$IFDEF VerboseFocus}
   write('GTKillFocusCB Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
@@ -784,6 +794,7 @@ var
   CurFocusWidget: PGtkWidget;
 {$ENDIF}
 begin
+  if (Widget=nil) or (Event=nil) then ;
   EventTrace('killfocus', data);
   {$IFDEF VerboseFocus}
   write('GTKillFocusCBAfter Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
@@ -840,10 +851,12 @@ begin
   if Info <> nil then Dispose(Info);
 end;
 
-function gtkdeleteCB( widget : PGtkWidget; event : PGdkEvent; data : gPointer) : GBoolean; cdecl;
+function gtkdeleteCB( widget : PGtkWidget; event : PGdkEvent;
+  data : gPointer) : GBoolean; cdecl;
 var Mess : TLMessage;
 begin
   FillChar(Mess,SizeOf(Mess),0);
+  if (Widget=nil) or (Event=nil) then ;
   Mess.Msg:= LM_CLOSEQUERY;
   { Message results : True - do nothing, False - destroy or hide window }
   Result:= DeliverMessage(Data, Mess) = 0;
@@ -854,6 +867,7 @@ function gtkresizeCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 //   Mess : TLMessage;
 begin
   Result := True;
+  if (Widget=nil) then ;
   EventTrace('resize', data);
 //   Mess.msg := LM_RESIZE;
 //   TControl(data).WindowProc(TLMessage(Mess));
@@ -866,6 +880,7 @@ var
   Mess: TLMessage;
 begin
   Result := True;
+  if (Widget=nil) then ;
   EventTrace('month changed', data);
   FillChar(Mess,SizeOf(Mess),0);
   Mess.Msg := LM_MONTHCHANGED;
@@ -902,6 +917,7 @@ var
   ShiftState: TShiftState;
   MappedXY: TPoint;
 begin
+  if (Widget=nil) then ;
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
                                          Point(trunc(Event^.X),trunc(Event^.Y)),
                                          PGtkWidget(AWinControl.Handle));
@@ -939,6 +955,7 @@ end;
 -------------------------------------------------------------------------------}
 function ControlGetsMouseMoveBefore(AControl: TControl): boolean;
 begin
+  if (AControl=nil) then ;
   // currently there are no controls, that need after events.
   Result:=true;
 end;
@@ -1172,6 +1189,7 @@ var
   end;
 
 begin
+  if (Widget=nil) then ;
   EventXY:=Point(trunc(Event^.X),trunc(Event^.Y));
   ShiftState := GTKEventState2ShiftState(Event^.State);
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,EventXY,
@@ -1358,6 +1376,7 @@ var
  end;
 
 begin
+  if (Widget=nil) then ;
   MappedXY:=TranslateGdkPointToClientArea(Event^.Window,
                                          Point(trunc(Event^.X),trunc(Event^.Y)),
                                          PGtkWidget(AWinControl.Handle));
@@ -1496,6 +1515,7 @@ var
   startRow : gint;
   endRow : gint;
 begin
+  if (Data=nil) then ;
    // only process the callback if there is event data. If there isn't any
    // event data that means it was called due to a direct function call of the
    // widget and not an actual mouse click on the widget.
@@ -1536,7 +1556,7 @@ var
    Fpointer : Pointer;
    // colordialog
    colorArray : array[0..2] of double;
-   colorsel : GTK_COLOR_SELECTION;
+   colorsel : PGtkColorSelection;
    newColor : TGdkColor;
    // fontdialog
    FontName : String;
@@ -1551,6 +1571,7 @@ var
    Files: TStringList;
 begin
   Result := True;
+  if (Widget=nil) then ;
   theDialog := TCommonDialog(data);
   FPointer := Pointer(theDialog.Handle);
   
@@ -1601,7 +1622,7 @@ begin
   end
   else if theDialog is TColorDialog then
   begin
-    colorSel := GTK_COLOR_SELECTION((GTK_COLOR_SELECTION_DIALOG(FPointer))^.colorsel);
+    colorSel := PGtkColorSelection(PGtkColorSelectionDialog(FPointer)^.colorsel);
     gtk_color_selection_get_color(colorsel, @colorArray[0]);
     newColor.pixel := 0;
     newColor.red := Trunc(colorArray[0] * $FFFF);
@@ -1643,6 +1664,7 @@ var
   theDialog : TCommonDialog;
 begin
   Result := True;
+  if (Widget=nil) then ;
   theDialog := TCommonDialog(data);
   if theDialog is TFileDialog then
   begin
@@ -1666,6 +1688,7 @@ var
   theDialog : TCommonDialog;
 begin
   Result := True;
+  if (Widget=nil) then ;
   theDialog := TCommonDialog(data);
   if theDialog is TOpenDialog then begin
     if TOpenDialog(theDialog).OnHelpClicked<>nil then
@@ -1689,6 +1712,7 @@ var
   ALogFont: TLogFont;
 begin
   Result := True;
+  if (Widget=nil) then ;
   theDialog := TCommonDialog(data);
   if (theDialog is TFontDialog)
   and (fdApplyButton in TFontDialog(theDialog).Options)
@@ -1720,6 +1744,7 @@ var
   CanClose: boolean;
 begin
   Result := False; // true = do nothing, false = destroy or hide window
+  if (Data=nil) then ;
   // data is not the commondialog. Get it manually.
   theDialog := TCommonDialog(GetLCLObject(Widget));
   if theDialog=nil then exit;
@@ -1782,6 +1807,7 @@ function GTKDialogKeyUpDownCB(Widget: PGtkWidget; Event : pgdkeventkey;
 begin
   Result:=false;
 
+  if (Widget=nil) then ;
   {$ifdef GTK2}
   case Event^._Type of
   {$else}
@@ -1790,7 +1816,8 @@ begin
   
   GDK_KEY_RELEASE, GDK_KEY_PRESS:
     begin
-      if Event^.KeyVal=GDK_Escape then begin
+      if Event^.KeyVal={$ifdef GTK2}GDK_KEY_Escape{$else}GDK_Escape{$EndIf}
+      then begin
         StoreCommonDialogSetup(TCommonDialog(data));
         TCommonDialog(data).UserChoice:=mrCancel;
       end;
@@ -1811,6 +1838,7 @@ end;
 -------------------------------------------------------------------------------}
 function GTKDialogRealizeCB(Widget: PGtkWidget; Data: Pointer): GBoolean; cdecl;
 begin
+  if (Data=nil) then ;
   gdk_window_set_events(GetControlWindow(Widget),
     gdk_window_get_events(GetControlWindow(Widget))
       or GDK_KEY_RELEASE_MASK or GDK_KEY_PRESS_MASK);
@@ -1830,6 +1858,7 @@ var
   theDialog: TCommonDialog;
 begin
   Result:=false;
+  if (Data=nil) then ;
   theDialog:=TCommonDialog(GetLCLObject(Widget));
   if (theDialog is TOpenDialog) then begin
     UpdateDetailView(TOpenDialog(theDialog));
@@ -1849,6 +1878,7 @@ var
   theDialog: TCommonDialog;
 begin
   Result:=false;
+  if (Data=nil) or (BEvent=nil) or (Column=0) or (Row=0) then ;
   theDialog:=TCommonDialog(GetLCLObject(Widget));
   if (theDialog is TOpenDialog) then begin
     UpdateDetailView(TOpenDialog(theDialog));
@@ -1874,7 +1904,7 @@ var
     AFilterEntry:=gtk_object_get_data(PGtkObject(FilterWidget),
                                       'LCLIsFilterMenuItem');
     if (AFilterEntry<>nil) and (AFilterEntry^.Mask<>nil) then begin
-      gtk_file_selection_complete(GTK_FILE_SELECTION(theDialog.Handle),
+      gtk_file_selection_complete(PGtkFileSelection(theDialog.Handle),
         AFilterEntry^.Mask);
       UpdateDetailView(TOpenDialog(theDialog));
     end;
@@ -1885,6 +1915,7 @@ var
   FilterMenu, ActiveFilterMenuItem: PGtkWidget;
 begin
   Result:=false;
+  if (Data=nil) then ;
   theDialog:=TCommonDialog(GetLCLObject(Widget));
   if (theDialog is TOpenDialog) then begin
     // check if history activated
@@ -1893,7 +1924,7 @@ begin
     if (AHistoryEntry<>nil) and (AHistoryEntry^.Filename<>nil) then begin
       // use has choosen a history file
       // -> select it in the filedialog
-      gtk_file_selection_complete(GTK_FILE_SELECTION(theDialog.Handle),
+      gtk_file_selection_complete(PGtkFileSelection(theDialog.Handle),
         AHistoryEntry^.Filename);
       // restore filter
       if DirectoryExists(AHistoryEntry^.Filename) then begin
@@ -1921,6 +1952,7 @@ end;
 function gtkDialogDestroyCB(widget: PGtkWidget; data: gPointer): GBoolean; cdecl;
 begin
   Result := True;
+  if (Widget=nil) then ;
   TCommonDialog(data).UserChoice := mrAbort;
   TCommonDialog(data).Close;
 end;
@@ -1930,6 +1962,7 @@ var
   Mess : TLMessage;
 begin
   Result := True;
+  if (Widget=nil) then ;
   EventTrace('pressed', data);
   Mess.msg := LM_PRESSED;
   Result := DeliverMessage(Data, Mess) = 0;
@@ -1974,6 +2007,7 @@ var
   Mess : TLMessage;
 begin
   Result := True;
+  if (Widget=nil) then ;
   EventTrace('move-cursor', data);
   Mess.msg := LM_MOVECURSOR;
   DeliverMessage(Data, Mess);
@@ -2020,6 +2054,7 @@ end;
 function gtksize_allocate_client(widget: PGtkWidget; size :pGtkAllocation;
   data: gPointer) : GBoolean; cdecl;
 begin
+  if (Widget=nil) or (Size=nil) then ;
   if (TObject(Data) is TWinControl) then begin
     {$IFDEF VerboseSizeMsg}
     writeln('gtksize_allocate_client: ',
@@ -2049,6 +2084,7 @@ var
   T : tagNMHDR;
 begin
   Result := True;
+  if (Widget=nil) or (Page=nil) then ;
   EventTrace('switch-page', data);
   UpdateNoteBookClientWidget(TObject(Data));
   Mess.Msg := LM_NOTIFY;
@@ -2091,6 +2127,7 @@ var
   Mess : TLMEssage;
 begin
   Result := True;
+  if (Widget=nil) then ;
   EventTrace('released', data);
   Mess.msg := LM_RELEASED;
   Result := DeliverMessage(Data, Mess) = 0;
@@ -2128,6 +2165,7 @@ var
   Mess : TLMessage;
 begin
   EventTrace('Delete Text', data);
+  if (StartPos=0) or (EndPos=0) or (Widget=nil) then ;
   Mess.msg := LM_DELETETEXT;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2137,6 +2175,7 @@ var
   Mess : TLMessage;
 begin
   EventTrace('Set Editable', data);
+  if (Widget=nil) then ;
   Mess.msg := LM_SETEDITABLE;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2146,6 +2185,7 @@ var
    Mess : TLMessage;
 begin
   EventTrace('Move Word', data);
+  if (Widget=nil) then ;
   Mess.msg := LM_MOVEWORD;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2155,6 +2195,7 @@ var
   Mess : TLMessage;
 begin
   EventTrace('Move Page', data);
+  if (Widget=nil) then ;
   Mess.msg := LM_MOVEPAGE;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2164,6 +2205,7 @@ var
   Mess : TLMessage;
 begin
   EventTrace('Move To Row!!', data);
+  if (Widget=nil) then ;
   Mess.msg := LM_MOVETOROW;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2173,6 +2215,7 @@ var
   Mess : TLMessage;
 begin
   EventTrace('MoveToColumn', data);
+  if (Widget=nil) then ;
   Mess.msg := LM_MOVETOCOLUMN;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2182,6 +2225,7 @@ var
   Mess : TLMessage;
 begin
   EventTrace('Kill Char', data);
+  if (Widget=nil) then ;
   Mess.msg := LM_KILLCHAR;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2191,6 +2235,7 @@ var
   Mess : TLMessage;
 begin
   EventTrace('Kill Word', data);
+  if (Widget=nil) then ;
   Mess.msg := LM_KILLWORD;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2200,6 +2245,7 @@ var
   Mess : TLMessage;
 begin
   EventTrace('Kill Line', data);
+  if (Widget=nil) then ;
   Mess.msg := LM_KILLLINE;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2209,6 +2255,7 @@ var
   Mess : TLMessage;
 begin
   EventTrace('Cut to clip', data);
+  if (Widget=nil) then ;
   Mess.msg := LM_CUTTOCLIP;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2218,6 +2265,7 @@ var
   Mess : TLMessage;
 begin
   EventTrace('Copy to Clip', data);
+  if (Widget=nil) then ;
   Mess.msg := LM_COPYTOCLIP;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2227,6 +2275,7 @@ var
   Mess : TLMessage;
 begin
   EventTrace('Paste from clip', data);
+  if (Widget=nil) then ;
   Mess.msg := LM_PASTEFROMCLIP;
   Result:= DeliverMessage(Data, Mess) = 0;
 end;
@@ -2236,6 +2285,7 @@ var
   Mess : TLMessage;
 begin
   EventTrace('Value changed', data);
+  if (Widget=nil) then ;
   Mess.msg := LM_CHANGED;
   Result := DeliverMessage(Data, Mess) = 0;
 end;
@@ -2252,12 +2302,12 @@ end;
            gtk_timeout_remove so we have to dispose data here & return 0
            (s.a. KillTimer).
  ------------------------------------------------------------------------------}
-function gtkTimerCB(Data: gPointer): gint; cdecl;
+function gtkTimerCB(Data: gPointer): {$IFDEF Gtk2}gBoolean{$ELSE}gint{$ENDIF}; cdecl;
 var
   TimerInfo: PGtkITimerinfo;
 begin
   EventTrace ('TimerCB', nil);
-  Result := 0;  // assume: timer will stop
+  Result := GdkFalse;  // assume: timer will stop
   
   TimerInfo:=PGtkITimerinfo(Data);
 
@@ -2266,7 +2316,7 @@ begin
     writeln('gtkTimerCB Timer was killed: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
     {$ENDIF}
     // timer was killed
-    Result:=0; // stop timer
+    Result:=GdkFalse; // stop timer
   end else begin
     {$IFDEF VerboseTimer}
     writeln('gtkTimerCB Timer Event: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
@@ -2275,20 +2325,20 @@ begin
     then begin
       // Call users timer function
       TimerInfo^.TimerFunc;
-      Result:=1; // timer will go on
+      Result:=GdkTrue; // timer will go on
     end
     else begin
-      Result := 0;       // stop timer
+      Result := GdkFalse;       // stop timer
     end;
   end;
   
-  if (Result<>0) and (FTimerData.IndexOf(Data)<0) then begin
+  if (Result<>GdkFalse) and (FTimerData.IndexOf(Data)<0) then begin
     // timer was killed
     // -> stop timer
-    Result:=0;
+    Result:=GdkFalse;
   end;
 
-  if Result=0 then begin
+  if Result=GdkFalse then begin
     {$IFDEF VerboseTimer}
     writeln('gtkTimerCB Timer was STOPPED: TimerInfo=',HexStr(Cardinal(TimerInfo),8));
     {$ENDIF}
@@ -2309,6 +2359,7 @@ begin
 //writeln('[gtkFocusInNotifyCB] ',TObject(data).ClassName);
   EventTrace ('FocusInNotify (alias Enter)', data);
   
+  if (Event=nil) then ;
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     gtk_signal_emit_stop_by_name(PGTKObject(Widget),'focus-in-event');
@@ -2326,6 +2377,7 @@ begin
 //writeln('[gtkFocusOutNotifyCB] ',TObject(data).ClassName);
   EventTrace ('FocusOutNotify (alias Exit)', data);
 
+  if (Event=nil) then ;
   if csDesigning in TControl(Data).ComponentState then begin
     // stop the signal, so that the widget does not auto react
     gtk_signal_emit_stop_by_name(PGTKObject(Widget),'focus-out-event');
@@ -2510,6 +2562,7 @@ var
   end;
 
 begin
+  if (Widget=nil) then ;
   GetGTKKeyInfo(Event,KeyCode,VirtKeyCode,SysKey,Extended,Toggle,ShiftState);
   KeyStateList:=TList(FuncData);
   ListCode:=KeyToListCode(KeyCode, VirtKeyCode, Extended);
@@ -2556,6 +2609,7 @@ var
   MSG: TLMessage;
 begin
   Result := True;
+  if (Widget=nil) then ;
   EventTrace('year changed', data);
   MSG.Msg := LM_YEARCHANGED;
   Result := DeliverPostMessage(Data, MSG);
@@ -2575,6 +2629,7 @@ var TempBuf: Pointer;
 begin
   // at any time there can be several requests
   // find the request with the correct TimeID
+  if (Data=nil) or (TargetWidget=nil) then ;
   i:=ClipboardSelectionData.Count-1;
   while (i>=0) do begin
     c:=PClipboardEventData(ClipboardSelectionData[i]);
@@ -2622,8 +2677,6 @@ end;
 procedure ClipboardSelectionRequestHandler(TargetWidget: PGtkWidget;
   SelectionData: PGtkSelectionData; Info: cardinal; TimeID: cardinal;
   Data: Pointer); cdecl;
-type
-  PGdkAtom = ^TGdkAtom;
 var ClipboardType: TClipboardType;
   MemStream: TMemoryStream;
   FormatID: cardinal;
@@ -2635,6 +2688,7 @@ begin
   {$IFDEF DEBUG_CLIPBOARD}
   writeln('*** [ClipboardSelectionRequestHandler] START');
   {$ENDIF}
+  if (Data=nil) or (TimeID=0) or (Info=0) or (TargetWidget=nil) then ;
   if SelectionData^.Target=0 then exit;
   for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do
     if SelectionData^.Selection=ClipboardTypeAtoms[ClipboardType] then begin
@@ -2651,14 +2705,14 @@ begin
           // the gtk-interface provides automatically some formats, that the lcl
           // does not know. Wrapping them to lcl formats ...
           FormatID:=SelectionData^.Target;
-          if ((FormatID=gdk_atom_intern('COMPOUND_TEXT',1))
+          if ((FormatID=gdk_atom_intern('COMPOUND_TEXT',GdkTrue))
             and (ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]))
-          or ((FormatID=gdk_atom_intern('STRING',1))
+          or ((FormatID=gdk_atom_intern('STRING',GdkTrue))
             and (ClipboardExtraGtkFormats[ClipboardType][gfSTRING]))
-          or ((FormatID=gdk_atom_intern('TEXT',1))
+          or ((FormatID=gdk_atom_intern('TEXT',GdkTrue))
             and (ClipboardExtraGtkFormats[ClipboardType][gfTEXT]))
           then
-            FormatID:=gdk_atom_intern('text/plain',0);
+            FormatID:=gdk_atom_intern('text/plain',GdkFalse);
             
           {$IFDEF DEBUG_CLIPBOARD}
           writeln('[ClipboardSelectionRequestHandler] FormatID=',FormatID,' CompoundText=',gdk_atom_intern('COMPOUND_TEXT',1),' ',ClipboardExtraGtkFormats[ClipboardType][gfCOMPOUND_TEXT]);
@@ -2673,20 +2727,17 @@ begin
           BitCount:=8;
           
           // if the format was wrapped, transform it back
-          if (FormatID=gdk_atom_intern('text/plain',1)) then begin
-            if (SelectionData^.Target=gdk_atom_intern('COMPOUND_TEXT',1)) then
+          if (FormatID=gdk_atom_intern('text/plain',GdkTrue)) then begin
+            if (SelectionData^.Target=gdk_atom_intern('COMPOUND_TEXT',GdkTrue)) then
             begin
               // transform text/plain to COMPOUND_TEXT
               P:=StrAlloc(MemStream.Size+1);
               MemStream.Read(P^,MemStream.Size);
               P[MemStream.Size]:=#0;
-              {$ifdef GTK2}
-              gdk_string_to_compound_text(P,@SelectionData^._Type,
+
+              gdk_string_to_compound_text(P,
+                @SelectionData^.{$ifdef GTK2}_Type{$ELSE}theType{$ENDIF},
                 @SelectionData^.Format,@Buffer,@BufLength);
-              {$else}
-              gdk_string_to_compound_text(P,@SelectionData^.theType,
-                @SelectionData^.Format,@Buffer,@BufLength);
-              {$endif}
               StrDispose(P);
               gtk_selection_data_set(SelectionData,SelectionData^.Target,
                 SelectionData^.Format,Buffer,BufLength);
@@ -2732,6 +2783,7 @@ function ClipboardSelectionLostOwnershipHandler(TargetWidget: PGtkWidget;
   EventSelection: PGdkEventSelection;  Data: Pointer): cardinal; cdecl;
 var ClipboardType: TClipboardType;
 begin
+  if (Data=nil) or (TargetWidget=nil) then ;
   //writeln('*** [ClipboardSelectionLostOwnershipHandler] ',hexstr(cardinal(targetwidget),8));
   for ClipboardType:=Low(TClipboardType) to High(TClipboardType) do
     if EventSelection^.Selection=ClipboardTypeAtoms[ClipboardType] then begin
@@ -2760,8 +2812,10 @@ end;
 
   Handler for style changes. For example the user changes the the theme.
 -------------------------------------------------------------------------------}
-Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle; Data: Pointer); cdecl;
+Procedure GTKStyleChanged(Widget: PGtkWidget; previous_style : PGTKStyle;
+  Data: Pointer); cdecl;
 begin
+  if (Widget=nil) or (Data=nil) or (previous_style=nil) then ;
   EventTrace('style-set', nil);
       ReleaseStyle('button');
       ReleaseStyle('radiobutton');
@@ -2787,6 +2841,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.184  2003/08/29 21:21:07  mattias
+  fixes for gtk2
+
   Revision 1.183  2003/07/21 23:43:32  marc
   * Fixed radiogroup menuitems
 

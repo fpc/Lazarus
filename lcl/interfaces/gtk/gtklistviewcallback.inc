@@ -52,6 +52,7 @@ end;
 function gtkLVAbortColumnResize(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 begin             
   //TODO: implement
+  if (AList=nil) or (AData=nil) then ;
   Result := False;
 end;
      
@@ -60,9 +61,11 @@ end;
 //HDN_TRACK
 //HDN_ITEMCHANGED
 //HDN_ITEMCHANGING 
-function gtkLVResizeColumn(AList: PGTKCList; AColumn, AWidth: Integer; AData: gPointer): GBoolean; cdecl;
+function gtkLVResizeColumn(AList: PGTKCList; AColumn, AWidth: Integer;
+  AData: gPointer): GBoolean; cdecl;
 begin
   //TODO: implement
+  if (AList=nil) or (AData=nil) or (AColumn=0) or (AWidth=0) then ;
   Result := False;
 end;
 
@@ -123,6 +126,7 @@ begin
   EventTrace('select-row', Adata);
   msg.Msg := CN_NOTIFY;
 
+  if (AEvent=nil) then ;
   FillChar(NM, SizeOf(NM), 0);
   NM.hdr.hwndfrom := longint(AList);
   NM.hdr.code := LVN_ITEMCHANGED;
@@ -134,7 +138,8 @@ begin
   Result := DeliverMessage(AData, msg) = 0;
 end;
 
-function gtkLVUnSelectRow(AList: PGTKCList; ARow, AColumn: Integer; AEvent: PGDKEventButton; AData: gPointer): GBoolean; cdecl;
+function gtkLVUnSelectRow(AList: PGTKCList; ARow, AColumn: Integer;
+  AEvent: PGDKEventButton; AData: gPointer): GBoolean; cdecl;
 var
   msg: TLMNotify;
   NM: TNMListView;
@@ -142,6 +147,7 @@ begin
   EventTrace('unselect-row', Adata);
   msg.Msg := CN_NOTIFY;
 
+  if (AEvent=nil) then ;
   FillChar(NM, SizeOf(NM), 0);
   NM.hdr.hwndfrom := longint(AList);
   NM.hdr.code := LVN_ITEMCHANGED;
@@ -159,11 +165,8 @@ function gtkLVToggleFocusRow(AList: PGTKCList; AData: gPointer): GBoolean; cdecl
   //NM: TNMListView;
 begin
   EventTrace('toggle-focus-row', Adata);
+  if (AList=nil) or (AData=nil) then ;
   //msg.Msg := CN_NOTIFY;
-(*
-  TODO:
-  Do we need this?
-*)
   Result := False;
 end;
 
@@ -198,12 +201,14 @@ end;
 function gtkLVUnSelectAll(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 begin
   EventTrace('unselect-all', Adata);
+  if (AList=nil) or (AData=nil) then ;
   Result:=true;
 end;
 
 function gtkLVEndSelection(AList: PGTKCList; AData: gPointer): GBoolean; cdecl;
 begin
   EventTrace('end-selection', Adata);
+  if (AList=nil) or (AData=nil) then ;
   Result:=true;
 end;
          
