@@ -112,7 +112,7 @@ export FPC OS_TARGET OS_SOURCE CPU_TARGET CPU_SOURCE FPC_VERSION
 #####################################################################
 
 ifneq (,$(findstring NEW_EDITOR,$(OPT)))
-  THE_EDIT=mwedit92
+  THE_EDIT=synedit
 else
   THE_EDIT=mwedit
 endif
