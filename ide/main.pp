@@ -61,16 +61,17 @@ uses
 type
   TMainIDE = class(TMainIDEBar)
     // event handlers
+    
     //procedure FormShow(Sender : TObject);
     procedure FormClose(Sender : TObject; var Action: TCloseAction);
     procedure FormCloseQuery(Sender : TObject; var CanClose: boolean);
     //procedure FormPaint(Sender : TObject);
     procedure MainMouseMoved(Sender: TObject; Shift: TShiftState; X,Y: Integer);
-    procedure MainMouseDown(Sender: TObject; Button: TMouseButton; 
-        Shift: TShiftState; X,Y: Integer);
-    procedure MainKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    function OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
-          const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
+    procedure OnApplicationUserInput(Sender: TObject);
+
+    // Hint Timer events
+    Procedure HintShowTimerTimer(Sender : TObject);
+    Procedure HintPersistentTimerTimer(Sender : TObject);
 
     // file menu
     procedure mnuNewUnitClicked(Sender : TObject);
@@ -270,21 +271,23 @@ type
     procedure OnBeforeCodeToolBossApplyChanges(Manager: TCodeToolManager;
                                     var Abort: boolean);
     procedure OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
-    
+    function OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
+          const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
+
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
 
-    // Hint Timer events
-    Procedure HintTimer1Timer(Sender : TObject);
-    
     // External Tools events
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
                                          var Abort: boolean);
     procedure OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
                                         ErrorOccurred: boolean);
   private
-    FHintSender : TObject;
+    FHintsPersistent: boolean; // show hints
+    FHintShowTimer: TTimer;
+    FHintPersistentTimer: TTimer;
+
     FCodeLastActivated : Boolean; // used for toggling between code and forms
     FLastFormActivated : TCustomForm;// used to find the last form so you can
                                      // display the correct tab
@@ -299,6 +302,9 @@ type
     procedure SetDefaultsForForm(aForm : TCustomForm);
 
     procedure InvalidateAllDesignerForms;
+    procedure GetHintControlAtMousePos(var AControl: TControl;
+      var MouseOnSelf, IsHintControl: boolean);
+    procedure ShowHintWindow(HintControl: TControl);
   protected
     procedure ToolButtonClick(Sender : TObject);
     procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
@@ -750,6 +756,8 @@ begin
   SetupControlSelection;
 
   SetupStartProject;
+  
+  Application.AddOnUserInputHandler(@OnApplicationUserInput);
 end;
 
 destructor TMainIDE.Destroy;
@@ -757,6 +765,8 @@ begin
   writeln('[TMainIDE.Destroy] A');
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.Destroy A ');{$ENDIF}
   if DebugBoss<>nil then DebugBoss.EndDebugging;
+
+  Application.RemoveOnUserInputHandler(@OnApplicationUserInput);
 
   FreeThenNil(Project1);
   if TheControlSelection<>nil then begin
@@ -774,7 +784,8 @@ begin
   FreeThenNil(EditorOpts);
   FreeThenNil(EnvironmentOptions);
   FreeThenNil(InputHistories);
-  FreeThenNil(HintTimer1);
+  FreeThenNil(FHintShowTimer);
+  FreeThenNil(FHintPersistentTimer);
   FreeThenNil(HintWindow1);
 
   writeln('[TMainIDE.Destroy] B  -> inherited Destroy...');
@@ -858,7 +869,7 @@ procedure TMainIDE.SetupSpeedButtons;
   
   function CreateButton(const AName, APixName: String; ANumGlyphs: Integer;
     var ALeft, ATop: Integer; const AMoveFlags: TMoveFlags;
-    const AOnClick: TNotifyEvent; AHint : String): TSpeedButton;
+    const AOnClick: TNotifyEvent; const AHint : String): TSpeedButton;
   begin
     Result := TSpeedButton.Create(Self);
     with Result do
@@ -893,6 +904,7 @@ begin
     Caption:= '';
     BevelWidth:=1;
     BevelOuter:=bvRaised;
+    OnMouseMove := @MainMouseMoved;
   end;
 
 
@@ -1000,7 +1012,6 @@ begin
         IDEComponent.SpeedButton.OnMouseMove := @MainMouseMoved;
         IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
         IDEComponent.SpeedButton.Name := IDEComponent.SpeedButton.Hint;
-        IDEComponent.SpeedButton.ShowHint := True;
         IDEComponent.SpeedButton.GroupIndex := 1;
         IDECompList.Add(IDEComponent);
       end;
@@ -1014,14 +1025,21 @@ end;
 
 procedure TMainIDE.SetupHints;
 begin
-  HintTimer1 := TTimer.Create(self);
-  with HintTimer1 do
-    Begin
-      Name:='HintTimer1';
-      Enabled := False;
-      Interval := 500;
-      OnTimer := @HintTimer1Timer;
-    end;
+  FHintShowTimer := TTimer.Create(self);
+  with FHintShowTimer do Begin
+    Name:='FHintShowTimer';
+    Enabled := False;
+    Interval := 500;
+    OnTimer := @HintShowTimerTimer;
+  end;
+
+  FHintPersistentTimer := TTimer.Create(self);
+  with FHintPersistentTimer do Begin
+    Name:='FHintPersistentTimer';
+    Enabled := False;
+    Interval := 500;
+    OnTimer := @HintPersistentTimerTimer;
+  end;
 
   HintWindow1 := THintWindow.Create(nil);
   HIntWindow1.Visible := False;
@@ -1442,8 +1460,6 @@ begin
   OnCloseQuery := @FormCloseQuery;
 
   OnMouseMove := @MainMouseMoved;
-  OnMouseDown := @MainMouseDown;
-  OnKeyDown := @MainKeyDown;
 end;
 
 {------------------------------------------------------------------------------}
@@ -6219,6 +6235,23 @@ begin
   SourceNoteBook.UnlockAllEditorsInSourceChangeCache;
 end;
 
+function TMainIDE.OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
+  const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
+var
+  AnUnitInfo: TUnitInfo;
+begin
+  Result:=nil;
+  // check if SrcFilename is project file
+  AnUnitInfo:=Project1.ProjectUnitWithFilename(SrcFilename);
+  if AnUnitInfo=nil then exit;
+  // SrcFilename is a project file
+  // -> search virtual project files
+  AnUnitInfo:=Project1.ProjectUnitWithUnitname(TheUnitName);
+  if AnUnitInfo=nil then exit;
+  // virtual unit found
+  Result:=AnUnitInfo.Source;
+end;
+
 procedure TMainIDE.SaveSourceEditorChangesToCodeCache(PageIndex: integer);
 // save all open sources to code tools cache
 var i: integer;
@@ -6876,123 +6909,128 @@ begin
      [mbOk],0);
 end;
 
-Procedure TMainIDE.HintTimer1Timer(Sender : TObject);
+Procedure TMainIDE.HintShowTimerTimer(Sender : TObject);
 var
-  Rect : TRect;
-  AHint : String;
-  cPosition : TPoint;
-//  TextPosition : TPoint;
-//  SE : TSourceEditor;
-  Window : TWinControl;
-//  Caret : TPoint;
-  Control : TControl;
-//  Control2 : TControl;
-//  tempPosition : TPoint;
+  AControl : TControl;
+  MouseOnSelf, IsHintControl: boolean;
 begin
-  HintTimer1.Enabled := False;
+  FHintShowTimer.Enabled := False;
+  // mouse has waited over a control with a hint
+  GetHintControlAtMousePos(AControl,MouseOnSelf,IsHintControl);
+  //writeln('TMainIDE.HintShowTimerTimer IsHintControl=',IsHintControl,' MouseOnSelf=',MouseOnSelf);
+  if IsHintControl then begin
+    // mouse has waited over control with hint
+    // -> show hint
+    ShowHintWindow(AControl);
+  end else begin
+    // mouse over control without hint
+    HintWindow1.Visible:=false;
+  end;
+end;
 
-  cPosition := Mouse.CursorPos;
-  Window := FindLCLWindow(cPosition);
-  if not(Assigned(Window)) then Exit;
+procedure TMainIDE.HintPersistentTimerTimer(Sender: TObject);
+begin
+  FHintPersistentTimer.Enabled:=false;
+  // mouse has waited over a control without a hint
+  // -> hide hint
+  //writeln('TMainIDE.HintPersistentTimerTimer FHintsPersistent=',FHintsPersistent,' HintWindow1.Visible=',HintWindow1.Visible);
+  FHintsPersistent:=false;
+  HintWindow1.Visible:=false;
+end;
 
-  //get the parent until parent is nil
-  While Window.Parent <> nil do
-    Window := Window.Parent;
+procedure TMainIDE.GetHintControlAtMousePos(var AControl: TControl;
+  var MouseOnSelf, IsHintControl: boolean);
+var
+  MousePos: TPoint;
+begin
+  IsHintControl:=false;
 
-  if (Window <> Self) then Exit;
+  // find control at mouse position
+  MousePos:=Mouse.CursorPos;
+  AControl:=FindLCLControl(MousePos);
+  MouseOnSelf:=(AControl<>nil) and (GetParentForm(AControl)=Self);
 
-  Control := nil;
-  
-  if (FHintSender is TSpeedButton) then begin
-    Control := TControl(FHintSender);
-    while (Control<>nil) do begin
-      if (Control=Self) then begin
-        // main speed button
-        if not EnvironmentOptions.ShowHintsForMainSpeedButtons then exit;
-      end else if (Control=ComponentNotebook) then begin
-        // component palette
-        if not EnvironmentOptions.ShowHintsForComponentPalette then exit;
-      end;
-      Control:=Control.Parent;
+  // check if this is a control with hints
+  if (not (AControl is TSpeedButton))
+  or (TSpeedButton(AControl).Hint='') then exit;
+  if ComponentNotebook.IsParentOf(AControl) then begin
+    // component palette
+    if not EnvironmentOptions.ShowHintsForComponentPalette then exit;
+  end else begin
+    // IDE speed button
+    if not EnvironmentOptions.ShowHintsForMainSpeedButtons then exit;
+  end;
+  IsHintControl:=true;
+end;
+
+procedure TMainIDE.OnApplicationUserInput(Sender: TObject);
+var
+  AControl : TControl;
+  MouseOnSelf, IsHintControl: boolean;
+begin
+  if HintWindow1.Visible then begin
+    GetHintControlAtMousePos(AControl,MouseOnSelf,IsHintControl);
+    //writeln('TMainIDE.OnApplicationUserInput IsHintControl=',IsHintControl,' MouseOnSelf=',MouseOnSelf);
+    if not IsHintControl then begin
+      HintWindow1.Visible:=false;
+      if not MouseOnSelf then
+        FHintsPersistent:=false;
     end;
   end;
-
-  AHint := '';
-
-  if (Control <> nil) and (Control is TSpeedButton) then
-     AHint := TSpeedButton(Control).Hint;
-
-
-  //If no hint, then Exit
-  if AHint = '' then Exit;
-
-  Rect := HintWindow1.CalcHintRect(0,AHint,nil);  //no maxwidth
-  Rect.Left := cPosition.X+10;
-  Rect.Top := cPosition.Y+10;
-  Rect.Top := Rect.Top + 25;
-  Rect.Right := Rect.Left + Rect.Right+3;
-  Rect.Bottom := Rect.Top + Rect.Bottom+3;
-
-  HintWindow1.ActivateHint(Rect,AHint);
-
-end;
-
-Procedure TMainIDE.MainKeyDown(Sender: TObject; var Key: Word; Shift:
-  TShiftState);
-begin
-  HintTimer1.Enabled := False;
-  if HintWIndow1.Visible then
-      HintWindow1.Visible := False;
-end;
-
-function TMainIDE.OnCodeToolBossSearchUsedUnit(const SrcFilename: string;
-  const TheUnitName, TheUnitInFilename: string): TCodeBuffer;
-var
-  AnUnitInfo: TUnitInfo;
-begin
-  Result:=nil;
-  // check if SrcFilename is project file
-  AnUnitInfo:=Project1.ProjectUnitWithFilename(SrcFilename);
-  if AnUnitInfo=nil then exit;
-  // SrcFilename is a project file
-  // -> search virtual project files
-  AnUnitInfo:=Project1.ProjectUnitWithUnitname(TheUnitName);
-  if AnUnitInfo=nil then exit;
-  // virtual unit found
-  Result:=AnUnitInfo.Source;
-end;
-
-Procedure TMainIDE.MainMouseDown(Sender: TObject; Button: TMouseButton; Shift:
-  TShiftState; X, Y: Integer);
-begin
-  HintTimer1.Enabled := False;
-  if HintWIndow1.Visible then
-    HintWindow1.Visible := False;
 end;
 
 Procedure TMainIDE.MainMouseMoved(Sender: TObject; Shift: TShiftState; X, Y:
   Integer);
-var Control: TControl;
+var
+  AControl: TControl;
+  MouseOnSelf, IsHintControl: boolean;
 begin
-  if HintWindow1.Visible then
-    HintWindow1.Visible := False;
-  HintTimer1.Enabled := False;
-  FHintSender := Sender;
-  if (FHintSender is TSpeedButton) then begin
-    Control := TControl(FHintSender);
-    while (Control<>nil) do begin
-      if (Control=Self) then begin
-        // main speed button
-        if not EnvironmentOptions.ShowHintsForMainSpeedButtons then exit;
-      end else if (Control=ComponentNotebook) then begin
-        // component palette
-        if not EnvironmentOptions.ShowHintsForComponentPalette then exit;
-      end;
-      Control:=Control.Parent;
-      Application.ProcessMessages;
-    end;
-    HintTimer1.Enabled := ([ssLeft,ssRight,ssMiddle]*Shift=[]);
+  FHintShowTimer.Enabled := False;
+
+  if ([ssLeft,ssRight,ssMiddle]*Shift<>[]) then begin
+    FHintsPersistent:=false;
+    HintWindow1.Visible:=false;
+    exit;
   end;
+  
+  GetHintControlAtMousePos(AControl,MouseOnSelf,IsHintControl);
+
+  //writeln('TMainIDE.MainMouseMoved IsHintControl=',IsHintControl,' MouseOnSelf=',MouseOnSelf,' FHintsPersistent=',FHintsPersistent,' FHintPersistentTimer.Enabled=',FHintPersistentTimer.Enabled);
+  if IsHintControl then begin
+    // mouse over a control with a hint
+    FHintPersistentTimer.Enabled:=false;
+    if FHintsPersistent then
+      // show hint window now
+      ShowHintWindow(AControl)
+    else
+      // start timer and wait
+      FHintShowTimer.Enabled:=true;
+  end else begin
+    // mouse over a control without a hint
+    HintWindow1.Visible:=false;
+    if FHintsPersistent then begin
+      // start timer (if not already done) to deactivate persistent hints
+      FHintPersistentTimer.Enabled:=true;
+    end;
+  end;
+end;
+
+procedure TMainIDE.ShowHintWindow(HintControl: TControl);
+var
+  ARect: TRect;
+  AHint: string;
+  MousePos: TPoint;
+begin
+  AHint := HintControl.Hint;
+  MousePos := Mouse.CursorPos;
+  //writeln('TMainIDE.ShowHintWindow "',AHint,'" ',MousePos.X,',',MousePos.Y);
+  ARect := HintWindow1.CalcHintRect(0,AHint,nil);  //no maxwidth
+  ARect.Left := MousePos.X+10;
+  ARect.Top := MousePos.Y+10;
+  ARect.Right := ARect.Left + ARect.Right+3;
+  ARect.Bottom := ARect.Top + ARect.Bottom+3;
+  FHintsPersistent:=true;
+  HintWindow1.ActivateHint(ARect,AHint);
 end;
 
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
@@ -7467,6 +7505,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.423  2002/11/04 19:49:34  lazarus
+  MG: added persistent hints for main ide bar
+
   Revision 1.422  2002/11/02 10:59:28  lazarus
   MG: fixed designer hints
 
