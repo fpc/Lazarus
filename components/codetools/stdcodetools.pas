@@ -117,7 +117,7 @@ type
     function FindPublishedVariable(const UpperClassName,
           UpperVarName: string): TCodeTreeNode;
     function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
-          SourceChangeCache: TSourceChangeCache): boolean;
+          SourceChangeCache: TSourceChangeCache): boolean; virtual;
     function RemovePublishedVariable(const UpperClassName, UpperVarName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
     function RenamePublishedVariable(const UpperClassName,

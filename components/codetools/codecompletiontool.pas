@@ -94,6 +94,8 @@ type
     property CodeCompleteSrcChgCache: TSourceChangeCache
       read ASourceChangeCache write SetCodeCompleteSrcChgCache;
   public
+    function AddPublishedVariable(const UpperClassName,VarName, VarType: string;
+          SourceChangeCache: TSourceChangeCache): boolean; override;
     function CompleteCode(CursorPos: TCodeXYPosition;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
         SourceChangeCache: TSourceChangeCache): boolean;
@@ -294,6 +296,34 @@ function TCodeCompletionCodeTool.NodeExtIsPrivate(
 begin
   Result:=(ANodeExt.Flags=ord(ncpPrivateVars))
        or (ANodeExt.Flags=ord(ncpPrivateProcs));
+end;
+
+function TCodeCompletionCodeTool.AddPublishedVariable(const UpperClassName,
+  VarName, VarType: string; SourceChangeCache: TSourceChangeCache): boolean;
+begin
+  Result:=false;
+  if (UpperClassName='') or (VarName='') or (VarType='')
+  or (SourceChangeCache=nil) or (Scanner=nil) then exit;
+  // find classnode
+  BuildTree(false);
+  if not EndOfSourceFound then exit;
+  ClassNode:=FindClassNodeInInterface(UpperClassName,true,false);
+  // initialize class for code completion
+  CodeCompleteClassNode:=ClassNode;
+  CodeCompleteSrcChgCache:=SourceChangeCache;
+  // check if variable already exists
+  if VarExistsInCodeCompleteClass(UpperCaseStr(VarName)) then begin
+
+  end else begin
+    AddClassInsertion(nil,UpperCaseStr(VarName),
+            VarName+':'+VarType+';',VarName,'',ncpPublishedVars);
+    if not InsertAllNewClassParts then
+      RaiseException(ctsErrorDuringInsertingNewClassParts);
+    // apply the changes
+    if not SourceChangeCache.Apply then
+      RaiseException(ctsUnableToApplyChanges);
+  end;
+  Result:=true;
 end;
 
 function TCodeCompletionCodeTool.CompleteProperty(
