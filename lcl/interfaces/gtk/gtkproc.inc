@@ -27,6 +27,27 @@
 {$ENDIF}
 
 {------------------------------------------------------------------------------
+  Function: FindChar
+  Params:  Width, Height: Size of the image
+           Depth:         Depth of the image
+  Returns: a GDIRawImage
+
+  Creates a RawImage
+ ------------------------------------------------------------------------------}
+function FindChar(c: char; p:PChar; Max: integer): integer;
+begin
+  Result:=0;
+  while (Result<Max) do begin
+    if p[Result]<>c then
+      inc(Result)
+    else
+      exit;
+  end;
+  Result:=-1;
+end;
+
+
+{------------------------------------------------------------------------------
   function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 
   The GTK_IS_XXX macro functions in the fpc gtk1.x bindings are not correct.
@@ -2406,6 +2427,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.68  2002/08/21 13:35:25  lazarus
+  MG: accelerations for synedit
+
   Revision 1.67  2002/08/21 11:29:36  lazarus
   MG: fixed mem some leaks in ide and gtk
 
