@@ -139,26 +139,25 @@ type
                                            read FOnCompareDescPtrWithDescriptor;
   end;
 
-function ComparePHandleWithResourceCacheItem(HandlePtr: PHandle;
-  Item: TResourceCacheItem): integer;
-function CompareDescPtrWithBlockResDesc(DescPtr: Pointer;
-  Item: TBlockResourceCacheDescriptor): integer;
+function ComparePHandleWithResourceCacheItem(HandlePtr, Item: Pointer): integer;
+function CompareDescPtrWithBlockResDesc(ADescPtr, AItem: Pointer): integer;
 
 
 implementation
 
 
-function ComparePHandleWithResourceCacheItem(HandlePtr: PHandle;
-  Item: TResourceCacheItem): integer;
+function ComparePHandleWithResourceCacheItem(HandlePtr, Item: Pointer): integer;
 begin
-  Result:=CompareHandles(HandlePtr^,Item.Handle);
+  Result := CompareHandles(PHandle(HandlePtr)^, TResourceCacheItem(Item).Handle);
 end;
 
-function CompareDescPtrWithBlockResDesc(DescPtr: Pointer;
-  Item: TBlockResourceCacheDescriptor): integer;
+function CompareDescPtrWithBlockResDesc(ADescPtr, AItem: Pointer): integer;
+var
+  Item: TBlockResourceCacheDescriptor;
 begin
-  Result:=CompareMemRange(DescPtr,Item.Data,
-                          TBlockResourceCache(Item.Cache).DataSize);
+  Item := TBlockResourceCacheDescriptor(AItem);
+  Result := CompareMemRange(ADescPtr, Item.Data,
+              TBlockResourceCache(Item.Cache).DataSize);
 end;
 
 

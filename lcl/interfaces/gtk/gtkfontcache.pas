@@ -112,15 +112,20 @@ end;
 
 { TGdkFontCache }
 
-function CompareGdkFontWithResItem(Font: PGDKFont;
-  Item: TGdkFontCacheItem): integer;
+function CompareGdkFontWithResItem(Font, Item: Pointer): integer;
+// Font = PGDKFont
 begin
-  Result:=ComparePointers(Font,Item.GdkFont);
+  Result := ComparePointers(Font, TGdkFontCacheItem(Item).GdkFont);
 end;
 
-function CompareLogFontAndNameWithResDesc(Key: PLogFontAndName;
-  Desc: TGdkFontCacheDescriptor): integer;
+function CompareLogFontAndNameWithResDesc(AKey, ADesc: Pointer): integer;
+var
+  Key: PLogFontAndName;
+  Desc: TGdkFontCacheDescriptor;
 begin
+  Key := PLogFontAndName(AKey);
+  Desc := TGdkFontCacheDescriptor(ADesc);
+  
   Result:=CompareStr(Key^.LongFontName,Desc.LongFontName);
   //writeln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',HexStr(Cardinal(Desc),8),' Result=',Result);
   if Result=0 then

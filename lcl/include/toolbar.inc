@@ -21,17 +21,22 @@
 
 {$IFNDEF OldToolBar}
 
-function CompareToolBarControl(Control1, Control2: TControl): integer;
+function CompareToolBarControl(AControl1, AControl2: Pointer): integer;
 var
   ToolBar: TToolBar;
   Row1: Integer;
   Row2: Integer;
   BtnHeight: Integer;
+  Control1, Control2: TControl;
 begin
   Result:=0;
-  if not (Control1.Parent is TToolBar) then exit;
-  ToolBar:=TToolBar(Control1.Parent);
-  BtnHeight:=ToolBar.FRealizedButtonHeight;
+  Control1 := TControl(AControl1);
+  if not (Control1.Parent is TToolBar) then Exit;
+
+  ToolBar := TToolBar(Control1.Parent);
+  BtnHeight := ToolBar.FRealizedButtonHeight;
+  Control2 := TControl(AControl2);
+
   Row1:=(Control1.Top+(BtnHeight div 2)) div ToolBar.FRealizedButtonHeight;
   Row2:=(Control2.Top+(BtnHeight div 2)) div ToolBar.FRealizedButtonHeight;
   if Row1<Row2 then
@@ -2083,6 +2088,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2004/11/03 22:13:48  marc
+  * Fixed fpc stronger typing
+
   Revision 1.31  2004/09/16 14:32:31  micha
   convert LM_SETSELMODE message to interface method
 

@@ -27,9 +27,13 @@ type
   end;
   PLogFontAndName = ^TLogFontAndName;
 
-function CompareLogFontAndNameWithResDesc(Key: PLogFontAndName;
-  Desc: TFontHandleCacheDescriptor): integer;
+function CompareLogFontAndNameWithResDesc(AKey, ADesc: Pointer): integer;
+var
+  Key: PLogFontAndName;
+  Desc: TFontHandleCacheDescriptor;
 begin
+  Key := PLogFontAndName(AKey);
+  Desc := TFontHandleCacheDescriptor(ADesc);
   Result:=CompareStr(Key^.LongFontName,Desc.LongFontName);
   //writeln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',HexStr(Cardinal(Desc),8),' Result=',Result);
   if Result=0 then
@@ -950,6 +954,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.17  2004/11/03 22:13:48  marc
+  * Fixed fpc stronger typing
+
   Revision 1.16  2004/09/04 22:24:16  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 

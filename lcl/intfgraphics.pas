@@ -2236,16 +2236,17 @@ type
   end;
   PLazAVLPaletteEntry = ^TLazAVLPaletteEntry;
 
-function CompareLazAVLPaletteEntries(
-  Entry1, Entry2: PLazAVLPaletteEntry): integer;
+function CompareLazAVLPaletteEntries(Entry1, Entry2: Pointer): integer;
 begin
-  Result:=Entry1^.Palette.CompareEntries(Entry1^.Index,Entry2^.Index);
+  with PLazAVLPaletteEntry(Entry1)^ do
+    Result := Palette.CompareEntries(Index,
+                PLazAVLPaletteEntry(Entry2)^.Index);
 end;
 
-function ComparePFPColorAndLazAVLPalEntry(PColor: PFPColor;
-  Entry: PLazAVLPaletteEntry): integer;
+function ComparePFPColorAndLazAVLPalEntry(PColor, Entry: Pointer): integer;
 begin
-  Result:=Entry^.Palette.CompareColorWithEntries(PColor^,Entry^.Index);
+  with PLazAVLPaletteEntry(Entry)^ do
+    Result := Palette.CompareColorWithEntries(PFPColor(PColor)^, Index);
 end;
 
 procedure TLazAVLPalette.SetCount(NewCount: integer);
