@@ -132,6 +132,7 @@ type
     OkButton: TButton;
     CancelButton: TButton;
     procedure ItemsTreeViewClick(Sender: TObject);
+    procedure ItemsTreeViewDblClick(Sender: TObject);
     procedure NewOtherDialogResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
   private
@@ -247,6 +248,11 @@ begin
   DescriptionLabel.Caption:=Desc;
 end;
 
+procedure TNewOtherDialog.ItemsTreeViewDblClick(Sender: TObject);
+begin
+  OkButton.Click;
+end;
+
 procedure TNewOtherDialog.SetupComponents;
 begin
   ItemsTreeView:=TTreeView.Create(Self);
@@ -256,6 +262,7 @@ begin
     Left:=5;
     Top:=5;
     OnClick:=@ItemsTreeViewClick;
+    OnDblClick:=@ItemsTreeViewDblClick;
   end;
   
   DescriptionGroupBox:=TGroupBox.Create(Self);

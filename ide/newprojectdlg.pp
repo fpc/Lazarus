@@ -32,16 +32,20 @@ interface
 
 uses
   Classes, SysUtils, Forms, Graphics, Controls, LResources, Project, Buttons,
-  StdCtrls, ProjectIntf;
+  StdCtrls, ProjectIntf, LazarusIDEStrConsts;
 
 type
-  TNewProjectDialog = class(TForm)
+
+{ TNewProjectDialog }
+
+TNewProjectDialog = class(TForm)
     CreateButton: TButton;
     CancelButton: TButton;
     ListBox: TListBox;
     HelpLabel: TLabel;
     procedure CreateButtonClick(Sender:TObject);
     procedure CancelButtonClick(Sender:TObject);
+    procedure ListBoxDblClick(Sender: TObject);
     procedure ListBoxMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
     procedure NewProjectDialogResize(Sender: TObject);
@@ -77,14 +81,12 @@ end;
 constructor TNewProjectDialog.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  if LazarusResources.Find(ClassName)=nil then begin
-    Width:=390;
-    Height:=240;
-    Position:=poScreenCenter;
-    Caption:='Create a new project';
-    OnResize:=@NewProjectDialogResize;
-    SetupComponents;
-  end;
+  Width:=390;
+  Height:=240;
+  Position:=poScreenCenter;
+  Caption:=lisNPCreateANewProject;
+  OnResize:=@NewProjectDialogResize;
+  SetupComponents;
   NewProjectDialogResize(nil);
   FillHelpLabel;
 end;
@@ -130,6 +132,7 @@ begin
     end;
     ItemIndex:=0;
     OnMouseUp:=@ListBoxMouseUp;
+    OnDblClick:=@ListBoxDblClick;
   end;
 
   HelpLabel:=TLabel.Create(Self);
@@ -141,7 +144,7 @@ begin
     Width:=MaxX-5-Left;
     Height:=ListBox.Height-2;
     WordWrap:=true;
-    Caption:='Select a project type';
+    Caption:=lisNPSelectAProjectType;
   end;
 
   CreateButton:=TButton.Create(Self);
@@ -153,7 +156,7 @@ begin
     Left:=Self.ClientWidth-Width*2-2*15;
     Top:=Self.ClientHeight-40;
     OnClick:=@CreateButtonClick;
-    Caption:='Create';
+    Caption:=lisNPCreate;
   end;
 
   CancelButton:=TButton.Create(Self);
@@ -165,7 +168,7 @@ begin
     Left:=Self.ClientWidth-Width-15;
     Top:=CreateButton.Top;
     OnClick:=@CancelButtonClick;
-    Caption:='Cancel';
+    Caption:=dlgCancel;
   end;
 end;
 
@@ -177,6 +180,11 @@ end;
 procedure TNewProjectDialog.CancelButtonClick(Sender:TObject);
 begin
   ModalResult:=mrCancel;
+end;
+
+procedure TNewProjectDialog.ListBoxDblClick(Sender: TObject);
+begin
+  CreateButton.Click;
 end;
 
 procedure TNewProjectDialog.ListBoxMouseUp(Sender:TObject;

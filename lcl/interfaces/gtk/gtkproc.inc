@@ -4213,7 +4213,8 @@ begin
   OldMouseCaptureWidget:=MouseCaptureWidget;
   MouseCaptureWidget:=nil;
   MouseCaptureType:=mctGTK;
-  gtk_grab_remove(OldMouseCaptureWidget);
+  if OldMouseCaptureWidget<>nil then
+    gtk_grab_remove(OldMouseCaptureWidget);
 end;
 
 {------------------------------------------------------------------------------
@@ -7923,6 +7924,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.330  2005/01/24 16:06:42  mattias
+  implemented DoubleClick for quick selection in new dialog
+
   Revision 1.329  2005/01/22 23:53:43  mattias
   fixed gtk2 intf  from Peter Vreman
 

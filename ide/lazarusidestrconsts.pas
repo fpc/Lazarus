@@ -2678,6 +2678,9 @@ resourcestring
     +'freepascal program. The program file is automatically maintained by '
     +'lazarus.';
   lisCustomProgramAFreepascalProgram = 'Custom Program%sA freepascal program.';
+  lisNPSelectAProjectType = 'Select a project type';
+  lisNPCreateANewProject = 'Create a new project';
+  lisNPCreate = 'Create';
 
 implementation
 end.

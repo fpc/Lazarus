@@ -1418,6 +1418,14 @@ msgstr ""
 msgid "Error: "
 msgstr ""
 
+#: lazarusidestrconsts:lissavechanges
+msgid "Save changes?"
+msgstr ""
+
+#: lazarusidestrconsts:lissavefilebeforeclosingform
+msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
+msgstr ""
+
 #: lazarusidestrconsts:lisunabletorenameforminsource
 msgid "Unable to rename form in source."
 msgstr ""
@@ -1896,6 +1904,14 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgmarkercolor
 msgid "Marker color"
+msgstr ""
+
+#: lazarusidestrconsts:lisfepaintdesigneritemsonidle
+msgid "Reduce designer painting"
+msgstr ""
+
+#: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
+msgid "Paint designer items only on idle (reduce overhead for slow computers)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgenvgrid
@@ -2871,11 +2887,11 @@ msgid "Config Files:"
 msgstr ""
 
 #: lazarusidestrconsts:dlgusefpccfg
-msgid "Use Compiler Config File (fpc.cfg)"
+msgid "Use standard Compiler Config File (fpc.cfg)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgusecustomconfig
-msgid "Use custom Compiler Config File"
+msgid "Use addional Compiler Config File"
 msgstr ""
 
 #: lazarusidestrconsts:liscustomoptions2
@@ -2916,6 +2932,18 @@ msgstr ""
 
 #: lazarusidestrconsts:liscoskipcallingcompiler
 msgid "Skip calling Compiler"
+msgstr ""
+
+#: lazarusidestrconsts:liscoambigiousadditionalcompilerconfigfile
+msgid "Ambigious additional compiler config file"
+msgstr ""
+
+#: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
+msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+msgstr ""
+
+#: lazarusidestrconsts:liscoclickokifaresuretodothat
+msgid "%s%sClick OK if are sure to do that."
 msgstr ""
 
 #: lazarusidestrconsts:liscocallon
@@ -3390,8 +3418,8 @@ msgstr ""
 msgid "Extract Procedure"
 msgstr ""
 
-#: lazarusidestrconsts:ueminvertattribution
-msgid "Invert Attribution"
+#: lazarusidestrconsts:ueminvertassignment
+msgid "Invert Assignment"
 msgstr ""
 
 #: lazarusidestrconsts:uemeditorproperties
@@ -4090,8 +4118,8 @@ msgstr ""
 msgid "Rename identifier"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecinvertattribution
-msgid "Invert attribution"
+#: lazarusidestrconsts:srkmecinvertassignment
+msgid "Invert assignment"
 msgstr ""
 
 #: lazarusidestrconsts:srkmecsyntaxcheck
@@ -7928,5 +7956,17 @@ msgstr ""
 
 #: lazarusidestrconsts:liscustomprogramafreepascalprogram
 msgid "Custom Program%sA freepascal program."
+msgstr ""
+
+#: lazarusidestrconsts:lisnpselectaprojecttype
+msgid "Select a project type"
+msgstr ""
+
+#: lazarusidestrconsts:lisnpcreateanewproject
+msgid "Create a new project"
+msgstr ""
+
+#: lazarusidestrconsts:lisnpcreate
+msgid "Create"
 msgstr ""
 

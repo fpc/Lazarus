@@ -286,6 +286,10 @@ msgstr ""
 msgid "Help context %s not found."
 msgstr ""
 
+#: objinspstrconsts:oishelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr ""
+
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
 msgstr ""

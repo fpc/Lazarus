@@ -93,6 +93,10 @@ msgstr ""
 msgid "%s%s%s is not a valid unit name."
 msgstr ""
 
+#: lazarusidestrconsts:liscoclickokifaresuretodothat
+msgid "%s%sClick OK if are sure to do that."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysfilename
 msgid "%s%sFile Name: %s%s%s"
 msgstr ""
@@ -451,6 +455,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2pambigiousunitname
 msgid "Ambigious Unit Name"
+msgstr ""
+
+#: lazarusidestrconsts:liscoambigiousadditionalcompilerconfigfile
+msgid "Ambigious additional compiler config file"
 msgstr ""
 
 #: lazarusidestrconsts:dlgambigfileact
@@ -1369,6 +1377,10 @@ msgstr ""
 msgid "Counter (.pp;1)"
 msgstr ""
 
+#: lazarusidestrconsts:lisnpcreate
+msgid "Create"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucreatepofile
 msgid "Create .po files"
 msgstr ""
@@ -1427,6 +1439,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewprogram
 msgid "Create a new program.%sThe program file is maintained by Lazarus."
+msgstr ""
+
+#: lazarusidestrconsts:lisnpcreateanewproject
+msgid "Create a new project"
 msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewprojectchooseatype
@@ -3301,12 +3317,12 @@ msgstr ""
 msgid "Invalid version"
 msgstr ""
 
-#: lazarusidestrconsts:ueminvertattribution
-msgid "Invert Attribution"
+#: lazarusidestrconsts:ueminvertassignment
+msgid "Invert Assignment"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecinvertattribution
-msgid "Invert attribution"
+#: lazarusidestrconsts:srkmecinvertassignment
+msgid "Invert assignment"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_irregular
@@ -4401,6 +4417,10 @@ msgstr ""
 msgid "Page Name too long"
 msgstr ""
 
+#: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
+msgid "Paint designer items only on idle (reduce overhead for slow computers)"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"
 msgstr ""
@@ -4771,6 +4791,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
+msgstr ""
+
+#: lazarusidestrconsts:lisfepaintdesigneritemsonidle
+msgid "Reduce designer painting"
 msgstr ""
 
 #: lazarusidestrconsts:uemrefactor
@@ -5165,6 +5189,10 @@ msgstr ""
 msgid "Save changes to project %s?"
 msgstr ""
 
+#: lazarusidestrconsts:lissavechanges
+msgid "Save changes?"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsavedfile
 msgid "Save desktop settings to file"
 msgstr ""
@@ -5175,6 +5203,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
+msgstr ""
+
+#: lazarusidestrconsts:lissavefilebeforeclosingform
+msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
 msgstr ""
 
 #: lazarusidestrconsts:lispckeditsavepackage
@@ -5371,6 +5403,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisselectanode
 msgid "Select a node"
+msgstr ""
+
+#: lazarusidestrconsts:lisnpselectaprojecttype
+msgid "Select a project type"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuselectall
@@ -7029,16 +7065,12 @@ msgstr ""
 msgid "Use Ansi Strings"
 msgstr ""
 
-#: lazarusidestrconsts:dlgusefpccfg
-msgid "Use Compiler Config File (fpc.cfg)"
-msgstr ""
-
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
 msgstr ""
 
 #: lazarusidestrconsts:dlgusecustomconfig
-msgid "Use custom Compiler Config File"
+msgid "Use addional Compiler Config File"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedusedefcolor
@@ -7051,6 +7083,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
+msgstr ""
+
+#: lazarusidestrconsts:dlgusefpccfg
+msgid "Use standard Compiler Config File (fpc.cfg)"
 msgstr ""
 
 #: lazarusidestrconsts:dlgusesyntaxhighlight
@@ -7263,6 +7299,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgambigwarn
 msgid "Warn on compile"
+msgstr ""
+
+#: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
+msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
 msgstr ""
 
 #: lazarusidestrconsts:lispkgmangwarningthefilebelongstothecurrentproject

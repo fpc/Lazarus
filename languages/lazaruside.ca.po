@@ -82,6 +82,10 @@ msgstr "%s%s%s no és un identificador vàlid"
 msgid "%s%s%s is not a valid unit name."
 msgstr ""
 
+#: lazarusidestrconsts:liscoclickokifaresuretodothat
+msgid "%s%sClick OK if are sure to do that."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysfilename
 msgid "%s%sFile Name: %s%s%s"
 msgstr ""
@@ -440,6 +444,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisa2pambigiousunitname
 msgid "Ambigious Unit Name"
+msgstr ""
+
+#: lazarusidestrconsts:liscoambigiousadditionalcompilerconfigfile
+msgid "Ambigious additional compiler config file"
 msgstr ""
 
 #: lazarusidestrconsts:dlgambigfileact
@@ -1358,6 +1366,10 @@ msgstr "Copyright (C) <year> <name of author>%sThis program is free software; yo
 msgid "Counter (.pp;1)"
 msgstr "Comptador (.pp;1)"
 
+#: lazarusidestrconsts:lisnpcreate
+msgid "Create"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucreatepofile
 msgid "Create .po files"
 msgstr ""
@@ -1416,6 +1428,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewprogram
 msgid "Create a new program.%sThe program file is maintained by Lazarus."
+msgstr ""
+
+#: lazarusidestrconsts:lisnpcreateanewproject
+msgid "Create a new project"
 msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewprojectchooseatype
@@ -3290,12 +3306,12 @@ msgstr "Nom de variable no vàlid"
 msgid "Invalid version"
 msgstr ""
 
-#: lazarusidestrconsts:ueminvertattribution
-msgid "Invert Attribution"
+#: lazarusidestrconsts:ueminvertassignment
+msgid "Invert Assignment"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecinvertattribution
-msgid "Invert attribution"
+#: lazarusidestrconsts:srkmecinvertassignment
+msgid "Invert assignment"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_irregular
@@ -4390,6 +4406,10 @@ msgstr ""
 msgid "Page Name too long"
 msgstr ""
 
+#: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
+msgid "Paint designer items only on idle (reduce overhead for slow computers)"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"
 msgstr ""
@@ -4761,6 +4781,10 @@ msgstr ""
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
 msgstr "Refer"
+
+#: lazarusidestrconsts:lisfepaintdesigneritemsonidle
+msgid "Reduce designer painting"
+msgstr ""
 
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
@@ -5154,6 +5178,10 @@ msgstr ""
 msgid "Save changes to project %s?"
 msgstr "Guardar els canvis al projecte %s?"
 
+#: lazarusidestrconsts:lissavechanges
+msgid "Save changes?"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsavedfile
 msgid "Save desktop settings to file"
 msgstr "Guardar paràmetres de l'escriptori al fitxer"
@@ -5165,6 +5193,10 @@ msgstr "Guardar informació de l'editor pels fitxers tancats"
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
 msgstr "Guardar informació de l'editor només per fitxers de projecte"
+
+#: lazarusidestrconsts:lissavefilebeforeclosingform
+msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
@@ -5360,6 +5392,10 @@ msgstr ""
 
 #: lazarusidestrconsts:lisselectanode
 msgid "Select a node"
+msgstr ""
+
+#: lazarusidestrconsts:lisnpselectaprojecttype
+msgid "Select a project type"
 msgstr ""
 
 #: lazarusidestrconsts:lismenuselectall
@@ -7018,16 +7054,12 @@ msgstr ""
 msgid "Use Ansi Strings"
 msgstr "Utilitzar Ansi Strings"
 
-#: lazarusidestrconsts:dlgusefpccfg
-msgid "Use Compiler Config File (fpc.cfg)"
-msgstr "Utilitzar el fitxer de configuració del compilador (fpc.cfg)"
-
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
 msgstr "Utilitzar unitat Heaptrc"
 
 #: lazarusidestrconsts:dlgusecustomconfig
-msgid "Use custom Compiler Config File"
+msgid "Use addional Compiler Config File"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedusedefcolor
@@ -7041,6 +7073,10 @@ msgstr "Utilitzar pantalla"
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Utilitzar aplicació executada"
+
+#: lazarusidestrconsts:dlgusefpccfg
+msgid "Use standard Compiler Config File (fpc.cfg)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -7253,6 +7289,10 @@ msgstr "Marge dret visible"
 #: lazarusidestrconsts:dlgambigwarn
 msgid "Warn on compile"
 msgstr "Avisar al compilar"
+
+#: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
+msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangwarningthefilebelongstothecurrentproject
 msgid "Warning: The file %s%s%s%sbelongs to the current project."

@@ -248,6 +248,10 @@ msgstr "Nuevo"
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
 msgstr "No se encontró navegador HTML.%sPor favor defina uno en Help(Ayuda) -> Configure Help(Configurar Ayuda) -> Viewers(Visores)"
 
+#: objinspstrconsts:oishelpnohelpfoundforsource
+msgid "No help found for line %d, column %d of %s."
+msgstr ""
+
 #: objinspstrconsts:oisobject
 msgid "Object"
 msgstr "Objecto"

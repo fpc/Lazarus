@@ -82,6 +82,10 @@ msgstr "%s%s%s - некорректный идентификатор."
 msgid "%s%s%s is not a valid unit name."
 msgstr "%s%s%s - некорректное название модуля"
 
+#: lazarusidestrconsts:liscoclickokifaresuretodothat
+msgid "%s%sClick OK if are sure to do that."
+msgstr ""
+
 #: lazarusidestrconsts:lispkgsysfilename
 msgid "%s%sFile Name: %s%s%s"
 msgstr "%s%sИмя файла: %s%s%s"
@@ -441,6 +445,10 @@ msgstr "Неясное имя класса"
 #: lazarusidestrconsts:lisa2pambigiousunitname
 msgid "Ambigious Unit Name"
 msgstr "Двусмысленное имя модуля"
+
+#: lazarusidestrconsts:liscoambigiousadditionalcompilerconfigfile
+msgid "Ambigious additional compiler config file"
+msgstr ""
 
 #: lazarusidestrconsts:dlgambigfileact
 msgid "Ambigious file action:"
@@ -1358,6 +1366,10 @@ msgstr "Авторское право (С) <год> <имя автора>%sЭта программа - бесплатное ПО; В
 msgid "Counter (.pp;1)"
 msgstr "Счетчик (.pp;1)"
 
+#: lazarusidestrconsts:lisnpcreate
+msgid "Create"
+msgstr ""
+
 #: lazarusidestrconsts:lismenucreatepofile
 msgid "Create .po files"
 msgstr "Создать файлы .po"
@@ -1417,6 +1429,10 @@ msgstr "Создать программу."
 #: lazarusidestrconsts:lisnewdlgcreateanewprogram
 msgid "Create a new program.%sThe program file is maintained by Lazarus."
 msgstr "Создать программу.%sФайл программы поддерживается Lazarus."
+
+#: lazarusidestrconsts:lisnpcreateanewproject
+msgid "Create a new project"
+msgstr ""
 
 #: lazarusidestrconsts:lisnewdlgcreateanewprojectchooseatype
 msgid "Create a new project.%sChoose a type."
@@ -3290,12 +3306,12 @@ msgstr "Неправильное имя переменной"
 msgid "Invalid version"
 msgstr "Неправильная версия"
 
-#: lazarusidestrconsts:ueminvertattribution
-msgid "Invert Attribution"
+#: lazarusidestrconsts:ueminvertassignment
+msgid "Invert Assignment"
 msgstr ""
 
-#: lazarusidestrconsts:srkmecinvertattribution
-msgid "Invert attribution"
+#: lazarusidestrconsts:srkmecinvertassignment
+msgid "Invert assignment"
 msgstr ""
 
 #: lazarusidestrconsts:srvk_irregular
@@ -4390,6 +4406,10 @@ msgstr "Пакеты для установки в IDE"
 msgid "Page Name too long"
 msgstr "Имя страницы слишком длинное"
 
+#: lazarusidestrconsts:lisfepaintdesigneritemsonidlereduceoverheadforslowcompu
+msgid "Paint designer items only on idle (reduce overhead for slow computers)"
+msgstr ""
+
 #: lazarusidestrconsts:lisa2ppalettepage
 msgid "Palette Page:"
 msgstr "Страница палитры:"
@@ -4761,6 +4781,10 @@ msgstr "Чистая пересборка"
 #: lazarusidestrconsts:lismenuredo
 msgid "Redo"
 msgstr "Вернуть"
+
+#: lazarusidestrconsts:lisfepaintdesigneritemsonidle
+msgid "Reduce designer painting"
+msgstr ""
 
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
@@ -5154,6 +5178,10 @@ msgstr "Сохранить как"
 msgid "Save changes to project %s?"
 msgstr "Сохранить изменения в проект %s?"
 
+#: lazarusidestrconsts:lissavechanges
+msgid "Save changes?"
+msgstr ""
+
 #: lazarusidestrconsts:dlgsavedfile
 msgid "Save desktop settings to file"
 msgstr "Сохр. рабочий стол в файл"
@@ -5165,6 +5193,10 @@ msgstr "Сохранять сведения о закрываемых файлах"
 #: lazarusidestrconsts:dlgsaveeditorinfoproject
 msgid "Save editor info only for project files"
 msgstr "Сохранять сведения только о файлах проекта"
+
+#: lazarusidestrconsts:lissavefilebeforeclosingform
+msgid "Save file %s%s%s%sbefore closing form %s%s%s?"
+msgstr ""
 
 #: lazarusidestrconsts:lispckeditsavepackage
 msgid "Save package"
@@ -5361,6 +5393,10 @@ msgstr "Искать элемент справки:"
 #: lazarusidestrconsts:lisselectanode
 msgid "Select a node"
 msgstr "Выберите элемент"
+
+#: lazarusidestrconsts:lisnpselectaprojecttype
+msgid "Select a project type"
+msgstr ""
 
 #: lazarusidestrconsts:lismenuselectall
 msgid "Select all"
@@ -7018,16 +7054,12 @@ msgstr "Использование"
 msgid "Use Ansi Strings"
 msgstr "Использовать строки Ansi"
 
-#: lazarusidestrconsts:dlgusefpccfg
-msgid "Use Compiler Config File (fpc.cfg)"
-msgstr "Использовать файл настроек fpc.cfg"
-
 #: lazarusidestrconsts:dlgcoheaptrc
 msgid "Use Heaptrc Unit"
 msgstr "Использовать модуль Heaprc"
 
 #: lazarusidestrconsts:dlgusecustomconfig
-msgid "Use custom Compiler Config File"
+msgid "Use addional Compiler Config File"
 msgstr ""
 
 #: lazarusidestrconsts:dlgedusedefcolor
@@ -7041,6 +7073,10 @@ msgstr "Использовать дисплей"
 #: lazarusidestrconsts:dlguselaunchingapp
 msgid "Use launching application"
 msgstr "Использовать приложение для запуска"
+
+#: lazarusidestrconsts:dlgusefpccfg
+msgid "Use standard Compiler Config File (fpc.cfg)"
+msgstr ""
 
 #: lazarusidestrconsts:dlgusesyntaxhighlight
 msgid "Use syntax highlight"
@@ -7253,6 +7289,10 @@ msgstr "Правая видимая граница"
 #: lazarusidestrconsts:dlgambigwarn
 msgid "Warn on compile"
 msgstr "Предупр. при компиляции"
+
+#: lazarusidestrconsts:liscowarningtheadditionalcompilerconfigfilehasthesamena
+msgid "Warning: The additional compiler config file has the same name, as one of the standard config filenames the FreePascal compiler is looking for. This can result in ONLY parsing the additional config and skipping the standard config."
+msgstr ""
 
 #: lazarusidestrconsts:lispkgmangwarningthefilebelongstothecurrentproject
 msgid "Warning: The file %s%s%s%sbelongs to the current project."
