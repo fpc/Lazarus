@@ -3126,11 +3126,6 @@ begin
         PLMScreenInit(Data)^.ColorDepth:= gdk_visual_get_system^.depth;
       end;
 
-      LM_GetLineCount :
-      begin
-        DebugLn('ToDo: LM_GetLineCount');
-      end;
-
       LM_GETSELCOUNT :
       {$IFdef GTK2}
       begin
@@ -8072,6 +8067,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.571  2004/09/15 18:50:33  micha
+  remove LM_GETLINECOUNT message as it is not used by the LCL
+
   Revision 1.570  2004/09/15 17:21:22  micha
   convert LM_GETITEMINDEX and LM_SETITEMINDEX messages to interface methods
 

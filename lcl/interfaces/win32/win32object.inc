@@ -330,11 +330,6 @@ Begin
         Else
           Assert(False, Format('Trace:I don''t know how to destroy component %S', [Sender.ClassName]));
       End;
-      LM_GETLINECOUNT:
-      Begin
-        If Sender Is TCustomMemo Then
-          Result := SendMessage(Handle, EM_GETLINECOUNT, 0, 0);
-      End;
       LM_GETSELCOUNT:
       Begin
         If Sender Is TCustomListBox then
@@ -2155,6 +2150,9 @@ End;
 
 {
   $Log$
+  Revision 1.264  2004/09/15 18:50:34  micha
+  remove LM_GETLINECOUNT message as it is not used by the LCL
+
   Revision 1.263  2004/09/15 17:21:22  micha
   convert LM_GETITEMINDEX and LM_SETITEMINDEX messages to interface methods
 

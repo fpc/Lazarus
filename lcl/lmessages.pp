@@ -54,7 +54,6 @@ const
   LM_AssignSelf     = LM_ComUser+11;
   LM_SetName        = LM_ComUser+12;
   LM_RESIZECHILDREN = LM_ComUser+13;
-  LM_GetLineCount   = LM_ComUser+16;
   LM_CANVASCREATE   = LM_ComUser+19;
 
   LM_SETPROPERTIES  = LM_ComUser+39;         // update object to reflect current properties
@@ -819,7 +818,6 @@ begin
   LM_AssignSelf     :Result:='LM_AssignSelf';
   LM_SetName        :Result:='LM_SetName';
   LM_RESIZECHILDREN :Result:='LM_RESIZECHILDREN';
-  LM_GetLineCount   :Result:='LM_GetLineCount';
   LM_CANVASCREATE   :Result:='LM_CANVASCREATE';
 
   LM_SETPROPERTIES  :Result:='LM_SETPROPERTIES';
@@ -953,6 +951,9 @@ end.
 
 {
   $Log$
+  Revision 1.103  2004/09/15 18:50:33  micha
+  remove LM_GETLINECOUNT message as it is not used by the LCL
+
   Revision 1.102  2004/09/15 17:21:22  micha
   convert LM_GETITEMINDEX and LM_SETITEMINDEX messages to interface methods
 
