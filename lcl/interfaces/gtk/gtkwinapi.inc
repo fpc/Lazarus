@@ -1605,12 +1605,19 @@ begin
            @(GdiObject^.GDIBitmapMaskObject), p, Data);
 
   gdk_window_get_geometry(GdiObject^.GDIPixmapObject, nil, nil, nil, nil, @Depth);
+
+  If GdiObject^.Visual <> nil then
+    GDK_Visual_UnRef(GdiObject^.Visual);
+
   GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
 
   If GdiObject^.Visual = nil then
     GdiObject^.Visual := gdk_visual_get_best_with_depth(Depth)
   else
     gdk_visual_ref(GdiObject^.Visual);
+
+  If GdiObject^.Colormap <> nil then
+    GDK_Colormap_UnRef(GdiObject^.Colormap);
 
   GdiObject^.Colormap := gdk_colormap_new(GdiObject^.Visual, 1);
   
@@ -3063,6 +3070,62 @@ begin
   Assert(False, Format('trace:< [TgtkObject.GetDC] Got 0x%x', [Result]));
 end;
 
+function TgtkObject.GetDeviceCaps(DC: HDC; Index: Integer): Integer;
+begin
+  Result := -1;
+  If DC = 0 then begin
+    DC := GetDC(0);
+    If DC = 0 then
+      exit;
+    Result := GetDeviceCaps(DC, Index);
+    ReleaseDC(0, DC);
+  end;
+  if IsValidDC(DC)
+  then with PDeviceContext(DC)^ do
+  begin
+    Case Index of
+      //The important ones I know how to do
+      HORZRES : { Horizontal width in pixels }
+        If Drawable = nil then
+          Result := GetSystemMetrics(SM_CXSCREEN)
+        else
+          gdk_window_get_geometry(Drawable, nil, nil, @Result, nil, nil);
+
+      VERTRES : { Vertical height in pixels }
+        If Drawable = nil then
+          Result := GetSystemMetrics(SM_CYSCREEN)
+        else
+          gdk_window_get_geometry(Drawable, nil, nil, nil, @Result, nil);
+
+      BITSPIXEL : { Number of bits per pixel }
+        If Drawable = nil then
+          Result := GDK_Visual_Get_System^.Depth
+        else
+          gdk_window_get_geometry(Drawable, nil, nil, nil, nil, @Result);
+
+      //For Size in MM, MM = (Pixels*100)/(PPI*25.4)
+      
+      HORZSIZE : { Horizontal size in millimeters }
+        Result := Round((GetDeviceCaps(DC, HORZRES) * 100) /
+                        (GetDeviceCaps(DC, LOGPIXELSX) * 25.4));
+
+      VERTSIZE : { Vertical size in millimeters }
+        Result := Round((GetDeviceCaps(DC, VERTRES) * 100) /
+                        (GetDeviceCaps(DC, LOGPIXELSY) * 25.4));
+
+      //So long as gdk_screen_width_mm is acurate, these should be
+      //acurate for Screen GDKDrawables. Once we get Metafiles
+      //we will also have to add internal support for Papersizes etc..
+      
+      LOGPIXELSX : { Logical pixels per inch in X }
+        Result := Round(gdk_screen_width / (gdk_screen_width_mm / 25.4));
+
+      LOGPIXELSY : { Logical pixels per inch in Y }
+        Result := Round(gdk_screen_height / (gdk_screen_height_mm / 25.4));
+    end;
+  end;
+end;
+
 {------------------------------------------------------------------------------
   Function: GetFocus
   Params:  none
@@ -3196,20 +3259,12 @@ begin
                   If GDIBitmapObject <> nil then begin
                     GDK_WINDOW_GET_SIZE(GDIBitmapObject, @biWidth, @biHeight);
                     NumColors := 2;
+                    biBitCount := 1;
                   end;
                 gbPixmap:
                   If GDIPixmapObject <> nil then begin
                     gdk_window_get_geometry(GDIPixmapObject, nil, nil,
-                      @biWidth, @biHeight, nil);
-
-                    If Visual = nil then begin
-                      Visual := gdk_visual_get_system;
-                      gdk_visual_ref(Visual);
-                    end;
-
-                    biBitCount := Visual^.Depth;
-                    If biBitCount < 24 then
-                      NumColors := Colormap^.Size;
+                      @biWidth, @biHeight, @biBitCount);
                   end;
                 gbImage :
                   If GDIRawImageObject <> nil then
@@ -3217,27 +3272,42 @@ begin
                       biHeight := Height;
                       biWidth := Width;
                       biBitCount := Depth;
-                      If Depth < 24 then
-                        NumColors := Colormap^.Size;
                     end;
               end;
 
+              If Visual = nil then begin
+                Visual := gdk_visual_get_best_with_depth(biBitCount);
+                If Visual = nil then begin//Depth not supported?
+                  Visual := gdk_visual_get_system;
+                  gdk_visual_ref(Visual);
+                end;
+                If Colormap = nil then
+                  gdk_colormap_unref(Colormap);
+                ColorMap := gdk_colormap_new(Visual, 1);
+              end else
+                biBitCount := Visual^.Depth;
+
+              If biBitCount < 24 then
+                NumColors := Colormap^.Size;
+
               biSizeImage := (((biBitCount*biWidth+31) shr 5) shl 2)*biHeight;
 
-              //I have no idea what I am doing here, but whatever...
               If GetSystemMetrics(SM_CXSCREEN) >= biWidth then
-                biXPelsPerMeter := Round(GetSystemMetrics(SM_CXSCREEN) * 100 / 2.54)
+                biXPelsPerMeter := GetDeviceCaps(0, LOGPIXELSX)
               else
-                biXPelsPerMeter := Round(biWidth * 100 / 2.54);
+                biXPelsPerMeter := Round((biWidth / GetSystemMetrics(SM_CXSCREEN)) *
+                                          GetDeviceCaps(0, LOGPIXELSX));
 
               If GetSystemMetrics(SM_CYSCREEN) >= biHeight then
-                biYPelsPerMeter := Round(GetSystemMetrics(SM_CYSCREEN) * 100 / 2.54)
+                biYPelsPerMeter := GetDeviceCaps(0, LOGPIXELSY)
               else
-                biYPelsPerMeter := Round(biHeight * 100 / 2.54);
+                biYPelsPerMeter := Round((biHeight / GetSystemMetrics(SM_CYSCREEN)) *
+                                          GetDeviceCaps(0, LOGPIXELSY));
 
               bmWidth := biWidth;
               bmHeight := biHeight;
               bmBitsPixel := biBitCount;
+              
               //Need to retrieve actual Number of Colors if Indexed Image
               if (bmBitsPixel < 24) then begin
                 biClrUsed   := NumColors;
@@ -3997,6 +4067,182 @@ begin
     Height:=PGtkWidget(Handle)^.Allocation.Height;
   end else
     Result:=false;
+end;
+
+{------------------------------------------------------------------------------
+  Function: GradientFill
+  Params: DC - DeviceContext to perform on
+          Vertices - array of Points W/Color & Alpha
+          NumVertices - Number of Vertices
+          Meshes - array of Triangle or Rectangle Meshes,
+                   each mesh representing one Gradient Fill
+          NumMeshes - Number of Meshes
+          Mode - Gradient Type, either Triangle,
+                 Vertical Rect, Horizontal Rect
+          
+  Returns: true on success
+
+  Performs multiple Gradient Fills, either a Three way Triangle Gradient,
+  or a two way Rectangle Gradient, each Vertex point also supports optional
+  Alpha/Transparency for more advanced Gradients.
+ ------------------------------------------------------------------------------}
+function TgtkObject.GradientFill(DC: HDC; Vertices: PTriVertex; NumVertices : Longint;
+  Meshes: Pointer; NumMeshes : Longint; Mode : Longint): Boolean;
+
+  Function DoFillTriangle : Boolean;
+  begin
+    Result := (Mode and GRADIENT_FILL_TRIANGLE) = GRADIENT_FILL_TRIANGLE;
+  end;
+
+  Function DoFillVRect : Boolean;
+  begin
+    Result := (Mode and GRADIENT_FILL_RECT_V) = GRADIENT_FILL_RECT_V;
+  end;
+
+  Procedure GetGradientBrush(BeginColor, EndColor : TColorRef; Position,
+    TotalSteps : Longint; var GradientBrush : hBrush);
+  var
+    R, G, B : Byte;
+    NewBrush : TLogBrush;
+  begin
+    R := GetRValue(BeginColor);
+    G := GetGValue(BeginColor);
+    B := GetBValue(BeginColor);
+
+    R := R + (Position*(GetRValue(EndColor) - R) div TotalSteps);
+    G := G + (Position*(GetGValue(EndColor) - G) div TotalSteps);
+    B := B + (Position*(GetBValue(EndColor) - B) div TotalSteps);
+
+    With NewBrush do begin
+      lbStyle := BS_SOLID;
+      lbColor := RGB(R,G,B);
+    end;
+
+    If GradientBrush <> -1 then
+      LCLLinux.DeleteObject(GradientBrush);
+    GradientBrush := LCLLinux.CreateBrushIndirect(NewBrush);
+  end;
+
+  Function FillTriMesh(Mesh : tagGradientTriangle) : Boolean;
+  {var
+    V1, V2, V3 : tagTRIVERTEX;
+    C1, C2, C3 : TColorRef;
+  begin
+    With Mesh do begin
+      Result := (Vertex1 < NumVertices) and (Vertex2 >= 0) and
+        (Vertex2 < NumVertices) and (Vertex2 >= 0) and
+        (Vertex3 < NumVertices) and (Vertex3 >= 0);
+
+      If (Vertex1 = Vertex2) or (Vertex1 = Vertex3) or
+        (Vertex2 = Vertex3) or not Result
+      then
+        exit;
+
+      V1 := Vertices[Vertex1];
+      V2 := Vertices[Vertex2];
+      V3 := Vertices[Vertex3];
+
+      //Check to make sure they are in reasonable positions..
+
+      //then what??
+    end;}
+  begin
+    Result := False;
+  end;
+
+  Function FillRectMesh(Mesh : tagGradientRect) : Boolean;
+  var
+    TL,BR : tagTRIVERTEX;
+    StartColor, EndColor : TColorRef;
+    I, Swap : Longint;
+    SwapColors : Boolean;
+    UseBrush : hBrush;
+    Steps, MaxSteps : Longint;
+  begin
+    With Mesh do begin
+      Result := (UpperLeft < NumVertices) and (UpperLeft >= 0) and
+        (LowerRight < NumVertices) and (LowerRight >= 0);
+      If (LowerRight = UpperLeft) or not Result then
+        exit;
+      TL := Vertices[UpperLeft];
+      BR := Vertices[LowerRight];
+      SwapColors := (BR.Y < TL.Y) and (BR.X < TL.X);
+      If BR.X < TL.X then begin
+        Swap := BR.X;
+        BR.X := TL.X;
+        TL.X := Swap;
+      end;
+      If BR.Y < TL.Y then begin
+        Swap := BR.Y;
+        BR.Y := TL.Y;
+        TL.Y := Swap;
+      end;
+      StartColor := RGB(TL.Red, TL.Green, TL.Blue);
+      EndColor := RGB(BR.Red, BR.Green, BR.Blue);
+      If SwapColors then begin
+        Swap := StartColor;
+        StartColor := EndColor;
+        EndColor := Swap;
+      end;
+      UseBrush := -1;
+      MaxSteps := GetDeviceCaps(DC, BITSPIXEL);
+      If MaxSteps >= 4 then
+        MaxSteps := Floor(Power(2, MaxSteps))
+      else
+        MaxSteps := 256;
+      If DoFillVRect then begin
+        Steps := Min(BR.Y - TL.Y, MaxSteps);
+        for I := 0 to Steps - 1 do begin
+          GetGradientBrush(StartColor, EndColor, I, Steps, UseBrush);
+            LCLLinux.FillRect(DC, Rect(TL.X, TL.Y + I, BR.X, TL.Y + I + 1),
+              UseBrush)
+        end
+      end
+      else begin
+        Steps := Min(BR.X - TL.X, MaxSteps);
+        for I := 0 to  Steps - 1 do begin
+          GetGradientBrush(StartColor, EndColor, I, Steps, UseBrush);
+          LCLLinux.FillRect(DC, Rect(TL.X + I, TL.Y, TL.X + I + 1, BR.Y),
+            UseBrush);
+        end;
+      end;
+      If UseBrush <> -1 then
+        LCLLinux.DeleteObject(UseBrush);
+    end;
+  end;
+
+const
+  MeshSize : Array[Boolean] of Integer = (SizeOf(tagGradientRect), SizeOf(tagGradientTriangle));
+var
+  I : Integer;
+begin
+  //Currently Alpha blending is ignored... Ideas anyone?
+  Result := (Meshes <> nil) and (NumMeshes >= 1) and (NumVertices >= 2) and (Vertices <> nil);
+  If Result and DoFillTriangle then
+    Result := NumVertices >= 3;
+  If Result then begin
+    Result := False;
+
+    //Sanity Checks For Vertices Size vs. Count
+    If MemSize(Vertices) < SizeOf(tagTRIVERTEX)*NumVertices then
+      exit;
+
+    //Sanity Checks For Meshes Size vs. Count
+    If MemSize(Meshes) < MeshSize[DoFillTriangle]*NumMeshes then
+      exit;
+
+    For I := 0 to NumMeshes - 1 do begin
+      If DoFillTriangle then begin
+        If Not FillTriMesh(PGradientTriangle(Meshes)[I]) then
+          exit;
+      end
+      else begin
+        If not FillRectMesh(PGradientRect(Meshes)[I]) then
+          exit;
+      end;
+    end;
+    Result := True;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -6709,6 +6955,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.130  2002/09/12 05:56:17  lazarus
+  MG: gradient fill, minor issues from Andrew
+
   Revision 1.129  2002/09/12 05:32:14  lazarus
   MG: fixed DeleteObject
 
