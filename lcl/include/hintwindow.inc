@@ -16,7 +16,6 @@
  *****************************************************************************
 }
 {
-
    use:
    HintWindow := THintWindow.Create(nil);
    Rect := HintWindow.CalcHintRect(0,'This is the hint',nil);
@@ -30,8 +29,8 @@ var
 begin
   inherited Create(AOwner);
   fCompStyle := csHintWindow;
-  parent := nil;
-  color := clInfoBk;
+  Parent := nil;
+  Color := clInfoBk;
   Canvas.Font := Screen.HintFont;
   Caption := 'THintWindow';
   SetBounds(1,1,25,25);
@@ -43,7 +42,7 @@ begin
   TheTimer.OnTimer := @AutoHideHint;
 end;
 
-destructor THintWIndow.Destroy;
+destructor THintWindow.Destroy;
 begin
   fAutoHideTimer.Free;
   fAutoHideTimer:=nil;
@@ -120,7 +119,6 @@ begin
   end;
 end;
 
-
 function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
   AData: Pointer): TRect;
 begin
@@ -132,4 +130,5 @@ begin
   Inc(Result.Right, 3);
 end;
 
+// included by forms.pp
 

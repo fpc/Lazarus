@@ -1,3 +1,5 @@
+// included by extctrls.pp
+
 {******************************************************************************
                                   TTimer
  ******************************************************************************
@@ -30,6 +32,7 @@
 
 const
   cIdNoTimer = -1;        { timer ID for an invalid timer }
+  SNoTimers = 'No timers available';
 
 {------------------------------------------------------------------------------
   Method:  TimerCBProc
@@ -61,9 +64,9 @@ end;
 constructor TTimer.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  FInterval := 1000;
-  FTimerID  := cIdNoTimer;
-  FEnabled  := true;
+  FInterval    := 1000;
+  FTimerHandle := cIdNoTimer;
+  FEnabled     := true;
 end;
 
 {------------------------------------------------------------------------------
@@ -75,6 +78,8 @@ end;
  ------------------------------------------------------------------------------}
 destructor TTimer.Destroy;
 begin
+  FOnTimer:=nil;
+  FEnabled:=false;
   KillTimer;
   inherited Destroy;
 end;
@@ -89,9 +94,9 @@ end;
 procedure TTimer.KillTimer;
 begin
   Assert(False, 'Trace:In TTimer.KillTimer');
-  if FTimerID <> cIdNoTimer then begin
-    InterfaceObject.KillTimer (integer(Self), FTimerID);
-    FTimerID := cIdNoTimer;
+  if FTimerHandle <> cIdNoTimer then begin
+    InterfaceObject.KillTimer (integer(Self), 1);
+    FTimerHandle := cIdNoTimer;
   end;
 end;
 
@@ -106,7 +111,12 @@ procedure TTimer.UpdateTimer;
 begin
   KillTimer;
   if (FEnabled) and (FInterval > 0) and Assigned (FOnTimer) then
-    FTimerID := InterfaceObject.SetTimer(Integer(Self), 0, FInterval, @TimerCBProc);
+    FTimerHandle := InterfaceObject.SetTimer(Integer(Self), 1,
+                      FInterval, @TimerCBProc);
+  if FTimerHandle=0 then begin
+    FTimerHandle:=cIdNoTimer;
+    raise EOutOfResources.Create(SNoTimers);
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -132,6 +142,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TTimer.SetOnTimer (value : TNotifyEvent);
 begin
+  if Value=FOnTimer then exit;
   Assert(False, 'Trace:SETTING TIMER CALLBACK');
   FOnTimer := value;
   UpdateTimer;
@@ -171,8 +182,13 @@ begin
   end;
 end;
 
+// included by extctrls.pp
+
 {
   $Log$
+  Revision 1.7  2002/10/15 16:01:36  lazarus
+  MG: fixed timers
+
   Revision 1.6  2002/10/14 19:00:49  lazarus
   MG: fixed zombie timers
 
