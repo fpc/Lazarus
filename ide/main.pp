@@ -2328,7 +2328,7 @@ var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
              CompilerUnitSearchPath,CompilerUnitLinks);
       InputHistories.Save;
     end else begin
-      MessageDlg(lisCompilerError,lisPlzCheckTheCmpilerName,
+      MessageDlg(lisCompilerError,lisPlzCheckTheCompilerName,
         mtError,[mbOk],0);
     end;
   end;
@@ -4540,13 +4540,49 @@ end;
 
 function TMainIDE.DoPublishProject(Flags: TSaveFlags;
   ShowDialog: boolean): TModalResult;
+  
+  procedure OnCopyFile(const Filename: string; var Copy: boolean);
+  begin
+
+    // ToDo
+
+  end;
+  
+  procedure OnCopyError(const ErrorMsg: string; var Handled: boolean);
+  begin
+    Handled:=MessageDlg(lisCopyError,ErrorMsg,mtError,[mbIgnore,mbAbort],0)
+               =mrIgnore;
+  end;
+  
+var
+  SrcDir, DestDir: string;
 begin
+  // save project
+  Result:=DoSaveProject(Flags);
+  if Result<>mrOk then exit;
+
+  // show the publish project dialog
   if ShowDialog then begin
     Result:=ShowPublishProjectDialog(Project1.PublishOptions);
     if Result<>mrOk then exit;
   end;
   
-  // ToDo:
+  // copy the project directory
+  SrcDir:=Project1.ProjectDirectory;
+  MacroList.SubstituteStr(SrcDir);
+  SrcDir:=ExpandFilename(SrcDir);
+  DestDir:=Project1.PublishOptions.DestinationDirectory;
+  MacroList.SubstituteStr(DestDir);
+  DestDir:=ExpandFilename(DestDir);
+  {if not CopyDirectory(SrcDir,DestDir,@OnCopyFile,@OnCopyError) then
+  begin
+    Result:=mrCancel;
+    exit;
+  end;}
+
+  // write a filtered .lpi file
+  
+  // execute 'CommandAfter'
   
 end;
 
@@ -5497,11 +5533,14 @@ begin
   end else if MacroName='projpath' then begin
     Handled:=true;
     s:=Project1.ProjectDirectory;
+  end else if MacroName='projpublishdir' then begin
+    Handled:=true;
+    s:=Project1.PublishOptions.DestinationDirectory;
   end else if MacroName='curtoken' then begin
     Handled:=true;
     if SourceNoteBook.NoteBook<>nil then
-      s:=SourceNoteBook.GetActiveSE.EditorComponent.GetWordAtRowCol(
-           SourceNoteBook.GetActiveSE.EditorComponent.CaretXY);
+      with SourceNoteBook.GetActiveSE.EditorComponent do
+        s:=GetWordAtRowCol(CaretXY);
   end else if MacroName='lazarusdir' then begin
     Handled:=true;
     s:=EnvironmentOptions.LazarusDirectory;
@@ -5529,6 +5568,9 @@ begin
       s:=GetProjectTargetFilename
     else
       s:=GetProjectTargetFilename+' '+s;
+  end else if MacroName='testdir' then begin
+    Handled:=true;
+    s:=GetTestBuildDir;
   end else if MacroName='runcmdline' then begin
     Handled:=true;
     s:=GetRunCommandLine;
@@ -6518,8 +6560,10 @@ begin
     
   end else begin
     if (aComponent is TMenuItem) or (aComponent is TMenu)
-    then writeln ('**SH: Warn: TMainIDE.OnDesignerRenameComponent MenuItem / TMenu with Owner = nil'+self.Name)
-    else raise Exception.Create('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name);
+    then
+      writeln ('**SH: Warn: TMainIDE.OnDesignerRenameComponent MenuItem / TMenu with Owner = nil'+self.Name)
+    else
+      RaiseException('TMainIDE.OnDesignerRenameComponent internal error:'+AComponent.Name);
   end;
 end;
 
@@ -6529,16 +6573,17 @@ var
   ActiveUnitInfo: TUnitInfo;
   NewJumpPoint: TProjectJumpHistoryPosition;
 begin
-//writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  //writeln('');
+  //writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] A Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
   ActiveUnitInfo:=Project1.UnitWithEditorIndex(APageIndex);
   if (ActiveUnitInfo=nil) then exit;
   NewJumpPoint:=TProjectJumpHistoryPosition.Create(ActiveUnitInfo.Filename,
     ACaretXY,ATopLine);
-  if DeleteForwardHistory then Project1.JumpHistory.DeleteForwardHistory;
   Project1.JumpHistory.InsertSmart(Project1.JumpHistory.HistoryIndex+1,
                                    NewJumpPoint);
-//writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
-//Project1.JumpHistory.WriteDebugReport;
+  if DeleteForwardHistory then Project1.JumpHistory.DeleteForwardHistory;
+  //writeln('[TMainIDE.OnSrcNoteBookAddJumpPoint] END Line=',ACaretXY.Y,',DeleteForwardHistory=',DeleteForwardHistory,' Count=',Project1.JumpHistory.Count,',HistoryIndex=',Project1.JumpHistory.HistoryIndex);
+  //Project1.JumpHistory.WriteDebugReport;
 end;
 
 Procedure TMainIDE.OnSrcNotebookDeleteLastJumPoint(Sender: TObject);
@@ -6570,7 +6615,9 @@ var DestIndex, UnitIndex: integer;
   DestJumpPoint: TProjectJumpHistoryPosition;
   CursorPoint, NewJumpPoint: TProjectJumpHistoryPosition;
 begin
+  //writeln('');
   //writeln('[TMainIDE.OnSrcNotebookJumpToHistoryPoint] A Back=',Action=jhaBack);
+  Project1.JumpHistory.WriteDebugReport;
 
   // update jump history (e.g. delete jumps to closed editors)
   Project1.JumpHistory.DeleteInvalidPositions;
@@ -6583,8 +6630,7 @@ begin
 
   CursorPoint:=nil;
   if (SourceNoteBook<>nil) then begin
-    // this is the first back jump
-    // -> insert current source position into history
+    // get current cursor position
     GetCurrentUnit(ASrcEdit,AnUnitInfo);
     if (ASrcEdit<>nil) and (AnUnitInfo<>nil) then begin
       CursorPoint:=TProjectJumpHistoryPosition.Create(AnUnitInfo.Filename,
@@ -7216,6 +7262,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.399  2002/10/02 20:30:26  lazarus
+  MG: fixed jumping history
+
   Revision 1.398  2002/10/02 16:16:36  lazarus
   MG: accelerated unitdependencies
 
