@@ -178,7 +178,7 @@ type
     procedure DoShowTabOrderEditor;
     procedure GiveComponentsNames;
     procedure NotifyComponentAdded(AComponent: TComponent);
-    
+
     // popup menu
     procedure BuildPopupMenu;
     procedure OnAlignPopupMenuClick(Sender: TObject);
@@ -912,13 +912,13 @@ begin
       //RaiseException('');
     end;
     LastPaintSender:=Sender;
-    
+
     // client grid
     if (not InternalPaint) and (Sender is TWinControl)
     and (csAcceptsControls in Sender.ControlStyle) then begin
       PaintClientGrid(TWinControl(Sender),DDC);
     end;
-    
+
     // marker (multi selection markers)
     if (ControlSelection.SelectionForm=Form)
     and (ControlSelection.IsSelected(Sender)) then begin
@@ -2049,7 +2049,7 @@ begin
   //writeln('TDesigner.DrawDesignerItems A ',dfNeedPainting in FFlags);
   if OnlyIfNeeded and (not (dfNeedPainting in FFlags)) then exit;
   Exclude(FFlags,dfNeedPainting);
-  
+
   if (Form=nil) or (not Form.HandleAllocated) then exit;
 
   //writeln('TDesigner.DrawDesignerItems B painting');
@@ -2057,7 +2057,7 @@ begin
   DDC.SetDC(Form,DesignerDC);
   DoPaintDesignerItems;
   DDC.Clear;
-  ReleaseDC(Form.Handle,DesignerDC);
+  ReleaseDesignerDC(Form.Handle,DesignerDC);
 end;
 
 procedure TDesigner.DoPaintDesignerItems;

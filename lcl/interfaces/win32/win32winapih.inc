@@ -137,6 +137,7 @@ Function Rectangle(DC: HDC; X1, Y1, X2, Y2: Integer): Boolean; Override;
 function RectVisible(dc : hdc; const ARect: TRect) : Boolean; Override;
 Function ReleaseCapture: Boolean; Override;
 Function ReleaseDC(HWnd: HWND; DC: HDC): Integer; Override;
+Function ReleaseDesignerDC(HWnd: HWND; DC: HDC): Integer; Override;
 Function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; Override;
 
 Function SaveDC(DC: HDC): Integer; Override;
@@ -181,6 +182,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.37  2003/11/07 18:48:52  micha
+  symmetry getdesignerdc, releasedesignerdc
+
   Revision 1.36  2003/11/04 13:18:22  micha
   Implement GetDesignerDC
 

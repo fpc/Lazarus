@@ -1505,6 +1505,11 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;
+begin
+  Result := ReleaseDC(hWnd, DC);
+end;
+
 function TInterfaceBase.RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 begin
   Result := False;
@@ -1842,6 +1847,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.108  2003/11/07 18:48:52  micha
+  symmetry getdesignerdc, releasedesignerdc
+
   Revision 1.107  2003/11/03 22:37:41  mattias
   fixed vert scrollbar, implemented GetDesignerDC
 

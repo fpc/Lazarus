@@ -9,8 +9,8 @@
       procedure MyProc;
     {$ENDIF}
 
-  !! Keep this alphabetical and place a pointer to the independent part 
-  !! if needed 
+  !! Keep this alphabetical and place a pointer to the independent part
+  !! if needed
 
  *****************************************************************************
  *                                                                           *
@@ -247,6 +247,7 @@ function RectVisible(dc : hdc; const ARect: TRect) : Boolean; {$IFDEF IF_BASE_ME
 function RegroupMenuItem(hndMenu: HMENU; GroupIndex: integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseCapture : Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;  {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function RightJustifyMenuItem(HndMenu: HMenu; bRightJustify: boolean): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 Function RoundRect(DC : hDC; X1, Y1, X2, Y2: Integer; RX,RY : Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -399,6 +400,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.91  2003/11/07 18:48:52  micha
+  symmetry getdesignerdc, releasedesignerdc
+
   Revision 1.90  2003/11/03 22:37:41  mattias
   fixed vert scrollbar, implemented GetDesignerDC
 

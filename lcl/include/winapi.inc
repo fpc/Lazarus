@@ -10,7 +10,7 @@
   to be implementerd here
 
   !! Keep this alphabetical !!
-  
+
  *****************************************************************************
  *                                                                           *
  *  This file is part of the Lazarus Component Library (LCL)                 *
@@ -688,7 +688,7 @@ end;
 {------------------------------------------------------------------------------
   Function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean;
     BorderWidth: integer) : Boolean;
-    
+
   Calls InvalidateRect for the borderframe.
 ------------------------------------------------------------------------------}
 Function InvalidateFrame(aHandle : HWND; ARect : pRect; bErase : Boolean; BorderWidth: integer) : Boolean;
@@ -731,7 +731,7 @@ begin
   Result := InterfaceObject.LoadStockPixmap(StockID);
 end;
 
-function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean; 
+function MaskBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Mask: HBITMAP; XMask, YMask: Integer; Rop: DWORD): Boolean;
 begin
   Result := InterfaceObject.MaskBlt(DestDC, X, Y, Width, Height, SrcDC, XSrc, YSrc, Mask, XMask, YMask, Rop);
 end;
@@ -789,19 +789,19 @@ begin
                                 StartX,StartY,EndX,EndY);
 end;
 
-function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; 
-  Filled, Continuous: boolean): boolean; 
+function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer;
+  Filled, Continuous: boolean): boolean;
 begin
   Result := InterfaceObject.PolyBezier(DC,Points,NumPts,Filled,Continuous);
 end;
 
-function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; 
-  Winding: boolean): boolean; 
+function Polygon(DC: HDC; Points: PPoint; NumPts: Integer;
+  Winding: boolean): boolean;
 begin
   Result := InterfaceObject.Polygon(DC,Points,NumPts,Winding);
 end;
 
-function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean; 
+function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): boolean;
 begin
   Result := InterfaceObject.Polyline(DC,Points,NumPts);
 end;
@@ -872,6 +872,11 @@ end;
 function ReleaseDC(hWnd: HWND; DC: HDC): Integer;
 begin
   Result := InterfaceObject.ReleaseDC(hWnd, DC);
+end;
+
+function ReleaseDesignerDC(hWnd: HWND; DC: HDC): Integer;
+begin
+  Result := InterfaceObject.ReleaseDesignerDC(hWnd, DC);
 end;
 
 Function RequestInput(const InputCaption, InputPrompt : String; MaskInput : Boolean; var Value : String) : Boolean;
@@ -964,12 +969,12 @@ end;
 
 function RestoreDC(DC: HDC; SavedDC: Integer): Boolean;
 begin
-  Result := InterfaceObject.RestoreDC(DC, SavedDC)  
+  Result := InterfaceObject.RestoreDC(DC, SavedDC)
 end;
 
-function SaveDC(DC: HDC) : Integer; 
+function SaveDC(DC: HDC) : Integer;
 begin
-  Result := InterfaceObject.SaveDC(DC)  
+  Result := InterfaceObject.SaveDC(DC)
 end;
 
 Function ScreenToClient(Handle : HWND; var P : TPoint) : Integer;
@@ -1033,12 +1038,12 @@ function SetCaretRespondToFocus(Handle: hWnd; ShowHideOnFocus: boolean):Boolean;
 begin
   Result := InterfaceObject.SetCaretRespondToFocus(Handle,ShowHideOnFocus);
 end;
- 
+
 function SetCursor(hCursor: HICON): HCURSOR;
 begin
   Result := InterfaceObject.SetCursor(hCursor);
 end;
- 
+
 Function SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
 Begin
   Result := InterfaceObject.SetProp(Handle,Str,Data);
@@ -1082,7 +1087,7 @@ begin
   Result := InterfaceObject.SetStretchBltMode(DC,StretchMode);
 end;
 
-function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean; 
+function SetSysColors(cElements: Integer; const lpaElements; const lpaRgbValues): Boolean;
 begin
   Result := InterfaceObject.SetSysColors(cElements, lpaElements, lpaRgbValues);
 end;
@@ -1383,7 +1388,7 @@ begin
     dec(ARect.Top,dy);
     inc(ARect.Bottom,dy);
   end;
-  
+
   Result := True;
 end;
 
@@ -1391,7 +1396,7 @@ end;
   Function: IntersectRect
   Params:  var DestRect: TRect; const SrcRect1, SrcRect2: TRect
   Returns: Boolean
-  
+
   Intersects SrcRect1 and SrcRect2 into DestRect.
   Intersecting means that DestRect will be the overlapping area of lprcSrc1 and
   lprcSrc2. If SrcRect1 and SrcRect2 does not overlapp the Result is false, else
@@ -1407,7 +1412,7 @@ begin
       and (SrcRect2.Right > SrcRect1.Left)
       and (SrcRect2.Top < SrcRect1.Bottom)
       and (SrcRect2.Bottom > SrcRect1.Top);
-       
+
   if Result then begin
     DestRect.Left:=Max(SrcRect1.Left,SrcRect2.Left);
     DestRect.Top:=Max(SrcRect1.Top,SrcRect2.Top);
@@ -1525,7 +1530,7 @@ end;
 {------------------------------------------------------------------------------
   Function: ScrollWindow   In progress pbd
   Params:   Handle
-            XAmount +scroll down -scroll up 
+            XAmount +scroll down -scroll up
             Rect: Rect to move
             ClipRect: Boundaries at which the pixels go to /dev/nul
   Returns:  More than a simple boolean but for compatibilty bool will do
@@ -1541,7 +1546,7 @@ end;
 {------------------------------------------------------------------------------
   Function: SetRect
   Params:
-  Returns: 
+  Returns:
  ------------------------------------------------------------------------------}
 Function SetRect(var ARect : TRect; xLeft,yTop,xRight,yBottom : Integer) : Boolean;
 Begin
@@ -1556,10 +1561,10 @@ End;
 
 {------------------------------------------------------------------------------
   Function: SetRectEmpty
-  Params: Rect to clear 
+  Params: Rect to clear
   Returns: essentially nothing
-  
-  
+
+
  ------------------------------------------------------------------------------}
 function SetRectEmpty(var ARect: TRect): Boolean;
 begin
@@ -1687,6 +1692,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.101  2003/11/07 18:48:52  micha
+  symmetry getdesignerdc, releasedesignerdc
+
   Revision 1.100  2003/11/03 22:37:41  mattias
   fixed vert scrollbar, implemented GetDesignerDC
 
