@@ -649,7 +649,7 @@ begin
   SourceNotebook.OnEditorChanged := @OnSrcNotebookEditorChanged;
   SourceNotebook.OnJumpToHistoryPoint := @OnSrcNotebookJumpToHistoryPoint;
   SourceNotebook.OnNewClicked := @OnSrcNotebookFileNew;
-  SourceNotebook.OnOpenClicked := @ OnSrcNotebookFileOpen;
+  SourceNotebook.OnOpenClicked := @OnSrcNotebookFileOpen;
   SourceNotebook.OnOpenFileAtCursorClicked := @OnSrcNotebookFileOpenAtCursor;
   SourceNotebook.OnFindDeclarationClicked := @OnSrcNotebookFindDeclaration;
   SourceNotebook.OnProcessUserCommand := @OnSrcNotebookProcessCommand;
@@ -1577,7 +1577,8 @@ var OpenDialog:TOpenDialog;
   AFilename: string;
   I  : Integer;
 begin
-  if (Sender=itmFileOpen) or (Sender=OpenFileSpeedBtn) then begin
+  if (Sender=itmFileOpen) or (Sender=OpenFileSpeedBtn)
+  or (Sender is TSourceNoteBook) then begin
     OpenDialog:=TOpenDialog.Create(Application);
     try
       OpenDialog.Title:='Open file';
@@ -5378,6 +5379,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.186  2001/12/17 11:16:08  lazarus
+  MG: fixed open file key in source editor
+
   Revision 1.185  2001/12/16 22:24:54  lazarus
   MG: changes for new compiler 20011216
 

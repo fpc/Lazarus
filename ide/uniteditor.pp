@@ -2330,12 +2330,6 @@ Begin
     NoteBook.PageIndex := NoteBook.Pages.Count-1;
 End;
 
-
-Procedure TSourceNotebook.OpenClicked(Sender: TObject);
-Begin
-  if Assigned(FOnOpenClicked) then FOnOpenClicked(Sender);
-end;
-
 Procedure TSourceNotebook.FindClicked(Sender : TObject);
 var TempEditor:TSourceEditor;
 Begin
@@ -2617,6 +2611,11 @@ Procedure TSourceNotebook.NewClicked(Sender: TObject);
 Begin
   if Assigned(FOnNewClicked) then FOnNewClicked(Sender);
 End;
+
+Procedure TSourceNotebook.OpenClicked(Sender: TObject);
+Begin
+  if Assigned(FOnOpenClicked) then FOnOpenClicked(Sender);
+end;
 
 Procedure TSourceNotebook.SaveClicked(Sender: TObject);
 Begin
