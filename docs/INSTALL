@@ -52,28 +52,31 @@ properly:
 
 1.3 Under Mac OS X:
 
-  You need the Apple Developer-tools, X11, gtk1.2:
+  What you need: Apple Developer-tools, X11, gtk1.2:
 
-  Downloading packages and installing them properly can be a time consuming
-  task. Therefore there are various package manager. One of them is fink:
-  Download fink from
-  http://fink.sourceforge.net/download/index.php?phpLang=en; follow the
-  install instructions
-
-  Developer-tools: Are included on the original OSX installation-CDs, or
+  1. Developer-tools: Are included on the original OSX installation-CDs, or
   download at ADC (free registration required)
   http://developer.apple.com/.
 
-  Apple X11: On a fresh system: choose "Customize" in the
-  install-dialogue, check "X11".
-  On an already installed system: download at
+  2. Apple X11: On a fresh system: choose "Customize" in the install-dialogue,
+  check "X11". On an already installed system: download at
   http://www.apple.com/downloads/macosx/apple/x11formacosx.html
 
-  In the Terminal, run
-  'sudo fink install gtk-pixbuf gtk+ gtk+-data gtk+-shlibs gtk-doc 1.2-13
-  gtkglarea'
-
   The X11-Application is in /Applications/Utilities/X11.
+
+  3. gtk1.2: The gtk is installed easily with a package manager like fink.
+  Download fink from
+  http://fink.sourceforge.net/download/index.php?phpLang=en
+  and follow the install instructions.
+
+  In the Terminal, run
+  sudo fink install gtk-pixbuf gtk+ gtk+-data \
+    gtk+-shlibs gtk-doc 1.2-13 gtkglarea gtk-engines
+
+
+  Starting any gtk application (including lazarus apps) will start with the gtk
+  default theme, which does not look very nice on Mac. There are some aqua
+  themes. For example: AquaGraphite or Aque.
 
 
 ================================================================================
