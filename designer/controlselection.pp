@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, LCLLinux, LCLType, Controls, Forms, GraphType, Graphics, SysUtils,
-  EnvironmentOpts;
+  EnvironmentOpts, DesignerProcs;
 
 type
   EGenException = class(Exception);
@@ -134,7 +134,7 @@ type
     Nearest: integer;
     Valid: boolean;
   end;
-
+  
   TControlSelection = class(TObject)
   private
     FControls: TList;  // list of TSelectedComponent
@@ -260,17 +260,17 @@ type
           VertSizing: TComponentSizing; AHeight: integer);
     procedure ScaleComponents(Percent: integer);
     property Snapping: boolean read FSnapping write SetSnapping;
-    procedure DrawGuideLines(DC: HDC);
+    procedure DrawGuideLines(DC: TDesignerDeviceContext);
 
     property GrabberSize:integer read FGrabberSize write SetGrabberSize;
     property GrabberColor: TColor read FGrabberColor write FGrabberColor;
-    procedure DrawGrabbers(DC: HDC);
+    procedure DrawGrabbers(DC: TDesignerDeviceContext);
     function GrabberAtPos(X,Y:integer):TGrabber;
     property Grabbers[AGrabIndex:TGrabIndex]:TGrabber read GetGrabbers write SetGrabbers;
     property MarkerSize:integer read FMarkerSize write FMarkerSize;
     property MarkerColor: TColor read FMarkerColor write FMarkerColor;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-    procedure DrawMarker(AComponent:TComponent; DC:HDC);
+    procedure DrawMarker(AComponent:TComponent; DC: TDesignerDeviceContext);
     procedure DrawMarkerAt(ACanvas: TCanvas; ALeft, ATop, AWidth, AHeight: integer);
     property ActiveGrabber:TGrabber read FActiveGrabber write SetActiveGrabber;
     
@@ -291,7 +291,7 @@ type
 
     property RubberbandBounds:TRect read FRubberbandBounds write SetRubberbandBounds;
     property RubberbandActive: boolean read FRubberbandActive write FRubberbandActive;
-    procedure DrawRubberband(DC: HDC);
+    procedure DrawRubberband(DC: TDesignerDeviceContext);
     procedure SelectWithRubberBand(ACustomForm:TCustomForm; ExclusiveOr: boolean);
     
     procedure Sort(SortProc: TSelectionSortCompare);
@@ -299,24 +299,6 @@ type
     function OnlyNonVisualComponentsSelected: boolean;
   end;
 
-
-const
-  NonVisualCompIconWidth = 23;
-  NonVisualCompBorder = 2;
-  NonVisualCompWidth = NonVisualCompIconWidth+2*NonVisualCompBorder;
-
-function GetParentFormRelativeTopLeft(Component: TComponent): TPoint;
-function GetParentFormRelativeBounds(Component: TComponent): TRect;
-function GetParentFormRelativeClientOrigin(Component: TComponent): TPoint;
-function GetParentFormRelativeParentClientOrigin(Component: TComponent): TPoint;
-function GetFormRelativeMousePosition(Form: TCustomForm): TPoint;
-function ComponentIsTopLvl(AComponent: TComponent): boolean;
-procedure GetComponentBounds(AComponent: TComponent;
-  var Left, Top, Width, Height: integer);
-function GetComponentLeft(AComponent: TComponent): integer;
-function GetComponentTop(AComponent: TComponent): integer;
-function GetComponentWidth(AComponent: TComponent): integer;
-function GetComponentHeight(AComponent: TComponent): integer;
 
 
 var TheControlSelection: TControlSelection;
@@ -340,153 +322,6 @@ const
     [gpLeft          ],             [          gpRight],
     [gpLeft, gpBottom], [gpBottom], [gpBottom, gpRight]
   );
-
-function GetParentFormRelativeTopLeft(Component: TComponent): TPoint;
-var
-  FormOrigin: TPoint;
-  ParentForm: TCustomForm;
-  Parent: TWinControl;
-begin
-  if Component is TControl then begin
-    ParentForm:=GetParentForm(TControl(Component));
-    Parent:=TControl(Component).Parent;
-    if (Parent=nil) or (ParentForm=nil) then begin
-      Result:=Point(0,0);
-    end else begin
-      Result:=Parent.ClientOrigin;
-      FormOrigin:=ParentForm.ClientOrigin;
-      Result.X:=Result.X-FormOrigin.X+TControl(Component).Left;
-      Result.Y:=Result.Y-FormOrigin.Y+TControl(Component).Top;
-    end;
-  end else begin
-    Result.X:=LongRec(Component.DesignInfo).Lo;
-    Result.Y:=LongRec(Component.DesignInfo).Hi;
-  end;
-end;
-
-function GetParentFormRelativeBounds(Component: TComponent): TRect;
-var CTopLeft: TPoint;
-begin
-  CTopLeft:=GetParentFormRelativeTopLeft(Component);
-  Result.Left:=CTopLeft.X;
-  Result.Top:=CTopLeft.Y;
-  Result.Right:=Result.Left+GetComponentWidth(Component);
-  Result.Bottom:=Result.Top+GetComponentHeight(Component);
-end;
-
-function GetParentFormRelativeClientOrigin(Component: TComponent): TPoint;
-var
-  FormOrigin: TPoint;
-  ParentForm: TCustomForm;
-begin
-  if Component is TControl then begin
-    ParentForm:=GetParentForm(TControl(Component));
-    if ParentForm=nil then begin
-      Result:=Point(0,0);
-    end else begin
-      Result:=TControl(Component).ClientOrigin;
-      FormOrigin:=ParentForm.ClientOrigin;
-      Result.X:=Result.X-FormOrigin.X;
-      Result.Y:=Result.Y-FormOrigin.Y;
-    end;
-  end else begin
-    Result.X:=LongRec(Component.DesignInfo).Lo;
-    Result.Y:=LongRec(Component.DesignInfo).Hi;
-  end;
-end;
-
-function GetParentFormRelativeParentClientOrigin(Component: TComponent): TPoint;
-var
-  FormOrigin, ParentOrigin: TPoint;
-  ParentForm: TCustomForm;
-  Parent: TWinControl;
-begin
-  if Component is TControl then begin
-    ParentForm:=GetParentForm(TControl(Component));
-    Parent:=TControl(Component).Parent;
-    if (Parent=nil) or (ParentForm=nil) then begin
-      Result:=Point(0,0);
-    end else begin
-      ParentOrigin:=Parent.ClientOrigin;
-      FormOrigin:=ParentForm.ClientOrigin;
-      Result.X:=ParentOrigin.X-FormOrigin.X;
-      Result.Y:=ParentOrigin.Y-FormOrigin.Y;
-    end;
-  end else begin
-    Result:=Point(0,0);
-  end;
-end;
-
-function GetFormRelativeMousePosition(Form: TCustomForm): TPoint;
-var
-  FormClientOrigin: TPoint;
-begin
-  Result.X:=0;
-  Result.Y:=0;
-  GetCaretPos(Result);
-  FormClientOrigin:=Form.ClientOrigin;
-  dec(Result.X,FormClientOrigin.X);
-  dec(Result.Y,FormClientOrigin.Y);
-end;
-
-function ComponentIsTopLvl(AComponent: TComponent): boolean;
-begin
-  Result:=(AComponent<>nil) and (AComponent is TControl)
-     and (TControl(AComponent).Parent=nil);
-end;
-
-procedure GetComponentBounds(AComponent: TComponent;
-  var Left, Top, Width, Height: integer);
-begin
-  if AComponent is TControl then begin
-    Left:=TControl(AComponent).Left;
-    Top:=TControl(AComponent).Top;
-    Width:=TControl(AComponent).Width;
-    Height:=TControl(AComponent).Height;
-  end else begin
-    Left:=LongRec(AComponent.DesignInfo).Lo;
-    Top:=LongRec(AComponent.DesignInfo).Hi;
-    Width:=NonVisualCompWidth;
-    Height:=Width;
-  end;
-end;
-
-function GetComponentLeft(AComponent: TComponent): integer;
-begin
-  if AComponent is TControl then begin
-    Result:=TControl(AComponent).Left;
-  end else begin
-    Result:=LongRec(AComponent.DesignInfo).Lo;
-  end;
-end;
-
-function GetComponentTop(AComponent: TComponent): integer;
-begin
-  if AComponent is TControl then begin
-    Result:=TControl(AComponent).Top;
-  end else begin
-    Result:=LongRec(AComponent.DesignInfo).Hi;
-  end;
-end;
-
-function GetComponentWidth(AComponent: TComponent): integer;
-begin
-  if AComponent is TControl then begin
-    Result:=TControl(AComponent).Width;
-  end else begin
-    Result:=NonVisualCompWidth;
-  end;
-end;
-
-function GetComponentHeight(AComponent: TComponent): integer;
-begin
-  if AComponent is TControl then begin
-    Result:=TControl(AComponent).Height;
-  end else begin
-    Result:=NonVisualCompWidth;
-  end;
-end;
-
 
 { TGrabber }
 
@@ -1438,18 +1273,15 @@ begin
   Result:=nil;
 end;
 
-procedure TControlSelection.DrawGrabbers(DC: HDC);
+procedure TControlSelection.DrawGrabbers(DC: TDesignerDeviceContext);
 var OldBrushColor:TColor;
   g:TGrabIndex;
-  FormOrigin, DCOrigin, Diff: TPoint;
-  SaveIndex: integer;
+  Diff: TPoint;
 //  OldFormHandle: HDC;
 begin
-  if (Count=0) or (FCustomForm=nil) or Items[0].IsTopLvl or (DC=0) then exit;
-  GetWindowOrgEx(DC, DCOrigin);
-  FormOrigin:=FCustomForm.ClientOrigin;
-  Diff.X:=FormOrigin.X-DCOrigin.X;
-  Diff.Y:=FormOrigin.Y-DCOrigin.Y;
+  if (Count=0) or (FCustomForm=nil) or Items[0].IsTopLvl then exit;
+  
+  Diff:=DC.FormOrigin;
 {
 writeln('[DrawGrabbers] Form=',FormOrigin.X,',',FormOrigin.Y
    ,' DC=',DCOrigin.X,',',DCOrigin.Y
@@ -1457,8 +1289,8 @@ writeln('[DrawGrabbers] Form=',FormOrigin.X,',',FormOrigin.Y
    ,' Selection=',FLeft,',',FTop);
 }
 //  OldFormHandle:=FCustomForm.Canvas.Handle;
-  SaveIndex:=SaveDC(DC);
-  FCanvas.Handle:=DC;
+  DC.Save;
+  FCanvas.Handle:=DC.DC;
   with FCanvas do begin
     OldBrushColor:=Brush.Color;
     Brush.Color:=FGrabberColor;
@@ -1472,7 +1304,6 @@ writeln('[DrawGrabbers] Form=',FormOrigin.X,',',FormOrigin.Y
     Brush.Color:=OldbrushColor;
   end;
   FCanvas.Handle:=0;
-  RestoreDC(DC,SaveIndex);
 //  FCustomForm.Canvas.Handle:=OldFormHandle;
 end;
 
@@ -1492,11 +1323,11 @@ begin
   end;
 end;
 
-procedure TControlSelection.DrawMarker(AComponent:TComponent; DC:HDC);
+procedure TControlSelection.DrawMarker(AComponent:TComponent;
+  DC: TDesignerDeviceContext);
 var
   ALeft,ATop:integer;
   AControlOrigin,DCOrigin:TPoint;
-  SaveIndex:HDC;
   AControl: TControl;
 begin
   if (Count<2) or (FCustomForm=nil) or (AComponent is TCustomForm)
@@ -1510,15 +1341,12 @@ begin
   end;
   Inc(AControlOrigin.X,GetComponentLeft(AControl));
   Inc(AControlOrigin.Y,GetComponentTop(AControl));
-  GetWindowOrgEx(DC, DCOrigin);
-  // MoveWindowOrg is currently not functioning in the gtk
-  // this is a workaround
+  DCOrigin:=DC.DCorigin;
   ALeft:=AControlOrigin.X-DCOrigin.X;
   ATop:=AControlOrigin.Y-DCOrigin.Y;
   
-  SaveIndex := SaveDC(DC);
-
-  FCanvas.Handle:=DC;
+  DC.Save;
+  FCanvas.Handle:=DC.DC;
 {
 writeln('DrawMarker A ',FCustomForm.Name
     ,' Control=',AControl.Name,',',AControlOrigin.X,',',AControlOrigin.Y
@@ -1528,12 +1356,10 @@ writeln('DrawMarker A ',FCustomForm.Name
 }
   DrawMarkerAt(FCanvas,ALeft,ATop,AControl.Width,AControl.Height);
   FCanvas.Handle:=0;
-  RestoreDC(DC, SaveIndex);
 end;
 
-procedure TControlSelection.DrawRubberband(DC: HDC);
-var FormOrigin, DCOrigin, Diff: TPoint;
-  SaveIndex: HDC;
+procedure TControlSelection.DrawRubberband(DC: TDesignerDeviceContext);
+var Diff: TPoint;
 
   procedure DrawInvertFrameRect(x1,y1,x2,y2:integer);
   var i:integer;
@@ -1575,16 +1401,12 @@ var FormOrigin, DCOrigin, Diff: TPoint;
 // DrawRubberband
 begin
   if (FCustomForm=nil) then exit;
-  GetWindowOrgEx(DC, DCOrigin);
-  FormOrigin:=FCustomForm.ClientOrigin;
-  Diff.X:=FormOrigin.X-DCOrigin.X;
-  Diff.Y:=FormOrigin.Y-DCOrigin.Y;
-  SaveIndex:=SaveDC(DC);
-  FCanvas.Handle:=DC;
+  Diff:=Dc.FormOrigin;
+  DC.Save;
+  FCanvas.Handle:=DC.DC;
   with FRubberBandBounds do
     DrawInvertFrameRect(Left,Top,Right,Bottom);
   FCanvas.Handle:=0;
-  RestoreDC(DC,SaveIndex);
 end;
 
 procedure TControlSelection.SelectWithRubberBand(ACustomForm:TCustomForm; 
@@ -1951,10 +1773,10 @@ begin
   EndResizing(false);
 end;
 
-procedure TControlSelection.DrawGuideLines(DC: HDC);
-var OldPenColor:TColor;
-  FormOrigin, DCOrigin, Diff: TPoint;
-  SaveIndex: integer;
+procedure TControlSelection.DrawGuideLines(DC: TDesignerDeviceContext);
+var
+  OldPenColor:TColor;
+  Diff: TPoint;
   LeftGuideLineExists, RightGuideLineExists,
   TopGuideLineExists, BottomGuideLineExists: boolean;
   LeftGuideLine, RightGuideLine, TopGuideLine, BottomGuideLine: TRect;
@@ -1967,12 +1789,10 @@ begin
   if (not LeftGuideLineExists) and (not RightGuideLineExists)
   and (not TopGuideLineExists) and (not BottomGuideLineExists)
   then exit;
-  GetWindowOrgEx(DC, DCOrigin);
-  FormOrigin:=FCustomForm.ClientOrigin;
-  Diff.X:=FormOrigin.X-DCOrigin.X;
-  Diff.Y:=FormOrigin.Y-DCOrigin.Y;
-  SaveIndex:=SaveDC(DC);
-  FCanvas.Handle:=DC;
+  
+  Diff:=DC.FormOrigin;
+  DC.Save;
+  FCanvas.Handle:=DC.DC;
   with FCanvas do begin
     OldPenColor:=Pen.Color;
     // draw bottom guideline
@@ -2002,7 +1822,6 @@ begin
     Pen.Color:=OldPenColor;
   end;
   FCanvas.Handle:=0;
-  RestoreDC(DC,SaveIndex);
 end;
 
 procedure TControlSelection.Sort(SortProc: TSelectionSortCompare);

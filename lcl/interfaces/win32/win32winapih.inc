@@ -119,7 +119,7 @@ Function Pie(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer): Boolean; Ov
 Function PolyBezier(DC: HDC; Points: PPoint; NumPts: Integer; Filled, Continuous: Boolean): Boolean; Override;
 Function Polygon(DC: HDC; Points: PPoint; NumPts: Integer; Winding: Boolean): Boolean; Override;
 Function Polyline(DC: HDC; Points: PPoint; NumPts: Integer): Boolean; Override;
-Function PostMessage(HWnd: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Boolean; Override;
+Function PostMessage(Handle: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Boolean; Override;
 
 function RadialArc(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
 function RadialChord(DC: HDC; x,y,width,height,sx,sy,ex,ey : Integer): Boolean; override;
@@ -172,6 +172,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/08/28 09:40:52  lazarus
+  MG: reduced paint messages and DC getting/releasing
+
   Revision 1.11  2002/08/19 20:34:49  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 

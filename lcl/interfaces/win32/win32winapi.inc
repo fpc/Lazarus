@@ -1529,7 +1529,7 @@ End;
 
 {------------------------------------------------------------------------------
   Method:  PostMessage
-  Params: HWnd - handle of destination window
+  Params: Handle - handle of destination window
           Msg - message to post
           WParam - first message parameter
           LParam - second message parameter
@@ -1538,9 +1538,9 @@ End;
   The PostMessage Function places (posts) a message in the message queue and
   then returns without waiting.
  ------------------------------------------------------------------------------}
-Function TWin32Object.PostMessage(HWnd: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Boolean;
+Function TWin32Object.PostMessage(Handle: HWND; Msg: Cardinal; WParam: LongInt; LParam: LongInt): Boolean;
 Begin
-  Result := Windows.PostMessage(hWnd, Msg, wParam, lParam);  
+  Result := Windows.PostMessage(Handle, Msg, wParam, lParam);
 End;
 
 {------------------------------------------------------------------------------
@@ -2263,6 +2263,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.15  2002/08/28 09:40:52  lazarus
+  MG: reduced paint messages and DC getting/releasing
+
   Revision 1.14  2002/08/19 20:34:48  lazarus
   MG: improved Clipping, TextOut, Polygon functions
 
