@@ -3133,6 +3133,7 @@ begin
     FillChar(Values, SizeOf(Values), #0);
   end
   else begin
+    // create a new devicecontext for this window
     ClientWidget := GetFixedWidget(Pointer(hWnd));
     if ClientWidget = nil
     then begin
@@ -3140,15 +3141,15 @@ begin
       ClientWidget := Pointer(hWnd);
     end;
 
-    // create a new devicecontext for this window
     aDC.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
-    if GetControlWindow(ClientWidget) = nil
+    aDC.Drawable := GetControlWindow(ClientWidget);
+    if aDC.Drawable = nil
     then begin
       Assert(False, 'Trace:[TgtkObject.GetDC] Force widget creation');
       //force creation
       gtk_widget_realize(ClientWidget);
+      aDC.Drawable := GetControlWindow(ClientWidget);
     end;
-    aDC.Drawable := GetControlWindow(ClientWidget);
     aDC.GC := gdk_gc_new(aDC.Drawable);
     gdk_window_get_size(aDC.Drawable, @X, @Y);
     gdk_gc_set_function(aDC.GC, GDK_COPY);
@@ -7216,6 +7217,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.142  2002/10/04 14:24:17  lazarus
+  MG: added DrawItem to TComboBox/TListBox
+
   Revision 1.141  2002/10/03 14:47:32  lazarus
   MG: added TComboBox.OnPopup+OnCloseUp+ItemWidth
 
