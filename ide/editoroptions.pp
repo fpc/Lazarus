@@ -26,10 +26,6 @@
     The editor options are stored in XML format in the
      ~/.lazarus/editoroptions.xml file.
     Currently only for TSynEdit.
-
-  ToDo:
-   - key mapping schemes
-   - nicer TColorButton
 }
 unit EditorOptions;
 
@@ -421,14 +417,14 @@ type
     // key mapping
     procedure KeyMappingChooseSchemeButtonClick(Sender: TObject);
     procedure KeyMappingTreeViewMouseUp(Sender:TObject;
-       Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+       Button:TMouseButton; Shift:TShiftState; X,Y:integer);
     procedure KeyMappingConsistencyCheckButtonClick(Sender: TObject);
 
     // color
     procedure ColorElementListBoxMouseUp(Sender:TObject;
-       Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+       Button:TMouseButton; Shift:TShiftState; X,Y:integer);
     procedure ColorPreviewMouseUp(Sender:TObject;
-       Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
+       Button:TMouseButton; Shift:TShiftState; X,Y:integer);
     procedure OnSpecialLineColors(Sender: TObject; Line: integer;
        var Special: boolean; var FG, BG: TColor);
     procedure SetAttributeToDefaultButtonClick(Sender: TObject);
@@ -2777,7 +2773,7 @@ begin
     i:=EditingKeyMap.IndexOf(ARelation);
     if (i>=0)
     and (ShowKeyMappingEditForm(i,EditingKeyMap)=mrOk) then begin
-      ANode.Text:=KeyMappingRelationToString(ARelation);
+      FillKeyMappingTreeView;
       for i:=Low(PreviewEdits) to High(PreviewEdits) do
         if PreviewEdits[i]<>nil then
           EditingKeyMap.AssignTo(PreviewEdits[i].KeyStrokes,[caSourceEditor]);
@@ -3131,20 +3127,35 @@ var i, j: integer;
 begin
   with KeyMappingTreeView do begin
     BeginUpdate;
-    Items.Clear;
     for i:=0 to EditingKeyMap.CategoryCount-1 do begin
       CurCategory:=EditingKeyMap.Categories[i];
-      NewCategoryNode:=Items.AddObject(nil,CurCategory.Description,CurCategory);
+      if Items.TopLvlCount>i then begin
+        NewCategoryNode:=Items.TopLvlItems[i];
+        NewCategoryNode.Text:=CurCategory.Description;
+        NewCategoryNode.Data:=CurCategory;
+      end else begin
+        NewCategoryNode:=Items.AddObject(nil,CurCategory.Description,CurCategory);
+      end;
       NewCategoryNode.ImageIndex:=0;
       NewCategoryNode.SelectedIndex:=NewCategoryNode.ImageIndex;
       for j:=0 to CurCategory.Count-1 do begin
         CurKeyRelation:=TKeyCommandRelation(CurCategory[j]);
-        NewKeyNode:=Items.AddChildObject(NewCategoryNode,
-          KeyMappingRelationToString(CurKeyRelation),CurKeyRelation);
+        if NewCategoryNode.Count>j then begin
+          NewKeyNode:=NewCategoryNode.Items[j];
+          NewKeyNode.Text:=KeyMappingRelationToString(CurKeyRelation);
+          NewKeyNode.Data:=CurKeyRelation;
+        end else begin
+          NewKeyNode:=Items.AddChildObject(NewCategoryNode,
+            KeyMappingRelationToString(CurKeyRelation),CurKeyRelation);
+        end;
         NewKeyNode.ImageIndex:=1;
         NewKeyNode.SelectedIndex:=NewKeyNode.ImageIndex;
       end;
+      while NewCategoryNode.Count>EditingKeyMap.CategoryCount do
+        NewCategoryNode[NewCategoryNode.Count-1].Delete;
     end;
+    while Items.TopLvlCount>EditingKeyMap.CategoryCount do
+      Items.TopLvlItems[Items.TopLvlCount-1].Delete;
     EndUpdate;
   end;
 end;

@@ -22,8 +22,9 @@
 }
 
 const
-  DefaultFPCSrcDirs: array[1..13] of string = (
+  DefaultFPCSrcDirs: array[1..14] of string = (
     '/usr/share/fpcsrc',
+    '/usr/local/share/fpcsrc',
     '/usr/fpcsrc',
     '/usr/share/fpc/src',
     '/usr/fpc/src',
@@ -34,9 +35,8 @@ const
     '/usr/local/lib/fpc/src',
     '/vol/fpc/src',
     '/vol/lib/fpc/src',
-    // here some extra paths. These paths are also created by the fpc rpm
-    // creation script and do not contain all sources. So, they are searched
-    // last.
+    // These paths are created by the fpc rpm creation script and do not
+    // contain all sources. So, they are searched last.
     '/usr/src/fpc',
     '/vol/src/fpc'
     );

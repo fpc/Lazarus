@@ -93,6 +93,9 @@ type
     KeyB: TIDEShortCut;
     DefaultKeyA: TIDEShortCut;
     DefaultKeyB: TIDEShortCut;
+    procedure ClearKeyA;
+    procedure ClearKeyB;
+    function GetCategoryAndName: string;
     property Name: String read FName;
     property Command: word read FCommand;  // see the ecXXX constants above
     property LocalizedName: string read GetLocalizedName write SetLocalizedName;
@@ -210,6 +213,23 @@ begin
   DefaultKeyA:=KeyA;
   DefaultKeyB:=KeyB;
   Category:=TheCategory;
+end;
+
+procedure TIDECommandKeys.ClearKeyA;
+begin
+  KeyA:=CleanIDEShortCut;
+end;
+
+procedure TIDECommandKeys.ClearKeyB;
+begin
+  KeyB:=CleanIDEShortCut;
+end;
+
+function TIDECommandKeys.GetCategoryAndName: string;
+begin
+  Result:='"'+GetLocalizedName+'"';
+  if Category<>nil then
+    Result:=Result+' in "'+Category.Description+'"';
 end;
 
 end.

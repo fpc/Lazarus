@@ -336,9 +336,11 @@ type
     GrabbingKey: integer; // 0=none, 1=Default key, 2=Alternative key
     procedure ActivateGrabbing(AGrabbingKey: integer);
     procedure DeactivateGrabbing;
-    procedure SetComboBox(AComboBox: TComboBox; AValue: string);
+    procedure SetComboBox(AComboBox: TComboBox; const AValue: string);
+    function ResolveConflicts(AKey: Word; AShiftState: TShiftState;
+                              Areas: TCommandAreas): boolean;
   public
-    constructor Create(TheOwner:TComponent); override;
+    constructor Create(TheOwner: TComponent); override;
     KeyCommandRelationList:TKeyCommandRelationList;
     KeyIndex:integer;
   end;
@@ -1592,10 +1594,10 @@ begin
 end;
 
 procedure TKeyMappingEditForm.OkButtonClick(Sender:TObject);
-var NewKey1,NewKey2:word;
-  NewShiftState1,NewShiftState2:TShiftState;
-  AText:AnsiString;
-  DummyRelation, CurRelation:TKeyCommandRelation;
+var
+  NewKey1, NewKey2: word;
+  NewShiftState1, NewShiftState2: TShiftState;
+  CurRelation: TKeyCommandRelation;
 begin
   // set defaults
   NewKey1:=VK_UNKNOWN;
@@ -1603,6 +1605,9 @@ begin
   NewKey2:=VK_UNKNOWN;
   NewShiftState2:=[];
   
+  // get old relation
+  CurRelation:=KeyCommandRelationList.Relations[KeyIndex];
+
   // get settings for key1
   NewKey1:=EditorKeyStringToVKCode(Key1KeyComboBox.Text);
   if NewKey1<>VK_UNKNOWN then
@@ -1612,22 +1617,10 @@ begin
     if Key1ShiftCheckBox.Checked then include(NewShiftState1,ssShift);
   end;
 
-  // get old relation
-  CurRelation:=KeyCommandRelationList.Relations[KeyIndex];
+  if not ResolveConflicts(NewKey1,NewShiftState1,CurRelation.Category.Areas)
+  then exit;
   
-  // search for conflict
-  DummyRelation:=KeyCommandRelationList.Find(NewKey1,NewShiftState1,
-                                                    CurRelation.Category.Areas);
-  if (DummyRelation<>nil) 
-  and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then
-  begin
-    AText:=Format(srkmAlreadyConnected,
-            [KeyAndShiftStateToEditorKeyString(NewKey1,NewShiftState1),
-            DummyRelation.Name]);
-    MessageDlg(AText,mtError,[mbok],0);
-    exit;
-  end;
-
+  // get settings for key2
   NewKey2:=EditorKeyStringToVKCode(Key2KeyComboBox.Text);
   if (NewKey1=NewKey2) and (NewShiftState1=NewShiftState2) then
     NewKey2:=VK_UNKNOWN;
@@ -1637,18 +1630,9 @@ begin
     if Key2AltCheckBox.Checked then include(NewShiftState2,ssAlt);
     if Key2ShiftCheckBox.Checked then include(NewShiftState2,ssShift);
   end;
-  DummyRelation:=KeyCommandRelationList.Find(NewKey2,NewShiftState2,
-                                             CurRelation.Category.Areas);
   
-  if (DummyRelation<>nil)
-  and (DummyRelation<>KeyCommandRelationList.Relations[KeyIndex]) then
-  begin
-    AText:=Format(srkmAlreadyConnected,
-            [KeyAndShiftStateToEditorKeyString(NewKey2,NewShiftState2),
-            DummyRelation.Name]);
-    MessageDlg(AText,mterror,[mbok],0);
-    exit;
-  end;
+  if not ResolveConflicts(NewKey2,NewShiftState2,CurRelation.Category.Areas)
+  then exit;
 
   if NewKey1=VK_UNKNOWN then
   begin
@@ -1696,7 +1680,8 @@ begin
   GrabbingKey:=0;
 end;
 
-procedure TKeyMappingEditForm.SetComboBox(AComboBox: TComboBox; AValue: string);
+procedure TKeyMappingEditForm.SetComboBox(AComboBox: TComboBox;
+  const AValue: string);
 var i: integer;
 begin
   i:=AComboBox.Items.IndexOf(AValue);
@@ -1707,6 +1692,46 @@ begin
     AComboBox.Items.Add(AValue);
     AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AValue);
   end;
+end;
+
+function TKeyMappingEditForm.ResolveConflicts(AKey: Word;
+  AShiftState: TShiftState; Areas: TCommandAreas): boolean;
+var
+  ConflictRelation: TKeyCommandRelation;
+  ConflictName: String;
+  CurRelation: TKeyCommandRelation;
+  CurName: String;
+begin
+  // search for conflict
+  CurRelation:=KeyCommandRelationList.Relations[KeyIndex];
+  ConflictRelation:=KeyCommandRelationList.Find(AKey,AShiftState,Areas);
+  if (ConflictRelation<>nil)
+  and (ConflictRelation<>KeyCommandRelationList.Relations[KeyIndex]) then
+  begin
+    CurName:=CurRelation.GetCategoryAndName;
+    ConflictName:=ConflictRelation.GetCategoryAndName;
+    if MessageDlg('Conflict found',
+      'The key '+KeyAndShiftStateToEditorKeyString(AKey,AShiftState)+#13
+      +'is already assigned to '+ConflictName+'.'#13
+      +#13
+      +'Remove the old assignment and assign the key to the new function'#13
+      +CurName+'?',
+      mtConfirmation,[mbOk,mbCancel],0)
+    <>mrOk then
+    begin
+      Result:=false;
+      exit;
+    end;
+    if (ConflictRelation.KeyA.Key1=AKey)
+    and (ConflictRelation.KeyA.Shift1=AShiftState) then begin
+      ConflictRelation.ClearKeyA;
+    end;
+    if (ConflictRelation.KeyB.Key1=AKey)
+    and (ConflictRelation.KeyB.Shift1=AShiftState) then begin
+      ConflictRelation.ClearKeyB;
+    end;
+  end;
+  Result:=true;
 end;
 
 procedure TKeyMappingEditForm.ActivateGrabbing(AGrabbingKey: integer);
