@@ -2271,6 +2271,7 @@ begin
         BOuter := True;
       end;
 
+      SelectedColors := dcscCustom;
       gdk_gc_set_fill(GC, GDK_SOLID);
 
       // Draw outer rect
@@ -2563,6 +2564,7 @@ begin
       begin
         Width := Rect^.Right - Rect^.Left;
         Height := Rect^.Bottom - Rect^.Top;
+        SelectedColors := dcscCustom;
         EnsureGCColor(DC, dccCurrentBackColor, True, False);
         gdk_draw_rectangle(Drawable, GC, 1,
                            Rect^.Left+DCOrigin.X, Rect^.Top+DCOrigin.Y,
@@ -2653,12 +2655,14 @@ begin
       // replace it with the given brush
       OldCurrentBrush := CurrentBrush;
       CurrentBrush := PGdiObject(Brush);
+      SelectedColors:=dcscCustom;
       SelectGDKBrushProps(DC);
       DCOrigin:=GetDCOffset(TDeviceContext(DC));
       gdk_draw_rectangle(Drawable, GC, 1,
                          Rect.Left+DCOrigin.X, Rect.Top+DCOrigin.Y,
                          Width, Height);
       // Restore current brush
+      SelectedColors:=dcscCustom;
       CurrentBrush := OldCurrentBrush;
 
       Result := True;
@@ -5288,20 +5292,23 @@ begin
       pSavedDC:=aDC.SavedContext;
       if pSavedDC<>nil then begin
         if pSavedDC.CurrentBitmap = aDC.CurrentBitmap
-        then aDC.CurrentBitmap := nil;
+        then
+          aDC.CurrentBitmap := nil;
         if pSavedDC.CurrentFont = aDC.CurrentFont
-        then aDC.CurrentFont := nil;
+        then
+          aDC.CurrentFont := nil;
         if (pSavedDC.CurrentPen = aDC.CurrentPen)
-        and (aDC.CurrentPen<>nil) then begin
+        and (aDC.CurrentPen<>nil)
+        then
           aDC.CurrentPen := nil;
-          aDC.DCFlags:=aDC.DCFlags-[dcfPenSelected,dcfPenInvalid];
-        end;
         if pSavedDC.CurrentBrush = aDC.CurrentBrush
-        then aDC.CurrentBrush := nil;
+        then
+          aDC.CurrentBrush := nil;
         {if pSavedDC.CurrentPalette = aDC.CurrentPalette
         then aDC.CurrentPalette := nil;}
         if pSavedDC.ClipRegion = aDC.ClipRegion
-        then pSavedDC.ClipRegion := 0;
+        then
+          pSavedDC.ClipRegion := 0;
         ReleaseDC(0,HDC(pSavedDC));
         aDC.SavedContext:=nil;
       end;
@@ -5383,22 +5390,25 @@ begin
 
     //prevent deleting of copied objects:
     if pSavedDC.CurrentBitmap = aDC.CurrentBitmap
-    then pSavedDC.CurrentBitmap := nil;
+    then
+      pSavedDC.CurrentBitmap := nil;
     if pSavedDC.CurrentFont = aDC.CurrentFont
-    then pSavedDC.CurrentFont := nil;
+    then
+      pSavedDC.CurrentFont := nil;
     if (pSavedDC.CurrentPen = aDC.CurrentPen)
-    and (pSavedDC.CurrentPen<>nil) then begin
+    and (pSavedDC.CurrentPen<>nil) then
       pSavedDC.CurrentPen := nil;
-      pSavedDC.DCFlags:=pSavedDC.DCFlags-[dcfPenInvalid,dcfPenSelected];
-    end;
     if pSavedDC.CurrentBrush = aDC.CurrentBrush
-    then pSavedDC.CurrentBrush := nil;
+    then
+      pSavedDC.CurrentBrush := nil;
     if pSavedDC.CurrentBrush = aDC.CurrentBrush
-    then pSavedDC.CurrentBrush := nil;
+    then
+      pSavedDC.CurrentBrush := nil;
     {if pSavedDC.CurrentPalette = aDC.CurrentPalette
     then pSavedDC.CurrentPalette := nil;}
     if pSavedDC.ClipRegion = aDC.ClipRegion
-    then pSavedDC.ClipRegion := 0;
+    then
+      pSavedDC.ClipRegion := 0;
 
     DeleteDC(HGDIOBJ(pSavedDC));
   end;
@@ -5634,7 +5644,7 @@ begin
           GC := gdk_gc_new(Drawable);
 
           gdk_gc_set_function(GC, GDK_COPY);
-
+          SelectedColors := dcscCustom;
         end;
       gdiBrush:
         with TDeviceContext(DC), PGdiObject(GDIObj)^ do
@@ -5650,6 +5660,7 @@ begin
               GDK_TILED:    gdk_gc_set_tile(GC, GDIBrushPixMap);
             end;
           end;
+          SelectedColors := dcscCustom;
         end;
       gdiFont:
         with TDeviceContext(DC) do
@@ -5661,6 +5672,7 @@ begin
           then begin
             gdk_gc_set_font(GC, PGdiObject(GDIObj)^.GDIFontObject);
           end;
+          SelectedColors := dcscCustom;
         end;
       gdiPen:
         with TDeviceContext(DC) do
@@ -5669,6 +5681,7 @@ begin
           CurrentPen := PGDIObject(GDIObj);
           DCFlags:=DCFlags-[dcfPenSelected,dcfPenInvalid];
           if GC <> nil then SelectGDKPenProps(DC);
+          SelectedColors := dcscCustom;
         end;
       gdiRegion:
       begin
@@ -6710,9 +6723,11 @@ var
       else
         Brush := GetStockObject(BLACK_BRUSH);
       CurrentBrush := PGdiObject(Brush);
+      SelectedColors := dcscCustom;
       SelectGDKBrushProps(DC);
       gdk_draw_rectangle(Scale^.GDIPixmapObject, GC, 1, 0, 0, Width, Height);
       // Restore current brush
+      SelectedColors := dcscCustom;
       CurrentBrush := OldCurrentBrush;
     end;
   end;
@@ -6726,6 +6741,7 @@ var
     fGC := GDK_GC_New(DestDevContext.Drawable);
 
     // perform raster operation and scaling in a buffer
+    DestDevContext.SelectedColors := dcscCustom;
     If not ScaleAndROP(DestDevContext.GC,
       SrcDevContext.Drawable, SrcGDIBitmap)
     then
@@ -6767,6 +6783,7 @@ var
     fGC := GDK_GC_New(SrcDevContext.Drawable);
 
     // perform raster operation and scaling in a buffer
+    DestDevContext.SelectedColors := dcscCustom;
     If not ScaleAndROP(DestDevContext.GC, SrcDevContext.Drawable,
       SrcGDIBitmap)
     then
@@ -7209,6 +7226,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.148  2002/10/08 14:10:03  lazarus
+  MG: added TDeviceContext.SelectedColors
+
   Revision 1.147  2002/10/08 13:42:26  lazarus
   MG: added TDevContextColorType
 
