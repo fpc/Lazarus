@@ -146,6 +146,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property CharCase;
     property Color;
     property Constraints;

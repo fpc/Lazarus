@@ -58,7 +58,10 @@ Type
     procedure Loaded; override;
     procedure InitializeWnd; override;
   published
-    Property ArrowType: TArrowType read GetArrowType write SetArrowType default atLeft;
+    property Align;
+    property Anchors;
+    property ArrowType: TArrowType read GetArrowType write SetArrowType default atLeft;
+    property BorderSpacing;
     property ShadowType: TShadowType read fShadowType write SetShadowType default stEtchedIn;
     property Visible;
     property OnClick;

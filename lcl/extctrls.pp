@@ -212,6 +212,7 @@ type
   TPage = class(TCustomPage)
   published
     property Caption;
+    property ChildSizing;
     property ClientWidth;
     property ClientHeight;
     property ImageIndex;
@@ -251,6 +252,7 @@ type
     property ActivePage;
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Constraints;
     property Enabled;
     property Images;
@@ -333,6 +335,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Brush: TBrush read FBrush write SetBrush;
     property Constraints;
     property DragCursor;
@@ -444,6 +447,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Color;
     property Constraints;
 //    property DragCursor;
@@ -523,6 +527,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property Center;
     property Constraints;
     property OnChangeBounds;
@@ -564,6 +569,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Constraints;
     property Height;
     property Left;
@@ -633,7 +639,9 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Caption;
+    property ChildSizing;
     property Color;
     property ColumnLayout;
     property Columns;
@@ -713,7 +721,9 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Caption;
+    property ChildSizing;
     property Color;
     property ColumnLayout;
     property Columns;
@@ -810,6 +820,7 @@ type
   published
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property CharCase;
     property Color;
     property Constraints;
@@ -891,12 +902,14 @@ type
     property Alignment;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
     property BorderWidth;
     property BorderStyle;
     property Caption;
+    property ChildSizing;
     property ClientHeight;
     property ClientWidth;
     property Color;
@@ -971,6 +984,9 @@ end.
 
  {
   $Log$
+  Revision 1.125  2004/12/27 19:40:59  mattias
+  published BorderSpacing for many controls
+
   Revision 1.124  2004/10/23 14:49:38  micha
   optimize: only create tabpage contents when accessed, not immediately upon creation
 

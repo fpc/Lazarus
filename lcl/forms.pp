@@ -187,8 +187,10 @@ type
     property Anchors;
     property AutoSize default True;
     //property AutoScroll;
+    property BorderSpacing;
     //property BiDiMode;
     property BorderStyle default bsSingle;
+    property ChildSizing;
     property Constraints;
     //property DockSite;
     property DragCursor;
@@ -534,6 +536,7 @@ type
     property BorderIcons;
     property BorderStyle;
     property Caption;
+    property ChildSizing;
     property ClientHeight;
     property ClientWidth;
     property Color;

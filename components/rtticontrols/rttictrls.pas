@@ -330,6 +330,7 @@ Type
     property Align;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property Constraints;
     property CharCase;
     property DragMode;
@@ -386,6 +387,7 @@ Type
     property Align;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property CharCase;
     property Color;
     property Constraints;
@@ -458,6 +460,7 @@ Type
     property Anchors;
     property ArrowKeysTraverseList;
     property AutoDropDown;
+    property BorderSpacing;
     property Ctl3D;
     property DropDownCount;
     property Enabled;
@@ -516,7 +519,9 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Caption;
+    property ChildSizing;
     property Color;
     property ColumnLayout;
     property Columns;
@@ -571,6 +576,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Caption;
     property Color;
     property ColumnLayout;
@@ -627,6 +633,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property BorderStyle;
     property Constraints;
     property ExtendedSelect;
@@ -683,6 +690,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property BorderStyle;
     property ClickOnSelChange;
     property Constraints;
@@ -756,6 +764,7 @@ Type
     property AllowGrayed;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property Caption;
     property Constraints;
     property DragCursor;
@@ -811,6 +820,7 @@ Type
     property Action;
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Cancel;
     property Caption;
     property Constraints;
@@ -862,6 +872,7 @@ Type
     property Alignment;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property Color;
     property Constraints;
     property FocusControl;
@@ -906,6 +917,8 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
+    property ChildSizing;
     property ClientHeight;
     property ClientWidth;
     property Color;
@@ -963,6 +976,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Color;
     property Constraints;
     property Font;
@@ -1015,6 +1029,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Constraints;
     property DisplaySettings;
     property Link;
@@ -1066,6 +1081,7 @@ Type
     property Align;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property Center;
     property Constraints;
     property Link;
@@ -1114,6 +1130,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Climb_Rate;
     property Constraints;
     property Decimal_Places;
@@ -1172,6 +1189,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Constraints;
     property Ctl3D;
     property DragCursor;
@@ -1244,6 +1262,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property BorderWidth;
     property ButtonColor;
     property Hint;
@@ -1274,6 +1293,7 @@ Type
     property Align;
     property Anchors;
     property BackgroundColor;
+    property BorderSpacing;
     property BorderStyle;
     property Constraints;
     property DefaultItemHeight;

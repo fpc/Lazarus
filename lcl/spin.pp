@@ -102,6 +102,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Climb_Rate;
     property Constraints;
     property Decimal_Places;

@@ -74,6 +74,9 @@ type
   published
     // inherited properties
     property Align;
+    {$IFDEF SYN_LAZARUS}
+    property BorderSpacing;
+    {$ENDIF}
 {$IFDEF SYN_COMPILER_4_UP}
     property Anchors;
     property Constraints;

@@ -1336,11 +1336,7 @@ type
   public
     property Control: TControl read FControl;
     property OnChange: TNotifyEvent read FOnChange write FOnChange;
-  published
-    property LeftRightSpacing: integer read FLeftRightSpacing write SetLeftRightSpacing;
-    property TopBottomSpacing: integer read FTopBottomSpacing write SetTopBottomSpacing;
-    property HorizontalSpacing: integer read FHorizontalSpacing write SetHorizontalSpacing;
-    property VerticalSpacing: integer read FVerticalSpacing write SetVerticalSpacing;
+    // TODO: publish the properties when implemented
     property EnlargeHorizontal: TChildControlEnlargeStyle read FEnlargeHorizontal
                            write SetEnlargeHorizontal default cesAnchorAligning;
     property EnlargeVertical: TChildControlEnlargeStyle read FEnlargeVertical
@@ -1349,6 +1345,11 @@ type
                             write SetShrinkHorizontal default cssAnchorAligning;
     property ShrinkVertical: TChildControlShrinkStyle read FShrinkVertical
                               write SetShrinkVertical default cssAnchorAligning;
+  published
+    property LeftRightSpacing: integer read FLeftRightSpacing write SetLeftRightSpacing;
+    property TopBottomSpacing: integer read FTopBottomSpacing write SetTopBottomSpacing;
+    property HorizontalSpacing: integer read FHorizontalSpacing write SetHorizontalSpacing;
+    property VerticalSpacing: integer read FVerticalSpacing write SetVerticalSpacing;
   end;
 
 
@@ -2598,6 +2599,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.262  2004/12/27 19:40:59  mattias
+  published BorderSpacing for many controls
+
   Revision 1.261  2004/12/27 12:56:42  mattias
   started TTranslateStrings and .lrt files support  from Vasily
 

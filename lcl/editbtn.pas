@@ -82,33 +82,24 @@ type
   Public
     Property Button;
   published
-    // EditButton properties
-    Property ButtonWidth;
-    Property DirectInput;
-    property Glyph;
-    property NumGlyphs;
-    Property OnButtonClick;
-    Property Flat;
-    Property ButtonOnlyWhenFocused;
-    // Other properties
     property AutoSize;
+    property Align;
+    property Anchors;
+    property BorderSpacing;
+    Property ButtonOnlyWhenFocused;
+    Property ButtonWidth;
     property Color;
     property Ctl3D;
+    Property DirectInput;
     property DragCursor;
     property DragMode;
     property Enabled;
+    Property Flat;
     property Font;
+    property Glyph;
     property MaxLength;
-    property ParentColor;
-    property ParentCtl3D;
-    property ParentFont;
-    property ParentShowHint;
-    property PopupMenu;
-    property ReadOnly;
-    property ShowHint;
-    property TabOrder;
-    property TabStop;
-    property Visible;
+    property NumGlyphs;
+    Property OnButtonClick;
     property OnChange;
     property OnClick;
     property OnDblClick;
@@ -124,6 +115,16 @@ type
     property OnMouseMove;
     property OnMouseUp;
     property OnStartDrag;
+    property ParentColor;
+    property ParentCtl3D;
+    property ParentFont;
+    property ParentShowHint;
+    property PopupMenu;
+    property ReadOnly;
+    property ShowHint;
+    property TabOrder;
+    property TabStop;
+    property Visible;
   end;
 
 
@@ -173,6 +174,9 @@ type
     property NumGlyphs;
     Property Flat;
     // Other properties
+    property Align;
+    property Anchors;
+    property BorderSpacing;
     property AutoSize;
     property Color;
     property Ctl3D;
@@ -243,6 +247,9 @@ type
     property NumGlyphs;
     Property Flat;
     // Other properties
+    property Align;
+    property Anchors;
+    property BorderSpacing;
     property AutoSize;
     property Color;
     property Ctl3D;
@@ -311,6 +318,9 @@ type
     property NumGlyphs;
     Property Flat;
     // Other properties
+    property Align;
+    property Anchors;
+    property BorderSpacing;
     property AutoSize;
     property Color;
     property Ctl3D;
@@ -383,6 +393,9 @@ type
     property NumGlyphs;
     Property Flat;
     // Other properties
+    property Align;
+    property Anchors;
+    property BorderSpacing;
     property AutoSize;
     property Color;
     property Ctl3D;

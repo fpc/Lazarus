@@ -251,6 +251,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property BorderWidth: integer read FBorderWidth write SetBorderWidth;
     property ButtonColor:TColor read FButtonColor write SetButtonColor;
     property Hint;
@@ -420,6 +421,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.57  2004/12/27 19:40:59  mattias
+  published BorderSpacing for many controls
+
   Revision 1.56  2004/12/21 11:14:29  mattias
   implemented im/export of install package list
 

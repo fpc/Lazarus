@@ -92,6 +92,7 @@ Type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Constraints;
     property Date;
     property DateTime;

@@ -48,7 +48,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
-    class procedure SetParams(const AScrollBar: TScrollBar); override;
+    class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
 
   { TWin32WSCustomGroupBox }
@@ -308,7 +308,7 @@ begin
   Result := Params.Window;
 end;
 
-procedure TWin32WSScrollBar.SetParams(const AScrollBar: TScrollBar);
+procedure TWin32WSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 begin
   with AScrollBar do
   begin

@@ -45,7 +45,7 @@ type
   private
   protected
   public
-    class procedure SetParams(const AScrollBar: TScrollBar); override;
+    class procedure SetParams(const AScrollBar: TCustomScrollBar); override;
   end;
 
   { TGtkWSCustomGroupBox }
@@ -308,7 +308,7 @@ end;
 
 { TGtkWSScrollBar }
 
-procedure TGtkWSScrollBar.SetParams(const AScrollBar: TScrollBar);
+procedure TGtkWSScrollBar.SetParams(const AScrollBar: TCustomScrollBar);
 var
   Widget   : PGtkWidget;
 begin

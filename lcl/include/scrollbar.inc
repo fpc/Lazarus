@@ -1,7 +1,7 @@
 {%MainUnit ../stdctrls.pp}
 
 {
- TScrollBar
+ TCustomScrollBar
 
  *****************************************************************************
  *                                                                           *
@@ -20,9 +20,9 @@
 
 
 {------------------------------------------------------------------------------}
-{  function TScrollBar.Create                                                      }
+{  function TCustomScrollBar.Create                                                      }
 {------------------------------------------------------------------------------}
-constructor TScrollBar.Create(AOwner: TComponent);
+constructor TCustomScrollBar.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csScrollBar;
@@ -41,7 +41,7 @@ begin
   FLargeChange := 1;
 end;
 
-procedure TScrollBar.CreateParams(var Params: TCreateParams);
+procedure TCustomScrollBar.CreateParams(var Params: TCreateParams);
 const
   Kinds: array[TScrollBarKind] of DWORD = (SBS_HORZ, SBS_VERT);
 begin
@@ -53,12 +53,12 @@ begin
   FRTLFactor := 1
 end;
 
-procedure TScrollBar.CreateWnd;
+procedure TCustomScrollBar.CreateWnd;
 var
   ScrollInfo: TScrollInfo;
 begin
   inherited CreateWnd;
-  if not HandleAllocated then RaiseGDBException('TScrollBar.CreateWnd HandleAllocated=false');
+  if not HandleAllocated then RaiseGDBException('TCustomScrollBar.CreateWnd HandleAllocated=false');
   SetScrollRange(Handle, SB_CTL, FMin, FMax, False);
   ScrollInfo.cbSize := SizeOf(ScrollInfo);
   ScrollInfo.nPage := FPageSize;
@@ -70,12 +70,12 @@ begin
     SetScrollPos(Handle, SB_CTL, FMax - FPosition, True);
 end;
 
-function TScrollBar.NotRightToLeft: Boolean;
+function TCustomScrollBar.NotRightToLeft: Boolean;
 begin
   Result := True;
 end;
 
-procedure TScrollBar.SetKind(Value: TScrollBarKind);
+procedure TCustomScrollBar.SetKind(Value: TScrollBarKind);
 var
   OldWidth: Integer;
   OldHeight: Integer;
@@ -92,7 +92,7 @@ begin
   end;
 end;
 
-procedure TScrollBar.SetParams(APosition, AMin, AMax: Integer);
+procedure TCustomScrollBar.SetParams(APosition, AMin, AMax: Integer);
 begin
   if AMax < AMin then
     raise EInvalidOperation.Create(rsScrollBarOutOfRange);
@@ -120,12 +120,12 @@ begin
     TWSScrollBarClass(WidgetSetClass).SetParams(Self);
 end;
 
-procedure TScrollBar.SetPosition(Value: Integer);
+procedure TCustomScrollBar.SetPosition(Value: Integer);
 begin
   SetParams(Value, FMin, FMax);
 end;
 
-procedure TScrollBar.SetPageSize(Value: Integer);
+procedure TCustomScrollBar.SetPageSize(Value: Integer);
 var
   ScrollInfo: TScrollInfo;
 begin
@@ -139,28 +139,28 @@ begin
   end;
 end;
 
-procedure TScrollBar.SetMin(Value: Integer);
+procedure TCustomScrollBar.SetMin(Value: Integer);
 begin
   SetParams(FPosition, Value, FMax);
 end;
 
-procedure TScrollBar.SetMax(Value: Integer);
+procedure TCustomScrollBar.SetMax(Value: Integer);
 begin
   SetParams(FPosition, FMin, Value);
 end;
 
-procedure TScrollBar.Change;
+procedure TCustomScrollBar.Change;
 begin
   inherited Changed;
   if Assigned(FOnChange) then FOnChange(Self);
 end;
 
-procedure TScrollBar.Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer);
+procedure TCustomScrollBar.Scroll(ScrollCode: TScrollCode; var ScrollPos: Integer);
 begin
   if Assigned(FOnScroll) then FOnScroll(Self, ScrollCode, ScrollPos);
 end;
 
-procedure TScrollBar.DoScroll(var Message: TLMScroll);
+procedure TCustomScrollBar.DoScroll(var Message: TLMScroll);
 var
   ScrollPos: Integer;
   NewPos: Longint;
@@ -203,22 +203,22 @@ begin
   end;
 end;
 
-procedure TScrollBar.CNHScroll(var Message: TLMHScroll);
+procedure TCustomScrollBar.CNHScroll(var Message: TLMHScroll);
 begin
   DoScroll(Message);
 end;
 
-procedure TScrollBar.CNVScroll(var Message: TLMVScroll);
+procedure TCustomScrollBar.CNVScroll(var Message: TLMVScroll);
 begin
   DoScroll(Message);
 end;
 
-procedure TScrollBar.CNCtlColorScrollBar(var Message: TLMessage);
+procedure TCustomScrollBar.CNCtlColorScrollBar(var Message: TLMessage);
 begin
 //CallWIndowProc is not yet created so no code is here
 end;
 
-procedure TScrollBar.WMEraseBkgnd(var Message: TLMEraseBkgnd);
+procedure TCustomScrollBar.WMEraseBkgnd(var Message: TLMEraseBkgnd);
 begin
   DefaultHandler(Message);
 end;

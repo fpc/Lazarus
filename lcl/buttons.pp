@@ -97,6 +97,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property Cancel;
     property Caption;
     property Constraints;
@@ -197,6 +198,7 @@ type
     property Action;
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Cancel;
     property Caption;
     property Constraints;
@@ -316,6 +318,7 @@ type
     property Align;
     property Anchors;
     property AllowAllUp;
+    property BorderSpacing;
     property Constraints;
     property Caption;
     property Down;
@@ -380,6 +383,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.84  2004/12/27 19:40:59  mattias
+  published BorderSpacing for many controls
+
   Revision 1.83  2004/12/18 10:20:22  mattias
   updatepofiles is now case sensitive,
   replaced many places, where Application was needlessly Owner

@@ -615,6 +615,7 @@ type
     property Align;
     property Anchors;
     property AutoAdvance;
+    property BorderSpacing;
     //property BiDiMode;
     property BorderStyle;
     property Color default clWindow;

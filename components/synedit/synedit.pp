@@ -835,6 +835,7 @@ type
     property Align;
 {$IFDEF SYN_LAZARUS}
     property BlockIndent;
+    property BorderSpacing;
 {$ENDIF}
 {$IFDEF SYN_COMPILER_4_UP}
     property Anchors;

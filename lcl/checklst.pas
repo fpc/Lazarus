@@ -57,6 +57,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property BorderStyle;
     property Constraints;
     property ExtendedSelect;
@@ -159,6 +160,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.9  2004/12/27 19:40:59  mattias
+  published BorderSpacing for many controls
+
   Revision 1.8  2004/09/10 20:19:13  micha
   convert LM_CLB_G/SETCHECKED to interface methods
 

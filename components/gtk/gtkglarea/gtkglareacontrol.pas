@@ -73,6 +73,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Enabled;
     property OnClick;
     property OnConstrainedResize;

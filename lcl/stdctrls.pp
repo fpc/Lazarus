@@ -58,7 +58,7 @@ type
   TScrollEvent = procedure(Sender: TObject; ScrollCode: TScrollCode;
                            var ScrollPos: Integer) of object;
 
-  TScrollBar = class(TWinControl)
+  TCustomScrollBar = class(TWinControl)
   private
     FKind: TScrollBarKind;
     FPosition: Integer;
@@ -89,30 +89,48 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     procedure SetParams(APosition, AMin, AMax: Integer);
+  public
+    property Kind: TScrollBarKind read FKind write SetKind default sbHorizontal;
+    property LargeChange: TScrollBarInc read FLargeChange write FLargeChange default 1;
+    property Max: Integer read FMax write SetMax default 100;
+    property Min: Integer read FMin write SetMin default 0;
+    property PageSize: Integer read FPageSize write SetPageSize;
+    property Position: Integer read FPosition write SetPosition default 0;
+    property SmallChange: TScrollBarInc read FSmallChange write FSmallChange default 1;
+    property TabStop default true;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnScroll: TScrollEvent read FOnScroll write FOnScroll;
+  end;
+  
+  
+  { TScrollBar }
+  
+  TScrollBar = class(TCustomScrollBar)
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Constraints;
     property Ctl3D;
     property DragCursor;
     property DragKind;
     property DragMode;
     property Enabled;
-    property Kind: TScrollBarKind read FKind write SetKind default sbHorizontal;
-    property LargeChange: TScrollBarInc read FLargeChange write FLargeChange default 1;
-    property Max: Integer read FMax write SetMax default 100;
-    property Min: Integer read FMin write SetMin default 0;
-    property PageSize: Integer read FPageSize write SetPageSize;
+    property Kind;
+    property LargeChange;
+    property Max;
+    property Min;
+    property PageSize;
     property ParentCtl3D;
     property ParentShowHint;
     property PopupMenu;
-    property Position: Integer read FPosition write SetPosition default 0;
+    property Position;
     property ShowHint;
-    property SmallChange: TScrollBarInc read FSmallChange write FSmallChange default 1;
+    property SmallChange;
     property TabOrder;
-    property TabStop default true;
+    property TabStop;
     property Visible;
-    property OnChange: TNotifyEvent read FOnChange write FOnChange;
+    property OnChange;
     property OnDragDrop;
     property OnDragOver;
     property OnEndDrag;
@@ -121,7 +139,7 @@ type
     property OnKeyDown;
     property OnKeyPress;
     property OnKeyUp;
-    property OnScroll: TScrollEvent read FOnScroll write FOnScroll;
+    property OnScroll;
     property OnStartDrag;
   end;
 
@@ -142,7 +160,9 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Caption;
+    property ChildSizing;
     property ClientHeight;
     property ClientWidth;
     property Color;
@@ -316,6 +336,7 @@ type
     property Anchors;
     property ArrowKeysTraverseList;
     property AutoDropDown;
+    property BorderSpacing;
     property Ctl3D;
     property DropDownCount;
     property Enabled;
@@ -480,6 +501,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property BorderStyle;
     property ClickOnSelChange;
     property Constraints;
@@ -646,6 +668,7 @@ type
     property Align;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property Constraints;
     property CharCase;
     property DragMode;
@@ -683,6 +706,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Color;
     property Constraints;
     property Font;
@@ -750,6 +774,7 @@ type
     property Alignment;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property Caption;
     property Color;
     property Constraints;
@@ -846,6 +871,7 @@ type
     property AllowGrayed;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property Caption;
     property Checked;
     property Constraints;
@@ -966,6 +992,7 @@ type
   published
     property AllowGrayed;
     property Anchors;
+    property BorderSpacing;
     property Caption;
     property Checked;
     property DragCursor;
@@ -1010,6 +1037,7 @@ type
     property AllowGrayed;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property Caption;
     property Checked;
     property Constraints;
@@ -1089,6 +1117,7 @@ type
     property Alignment;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property BorderStyle;
     property Caption;
     property Color;
@@ -1182,6 +1211,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.175  2004/12/27 19:40:59  mattias
+  published BorderSpacing for many controls
+
   Revision 1.174  2004/12/27 16:51:19  mattias
   implemented dialog to edit basic help db settings
 

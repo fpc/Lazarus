@@ -162,6 +162,7 @@ type
     property TabIndex: Integer read GetTabIndex write SetTabIndex;
   published
     property Caption;
+    property ChildSizing;
     property ClientHeight;
     property ClientWidth;
     property Enabled;
@@ -215,6 +216,7 @@ type
     property ActivePage: TTabSheet read GetActiveTabSheet write SetActiveTabSheet;
     property Align;
     property Anchors;
+    property BorderSpacing;
     //property BiDiMode;
     property Constraints;
     //property DockSite;
@@ -463,6 +465,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Constraints;
     property DockSite;
     property DragCursor;
@@ -818,6 +821,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
 //    property BorderStyle;
     property BorderWidth;
     property Color default clWindow;
@@ -893,6 +897,8 @@ type
     procedure StepBy(Delta: Integer);
   published
     property Align;
+    property Anchors;
+    property BorderSpacing;
     property BorderWidth;
     property Constraints;
     property DragCursor;
@@ -1004,6 +1010,7 @@ type
     property Anchors;
     property Associate;
     property ArrowKeys;
+    property BorderSpacing;
     property Enabled;
     property Hint;
     property Min;
@@ -1253,10 +1260,12 @@ type
   published
     property Align default alTop;
     property AutoSize;
+    property BorderSpacing;
     property BorderWidth;
     property ButtonHeight: Integer read FButtonHeight write SetButtonHeight default 22;
     property ButtonWidth: Integer read FButtonWidth write SetButtonWidth default 23;
     property Caption;
+    property ChildSizing;
     property Constraints;
     property Color;
     property Ctl3D;
@@ -1374,6 +1383,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Constraints;
     property Ctl3D;
     property DragCursor;
@@ -2100,6 +2110,7 @@ type
     property Align;
     property Anchors;
     property AutoExpand;
+    property BorderSpacing;
     //property BiDiMode;
     property BackgroundColor;
     property BorderStyle;
@@ -2265,6 +2276,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.153  2004/12/27 19:40:59  mattias
+  published BorderSpacing for many controls
+
   Revision 1.152  2004/11/28 00:55:44  mattias
   deactivated sending SYSKey messages in gtk intf - they are not used anyway
 

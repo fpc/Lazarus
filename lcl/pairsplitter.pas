@@ -64,6 +64,7 @@ type
     property Width;
     property Height;
   published
+    property ChildSizing;
     property ClientWidth;
     property ClientHeight;
     property Enabled;
@@ -119,6 +120,7 @@ type
   published
     property Align;
     property Anchors;
+    property BorderSpacing;
     property Enabled;
     property OnMouseDown;
     property OnMouseMove;

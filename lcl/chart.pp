@@ -72,6 +72,7 @@ type
     property Alignment;
     property Anchors;
     property AutoSize;
+    property BorderSpacing;
     property BevelInner;
     property BevelOuter;
     property BevelWidth;
