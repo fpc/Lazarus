@@ -94,9 +94,11 @@ type
     FVisible : Boolean;
     FOnMouseMove: TMouseMoveEvent;
     FOnMouseDown: TMouseEvent;
+    FOnKeyDown: TKeyEvent;
 
     Procedure EditorMouseMoved(Sender : TObject;Shift : TShiftState; X,Y : Integer);
     Procedure EditorMouseDown(Sender : TObject; Button : TMouseButton; Shift : TShiftState; X,Y : Integer);
+    Procedure EditorKeyDown(Sender : TObject; var Key : Word; Shift : TShiftState);
     Function FindFile(const Value : String) : String;
 
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
@@ -204,6 +206,7 @@ type
        read FOnDeleteBreakPoint write FOnDeleteBreakPoint;
     property OnMouseMove : TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
     property OnMouseDown : TMouseEvent read FOnMouseDown write FOnMouseDown;
+    property OnKeyDown : TKeyEvent read FOnKeyDown write FOnKeyDown;
 
   end;
 
@@ -263,8 +266,9 @@ type
     FHintWIndow : THintWindow;
     FHintTimer : TTimer;
     Procedure HintTimer(sender : TObject);
-    Procedure MouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
-    Procedure MouseDown(Sender : TObject; Button : TMouseButton; Shift: TShiftstate; X,Y : Integer);
+    Procedure EditorMouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
+    Procedure EditorMouseDown(Sender : TObject; Button : TMouseButton; Shift: TShiftstate; X,Y : Integer);
+//    Procedure KeyDown(Sender : TObject; var Key : Word; Shift: TShiftstate);
 
     Procedure NextEditor;
     Procedure PrevEditor;
@@ -1098,6 +1102,7 @@ writeln('TSourceEditor.CreateEditor  A ');
       OnSpecialLineColors:=@OnEditorSpecialLineColor;
       OnMouseMove := @EditorMouseMoved;
       OnMouseDown := @EditorMouseDown;
+      OnKeyDown := @EditorKeyDown;
       Show;
     end;
     if FCodeTemplates<>nil then
@@ -1449,6 +1454,14 @@ Procedure TSourceEditor.EditorMouseDown(Sender : TObject; Button : TMouseButton;
 begin
   if Assigned(OnMouseDown) then
      OnMouseDown(Sender, Button, Shift, X,Y);
+end;
+
+Procedure TSourceEditor.EditorKeyDown(Sender : TObject; var Key : Word; Shift :
+  TShiftState);
+begin
+  if Assigned(ONKeyDown) then
+     OnKeyDown(Sender, Key, Shift);
+     
 end;
 
 {------------------------------------------------------------------------}
@@ -2184,9 +2197,8 @@ writeln('TSourceNotebook.NewSE C ');
   Result.EditorComponent.BookMarkOptions.BookmarkImages := MarksImgList;
   Result.PopupMenu:=SrcPopupMenu;
   Result.OnEditorChange := @EditorChanged;
-  Result.OnMouseMove := @MouseMove;
-  Result.OnMouseDown := @MouseDown;
-
+  Result.OnMouseMove := @EditorMouseMove;
+  Result.OnMouseDown := @EditorMouseDown;
 {$IFDEF IDE_DEBUG}
 writeln('TSourceNotebook.NewSE end ');
 {$ENDIF}
@@ -2858,6 +2870,12 @@ procedure TSourceNotebook.KeyDown(var Key : Word; Shift : TShiftState);
 var i, Command: integer;
 Begin
   inherited KeyDown(Key,Shift);
+
+  if FHIntWindow.Visible then
+     FHintWindow.Visible := False;
+
+  FHintTimer.Enabled := False;
+  
   i := FKeyStrokes.FindKeycode(Key, Shift);
   if i>=0 then begin
     Command:=FKeyStrokes[i].Command;
@@ -2871,7 +2889,7 @@ Begin
   end;
 end;
 
-Procedure TSourceNotebook.MouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
+Procedure TSourceNotebook.EditorMouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
 begin
 //writeln('MOUSEMOVE');
     if FHintWIndow.Visible then
@@ -2890,6 +2908,7 @@ var
   SE : TSourceEditor;
 begin
   FHintTimer.Enabled := False;
+
   cPosition := Mouse.CursorPos;
 
   cPosition := ScreenToClient(cPosition);
@@ -2932,11 +2951,13 @@ begin
 
 end;
 
-Procedure TSourceNotebook.MouseDown(Sender : TObject; Button : TMouseButton; Shift: TShiftstate; X, Y
+Procedure TSourceNotebook.EditorMouseDown(Sender : TObject; Button : TMouseButton; Shift: TShiftstate; X, Y
    : Integer);
 begin
   if FHIntWindow.Visible then
      FHintWindow.Visible := False;
+     
+  FHintTimer.Enabled := False;
 end;
 
 
