@@ -904,8 +904,8 @@ begin
   FreeThenNil(FPen);
   FreeThenNil(FBrush);
   FreeThenNil(FRegion);
-  if FLockCount <> 0 then
-    DeleteCriticalSection(FLock);
+  if FLock <> 0 then
+     DeleteCriticalSection(FLock);
   inherited Destroy;
 end;
 
@@ -1097,6 +1097,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2002/12/01 22:00:34  mattias
+  fixed DeleteCriticalSection
+
   Revision 1.35  2002/11/29 15:14:47  mattias
   replaced many invalidates by invalidaterect
 
