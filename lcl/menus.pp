@@ -88,6 +88,7 @@ type
     procedure SetShortCut(Value : TShortCut);
     procedure SetVisible(Value: Boolean);
     procedure MenuChanged(Rebuild : Boolean);
+    procedure SetParentComponent(Value : TComponent); override;
   public
     FCompStyle : LongInt;
     procedure Add(Item: TMenuItem);
@@ -126,6 +127,7 @@ type
   protected
     procedure CreateHandle; virtual;
     function GetHandle: HMENU; virtual;
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
   public
     FCompStyle: LongInt;
     constructor Create(AOwner: TComponent); override;
@@ -143,6 +145,8 @@ type
   TMainMenu = class(TMenu)
   public
     constructor Create(AOwner: TComponent); override;
+  published
+    property Items;
   end;
 
   TPopupMenu = class(TMenu)
@@ -209,6 +213,10 @@ end.
 
 {
   $Log$
+  Revision 1.12  2002/05/19 08:28:50  lazarus
+  + added helper functions to enable streaming of TMenu / TMenuItem
+    stoppok
+
   Revision 1.11  2002/05/15 05:58:17  lazarus
   MG: added TMainMenu.Parent
 
