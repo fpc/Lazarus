@@ -2074,7 +2074,6 @@ begin
       csBitBtn :
       begin
         Assert(False, 'Trace:CSBITBTN CREATE*************************');
-	writeln('Creating a new bit button');
         p := gtk_button_new;
         if ((Sender as TBitBtn).Layout in [blGlyphLeft, blGlyphRight]) then begin
           Assert(False, 'Trace:GLYPHLEFT or GLYPHRIGHT');
@@ -3804,6 +3803,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.110  2002/03/15 13:15:23  lazarus
+  Removed FOCUSIN messages
+  Removed Bitbtn created message
+  Shane
+
   Revision 1.109  2002/03/14 20:28:49  lazarus
   Bug fix for Mattias.
   Fixed spinedit so you can now get the value and set the value.
