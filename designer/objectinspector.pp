@@ -1525,7 +1525,7 @@ try
     AvailCompsComboBox.Items.AddObject(
       ComponentToString(AComponent),AComponent);
 except
-  Writeln('Exception: ObjectInspector AddComponentToAvailComboBox');
+  raise EGenException.Create('Exception: ObjectInspector AddComponentToAvailComboBox');
 end;
 end;
 
@@ -1534,7 +1534,7 @@ begin
 try
   FillComponentComboBox;
 except
-  Writeln('Exception: ObjectInspector PropEditLookupRootCHange');
+  raise EGenException.Create('Exception: ObjectInspector PropEditLookupRootCHange');
 end;
 end;
 
@@ -1570,7 +1570,7 @@ try
   end else
     AvailCompsComboBox.ItemIndex:=a;
 except
-  Writeln('Exception: ObjectInspector FillComponentComboBox');
+    raise EGenException.Create('Exception: ObjectInspector FillComponentComboBox');
 end;
 end;
 

@@ -697,8 +697,7 @@ writeln('[TMainIDE.FormCloseQuery]');
   CanClose:=true;
 
   if SomethingOfProjectIsModified then begin
-    if (MessageDlg('Project changed', 'Save changes to project?', 
-      mtconfirmation, [mbOK, mbcancel], 0))=mrOK then
+    if (Application.MessageBox('Save changes to project?','Project changed', MB_IconQuestion+mb_YesNo))=mrYes then
     begin
       CanClose:=DoSaveProject(false,false)<>mrAbort;
       if CanClose=false then exit;
@@ -1186,9 +1185,7 @@ end;
 
 Procedure TMainIDE.SetDesigning(Control : TComponent; Value : Boolean);
 Begin
-  Writeln('Setting designing');
   Control.SetDesigning(Value);
-  Writeln('Set');
 end;
 
 
@@ -3562,7 +3559,7 @@ begin
     except
       ACaption:='Read Error';
       AText:='Unable to read file "'+AFilename+'"!';
-      Result:=MessageDlg(ACaption, AText,mterror, [mbabort, mbretry, mbignore], 0);
+      result := Application.MessageBox(PChar(aText),pChar(aCaption),mb_IconError+mb_AbortRetryIgnore);
       if Result=mrAbort then exit;
     end;
   until Result<>mrRetry;
@@ -4370,6 +4367,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.131  2001/11/01 18:48:48  lazarus
+  Changed Application.Messagebox to use TMessageBox class.
+  Added icon images for mtError and mtConfirmation
+  Shane
+
   Revision 1.130  2001/10/31 18:09:51  lazarus
   MG: fixed DirectoryExists
 
@@ -8985,6 +8987,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.131  2001/11/01 18:48:48  lazarus
+  Changed Application.Messagebox to use TMessageBox class.
+  Added icon images for mtError and mtConfirmation
+  Shane
+
   Revision 1.130  2001/10/31 18:09:51  lazarus
   MG: fixed DirectoryExists
 

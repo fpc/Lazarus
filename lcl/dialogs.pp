@@ -167,7 +167,7 @@ const
          mrNoToAll, mrYesToAll, 0);
 
 type
-   PCharArray32x32 = Array [0..35]  of PChar;
+   PCharArray32x32 = Array [0..36]  of PChar;
 
 var
    mtImages   : Array [TMsgDlgType] of PCharArray32x32;
@@ -198,7 +198,7 @@ begin
    mtImages [MtWarning     ] := IMGWarning;
    mtImages [MtError       ] := IMGError;
    mtImages [MtInformation ] := IMGInfo;
-   mtImages [MtConfirmation] := IMGInfo;
+   mtImages [MtConfirmation] := IMGConfirmation;
    mtImages [MtCustom      ] := IMGInfo;
 end;
 
@@ -213,6 +213,11 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.8  2001/11/01 18:48:51  lazarus
+  Changed Application.Messagebox to use TMessageBox class.
+  Added icon images for mtError and mtConfirmation
+  Shane
+
   Revision 1.7  2001/07/31 18:40:24  lazarus
   MG: added unit info, arrow xpms, and many changes from jens arm
 

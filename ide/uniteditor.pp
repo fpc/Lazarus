@@ -2365,9 +2365,13 @@ End;
 
 Procedure TSourceNotebook.FindInFilesClicked(Sender : TObject);
 Begin
-  MessageDlg('Not implemented yet',
+  Application.MessageBox('If You can help us implement this feature, mail to'#13
+     +'lazarus@miraclec.com','Not implemented yet',mb_IconInformation+mb_OK);
+  
+{  MessageDlg('Not implemented yet',
     'If you can help us to implement this feature, mail to'#13
-    +'lazarus@miraclec.com', mtInformation,[mbCancel],0);
+   +'lazarus@miraclec.com', mtInformation,[mbCancel],0);
+   }
 End;
 
 Procedure TSourceNotebook.BookMarkClicked(Sender : TObject);

@@ -414,7 +414,13 @@ MB_ABORTRETRYIGNORE = $00000002;
 MB_YESNOCANCEL = $00000003;
 MB_YESNO = $00000004;
 MB_RETRYCANCEL = $00000005;
-MB_ICONERROR = $00000010;
+MB_ICONHAND = $00000010;
+MB_ICONQUESTION = $00000020;
+MB_ICONEXCLAMATION = $00000030;
+MB_ICONASTERICK = $00000040;
+MB_ICONWARNING = MB_ICONEXCLAMATION;
+MB_ICONERROR = MB_ICONHAND;
+MB_ICONINFORMATION = MB_ICONASTERICK;
 
 IDOK = 1; 	ID_OK = IDOK;
 IDCANCEL = 2;	ID_CANCEL = IDCANCEL;
@@ -1388,6 +1394,11 @@ end.
 
 {
   $Log$
+  Revision 1.12  2001/11/01 18:48:52  lazarus
+  Changed Application.Messagebox to use TMessageBox class.
+  Added icon images for mtError and mtConfirmation
+  Shane
+
   Revision 1.11  2001/10/31 21:43:28  lazarus
   Added code for TApplication to get it ready to accept exceptions.
   Shane

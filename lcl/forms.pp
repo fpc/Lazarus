@@ -255,6 +255,7 @@ type
       procedure Idle;
       procedure MouseIdle(const CurrentControl: TControl);
       procedure SetIcon(AValue: TIcon);
+
    public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
@@ -313,7 +314,7 @@ implementation
 
 
 uses 
-  Buttons, StdCtrls, Interfaces, LResources {,designer};
+  Buttons, StdCtrls, Interfaces, LResources, dialogs {,designer};
 
 const
   FocusMessages : Boolean = true;
@@ -323,9 +324,10 @@ procedure ExceptionOccurred(Sender : TObject; Addr,Frame : Pointer);
 var
   Mess : String;
 Begin
-  Mess := 'Error occurred at '#13#10'Address '+HexStr(Cardinal(Addr),8);
+  Writeln('[FORMS.PP] ExceptionOccurred Procedure');
+  Mess := 'Error occurred in '+Sender.ClassName+' at '#13#10'Address '+HexStr(Cardinal(Addr),8)+#13#10'Frame '+HexStr(Cardinal(Frame),8);
   if Application<>nil then
-    Application.MessageBox('Exception',PChar(Mess),mb_IconError+mb_Ok)
+    Application.MessageBox(PChar(Mess),'Exception',mb_IconError+mb_Ok)
   else
     writeln(Mess);
 end;
