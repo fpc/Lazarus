@@ -2,8 +2,8 @@
 
 {
  /***************************************************************************
-                         buttons.pp  -  TButton implementation
-                             -------------------
+                                 buttons.pp
+                                 ----------
                              Component Library Code
 
 
@@ -44,14 +44,20 @@ type
   { TButton }
 
   TButtonLayout = (blGlyphLeft, blGlyphRight, blGlyphTop, blGlyphBottom);
-  TButtonState = (bsUp, bsDisabled, bsDown, bsExclusive);
+  TButtonState = (
+    bsUp,       // button is up
+    bsDisabled, // button disabled (grayed)
+    bsDown,     // button is down
+    bsExclusive // button is the only up in his group
+    );
 
-  {TNumGlyphs holds the number of glyphs in an image.  We restrict it to 4 to stay compatable
-   but we don't NEED to.
-   If we change this the code in SetNumGlyphs for @link(TSpeedButton) needs to be changed}
+  {TNumGlyphs holds the number of glyphs in an image.
+    We restrict it to 4 to stay compatable but we don't NEED to.
+    If we change this the code in SetNumGlyphs for @link(TSpeedButton) needs to
+    be changed }
   TNumGlyphs = 1..4;
 
-  TButton = class(TButtonControl)  //TButtoncontrol is declared in stdctrls.pp
+  TButton = class(TButtonControl)
   private
     FCancel : Boolean;
     FDefault : Boolean;
@@ -281,6 +287,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.35  2003/02/06 06:33:57  mattias
+  fixed message
+
   Revision 1.34  2003/01/27 13:49:16  mattias
   reduced speedbutton invalidates, added TCanvas.Frame
 
