@@ -1494,7 +1494,6 @@ end;
 function TControlSelection.OnlyNonVisualComponentsSelected: boolean;
 var i: integer;
 begin
-writeln('TControlSelection.OnlyNonVisualComponentsSelected ',cssOnlyNonVisualNeedsUpdate in FStates,' ',FOnlyNonVisualComponentsSelected);
   if cssOnlyNonVisualNeedsUpdate in FStates then begin
     Result:=true;
     for i:=0 to FControls.Count-1 do
@@ -1508,7 +1507,6 @@ end;
 function TControlSelection.OnlyVisualComponentsSelected: boolean;
 var i: integer;
 begin
-writeln('TControlSelection.OnlyVisualComponentsSelected ',cssOnlyVisualNeedsUpdate in FStates,' ',FOnlyVisualComponentsSelected);
   if cssOnlyVisualNeedsUpdate in FStates then begin
     Result:=true;
     for i:=0 to FControls.Count-1 do

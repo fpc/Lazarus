@@ -260,14 +260,18 @@ var
   OwnerForm: TCustomForm;
 begin
   if FDesigner=nil then begin
-    OwnerForm:=TCustomForm(Component.Owner);
-    if OwnerForm=nil then begin
-      raise Exception.Create('TComponentInterface.GetDesigner: '
-        +Component.Name+' Owner=nil');
-    end;
-    if not (OwnerForm is TCustomForm) then begin
-      raise Exception.Create('TComponentInterface.GetDesigner: '
-        +Component.Name+' OwnerForm='+OwnerForm.ClassName);
+    if (Component is TCustomForm) and (TCustomForm(Component).Parent=nil) then
+      OwnerForm:=TCustomForm(Component)
+    else begin
+      OwnerForm:=TCustomForm(Component.Owner);
+      if OwnerForm=nil then begin
+        raise Exception.Create('TComponentInterface.GetDesigner: '
+          +Component.Name+' Owner=nil');
+      end;
+      if not (OwnerForm is TCustomForm) then begin
+        raise Exception.Create('TComponentInterface.GetDesigner: '
+          +Component.Name+' OwnerForm='+OwnerForm.ClassName);
+      end;
     end;
     FDesigner:=TComponentEditorDesigner(OwnerForm.Designer);
     if FDesigner=nil then begin

@@ -416,12 +416,13 @@ end;
 function TComponentEditor.GetVerb(Index: Integer): string;
 begin
   // Intended for descendents to implement
-  Result:='';
+  Result:=ClassName+IntToStr(Index);
 end;
 
 procedure TComponentEditor.ExecuteVerb(Index: Integer);
 begin
   // Intended for descendents to implement
+  writeln(Classname+'.ExecuteVerb: ',Index);
 end;
 
 procedure TComponentEditor.Copy;
