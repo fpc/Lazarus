@@ -118,6 +118,8 @@ type
     property PaperRectOf[aName : string] : TPaperRect read PaperRectOfName;
   end;
 
+  { TPrinter }
+
   TPrinter = class(TObject)
   private
     fCanvas      : TCanvas;      //Active canvas object
@@ -171,6 +173,8 @@ type
      function DoGetPrinterState: TPrinterState; virtual;
      function GetPrinterType : TPrinterType; virtual;
      function GetCanPrint : Boolean; virtual;
+     function GetXDPI: Integer; virtual;
+     function GetYDPI: Integer; virtual;
   public
      constructor Create; virtual;
      destructor Destroy; override;
@@ -182,8 +186,8 @@ type
      procedure Refresh;
      procedure SetPrinter(aName : String);
 
-     function ExecuteSetup : Boolean;  virtual; abstract;
-     function ExecuteProperties : Boolean; virtual; abstract;
+     function PrintDialog : Boolean;  virtual; abstract;
+     function PrinterSetup: Boolean; virtual; abstract;
      
      property PrinterIndex : integer read GetPrinterIndex write SetPrinterIndex;
      property PaperSize : TPaperSize read GetPaperSize;
@@ -201,6 +205,9 @@ type
      property Title: string read fTitle write fTitle;
      property PrinterType : TPrinterType read GetPrinterType;
      property CanPrint : Boolean read GetCanPrint;
+     
+     property XDPI : Integer read GetXDPI;
+     property YDPI : Integer read GetYDPI;
   end;
   
 var
@@ -425,6 +432,18 @@ begin
   //Only 1 initialization
   if fPrinters.Count=0 then
     DoEnumPrinters(fPrinters);
+end;
+
+//Return XDPI
+function TPrinter.GetXDPI: Integer;
+begin
+  Result:=1;
+end;
+
+//Return YDPI
+function TPrinter.GetYDPI: Integer;
+begin
+  Result:=1;
 end;
 
 
