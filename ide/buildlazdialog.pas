@@ -133,7 +133,7 @@ type
     procedure Assign(Source: TBuildLazarusOptions);
     procedure SetBuildAll;
     function FindName(const Name: string): TBuildLazarusItem;
-    function CompiledUnitExt: string;
+    function CompiledUnitExt(FPCVersion, FPCRelease: integer): string;
   public
     property Count: integer read GetCount;
     property Items[Index: integer]: TBuildLazarusItem read GetItems;
@@ -207,7 +207,8 @@ function ShowConfigureBuildLazarusDlg(
 
 function BuildLazarus(Options: TBuildLazarusOptions;
   ExternalTools: TExternalToolList; Macros: TTransferMacroList;
-  const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
+  const PackageOptions, CompilerPath: string;
+  Flags: TBuildLazarusFlags): TModalResult;
 function CreateBuildLazarusOptions(Options: TBuildLazarusOptions;
   ItemIndex: integer; Macros: TTransferMacroList;
   const PackageOptions: string; Flags: TBuildLazarusFlags;
@@ -280,7 +281,8 @@ end;
 
 function BuildLazarus(Options: TBuildLazarusOptions;
   ExternalTools: TExternalToolList; Macros: TTransferMacroList;
-  const PackageOptions: string; Flags: TBuildLazarusFlags): TModalResult;
+  const PackageOptions, CompilerPath: string;
+  Flags: TBuildLazarusFlags): TModalResult;
 var
   Tool: TExternalToolOptions;
   i: Integer;
@@ -295,6 +297,8 @@ begin
     Tool.Filename:=Options.MakeFilename;
     Tool.EnvironmentOverrides.Values['LCL_PLATFORM']:=
       LCLPlatformNames[Options.LCLPlatform];
+    if CompilerPath<>'' then
+      Tool.EnvironmentOverrides.Values['PP']:=CompilerPath;
     if not FileExists(Tool.Filename) then begin
       Tool.Filename:=FindDefaultMakePath;
       if not FileExists(Tool.Filename) then exit;
@@ -1004,16 +1008,14 @@ begin
   end;
 end;
 
-function TBuildLazarusOptions.CompiledUnitExt: string;
+function TBuildLazarusOptions.CompiledUnitExt(FPCVersion, FPCRelease: integer
+  ): string;
 begin
-  Result:=GetDefaultCompiledUnitExt;
-  if AnsiCompareText(TargetOS,'win32')=0 then
+  Result:=GetDefaultCompiledUnitExt(FPCVersion,FPCRelease);
+  if (AnsiCompareText(TargetOS,'win32')=0)
+  and (FPCVersion=1) and (FPCRelease=0) then
     Result:='.ppw'
-  else if (AnsiCompareText(TargetOS,'linux')=0)
-  or (AnsiCompareText(TargetOS,'freebsd')=0)
-  or (AnsiCompareText(TargetOS,'netbsd')=0)
-  or (AnsiCompareText(TargetOS,'openbsd')=0)
-  then
+  else
     Result:='.ppu';
 end;
 

@@ -61,15 +61,15 @@ type
     function IndexOfName(const VarName: string): integer;
     procedure Expand;
   public
-    property Variables[const Name:string]: string
+    property Variables[const Name: string]: string
        read GetVariables write SetVariables;  default;
     property Count: integer read FCount;
-    procedure Undefine(const Name:string);
-    function IsDefined(const Name:string): boolean;
+    procedure Undefine(const Name: string);
+    function IsDefined(const Name: string): boolean;
     function Equals(AnExpressionEvaluator: TExpressionEvaluator): boolean;
     procedure Assign(SourceExpressionEvaluator: TExpressionEvaluator);
     procedure AssignTo(SL: TStringList);
-    function Eval(const Expression:string):string;
+    function Eval(const Expression: string):string;
     property ErrorPosition:integer read ErrorPos;
     property OnChange: TOnValuesChanged read FOnChange write FOnChange;
     function Items(Index: integer): string;

@@ -5899,6 +5899,8 @@ var
   PkgOptions: string;
   IDEBuildFlags: TBuildLazarusFlags;
   InheritedOptionStrings: TInheritedCompOptsStrings;
+  CompiledUnitExt: String;
+  FPCVersion, FPCRelease, FPCPatch: integer;
 begin
   if ToolStatus<>itNone then begin
     MessageDlg(lisNotNow,
@@ -5913,7 +5915,8 @@ begin
     SourceNotebook.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                          EnvironmentOptions.ExternalTools,MacroList,
-                         '',Flags+[blfWithoutLinkingIDE]);
+                         '',EnvironmentOptions.CompilerFilename,
+                         Flags+[blfWithoutLinkingIDE]);
     if Result<>mrOk then exit;
     
     // then compile the IDE
@@ -5936,10 +5939,15 @@ begin
       PkgOptions:=PkgBoss.DoGetIDEInstallPackageOptions(InheritedOptionStrings);
       
       // check ambigious units
+      CodeToolBoss.GetFPCVersionForDirectory(
+                                 EnvironmentOptions.LazarusDirectory,
+                                 FPCVersion,FPCRelease,FPCPatch);
+      CompiledUnitExt:=MiscellaneousOptions.BuildLazOpts.CompiledUnitExt(
+                         FPCVersion,FPCRelease);
       Result:=DoCheckUnitPathForAmbigiousPascalFiles(
                        EnvironmentOptions.LazarusDirectory,
                        InheritedOptionStrings[icoUnitPath],
-                       MiscellaneousOptions.BuildLazOpts.CompiledUnitExt,'IDE');
+                       CompiledUnitExt,'IDE');
       if Result<>mrOk then exit;
     end;
 
@@ -5953,7 +5961,8 @@ begin
     SourceNotebook.ClearErrorLines;
     Result:=BuildLazarus(MiscellaneousOptions.BuildLazOpts,
                          EnvironmentOptions.ExternalTools,MacroList,
-                         PkgOptions,IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean]);
+                         PkgOptions,EnvironmentOptions.CompilerFilename,
+                         IDEBuildFlags+[blfUseMakeIDECfg,blfDontClean]);
     if Result<>mrOk then exit;
   finally
     DoCheckFilesOnDisk;
@@ -10091,6 +10100,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.670  2003/11/16 19:28:33  mattias
+  build lazarus now uses custom compiler path
+
   Revision 1.669  2003/11/16 01:56:15  mattias
   changed TMenuItem.Graphic to TMenuItem.Bitmap
 

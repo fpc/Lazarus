@@ -136,9 +136,12 @@ begin
   Result:='.exe';
 end;
 
-function GetDefaultCompiledUnitExt: string;
+function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
 begin
-  Result:='.ppw';
+  if (FPCVersion=1) and (FPCRelease=0) then
+    Result:='.ppw'
+  else
+    Result:='.ppu';
 end;
 
 function GetDefaultTestBuildDirectory: string;
@@ -179,6 +182,9 @@ end;
 
 {
   $Log$
+  Revision 1.18  2003/11/16 19:28:33  mattias
+  build lazarus now uses custom compiler path
+
   Revision 1.17  2003/11/15 13:07:09  mattias
   added ambigious unit check for IDE
 

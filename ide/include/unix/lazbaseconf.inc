@@ -154,7 +154,7 @@ begin
   Result:='';
 end;
 
-function GetDefaultCompiledUnitExt: string;
+function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
 begin
   Result:='.ppu';
 end;

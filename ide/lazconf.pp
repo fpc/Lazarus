@@ -80,7 +80,7 @@ uses
   function GetDefaultExecutableExt: string;
   
   // returns the standard file extension for compiled units (e.g '.ppu')
-  function GetDefaultCompiledUnitExt: string;
+  function GetDefaultCompiledUnitExt(FPCVersion, FPCRelease: integer): string;
 
   procedure GetDefaultCompilerFilenames(List: TStrings);
   procedure GetDefaultTestBuildDirs(List: TStrings);
@@ -143,6 +143,9 @@ end.
 
 {
   $Log$
+  Revision 1.21  2003/11/16 19:28:33  mattias
+  build lazarus now uses custom compiler path
+
   Revision 1.20  2003/11/15 13:07:09  mattias
   added ambigious unit check for IDE
 
