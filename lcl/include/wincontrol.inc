@@ -3656,7 +3656,12 @@ begin
     end
     else begin
       if (Parent <> nil) then
+      begin
         Parent.HandleNeeded;
+        // has parent triggered us to create our handle ?
+        if HandleAllocated then
+          exit;
+      end;
     end;
     CreateHandle;
   end;
@@ -4116,6 +4121,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.288  2004/11/07 20:44:49  micha
+  handle "re-entrancy" into handleneeded (via parent); fixes crash upon showing file diff dialog
+
   Revision 1.287  2004/11/05 22:08:53  mattias
   implemented auto sizing: child to parent sizing
 
