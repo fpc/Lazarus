@@ -625,7 +625,8 @@ end;
 
 procedure DebugLn(const s: string);
 begin
-  writeln(s);
+  if TextRec(Output).Mode<>fmClosed then
+    writeln(s);
 end;
 
 procedure DebugLn(const s1, s2: string);
@@ -635,7 +636,7 @@ end;
 
 procedure DebugLn(const s1, s2, s3: string);
 begin
-  writeln(s1+s2+s3);
+  DebugLn(s1+s2+s3);
 end;
 
 procedure DebugLn(const s1, s2, s3, s4: string);
@@ -686,7 +687,8 @@ end;
 
 procedure DBGOut(const s: string);
 begin
-  write(s);
+  if TextRec(Output).Mode<>fmClosed then
+    write(s);
 end;
 
 procedure DBGOut(const s1, s2: string);
