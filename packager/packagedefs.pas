@@ -2171,7 +2171,7 @@ begin
   Clear;
   Filename:=OldFilename;
   LockModified;
-  PathDelimChanged:=XMLConfig.GetValue(Path+'PathDelim/Value','/')<>'/';
+  PathDelimChanged:=XMLConfig.GetValue(Path+'PathDelim/Value','/')<>PathDelim;
   Name:=XMLConfig.GetValue(Path+'Name/Value','');
   FPackageType:=LazPackageTypeIdentToType(XMLConfig.GetValue(Path+'Type/Value',
                                           LazPackageTypeIdents[lptRunTime]));
