@@ -116,12 +116,17 @@ type
     // ---
     procedure GDBStopCallback(var AResultState: TDBGState; var AResultValues: String; const ATag: Integer);
     function  FindBreakpoint(const ABreakpoint: Integer): TDBGBreakPoint;
-    function  GetText(const ALocation: Pointer): String; overload;
-    function  GetText(const AExpression: String; AValues: array of const): String; overload;
-    function  GetData(const ALocation: Pointer): Pointer; overload;
-    function  GetData(const AExpression: String; AValues: array of const): Pointer; overload;
-    function  GetStrValue(const AExpression: String; AValues: array of const): String;
-    function  GetIntValue(const AExpression: String; AValues: array of const): Integer;
+    function  GetClassName(const AClass: TDBGPtr): String; overload;
+    function  GetClassName(const AExpression: String; const AValues: array of const): String; overload;
+    function  GetInstanceClassName(const AInstance: TDBGPtr): String; overload;
+    function  GetInstanceClassName(const AExpression: String; const AValues: array of const): String; overload;
+    function  GetText(const ALocation: TDBGPtr): String; overload;
+    function  GetText(const AExpression: String; const AValues: array of const): String; overload;
+    function  GetData(const ALocation: TDbgPtr): TDbgPtr; overload;
+    function  GetData(const AExpression: String; const AValues: array of const): TDbgPtr; overload;
+    function  GetStrValue(const AExpression: String; const AValues: array of const): String;
+    function  GetIntValue(const AExpression: String; const AValues: array of const): Integer;
+    function  GetPtrValue(const AExpression: String; const AValues: array of const): TDbgPtr;
     function  GetGDBTypeInfo(const AExpression: String): TGDBType;
     function  ProcessResult(var ANewState: TDBGState; var AResultValues: String; const ANoMICommand: Boolean): Boolean;
     function  ProcessRunning(var AStoppedParams: String): Boolean;
@@ -129,12 +134,12 @@ type
     function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer): Boolean; overload;
     function  ExecuteCommand(const ACommand: String; var AResultValues: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultValues: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
-    function  ExecuteCommand(const ACommand: String; AValues: array of const; var AResultState: TDBGState; var AResultValues: String; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AValues: array of const; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AValues: array of const; var AResultValues: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AValues: array of const; var AResultState: TDBGState; const AFlags: TGDBMICmdFlags): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AValues: array of const; var AResultState: TDBGState; var AResultValues: String; const AFlags: TGDBMICmdFlags): Boolean; overload;
+    function  ExecuteCommand(const ACommand: String; const AValues: array of const; var AResultState: TDBGState; var AResultValues: String; const AFlags: TGDBMICmdFlags; const ACallback: TGDBMICallback; const ATag: Integer): Boolean; overload;
     function  StartDebugging(const AContinueCommand: String): Boolean;
   protected
     function  ChangeFileName: Boolean; override;
@@ -543,7 +548,7 @@ begin
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
-  AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean;
+  const AValues: array of const; const AFlags: TGDBMICmdFlags): Boolean;
 var
   S: String;
   ResultState: TDBGState;
@@ -552,7 +557,7 @@ begin
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
-  AValues: array of const; const AFlags: TGDBMICmdFlags;
+  const AValues: array of const; const AFlags: TGDBMICmdFlags;
   const ACallback: TGDBMICallback; const ATag: Integer): Boolean;
 var
   S: String;
@@ -562,7 +567,7 @@ begin
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
-  AValues: array of const; var AResultValues: String;
+  const AValues: array of const; var AResultValues: String;
   const AFlags: TGDBMICmdFlags): Boolean;
 var
   ResultState: TDBGState;
@@ -571,7 +576,7 @@ begin
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String; 
-  AValues: array of const; var AResultState: TDBGState; 
+  const AValues: array of const; var AResultState: TDBGState;
   const AFlags: TGDBMICmdFlags): Boolean; 
 var
   S: String;
@@ -580,14 +585,14 @@ begin
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
-  AValues: array of const; var AResultState: TDBGState;
+  const AValues: array of const; var AResultState: TDBGState;
   var AResultValues: String; const AFlags: TGDBMICmdFlags): Boolean;
 begin
   Result := ExecuteCommand(ACommand, AValues, AResultState, AResultValues, AFlags, nil, 0);
 end;
 
 function TGDBMIDebugger.ExecuteCommand(const ACommand: String;
-  AValues: array of const; var AResultState: TDBGState;
+  const AValues: array of const; var AResultState: TDBGState;
   var AResultValues: String; const AFlags: TGDBMICmdFlags;
   const ACallback: TGDBMICallback; const ATag: Integer): Boolean;
 var
@@ -706,6 +711,65 @@ begin
   Result := nil;
 end;
 
+function TGDBMIDebugger.GetClassName(const AClass: TDBGPtr): String;
+var
+  S: String;
+begin
+  // format has a problem with %u, so use Str for it
+  Str(AClass, S);
+  Result := GetClassName(S, []);
+end;
+
+function TGDBMIDebugger.GetClassName(const AExpression: String; const AValues: array of const): String;
+var
+  OK: Boolean;
+  S: String;
+  ResultList: TStrings;
+begin
+  Result := '';
+
+  if dfImplicidTypes in FDebuggerFlags
+  then begin
+    OK :=  ExecuteCommand(
+          '-data-evaluate-expression ^^shortstring(' + AExpression + '+12)^^',
+          AValues,
+          S, [cfIgnoreError]);
+  end
+  else begin
+    Str(TDbgPtr(GetData(AExpression + '+12', AValues)), S);
+    OK := ExecuteCommand('-data-evaluate-expression pshortstring(%s)^',
+          [S],
+          S, [cfIgnoreError]);
+  end;
+
+  if OK
+  then begin
+    ResultList := CreateMIValueList(S);
+    S := ResultList.Values['value'];
+    Result := GetPart('''', '''', S);
+    ResultList.Free;
+  end;
+end;
+
+function TGDBMIDebugger.GetInstanceClassName(const AInstance: TDBGPtr): String;
+var
+  S: String;
+begin
+  Str(AInstance, S);
+  Result := GetInstanceClassName(S, []);
+end;
+
+function TGDBMIDebugger.GetInstanceClassName(const AExpression: String; const AValues: array of const): String;
+begin
+  if dfImplicidTypes in FDebuggerFlags
+  then begin
+    Result := GetClassName('^pointer(' + AExpression + ')^', AValues);
+  end
+  else begin
+    Result := GetClassName(Int64(GetData(AExpression, AValues)));
+  end;
+end;
+
 function TGDBMIDebugger.GDBEnvironment(const AVariable: String; const ASet: Boolean): Boolean;
 var
   S: String;
@@ -760,7 +824,8 @@ var
   S, ResultValues: String;
   ResultList: TStringList;
   ResultInfo: TGDBType;
-  addr, e: Integer;
+  addr: TDbgPtr;
+  e: Integer;
 //  Expression: TGDBMIExpression;
 begin
 // TGDBMIExpression was an attempt to make expression evaluation on Objects possible for GDB <= 5.2
@@ -792,17 +857,47 @@ begin
   if (ResultInfo = nil) then Exit;
   
   try
-    if (ResultInfo.Kind <> skPointer) then Exit;
-    Val(AResult, addr, e);
-    if e <> 0 then Exit;
+    case ResultInfo.Kind of
+      skPointer: begin
+        Val(AResult, addr, e);
+        if e <> 0 then Exit;
 
-    if Addr = 0
-    then AResult := 'nil';
+        if Addr = 0
+        then AResult := 'nil';
 
-    S := Lowercase(ResultInfo.TypeName);
-    if (S = 'character')
-    or (S = 'ansistring')
-    then AResult := MakePrintable(GetText(Pointer(addr)));
+        S := Lowercase(ResultInfo.TypeName);
+        if (S = 'character')
+        or (S = 'ansistring')
+        then begin
+          AResult := MakePrintable(GetText(addr));
+        end
+        else begin
+          if S = 'pointer' then Exit;
+          if Length(S) = 0 then Exit;
+          if S[1] = 't'
+          then begin
+            S[1] := 'T';
+            if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
+          end;
+          AResult := '^' + S + ' ' + AResult;
+        end;
+      end;
+      skClass: begin
+        Val(AResult, addr, e);
+        if e <> 0 then Exit;
+        S := GetInstanceClassName(Addr);
+        if S = ''
+        then S := '???'
+        else begin
+          if S[1] = 't'
+          then begin
+            S[1] := 'T';
+            if Length(S) > 1 then S[2] := UpperCase(S[2])[1];
+          end;
+        end;
+        AResult := S + ' ' + AResult;
+      end;
+    end;
   finally
     ResultInfo.Free;
   end;
@@ -945,27 +1040,42 @@ begin
   end;
 end;
 
-function TGDBMIDebugger.GetData(const ALocation: Pointer): Pointer;
-begin
-  Result := GetData('%u', [Integer(ALocation)]);
-end;
-
-function TGDBMIDebugger.GetData(const AExpression: String;
-  AValues: array of const): Pointer;
+function TGDBMIDebugger.GetData(const ALocation: TDbgPtr): TDbgPtr;
 var
   S: String;
 begin
-  if not ExecuteCommand('x/d ' + AExpression, AValues, S, [cfNoMICommand])
-  then Result := nil
-  else Result := Pointer(StrToIntDef(StripLN(GetPart('\t', '', S)), 0));
+  Str(ALocation, S);
+  Result := GetData(S, []);
 end;
 
-function TGDBMIDebugger.GetIntValue(const AExpression: String; AValues: array of const): Integer;
+function TGDBMIDebugger.GetData(const AExpression: String;
+  const AValues: array of const): TDbgPtr;
+var
+  S: String;
+  e: Integer;
 begin
-  Result := StrToIntDef(GetStrValue(AExpression, AValues), 0);
+  Result := 0;
+  if ExecuteCommand('x/d ' + AExpression, AValues, S, [cfNoMICommand])
+  then Val(StripLN(GetPart('\t', '', S)), Result, e);
 end;
 
-function TGDBMIDebugger.GetStrValue(const AExpression: String; AValues: array of const): String;
+function TGDBMIDebugger.GetIntValue(const AExpression: String; const AValues: array of const): Integer;
+var
+  e: Integer;
+begin
+  Result := 0;
+  Val(GetStrValue(AExpression, AValues), Result, e);
+end;
+
+function TGDBMIDebugger.GetPtrValue(const AExpression: String; const AValues: array of const): TDbgPtr;
+var
+  e: Integer;
+begin
+  Result := 0;
+  Val(GetStrValue(AExpression, AValues), Result, e);
+end;
+
+function TGDBMIDebugger.GetStrValue(const AExpression: String; const AValues: array of const): String;
 var
   S: String;
   ResultList: TStringList;
@@ -979,13 +1089,16 @@ begin
   else Result := '';
 end;
 
-function TGDBMIDebugger.GetText(const ALocation: Pointer): String;
+function TGDBMIDebugger.GetText(const ALocation: TDBGPtr): String;
+var
+  S: String;
 begin
-  Result := GetText('%d', [Integer(ALocation)]);
+  Str(ALocation, S);
+  Result := GetText(S, []);
 end;
 
 function TGDBMIDebugger.GetText(const AExpression: String;
-  AValues: array of const): String;
+  const AValues: array of const): String;
 var
   S: String;
   n, len, idx: Integer;
@@ -1389,10 +1502,12 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
   var
     Frame: TStringList;
     Location: TDBGLocationRec;
+    e: Integer;
   begin
     Frame := CreateMIValueList(AFrame);
 
-    Location.Address := Pointer(StrToIntDef(Frame.Values['addr'], 0));
+    Location.Address := 0;
+    Val(Frame.Values['addr'], Location.Address, e);
     Location.FuncName := Frame.Values['func'];
     Location.SrcFile := Frame.Values['file'];
     Location.SrcLine := StrToIntDef(Frame.Values['line'], -1);
@@ -1410,16 +1525,15 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     Location: TDBGLocationRec;
     OK: Boolean;
   begin
-    ExceptionName := 'Unknown';
-
     if tfRTLUsesRegCall in FTargetFlags
     then  ObjAddr := '$eax'
     else begin
       if dfImplicidTypes in FDebuggerFlags
       then ObjAddr := '^pointer($fp+8)^'
-      else ObjAddr := Format('%u', [Integer(GetData('$fp+8', []))]);
+      else Str(GetData('$fp+8', []), ObjAddr);
     end;
     
+(*
     if dfImplicidTypes in FDebuggerFlags
     then begin
       OK :=  ExecuteCommand(
@@ -1440,7 +1554,11 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
       ExceptionName := GetPart('''', '''', ExceptionName);
       ResultList.Free;
     end;
-    
+*)
+    ExceptionName := GetInstanceClassName(ObjAddr, []);
+    if ExceptionName = ''
+    then ExceptionName := 'Unknown';
+
     // check if we should ignore this exception
     if Exceptions.Find(ExceptionName) <> nil
     then begin
@@ -1460,7 +1578,7 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     Location.SrcFile := '';
     Location.FuncName := '';
     if tfRTLUsesRegCall in FTargetFlags
-    then Location.Address := Pointer(GetIntValue('$edx', []))
+    then Location.Address := GetPtrValue('$edx', [])
     else Location.Address := GetData('$fp+12', []);
     
     if ExecuteCommand('info line * pointer(%d)', [Integer(Location.Address)],
@@ -1487,10 +1605,11 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String; const AIgnoreSigIn
     Location.SrcLine := -1;
     Location.SrcFile := '';
     if tfRTLUsesRegCall in FTargetFlags
-    then Location.Address := Pointer(GetIntValue('$edx', []))
+    then Location.Address := GetPtrValue('$edx', [])
     else Location.Address := GetData('$fp+12', []);
     Location.FuncName := '';
-    if ExecuteCommand('info line * pointer(%d)', [Integer(Location.Address)], S, [cfIgnoreError, cfNoMiCommand])
+    Str(Location.Address, S);
+    if ExecuteCommand('info line * pointer(%s)', [S], S, [cfIgnoreError, cfNoMiCommand])
     then begin
       Location.SrcLine := StrToIntDef(GetPart('Line ', ' of', S), -1);
       Location.SrcFile := GetPart('\"', '\"', S);
@@ -1990,7 +2109,8 @@ end;
 
 procedure TGDBMILocals.AddLocals(const AParams: String);
 var
-  n, addr: Integer;
+  n, e: Integer;
+  addr: TDbgPtr;
   LocList, List: TStrings;
   S, Name, Value: String;
 begin
@@ -2007,10 +2127,11 @@ begin
     S := GetPart(['(pchar) ', '(ansistring) '], [], Value, True, False);
     if S <> ''
     then begin
-      addr := StrToIntDef(S, 0);
+      addr := 0;
+      Val(S, addr, e);
       if addr = 0
       then Value := ''''''
-      else Value := '''' + TGDBMIDebugger(Debugger).GetText(Pointer(addr)) + '''';
+      else Value := '''' + TGDBMIDebugger(Debugger).GetText(addr) + '''';
     end;
 
     FLocals.Add(Name + '=' + Value);
@@ -2521,6 +2642,11 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.54  2004/11/21 15:19:08  marc
+  * worked aound lack of %u as formatspecifier
+  + introduced dbgptr for dealing with pointers on the target
+  + added classnames to pointer evaluation
+
   Revision 1.53  2004/11/19 00:41:18  marc
   * Fixed string evaluation
 

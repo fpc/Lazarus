@@ -532,7 +532,10 @@ begin
     S := GetPart(['type = '], [' '], Line);
     if S = '' then Exit;
     if Pos(' = class ', Line) > 0
-    then DoClass
+    then begin
+      FTypeName := GetPart(['^'], [' '], S);
+      DoClass;
+    end
     else if S[1] = '^'
     then begin
       FKind := skPointer;
@@ -615,6 +618,11 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.4  2004/11/21 15:19:08  marc
+  * worked aound lack of %u as formatspecifier
+  + introduced dbgptr for dealing with pointers on the target
+  + added classnames to pointer evaluation
+
   Revision 1.3  2003/12/05 08:39:53  mattias
   fixed memleak in debugger  from Vincent
 

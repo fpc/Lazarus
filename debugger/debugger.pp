@@ -40,8 +40,10 @@ uses
   Classes, SysUtils, LCLProc, Laz_XMLCfg, IDEProcs, DBGUtils;
 
 type
+  TDBGPtr = type QWord; // datatype pointing to data on the target
+
   TDBGLocationRec = record
-    Address: Pointer;
+    Address: TDBGPtr;
     FuncName: String;
     SrcFile: String;
     SrcLine: Integer;
@@ -3542,6 +3544,11 @@ finalization
 end.
 { =============================================================================
   $Log$
+  Revision 1.63  2004/11/21 15:19:08  marc
+  * worked aound lack of %u as formatspecifier
+  + introduced dbgptr for dealing with pointers on the target
+  + added classnames to pointer evaluation
+
   Revision 1.62  2004/10/11 23:28:13  marc
   * Fixed interrupting GDB on win32
   * Reset exename after run so that the exe is not locked on win32
