@@ -3434,14 +3434,15 @@ begin
     MoveCursorToNodeStart(Tree.Root);
     ReadNextAtom;
     ReadNextAtom;
+    SystemAlias:='SYSTEM';
     if (Scanner.PascalCompiler<>pcDelphi)
     and Scanner.InitialValues.IsDefined('VER1_0')
-    and Scanner.InitialValues.IsDefined('LINUX')
-    then
-      // ToDo: other OS than linux
-      SystemAlias:='SYSLINUX'
-    else
-      SystemAlias:='SYSTEM';
+    then begin
+      if Scanner.InitialValues.IsDefined('LINUX') then
+        SystemAlias:='SYSLINUX'
+      else if Scanner.InitialValues.IsDefined('WIN32') then
+        SystemAlias:='SYSWIN32';
+    end;
     if UpAtomIs(SystemAlias) or UpAtomIs('SYSTEM') then
       CurUnitType:=sutSystem
     else if UpAtomIs('OBJPAS') then

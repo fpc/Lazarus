@@ -355,10 +355,11 @@ type
     procedure Move(SrcIndex, DestIndex: integer);
     property EnglishErrorMsgFilename: string
         read FEnglishErrorMsgFilename write SetEnglishErrorMsgFilename;
-    function CreateFPCTemplate(const PPC386Path, TestPascalFile: string;
-                          var UnitSearchPath: string;
-                          Owner: TObject): TDefineTemplate;
-    function CreateFPCSrcTemplate(const FPCSrcDir, UnitSearchPath: string;
+    function CreateFPCTemplate(const PPC386Path, PPCOptions,
+                               TestPascalFile: string;
+                               var UnitSearchPath: string;
+                               Owner: TObject): TDefineTemplate;
+    function CreateFPCSrcTemplate(const FPCSrcDir, UnitSearchPath, PPUExt: string;
                           UnitLinkListValid: boolean; var UnitLinkList: string;
                           Owner: TObject): TDefineTemplate;
     function CreateLazarusSrcTemplate(
@@ -2416,7 +2417,7 @@ begin
 end;
 
 function TDefinePool.CreateFPCTemplate(
-  const PPC386Path, TestPascalFile: string;
+  const PPC386Path, PPCOptions, TestPascalFile: string;
   var UnitSearchPath: string; Owner: TObject): TDefineTemplate;
 // create symbol definitions for the freepascal compiler
 // To get reliable values the compiler itself is asked for
@@ -2515,6 +2516,7 @@ var CmdLine: string;
   OutputLine, Buf, TargetOS, SrcOS, TargetProcessor: String;
   NewDefTempl: TDefineTemplate;
 begin
+  //writeln('CreateFPCTemplate ',PPC386Path,' ',PPCOptions);
   Result:=nil;
   UnitSearchPath:='';
   if (PPC386Path='') or (not FileIsExecutable(PPC386Path)) then exit;
@@ -2526,6 +2528,8 @@ begin
     CmdLine:=PPC386Path+' -va ';
     if FileExists(EnglishErrorMsgFilename) then
       CmdLine:=CmdLine+'-Fr'+EnglishErrorMsgFilename+' ';
+    if PPCOptions<>'' then
+      CmdLine:=CmdLine+PPCOptions+' ';
     CmdLine:=CmdLine+TestPascalFile;
     ShortTestFile:=ExtractFileName(TestPascalFile);
 
@@ -2563,8 +2567,11 @@ begin
     end;
 
     // ask for target operating system -> ask compiler with switch -iTO
-    CmdLine:=PPC386Path+' -iTO';
-    
+    CmdLine:=PPC386Path;
+    if PPCOptions<>'' then
+      CmdLine:=CmdLine+' '+PPCOptions;
+    CmdLine:=CmdLine+' -iTO';
+
     TheProcess := TProcess.Create(nil);
     TheProcess.CommandLine := CmdLine;
     TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
@@ -2583,7 +2590,7 @@ begin
             ctsDefaultppc386TargetOperatingSystem,
             ExternalMacroStart+'TargetOS',TargetOS,da_DefineRecurse);
           AddTemplate(NewDefTempl);
-          if TargetOS='linux' then
+          if (TargetOS='linux') then
             SrcOS:='unix'
           else
             SrcOS:=TargetOS;
@@ -2602,7 +2609,11 @@ begin
     
     // ask for target processor -> ask compiler with switch -iTP
     TheProcess := TProcess.Create(nil);
-    TheProcess.CommandLine := PPC386Path+' -iTP';
+    CmdLine:=PPC386Path;
+    if PPCOptions<>'' then
+      CmdLine:=CmdLine+' '+PPCOptions;
+    CmdLine:=CmdLine+' -iTP';
+    TheProcess.CommandLine := CmdLine;
     TheProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
     TheProcess.ShowWindow := swoNone;
     try
@@ -2646,7 +2657,7 @@ begin
 end;
 
 function TDefinePool.CreateFPCSrcTemplate(
-  const FPCSrcDir, UnitSearchPath: string;
+  const FPCSrcDir, UnitSearchPath, PPUExt: string;
   UnitLinkListValid: boolean; var UnitLinkList: string;
   Owner: TObject): TDefineTemplate;
 var
@@ -2862,11 +2873,17 @@ var
   var PathStart, PathEnd: integer;
     ADirPath, UnitName: string;
     FileInfo: TSearchRec;
+    CurMask: String;
   begin
     // try every ppu file in every reachable directory (CompUnitPath)
     if UnitLinkListValid then exit;
     UnitLinkList:='';
     PathStart:=1;
+    CurMask:=PPUExt;
+    if CurMask='' then CurMask:='.ppu';
+    if CurMask[1]<>'.' then
+      CurMask:='.'+CurMask;
+    CurMask:='*'+CurMask;
     while PathStart<=length(UnitSearchPath) do begin
       while (PathStart<=length(UnitSearchPath))
       and (UnitSearchPath[PathStart]=#13) do
@@ -2880,7 +2897,7 @@ var
         ADirPath:=copy(UnitSearchPath,PathStart,PathEnd-PathStart);
         //writeln('&&& FindStandardPPUSources ',ADirPath);
         // search all ppu files in this directory
-        if FindFirst(ADirPath+'*.ppu',faAnyFile,FileInfo)=0 then begin
+        if FindFirst(ADirPath+CurMask,faAnyFile,FileInfo)=0 then begin
           repeat
             UnitName:=ExtractFileName(FileInfo.Name);
             UnitName:=copy(UnitName,1,length(UnitName)-4);
@@ -2902,7 +2919,9 @@ var
   DefTempl, MainDir, FCLDir, RTLDir, RTLOSDir, PackagesDir, CompilerDir,
   UtilsDir, DebugSvrDir: TDefineTemplate;
   s: string;
+  RTLWin32Dir: TDefineTemplate;
 begin
+  //writeln('CreateFPCSrcTemplate ',FPCSrcDir,': ',length(UnitSearchPath),' Valid=',UnitLinkListValid,' PPUExt=',PPUExt);
   Result:=nil;
   if (FPCSrcDir='') or (not DirectoryExists(FPCSrcDir)) then exit;
   DS:=PathDelim;
@@ -2975,6 +2994,12 @@ begin
       ExternalMacroStart+'IncPath',s,da_DefineRecurse));
     RTLDir.AddChild(RTLOSDir);
   end;
+  RTLWin32Dir:=TDefineTemplate.Create('Win32','Win32','','win32',da_Directory);
+  RTLDir.AddChild(RTLWin32Dir);
+  RTLWin32Dir.AddChild(TDefineTemplate.Create('Include Path',
+      Format(ctsIncludeDirectoriesPlusDirs,['wininc']),
+      ExternalMacroStart+'IncPath',
+      IncPathMacro+';wininc',da_Define));
 
   // define 'i386'   ToDo: other types like m68k
   DefTempl:=TDefineTemplate.Create('Define i386',

@@ -456,6 +456,8 @@ type
 
   public
     CustomExtToolMenuSeparator: TMenuItem;
+    CurDefinesCompilerFilename: String;
+    CurDefinesCompilerOptions: String;
     class procedure ParseCmdLineOptions;
     
     constructor Create(TheOwner: TComponent); override;
@@ -569,6 +571,7 @@ type
     
     // methods for codetools
     procedure InitCodeToolBoss;
+    procedure RescanCompilerDefines(OnlyIfCompilerChanged: boolean);
     procedure UpdateEnglishErrorMsgFilename;
     procedure ActivateCodeToolAbortableMode;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
@@ -2248,7 +2251,7 @@ var
 begin
   BeginCodeTool(ActiveSrcEdit, ActiveUnitInfo, []);
   if ShowProjectOptionsDialog(Project1)=mrOk then begin
-    
+
   end;
 end;
 
@@ -2306,6 +2309,7 @@ begin
     frmCompilerOptions.CompilerOpts:=Project1.CompilerOptions;
     frmCompilerOptions.GetCompilerOptions;
     if frmCompilerOptions.ShowModal=mrOk then begin
+      RescanCompilerDefines(true);
       Project1.DefineTemplates.AllChanged;
     end;
   finally
@@ -2524,11 +2528,11 @@ begin
 end;
 
 procedure TMainIDE.DoShowEnvGeneralOptions(StartPage: TEnvOptsDialogPage);
-var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
+var
+  EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
   MacroValueChanged, FPCSrcDirChanged, FPCCompilerChanged: boolean;
-  OldCompilerFilename, CompilerUnitSearchPath, CompilerUnitLinks: string;
-  CompilerTemplate, FPCSrcTemplate: TDefineTemplate;
-  
+  OldCompilerFilename: string;
+
   procedure ChangeMacroValue(const MacroName, NewValue: string);
   begin
     with CodeToolBoss.GlobalValues do begin
@@ -2537,40 +2541,6 @@ var EnvironmentOptionsDialog: TEnvironmentOptionsDialog;
       Variables[ExternalMacroStart+MacroName]:=NewValue;
     end;
     MacroValueChanged:=true;
-  end;
-  
-  procedure RescanCompilerDefines;
-  begin
-    // rescan compiler defines
-    // ask the compiler for its settings
-    CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
-                      EnvironmentOptions.CompilerFilename,
-                      CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
-                      CodeToolsOpts);
-    if CompilerTemplate<>nil then begin
-      CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(CompilerTemplate);
-      // create compiler macros to simulate the Makefiles of the FPC sources
-      FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
-        CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-        CompilerUnitSearchPath, false, CompilerUnitLinks,CodeToolsOpts);
-      if FPCSrcTemplate<>nil then begin
-        CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
-                                                       FPCSrcTemplate.Name);
-        FPCSrcTemplate.InsertBehind(CompilerTemplate);
-      end else begin
-        MessageDlg(lisFPCSourceDirectoryError,
-          lisPLzCheckTheFPCSourceDirectory,
-          mtError,[mbOk],0);
-      end;
-      // save unitlinks
-      InputHistories.SetLastFPCUnitLinks(
-             EnvironmentOptions.CompilerFilename,
-             CompilerUnitSearchPath,CompilerUnitLinks);
-      InputHistories.Save;
-    end else begin
-      MessageDlg(lisCompilerError,lisPlzCheckTheCompilerName,
-        mtError,[mbOk],0);
-    end;
   end;
   
   procedure UpdateDesigners;
@@ -2633,7 +2603,7 @@ Begin
       
       if MacroValueChanged then CodeToolBoss.DefineTree.ClearCache;
       if FPCCompilerChanged or FPCSrcDirChanged then begin
-        RescanCompilerDefines;
+        RescanCompilerDefines(false);
       end;
         
       // save to disk
@@ -3888,6 +3858,7 @@ begin
   UpdateCaption;
   EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
   EnvironmentOptions.Save(false);
+  RescanCompilerDefines(true);
   
   // load required packages
   PkgBoss.OpenProjectDependencies(Project1);
@@ -7536,26 +7507,31 @@ begin
   UpdateEnglishErrorMsgFilename;
   with CodeToolBoss.DefinePool do begin
     // start the compiler and ask for his settings
-    ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,
+    ADefTempl:=CreateFPCTemplate(EnvironmentOptions.CompilerFilename,'',
                        CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
                        CodeToolsOpts);
     AddTemplate(ADefTempl,false,
       'NOTE: Could not create Define Template for Free Pascal Compiler');
-      
+    CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
+    CurDefinesCompilerOptions:='';
+
     // create compiler macros to simulate the Makefiles of the FPC sources
-    InputHistories.LastFPCPath:=EnvironmentOptions.CompilerFilename;
-    CompilerUnitLinks:=InputHistories.LastFPCUnitLinks;
-    UnitLinksChanged:=InputHistories.LastFPCUnitLinksNeedsUpdate(
+    InputHistories.FPCConfigCache.CompilerPath:=
+                                            EnvironmentOptions.CompilerFilename;
+    CompilerUnitLinks:=InputHistories.FPCConfigCache.GetUnitLinks('');
+    UnitLinksChanged:=InputHistories.LastFPCUnitLinksNeedsUpdate('',
                                                         CompilerUnitSearchPath);
     ADefTempl:=CreateFPCSrcTemplate(
             CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
-            CompilerUnitSearchPath, not UnitLinksChanged,
-            CompilerUnitLinks,CodeToolsOpts);
+            CompilerUnitSearchPath,
+            CodeToolBoss.GetCompiledSrcExtForDirectory(''),
+            not UnitLinksChanged,CompilerUnitLinks,
+            CodeToolsOpts);
     // save unitlinks
     if UnitLinksChanged
-    or (InputHistories.LastFPCUnitLinks<>InputHistories.LastFPCUnitLinks)
+    or (CompilerUnitLinks<>InputHistories.FPCConfigCache.GetUnitLinks(''))
     then begin
-      InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
+      InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,'',
                                       CompilerUnitSearchPath,CompilerUnitLinks);
       InputHistories.Save;
     end;
@@ -7593,6 +7569,68 @@ begin
   c:=CodeToolBoss.ConsistencyCheck;
   if c<>0 then begin
     RaiseException('CodeToolBoss.ConsistencyCheck='+IntToStr(c));
+  end;
+end;
+
+procedure TMainIDE.RescanCompilerDefines(OnlyIfCompilerChanged: boolean);
+var
+  CompilerTemplate, FPCSrcTemplate: TDefineTemplate;
+  CompilerUnitSearchPath, CompilerUnitLinks: string;
+  CurOptions: String;
+  UnitLinksValid: boolean;
+begin
+  if Project1.CompilerOptions.TargetOS<>'' then
+    CurOptions:='-T'+Project1.CompilerOptions.TargetOS
+  else
+    CurOptions:='';
+  {writeln('TMainIDE.RescanCompilerDefines A ',CurOptions,
+    ' OnlyIfCompilerChanged=',OnlyIfCompilerChanged,
+    ' Valid=',InputHistories.FPCConfigCache.Valid(true),
+    ' ID=',InputHistories.FPCConfigCache.FindItem(CurOptions)
+    );}
+  // rescan compiler defines
+  // ask the compiler for its settings
+  if OnlyIfCompilerChanged
+  and (CurDefinesCompilerFilename=EnvironmentOptions.CompilerFilename)
+  and (CurDefinesCompilerOptions=CurOptions) then
+    exit;
+  CompilerTemplate:=CodeToolBoss.DefinePool.CreateFPCTemplate(
+                    EnvironmentOptions.CompilerFilename,CurOptions,
+                    CreateCompilerTestPascalFilename,CompilerUnitSearchPath,
+                    CodeToolsOpts);
+
+  if CompilerTemplate<>nil then begin
+    CurDefinesCompilerFilename:=EnvironmentOptions.CompilerFilename;
+    CurDefinesCompilerOptions:=CurOptions;
+    CodeToolBoss.DefineTree.ReplaceRootSameNameAddFirst(CompilerTemplate);
+    UnitLinksValid:=OnlyIfCompilerChanged
+      and InputHistories.FPCConfigCache.Valid(true)
+      and (InputHistories.FPCConfigCache.FindItem(CurOptions)>=0);
+    //writeln('TMainIDE.RescanCompilerDefines B rescanning FPC sources  UnitLinksValid=',UnitLinksValid);
+    // create compiler macros to simulate the Makefiles of the FPC sources
+    if not UnitLinksValid then begin
+      FPCSrcTemplate:=CodeToolBoss.DefinePool.CreateFPCSrcTemplate(
+        CodeToolBoss.GlobalValues.Variables[ExternalMacroStart+'FPCSrcDir'],
+        CompilerUnitSearchPath,
+        CodeToolBoss.GetCompiledSrcExtForDirectory(''),
+        UnitLinksValid, CompilerUnitLinks, CodeToolsOpts);
+      if FPCSrcTemplate<>nil then begin
+        CodeToolBoss.DefineTree.RemoveRootDefineTemplateByName(
+                                                           FPCSrcTemplate.Name);
+        FPCSrcTemplate.InsertBehind(CompilerTemplate);
+        // save unitlinks
+        InputHistories.SetLastFPCUnitLinks(EnvironmentOptions.CompilerFilename,
+                           CurOptions,CompilerUnitSearchPath,CompilerUnitLinks);
+        InputHistories.Save;
+      end else begin
+        MessageDlg(lisFPCSourceDirectoryError,
+          lisPlzCheckTheFPCSourceDirectory,
+          mtError,[mbOk],0);
+      end;
+    end;
+  end else begin
+    MessageDlg(lisCompilerError,lisPlzCheckTheCompilerName,
+      mtError,[mbOk],0);
   end;
 end;
 
@@ -9292,6 +9330,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.617  2003/06/28 19:31:57  mattias
+  implemented cross find declaration
+
   Revision 1.616  2003/06/23 12:33:55  mattias
   implemented TPairSplitter streaming
 

@@ -12,7 +12,8 @@ packages are outdated. The following works:
 Download all files into a directory. There is a small bug in xmingw32.mak.
 Search for '#$(GCC' and remove the '#'. Then do as root 'make -f xmingw.mak'.
 This will download the binutils, the gcc and the mingw32 files and will compile
-them. After installation link the following files:
+them. After installation you can etiher extend the PATH variable or link the
+following files:
 
 []$ ln -s /usr/local/xmingw32/bin/mingw32-as /usr/bin/asw
 []$ ln -s /usr/local/xmingw32/bin/mingw32-ld /usr/bin/ldw
@@ -66,4 +67,6 @@ You should now be able to cross compile simple pascal programs with
 4.1 Command line: cd lazarus/lcl; make OS_TARGET=win32
 4.2 In the IDE: Set LCL to Clean+Build, set LCL interface to win32 and
     set 'Target OS' to win32. Then build lazarus.
+
+
 

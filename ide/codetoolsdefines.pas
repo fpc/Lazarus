@@ -636,7 +636,7 @@ begin
     if Macros<>nil then Macros.SubstituteStr(CompilerPath);
     writeln('  CompilerPath="',CompilerPath,'"');
     if (CompilerPath<>'') and (CompilerPath<>DefaultCompiler) then
-      FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,
+      FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,'',
                                 CreateCompilerTestPascalFilename,UnitSearchPath,
                                 CodeToolsOpts)
     else
@@ -649,8 +649,7 @@ begin
     if (FPCSrcDir<>'') and (FPCSrcDir<>DefaultFPCSrcDir)
     and (UnitSearchPath<>'') then
       FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
-                                            UnitSearchPath, false, UnitLinkList,
-                                            CodeToolsOpts)
+                      UnitSearchPath, 'ppu', false, UnitLinkList, CodeToolsOpts)
     else
       FPCSrcTemplate:=nil;
 
@@ -711,7 +710,7 @@ begin
     if Macros<>nil then Macros.SubstituteStr(CompilerPath);
     writeln('  CompilerPath="',CompilerPath,'"');
     
-    FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,
+    FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,'',
                                            CreateCompilerTestPascalFilename,s,
                                            CodeToolsOpts);
     if FPCTemplate=nil then exit;
@@ -756,7 +755,7 @@ begin
     if Macros<>nil then Macros.SubstituteStr(CompilerPath);
     writeln('  CompilerPath="',CompilerPath,'"');
 
-    FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,
+    FPCTemplate:=Boss.DefinePool.CreateFPCTemplate(CompilerPath,'',
                                CreateCompilerTestPascalFilename,UnitSearchPath,
                                CodeToolsOpts);
     if FPCTemplate=nil then begin
@@ -770,8 +769,7 @@ begin
     writeln('  FPCSrcDir="',FPCSrcDir,'"');
     UnitSearchPath:='';
     FPCSrcTemplate:=Boss.DefinePool.CreateFPCSrcTemplate(FPCSrcDir,
-                                           UnitSearchPath, false, UnitLinks,
-                                           CodeToolsOpts);
+                        UnitSearchPath, 'ppu', false, UnitLinks, CodeToolsOpts);
     if FPCSrcTemplate=nil then begin
       writeln('ERROR: unable to create FPC CVS Src defines for "',FPCSrcDir,'"');
       FPCTemplate.Free;
