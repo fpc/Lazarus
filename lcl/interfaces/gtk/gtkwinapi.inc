@@ -1924,6 +1924,26 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TgtkObject.ComboBoxDropDown(Handle: HWND;
+                                       DropDown: boolean): boolean; override;
+------------------------------------------------------------------------------}
+function TgtkObject.ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean;
+var
+  ComboWidget: PGtkCombo;
+begin
+  Result:=false;
+  if Handle=0 then exit;
+  ComboWidget:=PGtkCombo(Handle);
+  if DropDown<>GTK_WIDGET_VISIBLE(ComboWidget^.popwin) then begin
+    if DropDown then begin
+      writeln('TgtkObject.ComboBoxDropDown ToDo: Find the trick to popup the combobox');
+    end else
+      gtk_widget_hide (ComboWidget^.popwin);
+  end;
+  Result:=true;
+end;
+
+{------------------------------------------------------------------------------
   Function: ExtSelectClipRGN
   Params:  dc, RGN, Mode
   Returns: integer
@@ -8045,6 +8065,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.232  2003/04/11 17:10:20  mattias
+  added but not implemented ComboBoxDropDown
+
   Revision 1.231  2003/04/11 09:05:41  mattias
   fixed adding items on TComboBox.DropDown
 
