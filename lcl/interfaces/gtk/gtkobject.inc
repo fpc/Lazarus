@@ -1742,7 +1742,7 @@ procedure TgtkObject.SetLabel(Sender : TObject; Data : Pointer);
     TabWidget: PGtkWidget;      // the tab (hbox containing a pixmap, a label
                                 //          and a close button)
     TabLabelWidget: PGtkWidget; // the label in the tab
-    MenuWidget: PGtkWidget;  // the popup menu (hbox containing a pixmap and
+    MenuWidget: PGtkWidget;     // the popup menu (hbox containing a pixmap and
                                 // a label)
     MenuLabelWidget: PGtkWidget; // the label in the popup menu item
     NewText: PChar;
@@ -5266,6 +5266,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.150  2002/07/29 13:26:57  lazarus
+  MG: source notebook pagenames are now updated more often
+
   Revision 1.149  2002/07/23 07:40:51  lazarus
   MG: fixed get widget position for inherited gdkwindows
 
