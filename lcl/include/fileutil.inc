@@ -373,6 +373,11 @@ begin
   end;
 end;
 
+function CompareFileExt(const Filename, Ext: string): integer;
+begin
+  Result:=CompareFileExt(Filename,Ext,false);
+end;
+
 {------------------------------------------------------------------------------
   function ChompPathDelim(const Path: string): string;
  ------------------------------------------------------------------------------}
@@ -1157,6 +1162,9 @@ end;
 
 {
   $Log$
+  Revision 1.13  2005/03/24 09:50:03  mattias
+  checking HandleAllocated for dbgrid   from Jesus
+
   Revision 1.12  2005/03/23 10:45:06  mattias
   fixed ambigious with ambiguous
 

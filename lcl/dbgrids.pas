@@ -791,7 +791,7 @@ end;
 
 function TCustomDbGrid.DefaultFieldColWidth(F: TField): Integer;
 begin
-  if not HandleAllocated or (F=nil) then
+  if not Canvas.HandleAllocated or (F=nil) then
     result:=DefaultColWidth
   else begin
     if F.DisplayWidth = 0 then
@@ -1996,7 +1996,7 @@ var
   TheGrid: TCustomDbGrid;
 begin
   TheGrid := TCustomDBGrid(Grid);
-  if (theGrid<>nil)and(TheGrid.HAndleAllocated)And(FField<>nil) then
+  if (theGrid<>nil)and(TheGrid.Canvas.HandleAllocated)And(FField<>nil) then
     result := FField.DisplayWidth * CalcCanvasCharWidth(TheGrid.Canvas)
   else
     result := 64;
@@ -2051,6 +2051,9 @@ end.
 
 {
   $Log$
+  Revision 1.37  2005/03/24 09:50:03  mattias
+  checking HandleAllocated for dbgrid   from Jesus
+
   Revision 1.36  2005/03/23 15:59:33  mattias
   blob fields for TDBGrid  from Jose A. Rimon
 

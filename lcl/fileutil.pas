@@ -59,6 +59,7 @@ function DirectoryIsWritable(const DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
 function CompareFileExt(const Filename, Ext: string;
                         CaseSensitive: boolean): integer;
+function CompareFileExt(const Filename, Ext: string): integer;
 function FilenameIsPascalUnit(const Filename: string): boolean;
 function AppendPathDelim(const Path: string): string;
 function ChompPathDelim(const Path: string): string;
@@ -120,6 +121,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2005/03/24 09:50:03  mattias
+  checking HandleAllocated for dbgrid   from Jesus
+
   Revision 1.6  2005/01/27 00:55:04  mattias
   implemented allowing parent as AnchorSide.Control
 
