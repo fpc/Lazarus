@@ -464,7 +464,13 @@ begin
   Result := False;  
 end;
 
-function TInterfaceBase.SaveDC(DC: HDC) : Integer; 
+function TInterfaceBase.RightJustifyMenuItem(HndMenu: HMenu;
+  bRightJustify: boolean): Boolean;
+begin
+  Result := False;
+end;
+
+function TInterfaceBase.SaveDC(DC: HDC) : Integer;
 begin
   Result := 0;  
 end;
@@ -615,6 +621,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2002/08/08 17:26:37  lazarus
+  MG: added property TMenuItems.RightJustify
+
   Revision 1.35  2002/08/08 09:07:06  lazarus
   MG: TMenuItem can now be created/destroyed/moved at any time
 
