@@ -1,0 +1,31 @@
+object MainForm: TMainForm
+  Caption = 'Example for turbopower internet pro HTML control'
+  ClientHeight = 327
+  ClientWidth = 569
+  OnCreate = MainFormCreate
+  HorzScrollBar.Page = 570
+  VertScrollBar.Page = 328
+  Left = 291
+  Height = 327
+  Top = 163
+  Width = 569
+  object OpenHTMLFileButton: TButton
+    Align = alTop
+    Caption = 'Open HTML File'
+    TabOrder = 0
+    Height = 25
+    Width = 569
+  end
+  object IpHtmlPanel1: TIpHtmlPanel
+    Align = alClient
+    FixedTypeface = 'Courier New'
+    PrintSettings.MarginLeft = 0.5
+    PrintSettings.MarginTop = 0.5
+    PrintSettings.MarginRight = 0.5
+    PrintSettings.MarginBottom = 0.5
+    OnHotClick = IpHtmlPanel1HotClick
+    Height = 302
+    Top = 25
+    Width = 569
+  end
+end
