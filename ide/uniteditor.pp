@@ -54,26 +54,11 @@ uses
   WordCompletion, FindInFilesDlg, IDEProcs, IDEOptionDefs, MsgView,
   InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger,
   TypInfo, LResources, LazConf, EnvironmentOpts, Compiler,
-  SourceEditProcs, SortSelectionDlg, ClipBoardHistory, DiffDialog;
+  SortSelectionDlg, ClipBoardHistory, DiffDialog,
+  SourceEditProcs, SourceMarks;
 
 type
   TSourceNoteBook = class;
-  // --------------------------------------------------------------------------
-
-  TSrcEditMarkerType = (
-    semActiveBreakPoint,
-    semInactiveBreakPoint,
-    semInvalidBreakPoint,
-    semUnknownBreakpoint,
-    semMultiActiveBreakPoint,
-    semMultiInactiveBreakPoint,
-    semMultiInvalidBreakPoint,
-    semMultiUnknownBreakPoint,
-    semMultiMixedBreakPoint
-    );
-  TSrcEditMarkerTypes = set of TSrcEditMarkerType;
-
-  // --------------------------------------------------------------------------
 
   TNotifyFileEvent = procedure(Sender: TObject; Filename : AnsiString) of object;
 
@@ -233,12 +218,12 @@ type
     procedure ActivateHint(ClientPos: TPoint; const TheHint: string);
     
     // gutter
-    procedure CreateBreakPoint(const ALine: Integer);
-    procedure SetBreakPointMark(const ALine: Integer; const AType: TSrcEditMarkerType);
-    function  GetBreakPointMark(const ALine: Integer): TSynEditMark;
-    function  IsBreakPointMark(const AMark: TSynEditMark): Boolean;
-    procedure RemoveBreakPoint(const ALine: Integer); overload;
-    procedure RemoveBreakPoint(const ABreakPointMark: TSynEditMark); overload;
+    //procedure CreateBreakPoint(const ALine: Integer);
+    //procedure SetBreakPointMark(const ALine: Integer; const AType: TSrcEditMarkerType);
+    //function  GetBreakPointMark(const ALine: Integer): TSynEditMark;
+    //function  IsBreakPointMark(const AMark: TSynEditMark): Boolean;
+    //procedure RemoveBreakPoint(const ALine: Integer); overload;
+    //procedure RemoveBreakPoint(const ABreakPointMark: TSynEditMark); overload;
 
     // selections
     function SelectionAvailable: boolean;
@@ -317,6 +302,8 @@ type
   end;
   
   //============================================================================
+  
+  { TSourceNotebook }
 
   TJumpHistoryAction = (jhaBack, jhaForward);
  
@@ -356,6 +343,7 @@ type
     procedure MoveEditorLeftClicked(Sender: TObject);
     procedure MoveEditorRightClicked(Sender: TObject);
     procedure EditorPropertiesClicked(Sender: TObject);
+    Procedure NotebookPageChanged(Sender : TObject);
   private
     FCodeTemplateModul: TSynEditAutoComplete;
     FFormEditor : TFormEditor;
@@ -411,8 +399,7 @@ type
     procedure UpdateActiveEditColors;
     procedure SetIncrementalSearchStr(const AValue: string);
   protected
-    ccSelection : String;
-    MarksImgList : TImageList;
+    ccSelection: String;
     States: TSourceNotebookStates;
      
     Function CreateNotebook : Boolean;
@@ -455,8 +442,13 @@ type
     Procedure ParentCommandProcessed(Sender: TObject; 
        var Command: TSynEditorCommand; var AChar: char; Data: pointer;
        var Handled: boolean);
+
+    // marks
     function FindBookmark(BookmarkID: integer): TSourceEditor;
-    function GetEditors(Index:integer):TSourceEditor;
+    function OnSourceMarksGetSourceEditor(ASynEdit: TCustomSynEdit): TObject;
+    function OnSourceMarksGetFilename(ASourceEditor: TObject): string;
+
+    function GetEditors(Index:integer): TSourceEditor;
     
     procedure KeyDown(var Key: Word; Shift: TShiftState); override;
     
@@ -466,24 +458,26 @@ type
     FindReplaceDlgHistoryIndex: array[TFindDlgComponent] of integer;
     FindReplaceDlgUserText: array[TFindDlgComponent] of string;
 
-    Procedure NotebookPageChanged(Sender : TObject);
+    constructor Create(AOwner: TComponent); override;
+    destructor Destroy; override;
 
     property Editors[Index:integer]:TSourceEditor read GetEditors;
     function EditorCount:integer;
+    
     function FindSourceEditorWithPageIndex(PageIndex:integer):TSourceEditor;
     function FindPageWithEditor(ASourceEditor: TSourceEditor):integer;
     function FindSourceEditorWithEditorComponent(
-      EditorComp: TComponent): TSourceEditor;
+                                         EditorComp: TComponent): TSourceEditor;
+    function FindSourceEditorWithFilename(const Filename: string): TSourceEditor;
     Function GetActiveSE : TSourceEditor;
     procedure SetActiveSE(SrcEdit: TSourceEditor);
+    
     procedure LockAllEditorsInSourceChangeCache;
     procedure UnlockAllEditorsInSourceChangeCache;
     function GetDiffFiles: TDiffFiles;
     procedure GetSourceText(PageIndex: integer; OnlySelection: boolean;
                             var Source: string);
 
-    constructor Create(AOwner: TComponent); override;
-    destructor Destroy; override;
     Function ActiveFileName : AnsiString;
     Function FindUniquePageName(FileName:string; IgnorePageIndex:integer):string;
     function SomethingModified: boolean;
@@ -626,7 +620,7 @@ type
 implementation
 
 
-const
+{const OldDebug
   SrcEditMarkerImgIndex: array[TSrcEditMarkerType] of integer = (
        10,  // active breakpoint
        11,  // inactive breakpoint
@@ -637,7 +631,7 @@ const
        14,  // multi invalid breakpoint
        14,  // multi unknown breakpoint
        14   // multi mixed breakpoint
-    );
+    );}
 
 var
   Highlighters: array[TLazSyntaxHighlighter] of TSynCustomHighlighter;
@@ -692,6 +686,8 @@ begin
   if (FAOwner<>nil) and (FEditor<>nil) then begin
     FEditor.Visible:=false;
     FEditor.Parent:=nil;
+    if SourceEditorMarks<>nil then
+      SourceEditorMarks.DeleteAllForEditor(FEditor);
     TSourceNoteBook(FAOwner).FSourceEditorList.Remove(Self);
     TSourceNoteBook(FAOwner).FUnUsedEditorComponents.Add(FEditor);
   end;
@@ -1158,6 +1154,8 @@ Begin
   UpdatePageName;
 end;
 
+{ OldDebug
+
 function TSourceEditor.IsBreakPointMark(
   const AMark: TSynEditMark): Boolean;
 begin
@@ -1190,9 +1188,9 @@ begin
   Result := nil;
 end;
 
-procedure TSourceEditor.CreateBreakPoint (const ALine: Integer);
+procedure TSourceEditor.CreateBreakPoint(const ALine: Integer);
 begin
-  SetBreakPointMark(Aline, semUnknownBreakpoint);
+  //SetBreakPointMark(ALine, semUnknownBreakpoint);
   DebugBoss.DoCreateBreakPoint(FileName, ALine);
 end;
 
@@ -1227,7 +1225,7 @@ begin
   ABreakPointMark.Free;
   DebugBoss.DoDeleteBreakPoint(FileName, OldLine);
   FModified:=true;
-end;
+end;}
 
 function TSourceEditor.SelectionAvailable: boolean;
 begin
@@ -1430,24 +1428,28 @@ end;
 
 procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;
   mark: TSynEditMark);
-var 
-  BreakPtMark: TSynEditMark;
+var
+  BreakPtMark: TSourceMark;
 begin
   // create or delete breakpoint
   // find breakpoint mark at line
-  BreakPtMark := GetBreakPointMark(Line);
-  if BreakPtMark = nil
-  then CreateBreakPoint(Line)
-  else RemoveBreakPoint(BreakPtMark);
+  BreakPtMark := SourceEditorMarks.FindBreakPointMark(FEditor,Line);
+writeln('TSourceEditor.OnGutterClick A ',BreakPtMark<>nil);
+  if BreakPtMark = nil then
+    DebugBoss.DoCreateBreakPoint(Filename,Line)
+  else
+    DebugBoss.DoDeleteBreakPointAtMark(BreakPtMark);
 end;
 
 procedure TSourceEditor.OnEditorSpecialLineColor(Sender: TObject; Line: integer;
   var Special: boolean; var FG, BG: TColor);
 var 
   i:integer;
-  AllMarks: TSynEditMarks;
   aha: TAdditionalHilightAttribute;
-  ImgIndex: Integer;
+  CurMarks: PSourceMark;
+  CurMarkCount: integer;
+  CurFG: TColor;
+  CurBG: TColor;
 begin
   aha := ahaNone;
   
@@ -1460,35 +1462,25 @@ begin
     aha := ahaExecutionPoint;
   end 
   else begin
-    fEditor.Marks.GetMarksForLine(Line, AllMarks);
-    for i := 1 to maxMarks do 
-    begin
-      if (AllMarks[i] <> nil) 
-      then begin
-        ImgIndex:=AllMarks[i].ImageIndex;
-        if (ImgIndex = SrcEditMarkerImgIndex[semActiveBreakPoint])
-          or (ImgIndex = SrcEditMarkerImgIndex[semMultiActiveBreakPoint])
-        then
-          aha := ahaEnabledBreakpoint
-        else if (ImgIndex = SrcEditMarkerImgIndex[semInactiveBreakPoint])
-          or (ImgIndex = SrcEditMarkerImgIndex[semMultiInactiveBreakPoint])
-        then
-          aha := ahaDisabledBreakpoint
-        else if (ImgIndex = SrcEditMarkerImgIndex[semInvalidBreakPoint])
-          or (ImgIndex = SrcEditMarkerImgIndex[semMultiInvalidBreakPoint])
-        then
-          aha := ahaInvalidBreakpoint
-        else if (ImgIndex = SrcEditMarkerImgIndex[semUnknownBreakPoint])
-          or (ImgIndex = SrcEditMarkerImgIndex[semMultiUnknownBreakPoint])
-        then
-          aha := ahaUnknownBreakpoint
-        else if (ImgIndex = SrcEditMarkerImgIndex[semMultiMixedBreakPoint])
-        then
-          aha := ahaEnabledBreakpoint
-        else
-          Continue;
-        Break;
+    SourceEditorMarks.GetMarksForLine(FEditor,Line,CurMarks,CurMarkCount);
+    if CurMarkCount>0 then begin
+      for i := 0 to CurMarkCount-1 do begin
+        // check highlight attribute
+        aha := CurMarks[i].LineColorAttrib;
+        if aha<>ahaNone then break;
+        
+        // check custom colors
+        CurFG:=CurMarks[i].LineColorForeGround;
+        CurBG:=CurMarks[i].LineColorBackGround;
+        if (CurFG<>clNone) or (CurBG<>clNone) then begin
+          FG:=CurFG;
+          BG:=CurBG;
+          Special:=true;
+          break;
+        end;
       end;
+      // clean up
+      FreeMem(CurMarks);
     end;
   end;
   if aha <> ahaNone 
@@ -1576,6 +1568,7 @@ Begin
       Parent := AParent;
       Align := alClient;
       BookMarkOptions.EnableKeys := false;
+      BookMarkOptions.LeftMargin:=1;
       OnStatusChange := @EditorStatusChanged;
       OnProcessCommand := @ProcessCommand;
       OnProcessUserCommand := @ProcessUserCommand;
@@ -1839,6 +1832,7 @@ Begin
 
   Visible := False;
   aCompletion.RemoveEditor(FEditor);
+  SourceEditorMarks.DeleteAllForEditor(FEditor);
   FEditor.Parent:=nil;
   CodeBuffer := nil;
   If Assigned(FOnAfterClose) then FOnAfterClose(Self);
@@ -2037,25 +2031,21 @@ end;
                       { TSourceNotebook }
 
 constructor TSourceNotebook.Create(AOwner: TComponent);
-var
-  Pixmap1 : TPixmap;
-  I : Integer;
-  ALayout: TIDEWindowLayout;
 begin
   inherited Create(AOwner);
   Visible:=false;
   Name:=NonModalIDEWindowNames[nmiwSourceNoteBookName];
-  Caption := locwndSrcEditor;
+  Caption := locWndSrcEditor;
   FProcessingCommand := false;
 
   FMainIDE := AOwner;
 
-  ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
-  ALayout.Form:=TForm(Self);
-  ALayout.Apply;
+  EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
 
   FSourceEditorList := TList.Create;
   FUnUsedEditorComponents := TList.Create;
+  
+  // code templates
   FCodeTemplateModul:=TSynEditAutoComplete.Create(Self);
   with FCodeTemplateModul do begin
     if FileExists(EditorOpts.CodeTemplateFilename) then
@@ -2067,6 +2057,8 @@ begin
     OnTokenNotFound:=@OnCodeTemplateTokenNotFound;
     EndOfTokenChr:=' ()[]{},.;:"+-*^@$\<>=''';
   end;
+  
+  // word completion
   if aWordCompletion=nil then begin
     aWordCompletion:=TWordCompletion.Create;
     with AWordCompletion do begin
@@ -2074,49 +2066,25 @@ begin
       OnGetSource:=@OnWordCompletionGetSource;
     end;
   end;
-  BuildPopupMenu;
 
+  // identifier completion
+  IdentCompletionTimer := TTimer.Create(self);
+  IdentCompletionTimer.Enabled := False;
+  IdentCompletionTimer.Interval := 500;
 
-  MarksImgList := TImageList.Create(AOwner);
-  MarksImgList.Width:=11;
-  MarksImgList.Height:=11;
+  // marks
+  SourceEditorMarks:=TSourceMarks.Create(Self);
+  SourceEditorMarks.OnGetSourceEditor:=@OnSourceMarksGetSourceEditor;
+  SourceEditorMarks.OnGetFilename:=@OnSourceMarksGetFilename;
 
-  // load 10 bookmark images
-  for I := 0 to 9 do Begin
-    Pixmap1:=TPixMap.Create;
-    Pixmap1.TransparentColor:=clBtnFace;
-    Pixmap1.LoadFromLazarusResource('bookmark'+IntToStr(i));
-    MarksImgList.Add(Pixmap1,nil);
-  end;
-  // load active breakpoint image
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  Pixmap1.LoadFromLazarusResource('ActiveBreakPoint');
-  MarksImgList.Add(Pixmap1,nil);
-  // load inactive breakpoint image
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  Pixmap1.LoadFromLazarusResource('InactiveBreakPoint');
-  MarksImgList.Add(Pixmap1,nil);
-  // load invalid breakpoint image
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  Pixmap1.LoadFromLazarusResource('InvalidBreakPoint');
-  MarksImgList.Add(Pixmap1,nil);
-  // load unknown breakpoint image
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  Pixmap1.LoadFromLazarusResource('UnknownBreakPoint');
-  MarksImgList.Add(Pixmap1,nil);
-  // load multi mixed breakpoint image
-  Pixmap1:=TPixMap.Create;
-  Pixmap1.TransparentColor:=clBtnFace;
-  Pixmap1.LoadFromLazarusResource('MultiBreakPoint');
-  MarksImgList.Add(Pixmap1,nil);
-
+  // key mapping
   FKeyStrokes:=TSynEditKeyStrokes.Create(Self);
   EditorOpts.KeyMap.AssignTo(FKeyStrokes,[caSourceEditor]);
 
+  // popup menu
+  BuildPopupMenu;
+
+  // completion form
   aCompletion := TSynCompletion.Create(AOwner);
     with aCompletion do
       Begin
@@ -2130,7 +2098,7 @@ begin
         ShortCut:=Menus.ShortCut(VK_UNKNOWN,[]);
       end;
 
-
+  // statusbar
   StatusBar := TStatusBar.Create(self);
     with Statusbar do
       begin
@@ -2157,11 +2125,8 @@ begin
        SimplePanel := False;
       end;
 
+  // goto dialog
   GotoDialog := TfrmGoto.Create(self);
-
-  IdentCompletionTimer := TTimer.Create(self);
-  IdentCompletionTimer.Enabled := False;
-  IdentCompletionTimer.Interval := 500;
 
   // HintTimer
   FHintTimer := TTimer.Create(nil);
@@ -2805,6 +2770,20 @@ begin
   end;
 end;
 
+function TSourceNotebook.OnSourceMarksGetFilename(ASourceEditor: TObject
+  ): string;
+begin
+  if (ASourceEditor=nil) or (not (ASourceEditor is TSourceEditor)) then
+    RaiseException('TSourceNotebook.OnSourceMarksGetFilename');
+  Result:=TSourceEditor(ASourceEditor).Filename;
+end;
+
+function TSourceNotebook.OnSourceMarksGetSourceEditor(ASynEdit: TCustomSynEdit
+  ): TObject;
+begin
+  Result:=FindSourceEditorWithEditorComponent(ASynEdit);
+end;
+
 Procedure TSourceNotebook.BuildPopupMenu;
 
   Function Seperator : TMenuItem;
@@ -2986,7 +2965,8 @@ Begin
   Result.CodeTemplates:=CodeTemplateModul;
   Notebook.PageIndex := Pagenum;
   Result.FPageName:=NoteBook.Pages[Pagenum];
-  Result.EditorComponent.BookMarkOptions.BookmarkImages := MarksImgList;
+  Result.EditorComponent.BookMarkOptions.BookmarkImages :=
+                                                      SourceEditorMarks.ImgList;
   Result.PopupMenu:=SrcPopupMenu;
   Result.OnEditorChange := @EditorChanged;
   Result.OnMouseMove := @EditorMouseMove;
@@ -3783,10 +3763,19 @@ function TSourceNotebook.FindSourceEditorWithEditorComponent(
 var i: integer;
 begin
   for i:=0 to EditorCount-1 do begin
-    if Editors[i].EditorComponent=EditorComp then begin
-      Result:=Editors[i];
-      exit;
-    end;
+    Result:=Editors[i];
+    if Result.EditorComponent=EditorComp then exit;
+  end;
+  Result:=nil;
+end;
+
+function TSourceNotebook.FindSourceEditorWithFilename(const Filename: string
+  ): TSourceEditor;
+var i: integer;
+begin
+  for i:=0 to EditorCount-1 do begin
+    Result:=Editors[i];
+    if CompareFilenames(Result.Filename,Filename)=0 then exit;
   end;
   Result:=nil;
 end;
