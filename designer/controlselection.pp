@@ -695,8 +695,10 @@ begin
     NewTop:=FTop;
     NewRight:=FLeft+FWidth;
     NewBottom:=FTop+FHeight;
-writeln('[TControlSelection.DoApplyUserBounds] S Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
-' User=',FLeft,',',FTop,',',FWidth,',',FHeight);
+    {$IFDEF VerboseDesigner}
+    writeln('[TControlSelection.DoApplyUserBounds] S Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
+    ' User=',FLeft,',',FTop,',',FWidth,',',FHeight);
+    {$ENDIF}
     Items[0].SetBounds(
       Min(NewLeft,NewRight),
       Min(NewTop,NewBottom),
@@ -705,8 +707,10 @@ writeln('[TControlSelection.DoApplyUserBounds] S Old=',FOldLeft,',',FOldTop,',',
     );
   end else if Count>1 then begin
     // multi selection
-writeln('[TControlSelection.DoApplyUserBounds] M Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
-' User=',FLeft,',',FTop,',',FWidth,',',FHeight);
+    {$IFDEF VerboseDesigner}
+    writeln('[TControlSelection.DoApplyUserBounds] M Old=',FOldLeft,',',FOldTop,',',FOldWidth,',',FOldHeight,
+    ' User=',FLeft,',',FTop,',',FWidth,',',FHeight);
+    {$ENDIF}
     if (FOldWidth<>0) and (FOldHeight<>0) then begin
       for i:=0 to Count-1 do begin
       
@@ -727,8 +731,10 @@ writeln('[TControlSelection.DoApplyUserBounds] M Old=',FOldLeft,',',FOldTop,',',
         end;
         if NewHeight<1 then NewHeight:=1;
         Items[i].SetBounds(NewLeft,NewTop,NewWidth,NewHeight);
-writeln('  i=',i,
-' ',Items[i].Left,',',Items[i].Top,',',Items[i].Width,',',Items[i].Height);
+        {$IFDEF VerboseDesigner}
+        writeln('  i=',i,
+        ' ',Items[i].Left,',',Items[i].Top,',',Items[i].Width,',',Items[i].Height);
+        {$ENDIF}
       end;
     end;
   end;
@@ -1286,13 +1292,17 @@ procedure TControlSelection.MoveSelectionWithSnapping(TotalDX, TotalDY: integer
   );
 begin
   if (Count=0) or (IsResizing) then exit;
+  {$IFDEF VerboseDesigner}
   writeln('[TControlSelection.MoveSelectionWithSnapping] A  ',
     TotalDX,',',TotalDY);
+  {$ENDIF}
   BeginResizing;
   FLeft:=FindNearestSnapLeft(FOldLeft+TotalDX,FWidth);
   FTop:=FindNearestSnapTop(FOldTop+TotalDY,FHeight);
+  {$IFDEF VerboseDesigner}
   writeln('[TControlSelection.MoveSelectionWithSnapping] B  ',
     FLeft,',',FTop,',',FWidth,',',FHeight);
+  {$ENDIF}
   EndResizing(true);
 end;
 
@@ -1304,7 +1314,9 @@ var
 begin
   if (Count=0) or (IsResizing) then exit;
   if (dx=0) and (dy=0) then exit;
+  {$IFDEF VerboseDesigner}
   writeln('[TControlSelection.SizeSelection] A  ',dx,',',dy);
+  {$ENDIF}
   BeginResizing;
   if FActiveGrabber<>nil then
     GrabberPos:=FActiveGrabber.Positions
@@ -1346,8 +1358,10 @@ function TControlSelection.GrabberAtPos(X,Y:integer):TGrabber;
 var g:TGrabIndex;
 begin
   if FControls.Count>0 then begin
+    {$IFDEF VerboseDesigner}
     writeln('[TControlSelection.GrabberAtPos] ',x,',',y,'  '
     ,FGrabbers[4].Left,',',FGrabbers[4].Top);
+    {$ENDIF}
     for g:=Low(TGrabIndex) to High(TGrabIndex) do
       if (FGrabbers[g].Left<=x) and (FGrabbers[g].Top<=y)
       and (FGrabbers[g].Left+FGrabbers[g].Width>x)

@@ -143,6 +143,7 @@ type
     procedure ValidateRename(AComponent: TComponent;
        const CurName, NewName: string); override;
     Procedure SelectOnlyThisComponent(AComponent:TComponent);
+    function NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
     function NonVisualComponentAtPos(x,y: integer): TComponent;
     procedure DrawNonVisualComponents(DC: HDC);
 
@@ -258,6 +259,14 @@ begin
   ControlSelection.Clear;
   ControlSelection.Add(TControl(AComponent));
   ControlSelection.EndUpdate;
+end;
+
+function TDesigner.NonVisualComponentLeftTop(AComponent: TComponent): TPoint;
+begin
+  Result.X:=Min(LongRec(AComponent.DesignInfo).Lo,
+                Form.ClientWidth-NonVisualCompWidth);
+  Result.Y:=Min(LongRec(AComponent.DesignInfo).Hi,
+                Form.ClientHeight-NonVisualCompWidth);
 end;
 
 procedure TDesigner.InvalidateWithParent(AComponent: TComponent);
@@ -634,6 +643,7 @@ begin
       ControlSelection.SizeSelection(
         LastMouseMovePos.X-OldMouseMovePos.X,
         LastMouseMovePos.Y-OldMouseMovePos.Y);
+      FCustomForm.Invalidate;
       if Assigned(OnModified) then OnModified(Self);
     end else begin
       if (not ComponentIsTopLvl(MouseDownComponent))
@@ -648,6 +658,7 @@ begin
         ControlSelection.MoveSelectionWithSnapping(
           LastMouseMovePos.X-MouseDownPos.X,LastMouseMovePos.Y-MouseDownPos.Y);
         if Assigned(OnModified) then OnModified(Self);
+        FCustomForm.Invalidate;
       end
       else
       begin
@@ -902,7 +913,7 @@ procedure TDesigner.DrawNonVisualComponents(DC: HDC);
 var
   i, j, ItemLeft, ItemTop, ItemRight, ItemBottom,
   IconWidth, IconHeight: integer;
-  FormOrigin, DCOrigin, Diff: TPoint;
+  FormOrigin, DCOrigin, Diff, ItemLeftTop: TPoint;
   SaveIndex: HDC;
   IconRect: TRect;
   IconCanvas: TCanvas;
@@ -916,8 +927,9 @@ begin
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     if not (FCustomForm.Components[i] is TControl) then begin
       // non-visual component
-      ItemLeft:=LongRec(FCustomForm.Components[i].DesignInfo).Lo+Diff.X;
-      ItemTop:=LongRec(FCustomForm.Components[i].DesignInfo).Hi+Diff.Y;
+      ItemLeftTop:=NonVisualComponentLeftTop(FCustomForm.Components[i]);
+      ItemLeft:=ItemLeftTop.X+Diff.X;
+      ItemTop:=ItemLeftTop.Y+Diff.Y;
       ItemRight:=ItemLeft+NonVisualCompWidth;
       ItemBottom:=ItemTop+NonVisualCompWidth;
       with FCustomForm.Canvas do begin
@@ -962,17 +974,17 @@ begin
 end;
 
 function TDesigner.NonVisualComponentAtPos(x,y: integer): TComponent;
-var i, ALeft, ATop: integer;
+var i: integer;
+  LeftTop: TPoint;
 begin
   for i:=FCustomForm.ComponentCount-1 downto 0 do begin
     Result:=FCustomForm.Components[i];
-    if (Result is TControl)=false then begin
+    if not (Result is TControl) then begin
       with Result do begin
-        ALeft:=LongRec(DesignInfo).Lo;
-        ATop:=LongRec(DesignInfo).Hi;
-        if (ALeft<=x) and (ATop<=y)
-        and (ALeft+NonVisualCompWidth>x)
-        and (ATop+NonVisualCompWidth>y) then
+        LeftTop:=NonVisualComponentLeftTop(Result);
+        if (LeftTop.x<=x) and (LeftTop.y<=y)
+        and (LeftTop.x+NonVisualCompWidth>x)
+        and (LeftTop.y+NonVisualCompWidth>y) then
           exit;
       end;
     end;
