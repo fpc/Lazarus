@@ -466,6 +466,12 @@ type
   { TControl }
   
   TControlShowHintEvent = procedure(Sender: TObject; HintInfo: Pointer) of object;
+  
+  TControlFlag = (
+    cfRequestAlignNeeded
+    );
+  TControlFlags = set of TControlFlag;
+
 
   TControl = class(TComponent)
   private
@@ -478,6 +484,7 @@ type
     FBaseParentClientSize: TPoint;
     FCaption : TCaption;
     FColor : TColor;
+    FControlFlags: TControlFlags;
     FConstraints : TSizeConstraints;
     FControlStyle: TControlStyle;
     FCtl3D : Boolean;
@@ -486,7 +493,7 @@ type
     FDragKind : TDragKind;
     FDragMode : TDragMode;
     FEnabled : Boolean;
-    FFont : TFont;
+    FFont: TFont;
     FHeight: Integer;
     FHelpContext: THelpContext;
     FHelpKeyword: String;
@@ -524,6 +531,7 @@ type
     FParentShowHint : Boolean;
     FPopupMenu : TPopupMenu;
     FShowHint : Boolean;
+    FSizeLock: integer;
     FText : TCaption;
     FTop: Integer;
     FWidth: Integer;
@@ -609,6 +617,7 @@ type
     function  GetPalette: HPalette; virtual;
     procedure DoOnResize; virtual;
     procedure Resize; virtual;
+    procedure Loaded; override;
     procedure RequestAlign; dynamic;
     procedure UpdateBaseBounds; virtual;
     procedure LockBaseBounds;
@@ -788,7 +797,6 @@ type
     wcfClientRectNeedsUpdate,
     wcfColorChanged,
     wcfReAlignNeeded,
-    wcfRequestAlignNeeded,
     wcfAligningControls
     );
   TWinControlFlags = set of TWinControlFlag;
@@ -837,12 +845,12 @@ type
     procedure AdjustSize; override;
     procedure AdjustClientRect(var Rect: TRect); virtual;
     procedure AlignControls(AControl : TControl; var ARect: TRect); virtual;
-    procedure BoundsChanged; override;
     Function CanTab: Boolean; override;
     Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
     procedure CMVisibleChanged(var TheMessage: TLMessage); message CM_VISIBLECHANGED;
     procedure ControlsAligned; virtual;
+    procedure RealizeBounds;
     procedure CreateSubClass(var Params: TCreateParams;ControlClassName: PChar);
     procedure CreateComponent(TheOwner: TComponent); virtual;
     procedure DestroyComponent;
@@ -879,8 +887,7 @@ type
     procedure KeyPress(var Key : Char); dynamic;
     procedure KeyUp(var Key : Word; Shift : TShiftState); dynamic;
     procedure MainWndProc(var Message : TLMessage);
-    procedure ReAlign;
-    procedure RequestAlign; override;
+    procedure ReAlign; // realign all childs
     procedure ReCreateWnd;
     procedure RemoveFocus(Removing: Boolean);
     procedure SetText(const Value: TCaption); override;
@@ -1501,6 +1508,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.125  2003/06/11 22:29:42  mattias
+  fixed realizing bounds after loading form
+
   Revision 1.124  2003/06/10 17:23:34  mattias
   implemented tabstop
 

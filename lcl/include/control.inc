@@ -125,6 +125,18 @@ var
   SizeChanged, PosChanged : boolean;
   ARight: Integer;
   ABottom: Integer;
+  OldLeft: Integer;
+  OldTop: Integer;
+  OldWidth: Integer;
+  OldHeight: Integer;
+  
+  function UpdatePosSizeChanged: boolean;
+  begin
+    SizeChanged:= (FWidth <> OldWidth) or (FHeight <> OldHeight);
+    PosChanged:= (FLeft <> OldLeft) or (FTop <> OldTop);
+    Result:=(not SizeChanged) and (not PosChanged);
+  end;
+  
 begin
   // constraint the size
   DoConstrainedResize(AWidth, AHeight);
@@ -139,11 +151,16 @@ begin
   then exit;
   FLastChangeboundRect:=Rect(ALeft,ATop,AWidth,AHeight);
 
+  OldLeft:=FLeft;
+  OldTop:=FTop;
+  OldWidth:=FWidth;
+  OldHeight:=FHeight;
+
   // check if something would change
   SizeChanged:= (FWidth <> AWidth) or (FHeight <> AHeight);
   PosChanged:= (FLeft <> ALeft) or (FTop <> ATop);
   if (not SizeChanged) and (not PosChanged) then exit;
-
+  
   {If AutoSize and not AutoSizing then begin
     If SizeChanged then begin
       DoAutoSize;
@@ -155,9 +172,6 @@ begin
     end;
   end;}
 
-  //FLastResize.X:= AWidth - FWidth;
-  //FLastResize.Y:= AHeight - FHeight;
-
   //writeln('TControl.ChangeBounds A ',Name,':',ClassName);
   if (not (csLoading in ComponentState))
   and (not (Self is TWinControl)) then
@@ -165,25 +179,57 @@ begin
   //writeln('TControl.ChangeBounds B ',Name,':',ClassName);
   DoSetBounds(ALeft,ATop,AWidth,AHeight);
 
+  // change base bounds
+  // (base bounds are the base for the automatic resizing)
   UpdateAnchorRules;
+  // lock the base bounds while automatic resizing
   LockBaseBounds;
+  // lock size messages
+  inc(FSizeLock);
   try
-    BoundsChanged;
-    //if csDesigning in ComponentState then
-    //  writeln('TControl.ChangeBounds ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
-    RequestAlign;
-    if (not (csLoading in ComponentState)) then begin
-      Resize;
-      SendMoveSizeMessages(SizeChanged,PosChanged);
+    // lock the autosizing of the child controls
+    if Self is TWinControl then
+      TWinControl(Self).DisableAlign;
+    try
+      // resize parents client area
+      If Parent <> nil then
+        Parent.DoAutoSize;
+      if UpdatePosSizeChanged then exit;
+      // notify before autosizing
+      BoundsChanged;
+      if UpdatePosSizeChanged then exit;
+      //if csDesigning in ComponentState then
+      //  writeln('TControl.ChangeBounds ',Name,':',ClassName,' ',Left,',',Top,',',Width,',',Height);
+      // autosize this control and its brothers
+      RequestAlign;
+      if UpdatePosSizeChanged then exit;
+      // autosize childs
+      if SizeChanged and (Self is TWinControl) then
+        TWinControl(Self).ReAlign;
+    finally
+      // unlock the autosizing of the child controls
+      // (this will autosize the childs)
+      if Self is TWinControl then
+        TWinControl(Self).EnableAlign;
     end;
-    If Parent <> nil then
-      Parent.DoAutoSize;
-    if SizeChanged
-    and (not (csLoading in ComponentState))
-    and (not (Self is TWinControl)) then
-      Invalidate;
   finally
+    dec(FSizeLock);
     UnlockBaseBounds;
+  end;
+  if UpdatePosSizeChanged then exit;
+
+  // send messages, if this is the top level call
+  if FSizeLock>0 then exit;
+
+  // invalidate
+  if SizeChanged
+  and (not (csLoading in ComponentState))
+  and (not (Self is TWinControl)) then
+    Invalidate;
+  // notify user about resize
+  if (not (csLoading in ComponentState)) then begin
+    Resize;
+    SendMoveSizeMessages(SizeChanged,PosChanged);
   end;
 end;
 
@@ -195,6 +241,13 @@ end;
 -------------------------------------------------------------------------------}
 procedure TControl.DoSetBounds(ALeft, ATop, AWidth, AHeight : integer);
 begin
+  {$IFDEF CHECK_POSITION}
+  if csDesigning in ComponentState then
+    writeln('TControl.DoSetBounds ',Name,':',ClassName,
+      ' Old=',Left,',',Top,',',Width,',',Height,
+      ' New=',aLeft,',',aTop,',',aWidth,',',aHeight,
+      '');
+  {$ENDIF}
   FLeft:= ALeft;
   FTop:= ATop;
   FWidth:= AWidth;
@@ -1591,6 +1644,15 @@ begin
   end;
 end;
 
+procedure TControl.Loaded;
+begin
+  inherited Loaded;
+  UpdateBaseBounds;
+  // align this control and the brothers
+  if cfRequestAlignNeeded in FControlFlags then
+    RequestAlign;
+end;
+
 {------------------------------------------------------------------------------}
 {  TControl SetBounds                                                          }
 {------------------------------------------------------------------------------}
@@ -1621,12 +1683,18 @@ end;
 
 {------------------------------------------------------------------------------
   TControl RequestAlign
+  
+  Requests the parent to realign all brothers
 ------------------------------------------------------------------------------}
 procedure TControl.RequestAlign;
 begin
-  if (Parent <> nil) then begin
-    Parent.AlignControl(Self);
+  if (Parent = nil) then exit;
+  if (csLoading in ComponentState) or (not Parent.HandleAllocated) then begin
+    Include(FControlFlags,cfRequestAlignNeeded);
+    exit;
   end;
+  Parent.AlignControl(Self);
+  Exclude(FControlFlags,cfRequestAlignNeeded);
 end;
 
 procedure TControl.UpdateBaseBounds;
@@ -1644,7 +1712,8 @@ begin
   and (NewBaseParentClientSize.X=FBaseParentClientSize.X)
   and (NewBaseParentClientSize.Y=FBaseParentClientSize.Y)
   then exit;
-  {writeln('TControl.UpdateBaseBounds ',Name,':',ClassName,
+  {if csDesigning in ComponentState then
+  writeln('TControl.UpdateBaseBounds ',Name,':',ClassName,
     ' OldBounds=',FBaseBounds.Left,',',FBaseBounds.Top,',',FBaseBounds.Right-FBaseBounds.Left,',',FBaseBounds.Bottom-FBaseBounds.Top,
     ' OldClientSize=',FBaseParentClientSize.X,',',FBaseParentClientSize.Y,
     ' NewBounds=',NewBaseBounds.Left,',',NewBaseBounds.Top,',',NewBaseBounds.Right-NewBaseBounds.Left,',',NewBaseBounds.Bottom-NewBaseBounds.Top,
@@ -2236,6 +2305,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.131  2003/06/11 22:29:42  mattias
+  fixed realizing bounds after loading form
+
   Revision 1.130  2003/06/10 17:23:34  mattias
   implemented tabstop
 
