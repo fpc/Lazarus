@@ -56,7 +56,8 @@ begin
   Result := True;
 end;
 
-function TInterfaceBase.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; 
+function TInterfaceBase.BitBlt(DestDC: HDC; X, Y, Width, Height: Integer;
+  SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean;
 begin
   Result := False;
 end;
@@ -66,7 +67,8 @@ begin
   Result := false;
 end;
 
-function TInterfaceBase.CallNextHookEx(hhk : HHOOK; ncode : Integer; wParam, lParam : Longint) : Integer;
+function TInterfaceBase.CallNextHookEx(hhk : HHOOK; ncode : Integer;
+  wParam, lParam : Longint) : Integer;
 begin
   Result := 0;
 end;
@@ -1469,6 +1471,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.67  2002/11/12 10:16:16  lazarus
+  MG: fixed TMainMenu creation
+
   Revision 1.66  2002/11/09 15:02:07  lazarus
   MG: fixed LM_LVChangedItem, OnShowHint, small bugs
 
