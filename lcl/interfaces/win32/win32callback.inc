@@ -273,9 +273,11 @@ Begin
       PLMsg:=@LMKey;
       With LMKey Do
       Begin
-        Msg := LM_SYSKEYDOWN;
+        Msg := LM_KEYDOWN;
         KeyData := LParam;
         CharCode := WParam;
+        writeln('WM_KEYDOWN KeyData=',KeyData,' CharCode=',CharCode);
+        writeln('  OwnerObject=',TComponent(OwnerObject).Name,':',OwnerObject.ClassName);
       End;
     End;
     WM_KEYUP:
@@ -283,9 +285,10 @@ Begin
       PLMsg:=@LMKey;
       With LMKey Do
       Begin
-        Msg := LM_SYSKEYUP;
+        Msg := LM_KEYUP;
         KeyData := LParam;
         CharCode := WParam;
+        writeln('WM_KEYUP KeyData=',KeyData,' CharCode=',CharCode);
       End;
     End;
     WM_KILLFOCUS:
@@ -409,6 +412,7 @@ Begin
           XPos := LoWord(LParam);
           YPos := HiWord(LParam);
         end;  
+        Win32PosToLCLPos(OwnerObject, XPos, YPos);
       End;
     End;
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
@@ -434,7 +438,6 @@ Begin
             idFrom := SendMessage(HWndFrom, TCM_GETCURSEL, 0, 0);
           end;
         end;
-        Win32PosToLCLPos(OwnerObject, XPos, YPos);
       End;
     End;
     WM_PAINT:
@@ -642,6 +645,9 @@ end;
 
 {
   $Log$
+  Revision 1.49  2003/08/12 14:02:54  mattias
+  fixed keypress/keyup, createcaret on synedit focus
+
   Revision 1.48  2003/08/11 20:18:46  mattias
   fixed position of control in TGroupBox from Micha
 

@@ -101,9 +101,9 @@ begin
   if (Index >= 0) and
      (Index < fPageList.Count) then
   begin
+    NewPageIndex:=fNoteBook.PageIndex;
     if not (csLoading in fNoteBook.ComponentState) then begin
       // If that page is showing, then show the next page before deleting it
-      NewPageIndex:=fNoteBook.PageIndex;
       if (Index = fNoteBook.PageIndex) then begin
         if NewPageIndex<fPageList.Count-1 then
           // switch current page to next (right) page
@@ -756,6 +756,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.32  2003/08/12 14:02:54  mattias
+  fixed keypress/keyup, createcaret on synedit focus
+
   Revision 1.31  2003/06/10 17:23:35  mattias
   implemented tabstop
 

@@ -2493,7 +2493,7 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TWinControl.WMKeyDown(Var Message : TLMKeyDown);
 begin
-  Assert(False, Format('Trace:[TWinControl.WMKeyDown] %s', [ClassName]));
+  //writeln('TWinControl.WMKeyDown ',Name,':',ClassName);
   if not DoKeyDown(Message) then begin
     {inherited} ;  // there is nothing to inherit
   end;
@@ -2946,6 +2946,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.157  2003/08/12 14:02:54  mattias
+  fixed keypress/keyup, createcaret on synedit focus
+
   Revision 1.156  2003/07/30 13:03:44  mattias
   replaced label with memo
 

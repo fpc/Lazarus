@@ -205,9 +205,6 @@ End;
  ------------------------------------------------------------------------------}
 Procedure TWin32ListStringList.Insert(Index: Integer; Const S: String);
 Begin
-  If (FSender.FCompStyle = csComboBox) 
-  and (GetCount <> 0) Then
-    FSender.Height := (FSender.Height + (FSender.Height Div GetCount));
   If FSorted Then
     SendMessage(FWin32List,FFlagAddString, 0, LPARAM(PChar(S)))
   Else 
@@ -381,6 +378,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2003/08/12 14:02:54  mattias
+  fixed keypress/keyup, createcaret on synedit focus
+
   Revision 1.10  2003/07/28 06:42:42  mattias
   removed debuggging SetName, Patch from Karl Brandt
 

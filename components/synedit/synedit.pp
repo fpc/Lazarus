@@ -58,6 +58,8 @@ unit SynEdit;
 
 interface
 
+{ $DEFINE VerboseKeys}
+
 uses
 {$IFDEF SYN_LAZARUS}
   LCLLinux,
@@ -1735,8 +1737,10 @@ var
   C: char;
   Cmd: TSynEditorCommand;
 begin
-  //writeln('[TCustomSynEdit.KeyDown] ',Key
-  //  ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
+  {$IFDEF VerboseKeys}
+  writeln('[TCustomSynEdit.KeyDown] ',Key
+    ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
+  {$ENDIF}
   inherited;
   {$IFDEF SYN_LAZARUS}
   if fLastControlIsPressed<>(GetKeyShiftState=[ssCtrl]) then
@@ -1765,6 +1769,10 @@ end;
 {$IFDEF SYN_LAZARUS}
 procedure TCustomSynEdit.KeyUp(var Key: Word; Shift: TShiftState);
 begin
+  {$IFDEF VerboseKeys}
+  writeln('[TCustomSynEdit.KeyUp] ',Key
+    ,' Shift=',ssShift in Shift,' Ctrl=',ssCtrl in Shift,' Alt=',ssAlt in Shift);
+  {$ENDIF}
   inherited KeyUp(Key, Shift);
   if fLastControlIsPressed<>(GetKeyShiftState=[ssCtrl]) then
     UpdateCtrlMouse;
@@ -4209,8 +4217,7 @@ begin
   {$IFDEF VerboseFocus}
   writeln('[TCustomSynEdit.WMSetFocus] A ',Name,':',ClassName);
   {$ENDIF}
-  UpdateCaret;
-  //InitializeCaret;
+  InitializeCaret;
   //if FHideSelection and SelAvail then
   //  Invalidate;
   //writeln('[TCustomSynEdit.WMSetFocus] END');
@@ -5657,6 +5664,10 @@ end;
 procedure TCustomSynEdit.CommandProcessor(Command: TSynEditorCommand;
   AChar: char; Data: pointer);
 begin
+  {$IFDEF VerboseKeys}
+  writeln('[TCustomSynEdit.CommandProcessor] ',Command
+    ,' AChar=',AChar,' Data=',HexStr(Cardinal(Data),8));
+  {$ENDIF}
   // first the program event handler gets a chance to process the command
   DoOnProcessCommand(Command, AChar, Data);
   if Command <> ecNone then begin

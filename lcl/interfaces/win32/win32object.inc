@@ -653,7 +653,11 @@ activate_time :	the time at which the activation event occurred.
                 end
               end;
               R := Rect(Left, Top, R.Right - R.Left, R.Bottom - R.Top);
-                  ResizeChild(Sender, R.Left, R.Top, R.Right , R.Bottom);
+              {Adjust for scrollbar}
+//              if (Windows.GetWindowLong(TWinControl(Sender).Handle, GWL_STYLE) and WS_VSCROLL) <> 0 then
+//                R.Right := R.Right + GetSystemMetrics(SM_CXVSCROLL);
+//              if (Windows.GetWindowLong(TWinControl(Sender).Handle, GWL_STYLE) and WS_HSCROLL) <> 0 then
+//                R.Bottom := R.Bottom + GetSystemMetrics(SM_CYHSCROLL);                  ResizeChild(Sender, R.Left, R.Top, R.Right , R.Bottom);
             end;
           end;
         End;
@@ -2730,6 +2734,9 @@ End;
 
 {
   $Log$
+  Revision 1.83  2003/08/12 14:02:54  mattias
+  fixed keypress/keyup, createcaret on synedit focus
+
   Revision 1.82  2003/08/11 20:18:46  mattias
   fixed position of control in TGroupBox from Micha
 
