@@ -53,6 +53,7 @@ type
   protected
     procedure AppendText(Sender: TObject; Str: PChar); override;
     procedure CreateComponent(Sender : TObject); override;
+    function GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer; override;
     function GetText(Sender: TComponent; var Text: String): Boolean; override;
     procedure HookSignals(Sender: TObject); override;
     function IntSendMessage3(LM_Message : Integer; Sender : TObject; data : pointer) : integer; override;
@@ -61,6 +62,7 @@ type
     function SetProperties(Sender : TObject) : integer; override;
     procedure SetSelectionMode(Sender: TObject; Widget: PGtkWidget;
       MultiSelect, ExtendedSelect: boolean); override;
+    function SetTopIndex(Sender: TObject; NewTopIndex: integer): integer; override;
     procedure UpdateDCTextMetric(DC: TDeviceContext); override;
   public
     function BeginPaint(Handle: hWnd; Var PS : TPaintStruct) : hdc; override;
@@ -559,6 +561,9 @@ end.
 
 {
   $Log$
+  Revision 1.23  2003/10/02 18:15:44  ajgenius
+  more gtk2 (check)ListBox implementation
+
   Revision 1.22  2003/09/24 17:23:54  ajgenius
   more work toward GTK2 - partly fix CheckListBox, & MenuItems
 

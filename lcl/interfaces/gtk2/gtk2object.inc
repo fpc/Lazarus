@@ -23,13 +23,15 @@
 {$ENDIF}
 
 Procedure gtk_clb_toggle(cellrenderertoggle : PGtkCellRendererToggle; arg1 : PGChar;
-                         treeview : PGtkTreeView); cdecl;
+                         WinControl: TWinControl); cdecl;
 var
+  aWidget : PGTKWidget;
   aTreeModel : PGtkTreeModel;
   aTreeIter : TGtkTreeIter;
   value : pgValue;
 begin
-  aTreeModel := gtk_tree_view_get_model (treeview);
+  aWidget := GetWidgetInfo(Pointer(WinControl.Handle), True)^.ImplementationWidget;
+  aTreeModel := gtk_tree_view_get_model (GTK_TREE_VIEW(aWidget));
   if (gtk_tree_model_get_iter_from_string (aTreeModel, @aTreeIter, arg1)) then begin
     aTreeIter.stamp := GTK_LIST_STORE (aTreeModel)^.stamp; //strange hack
     value := g_new0(SizeOf(TgValue), 1);
@@ -63,6 +65,25 @@ begin
     g_free(value);
   end;
 end;
+
+{$IfNDef GTK2_2}
+Procedure gtkTreeSelectionCountSelectedRows(model : PGtkTreeModel; path : PGtkTreePath;
+                                  iter : PGtkTreeIter; data : PGint); cdecl;
+begin
+  If Assigned(Data) then
+    Inc(Data^);
+end;
+
+Type
+  PPGList = ^PGList;
+  
+Procedure gtkTreeSelectionGetSelectedRows(model : PGtkTreeModel; path : PGtkTreePath;
+                                  iter : PGtkTreeIter; data : PPGList); cdecl;
+begin
+  If Assigned(Data) then
+    Data^ := g_list_append(Data^, gtk_tree_path_copy(path));
+end;
+{$EndIf}
 
 {------------------------------------------------------------------------------
   procedure Tgtk2Object.AppendText(Sender: TObject; Str: PChar);
@@ -158,10 +179,10 @@ begin
         gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (column), TRUE);
         g_signal_connect (renderer, 'toggled',
 					  G_CALLBACK (@gtk_clb_toggle),
-					  TempWidget);
-        g_signal_connect (GTK_TREE_VIEW (TempWidget), 'row_activated',
+					  Sender);
+        g_signal_connect (TempWidget, 'row_activated',
 					  G_CALLBACK (@gtk_clb_toggle_row_activated),
-					  nil);
+					  Sender);
         TempInt := 1;
       end;
 
@@ -215,6 +236,36 @@ begin
   end; //end case
   StrDispose(StrTemp);
   FinishComponentCreate(Sender, P, SetupProps);
+end;
+
+{------------------------------------------------------------------------------
+  function Tgtk2Object.GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
+------------------------------------------------------------------------------}
+function Tgtk2Object.GetIndexAtY(Sender: TObject; PointerToY: Pointer): integer;
+var
+  aTreeView: PGtkTreeView;
+  aTreeColumn: PGtkTreeViewColumn;
+  aTreePath   : PGtkTreePath;
+  Y : Integer;
+begin
+  Result:=-1;
+  if not (Sender is TWinControl) then exit;
+  Y:=PInteger(PointerToY)^;
+  case TWinControl(Sender).fCompStyle of
+
+  csListBox, csCheckListBox:
+    begin
+      aTreeView := GTK_TREE_VIEW(GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.ImplementationWidget);
+
+      if gtk_tree_view_get_path_at_pos(aTreeView, 0, Y, aTreePath, aTreeColumn, nil, nil) then begin
+        result := gtk_tree_path_get_indices(aTreePath)[0];
+        gtk_tree_path_free(aTreePath);
+        exit;
+      end;
+
+      Result:=-1;
+    end;
+  end;
 end;
 
 function TGtk2Object.GetText(Sender: TComponent; var Text: String): Boolean;
@@ -309,8 +360,10 @@ var
   aTreeSelect : PGtkTreeSelection;
   aTreeModel  : PGtkTreeModel;
   aTreeIter   : TGtkTreeIter;
+  aTreePath   : PGtkTreePath;
   TempInt     : Integer;
   TempBool    : Boolean;
+  list        : pGList;
 begin
   Result := 0;   //default value just in case nothing sets it
 
@@ -364,6 +417,46 @@ begin
              (gtk_tree_model_iter_nth_child(aTreeModel,@aTreeIter, nil, Integer(Data^)))
           then
               gtk_list_store_set(GTK_LIST_STORE(aTreeModel), @aTreeIter, [0, TLMSetChecked(Data^).Checked, -1]);
+        end;
+      end;
+
+      LM_GETITEMINDEX :
+      begin
+        case TControl(Sender).fCompStyle of
+           csListBox, csCheckListBox:
+             begin
+               if Handle<>0 then begin
+                 Result:= -1;
+                 Widget := GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+                 aTreeSelect := gtk_tree_view_get_selection(GTK_TREE_VIEW(Widget));
+                 
+                 {$IfNDef GTK2_2}
+                  list := nil;
+                  gtk_tree_selection_selected_foreach(aTreeSelect, TGtkTreeSelectionForeachFunc(@gtkTreeSelectionGetSelectedRows), @List);
+                 {$Else}
+                  list := gtk_tree_selection_get_selected_rows(aTreeSelect, aTreeModel);
+                 {$EndIf}
+                  if not Assigned(List) then begin
+                    result := -1;
+                    exit;
+                  end;
+                  
+                  List := g_list_last(List);
+
+                  aTreePath := PGtkTreePath(List^.Data);
+                  Result := gtk_tree_path_get_indices(aTreePath)[0];
+
+                  List := g_list_first(List);
+
+                  g_list_foreach (list, TGFunc(@gtk_tree_path_free), nil);
+                  g_list_free (list);
+               end else
+                 Result:=-1;
+             end;
+            else begin
+              result := inherited  IntSendMessage3(LM_Message, Sender, data);
+              exit;
+            end;
         end;
       end;
 
@@ -443,6 +536,27 @@ begin
           end
         else
           Result:= 0;
+      end;
+
+      LM_GETSELCOUNT :
+      begin
+        case (Sender as TControl).fCompStyle of
+          csListBox, csCheckListBox :
+            begin
+              Widget := GetWidgetInfo(Pointer(Handle),True)^.ImplementationWidget;
+              aTreeSelect := gtk_tree_view_get_selection(GTK_TREE_VIEW(Widget));
+              {$IfNDef GTK2_2}
+              Result := 0;
+              gtk_tree_selection_selected_foreach(aTreeSelect, TGtkTreeSelectionForeachFunc(@gtkTreeSelectionCountSelectedRows), @Result);
+              {$Else}
+              Result := gtk_tree_selection_count_selected_rows(aTreeSelect);
+              {$EndIf}
+           end;
+          else begin
+            result := inherited  IntSendMessage3(LM_Message, Sender, data);
+            exit;
+          end;
+        end;
       end;
 
       LM_GETSELLEN :
@@ -872,6 +986,48 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function Tgtk2Object.SetTopIndex(Sender: TObject; NewTopIndex: integer
+    ): integer;
+------------------------------------------------------------------------------}
+function Tgtk2Object.SetTopIndex(Sender: TObject; NewTopIndex: integer
+  ): integer;
+var
+  aTreeView: PGtkTreeView;
+  aTreeModel  : PGtkTreeModel;
+  aTreeColumn  : PGtkTreeViewColumn;
+  aTreeIter   : TGtkTreeIter;
+  aTreePath   : PGtkTreePath;
+  Count : Integer;
+begin
+  Result:=0;
+  if not (Sender is TWinControl) then exit;
+  case TWinControl(Sender).fCompStyle of
+
+  csListBox, csCheckListBox:
+    begin
+      aTreeView := GTK_TREE_VIEW(GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.ImplementationWidget);
+      aTreeModel := gtk_tree_view_get_model(aTreeView);
+
+      If NewTopIndex < 0 then
+        NewTopIndex := 0
+      else begin
+        Count := gtk_tree_model_iter_n_children(aTreeModel,nil);
+
+        If NewTopIndex >= Count then
+          NewTopIndex := Count - 1;
+      end;
+      
+      if gtk_tree_model_iter_nth_child(aTreeModel,@aTreeIter, nil, NewTopIndex) then begin
+        aTreePath := gtk_tree_model_get_path(aTreeModel, @aTreeIter);
+        aTreeColumn := gtk_tree_view_get_column(aTreeView, 0);
+        gtk_tree_view_scroll_to_cell(aTreeView, aTreePath, aTreeColumn, False, 0.0, 0.0);
+        gtk_tree_path_free(aTreePath);
+      end;
+    end;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   procedure Tgtk2Object.UpdateDCTextMetric(DC: TDeviceContext);
  ------------------------------------------------------------------------------}
 procedure Tgtk2Object.UpdateDCTextMetric(DC: TDeviceContext);
@@ -1004,6 +1160,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.4  2003/10/02 18:15:44  ajgenius
+  more gtk2 (check)ListBox implementation
+
   Revision 1.3  2003/10/02 01:18:38  ajgenius
   more callbacks fixes for gtk2, partly fix gtk2 CheckListBox
 
