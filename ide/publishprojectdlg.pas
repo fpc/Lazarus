@@ -269,6 +269,10 @@ procedure TPublishProjectDialog.SetOptions(const AValue: TPublishModuleOptions
 begin
   if FOptions=AValue then exit;
   FOptions:=AValue;
+  if FOptions is TPublishPackageOptions then
+    Caption:=lisPkgEditPublishPackage
+  else
+    Caption:=lisMenuPublishProject;
   LoadFromOptions(FOptions);
 end;
 
