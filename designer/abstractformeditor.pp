@@ -35,13 +35,9 @@ uses
 
 type
 
-{
-Should I include typinfo.pp and use TTypeKind instead of TPropertyType
-or use TPropertyType
- }
-
-//  TPropertyType = (ptUnknown, ptInteger, ptChar, ptEnumeration,ptFloat,ptString,ptSet,
-//                   ptClass, ptMethod,ptWChar, ptLString, LWString, ptVariant);
+{ Should I include typinfo.pp and use TTypeKind instead of TPropertyType
+  or use TPropertyType
+}
 
   TIComponentInterface = class
   public
@@ -51,10 +47,10 @@ or use TPropertyType
     Function IsTControl          : Boolean; virtual; abstract;
     Function GetPropCount	   : Integer; virtual; abstract;
     Function GetPropType(Index : Integer) : TTypeKind; virtual; abstract;
-//      Function GetPropType(Index : Integer) : TPropertyType; virtual; abstract;
+    // Function GetPropType(Index : Integer) : TPropertyType; virtual; abstract;
     Function GetPropName(Index : Integer) : String; virtual; abstract;
     Function GetPropTypebyName(Name : String) : TTypeKind; virtual; abstract;
-//      Function GetPropTypebyName(Name : String) : TPropertyType; virtual; abstract;
+    // Function GetPropTypebyName(Name : String) : TPropertyType; virtual; abstract;
     Function GetPropTypeName(Index : Integer) : String; virtual; abstract;
 
 
@@ -75,47 +71,40 @@ or use TPropertyType
   end;
 
 
+  { TIFormInterface - currently not used }
+
   TIFormInterface = class
     public
       Function Filename            : AnsiString; virtual; abstract;
       Function FormModified        : Boolean; virtual; abstract;
-      Function MArkModified        : Boolean; virtual; abstract;
+      Function MarkModified        : Boolean; virtual; abstract;
       Function GetFormComponent    : TIComponentInterface; virtual; abstract;
       Function FindComponent	   : TIComponentInterface; virtual; abstract;
       Function GetComponentfromHandle(ComponentHandle:Pointer): TIComponentInterface; virtual; abstract;
 
       Function GetSelCount: Integer; virtual; abstract;
       Function GetSelComponent(Index : Integer): TIComponentInterface; virtual; abstract;
-     Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
-                             X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
+      Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
+                               X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
     end;
 
 {
   Created by Shane Miller
-  This unit defines the layout for the forms editor.  The forms editor is responsible
-  for creating a form, holding a list of selected controls, determining if the form was
-  modified and working wit the object inspector.
+  This unit defines the layout for the forms editor. The forms editor is
+  responsible for creating all forms, holding all component interfaces .
 }
 
   TAbstractFormEditor = class
-   public
-     Function FormModified : Boolean; virtual; abstract;
-     Function FindComponentByName(const Name : ShortString) : TIComponentInterface; virtual; abstract;
-     Function FindComponent(AComponent: TComponent): TIComponentInterface; virtual; abstract;
+  public
+    Function FindComponentByName(const Name : ShortString) : TIComponentInterface; virtual; abstract;
+    Function FindComponent(AComponent: TComponent): TIComponentInterface; virtual; abstract;
 
-     Function GetFormComponent: TIComponentInterface; virtual; abstract;
-     Function GetComponentByHandle(const Value : Longint): TIComponentInterface; virtual; abstract;
-
-     Function GetSelCount : Integer; virtual; abstract;
-     Function GetSelComponent(Index : Integer) : TIComponentInterface; virtual; abstract;
-
-//     Function CreateComponent(CI : TIComponentInterface; TypeName : ShortString;
-     Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
+    Function CreateComponent(CI : TIComponentInterface; TypeClass : TComponentClass;
                              X,Y,W,H : Integer): TIComponentInterface; virtual; abstract;
-     Function CreateComponentFromStream(BinStream: TStream;
+    Function CreateComponentFromStream(BinStream: TStream;
                                      AncestorType: TComponentClass
                                      ): TIComponentInterface; virtual; abstract;
-   end;
+  end;
 
 
 implementation

@@ -38,13 +38,11 @@ interface
 uses
   Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
   StdCtrls, Buttons, ExtCtrls, LMessages, DesignerMenu, Menus, GraphType,
-  PropEdits, ComponentEditors, Designer, LazarusIDEStrConsts;
+  ComponentEditors, Designer, LazarusIDEStrConsts;
 
 type
 
   TMainMenuEditorForm = class(TForm)
-    procedure OnComponentDeleting(AComponent: TComponent);
-    procedure OnComponentsModified(Sender: TObject);
   private
     fDesignerMainMenu: TDesignerMainMenu;
     fPanel: TPanel;
@@ -84,41 +82,6 @@ implementation
 
 { TMainMenuEditorForm }
 
-procedure TMainMenuEditorForm.OnComponentDeleting(AComponent: TComponent);
-begin
-  if (AComponent=nil) then exit;
-  if AComponent is TMenu then begin
-    writeln('TMainMenuEditorForm.OnComponentDeleting ',AComponent.Name,':',AComponent.ClassName);
-
-  end else if AComponent is TMenuItem then begin
-    writeln('TMainMenuEditorForm.OnComponentDeleting ',AComponent.Name,':',AComponent.ClassName);
-
-  end;
-end;
-
-procedure TMainMenuEditorForm.OnComponentsModified(Sender: TObject);
-var
-  i: Integer;
-  SelectedComponents: TComponentSelectionList;
-begin
-  if GlobalDesignHook.LookupRoot=nil then exit;
-  SelectedComponents:=TComponentSelectionList.Create;
-  try
-    GlobalDesignHook.GetSelectedComponents(SelectedComponents);
-    for i:=0 to SelectedComponents.Count-1 do begin
-      if (SelectedComponents[i] is TMenu) then begin
-        writeln('TMainMenuEditorForm.OnComponentsModified ',SelectedComponents[i].Name,':',SelectedComponents[i].ClassName);
-
-      end else if (SelectedComponents[i] is TMenuItem) then begin
-        writeln('TMainMenuEditorForm.OnComponentsModified ',SelectedComponents[i].Name,':',SelectedComponents[i].ClassName);
-
-      end;
-    end;
-  finally
-    SelectedComponents.Free;
-  end;
-end;
-
 constructor TMainMenuEditorForm.CreateWithMenu(aOwner: TComponent; aMenu: TMenu;
   aEditor: TComponentEditor; aDesigner: TDesigner);
 var
@@ -139,11 +102,6 @@ begin
 
   
   DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu, fEditor);
-
-  GlobalDesignHook.AddHandlerComponentDeleting(@OnComponentDeleting);
-  GlobalDesignHook.AddHandlerModified(@OnComponentsModified);
-
-  //PopupMenu:=DesignerPopupMenu;
   
   Cmp2:=TScrollBox.Create(self);
   with Cmp2 do
@@ -220,7 +178,6 @@ end;
 
 destructor TMainMenuEditorForm.Destroy;
 begin
-  GlobalDesignHook.RemoveAllHandlersForObject(Self);
   inherited Destroy;
 end;
 
@@ -268,7 +225,8 @@ end;
 
 { TMainMenuComponentEditor}
 
-constructor TMainMenuComponentEditor.Create(AComponent: TComponent; aDesigner: TComponentEditorDesigner);
+constructor TMainMenuComponentEditor.Create(AComponent: TComponent;
+  aDesigner: TComponentEditorDesigner);
 begin
   inherited Create(AComponent,ADesigner);
   fDesigner:=TDesigner(aDesigner);

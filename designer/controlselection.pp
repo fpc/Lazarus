@@ -106,8 +106,10 @@ type
     FCachedWidth: integer;
     FCachedHeight: integer;
     FCachedFormRelativeLeftTop: TPoint;
-    FComponent:TComponent;
+    FComponent: TComponent;
+    FDesignerForm: TCustomForm;
     FFlags: TSelectedControlFlags;
+    FIsTControl: boolean;
     FOldLeft: integer;
     FOldTop: integer;
     FOldWidth: integer;
@@ -129,7 +131,6 @@ type
   public
     constructor Create(AnOwner: TControlSelection; AComponent: TComponent);
     destructor Destroy; override;
-    function ParentForm: TCustomForm;
     procedure SetBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SetFormRelativeBounds(ALeft, ATop, AWidth, AHeight: integer);
     procedure SaveBounds;
@@ -139,7 +140,7 @@ type
     function ParentInSelection: boolean;
     procedure InvalidateNonVisualComponent;
 
-    property Component: TComponent read FComponent write FComponent;
+    property Component: TComponent read FComponent;
     property Owner: TControlSelection read FOwner write SetOwner;
     property Left: integer read GetLeft write SetLeft;
     property Top: integer read GetTop write SetTop;
@@ -153,13 +154,27 @@ type
       read FOldFormRelativeLeftTop write FOldFormRelativeLeftTop;
     property Flags: TSelectedControlFlags read FFlags write SetFlags;
     property UseCache: boolean read FUseCache write SetUseCache;
+    property IsTControl: boolean read FIsTControl;
+    property DesignerForm: TCustomForm read FDesignerForm;
   end;
   
 
-  TComponentAlignment = (csaNone, csaSides1, csaCenters, csaSides2,
-      csaCenterInWindow, csaSpaceEqually, csaSide1SpaceEqually,
-      csaSide2SpaceEqually);
-  TComponentSizing = (cssNone, cssShrinkToSmallest, cssGrowToLargest, cssFixed);
+  TComponentAlignment = (
+    csaNone,
+    csaSides1,
+    csaCenters,
+    csaSides2,
+    csaCenterInWindow,
+    csaSpaceEqually,
+    csaSide1SpaceEqually,
+    csaSide2SpaceEqually
+    );
+  TComponentSizing = (
+    cssNone,
+    cssShrinkToSmallest,
+    cssGrowToLargest,
+    cssFixed
+    );
   TSelectionSortCompare = function(Index1, Index2: integer): integer of object;
   TOnSelectionFormChanged = procedure(Sender: TObject;
     OldForm, NewForm: TCustomForm) of object;
@@ -189,10 +204,13 @@ type
   { TControlSelection }
   
   TControlSelState = (
+    cssLookupRootSelected,
     cssOnlyNonVisualNeedsUpdate,
     cssOnlyNonVisualSelected,
     cssOnlyVisualNeedsUpdate,
     cssOnlyVisualNeedsSelected,
+    cssOnlyInvisibleNeedsUpdate,
+    cssOnlyInvisibleSelected,
     cssBoundsNeedsUpdate,
     cssBoundsNeedsSaving,
     cssParentLevelNeedsUpdate,
@@ -210,82 +228,81 @@ type
   TControlSelStates = set of TControlSelState;
 
   TControlSelection = class(TObject)
-    procedure GrabberMove(Grabber: TGrabber; const OldRect, NewRect: TRect);
-  private
     FControls: TList;  // list of TSelectedComponent
 
     // current bounds of the selection (only valid if Count>0)
     // These are the values set by the user
     // But due to snapping and lcl aligning the components can have other bounds
     FLeft: Integer;
-    FOnSelectionFormChanged: TOnSelectionFormChanged;
-    FRubberbandCreationColor: TColor;
-    FRubberbandSelectionColor: TColor;
-    FSavedHeight: integer;
-    FSavedLeft: integer;
-    FSavedTop: integer;
-    FSavedWidth: integer;
     FTop: Integer;
     FWidth: Integer;
     FHeight: Integer;
+
     // These are the real bounds of the selection (only valid if Count>0)
     FRealLeft: integer;
     FRealTop: integer;
     FRealWidth: integer;
     FRealHeight: integer;
+
     // saved bounds of the selection (only valid if Count>0)
     FOldLeft: integer;
     FOldTop: integer;
     FOldWidth: integer;
     FOldHeight: integer;
+
     // caches
     FGuideLinesCache: array[TGuideLineType] of TGuideLineCache;
     FParentLevel: integer;
 
-    FCustomForm: TCustomForm;
+    FActiveGrabber: TGrabber;
+    FForm: TCustomForm;// form to draw on (not necessarily the root)
     FGrabbers: array[TGrabIndex] of TGrabber;
     FGrabberSize: integer;
     FMarkerSize: integer;
-    FActiveGrabber: TGrabber;
-    FRubberBandBounds: TRect;
-    FRubberbandType: TRubberbandType;
-    FUpdateLock: integer;
-    FResizeLockCount: integer;
-    FStates: TControlSelStates;
-
     FOnChange: TNotifyEvent;
     FOnPropertiesChanged: TNotifyEvent;
+    FOnSelectionFormChanged: TOnSelectionFormChanged;
+    FResizeLockCount: integer;
+    FRubberBandBounds: TRect;
+    FRubberbandCreationColor: TColor;
+    FRubberbandSelectionColor: TColor;
+    FRubberbandType: TRubberbandType;
+    FLookupRoot: TComponent;// component owning the selected components
+    FStates: TControlSelStates;
+    FUpdateLock: integer;
 
+    function CompareBottom(Index1, Index2: integer): integer;
+    function CompareHorCenter(Index1, Index2: integer): integer;
+    function CompareInts(i1, i2: integer): integer;
+    function CompareLeft(Index1, Index2: integer): integer;
+    function CompareRight(Index1, Index2: integer): integer;
+    function CompareTop(Index1, Index2: integer): integer;
+    function CompareVertCenter(Index1, Index2: integer): integer;
     function GetCacheGuideLines: boolean;
     function GetGrabberColor: TColor;
+    function GetGrabbers(AGrabIndex:TGrabIndex): TGrabber;
+    function GetItems(Index:integer):TSelectedControl;
     function GetMarkerColor: TColor;
     function GetRubberbandActive: boolean;
     function GetRubberbandCreationColor: TColor;
     function GetRubberbandSelectionColor: TColor;
+    function GetSelectionOwner: TComponent;
     function GetSnapping: boolean;
     function GetVisible: boolean;
-    procedure SetCacheGuideLines(const AValue: boolean);
-    procedure SetCustomForm;
-    function GetGrabbers(AGrabIndex:TGrabIndex): TGrabber;
-    procedure SetGrabbers(AGrabIndex:TGrabIndex; const AGrabber: TGrabber);
-    procedure SetGrabberSize(const NewSize: integer);
     procedure DoChange;
     procedure DoChangeProperties;
+    procedure GrabberMove(Grabber: TGrabber; const OldRect, NewRect: TRect);
+    procedure SetActiveGrabber(AGrabber:TGrabber);
+    procedure SetCacheGuideLines(const AValue: boolean);
+    procedure SetCustomForm;
+    procedure SetGrabbers(AGrabIndex:TGrabIndex; const AGrabber: TGrabber);
+    procedure SetGrabberSize(const NewSize: integer);
+    procedure SetItems(Index:integer; ASelectedControl:TSelectedControl);
     procedure SetRubberbandActive(const AValue: boolean);
+    procedure SetRubberBandBounds(ARect:TRect);
     procedure SetRubberbandType(const AValue: TRubberbandType);
     procedure SetSnapping(const AValue: boolean);
     procedure SetVisible(const AValue: Boolean);
-    function GetItems(Index:integer):TSelectedControl;
-    procedure SetItems(Index:integer; ASelectedControl:TSelectedControl);
-    procedure SetActiveGrabber(AGrabber:TGrabber);
-    procedure SetRubberBandBounds(ARect:TRect);
-    function CompareInts(i1, i2: integer): integer;
-    function CompareLeft(Index1, Index2: integer): integer;
-    function CompareTop(Index1, Index2: integer): integer;
-    function CompareRight(Index1, Index2: integer): integer;
-    function CompareBottom(Index1, Index2: integer): integer;
-    function CompareHorCenter(Index1, Index2: integer): integer;
-    function CompareVertCenter(Index1, Index2: integer): integer;
   protected
     procedure AdjustGrabbers;
     procedure InvalidateGrabbers;
@@ -298,30 +315,33 @@ type
     function CleanGridSizeX: integer;
     function CleanGridSizeY: integer;
     function ComponentAlignable(AComponent: TComponent): boolean;
-    procedure ImproveNearestInt(var NearestInt: TNearestInt; Candidate: integer);
-    procedure FindNearestGridX(var NearestInt: TNearestInt);
-    procedure FindNearestGridY(var NearestInt: TNearestInt);
-    procedure FindNearestLeftGuideLine(var NearestInt: TNearestInt);
-    procedure FindNearestRightGuideLine(var NearestInt: TNearestInt);
-    procedure FindNearestTopGuideLine(var NearestInt: TNearestInt);
-    procedure FindNearestBottomGuideLine(var NearestInt: TNearestInt);
-    procedure FindNearestClientLeftRight(var NearestInt: TNearestInt);
-    procedure FindNearestClientTopBottom(var NearestInt: TNearestInt);
-    procedure FindNearestOldLeft(var NearestInt: TNearestInt);
-    procedure FindNearestOldRight(var NearestInt: TNearestInt);
-    procedure FindNearestOldTop(var NearestInt: TNearestInt);
-    procedure FindNearestOldBottom(var NearestInt: TNearestInt);
+    function GetBottomGuideLine(var ALine: TRect): boolean;
     function GetLeftGuideLine(var ALine: TRect): boolean;
     function GetRightGuideLine(var ALine: TRect): boolean;
     function GetTopGuideLine(var ALine: TRect): boolean;
-    function GetBottomGuideLine(var ALine: TRect): boolean;
+    procedure FindNearestBottomGuideLine(var NearestInt: TNearestInt);
+    procedure FindNearestClientLeftRight(var NearestInt: TNearestInt);
+    procedure FindNearestClientTopBottom(var NearestInt: TNearestInt);
+    procedure FindNearestGridX(var NearestInt: TNearestInt);
+    procedure FindNearestGridY(var NearestInt: TNearestInt);
+    procedure FindNearestLeftGuideLine(var NearestInt: TNearestInt);
+    procedure FindNearestOldBottom(var NearestInt: TNearestInt);
+    procedure FindNearestOldLeft(var NearestInt: TNearestInt);
+    procedure FindNearestOldRight(var NearestInt: TNearestInt);
+    procedure FindNearestOldTop(var NearestInt: TNearestInt);
+    procedure FindNearestRightGuideLine(var NearestInt: TNearestInt);
+    procedure FindNearestTopGuideLine(var NearestInt: TNearestInt);
+    procedure ImproveNearestInt(var NearestInt: TNearestInt; Candidate: integer);
   public
     constructor Create; 
     destructor Destroy; override;
+    
+    // items
     property Items[Index:integer]:TSelectedControl
       read GetItems write SetItems; default;
     function Count:integer;
-    
+    procedure Sort(SortProc: TSelectionSortCompare);
+
     procedure BeginUpdate;
     procedure EndUpdate;
     property UpdateLock: integer read FUpdateLock;
@@ -336,23 +356,30 @@ type
     function IsSelected(AComponent: TComponent): Boolean;
     function IsOnlySelected(AComponent: TComponent): Boolean;
     procedure SaveBounds;
-    
+    function ParentLevel: integer;
+    function OnlyNonVisualComponentsSelected: boolean;
+    function OnlyVisualComponentsSelected: boolean;
+    function OnlyInvisibleComponentsSelected: boolean;
+    function LookupRootSelected: boolean;
+
+    // resizing, moving, aligning, mirroring, ...
     function IsResizing: boolean;
     procedure BeginResizing;
     procedure EndResizing(ApplyUserBounds: boolean);
     procedure UpdateBounds;
+
     procedure MoveSelection(dx, dy: integer);
     function MoveSelectionWithSnapping(TotalDX, TotalDY: integer): boolean;
     procedure SizeSelection(dx, dy: integer);  
     procedure SetBounds(NewLeft,NewTop,NewWidth,NewHeight: integer);
-      // size all controls depending on ActiveGrabber.
-      // if ActiveGrabber=nil then Right,Bottom
     procedure AlignComponents(HorizAlignment,VertAlignment:TComponentAlignment);
     procedure MirrorHorizontal;
     procedure MirrorVertical;
     procedure SizeComponents(HorizSizing: TComponentSizing; AWidth: integer;
-          VertSizing: TComponentSizing; AHeight: integer);
+                             VertSizing: TComponentSizing; AHeight: integer);
     procedure ScaleComponents(Percent: integer);
+
+    // snapping
     function FindNearestSnapLeft(ALeft, AWidth: integer): integer;
     function FindNearestSnapLeft(ALeft: integer): integer;
     function FindNearestSnapRight(ARight: integer): integer;
@@ -365,8 +392,8 @@ type
     property CacheGuideLines: boolean
       read GetCacheGuideLines write SetCacheGuideLines;
     procedure InvalidateGuideLinesCache;
-    function ParentLevel: integer;
 
+    // grabbers and markers
     property GrabberSize:integer read FGrabberSize write SetGrabberSize;
     property GrabberColor: TColor read GetGrabberColor;
     procedure DrawGrabbers(DC: TDesignerDeviceContext);
@@ -383,42 +410,42 @@ type
       ALeft, ATop, AWidth, AHeight: integer);
     property ActiveGrabber: TGrabber read FActiveGrabber write SetActiveGrabber;
     
+    // user wished bounds:
     property Left:integer read FLeft;
     property Top:integer read FTop;
     property Width:integer read FWidth;
     property Height:integer read FHeight;
     
+    // real current bounds
     property RealLeft:integer read FRealLeft;
     property RealTop:integer read FRealTop;
     property RealWidth:integer read FRealWidth;
     property RealHeight:integer read FRealHeight;
 
-    property SavedLeft:integer read FSavedLeft;
-    property SavedTop:integer read FSavedTop;
-    property SavedWidth:integer read FSavedWidth;
-    property SavedHeight:integer read FSavedHeight;
+    // bounds before resizing
+    property OldLeft:integer read FOldLeft;
+    property OldTop:integer read FOldTop;
+    property OldWidth:integer read FOldWidth;
+    property OldHeight:integer read FOldHeight;
 
-    property RubberbandBounds:TRect
-      read FRubberbandBounds write SetRubberbandBounds;
-    property RubberbandActive: boolean
-      read GetRubberbandActive write SetRubberbandActive;
-    property RubberbandType: TRubberbandType
-      read FRubberbandType write SetRubberbandType;
-    property RubberbandSelectionColor: TColor
-      read GetRubberbandSelectionColor;
-    property RubberbandCreationColor: TColor
-      read GetRubberbandCreationColor;
+    // rubberband
+    property RubberbandBounds:TRect read FRubberbandBounds
+                                    write SetRubberbandBounds;
+    property RubberbandActive: boolean read GetRubberbandActive
+                                       write SetRubberbandActive;
+    property RubberbandType: TRubberbandType read FRubberbandType
+                                             write SetRubberbandType;
+    property RubberbandSelectionColor: TColor read GetRubberbandSelectionColor;
+    property RubberbandCreationColor: TColor read GetRubberbandCreationColor;
     procedure DrawRubberband(DC: TDesignerDeviceContext);
-    procedure SelectWithRubberBand(ACustomForm:TCustomForm;
-      ClearBefore, ExclusiveOr: boolean; var SelectionChanged: boolean;
-      MaxParentControl: TControl);
+    procedure SelectWithRubberBand(ALookupRoot: TComponent;
+                                   ClearBefore, ExclusiveOr: boolean;
+                                   var SelectionChanged: boolean;
+                                   MaxParentControl: TControl);
 
-    procedure Sort(SortProc: TSelectionSortCompare);
     property Visible:boolean read GetVisible write SetVisible;
-    function OnlyNonVisualComponentsSelected: boolean;
-    function OnlyVisualComponentsSelected: boolean;
-    
-    property SelectionForm: TCustomForm read FCustomForm;
+
+    property SelectionForm: TCustomForm read FForm;
     property OnSelectionFormChanged: TOnSelectionFormChanged
       read FOnSelectionFormChanged write FOnSelectionFormChanged;
   end;
@@ -494,6 +521,8 @@ begin
   inherited Create;
   FOwner:=AnOwner;
   FComponent:=AComponent;
+  FIsTControl:=FComponent is TControl;
+  FDesignerForm:=GetDesignerForm(FComponent);
 end;
 
 destructor TSelectedControl.Destroy;
@@ -501,20 +530,9 @@ begin
   inherited Destroy;
 end;
 
-function TSelectedControl.ParentForm: TCustomForm;
-begin
-  if FComponent is TControl then
-    Result:=GetParentForm(TControl(FComponent))
-  else
-    if FComponent.Owner is TCustomForm then
-      Result:=TCustomForm(FComponent.Owner)
-    else
-      Result:=nil;
-end;
-
 procedure TSelectedControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
-  if FComponent is TControl then begin
+  if FIsTControl then begin
     TControl(FComponent).SetBounds(ALeft, ATop, AWidth, AHeight);
     FCachedLeft:=ALeft;
     FCachedTop:=ATop;
@@ -558,7 +576,8 @@ end;
 
 function TSelectedControl.IsTopLvl: boolean;
 begin
-  Result:=(FComponent is TControl) and (TControl(FComponent).Parent=nil);
+  Result:=(FComponent.Owner=nil)
+          or (FIsTControl and (TControl(FComponent).Parent=nil));
 end;
 
 function TSelectedControl.ChildInSelection: boolean;
@@ -586,8 +605,8 @@ var
   AForm: TCustomForm;
   CompRect: TRect;
 begin
-  AForm:=TCustomForm(FComponent.Owner);
-  if (AForm=nil) or (not (AForm is TCustomForm)) then exit;
+  AForm:=DesignerForm;
+  if (AForm=nil) then exit;
   CompRect.Left:=LongRec(FComponent.DesignInfo).Lo;
   CompRect.Top:=LongRec(FComponent.DesignInfo).Hi;
   CompRect.Right:=CompRect.Left+NonVisualCompWidth;
@@ -611,7 +630,7 @@ end;
 
 procedure TSelectedControl.SetLeft(ALeft: integer);
 begin
-  if FComponent is TControl then
+  if FIsTControl then
     TControl(FComponent).Left:=Aleft
   else
     LongRec(FComponent.DesignInfo).Lo:=Min(32000,Max(0,ALeft));
@@ -634,7 +653,7 @@ end;
 
 procedure TSelectedControl.SetTop(ATop: integer);
 begin
-  if FComponent is TControl then
+  if FIsTControl then
     TControl(FComponent).Top:=ATop
   else
     LongRec(FComponent.DesignInfo).Hi:=Min(32000,Max(0,ATop));
@@ -658,7 +677,7 @@ end;
 
 procedure TSelectedControl.SetWidth(AWidth: integer);
 begin
-  if FComponent is TControl then
+  if FIsTControl then
     TControl(FComponent).Width:=AWidth
   else
     ;
@@ -667,12 +686,15 @@ end;
 
 function TSelectedControl.GetHeight: integer;
 begin
-  Result:=GetComponentHeight(FComponent);
+  if FUseCache then
+    Result:=FCachedHeight
+  else
+    Result:=GetComponentHeight(FComponent);
 end;
 
 procedure TSelectedControl.SetHeight(AHeight: integer);
 begin
-  if FComponent is TControl then
+  if FIsTControl then
     TControl(FComponent).Height:=AHeight
   else
     ;
@@ -696,10 +718,12 @@ begin
     FGrabbers[g].Cursor:=GRAB_CURSOR[g];
     FGrabbers[g].OnMove:=@GrabberMove;
   end;
-  FCustomForm:=nil;
+  FForm:=nil;
+  FLookupRoot:=nil;
   FActiveGrabber:=nil;
   FUpdateLock:=0;
   FStates:=[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
+            cssOnlyInvisibleNeedsUpdate,
             cssParentLevelNeedsUpdate,cssCacheGuideLines];
   FRubberbandType:=rbtSelection;
   FRubberbandCreationColor:=clMaroon;
@@ -791,9 +815,9 @@ end;
 procedure TControlSelection.GrabberMove(Grabber: TGrabber; const OldRect,
   NewRect: TRect);
 begin
-  if FCustomForm=nil then exit;
-  InvalidateRect(FCustomForm.Handle,@OldRect,false);
-  InvalidateRect(FCustomForm.Handle,@NewRect,false);
+  if FForm=nil then exit;
+  InvalidateRect(FForm.Handle,@OldRect,false);
+  InvalidateRect(FForm.Handle,@NewRect,false);
 end;
 
 function TControlSelection.GetCacheGuideLines: boolean;
@@ -816,15 +840,16 @@ var
   OldCustomForm, NewCustomForm: TCustomForm;
 begin
   if Count>0 then
-    NewCustomForm:=Items[0].ParentForm
+    NewCustomForm:=Items[0].DesignerForm
   else
     NewCustomForm:=nil;
-  if NewCustomForm=FCustomForm then exit;
+  if NewCustomForm=FForm then exit;
   // form changed
   InvalidateGuideLines;
   InvalidateGrabbers;
-  OldCustomForm:=FCustomForm;
-  FCustomForm:=NewCustomForm;
+  OldCustomForm:=FForm;
+  FForm:=NewCustomForm;
+  FLookupRoot:=GetSelectionOwner;
   if Assigned(FOnSelectionFormChanged) then
     FOnSelectionFormChanged(Self,OldCustomForm,NewCustomForm);
 end;
@@ -891,7 +916,7 @@ var g: TGrabIndex;
 begin
   if cssGrabbersPainted in FStates then begin
     for g:=Low(TGrabIndex) to High(TGrabIndex) do
-      FGrabbers[g].InvalidateOnForm(FCustomForm);
+      FGrabbers[g].InvalidateOnForm(FForm);
     Exclude(FStates,cssGrabbersPainted);
   end;
 end;
@@ -902,14 +927,14 @@ var
   LineRect: TRect;
 begin
   if (cssGuideLinesPainted in FStates) then begin
-    if (FCustomForm<>nil) and CacheGuideLines then
+    if (FForm<>nil) and CacheGuideLines then
       for g:=Low(g) to High(g) do begin
         if FGuideLinesCache[g].PaintedLineValid then
         begin
           LineRect:=FGuideLinesCache[g].PaintedLine;
           if LineRect.Top=LineRect.Bottom then inc(LineRect.Bottom);
           if LineRect.Left=LineRect.Right then inc(LineRect.Right);
-          InvalidateRect(FCustomForm.Handle,@LineRect,false);
+          InvalidateRect(FForm.Handle,@LineRect,false);
         end;
       end;
     Exclude(FStates,cssGuideLinesPainted);
@@ -1054,7 +1079,7 @@ begin
   Result:=false;
   if AComponent=nil then exit;
   if AComponent is TControl then begin
-    if not ControlIsDesignerVisible(TControl(AComponent)) then begin
+    if not ControlIsInDesignerVisible(TControl(AComponent)) then begin
       //writeln('not alignable: A not ControlIsDesignerVisible ',AComponent.Name);
       exit;
     end;
@@ -1072,7 +1097,7 @@ begin
       end;
     end;
   end else begin
-    if AComponent is TMenuItem then exit;
+    if ComponentIsInvisible(AComponent) then exit;
     if Count>0 then begin
       if OnlyVisualComponentsSelected then exit;
     end;
@@ -1115,9 +1140,9 @@ begin
   MaxDist:=(CleanGridSizeX+1) div 2;
   if Abs(NearestInt.Level-0)<MaxDist then
     ImproveNearestInt(NearestInt,0);
-  if (FCustomForm<>nil)
-  and (Abs(NearestInt.Level-FCustomForm.ClientWidth)<MaxDist) then
-    ImproveNearestInt(NearestInt,FCustomForm.ClientWidth);
+  if (FForm<>nil)
+  and (Abs(NearestInt.Level-FForm.ClientWidth)<MaxDist) then
+    ImproveNearestInt(NearestInt,FForm.ClientWidth);
 end;
 
 procedure TControlSelection.FindNearestClientTopBottom(
@@ -1127,9 +1152,9 @@ begin
   MaxDist:=(CleanGridSizeY+1) div 2;
   if Abs(NearestInt.Level-0)<MaxDist then
     ImproveNearestInt(NearestInt,0);
-  if (FCustomForm<>nil)
-  and (Abs(NearestInt.Level-FCustomForm.ClientHeight)<MaxDist) then
-    ImproveNearestInt(NearestInt,FCustomForm.ClientHeight);
+  if (FForm<>nil)
+  and (Abs(NearestInt.Level-FForm.ClientHeight)<MaxDist) then
+    ImproveNearestInt(NearestInt,FForm.ClientHeight);
 end;
 
 procedure TControlSelection.FindNearestOldLeft(var NearestInt: TNearestInt);
@@ -1171,11 +1196,11 @@ procedure TControlSelection.FindNearestLeftGuideLine(
 var i, CurLeft, MaxDist, CurDist: integer;
   AComponent: TComponent;
 begin
-  if (not EnvironmentOptions.SnapToGuideLines) or (FCustomForm=nil) then exit;
+  if (not EnvironmentOptions.SnapToGuideLines) or (FLookupRoot=nil) then exit;
   // search in all not selected components
   MaxDist:=(CleanGridSizeX+1) div 2;
-  for i:=0 to FCustomForm.ComponentCount-1 do begin
-    AComponent:=FCustomForm.Components[i];
+  for i:=0 to FLookupRoot.ComponentCount-1 do begin
+    AComponent:=FLookupRoot.Components[i];
     if not ComponentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurLeft:=GetParentFormRelativeTopLeft(AComponent).X;
@@ -1190,11 +1215,11 @@ procedure TControlSelection.FindNearestRightGuideLine(
 var i, CurRight, MaxDist, CurDist: integer;
   AComponent: TComponent;
 begin
-  if (not EnvironmentOptions.SnapToGuideLines) or (FCustomForm=nil) then exit;
+  if (not EnvironmentOptions.SnapToGuideLines) or (FLookupRoot=nil) then exit;
   // search in all not selected components
   MaxDist:=(CleanGridSizeX+1) div 2;
-  for i:=0 to FCustomForm.ComponentCount-1 do begin
-    AComponent:=FCustomForm.Components[i];
+  for i:=0 to FLookupRoot.ComponentCount-1 do begin
+    AComponent:=FLookupRoot.Components[i];
     if not ComponentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurRight:=GetParentFormRelativeTopLeft(AComponent).X
@@ -1210,11 +1235,11 @@ procedure TControlSelection.FindNearestTopGuideLine(var NearestInt: TNearestInt
 var i, CurTop, MaxDist, CurDist: integer;
   AComponent: TComponent;
 begin
-  if (not EnvironmentOptions.SnapToGuideLines) or (FCustomForm=nil) then exit;
+  if (not EnvironmentOptions.SnapToGuideLines) or (FLookupRoot=nil) then exit;
   // search in all not selected components
   MaxDist:=(CleanGridSizeY+1) div 2;
-  for i:=0 to FCustomForm.ComponentCount-1 do begin
-    AComponent:=FCustomForm.Components[i];
+  for i:=0 to FLookupRoot.ComponentCount-1 do begin
+    AComponent:=FLookupRoot.Components[i];
     if not ComponentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurTop:=GetParentFormRelativeTopLeft(AComponent).Y;
@@ -1229,11 +1254,11 @@ procedure TControlSelection.FindNearestBottomGuideLine(
 var i, CurBottom, MaxDist, CurDist: integer;
   AComponent: TComponent;
 begin
-  if (not EnvironmentOptions.SnapToGuideLines) or (FCustomForm=nil) then exit;
+  if (not EnvironmentOptions.SnapToGuideLines) or (FLookupRoot=nil) then exit;
   // search in all not selected components
   MaxDist:=(CleanGridSizeY+1) div 2;
-  for i:=0 to FCustomForm.ComponentCount-1 do begin
-    AComponent:=FCustomForm.Components[i];
+  for i:=0 to FLookupRoot.ComponentCount-1 do begin
+    AComponent:=FLookupRoot.Components[i];
     if not ComponentAlignable(AComponent) then continue;
     if IsSelected(AComponent) then continue;
     CurBottom:=GetParentFormRelativeTopLeft(AComponent).Y
@@ -1388,6 +1413,7 @@ end;
 function TControlSelection.GetLeftGuideLine(var ALine: TRect): boolean;
 var i, LineTop, LineBottom: integer;
   CRect: TRect;
+  AComponent: TComponent;
 begin
   if CacheGuideLines and FGuideLinesCache[glLeft].CacheValid then begin
     Result:=FGuideLinesCache[glLeft].LineValid;
@@ -1395,10 +1421,11 @@ begin
       ALine:=FGuideLinesCache[glLeft].Line;
   end else begin
     Result:=false;
-    if FCustomForm=nil then exit;
-    for i:=0 to FCustomForm.ComponentCount-1 do begin
-      if not ComponentAlignable(FCustomForm.Components[i]) then continue;
-      CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
+    if FForm=nil then exit;
+    for i:=0 to FLookupRoot.ComponentCount-1 do begin
+      AComponent:=FLookupRoot.Components[i];
+      if not ComponentAlignable(AComponent) then continue;
+      CRect:=GetParentFormRelativeBounds(AComponent);
       if CRect.Left=FRealLeft then begin
         ALine.Left:=FRealLeft;
         ALine.Right:=ALine.Left;
@@ -1430,6 +1457,7 @@ end;
 function TControlSelection.GetRightGuideLine(var ALine: TRect): boolean;
 var i, LineTop, LineBottom: integer;
   CRect: TRect;
+  AComponent: TComponent;
 begin
   if CacheGuideLines and FGuideLinesCache[glRight].CacheValid then begin
     Result:=FGuideLinesCache[glRight].LineValid;
@@ -1437,10 +1465,11 @@ begin
       ALine:=FGuideLinesCache[glRight].Line;
   end else begin
     Result:=false;
-    if FCustomForm=nil then exit;
-    for i:=0 to FCustomForm.ComponentCount-1 do begin
-      if not ComponentAlignable(FCustomForm.Components[i]) then continue;
-      CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
+    if FLookupRoot=nil then exit;
+    for i:=0 to FLookupRoot.ComponentCount-1 do begin
+      AComponent:=FForm.Components[i];
+      if not ComponentAlignable(AComponent) then continue;
+      CRect:=GetParentFormRelativeBounds(AComponent);
       if (CRect.Right=FRealLeft+FRealWidth) then begin
         ALine.Left:=CRect.Right;
         ALine.Right:=ALine.Left;
@@ -1472,6 +1501,7 @@ end;
 function TControlSelection.GetTopGuideLine(var ALine: TRect): boolean;
 var i, LineLeft, LineRight: integer;
   CRect: TRect;
+  AComponent: TComponent;
 begin
   if CacheGuideLines and FGuideLinesCache[glTop].CacheValid then begin
     Result:=FGuideLinesCache[glTop].LineValid;
@@ -1479,10 +1509,11 @@ begin
       ALine:=FGuideLinesCache[glTop].Line;
   end else begin
     Result:=false;
-    if FCustomForm=nil then exit;
-    for i:=0 to FCustomForm.ComponentCount-1 do begin
-      if not ComponentAlignable(FCustomForm.Components[i]) then continue;
-      CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
+    if FLookupRoot=nil then exit;
+    for i:=0 to FLookupRoot.ComponentCount-1 do begin
+      AComponent:=FForm.Components[i];
+      if not ComponentAlignable(AComponent) then continue;
+      CRect:=GetParentFormRelativeBounds(AComponent);
       if CRect.Top=FRealTop then begin
         ALine.Top:=FRealTop;
         ALine.Bottom:=ALine.Top;
@@ -1514,6 +1545,7 @@ end;
 function TControlSelection.GetBottomGuideLine(var ALine: TRect): boolean;
 var i, LineLeft, LineRight: integer;
   CRect: TRect;
+  AComponent: TComponent;
 begin
   if CacheGuideLines and FGuideLinesCache[glBottom].CacheValid then begin
     Result:=FGuideLinesCache[glBottom].LineValid;
@@ -1521,10 +1553,11 @@ begin
       ALine:=FGuideLinesCache[glBottom].Line;
   end else begin
     Result:=false;
-    if FCustomForm=nil then exit;
-    for i:=0 to FCustomForm.ComponentCount-1 do begin
-      if not ComponentAlignable(FCustomForm.Components[i]) then continue;
-      CRect:=GetParentFormRelativeBounds(FCustomForm.Components[i]);
+    if FLookupRoot=nil then exit;
+    for i:=0 to FLookupRoot.ComponentCount-1 do begin
+      AComponent:=FForm.Components[i];
+      if not ComponentAlignable(AComponent) then continue;
+      CRect:=GetParentFormRelativeBounds(AComponent);
       if CRect.Bottom=FRealTop+FRealHeight then begin
         ALine.Top:=CRect.Bottom;
         ALine.Bottom:=ALine.Top;
@@ -1695,11 +1728,13 @@ var NewSelectedControl:TSelectedControl;
 begin
   BeginUpdate;
   NewSelectedControl:=TSelectedControl.Create(Self,AComponent);
-  if NewSelectedControl.ParentForm<>FCustomForm then Clear;
+  if NewSelectedControl.DesignerForm<>FForm then Clear;
   Result:=FControls.Add(NewSelectedControl);
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
+                    cssOnlyInvisibleNeedsUpdate,
                     cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate];
   if Count=1 then SetCustomForm;
+  if AComponent=FLookupRoot then Include(FStates,cssLookupRootSelected);
   DoChange;
   UpdateBounds;
   SaveBounds;
@@ -1732,10 +1767,14 @@ begin
     InvalidateGrabbers;
     InvalidateGuideLines;
   end;
+  if Items[Index].Component=FLookupRoot then
+    Exclude(FStates,cssLookupRootSelected);
   Items[Index].Free;
   FControls.Delete(Index);
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
+                    cssOnlyInvisibleNeedsUpdate,
                     cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate];
+
   if Count=0 then SetCustomForm;
   UpdateBounds;
   SaveBounds;
@@ -1752,8 +1791,10 @@ begin
   for i:=0 to FControls.Count-1 do Items[i].Free;
   FControls.Clear;
   FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
-                    cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate];
-  FCustomForm:=nil;
+                    cssOnlyInvisibleNeedsUpdate,
+                    cssParentLevelNeedsUpdate,cssParentChildFlagsNeedUpdate]
+                  -[cssLookupRootSelected];
+  FForm:=nil;
   UpdateBounds;
   SaveBounds;
   DoChange;
@@ -1915,9 +1956,9 @@ var
   end;
   
 begin
-  if (Count=0) or (FCustomForm=nil)
-  or IsSelected(FCustomForm)
-  or (Items[0].Component is TMenuItem) then exit;
+  if (Count=0) or (FForm=nil)
+  or LookupRootSelected
+  or OnlyInvisibleComponentsSelected then exit;
 
   Diff:=DC.FormOrigin;
 
@@ -1975,10 +2016,10 @@ var
   CompOrigin, DCOrigin: TPoint;
 begin
   if (Count<2)
-  or (FCustomForm=nil)
-  or (AComponent.Owner<>DC.Form)
+  or (FForm=nil)
+  or (AComponent=FLookupRoot)
   or (not IsSelected(AComponent))
-  or (AComponent is TMenuItem) then exit;
+  or ComponentIsInvisible(AComponent) then exit;
   
   GetComponentBounds(AComponent,CompLeft,CompTop,CompWidth,CompHeight);
   CompOrigin:=GetParentFormRelativeParentClientOrigin(AComponent);
@@ -1986,7 +2027,7 @@ begin
   CompLeft:=CompLeft+CompOrigin.X-DCOrigin.X;
   CompTop:=CompTop+CompOrigin.Y-DCOrigin.Y;
 
-{writeln('DrawMarker A ',FCustomForm.Name
+{writeln('DrawMarker A ',FForm.Name
     ,' Component',AComponent.Name,',',CompLeft,',',CompLeft
     ,' DCOrigin=',DCOrigin.X,',',DCOrigin.Y
     );}
@@ -2062,23 +2103,24 @@ begin
     DrawInvertFrameRect(Left-Diff.X,Top-Diff.Y,Right-Diff.X,Bottom-Diff.Y);
 end;
 
-procedure TControlSelection.SelectWithRubberBand(ACustomForm:TCustomForm; 
+procedure TControlSelection.SelectWithRubberBand(ALookupRoot: TComponent;
   ClearBefore, ExclusiveOr:boolean; var SelectionChanged: boolean;
   MaxParentControl: TControl);
 var i:integer;
+  AComponent: TComponent;
 
-  function ControlInRubberBand(AComponent:TComponent):boolean;
+  function ControlInRubberBand(AComponent: TComponent): boolean;
   var
     ALeft, ATop, ARight, ABottom: integer;
     Origin: TPoint;
     AControl: TControl;
   begin
     Result:=false;
-    if (AComponent is TMenuItem) then exit;
+    if ComponentIsInvisible(AComponent) then exit;
     if (AComponent is TControl) then begin
       AControl:=TControl(AComponent);
       // check if control is visible on form
-      if not ControlIsDesignerVisible(AControl) then exit;
+      if not ControlIsInDesignerVisible(AControl) then exit;
       // check if control
       if (MaxParentControl<>nil) then begin
         // select only controls, that are childs of MaxParentControl
@@ -2108,30 +2150,34 @@ var i:integer;
 begin
   SelectionChanged:=false;
   if ClearBefore then begin
-    if IsSelected(ACustomForm) then begin
-      Remove(ACustomForm);
+    if IsSelected(ALookupRoot) then begin
+      Remove(ALookupRoot);
       SelectionChanged:=true;
     end;
-    for i:=0 to ACustomForm.ComponentCount-1 do
-      if not ControlInRubberBand(ACustomForm.Components[i]) then begin
-        if IsSelected(ACustomForm.Components[i]) then begin
-          Remove(ACustomForm.Components[i]);
+    for i:=0 to ALookupRoot.ComponentCount-1 do begin
+      AComponent:=ALookupRoot.Components[i];
+      if not ControlInRubberBand(AComponent) then begin
+        if IsSelected(AComponent) then begin
+          Remove(AComponent);
           SelectionChanged:=true;
         end;
       end;
+    end;
   end;
-  for i:=0 to ACustomForm.ComponentCount-1 do
-    if ControlInRubberBand(ACustomForm.Components[i]) then begin
-      if IsSelected(ACustomForm.Components[i]) then begin
+  for i:=0 to ALookupRoot.ComponentCount-1 do begin
+    AComponent:=ALookupRoot.Components[i];
+    if ControlInRubberBand(AComponent) then begin
+      if IsSelected(AComponent) then begin
         if ExclusiveOr then begin
-          Remove(ACustomForm.Components[i]);
+          Remove(AComponent);
           SelectionChanged:=true;
         end;
       end else begin
-        Add(ACustomForm.Components[i]);
+        Add(AComponent);
         SelectionChanged:=true;
       end;
     end;
+  end;
 end;
 
 procedure TControlSelection.SetRubberBandBounds(ARect:TRect);
@@ -2156,19 +2202,19 @@ begin
   or (FRubberBandBounds.Right<>ARect.Right)
   or (FRubberBandBounds.Bottom<>ARect.Bottom)
   then begin
-    if (FCustomForm<>nil) and (cssRubberbandPainted in FStates) then begin
+    if (FForm<>nil) and (cssRubberbandPainted in FStates) then begin
       InvFrame:=FRubberBandBounds;
       inc(InvFrame.Right);
       inc(InvFrame.Bottom);
-      InvalidateFrame(FCustomForm.Handle,@InvFrame,false,1);
+      InvalidateFrame(FForm.Handle,@InvFrame,false,1);
       Exclude(FStates,cssRubberbandPainted);
     end;
     FRubberBandBounds:=ARect;
-    if (FCustomForm<>nil) and RubberbandActive then begin
+    if (FForm<>nil) and RubberbandActive then begin
       InvFrame:=FRubberBandBounds;
       inc(InvFrame.Right);
       inc(InvFrame.Bottom);
-      InvalidateFrame(FCustomForm.Handle,@InvFrame,false,1);
+      InvalidateFrame(FForm.Handle,@InvFrame,false,1);
     end;
   end;
 end;
@@ -2179,7 +2225,10 @@ begin
   if cssOnlyNonVisualNeedsUpdate in FStates then begin
     Result:=true;
     for i:=0 to FControls.Count-1 do
-      Result:=Result and (not (Items[i].Component is TControl));
+      if Items[i].IsTControl then begin
+        Result:=false;
+        break;
+      end;
     if Result then
       Include(FStates,cssOnlyNonVisualSelected)
     else
@@ -2195,7 +2244,10 @@ begin
   if cssOnlyVisualNeedsUpdate in FStates then begin
     Result:=true;
     for i:=0 to FControls.Count-1 do
-      Result:=Result and (Items[i].Component is TControl);
+      if not Items[i].IsTControl then begin
+        Result:=false;
+        break;
+      end;
     if Result then
       Include(FStates,cssOnlyVisualNeedsSelected)
     else
@@ -2203,6 +2255,30 @@ begin
     Exclude(FStates,cssOnlyVisualNeedsUpdate);
   end else
     Result:=cssOnlyVisualNeedsSelected in FStates;
+end;
+
+function TControlSelection.OnlyInvisibleComponentsSelected: boolean;
+var i: integer;
+begin
+  if cssOnlyInvisibleNeedsUpdate in FStates then begin
+    Result:=true;
+    for i:=0 to FControls.Count-1 do
+      if not ComponentIsInvisible(Items[i].Component) then begin
+        Result:=false;
+        break;
+      end;
+    if Result then
+      Include(FStates,cssOnlyInvisibleSelected)
+    else
+      Exclude(FStates,cssOnlyInvisibleSelected);
+    Exclude(FStates,cssOnlyInvisibleNeedsUpdate);
+  end else
+    Result:=cssOnlyInvisibleSelected in FStates;
+end;
+
+function TControlSelection.LookupRootSelected: boolean;
+begin
+  Result:=cssLookupRootSelected in FStates;
 end;
 
 function TControlSelection.CompareInts(i1, i2: integer): integer;
@@ -2279,7 +2355,7 @@ begin
     csaSides1, csaCenters, csaSides2, csaCenterInWindow:
       begin
         HorCenter:=(ALeft+ARight) div 2;
-        HorDiff:=(FCustomForm.Width div 2)-HorCenter;
+        HorDiff:=(FForm.Width div 2)-HorCenter;
         for i:=0 to FControls.Count-1 do begin
           if Items[i].IsTopLvl then continue;
           case HorizAlignment of
@@ -2330,7 +2406,7 @@ begin
     csaSides1, csaCenters, csaSides2, csaCenterInWindow:
       begin
         VertCenter:=(ATop+ABottom) div 2;
-        VertDiff:=(FCustomForm.Height div 2)-VertCenter;
+        VertDiff:=(FForm.Height div 2)-VertCenter;
         for i:=0 to FControls.Count-1 do begin
           if Items[i].IsTopLvl then continue;
           case VertAlignment of
@@ -2537,7 +2613,7 @@ var
   Line: array[TGuideLineType] of TRect;
   g: TGuideLineType;
 begin
-  if (Count=0) or (FCustomForm=nil) or Items[0].IsTopLvl then exit;
+  if (Count=0) or (FForm=nil) or LookupRootSelected then exit;
   LineExists[glLeft]:=GetLeftGuideLine(Line[glLeft]);
   LineExists[glRight]:=GetRightGuideLine(Line[glRight]);
   LineExists[glTop]:=GetTopGuideLine(Line[glTop]);
@@ -2580,6 +2656,8 @@ var a, b: integer;
   Changed: boolean;
 begin
   Changed:=false;
+  // bubble sort: slow, but the selection is rarely bigger than few dozens
+  // and does not change very often
   for a:=0 to FControls.Count-1 do begin
     for b:=a+1 to FControls.Count-1 do begin
       if SortProc(a,b)>0 then begin
@@ -2591,6 +2669,20 @@ begin
     end;
   end;
   if Changed then DoChange;
+end;
+
+function TControlSelection.GetSelectionOwner: TComponent;
+var
+  AComponent: TComponent;
+begin
+  if FControls.Count>0 then begin
+    AComponent:=Items[0].Component;
+    if AComponent.Owner<>nil then
+      Result:=AComponent.Owner
+    else
+      Result:=AComponent;
+  end else
+    Result:=nil;
 end;
 
 end.

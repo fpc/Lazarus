@@ -66,6 +66,14 @@ type
                                  XMLConfig: TXMLConfig) of object;
   TOnSaveProjectInfo = procedure(TheProject: TProject;
                                  XMLConfig: TXMLConfig) of object;
+                                 
+  TUnitInfoList = (
+    uilPartOfProject,
+    uilWithEditorIndex,
+    uilWithComponent,
+    uilLoaded,
+    uilAutoRevertLocked
+    );
 
   //---------------------------------------------------------------------------
   TUnitInfo = class(TObject)
@@ -90,11 +98,10 @@ type
     fIsPartOfProject: boolean;
     fLoaded: Boolean;  // loaded in the source editor
     fModified: boolean;
-    fNextPartOfProject: TUnitInfo;
+    fNext, fPrev: array[TUnitInfoList] of TUnitInfo;
     fOnFileBackup: TOnFileBackup;
     fOnLoadSaveFilename: TOnLoadSaveFilename;
     fOnUnitNameChange: TOnUnitNameChange;
-    fPrevPartOfProject: TUnitInfo;
     FProject: TProject;
     FResourceFilename: string;
     fSource: TCodeBuffer;
@@ -106,6 +113,16 @@ type
 
     function GetFileName: string;
     function GetHasResources:boolean;
+    function GetNextAutoRevertLockedUnit: TUnitInfo;
+    function GetNextLoadedUnit: TUnitInfo;
+    function GetNextPartOfProject: TUnitInfo;
+    function GetNextUnitWithComponent: TUnitInfo;
+    function GetNextUnitWithEditorIndex: TUnitInfo;
+    function GetPrevAutoRevertLockedUnit: TUnitInfo;
+    function GetPrevLoadedUnit: TUnitInfo;
+    function GetPrevPartOfProject: TUnitInfo;
+    function GetPrevUnitWithComponent: TUnitInfo;
+    function GetPrevUnitWithEditorIndex: TUnitInfo;
     procedure SetEditorIndex(const AValue: integer);
     procedure SetFileReadOnly(const AValue: Boolean);
     procedure SetComponent(const AValue: TComponent);
@@ -116,19 +133,7 @@ type
     procedure SetUnitName(const NewUnitName:string);
     procedure SetUserReadOnly(const NewValue: boolean);
   protected
-    fNextUnitWithEditorIndex: TUnitInfo;
-    fPrevUnitWithEditorIndex: TUnitInfo;
-    fNextUnitWithComponent: TUnitInfo;
-    fPrevUnitWithComponent: TUnitInfo;
-    fNextLoadedUnit: TUnitInfo;
-    fPrevLoadedUnit: TUnitInfo;
-    fNextAutoRevertLockedUnit: TUnitInfo;
-    fPrevAutoRevertLockedUnit: TUnitInfo;
-    procedure UpdateEditorIndexList;
-    procedure UpdateComponentList;
-    procedure UpdateLoadedList;
-    procedure UpdateAutoRevertLockedList;
-    procedure UpdatePartOfProjectList;
+    procedure UpdateList(ListType: TUnitInfoList; Add: boolean);
   public
     constructor Create(ACodeBuffer: TCodeBuffer);
     destructor Destroy; override;
@@ -157,17 +162,17 @@ type
 
     { Properties }
   public
-    // Unit views
-    property NextUnitWithEditorIndex: TUnitInfo read fNextUnitWithEditorIndex;
-    property PrevUnitWithEditorIndex: TUnitInfo read fPrevUnitWithEditorIndex;
-    property NextUnitWithComponent: TUnitInfo read fNextUnitWithComponent;
-    property PrevUnitWithComponent: TUnitInfo read fPrevUnitWithComponent;
-    property NextLoadedUnit: TUnitInfo read fNextLoadedUnit;
-    property PrevLoadedUnit: TUnitInfo read fPrevLoadedUnit;
-    property NextAutoRevertLockedUnit: TUnitInfo read fNextAutoRevertLockedUnit;
-    property PrevAutoRevertLockedUnit: TUnitInfo read fPrevAutoRevertLockedUnit;
-    property NextPartOfProject: TUnitInfo read fNextPartOfProject;
-    property PrevPartOfProject: TUnitInfo read fPrevPartOfProject;
+    // Unit lists
+    property NextUnitWithEditorIndex: TUnitInfo read GetNextUnitWithEditorIndex;
+    property PrevUnitWithEditorIndex: TUnitInfo read GetPrevUnitWithEditorIndex;
+    property NextUnitWithComponent: TUnitInfo read GetNextUnitWithComponent;
+    property PrevUnitWithComponent: TUnitInfo read GetPrevUnitWithComponent;
+    property NextLoadedUnit: TUnitInfo read GetNextLoadedUnit;
+    property PrevLoadedUnit: TUnitInfo read GetPrevLoadedUnit;
+    property NextAutoRevertLockedUnit: TUnitInfo read GetNextAutoRevertLockedUnit;
+    property PrevAutoRevertLockedUnit: TUnitInfo read GetPrevAutoRevertLockedUnit;
+    property NextPartOfProject: TUnitInfo read GetNextPartOfProject;
+    property PrevPartOfProject: TUnitInfo read GetPrevPartOfProject;
   public
     property Bookmarks: TFileBookmarks read FBookmarks write FBookmarks;
     property CursorPos: TPoint read fCursorPos write fCursorPos;
@@ -277,13 +282,11 @@ type
     fChanged: boolean;
     fCompilerOptions: TProjectCompilerOptions;
     FDefineTemplates: TProjectDefineTemplates;
-    fFirstAutoRevertLockedUnit: TUnitInfo; // units with IsAutoRevertLocked=true
-    fFirstLoadedUnit: TUnitInfo;           // units with Loaded=true
-    fFirstPartOfProject: TUnitInfo;        // units with IsPartOfProject=true
+
     FFirstRemovedDependency: TPkgDependency;
     FFirstRequiredDependency: TPkgDependency;
-    fFirstUnitWithEditorIndex: TUnitInfo;  // units with EditorIndex>=0
-    fFirstUnitWithComponent: TUnitInfo;    // units with Component<>nil
+    fFirst: array[TUnitInfoList] of TUnitInfo;
+
     FFlags: TProjectFlags;
     fIconPath: String;
     fJumpHistory: TProjectJumpHistory;
@@ -306,6 +309,11 @@ type
     fUnitList: TList;  // list of _all_ units (TUnitInfo)
     FUpdateLock: integer;
     xmlconfig: TXMLConfig;
+    function GetFirstAutoRevertLockedUnit: TUnitInfo;
+    function GetFirstLoadedUnit: TUnitInfo;
+    function GetFirstPartOfProject: TUnitInfo;
+    function GetFirstUnitWithComponent: TUnitInfo;
+    function GetFirstUnitWithEditorIndex: TUnitInfo;
     function GetMainFilename: String;
     function GetMainUnitInfo: TUnitInfo;
     function GetProjectInfoFile: string;
@@ -328,21 +336,14 @@ type
     procedure UpdateProjectDirectory;
   protected
     // special unit lists
-    procedure AddToAutoRevertLockedList(AnUnitInfo: TUnitInfo);
-    procedure AddToEditorWithIndexList(AnUnitInfo: TUnitInfo);
-    procedure AddToComponentList(AnUnitInfo: TUnitInfo);
-    procedure AddToLoadedList(AnUnitInfo: TUnitInfo);
+    procedure AddToList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
+    procedure RemoveFromList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
+
     procedure AddToOrRemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromComponentList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
     procedure AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
-    procedure AddToPartOfProjectList(AnUnitInfo: TUnitInfo);
-    procedure RemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
-    procedure RemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
-    procedure RemoveFromComponentList(AnUnitInfo: TUnitInfo);
-    procedure RemoveFromLoadedList(AnUnitInfo: TUnitInfo);
-    procedure RemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
   public
     constructor Create(TheProjectType: TProjectType);
     destructor Destroy; override;
@@ -438,15 +439,15 @@ type
     property CompilerOptions: TProjectCompilerOptions
                                    read fCompilerOptions write fCompilerOptions;
     property DefineTemplates: TProjectDefineTemplates read FDefineTemplates;
-    property FirstAutoRevertLockedUnit: TUnitInfo read fFirstAutoRevertLockedUnit;
-    property FirstLoadedUnit: TUnitInfo read fFirstLoadedUnit;
-    property FirstPartOfProject: TUnitInfo read fFirstPartOfProject;
+    property FirstAutoRevertLockedUnit: TUnitInfo read GetFirstAutoRevertLockedUnit;
+    property FirstLoadedUnit: TUnitInfo read GetFirstLoadedUnit;
+    property FirstPartOfProject: TUnitInfo read GetFirstPartOfProject;
     property FirstRemovedDependency: TPkgDependency
                                                    read FFirstRemovedDependency;
     property FirstRequiredDependency: TPkgDependency
                                                   read FFirstRequiredDependency;
-    property FirstUnitWithEditorIndex: TUnitInfo read fFirstUnitWithEditorIndex;
-    property FirstUnitWithForm: TUnitInfo read fFirstUnitWithComponent;
+    property FirstUnitWithEditorIndex: TUnitInfo read GetFirstUnitWithEditorIndex;
+    property FirstUnitWithForm: TUnitInfo read GetFirstUnitWithComponent;
     property Flags: TProjectFlags read FFlags write SetFlags;
     property IconPath: String read fIconPath write fIconPath;
     property JumpHistory: TProjectJumpHistory
@@ -781,53 +782,16 @@ begin
   end;
 end;
 
-procedure TUnitInfo.UpdateEditorIndexList;
+procedure TUnitInfo.UpdateList(ListType: TUnitInfoList; Add: boolean);
 begin
   if Project<>nil then begin
-    Project.AddToOrRemoveFromEditorWithIndexList(Self);
+    if Add then
+      Project.AddToList(Self,ListType)
+    else
+      Project.RemoveFromList(Self,ListType);
   end else begin
-    fNextUnitWithEditorIndex:=nil;
-    fPrevUnitWithEditorIndex:=nil;
-  end;
-end;
-
-procedure TUnitInfo.UpdateComponentList;
-begin
-  if Project<>nil then begin
-    Project.AddToOrRemoveFromComponentList(Self);
-  end else begin
-    fNextUnitWithComponent:=nil;
-    fPrevUnitWithComponent:=nil;
-  end;
-end;
-
-procedure TUnitInfo.UpdateLoadedList;
-begin
-  if Project<>nil then begin
-    Project.AddToOrRemoveFromLoadedList(Self);
-  end else begin
-    fNextLoadedUnit:=nil;
-    fPrevLoadedUnit:=nil;
-  end;
-end;
-
-procedure TUnitInfo.UpdateAutoRevertLockedList;
-begin
-  if Project<>nil then begin
-    Project.AddToOrRemoveFromAutoRevertLockedList(Self);
-  end else begin
-    fNextAutoRevertLockedUnit:=nil;
-    fPrevAutoRevertLockedUnit:=nil;
-  end;
-end;
-
-procedure TUnitInfo.UpdatePartOfProjectList;
-begin
-  if Project<>nil then begin
-    Project.AddToOrRemoveFromPartOfProjectList(Self);
-  end else begin
-    fNextPartOfProject:=nil;
-    fPrevPartOfProject:=nil;
+    fNext[ListType]:=nil;
+    fPrev[ListType]:=nil;
   end;
 end;
 
@@ -1056,11 +1020,61 @@ begin
   Result:=fHasResources or (ComponentName<>'');
 end;
 
+function TUnitInfo.GetNextAutoRevertLockedUnit: TUnitInfo;
+begin
+  Result:=fNext[uilAutoRevertLocked];
+end;
+
+function TUnitInfo.GetNextLoadedUnit: TUnitInfo;
+begin
+  Result:=fNext[uilLoaded];
+end;
+
+function TUnitInfo.GetNextPartOfProject: TUnitInfo;
+begin
+  Result:=fNext[uilPartOfProject];
+end;
+
+function TUnitInfo.GetNextUnitWithComponent: TUnitInfo;
+begin
+  Result:=fNext[uilWithComponent];
+end;
+
+function TUnitInfo.GetNextUnitWithEditorIndex: TUnitInfo;
+begin
+  Result:=fNext[uilWithEditorIndex];
+end;
+
+function TUnitInfo.GetPrevAutoRevertLockedUnit: TUnitInfo;
+begin
+  Result:=fPrev[uilAutoRevertLocked];
+end;
+
+function TUnitInfo.GetPrevLoadedUnit: TUnitInfo;
+begin
+  Result:=fPrev[uilLoaded];
+end;
+
+function TUnitInfo.GetPrevPartOfProject: TUnitInfo;
+begin
+  Result:=fPrev[uilPartOfProject];
+end;
+
+function TUnitInfo.GetPrevUnitWithComponent: TUnitInfo;
+begin
+  Result:=fPrev[uilWithComponent];
+end;
+
+function TUnitInfo.GetPrevUnitWithEditorIndex: TUnitInfo;
+begin
+  Result:=fPrev[uilWithEditorIndex];
+end;
+
 procedure TUnitInfo.SetEditorIndex(const AValue: integer);
 begin
   if fEditorIndex=AValue then exit;
   fEditorIndex:=AValue;
-  UpdateEditorIndexList;
+  UpdateList(uilWithEditorIndex,fEditorIndex>=0);
 end;
 
 procedure TUnitInfo.SetFileReadOnly(const AValue: Boolean);
@@ -1075,7 +1089,7 @@ procedure TUnitInfo.SetComponent(const AValue: TComponent);
 begin
   if fComponent=AValue then exit;
   fComponent:=AValue;
-  UpdateComponentList;
+  UpdateList(uilWithComponent,fComponent<>nil);
 end;
 
 procedure TUnitInfo.SetIsPartOfProject(const AValue: boolean);
@@ -1083,7 +1097,7 @@ begin
   if fIsPartOfProject=AValue then exit;
   if Project<>nil then Project.BeginUpdate(true);
   fIsPartOfProject:=AValue;
-  UpdatePartOfProjectList;
+  UpdateList(uilPartOfProject,fIsPartOfProject);
   if fIsPartOfProject then UpdateUsageCount(uuIsPartOfProject,0);
   if Project<>nil then Project.EndUpdate;
 end;
@@ -1108,21 +1122,22 @@ begin
 end;
 
 procedure TUnitInfo.SetProject(const AValue: TProject);
+var
+  ListType: TUnitInfoList;
 begin
   if FProject=AValue then exit;
-  if AValue=nil then begin
-    Project.RemoveFromEditorWithIndexList(Self);
-    Project.RemoveFromComponentList(Self);
-    Project.RemoveFromLoadedList(Self);
-    Project.RemoveFromAutoRevertLockedList(Self);
-    Project.RemoveFromPartOfProjectList(Self);
+  if FProject<>nil then begin
+    for ListType:=Low(TUnitInfoList) to High(TUnitInfoList) do
+      Project.RemoveFromList(Self,ListType);
   end;
   FProject:=AValue;
-  UpdateEditorIndexList;
-  UpdateComponentList;
-  UpdateLoadedList;
-  UpdateAutoRevertLockedList;
-  UpdatePartOfProjectList;
+  if FProject<>nil then begin
+    if EditorIndex>=0 then Project.AddToList(Self,uilWithEditorIndex);
+    if Component<>nil then Project.AddToList(Self,uilWithComponent);
+    if Loaded then Project.AddToList(Self,uilLoaded);
+    if IsAutoRevertLocked then Project.AddToList(Self,uilAutoRevertLocked);
+    if IsPartOfProject then Project.AddToList(Self,uilPartOfProject);
+  end;
 end;
 
 
@@ -1815,9 +1830,9 @@ end;
 
 function TProject.UnitWithEditorIndex(Index:integer):TUnitInfo;
 begin
-  Result:=fFirstUnitWithEditorIndex;
+  Result:=fFirst[uilWithEditorIndex];
   while (Result<>nil) and (Result.EditorIndex<>Index) do begin
-    Result:=Result.fNextUnitWithEditorIndex;
+    Result:=Result.fNext[uilWithEditorIndex];
   end;
 end;
 
@@ -1907,9 +1922,9 @@ procedure TProject.CloseEditorIndex(EditorIndex:integer);
 var i:integer;
   AnUnitInfo, NextUnitInfo: TUnitInfo;
 begin
-  AnUnitInfo:=fFirstUnitWithEditorIndex;
+  AnUnitInfo:=fFirst[uilWithEditorIndex];
   while AnUnitInfo<>nil do begin
-    NextUnitInfo:=AnUnitInfo.fNextUnitWithEditorIndex;
+    NextUnitInfo:=AnUnitInfo.fNext[uilWithEditorIndex];
     if AnUnitInfo.EditorIndex=EditorIndex then
       AnUnitInfo.EditorIndex:=-1
     else if AnUnitInfo.EditorIndex>EditorIndex then
@@ -1940,10 +1955,10 @@ var i:integer;
   AnUnitInfo: TUnitInfo;
 begin
   // move all editor index of units:
-  AnUnitInfo:=fFirstUnitWithEditorIndex;
+  AnUnitInfo:=fFirst[uilWithEditorIndex];
   while AnUnitInfo<>nil do begin
     AnUnitInfo.EditorIndex:=MoveIndex(AnUnitInfo.EditorIndex);
-    AnUnitInfo:=AnUnitInfo.fNextUnitWithEditorIndex;
+    AnUnitInfo:=AnUnitInfo.fNext[uilWithEditorIndex];
   end;
   // move bookmarks
   i:=Bookmarks.Count-1;
@@ -1983,10 +1998,10 @@ var
 begin
   if OldEditorIndex=NewEditorIndex then exit;
   // move all editor index of units:
-  AnUnitInfo:=fFirstUnitWithEditorIndex;
+  AnUnitInfo:=fFirst[uilWithEditorIndex];
   while AnUnitInfo<>nil do begin
     AnUnitInfo.EditorIndex:=MoveIndex(AnUnitInfo.EditorIndex);
-    AnUnitInfo:=AnUnitInfo.fNextUnitWithEditorIndex;
+    AnUnitInfo:=AnUnitInfo.fNext[uilWithEditorIndex];
   end;
   // move bookmarks
   i:=Bookmarks.Count-1;
@@ -2000,45 +2015,45 @@ end;
 procedure TProject.AddToOrRemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
 begin
   if AnUnitInfo.EditorIndex<0 then begin
-    RemoveFromEditorWithIndexList(AnUnitInfo);
+    RemoveFromList(AnUnitInfo,uilWithEditorIndex);
   end else begin
-    AddToEditorWithIndexList(AnUnitInfo);
+    AddToList(AnUnitInfo,uilWithEditorIndex);
   end;
 end;
 
 procedure TProject.AddToOrRemoveFromComponentList(AnUnitInfo: TUnitInfo);
 begin
   if AnUnitInfo.Component=nil then begin
-    RemoveFromComponentList(AnUnitInfo);
+    RemoveFromList(AnUnitInfo,uilWithComponent);
   end else begin
-    AddToComponentList(AnUnitInfo);
+    AddToList(AnUnitInfo,uilWithComponent);
   end;
 end;
 
 procedure TProject.AddToOrRemoveFromLoadedList(AnUnitInfo: TUnitInfo);
 begin
   if not AnUnitInfo.Loaded then begin
-    RemoveFromLoadedList(AnUnitInfo);
+    RemoveFromList(AnUnitInfo,uilLoaded);
   end else begin
-    AddToLoadedList(AnUnitInfo);
+    AddToList(AnUnitInfo,uilLoaded);
   end;
 end;
 
 procedure TProject.AddToOrRemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
 begin
   if not AnUnitInfo.IsAutoRevertLocked then begin
-    RemoveFromAutoRevertLockedList(AnUnitInfo);
+    RemoveFromList(AnUnitInfo,uilAutoRevertLocked);
   end else begin
-    AddToAutoRevertLockedList(AnUnitInfo);
+    AddToList(AnUnitInfo,uilAutoRevertLocked);
   end;
 end;
 
 procedure TProject.AddToOrRemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
 begin
   if not AnUnitInfo.IsPartOfProject then begin
-    RemoveFromPartOfProjectList(AnUnitInfo);
+    RemoveFromList(AnUnitInfo,uilPartOfProject);
   end else begin
-    AddToPartOfProjectList(AnUnitInfo);
+    AddToList(AnUnitInfo,uilPartOfProject);
   end;
 end;
 
@@ -2056,6 +2071,31 @@ function TProject.GetMainFilename: String;
 begin
   if MainUnitID>=0 then Result:=MainUnitInfo.Filename
   else Result:='';
+end;
+
+function TProject.GetFirstPartOfProject: TUnitInfo;
+begin
+  Result:=FFirst[uilPartOfProject];
+end;
+
+function TProject.GetFirstLoadedUnit: TUnitInfo;
+begin
+  Result:=fFirst[uilLoaded];
+end;
+
+function TProject.GetFirstAutoRevertLockedUnit: TUnitInfo;
+begin
+  Result:=fFirst[uilAutoRevertLocked];
+end;
+
+function TProject.GetFirstUnitWithComponent: TUnitInfo;
+begin
+  Result:=fFirst[uilWithComponent];
+end;
+
+function TProject.GetFirstUnitWithEditorIndex: TUnitInfo;
+begin
+  Result:=fFirst[uilWithEditorIndex];
 end;
 
 function TProject.GetMainUnitInfo: TUnitInfo;
@@ -2173,14 +2213,14 @@ var
   AnUnitInfo: TUnitInfo;
 begin
   AnUnitList:=nil;
-  AnUnitInfo:=fFirstAutoRevertLockedUnit;
+  AnUnitInfo:=fFirst[uilAutoRevertLocked];
   while (AnUnitInfo<>nil) do begin
     if AnUnitInfo.ChangedOnDisk(false) then begin
       if AnUnitList=nil then
         AnUnitList:=TList.Create;
       AnUnitList.Add(AnUnitInfo);
     end;
-    AnUnitInfo:=AnUnitInfo.fNextAutoRevertLockedUnit;
+    AnUnitInfo:=AnUnitInfo.fNext[uilAutoRevertLocked];
   end;
 end;
 
@@ -2358,9 +2398,9 @@ end;
 
 Function TProject.UnitWithComponent(AComponent: TComponent) : TUnitInfo;
 begin
-  Result:=fFirstUnitWithComponent;
+  Result:=fFirst[uilWithComponent];
   while (Result<>nil) and (Result.Component<>AComponent) do
-    Result:=Result.fNextUnitWithComponent;
+    Result:=Result.fNext[uilWithComponent];
 end;
 
 function TProject.UnitInfoWithFilename(const AFilename: string): TUnitInfo;
@@ -2420,19 +2460,19 @@ end;
 
 function TProject.ProjectUnitWithFilename(const AFilename: string): TUnitInfo;
 begin
-  Result:=fFirstPartOfProject;
+  Result:=fFirst[uilPartOfProject];
   while Result<>nil do begin
     if CompareFileNames(AFilename,Result.Filename)=0 then exit;
-    Result:=Result.NextPartOfProject;
+    Result:=Result.fNext[uilPartOfProject];
   end;
 end;
 
 function TProject.ProjectUnitWithUnitname(const AnUnitName: string): TUnitInfo;
 begin
-  Result:=fFirstPartOfProject;
+  Result:=fFirst[uilPartOfProject];
   while Result<>nil do begin
     if AnsiCompareText(AnUnitName,Result.UnitName)=0 then exit;
-    Result:=Result.NextPartOfProject;
+    Result:=Result.fNext[uilPartOfProject];
   end;
 end;
 
@@ -2442,149 +2482,34 @@ begin
   CompilerOptions.BaseDirectory:=fProjectDirectory;
 end;
 
-procedure TProject.AddToEditorWithIndexList(AnUnitInfo: TUnitInfo);
+procedure TProject.AddToList(AnUnitInfo: TUnitInfo; ListType: TUnitInfoList);
 begin
   // add to list if AnUnitInfo is not in list
-  if (fFirstUnitWithEditorIndex<>AnUnitInfo)
-  and (AnUnitInfo.fNextUnitWithEditorIndex=nil)
-  and (AnUnitInfo.fPrevUnitWithEditorIndex=nil) then begin
-    AnUnitInfo.fNextUnitWithEditorIndex:=fFirstUnitWithEditorIndex;
-    AnUnitInfo.fPrevUnitWithEditorIndex:=nil;
-    fFirstUnitWithEditorIndex:=AnUnitInfo;
-    if AnUnitInfo.fNextUnitWithEditorIndex<>nil then
-      AnUnitInfo.fNextUnitWithEditorIndex.fPrevUnitWithEditorIndex:=AnUnitInfo;
+  if (fFirst[ListType]<>AnUnitInfo)
+  and (AnUnitInfo.fNext[ListType]=nil)
+  and (AnUnitInfo.fPrev[ListType]=nil) then begin
+    AnUnitInfo.fNext[ListType]:=fFirst[ListType];
+    AnUnitInfo.fPrev[ListType]:=nil;
+    fFirst[ListType]:=AnUnitInfo;
+    if AnUnitInfo.fNext[ListType]<>nil then
+      AnUnitInfo.fNext[ListType].fPrev[ListType]:=AnUnitInfo;
   end;
 end;
 
-procedure TProject.RemoveFromEditorWithIndexList(AnUnitInfo: TUnitInfo);
+procedure TProject.RemoveFromList(AnUnitInfo: TUnitInfo;
+  ListType: TUnitInfoList);
 begin
   // remove from list if AnUnitInfo is in list
-  if fFirstUnitWithEditorIndex=AnUnitInfo then
-    fFirstUnitWithEditorIndex:=AnUnitInfo.fNextUnitWithEditorIndex;
-  if AnUnitInfo.fNextUnitWithEditorIndex<>nil then
-    AnUnitInfo.fNextUnitWithEditorIndex.fPrevUnitWithEditorIndex:=
-      AnUnitInfo.fPrevUnitWithEditorIndex;
-  if AnUnitInfo.fPrevUnitWithEditorIndex<>nil then
-    AnUnitInfo.fPrevUnitWithEditorIndex.fNextUnitWithEditorIndex:=
-      AnUnitInfo.fNextUnitWithEditorIndex;
-  AnUnitInfo.fNextUnitWithEditorIndex:=nil;
-  AnUnitInfo.fPrevUnitWithEditorIndex:=nil;
-end;
-
-procedure TProject.AddToComponentList(AnUnitInfo: TUnitInfo);
-begin
-  // add to list if AnUnitInfo is not in list
-  if (fFirstUnitWithComponent<>AnUnitInfo)
-  and (AnUnitInfo.fNextUnitWithComponent=nil)
-  and (AnUnitInfo.fPrevUnitWithComponent=nil) then begin
-    AnUnitInfo.fNextUnitWithComponent:=fFirstUnitWithComponent;
-    AnUnitInfo.fPrevUnitWithComponent:=nil;
-    fFirstUnitWithComponent:=AnUnitInfo;
-    if AnUnitInfo.fNextUnitWithComponent<>nil then
-      AnUnitInfo.fNextUnitWithComponent.fPrevUnitWithComponent:=AnUnitInfo;
-  end;
-end;
-
-procedure TProject.RemoveFromComponentList(AnUnitInfo: TUnitInfo);
-begin
-  // remove from list if AnUnitInfo is in list
-  if fFirstUnitWithComponent=AnUnitInfo then
-    fFirstUnitWithComponent:=AnUnitInfo.fNextUnitWithComponent;
-  if AnUnitInfo.fNextUnitWithComponent<>nil then
-    AnUnitInfo.fNextUnitWithComponent.fPrevUnitWithComponent:=
-      AnUnitInfo.fPrevUnitWithComponent;
-  if AnUnitInfo.fPrevUnitWithComponent<>nil then
-    AnUnitInfo.fPrevUnitWithComponent.fNextUnitWithComponent:=
-      AnUnitInfo.fNextUnitWithComponent;
-  AnUnitInfo.fNextUnitWithComponent:=nil;
-  AnUnitInfo.fPrevUnitWithComponent:=nil;
-end;
-
-procedure TProject.AddToLoadedList(AnUnitInfo: TUnitInfo);
-begin
-  // add to list if AnUnitInfo is not in list
-  if (fFirstLoadedUnit<>AnUnitInfo)
-  and (AnUnitInfo.fNextLoadedUnit=nil)
-  and (AnUnitInfo.fPrevLoadedUnit=nil) then begin
-    AnUnitInfo.fNextLoadedUnit:=fFirstLoadedUnit;
-    AnUnitInfo.fPrevLoadedUnit:=nil;
-    fFirstLoadedUnit:=AnUnitInfo;
-    if AnUnitInfo.fNextLoadedUnit<>nil then
-      AnUnitInfo.fNextLoadedUnit.fPrevLoadedUnit:=AnUnitInfo;
-  end;
-end;
-
-procedure TProject.RemoveFromLoadedList(AnUnitInfo: TUnitInfo);
-begin
-  // remove from list if AnUnitInfo is in list
-  if fFirstLoadedUnit=AnUnitInfo then
-    fFirstLoadedUnit:=AnUnitInfo.fNextLoadedUnit;
-  if AnUnitInfo.fNextLoadedUnit<>nil then
-    AnUnitInfo.fNextLoadedUnit.fPrevLoadedUnit:=
-      AnUnitInfo.fPrevLoadedUnit;
-  if AnUnitInfo.fPrevLoadedUnit<>nil then
-    AnUnitInfo.fPrevLoadedUnit.fNextLoadedUnit:=
-      AnUnitInfo.fNextLoadedUnit;
-  AnUnitInfo.fNextLoadedUnit:=nil;
-  AnUnitInfo.fPrevLoadedUnit:=nil;
-end;
-
-procedure TProject.AddToAutoRevertLockedList(AnUnitInfo: TUnitInfo);
-begin
-  // add to list if AnUnitInfo is not in list
-  if (fFirstAutoRevertLockedUnit<>AnUnitInfo)
-  and (AnUnitInfo.fNextAutoRevertLockedUnit=nil)
-  and (AnUnitInfo.fPrevAutoRevertLockedUnit=nil) then begin
-    AnUnitInfo.fNextAutoRevertLockedUnit:=fFirstAutoRevertLockedUnit;
-    AnUnitInfo.fPrevAutoRevertLockedUnit:=nil;
-    fFirstAutoRevertLockedUnit:=AnUnitInfo;
-    if AnUnitInfo.fNextAutoRevertLockedUnit<>nil then
-      AnUnitInfo.fNextAutoRevertLockedUnit.fPrevAutoRevertLockedUnit:=AnUnitInfo;
-  end;
-end;
-
-procedure TProject.RemoveFromAutoRevertLockedList(AnUnitInfo: TUnitInfo);
-begin
-  // remove from list if AnUnitInfo is in list
-  if fFirstAutoRevertLockedUnit=AnUnitInfo then
-    fFirstAutoRevertLockedUnit:=AnUnitInfo.fNextAutoRevertLockedUnit;
-  if AnUnitInfo.fNextAutoRevertLockedUnit<>nil then
-    AnUnitInfo.fNextAutoRevertLockedUnit.fPrevAutoRevertLockedUnit:=
-      AnUnitInfo.fPrevAutoRevertLockedUnit;
-  if AnUnitInfo.fPrevAutoRevertLockedUnit<>nil then
-    AnUnitInfo.fPrevAutoRevertLockedUnit.fNextAutoRevertLockedUnit:=
-      AnUnitInfo.fNextAutoRevertLockedUnit;
-  AnUnitInfo.fNextAutoRevertLockedUnit:=nil;
-  AnUnitInfo.fPrevAutoRevertLockedUnit:=nil;
-end;
-
-procedure TProject.AddToPartOfProjectList(AnUnitInfo: TUnitInfo);
-begin
-  // add to list if AnUnitInfo is not in list
-  if (fFirstPartOfProject<>AnUnitInfo)
-  and (AnUnitInfo.fNextPartOfProject=nil)
-  and (AnUnitInfo.fPrevPartOfProject=nil) then begin
-    AnUnitInfo.fNextPartOfProject:=fFirstPartOfProject;
-    AnUnitInfo.fPrevPartOfProject:=nil;
-    fFirstPartOfProject:=AnUnitInfo;
-    if AnUnitInfo.fNextPartOfProject<>nil then
-      AnUnitInfo.fNextPartOfProject.fPrevPartOfProject:=AnUnitInfo;
-  end;
-end;
-
-procedure TProject.RemoveFromPartOfProjectList(AnUnitInfo: TUnitInfo);
-begin
-  // remove from list if AnUnitInfo is in list
-  if fFirstPartOfProject=AnUnitInfo then
-    fFirstPartOfProject:=AnUnitInfo.fNextPartOfProject;
-  if AnUnitInfo.fNextPartOfProject<>nil then
-    AnUnitInfo.fNextPartOfProject.fPrevPartOfProject:=
-      AnUnitInfo.fPrevPartOfProject;
-  if AnUnitInfo.fPrevPartOfProject<>nil then
-    AnUnitInfo.fPrevPartOfProject.fNextPartOfProject:=
-      AnUnitInfo.fNextPartOfProject;
-  AnUnitInfo.fNextPartOfProject:=nil;
-  AnUnitInfo.fPrevPartOfProject:=nil;
+  if fFirst[ListType]=AnUnitInfo then
+    fFirst[ListType]:=AnUnitInfo.fNext[ListType];
+  if AnUnitInfo.fNext[ListType]<>nil then
+    AnUnitInfo.fNext[ListType].fPrev[ListType]:=
+      AnUnitInfo.fPrev[ListType];
+  if AnUnitInfo.fPrev[ListType]<>nil then
+    AnUnitInfo.fPrev[ListType].fNext[ListType]:=
+      AnUnitInfo.fNext[ListType];
+  AnUnitInfo.fNext[ListType]:=nil;
+  AnUnitInfo.fPrev[ListType]:=nil;
 end;
 
 
@@ -2713,6 +2638,9 @@ end.
 
 {
   $Log$
+  Revision 1.125  2003/06/01 11:23:01  mattias
+  splittet designer form and lookup root
+
   Revision 1.124  2003/05/31 10:07:33  mattias
   changed projects forms into components
 

@@ -39,8 +39,8 @@ uses
   MemCheck,
 {$ENDIF}
   Classes, AbstractFormeditor, Controls, PropEdits, TypInfo, ObjectInspector,
-  Forms, Menus, JITForms, NonControlForms, ComponentReg, IDEProcs,
-  ComponentEditors, KeyMapping, EditorOptions, Dialogs;
+  Forms, Menus, Dialogs, AVL_Tree, JITForms, NonControlForms, ComponentReg,
+  IDEProcs, ComponentEditors, KeyMapping, EditorOptions, Designerprocs;
 
 Const OrdinalTypes = [tkInteger,tkChar,tkENumeration,tkbool];
 
@@ -104,50 +104,45 @@ each control that's dropped onto the form
     property Component : TComponent read FComponent;
   end;
 
-{
-TCustomFormEditor
 
-}
+  { TCustomFormEditor }
 
   TControlClass = class of TControl;
 
   TCustomFormEditor = class(TAbstractFormEditor)
   private
-    FModified     : Boolean;
-    FComponentInterfaceList: TList; //used to track and find controls
+    FComponentInterfaces: TAVLTree; // tree of TComponentInterface sorted for
+                                    // component
     FSelectedComponents: TComponentSelectionList;
     FObj_Inspector: TObjectInspector;
     function GetPropertyEditorHook: TPropertyEditorHook;
   protected
-    Procedure RemoveFromComponentInterfaceList(Value :TIComponentInterface);
+    FNonControlForms: TAVLTree; // tree of TNonControlForm sorted for LookupRoot
     procedure SetSelectedComponents(TheSelectedComponents : TComponentSelectionList);
     procedure OnObjectInspectorModified(Sender: TObject);
     procedure SetObj_Inspector(AnObjectInspector: TObjectInspector); virtual;
     procedure JITListReaderError(Sender: TObject; ErrorType: TJITFormError;
           var Action: TModalResult); virtual;
 
-    Function GetComponentByHandle(const Value : Longint): TIComponentInterface; override;
-
-    Function GetSelCount : Integer; override;
-    Function GetSelComponent(Index : Integer) : TIComponentInterface; override;
     procedure OnDesignerMenuItemClick(Sender: TObject); virtual;
+    function FindNonControlFormNode(LookupRoot: TComponent): TAVLTreeNode;
   public
     JITFormList: TJITForms;// designed forms
     JITDataModuleList: TJITDataModules;// designed data modules
-    
+
     constructor Create;
     destructor Destroy; override;
 
     Function AddSelected(Value : TComponent) : Integer;
     Procedure DeleteControl(AComponent: TComponent; FreeComponent: boolean);
-    Function FormModified : Boolean; override;
     Function FindComponentByName(const Name : ShortString) : TIComponentInterface; override;
     Function FindComponent(AComponent: TComponent): TIComponentInterface; override;
     function IsJITComponent(AComponent: TComponent): boolean;
     function GetJITListOfType(AncestorType: TComponentClass): TJITComponentList;
+    function GetDesignerForm(AComponent: TComponent): TCustomForm;
+    function FindNonControlForm(LookupRoot: TComponent): TNonControlForm;
     
     function GetComponentEditor(AComponent: TComponent): TBaseComponentEditor;
-    Function GetFormComponent: TIComponentInterface; override;
     function CreateUniqueComponentName(AComponent: TComponent): string;
     function CreateUniqueComponentName(const AClassName: string;
       OwnerComponent: TComponent): string;
@@ -164,18 +159,41 @@ TCustomFormEditor
     function TranslateKeyToDesignerCommand(Key: word; Shift: TShiftState): integer;
   public
     property SelectedComponents: TComponentSelectionList
-      read FSelectedComponents write SetSelectedComponents;
+                           read FSelectedComponents write SetSelectedComponents;
     property Obj_Inspector: TObjectInspector
-      read FObj_Inspector write SetObj_Inspector;
+                                     read FObj_Inspector write SetObj_Inspector;
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
   end;
-
+  
+  
+function CompareComponentInterfaces(Data1, Data2: Pointer): integer;
+function CompareComponentAndInterface(Key, Data: Pointer): integer;
 
 implementation
 
 
 uses
   SysUtils, Math;
+
+function CompareComponentInterfaces(Data1, Data2: Pointer): integer;
+var
+  CompIntf1: TComponentInterface;
+  CompIntf2: TComponentInterface;
+begin
+  CompIntf1:=TComponentInterface(Data1);
+  CompIntf2:=TComponentInterface(Data2);
+  Result:=integer(CompIntf1.Component)-integer(CompIntf2.Component);
+end;
+
+function CompareComponentAndInterface(Key, Data: Pointer): integer;
+var
+  AComponent: TComponent;
+  CompIntf: TComponentInterface;
+begin
+  AComponent:=TComponent(Key);
+  CompIntf:=TComponentInterface(Data);
+  Result:=integer(AComponent)-integer(CompIntf.Component);
+end;
 
 {TComponentInterface}
 
@@ -620,7 +638,8 @@ end;
 constructor TCustomFormEditor.Create;
 begin
   inherited Create;
-  FComponentInterfaceList := TList.Create;
+  FComponentInterfaces := TAVLTree.Create(@CompareComponentInterfaces);
+  FNonControlForms:=TAVLTree.Create(@CompareNonControlForms);
   FSelectedComponents := TComponentSelectionList.Create;
   
   JITFormList := TJITForms.Create;
@@ -630,6 +649,7 @@ begin
   JITDataModuleList.OnReaderError:=@JITListReaderError;
   
   DesignerMenuItemClick:=@OnDesignerMenuItemClick;
+  OnGetDesignerForm:=@GetDesignerForm;
 end;
 
 destructor TCustomFormEditor.Destroy;
@@ -637,8 +657,9 @@ begin
   DesignerMenuItemClick:=nil;
   JITFormList.Free;
   JITDataModuleList.Free;
-  FComponentInterfaceList.Free;
+  FComponentInterfaces.Free;
   FSelectedComponents.Free;
+  FNonControlForms.Free;
   inherited;
 end;
 
@@ -672,13 +693,15 @@ Procedure TCustomFormEditor.DeleteControl(AComponent: TComponent;
 var
   Temp : TComponentInterface;
   i: integer;
+  AForm: TCustomForm;
 Begin
   Temp := TComponentInterface(FindComponent(AComponent));
   if Temp <> nil then
   begin
-    RemoveFromComponentInterfaceList(Temp);
+    FComponentInterfaces.Remove(Temp);
 
-writeln('TCustomFormEditor.DeleteControl ',AComponent.ClassName,' ',IsJITComponent(AComponent));
+    writeln('TCustomFormEditor.DeleteControl ',
+            AComponent.ClassName,' ',IsJITComponent(AComponent));
     if IsJITComponent(AComponent) then begin
       // value is a top level component
       if FreeComponent then begin
@@ -692,11 +715,19 @@ writeln('TCustomFormEditor.DeleteControl ',AComponent.ClassName,' ',IsJITCompone
         if PropertyEditorHook.LookupRoot=AComponent then
           PropertyEditorHook.LookupRoot:=nil;
         if JITFormList.IsJITForm(AComponent) then
+          // free a form component
           JITFormList.DestroyJITComponent(AComponent)
-        else if JITDataModuleList.IsJITDataModule(AComponent) then
-          JITDataModuleList.DestroyJITComponent(AComponent)
-        else
-          RaiseException('TCustomFormEditor.AddSelected '+AComponent.ClassName);
+        else if JITDataModuleList.IsJITDataModule(AComponent) then begin
+          // free a datamodule and its designer form
+          AForm:=GetDesignerForm(AComponent);
+          if not (AForm is TNonControlForm) then
+            RaiseException('TCustomFormEditor.DeleteControl  Where is the TNonControlForm? '+AComponent.ClassName);
+          FNonControlForms.Remove(AForm);
+          TNonControlForm(AForm).LookupRoot:=nil;
+          AForm.Free;
+          JITDataModuleList.DestroyJITComponent(AComponent);
+        end else
+          RaiseException('TCustomFormEditor.DeleteControl '+AComponent.ClassName);
       end;
       Temp.Free;
     end
@@ -710,39 +741,32 @@ writeln('TCustomFormEditor.DeleteControl ',AComponent.ClassName,' ',IsJITCompone
   end;
 end;
 
-Function TCustomFormEditor.FormModified : Boolean;
-Begin
-  Result := FModified;
-end;
-
 Function TCustomFormEditor.FindComponentByName(
-  const Name : ShortString) : TIComponentInterface;
+  const Name: ShortString) : TIComponentInterface;
 Var
-  Num : Integer;
+  ANode: TAVLTreeNode;
 Begin
-  Num := 0;
-  While Num < FComponentInterfaceList.Count do
-  Begin
-    Result := TIComponentInterface(FComponentInterfaceList.Items[Num]);
+  ANode:=FComponentInterfaces.FindLowest;
+  while ANode<>nil do begin
+    Result := TIComponentInterface(ANode.Data);
     if AnsiCompareText(TComponentInterface(Result).Component.Name,Name)=0 then
       exit;
-    inc(num);
+    ANode:=FComponentInterfaces.FindSuccessor(ANode);
   end;
   Result:=nil;
 end;
 
-Function TCustomFormEditor.FindComponent(AComponent:TComponent): TIComponentInterface;
+Function TCustomFormEditor.FindComponent(AComponent: TComponent
+  ): TIComponentInterface;
 Var
-  Num : Integer;
+  ANode: TAVLTreeNode;
 Begin
-  Num := 0;
-  While Num < FComponentInterfaceList.Count do
-  Begin
-    Result := TIComponentInterface(FComponentInterfaceList.Items[Num]);
-    if TComponentInterface(Result).Component = AComponent then exit;
-    inc(num);
-  end;
-  Result:=nil;
+  ANode:=FComponentInterfaces.FindKey(Pointer(AComponent),
+                                      @CompareComponentAndInterface);
+  if ANode<>nil then
+    Result:=TIComponentInterface(ANode.Data)
+  else
+    Result:=nil;
 end;
 
 function TCustomFormEditor.IsJITComponent(AComponent: TComponent): boolean;
@@ -758,6 +782,31 @@ begin
     Result:=JITFormList
   else if AncestorType.InheritsFrom(TDataModule) then
     Result:=JITDataModuleList
+  else
+    Result:=nil;
+end;
+
+function TCustomFormEditor.GetDesignerForm(AComponent: TComponent
+  ): TCustomForm;
+var
+  OwnerComponent: TComponent;
+begin
+  Result:=nil;
+  OwnerComponent:=AComponent.Owner;
+  if OwnerComponent is TCustomForm then
+    Result:=TCustomForm(OwnerComponent)
+  else
+    Result:=FindNonControlForm(OwnerComponent);
+end;
+
+function TCustomFormEditor.FindNonControlForm(LookupRoot: TComponent
+  ): TNonControlForm;
+var
+  AVLNode: TAVLTreeNode;
+begin
+  AVLNode:=FindNonControlFormNode(LookupRoot);
+  if AVLNode<>nil then
+    Result:=TNonControlForm(AVLNode.Data)
   else
     Result:=nil;
 end;
@@ -790,13 +839,13 @@ Begin
   Temp := TComponentInterface.Create;
 
   OwnerComponent:=nil;
-  if Assigned(ParentCI) and ParentCI.IsTControl then
+  if Assigned(ParentCI) then
   begin
     // add as child control
     ParentComponent:=TComponentInterface(ParentCI).Component;
-    OwnerComponent:=GetParentForm(TControl(ParentComponent));
-    if OwnerComponent=nil then
-      OwnerComponent:=ParentComponent;
+    OwnerComponent:=ParentComponent;
+    if OwnerComponent.Owner<>nil then
+      OwnerComponent:=OwnerComponent.Owner;
     Temp.FComponent := TypeClass.Create(OwnerComponent);
     // set parent
     if Temp.IsTControl then begin
@@ -883,7 +932,7 @@ Begin
 
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TCustomFormEditor.CreateComponent F ');{$ENDIF}
   // add to component list
-  FComponentInterfaceList.Add(Temp);
+  FComponentInterfaces.Add(Temp);
 
   Result := Temp;
 end;
@@ -967,24 +1016,6 @@ begin
   Action:=MessageDlg(aCaption,aMsg,DlgType,Buttons,HelpCtx);
 end;
 
-function TCustomFormEditor.GetComponentByHandle(const Value: Longint
-  ): TIComponentInterface;
-begin
-  // ToDo:
-  Result:=nil;
-end;
-
-function TCustomFormEditor.GetSelCount: Integer;
-begin
-  Result:=FComponentInterfaceList.Count;
-end;
-
-function TCustomFormEditor.GetSelComponent(Index: Integer
-  ): TIComponentInterface;
-begin
-  Result:=TIComponentInterface(FComponentInterfaceList[Index]);
-end;
-
 procedure TCustomFormEditor.OnDesignerMenuItemClick(Sender: TObject);
 var
   CompEditor: TBaseComponentEditor;
@@ -1010,21 +1041,16 @@ begin
   end;
 end;
 
+function TCustomFormEditor.FindNonControlFormNode(LookupRoot: TComponent
+  ): TAVLTreeNode;
+begin
+  Result:=FNonControlForms.FindKey(Pointer(LookupRoot),
+                                   @CompareLookupRootAndNonControlForm);
+end;
+
 function TCustomFormEditor.GetPropertyEditorHook: TPropertyEditorHook;
 begin
   Result:=Obj_Inspector.PropertyEditorHook;
-end;
-
-Procedure TCustomFormEditor.RemoveFromComponentInterfaceList(
-  Value :TIComponentInterface);
-Begin
-  FComponentInterfaceList.Remove(Value);
-end;
-
-Function TCustomFormEditor.GetFormComponent : TIComponentInterface;
-Begin
-  //this can only be used IF you have one FormEditor per form.  I currently don't
-  Result := nil;
 end;
 
 function TCustomFormEditor.CreateUniqueComponentName(AComponent: TComponent
@@ -1078,7 +1104,7 @@ Function TCustomFormEditor.CreateComponentInterface(
   AComponent: TComponent): TIComponentInterface;
 Begin
   Result := TComponentInterface.Create(AComponent);
-  FComponentInterfaceList.Add(Result);
+  FComponentInterfaces.Add(Result);
 end;
 
 procedure TCustomFormEditor.OnObjectInspectorModified(Sender: TObject);

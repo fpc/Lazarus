@@ -33,7 +33,8 @@ unit DesignerProcs;
 interface
 
 uses
-  Classes, SysUtils, LCLLinux, Forms, Controls, LCLType, Graphics, VCLGlobals;
+  Classes, SysUtils, LCLLinux, Forms, Controls, LCLType, Graphics, VCLGlobals,
+  Menus;
 
 type
   TDesignerDCFlag = (ddcDCOriginValid, ddcFormOriginValid,
@@ -79,6 +80,19 @@ const
   NonVisualCompBorder = 2;
   NonVisualCompWidth = NonVisualCompIconWidth+2*NonVisualCompBorder;
 
+
+type
+  TGetDesignerFormEvent =
+    function(AComponent: TComponent): TCustomForm of object;
+
+var
+  OnGetDesignerForm: TGetDesignerFormEvent;
+
+function GetDesignerForm(AComponent: TComponent): TCustomForm;
+function GetParentLevel(AControl: TControl): integer;
+function ControlIsInDesignerVisible(AControl: TControl): boolean;
+function ComponentIsInvisible(AComponent: TComponent): boolean;
+
 function GetParentFormRelativeTopLeft(Component: TComponent): TPoint;
 function GetParentFormRelativeBounds(Component: TComponent): TRect;
 function GetParentFormRelativeClientOrigin(Component: TComponent): TPoint;
@@ -86,7 +100,6 @@ function GetParentFormRelativeParentClientOrigin(Component: TComponent): TPoint;
 
 function GetFormRelativeMousePosition(Form: TCustomForm): TPoint;
 
-function ComponentIsTopLvl(AComponent: TComponent): boolean;
 procedure GetComponentBounds(AComponent: TComponent;
   var Left, Top, Width, Height: integer);
 function GetComponentLeft(AComponent: TComponent): integer;
@@ -94,9 +107,6 @@ function GetComponentTop(AComponent: TComponent): integer;
 function GetComponentWidth(AComponent: TComponent): integer;
 function GetComponentHeight(AComponent: TComponent): integer;
 
-function GetParentLevel(AControl: TControl): integer;
-
-function ControlIsDesignerVisible(AControl: TControl): boolean;
 
 implementation
 
@@ -189,12 +199,6 @@ begin
   dec(Result.Y,FormClientOrigin.Y);
 end;
 
-function ComponentIsTopLvl(AComponent: TComponent): boolean;
-begin
-  Result:=(AComponent<>nil) and (AComponent is TControl)
-     and (TControl(AComponent).Parent=nil);
-end;
-
 procedure GetComponentBounds(AComponent: TComponent;
   var Left, Top, Width, Height: integer);
 begin
@@ -256,7 +260,7 @@ begin
   end;
 end;
 
-function ControlIsDesignerVisible(AControl: TControl): boolean;
+function ControlIsInDesignerVisible(AControl: TControl): boolean;
 begin
   Result:=true;
   while AControl<>nil do begin
@@ -265,6 +269,24 @@ begin
       exit;
     end;
     AControl:=AControl.Parent;
+  end;
+end;
+
+function ComponentIsInvisible(AComponent: TComponent): boolean;
+begin
+  Result:=(AComponent is TMenuItem);
+end;
+
+function GetDesignerForm(AComponent: TComponent): TCustomForm;
+var
+  Owner: TComponent;
+begin
+  Result:=nil;
+  if Assigned(OnGetDesignerForm) then
+    Result:=OnGetDesignerForm(AComponent)
+  else begin
+    Owner:=AComponent.Owner;
+    if Owner is TCustomForm then Result:=TCustomForm(Owner);
   end;
 end;
 
@@ -371,6 +393,9 @@ begin
       Result:=true;
   end;
 end;
+
+initialization
+  OnGetDesignerForm:=nil;
 
 end.
 

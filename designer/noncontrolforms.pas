@@ -76,9 +76,31 @@ type
     property DataModule: TDataModule read GetDataModule write SetDataModule;
   end;
   
+function CompareNonControlForms(Data1, Data2: Pointer): integer;
+function CompareLookupRootAndNonControlForm(Key, Data: Pointer): integer;
 
 implementation
 
+
+function CompareNonControlForms(Data1, Data2: Pointer): integer;
+var
+  Form1: TNonControlForm;
+  Form2: TNonControlForm;
+begin
+  Form1:=TNonControlForm(Data1);
+  Form2:=TNonControlForm(Data2);
+  Result:=integer(Form1.LookupRoot)-integer(Form2.LookupRoot);
+end;
+
+function CompareLookupRootAndNonControlForm(Key, Data: Pointer): integer;
+var
+  LookupRoot: TComponent;
+  Form: TNonControlForm;
+begin
+  LookupRoot:=TComponent(Key);
+  Form:=TNonControlForm(Data);
+  Result:=integer(LookupRoot)-integer(Form.LookupRoot);
+end;
 
 { TNonControlForm }
 
@@ -101,6 +123,7 @@ constructor TNonControlForm.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
   FFrameWidth:=1;
+  ControlStyle:=ControlStyle-[csAcceptsControls];
 end;
 
 destructor TNonControlForm.Destroy;
