@@ -826,7 +826,7 @@ activate_time :	the time at which the activation event occurred.
         End;
         LM_SETFORMICON:
         Begin
-          SetClassLong(Handle, GCL_HIcon, (Sender As TForm).GetIconHandle);
+          SetClassLong(Handle, GCL_HIcon, (Sender As TCustomForm).GetIconHandle);
         End;
         LM_GETITEMS :
         Begin
@@ -2034,37 +2034,14 @@ Begin
     End;
     csHintWindow:
     Begin
-      Window := CreateWindow(ClsName, StrTemp,WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
+      Window := CreateWindow(ClsName, StrTemp,WS_POPUP or WS_CLIPSIBLINGS or WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
       DoSubClass := false;
-    End;
-    csMainForm:
-    Begin
-      Assert(False, 'Trace:CreateComponent - Creating a MainForm for Win32 --------------------------------------');
-      PStr := StrAlloc(Length('TForm') + 1);
-      StrPCopy(PStr, 'TForm');
-      Window := CreateWindow(pStr, ClsName, WS_OverlappedWindow, CW_UseDefault, CW_UseDefault, CW_UseDefault, CW_UseDefault, Parent, HMENU(Nil), HInstance, Nil);
-      FParentWindow := Window;
-      StrDispose(PStr);
-      DoSubClass := false;
-      Assert(False, 'Trace:CreateComponent - MainForm Window Handle Value = $' + IntToHex(Window, 8));
-      If Window = 0 Then
-      Begin
-        MessageBox(0, 'csMainForm CreateWindow Failed', nil, mb_Ok);
-        Exit;
-      End;
     End;
     csFrame, csGroupBox:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_GROUPBOX, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       TWinControl(Sender).InvalidateClientRectCache;
     End;
-    {csHintWindow:
-    Begin
-      Assert(False, 'Trace:TWin32Object.CreateComponent - Got style csHintWindow');
-      Assert(False, 'Trace:TWin32Object.CreateComponent (style csHintWindow) - Creating a window.  TODO: Create a small dialog box for hints');
-      TControl(Sender).FCompStyle := csForm;
-      IntSendMessage3(LM_CREATE, Sender, Nil);
-    End;}
     csLabel:
     Begin
       Window := CreateWindow('STATIC', StrTemp, Flags Or SS_LEFT, Left, Top, Width, Height, FParentWindow, HMENU(Nil), HInstance, Nil);
@@ -2439,10 +2416,11 @@ Begin
       Else
         Integer(Data^) := 0;
     csRadiobutton, csCheckbox:
-      If SendMessage(Handle, BM_GETSTATE, 0, 0) = BST_CHECKED Then
-        TCheckBoxState(Data^) := cbChecked
-      Else If SendMessage(Handle, BM_GETSTATE, 0, 0) = BST_UNCHECKED Then
-        TCheckBoxState(Data^) := cbUnChecked;
+      case SendMessage(Handle, BM_GETCHECK, 0, 0) of
+        BST_CHECKED: TCheckBoxState(Data^) := cbChecked;
+        BST_INDETERMINATE: TCheckBoxState(Data^) := cbGrayed;	
+        BST_UNCHECKED: TCheckBoxState(Data^) := cbUnChecked;
+      end;
     csCalendar:
     Begin
       GetLocalTime(ST);
@@ -2815,6 +2793,9 @@ End;
 
 {
   $Log$
+  Revision 1.105  2003/09/06 18:37:18  mattias
+  fixed checkbox state and typecast bugs
+
   Revision 1.104  2003/08/31 17:30:49  mattias
   fixed TControl painting for win32
 
