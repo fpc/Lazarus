@@ -37,6 +37,8 @@ unit PropEdits;
 
 interface
 
+{$DEFINE NewListPropEdit}
+
 uses 
   Classes, TypInfo, SysUtils, Forms, Controls, GraphType, Graphics, StdCtrls,
   Buttons, ComCtrls, Menus, LCLType, ExtCtrls, LCLLinux;
@@ -688,6 +690,7 @@ type
     destructor Destroy; override;
     function GetAttributes: TPropertyAttributes; override;
     function GetName:shortstring; override;
+    procedure GetProperties(Proc: TGetPropEditProc); override;
     function GetValue: ansistring; override;
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
@@ -723,6 +726,8 @@ type
       Element: TListElementPropertyEditor): TPropertyAttributes; virtual;
     function GetElementName(
       Element: TListElementPropertyEditor):shortstring; virtual;
+    procedure GetElementProperties(Element: TListElementPropertyEditor;
+      Proc: TGetPropEditProc); virtual;
     function GetElementValue(
       Element: TListElementPropertyEditor): ansistring; virtual;
     procedure GetElementValues(Element: TListElementPropertyEditor;
@@ -758,6 +763,8 @@ type
       Element: TListElementPropertyEditor): TPropertyAttributes; override;
     function GetElementName(
       Element: TListElementPropertyEditor):shortstring; override;
+    procedure GetElementProperties(Element: TListElementPropertyEditor;
+      Proc: TGetPropEditProc); override;
     function GetElementValue(
       Element: TListElementPropertyEditor): ansistring; override;
     procedure GetElementValues(Element: TListElementPropertyEditor;
@@ -2275,6 +2282,11 @@ begin
   Result:=List.GetElementName(Self);
 end;
 
+procedure TListElementPropertyEditor.GetProperties(Proc: TGetPropEditProc);
+begin
+  List.GetElementProperties(Self,Proc);
+end;
+
 function TListElementPropertyEditor.GetValue: ansistring;
 begin
   Result:=List.GetElementValue(Self);
@@ -2427,6 +2439,12 @@ begin
   Result:='Item '+IntToStr(Element.TheIndex);
 end;
 
+procedure TListPropertyEditor.GetElementProperties(
+  Element: TListElementPropertyEditor; Proc: TGetPropEditProc);
+begin
+
+end;
+
 function TListPropertyEditor.GetElementValue(Element: TListElementPropertyEditor
   ): ansistring;
 begin
@@ -2524,13 +2542,24 @@ end;
 function TCollectionPropertyEditor.GetElementAttributes(
   Element: TListElementPropertyEditor): TPropertyAttributes;
 begin
-  Result:=inherited GetElementAttributes(Element);
+  Result := [paSubProperties, paReadOnly];
 end;
 
 function TCollectionPropertyEditor.GetElementName(
   Element: TListElementPropertyEditor): shortstring;
 begin
   Result:=inherited GetElementName(Element);
+end;
+
+procedure TCollectionPropertyEditor.GetElementProperties(
+  Element: TListElementPropertyEditor; Proc: TGetPropEditProc);
+var
+  Components: TComponentSelectionList;
+begin
+  Components := TComponentSelectionList.Create;
+  Components.Add(TComponent(GetElement(Element)));
+  GetComponentProperties(Components,tkProperties,PropertyHook,Proc,nil);
+  Components.Free;
 end;
 
 function TCollectionPropertyEditor.GetElementValue(
@@ -3922,9 +3951,6 @@ begin
     ,'',TComponentPropertyEditor);
   RegisterPropertyEditor(DummyClassForPropTypes.PTypeInfos('TListColumns'),
     nil,'',TListColumnsPropertyEditor);
-    
-  {$IFDEF NewListPropEdit}
-  {$ENDIF}
 end;
 
 procedure FinalPropEdits;
