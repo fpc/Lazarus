@@ -516,6 +516,121 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TGtkObject.SendPaintMessagesForInternalWidgets(
+    AWinControl: TWinControl);
+
+
+ ------------------------------------------------------------------------------}
+procedure TGtkObject.SendPaintMessagesForInternalWidgets(
+  AWinControl: TWinControl);
+type
+  TInternalPaintContext = record
+    WinControl: TWinControl;
+    MainWidget: PGtkWidget;
+    ClientWidget: PGtkWidget;
+    MainWindow: PGdkWindow;
+    ClientWindow: PGdkWindow;
+    WindowList: TList;
+  end;
+
+var
+  Context: TInternalPaintContext;
+
+  procedure SendPaintMessageForGDkWindow(PaintWindow: PGdkWindow);
+  var
+    AMessage: TLMessage;
+  begin
+    if PaintWindow=nil then exit;
+    // check if PaintWindow is only used internally
+    // and was not already used for an internal paint message
+    if (PaintWindow=nil) or (PaintWindow=Context.MainWindow)
+    or (PaintWindow=Context.ClientWindow)
+    or ((Context.WindowList<>nil)
+      and (Context.WindowList.IndexOf(PaintWindow)>=0))
+    then exit;
+
+    AMessage.Msg := LM_INTERNALPAINT;
+    AMessage.WParam := CreateDCForWidget(Context.MainWidget,PaintWindow);
+    AMessage.LParam := 0;
+    AMessage.Result := 0;
+
+    if Context.WindowList=nil then
+      Context.WindowList:=TList.Create;
+    Context.WindowList.Add(PaintWindow);
+
+    {writeln('SendInternalPaintMessage ',
+      AWinControl.Name,':',AWinControl.ClassName,
+      ' InternalWindow=',HexStr(Cardinal(PaintWindow),8));}
+    DeliverMessage(AWinControl,AMessage);
+
+    if AMessage.WParam<>0 then
+      ReleaseDC(0,HDC(AMessage.WParam));
+  end;
+  
+  procedure ForAllChilds(PaintWidget: PgtkWidget);
+  var
+    LCLObject: TObject;
+    ChildEntry: PGSList;
+  begin
+    if PaintWidget=nil then exit;
+    LCLObject:=GetLCLObject(PaintWidget);
+    if (LCLObject<>nil) and (LCLObject<>AWinControl) then exit;
+    // send the paint message
+    SendPaintMessageForGDkWindow(GetControlWindow(PaintWidget));
+
+    // search all child widgets
+    if GtkWidgetIsA(PaintWidget,GTK_CONTAINER_TYPE) then begin
+      // this is a container widget -> go through all childs
+      ChildEntry:=PGtkContainer(PaintWidget)^.resize_widgets;
+      while ChildEntry<>nil do begin
+        ForAllChilds(PGtkWidget(ChildEntry^.Data));
+        ChildEntry:=ChildEntry^.Next;
+      end;
+    end;
+    if GtkWidgetIsA(PaintWidget,GTK_SCROLLED_WINDOW_TYPE) then begin
+      ForAllChilds(PGtkScrolledWindow(PaintWidget)^.hscrollbar);
+      ForAllChilds(PGtkScrolledWindow(PaintWidget)^.vscrollbar);
+    end;
+    if GtkWidgetIsA(PaintWidget,GTK_BIN_TYPE) then begin
+      ForAllChilds(PGtkBin(PaintWidget)^.child);
+    end;
+    if GtkWidgetIsA(PaintWidget,GTK_COMBO_TYPE) then begin
+      ForAllChilds(PGtkCombo(PaintWidget)^.entry);
+      ForAllChilds(PGtkCombo(PaintWidget)^.button);
+    end;
+  end;
+
+begin
+  if AWinControl=nil then exit;
+  Context.WinControl:=AWinControl;
+  with Context do begin
+    MainWidget:=PGtkWidget(WinControl.Handle);
+    if MainWidget=nil then exit;
+    if MainWindow<>nil then
+      MainWindow:=GetControlWindow(MainWidget)
+    else
+      exit;
+    ClientWidget:=GetFixedWidget(MainWidget);
+    if ClientWidget<>nil then
+      ClientWindow:=GetControlWindow(ClientWidget)
+    else
+      ClientWindow:=nil;
+    WindowList:=nil;
+  end;
+  {writeln('TGtkObject.SendPaintMessagesForInternalWidgets START ',
+    ' ',AWinControl.Name,':',AWinControl.ClassName,
+    ' ',HexStr(Cardinal(Context.MainWidget),8),
+    ' ',HexStr(Cardinal(Context.MainWindow),8),
+    ' ',HexStr(Cardinal(Context.ClientWidget),8),
+    ' ',HexStr(Cardinal(Context.ClientWindow),8),
+    '');}
+
+  ForAllChilds(Context.MainWidget);
+
+  Context.WindowList.Free;
+end;
+
+{------------------------------------------------------------------------------
   Method: TGtkObject.HandleEvents
   Params:  None
   Returns: Nothing
@@ -5654,11 +5769,82 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TgtkObject.CreateDCForWidget(TheWidget: PGtkWidget;
+    TheWindow: PGdkWindow): HDC;
+
+  Creates an initial DC
+ ------------------------------------------------------------------------------}
+function TgtkObject.CreateDCForWidget(TheWidget: PGtkWidget;
+  TheWindow: PGdkWindow): HDC;
+var
+  aDC: TDeviceContext;
+  ClientWidget: PGtkWidget;
+  GdiObject: PGdiObject;
+  Values: TGdkGCValues;
+  X,Y : Longint;
+begin
+  aDC := nil;
+
+  aDC := NewDC;
+  aDC.hWnd := HWND(TheWidget);
+
+  if TheWidget = nil
+  then begin
+    FillChar(Values, SizeOf(Values), #0);
+  end
+  else begin
+    // create a new devicecontext for this window
+    if TheWindow=nil then begin
+      ClientWidget := GetFixedWidget(TheWidget);
+      if ClientWidget = nil
+      then begin
+        RaiseException('TgtkObject.CreateWindowDC widget '
+          +HexStr(Cardinal(TheWidget),8)+' has no client area');
+      end;
+      TheWindow:=GetControlWindow(ClientWidget);
+      if TheWindow=nil then begin
+        //force creation
+        gtk_widget_realize(ClientWidget);
+        TheWindow := GetControlWindow(ClientWidget);
+      end;
+    end else
+      ClientWidget:=TheWidget;
+
+    aDC.SpecialOrigin:=GtkWidgetIsA(ClientWidget,GTK_LAYOUT_GET_TYPE);
+    aDC.Drawable := TheWindow;
+    aDC.GC := gdk_gc_new(aDC.Drawable);
+    gdk_window_get_size(aDC.Drawable, @X, @Y);
+    gdk_gc_set_function(aDC.GC, GDK_COPY);
+
+    gdk_gc_get_values(aDC.GC, @Values);
+  end;
+
+  if aDC <> nil
+  then begin
+    if Values.Font <> nil
+    then begin
+      GdiObject:=NewGDIObject(gdiFont);
+      GdiObject^.GDIFontObject := Values.Font;
+      gdk_font_ref(Values.Font);
+    end
+    else GdiObject := CreateDefaultFont;
+
+    aDC.CurrentFont := GdiObject;
+    aDC.CurrentBrush := CreateDefaultBrush;
+    aDC.CurrentPen := CreateDefaultPen;
+  end;
+
+
+  Result := HDC(aDC);
+  Assert(False, Format('trace:< [TgtkObject.GetDC] Got 0x%x', [Result]));
+end;
+
+{------------------------------------------------------------------------------
   Function: NewGDIObject
   Params:  none
   Returns: a gtkwinapi DeviceContext
 
-  Creates an initial DC
+  Creates an initial GDIObject of GDIType.
  ------------------------------------------------------------------------------}
 function TgtkObject.NewGDIObject(const GDIType: TGDIType): PGdiObject;
 begin
@@ -6022,6 +6208,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.243  2002/10/10 08:51:13  lazarus
+  MG: added paint messages for some gtk internal widgets
+
   Revision 1.242  2002/10/09 11:46:05  lazarus
   MG: fixed loading TListView from stream
 
