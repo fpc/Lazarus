@@ -1820,7 +1820,7 @@ Begin
 //        Width := CW_USEDEFAULT;
 //      Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
       try
-        Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
+        Window := CreateWindow(ClsName, StrTemp, WS_OVERLAPPEDWINDOW or WS_CLIPSIBLINGS or WS_CLIPCHILDREN, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, Parent, HMENU(Nil), HInstance, Nil);
       except
         writeln('Exception occured creating window');
       end;
@@ -2591,6 +2591,7 @@ var MenuInfo: MENUITEMINFO;
 Begin
   ParentMenuHandle := (Sender as TMenuItem).Parent.Handle;
 
+
   {Following part fixes the case when an item is added in runtime
   but the parent item has not defined the submenu flag (hSubmenu=0) }
   if (Sender as TMenuItem).Parent.Parent<>nil then
@@ -2600,12 +2601,12 @@ Begin
       cbSize:=sizeof(MENUITEMINFO);
       fMask:=MIIM_SUBMENU;
     end;
-    GetMenuItemInfo(ParentOfParent, (Sender as TMenuItem).Command,
+    GetMenuItemInfo(ParentOfParent, (Sender as TMenuItem).Parent.Command,
                     false, @MenuInfo);
     if MenuInfo.hSubmenu=0 then // the parent menu item is not yet defined with submenu flag
     begin
       MenuInfo.hSubmenu:=ParentMenuHandle;
-      SetMenuItemInfo(ParentOfParent, (Sender as TMenuItem).Command,
+      SetMenuItemInfo(ParentOfParent, (Sender as TMenuItem).Parent.Command,
                       false, MenuInfo);
     end;
   end;
@@ -2671,6 +2672,9 @@ End;
 
 {
   $Log$
+  Revision 1.64  2003/07/01 22:02:55  mattias
+  fixed formstyle and redrawing from Micha
+
   Revision 1.63  2003/06/29 07:16:17  mattias
   fixed compiler warnings
 

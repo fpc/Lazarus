@@ -373,6 +373,7 @@ Begin
 //        ReleaseDC(Window, DC);
         DC := WParam;
       End;
+      WinProcess := false;
     End;
     WM_PASTE:
     Begin
@@ -546,6 +547,9 @@ end;
 
 {
   $Log$
+  Revision 1.32  2003/07/01 22:02:55  mattias
+  fixed formstyle and redrawing from Micha
+
   Revision 1.31  2003/06/29 20:07:07  mattias
   fixed using DC from Micha
 
