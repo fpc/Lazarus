@@ -2431,7 +2431,7 @@ begin
   FBorderStyle := bsSingle;
   BorderWidth := 2;
   FOptions := [tvoShowRoot, tvoShowLines, tvoShowButtons, tvoHideSelection,
-               tvoToolTips, tvoKeepCollapsedNodes];
+               tvoToolTips, tvoKeepCollapsedNodes, tvoAutoItemHeight];
   Items.KeepCollapsedNodes:=KeepCollapsedNodes;
   FScrollBars:=ssBoth;
   FDragImage := TDragImageList.CreateSize(32, 32);
@@ -2519,6 +2519,8 @@ procedure TCustomTreeView.CreateWnd;
 begin
   Exclude(FStates,tvsStateChanging);
   inherited CreateWnd;
+  UpdateDefaultItemHeight;
+
   //TreeView_SetBkColor(Handle, ColorToRGB(Color));
   //TreeView_SetTextColor(Handle, ColorToRGB(Font.Color));
   {if FMemStream <> nil then begin
@@ -2818,10 +2820,23 @@ begin
       Items.ClearMultiSelection;
     end;
   end;
+  if tvoAutoItemHeight in ChangedOptions then
+   UpdateDefaultItemHeight;
   if ([tvoHideSelection,tvoReadOnly,tvoShowButtons,tvoShowRoot,tvoShowLines]
     * ChangedOptions)<>[]
   then
     Invalidate;
+end;
+
+procedure TCustomTreeView.UpdateDefaultItemHeight;
+begin
+  if HandleAllocated and (tvoAutoItemHeight in FOptions) then begin
+    FDefItemHeight:=
+      Canvas.TextHeight('ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789|\()^')
+      +2 // margin
+      +2 // border
+      ;
+  end;
 end;
 
 procedure TCustomTreeView.UpdateAllTops;
@@ -3959,6 +3974,7 @@ var x, ImgIndex: integer;
   CurTextRect: TRect;
   DrawState: TCustomDrawState;
   PaintImages: boolean;
+  TextY: Integer;
 begin
   NodeRect:=Node.DisplayRect(false);
   if (NodeRect.Bottom<0) or (NodeRect.Top>=(ClientHeight-ScrollBarWidth)) then
@@ -4014,18 +4030,22 @@ begin
       inc(x,StateImages.Width+2);
     end;
     // draw text
-    if NodeSelected and (FSelectedColor<>clNone) then begin
-      Brush.Color:=FSelectedColor;
-      CurTextRect:=NodeRect;
-      CurTextRect.Left:=x;
-      CurTextRect.Right:=x+TextWidth(Node.Text);
-      OldFontColor:=Font.Color;
-      Font.Color:=InvertColor(Brush.Color);
-      FillRect(CurTextRect);
-      TextOut(x,NodeRect.Top+(TextHeight(Node.Text) shr 1),Node.Text);
-      Font.Color:=OldFontColor;
-    end else begin
-      TextOut(x,NodeRect.Top+(TextHeight(Node.Text) shr 1),Node.Text);
+    if Node.Text<>'' then begin
+      TextY:=NodeRect.Top+
+         ((NodeRect.Bottom-NodeRect.Top-TextHeight(Node.Text)) div 2);
+      if NodeSelected and (FSelectedColor<>clNone) then begin
+        Brush.Color:=FSelectedColor;
+        CurTextRect:=NodeRect;
+        CurTextRect.Left:=x;
+        CurTextRect.Right:=x+TextWidth(Node.Text);
+        OldFontColor:=Font.Color;
+        Font.Color:=InvertColor(Brush.Color);
+        FillRect(CurTextRect);
+        TextOut(x,TextY,Node.Text);
+        Font.Color:=OldFontColor;
+      end else begin
+        TextOut(x,TextY,Node.Text);
+      end;
     end;
     // draw separator
     if (tvoShowSeparators in FOptions) then begin

@@ -1294,19 +1294,20 @@ type
   TTreeViewStates = set of TTreeViewState;
 
   TTreeViewOption = (
+    tvoAllowMultiselect,
     tvoAutoExpand,
+    tvoAutoItemHeight,
     tvoHideSelection,
     tvoHotTrack,
-    tvoRightClickSelect,
-    tvoReadOnly,
-    tvoShowButtons,
-    tvoShowRoot,
-    tvoShowLines,
-    tvoToolTips,
-    tvoRowSelect,
     tvoKeepCollapsedNodes,
+    tvoReadOnly,
+    tvoRightClickSelect,
+    tvoRowSelect,
+    tvoShowButtons,
+    tvoShowLines,
+    tvoShowRoot,
     tvoShowSeparators,
-    tvoAllowMultiselect
+    tvoToolTips
     );
   TTreeViewOptions = set of TTreeViewOption;
 
@@ -1468,22 +1469,22 @@ type
     procedure DoPaintNode(Node: TTreeNode); virtual;
     procedure DoStartDrag(var DragObject: TDragObject); override;
     //procedure Edit(const Item: TTVItem); dynamic;
-    procedure EndEditing;
-    procedure EnsureNodeIsVisible(ANode: TTreeNode);
-    procedure Expand(Node: TTreeNode); dynamic;
     function GetDragImages: TDragImageList; //override;
-    procedure GetImageIndex(Node: TTreeNode); virtual;
     function GetMaxLvl: integer;
     function GetMaxScrollLeft: integer;
     function GetMaxScrollTop: integer;
     function GetNodeAtInternalY(Y: Integer): TTreeNode;
     function GetNodeAtY(Y: Integer): TTreeNode;
-    function GetNodeDrawAreaWidth: integer;
     function GetNodeDrawAreaHeight: integer;
-    procedure GetSelectedIndex(Node: TTreeNode); virtual;
+    function GetNodeDrawAreaWidth: integer;
     function IsCustomDrawn(Target: TCustomDrawTarget;
       Stage: TCustomDrawStage): Boolean;
     function IsNodeVisible(ANode: TTreeNode): Boolean;
+    procedure EndEditing;
+    procedure EnsureNodeIsVisible(ANode: TTreeNode);
+    procedure Expand(Node: TTreeNode); dynamic;
+    procedure GetImageIndex(Node: TTreeNode); virtual;
+    procedure GetSelectedIndex(Node: TTreeNode); virtual;
     procedure Loaded; override;
     procedure MouseDown(Button: TMouseButton; Shift: TShiftState; X, Y:
       Integer); override;
@@ -1495,8 +1496,9 @@ type
     procedure Paint; override;
     procedure SetDragMode(Value: TDragMode); override;
     procedure SetOptions(NewOptions: TTreeViewOptions);
+    procedure UpdateDefaultItemHeight; virtual;
     procedure WndProc(var Message: TLMessage); override;
-
+  protected
     property AutoExpand: Boolean read GetAutoExpand write SetAutoExpand default False;
     property BorderStyle: TBorderStyle
       read FBorderStyle write SetBorderStyle default bsSingle;
@@ -1545,28 +1547,29 @@ type
     constructor Create(AnOwner: TComponent); override;
     destructor Destroy; override;
     function AlphaSort: Boolean;
-    procedure BeginUpdate;
+    function ConsistencyCheck: integer;
     function CustomSort(SortProc: TTreeNodeCompare): Boolean;
-    procedure EndUpdate;
-    procedure FullCollapse;
-    procedure FullExpand;
     function GetHitTestInfoAt(X, Y: Integer): THitTests;
     function GetNodeAt(X, Y: Integer): TTreeNode;
     function IsEditing: Boolean;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    procedure FullCollapse;
+    procedure FullExpand;
     procedure LoadFromFile(const FileName: string);
     procedure LoadFromStream(Stream: TStream);
     procedure SaveToFile(const FileName: string);
     procedure SaveToStream(Stream: TStream);
-    function ConsistencyCheck: integer;
     procedure WriteDebugReport(const Prefix: string; AllNodes: boolean);
+  public
     property BackgroundColor: TColor
       read FBackgroundColor write SetBackgroundColor;
     property BorderWidth;
     property BottomItem: TTreeNode read GetBottomItem write SetBottomItem;
     property Canvas: TCanvas read FCanvas;
-    property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property DefaultItemHeight: integer
       read FDefItemHeight write SetDefaultItemHeight;
+    property DropTarget: TTreeNode read GetDropTarget write SetDropTarget;
     property ExpandSignType: TTreeViewExpandSignType
       read FExpandSignType write SetExpandSignType;
     property KeepCollapsedNodes: boolean
@@ -1724,6 +1727,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.68  2003/04/02 13:23:23  mattias
+  fixed default font
+
   Revision 1.67  2003/03/15 13:26:07  mattias
   fixes for fpc 1.1
 

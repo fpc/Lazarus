@@ -67,6 +67,7 @@ type
     procedure DoAddLastAssemblerMessages;
     function SearchIncludeFile(const ShortIncFilename: string): string;
     procedure SetStopExecute(const AValue: boolean);
+    procedure InternalSetCurrentDirectory(const Dir: string);
   public
     procedure Execute(TheProcess: TProcess);
     function GetSourcePosition(const Line: string; var Filename:string;
@@ -232,7 +233,8 @@ begin
     i:=length('Compiling ');
     if (length(s)>=i+2) and (s[i+1]='.') and (s[i+2]=PathDelim) then
       inc(i,2);
-    fCompilingHistory.Add(TrimFilename(copy(s,i+1,length(s)-i)));
+    Filename:=TrimFilename(copy(s,i+1,length(s)-i));
+    fCompilingHistory.Add(Filename);
     exit;
   end;
   if ('Assembling '=copy(s,1,length('Assembling ')))
@@ -376,8 +378,8 @@ begin
       if (ofoMakeFilenamesAbsolute in Options) then begin
         Filename:=copy(Msg,1,FilenameEndPos);
         if not FilenameIsAbsolute(Filename) then begin
-          Msg:=TrimFilename(AppendPathDelim(fCurrentDirectory)+Filename)
-            +copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
+          Filename:=TrimFilename(fCurrentDirectory+Filename);
+          Msg:=Filename+copy(Msg,FilenameEndPos+1,length(Msg)-FilenameEndPos);
         end;
       end;
       
@@ -535,13 +537,12 @@ begin
     // try every compiled pascal source
     for p:=fCompilingHistory.Count-1 downto 0 do begin
       RelativeDir:=AppendPathDelim(ExtractFilePath(fCompilingHistory[p]));
-      FullDir:=CleanAndExpandDirectory(
-                                AppendPathDelim(fCurrentDirectory)+RelativeDir);
+      FullDir:=TrimFilename(fCurrentDirectory+RelativeDir+PathDelim);
       if SearchedDirectories.IndexOf(FullDir)>=0 then continue;
       // new directory start a search
       if FileExists(FullDir+ShortIncFilename) then begin
         // file found in search dir
-        Result:=CleanAndExpandFilename(RelativeDir+ShortIncFilename);
+        Result:=CleanAndExpandFilename(FullDir+ShortIncFilename);
         exit;
       end;
       if Assigned(OnGetIncludePath) then begin
@@ -568,6 +569,11 @@ begin
   FStopExecute:=AValue;
 end;
 
+procedure TOutputFilter.InternalSetCurrentDirectory(const Dir: string);
+begin
+  fCurrentDirectory:=TrimFIlename(AppendPathDelim(Dir));
+end;
+
 destructor TOutputFilter.Destroy;
 begin
   fFilteredOutput.Free;
@@ -588,6 +594,9 @@ function TOutputFilter.ReadMakeLine(const s: string): boolean;
      make[1]: Entering directory `<filename>'
      make[1]: Leaving directory `<filename>'
 }
+const
+  EnterDirPattern = ']: Entering directory `';
+  LeavingDirPattern = ']: Leaving directory `';
 var i: integer;
 begin
   Result:=false;
@@ -597,28 +606,28 @@ begin
   if (i>length(s)) or (not (s[i] in ['0'..'9'])) then exit;
   while (i<=length(s)) and (s[i] in ['0'..'9']) do inc(i);
   if (i>length(s)) or (s[i]<>']') then exit;
-  if copy(s,i,length(']: Leaving directory `'))=']: Leaving directory `' then
+  if copy(s,i,length(EnterDirPattern))=EnterDirPattern then
+  begin
+    inc(i,length(EnterDirPattern));
+    if (fCurrentDirectory<>'') then begin
+      if (fMakeDirHistory=nil) then fMakeDirHistory:=TStringList.Create;
+      fMakeDirHistory.Add(fCurrentDirectory);
+    end;
+    InternalSetCurrentDirectory(copy(s,i,length(s)-i));
+    Result:=true;
+    exit;
+  end;
+  if copy(s,i,length(LeavingDirPattern))=LeavingDirPattern then
   begin
     if (fMakeDirHistory<>nil) and (fMakeDirHistory.Count>0) then begin
-      fCurrentDirectory:=fMakeDirHistory[fMakeDirHistory.Count-1];
+      InternalSetCurrentDirectory(fMakeDirHistory[fMakeDirHistory.Count-1]);
       fMakeDirHistory.Delete(fMakeDirHistory.Count-1);
       Result:=true;
       exit;
     end else begin
       // leaving what directory???
-      fCurrentDirectory:='';
+      InternalSetCurrentDirectory('');
     end;
-  end;
-  if copy(s,i,length(']: Entering directory `'))=']: Entering directory `' then
-  begin
-    inc(i,length(']: Entering directory `'));
-    if (fCurrentDirectory<>'') then begin
-      if (fMakeDirHistory=nil) then fMakeDirHistory:=TStringList.Create;
-      fMakeDirHistory.Add(fCurrentDirectory);
-    end;
-    fCurrentDirectory:=AppendPathDelim(copy(s,i,length(s)-i));
-    Result:=true;
-    exit;
   end;
 end;
 
