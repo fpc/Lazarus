@@ -132,6 +132,7 @@ type
   protected
   public
     constructor Create(AOwner : TComponent); Override;
+    function CanTab: boolean; override;
   end;
   
   
@@ -1452,6 +1453,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.95  2003/06/10 17:23:34  mattias
+  implemented tabstop
+
   Revision 1.94  2003/06/10 15:58:39  mattias
   started TLabeledEdit
 

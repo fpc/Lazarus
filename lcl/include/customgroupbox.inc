@@ -25,12 +25,21 @@ begin
   Width:= 185;
   Height:= 105;
 end;
+
+function TCustomGroupBox.CanTab: boolean;
+begin
+  Result:=false;
+end;
  
 // included by stdctrls.pp
 
 {
   $Log$
+  Revision 1.9  2003/06/10 17:23:34  mattias
+  implemented tabstop
+
   Revision 1.8  2002/08/30 06:46:03  lazarus
+
   Use comboboxes. Use history. Prettify the dialog. Preselect text on show.
   Make the findreplace a dialog. Thus removing resiying code (handled by Anchors now anyway).
   Make Anchors work again and publish them for various controls.

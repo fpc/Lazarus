@@ -399,6 +399,11 @@ begin
     Result:=-1;
 end;
 
+function TCustomNotebook.CanTab: boolean;
+begin
+  Result:=false;
+end;
+
 {------------------------------------------------------------------------------
   method TCustomNotebook DoCloseTabClicked
   Params: APage: TPage
@@ -751,6 +756,9 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.31  2003/06/10 17:23:35  mattias
+  implemented tabstop
+
   Revision 1.30  2003/04/22 13:27:10  mattias
   implemented installing components in component palette
 
