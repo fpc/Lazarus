@@ -84,7 +84,7 @@ var
 begin
   If Autosizing or not AutoSize then
     Exit;
-  if not HandleAllocated then exit;
+  if (not HandleAllocated) or (csLoading in ComponentState) then exit;
   AutoSizing := True;
   DC := GetDC(Handle);
   Try
@@ -105,6 +105,9 @@ end;
 
 {
   $Log$
+  Revision 1.9  2002/11/14 14:11:51  lazarus
+  MG: fixed TRadioButton.DoAutoSize during loading
+
   Revision 1.8  2002/09/08 19:09:55  lazarus
   Fixed and simplified TRadioButton
 
