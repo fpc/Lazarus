@@ -1719,8 +1719,9 @@ begin
   for I := 0 to 9 do Begin
     Pixmap1:=TPixMap.Create;
     Pixmap1.TransparentColor:=clBtnFace;
-    if not LoadPixmapRes('bookmark'+inttostr(i),Pixmap1) then
-           LoadPixmapRes('default',Pixmap1);
+    Pixmap1.LoadFromLazarusResource('bookmark'+inttostr(i));
+    //if not LoadPixmapRes('bookmark'+inttostr(i),Pixmap1) then
+    //       LoadPixmapRes('default',Pixmap1);
     MarksImgList.Add(Pixmap1,nil);
   end;
   // load active breakpoint image
