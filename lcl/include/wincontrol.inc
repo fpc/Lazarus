@@ -1371,10 +1371,9 @@ Begin
   end;
 end;
 
-
-{------------------------------------------------------------------------------}
-{  TWinControl KeyDown                                                      }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TWinControl KeyDown
+------------------------------------------------------------------------------}
 Procedure TWinControl.KeyDown(var Key: Word; shift : TShiftState);
 Begin
   if Assigned(FOnKeyDown) then FOnKeyDown(Self, Key, Shift);
@@ -2581,6 +2580,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.121  2003/03/17 08:51:09  mattias
+  added IsWindowVisible
+
   Revision 1.120  2003/03/11 07:46:44  mattias
   more localization for gtk- and win32-interface and lcl
 
