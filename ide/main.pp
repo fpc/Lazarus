@@ -40,7 +40,7 @@ uses
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
   UnitInfoDlg, Debugger, DBGWatch, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
-  LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg;
+  LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg,ColumnDlg;
 
 const
   Version_String = '0.8.1 alpha';
@@ -1919,6 +1919,10 @@ end;
 Procedure TMainIDE.mnuViewMessagesClick(Sender : TObject);
 Begin
   MessagesView.Show;
+  if Not Assigned(ColumnDlg1) then
+    ColumnDlg1 := TColumnDlg1.Create(self);
+  ColumnDlg1.ShowModal;
+//  CreateLFM(ColumnDlg1);
 End;
 
 
@@ -5490,6 +5494,10 @@ end.
 =======
 
   $Log$
+  Revision 1.195  2001/12/31 22:42:59  lazarus
+  Added a TViewColumn editor to be used in the object inspector as TViewColumn's property editor.
+  Shane
+
   Revision 1.194  2001/12/28 11:01:20  lazarus
   MG: fixed save as with lfm and lrs files
 
@@ -5507,6 +5515,10 @@ end.
 
 <<<<<<< main.pp
   $Log$
+  Revision 1.195  2001/12/31 22:42:59  lazarus
+  Added a TViewColumn editor to be used in the object inspector as TViewColumn's property editor.
+  Shane
+
   Revision 1.194  2001/12/28 11:01:20  lazarus
   MG: fixed save as with lfm and lrs files
 

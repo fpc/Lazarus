@@ -428,6 +428,8 @@ type
      FCaption: String;
      FAlignment: TColumnAlignment;
      FOnChange: TNotifyEvent;
+     FWidth: Integer;
+     procedure SetWidth(const AValue: Integer);
      procedure SetCaption(const AValue: String);
    
      procedure SetAlignment(const AValue: TColumnAlignment);
@@ -435,6 +437,7 @@ type
      constructor Create;
      destructor Destroy; override;
      Property Caption : String read FCaption write SetCaption;
+     Property Width  : Integer read FWidth write SetWidth;
      property Alignment : TColumnAlignment read FAlignment write SetAlignment;
      property OnChange : TNotifyEvent read FOnChange write FOnChange;
 
@@ -1019,6 +1022,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.12  2001/12/31 22:43:00  lazarus
+  Added a TViewColumn editor to be used in the object inspector as TViewColumn's property editor.
+  Shane
+
   Revision 1.11  2001/12/21 18:16:59  lazarus
   Added TImage class
   Shane

@@ -63,15 +63,15 @@ Procedure TBitBtn.SetKind(Value : TBitBtnKind);
 var
   Bitmap1 : TBitmap;
 Begin
-  HandleNeeded;
+//  HandleNeeded;
   FKind := Value;
   Assert(False, 'Trace:SETKIND');
+
   if FKind = bkCustom then Exit;
 
   if Glyph <> nil then Glyph.free;
   Bitmap1 := TBitmap.Create;
-  Bitmap1.Handle := 
-    CreatePixmapIndirect(@BitBtnImages[FKInd], ColorToRGB(clBtnFace));
+  Bitmap1.Handle := CreatePixmapIndirect(@BitBtnImages[FKInd], ColorToRGB(clBtnFace));
 
   Caption := BitBtnCaption[fKind];
 

@@ -4,6 +4,8 @@ constructor TViewColumn.Create;
 begin
    inherited;
    FAlignment :=caLEft;
+   FCaption := '';
+   FWidth := 50;
 end;
 
 destructor TViewColumn.Destroy;
@@ -25,6 +27,15 @@ begin
   if AValue = FCaption then Exit;
   
   FCaption := AValue;
+  if Assigned(OnChange) then
+     OnChange(self);
+end;
+
+procedure TViewColumn.SetWidth(const AValue: Integer);
+begin
+  if FWidth = AValue then Exit;
+
+  FWidth := AValue;
   if Assigned(OnChange) then
      OnChange(self);
 end;

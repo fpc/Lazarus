@@ -1,0 +1,121 @@
+object TCOLUMNDLG1
+  CAPTION = 'Column Editor'
+  COLOR = -2147483633
+  CLIENTHEIGHT = 338
+  CLIENTWIDTH = 401
+  LEFT = 207
+  HEIGHT = 338
+  TOP = 328
+  WIDTH = 401
+  object TLISTBOX
+    BORDERSTYLE = bssingle
+    ONCLICK = nil
+    LEFT = 1
+    HEIGHT = 300
+    TOP = 1
+    WIDTH = 170
+  end
+  object TLABEL
+    CAPTION = 'Caption'
+    FONT.COLOR = -2147483640
+    LEFT = 200
+    HEIGHT = 17
+    TOP = 15
+    WIDTH = 65
+  end
+  object TEDIT
+    ONCHANGE = nil
+    LEFT = 200
+    HEIGHT = 25
+    TOP = 37
+    WIDTH = 160
+  end
+  object TLABEL
+    CAPTION = 'Width'
+    FONT.COLOR = -2147483640
+    LEFT = 200
+    HEIGHT = 17
+    TOP = 67
+    WIDTH = 65
+  end
+  object TEDIT
+    ONCHANGE = nil
+    LEFT = 200
+    HEIGHT = 25
+    TOP = 89
+    WIDTH = 160
+  end
+  object TRADIOGROUP
+    CAPTION = 'Alignment'
+    ITEMINDEX = 0
+    ITEMS.Strings = (
+      'Left'
+      'Center'
+      'Right'
+    )
+    COLUMNS = 3
+    ONCLICK = nil
+    LEFT = 200
+    HEIGHT = 50
+    TOP = 119
+    WIDTH = 200
+  end
+  object TBUTTON
+    CAPTION = 'Add'
+    FONT.COLOR = -2147483640
+    ONCLICK = nil
+    LEFT = 200
+    HEIGHT = 25
+    TOP = 174
+    WIDTH = 75
+  end
+  object TBUTTON
+    CAPTION = 'Delete'
+    FONT.COLOR = -2147483640
+    ONCLICK = nil
+    LEFT = 280
+    HEIGHT = 25
+    TOP = 174
+    WIDTH = 75
+  end
+  object TBUTTON
+    CAPTION = 'Move up'
+    FONT.COLOR = -2147483640
+    ONCLICK = nil
+    LEFT = 5
+    HEIGHT = 25
+    TOP = 306
+    WIDTH = 75
+  end
+  object TBUTTON
+    CAPTION = 'Move down'
+    FONT.COLOR = -2147483640
+    ONCLICK = nil
+    LEFT = 85
+    HEIGHT = 25
+    TOP = 306
+    WIDTH = 75
+  end
+  object TBITBTN
+    KIND = bkok
+    SPACING = 3
+    MODALRESULT = 1
+    CAPTION = 'OK'
+    FONT.COLOR = -2147483640
+    LEFT = 205
+    HEIGHT = 25
+    TOP = 306
+    WIDTH = 75
+  end
+  object TBITBTN
+    KIND = bkcancel
+    SPACING = 3
+    MODALRESULT = 2
+    CAPTION = 'Cancel'
+    FONT.COLOR = -2147483640
+    LEFT = 285
+    HEIGHT = 25
+    TOP = 306
+    WIDTH = 75
+  end
+end

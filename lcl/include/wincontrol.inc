@@ -1792,7 +1792,7 @@ begin
       Assert(False, Format('Trace:[TWinControl.HandleNeeded] Sombody set Parent := Self in %s. DONT DO THAT !!', [Classname]));
     end
     else begin
-      if (Parent <> nil) 
+      if (Parent <> nil)
       then  Parent.HandleNeeded;
     end;
     CreateHandle;
@@ -1957,6 +1957,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.47  2001/12/31 22:43:00  lazarus
+  Added a TViewColumn editor to be used in the object inspector as TViewColumn's property editor.
+  Shane
+
   Revision 1.46  2001/12/28 15:12:02  lazarus
   MG: LM_SIZE and LM_MOVE messages are now send directly, not queued
 

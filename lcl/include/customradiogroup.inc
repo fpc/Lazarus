@@ -205,17 +205,18 @@ procedure TCustomRadioGroup.SetItemIndex (Value : integer);
 begin
   if FReading then FItemIndex:=Value
   else begin
-    if (Value < -1) or (Value >= FItems.Count) 
-      then
-        raise Exception.Create(
-          'TCustomRadioGroup.SetItemIndex : Index out of bounds');
+    if (Value < -1) or (Value >= FItems.Count) then
+        raise Exception.Create('TCustomRadioGroup.SetItemIndex : Index out of bounds');
 
-    if (HandleAllocated) and (Value <> FItemIndex) then begin
-      if (FItemIndex <> -1)
-         then TRadioButton (FButtonList [FItemIndex]).Checked := false;
+    if (HandleAllocated) and (Value <> FItemIndex) then
+    begin
+      if (FItemIndex <> -1) then
+         TRadioButton (FButtonList [FItemIndex]).Checked := false;
       FItemIndex := Value;
-      if (Value <> -1) 
-         then TRadioButton (FButtonList [Value]).Checked := true;
+      if (Value <> -1) then
+         TRadioButton (FButtonList [Value]).Checked := true;
+         
+      ItemsChanged(self);
     end
     else FItemIndex := Value;
   end;
@@ -292,6 +293,10 @@ end;
 
 {
   $Log$
+  Revision 1.8  2001/12/31 22:43:00  lazarus
+  Added a TViewColumn editor to be used in the object inspector as TViewColumn's property editor.
+  Shane
+
   Revision 1.7  2001/10/19 14:27:43  lazarus
   MG: fixed customradiogroup OnClick + ItemIndex
 
