@@ -1264,14 +1264,14 @@ function TTreeNode.DisplayStateIconLeft: integer;
 begin
   Result:=DisplayIconLeft;
   if (TreeView<>nil) and (TreeView.Images<>nil) then
-    inc(Result,TreeView.Images.Width);
+    inc(Result,TreeView.Images.Width+2);
 end;
 
 function TTreeNode.DisplayTextLeft: integer;
 begin
   Result:=DisplayStateIconLeft;
   if (TreeView<>nil) and (TreeView.StateImages<>nil) then
-    inc(Result,TreeView.StateImages.Width);
+    inc(Result,TreeView.StateImages.Width+2);
 end;
 
 function TTreeNode.DisplayTextRight: integer;
@@ -4000,14 +4000,14 @@ begin
       else
         ImgIndex:=Node.SelectedIndex;
       if (ImgIndex>=0) and (ImgIndex<Images.Count) then
-        Images.Draw(Canvas,x,NodeRect.Top,ImgIndex,true);
-      inc(x,Images.Width);
+        Images.Draw(Canvas,x+1,NodeRect.Top,ImgIndex,true);
+      inc(x,Images.Width+2);
     end;
     // draw state icon
     if (StateImages<>nil) and PaintImages then begin
       if (Node.StateIndex>=0) and (Node.StateIndex<StateImages.Count) then
-        StateImages.Draw(Canvas,x,NodeRect.Top,Node.StateIndex,true);
-      inc(x,StateImages.Width);
+        StateImages.Draw(Canvas,x+1,NodeRect.Top,Node.StateIndex,true);
+      inc(x,StateImages.Width+2);
     end;
     // draw text
     if NodeSelected and (FSelectedColor<>clNone) then begin
@@ -4269,6 +4269,8 @@ begin
     Images.RegisterChanges(FImageChangeLink);
     Images.FreeNotification(Self);
     //SetImageList(Images.Handle, TVSIL_NORMAL)
+    if DefaultItemHeight<Images.Height+2 then
+      DefaultItemHeight:=Images.Height+2;
   end;
   //else SetImageList(0, TVSIL_NORMAL);
   Invalidate;
@@ -4284,6 +4286,8 @@ begin
     StateImages.RegisterChanges(FStateChangeLink);
     StateImages.FreeNotification(Self);
     //SetImageList(StateImages.Handle, TVSIL_STATE)
+    if DefaultItemHeight<StateImages.Height+2 then
+      DefaultItemHeight:=StateImages.Height+2;
   end;
   //else SetImageList(0, TVSIL_STATE);
   Invalidate;

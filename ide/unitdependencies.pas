@@ -29,6 +29,7 @@
  
   Abstract:
     Defines the TUnitDependenciesView form.
+    The Unit Dependencies shows the used units in a treeview.
  
 }
 unit UnitDependencies;
@@ -43,19 +44,20 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Forms, Dialogs, Buttons, ComCtrls, StdCtrls,
+  Classes, SysUtils, Controls, Forms, Dialogs, Buttons, ComCtrls, StdCtrls,
   CodeToolManager, CodeCache, EnvironmentOpts, LResources, IDEOptionDefs,
-  LazarusIDEStrConsts, InputHistory;
+  LazarusIDEStrConsts, InputHistory, IDEProcs, Graphics;
   
 type
 
   { TUnitNode }
   
   TUnitNodeFlag = (
-    unfImplementation,// this unit was used in an implementation uses section
-    unfCircle,        // this unit is the parent of itself
-    unfFileNotFound,  // this unit file was not found
-    unfParseError     // error parsing the source
+    unfImplementation, // this unit was used in an implementation uses section
+    unfCircle,         // this unit is the parent of itself
+    unfForbiddenCircle,// forbidden circle
+    unfFileNotFound,   // this unit file was not found
+    unfParseError      // error parsing the source
     );
   TUnitNodeFlags = set of TUnitNodeFlag;
   
@@ -102,6 +104,7 @@ type
     procedure AddChild(const AFilename: string; ACodeBuffer: TCodeBuffer;
       InImplementation: boolean);
     procedure UpdateSourceType;
+    function ForbiddenCircle: boolean;
   public
     constructor Create;
     destructor Destroy; override;
@@ -111,7 +114,9 @@ type
     procedure CreateGrandChildren;
     function FindParentWithCodeBuffer(ACodeBuffer: TCodeBuffer): TUnitNode;
     function HasChildren: boolean;
+    function ImageIndex: integer;
     function IsImplementationNode: boolean;
+    function StateImageIndex: integer;
     property ChildCount: integer read FChildCount;
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
     property Filename: string read FFilename write SetFilename;
@@ -130,6 +135,8 @@ type
   { TUnitDependenciesView }
 
   TUnitDependenciesView = class(TForm)
+    SrcTypeImageList: TImageList;
+    FlagImageList: TImageList;
     UnitHistoryList: TComboBox;
     SelectUnitButton: TBitBtn;
     UnitTreeView: TTreeView;
@@ -163,6 +170,7 @@ const
   UnitDependenciesView: TUnitDependenciesView = nil;
 
 implementation
+
 
 { TUnitDependenciesView }
 
@@ -264,6 +272,16 @@ begin
 end;
 
 constructor TUnitDependenciesView.Create(TheOwner: TComponent);
+
+  procedure AddResImg(ImgList: TImageList; const ResName: string);
+  var Pixmap: TPixmap;
+  begin
+    Pixmap:=TPixmap.Create;
+    Pixmap.TransparentColor:=clWhite;
+    Pixmap.LoadFromLazarusResource(ResName);
+    ImgList.Add(Pixmap,nil)
+  end;
+
 var
   ALayout: TIDEWindowLayout;
 begin
@@ -275,6 +293,31 @@ begin
     ALayout.Form:=TForm(Self);
     ALayout.Apply;
     
+    SrcTypeImageList:=TImageList.Create(Self);
+    with SrcTypeImageList do begin
+      Name:='SrcTypeImageList';
+      Width:=22;
+      Height:=22;
+      AddResImg(SrcTypeImageList,'srctype_unknown_22x22');
+      AddResImg(SrcTypeImageList,'srctype_unit_22x22');
+      AddResImg(SrcTypeImageList,'srctype_program_22x22');
+      AddResImg(SrcTypeImageList,'srctype_library_22x22');
+      AddResImg(SrcTypeImageList,'srctype_package_22x22');
+      AddResImg(SrcTypeImageList,'srctype_filenotfound_22x22');
+      AddResImg(SrcTypeImageList,'srctype_parseerror_22x22');
+    end;
+
+    FlagImageList:=TImageList.Create(Self);
+    with FlagImageList do begin
+      Name:='FlagImageList';
+      Width:=22;
+      Height:=22;
+      AddResImg(SrcTypeImageList,'interface_unit_22x22.xpm');
+      AddResImg(SrcTypeImageList,'implementation_unit_22x22.xpm');
+      AddResImg(SrcTypeImageList,'forbidden_unit_circle_22x22.xpm');
+      AddResImg(SrcTypeImageList,'allowed_unit_circle_22x22.xpm');
+    end;
+    
     UnitHistoryList:=TComboBox.Create(Self);
     with UnitHistoryList do begin
       Name:='UnitHistoryList';
@@ -282,6 +325,7 @@ begin
       Left:=0;
       Top:=0;
       Width:=Parent.ClientWidth-Left;
+      Enabled:=false;
       Visible:=true;
     end;
     
@@ -293,6 +337,7 @@ begin
       Top:=UnitHistoryList.Top+UnitHistoryList.Height+2;
       Width:=25;
       Caption:='...';
+      Enabled:=false;
       Visible:=true;
     end;
     
@@ -305,6 +350,7 @@ begin
       Width:=100;
       Height:=SelectUnitButton.Height;
       Caption:='Refresh';
+      Enabled:=false;
       Visible:=true;
     end;
 
@@ -318,6 +364,8 @@ begin
       Height:=Parent.ClientHeight-Top;
       OnExpanding:=@UnitTreeViewExpanding;
       OnCollapsing:=@UnitTreeViewCollapsing;
+      Images:=SrcTypeImageList;
+      StateImages:=FlagImageList;
       Visible:=true;
     end;
     
@@ -373,12 +421,19 @@ begin
     TreeNode.Text:=ShortFilename;
     TreeNode.Data:=Self;
     TreeNode.HasChildren:=HasChildren;
+    TreeNode.ImageIndex:=ImageIndex;
+    TreeNode.StateIndex:=StateImageIndex;
   end;
 end;
 
 procedure TUnitNode.CreateShortFilename;
 begin
   ShortFilename:=Filename;
+  if (Parent<>nil) and (FilenameIsAbsolute(Parent.Filename))
+  and (FilenameIsAbsolute(Filename)) then begin
+    ShortFilename:=ExtractRelativePath(ExtractFilePath(Parent.Filename),
+                                       Filename);
+  end;
 end;
 
 procedure TUnitNode.UnbindFromParent;
@@ -409,6 +464,7 @@ begin
   if Parent.FirstChild=nil then Parent.FFirstChild:=Self;
   if PrevSibling<>nil then PrevSibling.FNextSibling:=Self;
   Inc(Parent.FChildCount);
+  CreateShortFilename;
   
   if Parent.TreeNode<>nil then begin
     Parent.TreeNode.HasChildren:=true;
@@ -428,8 +484,11 @@ begin
   NewNode.CodeBuffer:=ACodeBuffer;
   NewNode.Filename:=AFilename;
   if ACodeBuffer<>nil then begin
-    if FindParentWithCodeBuffer(ACodeBuffer)<>nil then
+    if FindParentWithCodeBuffer(ACodeBuffer)<>nil then begin
       Include(NewNode.FFlags,unfCircle);
+      if ForbiddenCircle then
+        Include(NewNode.FFlags,unfForbiddenCircle);
+    end;
   end else begin
     Include(NewNode.FFlags,unfFileNotFound);
   end;
@@ -441,15 +500,38 @@ end;
 procedure TUnitNode.UpdateSourceType;
 var
   SourceKeyWord: string;
+  ASrcType: TUnitNodeSourceType;
 begin
   FSourceType:=unstUnknown;
   if CodeBuffer=nil then exit;
   SourceKeyWord:=CodeToolBoss.GetSourceType(CodeBuffer,false);
-  for FSourceType:=Low(TUnitNodeSourceType) to High(TUnitNodeSourceType) do
-    if AnsiCompareText(SourceKeyWord,UnitNodeSourceTypeNames[FSourceType])=0
+  for ASrcType:=Low(TUnitNodeSourceType) to High(TUnitNodeSourceType) do
+    if AnsiCompareText(SourceKeyWord,UnitNodeSourceTypeNames[ASrcType])=0
     then
-      exit;
-  FSourceType:=unstUnknown;
+      FSourceType:=ASrcType;
+  if TreeNode<>nil then begin
+    TreeNode.ImageIndex:=ImageIndex;
+    TreeNode.StateIndex:=StateImageIndex;
+  end;
+end;
+
+function TUnitNode.ForbiddenCircle: boolean;
+var
+  ParentNode, CurNode: TUnitNode;
+begin
+  CurNode:=Self;
+  ParentNode:=Parent;
+  while ParentNode<>nil do begin
+    if ParentNode.CodeBuffer=CodeBuffer then begin
+      // circle detected
+      if unfImplementation in CurNode.Flags then begin
+        Result:=true;
+        exit;
+      end;
+    end;
+    CurNode:=ParentNode;
+    ParentNode:=ParentNode.Parent;
+  end;
 end;
 
 constructor TUnitNode.Create;
@@ -532,10 +614,50 @@ begin
   Result:=FChildCount>0;
 end;
 
+function TUnitNode.ImageIndex: integer;
+begin
+  case SourceType of
+  unstUnit:    Result:=1;
+  unstProgram: Result:=2;
+  unstLibrary: Result:=3;
+  unstPackage: Result:=4;
+  else
+    begin
+      if unfFileNotFound in Flags then
+        Result:=5
+      else if unfParseError in Flags then
+        Result:=6
+      else
+        Result:=0;
+    end;
+  end;
+end;
+
 function TUnitNode.IsImplementationNode: boolean;
 begin
   Result:=unfImplementation in FFlags;
 end;
+
+function TUnitNode.StateImageIndex: integer;
+begin
+  if not (unfCircle in Flags) then begin
+    if not (unfImplementation in Flags) then begin
+      Result:=0; // normal used unit
+    end else begin
+      Result:=1; // unit used in implementation section
+    end;
+  end else begin
+    if not (unfForbiddenCircle in Flags) then begin
+      Result:=2; // allowed unit circle
+    end else begin
+      Result:=3; // forbidden unit circle
+    end;
+  end;
+end;
+
+//-----------------------------------------------------------------------------
+initialization
+  {$I unitdependencies.lrs}
 
 end.
 
