@@ -907,17 +907,10 @@ end;
 
 type
   TXPMPixelToColorEntry = record
-    Pixel: string;
     Color: TFPColor;
   end;
   PXPMPixelToColorEntry = ^TXPMPixelToColorEntry;
   
-function CompareXPMPixelToColorEntries(
-  Entry1, Entry2: PXPMPixelToColorEntry): integer;
-begin
-  Result:=CompareStr(Entry1^.Pixel,Entry2^.Pixel);
-end;
-
 procedure TLazReaderXPM.ClearPixelToColorTree;
 var
   Entry: PXPMPixelToColorEntry;
@@ -1170,7 +1163,7 @@ var
       Result := FPImage.colTransparent;
   end;
   
-  procedure AddColor(const PixelString: string; const AColor: TFPColor;
+  procedure AddColor(PixelStart: integer; const AColor: TFPColor;
     IntArray: PInteger);
   var
     NewEntry: PXPMPixelToColorEntry;
@@ -1182,31 +1175,30 @@ var
       HexStr(Cardinal(AColor.Blue),4),',',
       HexStr(Cardinal(AColor.Alpha),4));}
     New(NewEntry);
-    NewEntry^.Pixel:=PixelString;
     NewEntry^.Color:=AColor;
     // add entry to Array Tree
     if FPixelToColorTree=nil then
       FPixelToColorTree:=TArrayNodesTree.Create;
-    for i:=1 to length(PixelString) do
-      IntArray[i-1]:=ord(PixelString[i]);
-    FPixelToColorTree.SetNode(IntArray,length(PixelString),NewEntry);
+    for i:=0 to FCharsPerPixel-1 do
+      IntArray[i]:=ord(Src[PixelStart+i]);
+    FPixelToColorTree.SetNode(IntArray,FCharsPerPixel,NewEntry);
   end;
 
   procedure ReadPalette(IntArray: PInteger);
   var
     i: Integer;
     Line: TSrcLine;
-    PixelString: String;
     ReadPos: Integer;
     ColorStart: Integer;
     ColorEnd: Integer;
     NewColor: TFPColor;
+    PixelStart: Integer;
   begin
     for i:=1 to FColorCount do begin
       ReadNextLine(Line,true);
       ReadPos:=Line.StartPos;
       // read pixel string
-      PixelString:=copy(Src,ReadPos,FCharsPerPixel);
+      PixelStart:=ReadPos;
       inc(ReadPos,FCharsPerPixel);
       // skip spaces
       while IsSpaceChar[Src[ReadPos]] do inc(ReadPos);
@@ -1233,13 +1225,12 @@ var
         ColorEnd:=ReadPos;
         NewColor:=TextToColor(ColorStart,ColorEnd);
       end;
-      AddColor(PixelString,NewColor,IntArray);
+      AddColor(PixelStart,NewColor,IntArray);
     end;
   end;
   
   procedure ReadPixels(IntArray: PInteger);
   var
-    Entry: PXPMPixelToColorEntry;
     y: Integer;
     Line: TSrcLine;
     ReadPos: Integer;
@@ -1250,65 +1241,58 @@ var
     ContinueReading: Boolean;
     CurEntry: PXPMPixelToColorEntry;
   begin
-    New(Entry);
-    SetLength(Entry^.Pixel,FCharsPerPixel);
     Img.SetSize(FWidth,fHeight);
-    try
-      ProgressCount:=10000;
-      for y:=0 to fHeight-1 do begin
-        ReadNextLine(Line,true);
-        ReadPos:=Line.StartPos;
-        if Line.EndPos-Line.StartPos<FCharsPerPixel*FWidth then
-          RaiseXPMReadError('line too short',ReadPos);
-        for x:=0 to FWidth-1 do begin
-          for i:=1 to FCharsPerPixel do begin
-            //Entry^.Pixel[i]:=Src[ReadPos];
-            IntArray[i-1]:=ord(Src[ReadPos]);
-            inc(ReadPos);
-          end;
-          CurEntry:=PXPMPixelToColorEntry(
-                          FPixelToColorTree.FindData(IntArray,FCharsPerPixel));
-          CurColor:=CurEntry^.Color;
-          {if CurEntry2<>CurEntry then begin
-            writeln('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
-              ' RefPixel=',CurEntry^.Pixel,
-              ' Color=',
-              HexStr(Cardinal(CurColor.Red),4),',',
-              HexStr(Cardinal(CurColor.Green),4),',',
-              HexStr(Cardinal(CurColor.Blue),4),',',
-              HexStr(Cardinal(CurColor.Alpha),4));
-            writeln('Entry2: Pixel=',CurEntry2^.Pixel,
-              ' RefPixel=',CurEntry2^.Pixel,
-              ' Color=',
-              HexStr(Cardinal(CurEntry2^.Color.Red),4),',',
-              HexStr(Cardinal(CurEntry2^.Color.Green),4),',',
-              HexStr(Cardinal(CurEntry2^.Color.Blue),4),',',
-              HexStr(Cardinal(CurEntry2^.Color.Alpha),4));
-          end;}
-          
-          {writeln('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
-            ' RefPixel=',PXPMPixelToColorEntry(Node.Data)^.Pixel,
+    ProgressCount:=10000;
+    for y:=0 to fHeight-1 do begin
+      ReadNextLine(Line,true);
+      ReadPos:=Line.StartPos;
+      if Line.EndPos-Line.StartPos<FCharsPerPixel*FWidth then
+        RaiseXPMReadError('line too short',ReadPos);
+      for x:=0 to FWidth-1 do begin
+        for i:=0 to FCharsPerPixel-1 do begin
+          IntArray[i]:=ord(Src[ReadPos]);
+          inc(ReadPos);
+        end;
+        CurEntry:=PXPMPixelToColorEntry(
+                        FPixelToColorTree.FindData(IntArray,FCharsPerPixel));
+        CurColor:=CurEntry^.Color;
+        {if CurEntry2<>CurEntry then begin
+          writeln('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
+            ' RefPixel=',CurEntry^.Pixel,
             ' Color=',
             HexStr(Cardinal(CurColor.Red),4),',',
             HexStr(Cardinal(CurColor.Green),4),',',
             HexStr(Cardinal(CurColor.Blue),4),',',
-            HexStr(Cardinal(CurColor.Alpha),4));}
-          Img.Colors[x,y]:=CurColor;
-        end;
-        if ProgressCount>0 then begin
-          dec(ProgressCount,FWidth);
-        end else begin
-          if Assigned(Img.OnProgress) then begin
-            ContinueReading:=true;
-            Img.OnProgress(Self,FPImage.psRunning,Byte((y*100) div FHeight),
-              true,Rect(0,0,FWidth,y),'reading XPM pixels',ContinueReading);
-            if not ContinueReading then exit;
-          end;
-          ProgressCount:=10000;
-        end;
+            HexStr(Cardinal(CurColor.Alpha),4));
+          writeln('Entry2: Pixel=',CurEntry2^.Pixel,
+            ' RefPixel=',CurEntry2^.Pixel,
+            ' Color=',
+            HexStr(Cardinal(CurEntry2^.Color.Red),4),',',
+            HexStr(Cardinal(CurEntry2^.Color.Green),4),',',
+            HexStr(Cardinal(CurEntry2^.Color.Blue),4),',',
+            HexStr(Cardinal(CurEntry2^.Color.Alpha),4));
+        end;}
+        
+        {writeln('x=',x,' y=',y,' Pixel=',Entry^.Pixel,
+          ' RefPixel=',PXPMPixelToColorEntry(Node.Data)^.Pixel,
+          ' Color=',
+          HexStr(Cardinal(CurColor.Red),4),',',
+          HexStr(Cardinal(CurColor.Green),4),',',
+          HexStr(Cardinal(CurColor.Blue),4),',',
+          HexStr(Cardinal(CurColor.Alpha),4));}
+        Img.Colors[x,y]:=CurColor;
       end;
-    finally
-      Dispose(Entry);
+      if ProgressCount>0 then begin
+        dec(ProgressCount,FWidth);
+      end else begin
+        if Assigned(Img.OnProgress) then begin
+          ContinueReading:=true;
+          Img.OnProgress(Self,FPImage.psRunning,Byte((y*100) div FHeight),
+            true,Rect(0,0,FWidth,y),'reading XPM pixels',ContinueReading);
+          if not ContinueReading then exit;
+        end;
+        ProgressCount:=10000;
+      end;
     end;
   end;
 

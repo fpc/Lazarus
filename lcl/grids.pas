@@ -1894,11 +1894,12 @@ begin
       Dec(FUpdateScrollBarsCount);
     end else
     if goSmoothScroll in Options then begin
-      WriteLn('This Way ==');
+      //WriteLn('This Way ==');
       CacheVisibleGrid;
       With FGCache do begin
         R.Topleft:=Point(FixedWidth, 0);
-        R.BottomRight:=MaxClientXY;
+        R.Right:=ClientWidth;
+        R.Bottom:=ClientHeight;
       end;
       InvalidateRect(Handle, @R, false);
       //Invalidate;
@@ -1911,6 +1912,7 @@ procedure TCustomGrid.WMVScroll(var Message: TLMVScroll);
 var
   C: Integer;
   TL: Integer;
+  R: TRect;
 begin
   // Avoid invalidating right know, just let the scrollbar
   // calculate its position
@@ -1948,7 +1950,13 @@ begin
     end else
     if goSmoothScroll in Options then begin
       CacheVisibleGrid;
-      Invalidate;
+      With FGCache do begin
+        R.Topleft:=Point(0, FixedHeight);
+        R.Right:=ClientWidth;
+        R.Bottom:=ClientHeight;
+      end;
+      InvalidateRect(Handle, @R, false);
+      //Invalidate;
     end;
   end;
 end;
@@ -2424,10 +2432,12 @@ begin
           MoveSelection;
           // Click();
         end;
+        
         if (GoEditing in Options)and(FEditor=nil) and not Focused then begin
           {$IfDef dbgFocus} WriteLn('  AUTO-FOCUSING '); {$Endif}
           LCLLinux.SetFocus(Self.Handle);
         end;
+        
       end;
   end;
   {$ifDef dbgFocus} WriteLn('MouseDown END'); {$Endif}
@@ -2763,6 +2773,10 @@ begin
     if InvalidateAll then begin
       //InvalidateSelection;
       Invalidate
+    end else
+    if goRowSelect in Options then begin
+      InvalidateRow(FRow);
+      InvalidateRow(DRow);
     end else begin
       InvalidateCell(FCol, FRow);
       InvalidateCell(DCol, DRow);
