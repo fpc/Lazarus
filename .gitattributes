@@ -129,7 +129,6 @@ ide/projectopts.lrs svneol=native#text/pascal
 ide/projectopts.pp svneol=native#text/pascal
 ide/runparamsopts.pas svneol=native#text/pascal
 ide/splash.pp svneol=native#text/pascal
-ide/testform.pp svneol=native#text/pascal
 ide/transfermacros.pp svneol=native#text/pascal
 ide/uniteditor.pp svneol=native#text/pascal
 ide/unitinfodlg.pp svneol=native#text/pascal
