@@ -172,6 +172,46 @@ begin
   end;
 {$ELSE linux}
 {$IFDEF WIN32}
+{$IFDEF DebuggerUsePeekNamedPipe}
+var
+  Count: Integer;
+  PipeHandle: Integer;
+  BytesRead: integer;
+  TotalBytesAvailable: integer;
+  R: LongBool;
+  n: integer;
+begin
+  Result := 0;
+
+  while Result=0 do
+  begin
+    for n:= 0 to High(AHandles) do
+    begin
+      PipeHandle := AHandles[n];
+      R := Windows.PeekNamedPipe(PipeHandle, null, 0, 0, @TotalBytesAvailable, null);
+      writeln('PeekNamedPipe returned with ',R);
+      if not R then begin
+        // PeekNamedPipe failed
+        Writeln('GetLastError is ', GetLastError);
+        Continue;
+      end;
+      if R then begin
+        // PeekNamedPipe successfull
+        writeln('TotalBytesAvailable: ', TotalBytesAvailable);
+        if (TotalBytesAvailable>0) then begin
+          Result := 1 shl n;
+          Break;
+        end;
+      end;
+    end;
+    // process messages
+    Application.ProcessMessages;
+    if Application.Terminated then Break;
+    // sleep a bit
+    Sleep(10);
+  end;
+  writeln('[WaitForHandles returns ', Result);
+{$ELSE DebuggerUsePeekNamedPipe}
 var
   Count: Integer;
   TimeOut: Integer;
@@ -179,7 +219,7 @@ var
   P: Pointer;
 begin
   Result := 0;
-  Count := High(AHandles);
+  Count := High(AHandles)+1;
   if Count < 0 then Exit;
   if Count > 31 then Count :=  31;
   // I know MAXIMUM_WAIT_OBJECTS is 64, but that wont fit in an int :)
@@ -211,7 +251,7 @@ begin
       Break;
     end;
   end;
-
+{$ENDIF DebuggerUsePeekNamedPipe}
 {$ELSE win32}
 begin
   writeln('ToDo: implement WaitForHandles for this OS');
@@ -405,6 +445,7 @@ begin
   if FFlushAfterRead 
   then FOutputBuf := '';
   FFlushAfterRead := False;
+  writeln('TCmdLineDebugger.ReadLine returns ', result);
 end;
 
 procedure TCmdLineDebugger.SendCmdLn(const ACommand: String); overload;
@@ -437,6 +478,9 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.29  2004/03/07 21:05:29  vincents
+  WaitForHandles rewritten using PeekNamedPipe
+
   Revision 1.28  2004/02/12 01:09:42  marc
   + added the first conceptual code for WaitForHandles on Win32
 
