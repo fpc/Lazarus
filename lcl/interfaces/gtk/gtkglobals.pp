@@ -422,7 +422,7 @@ const
 
 // font
 var
-  AvgFontCharsBuffer: array[#32..#126] of char;
+  AvgFontCharsBuffer: array[#32..#127] of char;
   AvgFontCharsBufLen: integer;
 
 implementation
@@ -433,7 +433,8 @@ var
 begin
   for c:=Low(AvgFontCharsBuffer) to High(AvgFontCharsBuffer) do
     AvgFontCharsBuffer[c]:=c;
-  AvgFontCharsBufLen:=ord(High(AvgFontCharsBuffer))-ord(Low(AvgFontCharsBuffer))+1;
+  AvgFontCharsBufLen:=ord(High(AvgFontCharsBuffer))-ord(Low(AvgFontCharsBuffer));
+  AvgFontCharsBuffer[high(AvgFontCharsBuffer)]:=#0;
   ModalWindows:=nil;
   UseTransientForModalWindows:=true;
   UpdatingTransientWindows:=false;
