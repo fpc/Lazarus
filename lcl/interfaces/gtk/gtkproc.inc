@@ -6548,7 +6548,7 @@ var
   Widget, FixWidget : PGTKWidget;
   NewColor: TGdkColor;
   MainWidget: PGtkWidget;
-  i: Integer;
+  //i: Integer;
 
   procedure CreateRCStyle;
   begin
@@ -7187,6 +7187,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.296  2004/08/29 10:13:59  mattias
+  fixed makefile
+
   Revision 1.295  2004/08/28 10:22:13  mattias
   added hints for long props in OI  from Andrew Haines
 

@@ -838,7 +838,6 @@ var
 procedure Set_RC_Name(Sender: TObject; AWidget: PGtkWidget);
 var RCName: string;
   AComponent: TComponent;
-  ACustomForm: TCustomForm;
 begin
   {$IFDEF NoStyle}
   exit;
