@@ -1,0 +1,52 @@
+object CheckCompilerOptsDlg: TCheckCompilerOptsDlg
+  CAPTION = 'CheckCompilerOptsDlg'
+  CLIENTHEIGHT = 307
+  CLIENTWIDTH = 624
+  POSITION = poscreencenter
+  VISIBLE = True
+  HORZSCROLLBAR.PAGE = 625
+  VERTSCROLLBAR.PAGE = 308
+  LEFT = 328
+  HEIGHT = 307
+  TOP = 358
+  WIDTH = 624
+  object OutputGroupBox: TGROUPBOX
+    ALIGN = altop
+    CAPTION = 'Output'
+    CLIENTHEIGHT = 232
+    CLIENTWIDTH = 620
+    PARENTCTL3D = False
+    TABORDER = 0
+    HEIGHT = 249
+    WIDTH = 624
+    object OutputMemo: TMEMO
+      ALIGN = albottom
+      LINES.Strings = (
+        'OutputMemo'
+      )
+      TABSTOP = True
+      TABSTOP = True
+      TABORDER = 0
+      HEIGHT = 207
+      TOP = 25
+      WIDTH = 620
+    end
+    object OutputLabel: TLABEL
+      ALIGN = altop
+      CAPTION = 'OutputLabel'
+      LAYOUT = tltop
+      HEIGHT = 25
+      WIDTH = 620
+    end
+  end
+  object CloseButton: TBUTTON
+    CAPTION = 'Close'
+    TABSTOP = True
+    TABORDER = 1
+    ONCLICK = CloseButtonCLICK
+    LEFT = 296
+    HEIGHT = 25
+    TOP = 264
+    WIDTH = 75
+  end
+end

@@ -315,6 +315,9 @@ type
       AnUnitInfo: TUnitInfo): TModalresult;
     function ProjInspectorRemoveFile(Sender: TObject;
       AnUnitInfo: TUnitInfo): TModalresult;
+      
+    // compiler options dialog events
+    procedure OnCompilerOptionsDialogTest(Sender: TObject);
 
     // unit dependencies events
     procedure UnitDependenciesViewAccessingSources(Sender: TObject);
@@ -328,7 +331,7 @@ type
                                         var ACodeTool: TCodeTool);
     procedure OnCodeExplorerJumpToCode(Sender: TObject; const Filename: string;
                                        const Caret: TPoint; TopLine: integer);
-
+                                       
     // view project ToDo list events
     procedure ViewProjectTodosOpenFile(Sender: TObject;
       const Filename: string);
@@ -505,6 +508,7 @@ type
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectToTestDirectory: TModalResult;
     function DoShowToDoList: TModalResult;
+    function DoTestCompilerSettings: TModalResult;
 
     // edit menu
     procedure DoEditMenuCommand(EditorCommand: integer);
@@ -2321,6 +2325,7 @@ begin
       ]);
     frmCompilerOptions.CompilerOpts:=Project1.CompilerOptions;
     frmCompilerOptions.GetCompilerOptions;
+    frmCompilerOptions.OnTest:=@OnCompilerOptionsDialogTest;
     if frmCompilerOptions.ShowModal=mrOk then begin
       RescanCompilerDefines(true);
       Project1.DefineTemplates.AllChanged;
@@ -5505,6 +5510,13 @@ begin
 
   frmToDo.ShowOnTop;
   Result:=mrOk;
+end;
+
+function TMainIDE.DoTestCompilerSettings: TModalResult;
+begin
+  Result:=mrCancel;
+  if Project1=nil then exit;
+  // ToDo
 end;
 
 function TMainIDE.DoBuildProject(BuildAll: boolean): TModalResult;
@@ -8837,6 +8849,11 @@ begin
   Project1.Modified:=true;
 end;
 
+procedure TMainIDE.OnCompilerOptionsDialogTest(Sender: TObject);
+begin
+  DoTestCompilerSettings;
+end;
+
 procedure TMainIDE.ProjInspectorOpen(Sender: TObject);
 var
   CurUnitInfo: TUnitInfo;
@@ -9373,6 +9390,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.632  2003/08/13 16:18:57  mattias
+  started check compiler options
+
   Revision 1.631  2003/08/08 10:41:34  mattias
   fixed no debugger run
 

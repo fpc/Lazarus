@@ -125,7 +125,8 @@ type
   { TBaseCompilerOptions }
   
   TCompilerCmdLineOption = (
-    ccloNoLinkerOpts  // exclude linker options
+    ccloNoLinkerOpts,  // exclude linker options
+    ccloAddVerboseAll  // add -va
     );
   TCompilerCmdLineOptions = set of TCompilerCmdLineOption;
   
@@ -659,6 +660,7 @@ type
     procedure SetupCompilationTab(Page: integer);
     procedure SetupButtonBar;
   private
+    FOnTest: TNotifyEvent;
     FReadOnly: boolean;
     ImageIndexPackage: integer;
     ImageIndexRequired: integer;
@@ -677,6 +679,7 @@ type
     procedure PutCompilerOptions;
   public
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
+    property OnTest: TNotifyEvent read FOnTest write FOnTest;
   end;
 
 type
@@ -1939,11 +1942,11 @@ Processor specific options:
   if (ShowCond) then
     tempsw := tempsw + 'c';
 
-  if (ShowAll) then
-    tempsw := 'a';
-
-  if (ShowNothing) then
+  if ShowNothing then
     tempsw := '0';
+
+  if ShowAll or (ccloAddVerboseAll in Flags) then
+    tempsw := 'a';
 
   if (tempsw <> '') then begin
     tempsw := '-v' + tempsw;
@@ -2497,8 +2500,9 @@ end;
 ------------------------------------------------------------------------------}
 procedure TfrmCompilerOptions.ButtonCheckClicked(Sender: TObject);
 begin
-  // Apply any changes
+  // Apply any changes and test
   PutCompilerOptions;
+  if Assigned(OnTest) then OnTest(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -4484,7 +4488,7 @@ begin
     Height := 23; 
     Top := Self.Height - btnCheck.Height - 15;
     Left := Self.Width - btnCheck.Width - 10;
-    Caption := dlgButApply;
+    Caption := lisCompTest;
     OnClick := @ButtonCheckClicked;
   end;
 

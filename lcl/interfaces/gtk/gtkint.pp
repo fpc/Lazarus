@@ -221,6 +221,7 @@ type
     procedure RemoveCallbacks(Sender : TObject); virtual;
   public
     // for gtk specific components:
+    FLogHandlerID: Cardinal;
     procedure SetCallback(Msg : LongInt; Sender : TObject); virtual;
     procedure SendPaintMessagesForInternalWidgets(AWinControl: TWinControl);
     function  LCLtoGtkMessagePending: boolean;virtual;
@@ -350,6 +351,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.137  2003/08/13 16:18:58  mattias
+  started check compiler options
+
   Revision 1.136  2003/07/29 00:28:43  marc
   + Implemented GetCursorPos
 

@@ -73,32 +73,44 @@ const
   EndOfLine: shortstring={$IFDEF win32}#13+{$ENDIF}#10;
   EmptyLine: shortstring={$IFDEF win32}#13#10#13#10{$ELSE}#10#10{$ENDIF};
 
-// files
-function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
+// file operations
 function BackupFile(const Filename, BackupFilename: string): boolean;
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
-function CompareFilenames(const Filename1, Filename2: string): integer;
-function CompareFilenames(const Filename1, Filename2: string;
-  ResolveLinks: boolean): integer;
-function FilenameIsMatching(const Mask, Filename: string;
-  MatchExactly: boolean): boolean;
-procedure SplitCmdLine(const CmdLine: string;
-                       var ProgramFilename, Params: string);
-function ConvertSpecialFileChars(const Filename: string): string;
-function PrepareCmdLineOption(const Option: string): string;
+function CreateEmptyFile(const Filename: string): boolean;
 function CopyFileWithMethods(const SrcFilename, DestFilename: string;
              OnCopyError: TOnCopyErrorMethod; Data: TObject): boolean;
 function CopyDirectoryWithMethods(const SrcDirectory, DestDirectory: string;
              OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod;
              Data: TObject): boolean;
-function ProgramDirectory: string;
+
+// file names
+function CompareFilenames(const Filename1, Filename2: string): integer;
+function CompareFilenames(const Filename1, Filename2: string;
+  ResolveLinks: boolean): integer;
+function FilenameIsMatching(const Mask, Filename: string;
+  MatchExactly: boolean): boolean;
+function ConvertSpecialFileChars(const Filename: string): string;
+function FilenameIsPascalUnit(const Filename: string): boolean;
+function FilenameIsPascalSource(const Filename: string): boolean;
+function FilenameIsFormText(const Filename: string): boolean;
+function CreateRelativePath(const Filename, BaseDirectory: string): string;
+function CreateAbsolutePath(const SearchPath, BaseDirectory: string): string;
+function SwitchPathDelims(const Filename: string; Switch: boolean): string;
+
+// cmd line
+procedure SplitCmdLine(const CmdLine: string;
+                       var ProgramFilename, Params: string);
+function PrepareCmdLineOption(const Option: string): string;
+
+// find file
 function FindFilesCaseInsensitive(const Directory,
   CaseInsensitiveFilename: string; IgnoreExact: boolean): TStringList;
 function FindFirstFileWithExt(const Directory, Ext: string): string;
 function FindShortFileNameOnDisk(const Filename: string): string;
-function FilenameIsPascalUnit(const Filename: string): boolean;
-function FilenameIsPascalSource(const Filename: string): boolean;
-function FilenameIsFormText(const Filename: string): boolean;
+function CreateNonExistingFilename(const BaseFilename: string): string;
+
+// search paths
+function TrimSearchPath(const SearchPath, BaseDirectory: string): string;
 function MergeSearchPaths(const OldSearchPath, AddSearchPath: string): string;
 function RemoveSearchPaths(const SearchPath, RemoveSearchPath: string): string;
 function CreateRelativeSearchPath(const SearchPath, BaseDirectory: string): string;
@@ -107,9 +119,13 @@ function GetNextDirectoryInSearchPath(const SearchPath: string;
                                       var NextStartPos: integer): string;
 function SearchDirectoryInSearchPath(const SearchPath, Directory: string;
                                      DirStartPos: integer): integer;
-function CreateRelativePath(const Filename, BaseDirectory: string): string;
-function CreateAbsolutePath(const SearchPath, BaseDirectory: string): string;
-function SwitchPathDelims(const Filename: string; Switch: boolean): string;
+
+// find in files
+procedure FindMatchingTextFiles(FileList: TStringList; TheDirectory: string;
+                                mask: string; recursive: boolean);
+function FindInFiles(TheFileList: TStringList; Searchfor: String;
+                     WholeWord: Boolean; CaseSensitive: Boolean;
+                     RegExp: Boolean): TStringList;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList;
@@ -150,6 +166,7 @@ procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings);
 function GetCurrentUserName: string;
 function GetCurrentMailAddress: string;
 procedure GetProgramSearchPath(var SearchPath: string; var Delim: char);
+function ProgramDirectory: string;
 
 // debugging
 procedure RaiseException(const Msg: string);
@@ -162,11 +179,6 @@ function CompareStringPointerI(Data1, Data2: Pointer): integer;
 procedure CheckList(List: TList; TestListNil, TestDoubles, TestNils: boolean);
 procedure CheckEmptyListCut(List1, List2: TList);
 function AnsiSearchInStringList(List: TStrings; const s: string): integer;
-procedure FindMatchingTextFiles(FileList: TStringList; TheDirectory: string;
-                                mask: string; recursive: boolean);
-function FindInFiles(TheFileList: TStringList; Searchfor: String;
-                     WholeWord: Boolean; CaseSensitive: Boolean;
-                     RegExp: Boolean): TStringList;
 
 const
   {$IFDEF Win32}
@@ -284,6 +296,25 @@ begin
     until SysUtils.FindNext(FileInfo)<>0;
   end;
   SysUtils.FindClose(FileInfo);
+end;
+
+function CreateNonExistingFilename(const BaseFilename: string): string;
+var
+  PostFix: String;
+  PreFix: String;
+  i: Integer;
+begin
+  if not FileExists(BaseFilename) then begin
+    Result:=BaseFilename;
+    exit;
+  end;
+  PostFix:=ExtractFileExt(BaseFilename);
+  PreFix:=copy(BaseFilename,1,length(BaseFilename)-length(PostFix));
+  i:=0;
+  repeat
+    inc(i);
+    Result:=PreFix+IntToStr(i)+PostFix;
+  until not FileExists(Result);
 end;
 
 function FilenameIsPascalUnit(const Filename: string): boolean;
@@ -1091,6 +1122,8 @@ end;
 
 {-------------------------------------------------------------------------------
   function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
+  
+  Empty file if exists.
 -------------------------------------------------------------------------------}
 function ClearFile(const Filename: string; RaiseOnError: boolean): boolean;
 var
@@ -1801,6 +1834,19 @@ end;
 function ProgramDirectory: string;
 begin
   Result:=FileCtrl.ProgramDirectory;
+end;
+
+function CreateEmptyFile(const Filename: string): boolean;
+var
+  fs: TFileStream;
+begin
+  Result:=false;
+  try
+    fs:=TFileStream.Create(Filename,fmCreate);
+    fs.Free;
+    Result:=true;
+  except
+  end;
 end;
 
 function CopyFileWithMethods(const SrcFilename, DestFilename: string;

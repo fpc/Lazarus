@@ -2029,7 +2029,6 @@ begin
       finally
         // clean up
         PkgCompileTool.Free;
-
       end;
     end;
 

@@ -553,6 +553,7 @@ resourcestring
   dlgEnvBckup = 'Backup';
   dlgNaming = 'Naming';
   dlgCancel = 'Cancel';
+  lisCompTest = 'Test';
   lisA2PFilename2 = 'Filename';
   dlgEnvLanguage = 'Language';
   dlgAutoSave = 'Auto save';

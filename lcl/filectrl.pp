@@ -46,7 +46,7 @@ uses
 // file attributes and states
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function CompareFilenames(const Filename1, Filename2: string;
-  ResolveLinks: boolean): integer;
+                          ResolveLinks: boolean): integer;
 function FilenameIsAbsolute(TheFilename: string):boolean;
 procedure CheckIfFileIsExecutable(const AFilename: string);
 procedure CheckIfFileIsSymlink(const AFilename: string);
@@ -57,7 +57,7 @@ function FileIsExecutable(const AFilename: string): boolean;
 function FileIsSymlink(const AFilename: string): boolean;
 function GetFileDescription(const AFilename: string): string;
 function ReadAllLinks(const Filename: string;
-  ExceptionOnError: boolean): string;
+                      ExceptionOnError: boolean): string;
 
 // directories
 function DirectoryExists(const FileName: String): Boolean;
@@ -69,7 +69,7 @@ function ProgramDirectory: string;
 // filename parts
 function ExtractFileNameOnly(const AFilename: string): string;
 function CompareFileExt(const Filename, Ext: string;
-  CaseSensitive: boolean): integer;
+                        CaseSensitive: boolean): integer;
 function AppendPathDelim(const Path: string): string;
 function ChompPathDelim(const Path: string): string;
 function TrimFilename(const AFilename: string): string;
@@ -126,6 +126,9 @@ end.
 
 {
   $Log$
+  Revision 1.17  2003/08/13 16:18:58  mattias
+  started check compiler options
+
   Revision 1.16  2003/03/29 17:20:05  mattias
   added TMemoScrollBar
 
