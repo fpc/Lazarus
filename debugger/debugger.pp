@@ -694,6 +694,11 @@ type
     procedure SetName(const AValue: String); virtual;
   public
     constructor Create(ACollection: TCollection); override;
+    procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
+                                const APath: string); virtual;
+    procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
+                              const APath: string); virtual;
+  public
     property Name: String read FName write SetName;
   end;
   TBaseExceptionClass = class of TBaseException;
@@ -715,9 +720,9 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     procedure LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
-                                const APath: string);
+                                const APath: string); override;
     procedure SaveToXMLConfig(const AXMLConfig: TXMLConfig;
-                              const APath: string);
+                              const APath: string); override;
     property Enabled: Boolean read FEnabled write SetEnabled;
   end;
 
@@ -2855,6 +2860,18 @@ begin
   inherited Create(ACollection);
 end;
 
+procedure TBaseException.LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
+  const APath: string);
+begin
+  FName:=AXMLConfig.GetValue(APath+'Name/Value','');
+end;
+
+procedure TBaseException.SaveToXMLConfig(const AXMLConfig: TXMLConfig;
+  const APath: string);
+begin
+  AXMLConfig.SetDeleteValue(APath+'Name/Value',FName,'');
+end;
+
 procedure TBaseException.SetName(const AValue: String);
 begin
   if FName = AValue then exit;
@@ -2876,14 +2893,18 @@ begin
   inherited Create(ACollection);
 end;
 
-procedure TIDEException.LoadFromXMLConfig(const AXMLConfig: TXMLConfig; const APath: string);
+procedure TIDEException.LoadFromXMLConfig(const AXMLConfig: TXMLConfig;
+  const APath: string);
 begin
-  // TODO
+  inherited LoadFromXMLConfig(AXMLConfig, APath);
+  FEnabled:=AXMLConfig.GetValue(APath+'Enabled/Value',true);
 end;
 
-procedure TIDEException.SaveToXMLConfig(const AXMLConfig: TXMLConfig; const APath: string);
+procedure TIDEException.SaveToXMLConfig(const AXMLConfig: TXMLConfig;
+  const APath: string);
 begin
-  // TODO
+  inherited SaveToXMLConfig(AXMLConfig, APath);
+  AXMLConfig.SetDeleteValue(APath+'Enabled/Value',FEnabled,true);
 end;
 
 procedure TIDEException.SetEnabled(const AValue: Boolean);
@@ -2972,17 +2993,20 @@ begin
   Result := TIDEException(inherited GetItem(AIndex));
 end;
 
-procedure TIDEExceptions.LoadFromXMLConfig (const AXMLConfig: TXMLConfig; const APath: string);
+procedure TIDEExceptions.LoadFromXMLConfig (const AXMLConfig: TXMLConfig;
+  const APath: string);
 begin
   // TODO
 end;
 
-procedure TIDEExceptions.SaveToXMLConfig (const AXMLConfig: TXMLConfig; const APath: string);
+procedure TIDEExceptions.SaveToXMLConfig (const AXMLConfig: TXMLConfig;
+  const APath: string);
 begin
   // TODO
 end;
 
-procedure TIDEExceptions.SetItem(const AIndex: Integer; const AValue: TIDEException);
+procedure TIDEExceptions.SetItem(const AIndex: Integer;
+  const AValue: TIDEException);
 begin
   inherited SetItem(Aindex, AValue);
 end;
@@ -2990,6 +3014,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.46  2003/07/25 17:05:58  mattias
+  moved debugger type to the debugger options
+
   Revision 1.45  2003/07/24 08:47:37  marc
   + Added SSHGDB debugger
 

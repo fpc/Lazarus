@@ -14,7 +14,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   WIDTH = 480
   object nbDebugOptions: TNOTEBOOK
     ALIGN = altop
-    PAGEINDEX = 2
+    PAGEINDEX = 0
     HEIGHT = 398
     WIDTH = 480
     object pgGeneral: TPAGE
@@ -27,12 +27,12 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       WIDTH = 476
       object gbDebuggerType: TGROUPBOX
         CAPTION = 'Debugger type and path'
-        CLIENTHEIGHT = 37
+        CLIENTHEIGHT = 69
         CLIENTWIDTH = 468
         PARENTCTL3D = False
         TABORDER = 0
         LEFT = 2
-        HEIGHT = 54
+        HEIGHT = 86
         TOP = 8
         WIDTH = 472
         object cmbDebuggerType: TCOMBOBOX
@@ -40,28 +40,30 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
           PARENTCTL3D = False
           TABORDER = 0
           TABSTOP = True
+          ONCHANGE = cmbDebuggerTypeCHANGE
           LEFT = 6
           HEIGHT = 25
           TOP = 5
-          WIDTH = 160
+          WIDTH = 268
         end
         object cmbDebuggerPath: TCOMBOBOX
           MAXLENGTH = 0
           PARENTCTL3D = False
           TABORDER = 1
           TABSTOP = True
-          LEFT = 174
+          LEFT = 6
           HEIGHT = 25
-          TOP = 5
-          WIDTH = 260
+          TOP = 37
+          WIDTH = 428
         end
         object cmdOpenDebuggerPath: TBUTTON
           CAPTION = '...'
           TABSTOP = True
           TABORDER = 2
+          ONCLICK = cmdOpenDebuggerPathCLICK
           LEFT = 442
           HEIGHT = 25
-          TOP = 5
+          TOP = 37
           WIDTH = 19
         end
       end
@@ -73,7 +75,7 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
         TABORDER = 1
         LEFT = 2
         HEIGHT = 52
-        TOP = 64
+        TOP = 100
         WIDTH = 472
         object txtAdditionalPath: TEDIT
           TABSTOP = True
@@ -95,13 +97,13 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
       end
       object gbDebuggerSpecific: TGROUPBOX
         CAPTION = 'Debugger specific options (depends on type of debugger)'
-        CLIENTHEIGHT = 227
+        CLIENTHEIGHT = 187
         CLIENTWIDTH = 468
         PARENTCTL3D = False
         TABORDER = 2
         LEFT = 2
-        HEIGHT = 244
-        TOP = 116
+        HEIGHT = 204
+        TOP = 156
         WIDTH = 472
       end
     end
@@ -401,7 +403,6 @@ object DebuggerOptionsForm: TDebuggerOptionsForm
   end
   object cmdOK: TBUTTON
     DEFAULT = True
-    MODALRESULT = 1
     CAPTION = 'OK'
     TABSTOP = True
     TABORDER = 2

@@ -6,15 +6,16 @@ interface
 
 uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, ExtCtrls,
-  StdCtrls, Buttons, ComCtrls, Menus, Spin, BaseDebugManager, Debugger,
-  CheckLst;
+  StdCtrls, Buttons, ComCtrls, Menus, Spin, CheckLst,
+  LazarusIDEStrConsts, FileProcs, InputHistory, EnvironmentOpts,
+  BaseDebugManager, Debugger;
 
 type
   TDebuggerOptionsForm = class (TForm )
     clbExceptions: TCHECKLISTBOX;
     chkMessagesInterface: TCHECKBOX;
     chkClearLogOnRun: TCHECKBOX;
-    chkLimitLinecount: TCHECKBOX;
+    chkLimitLineCount: TCHECKBOX;
     chkMessagesBreakpoint: TCHECKBOX;
     chkMessagesProcess: TCHECKBOX;
     chkMessagesThread: TCHECKBOX;
@@ -56,13 +57,20 @@ type
     procedure DebuggerOptionsFormCREATE(Sender: TObject);
     procedure DebuggerOptionsFormDESTROY(Sender: TObject);
     procedure clbExceptionsCLICK (Sender: TObject );
+    procedure cmbDebuggerTypeCHANGE(Sender: TObject);
     procedure cmdExceptionAddCLICK (Sender: TObject );
     procedure cmdExceptionRemoveCLICK (Sender: TObject );
     procedure cmdOKCLICK (Sender: TObject );
+    procedure cmdOpenDebuggerPathCLICK(Sender: TObject);
   private
     FExceptionDeleteList: TStringList;
+    FOldDebuggerPathAndParams: string;
+    FDebuggerSpecificComponents: TList;
+    FCurDebuggerType: TDebuggerType; // currently shown debugger type
     procedure AddExceptionLine(const AException: TIDEException; AName: String);
     procedure AddSignalLine(const ASignal: TIDESignal);
+    procedure FetchDebuggerType;
+    procedure FetchDebuggerSpecificOptions;
   public
   end;
 
@@ -77,7 +85,8 @@ const
 
 { TDebuggerOptionsForm }
 
-procedure TDebuggerOptionsForm.AddExceptionLine(const AException: TIDEException; AName: String);
+procedure TDebuggerOptionsForm.AddExceptionLine(const AException: TIDEException;
+  AName: String);
 var
   idx: Integer;
 begin
@@ -101,9 +110,87 @@ begin
   Item.Data := ASignal;
 end;
 
+procedure TDebuggerOptionsForm.FetchDebuggerType;
+var
+  ADebuggerType: TDebuggerType;
+  DebuggerType: TDebuggerType;
+begin
+  with cmbDebuggerType.Items do begin
+    BeginUpdate;
+    Clear;
+    for ADebuggerType:=Low(TDebuggerType) to High(TDebuggerType) do
+      Add(DebuggerName[ADebuggerType]);
+    EndUpdate;
+  end;
+  
+  with cmbDebuggerPath.Items do begin
+    BeginUpdate;
+    Assign(EnvironmentOptions.DebuggerFileHistory);
+    if Count=0 then
+      Add('/usr/bin/gdb');
+    EndUpdate;
+  end;
+    
+  FOldDebuggerPathAndParams:=EnvironmentOptions.DebuggerFilename;
+  SetComboBoxText(cmbDebuggerPath,FOldDebuggerPathAndParams,20);
+  DebuggerType:=EnvironmentOptions.DebuggerType;
+  SetComboBoxText(cmbDebuggerType,DebuggerName[DebuggerType]);
+end;
+
+procedure TDebuggerOptionsForm.FetchDebuggerSpecificOptions;
+var
+  NewDebuggerType: TDebuggerType;
+  i: Integer;
+  ALabel: TLabel;
+begin
+  NewDebuggerType:=DebuggerNameToType(cmbDebuggerType.Text);
+  if NewDebuggerType=FCurDebuggerType then exit;
+
+  // clear debugger specific options components
+  if FDebuggerSpecificComponents=nil then
+    FDebuggerSpecificComponents:=TList.Create;
+  for i:=0 to FDebuggerSpecificComponents.Count-1 do
+    TComponent(FDebuggerSpecificComponents[i]).Free;
+  FDebuggerSpecificComponents.Clear;
+
+  // create debugger specific options components
+  case NewDebuggerType of
+  
+  dtNone: ;
+  
+  dtGnuDebugger:
+    begin
+
+    end;
+  
+  dtSSHGNUDebugger:
+    begin
+      ALabel:=TLabel.Create(Self);
+      FDebuggerSpecificComponents.Add(ALabel);
+      with ALabel do begin
+        Name:='DebOptsSpecLabel1';
+        Parent:=gbDebuggerSpecific;
+        SetBounds(10,10,Parent.Width-25,Parent.Height-30);
+        WordWrap:=true;
+        Caption:='The GNU debugger through ssh allows to remote debug via a ssh'
+          +' connection. See docs/RemoteDebugging.txt for details. The path'
+          +' must contain the ssh client filename, the hostname with an optional'
+          +' username and the filename of gdb on the remote computer.'
+          +' For example: "/usr/bin/ssh username@hostname gdb"';
+      end;
+    end;
+    
+  end;
+end;
+
 procedure TDebuggerOptionsForm.clbExceptionsCLICK (Sender: TObject );
 begin
   cmdExceptionRemove.Enabled :=  clbExceptions.ItemIndex <> -1;
+end;
+
+procedure TDebuggerOptionsForm.cmbDebuggerTypeCHANGE(Sender: TObject);
+begin
+  FetchDebuggerSpecificOptions;
 end;
 
 procedure TDebuggerOptionsForm.cmdExceptionAddCLICK(Sender: TObject);
@@ -173,12 +260,44 @@ begin
       end;
     end;
   end;
+
+  EnvironmentOptions.DebuggerFilename:=cmbDebuggerPath.Text;
+  EnvironmentOptions.DebuggerFileHistory.Assign(cmbDebuggerPath.Items);
+  EnvironmentOptions.DebuggerType:=DebuggerNameToType(cmbDebuggerType.Text);
+
+  ModalResult:=mrOk;
+end;
+
+procedure TDebuggerOptionsForm.cmdOpenDebuggerPathCLICK(Sender: TObject);
+var
+  OpenDialog: TOpenDialog;
+  AFilename: string;
+begin
+  OpenDialog:=TOpenDialog.Create(Application);
+  try
+    InputHistories.ApplyFileDialogSettings(OpenDialog);
+    OpenDialog.Options:=OpenDialog.Options+[ofPathMustExist];
+    OpenDialog.Title:=lisChooseDebuggerPath;
+
+    if OpenDialog.Execute then begin
+      AFilename:=CleanAndExpandFilename(OpenDialog.Filename);
+      SetComboBoxText(cmbDebuggerPath,AFilename);
+      CheckExecutable(FOldDebuggerPathAndParams,cmbDebuggerPath.Text,
+        lisEnvOptDlgInvalidDebuggerFilename,
+        lisEnvOptDlgInvalidDebuggerFilenameMsg);
+    end;
+    InputHistories.StoreFileDialogSettings(OpenDialog);
+  finally
+    OpenDialog.Free;
+  end;
 end;
 
 procedure TDebuggerOptionsForm.DebuggerOptionsFormCREATE(Sender: TObject);
 var
   n: Integer;
 begin
+  FCurDebuggerType:=dtNone;
+  
   FExceptionDeleteList := TStringList.Create;
   FExceptionDeleteList.Sorted := True;
 
@@ -192,10 +311,12 @@ begin
     AddSignalLine(DebugBoss.Signals[n]);
   end;
 
+  FetchDebuggerType;
 end;
 
 procedure TDebuggerOptionsForm.DebuggerOptionsFormDESTROY(Sender: TObject);
 begin
+  FreeAndNil(FDebuggerSpecificComponents);
   FreeAndNil(FExceptionDeleteList);
 end;
 

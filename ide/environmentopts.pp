@@ -72,7 +72,7 @@ type
   TDebuggerType = (dtNone, dtGnuDebugger, dtSSHGNUDebugger);
 
 const
-  DebuggerName : array[TDebuggerType] of string = (
+  DebuggerName: array[TDebuggerType] of string = (
     '(None)','GNU debugger (gdb)', 'GNU debugger through SSH (gdb)'
   );
 
@@ -464,10 +464,6 @@ type
     FPCSourceDirGroupBox: TGroupBox;
     FPCSourceDirComboBox: TComboBox;
     FPCSourceDirButton: TButton;
-    DebuggerPathGroupBox: TGroupBox;
-    DebuggerPathComboBox: TComboBox;
-    DebuggerPathButton: TButton;
-    DebuggerTypeComboBox: TComboBox;
     TestBuildDirGroupBox: TGroupBox;
     TestBuildDirComboBox: TComboBox;
     TestBuildDirButton: TButton;
@@ -505,7 +501,6 @@ type
     procedure BackupProjectGroupBoxResize(Sender: TObject);
     procedure BakTypeRadioGroupClick(Sender: TObject);
     procedure CompilerPathGroupBoxResize(Sender: TObject);
-    procedure DebuggerPathGroupBoxResize(Sender: TObject);
     procedure FPCSourceDirGroupBoxResize(Sender: TObject);
     procedure FilesButtonClick(Sender: TObject);
     procedure FormEditMiscGroupBoxResize(Sender: TObject);
@@ -555,18 +550,8 @@ type
     procedure ResizeObjectInspectorPage;
     procedure ResizeBackupPage;
     procedure ResizeNamingPage;
-    procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
-    procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
-                              MaxCount: integer);
     procedure SetWindowPositionsItem(Index: integer);
     function CheckValues: boolean;
-    function CheckFileChanged(const OldFilename, NewFilename: string): boolean;
-    function CheckExecutable(const OldFilename, NewFilename: string;
-      const ErrorCaption, ErrorMsg: string): boolean;
-    function CheckDirectoryExists(const Dir,
-      ErrorCaption, ErrorMsg: string): TModalResult;
-    function SimpleDirectoryCheck(const OldDir, NewDir,
-      NotFoundErrMsg: string; var StopChecking: boolean): boolean;
     function CheckLazarusDir: boolean;
     function IsFPCSourceDir: boolean;
     function CheckTestDir: boolean;
@@ -591,6 +576,18 @@ function DebuggerNameToType(const s: string): TDebuggerType;
 function PascalExtToType(const Ext: string): TPascalExtType;
 function AmbigiousFileActionNameToType(const Action: string): TAmbigiousFileAction;
 function GetLazarusLanguageNames(aLangId : TLazarusLanguage) : String;
+
+function CheckFileChanged(const OldFilename, NewFilename: string): boolean;
+function CheckExecutable(const OldFilename, NewFilename: string;
+  const ErrorCaption, ErrorMsg: string): boolean;
+function CheckDirectoryExists(const Dir,
+  ErrorCaption, ErrorMsg: string): TModalResult;
+function SimpleDirectoryCheck(const OldDir, NewDir,
+  NotFoundErrMsg: string; var StopChecking: boolean): boolean;
+
+procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
+procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
+                          MaxCount: integer);
 
 implementation
 
@@ -642,6 +639,88 @@ begin
     llFrench   : Result:=rsLanguageFrench;
     llRussian  : Result:=rsLanguageRussian;
     llPolish   : Result:=rsLanguagePolish;
+  end;
+end;
+
+function CheckFileChanged(const OldFilename,
+  NewFilename: string): boolean;
+begin
+  Result:=(NewFilename<>OldFilename) and (NewFilename<>'');
+end;
+
+function CheckExecutable(const OldFilename,
+  NewFilename: string; const ErrorCaption, ErrorMsg: string): boolean;
+begin
+  Result:=true;
+  if not CheckFileChanged(OldFilename,NewFilename) then exit;
+  if (not FileIsExecutable(NewFilename)) then begin
+    if MessageDlg(ErrorCaption,Format(ErrorMsg,[NewFilename]),
+      mtWarning,[mbIgnore,mbCancel],0)=mrCancel
+    then begin
+      Result:=false;
+    end;
+  end;
+end;
+
+function CheckDirectoryExists(const Dir,
+  ErrorCaption, ErrorMsg: string): TModalResult;
+begin
+  if not DirectoryExists(Dir) then begin
+    Result:=MessageDlg(ErrorCaption,Format(ErrorMsg,[Dir]),mtWarning,
+                       [mbIgnore,mbCancel],0);
+  end else
+    Result:=mrOk;
+end;
+
+function SimpleDirectoryCheck(const OldDir, NewDir,
+  NotFoundErrMsg: string; var StopChecking: boolean): boolean;
+var
+  SubResult: TModalResult;
+begin
+  StopChecking:=true;
+  if not CheckFileChanged(OldDir,NewDir) then begin
+    Result:=true;
+    exit;
+  end;
+  SubResult:=CheckDirectoryExists(NewDir,lisEnvOptDlgDirectoryNotFound,
+                                  NotFoundErrMsg);
+  if SubResult=mrIgnore then begin
+    Result:=true;
+    exit;
+  end;
+  if SubResult=mrCancel then begin
+    Result:=false;
+    exit;
+  end;
+  StopChecking:=false;
+  Result:=true;
+end;
+
+procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString);
+var a:integer;
+begin
+  a:=AComboBox.Items.IndexOf(AText);
+  if a>=0 then
+    AComboBox.ItemIndex:=a
+  else begin
+    AComboBox.Items.Add(AText);
+    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
+  end;
+end;
+
+procedure SetComboBoxText(AComboBox:TComboBox; const AText:AnsiString;
+  MaxCount: integer);
+var a:integer;
+begin
+  a:=AComboBox.Items.IndexOf(AText);
+  if a>=0 then
+    AComboBox.ItemIndex:=a
+  else begin
+    AComboBox.Items.Insert(0,AText);
+    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
+    if MaxCount<2 then MaxCount:=2;
+    while AComboBox.Items.Count>MaxCount do
+      AComboBox.Items.Delete(AComboBox.Items.Count-1);
   end;
 end;
 
@@ -943,15 +1022,15 @@ begin
       if FFPCSourceDirHistory.Count=0 then begin
       
       end;
-      FDebuggerFilename:=TrimFilename(XMLConfig.GetValue(
-         'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename));
+      DebuggerFilename:=XMLConfig.GetValue(
+         'EnvironmentOptions/DebuggerFilename/Value',FDebuggerFilename);
       LoadRecentList(XMLConfig,FDebuggerFileHistory,
          'EnvironmentOptions/DebuggerFilename/History/');
       if FDebuggerFileHistory.Count=0 then begin
         FDebuggerFileHistory.Add(DebuggerName[dtNone]);
         FDebuggerFileHistory.Add('/usr/bin/gdb');
         FDebuggerFileHistory.Add('/opt/fpc/gdb');
-        FDebuggerFileHistory.Add('/usr/bin/ssh user@hostname /usr/bin/gdb');
+        FDebuggerFileHistory.Add('/usr/bin/ssh user@hostname gdb');
       end;
       LoadDebuggerType(FDebuggerType,'EnvironmentOptions/');
       TestBuildDirectory:=XMLConfig.GetValue(
@@ -1321,9 +1400,18 @@ begin
 end;
 
 procedure TEnvironmentOptions.SetDebuggerFilename(const AValue: string);
+var
+  SpacePos: Integer;
 begin
   if FDebuggerFilename=AValue then exit;
-  FDebuggerFilename:=TrimFilename(AValue);
+  FDebuggerFilename:=AValue;
+  // trim the filename and keep the options after the space (if any)
+  SpacePos:=1;
+  while (SpacePos<=length(FDebuggerFilename))
+  and (FDebuggerFilename[SpacePos]<>' ') do
+    inc(SpacePos);
+  FDebuggerFilename:=Trim(copy(FDebuggerFilename,1,SpacePos-1))+
+    copy(FDebuggerFilename,SpacePos,length(FDebuggerFilename)-SpacePos+1);
 end;
 
 //==============================================================================
@@ -1869,7 +1957,6 @@ end;
 
 procedure TEnvironmentOptionsDialog.SetupFilesPage(Page: integer);
 var MaxX:integer;
-  ADebuggerType: TDebuggerType;
 begin
   NoteBook.Page[Page].OnResize:=@OnFilesPageResize;
 
@@ -2024,46 +2111,6 @@ begin
   with FPCSourceDirButton do begin
     Name:='FPCSourceDirButton';
     Parent:=FPCSourceDirGroupBox;
-    Caption:='...';
-    OnClick:=@FilesButtonClick;
-  end;
-
-  DebuggerPathGroupBox:=TGroupBox.Create(Self);
-  with DebuggerPathGroupBox do begin
-    Name:='DebuggerPathGroupBox';
-    Parent:=NoteBook.Page[Page];
-    Caption:=dlgDebugType;
-    OnResize:=@DebuggerPathGroupBoxResize;
-  end;
-
-  DebuggerTypeComboBox:=TComboBox.Create(Self);
-  with DebuggerTypeComboBox do begin
-    Name:='DebuggerTypeComboBox';
-    Parent:=DebuggerPathGroupBox;
-    with Items do begin
-      BeginUpdate;
-      for ADebuggerType:=Low(TDebuggerType) to High(TDebuggerType) do
-        Add(DebuggerName[ADebuggerType]);
-      EndUpdate;
-    end;
-  end;
-
-  DebuggerPathComboBox:=TComboBox.Create(Self);
-  with DebuggerPathComboBox do begin
-    Name:='DebuggerPathComboBox';
-    Parent:=DebuggerPathGroupBox;
-    with Items do begin
-      BeginUpdate;
-      Add(DebuggerName[dtNone]);
-      Add('/opt/fpc/gdb');
-      EndUpdate;
-    end;
-  end;
-
-  DebuggerPathButton:=TButton.Create(Self);
-  with DebuggerPathButton do begin
-    Name:='DebuggerPathButton';
-    Parent:=DebuggerPathGroupBox;
     Caption:='...';
     OnClick:=@FilesButtonClick;
   end;
@@ -2766,10 +2813,6 @@ begin
     SetBounds(x,y,w,h);
   inc(y,h+SpaceH);
 
-  with DebuggerPathGroupBox do
-    SetBounds(x,y,w,h);
-  inc(y,h+SpaceH);
-
   with TestBuildDirGroupBox do
     SetBounds(x,y,w,h);
   inc(y,h+SpaceH);
@@ -2898,22 +2941,6 @@ begin
     SetBounds(x+1,0,w-2-x-1,CompilerPathComboBox.Height);
 end;
 
-procedure TEnvironmentOptionsDialog.DebuggerPathGroupBoxResize(Sender: TObject);
-var
-  x1, x2: Integer;
-  w: Integer;
-begin
-  w:=DebuggerPathGroupBox.ClientWidth;
-  x2:=Max(w-25,10);
-  x1:=x2 div 2;
-  with DebuggerTypeComboBox do
-    SetBounds(2,0,x1-1-2,Height);
-  with DebuggerPathComboBox do
-    SetBounds(x1+1,0,x2-x1-1-2,Height);
-  with DebuggerPathButton do
-    SetBounds(x2+1,0,w-2-x2-1,DebuggerPathComboBox.Height);
-end;
-
 procedure TEnvironmentOptionsDialog.FPCSourceDirGroupBoxResize(Sender: TObject);
 var
   x: Integer;
@@ -2943,8 +2970,6 @@ begin
       OpenDialog.Title:=lisChooseCompilerPath
     else if Sender=FPCSourceDirButton then
       OpenDialog.Title:=lisChooseFPCSourceDir
-    else if Sender=DebuggerPathButton then
-      OpenDialog.Title:=lisChooseDebuggerPath
     else if Sender=TestBuildDirButton then
       OpenDialog.Title:=lisChooseTestBuildDir
     else
@@ -2963,12 +2988,6 @@ begin
         CheckExecutable(FOldCompilerFilename,CompilerPathComboBox.Text,
           lisEnvOptDlgInvalidCompilerFilename,
           lisEnvOptDlgInvalidCompilerFilenameMsg);
-      end else if Sender=DebuggerPathButton then begin
-        // check debugger filename
-        SetComboBoxText(DebuggerPathComboBox,AFilename);
-        CheckExecutable(FOldDebuggerFilename,DebuggerPathComboBox.Text,
-          lisEnvOptDlgInvalidDebuggerFilename,
-          lisEnvOptDlgInvalidDebuggerFilenameMsg);
       end else if Sender=FPCSourceDirButton then begin
         // check fpc source directory
         SetComboBoxText(FPCSourceDirComboBox,AFilename);
@@ -3439,10 +3458,6 @@ begin
     FPCSourceDirComboBox.Items.Assign(FPCSourceDirHistory);
     FOldFPCSourceDir:=FPCSourceDirectory;
     SetComboBoxText(FPCSourceDirComboBox,FPCSourceDirectory,MaxComboBoxCount);
-    DebuggerPathComboBox.Items.Assign(DebuggerFileHistory);
-    FOldDebuggerFilename:=DebuggerFilename;
-    SetComboBoxText(DebuggerPathComboBox,DebuggerFilename,MaxComboBoxCount);
-    SetComboBoxText(DebuggerTypeComboBox,DebuggerName[DebuggerType]);
     TestBuildDirComboBox.Items.Assign(TestBuildDirHistory);
     FOldTestDir:=TestBuildDirectory;
     SetComboBoxText(TestBuildDirComboBox,TestBuildDirectory,MaxComboBoxCount);
@@ -3564,9 +3579,6 @@ begin
     CompilerFileHistory.Assign(CompilerPathComboBox.Items);
     FPCSourceDirectory:=FPCSourceDirComboBox.Text;
     FPCSourceDirHistory.Assign(FPCSourceDirComboBox.Items);
-    DebuggerFilename:=DebuggerPathComboBox.Text;
-    DebuggerFileHistory.Assign(DebuggerPathComboBox.Items);
-    DebuggerType:=DebuggerNameToType(DebuggerTypeComboBox.Text);
     TestBuildDirHistory.Assign(TestBuildDirComboBox.Items);
     TestBuildDirectory:=TestBuildDirComboBox.Text;
 
@@ -3627,35 +3639,6 @@ begin
     PascalFileAskLowerCase:=PascalFileAskLowercaseCheckBox.Checked;
     AmbigiousFileAction:=
       TAmbigiousFileAction(AmbigiousFileActionRadioGroup.ItemIndex);
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.SetComboBoxText(
-  AComboBox:TComboBox; const AText:AnsiString);
-var a:integer;
-begin
-  a:=AComboBox.Items.IndexOf(AText);
-  if a>=0 then
-    AComboBox.ItemIndex:=a
-  else begin
-    AComboBox.Items.Add(AText);
-    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
-  end;
-end;
-
-procedure TEnvironmentOptionsDialog.SetComboBoxText(
-  AComboBox:TComboBox; const AText:AnsiString; MaxCount: integer);
-var a:integer;
-begin
-  a:=AComboBox.Items.IndexOf(AText);
-  if a>=0 then
-    AComboBox.ItemIndex:=a
-  else begin
-    AComboBox.Items.Insert(0,AText);
-    AComboBox.ItemIndex:=AComboBox.Items.IndexOf(AText);
-    if MaxCount<2 then MaxCount:=2;
-    while AComboBox.Items.Count>MaxCount do
-      AComboBox.Items.Delete(AComboBox.Items.Count-1);
   end;
 end;
 
@@ -3757,60 +3740,6 @@ begin
     WindowPositionsBox.Caption:=WindowPositionsListBox.Items[Index];
 end;
 
-function TEnvironmentOptionsDialog.CheckFileChanged(const OldFilename,
-  NewFilename: string): boolean;
-begin
-  Result:=(NewFilename<>OldFilename) and (NewFilename<>'');
-end;
-
-function TEnvironmentOptionsDialog.CheckExecutable(const OldFilename,
-  NewFilename: string; const ErrorCaption, ErrorMsg: string): boolean;
-begin
-  Result:=true;
-  if not CheckFileChanged(OldFilename,NewFilename) then exit;
-  if (not FileIsExecutable(NewFilename)) then begin
-    if MessageDlg(ErrorCaption,Format(ErrorMsg,[NewFilename]),
-      mtWarning,[mbIgnore,mbCancel],0)=mrCancel
-    then begin
-      Result:=false;
-    end;
-  end;
-end;
-
-function TEnvironmentOptionsDialog.CheckDirectoryExists(const Dir,
-  ErrorCaption, ErrorMsg: string): TModalResult;
-begin
-  if not DirectoryExists(Dir) then begin
-    Result:=MessageDlg(ErrorCaption,Format(ErrorMsg,[Dir]),mtWarning,
-                       [mbIgnore,mbCancel],0);
-  end else
-    Result:=mrOk;
-end;
-
-function TEnvironmentOptionsDialog.SimpleDirectoryCheck(const OldDir, NewDir,
-  NotFoundErrMsg: string; var StopChecking: boolean): boolean;
-var
-  SubResult: TModalResult;
-begin
-  StopChecking:=true;
-  if not CheckFileChanged(OldDir,NewDir) then begin
-    Result:=true;
-    exit;
-  end;
-  SubResult:=CheckDirectoryExists(NewDir,lisEnvOptDlgDirectoryNotFound,
-                                  NotFoundErrMsg);
-  if SubResult=mrIgnore then begin
-    Result:=true;
-    exit;
-  end;
-  if SubResult=mrCancel then begin
-    Result:=false;
-    exit;
-  end;
-  StopChecking:=false;
-  Result:=true;
-end;
-
 function TEnvironmentOptionsDialog.CheckLazarusDir: boolean;
 var
   NewLazarusDir: string;
@@ -3868,10 +3797,6 @@ begin
   // check compiler filename
   if not CheckExecutable(FOldCompilerFilename,CompilerPathComboBox.Text,
     lisEnvOptDlgInvalidCompilerFilename,lisEnvOptDlgInvalidCompilerFilenameMsg)
-  then exit;
-  // check debugger filename
-  if not CheckExecutable(FOldDebuggerFilename,DebuggerPathComboBox.Text,
-    lisEnvOptDlgInvalidDebuggerFilename,lisEnvOptDlgInvalidDebuggerFilenameMsg)
   then exit;
   // check lazarus directory
   if not CheckLazarusDir then exit;

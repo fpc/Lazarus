@@ -691,16 +691,17 @@ begin
   DoInitDebugger;
 end;
 
-procedure TDebugManager.mnuDebuggerOptionsClick (Sender: TObject );
+procedure TDebugManager.mnuDebuggerOptionsClick(Sender: TObject);
 var
-  Form: TDebuggerOptionsForm;
+  DebuggerOptionsForm: TDebuggerOptionsForm;
 begin
-  ShowMessage('This dialog is for demonstration purposes only, and not (fully) functional !');
-  Form := TDebuggerOptionsForm.Create(Application);
-  Form.ShowModal;
-  Form.Free;
+  DebuggerOptionsForm := TDebuggerOptionsForm.Create(Application);
+  if DebuggerOptionsForm.ShowModal=mrOk then begin
+    // save to disk
+    EnvironmentOptions.Save(false);
+  end;
+  DebuggerOptionsForm.Free;
 end;
-
 
 
 //-----------------------------------------------------------------------------
@@ -1546,6 +1547,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.56  2003/07/25 17:05:58  mattias
+  moved debugger type to the debugger options
+
   Revision 1.55  2003/07/24 08:47:36  marc
   + Added SSHGDB debugger
 
