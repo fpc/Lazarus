@@ -87,6 +87,7 @@ Var
   PLMsg: PLMessage;
   R: TRect;
   NewLeft, NewTop, NewWidth, NewHeight: integer;
+  LeftOffset, TopOffset: Integer;
   OwnerObject: TObject;
   MsgObject: TObject;
   TheWinControl: TWinControl;
@@ -706,7 +707,6 @@ Begin
           XPos := NewLeft;
           YPos := NewTop;
         end;
-        Win32PosToLCLPos(OwnerObject, XPos, YPos);
         if OwnerObject is TWinControl then begin
           TheWinControl:=TWinControl(OwnerObject);
           {$IFDEF VerboseSizeMsg}
@@ -742,10 +742,28 @@ Begin
           and (TheWinControl.Height=Height)
           and (not TheWinControl.ClientRectNeedsInterfaceUpdate) then
             exit;
-          TheWinControl.InvalidateClientRectCache;
+          TheWinControl.InvalidateClientRectCache(true);
         end;
       End;
     End;
+  end;
+
+  // convert from win32 client to lcl client pos
+  if PLMsg = @LMMouseMove then
+  begin
+    if GetLCLClientOriginOffset(Window,LeftOffset,TopOffset) then
+    begin
+      Dec(LMMouseMove.XPos, LeftOffset);
+      Dec(LMMouseMove.YPos, TopOffset);
+    end;
+  end else
+  if PLMsg = @LMMouse then
+  begin
+    if GetLCLClientOriginOffset(Window,LeftOffset,TopOffset) then
+    begin
+      Dec(LMMouse.XPos, LeftOffset);
+      Dec(LMMouse.YPos, TopOffset);
+    end;
   end;
 
 
@@ -836,6 +854,9 @@ end;
 
 {
   $Log$
+  Revision 1.63  2003/10/06 10:50:10  mattias
+  added recursion to InvalidateClientRectCache
+
   Revision 1.62  2003/10/02 11:18:09  mattias
   clean ups from Karl
 

@@ -992,7 +992,7 @@ procedure TGtkObject.SendCachedGtkMessages;
       LCLControl:=TWinControl(GetLCLObject(MainWidget));
       if (LCLControl=nil) or (not (LCLControl is TWinControl)) then
         RaiseInvalidLCLControl;
-      LCLControl.InvalidateClientRectCache;
+      LCLControl.InvalidateClientRectCache(false);
     end;
     
     { if any main widget (= not fixed widget) was resized
@@ -8445,6 +8445,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.431  2003/10/06 10:50:10  mattias
+  added recursion to InvalidateClientRectCache
+
   Revision 1.430  2003/10/02 01:18:38  ajgenius
   more callbacks fixes for gtk2, partly fix gtk2 CheckListBox
 

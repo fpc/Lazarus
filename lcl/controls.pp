@@ -1148,7 +1148,7 @@ type
     function GetControlIndex(AControl: TControl): integer;
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     procedure DoAdjustClientRectChange;
-    procedure InvalidateClientRectCache;
+    procedure InvalidateClientRectCache(WithChildControls: boolean);
     function ClientRectNeedsInterfaceUpdate: boolean;
     Function Focused : Boolean; override;
     Procedure BroadCast(var Message);
@@ -1847,6 +1847,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.155  2003/10/06 10:50:10  mattias
+  added recursion to InvalidateClientRectCache
+
   Revision 1.154  2003/09/26 06:59:59  mattias
   implemented GetBrush
 

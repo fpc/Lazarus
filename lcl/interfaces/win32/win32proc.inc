@@ -533,7 +533,7 @@ begin
   Result:=true;
   if SendSizeMsgOnDiff then begin
     //writeln('LCLBoundsNeedsUpdate B ',TheWinControl.Name,':',TheWinControl.ClassName,' Sending WM_SIZE');
-    Sender.InvalidateClientRectCache;
+    Sender.InvalidateClientRectCache(true);
     SendMessage(Window, WM_SIZE, 0, MakeLParam(IntfWidth,IntfHeight));
   end;
 end;
@@ -632,6 +632,7 @@ var
   DC: HDC;
   Handle: HWND;
   TheWinControl: TWinControl;
+  ARect: TRect;
 Begin
   Result:=false;
   LeftOffset:=0;
@@ -639,18 +640,25 @@ Begin
   if (Sender = nil) or (not (Sender is TWinControl)) then exit;
   TheWinControl:=TWinControl(Sender);
   if not TheWinControl.HandleAllocated then exit;
+  Handle := TheWinControl.Handle;
   If (TheWinControl is TCustomGroupBox) Then
   Begin
     // The client area of a groupbox under win32 is the whole size, including
     // the frame. The LCL defines the client area without the frame.
     // -> Adjust the position
-    Handle := TheWinControl.Handle;
     DC := Windows.GetDC(Handle);
     GetTextMetrics(DC, TM);
     inc(TopOffset,TM.TMHeight); // add the upper frame with the caption
     inc(LeftOffset,2); // add the left frame border
     ReleaseDC(Handle, DC);
-  End;
+  End Else
+  If TheWinControl is TCustomNoteBook then begin
+    // Can't use complete client rect in win32 interface, top part contains the tabs
+    Windows.GetClientRect(Handle, @ARect);
+    Windows.SendMessage(Handle, TCM_AdjustRect, 0, LPARAM(@ARect));
+    LeftOffset := ARect.Left;
+    TopOffset := ARect.Top;
+  end;
   Result:=true;
 end;
 
@@ -694,6 +702,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.28  2003/10/06 10:50:10  mattias
+  added recursion to InvalidateClientRectCache
+
   Revision 1.27  2003/10/02 11:18:09  mattias
   clean ups from Karl
 

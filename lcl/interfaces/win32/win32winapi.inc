@@ -249,7 +249,7 @@ Begin
   Result := GetLCLClientOriginOffset(Handle,LeftOffset,TopOffset);
   if not Result then exit;
   inc(P.X,LeftOffset);
-  inc(P.X,TopOffset);
+  inc(P.Y,TopOffset);
 End;
 
 {------------------------------------------------------------------------------
@@ -1173,6 +1173,11 @@ Begin
       {writeln('TWin32Object.GetClientRect ',TheWinControl.Name,':',TheWinControl.ClassName,
         ' ClientRect=',Rect.Right,',',Rect.Bottom,
         ' CurLCLBounds=',TheWinControl.Left,',',TheWinControl.Top,',',TheWinControl.Width,',',TheWinControl.Height);}
+    end else
+    if TheWinControl is TCustomNoteBook then begin
+      // Can't use complete client rect in win32 interface, top part contains the tabs
+      Windows.SendMessage(TheWinControl.Handle, TCM_AdjustRect, 0, LPARAM(@Rect));
+      OffsetRect(Rect, -Rect.Left, -Rect.Top);
     end;
   end;
 End;
@@ -2469,6 +2474,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.63  2003/10/06 10:50:10  mattias
+  added recursion to InvalidateClientRectCache
+
   Revision 1.62  2003/09/27 09:52:44  mattias
   TScrollBox for win32 intf from Karl
 

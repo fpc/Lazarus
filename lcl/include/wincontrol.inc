@@ -643,17 +643,27 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  TWinControl InvalidateClientRectCache
+  TWinControl InvalidateClientRectCache(WithChildControls: boolean)
 
   The clientrect is cached. Call this procedure to invalidate the cache, so that
   next time the clientrect is fetched from the interface.
 -------------------------------------------------------------------------------}
-procedure TWinControl.InvalidateClientRectCache;
+procedure TWinControl.InvalidateClientRectCache(WithChildControls: boolean);
+var
+  I: Integer;
 begin
   {$IFDEF VerboseClientRectBugFix}
   writeln('[TWinControl.InvalidateClientRectCache] ',Name,':',ClassName);
   {$ENDIF}
   Include(FFlags,wcfClientRectNeedsUpdate);
+
+  if WithChildControls then begin
+    // invalidate clients too
+    if Assigned(FWinControls) then
+      for I := 0 to FWinControls.Count - 1 do
+        if Assigned(FWinControls.Items[I]) then
+          TWinControl(FWinControls.Items[I]).InvalidateClientRectCache(true);
+  end;
 end;
 
 {-------------------------------------------------------------------------------
@@ -3115,6 +3125,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.176  2003/10/06 10:50:10  mattias
+  added recursion to InvalidateClientRectCache
+
   Revision 1.175  2003/10/02 11:33:39  mattias
   completed compstyles and fixed calendar date parsing from Karl
 

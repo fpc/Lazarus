@@ -724,15 +724,6 @@ activate_time :	the time at which the activation event occurred.
               //bsNone: -> Do Nothing
               End;
             end;
-            csPage:
-            begin
-              if TheWinControl.Parent.HandleAllocated then Begin
-                Windows.SendMessage(TheWinControl.Parent.Handle,
-                                    TCM_AdjustRect, 0, LPARAM(@SizeRect));
-                Left := SizeRect.Left;
-                Top := SizeRect.Top;
-              end;                
-            end;
             csComboBox:
               begin
                 // the height of a combobox is fixed
@@ -2062,7 +2053,7 @@ Begin
     csFrame, csGroupBox:
     Begin
       Window := CreateWindow('BUTTON', StrTemp, Flags Or BS_GROUPBOX, Left, Top, Width, Height, Parent, HMENU(Nil), HInstance, Nil);
-      TWinControl(Sender).InvalidateClientRectCache;
+      TWinControl(Sender).InvalidateClientRectCache(true);
     End;
     csLabel:
     Begin
@@ -2326,7 +2317,7 @@ Begin
     // Set page caption in tabcontrol
     SetLabel(NewPage, PChar(PageCaption));
     // Adjust page size to fit in tabcontrol, need bounds of notebook in client of parent
-    Windows.GetClientRect(Handle, @R);
+    Self.GetClientRect(Handle, R);
     IntSendMessage3(LM_SETSIZE, NewPage, @R);
     // Do the page switch. The are no tabcontrol notifications so we have to
     // do the hiding and showing ourselves.
@@ -2796,6 +2787,9 @@ End;
 
 {
   $Log$
+  Revision 1.117  2003/10/06 10:50:10  mattias
+  added recursion to InvalidateClientRectCache
+
   Revision 1.116  2003/10/02 11:18:09  mattias
   clean ups from Karl
 
