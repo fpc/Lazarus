@@ -124,8 +124,9 @@ end;
  ------------------------------------------------------------------------------}
 destructor TgtkObject.Destroy;
 const
-  GDITYPENAME: array[TGDIType] of String = ('gdiBitmap', 'gdiBrush'
-    ,'gdiFont', 'gdiPen', 'gdiRegion', 'gdiPalette');
+  ProcName = '[TgtkObject.Destroy]';
+  GDITYPENAME: array[TGDIType] of String = (
+     'gdiBitmap', 'gdiBrush', 'gdiFont', 'gdiPen', 'gdiRegion', 'gdiPalette');
 var
   n: Integer;
   p: PMsg;
@@ -162,16 +163,17 @@ begin
   end;
   
   if FPaintMessages.Count>0 then begin
-    WriteLn('[TgtkObject.Destroy] WARNING: There are ',FPaintMessages.Count
-       ,' unremoved LM_PAINT/LM_GtkPAINT message links left.');
+    WriteLn(ProcName, Format(rsWarningUnremovedPaintMessages,
+      [IntToStr(FPaintMessages.Count)]));
   end;
 
   if (FDeviceContexts.Count > 0)
   then begin
-    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased DCs, a detailed dump follows:' ,[FDeviceContexts.Count]));
+    WriteLN(ProcName, Format(rsWarningUnreleasedDCsDump,
+      [FDeviceContexts.Count]));
     
     n:=0;
-    write('[TgtkObject.Destroy]   DCs:  ');
+    write(ProcName,'  DCs:  ');
     HashItem:=FDeviceContexts.FirstHashItem;
     while (n<7) and (HashItem<>nil) do 
     begin
@@ -184,12 +186,13 @@ begin
 
   if (FGDIObjects.Count > 0)  
   then begin  
-    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d unreleased GDIObjects, a detailed dump follows:' ,[FGDIObjects.Count]));  
+    WriteLN(ProcName,Format(rsWarningUnreleasedGDIObjectsDump,
+       [FGDIObjects.Count]));
     for GDIType := Low(GDIType) to High(GDIType) do
       GDITypeCount[GDIType] := 0;
       
     n:=0;
-    write('[TgtkObject.Destroy]   GDIOs:');
+    write(ProcName,'   GDIOs:');
     HashItem := FGDIObjects.FirstHashItem;
     while (HashItem <> nil) do
     begin
@@ -204,12 +207,13 @@ begin
     
     for GDIType := Low(GDIType) to High(GDIType) do 
       if GDITypeCount[GDIType] > 0 then
-        WriteLN(Format('[TgtkObject.Destroy]   %s: %d', [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
+        WriteLN(ProcName,Format('   %s: %d', [GDITYPENAME[GDIType], GDITypeCount[GDIType]]));
   end;
 
   if FMessageQueue.Count > 0 
   then begin
-    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d messages left in the queue! I''ll free them' ,[FMessageQueue.Count]));
+    WriteLN(ProcName, Format(rsWarningUnreleasedMessagesInQueue,[
+      FMessageQueue.Count]));
     while FMessageQueue.First<>nil do begin
       p := PMsg(FMessageQueue.First^.Data);
       Dispose(P);
@@ -220,7 +224,7 @@ begin
   n := FTimerData.Count;
   if (n > 0) then
   begin
-    WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d TimerInfo structures left, I''ll free them' ,[n]));
+    WriteLN(ProcName,Format(rsWarningUnreleasedTimerInfos,[n]));
     while (n > 0) do
     begin
       dec (n);
@@ -297,6 +301,30 @@ procedure TgtkObject.SendCachedLCLMessages;
     IsTopLevelWidget: boolean;
     TopologicalList: TList; // list of PGtkWidget;
     i, LCLWidth, LCLHeight: integer;
+    
+    procedure WriteBigWarning;
+    begin
+      writeln('WARNING: resizing BIG ',
+        ' Control=',LCLControl.Name,':',LCLControl.ClassName,
+        ' NewSize=',LCLWidth,',',LCLHeight);
+    end;
+    
+    procedure RaiseWidgetWithoutControl;
+    begin
+      RaiseException('ERROR: TgtkObject.SendCachedLCLMessages Widget '
+        +HexStr(Cardinal(Widget),8)+' without LCL control');
+    end;
+    
+    procedure WriteWarningParentWidgetNotFound;
+    begin
+      writeln('WARNING: TgtkObject.SendCachedLCLMessages - '
+              ,'Parent''s Fixed Widget not found');
+      writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName,
+        ' Parent=',LCLControl.Parent.Name,':',LCLControl.Parent.ClassName,
+        ' ParentWidget=',HexStr(Cardinal(ParentWidget),8),
+        '');
+    end;
+    
   begin
     if FWidgetsWithResizeRequest.Count=0 then exit;
     {$IFDEF VerboseSizeMsg}
@@ -310,8 +338,7 @@ procedure TgtkObject.SendCachedLCLMessages;
       // resize widget
       LCLControl:=TControl(GetLCLObject(Widget));
       if (LCLControl=nil) or (not (LCLControl is TControl)) then begin
-        RaiseException('ERROR: TgtkObject.SendCachedLCLMessages Widget '
-          +HexStr(Cardinal(Widget),8)+' without LCL control');
+        RaiseWidgetWithoutControl;
       end;
       {$IFDEF VerboseSizeMsg}
       writeln('SendCachedLCLMessages ',LCLControl.Name,':',LCLControl.ClassName,
@@ -330,9 +357,7 @@ procedure TgtkObject.SendCachedLCLMessages;
         if LCLHeight<0 then
           LCLHeight:=0;
         if (LCLWidth>10000) or (LCLHeight>10000) then begin
-          writeln('WARNING: resizing BIG ',
-            ' Control=',LCLControl.Name,':',LCLControl.ClassName,
-            ' NewSize=',LCLWidth,',',LCLHeight);
+          WriteBigWarning;
         end;
         RealizeWidgetSize(Widget,LCLWidth, LCLHeight);
 
@@ -344,11 +369,7 @@ procedure TgtkObject.SendCachedLCLMessages;
           FixedMoveControl(ParentFixed, Widget,
                          LCLControl.Left, LCLControl.Top);
         end else if not (LCLControl.Parent is TNoteBook) then begin
-          writeln('WARNING: TgtkObject.SendCachedLCLMessages - Parent''s Fixed Widget not found');
-          writeln('  Control=',LCLControl.Name,':',LCLControl.ClassName,
-            ' Parent=',LCLControl.Parent.Name,':',LCLControl.Parent.ClassName,
-            ' ParentWidget=',HexStr(Cardinal(ParentWidget),8),
-            '');
+          WriteWarningParentWidgetNotFound;
         end;
       end
       else begin
@@ -531,6 +552,16 @@ procedure TGtkObject.SendCachedGtkMessages;
     LCLControl: TWinControl;
     List: TList;
     i: integer;
+    
+    procedure RaiseInvalidLCLControl;
+    begin
+      RaiseException('SendCachedGtkResizeNotifications'
+        +' FixWidget='+HexStr(Cardinal(FixWidget),8)
+        +' MainWidget='+HexStr(Cardinal(MainWidget),8)
+        +' LCLControl='+HexStr(Cardinal(LCLControl),8)
+        );
+    end;
+    
   begin
     if (FFixWidgetsResized.Count=0) and (FWidgetsResized.Count=0) then exit;
     
@@ -549,11 +580,7 @@ procedure TGtkObject.SendCachedGtkMessages;
       MainWidget:=GetMainWidget(FixWidget);
       LCLControl:=TWinControl(GetLCLObject(MainWidget));
       if (LCLControl=nil) or (not (LCLControl is TWinControl)) then
-        raise Exception.Create('SendCachedGtkResizeNotifications'
-          +' FixWidget='+HexStr(Cardinal(FixWidget),8)
-          +' MainWidget='+HexStr(Cardinal(MainWidget),8)
-          +' LCLControl='+HexStr(Cardinal(LCLControl),8)
-          );
+        RaiseInvalidLCLControl;
       LCLControl.InvalidateClientRectCache;
     end;
     
@@ -1015,8 +1042,8 @@ var
   Width, Height, Depth : Longint;
 begin
   if not (Bitmap is TBitmap) then
-    raise Exception.Create('TGtkObject.LoadFromXPMFile Bitmap is not TBitmap: '
-                           +Bitmap.ClassName);
+    RaiseException('TGtkObject.LoadFromXPMFile Bitmap is not TBitmap: '
+                   +Bitmap.ClassName);
   TheBitmap:=TBitmap(Bitmap);
   GdiObject := NewGDIObject(gdiBitmap);
   if TheBitmap.TransparentColor<>clNone then begin
@@ -1110,8 +1137,8 @@ var
 
 begin
   if not (Bitmap is TBitmap) then
-    raise Exception.Create('TGtkObject.LoadFromPixbufFile Bitmap is not TBitmap: '
-                           +Bitmap.ClassName);
+    RaiseException('TGtkObject.LoadFromPixbufFile Bitmap is not TBitmap: '
+                   +Bitmap.ClassName);
   TheBitmap:=TBitmap(Bitmap);
   if not LoadFile then
     Writeln('WARNING: [TgtkObject.LoadFromPixbufFile] loading file FAILED!');
@@ -1276,7 +1303,7 @@ begin
                          Pointer(ListView.Handle), True)^.ImplementationWidget);
   Count:=ListViewWidget^.columns;
   if Count=0 then begin
-    writeln('WARNING: ListViewWidget^.columns=0');
+    writeln('WARNING: TgtkObject.ListViewAddItem  ListViewWidget^.columns=0');
     exit;
   end;
   GetMem(Titles,SizeOf(PGChar)*Count);
@@ -1869,9 +1896,6 @@ begin
 
       LM_INSERTTOOLBUTTON:
       begin
-      Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
-      Assert(False, 'Trace:Toolbutton being inserted');
-      Assert(False, 'Trace:!!!!!!!!!!!!!!!!!!!!!!!!!');
          If (SENDER is TWINCONTROL) Then
          Begin
             pStr := StrAlloc(Length(TToolbutton(SENDER).Caption)+1);
@@ -1883,8 +1907,8 @@ begin
             end;
          end 
          else Begin
-            raise Exception.Create('Can not assign this control to the toolbar');
-            exit;
+           RaiseException('Can not assign this control to the toolbar');
+           exit;
          end;
     
          num := TToolbar(TWinControl(Sender).parent).Buttonlist.IndexOf(TControl(Sender));
@@ -2542,7 +2566,7 @@ begin
   then Assert(False, Format('Trace:  [TgtkObject.SetLabel] %s --> label %s', [Sender.ClassName, TControl(Sender).Caption]))
   else begin
     Assert(False, Format('Trace:WARNING: [TgtkObject.SetLabel] %s --> No Decendant of TWinControl', [Sender.ClassName]));
-    raise Exception.Create('[TgtkObject.SetLabel] ERROR: Sender ('+Sender.Classname+')'
+    RaiseException('[TgtkObject.SetLabel] ERROR: Sender ('+Sender.Classname+')'
         +' is not TWinControl ');
   end;
 
@@ -3909,7 +3933,7 @@ begin
   // Details - a frame with a label
   if (ofViewDetail in OpenDialog.Options) then begin
     // create the frame around the information
-    Frame:=gtk_frame_new('File information');
+    Frame:=gtk_frame_new(PChar(rsFileInformation));
     gtk_box_pack_start(GTK_BOX(GTK_FILE_SELECTION(SelWidget)^.main_vbox),
                        Frame,false,false,0);
     gtk_widget_show(Frame);
@@ -3917,7 +3941,7 @@ begin
     HBox:=gtk_hbox_new(false,0);
     gtk_container_add(GTK_CONTAINER(Frame), HBox);
     // create the label for the file information
-    FileDetailLabel:=gtk_label_new('permissions user group size date time');
+    FileDetailLabel:=gtk_label_new(PChar(rsDefaultFileInfoValue));
     gtk_box_pack_start(GTK_BOX(HBox),FileDetailLabel,false,false,5);
     gtk_widget_show_all(HBox);
   end else
@@ -4109,7 +4133,8 @@ begin
     if (Sender is TMenuItem) then
       Result := TMenuItem(Sender).Caption;
 
-  if Result = '' then Result := 'Blank';
+  if Result = '' then
+    Result := rsBlank;
 end;
 
 function TgtkObject.CreateAPIWidget(
@@ -5448,7 +5473,6 @@ begin
     
   else
     writeln('Warning: TgtkObject.GetValue not implemented for ',Sender.ClassName);
-    Assert (true, Format ('WARNING:[TgtkObject.GetValue] failed for %s', [Sender.ClassName]));
   end;
 end;
 
@@ -5766,8 +5790,8 @@ begin
               < TListview(sender).SmallImages.Count)
             then begin
               //draw image
-              Writeln('drawing image');
-              Writeln('TListItem(TListview(sender).Items[i]).ImageIndex is ',TListItem(TListview(sender).Items[i]).ImageIndex);
+              //Writeln('drawing image');
+              //Writeln('TListItem(TListview(sender).Items[i]).ImageIndex is ',TListItem(TListview(sender).Items[i]).ImageIndex);
                     
               BitImage := TBitmap.Create;
               TListview(sender).SmallImages.GetBitmap(
@@ -6265,7 +6289,7 @@ begin
     if FDefaultFont = nil then begin
       FDefaultFont:= gdk_font_load ('fixed');
       if FDefaultFont = nil then
-        raise EOutOfResources.Create('Unable to load default font');
+        raise EOutOfResources.Create(rsUnableToLoadDefaultFont);
     end;
   end;    
   Result^.GDIFontObject:= FDefaultFont;
@@ -6865,6 +6889,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.328  2003/03/09 21:13:32  mattias
+  localized gtk interface
+
   Revision 1.327  2003/03/09 17:44:12  mattias
   finshed Make Resourcestring dialog and implemented TToggleBox
 

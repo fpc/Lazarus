@@ -1,3 +1,5 @@
+// included by gtkcallback.inc
+
 {
  *****************************************************************************
  *                                                                           *
@@ -82,4 +84,5 @@ begin
   Result:=false;
 end;
 
+// included by gtkcallback.inc
 
