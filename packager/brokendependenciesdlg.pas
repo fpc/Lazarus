@@ -71,7 +71,6 @@ const
 
 function ShowBrokenDependencies(DependencyList: TList;
   BtnSet: TMsgDlgButtons): TModalResult;
-function GetDependencyOwnerAsString(Dependency: TPkgDependency): string;
 
 
 implementation
@@ -89,25 +88,6 @@ begin
     UpdateDependencyList;
     Result:=ShowModal;
     Free;
-  end;
-end;
-
-function GetDependencyOwnerAsString(Dependency: TPkgDependency): string;
-var
-  DepOwner: TObject;
-begin
-  DepOwner:=Dependency.Owner;
-  if (DepOwner<>nil) then begin
-    if DepOwner is TLazPackage then begin
-      Result:='Package: '+TLazPackage(DepOwner).IDAsString;
-    end else if DepOwner is TProject then begin
-      Result:='Project: '
-                       +ExtractFileNameOnly(TProject(DepOwner).ProjectInfoFile);
-    end else begin
-      Result:=DepOwner.ClassName
-    end;
-  end else begin
-    Result:='Dependency without Owner: '+Dependency.AsString;
   end;
 end;
 

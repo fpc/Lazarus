@@ -59,6 +59,12 @@ type
       var AllowExpansion: Boolean);
     procedure PkgTreeViewSelectionChanged(Sender: TObject);
   private
+    ImgIndexPackage: integer;
+    ImgIndexInstallPackage: integer;
+    ImgIndexInstalledPackage: integer;
+    ImgIndexUninstallPackage: integer;
+    ImgIndexCirclePackage: integer;
+    ImgIndexMissingPackage: integer;
     FOnOpenPackage: TOnOpenPackage;
     fSortedPackages: TAVLTree;
     FChangedDuringLock: boolean;
@@ -96,13 +102,6 @@ var
 implementation
 
 uses Math;
-
-var
-  ImgIndexPackage,
-  ImgIndexInstallPackage,
-  ImgIndexUninstallPackage,
-  ImgIndexCirclePackage,
-  ImgIndexMissingPackage: integer;
 
 type
   TExpandedNode = class
@@ -342,8 +341,10 @@ begin
     Name:='ImageList';
     ImgIndexPackage:=Count;
     AddResImg('pkg_package');
+    ImgIndexInstalledPackage:=Count;
+    AddResImg('pkg_package_install');
     ImgIndexInstallPackage:=Count;
-    AddResImg('pkg_package_installed');
+    AddResImg('pkg_package_autoinstall');
     ImgIndexUninstallPackage:=Count;
     AddResImg('pkg_package_uninstall');
     ImgIndexCirclePackage:=Count;
@@ -395,12 +396,16 @@ function TPkgGraphExplorer.GetPackageImageIndex(Pkg: TLazPackage): integer;
 begin
   if Pkg.Installed<>pitNope then begin
     if Pkg.AutoInstall<>pitNope then begin
-      Result:=ImgIndexInstallPackage;
+      Result:=ImgIndexInstalledPackage;
     end else begin
       Result:=ImgIndexUninstallPackage;
     end;
   end else begin
-    Result:=ImgIndexPackage;
+    if Pkg.AutoInstall<>pitNope then begin
+      Result:=ImgIndexInstallPackage;
+    end else begin
+      Result:=ImgIndexPackage;
+    end;
   end;
 end;
 

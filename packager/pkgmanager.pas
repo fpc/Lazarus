@@ -91,8 +91,9 @@ type
     procedure IDEComponentPaletteEndUpdate(Sender: TObject;
       PaletteChanged: boolean);
     procedure IDEComponentPaletteOpenPackage(Sender: TObject);
+    procedure GetDependencyOwnerDescription(Dependency: TPkgDependency;
+                                                     var Description: string);
   private
-    FirstInstalledDependency: TPkgDependency;
     FirstAutoInstallDependency: TPkgDependency;
     // helper functions
     function DoShowSavePackageAsDialog(APackage: TLazPackage): TModalResult;
@@ -222,6 +223,28 @@ procedure TPkgManager.IDEComponentPaletteOpenPackage(Sender: TObject);
 begin
   if (Sender=nil) or (not (Sender is TLazPackage)) then exit;
   DoOpenPackage(TLazPackage(Sender));
+end;
+
+procedure TPkgManager.GetDependencyOwnerDescription(
+  Dependency: TPkgDependency; var Description: string);
+var
+  DepOwner: TObject;
+begin
+  DepOwner:=Dependency.Owner;
+  if (DepOwner<>nil) then begin
+    if DepOwner is TLazPackage then begin
+      Description:='Package: '+TLazPackage(DepOwner).IDAsString;
+    end else if DepOwner is TProject then begin
+      Description:='Project: '
+                       +ExtractFileNameOnly(TProject(DepOwner).ProjectInfoFile);
+    end else if DepOwner=Self then begin
+      Description:='Lazarus';
+    end else begin
+      Description:=DepOwner.ClassName
+    end;
+  end else begin
+    Description:='Dependency without Owner: '+Dependency.AsString;
+  end;
 end;
 
 procedure TPkgManager.MainIDEitmPkgAddCurUnitToPkgClick(Sender: TObject);
@@ -1051,6 +1074,7 @@ begin
   for i:=0 to PackageGraph.LazarusBasePackages.Count-1 do begin
     BasePackage:=TLazPackage(PackageGraph.LazarusBasePackages[i]);
     Dependency:=BasePackage.CreateDependencyForThisPkg;
+    Dependency.Owner:=Self;
     PackageGraph.OpenDependency(Dependency);
     Dependency.AddToList(FirstAutoInstallDependency,pdlRequires);
   end;
@@ -1104,9 +1128,9 @@ begin
   NewDependency:=TPkgDependency.Create;
   NewDependency.Owner:=Self;
   NewDependency.PackageName:=PackageName;
-  NewDependency.AddToList(FirstInstalledDependency,pdlRequires);
   PackageGraph.OpenInstalledDependency(NewDependency,pitStatic);
   Result:=NewDependency.RequiredPackage;
+  NewDependency.Free;
 end;
 
 procedure TPkgManager.LoadAutoInstallPackages;
@@ -1141,6 +1165,9 @@ end;
 constructor TPkgManager.Create(TheOwner: TComponent);
 begin
   inherited Create(TheOwner);
+  OnGetDependencyOwnerDescription:=@GetDependencyOwnerDescription;
+  
+  
   IDEComponentPalette:=TComponentPalette.Create;
   IDEComponentPalette.OnEndUpdate:=@IDEComponentPaletteEndUpdate;
   TComponentPalette(IDEComponentPalette).OnOpenPackage:=@IDEComponentPaletteOpenPackage;
