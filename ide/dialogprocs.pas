@@ -58,7 +58,8 @@ function LoadCodeBuffer(var ACodeBuffer: TCodeBuffer; const AFilename: string;
   Flags: TLoadBufferFlags): TModalResult;
 function CreateEmptyFile(const Filename: string;
   ErrorButtons: TMsgDlgButtons): TModalResult;
-
+function CheckFileIsWritable(const Filename: string;
+  ErrorButtons: TMsgDlgButtons): TModalResult;
 
 implementation
 
@@ -156,6 +157,18 @@ begin
     end;
   until false;
   Result:=mrOk;
+end;
+
+function CheckFileIsWritable(const Filename: string;
+  ErrorButtons: TMsgDlgButtons): TModalResult;
+begin
+  Result:=mrOk;
+  while not FileIsWritable(Filename) do begin
+    Result:=MessageDlg('File is not writable',
+      'Unable to write to file "'+Filename+'"',
+      mtError,ErrorButtons+[mbCancel],0);
+    if Result<>mrRetry then exit;
+  end;
 end;
 
 end.

@@ -3206,7 +3206,8 @@ begin
     +';'+Dir+'rtl'+DS+'objpas'+DS
     +';'+Dir+'rtl'+DS+'objpas'+DS+'sysutils'
     +';'+Dir+'rtl'+DS+'objpas'+DS+'classes'
-    +';'+Dir+'rtl'+DS+'inc'+DS;
+    +';'+Dir+'rtl'+DS+'inc'+DS
+    +';'+Dir+'rtl'+DS+'inc'+DS+'graph'+DS;
   if (TargetOS<>'') and (TargetOS<>SrcOS) then
     s:=s+';'+Dir+'rtl'+DS+TargetOS+DS;
   s:=s+

@@ -6519,6 +6519,8 @@ begin
   writeln('TMainIDE.DoConvertDelphiUnit A ',DelphiFilename);
   Result:=CheckDelphiFileExt(DelphiFilename);
   if Result<>mrOk then exit;
+  Result:=CheckFileIsWritable(DelphiFilename,[mbAbort]);
+  if Result<>mrOk then exit;
   Result:=CheckFilenameForLCLPaths(DelphiFilename);
   if Result<>mrOk then exit;
   // close Delphi files in editor
@@ -10335,6 +10337,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.713  2004/02/22 18:33:03  mattias
+  added write check
+
   Revision 1.712  2004/02/21 15:37:32  mattias
   moved compiler options to project menu, added -CX for smartlinking
 
