@@ -41,7 +41,11 @@ interface
 uses
   Classes, LclLinux, Process,StdCtrls, Forms, Buttons, Menus, ComCtrls, Arrow,
   Spin, SysUtils, Controls, CompReg, Graphics, ExtCtrls, Dialogs, Calendar,
-  ImgList, Grids, LResources
+  ImgList, Grids, LResources,
+  SynEditLazDsgn, SynEdit, SynCompletion, SynExportHTML, SynMacroRecorder,
+   SynMemo, SynHighlighterPas, SynHighlighterCPP, SynHighlighterJava,
+   SynHighlighterPerl, SynHighlighterHTML, SynHighlighterXML,
+   SynHighlighterLFM, SynHighlighterMulti
   {$IFDEF DATABASE}
   ,db
   {$ENDIF}
@@ -362,6 +366,21 @@ begin
   RegisterComponents('Interbase Data Access','Interbase',[TIBStoredProc,
           TIBQuery,TIBDatabase]);
   {$ENDIF}
+
+  // synedit
+  RegisterComponents('SynEdit','SynEdit', [TSynEdit]);
+  RegisterComponents('SynEdit','SynCompletion', [TSynAutoComplete]);
+  RegisterComponents('SynEdit','SynExportHTML', [TSynExporterHTML]);
+  RegisterComponents('SynEdit','SynMacroRecorder', [TSynMacroRecorder]);
+  RegisterComponents('SynEdit','SynMemo', [TSynMemo]);
+  RegisterComponents('SynEdit','SynHighlighterPas', [TSynPasSyn]);
+  RegisterComponents('SynEdit','SynHighlighterCPP', [TSynCPPSyn]);
+  RegisterComponents('SynEdit','SynHighlighterJava', [TSynJavaSyn]);
+  RegisterComponents('SynEdit','SynHighlighterPerl', [TSynPerlSyn]);
+  RegisterComponents('SynEdit','SynHighlighterHTML', [TSynHTMLSyn]);
+  RegisterComponents('SynEdit','SynHighlighterXML', [TSynXMLSyn]);
+  RegisterComponents('SynEdit','SynHighlighterLFM', [TSynLFMSyn]);
+  RegisterComponents('SynEdit','SynHighlighterMulti', [TSynMultiSyn]);
 
   // unselectable components
   // components that are streamed but not selectable in the IDE

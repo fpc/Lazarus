@@ -20,7 +20,8 @@ uses
   SynEditAutoComplete, SynhighlighterHTML, SynhighlighterCPP, SynHighlighterXML,
   SynHighlighterLFM, SynHighlighterPerl, SynHighlighterMulti, SynRegExpr,
   SynEditExport, SynExportHTML, SynMemo, SynMacroRecorder, SynEditPlugins,
-  SynEditRegexSearch, SynHighlighterPosition, SynHighlighterJava;
+  SynEditRegexSearch, SynHighlighterPosition, SynHighlighterJava,
+  SynEditLazDsgn;
 
 implementation
 
@@ -29,6 +30,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2003/02/20 00:44:01  mattias
+  added synedit to component palette
+
   Revision 1.15  2003/01/15 10:17:49  mattias
   added java syntax highlighter
 

@@ -3289,7 +3289,9 @@ begin
       OldPath:=edtOtherSources.Text;
       Templates:=SetDirSeparators(
             '$(LazarusDir)/lcl'
-          +';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)');
+          +';$(LazarusDir)/lcl/interfaces/$(LCLWidgetType)'
+          +';$(LazarusDir)/components/synedit'
+          +';$(LazarusDir)/components/codetools');
     end else
     if AButton=LibrariesPathEditBtn then begin
       OldPath:=edtLibraries.Text;
