@@ -353,6 +353,7 @@ begin
     Width := 0;
     Height := 0;
   end;
+  ScrollPanel.Invalidate;
   SaveBTN.Enabled := False;
 end;
 
@@ -360,14 +361,15 @@ end;
 procedure TPixmapPropertyEditor.Edit;
 var
   TheDialog: TPicturePropertyEditorForm;
-  Pixmap : TPixmap;
+  Pixmap : TBitmap;
+  Ext : String;
 begin
-  Pixmap := TPixmap(GetOrdValue);
+  Pixmap := TBitmap(GetOrdValue);
   TheDialog := TPicturePropertyEditorForm.Create(Application);
   If not Pixmap.Empty then begin
     TheDialog.Preview.Picture.Pixmap.Width := Pixmap.Width;
     TheDialog.Preview.Picture.Pixmap.Height := Pixmap.Height;
-    With TheDialog.Preview.Picture.Pixmap.Canvas do begin
+    With TheDialog.Preview.Picture.Bitmap.Canvas do begin
       Brush.Color := clWhite;
       FillRect(Rect(0, 0, Pixmap.Width, Pixmap.Height));
       Draw(0, 0, Pixmap);
@@ -377,8 +379,21 @@ begin
     if (TheDialog.ShowModal = mrOK) then begin
       If TheDialog.Preview.Picture.Graphic <> nil then begin
         If TheDialog.FileName <> '' then
-          If FileExists(TheDialog.FileName) then
-            Pixmap.LoadFromFile(TheDialog.FileName);
+          If FileExists(TheDialog.FileName) then begin
+            Ext := Lowercase(ExtractFileName(TheDialog.FileName));
+            If ((Pixmap is TPixmap) and (AnsiCompareText(Ext, '.xpm') = 0))
+            then
+              Pixmap.LoadFromFile(TheDialog.FileName)
+            else begin
+              Pixmap.Width := TheDialog.Preview.Picture.Graphic.Width;
+              Pixmap.Height := TheDialog.Preview.Picture.Graphic.Height;
+              With Pixmap.Canvas do begin
+                Brush.Color := clWhite;
+                FillRect(Rect(0, 0, Pixmap.Width, Pixmap.Height));
+                Draw(0, 0, TheDialog.Preview.Picture.Graphic);
+              end;
+            end;
+          end;
       end
       else
         Pixmap.FreeImage;
@@ -432,6 +447,28 @@ var
   TheDialog: TPicturePropertyEditorForm;
   Pixmap : TPixmap;
   Component : TComponent;
+  
+  Procedure LoadPixmap;
+  var
+    ext : String;
+  begin
+    Ext := ExtractFileName(TheDialog.FileName);
+    Pixmap := TPixmap.Create;
+    if AnsiCompareText(Ext, '.xpm') = 0 then begin
+      If TheDialog.FileName <> '' then
+        If FileExists(TheDialog.FileName) then
+          Pixmap.LoadFromFile(TheDialog.FileName);
+    end
+    else begin
+      Pixmap.Width := TheDialog.Preview.Picture.Graphic.Width;
+      Pixmap.Height := TheDialog.Preview.Picture.Graphic.Height;
+      With Pixmap.Canvas do begin
+        Brush.Color := clWhite;
+        FillRect(Rect(0, 0, Pixmap.Width, Pixmap.Height));
+        Draw(0, 0, TheDialog.Preview.Picture.Graphic);
+      end;
+    end;
+  end;
 begin
   Component := TComponent(GetComponent(0));
   If (Component = nil) or ((not (Component is TSpeedButton)) and
@@ -454,25 +491,8 @@ begin
   try
     if (TheDialog.ShowModal = mrOK) then begin
       If TheDialog.Preview.Picture.Graphic <> nil then begin
-        If Component is TSpeedButton then begin
-          Pixmap := TPixmap.Create;
-          If TheDialog.FileName <> '' then
-            If FileExists(TheDialog.FileName) then
-              Pixmap.LoadFromFile(TheDialog.FileName);
-          TSpeedButton(Component).Glyph := Pixmap;
-        end
-        else
-          If Component is TBitBTN then begin
-            Pixmap := TPixmap.Create;
-            If TheDialog.FileName <> '' then
-              If FileExists(TheDialog.FileName) then
-                Pixmap.LoadFromFile(TheDialog.FileName);
-            TBitBTN(Component).Glyph := Pixmap;
-          end
-       else
-         If TheDialog.FileName <> '' then
-           If FileExists(TheDialog.FileName) then
-             Pixmap.LoadFromFile(TheDialog.FileName);
+        LoadPixmap;
+        SetOrdValue(Longint(Pixmap));
       end
       else
         Pixmap.FreeImage;

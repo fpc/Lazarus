@@ -25,11 +25,11 @@ unit HelloForm;
 
 interface
 
-uses classes, forms, buttons, controls;
+uses SysUtils, classes, forms, buttons, controls, Graphics;
 
 type
    THello = class(TForm)
-     button1 : TSpeedButton;
+     button1 : TButton;
    public
      constructor Create(AOwner: TComponent); override;
      procedure button1Click(Sender : TObject);
@@ -49,7 +49,7 @@ begin
    Left := 200;
    Top := 200;
 
-   button1 := TSpeedButton.Create(Self);
+   button1 := TButton.Create(Self);
    button1.OnClick := @button1click;
    button1.Parent := Self;
    button1.left := (width - 75) div 2 ;
@@ -57,14 +57,30 @@ begin
    button1.width := 75;
    button1.height := 32;
    button1.caption := 'Close';
-   button1.Visible:= true;
-   button1.Align:= alClient;
+   button1.Show;
    
-   Self.Constraints.MaxWidth:= 500;
+   Self.Constraints.MaxWidth:= 500; 
 end;
 
 procedure THello.button1Click(Sender : TObject);
+var
+  Bitmap : TBitmap;
+  S : TFileStream;
+  Dir : String;
 begin
+  Dir := '..' + PathDelim + 'Images' + PathDelim;
+  With TPixmap.Create do begin
+    LoadFromFile(Dir + 'splash_logo.xpm');
+    S := TFileStream.Create(Dir + 'splash_logo.bmp', fmCreate or fmOpenWrite);
+    SaveToStream(S);
+    S.Free;
+  end;
+  Bitmap := TBitmap.Create;
+  Bitmap.LoadFromFile(Dir + 'splash_logo.bmp');
+  S := TFileStream.Create(Dir + 'splash_logo.bmp', fmCreate or fmOpenWrite);
+  Bitmap.SaveToStream(S);
+  S.Free;
+  Bitmap.Free;
   close;
 end;
 
@@ -73,6 +89,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/09/10 06:49:18  lazarus
+  MG: scrollingwincontrol from Andrew
+
   Revision 1.3  2002/05/10 06:57:50  lazarus
   MG: updated licenses
 
