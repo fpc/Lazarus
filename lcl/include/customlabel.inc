@@ -25,14 +25,15 @@
 
   Constructor for the class.
  ------------------------------------------------------------------------------}
-constructor TCustomLabel.Create(AOwner : TComponent);
+constructor TCustomLabel.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fCompStyle := csLabel;
   FLayout := tlTop;
+  fAlignment := taLeftJustify;
   FShowAccelChar:= true;
   ControlStyle := ControlStyle + [csOpaque, csReplicatable];
-  SetBounds(0, 0, 65, 17);
+  SetInitialBounds(0, 0, 65, 17);
 end;
 
 {------------------------------------------------------------------------------
@@ -47,10 +48,10 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  procedure TCustomLabel.Notification(AComponent : TComponent;
-    Operation : TOperation);
+  procedure TCustomLabel.Notification(AComponent: TComponent;
+    Operation: TOperation);
  ------------------------------------------------------------------------------}
-procedure TCustomLabel.Notification(AComponent : TComponent; Operation : TOperation);
+procedure TCustomLabel.Notification(AComponent: TComponent; Operation: TOperation);
 begin
   inherited Notification(AComponent, Operation);
   if (AComponent = FFocusControl) and (Operation = opRemove) then
@@ -63,21 +64,19 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCustomLabel.SetAlignment(Value : TAlignment);
+procedure TCustomLabel.SetAlignment(Value: TAlignment);
 begin
   if fAlignment <> value then begin
     fAlignment:= value;
-    if HandleAllocated then begin
-      Invalidate;
+    if HandleAllocated then
       TWSCustomLabelClass(WidgetSetClass).SetAlignment(Self, Value);
-    end;
   end;
 end;
 
 Procedure TCustomLabel.DoAutoSize;
 var
-  R : TRect;
-  DC : hDC;
+  R: TRect;
+  DC: hDC;
 begin
   If AutoSizing or (not AutoSize) or (Caption='') then
     Exit;
@@ -113,7 +112,7 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCustomLabel.SetFocusControl(Val : TWinControl);
+procedure TCustomLabel.SetFocusControl(Val: TWinControl);
 begin
   if Val <> FFocusControl then begin
     FFocusControl:= Val;
@@ -127,7 +126,7 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCustomLabel.SetLayout(Value : TTextLayout);
+procedure TCustomLabel.SetLayout(Value: TTextLayout);
 begin
   if FLayout <> Value then begin
     FLayout:= Value;
@@ -142,11 +141,12 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCustomLabel.SetShowAccelChar(Val : boolean);
+procedure TCustomLabel.SetShowAccelChar(Val: boolean);
 begin
   if Val <> FShowAccelChar then begin
     FShowAccelChar:= Val;
-    if HandleAllocated then TWSWinControlClass(WidgetSetClass).SetText(Self, Caption);
+    if HandleAllocated then
+      TWSWinControlClass(WidgetSetClass).SetText(Self,Caption);
   end;
 end;
 
@@ -156,14 +156,12 @@ end;
   Returns: Nothing
 
  ------------------------------------------------------------------------------}
-procedure TCustomLabel.SetWordWrap(Value : Boolean);
+procedure TCustomLabel.SetWordWrap(Value: Boolean);
 begin
   if fWordWrap <> value then begin
     fWordWrap:= value;
-    if HandleAllocated then begin
-      Invalidate;
+    if HandleAllocated then
       TWSCustomLabelClass(WidgetSetClass).SetWordWrap(Self, Value);
-    end;
   end;
 end;
 
@@ -185,6 +183,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2004/09/25 15:05:38  mattias
+  implemented Rename Identifier
+
   Revision 1.17  2004/09/22 14:50:18  micha
   convert LM_SETPROPERTIES message for tcustomlabel to interface methods
 

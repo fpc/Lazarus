@@ -169,6 +169,7 @@ type
     FEntries: TAVLTree;
     FBuffersToModify: TList; // sorted list of TCodeBuffer
     FBuffersToModifyNeedsUpdate: boolean;
+    FMainScannerNeeded: boolean;
     FOnBeforeApplyChanges: TOnBeforeApplyChanges;
     FOnAfterApplyChanges: TOnAfterApplyChanges;
     FUpdateLock: integer;
@@ -189,6 +190,7 @@ type
     procedure BeginUpdate;
     procedure EndUpdate;
     property MainScanner: TLinkScanner read FMainScanner write SetMainScanner;
+    property MainScannerNeeded: boolean read FMainScannerNeeded;
     function Replace(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
         const Text: string): boolean;
     function ReplaceEx(FrontGap, AfterGap: TGapTyp; FromPos, ToPos: integer;
@@ -442,13 +444,13 @@ function TSourceChangeCache.ReplaceEx(FrontGap, AfterGap: TGapTyp;
   
   procedure RaiseDataInvalid;
   begin
-    if MainScanner=nil then
+    if (MainScanner=nil) then
       RaiseException('TSourceChangeCache.ReplaceEx MainScanner=nil');
     if FromPos>ToPos then
       RaiseException('TSourceChangeCache.ReplaceEx FromPos>ToPos');
     if FromPos<1 then
       RaiseException('TSourceChangeCache.ReplaceEx FromPos<1');
-    if ToPos>MainScanner.CleanedLen+1 then
+    if (MainScanner<>nil) and (ToPos>MainScanner.CleanedLen+1) then
       RaiseException('TSourceChangeCache.ReplaceEx ToPos>MainScanner.CleanedLen+1');
   end;
   
@@ -491,7 +493,8 @@ begin
       Result:=true;
       exit;
     end;
-    if (MainScanner=nil) or (FromPos>ToPos) or (FromPos<1)
+    if (MainScanner=nil)
+    or (FromPos>ToPos) or (FromPos<1)
     or (ToPos>MainScanner.CleanedLen+1) then
     begin
       {$IFDEF CTDEBUG}
@@ -501,6 +504,7 @@ begin
       exit;
     end;
   end else begin
+    // direct code change without MainScanner
     if (Text='') and (FromDirectPos=ToDirectPos) then begin
       {$IFDEF CTDEBUG}
       DebugLn('TSourceChangeCache.ReplaceEx SUCCESS NoOperation');
@@ -519,16 +523,16 @@ begin
   end;
 
   if ToPos>FromPos then begin
-    // this is a replace/delete operation
+    // this is a replace/delete operation (in cleaned code)
     // -> check the whole range for writable buffers
     if not MainScanner.WholeRangeIsWritable(FromPos,ToPos,true) then exit;
-  end else if (DirectCode<>nil) and (FromDirectPos<ToDirectPos) then begin
+  end else if IsDirectChange and (FromDirectPos<ToDirectPos) then begin
     // this is a direct replace/delete operation
     // -> check if the DirectCode is writable
     if DirectCode.ReadOnly then
       RaiseCodeReadOnly(DirectCode);
   end;
-  if DirectCode=nil then begin
+  if not IsDirectChange then begin
     if not MainScanner.CleanedPosToCursor(FromPos,FromDirectPos,p) then begin
       {$IFDEF CTDEBUG}
       DebugLn('TSourceChangeCache.ReplaceEx IGNORED, because not in clean pos');
@@ -543,7 +547,8 @@ begin
   NewEntry:=TSourceChangeCacheEntry.Create(FrontGap,AfterGap,FromPos,ToPos,
                       Text,DirectCode,FromDirectPos,ToDirectPos,IsDirectChange);
   FEntries.Add(NewEntry);
-
+  if not IsDirectChange then
+    FMainScannerNeeded:=true;
   FBuffersToModifyNeedsUpdate:=true;
   Result:=true;
   {$IFDEF CTDEBUG}
@@ -561,6 +566,7 @@ procedure TSourceChangeCache.Clear;
 begin
   FUpdateLock:=0;
   FEntries.FreeAndClear;
+  FMainScannerNeeded:=false;
   FBuffersToModify.Clear;
   FBuffersToModifyNeedsUpdate:=true;
 end;
@@ -719,7 +725,7 @@ begin
   DebugLn('TSourceChangeCache.Apply EntryCount=',dbgs(FEntries.Count));
   {$ENDIF}
   Result:=false;
-  if MainScanner=nil then
+  if MainScannerNeeded and (MainScanner=nil) then
     RaiseCatchableException('TSourceChangeCache.Apply');
   if FUpdateLock>0 then begin
     Result:=true;
@@ -738,7 +744,10 @@ begin
     end;
   end;
   try
-    Src:=MainScanner.CleanedSrc;
+    if MainScanner<>nil then
+      Src:=MainScanner.CleanedSrc
+    else
+      Src:='';
     SrcLen:=length(Src);
     // apply the changes beginning with the last
     CurNode:=FEntries.FindHighest;
@@ -887,7 +896,14 @@ begin
   ANode:=FEntries.FindLowest;
   while ANode<>nil do begin
     AnEntry:=TSourceChangeCacheEntry(ANode.Data);
-    MainScanner.FindCodeInRange(AnEntry.FromPos,AnEntry.ToPos,FBuffersToModify);
+    if AnEntry.IsDirectChange then begin
+      if AnEntry.DirectCode=nil then
+        RaiseException('TSourceChangeCache.UpdateBuffersToModify AnEntry.DirectCode=nil');
+      if FBuffersToModify.IndexOf(AnEntry.DirectCode)<0 then
+        FBuffersToModify.Add(AnEntry.DirectCode)
+    end else
+      MainScanner.FindCodeInRange(AnEntry.FromPos,AnEntry.ToPos,
+                                  FBuffersToModify);
     ANode:=FEntries.FindSuccessor(ANode);
   end;
   FBuffersToModifyNeedsUpdate:=false;

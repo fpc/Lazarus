@@ -3,7 +3,7 @@
                                stdctrls.pp
                                -----------
 
-                   Initial Revision  : Tue Oct 19 CST 1999
+                   Initial Revision : Tue Oct 19 CST 1999
 
  ***************************************************************************/
 
@@ -131,7 +131,7 @@ type
   TCustomGroupBox = class (TWinControl) {class(TCustomControl) }
   protected
   public
-    constructor Create(AOwner : TComponent); Override;
+    constructor Create(AOwner: TComponent); Override;
     function CanTab: boolean; override;
   end;
 
@@ -210,7 +210,7 @@ type
     FItemWidth: integer;
     FItems: TStrings;
     fMaxLength: integer;
-    FOnChange : TNotifyEvent;
+    FOnChange: TNotifyEvent;
     FOnCloseUp: TNotifyEvent;
     FOnDrawItem: TDrawItemEvent;
     FOnDropDown: TNotifyEvent;
@@ -218,18 +218,18 @@ type
     FOnSelect: TNotifyEvent;
     FSelLength: integer;
     FSelStart: integer;
-    FSorted : boolean;
-    FStyle : TComboBoxStyle;
-    FArrowKeysTraverseList : Boolean;
-    FReturnArrowState : Boolean; //used to return the state of arrow keys from termporary change
+    FSorted: boolean;
+    FStyle: TComboBoxStyle;
+    FArrowKeysTraverseList: Boolean;
+    FReturnArrowState: Boolean; //used to return the state of arrow keys from termporary change
     function GetDroppedDown: Boolean;
     function GetItemWidth: Integer;
     procedure SetItemWidth(const AValue: Integer);
-    procedure SetItems(Value : TStrings);
-    procedure LMDrawListItem(var TheMessage : TLMDrawListItem); message LM_DrawListItem;
-    procedure CNCommand(var TheMessage : TLMCommand); message CN_Command;
+    procedure SetItems(Value: TStrings);
+    procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
+    procedure CNCommand(var TheMessage: TLMCommand); message CN_Command;
     procedure UpdateSorted;
-    procedure SetArrowKeysTraverseList(Value : Boolean);
+    procedure SetArrowKeysTraverseList(Value: Boolean);
   protected
     procedure CreateWnd; override;
     procedure DestroyWnd; override;
@@ -244,24 +244,24 @@ type
 
     function GetItemCount: Integer; //override;
     function GetItemHeight: Integer; virtual;
-    function GetSelLength : integer; virtual;
-    function GetSelStart : integer; virtual;
-    function GetSelText : string; virtual;
-    function GetItemIndex : integer; virtual;
-    function GetMaxLength : integer; virtual;
+    function GetSelLength: integer; virtual;
+    function GetSelStart: integer; virtual;
+    function GetSelText: string; virtual;
+    function GetItemIndex: integer; virtual;
+    function GetMaxLength: integer; virtual;
     procedure InitializeWnd; override;
     function SelectItem(const AnItem: String): Boolean;
     procedure SetDropDownCount(const AValue: Integer); virtual;
     procedure SetDroppedDown(const AValue: Boolean); virtual;
     procedure SetItemHeight(const AValue: Integer); virtual;
-    procedure SetItemIndex(Val : integer); virtual;
-    procedure SetMaxLength(Val : integer); virtual;
-    procedure SetSelLength(Val : integer); virtual;
-    procedure SetSelStart(Val : integer); virtual;
-    procedure SetSelText(const Val : string); virtual;
-    procedure SetSorted(Val : boolean); virtual;
-    procedure SetStyle(Val : TComboBoxStyle); virtual;
-    procedure KeyDown(var Key : Word; Shift : TShiftState); override;
+    procedure SetItemIndex(Val: integer); virtual;
+    procedure SetMaxLength(Val: integer); virtual;
+    procedure SetSelLength(Val: integer); virtual;
+    procedure SetSelStart(Val: integer); virtual;
+    procedure SetSelText(const Val: string); virtual;
+    procedure SetSorted(Val: boolean); virtual;
+    procedure SetStyle(Val: TComboBoxStyle); virtual;
+    procedure KeyDown(var Key: Word; Shift: TShiftState); override;
 
     property DropDownCount: Integer read FDropDownCount write SetDropDownCount default 8;
     property Items: TStrings read FItems write SetItems;
@@ -379,7 +379,7 @@ type
     procedure SetTopIndex(const AValue: Integer);
     procedure UpdateSelectionMode;
     procedure UpdateSorted;
-    procedure LMDrawListItem(var TheMessage : TLMDrawListItem); message LM_DrawListItem;
+    procedure LMDrawListItem(var TheMessage: TLMDrawListItem); message LM_DrawListItem;
     procedure LMSelChange(var TheMessage); message LM_SelChange;
     procedure SendItemSelected(Index: integer; IsSelected: boolean);
   protected
@@ -390,19 +390,19 @@ type
     procedure DestroyHandle; override;
     procedure CheckIndex(const AIndex: Integer);
     function GetItemHeight: Integer;
-    function GetItemIndex : integer; virtual;
-    function GetSelCount : integer;
-    function GetSelected(Index : integer) : boolean;
+    function GetItemIndex: integer; virtual;
+    function GetSelCount: integer;
+    function GetSelected(Index: integer): boolean;
     function GetCachedDataSize: Integer; virtual; // returns the amount of data needed per item
     function GetCachedData(const AIndex: Integer): Pointer;
-    procedure SetExtendedSelect(Val : boolean); virtual;
-    procedure SetItemIndex(Val : integer); virtual;
-    procedure SetItems(Value : TStrings); virtual;
+    procedure SetExtendedSelect(Val: boolean); virtual;
+    procedure SetItemIndex(Val: integer); virtual;
+    procedure SetItems(Value: TStrings); virtual;
     procedure SetItemHeight(Value: Integer);
-    procedure SetMultiSelect(Val : boolean); virtual;
-    procedure SetSelected(Index : integer; Val : boolean);
-    procedure SetSorted(Val : boolean); virtual;
-    procedure SetStyle(Val : TListBoxStyle); virtual;
+    procedure SetMultiSelect(Val: boolean); virtual;
+    procedure SetSelected(Index: integer; Val: boolean);
+    procedure SetSorted(Val: boolean); virtual;
+    procedure SetStyle(Val: TListBoxStyle); virtual;
     procedure DrawItem(Index: Integer; ARect: TRect;
       State: TOwnerDrawState); virtual;
     procedure DoSelectionChange(User: Boolean); virtual;
@@ -461,7 +461,7 @@ type
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;
-    property SelCount : integer read GetSelCount;
+    property SelCount: integer read GetSelCount;
     property Selected[Index: integer]: boolean read GetSelected write SetSelected;
     property ShowHint;
     property Sorted: boolean read FSorted write SetSorted;
@@ -536,26 +536,26 @@ type
     FOnChange: TNotifyEvent;
     FSelLength: integer;
     FSelStart: integer;
-    function GetModified : Boolean;
-    procedure SetCharCase(Value : TEditCharCase);
-    procedure SetMaxLength(Value : Integer);
-    procedure SetModified(Value : Boolean);
+    function GetModified: Boolean;
+    procedure SetCharCase(Value: TEditCharCase);
+    procedure SetMaxLength(Value: Integer);
+    procedure SetModified(Value: Boolean);
     procedure SetPasswordChar(const AValue: Char);
-    procedure SetReadOnly(Value : Boolean);
+    procedure SetReadOnly(Value: Boolean);
   Protected
     Procedure DoAutoSize; Override;
     procedure CreateWnd; override;
 
-    procedure CMTextChanged(Var Message : TLMessage); message CM_TextChanged;
+    procedure CMTextChanged(Var Message: TLMessage); message CM_TextChanged;
     procedure Change; dynamic;
-    function GetSelLength : integer; virtual;
-    function GetSelStart : integer; virtual;
-    function GetSelText : string; virtual;
+    function GetSelLength: integer; virtual;
+    function GetSelStart: integer; virtual;
+    function GetSelText: string; virtual;
     procedure InitializeWnd; override;
-    procedure SetEchoMode(Val : TEchoMode); virtual;
-    procedure SetSelLength(Val : integer); virtual;
-    procedure SetSelStart(Val : integer); virtual;
-    procedure SetSelText(const Val : string); virtual;
+    procedure SetEchoMode(Val: TEchoMode); virtual;
+    procedure SetSelLength(Val: integer); virtual;
+    procedure SetSelStart(Val: integer); virtual;
+    procedure SetSelText(const Val: string); virtual;
     procedure RealSetText(const Value: TCaption); override;
     function ChildClassAllowed(ChildClass: TClass): boolean; override;
     procedure KeyUp(var Key: Word; Shift: TShiftState); override;
@@ -614,9 +614,9 @@ type
     procedure SetVertScrollBar(const AValue: TMemoScrollBar);
     function StoreScrollBars: boolean;
   protected
-    procedure SetLines(const Value : TStrings);
-    procedure SetWordWrap(const Value : boolean);
-    procedure SetScrollBars(const Value : TScrollStyle);
+    procedure SetLines(const Value: TStrings);
+    procedure SetWordWrap(const Value: boolean);
+    procedure SetScrollBars(const Value: TScrollStyle);
     procedure InitializeWnd; override;
     procedure Loaded; override;
     function WordWrapIsStored: boolean; virtual;
@@ -624,13 +624,13 @@ type
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Append(const Value : String);
+    procedure Append(const Value: String);
     procedure Clear;
   public
     property Lines: TStrings read FLines write SetLines;
     property ScrollBars: TScrollStyle read FScrollBars write SetScrollBars;
     property WordWrap: Boolean read FWordWrap write SetWordWrap stored WordWrapIsStored default true;
-    //property Font : TFont read FFont write FFont;
+    //property Font: TFont read FFont write FFont;
     property HorzScrollBar: TMemoScrollBar
       read FHorzScrollBar write SetHorzScrollBar stored StoreScrollBars;
     property VertScrollBar: TMemoScrollBar
@@ -714,28 +714,28 @@ type
 
   TCustomLabel = class(TWinControl)
   private
-    FAlignment : TAlignment;
-    FWordWrap : Boolean;
-    FLayout : TTextLayout;
-    FFocusControl : TWinControl;
-    FShowAccelChar : boolean;
-    procedure SetAlignment(Value : TAlignment);
-    procedure SetLayout(Value : TTextLayout);
-    procedure SetWordWrap(Value : Boolean);
+    FAlignment: TAlignment;
+    FWordWrap: Boolean;
+    FLayout: TTextLayout;
+    FFocusControl: TWinControl;
+    FShowAccelChar: boolean;
+    procedure SetAlignment(Value: TAlignment);
+    procedure SetLayout(Value: TTextLayout);
+    procedure SetWordWrap(Value: Boolean);
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
   protected
     function GetLabelText: String ; virtual;
-    procedure DoAutoSize; Override;
+    procedure DoAutoSize; override;
     procedure ParentFormInitializeWnd; override;
-    procedure Notification(AComponent : TComponent; Operation : TOperation); override;
-    procedure SetFocusControl(Val : TWinControl); virtual;
-    procedure SetShowAccelChar(Val : boolean); virtual;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
+    procedure SetFocusControl(Val: TWinControl); virtual;
+    procedure SetShowAccelChar(Val: boolean); virtual;
   public
-    constructor Create(AOwner : TComponent); override;
+    constructor Create(AOwner: TComponent); override;
     property Alignment: TAlignment read FAlignment write SetAlignment default taLeftJustify;
     property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property Layout: TTextLayout read FLayout write SetLayout default tlTop;
-    property ShowAccelChar : boolean read FShowAccelChar write SetShowAccelChar default true;
+    property ShowAccelChar: boolean read FShowAccelChar write SetShowAccelChar default true;
     property WordWrap: Boolean read FWordWrap write SetWordWrap default false;
   end;
 
@@ -881,50 +881,50 @@ type
   Private
     FAllowGrayed,
     FWordWrap,
-    FAttachTextToBox : Boolean;
-    FAlignment : TCBAlignment;
-    FState  : TCheckBoxState;
-    FCheckBoxStyle : TCheckBoxStyle;
+    FAttachTextToBox: Boolean;
+    FAlignment: TCBAlignment;
+    FState : TCheckBoxState;
+    FCheckBoxStyle: TCheckBoxStyle;
     FMouseIsDragging,
     FMouseInControl: Boolean;
   Protected
     Procedure DoAutoSize; Override;
-    Procedure SetAlignment(Value : TCBAlignment);
-    Procedure SetState(Value : TCheckBoxState);
+    Procedure SetAlignment(Value: TCBAlignment);
+    Procedure SetState(Value: TCheckBoxState);
 
-    Function GetChecked : Boolean;
-    procedure SetChecked(Value : Boolean);
-    procedure SetCheckBoxStyle(Value : TCheckBoxStyle);
-    procedure SetAttachTextToBox(Value : Boolean);
+    Function GetChecked: Boolean;
+    procedure SetChecked(Value: Boolean);
+    procedure SetCheckBoxStyle(Value: TCheckBoxStyle);
+    procedure SetAttachTextToBox(Value: Boolean);
 
     procedure CMMouseEnter(var Message: TLMMouse); message CM_MOUSEENTER;
     procedure CMMouseLeave(var Message: TLMMouse); message CM_MOUSELEAVE;
-    Procedure WMMouseDown(var Message : TLMMouseEvent); Message LM_LBUTTONDOWN;
-    Procedure WMMouseUp(var Message : TLMMouseEvent); Message LM_LBUTTONUP;
-    Procedure WMKeyDown(var Message : TLMKeyDown); Message LM_KeyDown;
-    Procedure WMKeyUp(var Message : TLMKeyUp); Message LM_KeyUp;
+    Procedure WMMouseDown(var Message: TLMMouseEvent); Message LM_LBUTTONDOWN;
+    Procedure WMMouseUp(var Message: TLMMouseEvent); Message LM_LBUTTONUP;
+    Procedure WMKeyDown(var Message: TLMKeyDown); Message LM_KeyDown;
+    Procedure WMKeyUp(var Message: TLMKeyUp); Message LM_KeyUp;
   public
     procedure Paint; Override;
     Procedure PaintCheck(var PaintRect: TRect);
     Procedure PaintText(var PaintRect: TRect);
 
     Constructor Create(AOwner: TComponent); Override;
-    Function CheckBoxRect : TRect;
+    Function CheckBoxRect: TRect;
     procedure Click; Override;
 
-    Property MouseInControl : Boolean read FMouseInControl;
-    Property MouseIsDragging : Boolean read FMouseIsDragging;
+    Property MouseInControl: Boolean read FMouseInControl;
+    Property MouseIsDragging: Boolean read FMouseIsDragging;
   published
-    property Alignment : TCBAlignment read FAlignment write SetAlignment;
-    Property AllowGrayed : Boolean read FAllowGrayed write FAllowGrayed;
-    Property Checked : Boolean read GetChecked write SetChecked;
-    property State : TCheckBoxState read FState write SetState;
-    property CheckBoxStyle : TCheckBoxStyle read FCheckBoxStyle write SetCheckBoxStyle;
-    property AttachToBox : Boolean read FAttachTextToBox write SetAttachTextToBox default True;
+    property Alignment: TCBAlignment read FAlignment write SetAlignment;
+    Property AllowGrayed: Boolean read FAllowGrayed write FAllowGrayed;
+    Property Checked: Boolean read GetChecked write SetChecked;
+    property State: TCheckBoxState read FState write SetState;
+    property CheckBoxStyle: TCheckBoxStyle read FCheckBoxStyle write SetCheckBoxStyle;
+    property AttachToBox: Boolean read FAttachTextToBox write SetAttachTextToBox default True;
 
     property Align;
     Property AutoSize;
-    property WordWrap : Boolean read FWordWrap write FWordWrap;
+    property WordWrap: Boolean read FWordWrap write FWordWrap;
     property TabStop;
 
     property Anchors;
@@ -1047,26 +1047,26 @@ type
     FStaticBorderStyle: TStaticBorderStyle;
     FFocusControl: TWinControl;
     FShowAccelChar: Boolean;
-    Procedure FontChange(Sender : TObject);
+    Procedure FontChange(Sender: TObject);
   protected
     Procedure DoAutoSize; Override;
     Procedure CMTextChanged(var Message: TLMSetText); message CM_TEXTCHANGED;
 
     procedure WMActivate(var Message: TLMActivate); message LM_ACTIVATE;
-    procedure Notification(AComponent : TComponent; Operation : TOperation); override;
+    procedure Notification(AComponent: TComponent; Operation: TOperation); override;
 
-    Procedure SetAlignment(Value : TAlignment);
-    Function GetAlignment : TAlignment;
-    Procedure SetStaticBorderStyle(Value : TStaticBorderStyle);
-    Function GetStaticBorderStyle : TStaticBorderStyle;
-    Procedure SetFocusControl(Value : TWinControl);
-    Procedure SetShowAccelChar(Value : Boolean);
-    Function GetShowAccelChar : Boolean;
+    Procedure SetAlignment(Value: TAlignment);
+    Function GetAlignment: TAlignment;
+    Procedure SetStaticBorderStyle(Value: TStaticBorderStyle);
+    Function GetStaticBorderStyle: TStaticBorderStyle;
+    Procedure SetFocusControl(Value: TWinControl);
+    Procedure SetShowAccelChar(Value: Boolean);
+    Function GetShowAccelChar: Boolean;
     function CanTab: boolean; override;
 
     property Alignment: TAlignment read GetAlignment write SetAlignment;
     property BorderStyle: TStaticBorderStyle read GetStaticBorderStyle write SetStaticBorderStyle;
-    property FocusControl : TWinControl read FFocusControl write SetFocusControl;
+    property FocusControl: TWinControl read FFocusControl write SetFocusControl;
     property ShowAccelChar: Boolean read GetShowAccelChar write SetShowAccelChar;
   public
     constructor Create(AOwner: TComponent); override;
@@ -1126,12 +1126,12 @@ type
     FMemo: TCustomMemo;
     FMemoWidgetClass: TWSCustomMemoClass;
   protected
-    function Get(Index : Integer): String; override;
+    function Get(Index: Integer): String; override;
     function GetCount: Integer; override;
   public
     constructor Create(AMemo: TCustomMemo);
     procedure Clear; override;
-    procedure Delete(index : Integer); override;
+    procedure Delete(index: Integer); override;
     procedure Insert(index: Integer; const S: String); override;
 
     property MemoWidgetClass: TWSCustomMemoClass read FMemoWidgetClass write FMemoWidgetClass;
@@ -1175,6 +1175,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.170  2004/09/25 15:05:38  mattias
+  implemented Rename Identifier
+
   Revision 1.169  2004/09/22 19:05:58  mattias
   various fixes for TCustomMemo, RTTIControls, FindReferences
 

@@ -118,6 +118,7 @@ function CompareTextIgnoringSpace(Txt1: PChar; Len1: integer;
 function CompareSubStrings(const Find, Txt: string;
     FindStartPos, TxtStartPos, Len: integer; CaseSensitive: boolean): integer;
 function CompareIdentifiers(Identifier1, Identifier2: PChar): integer;
+function CompareIdentifiersCaseSensitive(Identifier1, Identifier2: PChar): integer;
 function ComparePrefixIdent(PrefixIdent, Identifier: PChar): boolean;
 function TextBeginsWith(Txt: PChar; TxtLen: integer; StartTxt: PChar;
     StartTxtLen: integer; CaseSensitive: boolean): boolean;
@@ -2276,6 +2277,47 @@ begin
       if (IsIDChar[Identifier1[0]]) then begin
         if (IsIDChar[Identifier2[0]]) then begin
           if UpChars[Identifier1[0]]>UpChars[Identifier2[0]] then
+            Result:=-1 // for example  'aab' 'aaa'
+          else
+            Result:=1; // for example  'aaa' 'aab'
+        end else begin
+          Result:=-1; // for example  'aaa' 'aa;'
+        end;
+      end else begin
+        if (IsIDChar[Identifier2[0]]) then
+          Result:=1 // for example  'aa;' 'aaa'
+        else
+          Result:=0; // for example  'aa;' 'aa,'
+      end;
+    end else begin
+      Result:=-1; // for example  'aaa' nil
+    end;
+  end else begin
+    if (Identifier2<>nil) then begin
+      Result:=1; // for example  nil 'bbb'
+    end else begin
+      Result:=0; // for example  nil nil
+    end;
+  end;
+end;
+
+function CompareIdentifiersCaseSensitive(Identifier1, Identifier2: PChar
+  ): integer;
+begin
+  if (Identifier1<>nil) then begin
+    if (Identifier2<>nil) then begin
+      while (Identifier1[0]=Identifier2[0]) do begin
+        if (IsIDChar[Identifier1[0]]) then begin
+          inc(Identifier1);
+          inc(Identifier2);
+        end else begin
+          Result:=0; // for example  'aaA;' 'aAa;'
+          exit;
+        end;
+      end;
+      if (IsIDChar[Identifier1[0]]) then begin
+        if (IsIDChar[Identifier2[0]]) then begin
+          if Identifier1[0]>Identifier2[0] then
             Result:=-1 // for example  'aab' 'aaa'
           else
             Result:=1; // for example  'aaa' 'aab'

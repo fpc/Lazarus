@@ -108,6 +108,8 @@ type
           const AFilename: string): string;
     function FindCodeOfMainUnitHint(Code: TCodeBuffer): TCodeBuffer;
     procedure CreateScanner(Code: TCodeBuffer);
+    procedure ClearError;
+    procedure ClearCurCodeTool;
     function InitCurCodeTool(Code: TCodeBuffer): boolean;
     function InitResourceTool: boolean;
     procedure ClearPositions;
@@ -125,6 +127,8 @@ type
     procedure BeforeApplyingChanges(var Abort: boolean);
     procedure AfterApplyingChanges;
     function HandleException(AnException: Exception): boolean;
+    procedure AdjustErrorTopLine;
+    procedure WriteError;
     function OnGetCodeToolForBuffer(Sender: TObject;
       Code: TCodeBuffer; GoToMainCode: boolean): TFindDeclarationTool;
     procedure OnToolSetWriteLock(Lock: boolean);
@@ -171,6 +175,8 @@ type
                                  read FOnSearchUsedUnit write FOnSearchUsedUnit;
     
     // exception handling
+    procedure SetError(Code: TCodeBuffer; Line, Column: integer;
+      const TheMessage: string);
     property CatchExceptions: boolean
                                    read FCatchExceptions write FCatchExceptions;
     property WriteExceptions: boolean
@@ -302,6 +308,8 @@ type
     function FindReferences(IdentifierCode: TCodeBuffer;
           X, Y: integer; TargetCode: TCodeBuffer; SkipComments: boolean;
           var ListOfPCodeXYPosition: TList): boolean;
+    function RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
+          const OldIdentifier, NewIdentifier: string): boolean;
 
     // resourcestring sections
     function GatherResourceStringSections(
@@ -798,6 +806,20 @@ begin
   end;
 end;
 
+procedure TCodeToolManager.ClearError;
+begin
+  fErrorMsg:='';
+  fErrorCode:=nil;
+  fErrorLine:=-1;
+end;
+
+procedure TCodeToolManager.ClearCurCodeTool;
+begin
+  ClearError;
+  if IdentifierList<>nil then IdentifierList.Clear;
+  FCurCodeTool:=nil;
+end;
+
 function TCodeToolManager.ApplyChanges: boolean;
 begin
   Result:=SourceChangeCache.Apply;
@@ -1074,10 +1096,7 @@ function TCodeToolManager.InitCurCodeTool(Code: TCodeBuffer): boolean;
 var MainCode: TCodeBuffer;
 begin
   Result:=false;
-  fErrorMsg:='';
-  fErrorCode:=nil;
-  fErrorLine:=-1;
-  if IdentifierList<>nil then IdentifierList.Clear;
+  ClearCurCodeTool;
   MainCode:=GetMainCode(Code);
   if MainCode=nil then begin
     fErrorMsg:='TCodeToolManager.InitCurCodeTool MainCode=nil';
@@ -1154,6 +1173,17 @@ begin
     end;
   end;
   // adjust error topline
+  AdjustErrorTopLine;
+  // write error
+  WriteError;
+  // raise or catch
+  if not FCatchExceptions then raise AnException;
+  Result:=false;
+end;
+
+procedure TCodeToolManager.AdjustErrorTopLine;
+begin
+  // adjust error topline
   if (fErrorCode<>nil) and (fErrorTopLine<1) then begin
     fErrorTopLine:=fErrorLine;
     if (fErrorTopLine>0) and JumpCentered then begin
@@ -1161,7 +1191,10 @@ begin
       if fErrorTopLine<1 then fErrorTopLine:=1;
     end;
   end;
-  // write error
+end;
+
+procedure TCodeToolManager.WriteError;
+begin
   if FWriteExceptions then begin
     {$IFDEF CTDEBUG}
     WriteDebugReport(true,false,false,false,false);
@@ -1172,9 +1205,6 @@ begin
     if ErrorCode<>nil then DbgOut(' in "',ErrorCode.Filename,'"');
     DebugLn('');
   end;
-  // raise or catch
-  if not FCatchExceptions then raise AnException;
-  Result:=false;
 end;
 
 function TCodeToolManager.CheckSyntax(Code: TCodeBuffer;
@@ -1457,6 +1487,76 @@ begin
   end;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindReferences END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.RenameIdentifier(TreeOfPCodeXYPosition: TAVLTree;
+  const OldIdentifier, NewIdentifier: string): boolean;
+var
+  ANode: TAVLTreeNode;
+  CurCodePos: PCodeXYPosition;
+  IdentStartPos: integer;
+  IdentLen: Integer;
+  Code: TCodeBuffer;
+begin
+  Result:=false;
+  { $IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.RenameIdentifier A Old=',OldIdentifier,' New=',NewIdentifier);
+  { $ENDIF}
+  if TreeOfPCodeXYPosition=nil then begin
+    Result:=true;
+    exit;
+  end;
+  if (NewIdentifier='') or (not IsValidIdent(NewIdentifier)) then exit;
+
+  ClearCurCodeTool;
+  SourceChangeCache.Clear;
+  IdentLen:=length(OldIdentifier);
+
+  // the tree is sorted for descending line code positions
+  // -> go from end of source to start of source, so that replacing does not
+  // change any CodeXYPosition not yet processed
+  ANode:=TreeOfPCodeXYPosition.FindLowest;
+  while ANode<>nil do begin
+    // next position
+    CurCodePos:=PCodeXYPosition(ANode.Data);
+    Code:=CurCodePos^.Code;
+    Code.LineColToPosition(CurCodePos^.Y,CurCodePos^.X,IdentStartPos);
+    DebugLn('TCodeToolManager.RenameIdentifier A ',Code.Filename,' Line=',dbgs(CurCodePos^.Y),' Col=',dbgs(CurCodePos^.X));
+    // search absolute position in source
+    if IdentStartPos<1 then begin
+      SetError(Code, CurCodePos^.Y, CurCodePos^.X, ctsPositionNotInSource);
+      exit;
+    end;
+    // check if old identifier is there
+    if CompareIdentifiers(@Code.Source[IdentStartPos],PChar(OldIdentifier))<>0
+    then begin
+      SetError(CurCodePos^.Code,CurCodePos^.Y,CurCodePos^.X,
+        Format(ctsStrExpectedButAtomFound,[OldIdentifier,
+                                   GetIdentifier(@Code.Source[IdentStartPos])])
+        );
+      exit;
+    end;
+    // change if needed
+    if CompareIdentifiersCaseSensitive(@Code.Source[IdentStartPos],
+       PChar(NewIdentifier))<>0
+    then begin
+      DebugLn('TCodeToolManager.RenameIdentifier Change ');
+      SourceChangeCache.ReplaceEx(gtNone,gtNone,1,1,Code,
+         IdentStartPos,IdentStartPos+IdentLen,NewIdentifier);
+    end else begin
+      DebugLn('TCodeToolManager.RenameIdentifier KEPT ',GetIdentifier(@Code.Source[IdentStartPos]));
+    end;
+    ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
+  end;
+  // apply
+  DebugLn('TCodeToolManager.RenameIdentifier Apply');
+  if not SourceChangeCache.Apply then exit;
+
+  DebugLn('TCodeToolManager.RenameIdentifier Success');
+  Result:=true;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.RenameIdentifier END ');
   {$ENDIF}
 end;
 
@@ -2973,6 +3073,18 @@ begin
     end;
   end;
   Result:=nil;
+end;
+
+procedure TCodeToolManager.SetError(Code: TCodeBuffer; Line, Column: integer;
+  const TheMessage: string);
+begin
+  FErrorMsg:=TheMessage;
+  FErrorCode:=Code;
+  FErrorLine:=Line;
+  FErrorColumn:=Column;
+  FErrorTopLine:=FErrorLine;
+  AdjustErrorTopLine;
+  WriteError;
 end;
 
 function TCodeToolManager.GetCodeToolForSource(Code: TCodeBuffer;

@@ -1113,6 +1113,11 @@ begin
   while (Result>=0) and (AnsiCompareText(List[Result],s)<>0) do dec(Result);
 end;
 
+{-------------------------------------------------------------------------------
+  procedure ReverseList(List: TList);
+  
+  Reverse the order of a TList
+-------------------------------------------------------------------------------}
 procedure ReverseList(List: TList);
 var
   i: Integer;

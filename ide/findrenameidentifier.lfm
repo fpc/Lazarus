@@ -47,7 +47,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Anchors = [akTop, akLeft, akRight]
       TabOrder = 0
       Text = 'NewEdit'
-      TabOrder = 0
       Left = 6
       Height = 23
       Top = 6
@@ -98,6 +97,7 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
         'in project/package owning file'
         'in all open projects and packages'
       )
+      ParentColor = True
       Left = 6
       Height = 112
       Top = 5
@@ -108,7 +108,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
       Caption = 'ExtraFilesGroupBox'
       ClientHeight = 27
       ClientWidth = 413
-      Enabled = False
       ParentColor = True
       TabOrder = 2
       Left = 6
@@ -119,7 +118,6 @@ object FindRenameIdentifierDialog: TFindRenameIdentifierDialog
         Anchors = [akTop, akLeft, akRight]
         TabOrder = 0
         Text = 'ExtraFilesEdit'
-        TabOrder = 0
         Left = 6
         Height = 23
         Width = 404

@@ -183,6 +183,7 @@ type
     // search menu
     procedure mnuSearchFindInFiles(Sender: TObject);
     procedure mnuSearchFindIdentifierRefsClicked(Sender: TObject);
+    procedure mnuSearchRenameIdentifierClicked(Sender: TObject);
     procedure mnuSearchFindBlockOtherEnd(Sender: TObject);
     procedure mnuSearchFindBlockStart(Sender: TObject);
     procedure mnuSearchFindDeclaration(Sender: TObject);
@@ -684,7 +685,7 @@ type
     procedure DoJumpToProcedureSection;
     procedure DoFindDeclarationAtCursor;
     procedure DoFindDeclarationAtCaret(const LogCaretXY: TPoint);
-    procedure DoFindIdentifierReferences;
+    function DoFindRenameIdentifier(Rename: boolean): TModalResult;
     function DoInitIdentCompletion: boolean;
     procedure DoCompleteCodeAtCursor;
     procedure DoExtractProcFromSelection;
@@ -1645,6 +1646,7 @@ begin
   inherited SetupSearchMenu;
   with MainIDEBar do begin
     itmSearchFindIdentifierRefs.OnClick:=@mnuSearchFindIdentifierRefsClicked;
+    itmSearchRenameIdentifier.OnClick:=@mnuSearchRenameIdentifierClicked;
     itmGotoIncludeDirective.OnClick:=@mnuGotoIncludeDirectiveClicked;
   end;
 end;
@@ -2065,7 +2067,10 @@ begin
     DoFindDeclarationAtCursor;
 
   ecFindIdentifierRefs:
-    DoFindIdentifierReferences;
+    DoFindRenameIdentifier(false);
+
+  ecRenameIdentifier:
+    DoFindRenameIdentifier(true);
 
   ecFindBlockOtherEnd:
     DoGoToPascalBlockOtherEnd;
@@ -9250,21 +9255,62 @@ begin
 end;
 
 {-------------------------------------------------------------------------------
-  procedure TMainIDE.DoFindIdentifierReferences;
+  function TMainIDE.DoFindRenameIdentifier(Rename: boolean): TModalResult;
 
 -------------------------------------------------------------------------------}
-procedure TMainIDE.DoFindIdentifierReferences;
+function TMainIDE.DoFindRenameIdentifier(Rename: boolean): TModalResult;
+var
+  Options: TFindRenameIdentifierOptions;
+
+  // TODO: replace Files: TStringsList with a AVL tree
+  
+  function AddExtraFiles(Files: TStrings): TModalResult;
+  var
+    i: Integer;
+    CurFileMask: string;
+    FileInfo: TSearchRec;
+    CurDirectory: String;
+    CurFilename: String;
+  begin
+    Result:=mrCancel;
+    if (Options.ExtraFiles=nil) then begin
+      for i:=0 to Options.ExtraFiles.Count-1 do begin
+        CurFileMask:=Options.ExtraFiles[i];
+        if not MacroList.SubstituteStr(CurFileMask) then exit;
+        if SysUtils.FindFirst(CurFileMask,faAnyFile,FileInfo)=0
+        then begin
+          CurDirectory:=AppendPathDelim(ExtractFilePath(CurFileMask));
+          if not FilenameIsAbsolute(CurDirectory) then begin
+            CurDirectory:=AppendPathDelim(Project1.ProjectDirectory)
+                          +CurDirectory;
+          end;
+          repeat
+            // check if special file
+            if (FileInfo.Name='.') or (FileInfo.Name='..') then continue;
+            CurFilename:=CurDirectory+FileInfo.Name;
+            if FileIsText(CurFilename) then
+              Files.Add(CurFilename);
+          until SysUtils.FindNext(FileInfo)<>0;
+        end;
+        SysUtils.FindClose(FileInfo);
+      end;
+    end;
+    Result:=mrOk;
+  end;
+
 var
   TargetSrcEdit, DeclarationSrcEdit: TSourceEditor;
   TargetUnitInfo, DeclarationUnitInfo: TUnitInfo;
   NewSource: TCodeBuffer;
   NewX, NewY, NewTopLine: integer;
   LogCaretXY, DeclarationCaretXY: TPoint;
-  Options: TFindRenameIdentifierOptions;
   OwnerList: TList;
   ExtraFiles: TStrings;
   Files: TStringList;
+  Identifier: string;
+  TreeOfPCodeXYPosition: TAVLTree;
 begin
+  Result:=mrCancel;
   if not BeginCodeTool(TargetSrcEdit,TargetUnitInfo,[]) then exit;
   
   // find the main declaration
@@ -9278,57 +9324,90 @@ begin
   end;
   DoJumpToCodePos(TargetSrcEdit, TargetUnitInfo,
     NewSource, NewX, NewY, NewTopLine, true);
+  CodeToolBoss.GetIdentifierAt(NewSource,NewX,NewY,Identifier);
+
   GetCurrentUnit(DeclarationSrcEdit,DeclarationUnitInfo);
   DeclarationCaretXY:=DeclarationSrcEdit.EditorComponent.LogicalCaretXY;
-  debugln('TMainIDE.DoFindIdentifierReferences A DeclarationCaretXY=x=',dbgs(DeclarationCaretXY.X),' y=',dbgs(DeclarationCaretXY.Y));
+  debugln('TMainIDE.DoFindRenameIdentifier A DeclarationCaretXY=x=',dbgs(DeclarationCaretXY.X),' y=',dbgs(DeclarationCaretXY.Y));
 
   // let user choose the search scope
-  if ShowFindRenameIdentifierDialog(DeclarationUnitInfo.Source.Filename,
-    DeclarationCaretXY,false,nil)<>mrOk
-  then exit;
+  Result:=ShowFindRenameIdentifierDialog(DeclarationUnitInfo.Source.Filename,
+    DeclarationCaretXY,Rename,Rename,nil);
+  if Result<>mrOk then exit;
   
   Files:=nil;
   OwnerList:=nil;
+  TreeOfPCodeXYPosition:=nil;
   try
     // create the file list
     Files:=TStringList.Create;
     Files.Add(TargetUnitInfo.Filename);
 
     Options:=MiscellaneousOptions.FindRenameIdentifierOptions;
-    case Options.Scope of
     
-    frProject,frOwnerProjectPackage,frAllOpenProjectsAndPackages:
+    // add packages, projects
+    case Options.Scope of
+    frProject:
       begin
-        if Options.Scope=frProject then begin
-          OwnerList:=TList.Create;
-          OwnerList.Add(Project1);
-        end else begin
-          OwnerList:=PkgBoss.GetOwnersOfUnit(TargetUnitInfo.Filename);
-          if Options.Scope=frAllOpenProjectsAndPackages then begin
-            PkgBoss.ExtendOwnerListWithUsedByOwners(OwnerList);
-            ReverseList(OwnerList);
-          end;
-        end;
-        ExtraFiles:=PkgBoss.GetSourceFilesOfOwners(OwnerList);
-        try
-          if ExtraFiles<>nil then
-            Files.AddStrings(ExtraFiles);
-        finally
-          ExtraFiles.Free;
+        OwnerList:=TList.Create;
+        OwnerList.Add(Project1);
+      end;
+    frOwnerProjectPackage,frAllOpenProjectsAndPackages:
+      begin
+        OwnerList:=PkgBoss.GetOwnersOfUnit(TargetUnitInfo.Filename);
+        if (OwnerList<>nil)
+        and (Options.Scope=frAllOpenProjectsAndPackages) then begin
+          PkgBoss.ExtendOwnerListWithUsedByOwners(OwnerList);
+          ReverseList(OwnerList);
         end;
       end;
-
     end;
-    
-    CreateSearchResultWindow;
-    GatherIdentifierReferences(Files,DeclarationUnitInfo.Source,
-      DeclarationCaretXY,Options.SearchInComments);
+
+    // get source files of packages and projects
+    if OwnerList<>nil then begin
+      ExtraFiles:=PkgBoss.GetSourceFilesOfOwners(OwnerList);
+      try
+        if ExtraFiles<>nil then
+          Files.AddStrings(ExtraFiles);
+      finally
+        ExtraFiles.Free;
+      end;
+    end;
+
+    // add user defined extra files
+    Result:=AddExtraFiles(Files);
+    if Result<>mrOk then exit;
+
+    // gather identifiers
+    Result:=GatherIdentifierReferences(Files,DeclarationUnitInfo.Source,
+      DeclarationCaretXY,Options.SearchInComments,TreeOfPCodeXYPosition);
     if CodeToolBoss.ErrorMessage<>'' then
       DoJumpToCodeToolBossError;
+    if Result<>mrOk then exit;
+
+    // show result
+    if (not Options.Rename) or (not Rename) then begin
+      CreateSearchResultWindow;
+      Result:=ShowIdentifierReferences(DeclarationUnitInfo.Source,
+        DeclarationCaretXY,TreeOfPCodeXYPosition);
+      if Result<>mrOk then exit;
+    end;
+    
+    // rename identifier
+    if Options.Rename and Rename then begin
+      if not CodeToolBoss.RenameIdentifier(TreeOfPCodeXYPosition,
+        Identifier,Options.RenameTo)
+      then begin
+        DoJumpToCodeToolBossError;
+        Result:=mrCancel;
+        exit;
+      end;
+    end;
 
   finally
     Files.Free;
     OwnerList.Free;
+    CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
   end;
 end;
 
@@ -10655,7 +10734,12 @@ end;
 
 procedure TMainIDE.mnuSearchFindIdentifierRefsClicked(Sender: TObject);
 begin
-  DoFindIdentifierReferences;
+  DoFindRenameIdentifier(false);
+end;
+
+procedure TMainIDE.mnuSearchRenameIdentifierClicked(Sender: TObject);
+begin
+  DoFindRenameIdentifier(true);
 end;
 
 procedure TMainIDE.mnuEditCompleteCodeClicked(Sender: TObject);
@@ -10813,6 +10897,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.779  2004/09/25 15:05:38  mattias
+  implemented Rename Identifier
+
   Revision 1.778  2004/09/24 17:24:40  micha
   convert LM_SETDESIGNING message to TWidgetSet method
 

@@ -91,6 +91,8 @@ type
     procedure MoveCursorToFirstProcSpecifier(ProcNode: TCodeTreeNode);
     function MoveCursorToProcSpecifier(ProcNode: TCodeTreeNode;
         ProcSpec: TProcedureSpecifier): boolean;
+    procedure MoveCursorToProcName(ProcNode: TCodeTreeNode;
+        SkipClassName: boolean);
     function ProcNodeHasParamList(ProcNode: TCodeTreeNode): boolean;
     function NodeIsInAMethod(Node: TCodeTreeNode): boolean;
     function NodeIsMethodBody(ProcNode: TCodeTreeNode): boolean;
@@ -669,6 +671,27 @@ begin
   Result:=false;
 end;
 
+procedure TPascalReaderTool.MoveCursorToProcName(ProcNode: TCodeTreeNode;
+  SkipClassName: boolean);
+begin
+  if (ProcNode.Desc=ctnProcedure) and (ProcNode.FirstChild<>nil)
+  and (ProcNode.FirstChild.Desc=ctnProcedureHead) then
+    ProcNode:=ProcNode.FirstChild;
+  MoveCursorToNodeStart(ProcNode);
+  ReadNextAtom;
+  if (ProcNode.Desc=ctnProcedure) then begin
+    if UpAtomIs('CLASS') then ReadNextAtom;
+    ReadNextAtom; // skip proc keyword
+  end;
+  if SkipClassName then begin
+    ReadNextAtom;
+    if CurPos.Flag=cafPoint then
+      ReadNextAtom
+    else
+      UndoReadNextAtom;
+  end;
+end;
+
 function TPascalReaderTool.MoveCursorToPropType(PropNode: TCodeTreeNode
   ): boolean;
 begin
@@ -709,6 +732,7 @@ begin
     ReadNextAtom;
   end;
   AtomIsIdentifier(true);
+  Result:=true;
 end;
 
 function TPascalReaderTool.ProcNodeHasSpecifier(ProcNode: TCodeTreeNode;

@@ -889,29 +889,57 @@ begin
   LockOnChange(PGtkObject(ComboWidget^.entry),-1);
 end;
 
-{------------------------------------------------------------------------------
-  function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
-
-  Returns the current ItemIndex of a TComboBox
- ------------------------------------------------------------------------------}
-function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
+function GetComboBoxText(ComboWidget: PGtkCombo): string;
 begin
-  Result:=ComboBox.Items.IndexOf(ComboBox.Text);
+  Result:=StrPas(gtk_entry_get_text(PGtkEntry(ComboWidget^.entry)));
 end;
 
 {------------------------------------------------------------------------------
-  procedure SetComboBoxItemIndex(ComboBox: TComboBox; Index: integer);
+  function GetComboBoxItemIndex(ComboBox: TCustomComboBox): integer;
 
   Returns the current ItemIndex of a TComboBox
  ------------------------------------------------------------------------------}
-procedure SetComboBoxItemIndex(ComboBox: TComboBox; Index: integer);
+function GetComboBoxItemIndex(ComboBox: TCustomComboBox): integer;
 var
   ComboWidget: PGtkCombo;
+  ComboStrings: TStrings;
+  CurText: String;
+begin
+  ComboWidget:=PGtkCombo(ComboBox.Handle);
+  ComboStrings:=TStrings(gtk_object_get_data(PGtkObject(ComboWidget),'LCLList'));
+  CurText:=GetComboBoxText(ComboWidget);
+  Result:=ComboStrings.IndexOf(CurText);
+end;
+
+{------------------------------------------------------------------------------
+  procedure SetComboBoxItemIndex(ComboBox: TCustomComboBox; Index: integer);
+
+  Returns the current ItemIndex of a TComboBox
+ ------------------------------------------------------------------------------}
+procedure SetComboBoxItemIndex(ComboBox: TCustomComboBox; Index: integer);
+var
+  ComboWidget: PGtkCombo;
+  ComboStrings: TStrings;
 begin
   ComboWidget:=PGtkCombo(ComboBox.Handle);
   gtk_list_select_item(PGtkList(ComboWidget^.list),Index);
-  if Index>=0 then
-    SetComboBoxText(ComboWidget,PChar(ComboBox.Items[Index]));
+  if Index>=0 then begin
+    ComboStrings:=TStrings(gtk_object_get_data(PGtkObject(ComboWidget),'LCLList'));
+    SetComboBoxText(ComboWidget,PChar(ComboStrings[Index]));
+  end;
+end;
+
+procedure SetLabelAlignment(LabelWidget: PGtkLabel;
+  const NewAlignment: TAlignment; const NewLayout: TTextLayout);
+const
+  cLabelAlignX : array[TAlignment] of gfloat = (0.0, 1.0, 0.5);
+  cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
+  cLabelAlign : array[TAlignment] of TGtkJustification =
+    (GTK_JUSTIFY_LEFT, GTK_JUSTIFY_RIGHT, GTK_JUSTIFY_CENTER);
+begin
+  gtk_label_set_justify(LabelWidget, cLabelAlign[NewAlignment]);
+  gtk_misc_set_alignment(GTK_MISC(LabelWidget), cLabelAlignX[NewAlignment],
+                        cLabelAlignY[NewLayout]);
 end;
 
 {------------------------------------------------------------------------------
@@ -7309,6 +7337,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.311  2004/09/25 15:05:39  mattias
+  implemented Rename Identifier
+
   Revision 1.310  2004/09/24 18:00:52  micha
   convert LM_NB_UPDATETAB message to interface method
 

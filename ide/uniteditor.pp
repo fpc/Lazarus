@@ -342,6 +342,7 @@ type
     ReadOnlyMenuItem: TMenuItem;
     RefactorMenuItem: TMenuItem;
     FindIdentifierReferencesMenuItem: TMenuItem;
+    RenameIdentifierMenuItem: TMenuItem;
     RunToCursorMenuItem: TMenuItem;
     SetBookmarkMenuItem: TMenuItem;
     ShowLineNumbersMenuItem: TMenuItem;
@@ -355,6 +356,7 @@ type
     procedure EncloseSelectionMenuItemClick(Sender: TObject);
     procedure ExtractProcMenuItemClick(Sender: TObject);
     procedure FindIdentifierReferencesMenuItemClick(Sender: TObject);
+    procedure RenameIdentifierMenuItemClick(Sender: TObject);
     procedure RunToClicked(Sender: TObject);
     procedure ViewCallStackClick(Sender: TObject);
     Procedure AddWatchAtCursor(Sender: TObject);
@@ -2861,7 +2863,9 @@ begin
     ExtractProcMenuItem.Enabled:=SelAvailAndWritable;
     FindIdentifierReferencesMenuItem.Enabled:=
                                    IsValidIdent(ASrcEdit.GetWordAtCurrentCaret);
-
+    RenameIdentifierMenuItem.Enabled:=
+                                   IsValidIdent(ASrcEdit.GetWordAtCurrentCaret)
+                                   and (not ASrcEdit.ReadOnly);
   end else begin
     // user clicked on gutter
     SourceEditorMarks.GetMarksForLine(EditorComp,EditorComp.CaretY,
@@ -3113,10 +3117,18 @@ Begin
       FindIdentifierReferencesMenuItem := TMenuItem.Create(Self);
       with FindIdentifierReferencesMenuItem do begin
         Name := 'FindIdentifierReferencesMenuItem';
-        Caption := uemFindIdentifierReferences;
+        Caption := lisMenuFindIdentifierRefs;
         OnClick :=@FindIdentifierReferencesMenuItemClick;
       end;
       RefactorMenuItem.Add(FindIdentifierReferencesMenuItem);
+
+      RenameIdentifierMenuItem := TMenuItem.Create(Self);
+      with RenameIdentifierMenuItem do begin
+        Name := 'RenameIdentifierMenuItem';
+        Caption := lisMenuRenameIdentifier;
+        OnClick :=@RenameIdentifierMenuItemClick;
+      end;
+      RefactorMenuItem.Add(RenameIdentifierMenuItem);
 
   SrcPopupMenu.Items.Add(Seperator);
 
@@ -3938,6 +3950,11 @@ procedure TSourceNotebook.FindIdentifierReferencesMenuItemClick(Sender: TObject
   );
 begin
   MainIDEInterface.DoCommand(ecFindIdentifierRefs);
+end;
+
+procedure TSourceNotebook.RenameIdentifierMenuItemClick(Sender: TObject);
+begin
+  MainIDEInterface.DoCommand(ecRenameIdentifier);
 end;
 
 procedure TSourceNotebook.RunToClicked(Sender: TObject);

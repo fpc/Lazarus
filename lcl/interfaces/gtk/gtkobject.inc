@@ -5164,6 +5164,8 @@ begin
   csLabel :
     begin
       P := gtk_label_new(StrTemp);
+      SetLabelAlignment(PGtkLabel(p),TCustomLabel(Sender).Alignment,
+                        TCustomLabel(Sender).Layout);
       SetupProps:= true;
     end;
 
@@ -6939,6 +6941,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.604  2004/09/25 15:05:38  mattias
+  implemented Rename Identifier
+
   Revision 1.603  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods

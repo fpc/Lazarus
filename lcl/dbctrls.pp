@@ -37,7 +37,7 @@ interface
 
 uses
   Classes, SysUtils, DB, LCLProc, LMessages, GraphType, Forms, Controls,
-  Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar,
+  Graphics, Dialogs, StdCtrls, Buttons, MaskEdit, ExtCtrls, Calendar, Chart,
   LCLType;
 
 Type
@@ -880,6 +880,10 @@ type
 // ToDo: Move this to db.pp
 function ExtractFieldName(const Fields: string; var StartPos: Integer): string;
 
+Procedure FillBarChart(BC: TBarChart; DS: TDataset;
+  const LabelField, ValueField: String; AColor: TColor);
+
+
 procedure Register;
 
 implementation
@@ -894,6 +898,38 @@ begin
   Result:=Trim(Copy(Fields,StartPos,i-StartPos));
   if (i<=Length(Fields)) and (Fields[i]=';') then Inc(i);
   StartPos:=i;
+end;
+
+Procedure FillBarChart(BC: TBarChart; DS: TDataset;
+  const LabelField, ValueField: String; AColor: TColor);
+Var
+  LF : TList;
+  VF : TField;
+  I : Integer;
+  L : String;
+begin
+  VF:=DS.FieldByName(ValueField);
+  LF:=TList.Create;
+  Try
+    DS.GetFieldList(LF,LabelField);
+    With DS do
+      begin
+      While Not EOF do
+        begin
+        L:='';
+        For I:=0 to LF.Count-1 do
+          begin
+          If L<>'' then
+            L:=L+' ';
+          L:=L+TField(LF[i]).AsString;
+          end;
+        BC.AddBar(L,VF.AsInteger,AColor);
+        Next;
+        end;
+      end;
+  Finally
+    LF.Free;
+  end;
 end;
 
 procedure Register;
@@ -1248,6 +1284,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.24  2004/09/25 15:05:38  mattias
+  implemented Rename Identifier
+
   Revision 1.23  2004/09/01 11:12:04  mattias
   replaced KeyPress dependencies with KeyDown
 

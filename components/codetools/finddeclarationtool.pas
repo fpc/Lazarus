@@ -2953,7 +2953,7 @@ var
         debugln('  x=',dbgs(ReferencePos.X),' y=',dbgs(ReferencePos.Y),' ',ReferencePos.Code.Filename);
 
       CursorNode:=BuildSubTreeAndFindDeepestNodeAtPos(Tree.Root,StartPos,true);
-      debugln('  CursorNode=',CursorNode.DescAsString,' ',dbgs(CursorNode.SubDesc and ctnsForwardDeclaration));
+      debugln('  CursorNode=',CursorNode.DescAsString,' Forward=',dbgs(CursorNode.SubDesc and ctnsForwardDeclaration));
 
       if (DeclarationTool=Self)
       and ((StartPos=CleanDeclCursorPos) or (CursorNode=AliasDeclarationNode))
@@ -2969,10 +2969,10 @@ var
         else
           Params.Clear;
         Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
-                       fdfExceptionOnNotFound];
+                       fdfExceptionOnNotFound,fdfIgnoreCurContextNode];
         if NodeIsForwardDeclaration(CursorNode) then begin
           debugln('Node is forward declaration');
-          Params.Flags:=Params.Flags+[fdfSearchForward,fdfIgnoreCurContextNode];
+          Params.Flags:=Params.Flags+[fdfSearchForward];
         end;
         Params.ContextNode:=CursorNode;
         //debugln(copy(Src,Params.ContextNode.StartPos,200));
@@ -2988,16 +2988,20 @@ var
         except
           on E: ECodeToolError do
             if not IsComment then raise;
+          on E: Exception do
+            raise;
         end;
 
+        debugln(' Found=',dbgs(Found));
         if Found and (Params.NewNode<>nil) then begin
-          if (Params.NewNode<>nil) and (Params.NewNode.Desc=ctnProcedure)
+          if (Params.NewNode.Desc=ctnProcedure)
           and (Params.NewNode.FirstChild<>nil)
           and (Params.NewNode.FirstChild.Desc=ctnProcedureHead) then begin
             // Instead of jumping to the procedure keyword,
             // jump to the procedure name
             Params.NewNode:=Params.NewNode.FirstChild;
-            Params.NewCleanPos:=Params.NewNode.StartPos;
+            Params.NewCodeTool.MoveCursorToProcName(Params.NewNode,true);
+            Params.NewCleanPos:=Params.NewCodeTool.CurPos.StartPos;
           end;
           debugln('Context=',Params.NewNode.DescAsString,' ',dbgs(Params.NewNode.StartPos),' ',dbgs(DeclarationNode.StartPos));
           if (Params.NewNode=DeclarationNode)
@@ -3240,21 +3244,12 @@ end;
 function TFindDeclarationTool.CleanPosIsDeclarationIdentifier(CleanPos: integer;
   Node: TCodeTreeNode): boolean;
 
-  function InNodeIdentifier: boolean;
+  function InNodeIdentifier(NodeIdentStartPos: Integer): boolean;
   var
     IdentStartPos, IdentEndPos: integer;
-    NodeIdentStartPos: Integer;
   begin
-    NodeIdentStartPos:=Node.StartPos;
-    if Node.Desc in [ctnProperty,ctnGlobalProperty] then begin
-      if not MoveCursorToPropName(Node) then exit;
-      NodeIdentStartPos:=CurPos.StartPos;
-    end;
     GetIdentStartEndAtPosition(Src,CleanPos,IdentStartPos,IdentEndPos);
-    if (IdentEndPos>IdentStartPos) and (IdentStartPos=NodeIdentStartPos)
-    then begin
-      Result:=true;
-    end;
+    Result:=(IdentEndPos>IdentStartPos) and (IdentStartPos=NodeIdentStartPos);
   end;
 
 begin
@@ -3265,13 +3260,30 @@ begin
   ctnTypeDefinition,ctnVarDefinition,ctnConstDefinition,ctnEnumIdentifier:
     begin
       if NodeIsForwardDeclaration(Node) then exit;
-      Result:=InNodeIdentifier;
+      Result:=InNodeIdentifier(Node.StartPos);
     end;
     
-  ctnProcedureHead, ctnProperty, ctnGlobalProperty:
-    Result:=InNodeIdentifier;
+  ctnProcedure:
+    begin
+      if (Node.SubDesc and ctnsForwardDeclaration)>0 then
+        RaiseException('TFindDeclarationTool.CleanPosIsDeclarationIdentifier Node not expanded');
+      MoveCursorToProcName(Node,true);
+      Result:=InNodeIdentifier(CurPos.StartPos);
+    end;
+    
+  ctnProcedureHead:
+    begin
+      MoveCursorToProcName(Node,true);
+      Result:=InNodeIdentifier(CurPos.StartPos);
+    end;
+    
+  ctnProperty, ctnGlobalProperty:
+    begin
+      if not MoveCursorToPropName(Node) then exit;
+      Result:=InNodeIdentifier(CurPos.StartPos);
+    end;
 
-  ctnBeginBlock,ctnClass,ctnProcedure:
+  ctnBeginBlock,ctnClass:
     if (Node.SubDesc and ctnsForwardDeclaration)>0 then
       RaiseException('TFindDeclarationTool.CleanPosIsDeclarationIdentifier Node not expanded');
     

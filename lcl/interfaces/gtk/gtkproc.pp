@@ -335,8 +335,13 @@ procedure HideCaretOfWidgetGroup(ChildWidget: PGtkWidget;
 
 // combobox
 procedure SetComboBoxText(ComboWidget: PGtkCombo; NewText: PChar);
-function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
-procedure SetComboBoxItemIndex(ComboBox: TComboBox; Index: integer);
+function GetComboBoxText(ComboWidget: PGtkCombo): string;
+function GetComboBoxItemIndex(ComboBox: TCustomComboBox): integer;
+procedure SetComboBoxItemIndex(ComboBox: TCustomComboBox; Index: integer);
+
+// label
+procedure SetLabelAlignment(LabelWidget: PGtkLabel;
+  const NewAlignment: TAlignment; const NewLayout: TTextLayout);
 
 // paint messages
 function GtkPaintMessageToPaintMessage(var GtkPaintMsg: TLMGtkPaint;

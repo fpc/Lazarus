@@ -148,6 +148,7 @@ resourcestring
   lisMenuCompleteCode = 'Complete Code';
   lisMenuExtractProc = 'Extract procedure';
   lisMenuFindIdentifierRefs = 'Find Identifier References';
+  lisMenuRenameIdentifier = 'Rename Identifier';
 
   lisMenuInsertGPLNotice = 'GPL notice';
   lisMenuInsertLGPLNotice = 'LGPL notice';
@@ -1019,6 +1020,12 @@ resourcestring
   dlgFromCursor = 'From Cursor';
   dlgEntireScope = 'Entire Scope';
   dlgScope = 'Scope';
+  lisFRIinCurrentUnit = 'in current unit';
+  lisFRIinMainProject = 'in main project';
+  lisFRIinProjectPackageOwningCurrentUnit = 'in project/package owning '
+    +'current unit';
+  lisFRIinAllOpenPackagesAndProjects = 'in all open packages and projects';
+  lisFRIRenameAllReferences = 'Rename all References';
   dlgGlobal = 'Global';
   dlgSelectedText = 'Selected Text';
   dlgDirection = 'Direction';
@@ -1062,7 +1069,6 @@ resourcestring
   uemCompleteCode = 'Complete Code';
   uemEncloseSelection = 'Enclose Selection';
   uemExtractProc = 'Extract Procedure';
-  uemFindIdentifierReferences = 'Find Identifier References';
   uemEditorproperties='Editor properties';
   ueNotImplCap='Not implemented yet';
   ueNotImplText='If You can help us to implement this feature, mail to '
@@ -1262,7 +1268,8 @@ resourcestring
   srkmecWordCompletion            = 'Word completion';
   srkmecCompletecode              = 'Complete code';
   srkmecExtractProc               = 'Extract procedure';
-  srkmecFindIdentifierRefs        = 'FInd identifier references';
+  srkmecFindIdentifierRefs        = 'Find identifier references';
+  srkmecRenameIdentifier          = 'Rename identifier';
   srkmecSyntaxCheck               = 'Syntax check';
   srkmecGuessMisplacedIFDEF       = 'Guess misplaced $IFDEF';
   srkmecFindDeclaration           = 'Find declaration';
@@ -1449,6 +1456,14 @@ resourcestring
   lisCodeToolsOptsNone        = 'None';
   lisCodeToolsOptsKeyword     = 'Keyword';
   lisCodeToolsOptsIdentifier  = 'Identifier';
+  lisFRIAdditionalFilesToSearchEGPathPasPath2Pp = 'Additional files to '
+    +'search (e.g. /path/*.pas;/path2/*.pp)';
+  lisFRIFindReferences = 'Find References';
+  lisFRIInvalidIdentifier = 'Invalid Identifier';
+  lisFRIRenameTo = 'Rename to';
+  lisFRIRename = 'Rename';
+  lisFRISearchInCommentsToo = 'Search in comments too';
+  lisFRISearchWhere = 'Search where';
   lisCodeToolsOptsColon       = 'Colon';
   lisCodeToolsOptsSemicolon   = 'Semicolon';
   lisCodeToolsOptsComma       = 'Comma';
@@ -1715,6 +1730,7 @@ resourcestring
   // System Variables Override Dialog
   lisSVUOInvalidVariableName = 'Invalid variable name';
   lisSVUOisNotAValidIdentifier = '%s%s%s is not a valid identifier.';
+  lisFRIIdentifier = 'Identifier: %s';
   lisSVUOOverrideSystemVariable = 'Override system variable';
   lisSVUOOk = 'Ok';
   
@@ -2554,6 +2570,7 @@ resourcestring
   lisA2PAddFilesToPackage = 'Add files to package';
   lisA2PAddToPackage = 'Add to package';
   lisA2PFilename2 = 'Filename';
+  lisFRIFindOrRenameIdentifier = 'Find or Rename Identifier';
 
 implementation
 end.

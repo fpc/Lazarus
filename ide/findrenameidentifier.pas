@@ -75,12 +75,16 @@ type
 
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
-  const Position: TPoint; AllowRename: boolean;
+  const Position: TPoint; AllowRename, SetRenameActive: boolean;
   Options: TFindRenameIdentifierOptions): TModalResult;
 function GatherIdentifierReferences(Files: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
-  SearchInComments: boolean): TModalResult;
-procedure ShowReferences(DeclarationCode: TCodeBuffer;
+  SearchInComments: boolean;
+  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+function ShowIdentifierReferences(
+  DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
+  TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+procedure AddReferencesToResultView(DeclarationCode: TCodeBuffer;
   const DeclarationCaretXY: TPoint; TargetCode: TCodeBuffer;
   TreeOfPCodeXYPosition: TAVLTree; ClearItems: boolean; SearchPageIndex: integer);
   
@@ -89,7 +93,7 @@ implementation
 
 
 function ShowFindRenameIdentifierDialog(const Filename: string;
-  const Position: TPoint; AllowRename: boolean;
+  const Position: TPoint; AllowRename, SetRenameActive: boolean;
   Options: TFindRenameIdentifierOptions): TModalResult;
 var
   FindRenameIdentifierDialog: TFindRenameIdentifierDialog;
@@ -99,6 +103,8 @@ begin
     FindRenameIdentifierDialog.LoadFromConfig;
     FindRenameIdentifierDialog.SetIdentifier(Filename,Position);
     FindRenameIdentifierDialog.AllowRename:=AllowRename;
+    if SetRenameActive and AllowRename then
+      FindRenameIdentifierDialog.RenameCheckBox.Checked:=true;
     Result:=FindRenameIdentifierDialog.ShowModal;
     if Result=mrOk then
       if Options<>nil then
@@ -110,21 +116,17 @@ end;
 
 function GatherIdentifierReferences(Files: TStringList;
   DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
-  SearchInComments: boolean): TModalResult;
+  SearchInComments: boolean;
+  var TreeOfPCodeXYPosition: TAVLTree): TModalResult;
 var
   i: Integer;
-  SearchPageIndex: LongInt;
   LoadResult: TModalResult;
   Code: TCodeBuffer;
   ListOfPCodeXYPosition: TList;
-  TreeOfPCodeXYPosition: TAVLTree;
-  Identifier: string;
-  OldSearchPageIndex: LongInt;
 begin
   Result:=mrCancel;
   ListOfPCodeXYPosition:=nil;
   TreeOfPCodeXYPosition:=nil;
-  SearchPageIndex:=-1;
   try
     // sort files
     Files.Sort;
@@ -138,11 +140,6 @@ begin
       inc(i);
     end;
 
-    // create a search result page
-    CodeToolBoss.GetIdentifierAt(DeclarationCode,
-      DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
-
-
     // search in every file
     for i:=0 to Files.Count-1 do begin
       LoadResult:=
@@ -150,18 +147,6 @@ begin
       if LoadResult=mrAbort then exit;
       if LoadResult<>mrOk then continue;
       
-      // create search page
-      if SearchPageIndex<0 then begin
-        SearchPageIndex:=SearchResultsView.AddResult(
-          'References of '+Identifier,
-          Identifier,
-          ExtractFilePath(Code.Filename),
-          '*.pas;*.pp;*.inc',
-          [fifWholeWord,fifSearchDirectories]);
-        if SearchPageIndex<0 then exit;
-        SearchResultsView.BeginUpdate(SearchPageIndex);
-      end;
-
       // search references
       CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
       if not CodeToolBoss.FindReferences(
@@ -181,9 +166,41 @@ begin
       end;
     end;
 
+    Result:=mrOk;
+  finally
+    CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
+    if Result<>mrOk then
+      CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
+  end;
+end;
+
+function ShowIdentifierReferences(
+  DeclarationCode: TCodeBuffer; const DeclarationCaretXY: TPoint;
+  TreeOfPCodeXYPosition: TAVLTree): TModalResult;
+var
+  Identifier: string;
+  OldSearchPageIndex: LongInt;
+  SearchPageIndex: LongInt;
+begin
+  Result:=mrCancel;
+  SearchPageIndex:=-1;
+  try
     // show result
-    ShowReferences(DeclarationCode,DeclarationCaretXY,
-                   Code,TreeOfPCodeXYPosition,false,SearchPageIndex);
+    CodeToolBoss.GetIdentifierAt(DeclarationCode,
+      DeclarationCaretXY.X,DeclarationCaretXY.Y,Identifier);
+    // create a search result page
+    SearchPageIndex:=SearchResultsView.AddResult(
+      'References of '+Identifier,
+      Identifier,
+      ExtractFilePath(DeclarationCode.Filename),
+      '*.pas;*.pp;*.inc',
+      [fifWholeWord,fifSearchDirectories]);
+    if SearchPageIndex<0 then exit;
+
+    // list results
+    SearchResultsView.BeginUpdate(SearchPageIndex);
+    AddReferencesToResultView(DeclarationCode,DeclarationCaretXY,
+                   DeclarationCode,TreeOfPCodeXYPosition,false,SearchPageIndex);
     OldSearchPageIndex:=SearchPageIndex;
     SearchPageIndex:=-1;
     SearchResultsView.EndUpdate(OldSearchPageIndex);
@@ -191,13 +208,10 @@ begin
   finally
     if SearchPageIndex>=0 then
       SearchResultsView.EndUpdate(SearchPageIndex);
-    CodeToolBoss.FreeListOfPCodeXYPosition(ListOfPCodeXYPosition);
-    CodeToolBoss.FreeTreeOfPCodeXYPosition(TreeOfPCodeXYPosition);
   end;
-  Result:=mrOk;
 end;
 
-procedure ShowReferences(DeclarationCode: TCodeBuffer;
+procedure AddReferencesToResultView(DeclarationCode: TCodeBuffer;
   const DeclarationCaretXY: TPoint; TargetCode: TCodeBuffer;
   TreeOfPCodeXYPosition: TAVLTree; ClearItems: boolean;
   SearchPageIndex: integer);
@@ -216,7 +230,7 @@ begin
   if ClearItems then
     SearchResultsView.Items[SearchPageIndex].Clear;
   if (TreeOfPCodeXYPosition<>nil) then begin
-    ANode:=TreeOfPCodeXYPosition.FindLowest;
+    ANode:=TreeOfPCodeXYPosition.FindHighest;
     while ANode<>nil do begin
       CodePos:=PCodeXYPosition(ANode.Data);
       CurLine:=TrimRight(CodePos^.Code.GetLine(CodePos^.Y-1));
@@ -228,7 +242,7 @@ begin
                                  Point(CodePos^.X,CodePos^.Y),
                                  TrimmedLine,
                                  CodePos^.X-TrimCnt, length(Identifier));
-      ANode:=TreeOfPCodeXYPosition.FindSuccessor(ANode);
+      ANode:=TreeOfPCodeXYPosition.FindPrecessor(ANode);
     end;
   end;
   SearchResultsView.EndUpdate(SearchPageIndex);
@@ -241,21 +255,20 @@ procedure TFindRenameIdentifierDialog.FindRenameIdentifierDialogCreate(
 begin
   IDEDialogLayoutList.ApplyLayout(Self,450,400);
 
-  Caption:='Find or Rename Identifier';
-  CancelButton.Caption:='Cancel';
-  CurrentGroupBox.Caption:='Identifier';
-  ExtraFilesGroupBox.Caption:=
-                    'Additional files to search (e.g. /path/*.pas;/path2/*.pp)';
-  FindOrRenameButton.Caption:='Find References';
-  NewGroupBox.Caption:='Rename to';
-  RenameCheckBox.Caption:='Rename';
-  ScopeCommentsCheckBox.Caption:='Search in comments too';
-  ScopeGroupBox.Caption:='Search where';
-  ScopeRadioGroup.Caption:='Scope';
-  ScopeRadioGroup.Items[0]:='in current unit';
-  ScopeRadioGroup.Items[1]:='in main project';
-  ScopeRadioGroup.Items[2]:='in project/package owning current unit';
-  ScopeRadioGroup.Items[3]:='in all open packages and projects';
+  Caption:=lisFRIFindOrRenameIdentifier;
+  CancelButton.Caption:=dlgCancel;
+  CurrentGroupBox.Caption:=lisCodeToolsOptsIdentifier;
+  ExtraFilesGroupBox.Caption:=lisFRIAdditionalFilesToSearchEGPathPasPath2Pp;
+  FindOrRenameButton.Caption:=lisFRIFindReferences;
+  NewGroupBox.Caption:=lisFRIRenameTo;
+  RenameCheckBox.Caption:=lisFRIRename;
+  ScopeCommentsCheckBox.Caption:=lisFRISearchInCommentsToo;
+  ScopeGroupBox.Caption:=lisFRISearchWhere;
+  ScopeRadioGroup.Caption:=dlgScope;
+  ScopeRadioGroup.Items[0]:=lisFRIinCurrentUnit;
+  ScopeRadioGroup.Items[1]:=lisFRIinMainProject;
+  ScopeRadioGroup.Items[2]:=lisFRIinProjectPackageOwningCurrentUnit;
+  ScopeRadioGroup.Items[3]:=lisFRIinAllOpenPackagesAndProjects;
 
   LoadFromConfig;
 end;
@@ -270,9 +283,9 @@ begin
   RenameCheckBox.Enabled:=AllowRename;
   NewEdit.Enabled:=RenameCheckBox.Checked and RenameCheckBox.Enabled;
   if NewEdit.Enabled then
-    FindOrRenameButton.Caption:='Rename all References'
+    FindOrRenameButton.Caption:=lisFRIRenameAllReferences
   else
-    FindOrRenameButton.Caption:='Find References';
+    FindOrRenameButton.Caption:=lisFRIFindReferences;
 end;
 
 procedure TFindRenameIdentifierDialog.SetAllowRename(const AValue: boolean);
@@ -288,8 +301,9 @@ var
 begin
   NewIdentifier:=NewEdit.Text;
   if (NewIdentifier='') or (not IsValidIdent(NewIdentifier)) then begin
-    MessageDlg('Invalid Identifier',
-      '"'+NewIdentifier+'" is not a valid identifier.',mtError,[mbCancel],0);
+    MessageDlg(lisFRIInvalidIdentifier,
+      Format(lisSVUOisNotAValidIdentifier, ['"', NewIdentifier, '"']), mtError,
+        [mbCancel], 0);
     exit;
   end;
   ModalResult:=mrOk;
@@ -379,7 +393,7 @@ begin
     if CodeToolBoss.GetIdentifierAt(ACodeBuffer,
       NewIdentifierPosition.X,NewIdentifierPosition.Y,NewIdentifier) then
     begin
-      CurrentGroupBox.Caption:='Identifier: '+NewIdentifier;
+      CurrentGroupBox.Caption:=Format(lisFRIIdentifier, [NewIdentifier]);
       NewEdit.Text:=NewIdentifier;
     end;
   end;

@@ -104,8 +104,8 @@ type
   
   TWSGTKGLAreaControl = class(TWSWinControl)
   public
-    class function CreateHandle(const AComponent: TComponent;
-                                const AParams: TCreateParams): THandle; override;
+    class function CreateHandle(const AWinControl: TWinControl;
+                                const AParams: TCreateParams): HWND; override;
   end;
   
 
@@ -341,16 +341,16 @@ end;
 
 { TWSGTKGLAreaControl }
 
-function TWSGTKGLAreaControl.CreateHandle(const AComponent: TComponent;
-  const AParams: TCreateParams): THandle;
+function TWSGTKGLAreaControl.CreateHandle(const AWinControl: TWinControl;
+  const AParams: TCreateParams): HWND;
 var
   NewWidget: Pointer;
   Area: TCustomGTKGLAreaControl;
 begin
-  if csDesigning in AComponent.ComponentState then
-    Result:=inherited CreateHandle(AComponent,AParams)
+  if csDesigning in AWinControl.ComponentState then
+    Result:=inherited CreateHandle(AWinControl,AParams)
   else begin
-    Area:=AComponent as TCustomGTKGLAreaControl;
+    Area:=AWinControl as TCustomGTKGLAreaControl;
     if (Area.SharedArea<>nil) and (not (csDestroying in Area.ComponentState))
     then
       NewWidget:=gtk_gl_area_share_new(Plongint(@InitAttrList),
@@ -358,7 +358,8 @@ begin
     else
       NewWidget:=gtk_gl_area_new(Plongint(@InitAttrList));
     Result:=longint(NewWidget);
-    TGTKWidgetSet(InterfaceObject).FinishComponentCreate(AComponent,NewWidget,true);
+    TGTKWidgetSet(InterfaceObject).FinishComponentCreate(AWinControl,NewWidget,
+                                                         true);
   end;
 end;
 

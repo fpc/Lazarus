@@ -760,6 +760,7 @@ begin
   GatherPredefinedIdentifiers(CleanPos,Context,BeautifyCodeOptions);
   if Context.Node.Desc=ctnProperty then begin
     PropertyName:=ExtractPropName(Context.Node,false);
+    debugln('AAA1 ',PropertyName);
     MoveCursorToCleanPos(CleanPos);
     ReadPriorAtom;
     if UpAtomIs('READ') then begin

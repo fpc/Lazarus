@@ -1122,10 +1122,6 @@ type
   end;
 
 
-  // Moved to LCLType to avoid unit circles
-  // TCreateParams is part of the interface
-  TCreateParams = LCLType.TCreateParams;
-
   TBorderWidth = 0..MaxInt;
 
   TGetChildProc = procedure(Child: TComponent) of Object;
@@ -2391,6 +2387,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.249  2004/09/25 15:05:38  mattias
+  implemented Rename Identifier
+
   Revision 1.248  2004/09/24 21:34:14  micha
   convert LM_CREATE message to interface methods
   remove SendMsgToInterface, CNSendMessage and related methods

@@ -150,6 +150,7 @@ type
     itmSearchFindInFiles: TMenuItem;
     itmSearchFindIdentifierRefs: TMenuItem;
     itmSearchReplace: TMenuItem;
+    itmSearchRenameIdentifier: TMenuItem;
     itmIncrementalFind: TMenuItem;
     itmGotoLine: TMenuItem;
     itmJumpBack: TMenuItem;
