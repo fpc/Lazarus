@@ -923,7 +923,9 @@ begin
             L:=L+' ';
           L:=L+TField(LF[i]).AsString;
           end;
-        BC.AddBar(L,VF.AsInteger,AColor);
+        BC.AddBar(L,
+          {$IFDEF VER1_0}StrToIntDef(VF.AsString,0){$ELSE}VF.AsInteger{$ENDIF},
+          AColor);
         Next;
         end;
       end;
@@ -1284,6 +1286,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.25  2004/10/01 13:25:51  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.24  2004/09/25 15:05:38  mattias
   implemented Rename Identifier
 

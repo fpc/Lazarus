@@ -1539,6 +1539,7 @@ begin
   Blue := (rgb shr 16) and $000000ff;
 end;
 
+{$IFNDEF DisableFPImage}
 function FPColorToTColor(const FPColor: TFPColor): TColor;
 begin
   Result:=((FPColor.Red shr 8) and $ff)
@@ -1556,6 +1557,7 @@ begin
   Result.Blue:=Result.Blue+(Result.Blue shr 8);
   Result.Alpha:=FPImage.alphaOpaque;
 end;
+{$ENDIF}
 
 {$I graphicsobject.inc}
 {$I graphic.inc}
@@ -1781,6 +1783,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.158  2004/10/01 13:25:51  mattias
+  fixed 1.0.10 compilation
+
   Revision 1.157  2004/10/01 13:16:43  mattias
   fixed unselecting TCanvas objects
 
