@@ -123,6 +123,7 @@ function THintWindow.CalcHintRect(MaxWidth: Integer; const AHint: String;
   AData: Pointer): TRect;
 begin
   Result := Rect(0,0, MaxWidth, ClientHeight);
+  if AHint='' then exit;
   SelectObject(Canvas.Handle, Canvas.Font.Handle);
   DrawText(Canvas.Handle, PChar(AHint), Length(AHint), Result, DT_CalcRect or
     DT_NOPREFIX);

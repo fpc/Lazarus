@@ -252,7 +252,7 @@ type
     GlobalMouseSpeedButton: TSpeedButton;
 
     // hints. Note/ToDo: hints should be controlled by the lcl, this is a workaround
-    HintTimer1 : TTimer;
+    HintTimer1 : TIdleTimer;
     HintWindow1 : THintWindow;
   protected
     TheCompiler: TCompiler;
