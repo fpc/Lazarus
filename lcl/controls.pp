@@ -421,6 +421,8 @@ type
       var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize) of object;
 
 
+  TTabOrder = -1..32767;
+
   { TControl }
 
   TControl = class(TComponent)
@@ -477,6 +479,7 @@ type
     FWidth: Integer;
     FWindowProc: TWndMethod;
     FVisible: Boolean;
+    FTabStop : Boolean;
     procedure DoConstrainedResize(var NewWidth, NewHeight : integer);
     procedure CheckMenuPopup(const P : TSmallPoint);
     function GetClientHeight: Integer;
@@ -505,6 +508,10 @@ type
     procedure DoDragMsg(var Dragmsg : TCMDrag);
     procedure DoMouseDown(var Message: TLMMouse; Button: TMouseButton; Shift:TShiftState);
     procedure DoMouseUp(var Message: TLMMouse; Button: TMouseButton);
+    Function  GetTabOrder: TTabOrder;
+    Procedure SetTabOrder(Value : TTabOrder);
+    procedure SetTabStop(Value : Boolean);
+    Procedure UpdateTaborder(value : TTabOrder);
   protected
     AutoSizing : Boolean;
 
@@ -574,6 +581,9 @@ type
     Procedure MouseUp(Button: TMouseButton; Shift:TShiftState; X,Y:Integer); dynamic;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
     Function CanAutoSize(var NewWidth, NewHeight : Integer): Boolean; virtual;
+    Function CanTab: Boolean; virtual;
+    Function Focused : Boolean; dynamic;
+    Procedure SetFocus; virtual;
     Function GetClientOrigin : TPoint; virtual;
     Function GetClientRect: TRect; virtual;
     function GetDeviceContext(var WindowHandle: HWnd): HDC; virtual;
@@ -602,6 +612,8 @@ type
     property OnMouseUp: TMouseEvent read FOnMouseUp write FOnMouseUp;
     property OnStartDrag: TStartDragEvent read FOnStartDrag write FOnStartDrag;
 
+    property TabStop : Boolean read FTabStop write SetTabStop;
+    property TabOrder : TTabOrder read GetTabOrder write SetTaborder;
   public
     FCompStyle : LongInt;
     // use overload to simulate default
@@ -628,6 +640,7 @@ type
     procedure Update; //override;   //pbd
     procedure SetZOrderPosition(Position : Integer); virtual;
     Procedure SetZOrder(Topmost: Boolean); virtual;
+
   public
     property Anchors : TAnchors read FAnchors write FAnchors default [akLeft,akTop];
     property Align : TAlign read FAlign write SetAlign;
@@ -680,8 +693,6 @@ type
   TBorderWidth = 0..MaxInt;
 
   TGetChildProc = procedure(Child: TComponent) of Object;
-  TTabOrder = -1..32767;
-
 
   { TWinControl }
 
@@ -716,8 +727,6 @@ type
     FHandle: Hwnd;
     FShowing : Boolean;
     FTabList : TList;
-    FTabOrder : Integer;
-    FTabStop : Boolean;
     FWinControls : TList;
     procedure AlignControl(AControl : TControl);
     function  GetControl(const Index: Integer): TControl;
@@ -725,16 +734,14 @@ type
     function  GetHandle : HWND;
     function  GetIsResizing: boolean;
     procedure SetHandle(NewHandle: HWND);
-    Function  GetTabOrder: TTabOrder;
     Procedure SetBorderWidth(Value : TBorderWidth);
     Procedure SetParentCtl3D(value : Boolean);
-    Procedure SetTabOrder(Value : TTabOrder);
-    Procedure UpdateTaborder(value : TTabOrder);
   protected
     procedure AdjustSize; override;
     procedure AdjustClientRect(var Rect: TRect); virtual;
     procedure AlignControls(AControl : TControl; var Rect: TRect); virtual;
     procedure BoundsChanged; override;
+    Function CanTab: Boolean; override;
     Procedure CMDrag(var Message : TCMDrag); message CM_DRAG;
     procedure CMShowHintChanged(var Message: TLMessage); message CM_SHOWHINTCHANGED;
     procedure CMShowingChanged(var Message: TLMessage); message CM_SHOWINGCHANGED;
@@ -792,6 +799,8 @@ type
     function  DoKeyDown(var Message: TLMKey): Boolean;
     function  DoKeyPress(var Message: TLMKey): Boolean;
     function  DoKeyUp(var Message: TLMKey): Boolean;
+    Function FindNextControl(CurrentControl : TControl; GoForward,
+      CheckTabStop, CheckParent : Boolean) : TControl;
     function  GetClientOrigin: TPoint; override;
     function  GetClientRect: TRect; override;
     function  GetDeviceContext(var WindowHandle: HWnd): HDC; override;
@@ -830,7 +839,7 @@ type
     procedure SetControlIndex(AControl: TControl; NewIndex: integer);
     procedure DoAdjustClientRectChange;
     procedure InvalidateClientRectCache;
-    Function Focused : Boolean; dynamic;
+    Function Focused : Boolean; Override;
     Procedure BroadCast(var Message);
     Procedure DisableAlign;
     Procedure EnableAlign;
@@ -842,8 +851,9 @@ type
     procedure SetBounds(aLeft, aTop, aWidth, aHeight : integer); override;
     procedure Hide;
     procedure Repaint; override;
-    Procedure SetFocus; virtual;
+    Procedure SetFocus; override;
     Function FindChildControl(ControlName : String) : TControl;
+    Procedure GetTabOrderList(List : TList);
     function HandleAllocated : Boolean;
     procedure HandleNeeded;
     property BoundsLockCount: integer read FBoundsLockCount;
@@ -852,8 +862,6 @@ type
     property ControlCount: Integer read GetControlCount;
     property Handle : HWND read GetHandle write SetHandle;
     property Showing : Boolean read FShowing;
-    property TabStop : Boolean read FTabStop write FTabStop default false;
-    property TabOrder : TTabOrder read GetTabOrder write SetTaborder default -1;
   end;
 
 
@@ -1349,6 +1357,69 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.73  2002/09/27 20:52:20  lazarus
+  MWE: Applied patch from "Andrew Johnson" <aj_genius@hotmail.com>
+
+  Here is the run down of what it includes -
+
+   -Vasily Volchenko's Updated Russian Localizations
+
+   -improvements to GTK Styles/SysColors
+   -initial GTK Palette code - (untested, and for now useless)
+
+   -Hint Windows and Modal dialogs now try to stay transient to
+    the main program form, aka they stay on top of the main form
+    and usually minimize/maximize with it.
+
+   -fixes to Form BorderStyle code(tool windows needed a border)
+
+   -fixes DrawFrameControl DFCS_BUTTONPUSH to match Win32 better
+    when flat
+
+   -fixes DrawFrameControl DFCS_BUTTONCHECK to match Win32 better
+    and to match GTK theme better. It works most of the time now,
+    but some themes, noteably Default, don't work.
+
+   -fixes bug in Bitmap code which broke compiling in NoGDKPixbuf
+    mode.
+
+   -misc other cleanups/ fixes in gtk interface
+
+   -speedbutton's should now draw correctly when flat in Win32
+
+   -I have included an experimental new CheckBox(disabled by
+    default) which has initial support for cbGrayed(Tri-State),
+    and WordWrap, and misc other improvements. It is not done, it
+    is mostly a quick hack to test DrawFrameControl
+    DFCS_BUTTONCHECK, however it offers many improvements which
+    can be seen in cbsCheck/cbsCrissCross (aka non-themed) state.
+
+   -fixes Message Dialogs to more accurately determine
+    button Spacing/Size, and Label Spacing/Size based on current
+    System font.
+   -fixes MessageDlgPos, & ShowMessagePos in Dialogs
+   -adds InputQuery & InputBox to Dialogs
+
+   -re-arranges & somewhat re-designs Control Tabbing, it now
+    partially works - wrapping around doesn't work, and
+    subcontrols(Panels & Children, etc) don't work. TabOrder now
+    works to an extent. I am not sure what is wrong with my code,
+    based on my other tests at least wrapping and TabOrder SHOULD
+    work properly, but.. Anyone want to try and fix?
+
+   -SynEdit(Code Editor) now changes mouse cursor to match
+    position(aka over scrollbar/gutter vs over text edit)
+
+   -adds a TRegion property to Graphics.pp, and Canvas. Once I
+    figure out how to handle complex regions(aka polygons) data
+    properly I will add Region functions to the canvas itself
+    (SetClipRect, intersectClipRect etc.)
+
+   -BitBtn now has a Stored flag on Glyph so it doesn't store to
+    lfm/lrs if Glyph is Empty, or if Glyph is not bkCustom(aka
+    bkOk, bkCancel, etc.) This should fix most crashes with older
+    GDKPixbuf libs.
+
   Revision 1.72  2002/09/10 06:49:18  lazarus
   MG: scrollingwincontrol from Andrew
 
