@@ -470,8 +470,6 @@ type
   end;
 
 
-
-
   TLMKey = record
     Msg: Cardinal;
     CharCode: Word;
@@ -1059,6 +1057,9 @@ end.
 
 {
   $Log$
+  Revision 1.50  2003/07/26 13:26:56  mattias
+  fixed WindowProc
+
   Revision 1.49  2003/07/07 23:58:43  marc
   + Implemented TCheckListBox.Checked[] property
 

@@ -51,13 +51,17 @@ End;
   Handles the messages sent to the current window by Windows or other
   applications
  ------------------------------------------------------------------------------}
-Function WindowProc(Window: HWnd; Msg: UInt; WParam: WParam; LParam: LParam): LResult; stdcall;
+Function WindowProc(Window: HWnd; Msg: UInt;
+  WParam: WParam; LParam: LParam): LResult; stdcall;
 Var
   LMessage: TLMessage;
+  PLMsg: PLMessage;
   R: TRect;
   OwnerObject: TObject;
   WinProcess: Boolean;
   PrevWndProc: Pointer;
+  
+  LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
 
   procedure ShowHideTabPage(NotebookHandle: HWnd; Showing: boolean);
   var
@@ -103,6 +107,7 @@ Begin
 
   Result := 0;
   LMessage.Msg := -1;
+  PLMsg := @LMessage;
   WinProcess := True;
 
   Assert(False, 'Trace:WindowProc - Getting Object With Callback Procedure');
@@ -141,7 +146,8 @@ Begin
     End;
     CB_INSERTSTRING, LB_INSERTSTRING:
     Begin
-      With PLMInsertText(@LMessage)^ Do
+      PLMsg:=@LMInsertText;
+      With LMInsertText Do
       Begin
         Msg := LM_INSERTTEXT;
         Position := WParam;
@@ -523,14 +529,14 @@ Begin
     List := TMsgArray(GetProp(Window, 'MsgList'));
     If Pointer(List) <> Nil Then
       For C := 0 To Length(List) Do
-        If List[C] = LMessage.Msg Then
+        If List[C] = PLMsg^.Msg Then
         Begin
-          DeliverMessage(OwnerObject, LMessage);
+          DeliverMessage(OwnerObject, PLMsg^);
           Exit;
         End;
   {$ELSE VER1_1}
-    If (OwnerObject <> Nil) And (LMessage.Msg <> -1) Then
-      DeliverMessage(OwnerObject, LMessage);
+    If (OwnerObject <> Nil) And (PLMsg^.Msg <> -1) Then
+      DeliverMessage(OwnerObject, PLMsg^);
   {$ENDIF VER1_1}
 
   Assert(False, 'Trace:WindowProc - Exit');
@@ -579,6 +585,9 @@ end;
 
 {
   $Log$
+  Revision 1.43  2003/07/26 13:26:56  mattias
+  fixed WindowProc
+
   Revision 1.42  2003/07/26 10:30:44  mattias
   rewritten WM_COMMAND by Micha
 

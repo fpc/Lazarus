@@ -554,7 +554,7 @@ begin
   inherited Create(AOwner);
 
   fCompStyle := csComboBox;
-  SetBounds(1,1,100,25);
+  SetInitialBounds(1,1,100,25);
   FItems := TStringlist.Create;
   FItemIndex:=-1;
   FDropDownCount:=8;
@@ -788,6 +788,9 @@ end;
 
 {
   $Log$
+  Revision 1.29  2003/07/26 13:26:56  mattias
+  fixed WindowProc
+
   Revision 1.28  2003/06/12 16:18:23  mattias
   applied TComboBox fix for grabbing keys from Yoyong
 

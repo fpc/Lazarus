@@ -446,9 +446,7 @@ begin
     inc(ChompLen);
   if ChompLen>0 then
     Result:=LeftStr(Result,length(Filename)-ChompLen);
-writeln('TTransferMacroList.MF_MakeFile A "',Result,'"');
   Result:=TrimFilename(Result);
-writeln('TTransferMacroList.MF_MakeFile B "',Result,'"');
 end;
 
 function TTransferMacroList.MF_Trim(const Filename: string; var Abort: boolean
