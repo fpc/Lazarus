@@ -145,23 +145,23 @@ type
     procedure TurnSiblingsOff;
     procedure DoActionChange(Sender: TObject);
   protected
+    function GetAction: TBasicAction;
+    function GetActionLinkClass: TMenuActionLinkClass; dynamic;
+    function GetHandle: HMenu;
+    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
     procedure CreateHandle; virtual;
     procedure DestroyHandle; virtual;
     procedure DoClicked(var msg); message LM_ACTIVATE;
-    function GetHandle: HMenu;
-    Procedure SetImageIndex(value : Integer);
+    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
+    procedure InitiateActions;
+    procedure MenuChanged(Rebuild : Boolean);
+    procedure SetAction(Value: TBasicAction);
+    procedure SetChildOrder(Child: TComponent; Order: Integer); override;
     procedure SetGroupIndex(AValue: Byte);
+    Procedure SetImageIndex(value : Integer);
+    procedure SetParentComponent(AValue : TComponent); override;
     procedure SetShortCut(const AValue : TShortCut);
     procedure SetVisible(AValue: Boolean);
-    procedure MenuChanged(Rebuild : Boolean);
-    procedure SetChildOrder(Child: TComponent; Order: Integer); override;
-    procedure SetParentComponent(AValue : TComponent); override;
-    procedure GetChildren(Proc: TGetChildProc; Root: TComponent); override;
-    function GetAction: TBasicAction;
-    procedure SetAction(Value: TBasicAction);
-    procedure InitiateActions;
-    procedure ActionChange(Sender: TObject; CheckDefaults: Boolean); dynamic;
-    function GetActionLinkClass: TMenuActionLinkClass; dynamic;
   protected
     property ActionLink: TMenuActionLink read FActionLink write FActionLink;
   public
@@ -391,6 +391,9 @@ end.
 
 {
   $Log$
+  Revision 1.61  2004/02/04 17:06:26  mattias
+  fixed updating menu designer caption when editing in OI
+
   Revision 1.60  2004/02/04 13:40:19  mattias
   ShortCutToText now deletes any modifier
 

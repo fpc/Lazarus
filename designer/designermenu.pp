@@ -58,7 +58,7 @@ type
   public
     constructor CreateWithAction(AOwner: TComponent; TheAction: Integer);
     procedure OkButtonClick(Sender: TObject);
-    procedure CancelButtonCLick(Sender: TObject);
+    procedure CancelButtonClick(Sender: TObject);
     function GetSelectedMenuTemplate: Integer;
     function GetDescription: string;
     procedure TemplateView(templatemenuitem: string; default_template: Integer);
@@ -163,6 +163,7 @@ type
     
     procedure HideDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem);
     function GetDesignerMenuItem(DesignerMenuItem: PDesignerMenuItem; const Ident: string): PDesignerMenuItem;
+    function FindDesignerMenuItem(AMenuItem: TMenuItem): PDesignerMenuItem;
   end;
   
 
@@ -276,7 +277,7 @@ begin
   PopupMenuItem.OnClick:=@DeleteFromTemplateClick;
   DesignerPopupMenu.Items.Add(PopupMenuItem);
 
-  //Handle for renaming a caption in the OI for some menuitem to rename also a
+  //Handler for renaming a caption in the OI for some menuitem to rename also a
   // designermenuitem
   GlobalDesignHook.AddHandlerModified(@OnComponentModified);
 
@@ -1273,10 +1274,11 @@ begin
         MenuItem:=TMenuItem(Instance);
         // ToDo
         // how to get the Designer menu item?
-        DesignerMenuItem:=GetDesignerMenuItem(Root, MenuItem.Name);
+        DesignerMenuItem:=FindDesignerMenuItem(MenuItem);
+        //writeln('TDesignerMainMenu.OnComponentModified A ',MenuItem.Name,' ',DesignerMenuItem<>nil,' ',MenuItem.Caption);
         if DesignerMenuItem = nil then Continue;
         
-        ChangeCaption(DesignerMenuItem, MenuItem. Caption);
+        ChangeCaption(DesignerMenuItem, MenuItem.Caption);
         InvalidateNeeded := true;
       end;
     end;
@@ -1602,6 +1604,7 @@ function TDesignerMainMenu.ChangeCaption(DesignerMenuItem: PDesignerMenuItem;
   const newcaption: string): Integer;
 begin
   Result:=0;
+  if DesignerMenuItem^.Caption=NewCaption then exit;
   InitIndexSequence;
   CreateIndexSequence(Root, DesignerMenuItem^.ID, 1);
   DesignerMenuItem^.Caption:=newcaption;
@@ -1631,16 +1634,55 @@ function TDesignerMainMenu.GetDesignerMenuItem(
   DesignerMenuItem: PDesignerMenuItem; const Ident: string): PDesignerMenuItem;
 begin
   Result:=nil;
+  if DesignerMenuItem=nil then exit;
   if (AnsiCompareText(DesignerMenuItem^.ID,Ident)=0) then
     Result:=DesignerMenuItem
   else
   begin
-    if (DesignerMenuItem^.SubMenu <> nil) then
-      Result:=GetDesignerMenuItem(DesignerMenuItem^.SubMenu, Ident);
-    if (Result = nil) then
-      if (DesignerMenuItem^.NextItem <> nil) then
-        Result:=GetDesignerMenuItem(DesignerMenuItem^.NextItem, Ident);
+    Result:=GetDesignerMenuItem(DesignerMenuItem^.SubMenu, Ident);
+    if Result<>nil then exit;
+    Result:=GetDesignerMenuItem(DesignerMenuItem^.NextItem, Ident);
   end;
+end;
+
+function TDesignerMainMenu.FindDesignerMenuItem(AMenuItem: TMenuItem
+  ): PDesignerMenuItem;
+// search the corresponding designer menu item
+
+  function FindRecursive(TheMenuItem: TMenuItem): PDesignerMenuItem;
+  var
+    ParentDesignerMenuItem: PDesignerMenuItem;
+    i: Integer;
+  begin
+    Result:=nil;
+    if TheMenuItem=nil then exit;
+    // find parent
+    if TheMenuItem.Parent=nil then begin
+      // this is TMenu.Items -> no corresponding
+    end else if TheMenuItem.Parent.Parent=nil then begin
+      // top level menu item
+      if (TheMenuItem.GetParentMenu=fMenu) then begin
+        // root item
+        Result:=Root;
+      end;
+    end else begin
+      // sub menu item
+      // -> search parent
+      ParentDesignerMenuItem:=FindRecursive(TheMenuItem.Parent);
+      if ParentDesignerMenuItem<>nil then
+        Result:=ParentDesignerMenuItem^.SubMenu;
+    end;
+    if Result<>nil then begin
+      i:=TheMenuItem.MenuIndex;
+      while (Result<>nil) and (i>0) do begin
+        Result:=Result^.NextItem;
+        dec(i);
+      end;
+    end;
+  end;
+
+begin
+  Result:=FindRecursive(AMenuItem);
 end;
 
 // ------------------------------------------------

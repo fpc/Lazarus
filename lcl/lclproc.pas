@@ -259,8 +259,12 @@ end;
 
 procedure OwnerFormDesignerModified(AComponent: TComponent);
 begin
-  if OwnerFormDesignerModifiedProc<>nil then
-    OwnerFormDesignerModifiedProc(AComponent);
+  if ([csDesigning,csLoading,csDestroying]*AComponent.ComponentState
+    =[csDesigning]
+  then begin
+    if OwnerFormDesignerModifiedProc<>nil then
+      OwnerFormDesignerModifiedProc(AComponent);
+  end;
 end;
 
 function OffSetRect(var ARect: TRect; dx,dy: Integer): Boolean;

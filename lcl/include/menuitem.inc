@@ -703,6 +703,7 @@ begin
   FCaption := AValue;
   if HandleAllocated then
     SendMsgToInterface(LM_SetLabel, Self, PChar(AValue));
+  OwnerFormDesignerModified(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -723,6 +724,7 @@ begin
     and not (csReading in ComponentState)
     and HandleAllocated
     then MenuItemSetCheck(Self);
+    OwnerFormDesignerModified(Self);
   end;
 end;
 
@@ -1078,6 +1080,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.49  2004/02/04 17:06:26  mattias
+  fixed updating menu designer caption when editing in OI
+
   Revision 1.48  2004/02/04 13:55:08  mattias
   implemented generic function to hide TComponents without page in designer
 
@@ -1253,6 +1258,9 @@ end;
 
 
   $Log$
+  Revision 1.49  2004/02/04 17:06:26  mattias
+  fixed updating menu designer caption when editing in OI
+
   Revision 1.48  2004/02/04 13:55:08  mattias
   implemented generic function to hide TComponents without page in designer
 

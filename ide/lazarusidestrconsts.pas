@@ -2273,7 +2273,7 @@ resourcestring
   lisMenuEditorInsertNewItemBefore = 'Insert New Item (before)';
   lisMenuEditorDeleteItem = 'Delete Item';
   lisMenuEditorCreateSubMenu = 'Create Submenu';
-  lisMenuEditorHandleOnClickEvent = 'Handle OnCLick Event';
+  lisMenuEditorHandleOnClickEvent = 'Handle OnClick Event';
   lisMenuEditorMoveUp = 'Move Up(left)';
   lisMenuEditorMoveDown = 'Move Up(right)';
   lisMenuEditorInsertFromTemplate = 'Insert From Template...';
