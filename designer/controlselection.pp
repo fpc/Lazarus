@@ -29,7 +29,7 @@ uses
 
 type
 
-  GenException = class(Exception);
+  EGenException = class(Exception);
   
   TGrabberMoveEvent = procedure(Sender: TObject; dx, dy: Integer) of object;
 
@@ -440,14 +440,15 @@ end;
 procedure TControlSelection.EndUpdate;
 begin
     if FUpdateLock<=0 then exit;
-    Writeln('1');
+
     dec(FUpdateLock);
+
     if FUpdateLock=0 then
       begin
        try
          if FChangedDuringLock then DoChange;
        except
-          raise GenException.Create('Exception Occured');
+          raise EGenException.Create('Exception Occured in ControlSelection EndUpdate');
        end;
       end;
 end;
@@ -543,8 +544,7 @@ try
     FChangedDuringLock:=false;
   end;
 except
-  Writeln('Exception in DoChange');
-//Crashes!!!!     raise GenException.Create('Exception Occured');
+  raise EGenException.Create('Exception Occured in ControlSelection DoChange');
 end;
 end;
 

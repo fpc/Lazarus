@@ -33,6 +33,9 @@ uses
   Dialogs;
 
 type
+
+  EGenException = class(Exception);
+  
   TObjectInspector = class;
 
   TOIOptions = class
@@ -1506,7 +1509,7 @@ Try
   Result:=c.GetNamePath+': '+c.ClassName;
 except
   Result := '';
-  Writeln('Exception: ObjectInspector ComponentToString');
+  Raise EGEnException.Create('Exception in ObjectInspector ComponentToString');
 end;
 
 end;

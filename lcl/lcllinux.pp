@@ -414,6 +414,7 @@ MB_ABORTRETRYIGNORE = $00000002;
 MB_YESNOCANCEL = $00000003;
 MB_YESNO = $00000004;
 MB_RETRYCANCEL = $00000005;
+MB_ICONERROR = $00000010;
 
 IDOK = 1; 	ID_OK = IDOK;
 IDCANCEL = 2;	ID_CANCEL = IDCANCEL;
@@ -1387,6 +1388,10 @@ end.
 
 {
   $Log$
+  Revision 1.11  2001/10/31 21:43:28  lazarus
+  Added code for TApplication to get it ready to accept exceptions.
+  Shane
+
   Revision 1.10  2001/09/30 08:34:49  lazarus
   MG: fixed mem leaks and fixed range check errors
 

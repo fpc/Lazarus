@@ -27,6 +27,7 @@
 
 unit Forms;
 
+
 {$mode objfpc}{$H+}
 
 interface
@@ -256,6 +257,8 @@ type
       procedure Idle;
       procedure MouseIdle(const CurrentControl: TControl);
       procedure SetIcon(AValue: TIcon);
+      
+      procedure ExceptionOccurred(Sender : TObject; Addr,Frame : Pointer);
    public
       constructor Create(AOwner: TComponent); override;
       destructor Destroy; override;
@@ -307,7 +310,7 @@ function InitResourceComponent(Instance: TComponent; RootAncestor: TClass):Boole
 var
   Application : TApplication;
   Screen : TScreen;
-
+  ExceptionObject : TExceptObject;
 
 
 implementation

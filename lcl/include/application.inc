@@ -16,6 +16,7 @@ begin
   FIcon := nil;
    
   inherited Create(AOwner);
+ // RaiseProc := @ExceptionOccurred;
 end;
 
 {------------------------------------------------------------------------------}
@@ -297,9 +298,22 @@ begin
   end;
 end;
 
+procedure TApplication.ExceptionOccurred(Sender : TObject; Addr,Frame : Pointer);
+var
+  Mess : String;
+Begin
+  Mess := 'Error occurred at '#13#10'Address '+inttostr(longint(addr));
+  MessageBox('Exception',pchar(Mess),mb_IconError+mb_Ok);
+end;
+
+
 { =============================================================================
 
   $Log$
+  Revision 1.9  2001/10/31 21:43:29  lazarus
+  Added code for TApplication to get it ready to accept exceptions.
+  Shane
+
   Revision 1.8  2001/10/15 13:11:28  lazarus
   MG: added complete code
 
