@@ -36,9 +36,9 @@ unit MenuEditorForm;
 interface
 
 uses
-  Classes, SysUtils, LCLProc, Forms, Controls, Graphics, Dialogs, LResources,
-  StdCtrls, Buttons, ExtCtrls, LMessages, DesignerMenu, Menus, GraphType,
-  ComponentEditors, Designer, LazarusIDEStrConsts, PropEdits;
+  Classes, SysUtils, TypInfo, LCLProc, Forms, Controls, Graphics, Dialogs,
+  LResources, StdCtrls, Buttons, ExtCtrls, LMessages, DesignerMenu, Menus,
+  GraphType, ComponentEditors, LazarusIDEStrConsts, PropEdits;
 
 type
   TMainMenuEditorForm = class(TForm)
@@ -46,21 +46,17 @@ type
     fDesignerMainMenu: TDesignerMainMenu;
     fPanel: TPanel;
     fMenu: TMenu;
-    fDesigner: TDesigner;
-    fEditor: TComponentEditor;
+    fDesigner: TComponentEditorDesigner;
     List_menus: TListBox;
     Label_menus: TLabel;
-    //DesignerPopupMenu: TPopupMenu;
-  //  fEditor: TComponentEditor;
     procedure OnComponentDeleting(AComponent: TComponent);
   public
-    constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor; aDesigner: TDesigner);
+    constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu);
     destructor Destroy; override;
     procedure Paint; override;
     procedure SelectMenuClick(Sender: TObject);
     property DesignerMainMenu: TDesignerMainMenu read fDesignerMainMenu write fDesignerMainMenu;
     property Panel: TPanel read FPanel write FPanel;
-//    property Editor: TComponentEditor read fEditor write fEditor;
   end;
 
 { TMenuComponentEditor
@@ -68,7 +64,7 @@ type
   TMainMenuComponentEditor = class(TComponentEditor)
   private
     fMenu: TMainMenu;
-    fDesigner: TDesigner;
+    fDesigner: TComponentEditorDesigner;
   protected
   public
     constructor Create(AComponent: TComponent; ADesigner: TComponentEditorDesigner); override;
@@ -80,10 +76,35 @@ type
     procedure ExecuteVerb(Index: Integer); override;
   end;
 
+
+{ TMenuItemsPropertyEditor
+  PropertyEditor editor for the TMenu.Items properties.
+  Brings up the menu editor. }
+
+  TMenuItemsPropertyEditor = class(TClassPropertyEditor)
+  public
+    procedure Edit; override;
+    function GetAttributes: TPropertyAttributes; override;
+  end;
+
+
 var
   MainMenuEditorForm: TMainMenuEditorForm;
 
+procedure ShowMenuEditor(AMenu: TMenu);
+
+
 implementation
+
+procedure ShowMenuEditor(AMenu: TMenu);
+begin
+  if AMenu=nil then RaiseGDBException('ShowMenuEditor AMenu=nil');
+  if MainMenuEditorForm=nil then begin
+  
+    MainMenuEditorForm:=TMainMenuEditorForm.CreateWithMenu(Application,AMenu);
+  end;
+  MainMenuEditorForm.Show;
+end;
 
 { TMainMenuEditorForm }
 
@@ -96,7 +117,8 @@ begin
   if i>=0 then List_menus.Items.Delete(i);
 end;
 
-constructor TMainMenuEditorForm.CreateWithMenu(aOwner: TComponent; aMenu: TMenu; aEditor: TComponentEditor; aDesigner: TDesigner);
+constructor TMainMenuEditorForm.CreateWithMenu(aOwner: TComponent;
+  aMenu: TMenu);
 var
   Cmp: TPanel;
   Cmp2: TScrollBox;
@@ -111,11 +133,9 @@ begin
   position:=poDesktopCenter;
   
   fMenu:=aMenu;
-  fDesigner:=aDesigner;
-  fEditor:=aEditor;
+  fDesigner:=FindRootDesigner(fMenu) as TComponentEditorDesigner;
 
-  
-  DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu, fEditor);
+  DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu);
   PopupMenu:=DesignerMainMenu.MainPopupMenu;
   
   Cmp2:=TScrollBox.Create(self);
@@ -165,9 +185,9 @@ begin
     Anchors := [akright, aktop, akbottom];
   end;
   
-  for i:=0 to aDesigner.Form.ComponentCount - 1 do
+  for i:=0 to fDesigner.Form.ComponentCount - 1 do
   begin
-    CurComponent:=aDesigner.Form.Components[i];
+    CurComponent:=fDesigner.Form.Components[i];
     if (CurComponent is TMainMenu) or (CurComponent is TPopupMenu) then
     begin
       List_menus.Items.Add(CurComponent.Name);
@@ -218,7 +238,7 @@ begin
           fMenu:=TMenu(fDesigner.Form.Components[j]);
         end;
       end;
-      DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu, fEditor);
+      DesignerMainMenu:=TDesignerMainMenu.CreateWithMenu(Self, fMenu);
       with DesignerMainMenu do
       begin
         Parent:=Self;
@@ -248,12 +268,12 @@ end;
 constructor TMainMenuComponentEditor.Create(AComponent: TComponent; aDesigner: TComponentEditorDesigner);
 begin
   inherited Create(AComponent,ADesigner);
-  fDesigner:=TDesigner(aDesigner);
+  fDesigner:=aDesigner;
 end;
 
 destructor TMainMenuComponentEditor.Destroy;
 begin
-  if MainMenuEditorForm.DesignerMainMenu.Editor=Self then begin
+  if MainMenuEditorForm.DesignerMainMenu.Menu=Component then begin
     FreeThenNil(MainMenuEditorForm);
   end;
   inherited Destroy;
@@ -261,12 +281,7 @@ end;
 
 procedure TMainMenuComponentEditor.Edit;
 begin
-  //if Menu=nil then RaiseGDBException('TMainMenuComponentEditor.Edit Menu=nil');
-  if MainMenuEditorForm=nil then
-    MainMenuEditorForm:=TMainMenuEditorForm.CreateWithMenu(Application,
-                                          TMenu(GetComponent), Self, fDesigner);
-  MainMenuEditorForm.Show;
-  //MainMenuEditorForm.Free;
+  ShowMenuEditor(Component as TMenu);
 end;
 
 function TMainMenuComponentEditor.GetVerbCount: Integer;
@@ -284,9 +299,40 @@ begin
   Edit;
 end;
 
-{ //TMainMenuComponentEditor}
+{ TMenuItemsPropertyEditor }
 
-initialization
+procedure TMenuItemsPropertyEditor.Edit;
+var
+  Component: TComponent;
+  AMenu: TMenu;
+begin
+  Component:=TComponent(GetOrdValue);
+  if (Component=nil) or (not (Component is TMenuItem)) then exit;
+  AMenu:=TMenuItem(Component).GetParentMenu;
+  if AMenu=nil then exit;
+  ShowMenuEditor(AMenu);
+end;
+
+function TMenuItemsPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result := [paDialog, paRevertable, paReadOnly];
+end;
+
+//=============================================================================
+
+procedure InitMenuEditorGlobals;
+var
+  ItemsPropInfo: PPropInfo;
+begin
   RegisterComponentEditor(TMainMenu,TMainMenuComponentEditor);
   RegisterComponentEditor(TPopupMenu,TMainMenuComponentEditor);
+
+  ItemsPropInfo:=GetPropInfo(TMenu,'Items');
+  RegisterPropertyEditor(ItemsPropInfo^.PropType,
+    TMenu,'',TMenuItemsPropertyEditor);
+end;
+
+initialization
+  InitMenuEditorGlobals;
+
 end.

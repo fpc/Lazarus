@@ -93,15 +93,14 @@ type
     fDesignerMenuItemIdent: Integer;
     fParentCanvas: TCanvas;
     fSelectedDesignerMenuItem: string;
-    fEditor: TComponentEditor;
     fMenu:TMenu;
     fDefaultComponentEditor: TDefaultComponentEditor;
     DesignerPopupMenu: TPopupMenu;
     TemplateMenuForm: TTemplateMenuForm;
+    function GetDesigner: TComponentEditorDesigner;
   public
     // Constructor and destructor
-    constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu;
-      aEditor: TComponentEditor);
+    constructor CreateWithMenu(aOwner: TComponent; aMenu: TMenu);
     destructor Destroy; override;
     
     // Properties for  accesing private variables
@@ -109,9 +108,9 @@ type
     property Panel: TPanel read FPanel write FPanel;
     property DesignerMenuItemIdent: Integer read FDesignerMenuItemIdent write FDesignerMenuItemIdent;
     property SelectedDesignerMenuItem: string read FSelectedDesignerMenuItem write FSelectedDesignerMenuItem;
-    property Editor: TComponentEditor read fEditor write fEditor;
     property ParentCanvas: TCanvas read FParentCanvas write FParentCanvas;
     property MainPopupMenu: TPopupMenu read DesignerPopupMenu;
+    property Menu: TMenu read fMenu;
 
     // Loading menu functions and initialization function
     procedure LoadMainMenu;
@@ -192,10 +191,15 @@ var
   
   XMLConfig: TXMLConfig;
 
+function TDesignerMainMenu.GetDesigner: TComponentEditorDesigner;
+begin
+  Result:=nil;
+  if fMenu=nil then exit;
+  Result:=FindRootDesigner(fMenu) as TComponentEditorDesigner;
+end;
 
 //
-constructor TDesignerMainMenu.CreateWithMenu(aOwner: TComponent; aMenu: TMenu;
-  aEditor: TComponentEditor);
+constructor TDesignerMainMenu.CreateWithMenu(aOwner: TComponent; aMenu: TMenu);
 var
   PopupMenuItem: TMenuItem;
 begin
@@ -277,7 +281,6 @@ begin
 
   new(Root);
   fMenu:=aMenu;
-  Editor:=aEditor;
 
 
   temp_level:=1;
@@ -358,17 +361,14 @@ var
   i: Integer;
   firstmenuitem: TMenuItem;
 begin
-
-
-
   if (fMenu.Items.Count = 0) then
   begin
     firstmenuitem:=TMenuItem.Create(fMenu.Owner);
     firstmenuitem.Caption:='New Item1';
-    firstmenuitem.Name:=fEditor.GetDesigner.CreateUniqueComponentName(firstmenuitem.ClassName);
+    firstmenuitem.Name:=GetDesigner.CreateUniqueComponentName(firstmenuitem.ClassName);
     fMenu.Items.Insert(0, firstmenuitem);
-    fEditor.GetDesigner.PropertyEditorHook.ComponentAdded(firstmenuitem, true);
-    fEditor.GetDesigner.Modified;
+    GetDesigner.PropertyEditorHook.ComponentAdded(firstmenuitem, true);
+    GetDesigner.Modified;
   end;
   
   prevtemp:=nil;
@@ -797,7 +797,7 @@ begin
   temp_menuitem:=UpdateMenu(fMenu.Items,
                     GetDesignerMenuItem(Root, SelectedDesignerMenuItem), 1, 10);
   fDefaultComponentEditor:=
-             TDefaultComponentEditor.Create(temp_menuitem, fEditor.GetDesigner);
+             TDefaultComponentEditor.Create(temp_menuitem, GetDesigner);
   fDefaultComponentEditor.Edit;
   fDefaultComponentEditor.Free;
 end;
@@ -1704,10 +1704,10 @@ begin
          temp_menuitem.Caption:=DesignerMenuItem^.Caption;
          
          // code from Mattias (one of mail he sent me)
-         temp_menuitem.Name:=fEditor.GetDesigner.CreateUniqueComponentName(temp_menuitem.ClassName);
+         temp_menuitem.Name:=GetDesigner.CreateUniqueComponentName(temp_menuitem.ClassName);
          MenuItem.Insert(index_sequence[Ind] + 1, temp_menuitem);
-         fEditor.GetDesigner.PropertyEditorHook.ComponentAdded(temp_menuitem, true);
-         fEditor.GetDesigner.Modified;
+         GetDesigner.PropertyEditorHook.ComponentAdded(temp_menuitem, true);
+         GetDesigner.Modified;
          
        end else
        begin
@@ -1722,10 +1722,10 @@ begin
          temp_menuitem.Caption:=DesignerMenuItem^.Caption;
          
          // code from Mattias (one of mail he sent me)
-         temp_menuitem.Name:=fEditor.GetDesigner.CreateUniqueComponentName(temp_menuitem.ClassName);
+         temp_menuitem.Name:=GetDesigner.CreateUniqueComponentName(temp_menuitem.ClassName);
          MenuItem.Insert(index_sequence[Ind] - 1, temp_menuitem);
-         fEditor.GetDesigner.PropertyEditorHook.ComponentAdded(temp_menuitem, true);
-         fEditor.GetDesigner.Modified;
+         GetDesigner.PropertyEditorHook.ComponentAdded(temp_menuitem, true);
+         GetDesigner.Modified;
        end else
        begin
          UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action);
@@ -1739,10 +1739,10 @@ begin
            temp_menuitem.Caption:=DesignerMenuItem^.Caption;
 
            // code from Mattias (one of mail he sent me)
-           temp_menuitem.Name:=fEditor.GetDesigner.CreateUniqueComponentName(temp_menuitem.ClassName);
+           temp_menuitem.Name:=GetDesigner.CreateUniqueComponentName(temp_menuitem.ClassName);
            MenuItem[index_sequence[Ind]].Add(temp_menuitem);
-           fEditor.GetDesigner.PropertyEditorHook.ComponentAdded(temp_menuitem, true);
-           fEditor.GetDesigner.Modified;
+           GetDesigner.PropertyEditorHook.ComponentAdded(temp_menuitem, true);
+           GetDesigner.Modified;
          end else
            UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action);
        end;
@@ -1797,7 +1797,7 @@ begin
     // Selectes a MenuItem in the OI
     9: begin
          if (index_sequence[Ind + 1] = -1) then
-           fEditor.GetDesigner.SelectOnlyThisComponent(MenuItem[index_sequence[Ind]])
+           GetDesigner.SelectOnlyThisComponent(MenuItem[index_sequence[Ind]])
          else
            UpdateMenu(MenuItem.Items[index_sequence[Ind]], DesignerMenuItem, Ind + 1, Action);
        end;

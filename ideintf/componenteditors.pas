@@ -36,12 +36,14 @@ uses
 type
   TComponentEditorDesigner = class(TIDesigner)
   protected
+    FForm: TCustomForm;
     function GetPropertyEditorHook: TPropertyEditorHook; virtual; abstract;
   public
     procedure DrawDesignerItems(OnlyIfNeeded: boolean); virtual; abstract;
     function CreateUniqueComponentName(const AClassName: string
                                        ): string; virtual; abstract;
     property PropertyEditorHook: TPropertyEditorHook read GetPropertyEditorHook;
+    property Form: TCustomForm read FForm;
   end;
 
 

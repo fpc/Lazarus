@@ -86,7 +86,6 @@ type
     FCutMenuItem: TMenuItem;
     FDeleteSelectionMenuItem: TMenuItem;
     FFlags: TDesignerFlags;
-    FForm: TCustomForm;
     FGridColor: TColor;
     FLookupRoot: TComponent;
     FMirrorHorizontalMenuItem: TMenuItem;
@@ -251,7 +250,6 @@ type
     procedure DoPaintDesignerItems;
   public
     property Flags: TDesignerFlags read FFlags;
-    property Form: TCustomForm read FForm;
     property GridSizeX: integer read GetGridSizeX write SetGridSizeX;
     property GridSizeY: integer read GetGridSizeY write SetGridSizeY;
     property GridColor: TColor read GetGridColor write SetGridColor;

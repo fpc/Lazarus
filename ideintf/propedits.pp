@@ -672,6 +672,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
   end;
 
+
 { TListColumnsPropertyEditor
   PropertyEditor editor for the TListColumns properties.
   Brings up the dialog for entering text. }
@@ -681,6 +682,7 @@ type
     procedure Edit; override;
     function GetAttributes: TPropertyAttributes; override;
   end;
+
 
 { TCursorPropertyEditor
   PropertyEditor editor for the TCursor properties.
@@ -693,7 +695,8 @@ type
     procedure GetValues(Proc: TGetStringProc); override;
     procedure SetValue(const NewValue: ansistring); override;
   end;
-
+  
+  
 { TListElementPropertyEditor
   A property editor for a single element of a TListPropertyEditor
   This editor simply redirects all methods to the TListPropertyEditor }
@@ -5251,7 +5254,7 @@ begin
   PropertyEditorMapperList:=TList.Create;
   // register the standard property editors
 
-  // XXX workaround for missing typeinfo function
+  // XXX workaround for buggy typeinfo function
   // Normally it should use something like this;
   // RegisterPropertyEditor(TypeInfo(TColor),nil,'',TColorPropertyEditor);
   DummyClassForPropTypes:=TDummyClassForPropTypes.Create;
@@ -5307,7 +5310,7 @@ begin
 
   FreeAndNil(ListPropertyEditors);
 
-  // XXX workaround for missing typeinfo function
+  // XXX workaround for buggy typeinfo function
   DummyClassForPropTypes.Free;
 end;
 
