@@ -74,7 +74,7 @@ begin
 
   // Init tooltips
   FGTKToolTips := gtk_tooltips_new;
-  gtk_object_ref(PGTKObject(FGTKToolTips));
+  //gtk_object_ref(PGTKObject(FGTKToolTips));
   gtk_toolTips_Enable(FGTKToolTips);
 
   // Init stock objects;
@@ -6734,6 +6734,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.303  2002/12/22 23:07:28  mattias
+  mem leak with tooltips, fix from Jeroen
+
   Revision 1.302  2002/12/22 22:42:55  mattias
   custom controls now support child wincontrols
 
