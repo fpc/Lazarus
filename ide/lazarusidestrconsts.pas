@@ -193,8 +193,8 @@ resourcestring
   lisMenuSaveProjectAs = 'Save Project As...';
   lisMenuPublishProject = 'Publish Project';
   lisMenuProjectInspector = 'Project Inspector';
-  lisMenuAddUnitToProject = 'Add active unit to Project';
-  lisMenuRemoveUnitFromProject = 'Remove from Project';
+  lisMenuAddToProject = 'Add editor file to Project';
+  lisMenuRemoveFromProject = 'Remove from Project';
   lisMenuViewSource = 'View Source';
   lisMenuViewProjectTodos = 'View ToDo List';
   lisMenuProjectOptions = 'Project Options...';

@@ -1176,8 +1176,8 @@ begin
     ecSaveProjectAs         : Result:= lisMenuSaveProjectAs;
     ecPublishProject        : Result:= lisMenuPublishProject;
     ecProjectInspector      : Result:= lisMenuProjectInspector;
-    ecAddCurUnitToProj      : Result:= lisMenuAddUnitToProject;
-    ecRemoveFromProj        : Result:= lisMenuRemoveUnitFromProject;
+    ecAddCurUnitToProj      : Result:= lisMenuAddToProject;
+    ecRemoveFromProj        : Result:= lisMenuRemoveFromProject;
     ecViewProjectSource     : Result:= lisMenuViewSource;
     ecViewProjectTodos      : Result:= lisMenuViewProjectTodos;
     ecProjectOptions        : Result:= lisMenuProjectOptions;

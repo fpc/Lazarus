@@ -1116,12 +1116,12 @@ begin
 
   itmProjectAddTo := TMenuItem.Create(Self);
   itmProjectAddTo.Name:='itmProjectAddTo';
-  itmProjectAddTo.Caption := lisMenuAddUnitToProject;
+  itmProjectAddTo.Caption := lisMenuAddToProject;
   mnuProject.Add(itmProjectAddTo);
 
   itmProjectRemoveFrom := TMenuItem.Create(Self);
   itmProjectRemoveFrom.Name:='itmProjectRemoveFrom';
-  itmProjectRemoveFrom.Caption := lisMenuRemoveUnitFromProject;
+  itmProjectRemoveFrom.Caption := lisMenuRemoveFromProject;
   mnuProject.Add(itmProjectRemoveFrom);
 
   mnuProject.Add(CreateMenuSeparator);

@@ -611,6 +611,7 @@ type
     function GetIncludePath(RelativeToBaseDir: boolean): string;
     function NeedsDefineTemplates: boolean;
     // files
+    function IndexOfPkgFile(PkgFile: TPkgFile): integer;
     procedure ShortenFilename(var ExpandedFilename: string; UseUp: boolean);
     procedure LongenFilename(var AFilename: string);
     function FindPkgFile(const AFilename: string;
@@ -626,6 +627,8 @@ type
     procedure RemoveFile(PkgFile: TPkgFile);
     procedure UnremovePkgFile(PkgFile: TPkgFile);
     function GetFileDialogInitialDir(const DefaultDirectory: string): string;
+    procedure MoveFile(CurIndex, NewIndex: integer);
+    procedure SortFiles;
     // required dependencies (plus removed required dependencies)
     function FindDependencyByName(const PkgName: string): TPkgDependency;
     function RequiredDepByIndex(Index: integer): TPkgDependency;
@@ -767,6 +770,7 @@ function ComparePkgDependencyNames(Data1, Data2: Pointer): integer;
 function CompareUnitsTree(UnitTree1, UnitTree2: TPkgUnitsTree): integer;
 function ComparePackageWithUnitsTree(Package: TLazPackage;
                                      UnitTree: TPkgUnitsTree): integer;
+function ComparePkgFilesAlphabetically(PkgFile1, PkgFile2: TPkgFile): integer;
 
 function GetUsageOptionsList(PackageList: TList): TList;
 
@@ -982,6 +986,13 @@ function ComparePackageWithUnitsTree(Package: TLazPackage;
                                      UnitTree: TPkgUnitsTree): integer;
 begin
   Result:=Package.Compare(UnitTree.LazPackage);
+end;
+
+function ComparePkgFilesAlphabetically(PkgFile1, PkgFile2: TPkgFile): integer;
+begin
+  Result:=AnsiCompareText(PkgFile1.UnitName,PkgFile2.UnitName);
+  if Result<>0 then exit;
+  Result:=CompareFilenames(PkgFile1.FileName,PkgFile2.FileName);
 end;
 
 function GetUsageOptionsList(PackageList: TList): TList;
@@ -2482,6 +2493,35 @@ begin
     Result:=Directory;
 end;
 
+procedure TLazPackage.MoveFile(CurIndex, NewIndex: integer);
+begin
+  if CurIndex=NewIndex then exit;
+  FFiles.Move(CurIndex,NewIndex);
+  Modified:=true;
+end;
+
+procedure TLazPackage.SortFiles;
+var
+  NewList: TList;
+  Cnt: Integer;
+  i: Integer;
+begin
+  if FileCount=0 then exit;
+  NewList:=TList.Create;
+  try
+    Cnt:=FileCount;
+    NewList.Assign(FFiles);
+    NewList.Sort(@ComparePkgFilesAlphabetically);
+    i:=Cnt-1;
+    while (i>=0) and (NewList[i]=FFiles[i]) do dec(i);
+    if i<0 then exit;
+    FFiles.Assign(NewList);
+    Modified:=true;
+  finally
+    NewList.Free;
+  end;
+end;
+
 procedure TLazPackage.RemoveRemovedDependency(Dependency: TPkgDependency);
 begin
   Dependency.RemoveFromList(FFirstRemovedDependency,pdlRequires);
@@ -2643,6 +2683,12 @@ begin
     Result:=false
   else
     Result:=true;
+end;
+
+function TLazPackage.IndexOfPkgFile(PkgFile: TPkgFile): integer;
+begin
+  Result:=FileCount-1;
+  while (Files[Result]<>PkgFile) do dec(Result);
 end;
 
 { TPkgComponent }

@@ -135,6 +135,8 @@ type
     procedure MoreBitBtnClick(Sender: TObject);
     procedure MoveDependencyUpClick(Sender: TObject);
     procedure MoveDependencyDownClick(Sender: TObject);
+    procedure MoveFileUpMenuItemClick(Sender: TObject);
+    procedure MoveFileDownMenuItemClick(Sender: TObject);
     procedure OpenFileMenuItemClick(Sender: TObject);
     procedure OptionsBitBtnClick(Sender: TObject);
     procedure PackageEditorFormClose(Sender: TObject; var Action: TCloseAction);
@@ -148,6 +150,7 @@ type
     procedure RevertClick(Sender: TObject);
     procedure SaveBitBtnClick(Sender: TObject);
     procedure SaveAsClick(Sender: TObject);
+    procedure SortFilesMenuItemClick(Sender: TObject);
     procedure UninstallClick(Sender: TObject);
     procedure UseMaxVersionCheckBoxClick(Sender: TObject);
     procedure UseMinVersionCheckBoxClick(Sender: TObject);
@@ -181,6 +184,8 @@ type
     procedure DoCompile(CompileClean, CompileRequired: boolean);
     procedure DoRevert;
     procedure DoPublishProject;
+    procedure DoMoveCurrentFile(Offset: integer);
+    procedure DoSortFiles;
   public
     property LazPackage: TLazPackage read FLazPackage write SetLazPackage;
   end;
@@ -406,6 +411,8 @@ var
   CurDependency: TPkgDependency;
   Removed: boolean;
   CurFile: TPkgFile;
+  Writable: Boolean;
+  FileIndex: Integer;
 
   function AddPopupMenuItem(const ACaption: string; AnEvent: TNotifyEvent;
     EnabledFlag: boolean): TMenuItem;
@@ -459,16 +466,23 @@ var
 begin
   ItemCnt:=0;
   CurDependency:=GetCurrentDependency(Removed);
+  Writable:=(not LazPackage.ReadOnly);
   if CurDependency=nil then
     CurFile:=GetCurrentFile(Removed)
   else
     CurFile:=nil;
 
   if CurFile<>nil then begin
+    FileIndex:=LazPackage.IndexOfPkgFile(CurFile);
     if not Removed then begin
       AddPopupMenuItem(lisOpenFile, @OpenFileMenuItemClick, true);
       AddPopupMenuItem(lisPckEditRemoveFile, @RemoveBitBtnClick,
                        RemoveBitBtn.Enabled);
+      AddPopupMenuItem('Move file up', @MoveFileUpMenuItemClick,
+                       (FileIndex>0) and Writable);
+      AddPopupMenuItem('Move file down', @MoveFileDownMenuItemClick,
+                       (FileIndex<LazPackage.FileCount-1) and Writable);
+      AddPopupMenuItem('Sort files', @SortFilesMenuItemClick, Writable);
       AddFileTypeMenuItem;
     end else begin
       AddPopupMenuItem(lisOpenFile, @OpenFileMenuItemClick, true);
@@ -484,10 +498,10 @@ begin
                        RemoveBitBtn.Enabled);
       AddPopupMenuItem(lisPckEditMoveDependencyUp, @MoveDependencyUpClick,
                        (CurDependency.PrevRequiresDependency<>nil)
-                       and (not LazPackage.ReadOnly));
+                       and Writable);
       AddPopupMenuItem(lisPckEditMoveDependencyDown, @MoveDependencyDownClick,
                        (CurDependency.NextRequiresDependency<>nil)
-                       and (not LazPackage.ReadOnly));
+                       and Writable);
     end else begin
       AddPopupMenuItem(lisMenuOpenPackage, @OpenFileMenuItemClick, true);
       AddPopupMenuItem(lisPckEditReAddDependency, @ReAddMenuItemClick,
@@ -595,6 +609,16 @@ begin
   PackageGraph.MoveRequiredDependencyDown(CurDependency);
   ApplyTreeSelection(OldSelection,true);
   FilesTreeView.EndUpdate;
+end;
+
+procedure TPackageEditorForm.MoveFileUpMenuItemClick(Sender: TObject);
+begin
+  DoMoveCurrentFile(-1);
+end;
+
+procedure TPackageEditorForm.MoveFileDownMenuItemClick(Sender: TObject);
+begin
+  DoMoveCurrentFile(1);
 end;
 
 procedure TPackageEditorForm.OpenFileMenuItemClick(Sender: TObject);
@@ -757,6 +781,11 @@ end;
 procedure TPackageEditorForm.SaveAsClick(Sender: TObject);
 begin
   DoSave(true);
+end;
+
+procedure TPackageEditorForm.SortFilesMenuItemClick(Sender: TObject);
+begin
+  DoSortFiles;
 end;
 
 procedure TPackageEditorForm.UninstallClick(Sender: TObject);
@@ -1776,6 +1805,37 @@ procedure TPackageEditorForm.DoPublishProject;
 begin
   PackageEditors.PublishPackage(LazPackage);
   UpdateAll;
+end;
+
+procedure TPackageEditorForm.DoMoveCurrentFile(Offset: integer);
+var
+  Removed: boolean;
+  CurFile: TPkgFile;
+  OldIndex: Integer;
+  NewIndex: Integer;
+  TreeSelection: TStringList;
+begin
+  CurFile:=GetCurrentFile(Removed);
+  if (CurFile=nil) or Removed then exit;
+  OldIndex:=LazPackage.IndexOfPkgFile(CurFile);
+  NewIndex:=OldIndex+Offset;
+  if (NewIndex<0) or (NewIndex>=LazPackage.FileCount) then exit;
+  TreeSelection:=StoreCurrentTreeSelection;
+  LazPackage.MoveFile(OldIndex,NewIndex);
+  UpdateFiles;
+  ApplyTreeSelection(TreeSelection,true);
+  UpdateButtons;
+  UpdateStatusBar;
+end;
+
+procedure TPackageEditorForm.DoSortFiles;
+var
+  TreeSelection: TStringList;
+begin
+  TreeSelection:=StoreCurrentTreeSelection;
+  LazPackage.SortFiles;
+  UpdateAll;
+  ApplyTreeSelection(TreeSelection,true);
 end;
 
 constructor TPackageEditorForm.Create(TheOwner: TComponent);
