@@ -130,7 +130,8 @@ type
   protected
     procedure LinkField;
     function  GetDisplayName: string; override;
-    function InternalAlignment(var aValue: TAlignment): boolean; override;
+    // FPC 1.0 has TAlignment in the DB unit too
+    function InternalAlignment(var aValue: {$IFDEF VER1_0}Classes.{$ENDIF}TAlignment): boolean; override;
     function InternalDefaultReadOnly: boolean; override;
     function InternalVisible(var Avalue: Boolean): boolean; override;
     function InternalDefaultWidth: Integer; override;
@@ -238,7 +239,8 @@ type
     function  EditorCanAcceptKey(const ch: Char): boolean; override;
     function  EditorIsReadOnly: boolean; override;
     procedure EndLayout;
-    function  GetDefaultAlignment(Column: Integer): TAlignment; override;
+    // FPC 1.0 has TAlignment in the DB unit too
+    function  GetDefaultAlignment(Column: Integer): {$IFDEF VER1_0}Classes.{$ENDIF}TAlignment; override;
     function  GetDefaultColumnWidth(Column: Integer): Integer; override;
     function  GetDefaultReadOnly(Column: Integer): boolean; override;
     function  GetDefaultTitle(Column: Integer): string; override;
@@ -1321,15 +1323,15 @@ begin
     DoLayoutChanged;
 end;
 
-function TCustomDbGrid.GetDefaultAlignment(Column: Integer): TAlignment;
+function TCustomDbGrid.GetDefaultAlignment(Column: Integer): {$IFDEF VER1_0}Classes.{$ENDIF}TAlignment;
 var
   F: TField;
 begin
   F := GetDsFieldFromGridColumn(Column);
   if F<>nil then
-    result := F.Alignment
+    result := {$IFNDEF VER1_0}F.Alignment{$ELSE}Classes.TAlignment(F.Alignment){$ENDIF}
   else
-    result := taLeftJustify;
+    result := {$IFNDEF VER1_0}taLeftJustify{$ELSE}Classes.TAlignment(taLeftJustify){$ENDIF};
 end;
 
 function TCustomDbGrid.GetDefaultColumnWidth(Column: Integer): Integer;
@@ -1901,14 +1903,6 @@ begin
     result := 64;
 end;
 
-
-{$ifdef ver1_0}
-procedure TColumn.Changed(AllItems: Boolean);
-begin
-  inherited Changed(AllItems);
-end;
-{$endif}
-
 procedure TColumn.LinkField;
 var
   TheGrid: TCustomDbGrid;
@@ -1920,10 +1914,10 @@ begin
     Field := nil;
 end;
 
-function TColumn.InternalAlignment(var aValue: TAlignment): boolean;
+function TColumn.InternalAlignment(var aValue: {$ifdef ver1_0}Classes.{$ENDIF}TAlignment): boolean;
 begin
   if FField<>nil then begin
-    Alignment := FField.Alignment;
+    Alignment := {$IFNDEF VER1_0}FField.Alignment{$ELSE}Classes.TAlignment(FField.Alignment){$ENDIF};
     Result := True;
   end else
     Result := False;
@@ -1958,6 +1952,9 @@ end.
 
 {
   $Log$
+  Revision 1.29  2005/01/10 15:59:43  vincents
+  some ugly hacks to fix 1.0.x compilation
+
   Revision 1.28  2005/01/09 14:11:03  mattias
   registered andadded icon for TTIGrid
 
