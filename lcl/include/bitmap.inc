@@ -188,17 +188,50 @@ var
   NewRawImage: TRawImage;
   ImgHandle, ImgMaskHandle: HBitmap;
 begin
-  DebugLn('TBitmap.CreateFromBitmapHandles A SrcRect=',dbgs(SrcRect));
+  //DebugLn('TBitmap.CreateFromBitmapHandles A SrcRect=',dbgs(SrcRect));
   if not GetRawImageFromBitmap(SrcBitmap,SrcMaskBitmap,SrcRect,NewRawImage) then
     raise EInvalidGraphicOperation.Create('TBitmap.CreateFromBitmapHandles Get RawImage');
+  ImgHandle:=0;
+  ImgMaskHandle:=0;
   try
-    DebugLn('TBitmap.CreateFromBitmapHandles B SrRect=',dbgs(SrcRect));
+    //DebugLn('TBitmap.CreateFromBitmapHandles B SrRect=',dbgs(SrcRect));
     if not CreateBitmapFromRawImage(NewRawImage,ImgHandle,ImgMaskHandle,false) then
       raise EInvalidGraphicOperation.Create('TBitmap.CreateFromBitmapHandles Create bitmaps');
     Handle:=ImgHandle;
+    ImgHandle:=0;
     MaskHandle:=ImgMaskHandle;
+    ImgMaskHandle:=0;
   finally
     FreeRawImageData(@NewRawImage);
+    if ImgHandle<>0 then DeleteObject(ImgHandle);
+    if ImgMaskHandle<>0 then DeleteObject(ImgMaskHandle);
+  end;
+end;
+
+procedure TBitmap.LoadFromDevice(DC: HDC);
+var
+  IntfImg: TLazIntfImage;
+  ImgHandle, ImgMaskHandle: HBitmap;
+begin
+  ImgHandle:=0;
+  ImgMaskHandle:=0;
+  IntfImg:=nil;
+  try
+    // create the interface image
+    IntfImg:=TLazIntfImage.Create(0,0);
+    // get a snapshot
+    IntfImg.LoadFromDevice(DC);
+    // create HBitmap
+    IntfImg.CreateBitmap(ImgHandle,ImgMaskHandle,false);
+    // feed HBitmap into a TBitmap
+    Handle:=ImgHandle;
+    ImgHandle:=0;
+    MaskHandle:=ImgMaskHandle;
+    ImgMaskHandle:=0;
+  finally
+    IntfImg.Free;
+    if ImgHandle<>0 then DeleteObject(ImgHandle);
+    if ImgMaskHandle<>0 then DeleteObject(ImgMaskHandle);
   end;
 end;
 
@@ -1201,6 +1234,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.89  2004/09/11 10:19:07  mattias
+  implemented TBitmap.LoadFromDevice
+
   Revision 1.88  2004/05/14 14:32:49  mattias
   fix for fpc 1.0.10
 

@@ -1065,6 +1065,7 @@ type
     function PaletteAllocated: boolean;
     procedure CreateFromBitmapHandles(SrcBitmap, SrcMaskBitmap: HBitmap;
                                       const SrcRect: TRect);
+    procedure LoadFromDevice(DC: HDC); virtual;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; virtual;
     procedure LoadFromStream(Stream: TStream); override;
     procedure LoadFromLazarusResource(const ResName: String); override;
@@ -1746,6 +1747,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.146  2004/09/11 10:19:07  mattias
+  implemented TBitmap.LoadFromDevice
+
   Revision 1.145  2004/09/04 22:24:16  mattias
   added default values for compiler skip options and improved many parts of synedit for UTF8
 
