@@ -81,7 +81,7 @@ begin
     ConfFileName:=SetDirSeparators(GetPrimaryConfigPath+'/'+MiscOptsFilename);
     CopySecondaryConfigFile(MiscOptsFilename);
     if (not FileExists(ConfFileName)) then begin
-      writeln('Note: miscellaneous options file not found - using defaults');
+      writeln('NOTE: miscellaneous options file not found - using defaults');
     end;
     FFilename:=ConfFilename;
   end;
@@ -95,7 +95,7 @@ begin
   try
     XMLConfig:=TXMLConfig.Create(GetFilename);
   except
-    writeln('Error: unable to open miscellaneous options "',GetFilename,'"');
+    writeln('ERROR: unable to open miscellaneous options "',GetFilename,'"');
     exit;
   end;
   try
@@ -103,14 +103,14 @@ begin
       FileVersion:=XMLConfig.GetValue('MiscellaneousOptions/Version/Value',0);
 
       if (FileVersion<MiscOptsVersion) and (FileVersion<>0) then
-        writeln('Note: converting old miscellaneous options ...');
+        writeln('NOTE: converting old miscellaneous options ...');
 
       BuildLazOpts.Load(XMLConfig,'MiscellaneousOptions/BuildLazarusOptions/');
     finally
       XMLConfig.Free;
     end;
   except
-    writeln('Error: unable read miscellaneous options from "',GetFilename,'"');
+    writeln('ERROR: unable read miscellaneous options from "',GetFilename,'"');
   end;
 end;
 
@@ -120,7 +120,7 @@ begin
   try
     XMLConfig:=TXMLConfig.Create(GetFilename);
   except
-    writeln('Error: unable to open miscellaneous options "',GetFilename,'"');
+    writeln('ERROR: unable to open miscellaneous options "',GetFilename,'"');
     exit;
   end;
   try
@@ -134,7 +134,7 @@ begin
       XMLConfig.Free;
     end;
   except
-    writeln('Error: unable read miscellaneous options from "',GetFilename,'"');
+    writeln('ERROR: unable read miscellaneous options from "',GetFilename,'"');
   end;
 end;
 

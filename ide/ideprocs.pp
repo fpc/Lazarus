@@ -1210,7 +1210,15 @@ end;
 
 function ProgramDirectory: string;
 begin
-  Result:=ExpandFilename(ExtractFilePath(ReadAllLinks(ParamStr(0),false)));
+  Result:=ParamStr(0);
+  if ExtractFilePath(Result)='' then begin
+    // program was started via PATH
+    Result:=SearchFileInPath(Result,'',GetEnv('PATH'),':');
+  end;
+  // resolve links
+  Result:=ReadAllLinks(Result,false);
+  // extract file path and expand to full name
+  Result:=ExpandFilename(ExtractFilePath(Result));
 end;
 
 function CopyFileWithMethods(const SrcFilename, DestFilename: string;
