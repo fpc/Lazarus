@@ -844,19 +844,33 @@ activate_time : the time at which the activation event occurred.
         End;
       End;
       LM_GETSELSTART:
-      Begin
-        If (Sender as TControl).FCompStyle = csComboBox Then
-        Begin
-          Result := Low(Windows.SendMessage(Handle, CB_GETEDITSEL, Windows.WPARAM(nil), Windows.LPARAM(nil)));
-        End;
-      End;
+      begin
+        case (Sender as TControl).FCompStyle of
+          csComboBox:
+            begin
+              Result := Low(Windows.SendMessage(Handle, CB_GETEDITSEL, Windows.WPARAM(nil), Windows.LPARAM(nil)));
+            end;
+          csEdit:
+            begin
+              Windows.SendMessage(Handle, EM_GETSEL, Windows.WPARAM(@i), 0);
+              Result := i;
+            end;
+        end;
+      end;
       LM_GETSELLEN:
-      Begin
-        If (Sender as TControl).FCompStyle = csComboBox then
-        Begin
-          Result := Windows.SendMessage(Handle, CB_GETEDITSEL, Windows.WPARAM(nil), Windows.LPARAM(nil));
-        End;
-      End;
+      begin
+        case (Sender as TControl).FCompStyle of
+          csComboBox:
+            begin
+              Result := Windows.SendMessage(Handle, CB_GETEDITSEL, Windows.WPARAM(nil), Windows.LPARAM(nil));
+            end;
+          csEdit:
+            begin
+              Windows.SendMessage(Handle, EM_GETSEL, Windows.WPARAM(@i), Windows.LPARAM(@num));
+              Result := num-i;
+            end;
+        end;
+      end;
       LM_GETLIMITTEXT:
       Begin
         If (Sender as TControl).FCompStyle = csComboBox Then
@@ -3078,6 +3092,9 @@ End;
 
 {
   $Log$
+  Revision 1.230  2004/09/06 15:08:32  micha
+  implement LM_GETSELLEN en LM_GETSELSTART for win32 edit controls
+
   Revision 1.229  2004/08/27 08:55:23  micha
   implement tapplication.minimize for win32, stub for gtk
 
