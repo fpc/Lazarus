@@ -87,6 +87,8 @@ type
           SourceChangeCache: TSourceChangeCache): boolean;
     function RemoveUnitFromAllUsesSections(const UpperUnitName: string;
           SourceChangeCache: TSourceChangeCache): boolean;
+    function FindUsedUnits(var MainUsesSection,
+          ImplementationUsesSection: TStrings): boolean;
 
     // lazarus resources
     function FindNextIncludeInInitialization(
@@ -515,6 +517,29 @@ begin
     end;
     SectionNode:=SectionNode.NextBrother;
   end;
+end;
+
+function TStandardCodeTool.FindUsedUnits(var MainUsesSection,
+  ImplementationUsesSection: TStrings): boolean;
+
+  function UsesSectionToStrings(ANode: TCodeTreeNode): TStrings;
+  begin
+    Result:=TStringList.Create;
+    if ANode=nil then exit;
+
+  end;
+
+var
+  MainUsesNode, ImplementatioUsesNode: TCodeTreeNode;
+begin
+  // find the uses sections
+  BuildTree(false);
+  MainUsesNode:=FindMainUsesSection;
+  ImplementatioUsesNode:=FindImplementationUsesSection;
+  // create lists
+  MainUsesSection:=UsesSectionToStrings(MainUsesNode);
+  ImplementationUsesSection:=UsesSectionToStrings(ImplementatioUsesNode);
+  Result:=true;
 end;
 
 function TStandardCodeTool.FindNextIncludeInInitialization(

@@ -195,6 +195,7 @@ type
     itmViewUnits : TMenuItem;
     itmViewCodeExplorer : TMenuItem;
     itmViewForms : TMenuItem;
+    itmViewUnitDependencies : TMenuItem;
     itmViewMessage : TMenuItem;
     itmViewDebugWindows: TMenuItem;
     itmViewWatches: TMenuItem;
@@ -756,6 +757,11 @@ begin
   itmViewForms.Caption := lisMenuViewForms;
   mnuView.Add(itmViewForms);
 
+  itmViewUnitDependencies := TMenuItem.Create(Self);
+  itmViewUnitDependencies.Name:='itmViewUnitDependencies';
+  itmViewUnitDependencies.Caption := lisMenuViewUnitDependencies;
+  mnuView.Add(itmViewUnitDependencies);
+
   mnuView.Add(CreateMenuSeparator);
 
   itmViewToggleFormUnit := TMenuItem.Create(Self);
@@ -1061,6 +1067,7 @@ begin
     itmViewProject.ShortCut:=CommandToShortCut(ecToggleProjectExpl);
     itmViewUnits.ShortCut:=CommandToShortCut(ecViewUnits);
     itmViewCodeExplorer.ShortCut:=CommandToShortCut(ecToggleCodeExpl);
+    itmViewUnitDependencies.ShortCut:=CommandToShortCut(ecViewUnitDependencies);
     itmViewForms.ShortCut:=CommandToShortCut(ecViewForms);
     itmViewToggleFormUnit.ShortCut:=CommandToShortCut(ecToggleFormUnit);
     itmViewMessage.ShortCut:=CommandToShortCut(ecToggleMessages);

@@ -126,8 +126,9 @@ const
   ecToggleDebuggerOut    = ecUserFirst + 308;
   ecViewUnits            = ecUserFirst + 309;
   ecViewForms            = ecUserFirst + 310;
-  ecToggleLocals         = ecUserFirst + 311;
-  ecToggleCallStack      = ecUserFirst + 312;
+  ecViewUnitDependencies = ecUserFirst + 311;
+  ecToggleLocals         = ecUserFirst + 312;
+  ecToggleCallStack      = ecUserFirst + 313;
 
   ecBuild                = ecUserFirst + 400;
   ecRun                  = ecUserFirst + 401;
@@ -564,6 +565,7 @@ begin
     ecToggleCallStack: Result := 'view call stack';
     ecViewUnits: Result:= 'view units';
     ecViewForms: Result:= 'view forms';
+    ecViewUnitDependencies: Result:= 'view unit dependencies';
 
     // codetools
     ecWordCompletion: Result:= 'word completion';
@@ -1382,6 +1384,7 @@ begin
   Add(C,'Toggle view Debugger Output',ecToggleDebuggerOut,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'View Units',ecViewUnits,VK_F12,[ssCtrl],VK_UNKNOWN,[]);
   Add(C,'View Forms',ecViewForms,VK_F12,[ssShift],VK_UNKNOWN,[]);
+  Add(C,'View Unit Dependencies',ecViewUnitDependencies,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Focus to source editor',ecJumpToEditor,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Toggle between Unit and Form',ecToggleFormUnit,VK_F12,[],VK_UNKNOWN,[]);
 

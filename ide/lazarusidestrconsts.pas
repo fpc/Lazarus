@@ -156,6 +156,7 @@ resourcestring
   lisMenuViewCodeExplorer = 'Code Explorer';
   lisMenuViewUnits = 'Units...';
   lisMenuViewForms = 'Forms...';
+  lisMenuViewUnitDependencies = 'Unit Dependencies ...';
   lisMenuViewToggleFormUnit = 'Toggle form/unit view';
   lisMenuViewMessages = 'Messages';
   lisMenuDebugWindows = 'Debug windows';

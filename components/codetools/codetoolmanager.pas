@@ -247,6 +247,8 @@ type
           const NewUnitName, NewUnitInFile: string): boolean;
     function RemoveUnitFromAllUsesSections(Code: TCodeBuffer;
           const AnUnitName: string): boolean;
+    function FindUsedUnits(Code: TCodeBuffer; var MainUsesSection,
+          ImplementationUsesSection: TStrings): boolean;
 
     // resources
     function FindLFMFileName(Code: TCodeBuffer): string;
@@ -1135,6 +1137,22 @@ begin
   try
     Result:=FCurCodeTool.RemoveUnitFromAllUsesSections(UpperCaseStr(AnUnitName),
                 SourceChangeCache);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+end;
+
+function TCodeToolManager.FindUsedUnits(Code: TCodeBuffer; var MainUsesSection,
+  ImplementationUsesSection: TStrings): boolean;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  writeln('TCodeToolManager.FindUsedUnits A ',Code.Filename);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  try
+    Result:=FCurCodeTool.FindUsedUnits(MainUsesSection,
+                                       ImplementationUsesSection);
   except
     on e: Exception do Result:=HandleException(e);
   end;
