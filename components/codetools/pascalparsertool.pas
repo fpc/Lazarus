@@ -838,8 +838,8 @@ function TPascalParserTool.KeyWordFuncClassVarTypeRecord: boolean;
 var Level: integer;
 begin
   Level:=1;
+  DoProgress;
   while (CurPos.StartPos<=SrcLen) and (Level>0) do begin
-    DoProgress;
     ReadNextAtom;
     if CurPos.Flag=cafRECORD then inc(Level)
     else if (CurPos.Flag=cafEND) then dec(Level);
@@ -2651,7 +2651,7 @@ begin
       SaveRaiseExceptionFmt(ctsAnoymDefinitionsAreNotAllowed,['class']);
     ClassAtomPos:=CurPos;
   end;
-  // class start found
+  // class or 'class of' start found
   ChildCreated:=(UpAtomIs('CLASS')) or (UpAtomIs('OBJECT'));
   if ChildCreated then begin
     CreateChildNode;
@@ -2681,13 +2681,15 @@ begin
   end else begin
     Level:=1;
     while (CurPos.StartPos<=SrcLen) do begin
-      DoProgress;
       if CurPos.Flag=cafEND then begin
         dec(Level);
         if Level=0 then break;
-      end else if CurPos.Flag=cafRECORD then inc(Level);
+      end
+      else if CurPos.Flag=cafRECORD then
+        inc(Level);
       ReadNextAtom;
     end;
+    DoProgress;
     if (CurPos.StartPos>SrcLen) then
       SaveRaiseException(ctsEndForClassNotFound);
   end;
@@ -3159,6 +3161,8 @@ begin
       end else if UpAtomIs('CASE') then begin
         // sub record variant
         KeyWordFuncTypeRecordCase();
+        if (CurPos.Flag<>cafRoundBracketClose) then
+          RaiseCharExpectedButAtomFound(')');
         break;
       end else begin
         // sub identifier
@@ -3186,8 +3190,6 @@ begin
         RaiseCharExpectedButAtomFound(';');
       ReadNextAtom;
     until false;
-    if (CurPos.Flag<>cafRoundBracketClose) then
-      RaiseCharExpectedButAtomFound(')');
     ReadNextAtom;
     if (CurPos.Flag in [cafEnd,cafRoundBracketClose]) then begin
       CurNode.EndPos:=CurPos.StartPos;

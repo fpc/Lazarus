@@ -34,7 +34,7 @@ begin
   FLines := TMemoStrings.Create(Self);
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
-  
+  settext
   SetBounds(0,0,185,90);
 end;
 
@@ -137,6 +137,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.13  2003/03/31 10:49:50  mattias
+  fixed parsing records
+
   Revision 1.12  2003/03/29 17:20:05  mattias
   added TMemoScrollBar
 

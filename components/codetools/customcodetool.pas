@@ -782,7 +782,7 @@ begin
           then
             CurPos.Flag:=cafEnd;
         'R':
-          if (CurPos.EndPos-CurPos.StartPos=7)
+          if (CurPos.EndPos-CurPos.StartPos=6)
           and UpAtomIs('RECORD')
           then
             CurPos.Flag:=cafRecord;
