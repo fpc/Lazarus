@@ -246,9 +246,25 @@ end;
 function gtkchangedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMessage;
+  OldText: PChar;
+  NewText: string;
 begin
   Result := True;
   EventTrace('changed', data);
+  
+  if TObject(Data) is TControl then begin
+    case TControl(Data).fCompStyle of
+      csComboBox:
+        begin
+          OldText:=gtk_object_get_data(PGtkObject(TComboBox(Data).Handle),'LCLOldText');
+          NewText:=TComboBox(Data).Text;
+          if ComparePChar(OldText,PChar(NewText)) then begin
+            exit;
+          end;
+          SetComboBoxText(PGtkCombo(TComboBox(Data).Handle),PChar(NewText));
+        end;
+    end;
+  end;
 
   Mess.Msg := LM_CHANGED;
   Result := DeliverMessage(Data, Mess) = 0;
@@ -2252,6 +2268,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.115  2002/08/29 00:07:02  lazarus
+  MG: fixed TComboBox and InvalidateControl
+
   Revision 1.114  2002/08/28 09:40:49  lazarus
   MG: reduced paint messages and DC getting/releasing
 
