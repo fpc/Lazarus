@@ -117,14 +117,9 @@ begin
   Result := ComparePointers(Font, Item.GdkFont);
 end;
 
-function CompareLogFontAndNameWithResDesc(AKey, ADesc: Pointer): integer;
-var
-  Key: PLogFontAndName;
-  Desc: TGdkFontCacheDescriptor;
+function CompareLogFontAndNameWithResDesc(Key: PLogFontAndName;
+  Desc: TGdkFontCacheDescriptor): integer;
 begin
-  Key := PLogFontAndName(AKey);
-  Desc := TGdkFontCacheDescriptor(ADesc);
-  
   Result:=CompareStr(Key^.LongFontName,Desc.LongFontName);
   //writeln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',HexStr(Cardinal(Desc),8),' Result=',Result);
   if Result=0 then
@@ -186,7 +181,7 @@ begin
   LogFontAndName.LogFont:=LogFont;
   LogFontAndName.LongFontName:=LongFontName;
   ANode:=FDescriptors.Findkey(@LogFontAndName,
-                              @CompareLogFontAndNameWithResDesc);
+                           TListSortCompare(@CompareLogFontAndNameWithResDesc));
   if ANode<>nil then
     Result:=TGdkFontCacheDescriptor(ANode.Data)
   else
