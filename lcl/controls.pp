@@ -980,7 +980,6 @@ procedure RaiseGDBException(const Msg: string);
 
 implementation
 
-
 uses
   Forms, Interfaces, Math;
 
@@ -1380,6 +1379,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.81  2002/10/26 11:20:30  lazarus
+  MG: broke some interfaces.pp circles
+
   Revision 1.80  2002/10/26 11:05:59  lazarus
   MG: broke actnlist <-> forms circle
 
