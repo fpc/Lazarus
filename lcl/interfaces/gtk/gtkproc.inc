@@ -846,12 +846,12 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  function GtkPaintMessageToPaintMessage(const GtkPaintMsg: TLMGtkPaint;
+  function GtkPaintMessageToPaintMessage(var GtkPaintMsg: TLMGtkPaint;
     FreeGtkPaintMsg: boolean): TLMPaint;
 
   Converts a LM_GtkPaint message to a LM_PAINT message
  ------------------------------------------------------------------------------}
-function GtkPaintMessageToPaintMessage(const GtkPaintMsg: TLMGtkPaint;
+function GtkPaintMessageToPaintMessage(var GtkPaintMsg: TLMGtkPaint;
   FreeGtkPaintMsg: boolean): TLMPaint;
 var
   PS : PPaintStruct;
@@ -868,7 +868,7 @@ begin
   Result.PaintStruct:=PS;
   Result.Result:=0;
   if FreeGtkPaintMsg then
-    GtkPaintMsg.Data.Free;
+    FreeThenNil(GtkPaintMsg.Data);
 end;
 
 procedure FinalizePaintMessage(Msg: PLMessage);
@@ -6805,6 +6805,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.286  2004/06/28 15:45:48  mattias
+  fixed a mem violation in gtk intf paint msg conversion
+
   Revision 1.285  2004/06/28 09:48:46  mattias
   added valgrind flag to compiler options
 

@@ -291,14 +291,20 @@ end;
 
 function gtkactivateCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 var
-  Mess : TLMessage;
+  Mess: TLMActivate;
 begin
   Result:= True;
   EventTrace('activate', data);
   
   if LockOnChange(PgtkObject(Widget),0) > 0 then Exit;
 
+  FillChar(Mess,SizeOf(Mess),#0);
   Mess.Msg := LM_ACTIVATE;
+  Mess.Active:=true;
+  Mess.Minimized:=false;
+  Mess.ActiveWindow:=0;
+  if GtkWidgetIsA(Widget,GTK_WINDOW_TYPE) then
+    Mess.ActiveWindow:=HWnd(PGTKWindow(Widget)^.focus_widget);
   Mess.Result := 0;
   DeliverMessage(Data, Mess);
   //DebugLn('gtkactivateCB ',TWinControl(Data).Name,':',TWinControl(Data).ClassName);
@@ -458,7 +464,6 @@ function gtkfrmactivateAfter(widget: PGtkWidget; Event : PgdkEventFocus;
   data: gPointer) : GBoolean; cdecl;
 var
   Mess : TLMActivate;
-  Status : GBoolean;
 {$IFDEF VerboseFocus}
   LCLObject: TObject;
   CurFocusWidget: PGtkWidget;
@@ -466,6 +471,7 @@ var
 begin
   EventTrace('activate after', data);
   if (Widget=nil) or (Event=nil) then ;
+  FillChar(Mess,SizeOf(Mess),#0);
   {$IFDEF VerboseFocus}
   write('gtkfrmactivateAfter Widget=',HexStr(Cardinal(Widget),8),' Event^.theIn=',Event^.theIn);
   LCLObject:=TObject(data);
@@ -498,13 +504,15 @@ begin
   
   UpdateMouseCaptureControl;
   Mess.Msg := LM_ACTIVATE;
-  Status := DeliverPostMessage(Data, Mess);
+  Mess.Active:=true;
+  Mess.Minimized:=false;
+  Mess.ActiveWindow:=0;
+  if GtkWidgetIsA(Widget,GTK_WINDOW_TYPE) then
+    Mess.ActiveWindow:=HWnd(PGTKWindow(Widget)^.focus_widget);
+  Mess.Result := 0;
+  DeliverPostMessage(Data, Mess);
 
-  {$ifdef GTK2}
   Result := CallBackDefaultReturn;
-  {$Else}
-  Result := Status;
-  {$endif}
 end;
 
 function gtkfrmdeactivateAfter( widget: PGtkWidget; Event : PgdkEventFocus;
@@ -3103,6 +3111,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.235  2004/06/28 15:45:48  mattias
+  fixed a mem violation in gtk intf paint msg conversion
+
   Revision 1.234  2004/06/24 20:49:10  marc
   * Applied patch from Ido
 

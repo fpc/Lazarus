@@ -7347,6 +7347,7 @@ var
     PaintDC: HDC;
     GtkPaintData: TLMGtkPaintData;
     DCOrigin: TPoint;
+    OldGtkPaintMsg: TLMGtkPaint;
   begin
     (* MG: old trick. Not used anymore, but it might be, that someday there
            will be component, that works better with this, so it is kept.
@@ -7398,10 +7399,11 @@ var
     end;
     {$ENDIF}
     if AMessage.Msg=LM_GtkPAINT then begin
-      GtkPaintData:=TLMGtkPaintData(AMessage.wParam);
+      OldGtkPaintMsg:=TLMGtkPaint(AMessage);
+      GtkPaintData:=OldGtkPaintMsg.Data;
       // convert LM_GtkPAINT to LM_PAINT
       AMessage := TLMessage(GtkPaintMessageToPaintMessage(
-                                                TLMGtkPaint(AMessage), True));
+                                                TLMGtkPaint(AMessage), False));
       {$IfNDef GTK2}
       if (GtkPaintData<>nil) and (not GtkPaintData.RepaintAll) then begin
         PaintDC:=TLMPaint(AMessage).DC;
@@ -7411,6 +7413,7 @@ var
                             Right-DCOrigin.X,Bottom-DCOrigin.Y);
       end;
       {$EndIf}
+      GtkPaintData.Free;
     end;
   end;
   
@@ -8697,6 +8700,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.353  2004/06/28 15:45:48  mattias
+  fixed a mem violation in gtk intf paint msg conversion
+
   Revision 1.352  2004/06/09 20:51:45  vincents
   implemented basic clipboard support for win32
 

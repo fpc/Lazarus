@@ -329,7 +329,7 @@ function GetComboBoxItemIndex(ComboBox: TComboBox): integer;
 procedure SetComboBoxItemIndex(ComboBox: TComboBox; Index: integer);
 
 // paint messages
-function GtkPaintMessageToPaintMessage(const GtkPaintMsg: TLMGtkPaint;
+function GtkPaintMessageToPaintMessage(var GtkPaintMsg: TLMGtkPaint;
   FreeGtkPaintMsg: boolean): TLMPaint;
 procedure FinalizePaintMessage(Msg: PLMessage);
 procedure FinalizePaintTagMsg(Msg: PMsg);
