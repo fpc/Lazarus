@@ -155,7 +155,7 @@ function LockOnChange(GtkObject: PGtkObject; LockOffset: integer): integer;
 begin
   Result:=Integer(gtk_object_get_data(GtkObject,'OnChangeLock'));
   if LockOffset<>0 then begin
-    inc(Result);
+    inc(Result,LockOffset);
     gtk_object_set_data(GtkObject,'OnChangeLock',Pointer(Result));
   end;
 end;
@@ -3985,6 +3985,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.160  2003/03/02 23:08:31  mattias
+  fixed TComboBox.OnChange
+
   Revision 1.159  2003/02/18 22:56:23  mattias
   fixed key grabbing
 
