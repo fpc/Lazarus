@@ -387,6 +387,7 @@ type
 
   protected
     procedure SetToolStatus(const AValue: TIDEToolStatus); override;
+    function DoResetToolStatus(Interactive: boolean): boolean;
 
     procedure ToolButtonClick(Sender: TObject);
     procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
@@ -1018,6 +1019,12 @@ procedure TMainIDE.MainIDEFormCloseQuery(Sender : TObject;
 var
   MsgResult: integer;
 begin
+  // stop debugging/compiling/...
+  if not DoResetToolStatus(true) then begin
+    CanClose:=false;
+    exit;
+  end;
+
   // check packages
   if (PkgBoss.DoSaveAllPackages([psfAskBeforeSaving])<>mrOk)
   or (PkgBoss.DoCloseAllPackageEditors<>mrOk) then begin
@@ -2185,6 +2192,24 @@ end;
 procedure TMainIDE.SetToolStatus(const AValue: TIDEToolStatus);
 begin
   inherited SetToolStatus(AValue);
+end;
+
+function TMainIDE.DoResetToolStatus(Interactive: boolean): boolean;
+begin
+  Result:=false;
+  case ToolStatus of
+
+  itDebugger:
+    begin
+      if Interactive
+      and (MessageDlg('Stop Debugging?',
+          'Stop the debugging?',mtConfirmation,[mbYes,mbCancel],0)<>mrYes)
+      then exit;
+      DebugBoss.DoStopProject;
+    end;
+
+  end;
+  Result:=true;
 end;
 
 
@@ -5194,7 +5219,7 @@ begin
 writeln('TMainIDE.DoSaveProject End');
 end;
 
-function TMainIDE.DoCloseProject:TModalResult;
+function TMainIDE.DoCloseProject: TModalResult;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('TMainIDE.DoCloseProject A');
@@ -5218,8 +5243,8 @@ begin
   {$ENDIF}
 end;
 
-function TMainIDE.DoOpenProjectFile(AFileName:string;
-  Flags: TOpenFlags):TModalResult;
+function TMainIDE.DoOpenProjectFile(AFileName: string;
+  Flags: TOpenFlags): TModalResult;
 var Ext,AText,ACaption: string;
   LowestEditorIndex,LowestUnitIndex,LastEditorIndex,i: integer;
   NewBuf: TCodeBuffer;
@@ -10140,6 +10165,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.673  2003/11/22 15:47:52  mattias
+  added auto stop debugging on close
+
   Revision 1.672  2003/11/22 15:29:20  mattias
   added short cmd line params
 
