@@ -86,8 +86,11 @@ implementation
 
 function FindPackagesTemplate: TDefineTemplate;
 begin
-  Result:=CodeToolBoss.DefineTree.FindDefineTemplateByName(
-    PackagesDefTemplName,true);
+  if (CodeToolBoss<>nil) then
+    Result:=CodeToolBoss.DefineTree.FindDefineTemplateByName(
+      PackagesDefTemplName,true)
+  else
+    Result:=nil;
 end;
 
 function FindPackageTemplateWithID(const PkgID: string): TDefineTemplate;
@@ -103,8 +106,11 @@ end;
 
 function FindCurrentProjectTemplate: TDefineTemplate;
 begin
-  Result:=CodeToolBoss.DefineTree.FindDefineTemplateByName(
-                                                      ProjectDefTemplName,true);
+  if (CodeToolBoss<>nil) then
+    Result:=CodeToolBoss.DefineTree.FindDefineTemplateByName(
+                                                      ProjectDefTemplName,true)
+  else
+    Result:=nil;
 end;
 
 function CreateProjectTemplate(var ProjectDirTemplate: TDefineTemplate
@@ -113,8 +119,12 @@ var
   ProjectDir, ProjectSrcPath, ProjectIncPath,
   ProjectUnitPath: TDefineTemplate;
 begin
+  if (CodeToolBoss=nil) then begin
+    Result:=nil;
+    exit;
+  end;
   Result:=FindCurrentProjectTemplate;
-  if Result<>nil then begin
+  if (Result<>nil) then begin
     ProjectDirTemplate:=Result.FindChildByName(ProjectDirDefTemplName);
     exit;
   end;

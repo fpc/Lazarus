@@ -43,9 +43,9 @@ uses
 type
   // TJITForm is a template TForm descendent class that can be altered at
   // runtime
-  TJITForm = class (TForm)
+  TJITForm = class(TForm)
   protected
-    class function NewInstance : TObject; override;
+    class function NewInstance: TObject; override;
   public
   end;
 
@@ -54,9 +54,9 @@ type
 
   // TJITDataModule is a template TDataModule descendent class that can be
   // altered at runtime
-  TJITDataModule = class (TDataModule)
+  TJITDataModule = class(TDataModule)
   protected
-    class function NewInstance : TObject; override;
+    class function NewInstance: TObject; override;
     procedure ValidateRename(AComponent: TComponent;
                              const CurName, NewName: string); override;
   public
@@ -71,6 +71,8 @@ type
     // the dummy template 'procedure of object' for all events
     procedure DoNothing;
   end;
+  
+  TJITClass = class of TPersistent;
   
 
 implementation
@@ -89,20 +91,20 @@ begin
   AComponent.SetDesigning(Value);
 end;
 
-{ TJITForm }
-
-function TJITForm.NewInstance: TObject;
-begin
-  Result:=inherited NewInstance;
-  TSetDesigningComponent.SetDesigningOfControl(TComponent(Result),true);
-end;
-
 { TPersistentWithTemplates }
 
 procedure TPersistentWithTemplates.DoNothing;
 // this is the template procedure for all events of the designed components
 begin
   // !!! do not write any code in here !!!
+end;
+
+{ TJITForm }
+
+function TJITForm.NewInstance: TObject;
+begin
+  Result:=inherited NewInstance;
+  TSetDesigningComponent.SetDesigningOfControl(TComponent(Result),true);
 end;
 
 { TJITDataModule }

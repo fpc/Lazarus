@@ -2589,7 +2589,8 @@ end;
 procedure TProjectDefineTemplates.Clear;
 begin
   if FMain<>nil then begin
-    CodeToolBoss.DefineTree.RemoveDefineTemplate(FMain);
+    if CodeToolBoss<>nil then
+      CodeToolBoss.DefineTree.RemoveDefineTemplate(FMain);
     FMain:=nil;
     FProjectDir:=nil;
     FFlags:=FFlags+[ptfFlagsChanged];
@@ -2667,6 +2668,9 @@ end.
 
 {
   $Log$
+  Revision 1.132  2003/07/14 09:03:39  mattias
+  deactivated FCL TDataModule
+
   Revision 1.131  2003/07/08 17:30:19  mattias
   fixed changing widget set and TStringGrid exceptions on ColCount=0
 

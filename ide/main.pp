@@ -883,6 +883,8 @@ begin
 
   // free project, if it is still there
   FreeThenNil(Project1);
+  
+  // free IDE parts
   FreeThenNil(FormEditor1);
   FreeThenNil(PkgBoss);
   FreeThenNil(GlobalDesignHook);
@@ -890,6 +892,7 @@ begin
   FreeThenNil(HiddenWindowsOnRun);
   FreeThenNil(TheOutputFilter);
   FreeThenNil(MacroList);
+  // IDE options objects
   FreeThenNil(CodeToolsOpts);
   FreeThenNil(MiscellaneousOptions);
   FreeThenNil(EditorOpts);
@@ -9351,6 +9354,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.624  2003/07/14 09:03:39  mattias
+  deactivated FCL TDataModule
+
   Revision 1.623  2003/07/12 09:11:28  mattias
   updated build scripts
 

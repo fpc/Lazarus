@@ -34,8 +34,10 @@ interface
 {$ASSERTIONS ON}
 {$endif}
 
-{$IFDEF VER1_0_8 or VER1_0_10}
-{$DEFINE UseFCLDataModule}
+{$IF VER1_0_8 or VER1_0_10}
+// There is a problem with try..except and calling JIT procedures, so we can't
+// use the FCL TDataModule at the moment
+{ $DEFINE UseFCLDataModule}
 {$ENDIF}
 
 uses
@@ -1201,26 +1203,27 @@ end;
 procedure TDataModule.DoCreate;
 begin
   if Assigned(FOnCreate) then
-  try
+  //try
     FOnCreate(Self);
-  except
+  {except
     begin
       if not HandleCreateException then
         raise;
     end;
-  end;
+  end;}
 end;
 
 procedure TDataModule.DoDestroy;
 begin
-  if Assigned(FOnDestroy) then
-  try
-    FOnDestroy(Self);
-  except
-    begin
-      if Assigned(ApplicationHandleException) then
-        ApplicationHandleException(Self);
-    end;
+  if Assigned(FOnDestroy) then begin
+    //try
+      FOnDestroy(Self);
+    {except
+      begin
+        if Assigned(ApplicationHandleException) then
+          ApplicationHandleException(Self);
+      end;
+    end;}
   end;
 end;
 
