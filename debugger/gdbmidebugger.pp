@@ -1025,7 +1025,11 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
     end;
 
     if CompactMode
-    then ExceptionMessage := GDBGetText('^^Exception($fp+8)^^.FMessage', [])
+    then begin
+      ExceptionMessage := GDBGetText('^^Exception($fp+8)^^.FMessage', []);
+      ExceptionMessage := DeleteBackSlashes(ExceptionMessage);
+      writeln('ExceptionMessage={',ExceptionMessage,'}');
+    end
     else ExceptionMessage := '### Not supported on GDB < 5.3 ###';
 
     Location.SrcLine := -1;
@@ -1033,11 +1037,13 @@ function TGDBMIDebugger.ProcessStopped(const AParams: String): Boolean;
     Location.FuncName := '';
     Location.Address := GDBGetData('$fp+12', []);
     
+  writeln('AAA1 ');
     if ExecuteCommand('info line * pointer(%d)', [Integer(Location.Address)],
                       S, [cfIgnoreError, cfNoMiCommand])
     then begin
       Location.SrcLine := StrToIntDef(GetPart('Line ', ' of', S), -1);
       Location.SrcFile := GetPart('\"', '\"', S);
+  writeln('AAA2 ',Location.SrcLine,' ',Location.SrcLine);
     end;
 
     DoException(ExceptionName, ExceptionMessage);
@@ -1881,6 +1887,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.27  2003/06/09 15:58:05  mattias
+  implemented view call stack key and jumping to last stack frame with debug info
+
   Revision 1.26  2003/06/09 14:30:47  marc
   MWE: + Added working dir.
 
