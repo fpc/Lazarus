@@ -271,7 +271,7 @@ procedure SetMainWidget(const ParentWidget, ChildWidget: Pointer);
 function GetFixedWidget(const Widget: Pointer): Pointer;
 procedure SetFixedWidget(const ParentWidget, FixedWidget: Pointer);
 Procedure FixedMoveControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
-Procedure FixedPutControl(Parent, Child : PGTKWIdget; Left, Top : Longint);
+Procedure FixedPutControl(Parent, Child : PGTKWidget; Left, Top : Longint);
 Function GetControlWindow(Control: Pointer) : PGDKWindow;
 function GetDCOffset(DC: TDeviceContext): TPoint;
 function CreateWidgetInfo(const Widget: Pointer): PWinWidgetInfo;
