@@ -97,11 +97,9 @@ end;
  ------------------------------------------------------------------------------}
 Procedure TCustomForm.FocusControl(Control : TWinControl);
 Begin
-//Writeln('[TCustomForm.FocusControl] A ',ClassName,' ',Control.ClassName);
   FActiveControl := Control;
   if HandleAllocated and Visible then
     LCLLinux.SetFocus(Control.Handle);
-//Writeln('[TCustomForm.FocusControl] END ',ClassName,' ',Control.ClassName);
 End;
 
 
@@ -949,6 +947,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2001/12/20 14:41:20  lazarus
+  Fixed setfocus for TComboBox and TMemo
+  Shane
+
   Revision 1.31  2001/12/19 10:59:12  lazarus
   MG: changes for fpc 1.1
 

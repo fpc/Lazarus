@@ -736,16 +736,13 @@ procedure TWinControl.SetFocus;
 var
   Form : TCustomForm;
 begin
-//Writeln('[TWINCONTROL.SETFOCUS] ',Name,':',ClassName);
    Form := GetParentForm(self);
-//   if Assigned(form) then
-//     Writeln('Form is assigned') else Writeln('Form is NOT assigned');
+
   if Form <> nil then
      Form.FocusControl(self)
   else
   if Visible and HandleAllocated then
      LCLLinux.SetFocus(Handle);
-//  Writeln('[TWINCONTROL.SETFOCUS] done');
 end;
 
 {------------------------------------------------------------------------------}
@@ -1933,6 +1930,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2001/12/20 14:41:20  lazarus
+  Fixed setfocus for TComboBox and TMemo
+  Shane
+
   Revision 1.44  2001/12/08 08:54:45  lazarus
   MG: added TControl.Refresh
 

@@ -3573,25 +3573,37 @@ function TgtkObject.SetFocus(hWnd: HWND): HWND;
 var
   TopLevel: PGTKWidget;
 begin
-//writeln('> TgtkObject.SetFocus A ',hWnd);
   if hwnd = 0
   then
     Result := 0
   else begin
-//writeln('> TgtkObject.SetFocus B');
     Result := GetFocus;
-//writeln('> TgtkObject.SetFocus C');
     TopLevel := gtk_widget_get_toplevel(PGTKWidget(hWND));
-//writeln('> TgtkObject.SetFocus D');
     if gtk_type_is_a(gtk_object_type(PGTKObject(TopLevel)), gtk_window_get_type)
     then begin
-//writeln('> TgtkObject.SetFocus E');
-      gtk_window_set_focus(PGTKWindow(TopLevel), PGTKWidget(hWND));
-//writeln('> TgtkObject.SetFocus F ',HexStr(Cardinal(GetFocus),8)
-//,' ',HexStr(Cardinal(TopLevel),8),' ',HexStr(Cardinal(hWnd),8));
-   end;
+      if GTK_WIDGET_CAN_FOCUS(TOPLEVEL) then
+         gtk_window_set_focus(PGTKWindow(TopLevel), PGTKWidget(hWND))
+         else
+         begin
+         if gtk_type_is_a(gtk_object_type(PGTKObject(hwnd)), gtk_combo_get_type) then
+            Begin
+               gtk_widget_grab_focus(PgtkWidget(PGtkCombo(hwnd)^.entry));
+            end
+            else
+         if GetCoreChildWidget(PGtkWidget(Hwnd)) <> nil then
+            gtk_widget_grab_focus(GetCoreChildWidget(PGtkWidget(Hwnd)))
+          else
+            gtk_widget_grab_focus(PgtkWidget(hwnd));
+         
+         
+         end;
+   end
+   else
+     begin
+       if GTK_WIDGET_CAN_FOCUS(PgtkWidget(hwnd)) then
+       gtk_widget_grab_focus(PgtkWidget(hwnd));
+     end;
   end;
-//writeln('>  TgtkObject.SetFocus End');
 end;
 
 Function TgtkObject.SetProp(Handle: hwnd; Str : PChar; Data : Pointer) : Boolean;
@@ -4084,6 +4096,10 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.52  2001/12/20 14:41:20  lazarus
+  Fixed setfocus for TComboBox and TMemo
+  Shane
+
   Revision 1.51  2001/12/12 14:23:18  lazarus
   MG: implemented DestroyCaret
 
