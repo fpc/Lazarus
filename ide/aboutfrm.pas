@@ -36,10 +36,8 @@ type
     Label1: TLABEL;
     procedure AboutFormResize(Sender: TObject);
   private
-    { private declarations }
     FPixmap : TPixmap;
   public
-    { public declarations }
     procedure Paint; override;
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
@@ -87,6 +85,7 @@ begin
 
   FPixmap := TPixmap.Create;
   FPixmap.LoadFromLazarusResource('lazarus_about_logo');
+  Caption:=lisAboutLazarus;
   Label1.Caption := lisVersion+' #: '+lisLazarusVersionString;
   Label2.Caption := lisDate+': '+GetLocalizedBuildDate;
   
