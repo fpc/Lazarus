@@ -1361,7 +1361,7 @@ begin
   while (Run<=FLineLen) and (not (fLine[Run] in [#0, #10, #13])) do begin
     if fLine[Run] = '''' then begin
       Inc(Run);
-      if (Run<=fLineLen) and (fLine[Run] <> '''') then
+      if (Run>fLineLen) or (fLine[Run] <> '''') then
         break;
     end;
     Inc(Run);
