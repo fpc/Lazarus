@@ -18,7 +18,6 @@ options=-gl
 dirs=../packager/registration
 units=allideintf
 implicitunits=actionseditor \
-  actionseditor \
   columndlg \
   componenteditors \
   componentreg \
