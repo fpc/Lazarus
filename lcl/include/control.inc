@@ -1904,6 +1904,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------}
+{  TControl SetTempCursor                                                      }
+{------------------------------------------------------------------------------}
+procedure TControl.SetTempCursor(Value: TCursor);
+begin
+  TWSControlClass(WidgetSetClass).SetCursor(Self, Value);
+end;
+
+{------------------------------------------------------------------------------}
 {  TControl SetCursor                                                          }
 {------------------------------------------------------------------------------}
 procedure TControl.SetCursor(Value: TCursor);
@@ -1911,7 +1919,7 @@ begin
   if FCursor <> Value
   then begin
     FCursor := Value;
-    TWSControlClass(WidgetSetClass).SetCursor(Self, Value);
+    SetTempCursor(Value);
   end;
 end;
 
@@ -3186,6 +3194,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.190  2004/06/14 12:54:02  micha
+  fix designer cursor to not set Form.Cursor directly
+
   Revision 1.189  2004/06/01 22:49:50  mattias
   added workaround for buggy typinfo GetMethodProp function
 

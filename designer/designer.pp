@@ -162,6 +162,7 @@ type
     Procedure MouseUpOnControl(Sender: TControl; var TheMessage:TLMMouse);
     Procedure KeyDown(Sender: TControl; var TheMessage:TLMKEY);
     Procedure KeyUp(Sender: TControl; var TheMessage:TLMKEY);
+    function  HandleSetCursor(var TheMessage: TLMessage): boolean;
 
     // procedures for working with components
     procedure DoDeleteSelectedComponents;
@@ -923,6 +924,13 @@ begin
     Exclude(FFlags,dfDuringPaintControl);
 end;
 
+function TDesigner.HandleSetCursor(var TheMessage: TLMessage): boolean;
+begin
+  Form.SetTempCursor(LastFormCursor);
+  TheMessage.Result := 1;
+  Result := true;
+end;
+
 function TDesigner.SizeControl(Sender: TControl; TheMessage: TLMSize):boolean;
 begin
   Result:=true;
@@ -1397,7 +1405,7 @@ begin
     end;
     if ACursor<>LastFormCursor then begin
       LastFormCursor:=ACursor;
-      Form.Cursor:=ACursor;
+      Form.SetTempCursor(ACursor);
     end;
 
     exit;
@@ -1654,6 +1662,7 @@ Begin
       LM_MOVE:        Result:=MoveControl(Sender,TLMMove(TheMessage));
       LM_ACTIVATE:    Result:=OnFormActivated;
       LM_CLOSEQUERY:  Result:=OnFormCloseQuery;
+      LM_SETCURSOR:   Result:=HandleSetCursor(TheMessage);
     else
       Result:=false;
     end;

@@ -1014,6 +1014,7 @@ type
                                     ExceptionOnInvalid: boolean): boolean;
     procedure CheckNewParent(AParent: TWinControl); virtual;
     procedure SendToBack;
+    procedure SetTempCursor(Value: TCursor);
     procedure SetBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetInitialBounds(aLeft, aTop, aWidth, aHeight: integer); virtual;
     procedure SetBoundsKeepBase(aLeft, aTop, aWidth, aHeight: integer;
@@ -2320,6 +2321,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.209  2004/06/14 12:54:02  micha
+  fix designer cursor to not set Form.Cursor directly
+
   Revision 1.208  2004/06/01 22:49:50  mattias
   added workaround for buggy typinfo GetMethodProp function
 

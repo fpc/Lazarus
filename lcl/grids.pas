@@ -1274,8 +1274,8 @@ begin
     end;
   end else
   if FScrollBars in [ssHorizontal, ssBoth] then HsbRange:=0;
-  If HsbVisible then ScrollBarRange(SB_HORZ, {HsbVisible, }HsbRange );
   ScrollBarShow(SB_HORZ, HsbVisible);
+  If HsbVisible then ScrollBarRange(SB_HORZ, {HsbVisible, }HsbRange );
 
   with FGCache do
   if ScrollBarAutomatic(ssVertical)  then begin
@@ -1292,8 +1292,8 @@ begin
     end;
   end else
   if FScrollBars in [ssVertical, ssBoth] then VsbRange:= 0;
-  if VsbVisible then ScrollbarRange(SB_VERT, {VsbVisible, }VsbRange );
   ScrollBarShow(SB_VERT, VsbVisible);
+  if VsbVisible then ScrollbarRange(SB_VERT, {VsbVisible, }VsbRange );
 
   CacheVisibleGrid;
   Invalidate;

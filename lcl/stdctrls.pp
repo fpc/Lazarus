@@ -914,8 +914,6 @@ type
     property ParentFont;
     property ParentShowHint;
     property TabOrder;
-    property OnEnter;
-    property OnExit;
   end;
 {$EndIf NewCheckBox}
 
@@ -1560,6 +1558,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.148  2004/06/14 12:54:02  micha
+  fix designer cursor to not set Form.Cursor directly
+
   Revision 1.147  2004/06/10 22:07:58  vincents
   listbox style changes are notified to the widgetset
 

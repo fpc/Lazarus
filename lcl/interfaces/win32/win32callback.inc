@@ -794,12 +794,17 @@ Begin
     End;
     WM_SETCURSOR:
     begin
-      if (TheWinControl <> nil) and (TheWinControl.Cursor <> crDefault) then
+      if (TheWinControl <> nil) and (TheWinControl.Cursor <> crDefault) and
+        not (csDesigning in TheWinControl.ComponentState) then
       begin
         Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[TheWinControl.Cursor]));
-        WinProcess := false;
         LMessage.Result := 1;
+      end else begin
+        LMessage.Msg := LM_SETCURSOR;
+        LMessage.WParam := WParam;
+        LMessage.LParam := LParam;
       end;
+      WinProcess := false;
     end;
     WM_SETFOCUS:
     Begin
@@ -997,7 +1002,7 @@ Begin
   {$ENDIF VER1_1_MSG}
 
   case Msg of
-    WM_ERASEBKGND:
+    WM_ERASEBKGND, WM_SETCURSOR:
     begin
       if LMessage.Result = 0 then
         WinProcess := true;
@@ -1212,6 +1217,9 @@ end;
 
 {
   $Log$
+  Revision 1.113  2004/06/14 12:54:02  micha
+  fix designer cursor to not set Form.Cursor directly
+
   Revision 1.112  2004/06/13 13:30:21  micha
   fix wm_setcursor to return TRUE if processed
 

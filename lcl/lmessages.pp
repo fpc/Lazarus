@@ -235,6 +235,8 @@ const
 
   LM_DRAWLISTITEM   = LM_User+80;
 
+  LM_SETCURSOR      = LM_User+81;
+
   LM_INTERNALPAINT  = LM_User + 90;
   LM_APPENDTEXT     = LM_User + 91;
 
@@ -1080,6 +1082,9 @@ end.
 
 {
   $Log$
+  Revision 1.64  2004/06/14 12:54:02  micha
+  fix designer cursor to not set Form.Cursor directly
+
   Revision 1.63  2004/05/14 17:17:29  micha
   add measureitem message and struct
 
