@@ -178,6 +178,22 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TGtkObject.SetWindowSizeAndPosition
+  Params:  Widget: PGtkWidget; AWinControl: TWinControl
+  Returns: Nothing
+
+  Set the size and position of a top level window.
+ ------------------------------------------------------------------------------}
+procedure TgtkObject.SetWindowSizeAndPosition(Window: PGtkWindow;
+  AWinControl: TWinControl);
+begin
+  gtk_window_set_default_size(Window,AWinControl.Width,AWinControl.Height);
+  gtk_widget_set_usize(PGtkWidget(Window), -1,-1);
+  gtk_widget_set_usize(PGtkWidget(Window),AWinControl.Width,AWinControl.Height);
+  gtk_widget_set_uposition(PGtkWidget(Window),AWinControl.Left,AWinControl.Top);
+end;
+
+{------------------------------------------------------------------------------
   Method: TGtkObject.SendCachedLCLMessages
   Params:  None
   Returns: Nothing
@@ -238,21 +254,13 @@ procedure TgtkObject.SendCachedLCLMessages;
       end
       else begin
         // resize form
-        gtk_window_set_default_size(PgtkWindow(Widget),
-                                    LCLControl.Width,LCLControl.Height);
-        {$IFDEF VerboseClientRectBugFix}
-        writeln('BBB1 SendCachedLCLMessages ',Widget^.window<>nil);
+        {$IFDEF VerboseFormPositioning}
+        writeln('VFP SendCachedLCLMessages1 ',Widget^.window<>nil);
         if (LCLControl is TCustomForm) then
-          writeln('BBB2 SendCachedLCLMessages ',LCLControl.ClassName,' ',LCLControl.Left,',',LCLControl.Top);
+          writeln('VFP SendCachedLCLMessages2 ',LCLControl.ClassName,' ',
+            LCLControl.Left,',',LCLControl.Top,',',LCLControl.Width,',',LCLControl.Height);
         {$ENDIF}
-        if Widget^.window<>nil then begin
-          gdk_window_resize(Widget^.window,LCLControl.Width, LCLControl.Height);
-          gdk_window_move(Widget^.window,LCLControl.Left,LCLControl.Top);
-        end else begin
-          gtk_widget_set_usize(Widget, -1,-1);
-          gtk_widget_set_usize(Widget, LCLControl.Width, LCLControl.Height);
-          gtk_widget_set_uposition(Widget, LCLControl.Left, LCLControl.Top);
-        end;
+        SetWindowSizeAndPosition(PgtkWindow(Widget),TWinControl(LCLControl));
       end;
 
     end;
@@ -289,7 +297,6 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkObject.SendCachedGtkMessages;
 
-  {$IFDEF ClientRectBugFix}
   procedure SendSizeNotificationToLCL(MainWidget: PGtkWidget);
   var
     LCLControl: TWinControl;
@@ -326,13 +333,21 @@ procedure TGtkObject.SendCachedGtkMessages;
     IsTopLevelWidget:=(LCLControl is TCustomForm)
                       and (LCLControl.Parent=nil);
     if IsTopLevelWidget then begin
+      if not GTK_WIDGET_VISIBLE(MainWidget) then begin
+        // size/move messages of invisible windows are not reliable
+        // -> ignore
+        exit;
+      end;
       if MainWidget^.window<>nil then begin
         gdk_window_get_root_origin(MainWidget^.window, @GtkLeft, @GtkTop);
       end else begin
         GtkLeft:=LCLControl.Left;
         GtkTop:=LCLControl.Top;
       end;
-      //writeln('SendSizeNotificationToLCL ',LCLControl.ClassName,' ',GtkLeft,',',GtkTop);
+      {$IFDEF VerboseFormPositioning}
+      writeln('VFP SendSizeNotificationToLCL ',LCLControl.ClassName,' ',
+        GtkLeft,',',GtkTop,',',GtkWidth,',',GtkHeight);
+      {$ENDIF}
     end;
     
     UpdateLCLRect;
@@ -461,9 +476,9 @@ procedure TGtkObject.SendCachedGtkMessages;
       end;
     end;
     
-    { if there any client area was resized, which MainWidget Size was already in
-      sync with the LCL, no message was send. So, tell each changed client area
-      to check its size.
+    { if any client area was resized, which MainWidget Size was already in sync
+      with the LCL, no message was send. So, tell each changed client area to
+      check its size.
     }
     {$IFDEF VerboseSizeMsg}
     writeln('HHH3 SendCachedGtkClientResizeNotifications Updating ClientRects ...');
@@ -483,12 +498,9 @@ procedure TGtkObject.SendCachedGtkMessages;
     writeln('HHH4 SendCachedGtkClientResizeNotifications  completed.');
     {$ENDIF}
   end;
-  {$ENDIF}
 
 begin
-  {$IFDEF ClientRectBugFix}
   SendCachedGtkResizeNotifications;
-  {$ENDIF}
 end;
 
 {------------------------------------------------------------------------------
@@ -3817,29 +3829,18 @@ begin
   //if Sender is TForm then
   //  writeln('[TgtkObject.ShowHide] START ',Sender.ClassName,' Visible=',TControl(Sender).Visible,' Window=',FormWidget^.Window<>nil);
   if TControl(Sender).Visible then begin
-    {$IFDEF ClientRectBugFix}
     if (Sender is TCustomForm) and (not gtk_widget_visible(SenderWidget)) then
     begin
-      {$IFDEF VerboseClientRectBugFix}
-      writeln('[TgtkObject.ShowHide] A set bounds ',
+      {$IFDEF VerboseFormPositioning}
+      writeln('VFP [TgtkObject.ShowHide] A set bounds ',
         TControl(Sender).Name,':',TControl(Sender).ClassName,
         ' Window=',SenderWidget^.Window<>nil,
-        ' ',TControl(Sender).Left,',',TControl(Sender).Top);
+        ' ',TControl(Sender).Left,',',TControl(Sender).Top,
+        ',',TControl(Sender).Width,',',TControl(Sender).Height);
       {$ENDIF}
-      {if SenderWidget^.Window<>nil then begin
-        gdk_window_resize(SenderWidget^.window,
-          TControl(Sender).Width,TControl(Sender).Height);
-        gdk_window_move(SenderWidget^.window,
-          TControl(Sender).Left, TControl(Sender).Top);
-      end else begin}
-        gtk_window_set_default_size(PgtkWindow(SenderWidget),
-                                 TControl(Sender).Width,TControl(Sender).Height);
-        gtk_widget_set_uposition(PgtkWidget(SenderWidget),
-                                 TControl(Sender).Left, TControl(Sender).Top);
-      //end;
+      SetWindowSizeAndPosition(PgtkWindow(SenderWidget),TWinControl(Sender));
       UnsetResizeRequest(PgtkWidget(Sender));
     end;
-    {$ENDIF}
     gtk_widget_show(SenderWidget);
     if (Sender is TCustomForm) and (SenderWidget^.Window<>nil) then begin
       FormIconGdiObject:=PGDIObject(TCustomForm(Sender).GetIconHandle);
@@ -5252,6 +5253,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.139  2002/06/09 07:08:43  lazarus
+  MG: fixed window jumping
+
   Revision 1.138  2002/06/08 17:16:04  lazarus
   MG: added close buttons and images to TNoteBook and close buttons to source editor
 
