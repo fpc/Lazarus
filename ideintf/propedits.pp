@@ -3516,7 +3516,6 @@ begin
         if NewItemIndex=i then NewItemIndex:=-1;
       end;
       CollectionListBox.ItemIndex := -1;
-      CollectionListBox.Items.Delete(i);
       if NewItemIndex>i then dec(NewItemIndex);
       //debugln('TCollectionPropertyEditorForm.DeleteClick A NewItemIndex=',dbgs(NewItemIndex),' ItemIndex=',dbgs(CollectionListBox.ItemIndex),' CollectionListBox.Items.Count=',dbgs(CollectionListBox.Items.Count),' Collection.Count=',dbgs(Collection.Count));
       // unselect all items in OI (collections can act strange on delete)
