@@ -79,6 +79,20 @@ type
   pByte = ^byte;
   HGLOBAL = THAndle;
 
+  TgComponentStyle = LongInt;
+  AnsiChar = Char;  //Should be moved
+  WideChar = Char;
+  Short = SmallInt;
+  THAndle = Integer;
+  hwnd    = THandle;
+  TCaption = string;
+  //TMessage = Pointer;
+  HMENU = type LongWord;
+  HBitmap = type LongWord;
+  HPalette = type LongWord;
+
+  HBRUSH = type LongWord;
+
   // from Delphis sysutils.pas
   PByteArray = ^TByteArray;
   TByteArray = array[0..32767] of Byte;
@@ -1797,6 +1811,9 @@ end.
 
 {
   $Log$
+  Revision 1.36  2003/04/12 09:26:58  mattias
+  fixes for current fpc 1.1
+
   Revision 1.35  2003/03/29 17:20:05  mattias
   added TMemoScrollBar
 

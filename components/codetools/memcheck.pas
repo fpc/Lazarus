@@ -1366,7 +1366,12 @@ const
   { only set using environment variables          }
   outputstr : shortstring = '';
 
+const
+  NullCall = {$IFDEF NEW1_1}nil{$ELSE}0{$ENDIF};
+  
 type
+  TCall = {$IFDEF New1_1}pointer{$ELSE}longint{$ENDIF};
+
   pheap_extra_info = ^theap_extra_info;
   theap_extra_info = record
     check       : cardinal;  { used to check if the procvar is still valid }
@@ -1392,11 +1397,12 @@ type
     release_sig : longword;
     prev_valid  : pheap_mem_info;
 {$endif EXTRA}
-    calls    : array [1..tracesize] of longint;
+    calls    : array [1..tracesize] of TCall;
     exact_info_size : word;
     extra_info_size : word;
     extra_info      : pheap_extra_info;
   end;
+  
 
 var
   ptext : ^text;
@@ -1610,7 +1616,7 @@ var
 begin
   writeln(ptext,'Call trace for block 0x',hexstr(longint(pointer(pp)+sizeof(theap_mem_info)),8),' size ',pp^.size);
   for i:=1 to tracesize do
-   if pp^.calls[i]<>0 then
+   if pp^.calls[i]<>NullCall then
      writeln(ptext,BackTraceStrFunc(pp^.calls[i]));
   { the check is done to be sure that the procvar is not overwritten }
   if assigned(pp^.extra_info) and
@@ -1626,11 +1632,11 @@ var
 begin
   writeln(ptext,'Call trace for block at 0x',hexstr(longint(pointer(pp)+sizeof(theap_mem_info)),8),' size ',pp^.size);
   for i:=1 to tracesize div 2 do
-   if pp^.calls[i]<>0 then
+   if pp^.calls[i]<>NullCall then
      writeln(ptext,BackTraceStrFunc(pp^.calls[i]));
   writeln(ptext,' was released at ');
   for i:=(tracesize div 2)+1 to tracesize do
-   if pp^.calls[i]<>0 then
+   if pp^.calls[i]<>NullCall then
      writeln(ptext,BackTraceStrFunc(pp^.calls[i]));
   { the check is done to be sure that the procvar is not overwritten }
   if assigned(pp^.extra_info) and
@@ -1724,7 +1730,8 @@ end;
 
 Function TraceGetMem(size:longint):pointer;
 var
-  allocsize,i,bp : longint;
+  allocsize,i: longint;
+  bp : TCall;
   pl : pdword;
   p : pointer;
   pp : pheap_mem_info;
@@ -1807,7 +1814,8 @@ end;
 
 function TraceFreeMemSize(p:pointer;size:longint):longint;
 var
-  i,bp, ppsize : longint;
+  i, ppsize : longint;
+  bp: TCall;
   pp : pheap_mem_info;
 {$ifdef EXTRA}
   pp2 : pheap_mem_info;
@@ -1967,7 +1975,8 @@ var
   newP: pointer;
   oldsize,
   allocsize,
-  i,bp : longint;
+  i : longint;
+  bp: TCall;
   pl : pdword;
   pp : pheap_mem_info;
   oldextrasize,
@@ -2551,6 +2560,9 @@ end.
 
 {
   $Log$
+  Revision 1.19  2003/04/12 09:26:58  mattias
+  fixes for current fpc 1.1
+
   Revision 1.18  2003/03/30 20:37:15  mattias
   ipro now shows simple HTML pages
 

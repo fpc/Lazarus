@@ -29,7 +29,7 @@
   Author: Mattias Gaertner
 
   Abstract:
-    TPackageOptionsDialog is the form for the options of a package.
+    TPackageOptionsDialog is the form for the general options of a package.
 }
 unit PkgOptionsDlg;
 
@@ -44,12 +44,16 @@ uses
 type
   TPackageOptionsDialog = class(TForm)
     Notebook: TNotebook;
-    // general page
-    GeneralPage: TPage;
+    // description page
+    DescriptionPage: TPage;
     DescriptionGroupBox: TGroupBox;
     DescriptionMemo: TMemo;
     UsageRadioGroup: TRadioGroup;
     BuildRadioGroup: TRadioGroup;
+    AuthorLabel: TLabel;
+    AuthorEdit: TEdit;
+    // usage page
+    UsagePage: TPage;
     
   public
     constructor Create(TheOwner: TComponent); override;
