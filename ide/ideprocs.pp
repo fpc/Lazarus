@@ -105,9 +105,7 @@ procedure LoadStringList(XMLConfig: TXMLConfig; List: TStringList;
 procedure SaveStringList(XMLConfig: TXMLConfig; List: TStringList;
   const Path: string);
 
-// miscellaneous
-procedure FreeThenNil(var Obj: TObject);
-
+// text conversion
 function TabsToSpaces(const s: string; TabWidth: integer): string;
 function CommentLines(const s: string): string;
 function CommentText(const s: string; CommentType: TCommentType): string;
@@ -115,19 +113,24 @@ function UncommentLines(const s: string): string;
 function CrossReplaceChars(const Src: string; PrefixChar: char;
   const SpecialChars: string): string;
 function SimpleSyntaxToRegExpr(const Src: string): string;
-
-procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
-
 function NameToValidIdentifier(const s: string): string;
 function BinaryStrToText(const s: string): string;
 
+// translation/internationalization/localization
+procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
+
+// environment
 function EnvironmentAsStringList: TStringList;
 procedure AssignEnvironmentTo(DestStrings, Overrides: TStrings);
 function GetCurrentUserName: string;
 function GetCurrentMailAddress: string;
 
+// debugging
 procedure RaiseException(const Msg: string);
 
+// miscellaneous
+procedure FreeThenNil(var Obj: TObject);
+function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
 
 implementation
 
@@ -513,6 +516,23 @@ procedure FreeThenNil(var Obj: TObject);
 begin
   Obj.Free;
   Obj:=nil;
+end;
+
+{-------------------------------------------------------------------------------
+  function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
+-------------------------------------------------------------------------------}
+function CompareCaret(const FirstCaret, SecondCaret: TPoint): integer;
+begin
+  if (FirstCaret.Y<SecondCaret.Y) then
+    Result:=1
+  else if (FirstCaret.Y>SecondCaret.Y) then
+    Result:=-1
+  else if (FirstCaret.X<SecondCaret.X) then
+    Result:=1
+  else if (FirstCaret.X>SecondCaret.X) then
+    Result:=-1
+  else
+    Result:=0;
 end;
 
 {-------------------------------------------------------------------------------
