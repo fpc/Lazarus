@@ -762,6 +762,30 @@ begin
   end;
 end;
 
+procedure FreeWinWidgetInfo(Widget: Pointer);
+var
+  WinWidgetInfo: PWinWidgetInfo;
+begin
+  if Widget=nil then exit;
+  WinWidgetInfo := gtk_object_get_data(Widget, 'widgetinfo');
+  if WinWidgetInfo<>nil then begin
+    Dispose(WinWidgetInfo);
+    gtk_object_set_data(Widget,'widgetinfo',nil);
+  end;
+end;
+
+{-------------------------------------------------------------------------------
+  procedure DestroyWidget(Widget: PGtkWidget);
+
+
+-------------------------------------------------------------------------------}
+procedure DestroyWidget(Widget: PGtkWidget);
+begin
+  FreeWinWidgetInfo(Widget);
+  gtk_widget_destroy(Widget);
+end;
+
+
 // ----------------------------------------------------------------------
 // the core_child widget points to the actual widget which implements the 
 // functionality we needed. It is mainly used in composed controls like
@@ -1787,7 +1811,7 @@ begin
     // there are already inner widgets
     if LCLMenuItem.Caption='-' then begin
       // a separator is an empty gtkmenuitem -> delete the inner widgets
-      gtk_widget_destroy(HBoxWidget);
+      DestroyWidget(HBoxWidget);
       gtk_object_set_data(PGtkObject(MenuItemWidget), 'LCLHBox', nil);
     end else begin
       // just update the content
@@ -2382,6 +2406,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.67  2002/08/21 11:29:36  lazarus
+  MG: fixed mem some leaks in ide and gtk
+
   Revision 1.66  2002/08/21 10:46:37  lazarus
   MG: fixed unreleased gdiRegions
 
