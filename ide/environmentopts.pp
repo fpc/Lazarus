@@ -1212,14 +1212,14 @@ procedure TEnvironmentOptions.InitLayoutList;
   
 var
   i: integer;
+  l: TNonModalIDEWindow;
 begin
   fIDEWindowLayoutList:=TIDEWindowLayoutList.Create;
 
-  CreateWindowLayout(DefaultMainIDEName);
+  for l:=Low(TNonModalIDEWindow) to High(TNonModalIDEWindow) do
+    if l<>nmiwNone then
+      CreateWindowLayout(NonModalIDEWindowNames[l]);
   CreateWindowLayout(DefaultObjectInspectorName);
-  CreateWindowLayout(DefaultSourceNoteBookName);
-  CreateWindowLayout(DefaultMessagesViewName);
-  CreateWindowLayout(DefaultUnitDependenciesName);
 
   for i:=0 to fIDEWindowLayoutList.Count-1 do begin
     IDEWindowLayoutList[i].OnApply:=@InternOnApplyWindowLayout;
@@ -3641,9 +3641,9 @@ begin
     WindowPositionsBox.Save;
   WindowPositionsListBox.ItemIndex:=Index;
   case Index of
-  0: WindowPositionsBox.Layout:=FLayouts.ItemByFormID(DefaultMainIDEName);
-  1: WindowPositionsBox.Layout:=FLayouts.ItemByFormID(DefaultSourceNoteBookName);
-  2: WindowPositionsBox.Layout:=FLayouts.ItemByFormID(DefaultMessagesViewName);
+  0: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwMainIDEName);
+  1: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwSourceNoteBookName);
+  2: WindowPositionsBox.Layout:=FLayouts.ItemByEnum(nmiwMessagesViewName);
   3: WindowPositionsBox.Layout:=FLayouts.ItemByFormID(DefaultObjectInspectorName);
   end;
   if Index>=0 then

@@ -98,7 +98,7 @@ var
 begin
   inherited Create(TheOwner);
   
-  Name:=DefaultClipbrdHistoryName;
+  Name:=NonModalIDEWindowNames[nmiwClipbrdHistoryName];
   Caption := 'Clipboard History';
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
   ALayout.Form:=TForm(Self);

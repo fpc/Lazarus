@@ -49,6 +49,7 @@ uses
   KeyMapping, EnvironmentOpts, IDEProcs, ProjectDefs, InputHistory,
   IDEDefs, UComponentManMain, PackageEditor, AddToPackageDlg, PackageDefs,
   PackageLinks, PackageSystem, ComponentReg, OpenInstalledPkgDlg,
+  PkgGraphExporer,
   BasePkgManager, MainBar;
 
 type
@@ -63,6 +64,9 @@ type
     function OnPackageEditorOpenPackage(Sender: TObject; APackage: TLazPackage
       ): TModalResult;
     procedure OnPackageEditorSavePackage(Sender: TObject);
+    procedure PackageGraphChangePackageName(Pkg: TLazPackage;
+      const OldName: string);
+    procedure PkgManagerAddPackage(Pkg: TLazPackage);
     procedure mnuConfigCustomCompsClicked(Sender: TObject);
     procedure mnuPkgEditPackageClicked(Sender: TObject);
     procedure mnuOpenRecentPackageClicked(Sender: TObject);
@@ -210,6 +214,20 @@ procedure TPkgManager.OnPackageEditorSavePackage(Sender: TObject);
 begin
   if Sender is TLazPackage then
     DoSavePackage(TLazPackage(Sender),[]);
+end;
+
+procedure TPkgManager.PackageGraphChangePackageName(Pkg: TLazPackage;
+  const OldName: string);
+begin
+  if PackageGraphExplorer<>nil then
+    PackageGraphExplorer.UpdatePackageName(Pkg,OldName);
+end;
+
+procedure TPkgManager.PkgManagerAddPackage(Pkg: TLazPackage);
+begin
+writeln('TPkgManager.PkgManagerAddPackage ',PackageGraphExplorer<>nil);
+  if PackageGraphExplorer<>nil then
+    PackageGraphExplorer.UpdatePackageAdded(Pkg);
 end;
 
 procedure TPkgManager.mnuConfigCustomCompsClicked(Sender: TObject);
@@ -414,6 +432,8 @@ begin
   PkgLinks:=TPackageLinks.Create;
   
   PackageGraph:=TLazPackageGraph.Create;
+  PackageGraph.OnChangePackageName:=@PackageGraphChangePackageName;
+  PackageGraph.OnAddPackage:=@PkgManagerAddPackage;
   
   PackageEditors:=TPackageEditors.Create;
   PackageEditors.OnOpenFile:=@MainIDE.DoOpenMacroFile;
@@ -426,6 +446,7 @@ end;
 
 destructor TPkgManager.Destroy;
 begin
+  FreeThenNil(PackageGraphExplorer);
   FreeThenNil(PackageEditors);
   FreeThenNil(PackageGraph);
   FreeThenNil(PkgLinks);
@@ -671,7 +692,11 @@ end;
 
 function TPkgManager.DoShowPackageGraph: TModalResult;
 begin
-  Result:=mrCancel;
+  if PackageGraphExplorer=nil then
+    PackageGraphExplorer:=TPkgGraphExplorer.Create(Application);
+  PackageGraphExplorer.Show;
+  PackageGraphExplorer.BringToFront;
+  Result:=mrOk;
 end;
 
 end.

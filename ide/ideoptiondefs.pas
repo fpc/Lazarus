@@ -36,14 +36,30 @@ uses
   Classes, SysUtils, Laz_XMLCfg, Forms, Controls, StdCtrls, Buttons,
   LazarusIDEStrConsts;
 
-const
+type
+  TNonModalIDEWindow = (
+    nmiwNone,
+    nmiwMainIDEName,
+    nmiwSourceNoteBookName,
+    nmiwMessagesViewName,
+    nmiwUnitDependenciesName,
+    nmiwCodeExplorerName,
+    nmiwClipbrdHistoryName,
+    nmiwPkgGraphExplorer
+    );
+
   // form names for non modal IDE windows:
-  DefaultMainIDEName = 'MainIDE';
-  DefaultSourceNoteBookName = 'SourceNotebook';
-  DefaultMessagesViewName = 'MessagesView';
-  DefaultUnitDependenciesName = 'UnitDependencies';
-  DefaultCodeExplorerName = 'CodeExplorer';
-  DefaultClipbrdHistoryName = 'ClipBrdHistory';
+const
+  NonModalIDEWindowNames: array[TNonModalIDEWindow] of string = (
+    '?',
+    'MainIDE',
+    'SourceNotebook',
+    'MessagesView',
+    'UnitDependencies',
+    'CodeExplorer',
+    'ClipBrdHistory',
+    'PkgGraphExplorer'
+   );
 
 type
   { TIDEWindowLayout stores information about the position, min/maximized state
@@ -159,6 +175,7 @@ type
     function IndexOf(const FormID: string): integer;
     function ItemByForm(AForm: TForm): TIDEWindowLayout;
     function ItemByFormID(const FormID: string): TIDEWindowLayout;
+    function ItemByEnum(ID: TNonModalIDEWindow): TIDEWindowLayout;
     property Items[Index: Integer]: TIDEWindowLayout
       read GetItems write SetItems; default;
     procedure LoadFromXMLConfig(XMLConfig: TXMLConfig; const Path: string);
@@ -275,6 +292,7 @@ type
   end;
 
 function CreateNiceWindowPosition(Width, Height: integer): TRect;
+function NonModalIDEFormIDToEnum(const FormID: string): TNonModalIDEWindow;
 
 var
   IDEDialogLayoutList: TIDEDialogLayoutList;
@@ -352,6 +370,14 @@ begin
   Result.Top:=y;
   Result.Right:=x+Width;
   Result.Bottom:=y+Height;
+end;
+
+function NonModalIDEFormIDToEnum(const FormID: string): TNonModalIDEWindow;
+begin
+  for Result:=Low(TNonModalIDEWindow) to High(TNonModalIDEWindow) do
+    if NonModalIDEWindowNames[Result]=FormID then
+      exit;
+  Result:=nmiwNone;
 end;
 
 { TIDEWindowLayout }
@@ -677,6 +703,12 @@ begin
     Result:=Items[i]
   else
     Result:=nil;
+end;
+
+function TIDEWindowLayoutList.ItemByEnum(ID: TNonModalIDEWindow
+  ): TIDEWindowLayout;
+begin
+  Result:=ItemByFormID(NonModalIDEWindowNames[ID]);
 end;
 
 procedure TIDEWindowLayoutList.ApplyAll;

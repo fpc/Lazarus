@@ -256,6 +256,9 @@ type
     pitDynamic
     );
     
+  TPkgChangeNameEvent = procedure(Pkg: TLazPackage;
+                                  const OldName: string) of object;
+    
   TLazPackage = class(TLazPackageID)
   private
     FAuthor: string;
@@ -273,6 +276,7 @@ type
     FIconFile: string;
     FInstalled: TPackageInstallType;
     FModifiedLock: integer;
+    FOnChangeName: TPkgChangeNameEvent;
     FPackageEditor: TBasePackageEditor;
     FPackageType: TLazPackageType;
     FReadOnly: boolean;
@@ -381,6 +385,7 @@ type
     property Installed: TPackageInstallType read FInstalled write SetInstalled;
     property Registered: boolean read FRegistered write SetRegistered;
     property Modified: boolean read GetModified write SetModified;
+    property OnChangeName: TPkgChangeNameEvent read FOnChangeName write FOnChangeName;
     property PackageType: TLazPackageType
       read FPackageType write SetPackageType;
     property ReadOnly: boolean read FReadOnly write SetReadOnly;
@@ -1113,9 +1118,13 @@ begin
 end;
 
 procedure TLazPackage.SetName(const AValue: string);
+var
+  OldName: String;
 begin
   if FName=AValue then exit;
+  OldName:=FName;
   FName:=AValue;
+  if Assigned(OnChangeName) then OnChangeName(Self,OldName);
   Modified:=true;
 end;
 

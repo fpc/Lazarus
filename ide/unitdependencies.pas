@@ -429,7 +429,7 @@ begin
   inherited Create(TheOwner);
   if LazarusResources.Find(ClassName)=nil then
   begin
-    Name:=DefaultUnitDependenciesName;
+    Name:=NonModalIDEWindowNames[nmiwUnitDependenciesName];
     Caption := dlgUnitDepCaption;
     ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
     ALayout.Form:=TForm(Self);

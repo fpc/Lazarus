@@ -97,9 +97,9 @@ Begin
       Visible:= true;
     end;
   end;
-  Name := DefaultMessagesViewName;
+  Name := NonModalIDEWindowNames[nmiwMessagesViewName];
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
-    ItemByFormID(DefaultMessagesViewName);
+                             ItemByEnum(nmiwMessagesViewName);
   ALayout.Form:=TForm(Self);
   ALayout.Apply;
 end;

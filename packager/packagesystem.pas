@@ -72,12 +72,16 @@ const
      fpfSearchInPckgsWithEditor,fpfSearchInPkgLinks];
 
 type
+  TPkgAddedEvent = procedure(Pkg: TLazPackage) of object;
+
   TLazPackageGraph = class
   private
     FAbortRegistration: boolean;
     FErrorMsg: string;
     FFCLPackage: TLazPackage;
     FLCLPackage: TLazPackage;
+    FOnAddPackage: TPkgAddedEvent;
+    FOnChangePackageName: TPkgChangeNameEvent;
     FRegistrationFile: TPkgFile;
     FRegistrationPackage: TLazPackage;
     FRegistrationUnitName: string;
@@ -88,6 +92,7 @@ type
     procedure SetRegistrationPackage(const AValue: TLazPackage);
     function CreateFCLPackage: TLazPackage;
     function CreateLCLPackage: TLazPackage;
+    procedure PackageChangedName(Pkg: TLazPackage; const OldName: string);
   public
     constructor Create;
     destructor Destroy; override;
@@ -130,6 +135,8 @@ type
     procedure IterateAllComponentClasses(Event: TIterateComponentClassesEvent);
     procedure IteratePackages(Flags: TFindPackageFlags;
       Event: TIteratePackagesEvent);
+    procedure IteratePackagesSorted(Flags: TFindPackageFlags;
+      Event: TIteratePackagesEvent);
   public
     property Packages[Index: integer]: TLazPackage read GetPackages; default;
     property RegistrationPackage: TLazPackage read FRegistrationPackage
@@ -141,6 +148,9 @@ type
                                         write SetAbortRegistration;
     property FCLPackage: TLazPackage read FFCLPackage;
     property LCLPackage: TLazPackage read FLCLPackage;
+    property OnChangePackageName: TPkgChangeNameEvent read FOnChangePackageName
+                                                     write FOnChangePackageName;
+    property OnAddPackage: TPkgAddedEvent read FOnAddPackage write FOnAddPackage;
   end;
   
 var
@@ -161,6 +171,12 @@ begin
 end;
 
 { TLazPackageGraph }
+
+procedure TLazPackageGraph.PackageChangedName(Pkg: TLazPackage;
+  const OldName: string);
+begin
+  if Assigned(OnChangePackageName) then OnChangePackageName(Pkg,OldName);
+end;
 
 function TLazPackageGraph.GetPackages(Index: integer): TLazPackage;
 begin
@@ -644,6 +660,9 @@ procedure TLazPackageGraph.AddPackage(APackage: TLazPackage);
 begin
   FTree.Add(APackage);
   FItems.Add(APackage);
+  APackage.OnChangeName:=@PackageChangedName;
+writeln('TLazPackageGraph.AddPackage ',Assigned(OnAddPackage));
+  if Assigned(OnAddPackage) then OnAddPackage(APackage);
 end;
 
 procedure TLazPackageGraph.AddStaticBasePackages;
@@ -757,6 +776,27 @@ begin
   // iterate in package links
   if (fpfSearchInPkgLinks in Flags) then begin
     PkgLinks.IteratePackages(Event);
+  end;
+end;
+
+procedure TLazPackageGraph.IteratePackagesSorted(Flags: TFindPackageFlags;
+  Event: TIteratePackagesEvent);
+var
+  ANode: TAVLTreeNode;
+  CurPkg: TLazPackage;
+begin
+  ANode:=FTree.FindLowest;
+  while ANode<>nil do begin
+    CurPkg:=TLazPackage(ANode.Data);
+    // check installed packages
+    if ((fpfSearchInInstalledPckgs in Flags) and (CurPkg.Installed<>pitNope))
+    // check autoinstall packages
+    or ((fpfSearchInAutoInstallPckgs in Flags) and (CurPkg.AutoInstall<>pitNope))
+    // check packages with opened editor
+    or ((fpfSearchInPckgsWithEditor in Flags) and (CurPkg.Editor<>nil))
+    then
+      Event(CurPkg);
+    ANode:=FTree.FindSuccessor(ANode);
   end;
 end;
 
