@@ -42,6 +42,7 @@ interface
 {$I codetools.inc}
 
 { $DEFINE IgnoreErrorAfterCursor}
+{ $DEFINE VerboseGetStringConstBounds}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -1992,11 +1993,11 @@ begin
   Result:=true;
   BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
   {$IFDEF VerboseGetStringConstBounds}
-  DebugLn('TStandardCodeTool.GetStringConstBounds A ',CleanCursorPos,' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
+  DebugLn('TStandardCodeTool.GetStringConstBounds A Start at ',dbgs(CleanCursorPos),' "',copy(Src,CleanCursorPos-5,5),'" | "',copy(Src,CleanCursorPos,5),'"');
   {$ENDIF}
   GetCleanPosInfo(-1,CleanCursorPos,ResolveComments,SameArea);
   {$IFDEF VerboseGetStringConstBounds}
-  DebugLn('TStandardCodeTool.GetStringConstBounds B ',SameArea.StartPos,'-',SameArea.EndPos,' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
+  DebugLn('TStandardCodeTool.GetStringConstBounds B Same Area: ',dbgs(SameArea.StartPos),'-',dbgs(SameArea.EndPos),' "',copy(Src,SameArea.StartPos,SameArea.EndPos-SameArea.StartPos),'"');
   {$ENDIF}
   if (SameArea.EndPos=SameArea.StartPos) or (SameArea.StartPos>SrcLen) then
     exit;
@@ -2005,7 +2006,7 @@ begin
   MoveCursorToCleanPos(SameArea.StartPos);
   ReadNextAtom;
   {$IFDEF VerboseGetStringConstBounds}
-  DebugLn('TStandardCodeTool.GetStringConstBounds read til end of string  ',GetAtom);
+  DebugLn('TStandardCodeTool.GetStringConstBounds read til end of string Atom=',GetAtom);
   {$ENDIF}
   CurrentToken:=GetCurrentTokenType;
   if (CurrentToken=scatNone) then exit;
@@ -2016,7 +2017,7 @@ begin
     LastToken:=CurrentToken;
     CurrentToken:=GetCurrentTokenType;
     {$IFDEF VerboseGetStringConstBounds}
-    DebugLn('TStandardCodeTool.GetStringConstBounds Read Forward: ',GetAtom,' EndCleanPos=',EndCleanPos,
+    DebugLn('TStandardCodeTool.GetStringConstBounds Read Forward: ',GetAtom,' EndCleanPos=',dbgs(EndCleanPos),
     ' LastToken=',StrConstTokenTypeName[LastToken],
     ' CurrentToken=',StrConstTokenTypeName[CurrentToken],
     ' ',StrConstTokenTypeName[GetCurrentTokenType]);
@@ -2047,7 +2048,8 @@ begin
       if not (LastToken in [scatPlus, scatPoint]) then exit;
 
     scatPoint:
-      if not (LastToken in [scatIdent, scatUp, scatRoundBracketClose]) then
+      if not (LastToken in [scatIdent, scatUp, scatRoundBracketClose,
+                            scatEdgedBracketClose]) then
         exit;
 
     scatEdgedBracketOpen,scatRoundBracketOpen:
@@ -2072,7 +2074,7 @@ begin
     StartCleanPos:=CurPos.StartPos;
     ReadPriorAtom;
     {$IFDEF VerboseGetStringConstBounds}
-    DebugLn('TStandardCodeTool.GetStringConstBounds Read backward: ',GetAtom,' StartCleanPos=',StartCleanPos);
+    DebugLn('TStandardCodeTool.GetStringConstBounds Read backward: ',GetAtom,' StartCleanPos=',dbgs(StartCleanPos));
     {$ENDIF}
     LastToken:=CurrentToken;
     CurrentToken:=GetCurrentTokenType;
@@ -2116,7 +2118,7 @@ begin
   
   // convert start and end position
   {$IFDEF VerboseGetStringConstBounds}
-  DebugLn('TStandardCodeTool.GetStringConstBounds END "',copy(Src,StartCleanPos,EndCleanPos-StartCleanPos),'" StringConstantFound=',StringConstantFound);
+  DebugLn('TStandardCodeTool.GetStringConstBounds END "',copy(Src,StartCleanPos,EndCleanPos-StartCleanPos),'" StringConstantFound=',dbgs(StringConstantFound));
   {$ENDIF}
   if not StringConstantFound then begin
     EndCleanPos:=StartCleanPos;

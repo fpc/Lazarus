@@ -26,6 +26,8 @@ resourcestring
   
   oiscAdd = '&Add';
   oiscDelete = '&Delete';
+  oisConfirmDelete = 'Confirm delete';
+  oisDeleteItem = 'Delete item %s%s%s?';
   oisUnknown = 'Unknown';
   oisObject = 'Object';
   oisClass = 'Class';

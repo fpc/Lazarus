@@ -21,13 +21,6 @@
 const
   DefaultDockGrabberSize = 12;
 
-procedure TDockTree.WindowProc(var AMessage: TLMessage);
-begin
-  // ToDo
-  if Assigned(FOldWndProc) then
-    FOldWndProc(AMessage);
-end;
-
 procedure TDockTree.DeleteZone(Zone: TDockZone);
 begin
   // ToDo
@@ -57,7 +50,8 @@ begin
   end;
 end;
 
-procedure TDockTree.GetControlBounds(AControl: TControl; var CtlBounds: TRect);
+procedure TDockTree.GetControlBounds(AControl: TControl;
+  var ControlBounds: TRect);
 begin
   // ToDo
 end;
@@ -70,7 +64,7 @@ begin
 end;
 
 procedure TDockTree.InsertControl(AControl: TControl; InsertAt: TAlign;
-  DropCtl: TControl);
+  DropControl: TControl);
 begin
   // ToDo
 end;
@@ -141,18 +135,10 @@ begin
   finally
     EndUpdate;
   end;
-  if not (csDesigning in FDockSite.ComponentState) then begin
-    FOldWndProc := FDockSite.WindowProc;
-    FDockSite.WindowProc := @WindowProc;
-  end;
 end;
 
 destructor TDockTree.Destroy;
 begin
-  if FOldWndProc=@WindowProc then begin
-    FDockSite.WindowProc:=FOldWndProc;
-    FOldWndProc:=nil;
-  end;
   DeleteZone(FTopZone);
   inherited Destroy;
 end;

@@ -4439,7 +4439,7 @@ begin
   else gObject := AGTKObject;
   if gObject = nil then Exit;
 
-  // gFixed is the widget with the client area (e.g. TGroupBox, TForm have this)
+  // gFixed is the widget with the client area (e.g. TGroupBox, TCustomForm have this)
   gFixed := PGTKObject(GetFixedWidget(gObject));
   if gFixed = nil then gFixed := gObject;
 
@@ -6954,7 +6954,7 @@ begin
       UntransientWindow(PGtkWindow(SenderWIdget));
     end;
   end;
-  //if Sender is TForm then
+  //if Sender is TCustomForm then
   //  DebugLn('[TGtkWidgetSet.ShowHide] END ',Sender.ClassName,' Window=',FormWidget^.Window<>nil);
 end;
 
@@ -9250,6 +9250,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.528  2004/08/18 09:08:34  mattias
+  fixed deleting of collection item in prop editor
+
   Revision 1.527  2004/08/17 19:01:36  mattias
   gtk intf now ignores size notifications of unrealized widgets
 
@@ -10566,7 +10569,7 @@ end;
   MG: started mouse bugfix and completed Makefile.fpc
 
   Revision 1.125  2002/05/16 15:42:54  lazarus
-  MG: fixed TForm ShowHide repositioning
+  MG: fixed TCustomForm ShowHide repositioning
 
   Revision 1.124  2002/05/15 05:58:17  lazarus
   MG: added TMainMenu.Parent

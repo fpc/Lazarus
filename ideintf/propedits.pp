@@ -3322,7 +3322,7 @@ Type
     procedure MoveDownButtonClick(Sender: TObject);
     procedure MoveUpButtonClick(Sender: TObject);
   protected
-    CollectionList : TListBox;
+    CollectionListBox: TListBox;
     ButtonPanel: TPanel;
     AddButton: TSpeedButton;
     DeleteButton: TSpeedButton;
@@ -3334,12 +3334,143 @@ Type
     Collection: TCollection;
     PersistentName: string;
     PropertyName: string;
-    Procedure PropagateList;
+    procedure FillCollectionListBox;
     Constructor Create(TheOwner: TComponent); Override;
+    procedure SelectInObjectInspector(UnselectAll: boolean);
   end;
 
 const
   CollectionForm : TCollectionPropertyEditorForm = nil;
+
+procedure TCollectionPropertyEditorForm.ListClick(Sender: TObject);
+begin
+  UpdateButtons;
+  UpdateCaption;
+  SelectInObjectInspector(false);
+end;
+
+procedure TCollectionPropertyEditorForm.AddClick(Sender: TObject);
+begin
+  Collection.Add;
+  FillCollectionListBox;
+end;
+
+procedure TCollectionPropertyEditorForm.DeleteClick(Sender: TObject);
+var
+  I : Integer;
+  NewItemIndex: Integer;
+begin
+  I := CollectionListBox.ItemIndex;
+  if (i>=0) and (i<Collection.Count) then begin
+    if MessageDlg(oisConfirmDelete,
+      Format(oisDeleteItem, ['"', Collection.Items[i].DisplayName, '"']),
+      mtConfirmation,[mbYes,mbNo],0) = mrYes then
+    begin
+      // select other item, or unselect
+      NewItemIndex:=i+1;
+      while (NewItemIndex<CollectionListBox.Items.Count)
+      and (CollectionListBox.Selected[NewItemIndex]) do
+        inc(NewItemIndex);
+      if NewItemIndex=CollectionListBox.Items.Count then begin
+        NewItemIndex:=0;
+        while (NewItemIndex<i)
+        and (CollectionListBox.Selected[NewItemIndex]) do
+          inc(NewItemIndex);
+        if NewItemIndex=i then NewItemIndex:=-1;
+      end;
+      CollectionListBox.ItemIndex := -1;
+      CollectionListBox.Items.Delete(i);
+      if NewItemIndex>i then dec(NewItemIndex);
+      //debugln('TCollectionPropertyEditorForm.DeleteClick A NewItemIndex=',dbgs(NewItemIndex),' ItemIndex=',dbgs(CollectionListBox.ItemIndex),' CollectionListBox.Items.Count=',dbgs(CollectionListBox.Items.Count),' Collection.Count=',dbgs(Collection.Count));
+      // unselect all items in OI (collections can act strange on delete)
+      SelectInObjectInspector(true);
+      // now delete
+      Collection.Items[i].Free;
+      // update listbox after whatever happened
+      FillCollectionListBox;
+      // set NewItemIndex
+      if NewItemIndex<CollectionListBox.Items.Count then begin
+        CollectionListBox.ItemIndex:=NewItemIndex;
+        SelectInObjectInspector(false);
+      end;
+    end;
+  end;
+  UpdateButtons;
+end;
+
+procedure TCollectionPropertyEditorForm.MoveDownButtonClick(Sender: TObject);
+var
+  i: LongInt;
+begin
+  i:=CollectionListBox.ItemIndex;
+  if i>=Collection.Count-1 then exit;
+  Collection.Items[i].Index:=i+1;
+  CollectionListBox.ItemIndex:=i+1;
+  FillCollectionListBox;
+end;
+
+procedure TCollectionPropertyEditorForm.MoveUpButtonClick(Sender: TObject);
+var
+  i: LongInt;
+begin
+  i:=CollectionListBox.ItemIndex;
+  if i<=0 then exit;
+  Collection.Items[i].Index:=i-1;
+  CollectionListBox.ItemIndex:=i-1;
+  FillCollectionListBox;
+end;
+
+procedure TCollectionPropertyEditorForm.UpdateCaption;
+var
+  NewCaption: String;
+begin
+  //I think to match Delphi this should be formated like
+  //"Editing ComponentName.PropertyName[Index]"
+  NewCaption:= 'Editing ' + PersistentName + '.' + PropertyName;
+  If CollectionListBox.ItemIndex > -1 then
+    NewCaption := NewCaption + '[' +
+      IntToStr(CollectionListBox.ItemIndex) + ']';
+  Caption:=NewCaption;
+end;
+
+procedure TCollectionPropertyEditorForm.UpdateButtons;
+var
+  i: LongInt;
+begin
+  i:=CollectionListBox.ItemIndex;
+  DeleteButton.Enabled:= i > -1;
+  MoveUpButton.Enabled:=i>0;
+  MoveDownButton.Enabled:=(i>=0) and (i<Collection.Count-1);
+end;
+
+procedure TCollectionPropertyEditorForm.FillCollectionListBox;
+var
+  I : Longint;
+  CurItem: String;
+  Cnt: Integer;
+begin
+  CollectionListBox.Items.BeginUpdate;
+  if Collection<>nil then
+    Cnt:=Collection.Count
+  else
+    Cnt:=0;
+  // add or replace list items
+  for I:=0 to Cnt - 1 do begin
+    CurItem:=Collection.Items[I].DisplayName;
+    if i>=CollectionListBox.Items.Count then
+      CollectionListBox.Items.Add(CurItem)
+    else
+      CollectionListBox.Items[I]:=CurItem;
+  end;
+  // delete unneeded list items
+  while CollectionListBox.Items.Count>Cnt do begin
+    CollectionListBox.Items.Delete(CollectionListBox.Items.Count-1);
+  end;
+  CollectionListBox.Items.EndUpdate;
+
+  UpdateButtons;
+  UpdateCaption;
+end;
 
 Constructor TCollectionPropertyEditorForm.Create(TheOwner : TComponent);
 var
@@ -3405,8 +3536,8 @@ begin
     inc(x,w);
   end;
 
-  CollectionList := TListBox.Create(Self);
-  With CollectionList do begin
+  CollectionListBox := TListBox.Create(Self);
+  With CollectionListBox do begin
     Parent:= Self;
     Align:= alClient;
 //  MultiSelect:= true;
@@ -3414,124 +3545,24 @@ begin
   end;
 end;
 
-procedure TCollectionPropertyEditorForm.UpdateCaption;
+procedure TCollectionPropertyEditorForm.SelectInObjectInspector(
+  UnselectAll: boolean);
 var
-  NewCaption: String;
-begin
-  //I think to match Delphi this should be formated like
-  //"Editing ComponentName.PropertyName[Index]"
-  NewCaption:= 'Editing ' + PersistentName + '.' + PropertyName;
-  If CollectionList.ItemIndex > -1 then
-    NewCaption := NewCaption + '[' +
-      IntToStr(CollectionList.ItemIndex) + ']';
-  Caption:=NewCaption;
-end;
-
-procedure TCollectionPropertyEditorForm.UpdateButtons;
-var
-  i: LongInt;
-begin
-  i:=CollectionList.ItemIndex;
-  DeleteButton.Enabled:= i > -1;
-  MoveUpButton.Enabled:=i>0;
-  MoveDownButton.Enabled:=(i>=0) and (i<Collection.Count-1);
-end;
-
-procedure TCollectionPropertyEditorForm.PropagateList;
-var
-  I : Longint;
-  CurItem: String;
-  Cnt: Integer;
-begin
-  CollectionList.Items.BeginUpdate;
-  if Collection<>nil then
-    Cnt:=Collection.Count
-  else
-    Cnt:=0;
-  // add or replace list items
-  for I:=0 to Cnt - 1 do begin
-    CurItem:=Collection.Items[I].DisplayName;
-    if i>=CollectionList.Items.Count then
-      CollectionList.Items.Add(CurItem)
-    else
-      CollectionList.Items[I]:=CurItem;
-  end;
-  // delete unneeded list items
-  while CollectionList.Items.Count>Cnt do begin
-    CollectionList.Items.Delete(CollectionList.Items.Count-1);
-  end;
-  CollectionList.Items.EndUpdate;
-
-  UpdateButtons;
-  UpdateCaption;
-end;
-
-procedure TCollectionPropertyEditorForm.MoveDownButtonClick(Sender: TObject);
-var
-  i: LongInt;
-begin
-  i:=CollectionList.ItemIndex;
-  if i>=Collection.Count-1 then exit;
-  Collection.Items[i].Index:=i+1;
-  CollectionList.ItemIndex:=i+1;
-  PropagateList;
-end;
-
-procedure TCollectionPropertyEditorForm.MoveUpButtonClick(Sender: TObject);
-var
-  i: LongInt;
-begin
-  i:=CollectionList.ItemIndex;
-  if i<=0 then exit;
-  Collection.Items[i].Index:=i-1;
-  CollectionList.ItemIndex:=i-1;
-  PropagateList;
-end;
-
-procedure TCollectionPropertyEditorForm.ListClick(Sender: TObject);
-var
-  NewSelection: TPersistentSelectionList;
   i: Integer;
+  NewSelection: TPersistentSelectionList;
 begin
-  UpdateButtons;
-  UpdateCaption;
   // select in OI
   NewSelection:=TPersistentSelectionList.Create;
   try
-    for i:=0 to CollectionList.Items.Count-1 do
-      if CollectionList.Selected[i] then
-        NewSelection.Add(Collection.Items[i]);
+    if not UnselectAll then begin
+      for i:=0 to CollectionListBox.Items.Count-1 do
+        if CollectionListBox.Selected[i] then
+          NewSelection.Add(Collection.Items[i]);
+    end;
     GlobalDesignHook.SetSelection(NewSelection);
   finally
     NewSelection.Free;
   end;
-end;
-
-procedure TCollectionPropertyEditorForm.AddClick(Sender: TObject);
-begin
-  Collection.Add;
-  PropagateList;
-end;
-
-procedure TCollectionPropertyEditorForm.DeleteClick(Sender: TObject);
-var
-  I : Integer;
-begin
-  I := CollectionList.ItemIndex;
-  if (i>=0) and (i<Collection.Count) then begin
-    if MessageDlg('Confirm delete',
-      'Delete item "'+Collection.Items[i].DisplayName+'"?',
-      mtConfirmation,[mbYes,mbNo],0) = mrYes then
-    begin
-      Collection.Items[i].Free;
-      PropagateList;
-      If I >= CollectionList.Items.Count then
-        I := I - 1;
-      If I > -1 then
-        CollectionList.ItemIndex := I;
-    end;
-  end;
-  UpdateButtons;
 end;
 
 //  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -3611,7 +3642,7 @@ begin
     PropertyName := GetPropInfo^.Name;
     PersistentName := '';
     Caption := 'Editing ' + GetPropInfo^.Name;
-    PropagateList;
+    FillCollectionListBox;
     Show;
   end;
 end;

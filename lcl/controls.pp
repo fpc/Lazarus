@@ -947,8 +947,8 @@ type
     procedure SetEnabled(Value: Boolean); virtual;
     procedure SetHint(const Value: String); virtual;
     procedure SetName(const Value: TComponentName); override;
-    procedure SetParent(AParent: TWinControl); virtual;
-    Procedure SetParentComponent(Value: TComponent); override;
+    procedure SetParent(NewParent: TWinControl); virtual;
+    Procedure SetParentComponent(NewParentComponent: TComponent); override;
     procedure WndProc(var TheMessage: TLMessage); virtual;
     procedure CaptureChanged; virtual;
     procedure Notification(AComponent: TComponent; Operation: TOperation); override;
@@ -1698,7 +1698,7 @@ type
     FGrabbersOnTop: Boolean;
     FFlags: TDockTreeFlags;
     //FOldRect: TRect;
-    FOldWndProc: TWndMethod;
+    //FOldWndProc: TWndMethod;
     //FReplacementZone: TDockZone;
     //FScaleBy: Double;
     //FShiftScaleOrient: TDockOrientation;
@@ -1711,16 +1711,15 @@ type
     FTopXYLimit: Integer;
     FUpdateCount: Integer;
     //FVersion: Integer;
-    procedure WindowProc(var AMessage: TLMessage);
     procedure DeleteZone(Zone: TDockZone);
   protected
     procedure AdjustDockRect(AControl: TControl; var ARect: TRect); virtual;
     procedure BeginUpdate; override;
     procedure EndUpdate; override;
-    procedure GetControlBounds(AControl: TControl; var CtlBounds: TRect); override;
+    procedure GetControlBounds(AControl: TControl; var ControlBounds: TRect); override;
     function HitTest(const MousePos: TPoint; var HTFlag: Integer): TControl; virtual;
     procedure InsertControl(AControl: TControl; InsertAt: TAlign;
-                            DropCtl: TControl); override;
+                            DropControl: TControl); override;
     procedure LoadFromStream(SrcStream: TStream); override;
     procedure PaintDockFrame(ACanvas: TCanvas; AControl: TControl;
                              const ARect: TRect); virtual;
@@ -2406,6 +2405,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.236  2004/08/18 09:08:33  mattias
+  fixed deleting of collection item in prop editor
+
   Revision 1.235  2004/08/16 20:40:26  mattias
   published TForm.SessionProperties, added property editor and activated the storage components for fpc 1.9.5 because of rttiutils
 

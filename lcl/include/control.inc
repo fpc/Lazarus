@@ -2493,16 +2493,28 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Procedure TControl.SetParent(AParent : TWinControl);
+  Procedure TControl.SetParent(NewParent : TWinControl);
 ------------------------------------------------------------------------------}
-Procedure TControl.SetParent(AParent : TWinControl);
+Procedure TControl.SetParent(NewParent: TWinControl);
 begin
-  if FParent = AParent then exit;
-  CheckNewParent(AParent);
+  if FParent = NewParent then exit;
+  CheckNewParent(NewParent);
   if FParent <> nil then FParent.RemoveControl(Self);
-  if AParent <> nil then AParent.InsertControl(Self);
+  if NewParent <> nil then NewParent.InsertControl(Self);
 end;
 
+{------------------------------------------------------------------------------
+  TControl SetParentComponent
+------------------------------------------------------------------------------}
+Procedure TControl.SetParentComponent(NewParentComponent: TComponent);
+Begin
+  if (NewParentComponent is TWinControl) then
+    SetParent(TWinControl(NewParentComponent));
+end;
+
+{------------------------------------------------------------------------------
+  procedure TControl.SetParentColor(Value : Boolean);
+------------------------------------------------------------------------------}
 procedure TControl.SetParentColor(Value : Boolean);
 begin
   if FParentColor <> Value then
@@ -2513,18 +2525,9 @@ begin
   end;
 end;
 
-
-{------------------------------------------------------------------------------}
-{  TControl SetParentComponent                                                 }
-{------------------------------------------------------------------------------}
-Procedure TControl.SetParentComponent(Value : TComponent);
-Begin
-  if (Value is TWinControl) then SetParent(TWinControl(Value));
-end;
-
-{------------------------------------------------------------------------------}
-{  TControl SetParentShowHint                                                                 }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl SetParentShowHint
+------------------------------------------------------------------------------}
 Procedure TControl.SetParentShowHint(Value : Boolean);
 Begin
   if FParentShowHint <> Value
@@ -2798,7 +2801,7 @@ begin
       HostDockSite.DockManager.GetControlBounds(Self,NewBounds);
       NewBounds.TopLeft:=HostDockSite.ControlToScreen(NewBounds.TopLeft);
     end else begin
-      NewBounds.TopLeft := ControlOrigin;
+      NewBounds.TopLeft:=ControlOrigin;
     end;
     NewBounds := Bounds(NewBounds.Left,NewBounds.Top,UndockWidth,UndockHeight);
     Result := ManualFloat(NewBounds);
@@ -2849,6 +2852,7 @@ begin
   // create new float dock site and dock this control into it.
   if Result then begin
     FloatHost := CreateFloatingDockSite(TheScreenRect);
+    //debugln('TControl.ManualFloat A '+Name,':',ClassName,' ',dbgs(TheScreenRect));
     if FloatHost<>nil then
       Dock(FloatHost,Rect(0,0,FloatHost.ClientWidth,FloatHost.ClientHeight))
     else
@@ -3226,6 +3230,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.209  2004/08/18 09:08:34  mattias
+  fixed deleting of collection item in prop editor
+
   Revision 1.208  2004/08/17 19:01:36  mattias
   gtk intf now ignores size notifications of unrealized widgets
 
