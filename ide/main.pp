@@ -1945,9 +1945,6 @@ end;
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuViewInspectorClicked(Sender : TObject);
 begin
-{  
-  ObjectInspector1.Show;
-  BringWindowToTop(ObjectInspector1.Handle);}
   DoBringToFrontFormOrInspector;
 end;
 
@@ -5650,7 +5647,10 @@ begin
     end;
   end;
     
-  if AForm <> nil then BringWindowToTop(AForm.Handle);
+  if AForm <> nil then begin
+    if not AForm.Visible then AForm.Show;
+    BringWindowToTop(AForm.Handle);
+  end;  
 end;
 
 procedure TMainIDE.OnMacroSubstitution(TheMacro: TTransferMacro; var s:string;
@@ -7493,6 +7493,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.430  2002/11/12 14:55:33  lazarus
+  Show Object Inspector when not visible if toggling OI/form/code view.
+
   Revision 1.429  2002/11/10 22:02:35  lazarus
   MG: added smart hints in debug mode
 
