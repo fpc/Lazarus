@@ -3561,7 +3561,7 @@ writeln('[TMainIDE.DoRunProject] A');
   else
       begin
         try
-          
+          writeln('  EXECUTING "',ProgramFilename,'"');
           TheProcess:=TProcess.Create(ProgramFilename,
              [poRunSuspended,poUsePipes,poNoConsole]);
         
@@ -4756,6 +4756,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.153  2001/11/20 19:39:45  lazarus
+  MG: DoRunProject writes the programfilename
+
   Revision 1.152  2001/11/20 18:30:30  lazarus
   Pressing DEL when form is the only thing selected in designer no longer crashes Lazarus.
   Shane
