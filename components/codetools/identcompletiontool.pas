@@ -41,7 +41,11 @@ interface
 { $DEFINE MEM_CHECK}
 
 // verbosity
-{ $DEFINE CTDEBUG}
+{$DEFINE CTDEBUG}
+
+// new features
+{ $DEFINE IgnoreErrorAfterCursor}
+
 
 uses
   {$IFDEF MEM_CHECK}
@@ -102,8 +106,14 @@ type
   end;
 
   TIdentCompletionTool = class(TFindDeclarationTool)
+  protected
+    CurrentIdentifierList: TIdentifierList;
+    function CollectAllIdentifiers(Params: TFindDeclarationParams;
+      const FoundContext: TFindContext): TIdentifierFoundResult;
+    procedure GatherPredefinedIdentifiers;
   public
-  
+    function GatherIdentifiers(const CursorPos: TCodeXYPosition;
+      var IdentifierList: TIdentifierList): boolean;
   end;
 
 implementation
@@ -129,6 +139,72 @@ end;
 procedure TIdentifierList.Clear;
 begin
 
+end;
+
+{ TIdentCompletionTool }
+
+function TIdentCompletionTool.CollectAllIdentifiers(
+  Params: TFindDeclarationParams; const FoundContext: TFindContext
+  ): TIdentifierFoundResult;
+begin
+  writeln('::: COLLECT IDENT ',FoundContext.Node.DescAsString);
+  Result:=ifrProceedSearch;
+end;
+
+procedure TIdentCompletionTool.GatherPredefinedIdentifiers;
+begin
+  // ToDo:
+end;
+
+function TIdentCompletionTool.GatherIdentifiers(
+  const CursorPos: TCodeXYPosition;
+  var IdentifierList: TIdentifierList): boolean;
+var
+  CleanCursorPos, IdentStartPos, IdentEndPos: integer;
+  CursorNode: TCodeTreeNode;
+  Params: TFindDeclarationParams;
+  GatherContext: TFindContext;
+begin
+  Result:=false;
+  if IdentifierList=nil then IdentifierList:=TIdentifierList.Create;
+  CurrentIdentifierList:=IdentifierList;
+  CurrentIdentifierList.Clear;
+  ActivateGlobalWriteLock;
+  try
+    // build code tree
+    {$IFDEF CTDEBUG}
+    writeln('TIdentCompletionTool.GatherIdentifiers A CursorPos=',CursorPos.X,',',CursorPos.Y);
+    {$ENDIF}
+    BuildTreeAndGetCleanPos(trTillCursor,CursorPos,CleanCursorPos,
+                  [{$IFDEF IgnoreErrorAfterCursor}btSetIgnoreErrorPos{$ENDIF}]);
+    CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
+    GetIdentStartEndAtPosition(Src,CleanCursorPos,IdentStartPos,IdentEndPos);
+    
+    // find context
+    MoveCursorToCleanPos(IdentStartPos);
+    Params.ContextNode:=CursorNode;
+    Params.SetIdentifier(Self,nil,nil);
+    Params.Flags:=[fdfExceptionOnNotFound,
+                   fdfSearchInParentNodes,fdfSearchInAncestors]
+                  +fdfAllClassVisibilities;
+    GatherContext:=FindContextNodeAtCursor(Params);
+    if (GatherContext.Tool<>nil) and (GatherContext.Node<>nil) then begin
+      // gather all identifiers in context
+      Params.ContextNode:=GatherContext.Node;
+      Params.SetIdentifier(Self,nil,@CollectAllIdentifiers);
+      Params.Flags:=[fdfSearchInParentNodes,fdfSearchInAncestors,
+                     fdfCollect,fdfFindVariable,fdfIgnoreCurContextNode]
+                    +fdfAllClassVisibilities;
+      GatherContext.Tool.FindIdentifierInContext(Params);
+    end;
+    // add predefined identifiers
+    GatherPredefinedIdentifiers;
+    
+    Result:=true;
+  finally
+    ClearIgnoreErrorAfter;
+    DeactivateGlobalWriteLock;
+  end;
 end;
 
 end.

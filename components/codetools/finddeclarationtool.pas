@@ -2078,7 +2078,7 @@ end;
 
 function TFindDeclarationTool.FindContextNodeAtCursor(
   Params: TFindDeclarationParams): TFindContext;
-{ searches for the context node for a specific cursor pos
+{ searches for the context node at a specific cursor pos
   Params.Context should contain the deepest node at cursor
   if there is no special context, then result is equal to Params.Context }
 var
@@ -4651,22 +4651,26 @@ begin
       ' Creating Input Expression List ...'
       );
       {$ENDIF}
-      StartContextNode:=Params.IdentifierTool.FindDeepestNodeAtPos(
-        CurPos.StartPos,true);
-      if StartContextNode.Desc in AllPascalStatements then begin
-        Params.Save(OldInput);
+      if Params.IdentifierTool.IsPCharInSrc(Params.Identifier) then begin
         Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
-        Params.Flags:=fdfDefaultForExpressions+Params.Flags*fdfGlobals;
-        Params.ContextNode:=StartContextNode;
-        Params.OnIdentifierFound:=@Self.CheckSrcIdentifier;
-        Params.IdentifierTool.ReadNextAtom;
-        Params.FoundProc^.ExprInputList:=
-                            Params.IdentifierTool.CreateParamExprList(
-                                    Params.IdentifierTool.CurPos.EndPos,Params);
-        Params.Load(OldInput);
-      end else begin
-        Params.FoundProc^.ExprInputList:=TExprTypeList.Create;
+        StartContextNode:=Params.IdentifierTool.FindDeepestNodeAtPos(
+          Params.IdentifierTool.CurPos.StartPos,true);
+        if (StartContextNode<>nil)
+        and (StartContextNode.Desc in AllPascalStatements) then begin
+          Params.Save(OldInput);
+          Params.IdentifierTool.MoveCursorToCleanPos(Params.Identifier);
+          Params.Flags:=fdfDefaultForExpressions+Params.Flags*fdfGlobals;
+          Params.ContextNode:=StartContextNode;
+          Params.OnIdentifierFound:=@Self.CheckSrcIdentifier;
+          Params.IdentifierTool.ReadNextAtom;
+          Params.FoundProc^.ExprInputList:=
+                              Params.IdentifierTool.CreateParamExprList(
+                                      Params.IdentifierTool.CurPos.EndPos,Params);
+          Params.Load(OldInput);
+        end;
       end;
+      if Params.FoundProc^.ExprInputList=nil then
+        Params.FoundProc^.ExprInputList:=TExprTypeList.Create;
     end;
 
     // create compatibility lists for params

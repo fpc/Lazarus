@@ -317,6 +317,7 @@ begin
   {$ENDIF}
   if (FormStyle <> fsMDIForm) or (csDesigning in ComponentState) then
     SetActive(Message.Active {<> WA_INACTIVE});
+  FActive:=true;
   Activate;
 end;
 
@@ -329,6 +330,7 @@ end;
  ------------------------------------------------------------------------------}
 procedure TCustomForm.WMDeactivate(var Message : TLMActivate);
 begin
+  FActive:=false;
   Deactivate;
 end;
 
@@ -800,11 +802,11 @@ Begin
       // EInvalidOperation.Create(SCannotFocus);
     FActiveControl := AWinControl;
     {$IFDEF VerboseFocus}
-    write('TCustomForm.SetActiveControl ',Name,':',ClassName,' ');
+    write('TCustomForm.SetActiveControl ',Name,':',ClassName,' FActive=',FActive);
     if FActiveControl<>nil then
-      writeln('FActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName)
+      writeln(' FActiveControl=',FActiveControl.Name,':',FActiveControl.ClassName)
     else
-      writeln('FActiveControl=nil');
+      writeln(' FActiveControl=nil');
     {$ENDIF}
     if not (csLoading in ComponentState) then
     begin
@@ -1263,6 +1265,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.82  2002/12/29 11:10:45  mattias
+  fixed form FActive, cleanups
+
   Revision 1.81  2002/12/28 21:06:37  mattias
   fixed TCustomForm.WMCloseQuery
 

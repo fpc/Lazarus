@@ -1258,11 +1258,14 @@ case Message.msg of
   case Message.msg of
     TB_INSERTBUTTON :
       if HandleAllocated then
-        CNSendMessage(LM_INSERTTOOLBUTTON,TControl(TTBButton(Pointer(Message.lParam)^).dwData),nil);
+        CNSendMessage(LM_INSERTTOOLBUTTON,
+                      TControl(TTBButton(Pointer(Message.lParam)^).dwData),
+                      nil);
 
     TB_DELETEBUTTON :
       if HandleAllocated then
-        CNSendMessage(LM_DELETETOOLBUTTON,TControl(FButtons[Message.wparam]),nil);
+        CNSendMessage(LM_DELETETOOLBUTTON,
+                      TControl(FButtons[Message.wparam]),nil);
     end;
 
 
@@ -1503,6 +1506,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.10  2002/12/29 11:10:45  mattias
+  fixed form FActive, cleanups
+
   Revision 1.9  2002/12/22 22:55:45  mattias
   fixed toolbar
 
