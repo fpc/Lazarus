@@ -32,6 +32,24 @@ uses
 Type
   TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
 
+  PWindowInfo = ^TWindowInfo;
+  TWindowInfo = record
+    AccelGroup: HACCEL;
+    Accel: HACCEL;
+    Overlay: HWND;             // overlay, transparent window on top, used by designer
+    PopupMenu: HMENU;
+    DefWndProc: WNDPROC;
+    ParentPanel: HWND;         // if non-zero, winxp groupbox parent window hack
+    WinControl: TWinControl;
+    PWinControl: TWinControl;  // control to paint for
+    AWinControl: TWinControl;  // control associated with (for buddy controls)
+    List: TStrings;
+    hasTabParent: boolean;
+    isTabPage: boolean;
+    isComboEdit: boolean;
+    MaxLength: dword;
+  end;
+
 function WM_To_String(WM_Message: Integer): string;
 function WindowPosFlagsToString(Flags: UINT): string;
 procedure EventTrace(Message: String; Data: TObject);
@@ -62,6 +80,12 @@ procedure UpdateWindowStyle(Handle: HWnd; Style: integer; StyleMask: integer);
 function BorderStyleToWin32Flags(Style: TFormBorderStyle): DWORD;
 function BorderStyleToWin32FlagsEx(Style: TFormBorderStyle): DWORD;
 function GetFileVersion(FileName: string): dword;
+function AllocWindowInfo(Window: HWND): PWindowInfo;
+function GetWindowInfo(Window: HWND): PWindowInfo;
+
+var
+  DefaultWindowInfo: TWindowInfo;
+  WindowInfoAtom: ATOM;
 
 implementation
 
@@ -631,15 +655,23 @@ end;
 // The Accelgroup and AccelKey is needed by menus
 // ----------------------------------------------------------------------
 Procedure SetAccelGroup(Const Control: HWND; Const AnAccelGroup: HACCEL);
+var
+  WindowInfo: PWindowInfo;
 Begin
   Assert(False, 'Trace:TODO: Code SetAccelGroup');
-  Windows.SetProp(Control, 'AccelGroup', AnAccelGroup);
+  WindowInfo := GetWindowInfo(Control);
+  if WindowInfo <> @DefaultWindowInfo then
+  begin
+    WindowInfo^.AccelGroup := AnAccelGroup;
+  end else begin
+    DebugLn('Win32 - SetAccelGroup: no window info to store accelgroup in!');
+  end;
 End;
 
 Function GetAccelGroup(Const Control: HWND): HACCEL;
 Begin
   Assert(False, 'Trace:TODO: Code GetAccelGroup');
-  Result := HACCEL(Windows.GetProp(Control, 'AccelGroup'));
+  Result := GetWindowInfo(Control)^.AccelGroup;
 End;
 
 Procedure SetAccelKey(Window: HWND; Const CommandId: Word; Const AKey: word; Const AModifier: TShiftState);
@@ -674,8 +706,11 @@ var AccelCount: integer; {number of accelerators in table}
     if ssShift in AState then Result := Result or FSHIFT;
   end;
 
+var
+  WindowInfo: PWindowInfo;
 Begin
-  OldAccel := Windows.GetProp(Window, 'Accel');
+  WindowInfo := GetWindowInfo(Window);
+  OldAccel := WindowInfo^.Accel;
   NullAccel := nil;
   AccelCount := CopyAcceleratorTable(OldAccel, NullAccel, 0);
   Assert(False,Format('Trace: AccelCount=%d',[AccelCount]));
@@ -694,13 +729,19 @@ Begin
   NewAccel[ControlIndex].fVirt := GetVirtFromState(AModifier);
   NewAccel[ControlIndex].key := AKey;
   DestroyAcceleratorTable(OldAccel);
-  Windows.SetProp(Window, 'Accel', CreateAcceleratorTable(NewAccel, NewCount));
+  if WindowInfo <> @DefaultWindowInfo then
+  begin
+    WindowInfo^.Accel := CreateAcceleratorTable(NewAccel, NewCount);
+  end else begin
+    DebugLn('Win32 - SetAccelKey: no windowinfo to put accelerator table in!');
+  end;
 End;
 
 Function GetAccelKey(Const Control: HWND): LPACCEL;
 Begin
   Assert(False, 'Trace:TODO: Code GetAccelKey');
-  Result := GetProp(Control, 'AccelKey');
+  //Result := GetWindowInfo(Control)^.AccelKey;
+  Result := nil;
 End;
 
 {-------------------------------------------------------------------------------
@@ -768,7 +809,7 @@ function GetLCLClientBoundsOffset(Handle: HWnd; var Rect: TRect): boolean;
 var
   OwnerObject: TObject;
 begin
-  OwnerObject := TObject(GetProp(Handle, 'Wincontrol'));
+  OwnerObject := GetWindowInfo(Handle)^.WinControl;
   Result:=GetLCLClientBoundsOffset(OwnerObject, Rect);
 end;
 
@@ -867,9 +908,37 @@ begin
   end;
 end;
 
+function AllocWindowInfo(Window: HWND): PWindowInfo;
+var
+  WindowInfo: PWindowInfo;
+begin
+  New(WindowInfo);
+  FillChar(WindowInfo^, sizeof(WindowInfo^), 0);
+  Windows.SetProp(Window, PChar(WindowInfoAtom), dword(WindowInfo));
+  Result := WindowInfo;
+end;
+
+function GetWindowInfo(Window: HWND): PWindowInfo;
+begin
+  Result := PWindowInfo(Windows.GetProp(Window, PChar(WindowInfoAtom)));
+  if Result = nil then
+    Result := @DefaultWindowInfo;
+end;
+
 {$IFDEF ASSERT_IS_ON}
   {$UNDEF ASSERT_IS_ON}
   {$C-}
 {$ENDIF}
+
+initialization
+
+  FillChar(DefaultWindowInfo, sizeof(DefaultWindowInfo), 0);
+  WindowInfoAtom := Windows.AddAtom('WindowInfo');
+
+finalization
+
+  DeleteAtom(WindowInfoAtom);
+  WindowInfoAtom := 0;
+
 end.
 

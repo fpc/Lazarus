@@ -363,9 +363,14 @@ begin
       Flags := Flags or WS_VISIBLE;
       // set P(aint)WinControl, for paint message to retrieve information
       // about wincontrol (hack)
-      Windows.SetProp(Buddy, 'PWinControl', dword(AWinControl));
-      if Windows.GetProp(Parent, 'TabPageParent') <> 0 then
-        Windows.SetProp(Buddy, 'TabPageParent', 1);
+      // allocate windowinfo record ourselves, we do not call WindowInitBuddy
+      BuddyWindowInfo := AllocWindowInfo(Buddy);
+      with BuddyWindowInfo^ do
+      begin
+        PWinControl := AWinControl;
+        if GetWindowInfo(Parent)^.hasTabParent then
+          hasTabParent := true;
+      end;
       Parent := Buddy;
     end;
     pClassName := 'BUTTON';
@@ -379,7 +384,7 @@ begin
   begin
     if Buddy <> 0 then
     begin
-      Windows.SetProp(Window, 'ParentPanel', Parent);
+      WindowInfo^.ParentPanel := Buddy;
       // no need to subclass this parentpanel
       Buddy := 0;
     end;
@@ -477,7 +482,7 @@ begin
     Result := TWin32CheckListBoxStrings.Create(Handle, ACustomListBox)
   else
     Result := TWin32ListStringList.Create(Handle, ACustomListBox);
-  Windows.SetProp(Handle, 'List', dword(Result));
+  GetWindowInfo(Handle)^.List := Result;
 end;
 
 function  TWin32WSCustomListBox.GetTopIndex(const ACustomListBox: TCustomListBox): integer;
@@ -579,10 +584,10 @@ begin
   with Params do
   begin
     Buddy := Windows.GetTopWindow(Window);
-    Windows.SetProp(Buddy, 'ComboEdit', 1);
     SubClassWndProc := @ChildEditWindowProc;
   end;
   WindowCreateInitBuddy(AWinControl, Params);
+  Params.BuddyWindowInfo^.isComboEdit := true;
   Result := Params.Window;
 end;
 
@@ -617,7 +622,7 @@ end;
 
 function  TWin32WSCustomComboBox.GetMaxLength(const ACustomComboBox: TCustomComboBox): integer;
 begin
-  Result := integer(GetProp(ACustomComboBox.Handle, 'MAXLENGTH'));
+  Result := GetWindowInfo(ACustomComboBox.Handle)^.MaxLength;
 end;
 
 procedure TWin32WSCustomComboBox.SetArrowKeysTraverseList(const ACustomComboBox: TCustomComboBox; 
@@ -653,7 +658,7 @@ var
 begin
   winhandle := ACustomComboBox.Handle;
   SendMessage(winhandle, CB_LIMITTEXT, NewLength, 0);
-  SetProp(winhandle, 'MAXLENGTH', NewLength);
+  GetWindowInfo(winhandle)^.MaxLength := NewLength;
 end;
 
 function  TWin32WSCustomComboBox.GetItems(const ACustomComboBox: TCustomComboBox): TStrings;
@@ -662,7 +667,7 @@ var
 begin
   winhandle := ACustomComboBox.Handle;
   Result := TWin32ListStringList.Create(winhandle, ACustomComboBox);
-  SetProp(winhandle, 'List', dword(Result));
+  GetWindowInfo(winhandle)^.List := Result;
 end;
 
 procedure TWin32WSCustomComboBox.Sort(const ACustomComboBox: TCustomComboBox; AList: TStrings; IsSorted: boolean);
@@ -733,7 +738,7 @@ end;
 
 function  TWin32WSCustomEdit.GetMaxLength(const ACustomEdit: TCustomEdit): integer;
 begin
-  Result := integer(GetProp(ACustomEdit.Handle, 'MAXLENGTH'));
+  Result := GetWindowInfo(ACustomEdit.Handle)^.MaxLength;
 end;
 
 procedure TWin32WSCustomEdit.SetCharCase(const ACustomEdit: TCustomEdit; NewCase: TEditCharCase);
@@ -754,7 +759,7 @@ var
 begin
   winhandle := ACustomEdit.Handle;
   SendMessage(winhandle, EM_LIMITTEXT, NewLength, 0);
-  SetProp(winhandle, 'MAXLENGTH', NewLength);
+  GetWindowInfo(winhandle)^.MaxLength := NewLength;
 end;
 
 procedure TWin32WSCustomEdit.SetPasswordChar(const ACustomEdit: TCustomEdit; NewChar: char);

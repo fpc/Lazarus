@@ -110,6 +110,7 @@ type
   TCreateWindowExParams = record
     Buddy, Parent, Window: HWND;
     Left, Top, Height, Width: integer;
+    WindowInfo, BuddyWindowInfo: PWindowInfo;
     MenuHandle: HMENU;
     Flags, FlagsEx: dword;
     SubClassWndProc: pointer;
@@ -215,13 +216,16 @@ begin
     if Window <> HWND(Nil) then
     begin
       // some controls (combobox) immediately send a message upon setting font
+      WindowInfo := AllocWindowInfo(Window);
       AWinControl.Handle := Window;
-      if Windows.GetProp(GetParent(Window), 'TabPageParent') <> 0 then
-        Windows.SetProp(Window, 'TabPageParent', 1);
-      Windows.SetProp(Window, 'Wincontrol', dword(AWinControl));
+      if GetWindowInfo(Parent)^.hasTabParent then
+        WindowInfo^.hasTabParent := true;
+      WindowInfo^.WinControl := AWinControl;
       if SubClassWndProc <> nil then
-        Windows.SetProp(Window, 'DefWndProc', Windows.SetWindowLong(Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
-      Windows.SendMessage(Window, WM_SETFONT, WParam(TWin32WidgetSet(InterfaceObject).MessageFont), 0);
+        WindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLong(
+          Window, GWL_WNDPROC, LongInt(SubClassWndProc)));
+      Windows.SendMessage(Window, WM_SETFONT, 
+        WParam(TWin32WidgetSet(InterfaceObject).MessageFont), 0);
     end;
   end;
 end;
@@ -232,9 +236,12 @@ begin
   with Params do
     if Buddy <> HWND(Nil) then
     begin
-      Windows.SetProp(Buddy, 'AWincontrol', dword(AWinControl));
-      Windows.SetProp(Buddy, 'DefWndProc', Windows.SetWindowLong(Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
-      Windows.SendMessage(Buddy, WM_SETFONT, WParam(TWin32WidgetSet(InterfaceObject).MessageFont), 0);
+      BuddyWindowInfo := AllocWindowInfo(Buddy);
+      BuddyWindowInfo^.AWinControl := AWinControl;
+      BuddyWindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLong(
+        Buddy, GWL_WNDPROC, LongInt(SubClassWndProc)));
+      Windows.SendMessage(Buddy, WM_SETFONT, 
+        WParam(TWin32WidgetSet(InterfaceObject).MessageFont), 0);
     end;
 end;
 
@@ -266,7 +273,7 @@ begin
   Assert(False, 'Trace:AddControl - Parent Window Handle is $' + IntToHex(LongInt(ParentHandle), 8));
   Assert(False, 'Trace:AddControl - Child Window Handle is $' + IntToHex(LongInt(ChildHandle), 8));
   // handle groupbox exception
-  ParentPanelHandle := Windows.GetProp(ChildHandle, 'ParentPanel');
+  ParentPanelHandle := GetWindowInfo(ChildHandle)^.ParentPanel;
   if ParentPanelHandle <> 0 then
     ChildHandle := ParentPanelHandle;
   SetParent(ChildHandle, ParentHandle);
@@ -427,7 +434,7 @@ var
   AccelTable: HACCEL;
 begin
   Handle := AWinControl.Handle;
-  AccelTable := Windows.GetProp(Handle, 'Accel');
+  AccelTable := GetWindowInfo(Handle)^.Accel;
   if AccelTable <> 0 then
     DestroyAcceleratorTable(AccelTable);
   DestroyWindow(Handle);

@@ -313,9 +313,10 @@ begin
   // return window handle
   Result := Params.Window;
   if TWin32WidgetSet(InterfaceObject).ThemesActive then
+  with Params.WindowInfo^ do
   begin
-    SetProp(Result, 'TabPageParent', 1);
-    SetProp(Result, 'TabPage', 1);
+    hasTabParent := true;
+    isTabPage := true;
   end;
 end;
 
@@ -404,7 +405,7 @@ begin
   Result := Params.Window;
   // although we may be child of tabpage, cut the paint chain
   // to improve speed and possible paint anomalities
-  Windows.RemoveProp(Result, 'TabPageParent');
+  Params.WindowInfo^.hasTabParent := false;
 end;
 
 procedure TWin32WSCustomNotebook.AddPage(const ANotebook: TCustomNotebook; 

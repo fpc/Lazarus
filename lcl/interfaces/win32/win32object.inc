@@ -179,6 +179,7 @@ begin
     0, {Windows.GetSystemMetrics(SM_CXSCREEN) div 2,}
     0, {Windows.GetSystemMetrics(SM_CYSCREEN) div 2,}
     0, 0, HWND(nil), HMENU(nil), HInstance, nil);
+  AllocWindowInfo(FAppHandle);
 
   // remove useless menuitems from sysmenu
   SysMenu := Windows.GetSystemMenu(FAppHandle, False);
@@ -296,7 +297,7 @@ var
 Begin
   While PeekMessage(AMessage, HWnd(Nil), 0, 0,PM_REMOVE) Do
   Begin
-    AccelTable := HACCEL(Windows.GetProp(AMessage.HWnd, 'Accel'));
+    AccelTable := GetWindowInfo(AMessage.HWnd)^.Accel;
     If (AccelTable = HACCEL(nil)) or (TranslateAccelerator(AMessage.HWnd, AccelTable, @AMessage) = 0) Then
     Begin
       TranslateMessage(@AMessage);
@@ -577,7 +578,7 @@ Begin
   csGroupBox:
   begin
     // check if we have a ``container'', if so, move that
-    BuddyHandle := Windows.GetProp(WinHandle, 'ParentPanel');
+    BuddyHandle := GetWindowInfo(WinHandle)^.ParentPanel;
     if BuddyHandle <> 0 then
     begin
       MoveWindow(BuddyHandle, Left, Top, Width, Height, false);
@@ -589,7 +590,7 @@ Begin
   else
     if Sender is TCustomComboBox then
     begin
-      StringList := TWin32ListStringList(Windows.GetProp(WinHandle, 'List'));
+      StringList := TWin32ListStringList(GetWindowInfo(WinHandle)^.List);
       if StringList <> nil then
         Height := StringList.ComboHeight;
     end;
@@ -665,7 +666,7 @@ Var
 Begin
   If (TControl(Sender).FCompStyle = csPage) or (TControl(Sender).FCompStyle = csToolButton) then exit;
   Handle := ObjectToHWND(Sender);
-  ParentPanel := Windows.GetProp(Handle, 'ParentPanel');
+  ParentPanel := GetWindowInfo(Handle)^.ParentPanel;
   if ParentPanel <> 0 then
     Handle := ParentPanel;
   If TControl(Sender).HandleObjectShouldBeVisible Then
@@ -740,6 +741,9 @@ end;
 
 {
   $Log$
+  Revision 1.294  2004/10/28 21:00:56  micha
+  convert GetProp and SetProp usage to one Atom pointing to a record of fields
+
   Revision 1.293  2004/10/28 07:43:29  micha
   experiment: use CS_SAVEBITS class style on tabpages to reduce flickering
 

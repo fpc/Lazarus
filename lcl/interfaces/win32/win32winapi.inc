@@ -1449,8 +1449,10 @@ function TWin32WidgetSet.GetDesignerDC(WindowHandle: HWND): HDC;
 var
   OverlayWindow: HWND;
   ARect: Windows.RECT;
+  WindowInfo, OverlayWindowInfo: PWindowInfo;
 begin
-  OverlayWindow := HWND(Windows.GetProp(WindowHandle, 'Overlay'));
+  WindowInfo := GetWindowInfo(WindowHandle);
+  OverlayWindow := WindowInfo^.Overlay;
   if OverlayWindow = HWND(nil) then
   begin
     // create 'overlay' window
@@ -1459,10 +1461,11 @@ begin
         'BUTTON', '', WS_CHILD or WS_VISIBLE or BS_OWNERDRAW,
         ARect.Left, ARect.Top, ARect.Right, ARect.Bottom,
         WindowHandle, HMENU(nil), HInstance, nil);
-    Windows.SetProp(OverlayWindow, 'DefWndProc', Windows.SetWindowLong(
+    OverlayWindowInfo := AllocWindowInfo(OverlayWindow);
+    OverlayWindowInfo^.DefWndProc := Windows.WNDPROC(Windows.SetWindowLong(
         OverlayWindow, GWL_WNDPROC, LongInt(@OverlayWindowProc)));
-    Windows.SetProp(OverlayWindow, 'Wincontrol', Windows.GetProp(WindowHandle, 'Wincontrol'));
-    Windows.SetProp(WindowHandle, 'Overlay', OverlayWindow);
+    OverlayWindowInfo^.WinControl := WindowInfo^.WinControl;
+    WindowInfo^.Overlay := OverlayWindow;
   end;
   // bring overlay window to front
   Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, 0, 0, SWP_NOSIZE or SWP_NOMOVE);
@@ -2438,7 +2441,7 @@ var
   OverlayWindow: HWND;
 Begin
   Assert(False, Format('Trace:> [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
-  OverlayWindow := Windows.GetProp(Window, 'Overlay');
+  OverlayWindow := GetWindowInfo(Window)^.Overlay;
   if OverlayWindow <> HWND(nil) then
     Result := Windows.ReleaseDC(OverlayWindow, DC);
   Assert(False, Format('Trace:< [TWin32WidgetSet.ReleaseDC] DC:0x%x', [DC]));
@@ -3016,6 +3019,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.127  2004/10/28 21:00:56  micha
+  convert GetProp and SetProp usage to one Atom pointing to a record of fields
+
   Revision 1.126  2004/08/01 14:31:46  micha
   fix stretchblt not called because of maskblt failure
 

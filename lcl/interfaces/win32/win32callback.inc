@@ -58,11 +58,12 @@ Begin
   Result:=false;
   if (DWORD(Str) and DWORD($FFFF0000)) = 0 then Exit; // global atom handle
   Assert(False, 'Trace:PropEnumProc - Start');
-  Assert(False, Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed', [String(Str), Data, Window]));
+  Assert(False, Format('Trace:PropEnumProc - Property %S (with value 0x%X) from window 0x%X removed', 
+    [String(Str), Data, Window]));
   RemoveProp(Window, Str);
   Result := True;
   Assert(False, 'Trace:PropEnumProc - Exit');
-End;                                              
+End;
 
 {------------------------------------------------------------------------------
  Function: CallDefaultWindowProc
@@ -78,13 +79,13 @@ End;
 function CallDefaultWindowProc(Window: HWnd; Msg: UInt; WParam: Windows.WParam;
   LParam: Windows.LParam): LResult;
 var
-  PrevWndProc: Pointer;
+  PrevWndProc: Windows.WNDPROC;
 begin
-  PrevWndProc := Pointer(Windows.GetProp(Window, 'DefWndProc'));
+  PrevWndProc := GetWindowInfo(Window)^.DefWndProc;
   if PrevWndProc = nil then
     Result := Windows.DefWindowProc(Window, Msg, WParam, LParam)
   else
-    Result := Windows.CallWindowProc(Windows.WNDPROC(PrevWndProc), Window, Msg, WParam, LParam);
+    Result := Windows.CallWindowProc(PrevWndProc, Window, Msg, WParam, LParam);
 end;
 
 type
@@ -128,9 +129,8 @@ Var
   R: TRect;
   P: TPoint;
   NewLeft, NewTop, NewWidth, NewHeight: integer;
-  OwnerObject: TObject;
-  MsgObject: TObject;
-  TheWinControl: TWinControl;
+  lWinControl, ChildWinControl: TWinControl;
+  TargetObject: TObject;
   WinProcess: Boolean;
   NotifyUserInput: Boolean;
   OverlayWindow: HWND;
@@ -138,6 +138,7 @@ Var
   DlgCode, CharCode: dword;
   eraseBkgndCommand: TEraseBkgndCommand;
   winClassName: array[0..19] of char;
+  WindowInfo: PWindowInfo;
 
   LMInsertText: TLMInsertText; // used by CB_INSERTSTRING, LB_INSERTSTRING
   LMScroll: TLMScroll; // used by WM_HSCROLL
@@ -156,7 +157,7 @@ Var
     PageIndex, Flags: Integer;
     PageHandle: HWND;
   begin
-    Notebook := TObject(GetProp(NotebookHandle, 'Wincontrol')) as TCustomNotebook;
+    Notebook := GetWindowInfo(NotebookHandle)^.WinControl as TCustomNotebook;
     PageIndex := Windows.SendMessage(NotebookHandle, TCM_GETCURSEL, 0, 0);
     if PageIndex = -1 then exit;
     PageHandle := Notebook.CustomPage(PageIndex).Handle;
@@ -175,10 +176,11 @@ Var
     MenuInfo.cbSize:=sizeof(MENUITEMINFO);
     MenuInfo.fMask:=MIIM_DATA;
     {first we have to decide if the command is from a popup menu or from the window main menu}
-    MainMenuHandle := HMENU(GetProp(Window, 'PopupMenu')); //if the 'PopupMenu' property exists, there is a big probability that the command is from a popup menu
+    //if the 'PopupMenu' property exists, there is a big probability that the command is from a popup menu
+    MainMenuHandle := GetWindowInfo(Window)^.PopupMenu;
     if MainMenuHandle<>0 then //processing popup menu
     begin
-      RemoveProp(Window, 'PopupMenu');
+      WindowInfo^.PopupMenu := 0;
       {GetMenuItemInfo can be FALSE when the 'PopupMenu' property was not
       removed in the last popup menu processing (no menuitem was selected)}
       if GetMenuItemInfo(MainMenuHandle, Lo(WParam), false, @MenuInfo)
@@ -199,37 +201,27 @@ Var
     PS : TPaintStruct;
     MemWidth: Integer;
     MemHeight: Integer;
-    AWinControl: TWinControl;
     PaintMsg: TLMPaint;
     ORect: TRect;
     parLeft, parTop: integer;
     useDoubleBuffer: boolean;
     parentPaint: boolean;
-    hasTabParent: boolean;
-    isTabPage: boolean;
     isNotebook: boolean;
   begin
     // note: ignores the received DC
     // do not use default deliver message
-    if not (OwnerObject is TWinControl) then
-    begin
-      OwnerObject := TObject(Windows.GetProp(Window, 'PWinControl'));
-      if not (OwnerObject is TWinControl) then
-        exit;              
-    end;
+    if lWinControl = nil then
+      lWinControl := GetWindowInfo(Window)^.PWinControl;
     
     // create a paint message
-    AWinControl := TWinControl(OwnerObject);
     GetClassName(Window, winClassName, 20);
-    hasTabParent := Windows.GetProp(Window, 'TabPageParent') <> 0;
-    isTabPage := (Windows.GetProp(Window, 'TabPage') <> 0);
     isNotebook := TWin32WidgetSet(InterfaceObject).ThemesActive and 
       CompareMem(@winClassName, @TabControlClsName, High(TabControlClsName)+1);
-    parentPaint := isTabPage or (hasTabParent and (WParam <> 0));
+    parentPaint := WindowInfo^.isTabPage or (WindowInfo^.hasTabParent and (WParam <> 0));
 
     // if painting background of some control for tabpage, don't handle erase background
     // in parent of tabpage
-    if isTabPage then
+    if WindowInfo^.isTabPage then
     begin
 {$ifdef MSG_DEBUG}
       writeln(MessageStackDepth, ' *forcing next WM_ERASEBKGND to disable message');
@@ -238,7 +230,7 @@ Var
     end;
 
     // paint optimizations for controls on a tabpage
-    if hasTabParent and (WParam = 0) and not isTabPage then
+    if WindowInfo^.hasTabParent and (WParam = 0) and not WindowInfo^.isTabPage then
     begin
       // if this is a groupbox in a tab, then the next erasebackground is for
       // drawing the background of the caption, send paint message then
@@ -253,7 +245,7 @@ Var
         
       // if need to start paint, paint by calling parent, and we have no 
       // controls, is a native control, use default win32 painting to avoid flicker
-      if (AWinControl.ControlCount = 0) 
+      if (lWinControl.ControlCount = 0) 
           and not CompareMem(@winClassName, @ClsName, High(ClsName)+1) then
       begin
         // optimization: no child controls -> default painting
@@ -262,7 +254,7 @@ Var
     end;
 
     // check if double buffering is requested
-    useDoubleBuffer := (WParam = 0) and AWinControl.DoubleBuffered;
+    useDoubleBuffer := (WParam = 0) and lWinControl.DoubleBuffered;
     if useDoubleBuffer then
     begin
       DC := Windows.GetDC(0);
@@ -284,7 +276,7 @@ Var
       end;
       if parentPaint then
         GetWin32ControlPos(Window, GetParent(Window), parLeft, parTop);
-      if not GetLCLClientBoundsOffset(AWinControl, ORect) then
+      if not GetLCLClientBoundsOffset(lWinControl, ORect) then
       begin
         ORect.Left := 0;
         ORect.Top := 0;
@@ -294,8 +286,8 @@ Var
       PaintMsg.PaintStruct := @PS;
       if not useDoubleBuffer then
         PaintMsg.DC := DC;
-      if not hasTabParent and not isNotebook then
-        AWinControl.EraseBackground(PaintMsg.DC);
+      if not WindowInfo^.hasTabParent and not isNotebook then
+        lWinControl.EraseBackground(PaintMsg.DC);
       if parentPaint then
       begin
         // tabpage parent and got a dc to draw in, divert paint to parent
@@ -303,10 +295,10 @@ Var
         SendMessage(GetParent(Window), WM_PAINT, PaintMsg.DC, 0);
         MoveWindowOrgEx(PaintMsg.DC, parLeft, parTop);
       end;
-      if (WParam = 0) or not hasTabParent then
+      if (WParam = 0) or not WindowInfo^.hasTabParent then
       begin
         MoveWindowOrgEx(PaintMsg.DC, ORect.Left, ORect.Top);
-        DeliverMessage(OwnerObject, PaintMsg);
+        DeliverMessage(lWinControl, PaintMsg);
         MoveWindowOrgEx(PaintMsg.DC, -ORect.Left, -ORect.Top);
       end;
       if useDoubleBuffer then
@@ -343,8 +335,8 @@ Var
       if Windows.PtInRect(ItemRect, MousePos) then
       begin
         // item clicked: toggle
-        if I < TCheckListBox(OwnerObject).Items.Count then
-          TCheckListBox(OwnerObject).Checked[I] := not TCheckListBox(OwnerObject).Checked[I];
+        if I < TCheckListBox(lWinControl).Items.Count then
+          TCheckListBox(lWinControl).Checked[I] := not TCheckListBox(lWinControl).Checked[I];
         // can only click one item
         exit;
       end;
@@ -391,12 +383,8 @@ Begin
   NotifyUserInput := False;
 
   Assert(False, 'Trace:WindowProc - Getting Object With Callback Procedure');
-  OwnerObject := TObject(GetProp(Window, 'Wincontrol'));
-  if OwnerObject is TWinControl then begin
-    TheWinControl := TWinControl(OwnerObject);
-  end else begin
-    TheWinControl := nil;
-  end;
+  WindowInfo := GetWindowInfo(Window);
+  lWinControl := WindowInfo^.WinControl;
   Assert(False, 'Trace:WindowProc - Getting Callback Object');
 
   Assert(False, 'Trace:WindowProc - Checking Proc');
@@ -405,7 +393,7 @@ Begin
   Case Msg Of
     LM_MONTHCHANGED..LM_DAYCHANGED:
     Begin
-      If OwnerObject Is TCalendar Then
+      If lWinControl Is TCalendar Then
         LMessage.Msg := Msg;
     End;
     WM_ACTIVATE:
@@ -430,8 +418,8 @@ Begin
     BM_SETCHECK:
     Begin
       LMessage.Msg := LM_CHANGED;
-      if (WParam=BST_CHECKED) and (OwnerObject is TRadioButton) then
-        ClearSiblingRadioButtons(TRadioButton(OwnerObject));
+      if (WParam=BST_CHECKED) and (lWinControl is TRadioButton) then
+        ClearSiblingRadioButtons(TRadioButton(lWinControl));
     End;
     WM_CAPTURECHANGED:
     Begin
@@ -481,47 +469,52 @@ Begin
     Begin
       if LParam=0 then 
       begin
-        OwnerObject := GetMenuItemObject; {menuitem or shortcut}
+        {menuitem or shortcut}
+        TargetObject := GetMenuItemObject;
+        if TargetObject is TMenuItem then
+        begin
+          if (Hi(WParam) = 0) or (Hi(WParam) = 1) then
+          begin
+            LMessage.Msg := LM_ACTIVATE;
+            TargetObject.Dispatch(LMessage);
+          end;
+          lWinControl := nil;
+        end;
       end else begin
-        OwnerObject := TObject(GetProp(LParam, 'Wincontrol'));      
+        lWinControl := GetWindowInfo(LParam)^.WinControl;
         // buddy controls use 'awincontrol' to designate associated wincontrol
-        if OwnerObject = nil then
-          OwnerObject := TObject(GetProp(LParam, 'AWincontrol'));
+        if lWinControl = nil then
+          lWinControl := GetWindowInfo(LParam)^.AWinControl;
+        if lWinControl is TCustomButton then
+          case Hi(WParam) of
+            BN_CLICKED:   LMessage.Msg := LM_CLICKED;
+            BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
+          end
+        else if (lWinControl is TCustomEdit) or (lWinControl is TCustomSpinEdit) then
+          case Hi(WParam) of
+            EN_CHANGE:    LMessage.Msg := CM_TEXTCHANGED;
+          end
+        else if lWinControl is TCustomCombobox then
+          case Hi(WParam) of
+            CBN_EDITCHANGE: LMessage.Msg := LM_CHANGED;
+            { CBN_EDITCHANGE is only sent after the user changes the edit box.
+              CBN_SELCHANGE is sent when the user changes the text by
+              selecting in the list, but before text is actually changed.
+              itemindex is updated, so set text manually }
+            CBN_SELCHANGE: begin
+              UpdateComboBoxText(TCustomComboBox(lWinControl));
+              LMessage.Msg := LM_CHANGED;
+            end;
+            { closeup message is sent before text is actually changed... *sigh*
+              itemindex is updated, so set text manually }
+            CBN_CLOSEUP:
+              UpdateComboBoxText(TCustomComboBox(lWinControl));
+          end;
       end;
           
-      if OwnerObject is TMenuItem then
-      begin
-        if (Hi(WParam) = 0) or (Hi(WParam) = 1) then
-          LMessage.Msg := LM_ACTIVATE;
-      end else if OwnerObject is TCustomButton then
-        case Hi(WParam) of
-          BN_CLICKED:   LMessage.Msg := LM_CLICKED;
-          BN_KILLFOCUS: LMessage.Msg := LM_EXIT;
-        end
-      else if (OwnerObject is TCustomEdit) or (OwnerObject is TCustomSpinEdit) then
-        case Hi(WParam) of
-          EN_CHANGE:    LMessage.Msg := CM_TEXTCHANGED;
-        end
-      else if OwnerObject is TCustomCombobox then
-        case Hi(WParam) of
-          CBN_EDITCHANGE: LMessage.Msg := LM_CHANGED;
-          { CBN_EDITCHANGE is only sent after the user changes the edit box.
-            CBN_SELCHANGE is sent when the user changes the text by
-            selecting in the list, but before text is actually changed.
-            itemindex is updated, so set text manually }
-          CBN_SELCHANGE: begin
-            UpdateComboBoxText(TCustomComboBox(OwnerObject));
-            LMessage.Msg := LM_CHANGED;
-          end;
-          { closeup message is sent before text is actually changed... *sigh*
-            itemindex is updated, so set text manually }
-          CBN_CLOSEUP:
-            UpdateComboBoxText(TCustomComboBox(OwnerObject));
-        end;
       // no specific message found? try send a general msg
-      if LMessage.Msg = LM_NULL then
-        if OwnerObject is TControl then
-          TControl(OwnerObject).Perform(CN_COMMAND, WParam, LParam);
+      if (LMessage.Msg = LM_NULL) and (lWinControl <> nil) then
+        lWinControl.Perform(CN_COMMAND, WParam, LParam);
     End;
 {
   * Besides the fact that LCL does not respond to LM_CREATE, this code is
@@ -539,16 +532,16 @@ Begin
       // only static and button controls have transparent parts
       // others need to erased with their window color
       if ((Msg <> WM_CTLCOLORSTATIC) and (Msg <> WM_CTLCOLORBTN))
-          or (Windows.GetProp(LParam, 'TabPageParent') = 0) then
+          or not GetWindowInfo(LParam)^.hasTabParent then
       begin
-        MsgObject := TObject(GetProp(LParam, 'Wincontrol'));
-        if MsgObject = nil then
-          MsgObject := TObject(GetProp(LParam, 'AWincontrol'));
-        if MsgObject is TWinControl then
+        ChildWinControl := GetWindowInfo(LParam)^.WinControl;
+        if ChildWinControl = nil then
+          ChildWinControl := GetWindowInfo(LParam)^.AWinControl;
+        if ChildWinControl <> nil then
         begin
-          Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Font.Color)));
-          Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(TWinControl(MsgObject).Brush.Color)));
-          LMessage.Result := LResult(TWinControl(MsgObject).Brush.Handle);
+          Windows.SetTextColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Font.Color)));
+          Windows.SetBkColor(HDC(WParam), Windows.COLORREF(ColorToRGB(ChildWinControl.Brush.Color)));
+          LMessage.Result := LResult(ChildWinControl.Brush.Handle);
           // Override default handling
           WinProcess := false;
         end;
@@ -581,10 +574,10 @@ Begin
     WM_DESTROY:
     Begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
-      If OwnerObject Is TCustomForm then
-        If fsModal in TCustomForm(OwnerObject).FormState then
+      If lWinControl Is TCustomForm then
+        If fsModal in TCustomForm(lWinControl).FormState then
           EnumThreadWindows(GetWindowThreadProcessId(Window,nil),@EnableWindowsProc, Window);
-      if OwnerObject is TCheckListBox then
+      if lWinControl is TCheckListBox then
         TWin32CheckListBoxStrings.DeleteItemRecords(Window);
       EnumProps(Window, @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
@@ -600,9 +593,12 @@ Begin
     End;
     WM_DRAWITEM:
     Begin
-      OwnerObject := TObject(WParam);
-      if (OwnerObject is TCustomListbox) and
-            (TCustomListBox(OwnerObject).Style <> lbStandard) then
+      if TObject(WParam) is TWinControl then
+        lWinControl := TWinControl(WParam)
+      else
+        lWinControl := nil;
+      if (lWinControl is TCustomListbox) and
+            (TCustomListBox(lWinControl).Style <> lbStandard) then
       begin
         LMessage.Msg := LM_DRAWLISTITEM;
         TLMDrawListItem(LMessage).DrawListItemStruct := @DrawListItemStruct;
@@ -631,8 +627,8 @@ Begin
       // When no theming active, the internal image needs to be 
       // recreated when the enabled state is changed
       if not TWin32WidgetSet(InterfaceObject).ThemesActive
-      and (OwnerObject is TCustomBitBtn)
-      then DrawBitBtnImage(TCustomBitBtn(OwnerObject), PChar(TCustomBitBtn(OwnerObject).Caption));
+      and (lWinControl is TCustomBitBtn)
+      then DrawBitBtnImage(TCustomBitBtn(lWinControl), PChar(TCustomBitBtn(lWinControl).Caption));
     End;
     WM_HSCROLL:
     Begin
@@ -646,7 +642,7 @@ Begin
         if ScrollBar <> 0 then
         begin
           // send message to actual scrollbar window
-          OwnerObject := TObject(Windows.GetProp(ScrollBar, 'Wincontrol'));
+          lWinControl := GetWindowInfo(ScrollBar)^.WinControl;
         end;
       End;
     End;
@@ -654,8 +650,7 @@ Begin
     Begin 
       eraseBkgndCommand := TEraseBkgndCommand(EraseBkgndStack and EraseBkgndStackMask);
       EraseBkgndStack := EraseBkgndStack shr EraseBkgndStackShift;
-      if (eraseBkgndCommand <> ecNoMsg) and 
-          (Windows.GetProp(Window, 'TabPageParent') = 0) then
+      if (eraseBkgndCommand <> ecNoMsg) and not WindowInfo^.hasTabParent then
       begin
         LMessage.Msg := LM_ERASEBKGND;
         LMessage.WParam := WParam;
@@ -683,7 +678,7 @@ Begin
         CharCode := Word(WParam);
         Result := 0;
         Assert(False,Format('WM_KEYDOWN KeyData= %d CharCode= %d ',[KeyData,CharCode]));
-        Assert(False,'  OwnerObject= '+TComponent(OwnerObject).Name+':'+OwnerObject.ClassName);
+        Assert(False,'  lWinControl= '+TComponent(lWinControl).Name+':'+lWinControl.ClassName);
       End;
       WinProcess := false;
     End;
@@ -719,7 +714,7 @@ Begin
       End;
 
       // CheckListBox functionality
-      if OwnerObject is TCheckListBox then
+      if lWinControl is TCheckListBox then
         CheckListBoxLButtonDown;
     End;
     WM_LBUTTONDOWN:
@@ -735,10 +730,10 @@ Begin
       End;
 
       // CheckListBox functionality
-      if OwnerObject is TCheckListBox then
+      if lWinControl is TCheckListBox then
         CheckListBoxLButtonDown;
       // RadioButton functionality
-      if OwnerObject is TRadioButton then
+      if lWinControl is TRadioButton then
         Windows.SendMessage(Window, BM_SETCHECK, BST_CHECKED, 0);
     End;
     WM_LBUTTONUP:
@@ -828,7 +823,7 @@ Begin
 
         // check if the window is an edit control of a combobox, if so,
         // redirect it to the combobox, not the edit control
-        if Windows.GetProp(TargetWindow, 'ComboEdit') <> 0 then
+        if GetWindowInfo(TargetWindow)^.isComboEdit then
           TargetWindow := Windows.GetParent(TargetWindow);
         if TargetWindow <> Window then
         begin
@@ -838,7 +833,7 @@ Begin
 
         // the mousewheel message is for us
         // windows handles combobox's mousewheel messages
-        if TWinControl(OwnerObject).FCompStyle <> csComboBox then
+        if TWinControl(lWinControl).FCompStyle <> csComboBox then
         begin
           Msg := LM_MOUSEWHEEL;
           WheelDelta := SmallInt(Hi(WParam));
@@ -851,9 +846,9 @@ Begin
     //TODO:LM_MOVEPAGE,LM_MOVETOROW,LM_MOVETOCOLUMN
     WM_NCHITTEST:
     begin
-      if (OwnerObject is TControl) then
+      if (lWinControl is TControl) then
       begin
-        if TControl(OwnerObject).FCompStyle = csHintWindow then
+        if TControl(lWinControl).FCompStyle = csHintWindow then
         begin
           LMessage.Result := HTTRANSPARENT;
           WinProcess := false;
@@ -933,11 +928,11 @@ Begin
     End;
     WM_SETCURSOR:
     begin
-      if (TheWinControl <> nil) and (TheWinControl.Cursor <> crDefault) and
-        not (csDesigning in TheWinControl.ComponentState) and
+      if (lWinControl <> nil) and (lWinControl.Cursor <> crDefault) and
+        not (csDesigning in lWinControl.ComponentState) and
         (Lo(LParam) = HTCLIENT) then
       begin
-        Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[TheWinControl.Cursor]));
+        Windows.SetCursor(Windows.LoadCursor(0, LclCursorToWin32CursorMap[lWinControl.Cursor]));
         LMessage.Result := 1;
       end else begin
         LMessage.Msg := LM_SETCURSOR;
@@ -949,7 +944,7 @@ Begin
     WM_SETFOCUS:
     Begin
       LMessage.Msg := LM_SETFOCUS;
-      if (TheWinControl <> nil) and (TheWinControl.FCompStyle = csEdit) then
+      if (lWinControl <> nil) and (lWinControl.FCompStyle = csEdit) then
         Windows.SendMessage(Window, EM_SETSEL, 0, -1);
     End;
     WM_SHOWWINDOW:
@@ -962,8 +957,8 @@ Begin
         Status := LParam;
       End;
 
-      if assigned(OwnerObject) and
-        (OwnerObject=Application.MainForm) then begin
+      if assigned(lWinControl) and
+        (lWinControl=Application.MainForm) then begin
         if WParam=0 then
           Windows.ShowWindow(TWin32WidgetSet(InterfaceObject).FAppHandle,
             SW_HIDE)
@@ -1014,7 +1009,7 @@ Begin
         if ScrollBar <> 0 then
         begin
           // send message to actual scrollbar window
-          OwnerObject := TObject(Windows.GetProp(ScrollBar, 'Wincontrol'));
+          lWinControl := GetWindowInfo(ScrollBar)^.WinControl;
         end;
       End;
     End;
@@ -1032,7 +1027,10 @@ Begin
     End;
     WM_MEASUREITEM:
     Begin
-      OwnerObject := TObject(WParam);
+      if TObject(WParam) is TWinControl then
+        lWinControl := TWinControl(LParam)
+      else
+        lWinControl := nil;
       LMessage.Msg := LM_MEASUREITEM;
       LMessage.LParam := LParam;
       LMessage.WParam := WParam;
@@ -1060,8 +1058,8 @@ Begin
         // MoveType := WParam;   WParam is not defined!
         MoveType := Move_SourceIsInterface;
         If (Windows.GetParent(Window) = 0)
-        and (OwnerObject is TCustomForm)
-        and (TCustomForm(OwnerObject).Parent=nil) then begin
+        and (lWinControl is TCustomForm)
+        and (TCustomForm(lWinControl).Parent=nil) then begin
           if Windows.GetWindowRect(Window,@R) then
           begin
             XPos := R.Left;
@@ -1079,12 +1077,12 @@ Begin
             Msg := LM_NULL;
           end;
         end;
-        if TheWinControl <> nil then begin
+        if lWinControl <> nil then begin
           {$IFDEF VerboseSizeMsg}
-          writeln('Win32CallBack WM_MOVE ',TheWinControl.Name,':',TheWinControl.ClassName,
+          writeln('Win32CallBack WM_MOVE ',lWinControl.Name,':',lWinControl.ClassName,
             ' NewPos=',XPos,',',YPos);
           {$ENDIF}
-          if (TheWinControl.Left=XPos) and (TheWinControl.Top=YPos) then
+          if (lWinControl.Left=XPos) and (lWinControl.Top=YPos) then
             exit;
         end;
       End;
@@ -1098,24 +1096,24 @@ Begin
         GetWindowSize(Window, NewWidth, NewHeight);
         Width := NewWidth;
         Height := NewHeight;
-        if (OwnerObject is TWinControl) then begin
-          TheWinControl:=TWinControl(OwnerObject);
+        if (lWinControl is TWinControl) then begin
+          lWinControl:=TWinControl(lWinControl);
           {$IFDEF VerboseSizeMsg}
           GetClientRect(Window,R);
-          writeln('Win32Callback: WM_SIZE ',TheWinControl.Name,':',TheWinControl.ClassName,
+          writeln('Win32Callback: WM_SIZE ',lWinControl.Name,':',lWinControl.ClassName,
             ' NewSize=',Width,',',Height,
             ' HasVScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_VSCROLL) <> 0,
             ' HasHScroll=',(Windows.GetWindowLong(Window, GWL_STYLE) and WS_HSCROLL) <> 0,
-            ' OldClientSize=',TheWinControl.CachedClientWidth,',',TheWinControl.CachedClientHeight,
+            ' OldClientSize=',lWinControl.CachedClientWidth,',',lWinControl.CachedClientHeight,
             ' NewClientSize=',R.Right,',',R.Bottom);
           {$ENDIF}
-          if (TheWinControl.Width=Width)
-          and (TheWinControl.Height=Height)
-          and (not TheWinControl.ClientRectNeedsInterfaceUpdate) then
+          if (lWinControl.Width=Width)
+          and (lWinControl.Height=Height)
+          and (not lWinControl.ClientRectNeedsInterfaceUpdate) then
             exit;
-          TheWinControl.InvalidateClientRectCache(true);
+          lWinControl.InvalidateClientRectCache(true);
         end;
-        OverlayWindow := Windows.GetProp(Window, 'Overlay');
+        OverlayWindow := GetWindowInfo(Window)^.Overlay;
         if OverlayWindow <> 0 then
           Windows.SetWindowPos(OverlayWindow, HWND_TOP, 0, 0, NewWidth, NewHeight, SWP_NOMOVE);
       End;
@@ -1144,8 +1142,8 @@ Begin
   if NotifyUserInput then
     NotifyApplicationUserInput(PLMsg^.Msg);
 
-  if (OwnerObject <> nil) and (PLMsg^.Msg <> LM_NULL) then
-    DeliverMessage(OwnerObject, PLMsg^);
+  if (lWinControl <> nil) and (PLMsg^.Msg <> LM_NULL) then
+    DeliverMessage(lWinControl, PLMsg^);
 
   case Msg of
     WM_SETCURSOR:
@@ -1154,6 +1152,16 @@ Begin
         WinProcess := true;
     end;
    
+    WM_DESTROY:
+    begin
+      // free our own data associated with window
+      if Windows.RemoveProp(Window, PChar(WindowInfo)) <> 0 then
+      begin
+        Dispose(WindowInfo);
+        WindowInfo := nil;
+      end;
+    end;
+
     WM_CHAR:
     begin
       // if key not yet processed, let windows process it
@@ -1202,7 +1210,7 @@ Begin
         if (DlgCode = 0) or ((DlgCode and CallDefaultWindowProc(Window, WM_GETDLGCODE, 0, 0)) = 0) then
         begin
           // windows didn't want the key
-          DeliverMessage(OwnerObject, PLMsg^);
+          DeliverMessage(lWinControl, PLMsg^);
         end;
       end;
     end;
@@ -1311,7 +1319,7 @@ var
   PLMsg: PLMessage;
   NotifyUserInput: boolean;
   WinProcess: boolean;
-  OwnerObject: TObject;
+  lWinControl: TWinControl;
 begin
   // filter messages we want to send to LCL
   WinProcess := true;
@@ -1354,8 +1362,8 @@ begin
     if NotifyUserInput then
       NotifyApplicationUserInput(PLMsg^.Msg);
 
-    OwnerObject := TObject(Windows.GetProp(Window, 'AWinControl'));
-    DeliverMessage(OwnerObject, PLMsg^);
+    lWinControl := GetWindowInfo(Window)^.AWinControl;
+    DeliverMessage(lWinControl, PLMsg^);
 
     case Msg of
       WM_KEYDOWN, WM_KEYUP:
@@ -1364,7 +1372,7 @@ begin
         if LMKey.CharCode <> VK_UNKNOWN then
         begin
           LMKey.Msg := Msg;
-          DeliverMessage(OwnerObject, LMKey);
+          DeliverMessage(lWinControl, LMKey);
           // still not handled? then do default processing
           WinProcess := LMKey.CharCode <> VK_UNKNOWN;
         end;
@@ -1406,6 +1414,9 @@ end;
 
 {
   $Log$
+  Revision 1.147  2004/10/28 21:00:56  micha
+  convert GetProp and SetProp usage to one Atom pointing to a record of fields
+
   Revision 1.146  2004/10/28 07:43:29  micha
   experiment: use CS_SAVEBITS class style on tabpages to reduce flickering
 

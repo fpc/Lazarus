@@ -260,21 +260,24 @@ var
 
 Initialization
 
-Assert(False, 'Trace:win32int.pp - Initialization');
+  Assert(False, 'Trace:win32int.pp - Initialization');
 {$ifdef MSG_DEBUG}
-MessageStackDepth := '';
+  MessageStackDepth := '';
 {$endif}
-EraseBkgndStack := 0;
+  EraseBkgndStack := 0;
 
 Finalization
 
-Assert(False, 'Trace:win32int.pp - Finalization');
+  Assert(False, 'Trace:win32int.pp - Finalization');
 
 End.
 
 { =============================================================================
 
   $Log$
+  Revision 1.126  2004/10/28 21:00:56  micha
+  convert GetProp and SetProp usage to one Atom pointing to a record of fields
+
   Revision 1.125  2004/10/28 14:17:18  micha
   remove obsolete message event array
 
