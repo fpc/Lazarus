@@ -368,11 +368,9 @@ type
 
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender : TObject);
-    procedure MessageViewDblClick(Sender : TObject);
 
     //SearchResultsView events
     procedure SearchResultsViewSelectionChanged(sender : TObject);
-    procedure SearchResultsViewDblClick(Sender : TObject);
 
     // External Tools events
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
@@ -2873,19 +2871,6 @@ procedure TMainIDE.mnuHelpAboutLazarusClicked(Sender : TObject);
 begin
   ShowAboutForm;
 end;
-
-//------------------------------------------------------------------------------
-
-Procedure TMainIDE.MessageViewDblClick(Sender : TObject);
-Begin
-
-end;
-
-Procedure TMainIDE.SearchResultsViewDblClick(Sender : TObject);
-Begin
-
-end;
-
 
 //==============================================================================
 
@@ -7445,14 +7430,14 @@ var MaxMessages: integer;
   NewFilename: String;
 begin
   Result:=false;
-  MaxMessages:=MessagesView.MessageView.Items.Count;
+  MaxMessages:=MessagesView.VisibleItemCount;
   if Index>=MaxMessages then exit;
   if (Index<0) then begin
     // search relevant message (first error, first fatal)
     Index:=0;
     while (Index<MaxMessages) do begin
       if (TheOutputFilter.GetSourcePosition(
-        MessagesView.MessageView.Items[Index],
+        MessagesView.VisibleItems[Index].Msg,
         Filename,CaretXY,MsgType)) then
       begin
         if MsgType in [etError,etFatal,etPanic] then break;
@@ -7462,7 +7447,7 @@ begin
     if Index>=MaxMessages then exit;
     MessagesView.SelectedMessageIndex:=Index;
   end;
-  MessagesView.GetMessageAt(Index,CurMsg,CurDir);
+  MessagesView.GetVisibleMessageAt(Index,CurMsg,CurDir);
   if TheOutputFilter.GetSourcePosition(CurMsg,Filename,CaretXY,MsgType)
   then begin
     if not FilenameIsAbsolute(Filename) then begin
@@ -10250,6 +10235,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.687  2003/12/26 12:36:31  mattias
+  started  a posteriori message filtering
+
   Revision 1.686  2003/12/25 14:17:06  mattias
   fixed many range check warnings
 

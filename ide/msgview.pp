@@ -41,36 +41,67 @@ uses
   IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts;
 
 type
+  { TMessageLine }
+
+  TMessageLine = class
+  private
+    FDirectory: string;
+    FMsg: string;
+    FPosition: integer;
+    FVisiblePosition: integer;
+    procedure SetDirectory(const AValue: string);
+    procedure SetMsg(const AValue: string);
+  public
+    constructor Create;
+    property Msg: string read FMsg write SetMsg;
+    property Directory: string read FDirectory write SetDirectory;
+    property Position: integer read FPosition;
+    property VisiblePosition: integer read FVisiblePosition;
+  end;
+  
+
+  { TMessagesView }
+  
+  TOnFilterLine = procedure(MsgLine: TMessageLine; var Show: boolean) of object;
+  
   TMessagesView = class(TForm)
-    MessageView : TListBox;
+    MessageView: TListBox;
     procedure MessageViewDblClicked(Sender: TObject);
     Procedure MessageViewClicked(sender : TObject);
   private
-    FDirectories: TStringList;
+    FItems: TList; // list of TMessageLine
+    FVisibleItems: TList; // list of TMessageLine (visible Items of FItems)
     FLastLineIsProgress: boolean;
     FOnSelectionChanged: TNotifyEvent;
     function GetDirectory: string;
+    function GetItems(Index: integer): TMessageLine;
     Function GetMessage: String;
+    function GetVisibleItems(Index: integer): TMessageLine;
     procedure SetLastLineIsProgress(const AValue: boolean);
   protected
     fBlockCount: integer;
     Function GetSelectedLineIndex: Integer;
     procedure SetSelectedLineIndex(const AValue: Integer);
-    procedure SetMsgDirectory(Index: integer; const CurDir: string);
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
-    procedure Add(const Msg, CurDir: String; ProgressLine: boolean);
+    procedure DeleteLine(Index: integer);
+    procedure Add(const Msg, CurDir: String; ProgressLine,
+                  VisibleLine: boolean);
     procedure AddMsg(const Msg, CurDir: String);
     procedure AddProgress(const Msg, CurDir: String);
     procedure AddSeparator;
     procedure ClearTillLastSeparator;
     procedure ShowTopMessage;
-    function MsgCount: integer;
     procedure Clear;
-    procedure GetMessageAt(Index: integer; var Msg, MsgDirectory: string);
+    procedure GetVisibleMessageAt(Index: integer; var Msg, MsgDirectory: string);
     procedure BeginBlock;
     procedure EndBlock;
+    procedure ClearItems;
+    function ItemCount: integer;
+    function VisibleItemCount: integer;
+    function MsgCount: integer;
+    procedure FilterLines(Filter: TOnFilterLine);
   public
     property LastLineIsProgress: boolean read FLastLineIsProgress
                                          write SetLastLineIsProgress;
@@ -80,6 +111,8 @@ type
                                            write SetSelectedLineIndex;
     property OnSelectionChanged: TNotifyEvent read FOnSelectionChanged
                                               write FOnSelectionChanged;
+    property Items[Index: integer]: TMessageLine read GetItems;
+    property VisibleItems[Index: integer]: TMessageLine read GetVisibleItems;
   end;
 
 var
@@ -100,6 +133,10 @@ constructor TMessagesView.Create(TheOwner : TComponent);
 var ALayout: TIDEWindowLayout;
 Begin
   inherited Create(TheOwner);
+  Name := NonModalIDEWindowNames[nmiwMessagesViewName];
+  FItems:=TList.Create;
+  FVisibleItems:=TList.Create;
+
   if LazarusResources.Find(ClassName)=nil then begin
     Caption:=lisMenuViewMessages;
     MessageView := TListBox.Create(Self);
@@ -108,7 +145,6 @@ Begin
       Align:= alClient;
     end;
   end;
-  Name := NonModalIDEWindowNames[nmiwMessagesViewName];
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.
                                                ItemByEnum(nmiwMessagesViewName);
   ALayout.Form:=TForm(Self);
@@ -117,56 +153,97 @@ end;
 
 destructor TMessagesView.Destroy;
 begin
-  FreeAndNil(FDirectories);
+  ClearItems;
+  FreeThenNil(FItems);
+  FreeThenNil(FVisibleItems);
   inherited Destroy;
+end;
+
+procedure TMessagesView.DeleteLine(Index: integer);
+var
+  Line: TMessageLine;
+  VisibleIndex: Integer;
+  i: Integer;
+begin
+  Line:=Items[Index];
+  FItems.Delete(Line.Position);
+  VisibleIndex:=Line.VisiblePosition;
+  if VisibleIndex>=0 then begin
+    MessageView.Items.Delete(VisibleIndex);
+    FVisibleItems.Delete(VisibleIndex);
+  end;
+  Line.Free;
+  // adjust Positions
+  for i:=Index to FItems.Count-1 do begin
+    Line:=Items[i];
+    dec(Line.FPosition);
+    if Line.VisiblePosition>VisibleIndex then
+      dec(Line.FVisiblePosition);
+  end;
 end;
 
 {------------------------------------------------------------------------------
   TMessagesView.Add
 ------------------------------------------------------------------------------}
-Procedure TMessagesView.Add(const Msg, CurDir: String; ProgressLine: boolean);
+Procedure TMessagesView.Add(const Msg, CurDir: String; ProgressLine,
+  VisibleLine: boolean);
 var
+  NewMsg: TMessageLine;
   i: Integer;
 Begin
-  if FLastLineIsProgress then begin
-    MessageView.Items[MessageView.Items.Count-1]:=Msg;
-  end else begin
-    MessageView.Items.Add(Msg);
+  NewMsg:=TMessageLine.Create;
+  NewMsg.Msg:=Msg;
+  NewMsg.Directory:=CurDir;
+  NewMsg.FPosition:=FItems.Count;
+  FItems.Add(NewMsg);
+
+  if VisibleLine then begin
+    if FLastLineIsProgress then begin
+      // replace old progress line
+      i:=FVisibleItems.Count-1;
+      VisibleItems[i].FVisiblePosition:=-1;
+      FVisibleItems.Delete(i);
+      MessageView.Items[i]:=Msg;
+    end else begin
+      // add line
+      MessageView.Items.Add(Msg);
+    end;
+    NewMsg.FVisiblePosition:=FVisibleItems.Count;
+    FVisibleItems.Add(NewMsg);
+    FLastLineIsProgress:=ProgressLine;
+    MessageView.TopIndex:=MessageView.Items.Count-1;
   end;
-  FLastLineIsProgress:=ProgressLine;
-  i:=MessageView.Items.Count-1;
-  SetMsgDirectory(i,CurDir);
-  MessageView.TopIndex:=MessageView.Items.Count-1;
 end;
 
 procedure TMessagesView.AddMsg(const Msg, CurDir: String);
 begin
-  Add(Msg,CurDir,false);
+  Add(Msg,CurDir,false,true);
 end;
 
 procedure TMessagesView.AddProgress(const Msg, CurDir: String);
 begin
-  Add(Msg,CurDir,true);
+  Add(Msg,CurDir,true,true);
 end;
 
 Procedure TMessagesView.AddSeparator;
 begin
-  Add(SeparatorLine,'',false);
+  Add(SeparatorLine,'',false,true);
 end;
 
 procedure TMessagesView.ClearTillLastSeparator;
 var LastSeparator: integer;
 begin
-  with MessageView do begin
-    LastSeparator:=Items.Count-1;
-    while (LastSeparator>=0) and (Items[LastSeparator]<>SeparatorLine) do
-      dec(LastSeparator);
-    if LastSeparator>=0 then begin
-      while (Items.Count>LastSeparator) do
-        Items.Delete(Items.Count-1);
-      FLastLineIsProgress:=false;
-    end;
+  BeginBlock;
+  LastSeparator:=VisibleItemCount-1;
+  while (LastSeparator>=0)
+  and (VisibleItems[LastSeparator].Msg<>SeparatorLine) do
+    dec(LastSeparator);
+  if LastSeparator>=0 then begin
+    while (VisibleItemCount>LastSeparator) do
+      DeleteLine(ItemCount-1);
+    FLastLineIsProgress:=false;
   end;
+  EndBlock;
 end;
 
 procedure TMessagesView.ShowTopMessage;
@@ -177,37 +254,73 @@ end;
 
 function TMessagesView.MsgCount: integer;
 begin
-  Result:=MessageView.Items.Count;
+  Result:=VisibleItemCount;
+end;
+
+procedure TMessagesView.FilterLines(Filter: TOnFilterLine);
+// recalculate visible lines
+var
+  i: Integer;
+  Line: TMessageLine;
+  ShowLine: Boolean;
+begin
+  // remove temporary lines
+  ClearTillLastSeparator;
+  FLastLineIsProgress:=false;
+  // recalculate visible lines
+  FVisibleItems.Clear;
+  for i:=0 to FItems.Count-1 do begin
+    Line:=Items[i];
+    ShowLine:=true;
+    Filter(Line,ShowLine);
+    if ShowLine then begin
+      Line.FVisiblePosition:=FVisibleItems.Count;
+      FVisibleItems.Add(Line);
+    end else
+      Line.FVisiblePosition:=-1;
+  end;
+  // rebuild MessageView.Items
+  MessageView.Items.BeginUpdate;
+  for i:=0 to FVisibleItems.Count-1 do begin
+    Line:=VisibleItems[i];
+    if MessageView.Items.Count>i then
+      MessageView.Items[i]:=Line.Msg
+    else
+      MessageView.Items.Add(Line.Msg);
+  end;
+  while MessageView.Items.Count>FVisibleItems.Count do
+    MessageView.Items.Delete(MessageView.Items.Count-1);
+  MessageView.Items.EndUpdate;
 end;
 
 {------------------------------------------------------------------------------
   TMessagesView.Clear
 ------------------------------------------------------------------------------}
-Procedure  TMessagesView.Clear;
+Procedure TMessagesView.Clear;
 Begin
   if fBlockCount>0 then exit;
-  MessageView.Clear;
   FLastLineIsProgress:=false;
-  if not Assigned(MessagesView.MessageView.OnClick) then
+  ClearItems;
+  if not Assigned(MessageView.OnClick) then
     MessageView.OnClick := @MessageViewClicked;
-  if not Assigned(MessagesView.MessageView.OnDblClick) then
+  if not Assigned(MessageView.OnDblClick) then
     MessageView.OnDblClick :=@MessageViewDblClicked;
 end;
 
-procedure TMessagesView.GetMessageAt(Index: integer;
+procedure TMessagesView.GetVisibleMessageAt(Index: integer;
   var Msg, MsgDirectory: string);
 begin
   // consistency checks
   if (Index<0) then
-    RaiseException('TMessagesView.GetMessageAt');
+    RaiseException('TMessagesView.GetVisibleMessageAt');
   if MessageView.Items.Count<=Index then
-    RaiseException('TMessagesView.GetMessageAt');
-  if (FDirectories=nil) then
-    RaiseException('TMessagesView.GetMessageAt');
-  if (FDirectories.Count<=Index) then
-    RaiseException('TMessagesView.GetMessageAt');
-  Msg:=MessageView.Items[Index];
-  MsgDirectory:=FDirectories[Index];
+    RaiseException('TMessagesView.GetVisibleMessageAt');
+  if (FItems=nil) then
+    RaiseException('TMessagesView.GetVisibleMessageAt');
+  if (FItems.Count<=Index) then
+    RaiseException('TMessagesView.GetVisibleMessageAt');
+  Msg:=Items[Index].Msg;
+  MsgDirectory:=Items[Index].Directory;
 end;
 
 procedure TMessagesView.BeginBlock;
@@ -222,6 +335,26 @@ begin
   dec(fBlockCount);
 end;
 
+procedure TMessagesView.ClearItems;
+var
+  i: Integer;
+begin
+  for i:=0 to FItems.Count-1 do TObject(FItems[i]).Free;
+  FItems.Clear;
+  FVisibleItems.Clear;
+  MessageView.Clear;
+end;
+
+function TMessagesView.ItemCount: integer;
+begin
+  Result:=FItems.Count;
+end;
+
+function TMessagesView.VisibleItemCount: integer;
+begin
+  Result:=FVisibleItems.Count;
+end;
+
 {------------------------------------------------------------------------------
   TMessagesView.GetMessage
 ------------------------------------------------------------------------------}
@@ -230,6 +363,11 @@ Begin
   Result := '';
   if (MessageView.Items.Count > 0) and (MessageView.SelCount > 0) then
     Result := MessageView.Items.Strings[GetSelectedLineIndex];
+end;
+
+function TMessagesView.GetVisibleItems(Index: integer): TMessageLine;
+begin
+  Result:=TMessageLine(FVisibleItems[Index]);
 end;
 
 procedure TMessagesView.MessageViewDblClicked(Sender: TObject);
@@ -256,8 +394,13 @@ var
 begin
   Result := '';
   i:=GetSelectedLineIndex;
-  if (FDirectories<>nil) and (FDirectories.Count>i) then
-    Result := FDirectories[i];
+  if (FVisibleItems.Count>i) then
+    Result := VisibleItems[i].Msg;
+end;
+
+function TMessagesView.GetItems(Index: integer): TMessageLine;
+begin
+  Result:=TMessageLine(FItems[Index]);
 end;
 
 Function TMessagesView.GetSelectedLineIndex : Integer;
@@ -291,17 +434,28 @@ begin
   MessageView.TopIndex:=MessageView.ItemIndex;
 end;
 
-procedure TMessagesView.SetMsgDirectory(Index: integer; const CurDir: string);
+{ TMessageLine }
+
+procedure TMessageLine.SetDirectory(const AValue: string);
 begin
-  if FDirectories=nil then FDirectories:=TStringList.Create;
-  while FDirectories.Count<=Index do FDirectories.Add('');
-  FDirectories[Index]:=CurDir;
+  if FDirectory=AValue then exit;
+  FDirectory:=AValue;
+end;
+
+procedure TMessageLine.SetMsg(const AValue: string);
+begin
+  if FMsg=AValue then exit;
+  FMsg:=AValue;
+end;
+
+constructor TMessageLine.Create;
+begin
+  FPosition:=-1;
+  FVisiblePosition:=-1;
 end;
 
 initialization
   MessagesView:=nil;
-  { $I msgview.lrs}
-
 
 end.
 

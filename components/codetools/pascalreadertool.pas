@@ -313,7 +313,8 @@ begin
     ProcNode:=ProcNode.Parent;
     if ProcNode=nil then exit;
   end;
-  if not ProcNode.Desc in [ctnProcedure,ctnProcedureType] then exit;
+  if (ProcNode.Desc<>ctnProcedure) and (ProcNode.Desc<>ctnProcedureType) then
+    exit;
   IsProcType:=(ProcNode.Desc=ctnProcedureType);
   if (phpAddClassname in Attr) then begin
     GrandPaNode:=ProcNode.Parent;

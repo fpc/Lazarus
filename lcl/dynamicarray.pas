@@ -41,7 +41,7 @@ Type
   TArray=Class
   Private
     FCols: TList;
-    Fondestroyitem: TOnNotifyItem;
+    FOnDestroyItem: TOnNotifyItem;
     FOnNewItem: TonNotifyItem;
     Function Getarr(Col, Row: Integer): Pointer;
     Procedure Setarr(Col, Row: Integer; Const Avalue: Pointer);
@@ -137,7 +137,7 @@ begin
   If (P<>nil)And Assigned(OnDestroyItem) Then OnDestroyItem(Self, Col, Row, P);
 end;
 
-Procedure Tarray.Setlength(Cols, Rows: Integer);
+Procedure Tarray.SetLength(Cols, Rows: Integer);
 Var
    i,j: integer;
    L: TList;
@@ -222,5 +222,6 @@ begin
       TList(FCols[i]).Exchange(Index, WithIndex);
   End;
 end;
+
 end.
 
