@@ -5426,8 +5426,10 @@ begin
         ImplWidget:= GetWidgetInfo(Widget, true)^.ImplementationWidget;
       
         gtk_text_set_editable (PGtkText(ImplWidget), not (Sender as TMemo).ReadOnly);
-        gtk_text_set_line_wrap(PGtkText(ImplWidget), Integer((Sender as TCustomMemo).WordWrap));
-        gtk_text_set_word_wrap(PGtkText(ImplWidget), 1);
+        {$IfNDef Win32}
+	gtk_text_set_line_wrap(PGtkText(ImplWidget), Integer((Sender as TCustomMemo).WordWrap));
+        {$EndIf}
+	gtk_text_set_word_wrap(PGtkText(ImplWidget), 1);
         
         case (Sender as TCustomMemo).Scrollbars of
           ssHorizontal: gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
@@ -6479,6 +6481,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.267  2002/10/26 12:32:29  lazarus
+  AJ:Minor fixes for Win32 GTK compiling
+
   Revision 1.266  2002/10/25 15:27:03  lazarus
   AJ: Moved form contents creation to gtkproc for code
       reuse between GNOME and GTK, and to make GNOME MDI
