@@ -1511,8 +1511,8 @@ end;
  ------------------------------------------------------------------------------}
 procedure TGtkWidgetSet.AppInit(var ScreenInfo: TScreenInfo);
 begin
-  If Assigned(Screen) then
-    FillScreenFonts(Screen.Fonts);
+  // MG: TODO: call FillScreenFonts on demand, not for every application
+  //FillScreenFonts(Screen.Fonts);
   InitKeyboardTables;
   { Compute pixels per inch variable }
   ScreenInfo.PixelsPerInchX :=
@@ -6942,6 +6942,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.608  2004/11/08 19:11:55  mattias
+  disabled hardly used gtk FillScreenFont, this should be only done on demand, improved getting default font family for gtk
+
   Revision 1.607  2004/11/03 14:18:36  mattias
   implemented preferred size for controls for theme depending AutoSizing
 

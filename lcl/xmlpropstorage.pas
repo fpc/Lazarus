@@ -25,19 +25,19 @@ interface
 
 {$IFNDEF VER1_0}
 uses
-  Classes, SysUtils, Forms, PropertyStorage, XMLCfg, DOM;
+  Classes, SysUtils, LCLProc, Forms, PropertyStorage, XMLCfg, DOM;
 
 type
   { TXMLPropStorage }
 
   TPropStorageXMLConfig = class(TXMLConfig)
   Public
-    Procedure DeleteSubNodes (const ARootNode : String);
+    Procedure DeleteSubNodes (const ARootNode: String);
   end;
   
   TCustomXMLPropStorage = class(TFormPropertyStorage)
   private
-    FCount : Integer;
+    FCount: Integer;
     FFileName: String;
     FXML: TPropStorageXMLConfig;
     FRootNode: String;
@@ -45,17 +45,17 @@ type
   protected
     procedure StorageNeeded(ReadOnly: Boolean);override;
     procedure FreeStorage; override;
-    Function GetXMLFileName : string; virtual;
-    Function RootSection : String; Override;
-    Function FixPath(const APath : String) : String; virtual;
+    Function GetXMLFileName: string; virtual;
+    Function RootSection: String; Override;
+    Function FixPath(const APath: String): String; virtual;
     Property XMLConfig: TPropStorageXMLConfig Read FXML;
   public
-    function  DoReadString(const Section, Ident, Default: string): string; override;
+    function  DoReadString(const Section, Ident, TheDefault: string): string; override;
     procedure DoWriteString(const Section, Ident, Value: string); override;
     Procedure DoEraseSections(const ARootSection: String);override;
   public
-    property FileName : String Read FFileName Write FFileName;
-    property RootNodePath : String Read FRootNode Write FRootNodePath;
+    property FileName: String Read FFileName Write FFileName;
+    property RootNodePath: String Read FRootNode Write FRootNodePath;
   end;
   
   TXMLPropStorage = class(TCustomXMLPropStorage)
@@ -116,7 +116,7 @@ begin
 {$endif}
 end;
 
-function TCustomXMLPropStorage.FixPath(const APath : String) : String;
+function TCustomXMLPropStorage.FixPath(const APath: String): String;
 
 begin
   Result:=StringReplace(APath,'.','/',[rfReplaceAll]);
@@ -131,14 +131,15 @@ begin
   Result:=FixPath(Result);
 end;
 
-function TCustomXMLPropStorage.DoReadString(const Section, Ident, Default: string
-  ): string;
+function TCustomXMLPropStorage.DoReadString(const Section, Ident,
+  TheDefault: string): string;
 begin
-  Result:=FXML.GetValue(FixPath(Section)+'/'+Ident, Default);
+  Result:=FXML.GetValue(FixPath(Section)+'/'+Ident, TheDefault);
   //debugln('TCustomXMLPropStorage.DoReadString Section=',Section,' Ident=',Ident,' Result=',Result);
 end;
 
-procedure TCustomXMLPropStorage.DoWriteString(const Section, Ident, Value: string);
+procedure TCustomXMLPropStorage.DoWriteString(const Section, Ident,
+  Value: string);
 begin
   //debugln('TCustomXMLPropStorage.DoWriteString Section=',Section,' Ident=',Ident,' Value=',Value);
   FXML.SetValue(FixPath(Section)+'/'+Ident, Value);
@@ -169,8 +170,10 @@ begin
     System.Delete(NodePath,1,I);
     Node := Child;
     end;
-  If Assigned(Node) then
+  If Assigned(Node) then begin
+    //debugln('TPropStorageXMLConfig.DeleteSubNodes ',ARootNode);
     Node.Free;
+  end;
 end;
 
 {$ENDIF not VER1_0}

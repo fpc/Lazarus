@@ -112,7 +112,8 @@ end;
 
 { TGdkFontCache }
 
-function CompareGdkFontWithResItem(Font: PGDKFont; Item: TGdkFontCacheItem): integer;
+function CompareGdkFontWithResItem(Font: PGDKFont;
+  Item: TGdkFontCacheItem): integer;
 begin
   Result := ComparePointers(Font, Item.GdkFont);
 end;
@@ -121,10 +122,10 @@ function CompareLogFontAndNameWithResDesc(Key: PLogFontAndName;
   Desc: TGdkFontCacheDescriptor): integer;
 begin
   Result:=CompareStr(Key^.LongFontName,Desc.LongFontName);
-  //writeln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',HexStr(Cardinal(Desc),8),' Result=',Result);
+  //debugln('CompareLogFontAndNameWithResDesc A ',Key^.LongFontName,' ',Desc.LongFontName,' ',HexStr(Cardinal(Desc),8),' Result=',Result);
   if Result=0 then
     Result:=CompareMemRange(@Key^.LogFont,@Desc.LogFont,SizeOf(Desc.LogFont));
-  //writeln('CompareLogFontAndNameWithResDesc END Result=',Result);
+  //debugln('CompareLogFontAndNameWithResDesc END Result=',Result);
 end;
 
 procedure TGdkFontCache.RemoveItem(Item: TResourceCacheItem);

@@ -69,14 +69,14 @@ const
   { tracing level
     splitted in two if memory is released !! }
 {$ifdef EXTRA}
-  tracesize = 16; // normal: 16
+  tracesize = 64; // normal: 16
 {$else EXTRA}
   tracesize = 32; // normal: 8
 {$endif EXTRA}
   { install heaptrc memorymanager }
-  useheaptrace : boolean=true;
+  useheaptrace : boolean = true;
   { less checking }
-  quicktrace : boolean=true;
+  quicktrace : boolean = true;
   { calls halt() on error }
   HaltOnError : boolean = false;
   { ExceptOnError: raise gdb catchable exception on error }
@@ -359,7 +359,7 @@ begin
       is_in_getmem_list:=true;
      // MG: changes for codetools:
      inc(i);
-     if i>getmem_cnt-freemem_cnt then begin
+     if (i>getmem_cnt-freemem_cnt) and (not keepreleased) then begin
        writeln(ptext^,'error in linked list of heap_mem_info',
          ' FreedCnt=',getmem_cnt-freemem_cnt,' RealCnt=',i);
        runerror(204);
@@ -2318,6 +2318,9 @@ end.
 
 {
   $Log$
+  Revision 1.35  2004/11/08 19:11:55  mattias
+  disabled hardly used gtk FillScreenFont, this should be only done on demand, improved getting default font family for gtk
+
   Revision 1.34  2004/10/25 17:59:29  vincents
   fpc 1.9.5 has no saveregisters calling convention anymore.
 

@@ -1306,7 +1306,6 @@ end;
 {$Else}
 var
   GdiObject: PGdiObject;
-  S: String;
   FontNameRegistry, Foundry, FamilyName, WeightName,
   Slant, SetwidthName, AddStyleName, PixelSize,
   PointSize, ResolutionX, ResolutionY, Spacing, AverageWidth,
@@ -1315,13 +1314,27 @@ var
   CachedFont: TGdkFontCacheDescriptor;
 
   function LoadFont: boolean;
+  var
+    S: string;
   begin
+    S:=FontNameRegistry+'-'+Foundry+'-'+FamilyName+'-'+WeightName
+       +'-'+Slant+'-'+SetwidthName+'-'+AddStyleName+'-'+PixelSize
+       +'-'+PointSize+'-'+ResolutionX+'-'+ResolutionY+'-'+Spacing+'-'+AverageWidth
+       +'-'+CharSetRegistry+'-'+CharSetCoding;
+    { MG: heaptrc gets corrupted heap using the construction below:
     S := Format('%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s-%s',
       [FontNameRegistry, Foundry, FamilyName, WeightName,
        Slant, SetwidthName, AddStyleName, PixelSize,
        PointSize, ResolutionX, ResolutionY, Spacing, AverageWidth,
        CharSetRegistry, CharSetCoding
-      ]);
+      ]);}
+
+    //DebugLn('  Trying "',S,'"');
+    {S:=FontNameRegistry+','+Foundry+','+FamilyName+','+WeightName
+       +','+Slant+','+SetwidthName+','+AddStyleName+','+PixelSize
+       +','+PointSize+','+ResolutionX+','+ResolutionY+','+Spacing+','+AverageWidth
+       +','+CharSetRegistry+','+CharSetCoding;
+    DebugLn('  Trying B "',S,'"');}
 
     GdiObject^.GDIFontObject := gdk_font_load(PChar(s));
     Result:=GdiObject^.GDIFontObject<>nil;
@@ -1331,7 +1344,7 @@ var
     end;
     
     {$IFDEF VerboseFonts}
-    DebugLn('  Trying "',S,'" Success=',dbgs(GdiObject^.GDIFontObject<>nil));
+    DebugLn('  Tried "',S,'" Success=',dbgs(GdiObject^.GDIFontObject<>nil));
     {$ENDIF}
   end;
 
@@ -1347,18 +1360,36 @@ var
   function GetDefaultFontFamilyName: string;
   begin
     Result:=GetDefaultFontName;
+    if IsFontNameXLogicalFontDesc(Result) then
+      Result := ExtractXLFDItem(LongFontName,2);
     if Result='' then Result:='*';
   end;
   
   function FamilyNameExists: boolean;
   var
     AFont: PGdkFont;
+    S: String;
   begin
     S := '*-*-'+FamilyName+'*-*-*-*-*-*-*-*-*-*-*-*-*';
     AFont:=gdk_font_load(PChar(s));
     Result:=AFont<>nil;
     if Result then gdk_font_unref(AFont);
   end;
+  
+  function CheckFontNameIsMangledXLogicalFontDesc(const ALongFontName: string
+    ): boolean;
+  var
+    c: Integer;
+    i: Integer;
+  begin
+    c:=0;
+    for i:=1 to length(ALongFontName) do
+      if ALongFontName[i]='-' then inc(c);
+    Result:=(c>5) and (c<>14);
+    if Result then
+      debugln('WARNING: Fontnamt "',ALongFontName,'" seems to be a XLFD fontname, but has 14<>',dbgs(c),' minus signs');
+  end;
+  
 
 begin
   // For info about xlfd see:
@@ -1404,10 +1435,9 @@ begin
 
     {$IFDEF VerboseFonts}
     DebugLn('TGtkWidgetSet.CreateFontIndirectEx Name="',LogFont.lfFaceName,'"',
-    ' Long="',LongFontName,'" IsXLFD=',IsFontNameXLogicalFontDesc(LongFontName)
-    ,' ',ord(LogFont.lfFaceName[0]));
+    ' Long="',LongFontName,'" IsXLFD=',dbgs(IsFontNameXLogicalFontDesc(LongFontName))
+    ,' ',dbgs(ord(LogFont.lfFaceName[0])));
     {$ENDIF}
-    S:=LongFontName;
     if IsFontNameXLogicalFontDesc(LongFontName) then begin
       FontNameRegistry := ExtractXLFDItem(LongFontName,0);
       Foundry          := ExtractXLFDItem(LongFontName,1);
@@ -1424,6 +1454,7 @@ begin
       AverageWidth     := ExtractXLFDItem(LongFontName,12);
       CharSetRegistry  := ExtractXLFDItem(LongFontName,13);
       CharSetCoding    := ExtractXLFDItem(LongFontName,14);
+    end else if CheckFontNameIsMangledXLogicalFontDesc(LongFontName) then begin
     end;
 
     with LogFont do
@@ -1625,8 +1656,8 @@ begin
     end;
 
     if Result = 0
-    then DebugLn(Format('WARNING: [TGtkWidgetSet.CreateFontIndirectEx] NOT found XLFD: <%s>', [S]))
-    else Assert(False, Format('Trace:  [TGtkWidgetSet.CreateFontIndirectEx] found XLFD: <%s>', [S]));
+    then DebugLn(Format('WARNING: [TGtkWidgetSet.CreateFontIndirectEx] NOT found XLFD: <%s>', [LongFontName]))
+    else Assert(False, Format('Trace:  [TGtkWidgetSet.CreateFontIndirectEx] found XLFD: <%s>', [LongFontName]));
   end;
 end;
 {$EndIf}
@@ -8695,6 +8726,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.371  2004/11/08 19:11:55  mattias
+  disabled hardly used gtk FillScreenFont, this should be only done on demand, improved getting default font family for gtk
+
   Revision 1.370  2004/10/15 13:28:22  mattias
   codeexplorer: using lower recursive depth
 

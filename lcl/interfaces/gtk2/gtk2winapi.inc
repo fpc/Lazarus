@@ -113,7 +113,7 @@ begin
       CharSetRegistry  := ExtractXLFDItem(LongFontName,13);
       CharSetCoding    := ExtractXLFDItem(LongFontName,14);
     end else
-      if (LongFontName <> '') and (Screen.Fonts.IndexOf(LongFontName) > 0) then
+      if (LongFontName <> '') {and (Screen.Fonts.IndexOf(LongFontName) > 0) }then
         FamilyName := LongFontName;
 
     with LogFont do begin
@@ -830,6 +830,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.11  2004/11/08 19:11:55  mattias
+  disabled hardly used gtk FillScreenFont, this should be only done on demand, improved getting default font family for gtk
+
   Revision 1.10  2004/08/04 15:48:44  mazen
   * fix UTF8 text display in source note book
 

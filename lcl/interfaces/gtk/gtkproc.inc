@@ -7738,9 +7738,10 @@ begin
   {$IFDEF GTK1}
   {$IFDEF UNIX}
   theFonts := XListFonts(X11Display,PChar('-*-*-*-*-*-*-*-*-*-*-*-*-*-*'), 10000, @N);
+  debugln('FillScreenFonts N=',dbgs(N));
   for I := 0 to N - 1 do
     if theFonts[I] <> nil then begin
-      Tmp := ExtractFamilyFromXLFDName(AnsiString(theFonts[I]));
+      Tmp := ExtractFamilyFromXLFDName(theFonts[I]);
       if Tmp <> '' then
         if ScreenFonts.IndexOf(Tmp) < 0 then
           ScreenFonts.Append(Tmp);
@@ -7791,6 +7792,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.317  2004/11/08 19:11:55  mattias
+  disabled hardly used gtk FillScreenFont, this should be only done on demand, improved getting default font family for gtk
+
   Revision 1.316  2004/11/03 14:18:36  mattias
   implemented preferred size for controls for theme depending AutoSizing
 
