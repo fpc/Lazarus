@@ -85,6 +85,11 @@ type
     procedure InitStockItems; virtual;
     procedure FreeStockItems; virtual;
 
+    Procedure FinishComponentCreate(Sender : TObject; Handle : Pointer;
+      SetupProps : Boolean); Virtual;
+
+    Function GetCaption(Sender : TObject) : String; Virtual;
+    Function GetCompStyle(Sender : TObject) : Longint; Virtual;
     Procedure HookSignals(Sender : TObject); virtual;  //hooks all signals for controls
     procedure CreateComponent(Sender : TObject);virtual;
     procedure DestroyLCLControl(Sender : TObject);virtual;
@@ -263,6 +268,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.94  2002/10/24 22:10:39  lazarus
+  AJ: More changes for better code reuse between gnome & gtk interfaces
+
   Revision 1.93  2002/10/21 03:23:35  lazarus
   AJ: rearranged GTK init stuff for proper GNOME init & less duplication between interfaces
 
