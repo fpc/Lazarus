@@ -360,8 +360,6 @@ begin
 end;
 
 procedure TToolBar.Loaded;
-var
-  I: Integer;
 begin
   // dock controls after streaming
   // TODO: activate when docking finished
@@ -619,6 +617,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2005/01/03 11:22:18  mattias
+  rpm script now uses cvsexportlocal.pas, increased rpm version to 0.9.4.1
+
   Revision 1.35  2005/01/03 01:07:08  mattias
   fixed registering TProgressBar, disabled docking in TToolBar, return key for codeexplorer, updated finnish translation
 
