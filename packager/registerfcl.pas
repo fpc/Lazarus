@@ -52,7 +52,7 @@ end;
 
 procedure RegisterDB;
 begin
-  RegisterComponents('Data Access',[TDatasource,TDatabase]);
+  RegisterComponents('Data Access',[TDatasource]);
 end;
 
 procedure Register;

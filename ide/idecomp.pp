@@ -365,7 +365,7 @@ begin
   //============================================================================
   // FCL components
   RegisterComponents('System','Process',[TProcess]);
-  RegisterComponents('Data Access','Db',[TDatasource,TDatabase]);
+  RegisterComponents('Data Access','Db',[TDatasource]);
 
   // Interbase Data Access
   {$IFDEF INTERBASE}
