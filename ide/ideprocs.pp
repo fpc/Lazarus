@@ -66,6 +66,9 @@ type
   TOnCopyErrorMethod =
     procedure(const ErrorData: TCopyErrorData; var Handled: boolean;
       Data: TObject) of object;
+      
+  TSearchFileFlag = (sffSearchNotInBasePath);
+  TSearchFileFlags = set of TSearchFileFlag;
 
 //
 const
@@ -76,7 +79,7 @@ const
 function BackupFile(const Filename, BackupFilename: string): boolean;
 function CompareFilenames(const Filename1, Filename2: string): integer;
 function SearchFileInPath(const Filename, BasePath, SearchPath,
-                          Delimiter: string): string;
+                          Delimiter: string; Flags: TSearchFileFlags): string;
 function FilenameIsMatching(const Mask, Filename: string;
   MatchExactly: boolean): boolean;
 procedure SplitCmdLine(const CmdLine: string;
@@ -323,7 +326,7 @@ begin
 end;
 
 function SearchFileInPath(const Filename, BasePath, SearchPath,
-  Delimiter: string): string;
+  Delimiter: string; Flags: TSearchFileFlags): string;
 
   function FileDoesExists(const AFilename: string): boolean;
   var s: string;
@@ -352,8 +355,10 @@ begin
     exit;
   end;
   Base:=AppendPathDelim(BasePath);
-  // search in current directory
-  if FileDoesExists(Base+Filename) then exit;
+  if not (sffSearchNotInBasePath in Flags) then begin
+    // search in current directory
+    if FileDoesExists(Base+Filename) then exit;
+  end;
   // search in search path
   StartPos:=1;
   l:=length(SearchPath);
@@ -1213,7 +1218,8 @@ begin
   Result:=ParamStr(0);
   if ExtractFilePath(Result)='' then begin
     // program was started via PATH
-    Result:=SearchFileInPath(Result,'',GetEnv('PATH'),':');
+    Result:=SearchFileInPath(Result,'',GetEnv('PATH'),':',
+                             [sffSearchNotInBasePath]);
   end;
   // resolve links
   Result:=ReadAllLinks(Result,false);
