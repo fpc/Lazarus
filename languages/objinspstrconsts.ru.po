@@ -106,11 +106,11 @@ msgstr "Просмотрщик %s%s%s не исполняемый."
 
 #: objinspstrconsts:oishelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr ""
+msgstr "Просмотрщик %s%s%s не найден."
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
-msgstr ""
+msgstr "О&чистить"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"

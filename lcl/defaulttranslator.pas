@@ -20,15 +20,23 @@ It seeks for localized .mo file in some common places. If you want to find
 .mo file anywhere else, don't use this unit but initialize LRSMoFile variable
 from LResources in your project by yourself. If you need standard translation,
 just use this unit in your project.
-As translation works only with 'patched' classes unit, you must install it, then
-rebuild lazarus with -dTRANSLATESTRING. If don't, this unit
-(and any such translation) will be completely useless}
+String translation works quite stable, but noone can guarantee some by-effects,
+so all these stuff needs definition TRANSLATESTRING. Anyway, it is incompartible
+with old fpc versions (1.0.x, 1.9.x up to 1.9.5 except of late December 2004
+vers). Current FPC contains all hooks required, so use fpc-1.9.6+, then rebuild
+lazarus with -dTRANSLATESTRING. If don't, this unit (and any such translation)
+will translate resourcestrings only.
+Another reason for including this unit may be using localized LCL stuff. This
+unit localizes LCL too, if it finds lcl.xxx.mo at that place, where main
+localization found.
+}
 {$mode objfpc}{$H+}
 
 interface
 
 uses
-  Classes, SysUtils, LResources, GetText, Controls, typinfo;
+  Classes, SysUtils, LResources, GetText, Controls, typinfo
+  {$IFDEF MSWINDOWS},Windows{$ENDIF};
 {$IFDEF TRANSLATESTRING}
 type
  TDefaultTranslator=class(TAbstractTranslator)
@@ -46,14 +54,29 @@ uses Menus;
 function FindLocaleFileName:string;
 var LANG,lng:string;
   i: Integer;
+  {$IFDEF Win32}
+   Buffer:array[1..4]of char;
+  {$ENDIF}
 begin
- LANG:=GetEnvironmentVariable('LANG');
+ //Win32 user may decide to override locale with LANG variable.
+ LANG:=SysUtils.GetEnvironmentVariable('LANG');
  if LANG='' then begin
    for i:=1 to Paramcount-1 do
     if (paramstr(i)='--LANG') or
      (paramstr(i)='-l') or
      (paramstr(i)='--lang') then LANG:=ParamStr(i+1);
  end;
+ {$IFDEF Win32}
+ //Modified code from lazconf.inc
+ if LANG='' then
+ begin
+  if GetLocaleInfo(GetUserDefaultLCID, LOCALE_SABBREVLANGNAME, @Buffer, 4)<>0 then
+    Lng := lowercase(copy(Buffer,1,2));
+  if GetLocaleInfo(GetUserDefaultLCID, LOCALE_SABBREVCTRYNAME, @Buffer, 4)<>0 then
+    LANG := Lng+'_'+copy(Buffer,1,2);
+ end;
+ {$ENDIF}
+
  if LANG<>'' then begin
   //paramstr(0) is said not to work properly in linux, but I've tested it
   Result:=ExtractFilePath(paramstr(0))+DirectorySeparator+LANG+
@@ -190,6 +213,8 @@ begin
   //TODO:another types of translation
 end;
 {$ENDIF}
+var Dot1:integer;
+    LCLPath:string;
 initialization
 //It is safe to place code here as no form is initialized before unit
 //initialization made
@@ -199,17 +224,35 @@ initialization
   except
     lcfn:='';
   end;
-  {$IFDEF TRANSLATESTRING}
+
   if lcfn<>'' then
   begin
     TranslateResourceStrings(lcfn);
+    LCLPath:=ExtractFileName(lcfn);
+    Dot1:=pos('.',LCLPath);
+    if Dot1>1 then
+    begin
+      Delete(LCLPath,1,Dot1-1);
+      LCLPath:=ExtractFilePath(lcfn)+'lcl'+LCLPath;
+      if FileExists(LCLPath) then
+        TranslateResourceStrings(LCLPath);
+    end;
+    {$IFDEF TRANSLATESTRING}
     LRSTranslator:=TDefaultTranslator.Create(lcfn);
+    {$ENDIF}
   end;
-  {$ENDIF}
 finalization
 end.
 {
 $Log$
+Revision 1.2  2005/01/10 19:01:36  mattias
+updated russian translation  from VVI
+
+Revision 1.2 2005/01/09  19:01:28  VVI
+Moved all independend translation stuff out form $IFDEFs.
+If found, translate LCL stuff of user program too.
+Added some win32 stuff, like in lazconf.inc
+
 Revision 1.1  2004/12/27 12:56:42  mattias
 started TTranslateStrings and .lrt files support  from Vasily
 

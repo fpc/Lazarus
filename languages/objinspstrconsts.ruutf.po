@@ -106,11 +106,11 @@ msgstr "Просмотрщик %s%s%s не исполняемый."
 
 #: objinspstrconsts:oishelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr ""
+msgstr "Просмотрщик %s%s%s не найден."
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
-msgstr ""
+msgstr "О&чистить"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
@@ -206,7 +206,7 @@ msgstr "Справочный элемент %s%s%s не имеет справо�
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
-msgstr ""
+msgstr "индекс рисунка"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
@@ -222,7 +222,7 @@ msgstr ""
 
 #: objinspstrconsts:oisinterface
 msgid "Interface"
-msgstr ""
+msgstr "интерфейс"
 
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
