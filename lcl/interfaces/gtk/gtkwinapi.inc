@@ -2148,7 +2148,7 @@ var
   //Line : Integer;
   TXTPt : TPoint;
   TM  : TTextMetric;
-  ADC : hDC;
+  //ADC : hDC;
 begin
   Assert(False, Format('trace:> [TgtkObject.ExtTextOut] DC:0x%x, X:%d, Y:%d, Options:%d, Str:''%s'', Count: %d', [DC, X, Y, Options, Str, Count]));
   Result := IsValidDC(DC);
@@ -5995,6 +5995,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.106  2002/08/22 12:25:00  lazarus
+  MG: fixed mouse events
+
   Revision 1.105  2002/08/22 07:30:16  lazarus
   MG: freeing more unused GCs
 
