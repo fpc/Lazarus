@@ -343,7 +343,8 @@ type
     FOnSaveAllClicked: TNotifyEvent;
     FOnSaveClicked: TNotifyEvent;
     FOnShowUnitInfo: TNotifyEvent;
-    FOnToggleFormUnitClicked : TNotifyEvent;
+    FOnToggleFormUnitClicked: TNotifyEvent;
+    FOnToggleObjectInspClicked: TNotifyEvent;
     FOnUserCommandProcessed: TOnProcessUserCommand;
     FOnViewJumpHistory: TNotifyEvent;
 
@@ -447,6 +448,7 @@ type
     procedure SaveAsClicked(Sender : TObject);
     procedure CloseClicked(Sender : TObject);
     procedure ToggleFormUnitClicked(Sender: TObject);
+    procedure ToggleObjectInspClicked(Sender: TObject);
 
     procedure InitFindDialog;
     procedure FindClicked(Sender : TObject);
@@ -526,6 +528,8 @@ type
        read FOnShowUnitInfo write FOnShowUnitInfo;
     property OnToggleFormUnitClicked : TNotifyEvent 
        read FOnToggleFormUnitClicked write FOnToggleFormUnitClicked;
+    property OnToggleObjectInspClicked : TNotifyEvent
+       read FOnToggleObjectInspClicked write FOnToggleObjectInspClicked;   
     property OnProcessUserCommand: TOnProcessUserCommand
        read FOnProcessUserCommand write FOnProcessUserCommand;
     property OnUserCommandProcessed: TOnUserCommandProcessed
@@ -3235,6 +3239,11 @@ begin
   if Assigned(FOnToggleFormUnitClicked) then FOnToggleFormUnitClicked(Sender);
 end;
 
+procedure TSourceNotebook.ToggleObjectInspClicked(Sender: TObject);
+begin
+  if Assigned(FOnToggleObjectInspClicked) then FOnToggleObjectInspClicked(Sender);
+end;
+
 procedure TSourceNotebook.InitFindDialog;
 var c: TFindDlgComponent;
 begin
@@ -3375,7 +3384,10 @@ begin
       Notebook.PageIndex:=Command-ecGotoEditor1;
 
   ecToggleFormUnit:
-    ToggleFormUnitClicked(self);
+    ToggleFormUnitClicked(Self);
+
+  ecToggleObjectInsp:
+    ToggleObjectInspClicked(Self);
     
   ecGotoMarker0..ecGotoMarker9:
     BookMarkGoto(Command - ecGotoMarker0);
