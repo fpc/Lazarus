@@ -48,6 +48,9 @@ uses
   {$IFDEF INTERBASE}
   ,interbase
   {$ENDIF}
+  {$IFDEF CustomIDEComps}
+  ,CustomIDEComps
+  {$ENDIF}
   ;
 
 const
@@ -269,7 +272,7 @@ end;
 
 function TIDEComponent.LoadImageIntoPixmap: TPixmap;
 
-  function LoadResource(ResourceName:string; PixMap:TPixMap):boolean;
+  function LoadResource(const ResourceName:string; PixMap:TPixMap):boolean;
   var 
     ms:TMemoryStream;
     res:TLResource;
@@ -303,18 +306,16 @@ end;
 
 {--------------------------------------------------}
 
-procedure RegisterStandardComponents(
-  ARegisteredComponentList:TRegisteredComponentList);
-
-  procedure RegisterComponents(const Page,UnitName:ShortString;
-    ComponentClasses: array of TComponentClass);
-  begin
-    ARegisteredComponentList.RegisterComponents(
-       Page,UnitName,ComponentClasses);
-  end;
-
+{procedure RegisterComponents(const Page,UnitName:ShortString;
+  ComponentClasses: array of TComponentClass);
 begin
-  RegisterComponentsProc:=@RegisterComponents;
+  CurRegisteredComponentList.RegisterComponents(
+     Page,UnitName,ComponentClasses);
+end;}
+
+procedure RegisterStandardComponents;
+begin
+  //RegisterComponentsProc:=@RegisterComponents;
   
   RegisterComponents('Standard','Menus',[TMainMenu,TPopupMenu]);
   RegisterComponents('Standard','StdCtrls',[TLabel,TEdit,TMemo]);
@@ -339,14 +340,14 @@ begin
 
   RegisterComponents('Samples','Spin',[TSpinEdit]);
 
-{$IFDEF DATABASE}
+  {$IFDEF DATABASE}
   RegisterComponents('Data Access','Db',[TDatasource,TDatabase]);
-{$ENDIF}
+  {$ENDIF}
 
-{$IFDEF INTERBASE}
+  {$IFDEF INTERBASE}
   RegisterComponents('Interbase Data Access','Interbase',[TIBStoredProc,
           TIBQuery,TIBDatabase]);
-{$ENDIF}
+  {$ENDIF}
 
   // unselectable components
   // components that are streamed but not selectable in the IDE
@@ -354,12 +355,16 @@ begin
   RegisterComponents('','ComCtrls',[TToolbutton]);
   RegisterComponents('','menus', [TMenuItem]);
 
-  RegisterComponentsProc:=nil;
+  {$IFDEF CustomIDEComps}
+  CustomIDEComps.RegisterCustomComponents(@RegisterComponent);
+  {$ENDIF}
+
+  //RegisterComponentsProc:=nil;
 end;
 
 procedure InitIDEComponents;
 begin
-  RegisterStandardComponents(RegCompList);
+  RegisterStandardComponents;
   IdeCompList := TIDECompList.Create;
 end;
 

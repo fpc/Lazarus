@@ -3685,7 +3685,7 @@ var
     end;
     if (ExprType.Context.Node=nil) then begin
       MoveCursorToCleanPos(CurAtom.StartPos);
-      RaiseExceptionFmt(ctsStrExpectedButAtomFound,[ctsIllegalQualifier,'.']);
+      RaiseIllegalQualifierFound;
     end;
     if (ExprType.Context.Node.Desc in AllUsableSourceTypes) then begin
       // identifier in front of the point is a unit name

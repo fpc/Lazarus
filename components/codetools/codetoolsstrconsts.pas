@@ -170,6 +170,7 @@ ResourceString
   ctsAbstractWidgetPath = 'abstract widget path';
   ctsWidgetDirectory = 'Widget Directory';
   ctsComponentsDirectory = 'Components Directory';
+  ctsCustomComponentsDirectory = 'Custom Components Directory';
   ctsToolsDirectory = 'Tools Directory';
   ctsDesignerDirectory = 'Designer Directory';
   ctsLazarusMainDirectory = 'lazarus main directory';

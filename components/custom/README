@@ -1,0 +1,5 @@
+How to add extra components to the lazarus IDE
+==============================================
+
+Use the customidecomps.pas.template file and read the instructions carefully.
+

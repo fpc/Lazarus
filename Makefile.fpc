@@ -16,7 +16,8 @@ exampledirs=examples
 
 [compiler]
 options=-gl
-unitdir=lcl/units lcl/units/$(LCL_PLATFORM) designer designer/units debugger \
+unitdir=components/custom \
+        lcl/units lcl/units/$(LCL_PLATFORM) designer designer/units debugger \
         components/units .
 includedir=include include/$(OS_TARGET)
 targetdir=.
@@ -75,3 +76,5 @@ ifeq ($(OS_TARGET), win32)
 endif
 
 clean: cleanall cleanide
+# end.
+

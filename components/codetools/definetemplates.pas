@@ -2293,13 +2293,14 @@ begin
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create(
     'Component path addition',
-    Format(ctsAddsDirToSourcePath,['designer, jitform, debugger, synedit, codetools']),
+    Format(ctsAddsDirToSourcePath,['designer, debugger, components']),
     ExternalMacroStart+'SrcPath',
        'designer;'
       +'designer'+ds+'jitform;'
       +'debugger;'
       +'components'+ds+'synedit;'
       +'components'+ds+'codetools;'
+      +'components'+ds+'custom;'
       +SrcPath
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create('includepath addition',
@@ -2341,6 +2342,7 @@ begin
     LazarusSrcDir+ds+'lcl;'+SrcPath,da_DefineRecurse));
   DirTempl.AddChild(SubDirTempl);
   
+
   // components
   DirTempl:=TDefineTemplate.Create('Components',ctsComponentsDirectory,
     '','components',da_Directory);
@@ -2352,6 +2354,19 @@ begin
     +';'+SrcPath
     ,da_DefineRecurse));
   MainDir.AddChild(DirTempl);
+  
+  // components/custom
+  SubDirTempl:=TDefineTemplate.Create('Custom Components',
+    ctsCustomComponentsDirectory,
+    '','custom',da_Directory);
+  SubDirTempl.AddChild(TDefineTemplate.Create('lazarus standard components',
+    Format(ctsAddsDirToSourcePath,['synedit']),
+    ExternalMacroStart+'SrcPath',
+    '..'+ds+'synedit'
+    +';'+SrcPath
+    ,da_DefineRecurse));
+  DirTempl.AddChild(SubDirTempl);
+
 
   // tools
   DirTempl:=TDefineTemplate.Create('Tools',
@@ -2363,6 +2378,7 @@ begin
     '..'+ds+'lcl;..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
     ,da_Define));
   MainDir.AddChild(DirTempl);
+
 
   // include
   
@@ -2384,7 +2400,9 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('components path addition',
     Format(ctsAddsDirToSourcePath,['synedit']),
     ExternalMacroStart+'SrcPath',
-      '..'+ds+'components'+ds+'synedit;'+'..'+ds+'components'+ds+'codetools;'
+      '..'+ds+'components'+ds+'synedit;'
+      +'..'+ds+'components'+ds+'codetools;'
+      +'..'+ds+'components'+ds+'custom;'
       +'jitform;'
       +SrcPath
     ,da_Define));

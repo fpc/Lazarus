@@ -98,10 +98,15 @@ type
   end;
 
 
-const
-  RegisterComponentsProc: procedure(const Page,UnitName:ShortString;
-    ComponentClasses: array of TComponentClass) = nil;
+type
+  TRegisterComponentsProc = procedure(const Page,UnitName:ShortString;
+    ComponentClasses: array of TComponentClass);
 
+var
+  RegisterComponentsProc: TRegisterComponentsProc;
+
+procedure RegisterComponent(const Page,UnitName:ShortString;
+  ComponentClass: TComponentClass);
 procedure RegisterComponents(const Page,UnitName:ShortString;
   ComponentClasses: array of TComponentClass);
 function FindRegsiteredComponentClass(
@@ -110,10 +115,19 @@ function FindRegsiteredComponentClass(
 var
   RegCompList:TRegisteredComponentList;
   
-  
 
 implementation
 
+
+procedure RegisterComponent(const Page, UnitName: ShortString;
+  ComponentClass: TComponentClass);
+begin
+  if RegCompList<>nil then
+    RegCompList.RegisterComponents(Page,UnitName,[ComponentClass])
+  else
+    raise EComponentError.Create(
+      'RegisterComponentsInGlobalList RegCompList=nil');
+end;
 
 procedure RegisterComponents(const Page,UnitName:ShortString;
   ComponentClasses: array of TComponentClass);
@@ -134,6 +148,16 @@ begin
   if RegCompList<>nil then begin
     Result:=RegCompList.FindComponentClassByName(AClassName);
   end;
+end;
+
+procedure RegisterComponentsInGlobalList(const Page,UnitName:ShortString;
+  ComponentClasses: array of TComponentClass);
+begin
+  if RegCompList<>nil then
+    RegCompList.RegisterComponents(Page,UnitName,ComponentClasses)
+  else
+    raise EComponentError.Create(
+      'RegisterComponentsInGlobalList RegCompList=nil');
 end;
 
 { TRegisteredComponent }
@@ -231,7 +255,12 @@ var NewPage:TRegisteredComponentPage;
   a:integer;
   NewComp:TRegisteredComponent;
 begin
-
+  if (High(ComponentClasses)-Low(ComponentClasses)<0)
+  or (Page='') or (UnitName='') then exit;
+  if not IsValidIdent(UnitName) then begin
+    raise EComponentError.Create(
+      'RegisterComponents: Invalid unitname "'+UnitName+'"');
+  end;
   NewPage:=FindPageByName(Page);
   if (NewPage=nil) then begin
     NewPage:=TRegisteredComponentPage.Create(Self,FPages.Count,Page);
@@ -270,11 +299,13 @@ begin
 end;
 
 initialization
+  RegisterComponentsProc:=nil;
   RegCompList := TRegisteredComponentList.Create;
+  RegisterComponentsProc := @RegisterComponentsInGlobalList;
 
 finalization
-  RegCompList.Destroy;
-
+  RegCompList.Free;
+  RegCompList:=nil;
 
 end.
 
