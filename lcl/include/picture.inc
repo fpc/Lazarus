@@ -225,6 +225,7 @@ begin
     GraphicClass:=AClass;
     FormatID:=AFormatID;
   end;
+  inherited Add(NewFormat);
 end;
 
 function TPicClipboardFormats.FindFormat(
