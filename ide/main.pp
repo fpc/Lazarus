@@ -2705,10 +2705,14 @@ begin
   // let user choose a filename
   SaveDialog:=TSaveDialog.Create(Application);
   try
-    // show save dialog
     InputHistories.ApplyFileDialogSettings(SaveDialog);
     SaveDialog.Title:=lisSaveSpace+SaveAsFilename+' (*'+SaveAsFileExt+')';
     SaveDialog.FileName:=SaveAsFilename+SaveAsFileExt;
+    // if this is a project file, start in project directory
+    if AnUnitInfo.IsPartOfProject and (not Project1.IsVirtual)
+    and (not FileIsInPath(SaveDialog.InitialDir,Project1.ProjectDirectory)) then
+      SaveDialog.InitialDir:=Project1.ProjectDirectory;
+    // show save dialog
     if not SaveDialog.Execute then begin
       // user cancels
       Result:=mrCancel;
@@ -7724,6 +7728,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.464  2003/02/20 11:03:20  mattias
+  save as of project files now starts in project dierctory
+
   Revision 1.463  2003/02/19 23:17:45  mattias
   added warnings when fpc source dir invalid
 
