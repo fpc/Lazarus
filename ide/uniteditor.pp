@@ -41,7 +41,7 @@ uses
   {$IFDEF IDE_MEM_CHECK}
   MemCheck,
   {$ENDIF}
-  Classes, SysUtils, Controls, LCLProc, LCLType, LCLIntf, FileCtrl,
+  Classes, SysUtils, Controls, LCLProc, LCLType, LResources, LCLIntf, FileCtrl,
   Forms, Buttons, ComCtrls, Dialogs, StdCtrls, GraphType, Graphics,
   Extctrls, Menus,
   // codetools
@@ -49,14 +49,15 @@ uses
   // synedit
   SynEditTypes, SynEdit, SynRegExpr, SynEditHighlighter, //SynHighlighterPas,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion,
+  // IDE interface
+  HelpIntf, SrcEditorIntf,
   // IDE units
-  IDECommands, EditorOptions, KeyMapping, Project,
-  FindReplaceDialog, WordCompletion, FindInFilesDlg, IDEProcs, IDEOptionDefs,
-  MsgView, SearchResultView, InputHistory, LazarusIDEStrConsts,
-  BaseDebugManager, Debugger, LResources, LazConf, EnvironmentOpts,
+  LazarusIDEStrConsts, LazConf, IDECommands, EditorOptions, KeyMapping, Project,
+  WordCompletion, FindReplaceDialog, FindInFilesDlg, IDEProcs, IDEOptionDefs,
+  EnvironmentOpts, MsgView, SearchResultView, InputHistory,
   SortSelectionDlg, EncloseSelectionDlg, DiffDialog, ConDef,
   SourceEditProcs, SourceMarks, CharacterMapDlg, frmSearch,
-  SrcEditorIntf;
+  BaseDebugManager, Debugger, MainIntf;
 
 type
   TSourceNoteBook = class;
@@ -241,6 +242,9 @@ type
     procedure InsertDateTime;
     procedure InsertChangeLogEntry;
     procedure InsertCVSKeyword(const AKeyWord: string);
+    
+    // context help
+    procedure FindHelpForSourceAtCursor;
 
     // editor commands
     procedure DoEditorExecuteCommand(EditorCommand: integer);
@@ -902,7 +906,9 @@ begin
 end;
 
 Procedure TSourceEditor.ProcessCommand(Sender: TObject;
-   var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
+  var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
+// these are normal commands for synedit, define extra actions here
+// otherwise use ProcessUserCommand
 begin
   if (FSourceNoteBook<>nil)
   and (snIncrementalFind in FSourceNoteBook.States) then begin
@@ -933,7 +939,6 @@ begin
     end;
   end;
 
-
   case Command of
 
   ecSelEditorTop, ecSelEditorBottom, ecEditorTop, ecEditorBottom:
@@ -962,6 +967,7 @@ end;
 
 Procedure TSourceEditor.ProcessUserCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: TCharacter; Data: pointer);
+// define all extra keys here, that should are not handled by synedit
 var
   I: Integer;
   P: TPoint;
@@ -970,7 +976,12 @@ var
 Begin
   Handled:=true;
 
+  //debugln('TSourceEditor.ProcessUserCommand A ',dbgs(Command));
+
   case Command of
+
+  ecContextHelp:
+    FindHelpForSourceAtCursor;
 
   ecIdentCompletion :
     if not TCustomSynEdit(Sender).ReadOnly then begin
@@ -1408,6 +1419,12 @@ end;
 procedure TSourceEditor.InsertCVSKeyword(const AKeyWord: string);
 begin
   FEditor.SelText:='$'+AKeyWord+'$'+LineEnding;
+end;
+
+procedure TSourceEditor.FindHelpForSourceAtCursor;
+begin
+  writeln('TSourceEditor.FindHelpForSourceAtCursor A');
+  ShowHelpOrErrorForSourcePosition(Filename,FEditor.CaretXY);
 end;
 
 procedure TSourceEditor.OnGutterClick(Sender: TObject; X, Y, Line: integer;

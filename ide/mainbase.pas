@@ -1313,6 +1313,5 @@ begin
   SourceNotebook.FindInFiles(AProject, FindText);
 end;
 
-
 end.
 

@@ -2411,7 +2411,7 @@ Begin
         exit;
       end;
       if mrOk<>LoadCodeBuffer(PreReadBuf,AFileName,
-                          [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert])
+                              [lbfCheckIfText,lbfUpdateFromDisk,lbfRevert])
       then
         exit;
       if DoCreateProjectForProgram(PreReadBuf)=mrOk then begin
@@ -10576,6 +10576,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.757  2004/08/22 22:47:43  mattias
+  implemented context help for source editor
+
   Revision 1.756  2004/08/21 23:16:11  mattias
   implemented simple HTML help viewer
 

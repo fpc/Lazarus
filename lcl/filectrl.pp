@@ -20,12 +20,6 @@
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.                     *
  *                                                                           *
  *****************************************************************************
-}
-
-{
-@author(DirectoryExists - Curtis White <cwhite@aracnet.com>)                       
-@created(23-Apr-2000)
-@lastmod(23-Apr-2000)
 
 This unit contains file and directory controls and supporting handling functions. 
 } 
@@ -93,10 +87,10 @@ Type
     property OnChange: TNotifyEvent Read FOnChange Write FOnChange;
     property Sorted default true;
   end;
-  
-  
+
+
   { TFileListBox }
-  
+
   TFileListBox = class(TCustomFileListBox)
   published
     property Align;
@@ -174,6 +168,8 @@ function TrimFilename(const AFilename: string): string;
 function CleanAndExpandFilename(const Filename: string): string;
 function CleanAndExpandDirectory(const Filename: string): string;
 function FileIsInPath(const Filename, Path: string): boolean;
+function FileIsInDirectory(const Filename, Directory: string): boolean;
+function FileInFilenameMasks(const Filename, Masks: string): boolean;
 
 // file search
 type
@@ -400,6 +396,9 @@ end.
 
 {
   $Log$
+  Revision 1.28  2004/08/22 22:47:43  mattias
+  implemented context help for source editor
+
   Revision 1.27  2004/04/21 21:22:52  mattias
   fixed updatinf Filename when setting Filename  from Luis
 

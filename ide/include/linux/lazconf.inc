@@ -40,7 +40,7 @@ end;
 
 procedure IfDirectoryExistsAdd(const Directory: string; List: TStrings);
 begin
-  if DirectoryExists(Directory) then List.Add(Directory);
+  if DirPathExists(Directory) then List.Add(Directory);
 end;
 
 procedure GetDefaultLCLLibPaths(List: TStrings);
@@ -55,6 +55,9 @@ end;
 
 {
   $Log$
+  Revision 1.19  2004/08/22 22:47:43  mattias
+  implemented context help for source editor
+
   Revision 1.18  2004/08/20 09:47:36  mattias
   added darwin libpaths to Makefile and LCL Usage lib paths
 

@@ -656,6 +656,8 @@ type
     function BaseTypeOfNodeHasSubIdents(ANode: TCodeTreeNode): boolean;
     function FindBaseTypeOfNode(Params: TFindDeclarationParams;
       Node: TCodeTreeNode): TFindContext;
+    function FindDeclarationsAndAncestors(const CursorPos: TCodeXYPosition;
+      var ListOfPCodeXYPosition: TList): boolean;
 
     function JumpToNode(ANode: TCodeTreeNode;
         var NewPos: TCodeXYPosition; var NewTopLine: integer;
@@ -2763,6 +2765,68 @@ begin
   if Result.Node<>nil then write(Result.Node.DescAsString) else write('NIL');
   DebugLn('');
   {$ENDIF}
+end;
+
+function TFindDeclarationTool.FindDeclarationsAndAncestors(
+  const CursorPos: TCodeXYPosition; var ListOfPCodeXYPosition: TList): boolean;
+  
+  procedure AddCodePosition(const NewCodePos: TCodeXYPosition);
+  var
+    AddCodePos: PCodeXYPosition;
+  begin
+    if ListOfPCodeXYPosition=nil then ListOfPCodeXYPosition:=TList.Create;
+    New(AddCodePos);
+    AddCodePos^:=NewCodePos;
+    ListOfPCodeXYPosition.Add(AddCodePos);
+  end;
+  
+  function IndexOfCodePosition(APosition: PCodeXYPosition): integer;
+  begin
+    if ListOfPCodeXYPosition=nil then
+      Result:=-1
+    else begin
+      Result:=ListOfPCodeXYPosition.Count-1;
+      while (Result>=0)
+      and (CompareCodeXYPositions(APosition,
+                             PCodeXYPosition(ListOfPCodeXYPosition[Result]))<>0)
+      do
+        dec(Result);
+    end;
+  end;
+  
+var
+  CurCursorPos: TCodeXYPosition;
+  NewTool: TFindDeclarationTool;
+  NewNode: TCodeTreeNode;
+  NewPos: TCodeXYPosition;
+  NewTopLine: integer;
+  CurTool: TFindDeclarationTool;
+begin
+  Result:=true;
+  ListOfPCodeXYPosition:=nil;
+  AddCodePosition(CursorPos);
+
+  ActivateGlobalWriteLock;
+  try
+    CurCursorPos:=CursorPos;
+    CurTool:=Self;
+    try
+      while CurTool.FindDeclaration(CurCursorPos,AllFindSmartFlags,
+        NewTool,NewNode,NewPos,NewTopLine) do
+      begin
+        if IndexOfCodePosition(@NewPos)>=0 then break;
+        AddCodePosition(NewPos);
+        CurCursorPos:=NewPos;
+        CurTool:=NewTool;
+      end;
+    except
+      // just stop on errors
+      on E: ECodeToolError do ;
+      on E: ELinkScannerError do ;
+    end;
+  finally
+    DeactivateGlobalWriteLock;
+  end;
 end;
 
 function TFindDeclarationTool.JumpToNode(ANode: TCodeTreeNode;

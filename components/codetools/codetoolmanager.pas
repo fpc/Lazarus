@@ -105,13 +105,11 @@ type
           TheUnitInFilename: string): TCodeBuffer;
     function DoOnGetSrcPathForCompiledUnit(Sender: TObject;
           const AFilename: string): string;
-    function GetMainCode(Code: TCodeBuffer): TCodeBuffer;
     function FindCodeOfMainUnitHint(Code: TCodeBuffer): TCodeBuffer;
     procedure CreateScanner(Code: TCodeBuffer);
     function InitCurCodeTool(Code: TCodeBuffer): boolean;
     function InitResourceTool: boolean;
     procedure ClearPositions;
-    function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
     function GetCodeToolForSource(Code: TCodeBuffer;
       ExceptionOnError: boolean): TCustomCodeTool;
     procedure SetAbortable(const AValue: boolean);
@@ -163,6 +161,10 @@ type
     function SaveBufferAs(OldBuffer: TCodeBuffer;const ExpandedFilename: string;
                           var NewBuffer: TCodeBuffer): boolean;
     function FilenameHasSourceExt(const AFilename: string): boolean;
+    function GetMainCode(Code: TCodeBuffer): TCodeBuffer;
+    function GetIncludeCodeChain(Code: TCodeBuffer;
+                                 var ListOfCodeBuffer: TList): boolean;
+    function FindCodeToolForSource(Code: TCodeBuffer): TCustomCodeTool;
     property OnSearchUsedUnit: TOnSearchUsedUnit
                                  read FOnSearchUsedUnit write FOnSearchUsedUnit;
     
@@ -276,6 +278,8 @@ type
     function FindDeclarationInInterface(Code: TCodeBuffer;
           const Identifier: string; var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
+    function FindDeclarationsAndAncestors(Code: TCodeBuffer; X,Y: integer;
+          var ListOfPCodeXYPosition: TList): boolean;
     
     // gather identifiers (i.e. all visible)
     function GatherIdentifiers(Code: TCodeBuffer; X,Y: integer): boolean;
@@ -696,6 +700,34 @@ begin
   end;
   if Result=nil then exit;
   CreateScanner(Result);
+end;
+
+function TCodeToolManager.GetIncludeCodeChain(Code: TCodeBuffer;
+  var ListOfCodeBuffer: TList): boolean;
+var
+  OldCode: TCodeBuffer;
+begin
+  // find MainCode (= the start source, e.g. a unit/program/package source)
+  Result:=false;
+  ListOfCodeBuffer:=nil;
+  if Code=nil then exit;
+  
+  Result:=true;
+  ListOfCodeBuffer:=TList.Create;
+  ListOfCodeBuffer.Add(Code);
+  
+  // if this is an include file, find the top level source
+  while (Code.LastIncludedByFile<>'') do begin
+    Code:=SourceCache.LoadFile(Code.LastIncludedByFile);
+    if Code=nil then exit;
+    ListOfCodeBuffer.Insert(0,Code);
+  end;
+  if (not FilenameHasSourceExt(Code.Filename)) then begin
+    OldCode:=Code;
+    Code:=FindCodeOfMainUnitHint(OldCode);
+    if Code<>OldCode then
+      ListOfCodeBuffer.Insert(0,Code);
+  end;
 end;
 
 function TCodeToolManager.FindCodeOfMainUnitHint(Code: TCodeBuffer
@@ -1188,6 +1220,33 @@ begin
   end;
   {$IFDEF CTDEBUG}
   DebugLn('TCodeToolManager.FindDeclarationInInterface END ');
+  {$ENDIF}
+end;
+
+function TCodeToolManager.FindDeclarationsAndAncestors(Code: TCodeBuffer; X,
+  Y: integer; var ListOfPCodeXYPosition: TList): boolean;
+var
+  CursorPos: TCodeXYPosition;
+begin
+  Result:=false;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationsAndAncestors A ',Code.Filename,' x=',x,' y=',y);
+  {$ENDIF}
+  if not InitCurCodeTool(Code) then exit;
+  CursorPos.X:=X;
+  CursorPos.Y:=Y;
+  CursorPos.Code:=Code;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationsAndAncestors B ',FCurCodeTool.Scanner<>nil);
+  {$ENDIF}
+  try
+    Result:=FCurCodeTool.FindDeclarationsAndAncestors(CursorPos,
+                                                      ListOfPCodeXYPosition);
+  except
+    on e: Exception do Result:=HandleException(e);
+  end;
+  {$IFDEF CTDEBUG}
+  DebugLn('TCodeToolManager.FindDeclarationsAndAncestors END ');
   {$ENDIF}
 end;
 

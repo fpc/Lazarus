@@ -3318,6 +3318,9 @@ end;
 
 procedure TEditorOptionsForm.SetupGeneralPage;
 var MaxX,ChkBoxW:integer;
+  ChkBoxH: Integer;
+  x: Integer;
+  y: Integer;
 begin
   MaxX:=Width-5;
   ChkBoxW:=(MaxX-20) div 2;
@@ -3337,305 +3340,265 @@ begin
   // many, many checkboxes ...
 
   // left side
+  x:=5;
+  y:=2;
+  ChkBoxH:=21;
+  
   AltSetsColumnModeCheckBox:=TCheckBox.Create(Self);
   with AltSetsColumnModeCheckBox do begin
     Name:='AltSetsColumnModeCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=5;
-    Left:=5;
-    Width:=ChkBoxW;
-    Height:=16;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgAltSetClMode;
     Checked:=eoAltSetsColumnMode in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   AutoIndentCheckBox:=TCheckBox.Create(Self);
   with AutoIndentCheckBox do begin
     Name:='AutoIndentCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=AltSetsColumnModeCheckBox.Top+AltSetsColumnModeCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgAutoIdent;
     Checked:=eoAutoIndent in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   BracketHighlightCheckBox:=TCheckBox.Create(Self);
   with BracketHighlightCheckBox do begin
     Name:='BracketHighlightCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=AutoIndentCheckBox.Top+AutoIndentCheckBox.Height+5;
-    Left:=AutoIndentCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgBracHighlight;
     Checked:=eoBracketHighlight in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   DragDropEditingCheckBox:=TCheckBox.Create(Self);
   with DragDropEditingCheckBox do begin
     Name:='DragDropEditingCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=BracketHighlightCheckBox.Top+BracketHighlightCheckBox.Height+5;
-    Left:=BracketHighlightCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgDragDropEd;
     Checked:=eoDragDropEditing in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   DropFilesCheckBox:=TCheckBox.Create(Self);
   with DropFilesCheckBox do begin
     Name:='DropFilesCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=DragDropEditingCheckBox.Top+DragDropEditingCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgDropFiles;
     Checked:=eoDropFiles in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
     Enabled:=false;
   end;
+  inc(y,ChkBoxH);
 
   HalfPageScrollCheckBox:=TCheckBox.Create(Self);
   with HalfPageScrollCheckBox do begin
     Name:='HalfPageScrollCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=DropFilesCheckBox.Top+DropFilesCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgHalfPageScroll;
     Checked:=eoHalfPageScroll in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   KeepCaretXCheckBox:=TCheckBox.Create(Self);
   with KeepCaretXCheckBox do begin
     Name:='KeepCaretXCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=HalfPageScrollCheckBox.Top+HalfPageScrollCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgKeepCaretX;
     Checked:=eoKeepCaretX in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   PersistentCaretCheckBox:=TCheckBox.Create(Self);
   with PersistentCaretCheckBox do begin
     Name:='PersistentCaretCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=KeepCaretXCheckBox.Top+KeepCaretXCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgPersistentCaret;
     Checked:=eoPersistentCaret in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   ScrollByOneLessCheckBox:=TCheckBox.Create(Self);
   with ScrollByOneLessCheckBox do begin
     Name:='ScrollByOneLessCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=PersistentCaretCheckBox.Top+PersistentCaretCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgScrollByOneLess;
     Checked:=eoScrollByOneLess in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   ScrollPastEoFCheckBox:=TCheckBox.Create(Self);
   with ScrollPastEoFCheckBox do begin
     Name:='ScrollPastEoFCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=ScrollByOneLessCheckBox.Top+ScrollByOneLessCheckBox.Height+5;
-    Left:=ScrollByOneLessCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgScrollPastEndFile;
     Checked:=eoScrollPastEoF in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   MouseLinksCheckBox:=TCheckBox.Create(Self);
   with MouseLinksCheckBox do begin
     Name:='MouseLinksCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=ScrollPastEoFCheckBox.Top+ScrollPastEoFCheckBox.Height+5;
-    Left:=ScrollPastEoFCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgMouseLinks;
     Checked:=EditorOpts.CtrlMouseLinks;
   end;
+  inc(y,ChkBoxH);
 
   ShowGutterHintsCheckBox:=TCheckBox.Create(Self);
   with ShowGutterHintsCheckBox do begin
     Name:='ShowGutterHintsCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=MouseLinksCheckBox.Top+MouseLinksCheckBox.Height+5;
-    Left:=MouseLinksCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgShowGutterHints;
     Checked:=EditorOpts.ShowGutterHints;
   end;
+  inc(y,ChkBoxH);
 
   // right side
+  x:=AltSetsColumnModeCheckBox.Left+(MaxX div 2)+5;
+  y:=2;
+  
   ScrollPastEoLCheckBox:=TCheckBox.Create(Self);
   with ScrollPastEoLCheckBox do begin
     Name:='ScrollPastEoLCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Left:=AltSetsColumnModeCheckBox.Left+(MaxX div 2)+5;
-    Left:=ScrollPastEoFCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgScrollPastEndLine;
     Checked:=eoScrollPastEoL in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   ShowCloseBtnInNoteBookCheckBox:=TCheckBox.Create(Self);
   with ShowCloseBtnInNoteBookCheckBox do begin
     Name:='ShowCloseBtnInNoteBookCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=ScrollPastEoLCheckBox.Top+ScrollPastEoLCheckBox.Height+5;
-    Left:=ScrollPastEoLCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgCloseButtonsNotebook;
     Checked:=EditorOpts.ShowTabCloseButtons;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   ShowScrollHintCheckBox:=TCheckBox.Create(Self);
   with ShowScrollHintCheckBox do begin
     Name:='ShowScrollHintCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=ShowCloseBtnInNoteBookCheckBox.Top
-         +ShowCloseBtnInNoteBookCheckBox.Height+5;
-    Left:=ShowCloseBtnInNoteBookCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgShowScrollHint;
     Checked:=eoShowScrollHint in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   SmartTabsCheckBox:=TCheckBox.Create(Self);
   with SmartTabsCheckBox do begin
     Name:='SmartTabsCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=ShowScrollHintCheckBox.Top+ShowScrollHintCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgSmartTabs;
     Checked:=eoSmartTabs in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   TabsToSpacesCheckBox:=TCheckBox.Create(Self);
   with TabsToSpacesCheckBox do begin
     Name:='TabsToSpacesCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=SmartTabsCheckBox.Top+SmartTabsCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgTabsToSpaces;
     Checked:=eoTabsToSpaces in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   TrimTrailingSpacesCheckBox:=TCheckBox.Create(Self);
   with TrimTrailingSpacesCheckBox do begin
     Name:='TrimTrailingSpacesCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=TabsToSpacesCheckBox.Top+TabsToSpacesCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgTrimTrailingSpaces;
     Checked:=eoTrimTrailingSpaces in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   UndoAfterSaveCheckBox:=TCheckBox.Create(Self);
   with UndoAfterSaveCheckBox do begin
     Name:='UndoAfterSaveCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=TrimTrailingSpacesCheckBox.Top+TrimTrailingSpacesCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgUndoAfterSave;
     Checked:=EditorOpts.UndoAfterSave;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   DoubleClickLineCheckBox:=TCheckBox.Create(Self);
   with DoubleClickLineCheckBox do begin
     Name:='DoubleClickLineCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=UndoAfterSaveCheckBox.Top+UndoAfterSaveCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgDoubleClickLine;
     Checked:=eoDoubleClickSelectsLine in EditorOpts.SynEditOptions;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   FindTextAtCursorCheckBox:=TCheckBox.Create(Self);
   with FindTextAtCursorCheckBox do begin
     Name:='FindTextAtCursorCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=DoubleClickLineCheckBox.Top+DoubleClickLineCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgFindTextatCursor;
     Checked:=EditorOpts.FindTextAtCursor;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   UseSyntaxHighlightCheckBox:=TCheckBox.Create(Self);
   with UseSyntaxHighlightCheckBox do begin
     Name:='UseSyntaxHighlightCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=FindTextAtCursorCheckBox.Top+FindTextAtCursorCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgUseSyntaxHighlight;
     Checked:=EditorOpts.UseSyntaxHighlight;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   CopyWordAtCursorOnCopyNoneCheckBox:=TCheckBox.Create(Self);
   with CopyWordAtCursorOnCopyNoneCheckBox do begin
     Name:='CopyWordAtCursorOnCopyNoneCheckBox';
     Parent:=EditorOptionsGroupBox;
-    Top:=UseSyntaxHighlightCheckBox.Top+UseSyntaxHighlightCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
     Caption:=dlgCopyWordAtCursorOnCopyNone;
     Checked:=EditorOpts.CopyWordAtCursorOnCopyNone;
     OnClick:=@GeneralCheckBoxOnClick;
   end;
+  inc(y,ChkBoxH);
 
   //
 
@@ -3728,10 +3691,14 @@ end;
 
 procedure TEditorOptionsForm.ResizeGeneralPage;
 var MaxX,ChkBoxW:integer;
+  ChkBoxH: Integer;
+  x: Integer;
+  y: Integer;
 begin
   MaxX:=Width-5;
   ChkBoxW:=(MaxX-20) div 2;
-
+  ChkBoxH:=21;
+  
   with EditorOptionsGroupBox do begin
     Top:=5;
     Left:=5;
@@ -3741,169 +3708,127 @@ begin
 
   // many, many checkboxes ...
 
+  x:=5;
+  y:=2;
+
   with AltSetsColumnModeCheckBox do begin
-    Top:=5;
-    Left:=5;
-    Width:=ChkBoxW;
-    Height:=16;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with AutoIndentCheckBox do begin
-    Top:=AltSetsColumnModeCheckBox.Top+AltSetsColumnModeCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with BracketHighlightCheckBox do begin
-    Top:=AutoIndentCheckBox.Top+AutoIndentCheckBox.Height+5;
-    Left:=AutoIndentCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with DragDropEditingCheckBox do begin
-    Top:=BracketHighlightCheckBox.Top+BracketHighlightCheckBox.Height+5;
-    Left:=BracketHighlightCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with DropFilesCheckBox do begin
-    Top:=DragDropEditingCheckBox.Top+DragDropEditingCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with HalfPageScrollCheckBox do begin
-    Top:=DropFilesCheckBox.Top+DropFilesCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with KeepCaretXCheckBox do begin
-    Top:=HalfPageScrollCheckBox.Top+HalfPageScrollCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with PersistentCaretCheckBox do begin
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Top:=KeepCaretXCheckBox.Top+KeepCaretXCheckBox.Height+5;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with ScrollByOneLessCheckBox do begin
-    Top:=PersistentCaretCheckBox.Top+PersistentCaretCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with ScrollPastEoFCheckBox do begin
-    Top:=ScrollByOneLessCheckBox.Top+ScrollByOneLessCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
-  
+  inc(y,ChkBoxH);
+
   with MouseLinksCheckBox do begin
-    Top:=ScrollPastEoFCheckBox.Top+ScrollPastEoFCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with ShowGutterHintsCheckBox do begin
-    Top:=MouseLinksCheckBox.Top+MouseLinksCheckBox.Height+5;
-    Left:=AltSetsColumnModeCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   // right side
+  x:=AltSetsColumnModeCheckBox.Left+(MaxX div 2)+5;
+  y:=2;
 
   with ScrollPastEoLCheckBox do begin
-    Top:=5;
-    Left:=AltSetsColumnModeCheckBox.Left+(MaxX div 2)+5;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with ShowCloseBtnInNoteBookCheckBox do begin
-    Top:=ScrollPastEoLCheckBox.Top+ScrollPastEoLCheckBox.Height+5;
-    Left:=ScrollPastEoLCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with ShowScrollHintCheckBox do begin
-    Top:=ShowCloseBtnInNoteBookCheckBox.Top
-        +ShowCloseBtnInNoteBookCheckBox.Height+5;
-    Left:=ShowCloseBtnInNoteBookCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with SmartTabsCheckBox do begin
-    Top:=ShowScrollHintCheckBox.Top+ShowScrollHintCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with TabsToSpacesCheckBox do begin
-    Top:=SmartTabsCheckBox.Top+SmartTabsCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with TrimTrailingSpacesCheckBox do begin
-    Top:=TabsToSpacesCheckBox.Top+TabsToSpacesCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with UndoAfterSaveCheckBox do begin
-    Top:=TrimTrailingSpacesCheckBox.Top+TrimTrailingSpacesCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with DoubleClickLineCheckBox do begin
-    Top:=UndoAfterSaveCheckBox.Top+UndoAfterSaveCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with FindTextAtCursorCheckBox do begin
-    Top:=DoubleClickLineCheckBox.Top+DoubleClickLineCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with UseSyntaxHighlightCheckBox do begin
-    Top:=FindTextAtCursorCheckBox.Top+FindTextAtCursorCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   with CopyWordAtCursorOnCopyNoneCheckBox do begin
-    Top:=UseSyntaxHighlightCheckBox.Top+UseSyntaxHighlightCheckBox.Height+5;
-    Left:=ShowScrollHintCheckBox.Left;
-    Width:=ChkBoxW;
-    Height:=AltSetsColumnModeCheckBox.Height;
+    SetBounds(x,y,ChkBoxW,Height);
   end;
+  inc(y,ChkBoxH);
 
   //
 

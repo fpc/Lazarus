@@ -140,6 +140,7 @@ type
 function AtomPosition(StartPos, EndPos: integer): TAtomPosition;
 function CodePosition(P: integer; Code: TCodeBuffer): TCodePosition;
 function CodeXYPosition(X, Y: integer; Code: TCodeBuffer): TCodeXYPosition;
+function CompareCodeXYPositions(Pos1, Pos2: PCodeXYPosition): integer;
 
 var
   WordToAtomFlag: TWordToAtomFlag;
@@ -167,6 +168,17 @@ begin
   Result.X:=X;
   Result.Y:=Y;
   Result.Code:=Code;
+end;
+
+function CompareCodeXYPositions(Pos1, Pos2: PCodeXYPosition): integer;
+begin
+  if Pointer(Pos1^.Code)>Pointer(Pos2^.Code) then Result:=1
+  else if Pointer(Pos1^.Code)<Pointer(Pos2^.Code) then Result:=-1
+  else if Pos1^.Y<Pos2^.Y then Result:=1
+  else if Pos1^.Y>Pos2^.Y then Result:=-1
+  else if Pos1^.X<Pos2^.X then Result:=1
+  else if Pos1^.Y<Pos2^.Y then Result:=-1
+  else Result:=0;
 end;
 
 { TAtomRing }

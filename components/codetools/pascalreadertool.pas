@@ -119,6 +119,7 @@ type
         DefinitionNode: TCodeTreeNode): TCodeTreeNode;
     function NodeIsPartOfTypeDefinition(ANode: TCodeTreeNode): boolean;
     function ExtractDefinitionNodeType(DefinitionNode: TCodeTreeNode): string;
+    function ExtractDefinitionName(DefinitionNode: TCodeTreeNode): string;
 
     // sections
     function GetSourceType: TCodeTreeNodeDesc;
@@ -1219,6 +1220,15 @@ begin
   if TypeNode=nil then exit;
   if TypeNode.Desc=ctnIdentifier then
     Result:=GetIdentifier(@Src[TypeNode.StartPos]);
+end;
+
+function TPascalReaderTool.ExtractDefinitionName(DefinitionNode: TCodeTreeNode
+  ): string;
+var
+  Len: LongInt;
+begin
+  Len:=GetIdentLen(@Src[DefinitionNode.StartPos]);
+  Result:=copy(Src,DefinitionNode.StartPos,Len);
 end;
 
 function TPascalReaderTool.PropertyIsDefault(PropertyNode: TCodeTreeNode

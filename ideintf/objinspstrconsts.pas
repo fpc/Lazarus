@@ -102,6 +102,18 @@ resourcestring
   oisHelpBrowserNotFound = 'Browser %s%s%s not found.';
   oisHelpBrowserNotExecutable = 'Browser %s%s%s not executable.';
   oisHelpErrorWhileExecuting = 'Error while executing %s%s%s:%s%s';
+  oisHelpHelpNodeHasNoHelpDatabase = 'Help node %s%s%s has no Help Database';
+  oisHelpHelpDatabaseDidNotFoundAViewerForAHelpPageOfType = 'Help Database %s%'
+    +'s%s did not found a viewer for a help page of type %s';
+  oisHelpAlreadyRegistered = '%s: Already registered';
+  oisHelpNotRegistered = '%s: Not registered';
+  oisHelpHelpDatabaseNotFound = 'Help Database %s%s%s not found';
+  oisHelpHelpKeywordNotFoundInDatabase = 'Help keyword %s%s%s not found in '
+    +'Database %s%s%s.';
+  oisHelpHelpKeywordNotFound = 'Help keyword %s%s%s not found.';
+  oisHelpHelpContextNotFoundInDatabase = 'Help context %s not found in '
+    +'Database %s%s%s.';
+  oisHelpHelpContextNotFound = 'Help context %s not found.';
 
 implementation
 

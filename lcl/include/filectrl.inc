@@ -799,6 +799,36 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function FileIsInPath(const Filename, Path: string): boolean;
+ ------------------------------------------------------------------------------}
+function FileIsInDirectory(const Filename, Directory: string): boolean;
+var
+  ExpFile: String;
+  ExpDir: String;
+  LenFile: Integer;
+  LenDir: Integer;
+  p: LongInt;
+begin
+  ExpFile:=CleanAndExpandFilename(Filename);
+  ExpDir:=CleanAndExpandDirectory(Directory);
+  LenFile:=length(ExpFile);
+  LenDir:=length(ExpDir);
+  p:=LenFile;
+  while (p>0) and (ExpFile[p]<>PathDelim) do dec(p);
+  Result:=(p=LenDir) and (p<LenFile)
+          and (CompareFilenames(ExpDir,LeftStr(ExpFile,p))=0);
+end;
+
+{------------------------------------------------------------------------------
+  function FileInFilenameMasks(const Filename, Masks: string): boolean;
+ ------------------------------------------------------------------------------}
+function FileInFilenameMasks(const Filename, Masks: string): boolean;
+begin
+  // TODO
+  Result:=false;
+end;
+
+{------------------------------------------------------------------------------
   function CopyFile(const SrcFilename, DestFilename: string): boolean;
  ------------------------------------------------------------------------------}
 function CopyFile(const SrcFilename, DestFilename: string): boolean;
@@ -928,6 +958,9 @@ end;
 
 {
   $Log$
+  Revision 1.47  2004/08/22 22:47:43  mattias
+  implemented context help for source editor
+
   Revision 1.46  2004/08/04 23:47:32  mattias
   implemented FileExecutable for win32
 

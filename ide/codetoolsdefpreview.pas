@@ -94,7 +94,7 @@ var
 begin
   Dir:=TrimFilename(DirectoryCombobox.Text);
   if (DefineTree=nil) or (not FilenameIsAbsolute(Dir))
-  or (not DirectoryExists(Dir)) then begin
+  or (not DirPathExists(Dir)) then begin
     ClearValues;
     exit;
   end;
