@@ -90,11 +90,8 @@ var
 
 {$IFNDEF Win32}
 function GetTickCount: DWord;
-var
-  hour, minutes, secs, msecs, usecs: word;
 begin
-  GetTime(hour, minutes, secs, msecs, usecs);
-  Result:=(((hour*60)+minutes)*60+secs)*1000+msecs;
+  Result := Trunc(Now * 24 * 60 * 60 * 1000);
 end;
 {$ENDIF}
 
@@ -182,6 +179,9 @@ end.
 
 {
   $Log$
+  Revision 1.17  2004/11/03 22:59:58  marc
+  * fixed GetTickCount
+
   Revision 1.16  2004/08/18 09:31:21  mattias
   removed obsolete unit vclglobals
 
