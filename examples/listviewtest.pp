@@ -44,8 +44,8 @@ begin
   inherited Create(AOwner);
 
   Caption := 'List View Test';
-  Width := 200;
-  Height := 300;
+  Width := 175;
+  Height := 195;
 
   ListView := TListView.Create(Self);
   ListView.Parent := Self;
@@ -86,6 +86,9 @@ end.
 
 {
   $Log$
+  Revision 1.2  2002/02/08 00:44:06  lazarus
+  Keith: Fixed form size for listviewtest.pp, kind changing for scrollbar.pp
+
   Revision 1.1  2002/02/04 10:54:33  lazarus
   Keith:
     * Fixes for Win32

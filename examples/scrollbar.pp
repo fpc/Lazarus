@@ -121,11 +121,11 @@ End;
 
 Procedure TForm1.Button1Clicked(sender : tobject);
 Begin
-{Writeln('[Button1cvlikced]');
+Writeln('[Button1cvlikced]');
 if ScrollBar1.Kind = sbHorizontal then
     Scrollbar1.Kind := sbVertical else
     Scrollbar1.kind := sbHorizontal;
- }
+ 
 end;
 
 Procedure TForm1.Button2Clicked(sender : tobject);
