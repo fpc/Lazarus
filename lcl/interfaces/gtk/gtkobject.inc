@@ -966,7 +966,7 @@ begin
         if (Sender is TListView) then
         begin
           Num := Integer(data^);
-          Widget := GetCoreChildWidget(PgtkWidget(Handle));//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
           gtk_clist_remove(PgtkCList(Widget),Num);
         end;
       end;
@@ -975,10 +975,9 @@ begin
       begin
         if (Sender is TListView) then
         begin
-          Widget := GetCoreChildWidget(PgtkWidget(Handle));//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
 
           Num := Integer(data^);
-
           AddItemListItem := TListview(sender).Items[Num];
           pStr := StrAlloc(length(AddItemListItem.Caption) + 1);
           StrPCopy(pStr, AddItemListItem.Caption);
@@ -1015,7 +1014,7 @@ begin
       begin
         if (Sender is TListView) then
         begin
-          Widget := GetCoreChildWidget(PgtkWidget(Handle));//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
 
           //get last item and add it..
           pStr := StrAlloc(length('Test') + 1);
@@ -1456,7 +1455,8 @@ begin
       begin
         if TControl(Sender).fCompStyle = csCListBox
         then begin
-          Widget:= GetCoreChildWidget(PGtkWidget(Handle));
+          Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+          
           Data := TGtkCListStringList.Create(PGtkCList(Widget));
           Result := integer(Data);
         end 
@@ -1467,11 +1467,10 @@ begin
 
             csListBox :
               begin
-                Widget:= GetCoreChildWidget(PGtkWidget(Handle));
+                Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
                 Data:= TGtkListStringList.Create(PGtkList(Widget));
                 Result:= Integer(Data);
               end;
-              
           else 
             raise Exception.Create('Message LM_GETITEMS - Not implemented');
           end;
@@ -1494,30 +1493,27 @@ begin
              begin
                if Handle<>0 then begin
                  if TListBox(Sender).MultiSelect then 
-                   Widget:= PGtkList(
-                      GetCoreChildWidget(PGtkWidget(Handle)))^.last_focus_child
+                   Widget:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.last_focus_child
                  else begin
-                   GList:= PGtkList(
-                      GetCoreChildWidget(PGtkWidget(Handle)))^.selection;
-                   if GList = nil 
-                      then Widget:= nil
-                      else Widget:= PGtkWidget(GList^.data);
+                   GList:= PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection;
+                   if GList = nil then
+                     Widget:= nil
+                   else
+                     Widget:= PGtkWidget(GList^.data);
                  end;  
-                 if Widget = nil 
-                   then Result:= -1
-                   else Result:= gtk_list_child_position(
-                     PGtkList(GetCoreChildWidget(PGtkWidget(Handle))), Widget);
-                end else
-                  Result:=-1;
+                 if Widget = nil then Result:= -1
+                 else Result:= gtk_list_child_position(PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget), Widget);
+               end else
+                 Result:=-1;
              end;
              
            csCListBox:
              begin
-               GList:= 
-                 PGtkCList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection;
-               if GList = nil
-                  then Result := -1
-                  else Result := integer(GList^.Data);
+               GList:= PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection;
+               if GList = nil then
+                 Result := -1
+               else
+                 Result := integer(GList^.Data);
              end;
              
            csNotebook:
@@ -1535,19 +1531,15 @@ begin
           case TControl(Sender).fCompStyle of
         
           csComboBox:
-            gtk_list_select_item(PGTKLIST(PGTKCOMBO(Handle)^.list),
-                                 Integer(Data));
+            gtk_list_select_item(PGTKLIST(PGTKCOMBO(Handle)^.list), Integer(Data));
                                  
           csListBox :
             begin
-              gtk_list_select_item(
-                PGtkList(GetCoreChildWidget(PGtkWidget(Handle))),
-                Integer(Data));
+              gtk_list_select_item(PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget), Integer(Data));
             end;
             
           csCListBox:
-            gtk_clist_select_row(
-              PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),
+            gtk_clist_select_row(PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),
               Integer(Data), 1);    // column
               
           csNotebook:
@@ -1638,10 +1630,8 @@ begin
       LM_GETSELCOUNT :
       begin
         case (Sender as TControl).fCompStyle of
-          csListBox : Result:= g_list_length(PGtkList(GetCoreChildWidget(
-                                             PGtkWidget(Handle)))^.selection);
-          csCListBox: Result:= g_list_length(PGtkCList(GetCoreChildWidget(
-                                             PGtkWidget(Handle)))^.selection);
+          csListBox : Result:= g_list_length(PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection);
+          csCListBox: Result:= g_list_length(PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection);
         end;
       end;
   
@@ -1650,22 +1640,21 @@ begin
          if (Sender as TWinControl).fCompStyle = csListBox then
          begin
            { Get the child in question of that index }
-           ListItem:= g_list_nth_data(PGtkList(
-             GetCoreChildWidget(PGtkWidget(Handle)))^.children, Integer(Data^));
-           Result:= g_list_index(PGtkList(
-             GetCoreChildWidget(PGtkWidget(Handle)))^.selection, ListItem);
+           ListItem:= g_list_nth_data(PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.children, Integer(Data^));
+           Result:= g_list_index(PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection, ListItem);
          end
          else if (Sender as TControl).fCompStyle = csCListBox then
          begin
-            { Get the selections }
-            GList:= PGtkCList(GetCoreChildWidget(PGtkWidget(Handle)))^.selection;
-            Result := -1;      { assume: nothing found }
-            while Assigned(GList) and (result = -1) do
-            begin
-               if integer(GList^.data) = integer(Data^)
-                  then Result := 0
-                  else GList := GList^.Next;
-            end;
+           { Get the selections }
+           GList:= PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget)^.selection;
+           Result := -1;      { assume: nothing found }
+           while Assigned(GList) do begin
+             if integer(GList^.data) = integer(Data^) then begin
+               Result:= 0;
+               Break;
+             end else
+               GList := GList^.Next;
+           end;
          end;
       end;
   
@@ -1700,23 +1689,23 @@ begin
           begin
             if TLMSetSel(Data^).Selected then begin
               gtk_list_select_item(
-                PGtkList(GetCoreChildWidget(PGtkWidget(Handle))),
+                PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),
                 TLMSetSel(Data^).Index);
             end else
               gtk_list_unselect_item(
-                PGtkList(GetCoreChildWidget(PGtkWidget(Handle))),
+                PGtkList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),
                 TLMSetSel(Data^).Index);
           end
           else if (TControl(Sender).fCompStyle = csCListBox) then
           begin
             if TLMSetSel(Data^).Selected then
               gtk_clist_select_row(
-                PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),
-                TLMSetSel(Data^).Index,0)
+                PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),
+                TLMSetSel(Data^).Index, 0)
             else
               gtk_clist_unselect_row(
-                PGtkCList(GetCoreChildWidget(PGtkWidget(Handle))),
-                TLMSetSel(Data^).Index,0);
+                PGtkCList(GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),
+                TLMSetSel(Data^).Index, 0);
           end;
         end;
       end;
@@ -1736,10 +1725,10 @@ begin
             else 
               SelectionMode:= GTK_SELECTION_BROWSE;
             case TControl(Sender).fCompStyle of
-              csListBox  : gtk_list_set_selection_mode(PGtkList(
-                        GetCoreChildWidget(PGtkWidget(Handle))), SelectionMode);
+              csListBox  : gtk_list_set_selection_mode(PGtkList(              
+                GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget), SelectionMode);
               csCListBox : gtk_clist_set_selection_mode(PGtkCList(
-                        GetCoreChildWidget(PGtkWidget(Handle))),SelectionMode);
+                GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget),SelectionMode);
             else
               Assert (true, 'WARNING:[TgtkObject.IntSendMessage3] usage of LM_SETSELMODE unimplemented for actual component');
             end;
@@ -1855,8 +1844,7 @@ begin
 
    csMemo    : begin
                   CS := gtk_editable_get_chars(PGtkEditable(
-                              GetCoreChildWidget(PGtkWidget(
-                                TWinControl(Sender).Handle))), 0, -1);
+                    GetWidgetInfo(Pointer(TWinControl(Sender).Handle), True)^.ImplementationWidget), 0, -1);
                   Text := StrPas(CS);
                   g_free(CS);
                end;
@@ -2091,12 +2079,11 @@ begin
   csEdit        : gtk_entry_set_text(pGtkEntry(P),pLabel);
 
   csMemo        : begin
-                    P := GetCoreChildWidget(P);
+                    P:= GetWidgetInfo(P, True)^.ImplementationWidget;
+                    
                     gtk_text_freeze(PGtkText(P));
                     gtk_text_set_point(PGtkText(P), 0);
-                    gtk_text_forward_delete(
-                       PGtkText(P),
-                       gtk_text_get_length(PGtkText(P)));
+                    gtk_text_forward_delete(PGtkText(P), gtk_text_get_length(PGtkText(P)));
                     gtk_text_insert(PGtkText(P), nil, nil, nil, pLabel, -1);
                     gtk_text_thaw(PGtkText(P));
                   end;      
@@ -2214,7 +2201,7 @@ begin
   if gFixed = nil then gFixed := gObject;
 
   // gCore is the main widget (e.g. TListView has this)
-  gCore := GetCoreChildWidget(gObject);
+  gCore:= PGtkObject(GetWidgetInfo(gObject, True)^.ImplementationWidget);
 
   case Msg of
     LM_SHOWWINDOW :
@@ -2265,8 +2252,7 @@ begin
                    PGtkCombo(gobject)^.entry), 'changed', @gtkchangedCB)
        else 
        if Sender is TCustomMemo then
-         ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(
-                   TCustomMemo(sender).handle))),'changed', @gtkchanged_editbox)
+         ConnectSenderSignal(gCore, 'changed', @gtkchanged_editbox)
        else
          ConnectSenderSignal(gObject, 'changed', @gtkchanged_editbox);
 
@@ -2295,22 +2281,15 @@ begin
 
     LM_FOCUS :
     begin
-      if (sender is TCustomComboBox) then
-         Begin
-          ConnectSenderSignal(PgtkObject(PgtkCombo(
-            TCustomComboBox(sender).handle)^.entry), 'focus-in-event', @gtkFocusCB);
-          ConnectSenderSignal(PgtkObject(PgtkCombo(
-            TCustomComboBox(sender).handle)^.entry), 'focus-out-event', @gtkKillFocusCB);
-          ConnectSenderSignal(PgtkObject(PgtkCombo(
-            TCustomComboBox(sender).handle)^.list), 'focus-in-event', @gtkFocusCB);
-          ConnectSenderSignal(PgtkObject(PgtkCombo(
-            TCustomComboBox(sender).handle)^.list), 'focus-out-event', @gtkKillFocusCB);
-         end
-         else
-         Begin
-          ConnectSenderSignal(gObject, 'focus-in-event', @gtkFocusCB);
-          ConnectSenderSignal(gObject, 'focus-out-event', @gtkKillFocusCB);
-         end;
+      if (sender is TCustomComboBox) then begin
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry), 'focus-in-event', @gtkFocusCB);
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry), 'focus-out-event', @gtkKillFocusCB);
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list), 'focus-in-event', @gtkFocusCB);
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list), 'focus-out-event', @gtkKillFocusCB);
+      end else begin
+        ConnectSenderSignal(gObject, 'focus-in-event', @gtkFocusCB);
+        ConnectSenderSignal(gObject, 'focus-out-event', @gtkKillFocusCB);
+      end;
     end;
     
     LM_GRABFOCUS:
@@ -2325,30 +2304,23 @@ begin
     LM_SYSCHAR,
     LM_SYSKEYUP:
     begin
-      if (Sender is TComboBox) then Begin
-        ConnectSenderSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
+      if (Sender is TComboBox) then begin
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-        ConnectSenderSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
           'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
       end
-      else
-      if (Sender is TCustomForm) then Begin
-        ConnectSenderSignal(PgtkObject(TCustomForm(sender).handle),
-          'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-        ConnectSenderSignal(PgtkObject(TCustomForm(sender).handle),
-          'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+      else if (Sender is TCustomForm) then begin
+        ConnectSenderSignal(gObject, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
+        ConnectSenderSignal(gObject, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
       end
       else
       if (Sender is TCustomListBox) then Begin
       
         //TODO:listbox is STILL not sendig keypress events even with these lines.
-        
-        ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(
-           TCustomListBox(Sender).Handle))), 'key-press-event', @GTKKeyUpDown,
-           GDK_KEY_PRESS_MASK);
-        ConnectSenderSignal(PgtkObject(GetCoreChildWidget(PgtkWidget(
-           TCustomListBox(Sender).Handle))), 'key-release-event', @GTKKeyUpDown,
-           GDK_KEY_RELEASE_MASK);
+
+        ConnectSenderSignal(gCore, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
+        ConnectSenderSignal(gCore, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
       end;
       ConnectSenderSignal(gFixed, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
       ConnectSenderSignal(gFixed, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
@@ -2381,19 +2353,16 @@ begin
     LM_MOUSEMOVE:
     begin
       if (sender is TComboBox) then
-      Begin
-        ConnectSenderSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
-              'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
-        ConnectSenderSignalAfter(
-              PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry),
-              'motion-notify-event', @GTKMotionNotifyAfter,
-              GDK_POINTER_MOTION_MASK);
-        ConnectSenderSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.button),
-              'motion-notify-event', @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
-        ConnectSenderSignalAfter(
-              PgtkObject(PgtkCombo(TComboBox(sender).handle)^.button),
-              'motion-notify-event', @GTKMotionNotifyAfter,
-              GDK_POINTER_MOTION_MASK);
+      begin
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry), 'motion-notify-event',
+          @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
+        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry), 'motion-notify-event',
+          @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
+
+        ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.button), 'motion-notify-event',
+          @GTKMotionNotify, GDK_POINTER_MOTION_MASK);
+        ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.button), 'motion-notify-event',
+          @GTKMotionNotifyAfter, GDK_POINTER_MOTION_MASK);
       end
       else begin
         ConnectSenderSignal(gFixed, 'motion-notify-event', @GTKMotionNotify,
@@ -2409,7 +2378,7 @@ begin
     LM_MOUSEWHEEL :
     begin
       if (sender is TCustomComboBox) then
-      Begin
+      begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
               'button-press-event',  @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
         ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.entry),
@@ -2418,17 +2387,16 @@ begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.button) ,
               'button-press-event', @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
         ConnectSenderSignalAfter(PgtkObject(PgtkCombo(gObject)^.button) ,
-              'button-press-event', @gtkMouseBtnPressAfter,
-              GDK_BUTTON_PRESS_MASK);
+              'button-press-event', @gtkMouseBtnPressAfter, GDK_BUTTON_PRESS_MASK);
         // Connecting the list seems to cause errors. Maybe we are returning the
         // wrong boolean in the callback func
         // ConnectSenderSignal(PgtkObject(PgtkCOmbo(gObject)^.list),
         //    'button-press-event',  @gtkMouseBtnPress, GDK_BUTTON_PRESS_MASK);
       end
       else begin
-        ConnectSenderSignal(gFixed,'button-press-event', @gtkMouseBtnPress,
+        ConnectSenderSignal(gFixed, 'button-press-event', @gtkMouseBtnPress,
                       GDK_BUTTON_PRESS_MASK);
-        ConnectSenderSignalAfter(gFixed,'button-press-event', @gtkMouseBtnPressAfter,
+        ConnectSenderSignalAfter(gFixed, 'button-press-event', @gtkMouseBtnPressAfter,
                       GDK_BUTTON_PRESS_MASK);
       end;
     end;
@@ -2466,17 +2434,17 @@ begin
     LM_ENTER :
     begin
       if sender is TButton then
-         ConnectSenderSignal(gObject, 'enter', @gtkenterCB)
+        ConnectSenderSignal(gObject, 'enter', @gtkenterCB)
       else
-         ConnectSenderSignal(gObject, 'focus-in-event', @gtkFocusInNotifyCB); //TODO: check this focus in is mapped to focus
+        ConnectSenderSignal(gObject, 'focus-in-event', @gtkFocusInNotifyCB); //TODO: check this focus in is mapped to focus
     end;
 
     LM_EXIT :
     begin
       if sender is TButton then
-         ConnectSenderSignal(gObject, 'leave', @gtkleaveCB)
+        ConnectSenderSignal(gObject, 'leave', @gtkleaveCB)
       else
-         ConnectSenderSignal(gObject, 'focus-out-event', @gtkFocusOutNotifyCB);
+        ConnectSenderSignal(gObject, 'focus-out-event', @gtkFocusOutNotifyCB);
     end;
 
     LM_LEAVE :
@@ -2550,9 +2518,7 @@ begin
     LM_CUTTOCLIP :
     begin
       if (sender is TCustomMemo) then
-        ConnectSenderSignal(PgtkObject(GetCoreChildWidget(
-          PgtkWidget(TCustomMemo(sender).handle))),
-          'cut-clipboard', @gtkcuttoclip)
+        ConnectSenderSignal(gCore, 'cut-clipboard', @gtkcuttoclip)
       else
         ConnectSenderSignal(gObject, 'cut-clipboard', @gtkcuttoclip);
     end;
@@ -2560,9 +2526,7 @@ begin
     LM_COPYTOCLIP :
     begin
       if (sender is TCustomMemo) then
-        ConnectSenderSignal(PgtkObject(GetCoreChildWidget(
-          PgtkWidget(TCustomMemo(sender).handle))),
-          'copy-clipboard', @gtkcopytoclip)
+        ConnectSenderSignal(gCore, 'copy-clipboard', @gtkcopytoclip)
       else
         ConnectSenderSignal(gObject, 'copy-clipboard', @gtkcopytoclip);
     end;
@@ -2570,9 +2534,7 @@ begin
     LM_PASTEFROMCLIP :
     begin
       if (sender is TCustomMemo) then
-        ConnectSenderSignal(PgtkObject(GetCoreChildWidget(
-          PgtkWidget(TCustomMemo(sender).handle))),
-          'paste-clipboard', @gtkpastefromclip)
+        ConnectSenderSignal(gCore, 'paste-clipboard', @gtkpastefromclip)
       else
         ConnectSenderSignal(gObject, 'paste-clipboard', @gtkpastefromclip);
     end;
@@ -2584,9 +2546,8 @@ begin
       //  ConnectSenderSignal(gObject, 'scroll-horizontal', @gtkLVHScroll);
       //end
       //else begin
-        ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
-                        PGTKScrolledWindow(gObject))),
-                      'value-changed', @GTKHScrollCB);
+      ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_hadjustment(
+        PGTKScrolledWindow(gObject))), 'value-changed', @GTKHScrollCB);
       //end;
     end;
 
@@ -2598,8 +2559,7 @@ begin
       //end
       //else begin
         ConnectSenderSignal(PGTKObject(gtk_scrolled_window_get_vadjustment(
-                        PGTKScrolledWindow(gObject))),
-                      'value-changed', @GTKVScrollCB);
+          PGTKScrolledWindow(gObject))), 'value-changed', @GTKVScrollCB);
       //end;
     end;
     
@@ -3611,12 +3571,8 @@ begin
                     gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
       gtk_widget_show(TempWidget);
 
-      //--------------------------
-      // MWE: will be obsoleted
-      SetCoreChildWidget(p, TempWidget);
-      //--------------------------
-      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
       SetMainWidget(p, TempWidget);
+      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
     end;
 
   csColorDialog :
@@ -3765,12 +3721,8 @@ begin
                    gtk_scrolled_window_get_hadjustment(PGtkScrolledWindow(p)));
       gtk_widget_show(TempWidget);
 
-      //--------------------------
-      // MWE: will be obsoleted
-      SetCoreChildWidget(p, TempWidget);
-      //--------------------------
-      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
       SetMainWidget(p, TempWidget);
+      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
     end;
 
   csListView :
@@ -3828,14 +3780,8 @@ begin
       gtk_widget_show(TempWidget);
       gtk_widget_show(p);
 
-      //--------------------------
-      // MWE: will be obsoleted
-      SetCoreChildWidget(p, TempWidget);
-      //--------------------------
-      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
       SetMainWidget(p, TempWidget);
-
-      gtk_widget_show(P);
+      GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
     end;
 
 
@@ -3860,10 +3806,7 @@ begin
       gtk_text_set_adjustments(PGtkText(TempWidget), PGtkAdjustment(PGtkScrolledWindow(P)^.hscrollbar),
         PGtkAdjustment(PGtkScrolledWindow(P)^.vscrollbar));
 
-      //--------------------------
-      // MWE: will be obsoleted
-      SetCoreChildWidget(p, TempWidget);
-      //--------------------------
+      SetMainWidget(p, TempWidget);
       GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
 
       gtk_widget_show(P);
@@ -3913,8 +3856,6 @@ begin
     begin
       p := gtk_fixed_new();
       gtk_widget_show (p);
-      SetFixedWidget(p, nil);
-      SetMainWidget(nil, p);
     end;
 
   csPopupMenu :
@@ -4812,10 +4753,7 @@ begin
   csRadiobutton,
   csCheckbox   :
     begin
-      if TCheckBoxState (data^) = cbChecked then
-        gtk_toggle_button_set_active( PGtkToggleButton (handle), TRUE)
-      else
-        gtk_toggle_button_set_active( PGtkToggleButton (handle), FALSE);
+      gtk_toggle_button_set_active(PGtkToggleButton(handle), (TCheckBoxState(data^) = cbChecked))
     end;
                     
   csCalendar   :
@@ -4851,7 +4789,7 @@ begin
        //readonly
        if TLMCalendar(data^).ReadOnly then
           gtk_calendar_freeze(PgtkCalendar(handle))
-          else
+       else
           gtk_calendar_thaw(PgtkCalendar(handle));
 
      end;
@@ -5001,8 +4939,9 @@ begin
     csListView :
       begin
         //set up columns..
-        //
-        Widget := GetCoreChildWidget(PgtkWidget(Handle));//GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+                
+        Widget:= GetWidgetInfo(Pointer(Handle), True)^.ImplementationWidget;
+        
         gtk_clist_freeze(PgtkCList(Widget));
         for I := 0 to TListview(sender).Columns.Count-1 do
         begin
@@ -5722,6 +5661,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.202  2002/09/06 19:45:11  lazarus
+  Cleanups plus a fix to TPanel parent/drawing problem.
+
   Revision 1.201  2002/09/06 15:57:35  lazarus
   MG: fixed notebook client area, send messages and minor bugs
 
