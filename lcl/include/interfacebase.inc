@@ -179,6 +179,12 @@ begin
   Result := False;
 end;
 
+function TInterfaceBase.FloodFill(DC: HDC; X, Y: Integer; Color: TColor;
+  FillStyle: TFillStyle; Brush: HBRUSH): Boolean;
+begin
+  Result := false;
+end;
+
 function TInterfaceBase.Frame3d(DC: HDC; var Rect: TRect; const FrameWidth : integer; const Style : TBevelCut) : boolean;
 begin
   Result:= false;
@@ -537,6 +543,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.26  2002/03/08 16:16:55  lazarus
+  MG: fixed parser of end blocks in initialization section added label sections
+
   Revision 1.25  2002/02/03 00:24:01  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

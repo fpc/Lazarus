@@ -69,6 +69,9 @@ end.
 
 {
   $Log$
+  Revision 1.16  2002/03/08 16:16:55  lazarus
+  MG: fixed parser of end blocks in initialization section added label sections
+
   Revision 1.15  2002/02/03 00:24:00  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

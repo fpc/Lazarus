@@ -180,6 +180,12 @@ begin
   Result := InterfaceObject.FillRect(DC, Rect, Brush);
 end;
 
+function FloodFill(DC: HDC; X, Y: Integer; Color: TColor;
+  FillStyle: TFillStyle; Brush: HBRUSH): Boolean;
+begin
+  Result := InterfaceObject.FloodFill(DC,X,Y,Color,FillStyle,Brush);
+end;
+
 function Frame3d(DC : HDC; var Rect : TRect; const FrameWidth : integer; const Style : TBevelCut) : boolean;
 begin
   Result:= InterfaceObject.Frame3d(DC, Rect, FrameWidth, Style);
@@ -1058,6 +1064,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.25  2002/03/08 16:16:55  lazarus
+  MG: fixed parser of end blocks in initialization section added label sections
+
   Revision 1.24  2002/02/03 00:24:01  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can
