@@ -1550,11 +1550,13 @@ begin
         FTop:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Top',0);
         FWidth:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Width',250);
         FHeight:=XMLConfig.GetValue('ObjectInspectorOptions/Bounds/Height',400);
-        FPropertyGridSplitterX:=XMLConfig.GetValue(
-           'ObjectInspectorOptions/Bounds/PropertyGridSplitterX',110);
-        FEventGridSplitterX:=XMLConfig.GetValue(
-           'ObjectInspectorOptions/Bounds/EventGridSplitterX',110);
       end;
+      FPropertyGridSplitterX:=XMLConfig.GetValue(
+         'ObjectInspectorOptions/Bounds/PropertyGridSplitterX',110);
+      if FPropertyGridSplitterX<10 then FPropertyGridSplitterX:=10;
+      FEventGridSplitterX:=XMLConfig.GetValue(
+         'ObjectInspectorOptions/Bounds/EventGridSplitterX',110);
+      if FEventGridSplitterX<10 then FEventGridSplitterX:=10;
 
       FGridBackgroundColor:=XMLConfig.GetValue(
            'ObjectInspectorOptions/GridBackgroundColor',clBtnFace);
@@ -1582,13 +1584,13 @@ begin
         XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Top',FTop);
         XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Width',FWidth);
         XMLConfig.SetValue('ObjectInspectorOptions/Bounds/Height',FHeight);
-        XMLConfig.SetValue(
-           'ObjectInspectorOptions/Bounds/PropertyGridSplitterX'
-           ,FPropertyGridSplitterX);
-        XMLConfig.SetValue(
-           'ObjectInspectorOptions/Bounds/EventGridSplitterX'
-           ,FEventGridSplitterX);
       end;
+      XMLConfig.SetValue(
+         'ObjectInspectorOptions/Bounds/PropertyGridSplitterX'
+         ,FPropertyGridSplitterX);
+      XMLConfig.SetValue(
+         'ObjectInspectorOptions/Bounds/EventGridSplitterX'
+         ,FEventGridSplitterX);
 
       XMLConfig.SetValue('ObjectInspectorOptions/GridBackgroundColor'
          ,FGridBackgroundColor);
@@ -1619,11 +1621,11 @@ procedure TOIOptions.AssignTo(AnObjInspector: TObjectInspector);
 begin
   if FSaveBounds then begin
     AnObjInspector.SetBounds(FLeft,FTop,FWidth,FHeight);
-    AnObjInspector.PropertyGrid.SplitterX:=FPropertyGridSplitterX;
-    AnObjInspector.PropertyGrid.PrefferedSplitterX:=FPropertyGridSplitterX;
-    AnObjInspector.EventGrid.SplitterX:=FEventGridSplitterX;
-    AnObjInspector.EventGrid.PrefferedSplitterX:=FPropertyGridSplitterX;
   end;
+  AnObjInspector.PropertyGrid.PrefferedSplitterX:=FPropertyGridSplitterX;
+  AnObjInspector.PropertyGrid.SplitterX:=FPropertyGridSplitterX;
+  AnObjInspector.EventGrid.PrefferedSplitterX:=FEventGridSplitterX;
+  AnObjInspector.EventGrid.SplitterX:=FEventGridSplitterX;
   AnObjInspector.PropertyGrid.BackgroundColor:=FGridBackgroundColor;
   AnObjInspector.PropertyGrid.ShowHint:=FShowHints;
   AnObjInspector.EventGrid.BackgroundColor:=FGridBackgroundColor;

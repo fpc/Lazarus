@@ -462,7 +462,6 @@ begin
   // trim result
   if DestPos<=length(AFilename) then
     SetLength(Result,DestPos-1);
-writeln(' TrimFilename "',AFilename,'" -> "',Result,'"');
 end;
 
 procedure FreeThenNil(var Obj: TObject);

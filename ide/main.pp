@@ -911,6 +911,9 @@ begin
   ObjectInspector1.PropertyEditorHook:=PropertyEditorHook1;
   EnvironmentOptions.IDEWindowLayoutList.Apply(TForm(ObjectInspector1),
                                                DefaultObjectInspectorName);
+  with EnvironmentOptions do begin
+    ObjectInspectorOptions.AssignTo(ObjectInspector1);
+  end;
 end;
 
 procedure TMainIDE.SetupCompilerInterface;
@@ -6285,6 +6288,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.288  2002/04/28 06:42:47  lazarus
+  MG: fixed saving OI settings
+
   Revision 1.287  2002/04/27 18:56:47  lazarus
   MG: started component renaming
 
