@@ -1754,11 +1754,15 @@ begin
 
       LM_BTNDEFAULT_CHANGED :
       Begin
-        if (TButton(Sender).Default) then begin
-          TButton(Sender).SetFocus;
-          //and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(handle))) then
-          //  gtk_widget_grab_default(pgtkwidget(handle))
-          //else
+        if (TButton(Sender).Default)
+        and (GTK_WIDGET_CAN_DEFAULT(pgtkwidget(handle))) then
+          gtk_widget_grab_default(pgtkwidget(handle))
+        else begin
+          {writeln('LM_BTNDEFAULT_CHANGED ',TButton(Sender).Name,':',Sender.ClassName,' widget can not grab default ',
+            ' visible=',GTK_WIDGET_VISIBLE(PGtkWidget(Handle)),
+            ' realized=',GTK_WIDGET_REALIZED(PGtkWidget(Handle)),
+            ' mapped=',GTK_WIDGET_MAPPED(PGtkWidget(Handle)),
+            '');}
           //  gtk_widget_Draw_Default(pgtkwidget(Handle));  //this isn't right but I'm not sure what to call
         end;
       end;
@@ -3007,14 +3011,14 @@ begin
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
                             'focus-in-event', @gtkFocusCB);
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.entry),
-                            'focus-out-event', @gtkKillFocusCB);
+                            'focus-out-event', @gtkKillFocusCBAfter);
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list),
                             'focus-in-event', @gtkFocusCB);
         ConnectSenderSignal(PgtkObject(PgtkCombo(gObject)^.list),
-                            'focus-out-event', @gtkKillFocusCB);
+                            'focus-out-event', @gtkKillFocusCBAfter);
       end else begin
         ConnectSenderSignal(gCore, 'focus-in-event', @gtkFocusCB);
-        ConnectSenderSignal(gCore, 'focus-out-event', @gtkKillFocusCB);
+        ConnectSenderSignal(gCore, 'focus-out-event', @gtkKillFocusCBAfter);
       end;
     end;
     
@@ -5006,6 +5010,7 @@ begin
         end;
       end;
     end;
+    
   end
   else Begin
   
@@ -7041,6 +7046,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.337  2003/03/18 13:04:25  mattias
+  improved focus debugging output
+
   Revision 1.336  2003/03/17 20:53:16  mattias
   removed SetRadioButtonGroupMode
 
