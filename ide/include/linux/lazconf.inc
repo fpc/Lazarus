@@ -2,7 +2,11 @@
                                lazconf.inc
  ***************************************************************************}
 uses
+  {$IFDEF VER1_1}
+  unix;
+  {$ELSE}
   linux;
+  {$ENDIF}
 
 var
   PrimaryConfigPath,
@@ -84,6 +88,9 @@ initialization
 
 {
   $Log$
+  Revision 1.3  2001/10/24 09:51:40  lazarus
+  MG: fpc 1.1: linux.pp is replaced by unix.pp
+
   Revision 1.2  2001/05/27 11:52:01  lazarus
   MG: added --primary-config-path=<filename> cmd line option
 
