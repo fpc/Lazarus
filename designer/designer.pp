@@ -438,18 +438,18 @@ begin
   Result:=true;
   Sender.Dispatch(TheMessage);
   if ControlSelection.SelectionForm=Form then begin
-    if (ControlSelection.IsSelected(Sender)) then begin
-      {writeln('###  TDesigner.SizeControl ',Sender.Name,':',Sender.ClassName,
-        ' ',Sender.Width,',',Sender.Height,
-        ' Type=',TheMessage.SizeType
-        ,' ',TheMessage.Width,',',TheMessage.Height,' Pos=',Sender.Left,',',Sender.Top);}
-      if not ControlSelection.IsResizing then begin
+    if not ControlSelection.IsResizing then begin
+      if (ControlSelection.IsSelected(Sender)) then begin
+        {writeln('###  TDesigner.SizeControl ',Sender.Name,':',Sender.ClassName,
+          ' ',Sender.Width,',',Sender.Height,
+          ' Type=',TheMessage.SizeType
+          ,' ',TheMessage.Width,',',TheMessage.Height,' Pos=',Sender.Left,',',Sender.Top);}
         ControlSelection.UpdateBounds;
         if Assigned(FOnPropertiesChanged) then
           FOnPropertiesChanged(Self);
       end;
+      ControlSelection.InvalidGuideLinesCache;
     end;
-    ControlSelection.InvalidGuideLinesCache;
   end;
 end;
 
@@ -458,11 +458,13 @@ begin
   Result:=true;
   Sender.Dispatch(TheMessage);
   if ControlSelection.SelectionForm=Form then begin
-    if (ControlSelection.IsSelected(Sender)) then begin
-      //    writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
-      ControlSelection.UpdateBounds;
-      if Assigned(FOnPropertiesChanged) then
-        FOnPropertiesChanged(Self);
+    if not ControlSelection.IsResizing then begin
+      if (ControlSelection.IsSelected(Sender)) then begin
+        //    writeln('***  LM_Move ',Sender.Name,':',Sender.ClassName);
+        ControlSelection.UpdateBounds;
+        if Assigned(FOnPropertiesChanged) then
+          FOnPropertiesChanged(Self);
+      end;
     end;
     ControlSelection.InvalidGuideLinesCache;
   end;
