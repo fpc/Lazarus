@@ -9155,8 +9155,11 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.540  2004/09/07 10:26:16  micha
+  fix logs to get rid of comment level 2 warning
+
   Revision 1.539  2004/09/07 09:44:46  micha
-  convert lcl messages to new interface using methods: LM_{G,S}ETSELSTART, LM_{G,S}ETSELLEN, LM_{G,S}ETLIMITTEXT
+  convert lcl messages to new interface using methods: LM_G/SETSELSTART, LM_G/SETSELLEN, LM_G/SETLIMITTEXT
 
   Revision 1.538  2004/09/06 22:24:52  mattias
   started the carbon LCL interface

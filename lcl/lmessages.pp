@@ -1044,8 +1044,11 @@ end.
 
 {
   $Log$
+  Revision 1.74  2004/09/07 10:26:16  micha
+  fix logs to get rid of comment level 2 warning
+
   Revision 1.73  2004/09/07 09:44:46  micha
-  convert lcl messages to new interface using methods: LM_{G,S}ETSELSTART, LM_{G,S}ETSELLEN, LM_{G,S}ETLIMITTEXT
+  convert lcl messages to new interface using methods: LM_G/SETSELSTART, LM_G/SETSELLEN, LM_G/SETLIMITTEXT
 
   Revision 1.72  2004/08/30 16:37:58  mattias
   added OnUTF8KeyPresss

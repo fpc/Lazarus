@@ -2979,11 +2979,14 @@ End;
 
 {
   $Log$
+  Revision 1.233  2004/09/07 10:26:17  micha
+  fix logs to get rid of comment level 2 warning
+
   Revision 1.232  2004/09/07 10:18:11  micha
   fix win32 interface, remove lm_setlimittext (obsolete)
 
   Revision 1.231  2004/09/07 09:44:46  micha
-  convert lcl messages to new interface using methods: LM_{G,S}ETSELSTART, LM_{G,S}ETSELLEN, LM_{G,S}ETLIMITTEXT
+  convert lcl messages to new interface using methods: LM_G/SETSELSTART, LM_G/SETSELLEN, LM_G/SETLIMITTEXT
 
   Revision 1.230  2004/09/06 15:08:32  micha
   implement LM_GETSELLEN en LM_GETSELSTART for win32 edit controls

@@ -380,8 +380,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.33  2004/09/07 10:26:16  micha
+  fix logs to get rid of comment level 2 warning
+
   Revision 1.32  2004/09/07 09:44:46  micha
-  convert lcl messages to new interface using methods: LM_{G,S}ETSELSTART, LM_{G,S}ETSELLEN, LM_{G,S}ETLIMITTEXT
+  convert lcl messages to new interface using methods: LM_G/SETSELSTART, LM_G/SETSELLEN, LM_G/SETLIMITTEXT
 
   Revision 1.31  2004/08/25 20:16:12  marc
   * fixed infinite for maxlength
