@@ -53,9 +53,9 @@ begin
 
    Application.CreateForm(TMainIDE, MainIDE);
    Application.CreateForm(TMessageDlg, MessageDlg);
-   Application.CreateForm(TViewForms1, ViewForms1);
    Application.CreateForm(TViewUnits1, ViewUnits1);
    Application.CreateForm(TfrmCompilerOptions, frmCompilerOptions);
+   Application.CreateForm(TViewForms1, ViewForms1);
    SplashForm.StartTimer;
    Application.Run;
 end.
@@ -63,9 +63,8 @@ end.
 
 {
   $Log$
-  Revision 1.10  2001/01/16 22:04:26  lazarus
-  Removes the resource for TViewUnits and it compiles and runs now.
-
+  Revision 1.11  2001/01/16 23:30:45  lazarus
+  trying to determine what's crashing LAzarus on load.
   Shane
 
   Revision 1.9  2001/01/15 18:25:51  lazarus

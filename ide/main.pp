@@ -1611,8 +1611,8 @@ If TSourceEditor(Sender).IsControlUnit then
    Writeln('*****************CREATING LFM********************');
 //   Writeln('Result = '+Inttostr(CreateLFM(TCustomForm(TSourceEditor(Sender).Control))));
 //  writeln('RESULT IS '+inttostr(CreateLFM(Self)));
-//   Writeln('Result = '+Inttostr(CreateLFM(ViewUnits1)));
-//   Writeln('Result = '+Inttostr(CreateLFM(ViewForms1)));
+   Writeln('Result = '+Inttostr(CreateLFM(ViewUnits1)));
+   Writeln('Result = '+Inttostr(CreateLFM(ViewForms1)));
 //   Writeln('Result = '+Inttostr(CreateLFM(MessageDlg)));
 //   Writeln('Result = '+Inttostr(CreateLFM(FindDialog1)));
 //   Writeln('Result = '+Inttostr(CreateLFM(MainIDE)));
@@ -1927,9 +1927,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.47  2001/01/16 22:04:26  lazarus
-  Removes the resource for TViewUnits and it compiles and runs now.
-
+  Revision 1.48  2001/01/16 23:30:45  lazarus
+  trying to determine what's crashing LAzarus on load.
   Shane
 
   Revision 1.45  2001/01/15 20:55:44  lazarus

@@ -43,7 +43,7 @@ type
     Procedure Listbox1Click(Sender : TObject);
 protected
 public
-    constructor Create(AOwner: TComponent); override;	
+  //  constructor Create(AOwner: TComponent); override;	
 end;
 
 var
@@ -51,7 +51,7 @@ ViewUnits1 : TViewUnits1;
 
 implementation
 
-
+  {
 constructor TViewUnits1.Create(AOwner: TComponent);	
 var
 Pad : Integer;
@@ -109,13 +109,12 @@ begin
     MultiSelect:= false;
     Name := 'Listbox1';
     OnClick := @ListBox1Click;
-//    Selected[1]:= true;
   end;
 
 
 
 end;
-
+       }
 
 Procedure TViewUnits1.btnOKClick(Sender : TOBject);
 Begin
@@ -130,7 +129,7 @@ End;
 
 Procedure TViewUnits1.btnCancelClick(Sender : TOBject);
 Begin
-close;ModalResult := mrCancel;
+ModalResult := mrCancel;
 end;
 
 Procedure TViewUnits1.listbox1Click(Sender : TObject);
@@ -156,7 +155,7 @@ end;
 initialization
 {Do not change the following}
 {<LAZARUSFORMDEF>}
-{ $I viewunits1.lrs}
+{$I viewunits1.lrs}
 {<LAZARUSFORMDEFEND>}
 {}
 
@@ -164,9 +163,8 @@ initialization
 end.
 {
   $Log$
-  Revision 1.5  2001/01/16 22:04:26  lazarus
-  Removes the resource for TViewUnits and it compiles and runs now.
-
+  Revision 1.6  2001/01/16 23:30:45  lazarus
+  trying to determine what's crashing LAzarus on load.
   Shane
 
   Revision 1.4  2001/01/14 03:56:57  lazarus
