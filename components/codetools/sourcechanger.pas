@@ -666,7 +666,8 @@ begin
 end;
 
 procedure TBeautifyCodeOptions.AddAtom(var s:string; NewAtom: string);
-var RestLineLen, LastLineEndInAtom: integer;
+var
+  RestLineLen, LastLineEndInAtom, LastIndent: integer;
 begin
   if NewAtom='' then exit;
 //writeln('[TBeautifyCodeOptions.AddAtom]  NewAtom=',NewAtom,' s="',s,'"');

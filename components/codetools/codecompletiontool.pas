@@ -690,9 +690,9 @@ begin
       end;
       CurCode:=ANodeExt.ExtTxt1;
       CurCode:=ASourceChangeCache.BeautifyCodeOptions.BeautifyStatement(
-                          CurCode,0);
+                          CurCode,Indent);
       ASourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
-         GetIndentStr(Indent)+CurCode);
+         CurCode);
     end;
     ANodeExt:=ANodeExt.Next;
   end;

@@ -2713,7 +2713,6 @@ begin
 end;
 
 function TPascalParserTool.KeyWordFuncTypeRecordCase: boolean;
-var s: string;
 begin
   if not UpAtomIs('CASE') then
     RaiseException('[TPascalParserTool.KeyWordFuncTypeRecordCase] '
@@ -2722,8 +2721,6 @@ begin
   CurNode.Desc:=ctnRecordCase;
   ReadNextAtom; // read ordinal type
   AtomIsIdentifier(true);
-s:=GetAtom;
-writeln('TPascalParserTool.KeyWordFuncTypeRecordCase ',s);
   ReadNextAtom;
   if AtomIsChar(':') then begin
     ReadNextAtom;
@@ -2735,7 +2732,6 @@ writeln('TPascalParserTool.KeyWordFuncTypeRecordCase ',s);
   // read all variants
   repeat
     ReadNextAtom;  // read constant (variant identifier)
-writeln('%%%%% Variant=',GetAtom);
     if AtomIsChar(')') or UpAtomIs('END') then break;
     CreateChildNode;
     CurNode.Desc:=ctnRecordVariant;
@@ -2754,18 +2750,14 @@ writeln('%%%%% Variant=',GetAtom);
     ReadNextAtom; // read first variable name
     repeat
       if AtomIsChar(')') then begin
-writeln('%%%%% End of Variant  ',GetAtom);
         // end of variant record
         break;
       end else if UpAtomIs('CASE') then begin
         // sub record variant
-writeln('%%%%% SubCase  ',GetAtom);
         KeyWordFuncTypeRecordCase();
-writeln('%%%%% Return from SubCase  ',GetAtom);
         break;
       end else begin
         // sub identifier
-writeln('%%%%% SubIdentifier  ',GetAtom);
         repeat
           AtomIsIdentifier(true);
           CreateChildNode;
@@ -2782,7 +2774,6 @@ writeln('%%%%% SubIdentifier  ',GetAtom);
         ReadNextAtom; // read type
         Result:=TypeKeyWordFuncList.DoItUpperCase(UpperSrc,CurPos.StartPos,
            CurPos.EndPos-CurPos.StartPos);
-writeln('%%%%% End of Type  ',GetAtom);
         if not Result then exit;
         CurNode.EndPos:=CurPos.EndPos;
         EndChildNode; // close variable definition
@@ -2791,12 +2782,10 @@ writeln('%%%%% End of Type  ',GetAtom);
       if not AtomIsChar(';') then
         RaiseException('; expected, but '+GetAtom+' found');
       ReadNextAtom;
-writeln('%%%%% C ',GetAtom);
     until false;
     if not AtomIsChar(')') then
       RaiseException(') expected, but '+GetAtom+' found');
     ReadNextAtom;
-writeln('%%%%% CloseVariant ',GetAtom);
     if UpAtomIs('END') or AtomIsChar(')') then begin
       CurNode.EndPos:=CurPos.StartPos;
       EndChildNode; // close variant
@@ -2810,7 +2799,6 @@ writeln('%%%%% CloseVariant ',GetAtom);
   until false;
   CurNode.EndPos:=CurPos.EndPos;
   EndChildNode; // close case
-writeln('TPascalParserTool.KeyWordFuncTypeRecordCase END ',s);
   Result:=true;
 end;
 
