@@ -162,6 +162,7 @@ type
       FSpacing : integer;
       FState : TButtonState;
       FTransparent : Boolean;
+      FShortcut : Longint;
       function GetGlyph : TBitmap;
       procedure UpdateExclusive;
       procedure UpdateTracking;
@@ -246,6 +247,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2002/08/19 20:34:47  lazarus
+  MG: improved Clipping, TextOut, Polygon functions
+
   Revision 1.15  2002/05/10 06:05:48  lazarus
   MG: changed license to LGPL
 
