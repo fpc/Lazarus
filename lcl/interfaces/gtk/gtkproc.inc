@@ -232,6 +232,12 @@ begin
   ShiftState := GTKEventState2ShiftState(Event^.State);
   Extended := False;
   Toggle := False;
+  
+  {if Event^.Length>0 then begin
+    writeln('AAA1 Event^.KeyVal=',Event^.KeyVal,
+      ' Event^.Length=',Event^.Length,' ',ord(Event^.theString[0])
+    );
+  end;}
 
   case Event^.KeyVal of
     // Normal ASCII chars
@@ -1385,6 +1391,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.46  2002/06/14 14:57:07  lazarus
+  MG: fixed open file at cursor search path
+
   Revision 1.45  2002/06/11 13:41:11  lazarus
   MG: fixed mouse coords and fixed mouse clicked thru bug
 
