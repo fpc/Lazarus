@@ -1070,7 +1070,7 @@ var
   
 procedure Register;
 begin
-  RegisterComponents('Common Control',[TImageList]);
+  RegisterComponents('Common Controls',[TImageList]);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1453,6 +1453,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.114  2003/04/07 01:59:25  mattias
+  implemented package iterations
+
   Revision 1.113  2003/04/04 16:35:24  mattias
   started package registration
 
