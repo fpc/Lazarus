@@ -2748,6 +2748,7 @@ begin
       SetHistoryText;
     end;
     FetchFocus;
+    Key:=VK_UNKNOWN;
   end else if Key=VK_UP then begin
     if (CurIndex<0)
     or (HistoryList[CurIndex]<>CurText) then
@@ -2762,6 +2763,7 @@ begin
       SetHistoryText;
     end;
     FetchFocus;
+    Key:=VK_UNKNOWN;
   end;
 end;
 
