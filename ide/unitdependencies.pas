@@ -606,6 +606,7 @@ begin
     TreeNode.Data:=Self;
     TreeNode.HasChildren:=HasChildren;
     TreeNode.ImageIndex:=ImageIndex;
+    TreeNode.SelectedIndex:=ImageIndex;
   end;
 end;
 
@@ -694,6 +695,7 @@ begin
       FSourceType:=ASrcType;
   if TreeNode<>nil then begin
     TreeNode.ImageIndex:=ImageIndex;
+    TreeNode.SelectedIndex:=ImageIndex;
   end;
 end;
 

@@ -3316,9 +3316,14 @@ begin
 end;
 
 procedure TCustomTreeView.SetSelection(Value: TTreeNode);
+var OldNode: TTreeNode;
 begin
   if FSelectedNode=Value then exit;
+  OldNode:=FSelectedNode;
   FSelectedNode:=Value;
+  if OldNode<>nil then begin
+    OldNode.Selected:=false;
+  end;
   if Value <> nil then begin
     Value.Selected := True;
     Value.MakeVisible;
