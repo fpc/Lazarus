@@ -286,6 +286,10 @@ msgstr "тип выражения должен быть объектом или записью"
 msgid "file \"%s\" does not exist"
 msgstr "файл \"%s\" не существует"
 
+#: codetoolsstrconsts:ctsfileisreadonly
+msgid "file is read only"
+msgstr ""
+
 #: codetoolsstrconsts:ctsforward
 msgid "Forward"
 msgstr ""

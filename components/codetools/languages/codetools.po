@@ -34,6 +34,10 @@ msgstr ""
 msgid "Include circle detected"
 msgstr ""
 
+#: codetoolsstrconsts:ctsfileisreadonly
+msgid "file is read only"
+msgstr ""
+
 #: codetoolsstrconsts:ctscommentendnotfound
 msgid "Comment end not found"
 msgstr ""

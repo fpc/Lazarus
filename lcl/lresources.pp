@@ -25,7 +25,6 @@
     To create a LRS file from an LFM file use the LFMtoLRSfile function which
     transforms the LFM text to binary format and stores it as Lazarus resource
     include file.
-
 }
 unit LResources;
 

@@ -594,6 +594,72 @@ begin
     Move(ClassPGChar[0],Result[1],ClassLen);
 end;
 
+function GetWidgetDebugReport(Widget: PGtkWidget): string;
+var
+  LCLObject: TObject;
+  AWinControl: TWinControl;
+  MainWidget: PGtkWidget;
+  WinWidgetInfo: PWinWidgetInfo;
+  FixedWidget: PGTKWidget;
+begin
+  Result:=HexStr(Cardinal(Widget),8);
+  if Widget=nil then exit;
+  Result:=Result+'='+GetWidgetClassName(Widget);
+  LCLObject:=GetParentLCLObject(Widget);
+  Result:=Result+' LCLObject='+HexStr(Cardinal(LCLObject),8);
+  if LCLObject=nil then exit;
+  if LCLObject is TControl then
+    Result:=Result+'='+TControl(LCLObject).Name+':'+LCLObject.ClassName
+  else
+    Result:=Result+'='+LCLObject.ClassName;
+  if LCLObject is TWinControl then begin
+    AWinControl:=TWinControl(LCLObject);
+    if AWinControl.HandleAllocated then begin
+      MainWidget:=PGTKWidget(AWinControl.Handle);
+      if MainWidget=Widget then begin
+        Result:=Result+'<Is MainWidget>';
+      end else begin
+        Result:=Result+'<MainWidget='+HexStr(Cardinal(MainWidget),8)
+                      +'='+GetWidgetClassName(MainWidget)+'>';
+      end;
+      FixedWidget:=GetFixedWidget(MainWidget);
+      if FixedWidget=Widget then
+        Result:=Result+'<Is FixedWidget>';
+      WinWidgetInfo:=GetWidgetInfo(MainWidget,false);
+      if WinWidgetInfo<>nil then begin
+        if WinWidgetInfo^.ImplementationWidget=Widget then
+          Result:=Result+'<Is ImplementationWidget>';
+      end;
+    end else begin
+      Result:=Result+'<NOT HandleAllocated>'
+    end;
+  end;
+end;
+
+function GetWindowDebugReport(AWindow: PGDKWindow): string;
+var
+  p: Pgpointer;
+  Widget: PGtkWidget;
+begin
+  Result:=HexStr(Cardinal(AWindow),8);
+  if AWindow=nil then exit;
+  p:=nil;
+  gdk_window_get_user_data(AWindow,p);
+  if GtkWidgetIsA(PGTKWidget(p),GTK_WIDGET_TYPE) then begin
+    Widget:=PGTKWidget(p);
+    Result:=Result+'<Widget['+GetWidgetDebugReport(Widget)+']>';
+  end else begin
+    Result:=Result+'<Data='+HexStr(Cardinal(p),8)+']>';
+  end;
+end;
+
+function GetDrawableDebugReport(ADrawable: PGDKDrawable): string;
+begin
+  Result:=HexStr(Cardinal(ADrawable),8);
+  if ADrawable=nil then exit;
+  
+end;
+
 {------------------------------------------------------------------------------
   function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 
@@ -4768,6 +4834,9 @@ begin
       If (StyleObject^.Widget <> nil)
       and (AnsiCompareText(WName,'window')=0) then
         UpdateSysColorMap(StyleObject^.Widget);
+        
+      // ToDo: create all gc of the style
+      
     end
     else begin
       // no success, clean up
@@ -4775,8 +4844,10 @@ begin
     end;
     If Tp<>nil then
       GTK_Object_Destroy(Tp);
-  end else
-    Result := PStyleObject(Styles.Objects[l])^.Style;
+  end else begin
+    StyleObject:=PStyleObject(Styles.Objects[l]);
+    Result := StyleObject^.Style;
+  end;
 end;
 
 Function GetStyleWidget(const WName : String) : PGTKWidget;
@@ -5745,6 +5816,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.246  2004/01/18 11:03:01  mattias
+  added finnish translation
+
   Revision 1.245  2004/01/14 20:09:50  mattias
   added TColorDialog debugging
 

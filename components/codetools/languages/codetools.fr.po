@@ -296,6 +296,10 @@ msgstr "le type d'expression doit être classe ou record"
 msgid "file \"%s\" does not exist"
 msgstr "le fichier \"%s\" n'existe pas"
 
+#: codetoolsstrconsts:ctsfileisreadonly
+msgid "file is read only"
+msgstr ""
+
 #: codetoolsstrconsts:ctsforward
 msgid "Forward"
 msgstr "Vers l'avant"

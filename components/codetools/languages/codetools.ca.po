@@ -286,6 +286,10 @@ msgstr "el tipus d'expressió ha de ser del tipus class o record"
 msgid "file \"%s\" does not exist"
 msgstr "el fitxer \"%s\" no existeix"
 
+#: codetoolsstrconsts:ctsfileisreadonly
+msgid "file is read only"
+msgstr ""
+
 #: codetoolsstrconsts:ctsforward
 msgid "Forward"
 msgstr "Avançar"

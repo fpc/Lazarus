@@ -259,6 +259,9 @@ function FindChar(c: char; p:PChar; Max: integer): integer;
 
 function GtkWidgetIsA(Widget: PGtkWidget; AType: TGtkType): boolean;
 function GetWidgetClassName(Widget: PGtkWidget): string;
+function GetWidgetDebugReport(Widget: PGtkWidget): string;
+function GetWindowDebugReport(AWindow: PGDKWindow): string;
+function GetDrawableDebugReport(ADrawable: PGDKDrawable): string;
 function WidgetIsDestroyingHandle(Widget: PGtkWidget): boolean;
 procedure SetWidgetIsDestroyingHandle(Widget: PGtkWidget);
 function ComponentIsDestroyingHandle(AWinControl: TWinControl): boolean;

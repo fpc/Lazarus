@@ -296,6 +296,10 @@ msgstr "wyra¿enie musi typu klasy lub rekordu"
 msgid "file \"%s\" does not exist"
 msgstr "plik \"%s\" nie istnieje"
 
+#: codetoolsstrconsts:ctsfileisreadonly
+msgid "file is read only"
+msgstr ""
+
 #: codetoolsstrconsts:ctsforward
 msgid "Forward"
 msgstr "Naprzód"

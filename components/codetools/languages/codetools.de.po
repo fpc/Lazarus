@@ -286,6 +286,10 @@ msgstr ""
 msgid "file \"%s\" does not exist"
 msgstr ""
 
+#: codetoolsstrconsts:ctsfileisreadonly
+msgid "file is read only"
+msgstr ""
+
 #: codetoolsstrconsts:ctsforward
 msgid "Forward"
 msgstr "Forward"

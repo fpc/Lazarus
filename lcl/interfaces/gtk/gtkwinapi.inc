@@ -3380,13 +3380,15 @@ var
   TheStyle: PGtkStyle;
   Area: TGdkRectangle;
   ShadowType: Integer;
+  AWindow: PGdkWindow;
 begin
   Result := IsValidDC(DC);
   if not Result then exit;
   if FrameWidth=0 then exit;
   TheStyle:=GetStyle('button');
   if TheStyle=nil then exit;
-  
+  //writeln('TGtkObject.Frame3d A ',HexStr(Cardinal(TheStyle),8));
+
   with TDeviceContext(DC) do
   begin
     if GC = nil then begin
@@ -3397,6 +3399,7 @@ begin
     ClientWidget:=GetFixedWidget(Widget);
     if ClientWidget=nil then
       ClientWidget:=Widget;
+    AWindow:=Drawable;
     DCOrigin:=GetDCOffset(TDeviceContext(DC));
     Area.X:=ARect.Left+DCOrigin.X;
     Area.Y:=ARect.Top+DCOrigin.Y;
@@ -3425,6 +3428,11 @@ begin
       ShadowType:=GTKThinShadowType[Style]
     else
       ShadowType:=GTKStrongShadowType[Style];
+    //writeln('ShadowType ',ShadowType,
+    //' dark_gc=',HexStr(Cardinal(TheStyle^.dark_gc[GTK_STATE_NORMAL]),8),
+    //' light_gc=',HexStr(Cardinal(TheStyle^.light_gc[GTK_STATE_NORMAL]),8),
+    //'');
+
 
     for i:= 1 to FrameWidth do begin
      { // left edge
@@ -3443,8 +3451,12 @@ begin
       gdk_draw_line(Drawable, RightBottomGC,
                  ARect.Left+DCOrigin.X, ARect.Bottom+DCOrigin.Y,
                  ARect.Right+DCOrigin.X, ARect.Bottom+DCOrigin.Y);}
+      //writeln('TGtkObject.Frame3d A TheStyle=',HexStr(Cardinal(TheStyle),8),
+      //  ' Drawable=',GetDrawableDebugReport(Drawable),
+      //  ' ClientWidget=',GetWidgetDebugReport(ClientWidget)
+      //  );
       gtk_paint_shadow(TheStyle,
-                       Drawable, GTK_STATE_NORMAL,
+                       AWindow, GTK_STATE_NORMAL,
                        ShadowType,
                        @Area,
                        ClientWidget,
@@ -9223,6 +9235,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.319  2004/01/18 11:03:01  mattias
+  added finnish translation
+
   Revision 1.318  2004/01/17 13:29:04  mattias
   using now fpc constant LineEnding   from Vincent
 
