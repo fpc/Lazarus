@@ -290,7 +290,7 @@ function THTMLBrowserHelpViewer.FindDefaultBrowser: string;
   function Find(const ShortFilename: string; var Filename: string): boolean;
   begin
     Filename:=SearchFileInPath(ShortFilename{$IFDEF win32}+'.exe'{$ENDIF},'',
-                   Application.EnvironmentVariable['PATH'],':',[]);
+                   Application.EnvironmentVariable['PATH'],PathSeparator,[]);
     Result:=Filename<>'';
   end;
 
@@ -303,7 +303,7 @@ begin
   if Find('safari',Result) then exit;
   if Find('netscape',Result) then exit;
   if Find('opera',Result) then exit;
-  if Find('iexplorer',Result) then exit;
+  if Find('iexplore',Result) then exit;
   Result:='';
 end;
 

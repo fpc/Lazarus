@@ -4480,8 +4480,10 @@ begin
 end;
 
 procedure TCustomGrid.EditorShowChar(Ch: Char);
+{$ifndef win32}
 var
   msg: TGridMessage;
+{$endif}
 begin
   SelectEditor;
   if FEditor<>nil then begin
