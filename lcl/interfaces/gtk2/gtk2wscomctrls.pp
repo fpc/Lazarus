@@ -249,11 +249,11 @@ begin
     //for Icons
     renderer := gtk_cell_renderer_pixbuf_new();
     gtk_tree_view_column_pack_start(GtkColumn, renderer, FALSE);
-    gtk_tree_view_column_set_attributes(GtkColumn, renderer,['pixbuf', 0, nil]);
+    gtk_tree_view_column_set_attributes(GtkColumn, renderer,['pixbuf', 0, -1]);
 
     renderer := gtk_cell_renderer_text_new();
     gtk_tree_view_column_pack_start(GtkColumn, renderer, True);
-    gtk_tree_view_column_set_attributes(GtkColumn, renderer, ['text', 1, nil]);
+    gtk_tree_view_column_set_attributes(GtkColumn, renderer, ['text', 1, -1]);
 
     gtk_tree_view_append_column(GTK_TREE_VIEW(Widgets.Treeview), GtkColumn);
     gtk_tree_view_column_set_clickable (GTK_TREE_VIEW_COLUMN (GtkColumn), TRUE);
@@ -261,7 +261,7 @@ begin
   end
   else begin
     renderer := gtk_cell_renderer_text_new();
-    gtk_tree_view_column_set_attributes(GtkColumn, renderer, ['text', AIndex, nil]);
+    gtk_tree_view_column_set_attributes(GtkColumn, renderer, ['text', AIndex, -1]);
     gtk_tree_view_insert_column(Widgets.TreeView, GtkColumn, AIndex);
   end;
   gtk_tree_view_column_set_alignment(GtkColumn, AlignToGtkAlign(AColumn.Alignment));
@@ -489,8 +489,8 @@ begin
       BitImage := TBitmap.Create;
       ALV.SmallImages.GetBitmap(AItem.ImageIndex,BitImage);
 
-      gtk_tree_store_set(TreeModel, @Iter,
-            [0 ,PGdkPixmap(PGDIObject(BitImage.handle)^.GDIBitmapObject), nil]);
+      gtk_list_store_set(TreeModel, @Iter,
+            [0 ,PGdkPixmap(PGDIObject(BitImage.handle)^.GDIBitmapObject), -1]);
     end;
 
     //Caption
@@ -501,7 +501,7 @@ begin
       //SubItems
       for X := 2 to ColCount-1 do begin
         if (X-2) >= AItem.SubItems.Count then Break;
-        gtk_tree_store_set(TreeModel, @Iter, [X, PChar(AItem.SubItems.Strings[X-2]), -1]);
+        gtk_list_store_set(TreeModel, @Iter, [X, PChar(AItem.SubItems.Strings[X-2]), -1]);
       end;
     end;
   end;
@@ -530,7 +530,7 @@ begin
         BitImage := TBitmap.Create;
         ALV.SmallImages.GetBitmap(AItem.ImageIndex,BitImage);
 
-        gtk_tree_store_set(TreeModel, @Iter,
+        gtk_list_store_set(TreeModel, @Iter,
               [0 ,PGdkPixmap(PGDIObject(BitImage.handle)^.GDIBitmapObject), -1]);
       end;
     end;
@@ -699,18 +699,18 @@ begin
       BitImage := TBitmap.Create;
       ACustomListView.SmallImages.GetBitmap(Item.ImageIndex,BitImage);
       // this doesnt seem to be working :(
-      gtk_tree_store_set(TreeModel, @Iter,
-            [0 ,PGdkPixmap(PGDIObject(BitImage.handle)^.GDIBitmapObject), nil]);
+      gtk_list_store_set(TreeModel, @Iter,
+            [0 ,PGdkPixmap(PGDIObject(BitImage.handle)^.GDIBitmapObject), -1]);
     end;
     
     //Item.Caption
-    gtk_tree_store_set(TreeModel, @Iter, [1, PChar(Item.Caption), nil]);
+    gtk_list_store_set(TreeModel, @Iter, [1, PChar(Item.Caption), -1]);
     Count := ACustomListView.Columns.Count;
 
     //Item.Subitems
     for Y := 2 to Count-1 do begin
       if (Y-2) >= Item.SubItems.Count then Break;
-      gtk_tree_store_set(TreeModel, @Iter, [Y, PChar(Item.SubItems.Strings[Y-2]), nil]);
+      gtk_list_store_set(TreeModel, @Iter, [Y, PChar(Item.SubItems.Strings[Y-2]), -1]);
     end;
   end;
   end;
