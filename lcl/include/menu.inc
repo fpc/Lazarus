@@ -1,3 +1,5 @@
+// included by menus.pp
+
 {******************************************************************************
                                   TMenu
  ******************************************************************************}
@@ -27,7 +29,7 @@ procedure TMenu.CreateHandle;
 begin
   InterfaceObject.IntSendMessage3(LM_CREATE, Self, nil); // CreateComponent(nil);
   // initiate creation of subitems
-  // Note: FItems is a MenuItem, by using Creathandle all subitems will be 
+  // Note: FItems is a MenuItem, by using Createhandle all subitems will be
   //       created.
   FItems.CreateHandle;
 end;
@@ -52,9 +54,9 @@ end;
 
   
  ------------------------------------------------------------------------------}
-function TMenu.FIndItem(value : Integer; Kind : TFindItemKind): TMenuItem;
+function TMenu.FindItem(Value: Integer; Kind: TFindItemKind): TMenuItem;
 begin
-//TODO: FINISH TMEnu:FINDITEM
+  //TODO: FINISH TMenu:FINDITEM
   Result:=nil;
 end;
 
@@ -91,26 +93,30 @@ end;
  ------------------------------------------------------------------------------}
 procedure TMenu.HandleNeeded;
 begin
-  if not HandleAllocated 
-  then CreateHandle;
+  if not HandleAllocated then CreateHandle;
 end;
 
 {------------------------------------------------------------------------------
-  Function: TMenu.IsRighttoLeft
+  Function: TMenu.IsRightToLeft
   Params:   
   Returns:  
 
   
  ------------------------------------------------------------------------------}
-function TMenu.IsRighttoLeft : Boolean;
+function TMenu.IsRightToLeft : Boolean;
 Begin
-//TODO: Make sure it should return FALSE!!!!!!!!!!
-Result := False;
+  //TODO: Make sure it should return FALSE!!!!!!!!!!
+  Result := False;
 end;
+
+// included by menus.pp
 
 { =============================================================================
 
   $Log$
+  Revision 1.4  2002/05/09 12:41:28  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.3  2001/03/12 12:17:01  lazarus
   MG: fixed random function results
 

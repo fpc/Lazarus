@@ -106,10 +106,14 @@ begin
   SizeChanged:= (FWidth <> AWidth) or (FHeight <> AHeight);
   PosChanged:= (FLeft <> ALeft) or (FTop <> ATop);
   if SizeChanged or PosChanged then begin
+    {$IFDEF ClientRectBugFix}
+    DoSetBounds(ALeft,ATop,AWidth,AHeight);
+    {$ELSE}
     FLeft:= ALeft;
     FTop:= ATop;
     FWidth:= AWidth;
     FHeight:= AHeight;
+    {$ENDIF}
     if SizeChanged then Invalidate;
 //    UpdateAnchorRules;
     BoundsChanged;
@@ -151,6 +155,22 @@ begin
     end;
   end;    
 end;
+
+{$IFDEF ClientRectBugFix}
+{-------------------------------------------------------------------------------
+  TControl.DoSetBounds
+  Params: ALeft, ATop, AWidth, AHeight : integer
+  
+  store bounds in private variables
+-------------------------------------------------------------------------------}
+procedure TControl.DoSetBounds(ALeft, ATop, AWidth, AHeight : integer);
+begin
+  FLeft:= ALeft;
+  FTop:= ATop;
+  FWidth:= AWidth;
+  FHeight:= AHeight;
+end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------}
 {       TControl.ChangeScale
@@ -264,7 +284,8 @@ end;
 {------------------------------------------------------------------------------}
 {       TControl.ConstrainedResize                                             }
 {------------------------------------------------------------------------------}
-procedure TControl.ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize);
+procedure TControl.ConstrainedResize(var MinWidth, MinHeight,
+  MaxWidth, MaxHeight : TConstraintSize);
 begin
   if Assigned(FOnConstrainedResize) then
     FOnConstrainedResize(Self, MinWidth, MinHeight, MaxWidth, MaxHeight);
@@ -287,11 +308,15 @@ begin
 
   ConstrainedResize(MinWidth, MinHeight, MaxWidth, MaxHeight);
   
-  if (MinWidth > 0) and (NewWidth < MinWidth) then NewWidth:= MinWidth
-  else if (MaxWidth > 0) and (NewWidth > MaxWidth) then NewWidth:= MaxWidth;
+  if (MinWidth > 0) and (NewWidth < MinWidth) then
+    NewWidth:= MinWidth
+  else if (MaxWidth > 0) and (NewWidth > MaxWidth) then
+    NewWidth:= MaxWidth;
   
-  if (MinHeight > 0) and (NewHeight < MinHeight) then NewHeight:= MinHeight
-  else if (MaxHeight > 0) and (NewHeight > MaxHeight) then NewHeight:= MaxHeight;
+  if (MinHeight > 0) and (NewHeight < MinHeight) then
+    NewHeight:= MinHeight
+  else if (MaxHeight > 0) and (NewHeight > MaxHeight) then
+    NewHeight:= MaxHeight;
 end;
 
 {------------------------------------------------------------------------------}
@@ -630,7 +655,7 @@ begin
         end;
       end
       else begin
-        if Message.MSg = CM_VISIBLECHANGED
+        if Message.Msg = CM_VISIBLECHANGED
         then with Message do SendDockNotification(Msg,WParam,LParam);
       end;
     end;
@@ -1132,16 +1157,26 @@ begin
     end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TControl Resize                                                            }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TControl Resize
+  
+  Calls OnResize
+-------------------------------------------------------------------------------}
 procedure TControl.Resize;
 begin
-//writeln('[TControl.Resize] ',ClassName);
   if (csLoading in ComponentState) then exit;
-  if (FLastResizeWidth<>Width) or (FLastResizeHeight<>Height) then begin
+  if (FLastResizeWidth<>Width) or (FLastResizeHeight<>Height)
+  or (FLastResizeClientWidth<>ClientWidth)
+  or (FLastResizeClientHeight<>ClientHeight) then begin
+    {writeln('[TControl.Resize] ',Name,':',ClassName,
+    ' Last=',FLastResizeWidth,',',FLastResizeHeight,
+    ' LastClient=',FLastResizeClientWidth,',',FLastResizeClientHeight,
+    ' New=',Width,',',Height,
+    ' NewClient=',ClientWidth,',',ClientHeight);}
     FLastResizeWidth:=Width;
     FLastResizeHeight:=Height;
+    FLastResizeClientWidth:=ClientWidth;
+    FLastResizeClientHeight:=ClientHeight;
     if Assigned(FOnResize) then FOnResize(Self);
   end;
 end;
@@ -1553,6 +1588,8 @@ begin
   CNSendMessage(LM_CREATE, Self, nil);
 end;
 
+{$IFDEF ClientRectBugFix}
+{$ELSE}
 {------------------------------------------------------------------------------}
 {  TControl DoEvents                                                           }
 {------------------------------------------------------------------------------}
@@ -1561,6 +1598,7 @@ begin
   // used to make sure that events are handled while in long loops.
   InterfaceObject.DoEvents;
 end;
+{$ENDIF}
 
 {------------------------------------------------------------------------------}
 {  TControl Destroy Component                                                  }
@@ -1622,17 +1660,17 @@ end;
 
 {------------------------------------------------------------------------------
   Method: TControl.WMSize
-  Params:   Msg: The message
+  Params:   Message : TLMSize
   Returns:  nothing
 
   event handler.
   
-  Message.SizeType=Size_Restored is the default. All other values will force a
-  ReAlign.
+  Message.SizeType=Size_Restored is the default. All other values will result in
+  a ReAlign.
  ------------------------------------------------------------------------------}
 procedure TControl.WMSize(Var Message : TLMSize);
 begin
-  if (Message.SizeType = Size_Restored) 
+  if (Message.SizeType = Size_Restored)
     and (FWidth = Message.Width) and (FHeight = Message.Height) then exit;
 
   {$IFDEF CHECK_POSITION}
@@ -1673,6 +1711,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.47  2002/05/09 12:41:28  lazarus
+  MG: further clientrect bugfixes
+
   Revision 1.46  2002/04/24 16:11:17  lazarus
   MG: started new client rectangle
 
