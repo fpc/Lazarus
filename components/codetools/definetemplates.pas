@@ -207,12 +207,16 @@ type
       dtlpProjectSpecific, // replace all (not auto) and project specific nodes
       dtlpGlobals          // replace all (not auto) and (not proj spec) nodes
     );
+    
+  TOnGetVirtualDirectoryAlias = procedure(Sender: TObject;
+    var RealDir: string) of object;
 
   TDefineTree = class
   private
     FFirstDefineTemplate: TDefineTemplate;
     FCache: TAVLTree; // tree of TDirectoryDefines
     FChangeStep: integer;
+    FOnGetVirtualDirectoryAlias: TOnGetVirtualDirectoryAlias;
     FVirtualDirCache: TDirectoryDefines;
     FOnReadValue: TOnReadValue;
     FErrorTemplate: TDefineTemplate;
@@ -224,12 +228,15 @@ type
   public
     property RootTemplate: TDefineTemplate
         read FFirstDefineTemplate write FFirstDefineTemplate;
-    property OnReadValue: TOnReadValue read FOnReadValue write FOnReadValue;
+    property ChangeStep: integer read FChangeStep;
     property ErrorTemplate: TDefineTemplate read FErrorTemplate;
     property ErrorDescription: string read FErrorDescription;
-    property ChangeStep: integer read FChangeStep;
+    property OnGetVirtualDirectoryAlias: TOnGetVirtualDirectoryAlias
+      read FOnGetVirtualDirectoryAlias write FOnGetVirtualDirectoryAlias;
+    property OnReadValue: TOnReadValue read FOnReadValue write FOnReadValue;
   public
-    function  GetDefinesForDirectory(const Path: string): TExpressionEvaluator;
+    function  GetDefinesForDirectory(const Path: string;
+        WithVirtualDir: boolean): TExpressionEvaluator;
     function  GetDefinesForVirtualDirectory: TExpressionEvaluator;
     procedure AddFirst(ADefineTemplate: TDefineTemplate);
     procedure Add(ADefineTemplate: TDefineTemplate);
@@ -252,6 +259,7 @@ type
     procedure RemoveProjectSpecificOnly;
     procedure RemoveProjectSpecificAndParents;
     procedure RemoveNonAutoCreated;
+    function GetUnitPathForDirectory(const Directory: string): string;
     function GetIncludePathForDirectory(const Directory: string): string;
     function GetSrcPathForDirectory(const Directory: string): string;
     function GetPPUSrcPathForDirectory(const Directory: string): string;
@@ -1236,11 +1244,22 @@ begin
   RemoveMarked;
 end;
 
+function TDefineTree.GetUnitPathForDirectory(const Directory: string): string;
+var ExprEval: TExpressionEvaluator;
+begin
+  ExprEval:=GetDefinesForDirectory(Directory,true);
+  if ExprEval<>nil then begin
+    Result:=ExprEval.Variables[ExternalMacroStart+'UnitPath'];
+  end else begin
+    Result:='';
+  end;
+end;
+
 function TDefineTree.GetIncludePathForDirectory(const Directory: string
   ): string;
 var ExprEval: TExpressionEvaluator;
 begin
-  ExprEval:=GetDefinesForDirectory(Directory);
+  ExprEval:=GetDefinesForDirectory(Directory,true);
   if ExprEval<>nil then begin
     Result:=ExprEval.Variables[ExternalMacroStart+'IncPath'];
   end else begin
@@ -1251,7 +1270,7 @@ end;
 function TDefineTree.GetSrcPathForDirectory(const Directory: string): string;
 var ExprEval: TExpressionEvaluator;
 begin
-  ExprEval:=GetDefinesForDirectory(Directory);
+  ExprEval:=GetDefinesForDirectory(Directory,true);
   if ExprEval<>nil then begin
     Result:=ExprEval.Variables[ExternalMacroStart+'SrcPath'];
   end else begin
@@ -1263,7 +1282,7 @@ function TDefineTree.GetPPUSrcPathForDirectory(const Directory: string
   ): string;
 var ExprEval: TExpressionEvaluator;
 begin
-  ExprEval:=GetDefinesForDirectory(Directory);
+  ExprEval:=GetDefinesForDirectory(Directory,true);
   if ExprEval<>nil then begin
     Result:=ExprEval.Variables[ExternalMacroStart+'PPUSrcPath'];
   end else begin
@@ -1275,7 +1294,7 @@ function TDefineTree.GetPPWSrcPathForDirectory(const Directory: string
   ): string;
 var ExprEval: TExpressionEvaluator;
 begin
-  ExprEval:=GetDefinesForDirectory(Directory);
+  ExprEval:=GetDefinesForDirectory(Directory,true);
   if ExprEval<>nil then begin
     Result:=ExprEval.Variables[ExternalMacroStart+'PPWSrcPath'];
   end else begin
@@ -1287,7 +1306,7 @@ function TDefineTree.GetDCUSrcPathForDirectory(const Directory: string
   ): string;
 var ExprEval: TExpressionEvaluator;
 begin
-  ExprEval:=GetDefinesForDirectory(Directory);
+  ExprEval:=GetDefinesForDirectory(Directory,true);
   if ExprEval<>nil then begin
     Result:=ExprEval.Variables[ExternalMacroStart+'DCUSrcPath'];
   end else begin
@@ -1296,28 +1315,32 @@ begin
 end;
 
 function TDefineTree.GetDefinesForDirectory(
-  const Path: string): TExpressionEvaluator;
+  const Path: string; WithVirtualDir: boolean): TExpressionEvaluator;
 var ExpPath: string;
   DirDef: TDirectoryDefines;
 begin
   //writeln('[TDefineTree.GetDefinesForDirectory] "',Path,'"');
-  ExpPath:=Path;
-  if (ExpPath<>'') and (ExpPath[length(ExpPath)]<>PathDelim) then
-    ExpPath:=ExpPath+PathDelim;
-  DirDef:=FindDirectoryInCache(ExpPath);
-  if DirDef<>nil then begin
-    Result:=DirDef.Values;
-  end else begin
-    DirDef:=TDirectoryDefines.Create;
-    DirDef.Path:=ExpPath;
-    //writeln('[TDefineTree.GetDefinesForDirectory] B ',ExpPath,' ');
-    if Calculate(DirDef) then begin
-      FCache.Add(DirDef);
+  if (Path<>'') or (not WithVirtualDir) then begin
+    ExpPath:=Path;
+    if (ExpPath<>'') and (ExpPath[length(ExpPath)]<>PathDelim) then
+      ExpPath:=ExpPath+PathDelim;
+    DirDef:=FindDirectoryInCache(ExpPath);
+    if DirDef<>nil then begin
       Result:=DirDef.Values;
     end else begin
-      DirDef.Free;
-      Result:=nil;
+      DirDef:=TDirectoryDefines.Create;
+      DirDef.Path:=ExpPath;
+      //writeln('[TDefineTree.GetDefinesForDirectory] B ',ExpPath,' ');
+      if Calculate(DirDef) then begin
+        FCache.Add(DirDef);
+        Result:=DirDef.Values;
+      end else begin
+        DirDef.Free;
+        Result:=nil;
+      end;
     end;
+  end else begin
+    Result:=GetDefinesForVirtualDirectory;
   end;
 end;
 
@@ -1331,7 +1354,7 @@ begin
     FVirtualDirCache.Path:=VirtualDirectory;
     if Calculate(FVirtualDirCache) then begin
       Result:=FVirtualDirCache.Values;
-      //writeln(TDefineTree.GetDefinesForVirtualDirectory Result.AsString);
+      //writeln('TDefineTree.GetDefinesForVirtualDirectory ',Result.AsString);
     end else begin
       FVirtualDirCache.Free;
       FVirtualDirCache:=nil;
@@ -1547,10 +1570,12 @@ begin
   //writeln('[TDefineTree.Calculate] "',DirDef.Path,'"');
   Result:=true;
   FErrorTemplate:=nil;
-  if DirDef.Path<>VirtualDirectory then
-    ExpandedDirectory:=ReadValue(DirDef.Path,'')
-  else
-    ExpandedDirectory:=DirDef.Path;
+  ExpandedDirectory:=DirDef.Path;
+  if (ExpandedDirectory=VirtualDirectory)
+  and Assigned(OnGetVirtualDirectoryAlias) then
+    OnGetVirtualDirectoryAlias(Self,ExpandedDirectory);
+  if (ExpandedDirectory<>VirtualDirectory) then
+    ExpandedDirectory:=ReadValue(ExpandedDirectory,'');
   DirDef.Values.Clear;
   // compute the result of all matching DefineTemplates
   CalculateTemplate(FFirstDefineTemplate,'');

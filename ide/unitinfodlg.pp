@@ -47,6 +47,14 @@ type
     uIncludedBy: TLabel;
     outIncludedBy: TLabel;
     clearIncludedBy: TBitBtn;
+    PathsGroupBox: TGroupBox;
+    UnitPathLabel: TLabel;
+    UnitPathEdit: TEdit;
+    IncludePathLabel: TLabel;
+    IncludePathEdit: TEdit;
+    SrcPathLabel: TLabel;
+    SrcPathEdit: TEdit;
+    procedure PathsGroupBoxResize(Sender: TObject);
     procedure UnitInfoDlgResize(Sender: TObject);
     procedure OkButtonClick(Sender:TObject);
     procedure clearIncludedByClick(Sender: TObject);
@@ -59,6 +67,9 @@ type
     procedure setLines(const str:string);
     procedure setPath(const str:string);
     procedure setIncludedBy(const IncludedBy: string);
+    procedure setUnitPath(const UnitPath: string);
+    procedure setIncludePath(const IncPath: string);
+    procedure setSrcPath(const SrcPath: string);
   public
     constructor Create(AOwner:TComponent); override;
   end;
@@ -66,7 +77,8 @@ type
 function ShowUnitInfoDlg(const AnUnitName, AType: string;
   IsPartOfProject: boolean; SizeInBytes, LineCount: integer;
   const FilePath: string;
-  const IncludedBy: string; var ClearIncludedBy: boolean): TModalResult;
+  const IncludedBy: string; var ClearIncludedBy: boolean;
+  const UnitPath, IncludePath, SrcPath: string): TModalResult;
 
 
 implementation
@@ -76,7 +88,8 @@ uses LResources;
 function ShowUnitInfoDlg(const AnUnitName, AType: string;
   IsPartOfProject: boolean; SizeInBytes, LineCount: integer;
   const FilePath: string;
-  const IncludedBy: string; var ClearIncludedBy: boolean): TModalResult;
+  const IncludedBy: string; var ClearIncludedBy: boolean;
+  const UnitPath, IncludePath, SrcPath: string): TModalResult;
 var Dlg: TUnitInfoDlg;
 begin
   Dlg:=TUnitInfoDlg.Create(Application);
@@ -92,6 +105,9 @@ begin
     setLines(IntToStr(LineCount));
     setPath(FilePath);
     setIncludedBy(IncludedBy);
+    setUnitPath(UnitPath);
+    setIncludePath(IncludePath);
+    setSrcPath(SrcPath);
   end;
   Result:=Dlg.ShowModal;
   ClearIncludedBy:=(Result=mrOk)
@@ -108,7 +124,7 @@ begin
 
     Caption:='Unit Info for unit ???';
     Width:=500;
-    Height:=200;
+    Height:=300;
     position:=poScreenCenter;
     OnResize:=@UnitInfoDlgResize;
 
@@ -257,12 +273,78 @@ begin
       Caption:='Clear';
       OnClick:=@clearIncludedByClick;
     end;
+    
+    PathsGroupBox:=TGroupBox.Create(Self);
+    with PathsGroupBox do begin
+      Name:='PathsGroupBox';
+      Parent:=Self;
+      Left:=2;
+      Top:=outIncludedBy.Top+outIncludedBy.Height+5;
+      Width:=Self.ClientWidth-2*Left;
+      Height:=100;
+      Caption:='Paths (Read Only)';
+      OnResize:=@PathsGroupBoxResize;
+    end;
+    
+    UnitPathLabel:=TLabel.Create(Self);
+    with UnitPathLabel do begin
+      Name:='UnitPathLabel';
+      Parent:=PathsGroupBox;
+      Left:=2;
+      Top:=2;
+      Caption:='Unit';
+    end;
+    
+    UnitPathEdit:=TEdit.Create(Self);
+    with UnitPathEdit do begin
+      Name:='UnitPathEdit';
+      Parent:=PathsGroupBox;
+      Left:=50;
+      Top:=2;
+      Width:=Parent.ClientWidth-Left-2;
+    end;
+    
+    IncludePathLabel:=TLabel.Create(Self);
+    with IncludePathLabel do begin
+      Name:='IncludePathLabel';
+      Parent:=PathsGroupBox;
+      Left:=2;
+      Top:=27;
+      Caption:='Include';
+    end;
+
+    IncludePathEdit:=TEdit.Create(Self);
+    with IncludePathEdit do begin
+      Name:='IncludePathEdit';
+      Parent:=PathsGroupBox;
+      Left:=UnitPathEdit.Left;
+      Top:=27;
+      Width:=Parent.ClientWidth-Left-2;
+    end;
+
+    SrcPathLabel:=TLabel.Create(Self);
+    with SrcPathLabel do begin
+      Name:='SrcPathLabel';
+      Parent:=PathsGroupBox;
+      Left:=2;
+      Top:=52;
+      Caption:='Src';
+    end;
+
+    SrcPathEdit:=TEdit.Create(Self);
+    with SrcPathEdit do begin
+      Name:='SrcPathEdit';
+      Parent:=PathsGroupBox;
+      Left:=UnitPathEdit.Left;
+      Top:=52;
+      Width:=Parent.ClientWidth-Left-2;
+    end;
 
     OkButton:=TButton.Create(Self);
     with OkButton do begin
       Name:='OkButton';
       Parent:=Self;
-      Top:=152;
+      Top:=Parent.ClientHeight-33;
       Width:=75;
       Height:=25;
       Left:=(Self.ClientWidth-Width) div 2;
@@ -308,6 +390,21 @@ end;
 procedure TUnitInfoDlg.setIncludedBy(const IncludedBy: string);
 begin
   outIncludedBy.Caption:=IncludedBy;
+end;
+
+procedure TUnitInfoDlg.setUnitPath(const UnitPath: string);
+begin
+  UnitPathEdit.Text:=UnitPath;
+end;
+
+procedure TUnitInfoDlg.setIncludePath(const IncPath: string);
+begin
+  IncludePathEdit.Text:=IncPath;
+end;
+
+procedure TUnitInfoDlg.setSRcPath(const SrcPath: string);
+begin
+  SrcPathEdit.Text:=SrcPath;
 end;
 
 procedure TUnitInfoDlg.UnitInfoDlgResize(Sender: TObject);
@@ -394,11 +491,53 @@ begin
     top:=124;
   end;
 
+  with PathsGroupBox do begin
+    Left:=2;
+    Top:=outIncludedBy.Top+outIncludedBy.Height+7;
+    Width:=Self.ClientWidth-2*Left;
+  end;
+
   with OkButton do begin
-    Top:=152;
+    Top:=Parent.ClientHeight-33;
     Width:=75;
     Height:=25;
     Left:=(Self.ClientWidth-Width) div 2;
+  end;
+end;
+
+procedure TUnitInfoDlg.PathsGroupBoxResize(Sender: TObject);
+begin
+  with UnitPathLabel do begin
+    Left:=2;
+    Top:=2;
+  end;
+
+  with UnitPathEdit do begin
+    Left:=50;
+    Top:=2;
+    Width:=Parent.ClientWidth-Left-2;
+  end;
+
+  with IncludePathLabel do begin
+    Left:=2;
+    Top:=27;
+  end;
+
+  with IncludePathEdit do begin
+    Left:=UnitPathEdit.Left;
+    Top:=27;
+    Width:=Parent.ClientWidth-Left-2;
+  end;
+
+  with SrcPathLabel do begin
+    Left:=2;
+    Top:=52;
+  end;
+
+  with SrcPathEdit do begin
+    Left:=UnitPathEdit.Left;
+    Top:=52;
+    Width:=Parent.ClientWidth-Left-2;
   end;
 end;
 

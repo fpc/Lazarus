@@ -188,6 +188,7 @@ type
           read FOnAfterApplyChanges write FOnAfterApplyChanges;
           
     // defines
+    function GetUnitPathForDirectory(const Directory: string): string;
     function GetIncludePathForDirectory(const Directory: string): string;
     function GetSrcPathForDirectory(const Directory: string): string;
 
@@ -543,6 +544,11 @@ end;
 function TCodeToolManager.ApplyChanges: boolean;
 begin
   Result:=SourceChangeCache.Apply;
+end;
+
+function TCodeToolManager.GetUnitPathForDirectory(const Directory: string): string;
+begin
+  Result:=DefineTree.GetUnitPathForDirectory(Directory);
 end;
 
 function TCodeToolManager.GetIncludePathForDirectory(const Directory: string
@@ -1635,7 +1641,7 @@ begin
   //DefineTree.WriteDebugReport;
   if not TCodeBuffer(Code).IsVirtual then
     Result:=DefineTree.GetDefinesForDirectory(
-      ExtractFilePath(TCodeBuffer(Code).Filename))
+      ExtractFilePath(TCodeBuffer(Code).Filename),false)
   else
     Result:=DefineTree.GetDefinesForVirtualDirectory;
 end;
