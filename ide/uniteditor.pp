@@ -263,6 +263,7 @@ type
     // notebook
     procedure Activate;
     function PageIndex: integer;
+    function IsActiveOnNoteBook: boolean;
   public
     // properties
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
@@ -1551,6 +1552,7 @@ begin
       FCodeBuffer.AssignTo(FEditor.Lines);
       FEditor.EndUpdate;
     end;
+    if IsActiveOnNoteBook then SourceNoteBook.UpdateStatusBar;
   end;
 end;
 
@@ -1894,7 +1896,18 @@ end;
 
 function TSourceEditor.PageIndex: integer;
 begin
-  Result:=FSourceNoteBook.FindPageWithEditor(Self);
+  if FSourceNoteBook<>nil then
+    Result:=FSourceNoteBook.FindPageWithEditor(Self)
+  else
+    Result:=-1;
+end;
+
+function TSourceEditor.IsActiveOnNoteBook: boolean;
+begin
+  if FSourceNoteBook<>nil then
+    Result:=(FSourceNoteBook.GetActiveSE=Self)
+  else
+    Result:=false;
 end;
 
 Function TSourceEditor.GetWordAtCurrentCaret: String;
