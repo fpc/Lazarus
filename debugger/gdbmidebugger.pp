@@ -119,7 +119,8 @@ type
   private
   protected
     procedure DoDebuggerStateChange; override;
-    procedure SetBreakPoints;
+    procedure SetBreakPoints(ResetAll: boolean);
+    procedure InitTargetStart; override;
   public
   end;
 
@@ -662,7 +663,7 @@ begin
         Exit;
       end;
       
-      TGDBMIBreakPoints(BreakPoints).SetBreakPoints;
+      //TGDBMIBreakPoints(BreakPoints).SetBreakPoints;
 
       if ResultState = dsNone
       then begin
@@ -1196,10 +1197,12 @@ begin
   inherited DoDebuggerStateChange;
   if (Debugger <> nil)
   and (Debugger.State in [dsStop, dsPause])
-  then SetBreakPoints;
+  then begin
+    //SetBreakPoints;
+  end;
 end;
 
-procedure TGDBMIBreakPoints.SetBreakPoints;
+procedure TGDBMIBreakPoints.SetBreakPoints(ResetAll: boolean);
 var
   n: Integer;
   BreakPoint: TGDBMIBreakPoint;
@@ -1207,9 +1210,15 @@ begin
   for n := 0 to Count - 1 do
   begin
     BreakPoint := TGDBMIBreakPoint(Items[n]);
-    if Breakpoint.FBreakID = 0
+    if (Breakpoint.FBreakID = 0) or ResetAll
     then BreakPoint.SetBreakPoint;
   end;
+end;
+
+procedure TGDBMIBreakPoints.InitTargetStart;
+begin
+  inherited InitTargetStart;
+  SetBreakPoints(false);
 end;
 
 { =========================================================================== }
@@ -1247,9 +1256,8 @@ end;
 
 procedure TGDBMIBreakPoint.InitTargetStart;
 begin
+  // initialize values
   inherited InitTargetStart;
-  UpdateExpression;
-  UpdateEnable;
 end;
 
 procedure TGDBMIBreakPoint.SetBreakpoint;
@@ -1274,7 +1282,8 @@ begin
       SetValid(vsValid)
     else
       SetValid(vsInvalid);
-    DoEnableChange;
+    UpdateExpression;
+    UpdateEnable;
     ResultList.Free;
     BkptList.Free;
   finally
@@ -1863,6 +1872,9 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.24  2003/06/03 10:29:22  mattias
+  implemented updates between source marks and breakpoints
+
   Revision 1.23  2003/06/03 01:35:40  marc
   MWE: = Splitted TDBGBreakpoint into TBaseBreakPoint, TIDEBreakpoint and
          TDBGBreakPoint
