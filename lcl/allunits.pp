@@ -8,6 +8,7 @@
  /***************************************************************************
 }
 unit allunits;
+{$mode objfpc}
 interface
 uses
   interfacebase, interfaces,
@@ -23,6 +24,10 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.4  2001/01/30 22:56:54  lazarus
+  MWE:
+    + added $mode objfpc directive
+
   Revision 1.3  2001/01/10 23:54:59  lazarus
   MWE:
     * Fixed make clean
