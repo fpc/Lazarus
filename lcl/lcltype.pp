@@ -57,6 +57,7 @@ type
   PANSICHAR = ^AnsiChar;
   PWideChar = ^WideChar;
   UINT = LongWord;
+  PPoint = ^TPoint;
 
   TCriticalSection = longint;
   PCriticalSection = ^TCriticalSection;
@@ -721,8 +722,6 @@ type
     end;
   TWindowPos = tagWindowPos;
   WindowPos = tagWindowPos;
-
-  PPoint = ^TPoint;
 
   tagScrollInfo = packed record
     cbSize : UINT;
@@ -1683,6 +1682,9 @@ end.
 
 {
   $Log$
+  Revision 1.25  2002/11/22 09:59:29  mattias
+  removed duplicate PPoint
+
   Revision 1.24  2002/10/26 10:21:01  lazarus
   MG: broke actnlist <-> menus circle
 
