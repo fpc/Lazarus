@@ -104,10 +104,12 @@ type
     FGraphic: TGraphic;
     FGroupIndex: Byte;
     FHandle: HMenu;
-    FHint : String;
+    FHint: String;
     FImageIndex : Integer;
     FItems: TList; // list of TMenuItem
     FMenu: TMenu;
+    FOnChange: TMenuChangeEvent;
+    FOnClick: TNotifyEvent;
     FParent: TMenuItem;
     FRadioItem: Boolean;
     FRightJustify: boolean;
@@ -115,8 +117,6 @@ type
     FShowAlwaysCheckable: boolean;
     FSubMenuImages: TCustomImageList;
     FVisible: Boolean;
-    FOnChange: TMenuChangeEvent;
-    FOnClick: TNotifyEvent;
     function GetCount: Integer;
     function GetItem(Index: Integer): TMenuItem;
     function GetMenuIndex: Integer;
@@ -204,7 +204,7 @@ type
       read FSubMenuImages write SetSubMenuImages;
     property Visible: Boolean
       read FVisible write SetVisible stored IsVisibleStored default True;
-    property OnClick: TNotifyEvent read FOnClick write FOnclick; 
+    property OnClick: TNotifyEvent read FOnClick write FOnClick;
   end;
 
   TFindItemKind = (fkCommand, fkHandle, fkShortCut);
@@ -217,8 +217,8 @@ type
     FImageChangeLink: TChangeLink;
     FImages: TCustomImageList;
     FItems: TMenuItem;
-    FParent: TComponent;
     FOnChange: TMenuChangeEvent;
+    FParent: TComponent;
     procedure SetImages(const AValue: TCustomImageList);
     procedure SetParent(const AValue: TComponent);
     procedure ImageListChange(Sender: TObject);
@@ -361,6 +361,9 @@ end.
 
 {
   $Log$
+  Revision 1.36  2003/01/04 11:58:32  mattias
+  added Windows menu to IDE
+
   Revision 1.35  2002/12/02 16:38:13  mattias
   started position highlighter
 

@@ -537,6 +537,14 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  procedure TApplication.UpdateVisible;
+ ------------------------------------------------------------------------------}
+procedure TApplication.UpdateVisible;
+begin
+
+end;
+
+{------------------------------------------------------------------------------
   Method: TApplication.IconChanged
  ------------------------------------------------------------------------------}
 procedure TApplication.IconChanged(Sender: TObject);
@@ -851,6 +859,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.45  2003/01/04 11:58:32  mattias
+  added Windows menu to IDE
+
   Revision 1.44  2002/12/27 17:12:37  mattias
   added more Delphi win32 compatibility functions
 

@@ -30,6 +30,7 @@ begin
   inherited Create(AOwner);
   FFonts := TStringlist.Create;
   TStringlist(FFonts).Sorted := True;
+  FCustomForms:=TList.Create;
   FFormList := TList.Create;
   FPixelsPerInch:= ScreenInfo.PixelsPerInchX;
   FHintFont := TFont.Create;
@@ -52,6 +53,7 @@ Destructor TScreen.Destroy;
 begin
   FreeThenNil(FHintFont);
   FreeThenNil(FFormList);
+  FreeThenNil(FCustomForms);
   FreeThenNil(FSaveFocusedList);
   FreeThenNil(FFonts);
   inherited Destroy;
@@ -138,17 +140,37 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TScreen.GetCustomFormCount: Integer;
+ ------------------------------------------------------------------------------}
+function TScreen.GetCustomFormCount: Integer;
+begin
+  Result:=FCustomForms.Count;
+end;
+
+{------------------------------------------------------------------------------
+  function TScreen.GetCustomForms(Index: Integer): TCustomForm;
+ ------------------------------------------------------------------------------}
+function TScreen.GetCustomForms(Index: Integer): TCustomForm;
+begin
+  Result := TCustomForm(FCustomForms[Index]);
+end;
+
+{------------------------------------------------------------------------------
   Function: TScreen.AddForm
   Params:   FForm: The form to be added
   Returns:  Nothing
 
   Do not use this procedure. This procedure is used by TScreen internally.
  ------------------------------------------------------------------------------}
-procedure TScreen.AddForm(FForm: TCustomForm);
+procedure TScreen.AddForm(AForm: TCustomForm);
 begin
-  FFormList.Add(FForm);
+  FCustomForms.Add(AForm);
+  if AForm is TForm then
+  begin
+    FFormList.Add(AForm);
+    Application.UpdateVisible;
+  end;
 end;
-
 
 {------------------------------------------------------------------------------
   Function: TScreen.GetFormCount
@@ -162,7 +184,6 @@ begin
   Result := FFormList.Count;
 end;
 
-
 {------------------------------------------------------------------------------
   Function: TScreen.GetForms
   Params:   IIndex: The index of the form
@@ -175,7 +196,6 @@ begin
   Result := TForm(FFormList.Items[IIndex]);
 end;
 
-
 {------------------------------------------------------------------------------
   Method:  TScreen.GetWidth
   Params:  none
@@ -187,7 +207,6 @@ Function TScreen.GetWidth : Integer;
 begin
   Result := GetSystemMetrics(SM_CXSCREEN);
 end;
-
 
 {------------------------------------------------------------------------------
   Method:  TScreen.GetHeight
@@ -209,9 +228,13 @@ end;
 
   Do not use this procedure. This procedure is used by TScreen internally.
  ------------------------------------------------------------------------------}
-procedure TScreen.RemoveForm(FForm: TCustomForm);
+procedure TScreen.RemoveForm(AForm: TCustomForm);
 begin
-  FFormList.Remove(FForm);
+  FCustomForms.Remove(AForm);
+  FFormList.Remove(AForm);
+  Application.UpdateVisible;
+  //if (FCustomForms.Count = 0) and (Application.FHintWindow <> nil) then
+  //  Application.FHintWindow.ReleaseHandle;
 end;
 
 {------------------------------------------------------------------------------

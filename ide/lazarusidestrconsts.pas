@@ -99,6 +99,7 @@ resourcestring
   lisMenuRun = '&Run';
   lisMenuTools = '&Tools';
   lisMenuEnvironent = 'E&nvironment';
+  lisMenuWindows = '&Windows';
   lisMenuHelp = '&Help';
   
   lisMenuNewUnit = 'New Unit';

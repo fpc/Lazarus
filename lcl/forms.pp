@@ -450,6 +450,7 @@ type
     FCursor: TCursor;
     FCursorCount: integer;
     FCursorList: PCursorRec;
+    FCustomForms: TList;
     FDefaultCursor: HCURSOR;
     FFocusedForm: TCustomForm;
     FFonts : TStrings;
@@ -466,13 +467,15 @@ type
     procedure DeleteCursor(Index: Integer);
     procedure DestroyCursors;
     function GetCursors(Index: Integer): HCURSOR;
+    function GetCustomFormCount: Integer;
+    function GetCustomForms(Index: Integer): TCustomForm;
     function GetFonts : TStrings;
     function GetFormCount: Integer;
     function GetForms(IIndex: Integer): TForm;
     function GetHeight : Integer;
     function GetWidth : Integer;
-    procedure AddForm(FForm: TCustomForm);
-    procedure RemoveForm(FForm: TCustomForm);
+    procedure AddForm(AForm: TCustomForm);
+    procedure RemoveForm(AForm: TCustomForm);
     procedure SetCursor(const AValue: TCursor);
     procedure SetCursors(Index: Integer; const AValue: HCURSOR);
     procedure UpdateLastActive;
@@ -485,6 +488,8 @@ type
     property ActiveForm: TForm read FActiveForm;
     property Cursor: TCursor read FCursor write SetCursor;
     property Cursors[Index: Integer]: HCURSOR read GetCursors write SetCursors;
+    property CustomFormCount: Integer read GetCustomFormCount;
+    property CustomForms[Index: Integer]: TCustomForm read GetCustomForms;
     property FormCount: Integer read GetFormCount;
     property Forms[Index: Integer]: TForm read GetForms;
     property Fonts : TStrings read GetFonts;
@@ -600,6 +605,7 @@ type
     procedure ShowHintWindow(const Info: THintInfoAtMouse);
     procedure StartHintTimer(Interval: integer; TimerType: TAppHintTimerType);
     procedure OnHintTimer(Sender: TObject);
+    procedure UpdateVisible;
   public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;

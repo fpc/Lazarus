@@ -43,7 +43,7 @@ uses
   Classes, LazarusIDEStrConsts, LCLType, LclLinux, Compiler, StdCtrls, Forms,
   Buttons, Menus, ComCtrls, Spin, Project, SysUtils, FileCtrl, Controls,
   Graphics, ExtCtrls, Dialogs, LazConf, CompReg, CodeToolManager,
-  ObjectInspector, PropEdits, SynEditKeyCmds, OutputFilter,
+  Splash, ObjectInspector, PropEdits, SynEditKeyCmds, OutputFilter,
   MsgView, EnvironmentOpts, EditorOptions, IDEComp, FormEditor,
   KeyMapping, IDEProcs, UnitEditor, Debugger, IDEOptionDefs, CodeToolsDefines;
 
@@ -143,6 +143,7 @@ type
     mnuRun: TMenuItem;
     mnuTools: TMenuItem;
     mnuEnvironment: TMenuItem;
+    mnuWindows: TMenuItem;
     mnuHelp: TMenuItem;
 
     itmFileNewUnit : TMenuItem;
@@ -273,6 +274,7 @@ type
     // hints. Note/ToDo: hints should be controlled by the lcl, this is a workaround
     HintTimer1 : TIdleTimer;
     HintWindow1 : THintWindow;
+    procedure mnuWindowsItemClick(Sender: TObject);
   protected
     TheCompiler: TCompiler;
     TheOutputFilter: TOutputFilter;
@@ -286,6 +288,7 @@ type
     procedure SetupRunMenu; virtual;
     procedure SetupToolsMenu; virtual;
     procedure SetupEnvironmentMenu; virtual;
+    procedure SetupWindowsMenu; virtual;
     procedure SetupHelpMenu; virtual;
     
     procedure LoadMenuShortCuts; virtual;
@@ -307,6 +310,8 @@ type
     function DoCheckFilesOnDisk: TModalResult; virtual; abstract;
     function DoCheckAmbigiousSources(const AFilename: string;
       Compiling: boolean): TModalResult;
+      
+    procedure UpdateWindowsMenu; virtual;
   end;
 
 var
@@ -379,6 +384,18 @@ end;
 
 
 { TMainIDEBar }
+
+procedure TMainIDEBar.mnuWindowsItemClick(Sender: TObject);
+var
+  i: Integer;
+begin
+  i:=Screen.CustomFormCount-1;
+  while (i>=0) do begin
+    if Screen.CustomForms[i].Caption=TMenuItem(Sender).Caption then
+      Screen.CustomForms[i].BringToFront;
+    dec(i);
+  end;
+end;
 
 function TMainIDEBar.CreateMenuSeparator : TMenuItem;
 begin
@@ -1038,6 +1055,11 @@ begin
   mnuEnvironment.Add(itmEnvCodeToolsDefinesEditor);
 end;
 
+procedure TMainIDEBar.SetupWindowsMenu;
+begin
+
+end;
+
 procedure TMainIDEBar.SetupHelpMenu;
 begin
   itmHelpAboutLazarus := TMenuItem.Create(Self);
@@ -1259,6 +1281,51 @@ begin
     else if LowExt='.pas' then
       Result:=CheckFile(ChangeFileExt(AFilename,'.pp'));
   end;
+end;
+
+procedure TMainIDEBar.UpdateWindowsMenu;
+var
+  WindowsList: TList;
+  i: Integer;
+  CurMenuItem: TMenuItem;
+  AForm: TForm;
+begin
+  WindowsList:=TList.Create;
+  // add typical IDE windows
+  if (SourceNotebook<>nil) and (SourceNotebook.Visible) then
+    WindowsList.Add(SourceNotebook);
+  if (ObjectInspector1<>nil) and (ObjectInspector1.Visible) then
+    WindowsList.Add(ObjectInspector1);
+  // add special IDE windows
+  for i:=0 to Screen.FormCount-1 do begin
+    AForm:=Screen.Forms[i];
+    if (AForm<>Self) and (AForm<>SplashForm)
+    and (AForm.Designer=nil) and (AForm.Visible)
+    and (WindowsList.IndexOf(AForm)<0) then
+      WindowsList.Add(AForm);
+  end;
+  // add designer forms and datamodule forms
+  for i:=0 to Screen.FormCount-1 do begin
+    AForm:=Screen.Forms[i];
+    if (AForm.Designer<>nil) and (WindowsList.IndexOf(AForm)<0) then
+      WindowsList.Add(AForm);
+  end;
+  // add menuitems
+  for i:=0 to WindowsList.Count-1 do begin
+    if mnuWindows.Count>i then
+      CurMenuItem:=mnuWindows.Items[i]
+    else begin
+      CurMenuItem:=TMenuItem.Create(Self);
+      mnuWindows.Add(CurMenuItem);
+      CurMenuItem.OnClick:=@mnuWindowsItemClick;
+    end;
+    CurMenuItem.Caption:=TCustomForm(WindowsList[i]).Caption;
+  end;
+  // remove unused menuitems
+  while mnuWindows.Count>WindowsList.Count do
+    mnuWindows.Items[mnuWindows.Count-1].Free;
+  // clean up
+  WindowsList.Free;
 end;
 
 
