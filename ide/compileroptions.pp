@@ -4711,11 +4711,11 @@ begin
     if AButton=OtherUnitsPathEditBtn then begin
       OldPath:=edtOtherUnits.Text;
       Templates:=SetDirSeparators(
-            '$(LazarusDir)/lcl/units'
-          +';$(LazarusDir)/lcl/units/$(LCLWidgetType)'
-          +';$(LazarusDir)/components/units'
+            '$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS)'
+          +';$(LazarusDir)/lcl/units/$(TargetCPU)/$(TargetOS)/$(LCLWidgetType)'
+          +';$(LazarusDir)/components/units/$(TargetCPU)/$(TargetOS)'
           +';$(LazarusDir)/components/custom'
-          +';$(LazarusDir)/packager/units'
+          +';$(LazarusDir)/packager/units/$(TargetCPU)/$(TargetOS)'
           );
     end else
     if AButton=IncludeFilesPathEditBtn then begin

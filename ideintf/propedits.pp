@@ -2028,13 +2028,11 @@ function TPropertyEditor.GetDefaultOrdValue: Longint;
 var
   APropInfo: PPropInfo;
 begin
-  writeln('TPropertyEditor.GetDefaultOrdValue START ',ClassName);
   APropInfo:=FPropList^[0].PropInfo;
   {if HasAncestor then
     Result:=GetOrdValue(Ancestor,APropInfo)
   else}
   Result:=APropInfo^.Default;
-  writeln('TPropertyEditor.GetDefaultOrdValue END ',Result);
 end;
 
 function TPropertyEditor.GetPrivateDirectory:ansistring;

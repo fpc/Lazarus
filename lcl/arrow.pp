@@ -50,7 +50,6 @@ Type
   private
     FArrowType : TArrowType;
     FShadowType : TShadowType;
-    //FArrowChanged: TNotifyEvent;
     function GetShadowType: TShadowType;
     procedure SetShadowType(const AValue: TShadowType);
     function GetArrowType: TArrowType;
@@ -63,12 +62,17 @@ Type
     procedure Loaded; override;
     procedure InitializeWnd; override;
   published
-    Property ArrowType : TArrowType read GetArrowType write SetArrowType;
-    property ShadowType : TShadowType read fShadowType write SetShadowType;
+    Property ArrowType: TArrowType read GetArrowType write SetArrowType default atLeft;
+    property ShadowType: TShadowType read fShadowType write SetShadowType default stEtchedIn;
     property Visible;
     property OnClick;
     property OnMouseMove;
     property OnMouseDown;
+    property OnMouseUp;
+    property OnChangeBounds;
+    property OnResize;
+    property OnContextPopup;
+    property PopupMenu;
   end;
   
 procedure Register;

@@ -828,7 +828,7 @@ const
 procedure _start; cdecl; external;
 {$endif unix}
 
-procedure CheckPointer(p : pointer);[saveregisters,public, alias : 'FPC_CHECKPOINTER'];
+procedure CheckPointer(p: pointer);[saveregisters,public,alias:'FPC_CHECKPOINTER'];
 var
   i  : longint;
   pp : pheap_mem_info;
@@ -2566,6 +2566,9 @@ end.
 
 {
   $Log$
+  Revision 1.27  2004/01/06 10:53:31  mattias
+  fixed default value of TArrow.ArrowType
+
   Revision 1.26  2003/12/25 14:17:06  mattias
   fixed many range check warnings
 
