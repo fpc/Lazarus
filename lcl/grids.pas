@@ -319,7 +319,7 @@ type
     function  GetVisibleColCount: Integer;
     function  GetVisibleGrid: TRect;
     function  GetVisibleRowCount: Integer;
-    procedure MyTextRect(R: TRect; Offx,Offy:Integer; S:string; Ts: TTextStyle);
+    procedure MyTextRect(R: TRect; Offx,Offy:Integer; S:string; Clipping: boolean);
     procedure ReadColWidths(Reader: TReader);
     procedure ReadRowHeights(Reader: TReader);
     function  ScrollToCell(const aCol,aRow: Integer): Boolean;
@@ -637,13 +637,16 @@ type
       function  GetCols(index: Integer): TStrings;
       function  GetObjects(ACol, ARow: Integer): TObject;
       function  GetRows(index: Integer): TStrings;
+      procedure ReadCells(Reader: TReader);
       procedure SetCells(ACol, ARow: Integer; const AValue: string);
       procedure SetCols(index: Integer; const AValue: TStrings);
       procedure SetObjects(ACol, ARow: Integer; AValue: TObject);
       procedure SetRows(index: Integer; const AValue: TStrings);
+      procedure WriteCells(Writer: TWriter);
     protected
       procedure AutoAdjustColumn(aCol: Integer); override;
       procedure CalcCellExtent(acol, aRow: Integer; var aRect: TRect); override;
+      procedure DefineProperties(Filer: TFiler); override;
       procedure DrawCell(aCol,aRow: Integer; aRect: TRect; aState:TGridDrawState); override;
       procedure EditordoGetValue; override;
       procedure EditordoSetValue; override;
@@ -1702,12 +1705,12 @@ end;
 
 
 procedure TCustomGrid.MyTextRect(R: TRect; Offx, Offy: Integer; S: string;
-  Ts: TTextStyle);
+  Clipping: boolean);
 var
   Rorg: TRect;
   tmpRgn: HRGN;
 begin
-  if Ts.Clipping then begin
+  if Clipping then begin
     //IntersectClipRect(Canvas.handle, R.Left,R.Top,R.Right,R.Bottom);
 
     GetClipBox(Canvas.Handle, @ROrg);
@@ -1722,7 +1725,7 @@ begin
   //if Ts.Opaque then Canvas.FillRect(R);
   Canvas.TextOut(R.Left+Offx, R.Top+Offy,  S);
 
-  if Ts.Clipping then begin
+  if Clipping then begin
     tmpRGN:=CreateRectRgn(Rorg.Left, Rorg.Top, Rorg.Right, Rorg.Bottom);
     SelectClipRgn(Canvas.Handle, tmpRGN);
     //GetClipBox(Canvas.Handle, @Rtmp);
@@ -3135,17 +3138,20 @@ begin
 end;
 
 procedure TCustomGrid.EditorShowChar(Ch: Char);
+{
 var
   msg: TGridMessage;
+}
 begin
   SelectEditor;
   if FEditor<>nil then begin
     EditorShow;
     EditorSelectAll;
-    //PostMessage(FEditor.Handle, LM_CHAR, Word(Ch), 0);
+    PostMessage(FEditor.Handle, LM_CHAR, Word(Ch), 0);
     //
     // Note. this is a workaround because the call above doesn't work
     ///
+    {
     Msg.MsgID:=GM_SETVALUE;
     Msg.Grid:=Self;
     Msg.Col:=FCol;
@@ -3153,6 +3159,7 @@ begin
     if Ch=^H then Msg.Value:=''
     else          Msg.Value:=ch;
     FEditor.Dispatch(Msg);
+    }
   end;
 end;
 
@@ -3953,7 +3960,7 @@ procedure TDrawGrid.DefaultDrawCell(aCol, aRow: Integer; var aRect: TRect;
 begin
   if DefaultDrawing or (csDesigning in ComponentState) then
     Canvas.TextStyle.Clipping:=False;
-
+    
   if goColSpanning in Options then CalcCellExtent(acol, arow, aRect);
   Canvas.FillRect(aRect);
 end;
@@ -4003,6 +4010,30 @@ begin
       j:=Result.Add( Cells[i, index] );
       Result.Objects[j]:=Objects[i, index];
     end;
+  end;
+end;
+
+procedure TStringGrid.ReadCells(Reader: TReader);
+var
+  aCol,aRow: Integer;
+  i, c: Integer;
+begin
+  with Reader do begin
+    ReadListBegin;
+    c := ReadInteger;
+    for i:=1 to c do begin
+      aCol := ReadInteger;
+      aRow := ReadInteger;
+      Cells[aCol,aRow]:= ReadString;
+    end;
+    {
+    repeat
+      aCol := ReadInteger;
+      aRow := ReadInteger;
+      Cells[aCol,aRow] := ReadString;
+    until NextValue = vaNull;
+    }
+    ReadListEnd;
   end;
 end;
 
@@ -4061,6 +4092,31 @@ begin
   end;
 end;
 
+procedure TStringGrid.WriteCells(Writer: TWriter);
+var
+  i,j: Integer;
+  c: Integer;
+begin
+  with writer do begin
+    WriteListBegin;
+    //cell count
+    c:=0;
+    for i:=0 to ColCount-1 do
+      for j:=0 to RowCount-1 do
+        if Cells[i,j]<>'' then Inc(c);
+    WriteInteger(c);
+    
+    for i:=0 to ColCount-1 do
+      for j:=0 to RowCount-1 do
+        if Cells[i,j]<>'' then begin
+          WriteInteger(i);
+          WriteInteger(j);
+          WriteString(Cells[i,j]);
+        end;
+    WriteListEnd;
+  end;
+end;
+
 procedure TStringGrid.AutoAdjustColumn(aCol: Integer);
 var
   i,W: Integer;
@@ -4103,6 +4159,32 @@ begin
   end;
 end;
 
+procedure TStringGrid.DefineProperties(Filer: TFiler);
+  function NeedCells: boolean;
+  var
+    i,j: integer;
+    AntGrid: TStringGrid;
+  begin
+    AntGrid := TStringGrid(Filer.Ancestor);
+    WriteLn('TStringGrid.DefineProperties: Ancestor=',Integer(AntGrid));
+    if AntGrid<>nil then begin
+      result:=false;
+      for i:=0 to AntGrid.ColCount-1 do
+        for j:=0 to AntGrid.RowCount-1 do
+          if Cells[i,j]<>AntGrid.Cells[i,j] then begin
+          result:=true;
+          break;
+        end;
+   end else
+      result:=true;
+  end;
+begin
+  inherited DefineProperties(Filer);
+  with Filer do begin
+    DefineProperty('Cells',  @ReadCells,  @WriteCells,  NeedCells);
+  end;
+end;
+
 procedure TStringGrid.DrawCell(aCol, aRow: Integer; aRect: TRect;
   aState: TGridDrawState);
 var
@@ -4113,6 +4195,7 @@ begin
   S:=Cells[aCol,aRow];
   //if S<>'' then
   Canvas.TextRect(aRect, 3, 0, S);
+  //MyTExtRect(aRect, 3, 0, S, Canvas.Textstyle.Clipping);
 end;
 
 procedure TStringGrid.EditordoGetValue;
@@ -4277,7 +4360,10 @@ begin
   end else begin
     FDefEditor:=nil;
   end;
+  Canvas.TextStyle.Alignment:=taLeftJustify;
   Canvas.TextStyle.Layout:=tlCenter;
+  //Canvas.TextStyle.Wordbreak:=false;
+  Canvas.TextStyle.Clipping:=True;
 end;
 
 destructor TStringGrid.Destroy;
