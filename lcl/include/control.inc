@@ -158,7 +158,7 @@ end;
 {------------------------------------------------------------------------------}
 Procedure TControl.ChangeScale(M,D : Integer);
 Begin
-//TODO: TCONTROL.CHANGESCALE
+  // TODO: TCONTROL.CHANGESCALE
   Assert(False, 'Trace:TODO: [TControl.ChangeScale]');
 end;
 
@@ -185,7 +185,7 @@ begin
       TempPopupMenu.PopupComponent := Control;
       P2 := SmallPointtoPoint(P);
       P2 := ClientToScreen(P2);
-        TempPopupMenu.Popup(P2.X, P2.Y);
+      TempPopupMenu.Popup(P2.X, P2.Y);
       Exit;
     end;
     Control := Control.Parent;
@@ -1283,7 +1283,8 @@ End;
 }
 {------------------------------------------------------------------------------}
 
-Procedure TControl.MouseDown(Button: TMouseButton; Shift:TShiftState; X, Y: Integer);
+Procedure TControl.MouseDown(Button: TMouseButton; Shift:TShiftState;
+  X, Y: Integer);
 begin
   if Assigned(FOnMOuseDown) then FOnMOuseDOwn(Self, Button, Shift, X,Y);
 end;
@@ -1295,7 +1296,7 @@ end;
 
 Procedure TControl.MouseMove(Shift:TShiftState; X, Y: Integer);
 begin
-if Assigned(FOnMOuseMove) then FOnMOuseMove(Self, Shift, X,Y);
+  if Assigned(FOnMOuseMove) then FOnMOuseMove(Self, Shift, X,Y);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1303,9 +1304,10 @@ end;
 }
 {------------------------------------------------------------------------------}
 
-Procedure TControl.MouseUp(Button: TMouseButton; Shift:TShiftState; X, Y: Integer);
+Procedure TControl.MouseUp(Button: TMouseButton; Shift:TShiftState;
+  X, Y: Integer);
 begin
-if Assigned(FOnMOuseUp) then FOnMOuseUp(Self, Button, Shift, X,Y);
+  if Assigned(FOnMOuseUp) then FOnMOuseUp(Self, Button, Shift, X,Y);
 end;
 
 {------------------------------------------------------------------------------}
@@ -1314,12 +1316,12 @@ end;
 {------------------------------------------------------------------------------}
 procedure TControl.SetShowHint(Value : Boolean);
 begin
-   if FShowHint <> Value then
-   begin
-      FShowHint := Value;
-      FParentShowHint := False;
-      Perform(CM_SHOWHINTCHANGED, 0, 0);
-   end;
+  if FShowHint <> Value then
+  begin
+    FShowHint := Value;
+    FParentShowHint := False;
+    Perform(CM_SHOWHINTCHANGED, 0, 0);
+  end;
 end;
 
 {------------------------------------------------------------------------------}
@@ -1633,6 +1635,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.45  2002/04/24 09:29:07  lazarus
+  MG: fixed typos
+
   Revision 1.44  2002/04/22 13:07:45  lazarus
   MG: fixed AdjustClientRect of TGroupBox
 
