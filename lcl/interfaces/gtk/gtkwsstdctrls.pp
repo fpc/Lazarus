@@ -282,7 +282,7 @@ implementation
 
 { helper routines }
 
-function  WidgetGetSelStart(const Widget: PGtkWidget): integer;
+function WidgetGetSelStart(const Widget: PGtkWidget): integer;
 begin
   if Widget <> nil then 
   begin
@@ -765,9 +765,15 @@ end;
 
 procedure TGtkWSCustomEdit.SetSelStart(const ACustomEdit: TCustomEdit;
   NewStart: integer);
+var
+Widget: PGtkWidget;
 begin
-  gtk_editable_set_position(PGtkOldEditable(GetWidgetInfo(
-    Pointer(ACustomEdit.Handle), true)^.CoreWidget), NewStart);
+  Widget:=GetWidgetInfo(Pointer(ACustomEdit.Handle), true)^.CoreWidget;
+  if WidgetGetSelStart(Widget)=NewStart then exit;
+  // sometimes the gtk freezes the memo, canges something and emits the change
+  // event. Then the LCL gets notified and wants to react: force thaw (unfreeze)
+  gtk_text_thaw(PGtkText(Widget));
+  gtk_editable_set_position(PGtkOldEditable(Widget), NewStart);
 end;
 
 procedure TGtkWSCustomEdit.SetSelLength(const ACustomEdit: TCustomEdit;
