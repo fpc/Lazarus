@@ -79,6 +79,11 @@ const
     );
 
 type
+  TUnitDependenciesView = class;
+
+
+  { TUnitNode }
+
   TUnitNode = class
   private
     FChildCount: integer;
@@ -130,6 +135,21 @@ type
     property SourceType: TUnitNodeSourceType read FSourceType;
     property TreeNode: TTreeNode read FTreeNode write SetTreeNode;
   end;
+  
+  
+  { TExpandedUnitNodeState
+    Used to save which TUnitNodes are expanded during a Refresh }
+  
+  TExpandedUnitNodeState = class
+  private
+    FPaths: TStringList;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure Clear;
+    procedure Assign(ANode: TUnitNode);
+    procedure AssignTo(ANode: TUnitNode);
+  end;
 
 
   { TUnitDependenciesView }
@@ -140,6 +160,7 @@ type
     SelectUnitButton: TBitBtn;
     UnitTreeView: TTreeView;
     RefreshButton: TBitBtn;
+    procedure RefreshButtonClick(Sender: TObject);
     procedure UnitDependenciesViewResize(Sender: TObject);
     procedure UnitTreeViewAdvancedCustomDrawItem(Sender: TCustomTreeView;
           Node: TTreeNode; State: TCustomDrawState; Stage: TCustomDrawStage;
@@ -149,11 +170,13 @@ type
     procedure UnitTreeViewExpanding(Sender: TObject; Node: TTreeNode;
           var AllowExpansion: Boolean);
   private
+    FOnAccessingSources: TNotifyEvent;
     FRootCodeBuffer: TCodeBuffer;
     FRootFilename: string;
     FRootNode: TUnitNode;
     FRootShortFilename: string;
     FRootValid: boolean;
+    FUpdateCount: integer;
     procedure DoResize;
     procedure ClearTree;
     procedure RebuildTree;
@@ -162,7 +185,12 @@ type
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    procedure Refresh;
     function RootValid: boolean;
+    property OnAccessingSources: TNotifyEvent
+      read FOnAccessingSources write FOnAccessingSources;
     property RootFilename: string read FRootFilename write SetRootFilename;
     property RootShortFilename: string read FRootShortFilename write SetRootShortFilename;
   end;
@@ -174,6 +202,11 @@ implementation
 
 
 { TUnitDependenciesView }
+
+procedure TUnitDependenciesView.RefreshButtonClick(Sender: TObject);
+begin
+  Refresh;
+end;
 
 procedure TUnitDependenciesView.UnitDependenciesViewResize(Sender: TObject);
 begin
@@ -253,6 +286,7 @@ end;
 
 procedure TUnitDependenciesView.RebuildTree;
 begin
+  BeginUpdate;
   ClearTree;
   if RootFilename='' then exit;
   FRootNode:=TUnitNode.Create;
@@ -262,6 +296,7 @@ begin
   UnitTreeView.Items.Clear;
   FRootNode.TreeNode:=UnitTreeView.Items.Add(nil,'');
   FRootNode.CreateChilds;
+  EndUpdate;
 end;
 
 procedure TUnitDependenciesView.SetRootFilename(const AValue: string);
@@ -358,7 +393,7 @@ begin
       Width:=100;
       Height:=SelectUnitButton.Height;
       Caption:='Refresh';
-      Enabled:=false;
+      OnClick:=@RefreshButtonClick;
       Visible:=true;
     end;
 
@@ -386,6 +421,34 @@ destructor TUnitDependenciesView.Destroy;
 begin
   ClearTree;
   inherited Destroy;
+end;
+
+procedure TUnitDependenciesView.BeginUpdate;
+begin
+  inc(FUpdateCount);
+end;
+
+procedure TUnitDependenciesView.EndUpdate;
+begin
+  dec(FUpdateCount);
+end;
+
+procedure TUnitDependenciesView.Refresh;
+var
+  ExpandState: TExpandedUnitNodeState;
+begin
+  if FUpdateCount>0 then exit;
+  BeginUpdate;
+  if Assigned(OnAccessingSources) then OnAccessingSources(Self);
+  // save old expanded nodes
+  ExpandState:=TExpandedUnitNodeState.Create;
+  ExpandState.Assign(FRootNode);
+  // clear all child nodes
+  RebuildTree;
+  // restore expanded state
+  ExpandState.AssignTo(FRootNode);
+  ExpandState.Free;
+  EndUpdate;
 end;
 
 { TUnitNode }
@@ -527,16 +590,23 @@ var
   ParentNode, CurNode: TUnitNode;
 begin
   Result:=false;
-  if unfImplementation in Flags then exit;
+  if CodeBuffer=nil then exit;
   CurNode:=Self;
   ParentNode:=Parent;
+  if (ParentNode<>nil) and (ParentNode.CodeBuffer=CodeBuffer) then begin
+    // unit includes itself -> forbidden
+    Result:=true;
+    exit;
+  end;
   while ParentNode<>nil do begin
+    if (unfImplementation in CurNode.Flags) then begin
+      // pascal allows to use nearly anything in the implementation section
+      exit;
+    end;
     if ParentNode.CodeBuffer=CodeBuffer then begin
-      // circle detected
-      if not (unfImplementation in CurNode.Flags) then begin
-        Result:=true;
-        exit;
-      end;
+      // interface circle detected
+      Result:=true;
+      exit;
     end;
     CurNode:=ParentNode;
     ParentNode:=ParentNode.Parent;
@@ -663,6 +733,102 @@ begin
 end;
 
 //-----------------------------------------------------------------------------
+
+{ TExpandedUnitNodeState }
+
+constructor TExpandedUnitNodeState.Create;
+begin
+  inherited Create;
+end;
+
+destructor TExpandedUnitNodeState.Destroy;
+begin
+  Clear;
+  inherited Destroy;
+end;
+
+procedure TExpandedUnitNodeState.Clear;
+
+  procedure ClearPathTree(StringListNode: TStringList);
+  var
+    i: integer;
+    sl: TStringList;
+  begin
+    if StringListNode=nil then exit;
+    for i:=0 to StringListNode.Count-1 do begin
+      sl:=TStringList(StringListNode.Objects[i]);
+      if sl<>nil then begin
+        ClearPathTree(sl);
+        sl.Free;
+      end;
+    end;
+    StringListNode.Clear;
+  end;
+  
+begin
+  if FPaths=nil then exit;
+  ClearPathTree(FPaths);
+  FreeAndNil(FPaths);
+end;
+
+procedure TExpandedUnitNodeState.Assign(ANode: TUnitNode);
+
+  procedure AssignRecursive(var CurPathList: TStringList; CurNode: TUnitNode);
+  var
+    ChildNode: TUnitNode;
+    CurChildList: TStringList;
+  begin
+    if CurNode=nil then exit;
+    if CurNode.HasChildren and (CurNode.TreeNode<>nil)
+    and (CurNode.TreeNode.Expanded) then begin
+      if CurPathList=nil then
+        CurPathList:=TStringList.Create;
+      CurPathList.Add(CurNode.Filename);
+      CurChildList:=nil;
+      ChildNode:=CurNode.FirstChild;
+      while ChildNode<>nil do begin
+        AssignRecursive(CurChildList,ChildNode);
+        ChildNode:=ChildNode.NextSibling;
+      end;
+      if CurChildList<>nil then
+        CurPathList.Objects[CurPathList.Count-1]:=CurChildList;
+    end;
+  end;
+
+begin
+  Clear;
+  AssignRecursive(FPaths,ANode);
+end;
+
+procedure TExpandedUnitNodeState.AssignTo(ANode: TUnitNode);
+
+  procedure AssignToRecursive(CurPathList: TStringList; CurNode: TUnitNode);
+  var
+    ChildNode: TUnitNode;
+    CurChildList: TStringList;
+    i: integer;
+  begin
+    if (CurPathList=nil) or (CurNode=nil) or (not CurNode.HasChildren)
+    or (CurNode.TreeNode=nil) then
+      exit;
+    i:=CurPathList.IndexOf(CurNode.Filename);
+    if i>=0 then begin
+      CurNode.TreeNode.Expand(false);
+      CurChildList:=TStringList(CurPathList.Objects[i]);
+      if CurChildList<>nil then begin
+        ChildNode:=CurNode.FirstChild;
+        while ChildNode<>nil do begin
+          AssignToRecursive(CurChildList,ChildNode);
+          ChildNode:=ChildNode.NextSibling;
+        end;
+      end;
+    end;
+  end;
+
+begin
+  AssignToRecursive(FPaths,ANode);
+end;
+
 initialization
   {$I unitdependencies.lrs}
 
