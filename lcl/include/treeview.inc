@@ -3409,7 +3409,7 @@ end;
 procedure TCustomTreeView.OnChangeTimer(Sender: TObject);
 begin
   FChangeTimer.Enabled := False;
-  Change(TTreeNode(FChangeTimer.Tag));
+  Change(FSelectedNode);
 end;
 
 procedure TCustomTreeView.UpdateScrollbars;
@@ -4627,6 +4627,8 @@ begin
   end else begin
     Exclude(fStates,tvsSelectionChanged);
     DoSelectionChanged;
+    FChangeTimer.Enabled := false;
+    FChangeTimer.Enabled := true;
   end;
 end;
 
