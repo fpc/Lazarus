@@ -1076,7 +1076,7 @@ begin
     begin
       lopnStyle := PS_SOLID;
       lopnWidth.X := 1;
-      lopnColor := ColorToRGB(GridColor);
+      lopnColor := GridColor;
     end;
     Pen := CreatePenIndirect(LogPen);
     OldPen:=SelectObject(aDDC.DC, Pen);
