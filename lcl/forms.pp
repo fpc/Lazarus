@@ -110,17 +110,19 @@ type
     procedure IconChanged(Sender: TObject);
     function IsIconStored: Boolean;
     { events }
-    procedure WMActivate(var Message : TLMActivate); message LM_Activate;
+    procedure WMActivate(var Message : TLMActivate); message LM_ACTIVATE;
+    procedure WMDeactivate(var Message : TLMActivate); message LM_DEACTIVATE;
     procedure WMPaint(var message: TLMPaint); message LM_PAINT;
     procedure WMSize(var message: TLMSize); message LM_Size;
     procedure WMShowWindow(var message: TLMShowWindow); message LM_SHOWWINDOW;
     procedure WMCloseQuery(var message: TLMessage); message LM_CLOSEQUERY;
     procedure WMDestroy(var message: TLMDestroy); message LM_DESTROY;
   protected
+    procedure Activate; dynamic;
     function CloseQuery : boolean; virtual;
     procedure CreateParams(var Params: TCreateParams); override;
     procedure CreateWnd; override;
-    procedure DeActivate; dynamic;
+    procedure Deactivate;dynamic;
     procedure DoClose(var Action: TCloseAction); dynamic;
     procedure DoHide; dynamic;
     procedure DoShow; dynamic;

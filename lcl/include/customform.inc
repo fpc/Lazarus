@@ -109,17 +109,6 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Method: TCustomForm.Deactivate
-  Params:  None
-  Returns: Nothing
- ------------------------------------------------------------------------------}
-Procedure TCustomForm.Deactivate;
-Begin
-  if Assigned(FOnDeactivate) then
-    FOnDeactivate(Self);
-end;
-
-{------------------------------------------------------------------------------
   Method: TCustomForm.FocusControl
   Params:  None
   Returns: Nothing
@@ -261,11 +250,45 @@ end;
 
   Activate event handler.
  ------------------------------------------------------------------------------}
-Procedure TCustomForm.WMActivate(var Message : TLMActivate);
-Begin
-//  Writeln('[TCUSTOMFORM.WMACtivate]');
+procedure TCustomForm.WMActivate(var Message : TLMActivate);
+begin
+  Activate;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomForm.WMDeactivate
+  Params: Msg: When the form is deactivated (loses focus within application)
+  Returns: nothing
+
+  Form deactivation (losing focus within application)  event handler.
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.WMDeactivate(var Message : TLMActivate);
+begin
+  Deactivate;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomForm.Activate
+  Params: none
+  Returns:  nothing
+
+  Activation form methode event handler.
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.Activate;
+begin
   if Assigned(FOnActivate) then FOnActivate(Self);
-//  Writeln('[TCUSTOMFORM.WMACtivate] Done');
+end;
+
+{------------------------------------------------------------------------------
+  Method: TCustomForm.Deactivate
+  Params: none
+  Returns: nothing
+
+  Form deactivation (losing focus within application)  event handler.
+ ------------------------------------------------------------------------------}
+procedure TCustomForm.Deactivate;
+begin
+  if Assigned(FOnDeactivate) then FOnDeactivate(Self);
 end;
 
 {------------------------------------------------------------------------------
@@ -1027,6 +1050,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.57  2002/09/09 06:27:06  lazarus
+  Form deactivation fixes.
+
   Revision 1.56  2002/09/03 20:02:01  lazarus
   Intermediate UI patch to show a bug.
 
