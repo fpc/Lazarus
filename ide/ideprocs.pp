@@ -1,4 +1,5 @@
 {
+  Simple functions for file access, not yet in fpc.
 
 }
 unit IDEProcs;
@@ -22,6 +23,9 @@ function ForceDirectory(DirectoryName: string): boolean;
 function ExtractFileNameOnly(const AFilename: string): string;
 procedure CheckIfFileIsExecutable(const AFilename: string);
 function FileIsExecutable(const AFilename: string): boolean;
+function FileIsReadable(const AFilename: string): boolean;
+function FileIsWritable(const AFilename: string): boolean;
+function FileIsText(const AFilename: string): boolean;
 function CompareFilenames(const Filename1, Filename2: string): integer;
 
 // XMLConfig
@@ -201,6 +205,60 @@ begin
     end;
   end;
   Result:=true;
+end;
+
+function FileIsReadable(const AFilename: string): boolean;
+begin
+  {$IFDEF win32}
+  Result:=true;
+  {$ELSE}
+  Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.R_OK);
+  {$ENDIF}
+end;
+
+function FileIsWritable(const AFilename: string): boolean;
+begin
+  {$IFDEF win32}
+  Result:=((FileGetAttr(Filename) and faReadOnly)>0);
+  {$ELSE}
+  Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.W_OK);
+  {$ENDIF}
+end;
+
+function FileIsText(const AFilename: string): boolean;
+var fs: TFileStream;
+  Buf: string;
+  Len, i: integer;
+  NewLine: boolean;
+begin
+  Result:=false;
+  try
+    fs:=TFileStream.Create(AFilename,fmOpenRead);
+    try
+      // read the first 1024 bytes
+      Len:=1024;
+      if Len>fs.Size then Len:=fs.Size;
+      if Len>0 then begin
+        SetLength(Buf,Len);
+        fs.Read(Buf[1],length(Buf));
+        NewLine:=false;
+        for i:=1 to length(Buf) do begin
+          case Buf[i] of
+          #0..#8,#11..#12,#14..#31: exit;
+          #10,#13: NewLine:=true;
+          end;
+        end;
+        if NewLine or (Len<1024) then
+          Result:=true;
+      end else
+        Result:=true;
+    finally
+      fs.Free;
+    end;
+  except
+  end;
 end;
 
 end.

@@ -1583,11 +1583,11 @@ begin
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create('Component path addition',
     'adds designer and synedit to SrcPath',ExternalMacroStart+'SrcPath',
-    'components'+ds+'synedit;designer;'+SrcPath
+    'components'+ds+'synedit;components'+ds+'codetools;designer;'+SrcPath
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create('includepath addition',
     'adds include to IncPath',ExternalMacroStart+'IncPath',
-    'include'+ds+TargetOS,
+    'include:include'+ds+TargetOS,
     da_Define));
     
   // examples
@@ -1596,7 +1596,7 @@ begin
   DirTempl.AddChild(TDefineTemplate.Create('LCL path addition',
     'adds lcl to SrcPath',
     ExternalMacroStart+'SrcPath',
-    '..'+ds+'lcl;..'+ds+'lcl/interfaces/'+WidgetType+':'+SrcPath
+    '..'+ds+'lcl;..'+ds+'lcl'+ds+'interfaces'+ds+WidgetType+';'+SrcPath
     ,da_Define));
   MainDir.AddChild(DirTempl);
   

@@ -39,7 +39,7 @@ uses
   IDEComp, AbstractFormEditor, FormEditor, CustomFormEditor, ObjectInspector,
   PropEdits, ControlSelection, UnitEditor, CompilerOptions, EditorOptions,
   EnvironmentOpts, TransferMacros, KeyMapping, ProjectOpts, IDEProcs, Process,
-  UnitInfoDlg, Debugger, DBGWatch,RunParamsOpts, ExtToolDialog, MacroPromptDlg,
+  UnitInfoDlg, Debugger, DBGWatch, RunParamsOpts, ExtToolDialog, MacroPromptDlg,
   LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg;
 
 const
@@ -5379,6 +5379,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.187  2001/12/17 16:46:59  lazarus
+  MG: new file procs, find declaration now supports relative search paths
+
   Revision 1.186  2001/12/17 11:16:08  lazarus
   MG: fixed open file key in source editor
 

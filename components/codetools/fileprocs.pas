@@ -51,21 +51,20 @@ function ExtractFileNameOnly(const AFilename: string): string;
 function FilenameIsAbsolute(TheFilename: string):boolean;
 function ForceDirectory(DirectoryName: string): boolean;
 procedure CheckIfFileIsExecutable(const AFilename: string);
+function FileIsExecutable(const AFilename: string): boolean;
+function FileIsReadable(const AFilename: string): boolean;
+function FileIsWritable(const AFilename: string): boolean;
+function FileIsText(const AFilename: string): boolean;
 
 
 implementation
 
 
 // to get more detailed error messages consider the os
- {$IFDEF Linux}
+{$IFNDEF win32}
 uses
- {$IFDEF Ver1_0}
-  Linux
- {$ELSE}
-  Unix
- {$ENDIF}
- ;
- {$ENDIF}
+  {$IFDEF Ver1_0} Linux {$ELSE} Unix {$ENDIF};
+{$ENDIF}
 
 function CompareFilenames(const Filename1, Filename2: string): integer;
 begin
@@ -94,7 +93,7 @@ begin
   if not FileExists(AFilename) then begin
     raise Exception.Create('file "'+AFilename+'" does not exist');
   end;
-  {$IFDEF linux}
+  {$IFNDEF win32}
   if not{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
     AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.X_OK) then
   begin
@@ -111,7 +110,7 @@ begin
     end;
     raise Exception.Create(AText);
   end;
-  {$ENDIF linux}
+  {$ENDIF}
 
   // ToDo: windows and xxxbsd
 end;
@@ -126,7 +125,14 @@ end;
 
 function FilenameIsAbsolute(TheFilename: string):boolean;
 begin
-  Result:=(ExpandFileName(TheFilename)=TheFilename);
+  DoDirSeparators(TheFilename);
+  {$IFDEF win32}
+  // windows
+  Result:=(copy(TheFilename,1,2)='\\') or ((length(TheFilename)>3) and 
+     (upcase(TheFilename[1]) in ['A'..'Z']) and (copy(TheFilename,2,2)=':\'));
+  {$ELSE}
+  Result:=(TheFilename<>'') and (TheFilename[1]='/');
+  {$ENDIF}
 end;
 
 function DirectoryExists(DirectoryName: string): boolean;
@@ -160,6 +166,59 @@ begin
   Result:=true;
 end;
 
+function FileIsReadable(const AFilename: string): boolean;
+begin
+  {$IFDEF win32}
+  Result:=true;
+  {$ELSE}
+  Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.R_OK);
+  {$ENDIF}
+end;
+
+function FileIsWritable(const AFilename: string): boolean;
+begin
+  {$IFDEF win32}
+  Result:=((FileGetAttr(Filename) and faReadOnly)>0);
+  {$ELSE}
+  Result:={$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.Access(
+    AFilename,{$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF}.W_OK);
+  {$ENDIF}
+end;
+
+function FileIsText(const AFilename: string): boolean;
+var fs: TFileStream;
+  Buf: string;
+  Len, i: integer;
+  NewLine: boolean;
+begin
+  Result:=false;
+  try
+    fs:=TFileStream.Create(AFilename,fmOpenRead);
+    try
+      // read the first 1024 bytes
+      Len:=1024;
+      if Len>fs.Size then Len:=fs.Size;
+      if Len>0 then begin
+        SetLength(Buf,Len);
+        fs.Read(Buf[1],length(Buf));
+        NewLine:=false;
+        for i:=1 to length(Buf) do begin
+          case Buf[i] of
+          #0..#8,#11..#12,#14..#31: exit;
+          #10,#13: NewLine:=true;
+          end;
+        end;
+        if NewLine or (Len<1024) then
+          Result:=true;
+      end else
+        Result:=true;
+    finally
+      fs.Free;
+    end;
+  except
+  end;
+end;
 
 end.
 

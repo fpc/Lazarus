@@ -218,6 +218,8 @@ writeln('TFindDeclarationTool.FindUnitSource.LoadFile ',ExpandedFilename);
         ADir:=copy(APath,PathStart,PathEnd-PathStart);
         if (ADir<>'') and (ADir[length(ADir)]<>PathDelim) then
           ADir:=ADir+PathDelim;
+        if not FilenameIsAbsolute(ADir) then
+          ADir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename)+ADir;
         Result:=SearchUnitFileInDir(ADir,TheUnitName);
         if Result<>nil then exit;
       end;
@@ -238,6 +240,8 @@ writeln('TFindDeclarationTool.FindUnitSource.LoadFile ',ExpandedFilename);
         ADir:=copy(APath,PathStart,PathEnd-PathStart);
         if (ADir<>'') and (ADir[length(ADir)]<>PathDelim) then
           ADir:=ADir+PathDelim;
+        if not FilenameIsAbsolute(ADir) then
+          ADir:=ExtractFilePath(TCodeBuffer(Scanner.MainCode).Filename)+ADir;
         if LoadFile(ADir+RelativeFilename,Result) then exit;
       end;
       PathStart:=PathEnd+1;
