@@ -813,8 +813,13 @@ begin
 end;
 
 function TFontPropertyEditor.GetAttributes: TPropertyAttributes;
+var
+  AComponent: TPersistent;
 begin
   Result := [paMultiSelect, paSubProperties, paDialog, paReadOnly];
+  AComponent:=GetComponent(0);
+  if (AComponent<>nil) and (AComponent is TControl) then
+    Include(Result,paReadOnlySubProperties);
 end;
 
 
