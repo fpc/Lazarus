@@ -124,6 +124,7 @@ type
   private
   protected
   public
+    class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
   end;
 
   { TGtk2WSEdit }
@@ -221,8 +222,13 @@ type
   public
   end;
 
+{$DEFINE MEMOHEADER}
+{$I gtk2memostrings.inc}
+{$UNDEF MEMOHEADER}
 
 implementation
+
+{$I gtk2memostrings.inc}
 
 { TGtk2WSCustomListBox }
 
@@ -471,6 +477,17 @@ begin
   LockOnChange(GtkObject,-1);
 end;
 
+{ TGtk2WSCustomMemo }
+
+function TGtk2WSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo
+  ): TStrings;
+var
+TextView: PGtkTextView;
+begin
+  TextView := PGtkTextView(GetWidgetInfo(Pointer(ACustomMemo.Handle), False)^.CoreWidget);
+  Result := TGtk2MemoStrings.Create(TextView, ACustomMemo);
+end;
+
 initialization
 
 ////////////////////////////////////////////////////
@@ -487,7 +504,7 @@ initialization
   RegisterWSComponent(TCustomListBox, TGtk2WSCustomListBox);
 //  RegisterWSComponent(TListBox, TGtk2WSListBox);
 //  RegisterWSComponent(TCustomEdit, TGtk2WSCustomEdit);
-//  RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo);
+  RegisterWSComponent(TCustomMemo, TGtk2WSCustomMemo);
 //  RegisterWSComponent(TEdit, TGtk2WSEdit);
 //  RegisterWSComponent(TMemo, TGtk2WSMemo);
 //  RegisterWSComponent(TCustomLabel, TGtk2WSCustomLabel);

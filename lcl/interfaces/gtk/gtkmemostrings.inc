@@ -1,0 +1,326 @@
+{$IFDEF GTK1}
+{$IFDEF MEMOHEADER}
+
+
+type
+
+  PGtkTextInsertEvent = ^TGtkTextInsertEvent;
+  TGtkTextInsertEvent = procedure (NewText: pgchar; NewTextLength: gint; position: pgint) of object;
+  
+  PGtkTextDeleteEvent = ^TGtkTextDeleteEvent;
+  TGtkTextDeleteEvent = procedure(StartPos, EndPos: gint) of object;
+  { TGtkMemoStrings }
+
+  TGtkMemoStrings = class(TStrings)
+  private
+    FGtkText : PGtkText;
+    FOwner: TWinControl;
+    fTextInsertEvent: TGtkTextInsertEvent;
+    fTextDeleteEvent: TGtkTextDeleteEvent;
+    FCachedCount: Integer;
+    FLineStartCapacity: Integer;
+    FLineStartPos: array of Integer;
+  protected
+    fModified: Boolean;
+    fDeleting: Boolean;
+    function GetTextStr: string; override;
+    function GetCount: integer; override;
+    function Get(Index : Integer) : string; override;
+    procedure AdjustIndices(FromIndex, ToIndex: Integer; ACount: Integer; Back: Boolean);
+    procedure InsertIndices(StartIndex: Integer; AValue: array of Integer; ACount: Integer);
+    procedure DeleteIndices(StartIndex, ACount: Integer);
+    procedure SetCachedCount(AValue: Integer);
+    procedure TextInserted(NewText: pgchar; NewTextLength: gint; position: pgint);
+    procedure TextDeleted(StartPos, EndPos: gint);
+    function PositionToLine(Position: Integer; StartLine: Integer = 0): Integer;
+    //procedure SetSorted(Val : boolean); virtual;
+  public
+    constructor Create(GtkText : PGtkText; TheOwner: TWinControl);
+    destructor Destroy; override;
+    procedure Assign(Source : TPersistent); override;
+    procedure Clear; override;
+    procedure Delete(Index : integer); override;
+    procedure Insert(Index : integer; const S: string); override;
+    procedure SetText(TheText: PChar); override;
+    //procedure Sort; virtual;
+  public
+    //property Sorted: boolean read FSorted write SetSorted;
+    property Owner: TWinControl read FOwner;
+  end;
+{$ELSE}
+{
+
+Implementation
+
+}
+
+//////// Callbacks   //////
+
+function GtkWS_GtkTextUnFreeze(GtkText: PGtkText): guint; cdecl;
+begin
+ gtk_text_thaw(GtkText);
+ Result := 0;
+end;
+procedure GtkWS_GtkTextInserting(GtkEditable: PGtkEditable; NewText: pgchar;
+           NewTextLength: gint; position: pgint; TextInserted:  PGtkTextInsertEvent); cdecl;
+begin
+  TextInserted^(NewText, NewTextLength, position);
+end;
+
+procedure GtkWS_GtkTextDeleting(GtkEditable: PGtkEditable; StartPos, EndPos: gint; TextDeleted : PGtkTextDeleteEvent); cdecl;
+begin
+ TextDeleted^(StartPos, EndPos);
+end;
+
+//////// Code        //////
+
+function TGtkMemoStrings.GetTextStr: string;
+begin
+  Result := gtk_editable_get_chars(PGtkEditable(FGtkText), 0, gtk_text_get_length(FGtkText));
+end;
+
+function TGtkMemoStrings.GetCount: integer;
+var
+X: Integer;
+begin
+  Result := FCachedCount;
+end;
+
+function TGtkMemoStrings.Get(Index: Integer): string;
+var
+LineStart,
+LineEnd: Integer;
+begin
+  if Index = 0 then
+    LineStart := 0
+  else
+    LineStart := FLineStartPos[Index];
+  if FCachedCount-1 = Index then begin
+    LineEnd := gtk_text_get_length(FGtkText);
+  end
+  else begin
+    LineEnd := FLineStartPos[Index+1]-Length(LineEnding);
+  end;
+  Result := gtk_editable_get_chars(@(FGtkText^.editable), LineStart, LineEnd);
+end;
+
+procedure TGtkMemoStrings.AdjustIndices(FromIndex, ToIndex: Integer; ACount: Integer;
+  Back: Boolean);
+var
+X: Integer;
+begin
+  for X := FromIndex to ToIndex do begin;
+    if Back then
+      Dec(FLineStartPos[X], ACount)
+    else Inc(FLineStartPos[X], ACount);
+  end;
+end;
+
+procedure TGtkMemoStrings.InsertIndices(StartIndex: Integer;
+  AValue: array of integer; ACount: Integer);
+var
+  X: Integer;
+begin
+  SetCachedCount(FCachedCount+ACount);
+  System.Move(FLineStartPos[StartIndex],FLineStartPos[StartIndex+ACount], (FCachedCount-StartIndex-ACount)*SizeOf(Integer));
+  for X := 0 to ACount-1 do begin
+    FLineStartPos[StartIndex+X] := Avalue[X];
+  end;
+end;
+
+procedure TGtkMemoStrings.DeleteIndices(StartIndex, ACount: Integer);
+begin
+  System.Move(FLineStartPos[StartIndex+ACount],FLineStartPos[StartIndex], (FCachedCount-StartIndex)*SizeOf(Integer));
+  SetCachedCount(FCachedCount-ACount);
+end;
+
+procedure TGtkMemoStrings.SetCachedCount(AValue: Integer);
+begin
+  if AValue = FCachedCount then exit;
+  if AValue >= FLineStartCapacity then begin
+    while AValue >= FLineStartCapacity do Inc(FLineStartCapacity, 50);
+    SetLength(FLineStartPos, FLineStartCapacity);
+  end
+  else if FLineStartCapacity-50 > AValue then begin
+    Dec(FLineStartCapacity, 50);
+    if FLineStartCapacity < 0 then FLineStartCapacity := 0;
+    SetLength(FLineStartPos, FLineStartCapacity);
+  end;
+  FCachedCount := AValue;
+end;
+
+procedure TGtkMemoStrings.TextInserted(NewText: pgchar; NewTextLength: gint;
+  position: pgint);
+var
+LineIndices: array of Integer;
+LineIndicesCapacity: Integer;
+LineCount: Integer;
+X: Integer;
+StartLine: Integer;
+RealStartLine: Integer;
+
+begin
+ fDeleting := False;
+ If (FCachedCount = 0) and (NewTextLength > 0) then SetCachedCount(1);
+ LineCount := 0;
+ LineIndicesCapacity := 0;
+ for X := 0 to NewTextLength-1 do begin
+   if NewText[X] = #10 then begin
+     if LineCount >= LineIndicesCapacity then begin
+       Inc(LineIndicesCapacity, 50);
+       SetLength(LineIndices, LineIndicesCapacity);
+     end;
+     LineIndices[LineCount] := Position^+X+1;
+     Inc(LineCount);
+   end;
+ end;
+ StartLine:= PositionToLine(Position^);
+ RealStartLine := StartLine + Ord(Position^ >= FLineStartPos[StartLine]);
+
+ if RealStartLine <= FCachedCount-1 then
+   AdjustIndices(RealStartLine, FCachedCount, NewTextLength, False);
+
+ if LineCount > 0 then
+   InsertIndices(RealStartLine, LineIndices, LineCount);
+
+ SetLength(LineIndices, 0);
+// detect lineendings and  Increase Count and Lines.InsertIndices(); and AdjustIndices();
+
+end;
+
+procedure TGtkMemoStrings.TextDeleted(StartPos, EndPos: gint);
+var
+X: Integer;
+ShrinkCount: Integer;
+StartLine,
+EndLine: Integer;
+begin
+  if EndPos - StartPos = 0 then Exit;
+  fDeleting := True;
+  ShrinkCount := 0;
+  StartLine := PositionToLine(StartPos+1);
+  EndLine := PositionToLine(EndPos+1, StartLine);
+  ShrinkCount := EndLine - StartLine;
+
+  if ShrinkCount > 0 then begin
+    DeleteIndices(StartLine, ShrinkCount);
+  end;
+  AdjustIndices(StartLine, FCachedCount-1, EndPos-StartPos, True);
+  
+  if (FCachedCount = 1) and (gtk_text_get_length(FGtkText)-(endpos-startpos) = 0) then SetCachedCount(0);
+  // see if any Indices in the cache are within the array, shrink the array , adjust the indices
+  fDeleting := False;
+
+end;
+
+function TGtkMemoStrings.PositionToLine(Position: Integer; StartLine: Integer = 0): Integer;
+var
+ X: Integer;
+begin
+ Result := 0;
+ // TODO maybe make this work faster by moving by more than 1 Index at a time
+ // although it doesn't seem slow....
+ X := StartLine;
+ if FCachedCount = 0 then Exit;
+
+ while (FLineStartPos[X] < Position) and (X <= FCachedCount-1) do begin
+   if (not fDeleting) and (X = FCachedCount-1) then Break;
+   Inc(X);
+ end;
+ Result := X;
+end;
+
+constructor TGtkMemoStrings.Create(GtkText: PGtkText; TheOwner: TWinControl);
+begin
+  inherited Create;
+  FGtkText := GtkText;
+  FOwner := TheOwner;
+  FLineStartCapacity := 50;
+  SetLength(FLineStartPos, FLineStartCapacity);
+  FLineStartPos[0] := 0;
+  FCachedCount := 0;
+  fDeleting := False;
+  fTextInsertEvent := @TextInserted;
+  fTextDeleteEvent := @TextDeleted;
+  g_signal_connect(PGtkObject(FGtkText), 'insert-text', TGtkSignalFunc(@GtkWS_GtkTextInserting), @fTextInsertEvent);
+  g_signal_connect(PGtkObject(FGtkText), 'delete-text', TGtkSignalFunc(@GtkWS_GtkTextDeleting), @fTextDeleteEvent);
+end;
+
+destructor TGtkMemoStrings.Destroy;
+begin
+  SetLength(FLineStartPos, 0);
+  inherited Destroy;
+end;
+
+procedure TGtkMemoStrings.Assign(Source: TPersistent);
+begin
+  if (Source=Self) or (Source=nil) then exit;
+  if Source is TStrings then begin
+    SetText(PChar(TStrings(Source).Text));
+    exit;
+  end;
+  Inherited Assign(Source);
+end;
+
+procedure TGtkMemoStrings.Clear;
+begin
+  gtk_editable_delete_text(PGtkEditable(FGtkText), 0, gtk_text_get_length(FGtkText));
+  SetCachedCount(0);
+end;
+
+procedure TGtkMemoStrings.Delete(Index: integer);
+var
+LineStart,
+LineEnd: Integer;
+begin
+  if Index = 0 then
+    LineStart := 0
+  else
+    LineStart := FLineStartPos[Index];
+  if FCachedCount-1 = Index then begin
+    LineEnd := gtk_text_get_length(FGtkText);
+  end
+  else begin
+    LineEnd := FLineStartPos[Index+1];
+  end;
+  gtk_editable_delete_text(PGtkEditable(FGtkText), LineStart, LineEnd);
+
+end;
+
+procedure TGtkMemoStrings.Insert(Index: integer; const S: string);
+var
+LineStart: Integer;
+fCount: Integer;
+begin
+  if FGtkText^.freeze_count = 0 then begin
+    gtk_text_freeze(FGtkText);
+    gtk_idle_add(TGtkfunction(@GtkWS_GtkTextUnFreeze), FGtkText);
+  end;
+  fCount := FCachedCount;
+  if fCount = 0 then begin
+    // insert
+    LineStart := 0;
+    gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(S), Length(S), @LineStart);
+  end
+  else if Index < fCount then begin
+    //insert with LineEnding
+    LineStart := FLineStartPos[Index];
+    gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(S+LineEnding), Length(S+LineEnding), @LineStart);
+  end
+  else begin
+    //append with a preceding LineEnding
+    LineStart := gtk_text_get_length(FGtkText);
+    gtk_editable_insert_text(PGtkEditable(FGtkText),PChar(LineEnding+S), Length(LineEnding+S), @LineStart);
+  end;
+end;
+
+procedure TGtkMemoStrings.SetText(TheText: PChar);
+var
+StartPos: Integer;
+begin
+  StartPos := 0;
+  Clear;
+  gtk_editable_insert_text(PGtkEditable(FGtkText),TheText, Length(TheText), @StartPos);
+end;
+{$ENDIF}
+{$ENDIF}

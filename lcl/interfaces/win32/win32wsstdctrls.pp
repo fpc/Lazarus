@@ -165,6 +165,7 @@ type
   public
     class function  CreateHandle(const AWinControl: TWinControl;
           const AParams: TCreateParams): HWND; override;
+    class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); override;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); override;
     class procedure SetText(const AWinControl: TWinControl; const AText: string); override;
@@ -263,7 +264,13 @@ function  EditGetSelLength(WinHandle: HWND): integer;
 procedure EditSetSelStart(WinHandle: HWND; NewStart: integer);
 procedure EditSetSelLength(WinHandle: HWND; NewLength: integer);
 
+{$DEFINE MEMOHEADER}
+{$I win32memostrings.inc}
+{$UNDEF MEMOHEADER}
+
 implementation
+
+{$I win32memostrings.inc}
 
 { TWin32WSScrollBar }
 
@@ -863,6 +870,12 @@ begin
   // memo is not a transparent control -> no need for parentpainting
   Params.WindowInfo^.hasTabParent := false;
   Result := Params.Window;
+end;
+
+function TWin32WSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo
+  ): TStrings;
+begin
+  Result:=TWin32MemoStrings.Create(ACustomMemo.Handle, ACustomMemo)
 end;
 
 procedure TWin32WSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);

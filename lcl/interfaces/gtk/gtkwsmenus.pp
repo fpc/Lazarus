@@ -196,15 +196,24 @@ begin
 end;
 
 { TGtkWSPopupMenu }
+procedure GtkWS_Popup(menu:  PGtkMenu; X, Y: pgint; Point: PPoint); cdecl;
+begin
+  X^ := Point^.X;
+  Y^ := Point^.Y;
+end;
 
 procedure TGtkWSPopupMenu.Popup(const APopupMenu: TPopupMenu; const X, Y: integer);
+var
+APoint: TPoint;
 begin
   ReleaseMouseCapture;
+  APoint.X := X;
+  APoint.Y := Y;
   gtk_menu_popup(PgtkMenu(APopupMenu.Handle),
                  nil,
                  nil,
-                 nil,
-                 nil,
+                 TGtkMenuPositionFunc(@GtkWS_Popup),
+                 @APoint,
                  0,
                  0);
   {Displays a menu and makes it available for selection. Applications

@@ -645,6 +645,10 @@ type
     procedure SetVertScrollBar(const AValue: TMemoScrollBar);
     function StoreScrollBars: boolean;
   protected
+    procedure CreateHandle; override;
+    procedure DestroyHandle; override;
+    function  RealGetText: TCaption; override;
+    procedure RealSetText(const Value: TCaption); override;
     procedure SetLines(const Value: TStrings);
     procedure SetWordWrap(const Value: boolean);
     procedure SetScrollBars(const Value: TScrollStyle);
@@ -1233,6 +1237,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.200  2005/04/05 19:41:19  mattias
+  accelerated TMemo on gtk, gtk2 and win32 interface  from Andrew Haines
+
   Revision 1.199  2005/03/20 21:12:15  vincents
   made TCustomCombobox.Clear virtual
 

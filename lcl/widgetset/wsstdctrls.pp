@@ -136,6 +136,7 @@ type
 
   TWSCustomMemo = class(TWSCustomEdit)
     class procedure AppendText(const ACustomMemo: TCustomMemo; const AText: string); virtual;
+    class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; virtual;
     class procedure SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle); virtual;
     class procedure SetWordWrap(const ACustomMemo: TCustomMemo; const NewWordWrap: boolean); virtual;
   end;
@@ -358,6 +359,11 @@ end;
 
 procedure TWSCustomMemo.AppendText(const ACustomMemo: TCustomMemo; const AText: string);
 begin
+end;
+
+function TWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
+begin
+  Result := ACustomMemo.Lines; //use default if the WS has not defined any
 end;
 
 procedure TWSCustomMemo.SetScrollbars(const ACustomMemo: TCustomMemo; const NewScrollbars: TScrollStyle);

@@ -30,8 +30,9 @@ begin
   inherited Create(AOwner);
   fCompStyle := csMemo;
   FWordWrap := True;
-  FLines := TMemoStrings.Create(Self);
-  TMemoStrings(FLines).MemoWidgetClass := TWSCustomMemoClass(WidgetSetClass);
+  //FLines := TMemoStrings.Create(Self);
+  FLines := TStringList.Create; //TODO finish TTextStrings and add them here instead of TStringList
+  //TMemoStrings(FLines).MemoWidgetClass := TWSCustomMemoClass(WidgetSetClass);
   FVertScrollbar := TMemoScrollBar.Create(Self, sbVertical);
   FHorzScrollbar := TMemoScrollBar.Create(Self, sbHorizontal);
   SetInitialBounds(0,0,150,90);
@@ -95,6 +96,57 @@ end;
 function TCustomMemo.StoreScrollBars: boolean;
 begin
   Result:=true;
+end;
+
+procedure TCustomMemo.CreateHandle;
+var
+  NewStrings : TStrings;
+begin
+  //DebugLn('[TCustomMemo.CreateHandle] A ',FLines.ClassName);
+  inherited CreateHandle;
+  //DebugLn('[TCustomMemo.CreateHandle] B ',FLines.ClassName);
+  
+  // fetch/create the interface item list
+  NewStrings := TWSCustomMemoClass(WidgetSetClass).GetStrings(Self);
+  // copy the items (text)
+  NewStrings.Assign(Lines);
+
+  // free old items
+  FLines.Free;
+
+  // new item list is the interface item list
+  FLines:= NewStrings;
+
+  //DebugLn('[TCustomMemo.CreateHandle] END ',FLines.ClassName);
+end;
+
+procedure TCustomMemo.DestroyHandle;
+var
+  NewStrings : TStringList;
+
+begin
+  if Assigned(FLines) then begin
+    // create internal item list
+    NewStrings:= TStringList.Create;
+
+    // copy items (text+objects) from the interface items list
+    NewStrings.Assign(Lines);
+
+    FLines.Free;
+    // new item list is the internal item list
+    FLines:= NewStrings;
+  end;
+  inherited DestroyHandle;
+end;
+
+function TCustomMemo.RealGetText: TCaption;
+begin
+  Result := Lines.Text;
+end;
+
+procedure TCustomMemo.RealSetText(const Value: TCaption);
+begin
+  Lines.Text := Value;
 end;
 
 {------------------------------------------------------------------------------
@@ -180,6 +232,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.34  2005/04/05 19:41:19  mattias
+  accelerated TMemo on gtk, gtk2 and win32 interface  from Andrew Haines
+
   Revision 1.33  2005/03/10 09:06:34  mattias
   TCustomMemo: check for navigations keys only if not ReadOnly
 

@@ -155,6 +155,7 @@ type
     class procedure AppendText(const ACustomMemo: TCustomMemo;
                                const AText: string); override;
 {$ifdef GTK1}
+    class function  GetStrings(const ACustomMemo: TCustomMemo): TStrings; override;
     class procedure SetEchoMode(const ACustomEdit: TCustomEdit;
                                 NewMode: TEchoMode); override;
     class procedure SetMaxLength(const ACustomEdit: TCustomEdit;
@@ -256,10 +257,17 @@ type
 function  WidgetGetSelStart(const Widget: PGtkWidget): integer;
 procedure WidgetSetSelLength(const Widget: PGtkWidget; NewLength: integer);
 
+{$DEFINE MEMOHEADER}
+{$I gtkmemostrings.inc}
+{$UNDEF MEMOHEADER}
+
 implementation
 
+{$I gtkmemostrings.inc}
 
 { helper routines }
+
+
 
 function WidgetGetSelStart(const Widget: PGtkWidget): integer;
 begin
@@ -855,7 +863,16 @@ begin
   gtk_text_thaw(PGtkText(Widget));
 end;
 
+
 {$ifdef GTK1}
+
+function TGtkWSCustomMemo.GetStrings(const ACustomMemo: TCustomMemo): TStrings;
+var
+Widget: PGtkText;
+begin
+  Widget:=PGtkText(GetWidgetInfo(Pointer(ACustomMemo.Handle), true)^.CoreWidget);
+  Result:=TGtkMemoStrings.Create(Widget, ACustomMemo);
+end;
 
 procedure TGtkWSCustomMemo.SetEchoMode(const ACustomEdit: TCustomEdit;
   NewMode: TEchoMode);
