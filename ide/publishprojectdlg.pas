@@ -225,8 +225,8 @@ begin
   
   // command after
   List:=InputHistories.HistoryLists.GetList(hlPublishProjectCommandsAfter,true);
-  List.AppendEntry('/bin/tar czf project.tgz -C $(TestDir) publishedproject');
-  List.AppendEntry('/bin/tar czf package.tgz -C $(TestDir) publishedpackage');
+  List.AppendEntry('/bin/tar czf $(TestDir)/project.tgz -C $(TestDir) publishedproject');
+  List.AppendEntry('/bin/tar czf $(TestDir)/package.tgz -C $(TestDir) publishedpackage');
   CommandAfterCombobox.Items.Assign(List);
 
   // file filter

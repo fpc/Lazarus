@@ -309,7 +309,8 @@ procedure TPublishModuleOptions.SaveToXMLConfig(XMLConfig: TXMLConfig;
   const APath: string);
 begin
   XMLConfig.SetValue(APath+'Version/Value',PublishModulOptsVersion);
-  XMLConfig.SetValue(APath+'DestinationDirectory/Value',GetDefaultDestinationDir);
+  XMLConfig.SetDeleteValue(APath+'DestinationDirectory/Value',
+                           DestinationDirectory,GetDefaultDestinationDir);
   XMLConfig.SetDeleteValue(APath+'CommandAfter/Value',CommandAfter,'');
   XMLConfig.SetDeleteValue(APath+'IgnoreBinaries/Value',IgnoreBinaries,true);
   XMLConfig.SetDeleteValue(APath+'UseIncludeFileFilter/Value',

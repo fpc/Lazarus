@@ -1330,8 +1330,10 @@ begin
       xmlconfig.SetValue('ProjectOptions/General/TargetFileExt/Value'
           ,TargetFileExt);
       xmlconfig.SetDeleteValue('ProjectOptions/General/Title/Value', Title,'');
-      fJumpHistory.DeleteInvalidPositions;
-      fJumpHistory.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
+      if not (pfSaveOnlyProjectUnits in Flags) then begin
+        fJumpHistory.DeleteInvalidPositions;
+        fJumpHistory.SaveToXMLConfig(xmlconfig,'ProjectOptions/');
+      end;
 
       SaveUnits;
 
@@ -2661,6 +2663,9 @@ end.
 
 {
   $Log$
+  Revision 1.119  2003/05/12 14:47:45  mattias
+  reduced output
+
   Revision 1.118  2003/05/12 13:11:34  mattias
   implemented publish package
 

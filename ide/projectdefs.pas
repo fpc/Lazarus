@@ -42,7 +42,10 @@ uses
 type
   TOnLoadSaveFilename = procedure(var Filename:string; Load:boolean) of object;
 
-  TProjectWriteFlag = (pwfDontSaveClosedUnits, pwfSaveOnlyProjectUnits);
+  TProjectWriteFlag = (
+    pwfDontSaveClosedUnits,
+    pwfSaveOnlyProjectUnits
+    );
   TProjectWriteFlags = set of TProjectWriteFlag;
 
   TNewUnitType = (
