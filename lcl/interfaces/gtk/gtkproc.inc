@@ -305,8 +305,8 @@ begin
       CurrentPen := SourceDC.CurrentPen;
       CurrentBrush := SourceDC.CurrentBrush;
       //CurrentPalette := SourceDC.CurrentPalette;
-      CurrentTextColor := SourceDC.CurrentTextColor;
-      CurrentBackColor := SourceDC.CurrentBackColor;
+      CopyGDIColor(SourceDC.CurrentTextColor,CurrentTextColor);
+      CopyGDIColor(SourceDC.CurrentBackColor,CurrentBackColor);
       ClipRegion := SourceDC.ClipRegion;
 
       SelectedColors := dcscCustom;
@@ -369,42 +369,40 @@ begin
   end;
 end;
 
-Procedure FreeGDIColor(var GDIColor : TGDIColor);
+Procedure FreeGDIColor(GDIColor: PGDIColor);
 begin
-  if (cfColorAllocated in GDIColor.ColorFlags) then begin
-    if (GDIColor.Colormap <> nil) then
-      gdk_colormap_free_colors(GDIColor.Colormap,@GDIColor.Color, 1);
+  if (cfColorAllocated in GDIColor^.ColorFlags) then begin
+    if (GDIColor^.Colormap <> nil) then
+      gdk_colormap_free_colors(GDIColor^.Colormap,@(GDIColor^.Color), 1);
 
     //GDIColor.Color.Pixel := -1;
-    Exclude(GDIColor.ColorFlags,cfColorAllocated);
+    Exclude(GDIColor^.ColorFlags,cfColorAllocated);
   end;
 end;
 
-procedure SetGDIColorRef(var GDIColor : TGDIColor; NewColorRef: TColorRef);
+procedure SetGDIColorRef(var GDIColor: TGDIColor; NewColorRef: TColorRef);
 begin
   if GDIColor.ColorRef=NewColorRef then exit;
-  FreeGDIColor(GDIColor);
+  FreeGDIColor(@GDIColor);
   GDIColor.ColorRef:=NewColorRef;
 end;
 
-Procedure AllocGDIColor(DC : hDC; var GDIColor : TGDIColor);
+Procedure AllocGDIColor(DC: hDC; GDIColor: PGDIColor);
 var
   RGBColor : Longint;
 begin
-  if not (cfColorAllocated in GDIColor.ColorFlags) then begin
-    FreeGDIColor(GDIColor);
-
-    Case GDIColor.ColorRef of
+  if not (cfColorAllocated in GDIColor^.ColorFlags) then begin
+    Case GDIColor^.ColorRef of
       clScrollbar..clEndColors:
-        RGBColor := GetSysColor(GDIColor.ColorRef and $FF);
+        RGBColor := GetSysColor(GDIColor^.ColorRef and $FF);
       else
-        RGBColor := GDIColor.ColorRef and $FFFFFF;
+        RGBColor := GDIColor^.ColorRef and $FFFFFF;
     end;
 
-    With GDIColor.Color do begin
-      Red := RGB(0,GetRValue(RGBColor),0);
-      Green := RGB(0,GetGValue(RGBColor),0);
-      Blue := RGB(0,GetBValue(RGBColor),0);
+    With GDIColor^.Color do begin
+      Red := gushort(GetRValue(RGBColor)) shl 8;
+      Green := gushort(GetGValue(RGBColor)) shl 8;
+      Blue := gushort(GetBValue(RGBColor)) shl 8;
       Pixel := 0;
     end;
 
@@ -412,25 +410,31 @@ begin
       If CurrentPalette <> nil then
         GDIColor.Colormap := CurrentPalette^.PaletteColormap
       else}
-        GDIColor.Colormap := GDK_Colormap_get_system;
+        GDIColor^.Colormap := GDK_Colormap_get_system;
 
-    gdk_colormap_alloc_color(GDIColor.Colormap, @GDIColor.Color,True,True);
-    Include(GDIColor.ColorFlags,cfColorAllocated);
+    gdk_colormap_alloc_color(GDIColor^.Colormap, @(GDIColor^.Color),True,True);
+    Include(GDIColor^.ColorFlags,cfColorAllocated);
   end;
+end;
+
+procedure BuildColorRefFromGDKColor(var GDIColor: TGDIColor);
+begin
+  GDIColor.ColorRef:=TGDKColorToTColor(GDIColor.Color);
+  Include(GDIColor.ColorFlags,cfColorAllocated);
 end;
 
 Procedure EnsureGCColor(DC: hDC; ColorType: TDevContextsColorType;
   IsSolidBrush: Boolean; AsBackground: Boolean);
 var
   GC: PGDKGC;
-  GDIColor: TGDIColor;
+  GDIColor: PGDIColor;
 
   Procedure EnsureAsGCValues;
   var
     AllocFG : Boolean;
   begin
     FreeGDIColor(GDIColor);
-    With GetSysGCValues(GDIColor.ColorRef) do begin
+    With GetSysGCValues(GDIColor^.ColorRef) do begin
       gdk_gc_set_fill(GC, fill);
       AllocFG := Foreground.Pixel = 0;
       If AllocFG then
@@ -460,10 +464,10 @@ var
   begin
     AllocGDIColor(DC, GDIColor);
     If AsBackground then
-      gdk_gc_set_background(GC, @GDIColor.Color)
+      gdk_gc_set_background(GC, @(GDIColor^.Color))
     else begin
       gdk_gc_set_fill(GC, GDK_SOLID);
-      gdk_gc_set_foreground(GC, @GDIColor.Color);
+      gdk_gc_set_foreground(GC, @(GDIColor^.Color));
     end;
   end;
   
@@ -472,14 +476,14 @@ begin
   with TDeviceContext(DC) do
   begin
     case ColorType of
-    dccCurrentBackColor: GDIColor:=CurrentBackColor;
-    dccCurrentTextColor: GDIColor:=CurrentTextColor;
-    dccGDIBrushColor   : GDIColor:=CurrentBrush^.GDIBrushColor;
-    dccGDIPenColor     : GDIColor:=CurrentPen^.GDIPenColor;
+    dccCurrentBackColor: GDIColor:=@CurrentBackColor;
+    dccCurrentTextColor: GDIColor:=@CurrentTextColor;
+    dccGDIBrushColor   : GDIColor:=@(CurrentBrush^.GDIBrushColor);
+    dccGDIPenColor     : GDIColor:=@(CurrentPen^.GDIPenColor);
     else
       exit;
     end;
-    Case GDIColor.ColorRef of
+    Case GDIColor^.ColorRef of
       clScrollbar,
       clInfoBk,
       clMenu,
@@ -503,6 +507,11 @@ begin
         EnsureAsColor;
     end;
   end;
+end;
+
+procedure CopyGDIColor(var SourceGDIColor, DestGDIColor: TGDIColor);
+begin
+  SetGDIColorRef(DestGDIColor,SourceGDIColor.ColorRef);
 end;
 
 function CompareGDIColor(const Color1, Color2: TGDIColor): boolean;
@@ -2883,13 +2892,13 @@ Begin
   Writeln('*********************************************');
 end;
 
-function TGDKColorToTColor(value : TGDKColor) : TColor;
+function TGDKColorToTColor(const value : TGDKColor) : TColor;
 begin
   Result := ((Value.Blue shr 8) shl 16) + ((Value.Green shr 8) shl 8)
            + (Value.Red shr 8);
 end;
 
-function TColortoTGDKColor(value : TColor) : TGDKColor;
+function TColortoTGDKColor(const value : TColor) : TGDKColor;
 var
    newColor : TGDKColor;
    num : LongInt;                                          // example assume value := $00FF2510
@@ -4063,6 +4072,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.172  2003/05/19 08:16:33  mattias
+  fixed allocation of dc backcolor
+
   Revision 1.171  2003/05/01 11:44:03  mattias
   fixed changing menuitem separator and normal
 
