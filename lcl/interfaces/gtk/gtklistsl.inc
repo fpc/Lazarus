@@ -196,6 +196,7 @@ begin
     while (l<=r) do begin
       m:=(l+r) shr 1;
       cmp:=AnsiCompareText(S,Strings[m]);
+
       if cmp<0 then
         r:=m-1
       else if cmp>0 then
@@ -404,6 +405,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.7  2002/09/07 20:30:50  lazarus
+  Make TComboboxes sort again, including in OI
+
   Revision 1.6  2002/08/29 00:07:02  lazarus
   MG: fixed TComboBox and InvalidateControl
 
