@@ -6465,7 +6465,8 @@ begin
       NewFocusWidget:=Widget;
     end;
     if (NewFocusWidget<>nil)
-    and (PGtkWindow(TopLevel)^.Focus_Widget<>NewFocusWidget) then begin
+    and (PGtkWindow(TopLevel)^.Focus_Widget<>NewFocusWidget)
+    and (GTK_WIDGET_CAN_FOCUS(NewFocusWidget)) then begin
       {$IfDef VerboseFocus}
       writeln('  G NewFocusWidget=',HexStr(Cardinal(NewFocusWidget),8));
       {$EndIf}
@@ -7616,6 +7617,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.200  2002/12/28 11:29:47  mattias
+  xmlcfg deletion, focus fixes
+
   Revision 1.199  2002/12/27 17:58:47  mattias
   cleanup
 
