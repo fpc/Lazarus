@@ -4405,7 +4405,8 @@ end;
 Procedure TgtkObject.FinishComponentCreate(Sender : TObject;
   Handle : Pointer; SetupProps : Boolean);
 
-  {procedure SetWidgetFont(AWinControl: TWinControl; AWidget: PGtkWidget);
+  {$IFDEF CustomFonts}
+  procedure SetWidgetFont(AWinControl: TWinControl; AWidget: PGtkWidget);
   var
     AStyle: PGtkStyle;
   begin
@@ -4421,7 +4422,8 @@ Procedure TgtkObject.FinishComponentCreate(Sender : TObject;
       exit;
     end;
     
-  end;}
+  end;
+  {$ENDIF}
   
 begin
   // MWE: next will be obsoleted by WinWidgetInfo
@@ -4461,9 +4463,11 @@ begin
     {$IfNDef win32}
     if Sender is TCustomForm then
       gtk_widget_set_app_paintable(Handle,true);
-    //if AComponent is TWinControl then
-    //  SetWidgetFont(TWinControl(Sender),PGtkWidget(Handle));
     {$EndIf}
+    {$IFDEF CustomFonts}
+    if AComponent is TWinControl then
+      SetWidgetFont(TWinControl(Sender),PGtkWidget(Handle));
+    {$ENDIF}
     HookSignals(Sender);
   end;
 end;
@@ -7346,6 +7350,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.370  2003/06/09 09:31:40  mattias
+  fixed 1_0_8 difference
+
   Revision 1.369  2003/06/09 09:20:27  mattias
   removed menubar.inc
 
