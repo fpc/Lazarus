@@ -4790,7 +4790,7 @@ begin
   LCLControl:=TWinControl(Sender);
   if not LCLControl.HandleAllocated then exit;
   SenderWidget:=PgtkWidget(LCLControl.Handle);
-  //if Sender is TForm then
+  //if (Sender is TForm) and (Sender.ClassName='TForm1') then
   //  writeln('[TgtkObject.ShowHide] START ',TControl(Sender).Name,':',Sender.ClassName,' Visible=',TControl(Sender).Visible,' GtkVisible=',gtk_widget_visible(SenderWidget));
   if LCLControl.Visible
   or ((csDesigning in LCLControl.ComponentState)
@@ -6889,6 +6889,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.329  2003/03/11 22:56:41  mattias
+  added visiblechanging
+
   Revision 1.328  2003/03/09 21:13:32  mattias
   localized gtk interface
 
