@@ -61,6 +61,7 @@ function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; {$I
 Function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateCaret(Handle: HWND; Bitmap: hBitmap; width, Height: Integer): Boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -386,6 +387,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.81  2003/07/02 15:56:15  mattias
+  fixed win32 painting and started creating bitmaps from rawimages
+
   Revision 1.80  2003/07/02 10:02:51  mattias
   fixed TPaintStruct
 

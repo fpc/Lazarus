@@ -1905,7 +1905,7 @@ begin
   Desc^.BluePrec:=Visual^.blue_prec;
   Desc^.BlueShift:=Visual^.blue_shift;
   Desc^.AlphaMask:=true;
-  Desc^.AlphaPrec:=1;
+  Desc^.AlphaPrec:=0;
   Desc^.AlphaShift:=0;
   // AlphaBitsPerPixel and AlphaLineEnd
   Desc^.AlphaBitsPerPixel:=Desc^.AlphaPrec;
@@ -1936,6 +1936,97 @@ begin
       ' AlphaBitsPerPixel=',AlphaBitsPerPixel,
       ' AlphaLineEnd=',ord(AlphaLineEnd),
     '');
+  end;
+
+  Result:=true;
+end;
+
+function TgtkObject.GetRawImageFromGdkWindow(GDKWindow: PGdkWindow;
+  const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+var
+  ARect: TRect;
+  MaxRect: TRect;
+  SourceRect: TRect;
+  AnImage: PGdkImage;
+  {y: Integer;
+  x: Integer;
+  AColor: guint;
+  i: Integer;}
+begin
+  Result:=false;
+  FillChar(NewRawImage,SizeOf(NewRawImage),0);
+  if GdkWindow=nil then
+    RaiseGDBException('TgtkObject.GetRawImageFromGdkWindow');
+
+  // get raw image description
+  writeln('TgtkObject.GetRawImageFromGdkWindow A GdkWindow=',HexStr(Cardinal(GdkWindow),8));
+  if not GetWindowRawImageDescription(GdkWindow,@NewRawImage.Description) then
+    exit;
+
+  writeln('TgtkObject.GetRawImageFromGdkWindow B ');
+  // get intersection
+  ARect:=SrcRect;
+  writeln('TgtkObject.GetRawImageFromGdkWindow D ARect=',ARect.Left,',',ARect.Top,',',ARect.Right,',',ARect.Bottom,' DevW=',NewRawImage.Description.Width,' DevH=',NewRawImage.Description.Height);
+  MaxRect:=Rect(0,0,NewRawImage.Description.Width,
+                    NewRawImage.Description.Height);
+  SourceRect:=ARect;
+  IntersectRect(SourceRect,ARect,MaxRect);
+  writeln('TgtkObject.GetRawImageFromGdkWindow E SourceRect=',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom);
+  NewRawImage.Description.Width:=SourceRect.Right-SourceRect.Left;
+  NewRawImage.Description.Height:=SourceRect.Bottom-SourceRect.Top;
+  writeln('TgtkObject.GetRawImageFromGdkWindow F ',SourceRect.Left,',',SourceRect.Top,',',SourceRect.Right,',',SourceRect.Bottom,' GDKWindow=',HexStr(Cardinal(GDkWindow),8));
+  if (NewRawImage.Description.Width=0) or (NewRawImage.Description.Height=0)
+  then exit;
+
+  // get gdk_image
+  AnImage:=gdk_image_get(GDKWindow,SourceRect.Left,SourceRect.Top,
+                         NewRawImage.Description.Width,
+                         NewRawImage.Description.Height);
+  if AnImage=nil then begin
+    writeln('WARNING: TgtkObject.GetRawImageFromGdkWindow gdk_image_get failed');
+    exit;
+  end;
+  try
+    // consistency checks
+    if NewRawImage.Description.Depth<>AnImage^.Depth then
+      RaiseGDBException('NewRawImage.Description.Depth<>AnImage^.Depth');
+    if NewRawImage.Description.BitsPerPixel<>AnImage^.bpp then
+      RaiseGDBException('NewRawImage.Description.BitsPerPixel<>AnImage^.bpp');
+
+    NewRawImage.DataSize:=(NewRawImage.Description.BitsPerPixel shr 3)
+                          *AnImage^.Width*AnImage^.Height;
+    writeln('TgtkObject.GetRawImageFromGdkWindow G Width=',AnImage^.Width,' Height=',AnImage^.Height,' BitsPerPixel=',NewRawImage.Description.BitsPerPixel,' bpl=',AnImage^.bpl);
+    if NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height then
+      RaiseGDBException('NewRawImage.DataSize<>AnImage^.bpl*AnImage^.Height');
+
+    // copy data
+    NewRawImage.Description.Width:=AnImage^.Width;
+    NewRawImage.Description.Height:=AnImage^.Height;
+
+    {NewRawImage.Description.BitsPerPixel:=SizeOf(GUInt)*8;
+    NewRawImage.DataSize:=AnImage^.Width*AnImage^.Height*SizeOf(GUInt);
+    ReAllocMem(NewRawImage.Data,NewRawImage.DataSize);
+    i:=0;
+    for y:=0 to AnImage^.Height-1 do begin
+      for x:=0 to AnImage^.Width-1 do begin
+        AColor:=gdk_image_get_pixel(AnImage,x,y);
+        pGuint(NewRawImage.Data)[i]:=AColor;
+        if (y=5) then write(' ',HexStr(Cardinal(AColor),8),'@',HexStr(Cardinal(@pGuint(NewRawImage.Data)[i]),8));
+        inc(i);
+      end;
+    end;
+    writeln('');}
+    ReAllocMem(NewRawImage.Data,NewRawImage.DataSize);
+    if NewRawImage.DataSize>0 then
+      System.Move(AnImage^.Mem^,NewRawImage.Data^,NewRawImage.DataSize);
+
+    writeln('TgtkObject.GetRawImageFromGdkWindow H ',
+      ' Width=',NewRawImage.Description.Width,
+      ' Height=',NewRawImage.Description.Height,
+      ' Depth=',NewRawImage.Description.Depth,
+      ' DataSize=',NewRawImage.DataSize);
+  finally
+    gdk_image_destroy(AnImage);
   end;
 
   Result:=true;
@@ -7791,6 +7882,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.388  2003/07/02 15:56:15  mattias
+  fixed win32 painting and started creating bitmaps from rawimages
+
   Revision 1.387  2003/07/02 10:02:51  mattias
   fixed TPaintStruct
 

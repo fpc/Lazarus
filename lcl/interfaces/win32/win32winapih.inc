@@ -22,6 +22,7 @@
 Function Arc(DC: HDC; X, Y, Width, Height, Angle1, Angle2: Integer): Boolean; Override;
 function AngleChord(DC: HDC; x,y,width,height,angle1,angle2 : Integer): Boolean; override;
 
+Function BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc; Override;
 Function BitBlt(DestDC: HDC; X, Y, Width, Height: Integer; SrcDC: HDC; XSrc, YSrc: Integer; Rop: DWORD): Boolean; Override;
 Function BringWindowToTop(HWnd: HWND): Boolean; Override;
 
@@ -68,6 +69,7 @@ Function EmptyClipBoard: Boolean;
 Function EnableMenuItem(HndMenu: HMENU; UIDEnableItem: Integer; BEnable: Boolean): Boolean; Override;
 Function EnableScrollBar(Wnd: HWND; WSBFlags, WArrows: Cardinal): Boolean; Override;
 Function EnableWindow(HWnd: HWND; BEnable: Boolean): Boolean; Override;
+Function EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer; Override;
 Function ExcludeClipRect(dc: hdc; Left, Top, Right, Bottom : Integer) : Integer; override;
 Function ExtTextOut(DC: HDC; X, Y: Integer; Options: LongInt; Rect: PRect; Str: PChar; Count: LongInt; Dx: PInteger): Boolean; Override;
 function ExtSelectClipRGN(dc: hdc; rgn : hrgn; Mode : Longint) : Integer; override;
@@ -173,6 +175,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.24  2003/07/02 15:56:15  mattias
+  fixed win32 painting and started creating bitmaps from rawimages
+
   Revision 1.23  2003/03/25 08:12:39  mattias
   patch from Martin Smat for menu items and default messages
 

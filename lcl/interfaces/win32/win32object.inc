@@ -228,7 +228,7 @@ Procedure TWin32Object.SetLabel(Sender: TObject; Data: Pointer);
       cbsize:=sizeof(MENUITEMINFO);
       {In Win32 Menu items that are created without a initial caption default to disabled,
        the next three lines are to counter that.}
-      fMask:=MIIM_STATE or MIIM_TYPE or MIIM_ID;
+      fMask:=MIIM_STATE;
       GetMenuItemInfo((Sender as TMenuItem).Parent.Handle,
                       (Sender as TMenuItem).Command, false, @MenuInfo);
       if (Sender as TMenuItem).Enabled then
@@ -2672,6 +2672,9 @@ End;
 
 {
   $Log$
+  Revision 1.65  2003/07/02 15:56:15  mattias
+  fixed win32 painting and started creating bitmaps from rawimages
+
   Revision 1.64  2003/07/01 22:02:55  mattias
   fixed formstyle and redrawing from Micha
 

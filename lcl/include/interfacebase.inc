@@ -149,9 +149,16 @@ begin
   SendMsgToInterface:=@IntSendMessage3;
 end;
 
-function TInterfaceBase.CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
+function TInterfaceBase.CreateBitmap(Width, Height: Integer;
+  Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP;
 begin
   Result := 0;
+end;
+
+function TInterfaceBase.CreateBitmapFromRawImage(const RawImage: TRawImage;
+  var Bitmap, MaskBitmap: HBitmap): boolean;
+begin
+  Result := false;
 end;
 
 function TInterfaceBase.CreateDIBitmap(DC: HDC;
@@ -1768,6 +1775,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.94  2003/07/02 15:56:15  mattias
+  fixed win32 painting and started creating bitmaps from rawimages
+
   Revision 1.93  2003/07/02 10:02:51  mattias
   fixed TPaintStruct
 

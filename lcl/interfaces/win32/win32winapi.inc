@@ -101,6 +101,20 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:  BeginPaint
+  Params:  Handle        - Handle to window to begin painting in
+           PS            - PAINTSTRUCT variable that will receive painting information.
+  Returns: A device context for the specified window if succesful otherwise nil
+
+  The BeginPaint function prepares the specified window for painting and fills
+  a PAINTSTRUCT structure with information about the painting.
+ ------------------------------------------------------------------------------}
+Function TWin32Object.BeginPaint(Handle : hwnd; var PS : TPaintStruct): hdc;
+Begin
+  Result := Windows.BeginPaint(Handle, @PS);
+End;
+
+{------------------------------------------------------------------------------
   Method:  BringWindowToTop
   Params:  HWnd - The handle of the window
   Returns: True if succesful
@@ -842,6 +856,21 @@ Begin
   Assert(False, 'Trace:TODO: [TWin32Object.EnableScrollBar]');
   //TODO: Implement this;
   Result := Windows.EnableScrollBar(Wnd, WSBFlags, WArrows);
+End;
+
+{------------------------------------------------------------------------------
+  Method:  EndPaint
+  Params:  Handle        - Handle to window
+           PS            - PAINTSTRUCT variable with painting information
+  Returns: always nonzero.
+
+  The EndPaint function marks the end of painting in the specified window.
+  This function is required for each call to the BeginPaint function, but only
+  after painting is complete.
+ ------------------------------------------------------------------------------}
+Function TWin32Object.EndPaint(Handle : hwnd; var PS : TPaintStruct): Integer;
+Begin
+  Result := Integer(Windows.EndPaint(Handle, @PS));
 End;
 
 {------------------------------------------------------------------------------
@@ -2237,24 +2266,24 @@ var
 begin
   { An OS Compatible TCriticalSection needs to be defined}
   If CritSection <> 0 then
-    Try
+{    Try
       Crit := LPCRITICAL_SECTION(CritSection);
       Dispose(Crit);
     except
       CritSection := 0;
-    end;
+    end;}
   New(Crit);
   Windows.InitializeCriticalSection(Crit^);
   CritSection := Longint(Crit);
 end;
 
 Procedure TWin32Object.EnterCriticalSection(var CritSection: TCriticalSection);
-var
+{var
   Crit,
-  tmp : LPCRITICAL_SECTION;
+  tmp : LPCRITICAL_SECTION;}
 begin
   { An OS Compatible TCriticalSection needs to be defined}
-  New(Crit);
+{  New(Crit);
   If CritSection <> 0 then
     Try
       Crit^ := LPCRITICAL_SECTION(CritSection)^;
@@ -2267,16 +2296,16 @@ begin
   Windows.EnterCriticalSection(Crit^);
   tmp := LPCRITICAL_SECTION(CritSection);
   CritSection := Longint(Crit);
-  Dispose(Tmp);
+  Dispose(Tmp);}
 end;
 
 Procedure TWin32Object.LeaveCriticalSection(var CritSection: TCriticalSection);
-var
+{var
   Crit,
-  tmp : LPCRITICAL_SECTION;
+  tmp : LPCRITICAL_SECTION;}
 begin
   { An OS Compatible TCriticalSection needs to be defined}
-  New(Crit);
+{  New(Crit);
   If CritSection <> 0 then
     Try
       Crit^ := LPCRITICAL_SECTION(CritSection)^;
@@ -2289,16 +2318,16 @@ begin
   Windows.LeaveCriticalSection(Crit^);
   tmp := LPCRITICAL_SECTION(CritSection);
   CritSection := Longint(Crit);
-  Dispose(Tmp);
+  Dispose(Tmp);}
 end;
 
 Procedure TWin32Object.DeleteCriticalSection(var CritSection: TCriticalSection);
-var
+{var
   Crit,
-  tmp : LPCRITICAL_SECTION;
+  tmp : LPCRITICAL_SECTION;}
 begin
   { An OS Compatible TCriticalSection needs to be defined}
-  New(Crit);
+{  New(Crit);
   If CritSection <> 0 then
     Try
       Crit^ := LPCRITICAL_SECTION(CritSection)^;
@@ -2312,7 +2341,7 @@ begin
   Dispose(Crit);
   tmp := LPCRITICAL_SECTION(CritSection);
   CritSection := 0;
-  Dispose(Tmp);
+  Dispose(Tmp);}
 end;
 
 //##apiwiz##eps##   // Do not remove
@@ -2325,6 +2354,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.36  2003/07/02 15:56:15  mattias
+  fixed win32 painting and started creating bitmaps from rawimages
+
   Revision 1.35  2003/06/28 16:20:19  mattias
   fixed some win32 intf warnings
 

@@ -2243,7 +2243,7 @@ begin
   begin
     if not (csCustomPaint in ControlState) and (ControlCount = 0) then
       begin
-      // no inherited method to call...
+        DefaultHandler(Msg);
       end
     else
       PaintHandler(Msg);
@@ -2885,6 +2885,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.150  2003/07/02 15:56:15  mattias
+  fixed win32 painting and started creating bitmaps from rawimages
+
   Revision 1.149  2003/06/30 16:39:40  mattias
   clean up
 

@@ -126,6 +126,12 @@ begin
                                          BitmapBits);
 end;
 
+function CreateBitmapFromRawImage(const RawImage: TRawImage;
+  var Bitmap, MaskBitmap: HBitmap): boolean;
+begin
+  Result := InterfaceObject.CreateBitmapFromRawImage(RawImage,Bitmap,MaskBitmap);
+end;
+
 function CreateDIBitmap(DC: HDC; var InfoHeader: TBitmapInfoHeader;
   dwUsage: DWORD; InitBits: PChar; var InitInfo: TBitmapInfo;
   wUsage: UINT): HBITMAP;
@@ -1623,6 +1629,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.88  2003/07/02 15:56:15  mattias
+  fixed win32 painting and started creating bitmaps from rawimages
+
   Revision 1.87  2003/07/02 10:02:51  mattias
   fixed TPaintStruct
 

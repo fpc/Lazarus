@@ -48,6 +48,7 @@ function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; ove
 Function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;  override;
 function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
+function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap): boolean; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
@@ -209,6 +210,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.72  2003/07/02 15:56:15  mattias
+  fixed win32 painting and started creating bitmaps from rawimages
+
   Revision 1.71  2003/07/02 10:02:51  mattias
   fixed TPaintStruct
 

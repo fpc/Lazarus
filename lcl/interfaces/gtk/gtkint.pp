@@ -155,6 +155,8 @@ type
       BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;virtual;
     function GetWindowRawImageDescription(GDKWindow: PGdkWindow;
       Desc: PRawImageDescription): boolean;
+    function GetRawImageFromGdkWindow(GDKWindow: PGdkWindow;
+      const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
 
     // RC file
     procedure SetRCFilename(const AValue: string);virtual;
@@ -347,6 +349,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.134  2003/07/02 15:56:15  mattias
+  fixed win32 painting and started creating bitmaps from rawimages
+
   Revision 1.133  2003/07/02 10:02:51  mattias
   fixed TPaintStruct
 
