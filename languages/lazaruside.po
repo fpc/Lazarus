@@ -1983,7 +1983,27 @@ msgid "Ignore"
 msgstr ""
 
 #: lazarusidestrconsts:dlgbackcolor
-msgid "Background color"
+msgid "Background"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsubpropkcolor
+msgid "Subpropertes"
+msgstr ""
+
+#: lazarusidestrconsts:dlgreferencecolor
+msgid "Reference"
+msgstr ""
+
+#: lazarusidestrconsts:dlgvaluecolor
+msgid "Value"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdefvaluecolor
+msgid "Default value"
+msgstr ""
+
+#: lazarusidestrconsts:dlgpropnamecolor
+msgid "Property name"
 msgstr ""
 
 #: lazarusidestrconsts:dlgoimiscellaneous

@@ -617,8 +617,8 @@ msgid "Back"
 msgstr "Indietro"
 
 #: lazarusidestrconsts:dlgbackcolor
-msgid "Background color"
-msgstr "Colore sfondo"
+msgid "Background"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_back
 msgid "Backspace"
@@ -1623,6 +1623,10 @@ msgstr "Carattere dell'editor predefinito"
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
 msgstr "Estensione Pascal predefinita"
+
+#: lazarusidestrconsts:dlgdefvaluecolor
+msgid "Default value"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsdefine
 msgid "Define"
@@ -4728,6 +4732,10 @@ msgstr ""
 msgid "Property completion"
 msgstr "Completamento della proprietà"
 
+#: lazarusidestrconsts:dlgpropnamecolor
+msgid "Property name"
+msgstr ""
+
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
 msgstr ""
@@ -4822,6 +4830,10 @@ msgstr ""
 
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
+msgstr ""
+
+#: lazarusidestrconsts:dlgreferencecolor
+msgid "Reference"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdeprefresh
@@ -5875,6 +5887,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgedbsubdir
 msgid "Sub directory"
 msgstr "Sotto directory"
+
+#: lazarusidestrconsts:dlgsubpropkcolor
+msgid "Subpropertes"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -7168,7 +7184,7 @@ msgstr "Estensione definita dall'utente (.pp.xxx)"
 msgid "User overrides"
 msgstr "Le impostazioni utente vincono"
 
-#: lazarusidestrconsts:dlgrunovalue
+#: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
 msgstr "Valore"
 

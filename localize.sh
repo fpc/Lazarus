@@ -24,7 +24,7 @@ fi
 IDE_RST=`find . -name lazarusidestrconsts.rst | xargs ls -1t | head -1`;
 rstconv -i $IDE_RST -o languages/lazaruside.po
 ./tools/updatepofiles languages/lazaruside.po
-for lang in ca de es esutf fi fiwin fr he it itiso pl pliso plwin ru ruwin ruutf ; do
+for lang in ca de es esutf fi fiwin fr he it itiso nl pl pliso plwin ru ruwin ruutf ; do
   msgfmt languages/lazaruside.$lang.po -o languages/lazaruside.$lang.mo
 done
 

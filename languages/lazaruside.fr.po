@@ -617,8 +617,8 @@ msgid "Back"
 msgstr "Retour"
 
 #: lazarusidestrconsts:dlgbackcolor
-msgid "Background color"
-msgstr "Couleur de fond"
+msgid "Background"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_back
 msgid "Backspace"
@@ -1623,6 +1623,10 @@ msgstr "Fonte par défaut pour l'éditeur"
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
 msgstr "Extension Pascal par défaut"
+
+#: lazarusidestrconsts:dlgdefvaluecolor
+msgid "Default value"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsdefine
 msgid "Define"
@@ -4728,6 +4732,10 @@ msgstr "Propriétés:"
 msgid "Property completion"
 msgstr "Achèvement de propriété"
 
+#: lazarusidestrconsts:dlgpropnamecolor
+msgid "Property name"
+msgstr ""
+
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
 msgstr "Méthode protégée"
@@ -4823,6 +4831,10 @@ msgstr "Réduire le traçage du designer"
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
 msgstr "Retravailler"
+
+#: lazarusidestrconsts:dlgreferencecolor
+msgid "Reference"
+msgstr ""
 
 #: lazarusidestrconsts:dlgunitdeprefresh
 msgid "Refresh"
@@ -5875,6 +5887,10 @@ msgstr "Sous-procédure de même niveau"
 #: lazarusidestrconsts:dlgedbsubdir
 msgid "Sub directory"
 msgstr "Sous-répertoire"
+
+#: lazarusidestrconsts:dlgsubpropkcolor
+msgid "Subpropertes"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -7168,7 +7184,7 @@ msgstr "Extension utilisateur (.pp.xxx)"
 msgid "User overrides"
 msgstr "Surcharge utilisateur"
 
-#: lazarusidestrconsts:dlgrunovalue
+#: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
 msgstr "Valeur"
 

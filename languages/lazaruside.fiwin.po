@@ -607,8 +607,8 @@ msgid "Back"
 msgstr ""
 
 #: lazarusidestrconsts:dlgbackcolor
-msgid "Background color"
-msgstr "Taustaväri"
+msgid "Background"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_back
 msgid "Backspace"
@@ -1612,6 +1612,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
+msgstr ""
+
+#: lazarusidestrconsts:dlgdefvaluecolor
+msgid "Default value"
 msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsdefine
@@ -4718,6 +4722,10 @@ msgstr ""
 msgid "Property completion"
 msgstr ""
 
+#: lazarusidestrconsts:dlgpropnamecolor
+msgid "Property name"
+msgstr ""
+
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
 msgstr "Protected - metodi"
@@ -4812,6 +4820,10 @@ msgstr ""
 
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
+msgstr ""
+
+#: lazarusidestrconsts:dlgreferencecolor
+msgid "Reference"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdeprefresh
@@ -5864,6 +5876,10 @@ msgstr ""
 
 #: lazarusidestrconsts:dlgedbsubdir
 msgid "Sub directory"
+msgstr ""
+
+#: lazarusidestrconsts:dlgsubpropkcolor
+msgid "Subpropertes"
 msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
@@ -7158,7 +7174,7 @@ msgstr ""
 msgid "User overrides"
 msgstr ""
 
-#: lazarusidestrconsts:dlgrunovalue
+#: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
 msgstr ""
 

@@ -607,8 +607,8 @@ msgid "Back"
 msgstr "Назад"
 
 #: lazarusidestrconsts:dlgbackcolor
-msgid "Background color"
-msgstr "Цвет фона"
+msgid "Background"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_back
 msgid "Backspace"
@@ -1613,6 +1613,10 @@ msgstr "Шрифт редактора по умолчанию"
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
 msgstr "Стандартное расширение паскаля"
+
+#: lazarusidestrconsts:dlgdefvaluecolor
+msgid "Default value"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsdefine
 msgid "Define"
@@ -4718,6 +4722,10 @@ msgstr "Свойства:"
 msgid "Property completion"
 msgstr "Завершение свойств"
 
+#: lazarusidestrconsts:dlgpropnamecolor
+msgid "Property name"
+msgstr ""
+
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
 msgstr "Защищённый метод"
@@ -4813,6 +4821,10 @@ msgstr "Уменьшить прорисовку дизайнеров"
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
 msgstr "Переработка кода"
+
+#: lazarusidestrconsts:dlgreferencecolor
+msgid "Reference"
+msgstr ""
 
 #: lazarusidestrconsts:dlgunitdeprefresh
 msgid "Refresh"
@@ -5865,6 +5877,10 @@ msgstr "Подпроцедура того же уровня"
 #: lazarusidestrconsts:dlgedbsubdir
 msgid "Sub directory"
 msgstr "Подкаталог"
+
+#: lazarusidestrconsts:dlgsubpropkcolor
+msgid "Subpropertes"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -7158,7 +7174,7 @@ msgstr "Расширение пользователя (.pp.xxx)"
 msgid "User overrides"
 msgstr "Пользовательские замены"
 
-#: lazarusidestrconsts:dlgrunovalue
+#: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
 msgstr "Значение"
 

@@ -16,11 +16,11 @@ msgstr " Imatge seleccionada "
 
 #: objinspstrconsts:oishelpalreadyregistered
 msgid "%s: Already registered"
-msgstr "%s: Ja registrat"
+msgstr "%s: Ja està registrat"
 
 #: objinspstrconsts:oishelpnotregistered
 msgid "%s: Not registered"
-msgstr "%s: No registrat"
+msgstr "%s: No està registrat"
 
 #: objinspstrconsts:oisitemsselected
 msgid "%u items selected"
@@ -28,51 +28,51 @@ msgstr "%u elements seleccionats"
 
 #: objinspstrconsts:oiscadd
 msgid "&Add"
-msgstr "&Afegir"
+msgstr "&Afegeix"
 
 #: objinspstrconsts:oistdactdatasetcancelheadline
 msgid "&Cancel"
-msgstr "&Cancel·lar"
+msgstr "&Cancel·la"
 
 #: objinspstrconsts:oistdacthelpcontentsheadline
 msgid "&Contents"
-msgstr ""
+msgstr "&Índex"
 
 #: objinspstrconsts:oistdacteditcopyheadline
 msgid "&Copy"
-msgstr ""
+msgstr "Co&pia"
 
 #: objinspstrconsts:oiscdelete
 msgid "&Delete"
-msgstr "E&sborrar"
+msgstr "&Elimina"
 
 #: objinspstrconsts:oistdactdataseteditheadline
 msgid "&Edit"
-msgstr ""
+msgstr "&Edita"
 
 #: objinspstrconsts:oistdactdatasetfirstheadline
 msgid "&First"
-msgstr ""
+msgstr "&Primer"
 
 #: objinspstrconsts:oistdacthelphelphelpheadline
 msgid "&Help on Help"
-msgstr ""
+msgstr "&Ajuda en l'ajuda"
 
 #: objinspstrconsts:oistdactdatasetinsertheadline
 msgid "&Insert"
-msgstr ""
+msgstr "&Insereix"
 
 #: objinspstrconsts:oistdactdatasetlastheadline
 msgid "&Last"
-msgstr ""
+msgstr "&Últim"
 
 #: objinspstrconsts:oisload
 msgid "&Load"
-msgstr "Ca&rregar"
+msgstr "Ca&rrega"
 
 #: objinspstrconsts:oistdactdatasetnextheadline
 msgid "&Next"
-msgstr ""
+msgstr "Següe&nt"
 
 #: objinspstrconsts:oisok
 msgid "&OK"
@@ -80,31 +80,31 @@ msgstr "D'ac&ord"
 
 #: objinspstrconsts:oistdactfileopenheadline
 msgid "&Open..."
-msgstr ""
+msgstr "&Obre.."
 
 #: objinspstrconsts:oistdacteditpasteheadline
 msgid "&Paste"
-msgstr ""
+msgstr "&Enganxa"
 
 #: objinspstrconsts:oistdactdatasetpriorheadline
 msgid "&Prior"
-msgstr ""
+msgstr "&Passat"
 
 #: objinspstrconsts:oistdactdatasetrefreshheadline
 msgid "&Refresh"
-msgstr ""
+msgstr "&Refresca"
 
 #: objinspstrconsts:oissave
 msgid "&Save"
-msgstr "&Guardar"
+msgstr "&Desa"
 
 #: objinspstrconsts:oistdacthelptopicsearchheadline
 msgid "&Topic Search"
-msgstr ""
+msgstr "Cerca el con&tingut"
 
 #: objinspstrconsts:oistdacteditundoheadline
 msgid "&Undo"
-msgstr ""
+msgstr "De&sfés"
 
 #: objinspstrconsts:cactionlisteditorallcategory
 msgid "(All)"
@@ -120,11 +120,11 @@ msgstr "Acció"
 
 #: objinspstrconsts:oisactionlisteditor
 msgid "Action List Editor"
-msgstr "Editor de llista d'accions"
+msgstr "Editor de la llista d'accions"
 
 #: objinspstrconsts:sccsilbtnadd
 msgid "Add ..."
-msgstr "Afegir ..."
+msgstr "Afegeix ..."
 
 #: objinspstrconsts:oisall
 msgid "All"
@@ -140,7 +140,7 @@ msgstr "Conjunt"
 
 #: objinspstrconsts:oisstdactionlisteditorclass
 msgid "Available Action Classes:"
-msgstr ""
+msgstr "Classes d'acció disponibles:"
 
 #: objinspstrconsts:oisboolean
 msgid "Boolean"
@@ -148,19 +148,19 @@ msgstr "Booleà"
 
 #: objinspstrconsts:oishelpbrowsernotexecutable
 msgid "Browser %s%s%s not executable."
-msgstr "Navegador %s%s%s no executable."
+msgstr "El navegador %s%s%s no és executable."
 
 #: objinspstrconsts:oishelpbrowsernotfound
 msgid "Browser %s%s%s not found."
-msgstr "Navegador %s%s%s no trobat."
+msgstr "No s'ha trobat el navegador %s%s%s."
 
 #: objinspstrconsts:oisclear
 msgid "C&lear"
-msgstr "Ne&tejar"
+msgstr "Ne&teja"
 
 #: objinspstrconsts:oistdactdatasetcancel1hint
 msgid "Cancel"
-msgstr ""
+msgstr "Cancel·la"
 
 #: objinspstrconsts:oiscategory
 msgid "Category"
@@ -176,95 +176,95 @@ msgstr "Classe"
 
 #: objinspstrconsts:sccsilbtnclear
 msgid "Clear"
-msgstr "Netejar"
+msgstr "Neteja"
 
 #: objinspstrconsts:oistdactcolorselecthint
 msgid "Color Select"
-msgstr ""
+msgstr "Selecciona el color"
 
 #: objinspstrconsts:oisconfirmdelete
 msgid "Confirm delete"
-msgstr "Confirmar esborrar"
+msgstr "Confirma l'eliminació"
 
 #: objinspstrconsts:sccsilconfirme
 msgid "Confirme clear all images ?"
-msgstr "Confirmar esborrar totes les imatges ?"
+msgstr "Voleu confirmar la neteja de totes les imatges ?"
 
 #: objinspstrconsts:oistdacteditcopyshorthint
 msgid "Copy"
-msgstr ""
+msgstr "Copia"
 
 #: objinspstrconsts:oiscreatedefaultevent
 msgid "Create default event"
-msgstr "Crear esdeveniment predeterminat"
+msgstr "Crea l'esdeveniment predeterminat"
 
 #: objinspstrconsts:oistdacteditselectallshortcut
 msgid "Ctrl+A"
-msgstr ""
+msgstr "Ctrl+A"
 
 #: objinspstrconsts:oistdacteditcopyshortcut
 msgid "Ctrl+C"
-msgstr ""
+msgstr "Ctrl+C"
 
 #: objinspstrconsts:oistdactfileopenshortcut
 msgid "Ctrl+O"
-msgstr ""
+msgstr "Ctrl+O"
 
 #: objinspstrconsts:oistdacteditpasteshortcut
 msgid "Ctrl+V"
-msgstr ""
+msgstr "Ctrl+V"
 
 #: objinspstrconsts:oistdacteditcutshortcut
 msgid "Ctrl+X"
-msgstr ""
+msgstr "Ctrl+X"
 
 #: objinspstrconsts:oistdacteditundoshortcut
 msgid "Ctrl+Z"
-msgstr ""
+msgstr "Ctrl+Z"
 
 #: objinspstrconsts:oistdacteditcutheadline
 msgid "Cu&t"
-msgstr ""
+msgstr "&Talla"
 
 #: objinspstrconsts:oistdacteditcutshorthint
 msgid "Cut"
-msgstr ""
+msgstr "Talla"
 
 #: objinspstrconsts:cactionlisteditordatabasecategory
 msgid "Database"
-msgstr ""
+msgstr "Base de dades"
 
 #: objinspstrconsts:oistdacteditdeleteshortcut
 msgid "Del"
-msgstr ""
+msgstr "Del"
 
 #: objinspstrconsts:sccslvedtbtndel
 msgid "Delete"
-msgstr "Esborrar"
+msgstr "Elimina"
 
 #: objinspstrconsts:cactionlisteditordeleteactionhint
 msgid "Delete Action"
-msgstr ""
+msgstr "Elimina l'acció"
 
 #: objinspstrconsts:oisdeleteitem
 msgid "Delete item %s%s%s?"
-msgstr "Esborrar element %s%s%s?"
+msgstr "Voleu eliminar l'element %s%s%s?"
 
 #: objinspstrconsts:cactionlisteditordialogcategory
 msgid "Dialog"
-msgstr ""
+msgstr "Diàleg"
 
 #: objinspstrconsts:oistdactfileexitheadline
 msgid "E&xit"
-msgstr ""
+msgstr "Su&rt"
 
 #: objinspstrconsts:cactionlisteditoreditcategory
 msgid "Edit"
-msgstr ""
+msgstr "Edita"
 
 #: objinspstrconsts:oiseditactionlist
 msgid "Edit action list..."
-msgstr "Editar llista d'accions..."
+msgstr "Edita la llista d'accions..."
 
 #: objinspstrconsts:oisenumeration
 msgid "Enumeration"
@@ -272,19 +272,19 @@ msgstr "Enumeració"
 
 #: objinspstrconsts:oiserror
 msgid "Error"
-msgstr "Error"
+msgstr "S'ha produït un error"
 
 #: objinspstrconsts:oiserrorloadingimage
 msgid "Error loading image"
-msgstr "Error carregant imatge"
+msgstr "S'ha produït un error mentre es carregava l'imatge"
 
 #: objinspstrconsts:oiserrorloadingimage2
 msgid "Error loading image %s%s%s:%s%s"
-msgstr "Error carregant imatge %s%s%s:%s%s"
+msgstr "S'ha produït un error mentre es carregava l'imatge %s%s%s:%s%s"
 
 #: objinspstrconsts:oishelperrorwhileexecuting
 msgid "Error while executing %s%s%s:%s%s"
-msgstr "Error executant %s%s%s:%s%s"
+msgstr "S'ha produït un error mentre s'executava %s%s%s:%s%s"
 
 #: objinspstrconsts:oisevents
 msgid "Events"
@@ -292,19 +292,19 @@ msgstr "Esdeveniments"
 
 #: objinspstrconsts:oistdactfileexithint
 msgid "Exit"
-msgstr ""
+msgstr "Surt"
 
 #: objinspstrconsts:oisfavourites
 msgid "Favourites"
-msgstr ""
+msgstr "Favorits"
 
 #: objinspstrconsts:cactionlisteditorfilecategory
 msgid "File"
-msgstr ""
+msgstr "Fitxer"
 
 #: objinspstrconsts:oistdactdatasetfirsthint
 msgid "First"
-msgstr ""
+msgstr "Primer"
 
 #: objinspstrconsts:oisfloat
 msgid "Float"
@@ -312,15 +312,15 @@ msgstr "Float"
 
 #: objinspstrconsts:oistdactfontedithint
 msgid "Font Select"
-msgstr ""
+msgstr "Selecciona la font"
 
 #: objinspstrconsts:cactionlisteditorhelpcategory
 msgid "Help"
-msgstr ""
+msgstr "Ajuda"
 
 #: objinspstrconsts:oistdacthelpcontentshint
 msgid "Help Contents"
-msgstr ""
+msgstr "Contingut de l'ajuda"
 
 #: objinspstrconsts:oishelphelpdatabasedidnotfoundaviewerforahelppageoftype
 msgid "Help Database %s%s%s did not found a viewer for a help page of type %s"
@@ -332,39 +332,39 @@ msgstr "No s'ha trobat la base de dades de l'ajuda %s%s%s"
 
 #: objinspstrconsts:oishelphelpcontextnotfoundindatabase
 msgid "Help context %s not found in Database %s%s%s."
-msgstr "El context d'ajuda %s no s'ha trobat en la base de dades %s%s%s."
+msgstr "No s'ha trobat el context de l'ajuda %s en la base de dades %s%s%s."
 
 #: objinspstrconsts:oishelphelpcontextnotfound
 msgid "Help context %s not found."
-msgstr "No s'ha trobat el context d'ajuda %s."
+msgstr "No s'ha trobat el context de l'ajuda %s."
 
 #: objinspstrconsts:oishelphelpkeywordnotfoundindatabase
 msgid "Help keyword %s%s%s not found in Database %s%s%s."
-msgstr "Paraula clau d'ajuda %s%s%s no trobada en base de dades %s%s%s."
+msgstr "No s'ha trobat la paraula clau de l'ajuda %s%s%s en base de dades %s%s%s."
 
 #: objinspstrconsts:oishelphelpkeywordnotfound
 msgid "Help keyword %s%s%s not found."
-msgstr "Paraula clau d'ajuda %s%s%s no trobada."
+msgstr "No s'ha trobat la paraula clau de l'ajuda %s%s%s."
 
 #: objinspstrconsts:oishelphelpnodehasnohelpdatabase
 msgid "Help node %s%s%s has no Help Database"
-msgstr "El node d'ajuda %s%s%s no té base de dades d'ajuda"
+msgstr "El node de l'ajuda %s%s%s no té base de dades de l'ajuda"
 
 #: objinspstrconsts:oistdacthelphelphelphint
 msgid "Help on help"
-msgstr ""
+msgstr "Ajuda de l'ajuda"
 
 #: objinspstrconsts:sccslvedtimgindexcaption
 msgid "Image index"
-msgstr "Índex d'imatges"
+msgstr "Índex de les imatges"
 
 #: objinspstrconsts:sccsiledtcaption
 msgid "Image list editor"
-msgstr "Editor de llista d'imatges"
+msgstr "Editor de la llista de les imatges"
 
 #: objinspstrconsts:oistdactdatasetinserthint
 msgid "Insert"
-msgstr ""
+msgstr "Insereix"
 
 #: objinspstrconsts:oisint64
 msgid "Int64"
@@ -380,11 +380,11 @@ msgstr "Interface"
 
 #: objinspstrconsts:sccslvedtlabcaption
 msgid "Label"
-msgstr "Etiqueta"
+msgstr "Label"
 
 #: objinspstrconsts:oistdactdatasetlasthint
 msgid "Last"
-msgstr ""
+msgstr "Últim"
 
 #: objinspstrconsts:sccslvedtcaption
 msgid "ListView editor"
@@ -392,7 +392,7 @@ msgstr "Editor de ListView"
 
 #: objinspstrconsts:oisloadimagedialog
 msgid "Load Image Dialog"
-msgstr "Carregar diàleg d'imatge"
+msgstr "Carrega el diàleg de l'imatge"
 
 #: objinspstrconsts:oismethod
 msgid "Method"
@@ -400,11 +400,11 @@ msgstr "Mètode"
 
 #: objinspstrconsts:cactionlisteditormovedownaction
 msgid "Move Down"
-msgstr ""
+msgstr "Mou avall"
 
 #: objinspstrconsts:cactionlisteditormoveupaction
 msgid "Move Up"
-msgstr ""
+msgstr "Mou amunt"
 
 #: objinspstrconsts:sccslvedtbtnadd
 msgid "New"
@@ -412,19 +412,19 @@ msgstr "Nou"
 
 #: objinspstrconsts:cactionlisteditornewaction
 msgid "New Action"
-msgstr ""
+msgstr "Nova acció"
 
 #: objinspstrconsts:cactionlisteditornewstdaction
 msgid "New Standard Action"
-msgstr ""
+msgstr "Nova acció normalitzada"
 
 #: objinspstrconsts:oistdactdatasetnexthint
 msgid "Next"
-msgstr ""
+msgstr "Següent"
 
 #: objinspstrconsts:oishelpnohtmlbrowserfoundpleasedefineoneinhelpconfigurehe
 msgid "No HTML Browser found.%sPlease define one in Help -> Configure Help -> Viewers"
-msgstr "No s'ha trobat navegador HTML.%sSi us plau, defineix-ne un a Ajuda -> Configurar Ajuda -> Visors"
+msgstr "No s'ha trobat el navegador de l'HTML.%sSi us plau, definiu-ne un a Ajuda -> Configura Ajuda -> Visors"
 
 #: objinspstrconsts:oishelpnohelpfoundforsource
 msgid "No help found for line %d, column %d of %s."
@@ -436,31 +436,31 @@ msgstr "Objecte"
 
 #: objinspstrconsts:oisobjectinspector
 msgid "Object Inspector"
-msgstr "Inspector d'objectes"
+msgstr "Inspector dels objectes"
 
 #: objinspstrconsts:oistdactfileopenhint
 msgid "Open"
-msgstr ""
+msgstr "Obre"
 
 #: objinspstrconsts:oistdactdatasetpostheadline
 msgid "P&ost"
-msgstr ""
+msgstr "Envi&a"
 
 #: objinspstrconsts:cactionlisteditorpaneldescrriptions
 msgid "Panel Descriptions"
-msgstr ""
+msgstr "Descipcions del tauler"
 
 #: objinspstrconsts:oistdacteditpasteshorthint
 msgid "Paste"
-msgstr ""
+msgstr "Enganxa"
 
 #: objinspstrconsts:oistdactdatasetposthint
 msgid "Post"
-msgstr ""
+msgstr "Envia"
 
 #: objinspstrconsts:oistdactdatasetpriorhint
 msgid "Prior"
-msgstr ""
+msgstr "Passat"
 
 #: objinspstrconsts:oisproperties
 msgid "Properties"
@@ -472,55 +472,55 @@ msgstr "Registre"
 
 #: objinspstrconsts:oistdactdatasetrefreshhint
 msgid "Refresh"
-msgstr ""
+msgstr "Refresca"
 
 #: objinspstrconsts:oistdactfilesaveasheadline
 msgid "Save &As..."
-msgstr ""
+msgstr "&Anomena i desa.."
 
 #: objinspstrconsts:oistdactfilesaveashint
 msgid "Save As"
-msgstr ""
+msgstr "Anomena i desa"
 
 #: objinspstrconsts:oistdacteditselectallheadline
 msgid "Select &All"
-msgstr ""
+msgstr "Seleccion&a-ho tot"
 
 #: objinspstrconsts:oistdactcolorselect1headline
 msgid "Select &Color..."
-msgstr ""
+msgstr "Selecciona el &color"
 
 #: objinspstrconsts:oistdactfonteditheadline
 msgid "Select &Font..."
-msgstr ""
+msgstr "Selecciona la &font"
 
 #: objinspstrconsts:oistdacteditselectallshorthint
 msgid "Select All"
-msgstr ""
+msgstr "Selecciona-ho tot"
 
 #: objinspstrconsts:oisselectafile
 msgid "Select a file"
-msgstr "Seleccionar un fitxer"
+msgstr "Selecciona un fitxer"
 
 #: objinspstrconsts:oisset
 msgid "Set"
-msgstr "Ficar"
+msgstr "Fica"
 
 #: objinspstrconsts:oissettodefaultvalue
 msgid "Set to default value"
-msgstr "Ficar a valor predeterminat"
+msgstr "Fica a valor predeterminat"
 
 #: objinspstrconsts:oissettodefault
 msgid "Set to default: %s"
-msgstr "Ficar a predeterminat: %s"
+msgstr "Fica a predeterminat: %s"
 
 #: objinspstrconsts:oissort
 msgid "Sort"
-msgstr "Classificar"
+msgstr "Classifica"
 
 #: objinspstrconsts:oisstdactionlisteditor
 msgid "Standard Action Classes"
-msgstr ""
+msgstr "Classes d'acció normalitzades"
 
 #: objinspstrconsts:oisstring
 msgid "String"
@@ -528,23 +528,23 @@ msgstr "Cadena"
 
 #: objinspstrconsts:cesstringgrideditor2
 msgid "StringGrid Editor"
-msgstr "Editor de Cadena De la Graella"
+msgstr "Editor de la cadena de la graella"
 
 #: objinspstrconsts:cesstringgrideditor
 msgid "StringGrid Editor ..."
-msgstr "Editor de Cadena de la Graella ..."
+msgstr "Editor de la cadena de la graella ..."
 
 #: objinspstrconsts:oisstringseditordialog
 msgid "Strings Editor Dialog"
-msgstr "Diàleg editor de cadenes"
+msgstr "Diàleg editor de les cadenes"
 
 #: objinspstrconsts:sccslvedtbtnaddsub
 msgid "Sub item"
-msgstr "Sot-element"
+msgstr "Subelement"
 
 #: objinspstrconsts:oishelpthehelpdatabasewasunabletofindfile
 msgid "The help database %s%s%s was unable to find file %s%s%s."
-msgstr "La base de dades de l'ajuda %s%s%s no pot trobat el fitxer %s%s%s."
+msgstr "La base de dades de l'ajuda %s%s%s no ha trobat el fitxer %s%s%s."
 
 #: objinspstrconsts:oishelpthemacrosinbrowserparamswillbereplacedbytheurl
 msgid "The macro %s in BrowserParams will be replaced by the URL."
@@ -552,15 +552,15 @@ msgstr "La macroinstrucció %s en el paràmetres del navegador serà reemplaçada pe
 
 #: objinspstrconsts:cactionlisteditorpaneltoolbar
 msgid "Toolbar"
-msgstr ""
+msgstr "Barra d'eines"
 
 #: objinspstrconsts:oistdacthelptopicsearchhint
 msgid "Topic Search"
-msgstr ""
+msgstr "Cerca el contingut"
 
 #: objinspstrconsts:oistdacteditundoshorthint
 msgid "Undo"
-msgstr ""
+msgstr "Desfés"
 
 #: objinspstrconsts:oisunknown
 msgid "Unknown"

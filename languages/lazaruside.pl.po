@@ -618,8 +618,8 @@ msgid "Back"
 msgstr "W tył"
 
 #: lazarusidestrconsts:dlgbackcolor
-msgid "Background color"
-msgstr "Kolor tła"
+msgid "Background"
+msgstr ""
 
 #: lazarusidestrconsts:srvk_back
 msgid "Backspace"
@@ -1624,6 +1624,10 @@ msgstr "Domyślna czcionka edytora"
 #: lazarusidestrconsts:dlgpasext
 msgid "Default pascal extension"
 msgstr "Domyślne rozszerzenie pascala"
+
+#: lazarusidestrconsts:dlgdefvaluecolor
+msgid "Default value"
+msgstr ""
 
 #: lazarusidestrconsts:liscodetoolsdefsdefine
 msgid "Define"
@@ -4729,6 +4733,10 @@ msgstr ""
 msgid "Property completion"
 msgstr "Uzupełnianie właściwości"
 
+#: lazarusidestrconsts:dlgpropnamecolor
+msgid "Property name"
+msgstr ""
+
 #: lazarusidestrconsts:lisprotectedmethod
 msgid "Protected Method"
 msgstr ""
@@ -4823,6 +4831,10 @@ msgstr ""
 
 #: lazarusidestrconsts:uemrefactor
 msgid "Refactoring"
+msgstr ""
+
+#: lazarusidestrconsts:dlgreferencecolor
+msgid "Reference"
 msgstr ""
 
 #: lazarusidestrconsts:dlgunitdeprefresh
@@ -5876,6 +5888,10 @@ msgstr ""
 #: lazarusidestrconsts:dlgedbsubdir
 msgid "Sub directory"
 msgstr "Podkatalog"
+
+#: lazarusidestrconsts:dlgsubpropkcolor
+msgid "Subpropertes"
+msgstr ""
 
 #: lazarusidestrconsts:lisa2pswitchpaths
 msgid "Switch Paths"
@@ -7169,7 +7185,7 @@ msgstr "Inne rozszerzenie (.pp.xxx)"
 msgid "User overrides"
 msgstr "Nadpisanie zmiennych"
 
-#: lazarusidestrconsts:dlgrunovalue
+#: lazarusidestrconsts:dlgvaluecolor
 msgid "Value"
 msgstr "Wartość"
 

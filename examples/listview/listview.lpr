@@ -5,7 +5,7 @@ program listview;
 uses
   Interfaces,
   testform,
-  Forms;
+  Forms, Unit1;
 
 begin
   Application.Initialize;
