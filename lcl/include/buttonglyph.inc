@@ -19,21 +19,28 @@ end;
 {------------------------------------------------------------------------------}
 {       TButtonGlyph SetGlyph                                                  }
 {------------------------------------------------------------------------------}
-Procedure TButtonGlyph.SetGlyph(Value : TBitmap);
-Begin
+procedure TButtonGlyph.SetGlyph(Value : TBitmap);
+var GlyphCount : integer;
+begin
   if FOriginal = Value then exit;
-  //Invalidate;
+//  FOriginal.Assign(Value);
   FOriginal.Free;
-  FOriginal := Value;
-  //FOriginal.Assign(Value);
+  FOriginal:= Value;
+  if (Value <> nil) and (Value.Height > 0) then begin
+    if Value.Width mod Value.Height = 0 then begin
+      GlyphCount:= Value.Width div Value.Height;
+      if GlyphCount > 4 then GlyphCount:= 1;
+      NumGlyphs:= GlyphCount;
+    end;
+  end;
+  //Invalidate;
 end;
 
 {------------------------------------------------------------------------------}
 {       TButtonGlyph Draw                                                      }
 {------------------------------------------------------------------------------}
 Function TButtonGlyph.Draw(Canvas: TCanvas; const Client: TRect;
-  const Offset: TPoint;  const Caption: string; Layout: TButtonLayout;
-  Margin, Spacing: Integer;  State: TButtonState;  Transparent: Boolean;
+  const Offset: TPoint;  State: TButtonState;  Transparent: Boolean;
   BiDiFlags: Longint): TRect;
 var
   gWidth : integer;
@@ -41,6 +48,9 @@ var
   DestRect: TRect;
   ImgID: integer;
 begin
+  if FOriginal = nil then Exit;
+  if (FOriginal.Width = 0) or (FOriginal.Height = 0) then Exit;
+  
   gWidth := TPixMap(FOriginal).Width;
   gHeight := TPixMap(FOriginal).Height;
   if NumGlyphs > 1 then
@@ -68,13 +78,10 @@ end;
 {------------------------------------------------------------------------------}
 {       TButtonGlyph SetNumGlyphs                                               }
 {------------------------------------------------------------------------------}
-Procedure TButtonGlyph.SetNumGlyphs(Value : TNumGlyphs);
-Begin
-  if Value <> FNumGlyphs then
-     Begin
-       FNumGlyphs := Value;
-       if Assigned(FOnChange) then FOnChange(Glyph);
-     end;
-
+procedure TButtonGlyph.SetNumGlyphs(Value : TNumGlyphs);
+begin
+  if Value <> FNumGlyphs then begin
+    FNumGlyphs := Value;
+    if Assigned(FOnChange) then FOnChange(Glyph);
+  end;
 end;
-

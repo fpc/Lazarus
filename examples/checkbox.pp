@@ -26,13 +26,14 @@ program checkbox;
 
 uses
   classes, stdctrls, forms, buttons, menus, comctrls, sysutils,
-  extctrls, graphtype, controls;
+  extctrls, graphtype, graphics, controls;
 
 type
   TForm1 = class(TFORM)
   public
     Button2: TButton;
     Button3: TButton;
+    Button11, Button12, Button13 : TSpeedButton; 
     Panel1: TPanel;
     mnuMain: TMainMenu;
     itmFileQuit: TMenuItem;
@@ -45,7 +46,8 @@ type
     RadioGroup2  : TRadioGroup;
     ToggleBox   : TToggleBox;
     label1    : TLabel;   
-    label2    : TLabel;   
+    label2    : TLabel;
+    FPixmap : TPixMap;
     constructor Create(AOwner: TComponent); override; 
     procedure LoadMainMenu;
     Procedure FormKill(Sender : TObject);
@@ -215,6 +217,44 @@ begin
    Button2.Caption := 'Toggle checkbox';
    Button2.OnClick := @Button2Click;
 
+   FPixMap:= TPixmap.Create;
+   FPixmap.LoadFromFile('../images/btn_newform.xpm');
+
+   Button11 := TSpeedButton.Create(Self);
+   Button11.GroupIndex:= 1;
+   Button11.Layout:= blGlyphTop;
+//   Button11.Caption:= 'Option 1';
+   Button11.Parent := Self;
+   Button11.Left := 5;
+   Button11.Top := 5;
+   Button11.Width:= 45;
+   Button11.Height:= 55;
+   Button11.Flat:= true;
+   Button11.Glyph:= FPixmap;
+//   Button11.Spacing:= -1;
+//   Button11.Margin:= 4;
+   Button11.Visible:= true;
+   
+   Button12 := TSpeedButton.Create(Self);
+   Button12.GroupIndex:= 1;
+   Button12.Caption:= '2';
+   Button12.Parent := Self;
+   Button12.Left := 55;
+   Button12.Top := 5;
+//   Button12.Flat:= true;
+   Button12.Visible:= true;
+
+   Button13 := TSpeedButton.Create(Self);
+   Button13.GroupIndex:= 1;
+   Button13.Caption:= '3';
+   Button13.Parent := Self;
+   Button13.Left := 95;
+   Button13.Top := 5;
+   Button13.Flat:= true;
+   Button13.AllowAllUp:= true;
+   Button13.Visible:= true;
+   
+
    { Create a label which shows the caption of the active radiobutton }
    label2 := TLabel.Create(Self);
    label2.Parent := self;
@@ -365,6 +405,11 @@ end.
 
 {
   $Log$
+  Revision 1.3  2002/02/24 20:51:23  lazarus
+  Improved TSpeedButton (Glyph, Spacing, Margin, drawing)
+  Added PageCount to TNotebook
+  Optimized component selection buttons a bit.
+
   Revision 1.2  2002/02/03 00:24:00  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

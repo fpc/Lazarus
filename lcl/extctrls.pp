@@ -121,6 +121,7 @@ type
     Procedure CNNotify(var Message : TLMNotify); message CN_NOTIFY;
     function GetActivePage: String;
     function GetPage(aIndex: Integer): TPage;
+    function GetPageCount : integer;
     function GetPageIndex: Integer;
     //function InternalSetMultiLine(Value: boolean): boolean;
     procedure SetActivePage(const Value: String);
@@ -141,6 +142,7 @@ type
     property ActivePage: String read GetActivePage write SetActivePage;
     //property MultiLine: boolean read fMultiLine write SetMultiLine default false;
     property Page[Index: Integer]: TPage read GetPage;
+    property PageCount : integer read GetPageCount;
     property PageIndex: Integer read GetPageIndex write SetPageIndex default 0;
     property PageList: TList read fPageList;
     property Pages: TStrings read fAccess write SetPages;
@@ -163,6 +165,7 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     property Page;
+    property PageCount;
     property Pages;
   published
     property ActivePage;
@@ -432,6 +435,11 @@ end.
 
  {
   $Log$
+  Revision 1.18  2002/02/24 20:51:23  lazarus
+  Improved TSpeedButton (Glyph, Spacing, Margin, drawing)
+  Added PageCount to TNotebook
+  Optimized component selection buttons a bit.
+
   Revision 1.17  2002/02/03 00:24:00  lazarus
   TPanel implemented.
   Basic graphic primitives split into GraphType package, so that we can

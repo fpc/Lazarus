@@ -28,6 +28,8 @@ begin
 
   {set default alignment}
   Align := alNone;
+  FLayout:= blGlyphLeft;
+  FAllowAllUp:= false;
   FMouseInControl := False;
   FDragging := False;
   FSpacing := 4;
@@ -82,15 +84,14 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSpeedButton.SetDown(Value : Boolean);
 begin
-  if FDown <> value 
-  then begin
+  if FGroupIndex = 0 then Value:= false;
+  if FDown <> Value then begin
+    if FDown and not FAllowAllUp then Exit;
     FDown := Value;
-    if FDown 
-    then begin
+    if FDown then begin
       if FState = bsUp then Invalidate;
       fState := bsExclusive;
-    end
-    else begin
+    end else begin
       FState := bsUp;
       Repaint;
     end;
@@ -104,10 +105,12 @@ end;
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetFlat(Value : Boolean);
+procedure TSpeedButton.SetFlat(const Value : boolean);
 begin
-  FFlat := Value;
-  Invalidate;
+  if FFlat <> Value then begin
+    FFlat := Value;
+    Invalidate;
+  end;
 end;
 
 {------------------------------------------------------------------------------
@@ -128,7 +131,7 @@ end;
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetGroupIndex(Value : Integer);
+procedure TSpeedButton.SetGroupIndex(const Value : Integer);
 begin
   if FGroupIndex <> Value 
   then begin
@@ -138,12 +141,26 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TSpeedButton.SetMargin
+  Params: Value:
+  Returns:  nothing
+
+ ------------------------------------------------------------------------------}
+procedure TSpeedButton.SetMargin(const Value : Integer);
+begin
+  if FMargin <> Value then begin
+    FMargin := Value;
+    Invalidate;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TSpeedButton.SetNumGlyphs
   Params: Value : Integer = Number of glyphs in the file/resource
   Returns:  nothing
 
  ------------------------------------------------------------------------------}
-procedure TSpeedButton.SetNumGlyphs(Value : Integer);
+procedure TSpeedButton.SetNumGlyphs(Value : integer);
 Begin
   if Value < 0 then Value := 1;
   if Value > 4 then Value := 4;
@@ -155,6 +172,19 @@ Begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+  Method: TSpeedButton.SetSpacing
+  Params: Value:
+  Returns:  nothing
+
+ ------------------------------------------------------------------------------}
+procedure TSpeedButton.SetSpacing(const Value : Integer);
+begin
+  if FSpacing <> Value then begin
+    FSpacing := Value;
+    Invalidate;
+  end;
+end;
 
 {------------------------------------------------------------------------------
   Method: TSpeedButton.UpdateExclusive
@@ -219,23 +249,21 @@ end;
  ------------------------------------------------------------------------------}
 procedure TSpeedbutton.Paint;
 const
-//  DownStyles: array[Boolean] of Integer = (BDR_RAISEDINNER, BDR_SUNKENOUTER);
   DownStyles: array[Boolean] of Integer = (BDR_RAISEDINNER, BDR_SUNKENINNER);
   FillStyles: array[Boolean] of Integer = (BF_MIDDLE, 0);
 var
   PaintRect: TRect;
   DrawFlags, GlyphWidth, GlyphHeight: Integer;
-  //R : TRect;
-  Offset: TPoint;
+  Offset, OffsetCap: TPoint;
+  ClientSize, TotalSize, TextSize: TSize;
+  BrushStyle : TBrushStyle;
+  M, S : integer;
+
 begin
-  if not Enabled
-  then begin
+  if not Enabled then begin
     FState := bsDisabled;
     FDragging := False;
-  end
-//  else
-//  if not Visible then exit
-  else begin
+  end else begin
     if FState = bsDisabled 
     then begin
       if FDown and (GroupIndex <> 0) 
@@ -248,64 +276,126 @@ begin
   PaintRect := Bounds(Left, Top, Width, Height);
 //  PaintRect := Rect(0, 0, Width, Height);
 
-  if not FFlat then
-  begin
+  if Transparent and not (csDesigning in ComponentState) then
+    BrushStyle:= bsClear
+  else
+    BrushStyle:= bsSolid;
+  
+  Canvas.Brush.Color:= clBtnFace;
+  Canvas.FillRect(PaintRect);
+
+  if FFlat then begin
+    if (FState in [bsDown, bsExclusive])
+      or (FMouseInControl and (FState <> bsDisabled)) 
+      or (csDesigning in ComponentState) 
+    then begin
+      DrawEdge(Canvas.Handle, PaintRect, 
+        DOWNSTYLES[FState in [bsDown, bsExclusive]],
+        FILLSTYLES[Transparent] or BF_RECT)
+    end;  
+    InflateRect(PaintRect, -1, -1);
+  end else begin
     DrawFlags := DFCS_BUTTONPUSH or DFCS_ADJUSTRECT;
     if FState in [bsDown, bsExclusive]
     then DrawFlags := DrawFlags or DFCS_PUSHED;
     DrawFrameControl(Canvas.Handle, PaintRect, DFC_BUTTON, DrawFlags);
-  end
-  else begin   //flat
-    if (FState in [bsDown, bsExclusive])
-    or (FMouseInControl and (FState <> bsDisabled)) 
-    or (csDesigning in ComponentState) 
-    then begin
-      Canvas.Brush.Color := clbtnface;//color;
-      // Fillrect doesnt paint the outer right and bottom border
-      Canvas.FillRect(PaintRect);
-      DrawEdge(Canvas.Handle, PaintRect, 
-        DOWNSTYLES[FState in [bsDown, bsExclusive]],
-        FILLSTYLES[Transparent] or BF_RECT)
-    end else 
-      if not Transparent 
-      then begin
-        Canvas.Brush.Color := clbtnface;//color;
-        // Fillrect doesnt paint the outer right and bottom border
-        Canvas.FillRect(PaintRect);
-      end;
-    InflateRect(PaintRect, -1, -1);
   end;
 
   if FState in [bsDown, bsExclusive] then begin
-    if (FState = bsExclusive)
-    and (not FFlat or not FMouseInControl) 
+    if (FState = bsExclusive) and (not FFlat or not FMouseInControl) 
     then begin
       //this needs to be done yet.
       Assert(False,'Trace:TODO: ALLOCPATTERNBITMAP');
 //      Canvas.Brush.Bitmap := AllocPatternBitmap(clBtnFace, clBtnHighlight);
+      Canvas.Brush.Color:= clBtnHighlight;
       Canvas.FillRect(PaintRect);
     end;
-    Offset.X := 1;
-    Offset.Y := 1;
-  end
-  else begin
-    Offset.X := 0;
-    Offset.Y := 0;
   end;
   
-  
-  GlyphWidth:=TButtonGlyph(FGlyph).Glyph.Width;
-  if TButtonGlyph(FGlyph).NumGlyphs>1 then
+  GlyphWidth:= TButtonGlyph(FGlyph).Glyph.Width;
+  if TButtonGlyph(FGlyph).NumGlyphs > 1 then
     GlyphWidth:=GlyphWidth div NumGlyphs;
   GlyphHeight:=TButtonGlyph(FGlyph).Glyph.Height;
   
-  inc(Offset.X,(PaintRect.Right-PaintRect.Left-GlyphWidth) div 2);
-  inc(Offset.Y,(PaintRect.Bottom-PaintRect.Top-GlyphHeight) div 2);
+  ClientSize.cx:= PaintRect.Right - PaintRect.Left;
+  ClientSize.cy:= PaintRect.Bottom - PaintRect.Top;
+  
+  if Caption <> '' then
+    TextSize:= Canvas.TextExtent(Caption)
+  else begin
+    TextSize.cx:= 0;
+    TextSize.cy:= 0;
+  end;
+
+  if (GlyphWidth = 0) or (GlyphHeight = 0) or (TextSize.cx = 0) or (TextSize.cy = 0) then
+    S:= 0
+  else
+    S:= Spacing;
+  
+  { Calculate caption and glyph layout }
+  
+  if Margin = -1 then begin
+    if S = -1 then begin
+      TotalSize.cx:= TextSize.cx + GlyphWidth;
+      TotalSize.cy:= TextSize.cy + GlyphHeight;
+      if Layout in [blGlyphLeft, blGlyphRight] then
+        M:= (ClientSize.cx - TotalSize.cx) div 3
+      else
+        M:= (ClientSize.cy - TotalSize.cy) div 3;
+      S:= M;
+    end else begin
+      TotalSize.cx:= GlyphWidth + S + TextSize.cx;
+      TotalSize.cy:= GlyphHeight + S + TextSize.cy;
+      if Layout in [blGlyphLeft, blGlyphRight] then
+        M:= (ClientSize.cx - TotalSize.cx + 1) div 2
+      else
+        M:= (ClientSize.cy - TotalSize.cy + 1) div 2
+    end;  
+  end else begin
+    if S = -1 then begin
+      TotalSize.cx:= ClientSize.cx - (Margin + GlyphWidth);
+      TotalSize.cy:= ClientSize.cy - (Margin + GlyphHeight);
+      if Layout in [blGlyphLeft, blGlyphRight] then
+        S:= (TotalSize.cx - TextSize.cx) div 2
+      else
+      	S:= (TotalSize.cy - TextSize.cy) div 2;
+    end;
+    M:= Margin
+  end;  
+
+  case Layout of
+    blGlyphLeft : begin
+      Offset.X:= M;
+      Offset.Y:= (ClientSize.cy - GlyphHeight + 1) div 2;
+      OffsetCap.X:= Offset.X + GlyphWidth + S;
+      OffsetCap.Y:= (ClientSize.cy - TextSize.cy) div 2;
+    end;
+    blGlyphRight : begin
+      Offset.X:= ClientSize.cx - M - GlyphWidth;
+      Offset.Y:= (ClientSize.cy - GlyphHeight + 1) div 2;
+      OffsetCap.X:= Offset.X - S - TextSize.cx;
+      OffsetCap.Y:= (ClientSize.cy - TextSize.cy) div 2;
+    end;
+    blGlyphTop : begin
+      Offset.X:= (ClientSize.cx - GlyphWidth + 1) div 2;
+      Offset.Y:= M;
+      OffsetCap.X:= (ClientSize.cx - TextSize.cx + 1) div 2;
+      OffsetCap.Y:= Offset.Y + GlyphHeight + S;
+    end;
+    blGlyphBottom : begin
+      Offset.X:= (ClientSize.cx - GlyphWidth + 1) div 2;
+      Offset.Y:= ClientSize.cy - M - GlyphHeight;
+      OffsetCap.X:= (ClientSize.cx - TextSize.cx + 1) div 2;
+      OffsetCap.Y:= Offset.Y - S - TextSize.cy; 
+    end;
+  end;  
 
   //this needs to be done yet.
-  Assert(False,'Trace:TODO: DRAWTEXTBIDIMODEFLAGS');
-  TButtonGlyph(FGlyph).Draw(Canvas, PaintRect, Offset, Caption, FLayout, FMargin,
-    FSpacing, FState, Transparent, (0));
+  //Assert(False,'Trace:TODO: DRAWTEXTBIDIMODEFLAGS');
+
+  FGlyph.Draw(Canvas, PaintRect, Offset, FState, Transparent, 0);
+  if Caption <> '' then
+    Canvas.TextOut(PaintRect.Left + OffsetCap.X, PaintRect.Top + OffsetCap.Y, Caption);
 end;
 
 {------------------------------------------------------------------------------
@@ -444,6 +534,36 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  Method: TSpeedButton.SetLayout
+  Params: Value: new layout value
+  Returns:  nothing
+
+ ------------------------------------------------------------------------------}
+procedure TSpeedButton.SetLayout(const Value : TButtonLayout);
+begin
+  if Value <> FLayout then begin
+    FLayout:= Value;
+    Invalidate;
+  end;
+end;
+
+{------------------------------------------------------------------------------
+  Method: TSpeedButton.SetTransparent
+  Params: Value: new transparency value
+  Returns:  nothing
+
+ ------------------------------------------------------------------------------}
+procedure TSpeedButton.SetTransparent(const Value : boolean);
+begin
+  if Value <> FTransparent then begin
+    FTransparent:= Value;
+    if Value then ControlStyle:= ControlStyle + [csOpaque]
+    else ControlStyle:= ControlStyle - [csOpaque];
+    Invalidate;
+  end;
+end;
+
+{------------------------------------------------------------------------------
   Method: TSpeedButton.CMButtonPressed
   Params: Message:
   Returns:  nothing
@@ -533,6 +653,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.12  2002/02/24 20:51:24  lazarus
+  Improved TSpeedButton (Glyph, Spacing, Margin, drawing)
+  Added PageCount to TNotebook
+  Optimized component selection buttons a bit.
+
   Revision 1.11  2001/11/22 14:33:26  lazarus
   MG: fixed painting background of flat speedbuttons
 

@@ -349,6 +349,15 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  TCustomNotebook GetPageCount
+ ------------------------------------------------------------------------------}
+function TCustomNotebook.GetPageCount: Integer;
+begin
+  Result := fPageList.Count;
+end;
+
+
+{------------------------------------------------------------------------------
   TCustomNotebook SetPages
  ------------------------------------------------------------------------------}
 procedure TCustomNotebook.SetPages(Value: TStrings);
@@ -526,6 +535,11 @@ end;}
 { =============================================================================
 
   $Log$
+  Revision 1.13  2002/02/24 20:51:24  lazarus
+  Improved TSpeedButton (Glyph, Spacing, Margin, drawing)
+  Added PageCount to TNotebook
+  Optimized component selection buttons a bit.
+
   Revision 1.12  2002/01/01 15:50:14  lazarus
   MG: fixed initial component aligning
 

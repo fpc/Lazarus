@@ -642,7 +642,7 @@ begin
       GlobalMouseSpeedButton := TSpeedButton.Create(Self);
       SelectionPointerPixmap:=LoadSpeedBtnPixMap('tmouse');
       with GlobalMouseSpeedButton do
-      Begin
+      begin
         Parent := ComponentNotebook.Page[PageCount];
         Parent.OnMouseMove := @MainMouseMoved;  //this is for the hints
         Enabled := True;
@@ -652,6 +652,7 @@ begin
         Glyph := SelectionPointerPixmap;
         Visible := True;
         Flat := True;
+	GroupIndex:= 1;
         Down := True;
         Name := 'GlobalMouseSpeedButton'+IntToStr(PageCount);
         Hint := 'Selection tool';
@@ -668,6 +669,7 @@ begin
         IDEComponent.SpeedButton.Hint := RegComp.ComponentClass.ClassName;
         IDEComponent.SpeedButton.Name := IDEComponent.SpeedButton.Hint;
         IDEComponent.SpeedButton.ShowHint := True;
+        IDEComponent.SpeedButton.GroupIndex := 1;
         IDECompList.Add(IDEComponent);
       end;
       inc(PageCount);
@@ -1634,118 +1636,31 @@ end;
 ------------------------------------------------------------------------
 }
 
-Procedure TMainIDE.ControlClick(Sender : TObject);
+procedure TMainIDE.ControlClick(Sender : TObject);
 var
-  I : Integer;
   IDECOmp : TIDEComponent;
   Speedbutton : TSpeedbutton;
-  Temp : TControl;
+  i : integer;
 begin
   if Sender is TSpeedButton then
-  Begin
-//    Writeln('sender is a speedbutton');
-//    Writeln('The name is '+TSpeedbutton(sender).name);
+ begin
     SpeedButton := TSpeedButton(Sender);
-//    Writeln('Speedbutton s Name is '+SpeedButton.name);
     //find the IDECOmponent that has this speedbutton
     IDEComp := IDECompList.FindCompBySpeedButton(SpeedButton);
-    if SelectedComponent <> nil then
-      TIDeComponent(
-       IdeCompList.FindCompByRegComponent(SelectedComponent)).SpeedButton.Down
-         := False
-    else begin
-      Temp := nil;
-      for i := 0 to 
-              ComponentNotebook.Page[ComponentNotebook.Pageindex].ControlCount-1
-      do begin
-        if CompareText(
-            TControl(ComponentNotebook.
-                Page[ComponentNotebook.Pageindex].Controls[I]).Name
-            ,'GlobalMouseSpeedButton'
-              +IntToStr(ComponentNotebook.Pageindex)) = 0 then
-        begin
-          temp := TControl(ComponentNotebook.
-                              Page[ComponentNotebook.Pageindex].Controls[i]);
-          Break;
-        end;
-      end;
-      if temp <> nil then
-        TSpeedButton(Temp).down := False
-      else begin
-        Writeln('[TMainIDE.ControlClick] ERROR - Control ',
-           'GlobalMouseSpeedButton',
-           IntToStr(ComponentNotebook.PageIndex),' not found');
-        Halt;
-      end;
-    end;
-    if IDECOmp <> nil then Begin
-      //draw this button down
-      SpeedButton.Down := True;
+    if IDECOmp <> nil then begin
       SelectedComponent := IDEComp.RegisteredComponent;
     end else begin
       SelectedComponent := nil;
-      Temp := nil;
-      for i := 0 to 
-          ComponentNotebook.Page[ComponentNotebook.Pageindex].ControlCount-1 do
-      begin
-        if CompareText(
-          TControl(ComponentNotebook.
-               Page[ComponentNotebook.Pageindex].Controls[I]).Name
-           ,'GlobalMouseSpeedButton'
-             +IntToStr(ComponentNotebook.Pageindex)) = 0 then
-        begin
-          temp := TControl(ComponentNotebook.
-                                 Page[ComponentNotebook.Pageindex].Controls[i]);
-          Break;
-        end;
-      end;
-      if temp <> nil then
-        TSpeedButton(Temp).down := True
-      else begin
-        Writeln('[TMainIDE.ControlClick] ERROR - Control '
-           +'GlobalMouseSpeedButton'
-           +IntToStr(ComponentNotebook.Pageindex)+' not found');
-        Halt;
-      end;
     end;
   end
-  else
-  Begin
-//    Writeln('must be nil');
-    //draw old speedbutton up
-    if SelectedComponent <> nil then
-      TIDeComponent(
-        IdeCompList.FindCompByRegComponent(SelectedComponent)).SpeedButton.Down
-           := False;
+ else
+ begin
     SelectedComponent := nil;
-    Temp := nil;
-    for i := 0 to 
-          ComponentNotebook.Page[ComponentNotebook.Pageindex].ControlCount-1 do
-    begin
-      if CompareText(
-         TControl(ComponentNotebook.
-            Page[ComponentNotebook.Pageindex].Controls[I]).Name
-         ,'GlobalMouseSpeedButton'
-           +IntToStr(ComponentNotebook.Pageindex)) = 0 then
-      begin
-        temp := TControl(ComponentNotebook.
-                              Page[ComponentNotebook.Pageindex].Controls[i]);
-        Break;
-      end;
-    end;
-    if temp <> nil then
-      TSpeedButton(Temp).down := True
-    else begin
-      Writeln('[TMainIDE.ControlClick] ERROR - Control '
-        +'GlobalMouseSpeedButton'
-        +IntToStr(ComponentNotebook.Pageindex)+' not found');
-      Halt;
+    for i:= 0 to ComponentNotebook.PageCount - 1 do begin
+      (ComponentNotebook.Page[i].Controls[0] as TSpeedButton).Down:= true;
     end;
   end;
-//  Writeln('Exiting ControlClick');
 end;
-
-
 
 {------------------------------------------------------------------------------}
 procedure TMainIDE.mnuFindDeclarationClicked(Sender : TObject);
@@ -6107,6 +6022,11 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.231  2002/02/24 20:51:22  lazarus
+  Improved TSpeedButton (Glyph, Spacing, Margin, drawing)
+  Added PageCount to TNotebook
+  Optimized component selection buttons a bit.
+
   Revision 1.230  2002/02/22 17:39:40  lazarus
   MG: improved LinkScanner error messages
 
