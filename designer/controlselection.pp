@@ -136,13 +136,6 @@ type
   TOnSelectionFormChanged = procedure(Sender: TObject;
     OldForm, NewForm: TCustomForm) of object;
   
-  TControlSelState = (cssOnlyNonVisualNeedsUpdate,
-                      cssOnlyVisualNeedsUpdate,
-                      cssBoundsNeedsUpdate,
-                      cssBoundsNeedsSaving
-                      );
-  TControlSelStates = set of TControlSelState;
-  
   TNearestInt = record
     Level: integer;
     Nearest: integer;
@@ -157,6 +150,14 @@ type
   
   TGuideLineType = (glLeft, glTop, glRight, glBottom);
   
+  TControlSelState = (cssOnlyNonVisualNeedsUpdate,
+                      cssOnlyVisualNeedsUpdate,
+                      cssBoundsNeedsUpdate,
+                      cssBoundsNeedsSaving,
+                      cssParentLevelNeedsUpdate
+                      );
+  TControlSelStates = set of TControlSelState;
+
   TControlSelection = class(TObject)
   private
     FControls: TList;  // list of TSelectedComponent
@@ -187,6 +188,7 @@ type
     // caches
     FCacheGuideLines: boolean;
     FGuideLinesCache: array[TGuideLineType] of TGuideLineCache;
+    FParentLevel: integer;
 
     FCustomForm: TCustomForm;
     FGrabbers: array[TGrabIndex] of TGrabber;
@@ -235,6 +237,7 @@ type
     // snapping
     function CleanGridSizeX: integer;
     function CleanGridSizeY: integer;
+    function ComponentAlignable(AComponent: TComponent): boolean;
     procedure ImproveNearestInt(var NearestInt: TNearestInt; Candidate: integer);
     procedure FindNearestGridX(var NearestInt: TNearestInt);
     procedure FindNearestGridY(var NearestInt: TNearestInt);
@@ -295,6 +298,7 @@ type
     procedure DrawGuideLines(DC: TDesignerDeviceContext);
     property CacheGuideLines: boolean read FCacheGuideLines write SetCacheGuideLines;
     procedure InvalidGuideLinesCache;
+    function ParentLevel: integer;
 
     property GrabberSize:integer read FGrabberSize write SetGrabberSize;
     property GrabberColor: TColor read FGrabberColor write FGrabberColor;
@@ -401,9 +405,13 @@ end;
 
 procedure TSelectedControl.SetBounds(ALeft, ATop, AWidth, AHeight: integer);
 begin
-  if FComponent is TControl then
-    TControl(FComponent).SetBounds(ALeft, ATop, AWidth, AHeight)
-  else begin
+  if FComponent is TControl then begin
+    TControl(FComponent).SetBounds(ALeft, ATop, AWidth, AHeight);
+    FCachedLeft:=ALeft;
+    FCachedTop:=ATop;
+    FCachedWidth:=AWidth;
+    FCachedHeight:=AHeight;
+  end else begin
     Left:=ALeft;
     Top:=ATop;
   end;
@@ -453,7 +461,7 @@ begin
   if FComponent is TControl then
     TControl(FComponent).Left:=Aleft
   else
-    LongRec(FComponent.DesignInfo).Lo:=ALeft;
+    LongRec(FComponent.DesignInfo).Lo:=Min(32000,Max(0,ALeft));
   FCachedLeft:=ALeft;
 end;
 
@@ -470,7 +478,7 @@ begin
   if FComponent is TControl then
     TControl(FComponent).Top:=ATop
   else
-    LongRec(FComponent.DesignInfo).Hi:=ATop;
+    LongRec(FComponent.DesignInfo).Hi:=Min(32000,Max(0,ATop));
   FCachedTop:=ATop;
 end;
 
@@ -536,7 +544,8 @@ begin
   FChangedDuringLock:=false;
   FRubberbandActive:=false;
   FNotSaveBounds:=false;
-  FStates:=[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate];
+  FStates:=[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
+            cssParentLevelNeedsUpdate];
   fCacheGuideLines:=true;
 end;
 
@@ -712,7 +721,7 @@ begin
         if NewHeight<1 then NewHeight:=1;
         Items[i].SetFormRelativeBounds(NewLeft,NewTop,NewWidth,NewHeight);
         {$IFDEF VerboseDesigner}
-        writeln('  i=',i,
+        writeln('  i=',i,' ',Items[i].Component.Name,
         ' ',Items[i].Left,',',Items[i].Top,',',Items[i].Width,',',Items[i].Height);
         {$ENDIF}
       end;
@@ -760,6 +769,31 @@ function TControlSelection.CleanGridSizeY: integer;
 begin
   Result:=EnvironmentOptions.GridSizeY;
   if Result<1 then Result:=1;
+end;
+
+function TControlSelection.ComponentAlignable(AComponent: TComponent): boolean;
+var
+  CurParentLevel: integer;
+begin
+  Result:=false;
+  if AComponent=nil then exit;
+  if AComponent is TControl then begin
+    if csNoDesignVisible in TControl(AComponent).ControlStyle then exit;
+    if Count>0 then begin
+      if OnlyNonVisualComponentsSelected then exit;
+    end;
+    if ParentLevel>0 then begin
+      CurParentLevel:=GetParentLevel(TControl(AComponent));
+      if CurParentLevel<>ParentLevel then exit;
+    end;
+  end else begin
+    if Count>0 then begin
+      if OnlyVisualComponentsSelected then exit;
+    end;
+  end;
+  if IsSelected(AComponent) then exit;
+  
+  Result:=true;
 end;
 
 procedure TControlSelection.ImproveNearestInt(var NearestInt: TNearestInt;
@@ -856,6 +890,7 @@ begin
   MaxDist:=(CleanGridSizeX+1) div 2;
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     AComponent:=FCustomForm.Components[i];
+    if not ComponentAlignable(AComponent) then exit;
     if IsSelected(AComponent) then continue;
     CurLeft:=GetParentFormRelativeTopLeft(AComponent).X;
     CurDist:=Abs(CurLeft-NearestInt.Level);
@@ -874,6 +909,7 @@ begin
   MaxDist:=(CleanGridSizeX+1) div 2;
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     AComponent:=FCustomForm.Components[i];
+    if not ComponentAlignable(AComponent) then exit;
     if IsSelected(AComponent) then continue;
     CurRight:=GetParentFormRelativeTopLeft(AComponent).X
               +GetComponentWidth(AComponent);
@@ -893,6 +929,7 @@ begin
   MaxDist:=(CleanGridSizeY+1) div 2;
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     AComponent:=FCustomForm.Components[i];
+    if not ComponentAlignable(AComponent) then exit;
     if IsSelected(AComponent) then continue;
     CurTop:=GetParentFormRelativeTopLeft(AComponent).Y;
     CurDist:=Abs(CurTop-NearestInt.Level);
@@ -911,6 +948,7 @@ begin
   MaxDist:=(CleanGridSizeY+1) div 2;
   for i:=0 to FCustomForm.ComponentCount-1 do begin
     AComponent:=FCustomForm.Components[i];
+    if not ComponentAlignable(AComponent) then exit;
     if IsSelected(AComponent) then continue;
     CurBottom:=GetParentFormRelativeTopLeft(AComponent).Y
               +GetComponentHeight(AComponent);
@@ -1150,6 +1188,19 @@ begin
     FGuideLinesCache[t].CacheValid:=false;
 end;
 
+function TControlSelection.ParentLevel: integer;
+begin
+  if (cssParentLevelNeedsUpdate in FStates) then begin
+    if (Count>0) and OnlyVisualComponentsSelected
+    and (Items[0].Component is TControl) then
+      FParentLevel:=GetParentLevel(TControl(Items[0].Component))
+    else
+      FParentLevel:=0;
+    Exclude(FStates,cssParentLevelNeedsUpdate);
+  end;
+  Result:=FParentLevel;
+end;
+
 procedure TControlSelection.FindNearestGridX(var NearestInt: TNearestInt);
 var GridSizeX, NearestGridX: integer;
 begin
@@ -1245,7 +1296,8 @@ begin
   NewSelectedControl:=TSelectedControl.Create(AComponent);
   if NewSelectedControl.ParentForm<>FCustomForm then Clear;
   Result:=FControls.Add(NewSelectedControl);
-  FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate];
+  FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
+                    cssParentLevelNeedsUpdate];
   if Count=1 then SetCustomForm;
   DoChange;
   UpdateBounds;
@@ -1277,7 +1329,8 @@ begin
   BeginUpdate;
   Items[Index].Free;
   FControls.Delete(Index);
-  FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate];
+  FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
+                    cssParentLevelNeedsUpdate];
   if Count=0 then SetCustomForm;
   UpdateBounds;
   SaveBounds;
@@ -1291,7 +1344,8 @@ begin
   if FControls.Count=0 then exit;
   for i:=0 to FControls.Count-1 do Items[i].Free;
   FControls.Clear;
-  FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate];
+  FStates:=FStates+[cssOnlyNonVisualNeedsUpdate,cssOnlyVisualNeedsUpdate,
+                    cssParentLevelNeedsUpdate];
   FCustomForm:=nil;
   UpdateBounds;
   SaveBounds;
@@ -1602,6 +1656,11 @@ var i:integer;
   var ALeft,ATop,ARight,ABottom:integer;
     Origin:TPoint;
   begin
+    if (AComponent is TControl)
+    and (csNoDesignVisible in TControl(AComponent).ControlStyle) then begin
+      Result:=false;
+      exit;
+    end;
     Origin:=GetParentFormRelativeTopLeft(AComponent);
     ALeft:=Origin.X;
     ATop:=Origin.Y;

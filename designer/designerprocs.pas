@@ -94,7 +94,7 @@ function GetComponentTop(AComponent: TComponent): integer;
 function GetComponentWidth(AComponent: TComponent): integer;
 function GetComponentHeight(AComponent: TComponent): integer;
 
-
+function GetParentLevel(AControl: TControl): integer;
 
 implementation
 
@@ -242,6 +242,15 @@ begin
     Result:=TControl(AComponent).Height;
   end else begin
     Result:=NonVisualCompWidth;
+  end;
+end;
+
+function GetParentLevel(AControl: TControl): integer;
+begin
+  Result:=0;
+  while AControl<>nil do begin
+    inc(Result);
+    AControl:=AControl.Parent;
   end;
 end;
 
