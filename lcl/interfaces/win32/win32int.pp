@@ -145,7 +145,7 @@ Uses
   Arrow, Buttons, Calendar, CListBox, Spin, CheckLst, WinExt;
 
 Type
-  TEventType = (etNotify, etKey, etKeyPress, etMouseWheeel, etMouseUpDown);
+  TEventType = (etNotify, etKey, etKeyPress, etMouseWheel, etMouseUpDown);
 
   { Linked list of objects for events }
   PLazObject = ^TLazObject;
@@ -192,6 +192,9 @@ End.
 { =============================================================================
 
   $Log$
+  Revision 1.60  2003/12/15 21:57:16  micha
+  checklistbox, implement object+checked; from vincent
+
   Revision 1.59  2003/12/14 19:18:04  micha
   hint fixes: parentfont, font itself, showing/hiding + more
 

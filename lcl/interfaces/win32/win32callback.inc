@@ -362,6 +362,8 @@ Begin
       If OwnerObject Is TCustomForm then
         If fsModal in TCustomForm(OwnerObject).FormState then
           EnumThreadWindows(GetWindowThreadProcessId(Window,nil),@EnableWindowsProc, Window);
+      if OwnerObject is TCheckListBox then
+        TWin32CheckListBoxStrings.DeleteItemRecords(Window);
       EnumProps(Window, @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
@@ -898,6 +900,9 @@ end;
 
 {
   $Log$
+  Revision 1.75  2003/12/15 21:57:16  micha
+  checklistbox, implement object+checked; from vincent
+
   Revision 1.74  2003/12/13 19:44:42  micha
   hintwindow, color, rectangle size fixes
 

@@ -506,11 +506,7 @@ Begin
       begin
         with TLMSetChecked(Data^) do
         begin
-          if Checked then
-            I := 1
-          else
-            I := 0;
-          Windows.SendMessage(Handle, LB_SETITEMDATA, Index, I);
+          TWin32CheckListBoxStrings((Sender as TCheckListBox).Items).Checked[Index] := Checked;
 
           // redraw control
           Windows.SendMessage(Handle, LB_GETITEMRECT, Index, LPARAM(@SizeRect));
@@ -519,7 +515,7 @@ Begin
       end;
       LM_CLB_GETCHECKED:
       begin
-        Result := Windows.SendMessage(Handle, LB_GETITEMDATA, PInteger(Data)^, 0);
+        Result := integer(TWin32CheckListBoxStrings((Sender as TCheckListBox).Items).Checked[PInteger(data)^]);
       end;
       LM_LV_DELETEITEM:
       Begin
@@ -826,16 +822,13 @@ activate_time :	the time at which the activation event occurred.
       End;
       LM_GETITEMS :
       Begin
-        If (Sender as TControl).fCompStyle = csCListBox Then
-        Begin
-          Data := TWin32CListStringList.Create(Handle,TWinControl(Sender));
-          Result := Integer(Data);
-        End
+        If (Sender as TControl).fCompStyle = csCListBox
+          Then Data := TWin32CListStringList.Create(Handle,TWinControl(Sender))
         Else
-        Begin
-          Data := TWin32ListStringList.Create(Handle,TWinControl(Sender));
-          Result := Integer(Data);
-        End;
+          If (Sender Is TCheckListBox)
+            Then Data := TWin32CheckListBoxStrings.Create(Handle,TWinControl(Sender))
+          Else Data := TWin32ListStringList.Create(Handle,TWinControl(Sender));
+        Result := Integer(Data);
       End;
       LM_GETTEXT :
       Begin
@@ -1398,7 +1391,7 @@ Var
     Result := 0;
     If ofAllowMultiSelect In Options Then Result := Result Or OFN_ALLOWMULTISELECT;
     If ofCreatePrompt In Options Then Result := Result Or OFN_CREATEPROMPT;
-    If Not (ofOldStyleDialog In Options) Then Result := Result Or OFN_EXPLORER;
+//    If Not (ofOldStyleDialog In Options) Then Result := Result Or OFN_EXPLORER;
     If ofExtensionDifferent In Options Then Result := Result Or OFN_EXTENSIONDIFFERENT;
     If ofFileMustExist In Options Then Result := Result Or OFN_FILEMUSTEXIST;
     If ofHideReadOnly In Options Then Result := Result Or OFN_HIDEREADONLY;
@@ -1510,8 +1503,9 @@ Begin
       SizeStr:=15*MAX_PATH  // Tested with 210 selected files
     Else
       SizeStr:=MAX_PATH;
-    GetMem(FName,SizeStr);
-    StrPCopy(FName,Filename);
+    GetMem(FName,SizeStr+2);
+    FillChar(FName^, SizeStr+2, 0);
+    StrLCopy(FName,PChar(Filename),SizeStr);
     If Filter <> '' Then Begin
       FFilter := Filter;
       ReplacePipe(FFilter);
@@ -2896,6 +2890,9 @@ End;
 
 {
   $Log$
+  Revision 1.141  2003/12/15 21:57:16  micha
+  checklistbox, implement object+checked; from vincent
+
   Revision 1.140  2003/12/14 20:49:22  micha
   hintwindow focus fix
 

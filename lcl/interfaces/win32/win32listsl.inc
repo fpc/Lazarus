@@ -153,7 +153,10 @@ Begin
 
     Windows.SendMessage(FWin32List, FFlagResetContent, 0, 0);
     For Counter := 0 To (TStrings(Source).Count - 1) Do
+    Begin
       Windows.SendMessage(FWin32List, FFlagAddString, 0, LPARAM(PChar(TStrings(Source)[Counter]))); //Insert
+      PutObject(Counter, TStrings(Source).Objects[Counter]);
+    end;
 
     if FSender.FCompStyle=csComboBox Then
     begin
@@ -184,7 +187,7 @@ Begin
     Raise Exception.Create('Out of bounds.')
   Else
   Begin
-  	Getmem(Item,Windows.SendMessage(FWin32List,FFlagGetTextLen,Index,0)+1);
+    Getmem(Item,Windows.SendMessage(FWin32List,FFlagGetTextLen,Index,0)+1);
     Windows.SendMessage(FWin32List, FFlagGetText, Index, LPARAM(Item));
   End;
   Result := StrPas(Item);
@@ -232,6 +235,17 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method: TWin32ListStringList.GetObject
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Function TWin32ListStringList.GetObject(Index: Integer): TObject;
+Begin
+  HWND(Result) := Windows.SendMessage(FWin32List, LB_GETITEMDATA, Index, 0);
+End;
+
+{------------------------------------------------------------------------------
   Method: TWin32ListStringList.Insert
   Params:
   Returns:
@@ -248,6 +262,96 @@ Begin
   Else
     Windows.SendMessage(FWin32List,FFlagInsertString, Index, LPARAM(PChar(S)));
 End;
+
+{------------------------------------------------------------------------------
+  Method: TWin32ListStringList.PutObject
+  Params:
+  Returns:
+
+ ------------------------------------------------------------------------------}
+Procedure TWin32ListStringList.PutObject(Index: Integer; AObject: TObject);
+Begin
+  Windows.SendMessage(FWin32List, LB_SETITEMDATA, Index, LPARAM(AObject));
+End;
+
+{ TWin32CheckListBoxStrings }
+
+function TWin32CheckListBoxStrings.GetChecked(const Index: Integer): Boolean;
+begin
+  Result:= GetItemRecord(Index, false)^.Checked;
+end;
+
+procedure TWin32CheckListBoxStrings.SetChecked(const Index: Integer;
+  const AValue: Boolean);
+var
+  ItemRecord: PWin32CheckListBoxItemRecord;
+begin
+  ItemRecord := GetItemRecord(Index, true);
+  ItemRecord^.Checked := AValue;
+  SetItemRecord(Index, ItemRecord);
+end;
+
+function TWin32CheckListBoxStrings.GetItemRecord(const Index: Integer;
+  const CreateNew: boolean): PWin32CheckListBoxItemRecord;
+begin
+  Result := PWin32CheckListBoxItemRecord(Windows.SendMessage(FWin32List, LB_GETITEMDATA, Index, 0));
+  if (not Assigned(Result)) and CreateNew then begin
+    Result := new(PWin32CheckListBoxItemRecord);
+    Result^.Checked := false;
+    Result^.TheObject := nil;
+  end;
+end;
+
+procedure TWin32CheckListBoxStrings.SetItemRecord(const Index: Integer;
+  ItemRecord: PWin32CheckListBoxItemRecord);
+begin
+  Windows.SendMessage(FWin32List, LB_SETITEMDATA, Index, LPARAM(ItemRecord));
+end;
+
+procedure TWin32CheckListBoxStrings.Clear;
+begin
+  DeleteItemRecords(FWin32List);
+  inherited Clear;
+end;
+
+procedure TWin32CheckListBoxStrings.Delete(Index: Integer);
+begin
+  DeleteItemRecord(FWin32List, Index);
+  inherited Delete(Index);
+end;
+
+function TWin32CheckListBoxStrings.GetObject(Index: Integer): TObject;
+begin
+  Result:= GetItemRecord(Index, false)^.TheObject;
+end;
+
+procedure TWin32CheckListBoxStrings.PutObject(Index: Integer; AObject: TObject);
+var
+  ItemRecord: PWin32CheckListBoxItemRecord;
+begin
+  ItemRecord := GetItemRecord(Index, true);
+  ItemRecord^.TheObject := AObject;
+  SetItemRecord(Index, ItemRecord);
+end;
+
+class procedure TWin32CheckListBoxStrings.DeleteItemRecords(const List: HWND);
+var
+  Index: Integer;
+  ItemCount: Integer;
+begin
+  ItemCount := Windows.SendMessage(List, LB_GETCOUNT, 0, 0);
+  for Index := 0 to ItemCount-1 do
+    DeleteItemRecord(List, Index);
+end;
+
+class procedure TWin32CheckListBoxStrings.DeleteItemRecord(const List: HWND;const Index: integer);
+var
+  ItemRecord: PWin32CheckListBoxItemRecord;
+begin
+  ItemRecord := PWin32CheckListBoxItemRecord(Windows.SendMessage(List, LB_GETITEMDATA, Index, 0));
+  if Assigned(ItemRecord)
+    then Dispose(ItemRecord);
+end;
 
 {*************************************************************}
 {                      TWin32CListStringList methods            }
@@ -417,6 +521,9 @@ End;
 { =============================================================================
 
   $Log$
+  Revision 1.23  2003/12/15 21:57:16  micha
+  checklistbox, implement object+checked; from vincent
+
   Revision 1.22  2003/11/25 21:20:38  micha
   implement tchecklistbox
 

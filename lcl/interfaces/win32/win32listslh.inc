@@ -47,6 +47,8 @@ Type
   Protected
     Function Get(Index: Integer): String; Override;
     Function GetCount: Integer; Override;
+    Function GetObject(Index: Integer): TObject; Override;
+    Procedure PutObject(Index: Integer; AObject: TObject); Override;
     Procedure SetSorted(Val: Boolean); Virtual;
   Public
     Constructor Create(List : HWND; TheOwner: TWinControl);
@@ -57,6 +59,29 @@ Type
     Procedure Sort; Virtual;
     Property Sorted: Boolean Read FSorted Write SetSorted;
   End;
+  
+  PWin32CheckListBoxItemRecord = ^TWin32CheckListBoxItemRecord;
+  TWin32CheckListBoxItemRecord = record
+    TheObject: TObject;
+    Checked: Boolean;
+  end;
+
+  TWin32CheckListBoxStrings = class(TWin32ListStringList)
+  private
+    function GetChecked(const Index: Integer): Boolean;
+    procedure SetChecked(const Index: Integer; const AValue: Boolean);
+    function GetItemRecord(const Index: Integer; const CreateNew: boolean): PWin32CheckListBoxItemRecord;
+    procedure SetItemRecord(const Index: Integer; ItemRecord: PWin32CheckListBoxItemRecord);
+  protected
+    function GetObject(Index: Integer): TObject; override;
+    procedure PutObject(Index: Integer; AObject: TObject); override;
+  public
+    class procedure DeleteItemRecords(const List: HWND);
+    class procedure DeleteItemRecord(const List: HWND; const Index: integer);
+    procedure Clear; override;
+    procedure Delete(Index: Integer); override;
+    property Checked[const Index: Integer]: Boolean read GetChecked write SetChecked;
+  end;
 
   TWin32CListStringList = Class(TStrings)
   Private
@@ -88,6 +113,9 @@ Type
 { =============================================================================
 
   $Log$
+  Revision 1.12  2003/12/15 21:57:16  micha
+  checklistbox, implement object+checked; from vincent
+
   Revision 1.11  2003/11/18 07:20:40  micha
   added "included by" notice at top of file
 
