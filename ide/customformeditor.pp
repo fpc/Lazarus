@@ -40,7 +40,7 @@ uses
 {$ENDIF}
   // LCL+FCL
   Classes, SysUtils, TypInfo, Math,
-  {$IFNDEF Ver1_0}AVL_Tree{$ELSE}Variants, OldAvLTree{$ENDIF},
+  {$IFNDEF Ver1_0}AVL_Tree{$ELSE}OldAvLTree{$ENDIF},
   LCLProc, Graphics, Controls, Forms, Menus, Dialogs,
   // components
   PropEdits, ObjectInspector, IDECommands,
