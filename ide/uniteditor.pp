@@ -38,7 +38,7 @@ uses
   FindReplaceDialog, EditorOptions, CustomFormEditor, KeyMapping, StdCtrls,
   Compiler, MsgView, WordCompletion, CodeToolManager, CodeCache, SourceLog,
   SynEdit, SynEditHighlighter, SynHighlighterPas, SynEditAutoComplete,
-  SynEditKeyCmds,SynCompletion, Graphics, Extctrls, Menus, Splash, FindInFilesDlg;
+  SynEditKeyCmds,SynCompletion, Graphics, Extctrls, Menus, Splash, FindInFilesDlg,LMessages;
 
 type
   // --------------------------------------------------------------------------
@@ -92,7 +92,9 @@ type
     FOnCreateBreakPoint: TOnCreateDeleteBreakPoint;
     FOnDeleteBreakPoint: TOnCreateDeleteBreakPoint;
     FVisible : Boolean;
+    FOnMouseMove: TMouseMoveEvent;
 
+    Procedure EditorMouseMoved(Sender : TObject;Shift : TShiftState; X,Y : Integer);
     Function FindFile(const Value : String) : String;
 
     procedure SetCodeBuffer(NewCodeBuffer: TCodeBuffer);
@@ -163,6 +165,7 @@ type
     procedure FindNext;
     procedure FindPrevious;
     procedure GetDialogPosition(Width, Height:integer; var Left,Top:integer);
+    Function GetWordAtPosition(Position : TPoint) : String;
     
     property CodeBuffer: TCodeBuffer read FCodeBuffer write SetCodeBuffer;
 //    property Control : TComponent read FControl write FControl; //commented out on 11-14-2001
@@ -197,6 +200,8 @@ type
        read FOnCreateBreakPoint write FOnCreateBreakPoint;
     property OnDeleteBreakPoint: TOnCreateDeleteBreakPoint
        read FOnDeleteBreakPoint write FOnDeleteBreakPoint;
+    property OnMouseMove : TMouseMoveEvent read FOnMouseMove write FOnMouseMove;
+
   end;
 
 
@@ -250,6 +255,12 @@ type
     function OnSynCompletionPaintItem(AKey: string; ACanvas: TCanvas;
        X, Y: integer): boolean;
     procedure OnSynCompletionSearchPosition(var APosition:integer);
+    
+//hintwindow stuff
+    FHintWIndow : THintWindow;
+    FHintTimer : TTimer;
+    Procedure HintTimer(sender : TObject);
+    Procedure OnMouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
 
     Procedure NextEditor;
     Procedure PrevEditor;
@@ -1081,6 +1092,7 @@ writeln('TSourceEditor.CreateEditor  A ');
       OnReplaceText := @OnReplace;
       OnGutterClick := @Self.OnGutterClick;
       OnSpecialLineColors:=@OnEditorSpecialLineColor;
+      OnMouseMove := @EditorMouseMoved;
       Show;
     end;
     if FCodeTemplates<>nil then
@@ -1358,6 +1370,66 @@ begin
     Result:='';
 end;
 
+Procedure TSourceEditor.EditorMouseMoved(Sender : TObject; Shift : TShiftState; X,Y : Integer);
+begin
+//  Writeln('MOuseMove in Editor',X,',',Y);
+  if Assigned(OnMouseMove) then
+     OnMouseMove(self,Shift,X,Y);
+end;
+
+Function TSourceEditor.GetWordAtPosition(Position : TPoint) : String;
+var
+  TopLine : Integer;
+  LineHeight : Integer;
+  LineNum : Integer;
+  XLine : Integer;
+  EditorLine,Texts : String;
+begin
+  Result := '';
+  //Figure out the line number
+  TopLine := FEditor.TopLine;
+  LineHeight := FEditor.LineHeight;
+//  Writeln('GetWord...,',position.X,',',Position.Y);
+  if Position.Y > 1 then
+     LineNum := Position.Y div LineHeight
+     else
+     LineNum := 1;
+  XLine := Position.X div FEditor.CharWidth;
+  if XLine = 0 then inc(XLine);
+  
+  EditorLine := FEditor.Lines[LineNum];
+//  Writeln('XLine and LineNum = ',XLine,',',LineNum);
+  if Length(trim(EditorLine)) = 0 then Exit;
+  if XLine > Length(EditorLine) then Exit;
+  
+  //walk backwards to a space or non-standard character.
+  while (((ord(upcase(EditorLine[XLine])) >= 65)
+        and (ord(upcase(EditorLine[xLine])) <= 90)) or
+        ((ord(EditorLine[XLine]) >= ord('1'))
+        and (ord(EditorLine[XLine]) <= ord('0'))))  and (XLine>1)  do
+    dec(xLine);
+  if ( (XLine > 1) and (XLine < Length(EditorLine))) then Inc(xLine);
+  Texts := Copy(EditorLine,XLine,length(EditorLine));  //chop off the beginning
+
+  XLine := 1;
+  while (((ord(upcase(Texts[xLine])) >= 65) and (ord(upcase(Texts[xLine])) <= 90))
+        or ((ord(EditorLine[XLine]) >= ord('1'))
+        and (ord(EditorLine[XLine]) <= ord('0'))))
+        and (XLine< length(Texts)) do
+   inc(xLine);
+
+  if (XLine < Length(Texts) ) and (XLine >1)  then dec(xLine);
+
+  if not((((ord(upcase(Texts[xLine])) >= 65) and (ord(upcase(Texts[xLine])) <= 90)))
+          or ((ord(EditorLine[XLine]) >= ord('1'))
+          and (ord(EditorLine[XLine]) <= ord('0'))))  then
+    dec(xLine);
+  Texts := Copy(Texts,1,XLine);
+
+  Result := Texts;
+
+end;
+
 {------------------------------------------------------------------------}
                       { TSourceNotebook }
 
@@ -1506,7 +1578,20 @@ begin
   IdentCompletionTimer.Interval := 500;
 
   Visible:=false;
-  
+
+//hinttimer
+  FHintTimer := TTimer.Create(nil);
+  FHintTimer.Interval := 500;
+  FHintTimer.Enabled := False;
+  FHintTimer.OnTimer := @HintTimer;
+
+  FHintWindow := THintWindow.Create(nil);
+
+  FHIntWindow.Visible := False;
+  FHintWindow.Caption := 'This is a hint window'#13#10'NEat huh?';
+  FHintWindow.HideInterval := 4000;
+  FHintWindow.AutoHide := True;
+
 end;
 
 destructor TSourceNotebook.Destroy;
@@ -1526,6 +1611,10 @@ begin
   FCodeTemplateModul.Free;
   FSourceEditorList.Free;
   Gotodialog.free;
+  
+  FHintTimer.free;
+  FHintWindow.Free;
+
   inherited Destroy;
 end;
 
@@ -2074,6 +2163,13 @@ writeln('TSourceNotebook.NewSE C ');
   Result.EditorComponent.BookMarkOptions.BookmarkImages := MarksImgList;
   Result.PopupMenu:=SrcPopupMenu;
   Result.OnEditorChange := @EditorChanged;
+  writeln('ASSIGNING ONMOUSEMOVE');
+  Result.OnMouseMove := @OnMouseMove;
+  Writeln('-------------------------------------------');
+  Writeln('-------------------------------------------');
+  Writeln('-------------------------------------------');
+  Writeln('-------------------------------------------');
+  Writeln('-------------------------------------------');
 {$IFDEF IDE_DEBUG}
 writeln('TSourceNotebook.NewSE end ');
 {$ENDIF}
@@ -2756,6 +2852,55 @@ Begin
         end;
     end;
   end;
+end;
+
+Procedure TSourceNotebook.OnMouseMove(Sender : TObject; Shift: TShiftstate; X,Y : Integer);
+begin
+//writeln('MOUSEMOVE');
+    if FHintWIndow.Visible then
+     FHintWindow.Visible := False;
+
+  FHintTimer.Enabled := False;
+  FHintTimer.Enabled := not ((ssLeft in Shift) or (ssRight in Shift) or (ssMiddle in Shift));
+end;
+
+Procedure TSourceNotebook.HintTimer(sender : TObject);
+var
+  Rect : TRect;
+  AHint : String;
+  cPosition : TPoint;
+  TextPosition : TPoint;
+  SE : TSourceEditor;
+begin
+  FHintTimer.Enabled := False;
+  cPosition := Mouse.CursorPos;
+
+  cPosition := ScreenToClient(cPosition);
+  if ((cPosition.X <=EditorOpts.GutterWidth) or (cPosition.X >= Width) or (cPosition.Y <= 25)
+  or (cPosition.Y >= Height)) then
+    Exit;
+
+  Se := GetActiveSE;
+  if Not Assigned(se) then Exit;
+  
+  TextPosition.x := cPosition.X-EditorOPts.GutterWidth;
+  TextPosition.Y := cPosition.Y - 28;
+  AHint := SE.GetWordAtPosition(TextPosition);
+
+  if AHint = '' then Exit;
+  
+  Writeln('cPosition ius ',cPosition.x,',',cPosition.y);
+  Rect := FHintWindow.CalcHintRect(0,AHint,nil);  //no maxwidth
+//  Position := ClientToScreen(FLastMouseMovePos);
+  Rect.Left := cPosition.X+Left+10;
+  Rect.Top := cPosition.Y+Top+10;
+  //adding tab height
+  Rect.Top := Rect.Top + 25;
+  Rect.Right := Rect.Left + Rect.Right+3;
+  Rect.Bottom := Rect.Top + Rect.Bottom+3;
+
+  FHintWindow.ActivateHint(Rect,AHint);
+
 end;
 
 

@@ -348,6 +348,8 @@ Begin
       if ControlSelection.ActiveGrabber=nil then begin
         NonVisualComp:=NonVisualComponentAtPos(
            MouseDownPos.X,MouseDownPos.Y);
+        Writeln('ActiveGrabber = nil');
+        if NonVisualComp<>nil then Writeln('1') else Writeln('2');
         if NonVisualComp<>nil then MouseDownComponent:=NonVisualComp;
         CompIndex:=ControlSelection.IndexOf(MouseDownComponent);
         if (Message.Keys and MK_SHIFT)>0 then begin
