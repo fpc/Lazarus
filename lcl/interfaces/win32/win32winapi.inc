@@ -2585,6 +2585,18 @@ Begin
 End;
 
 {------------------------------------------------------------------------------
+  Method:  SetActiveWindow
+  Params:  Window - Window to focus
+  Returns: Old active window
+
+  Sets focus to the specified window, if the current process is on top
+ ------------------------------------------------------------------------------}
+function TWin32WidgetSet.SetActiveWindow(Window: HWND): HWND;
+begin
+  Result := Windows.SetActiveWindow(Window);
+end;
+
+{------------------------------------------------------------------------------
   Method:  SetBkColor
   Params:  DC    - Device context to change the text background color
            Color - background color value
@@ -3019,6 +3031,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.128  2004/11/19 21:59:23  micha
+  fix focus issue (for example using MessageDlg)
+
   Revision 1.127  2004/10/28 21:00:56  micha
   convert GetProp and SetProp usage to one Atom pointing to a record of fields
 

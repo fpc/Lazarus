@@ -155,6 +155,7 @@ Function SelectClipRGN(DC : hDC; RGN : HRGN) : Longint; override;
 Function SelectObject(DC: HDC; GDIObj: HGDIOBJ): HGDIOBJ; Override;
 Function SelectPalette(DC: HDC; Palette: HPALETTE; ForceBackground: Boolean): HPALETTE; Override;
 Function SendMessage(HandleWnd: HWND; Msg: Cardinal; WParam: WParam; LParam: LParam): LResult; Override;
+function SetActiveWindow(Window: HWND): HWND; override;
 Function SetBkColor(DC: HDC; Color: TColorRef): TColorRef; Override;
 Function SetBkMode(DC: HDC; BkMode: Integer): Integer; Override;
 Function SetCapture(Value: LongInt): LongInt; Override;
@@ -190,6 +191,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.50  2004/11/19 21:59:23  micha
+  fix focus issue (for example using MessageDlg)
+
   Revision 1.49  2004/03/05 12:16:09  micha
   fix designer (overlay) window transparency issue
   fix releasedesignerdc to use correct window
