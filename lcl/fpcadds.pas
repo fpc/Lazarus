@@ -36,6 +36,7 @@ type
   
   {$IFDEF VER1_0}
   PCardinal = ^Cardinal;
+  PtrInt = Longint;
   {$ENDIF}
   
   PHandle = ^THandle;
