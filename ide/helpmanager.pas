@@ -36,7 +36,7 @@ uses
   Classes, SysUtils, LCLProc, Forms, Controls, Buttons, StdCtrls, Dialogs,
   CodeToolManager, CodeAtom, CodeCache, CustomCodeTool, CodeTree,
   PascalParserTool, FindDeclarationTool,
-  HelpIntf, HelpHTML, HelpFPDoc, MacroIntf,
+  PropEdits, HelpIntf, HelpHTML, HelpFPDoc, MacroIntf,
   LazarusIDEStrConsts, TransferMacros, DialogProcs, IDEOptionDefs,
   EnvironmentOpts, AboutFrm, MsgView, Project, PackageDefs, MainBar,
   HelpOptions, MainIntf;
@@ -118,7 +118,7 @@ type
     property RTLHelpDB: THelpDatabase read FRTLHelpDB;
     property RTLHelpDBPath: THelpBasePathObject read FRTLHelpDBPath;
   end;
-
+  
   { Help Contexts for IDE help }
 const
   lihcStartPage = 'StartPage';
@@ -132,7 +132,7 @@ const
 
 var
   HelpBoss: TBaseHelpManager;
-
+  
 implementation
 
 { TBaseHelpManager }
@@ -450,6 +450,10 @@ begin
   HelpViewers:=THelpViewers.Create;
   RegisterIDEHelpDatabases;
   RegisterDefaultIDEHelpViewers;
+
+  // register property editors for URL handling
+  RegisterPropertyEditor(TypeInfo(AnsiString),
+                         THTMLHelpDatabase,'BaseURL',TURLPropertyEditor);
 end;
 
 destructor THelpManager.Destroy;

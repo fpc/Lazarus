@@ -737,6 +737,17 @@ type
     function GetDialogOptions: TOpenOptions; virtual;
     function GetDialogTitle: string; virtual;
     function GetInitialDirectory: string; virtual;
+    procedure SetFilename(const Filename: string); virtual;
+  end;
+
+
+{ TURLPropertyEditor
+  PropertyEditor editor for URL properties.
+  Show an TOpenDialog on Edit. }
+
+  TURLPropertyEditor = class(TFileNamePropertyEditor)
+  public
+    procedure SetFilename(const Filename: string); override;
   end;
 
 
@@ -749,6 +760,7 @@ type
     function GetAttributes: TPropertyAttributes; override;
     procedure Edit; override;
   end;
+  
 
 { TListElementPropertyEditor
   A property editor for a single element of a TListPropertyEditor
@@ -4801,7 +4813,7 @@ begin
       InitialDir:=GetInitialDirectory;
       Title:=GetDialogTitle;
       If Execute then
-        SetStrValue(FileName);
+        SetFilename(Filename);
     Finally
       Free;
     end;
@@ -4825,6 +4837,32 @@ end;
 function TFileNamePropertyEditor.GetInitialDirectory: string;
 begin
   Result:='';
+end;
+
+procedure TFileNamePropertyEditor.SetFilename(const Filename: string);
+begin
+  SetStrValue(Filename);
+end;
+
+{ TURLPropertyEditor }
+
+procedure TURLPropertyEditor.SetFilename(const Filename: string);
+
+  function FilenameToURL(const Filename: string): string;
+  var
+    i: Integer;
+  begin
+    Result:=Filename;
+    if PathDelim<>'/' then
+      for i:=1 to length(Result) do
+        if Result[i]=PathDelim then
+          Result[i]:='/';
+    if Result<>'' then
+      Result:='file://'+Result;
+  end;
+
+begin
+  inherited SetFilename(FilenameToURL(Filename));
 end;
 
 { TSessionPropertiesPropertyEditor }
