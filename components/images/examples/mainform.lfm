@@ -22,7 +22,8 @@ object ImagesExampleForm: TImagesExampleForm
     Width = 425
     object Image1: TImage
       Align = alClient
-      Proportional = True
+      AutoSize = True
+      Center = True
       Transparent = True
       Height = 315
       Width = 421

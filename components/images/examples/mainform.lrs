@@ -9,29 +9,29 @@ LazarusResources.Add('TImagesExampleForm','FORMDATA',[
   +'akTop'#6'akLeft'#8'akBottom'#0#7'Caption'#6#3'...'#12'ClientHeight'#3';'#1
   +#11'ClientWidth'#3#165#1#11'ParentColor'#9#11'ParentCtl3D'#8#8'TabOrder'#2#0
   +#6'Height'#3'P'#1#5'Width'#3#169#1#0#6'TImage'#6'Image1'#5'Align'#7#8'alClie'
-  +'nt'#12'Proportional'#9#11'Transparent'#9#6'Height'#3';'#1#5'Width'#3#165#1#0
-  +#0#0#7'TButton'#14'LoadJPEGButton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'C'
-  +'aption'#6#19'Load JPEG from file'#7'OnClick'#7#19'LoadJPEGButtonClick'#8'Ta'
-  +'bOrder'#2#1#4'Left'#3#229#0#6'Height'#2#25#3'Top'#3'Z'#1#5'Width'#3#173#0#0
-  +#0#7'TButton'#14'SaveJPEGButton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Cap'
-  +'tion'#6#20'Save as JPEG to file'#7'OnClick'#7#19'SaveJPEGButtonClick'#8'Tab'
-  +'Order'#2#2#4'Left'#3#229#0#6'Height'#2#25#3'Top'#3'|'#1#5'Width'#3#173#0#0#0
-  +#7'TButton'#15'LoadImageButton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Capt'
-  +'ion'#6#10'Load Image'#7'OnClick'#7#20'LoadImageButtonClick'#8'TabOrder'#2#3
-  +#4'Left'#2#24#6'Height'#2#25#3'Top'#3'Z'#1#5'Width'#3#163#0#0#0#7'TButton'#15
-  +'SaveImageButton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#10'Save'
-  +' Image'#7'OnClick'#7#20'SaveImageButtonClick'#8'TabOrder'#2#4#4'Left'#2#24#6
-  +'Height'#2#25#3'Top'#3'|'#1#5'Width'#3#163#0#0#0#18'TOpenPictureDialog'#18'O'
-  +'penPictureDialog1'#6'Filter'#6#143'All files (*)|*|Graphic (*.png;*.xpm;*.b'
-  +'mp)|*.png;*.xpm;*.bmp|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)'
-  +'|*.xpm|Bitmaps (*.bmp)|*.bmp'#5'Title'#6#18'Open existing file'#6'Filter'#6
+  +'nt'#8'AutoSize'#9#6'Center'#9#11'Transparent'#9#6'Height'#3';'#1#5'Width'#3
+  +#165#1#0#0#0#7'TButton'#14'LoadJPEGButton'#7'Anchors'#11#6'akLeft'#8'akBotto'
+  +'m'#0#7'Caption'#6#19'Load JPEG from file'#7'OnClick'#7#19'LoadJPEGButtonCli'
+  +'ck'#8'TabOrder'#2#1#4'Left'#3#229#0#6'Height'#2#25#3'Top'#3'Z'#1#5'Width'#3
+  +#173#0#0#0#7'TButton'#14'SaveJPEGButton'#7'Anchors'#11#6'akLeft'#8'akBottom'
+  +#0#7'Caption'#6#20'Save as JPEG to file'#7'OnClick'#7#19'SaveJPEGButtonClick'
+  +#8'TabOrder'#2#2#4'Left'#3#229#0#6'Height'#2#25#3'Top'#3'|'#1#5'Width'#3#173
+  +#0#0#0#7'TButton'#15'LoadImageButton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7
+  +'Caption'#6#10'Load Image'#7'OnClick'#7#20'LoadImageButtonClick'#8'TabOrder'
+  +#2#3#4'Left'#2#24#6'Height'#2#25#3'Top'#3'Z'#1#5'Width'#3#163#0#0#0#7'TButto'
+  +'n'#15'SaveImageButton'#7'Anchors'#11#6'akLeft'#8'akBottom'#0#7'Caption'#6#10
+  +'Save Image'#7'OnClick'#7#20'SaveImageButtonClick'#8'TabOrder'#2#4#4'Left'#2
+  +#24#6'Height'#2#25#3'Top'#3'|'#1#5'Width'#3#163#0#0#0#18'TOpenPictureDialog'
+  +#18'OpenPictureDialog1'#6'Filter'#6#143'All files (*)|*|Graphic (*.png;*.xpm'
+  +';*.bmp)|*.png;*.xpm;*.bmp|Portable Network Graphic (*.png)|*.png|Pixmap (*.'
+  +'xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp'#5'Title'#6#18'Open existing file'#6'Filte'
+  +'r'#6#143'All files (*)|*|Graphic (*.png;*.xpm;*.bmp)|*.png;*.xpm;*.bmp|Port'
+  +'able Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.b'
+  +'mp'#11'FilterIndex'#2#0#4'left'#2'X'#3'top'#2'@'#0#0#18'TSavePictureDialog'
+  +#18'SavePictureDialog1'#6'Filter'#6#143'All files (*)|*|Graphic (*.png;*.xpm'
+  +';*.bmp)|*.png;*.xpm;*.bmp|Portable Network Graphic (*.png)|*.png|Pixmap (*.'
+  +'xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp'#5'Title'#6#12'Save file as'#6'Filter'#6
   +#143'All files (*)|*|Graphic (*.png;*.xpm;*.bmp)|*.png;*.xpm;*.bmp|Portable '
   +'Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp'#11
-  +'FilterIndex'#2#0#4'left'#2'X'#3'top'#2'@'#0#0#18'TSavePictureDialog'#18'Sav'
-  +'ePictureDialog1'#6'Filter'#6#143'All files (*)|*|Graphic (*.png;*.xpm;*.bmp'
-  +')|*.png;*.xpm;*.bmp|Portable Network Graphic (*.png)|*.png|Pixmap (*.xpm)|*'
-  +'.xpm|Bitmaps (*.bmp)|*.bmp'#5'Title'#6#12'Save file as'#6'Filter'#6#143'All'
-  +' files (*)|*|Graphic (*.png;*.xpm;*.bmp)|*.png;*.xpm;*.bmp|Portable Network'
-  +' Graphic (*.png)|*.png|Pixmap (*.xpm)|*.xpm|Bitmaps (*.bmp)|*.bmp'#11'Filte'
-  +'rIndex'#2#0#4'left'#2'X'#3'top'#2'p'#0#0#0
+  +'FilterIndex'#2#0#4'left'#2'X'#3'top'#2'p'#0#0#0
 ]);
