@@ -1633,6 +1633,7 @@ end;
 
 constructor TCustomDbGrid.Create(AOwner: TComponent);
 begin
+  FEditingColumn:=-1;
   DragDx:=5;
   inherited Create(AOwner);
 
@@ -2023,6 +2024,9 @@ end.
 
 {
   $Log$
+  Revision 1.33  2005/03/04 07:06:18  vincents
+  added initialization of FEditingColumn   from Luiz Americo
+
   Revision 1.32  2005/02/08 11:33:16  mattias
   fixes for empty dbgrid  from Jesus
 
