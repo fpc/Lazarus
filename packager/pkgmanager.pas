@@ -1326,8 +1326,10 @@ begin
   while Dependency<>nil do begin
     if (Dependency.LoadPackageResult=lprSuccess)
     and (not Dependency.RequiredPackage.AutoCreated) then begin
-      sl.Add(Dependency.PackageName);
-      writeln('TPkgManager.SaveAutoInstallDependencies A ',Dependency.PackageName);
+      if sl.IndexOf(Dependency.PackageName)<0 then begin
+        sl.Add(Dependency.PackageName);
+        writeln('TPkgManager.SaveAutoInstallDependencies A ',Dependency.PackageName);
+      end;
     end;
     Dependency:=Dependency.NextRequiresDependency;
   end;
@@ -2554,29 +2556,26 @@ var
       UnitOwner:=TObject(MissingDependencies[i]);
       RequiredPackage:=TLazPackage(MissingDependencies.Objects[i]);
       if UnitOwner is TProject then begin
-        PackageAdditions:=PackageAdditions
-          +'Adding new Dependency for project '+TProject(UnitOwner).Title
-          +': package '+RequiredPackage.Name
-          +#13#13;
+        PackageAdditions:=Format(
+          lisPkgMangAddingNewDependencyForProjectPackage, [PackageAdditions,
+          TProject(UnitOwner).Title, RequiredPackage.Name, #13#13]);
       end else if UnitOwner is TLazPackage then begin
-        PackageAdditions:=PackageAdditions
-          +'Adding new Dependency for package '+TLazPackage(UnitOwner).Name
-          +': package '+RequiredPackage.Name
-          +#13#13;
+        PackageAdditions:=Format(
+          lisPkgMangAddingNewDependencyForPackagePackage, [PackageAdditions,
+          TLazPackage(UnitOwner).Name, RequiredPackage.Name, #13#13]);
       end;
     end;
     writeln('TPkgManager.AddUnitDependenciesForComponentClasses PackageAdditions=',PackageAdditions);
     Msg:='';
     if UsesAdditions<>'' then begin
-      Msg:=Msg+'The following units will be added to the uses section of'#13
-              +UnitFilename+':'#13
-              +UsesAdditions+#13#13;
+      Msg:=Format(lisPkgMangTheFollowingUnitsWillBeAddedToTheUsesSectionOf, [
+        Msg, #13, UnitFilename, #13, UsesAdditions, #13#13]);
     end;
     if PackageAdditions<>'' then begin
       Msg:=Msg+PackageAdditions;
     end;
     if Msg<>'' then begin
-      Result:=MessageDlg('Confirm changes',
+      Result:=MessageDlg(lisConfirmChanges,
         Msg,mtConfirmation,[mbOk,mbAbort],0);
       exit;
     end;
@@ -2784,8 +2783,17 @@ end;
 
 function TPkgManager.DoInstallPackage(APackage: TLazPackage): TModalResult;
 var
-  Dependency: TPkgDependency;
   PkgList: TList;
+  
+  function GetPkgListIndex(APackage: TLazPackage): integer;
+  begin
+    Result:=PkgList.Count-1;
+    while (Result>=0) and (TLazPackage(PkgList[Result])<>APackage) do
+      dec(Result);
+  end;
+  
+var
+  Dependency: TPkgDependency;
   i: Integer;
   s: String;
   NeedSaving: Boolean;
@@ -2822,7 +2830,7 @@ begin
     // remove packages already marked for installation
     for i:=PkgList.Count-1 downto 0 do begin
       RequiredPackage:=TLazPackage(PkgList[i]);
-      if RequiredPackage.AutoInstall<>pitNope then
+      if (RequiredPackage.AutoInstall<>pitNope) then
         PkgList.Delete(i);
     end;
     
@@ -2842,7 +2850,8 @@ begin
     end;
 
     // add packages to auto installed packages
-    PkgList.Add(APackage);
+    if GetPkgListIndex(APackage)<0 then
+      PkgList.Add(APackage);
     NeedSaving:=false;
     for i:=0 to PkgList.Count-1 do begin
       RequiredPackage:=TLazPackage(PkgList[i]);

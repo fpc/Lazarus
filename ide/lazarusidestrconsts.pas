@@ -2007,6 +2007,13 @@ resourcestring
   lisPkgMangThePackageOwnsTheFileShouldTheFileBeRenamed = 'The package %s '
     +'owns the file%s%s%s%s.%sShould the file be renamed in the package as '
     +'well?';
+  lisPkgMangAddingNewDependencyForProjectPackage = '%sAdding new Dependency '
+    +'for project %s: package %s%s';
+  lisPkgMangAddingNewDependencyForPackagePackage = '%sAdding new Dependency '
+    +'for package %s: package %s%s';
+  lisPkgMangTheFollowingUnitsWillBeAddedToTheUsesSectionOf = '%sThe following '
+    +'units will be added to the uses section of%s%s:%s%s%s';
+  lisConfirmChanges = 'Confirm changes';
   lisPkgMangFileNotSaved = 'File not saved';
   lisPkgMangPleaseSaveTheFileBeforeAddingItToAPackage = 'Please save the file '
     +'before adding it to a package.';
