@@ -855,6 +855,7 @@ begin
     FreeThenNil(TheControlSelection);
   end;
   FreeThenNil(FormEditor1);
+  FreeThenNil(PkgBoss);
   FreeThenNil(PropertyEditorHook1);
   FreeThenNil(TheCompiler);
   FreeThenNil(TheOutputFilter);
@@ -922,6 +923,14 @@ procedure TMainIDE.FormCloseQuery(Sender : TObject; var CanClose: boolean);
 var
   MsgResult: integer;
 begin
+  // check packages
+  if (PkgBoss.DoSaveAllPackages([pfAskBeforeSaving])<>mrOk)
+  or (PkgBoss.DoCloseAllPackageEditors<>mrOk) then begin
+    CanClose:=false;
+    exit;
+  end;
+
+  // check project
   if SomethingOfProjectIsModified then begin
     MsgResult:=MessageDlg(lisProjectChanged, Format(lisSaveChangesToProject,
       [Project1.Title]), mtConfirmation, [mbYes, mbNo, mbCancel], 0);
@@ -8256,6 +8265,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.520  2003/04/13 13:45:04  mattias
+  implemented broken dependencies dialog
+
   Revision 1.519  2003/04/11 21:21:34  mattias
   implemented closing unneeded package
 
