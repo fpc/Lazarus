@@ -1364,6 +1364,16 @@ begin
   Result := TObject(gtk_object_get_data(Widget, 'Class'));
 end;
 
+function GetParentLCLObject(Widget: PGtkWidget): TObject;
+begin
+  while (Widget<>nil) do begin
+    Result:=GetLCLObject(Widget);
+    if Result<>nil then exit;
+    Widget:=Widget^.Parent;
+  end;
+  Result:=nil;
+end;
+
 {-------------------------------------------------------------------------------
  Some need the HiddenLCLobject which created a parent of this widget.
 
@@ -3215,7 +3225,6 @@ end;
 function GetDefaultFont : PGDKFont;
 var
   Style : PGTKStyle;
-  UnRefStyle : Boolean;
 begin
   Result := nil;
   Style := GetStyle('default');
@@ -3825,6 +3834,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.139  2002/10/21 22:12:48  lazarus
+  MG: fixed frmactivate
+
   Revision 1.138  2002/10/21 18:21:38  lazarus
   AJ:minor styles improvement; fixed drawing checks under all(?) themes
 
