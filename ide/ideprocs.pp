@@ -44,11 +44,18 @@ type
     comtHtml        // <!-- -->
     );
   TCommentTypes = set of TCommentType;
+  
+  TOnCopyFile = procedure(const Filename: string; var Copy: boolean);
+  TOnCopyFileMethod =
+    procedure(const Filename: string; var Copy: boolean) of object;
+  TOnCopyError = procedure(const ErrorMsg: string; var Handled: boolean);
+  TOnCopyErrorMethod =
+    procedure(const ErrorMsg: string; var Handled: boolean) of object;
 
 //
 const
   // ToDo: find the constant in the fpc units.
-  EndOfLine:shortstring={$IFDEF win32}#13+{$ENDIF}#10;
+  EndOfLine: shortstring={$IFDEF win32}#13+{$ENDIF}#10;
 
 // files
 function FilenameIsAbsolute(Filename: string):boolean;
@@ -70,6 +77,12 @@ procedure SplitCmdLine(const CmdLine: string;
                        var ProgramFilename, Params: string);
 function ConvertSpecialFileChars(const Filename: string): string;
 function PrepareCmdLineOption(const Option: string): string;
+function CopyDirectory(const SrcDirectory, DestDirectory: string;
+             OnCopyFile: TOnCopyFile;
+             OnCopyError: TOnCopyError): boolean;
+function CopyDirectoryWithMethods(const SrcDir, DestDir: string;
+             OnCopyFile: TOnCopyFileMethod;
+             OnCopyError: TOnCopyErrorMethod): boolean;
 
 // XMLConfig
 procedure LoadRecentList(XMLConfig: TXMLConfig; List: TStringList; 
@@ -1063,4 +1076,35 @@ begin
   if (length(Msg) div (length(Msg) div 10000))=0 then ;
 end;
 
+
+function CopyDirectory(const SrcDirectory, DestDirectory: string;
+  OnCopyFile: TOnCopyFile; OnCopyError: TOnCopyError): boolean;
+var
+  SrcDir, DestDir: string;
+begin
+  Result:=true;
+  SrcDir:=AppendPathDelim(TrimFilename(SrcDirectory));
+  DestDir:=AppendPathDelim(TrimFilename(DestDirectory));
+  if CompareFilenames(SrcDir,DestDir)=0 then exit;
+  
+end;
+
+function CopyDirectoryWithMethods(const SrcDir, DestDir: string;
+  OnCopyFile: TOnCopyFileMethod; OnCopyError: TOnCopyErrorMethod): boolean;
+  
+  procedure OnCopyFileProc(const Filename: string; var Copy: boolean);
+  begin
+    OnCopyFile(Filename,Copy);
+  end;
+
+  procedure OnCopyErrorProc(const ErrorMsg: string; var Handled: boolean);
+  begin
+    OnCopyError(ErrorMsg,Handled);
+  end;
+
+begin
+  Result:=false; //CopyDirectory(SrcDir,DestDir,@OnCopyFileProc,@OnCopyErrorProc);
+end;
+
 end.
+
