@@ -39,9 +39,10 @@ type
     FOutputBuf: String;
     FReading: Boolean;       // Set if we are in the ReadLine loop
     FFlushAfterRead: Boolean;// Set if we should flus if we finished reading
+    FPeekOffset: Integer;    // Counst the number of lines we have peeked
     function GetDebugProcessRunning: Boolean;
   protected
-    function  CreateDebugProcess(const AName: String): Boolean;
+    function  CreateDebugProcess(const AOptions: String): Boolean;
     procedure Flush;         // Flushes output buffer
 //    procedure KillTargetProcess;
     function  ReadLine: String; overload;
@@ -52,7 +53,7 @@ type
     property  DebugProcessRunning: Boolean read GetDebugProcessRunning;         
     property  LineEnds: TStringList read FLineEnds;
   public
-    constructor Create; {override; }
+    constructor Create(const AExternalDebugger: String); {override; }
     destructor Destroy; override;
     procedure TestCmd(const ACommand: String); virtual;// For internal debugging purposes
   end;
@@ -223,22 +224,23 @@ end;
 
 { TCmdLineDebugger }
 
-constructor TCmdLineDebugger.Create;
+constructor TCmdLineDebugger.Create(const AExternalDebugger: String);
 begin
   FDbgProcess := nil;
   FLineEnds := TStringList.Create;
   FLineEnds.Add(LINE_END);
   FReading := False;
   FFlushAfterRead := False;
-  inherited Create;
+  FPeekOffset := 0;
+  inherited;
 end;
 
-function TCmdLineDebugger.CreateDebugProcess(const AName:String): Boolean;
+function TCmdLineDebugger.CreateDebugProcess(const AOptions: String): Boolean;
 begin
   if FDbgProcess = nil 
   then begin
     FDbgProcess := TProcess.Create(nil);
-    FDbgProcess.CommandLine := AName;
+    FDbgProcess.CommandLine := ExternalDebugger + ' ' + AOptions;
     FDbgProcess.Options:= [poUsePipes, poNoConsole, poStdErrToOutPut];
     FDbgProcess.ShowWindow := swoNone;
   end;
@@ -325,13 +327,16 @@ function TCmdLineDebugger.ReadLine(const APeek: Boolean): String;
 var   
   WaitSet: Integer;
   LineEndMatch: String;
-  n, Idx, MinIdx: Integer;
+  n, Idx, MinIdx, PeekCount: Integer;
 begin                
 //  WriteLN('[TCmdLineDebugger.GetOutput] Enter');
 
 // TODO: get extra handles to wait for
-  
+// TODO: Fix multiple peeks
+  if not APeek 
+  then FPeekOffset := 0;
   FReading := True;
+  PeekCount := 0;
   repeat                       
     if FOutputBuf <> ''
     then begin
@@ -348,8 +353,16 @@ begin
       then begin
         n := MinIdx + Length(LineEndMatch) - 1;
         Result := Copy(FOutputBuf, 1, n);
-        if not APeek 
-        then Delete(FOutputBuf, 1, n);
+        if APeek 
+        then begin
+          if PeekCount = FPeekOffset
+          then Inc(FPeekOffset)
+          else begin
+            Inc(PeekCount);
+            Continue;
+          end;
+        end
+        else Delete(FOutputBuf, 1, n);
       
         DoDbgOutput(Result);
         Break;
@@ -414,6 +427,14 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.8  2002/03/23 15:54:30  lazarus
+  MWE:
+    + Added locals dialog
+    * Modified breakpoints dialog (load as resource)
+    + Added generic debuggerdlg class
+    = Reorganized main.pp, all debbugger relater routines are moved
+      to include/ide_debugger.inc
+
   Revision 1.7  2002/03/09 02:03:58  lazarus
   MWE:
     * Upgraded gdb debugger to gdb/mi debugger

@@ -2,7 +2,6 @@ object DbgOutputForm1: TDbgOutputForm
   CAPTION = 'Debug output'
   OnClose = FormClose
   OnCreate = FormCreate
-  OnDestroy = FormDestroy
   HEIGHT = 200
   WIDTH = 400
   object txtOutput: TMemo

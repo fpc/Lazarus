@@ -25,7 +25,7 @@ interface
 
 uses
   Classes, Graphics, Controls, Forms, Dialogs, LResources,
-  Buttons, StdCtrls, Debugger, DbgOutputForm, BreakpointsDlg;
+  Buttons, StdCtrls, Debugger, DbgOutputForm, BreakpointsDlg, LocalsDlg;
 
 
 type
@@ -71,6 +71,8 @@ type
     FDebugger: TDebugger;
     FOutputForm: TDBGOutputForm;
     FBreakpointDlg: TBreakpointsDlg;
+    FLocalsDlg: TLocalsDlg;
+    FDummy: Boolean;
     procedure DBGState(Sender: TObject);
     procedure DBGCurrent(Sender: TObject; const ALocation: TDBGLocationRec);
     procedure DBGOutput(Sender: TObject; const AText: String);
@@ -79,7 +81,12 @@ type
   protected
     procedure Loaded; override;
   public
-    destructor Destroy; override;
+    destructor Destroy; override;  
+  published
+    property Dummy: Boolean read FDummy write FDummy; // insert some dummies until fpcbug #1888 is fixed
+    property Dummy1: Boolean read FDummy write FDummy; // insert some dummies until fpcbug #1888 is fixed
+    property Dummy2: Boolean read FDummy write FDummy; // insert some dummies until fpcbug #1888 is fixed
+    property Dummy3: Boolean read FDummy write FDummy; // insert some dummies until fpcbug #1888 is fixed
   end;
 
 var
@@ -112,6 +119,9 @@ begin
   FDebugger := nil;
   FBreakpointDlg := TBreakpointsDlg.Create(Application);
   FBreakpointDlg.Show;
+  
+  FLocalsDlg := TLocalsDlg.Create(Application);
+  FLocalsDlg.Show;
 end;
 
 procedure TDebugTestForm.FormDestroy(Sender: TObject);
@@ -124,13 +134,16 @@ procedure TDebugTestForm.cmdInitClick(Sender: TObject);
 begin
   if FDebugger = nil 
   then begin
-    FDebugger := TGDBMIDebugger.Create;
+    FDebugger := TGDBMIDebugger.Create('/usr/bin/gdb');
     FDebugger.OnDbgOutput := @DBGOutput;
     FDebugger.OnOutput := @DBGTargetOutput;
     FDebugger.OnCurrent := @DBGCurrent;
     FDebugger.OnState := @DBGState;   
     TDBGBreakPointGroup(FDebugger.BreakPointGroups.Add).Name := 'Default';
-                                               
+
+    FBreakpointDlg.Debugger := FDebugger;
+    FLocalsDlg.Debugger := FDebugger;
+    
     // Something strange going on here, 
     // sometimes the form crashes during load with Application as owner
     // sometimes the form crashes during load with nil as owner
@@ -274,6 +287,14 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.6  2002/03/23 15:54:30  lazarus
+  MWE:
+    + Added locals dialog
+    * Modified breakpoints dialog (load as resource)
+    + Added generic debuggerdlg class
+    = Reorganized main.pp, all debbugger relater routines are moved
+      to include/ide_debugger.inc
+
   Revision 1.5  2002/03/12 23:55:36  lazarus
   MWE:
     * More delphi compatibility added/updated to TListView

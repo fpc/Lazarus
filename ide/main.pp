@@ -42,7 +42,7 @@ uses
   Debugger, DBGOutputForm, GDBMIDebugger, RunParamsOpts, ExtToolDialog,
   MacroPromptDlg, LMessages, ProjectDefs, Watchesdlg, BreakPointsdlg, ColumnDlg,
   OutputFilter, BuildLazDialog, MiscOptions, EditDefineTree, CodeToolsOptions,
-  TypInfo, IDEOptionDefs, CodeToolsDefines;
+  TypInfo, IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg;
 
 const
   Version_String = '0.8.2 alpha';
@@ -57,6 +57,10 @@ type
     itCustom: this state is not used yet.
   }
   TIDEToolStatus = (itNone, itBuilder, itDebugger, itCustom);
+
+  {$DEFINE IDE_TYPE}
+  {$I ide_debugger.inc}
+  {$UNDEF IDE_TYPE}  
 
   TMainIDE = class(TForm)
     pnlSpeedButtons : TPanel;
@@ -132,9 +136,6 @@ type
     itmViewCodeExplorer : TMenuItem;
     itmViewForms : TMenuItem;
     itmViewMessage : TMenuItem;
-    itmViewwatches : TMenuItem;
-    itmViewBreakpoints : TMenuItem;
-    itmViewDebugOutput: TMenuItem;
 
     itmProjectNew: TMenuItem;
     itmProjectOpen: TMenuItem;
@@ -219,9 +220,6 @@ type
     procedure mnuViewFormsClicked(Sender : TObject);
     procedure mnuViewCodeExplorerClick(Sender : TObject);
     procedure mnuViewMessagesClick(Sender : TObject);
-    procedure mnuViewWatchesClick(Sender : TObject);
-    procedure mnuViewBreakPointsClick(Sender : TObject);
-    procedure mnuViewDebugOutputClick(Sender : TObject);
     procedure MessageViewDblClick(Sender : TObject);
     procedure mnuToggleFormUnitClicked(Sender : TObject);
 
@@ -292,9 +290,6 @@ type
     procedure OnSrcNoteBookShowUnitInfo(Sender: TObject);
     Procedure OnSrcNotebookToggleFormUnit(Sender : TObject);
     Procedure OnSrcNotebookViewJumpHistory(Sender : TObject);
-    Procedure OnSrcNotebookAddWatchesAtCursor(Sender : TObject);
-    Procedure OnSrcNotebookCreateBreakPoint(Sender : TObject; Line : Integer);
-    Procedure OnSrcNotebookDeleteBreakPoint(Sender : TObject; Line : Integer);
     
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnAddAvailableComponent(AComponent:TComponent;
@@ -320,22 +315,11 @@ type
                                     var Abort: boolean);
     procedure OnAfterCodeToolBossApplyChanges(Manager: TCodeToolManager);
     
-    // Debugger events
-    procedure OnDebuggerChangeState(Sender: TObject);
-    procedure OnDebuggerCurrentLine(Sender: TObject; const ALocation: TDBGLocationRec);
-    procedure OnDebuggerWatchChanged(Sender: TObject);
-    procedure OnDebuggerOutput(Sender: TObject; const AText: String);
-    procedure OnDebuggerException(Sender: TObject; const AExceptionID: Integer;
-      const AExceptionText: String);
-    
     // MessagesView events
     procedure MessagesViewSelectionChanged(sender : TObject);
 
     // Hint Timer events
     Procedure HintTimer1Timer(Sender : TObject);
-    
-    // Watch Dialog events
-    Procedure OnWatchAdded(Sender : TObject; AnExpression : String);
     
     // External Tools events
     procedure OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
@@ -343,6 +327,9 @@ type
     procedure OnExtToolFreeOutputFilter(OutputFilter: TOutputFilter;
                                         ErrorOccurred: boolean);
 
+    {$DEFINE IDE_HEAD}
+    {$I ide_debugger.inc}
+    {$UNDEF IDE_HEAD}  
   private
     FHintSender : TObject;
     FCodeLastActivated : Boolean; // used for toggling between code and forms
@@ -353,21 +340,19 @@ type
     MacroList: TTransferMacroList;
     FMessagesViewBoundsRectValid: boolean;
     FOpenEditorsOnCodeToolChange: boolean;
-    FBreakPoints: TDBGBreakPoints; // Points to debugger breakpoints if available
-                                   // Else to own objet
-    FDebugOutputDlg: TDBGOutputForm;
-    FDebugger: TDebugger;
+
     FRunProcess: TProcess; // temp solution, will be replaced by dummydebugger
     TheCompiler: TCompiler;
     TheOutputFilter: TOutputFilter;
 
     function CreateSeperator : TMenuItem;
     procedure SetDefaultsForForm(aForm : TCustomForm);
-    procedure OutputFormDestroy(Sender: TObject);
 
+    {$DEFINE IDE_PRIVATE}
+    {$I ide_debugger.inc}
+    {$UNDEF IDE_PRIVATE}
   protected
     procedure ToolButtonClick(Sender : TObject);
-    Procedure AddWatch(const AnExpression : String);
     procedure OnApplyWindowLayout(ALayout: TIDEWindowLayout);
   public
     ToolStatus: TIDEToolStatus;
@@ -404,11 +389,6 @@ type
     function DoBuildProject(BuildAll: boolean): TModalResult;
     function DoInitProjectRun: TModalResult;
     function DoRunProject: TModalResult;
-    function DoPauseProject: TModalResult;
-    function DoStepIntoProject: TModalResult;
-    function DoStepOverProject: TModalResult;
-    function DoRunToCursor: TModalResult;
-    function DoStopProject: TModalResult;
     function SomethingOfProjectIsModified: boolean;
     function DoCreateProjectForProgram(ProgramBuf: TCodeBuffer): TModalResult;
     function DoSaveProjectToTestDirectory: TModalResult;
@@ -465,7 +445,6 @@ type
     // methods for debugging, compiling and external tools
     function DoJumpToCompilerMessage(Index:integer;
       FocusEditor: boolean): boolean;
-    function DoInitDebugger: TModalResult;
     procedure DoShowMessagesView;
     procedure DoArrangeSourceEditorAndMessageView;
     function GetProjectTargetFilename: string;
@@ -500,6 +479,10 @@ type
     procedure SaveEnvironment;
     procedure LoadDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
     procedure SaveDesktopSettings(TheEnvironmentOptions: TEnvironmentOptions);
+
+    {$DEFINE IDE_PUBLIC}
+    {$I ide_debugger.inc}
+    {$UNDEF IDE_PUBLIC}
   end;
 
 
@@ -553,6 +536,9 @@ end;
 
 { TMainIDE }
 
+{$DEFINE IDE_IMPLEMENTATION}
+{$I ide_debugger.inc}
+{$UNDEF IDE_IMPLEMENTATION}  
 
 constructor TMainIDE.Create(AOwner: TComponent);
 const
@@ -832,16 +818,8 @@ begin
                     'Launching target command line',nil,[]));
   MacroList.OnSubstitution:=@OnMacroSubstitution;
   
-  // TWatchesDlg
-  Watches_Dlg := TWatchesDlg.Create(Self);
-  Watches_Dlg.OnWatchAddedEvent := @OnWatchAdded;
 
-
-  // TBreakPointsDlg
-  BreakPoints_Dlg := TBreakPointsDlg.Create(Self);
-
-  FDebugger := nil;
-  FBreakPoints := TDBGBreakPoints.Create(nil, TDBGBreakPoint);
+  DebugConstructor;
   
   // control selection (selected components on edited form)
   TheControlSelection:=TControlSelection.Create;
@@ -1642,6 +1620,12 @@ begin
   itmHelpAboutLazarus.OnCLick := @mnuHelpAboutLazarusClicked;
   mnuHelp.Add(itmHelpAboutLazarus);
 
+//--------------
+// Other menu load routines
+//--------------
+
+  DebugLoadMenus;
+  
   LoadMenuShortCuts;
 end;
 {------------------------------------------------------------------------------}
@@ -4331,226 +4315,6 @@ begin
   Writeln('[TMainIDE.DoRunProject] END');
 end;
 
-function TMainIDE.DoPauseProject: TModalResult;
-begin
-  Result := mrCancel;
-  if (ToolStatus <> itDebugger) 
-  or (FDebugger = nil) 
-  then Exit;
-  FDebugger.Pause;
-  Result := mrOk;
-end;
-
-function TMainIDE.DoStepIntoProject: TModalResult;
-begin
-  if (DoInitProjectRun <> mrOK)
-  or (ToolStatus <> itDebugger)
-  or (FDebugger = nil) 
-  then begin
-    Result := mrAbort;
-    Exit;
-  end;
-
-  FDebugger.StepInto;
-  Result := mrOk;
-end;
-
-function TMainIDE.DoStepOverProject: TModalResult;
-begin
-  if (DoInitProjectRun <> mrOK)
-  or (ToolStatus <> itDebugger)
-  or (FDebugger = nil) 
-  then begin
-    Result := mrAbort;
-    Exit;
-  end;
-
-  FDebugger.StepOver;
-  Result := mrOk;
-end;
-
-function TMainIDE.DoStopProject: TModalResult;
-begin
-  Result := mrCancel;
-  if (ToolStatus <> itDebugger) 
-  or (FDebugger=nil) 
-  then Exit;
-
-  FDebugger.Stop;
-  Result := mrOk;
-end;
-
-function TMainIDE.DoRunToCursor: TModalResult;
-var 
-  ActiveSrcEdit: TSourceEditor;
-  ActiveUnitInfo: TUnitInfo;
-  UnitFilename: string;
-begin
-  if (DoInitProjectRun <> mrOK)
-  or (ToolStatus <> itDebugger)
-  or (FDebugger = nil) 
-  then begin
-    Result := mrAbort;
-    Exit;
-  end;
-
-  Result := mrCancel;
-
-  GetCurrentUnit(ActiveSrcEdit, ActiveUnitInfo);
-  if (ActiveSrcEdit=nil) or (ActiveUnitInfo=nil) 
-  then begin
-    MessageDlg('Run to failed','Please open a unit before run.',mtError,
-      [mbCancel],0);
-    Exit;
-  end;
-
-  if not ActiveUnitInfo.Source.IsVirtual 
-  then UnitFilename:=ActiveUnitInfo.Filename
-  else UnitFilename:=GetTestUnitFilename(ActiveUnitInfo);
-
-  FDebugger.RunTo(ExtractFilename(UnitFilename), ActiveSrcEdit.EditorComponent.CaretY);
-
-  Result := mrOK;
-end;
-
-function TMainIDE.DoInitDebugger: TModalResult;
-var
-  OldBreakpoints: TDBGBreakpoints;
-begin
-  WriteLN('[TMainIDE.DoInitDebugger] A');  
-  
-  Result:=mrCancel;
-  if Project.MainUnit < 0 then Exit;
-  
-  OldBreakpoints := nil;  
-
-  case EnvironmentOptions.DebuggerType of
-    dtGnuDebugger: begin  
-      if (FDebugger <> nil) 
-      and not (FDebugger is TGDBMIDebugger) 
-      then begin
-        OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
-        OldBreakpoints.Assign(FBreakPoints);
-        FBreakPoints := nil; 
-        
-        FDebugger.Free;
-        FDebugger := nil;
-      end;
-      if FDebugger = nil
-      then begin
-        if FBreakPoints <> nil
-        then begin
-          OldBreakpoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
-          OldBreakpoints.Assign(FBreakPoints);
-        end;
-        FDebugger := TGDBMIDebugger.Create;
-        FBreakPoints := FDebugger.BreakPoints;
-      end;
-      if OldBreakpoints <> nil
-      then FBreakPoints.Assign(OldBreakpoints);
-    end;
-  else
-    OldBreakpoints := FBreakPoints;
-    FBreakPoints := TDBGBreakpoints.Create(nil, TDBGBreakpoint);
-    FBreakPoints.Assign(OldBreakpoints);
-    
-    FDebugger.Free;
-    FDebugger := nil;
-    Exit;
-  end;
-  //MainUnitInfo:=Project.Units[Project.MainUnit];
-  FDebugger.OnState:=@OnDebuggerChangeState;
-  FDebugger.OnCurrent:=@OnDebuggerCurrentLine;
-  FDebugger.OnDbgOutput := @OnDebuggerOutput;
-  FDebugger.OnException := @OnDebuggerException;
-  if FDebugger.State = dsNone 
-  then FDebugger.Init;
-  
-  //TODO: Show/hide debug menuitems based on FDebugger.SupportedCommands 
-    
-  // property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups; // list of all breakpoints
-  // property Watches: TDBGWatches read FWatches;   // list of all watches localvars etc
-  
-  Result := mrOk;
-  WriteLN('[TMainIDE.DoInitDebugger] END');  
-end;
-
-procedure TMainIDE.OnDebuggerChangeState(Sender: TObject);
-const
-  // dsNone, dsIdle, dsStop, dsPause, dsRun, dsError
-  TOOLSTATEMAP: array[TDBGState] of TIDEToolStatus = (
-    // dsNone, dsIdle, dsStop, dsPause, dsRun, dsError
-    itNone, itNone, itNone, itDebugger, itDebugger, itDebugger
-  );          
-  STATENAME: array[TDBGState] of string = (
-    'dsNone', 'dsIdle', 'dsStop', 'dsPause', 'dsRun', 'dsError'
-  );
-begin
-  // Is the next line needed ???
-  if (Sender<>FDebugger) or (Sender=nil) then exit;
-  
-  WriteLN('[TMainIDE.OnDebuggerChangeState] state: ', STATENAME[FDebugger.State]);
-
-  // All conmmands
-  // -------------------
-  // dcRun, dcPause, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch
-  // -------------------
-
-  RunSpeedButton.Enabled := dcRun in FDebugger.Commands;
-  itmProjectRun.Enabled := RunSpeedButton.Enabled;
-  PauseSpeedButton.Enabled := dcPause in FDebugger.Commands;
-  itmProjectPause.Enabled := PauseSpeedButton.Enabled;
-  StepIntoSpeedButton.Enabled := dcStepInto in FDebugger.Commands;
-  itmProjectStepInto.Enabled := StepIntoSpeedButton.Enabled;
-  StepOverSpeedButton.Enabled := dcStepOver in FDebugger.Commands;
-  itmProjectStepOver.Enabled := StepOverSpeedButton.Enabled;
-
-  itmProjectRunToCursor.Enabled := dcRunTo in FDebugger.Commands;
-  itmProjectStop.Enabled := dcStop in FDebugger.Commands;;
-  
-  // TODO: add other debugger menuitems
-  // TODO: implement by actions
-
-  ToolStatus := TOOLSTATEMAP[FDebugger.State];
-  
-  if FDebugger.State = dsError
-  then begin
-    WriteLN('Ooops, the debugger entered the error state');
-  end;
-end;
-
-procedure TMainIDE.OnDebuggerCurrentLine(Sender: TObject; 
-  const ALocation: TDBGLocationRec);
-// debugger paused program due to pause or error
-// -> show the current execution line in editor
-// if SrcLine = -1 then no source is available
-var 
-  ActiveSrcEdit: TSourceEditor;
-  UnitFile: String;
-begin
-  if (Sender<>FDebugger) or (Sender=nil) then exit;
-
-  //TODO: Show assembler window if no source can be found.
-  if ALocation.SrcLine = -1 then Exit; 
-  
-  UnitFile := FindUnitFile(ALocation.SrcFile);
-  if UnitFile = '' 
-  then UnitFile := ALocation.SrcFile;
-  if DoOpenEditorFile(UnitFile, False, True) <> mrOk then exit;
-  
-  ActiveSrcEdit := SourceNoteBook.GetActiveSE;
-  if ActiveSrcEdit=nil then exit;
-  
-  with ActiveSrcEdit.EditorComponent do 
-  begin
-    CaretXY:=Point(1, ALocation.SrcLine);
-    BlockBegin:=CaretXY;
-    BlockEnd:=CaretXY;
-    TopLine:=ALocation.SrcLine-(LinesInWindow div 2);
-  end;
-  ActiveSrcEdit.ErrorLine:=ALocation.SrcLine;
-end;
-
 function TMainIDE.SomethingOfProjectIsModified: boolean;
 begin
   Result:=(Project<>nil) 
@@ -5969,138 +5733,12 @@ begin
   end;
 end;
 
-Procedure TMainIDE.OnSrcNotebookAddWatchesAtCursor(Sender : TObject);
-var
-  SE : TSourceEditor;
-  WatchVar : String;
-begin
-  //get the sourceEditor.
-  SE := TSourceNotebook(sender).GetActiveSE;
-  if not Assigned(SE) then Exit;
-  WatchVar := SE.GetWordAtCurrentCaret;
-  if WatchVar = ''  then Exit;
-
-  AddWatch(WatchVar);
-end;
-
-procedure TMainIDE.mnuViewWatchesClick(Sender : TObject);
-begin
-  Watches_dlg.Show;
-//  CreateLFM(Watches_Dlg);
-//  CreateLFM(Insertwatch);
-end;
-
-procedure TMainIDE.mnuViewBreakPointsClick(Sender : TObject);
-begin
-Writeln('showing breakpoints');
-  BreakPoints_dlg.Show;
-Writeln('DONE showing breakpoints');
-
-//  CreateLFM(Watches_Dlg);
-//  CreateLFM(Insertwatch);
-end;
-
-procedure TMainIDE.mnuViewDebugOutputClick(Sender : TObject);
-begin
-  if FDebugOutputDlg = nil
-  then begin
-    FDebugOutputDlg := TDBGOutputForm.Create(Self);
-    FDebugOutputDlg.OnDestroy := @OutputFormDestroy;
-  end;
-  FDebugOutputDlg.Show;  
-end;
-
-procedure TMainIDE.OutputFormDestroy(Sender: TObject);
-begin
-  FDebugOutputDlg := nil;
-end;
-
-//This adds the watch to the TWatches TCollection and to the watches dialog
-procedure TMainIDE.AddWatch(const AnExpression : String);
-var
-  NewWatch : TdbgWatch;
-begin
-  if FDebugger = nil then Exit;
-  if not Watches_Dlg.Visible then Watches_Dlg.Show;
-
-  NewWatch := TdbgWatch(FDebugger.watches.Add);
-  with NewWatch do
-  begin
-    Expression := AnExpression;
-    OnChange := @OnDebuggerWatchChanged;
-    Enabled := True;
-  end;
-
-  Watches_Dlg.AddWatch(NewWatch.Expression+':'+NewWatch.Value);
-end;
-
-procedure TMainIDE.OnDebuggerException(Sender: TObject; const AExceptionID: Integer; const AExceptionText: String);
-begin
-  MessageDlg('Error', 
-    Format('Project %s raised exception class %d with message ''%s''.', [Project.Title, AExceptionID, AExceptionText]), 
-    mtError,[mbOk],0);
-end;
-
-procedure TMainIDE.OnDebuggerOutput(Sender: TObject; const AText: String);
-begin
-  if FDebugOutputDlg <> nil
-  then FDebugOutputDlg.AddText(AText);
-end;
-
-
-procedure TMainIDE.OnDebuggerWatchChanged(Sender : TObject);
-begin
-  Writeln('OnDebuggerWatchChanged');
-  //watch changed.
-end;
-
-procedure TMainIDE.OnWatchAdded(Sender : TObject; AnExpression : String);
-Var
-  NewWatch : TdbgWatch;
-begin
-
-  if not Watches_Dlg.Visible then Watches_Dlg.Show;
-
-  if Pos(':',AnExpression) > 0 then
-     AnExpression := Copy(AnExpression,1,pos(':',AnExpression)-1);
-     
-  NewWatch := TdbgWatch(FDebugger.watches.Add);
-  with NewWatch do
-    Begin
-      Expression := AnExpression;
-      OnChange := @OnDebuggerWatchChanged;
-      Enabled := True;
-
-    end;
-
-  Watches_Dlg.UpdateWatch(NewWatch.Expression,NewWatch.Value);
-
-end;
-
 //this is fired when the editor is focused, changed, ?.  Anything that causes the status change
 Procedure TMainIDE.OnSrcNotebookEditorChanged(Sender : TObject);
 begin
   if SourceNotebook.Notebook = nil then Exit;
 
   SaveSpeedBtn.Enabled := SourceNotebook.GetActiveSE.Modified;
-end;
-
-procedure TMainIDE.OnSrcNotebookCreateBreakPoint(Sender : TObject; Line : Integer);
-var
-  NewBreak: TDBGBreakPoint;
-begin
-  if SourceNotebook.Notebook = nil then Exit;
-
-  NewBreak := FBreakPoints.Add(ExtractFilename(TSourceNotebook(sender).GetActiveSe.FileName), Line);
-  NewBreak.Enabled := True;
-end;
-
-Procedure TMainIDE.OnSrcNotebookDeleteBreakPoint(Sender : TObject;
-  Line : Integer);
-begin
-  if SourceNotebook.Notebook = nil then Exit;
-
-  FBreakPoints.Find(ExtractFilename(TSourceNotebook(sender).GetActiveSe.FileName), Line).Free;
 end;
 
 procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
@@ -6462,6 +6100,14 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.252  2002/03/23 15:54:28  lazarus
+  MWE:
+    + Added locals dialog
+    * Modified breakpoints dialog (load as resource)
+    + Added generic debuggerdlg class
+    = Reorganized main.pp, all debbugger relater routines are moved
+      to include/ide_debugger.inc
+
   Revision 1.251  2002/03/22 17:36:09  lazarus
   MG: added include link history
 

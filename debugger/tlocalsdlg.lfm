@@ -1,0 +1,26 @@
+object LocalsDlg: TLocalsDlg
+  Left = 359
+  Top = 126
+  Width = 572
+  Height = 200
+  Caption = 'Locals'
+  object lvLocals: TListView
+    Left = 0
+    Top = 0
+    Width = 564
+    Height = 200
+    Align = alClient
+    Columns = <
+      item
+        Caption = 'Name'
+        Width = 150
+      end
+      item
+        Caption = 'Value'
+        Width = 400
+      end>
+    MultiSelect = True
+    ScrollBars = sbBoth
+    ViewStyle = vsReport
+  end
+end 

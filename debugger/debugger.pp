@@ -224,7 +224,9 @@ type
   TDBGLocals = class(TObject)
   private
     FDebugger: TDebugger;  // reference to our debugger
+    FOnChange: TNotifyEvent;
   protected
+    procedure DoChange; 
     procedure DoStateChange; virtual;
     function GetName(const AnIndex: Integer): String; virtual;
     function GetValue(const AnIndex: Integer): String; virtual;
@@ -234,6 +236,7 @@ type
     constructor Create(const ADebugger: TDebugger); 
     property Names[const AnIndex: Integer]: String read GetName;
     property Values[const AnIndex: Integer]: String read GetValue;
+    property OnChange: TNotifyEvent read FOnChange write FOnChange;
   end;
           
   TDBGOutputEvent = procedure(Sender: TObject; const AText: String) of object;
@@ -246,6 +249,7 @@ type
     FBreakPoints: TDBGBreakPoints;
     FBreakPointGroups: TDBGBreakPointGroups;
     FExitCode: Integer;
+    FExternalDebugger: String; 
     FFileName: String;    
     FLocals: TDBGLocals;                          
     FState: TDBGState;
@@ -274,7 +278,7 @@ type
     procedure SetExitCode(const AValue: Integer); 
     procedure SetState(const AValue: TDBGState); 
   public
-    constructor Create; {virtual; Virtual constructor makes no sense}
+    constructor Create(const AExternalDebugger: String); {virtual; Virtual constructor makes no sense}
                         //MWE: there will be a day that they do make sense :-)
     destructor Destroy; override;
     
@@ -293,6 +297,7 @@ type
     property BreakPointGroups: TDBGBreakPointGroups read FBreakPointGroups;      // list of all breakpointgroups
     property Commands: TDBGCommands read GetCommands;                            // All current available commands of the debugger
     property ExitCode: Integer read FExitCode;
+    property ExternalDebugger: String read FExternalDebugger;
     property FileName: String read FFileName write SetFileName;                  // The name of the exe to be debugged
     property Locals: TDBGLocals read FLocals;
     property State: TDBGState read FState;                                       // The current state of the debugger    
@@ -302,8 +307,8 @@ type
     property OnState: TNotifyEvent read FOnState write FOnState;                 // Fires when the current state of the debugger changes
     property OnOutput: TDBGOutputEvent read FOnOutput write FOnOutput;           // Passes all output of the debugged target
     property OnDbgOutput: TDBGOutputEvent read FOnDbgOutput write FOnDbgOutput;  // Passes all debuggeroutput        
-  end;
-
+  end;   
+  
 implementation
 
 uses
@@ -316,7 +321,7 @@ const
   {dsStop } [dcRun, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch],
   {dsPause} [dcRun, dcStop, dcStepOver, dcStepInto, dcRunTo, dcJumpto, dcBreak, dcWatch, dcLocal],
   {dsRun  } [dcPause, dcStop, dcBreak, dcWatch],
-  {dsError} []
+  {dsError} [dcStop]
   );
 
 { =========================================================================== }
@@ -328,7 +333,7 @@ begin
   Result := True;
 end;
               
-constructor TDebugger.Create;
+constructor TDebugger.Create(const AExternalDebugger: String);
 begin
   inherited Create;
   FOnState := nil;
@@ -338,6 +343,7 @@ begin
   FState := dsNone;
   FArguments := '';
   FFilename := '';
+  FExternalDebugger := AExternalDebugger;
   FBreakPoints := CreateBreakPoints;
   FLocals := CreateLocals;
   FWatches := CreateWatches;
@@ -649,6 +655,7 @@ begin
   then begin
     FActions := AValue;
     DoActionChange;
+    Changed(False);
   end;
 end;
 
@@ -658,6 +665,7 @@ begin
   then begin
     FEnabled := AValue;
     DoEnableChange;
+    Changed(False);
   end;
 end;
 
@@ -667,6 +675,7 @@ begin
   then begin
     FExpression := AValue;
     DoExpressionChange;
+    Changed(False);
   end;
 end;
 
@@ -974,6 +983,11 @@ begin
   FDebugger := ADebugger;
 end;
 
+procedure TDBGLocals.DoChange;  
+begin                  
+  if Assigned(FOnChange) then FOnChange(Self);
+end;
+
 procedure TDBGLocals.DoStateChange;  
 begin
 end;
@@ -991,6 +1005,14 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.11  2002/03/23 15:54:30  lazarus
+  MWE:
+    + Added locals dialog
+    * Modified breakpoints dialog (load as resource)
+    + Added generic debuggerdlg class
+    = Reorganized main.pp, all debbugger relater routines are moved
+      to include/ide_debugger.inc
+
   Revision 1.10  2002/03/12 23:55:36  lazarus
   MWE:
     * More delphi compatibility added/updated to TListView

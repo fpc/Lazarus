@@ -25,16 +25,15 @@ interface
 
 uses
   Classes, Graphics, Controls, Forms, Dialogs, LResources,
-  Buttons, StdCtrls, Menus;
+  Buttons, StdCtrls, Menus, DebuggerDlg;
 
 type
-  TDbgOutputForm = class(TForm)
+  TDbgOutputForm = class(TDebuggerDlg)
     txtOutput: TMemo;
     mnuPopup: TPopupMenu;
     popClear: TMenuItem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure FormDestroy(Sender: TObject);
     procedure popClearClick(Sender: TObject);
   private
   protected
@@ -42,6 +41,8 @@ type
   public
     procedure AddText(const AText: String);
     procedure Clear;
+  published
+//    property Dummy: Boolean; // insert some dummies until fpcbug #1888 is fixed
   end;
 
 implementation
@@ -66,10 +67,6 @@ begin
   txtOutput.Lines.Clear;
 end;
 
-procedure TDbgOutputForm.FormDestroy(Sender: TObject);
-begin
-end;
-
 procedure TDbgOutputForm.Loaded;
 begin
   inherited Loaded;
@@ -79,10 +76,6 @@ begin
   
   // Not yet through resources
   mnuPopUp.Items.Add(popClear);
-//    popClear.Caption := '&Clear';
-//    popClear.OnClick := @popClearClick; 
-WriteLn('Popupcount: ', mnuPopUp.Items.Count);
-WriteLn('Itemvisible ', popClear.Visible);
 end;
 
 procedure TDbgOutputForm.popClearClick(Sender: TObject);
@@ -96,6 +89,14 @@ initialization
 end.
 { =============================================================================
   $Log$
+  Revision 1.4  2002/03/23 15:54:30  lazarus
+  MWE:
+    + Added locals dialog
+    * Modified breakpoints dialog (load as resource)
+    + Added generic debuggerdlg class
+    = Reorganized main.pp, all debbugger relater routines are moved
+      to include/ide_debugger.inc
+
   Revision 1.3  2002/03/09 02:03:59  lazarus
   MWE:
     * Upgraded gdb debugger to gdb/mi debugger

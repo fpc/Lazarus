@@ -70,7 +70,7 @@ type
     function  GetSupportedCommands: TDBGCommands; override;
     function  RequestCommand(const ACommand: TDBGCommand; const AParams: array of const): Boolean; override;
   public
-    constructor Create; {override;}
+    constructor Create(const AExternalDebugger: String); {override;}
     destructor Destroy; override;
   
     procedure Init; override;         // Initializes external debugger
@@ -210,16 +210,13 @@ function TGDBMIDebugger.ChangeFileName: Boolean;
 var
   S: String;
 begin
-  SendCmdLn('-file-exec-and-symbols %s', [FileName]);
-  S := ReadLine(True);
-  FHasSymbols := Pos('no debugging symbols', S) = 0;
-  if not FHasSymbols
-  then WriteLN('WARNING: File ''',FileName, ''' has no debug symbols');  
-  Result := ProcessResult(True, S) and inherited ChangeFileName;   
-  
-  if Result 
+  FHasSymbols := True; // True untilproven otherwise
+  Result := ExecuteCommand('-file-exec-and-symbols %s', [FileName]) and inherited ChangeFileName;   
+
+  if Result and FHasSymbols
   then begin
     ExecuteCommand('-gdb-set extention-language .lpr pascal');
+    if not FHasSymbols then Exit; // file-exec-and-symbols not allways result in no symbols
     ExecuteCommand('-gdb-set extention-language .lrc pascal');
     ExecuteCommand('-gdb-set extention-language .dpr pascal');
     ExecuteCommand('-gdb-set extention-language .pas pascal');
@@ -228,11 +225,11 @@ begin
   end;
 end;
 
-constructor TGDBMIDebugger.Create;
+constructor TGDBMIDebugger.Create(const AExternalDebugger: String);
 begin
   FCommandQueue := TStringList.Create;
   FTargetPID := 0;
-  inherited Create;
+  inherited;
 end;
 
 function TGDBMIDebugger.CreateBreakPoints: TDBGBreakPoints; 
@@ -330,7 +327,7 @@ end;
 procedure TGDBMIDebugger.GDBRun;
 begin
   case State of 
-    dsIdle, dsStop: begin
+    dsStop: begin
       GDBStart;
       if State = dsPause
       then begin
@@ -342,6 +339,9 @@ begin
     end;
     dsPause: begin
       ExecuteCommand('-exec-continue');
+    end;
+    dsIdle: begin
+      WriteLN('[WARNING] Debugger: Unable to run in idle state');      
     end;
   end;
 end;
@@ -357,10 +357,12 @@ procedure TGDBMIDebugger.GDBStart;
 var
   S: String;
 begin
-  if State in [dsIdle, dsStop]
+  if State in [dsStop]
   then begin
     if FHasSymbols
-    then begin
+    then begin 
+      if Arguments <>''
+      then ExecuteCommand('-exec-arguments %s', [Arguments]);
       ExecuteCommand('-break-insert -t main');
       ExecuteCommand('-exec-run');
       
@@ -420,7 +422,7 @@ end;
 
 procedure TGDBMIDebugger.Init;
 begin
-  if CreateDebugProcess('/usr/bin/gdb -silent -i mi')
+  if CreateDebugProcess('-silent -i mi')
   then begin  
     ReadLine;  //flush first line
     ExecuteCommand('-gdb-set confirm off');
@@ -472,7 +474,15 @@ begin
           else WriteLN('[WARNING] Debugger: Unknown result class: ', S);
         end;
         '~': begin // console-stream-output
-          WriteLN('[Debugger] Console output: ', S);
+          // check for symbol info
+          if Pos('no debugging symbols', S) > 0
+          then begin
+            FHasSymbols := False;
+            WriteLN('WARNING: File ''',FileName, ''' has no debug symbols');  
+          end
+          else begin
+            WriteLN('[Debugger] Console output: ', S);
+          end;
         end;
         '@': begin // target-stream-output
           WriteLN('[Debugger] Target output: ', S);
@@ -799,8 +809,11 @@ end;
 
 procedure TGDBMILocals.DoStateChange;  
 begin
-  if Debugger.State <> dsPause 
-  then begin
+  if Debugger.State = dsPause 
+  then begin         
+    DoChange;
+  end
+  else begin
     FLocalsValid := False;
     FLocals.Clear;
   end;
@@ -880,6 +893,14 @@ end;
 end.
 { =============================================================================
   $Log$
+  Revision 1.3  2002/03/23 15:54:30  lazarus
+  MWE:
+    + Added locals dialog
+    * Modified breakpoints dialog (load as resource)
+    + Added generic debuggerdlg class
+    = Reorganized main.pp, all debbugger relater routines are moved
+      to include/ide_debugger.inc
+
   Revision 1.2  2002/03/12 23:55:36  lazarus
   MWE:
     * More delphi compatibility added/updated to TListView

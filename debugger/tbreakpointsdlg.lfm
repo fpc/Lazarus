@@ -4,13 +4,17 @@ object BreakpointsDlg: TBreakpointsDlg
   Width = 554
   Height = 200
   Caption = 'Breakpoints'
-  object ListView1: TListView
+  object lvBreakPoints: TListView
     Left = 0
     Top = 0
     Width = 546
     Height = 171
     Align = alClient
     Columns = <
+      item
+        Caption = 'State'
+        Width = 50
+      end
       item
         Caption = 'Filename/Address'
         Width = 150
@@ -25,6 +29,7 @@ object BreakpointsDlg: TBreakpointsDlg
       end
       item
         Caption = 'Action'
+        Width = 50
       end
       item
         Caption = 'Pass Count'
@@ -34,6 +39,46 @@ object BreakpointsDlg: TBreakpointsDlg
         Caption = 'Group'
       end>
     MultiSelect = True 
+    PopupMenu = mnuPopup
     ViewStyle = vsReport 
+  end
+  object mnuPopup: TPopupMenu
+    Left = 100
+    Top = 96
+    object popAdd: TMenuItem
+      Caption = 'Add...'
+      object popAddSourceBP: TMenuItem
+        Caption = '&Source breakpoint'
+        OnClick = popAddSourceBPClick 
+      end
+    end
+    object popDeleteAll: TMenuItem
+      Caption = '&Delete All'
+      OnClick = popDeleteAllClick 
+    end
+    object popDisableAll: TMenuItem
+      Caption = 'D&isable All'
+      OnClick = popDisableAllClick 
+    end
+    object popEnableAll: TMenuItem
+      Caption = '&Enable All'
+      OnClick = popEnableAllClick 
+    end
+  end
+  object mnuPopSelected: TPopupMenu
+    Left = 150
+    Top = 96
+    object popEnabled: TMenuItem
+      Caption = '&Enabled'
+      OnClick = popEnabledClick 
+    end
+    object popDelete: TMenuItem
+      Caption = '&Delete'
+      OnClick = popDeleteClick 
+    end
+    object popProperties: TMenuItem
+      Caption = '&Properties'
+      OnClick = popPropertiesClick 
+    end
   end
 end

@@ -498,7 +498,7 @@ begin
     Columns[1].Caption:='Value';
     Columns.EndUpdate;
     ViewStyle := vsReport;
-    Sorted := true;
+    SortType := stText;
     Visible:=true;
   end;
   
@@ -529,7 +529,7 @@ begin
     Columns[1].Caption:='Value';
     Columns.EndUpdate;
     ViewStyle := vsReport;
-    Sorted := true;
+    SortType := stText;
     Visible:=true;
   end;
 
