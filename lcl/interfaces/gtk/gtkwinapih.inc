@@ -81,7 +81,8 @@ function Frame3d(DC: HDC; var ARect: TRect; const FrameWidth : integer; const St
 function FrameRect(DC: HDC; const ARect: TRect; hBr: HBRUSH): Integer; override;
 
 Function GetActiveWindow : HWND; override;
-function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; Override;
+function GetBitmapBits(Bitmap: HBITMAP; Count: Longint;  Bits: Pointer): Longint; override;
+function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescription): boolean; override;
 function GetCapture: HWND; override;
 function GetCaretPos(var lpPoint: TPoint): Boolean; override;
 function GetCaretRespondToFocus(handle: HWND; var ShowHideOnFocus: boolean): Boolean; override;
@@ -103,6 +104,8 @@ function GetNotebookTabIndexAtPos(Handle: HWND; const ClientPos: TPoint): intege
 function GetObject(GDIObj: HGDIOBJ; BufSize: Integer; Buf: Pointer): Integer; override;
 Function GetParent(Handle : HWND): HWND; override;
 Function GetProp(Handle : hwnd; Str : PChar): Pointer; override;
+function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
+function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; override;
 Function GetRgnBox(RGN : HRGN; lpRect : PRect) : Longint; override;
 function GetScrollBarSize(Handle: HWND; BarKind: Integer): integer; override;
 function GetScrollbarVisible(Handle: HWND; SBStyle: Integer): boolean; override;
@@ -206,6 +209,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.71  2003/07/02 10:02:51  mattias
+  fixed TPaintStruct
+
   Revision 1.70  2003/07/01 09:29:52  mattias
   attaching menuitems topdown
 

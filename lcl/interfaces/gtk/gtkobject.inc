@@ -1597,6 +1597,350 @@ begin
     Writeln('WARNING: [TgtkObject.LoadFromPixbufData] loading data FAILED!');
 end;
 
+{------------------------------------------------------------------------------
+  function Tgtkobject.InternalGetDIBits(DC: HDC; Bitmap: HBitmap;
+    StartScan, NumScans: UINT;
+    BitSize : Longint; Bits: Pointer;
+    var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
+ ------------------------------------------------------------------------------}
+function Tgtkobject.InternalGetDIBits(DC: HDC; Bitmap: HBitmap;
+  StartScan, NumScans: UINT;
+  BitSize : Longint; Bits: Pointer;
+  var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;
+const
+  PadLine : array[0..12] of Byte = (0,0,0,0,0,0,0,0,0,0,1,0,0);
+  TempBuffer : array[0..2] of Byte = (0,0,0);
+var
+  {$IfNDef NoGDKPixbuflib}
+  Source: PGDKPixbuf;
+  rowstride, PixelPos: Longint;
+  Pixels: PByte;
+  {$Else}
+  Source: PGDKImage;//The MONDO slow way...
+  {$EndIf}
+  FDIB: TDIBSection;
+  X, Y: Longint;
+  PadSize, Pos, BytesPerPixel: Longint;
+  TrapIsSet: boolean;
+  Buf16Bit: word;
+
+  procedure BeginGDKErrorTrap;
+  begin
+    if TrapIsSet then exit;
+    gdk_error_trap_push; //try to prevent GDK from killing us...
+    TrapIsSet:=true;
+  end;
+
+  procedure EndGDKErrorTrap;
+  begin
+    if not TrapIsSet then exit;
+    gdk_error_trap_pop;
+    TrapIsSet:=false;
+  end;
+
+  Procedure DataSourceInitialize(Bitmap : PGDIObject; Width : Longint);
+  begin
+    Source := nil;
+
+    case Bitmap^.GDIBitmapType of
+      gbBitmap:
+        If Bitmap^.GDIBitmapObject <> nil then begin
+         {$IfNDef NoGDKPixbuflib}
+           Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIBitmapObject,
+             Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
+           rowstride := gdk_pixbuf_get_rowstride(Source);
+           Pixels := PByte(gdk_pixbuf_get_pixels(Source));
+         {$else}
+           BeginGDKErrorTrap;
+           Source := gdk_image_get(Bitmap^.GDIBitmapObject, 0, StartScan, Width,
+             StartScan + NumScans);
+         {$EndIf}
+        end;
+      gbPixmap:
+        If Bitmap^.GDIPixmapObject <> nil then begin
+         {$IfNDef NoGDKPixbuflib}
+           Source := gdk_pixbuf_get_from_drawable(nil, Bitmap^.GDIPixmapObject,
+             Bitmap^.Colormap,0,StartScan,0,0,Width,StartScan + NumScans);
+           rowstride := gdk_pixbuf_get_rowstride(Source);
+           Pixels := PByte(gdk_pixbuf_get_pixels(Source));
+         {$else}
+           BeginGDKErrorTrap;
+           Source := gdk_image_get(Bitmap^.GDIPixmapObject, StartScan, 0, Width,
+             StartScan + NumScans);
+         {$EndIf}
+        end;
+      gbImage :
+        If Bitmap^.GDI_RGBImageObject <> nil then begin
+          Writeln('WARNING : [TgtkObject.GetDIBits] support for gdiImage unimplimented!.');
+        end;
+    end;
+  end;
+
+  Function DataSourceGetGDIRGB(Bitmap : PGDIObject; X, Y : Longint) : TGDIRGB;
+  {$IfNDef NoGDKPixbuflib}
+  begin
+     If Bitmap <> nil then ; //Keep compiler happy..
+
+     PixelPos := rowstride*Y + X*3;
+
+     With Result do begin
+       Red := Pixels[PixelPos + 0];
+       Green := Pixels[PixelPos + 1];
+       Blue := Pixels[PixelPos + 2];
+     end;
+
+  {$else}
+  var
+    Pixel : Longint;
+  begin
+    Pixel := 0;
+
+    BeginGDKErrorTrap;
+
+    Pixel := gdk_image_get_pixel(Source, X, Y);
+
+    Result := GDKPixel2GDIRGB(Pixel, Bitmap^.Visual, Bitmap^.Colormap);
+  {$EndIf}
+  end;
+
+  Procedure DataSourceFinalize;
+  begin
+  {$IfNDef NoGDKPixbuflib}
+    GDK_Pixbuf_Unref(Source);
+  {$else}
+    BeginGDKErrorTrap;
+    gdk_image_destroy(Source);
+  {$EndIf}
+  end;
+
+  Procedure WriteData(Value : PByte; Size : Longint);
+  var
+    I : Longint;
+  begin
+    For I := 0 to Size - 1 do
+      PByte(Bits)[Pos + I] := Value[I];
+    Inc(Pos, Size);
+  end;
+
+  Procedure WriteData(Value : Word);
+  begin
+    PByte(Bits)[Pos] := Lo(Value);
+    inc(Pos);
+    PByte(Bits)[Pos] := Hi(Value);
+    inc(Pos);
+  end;
+
+begin
+  Assert(False, 'trace:[TgtkObject.InternalGetDIBits]');
+  Result := 0;
+  TrapIsSet:=false;
+  if IsValidGDIObject(Bitmap)
+  then begin
+    case PGDIObject(Bitmap)^.GDIType of
+    gdiBitmap:
+      begin
+        FillChar(FDIB, SizeOf(FDIB), 0);
+        GetObject(Bitmap, SizeOf(FDIB), @FDIB);
+        BitInfo.bmiHeader := FDIB.dsBmih;
+
+        With PGDIObject(Bitmap)^, BitInfo.bmiHeader do begin
+          If not DIB then begin
+            NumScans := biHeight;
+            StartScan := 0;
+          end;
+          BytesPerPixel:=biBitCount div 8;
+
+          {writeln('TgtkObject.InternalGetDIBits A BitSize=',BitSize,
+          ' biSizeImage=',biSizeImage,' biHeight=',biHeight,' biWidth=',biWidth,
+          ' NumScans=',NumScans,' StartScan=',StartScan,
+          ' Bits=',HexStr(Cardinal(Bits),8),' MemSize(Bits)=',MemSize(Bits),
+          ' biBitCount=',biBitCount);}
+          If BitSize <= 0 then
+            BitSize := longint(SizeOf(Byte))
+                       *(longint(biSizeImage) div biHeight)
+                       *longint(NumScans + StartScan);
+          If MemSize(Bits) < BitSize then begin
+            writeln('WARNING: [TgtkObject.InternalGetDIBits] not enough memory allocated for Bits!');
+            exit;
+          end;
+          // ToDo: other bitcounts
+          if (biBitCount<>24) and (biBitCount<>16) then begin
+            writeln('WARNING: [TgtkObject.InternalGetDIBits] unsupported biBitCount=',biBitCount);
+            exit;
+          end;
+          Pos := 0;
+          PadSize := (Longint(biSizeImage) div biHeight)
+                     - biWidth*BytesPerPixel;
+          DataSourceInitialize(PGDIObject(Bitmap), biWidth);
+          if NumScans - 1<>0 then begin
+            If DIB then begin
+              Y:=NumScans - 1;
+            end else begin
+              Y:=0;
+            end;
+            repeat
+              if biBitCount=24 then begin
+                for X := 0 to biwidth - 1 do begin
+                  With DataSourceGetGDIRGB(PGDIObject(Bitmap), X, Y) do begin
+                    TempBuffer[0]  := Blue;
+                    TempBuffer[1] := Green;
+                    TempBuffer[2]   := Red;
+                  end;
+                  WriteData(TempBuffer, BytesPerPixel);
+                end;
+              end else if biBitCount=16 then begin
+                for X := 0 to biwidth - 1 do begin
+                  With DataSourceGetGDIRGB(PGDIObject(Bitmap), X, Y) do begin
+                    Buf16Bit:=(Blue shr 3) shl 11
+                             +(Green shr 2) shl 5
+                             +(Red shr 3);
+                  end;
+                  WriteData(Buf16Bit);
+                end;
+              end;
+              WriteData(PadLine, PadSize);
+              If DIB then begin
+                dec(y);
+                if Y<=0 then break;
+              end else begin
+                inc(y);
+                if Y>=longint(NumScans) - 1 then break;
+              end;
+            until false;
+          end
+        end;
+        DataSourceFinalize;
+      end;
+    else
+      writeln('WARNING: [TgtkObject.InternalGetDIBits] not a Bitmap!');
+    end;
+  end
+  else
+    writeln('WARNING: [TgtkObject.InternalGetDIBits] invalid Bitmap!');
+  EndGDKErrorTrap;
+end;
+
+function TgtkObject.GetWindowRawImageDescription(GDKWindow: PGdkWindow;
+  Desc: PRawImageDescription): boolean;
+var
+  Visual: PGdkVisual;
+  Width, Height: integer;
+begin
+  Result := false;
+  if Desc=nil then begin
+    RaiseGDBException('TgtkObject.GetWindowDeviceRawImageDescription');
+    exit;
+  end;
+
+  Visual:=nil;
+  Width:=0;
+  Height:=0;
+  If GDKWindow <> nil then begin
+    Visual:=gdk_window_get_visual(GDKWindow);
+    GDK_Window_Get_Size(GDKWindow,@Width,@Height);
+  end;
+  if Visual = nil then begin
+    Visual := GDK_Visual_Get_System;
+    if Visual=nil then exit;
+  end;
+
+
+  FillChar(Desc^,SizeOf(TRawImageDescription),0);
+
+  // Format
+  case Visual^.thetype of
+  GDK_VISUAL_STATIC_GRAY:  Desc^.Format:=ricfGray;
+  GDK_VISUAL_GRAYSCALE:    Desc^.Format:=ricfGray;
+  GDK_VISUAL_STATIC_COLOR: Desc^.Format:=ricfGray;
+  GDK_VISUAL_PSEUDO_COLOR: Desc^.Format:=ricfGray;
+  GDK_VISUAL_TRUE_COLOR:   Desc^.Format:=ricfRGBA;
+  GDK_VISUAL_DIRECT_COLOR: Desc^.Format:=ricfRGBA;
+  else
+    writeln('TgtkObject.GetDeviceRawImageDescription unknown Visual type ',Visual^.thetype);
+    exit;
+  end;
+
+  // Palette
+  Desc^.HasPalette:=Visual^.thetype in [GDK_VISUAL_GRAYSCALE,GDK_VISUAL_STATIC_COLOR,
+                                  GDK_VISUAL_PSEUDO_COLOR];
+  // Depth
+  Desc^.Depth:=Visual^.Depth;
+  // Width + Height
+  Desc^.Width:=cardinal(Width);
+  Desc^.Height:=cardinal(Height);
+  // PaletteEntries
+  if Desc^.HasPalette then begin
+    // ToDo
+    Desc^.PaletteEntries:=0;
+  end else
+    Desc^.PaletteEntries:=0;
+  // ByteOrder
+  if Visual^.byte_order=GDK_MSB_FIRST then
+    Desc^.ByteOrder:=riboMSBFirst
+  else
+    Desc^.ByteOrder:=riboLSBFirst;
+  // LineOrder
+  Desc^.LineOrder:=riloTopToBottom;
+  // ColorCount
+  Desc^.ColorCount:=0;
+  // BitsPerPixel
+  case Desc^.Depth of
+  0..8:   Desc^.BitsPerPixel:=8;
+  9..16:  Desc^.BitsPerPixel:=16;
+  17..32: Desc^.BitsPerPixel:=32;
+  else    Desc^.BitsPerPixel:=64;
+  end;
+  // LineEnd
+  case Desc^.Depth of
+  0..8:   Desc^.LineEnd:=rileByteBoundary;
+  9..16:  Desc^.LineEnd:=rileWordBoundary;
+  17..32: Desc^.LineEnd:=rileDWordBoundary;
+  else    Desc^.LineEnd:=rileQWordBoundary;
+  end;
+  // Precisions and Shifts
+  Desc^.RedPrec:=Visual^.red_prec;
+  Desc^.RedShift:=Visual^.red_shift;
+  Desc^.GreenPrec:=Visual^.green_prec;
+  Desc^.GreenShift:=Visual^.green_shift;
+  Desc^.BluePrec:=Visual^.blue_prec;
+  Desc^.BlueShift:=Visual^.blue_shift;
+  Desc^.AlphaMask:=true;
+  Desc^.AlphaPrec:=1;
+  Desc^.AlphaShift:=0;
+  // AlphaBitsPerPixel and AlphaLineEnd
+  Desc^.AlphaBitsPerPixel:=Desc^.AlphaPrec;
+  Desc^.AlphaLineEnd:=rileDWordBoundary;
+
+  with Desc^ do begin
+    writeln('TgtkObject.GetDeviceRawImageDescription A ',
+      ' Format=',ord(Format),
+      ' HasPalette=',HasPalette,
+      ' Depth=',Depth,
+      ' Width=',Width,
+      ' Height=',Height,
+      ' PaletteEntries=',PaletteEntries,
+      ' ByteOrder=',ord(ByteOrder),
+      ' LineOrder=',ord(LineOrder),
+      ' ColorCount=',ColorCount,
+      ' BitsPerPixel=',BitsPerPixel,
+      ' LineEnd=',ord(LineEnd),
+      ' RedPrec=',RedPrec,
+      ' RedShift=',RedShift,
+      ' GreenPrec=',GreenPrec,
+      ' GreenShift=',GreenShift,
+      ' BluePrec=',BluePrec,
+      ' BlueShift=',BlueShift,
+      ' AlphaMask=',AlphaMask,
+      ' AlphaPrec=',AlphaPrec,
+      ' AlphaShift=',AlphaShift,
+      ' AlphaBitsPerPixel=',AlphaBitsPerPixel,
+      ' AlphaLineEnd=',ord(AlphaLineEnd),
+    '');
+  end;
+
+  Result:=true;
+end;
+
 procedure TGtkObject.ListViewChangeItem(TheListView: TObject; Index: integer);
 var
   ListView: TListView;
@@ -6507,7 +6851,7 @@ begin
            case GDIBitmapType of
              gbPixmap: Result := GDIPixmapObject <> nil;
              gbBitmap: Result := GDIBitmapObject <> nil;
-             gbImage:  Result := GDIRawImageObject <> nil;
+             gbImage:  Result := GDI_RGBImageObject <> nil;
            else
              Result := False; 
            end;
@@ -7447,6 +7791,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.387  2003/07/02 10:02:51  mattias
+  fixed TPaintStruct
+
   Revision 1.386  2003/06/30 10:09:46  mattias
   fixed Get/SetPixel for DC without widget
 

@@ -435,10 +435,17 @@ begin
   Result := InterfaceObject.GetBitmapBits(Bitmap, Count, Bits);
 end;
 
-function CreateDIBSection(DC: HDC; const p2: tagBitmapInfo; p3: UINT;
-  var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;
+function GetBitmapRawImageDescription(Bitmap: HBITMAP;
+  Desc: PRawImageDescription): boolean;
 begin
-  Result := InterfaceObject.CreateDIBSection(DC, p2,  p3, p4, p5, p6)
+  Result := InterfaceObject.GetBitmapRawImageDescription(Bitmap,Desc);
+end;
+
+function CreateDIBSection(DC: HDC; const BitmapInfo: tagBitmapInfo; Usage: UINT;
+  var Bits: Pointer; SectionHandle: THandle; Offset: DWORD): HBITMAP;
+begin
+  Result := InterfaceObject.CreateDIBSection(DC,BitmapInfo,Usage,
+                                             Bits,SectionHandle,Offset);
 end;
 
 function GetFocus: HWND;
@@ -487,6 +494,19 @@ end;
 Function GetProp(Handle : hwnd; Str : PChar): Pointer;
 Begin
   Result := InterfaceObject.GetProp(Handle,Str);
+end;
+
+function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect;
+  var NewRawImage: TRawImage): boolean;
+begin
+  Result := InterfaceObject.GetRawImageFromDevice(SrcDC,SrcRect,NewRawImage);
+end;
+
+function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HDC;
+  const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+begin
+  Result := InterfaceObject.GetRawImageFromBitmap(SrcBitmap,SrcMaskBitmap,
+                                                  SrcRect,NewRawImage);
 end;
 
 Function GetRGNBox(RGN : HRGN; lpRect : PRect) : Longint;
@@ -1603,6 +1623,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.87  2003/07/02 10:02:51  mattias
+  fixed TPaintStruct
+
   Revision 1.86  2003/07/01 15:37:03  mattias
   fixed exception handling
 

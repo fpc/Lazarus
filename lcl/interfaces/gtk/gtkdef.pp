@@ -52,8 +52,8 @@ type
     Blue: Byte;
   end;
 
-  PGDIRawImage = ^TGDIRawImage;
-  TGDIRawImage = record
+  PGDI_RGBImage = ^TGDI_RGBImage;
+  TGDI_RGBImage = record
     Height,
     Width: Integer;
     Depth: Byte;
@@ -82,7 +82,7 @@ type
         case GDIBitmapType: TGDIBitmapType of
           gbBitmap: (GDIBitmapObject: PGdkBitmap); // pixmap with depth 1
           gbPixmap: (GDIPixmapObject: PGdkPixmap); // normal pixmap
-          gbImage : (GDIRawImageObject: PGDIRawImage);
+          gbImage : (GDI_RGBImageObject: PGDI_RGBImage);
       );
       gdiBrush: ( 
         // ToDo: add bitmap mask
@@ -449,6 +449,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.41  2003/07/02 10:02:51  mattias
+  fixed TPaintStruct
+
   Revision 1.40  2002/08/19 15:15:24  mattias
   implemented TPairSplitter
 

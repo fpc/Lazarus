@@ -182,8 +182,9 @@ begin
   Result := 0;
 end;
 
-function TInterfaceBase.CreateDIBSection(DC: HDC; const p2: tagBitmapInfo;
-  p3: UINT; var p4: Pointer; p5: THandle; p6: DWORD): HBITMAP;
+function TInterfaceBase.CreateDIBSection(DC: HDC;
+  const BitmapInfo: tagBitmapInfo; Usage: UINT;
+  var Bits: Pointer; SectionHandle: THandle; Offset: DWORD): HBITMAP;
 begin
   Result := 0;
 end;
@@ -812,6 +813,12 @@ begin
   Result := 0;
 end;
 
+function TInterfaceBase.GetBitmapRawImageDescription(Bitmap: HBITMAP;
+  Desc: PRawImageDescription): boolean;
+begin
+  Result:=false;
+end;
+
 function TInterfaceBase.GetCapture : HWND;
 begin
   Result := 0;
@@ -942,6 +949,18 @@ end;
 Function TInterfaceBase.GetProp(Handle : hwnd; Str : PChar): Pointer;
 begin
   Result := nil;
+end;
+
+function TInterfaceBase.GetRawImageFromDevice(SrcDC: HDC;
+  const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+begin
+  Result:=false;
+end;
+
+function TInterfaceBase.GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HDC;
+  const SrcRect: TRect; var NewRawImage: TRawImage): boolean;
+begin
+  Result:=false;
 end;
 
 Function TInterfaceBase.GetRGNBox(RGN : HRGN; lpRect : PRect) : Longint;
@@ -1749,6 +1768,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.93  2003/07/02 10:02:51  mattias
+  fixed TPaintStruct
+
   Revision 1.92  2003/07/01 14:06:45  mattias
   made Begin/EndPaint interface dependent
 

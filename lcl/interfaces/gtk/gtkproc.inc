@@ -262,17 +262,17 @@ begin
 end;
 
 {------------------------------------------------------------------------------
-  Function: NewGDIRawImage
+  Function: NewGDI_RGBImage
   Params:  Width, Height: Size of the image
            Depth:         Depth of the image
-  Returns: a GDIRawImage
+  Returns: a GDI_RGBImage
 
   Creates a RawImage
  ------------------------------------------------------------------------------}
-function NewGDIRawImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDIRawImage;
+function NewGDI_RGBImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDI_RGBImage;
 begin
-  Result := AllocMem(SizeOf(TGDIRawImage) + ((AWidth * AHeight) - 1) * SizeOf(TGDIRGB));
-//  FillChar(Result^, SizeOf(TGDIRawImage), 0);
+  Result := AllocMem(SizeOf(TGDI_RGBImage) + ((AWidth * AHeight) - 1) * SizeOf(TGDIRGB));
+//  FillChar(Result^, SizeOf(TGDI_RGBImage), 0);
   with Result^ do
   begin
     Height := AHeight;
@@ -4259,6 +4259,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.187  2003/07/02 10:02:51  mattias
+  fixed TPaintStruct
+
   Revision 1.186  2002/08/18 16:50:09  mattias
   fixes for debugging
 

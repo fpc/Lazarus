@@ -2714,32 +2714,24 @@ begin
 end;
 
 procedure TCustomTreeView.EditWndProc(var Message: TLMessage);
-var ok: boolean;
 begin
-  try
-    ok:=false;
-    with Message do
-    begin
-      case Msg of
-        LM_KEYDOWN,
-        LM_SYSKEYDOWN: if DoKeyDown(TLMKey(Message)) then Exit;
-        LM_CHAR: if DoKeyPress(TLMKey(Message)) then Exit;
-        LM_KEYUP,
-        LM_SYSKEYUP: if DoKeyUp(TLMKey(Message)) then Exit;
-        CN_KEYDOWN,
-        CN_CHAR, CN_SYSKEYDOWN,
-        CN_SYSCHAR:
-          begin
-            WndProc(Message);
-            Exit;
-          end;
-      end;
-      Result := CallWindowProc(FDefEditProc, FEditHandle, Msg, WParam, LParam);
+  with Message do
+  begin
+    case Msg of
+      LM_KEYDOWN,
+      LM_SYSKEYDOWN: if DoKeyDown(TLMKey(Message)) then Exit;
+      LM_CHAR: if DoKeyPress(TLMKey(Message)) then Exit;
+      LM_KEYUP,
+      LM_SYSKEYUP: if DoKeyUp(TLMKey(Message)) then Exit;
+      CN_KEYDOWN,
+      CN_CHAR, CN_SYSKEYDOWN,
+      CN_SYSCHAR:
+        begin
+          WndProc(Message);
+          Exit;
+        end;
     end;
-    ok:=true;
-  finally
-    if not ok then
-      Application.HandleException(Self);
+    Result := CallWindowProc(FDefEditProc, FEditHandle, Msg, WParam, LParam);
   end;
 end;
 

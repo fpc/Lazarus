@@ -270,7 +270,7 @@ function GtkPaintMessageToPaintMessage(const GtkPaintMsg: TLMGtkPaint;
 procedure FinalizePaintMessage(Msg: PLMessage);
 procedure FinalizePaintTagMsg(Msg: PMsg);
 
-function NewGDIRawImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDIRawImage;
+function NewGDI_RGBImage(const AWidth, AHeight: Integer; const ADepth: Byte): PGDI_RGBImage;
 
 function CopyDCData(DestinationDC, SourceDC: TDeviceContext): Boolean;
 

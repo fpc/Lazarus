@@ -181,10 +181,7 @@ type
     ricfRGBA,   // one pixel contains red, green, blue and alpha
                 // If AlphaPrec=0 then there is no alpha.
                 // Same for RedPrec, GreenPrec and BluePrec.
-    ricfRGB,    // like ricfRGBA, but alpha is stored separate in a mask.
-                // If AlphaPrec=0 then there is no alpha.
-    ricfGray,   // R=G=B. The Red stores the Gray.
-    ricfPalette // The Red is color index and ColorCount is valid
+    ricfGray    // R=G=B. The Red stores the Gray.
     );
 
   TRawImageByteOrder = (
@@ -203,15 +200,17 @@ type
     );
 
   TRawImageLineOrder = (
-    rivoTopToBottom, // The line 0 is the top line
-    rivoBottomToTop  // The line 0 is the bottom line
+    riloTopToBottom, // The line 0 is the top line
+    riloBottomToTop  // The line 0 is the bottom line
     );
 
   TRawImageDescription = record
     Format: TRawImageColorFormat;
-    Depth: cardinal; // used bits per pixel (= RedPrec + GreenPrec + BluePrec)
+    HasPalette: boolean; // if true, each pixel is an index in the palette
+    Depth: cardinal; // used bits per pixel
     Width: cardinal;
     Height: cardinal;
+    PaletteEntries: integer;
     ByteOrder: TRawImageByteOrder;
     LineOrder: TRawImageLineOrder;
     ColorCount: cardinal; // entries in color palette. Ignore when no palette.
@@ -223,6 +222,7 @@ type
     GreenShift: cardinal;
     BluePrec: cardinal;
     BlueShift: cardinal;
+    AlphaMask: boolean; // the alpha is stored as separate Mask
     AlphaPrec: cardinal;
     AlphaShift: cardinal;
     // The next values are only valid, if there is a separate alpha mask
@@ -230,6 +230,17 @@ type
     AlphaLineEnd: TRawImageLineEnd;
   end;
   PRawImageDescription = ^TRawImageDescription;
+  
+  TRawImage = record
+    Description: TRawImageDescription;
+    Data: PByte;
+    DataSize: cardinal;
+    Mask: PByte;
+    MaskSize: cardinal;
+    Palette: PByte;
+    PaletteSize: cardinal;
+  end;
+  PRawImage = ^TRawImage;
 
 implementation
 
@@ -238,6 +249,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.15  2003/07/02 10:02:51  mattias
+  fixed TPaintStruct
+
   Revision 1.14  2003/07/01 15:37:03  mattias
   fixed exception handling
 

@@ -153,6 +153,8 @@ type
     procedure LoadFromPixbufData(Bitmap : hBitmap; Data : PByte);virtual;
     function InternalGetDIBits(DC: HDC; Bitmap: HBitmap; StartScan, NumScans: UINT;
       BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;virtual;
+    function GetWindowRawImageDescription(GDKWindow: PGdkWindow;
+      Desc: PRawImageDescription): boolean;
 
     // RC file
     procedure SetRCFilename(const AValue: string);virtual;
@@ -345,6 +347,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.133  2003/07/02 10:02:51  mattias
+  fixed TPaintStruct
+
   Revision 1.132  2003/06/23 09:42:09  mattias
   fixes for debugging lazarus
 

@@ -737,10 +737,10 @@ type
   PPaintStruct = ^TPaintStruct;
   tagPAINTSTRUCT = packed record
     hdc: HDC;
-    fErase: Boolean;
+    fErase: BOOL;
     rcPaint: TRect;
-    fRestore: Boolean;
-    fIncUpdate: Boolean;
+    fRestore: BOOL;
+    fIncUpdate: BOOL;
     rgbReserved: array[0..31] of Byte;
   end;
   TPaintStruct = tagPAINTSTRUCT;
@@ -1812,6 +1812,9 @@ end.
 
 {
   $Log$
+  Revision 1.39  2003/07/02 10:02:51  mattias
+  fixed TPaintStruct
+
   Revision 1.38  2003/07/01 09:29:51  mattias
   attaching menuitems topdown
 
