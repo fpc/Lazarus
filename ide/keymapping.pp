@@ -81,6 +81,8 @@ const
   ecSelectCodeBlock      = ecUserFirst + 56;
   ecSelectLine           = ecUserFirst + 57;
   ecSelectParagraph      = ecUserFirst + 58;
+  
+  ecInsertGPLNotice      = ecUserFirst + 80;
 
   ecWordCompletion       = ecUserFirst + 100;
   ecCompleteCode         = ecUserFirst + 101;
@@ -500,6 +502,7 @@ begin
     ecSelectCodeBlock: Result:= 'Select code block';
     ecSelectLine: Result:= 'Select line';
     ecSelectParagraph: Result:= 'Select paragraph';
+    ecInsertGPLNotice: Result:='Insert GPL notice';
 
     // search menu
     ecFind: Result:= 'Find text';
@@ -1167,6 +1170,7 @@ begin
   Add(C,'Select code block',ecSelectCodeBlock,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Select line',ecSelectLine,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Select paragraph',ecSelectParagraph,VK_UNKNOWN,[],VK_UNKNOWN,[]);
+  Add(C,'Insert GPL notice',ecInsertGPLNotice,VK_UNKNOWN,[],VK_UNKNOWN,[]);
   Add(C,'Uppercase selection',ecSelectionUpperCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Lowercase selection',ecSelectionLowerCase,VK_UNKNOWN, [],VK_UNKNOWN,[]);
   Add(C,'Convert tabs to spaces in selection',ecSelectionTabs2Spaces,VK_UNKNOWN, [],VK_UNKNOWN,[]);

@@ -32,6 +32,19 @@ interface
 uses
   Classes, SysUtils, Laz_XMLCfg, GetText;
 
+type
+  TCommentType = (
+    comtDefault,    // automatically decide
+    comtNone,       // no comment
+    comtPascal,     // {}
+    comtDelphi,     // //
+    comtTurboPascal,// (* *)
+    comtCPP,        // /* */
+    comtPerl,       // #
+    comtHtml        // <!-- -->
+    );
+  TCommentTypes = set of TCommentType;
+
 //
 const
   // ToDo: find the constant in the fpc units.
@@ -73,9 +86,11 @@ procedure SaveRect(XMLConfig: TXMLConfig; const Path:string; var ARect:TRect);
 procedure FreeThenNil(var Obj: TObject);
 function TabsToSpaces(const s: string; TabWidth: integer): string;
 function CommentLines(const s: string): string;
+function CommentText(const s: string; CommentType: TCommentType): string;
 function UncommentLines(const s: string): string;
 procedure TranslateResourceStrings(const BaseDirectory, CustomLang: string);
 function NameToValidIdentifier(const s: string): string;
+
 
 implementation
 
@@ -799,6 +814,113 @@ begin
     end;
   end;
   Result:=Dest;
+end;
+
+{-------------------------------------------------------------------------------
+  function CommentLines(const s: string; CommentType: TCommentType): string;
+
+  Comment s.
+-------------------------------------------------------------------------------}
+function CommentText(const s: string; CommentType: TCommentType): string;
+
+  procedure GetTextInfo(var Len, LineCount: integer;
+    var LastLineEmpty: boolean);
+  var
+    p: integer;
+  begin
+    Len:=length(s);
+    LineCount:=1;
+    p:=1;
+    while p<=Len do
+      if not (s[p] in [#10,#13]) then begin
+        inc(p);
+      end else begin
+        inc(p);
+        inc(LineCount);
+        if (p<=Len) and (s[p] in [#10,#13]) and (s[p]<>s[p-1]) then
+          inc(p);
+      end;
+    LastLineEmpty:=(Len=0) or (s[Len] in [#10,#13]);
+  end;
+
+  procedure DoCommentBlock(const FirstLineStart, LineStart, LastLine: string);
+  var
+    OldLen, NewLen, LineCount, OldPos, NewPos: integer;
+    LastLineEmpty: boolean;
+  begin
+    GetTextInfo(OldLen,LineCount,LastLineEmpty);
+    
+    NewLen:=OldLen+length(FirstLineStart)
+                  +(LineCount-1)*length(LineStart);
+    if LastLineEmpty then
+      dec(NewLen,length(LineStart))
+    else
+      inc(NewLen,length(EndOfLine));
+    if (LastLine<>'') then begin
+      inc(NewLen,length(LastLine)+length(EndOfLine));
+    end;
+
+    SetLength(Result,NewLen);
+    NewPos:=1;
+    OldPos:=1;
+
+    // add first line start
+    if FirstLineStart<>'' then begin
+      System.Move(FirstLineStart[1],Result[NewPos],length(FirstLineStart));
+      inc(NewPos,length(FirstLineStart));
+    end;
+    // copy all lines and add new linestart
+    while (OldPos<=OldLen) do begin
+      if (not (s[OldPos] in [#10,#13])) then begin
+        Result[NewPos]:=s[OldPos];
+        inc(OldPos);
+        inc(NewPos);
+      end else begin
+        Result[NewPos]:=s[OldPos];
+        inc(OldPos);
+        inc(NewPos);
+        if (OldPos<=OldLen) and (s[OldPos] in [#10,#13])
+        and (s[OldPos]<>s[OldPos-1]) then begin
+          Result[NewPos]:=s[OldPos];
+          inc(OldPos);
+          inc(NewPos);
+        end;
+        // start new line
+        if (LineStart<>'') and (OldPos<OldLen) then begin
+          System.Move(LineStart[1],Result[NewPos],length(LineStart));
+          inc(NewPos,length(LineStart));
+        end;
+      end;
+    end;
+    if not LastLineEmpty then begin
+      System.Move(EndOfLine[1],Result[NewPos],length(EndOfLine));
+      inc(NewPos,length(EndOfLine));
+    end;
+    // add last line
+    if LastLine<>'' then begin
+      System.Move(LastLine[1],Result[NewPos],length(LastLine));
+      inc(NewPos,length(LastLine));
+      System.Move(EndOfLine[1],Result[NewPos],length(EndOfLine));
+      inc(NewPos,length(EndOfLine));
+    end;
+    if NewPos<>NewLen+1 then
+      raise Exception.Create('IDEProcs.CommentText ERROR: '
+        +IntToStr(NewPos-1)+'<>'+IntToStr(NewLen));
+  end;
+
+begin
+  Result:=s;
+  if CommentType=comtNone then exit;
+  if CommentType=comtDefault then CommentType:=comtPascal;
+    
+  case CommentType of
+    comtPascal: DoCommentBlock('{ ','  ','}');
+    comtDelphi: DoCommentBlock('// ','// ','');
+    comtTurboPascal: DoCommentBlock('(* ',' * ',' *)');
+    comtCPP: DoCommentBlock('/* ',' * ',' */');
+    comtPerl: DoCommentBlock('# ','# ','');
+    comtHtml: DoCommentBlock('<!-- ','  ','-->');
+  end;
 end;
 
 {-------------------------------------------------------------------------------

@@ -122,6 +122,9 @@ ResourceString
   lisMenuSelectCodeBlock = 'Select code block';
   lisMenuSelectLine = 'Select line';
   lisMenuSelectParagraph = 'Select paragraph';
+  lisMenuInsertText = 'Insert text';
+  lisMenuInsertGeneral = 'General';
+  lisMenuInsertGPLNotice = 'GPL notice';
   lisMenuCompleteCode = 'Complete Code';
 
   lisMenuFind = 'Find';
@@ -222,29 +225,45 @@ ResourceString
     +#13
     +'As Lazarus is growing we need more developers.'#13
     +'For example: Write a nicer about dialog with a logo.';
-  lsiUnitNameAlreadyExistsCap = 'Unitname already in project';
-  lsiUnitNameAlreadyExistsText = 'The unit "%s" already exists.'#13
+  lisUnitNameAlreadyExistsCap = 'Unitname already in project';
+  lisUnitNameAlreadyExistsText = 'The unit "%s" already exists.'#13
        +'Ignore will force the renaming,'#13
        +'Cancel will cancel the saving of this source and'#13
        +'Abort will abort the whole saving.';
-  lsiInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
-  lsiInvalidPascalIdentifierText =
+  lisInvalidPascalIdentifierCap = 'Invalid Pascal Identifier';
+  lisInvalidPascalIdentifierText =
     'The name "%s" is not a valid pascal identifier.';
 
   // hints
-  lsiHintNewUnit = 'New Unit';
-  lsiHintOpen = 'Open';
-  lsiHintSave = 'Save';
-  lsiHintSaveAll = 'Save all';
-  lsiHintNewForm = 'New Form';
-  lsiHintToggleFormUnit = 'Toggle Form/Unit';
-  lsiHintViewUnits = 'View Units';
-  lsiHintViewForms = 'View Forms';
-  lsiHintRun = 'Run';
-  lsiHintPause = 'Pause';
-  lsiHintStepInto = 'Step Into';
-  lsiHintStepOver = 'Step Over';
+  lisHintNewUnit = 'New Unit';
+  lisHintOpen = 'Open';
+  lisHintSave = 'Save';
+  lisHintSaveAll = 'Save all';
+  lisHintNewForm = 'New Form';
+  lisHintToggleFormUnit = 'Toggle Form/Unit';
+  lisHintViewUnits = 'View Units';
+  lisHintViewForms = 'View Forms';
+  lisHintRun = 'Run';
+  lisHintPause = 'Pause';
+  lisHintStepInto = 'Step Into';
+  lisHintStepOver = 'Step Over';
+  
+  lisGPLNotice =
+    'This program is free software; you can redistribute it and/or modify'#13
+   +'it under the terms of the GNU General Public License as published by'#13
+   +'the Free Software Foundation; either version 2 of the License, or'#13
+   +'(at your option) any later version.'#13
+   +''#13
+   +'This program is distributed in the hope that it will be useful,'#13
+   +'but WITHOUT ANY WARRANTY; without even the implied warranty of'#13
+   +'MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the'#13
+   +'GNU Library General Public License for more details.'#13
+   +''#13
+   +'You should have received a copy of the GNU General Public License'#13
+   +'along with this program; if not, write to the Free Software'#13
+   +'Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.'#13;
 
+  
 implementation
 
 end.

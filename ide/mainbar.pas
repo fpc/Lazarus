@@ -154,6 +154,9 @@ type
     itmEditSelectCodeBlock: TMenuItem;
     itmEditSelectLine: TMenuItem;
     itmEditSelectParagraph: TMenuItem;
+    itmEditInsertText: TMenuItem;
+    itmEditInsertGeneral: TMenuItem;
+    itmEditInsertGPLNotice: TMenuItem;
     itmEditCompleteCode: TMenuItem;
 
     itmSearchFind: TMenuItem;
@@ -500,7 +503,8 @@ begin
   itmEditSelect.Caption := lisMenuSelect;
   mnuEdit.Add(itmEditSelect);
 
-  // select sub menu items
+  begin
+    // select sub menu items
     itmEditSelectAll := TMenuItem.Create(Self);
     itmEditSelectAll.Name:='itmEditSelectAll';
     itmEditSelectAll.Caption := lisMenuSelectAll;
@@ -526,9 +530,30 @@ begin
     itmEditSelectParagraph.Name:='itmEditSelectParagraph';
     itmEditSelectParagraph.Caption := lisMenuSelectParagraph;
     itmEditSelect.Add(itmEditSelectParagraph);
+  end;
+
+  itmEditInsertText := TMenuItem.Create(Self);
+  itmEditInsertText.Name:='itmEditInsertText';
+  itmEditInsertText.Caption := lisMenuInsertText;
+  mnuEdit.Add(itmEditInsertText);
+
+  begin
+    // insert text sub menu items
+    itmEditInsertGeneral := TMenuItem.Create(Self);
+    itmEditInsertGeneral.Name:='itmEditInsertGeneral';
+    itmEditInsertGeneral.Caption := lisMenuInsertGeneral;
+    itmEditInsertText.Add(itmEditInsertGeneral);
+    
+    begin
+      // insert general text sub menu items
+      itmEditInsertGPLNotice := TMenuItem.Create(Self);
+      itmEditInsertGPLNotice.Name:='itmEditInsertGPLNotice';
+      itmEditInsertGPLNotice.Caption := lisMenuInsertGPLNotice;
+      itmEditInsertGeneral.Add(itmEditInsertGPLNotice);
+    end;
+  end;
 
   mnuEdit.Add(CreateMenuSeparator);
-
 
   itmEditCompleteCode := TMenuItem.Create(Self);
   itmEditCompleteCode.Name:='itmEditCompleteCode';
@@ -922,6 +947,7 @@ begin
     itmEditSelectCodeBlock.ShortCut:=CommandToShortCut(ecSelectCodeBlock);
     itmEditSelectLine.ShortCut:=CommandToShortCut(ecSelectLine);
     itmEditSelectParagraph.ShortCut:=CommandToShortCut(ecSelectParagraph);
+    itmEditInsertGPLNotice.ShortCut:=CommandToShortCut(ecInsertGPLNotice);
     itmEditCompleteCode.ShortCut:=CommandToShortCut(ecCompleteCode);
 
     itmSearchFind.ShortCut:=CommandToShortCut(ecFind);

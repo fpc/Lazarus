@@ -90,6 +90,21 @@ const
     ( nil, nil, TSynPasSyn, TSynPasSyn, TSynLFMSyn, TSynXMLSyn, TSynHTMLSyn,
       TSynCPPSyn, TSynPerlSyn);
     
+
+  { Comments }
+const
+  DefaultCommentTypes: array[TLazSyntaxHighlighter] of TCommentType = (
+      comtNone,  // lshNone
+      comtNone,  // lshText
+      comtPascal,// lshFreePascal
+      comtPascal,// lshDelphi
+      comtDelphi,// lshLFM
+      comtHtml,  // lshXML
+      comtHtml,  // lshHTML
+      comtCPP,   // lshCPP
+      comtPerl   // lshPerl
+    );
+
 type
   { TEditOptLanguageInfo stores lazarus IDE additional information
     of a highlighter, such as samplesource, which sample lines are special
@@ -111,6 +126,7 @@ type
     SampleSource: string;
     AddAttrSampleLines: array[TAdditionalHilightAttribute] of integer; // first line = 1
     MappedAttributes: TStringList; // map attributes to pascal
+    DefaultCommentType: TCommentType;
     constructor Create;
     destructor Destroy; override;
     function GetDefaultFilextension: string;
@@ -127,6 +143,7 @@ type
     destructor Destroy; override;
     function FindByName(const Name: string): integer;
     function FindByClass(CustomSynClass: TCustomSynClass): integer;
+    function FindByHighlighter(Hilighter: TSynCustomHighlighter): integer;
     function FindByType(AType: TLazSyntaxHighlighter): integer;
     function GetDefaultFilextension(AType: TLazSyntaxHighlighter): string;
     property Items[Index: integer]: TEditOptLanguageInfo read GetInfos; default;
@@ -521,8 +538,8 @@ function ShowEditorOptionsDialog:TModalResult;
 function StrToLazSyntaxHighlighter(const s: string): TLazSyntaxHighlighter;
 function ExtensionToLazSyntaxHighlighter(Ext:string): TLazSyntaxHighlighter;
 
-
 implementation
+
 
 uses Math;
 
@@ -721,6 +738,7 @@ begin
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
     TheType:=CompatibleLazSyntaxHilighter[lshFreePascal];
+    DefaultCommentType:=DefaultCommentTypes[lshFreePascal];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='pp;pas;inc;lpr;lrs;dpr;dpk';
     SampleSource:=
@@ -759,6 +777,7 @@ begin
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
     TheType:=CompatibleLazSyntaxHilighter[lshHTML];
+    DefaultCommentType:=DefaultCommentTypes[lshHTML];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='htm;html';
     SampleSource:=
@@ -789,6 +808,7 @@ begin
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
     TheType:=CompatibleLazSyntaxHilighter[lshCPP];
+    DefaultCommentType:=DefaultCommentTypes[lshCPP];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='c;cc;cpp;h;hpp';
     SampleSource:=
@@ -826,6 +846,7 @@ begin
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
     TheType:=CompatibleLazSyntaxHilighter[lshXML];
+    DefaultCommentType:=DefaultCommentTypes[lshXML];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='xml;xsd;xsl;xslt;dtd';
     SampleSource:=
@@ -855,6 +876,7 @@ begin
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
     TheType:=CompatibleLazSyntaxHilighter[lshLFM];
+    DefaultCommentType:=DefaultCommentTypes[lshLFM];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='lfm;dfm;xfm';
     SampleSource:=
@@ -886,6 +908,7 @@ begin
   NewInfo:=TEditOptLanguageInfo.Create;
   with NewInfo do begin
     TheType:=CompatibleLazSyntaxHilighter[lshPerl];
+    DefaultCommentType:=DefaultCommentTypes[lshPerl];
     SynClass:=LazSyntaxHighlighterClasses[TheType];
     FileExtensions:='pl;pm;cgi';
     SampleSource:=
@@ -935,6 +958,16 @@ begin
   while (Result>=0) 
   and (Items[Result].SynClass<>CustomSynClass) do
     dec(Result);
+end;
+
+function TEditOptLangList.FindByHighlighter(Hilighter: TSynCustomHighlighter
+  ): integer;
+begin
+  if Hilighter<>nil then begin
+    Result:=FindByClass(TCustomSynClass(Hilighter.ClassType));
+  end else begin
+    Result:=-1;
+  end;
 end;
 
 function TEditOptLangList.FindByType(
