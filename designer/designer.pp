@@ -39,7 +39,7 @@ uses
   Classes, LCLType, LCLLinux, Forms, Controls, LMessages, GraphType, Graphics,
   ControlSelection, CustomFormEditor, FormEditor, UnitEditor, CompReg, Menus,
   AlignCompsDlg, SizeCompsDlg, ScaleCompsDlg, ExtCtrls, EnvironmentOpts,
-  DesignerProcs;
+  DesignerProcs, PropEdits, ComponentEditors;
 
 type
   TDesigner = class;
@@ -58,7 +58,7 @@ type
   TOnRenameComponent = procedure(Designer: TDesigner; AComponent: TComponent;
     const NewName: string) of object;
 
-  TDesigner = class(TIDesigner)
+  TDesigner = class(TComponentEditorDesigner)
   private
     FCustomForm: TCustomForm;
     FFormEditor : TFormEditor;
@@ -135,6 +135,8 @@ type
     procedure OnBringToFrontMenuClick(Sender: TObject);
     procedure OnSendToBackMenuClick(Sender: TObject);
     Procedure OnFormActivated;
+    
+    function GetPropertyEditorHook: TPropertyEditorHook; override;
   public
     ControlSelection : TControlSelection;
     DDC: TDesignerDeviceContext;
@@ -1335,6 +1337,11 @@ begin
   //the form was activated.
   if Assigned(FOnActivated) then
      FOnActivated(Form);
+end;
+
+function TDesigner.GetPropertyEditorHook: TPropertyEditorHook;
+begin
+  Result:=FormEditor.PropertyEditorHook;
 end;
 
 
