@@ -608,7 +608,7 @@ var
   NewList: TPascalHelpContextList;
 begin
   debugln('THelpManager.ShowHelpForSourcePosition A Filename=',Filename,' ',dbgs(CodePos));
-  Result:=shrSuccess;
+  Result:=shrHelpNotFound;
   ErrMsg:='No help found for "'+Filename+'"'
          +' at ('+IntToStr(CodePos.Y)+','+IntToStr(CodePos.X)+')';
   // commit editor changes
@@ -640,7 +640,7 @@ begin
 
       // invoke help system
       debugln('THelpManager.ShowHelpForSourcePosition D PascalHelpContextLists.Count=',dbgs(PascalHelpContextLists.Count));
-      ShowHelpForPascalContexts(Filename,CodePos,PascalHelpContextLists,ErrMsg);
+      Result:=ShowHelpForPascalContexts(Filename,CodePos,PascalHelpContextLists,ErrMsg);
     end else begin
       MainIDEInterface.DoJumpToCodeToolBossError;
     end;
