@@ -229,7 +229,6 @@ function GTKEventState2ShiftState(KeyState: Word): TShiftState;
 function KeyToListCode(KeyCode, VirtKeyCode: Word; Extended: boolean): integer;
 procedure GetGTKKeyInfo(const Event: PGDKEventKey; var KeyCode,VirtualKey: Word;
   var SysKey, Extended, Toggle: Boolean);
-procedure Uncapturehandle;
 procedure StoreCommonDialogSetup(ADialog: TCommonDialog);
 procedure DestroyCommonDialogAddOns(ADialog: TCommonDialog);
 function ObjectToGTKObject(const AObject: TObject): gtk_object;
@@ -258,7 +257,6 @@ function GetWidgetClientOrigin(TheWidget: PGtkWidget): TPoint;
 function TranslateGdkPointToClientArea(SourceWindow: PGdkWindow;
   SourcePos: TPoint;  DestinationWidget: PGtkWidget): TPoint;
 procedure UpdateMouseCaptureControl;
-procedure CheckMouseCaptureHandle(CurrentInputWidget: PGtkWidget);
 procedure SetCursor(AWinControl : TWinControl; Data: Pointer);
 
 type
