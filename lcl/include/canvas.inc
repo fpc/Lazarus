@@ -1060,7 +1060,7 @@ begin
     begin
       CreateHandle;
       if FHandle = 0
-      then raise EInvalidOperation.Create('Canvas does not allow drawing');
+      then raise EInvalidOperation.Create(rsCanvasDoesNotAllowDrawing);
       Include(FState, csHandleValid);
     end;
     if csFontValid in Needed then CreateFont;
@@ -1155,6 +1155,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.41  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.40  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 

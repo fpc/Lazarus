@@ -32,8 +32,8 @@ interface
 {$endif}
 
 uses
-  GraphType, SysUtils, Classes, vclGlobals, LMessages, LCLType, LCLProc,
-  LCLLinux, LResources, GraphMath;
+  GraphType, SysUtils, LCLStrConsts, Classes, vclGlobals, LMessages, LCLType,
+  LCLProc, LCLLinux, LResources, GraphMath;
 
 
 const
@@ -962,6 +962,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.64  2003/03/11 07:46:43  mattias
+  more localization for gtk- and win32-interface and lcl
+
   Revision 1.63  2003/02/26 12:44:52  mattias
   readonly flag is now only saved if user set
 
