@@ -786,8 +786,6 @@ type
     Procedure CreateRegion; virtual;
     procedure CreateHandle; virtual;
     procedure RequiredState(ReqState: TCanvasState);
-    procedure Changed; virtual;
-    procedure Changing; virtual;
     procedure SetHandle(NewHandle: HDC); virtual;
   public
     constructor Create;
@@ -795,6 +793,8 @@ type
     procedure Lock;
     procedure Unlock;
     procedure Refresh;
+    procedure Changing; virtual;
+    procedure Changed; virtual;
 
     procedure Arc(x,y,width,height,angle1,angle2 : Integer);
     procedure Arc(x,y,width,height,SX,SY,EX,EY : Integer);
@@ -803,8 +803,8 @@ type
     procedure Chord(x,y,width,height,angle1,angle2 : Integer);
     procedure Chord(x,y,width,height,SX,SY,EX,EY : Integer);
     Procedure CopyRect(const Dest: TRect; SrcCanvas: TCanvas; const Source: TRect);
-    Procedure Draw(X,Y: Integer; Graphic : TGraphic);
-    procedure StretchDraw(const ARect: TRect; Graphic: TGraphic);
+    Procedure Draw(X,Y: Integer; SrcGraphic : TGraphic);
+    procedure StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic);
     procedure Ellipse(const ARect: TRect);
     procedure Ellipse(x1, y1, x2, y2: Integer);
     Procedure FillRect(const ARect : TRect);
@@ -1598,6 +1598,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.126  2004/03/03 23:35:55  mattias
+  accelerated TActionList editor  from Radek
+
   Revision 1.125  2004/03/02 22:37:36  mattias
   clean up for TBitmapImage sharing
 

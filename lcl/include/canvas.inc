@@ -31,22 +31,25 @@ end;
 {-----------------------------------------------}
 {--  TCanvas.Draw --}
 {-----------------------------------------------}
-Procedure TCanvas.Draw(X,Y : Integer; Graphic : TGraphic);
+Procedure TCanvas.Draw(X,Y : Integer; SrcGraphic : TGraphic);
+var
+  ARect: TRect;
 begin
-  If Assigned(Graphic) then
-    StretchDraw(Rect(X, Y, Graphic.Width + X,Graphic.Height + Y), Graphic);
+  if not Assigned(SrcGraphic) then exit;
+  ARect:=Bounds(X,Y,SrcGraphic.Width,SrcGraphic.Height);
+  StretchDraw(ARect,SrcGraphic);
 end;
 
 {-----------------------------------------------}
 {--  TCanvas.StretchDraw --}
 {-----------------------------------------------}
-procedure TCanvas.StretchDraw(const ARect: TRect; Graphic: TGraphic);
+procedure TCanvas.StretchDraw(const DestRect: TRect; SrcGraphic: TGraphic);
 begin
-  if Assigned(Graphic) then
-  begin
-    RequiredState([csHandleValid, csPenValid]);
-    Graphic.Draw(Self, ARect);
-  end;
+  if not Assigned(SrcGraphic) then exit;
+  RequiredState([csHandleValid]);
+  Changing;
+  SrcGraphic.Draw(Self, DestRect);
+  Changed;
 end;
 
 {-----------------------------------------------}
@@ -76,9 +79,9 @@ Begin
   DW := Dest.Right - Dest.Left;
   if (Dh=0) or (DW=0) then exit;
 
+  SrcCanvas.RequiredState([csHandleValid]);
   Changing;
-  SrcCanvas.RequiredState([csHandleValid, csBrushValid]);
-  RequiredState([csHandleValid, csBrushValid]);
+  RequiredState([csHandleValid]);
 
   //writeln('TCanvas.CopyRect ',ClassName,' SrcCanvas=',SrcCanvas.ClassName,' ',
   //  ' Src=',Source.Left,',',Source.Top,',',SW,',',SH,
@@ -1258,6 +1261,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.70  2004/03/03 23:35:55  mattias
+  accelerated TActionList editor  from Radek
+
   Revision 1.69  2004/02/28 00:34:35  mattias
   fixed CreateComponent for buttons, implemented basic Drag And Drop
 

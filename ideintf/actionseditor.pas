@@ -21,10 +21,18 @@
      Radek Cervinka, radek.cervinka@centrum.cz
   
   contributors:
-  
+     Mattias
   
   version:
     0.1 - 26-27.2.2004 - write all from scratch
+    0.2 -  3.3.2004 - speed up filling listboxes
+                      some ergonomic fixes (like stay in category after ADD)
+                      fixed possible language problems
+                      
+  TODO:- after changing action category in Object Inspector
+         need sort category to listbox
+       - sometimes click in listbox causes selecting last item
+         (maybe listbox error)
 }
 
 
@@ -64,7 +72,7 @@ type
     destructor Destroy; override;
     procedure SetActionList(AActionList:TActionList);
     procedure FillCategories;
-    procedure FillActionByCategory(const sCategory:String);
+    procedure FillActionByCategory(iIndex:Integer);
     property Designer:TComponentEditorDesigner read FDesigner write FDesigner;
   end;
 
@@ -119,7 +127,7 @@ begin
   NewAction.Name:=FDesigner.CreateUniqueComponentName(NewAction.ClassName);
   writeln(NewAction.Name);
   
-  if lstCategory.ItemIndex>-1 then
+  if lstCategory.ItemIndex>1 then // ignore first two items (virtual categories)
     NewAction.Category:=lstCategory.Items[lstCategory.ItemIndex]
   else
     NewAction.Category:='';
@@ -144,26 +152,44 @@ begin
   OldName:=lstActionName.Items[iNameIndex];
   writeln('',OldName);
   lstActionName.Items.Delete(iNameIndex);
-
+  
   OldAction:=FActionList.ActionByName(OldName);
-  if OldAction=nil then begin
+{  if OldAction=nil then begin
     // item already deleted -> only update list
     exit;
   end;
-
+}
   // be gone
-  try
-    OldAction.Free;
-  except
-    // rebuild
-    FillActionByCategory(lstCategory.Items[lstCategory.ItemIndex]);
+  if assigned(OldAction) then
+  begin
+    try
+      OldAction.Free;
+      FDesigner.PropertyEditorHook.ComponentDeleting(OldAction);
+    except
+      // rebuild
+//      FillActionByCategory(lstCategory.ItemIndex);
+    end;
   end;
+  
+  if lstActionName.Items.Count=0 then // last act in category > rebuild
+    FillCategories
+  else
+  begin
+    if iNameIndex>=lstActionName.Items.Count then
+      lstActionName.ItemIndex:=lstActionName.Items.Count -1
+    else
+      lstActionName.ItemIndex:=iNameIndex;
+      
+    FDesigner.SelectOnlyThisComponent(
+       FActionList.ActionByName(lstActionName.Items[lstActionName.ItemIndex]));
+  end;
+//   FDesigner.Modified; // inform object inspector
 end;
 
 procedure TActionListEditor.lstCategoryClick(Sender: TObject);
 begin
   if lstCategory.ItemIndex<0 then Exit;
-  FillActionByCategory(lstCategory.Items[lstCategory.ItemIndex]);
+  FillActionByCategory(lstCategory.ItemIndex);
 end;
 
 procedure TActionListEditor.lstActionNameClick(Sender: TObject);
@@ -178,10 +204,22 @@ begin
 end;
 
 procedure TActionListEditor.OnComponentDeleting(AComponent: TComponent);
+var
+  xIndex:Integer;
 begin
   if (AComponent is TAction) then
-    // ToDo: only set update flag and do not rebuild everything on every change
-    FillCategories;
+  begin
+    xIndex:=lstActionName.Items.IndexOf(AComponent.Name);
+    if xIndex<0 then Exit; // action not showed in listbox (other category)
+    lstActionName.Items.Delete(xIndex);
+    if lstActionName.Items.Count=0 then
+      FillCategories //last action in category is deleted, rebuild category list
+    else
+      if xIndex>=lstActionName.Items.Count then
+        lstActionName.ItemIndex:=lstActionName.Items.Count-1
+      else
+        lstActionName.ItemIndex:=xIndex;
+  end;
 end;
 
 procedure TActionListEditor.OnComponentAdded(AComponent: TComponent;
@@ -296,62 +334,75 @@ var
   xIndex:Integer;
   sOldCategory:String;
 begin
-  lstCategory.Clear;
-  lstCategory.Items.Add(cActionListEditorUnknownCategory);
-  lstCategory.Items.Add(cActionListEditorAllCategory);
-  if lstCategory.ItemIndex<0 then
-     lstCategory.ItemIndex:=0;
-     
-  sOldCategory:=lstCategory.Items[lstCategory.ItemIndex];
+  // try remember old category
+  sOldCategory:='';
+  if (lstCategory.Items.Count>0) and (lstCategory.ItemIndex>-1) then
+    sOldCategory:=lstCategory.Items[lstCategory.ItemIndex];
 
-  for i:=0 to FActionList.ActionCount-1 do
-  begin
-    sCategory:=FActionList.Actions[i].Category;
-    if Trim(sCategory)='' then
-      Continue;
-    xIndex:=lstCategory.Items.IndexOf(sCategory);
-    if xIndex<0 then
-      lstCategory.Items.Add(sCategory);
+  lstCategory.Items.BeginUpdate;
+  try
+    lstCategory.Clear;
+    lstCategory.Items.Add(cActionListEditorUnknownCategory);
+    lstCategory.Items.Add(cActionListEditorAllCategory);
+
+    for i:=0 to FActionList.ActionCount-1 do
+    begin
+      sCategory:=FActionList.Actions[i].Category;
+      if Trim(sCategory)='' then
+        Continue;
+      xIndex:=lstCategory.Items.IndexOf(sCategory);
+      if xIndex<0 then
+        lstCategory.Items.Add(sCategory);
+    end;
+  finally
+    lstCategory.Items.EndUpdate;
   end;
-  
   xIndex:=lstCategory.Items.IndexOf(sOldCategory);
   if xIndex<0 then
     xIndex:=0;
   lstCategory.ItemIndex:=xIndex;
 
-  FillActionByCategory(lstCategory.Items[xIndex]);
+  FillActionByCategory(xIndex);
 end;
 
-procedure TActionListEditor.FillActionByCategory(const sCategory: String);
+procedure TActionListEditor.FillActionByCategory(iIndex:Integer);
 var
   i:Integer;
+  sCategory:String;
 begin
-  lstActionName.Clear;
-  
-  // handle all (ToDo: fix changing languages)
-  if sCategory = cActionListEditorAllCategory then
-  begin
-    for i:=0 to FActionList.ActionCount-1 do
-      lstActionName.Items.Add(FActionList.Actions[i].Name);
-    Exit;
-  end;
 
-  // handle unknown (ToDo: fix changing languages)
-  if sCategory = cActionListEditorUnknownCategory then
-  begin
+  lstActionName.Items.BeginUpdate;
+
+  try
+    lstActionName.Clear;
+    // handle all
+    if iIndex = 1 then
+    begin
+      for i:=0 to FActionList.ActionCount-1 do
+        lstActionName.Items.Add(FActionList.Actions[i].Name);
+      Exit; //throught finally
+    end;
+
+    // handle unknown
+    if iIndex = 0 then
+    begin
+      for i:=0 to FActionList.ActionCount-1 do
+      begin
+        if Trim(FActionList.Actions[i].Category)='' then
+          lstActionName.Items.Add(FActionList.Actions[i].Name);
+      end;
+      Exit; //throught finally
+    end;
+
+    // else sort to categories
+    sCategory:=lstCategory.Items[iIndex];
     for i:=0 to FActionList.ActionCount-1 do
     begin
-      if trim(FActionList.Actions[i].Category)='' then
+      if FActionList.Actions[i].Category = sCategory then
         lstActionName.Items.Add(FActionList.Actions[i].Name);
     end;
-    Exit;
-  end;
-
-  // else sort to categories
-  for i:=0 to FActionList.ActionCount-1 do
-  begin
-    if FActionList.Actions[i].Category = sCategory then
-      lstActionName.Items.Add(FActionList.Actions[i].Name);
+  finally
+    lstActionName.Items.EndUpdate;
   end;
 end;
 
@@ -397,4 +448,5 @@ end;
 initialization
   RegisterComponentEditor(TActionList,TActionListComponentEditor);
 end.
+
 

@@ -91,6 +91,8 @@ end;
 procedure TBitmap.Draw(DestCanvas: TCanvas; const DestRect: TRect);
 var
   UseMaskHandle: HBitmap;
+  SrcDC: LongWord;
+  DestDC: LongWord;
 begin
   if (DestRect.Right<=DestRect.Left) or (DestRect.Bottom<=DestRect.Top)
   or (Width=0) or (Height=0) then exit;
@@ -101,10 +103,14 @@ begin
       UseMaskHandle:=MaskHandle
     else
       UseMaskHandle:=0;
-    StretchMaskBlt(DestCanvas.Handle,
+    SrcDC:=Canvas.GetUpdatedHandle([csHandleValid]);
+    DestCanvas.Changing;
+    DestDC:=DestCanvas.GetUpdatedHandle([csHandleValid]);
+    StretchMaskBlt(DestDC,
             DestRect.Left,DestRect.Top,
             DestRect.Right-DestRect.Left,DestRect.Bottom-DestRect.Top,
-            Canvas.Handle,0,0,Width,Height, UseMaskHandle,0,0,SRCCOPY);
+            SrcDC,0,0,Width,Height, UseMaskHandle,0,0,SRCCOPY);
+    DestCanvas.Changed;
   end;
 end;
 
@@ -1128,6 +1134,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.77  2004/03/03 23:35:55  mattias
+  accelerated TActionList editor  from Radek
+
   Revision 1.76  2004/02/29 22:51:54  mattias
   added jpeg example
 
