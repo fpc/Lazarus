@@ -3769,6 +3769,9 @@ begin
   UpdateCaption;
   EnvironmentOptions.LastSavedProjectFile:=Project1.ProjectInfoFile;
   EnvironmentOptions.Save(false);
+  // load required packages
+  PkgBoss.OpenProjectDependencies(Project1);
+
   Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,
                                Project1.ProjectInfoFile);
 end;
@@ -4684,7 +4687,6 @@ end;
 
 function TMainIDE.DoNewProject(NewProjectType:TProjectType):TModalResult;
 var i:integer;
-  ds: char;
 Begin
 writeln('TMainIDE.DoNewProject A');
   Result:=mrCancel;
@@ -4718,51 +4720,44 @@ writeln('TMainIDE.DoNewProject A');
 
   // create new project (TProject will automatically create the mainunit)
   Project1:=TProject.Create(NewProjectType);
-  Project1.OnFileBackup:=@DoBackupFile;
-  Project1.Title := 'project1';
-  Project1.CompilerOptions.CompilerPath:='$(CompPath)';
-  UpdateCaption;
-  if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
+  Project1.BeginUpdate(true);
+  try
+    Project1.OnFileBackup:=@DoBackupFile;
+    Project1.Title := 'project1';
+    Project1.CompilerOptions.CompilerPath:='$(CompPath)';
+    UpdateCaption;
+    if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
 
-  // set the project type specific things
-  ds:=PathDelim;
-  case NewProjectType of
-  
-  ptApplication:
-    begin
-      // add lcl ppu dirs to unit search path
-      Project1.CompilerOptions.OtherUnitFiles:=
-        '$(LazarusDir)'+ds+'lcl'+ds+'units'
-       +';'+
-        '$(LazarusDir)'+ds+'lcl'+ds+'units'+ds+'$(LCLWidgetType)';
-      // add lcl pp/pas dirs to source search path
-      Project1.SrcPath:=
-        '$(LazarusDir)'+ds+'lcl'
-       +';'+
-        '$(LazarusDir)'+ds+'lcl'+ds+'interfaces'+ds+'$(LCLWidgetType)';
+    // add and load default required packages
+    PkgBoss.AddDefaultDependencies(Project1);
+
+    // set the project type specific things
+    case NewProjectType of
+
+    ptApplication:
       // create a first form unit
       DoNewEditorFile(nuForm,'','',
-                      [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
-    end;
-    
-  ptProgram,ptCustomProgram:
-    begin
+                        [nfIsPartOfProject,nfOpenInEditor,nfCreateDefaultSrc]);
+
+    ptProgram,ptCustomProgram:
       // show program unit
       DoOpenMainUnit(false);
+
     end;
-    
+
+    // rebuild codetools defines
+    // (i.e. remove old project specific things and create new)
+    IncreaseCompilerParseStamp;
+    Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,'');
+    CreateProjectDefineTemplate(Project1.CompilerOptions,Project1.SrcPath);
+  finally
+    Project1.EndUpdate;
   end;
-  
-  // rebuild codetools defines
-  // (i.e. remove old project specific things and create new)
-  Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,'');
-  CreateProjectDefineTemplate(Project1.CompilerOptions,Project1.SrcPath);
 
   // set all modified to false
   for i:=0 to Project1.UnitCount-1 do
     Project1.Units[i].Modified:=false;
   Project1.Modified:=false;
-  IncreaseCompilerParseStamp;
 
 writeln('TMainIDE.DoNewProject end ',CodeToolBoss.ConsistencyCheck);
   Result:=mrOk;
@@ -4961,14 +4956,19 @@ begin
   {$ENDIF}
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B');{$ENDIF}
   Project1:=TProject.Create(ptProgram);
-  if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
-  Project1.OnFileBackup:=@DoBackupFile;
-  
-  // read project info file
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B3');{$ENDIF}
-  Project1.ReadProject(AFilename);
-  {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B4');{$ENDIF}
-  Result:=DoCompleteLoadingProjectInfo;
+  Project1.BeginUpdate(true);
+  try
+    if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
+    Project1.OnFileBackup:=@DoBackupFile;
+
+    // read project info file
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B3');{$ENDIF}
+    Project1.ReadProject(AFilename);
+    {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B4');{$ENDIF}
+    Result:=DoCompleteLoadingProjectInfo;
+  finally
+    Project1.EndUpdate;
+  end;
   {$IFDEF IDE_MEM_CHECK}CheckHeapWrtMemCnt('TMainIDE.DoOpenProjectFile B5');{$ENDIF}
   if Result<>mrOk then exit;
 
@@ -5178,7 +5178,6 @@ function TMainIDE.DoCreateProjectForProgram(
   ProgramBuf: TCodeBuffer): TModalResult;
 var NewProjectType:TProjectType;
   MainUnitInfo: TUnitInfo;
-  ds: char;
 begin
   {$IFDEF IDE_VERBOSE}
   writeln('[TMainIDE.DoCreateProjectForProgram] A ',ProgramBuf.Filename);
@@ -5214,36 +5213,26 @@ begin
 
   // create a new project
   Project1:=TProject.Create(NewProjectType);
-  if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
-  Project1.OnFileBackup:=@DoBackupFile;
-  MainUnitInfo:=Project1.MainUnitInfo;
-  MainUnitInfo.Source:=ProgramBuf;
-  Project1.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
-  Project1.CompilerOptions.CompilerPath:='$(CompPath)';
-  UpdateCaption;
-  IncreaseCompilerParseStamp;
+  Project1.BeginUpdate(true);
+  try
+    if ProjInspector<>nil then ProjInspector.LazProject:=Project1;
+    Project1.OnFileBackup:=@DoBackupFile;
+    MainUnitInfo:=Project1.MainUnitInfo;
+    MainUnitInfo.Source:=ProgramBuf;
+    Project1.ProjectInfoFile:=ChangeFileExt(ProgramBuf.Filename,'.lpi');
+    Project1.CompilerOptions.CompilerPath:='$(CompPath)';
+    UpdateCaption;
+    IncreaseCompilerParseStamp;
 
-  // set project type specific things
-  ds:=PathDelim;
-  case NewProjectType of
-  ptApplication:
-    begin
-      // add lcl ppu dirs to unit search path
-      Project1.CompilerOptions.OtherUnitFiles:=
-        '$(LazarusDir)'+ds+'lcl'+ds+'units'
-       +';'+
-        '$(LazarusDir)'+ds+'lcl'+ds+'units'+ds+'$(LCLWidgetType)';
-      // add lcl pp/pas dirs to source search path
-      Project1.SrcPath:=
-        '$(LazarusDir)'+ds+'lcl'
-       +';'+
-        '$(LazarusDir)'+ds+'lcl'+ds+'interfaces'+ds+'$(LCLWidgetType)';
-    end;
+    // add and load default required packages
+    PkgBoss.AddDefaultDependencies(Project1);
+
+    // rebuild project specific codetools defines
+    Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,
+                                 Project1.ProjectInfoFile);
+  finally
+    Project1.EndUpdate;
   end;
-  
-  // rebuild project specific codetools defines
-  Result:=LoadCodeToolsDefines(CodeToolBoss,CodeToolsOpts,
-                               Project1.ProjectInfoFile);
   if Result<>mrOk then exit;
 
   // show program unit
@@ -7904,8 +7893,11 @@ var
   CurUnitInfo: TUnitInfo;
 begin
   CurUnitInfo:=ProjInspector.GetSelectedFile;
-  if CurUnitInfo=nil then exit;
-  DoOpenEditorFile(CurUnitInfo.Filename,-1,[ofRegularFile]);
+  if CurUnitInfo<>nil then begin
+    DoOpenEditorFile(CurUnitInfo.Filename,-1,[ofRegularFile]);
+    exit;
+  end;
+  if PkgBoss.OnProjectInspectorOpen(Sender) then exit;
 end;
 
 procedure TMainIDE.OnExtToolNeedsOutputFilter(var OutputFilter: TOutputFilter;
@@ -8408,6 +8400,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.529  2003/04/20 20:32:40  mattias
+  implemented removing, re-adding, updating project dependencies
+
   Revision 1.528  2003/04/20 07:36:28  mattias
   fixed loading form name
 
