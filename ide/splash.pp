@@ -25,14 +25,14 @@ unit Splash;
 interface
 
 uses
-  Classes, Controls, Forms, Buttons, SysUtils, StdCtrls, ExtCtrls,
+  Classes, Controls, Forms, Buttons, SysUtils, StdCtrls, ExtCtrls, LResources,
   LCLLinux{must be used before graphics}, Graphics;
 
 type
   TSplashForm = class(TForm)
     procedure ApplicationOnIdle(Sender: TObject; var Done: Boolean);
   private
-    FBitmap : TBitmap;
+    FPixmap : TPixmap;
     FTimer : TTimer;
     procedure HideFormTimer(Sender : TObject);
   protected
@@ -314,13 +314,14 @@ constructor TSplashForm.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   Caption := 'Lazarus';
+  Width := 429;
+  Height := 341;
   Position:= poScreenCenter;
-  Width := 240;
-  Height := 180;
   BorderStyle  := bsToolWindow;
 
-  FBitmap := TBitmap.Create;
-  FBitmap.Handle := CreatePixmapIndirect(@SPLASH_IMAGE, ColorToRGB(clBtnFace));
+  FPixmap := TPixmap.Create;
+  FPixmap.LoadFromLazarusResource('splash_logo');
+  //FBitmap.Handle := CreatePixmapIndirect(@SPLASH_IMAGE, ColorToRGB(clBtnFace));
 
   FTimer := TTimer.Create(self);
   with FTimer do
@@ -335,8 +336,8 @@ end;
 
 destructor TSplashForm.Destroy;
 begin
-  FBitmap.Free;
-  FBitmap:=nil;
+  FPixmap.Free;
+  FPixmap:=nil;
   FTimer.Free;
   FTimer:=nil;
   if Application.OnIdle=@ApplicationOnIdle then
@@ -352,8 +353,8 @@ begin
     //Release resources
     FTimer.Free;
     FTimer:=nil;
-    FBitmap.Free;
-    FBitmap:=nil;
+    FPixmap.Free;
+    FPixmap:=nil;
   end;
 end;
 
@@ -370,9 +371,9 @@ end;
 procedure TSplashForm.Paint;
 begin
   inherited Paint;
-  if FBitmap <>nil 
+  if FPixmap <>nil
   then Canvas.Copyrect(Bounds(0, 0, Width, Height)
-     ,FBitmap.Canvas, Rect(0,0, Width, Height));
+     ,FPixmap.Canvas, Rect(0,0, Width, Height));
 end;
 
 procedure TSplashForm.StartTimer;
@@ -381,11 +382,17 @@ begin
     FTimer.Enabled := True;
 end;
 
+initialization
+  {$I splash.lrs}
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.11  2002/05/06 08:50:34  lazarus
+  MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
+
   Revision 1.10  2002/03/30 21:09:07  lazarus
   MG: hide splash screen on message
 

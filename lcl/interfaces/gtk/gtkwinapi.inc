@@ -1922,7 +1922,7 @@ end;
 Function TGTKObject.GetClientRect(handle : HWND; var ARect : TRect) : Boolean;
 var
 //  requisition : TgtkRequisition;
-  Widget: PGtkWidget;
+  Widget, ClientWidget: PGtkWidget;
 begin
   result := False;
   if Handle = 0 then Exit;
@@ -1930,8 +1930,12 @@ begin
   Try
     ARect.Left := 0;
     ARect.Top := 0;
-    Widget := GetFixedWidget(pgtkwidget(Handle));
-    if (Widget = nil) then Widget := pgtkwidget(Handle);
+    ClientWidget := GetFixedWidget(pgtkwidget(Handle));
+    if (ClientWidget <> nil) then begin
+      Widget := ClientWidget;
+    end else begin
+      Widget := pgtkwidget(Handle);
+    end;
     if (Widget <> nil) and (Widget^.Window<>nil) then begin
       gdk_window_get_size(Widget^.Window, @ARect.Right, @ARect.Bottom);
       //gtk_Widget_size_request(PgtkWidget(handle),@requisition);
@@ -1941,6 +1945,15 @@ begin
       ARect.Bottom:=0;
       ARect.Right:=0;
     end;
+    {$IFDEF VerboseGetClientRect}
+    if ClientWidget<>nil then begin
+      writeln('GetClientRect  Widget=',HexStr(Cardinal(handle),8),
+         ' Client=',HexStr(Cardinal(ClientWidget),8),
+         ' WindowSize=',ARect.Right,',',ARect.Bottom,
+         ' Allocation=',ClientWidget^.Allocation.Width,',',ClientWidget^.Allocation.Height
+         );
+    end;
+    {$ENDIF}
 //   Writeln('Width / Height = '+Inttostr(REct.Right)+'/'+Inttostr(Rect.Bottom));
   except
     on E: Exception do begin
@@ -4403,6 +4416,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.66  2002/05/06 08:50:37  lazarus
+  MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
+
   Revision 1.65  2002/04/22 13:07:45  lazarus
   MG: fixed AdjustClientRect of TGroupBox
 

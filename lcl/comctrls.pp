@@ -30,6 +30,8 @@ unit ComCtrls;
 {$mode objfpc}
 {$H+}
 
+{ $DEFINE ClientRectBugFix}
+
 interface
 
 uses
@@ -1501,8 +1503,12 @@ const
   ButtonStyles: array[TToolButtonStyle] of Word = (TBSTYLE_BUTTON, TBSTYLE_CHECK,
     TBSTYLE_DROPDOWN, TBSTYLE_SEP, TBSTYLE_SEP);
 
+  {$IFDEF ClientRectBugFix}
+  ScrollBarWidth=0;
+  {$ELSE}
   // workaround till clientwidth/height is working correctly with scrollbars
   ScrollBarWidth=19;
+  {$ENDIF}
 
 { Toolbar menu support }
 
@@ -1549,6 +1555,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.33  2002/05/06 08:50:36  lazarus
+  MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
+
   Revision 1.32  2002/04/17 09:15:51  lazarus
   MG: fixes, e.g. method jumping to changed overloaded methods
 

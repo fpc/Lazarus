@@ -815,9 +815,44 @@ begin
   Result := DeliverMessage(Data, Mess) = 0;
 end;
 
-function gtksize_allocateCB( widget: PGtkWidget; size :pGtkAllocation;
+function gtksize_allocateCB(widget: PGtkWidget; size :pGtkAllocation;
   data: gPointer) : GBoolean; cdecl;
-{ $DEFINE VerboseSizeMsg}
+  
+  {$IFDEF ClientRectBugFix}
+  procedure UpdateParentSizes(AParent: TWinControl);
+  var
+    OldLeft, OldTop, OldWidth, OldHeight: integer;
+    NewLeft, NewTop, NewWidth, NewHeight: integer;
+    ParentWidget: PGtkWidget;
+  begin
+    if AParent=nil then exit;
+    UpdateParentSizes(AParent.Parent);
+    if (not AParent.HandleAllocated) then exit;
+    
+    // update size
+    OldLeft:=AParent.Left;
+    OldTop:=AParent.Top;
+    OldWidth:=AParent.Width;
+    OldHeight:=AParent.Height;
+    
+    ParentWidget:=PGtkWidget(AParent.Handle);
+    NewLeft:=ParentWidget^.Allocation.x;
+    NewTop:=ParentWidget^.Allocation.y;
+    NewWidth:=ParentWidget^.Allocation.Width;
+    NewHeight:=ParentWidget^.Allocation.Height;
+    {$IFDEF VerboseSizeMsg}
+    writeln('    UpdateParentSizes ',AParent.Name,':',AParent.ClassName,
+      ' LCL=',OldLeft,',',OldTop,',',OldWidth,',',OldHeight,
+      ' GTK=',NewLeft,',',NewTop,',',NewWidth,',',NewHeight
+      );
+    {$ENDIF}
+
+    // update client rectangle
+    if AParent is TWinControl then
+      TWinControl(AParent).DoAdjustClientRectChange;
+  end;
+  {$ENDIF}
+  
 var
   PosMsg : TLMWindowPosChanged;
   SizeMsg: TLMSize;
@@ -830,32 +865,48 @@ var
   {$ENDIF}
 //  DummyW, DummyH, DummyD: integer;
 begin
+  Result:=false;
+  
   EventTrace('size-allocate', data);
+
+  with Size^ do Assert(False, Format('Trace:[gtksize_allocateCB] %s --> X: %d, Y: %d, Width: %d, Height: %d', [TObject(data).ClassName, X, Y, Width, Height]));
+  
+  if not (TObject(Data) is TControl) then begin
+    // owner is not TControl -> ignore
+    writeln('WARNING: gtksize_allocateCB: Data is not TControl. Data=',
+            HexStr(Cardinal(Data),8));
+    exit;
+  end;
+  
+  {$IFDEF ClientRectBugFix}
+  { The gtk sends the size messages after the resizing. Therefore the parent
+    widget is already resized, but the parent resize message will be emitted
+    after all its childs. So, the gtk resizes in top-bottom order, just like the
+    LCL. But it sends size messages in bottom-top order, which results in
+    many resizes in the LCL.
+    The next lines repairs this, by updating the parents first
+  }
+  UpdateParentSizes(TControl(Data).Parent);
+  {$ENDIF}
+
+  OldLeft:=TControl(Data).Left;
+  OldTop:=TControl(Data).Top;
+  OldWidth:=TControl(Data).Width;
+  OldHeight:=TControl(Data).Height;
+  {$IFDEF VerboseSizeMsg}
+  writeln('gtksize_allocateCB: ',
+    TControl(Data).Name,':',TControl(Data).ClassName,
+    ' widget=',HexStr(Cardinal(Widget),8),
+    ' fixwidget=',HexStr(Cardinal(GetFixedWidget(Widget)),8),
+    ' OldPos=',OldLeft,',',OldTop,',',OldWidth,',',OldHeight);
+  {$ENDIF}
 
 
   PosMsg.msg := LM_WINDOWPOSCHANGED; //LM_SIZEALLOCATE;
   PosMsg.Result := -1;
   SizeMsg.Result := -1;
   MoveMsg.Result := -1;
-  
-  with Size^ do Assert(False, Format('Trace:[gtksize_allocateCB] %s --> X: %d, Y: %d, Width: %d, Height: %d', [TObject(data).ClassName, X, Y, Width, Height]));
-  
-  if (TObject(Data) is TControl) then begin
-    OldLeft:=TControl(Data).Left;
-    OldTop:=TControl(Data).Top;
-    OldWidth:=TControl(Data).Width;
-    OldHeight:=TControl(Data).Height;
-    {$IFDEF VerboseSizeMsg}
-    writeln('gtksize_allocateCB: ',TControl(Data).Name,':',TControl(Data).ClassName,
-      ' OldPos=',OldLeft,',',OldTop,',',OldWidth,',',OldHeight);
-    {$ENDIF}
-  end else begin
-    OldLeft:=0;
-    OldTop:=0;
-    OldWidth:=0;
-    OldHeight:=0;
-  end;
-  
+
   New(PosMsg.WindowPos);
   try
     with PosMsg.WindowPos^ do
@@ -954,11 +1005,41 @@ end;}
     end;
   end;
   
-  if (TObject(Data) is TWinControl)
-  and (not WidthHeightChanged) and (not TopLeftChanged) then begin
+  {$IFDEF ClientRectBugFix}
+  {$ELSE}
+  if not (TopLeftChanged or WidthHeightChanged)
+  and (TObject(Data) is TWinControl) then
     TWinControl(Data).DoAdjustClientRectChange;
-  end;
+  {$ENDIF}
+  
 end;
+
+{$IFDEF ClientRectBugFix}
+function gtksize_allocate_client(widget: PGtkWidget; size :pGtkAllocation;
+  data: gPointer) : GBoolean; cdecl;
+begin
+  if (TObject(Data) is TControl) then begin
+    {$IFDEF VerboseSizeMsg}
+    writeln('gtksize_allocate_client: ',
+      TControl(Data).Name,':',TControl(Data).ClassName,
+      ' widget=',HexStr(Cardinal(Widget),8),
+      ' NewSize=',Size^.Width,',',Size^.Height,
+      ' Allocation=',widget^.Allocation.Width,',',Widget^.Allocation.Height,
+      ' Requisiton=',widget^.Requisition.Width,',',Widget^.Requisition.Height
+      );
+    {$ENDIF}
+  end else begin
+    // owner is not TControl -> ignore
+    writeln('WARNING: gtksize_allocate_client: Data is not TControl. Data=',
+            HexStr(Cardinal(Data),8));
+    exit;
+  end;
+  
+  if (TObject(Data) is TWinControl) then
+    TWinControl(Data).DoAdjustClientRectChange;
+  Result:=true;
+end;
+{$ENDIF}
 
 function gtkswitchpage(widget: PGtkWidget; page: Pgtkwidget; pagenum : integer;
   data: gPointer) : GBoolean; cdecl;
@@ -1635,6 +1716,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.71  2002/05/06 08:50:36  lazarus
+  MG: replaced logo, increased version to 0.8.3a and some clientrectbugfix
+
   Revision 1.70  2002/04/27 15:35:51  lazarus
   MG: fixed window shrinking
 

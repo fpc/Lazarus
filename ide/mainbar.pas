@@ -43,7 +43,7 @@ uses
   TypInfo, IDEOptionDefs, CodeToolsDefines, LocalsDlg, DebuggerDlg;
 
 const
-  Version_String = '0.8.2 alpha';
+  Version_String = '0.8.3 alpha';
 
 type
   {

@@ -5,8 +5,10 @@ in xpm format.
 mainicon.lrs - This is the IDE program icon.
 laz_images.lrs - The icons for the speedbuttons (Open, Save, Run,...)
 components_images.lrs - Icons and pics for lcl components
+bookmark.lrs - Icons for bookmarks
 editoroptions.lrs - Icons for editor options
 codetoolsdefines.lrs - Icons for CodeTools Defines Editor
+splash.lrs - the lazarus logo at IDE start
 
 
 How to update the image resources:
@@ -52,5 +54,11 @@ cd <lazarusdir>/images/
 
 cd <lazarusdir>/images/codetoolsdefines
 ../../tools/lazres ../../codetoolsdefines.lrs *.xpm
+
+
+7. splash.lrs
+
+cd <lazarusdir>/
+./tools/lazres splash.lrs images/splash_logo.xpm
 
 

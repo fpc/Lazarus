@@ -70,13 +70,22 @@ procedure BinaryToLazarusResourceCode(BinStream,ResStream:TStream;
     +#83#187#6#78#83
   );
 }
-const LineEnd:ShortString=#10;
-  RightMargin:integer=79;
-var s,Indent:ShortString;
-  p,x:integer;
-  c,h:char;
-  RangeString,NewRangeString:boolean;
+const LineEnd:ShortString={$IFDEF win32}#13{$ENDIF}#10;
+var s, Indent: ShortString;
+  p, x: integer;
+  c, h: char;
+  RangeString, NewRangeString: boolean;
+  RightMargin: integer;
 begin
+  // normally a resource should be split into lines with the right margin at 80,
+  // so that it looks like nice source.
+  // But fpc is not optimized for building a constant string out of thousands of
+  // lines. It needs huge amounts of memory and becomes very slow. Therefore for
+  // big files the right margin is set to 256.
+  RightMargin:=80;
+  p:=BinStream.Size-BinStream.Position;
+  if p>5000 then RightMargin:=256;
+  
   Indent:='';
   s:=Indent+'LazarusResources.Add('''+ResourceName+''','''+ResourceType+''','
     +LineEnd;
