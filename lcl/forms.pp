@@ -784,7 +784,7 @@ type
     Procedure SelectOnlyThisComponent(AComponent:TComponent); virtual; abstract;
   end;
 
-{$IFDEF VER1_0_7}
+{$IFNDEF VER1_0_8}
 type
 { TDataModule }
 
@@ -1131,7 +1131,7 @@ begin
 end;
 
 
-{$IFDEF VER1_0_7}
+{$IFNDEF VER1_0_8}
 { TDataModule }
 
 constructor TDataModule.Create(TheOwner: TComponent);
@@ -1345,7 +1345,7 @@ initialization
   Screen:= TScreen.Create(nil);
   Application:= TApplication.Create(nil);
   
-  {$IFNDEF VER1_0_7}
+  {$IFDEF VER1_0_8}
   RegisterInitComponentHandler(TComponent,@InitResourceComponent);
   {$ENDIF}
   // keep this comment, there is parser a bug in fpc 1.0.x
