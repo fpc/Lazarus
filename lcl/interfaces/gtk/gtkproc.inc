@@ -1000,9 +1000,210 @@ begin
 end;
 
 
+{-------------------------------------------------------------------------------
+  procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
+    const ACallBackProc: Pointer; const ReqSignalMask: TGdkEventMask;
+    Flags: TConnectSignalFlags);
+    
+  Connects a gtk signal handler.
+-------------------------------------------------------------------------------}
+type
+  TConnectSignalFlag = (
+    csfAfter,            // connect after signal
+    csfConnectRealize,   // auto connect realize handler
+    csfUpdateSignalMask, // extend signal mask for gdkwindow
+    csfDesignOnly        // mark signal as design only
+    );
+  TConnectSignalFlags = set of TConnectSignalFlag;
+
+  TDesignSignalType = (
+    dstUnknown,
+    dstMousePress,
+    dstMouseMotion,
+    dstMouseRelease
+    );
+  TDesignSignalTypes = set of TDesignSignalType;
+  
+  TDesignSignalMask = longint;
+  
+const
+  DesignSignalAfter: array[TDesignSignalType] of boolean =
+    (false,false,false,false);
+  DesignSignalNames: array[TDesignSignalType] of PChar = (
+    '',
+    'button-press-event',
+    'motion-notify-event',
+    'button-release-event'
+    );
+  DesignSignalFuncs: array[TDesignSignalType] of Pointer = (
+    nil,
+    @gtkMouseBtnPress,
+    @GTKMotionNotify,
+    @gtkMouseBtnRelease
+    );
+  DesignSignalMasks: array[TDesignSignalType] of TDesignSignalMask =
+    (0,1,2,4);
+
+function DesignSignalNameToType(Name: PChar; After: boolean): TDesignSignalType;
+begin
+  for Result:=Low(TDesignSignalType) to High(TDesignSignalType) do
+    if (AnsiStrComp(DesignSignalNames[Result],Name)=0)
+    and (DesignSignalAfter[Result]=After) then exit;
+  Result:=dstUnknown;
+end;
+
+function GetDesignSignalMask(Widget: PGtkWidget): TDesignSignalMask;
+begin
+  Result:=TDesignSignalMask(gtk_object_get_data(PGtkObject(Widget),
+                                                'LCLDesignMask'));
+end;
+
+procedure SetDesignSignalMask(Widget: PGtkWidget; NewMask: TDesignSignalMask);
+begin
+  gtk_object_set_data(PGtkObject(Widget),'LCLDesignMask',Pointer(NewMask));
+end;
+
+function GetDesignOnlySignalFlag(Widget: PGtkWidget;
+  DesignSignalType: TDesignSignalType): boolean;
+begin
+  Result:=(GetDesignSignalMask(Widget)
+          and DesignSignalMasks[DesignSignalType])<>0;
+end;
+
+procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
+  const ACallBackProc: Pointer; LCLComponent: TComponent;
+  const ReqSignalMask: TGdkEventMask; SFlags: TConnectSignalFlags);
+var
+  RealizeHandler, Handler: PGTKHandler;
+  RealizeID, SignalID: guint;
+  WinWidgetInfo: PWinWidgetInfo;
+  MainWidget: PGtkWidget;
+  OldDesignMask, NewDesignMask: TDesignSignalMask;
+  DesignSignalType: TDesignSignalType;
+begin
+  if ACallBackProc = nil then exit;
+
+  // first loop through the handlers to:
+  // - check if a handler already exists
+  // - Find the realize handler to change data
+  Handler := gtk_object_get_data_by_id (AnObject, gtk_handler_quark);
+  SignalID := gtk_signal_lookup(ASignal, GTK_OBJECT_TYPE(AnObject));
+  if csfConnectRealize in SFlags then
+    RealizeID := gtk_signal_lookup('realize', GTK_OBJECT_TYPE(AnObject))
+  else
+    RealizeID := 0;
+  RealizeHandler := nil;
+  DesignSignalType:=DesignSignalNameToType(ASignal,csfAfter in SFlags);
+
+  while (Handler <> nil) do begin
+    with Handler^ do
+    begin
+      // check if signal is already connected
+      if  (Id > 0)
+      and (Signal_ID = SignalID)
+      and (Func = TGTKSignalFunc(ACallBackProc))
+      and (func_data = Pointer(LCLComponent))
+      and (((flags and bmSignalAfter)<>0)=(csfAfter in SFlags))
+      then begin
+        Assert(False, Format('Trace:WARNING: [TGTKObject.SetCallback] %s signal <%s> set twice', [LCLComponent.ClassName, ASignal]));
+        // signal is already connected
+        // update the DesignSignalMask
+        if (DesignSignalType<>dstUnknown)
+        and (not (csfDesignOnly in SFlags)) then begin
+          OldDesignMask:=GetDesignSignalMask(PGtkWidget(AnObject));
+          NewDesignMask:=
+            OldDesignMask and not DesignSignalMasks[DesignSignalType];
+          if OldDesignMask<>NewDesignMask then
+            SetDesignSignalMask(PGtkWidget(AnObject),NewDesignMask);
+        end;
+        Exit;
+      end;
+
+      // look for realize handler
+      if  (csfConnectRealize in SFlags)
+      and (Id > 0)
+      and (Signal_ID = RealizeID)
+      and (Func = TGTKSignalFunc(@GTKRealizeCB))
+      and (func_data = Pointer(LCLComponent))
+      and ((flags and bmSignalAfter)=0) // test if not after
+      then
+        RealizeHandler := Handler;
+
+      Handler := Next;
+    end;
+  end;
+
+  // if we are here, then no handler was defined yet
+  // -> register handler
+  //if (Msg=LM_LBUTTONUP) then writeln('CONNECT ',ReqSignalMask,' Widget=',HexStr(Cardinal(AnObject),8));
+  if csfAfter in SFlags then
+    gtk_signal_connect_after(AnObject, ASignal,
+                             TGTKSignalFunc(ACallBackProc),LCLComponent)
+  else
+    gtk_signal_connect      (AnObject, ASignal,
+                             TGTKSignalFunc(ACallBackProc),LCLComponent);
+
+  // update signal mask which will be set in the realize handler
+  if (csfUpdateSignalMask in SFlags) and (ReqSignalMask <> 0) then begin
+    MainWidget:=GetMainWidget(PGtkWidget(AnObject));
+    if MainWidget=nil then
+      MainWidget:=PGtkWidget(AnObject);
+    WinWidgetInfo:=GetWidgetInfo(MainWidget,true);
+    WinWidgetInfo^.EventMask:=WinWidgetInfo^.EventMask or ReqSignalMask;
+  end;
+  // -> register realize handler
+  if (csfConnectRealize in SFlags)
+  and (RealizeHandler = nil) and (RealizeID<>0) then begin
+    //writeln('REALIZE CONNECT Widget=',HexStr(Cardinal(AnObject),8));
+    gtk_signal_connect(AnObject, 'realize',
+      TGTKSignalFunc(@GTKRealizeCB), LCLComponent);
+    gtk_signal_connect_after(AnObject, 'realize',
+      TGTKSignalFunc(@GTKRealizeAfterCB), LCLComponent);
+  end;
+
+  // update the DesignSignalMask
+  if (DesignSignalType<>dstUnknown) then begin
+    OldDesignMask:=GetDesignSignalMask(PGtkWidget(AnObject));
+    if csfDesignOnly in SFlags then
+      NewDesignMask:=OldDesignMask or DesignSignalMasks[DesignSignalType]
+    else
+      NewDesignMask:=OldDesignMask and not DesignSignalMasks[DesignSignalType];
+    if OldDesignMask<>NewDesignMask then
+      SetDesignSignalMask(PGtkWidget(AnObject),NewDesignMask);
+  end;
+end;
+
+procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
+  const ACallBackProc: Pointer; LCLComponent: TComponent;
+  const ReqSignalMask: TGdkEventMask);
+begin
+  ConnectSignal(AnObject,ASignal,ACallBackProc,LCLComponent,ReqSignalMask,
+                [csfConnectRealize,csfUpdateSignalMask]);
+end;
+
+procedure ConnectSignalAfter(const AnObject:gtk_Object; const ASignal: PChar;
+  const ACallBackProc: Pointer; LCLComponent: TComponent;
+  const ReqSignalMask: TGdkEventMask);
+begin
+  ConnectSignal(AnObject,ASignal,ACallBackProc,LCLComponent,ReqSignalMask,
+                [csfConnectRealize,csfUpdateSignalMask,csfAfter]);
+end;
+
+procedure ConnectSignal(const AnObject:gtk_Object; const ASignal: PChar;
+  const ACallBackProc: Pointer; LCLComponent: TComponent);
+begin
+  ConnectSignal(AnObject,ASignal,ACallBackProc,LCLComponent,0);
+end;
+
+procedure ConnectSignalAfter(const AnObject:gtk_Object; const ASignal: PChar;
+  const ACallBackProc: Pointer; LCLComponent: TComponent);
+begin
+  ConnectSignalAfter(AnObject,ASignal,ACallBackProc,LCLComponent,0);
+end;
+
 {------------------------------------------------------------------------------
   procedure: ConnectInternalWidgetsSignals
-  Params:  AWinControl: TWinControl
+  Params:  AWidget: PGtkWidget; AWinControl: TWinControl
   Returns: Nothing
 
   Connects hidden child widgets signals.
@@ -1010,72 +1211,22 @@ end;
   Design mode these widgets should not auto react themselves, but instead send
   messages to the lcl. Therefore these widgets are connected to special
   signal handlers.
-  This procedure is called by the realize after handler of all LCL widgets
+  This procedure is called by the realize-after handler of all LCL widgets
   and each time the design mode of a LCL control changes.
  ------------------------------------------------------------------------------}
-procedure ConnectInternalWidgetsSignals(AWinControl: TWinControl);
+procedure ConnectInternalWidgetsSignals(AWidget: PGtkWidget;
+  AWinControl: TWinControl);
 
-  procedure ConnectInternalChilds(AWidget: PGtkWidget); forward;
-
-  procedure ConnectSignal(AWidget: PGtkWidget; SignalName: PChar;
-    const ACallBackProc: Pointer; ConnectBefore: boolean);
-  var
-    SignalID: guint;
-    TheGtkObject: PGtkObject;
+  function WidgetIsInternal(TheWidget: PGtkWidget): boolean;
   begin
-    TheGtkObject:=PGtkObject(AWidget);
-    // check if widget supports this signal
-    SignalID := gtk_signal_lookup(SignalName, GTK_OBJECT_TYPE(TheGtkObject));
-    if SignalID=0 then exit;
-    // connect signal
-    if ConnectBefore then
-      gtk_signal_connect      (TheGtkObject,SignalName,
-                               TGTKSignalFunc(@ACallBackProc),AWinControl)
-    else
-      gtk_signal_connect_after(TheGtkObject,SignalName,
-                               TGTKSignalFunc(@ACallBackProc),AWinControl);
+    Result:=(TheWidget<>nil)
+      and (PGtkWidget(AWinControl.Handle)<>TheWidget)
+      and (GetMainWidget(TheWidget)=nil);
   end;
 
-  procedure HiddenWidgetConnectSignals(ChildWidget: PGtkWidget);
-  var
-    WinWidgetInfo: PWinWidgetInfo;
-  begin
-    if ChildWidget=nil then exit;
-    
-  writeln('BBB1 CONNECT ',AWinControl.Name,':',AWinControl.ClassName,' ',HexStr(Cardinal(ChildWidget),8));
-    // check if hidden widget is already connected
-    if GetHiddenLCLObject(ChildWidget)<>nil then exit;
-    
-    // check if widget is a LCL widget
-    WinWidgetInfo:=GetWidgetInfo(ChildWidget,false);
-    if (WinWidgetInfo<>nil) then begin
-      // this is a LCL widget => not a hidden widget
-      // -> skip
-      exit;
-    end;
-    
-//if csDesigning in AWinControl.ComponentState then
-  writeln('BBB2 CONNECT ',AWinControl.Name,':',AWinControl.ClassName,' ',HexStr(Cardinal(ChildWidget),8));
-    // mark widget as 'hidden'
-    SetHiddenLCLObject(ChildWidget, AWinControl);
-  writeln('BBB3 CONNECT ',HexStr(Cardinal(GetHiddenLCLObject(ChildWidget)),8));
+  procedure ConnectSignals(TheWidget: PGtkWidget); forward;
 
-    // connect signals needed for design mode:
-      // realize after
-      // ToDo: TListBox crashes if a realize after signal is connected - Strange
-      //ConnectSignal(ChildWidget,'realize',@GTKHiddenRealizeAfterCB,false);
-      // mouse press
-      ConnectSignal(ChildWidget,'button-press-event', @gtkMouseBtnPress, true);
-      // mouse motion
-      ConnectSignal(ChildWidget,'motion-notify-event', @GTKMotionNotify, true);
-      // mouse release
-      ConnectSignal(ChildWidget,'button-release-event',@gtkMouseBtnRelease,true);
-
-    // connect recursively ...
-    ConnectInternalChilds(ChildWidget);
-  end;
-
-  procedure ConnectInternalChilds(AWidget: PGtkWidget);
+  procedure ConnectChilds(TheWidget: PGtkWidget);
   var
     ContainerWidget: PGtkContainer;
     ScrolledWindow: PGtkScrolledWindow;
@@ -1083,49 +1234,66 @@ procedure ConnectInternalWidgetsSignals(AWinControl: TWinControl);
     ChildEntry: PGSList;
     ChildWidget: PGtkWidget;
   begin
-    if (AWidget=nil) then exit;
-    if csDesigning in AWinControl.ComponentState then begin
-      writeln('AAA1 ',AWinControl.Name,':',AWinControl.ClassName,' ',HexStr(Cardinal(AWidget),8));
-      if AWinControl.Parent<>nil then begin
-        writeln(' Parent=',AWinControl.Parent.Name,':',AWinControl.Parent.ClassName);
-      end;
-    end;
-    if GTK_IS_CONTAINER(AWidget) then begin
-//if csDesigning in AWinControl.ComponentState then
-  writeln('AAA2 ',AWinControl.Name,':',AWinControl.ClassName,' is container');
+    if GtkWidgetIsA(TheWidget,GTK_CONTAINER_TYPE) then begin
       // this is a container widget -> connect all childs
-      ContainerWidget:=PGtkContainer(AWidget);
+      ContainerWidget:=PGtkContainer(TheWidget);
       ChildEntry:=ContainerWidget^.resize_widgets;
       while ChildEntry<>nil do begin
         ChildWidget:=PGtkWidget(ChildEntry^.Data);
-        HiddenWidgetConnectSignals(ChildWidget);
+        ConnectSignals(ChildWidget);
         ChildEntry:=ChildEntry^.Next;
       end;
     end;
-    if GTK_IS_SCROLLED_WINDOW(AWidget) then begin
-//if csDesigning in AWinControl.ComponentState then
-  writeln('AAA3 ',AWinControl.Name,':',AWinControl.ClassName,' is scrolled window');
-      ScrolledWindow:=PGtkScrolledWindow(AWidget);
-      HiddenWidgetConnectSignals(ScrolledWindow^.hscrollbar);
-      HiddenWidgetConnectSignals(ScrolledWindow^.vscrollbar);
+    if GtkWidgetIsA(TheWidget,GTK_BIN_TYPE) then begin
+      BinWidget:=PGtkBin(TheWidget);
+      ConnectSignals(BinWidget^.child);
     end;
-    if GTK_IS_BIN(AWidget) then begin
-//if csDesigning in AWinControl.ComponentState then
-  writeln('AAA4 ',AWinControl.Name,':',AWinControl.ClassName,' is bin');
-      BinWidget:=PGtkBin(AWidget);
-      HiddenWidgetConnectSignals(BinWidget^.child);
+    if GtkWidgetIsA(TheWidget,GTK_SCROLLED_WINDOW_TYPE) then begin
+      ScrolledWindow:=PGtkScrolledWindow(TheWidget);
+      ConnectSignals(ScrolledWindow^.hscrollbar);
+      ConnectSignals(ScrolledWindow^.vscrollbar);
     end;
   end;
 
-var
-  MainWidget: PGtkWidget;
-begin
-  // ToDo: activate when tested
-  exit;
+  procedure ConnectSignals(TheWidget: PGtkWidget);
+  var
+    LCLObject, HiddenLCLObject: TObject;
+    DesignSignalType: TDesignSignalType;
+    DesignFlags: TConnectSignalFlags;
+  begin
+    if TheWidget=nil then exit;
+    
+    // check if widget belongs to another LCL object
+    LCLObject:=GetLCLObject(TheWidget);
+    HiddenLCLObject:=GetHiddenLCLObject(TheWidget);
+    if (LCLObject<>nil) and (LCLObject<>AWinControl) then exit;
+    if (HiddenLCLObject<>nil) and (HiddenLCLObject<>AWinControl) then exit;
+
+    // connect signals needed for design mode:
+    for DesignSignalType:=Low(TDesignSignalType) to High(TDesignSignalType) do
+    begin
+      if DesignSignalType=dstUnknown then continue;
+      DesignFlags:=[csfDesignOnly];
+      if DesignSignalAfter[DesignSignalType] then
+        Include(DesignFlags,csfAfter);
+      ConnectSignal(PGtkObject(TheWidget),DesignSignalNames[DesignSignalType],
+                    DesignSignalFuncs[DesignSignalType],AWinControl,0,
+                    DesignFlags);
+    end;
+
+    if WidgetIsInternal(TheWidget) then
+      // mark widget as 'hidden' connected
+      SetHiddenLCLObject(TheWidget,AWinControl);
+
+    // connect recursively ...
+    ConnectChilds(TheWidget);
+  end;
   
-  if (AWinControl=nil) or (not AWinControl.HandleAllocated) then exit;
-  MainWidget:=PGtkWidget(AWinControl.Handle);
-  ConnectInternalChilds(MainWidget);
+
+begin
+  if (AWinControl=nil) or (AWidget=nil)
+  or (not (csDesigning in AWinControl.ComponentState)) then exit;
+  ConnectSignals(AWidget);
 end;
 
 {-------------------------------------------------------------------------------
@@ -2210,6 +2378,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.64  2002/08/19 18:00:03  lazarus
+  MG: design signals for gtk internal widgets
+
   Revision 1.63  2002/08/19 08:53:45  lazarus
   MG: fixed broken commit
 
