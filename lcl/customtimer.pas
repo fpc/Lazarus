@@ -139,12 +139,13 @@ end;
 procedure TCustomTimer.UpdateTimer;
 begin
   KillTimer;
-  if (FEnabled) and (FInterval > 0) and Assigned (FOnTimer) then
+  if (FEnabled) and (FInterval > 0) and Assigned (FOnTimer) then begin
     FTimerHandle := LCLLinux.SetTimer(Integer(Self), 1,
                       FInterval, @TimerCBProc);
-  if FTimerHandle=0 then begin
-    FTimerHandle:=cIdNoTimer;
-    raise EOutOfResources.Create(SNoTimers);
+    if FTimerHandle=0 then begin
+      FTimerHandle:=cIdNoTimer;
+      raise EOutOfResources.Create(SNoTimers);
+    end;
   end;
 end;
 
