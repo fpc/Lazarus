@@ -2198,6 +2198,7 @@ var CleanCursorPos, Indent, insertPos: integer;
   procedure CompleteClass;
   var
     OldCodePos: TCodePosition;
+    CurClassName: String;
   begin
     {$IFDEF CTDEBUG}
     DebugLn('TCodeCompletionCodeTool.CompleteCode In-a-class ',NodeDescriptionAsString(AClassNode.Desc));
@@ -2209,6 +2210,7 @@ var CleanCursorPos, Indent, insertPos: integer;
     DebugLn('TCodeCompletionCodeTool.CompleteCode C ',dbgs(CleanCursorPos),', |',copy(Src,CleanCursorPos,8));
     {$ENDIF}
     CodeCompleteClassNode:=AClassNode;
+    CurClassName:=ExtractClassName(AClassNode,false);
     try
       // go through all properties and procs
       //  insert read + write prop specifiers
@@ -2264,11 +2266,10 @@ var CleanCursorPos, Indent, insertPos: integer;
         BuildTreeAndGetCleanPos(trAll,CursorPos,CleanCursorPos,[]);
         // find CodeTreeNode at cursor
         CursorNode:=FindDeepestNodeAtPos(CleanCursorPos,true);
-
-        FCodeCompleteClassNode:=CursorNode;
-        while (FCodeCompleteClassNode<>nil)
-        and (FCodeCompleteClassNode.Desc<>ctnClass) do
-          FCodeCompleteClassNode:=FCodeCompleteClassNode.Parent;
+        // due to insertions in fron of the class, the cursor position could
+        // have changed
+        FCodeCompleteClassNode:=
+                              FindClassNode(CursorNode,CurClassName,true,false);
         if FCodeCompleteClassNode=nil then
           RaiseException('oops, I lost your class');
         ANode:=FCodeCompleteClassNode.Parent;
