@@ -109,6 +109,8 @@ type
     procedure SetMacroList(const AValue: TTransferMacroList);
     procedure SetRunFileIfActive(const AValue: boolean);
     procedure UpdateCaption;
+    procedure UpdateBuildMacroSelectionBoxBounds;
+    procedure UpdateRunMacroSelectionBoxBounds;
     procedure ReadDirectiveList;
     procedure WriteDirectiveList;
   public
@@ -491,20 +493,8 @@ begin
 end;
 
 procedure TBuildFileDialog.BuildPageRESIZE(Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-  h: Integer;
 begin
-  if (BuildMacroSelectionBox=nil) or (BuildScanForMakeMsgCheckbox=nil) then
-    exit;
-
-  x:=3;
-  y:=BuildScanForMakeMsgCheckbox.Top+BuildScanForMakeMsgCheckbox.Height+5;
-  w:=BuildPage.ClientWidth-2*x;
-  h:=BuildPage.ClientHeight-y-x;
-  BuildMacroSelectionBox.SetBounds(x,y,w,h);
+  UpdateBuildMacroSelectionBoxBounds;
 end;
 
 procedure TBuildFileDialog.OkButtonCLICK(Sender: TObject);
@@ -524,18 +514,8 @@ begin
 end;
 
 procedure TBuildFileDialog.RunPageRESIZE(Sender: TObject);
-var
-  x: Integer;
-  y: Integer;
-  w: Integer;
-  h: Integer;
 begin
-  if (RunCommandGroupbox=nil) or (RunMacroSelectionBox=nil) then exit;
-  x:=3;
-  y:=RunCommandGroupbox.Top+RunCommandGroupbox.Height+5;
-  w:=RunPage.ClientWidth-2*x;
-  h:=RunPage.ClientHeight-y-x;
-  RunMacroSelectionBox.SetBounds(x,y,w,h);
+  UpdateRunMacroSelectionBoxBounds;
 end;
 
 procedure TBuildFileDialog.BuildFileDialogCREATE(Sender: TObject);
@@ -549,6 +529,7 @@ begin
     Caption:='Macros';
     OnAddMacro:=@BuildMacroSelectionBoxAddMacro;
   end;
+  UpdateBuildMacroSelectionBoxBounds;
   
   RunMacroSelectionBox:=TMacroSelectionBox.Create(Self);
   with RunMacroSelectionBox do begin
@@ -557,6 +538,7 @@ begin
     Caption:='Macros';
     OnAddMacro:=@RunMacroSelectionBoxAddMacro;
   end;
+  UpdateRunMacroSelectionBoxBounds;
 end;
 
 procedure TBuildFileDialog.BuildBrowseWorkDirButtonCLICK(Sender: TObject);
@@ -635,6 +617,38 @@ end;
 procedure TBuildFileDialog.UpdateCaption;
 begin
   Caption:='Configure Build '+Filename;
+end;
+
+procedure TBuildFileDialog.UpdateBuildMacroSelectionBoxBounds;
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+  h: Integer;
+begin
+  if (BuildMacroSelectionBox=nil) or (BuildScanForMakeMsgCheckbox=nil) then
+    exit;
+
+  x:=3;
+  y:=BuildScanForMakeMsgCheckbox.Top+BuildScanForMakeMsgCheckbox.Height+5;
+  w:=BuildPage.ClientWidth-2*x;
+  h:=BuildPage.ClientHeight-y-x;
+  BuildMacroSelectionBox.SetBounds(x,y,w,h);
+end;
+
+procedure TBuildFileDialog.UpdateRunMacroSelectionBoxBounds;
+var
+  x: Integer;
+  y: Integer;
+  w: Integer;
+  h: Integer;
+begin
+  if (RunCommandGroupbox=nil) or (RunMacroSelectionBox=nil) then exit;
+  x:=3;
+  y:=RunCommandGroupbox.Top+RunCommandGroupbox.Height+5;
+  w:=RunPage.ClientWidth-2*x;
+  h:=RunPage.ClientHeight-y-x;
+  RunMacroSelectionBox.SetBounds(x,y,w,h);
 end;
 
 procedure TBuildFileDialog.ReadDirectiveList;
