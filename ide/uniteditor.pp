@@ -935,8 +935,11 @@ begin
     case Command of
     ecChar:
       begin
-        FSourceNoteBook.IncrementalSearchStr:=
-          FSourceNoteBook.IncrementalSearchStr+AChar;
+        if AChar=#27 then begin
+          FSourceNoteBook.IncrementalSearchStr:='';
+        end else
+          FSourceNoteBook.IncrementalSearchStr:=
+            FSourceNoteBook.IncrementalSearchStr+AChar;
         Command:=ecNone;
       end;
 
@@ -953,7 +956,7 @@ begin
         FSourceNoteBook.EndIncrementalFind;
         Command:=ecNone;
       end;
-
+      
     else
       FSourceNoteBook.EndIncrementalFind;
     end;
