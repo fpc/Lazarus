@@ -450,7 +450,7 @@ begin
 
     if lfFaceName[0] = #0
     then begin
-      WriteLn('ERROR: [TgtkObject.CreateFontIndirect] No fontname');
+      Assert(false,'ERROR: [TgtkObject.CreateFontIndirect] No fontname');
       Exit;
     end;
 
@@ -541,6 +541,20 @@ begin
   then begin
     // try all slant
     Slant := '*';
+    LoadFont;
+  end;
+
+  if GdiObject^.GDIFontObject = nil
+  then begin
+    // try all Familys
+    FamilyName := '*';
+    LoadFont;
+  end;
+
+  if GdiObject^.GDIFontObject = nil
+  then begin
+    // try all Foundrys
+    Foundry := '*';
     LoadFont;
   end;
 
@@ -2968,6 +2982,11 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.4  2000/08/07 17:06:39  lazarus
+  Slight modification to CreateFontIndirect.
+  I check to see if the GdiObject^.GDIFontObject is nil.  If so After the code to retry the weight and slant I added code to retry the Family and Foundry.
+  Shane
+
   Revision 1.3  2000/07/30 21:48:34  lazarus
   MWE:
     = Moved ObjectToGTKObject to GTKProc unit
