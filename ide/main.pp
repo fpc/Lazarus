@@ -6488,6 +6488,8 @@ var
   ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
   UnitCode, LFMCode: TCodeBuffer;
+  HasDFMFile: boolean;
+  LFMFilename: String;
 begin
   // check file and directory
   writeln('TMainIDE.DoConvertDelphiUnit A ',DelphiFilename);
@@ -6500,30 +6502,37 @@ begin
   Result:=DoCloseEditorFile(DelphiFilename,[cfSaveFirst]);
   if Result<>mrOk then exit;
   DFMFilename:=FindDFMFileForDelphiUnit(DelphiFilename);
-  Result:=DoCloseEditorFile(DFMFilename,[cfSaveFirst]);
-  if Result<>mrOk then exit;
+  writeln('TMainIDE.DoConvertDelphiUnit DFM file="',DFMFilename,'"');
+  HasDFMFile:=DFMFilename<>'';
+  if HasDFMFile then begin
+    Result:=DoCloseEditorFile(DFMFilename,[cfSaveFirst]);
+    if Result<>mrOk then exit;
+  end;
   // rename files (.pas,.dfm) lowercase
   writeln('TMainIDE.DoConvertDelphiUnit Rename files');
-  Result:=RenameDelphiUnitToLazarusUnit(DelphiFilename,false);
+  LazarusUnitFilename:='';
+  LFMFilename:='';
+  Result:=RenameDelphiUnitToLazarusUnit(DelphiFilename,true,
+                       LazarusUnitFilename,LFMFilename);
   if Result<>mrOk then exit;
   // convert .dfm file to .lfm file
-  writeln('TMainIDE.DoConvertDelphiUnit Convert dfm to lfm');
-  if DFMFilename<>'' then begin
-    Result:=ConvertDFMFileToLFMFile(DFMFilename);
+  if HasDFMFile then begin
+    writeln('TMainIDE.DoConvertDelphiUnit Convert dfm format to lfm "',LFMFilename,'"');
+    Result:=ConvertDFMFileToLFMFile(LFMFilename);
     if Result<>mrOk then exit;
   end;
   // create empty .lrs file
   writeln('TMainIDE.DoConvertDelphiUnit Create empty lrs');
-  LazarusUnitFilename:=ConvertDelphiToLazarusFilename(DelphiFilename);
-  if DFMFilename<>'' then begin
+  if HasDFMFile then begin
     LRSFilename:=ChangeFileExt(LazarusUnitFilename,'.lrs');
+    writeln('TMainIDE.DoConvertDelphiUnit Create ',LRSFilename);
     Result:=CreateEmptyFile(LRSFilename,[mbAbort,mbRetry]);
     if Result<>mrOk then exit;
   end else
     LRSFilename:='';
   // add {$mode delphi} directive
   // remove windows unit and add LResources, LCLIntf
-  // remove {$R *.dfm} directive
+  // remove {$R *.dfm} or {$R *.xfm} directive
   // add initialization
   // add {$i unit.lrs} directive
   writeln('TMainIDE.DoConvertDelphiUnit Convert delphi source');
@@ -6542,10 +6551,12 @@ begin
 
     // check the LFM file and the pascal unit
     writeln('TMainIDE.DoConvertDelphiUnit Check new .lfm and .pas file');
-    Result:=LoadUnitAndLFMFile(LazarusUnitFilename,UnitCode,LFMCode);
+    Result:=LoadUnitAndLFMFile(LazarusUnitFilename,UnitCode,LFMCode,HasDFMFile);
     if Result<>mrOk then exit;
-    if not CheckLFMBuffer(UnitCode,LFMCode,@MessagesView.AddMsg) then
-    begin
+    if HasDFMFile and (LFMCode=nil) then
+      writeln('WARNING: TMainIDE.DoConvertDelphiUnit unable to load LFMCode');
+    if (LFMCode<>nil)
+    and (not CheckLFMBuffer(UnitCode,LFMCode,@MessagesView.AddMsg)) then begin
       DoJumpToCompilerMessage(-1,true);
       exit;
     end;
@@ -10301,6 +10312,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.705  2004/02/01 09:19:08  mattias
+  fixed delphi2lazarus unit  R directive
+
   Revision 1.704  2004/01/27 13:00:16  mattias
   increased realease number to 0.9.0.10
 

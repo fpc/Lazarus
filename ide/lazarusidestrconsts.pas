@@ -262,6 +262,9 @@ resourcestring
   lisFormatError = 'Format error';
   lisUnableToConvertFileError = 'Unable to convert file %s%s%s%sError: %s';
   lisUnableToWriteFileError = 'Unable to write file %s%s%s%sError: %s';
+  lisErrorCreatingLrs = 'Error creating lrs';
+  lisUnableToConvertLfmToLrsAndWriteLrsFile = 'Unable to convert lfm to lrs '
+    +'and write lrs file.';
   lisUnableToLoadOldResourceFileTheResourceFileIs = 'Unable to load old '
     +'resource file.%sThe resource file is the first include file in the%'
     +'sinitialization section.%sFor example {$I %s.lrs}.%sProbably a syntax '
@@ -1358,6 +1361,11 @@ resourcestring
   lisCodeToolsDefsErrorWhileWritingProjectInfoFile = 'Error while writing '
     +'project info file %s%s%s%s%s';
   lisCodeToolsDefsReadError = 'Read error';
+  lisTheCurrentUnitPathForTheFileIsThePathToTheLCLUnits = 'The current unit '
+    +'path for the file%s%s%s%s is%s%s%s%s.%s%sThe path to the LCL units %s%s%'
+    +'s is missing.%s%sHint for newbies:%sCreate a lazarus application and '
+    +'put the file into the project directory.';
+  lisLCLUnitPathMissing = 'LCL unit path missing';
   lisCodeToolsDefsErrorReading = 'Error reading %s%s%s%s%s';
   lisCodeToolsDefsErrorReadingProjectInfoFile = 'Error reading project info '
     +'file %s%s%s%s%s';

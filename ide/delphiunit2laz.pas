@@ -62,12 +62,13 @@ function ConvertDFMToLFMFilename(const DFMFilename: string;
   KeepCase: boolean): string;
 function FindDFMFileForDelphiUnit(const DelphiFilename: string): string;
 function RenameDelphiUnitToLazarusUnit(const DelphiFilename: string;
-  RenameDFMFile: boolean): TModalResult;
+  RenameDFMFile: boolean;
+  var LazarusFilename, LFMFilename: string): TModalResult;
 function ConvertDFMFileToLFMFile(const DFMFilename: string): TModalResult;
 function ConvertDelphiSourceToLazarusSource(const LazarusUnitFilename: string;
   AddLRSCode: boolean): TModalResult;
 function LoadUnitAndLFMFile(const UnitFileName: string;
-  var UnitCode, LFMCode: TCodeBuffer): TModalResult;
+  var UnitCode, LFMCode: TCodeBuffer; LFMMustExist: boolean): TModalResult;
 function ConvertLFMtoLRSfile(const LFMFilename: string): TModalResult;
 
 implementation
@@ -107,15 +108,10 @@ begin
   if GetNextUsedDirectoryInSearchPath(UnitPath,LCLPath,NextStartPos)='' then
   begin
     LCLPath:=LCLPath+'$(TargetCPU)'+PathDelim+'$(TargetOS)';
-    Result:=MessageDlg('LCL unit path missing',
-      'The current unit path for the file'#13
-      +'"'+Filename+'" is'#13
-      +'"'+UnitPath+'".'#13
-      +#13
-      +'The path to the LCL units "'+LCLPath+'" is missing.'#13
-      +#13
-      +'Hint for newbies:'#13
-      +'Create a lazarus application and put the file into the project directory.',
+    Result:=MessageDlg(lisLCLUnitPathMissing,
+      Format(lisTheCurrentUnitPathForTheFileIsThePathToTheLCLUnits, [#13, '"',
+        Filename, '"', #13, '"', UnitPath, '"', #13, #13, '"', LCLPath, '"',
+        #13, #13, #13]),
       mtError,[mbCancel,mbAbort],0);
     exit;
   end;
@@ -147,24 +143,29 @@ begin
   if FileExists(Result) then exit;
   Result:=ChangeFileExt(DelphiFilename,'.DFM');
   if FileExists(Result) then exit;
+  Result:=ChangeFileExt(DelphiFilename,'.xfm');
+  if FileExists(Result) then exit;
+  Result:=ChangeFileExt(DelphiFilename,'.XFM');
+  if FileExists(Result) then exit;
   Result:='';
 end;
 
 function RenameDelphiUnitToLazarusUnit(const DelphiFilename: string;
-  RenameDFMFile: boolean): TModalResult;
+  RenameDFMFile: boolean;
+  var LazarusFilename, LFMFilename: string): TModalResult;
 var
-  LazarusFilename: String;
   DFMFilename: String;
-  LFMFilename: String;
 begin
   LazarusFilename:=ConvertDelphiToLazarusFilename(DelphiFilename);
   LFMFilename:='';
+  writeln('RenameDelphiUnitToLazarusUnit Unit "',DelphiFilename,'" -> "',LazarusFilename,'"');
   Result:=RenameFileWithErrorDialogs(DelphiFilename,LazarusFilename,[mbAbort]);
   if Result<>mrOK then exit;
   if RenameDFMFile then begin
     DFMFilename:=FindDFMFileForDelphiUnit(DelphiFilename);
     if DFMFilename<>'' then begin
       LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,false);
+      writeln('RenameDelphiUnitToLazarusUnit Unit "',DFMFilename,'" -> "',LFMFilename,'"');
       Result:=RenameFileWithErrorDialogs(DFMFilename,LFMFilename,[mbAbort]);
       if Result<>mrOK then exit;
     end;
@@ -204,6 +205,7 @@ begin
     end;
     // converting dfm file, without renaming unit -> keep case
     LFMFilename:=ConvertDFMToLFMFilename(DFMFilename,true);
+    writeln('ConvertDFMFileToLFMFile LFMFilename="',LFMFilename,'"');
     try
       LFMStream.SaveToFile(LFMFilename);
     except
@@ -239,7 +241,7 @@ begin
 end;
 
 function LoadUnitAndLFMFile(const UnitFileName: string;
-  var UnitCode, LFMCode: TCodeBuffer): TModalResult;
+  var UnitCode, LFMCode: TCodeBuffer; LFMMustExist: boolean): TModalResult;
 var
   LFMFilename: string;
 begin
@@ -253,14 +255,19 @@ begin
     Result:=LoadCodeBuffer(LFMCode,LFMFilename,
                            [lbfCheckIfText,lbfUpdateFromDisk]);
     if Result<>mrOk then exit;
+  end else if LFMMustExist then begin
+    Result:=MessageDlg('LFM file not found',
+                       'Unit: '+UnitFileName+#13
+                       +'LFM file: '+LFMFilename,
+                       mtError,[mbCancel,mbAbort],0);
   end;
 end;
 
 function ConvertLFMtoLRSfile(const LFMFilename: string): TModalResult;
 begin
   if not LFMtoLRSfile(LFMFilename) then begin
-    Result:=MessageDlg('Error creating lrs',
-      'Unable to convert lfm to lrs and write lrs file.',
+    Result:=MessageDlg(lisErrorCreatingLrs,
+      lisUnableToConvertLfmToLrsAndWriteLrsFile,
       mtError,[mbCancel],0);
     exit;
   end;

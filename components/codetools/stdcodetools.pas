@@ -2166,7 +2166,7 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
   end;
 
   function RemoveDFMResourceDirective: boolean;
-  // remove {$R *.dfm} directive
+  // remove {$R *.dfm} or {$R *.xfm} directive
   var
     ParamPos: Integer;
     ACleanPos: Integer;
@@ -2180,12 +2180,15 @@ function TStandardCodeTool.ConvertDelphiToLazarusSource(AddLRSCode: boolean;
         Scanner.NestedComments,ParamPos);
       if (ACleanPos<1) or (ACleanPos>SrcLen) or (ParamPos>SrcLen) then break;
       if (Src[ACleanPos]='{')
-      and (copy(UpperSrc,ParamPos,6)='*.DFM}') then begin
+      and ((copy(UpperSrc,ParamPos,6)='*.DFM}')
+        or (copy(UpperSrc,ParamPos,6)='*.XFM}'))
+      then begin
         StartPos:=FindLineEndOrCodeInFrontOfPosition(ACleanPos,true);
         if not SourceChangeCache.Replace(gtNone,gtNone,StartPos,ParamPos+6,'')
         then exit;
         break;
       end;
+      ACleanPos:=FindCommentEnd(Src,ACleanPos,Scanner.NestedComments);
     until false;
     Result:=true;
   end;
