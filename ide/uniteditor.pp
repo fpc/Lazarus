@@ -47,7 +47,7 @@ uses
   SynEditTypes, SynEdit, SynEditHighlighter, SynHighlighterPas,
   SynEditAutoComplete, SynEditKeyCmds, SynCompletion, GraphType, Graphics,
   Extctrls, Menus, FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs,
-  InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger;
+  InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger, FileCtrl;
 
 type
   TSourceNoteBook = class;

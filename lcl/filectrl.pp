@@ -41,18 +41,34 @@ interface
 {$endif}
 
 uses
-  SysUtils;
+  Classes, SysUtils;
 
+// file attributes and states
+function FilenameIsAbsolute(TheFilename: string):boolean;
+procedure CheckIfFileIsExecutable(const AFilename: string);
+function FileIsReadable(const AFilename: string): boolean;
+function FileIsWritable(const AFilename: string): boolean;
+function FileIsText(const AFilename: string): boolean;
+function FileIsExecutable(const AFilename: string): boolean;
+function GetFileDescription(const AFilename: string): string;
 
-  {
-    @abstract (Function to determine if a directory exists or not.)
-    Introduced by Curtis White
-    Currently maintained by Curtis White
-  }
-  function DirectoryExists(const Name: String): Boolean;
-  function FileIsWritable(const AFilename: string): boolean;
-  function GetFileDescription(const AFilename: string): string;
+// directories
+function DirectoryExists(const Name: String): Boolean;
+function ForceDirectory(DirectoryName: string): boolean;
 
+// filename parts
+function ExtractFileNameOnly(const AFilename: string): string;
+function CompareFileExt(const Filename, Ext: string;
+  CaseSensitive: boolean): integer;
+function AppendPathDelim(const Path: string): string;
+function ChompPathDelim(const Path: string): string;
+function TrimFilename(const AFilename: string): string;
+function CleanAndExpandFilename(const Filename: string): string;
+function CleanAndExpandDirectory(const Filename: string): string;
+
+// file search
+function SearchFileInPath(const Filename, BasePath, SearchPath,
+                          Delimiter: string; SearchLoUpCase: boolean): string;
 
 implementation
 
@@ -61,10 +77,23 @@ uses
   {$IFDEF Ver1_0}Linux{$ELSE}Unix{$ENDIF};
 {$ENDIF}
 
+var
+  UpChars: array[char] of char;
+
+
 {$I filectrl.inc}
 
+procedure InternalInit;
+var
+  c: char;
+begin
+  for c:=Low(char) to High(char) do begin
+    UpChars[c]:=upcase(c);
+  end;
+end;
 
 initialization
+  InternalInit;
 
 finalization
 
@@ -72,6 +101,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2002/12/09 16:48:36  mattias
+  added basic file handling functions to filectrl
+
   Revision 1.4  2002/05/29 21:44:38  lazarus
   MG: improved TCommon/File/OpenDialog, fixed TListView scrolling and broder
 
