@@ -23,6 +23,110 @@
 {$ENDIF}
 
 {------------------------------------------------------------------------------
+  Procedure: GLogFunc
+
+  Replaces the default glib loghandler. All errors, warnings etc, are logged
+  through this function.
+  Here are Fatals, Criticals and Errors translated to Exceptions
+  Comment Ex to skip exception, comment Level to skip logging
+ ------------------------------------------------------------------------------}
+procedure GLogFunc(ALogDomain: Pgchar; ALogLevel: TGLogLevelFlags; AMessage: Pgchar; AData: gpointer);cdecl;
+var
+  Flag, Level, Domain: String;
+  Ex: ExceptClass;
+begin
+(*
+    G_LOG_FLAG_RECURSION = 1 shl 0;
+    G_LOG_FLAG_FATAL = 1 shl 1;
+    G_LOG_LEVEL_ERROR = 1 shl 2;
+    G_LOG_LEVEL_CRITICAL = 1 shl 3;
+    G_LOG_LEVEL_WARNING = 1 shl 4;
+    G_LOG_LEVEL_MESSAGE = 1 shl 5;
+    G_LOG_LEVEL_INFO = 1 shl 6;
+    G_LOG_LEVEL_DEBUG = 1 shl 7;
+    G_LOG_LEVEL_MASK = (1 shl 8) - 2;
+*)
+
+  Ex := nil;
+  Level := '';
+  Flag := '';
+
+  if ALogDomain = nil
+  then Domain := ''
+  else Domain := ALogDomain + ': ';
+
+  if ALogLevel and G_LOG_FLAG_RECURSION <> 0
+  then Flag := '[RECURSION] ';
+
+  if ALogLevel and G_LOG_FLAG_FATAL <> 0
+  then Flag := Flag + '[FATAL] ';
+
+  if ALogLevel and G_LOG_LEVEL_ERROR <> 0
+  then begin
+    Level := 'ERROR';
+    Ex := EInterfaceError;
+  end
+  else
+  if ALogLevel and G_LOG_LEVEL_CRITICAL <> 0
+  then begin
+    Level := 'CRITICAL';
+    Ex := EInterfaceCritical;
+  end
+  else
+  if ALogLevel and G_LOG_LEVEL_WARNING <> 0
+  then begin
+    Level := 'WARNING';
+    Ex := EInterfaceWarning;
+  end
+  else
+  if ALogLevel and G_LOG_LEVEL_INFO <> 0
+  then begin
+    Level := 'INFO';
+  end
+  else
+  if ALogLevel and G_LOG_LEVEL_DEBUG <> 0
+  then begin
+    Level := 'DEBUG';
+  end
+  else begin
+    Level := 'USER';
+  end;
+
+  if Ex = nil
+  then begin
+    if Level <> ''
+    then WriteLN('[', Level, '] ', Flag, Domain, AMessage);
+  end
+  else begin
+    if ALogLevel and G_LOG_FLAG_FATAL <> 0
+    then begin
+      // always create exception
+      //
+      // see callstack for more info
+      raise Ex.Create(Flag + Domain + AMessage);
+    end
+    else begin
+      // create a debugger trappable exception
+      // but for now let the app continue and log a line
+      // in future when all warnings etc. are gone they might raise
+      // a real exception
+      //
+      // see callstack for more info
+      try
+        raise Ex.Create(Flag + Domain + AMessage);
+      except
+        on Exception do begin
+          // just write a line
+          WriteLN('[', Level, '] ', Flag, Domain, AMessage);
+        end;
+      end;
+    end;
+  end;
+
+end;
+
+
+{------------------------------------------------------------------------------
   Method: TGtkObject.Create
   Params:  None
   Returns: Nothing
@@ -63,6 +167,9 @@ begin
 
   // call init and pass cmd line args
   PassCmdLineOptions;
+  
+  // set glib log handler
+  FLogHandlerID := g_log_set_handler(nil, $FFFFFFFF, @GLogFunc, Self);
 
   // read gtk rc file
   ParseRCFile;
@@ -274,6 +381,9 @@ begin
   FGDIObjects.Free;
   FKeyStateList.Free;
   FTimerData.Free;
+  
+  // finally remove our loghandler
+  g_log_remove_handler(nil, FLogHandlerID);
   
   inherited Destroy;
 end;
@@ -2094,9 +2204,7 @@ begin
       ImageBitmap, MaskBitmap);
     Pixmap:=PgdiObject(ImageBitmap.Handle)^.GDIPixmapObject;
     Mask:=pgdkBitmap(PgdiObject(ImageBitmap.Handle)^.GDIBitmapMaskObject);
-    {$IfNDef Win32}
     gtk_clist_set_pixtext(LVWidget,Index,0,pStr,3,Pixmap,Mask);
-    {$EndIF}
   end;
 
   // set the other column texts
@@ -3587,7 +3695,6 @@ begin
       FixWidget:=GetFixedWidget(Widget);
       If FixWidget <> Widget then Widget := FixWidget;
 
-      {$IfNdef Win32}
       // set default background
       if (Color=clNone) and (FixWidget^.Window<>nil) then
         gdk_window_set_back_pixmap(FixWidget^.Window,nil,0)
@@ -3610,10 +3717,6 @@ begin
 
         //SetBKColor(Handle, ColorToRGB(Color));
       end;
-      {$Else}
-      if ColorIsStored then
-        Writeln('WARNING: [TgtkObject.SetColor] NOT supported under Win32 GTK')
-      {$EndIf}
     end;
   end;
 end;
@@ -4987,10 +5090,8 @@ begin
   if SetupProps then SetProperties(Sender);
 
   if Handle <> nil then begin
-    {$IfNDef win32}
     if Sender is TCustomForm then
       gtk_widget_set_app_paintable(Handle,true);
-    {$EndIf}
     HookSignals(Sender);
   end;
 end;
@@ -5496,12 +5597,10 @@ begin
       GetWidgetInfo(p, True)^.ImplementationWidget := TempWidget;
 
       gtk_text_set_editable (PGtkText(TempWidget), not TCustomMemo(Sender).ReadOnly);
-      {$IfNDef Win32}
       if TCustomMemo(Sender).WordWrap then
         gtk_text_set_line_wrap(PGtkText(TempWidget), 1)
       else
         gtk_text_set_line_wrap(PGtkText(TempWidget), 0);
-      {$EndIf}
       gtk_text_set_word_wrap(PGtkText(TempWidget), 1);
 
       gtk_widget_show_all(P);
@@ -6814,11 +6913,9 @@ begin
             gtk_clist_set_pixmap(Pgtkclist(Widget),I,0,
               pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
               nil);
-            {$IfNDef Win32}
             gtk_clist_set_pixtext(Pgtkclist(Widget),I,0,pRowText,3,
               pgdkPixmap(PgdiObject(BitImage.handle)^.GDIBitmapObject),
               nil);
-            {$EndIF}
 //                      bitimage.Free;
           end;
         end;
@@ -6844,12 +6941,10 @@ begin
       ImplWidget:= GetWidgetInfo(Widget, true)^.ImplementationWidget;
     
       gtk_text_set_editable (PGtkText(ImplWidget), not (Sender as TCustomMemo).ReadOnly);
-      {$IfNDef Win32}
       if TCustomMemo(Sender).WordWrap then
         gtk_text_set_line_wrap(PGtkText(ImplWidget), 1)
       else
         gtk_text_set_line_wrap(PGtkText(ImplWidget), 0);
-      {$EndIf}
       gtk_text_set_word_wrap(PGtkText(ImplWidget), 1);
 
       case (Sender as TCustomMemo).Scrollbars of
@@ -7655,7 +7750,6 @@ const
   end;
   {$ENDIF}
   
-  {$IFNDEF WIN32}
   procedure ClearTargetLists(Widget: PGtkWidget);
   // MG: Reading in gtk internals is dirty, but there seems to be no other way
   //     to clear the old target lists
@@ -7681,7 +7775,6 @@ const
     writeln('  ClearTargetLists WWW END');
     {$ENDIF}
   end;
-  {$ENDIF}
   
 var c: TClipboardType;
 begin
@@ -7693,9 +7786,7 @@ begin
     {$IFDEF DEBUG_CLIPBOARD}
     WriteTargetLists(ClipboardWidget);
     {$ENDIF}
-    {$IFNDEF WIN32}
     ClearTargetLists(ClipboardWidget);
-    {$ENDIF}
     {$IFDEF DEBUG_CLIPBOARD}
     WriteTargetLists(ClipboardWidget);
     {$ENDIF}
@@ -7713,10 +7804,8 @@ begin
     // add all supported targets for all clipboard types
     for c:=Low(TClipboardType) to High(TClipboardType) do begin
       if (ClipboardTargetEntries[c]<>nil) then begin
-        {$IFNDEF WIN32}
         gtk_selection_add_targets(ClipboardWidget,ClipboardTypeAtoms[c],
                   ClipboardTargetEntries[c],ClipboardTargetEntryCnt[c]);
-        {$ENDIF}
       end;
     end;
   end;
@@ -7949,6 +8038,10 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.396  2003/08/13 00:02:06  marc
+  + introduced interface exceptions
+  - Removed ifdefs for implemented gtkwin32 functions
+
   Revision 1.395  2003/07/25 08:00:36  mattias
   fixed sending follow up move/size messages from gtk
 
