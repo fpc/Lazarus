@@ -154,8 +154,10 @@ Begin
     WM_DESTROY:
     Begin
       Assert(False, 'Trace:WindowProc - Got WM_DESTROY');
-      For C := 0 To WndList.Count - 1 Do
-        EnumProps(HWND(WndList[C]), @PropEnumProc);
+// The following lines cause an acces violation
+// TODO: find out why.
+//      For C := 0 To WndList.Count - 1 Do
+//        EnumProps(HWND(WndList[C]), @PropEnumProc);
       LMessage.Msg := LM_DESTROY;
       PostQuitMessage(0);
     End;
@@ -475,6 +477,9 @@ end;
 
 {
   $Log$
+  Revision 1.19  2002/12/04 20:39:16  mattias
+  patch from Vincent: clean ups and fixed crash on destroying window
+
   Revision 1.18  2002/11/26 20:51:05  mattias
   applied clipbrd patch from Vincent
 

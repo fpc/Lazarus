@@ -516,7 +516,10 @@ End;
 Function DeliverMessage(Const Target: Pointer; Var Message): Integer;
 Begin
   If Target = Nil Then
+  begin
     WriteLn('[DeliverMessage] Nil');
+    Exit;
+  end;
   If TObject(Target) Is TControl Then
   Begin
     TControl(Target).WinDowProc(TLMessage(Message));
@@ -670,6 +673,9 @@ End;
  { =============================================================================
 
   $Log$
+  Revision 1.10  2002/12/04 20:39:18  mattias
+  patch from Vincent: clean ups and fixed crash on destroying window
+
   Revision 1.9  2002/11/17 15:01:38  mattias
   fixed uninitialised handle
 
