@@ -29,7 +29,7 @@ type
   // Just-In-Time-Form List
   TJITForms = class(TPersistent)
   private
-    FForms: TList;
+    FForms: TList; // list of TJITForm
     FCurReadForm:TForm;
     FCurReadClass:TClass;
     FRegCompList:TRegisteredComponentList;
@@ -207,7 +207,7 @@ begin
     if NewFormName<>'' then
       Instance.Name:=NewFormName;
     DoRenameClass(FCurReadClass,NewClassName);
-//writeln('[TJITForms.DoCreateJITForm] Initialization was successful!');
+//writeln('[TJITForms.DoCreateJITForm] Initialization was successful! FormName="',NewFormName,'"');
   except
     TComponent(FCurReadForm):=nil;
     writeln('[TJITForms.DoCreateJITForm] Error while creating instance');
@@ -221,7 +221,7 @@ var NewFormName,NewClassName:shortstring;
 begin
   Writeln('[TJITForms] AddNewJITForm');
   GetUnusedNames(NewFormName,NewClassName);
-  Writeln('Newformname is '+NewFormname);
+  Writeln('NewFormName is ',NewFormname,', NewClassName is ',NewClassName);
   Result:=DoCreateJITForm(NewFormName,NewClassName);
 end;
 
@@ -246,18 +246,18 @@ begin
 end;
 
 function TJITForms.AddJITFormFromStream(BinStream:TStream):integer;
-//  0 = ok
+//  returns new index
 // -1 = invalid stream
 var
   Reader:TReader;
   NewClassName:shortstring;
   a:integer;
 begin
-  Result:=0;
+  Result:=-1;
   NewClassName:=GetClassNameFromStream(BinStream);
   if NewClassName='' then begin
     Application.MessageBox('No classname in form stream found.','',mb_OK);
-    Result:=-1;  exit;
+    exit;
   end;
 writeln('[TJITForms.AddJITFormFromStream] 1');
   try
@@ -296,7 +296,6 @@ writeln('[TJITForms.AddJITFormFromStream] 6');
       FindGlobalComponent:=nil;
       Reader.Free;
     end;
-    Result:=0;
   except
     writeln('[TJITForms.AddJITFormFromStream] ERROR reading form stream'
        +' of Class ''',NewClassName,'''');
@@ -365,9 +364,10 @@ const
   vmtSize:integer=2000; //XXX how big is the vmt of class TJITForm ?
 var MethodTable, NewMethodTable : PMethodNameTable;
   MethodTableSize: integer;
+  ClassNamePtr: Pointer;
 begin
 //writeln('[TJITForms.CreatevmtCopy] SourceClass='''+SourceClass.ClassName+''''
-//   +' NewClassName='''+NewClassName+'''');
+// +' NewClassName='''+NewClassName+'''');
   // create copy of vmt
   GetMem(Result,vmtSize);
   // type of self is class of TJITForm => it points to the vmt
@@ -381,17 +381,26 @@ begin
     Move(MethodTable^,NewMethodTable^,MethodTableSize);
     PPointer(Result+vmtMethodTable)^:=NewMethodTable;
   end;
-  PShortString((Pointer(Result)+vmtClassName)^)^:=NewClassName;
+  // create pointer to classname
+  ClassNamePtr:=Pointer(Result)+vmtClassName;
+  GetMem(Pointer(ClassNamePtr^),SizeOf(Pointer));
+  Pointer(Pointer(ClassNamePtr^)^):=nil;
+  PShortString(ClassNamePtr^)^:=NewClassName;
 end;
 
 procedure TJITForms.FreevmtCopy(vmtCopy:Pointer);
 var MethodTable : PMethodNameTable;
+  ClassNamePtr: Pointer;
 begin
 //writeln('[TJITForms.FreevmtCopy] ClassName='''+TClass(vmtCopy).ClassName+'''');
   if vmtCopy=nil then exit;
+  // free copy of methodtable
   MethodTable:=PMethodNameTable((Pointer(vmtCopy)+vmtMethodTable)^);
   if (Assigned(MethodTable)) then
     FreeMem(MethodTable);
+  // free pointer to classname
+  ClassNamePtr:=Pointer(vmtCopy)+vmtClassName;
+  FreeMem(Pointer(ClassNamePtr^));
   FreeMem(vmtCopy);
 end;
 
