@@ -4745,6 +4745,7 @@ function TgtkObject.SetCapture(Value: Longint): Longint;
 {$IFDEF VerboseMouseCapture}
 var
   Sender : TObject;
+  CurMouseCaptureHandle: PGtkWidget;
 {$ENDIF}
 begin
   Assert(False, Format('Trace:> [TgtkObject.SetCapture] 0x%x', [Value]));
@@ -4753,17 +4754,22 @@ begin
     Sender:=GetLCLObject(Pointer(Value))
   else
     Sender:=nil;
-  write('TgtkObject.SetCapture ',HexStr(Cardinal(Value),8),' ');
+  write('TgtkObject.SetCapture New=',HexStr(Cardinal(Value),8),' ');
   if Sender=nil then
     writeln('Sender=nil')
   else
     writeln('Sender=',TControl(Sender).Name,':',Sender.ClassName);
+
+  CurMouseCaptureHandle:=gtk_grab_get_current;
+  writeln('  gtk=',HexStr(Cardinal(CurMouseCaptureHandle),8),
+    ' MCaptureHandle=',HexStr(Cardinal(MCaptureHandle),8));
   {$ENDIF}
 
   //CaptureHandle is defined in gtkint.pp pivate var definition.
   
   //MWE: there are some problems with grabbing the pointer and tabs
   //     so back to gtk_grab
+
 
   if MCaptureHandle <> 0 then
     //gdk_pointer_ungrab(0);
@@ -4799,7 +4805,6 @@ begin
   end;
      
   Assert(False, Format('Trace:< [TgtkObject.SetCapture] 0x%x --> 0x%x', [Value, Result]));
-
 end;
 
 {------------------------------------------------------------------------------
@@ -5995,6 +6000,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.108  2002/08/22 16:22:39  lazarus
+  MG: started debugging of mouse capturing
+
   Revision 1.107  2002/08/22 13:45:58  lazarus
   MG: fixed non AutoCheck menuitems and editor bookmark popupmenu
 
