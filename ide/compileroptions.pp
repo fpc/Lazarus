@@ -337,11 +337,11 @@ type
 
     { Procedures }
     procedure CreateForm(Sender: TObject);
-    procedure SetupParsingTab(Sender: TObject);
-    procedure SetupCodeGenerationTab(Sender: TObject);
-    procedure SetupLinkingTab(Sender: TObject);
-    procedure SetupOtherTab(Sender: TObject);
-    procedure SetupSearchPathsTab(Sender: TObject);
+    procedure SetupParsingTab(Sender: TObject; Page: integer);
+    procedure SetupCodeGenerationTab(Sender: TObject; Page: integer);
+    procedure SetupLinkingTab(Sender: TObject; Page: integer);
+    procedure SetupOtherTab(Sender: TObject; Page: integer);
+    procedure SetupSearchPathsTab(Sender: TObject; Page: integer);
     procedure SetupButtonBar(Sender: TObject);
   public
     CompilerOpts: TCompilerOptions;
@@ -1326,6 +1326,7 @@ end;
 {  TfrmCompilerOptions Constructor                                             }
 {------------------------------------------------------------------------------}
 constructor TfrmCompilerOptions.Create(AOwner: TComponent);
+var Page: integer;
 begin
   inherited Create(AOwner);
 
@@ -1342,11 +1343,11 @@ begin
   nbmain.Left := 0;
 
   // Add the pages 
-  nbMain.Pages.Strings[0] := 'Parsing';
+  nbMain.Pages.Strings[0] := 'Search Paths';
+  nbMain.Pages.Add('Parsing');
   nbMain.Pages.Add('Code Generation');
   nbMain.Pages.Add('Linking');
   nbMain.Pages.Add('Other');
-  nbMain.Pages.Add('Search Paths');
 
 {
   bvlButtonBar := TBevel.Create(Self);
@@ -1357,20 +1358,27 @@ begin
   bvlButtonBar.Left := 0;
 }
 
+  Page:=0;
+  
+  { Search Paths Tab }
+  SetupSearchPathsTab(Self,Page);
+  inc(Page);
+  
   { Parsing Tab }
-  SetupParsingTab(Self);
+  SetupParsingTab(Self,Page);
+  inc(Page);
 
   { Code Generation Tab }
-  SetupCodeGenerationTab(Self);
+  SetupCodeGenerationTab(Self,Page);
+  inc(Page);
 
   { Linking Tab }
-  SetupLinkingTab(Self);
+  SetupLinkingTab(Self,Page);
+  inc(Page);
 
   { Other Tab }
-  SetupOtherTab(Self);
-
-  { Search Paths Tab }
-  SetupSearchPathsTab(Self);
+  SetupOtherTab(Self,Page);
+  inc(Page);
 
   { Bottom Buttons }
   SetupButtonBar(Self);
@@ -1698,7 +1706,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SetupParsingTab                                         }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupParsingTab(Sender: TObject);
+procedure TfrmCompilerOptions.SetupParsingTab(Sender: TObject; Page: integer);
 begin
   // Setup the Parsing Tab
   Assert(False, 'Trace:Setting up compiler options parsing tab');
@@ -1706,7 +1714,7 @@ begin
   grpStyle := TGroupBox.Create(Self);
   with grpStyle do
   begin
-    Parent := nbMain.Page[0];
+    Parent := nbMain.Page[Page];
     Top := 10;
     Left := 10;
     Height := 45;
@@ -1754,7 +1762,7 @@ begin
   grpSymantecChk := TGroupBox.Create(Self);
   with grpSymantecChk do
   begin
-    Parent := nbMain.Page[0];
+    Parent := nbMain.Page[Page];
     Top := 65;
     Left := 10;
     Height := 316;
@@ -1912,7 +1920,8 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SetupCodeGenerationTab                                  }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupCodeGenerationTab(Sender: TObject);
+procedure TfrmCompilerOptions.SetupCodeGenerationTab(Sender: TObject;
+  Page: integer);
 begin
   // Setup the Code Generation Tab
   Assert(False, 'Trace:Setting up compiler options code generation tab');
@@ -1920,7 +1929,7 @@ begin
   grpUnitStyle := TRadioGroup.Create(Self);
   with grpUnitStyle do
   begin
-    Parent := nbMain.Page[1];
+    Parent := nbMain.Page[Page];
     Top := 10;
     Left := 10;
     Height := 70;
@@ -1938,7 +1947,7 @@ begin
   grpChecks := TGroupBox.Create(Self);
   with grpChecks do
   begin
-    Parent := nbMain.Page[1];
+    Parent := nbMain.Page[Page];
     Top := 10;
     Left := grpUnitStyle.Left + grpUnitStyle.Width + 10;
     Height := 70;
@@ -2000,7 +2009,7 @@ begin
   grpHeapSize := TGroupBox.Create(Self);
   with grpHeapSize do
   begin
-    Parent := nbMain.Page[1];
+    Parent := nbMain.Page[Page];
     Top := 10;
     Left := grpChecks.Left + grpChecks.Width + 10;
     Height := 55;
@@ -2027,7 +2036,7 @@ begin
   grpGenerate := TGroupBox.Create(Self);
   with grpGenerate do
   begin
-    Parent := nbMain.Page[1];
+    Parent := nbMain.Page[Page];
     Top := grpUnitStyle.Top + grpUnitStyle.Height + 6;
     Left := 10;
     Height := 70;
@@ -2066,7 +2075,7 @@ begin
   grpTargetProc := TGroupBox.Create(Self);
   with grpTargetProc do
   begin
-    Parent := nbMain.Page[1];
+    Parent := nbMain.Page[Page];
     Top := grpGenerate.Top;
     Left := grpGenerate.Left + grpGenerate.Width + 10;
     Height := 90;
@@ -2117,7 +2126,7 @@ begin
   grpOptimizations := TGroupBox.Create(Self);
   with grpOptimizations do
   begin
-    Parent := nbMain.Page[1];
+    Parent := nbMain.Page[Page];
     Top := grpTargetProc.Top + grpTargetProc.Height + 6;
     Left := 10;
     Height := 132;
@@ -2204,7 +2213,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SetupLinkingTab                                         }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupLinkingTab(Sender: TObject);
+procedure TfrmCompilerOptions.SetupLinkingTab(Sender: TObject; Page: integer);
 begin
   // Setup the Linking Tab
   Assert(False, 'Trace:Setting up compiler options linking tab');
@@ -2212,7 +2221,7 @@ begin
   grpDebugging := TGroupBox.Create(Self);
   with grpDebugging do
   begin
-    Parent := nbMain.Page[2];
+    Parent := nbMain.Page[Page];
     Top := 10;
     Left := 10;
     Height := 151;
@@ -2298,7 +2307,7 @@ begin
   grpLinkLibraries := TGroupBox.Create(Self);
   with grpLinkLibraries do
   begin
-    Parent := nbMain.Page[2];
+    Parent := nbMain.Page[Page];
     Top := grpDebugging.Top + grpDebugging.Height + 10;
     Left := 10;
     Height := 70;
@@ -2336,7 +2345,7 @@ begin
   grpOptions := TGroupBox.Create(Self);
   with grpOptions do
   begin
-    Parent := nbMain.Page[2];
+    Parent := nbMain.Page[Page];
     Top := grpLinkLibraries.Top + grpLinkLibraries.Height + 10;
     Left := 10;
     Height := 75;
@@ -2373,7 +2382,7 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SetupOtherTab                                           }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupOtherTab(Sender: TObject);
+procedure TfrmCompilerOptions.SetupOtherTab(Sender: TObject; Page: integer);
 begin
   // Setup the Other Tab
   Assert(False, 'Trace:Setting up compiler options other tab');
@@ -2381,7 +2390,7 @@ begin
   grpVerbosity := TGroupBox.Create(Self);
   with grpVerbosity do
   begin
-    Parent := nbMain.Page[3];
+    Parent := nbMain.Page[Page];
     Top := 10;
     Left := 10;
     Height := 212;
@@ -2599,7 +2608,7 @@ begin
   grpConfigFile := TGroupBox.Create(Self);
   with grpConfigFile do
   begin
-    Parent := nbMain.Page[3];
+    Parent := nbMain.Page[Page];
     Top := grpVerbosity.Top + grpVerbosity.Height + 10;
     Left := 10;
     Height := 95;
@@ -2648,7 +2657,7 @@ begin
   grpErrorCnt := TGroupBox.Create(Self);
   with grpErrorCnt do
   begin
-    Parent := nbMain.Page[3];
+    Parent := nbMain.Page[Page];
     Top := grpConfigFile.Top + grpConfigFile.Height + 10;
     Left := 10;
     Height := 50;
@@ -2673,14 +2682,15 @@ end;
 {------------------------------------------------------------------------------}
 {  TfrmCompilerOptions SetupSearchPathsTab                                     }
 {------------------------------------------------------------------------------}
-procedure TfrmCompilerOptions.SetupSearchPathsTab(Sender: TObject);
+procedure TfrmCompilerOptions.SetupSearchPathsTab(Sender: TObject;
+  Page: integer);
 begin
   // Setup the Search Paths Tab
 
   grpOtherUnits := TGroupBox.Create(Self);
   with grpOtherUnits do
   begin
-    Parent := nbMain.Page[4];
+    Parent := nbMain.Page[Page];
     Left := 10;
     Top := 7;
     Width := Self.ClientWidth-28;
@@ -2706,7 +2716,7 @@ begin
   grpIncludeFiles := TGroupBox.Create(Self);
   with grpIncludeFiles do
   begin
-    Parent := nbMain.Page[4];
+    Parent := nbMain.Page[Page];
     Left := grpOtherUnits.Left;
     Top := grpOtherUnits.Top+grpOtherUnits.Height+5;
     Width := grpOtherUnits.Width;
@@ -2732,7 +2742,7 @@ begin
   grpOtherSources := TGroupBox.Create(Self);
   with grpOtherSources do
   begin
-    Parent := nbMain.Page[4];
+    Parent := nbMain.Page[Page];
     Top := grpIncludeFiles.Top+grpIncludeFiles.Height+5;
     Left := grpOtherUnits.Left;
     Width := grpOtherUnits.Width;
@@ -2758,7 +2768,7 @@ begin
   grpLibraries := TGroupBox.Create(Self);
   with grpLibraries do
   begin
-    Parent := nbMain.Page[4];
+    Parent := nbMain.Page[Page];
     Top := grpOtherSources.Top + grpOtherSources.Height + 5;
     Left := grpOtherUnits.Left;
     Width := grpOtherUnits.Width;
@@ -2784,7 +2794,7 @@ begin
   grpCompiler := TGroupBox.Create(Self);
   with grpCompiler do
   begin
-    Parent := nbMain.Page[4];
+    Parent := nbMain.Page[Page];
     Top := grpLibraries.Top + grpLibraries.Height + 5;
     Left := grpOtherUnits.Left;
     Width := grpOtherUnits.Width;
@@ -2810,7 +2820,7 @@ begin
   grpUnitOutputDir := TGroupBox.Create(Self);
   with grpUnitOutputDir do
   begin
-    Parent := nbMain.Page[4];
+    Parent := nbMain.Page[Page];
     Top := grpCompiler.Top + grpCompiler.Height + 5;
     Left := grpOtherUnits.Left;
     Width := grpOtherUnits.Width;
@@ -2836,7 +2846,7 @@ begin
   LCLWidgetTypeRadioGroup:=TRadioGroup.Create(Self);
   with LCLWidgetTypeRadioGroup do begin
     Name:='LCLWidgetTypeRadioGroup';
-    Parent:=nbMain.Page[4];
+    Parent:=nbMain.Page[Page];
     Left := grpOtherUnits.Left;
     Top:=grpUnitOutputDir.Top+grpUnitOutputDir.Height+5;
     Width:=150;
