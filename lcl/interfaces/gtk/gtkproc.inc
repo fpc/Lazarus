@@ -197,7 +197,8 @@ end;
   
   GetGTKKeyInfo returns information about the given key event
  ------------------------------------------------------------------------------}
-procedure GetGTKKeyInfo(const Event: PGDKEventKey; var KeyCode, VirtualKey: Word; var SysKey, Extended, Toggle: Boolean);
+procedure GetGTKKeyInfo(const Event: PGDKEventKey; var KeyCode,VirtualKey: Word;
+  var SysKey, Extended, Toggle: Boolean);
 var
   CtrlDown: Boolean;
 begin
@@ -729,6 +730,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.16  2001/06/16 09:14:39  lazarus
+  MG: added lazqueue and used it for the messagequeue
+
   Revision 1.15  2001/06/05 10:32:06  lazarus
   MG: small bugfixes for bitbtn, handles
 

@@ -17,7 +17,7 @@ uses
 	comctrls,   graphics,        lmessages,    stdctrls, 
 	controls,   imglist,         menus,        toolwin, 
 	dialogs,    messages,        utrace,       dynhasharray,
-	clistbox;
+	clistbox,   lazqueue;
 
 implementation
 end.
@@ -25,8 +25,8 @@ end.
 { =============================================================================
 
   $Log$
-  Revision 1.7  2001/06/15 10:31:05  lazarus
-  MG: set longstrings as default
+  Revision 1.8  2001/06/16 09:14:38  lazarus
+  MG: added lazqueue and used it for the messagequeue
 
   Revision 1.6  2001/03/27 20:55:23  lazarus
   MWE:

@@ -32,7 +32,7 @@ interface
 uses 
   InterfaceBase, gtk, gdk, glib, sysutils, lmessages, Classes, Controls,
   extctrls, forms,dialogs, VclGlobals,stdctrls, comctrls, LCLLinux, gtkdef,
-  DynHashArray;
+  DynHashArray, LazQueue;
 
 type
    TgtkObject = class(TInterfaceBase)
@@ -40,7 +40,7 @@ type
       FKeyStateList: TList; // Keeps track of which keys are pressed
       FDeviceContexts: TDynHashArray;
       FGDIObjects: TDynHashArray;
-      FMessageQueue: TList;
+      FMessageQueue: TLazQueue;
       FGTKToolTips: PGtkToolTips;
       FAccelGroup: PgtkAccelGroup;
       FTimerData : TList;       // keeps track of timer evenet structures
@@ -252,6 +252,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.16  2001/06/16 09:14:38  lazarus
+  MG: added lazqueue and used it for the messagequeue
+
   Revision 1.15  2001/06/14 14:57:59  lazarus
   MG: small bugfixes and less notes
 

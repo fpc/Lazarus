@@ -2457,11 +2457,11 @@ begin
   Result := FMessageQueue.Count > 0;
   if Result 
   then begin
-    Message := FMessageQueue.Items[0];
+    Message := FMessageQueue.First^.Data;
     lpMsg := Message^;
     if (wRemoveMsg and PM_REMOVE) = PM_REMOVE 
     then begin
-      FMessageQueue.Delete(0);
+      FMessageQueue.Delete(FMessageQueue.First);
     end;
   end;
 
@@ -2488,7 +2488,7 @@ begin
   Message^.WParam := WParam;
   Message^.LParam := LParam;
 //  Message^.Time := 
-  FMessageQueue.Add(Message);
+  FMessageQueue.AddLast(Message);
   Result := True;  
 end;
 
@@ -3520,6 +3520,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.38  2001/06/16 09:14:39  lazarus
+  MG: added lazqueue and used it for the messagequeue
+
   Revision 1.37  2001/06/14 23:13:30  lazarus
   MWE:
     * Fixed some syntax errors for the latest 1.0.5 compiler

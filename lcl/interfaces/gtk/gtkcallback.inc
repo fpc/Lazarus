@@ -188,8 +188,8 @@ begin
 *)
 end;
 
-
-function GTKKeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey; Data: gPointer) : GBoolean; cdecl;
+function GTKKeyUpDown(Widget: PGtkWidget; Event : pgdkeventkey;
+  Data: gPointer) : GBoolean; cdecl;
 var
   Msg: TLMKey;
   KeyCode: Word;
@@ -204,13 +204,13 @@ begin
   if Extended then Flags := KF_EXTENDED;
   if SysKey then Flags := Flags or KF_ALTDOWN;
 
-
   Msg.KeyData := $00000000; //TODO: OEM char
   
   case Event^.theType of
 
     GDK_KEY_RELEASE:
       begin
+//writeln('GTKKeyUpDown-GDK_KEY_RELEASE Code=',KeyCode,' Char=',Msg.CharCode,' Sys=',SysKey,' Ext=',Extended,' Toggle=',Toggle);
         EventTrace('key up', data);
         if SysKey
         then Msg.msg := LM_SYSKEYUP
@@ -224,6 +224,7 @@ begin
       end;
     GDK_KEY_PRESS:
       begin
+//writeln('GTKKeyUpDown-GDK_KEY_PRESS Code=',KeyCode,' Char=',Msg.CharCode,' Sys=',SysKey,' Ext=',Extended,' Toggle=',Toggle);
         EventTrace('key down', data);
         if SysKey
         then Msg.msg := LM_SYSKEYDOWN
@@ -1138,6 +1139,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.32  2001/06/16 09:14:38  lazarus
+  MG: added lazqueue and used it for the messagequeue
+
   Revision 1.31  2001/06/14 14:57:59  lazarus
   MG: small bugfixes and less notes
 

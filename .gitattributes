@@ -305,6 +305,7 @@ lcl/interfaces/win32/interfaces.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32callback.inc svneol=native#text/pascal
 lcl/interfaces/win32/win32int.pp svneol=native#text/pascal
 lcl/interfaces/win32/win32object.inc svneol=native#text/pascal
+lcl/lazqueue.pp svneol=native#text/pascal
 lcl/lcllinux.pp svneol=native#text/pascal
 lcl/lmessages.pp svneol=native#text/pascal
 lcl/lresources.pp svneol=native#text/pascal

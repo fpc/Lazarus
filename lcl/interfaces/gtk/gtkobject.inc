@@ -24,7 +24,7 @@ begin
   FKeyStateList := TList.Create;
   FDeviceContexts := TDynHashArray.Create(-1);
   FGDIObjects := TDynHashArray.Create(-1);
-  FMessageQueue := TList.Create;
+  FMessageQueue := TLazQueue.Create;
   FAccelGroup := gtk_accel_group_new();
   FTimerData  := TList.Create;
 end;
@@ -47,18 +47,21 @@ var
   GDITypeCount: array[TGDIType] of Integer;
   GDIType: TGDIType;
   HashItem: PDynHashArrayItem;
+  QueueItem, OldQueueItem: PLazQueueItem;
 begin
   // tidy up the messages
-  n:=FMessageQueue.Count-1;
-  while (n>=0) do begin
-    p := PMsg(FMessageQueue.Items[n]);
+  QueueItem:=FMessageQueue.First;
+  while (QueueItem<>nil) do begin
+    p := PMsg(QueueItem^.Data);
     if p^.Message=LM_PAINT then begin
       //writeln('[TgtkObject.Destroy]  freeing unused paint message ',HexStr(p^.WParam,8));
       ReleaseDC(0,P^.WParam);
       Dispose(p);
-      FMessageQueue.Delete(n);
-    end;
-    dec(n);
+      OldQueueItem:=QueueItem;
+      QueueItem:=QueueItem^.Next;
+      FMessageQueue.Delete(OldQueueItem);
+    end else
+      QueueItem:=QueueItem^.Next;
   end;
 
   if (FDeviceContexts.Count > 0)
@@ -108,10 +111,10 @@ begin
   if FMessageQueue.Count > 0 
   then begin
     WriteLN(Format('[TgtkObject.Destroy] WARNING: There are %d messages left in the queue! I''ll free them' ,[FMessageQueue.Count]));
-    for n := 0 to FMessageQueue.Count  - 1 do
-    begin
-      p := PMsg(FMessageQueue.Items[n]);
+    while FMessageQueue.First<>nil do begin
+      p := PMsg(FMessageQueue.First^.Data);
       Dispose(P);
+      FMessageQueue.Delete(FMessageQueue.First);
     end;
   end;
 
@@ -155,11 +158,11 @@ begin
 
   //Should we handle this ???
   with FMessageQueue do
-    while Count > 0 do
+    while First<>nil do
     begin
-      p := PMsg(Items[0]);
+      p := PMsg(First^.Data);
+      Delete(First);
       Msg := p^;
-      Delete(0);
       with Msg do
         SendMessage(hWND, Message, WParam, LParam);
       case Msg.Message of
@@ -1433,19 +1436,16 @@ begin
     LM_SYSKEYUP:
     begin
       if (sender is TMemo) then
-      Writeln('KEY-PRESS-EVENT for TMEmo');
-      if (sender is TComboBox) then
-         Begin
-          ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-          ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
-
-         end
-         else
-      if (sender is TCustomForm) then
-         Begin
-      ConnectSignal(PgtkObject(TCustomForm(sender).handle), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
-      ConnectSignal(PgtkObject(TCustomForm(sender).handle), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
-        end;
+        Writeln('KEY-PRESS-EVENT for TMemo');
+      if (sender is TComboBox) then Begin
+        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
+        ConnectSignal(PgtkObject(PgtkCombo(TComboBox(sender).handle)^.entry), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+      end
+      else
+      if (sender is TCustomForm) then Begin
+        ConnectSignal(PgtkObject(TCustomForm(sender).handle), 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
+        ConnectSignal(PgtkObject(TCustomForm(sender).handle), 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
+      end;
       ConnectSignal(gFixed, 'key-press-event', @GTKKeyUpDown, GDK_KEY_PRESS_MASK);
       ConnectSignal(gFixed, 'key-release-event', @GTKKeyUpDown, GDK_KEY_RELEASE_MASK);
     end;
@@ -2873,6 +2873,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.50  2001/06/16 09:14:38  lazarus
+  MG: added lazqueue and used it for the messagequeue
+
   Revision 1.49  2001/06/14 14:57:59  lazarus
   MG: small bugfixes and less notes
 
