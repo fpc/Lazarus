@@ -164,6 +164,7 @@ resourcestring
   lisMenuGotoIncludeDirective = 'Goto include directive';
   
   lisMenuViewObjectInspector = 'Object Inspector';
+  lisMenuViewSourceEditor = 'Source Editor';
   lisMenuViewCodeExplorer = 'Code Explorer';
   lisMenuViewUnits = 'Units...';
   lisMenuViewForms = 'Forms...';
@@ -373,6 +374,8 @@ resourcestring
     +'ambigious file?';
   lisLazarusEditorV = 'Lazarus Editor v%s';
   lisnewProject = '%s - (new project)';
+  liscompiling = '%s (compiling ...)';
+  lisdebugging = '%s (debugging ...)';
   lisUnableToFindFile = 'Unable to find file %s%s%s.';
   lisUnableToFindFileCheckSearchPathInRunCompilerOption = 'Unable to find '
     +'file %s%s%s.%sCheck search path in%sRun->Compiler Options...->Search '
@@ -524,6 +527,7 @@ resourcestring
   dlgBakDirectory='(no subdirectoy)';
   
   dlgDesktop = 'Desktop';
+  dlgWindows = 'Windows';
   dlgFrmEditor = 'Form Editor';
   dlgObjInsp = 'Object Inspector';
   dlgEnvFiles = 'Files';
@@ -539,6 +543,7 @@ resourcestring
   dlgSaveDFile = 'Save desktop settings to file';
   dlgLoadDFile = 'Load desktop settings from file';
   dlgMinimizeAllOnMinimizeMain = 'Minimize all on minimize main';
+  dlgHideIDEOnRun = 'Hide IDE windows on run';
   dlgPalHints = 'Hints for component palette';
   dlgSpBHints = 'Hints for main speed buttons (open, save, ...)';
   dlgWinPos = 'Window Positions';
@@ -1068,8 +1073,8 @@ resourcestring
   // view menu
   srkmecToggleFormUnit            = 'Switch between form and unit';
   srkmecToggleObjectInsp          = 'View Object Inspector';
-  srkmecToggleProjectExpl         = 'View project explorer';
-  srkmecTogglecodeExpl            = 'View code explorer';
+  srkmecToggleSourceEditor        = 'View Source Editor';
+  srkmecToggleCodeExpl            = 'View Code Explorer';
   srkmecToggleMessages            = 'View messages';
   srkmecToggleWatches             = 'View watches';
   srkmecToggleBreakPoints         = 'View breakpoints';

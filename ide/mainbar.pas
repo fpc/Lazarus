@@ -256,6 +256,7 @@ type
 
     // view menu
     itmViewInspector: TMenuItem;
+    itmViewSourceEditor: TMenuItem;
     itmViewUnits : TMenuItem;
     itmViewCodeExplorer : TMenuItem;
     itmViewForms : TMenuItem;
@@ -361,6 +362,7 @@ type
 
     property ToolStatus: TIDEToolStatus read FToolStatus write SetToolStatus;
     procedure UpdateCaption; virtual; abstract;
+    procedure HideIDE; virtual; abstract;
 
     procedure CreateOftenUsedForms; virtual; abstract;
 
@@ -916,7 +918,10 @@ begin
   itmViewInspector.Caption := lisMenuViewObjectInspector;
   mnuView.Add(itmViewInspector);
 
-  mnuView.Add(CreateMenuSeparator);
+  itmViewSourceEditor := TMenuItem.Create(Self);
+  itmViewSourceEditor.Name:='itmViewSourceEditor';
+  itmViewSourceEditor.Caption := lisMenuViewSourceEditor;
+  mnuView.Add(itmViewSourceEditor);
 
   itmViewCodeExplorer := TMenuItem.Create(Self);
   itmViewCodeExplorer.Name:='itmViewCodeExplorer';
@@ -1372,6 +1377,7 @@ begin
 
     // view menu
     itmViewInspector.ShortCut:=CommandToShortCut(ecToggleObjectInsp);
+    itmViewSourceEditor.ShortCut:=CommandToShortCut(ecToggleSourceEditor);
     itmViewUnits.ShortCut:=CommandToShortCut(ecViewUnits);
     itmViewCodeExplorer.ShortCut:=CommandToShortCut(ecToggleCodeExpl);
     itmViewUnitDependencies.ShortCut:=CommandToShortCut(ecViewUnitDependencies);
@@ -1715,7 +1721,7 @@ var
   AForm: TForm;
 begin
   WindowsList:=TList.Create;
-  // add typical IDE windows
+  // add typical IDE windows at the start of the list
   if (SourceNotebook<>nil) and (SourceNotebook.Visible) then
     WindowsList.Add(SourceNotebook);
   if (ObjectInspector1<>nil) and (ObjectInspector1.Visible) then
@@ -1734,7 +1740,7 @@ begin
     if (AForm.Designer<>nil) and (WindowsList.IndexOf(AForm)<0) then
       WindowsList.Add(AForm);
   end;
-  // add menuitems
+  // create menuitems
   for i:=0 to WindowsList.Count-1 do begin
     if mnuWindows.Count>i then
       CurMenuItem:=mnuWindows.Items[i]

@@ -260,6 +260,13 @@ begin
     ToolStatus := TOOLSTATEMAP[FDebugger.State];
   end;
 
+  if (FDebugger.State in [dsRun]) then begin
+    if EnvironmentOptions.HideIDEOnRun then
+      MainIDE.HideIDE;
+  end else if (OldState in [dsRun]) then begin
+    MainIDE.Show;
+    SourceNotebook.Show;
+  end;
 
   case FDebugger.State of 
 
@@ -894,6 +901,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.22  2003/05/24 11:06:43  mattias
+  started Hide IDE on run
+
   Revision 1.21  2003/05/23 18:50:07  mattias
   implemented searching debugging files in inherited unit paths
 

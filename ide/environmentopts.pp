@@ -146,6 +146,7 @@ type
     FIDEWindowLayoutList: TIDEWindowLayoutList;
     FIDEDialogLayoutList: TIDEDialogLayoutList;
     FMinimizeAllOnMinimizeMain: boolean;
+    FHideIDEOnRun: boolean;
 
     // form editor
     FShowGrid: boolean;
@@ -244,13 +245,14 @@ type
     property AutoSaveIntervalInSecs: integer read FAutoSaveIntervalInSecs
                                              write FAutoSaveIntervalInSecs;
        
-    // windows
+    // window layouts
     property IDEWindowLayoutList: TIDEWindowLayoutList
                            read FIDEWindowLayoutList write FIDEWindowLayoutList;
     property IDEDialogLayoutList: TIDEDialogLayoutList
                            read FIDEDialogLayoutList write FIDEDialogLayoutList;
     property MinimizeAllOnMinimizeMain: boolean read FMinimizeAllOnMinimizeMain
                                                write FMinimizeAllOnMinimizeMain;
+    property HideIDEOnRun: boolean read FHideIDEOnRun write FHideIDEOnRun;
 
     // form editor
     property ShowGrid: boolean read FShowGrid write FShowGrid;
@@ -398,11 +400,12 @@ type
     ShowHintsForComponentPaletteCheckBox: TCheckBox;
     ShowHintsForMainSpeedButtonsCheckBox: TCheckBox;
     
-    // window positions
+    // window layout
     WindowPositionsGroupBox: TGroupBox;
     WindowPositionsListBox: TListBox;
     WindowPositionsBox: TIDEWindowSetupLayoutComponent;
     MinimizeAllOnMinimizeMainCheckBox: TCheckBox;
+    HideIDEOnRunCheckBox: TCheckBox;
 
     // form editor
     GridGroupBox: TGroupBox;
@@ -450,20 +453,20 @@ type
     MaxRecentProjectFilesLabel: TLabel;
     MaxRecentProjectFilesComboBox: TComboBox;
     OpenLastProjectAtStartCheckBox: TCheckBox;
-    LazarusDirLabel: TLabel;
+    LazarusDirGroupBox: TGroupBox;
     LazarusDirComboBox: TComboBox;
     LazarusDirButton: TButton;
-    CompilerPathLabel: TLabel;
+    CompilerPathGroupBox: TGroupBox;
     CompilerPathComboBox: TComboBox;
     CompilerPathButton: TButton;
-    FPCSourceDirLabel: TLabel;
+    FPCSourceDirGroupBox: TGroupBox;
     FPCSourceDirComboBox: TComboBox;
     FPCSourceDirButton: TButton;
-    DebuggerPathLabel: TLabel;
+    DebuggerPathGroupBox: TGroupBox;
     DebuggerPathComboBox: TComboBox;
     DebuggerPathButton: TButton;
     DebuggerTypeComboBox: TComboBox;
-    TestBuildDirLabel: TLabel;
+    TestBuildDirGroupBox: TGroupBox;
     TestBuildDirComboBox: TComboBox;
     TestBuildDirButton: TButton;
 
@@ -499,10 +502,14 @@ type
     procedure BackupOtherGroupBoxResize(Sender: TObject);
     procedure BackupProjectGroupBoxResize(Sender: TObject);
     procedure BakTypeRadioGroupClick(Sender: TObject);
+    procedure CompilerPathGroupBoxResize(Sender: TObject);
+    procedure DebuggerPathGroupBoxResize(Sender: TObject);
+    procedure FPCSourceDirGroupBoxResize(Sender: TObject);
     procedure FilesButtonClick(Sender: TObject);
     procedure FormEditMiscGroupBoxResize(Sender: TObject);
     procedure GridGroupBoxResize(Sender: TObject);
     procedure GuideLinesGroupBoxResize(Sender: TObject);
+    procedure LazarusDirGroupBoxResize(Sender: TObject);
     procedure OIMiscGroupBoxResize(Sender: TObject);
     procedure ObjectInspectorColorsGroupBoxResize(Sender: TObject);
     procedure OkButtonClick(Sender: TObject);
@@ -513,9 +520,11 @@ type
     procedure OnFormEditorPageResize(Sender: TObject);
     procedure OnNamingPageResize(Sender: TObject);
     procedure OnObjectInspectorPageResize(Sender: TObject);
+    procedure OnWindowsPageResize(Sender: TObject);
     procedure RubberbandGroupBoxResize(Sender: TObject);
     procedure SaveDesktopSettingsToFileButtonClick(Sender: TObject);
     procedure LoadDesktopSettingsFromFileButtonClick(Sender: TObject);
+    procedure TestBuildDirGroupBoxResize(Sender: TObject);
     procedure WindowPositionsListBoxMouseUp(Sender:TObject;
        Button:TMouseButton;  Shift:TShiftState;  X,Y:integer);
     procedure EnvironmentOptionsDialogResize(Sender: TObject);
@@ -532,12 +541,14 @@ type
     procedure SetCategoryPage(const AValue: TEnvOptsDialogPage);
     procedure SetupFilesPage(Page: integer);
     procedure SetupDesktopPage(Page: integer);
+    procedure SetupWindowsPage(Page: integer);
     procedure SetupFormEditorPage(Page: integer);
     procedure SetupObjectInspectorPage(Page: integer);
     procedure SetupBackupPage(Page: integer);
     procedure SetupNamingPage(Page: integer);
     procedure ResizeFilesPage;
     procedure ResizeDesktopPage;
+    procedure ResizeWindowsPage;
     procedure ResizeFormEditorPage;
     procedure ResizeObjectInspectorPage;
     procedure ResizeBackupPage;
@@ -566,7 +577,7 @@ type
   public
     procedure ReadSettings(AnEnvironmentOptions: TEnvironmentOptions);
     procedure WriteSettings(AnEnvironmentOptions: TEnvironmentOptions);
-    constructor Create(AOwner:TComponent);  override;
+    constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
   end;
 
@@ -658,6 +669,7 @@ begin
   if IDEOptionDefs.IDEDialogLayoutList=nil then
     IDEOptionDefs.IDEDialogLayoutList:=FIDEDialogLayoutList;
   FMinimizeAllOnMinimizeMain:=false;
+  FHideIDEOnRun:=false;
 
   // form editor
   FShowGrid:=true;
@@ -855,6 +867,8 @@ begin
       'EnvironmentOptions/Desktop/Dialogs');
     FMinimizeAllOnMinimizeMain:=XMLConfig.GetValue(
       'EnvironmentOptions/Desktop/MinimizeAllOnMinimizeMain/Value',true);
+    FHideIDEOnRun:=XMLConfig.GetValue(
+      'EnvironmentOptions/Desktop/HideIDEOnRun/Value',false);
 
     // form editor
     FShowGrid:=XMLConfig.GetValue(
@@ -1061,6 +1075,8 @@ begin
     XMLConfig.SetDeleteValue(
       'EnvironmentOptions/Desktop/MinimizeAllOnMinimizeMain/Value',
       FMinimizeAllOnMinimizeMain,true);
+    XMLConfig.SetDeleteValue(
+      'EnvironmentOptions/Desktop/HideIDEOnRun/Value',FHideIDEOnRun,false);
 
     // form editor
     XMLConfig.SetDeleteValue(
@@ -1309,70 +1325,65 @@ end;
 
 { TEnvironmentOptionsDialog }
 
-constructor TEnvironmentOptionsDialog.Create(AOwner:TComponent);
+constructor TEnvironmentOptionsDialog.Create(TheOwner: TComponent);
 begin
-  inherited Create(AOwner);
-  if LazarusResources.Find(ClassName)=nil then
-  begin
-    Position:=poScreenCenter;
-    IDEDialogLayoutList.ApplyLayout(Self,485,435);
-    Caption:=lisMenuGeneralOptions;
-    OnResize:=@EnvironmentOptionsDialogResize;
-    
-    NoteBook:=TNoteBook.Create(Self);
-    with NoteBook do begin
-      Name:='NoteBook';
-      Parent:=Self;
-      SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
-      if PageCount>0 then
-        Pages[0]:=dlgEnvFiles
-      else
-        Pages.Add(dlgEnvFiles);
-      Pages.Add(dlgDesktop);
-      Pages.Add(dlgFrmEditor);
-      Pages.Add(dlgObjInsp);
-      Pages.Add(dlgEnvBckup);
-      Pages.Add(dlgNaming);
-      PageIndex:=0;
-    end;
-
-    SetupFilesPage(0);
-    SetupDesktopPage(1);
-    SetupFormEditorPage(2);
-    SetupObjectInspectorPage(3);
-    SetupBackupPage(4);
-    SetupNamingPage(5);
-    
-    NoteBook.Show;
-
-    CancelButton:=TButton.Create(Self);
-    with CancelButton do begin
-      Name:='CancelButton';
-      Parent:=Self;
-      Width:=70;
-      Height:=23;
-      Left:=Self.ClientWidth-Width-15;
-      Top:=Self.ClientHeight-Height-15;
-      Caption:=dlgCancel;
-      OnClick:=@CancelButtonClick;
-      Visible:=true;
-    end;
-
-    OkButton:=TButton.Create(Self);
-    with OkButton do begin
-      Name:='OkButton';
-      Parent:=Self;
-      Width:=CancelButton.Width;
-      Height:=CancelButton.Height;
-      Left:=CancelButton.Left-15-Width;
-      Top:=CancelButton.Top;
-      Caption:='Ok';//"Ok" may be the same in any language. If not, change
-      OnClick:=@OkButtonClick;
-      Visible:=true;
-    end;
-
+  inherited Create(TheOwner);
+  Position:=poScreenCenter;
+  IDEDialogLayoutList.ApplyLayout(Self,510,450);
+  Caption:=lisMenuGeneralOptions;
+  OnResize:=@EnvironmentOptionsDialogResize;
+  
+  NoteBook:=TNoteBook.Create(Self);
+  with NoteBook do begin
+    Name:='NoteBook';
+    Parent:=Self;
+    SetBounds(0,0,Self.ClientWidth,Self.ClientHeight-50);
+    if PageCount>0 then
+      Pages[0]:=dlgEnvFiles
+    else
+      Pages.Add(dlgEnvFiles);
+    Pages.Add(dlgDesktop);
+    Pages.Add(dlgWindows);
+    Pages.Add(dlgFrmEditor);
+    Pages.Add(dlgObjInsp);
+    Pages.Add(dlgEnvBckup);
+    Pages.Add(dlgNaming);
+    PageIndex:=0;
   end;
-  EnvironmentOptionsDialogResize(nil);
+
+  SetupFilesPage(0);
+  SetupDesktopPage(1);
+  SetupWindowsPage(2);
+  SetupFormEditorPage(3);
+  SetupObjectInspectorPage(4);
+  SetupBackupPage(5);
+  SetupNamingPage(6);
+  
+  CancelButton:=TButton.Create(Self);
+  with CancelButton do begin
+    Name:='CancelButton';
+    Parent:=Self;
+    Width:=70;
+    Height:=23;
+    Left:=Self.ClientWidth-Width-15;
+    Top:=Self.ClientHeight-Height-15;
+    Caption:=dlgCancel;
+    OnClick:=@CancelButtonClick;
+  end;
+
+  OkButton:=TButton.Create(Self);
+  with OkButton do begin
+    Name:='OkButton';
+    Parent:=Self;
+    Width:=CancelButton.Width;
+    Height:=CancelButton.Height;
+    Left:=CancelButton.Left-15-Width;
+    Top:=CancelButton.Top;
+    Caption:='Ok';//"Ok" may be the same in any language. If not, change
+    OnClick:=@OkButtonClick;
+  end;
+  
+  OnResize(nil);
 end;
 
 destructor TEnvironmentOptionsDialog.Destroy;
@@ -1522,52 +1533,44 @@ begin
   with LoadDesktopSettingsFromFileButton do begin
     Name:='LoadDesktopSettingsFromFileButton';
     Parent:=DesktopFilesGroupBox;
-    Left:=5;
-    Top:=38;
-    Width:=SaveDesktopSettingsToFileButton.Width;
-    Height:=25;
     Caption:=dlgLoadDFile;
     OnClick:=@LoadDesktopSettingsFromFileButtonClick;
-    Visible:=true;
   end;
   
-  // windows
-  MinimizeAllOnMinimizeMainCheckBox:=TCheckBox.Create(Self);
-  with MinimizeAllOnMinimizeMainCheckBox do begin
-    Name:='MinimizeAllOnMinimizeMainCheckBox';
-    Parent:=NoteBook.Page[Page];
-    Left:=DesktopFilesGroupBox.Left;
-    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+20;
-    Width:=Parent.ClientWidth-Left;
-    Height:=20;
-    Caption:=dlgMinimizeAllOnMinimizeMain;
-    Enabled:=false;
-  end;
-
   // hints
   ShowHintsForComponentPaletteCheckBox:=TCheckBox.Create(Self);
   with ShowHintsForComponentPaletteCheckBox do begin
     Name:='ShowHintsForComponentPaletteCheckBox';
     Parent:=NoteBook.Page[Page];
-    Left:=DesktopFilesGroupBox.Left;
-    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+40;
-    Width:=Parent.ClientWidth-Left;
-    Height:=20;
     Caption:=dlgPalHints;
-    Visible:=true;
   end;
   
   ShowHintsForMainSpeedButtonsCheckBox:=TCheckBox.Create(Self);
   with ShowHintsForMainSpeedButtonsCheckBox do begin
     Name:='ShowHintsForMainSpeedButtonsCheckBox';
     Parent:=NoteBook.Page[Page];
-    Left:=ShowHintsForComponentPaletteCheckBox.Left;
-    Top:=ShowHintsForComponentPaletteCheckBox.Top
-         +ShowHintsForComponentPaletteCheckBox.Height+5;
-    Width:=Parent.ClientWidth-Left;
-    Height:=20;
     Caption:=dlgSpBHints;
-    Visible:=true;
+  end;
+end;
+
+procedure TEnvironmentOptionsDialog.SetupWindowsPage(Page: integer);
+begin
+  NoteBook.Page[Page].OnResize:=@OnWindowsPageResize;
+
+  // windows
+  MinimizeAllOnMinimizeMainCheckBox:=TCheckBox.Create(Self);
+  with MinimizeAllOnMinimizeMainCheckBox do begin
+    Name:='MinimizeAllOnMinimizeMainCheckBox';
+    Parent:=NoteBook.Page[Page];
+    Caption:=dlgMinimizeAllOnMinimizeMain;
+    Enabled:=false;
+  end;
+
+  HideIDEOnRunCheckBox:=TCheckBox.Create(Self);
+  with HideIDEOnRunCheckBox do begin
+    Name:='HideIDEOnRunCheckBox';
+    Parent:=NoteBook.Page[Page];
+    Caption:=dlgHideIDEOnRun;
   end;
 
   // Window Positions
@@ -1576,16 +1579,13 @@ begin
     Name:='WindowPositionsGroupBox';
     Parent:=NoteBook.Page[Page];
     Caption:=dlgWinPos;
-    SetBounds(MaxX div 2,LanguageGroupBox.Top,(MaxX div 2)-5,330);
     OnResize:=@WindowPositionsGroupBoxResize;
-    Visible:=true;
   end;
-  
+
   WindowPositionsListBox:=TListBox.Create(Self);
   with WindowPositionsListBox do begin
     Name:='WindowPositionsListBox';
     Parent:=WindowPositionsGroupBox;
-    SetBounds(5,5,Parent.ClientWidth-15,60);
     with Items do begin
       BeginUpdate;
       Add(dlgMainMenu);
@@ -1595,18 +1595,12 @@ begin
       EndUpdate;
     end;
     OnMouseUp:=@WindowPositionsListBoxMouseUp;
-    Visible:=true;
   end;
 
   WindowPositionsBox:=TIDEWindowSetupLayoutComponent.Create(Self);
   with WindowPositionsBox do begin
     Name:='WindowPositionsBox';
     Parent:=WindowPositionsGroupBox;
-    Left:=5;
-    Top:=WindowPositionsListBox.Top+WindowPositionsListBox.Height+5;
-    Width:=WindowPositionsListBox.Width;
-    Height:=Parent.ClientHeight-Top-2;
-    Visible:=true;
   end;
 end;
 
@@ -1850,7 +1844,6 @@ begin
     Width:=110;
     Height:=23;
     Caption:=dlgEdBSubDir;
-    Visible:=true;
   end;
 
   BakOtherSubDirComboBox:=TComboBox.Create(Self);
@@ -1886,7 +1879,6 @@ begin
     Width:=170;
     Height:=23;
     Caption:=dlgMaxRecentFiles;
-    Visible:=true;
   end;
 
   MaxRecentOpenFilesComboBox:=TComboBox.Create(Self);
@@ -1917,7 +1909,6 @@ begin
     Width:=MaxRecentOpenFilesLabel.Width;
     Height:=MaxRecentOpenFilesLabel.Height;
     Caption:=dlgMaxRecentProjs;
-    Visible:=true;
   end;
 
   MaxRecentProjectFilesComboBox:=TComboBox.Create(Self);
@@ -1948,21 +1939,20 @@ begin
     Width:=MaxX-10;
     Height:=23;
     Caption:=dlgQOpenLastPrj;
-    Visible:=true;
   end;
 
-  LazarusDirLabel:=TLabel.Create(Self);
-  with LazarusDirLabel do begin
-    Name:='LazarusDirLabel';
+  LazarusDirGroupBox:=TGroupBox.Create(Self);
+  with LazarusDirGroupBox do begin
+    Name:='LazarusDirGroupBox';
     Parent:=NoteBook.Page[Page];
     Caption:=dlgLazarusDir;
-    Visible:=true;
+    OnResize:=@LazarusDirGroupBoxResize;
   end;
 
   LazarusDirComboBox:=TComboBox.Create(Self);
   with LazarusDirComboBox do begin
     Name:='LazarusDirComboBox';
-    Parent:=NoteBook.Page[Page];
+    Parent:=LazarusDirGroupBox;
     with Items do begin
       BeginUpdate;
       Add(ProgramDirectory);
@@ -1973,23 +1963,23 @@ begin
   LazarusDirButton:=TButton.Create(Self);
   with LazarusDirButton do begin
     Name:='LazarusDirButton';
-    Parent:=NoteBook.Page[Page];
+    Parent:=LazarusDirGroupBox;
     Caption:='...';
     OnClick:=@FilesButtonClick;
   end;
 
-  CompilerPathLabel:=TLabel.Create(Self);
-  with CompilerPathLabel do begin
-    Name:='CompilerPathLabel';
+  CompilerPathGroupBox:=TGroupBox.Create(Self);
+  with CompilerPathGroupBox do begin
+    Name:='CompilerPathGroupBox';
     Parent:=NoteBook.Page[Page];
     Caption:=dlgFpcPath;
-    Visible:=true;
+    OnResize:=@CompilerPathGroupBoxResize;
   end;
 
   CompilerPathComboBox:=TComboBox.Create(Self);
   with CompilerPathComboBox do begin
     Name:='CompilerPathComboBox';
-    Parent:=NoteBook.Page[Page];
+    Parent:=CompilerPathGroupBox;
     with Items do begin
       BeginUpdate;
       Add('/usr/bin/ppc386');
@@ -2001,23 +1991,23 @@ begin
   CompilerPathButton:=TButton.Create(Self);
   with CompilerPathButton do begin
     Name:='CompilerPathButton';
-    Parent:=NoteBook.Page[Page];
+    Parent:=CompilerPathGroupBox;
     Caption:='...';
     OnClick:=@FilesButtonClick;
   end;
 
-  FPCSourceDirLabel:=TLabel.Create(Self);
-  with FPCSourceDirLabel do begin
-    Name:='FPCSourceDirLabel';
+  FPCSourceDirGroupBox:=TGroupBox.Create(Self);
+  with FPCSourceDirGroupBox do begin
+    Name:='FPCSourceDirGroupBox';
     Parent:=NoteBook.Page[Page];
     Caption:=dlgFpcSrcPath;
-    Visible:=true;
+    OnResize:=@FPCSourceDirGroupBoxResize;
   end;
 
   FPCSourceDirComboBox:=TComboBox.Create(Self);
   with FPCSourceDirComboBox do begin
     Name:='FPCSourceDirComboBox';
-    Parent:=NoteBook.Page[Page];
+    Parent:=FPCSourceDirGroupBox;
     with Items do begin
       BeginUpdate;
       Add('');
@@ -2028,23 +2018,23 @@ begin
   FPCSourceDirButton:=TButton.Create(Self);
   with FPCSourceDirButton do begin
     Name:='FPCSourceDirButton';
-    Parent:=NoteBook.Page[Page];
+    Parent:=FPCSourceDirGroupBox;
     Caption:='...';
     OnClick:=@FilesButtonClick;
   end;
 
-  DebuggerPathLabel:=TLabel.Create(Self);
-  with DebuggerPathLabel do begin
-    Name:='DebuggerPathLabel';
+  DebuggerPathGroupBox:=TGroupBox.Create(Self);
+  with DebuggerPathGroupBox do begin
+    Name:='DebuggerPathGroupBox';
     Parent:=NoteBook.Page[Page];
     Caption:=dlgDebugType;
-    Visible:=true;
+    OnResize:=@DebuggerPathGroupBoxResize;
   end;
 
   DebuggerTypeComboBox:=TComboBox.Create(Self);
   with DebuggerTypeComboBox do begin
     Name:='DebuggerTypeComboBox';
-    Parent:=NoteBook.Page[Page];
+    Parent:=DebuggerPathGroupBox;
     with Items do begin
       BeginUpdate;
       for ADebuggerType:=Low(TDebuggerType) to High(TDebuggerType) do
@@ -2056,7 +2046,7 @@ begin
   DebuggerPathComboBox:=TComboBox.Create(Self);
   with DebuggerPathComboBox do begin
     Name:='DebuggerPathComboBox';
-    Parent:=NoteBook.Page[Page];
+    Parent:=DebuggerPathGroupBox;
     with Items do begin
       BeginUpdate;
       Add(DebuggerName[dtNone]);
@@ -2068,22 +2058,23 @@ begin
   DebuggerPathButton:=TButton.Create(Self);
   with DebuggerPathButton do begin
     Name:='DebuggerPathButton';
-    Parent:=NoteBook.Page[Page];
+    Parent:=DebuggerPathGroupBox;
     Caption:='...';
     OnClick:=@FilesButtonClick;
   end;
 
-  TestBuildDirLabel:=TLabel.Create(Self);
-  with TestBuildDirLabel do begin
-    Name:='TestBuildDirLabel';
+  TestBuildDirGroupBox:=TGroupBox.Create(Self);
+  with TestBuildDirGroupBox do begin
+    Name:='TestBuildDirGroupBox';
     Parent:=NoteBook.Page[Page];
     Caption:=dlgTestPrjDir;
+    OnResize:=@TestBuildDirGroupBoxResize;
   end;
 
   TestBuildDirComboBox:=TComboBox.Create(Self);
   with TestBuildDirComboBox do begin
     Name:='TestBuildDirComboBox';
-    Parent:=NoteBook.Page[Page];
+    Parent:=TestBuildDirGroupBox;
     with Items do begin
       BeginUpdate;
       Add('/tmp');
@@ -2097,7 +2088,7 @@ begin
   TestBuildDirButton:=TButton.Create(Self);
   with TestBuildDirButton do begin
     Name:='TestBuildDirButton';
-    Parent:=NoteBook.Page[Page];
+    Parent:=TestBuildDirGroupBox;
     Caption:='...';
     OnClick:=@FilesButtonClick;
   end;
@@ -2594,7 +2585,7 @@ begin
 
   with AutoSaveIntervalInSecsLabel do begin
     Left:=4;
-    Top:=54;
+    Top:=58;
     Width:=90;
     Height:=23;
   end;
@@ -2628,18 +2619,10 @@ begin
     Height:=25;
   end;
 
-  // window minimizing
-  with MinimizeAllOnMinimizeMainCheckBox do begin
-    Left:=DesktopFilesGroupBox.Left;
-    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+75;
-    Width:=Max(10,Parent.ClientWidth-Left);
-    Height:=20;
-  end;
-
   // hints
   with ShowHintsForComponentPaletteCheckBox do begin
     Left:=DesktopFilesGroupBox.Left;
-    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+100;
+    Top:=DesktopFilesGroupBox.Top+DesktopFilesGroupBox.Height+20;
     Width:=Max(10,Parent.ClientWidth-Left);
     Height:=20;
   end;
@@ -2651,11 +2634,32 @@ begin
     Width:=Max(10,Parent.ClientWidth-Left);
     Height:=20;
   end;
+end;
+
+procedure TEnvironmentOptionsDialog.ResizeWindowsPage;
+var
+  x: Integer;
+  w: Integer;
+  y: Integer;
+begin
+  x:=10;
+  w:=MinimizeAllOnMinimizeMainCheckBox.Parent.ClientWidth-2*x;
+  y:=10;
+
+  // window minimizing and hiding
+  with MinimizeAllOnMinimizeMainCheckBox do begin
+    SetBounds(x,y,w,Height);
+    inc(y,Height+5);
+  end;
+
+  with HideIDEOnRunCheckBox do begin
+    SetBounds(x,y,w,Height);
+    inc(y,Height+10);
+  end;
 
   // Window Positions
-  with WindowPositionsGroupBox do begin
-    SetBounds(MaxX div 2,LanguageGroupBox.Top,Max(10,(MaxX div 2)-5),330);
-  end;
+  with WindowPositionsGroupBox do
+    SetBounds(x,y,Max(10,(w div 2)-5),330);
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeFormEditorPage;
@@ -2695,16 +2699,11 @@ end;
 procedure TEnvironmentOptionsDialog.ResizeFilesPage;
 var
   MaxX:integer;
-  LabelX: Integer;
-  LabelW: Integer;
   y: Integer;
-  ButtonX: Integer;
-  ComboX: Integer;
-  ComboW: Integer;
-  ButtonH: Integer;
-  ButtonW: Integer;
-  LabelH: Integer;
   SpaceH: Integer;
+  x: Integer;
+  w: Integer;
+  h: Integer;
 begin
   MaxX:=MaxRecentOpenFilesLabel.Parent.ClientWidth;
 
@@ -2743,85 +2742,32 @@ begin
     Height:=23;
   end;
 
-  LabelX:=4;
-  LabelW:=MaxX-2*LabelX;
-  LabelH:=23;
   y:=OpenLastProjectAtStartCheckBox.Top
         +OpenLastProjectAtStartCheckBox.Height+8;
-  ButtonW:=25;
-  ButtonX:=MaxX-LabelX-ButtonW-3;
-  ButtonH:=LazarusDirComboBox.Height;
-  ComboX:=LabelX;
-  ComboW:=ButtonX-ComboX-3;
   SpaceH:=10;
+  x:=4;
+  w:=LazarusDirGroupBox.Parent.ClientWidth-2*x;
+  h:=50;
 
-  with LazarusDirLabel do begin
-    SetBounds(LabelX,y,LabelW,LabelH);
-    inc(y,Height);
-  end;
-  
-  with LazarusDirComboBox do
-    SetBounds(ComboX,y,ComboW,Height);
+  with LazarusDirGroupBox do
+    SetBounds(x,y,w,h);
+  inc(y,h+SpaceH);
 
-  with LazarusDirButton do
-    SetBounds(ButtonX,y,ButtonW,ButtonH);
-  inc(y,ButtonH+SpaceH);
+  with CompilerPathGroupBox do
+    SetBounds(x,y,w,h);
+  inc(y,h+SpaceH);
 
-  with CompilerPathLabel do begin
-    SetBounds(LabelX,y,LabelW,LabelH);
-    inc(y,Height);
-  end;
+  with FPCSourceDirGroupBox do
+    SetBounds(x,y,w,h);
+  inc(y,h+SpaceH);
 
-  with CompilerPathComboBox do
-    SetBounds(ComboX,y,ComboW,Height);
+  with DebuggerPathGroupBox do
+    SetBounds(x,y,w,h);
+  inc(y,h+SpaceH);
 
-  with CompilerPathButton do
-    SetBounds(ButtonX,y,ButtonW,ButtonH);
-  inc(y,ButtonH+SpaceH);
-
-  with FPCSourceDirLabel do begin
-    SetBounds(LabelX,y,LabelW,LabelH);
-    inc(y,Height);
-  end;
-
-  with FPCSourceDirComboBox do
-    SetBounds(ComboX,y,ComboW,Height);
-
-  with FPCSourceDirButton do
-    SetBounds(ButtonX,y,ButtonW,ButtonH);
-  inc(y,ButtonH+SpaceH);
-
-  with DebuggerPathLabel do begin
-    SetBounds(LabelX,y,LabelW,LabelH);
-    inc(y,Height);
-  end;
-
-  with DebuggerTypeComboBox do begin
-    Left:=ComboX;
-    Top:=y;
-    Width:=150;
-  end;
-
-  with DebuggerPathComboBox do begin
-    Left:=DebuggerTypeComboBox.Left+DebuggerTypeComboBox.Width+10;
-    Top:=y;
-    Width:=ComboW-DebuggerTypeComboBox.Width-10;
-  end;
-
-  with DebuggerPathButton do
-    SetBounds(ButtonX,y,ButtonW,ButtonH);
-  inc(y,ButtonH+SpaceH);
-
-  with TestBuildDirLabel do begin
-    SetBounds(LabelX,y,LabelW,LabelH);
-    inc(y,Height);
-  end;
-
-  with TestBuildDirComboBox do
-    SetBounds(ComboX,y,ComboW,Height);
-
-  with TestBuildDirButton do
-    SetBounds(ButtonX,y,ButtonW,ButtonH);
+  with TestBuildDirGroupBox do
+    SetBounds(x,y,w,h);
+  inc(y,h+SpaceH);
 end;
 
 procedure TEnvironmentOptionsDialog.ResizeBackupPage;
@@ -2932,6 +2878,48 @@ begin
     BakOtherMaxCounterComboBox.Enabled:=(i=3);
     BakOtherMaxCounterLabel.EnableD:=BakOtherMaxCounterComboBox.Enabled;
   end;
+end;
+
+procedure TEnvironmentOptionsDialog.CompilerPathGroupBoxResize(Sender: TObject);
+var
+  x: Integer;
+  w: Integer;
+begin
+  w:=CompilerPathGroupBox.ClientWidth;
+  x:=w-25;
+  with CompilerPathComboBox do
+    SetBounds(2,0,x-1-2,Height);
+  with CompilerPathButton do
+    SetBounds(x+1,0,w-2-x-1,CompilerPathComboBox.Height);
+end;
+
+procedure TEnvironmentOptionsDialog.DebuggerPathGroupBoxResize(Sender: TObject);
+var
+  x1, x2: Integer;
+  w: Integer;
+begin
+  w:=DebuggerPathGroupBox.ClientWidth;
+  x2:=Max(w-25,10);
+  x1:=x2 div 2;
+  with DebuggerTypeComboBox do
+    SetBounds(2,0,x1-1-2,Height);
+  with DebuggerPathComboBox do
+    SetBounds(x1+1,0,x2-x1-1-2,Height);
+  with DebuggerPathButton do
+    SetBounds(x2+1,0,w-2-x2-1,DebuggerPathComboBox.Height);
+end;
+
+procedure TEnvironmentOptionsDialog.FPCSourceDirGroupBoxResize(Sender: TObject);
+var
+  x: Integer;
+  w: Integer;
+begin
+  w:=FPCSourceDirGroupBox.ClientWidth;
+  x:=w-25;
+  with FPCSourceDirComboBox do
+    SetBounds(2,0,x-1-2,Height);
+  with FPCSourceDirButton do
+    SetBounds(x+1,0,w-2-x-1,FPCSourceDirComboBox.Height);
 end;
 
 procedure TEnvironmentOptionsDialog.FilesButtonClick(Sender: TObject);
@@ -3201,6 +3189,19 @@ begin
   end;
 end;
 
+procedure TEnvironmentOptionsDialog.LazarusDirGroupBoxResize(Sender: TObject);
+var
+  x: Integer;
+  w: Integer;
+begin
+  w:=LazarusDirGroupBox.ClientWidth;
+  x:=w-25;
+  with LazarusDirComboBox do
+    SetBounds(2,0,x-1-2,Height);
+  with LazarusDirButton do
+    SetBounds(x+1,0,w-2-x-1,LazarusDirComboBox.Height);
+end;
+
 procedure TEnvironmentOptionsDialog.OIMiscGroupBoxResize(Sender: TObject);
 begin
   with OIDefaultItemHeightSpinEdit do begin
@@ -3278,6 +3279,11 @@ begin
   ResizeObjectInspectorPage;
 end;
 
+procedure TEnvironmentOptionsDialog.OnWindowsPageResize(Sender: TObject);
+begin
+  ResizeWindowsPage;
+end;
+
 procedure TEnvironmentOptionsDialog.RubberbandGroupBoxResize(Sender: TObject);
 begin
 
@@ -3352,6 +3358,19 @@ begin
   end;
 end;
 
+procedure TEnvironmentOptionsDialog.TestBuildDirGroupBoxResize(Sender: TObject);
+var
+  x: Integer;
+  w: Integer;
+begin
+  w:=TestBuildDirGroupBox.ClientWidth;
+  x:=w-25;
+  with TestBuildDirComboBox do
+    SetBounds(2,0,x-1-2,Height);
+  with TestBuildDirButton do
+    SetBounds(x+1,0,w-2-x-1,TestBuildDirComboBox.Height);
+end;
+
 procedure TEnvironmentOptionsDialog.ReadSettings(
   AnEnvironmentOptions: TEnvironmentOptions);
 var i: integer;
@@ -3376,8 +3395,9 @@ begin
     OIDefaultItemHeightSpinEdit.Value:=
        ObjectInspectorOptions.DefaultItemHeight;
        
-    // window minimizing
+    // window minimizing and hiding
     MinimizeAllOnMinimizeMainCheckBox.Checked:=MinimizeAllOnMinimizeMain;
+    HideIDEOnRunCheckBox.Checked:=HideIDEOnRun;
 
     // hints
     ShowHintsForComponentPaletteCheckBox.Checked:=
@@ -3507,6 +3527,7 @@ begin
 
     // window minimizing
     MinimizeAllOnMinimizeMain:=MinimizeAllOnMinimizeMainCheckBox.Checked;
+    HideIDEOnRun:=HideIDEOnRunCheckBox.Checked;
 
     // hints
     ShowHintsForComponentPalette:=ShowHintsForComponentPaletteCheckBox.Checked;
