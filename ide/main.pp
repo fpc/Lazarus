@@ -531,7 +531,6 @@ type
                               Flags: TLoadBufferFlags): TModalResult; override;
     function DoBackupFile(const Filename:string;
                           IsPartOfProject:boolean): TModalResult; override;
-    function DoDeleteAmbigiousFiles(const Filename:string): TModalResult; override;
     function DoCheckFilesOnDisk: TModalResult; override;
 
     // useful frontend methods
@@ -6184,54 +6183,6 @@ begin
   until Result<>mrRetry;
 end;
 
-function TMainIDE.DoDeleteAmbigiousFiles(const Filename: string): TModalResult;
-var
-  ADirectory: String;
-  FileInfo: TSearchRec;
-  ShortFilename: String;
-  CurFilename: String;
-begin
-  Result:=mrOk;
-  if EnvironmentOptions.AmbigiousFileAction=afaIgnore then exit;
-  if EnvironmentOptions.AmbigiousFileAction
-    in [afaAsk,afaAutoDelete,afaAutoRename]
-  then begin
-    ADirectory:=AppendPathDelim(ExtractFilePath(Filename));
-    if SysUtils.FindFirst(ADirectory+FindMask,faAnyFile,FileInfo)=0 then begin
-      ShortFilename:=ExtractFileName(Filename);
-      repeat
-        if (FileInfo.Name='.') or (FileInfo.Name='..')
-        or ((FileInfo.Attr and faDirectory)<>0) then continue;
-        if (ShortFilename<>FileInfo.Name)
-        and (AnsiCompareText(ShortFilename,FileInfo.Name)=0)
-        then begin
-          CurFilename:=ADirectory+FileInfo.Name;
-          if EnvironmentOptions.AmbigiousFileAction=afaAsk then begin
-            if MessageDlg(lisDeleteAmbigiousFile,
-              Format(lisDeleteAmbigiousFile2, ['"', CurFilename, '"']),
-              mtConfirmation,[mbYes,mbNo],0)=mrNo
-            then continue;
-          end;
-          if EnvironmentOptions.AmbigiousFileAction in [afaAutoDelete,afaAsk]
-          then begin
-            if not DeleteFile(CurFilename) then begin
-              MessageDlg(lisDeleteFileFailed,
-                Format(lisPkgMangUnableToDeleteFile, ['"', CurFilename, '"']),
-                mtError,[mbOk],0);
-            end;
-          end else if EnvironmentOptions.AmbigiousFileAction=afaAutoRename then
-          begin
-            Result:=DoBackupFile(CurFilename,false);
-            if Result=mrABort then exit;
-            Result:=mrOk;
-          end;
-        end;
-      until SysUtils.FindNext(FileInfo)<>0;
-    end;
-    FindClose(FileInfo);
-  end;
-end;
-
 function TMainIDE.DoCheckFilesOnDisk: TModalResult;
 var
   AnUnitList: TList; // list of TUnitInfo
@@ -8676,6 +8627,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.563  2003/05/12 08:06:32  mattias
+  small fixes for gtkopengl
+
   Revision 1.562  2003/05/09 14:21:25  mattias
   added published properties for gtkglarea
 
