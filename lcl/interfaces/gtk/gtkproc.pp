@@ -53,8 +53,6 @@ function gtkactivateCB(widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 function gtkchangedCB( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 function gtkchanged_editbox( widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
 function gtkdaychanged(Widget: PGtkWidget; data: gPointer) : GBoolean; cdecl;
-function gtkDraw(Widget: PGtkWidget; area: PGDKRectangle;
-  data: gPointer) : GBoolean; cdecl;
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
 function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;

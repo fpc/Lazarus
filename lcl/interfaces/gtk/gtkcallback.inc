@@ -20,9 +20,19 @@
 
 {$DEFINE ASSERT_IS_ON}
 
-function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
+function DeliverPaintMessage(const Target: Pointer; var TheMessage): GBoolean;
 var
   PaintMsg: TLMPaint;
+begin
+  if TLMessage(TheMessage).Msg=LM_GtkPAINT then
+    PaintMsg:= GtkPaintMessageToPaintMessage(TLMGtkPaint(TheMessage))
+  else
+    PaintMsg:=TLMPaint(TheMessage);
+  Result := DeliverMessage(Target,PaintMsg) = 0;
+  ReleaseDC(0,PaintMsg.DC);
+end;
+
+function DeliverPostMessage(const Target: Pointer; var TheMessage): GBoolean;
 begin
   if TObject(Target) is TWinControl then
   begin
@@ -34,10 +44,30 @@ begin
     if TLMessage(TheMessage).Msg<>LM_GtkPAINT then
       Result := DeliverMessage(Target, TheMessage) = 0
     else begin
-      PaintMsg:= GtkPaintMessageToPaintMessage(TLMGtkPaint(TheMessage));
-      Result := DeliverMessage(Target,PaintMsg) = 0;
+      Result := DeliverPaintMessage(Target,TheMessage);
     end;
   end;
+end;
+
+function DeliverGtkPaintMessage(Target: Pointer; Widget: PGtkWidget): GBoolean;
+var
+  MSG: TLMGtkPaint;
+  {$IFDEF DirectPaintMsg}
+  PaintMsg: TLMPaint;
+  {$ENDIF}
+begin
+  MSG.Msg := LM_GtkPAINT;
+  MSG.Widget := Widget;
+  MSG.State := GtkPaint_LCLWidget;
+  MSG.Unused := 0;
+
+  {$IFDEF DirectPaintMsg}
+  PaintMsg:= GtkPaintMessageToPaintMessage(Msg);
+  Result := DeliverMessage(Target,PaintMsg) = 0;
+  ReleaseDC(0,PaintMsg.DC);
+  {$ELSE}
+  Result:=DeliverPostMessage(Target,Msg);
+  {$ENDIF}
 end;
 
 procedure EventTrace(const TheMessage : string; data : pointer);
@@ -290,26 +320,9 @@ begin
 //   Result := DeliverMessage(Data, MSG) = 0;
 end;
 
-function gtkDraw(Widget: PGtkWidget; area: PGDKRectangle;
-  data: gPointer) : GBoolean; cdecl;
-var
-  MSG: TLMGtkPaint;
-begin
-  Result := True;
-  EventTrace('draw', data);
-  
-  MSG.Msg := LM_GtkPAINT;
-  MSG.Widget := Widget;
-  MSG.State := GtkPaint_LCLWidget;
-  MSG.Unused := 0;
-  
-  Result := DeliverPostMessage(Data, MSG);
-end;
-
 function gtkDrawAfter(Widget: PGtkWidget; area: PGDKRectangle;
   data: gPointer) : GBoolean; cdecl;
 var
-  MSG: TLMGtkPaint;
   DesignOnlySignal: boolean;
 begin
   Result := True;
@@ -325,23 +338,17 @@ begin
       ' ',TComponent(Data).Name);
     {$ENDIF}
   end;
-
-  MSG.Msg := LM_GtkPAINT;
-  MSG.Widget := Widget;
-  MSG.State := GtkPaint_LCLWidget;
-  MSG.Unused := 0;
-
-  Result := DeliverPostMessage(Data, MSG);
+  
+  DeliverGtkPaintMessage(Data,Widget);
 end;
 
 function gtkExposeEventAfter(Widget: PGtkWidget; Event : PGDKEventExpose;
   Data: gPointer): GBoolean; cdecl;
 var
-  MSG: TLMGtkPaint;
   DesignOnlySignal: boolean;
 begin
   Result := True;
-  EventTrace('expose-event', data);
+  EventTrace('ExposeAfter', data);
   if (Event^.Count > 0) then exit;
 
   if not (csDesigning in TComponent(Data).ComponentState) then begin
@@ -355,12 +362,7 @@ begin
     {$ENDIF}
   end;
 
-  MSG.Msg := LM_GtkPAINT;
-  MSG.Widget := Widget;
-  MSG.State := GtkPaint_LCLWidget;
-  MSG.Unused := 0;
-
-  Result := DeliverPostMessage(Data, MSG);
+  DeliverGtkPaintMessage(Data,Widget);
 end;
 
 function gtkfrmactivate( widget: PGtkWidget; Event : PgdkEventFocus;
@@ -2014,16 +2016,14 @@ end;
   Returns: 1    - 1 tells gtk to restart the timer
            0    - 0 will stop the gtk timer
 
-  Callback for gtk timer. Depending on "data" either user-callback function
-  will be called or a timer message will be delivered.
-
+  Callback for gtk timer.
+  
   WARNING: There seems to be a bug in gtk-1.2.x which breaks 
            gtk_timeout_remove so we have to dispose data here & return 0
            (s.a. KillTimer).
  ------------------------------------------------------------------------------}
 function gtkTimerCB(Data: gPointer): gint; cdecl;
 var
-  Mess : TLMessage;
   TimerInfo: PGtkITimerinfo;
 begin
   EventTrace ('TimerCB', nil);
@@ -2044,22 +2044,8 @@ begin
     if TimerInfo^.TimerFunc <> nil
     then begin
       // Call users timer function
-      TimerInfo^.TimerFunc(TimerInfo^.Handle,
-                           LM_TIMER,
-                           TimerInfo^.IDEvent,
-                           0{WARN: should be: GetTickCount});
+      TimerInfo^.TimerFunc;
       Result:=1; // timer will go on
-    end
-    else if (pointer (TimerInfo^.Handle) <> nil)
-    then begin    // Handle through default message handler
-      Mess.msg    := LM_TIMER;
-      Mess.WParam := TimerInfo^.IDEvent;
-      Mess.LParam := LongInt (TimerInfo^.TimerFunc);
-      Mess.Result := 0;
-      if DeliverMessage (Pointer (TimerInfo^.Handle), Mess)=0 then
-        Result:=1
-      else
-        Result:=0;
     end
     else begin
       Result := 0;       // stop timer
@@ -2078,10 +2064,7 @@ begin
     {$ENDIF}
     // timer will be stopped
     // -> free timer data, if not already done
-    if (FTimerData.IndexOf(Data)>=0)
-    or (FOldTimerData.IndexOf(Data)>=0) then
-    begin
-      FOldTimerData.Remove(Data);
+    if (FTimerData.IndexOf(Data)>=0) then begin
       FTimerData.Remove(Data);
       Dispose (TimerInfo);     // free memory with timer data
     end;
@@ -2547,6 +2530,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.160  2002/11/23 13:48:44  mattias
+  added Timer patch from Vincent Snijders
+
   Revision 1.159  2002/11/21 18:49:53  mattias
   started OnMouseEnter and OnMouseLeave
 
