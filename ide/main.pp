@@ -5955,10 +5955,8 @@ begin
   Result:=mrCancel;
   if ToolStatus<>itNone then exit;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,[]) then exit;
-  if not FilenameIsAbsolute(ActiveUnitInfo.Filename) then begin
-    Result:=DoSaveEditorFile(ActiveUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
-    if Result<>mrOk then exit;
-  end;
+  Result:=DoSaveEditorFile(ActiveUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+  if Result<>mrOk then exit;
   DirectiveList:=TStringList.Create;
   try
     Result:=GetIDEDirectives(ActiveUnitInfo,DirectiveList);
@@ -9796,6 +9794,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.652  2003/10/02 12:19:25  mattias
+  fixed saving before build file
+
   Revision 1.651  2003/09/26 17:10:44  mattias
   expand file in msg view only if exists
 
