@@ -89,15 +89,20 @@ end;
   Creates a region if needed
  ------------------------------------------------------------------------------}
 function TRegion.GetHandle: HRGN;
+var
+  FillMode: integer;
 begin
   If FRegiondata.Handle = 0 then
     With FRegionData do
       if (Polygon <> nil) or (((Rect.Right - Rect.Left) <> 0) or ((Rect.Bottom - Rect.Top) <> 0))
       then
-        If Polygon <> nil then
-          FRegionData.Handle := CreatePolygonRgn(Polygon,
-            NumPoints, Winding)
-        else
+        If Polygon <> nil then begin
+          if Winding then
+            FillMode:=LCLType.Winding
+          else
+            FillMode:=Alternate;
+          FRegionData.Handle := CreatePolygonRgn(Polygon, NumPoints, FillMode);
+        end else
           With Rect do
             FRegionData.Handle := CreateRectRgn(Left, Top, Right, Bottom);
 

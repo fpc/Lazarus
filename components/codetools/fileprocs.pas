@@ -116,11 +116,17 @@ begin
   begin
     AText:='"'+AFilename+'"';
     case LinuxError of
-    sys_eacces: AText:=Format(ctsExecuteAccessDeniedForFile,[AText]);
-    sys_enoent: AText:=Format(ctsDirComponentDoesNotExistsOrIsDanglingSymLink,[AText]);
-    sys_enotdir: AText:=Format(ctsDirComponentIsNotDir,[AText]);
-    sys_enomem: AText:=ctsInsufficientMemory;
-    sys_eloop: AText:=Format(ctsFileHasCircularSymLink,[AText]);
+    {$IFDEF Ver1_0}sys_eacces{$ELSE}ESysEAcces{$ENDIF}:
+      AText:='read access denied for '+AText;
+    {$IFDEF Ver1_0}sys_enoent{$ELSE}ESysENoEnt{$ENDIF}:
+      AText:='a directory component in '+AText
+                          +' does not exist or is a dangling symlink';
+    {$IFDEF Ver1_0}sys_enotdir{$ELSE}ESysENotDir{$ENDIF}:
+      AText:='a directory component in '+Atext+' is not a directory';
+    {$IFDEF Ver1_0}sys_enomem{$ELSE}ESysENoMem{$ENDIF}:
+      AText:='insufficient memory';
+    {$IFDEF Ver1_0}sys_eloop{$ELSE}ESysELoop{$ENDIF}:
+      AText:=AText+' has a circular symbolic link';
     else
       AText:=Format(ctsFileIsNotExecutable,[AText]);
     end;

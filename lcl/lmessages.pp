@@ -136,9 +136,16 @@ const
   LM_CB_ADDTEXT    = LM_CB_FIRST+3;
   LM_CB_LAST       = LM_CB_FIRST+9; // LM_COMUSER+99
   
-  // additional for TNoteBook
-  LM_NB_UpdateTab  = LM_CB_LAST+1;
+  // TNoteBook
+  LM_NB_First      = LM_CB_LAST+1;
+  LM_NB_UpdateTab  = LM_NB_First+1;
   LM_NB_Last       = LM_NB_UpdateTab;
+  
+  // TListBox
+  LB_First         = LM_NB_Last +1;
+  LB_GETTOPINDEX   = LB_First   +1;
+  LB_SETTOPINDEX   = LB_First   +2;
+  LB_Last          = LB_SETTOPINDEX;
 
   //-------------
   //end of messages that are sent to the interface
@@ -892,6 +899,9 @@ end.
 
 {
   $Log$
+  Revision 1.43  2002/12/27 08:46:32  mattias
+  changes for fpc 1.1
+
   Revision 1.42  2002/12/16 09:02:27  mattias
   applied win32 notebook patch from Vincent
 

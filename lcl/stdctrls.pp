@@ -329,15 +329,18 @@ type
   
   TCustomListBox = class(TWinControl)
   private
-    FBorderStyle : TBorderStyle;
+    FBorderStyle: TBorderStyle;
     FCanvas: TCanvas;
     FExtendedSelect, FMultiSelect : boolean;
-    FItems : TStrings;
+    FItems: TStrings;
     FItemHeight: Integer;
     FItemIndex: integer;
     FOnDrawItem: TDrawItemEvent;
-    FSorted : boolean;
-    FStyle : TListBoxStyle;
+    FSorted: boolean;
+    FStyle: TListBoxStyle;
+    FTopIndex: integer;
+    function GetTopIndex: Integer;
+    procedure SetTopIndex(const AValue: Integer);
     procedure UpdateSelectionMode;
     procedure UpdateSorted;
     procedure LMDrawListItem(var TheMessage : TLMDrawListItem); message LM_DrawListItem;
@@ -377,6 +380,7 @@ type
     property MultiSelect : boolean read FMultiSelect write SetMultiSelect;
     property SelCount : integer read GetSelCount;
     property Selected[Index : integer] : boolean read GetSelected write SetSelected;
+    property TopIndex: Integer read GetTopIndex write SetTopIndex;
   end;
   
   
@@ -1387,6 +1391,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.71  2002/12/27 08:46:32  mattias
+  changes for fpc 1.1
+
   Revision 1.70  2002/12/22 23:25:34  mattias
   fixed setting TEdit properties after creating handle
 

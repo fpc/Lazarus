@@ -125,6 +125,27 @@ begin
 end;
 
 {------------------------------------------------------------------------------
+  function TCustomListBox.GetTopIndex: Integer;
+------------------------------------------------------------------------------}
+function TCustomListBox.GetTopIndex: Integer;
+begin
+  if HandleAllocated then
+    FTopIndex:=SendMessage(Handle, LB_GETTOPINDEX, 0, 0);
+  Result := FTopIndex;
+end;
+
+{------------------------------------------------------------------------------
+  procedure TCustomListBox.SetTopIndex(const AValue: Integer);
+------------------------------------------------------------------------------}
+procedure TCustomListBox.SetTopIndex(const AValue: Integer);
+begin
+  if FTopIndex=AValue then exit;
+  FTopIndex:=AValue;
+  if HandleAllocated then
+    SendMessage(Handle, LB_SETTOPINDEX, FTopIndex, 0);
+end;
+
+{------------------------------------------------------------------------------
   procedure TCustomListBox.UpdateSorted;
 ------------------------------------------------------------------------------}
 procedure TCustomListBox.UpdateSorted;
