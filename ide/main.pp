@@ -78,7 +78,7 @@ uses
   UnitEditor, EditDefineTree, CodeToolsOptions, IDEOptionDefs, CodeToolsDefines,
   DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions, ViewUnit_dlg,
   // rest of the ide
-  IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, PublishModule,
+  Splash, IDEDefs, LazarusIDEStrConsts, LazConf, MsgView, PublishModule,
   EnvironmentOpts, TransferMacros, KeyMapping, IDEProcs, ExtToolDialog,
   ExtToolEditDlg, MacroPromptDlg, OutputFilter, BuildLazDialog, MiscOptions,
   InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
@@ -297,7 +297,8 @@ type
       AComponent: TComponent);
     procedure OnDesignerRemoveComponent(Sender: TObject; AComponent: TComponent);
     procedure OnDesignerModified(Sender: TObject);
-    Procedure OnDesignerActivated(Sender : TObject);
+    procedure OnDesignerActivated(Sender: TObject);
+    procedure OnDesignerCloseQuery(Sender: TObject);
     procedure OnDesignerRenameComponent(ADesigner: TDesigner;
       AComponent: TComponent; const NewName: string);
 
@@ -403,8 +404,7 @@ type
         NewFilename: string; var NewCodeBuffer: TCodeBuffer;
         var NewUnitName: string): TModalResult;
     function CreateNewForm(NewUnitInfo: TUnitInfo): TModalResult;
-    procedure ShowDesignForm(AForm: TCustomForm);
-    
+
     // methods for 'save unit'
     function DoLoadResourceFile(AnUnitInfo: TUnitInfo;
         var LFMCode, ResourceCode: TCodeBuffer;
@@ -558,13 +558,16 @@ type
     procedure UpdateEnglishErrorMsgFilename;
     procedure ActivateCodeToolAbortableMode;
     function BeginCodeTool(var ActiveSrcEdit: TSourceEditor;
-      var ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
-    function BeginCodeTool(ADesigner: TDesigner; var ActiveSrcEdit: TSourceEditor;
-      var ActiveUnitInfo: TUnitInfo; Flags: TCodeToolsFlags): boolean;
+                           var ActiveUnitInfo: TUnitInfo;
+                           Flags: TCodeToolsFlags): boolean;
+    function BeginCodeTool(ADesigner: TDesigner;
+                           var ActiveSrcEdit: TSourceEditor;
+                           var ActiveUnitInfo: TUnitInfo;
+                           Flags: TCodeToolsFlags): boolean;
     function DoJumpToCodePos(
-      ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
-      NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
-      AddJumpPoint: boolean): TModalResult; override;
+                        ActiveSrcEdit: TSourceEditor; ActiveUnitInfo: TUnitInfo;
+                        NewSource: TCodeBuffer; NewX, NewY, NewTopLine: integer;
+                        AddJumpPoint: boolean): TModalResult; override;
     procedure DoJumpToCodeToolBossError; override;
     procedure UpdateSourceNames;
     procedure SaveSourceEditorChangesToCodeCache(PageIndex: integer); override;
@@ -2102,6 +2105,7 @@ Begin
   with TDesigner(aForm.Designer) do begin
     TheFormEditor := FormEditor1;
     OnActivated:=@OnDesignerActivated;
+    OnCloseQuery:=@OnDesignerCloseQuery;
     OnComponentAdded:=@OnDesignerComponentAdded;
     OnComponentDeleted:=@OnDesignerComponentDeleted;
     {$IFDEF DisablePkgs}
@@ -2828,18 +2832,6 @@ begin
   Result:=mrOk;
 end;
 
-procedure TMainIDE.ShowDesignForm(AForm: TCustomForm);
-begin
-  // show form
-  AForm.Show;
-  FDisplayState:= dsForm;
-
-  // select the new form (object inspector, formeditor, control selection)
-  GlobalDesignHook.LookupRoot := AForm;
-  TDesigner(AForm.Designer).SelectOnlyThisComponent(AForm);
-  AForm.ShowOnTop;
-end;
-
 function TMainIDE.DoLoadResourceFile(AnUnitInfo: TUnitInfo;
   var LFMCode, ResourceCode: TCodeBuffer;
   IgnoreSourceErrors: boolean): TModalResult;
@@ -3533,7 +3525,7 @@ begin
 
         // create jitform
         CInterface := TComponentInterface(
-          FormEditor1.CreateFormFromStream(BinLFMStream));
+                                FormEditor1.CreateFormFromStream(BinLFMStream));
         if CInterface=nil then begin
           ACaption:=lisFormLoadError;
           AText:=Format(lisUnableToBuildFormFromFile, [#13, '"',
@@ -3554,7 +3546,6 @@ begin
             SourceNoteBook.GetActiveSE;
 
           if not (ofProjectLoading in Flags) then begin
-            TempForm.Hide; Show;
             FDisplayState:= dsForm;
           end;
 
@@ -4069,7 +4060,7 @@ begin
       // show form
       TDesigner(TCustomForm(NewUnitInfo.Form).Designer).SourceEditor :=
         SourceNoteBook.GetActiveSE;
-      ShowDesignForm(TCustomForm(NewUnitInfo.Form));
+      DoShowDesignerFormOfCurrentSrc;
     end else begin
       FDisplayState:= dsSource;
     end;
@@ -4141,7 +4132,7 @@ begin
   end;
   GetUnitWithPageIndex(PageIndex,ActiveSrcEdit,ActiveUnitInfo);
   if ActiveUnitInfo=nil then exit;
-
+  
   // check if file is writable on disk
   if (not ActiveUnitInfo.IsVirtual)
   and FileExists(ActiveUnitInfo.Filename) then
@@ -7910,6 +7901,28 @@ begin
   FLastFormActivated := TDesigner(Sender).Form;
 end;
 
+procedure TMainIDE.OnDesignerCloseQuery(Sender: TObject);
+var
+  ADesigner: TDesigner;
+  ASrcEdit: TSourceEditor;
+  AnUnitInfo: TUnitInfo;
+begin
+  ADesigner:=TDesigner(Sender);
+  GetDesignerUnit(ADesigner,ASrcEdit,AnUnitInfo);
+  if AnUnitInfo.NeedsSaveToDisk then begin
+    if MessageDlg('Save changes?',
+      'Save file "'+AnUnitInfo.Filename+'"'#13
+      +'before closing form "'+ADesigner.Form.Name+'"?',
+      mtConfirmation,[mbYes,mbCancel,mbAbort],0)<>mrYes
+    then
+      exit;
+    if DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbigiousFiles])<>mrOk
+    then
+      exit;
+  end;
+  CloseDesignerForm(AnUnitInfo);
+end;
+
 procedure TMainIDE.OnDesignerRenameComponent(ADesigner: TDesigner;
   AComponent: TComponent; const NewName: string);
 var
@@ -8171,6 +8184,7 @@ begin
   UpdateWindowsMenu;
   GetDefaultProcessList.FreeStoppedProcesses;
   EnvironmentOptions.ExternalTools.FreeStoppedProcesses;
+  if (SplashForm<>nil) then FreeThenNil(SplashForm);
 end;
 
 function TMainIDE.ProjInspectorAddUnitToProject(Sender: TObject;
@@ -8759,6 +8773,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.578  2003/05/24 08:51:40  mattias
+  implemented designer close query
+
   Revision 1.577  2003/05/23 19:31:23  mattias
   implemented searching debugging files in include paths
 
