@@ -614,14 +614,17 @@ end;
 function GTKAPIWidget_new: PGTKWidget;
 var
   APIWidget: PGTKAPIWidget;
+  Args : array[0..1] of TGTKArg;
 begin
-  Result := gtk_widget_new(
-    GTKAPIWidget_GetType,
-    'hadjustment', [nil,
-    'vadjustment', nil,
-    nil]
-  );
-  
+  Args[0].thetype := GTK_ADJUSTMENT_TYPE;
+  Args[0].name := 'hadjustment';
+  Args[0].d.object_data := nil;
+  Args[1].thetype := GTK_ADJUSTMENT_TYPE;
+  Args[1].name := 'vadjustment';
+  Args[1].d.object_data := nil;
+
+  Result := gtk_widget_newv(GTKAPIWidget_GetType, Length(Args), @Args[0]);
+
   // create client widget
   APIWidget := PGTKAPIWidget(Result);
   APIWidget^.Client := GTKAPIWidgetClient_New;
@@ -712,6 +715,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.33  2002/10/20 22:57:18  lazarus
+  AJ:switched to gtk_widget_newv to work around array of const
+
   Revision 1.32  2002/06/12 12:35:45  lazarus
   MG: fixed apiwidget warnings/criticals
 
