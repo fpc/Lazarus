@@ -2805,9 +2805,11 @@ begin
   with PropertyGrid do begin
     Name:='PropertyGrid';
     Parent:=NoteBook.Page[0];
+{    
     ValueEdit.Parent:=Parent;
     ValueComboBox.Parent:=Parent;
     ValueButton.Parent:=Parent;
+}    
     Selection:=Self.FSelection;
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
@@ -2820,9 +2822,11 @@ begin
   with EventGrid do begin
     Name:='EventGrid';
     Parent:=NoteBook.Page[1];
+{    
     ValueEdit.Parent:=Parent;
     ValueComboBox.Parent:=Parent;
     ValueButton.Parent:=Parent;
+}
     Selection:=Self.FSelection;
     Align:=alClient;
     PopupMenu:=MainPopupMenu;
