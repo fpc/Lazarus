@@ -95,7 +95,8 @@ type
 
   TSelectedControlFlag = (
     scfParentInSelection,
-    scfChildInSelection
+    scfChildInSelection,
+    scfMarkersPainted
     );
   TSelectedControlFlags = set of TSelectedControlFlag;
 
@@ -110,6 +111,7 @@ type
     FDesignerForm: TCustomForm;
     FFlags: TSelectedControlFlags;
     FIsTControl: boolean;
+    FMarkerPaintedBounds: TRect;
     FOldLeft: integer;
     FOldTop: integer;
     FOldWidth: integer;
@@ -127,7 +129,6 @@ type
     procedure SetWidth(AWidth: integer);
     function GetHeight: integer;
     procedure SetHeight(AHeight: integer);
-    procedure SetFlags(const AValue: TSelectedControlFlags);
   public
     constructor Create(AnOwner: TControlSelection; AComponent: TComponent);
     destructor Destroy; override;
@@ -152,10 +153,11 @@ type
     property OldHeight:integer read FOldHeight write FOldHeight;
     property OldFormRelativeLeftTop: TPoint
       read FOldFormRelativeLeftTop write FOldFormRelativeLeftTop;
-    property Flags: TSelectedControlFlags read FFlags write SetFlags;
+    property Flags: TSelectedControlFlags read FFlags write FFlags;
     property UseCache: boolean read FUseCache write SetUseCache;
     property IsTControl: boolean read FIsTControl;
     property DesignerForm: TCustomForm read FDesignerForm;
+    property MarkerPaintedBounds: TRect read FMarkerPaintedBounds write FMarkerPaintedBounds;
   end;
 
 
@@ -310,6 +312,7 @@ type
     procedure DoApplyUserBounds;
     procedure UpdateRealBounds;
     procedure UpdateParentChildFlags;
+    procedure DoDrawMarker(Index: integer; DC: TDesignerDeviceContext);
 
     // snapping
     function CleanGridSizeX: integer;
@@ -409,7 +412,9 @@ type
     procedure DrawMarker(AComponent: TComponent; DC: TDesignerDeviceContext);
     procedure DrawMarkerAt(DC: TDesignerDeviceContext;
       ALeft, ATop, AWidth, AHeight: integer);
+    procedure DrawMarkers(DC: TDesignerDeviceContext);
     property ActiveGrabber: TGrabber read FActiveGrabber write SetActiveGrabber;
+    procedure InvalidateMarkersForComponent(AComponent: TComponent);
 
     // user wished bounds:
     property Left:integer read FLeft;
@@ -619,12 +624,6 @@ begin
     Result:=FCachedLeft
   else
     Result:=GetComponentLeft(FComponent);
-end;
-
-procedure TSelectedControl.SetFlags(const AValue: TSelectedControlFlags);
-begin
-  if FFlags=AValue then exit;
-  FFlags:=AValue;
 end;
 
 procedure TSelectedControl.SetLeft(ALeft: integer);
@@ -1063,6 +1062,33 @@ begin
     end;
   end;
   Exclude(FStates,cssParentChildFlagsNeedUpdate);
+end;
+
+procedure TControlSelection.DoDrawMarker(Index: integer;
+  DC: TDesignerDeviceContext);
+var
+  CompLeft, CompTop, CompWidth, CompHeight: integer;
+  CompOrigin, DCOrigin: TPoint;
+  CurItem: TSelectedControl;
+  AComponent: TComponent;
+begin
+  CurItem:=Items[Index];
+  AComponent:=CurItem.Component;
+
+  GetComponentBounds(AComponent,CompLeft,CompTop,CompWidth,CompHeight);
+  CompOrigin:=GetParentFormRelativeParentClientOrigin(AComponent);
+  DCOrigin:=DC.FormOrigin;
+  CompLeft:=CompLeft+CompOrigin.X-DCOrigin.X;
+  CompTop:=CompTop+CompOrigin.Y-DCOrigin.Y;
+
+  {writeln('DoDrawMarker A ',FForm.Name
+    ,' Component',AComponent.Name,',',CompLeft,',',CompLeft
+    ,' DCOrigin=',DCOrigin.X,',',DCOrigin.Y
+    );}
+
+  DrawMarkerAt(DC,CompLeft,CompTop,CompWidth,CompHeight);
+  CurItem.Flags:=CurItem.Flags+[scfMarkersPainted];
+  CurItem.MarkerPaintedBounds:=Bounds(CompLeft,CompTop,CompWidth,CompHeight);
 end;
 
 function TControlSelection.CleanGridSizeX: integer;
@@ -2038,30 +2064,72 @@ begin
     DC.Canvas.Brush.Color:=OldBrushColor;
 end;
 
+procedure TControlSelection.DrawMarkers(DC: TDesignerDeviceContext);
+var
+  i: Integer;
+  AComponent: TComponent;
+begin
+  if (Count<2) or (FForm=nil) then exit;
+  for i:=0 to Count-1 do begin
+    AComponent:=Items[i].Component;
+    if (AComponent=FLookupRoot)
+    or ComponentIsInvisible(AComponent) then continue;
+    DoDrawMarker(i,DC);
+  end;
+end;
+
+procedure TControlSelection.InvalidateMarkersForComponent(AComponent: TComponent
+  );
+
+  procedure InvalidateMarker(x,y: integer);
+  var
+    R: TRect;
+  begin
+    R:=Rect(x,y,x+MarkerSize,y+MarkerSize);
+    InvalidateRect(FForm.Handle,@R,true);
+  end;
+  
+var
+  i: Integer;
+  CurItem: TSelectedControl;
+  ComponentBounds: TRect;
+  LeftMarker: Integer;
+  TopMarker: Integer;
+  RightMarker: Integer;
+  BottomMarker: Integer;
+begin
+  if (FForm=nil) then exit;
+  i:=IndexOf(AComponent);
+  if (i>=0) then begin
+    CurItem:=Items[i];
+    if scfMarkersPainted in CurItem.Flags then begin
+      ComponentBounds:=CurItem.MarkerPaintedBounds;
+      LeftMarker:=ComponentBounds.Left;
+      TopMarker:=ComponentBounds.Top;
+      RightMarker:=ComponentBounds.Right-MarkerSize;
+      BottomMarker:=ComponentBounds.Bottom-MarkerSize;
+      InvalidateMarker(LeftMarker,TopMarker);
+      InvalidateMarker(LeftMarker,BottomMarker);
+      InvalidateMarker(RightMarker,TopMarker);
+      InvalidateMarker(RightMarker,BottomMarker);
+      CurItem.Flags:=CurItem.Flags-[scfMarkersPainted];
+    end;
+  end;
+end;
+
 procedure TControlSelection.DrawMarker(AComponent: TComponent;
   DC: TDesignerDeviceContext);
 var
-  CompLeft, CompTop, CompWidth, CompHeight: integer;
-  CompOrigin, DCOrigin: TPoint;
+  i: Integer;
 begin
   if (Count<2)
   or (FForm=nil)
-  or (AComponent=FLookupRoot)
-  or (not IsSelected(AComponent))
-  or ComponentIsInvisible(AComponent) then exit;
-
-  GetComponentBounds(AComponent,CompLeft,CompTop,CompWidth,CompHeight);
-  CompOrigin:=GetParentFormRelativeParentClientOrigin(AComponent);
-  DCOrigin:=DC.FormOrigin;
-  CompLeft:=CompLeft+CompOrigin.X-DCOrigin.X;
-  CompTop:=CompTop+CompOrigin.Y-DCOrigin.Y;
-
-{writeln('DrawMarker A ',FForm.Name
-    ,' Component',AComponent.Name,',',CompLeft,',',CompLeft
-    ,' DCOrigin=',DCOrigin.X,',',DCOrigin.Y
-    );}
-
-  DrawMarkerAt(DC,CompLeft,CompTop,CompWidth,CompHeight);
+  or (AComponent=FLookupRoot) then exit;
+  i:=IndexOf(AComponent);
+  if i<0 then exit;
+  if ComponentIsInvisible(AComponent) then exit;
+  
+  DoDrawMarker(i,DC);
 end;
 
 procedure TControlSelection.DrawRubberband(DC: TDesignerDeviceContext);

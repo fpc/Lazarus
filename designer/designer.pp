@@ -916,18 +916,10 @@ begin
       PaintClientGrid(TWinControl(Sender),DDC);
     end;
 
-    // marker (multi selection markers)
-    if (ControlSelection.SelectionForm=Form)
-    and (ControlSelection.IsSelected(Sender)) then begin
-      ControlSelection.DrawMarker(Sender,DDC);
-    end;
-    //writeln('TDesigner.PaintControl NOT Drawing items');
-    //DoPaintDesignerItems;
-
     // clean up
     DDC.Clear;
   end;
-//writeln('TDesigner.PaintControl END ',Sender.Name);
+  //writeln('TDesigner.PaintControl END ',Sender.Name);
 
   if not OldDuringPaintControl then
     Exclude(FFlags,dfDuringPaintControl);
@@ -948,6 +940,7 @@ begin
         FOnPropertiesChanged(Self);
     end;
     ControlSelection.InvalidateGuideLinesCache;
+    ControlSelection.InvalidateMarkersForComponent(Sender);
   end;
 end;
 
@@ -964,6 +957,7 @@ begin
         FOnPropertiesChanged(Self);
     end;
     ControlSelection.InvalidateGuideLinesCache;
+    ControlSelection.InvalidateMarkersForComponent(Sender);
   end;
 end;
 
@@ -2061,8 +2055,9 @@ end;
 procedure TDesigner.DoPaintDesignerItems;
 begin
   // marker (multi selection markers)
-  if (ControlSelection.SelectionForm=Form) then begin
-    // ToDo: draw all markers
+  if (ControlSelection.SelectionForm=Form)
+  and (ControlSelection.Count>1) then begin
+    ControlSelection.DrawMarkers(DDC);
   end;
   // non visual component icons
   DrawNonVisualComponents(DDC);
