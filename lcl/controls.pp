@@ -593,7 +593,7 @@ type
     procedure CMVisibleChanged(var Message : TLMessage); message CM_VISIBLECHANGED;
     procedure ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize); virtual;
     function  GetPalette: HPalette; virtual;
-    procedure Resize;
+    procedure Resize; virtual;
     procedure RequestAlign; dynamic;
     procedure BeginAutoDrag; dynamic;
     procedure ChangeBounds(ALeft, ATop, AWidth, AHeight : integer); virtual;
@@ -1439,6 +1439,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.102  2003/02/26 12:44:52  mattias
+  readonly flag is now only saved if user set
+
   Revision 1.101  2003/01/01 13:01:01  mattias
   fixed setcolor for streamed components
 
