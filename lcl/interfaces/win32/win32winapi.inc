@@ -1630,7 +1630,7 @@ var
   hScreenDC: HDC;
 begin
   FillChar(BitmapInfo, SizeOf(BitmapInfo), 0);
-  BitmapInfo.bmiHeader.biSize := SizeOf(BitmapInfo);
+  BitmapInfo.bmiHeader.biSize := SizeOf(BitmapInfo.bmiHeader);
   BitmapInfo.bmiHeader.biWidth := RawImage.Description.Width;
   BitmapInfo.bmiHeader.biHeight := -RawImage.Description.Height;
   BitmapInfo.bmiHeader.biPlanes := 1;
@@ -2866,6 +2866,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.90  2003/12/31 18:10:56  micha
+  fix sizeof bitmap structure (from martin)
+
   Revision 1.89  2003/12/30 22:08:48  micha
   fix for fpc 1.0.x, LPPOINT winapi stuff
 
