@@ -567,10 +567,7 @@ Begin
                 InvalidateWithParent(TControl(ControlSelection[i].Component));
                 
             // clear old selection and select new component
-            ControlSelection.BeginUpdate;
-            ControlSelection.Clear;
-            ControlSelection.Add(MouseDownComponent);
-            ControlSelection.EndUpdate;
+            ControlSelection.AssignComponent(MouseDownComponent);
             InvalidateWithParent(MouseDownComponent);
           end;
         end;
@@ -632,50 +629,53 @@ var
     // add a new component
     ControlSelection.RubberbandActive:=false;
     ControlSelection.BeginUpdate;
+    try
 
-    // find a parent for the new component
-    NewParent:=TWinControl(MouseDownComponent);
-    while (NewParent<>nil)
-    and ((not (csAcceptsControls in NewParent.ControlStyle))
-      or ((NewParent.Owner<>Form) and (NewParent<>Form)))
-    do begin
-      NewParent:=NewParent.Parent;
-    end;
-    ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
-    if Assigned(ParentCI) then begin
-      ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
-      NewLeft:=Min(MouseDownPos.X,MouseUpPos.X)-ParentClientOrigin.X;
-      NewWidth:=Abs(MouseUpPos.X-MouseDownPos.X);
-      NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y)-ParentClientOrigin.Y;
-      NewHeight:=Abs(MouseUpPos.Y-MouseDownPos.Y);
-      if Abs(NewWidth+NewHeight)<7 then begin
-        // this very small component is probably only a wag, take default size
-        NewWidth:=0;
-        NewHeight:=0;
+      // find a parent for the new component
+      NewParent:=TWinControl(MouseDownComponent);
+      while (NewParent<>nil)
+      and ((not (csAcceptsControls in NewParent.ControlStyle))
+        or ((NewParent.Owner<>Form) and (NewParent<>Form)))
+      do begin
+        NewParent:=NewParent.Parent;
       end;
+      ParentCI:=TComponentInterface(TheFormEditor.FindComponent(NewParent));
+      if Assigned(ParentCI) then begin
+        ParentClientOrigin:=GetParentFormRelativeClientOrigin(NewParent);
+        NewLeft:=Min(MouseDownPos.X,MouseUpPos.X)-ParentClientOrigin.X;
+        NewWidth:=Abs(MouseUpPos.X-MouseDownPos.X);
+        NewTop:=Min(MouseDownPos.Y,MouseUpPos.Y)-ParentClientOrigin.Y;
+        NewHeight:=Abs(MouseUpPos.Y-MouseDownPos.Y);
+        if Abs(NewWidth+NewHeight)<7 then begin
+          // this very small component is probably only a wag, take default size
+          NewWidth:=0;
+          NewHeight:=0;
+        end;
 
-      NewCI := TComponentInterface(TheFormEditor.CreateComponent(
-         ParentCI,SelectedCompClass.ComponentClass
-        ,NewLeft,NewTop,NewWidth,NewHeight));
-      if NewCI.Component is TControl then
-        TControl(NewCI.Component).Visible:=true;
-      if Assigned(FOnSetDesigning) then
-        FOnSetDesigning(Self,NewCI.Component,True);
-      if Assigned(FOnComponentAdded) then
-        FOnComponentAdded(Self,NewCI.Component,SelectedCompClass);
+        NewCI := TComponentInterface(TheFormEditor.CreateComponent(
+           ParentCI,SelectedCompClass.ComponentClass
+          ,NewLeft,NewTop,NewWidth,NewHeight));
+        if NewCI.Component is TControl then
+          TControl(NewCI.Component).Visible:=true;
+        if Assigned(FOnSetDesigning) then
+          FOnSetDesigning(Self,NewCI.Component,True);
+        if Assigned(FOnComponentAdded) then
+          FOnComponentAdded(Self,NewCI.Component,SelectedCompClass);
 
-      SelectOnlyThisComponent(TComponent(NewCI.Component));
-      if not (ssShift in Shift) then
-        if Assigned(FOnUnselectComponentClass) then
-          // this resets the component palette to the selection tool
-          FOnUnselectComponentClass(Self);
-      Form.Invalidate;
-      {$IFDEF VerboseDesigner}
-      writeln('NEW COMPONENT ADDED: Form.ComponentCount=',Form.ComponentCount,
-         '  NewCI.Control.Owner.Name=',NewCI.Component.Owner.Name);
-      {$ENDIF}
+        SelectOnlyThisComponent(TComponent(NewCI.Component));
+        if not (ssShift in Shift) then
+          if Assigned(FOnUnselectComponentClass) then
+            // this resets the component palette to the selection tool
+            FOnUnselectComponentClass(Self);
+        Form.Invalidate;
+        {$IFDEF VerboseDesigner}
+        writeln('NEW COMPONENT ADDED: Form.ComponentCount=',Form.ComponentCount,
+           '  NewCI.Control.Owner.Name=',NewCI.Component.Owner.Name);
+        {$ENDIF}
+      end;
+    finally
+      ControlSelection.EndUpdate;
     end;
-    ControlSelection.EndUpdate;
   end;
   
   procedure RubberbandSelect;
@@ -692,8 +692,10 @@ var
     end;
     ControlSelection.RubberbandActive:=false;
     ControlSelection.EndUpdate;
+    {$IFDEF VerboseDesigner}
     with ControlSelection.Grabbers[0] do
       writeln('AAA1 ',Left,',',Top,',',Width,',',Height);
+    {$ENDIF}
     Form.Invalidate;
   end;
   
@@ -821,17 +823,19 @@ begin
   and (OldMouseMovePos.Y=LastMouseMovePos.Y) then exit;
 
   Grabber:= ControlSelection.GrabberAtPos(LastMouseMovePos.X, LastMouseMovePos.Y);
-  if Grabber = nil then
-    ACursor:= crDefault
-  else begin
-    ACursor:= Grabber.Cursor;
+  if MouseDownComponent=nil then begin
+    if Grabber = nil then
+      ACursor:= crDefault
+    else begin
+      ACursor:= Grabber.Cursor;
+    end;
+    if ACursor<>LastFormCursor then begin
+      LastFormCursor:=ACursor;
+      CNSendMessage(LM_SETCURSOR, Form, Pointer(Integer(ACursor)));
+    end;
+    
+    exit;
   end;
-  if ACursor<>LastFormCursor then begin
-    LastFormCursor:=ACursor;
-    CNSendMessage(LM_SETCURSOR, Form, Pointer(Integer(ACursor)));
-  end;
-
-  if MouseDownComponent=nil then exit;
 
   Shift := [];
   if (TheMessage.keys and MK_Shift) = MK_Shift then
