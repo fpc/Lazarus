@@ -61,6 +61,7 @@ type
     FPaintMessages: TDynHashArray; // hasharray of PLazQueueItem
     FRCFilename: string;
     FRCFileParsed: boolean;
+    FRCFileAge: integer;
     FWidgetsWithResizeRequest: TDynHashArray; // hasharray of PGtkWidget
     FGTKToolTips: PGtkToolTips;
     FDefaultFont : PGdkFont;
@@ -130,6 +131,7 @@ type
       BitSize : Longint; Bits: Pointer; var BitInfo: BitmapInfo; Usage: UINT; DIB : Boolean): Integer;virtual;
 
     procedure SetRCFilename(const AValue: string);virtual;
+    procedure CheckRCFilename;virtual;
     procedure ParseRCFile;virtual;
 
     procedure ShowHide(Sender : TObject);virtual;
@@ -269,6 +271,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.97  2002/10/30 00:08:09  lazarus
+  MG: finished ParseRCFile
+
   Revision 1.96  2002/10/28 18:17:02  lazarus
   MG: impoved focussing, unfocussing on destroy and fixed unit search
 
