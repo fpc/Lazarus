@@ -279,7 +279,9 @@ type
       var MethodIsCompatible,MethodIsPublished,IdentIsMethod: boolean):boolean;
     function OnPropHookCreateMethod(const AMethodName:ShortString;
       ATypeInfo:PTypeInfo): TMethod;
-    
+    procedure OnPropHookShowMethod(const AMethodName:ShortString);
+    procedure OnPropHookRenameMethod(const CurName, NewName:ShortString);
+
     // Environment options dialog events
     procedure OnLoadEnvironmentSettings(Sender: TObject; 
        TheEnvironmentOptions: TEnvironmentOptions);
@@ -707,6 +709,9 @@ begin
   {$IFDEF TestEvents}
   PropertyEditorHook1.OnGetMethods:=@OnPropHookGetMethods;
   PropertyEditorHook1.OnMethodExists:=@OnPropHookMethodExists;
+  PropertyEditorHook1.OnCreateMethod:=@OnPropHookCreateMethod;
+  PropertyEditorHook1.OnShowMethod:=@OnPropHookShowMethod;
+  PropertyEditorHook1.OnRenameMethod:=@OnPropHookRenameMethod;
   {$ENDIF}
   ObjectInspector1.PropertyEditorHook:=PropertyEditorHook1;
   ObjectInspector1.Show;
@@ -4861,8 +4866,9 @@ begin
           TopLine:=CaretXY.Y-(SrcEdit.EditorComponent.LinesInWindow div 2);
           if TopLine<1 then TopLine:=1;
           if FocusEditor then begin
-            SourceNotebook.BringToFront;
+            //SourceNotebook.BringToFront;
             SrcEdit.EditorComponent.SetFocus;
+            BringWindowToTop(SourceNoteBook.Handle);
           end;
           SrcEdit.EditorComponent.CaretXY:=CaretXY;
           SrcEdit.EditorComponent.TopLine:=TopLine;
@@ -5265,6 +5271,7 @@ begin
     TopLine:=NewTopLine;
     SetFocus;
   end;
+  BringWindowToTop(SourceNoteBook.Handle);
   Result:=mrOk;
 end;
 
@@ -5320,7 +5327,6 @@ begin
     if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,false,true)=mrOk then
     begin
       ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
-      SourceNotebook.BringToFront;
       with ActiveSrcEdit.EditorComponent do begin
         SetFocus;
         CaretXY:=Point(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine);
@@ -5330,6 +5336,11 @@ begin
           TopLine:=CodeToolBoss.ErrorTopLine;
       end;
       ActiveSrcEdit.ErrorLine:=CodeToolBoss.ErrorLine;
+      
+      // ToDo: clear all other errorlines
+      
+      //SourceNotebook.BringToFront;
+      BringWindowToTop(SourceNoteBook.Handle);
     end;
   end;
 end;
@@ -5855,23 +5866,85 @@ function TMainIDE.OnPropHookCreateMethod(const AMethodName: ShortString;
   ATypeInfo: PTypeInfo): TMethod;
 var ActiveSrcEdit: TSourceEditor;
   ActiveUnitInfo: TUnitInfo;
+  r: boolean;
 begin
   Result.Code:=nil;
   Result.Data:=nil;
   if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
-{$IFDEF IDE_DEBUG}
+{ $IFDEF IDE_DEBUG}
 writeln('');
 writeln('[TMainIDE.OnPropHookCreateMethod] ************');
+{ $ENDIF}
+  FOpenEditorsOnCodeToolChange:=true;
+  try
+    // create published method
+    r:=CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
+                ActiveUnitInfo.Form.ClassName,AMethodName,ATypeInfo);
+{ $IFDEF IDE_DEBUG}
+writeln('');
+writeln('[TMainIDE.OnPropHookCreateMethod] ************2 ',r);
+{ $ENDIF}
+    ApplyCodeToolChanges;
+    if r then begin
+      Result:=FormEditor1.JITFormList.CreateNewMethod(TForm(ActiveUnitInfo.Form)
+                                                      ,AMethodName);
+    end else begin
+      DoJumpToCodeToolBossError;
+    end;
+  finally
+    FOpenEditorsOnCodeToolChange:=false;
+  end;
+end;
+
+procedure TMainIDE.OnPropHookShowMethod(const AMethodName: ShortString);
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  NewSource: TCodeBuffer;
+  NewX, NewY, NewTopLine: integer;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
+{$IFDEF IDE_DEBUG}
+writeln('');
+writeln('[TMainIDE.OnPropHookShowMethod] ************');
 {$ENDIF}
-  // create published method
-  if CodeToolBoss.CreatePublishedMethod(ActiveUnitInfo.Source,
-              ActiveUnitInfo.Form.ClassName,AMethodName,ATypeInfo) then
+  if CodeToolBoss.JumpToPublishedMethodBody(ActiveUnitInfo.Source,
+    ActiveUnitInfo.Form.ClassName,AMethodName,
+    NewSource,NewX,NewY,NewTopLine) then
   begin
-
-    // ToDo: create published method in form
-
-  end else begin
+    DoJumpToCodePos(ActiveSrcEdit, ActiveUnitInfo,
+      NewSource, NewX, NewY, NewTopLine, true);
+  end else
     DoJumpToCodeToolBossError;
+end;
+
+procedure TMainIDE.OnPropHookRenameMethod(const CurName, NewName: ShortString);
+var ActiveSrcEdit: TSourceEditor;
+  ActiveUnitInfo: TUnitInfo;
+  r: boolean;
+begin
+  if not BeginCodeTool(ActiveSrcEdit,ActiveUnitInfo,true) then exit;
+{ $IFDEF IDE_DEBUG}
+writeln('');
+writeln('[TMainIDE.OnPropHookRenameMethod] ************');
+{ $ENDIF}
+  FOpenEditorsOnCodeToolChange:=true;
+  try
+    // create published method
+    r:=CodeToolBoss.RenamePublishedMethod(ActiveUnitInfo.Source,
+                ActiveUnitInfo.Form.ClassName,CurName,NewName);
+{ $IFDEF IDE_DEBUG}
+writeln('');
+writeln('[TMainIDE.OnPropHookRenameMethod] ************2 ',r);
+{ $ENDIF}
+    ApplyCodeToolChanges;
+    if r then begin
+      FormEditor1.JITFormList.RenameMethod(TForm(ActiveUnitInfo.Form),
+                                           CurName,NewName);
+    end else begin
+      DoJumpToCodeToolBossError;
+    end;
+  finally
+    FOpenEditorsOnCodeToolChange:=false;
   end;
 end;
 
@@ -5889,6 +5962,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.222  2002/02/11 15:12:00  lazarus
+  MG: started OI events
+
   Revision 1.221  2002/02/10 20:44:00  lazarus
   MG: fixed a node cache range bug
 

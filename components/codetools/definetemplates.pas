@@ -1762,7 +1762,7 @@ begin
     ,da_Define));
   MainDir.AddChild(TDefineTemplate.Create('includepath addition',
     'adds include to IncPath',ExternalMacroStart+'IncPath',
-    'include:include'+ds+TargetOS,
+    'include;include'+ds+TargetOS,
     da_Define));
     
   // examples
@@ -1842,10 +1842,10 @@ begin
     ,da_Define));
   DirTempl.AddChild(TDefineTemplate.Create('includepath addition',
     'adds include to IncPath',ExternalMacroStart+'IncPath',
-    'include'+ds+TargetOS,
+    '..'+ds+'include;..'+ds+'include'+ds+TargetOS,
     da_Define));
   MainDir.AddChild(DirTempl);
-  
+
   // images
   
   // debugger

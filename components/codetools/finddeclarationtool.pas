@@ -364,10 +364,58 @@ function CreateFindContext(NewTool: TFindDeclarationTool;
 function CreateFindContext(Params: TFindDeclarationParams): TFindContext;
 function CreateFindContext(BaseTypeCache: TBaseTypeCache): TFindContext;
 function FindContextAreEqual(Context1, Context2: TFindContext): boolean;
-
+function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
 
 implementation
 
+
+function PredefinedIdentToExprTypeDesc(Identifier: PChar): TExpressionTypeDesc;
+begin
+  // predefined identifiers
+  if CompareIdentifiers(Identifier,'NIL'#0)=0 then
+    Result:=xtNil
+  else if CompareIdentifiers(Identifier,'POINTER'#0)=0 then
+    Result:=xtPointer
+  else if (CompareIdentifiers(Identifier,'TRUE'#0)=0)
+  or (CompareIdentifiers(Identifier,'FALSE'#0)=0) then
+    Result:=xtConstBoolean
+  else if CompareIdentifiers(Identifier,'STRING'#0)=0 then
+    Result:=xtString
+  else if CompareIdentifiers(Identifier,'SHORTSTRING'#0)=0 then
+    Result:=xtShortString
+  else if CompareIdentifiers(Identifier,'ANSISTRING'#0)=0 then
+    Result:=xtAnsiString
+  else if CompareIdentifiers(Identifier,'WIDESTRING'#0)=0 then
+    Result:=xtWideString
+  else if CompareIdentifiers(Identifier,'INT64'#0)=0 then
+    Result:=xtInt64
+  else if CompareIdentifiers(Identifier,'CARDINAL'#0)=0 then
+    Result:=xtCardinal
+  else if CompareIdentifiers(Identifier,'QWORD'#0)=0 then
+    Result:=xtQWord
+  else if CompareIdentifiers(Identifier,'BOOLEAN'#0)=0 then
+    Result:=xtBoolean
+  else if CompareIdentifiers(Identifier,'BYTEBOOL'#0)=0 then
+    Result:=xtByteBool
+  else if CompareIdentifiers(Identifier,'LONGBOOL'#0)=0 then
+    Result:=xtLongBool
+  else if CompareIdentifiers(Identifier,'CHAR'#0)=0 then
+    Result:=xtChar
+  else if CompareIdentifiers(Identifier,'REAL'#0)=0 then
+    Result:=xtReal
+  else if CompareIdentifiers(Identifier,'SINGLE'#0)=0 then
+    Result:=xtSingle
+  else if CompareIdentifiers(Identifier,'DOUBLE'#0)=0 then
+    Result:=xtDouble
+  else if CompareIdentifiers(Identifier,'EXTENDED'#0)=0 then
+    Result:=xtExtended
+  else if CompareIdentifiers(Identifier,'COMP'#0)=0 then
+    Result:=xtComp
+  else if CompareIdentifiers(Identifier,'CURRENCY'#0)=0 then
+    Result:=xtCurrency
+  else
+    Result:=xtNone;
+end;
 
 function ExprTypeToString(ExprType: TExpressionType): string;
 begin
@@ -2915,7 +2963,7 @@ writeln('[TFindDeclarationTool.ConvertNodeToExpressionType] B',
 
     MoveCursorToNodeStart(Node);
 
-    // ToDo: prevent circles
+    // ToDo: check for circles
 
     Result:=ReadOperandTypeAtCursor(Params);
     Result.Context:=CreateFindContext(Self,Node);
@@ -2929,49 +2977,12 @@ writeln('[TFindDeclarationTool.ConvertNodeToExpressionType] B',
       CurPos.EndPos-CurPos.StartPos) then
     begin
       // predefined identifiers
-      if UpAtomIs('NIL') then
-        Result.Desc:=xtNil
-      else if UpAtomIs('POINTER') then
-        Result.Desc:=xtPointer
-      else if UpAtomIs('TRUE') or UpAtomIs('FALSE') then
-        Result.Desc:=xtConstBoolean
-      else if UpAtomIs('STRING') then
+      Result.Desc:=PredefinedIdentToExprTypeDesc(@Src[CurPos.StartPos]);
+      if Result.Desc=xtString then begin
 
         // ToDo: ask scanner, if AnsiString or ShortString
-
-        Result.Desc:=xtString
-      else if UpAtomIs('SHORTSTRING') then
-        Result.Desc:=xtShortString
-      else if UpAtomIs('ANSISTRING') then
-        Result.Desc:=xtAnsiString
-      else if UpAtomIs('WIDESTRING') then
-        Result.Desc:=xtWideString
-      else if UpAtomIs('INT64') then
-        Result.Desc:=xtInt64
-      else if UpAtomIs('CARDINAL') then
-        Result.Desc:=xtCardinal
-      else if UpAtomIs('QWORD') then
-        Result.Desc:=xtQWord
-      else if UpAtomIs('BOOLEAN') then
-        Result.Desc:=xtBoolean
-      else if UpAtomIs('BYTEBOOL') then
-        Result.Desc:=xtByteBool
-      else if UpAtomIs('LONGBOOL') then
-        Result.Desc:=xtLongBool
-      else if UpAtomIs('CHAR') then
-        Result.Desc:=xtChar
-      else if UpAtomIs('REAL') then
-        Result.Desc:=xtReal
-      else if UpAtomIs('SINGLE') then
-        Result.Desc:=xtSingle
-      else if UpAtomIs('DOUBLE') then
-        Result.Desc:=xtDouble
-      else if UpAtomIs('EXTENDED') then
-        Result.Desc:=xtExtended
-      else if UpAtomIs('COMP') then
-        Result.Desc:=xtComp
-      else if UpAtomIs('CURRENCY') then
-        Result.Desc:=xtCurrency;
+        
+      end;
     end;
   end;
 end;
@@ -3905,11 +3916,24 @@ end;
 
 function TFindDeclarationTool.GetExpressionTypeOfTypeIdentifier(
   Params: TFindDeclarationParams): TExpressionType;
+var IsPredefinedIdentifier: boolean;
+  OldFlags: TFindDeclarationFlags;
 begin
+  IsPredefinedIdentifier:=WordIsPredefinedIdentifier.DoIt(Params.Identifier);
+  OldFlags:=Params.Flags;
+  if IsPredefinedIdentifier then
+    Exclude(Params.Flags,fdfExceptionOnNotFound)
+  else
+    Include(Params.Flags,fdfExceptionOnNotFound);
   if FindIdentifierInContext(Params) then begin
+    Params.Flags:=OldFlags;
     Result:=Params.NewCodeTool.ConvertNodeToExpressionType(Params.NewNode,Params);
-  end else
+  end else begin
+    // predefined identifier
+    Params.Flags:=OldFlags;
     Result:=CleanExpressionType;
+    Result.Desc:=PredefinedIdentToExprTypeDesc(Params.Identifier);
+  end;
 end;
 
 

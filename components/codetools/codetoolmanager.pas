@@ -105,10 +105,6 @@ type
     SourceChangeCache: TSourceChangeCache; // cache for write accesses
     GlobalValues: TExpressionEvaluator;
     
-    // Write Lock
-    procedure BeginUpdate;
-    procedure EndUpdate;
-
     // file handling
     property SourceExtensions: string
           read FSourceExtensions write FSourceExtensions;
@@ -145,11 +141,16 @@ type
     property VisibleEditorLines: integer
           read FVisibleEditorLines write SetVisibleEditorLines;
 
-    // events
+    // source changing
+    procedure BeginUpdate;
+    procedure EndUpdate;
+    function ApplyChanges: boolean;
     property OnBeforeApplyChanges: TOnBeforeApplyChanges
           read FOnBeforeApplyChanges write FOnBeforeApplyChanges;
     property OnAfterApplyChanges: TOnAfterApplyChanges
           read FOnAfterApplyChanges write FOnAfterApplyChanges;
+
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     // syntax checking  (true on syntax is ok)
     function CheckSyntax(Code: TCodeBuffer; var NewCode: TCodeBuffer;
@@ -171,7 +172,6 @@ type
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
 
-
     // find declaration
     function FindDeclaration(Code: TCodeBuffer; X,Y: integer;
           var NewCode: TCodeBuffer;
@@ -186,7 +186,7 @@ type
           var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
           ): boolean;
     function JumpToPublishedMethodBody(Code: TCodeBuffer;
-          const AClassName, AMethodName: string;  TypeData: PTypeData;
+          const AClassName, AMethodName: string;
           var NewCode: TCodeBuffer;
           var NewX, NewY, NewTopLine: integer): boolean;
     function RenamePublishedMethod(Code: TCodeBuffer;
@@ -249,8 +249,7 @@ type
     function RemovePublishedVariable(Code: TCodeBuffer;
           const AClassName, AVarName: string): boolean;
 
-
-    function ApplyChanges: boolean;
+    // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     constructor Create;
     destructor Destroy; override;
@@ -751,7 +750,7 @@ writeln('TCodeToolManager.PublishedMethodExists A ',Code.Filename,' ',AClassName
 end;
 
 function TCodeToolManager.JumpToPublishedMethodBody(Code: TCodeBuffer;
-  const AClassName, AMethodName: string;  TypeData: PTypeData;
+  const AClassName, AMethodName: string;
   var NewCode: TCodeBuffer; var NewX, NewY, NewTopLine: integer): boolean;
 var NewPos: TCodeXYPosition;
 begin
@@ -762,7 +761,7 @@ writeln('TCodeToolManager.JumpToPublishedMethodBody A ',Code.Filename,' ',AClass
   if not Result then exit;
   try
     Result:=FCurCodeTool.JumpToPublishedMethodBody(UpperCaseStr(AClassName),
-              UpperCaseStr(AMethodName),TypeData,NewPos,NewTopLine);
+              UpperCaseStr(AMethodName),NewPos,NewTopLine);
     if Result then begin
       NewCode:=NewPos.Code;
       NewX:=NewPos.X;

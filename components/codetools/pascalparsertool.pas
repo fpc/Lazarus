@@ -81,6 +81,7 @@ type
       phpWithParameterNames, // extract parameter names
       phpWithDefaultValues,  // extract default values
       phpWithResultType,     // extract colon + result type
+      phpWithOfObject,       // extract 'of object'
       phpWithComments,       // extract comments
       phpInUpperCase,        // turn to uppercase
       phpWithoutBrackets,    // skip start- and end-bracket of parameter list
@@ -93,7 +94,8 @@ type
     );
   TProcHeadAttributes = set of TProcHeadAttribute;
   
-  TProcHeadExtractPos = (phepNone, phepStart, phepName, phepParamList);
+  TProcHeadExtractPos = (phepNone, phepStart, phepName, phepParamList,
+    phepResultType);
 
   TPascalParserTool = class(TMultiKeyWordListCodeTool)
   private
@@ -2893,7 +2895,7 @@ function TPascalParserTool.ExtractProcHead(ProcNode: TCodeTreeNode;
 var
   GrandPaNode: TCodeTreeNode;
   TheClassName, s: string;
-  HasClassName: boolean;
+  HasClassName, IsProcType: boolean;
 // function TPascalParserTool.ExtractProcHead(ProcNode: TCodeTreeNode;
 //   Attr: TProcHeadAttributes): string;
 begin
@@ -2903,8 +2905,9 @@ begin
   if ProcNode.Desc=ctnProcedureHead then
     ProcNode:=ProcNode.Parent;
   if ProcNode=nil then exit;
-  if ProcNode.Desc<>ctnProcedure then exit;
-  if phpAddClassname in Attr then begin
+  if not ProcNode.Desc in [ctnProcedure,ctnProcedureType] then exit;
+  IsProcType:=(ProcNode.Desc=ctnProcedureType);
+  if (phpAddClassname in Attr) then begin
     GrandPaNode:=ProcNode.Parent;
     if GrandPaNode=nil then exit;
     GrandPaNode:=GrandPaNode.Parent;
@@ -2932,41 +2935,56 @@ begin
   else
     exit;
   ExtractProcHeadPos:=phepStart;
-  // read name
-  if (not AtomIsWord) or AtomIsKeyWord then exit;
-  ReadNextAtom;
-  HasClassName:=AtomIsChar('.');
-  UndoReadNextAtom;
-  if HasClassName then begin
-    // read class name
-    ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
-    // read '.'
-    ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
+  if not IsProcType then begin
     // read name
     if (not AtomIsWord) or AtomIsKeyWord then exit;
-    ExtractNextAtom(not (phpWithoutName in Attr),Attr);
-  end else begin
-    // read name
-    if not (phpAddClassname in Attr) then begin
+    ReadNextAtom;
+    HasClassName:=AtomIsChar('.');
+    UndoReadNextAtom;
+    if HasClassName then begin
+      // read class name
+      ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
+      // read '.'
+      ExtractNextAtom(not (phpWithoutClassName in Attr),Attr);
+      // read name
+      if (not AtomIsWord) or AtomIsKeyWord then exit;
       ExtractNextAtom(not (phpWithoutName in Attr),Attr);
     end else begin
-      // add class name
-      s:=TheClassName+'.';
-      if not (phpWithoutName in Attr) then
-        s:=s+GetAtom;
-      if phpInUpperCase in Attr then s:=UpperCaseStr(s);
-      ExtractNextAtom(false,Attr);
-      ExtractMemStream.Write(s[1],length(s));
+      // read name
+      if not (phpAddClassname in Attr) then begin
+        ExtractNextAtom(not (phpWithoutName in Attr),Attr);
+      end else begin
+        // add class name
+        s:=TheClassName+'.';
+        if not (phpWithoutName in Attr) then
+          s:=s+GetAtom;
+        if phpInUpperCase in Attr then s:=UpperCaseStr(s);
+        ExtractNextAtom(false,Attr);
+        ExtractMemStream.Write(s[1],length(s));
+      end;
     end;
+    ExtractProcHeadPos:=phepName;
   end;
-  ExtractProcHeadPos:=phepName;
   // read parameter list
   if AtomIsChar('(') then
     ReadParamList(false,true,Attr);
   ExtractProcHeadPos:=phepParamList;
   // read result type
-  while not AtomIsChar(';') do
+  if AtomIsChar(':') then begin
     ExtractNextAtom(phpWithResultType in Attr,Attr);
+    if not AtomIsIdentifier(false) then exit;
+    ExtractNextAtom(phpWithResultType in Attr,Attr);
+    ExtractProcHeadPos:=phepResultType;
+  end;
+  if UpAtomIs('OF') then begin
+    if IsProcType then begin
+      ExtractNextAtom(phpWithOfObject in Attr,Attr);
+      if not UpAtomIs('OBJECT') then exit;
+      ExtractNextAtom(phpWithOfObject in Attr,Attr);
+    end else begin
+      exit;
+    end;
+  end;
   if AtomIsChar(';') then
     ExtractNextAtom(true,Attr);
   

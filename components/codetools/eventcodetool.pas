@@ -34,7 +34,7 @@ interface
 
 {$I codetools.inc}
 
-{$DEFINE CTDEBUG}
+{ $DEFINE CTDEBUG}
 
 uses
   {$IFDEF MEM_CHECK}
@@ -74,7 +74,7 @@ type
         var MethodIsCompatible, MethodIsPublished, IdentIsMethod: boolean
         ): boolean;
     function JumpToPublishedMethodBody(const UpperClassName,
-        UpperMethodName: string; TypeData: PTypeData;
+        UpperMethodName: string;
         var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
     function RenamePublishedMethod(const UpperClassName, UpperOldMethodName,
         NewMethodName: string; SourceChangeCache: TSourceChangeCache): boolean;
@@ -414,11 +414,10 @@ begin
 end;
 
 function TEventsCodeTool.JumpToPublishedMethodBody(const UpperClassName,
-  UpperMethodName: string; TypeData: PTypeData;
+  UpperMethodName: string;
   var NewPos: TCodeXYPosition; var NewTopLine: integer): boolean;
 var ANode: TCodeTreeNode;
 begin
-  Result:=false;
   ANode:=FindProcNodeInImplementation(UpperClassName,UpperMethodName,true);
   Result:=FindJumpPointInProcNode(ANode,NewPos,NewTopLine);
 end;
@@ -522,6 +521,14 @@ writeln('[TEventsCodeTool.CreatePublishedMethod] A NewMethod="',NewMethod,'"');
 
   Result:=InsertNewMethodToClass(PublishedNode,AMethodName,NewMethod,
               SourceChangeCache);
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.CreatePublishedMethod] B ',Result);
+{$ENDIF}
+  if not Result then exit;
+  Result:=SourceChangeCache.Apply;
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.CreatePublishedMethod] END');
+{$ENDIF}
 end;
 
 function TEventsCodeTool.InsertNewMethodToClass(
@@ -529,8 +536,8 @@ function TEventsCodeTool.InsertNewMethodToClass(
   SourceChangeCache: TSourceChangeCache): boolean;
 // NewMethod is for example 'class function Lol(c: char): char;'
 var InsertNode, ClassNode, ImplementationNode, StartNode, ANode: TCodeTreeNode;
-  Indent, InsertPos, cmp, WordStart, WordEnd: integer;
-  UpperMethodName, CurProcName, ProcCode, UpperClassName, CurWord,
+  Indent, InsertPos, cmp: integer;
+  UpperMethodName, CurProcName, ProcCode, UpperClassName,
   AClassName: string;
   StartClassCode: boolean;
   ClassBodyProcs: TAVLTree;
@@ -610,17 +617,19 @@ writeln('[TEventsCodeTool.InsertNewMethodToClass] D');
 {$IFDEF CTDEBUG}
 writeln('[TEventsCodeTool.InsertNewMethodToClass] E');
 {$ENDIF}
-  ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(NewMethod,
-                     Indent,false);
+  ProcCode:=SourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
+        NewMethod,'',AMethodName);
+  ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(
+                     ProcCode,Indent,false);
+{$IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.InsertNewMethodToClass] E2 ProcCode="',ProcCode,'"');
+{$ENDIF}
   if not SourceChangeCache.Replace(gtNewLine,gtNewLine,InsertPos,InsertPos,
            ProcCode) then exit;
            
   // add method body to implementation section
 
-  ImplementationNode:=Tree.Root;
-  while (ImplementationNode<>nil)
-  and (ImplementationNode.Desc<>ctnImplementation) do
-    ImplementationNode:=ImplementationNode.NextBrother;
+  ImplementationNode:=FindImplementationNode;
 {$IFDEF CTDEBUG}
 writeln('[TEventsCodeTool.InsertNewMethodToClass] F ',ImplementationNode<>nil);
 {$ENDIF}
@@ -636,6 +645,9 @@ writeln('[TEventsCodeTool.InsertNewMethodToClass] G');
     ClassBodyProcs:=GatherProcNodes(StartNode,
            [phpInUpperCase,phpIgnoreForwards,phpOnlyWithClassname,
             phpWithoutClassName],UpperClassName);
+            
+    // ToDo: check if proc already exists
+            
     StartClassCode:=(ClassBodyProcs.Count=0);
     UpperMethodName:=UpperClassName+'.'+UpperMethodName;
     if not StartClassCode then begin
@@ -683,7 +695,10 @@ writeln('[TEventsCodeTool.InsertNewMethodToClass] H');
                                       InsertNode.EndPos,Scanner.NestedComments);
             end;
           end;
-        else // pipLast:
+        else  // pipLast
+        
+          // ToDo: pipClassOrder
+        
           // insert proc body behind last proc body
           begin
             AnAVLNode:=ClassBodyProcs.FindLowest;
@@ -724,21 +739,10 @@ writeln('[TEventsCodeTool.InsertNewMethodToClass] J');
 {$IFDEF CTDEBUG}
 writeln('[TEventsCodeTool.InsertNewMethodToClass] K');
 {$ENDIF}
-  WordEnd:=1;
-  repeat
-    WordStart:=WordEnd;
-    while (WordStart<=length(NewMethod)) and (IsSpaceChar[NewMethod[WordStart]])
-    do inc(WordStart);
-    WordEnd:=WordStart;
-    while (WordEnd<=length(NewMethod)) and (IsIdentChar[NewMethod[WordEnd]])
-    do inc(WordEnd);
-    CurWord:=UpperCaseStr(copy(NewMethod,WordStart,WordEnd-WordStart));
-  until (CurWord<>'PROCEDURE') and (CurWord<>'FUNCTION') and (CurWord<>'CLASS')
-  and (CurWord<>'CONSTRUCTOR') and (CurWord<>'DESTRUCTOR');
-  ProcCode:=copy(NewMethod,1,WordStart-1)+AClassName+'.'
-            +copy(NewMethod,WordStart,length(NewMethod)-WordStart+1);
+  ProcCode:=SourceChangeCache.BeautifyCodeOptions.AddClassAndNameToProc(
+                                              NewMethod,AClassName,AMethodName);
 {$IFDEF CTDEBUG}
-writeln('[TEventsCodeTool.InsertNewMethodToClass] L');
+writeln('[TEventsCodeTool.InsertNewMethodToClass] L ProcCode="',ProcCode,'"');
 {$ENDIF}
   // build nice proc
   ProcCode:=SourceChangeCache.BeautifyCodeOptions.BeautifyProc(ProcCode,
@@ -802,7 +806,7 @@ writeln('[TEventsCodeTool.CreateExprListFromMethodTypeData] A ',
       // convert ParamType to TExpressionType
       Params.Save(OldInput);
       Params.SetIdentifier(Self,@CurTypeIdentifier[1],nil);
-      Params.Flags:=[fdfExceptionOnNotFound,fdfSearchInParentNodes,
+      Params.Flags:=[fdfSearchInParentNodes,
                      fdfIgnoreCurContextNode,fdfClassPublished]
                      +(fdfGlobals*Params.Flags)
                      -[fdfSearchInAncestors,
@@ -901,13 +905,17 @@ begin
         Params.NewCodeTool.RaiseException('method type definition not found');
       end;
       Params.NewNode:=FindTypeNodeOfDefinition(Params.NewNode);
-      if Params.NewNode.Desc<>ctnProcedure then begin
+      if Params.NewNode.Desc<>ctnProcedureType then begin
         Params.NewCodeTool.MoveCursorToNodeStart(Params.NewNode);
         Params.NewCodeTool.RaiseException('method type definition not found');
       end;
       Result:=Params.NewCodeTool.ExtractProcHead(Params.NewNode,
                   [phpWithStart, phpWithoutClassName, phpWithVarModifiers,
-                   phpWithParameterNames, phpWithResultType, phpWithComments]);
+                   phpWithParameterNames, phpWithResultType]);
+      Result:=TrimCodeSpace(Result);
+{ $IFDEF CTDEBUG}
+writeln('[TEventsCodeTool.MethodTypeInfoToStr] Result="',Result,'"');
+{ $ENDIF}
     finally
       Params.Free;
     end;
