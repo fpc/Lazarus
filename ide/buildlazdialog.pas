@@ -35,7 +35,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Buttons, LResources,
-  XMLCfg, ExtToolDialog, ExtToolEditDlg, TransferMacros;
+  XMLCfg, ExtToolDialog, ExtToolEditDlg, TransferMacros, LazConf;
 
 type
   TMakeMode = (mmNone, mmBuild, mmCleanBuild);
@@ -152,6 +152,10 @@ begin
   Tool:=TExternalToolOptions.Create;
   try
     Tool.Filename:=Options.MakeFilename;
+    if not FileExists(Tool.Filename) then begin
+      Tool.Filename:=FindDefaultMakePath;
+      if not FileExists(Tool.Filename) then exit;
+    end;
     Tool.ScanOutputForFPCMessages:=true;
     Tool.ScanOutputForMakeMessages:=true;
     if Options.CleanAll then begin
@@ -523,7 +527,7 @@ end;
 constructor TBuildLazarusOptions.Create;
 begin
   inherited Create;
-  fMakeFilename:='/usr/bin/make';
+  fMakeFilename:='';
 end;
 
 

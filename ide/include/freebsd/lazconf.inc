@@ -101,12 +101,12 @@ end;
 
 function FindDefaultCompilerPath: string;
 begin
-  if FileIsExecutable('/usr/bin/ppc386') then
-    Result:='/usr/bin/ppc386'
-  else if FileIsExecutable('/opt/fpc/ppc386') then
-    Result:='/opt/fpc/ppc386'
-  else
-    Result:='';
+  Result:=SearchFileInPath('ppc386','',GetEnv('PATH'),':');
+end;
+
+function FindDefaultMakePath: string;
+begin
+  Result:=SearchFileInPath('make','',GetEnv('PATH'),':');
 end;
 
 
@@ -117,6 +117,9 @@ initialization
 
 {
   $Log$
+  Revision 1.6  2002/07/01 05:53:31  lazarus
+  MG: improved default make path for build lazarus
+
   Revision 1.5  2002/05/10 06:57:51  lazarus
   MG: updated licenses
 

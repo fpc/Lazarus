@@ -66,6 +66,7 @@ uses
   procedure CopySecondaryConfigFile(const AFilename: String);
   
   function FindDefaultCompilerPath: string;
+  function FindDefaultMakePath: string;
 
 implementation
 
@@ -75,6 +76,9 @@ end.
 
 {
   $Log$
+  Revision 1.8  2002/07/01 05:53:31  lazarus
+  MG: improved default make path for build lazarus
+
   Revision 1.7  2002/07/01 05:11:34  lazarus
   MG: improved default path to lazarus and ppc386
 

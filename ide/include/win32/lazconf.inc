@@ -98,6 +98,10 @@ begin
   Result:='';
 end;
 
+function FindDefaultMakePath: string;
+begin
+  Result:='';
+end;
 
 initialization
   PrimaryConfigPath:=ExtractFilePath(Paramstr(0));
@@ -110,6 +114,9 @@ initialization
 
 {
   $Log$
+  Revision 1.6  2002/07/01 05:53:31  lazarus
+  MG: improved default make path for build lazarus
+
   Revision 1.5  2002/05/10 06:57:51  lazarus
   MG: updated licenses
 
