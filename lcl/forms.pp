@@ -88,13 +88,9 @@ type
     procedure ScrollHandler(var Message: TLMScroll);
   public
     constructor Create(AControl: TScrollingWinControl; AKind: TScrollBarKind);
-
     procedure Assign(Source: TPersistent); override;
-
     function IsScrollBarVisible: Boolean;
-
     function ScrollPos: Integer;
-
     property Kind: TScrollBarKind read FKind;
   published
     property Increment: TScrollBarInc read FIncrement write FIncrement default 8;
