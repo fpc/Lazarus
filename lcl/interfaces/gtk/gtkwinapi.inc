@@ -2150,9 +2150,11 @@ var
       Result := True;
     end
     else begin
+      {$IfNDef Win32}
       gtk_draw_check(Style,aDC.Drawable, State,
         Shadow, Rect.Left+DCOrigin.X,Rect.Top+DCOrigin.Y,
         Rect.Right-Rect.Left, Rect.Bottom-Rect.Top);
+      {$EndIf}	
       Result := True;
     end;
   end;
@@ -4629,17 +4631,19 @@ begin
   Widget:=GetFixedWidget(PGtkWidget(aHandle));
   if Widget=nil then Widget:=PgtkWidget(aHandle);
 
+{$IfNDef Win32}
   if bErase then
     gtk_widget_queue_clear_area(Widget,
                           gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
 
   gtk_widget_queue_draw_area(Widget, gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
-
-{  if bErase then
+{$Else}
+  if bErase then
     gdk_window_clear_area(GetControlWindow(Widget),
                           gdkRect.X,gdkRect.Y,gdkRect.Width,gdkRect.Height);
 
-  gtk_widget_draw(Widget, @gdkRect);}
+  gtk_widget_draw(Widget, @gdkRect);
+{$EndIf}  
 end;
 
 {------------------------------------------------------------------------------
@@ -7467,6 +7471,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.171  2002/10/26 12:32:29  lazarus
+  AJ:Minor fixes for Win32 GTK compiling
+
   Revision 1.170  2002/10/24 20:59:35  lazarus
   AJ: fixed typo causing gdk cmap error
 
