@@ -1,0 +1,13 @@
+Source: lazarus
+Section: development
+Priority: optional
+Maintainer: Pierre Gillmann <pierro@inetmx.de>
+Build-Depends: debhelper (>= 4.0.0),  fp-compiler (>=1.0.10), fp-units-base (>=1.0.10), fp-units-db (>=1.0.10), fp-units-fcl (>=1.0.10), fp-units-gfx (>=1.0.10), fp-units-gtk (>=1.0.10), fp-units-misc (>=1.0.10), fp-units-net (>=1.0.10), fp-units-rtl (>=1.0.10), fp-utils (>=1.0.10), bash
+Standards-Version: 3.6.0
+
+Package: lazarus
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: RAD tool for freepascal
+  Lazarus is a free RAD tool for FreePascal using the lazarus component
+  library LCL.

@@ -36,10 +36,7 @@ Known Issues:
 
   -TForm.Deactivate
   -Registry
-  -TBasicAction
-  -Constraints
   -Docking
-  -StdActions
   -ShellAPI
   -DoubleBuffered
   -Font.CharSet

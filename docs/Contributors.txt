@@ -30,6 +30,7 @@ Micha Nelissen
 Michal Bukovjan
 Olivier Guilbaud
 Peter Dyson
+Pierre Gillmann
 Radek Cervinka
 Raul Moratalla
 Reimar Grabowski
