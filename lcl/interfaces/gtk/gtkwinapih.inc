@@ -48,7 +48,7 @@ function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; ove
 Function CombineRgn(Dest, Src1, Src2 : HRGN; fnCombineMode : Longint) : Longint;  override;
 function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; override;
 function CreateBitmap(Width, Height: Integer; Planes, BitCount: Longint; BitmapBits: Pointer): HBITMAP; override;
-function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap): boolean; override;
+function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; override;
 function CreateBrushIndirect(const LogBrush: TLogBrush): HBRUSH; override;
 function CreateCaret(Handle : HWND; Bitmap : hBitmap; width, Height : Integer) : Boolean; override;
 function CreateCompatibleBitmap(DC: HDC; Width, Height: Integer): HBITMAP; override;
@@ -213,6 +213,9 @@ Function WindowFromPoint(Point : TPoint) : HWND; override;
 { =============================================================================
 
   $Log$
+  Revision 1.88  2004/02/19 05:07:17  mattias
+  CreateBitmapFromRawImage now creates mask only if needed
+
   Revision 1.87  2004/02/10 00:05:03  mattias
   TSpeedButton now uses MaskBlt
 

@@ -863,11 +863,11 @@ end;
 
 {------------------------------------------------------------------------------
   function TgtkObject.CreateBitmapFromRawImage(const RawImage: TRawImage;
-    var Bitmap, MaskBitmap: HBitmap): Boolean;
+    var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): Boolean;
 
  ------------------------------------------------------------------------------}
 function TgtkObject.CreateBitmapFromRawImage(const RawImage: TRawImage;
-  var Bitmap, MaskBitmap: HBitmap): boolean;
+  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 var
   GdiObject: PGDIObject;
   DefGDkWindow: PGdkWindow;
@@ -910,6 +910,7 @@ begin
     GdiObject := NewGDIObject(gdiBitmap);
     GdiObject^.GDIBitmapType := gbPixmap;
 
+    // create Pixmap from data
     ImgWidth:=RawImage.Description.Width;
     ImgHeight:=RawImage.Description.Height;
     if RawImage.Data<>nil then begin
@@ -918,6 +919,8 @@ begin
           gdk_pixmap_create_from_data(DefGdkWindow,PGChar(RawImage.Data),
                         RawImage.Description.Width, RawImage.Description.Height,
                         RawImage.Description.Depth, @fg,@bg);}
+
+      // Create a GdkImage, copy our data into it and create a pixmap from it
       ImgData:=PDWord(RawImage.Data);
       ImgDataSize:=RawImage.DataSize;
       ImgDepth:=RawImage.Description.Depth;
@@ -936,19 +939,12 @@ begin
       {$ENDIF}
       if (RawImage.Description.BitsPerPixel<>(cardinal(GdkImage^.bpp) shl 3))
       then begin
-        EndGDKErrorTrap;
         RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible BitsPerPixel');
       end;
       if (ImgDataSize<>GdkImage^.bpl*ImgHeight) then begin
-        EndGDKErrorTrap;
         RaiseGDBException('TgtkObject.CreateBitmapFromRawImage Incompatible DataSize');
       end;
       System.Move(ImgData^,GdkImage^.mem^,ImgDataSize);
-      {for y:=0 to ImgHeight-1 do begin
-        for x:=0 to ImgWidth-1 do begin
-          gdk_image_put_pixel(GdkImage,X,Y,ImgData[X+Y*ImgWidth]);
-        end;
-      end;}
       GC:=gdk_gc_new(GDkWindow);
       gdk_draw_image(PGDKDrawable(GdiObject^.GDIPixmapObject),GC,
                      GdkImage,0,0,0,0,ImgWidth,ImgHeight);
@@ -962,8 +958,9 @@ begin
     GdiObject^.Visual := gdk_window_get_visual(GdiObject^.GDIPixmapObject);
     Bitmap:=HBITMAP(GdiObject);
 
-    // mask
-    If (RawImage.Mask<>nil) then begin
+    // create mask
+    if (AlwaysCreateMask or (not RawImageMaskIsEmpty(@RawImage,true)))
+    and (RawImage.Mask<>nil) then begin
       GdiObject^.GDIBitmapMaskObject :=
           gdk_bitmap_create_from_data(DefGdkWindow,PGChar(RawImage.Mask),
                        RawImage.Description.Width, RawImage.Description.Height);
@@ -8743,6 +8740,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.331  2004/02/19 05:07:17  mattias
+  CreateBitmapFromRawImage now creates mask only if needed
+
   Revision 1.330  2004/02/17 00:32:25  mattias
   fixed TCustomImage.DoAutoSize fixing uninitialized vars
 

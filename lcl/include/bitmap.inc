@@ -75,7 +75,7 @@ begin
     try
       IntfImage.GetDescriptionFromBitmap(Handle);
       IntfImage.Assign(SrcFPImage);
-      IntfImage.CreateBitmap(ImgHandle,ImgMaskHandle);
+      IntfImage.CreateBitmap(ImgHandle,ImgMaskHandle,false);
       Handle:=ImgHandle;
       MaskHandle:=ImgMaskHandle;
     finally
@@ -159,6 +159,11 @@ end;
 function TBitmap.HandleAllocated: boolean;
 begin
   Result:=(FImage<>nil) and (FImage.FHandle<>0);
+end;
+
+function TBitmap.MaskHandleAllocated: boolean;
+begin
+  Result:=(FImage<>nil) and (FImage.FMaskHandle<>0);
 end;
 
 function TBitmap.LazarusResourceTypeValid(const ResourceType: string): boolean;
@@ -381,7 +386,7 @@ begin
         IntfImage:=TLazIntfImage.Create(0,0);
         try
           IntfImage.LoadFromBitmap(FImage.FHandle,FImage.FMaskHandle);
-          IntfImage.CreateBitmap(NewImage.FHandle,NewImage.FMaskHandle);
+          IntfImage.CreateBitmap(NewImage.FHandle,NewImage.FMaskHandle,false);
           FillChar(NewImage.FDIB, SizeOf(NewImage.FDIB), 0);
           if NewImage.HandleAllocated then
             GetObject(NewImage.FHandle, SizeOf(NewImage.FDIB), @NewImage.FDIB);
@@ -824,7 +829,7 @@ begin
     NewSaveStream.Position:=0;
     IntfImg.LoadFromStream(NewSaveStream,ImgReader);
     FinalizeFPImageReader(ImgReader);
-    IntfImg.CreateBitmap(ImgHandle,ImgMaskHandle);
+    IntfImg.CreateBitmap(ImgHandle,ImgMaskHandle,false);
     Handle:=ImgHandle;
     MaskHandle:=ImgMaskHandle;
   finally
@@ -1059,6 +1064,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2004/02/19 05:07:16  mattias
+  CreateBitmapFromRawImage now creates mask only if needed
+
   Revision 1.67  2004/02/19 03:20:58  mattias
   fixed scaling TBitmap.Draw
 

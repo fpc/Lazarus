@@ -80,9 +80,10 @@ begin
 end;
 
 function CreateBitmapFromRawImage(const RawImage: TRawImage;
-  var Bitmap, MaskBitmap: HBitmap): boolean;
+  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 begin
-  Result := InterfaceObject.CreateBitmapFromRawImage(RawImage,Bitmap,MaskBitmap);
+  Result := InterfaceObject.CreateBitmapFromRawImage(RawImage,Bitmap,MaskBitmap,
+                                                     AlwaysCreateMask);
 end;
 
 function CreateEmptyRegion: hRGN;
@@ -511,6 +512,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/02/19 05:07:17  mattias
+  CreateBitmapFromRawImage now creates mask only if needed
+
   Revision 1.15  2004/02/17 00:32:25  mattias
   fixed TCustomImage.DoAutoSize fixing uninitialized vars
 

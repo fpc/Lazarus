@@ -83,7 +83,7 @@ function GetBitmapRawImageDescription(Bitmap: HBITMAP; Desc: PRawImageDescriptio
 function GetDeviceRawImageDescription(DC: HDC; Desc: PRawImageDescription): boolean; Override;
 function GetRawImageFromDevice(SrcDC: HDC; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
 function GetRawImageFromBitmap(SrcBitmap, SrcMaskBitmap: HBITMAP; const SrcRect: TRect; var NewRawImage: TRawImage): boolean; Override;
-function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap): boolean; Override;
+function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; Override;
 
 Function GetActiveWindow: HWND; Override;
 Function GetCapture: HWND; Override;
@@ -190,6 +190,9 @@ Procedure DeleteCriticalSection(var CritSection: TCriticalSection); Override;
 { =============================================================================
 
   $Log$
+  Revision 1.46  2004/02/19 05:07:17  mattias
+  CreateBitmapFromRawImage now creates mask only if needed
+
   Revision 1.45  2004/02/03 08:54:09  mattias
   Frame3D rect now var again
 

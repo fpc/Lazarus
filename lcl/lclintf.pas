@@ -65,7 +65,7 @@ function CharLower(c: char): char;
 function CharUpper(c: char): char;
 
 {$IFDEF win32}
-function GetTickCount: DWord; cdecl; external;
+function GetTickCount: DWord; stdcall; external 'kernel32.dll' name 'GetTickCount';
 {$ELSE}
 function GetTickCount: DWord;
 function GetTickStep: DWord;
@@ -175,6 +175,9 @@ end.
 
 {
   $Log$
+  Revision 1.10  2004/02/19 05:07:16  mattias
+  CreateBitmapFromRawImage now creates mask only if needed
+
   Revision 1.9  2004/02/18 08:50:42  mattias
   moved GetTickStep to non win32
 

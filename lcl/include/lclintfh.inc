@@ -49,7 +49,7 @@ function ClipboardGetOwnerShip(ClipboardType: TClipboardType;
   Formats: PClipboardFormat): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ClipboardRegisterFormat(const AMimeType: string): TClipboardFormat; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function ComboBoxDropDown(Handle: HWND; DropDown: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
-function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
+function CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateEmptyRegion: hRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreatePixmapIndirect(const Data: Pointer; const TransColor: Longint): HBITMAP; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
 function CreateRegionCopy(SrcRGN: hRGN): hRGN; {$IFDEF IF_BASE_MEMBER}virtual;{$ENDIF}
@@ -148,6 +148,9 @@ procedure RaiseLastOSError;
 { =============================================================================
 
   $Log$
+  Revision 1.16  2004/02/19 05:07:17  mattias
+  CreateBitmapFromRawImage now creates mask only if needed
+
   Revision 1.15  2004/02/17 00:32:25  mattias
   fixed TCustomImage.DoAutoSize fixing uninitialized vars
 

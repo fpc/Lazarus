@@ -1008,6 +1008,7 @@ type
     procedure Assign(Source: TPersistent); override;
     procedure FreeImage;
     function HandleAllocated: boolean;
+    function MaskHandleAllocated: boolean;
     function LazarusResourceTypeValid(const ResourceType: string): boolean; virtual;
     procedure LoadFromStream(Stream: TStream); override;
     procedure LoadFromLazarusResource(const ResName: String); override;
@@ -1448,6 +1449,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.115  2004/02/19 05:07:16  mattias
+  CreateBitmapFromRawImage now creates mask only if needed
+
   Revision 1.114  2004/02/10 00:38:43  mattias
   deactivated fpImage or fpc 1.0.10
 

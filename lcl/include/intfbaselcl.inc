@@ -74,8 +74,10 @@ begin
 end;
 
 function TInterfaceBase.CreateBitmapFromRawImage(const RawImage: TRawImage;
-  var Bitmap, MaskBitmap: HBitmap): boolean;
+  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 begin
+  Bitmap:=0;
+  MaskBitmap:=0;
   Result := false;
 end;
 
@@ -613,6 +615,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2004/02/19 05:07:17  mattias
+  CreateBitmapFromRawImage now creates mask only if needed
+
   Revision 1.17  2004/02/17 00:32:25  mattias
   fixed TCustomImage.DoAutoSize fixing uninitialized vars
 

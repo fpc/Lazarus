@@ -159,9 +159,99 @@ const
   DefaultByteOrder = {$IFDEF Endian_Little}riboLSBFirst{$ELSE}riboMSBFirst{$ENDIF};
 
 
+function RawImageMaskIsEmpty(RawImage: PRawImage; TestPixels: boolean): boolean;
 function RawImageDescriptionAsString(Desc: PRawImageDescription): string;
 
+procedure CreateRawImageData(Width, Height, BitsPerPixel: cardinal;
+                             LineEnd: TRawImageLineEnd;
+                             var Data: Pointer; var DataSize: cardinal);
+procedure CreateRawImageLineStarts(Width, Height, BitsPerPixel: cardinal;
+                                   LineEnd: TRawImageLineEnd;
+                                   var LineStarts: PRawImagePosition);
+function GetBitsPerLine(Width, BitsPerPixel: cardinal;
+                        LineEnd: TRawImageLineEnd): cardinal;
+procedure ReadRawImageBits(TheData: PByte; const Position: TRawImagePosition;
+                       BitsPerPixel, Prec, Shift: cardinal;
+                       BitOrder: TRawImageBitOrder; var Bits: word);
+procedure WriteRawImageBits(TheData: PByte; const Position: TRawImagePosition;
+                       BitsPerPixel, Prec, Shift: cardinal;
+                       BitOrder: TRawImageBitOrder; Bits: word);
+var
+  MissingBits: array[0..15] of array[0..7] of word;
+
 implementation
+
+
+function RawImageMaskIsEmpty(RawImage: PRawImage; TestPixels: boolean): boolean;
+var
+  Width: cardinal;
+  Height: cardinal;
+  BitsPerLine: cardinal;
+  UsedBitsPerLine: cardinal;
+  UnusedBitsAtEnd: cardinal;
+  p: PByte;
+  y: cardinal;
+  x: cardinal;
+  UnusedByteMask: Byte;
+  UsedBytesPerLine: cardinal;
+begin
+  Result:=true;
+  
+  // quick test
+  if (RawImage^.Mask=nil) or (RawImage^.MaskSize=0)
+  or (RawImage^.Description.Width=0) or (RawImage^.Description.Height=0)
+  or (RawImage^.Description.AlphaPrec=0) then
+    exit;
+  Result:=false;
+  
+  // slow test
+  if TestPixels then begin
+    Width:=RawImage^.Description.Width;
+    Height:=RawImage^.Description.Height;
+    if RawImage^.Description.AlphaSeparate then begin
+      BitsPerLine:=GetBitsPerLine(Width,RawImage^.Description.AlphaBitsPerPixel,
+                                  RawImage^.Description.AlphaLineEnd);
+      UsedBitsPerLine:=Width*RawImage^.Description.AlphaBitsPerPixel;
+      UnusedBitsAtEnd:=BitsPerLine-UsedBitsPerLine;
+      if RawImage^.MaskSize<((Height*BitsPerLine+7) shr 3) then
+        raise Exception('RawImageMaskIsEmpty Invalid MaskSize');
+      if (BitsPerLine and 7)=0 then begin
+        // byte boundary
+        UsedBytesPerLine:=UsedBitsPerLine shr 3;
+        UnusedByteMask:=(1 shl UnusedBitsAtEnd)-1;
+        p:=RawImage^.Mask;
+        for y:=0 to Height-1 do begin
+          // check fully used bytes in line
+          for x:=0 to UsedBytesPerLine-1 do begin
+            if p^<>$ff then begin
+              // not all bits set -> transparent pixels found -> Mask needed
+              //writeln('RawImageMaskIsEmpty y=',y,' x=',x,' ',HexStr(Cardinal(p^),2));
+              exit;
+            end;
+            inc(p);
+          end;
+          // check partly used bytes at end of line
+          if UnusedBitsAtEnd>0 then begin
+            if (p^ or UnusedByteMask)<>$ff then begin
+              // not all bits set -> transparent pixels found -> Mask needed
+              //writeln('RawImageMaskIsEmpty y=',y,' x=',x,' ',HexStr(Cardinal(p^),2),' ',HexStr(Cardinal(UnusedByteMask),8));
+              exit;
+            end;
+            inc(p);
+          end;
+        end;
+      end else begin
+        // ToDo: AlphaSeparate and rileTight
+        exit;
+      end;
+    end else begin
+      // ToDo: Alpha not Separate
+      exit;
+    end;
+    // no pixel is transparent
+    Result:=true;
+  end;
+end;
 
 function RawImageDescriptionAsString(Desc: PRawImageDescription): string;
 
@@ -206,11 +296,226 @@ begin
   end;
 end;
 
+procedure CreateRawImageData(Width, Height, BitsPerPixel: cardinal;
+  LineEnd: TRawImageLineEnd; var Data: Pointer; var DataSize: cardinal);
+var
+  PixelCount: cardinal;
+  BitsPerLine: cardinal;
+  DataBits: Int64;
+begin
+  // get current size
+  PixelCount:=Width*Height;
+  if PixelCount=0 then exit;
+
+  // calculate BitsPerLine
+  BitsPerLine:=GetBitsPerLine(Width,BitsPerPixel,LineEnd);
+
+  // create pixels
+  DataBits:=int64(BitsPerLine)*Height;
+  DataSize:=cardinal((DataBits+7) shr 3);
+  ReAllocMem(Data,DataSize);
+  FillChar(Data^,DataSize,0);
+end;
+
+procedure CreateRawImageLineStarts(Width, Height, BitsPerPixel: cardinal;
+  LineEnd: TRawImageLineEnd; var LineStarts: PRawImagePosition);
+var
+  PixelCount: cardinal;
+  BitsPerLine: cardinal;
+  CurLine: cardinal;
+  BytesPerLine: cardinal;
+  ExtraBitsPerLine: cardinal;
+  CurBitOffset: cardinal;
+begin
+  // get current size
+  PixelCount:=Width*Height;
+  if PixelCount=0 then exit;
+
+  // calculate BitsPerLine, BytesPerLine and ExtraBitsPerLine
+  BitsPerLine:=GetBitsPerLine(Width,BitsPerPixel,LineEnd);
+  BytesPerLine:=BitsPerLine shr 3;
+  ExtraBitsPerLine:=BitsPerLine and 7;
+
+  // create line start array
+  ReAllocMem(LineStarts,Height*SizeOf(TRawImagePosition));
+  LineStarts[0].Byte:=0;
+  LineStarts[0].Bit:=0;
+  for CurLine:=1 to Height-1 do begin
+    CurBitOffset:=LineStarts[CurLine-1].Bit+ExtraBitsPerLine;
+    LineStarts[CurLine].Byte:=LineStarts[CurLine-1].Byte+BytesPerLine
+                                 +(CurBitOffset shr 3);
+    LineStarts[CurLine].Bit:=CurBitOffset and 7;
+  end;
+end;
+
+function GetBitsPerLine(Width, BitsPerPixel: cardinal;
+                        LineEnd: TRawImageLineEnd): cardinal;
+var
+  BitsPerLine: Cardinal;
+begin
+  BitsPerLine:=Width*BitsPerPixel;
+  case LineEnd of
+  rileTight: ;
+  rileByteBoundary:  BitsPerLine:=(BitsPerLine+7) and not cardinal(7);
+  rileWordBoundary:  BitsPerLine:=(BitsPerLine+15) and not cardinal(15);
+  rileDWordBoundary: BitsPerLine:=(BitsPerLine+31) and not cardinal(31);
+  rileQWordBoundary: BitsPerLine:=(BitsPerLine+63) and not cardinal(63);
+  end;
+  Result:=BitsPerLine;
+end;
+
+procedure ReadRawImageBits(TheData: PByte;
+  const Position: TRawImagePosition;
+  BitsPerPixel, Prec, Shift: cardinal; BitOrder: TRawImageBitOrder;
+  var Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  OneByte: Byte;
+  TwoBytes: Word;
+  FourBytes: Cardinal;
+begin
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  P:=@(TheData[Position.Byte]);
+  case BitsPerPixel of
+  1,2,4:
+      begin
+        OneByte:=P^;
+        if BitOrder=riboBitsInOrder then
+          Bits:=Word(cardinal(OneByte shr (Shift+Position.Bit)) and PrecMask)
+        else
+          Bits:=Word(cardinal(OneByte shr (Shift+7-Position.Bit)) and PrecMask);
+      end;
+  8:  begin
+        OneByte:=P^;
+        Bits:=Word(cardinal(OneByte shr Shift) and PrecMask);
+      end;
+  16: begin
+        TwoBytes:=PWord(P)^;
+        Bits:=Word(cardinal(TwoBytes shr Shift) and PrecMask);
+      end;
+  32: begin
+        FourBytes:=PDWord(P)^;
+        Bits:=Word(cardinal(FourBytes shr Shift) and PrecMask);
+      end;
+  else
+    Bits:=0;
+  end;
+  if Prec<16 then begin
+    // add missing bits
+    Bits:=(Bits shl (16-Prec));
+    Bits:=Bits or MissingBits[Prec,Bits shr 13];
+  end;
+end;
+
+procedure WriteRawImageBits(TheData: PByte;
+  const Position: TRawImagePosition;
+  BitsPerPixel, Prec, Shift: cardinal; BitOrder: TRawImageBitOrder; Bits: word);
+var
+  P: PByte;
+  PrecMask: Cardinal;
+  OneByte: Byte;
+  TwoBytes: Word;
+  FourBytes: Cardinal;
+  ShiftLeft: Integer;
+begin
+  P:=@(TheData[Position.Byte]);
+  PrecMask:=(Cardinal(1) shl Prec)-1;
+  Bits:=Bits shr (16-Prec);
+  {writeln('WriteDataBits WRITE Position=',Position.Byte,'/',Position.Bit,
+    ' Shift=',Shift,' Prec=',Prec,' BitsPerPixel=',BitsPerPixel,
+    ' PrecMask=',HexStr(Cardinal(PrecMask),4),
+    ' Bits=',HexStr(Cardinal(Bits),4),
+    '');}
+  case BitsPerPixel of
+  1,2,4:
+      begin
+        OneByte:=P^;
+        if BitOrder=riboBitsInOrder then
+          ShiftLeft:=Shift+Position.Bit
+        else
+          ShiftLeft:=Shift+7-Position.Bit;
+        PrecMask:=not (PrecMask shl ShiftLeft);
+        OneByte:=OneByte and PrecMask; // clear old
+        OneByte:=OneByte or (Bits shl ShiftLeft); // set new
+        P^:=OneByte;
+        //writeln('WriteDataBits 1,2,4 Result=',HexStr(Cardinal(OneByte),2));
+      end;
+  8:  begin
+        OneByte:=P^;
+        PrecMask:=not (PrecMask shl Shift);
+        OneByte:=OneByte and PrecMask; // clear old
+        OneByte:=OneByte or (Bits shl Shift); // set new
+        P^:=OneByte;
+        //writeln('WriteDataBits 8 Result=',HexStr(Cardinal(OneByte),2));
+      end;
+  16: begin
+        TwoBytes:=PWord(P)^;
+        PrecMask:=not (PrecMask shl Shift);
+        TwoBytes:=TwoBytes and PrecMask; // clear old
+        TwoBytes:=TwoBytes or (Bits shl Shift); // set new
+        PWord(P)^:=TwoBytes;
+        //writeln('WriteDataBits 16 Result=',HexStr(Cardinal(TwoBytes),4));
+      end;
+  32: begin
+        FourBytes:=PDWord(P)^;
+        PrecMask:=not (PrecMask shl Shift);
+        FourBytes:=FourBytes and PrecMask; // clear old
+        FourBytes:=FourBytes or cardinal(Bits shl Shift); // set new
+        PDWord(P)^:=FourBytes;
+        //writeln('WriteDataBits 32 Result=',HexStr(Cardinal(FourBytes),8));
+      end;
+  end;
+end;
+
+//------------------------------------------------------------------------------
+procedure InternalInit;
+var
+  Prec: Integer;
+  HighValue: word;
+  Bits: word;
+  CurShift: Integer;
+begin
+  for Prec:=0 to 15 do begin
+    For HighValue:=0 to 7 do begin
+      // Value represents the three highest bits
+      // For example:
+      //   Prec=5 and the read value is %10110
+      //   => Value=%101
+      if Prec=0 then begin
+        MissingBits[Prec,HighValue]:=0;
+        continue;
+      end;
+      // copy the value till all missing bits are set
+      // For example:
+      //   Prec=5, HighValue=%110
+      // => MissingBits[5,6]:=%0000011011011011
+      Bits:=HighValue;
+      if Prec<3 then
+        // for Precision 1 and 2 the high bits are less
+        Bits:=Bits shr (3-Prec);
+      MissingBits[Prec,HighValue]:=0;
+      CurShift:=16-Prec;
+      while CurShift>0 do begin
+        MissingBits[Prec,HighValue]:=
+          MissingBits[Prec,HighValue] or (Bits shl CurShift);
+        dec(CurShift,Prec);
+      end;
+    end;
+  end;
+end;
+
+initialization
+  InternalInit;
+
 end.
 
 { =============================================================================
 
   $Log$
+  Revision 1.25  2004/02/19 05:07:16  mattias
+  CreateBitmapFromRawImage now creates mask only if needed
+
   Revision 1.24  2004/02/09 19:52:52  mattias
   implemented ByteOrder for TLazIntfImage and added call of to LM_SETFONT
 

@@ -1640,7 +1640,8 @@ begin
   end;
 end;
 
-function TWin32Object.CreateBitmapFromRawImage(const RawImage: TRawImage; var Bitmap, MaskBitmap: HBitmap): boolean;
+function TWin32Object.CreateBitmapFromRawImage(const RawImage: TRawImage;
+  var Bitmap, MaskBitmap: HBitmap; AlwaysCreateMask: boolean): boolean;
 var
   BitmapInfo: TBitmapInfo;
   hScreenDC: HDC;
@@ -1660,10 +1661,14 @@ begin
   Result := Bitmap <> 0;
   if Result then
   begin
-    if RawImage.Description.AlphaSeparate then
+    if (AlwaysCreateMask or (not RawImageMaskIsEmpty(@RawImage,true))) then
     begin
-      MaskBitmap := Windows.CreateBitmap(RawImage.Description.Width, RawImage.Description.Height, 1, 1, RawImage.Mask);
-      Result := Result and (MaskBitmap <> 0);
+      if RawImage.Description.AlphaSeparate then
+      begin
+        MaskBitmap := Windows.CreateBitmap(RawImage.Description.Width,
+                              RawImage.Description.Height, 1, 1, RawImage.Mask);
+        Result := Result and (MaskBitmap <> 0);
+      end;
     end;
   end;
   Windows.ReleaseDC(0, hScreenDC);
@@ -2912,6 +2917,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.99  2004/02/19 05:07:17  mattias
+  CreateBitmapFromRawImage now creates mask only if needed
+
   Revision 1.98  2004/02/03 08:54:09  mattias
   Frame3D rect now var again
 
