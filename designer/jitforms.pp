@@ -201,6 +201,8 @@ type
 
 implementation
 
+{$IFOPT R+}{$DEFINE RangeCheckOn}{$ENDIF}
+
 var
   MyFindGlobalComponentProc:function(const AName:AnsiString):TComponent of object;
 
@@ -616,7 +618,7 @@ type
   TMethodNameTable = packed record
     Count : DWord;
     // for runtime range checking it is important to give a range
-    Entries : packed array[0..0] of TMethodNameRec;
+    Entries : packed array[0..1000000] of TMethodNameRec;
   end;
 
   PMethodNameTable =  ^TMethodNameTable;
@@ -676,9 +678,7 @@ procedure TJITComponentList.FreevmtCopy(vmtCopy:Pointer);
     if CurCount=BaseCount then exit;
     i:=CurCount;
     while i>BaseCount do begin
-      {$R-}
       CurMethod:=MethodTable^.Entries[i-1];
-      {$R+}
       if CurMethod.Name<>nil then
         FreeMem(CurMethod.Name);
       if CurMethod.Addr<>nil then
@@ -741,7 +741,7 @@ begin
   //for a:=0 to NewMethodTable^.Count-1 do
   //  writeln(a,'=',NewMethodTable^.Entries[a].Name^,' $'
   //    ,HexStr(Integer(NewMethodTable^.Entries[a].Name),8));
-  {$R+}
+  {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
   PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^):=NewMethodTable;
   if Assigned(OldMethodTable) then
     FreeMem(OldMethodTable);
@@ -783,7 +783,7 @@ begin
         FreeMem(OldMethodTable);
         break;
       end;
-      {$R+}
+      {$IFDEF RangeCheckOn}{$R+}{$ENDIF}
       inc(a);
     end;
   end;
@@ -802,10 +802,8 @@ begin
   MethodTable:=PMethodNameTable((Pointer(JITClass)+vmtMethodTable)^);
   if Assigned(MethodTable) then begin
     for a:=0 to MethodTable^.Count-1 do begin
-      {$R-}
       if uppercase(MethodTable^.Entries[a].Name^)=OldName then
         MethodTable^.Entries[a].Name^:=NewName;
-      {$R+}
     end;
   end;
 end;
