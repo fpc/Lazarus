@@ -583,6 +583,7 @@ lcl/include/colordialog.inc svneol=native#text/pascal
 lcl/include/commondialog.inc svneol=native#text/pascal
 lcl/include/containedaction.inc svneol=native#text/pascal
 lcl/include/control.inc svneol=native#text/pascal
+lcl/include/controlactionlink.inc svneol=native#text/pascal
 lcl/include/controlcanvas.inc svneol=native#text/pascal
 lcl/include/controlscrollbar.inc svneol=native#text/pascal
 lcl/include/controlsproc.inc svneol=native#text/pascal
