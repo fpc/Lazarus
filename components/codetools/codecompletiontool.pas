@@ -820,10 +820,12 @@ writeln('TCodeCompletionCodeTool.CreateMissingProcBodies Gather existing method 
         InsertPos:=ANode.EndPos;
       end;
       // insert class comment
-      ClassStartComment:=GetIndentStr(Indent)
-                          +'{ '+ExtractClassName(ClassNode,false)+' }';
-      ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
-         ClassStartComment);
+      if MissingNode<>nil then begin
+        ClassStartComment:=GetIndentStr(Indent)
+                            +'{ '+ExtractClassName(ClassNode,false)+' }';
+        ASourceChangeCache.Replace(gtEmptyLine,gtEmptyLine,InsertPos,InsertPos,
+           ClassStartComment);
+      end;
       // insert all missing proc bodies
       while (MissingNode<>nil) do begin
         ANodeExt:=TCodeTreeNodeExtension(MissingNode.Data);
@@ -1021,6 +1023,9 @@ writeln('TCodeCompletionCodeTool.CompleteCode Apply ... ');
         RaiseException('unable to apply changes');
 
       if JumpToProc<>'' then begin
+{$IFDEF CTDEBUG}
+writeln('TCodeCompletionCodeTool.CompleteCode Jump to new proc body ... ');
+{$ENDIF}
         // there was a new proc body
         // -> find it and jump to
 
@@ -1054,6 +1059,9 @@ writeln('TCodeCompletionCodeTool.CompleteCode Apply ... ');
         Result:=FindJumpPointInProcNode(ProcNode,NewPos,NewTopLine);
         exit;
       end else begin
+{$IFDEF CTDEBUG}
+writeln('TCodeCompletionCodeTool.CompleteCode Adjust Cursor ... ');
+{$ENDIF}
         // there was no new proc body
         // -> adjust cursor
         NewPos:=CursorPos;
