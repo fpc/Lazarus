@@ -5942,12 +5942,12 @@ const
   cLabelAlignY : array[TTextLayout] of gfloat = (0.0, 0.5, 1.0);
   cLabelAlign : array[TAlignment] of TGtkJustification = (GTK_JUSTIFY_LEFT, GTK_JUSTIFY_RIGHT, GTK_JUSTIFY_CENTER);
 var
-   Handle    : Pointer;
-   Widget, ImplWidget   : PGtkWidget;
-   I,X         : Integer;
-   pRowText : PChar;
-   BitImage : TBitMap;
-   AnAdjustment: PGtkAdjustment;
+  Handle    : Pointer;
+  Widget, ImplWidget   : PGtkWidget;
+  I,X         : Integer;
+  pRowText : PChar;
+  BitImage : TBitMap;
+  AnAdjustment: PGtkAdjustment;
 begin
   Result := 0;     // default if nobody sets it
 
@@ -6168,16 +6168,29 @@ begin
         gtk_text_set_word_wrap(PGtkText(ImplWidget), 1);
 
         case (Sender as TCustomMemo).Scrollbars of
-          ssHorizontal: gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
-          ssVertical:   gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
-          ssBoth:       gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-          ssAutoHorizontal: gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
-          ssAutoVertical:   gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
-          ssAutoBoth:       gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+          ssHorizontal:     gtk_scrolled_window_set_policy(
+                              PGtkScrolledWindow(Widget),
+                              GTK_POLICY_ALWAYS, GTK_POLICY_NEVER);
+          ssVertical:       gtk_scrolled_window_set_policy(
+                              PGtkScrolledWindow(Widget),
+                              GTK_POLICY_NEVER, GTK_POLICY_ALWAYS);
+          ssBoth:           gtk_scrolled_window_set_policy(
+                              PGtkScrolledWindow(Widget),
+                              GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+          ssAutoHorizontal: gtk_scrolled_window_set_policy(
+                              PGtkScrolledWindow(Widget),
+                              GTK_POLICY_AUTOMATIC, GTK_POLICY_NEVER);
+          ssAutoVertical:   gtk_scrolled_window_set_policy(
+                              PGtkScrolledWindow(Widget),
+                              GTK_POLICY_NEVER, GTK_POLICY_AUTOMATIC);
+          ssAutoBoth:       gtk_scrolled_window_set_policy(
+                              PGtkScrolledWindow(Widget),
+                              GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
         else
-          gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget), GTK_POLICY_NEVER, GTK_POLICY_NEVER);
+          gtk_scrolled_window_set_policy(PGtkScrolledWindow(Widget),
+                                         GTK_POLICY_NEVER, GTK_POLICY_NEVER);
         end;
-	
+
 	if (TCustomMemo(Sender).MaxLength >= 0) then begin
 	  i:= gtk_text_get_length(PGtkText(ImplWidget));
 	  if i > TCustomMemo(Sender).MaxLength then begin
@@ -7230,6 +7243,9 @@ end;
  { =============================================================================
 
   $Log$
+  Revision 1.354  2003/04/15 09:03:46  mattias
+  reduced output
+
   Revision 1.353  2003/04/15 08:54:27  mattias
   fixed TMemo.WordWrap
 
