@@ -1,0 +1,119 @@
+This text is for people knowing Delphi and it describes the differences
+
+
+Delphi -> Lazarus
+=================
+
+Lazarus is an Rapid Application Development (RAD) tool like Delphi. That means
+it comes with a visual component library and an IDE. The lazarus component
+library (LCL) is very similar to Delphi's VCL. Most units, classes and
+properties have the same name and functionality. This makes porting easy. But
+Lazarus is *not* an 'open source Delphi clone'. So don't expect 100%
+compatibility.
+
+The biggest differences:
+Lazarus is completely open source, is written platform independent and uses the
+mighty FreePascal compiler (FPC). FPC runs on more than 15 platforms. But not
+all packages and libs are ported, so Lazarus currently runs on Linux,
+Free/Open/NetBSD and the win32 port is under heavy development.
+
+Lazarus is not complete, as is this text. We are always searching for new
+developers, packagers, porters, documentation writers, ... .
+
+
+Delphi IDE -> Lazarus IDE
+=========================
+
+Projects
+
+- The main file of a Delphi application is the .dpr file. The main file of a
+  Lazarus project is the .lpi file (Lazarus Project Information). A .dpr file
+  is the program main source. A Lazarus application also has a .lpr file, which
+  is also the main source file. But the .lpr file is nothing more.
+  The important file is the .lpi file.
+- There is always a project. The only way to "close" a project is to exit
+  lazarus or open another project. This is because a lazarus project is also a
+  "session".
+  This means, the current editor settings are also stored in the .lpi file and
+  are restored when you reopen the project.
+  For example: You are debugging an application, set a lot of breakpoints and
+  bookmarks. You can save the project at any time, close lazarus or open
+  another project. When you reopen the project, even on another computer, all
+  your breakpoints, bookmarks, open files, cursor positions, jump history, ...
+  are restored.
+
+
+Source Editor
+
+- Nearly all keys and short cuts can be defined in
+  environment->editor options->key mappings
+  
+- The source editor works with comments. For Delphi comments are just space
+  between code. No code feature works there and when new code is auto inserted,
+  your comments will travel. Under Lazarus you can do a find declaration even
+  on code in comments. Although this is not completely reliable, it often works.
+  And when new code is inserted, the IDE uses some heuristics to keep comment
+  and code together. For example: It will not split the line
+  "c: char; // comment".
+
+- Delphi's "Code Completion" (Ctrl+Space) is called "Identifier Completion"
+  under Lazarus. The Lazarus term "Code Completion" is a feature, combining
+  "Automatic Class Completion" (same as under Delphi),
+  "Local Variable Completion" and "Event Assignment Completion". All of them
+  are invoked by Ctrl+Shift+C and the IDE determines by the cursor position,
+  what is ment.
+  
+  Example for Local Variable Completion:
+  Assume you just created a new method and wrote the statement "i:=3;":
+  
+  procedure TForm1.DoSomething;
+  begin
+    i:=3;
+  end;
+  
+  Position the cursor over the identifier "i" and press Ctrl+Shift+C to get
+  
+  procedure TForm1.DoSomething;
+  var
+    i: Integer;
+  begin
+    i:=3;
+  end;
+  
+  
+  Example for Event Assignment Completion. A nice feature of the object
+  inspector is to auto create methods. The same you can get in the source
+  editor. For example:
+  
+  Button1.OnClick:=
+  
+  Position the cursor behind the assign operator ":=" and press Ctrl+Shift+C.
+  
+- "Word Completion" Ctrl+W. It works similar to the "Identifier Completion",
+  but it does not work on pascal identifiers, but on all words. It lets you
+  choose of all words in all open files beginning with the same letters.
+
+- Supports Include files. Delphi didn't support it, and so you probably didn't
+  create many include files. But include files have a big advantage:
+  They make it possible writing patform (in)dependent code without messing your
+  code with IFDEFs.
+  For example: Method jumping, Class Completion, find declaration, .. all
+  work with include files.
+
+
+Designer
+
+- Guidelines
+
+
+Packages
+
+- see Packages.txt
+
+
+
+VCL -> LCL
+==========
+
+
+

@@ -198,6 +198,7 @@ designer/taborderdlg.lrs svneol=native#text/pascal
 designer/taborderdlg.pas svneol=native#text/pascal
 docs/CrossCompile.txt svneol=native#text/plain
 docs/ExtendingTheIDE.txt svneol=native#text/plain
+docs/ForDelphians.txt svneol=native#text/plain
 docs/LazarusIDEInternals.pdf -text svneol=unset#application/pdf
 docs/Packages.txt svneol=native#text/plain
 docs/RemoteDebugging.txt svneol=native#text/plain
