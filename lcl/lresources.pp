@@ -178,7 +178,7 @@ var
   LRSObjectWriterClass: TLRSObjectWriterClass;
 
 function InitLazResourceComponent(Instance: TComponent;
-  RootAncestor: TClass): Boolean;
+                                  RootAncestor: TClass): Boolean;
 function CreateLRSReader(s: TStream; var DestroyDriver: boolean): TReader;
 function CreateLRSWriter(s: TStream; var DestroyDriver: boolean): TWriter;
 
@@ -1642,7 +1642,7 @@ begin
   {$IFDEF NewLRSStreamer}
   if Result.Driver.ClassType=LRSObjectReaderClass then exit;
   // hack to set a write protected variable.
-  DestroyDriver:=true;
+  // DestroyDriver:=true; TReader will free it
   Driver:=LRSObjectReaderClass.Create(s,4096);
   p:=@Result.Driver;
   Result.Driver.Free;
