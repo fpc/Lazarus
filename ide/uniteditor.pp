@@ -49,7 +49,7 @@ uses
   Extctrls, Menus, FindInFilesDlg, LMessages, IDEProcs, IDEOptionDefs,
   InputHistory, LazarusIDEStrConsts, BaseDebugManager, Debugger, FileCtrl,
   LCLType, LCLLinux, TypInfo, LResources, LazConf, EnvironmentOpts,
-  SourceEditProcs;
+  SourceEditProcs, SortSelectionDlg;
 
 type
   TSourceNoteBook = class;
@@ -234,6 +234,7 @@ type
     procedure TabsToSpacesInSelection;
     procedure CommentSelection;
     procedure UncommentSelection;
+    procedure SortSelection;
     procedure SelectToBrace;
     procedure SelectCodeBlock;
     procedure SelectLine;
@@ -1013,7 +1014,10 @@ Begin
 
   ecSelectionUnComment:
     UncommentSelection;
-    
+
+  ecSelectionSort:
+    SortSelection;
+
   ecSelectToBrace:
     SelectToBrace;
 
@@ -1246,6 +1250,19 @@ begin
   FEditor.BlockEnd:=OldBlockEnd;
   FEditor.EndUndoBlock;
   FEditor.EndUpdate;
+end;
+
+procedure TSourceEditor.SortSelection;
+var
+  SortSelectionDialog: TSortSelectionDialog;
+begin
+  SortSelectionDialog:=TSortSelectionDialog.Create(Application);
+  SortSelectionDialog.PreviewSynEdit.Highlighter:=EditorComponent.Highlighter;
+  EditorOpts.GetSynEditSelectedColor(SortSelectionDialog.PreviewSynEdit);
+  SortSelectionDialog.TheText:=EditorComponent.SelText;
+  if SortSelectionDialog.ShowModal=mrOk then
+    EditorComponent.SelText:=SortSelectionDialog.SortedText;
+  SortSelectionDialog.Free;
 end;
 
 procedure TSourceEditor.SelectToBrace;
