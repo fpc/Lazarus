@@ -592,6 +592,20 @@ begin
   end;
 end;
 
+{------------------------------------------------------------------------------
+       TControl.CMParentColorChanged
+
+       assumes: FParent <> nil
+------------------------------------------------------------------------------}
+procedure TControl.CMParentColorChanged(var Message: TLMessage);
+begin
+  if FParentColor then
+  begin
+    Color := FParent.Color;
+    FParentColor := true;
+  end;
+end;
+
 {------------------------------------------------------------------------------}
 {       TControl.ConstrainedResize                                             }
 {------------------------------------------------------------------------------}
@@ -2048,6 +2062,16 @@ begin
   end;
 end;
 
+procedure TControl.SetParentColor(Value : Boolean);
+begin
+  if FParentColor <> Value then
+  begin
+    FParentColor := Value;
+    if Assigned(FParent) and not (csReading in ComponentState) then
+      Perform(CM_PARENTCOLORCHANGED, 0, 0);
+  end;
+end;
+
 
 {------------------------------------------------------------------------------}
 {  TControl SetParentComponent                                                 }
@@ -2402,6 +2426,7 @@ begin
   FColor := clWindow;
   FVisible := true;
   FParentShowHint := True;
+  FParentColor := True;
   FWindowProc := @WndProc;
   FCursor := crDefault;
   FFont := TFont.Create;
@@ -2561,6 +2586,9 @@ end;
 
 { =============================================================================
   $Log$
+  Revision 1.155  2003/09/13 15:51:21  mattias
+  implemented parent color from Micha
+
   Revision 1.154  2003/09/13 10:04:35  mattias
   fixed ColorIsStored
 

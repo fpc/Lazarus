@@ -683,6 +683,7 @@ type
     procedure SetLeft(Value: Integer);
     procedure SetMouseCapture(Value : Boolean);
     procedure SetParentShowHint(Value : Boolean);
+    procedure SetParentColor(Value : Boolean);
     procedure SetPopupMenu(Value : TPopupMenu);
     procedure SetShowHint(Value : Boolean);
     Procedure SetTabOrder(Value : TTabOrder);
@@ -727,6 +728,7 @@ type
     procedure CMMouseEnter(var Message :TLMessage); message CM_MouseEnter;
     procedure CMMouseLeave(var Message :TLMessage); message CM_MouseLeave;
     procedure CMHintShow(var Message: TLMessage); message CM_HINTSHOW;
+    procedure CMParentColorChanged(var Message : TLMessage); message CM_PARENTCOLORCHANGED;
     procedure CMVisibleChanged(var Message : TLMessage); message CM_VISIBLECHANGED;
     procedure ConstrainedResize(var MinWidth, MinHeight, MaxWidth, MaxHeight : TConstraintSize); virtual;
     function  GetPalette: HPalette; virtual;
@@ -803,7 +805,7 @@ type
     property IsControl: Boolean read FIsControl write FIsControl;
     property MouseCapture: Boolean read GetMouseCapture write SetMouseCapture;
     property ParentFont: Boolean  read FParentFont write FParentFont;
-    property ParentColor: Boolean  read FParentColor write FParentColor;
+    property ParentColor: Boolean  read FParentColor write SetParentColor;
     property ParentShowHint : Boolean read FParentShowHint write SetParentShowHint default True;
     property Text: TCaption read GetText write SetText;
     property OnConstrainedResize: TConstrainedResizeEvent read FOnConstrainedResize write FOnConstrainedResize;
@@ -1842,6 +1844,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.149  2003/09/13 15:51:21  mattias
+  implemented parent color from Micha
+
   Revision 1.148  2003/09/02 08:39:16  mattias
   added italian localization
 
