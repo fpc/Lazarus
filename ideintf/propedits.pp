@@ -2356,8 +2356,8 @@ begin
   //
 end;
 
-procedure TPropertyEditor.PropDrawName(ACanvas:TCanvas; const ARect:TRect;
-  AState:TPropEditDrawState);
+procedure TPropertyEditor.PropDrawName(ACanvas: TCanvas; const ARect: TRect;
+  AState: TPropEditDrawState);
 var
   Style : TTextStyle;
 begin
@@ -2376,8 +2376,8 @@ begin
   ACanvas.TextRect(ARect, 2,0,GetName, Style);
 end;
 
-procedure TPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect:TRect;
-  AState:TPropEditDrawState);
+procedure TPropertyEditor.PropDrawValue(ACanvas:TCanvas; const ARect: TRect;
+  AState: TPropEditDrawState);
 var
   Style : TTextStyle;
 begin

@@ -755,16 +755,20 @@ begin
   else
     RequiredState([csHandleValid, csFontValid]);
 
+  // calculate text rectangle
   fRect := ARect;
-  DrawText(Self.Handle,pChar(Text),Length(Text),fRect, DT_CALCRECT or Options);
-  case Style.Alignment of
-    taRightJustify : OffsetRect(fRect, ARect.Right - fRect.Right, 0);
-    taCenter : OffsetRect(fRect, (ARect.Right - fRect.Right) div 2, 0);
-  end;
-  case Style.Layout of
-    tlCenter : OffsetRect(fRect, 0, (ARect.Bottom - ARect.Top) div 2
-                                    - (fRect.Bottom - fRect.Top) div 2);
-    tlBottom : OffsetRect(fRect, 0, ARect.Bottom - fRect.Bottom);
+  if (Style.Alignment in [taRightJustify,taCenter])
+  or (Style.Layout in [tlCenter,tlBottom]) then begin
+    DrawText(Self.Handle,pChar(Text),Length(Text),fRect,DT_CALCRECT or Options);
+    case Style.Alignment of
+      taRightJustify : OffsetRect(fRect, ARect.Right - fRect.Right, 0);
+      taCenter : OffsetRect(fRect, (ARect.Right - fRect.Right) div 2, 0);
+    end;
+    case Style.Layout of
+      tlCenter : OffsetRect(fRect, 0,
+               ((ARect.Bottom - ARect.Top) - (fRect.Bottom - fRect.Top)) div 2);
+      tlBottom : OffsetRect(fRect, 0, ARect.Bottom - fRect.Bottom);
+    end;
   end;
   If Style.Opaque then begin
     RequiredState([csHandleValid, csBrushValid]);
@@ -1253,6 +1257,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.62  2004/01/31 15:29:55  mattias
+  added icons for synhighlighter
+
   Revision 1.61  2004/01/05 01:18:15  mattias
   implemented Double Buffering for synedit and deactivated multi buffering in TGTKObject.ExtTextOut
 

@@ -1727,6 +1727,7 @@ var
   TypeKind : TTypeKind;
   Window: TWinControl;
 begin
+  // ToDo: use LCL hintsystem
   FHintTimer.Enabled := False;
   if not ShowHint then exit;
 
