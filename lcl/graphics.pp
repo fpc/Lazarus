@@ -1476,22 +1476,29 @@ var
   StartPos: Integer;
   EndPos: Integer;
   i: Integer;
+  Ext: String;
 begin
   Result:=false;
   if FileExtension='' then exit;
   Extensions:=GetFileExtensions;
+  if Extensions='' then exit;
+  Ext:=FileExtension;
+  if Ext[1]='.'  then begin
+    Ext:=copy(Ext,2,length(Ext));
+    if Ext='' then exit;
+  end;
   StartPos:=1;
   while StartPos<=length(Extensions) do begin
     if not (Extensions[StartPos] in [';',' ']) then begin
       EndPos:=StartPos;
       while (EndPos<=length(Extensions)) and (Extensions[EndPos]<>';') do
         inc(EndPos);
-      if EndPos-StartPos=length(FileExtension) then begin
+      if EndPos-StartPos=length(Ext) then begin
         i:=1;
-        while (i<=length(FileExtension))
-        and (upcase(Extensions[StartPos+i-1])=upcase(FileExtension[i])) do
+        while (i<=length(Ext))
+        and (upcase(Extensions[StartPos+i-1])=upcase(Ext[i])) do
           inc(i);
-        if i>length(FileExtension) then begin
+        if i>length(Ext) then begin
           Result:=true;
           exit;
         end;
@@ -1592,6 +1599,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.124  2004/03/01 18:02:00  mattias
+  fixed IsFileExtensionSupported
+
   Revision 1.123  2004/02/29 22:51:54  mattias
   added jpeg example
 

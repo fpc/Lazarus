@@ -47,24 +47,23 @@ begin
   FOldWorkingDir:=GetCurrentDir;
   if FInitialDir<>'' then SetCurrentDir(FInitialDir);
   try
-    FUserChoice := mrNone;
-    CNSendMessage(LM_CREATE, Self, nil);
-    Result:= DoExecute;
-    CNSendMessage(LM_DESTROY, Self, nil);
-    FHandle := 0;
+    Result:=inherited Execute;
   finally
     SetCurrentDir(FOldWorkingDir);
   end;
 end;
 
-{------------------------------------------------------------------------------}
-{  TFileDialog DoExecute                                                         }
-{------------------------------------------------------------------------------}
+{------------------------------------------------------------------------------
+  TFileDialog DoExecute
+------------------------------------------------------------------------------}
 procedure TFileDialog.SetHistoryList(const AValue: TStrings);
 begin
   FHistoryList.Assign(AValue);
 end;
 
+{------------------------------------------------------------------------------
+  procedure TFileDialog.SetDefaultExt(const AValue: string);
+------------------------------------------------------------------------------}
 procedure TFileDialog.SetDefaultExt(const AValue: string);
 begin
   FDefaultExt:=AValue;
@@ -93,6 +92,7 @@ end;
 {------------------------------------------------------------------------------}
 procedure TFileDialog.SetFileName(const value : string);
 begin
+  if FFilename=Value then exit;
   FFileName := Value;  // make sure this is defined first before the CNSendMessage
 end;
 
@@ -278,6 +278,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.18  2004/03/01 18:02:00  mattias
+  fixed IsFileExtensionSupported
+
   Revision 1.17  2004/02/23 08:19:04  micha
   revert intf split
 

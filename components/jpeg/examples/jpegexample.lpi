@@ -23,7 +23,7 @@
         <UsageCount Value="33"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="3" Y="6"/>
+        <CursorPos X="21" Y="17"/>
         <EditorIndex Value="0"/>
         <Filename Value="mainform.pas"/>
         <ComponentName Value="JPEGExampleForm"/>
