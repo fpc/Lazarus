@@ -516,17 +516,13 @@ begin
           PageIndex:=NewPageIndex;
       end;
     end;
-    if (HandleAllocated) and (APage.HandleAllocated) then begin
+    if HandleAllocated and APage.HandleAllocated then begin
       TWSCustomNotebookClass(WidgetSetClass).RemovePage(Self, Index);
     end;
     FPageList.Delete(Index);
     APage.Parent:=nil;
-    if not (csLoading in ComponentState) then begin
-      if NewPageIndex>=Index then
-        dec(NewPageIndex);
-      if (NewPageIndex>=0) and (FPageList.Count>0) then
-        PageIndex:=NewPageIndex;
-    end;
+    if fPageIndex >= Index then
+      Dec(fPageIndex);
   end;
   {$IFDEF NOTEBOOK_DEBUG}
   DebugLn('TCustomNotebook.RemovePage END ',fNoteBook.Name,' Index=',Index,' fPageList.Count=',fPageList.Count,' fNoteBook.PageIndex=',fNoteBook.PageIndex);
@@ -778,6 +774,9 @@ end;
 { =============================================================================
 
   $Log$
+  Revision 1.68  2005/01/03 11:13:41  micha
+  fix repeatingly setting pageindex 0,1,0,1,.. when removing more pages ... note: needs implementation of visible list
+
   Revision 1.67  2005/01/01 11:59:58  mattias
   fixed collecting values
 
