@@ -40,6 +40,7 @@ unit LinkScanner;
 
 // debugging
 { $DEFINE ShowUpdateCleanedSrc}
+{ $DEFINE VerboseIncludeSearch}
 
 interface
 
@@ -2232,7 +2233,7 @@ begin
   if (Src[SrcPos]<>'%') then begin
     IncFilename:=Trim(copy(Src,SrcPos,CommentInnerEndPos-SrcPos));
     if PascalCompiler<>pcDelphi then begin
-      // default is fpc behaviour
+      // default is fpc behaviour (default extension is .pp)
       if ExtractFileExt(IncFilename)='' then
         IncFilename:=IncFilename+'.pp';
     end else begin
@@ -2329,6 +2330,9 @@ var PathStart, PathEnd: integer;
   end;
 
 begin
+  {$IFDEF VerboseIncludeSearch}
+  writeln('TLinkScanner.SearchIncludeFile Filename="',AFilename,'"');
+  {$ENDIF}
   IncludePath:='';
   if not Assigned(FOnLoadSource) then begin
     NewCode:=nil;
@@ -2346,6 +2350,9 @@ begin
   // include filename is relative
   
   // first search include file in the directory of the main source
+  {$IFDEF VerboseIncludeSearch}
+  writeln('TLinkScanner.SearchIncludeFile MainSourceFilename="',FMainSourceFilename,'"');
+  {$ENDIF}
   if FilenameIsAbsolute(FMainSourceFilename) then begin
     // main source has absolute filename
     ExpFilename:=ExtractFilePath(FMainSourceFilename)+AFilename;
@@ -2379,6 +2386,9 @@ begin
     PathDivider:=':'
   else
     PathDivider:=':;';
+  {$IFDEF VerboseIncludeSearch}
+  writeln('TLinkScanner.SearchIncludeFile IncPath="',IncludePath,'" PathDivider="',PathDivider,'"');
+  {$ENDIF}
   PathStart:=1;
   PathEnd:=PathStart;
   while PathEnd<=length(IncludePath) do begin

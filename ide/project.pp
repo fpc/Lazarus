@@ -282,7 +282,9 @@ type
   
   TProjectFileSearchFlag = (
     pfsfResolveFileLinks,
-    pfsfOnlyEditorFiles
+    pfsfOnlyEditorFiles,
+    pfsfOnlyVirtualFiles,
+    pfsfOnlyProjectFiles
     );
   TProjectFileSearchFlags = set of TProjectFileSearchFlag;
 
@@ -400,6 +402,8 @@ type
     function UnitWithEditorIndex(Index:integer): TUnitInfo;
     Function UnitWithComponent(AComponent: TComponent): TUnitInfo;
     function UnitInfoWithFilename(const AFilename: string): TUnitInfo;
+    function UnitInfoWithFilename(const AFilename: string;
+                    SearchFlags: TProjectFileSearchFlags): TUnitInfo;
     function UnitWithUnitname(const AnUnitname: string): TUnitInfo;
 
     // units in editor
@@ -2526,6 +2530,18 @@ begin
     Result:=nil;
 end;
 
+function TProject.UnitInfoWithFilename(const AFilename: string;
+  SearchFlags: TProjectFileSearchFlags): TUnitInfo;
+var
+  i: Integer;
+begin
+  i:=IndexOfFilename(AFilename,SearchFlags);
+  if i>=0 then
+    Result:=Units[i]
+  else
+    Result:=nil;
+end;
+
 function TProject.UnitWithUnitname(const AnUnitname: string): TUnitInfo;
 var
   i: Integer;
@@ -2559,6 +2575,16 @@ begin
   while (Result>=0) do begin
     if (pfsfOnlyEditorFiles in SearchFlags)
     and (Units[Result].EditorIndex<0) then begin
+      dec(Result);
+      continue;
+    end;
+    if (pfsfOnlyVirtualFiles in SearchFlags)
+    and (not Units[Result].IsVirtual) then begin
+      dec(Result);
+      continue;
+    end;
+    if (pfsfOnlyProjectFiles in SearchFlags)
+    and (not Units[Result].IsPartOfProject) then begin
       dec(Result);
       continue;
     end;
@@ -2789,6 +2815,9 @@ end.
 
 {
   $Log$
+  Revision 1.146  2004/01/03 20:19:22  mattias
+  fixed reopening virtual files
+
   Revision 1.145  2003/12/26 09:37:19  mattias
   added TProject.Destroying
 

@@ -59,9 +59,11 @@ begin
   File2:=Filename2;
   if ResolveLinks then begin
     File1:=ReadAllLinks(File1,false);
+    if (File1='') then File1:=Filename1;
     File2:=ReadAllLinks(File2,false);
+    if (File2='') then File2:=Filename2;
   end;
-  Result:=CompareFilenames(File1, File2);
+  Result:=CompareFilenames(File1,File2);
 end;
 
 {------------------------------------------------------------------------------
@@ -896,6 +898,9 @@ end;
 
 {
   $Log$
+  Revision 1.40  2004/01/03 20:19:22  mattias
+  fixed reopening virtual files
+
   Revision 1.39  2003/12/25 14:17:07  mattias
   fixed many range check warnings
 

@@ -401,10 +401,12 @@ end;
 function TCodeCache.OnScannerLoadSource(Sender: TObject;
   const AFilename: string; OnlyIfExists: boolean): pointer;
 begin
-  if OnlyIfExists
-  and FilenameIsAbsolute(AFilename) and (not FileExists(AFilename)) then
-    Result:=FindFile(AFilename)
-  else
+  if OnlyIfExists then begin
+    Result:=FindFile(AFilename);
+    if (Result=nil)
+    and (FilenameIsAbsolute(AFilename) and FileExists(AFilename)) then
+      Result:=LoadFile(AFilename);
+  end else
     Result:=LoadFile(AFilename);
   if Result<>nil then
     OnScannerCheckFileOnDisk(Result);

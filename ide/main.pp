@@ -2948,22 +2948,24 @@ begin
   LFMCode:=nil;
   ResourceCode:=nil;
   if AnUnitInfo.HasResources then begin
+    //writeln('TMainIDE.DoLoadResourceFile A "',AnUnitInfo.Filename,'" "',AnUnitInfo.ResourceFileName,'"');
     // first try to find the resource file via the unit source
     LinkIndex:=-1;
     ResourceCode:=CodeToolBoss.FindNextResourceFile(
       AnUnitInfo.Source,LinkIndex);
-    // if unit source has errors, then try the last resource file
-    if (ResourceCode=nil) then begin
+    // if unit source has errors, then show the error and try the last resource
+    // file
+    if (ResourceCode=nil) and (CodeToolBoss.ErrorMessage<>'') then begin
       if not IgnoreSourceErrors then
         DoJumpToCodeToolBossError;
-      if (AnUnitInfo.ResourceFileName<>'')
-      then begin
+      if (AnUnitInfo.ResourceFileName<>'') then begin
         Result:=LoadCodeBuffer(ResourceCode,AnUnitInfo.ResourceFileName,
-                                       [lbfCheckIfText]);
+                               [lbfCheckIfText]);
         if Result=mrAbort then exit;
       end;
     end;
-    // if no resource file (aka normally .lrs file) found then tell the user
+    // if no resource file found (i.e. normally the .lrs file)
+    // then tell the user
     if (ResourceCode=nil) and (not IgnoreSourceErrors) then begin
       MsgTxt:=Format(lisUnableToLoadOldResourceFileTheResourceFileIs, [#13,
         #13, #13, AnUnitInfo.UnitName, #13]);
@@ -3215,7 +3217,7 @@ begin
           {$ENDIF}
           // replace lazarus form resource code
           if not (sfSaveToTestDir in Flags) then begin
-            // if resource name has chanegd, delete old resource
+            // if resource name has changed, delete old resource
             if (AnUnitInfo.ComponentName<>AnUnitInfo.ComponentResourceName)
             and (AnUnitInfo.ComponentResourceName<>'') then begin
               CodeToolBoss.RemoveLazarusResource(ResourceCode,
@@ -3311,7 +3313,7 @@ begin
     if not (sfSaveToTestDir in Flags) then begin
       if (ResourceCode.Modified) then begin
         Result:=DoSaveCodeBufferToFile(ResourceCode,ResourceCode.Filename,
-            AnUnitInfo.IsPartOfProject);
+                                       AnUnitInfo.IsPartOfProject);
         if not Result=mrOk then exit;
       end;
     end else begin
@@ -4182,6 +4184,7 @@ var NewUnitInfo:TUnitInfo;
   NewBuffer: TCodeBuffer;
   OldUnitIndex: Integer;
   AncestorType: TComponentClass;
+  NewResBuffer: TCodeBuffer;
 begin
   writeln('TMainIDE.DoNewEditorFile A NewFilename=',NewFilename);
   SaveSourceEditorChangesToCodeCache(-1);
@@ -4215,7 +4218,11 @@ begin
     if NewUnitType in [nuForm,nuDataModule,nuCGIDataModule] then begin
       NewUnitInfo.ComponentName:=Project1.NewUniqueComponentName(NewUnitType);
       NewUnitInfo.ComponentResourceName:='';
-      CodeToolBoss.CreateFile(ChangeFileExt(NewFilename,ResourceFileExt));
+      NewResBuffer:=CodeToolBoss.CreateFile(
+                                    ChangeFileExt(NewFilename,ResourceFileExt));
+      if NewResBuffer=nil then begin
+        RaiseException('TMainIDE.DoNewEditorFile Internal error');
+      end;
     end;
     NewUnitInfo.CreateStartCode(NewUnitType,NewUnitName);
   end else begin
@@ -4394,10 +4401,10 @@ begin
     exit;
   end;
 
-  // load resource file
+  // load old resource file
   Result:=DoLoadResourceFile(ActiveUnitInfo,LFMCode,ResourceCode,
                              not (sfSaveAs in Flags));
-  if Result in [mrIgnore, mrOk] then
+  if Result in [mrIgnore,mrOk] then
     Result:=mrCancel
   else
     exit;
@@ -4405,7 +4412,7 @@ begin
   if [sfSaveAs,sfSaveToTestDir]*Flags=[sfSaveAs] then begin
     // let user choose a filename
     Result:=DoShowSaveFileAsDialog(ActiveUnitInfo,ResourceCode);
-    if Result in [mrIgnore, mrOk] then
+    if Result in [mrIgnore,mrOk] then
       Result:=mrCancel
     else
       exit;
@@ -4577,7 +4584,8 @@ begin
   // if this is the main unit, it is already
   // loaded and needs only to be shown in the sourceeditor/formeditor
   if (not (ofRevert in Flags))
-  and (CompareFilenames(Project1.MainFilename,AFilename,true)=0)
+  and (CompareFilenames(Project1.MainFilename,AFilename,
+       not (ofVirtualFile in Flags))=0)
   then begin
     Result:=DoOpenMainUnit(ofProjectLoading in Flags);
     exit;
@@ -4613,7 +4621,7 @@ begin
     ReOpen:=(UnitIndex>=0);
     // check if there is already a symlinked file open in the editor
     OtherUnitIndex:=Project1.IndexOfFilename(AFilename,
-                                  [pfsfOnlyEditorFiles,pfsfResolveFileLinks]);
+                                    [pfsfOnlyEditorFiles,pfsfResolveFileLinks]);
     if (OtherUnitIndex>=0) and (OtherUnitIndex<>UnitIndex) then begin
       // There is another file open in the editor symlinked to the same file
       // ToDo
@@ -5072,7 +5080,7 @@ end;
 function TMainIDE.DoNewProject(NewProjectType:TProjectType):TModalResult;
 var i:integer;
 Begin
-writeln('TMainIDE.DoNewProject A');
+  writeln('TMainIDE.DoNewProject A');
   Result:=mrCancel;
 
   // invalidate cached substituted macros
@@ -7449,25 +7457,34 @@ begin
     MessagesView.SelectedMessageIndex:=Index;
   end;
   MessagesView.GetVisibleMessageAt(Index,CurMsg,CurDir);
+writeln('TMainIDE.DoJumpToCompilerMessage A ');
   if TheOutputFilter.GetSourcePosition(CurMsg,Filename,CaretXY,MsgType)
   then begin
-    if not FilenameIsAbsolute(Filename) then begin
+writeln('TMainIDE.DoJumpToCompilerMessage B ');
+    if (not FilenameIsAbsolute(Filename)) and (CurDir<>'') then begin
+      // the directory was just hidden, re-append it
       NewFilename:=AppendPathDelim(CurDir)+Filename;
       if FileExists(NewFilename) then
         Filename:=NewFilename;
     end;
 
+writeln('TMainIDE.DoJumpToCompilerMessage C ');
     OpenFlags:=[ofOnlyIfExists,ofRegularFile];
     if IsTestUnitFilename(Filename) then begin
       SearchedFilename := ExtractFileName(Filename);
       Include(OpenFlags,ofVirtualFile);
     end else begin
       SearchedFilename := FindUnitFile(Filename);
+writeln('TMainIDE.DoJumpToCompilerMessage D ',SearchedFilename);
+      if not FilenameIsAbsolute(SearchedFilename) then
+        Include(OpenFlags,ofVirtualFile);
     end;
 
+writeln('TMainIDE.DoJumpToCompilerMessage E ',SearchedFilename);
     if SearchedFilename<>'' then begin
       // open the file in the source editor
       Result:=(DoOpenEditorFile(SearchedFilename,-1,OpenFlags)=mrOk);
+writeln('TMainIDE.DoJumpToCompilerMessage F ',Result);
       if Result then begin
         // set caret position
         SourceNotebook.AddJumpPointClicked(Self);
@@ -7724,16 +7741,26 @@ end;
 function TMainIDE.FindUnitFile(const AFilename: string): string;
 var
   SearchPath, ProjectDir: string;
+  AnUnitInfo: TUnitInfo;
 begin
   if FilenameIsAbsolute(AFilename) then begin
     Result:=AFilename;
     exit;
   end;
-  // ToDo: use the CodeTools way to find the pascal source
-  ProjectDir:=Project1.ProjectDirectory;
-  SearchPath:=CodeToolBoss.DefineTree.GetUnitPathForDirectory(ProjectDir)
-            +';'+CodeToolBoss.DefineTree.GetSrcPathForDirectory(ProjectDir);
-  Result:=SearchFileInPath(AFilename,ProjectDir,SearchPath,';',[]);
+  Result:='';
+  if not Project1.IsVirtual then begin
+    // ToDo: use the CodeTools way to find the pascal source
+    ProjectDir:=Project1.ProjectDirectory;
+    SearchPath:=CodeToolBoss.DefineTree.GetUnitPathForDirectory(ProjectDir)
+              +';'+CodeToolBoss.DefineTree.GetSrcPathForDirectory(ProjectDir);
+    Result:=SearchFileInPath(AFilename,ProjectDir,SearchPath,';',[]);
+    if Result<>'' then exit;
+  end;
+  // search in virtual (unsaved) files
+  AnUnitInfo:=Project1.UnitInfoWithFilename(AFilename,
+                                   [pfsfOnlyProjectFiles,pfsfOnlyVirtualFiles]);
+  if AnUnitInfo<>nil then
+    Result:=AnUnitInfo.Filename;
 end;
 
 {------------------------------------------------------------------------------
@@ -8732,6 +8759,7 @@ procedure TMainIDE.DoJumpToCodeToolBossError;
 var
   ActiveSrcEdit:TSourceEditor;
   ErrorCaret: TPoint;
+  OpenFlags: TOpenFlags;
 begin
   if CodeToolBoss.ErrorMessage='' then begin
     UpdateSourceNames;
@@ -8742,6 +8770,7 @@ begin
   DoArrangeSourceEditorAndMessageView(false);
   MessagesView.ClearTillLastSeparator;
   MessagesView.AddSeparator;
+writeln('TMainIDE.DoJumpToCodeToolBossError A ',CodeToolBoss.ErrorCode<>nil);
   if CodeToolBoss.ErrorCode<>nil then begin
     MessagesView.AddMsg(Project1.RemoveProjectPathFromFilename(
        CodeToolBoss.ErrorCode.Filename)
@@ -8757,9 +8786,13 @@ begin
   if CodeToolBoss.ErrorCode<>nil then begin
     SourceNotebook.AddJumpPointClicked(Self);
     ErrorCaret:=Point(CodeToolBoss.ErrorColumn,CodeToolBoss.ErrorLine);
-    if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,-1,
-      [ofOnlyIfExists,ofUseCache])=mrOk
+writeln('TMainIDE.DoJumpToCodeToolBossError B ',CodeToolBoss.ErrorCode.Filename,' ',CodeToolBoss.ErrorCode.IsVirtual);
+    OpenFlags:=[ofOnlyIfExists,ofUseCache];
+    if CodeToolBoss.ErrorCode.IsVirtual then
+      Include(OpenFlags,ofVirtualFile);
+    if DoOpenEditorFile(CodeToolBoss.ErrorCode.Filename,-1,OpenFlags)=mrOk
     then begin
+writeln('TMainIDE.DoJumpToCodeToolBossError C ',CodeToolBoss.ErrorCode.Filename,' ',CodeToolBoss.ErrorCode.IsVirtual);
       ActiveSrcEdit:=SourceNoteBook.GetActiveSE;
       MessagesView.ShowOnTop;
       SourceNoteBook.ShowOnTop;
@@ -10237,6 +10270,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.691  2004/01/03 20:19:22  mattias
+  fixed reopening virtual files
+
   Revision 1.690  2003/12/28 11:00:43  mattias
   fixed memleak after showing project units  from vincent
 
