@@ -35,13 +35,14 @@
 
 Detailed description of the Unit.
 }
-program edittest;
+program EditTest;
 
 {$mode objfpc}{$H+}
 
 uses
-  StdCtrls, buttons, classes, forms, controls, sysutils, Graphics,  synedit,
-  synhighlighterpas;
+  Interfaces,
+  StdCtrls, Buttons, Classes, Forms, Controls, SysUtils, Graphics,
+  SynEdit, SynHighlighterPas;
 
 type
   TEditTestForm = class(TForm)
@@ -108,6 +109,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2002/10/29 08:22:32  lazarus
+  MG: added interfaces unit
+
   Revision 1.4  2002/05/10 06:57:50  lazarus
   MG: updated licenses
 

@@ -26,12 +26,13 @@
  *                                                                         *
  ***************************************************************************
 }
-program combobox;
+program ComboBox;
 
 {$mode objfpc}{$H+}
 
 uses
-  classes, stdctrls,forms,buttons,menus,comctrls,sysutils, extctrls,controls;
+  Interfaces, Classes, StdCtrls, Forms, Buttons, Menus, ComCtrls,
+  SysUtils, Extctrls, Controls;
 
 type
 	TForm1 = class(TFORM)
@@ -388,6 +389,9 @@ end.
 
 {
   $Log$
+  Revision 1.7  2002/10/29 08:22:32  lazarus
+  MG: added interfaces unit
+
   Revision 1.6  2002/09/07 20:30:50  lazarus
   Make TComboboxes sort again, including in OI
 

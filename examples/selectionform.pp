@@ -25,8 +25,8 @@ interface
 {$mode delphi}
 
 uses
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ControlSelection,
-  StdCtrls, Buttons;
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ControlSelection, StdCtrls, Buttons;
 
 type
   TForm1 = class(TForm)

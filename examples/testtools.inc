@@ -2351,8 +2351,6 @@ begin
 end;
 
 procedure TForm1.EventOnMouseMove(Sender : TObject; Shift : TShiftState; X,Y : Integer);
-var
-Nothing : TMouseButton;
 begin
   If Sender = BenchForm[5] then
   Begin
@@ -2881,6 +2879,9 @@ begin
 end;
 {
   $Log$
+  Revision 1.9  2002/10/29 08:22:33  lazarus
+  MG: added interfaces unit
+
   Revision 1.8  2002/07/30 06:24:06  lazarus
   MG: added a faster version of TXMLConfig
 

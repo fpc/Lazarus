@@ -39,7 +39,8 @@ program Trackbar;
 {$mode objfpc}{$H+}
 
 uses
-  classes, forms,buttons,menus,comctrls,sysutils, controls;
+  Interfaces, Classes, Forms, Buttons, Menus, ComCtrls,
+  SysUtils, Controls;
 
 type
 	TForm1 = class(TFORM)
@@ -309,6 +310,9 @@ begin
 end.
 {
   $Log$
+  Revision 1.5  2002/10/29 08:22:33  lazarus
+  MG: added interfaces unit
+
   Revision 1.4  2002/05/10 06:57:50  lazarus
   MG: updated licenses
 

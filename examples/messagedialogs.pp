@@ -32,7 +32,7 @@ Program MessagDialogs;
 
 {$mode objfpc}{$H+}
 
-uses classes, forms, dialogs, buttons;
+uses Interfaces, Classes, Forms, Dialogs, Buttons;
      
 type
    TMainForm = class(TForm)
@@ -85,6 +85,9 @@ begin
 end.
 {
    $Log$
+   Revision 1.6  2002/10/29 08:22:32  lazarus
+   MG: added interfaces unit
+
    Revision 1.5  2002/09/03 20:02:01  lazarus
    Intermediate UI patch to show a bug.
 

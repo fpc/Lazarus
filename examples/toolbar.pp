@@ -34,8 +34,8 @@ program Toolbar;
 {$mode objfpc}{$H+}
 
 uses
-  classes, stdctrls,forms,buttons,menus,comctrls,sysutils, extctrls, 
-  controls;
+  Interfaces, Classes, StdCtrls, Forms, Buttons, Menus, ComCtrls,
+  SysUtils, ExtCtrls, Controls;
 
 type
 	TForm1 = class(TFORM)

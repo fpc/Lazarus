@@ -37,8 +37,8 @@ program NotebookTest;
 {$mode delphi}
 
 uses
-  classes, Controls, forms,buttons,sysutils, stdctrls,
-	Graphics, extctrls;
+  Interfaces, Classes, Controls, Forms, Buttons, SysUtils, StdCtrls,
+  Graphics, ExtCtrls;
 
 type
 	  

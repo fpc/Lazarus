@@ -18,12 +18,13 @@
  *                                                                         *
  ***************************************************************************
 }
-program listboxtest;
+program ListBoxTest;
 
 {$mode objfpc}{$H+}
 
 uses
-  buttons, classes, forms, stdctrls, sysutils, Vclglobals, clistbox;
+  Interfaces, Buttons, Classes, Forms, StdCtrls, SysUtils, Vclglobals,
+  CListBox;
 
 type
   TListBoxTestForm = class(TForm)
@@ -135,6 +136,7 @@ var
   X: integer;
 begin
   X := integer(ListBox.Items.Objects[ListBox.ItemIndex]);
+  writeln('TListBoxTestForm.Button4Click ',X);
 end;
 
 begin

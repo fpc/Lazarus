@@ -23,6 +23,7 @@ program Selection;
 {$mode delphi}
 
 uses
+  Interfaces,
   Forms,
   Selectionform,
   ControlSelection;

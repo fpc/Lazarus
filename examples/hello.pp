@@ -18,12 +18,11 @@
  *                                                                         *
  ***************************************************************************
 }
-program hello_world;
+program Hello_world;
 
 {$mode objfpc}{$H+}
 
-uses forms,
-     helloform;
+uses Interfaces, Forms, HelloForm;
 
 begin
    Application.Initialize; { calls InitProcedure which starts up GTK }

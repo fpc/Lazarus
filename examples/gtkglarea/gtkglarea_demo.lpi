@@ -8,7 +8,7 @@
         <SaveOnlyProjectUnits Value="True"/>
       </Flags>
       <MainUnit Value="0"/>
-      <ActiveEditorIndexAtStart Value="1"/>
+      <ActiveEditorIndexAtStart Value="2"/>
       <IconPath Value=""/>
       <TargetFileExt Value=""/>
       <Title Value="gtkglarea_demo"/>
@@ -17,7 +17,64 @@
       <SrcPath Value="$(LazarusDir)/lcl;$(LazarusDir)/lcl/interfaces/gtk"/>
     </General>
     <Bookmarks Count="0"/>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="14" HistoryIndex="13">
+      <Position1>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/gtkglarea.pp"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/gtkglarea.pp"/>
+        <Caret Line="104" Column="12" TopLine="66"/>
+      </Position2>
+      <Position3>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/gtkglarea.pp"/>
+        <Caret Line="24" Column="42" TopLine="1"/>
+      </Position3>
+      <Position4>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/gtkglarea.pp"/>
+        <Caret Line="103" Column="10" TopLine="71"/>
+      </Position4>
+      <Position5>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/gtkglarea.pp"/>
+        <Caret Line="24" Column="18" TopLine="1"/>
+      </Position5>
+      <Position6>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/nvgl.pp"/>
+        <Caret Line="750" Column="1" TopLine="703"/>
+      </Position6>
+      <Position7>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/nvgl.pp"/>
+        <Caret Line="2239" Column="17" TopLine="2215"/>
+      </Position7>
+      <Position8>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/nvgl.pp"/>
+        <Caret Line="1296" Column="9" TopLine="1249"/>
+      </Position8>
+      <Position9>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/gtkglarea.pp"/>
+        <Caret Line="84" Column="3" TopLine="70"/>
+      </Position9>
+      <Position10>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/gtkglarea.pp"/>
+        <Caret Line="24" Column="18" TopLine="1"/>
+      </Position10>
+      <Position11>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/gtkglarea.pp"/>
+        <Caret Line="28" Column="18" TopLine="1"/>
+      </Position11>
+      <Position12>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/gtkglarea.pp"/>
+        <Caret Line="106" Column="5" TopLine="70"/>
+      </Position12>
+      <Position13>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/gtkglarea.pp"/>
+        <Caret Line="38" Column="34" TopLine="1"/>
+      </Position13>
+      <Position14>
+        <Filename Value="/home/mattias/pascal/official/lazarus/components/gtk/gtkglarea/gtkglarea.pp"/>
+        <Caret Line="104" Column="16" TopLine="70"/>
+      </Position14>
+    </JumpHistory>
     <Units Count="2">
       <Unit0>
         <CursorPos X="7" Y="26"/>
@@ -35,7 +92,7 @@
         <BreakPoints Count="0"/>
       </Unit0>
       <Unit1>
-        <CursorPos X="12" Y="70"/>
+        <CursorPos X="17" Y="69"/>
         <EditorIndex Value="1"/>
         <Filename Value="exampleform.pp"/>
         <FormName Value=""/>
@@ -50,6 +107,16 @@
         <BreakPoints Count="0"/>
       </Unit1>
     </Units>
+    <PublishOptions>
+      <DestinationDirectory Value="$(TestDir)/publishedproject/"/>
+      <CommandAfter Value=""/>
+      <UseIncludeFileFilter Value="True"/>
+      <IncludeFileFilter Value="*.{pas,pp,inc,lfm,lpr,lrs,lpi,lpk,fpc,sh,xml}"/>
+      <UseExcludeFileFilter Value="False"/>
+      <ExcludeFileFilter Value="*.{bak,ppu,ppw,o,so};*~;backup"/>
+      <SaveClosedEditorFilesInfo Value="False"/>
+      <SaveEditorInfoOfNonProjectFiles Value="False"/>
+    </PublishOptions>
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
@@ -57,7 +124,7 @@
         <CommandLineParams Value=""/>
         <LaunchingApplication Use="False" PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e bash -i -c '$(TargetCmdLine)'"/>
         <WorkingDirectory Value=""/>
-        <Display Value=":0"/>
+        <Display Use="False" Value=":0"/>
       </local>
       <environment>
         <UserOverrides Count="0"/>
@@ -102,6 +169,7 @@
         <UncertainOptimizations Value="False"/>
         <OptimizationLevel Value="1"/>
       </Optimizations>
+      <TargetOS Value="linux"/>
       <LinkStyle Value="1"/>
     </CodeGeneration>
     <Linking>

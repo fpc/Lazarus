@@ -25,7 +25,7 @@ unit HelloForm;
 
 interface
 
-uses SysUtils, classes, forms, buttons, controls, Graphics;
+uses Interfaces, SysUtils, Classes, Forms, Buttons, Controls, Graphics;
 
 type
    THello = class(TForm)
@@ -89,6 +89,9 @@ end.
 { =============================================================================
 
   $Log$
+  Revision 1.5  2002/10/29 08:22:32  lazarus
+  MG: added interfaces unit
+
   Revision 1.4  2002/09/10 06:49:18  lazarus
   MG: scrollingwincontrol from Andrew
 

@@ -24,7 +24,7 @@ program GTKGLArea_Demo;
 {$MODE objfpc}{$H+}
 
 uses
-  Classes, SysUtils, Forms, ExampleForm;
+  Interfaces, Forms, ExampleForm;
 
 begin
   Application.Initialize;

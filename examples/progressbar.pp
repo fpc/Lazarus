@@ -36,7 +36,8 @@ program Progressbar;
 {$mode objfpc}{$H+}
 
 uses
-  classes, stdctrls,forms,buttons,menus,comctrls,sysutils, extctrls;
+  Interfaces, Classes, StdCtrls, Forms, Buttons, Menus, ComCtrls,
+  SysUtils, Extctrls;
 
 
 type

@@ -29,13 +29,13 @@
  *                                                                         *
  ***************************************************************************
 }
-program checkbox;
+program CheckBox;
 
 {$mode objfpc}{$H+}
 
 uses
-  classes, stdctrls, forms, buttons, menus, comctrls, sysutils,
-  extctrls, graphtype, graphics, controls;
+  Interfaces, Classes, Stdctrls, Forms, Buttons, Menus, Comctrls,
+  SysUtils, ExtCtrls, GraphType, Graphics, Controls;
 
 type
   TForm1 = class(TFORM)
@@ -414,6 +414,9 @@ end.
 
 {
   $Log$
+  Revision 1.5  2002/10/29 08:22:32  lazarus
+  MG: added interfaces unit
+
   Revision 1.4  2002/05/10 06:57:50  lazarus
   MG: updated licenses
 

@@ -18,15 +18,14 @@
  *                                                                         *
  ***************************************************************************
 }
-program comdialogs;
+program ComDialogs;
 
 {$mode objfpc}{$H+}
 
-uses forms,
-     dlgform;
+uses Interfaces, Forms, DlgForm;
 
 begin
-   Application.Initialize;
-   Application.CreateForm(TSampleDialogs, SampleDialogs);
-   Application.Run;
+  Application.Initialize;
+  Application.CreateForm(TSampleDialogs, SampleDialogs);
+  Application.Run;
 end.

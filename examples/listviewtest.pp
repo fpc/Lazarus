@@ -35,7 +35,7 @@ program ListViewTest;
 {$mode objfpc}{$H+}
 
 uses
-  Classes, Buttons, ComCtrls, Forms, SysUtils;
+  Interfaces, Classes, Buttons, ComCtrls, Forms, SysUtils;
 
 type
   TMyForm = class(TForm)
@@ -98,6 +98,9 @@ end.
 
 {
   $Log$
+  Revision 1.4  2002/10/29 08:22:32  lazarus
+  MG: added interfaces unit
+
   Revision 1.3  2002/05/10 06:57:50  lazarus
   MG: updated licenses
 

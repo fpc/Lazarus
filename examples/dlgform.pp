@@ -18,14 +18,14 @@
  *                                                                         *
  ***************************************************************************
 }
-unit dlgform;
+unit DlgForm;
 
 {$mode objfpc}
 {$H+}
 
 interface
 
-uses classes, forms, buttons, dialogs, graphics;
+uses Interfaces, Classes, Forms, Buttons, Dialogs, Graphics;
 
 type
   TSampleDialogs = class(TForm)

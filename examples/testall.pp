@@ -18,20 +18,22 @@
  *                                                                         *
  ***************************************************************************
 }
-program testall;
+program TestAll;
 
 {$mode objfpc}{$H+}
 
-uses forms,
-     testallform;
+uses Interfaces, Forms, TestAllForm;
 
 begin
-   Application.Initialize;
-   Application.CreateForm(TForm1, Form1);
-   Application.Run;
+  Application.Initialize;
+  Application.CreateForm(TForm1, Form1);
+  Application.Run;
 end.
 {
   $Log$
+  Revision 1.3  2002/10/29 08:22:32  lazarus
+  MG: added interfaces unit
+
   Revision 1.2  2002/05/10 06:57:50  lazarus
   MG: updated licenses
 

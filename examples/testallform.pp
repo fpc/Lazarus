@@ -52,7 +52,7 @@ type
     //Bitmap1           : TBitmap;
       Button1           : Array[0..15] of TButton;
       CheckBox1         : Array[1..35] of TCheckBox;
-      ClipBoard1        : TClipBoard;
+    //ClipBoard1        : TClipBoard;
       CListBox1         : TClistBox;
       ColorDialog1      : TColorDialog;
       ComboBox1         : TComboBox;
@@ -95,7 +95,11 @@ type
       Panel1            : TPanel;
       PixMap1           : TPixMap;
       PopupMenu1        : TPopupMenu;
-      Hello, Doctor, FName, Yesterday, Tomorrow : TMenuItem;
+      Hello             : TMenuItem;
+      Doctor            : TMenuItem;
+    //FName: TMenuItem;
+    //Yesterday: TMenuItem;
+    //Tomorrow : TMenuItem;
     //PrintDialog1      : TPrintDialog;
     //PrinterSetupDialog1 : TPrinterSetupDialog;
       ProgressBar1      : TProgressBar;
@@ -114,11 +118,11 @@ type
     //StringGrid1       : TStringGrid;
     //TabbedNoteBook    : TTabbedNoteBook;
     //TabControl        : TTabControl;
-      Thread1           : TThread;
+    //Thread1           : TThread;
       Timer1            : TTimer;
       ToggleBox1        : TToggleBox;
       ToolBar1          : TToolBar;
-      ToolButton1, ToolButton2 : TToolButton;
+      ToolButton1       : TToolButton;
       TrackBar1, TrackBar2 : TTrackBar;
     //UpDown1           : TUpDown;
 //+++++++++++++ TestTools +++++++++++++++++++++++++++++
@@ -202,7 +206,9 @@ type
       procedure FormBorder(Sender : TObject);
       procedure FormPosition(Sender : TObject);
 //+++++++++++++ TFontDialog +++++++++++++++++++++++++++
-      lblWhatFont, lblFontSize, lblFontStyle : TLabel;
+      lblWhatFont: TLabel;
+    //blFontSize: TLabel;
+    //lblFontStyle : TLabel;
       btnShowFont : TBitBtn;
       procedure SelectFont(Sender : TObject);
 //+++++++++++++ TIniFile ++++++++++++++++++++++++++++++
@@ -2579,6 +2585,9 @@ END.
 
 {
   $Log$
+  Revision 1.11  2002/10/29 08:22:32  lazarus
+  MG: added interfaces unit
+
   Revision 1.10  2002/09/10 14:08:54  lazarus
   MG: fixed compiling examples
 

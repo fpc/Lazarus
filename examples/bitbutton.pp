@@ -22,8 +22,8 @@ program bitbutton;
 
 {$mode objfpc}{$H+}
 
-uses forms,
-     bitbtnform;
+uses
+  interfaces, forms, bitbtnform;
 
 begin
    Application.Initialize;

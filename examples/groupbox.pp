@@ -30,12 +30,13 @@
  *                                                                         *
  ***************************************************************************
 }
-program groupbox;
+program GroupBox;
 
 {$mode objfpc}{$H+}
 
 uses
-  classes, stdctrls,forms,buttons,menus,comctrls,sysutils;
+  Interfaces, Classes, StdCtrls, Forms, Buttons, Menus, ComCtrls,
+  SysUtils;
 
 type
 	TForm1 = class(TFORM)
