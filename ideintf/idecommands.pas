@@ -38,9 +38,16 @@ uses
   Classes, SysUtils, LCLType;
   
 type
-  TCommandArea = (caSourceEditor, caDesigner);
+  TCommandArea = (caMenu, caSourceEditor, caDesigner);
   TCommandAreas = set of TCommandArea;
-  
+const
+  caAll = [caMenu, caSourceEditor, caDesigner];
+  caMenuOnly = [caMenu];
+  caSrcEdit = [caMenu,caSourceEditor];
+  caDesign = [caMenu,caDesigner];
+
+
+type
   TIDEShortCut = record
     Key1: word;
     Shift1: TShiftState;
@@ -100,6 +107,20 @@ function IDEShortCut(Key1: word; Shift1: TShiftState;
   Key2: word; Shift2: TShiftState): TIDEShortCut;
 
 
+type
+  TExecuteIDECommand = procedure(Sender: TObject;
+                                 var Key: word; Shift: TShiftState;
+                                 Areas: TCommandAreas) of object;
+
+var
+  // will be set by the IDE
+  OnExecuteIDECommand: TExecuteIDECommand;
+
+procedure ExecuteIDECommand(Sender: TObject; var Key: word; Shift: TShiftState;
+                            Areas: TCommandAreas);
+procedure ExecuteIDECommand(Sender: TObject; var Key: word; Shift: TShiftState);
+
+
 implementation
 
 
@@ -110,6 +131,18 @@ begin
   Result.Shift1:=Shift1;
   Result.Key2:=Key2;
   Result.Shift2:=Shift2;
+end;
+
+procedure ExecuteIDECommand(Sender: TObject; var Key: word; Shift: TShiftState;
+                            Areas: TCommandAreas);
+begin
+  if (OnExecuteIDECommand<>nil) and (Key<>VK_UNKNOWN) then
+    OnExecuteIDECommand(Sender,Key,Shift,Areas);
+end;
+
+procedure ExecuteIDECommand(Sender: TObject; var Key: word; Shift: TShiftState);
+begin
+  OnExecuteIDECommand(Sender,Key,Shift,caMenuOnly);
 end;
 
 { TIDECommandCategory }

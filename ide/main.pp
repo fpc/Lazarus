@@ -50,6 +50,8 @@ uses
   Dialogs,
   // codetools
   Laz_XMLCfg, CodeToolsStructs, CodeToolManager, CodeCache, DefineTemplates,
+  // IDE interface
+  AllIDEIntf, ObjectInspector, PropEdits, IDECommands,
   // synedit
   SynEditKeyCmds,
   // compile
@@ -60,7 +62,7 @@ uses
   // designer
   ComponentPalette, ComponentReg,
   Designer, FormEditor, CustomFormEditor,
-  ObjectInspector, PropEdits, ControlSelection, AllIDEIntf,
+  ControlSelection,
   {$DEFINE UseNewMenuEditor}
   {$IFDEF UseNewMenuEditor}
   MenuEditorForm,
@@ -240,12 +242,14 @@ type
     // Global IDE events
     procedure OnProcessIDECommand(Sender: TObject; Command: word;
       var Handled: boolean);
+    procedure OnExecuteIDECommand(Sender: TObject;
+      var Key: word; Shift: TShiftState; Areas: TCommandAreas);
 
     // Environment options dialog events
     procedure OnLoadEnvironmentSettings(Sender: TObject;
-       TheEnvironmentOptions: TEnvironmentOptions);
+      TheEnvironmentOptions: TEnvironmentOptions);
     procedure OnSaveEnvironmentSettings(Sender: TObject;
-       TheEnvironmentOptions: TEnvironmentOptions);
+      TheEnvironmentOptions: TEnvironmentOptions);
     procedure DoShowEnvGeneralOptions(StartPage: TEnvOptsDialogPage);
 
     // SourceNotebook events
@@ -283,6 +287,8 @@ type
     // ObjectInspector + PropertyEditorHook events
     procedure OIOnSelectPersistents(Sender: TObject);
     procedure OIOnShowOptions(Sender: TObject);
+    procedure OIRemainingKeyUp(Sender: TObject; var Key: Word;
+       Shift: TShiftState);
     procedure OnPropHookGetMethods(TypeData:PTypeData; Proc:TGetStringProc);
     function OnPropHookMethodExists(const AMethodName:ShortString;
        TypeData: PTypeData;
@@ -319,6 +325,7 @@ type
     procedure OnDesignerRenameComponent(ADesigner: TDesigner;
       AComponent: TComponent; const NewName: string);
 
+    // control selection
     procedure OnControlSelectionChanged(Sender: TObject);
     procedure OnControlSelectionPropsChanged(Sender: TObject);
     procedure OnControlSelectionFormChanged(Sender: TObject; OldForm,
@@ -423,6 +430,7 @@ type
     procedure SetupSourceNotebook;
     procedure SetupTransferMacros;
     procedure SetupControlSelection;
+    procedure SetupIDEInterface;
     procedure SetupStartProject;
     procedure ReOpenIDEWindows;
 
@@ -566,7 +574,11 @@ type
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
     procedure GetDesignerUnit(ADesigner: TDesigner;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+    procedure GetObjectInspectorUnit(
+          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
     procedure GetUnitWithForm(AForm: TCustomForm;
+          var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+    procedure GetUnitWithPersistent(APersistent: TPersistent;
           var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
     function GetSourceEditorForUnitInfo(AnUnitInfo: TUnitInfo): TSourceEditor;
     procedure UpdateDefaultPascalFileExtensions;
@@ -890,6 +902,7 @@ begin
   SetupSourceNotebook;
   SetupTransferMacros;
   SetupControlSelection;
+  SetupIDEInterface;
 
   // Main IDE bar created and setup completed -> Show it
   Show;
@@ -933,6 +946,7 @@ begin
   Application.RemoveOnUserInputHandler(@OnApplicationUserInput);
   Application.RemoveOnIdleHandler(@OnApplicationIdle);
   Screen.RemoveHandlerRemoveForm(@OnScreenRemoveForm);
+  IDECommands.OnExecuteIDECommand:=nil;
 
   // free project, if it is still there
   FreeThenNil(Project1);
@@ -986,6 +1000,12 @@ end;
 procedure TMainIDE.OIOnShowOptions(Sender: TObject);
 begin
   DoShowEnvGeneralOptions(eodpObjectInspector);
+end;
+
+procedure TMainIDE.OIRemainingKeyUp(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  OnExecuteIDECommand(Sender,Key,Shift,caDesign);
 end;
 
 procedure TMainIDE.OnPropHookGetMethods(TypeData:PTypeData;
@@ -1198,6 +1218,7 @@ begin
   ObjectInspector1 := TObjectInspector.Create(Self);
   ObjectInspector1.OnSelectPersistentsInOI:=@OIOnSelectPersistents;
   ObjectInspector1.OnShowOptions:=@OIOnShowOptions;
+  ObjectInspector1.OnRemainingKeyUp:=@OIRemainingKeyUp;
 
   GlobalDesignHook:=TPropertyEditorHook.Create;
   GlobalDesignHook.GetPrivateDirectory:=AppendPathDelim(GetPrimaryConfigPath);
@@ -1209,6 +1230,7 @@ begin
   GlobalDesignHook.AddHandlerBeforeAddComponent(@OnPropHookBeforeAddComponent);
   GlobalDesignHook.AddHandlerComponentRenamed(@OnPropHookComponentRenamed);
   GlobalDesignHook.AddHandlerComponentAdded(@OnPropHookComponentAdded);
+
   ObjectInspector1.PropertyEditorHook:=GlobalDesignHook;
   EnvironmentOptions.IDEWindowLayoutList.Apply(ObjectInspector1,
                                                DefaultObjectInspectorName);
@@ -1347,6 +1369,11 @@ begin
   TheControlSelection.OnChange:=@OnControlSelectionChanged;
   TheControlSelection.OnPropertiesChanged:=@OnControlSelectionPropsChanged;
   TheControlSelection.OnSelectionFormChanged:=@OnControlSelectionFormChanged;
+end;
+
+procedure TMainIDE.SetupIDEInterface;
+begin
+  IDECommands.OnExecuteIDECommand:=@OnExecuteIDECommand;
 end;
 
 procedure TMainIDE.SetupStartProject;
@@ -1881,8 +1908,12 @@ begin
   
   case Command of
   ecSave:
-    if Sender is TDesigner then begin
+    if (Sender is TDesigner) then begin
       GetDesignerUnit(TDesigner(Sender),ASrcEdit,AnUnitInfo);
+      if (AnUnitInfo<>nil) and (AnUnitInfo.EditorIndex>=0) then
+        DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
+    end else if (Sender is TObjectInspector) then begin
+      GetObjectInspectorUnit(ASrcEdit,AnUnitInfo);
       if (AnUnitInfo<>nil) and (AnUnitInfo.EditorIndex>=0) then
         DoSaveEditorFile(AnUnitInfo.EditorIndex,[sfCheckAmbigiousFiles]);
     end else if Sender is TSourceNotebook then
@@ -1994,6 +2025,21 @@ begin
   else
     Handled:=false;
   end;
+end;
+
+procedure TMainIDE.OnExecuteIDECommand(Sender: TObject; var Key: word;
+  Shift: TShiftState; Areas: TCommandAreas);
+var
+  CommandRelation: TKeyCommandRelation;
+  Handled: Boolean;
+begin
+writeln('TMainIDE.OnExecuteIDECommand A ',Key);
+  CommandRelation:=EditorOpts.KeyMap.Find(Key,Shift,Areas);
+  if (CommandRelation=nil) or (CommandRelation.Command=ecNone) then exit;
+  Handled:=false;
+writeln('TMainIDE.OnExecuteIDECommand B ',CommandRelation.Command,' ',ecSave);
+  OnProcessIDECommand(Sender,CommandRelation.Command,Handled);
+  if Handled then Key:=VK_UNKNOWN;
 end;
 
 procedure TMainIDE.OnSrcNoteBookCtrlMouseUp(Sender: TObject;
@@ -6715,6 +6761,18 @@ begin
   end;
 end;
 
+procedure TMainIDE.GetObjectInspectorUnit(
+  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+begin
+  ActiveSourceEditor:=nil;
+  ActiveUnitInfo:=nil;
+  if (ObjectInspector1=nil) or (ObjectInspector1.PropertyEditorHook=nil)
+  or (ObjectInspector1.PropertyEditorHook.LookupRoot=nil)
+  then exit;
+  GetUnitWithPersistent(ObjectInspector1.PropertyEditorHook.LookupRoot,
+    ActiveSourceEditor,ActiveUnitInfo);
+end;
+
 procedure TMainIDE.GetUnitWithForm(AForm: TCustomForm;
   var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
 var
@@ -6726,9 +6784,20 @@ begin
     AComponent:=TDesigner(AForm.Designer).LookupRoot;
     if AComponent=nil then
       RaiseException('TMainIDE.GetUnitWithForm AComponent=nil');
+    GetUnitWithPersistent(AComponent,ActiveSourceEditor,ActiveUnitInfo);
+  end else begin
+    ActiveSourceEditor:=nil;
+    ActiveUnitInfo:=nil;
+  end;
+end;
+
+procedure TMainIDE.GetUnitWithPersistent(APersistent: TPersistent;
+  var ActiveSourceEditor: TSourceEditor; var ActiveUnitInfo: TUnitInfo);
+begin
+  if APersistent<>nil then begin
     ActiveUnitInfo:=Project1.FirstUnitWithComponent;
     while ActiveUnitInfo<>nil do begin
-      if ActiveUnitInfo.Component=AComponent then begin
+      if ActiveUnitInfo.Component=APersistent then begin
         ActiveSourceEditor:=SourceNoteBook.FindSourceEditorWithPageIndex(
                                                     ActiveUnitInfo.EditorIndex);
         exit;
@@ -10345,6 +10414,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.727  2004/05/29 17:20:05  mattias
+  implemented handling keys in IDE windows
+
   Revision 1.726  2004/05/29 14:52:18  mattias
   implemented go to next/previous error
 

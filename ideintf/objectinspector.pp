@@ -358,6 +358,7 @@ type
     procedure OnMainPopupMenuPopup(Sender: TObject);
     procedure HookRefreshPropertyValues;
   private
+    FOnRemainingKeyUp: TKeyEvent;
     FSelection: TPersistentSelectionList;
     FComponentTreeHeight: integer;
     FDefaultItemHeight: integer;
@@ -414,6 +415,7 @@ type
                            read FPropertyEditorHook write SetPropertyEditorHook;
     property OnModified: TNotifyEvent read FOnModified write FOnModified;
     property OnShowOptions: TNotifyEvent read FOnShowOptions write SetOnShowOptions;
+    property OnRemainingKeyUp: TKeyEvent read FOnRemainingKeyUp write FOnRemainingKeyUp;
     property ShowComponentTree: boolean read FShowComponentTree write SetShowComponentTree;
     property ComponentTreeHeight: integer read FComponentTreeHeight write SetComponentTreeHeight;
     property UsePairSplitter: boolean read FUsePairSplitter write SetUsePairSplitter;
@@ -2261,15 +2263,17 @@ constructor TObjectInspector.Create(AnOwner: TComponent);
 
 begin
   inherited Create(AnOwner);
-  Caption := oisObjectInspector;
   FPropertyEditorHook:=nil;
   FSelection:=TPersistentSelectionList.Create;
   FUpdatingAvailComboBox:=false;
-  Name := DefaultObjectInspectorName;
   FDefaultItemHeight := 22;
   FComponentTreeHeight:=100;
   FShowComponentTree:=true;
   FUsePairSplitter:=TPairSplitter.IsSupportedByInterface;
+
+  Caption := oisObjectInspector;
+  Name := DefaultObjectInspectorName;
+  KeyPreview:=true;
 
   // StatusBar
   StatusBar:=TStatusBar.Create(Self);
@@ -2844,6 +2848,8 @@ begin
     if Key=VK_UNKNOWN then exit;
   end;
   inherited KeyDown(Key, Shift);
+  if (Key<>VK_UNKNOWN) and Assigned(OnRemainingKeyUp) then
+    OnRemainingKeyUp(Self,Key,Shift);
 end;
 
 procedure TObjectInspector.OnShowHintPopupMenuItemClick(Sender : TObject);

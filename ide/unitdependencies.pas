@@ -47,6 +47,7 @@ uses
   Classes, SysUtils, Controls, Forms, Dialogs, Buttons, ComCtrls, StdCtrls,
   Graphics, LCLType, FileCtrl, LResources,
   CodeToolManager, CodeCache,
+  IDECommands,
   EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts, InputHistory;
   
 type
@@ -198,6 +199,8 @@ type
     procedure RebuildTree;
     procedure SetRootFilename(const AValue: string);
     procedure SetRootShortFilename(const AValue: string);
+  protected
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -413,6 +416,12 @@ begin
     FRootNode.ShortFilename:=AValue;
 end;
 
+procedure TUnitDependenciesView.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyUp(Key, Shift);
+  ExecuteIDECommand(Self,Key,Shift,caMenuOnly);
+end;
+
 function TUnitDependenciesView.RootValid: boolean;
 begin
   Result:=FRootValid;
@@ -439,6 +448,7 @@ begin
   Name:=NonModalIDEWindowNames[nmiwUnitDependenciesName];
   Caption := dlgUnitDepCaption;
   EnvironmentOptions.IDEWindowLayoutList.Apply(Self,Name);
+  KeyPreview:=true;
 
   SrcTypeImageList:=TImageList.Create(Self);
   with SrcTypeImageList do

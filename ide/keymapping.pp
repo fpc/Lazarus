@@ -240,11 +240,6 @@ const
   ecCustomToolLast       = ecUserFirst + 2999;
 
 
-const
-  caAll = [caSourceEditor, caDesigner];
-  caSrcEditOnly = [caSourceEditor];
-  caDesignOnly = [caDesigner];
-  
 type
   TKeyMapScheme = (
     kmsLazarus,
@@ -1800,7 +1795,7 @@ begin
   // create default keymapping
 
   // moving
-  C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,caSrcEditOnly)];
+  C:=Categories[AddCategory('CursorMoving',srkmCatCursorMoving,caSrcEdit)];
   AddDefault(C,'Move cursor word left',ecWordLeft);
   AddDefault(C,'Move cursor word right',ecWordRight);
   AddDefault(C,'Move cursor to line start',ecLineStart);
@@ -1819,7 +1814,7 @@ begin
   AddDefault(C,'Scroll right one char',ecScrollRight);
 
   // selection
-  C:=Categories[AddCategory('Selection',srkmCatSelection,caSrcEditOnly)];
+  C:=Categories[AddCategory('Selection',srkmCatSelection,caSrcEdit)];
   AddDefault(C,'Copy selection to clipboard',ecCopy);
   AddDefault(C,'Cut selection to clipboard',ecCut);
   AddDefault(C,'Paste clipboard to current position',ecPaste);
@@ -1849,7 +1844,7 @@ begin
   AddDefault(C,'Break Lines in selection',ecSelectionBreakLines);
 
   // editing
-  C:=Categories[AddCategory('editing commands',srkmCatEditing,caSrcEditOnly)];
+  C:=Categories[AddCategory('editing commands',srkmCatEditing,caSrcEdit)];
   AddDefault(C,'Indent block',ecBlockIndent);
   AddDefault(C,'Unindent block',ecBlockUnindent);
   AddDefault(C,'Delete last char',ecDeleteLastChar);
@@ -1883,7 +1878,7 @@ begin
   AddDefault(C,'Redo',ecRedo);
 
   // search & replace
-  C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,caSrcEditOnly)];
+  C:=Categories[AddCategory('SearchReplace',srkmCatSearchReplace,caAll)];
   AddDefault(C,'Go to matching bracket',ecMatchBracket);
   AddDefault(C,'Find text',ecFind);
   AddDefault(C,'Find next',ecFindNext);
@@ -1901,7 +1896,7 @@ begin
   AddDefault(C,'Open file at cursor',ecOpenFileAtCursor);
 
   // marker
-  C:=Categories[AddCategory('Marker',srkmCatMarker,caSrcEditOnly)];
+  C:=Categories[AddCategory('Marker',srkmCatMarker,caSrcEdit)];
   AddDefault(C,'Go to marker 0',ecGotoMarker0);
   AddDefault(C,'Go to marker 1',ecGotoMarker1);
   AddDefault(C,'Go to marker 2',ecGotoMarker2);
@@ -1924,7 +1919,7 @@ begin
   AddDefault(C,'Set marker 9',ecSetMarker9);
 
   // codetools
-  C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,caSrcEditOnly)];
+  C:=Categories[AddCategory('CodeTools',srkmCatCodeTools,caSrcEdit)];
   AddDefault(C,'Code template completion',ecAutoCompletion);
   AddDefault(C,'Word completion',ecWordCompletion);
   AddDefault(C,'Complete code',ecCompleteCode);
@@ -2055,7 +2050,7 @@ begin
   AddDefault(C,'About Lazarus',ecAboutLazarus);
 
   // designer
-  C:=Categories[AddCategory('Designer',lisKeyCatDesigner,caDesignOnly)];
+  C:=Categories[AddCategory('Designer',lisKeyCatDesigner,caDesign)];
   AddDefault(C,'Copy selected Components to clipboard',ecCopyComponents);
   AddDefault(C,'Cut selected Components to clipboard',ecCutComponents);
   AddDefault(C,'Paste Components from clipboard',ecPasteComponents);

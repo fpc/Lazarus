@@ -2,6 +2,7 @@ object CodeExplorerView: TCodeExplorerView
   Caption = 'CodeExplorerView'
   ClientHeight = 505
   ClientWidth = 206
+  KeyPreview = True
   OnClose = CodeExplorerViewCLOSE
   OnCreate = CodeExplorerViewCREATE
   OnResize = CodeExplorerViewRESIZE
@@ -13,7 +14,6 @@ object CodeExplorerView: TCodeExplorerView
   Width = 206
   object RefreshButton: TButton
     Caption = 'Refresh'
-    TabStop = True
     TabOrder = 0
     OnClick = RefreshButtonCLICK
     Height = 25
@@ -22,14 +22,13 @@ object CodeExplorerView: TCodeExplorerView
   object OptionsButton: TButton
     Enabled = False
     Caption = 'Options'
-    TabStop = True
     TabOrder = 1
     Left = 110
     Height = 25
     Width = 96
   end
   object CodeTreeview: TTreeView
-    Align = ALBOTTOM
+    Align = alBottom
     DefaultItemHeight = 17
     DragCursor = 65524
     HideSelection = False
@@ -40,7 +39,7 @@ object CodeExplorerView: TCodeExplorerView
     TabOrder = 2
     OnDblClick = CodeTreeviewDBLCLICK
     OnDeletion = CodeTreeviewDELETION
-    Options = [TVOAUTOITEMHEIGHT, TVOKEEPCOLLAPSEDNODES, TVORIGHTCLICKSELECT, TVOSHOWBUTTONS, TVOSHOWLINES, TVOSHOWROOT, TVOTOOLTIPS]
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
     Height = 480
     Top = 25
     Width = 206

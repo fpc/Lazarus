@@ -38,7 +38,7 @@ interface
 
 uses
   Classes, SysUtils, Controls, StdCtrls, Forms, LResources, IDEProcs,
-  IDEOptionDefs, EnvironmentOpts, LazarusIDEStrConsts;
+  IDEOptionDefs, IDECommands, EnvironmentOpts, LazarusIDEStrConsts;
 
 type
   { TMessageLine }
@@ -68,6 +68,8 @@ type
     MessageView: TListBox;
     procedure MessageViewDblClicked(Sender: TObject);
     Procedure MessageViewClicked(sender : TObject);
+    procedure MessagesViewKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     FItems: TList; // list of TMessageLine
     FVisibleItems: TList; // list of TMessageLine (visible Items of FItems)
@@ -149,6 +151,8 @@ Begin
                                                ItemByEnum(nmiwMessagesViewName);
   ALayout.Form:=TForm(Self);
   ALayout.Apply;
+  KeyPreview:=true;
+  OnKeyDown:=@MessagesViewKeyDown;
 end;
 
 destructor TMessagesView.Destroy;
@@ -386,6 +390,12 @@ begin
     If Assigned(OnSelectionChanged) then
       OnSelectionChanged(self);
   end;
+end;
+
+procedure TMessagesView.MessagesViewKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  ExecuteIDECommand(Self,Key,Shift);
 end;
 
 function TMessagesView.GetDirectory: string;

@@ -40,6 +40,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
   StdCtrls, Menus, Dialogs, Graphics, FileCtrl,
+  IDECommands,
   LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, AddToProjectDlg, PackageSystem, PackageDefs;
   
@@ -104,6 +105,8 @@ type
     function GetImageIndexOfFile(AFile: TUnitInfo): integer;
     procedure OnProjectBeginUpdate(Sender: TObject);
     procedure OnProjectEndUpdate(Sender: TObject; ProjectChanged: boolean);
+  protected
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -602,6 +605,12 @@ begin
   EndUpdate;
 end;
 
+procedure TProjectInspectorForm.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyDown(Key, Shift);
+  ExecuteIDECommand(Self,Key,Shift,caMenuOnly);
+end;
+
 function TProjectInspectorForm.GetSelectedFile: TUnitInfo;
 var
   CurNode: TTreeNode;
@@ -679,6 +688,7 @@ begin
   inherited Create(TheOwner);
   Name:=NonModalIDEWindowNames[nmiwProjectInspector];
   Caption:=lisMenuProjectInspector;
+  KeyPreview:=true;
 
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
   ALayout.Form:=TForm(Self);
@@ -688,6 +698,7 @@ begin
   OnResize:=@ProjectInspectorFormResize;
   OnResize(Self);
   OnShow:=@ProjectInspectorFormShow;
+  KeyPreview:=true;
 end;
 
 destructor TProjectInspectorForm.Destroy;

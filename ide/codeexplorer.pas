@@ -35,6 +35,7 @@ uses
   Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, Buttons,
   ComCtrls,
   CodeToolManager, CodeAtom, CodeCache, CodeTree, PascalParserTool,
+  IDECommands,
   EnvironmentOpts, IDEOptionDefs, LazarusIDEStrConsts, InputHistory, IDEProcs,
   Menus;
 
@@ -95,6 +96,8 @@ type
     function GetNodeImage(CodeNode: TCodeTreeNode): integer;
     procedure CreateNodes(ACodeTool: TCodeTool; CodeNode: TCodeTreeNode;
            ParentViewNode, InFrontViewNode: TTreeNode; CreateSiblings: boolean);
+  protected
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
     procedure BeginUpdate;
     procedure EndUpdate;
@@ -365,6 +368,12 @@ begin
       CreateNodes(ACodeTool,CodeNode.NextBrother,ParentViewNode,InFrontViewNode,
                   true);
   end;
+end;
+
+procedure TCodeExplorerView.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyUp(Key, Shift);
+  ExecuteIDECommand(Self,Key,Shift,caMenuOnly);
 end;
 
 procedure TCodeExplorerView.BeginUpdate;

@@ -253,6 +253,8 @@ type
     itmJumpForward: TMenuItem;
     itmAddJumpPoint: TMenuItem;
     itmJumpHistory: TMenuItem;
+    itmJumpToNextError: TMenuItem;
+    itmJumpToPrevError: TMenuItem;
     itmFindBlockOtherEnd: TMenuItem;
     itmFindBlockStart: TMenuItem;
     itmFindDeclaration: TMenuItem;
@@ -725,6 +727,8 @@ begin
   CreateMenuItem(mnuSearch,itmJumpForward,'itmJumpForward',lisMenuJumpForward); 
   CreateMenuItem(mnuSearch,itmAddJumpPoint,'itmAddJumpPoint',lisMenuAddJumpPointToHistory); 
   CreateMenuItem(mnuSearch,itmJumpHistory,'itmJumpHistory',lisMenuViewJumpHistory); 
+  CreateMenuItem(mnuSearch,itmJumpHistory,'itmJumpToNextError',lisMenuJumpToNextError);
+  CreateMenuItem(mnuSearch,itmJumpHistory,'itmJumpToPrevError',lisMenuJumpToPrevError);
 
   mnuSearch.Add(CreateMenuSeparator);
 
@@ -944,6 +948,8 @@ begin
     itmJumpForward.ShortCut:=CommandToShortCut(ecJumpForward);
     itmAddJumpPoint.ShortCut:=CommandToShortCut(ecAddJumpPoint);
     itmJumpHistory.ShortCut:=CommandToShortCut(ecViewJumpHistory);
+    itmJumpToNextError.ShortCut:=CommandToShortCut(ecJumpToNextError);
+    itmJumpToPrevError.ShortCut:=CommandToShortCut(ecJumpToPrevError);
     itmFindBlockOtherEnd.ShortCut:=CommandToShortCut(ecFindBlockOtherEnd);
     itmFindBlockStart.ShortCut:=CommandToShortCut(ecFindBlockStart);
     itmFindDeclaration.ShortCut:=CommandToShortCut(ecFindDeclaration);

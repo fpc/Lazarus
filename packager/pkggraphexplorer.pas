@@ -40,6 +40,7 @@ interface
 uses
   Classes, SysUtils, LCLProc, LResources, Forms, Controls, Buttons, ComCtrls,
   StdCtrls, Menus, Dialogs, Graphics, FileCtrl, AVL_Tree,
+  IDECommands,
   LazConf, LazarusIDEStrConsts, IDEProcs, IDEOptionDefs, EnvironmentOpts,
   Project, PackageDefs, PackageSystem, PackageEditor;
   
@@ -86,6 +87,8 @@ type
     procedure GetCurrentIsUsedBy(var Dependency: TPkgDependency);
     function SearchParentNodeWithText(ANode: TTreeNode;
       const NodeText: string): TTreeNode;
+  protected
+    procedure KeyUp(var Key: Word; Shift: TShiftState); override;
   public
     constructor Create(TheOwner: TComponent); override;
     destructor Destroy; override;
@@ -444,6 +447,12 @@ begin
   end;
 end;
 
+procedure TPkgGraphExplorer.KeyUp(var Key: Word; Shift: TShiftState);
+begin
+  inherited KeyUp(Key, Shift);
+  ExecuteIDECommand(Self,Key,Shift,caMenuOnly);
+end;
+
 constructor TPkgGraphExplorer.Create(TheOwner: TComponent);
 var
   ALayout: TIDEWindowLayout;
@@ -453,6 +462,7 @@ begin
   fSortedPackages:=TAVLTree.Create(@CompareLazPackageID);
   Name:=NonModalIDEWindowNames[nmiwPkgGraphExplorer];
   Caption:=lisMenuPackageGraph;
+  KeyPreview:=true;
 
   ALayout:=EnvironmentOptions.IDEWindowLayoutList.ItemByFormID(Name);
   ALayout.Form:=TForm(Self);
