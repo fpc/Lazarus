@@ -1,0 +1,43 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TFrmComponentMan','FORMDATA',[
+  'TPF0'#16'TFrmComponentMan'#15'FrmComponentMan'#7'CAPTION'#6#29'Component Man'
+  +'ager for Lazarus'#12'CLIENTHEIGHT'#3#244#0#11'CLIENTWIDTH'#3#209#1#8'ONCREA'
+  +'TE'#7#13'FrmMainCREATE'#9'ONDESTROY'#7#14'FrmMainDESTROY'#6'ONSHOW'#7#11'Fr'
+  +'mMainSHOW'#18'HORZSCROLLBAR.PAGE'#3#210#1#18'VERTSCROLLBAR.PAGE'#3#245#0#4
+  +'LEFT'#3'v'#1#6'HEIGHT'#3#244#0#3'TOP'#3#171#0#5'WIDTH'#3#209#1#0#8'TLISTBOX'
+  +#9'ListComps'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'ONCLICK'#7#14'ListCompsCL'
+  +'ICK'#6'SORTED'#9#7'TABSTOP'#9#8'TOPINDEX'#2#255#4'LEFT'#2#12#6'HEIGHT'#3#184
+  +#0#3'TOP'#2#28#5'WIDTH'#3#224#0#0#0#6'TLABEL'#6'Label1'#8'AUTOSIZE'#9#7'ANCH'
+  +'ORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#21'Installed Components:'#6'LAYOU'
+  +'T'#7#5'tltop'#4'LEFT'#2#12#6'HEIGHT'#2#14#3'TOP'#2#8#5'WIDTH'#3#130#0#0#0#7
+  +'TBUTTON'#7'Button1'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#7'Add N'
+  +'ew'#7'TABSTOP'#9#8'TABORDER'#2#2#7'ONCLICK'#7#12'Button1CLICK'#4'LEFT'#2#12
+  +#6'HEIGHT'#2#15#3'TOP'#3#220#0#5'WIDTH'#2'K'#0#0#7'TBUTTON'#9'BtnRemove'#7'A'
+  +'NCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#6'Remove'#7'TABSTOP'#9#8'TABOR'
+  +'DER'#2#3#7'ONCLICK'#7#14'BtnRemoveCLICK'#4'LEFT'#3#161#0#6'HEIGHT'#2#15#3'T'
+  +'OP'#3#220#0#5'WIDTH'#2'K'#0#0#6'TLABEL'#6'Label2'#8'AUTOSIZE'#9#7'ANCHORS'
+  +#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#15'Component Name:'#6'LAYOUT'#7#5'tlto'
+  +'p'#4'LEFT'#3#248#0#6'HEIGHT'#2#14#3'TOP'#2#28#5'WIDTH'#2'q'#0#0#6'TLABEL'#6
+  +'Label3'#8'AUTOSIZE'#9#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#12'Pa'
+  +'scal Unit:'#6'LAYOUT'#7#5'tltop'#4'LEFT'#3#248#0#6'HEIGHT'#2#14#3'TOP'#3#132
+  +#0#5'WIDTH'#2'M'#0#0#6'TLABEL'#6'Label4'#8'AUTOSIZE'#9#7'ANCHORS'#11#5'aktop'
+  +#6'akleft'#0#7'CAPTION'#6#5'Page:'#6'LAYOUT'#7#5'tltop'#4'LEFT'#3#248#0#6'HE'
+  +'IGHT'#2#16#3'TOP'#2'P'#5'WIDTH'#2'S'#0#0#7'TBITBTN'#9'BtnCancel'#4'KIND'#7#8
+  +'bkcancel'#7'SPACING'#2#3#7'ANCHORS'#11#5'aktop'#6'akleft'#0#11'MODALRESULT'
+  +#2#2#7'CAPTION'#6#6'Cancel'#7'TABSTOP'#9#8'TABORDER'#2#7#7'ONCLICK'#7#14'Btn'
+  +'CancelCLICK'#4'LEFT'#3#128#1#6'HEIGHT'#2#25#3'TOP'#3#212#0#5'WIDTH'#2'K'#0#0
+  +#7'TBITBTN'#7'Bitbtn2'#4'KIND'#7#4'bkok'#7'SPACING'#2#3#7'ANCHORS'#11#5'akto'
+  +'p'#6'akleft'#0#7'DEFAULT'#9#11'MODALRESULT'#2#1#7'CAPTION'#6#4'Save'#7'TABS'
+  +'TOP'#9#8'TABORDER'#2#8#7'ONCLICK'#7#12'Bitbtn2CLICK'#4'LEFT'#3'$'#1#6'HEIGH'
+  +'T'#2#25#3'TOP'#3#212#0#5'WIDTH'#2'K'#0#0#6'TLABEL'#12'LblComponent'#7'ANCHO'
+  +'RS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#12'LblComponent'#6'LAYOUT'#7#5'tlt'
+  +'op'#4'LEFT'#3#10#1#6'HEIGHT'#2#17#3'TOP'#2'0'#5'WIDTH'#3#193#0#0#0#6'TLABEL'
+  +#7'LblUnit'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'CAPTION'#6#7'LblUnit'#6'LAY'
+  +'OUT'#7#5'tltop'#4'LEFT'#3#8#1#6'HEIGHT'#2#17#3'TOP'#3#156#0#5'WIDTH'#3#196#0
+  +#0#0#5'TEDIT'#7'TxtPage'#7'ANCHORS'#11#5'aktop'#6'akleft'#0#8'ONCHANGE'#7#13
+  +'TxtPageCHANGE'#7'TABSTOP'#9#8'TABORDER'#2#11#4'LEFT'#3#8#1#6'HEIGHT'#2#23#3
+  +'TOP'#2'd'#5'WIDTH'#3#192#0#0#0#11'TOPENDIALOG'#7'DlgLoad'#7'OPTIONS'#11#14
+  +'ofenablesizing'#12'ofviewdetail'#0#6'FILTER'#6#10'*.pp|*.pas'#11'FILTERINDE'
+  +'X'#2#0#4'left'#2#12#3'top'#3#160#1#0#0#0
+]);

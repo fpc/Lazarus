@@ -1,0 +1,16 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TFrmAddComponent','FORMDATA',[
+  'TPF0'#16'TFrmAddComponent'#15'FrmAddComponent'#7'CAPTION'#6#24'Select compon'
+  +'ents to add'#12'CLIENTHEIGHT'#3#0#1#11'CLIENTWIDTH'#3#228#0#18'HORZSCROLLBA'
+  +'R.PAGE'#3#229#0#18'VERTSCROLLBAR.PAGE'#3#1#1#4'LEFT'#3#159#1#6'HEIGHT'#3#0#1
+  +#3'TOP'#3#176#0#5'WIDTH'#3#228#0#0#8'TLISTBOX'#11'ListCompAdd'#7'ANCHORS'#11
+  +#5'aktop'#6'akleft'#0#11'MULTISELECT'#9#6'SORTED'#9#7'TABSTOP'#9#8'TOPINDEX'
+  +#2#255#6'HEIGHT'#3#216#0#5'WIDTH'#3#228#0#0#0#7'TBITBTN'#7'Bitbtn1'#4'KIND'#7
+  +#8'bkcancel'#7'SPACING'#2#3#7'ANCHORS'#11#5'aktop'#6'akleft'#0#11'MODALRESUL'
+  +'T'#2#2#7'CAPTION'#6#6'Cancel'#7'TABSTOP'#9#8'TABORDER'#2#1#4'LEFT'#3#144#0#6
+  +'HEIGHT'#2#25#3'TOP'#3#224#0#5'WIDTH'#2'K'#0#0#7'TBITBTN'#7'Bitbtn2'#4'KIND'
+  +#7#4'bkok'#7'SPACING'#2#3#7'ANCHORS'#11#5'aktop'#6'akleft'#0#7'DEFAULT'#9#11
+  +'MODALRESULT'#2#1#7'CAPTION'#6#3'&OK'#7'TABSTOP'#9#8'TABORDER'#2#2#4'LEFT'#2
+  +'8'#6'HEIGHT'#2#25#3'TOP'#3#224#0#5'WIDTH'#2'K'#0#0#0
+]);

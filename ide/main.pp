@@ -45,8 +45,8 @@ uses
   // fpc packages
   Classes, SysUtils, Process, TypInfo,
   // lcl
-  LCLType, LclLinux, LMessages, StdCtrls, Forms, Buttons, Menus, ComCtrls, Spin,
-  FileCtrl, Controls, Graphics, GraphType, ExtCtrls, Dialogs,
+  LCLType, LclLinux, LMessages, LResources, StdCtrls, Forms, Buttons, Menus,
+  ComCtrls, Spin, FileCtrl, Controls, Graphics, GraphType, ExtCtrls, Dialogs,
   // codetools
   CodeToolManager, CodeCache, DefineTemplates,
   // synedit
@@ -62,16 +62,16 @@ uses
   Debugger, DBGOutputForm, GDBMIDebugger, RunParamsOpts, Watchesdlg,
   BreakPointsdlg, DebuggerDlg, LocalsDlg,
   // packager
-  PackageDefs, PackageEditor,
+  PkgManager, BasePkgManager,
   // source editing
   UnitEditor, EditDefineTree, CodeToolsOptions, IDEOptionDefs, CodeToolsDefines,
-  DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions,
+  DiffDialog, DiskDiffsDialog, UnitInfoDlg, EditorOptions, ViewUnit_dlg,
   // rest ide
   LazarusIDEStrConsts, LazConf, MsgView, EnvironmentOpts,
   TransferMacros, KeyMapping, IDEProcs, ExtToolDialog, ExtToolEditDlg,
   MacroPromptDlg, OutputFilter, BuildLazDialog, MiscOptions,
   InputHistory, UnitDependencies, ClipBoardHistory, ProcessList,
-  InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList,
+  InitialSetupDlgs, NewDialog, MakeResStrDlg, ToDoList, AboutFrm,
   // main ide
   BaseDebugManager, DebugManager, MainBar;
 
@@ -186,6 +186,8 @@ type
     procedure mnuStopProjectClicked(Sender : TObject);
     procedure mnuRunParametersClicked(Sender : TObject);
     procedure mnuProjectCompilerSettingsClicked(Sender : TObject);
+    
+    // components menu
 
     // tools menu
     procedure mnuToolConfigureClicked(Sender : TObject);
@@ -360,6 +362,7 @@ type
     procedure SetupViewMenu; override;
     procedure SetupProjectMenu; override;
     procedure SetupRunMenu; override;
+    procedure SetupComponentsMenu; override;
     procedure SetupToolsMenu; override;
     procedure SetupEnvironmentMenu; override;
     procedure SetupWindowsMenu; override;
@@ -589,7 +592,7 @@ const
 implementation
 
 uses
-  ViewUnit_dlg, Math, LResources, aboutfrm;
+  Math;
 
 //==============================================================================
 {
@@ -802,10 +805,13 @@ begin
     ConnectMainBarEvents;
   end;
 
-  // initialize the other IDE manager
+  // initialize the other IDE managers
   DebugBoss:=TDebugManager.Create(Self);
   DebugBoss.ConnectMainBarEvents;
+  PkgBoss:=TPkgManager.Create(Self);
+  PkgBoss.ConnectMainBarEvents;
 
+  // setup the rest ...
   LoadMenuShortCuts;
   SetupComponentTabs;
   SetupOutputFilter;
@@ -1325,6 +1331,11 @@ begin
   mnuRun.Caption := lisMenuRun;
   mnuMain.Items.Add(mnuRun);
 
+  mnuComponents := TMenuItem.Create(Self);
+  mnuComponents.Name:='mnuComponents';
+  mnuComponents.Caption := lisMenuComponents;
+  mnuMain.Items.Add(mnuComponents);
+
   mnuTools := TMenuItem.Create(Self);
   mnuTools.Name:='mnuTools';
   mnuTools.Caption := lisMenuTools;
@@ -1351,6 +1362,7 @@ begin
   SetupViewMenu;
   SetupProjectMenu;
   SetupRunMenu;
+  SetupComponentsMenu;
   SetupToolsMenu;
   SetupEnvironmentMenu;
   SetupWindowsMenu;
@@ -1501,6 +1513,11 @@ begin
   itmProjectStop.OnClick := @mnuStopProjectClicked;
   itmProjectCompilerSettings.OnClick := @mnuProjectCompilerSettingsClicked;
   itmProjectRunParameters.OnClick := @mnuRunParametersClicked;
+end;
+
+procedure TMainIDE.SetupComponentsMenu;
+begin
+  inherited SetupComponentsMenu;
 end;
 
 procedure TMainIDE.SetupToolsMenu;
@@ -1842,6 +1859,9 @@ begin
     
    ecCompleteCode:
      DoCompleteCodeAtCursor;
+     
+   ecConfigCustomComps:
+     PkgBoss.ShowConfigureCustomComponents;
       
    ecExtToolFirst..ecExtToolLast:
      DoRunExternalTool(Command-ecExtToolFirst);
@@ -1875,6 +1895,9 @@ begin
      
    ecToggleObjectInsp:
      mnuViewInspectorClicked(Self);  
+     
+   ecAboutLazarus:
+     mnuHelpAboutLazarusClicked(Self);
 
   else
     Handled:=false;
@@ -8100,6 +8123,9 @@ end.
 
 { =============================================================================
   $Log$
+  Revision 1.503  2003/04/01 17:29:36  mattias
+  added packagemanager and added config dialog for custom components from Tony
+
   Revision 1.502  2003/04/01 16:25:45  mattias
   started packageeditor and packagelinks
 
